@@ -1,7 +1,41 @@
+const prettierOptions = {
+  printWidth: 80,
+  tabWidth: 2,
+  useTabs: false,
+  semi: true,
+  singleQuote: true,
+  trailingComma: "all",
+  arrowParens: "avoid",
+  endOfLine: "lf",
+};
+
 module.exports = {
-  extends: ["next", "prettier"],
+  extends: [
+    "react-app",
+    // react and @typescript-react are now merged into prettier
+    "prettier",
+  ],
+  plugins: ["next", "prettier"],
   rules: {
-    "@next/next/no-html-link-for-pages": "off",
-    "react/jsx-key": "off",
+    "prettier/prettier": ["error", prettierOptions],
+    "@typescript-eslint/ban-ts-comment": "error",
+    "react-hooks/exhaustive-deps": [
+      "warn",
+      {
+        additionalHooks: "useDebouncedEffect",
+      },
+    ],
   },
+  overrides: [
+    {
+      files: ["**/*.ts?(x)"],
+      rules: { "prettier/prettier": ["warn", prettierOptions] },
+    },
+    {
+      files: ["**/*.stories.*"],
+      rules: {
+        "import/no-anonymous-default-export": "off",
+      },
+    },
+  ],
 };

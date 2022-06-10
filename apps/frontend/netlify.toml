@@ -1,0 +1,39 @@
+# Production context:
+# All deploys from the main repository branch
+# will inherit these settings. Be mindful 
+# when using this option and avoid committing  
+# sensitive values to public source repositories.
+[context.production]
+  command = "yarn build"
+  [context.production.environment]
+    ACCESS_TOKEN = "super secret"
+    APP_MODE = "mainnet"
+  # Deploys from main branch run this plugin in the build.
+  # Plugins context requires double brackets.
+  [[context.production.plugins]]
+    package = "@netlify/plugin-sitemap"
+
+
+[context.deploy-preview]
+  command = "yarn preview"
+
+# Deploy Preview context:
+# All deploys generated from a pull/merge request
+# will inherit these settings. Be mindful 
+# when using this option and avoid committing  
+# sensitive values to public source repositories.
+[context.deploy-preview.environment]
+  ACCESS_TOKEN = "not so secret"
+  APP_MODE = "testnet"
+
+# Branch deploy context:
+# All deploys that are not from a pull/merge request
+# or from the production branch will inherit these settings.
+[context.branch-deploy]
+  command = "yarn staging"
+
+# Specific branch context:
+# Deploys from this branch will take these settings
+# and override their current ones.
+[context.development]
+  command = "yarn testnet"

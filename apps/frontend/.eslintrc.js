@@ -1,6 +1,6 @@
 module.exports = {
   root: true,
-  extends: ['custom'],
+  extends: ['@sovryn/eslint-config-custom'],
   rules: {
     'react-hooks/exhaustive-deps': [
       'warn',

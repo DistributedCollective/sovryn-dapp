@@ -22,7 +22,11 @@ module.exports = {
   },
   overrides: [
     {
-      files: ['**/*.ts?(x)', '**/*.js?(x)'],
+      files: ['**/*.ts?(x)'],
+      rules: { 'prettier/prettier': ['warn', prettierOptions] },
+    },
+    {
+      files: ['**/*.js?(x)'],
       rules: { 'prettier/prettier': ['warn', prettierOptions] },
     },
     {

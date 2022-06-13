@@ -1,4 +1,12 @@
 module.exports = {
   root: true,
-  extends: ["custom"],
+  extends: ['custom'],
+  rules: {
+    'react-hooks/exhaustive-deps': [
+      'warn',
+      {
+        additionalHooks: 'useDebouncedEffect',
+      },
+    ],
+  },
 };

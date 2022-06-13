@@ -1,4 +1,4 @@
-const prettierOptions = {
+var prettierOptions = {
   printWidth: 80,
   tabWidth: 2,
   useTabs: false,
@@ -19,12 +19,6 @@ module.exports = {
   rules: {
     'prettier/prettier': ['error', prettierOptions],
     '@typescript-eslint/ban-ts-comment': 'error',
-    'react-hooks/exhaustive-deps': [
-      'warn',
-      {
-        additionalHooks: 'useDebouncedEffect',
-      },
-    ],
   },
   overrides: [
     {

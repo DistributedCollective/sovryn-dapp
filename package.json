@@ -14,7 +14,7 @@
     "test": "turbo run test"
   },
   "devDependencies": {
-    "eslint-config-custom": "latest",
+    "@sovryn/eslint-config-custom": "*",
     "prettier": "latest",
     "turbo": "latest"
   },

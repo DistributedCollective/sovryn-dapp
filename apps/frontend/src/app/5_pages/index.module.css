@@ -3,7 +3,7 @@
 
     color: orange;
 
-    /* &:hover{
+    &:hover{
         color: blue;
-    }; */
+    };
 }

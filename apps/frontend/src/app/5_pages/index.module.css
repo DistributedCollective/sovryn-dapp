@@ -1,0 +1,9 @@
+.test {
+    @apply tw-font-extrabold;
+
+    color: orange;
+
+    /* &:hover{
+        color: blue;
+    }; */
+}

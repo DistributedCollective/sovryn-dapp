@@ -2,11 +2,7 @@
 module.exports = {
   prefix: 'tw-',
   important: true,
-  content: [
-    './public/index.html',
-    './public/maintenance.html',
-    './src/app/**/*.{ts,tsx}',
-  ],
+  content: ['./src/**/*.{html,ts, tsx}'],
   future: {
     purgeLayersByDefault: true,
   },

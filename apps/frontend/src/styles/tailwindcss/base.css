@@ -1,11 +1,11 @@
 @layer base {
     html,
     body {
-      @apply tw-h-full tw-w-full tw-font-normal;
+      @apply h-full w-full font-normal;
     }
   
     body {
-      @apply tw-bg-gray-1 tw-text-sov-white tw-font-body tw-text-xs tw-leading-normal;
+      @apply bg-gray-1 text-sov-white font-body text-xs leading-normal;
       font-variant-numeric: tabular-nums;
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
@@ -14,12 +14,12 @@
   
     @screen lg {
       body {
-        @apply tw-text-base tw-leading-normal;
+        @apply text-base leading-normal;
       }
     }
   
     * {
-      @apply tw-font-body tw-scrollbars-wide;
+      @apply font-body scrollbars-wide;
     }
   
     *:focus {
@@ -33,7 +33,7 @@
     h4,
     h5,
     h6 {
-      @apply tw-text-sov-white tw-font-medium;
+      @apply text-sov-white font-medium;
       line-height: 1.2;
     }
   
@@ -44,12 +44,12 @@
   
     a,
     a:visited {
-      @apply tw-text-primary tw-no-underline tw-underline;
+      @apply text-primary no-underline underline;
     }
   
     a:hover,
     a:active {
-      @apply tw-text-primary tw-underline;
+      @apply text-primary underline;
     }
   
     th {
@@ -64,19 +64,19 @@
     }
     
     h1 {
-      @apply tw-text-4xl tw-font-semibold;
+      @apply text-4xl font-semibold;
     }
   
     h2 {
-      @apply tw-m-0 tw-text-3xl tw-font-semibold tw-normal-case;
+      @apply m-0 text-3xl font-semibold normal-case;
     }
   
     h3 {
-      @apply tw-m-0 tw-text-base tw-font-semibold;
+      @apply m-0 text-base font-semibold;
     }
   
     h4 {
-      @apply tw-m-0 tw-text-base tw-font-medium tw-text-gray-7;
+      @apply m-0 text-base font-medium text-gray-7;
     }
   }
   

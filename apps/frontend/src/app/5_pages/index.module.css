@@ -1,5 +1,5 @@
 .test {
-    @apply tw-font-extrabold;
+    @apply font-extrabold;
 
     color: orange;
 

@@ -1,74 +1,74 @@
 @layer components {
 
-    .tw-link {
-      @apply tw-text-primary tw-no-underline tw-font-normal;
+    .link {
+      @apply text-primary no-underline font-normal;
     }
   
-    .tw-link:hover {
-      @apply tw-text-primary tw-underline;
+    .link:hover {
+      @apply text-primary underline;
     }
   
-    .tw-header-link,
-    .tw-header-link:visited {
-      @apply tw-font-body tw-normal-case tw-no-underline tw-text-sov-white tw-text-base tw-no-underline tw-transition;
+    .header-link,
+    .header-link:visited {
+      @apply font-body normal-case no-underline text-sov-white text-base no-underline transition;
     }
   
-    .tw-header-link:hover,
-    .tw-header-link:active {
-      @apply tw-text-secondary tw-no-underline;
+    .header-link:hover,
+    .header-link:active {
+      @apply text-secondary no-underline;
     }
   
-    .tw-header-link.active {
-      @apply tw-text-sov-white tw-font-medium tw-no-underline;
+    .header-link.active {
+      @apply text-sov-white font-medium no-underline;
     }
   
     /* form button styles */
-    .tw-btn {
+    .btn {
       height: 3rem;
       letter-spacing: 0.1rem;
-      @apply tw-flex tw-flex-row tw-items-center tw-justify-center;
-      @apply tw-text-primary tw-uppercase tw-text-xl tw-font-black tw-leading-none tw-font-body;
-      @apply tw-px-6 tw-py-2;
-      @apply tw-border lg:tw-rounded;
-      @apply tw-transition;
-      @apply tw-bg-primary tw-bg-opacity-10;
-      @apply hover:tw-bg-opacity-25;
+      @apply flex flex-row items-center justify-center;
+      @apply text-primary uppercase text-xl font-black leading-none font-body;
+      @apply px-6 py-2;
+      @apply border lg:rounded;
+      @apply transition;
+      @apply bg-primary bg-opacity-10;
+      @apply hover:bg-opacity-25;
     }
   
-    .tw-btn:disabled {
-      @apply tw-opacity-25 tw-bg-opacity-25 tw-cursor-not-allowed;
+    .btn:disabled {
+      @apply opacity-25 bg-opacity-25 cursor-not-allowed;
     }
   
-    .tw-btn.loading,
-    .tw-btn.loading:disabled {
-      @apply tw-opacity-75 tw-bg-opacity-25 tw-cursor-wait;
+    .btn.loading,
+    .btn.loading:disabled {
+      @apply opacity-75 bg-opacity-25 cursor-wait;
     }
   
     /* inverted btn styles */
-    .tw-btn-inverted {
-      @apply tw-btn;
-      @apply tw-text-black tw-bg-opacity-100;
-      @apply hover:tw-bg-opacity-75;
+    .btn-inverted {
+      @apply btn;
+      @apply text-black bg-opacity-100;
+      @apply hover:bg-opacity-75;
     }
   
-    .tw-btn-inverted:disabled {
-      @apply tw-opacity-75 tw-bg-opacity-75 tw-cursor-not-allowed;
+    .btn-inverted:disabled {
+      @apply opacity-75 bg-opacity-75 cursor-not-allowed;
     }
   
-    .tw-btn-inverted.loading,
-    .tw-btn-inverted.loading:disabled {
-      @apply tw-opacity-75 tw-bg-opacity-75 tw-cursor-wait;
+    .btn-inverted.loading,
+    .btn-inverted.loading:disabled {
+      @apply opacity-75 bg-opacity-75 cursor-wait;
     }
   
-    .tw-trading-form-card.spot-form {
+    .trading-form-card.spot-form {
       min-width: 452px;
     }
-    .tw-trading-form-card {
+    .trading-form-card {
       width: 100%;
     }
   
-    .tw-mw-340 {
-      @apply tw-w-full;
+    .mw-340 {
+      @apply w-full;
       max-width: 320px;
     }
   }
@@ -85,7 +85,7 @@
     min-width: 115px;
   }
   @screen md {
-    .tw-trading-form-card {
+    .trading-form-card {
       max-width: 369px;
     }
   }

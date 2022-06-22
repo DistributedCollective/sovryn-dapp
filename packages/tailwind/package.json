@@ -1,0 +1,10 @@
+{
+    "name": "@sovryn/tailwind",
+    "version": "0.0.0",
+    "main": "index.js",
+    "private": true,
+    "files": [
+        "index.js",
+        "postcss.config.js"
+      ]
+  }

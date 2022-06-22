@@ -2,21 +2,7 @@ module.exports = {
   style: {
     postcss: {
       loaderOptions: postcssLoaderOptions => {
-        postcssLoaderOptions.postcssOptions.plugins = [
-          require('postcss-import'),
-          require('tailwindcss/nesting'),
-          require('tailwindcss'),
-          'postcss-flexbugs-fixes',
-          [
-            'postcss-preset-env',
-            {
-              autoprefixer: {
-                flexbox: 'no-2009',
-              },
-              stage: 0,
-            },
-          ],
-        ];
+        postcssLoaderOptions.postcssOptions = require('@sovryn/tailwind/postcss.config.js');
 
         return postcssLoaderOptions;
       },

@@ -3,6 +3,12 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "react": "^18.1.0",
+    "react-dom": "^18.1.0",
+    "react-scripts": "5.0.1"
+  },
+  "devDependencies": {
+    "@babel/core": "7.18.2",
     "@testing-library/jest-dom": "^5.16.4",
     "@testing-library/react": "^13.3.0",
     "@testing-library/user-event": "^13.5.0",
@@ -10,22 +16,16 @@
     "@types/node": "^16.11.39",
     "@types/react": "^18.0.12",
     "@types/react-dom": "^18.0.5",
-    "react": "^18.1.0",
-    "react-dom": "^18.1.0",
-    "react-scripts": "5.0.1",
-    "typescript": "^4.7.3",
-    "tailwindcss": "3.1.2",
-    "@babel/core": "7.18.2"
-  },
-  "devDependencies": {
+    "@sovryn/eslint-config-custom": "*",
     "@sovryn/tsconfig": "*",
-    "@sovryn/eslint-config-custom": "*"
+    "@sovryn/tailwindcss-config": "*",
+    "@craco/craco": "^6.4.3",
+    "typescript": "^4.7.4"
   },
   "scripts": {
-    "dev": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject",
+    "dev": "craco start",
+    "build": "craco build",
+    "test": "craco test",
     "lint": "eslint -c .eslintrc.js ./"
   },
   "browserslist": {

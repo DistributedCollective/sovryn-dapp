@@ -1,0 +1,91 @@
+@layer components {
+
+    .link {
+      @apply text-primary no-underline font-normal;
+    }
+  
+    .link:hover {
+      @apply text-primary underline;
+    }
+  
+    .header-link,
+    .header-link:visited {
+      @apply font-body normal-case no-underline text-sov-white text-base no-underline transition;
+    }
+  
+    .header-link:hover,
+    .header-link:active {
+      @apply text-secondary no-underline;
+    }
+  
+    .header-link.active {
+      @apply text-sov-white font-medium no-underline;
+    }
+  
+    /* form button styles */
+    .btn {
+      height: 3rem;
+      letter-spacing: 0.1rem;
+      @apply flex flex-row items-center justify-center;
+      @apply text-primary uppercase text-xl font-black leading-none font-body;
+      @apply px-6 py-2;
+      @apply border lg:rounded;
+      @apply transition;
+      @apply bg-primary bg-opacity-10;
+      @apply hover:bg-opacity-25;
+    }
+  
+    .btn:disabled {
+      @apply opacity-25 bg-opacity-25 cursor-not-allowed;
+    }
+  
+    .btn.loading,
+    .btn.loading:disabled {
+      @apply opacity-75 bg-opacity-25 cursor-wait;
+    }
+  
+    /* inverted btn styles */
+    .btn-inverted {
+      @apply btn;
+      @apply text-black bg-opacity-100;
+      @apply hover:bg-opacity-75;
+    }
+  
+    .btn-inverted:disabled {
+      @apply opacity-75 bg-opacity-75 cursor-not-allowed;
+    }
+  
+    .btn-inverted.loading,
+    .btn-inverted.loading:disabled {
+      @apply opacity-75 bg-opacity-75 cursor-wait;
+    }
+  
+    .trading-form-card.spot-form {
+      min-width: 452px;
+    }
+    .trading-form-card {
+      width: 100%;
+    }
+  
+    .mw-340 {
+      @apply w-full;
+      max-width: 320px;
+    }
+  }
+  
+  .assetname {
+    min-width: 130px;
+  }
+  
+  [disabled].hover\:bg-opacity-0:hover {
+    background: transparent !important;
+  }
+  
+  .assets {
+    min-width: 115px;
+  }
+  @screen md {
+    .trading-form-card {
+      max-width: 369px;
+    }
+  }

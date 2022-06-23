@@ -3,7 +3,7 @@ import styles from './index.module.css';
 
 function App() {
   return (
-    <div>
+    <div className="my-2 px-4">
       <header>
         <p className={styles.test}>
           Edit <code>src/App.tsx</code> and save to reload.

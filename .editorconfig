@@ -15,6 +15,6 @@ charset = utf-8
 [Makefile]
 indent_style = tab
 
-[*.{js,ts,tsx,json}]
+[*.{js,ts,tsx,json,css}]
 indent_style = space
 indent_size = 2

@@ -1,5 +1,8 @@
 {
   "extends": "@sovryn/tsconfig/react-library.json",
-  "include": ["."],
-  "exclude": ["dist", "build", "node_modules"],
+  "include": ["./src"],
+  "exclude": ["dist", "build", "storybook-static", "node_modules"],
+  "compilerOptions": {
+    "outDir": "./dist"
+  }
 }

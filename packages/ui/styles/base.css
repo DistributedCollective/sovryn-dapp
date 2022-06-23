@@ -4,6 +4,6 @@
   }
 
   body {
-    @apply bg-warning-50;
+    @apply bg-warning-50 text-white;
   }
 }

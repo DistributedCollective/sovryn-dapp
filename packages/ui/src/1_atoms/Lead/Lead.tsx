@@ -1,8 +1,8 @@
 import { FC, PropsWithChildren } from 'react';
-import styles from './lead.module.css';
+import styles from './Lead.module.css';
 
 export type LeadProps = {
-  test: boolean;
+  test?: boolean;
 };
 
 export const Lead: FC<PropsWithChildren<LeadProps>> = ({ children, test }) => {

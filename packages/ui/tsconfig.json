@@ -3,6 +3,15 @@
   "include": ["./src"],
   "exclude": ["dist", "build", "storybook-static", "node_modules"],
   "compilerOptions": {
-    "outDir": "./dist"
+    "rootDir": "src",
+    "strict": true, 
+    "skipLibCheck": true,
+    "module": "ESNext",  
+    "declaration": true,
+    "sourceMap": true,
+    "outDir": "dist/esm",
+    "moduleResolution": "node",
+    "allowSyntheticDefaultImports": true,
+    "emitDeclarationOnly": true,
   }
 }

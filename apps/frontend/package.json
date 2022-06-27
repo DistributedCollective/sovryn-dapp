@@ -5,14 +5,15 @@
   "dependencies": {
     "react": "^18.1.0",
     "react-dom": "^18.1.0",
-    "react-scripts": "5.0.1"
+    "react-scripts": "5.0.1",
+    "@sovryn/tailwindcss-config": "*",
+    "@sovryn/ui": "*"
   },
   "devDependencies": {
     "@babel/core": "7.18.2",
     "@babel/preset-react": "^7.17.12",
     "@craco/craco": "^6.4.3",
     "@sovryn/eslint-config-custom": "*",
-    "@sovryn/tailwindcss-config": "*",
     "@sovryn/tsconfig": "*",
     "@testing-library/jest-dom": "^5.16.4",
     "@testing-library/react": "^13.3.0",

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Lead } from '@sovryn/ui/src';
+import { Button, Lead } from '@sovryn/ui';
 import styles from './index.module.css';
 
 function App() {

@@ -1,10 +1,4 @@
-import '@sovryn/tailwindcss-config/styles/index.css';
-// import '@sovryn/tailwindcss-config/styles/base.css';
-// import '@sovryn/tailwindcss-config/styles/components.css';
-// import '@sovryn/tailwindcss-config/styles/utilities.css';
-// import '../styles/base.css';
-// import '../styles/components.css';
-// import '../styles/utilities.css';
+import '../styles/index.css';
 
 const screens = {
   xs: '320px',

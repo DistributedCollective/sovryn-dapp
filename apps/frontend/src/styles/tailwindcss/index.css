@@ -6,6 +6,11 @@
 @import "@sovryn/tailwindcss-config/styles/components.css";
 @import "@sovryn/tailwindcss-config/styles/utilities.css";
 
+/* Shared sovryn UI (global) */
+@import "@sovryn/ui/styles/base.css";
+@import "@sovryn/ui/styles/components.css";
+@import "@sovryn/ui/styles/utilities.css";
+
 /* Dapp specific global styles */
 @import "./base.css";
 @import "./components.css";

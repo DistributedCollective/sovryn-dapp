@@ -1,3 +1,9 @@
-export const Button = () => {
-  return <button className="p-4 py-12">Boop</button>;
+import React, { FC } from 'react';
+
+type ButtonProps = {
+  className?: string;
+};
+
+export const Button: FC<ButtonProps> = ({ className }) => {
+  return <button className={className || 'bg-warning-25'}>Boop</button>;
 };

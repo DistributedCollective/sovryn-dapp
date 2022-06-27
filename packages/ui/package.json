@@ -35,6 +35,7 @@
     "rollup": "^2.75.7",
     "rollup-plugin-dts": "^4.2.2",
     "rollup-plugin-postcss": "^4.0.2",
+    "storybook-css-modules": "^1.0.8",
     "typescript": "^4.5.2"
   },
   "dependencies": {

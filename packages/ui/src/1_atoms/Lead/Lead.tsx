@@ -1,5 +1,5 @@
 import React, { FC, PropsWithChildren } from 'react';
-import styles from './Lead.module.css';
+import styles from './lead.module.css';
 
 export type LeadProps = {
   test?: boolean;

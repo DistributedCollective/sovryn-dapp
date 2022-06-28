@@ -12,7 +12,7 @@
   "devDependencies": {
     "@babel/core": "7.18.2",
     "@babel/preset-react": "^7.17.12",
-    "@craco/craco": "^6.4.3",
+    "@craco/craco": "v7.0.0-alpha.3",
     "@sovryn/eslint-config-custom": "*",
     "@sovryn/tsconfig": "*",
     "@testing-library/jest-dom": "^5.16.4",

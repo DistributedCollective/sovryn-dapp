@@ -1,0 +1,9 @@
+@layer base {
+  h1 {
+    @apply font-bold;
+  }
+
+  body {
+    @apply bg-warning-25;
+  }
+}

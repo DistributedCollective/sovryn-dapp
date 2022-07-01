@@ -9,6 +9,8 @@ const screens = {
   ...config.theme.screens,
 };
 
+const backgrounds = Object.entries(config.theme.backgroundColor).map(([name, value]) => ({ name, value }));
+
 export const parameters = {
   actions: { argTypesRegex: "^on[A-Z].*" },
   controls: {
@@ -20,32 +22,7 @@ export const parameters = {
   // values of tailwind
   backgrounds: {
     default: 'gray-1',
-    values: [
-      {
-        name: 'black',
-        value: '#000000',
-      },
-      {
-        name: 'gray-1',
-        value: '#161616',
-      },
-      {
-        name: 'gray-2',
-        value: '#1f1f1f',
-      },
-      {
-        name: 'gray-3',
-        value: '#2c2c2c',
-      },
-      {
-        name: 'gray-4',
-        value: '#343434',
-      },
-      {
-        name: 'gray-5',
-        value: '#484848',
-      },
-    ],
+    values: backgrounds,
   },
   viewport: {
     viewports: Object.entries(screens).map(([viewport, width]) => ({
@@ -61,6 +38,7 @@ export const parameters = {
     storySort: {
       order: [
         'Design Guide',
+        'Meta',
         'Atoms',
         'Molecules',
         'Organisms',

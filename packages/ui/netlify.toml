@@ -1,0 +1,4 @@
+[build]
+  base = "packages/ui/"
+  publish = "storybook-static/"
+  command = "yarn build-storybook"

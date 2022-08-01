@@ -1,5 +1,16 @@
 {
   "extends": "@sovryn/tsconfig/react-library.json",
-  "include": ["."],
-  "exclude": ["dist", "build", "node_modules"]
+  "include": ["./src", "./index.ts"],
+  "exclude": ["dist", "build", "storybook-static", "node_modules"],
+  "compilerOptions": {
+    "rootDir": "src",
+    "strict": true, 
+    "skipLibCheck": true,
+    "module": "ESNext",  
+    "declaration": true,
+    "sourceMap": true,
+    "moduleResolution": "node",
+    "allowSyntheticDefaultImports": true,
+    "emitDeclarationOnly": true,
+  }
 }

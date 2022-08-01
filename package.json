@@ -11,7 +11,8 @@
     "dev": "turbo run dev --parallel",
     "lint": "turbo run lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
-    "test": "turbo run test"
+    "test": "turbo run test",
+    "storybook": "turbo run storybook"
   },
   "devDependencies": {
     "@sovryn/eslint-config-custom": "*",

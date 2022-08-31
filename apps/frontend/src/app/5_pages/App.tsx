@@ -1,19 +1,11 @@
-import React from 'react';
-import { Button, Lead } from '@sovryn/ui';
-import styles from './index.module.css';
-
-enum Theme {
-  'sovryn' = 'sovryn',
-  'dark' = 'dark',
-  'light' = 'light',
-  'coffee' = 'coffee',
-}
+import React from "react";
+import { Button, Lead } from "@sovryn/ui";
+import styles from "./index.module.css";
+import { AppTheme } from "../../types/tailwind";
+import { useTheme } from "../../hooks/useTheme";
 
 function App() {
-  const handleThemeChange = (theme: Theme) => {
-    document.documentElement.setAttribute('data-theme', theme);
-  };
-
+  const { handleThemeChange } = useTheme();
   return (
     <div className="my-2 px-4">
       <header>
@@ -31,25 +23,25 @@ function App() {
         <div className="flex items-center gap-4">
           <div
             className="cursor-pointer"
-            onClick={() => handleThemeChange(Theme.sovryn)}
+            onClick={() => handleThemeChange(AppTheme.sovryn)}
           >
             Sovryn
           </div>
           <div
             className="cursor-pointer"
-            onClick={() => handleThemeChange(Theme.dark)}
+            onClick={() => handleThemeChange(AppTheme.dark)}
           >
             Dark
           </div>
           <div
             className="cursor-pointer"
-            onClick={() => handleThemeChange(Theme.light)}
+            onClick={() => handleThemeChange(AppTheme.light)}
           >
             Light
           </div>
           <div
             className="cursor-pointer"
-            onClick={() => handleThemeChange(Theme.coffee)}
+            onClick={() => handleThemeChange(AppTheme.coffee)}
           >
             coffee
           </div>

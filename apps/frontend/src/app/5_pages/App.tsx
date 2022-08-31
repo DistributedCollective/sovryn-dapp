@@ -6,6 +6,7 @@ import { useTheme } from "../../hooks/useTheme";
 
 function App() {
   const { handleThemeChange } = useTheme();
+
   return (
     <div className="my-2 px-4">
       <header>

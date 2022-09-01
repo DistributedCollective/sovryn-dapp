@@ -1,0 +1,20 @@
+.host {
+  @apply flex flex-row self-center w-full text-sm leading-snug px-0 font-extralight text-center mt-2 list-none;
+}
+.host:after,
+.host:before {
+  @apply flex-1 border-b border-solid border-current m-auto;
+
+  content: "";
+}
+
+.host:not(:empty):before {
+  @apply mr-2.5;
+}
+.host:not(:empty):after {
+  @apply ml-2.5;
+}
+
+.host:empty {
+  @apply mb-2;
+}

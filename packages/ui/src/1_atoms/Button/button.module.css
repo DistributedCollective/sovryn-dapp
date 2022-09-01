@@ -1,11 +1,179 @@
 .button {
-  @apply bg-warning-25 bg-opacity-25 p-4 text-white;
+  @apply inline-flex box-border items-center justify-center
+    text-center text-sov-white font-bold no-underline
+    bg-primary border border-primary rounded-xl
+    cursor-pointer;
+  transition: background-color 0.3s, color 0.3s, border 0.3s, opacity 0.3s;
 }
 
-.primary {
-  @apply text-warning-75 rounded-lg;
+.button:hover,
+.button:focus,
+.button:active {
+  @apply no-underline;
 }
 
-.small {
-  @apply p-2;
+.button.disabled,
+.button:disabled {
+  @apply opacity-25 cursor-not-allowed;
+}
+
+/* // SIZES ================================================================== */
+
+.button.sm {
+  @apply px-4 py-1 
+    text-sm leading-none font-light;
+  min-height: 30px;
+}
+
+.button.md {
+  @apply px-4 py-2 min-h-10 
+    text-base leading-none font-normal;
+}
+
+.button.lg {
+  @apply px-6 py-3 
+    text-lg leading-none;
+  min-height: 50px;
+}
+.button.xl {
+  @apply px-8 py-4 
+    text-xl leading-none;
+  min-height: 60px;
+}
+
+/* // COLORS ================================================================== */
+
+.button.primary {
+  @apply text-primary bg-primary border-primary;
+}
+
+.button.secondary {
+  @apply text-secondary bg-secondary border-secondary;
+}
+
+.button.tradeLong {
+  @apply text-trade-long bg-trade-long border-trade-long;
+}
+
+.button.tradeShort {
+  @apply text-trade-short bg-trade-short border-trade-short;
+}
+
+.button.success {
+  @apply text-success bg-success border-success;
+}
+
+.button.warning {
+  @apply text-warning bg-warning border-warning;
+}
+
+.button.gray {
+  @apply text-primary bg-gray-4 border-primary;
+}
+
+/* // STYLES ================================================================== */
+
+.button.normal {
+  @apply rounded-lg;
+}
+
+.button.normal.sm {
+  @apply font-normal;
+}
+
+.button.normal.md {
+  @apply font-semibold;
+}
+
+.button.normal.lg,
+.button.normal.xl {
+  @apply uppercase;
+}
+
+.button.normal.primary,
+.button.normal.secondary {
+  @apply text-black;
+}
+
+.button.normal.tradeLong,
+.button.normal.tradeShort,
+.button.normal.success,
+.button.normal.warning {
+  @apply text-sov-white;
+}
+
+.button.normal.loading {
+  @apply opacity-75 cursor-wait;
+}
+
+.button.normal:not(.disabled):not(:disabled):not(.loading) :hover,
+.button.normal:not(.disabled):not(:disabled):not(.loading) :focus,
+.button.normal:not(.disabled):not(:disabled):not(.loading) :active {
+  @apply opacity-75;
+}
+
+.button.inverted {
+  @apply bg-gray-1 border rounded-lg;
+}
+
+.button.inverted.lg,
+.button.inverted.xl {
+  @apply uppercase;
+}
+
+.button.inverted.loading {
+  @apply opacity-75 cursor-wait;
+}
+
+.button.inverted:not(.disabled):not(:disabled):not(.loading):hover,
+.button.inverted:not(.disabled):not(:disabled):not(.loading):focus,
+.button.inverted:not(.disabled):not(:disabled):not(.loading):active {
+  @apply opacity-75;
+}
+
+.button.transparent {
+  @apply bg-opacity-0;
+}
+
+.button.transparent.sm {
+  @apply rounded-full;
+}
+
+.button.transparent.loading {
+  @apply opacity-75 cursor-wait;
+}
+
+.button.transparent:not(.disabled):not(:disabled):not(.loading):hover,
+.button.transparent:not(.disabled):not(:disabled):not(.loading):focus,
+.button.transparent:not(.disabled):not(:disabled):not(.loading):active {
+  @apply opacity-100 bg-opacity-25;
+}
+
+.button.frosted {
+  @apply bg-opacity-10;
+}
+.button.frosted.sm {
+  @apply rounded-full;
+}
+
+.button.frosted.loading {
+  @apply opacity-75 cursor-wait;
+}
+
+.button.frosted:not(.disabled):not(:disabled):not(.loading):hover,
+.button.frosted:not(.disabled):not(:disabled):not(.loading):focus,
+.button.frosted:not(.disabled):not(:disabled):not(.loading):active {
+  @apply opacity-100 bg-opacity-25;
+}
+
+.button.link {
+  @apply h-auto p-0 bg-transparent border-0 font-bold;
+}
+.button.link.loading {
+  @apply opacity-75 cursor-wait;
+}
+
+.button.link:not(.disabled):not(:disabled):not(.loading):hover,
+.button.link:not(.disabled):not(:disabled):not(.loading):focus {
+  @apply underline;
 }

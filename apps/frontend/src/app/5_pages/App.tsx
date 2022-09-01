@@ -1,6 +1,6 @@
-import React from 'react';
-import { Button, Lead } from '@sovryn/ui';
-import styles from './index.module.css';
+import React from "react";
+import { Lead } from "@sovryn/ui";
+import styles from "./index.module.css";
 
 function App() {
   return (
@@ -12,8 +12,6 @@ function App() {
         <a href="https://reactjs.org" target="_blank" rel="noopener noreferrer">
           Learn React
         </a>
-        <Button className="p-3" />
-        <Button />
         <Lead test={false}>abc</Lead>
         <Lead test={true}>def</Lead>
       </header>

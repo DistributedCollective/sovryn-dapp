@@ -1,15 +1,26 @@
-import '../styles/index.css';
-import resolveConfig from 'tailwindcss/resolveConfig';
-import tailwindConfig from '@sovryn/tailwindcss-config/index';
+import "../styles/index.css";
+import resolveConfig from "tailwindcss/resolveConfig";
+import tailwindConfig from "@sovryn/tailwindcss-config/index";
+import { MemoryRouter } from "react-router-dom";
 
 const config = resolveConfig(tailwindConfig);
 
 const screens = {
-  xs: '320px',
+  xs: "320px",
   ...config.theme.screens,
 };
 
-const backgrounds = Object.entries(config.theme.backgroundColor).map(([name, value]) => ({ name, value }));
+export const decorators = [
+  (Story) => (
+    <MemoryRouter>
+      <Story />
+    </MemoryRouter>
+  ),
+];
+
+const backgrounds = Object.entries(config.theme.backgroundColor).map(
+  ([name, value]) => ({ name, value })
+);
 
 export const parameters = {
   actions: { argTypesRegex: "^on[A-Z].*" },
@@ -21,7 +32,7 @@ export const parameters = {
   },
   // values of tailwind
   backgrounds: {
-    default: 'gray-1',
+    default: "gray-1",
     values: backgrounds,
   },
   viewport: {
@@ -29,22 +40,22 @@ export const parameters = {
       name: viewport,
       styles: {
         width,
-        height: '100%',
+        height: "100%",
       },
     })),
   },
-  layout: 'fullscreen',
+  layout: "fullscreen",
   options: {
     storySort: {
       order: [
-        'Design Guide',
-        'Meta',
-        'Atoms',
-        'Molecules',
-        'Organisms',
-        'Views',
-        'Pages',
+        "Design Guide",
+        "Meta",
+        "Atoms",
+        "Molecules",
+        "Organisms",
+        "Views",
+        "Pages",
       ],
     },
   },
-}
+};

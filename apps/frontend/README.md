@@ -11,4 +11,3 @@ and then
 ```
 yarn --cwd apps/frontend serve
 ```
-

@@ -1,10 +1,10 @@
-import React, { FC } from 'react';
-import classNames from 'classnames';
-import styles from './button.module.css';
+import React, { FC } from "react";
+import classNames from "classnames";
+import styles from "./button.module.css";
 
 type ButtonProps = {
   primary?: boolean;
-  size?: 'small' | 'large';
+  size?: "small" | "large";
   label?: string;
   className?: string;
 };
@@ -21,9 +21,9 @@ export const Button: FC<ButtonProps> = ({
         styles.button,
         {
           [styles.primary]: primary,
-          [styles.small]: size === 'small',
+          [styles.small]: size === "small",
         },
-        className,
+        className
       )}
     >
       {label}

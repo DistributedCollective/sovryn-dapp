@@ -1,6 +1,6 @@
-import React, { ComponentProps } from "react";
+import React, { ComponentProps } from 'react';
 
-import { Story, Meta } from "@storybook/react";
+import { Story, Meta } from '@storybook/react';
 
 import {
   Button,
@@ -8,21 +8,21 @@ import {
   ButtonSize,
   ButtonStyle,
   ButtonType,
-} from "./Button";
+} from './Button';
 
 //👇 This default export determines where your story goes in the story list
 export default {
-  title: "Atoms/Button",
+  title: 'Atoms/Button',
   component: Button,
 } as Meta;
 
-const Template: Story<ComponentProps<typeof Button>> = (args) => (
+const Template: Story<ComponentProps<typeof Button>> = args => (
   <Button {...args} />
 );
 
 export const Default = Template.bind({});
 Default.args = {
-  text: "Button",
+  text: 'Button',
   type: ButtonType.button,
   color: ButtonColor.primary,
   style: ButtonStyle.normal,
@@ -32,7 +32,7 @@ Default.args = {
 export const LinkInternal = Template.bind({});
 LinkInternal.args = {
   text: "Internal Link (Doesn't work in Storybook)",
-  href: "/?path=/story/atoms-button--default",
+  href: '/?path=/story/atoms-button--default',
   type: ButtonType.button,
   color: ButtonColor.primary,
   style: ButtonStyle.normal,
@@ -41,8 +41,8 @@ LinkInternal.args = {
 
 export const LinkExternal = Template.bind({});
 LinkExternal.args = {
-  text: "External Link",
-  href: "https://live.sovryn.app",
+  text: 'External Link',
+  href: 'https://live.sovryn.app',
   hrefExternal: true,
   type: ButtonType.button,
   color: ButtonColor.primary,
@@ -54,7 +54,7 @@ const renderButton = (
   props,
   color: ButtonColor,
   style: ButtonStyle,
-  size: ButtonSize
+  size: ButtonSize,
 ) => (
   <div className="flex-grow w-1/5 text-center">
     <Button
@@ -62,7 +62,7 @@ const renderButton = (
       color={color}
       style={style}
       size={size}
-      text={[color, style, size].join(" ")}
+      text={[color, style, size].join(' ')}
     />
   </div>
 );
@@ -107,7 +107,7 @@ type AllVariationsProps = {
   hrefExternal: boolean;
 };
 
-export const AllVariations: React.FC<AllVariationsProps> = (props) => (
+export const AllVariations: React.FC<AllVariationsProps> = props => (
   <>
     <Variations {...props} color={ButtonColor.primary} />
     <Variations {...props} color={ButtonColor.secondary} />

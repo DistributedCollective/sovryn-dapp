@@ -3,13 +3,13 @@ import React, {
   MouseEventHandler,
   useMemo,
   useCallback,
-} from "react";
-import classNames from "classnames";
-import { Link, useLocation } from "react-router-dom";
-import styles from "./index.module.css";
-import { IconProp } from "@fortawesome/fontawesome-svg-core";
-import iconNewTab from "../../../../../assets/storybook/iconNewTab.svg";
-import { Icon } from "../../../../1_atoms";
+} from 'react';
+import classNames from 'classnames';
+import { Link, useLocation } from 'react-router-dom';
+import styles from './index.module.css';
+import { IconProp } from '@fortawesome/fontawesome-svg-core';
+import iconNewTab from '../../../../../assets/storybook/iconNewTab.svg';
+import { Icon } from '../../../../1_atoms';
 
 type MenuItemProps = {
   className?: string;
@@ -36,7 +36,7 @@ export const MenuItem: React.FC<MenuItemProps> = ({
   dataActionId,
 }) => {
   const onClickWhenAllowed = useCallback(
-    (event) => {
+    event => {
       if (disabled) {
         event.preventDefault();
         event.stopPropagation();
@@ -44,14 +44,14 @@ export const MenuItem: React.FC<MenuItemProps> = ({
         onClick(event);
       }
     },
-    [onClick, disabled]
+    [onClick, disabled],
   );
 
   const location = useLocation();
 
   const isActive = useMemo(
     () => href && href === location.pathname,
-    [href, location.pathname]
+    [href, location.pathname],
   );
 
   const button = useMemo(() => {
@@ -73,7 +73,7 @@ export const MenuItem: React.FC<MenuItemProps> = ({
                 {icon && <Icon icon={icon} className="mr-2" />}
                 <span
                   className={classNames(styles.text, {
-                    "mb-1": !!label,
+                    'mb-1': !!label,
                   })}
                 >
                   {text}
@@ -104,7 +104,7 @@ export const MenuItem: React.FC<MenuItemProps> = ({
                 {icon && <Icon icon={icon} className="mr-2" />}
                 <span
                   className={classNames(styles.text, {
-                    "mb-1": !!label,
+                    'mb-1': !!label,
                   })}
                 >
                   {text}
@@ -131,7 +131,7 @@ export const MenuItem: React.FC<MenuItemProps> = ({
               {icon && <Icon icon={icon} className="mr-2" />}
               <span
                 className={classNames(styles.text, {
-                  "mb-1": !!label,
+                  'mb-1': !!label,
                 })}
               >
                 {text}

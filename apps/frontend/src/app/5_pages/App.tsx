@@ -1,6 +1,6 @@
-import React from "react";
-import { Lead } from "@sovryn/ui";
-import styles from "./index.module.css";
+import React from 'react';
+import { Lead } from '@sovryn/ui';
+import styles from './index.module.css';
 
 function App() {
   return (

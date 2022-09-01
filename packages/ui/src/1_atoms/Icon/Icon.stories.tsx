@@ -1,20 +1,20 @@
-import React, { ComponentProps, useMemo } from "react";
-import { Story } from "@storybook/react";
-import { Icon } from "./Icon";
-import * as IconNames from "./iconNames";
-import { IconName } from "./types";
-import { faBacterium } from "@fortawesome/free-solid-svg-icons";
+import React, { ComponentProps, useMemo } from 'react';
+import { Story } from '@storybook/react';
+import { Icon } from './Icon';
+import * as IconNames from './iconNames';
+import { IconName } from './types';
+import { faBacterium } from '@fortawesome/free-solid-svg-icons';
 
 export default {
-  title: "Atoms/Icon",
+  title: 'Atoms/Icon',
   component: Icon,
 };
 
-const Template: Story<ComponentProps<typeof Icon>> = (args) => {
+const Template: Story<ComponentProps<typeof Icon>> = args => {
   return <Icon {...args} />;
 };
 
-const CustomIconTemplate: Story<ComponentProps<typeof Icon>> = (args) => {
+const CustomIconTemplate: Story<ComponentProps<typeof Icon>> = args => {
   const customIcon = (
     <svg width="20" height="20" viewBox="0 0 20 20">
       <path
@@ -32,7 +32,7 @@ const CustomIconTemplate: Story<ComponentProps<typeof Icon>> = (args) => {
   );
 };
 
-const FontAwesomeIconTemplate: Story<ComponentProps<typeof Icon>> = (args) => {
+const FontAwesomeIconTemplate: Story<ComponentProps<typeof Icon>> = args => {
   return (
     <div className="pt-4">
       <Icon {...args} />
@@ -71,19 +71,19 @@ export const Basic = Template.bind({});
 Basic.args = {
   icon: IconNames.WARNING,
   size: 30,
-  className: "text-warning",
+  className: 'text-warning',
 };
 
 export const FontAwesomeIcon = FontAwesomeIconTemplate.bind({});
 FontAwesomeIcon.args = {
   icon: faBacterium,
-  size: "3x",
-  className: "text-success mr-2",
+  size: '3x',
+  className: 'text-success mr-2',
 };
 
 export const CustomIcon = CustomIconTemplate.bind({});
 CustomIcon.args = {
   size: 30,
-  className: "text-yellow-1 mr-2",
+  className: 'text-yellow-1 mr-2',
 };
 export const AllIcons = AllIconsTemplate.bind({});

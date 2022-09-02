@@ -1,4 +1,4 @@
-import { RefObject, useEffect } from 'react';
+import { RefObject, useEffect } from "react";
 
 type ClickOutsideHandler = MouseEvent | TouchEvent;
 /**
@@ -8,14 +8,14 @@ type ClickOutsideHandler = MouseEvent | TouchEvent;
  */
 export function useOnClickOutside(
   ignoreClicksInsideRefs: ReadonlyArray<RefObject<HTMLElement>>,
-  callback: (event: ClickOutsideHandler) => void,
+  callback: (event: ClickOutsideHandler) => void
 ) {
   useEffect(() => {
     const handleClick = (event: ClickOutsideHandler) => {
       const { target } = event;
       if (target && target instanceof HTMLElement) {
-        const shouldIgnoreByRef = ignoreClicksInsideRefs.some(ref =>
-          ref.current?.contains(target),
+        const shouldIgnoreByRef = ignoreClicksInsideRefs.some((ref) =>
+          ref.current?.contains(target)
         );
 
         if (!shouldIgnoreByRef) {
@@ -23,12 +23,12 @@ export function useOnClickOutside(
         }
       }
     };
-    document.addEventListener('mousedown', handleClick);
-    document.addEventListener('touchstart', handleClick);
+    document.addEventListener("mousedown", handleClick);
+    document.addEventListener("touchstart", handleClick);
 
     return () => {
-      document.removeEventListener('mousedown', handleClick);
-      document.removeEventListener('touchstart', handleClick);
+      document.removeEventListener("mousedown", handleClick);
+      document.removeEventListener("touchstart", handleClick);
     };
   }, [ignoreClicksInsideRefs, callback]);
 }

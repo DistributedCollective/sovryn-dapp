@@ -1,10 +1,10 @@
 export enum Breakpoint {
-  sm = 'sm',
-  md = 'md',
-  lg = 'lg',
-  xl = 'xl',
-  _2xl = '2xl',
-  _3xl = '3xl',
+  sm = "sm",
+  md = "md",
+  lg = "lg",
+  xl = "xl",
+  _2xl = "2xl",
+  _3xl = "3xl",
 }
 
 export const BreakpointOrder: Breakpoint[] = [
@@ -26,22 +26,22 @@ export const BreakpointWidths: { [key in Breakpoint]: number } = {
 };
 
 export enum Align {
-  left = 'left',
-  center = 'center',
-  right = 'right',
+  left = "left",
+  center = "center",
+  right = "right",
 }
 
 export enum AlignVertical {
-  top = 'top',
-  center = 'center',
-  bottom = 'bottom',
+  top = "top",
+  center = "center",
+  bottom = "bottom",
 }
 
 export enum Color {
-  primary = 'primary',
-  secondary = 'secondary',
-  success = 'success',
-  warning = 'warning',
-  tradeShort = 'trade-short',
-  tradeLong = 'trade-long',
+  primary = "primary",
+  secondary = "secondary",
+  success = "success",
+  warning = "warning",
+  tradeShort = "trade-short",
+  tradeLong = "trade-long",
 }

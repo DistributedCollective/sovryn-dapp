@@ -1,5 +1,5 @@
-import React, { ReactNode, useMemo, useEffect } from 'react';
-import ReactDOM from 'react-dom';
+import React, { ReactNode, useMemo, useEffect } from "react";
+import ReactDOM from "react-dom";
 
 type PortalProps = {
   zIndex?: number;
@@ -12,12 +12,12 @@ type PortalProps = {
 export const Portal: React.FC<PortalProps> = ({
   zIndex,
   className,
-  target = '#overlay',
+  target = "#overlay",
   children,
 }) => {
   const parent = useMemo(() => document.querySelector(target), [target]);
 
-  const element = useMemo(() => document.createElement('div'), []);
+  const element = useMemo(() => document.createElement("div"), []);
 
   useEffect(() => {
     if (zIndex) {

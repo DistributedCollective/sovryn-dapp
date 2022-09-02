@@ -1,13 +1,13 @@
-import React, { ComponentProps } from 'react';
-import { Story } from '@storybook/react';
+import React, { ComponentProps } from "react";
+import { Story } from "@storybook/react";
 
-import { Menu } from './Menu';
-import { MenuItem } from './components/MenuItem';
-import { faArchway } from '@fortawesome/free-solid-svg-icons';
-import { MenuSeparator } from './components/MenuSeparator';
+import { Menu } from "./Menu";
+import { MenuItem } from "./components/MenuItem";
+import { faArchway } from "@fortawesome/free-solid-svg-icons";
+import { MenuSeparator } from "./components/MenuSeparator";
 
 export default {
-  title: 'Molecule/Menu',
+  title: "Molecule/Menu",
   component: Menu,
   subcomponents: {
     MenuItem,
@@ -15,11 +15,13 @@ export default {
   },
 };
 
-const Template: Story<ComponentProps<typeof Menu>> = args => <Menu {...args} />;
+const Template: Story<ComponentProps<typeof Menu>> = (args) => (
+  <Menu {...args} />
+);
 
 export const _Menu = Template.bind({});
 _Menu.args = {
-  className: 'max-w-xs',
+  className: "max-w-xs",
   children: [
     <MenuItem text="Alpha" label="href" href="/" />,
     <MenuItem
@@ -50,22 +52,22 @@ _Menu.args = {
   ],
 };
 
-const MenuSeparatorTemplate: Story<
-  ComponentProps<typeof MenuSeparator>
-> = args => <MenuSeparator {...args} />;
+const MenuSeparatorTemplate: Story<ComponentProps<typeof MenuSeparator>> = (
+  args
+) => <MenuSeparator {...args} />;
 
 export const _MenuSeparator = MenuSeparatorTemplate.bind({});
 _MenuSeparator.args = {
-  text: '',
+  text: "",
 };
 
-const MenuItemTemplate: Story<ComponentProps<typeof MenuItem>> = args => (
+const MenuItemTemplate: Story<ComponentProps<typeof MenuItem>> = (args) => (
   <MenuItem {...args} />
 );
 
 export const _MenuItem = MenuItemTemplate.bind({});
 _MenuItem.args = {
-  text: 'Text',
-  label: 'label',
+  text: "Text",
+  label: "label",
   icon: faArchway,
 };

@@ -1,18 +1,18 @@
-import { Story } from '@storybook/react';
-import React, { ComponentProps, useState } from 'react';
-import { Input, InputProps } from './Input';
+import { Story } from "@storybook/react";
+import React, { ComponentProps, useState } from "react";
+import { Input, InputProps } from "./Input";
 
 export default {
-  title: 'Atoms/Input',
+  title: "Atoms/Input",
   component: Input,
 };
 
-const Template: Story<ComponentProps<typeof Input>> = args => (
+const Template: Story<ComponentProps<typeof Input>> = (args) => (
   <Input {...args} />
 );
 
-const AdvancedTemplate: Story<ComponentProps<typeof Input>> = args => {
-  const [value, setValue] = useState('hello world');
+const AdvancedTemplate: Story<ComponentProps<typeof Input>> = (args) => {
+  const [value, setValue] = useState("hello world");
 
   return (
     <div>
@@ -26,15 +26,15 @@ const AdvancedTemplate: Story<ComponentProps<typeof Input>> = args => {
 
 export const TextInput = Template.bind({});
 TextInput.args = {
-  value: 'example input text',
-  type: 'text',
+  value: "example input text",
+  type: "text",
 };
 
 export const NumberInput = Template.bind({});
 NumberInput.args = {
   value: 13.37,
   step: 1,
-  type: 'number',
+  type: "number",
 };
 
 export const DebouncedInput = AdvancedTemplate.bind({});
@@ -49,99 +49,99 @@ const renderInput = (label: string, props: InputProps) => (
   </div>
 );
 
-export const AllVariations: React.FC<InputProps> = props => (
+export const AllVariations: React.FC<InputProps> = (props) => (
   <div className="flex flex-col justify-evenly items-center mb-4 space-y-4 w-full">
-    {renderInput('Empty text', {
+    {renderInput("Empty text", {
       ...props,
-      placeholder: 'Enter wallet address',
+      placeholder: "Enter wallet address",
     })}
-    {renderInput('With text value', {
+    {renderInput("With text value", {
       ...props,
-      value: 'Hello World',
+      value: "Hello World",
     })}
-    {renderInput('Disabled text', {
+    {renderInput("Disabled text", {
       ...props,
-      value: 'Hello World',
+      value: "Hello World",
       disabled: true,
     })}
-    {renderInput('Text & Unit', {
+    {renderInput("Text & Unit", {
       ...props,
-      value: 'Hello World',
-      unit: 'RBTC',
+      value: "Hello World",
+      unit: "RBTC",
     })}
-    {renderInput('Read-only text', {
+    {renderInput("Read-only text", {
       ...props,
-      value: 'Hello World',
+      value: "Hello World",
       readOnly: true,
     })}
-    {renderInput('Read-only text & Unit', {
+    {renderInput("Read-only text & Unit", {
       ...props,
-      value: 'Hello World',
+      value: "Hello World",
       readOnly: true,
-      unit: 'RBTC',
+      unit: "RBTC",
     })}
-    {renderInput('Invalid text', {
+    {renderInput("Invalid text", {
       ...props,
-      value: 'Hello World',
+      value: "Hello World",
       invalid: true,
     })}
-    {renderInput('Success text', {
+    {renderInput("Success text", {
       ...props,
-      value: 'Hello World',
+      value: "Hello World",
       invalid: false,
     })}
-    {renderInput('Numeric empty', {
+    {renderInput("Numeric empty", {
       ...props,
-      type: 'number',
-      placeholder: 'Enter amount',
+      type: "number",
+      placeholder: "Enter amount",
     })}
-    {renderInput('Numeric with value', {
+    {renderInput("Numeric with value", {
       ...props,
-      value: '100.5',
-      type: 'number',
+      value: "100.5",
+      type: "number",
     })}
-    {renderInput('Numeric & Stepper', {
+    {renderInput("Numeric & Stepper", {
       ...props,
-      value: '100.5',
-      type: 'number',
+      value: "100.5",
+      type: "number",
       step: 1,
     })}
-    {renderInput('Numeric & Unit', {
+    {renderInput("Numeric & Unit", {
       ...props,
-      value: '100.5',
-      type: 'number',
-      unit: 'RBTC',
+      value: "100.5",
+      type: "number",
+      unit: "RBTC",
     })}
-    {renderInput('Numeric & Stepper + Unit', {
+    {renderInput("Numeric & Stepper + Unit", {
       ...props,
-      value: '100.5',
-      type: 'number',
+      value: "100.5",
+      type: "number",
       step: 0.1,
-      unit: 'RBTC',
+      unit: "RBTC",
     })}
-    {renderInput('Numeric read-only', {
+    {renderInput("Numeric read-only", {
       ...props,
-      value: '100.5',
-      type: 'number',
+      value: "100.5",
+      type: "number",
       readOnly: true,
     })}
-    {renderInput('Numeric read-only & Unit', {
+    {renderInput("Numeric read-only & Unit", {
       ...props,
-      value: '100.5',
-      type: 'number',
+      value: "100.5",
+      type: "number",
       readOnly: true,
-      unit: 'RBTC',
+      unit: "RBTC",
     })}
-    {renderInput('Numeric invalid', {
+    {renderInput("Numeric invalid", {
       ...props,
-      value: '100.5',
-      type: 'number',
+      value: "100.5",
+      type: "number",
       invalid: true,
     })}
-    {renderInput('Numeric success', {
+    {renderInput("Numeric success", {
       ...props,
-      value: '100.5',
-      type: 'number',
+      value: "100.5",
+      type: "number",
       invalid: false,
     })}
   </div>

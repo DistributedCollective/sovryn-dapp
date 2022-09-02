@@ -1,6 +1,6 @@
-import React, { ReactNode } from 'react';
-import classNames from 'classnames';
-import styles from './index.module.css';
+import React, { ReactNode } from "react";
+import classNames from "classnames";
+import styles from "./index.module.css";
 
 type MenuSeparatorProps = {
   className?: string;

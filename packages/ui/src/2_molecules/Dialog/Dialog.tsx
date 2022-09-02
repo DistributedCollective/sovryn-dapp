@@ -1,8 +1,8 @@
-import React, { useCallback, useEffect, useMemo, MouseEvent } from 'react';
-import classNames from 'classnames';
-import { Overlay, OverlayProps } from '../Overlay/Overlay';
-import styles from './dialog.module.css';
-import { DialogSize, dialogSizeMap, IDialogFunctionComponent } from './types';
+import React, { useCallback, useEffect, useMemo, MouseEvent } from "react";
+import classNames from "classnames";
+import { Overlay, OverlayProps } from "../Overlay/Overlay";
+import styles from "./dialog.module.css";
+import { DialogSize, dialogSizeMap, IDialogFunctionComponent } from "./types";
 
 type DialogProps = {
   isOpen: boolean;
@@ -10,7 +10,7 @@ type DialogProps = {
   className?: string;
   width?: DialogSize;
   dataActionId?: string;
-  overlayProps?: Omit<Partial<OverlayProps>, 'isOpen' | 'fixed'>;
+  overlayProps?: Omit<Partial<OverlayProps>, "isOpen" | "fixed">;
   onClose?: () => void;
 };
 
@@ -58,7 +58,7 @@ export const Dialog: IDialogFunctionComponent<DialogProps> = ({
               <button
                 className={styles.closeButton}
                 onClick={handleClose}
-                data-action-id={`close-${dataActionId || 'dialog'}`}
+                data-action-id={`close-${dataActionId || "dialog"}`}
               >
                 <span className="sr-only">close</span>
               </button>

@@ -3,12 +3,12 @@ import React, {
   useImperativeHandle,
   useMemo,
   useRef,
-} from "react";
-import classNames from "classnames";
-import { InputBase, InputBaseProps } from "./InputBase";
-import styles from "./input.module.css";
+} from 'react';
+import classNames from 'classnames';
+import { InputBase, InputBaseProps } from './InputBase';
+import styles from './input.module.css';
 
-export type InputProps = Omit<InputBaseProps, "ref"> & {
+export type InputProps = Omit<InputBaseProps, 'ref'> & {
   classNameInput?: string;
   invalid?: boolean;
   unit?: React.ReactNode;
@@ -29,7 +29,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
     const onStepUp = useCallback(
       (event) => {
         inputRef.current?.stepUp();
-        rest.onChangeText?.(inputRef.current?.value || "");
+        rest.onChangeText?.(inputRef.current?.value || '');
         rest.onChange?.(event);
       },
       [rest]
@@ -38,7 +38,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
     const onStepDown = useCallback(
       (event) => {
         inputRef.current?.stepDown();
-        rest.onChangeText?.(inputRef.current?.value || "");
+        rest.onChangeText?.(inputRef.current?.value || '');
         rest.onChange?.(event);
       },
       [rest]
@@ -46,9 +46,9 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
 
     const wrapperClasses = useMemo(() => {
       return {
-        "border-sov-white": rest.readOnly,
-        "border-warning bg-warning": typeof invalid !== "undefined" && invalid,
-        "border-success bg-success": typeof invalid !== "undefined" && !invalid,
+        'border-sov-white': rest.readOnly,
+        'border-warning bg-warning': typeof invalid !== 'undefined' && invalid,
+        'border-success bg-success': typeof invalid !== 'undefined' && !invalid,
       };
     }, [invalid, rest.readOnly]);
 
@@ -59,14 +59,14 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
             ref={inputRef}
             className={classNames(
               styles.input,
-              { "rounded-lg": !unit, "rounded-l-lg": !!unit },
+              { 'rounded-lg': !unit, 'rounded-l-lg': !!unit },
               classNameInput
             )}
             type={type}
             {...rest}
             dataActionId={dataActionId}
           />
-          {type === "number" && rest.step ? (
+          {type === 'number' && rest.step ? (
             <>
               <button
                 className={classNames(styles.stepButton, styles.up)}
@@ -86,10 +86,10 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
         {unit && (
           <div
             className={classNames(
-              "w-full h-8 max-w-24 px-3 flex items-center justify-center leading-none text-base font-semibold rounded-r-lg",
+              'w-full h-8 max-w-24 px-3 flex items-center justify-center leading-none text-base font-semibold rounded-r-lg',
               {
-                "bg-gray-9 text-gray-5": !rest.readOnly,
-                "bg-transparent text-sov-white": rest.readOnly,
+                'bg-gray-9 text-gray-5': !rest.readOnly,
+                'bg-transparent text-sov-white': rest.readOnly,
               }
             )}
           >

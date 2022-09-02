@@ -5,37 +5,37 @@ import React, {
   MouseEventHandler,
   MouseEvent,
   useEffect,
-} from "react";
-import { Align, AlignVertical } from "../../types/tailwind";
-import classNames from "classnames";
-import { Portal } from "../../1_atoms/Portal/Portal";
+} from 'react';
+import { Align, AlignVertical } from '../../types/tailwind';
+import classNames from 'classnames';
+import { Portal } from '../../1_atoms/Portal/Portal';
 
 export enum OverlayBackground {
-  transparent = "transparent",
-  light25 = "light25",
-  light75 = "light75",
-  dark25 = "dark25",
-  dark75 = "dark75",
+  transparent = 'transparent',
+  light25 = 'light25',
+  light75 = 'light75',
+  dark25 = 'dark25',
+  dark75 = 'dark75',
 }
 
 const OverlayBackgroundClassName: { [key in OverlayBackground]: string } = {
-  [OverlayBackground.transparent]: "bg-transparent",
-  [OverlayBackground.light25]: "bg-gray-9 bg-opacity-25",
-  [OverlayBackground.light75]: "bg-gray-9 bg-opacity-75",
-  [OverlayBackground.dark25]: "bg-gray-1 bg-opacity-25",
-  [OverlayBackground.dark75]: "bg-gray-1 bg-opacity-75",
+  [OverlayBackground.transparent]: 'bg-transparent',
+  [OverlayBackground.light25]: 'bg-gray-9 bg-opacity-25',
+  [OverlayBackground.light75]: 'bg-gray-9 bg-opacity-75',
+  [OverlayBackground.dark25]: 'bg-gray-1 bg-opacity-25',
+  [OverlayBackground.dark75]: 'bg-gray-1 bg-opacity-75',
 };
 
 const AlignClassName: { [key in Align]: string } = {
-  [Align.left]: "justify-start",
-  [Align.center]: "justify-center",
-  [Align.right]: "justify-end",
+  [Align.left]: 'justify-start',
+  [Align.center]: 'justify-center',
+  [Align.right]: 'justify-end',
 };
 
 const AlignVerticalClassName: { [key in AlignVertical]: string } = {
-  [AlignVertical.top]: "items-start",
-  [AlignVertical.center]: "items-center",
-  [AlignVertical.bottom]: "items-end",
+  [AlignVertical.top]: 'items-start',
+  [AlignVertical.center]: 'items-center',
+  [AlignVertical.bottom]: 'items-end',
 };
 
 export type OverlayProps = {
@@ -81,8 +81,8 @@ export const Overlay: React.FC<OverlayProps> = ({
       isOpen ? (
         <div
           className={classNames(
-            fixed ? "fixed" : "absolute",
-            "inset-0 flex flex-column",
+            fixed ? 'fixed' : 'absolute',
+            'inset-0 flex flex-column',
             AlignClassName[align],
             AlignVerticalClassName[alignVertical],
             OverlayBackgroundClassName[background],
@@ -109,11 +109,11 @@ export const Overlay: React.FC<OverlayProps> = ({
 
   useEffect(() => {
     if (fixed && isOpen) {
-      document.body.className += " overflow-hidden";
+      document.body.className += ' overflow-hidden';
       return () => {
         document.body.className = document.body.className.replace(
-          " overflow-hidden",
-          ""
+          ' overflow-hidden',
+          ''
         );
       };
     }

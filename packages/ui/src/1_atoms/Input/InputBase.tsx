@@ -6,10 +6,10 @@ import React, {
   ChangeEvent,
   ChangeEventHandler,
   useMemo,
-} from "react";
-import debounceCallback from "lodash.debounce";
+} from 'react';
+import debounceCallback from 'lodash.debounce';
 
-export type InputBaseProps = Omit<HTMLProps<HTMLInputElement>, "ref"> & {
+export type InputBaseProps = Omit<HTMLProps<HTMLInputElement>, 'ref'> & {
   debounce?: number;
   dataActionId?: string;
   onChangeText?: (value: string) => void;

@@ -1,14 +1,14 @@
-import React, { useMemo } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { IconProp, SizeProp } from "@fortawesome/fontawesome-svg-core";
-import classNames from "classnames";
-import styles from "./icon.module.css";
-import { IconSvgPaths } from "./iconSvgPaths";
-import { IconType, ViewBoxSize } from "./types";
+import React, { useMemo } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { IconProp, SizeProp } from '@fortawesome/fontawesome-svg-core';
+import classNames from 'classnames';
+import styles from './icon.module.css';
+import { IconSvgPaths } from './iconSvgPaths';
+import { IconType, ViewBoxSize } from './types';
 
 const STANDARD = 16;
-const INLINE = "1em";
-const SM = "sm";
+const INLINE = '1em';
+const SM = 'sm';
 
 type IconProps = {
   /**
@@ -38,7 +38,7 @@ export const Icon: React.FC<IconProps> = ({
   className,
 }) => {
   const isFaIcon = useMemo(() => {
-    if (icon && icon["prefix"]) {
+    if (icon && icon['prefix']) {
       return true;
     }
     return false;
@@ -53,13 +53,13 @@ export const Icon: React.FC<IconProps> = ({
   }, [inline, size]);
 
   const inlineBlock = useMemo(() => {
-    return inline ? "inline-block" : "block";
+    return inline ? 'inline-block' : 'block';
   }, [inline]);
 
   const renderIcon = useMemo(() => {
     const iconSize = inline ? INLINE : size;
     //checking if we trying to show a custom icon
-    if (typeof icon !== "string") {
+    if (typeof icon !== 'string') {
       return (
         <div
           className={classNames(className, styles.customIcon, inlineBlock)}

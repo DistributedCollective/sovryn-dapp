@@ -1,11 +1,11 @@
-import React, { ComponentProps, useCallback, useState } from "react";
-import { Story } from "@storybook/react";
+import React, { ComponentProps, useCallback, useState } from 'react';
+import { Story } from '@storybook/react';
 
-import { Overlay } from "./Overlay";
-import { Button } from "../../1_atoms";
+import { Overlay } from './Overlay';
+import { Button } from '../../1_atoms';
 
 export default {
-  title: "Molecule/Overlay",
+  title: 'Molecule/Overlay',
   component: Overlay,
 };
 
@@ -27,13 +27,13 @@ const InteractiveTemplate: Story<ComponentProps<typeof Overlay>> = (args) => {
 
 export const Basic = Template.bind({});
 Basic.args = {
-  portalTarget: "body",
-  children: "Overlay Active",
+  portalTarget: 'body',
+  children: 'Overlay Active',
   fixed: true,
 };
 
 export const Interactive = InteractiveTemplate.bind({});
 Interactive.args = {
-  portalTarget: "body",
-  children: "Overlay Active",
+  portalTarget: 'body',
+  children: 'Overlay Active',
 };

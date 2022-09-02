@@ -1,4 +1,4 @@
-import { DropdownCoords, DropdownMode } from "./types";
+import { DropdownCoords, DropdownMode } from './types';
 
 export const getDropdownPositionStyles = (
   coords: DropdownCoords,
@@ -32,7 +32,7 @@ export const getDropdownPositionStyles = (
     right: {
       left: `${left + buttonWidth}px`,
       maxWidth: `${left + buttonWidth}px`,
-      transform: "translateX(-100%)",
+      transform: 'translateX(-100%)',
     },
     center: {
       left: `${left - (centerWidthDropdown - buttonWidth) / 2}px`,

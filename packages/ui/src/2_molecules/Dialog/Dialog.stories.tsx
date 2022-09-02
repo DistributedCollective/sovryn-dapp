@@ -1,11 +1,11 @@
-import React, { ComponentProps, useCallback, useState } from "react";
-import { Story } from "@storybook/react";
+import React, { ComponentProps, useCallback, useState } from 'react';
+import { Story } from '@storybook/react';
 
-import { Dialog } from "./Dialog";
-import { Button } from "../../1_atoms";
+import { Dialog } from './Dialog';
+import { Button } from '../../1_atoms';
 
 export default {
-  title: "Molecule/Dialog",
+  title: 'Molecule/Dialog',
   component: Dialog,
 };
 
@@ -45,13 +45,13 @@ const ChildDialog: React.FC = () => {
 
 export const Basic = Template.bind({});
 Basic.args = {
-  children: "Dialog Active",
+  children: 'Dialog Active',
   isOpen: true,
 };
 
 export const NotClosable = NotClosableTemplate.bind({});
 NotClosable.args = {
-  children: "Dialog Active",
+  children: 'Dialog Active',
   isOpen: true,
 };
 
@@ -73,7 +73,7 @@ LongContent.args = {
 
 export const Interactive = InteractiveTemplate.bind({});
 Interactive.args = {
-  children: "Dialog Active",
+  children: 'Dialog Active',
 };
 
 export const MultipleDialogs = InteractiveTemplate.bind({});

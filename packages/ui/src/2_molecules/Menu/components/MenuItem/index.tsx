@@ -3,13 +3,13 @@ import React, {
   MouseEventHandler,
   useMemo,
   useCallback,
-} from "react";
-import classNames from "classnames";
-import { Link, useLocation } from "react-router-dom";
-import styles from "./index.module.css";
-import { IconProp } from "@fortawesome/fontawesome-svg-core";
-import iconNewTab from "../../../../../assets/storybook/iconNewTab.svg";
-import { Icon } from "../../../../1_atoms";
+} from 'react';
+import classNames from 'classnames';
+import { Link, useLocation } from 'react-router-dom';
+import styles from './index.module.css';
+import { IconProp } from '@fortawesome/fontawesome-svg-core';
+import iconNewTab from '../../../../../assets/storybook/iconNewTab.svg';
+import { Icon } from '../../../../1_atoms';
 
 type MenuItemProps = {
   className?: string;
@@ -73,7 +73,7 @@ export const MenuItem: React.FC<MenuItemProps> = ({
                 {icon && <Icon icon={icon} className="mr-2" />}
                 <span
                   className={classNames(styles.text, {
-                    "mb-1": !!label,
+                    'mb-1': !!label,
                   })}
                 >
                   {text}
@@ -104,7 +104,7 @@ export const MenuItem: React.FC<MenuItemProps> = ({
                 {icon && <Icon icon={icon} className="mr-2" />}
                 <span
                   className={classNames(styles.text, {
-                    "mb-1": !!label,
+                    'mb-1': !!label,
                   })}
                 >
                   {text}
@@ -131,7 +131,7 @@ export const MenuItem: React.FC<MenuItemProps> = ({
               {icon && <Icon icon={icon} className="mr-2" />}
               <span
                 className={classNames(styles.text, {
-                  "mb-1": !!label,
+                  'mb-1': !!label,
                 })}
               >
                 {text}

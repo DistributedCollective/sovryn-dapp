@@ -5,15 +5,15 @@ import React, {
   useMemo,
   useRef,
   useState,
-} from "react";
-import classNames from "classnames";
-import styles from "./dropdown.module.css";
-import { useOnClickOutside } from "../../hooks/useOnClickOutside";
+} from 'react';
+import classNames from 'classnames';
+import styles from './dropdown.module.css';
+import { useOnClickOutside } from '../../hooks/useOnClickOutside';
 
-import { DropdownColor, DropdownCoords, DropdownMode } from "./types";
-import { getDropdownPositionStyles } from "./utils";
-import { Nullable } from "../../types";
-import { Portal } from "../../1_atoms/Portal/Portal";
+import { DropdownColor, DropdownCoords, DropdownMode } from './types';
+import { getDropdownPositionStyles } from './utils';
+import { Nullable } from '../../types';
+import { Portal } from '../../1_atoms/Portal/Portal';
 
 interface IDropdownProps {
   text: ReactNode;
@@ -111,7 +111,7 @@ export const Dropdown: React.FC<IDropdownProps> = ({
         {text}
         <span
           className={classNames(styles.iconArrow, {
-            "transform rotate-180 rounded-b-none": isOpen,
+            'transform rotate-180 rounded-b-none': isOpen,
           })}
         ></span>
       </button>

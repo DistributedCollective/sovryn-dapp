@@ -1,41 +1,41 @@
-import React, { MouseEventHandler, useMemo } from "react";
-import classNames from "classnames";
-import styles from "./button.module.css";
-import { Link } from "react-router-dom";
+import React, { MouseEventHandler, useMemo } from 'react';
+import classNames from 'classnames';
+import styles from './button.module.css';
+import { Link } from 'react-router-dom';
 
 export enum ButtonType {
-  button = "button",
-  submit = "submit",
-  reset = "reset",
+  button = 'button',
+  submit = 'submit',
+  reset = 'reset',
 }
 
 export enum ButtonColor {
-  primary = "primary",
-  secondary = "secondary",
-  tradeLong = "tradeLong",
-  tradeShort = "tradeShort",
-  success = "success",
-  warning = "warning",
-  gray = "gray",
+  primary = 'primary',
+  secondary = 'secondary',
+  tradeLong = 'tradeLong',
+  tradeShort = 'tradeShort',
+  success = 'success',
+  warning = 'warning',
+  gray = 'gray',
 }
 
 export enum ButtonSize {
   /** Inline/Minor buttons, height 30px */
-  sm = "sm",
+  sm = 'sm',
   /** Standard buttons, height 40px */
-  md = "md",
+  md = 'md',
   /** Minor CTA buttons, height 50px */
-  lg = "lg",
+  lg = 'lg',
   /** Major CTA buttons, height 50px */
-  xl = "xl",
+  xl = 'xl',
 }
 
 export enum ButtonStyle {
-  normal = "normal",
-  inverted = "inverted",
-  transparent = "transparent",
-  frosted = "frosted",
-  link = "link",
+  normal = 'normal',
+  inverted = 'inverted',
+  transparent = 'transparent',
+  frosted = 'frosted',
+  link = 'link',
 }
 
 interface IButtonProps {

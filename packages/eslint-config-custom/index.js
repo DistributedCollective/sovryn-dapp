@@ -4,35 +4,35 @@ var prettierOptions = {
   useTabs: false,
   semi: true,
   singleQuote: true,
-  trailingComma: 'all',
-  arrowParens: 'avoid',
-  endOfLine: 'lf',
+  trailingComma: "all",
+  arrowParens: "avoid",
+  endOfLine: "lf",
 };
 
 module.exports = {
   extends: [
-    'react-app',
+    "react-app",
     // react and @typescript-react are now merged into prettier
-    'prettier',
+    "prettier",
   ],
-  plugins: ['prettier'],
+  plugins: ["prettier"],
   rules: {
-    'prettier/prettier': ['error', prettierOptions],
-    '@typescript-eslint/ban-ts-comment': 'error',
+    "prettier/prettier": ["error", prettierOptions],
+    "@typescript-eslint/ban-ts-comment": "error",
   },
   overrides: [
     {
-      files: ['**/*.ts?(x)'],
-      rules: { 'prettier/prettier': ['warn', prettierOptions] },
+      files: ["**/*.ts?(x)"],
+      rules: { "prettier/prettier": ["warn", prettierOptions] },
     },
     {
-      files: ['**/*.js?(x)'],
-      rules: { 'prettier/prettier': ['warn', prettierOptions] },
+      files: ["**/*.js?(x)"],
+      rules: { "prettier/prettier": ["warn", prettierOptions] },
     },
     {
-      files: ['**/*.stories.*'],
+      files: ["**/*.stories.*"],
       rules: {
-        'import/no-anonymous-default-export': 'off',
+        "import/no-anonymous-default-export": "off",
       },
     },
   ],

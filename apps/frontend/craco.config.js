@@ -1,28 +1,28 @@
 module.exports = {
   style: {
     postcss: {
-      loaderOptions: postcssLoaderOptions => {
-        postcssLoaderOptions.postcssOptions = require('@sovryn/tailwindcss-config/postcss.config.js');
+      loaderOptions: (postcssLoaderOptions) => {
+        postcssLoaderOptions.postcssOptions = require("@sovryn/tailwindcss-config/postcss.config.js");
         return postcssLoaderOptions;
       },
     },
   },
   webpack: {
-    configure: config => {
+    configure: (config) => {
       // ts-loader is required to reference external typescript projects/files (non-transpiled)
       config.module.rules.push({
         test: /\.tsx?$/,
-        loader: 'ts-loader',
+        loader: "ts-loader",
         exclude: /node_modules/,
         options: {
           transpileOnly: true,
-          configFile: 'tsconfig.json',
+          configFile: "tsconfig.json",
         },
       });
       return config;
     },
   },
   babel: {
-    presets: ['@babel/preset-react'],
+    presets: ["@babel/preset-react"],
   },
 };

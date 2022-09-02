@@ -10,7 +10,7 @@
     "build": "turbo run build",
     "dev": "turbo run dev --parallel",
     "lint": "turbo run lint",
-    "format": "prettier --write \"**/*.{ts,tsx,md, js}\"",
+    "format": "prettier --write \"**/*.{ts,tsx,md,js}\"",
     "test": "turbo run test",
     "storybook": "turbo run storybook"
   },

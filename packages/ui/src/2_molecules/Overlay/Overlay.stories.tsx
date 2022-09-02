@@ -9,13 +9,13 @@ export default {
   component: Overlay,
 };
 
-const Template: Story<ComponentProps<typeof Overlay>> = (args) => (
+const Template: Story<ComponentProps<typeof Overlay>> = args => (
   <Overlay {...args} />
 );
 
-const InteractiveTemplate: Story<ComponentProps<typeof Overlay>> = (args) => {
+const InteractiveTemplate: Story<ComponentProps<typeof Overlay>> = args => {
   const [open, setOpen] = useState(false);
-  const toggleOpen = useCallback(() => setOpen((open) => !open), []);
+  const toggleOpen = useCallback(() => setOpen(open => !open), []);
 
   return (
     <div className="relative mx-auto w-80 h-80 p-8 bg-gray-3 text-center">

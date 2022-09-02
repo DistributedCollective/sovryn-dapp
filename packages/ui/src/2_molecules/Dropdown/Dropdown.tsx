@@ -43,8 +43,8 @@ export const Dropdown: React.FC<IDropdownProps> = ({
   const [isOpen, setOpen] = useState(false);
   const [coords, setCoords] = useState<Nullable<DropdownCoords>>(null);
   const onButtonClick = useCallback(
-    () => setOpen((prevValue) => !prevValue),
-    [setOpen]
+    () => setOpen(prevValue => !prevValue),
+    [setOpen],
   );
 
   const getCoords = useCallback(() => {
@@ -75,7 +75,7 @@ export const Dropdown: React.FC<IDropdownProps> = ({
 
   const classNameComplete = useMemo(
     () => classNames(styles.button, color, className, isOpen && styles.isOpen),
-    [color, className, isOpen]
+    [color, className, isOpen],
   );
 
   const useClickedOutside = useCallback(() => {

@@ -16,7 +16,7 @@ export default {
   component: Button,
 } as Meta;
 
-const Template: Story<ComponentProps<typeof Button>> = (args) => (
+const Template: Story<ComponentProps<typeof Button>> = args => (
   <Button {...args} />
 );
 
@@ -54,7 +54,7 @@ const renderButton = (
   props,
   color: ButtonColor,
   style: ButtonStyle,
-  size: ButtonSize
+  size: ButtonSize,
 ) => (
   <div className="flex-grow w-1/5 text-center">
     <Button
@@ -107,7 +107,7 @@ type AllVariationsProps = {
   hrefExternal: boolean;
 };
 
-export const AllVariations: React.FC<AllVariationsProps> = (props) => (
+export const AllVariations: React.FC<AllVariationsProps> = props => (
   <>
     <Variations {...props} color={ButtonColor.primary} />
     <Variations {...props} color={ButtonColor.secondary} />

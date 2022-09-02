@@ -10,11 +10,11 @@ export default {
   component: Icon,
 };
 
-const Template: Story<ComponentProps<typeof Icon>> = (args) => {
+const Template: Story<ComponentProps<typeof Icon>> = args => {
   return <Icon {...args} />;
 };
 
-const CustomIconTemplate: Story<ComponentProps<typeof Icon>> = (args) => {
+const CustomIconTemplate: Story<ComponentProps<typeof Icon>> = args => {
   const customIcon = (
     <svg width="20" height="20" viewBox="0 0 20 20">
       <path
@@ -32,7 +32,7 @@ const CustomIconTemplate: Story<ComponentProps<typeof Icon>> = (args) => {
   );
 };
 
-const FontAwesomeIconTemplate: Story<ComponentProps<typeof Icon>> = (args) => {
+const FontAwesomeIconTemplate: Story<ComponentProps<typeof Icon>> = args => {
   return (
     <div className="pt-4">
       <Icon {...args} />

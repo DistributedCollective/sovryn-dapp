@@ -7,11 +7,11 @@ export default {
   component: Input,
 };
 
-const Template: Story<ComponentProps<typeof Input>> = (args) => (
+const Template: Story<ComponentProps<typeof Input>> = args => (
   <Input {...args} />
 );
 
-const AdvancedTemplate: Story<ComponentProps<typeof Input>> = (args) => {
+const AdvancedTemplate: Story<ComponentProps<typeof Input>> = args => {
   const [value, setValue] = useState('hello world');
 
   return (
@@ -49,7 +49,7 @@ const renderInput = (label: string, props: InputProps) => (
   </div>
 );
 
-export const AllVariations: React.FC<InputProps> = (props) => (
+export const AllVariations: React.FC<InputProps> = props => (
   <div className="flex flex-col justify-evenly items-center mb-4 space-y-4 w-full">
     {renderInput('Empty text', {
       ...props,

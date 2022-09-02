@@ -76,9 +76,9 @@ export const Button: React.FC<IButtonProps> = ({
         size && styles[size],
         style && styles[style],
         disabled && styles.disabled,
-        className
+        className,
       ),
-    [loading, color, size, style, disabled, className]
+    [loading, color, size, style, disabled, className],
   );
 
   const onClickWhenAllowed = !disabled && !loading ? onClick : undefined;

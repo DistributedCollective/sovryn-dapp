@@ -36,7 +36,7 @@ export const MenuItem: React.FC<MenuItemProps> = ({
   dataActionId,
 }) => {
   const onClickWhenAllowed = useCallback(
-    (event) => {
+    event => {
       if (disabled) {
         event.preventDefault();
         event.stopPropagation();
@@ -44,14 +44,14 @@ export const MenuItem: React.FC<MenuItemProps> = ({
         onClick(event);
       }
     },
-    [onClick, disabled]
+    [onClick, disabled],
   );
 
   const location = useLocation();
 
   const isActive = useMemo(
     () => href && href === location.pathname,
-    [href, location.pathname]
+    [href, location.pathname],
   );
 
   const button = useMemo(() => {

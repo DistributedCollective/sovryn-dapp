@@ -1,3 +1,3 @@
 module.exports = {
-  presets: [require("@sovryn/tailwindcss-config/index.js")],
+  presets: [require('@sovryn/tailwindcss-config/index.js')],
 };

@@ -14,7 +14,7 @@ export default {
 } as ComponentMeta<typeof Lead>;
 
 // More on component templates: https://storybook.js.org/docs/react/writing-stories/introduction#using-args
-const Template: ComponentStory<typeof Lead> = (args) => <Lead {...args} />;
+const Template: ComponentStory<typeof Lead> = args => <Lead {...args} />;
 
 export const Primary = Template.bind({});
 // More on args: https://storybook.js.org/docs/react/writing-stories/args

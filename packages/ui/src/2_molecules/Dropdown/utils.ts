@@ -2,7 +2,7 @@ import { DropdownCoords, DropdownMode } from './types';
 
 export const getDropdownPositionStyles = (
   coords: DropdownCoords,
-  mode: DropdownMode
+  mode: DropdownMode,
 ) => {
   const { top, left, right, buttonWidth, windowWidth, dropdownWidth } = coords;
 

@@ -1,1 +1,1 @@
-module.exports = require("@sovryn/tailwindcss-config/postcss.config");
+module.exports = require('@sovryn/tailwindcss-config/postcss.config');

@@ -18,30 +18,30 @@ export type InputProps = Omit<InputBaseProps, 'ref'> & {
 export const Input = React.forwardRef<HTMLInputElement, InputProps>(
   (
     { className, classNameInput, type, invalid, unit, dataActionId, ...rest },
-    ref
+    ref,
   ) => {
     const inputRef = useRef<HTMLInputElement>(
-      null
+      null,
     ) as React.MutableRefObject<HTMLInputElement>;
 
     useImperativeHandle(ref, () => inputRef.current);
 
     const onStepUp = useCallback(
-      (event) => {
+      event => {
         inputRef.current?.stepUp();
         rest.onChangeText?.(inputRef.current?.value || '');
         rest.onChange?.(event);
       },
-      [rest]
+      [rest],
     );
 
     const onStepDown = useCallback(
-      (event) => {
+      event => {
         inputRef.current?.stepDown();
         rest.onChangeText?.(inputRef.current?.value || '');
         rest.onChange?.(event);
       },
-      [rest]
+      [rest],
     );
 
     const wrapperClasses = useMemo(() => {
@@ -60,7 +60,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
             className={classNames(
               styles.input,
               { 'rounded-lg': !unit, 'rounded-l-lg': !!unit },
-              classNameInput
+              classNameInput,
             )}
             type={type}
             {...rest}
@@ -90,7 +90,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
               {
                 'bg-gray-9 text-gray-5': !rest.readOnly,
                 'bg-transparent text-sov-white': rest.readOnly,
-              }
+              },
             )}
           >
             <div>{unit}</div>
@@ -98,5 +98,5 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
         )}
       </div>
     );
-  }
+  },
 );

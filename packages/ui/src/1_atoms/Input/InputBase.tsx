@@ -20,7 +20,7 @@ export type InputBaseProps = Omit<HTMLProps<HTMLInputElement>, 'ref'> & {
 export const InputBase = React.forwardRef<HTMLInputElement, InputBaseProps>(
   (
     { value, debounce = 500, dataActionId, onChange, onChangeText, ...props },
-    ref
+    ref,
   ) => {
     const [renderedValue, setRenderedValue] = useState<
       string | string[] | number | undefined
@@ -37,7 +37,7 @@ export const InputBase = React.forwardRef<HTMLInputElement, InputBaseProps>(
           onChangeText?.(event.currentTarget.value);
           onChange?.(event);
         }, debounce),
-      [debounce, onChange, onChangeText]
+      [debounce, onChange, onChangeText],
     );
 
     const handleChange = useCallback(
@@ -46,7 +46,7 @@ export const InputBase = React.forwardRef<HTMLInputElement, InputBaseProps>(
         setRenderedValue(event.currentTarget?.value);
         debouncedOnChangeHandler(event);
       },
-      [debouncedOnChangeHandler]
+      [debouncedOnChangeHandler],
     );
 
     // updating value if it was changed by parent component
@@ -61,5 +61,5 @@ export const InputBase = React.forwardRef<HTMLInputElement, InputBaseProps>(
         data-action-id={dataActionId}
       />
     );
-  }
+  },
 );

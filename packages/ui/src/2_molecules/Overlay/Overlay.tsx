@@ -73,7 +73,7 @@ export const Overlay: React.FC<OverlayProps> = ({
       event.preventDefault();
       event.stopPropagation();
     },
-    [onBlur]
+    [onBlur],
   );
 
   const element = useMemo(
@@ -86,7 +86,7 @@ export const Overlay: React.FC<OverlayProps> = ({
             AlignClassName[align],
             AlignVerticalClassName[alignVertical],
             OverlayBackgroundClassName[background],
-            className
+            className,
           )}
           style={!fixed && zIndex ? { zIndex } : undefined}
           onClick={onBlurHandler}
@@ -104,7 +104,7 @@ export const Overlay: React.FC<OverlayProps> = ({
       className,
       zIndex,
       onBlurHandler,
-    ]
+    ],
   );
 
   useEffect(() => {
@@ -113,7 +113,7 @@ export const Overlay: React.FC<OverlayProps> = ({
       return () => {
         document.body.className = document.body.className.replace(
           ' overflow-hidden',
-          ''
+          '',
         );
       };
     }

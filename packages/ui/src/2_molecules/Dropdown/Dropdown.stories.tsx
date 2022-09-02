@@ -8,7 +8,7 @@ export default {
   component: Dropdown,
 };
 
-const Template: Story<ComponentProps<typeof Dropdown>> = (args) => (
+const Template: Story<ComponentProps<typeof Dropdown>> = args => (
   <>
     <Dropdown {...args} />
   </>

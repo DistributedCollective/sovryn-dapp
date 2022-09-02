@@ -15,9 +15,7 @@ export default {
   },
 };
 
-const Template: Story<ComponentProps<typeof Menu>> = (args) => (
-  <Menu {...args} />
-);
+const Template: Story<ComponentProps<typeof Menu>> = args => <Menu {...args} />;
 
 export const _Menu = Template.bind({});
 _Menu.args = {
@@ -52,16 +50,16 @@ _Menu.args = {
   ],
 };
 
-const MenuSeparatorTemplate: Story<ComponentProps<typeof MenuSeparator>> = (
-  args
-) => <MenuSeparator {...args} />;
+const MenuSeparatorTemplate: Story<
+  ComponentProps<typeof MenuSeparator>
+> = args => <MenuSeparator {...args} />;
 
 export const _MenuSeparator = MenuSeparatorTemplate.bind({});
 _MenuSeparator.args = {
   text: '',
 };
 
-const MenuItemTemplate: Story<ComponentProps<typeof MenuItem>> = (args) => (
+const MenuItemTemplate: Story<ComponentProps<typeof MenuItem>> = args => (
   <MenuItem {...args} />
 );
 

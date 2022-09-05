@@ -1,4 +1,4 @@
-import { IconName } from './types';
+import { IconName } from './Icon.types';
 
 export const IconSvgPaths: Record<IconName, string[]> = {
   wallet: [

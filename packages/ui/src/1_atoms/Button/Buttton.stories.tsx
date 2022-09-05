@@ -2,13 +2,13 @@ import React, { ComponentProps } from 'react';
 
 import { Story, Meta } from '@storybook/react';
 
+import { Button } from './Button';
 import {
-  Button,
   ButtonColor,
   ButtonSize,
   ButtonStyle,
   ButtonType,
-} from './Button';
+} from './Button.types';
 
 //👇 This default export determines where your story goes in the story list
 export default {

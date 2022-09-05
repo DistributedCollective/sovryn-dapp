@@ -23,7 +23,7 @@ const InteractiveTemplate: Story<ComponentProps<typeof Dialog>> = args => {
 
   return (
     <div className="relative mx-auto w-80 h-80 p-8 bg-gray-3 text-center">
-      <Button onClick={toggleOpen} label="open" />
+      <Button onClick={toggleOpen} text="open" />
       <Dialog {...args} isOpen={open} onClose={toggleOpen} />
     </div>
   );
@@ -35,7 +35,7 @@ const ChildDialog: React.FC = () => {
 
   return (
     <>
-      <Button onClick={toggleOpen} label="open" />
+      <Button onClick={toggleOpen} text="open" />
       <Dialog isOpen={open} onClose={toggleOpen}>
         Opens on top of parent.
       </Dialog>

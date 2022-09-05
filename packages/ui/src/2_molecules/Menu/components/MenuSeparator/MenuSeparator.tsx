@@ -1,6 +1,6 @@
 import React, { ReactNode } from 'react';
 import classNames from 'classnames';
-import styles from './index.module.css';
+import styles from './MenuSeparator.module.css';
 
 type MenuSeparatorProps = {
   className?: string;
@@ -10,6 +10,4 @@ type MenuSeparatorProps = {
 export const MenuSeparator: React.FC<MenuSeparatorProps> = ({
   className,
   text,
-}) => {
-  return <li className={classNames(styles.host, className)}>{text}</li>;
-};
+}) => <li className={classNames(styles.host, className)}>{text}</li>;

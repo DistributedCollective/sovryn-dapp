@@ -9,34 +9,12 @@ import React, {
 import { Align, AlignVertical } from '../../types/tailwind';
 import classNames from 'classnames';
 import { Portal } from '../../1_atoms/Portal/Portal';
-
-export enum OverlayBackground {
-  transparent = 'transparent',
-  light25 = 'light25',
-  light75 = 'light75',
-  dark25 = 'dark25',
-  dark75 = 'dark75',
-}
-
-const OverlayBackgroundClassName: { [key in OverlayBackground]: string } = {
-  [OverlayBackground.transparent]: 'bg-transparent',
-  [OverlayBackground.light25]: 'bg-gray-9 bg-opacity-25',
-  [OverlayBackground.light75]: 'bg-gray-9 bg-opacity-75',
-  [OverlayBackground.dark25]: 'bg-gray-1 bg-opacity-25',
-  [OverlayBackground.dark75]: 'bg-gray-1 bg-opacity-75',
-};
-
-const AlignClassName: { [key in Align]: string } = {
-  [Align.left]: 'justify-start',
-  [Align.center]: 'justify-center',
-  [Align.right]: 'justify-end',
-};
-
-const AlignVerticalClassName: { [key in AlignVertical]: string } = {
-  [AlignVertical.top]: 'items-start',
-  [AlignVertical.center]: 'items-center',
-  [AlignVertical.bottom]: 'items-end',
-};
+import {
+  OverlayBackground,
+  OverlayBackgroundClassName,
+  AlignClassName,
+  AlignVerticalClassName,
+} from './Overlay.types';
 
 export type OverlayProps = {
   className?: string;
@@ -67,9 +45,7 @@ export const Overlay: React.FC<OverlayProps> = ({
 }) => {
   const onBlurHandler = useCallback(
     (event: MouseEvent) => {
-      if (onBlur) {
-        onBlur(event);
-      }
+      onBlur?.(event);
       event.preventDefault();
       event.stopPropagation();
     },

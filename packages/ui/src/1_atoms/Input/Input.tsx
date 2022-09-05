@@ -6,7 +6,7 @@ import React, {
 } from 'react';
 import classNames from 'classnames';
 import { InputBase, InputBaseProps } from './InputBase';
-import styles from './input.module.css';
+import styles from './Input.module.css';
 
 export type InputProps = Omit<InputBaseProps, 'ref'> & {
   classNameInput?: string;

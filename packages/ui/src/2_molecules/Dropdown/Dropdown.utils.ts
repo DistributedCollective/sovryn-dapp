@@ -1,4 +1,4 @@
-import { DropdownCoords, DropdownMode } from './types';
+import { DropdownCoords, DropdownMode } from './Dropdown.types';
 
 export const getDropdownPositionStyles = (
   coords: DropdownCoords,

@@ -2,7 +2,7 @@ import React, { ComponentProps, useMemo } from 'react';
 import { Story } from '@storybook/react';
 import { Icon } from './Icon';
 import * as IconNames from './iconNames';
-import { IconName } from './types';
+import { IconName } from './Icon.types';
 import { faBacterium } from '@fortawesome/free-solid-svg-icons';
 
 export default {

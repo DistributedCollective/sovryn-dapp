@@ -2,13 +2,9 @@ import React, { useMemo } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { IconProp, SizeProp } from '@fortawesome/fontawesome-svg-core';
 import classNames from 'classnames';
-import styles from './icon.module.css';
+import styles from './Icon.module.css';
 import { IconSvgPaths } from './iconSvgPaths';
-import { IconType, ViewBoxSize } from './types';
-
-const STANDARD = 16;
-const INLINE = '1em';
-const SM = 'sm';
+import { IconType, ViewBoxSize, STANDARD, INLINE, SM } from './Icon.types';
 
 type IconProps = {
   /**
@@ -37,12 +33,7 @@ export const Icon: React.FC<IconProps> = ({
   inline,
   className,
 }) => {
-  const isFaIcon = useMemo(() => {
-    if (icon && icon['prefix']) {
-      return true;
-    }
-    return false;
-  }, [icon]);
+  const isFaIcon = useMemo(() => !!icon && !!icon['prefix'], [icon]);
 
   const iconFaSize = useMemo(() => {
     if (inline) {
@@ -52,9 +43,10 @@ export const Icon: React.FC<IconProps> = ({
     }
   }, [inline, size]);
 
-  const inlineBlock = useMemo(() => {
-    return inline ? 'inline-block' : 'block';
-  }, [inline]);
+  const inlineBlock = useMemo(
+    () => (inline ? 'inline-block' : 'block'),
+    [inline],
+  );
 
   const renderIcon = useMemo(() => {
     const iconSize = inline ? INLINE : size;

@@ -1,44 +1,15 @@
 import React, { MouseEventHandler, useMemo } from 'react';
 import classNames from 'classnames';
-import styles from './button.module.css';
+import styles from './Button.module.css';
 import { Link } from 'react-router-dom';
+import {
+  ButtonType,
+  ButtonColor,
+  ButtonSize,
+  ButtonStyle,
+} from './Button.types';
 
-export enum ButtonType {
-  button = 'button',
-  submit = 'submit',
-  reset = 'reset',
-}
-
-export enum ButtonColor {
-  primary = 'primary',
-  secondary = 'secondary',
-  tradeLong = 'tradeLong',
-  tradeShort = 'tradeShort',
-  success = 'success',
-  warning = 'warning',
-  gray = 'gray',
-}
-
-export enum ButtonSize {
-  /** Inline/Minor buttons, height 30px */
-  sm = 'sm',
-  /** Standard buttons, height 40px */
-  md = 'md',
-  /** Minor CTA buttons, height 50px */
-  lg = 'lg',
-  /** Major CTA buttons, height 50px */
-  xl = 'xl',
-}
-
-export enum ButtonStyle {
-  normal = 'normal',
-  inverted = 'inverted',
-  transparent = 'transparent',
-  frosted = 'frosted',
-  link = 'link',
-}
-
-interface IButtonProps {
+export interface IButtonProps {
   text: React.ReactNode;
   href?: string;
   hrefExternal?: boolean;
@@ -58,10 +29,10 @@ export const Button: React.FC<IButtonProps> = ({
   href,
   hrefExternal,
   onClick,
-  color,
-  size,
-  style,
-  type,
+  color = ButtonColor.primary,
+  size = ButtonSize.md,
+  style = ButtonStyle.normal,
+  type = ButtonType.button,
   loading,
   disabled,
   className,
@@ -81,7 +52,10 @@ export const Button: React.FC<IButtonProps> = ({
     [loading, color, size, style, disabled, className],
   );
 
-  const onClickWhenAllowed = !disabled && !loading ? onClick : undefined;
+  const onClickHandler = useMemo(
+    () => (!disabled && !loading ? onClick : undefined),
+    [disabled, loading, onClick],
+  );
 
   if (href) {
     if (hrefExternal) {
@@ -91,7 +65,7 @@ export const Button: React.FC<IButtonProps> = ({
           href={href}
           target="_blank"
           rel="noreferrer"
-          onClick={onClickWhenAllowed}
+          onClick={onClickHandler}
           data-action-id={dataActionId}
         >
           {text}
@@ -102,7 +76,7 @@ export const Button: React.FC<IButtonProps> = ({
         <Link
           to={href}
           className={classNameComplete}
-          onClick={onClickWhenAllowed}
+          onClick={onClickHandler}
           data-action-id={dataActionId}
         >
           {text}
@@ -115,18 +89,11 @@ export const Button: React.FC<IButtonProps> = ({
         type={type}
         disabled={disabled}
         className={classNameComplete}
-        onClick={onClickWhenAllowed}
+        onClick={onClickHandler}
         data-action-id={dataActionId}
       >
         {text}
       </button>
     );
   }
-};
-
-Button.defaultProps = {
-  type: ButtonType.button,
-  color: ButtonColor.primary,
-  size: ButtonSize.md,
-  style: ButtonStyle.normal,
 };

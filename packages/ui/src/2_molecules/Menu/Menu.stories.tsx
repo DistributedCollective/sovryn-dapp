@@ -2,9 +2,9 @@ import React, { ComponentProps } from 'react';
 import { Story } from '@storybook/react';
 
 import { Menu } from './Menu';
-import { MenuItem } from './components/MenuItem';
+import { MenuItem } from './components/MenuItem/MenuItem';
 import { faArchway } from '@fortawesome/free-solid-svg-icons';
-import { MenuSeparator } from './components/MenuSeparator';
+import { MenuSeparator } from './components/MenuSeparator/MenuSeparator';
 
 export default {
   title: 'Molecule/Menu',

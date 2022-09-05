@@ -7,15 +7,15 @@ import React, {
   useState,
 } from 'react';
 import classNames from 'classnames';
-import styles from './dropdown.module.css';
+import styles from './Dropdown.module.css';
 import { useOnClickOutside } from '../../hooks/useOnClickOutside';
 
-import { DropdownColor, DropdownCoords, DropdownMode } from './types';
-import { getDropdownPositionStyles } from './utils';
+import { DropdownColor, DropdownCoords, DropdownMode } from './Dropdown.types';
+import { getDropdownPositionStyles } from './Dropdown.utils';
 import { Nullable } from '../../types';
 import { Portal } from '../../1_atoms/Portal/Portal';
 
-interface IDropdownProps {
+type IDropdownProps = {
   text: ReactNode;
   children: ReactNode;
   mode?: DropdownMode;
@@ -25,7 +25,7 @@ interface IDropdownProps {
   className?: string;
   dataActionId?: string;
   dropdownClassName?: string;
-}
+};
 
 export const Dropdown: React.FC<IDropdownProps> = ({
   text,
@@ -74,15 +74,14 @@ export const Dropdown: React.FC<IDropdownProps> = ({
   }, [coords, mode]);
 
   const classNameComplete = useMemo(
-    () => classNames(styles.button, color, className, isOpen && styles.isOpen),
+    () =>
+      classNames(styles.button, color, className, { [styles.isOpen]: isOpen }),
     [color, className, isOpen],
   );
 
   const useClickedOutside = useCallback(() => {
     setOpen(false);
-    if (onClose) {
-      onClose();
-    }
+    onClose?.();
   }, [onClose]);
 
   useOnClickOutside([buttonRef, dropdownRef], useClickedOutside);
@@ -93,10 +92,7 @@ export const Dropdown: React.FC<IDropdownProps> = ({
     }
     const coords = getCoords();
     setCoords(coords);
-
-    if (onOpen) {
-      onOpen();
-    }
+    onOpen?.();
   }, [isOpen, getCoords, onOpen, mode]);
 
   return (

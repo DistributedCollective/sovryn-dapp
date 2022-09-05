@@ -6,15 +6,14 @@ import React, {
 } from 'react';
 import classNames from 'classnames';
 import { Link, useLocation } from 'react-router-dom';
-import styles from './index.module.css';
-import { IconProp } from '@fortawesome/fontawesome-svg-core';
+import styles from './MenuItem.module.css';
 import iconNewTab from '../../../../../assets/storybook/iconNewTab.svg';
 import { Icon } from '../../../../1_atoms';
+import { IconType } from '../../../../1_atoms/Icon/Icon.types';
 
 type MenuItemProps = {
   className?: string;
-  //TODO: use IconComponents enum here instead, requires Icon Component to be done
-  icon?: IconProp;
+  icon?: IconType;
   text: ReactNode;
   label?: ReactNode;
   disabled?: boolean;

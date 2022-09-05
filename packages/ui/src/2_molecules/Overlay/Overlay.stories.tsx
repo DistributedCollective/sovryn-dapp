@@ -19,7 +19,7 @@ const InteractiveTemplate: Story<ComponentProps<typeof Overlay>> = args => {
 
   return (
     <div className="relative mx-auto w-80 h-80 p-8 bg-gray-3 text-center">
-      <Button onClick={toggleOpen} label="open" />
+      <Button onClick={toggleOpen} text="open" />
       <Overlay {...args} isOpen={open} onBlur={toggleOpen} />
     </div>
   );

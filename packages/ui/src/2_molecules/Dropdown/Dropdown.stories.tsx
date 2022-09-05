@@ -9,9 +9,7 @@ export default {
 };
 
 const Template: Story<ComponentProps<typeof Dropdown>> = args => (
-  <>
-    <Dropdown {...args} />
-  </>
+  <Dropdown {...args} />
 );
 
 export const Basic = Template.bind({});

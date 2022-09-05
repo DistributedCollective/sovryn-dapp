@@ -1,8 +1,12 @@
 import React, { useCallback, useEffect, useMemo, MouseEvent } from 'react';
 import classNames from 'classnames';
 import { Overlay, OverlayProps } from '../Overlay/Overlay';
-import styles from './dialog.module.css';
-import { DialogSize, dialogSizeMap, IDialogFunctionComponent } from './types';
+import styles from './Dialog.module.css';
+import {
+  DialogSize,
+  dialogSizeMap,
+  IDialogFunctionComponent,
+} from './Dialog.types';
 
 type DialogProps = {
   isOpen: boolean;

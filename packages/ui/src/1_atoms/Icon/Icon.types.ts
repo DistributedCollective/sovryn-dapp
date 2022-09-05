@@ -9,3 +9,7 @@ export enum ViewBoxSize {
 }
 
 export type IconType = IconName | ReactNode | IconProp;
+
+export const STANDARD = 16;
+export const INLINE = '1em';
+export const SM = 'sm';

@@ -1,0 +1,63 @@
+.wrapper {
+  @apply w-full rounded-lg max-w-xs border flex flex-row justify-between items-center;
+}
+
+.input {
+  @apply w-full h-8 py-2 px-3 leading-none text-base font-semibold text-gray-1 bg-sov-white duration-300 hover:bg-gray-10;
+}
+.input::placeholder {
+  @apply text-gray-8;
+}
+
+.input[value=""]:not(:focus),
+.input:not([value]):not(:focus) {
+  @apply bg-gray-9;
+}
+
+.input:disabled {
+  @apply cursor-not-allowed bg-gray-8 text-gray-6;
+}
+
+.input:read-only:not(:disabled) {
+  @apply bg-transparent text-sov-white;
+}
+
+.input[type="number"] {
+  appearance: textfield;
+}
+.input[type="number"][step] {
+  @apply pr-7;
+}
+.input[type="number"]::-webkit-inner-spin-button,
+.input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.stepButton {
+  @apply absolute right-1 flex items-center justify-center h-4 w-6 
+    transition-opacity duration-300 hover:opacity-50;
+
+  padding: 3px;
+}
+.stepButton > span {
+  @apply w-0 h-0;
+}
+
+.stepButton.up {
+  @apply top-0 items-end;
+}
+.stepButton.up > span {
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-bottom: 5px solid theme("colors.black");
+}
+
+.stepButton.down {
+  @apply bottom-0 items-start;
+}
+.stepButton.down > span {
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 5px solid theme("colors.black");
+}

@@ -12,7 +12,7 @@ export const useTheme = () => {
     if (theme) {
       handleThemeChange(theme as AppTheme);
     }
-  }, []);
+  }, [handleThemeChange]);
 
   return {
     handleThemeChange,

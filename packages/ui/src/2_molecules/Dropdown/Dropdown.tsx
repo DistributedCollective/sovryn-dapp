@@ -15,7 +15,7 @@ import { getDropdownPositionStyles } from './Dropdown.utils';
 import { Nullable } from '../../types';
 import { Portal } from '../../1_atoms/Portal/Portal';
 
-type IDropdownProps = {
+type DropdownProps = {
   text: ReactNode;
   children: ReactNode;
   mode?: DropdownMode;
@@ -27,7 +27,7 @@ type IDropdownProps = {
   dropdownClassName?: string;
 };
 
-export const Dropdown: React.FC<IDropdownProps> = ({
+export const Dropdown: React.FC<DropdownProps> = ({
   text,
   children,
   mode = DropdownMode.sameWidth,

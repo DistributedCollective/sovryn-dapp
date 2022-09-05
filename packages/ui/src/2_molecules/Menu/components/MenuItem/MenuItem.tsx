@@ -34,13 +34,13 @@ export const MenuItem: React.FC<MenuItemProps> = ({
   onClick,
   dataActionId,
 }) => {
-  const onClickWhenAllowed = useCallback(
+  const onClickHandler = useCallback(
     event => {
       if (disabled) {
         event.preventDefault();
         event.stopPropagation();
-      } else if (onClick) {
-        onClick(event);
+      } else {
+        onClick?.(event);
       }
     },
     [onClick, disabled],
@@ -64,7 +64,7 @@ export const MenuItem: React.FC<MenuItemProps> = ({
             href={href}
             target="_blank"
             rel="noreferrer"
-            onClick={onClickWhenAllowed}
+            onClick={onClickHandler}
             data-action-id={dataActionId}
           >
             <div className="block leading-none">
@@ -95,7 +95,7 @@ export const MenuItem: React.FC<MenuItemProps> = ({
               [styles.disabled]: disabled,
               [styles.active]: isActive,
             })}
-            onClick={onClickWhenAllowed}
+            onClick={onClickHandler}
             data-action-id={dataActionId}
           >
             <div className="block leading-none">
@@ -122,7 +122,7 @@ export const MenuItem: React.FC<MenuItemProps> = ({
           className={classNames(styles.button, {
             [styles.disabled]: disabled,
           })}
-          onClick={onClickWhenAllowed}
+          onClick={onClickHandler}
           data-action-id={dataActionId}
         >
           <div className="block leading-none">
@@ -145,7 +145,7 @@ export const MenuItem: React.FC<MenuItemProps> = ({
     href,
     hrefExternal,
     disabled,
-    onClickWhenAllowed,
+    onClickHandler,
     dataActionId,
     icon,
     label,

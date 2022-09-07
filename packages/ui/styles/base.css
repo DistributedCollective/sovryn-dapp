@@ -1,5 +1,21 @@
 @layer base {
-  h1, h2, h3, h4, h5, h6 {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
     @apply font-bold text-white;
   }
+
+  body {
+    @apply bg-gray-1 text-sov-white font-body text-xs leading-normal;
+    font-variant-numeric: tabular-nums;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow: overlay;
+  }
+}
+.sb-show-main #root {
+  @apply relative block p-4;
 }

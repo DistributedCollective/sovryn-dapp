@@ -1,8 +1,10 @@
 import React from 'react';
-import { Button, Lead } from '@sovryn/ui';
-import styles from './index.module.css';
-import { AppTheme } from '../../types/tailwind';
-import { useTheme } from '../../hooks/useTheme';
+
+import { Lead } from '@sovryn/ui';
+
+import { useTheme } from '../../../hooks/useTheme';
+import { AppTheme } from '../../../types/tailwind';
+import styles from './App.module.css';
 
 function App() {
   const { handleThemeChange } = useTheme();
@@ -16,8 +18,6 @@ function App() {
         <a href="https://reactjs.org" target="_blank" rel="noopener noreferrer">
           Learn React
         </a>
-        <Button className="p-3" />
-        <Button />
         <Lead test={false}>abc</Lead>
         <Lead test={true}>def</Lead>
 

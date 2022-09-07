@@ -1,32 +1,99 @@
-import React, { FC } from 'react';
+import React, { MouseEventHandler, useMemo } from 'react';
 import classNames from 'classnames';
-import styles from './button.module.css';
+import styles from './Button.module.css';
+import { Link } from 'react-router-dom';
+import {
+  ButtonType,
+  ButtonColor,
+  ButtonSize,
+  ButtonStyle,
+} from './Button.types';
 
-type ButtonProps = {
-  primary?: boolean;
-  size?: 'small' | 'large';
-  label?: string;
+export interface IButtonProps {
+  text: React.ReactNode;
+  href?: string;
+  hrefExternal?: boolean;
+  onClick?: MouseEventHandler;
+  type?: ButtonType;
+  color?: ButtonColor;
+  size?: ButtonSize;
+  style?: ButtonStyle;
+  disabled?: boolean;
+  loading?: boolean;
   className?: string;
-};
+  dataActionId?: string;
+}
 
-export const Button: FC<ButtonProps> = ({
-  label,
-  primary,
-  size,
+export const Button: React.FC<IButtonProps> = ({
+  text,
+  href,
+  hrefExternal,
+  onClick,
+  color = ButtonColor.primary,
+  size = ButtonSize.md,
+  style = ButtonStyle.normal,
+  type = ButtonType.button,
+  loading,
+  disabled,
   className,
+  dataActionId,
 }) => {
-  return (
-    <button
-      className={classNames(
+  const classNameComplete = useMemo(
+    () =>
+      classNames(
         styles.button,
-        {
-          [styles.primary]: primary,
-          [styles.small]: size === 'small',
-        },
+        loading && styles.loading,
+        color && styles[color],
+        size && styles[size],
+        style && styles[style],
+        disabled && styles.disabled,
         className,
-      )}
-    >
-      {label}
-    </button>
+      ),
+    [loading, color, size, style, disabled, className],
   );
+
+  const onClickHandler = useMemo(
+    () => (!disabled && !loading ? onClick : undefined),
+    [disabled, loading, onClick],
+  );
+
+  if (href) {
+    if (hrefExternal) {
+      return (
+        <a
+          className={classNameComplete}
+          href={href}
+          target="_blank"
+          rel="noreferrer"
+          onClick={onClickHandler}
+          data-action-id={dataActionId}
+        >
+          {text}
+        </a>
+      );
+    } else {
+      return (
+        <Link
+          to={href}
+          className={classNameComplete}
+          onClick={onClickHandler}
+          data-action-id={dataActionId}
+        >
+          {text}
+        </Link>
+      );
+    }
+  } else {
+    return (
+      <button
+        type={type}
+        disabled={disabled}
+        className={classNameComplete}
+        onClick={onClickHandler}
+        data-action-id={dataActionId}
+      >
+        {text}
+      </button>
+    );
+  }
 };

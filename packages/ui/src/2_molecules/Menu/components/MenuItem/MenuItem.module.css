@@ -1,0 +1,26 @@
+.host {
+  @apply list-none;
+}
+.host .button {
+  @apply flex items-center w-full px-5 py-2.5 text-gray-8 text-left no-underline rounded hover:text-sov-white hover:bg-gray-3 font-medium opacity-70 hover:opacity-100 leading-none;
+
+  @media (min-width: 1536px) {
+    @apply px-4;
+  }
+}
+
+.host .button.disabled {
+  @apply opacity-50 cursor-not-allowed;
+}
+
+.host .button.active {
+  @apply text-sov-white bg-gray-3 font-bold opacity-100;
+}
+
+.host .button .text {
+  @apply text-sm font-medium leading-none text-sov-white flex items-center;
+}
+
+.host .button .label {
+  @apply text-gray-8 text-tiny inline-block leading-none pointer-events-none;
+}

@@ -1,6 +1,7 @@
 import '../styles/index.css';
 import resolveConfig from 'tailwindcss/resolveConfig';
 import tailwindConfig from '@sovryn/tailwindcss-config/index';
+import { MemoryRouter } from 'react-router-dom';
 
 const config = resolveConfig(tailwindConfig);
 
@@ -9,10 +10,20 @@ const screens = {
   ...config.theme.screens,
 };
 
-const backgrounds = Object.entries(config.theme.backgroundColor).map(([name, value]) => ({ name, value }));
+export const decorators = [
+  Story => (
+    <MemoryRouter>
+      <Story />
+    </MemoryRouter>
+  ),
+];
+
+const backgrounds = Object.entries(config.theme.backgroundColor).map(
+  ([name, value]) => ({ name, value }),
+);
 
 export const parameters = {
-  actions: { argTypesRegex: "^on[A-Z].*" },
+  actions: { argTypesRegex: '^on[A-Z].*' },
   controls: {
     matchers: {
       color: /(background|color)$/i,
@@ -47,4 +58,4 @@ export const parameters = {
       ],
     },
   },
-}
+};

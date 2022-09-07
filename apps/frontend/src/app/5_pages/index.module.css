@@ -1,9 +1,0 @@
-.test {
-    @apply font-extrabold;
-
-    color: orange;
-
-    &:hover{
-        color: blue;
-    };
-}

@@ -12,7 +12,6 @@ This is a turborepo for sovryn dapp v2.
 - `@sovryn/tailwindcss-config`: `tailwindcss` configuration
 - `@sovryn/tsconfig`: `tsconfig.json`s used throughout the monorepo
 
-
 ## Development
 
 ```bash

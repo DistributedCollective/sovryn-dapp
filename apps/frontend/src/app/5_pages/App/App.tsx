@@ -1,8 +1,10 @@
 import React from 'react';
+
 import { Lead } from '@sovryn/ui';
-import styles from './index.module.css';
-import { AppTheme } from '../../types/tailwind';
-import { useTheme } from '../../hooks/useTheme';
+
+import { useTheme } from '../../../hooks/useTheme';
+import { AppTheme } from '../../../types/tailwind';
+import styles from './App.module.css';
 
 function App() {
   const { handleThemeChange } = useTheme();

@@ -1,7 +1,9 @@
-import '../styles/index.css';
-import resolveConfig from 'tailwindcss/resolveConfig';
-import tailwindConfig from '@sovryn/tailwindcss-config/index';
 import { MemoryRouter } from 'react-router-dom';
+import resolveConfig from 'tailwindcss/resolveConfig';
+
+import tailwindConfig from '@sovryn/tailwindcss-config/index';
+
+import '../styles/index.css';
 
 const config = resolveConfig(tailwindConfig);
 

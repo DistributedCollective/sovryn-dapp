@@ -1,5 +1,7 @@
 import React, { ReactNode } from 'react';
+
 import classNames from 'classnames';
+
 import styles from './MenuSeparator.module.css';
 
 type MenuSeparatorProps = {

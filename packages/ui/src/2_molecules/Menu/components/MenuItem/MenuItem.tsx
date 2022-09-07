@@ -4,12 +4,14 @@ import React, {
   useMemo,
   useCallback,
 } from 'react';
+
 import classNames from 'classnames';
 import { Link, useLocation } from 'react-router-dom';
-import styles from './MenuItem.module.css';
-import iconNewTab from '../../../../../assets/storybook/iconNewTab.svg';
+
 import { Icon } from '../../../../1_atoms';
 import { IconType } from '../../../../1_atoms/Icon/Icon.types';
+import iconNewTab from '../../../../../assets/storybook/iconNewTab.svg';
+import styles from './MenuItem.module.css';
 
 type MenuItemProps = {
   className?: string;

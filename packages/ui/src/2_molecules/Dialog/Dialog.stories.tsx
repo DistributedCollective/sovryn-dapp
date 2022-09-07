@@ -1,8 +1,9 @@
-import React, { ComponentProps, useCallback, useState } from 'react';
 import { Story } from '@storybook/react';
 
-import { Dialog } from './Dialog';
+import React, { ComponentProps, useCallback, useState } from 'react';
+
 import { Button } from '../../1_atoms';
+import { Dialog } from './Dialog';
 
 export default {
   title: 'Molecule/Dialog',

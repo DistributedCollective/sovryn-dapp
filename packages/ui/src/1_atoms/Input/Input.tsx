@@ -4,9 +4,11 @@ import React, {
   useMemo,
   useRef,
 } from 'react';
+
 import classNames from 'classnames';
-import { InputBase, InputBaseProps } from './InputBase';
+
 import styles from './Input.module.css';
+import { InputBase, InputBaseProps } from './InputBase';
 
 export type InputProps = Omit<InputBaseProps, 'ref'> & {
   classNameInput?: string;

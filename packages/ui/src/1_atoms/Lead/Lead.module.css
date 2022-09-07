@@ -1,5 +1,5 @@
-@import "../../../styles/index.css";
+@import '../../../styles/index.css';
 
 .custom {
-    @apply text-warning-25 underline;
+  @apply text-warning-25 underline;
 }

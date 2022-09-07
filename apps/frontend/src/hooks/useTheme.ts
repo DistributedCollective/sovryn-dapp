@@ -1,4 +1,5 @@
 import { useCallback, useEffect } from 'react';
+
 import { AppTheme } from '../types/tailwind';
 
 export const useTheme = () => {

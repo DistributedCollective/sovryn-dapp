@@ -1,6 +1,6 @@
-import React, { ComponentProps } from 'react';
-
 import { Story, Meta } from '@storybook/react';
+
+import React, { ComponentProps } from 'react';
 
 import { Button } from './Button';
 import {

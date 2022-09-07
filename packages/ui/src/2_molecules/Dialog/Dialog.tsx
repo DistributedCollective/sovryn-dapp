@@ -1,5 +1,7 @@
 import React, { useCallback, useEffect, useMemo, MouseEvent } from 'react';
+
 import classNames from 'classnames';
+
 import { Overlay, OverlayProps } from '../Overlay/Overlay';
 import styles from './Dialog.module.css';
 import {

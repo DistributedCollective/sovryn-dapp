@@ -1,10 +1,13 @@
-import React, { useMemo } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { IconProp, SizeProp } from '@fortawesome/fontawesome-svg-core';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+
+import React, { useMemo } from 'react';
+
 import classNames from 'classnames';
+
 import styles from './Icon.module.css';
-import { IconSvgPaths } from './iconSvgPaths';
 import { IconType, ViewBoxSize, STANDARD, INLINE, SM } from './Icon.types';
+import { IconSvgPaths } from './iconSvgPaths';
 
 type IconProps = {
   /**

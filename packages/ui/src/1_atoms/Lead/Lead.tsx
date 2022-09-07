@@ -1,4 +1,5 @@
 import React, { FC, PropsWithChildren } from 'react';
+
 import styles from './Lead.module.css';
 
 export type LeadProps = {

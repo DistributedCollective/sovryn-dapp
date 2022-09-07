@@ -7,6 +7,7 @@ import React, {
   ChangeEventHandler,
   useMemo,
 } from 'react';
+
 import debounceCallback from 'lodash.debounce';
 
 export type InputBaseProps = Omit<HTMLProps<HTMLInputElement>, 'ref'> & {

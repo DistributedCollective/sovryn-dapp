@@ -1,8 +1,9 @@
-import React, { ComponentProps, useCallback, useState } from 'react';
 import { Story } from '@storybook/react';
 
-import { Overlay } from './Overlay';
+import React, { ComponentProps, useCallback, useState } from 'react';
+
 import { Button } from '../../1_atoms';
+import { Overlay } from './Overlay';
 
 export default {
   title: 'Molecule/Overlay',

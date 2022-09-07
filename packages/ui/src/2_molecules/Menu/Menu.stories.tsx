@@ -1,9 +1,10 @@
-import React, { ComponentProps } from 'react';
+import { faArchway } from '@fortawesome/free-solid-svg-icons';
 import { Story } from '@storybook/react';
+
+import React, { ComponentProps } from 'react';
 
 import { Menu } from './Menu';
 import { MenuItem } from './components/MenuItem/MenuItem';
-import { faArchway } from '@fortawesome/free-solid-svg-icons';
 import { MenuSeparator } from './components/MenuSeparator/MenuSeparator';
 
 export default {

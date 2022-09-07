@@ -6,9 +6,11 @@ import React, {
   MouseEvent,
   useEffect,
 } from 'react';
-import { Align, AlignVertical } from '../../types/tailwind';
+
 import classNames from 'classnames';
+
 import { Portal } from '../../1_atoms/Portal/Portal';
+import { Align, AlignVertical } from '../../types/tailwind';
 import {
   OverlayBackground,
   OverlayBackgroundClassName,

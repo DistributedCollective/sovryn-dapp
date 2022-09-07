@@ -6,14 +6,15 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import classNames from 'classnames';
-import styles from './Dropdown.module.css';
-import { useOnClickOutside } from '../../hooks/useOnClickOutside';
 
+import classNames from 'classnames';
+
+import { Portal } from '../../1_atoms/Portal/Portal';
+import { useOnClickOutside } from '../../hooks/useOnClickOutside';
+import { Nullable } from '../../types';
+import styles from './Dropdown.module.css';
 import { DropdownColor, DropdownCoords, DropdownMode } from './Dropdown.types';
 import { getDropdownPositionStyles } from './Dropdown.utils';
-import { Nullable } from '../../types';
-import { Portal } from '../../1_atoms/Portal/Portal';
 
 type DropdownProps = {
   text: ReactNode;

@@ -1,7 +1,9 @@
 import React, { MouseEventHandler, useMemo } from 'react';
+
 import classNames from 'classnames';
-import styles from './Button.module.css';
 import { Link } from 'react-router-dom';
+
+import styles from './Button.module.css';
 import {
   ButtonType,
   ButtonColor,

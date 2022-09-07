@@ -1,9 +1,11 @@
-import React, { ComponentProps, useMemo } from 'react';
-import { Story } from '@storybook/react';
-import { Icon } from './Icon';
-import * as IconNames from './iconNames';
-import { IconName } from './Icon.types';
 import { faBacterium } from '@fortawesome/free-solid-svg-icons';
+import { Story } from '@storybook/react';
+
+import React, { ComponentProps, useMemo } from 'react';
+
+import { Icon } from './Icon';
+import { IconName } from './Icon.types';
+import * as IconNames from './iconNames';
 
 export default {
   title: 'Atoms/Icon',

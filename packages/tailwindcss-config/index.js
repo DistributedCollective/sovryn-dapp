@@ -37,6 +37,34 @@ module.exports = {
       transparent: 'transparent',
       current: 'currentColor',
 
+      // New color palette
+      'sovryn-black': '#0D0D0F',
+      'gray-90': '#16171C',
+      'gray-80': '#1E2128',
+      'gray-70': '#2C303B',
+      'gray-70-ol': 'rgba(44, 48, 59, 0.65)',
+      'gray-60': '#333845',
+      'gray-50': '#484D59',
+      'gray-30': '#B6BAC2',
+      'gray-20': '#E6E6E8',
+      'gray-10': '#F5F5F5',
+
+      primary: '#F57118',
+      'primary-30': '#F58C31',
+      'primary-20': '#F5A549',
+      'primary-10': '#FFDAA7',
+
+      negative: '#FF6868',
+      positive: '#72EADE',
+
+      error: '#FF0000',
+      'error-light': '#FF5353',
+
+      success: '#19A619',
+      warning: '#DFA000',
+      // New color palette
+
+      // Old color palette
       'primary-300': '#F8F0BA',
       'primary-200': '#F8E37C',
       'primary-150': '#F8D33E',
@@ -44,7 +72,7 @@ module.exports = {
       'primary-75': '#DFA000', //'#fec004C0',
       'primary-50': '#AB7800', //'#fec00480',
       'primary-25': '#896000', //'#fec00440',
-      'primary-10': '#563C00', //'#fec0041a',
+      //'primary-10': '#563C00', //'#fec0041a',
 
       'secondary-300': '#9CE8FF',
       'secondary-200': '#47B9E5',
@@ -66,7 +94,7 @@ module.exports = {
       'gray-7': '#8e8e8e',
       'gray-8': '#a2a2a2',
       'gray-9': '#c4c4c4',
-      'gray-10': '#d9d9d9',
+      // 'gray-10': '#d9d9d9',
       'sov-white': '#e8e8e8',
       white: '#ffffff',
 
@@ -91,7 +119,7 @@ module.exports = {
       'success-300': '#80FF9B',
       'success-200': '#55F26A',
       'success-150': '#36D944',
-      success: '#27BF2C', // '#27A522',
+      //success: '#27BF2C', // '#27A522',
       'success-75': '#19A619', // '#27A522C0',
       'success-50': '#128C0E', // '#27A52280',
       'success-25': '#0D7306', // '#27A52240',
@@ -100,7 +128,7 @@ module.exports = {
       'warning-300': '#FFCECC',
       'warning-200': '#FF8C80',
       'warning-150': '#FF5F57',
-      warning: '#FF0000', // '#A52222',
+      //warning: '#FF0000', // '#A52222',
       'warning-75': '#D9000B', // '#A52222C0',
       'warning-50': '#B20012', // '#A5222280',
       'warning-25': '#8C0015', // '#A5222240',
@@ -118,8 +146,9 @@ module.exports = {
       'purple-2': '#7E64A7',
       'pink-1': '#C38FBB',
       'pink-2': '#A264A7',
+      // Old color palette
 
-      primary: 'var(--color-primary)',
+      // primary: 'var(--color-primary)',
       'primary-content': 'var(--color-primary-content)',
       secondary: 'var(--color-secondary)',
       'secondary-content': 'var(--color-secondary-content)',

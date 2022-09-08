@@ -1,6 +1,6 @@
 import { Story } from '@storybook/react';
 
-import React, { ComponentProps, useState } from 'react';
+import { FC, ComponentProps, useState } from 'react';
 
 import { Input, InputProps } from './Input';
 
@@ -51,7 +51,7 @@ const renderInput = (label: string, props: InputProps) => (
   </div>
 );
 
-export const AllVariations: React.FC<InputProps> = props => (
+export const AllVariations: FC<InputProps> = props => (
   <div className="flex flex-col justify-evenly items-center mb-4 space-y-4 w-full">
     {renderInput('Empty text', {
       ...props,

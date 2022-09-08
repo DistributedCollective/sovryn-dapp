@@ -1,4 +1,5 @@
-import React, {
+import {
+  FC,
   ReactNode,
   useMemo,
   useCallback,
@@ -32,7 +33,7 @@ export type OverlayProps = {
   portalClassName?: string;
 };
 
-export const Overlay: React.FC<OverlayProps> = ({
+export const Overlay: FC<OverlayProps> = ({
   className,
   portalTarget,
   zIndex,

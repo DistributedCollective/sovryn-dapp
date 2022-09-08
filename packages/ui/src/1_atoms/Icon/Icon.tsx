@@ -1,7 +1,7 @@
 import { IconProp, SizeProp } from '@fortawesome/fontawesome-svg-core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-import React, { useMemo } from 'react';
+import { useMemo, FC } from 'react';
 
 import classNames from 'classnames';
 
@@ -30,7 +30,7 @@ type IconProps = {
   className?: string;
 };
 
-export const Icon: React.FC<IconProps> = ({
+export const Icon: FC<IconProps> = ({
   icon,
   size = STANDARD,
   inline,

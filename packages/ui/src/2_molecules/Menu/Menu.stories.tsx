@@ -1,7 +1,7 @@
 import { faArchway } from '@fortawesome/free-solid-svg-icons';
 import { Story } from '@storybook/react';
 
-import React, { ComponentProps } from 'react';
+import { ComponentProps } from 'react';
 
 import { Menu } from './Menu';
 import { MenuItem } from './components/MenuItem/MenuItem';

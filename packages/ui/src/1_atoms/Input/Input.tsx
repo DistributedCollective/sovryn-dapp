@@ -1,8 +1,11 @@
-import React, {
+import {
   useCallback,
   useImperativeHandle,
   useMemo,
+  ReactNode,
   useRef,
+  forwardRef,
+  MutableRefObject,
 } from 'react';
 
 import classNames from 'classnames';
@@ -13,18 +16,18 @@ import { InputBase, InputBaseProps } from './InputBase';
 export type InputProps = Omit<InputBaseProps, 'ref'> & {
   classNameInput?: string;
   invalid?: boolean;
-  unit?: React.ReactNode;
+  unit?: ReactNode;
   dataActionId?: string;
 };
 
-export const Input = React.forwardRef<HTMLInputElement, InputProps>(
+export const Input = forwardRef<HTMLInputElement, InputProps>(
   (
     { className, classNameInput, type, invalid, unit, dataActionId, ...rest },
     ref,
   ) => {
     const inputRef = useRef<HTMLInputElement>(
       null,
-    ) as React.MutableRefObject<HTMLInputElement>;
+    ) as MutableRefObject<HTMLInputElement>;
 
     useImperativeHandle(ref, () => inputRef.current);
 

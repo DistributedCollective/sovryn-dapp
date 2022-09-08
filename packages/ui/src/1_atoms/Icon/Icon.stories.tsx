@@ -1,7 +1,7 @@
 import { faBacterium } from '@fortawesome/free-solid-svg-icons';
 import { Story } from '@storybook/react';
 
-import React, { ComponentProps, useMemo } from 'react';
+import { ComponentProps, useMemo } from 'react';
 
 import { Icon } from './Icon';
 import { IconName } from './Icon.types';

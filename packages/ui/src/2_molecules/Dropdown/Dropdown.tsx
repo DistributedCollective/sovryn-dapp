@@ -1,4 +1,5 @@
-import React, {
+import {
+  FC,
   ReactNode,
   useCallback,
   useEffect,
@@ -28,7 +29,7 @@ type DropdownProps = {
   dropdownClassName?: string;
 };
 
-export const Dropdown: React.FC<DropdownProps> = ({
+export const Dropdown: FC<DropdownProps> = ({
   text,
   children,
   mode = DropdownMode.sameWidth,

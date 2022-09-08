@@ -1,6 +1,6 @@
 import { Story } from '@storybook/react';
 
-import React, { ComponentProps, useCallback, useState } from 'react';
+import { ComponentProps, useCallback, useState } from 'react';
 
 import { Button } from '../../1_atoms';
 import { Overlay } from './Overlay';

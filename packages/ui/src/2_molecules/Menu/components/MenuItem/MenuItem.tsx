@@ -1,9 +1,4 @@
-import React, {
-  ReactNode,
-  MouseEventHandler,
-  useMemo,
-  useCallback,
-} from 'react';
+import { FC, ReactNode, MouseEventHandler, useMemo, useCallback } from 'react';
 
 import classNames from 'classnames';
 import { Link, useLocation } from 'react-router-dom';
@@ -25,7 +20,7 @@ type MenuItemProps = {
   dataActionId?: string;
 };
 
-export const MenuItem: React.FC<MenuItemProps> = ({
+export const MenuItem: FC<MenuItemProps> = ({
   className,
   icon,
   text,

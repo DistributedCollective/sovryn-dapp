@@ -1,6 +1,6 @@
 import { Story } from '@storybook/react';
 
-import React, { ComponentProps, useCallback, useState } from 'react';
+import { FC, ComponentProps, useCallback, useState } from 'react';
 
 import { Button } from '../../1_atoms';
 import { Dialog } from './Dialog';
@@ -30,7 +30,7 @@ const InteractiveTemplate: Story<ComponentProps<typeof Dialog>> = args => {
   );
 };
 
-const ChildDialog: React.FC = () => {
+const ChildDialog: FC = () => {
   const [open, setOpen] = useState(false);
   const toggleOpen = useCallback(() => setOpen(open => !open), []);
 

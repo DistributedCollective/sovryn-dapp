@@ -1,6 +1,6 @@
 import { Story, Meta } from '@storybook/react';
 
-import React, { ComponentProps } from 'react';
+import { FC, ComponentProps } from 'react';
 
 import { Button } from './Button';
 import {
@@ -107,7 +107,7 @@ type AllVariationsProps = {
   hrefExternal: boolean;
 };
 
-export const AllVariations: React.FC<AllVariationsProps> = props => (
+export const AllVariations: FC<AllVariationsProps> = props => (
   <>
     <Variations {...props} color={ButtonColor.primary} />
     <Variations {...props} color={ButtonColor.secondary} />

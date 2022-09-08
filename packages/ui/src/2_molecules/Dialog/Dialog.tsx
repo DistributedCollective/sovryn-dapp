@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, MouseEvent } from 'react';
+import { ReactNode, useCallback, useEffect, useMemo, MouseEvent } from 'react';
 
 import classNames from 'classnames';
 
@@ -12,7 +12,7 @@ import {
 
 type DialogProps = {
   isOpen: boolean;
-  children: React.ReactNode;
+  children: ReactNode;
   className?: string;
   width?: DialogSize;
   dataActionId?: string;

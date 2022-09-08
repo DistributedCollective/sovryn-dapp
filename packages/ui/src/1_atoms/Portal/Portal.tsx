@@ -1,4 +1,4 @@
-import React, { ReactNode, useMemo, useEffect } from 'react';
+import { ReactNode, FC, useMemo, useEffect } from 'react';
 
 import ReactDOM from 'react-dom';
 
@@ -10,7 +10,7 @@ type PortalProps = {
   children: ReactNode;
 };
 
-export const Portal: React.FC<PortalProps> = ({
+export const Portal: FC<PortalProps> = ({
   zIndex,
   className,
   target = '#overlay',

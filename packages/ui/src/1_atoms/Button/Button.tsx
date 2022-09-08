@@ -1,4 +1,4 @@
-import React, { MouseEventHandler, useMemo } from 'react';
+import { MouseEventHandler, useMemo, ReactNode } from 'react';
 
 import classNames from 'classnames';
 import { Link } from 'react-router-dom';
@@ -12,7 +12,7 @@ import {
 } from './Button.types';
 
 export interface IButtonProps {
-  text: React.ReactNode;
+  text: ReactNode;
   href?: string;
   hrefExternal?: boolean;
   onClick?: MouseEventHandler;

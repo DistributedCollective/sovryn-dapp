@@ -1,4 +1,4 @@
-import React, {
+import {
   useState,
   HTMLProps,
   useCallback,
@@ -6,6 +6,7 @@ import React, {
   ChangeEvent,
   ChangeEventHandler,
   useMemo,
+  forwardRef,
 } from 'react';
 
 import debounceCallback from 'lodash.debounce';
@@ -18,7 +19,7 @@ export type InputBaseProps = Omit<HTMLProps<HTMLInputElement>, 'ref'> & {
   onChange?: ChangeEventHandler<HTMLInputElement>;
 };
 
-export const InputBase = React.forwardRef<HTMLInputElement, InputBaseProps>(
+export const InputBase = forwardRef<HTMLInputElement, InputBaseProps>(
   (
     { value, debounce = 500, dataActionId, onChange, onChangeText, ...props },
     ref,

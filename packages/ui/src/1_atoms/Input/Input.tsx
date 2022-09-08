@@ -1,9 +1,4 @@
-import React, {
-  useCallback,
-  useImperativeHandle,
-  useMemo,
-  useRef,
-} from 'react';
+import React, { useImperativeHandle, useMemo, useRef } from 'react';
 
 import classNames from 'classnames';
 
@@ -28,31 +23,11 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
 
     useImperativeHandle(ref, () => inputRef.current);
 
-    const onStepUp = useCallback(
-      event => {
-        inputRef.current?.stepUp();
-        rest.onChangeText?.(inputRef.current?.value || '');
-        rest.onChange?.(event);
-      },
-      [rest],
-    );
-
-    const onStepDown = useCallback(
-      event => {
-        inputRef.current?.stepDown();
-        rest.onChangeText?.(inputRef.current?.value || '');
-        rest.onChange?.(event);
-      },
-      [rest],
-    );
-
     const wrapperClasses = useMemo(() => {
       return {
-        'border-sov-white': rest.readOnly,
-        'border-warning bg-warning': typeof invalid !== 'undefined' && invalid,
-        'border-success bg-success': typeof invalid !== 'undefined' && !invalid,
+        'border-error-light': typeof invalid !== 'undefined' && invalid,
       };
-    }, [invalid, rest.readOnly]);
+    }, [invalid]);
 
     return (
       <div className={classNames(styles.wrapper, wrapperClasses, className)}>
@@ -61,29 +36,13 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
             ref={inputRef}
             className={classNames(
               styles.input,
-              { 'rounded-lg': !unit, 'rounded-l-lg': !!unit },
+              // { 'rounded-lg': !unit, 'rounded-l-lg': !!unit },
               classNameInput,
             )}
             type={type}
             {...rest}
             dataActionId={dataActionId}
           />
-          {type === 'number' && rest.step ? (
-            <>
-              <button
-                className={classNames(styles.stepButton, styles.up)}
-                onClick={onStepUp}
-              >
-                <span />
-              </button>
-              <button
-                className={classNames(styles.stepButton, styles.down)}
-                onClick={onStepDown}
-              >
-                <span />
-              </button>
-            </>
-          ) : null}
         </div>
         {unit && (
           <div

@@ -1,25 +1,28 @@
 .wrapper {
-  @apply w-full rounded max-w-xs border flex flex-row justify-between items-center;
+  @apply w-full rounded max-w-xs border flex flex-row justify-between items-center font-roboto;
 }
 
 .input {
-  @apply w-full h-10 py-2 px-3 leading-none text-base font-semibold text-gray-1 bg-sov-white duration-300 hover:bg-gray-10;
+  @apply w-full rounded h-10 py-2 px-3 leading-tight text-xs font-medium text-gray-10 bg-gray-70-ol hover:bg-gray-60;
 }
 .input::placeholder {
-  @apply text-gray-8;
+  @apply text-gray-30;
 }
 
-.input[value='']:not(:focus),
-.input:not([value]):not(:focus) {
-  @apply bg-gray-9;
+.input:focus {
+  @apply outline outline-1 outline-gray-50 bg-gray-60;
 }
 
 .input:disabled {
-  @apply cursor-not-allowed bg-gray-8 text-gray-6;
+  @apply cursor-not-allowed bg-gray-70-ol text-gray-10/50;
+
+  &::placeholder {
+    @apply text-gray-30/50;
+  }
 }
 
 .input:read-only:not(:disabled) {
-  @apply bg-transparent text-sov-white;
+  @apply bg-gray-70/50 border-gray-50 text-gray-30;
 }
 
 .input[type='number'] {

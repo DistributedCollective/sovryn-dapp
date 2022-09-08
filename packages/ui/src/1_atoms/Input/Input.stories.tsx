@@ -87,11 +87,6 @@ export const AllVariations: React.FC<InputProps> = props => (
       value: 'Hello World',
       invalid: true,
     })}
-    {renderInput('Success text', {
-      ...props,
-      value: 'Hello World',
-      invalid: false,
-    })}
     {renderInput('Numeric empty', {
       ...props,
       type: 'number',
@@ -102,23 +97,10 @@ export const AllVariations: React.FC<InputProps> = props => (
       value: '100.5',
       type: 'number',
     })}
-    {renderInput('Numeric & Stepper', {
-      ...props,
-      value: '100.5',
-      type: 'number',
-      step: 1,
-    })}
     {renderInput('Numeric & Unit', {
       ...props,
       value: '100.5',
       type: 'number',
-      unit: 'RBTC',
-    })}
-    {renderInput('Numeric & Stepper + Unit', {
-      ...props,
-      value: '100.5',
-      type: 'number',
-      step: 0.1,
       unit: 'RBTC',
     })}
     {renderInput('Numeric read-only', {
@@ -139,12 +121,6 @@ export const AllVariations: React.FC<InputProps> = props => (
       value: '100.5',
       type: 'number',
       invalid: true,
-    })}
-    {renderInput('Numeric success', {
-      ...props,
-      value: '100.5',
-      type: 'number',
-      invalid: false,
     })}
   </div>
 );

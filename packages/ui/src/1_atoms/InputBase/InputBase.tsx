@@ -20,6 +20,7 @@ export type InputBaseProps = Omit<HTMLProps<HTMLInputElement>, 'ref'> & {
   onChange?: ChangeEventHandler<HTMLInputElement>;
 };
 
+// Important: Do not export out of UI package, should be only used by other components!
 export const InputBase = React.forwardRef<HTMLInputElement, InputBaseProps>(
   (
     { value, debounce = 500, dataActionId, onChange, onChangeText, ...props },

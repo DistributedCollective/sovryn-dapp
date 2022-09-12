@@ -2,9 +2,9 @@ import React, { useImperativeHandle, useRef } from 'react';
 
 import classNames from 'classnames';
 
+import { InputBase, InputBaseProps } from '../InputBase/InputBase';
 import styles from './Input.module.css';
 import { InputSize } from './Input.types';
-import { InputBase, InputBaseProps } from './InputBase';
 
 export type InputProps = Omit<InputBaseProps, 'ref'> & {
   classNameInput?: string;

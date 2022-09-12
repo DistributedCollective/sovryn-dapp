@@ -1,66 +1,39 @@
 .wrapper {
-  @apply w-full rounded max-w-xs border flex flex-row justify-between items-center font-roboto;
+  @apply w-full max-w-xs flex flex-row justify-between items-center font-roboto;
 }
 
 .input {
-  @apply w-full rounded h-10 py-2 px-3 leading-tight text-xs font-medium text-gray-10 bg-gray-70-ol hover:bg-gray-60;
-}
-.input::placeholder {
-  @apply text-gray-30;
-}
-
-.input:focus {
-  @apply outline outline-1 outline-gray-50 bg-gray-60;
-}
-
-.input:disabled {
-  @apply cursor-not-allowed bg-gray-70-ol text-gray-10/50;
+  @apply w-full rounded h-10 px-3 leading-tight text-xs font-medium text-gray-10 bg-gray-70 hover:bg-gray-60;
 
   &::placeholder {
-    @apply text-gray-30/50;
+    @apply text-gray-30;
+  }
+
+  &:focus {
+    @apply outline outline-1 outline-gray-50 bg-gray-60;
+  }
+
+  &:disabled {
+    @apply cursor-not-allowed bg-gray-70-ol text-gray-10/50;
+
+    &::placeholder {
+      @apply text-gray-30/50;
+    }
+  }
+
+  &:read-only:not(:disabled) {
+    @apply bg-gray-70/50 outline outline-1 outline-gray-50 text-gray-30;
+  }
+
+  &[type='number'] {
+    &::-webkit-inner-spin-button,
+    &::-webkit-outer-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
   }
 }
 
-.input:read-only:not(:disabled) {
-  @apply bg-gray-70/50 border-gray-50 text-gray-30;
-}
-
-.input[type='number'] {
-  appearance: textfield;
-}
-.input[type='number'][step] {
-  @apply pr-7;
-}
-.input[type='number']::-webkit-inner-spin-button,
-.input[type='number']::-webkit-outer-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
-}
-
-.stepButton {
-  @apply absolute right-1 flex items-center justify-center h-4 w-6 
-    transition-opacity duration-300 hover:opacity-50;
-
-  padding: 3px;
-}
-.stepButton > span {
-  @apply w-0 h-0;
-}
-
-.stepButton.up {
-  @apply top-0 items-end;
-}
-.stepButton.up > span {
-  border-left: 5px solid transparent;
-  border-right: 5px solid transparent;
-  border-bottom: 5px solid theme('colors.black');
-}
-
-.stepButton.down {
-  @apply bottom-0 items-start;
-}
-.stepButton.down > span {
-  border-left: 5px solid transparent;
-  border-right: 5px solid transparent;
-  border-top: 5px solid theme('colors.black');
+.invalid {
+  @apply outline outline-1 outline-error-light bg-gray-60;
 }

@@ -66,21 +66,10 @@ export const AllVariations: React.FC<InputProps> = props => (
       value: 'Hello World',
       disabled: true,
     })}
-    {renderInput('Text & Unit', {
-      ...props,
-      value: 'Hello World',
-      unit: 'RBTC',
-    })}
     {renderInput('Read-only text', {
       ...props,
       value: 'Hello World',
       readOnly: true,
-    })}
-    {renderInput('Read-only text & Unit', {
-      ...props,
-      value: 'Hello World',
-      readOnly: true,
-      unit: 'RBTC',
     })}
     {renderInput('Invalid text', {
       ...props,
@@ -97,24 +86,11 @@ export const AllVariations: React.FC<InputProps> = props => (
       value: '100.5',
       type: 'number',
     })}
-    {renderInput('Numeric & Unit', {
-      ...props,
-      value: '100.5',
-      type: 'number',
-      unit: 'RBTC',
-    })}
     {renderInput('Numeric read-only', {
       ...props,
       value: '100.5',
       type: 'number',
       readOnly: true,
-    })}
-    {renderInput('Numeric read-only & Unit', {
-      ...props,
-      value: '100.5',
-      type: 'number',
-      readOnly: true,
-      unit: 'RBTC',
     })}
     {renderInput('Numeric invalid', {
       ...props,

@@ -31,7 +31,7 @@ export const InputBase = React.forwardRef<HTMLInputElement, InputBaseProps>(
       () =>
         debounceCallback((event: ChangeEvent<HTMLInputElement>) => {
           // some inputs may depend on currentTarget, but it may be nullified when debouncing completes
-          // assigning event.target for backwards compability.
+          // assigning event.target for backwards compatibility.
           if (event.currentTarget === null) {
             event.currentTarget = event.target;
           }

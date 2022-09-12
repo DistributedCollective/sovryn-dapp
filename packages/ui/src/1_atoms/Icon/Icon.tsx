@@ -76,6 +76,7 @@ export const Icon: React.FC<IconProps> = ({
         width={iconSize}
         fill="currentColor"
         className={classNames(className, inlineBlock)}
+        data-icon={icon}
       >
         {paths}
       </svg>

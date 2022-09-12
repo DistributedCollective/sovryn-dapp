@@ -3,10 +3,22 @@ import { Story } from '@storybook/react';
 import React, { ComponentProps, useState } from 'react';
 
 import { Input, InputProps } from './Input';
+import { InputSize } from './Input.types';
 
 export default {
   title: 'Atoms/Input',
   component: Input,
+  args: { size: InputSize.large },
+  argTypes: {
+    size: {
+      options: ['Small', 'Large'],
+      control: { type: 'radio' },
+      mapping: {
+        Small: InputSize.small,
+        Large: InputSize.large,
+      },
+    },
+  },
 };
 
 const Template: Story<ComponentProps<typeof Input>> = args => (

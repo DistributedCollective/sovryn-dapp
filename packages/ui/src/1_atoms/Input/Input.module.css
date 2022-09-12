@@ -3,7 +3,7 @@
 }
 
 .input {
-  @apply w-full rounded h-10 px-3 leading-tight text-xs font-medium text-gray-10 bg-gray-70 hover:bg-gray-60;
+  @apply w-full rounded px-3 leading-tight text-xs font-medium text-gray-10 bg-gray-70 hover:bg-gray-60;
 
   &::placeholder {
     @apply text-gray-30;

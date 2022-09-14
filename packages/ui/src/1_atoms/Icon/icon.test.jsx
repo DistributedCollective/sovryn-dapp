@@ -16,20 +16,17 @@ const customIcon = (
 );
 
 describe('Test for all icon types', () => {
-  //render icon from the Fontawesome library
-  test('render fa icon', () => {
+  test('renders an fa icon', () => {
     render(<Icon icon={faBacterium} size="2x" />);
     expect(screen.findAllByRole('svg[data-icon="bacterium"]')).toBeDefined();
   });
 
-  //render custom icon
-  test('render custom icon', () => {
+  test('renders a custom icon', () => {
     render(<Icon icon={customIcon} />);
     expect(screen.findAllByRole('svg[data-icon="customIcon"]')).toBeDefined();
   });
 
-  //render icon from our Sovryn Library
-  test('render icon from Sovryn Library', () => {
+  test('renders an icon from Sovryn Library', () => {
     render(<Icon icon={WARNING} />);
     expect(screen.findAllByRole('svg[data-icon="warning"]')).toBeDefined();
   });

@@ -70,7 +70,7 @@ config.updateChain([
 ]);
 
 // Get list of registered chains
-const supportedChains = config.chains;
+const supportedChains = config.chains();
 
 // Subscribe to registered chain changes
 const sub = config.observe.subscribe(items => console.log(items));

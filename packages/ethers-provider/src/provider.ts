@@ -20,8 +20,12 @@ export function getProvider(
     chain = state.get().chains[0] as Chain;
   }
 
-  if (typeof chainOrChainId !== 'object') {
+  if (typeof chainOrChainId === 'string') {
     chain = state.get().chains.find(c => c.id === chainOrChainId) as Chain;
+  }
+
+  if (typeof chainOrChainId === 'object') {
+    chain = chainOrChainId as Chain;
   }
 
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment

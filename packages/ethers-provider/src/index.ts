@@ -10,7 +10,7 @@ const API = {
   getProvider,
   addChains,
   updateChain,
-  chains: state.get().chains,
+  chains: () => state.get().chains,
   observe: state.select('chains'),
 };
 

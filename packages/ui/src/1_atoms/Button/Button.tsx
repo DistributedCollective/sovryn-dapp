@@ -1,4 +1,4 @@
-import { MouseEventHandler, useMemo, ReactNode } from 'react';
+import { MouseEventHandler, useMemo, ReactNode, FC } from 'react';
 
 import classNames from 'classnames';
 import { Link } from 'react-router-dom';
@@ -26,7 +26,7 @@ export interface IButtonProps {
   dataActionId?: string;
 }
 
-export const Button: React.FC<IButtonProps> = ({
+export const Button: FC<IButtonProps> = ({
   text,
   href,
   hrefExternal,

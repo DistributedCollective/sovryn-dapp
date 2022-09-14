@@ -1,0 +1,9 @@
+{
+  "extends": "@sovryn/tsconfig/base.json",
+  "include": ["./src"],
+  "exclude": ["dist", "node_modules"],
+  "compilerOptions": {
+    "outDir": "./dist",
+    "rootDir": "./src",
+  }
+}

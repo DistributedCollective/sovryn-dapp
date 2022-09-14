@@ -5,6 +5,7 @@ import { Lead } from '@sovryn/ui';
 import { useTheme } from '../../../hooks/useTheme';
 import { AppTheme } from '../../../types/tailwind';
 import styles from './App.module.css';
+import { EthersProviderTest } from '../../3_organisms/EthersProviderTest';
 
 function App() {
   const { handleThemeChange } = useTheme();
@@ -54,6 +55,9 @@ function App() {
           molestiae ipsa omnis dolorum aliquam.
         </p>
       </header>
+      <main>
+        <EthersProviderTest />
+      </main>
     </div>
   );
 }

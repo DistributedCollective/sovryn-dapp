@@ -1,11 +1,11 @@
 import { dispatch } from '.';
-import { ADD_CHAINS, RESET_STORE, UPDATE_CHAIN } from './constants';
 import type {
   AddChainsAction,
   Chain,
   ResetStoreAction,
   UpdateChainAction,
 } from '../types';
+import { ADD_CHAINS, RESET_STORE, UPDATE_CHAIN } from './constants';
 
 export const addChains = (chains: Chain[]) => {
   const action = {

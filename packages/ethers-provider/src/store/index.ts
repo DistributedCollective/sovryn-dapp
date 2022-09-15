@@ -6,6 +6,7 @@ import {
   Observable,
   Subject,
 } from 'rxjs';
+
 import { APP_INITIAL_STATE } from '../constants';
 import { Action, AppState, Chain } from '../types';
 import { ADD_CHAINS, RESET_STORE, UPDATE_CHAIN } from './constants';

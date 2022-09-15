@@ -1,4 +1,5 @@
 import { providers } from 'ethers';
+
 import { state } from './store';
 import type { Chain, ChainId } from './types';
 

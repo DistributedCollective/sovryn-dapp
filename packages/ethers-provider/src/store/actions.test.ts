@@ -1,22 +1,11 @@
-import { of, startWith, take } from 'rxjs';
-import { ChainIds } from '../src';
-import { state } from '../src/store';
-import { addChains, resetStore, updateChain } from '../src/store/actions';
+import { take } from 'rxjs';
 
-const chains = [
-  {
-    id: ChainIds.RSK_MAINNET,
-    rpcUrl: 'https://public-node.rsk.co',
-    label: 'RSK Mainnet',
-  },
-  {
-    id: ChainIds.RSK_TESTNET,
-    rpcUrl: 'https://public-node.testnet.rsk.co',
-    label: 'RSK Testnet',
-  },
-];
+import { state, dispatch } from '.';
+import { chains } from '../__utils__/test-utils';
+import { ChainIds } from '../chains';
+import { addChains, resetStore, updateChain } from './actions';
 
-describe('actions', () => {
+describe('actions and state', () => {
   beforeEach(() => {
     resetStore();
   });
@@ -52,19 +41,41 @@ describe('actions', () => {
   });
 
   it('should be able to subscribe to observable with selector', done => {
+    state
+      .select()
+      .pipe(take(1))
+      .subscribe(value => {
+        expect(value).toEqual({ chains: chains });
+        done();
+      });
     addChains(chains);
+  });
+
+  it('should be able to subscribe to observable with named selector', done => {
     state
       .select('chains')
-      .pipe(startWith(state.get().chains), take(1))
+      .pipe(take(1))
       .subscribe(value => {
         expect(value).toEqual(chains);
         done();
       });
+    addChains(chains);
   });
 
   it('should throw error when subscribing to non existing key', () => {
+    // @ts-expect-error - key does not exist and we know it.
     expect(() => state.select('nonExistingKey')).toThrowError(
       'key: nonExistingKey does not exist on this store',
     );
+  });
+
+  it('should throw error when dispatching non existing action', () => {
+    expect(() =>
+      dispatch({
+        // @ts-expect-error - key does not exist and we know it.
+        type: 'nonExistingType',
+        payload: {},
+      }),
+    ).toThrowError('Unknown type: nonExistingType in appStore reducer');
   });
 });

@@ -21,12 +21,13 @@ const chain: Chain = {
   id: ChainIds.RSK_MAINNET,
   label: 'RSK Mainnet',
   rpcUrl: 'https://public-node.rsk.co',
-} 
+};
 
 const balance = await getProvider(chain).getBalance('0x0000000...');
 ```
 
 ### 2. Get Provider using global config
+
 ```typescript
 import init, { getProvider, Chain, ChainIds } from '@sovryn/ethers-provider';
 
@@ -72,7 +73,12 @@ config.updateChain([
 // Get list of registered chains
 const supportedChains = config.chains();
 
-// Subscribe to registered chain changes
+// Subscribe to registered chain changes (only new changes)
 const sub = config.observe.subscribe(items => console.log(items));
+sub.unsubscribe();
+
+// Subscribe to registered chain changes (with seed)
+import { startWith } from 'rxjs';
+const sub = config.observe.pipe(startWith(config.chains())).subscribe(items => console.log(items));
 sub.unsubscribe();
 ```

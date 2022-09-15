@@ -1,4 +1,5 @@
 import type { ConnectionInfo } from 'ethers/lib/utils';
+
 import type { ChainIds } from './chains';
 
 export type ChainId = ChainIds | string;

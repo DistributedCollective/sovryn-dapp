@@ -10,8 +10,8 @@ module.exports = {
     '<rootDir>/src/**/__tests__/**/*.{js,jsx,ts,tsx}',
     '<rootDir>/src/**/*.{spec,test}.{js,jsx,ts,tsx}',
   ],
-  resetMocks: true,
   moduleNameMapper: {
-    '\\.(css)$': '<rootDir>/styleMock.js',
+    '\\.(css|scss)$': '<rootDir>/__mocks__/styleMock.js',
   },
+  resetMocks: true,
 };

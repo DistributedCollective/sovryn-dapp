@@ -88,7 +88,7 @@ export const Icon: React.FC<IconProps> = ({
         {paths}
       </svg>
     );
-  }, [icon, inline, size, inlineBlock, className]);
+  }, [icon, inline, size, inlineBlock, className, dataActionId]);
 
   return (
     <>

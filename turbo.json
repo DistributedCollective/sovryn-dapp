@@ -12,10 +12,12 @@
       "cache": false
     },
     "test": {
-      "outputs": []
+      "dependsOn": ["^build"],
+      "outputs": ["dist/**"]
     },
     "coverage": {
-      "outputs": []
+      "dependsOn": ["^build"],
+      "outputs": ["dist/**", "coverage/**"]
     },
     "storybook": {
       "outputs": []

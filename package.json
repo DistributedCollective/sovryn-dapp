@@ -11,8 +11,8 @@
     "dev": "turbo run dev --parallel",
     "lint": "turbo run lint",
     "format": "prettier --write \"**/*.{ts,tsx,md,js}\"",
-    "test": "turbo run test --parallel",
-    "coverage": "turbo run coverage --parallel",
+    "test": "turbo run test",
+    "coverage": "turbo run coverage",
     "storybook": "turbo run storybook"
   },
   "devDependencies": {

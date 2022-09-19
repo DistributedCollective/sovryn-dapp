@@ -12,8 +12,9 @@ describe('#getProvider', () => {
   });
 
   it('should return null when chains not registered and using provider by chain id', () => {
-    const provider = getProvider(ChainIds.RSK_MAINNET);
-    expect(provider).toBeNull();
+    expect(() => getProvider(ChainIds.RSK_MAINNET)).toThrowError(
+      'No chain found',
+    );
   });
 
   it('should return ethers provider', () => {
@@ -36,8 +37,9 @@ describe('#getProvider', () => {
   it('should return null after reseting store', () => {
     init(chains);
     resetStore();
-    const provider = getProvider(ChainIds.RSK_MAINNET);
-    expect(provider).toBeNull();
+    expect(() => getProvider(ChainIds.RSK_MAINNET)).toThrowError(
+      'No chain found',
+    );
   });
 
   it('should return network chain using rpc url', async () => {

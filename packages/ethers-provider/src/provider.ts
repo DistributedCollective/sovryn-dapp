@@ -30,7 +30,7 @@ export function getProvider(
   }
 
   if (!chain) {
-    return null as unknown as providers.StaticJsonRpcProvider;
+    throw new Error('No chain found');
   }
 
   if (!ethersProviders[chain.rpcUrl]) {

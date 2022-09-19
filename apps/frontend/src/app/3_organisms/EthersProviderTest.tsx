@@ -1,26 +1,6 @@
+import { Chain, getProvider } from '@sovryn/ethers-provider';
 import React, { useEffect, useState } from 'react';
-
-import init, { Chain, ChainIds, getProvider } from '@sovryn/ethers-provider';
-
-const chains: Chain[] = [
-  {
-    id: ChainIds.MAINNET,
-    label: 'Ethereum Mainnet',
-    rpcUrl: 'https://cloudflare-eth.com',
-  },
-  {
-    id: ChainIds.RSK_MAINNET,
-    label: 'RSK Mainnet',
-    rpcUrl: 'https://public-node.rsk.co',
-  },
-  {
-    id: ChainIds.RSK_TESTNET,
-    label: 'RSK Testnet',
-    rpcUrl: 'https://public-node.testnet.rsk.co',
-  },
-];
-
-init(chains);
+import { network } from '../../utils/network';
 
 const ProviderItem = ({ chain }: { chain: Chain }) => {
   const [blockNumber, setBlockNumber] = useState<number>(0);
@@ -57,7 +37,7 @@ export const EthersProviderTest = () => {
       <hr />
       <h1>Block Id by network.</h1>
       <ul>
-        {chains.map(b => (
+        {network.chains().map(b => (
           <ProviderItem key={b.id} chain={b} />
         ))}
       </ul>

@@ -11,10 +11,10 @@ import { APP_INITIAL_STATE } from '../constants';
 import { Action, AppState, Chain } from '../types';
 import { ADD_CHAINS, RESET_STORE, UPDATE_CHAIN } from './constants';
 
-const _store = new BehaviorSubject<AppState>(APP_INITIAL_STATE);
-const _stateUpdates = new Subject<AppState>();
+const store = new BehaviorSubject<AppState>(APP_INITIAL_STATE);
+const stateUpdates = new Subject<AppState>();
 
-_stateUpdates.subscribe(_store);
+stateUpdates.subscribe(store);
 
 function reducer(state: AppState, action: Action): AppState {
   const { type, payload } = action;
@@ -50,8 +50,8 @@ function reducer(state: AppState, action: Action): AppState {
 }
 
 export const dispatch = (action: Action) => {
-  const state = _store.getValue();
-  _stateUpdates.next(reducer(state, action));
+  const state = store.getValue();
+  stateUpdates.next(reducer(state, action));
 };
 
 function select(): Observable<AppState>;
@@ -59,15 +59,17 @@ function select<T extends keyof AppState>(stateKey: T): Observable<AppState[T]>;
 function select<T extends keyof AppState>(
   stateKey?: keyof AppState,
 ): Observable<AppState[T]> | Observable<AppState> {
-  if (!stateKey) return _stateUpdates.asObservable();
+  if (!stateKey) {
+    return stateUpdates.asObservable();
+  }
 
-  const validStateKeys = Object.keys(_store.getValue());
+  const validStateKeys = Object.keys(store.getValue());
 
   if (!validStateKeys.includes(String(stateKey))) {
     throw new Error(`key: ${stateKey} does not exist on this store`);
   }
 
-  return _stateUpdates.asObservable().pipe(
+  return stateUpdates.asObservable().pipe(
     distinctUntilKeyChanged(stateKey),
     map(x => x?.[stateKey]),
     filter(item => item != null),
@@ -75,7 +77,7 @@ function select<T extends keyof AppState>(
 }
 
 function get(): AppState {
-  return _store.getValue();
+  return store.getValue();
 }
 
 export const state = {

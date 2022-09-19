@@ -15,7 +15,7 @@ export function getProvider(
 export function getProvider(
   chainOrChainId?: ChainId | Chain,
 ): providers.StaticJsonRpcProvider {
-  let chain: Chain;
+  let chain: Chain | undefined;
 
   if (chainOrChainId === undefined) {
     chain = state.get().chains[0] as Chain;
@@ -29,9 +29,9 @@ export function getProvider(
     chain = chainOrChainId as Chain;
   }
 
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
-  if (!chain) return null;
+  if (!chain) {
+    return null as unknown as providers.StaticJsonRpcProvider;
+  }
 
   if (!ethersProviders[chain.rpcUrl]) {
     ethersProviders[chain.rpcUrl] = new providers.StaticJsonRpcProvider(

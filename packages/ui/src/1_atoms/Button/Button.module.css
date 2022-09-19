@@ -17,31 +17,31 @@
   @apply opacity-25 cursor-not-allowed;
 }
 
-/* // SIZES ================================================================== */
+/* SIZES ================================================================== */
 
 .button.sm {
-  @apply px-4 py-1 
+  @apply px-4 py-1
     text-sm leading-none font-light;
   min-height: 30px;
 }
 
 .button.md {
-  @apply px-4 py-2 min-h-10 
+  @apply px-4 py-2 min-h-10
     text-base leading-none font-normal;
 }
 
 .button.lg {
-  @apply px-6 py-3 
+  @apply px-6 py-3
     text-lg leading-none;
   min-height: 50px;
 }
 .button.xl {
-  @apply px-8 py-4 
+  @apply px-8 py-4
     text-xl leading-none;
   min-height: 60px;
 }
 
-/* // COLORS ================================================================== */
+/* COLORS ================================================================== */
 
 .button.primary {
   @apply text-primary bg-primary border-primary;
@@ -71,7 +71,7 @@
   @apply text-primary bg-gray-4 border-primary;
 }
 
-/* // STYLES ================================================================== */
+/* STYLES ================================================================== */
 
 .button.normal {
   @apply rounded-lg;

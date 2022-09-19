@@ -7,7 +7,7 @@ import * as IconNames from './iconNames';
 export type IconName = typeof IconNames[keyof typeof IconNames];
 
 export enum ViewBoxSize {
-  DEFAULT = '0 0 32 32',
+  DEFAULT = '0 0 24 24',
 }
 
 export type IconType = IconName | ReactNode | IconProp;

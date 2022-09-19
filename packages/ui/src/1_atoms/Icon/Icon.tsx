@@ -28,6 +28,10 @@ type IconProps = {
    * Applied classNames to the outer element.
    */
   className?: string;
+  /**
+   * Applied data-action-id value to the element, mainly needed for testing or for GA
+   */
+  dataActionId?: string;
 };
 
 export const Icon: React.FC<IconProps> = ({
@@ -35,6 +39,7 @@ export const Icon: React.FC<IconProps> = ({
   size = STANDARD,
   inline,
   className,
+  dataActionId,
 }) => {
   const isFaIcon = useMemo(() => !!icon && !!icon['prefix'], [icon]);
 
@@ -59,6 +64,7 @@ export const Icon: React.FC<IconProps> = ({
         <div
           className={classNames(className, styles.customIcon, inlineBlock)}
           style={{ width: iconSize, height: iconSize }}
+          data-action-id={dataActionId}
         >
           {icon}
         </div>
@@ -76,11 +82,13 @@ export const Icon: React.FC<IconProps> = ({
         width={iconSize}
         fill="currentColor"
         className={classNames(className, inlineBlock)}
+        data-icon={icon}
+        data-action-id={dataActionId}
       >
         {paths}
       </svg>
     );
-  }, [icon, inline, size, inlineBlock, className]);
+  }, [icon, inline, size, inlineBlock, className, dataActionId]);
 
   return (
     <>
@@ -89,6 +97,7 @@ export const Icon: React.FC<IconProps> = ({
           className={classNames(className, inlineBlock)}
           size={iconFaSize}
           icon={icon as IconProp}
+          data-action-id={dataActionId}
         />
       ) : (
         renderIcon

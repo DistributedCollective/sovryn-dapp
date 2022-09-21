@@ -5,8 +5,8 @@
   "types": "./dist/index.d.ts",
   "license": "MIT",
   "author": {
-    "name": "Rytis Grincevicius",
-    "email": "rytis.grincevicius@gmail.com"
+    "name": "Victor Creed",
+    "email": "victor@sovryn.app"
   },
   "scripts": {
     "dev": "tsup --watch",

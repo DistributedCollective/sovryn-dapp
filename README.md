@@ -8,6 +8,7 @@ This is a turborepo for sovryn dapp v2.
 
 - `frontend`: a react app
 - `@sovryn/ui`: a stub React component library shared by our apps
+- `@sovryn/ethers-provider`: helper functions for accessing ethers static provider
 - `@sovryn/eslint-config-custom`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
 - `@sovryn/tailwindcss-config`: `tailwindcss` configuration
 - `@sovryn/tsconfig`: `tsconfig.json`s used throughout the monorepo

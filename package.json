@@ -12,6 +12,7 @@
     "lint": "turbo run lint",
     "format": "prettier --write \"**/*.{ts,tsx,md,js}\"",
     "test": "turbo run test",
+    "coverage": "turbo run coverage",
     "storybook": "turbo run storybook"
   },
   "devDependencies": {

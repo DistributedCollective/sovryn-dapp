@@ -2,6 +2,7 @@ import React from 'react';
 
 import { Lead } from '@sovryn/ui';
 
+import { EthersProviderTest } from '../../3_organisms/EthersProviderTest';
 import { useTheme } from '../../../hooks/useTheme';
 import { AppTheme } from '../../../types/tailwind';
 import styles from './App.module.css';
@@ -54,6 +55,9 @@ function App() {
           molestiae ipsa omnis dolorum aliquam.
         </p>
       </header>
+      <main>
+        <EthersProviderTest />
+      </main>
     </div>
   );
 }

@@ -1,0 +1,42 @@
+.paragraph {
+  @apply text-white m-0;
+}
+
+/* TYPES ================================================================== */
+.paragraph.regular {
+  @apply font-roboto font-medium;
+}
+
+.paragraph.light {
+  @apply font-roboto font-normal;
+}
+
+.paragraph.bold {
+  @apply font-roboto font-semibold;
+}
+
+/* SIZES ================================================================== */
+.paragraph.base {
+  @apply text-base;
+}
+
+.paragraph.small {
+  @apply text-xs;
+}
+
+.paragraph.large {
+  @apply text-xl;
+}
+
+/* STYLES ================================================================== */
+.paragraph.normal {
+  @apply leading-4;
+}
+
+.paragraph.short {
+  line-height: 12px;
+}
+
+.paragraph.tall {
+  @apply leading-5;
+}

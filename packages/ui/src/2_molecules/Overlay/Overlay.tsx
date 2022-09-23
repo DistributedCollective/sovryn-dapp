@@ -41,7 +41,7 @@ export const Overlay: React.FC<OverlayProps> = ({
   isOpen = true,
   align = Align.center,
   alignVertical = AlignVertical.center,
-  background = OverlayBackground.dark75,
+  background = OverlayBackground.default,
   onBlur,
   children,
   portalClassName,

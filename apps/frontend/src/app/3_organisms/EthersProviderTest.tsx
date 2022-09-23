@@ -1,5 +1,7 @@
-import { Chain, getProvider } from '@sovryn/ethers-provider';
 import React, { useEffect, useState } from 'react';
+
+import { Chain, getProvider } from '@sovryn/ethers-provider';
+
 import { network } from '../../utils/network';
 
 const ProviderItem = ({ chain }: { chain: Chain }) => {

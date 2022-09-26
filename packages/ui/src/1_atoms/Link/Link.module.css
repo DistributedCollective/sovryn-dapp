@@ -1,0 +1,23 @@
+@import '../../../styles/index.css';
+
+.link {
+  @apply underline text-xs font-medium;
+}
+
+/* STYLES ================================================================== */
+
+.link.primary {
+  @apply text-primary-20;
+}
+
+.link.primary:hover {
+  @apply text-primary-10;
+}
+
+.link.secondary {
+  @apply text-secondary-20;
+}
+
+.link.secondary:hover {
+  @apply text-secondary-30;
+}

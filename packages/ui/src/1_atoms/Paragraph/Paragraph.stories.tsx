@@ -9,7 +9,6 @@ import {
   ParagraphType,
 } from './Paragraph.types';
 
-//👇 This default export determines where your story goes in the story list
 export default {
   title: 'Atoms/Paragraph',
   component: Paragraph,

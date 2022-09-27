@@ -28,17 +28,13 @@ export const Paragraph: React.FC<ParagraphProps> = ({
     () =>
       classNames(
         styles.paragraph,
-        type && styles[type],
-        size && styles[size],
-        style && styles[style],
+        styles[type],
+        styles[size],
+        styles[style],
         className,
       ),
     [size, style, type, className],
   );
 
-  return (
-    <p className={classNames(classNameComplete)}>
-      {children}
-    </p>
-  );
+  return <p className={classNames(classNameComplete)}>{children}</p>;
 };

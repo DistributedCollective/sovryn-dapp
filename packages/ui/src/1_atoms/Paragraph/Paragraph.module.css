@@ -1,42 +1,42 @@
 .paragraph {
   @apply text-white m-0;
-}
 
-/* TYPES ================================================================== */
-.paragraph.regular {
-  @apply font-roboto font-medium;
-}
+  /* TYPES ================================================================== */
+  &.regular {
+    @apply font-roboto font-medium;
+  }
 
-.paragraph.light {
-  @apply font-roboto font-normal;
-}
+  &.light {
+    @apply font-roboto font-normal;
+  }
 
-.paragraph.bold {
-  @apply font-roboto font-semibold;
-}
+  &.bold {
+    @apply font-roboto font-semibold;
+  }
 
-/* SIZES ================================================================== */
-.paragraph.base {
-  @apply text-base;
-}
+  /* SIZES ================================================================== */
+  &.base {
+    @apply text-base;
+  }
 
-.paragraph.small {
-  @apply text-xs;
-}
+  &.small {
+    @apply text-xs;
+  }
 
-.paragraph.large {
-  @apply text-xl;
-}
+  &.large {
+    @apply text-xl;
+  }
 
-/* STYLES ================================================================== */
-.paragraph.normal {
-  @apply leading-4;
-}
+  /* STYLES ================================================================== */
+  &.normal {
+    @apply leading-4;
+  }
 
-.paragraph.short {
-  line-height: 12px;
-}
+  &.short {
+    @apply leading-3;
+  }
 
-.paragraph.tall {
-  @apply leading-5;
+  &.tall {
+    @apply leading-5;
+  }
 }

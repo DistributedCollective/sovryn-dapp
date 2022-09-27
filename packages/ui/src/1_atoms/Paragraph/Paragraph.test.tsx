@@ -4,7 +4,7 @@ import React from 'react';
 
 import { Paragraph } from './Paragraph';
 
-describe('Test paragraphs', () => {
+describe('Paragraph', () => {
   test('renders a paragraph', () => {
     render(<Paragraph children="Testing paragraph" />);
     expect(screen.getByText('Testing paragraph')).toBeInTheDocument();

@@ -76,7 +76,7 @@ export const Dropdown: React.FC<DropdownProps> = ({
     return getDropdownPositionStyles(coords, mode);
   }, [coords, mode]);
 
-  const classNameComplete = useMemo(
+  const classNames = useMemo(
     () =>
       classNames(styles.button, styles[size], className, {
         [styles.isOpen]: isOpen,
@@ -103,7 +103,7 @@ export const Dropdown: React.FC<DropdownProps> = ({
   return (
     <>
       <button
-        className={classNames(classNameComplete)}
+        className={classNames(classNames)}
         data-action-id={dataActionId}
         onClick={onButtonClick}
         type="button"

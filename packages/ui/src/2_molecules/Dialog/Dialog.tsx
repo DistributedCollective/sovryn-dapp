@@ -1,6 +1,13 @@
-import React, { useCallback, useEffect, useMemo, MouseEvent } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  MouseEvent,
+  useRef,
+} from 'react';
 
 import classNames from 'classnames';
+import FocusTrap from 'focus-trap-react';
 
 import { Overlay, OverlayProps } from '../Overlay/Overlay';
 import styles from './Dialog.module.css';
@@ -18,6 +25,7 @@ type DialogProps = {
   dataActionId?: string;
   overlayProps?: Omit<Partial<OverlayProps>, 'isOpen' | 'fixed'>;
   onClose?: () => void;
+  closeOnEscape?: boolean;
 };
 
 export const Dialog: IDialogFunctionComponent<DialogProps> = ({
@@ -28,8 +36,11 @@ export const Dialog: IDialogFunctionComponent<DialogProps> = ({
   dataActionId,
   overlayProps,
   onClose,
+  closeOnEscape = true,
 }) => {
   const sizeClassNames = useMemo(() => dialogSizeMap[width], [width]);
+
+  const ref = useRef<HTMLDivElement>(null);
 
   const handleClose = useCallback(() => {
     onClose?.();
@@ -44,6 +55,29 @@ export const Dialog: IDialogFunctionComponent<DialogProps> = ({
     Dialog.index++;
   }, []);
 
+  useEffect(() => {
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        event.stopPropagation();
+        // close the dialog only if it's the topmost one
+        if (
+          ref.current === document.activeElement ||
+          ref.current?.contains(document.activeElement)
+        ) {
+          handleClose();
+        }
+      }
+    };
+
+    if (closeOnEscape) {
+      document.addEventListener('keydown', handleEscape);
+    }
+
+    return () => {
+      document.removeEventListener('keydown', handleEscape);
+    };
+  }, [handleClose, closeOnEscape]);
+
   return (
     <Overlay
       zIndex={100 + Dialog.index}
@@ -56,21 +90,22 @@ export const Dialog: IDialogFunctionComponent<DialogProps> = ({
     >
       <div className={styles.wrapper} data-action-id={dataActionId}>
         <div className={styles.container}>
-          <div
-            className={classNames(styles.dialog, sizeClassNames, className)}
-            onClick={handleChildElementClick}
+          <FocusTrap
+            active={isOpen}
+            focusTrapOptions={{
+              fallbackFocus: () => ref.current!,
+            }}
           >
-            {onClose && (
-              <button
-                className={styles.closeButton}
-                onClick={handleClose}
-                data-action-id={`close-${dataActionId || 'dialog'}`}
-              >
-                <span className="sr-only">close</span>
-              </button>
-            )}
-            {children}
-          </div>
+            <section
+              className={classNames(styles.dialog, sizeClassNames, className)}
+              role="dialog"
+              ref={ref}
+              onClick={handleChildElementClick}
+              tabIndex={-1}
+            >
+              {children}
+            </section>
+          </FocusTrap>
         </div>
       </div>
     </Overlay>

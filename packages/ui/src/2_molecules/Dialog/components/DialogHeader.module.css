@@ -1,0 +1,7 @@
+.container {
+  @apply px-10 py-3 relative bg-gray-2.3 flex flex-row justify-between items-center space-x-4;
+}
+
+.title {
+  @apply text-white font-normal text-base;
+}

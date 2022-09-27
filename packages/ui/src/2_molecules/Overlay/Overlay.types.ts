@@ -9,7 +9,7 @@ export const OverlayBackgroundClassName: {
   [key in OverlayBackground]: string;
 } = {
   [OverlayBackground.transparent]: 'bg-transparent',
-  [OverlayBackground.default]: 'bg-gray-70 bg-opacity-[0.69]',
+  [OverlayBackground.default]: 'bg-gray-70-ol',
 };
 
 export const AlignClassName: { [key in Align]: string } = {

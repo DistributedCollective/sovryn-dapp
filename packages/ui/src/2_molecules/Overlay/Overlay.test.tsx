@@ -11,9 +11,7 @@ const TestComponent = ({ callback }: TestComponentSettings) => {
   const [isOpen, setIsOpen] = useState(false);
   const closeOverlay = () => {
     setIsOpen(false);
-    if (callback) {
-      callback();
-    }
+    callback?.();
   };
   return (
     <>

@@ -3,28 +3,32 @@
 
   /* TYPES ================================================================== */
   &.regular {
-    @apply font-roboto font-medium;
-  }
-
-  &.light {
     @apply font-roboto font-normal;
   }
 
-  &.bold {
+  &.medium {
+    @apply font-roboto font-medium;
+  }
+
+  &.semibold {
     @apply font-roboto font-semibold;
   }
 
   /* SIZES ================================================================== */
-  &.base {
-    @apply text-base;
-  }
-
   &.small {
     @apply text-xs;
   }
 
+  &.base {
+    @apply text-sm;
+  }
+
   &.large {
-    @apply text-xl;
+    @apply text-base;
+  }
+
+  &.extraLarge {
+    @apply text-2xl;
   }
 
   /* STYLES ================================================================== */

@@ -4,6 +4,7 @@ export enum ParagraphType {
 }
 
 export enum ParagraphSize {
+  tiny = 'tiny',
   small = 'small',
   base = 'base',
 }

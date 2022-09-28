@@ -19,6 +19,20 @@ const Template: Story<ComponentProps<typeof Paragraph>> = () => (
     <Paragraph children="Text by default" />
     <br />
     <Paragraph
+      size={ParagraphSize.tiny}
+      style={ParagraphStyle.normal}
+      type={ParagraphType.regular}
+      children="tiny normal regular"
+    />
+    <br />
+    <Paragraph
+      size={ParagraphSize.tiny}
+      style={ParagraphStyle.normal}
+      type={ParagraphType.medium}
+      children="tiny normal medium"
+    />
+    <br />
+    <Paragraph
       size={ParagraphSize.small}
       style={ParagraphStyle.normal}
       type={ParagraphType.regular}

@@ -1,4 +1,14 @@
+const CracoEnvPlugin = require('craco-plugin-env');
+
 module.exports = {
+  plugins: [
+    {
+      plugin: CracoEnvPlugin,
+      options: {
+        variables: {},
+      },
+    },
+  ],
   style: {
     postcss: {
       loaderOptions: postcssLoaderOptions => {

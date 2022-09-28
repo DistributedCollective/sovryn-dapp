@@ -26,6 +26,7 @@ type DialogProps = {
   overlayProps?: Omit<Partial<OverlayProps>, 'isOpen' | 'fixed'>;
   onClose?: () => void;
   closeOnEscape?: boolean;
+  initialFocusRef?: React.RefObject<HTMLElement>;
 };
 
 export const Dialog: IDialogFunctionComponent<DialogProps> = ({
@@ -37,6 +38,7 @@ export const Dialog: IDialogFunctionComponent<DialogProps> = ({
   overlayProps,
   onClose,
   closeOnEscape = true,
+  initialFocusRef,
 }) => {
   const sizeClassNames = useMemo(() => dialogSizeMap[width], [width]);
 
@@ -77,6 +79,12 @@ export const Dialog: IDialogFunctionComponent<DialogProps> = ({
       document.removeEventListener('keydown', handleEscape);
     };
   }, [handleClose, closeOnEscape]);
+
+  useEffect(() => {
+    if (isOpen && initialFocusRef && initialFocusRef.current) {
+      initialFocusRef.current.focus();
+    }
+  }, [isOpen]);
 
   return (
     <Overlay

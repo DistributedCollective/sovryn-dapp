@@ -21,18 +21,18 @@ describe('Paragraph', () => {
     expect(paragraph).toBeInstanceOf(HTMLParagraphElement);
   });
 
-  it('should render a paragraph size with a className equal to the extraLarge', () => {
-    const size = ParagraphSize.extraLarge;
+  it('should render a paragraph size with a className equal to the base', () => {
+    const size = ParagraphSize.base;
     render(<Paragraph children="Paragraph size" size={size} />);
     const paragraph = screen.getByText('Paragraph size').getAttribute('class');
-    expect(paragraph).toContain('extraLarge');
+    expect(paragraph).toContain('base');
   });
 
-  it('should render a paragraph type with a className equal to the semibold', () => {
-    const type = ParagraphType.semibold;
+  it('should render a paragraph type with a className equal to the regular', () => {
+    const type = ParagraphType.regular;
     render(<Paragraph children="Paragraph type" type={type} />);
     const paragraph = screen.getByText('Paragraph type').getAttribute('class');
-    expect(paragraph).toContain('semibold');
+    expect(paragraph).toContain('regular');
   });
 
   it('should render a paragraph style with a className equal to the tall', () => {

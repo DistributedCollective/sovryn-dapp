@@ -19,8 +19,8 @@ export type ParagraphProps = {
 
 export const Paragraph: React.FC<ParagraphProps> = ({
   children,
-  type = ParagraphType.regular,
-  size = ParagraphSize.base,
+  type = ParagraphType.medium,
+  size = ParagraphSize.small,
   style = ParagraphStyle.normal,
   className,
 }) => {

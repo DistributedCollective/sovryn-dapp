@@ -16,25 +16,20 @@ export default {
 
 const Template: Story<ComponentProps<typeof Paragraph>> = () => (
   <>
+    <Paragraph children="Text by default" />
+    <br />
     <Paragraph
       size={ParagraphSize.small}
-      style={ParagraphStyle.short}
+      style={ParagraphStyle.normal}
       type={ParagraphType.regular}
-      children="small short regular"
+      children="small normal regular"
     />
     <br />
     <Paragraph
       size={ParagraphSize.small}
-      style={ParagraphStyle.short}
+      style={ParagraphStyle.normal}
       type={ParagraphType.medium}
-      children="small short medium"
-    />
-    <br />
-    <Paragraph
-      size={ParagraphSize.small}
-      style={ParagraphStyle.short}
-      type={ParagraphType.semibold}
-      children="small short semibold"
+      children="small normal medium"
     />
     <br />
     <Paragraph
@@ -53,51 +48,16 @@ const Template: Story<ComponentProps<typeof Paragraph>> = () => (
     <br />
     <Paragraph
       size={ParagraphSize.base}
-      style={ParagraphStyle.normal}
-      type={ParagraphType.semibold}
-      children="base normal semibold"
-    />
-    <br />
-    <Paragraph
-      size={ParagraphSize.large}
       style={ParagraphStyle.tall}
       type={ParagraphType.regular}
-      children="large tall regular"
+      children="base tall regular"
     />
     <br />
     <Paragraph
-      size={ParagraphSize.large}
+      size={ParagraphSize.base}
       style={ParagraphStyle.tall}
       type={ParagraphType.medium}
-      children="large tall medium"
-    />
-    <br />
-    <Paragraph
-      size={ParagraphSize.large}
-      style={ParagraphStyle.tall}
-      type={ParagraphType.semibold}
-      children="large tall semibold"
-    />
-    <br />
-    <Paragraph
-      size={ParagraphSize.extraLarge}
-      style={ParagraphStyle.normal}
-      type={ParagraphType.regular}
-      children="extraLarge normal regular"
-    />
-    <br />
-    <Paragraph
-      size={ParagraphSize.extraLarge}
-      style={ParagraphStyle.normal}
-      type={ParagraphType.medium}
-      children="extraLarge normal medium"
-    />
-    <br />
-    <Paragraph
-      size={ParagraphSize.extraLarge}
-      style={ParagraphStyle.normal}
-      type={ParagraphType.semibold}
-      children="extraLarge normal semibold"
+      children="base tall medium"
     />
   </>
 );
@@ -111,7 +71,7 @@ const InteractiveTemplate: Story<ComponentProps<typeof Paragraph>> = args => {
 export const Interactive = InteractiveTemplate.bind({});
 Interactive.args = {
   children: 'You can change this text',
-  type: ParagraphType.regular,
-  size: ParagraphSize.base,
+  type: ParagraphType.medium,
+  size: ParagraphSize.small,
   style: ParagraphStyle.normal,
 };

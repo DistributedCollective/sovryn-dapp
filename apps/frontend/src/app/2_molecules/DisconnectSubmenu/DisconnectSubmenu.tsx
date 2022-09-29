@@ -2,7 +2,7 @@ import React, { FC, PropsWithChildren } from 'react';
 
 import classNames from 'classnames';
 
-import { Menu, MenuItem } from '@sovryn/ui';
+import { Icon, Menu, MenuItem } from '@sovryn/ui';
 
 import CopyIcon from '../../../assets/Copy.svg';
 import ExitIcon from '../../../assets/Exit.svg';
@@ -20,19 +20,28 @@ export const DisconnectSubmenu: FC<
 > = ({ address, onDisconnect, className }) => {
   return (
     <Menu className={classNames(styles.disconnectSubmenu, className)}>
-      <MenuItem text="Delta" label="onClick" onClick={console.log} />
-      <li
+      <MenuItem
         onClick={() => {
           navigator.clipboard.writeText(address);
         }}
-      >
-        <img className="mr-3" width={14} src={CopyIcon} />
-        Copy Address
-      </li>
-      <li onClick={onDisconnect}>
-        <img className="mr-3" width={16} src={ExitIcon} />
-        Disconnect
-      </li>
+        text={
+          <div className={styles.menuItem}>
+            <Icon className="mr-3" size={14} icon={'copy'} />
+            Copy Address
+          </div>
+        }
+      />
+      <MenuItem
+        onClick={() => {
+          navigator.clipboard.writeText(address);
+        }}
+        text={
+          <div className={styles.menuItem}>
+            <Icon className="mr-3 flex items-center" size={16} icon={'exit'} />
+            Disconnect
+          </div>
+        }
+      />
     </Menu>
   );
 };

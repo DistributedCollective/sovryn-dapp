@@ -2,6 +2,7 @@ import React from 'react';
 
 import { Lead } from '@sovryn/ui';
 
+import { DisconnectSubmenu } from '../../2_molecules';
 import { EthersProviderTest } from '../../3_organisms/EthersProviderTest';
 import { useTheme } from '../../../hooks/useTheme';
 import { AppTheme } from '../../../types/tailwind';
@@ -56,7 +57,11 @@ function App() {
         </p>
       </header>
       <main>
-        <EthersProviderTest />
+        <DisconnectSubmenu
+          address="0x71C7656EC7ab88b098defB751B7401B5f6d8976F"
+          onDisconnect={() => {}}
+        />
+        {/* <EthersProviderTest /> */}
       </main>
     </div>
   );

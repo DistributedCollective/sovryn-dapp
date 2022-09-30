@@ -3,7 +3,7 @@ import { fireEvent, render, screen } from '@testing-library/react';
 import React from 'react';
 
 import { Button } from './Button';
-import { ButtonSize, ButtonStyle } from './Button.types';
+// import { ButtonSize, ButtonStyle } from './Button.types';
 
 describe('Button', () => {
   it('renders a button', () => {

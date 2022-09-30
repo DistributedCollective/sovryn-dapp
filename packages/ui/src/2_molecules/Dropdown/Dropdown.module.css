@@ -19,18 +19,5 @@
 }
 
 .dropdown {
-  @apply absolute overflow-x-auto mt-1 rounded bg-gray-80 transition-colors whitespace-nowrap p-1 font-roboto text-gray-30 text-xs font-semibold;
-
-  & > div {
-    @apply flex items-center mb-1 cursor-pointer rounded px-1.5;
-    height: 33px;
-
-    &:hover {
-      @apply bg-gray-70 text-gray-10;
-    }
-
-    &:last-child {
-      @apply mb-0;
-    }
-  }
+  @apply absolute overflow-x-auto mt-1 transition-colors;
 }

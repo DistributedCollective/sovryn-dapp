@@ -1,9 +1,9 @@
 import { Story } from '@storybook/react';
 
 import React, { ComponentProps, useState } from 'react';
-import { MenuItem } from '../Menu/components/MenuItem/MenuItem';
-import { Menu } from '../Menu/Menu';
 
+import { Menu } from '../Menu/Menu';
+import { MenuItem } from '../Menu/components/MenuItem/MenuItem';
 import { Dropdown } from './Dropdown';
 import { DropdownMode, DropdownSize } from './Dropdown.types';
 
@@ -37,25 +37,21 @@ Basic.args = {
   ),
 };
 
-const AdvancedTemplate: Story<ComponentProps<typeof Dropdown>> = () => {
-  const [mode, setMode] = useState(DropdownMode.left);
-
-  const data = Object.keys(DropdownMode).map(item => (
-    <MenuItem
-      key={item}
-      onClick={() => setMode(DropdownMode[item])}
-      text={`Set mode to ${item}`}
-    />
-  ));
-
-  return (
-    <Dropdown
-      className="m-auto"
-      text="Mode control"
-      children={<Menu>{data}</Menu>}
-      mode={mode}
-    />
-  );
+const AdvancedTemplate: Story<ComponentProps<typeof Dropdown>> = args => {
+  return <Dropdown {...args} />;
 };
 
 export const Interactive = AdvancedTemplate.bind({});
+Interactive.args = {
+  text: 'Mode control',
+  size: DropdownSize.large,
+  className: 'm-auto',
+  mode: DropdownMode.center,
+  children: (
+    <Menu>
+      <MenuItem text="Dropdown Menu Item 1" />
+      <MenuItem text="Dropdown Menu Item 2" />
+      <MenuItem text="Dropdown Menu Item 3" />
+    </Menu>
+  ),
+};

@@ -1,4 +1,4 @@
-import React, { ReactNode, useMemo } from 'react';
+import React, { ReactNode } from 'react';
 
 import classNames from 'classnames';
 
@@ -23,18 +23,16 @@ export const Paragraph: React.FC<ParagraphProps> = ({
   size = ParagraphSize.small,
   style = ParagraphStyle.normal,
   className,
-}) => {
-  const classNameComplete = useMemo(
-    () =>
-      classNames(
-        styles.paragraph,
-        styles[type],
-        styles[size],
-        styles[style],
-        className,
-      ),
-    [size, style, type, className],
-  );
-
-  return <p className={classNames(classNameComplete)}>{children}</p>;
-};
+}) => (
+  <p
+    className={classNames(
+      styles.paragraph,
+      styles[type],
+      styles[size],
+      styles[style],
+      className,
+    )}
+  >
+    {children}
+  </p>
+);

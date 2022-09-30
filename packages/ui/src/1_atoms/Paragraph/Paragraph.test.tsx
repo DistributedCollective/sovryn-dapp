@@ -22,23 +22,30 @@ describe('Paragraph', () => {
   });
 
   it('should render a paragraph size with a className equal to the base', () => {
-    const size = ParagraphSize.base;
-    render(<Paragraph children="Paragraph size" size={size} />);
-    const paragraph = screen.getByText('Paragraph size').getAttribute('class');
-    expect(paragraph).toContain('base');
+    render(<Paragraph children="Paragraph size" size={ParagraphSize.base} />);
+    const paragraphClasses = screen
+      .getByText('Paragraph size')
+      .getAttribute('class');
+    expect(paragraphClasses).toContain('base');
   });
 
   it('should render a paragraph type with a className equal to the regular', () => {
-    const type = ParagraphType.regular;
-    render(<Paragraph children="Paragraph type" type={type} />);
-    const paragraph = screen.getByText('Paragraph type').getAttribute('class');
-    expect(paragraph).toContain('regular');
+    render(
+      <Paragraph children="Paragraph type" type={ParagraphType.regular} />,
+    );
+    const paragraphClasses = screen
+      .getByText('Paragraph type')
+      .getAttribute('class');
+    expect(paragraphClasses).toContain('regular');
   });
 
   it('should render a paragraph style with a className equal to the tall', () => {
-    const style = ParagraphStyle.tall;
-    render(<Paragraph children="Paragraph style" style={style} />);
-    const paragraph = screen.getByText('Paragraph style').getAttribute('class');
-    expect(paragraph).toContain('tall');
+    render(
+      <Paragraph children="Paragraph style" style={ParagraphStyle.tall} />,
+    );
+    const paragraphClasses = screen
+      .getByText('Paragraph style')
+      .getAttribute('class');
+    expect(paragraphClasses).toContain('tall');
   });
 });

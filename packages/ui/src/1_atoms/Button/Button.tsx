@@ -1,23 +1,17 @@
-import React, { MouseEventHandler, useMemo } from 'react';
+import React, { MouseEventHandler, ReactNode, useMemo } from 'react';
 
 import classNames from 'classnames';
 import { Link } from 'react-router-dom';
 
 import styles from './Button.module.css';
-import {
-  ButtonType,
-  ButtonColor,
-  ButtonSize,
-  ButtonStyle,
-} from './Button.types';
+import { ButtonType, ButtonSize, ButtonStyle } from './Button.types';
 
 export interface IButtonProps {
-  text: React.ReactNode;
+  text: ReactNode;
   href?: string;
   hrefExternal?: boolean;
   onClick?: MouseEventHandler;
   type?: ButtonType;
-  color?: ButtonColor;
   size?: ButtonSize;
   style?: ButtonStyle;
   disabled?: boolean;
@@ -31,27 +25,26 @@ export const Button: React.FC<IButtonProps> = ({
   href,
   hrefExternal,
   onClick,
-  color = ButtonColor.primary,
-  size = ButtonSize.md,
-  style = ButtonStyle.normal,
+  size = ButtonSize.small,
+  style = ButtonStyle.primary,
   type = ButtonType.button,
-  loading,
   disabled,
+  loading,
   className,
   dataActionId,
 }) => {
-  const classNameComplete = useMemo(
+  const classNamesComplete = useMemo(
     () =>
       classNames(
         styles.button,
         loading && styles.loading,
-        color && styles[color],
-        size && styles[size],
-        style && styles[style],
+        styles[size],
+        styles[style],
+        styles[type],
         disabled && styles.disabled,
         className,
       ),
-    [loading, color, size, style, disabled, className],
+    [loading, size, style, type, disabled, className],
   );
 
   const onClickHandler = useMemo(
@@ -63,7 +56,7 @@ export const Button: React.FC<IButtonProps> = ({
     if (hrefExternal) {
       return (
         <a
-          className={classNameComplete}
+          className={classNamesComplete}
           href={href}
           target="_blank"
           rel="noreferrer"
@@ -77,7 +70,7 @@ export const Button: React.FC<IButtonProps> = ({
       return (
         <Link
           to={href}
-          className={classNameComplete}
+          className={classNamesComplete}
           onClick={onClickHandler}
           data-action-id={dataActionId}
         >
@@ -90,7 +83,7 @@ export const Button: React.FC<IButtonProps> = ({
       <button
         type={type}
         disabled={disabled}
-        className={classNameComplete}
+        className={classNamesComplete}
         onClick={onClickHandler}
         data-action-id={dataActionId}
       >

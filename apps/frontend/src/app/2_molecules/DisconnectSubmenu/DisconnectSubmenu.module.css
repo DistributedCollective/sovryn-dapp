@@ -1,9 +1,0 @@
-.disconnectSubmenu {
-  @apply p-1 bg-gray-80 inline-flex flex-col rounded;
-  .menuItem {
-    @apply flex items-center cursor-pointer rounded font-semibold text-xs transition-colors;
-
-    font-family: 'Roboto';
-    line-height: 25px;
-  }
-}

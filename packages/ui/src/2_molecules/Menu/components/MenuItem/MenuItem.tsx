@@ -8,13 +8,14 @@ import React, {
 import classNames from 'classnames';
 import { Link, useLocation } from 'react-router-dom';
 
-import { Icon } from '../../../../1_atoms';
+import { Icon, IconProps } from '../../../../1_atoms';
 import { IconType } from '../../../../1_atoms/Icon/Icon.types';
 import styles from './MenuItem.module.css';
 
 type MenuItemProps = {
   className?: string;
   icon?: IconType;
+  iconProps?: Omit<IconProps, 'icon'>;
   text: ReactNode;
   label?: ReactNode;
   disabled?: boolean;
@@ -34,6 +35,7 @@ export const MenuItem: React.FC<MenuItemProps> = ({
   hrefExternal,
   onClick,
   dataActionId,
+  iconProps,
 }) => {
   const onClickHandler = useCallback(
     event => {

@@ -87,7 +87,6 @@ module.exports = {
       black: '#000000',
       'gray-1': '#161616',
       'gray-2': '#1f1f1f',
-      'gray-2.3': '#171717', // newly added
       'gray-2.5': '#222222', // newly added
       'gray-3': '#2c2c2c',
       'gray-4': '#343434',
@@ -117,6 +116,8 @@ module.exports = {
       'trade-short-50': '#9C3111', // '#D74E0980',
       'trade-short-25': '#75200D', // '#D74E0940',
       'trade-short-10': '#4F1209', // '#D74E091a',
+
+      'dialog-header': '#292D36',
 
       'success-300': '#80FF9B',
       'success-200': '#55F26A',

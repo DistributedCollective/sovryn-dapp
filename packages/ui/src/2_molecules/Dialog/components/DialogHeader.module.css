@@ -1,7 +1,11 @@
 .container {
-  @apply px-10 py-3 relative bg-gray-2.3 flex flex-row justify-between items-center space-x-4;
+  @apply px-6 py-3.5 relative bg-dialog-header flex
+   flex-row justify-between items-center space-x-4;
+   @screen sm {
+     @apply rounded-t;
+   }
 }
 
 .title {
-  @apply text-white font-normal text-base;
+  @apply text-white font-bold text-sm;
 }

@@ -21,7 +21,7 @@ export const DialogHeader: FC<DialogHeaderProps> = ({
       {renderTitle(title)}
       {onClose && (
         <button onClick={onClose} data-action-id={dataActionId}>
-          <Icon icon="x-mark" />
+          <Icon icon="x-mark" size={12} />
           <span className="sr-only">Close</span>
         </button>
       )}

@@ -10,9 +10,9 @@
 }
 
 .dialog {
-  @apply relative bg-black text-sov-white p-0 mx-auto min-h-full;
+  @apply relative bg-sovryn-black text-sov-white p-0 mx-auto min-h-full;
   @screen sm {
-    @apply min-h-0 my-16;
+    @apply min-h-0 my-16 rounded;
   }
 
   &:focus {

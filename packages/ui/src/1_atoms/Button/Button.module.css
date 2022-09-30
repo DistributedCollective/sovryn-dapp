@@ -1,5 +1,5 @@
 .button {
-  @apply inline-flex box-border items-center justify-center text-center text-sov-white border font-roboto font-bold no-underline rounded cursor-pointer;
+  @apply inline-flex box-border items-center justify-center text-center text-sov-white border font-roboto font-semibold no-underline rounded cursor-pointer;
   transition: background-color 0.3s, color 0.3s, border 0.3s, opacity 0.3s;
 
   &:hover,

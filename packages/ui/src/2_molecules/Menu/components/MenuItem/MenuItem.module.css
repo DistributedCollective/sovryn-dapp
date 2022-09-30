@@ -1,38 +1,41 @@
 .host {
   @apply list-none;
-}
-.host:last-child .button{
-  @apply mb-0;
-}
-.host:first-child .button{
-  @apply mt-0;
-}
-.host .button {
-  @apply flex text-left items-center w-full px-2.5 py-1 cursor-pointer rounded transition-colors my-1;
 
-  @media (min-width: 1536px) {
-    @apply px-4;
+  & .button {
+    @apply flex text-left items-center w-full px-2.5 py-1 cursor-pointer rounded transition-colors my-1;
+
+    &.disabled {
+      @apply opacity-50 cursor-not-allowed;
+    }
+
+    &.active {
+      @apply opacity-100;
+    }
+
+    &.active,
+    &:not(.disabled):hover {
+      @apply bg-gray-70 text-gray-10;
+    }
+
+    & .text {
+      @apply font-semibold text-gray-10 flex items-center;
+      line-height: 25px;
+    }
+
+    & .label {
+      @apply text-gray-30 font-normal text-tiny inline-block leading-none pointer-events-none;
+    }
   }
-}
 
-.host .button.disabled {
-  @apply opacity-50 cursor-not-allowed;
-}
+  &:last-child {
+    & .button{
+      @apply mb-0;
+    }
+  }
 
-.host .button.active {
-  @apply opacity-100;
-}
-
-.host .button.active,
-.host .button:not(.disabled):hover {
-  @apply bg-gray-70 text-gray-10;
-}
-
-.host .button .text {
-  @apply text-sm font-semibold leading-none text-gray-10 flex items-center;
-  line-height: 25px;
-}
-
-.host .button .label {
-  @apply text-gray-30 font-normal text-tiny inline-block leading-none pointer-events-none;
+  &:first-child {
+    & .button{
+      @apply mt-0;
+    }
+  }
 }

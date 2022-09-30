@@ -2,3 +2,12 @@
   base = "apps/frontend/"
   publish = "build"
   command = "yarn build"
+
+[context.production]
+  [context.production.environment]
+    REACT_APP_GOOGLE_ANALYTICS = "GTM-5MWCJN3"
+
+# Staging deployments (all branches)
+[context.branch-deploy]
+  [context.branch-deploy.environment]
+    REACT_APP_GOOGLE_ANALYTICS = "GTM-PX36D3G"

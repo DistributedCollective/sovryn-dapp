@@ -9,7 +9,7 @@ import styles from './Icon.module.css';
 import { IconType, ViewBoxSize, STANDARD, INLINE, SM } from './Icon.types';
 import { IconSvgPaths } from './iconSvgPaths';
 
-type IconProps = {
+export type IconProps = {
   /**
    * Name of a Sovryn UI icon, or an custom SVG element, or an Fontawesome imported icon to render.
    * This prop is required because it determines the content of the component

@@ -8,7 +8,7 @@ import React, {
 import classNames from 'classnames';
 import { Link, useLocation } from 'react-router-dom';
 
-import { Icon } from '../../../../1_atoms';
+import { Icon, IconProps } from '../../../../1_atoms';
 import { IconType } from '../../../../1_atoms/Icon/Icon.types';
 import iconNewTab from '../../../../../assets/storybook/iconNewTab.svg';
 import styles from './MenuItem.module.css';
@@ -16,6 +16,7 @@ import styles from './MenuItem.module.css';
 type MenuItemProps = {
   className?: string;
   icon?: IconType;
+  iconProps?: Omit<IconProps, 'icon'>;
   text: ReactNode;
   label?: ReactNode;
   disabled?: boolean;
@@ -35,6 +36,7 @@ export const MenuItem: React.FC<MenuItemProps> = ({
   hrefExternal,
   onClick,
   dataActionId,
+  iconProps,
 }) => {
   const onClickHandler = useCallback(
     event => {
@@ -71,7 +73,7 @@ export const MenuItem: React.FC<MenuItemProps> = ({
           >
             <div className="block leading-none">
               <div className="flex items-center">
-                {icon && <Icon icon={icon} className="mr-2" />}
+                {icon && <Icon {...iconProps} icon={icon} className="mr-2" />}
                 <span className={classNames(styles.text)}>{text}</span>
                 <img
                   src={iconNewTab}
@@ -96,7 +98,7 @@ export const MenuItem: React.FC<MenuItemProps> = ({
           >
             <div className="block leading-none">
               <div className="flex items-center">
-                {icon && <Icon icon={icon} className="mr-2" />}
+                {icon && <Icon {...iconProps} icon={icon} className="mr-2" />}
                 <span className={classNames(styles.text)}>{text}</span>
               </div>
               {label && <span className={styles.label}>{label}</span>}
@@ -117,7 +119,7 @@ export const MenuItem: React.FC<MenuItemProps> = ({
         >
           <div className="block leading-none">
             <div className="flex items-center">
-              {icon && <Icon icon={icon} className="mr-2" />}
+              {icon && <Icon {...iconProps} icon={icon} className="mr-2" />}
               <span className={classNames(styles.text)}>{text}</span>
             </div>
             {label && <span className={styles.label}>{label}</span>}
@@ -132,8 +134,9 @@ export const MenuItem: React.FC<MenuItemProps> = ({
     onClickHandler,
     dataActionId,
     icon,
-    label,
+    iconProps,
     text,
+    label,
     isActive,
   ]);
 

@@ -1,8 +1,3 @@
-export enum ParagraphType {
-  medium = 'medium',
-  regular = 'regular',
-}
-
 export enum ParagraphSize {
   tiny = 'tiny',
   small = 'small',

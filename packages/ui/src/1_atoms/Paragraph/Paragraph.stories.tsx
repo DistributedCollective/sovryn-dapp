@@ -3,11 +3,7 @@ import { Story, Meta } from '@storybook/react';
 import React, { ComponentProps } from 'react';
 
 import { Paragraph } from './Paragraph';
-import {
-  ParagraphSize,
-  ParagraphStyle,
-  ParagraphType,
-} from './Paragraph.types';
+import { ParagraphSize, ParagraphStyle } from './Paragraph.types';
 
 export default {
   title: 'Atoms/Paragraph',
@@ -16,62 +12,69 @@ export default {
 
 const Template: Story<ComponentProps<typeof Paragraph>> = () => (
   <>
-    <Paragraph children="Text by default" />
+    <Paragraph children="base normal medium-weight (defaults)" />
     <br />
     <Paragraph
       size={ParagraphSize.tiny}
       style={ParagraphStyle.normal}
-      type={ParagraphType.regular}
-      children="tiny normal regular"
+      className="font-normal"
+      children="tiny normal regular-weight"
     />
     <br />
     <Paragraph
       size={ParagraphSize.tiny}
       style={ParagraphStyle.normal}
-      type={ParagraphType.medium}
-      children="tiny normal medium"
+      children="tiny normal medium-weight"
     />
     <br />
     <Paragraph
       size={ParagraphSize.small}
       style={ParagraphStyle.normal}
-      type={ParagraphType.regular}
-      children="small normal regular"
+      className="font-normal"
+      children="small normal regular-weight"
     />
     <br />
     <Paragraph
       size={ParagraphSize.small}
       style={ParagraphStyle.normal}
-      type={ParagraphType.medium}
-      children="small normal medium"
+      children="small normal medium-weight"
     />
     <br />
     <Paragraph
       size={ParagraphSize.base}
       style={ParagraphStyle.normal}
-      type={ParagraphType.regular}
-      children="base normal regular"
+      className="font-normal"
+      children="base normal regular-weight"
     />
     <br />
     <Paragraph
       size={ParagraphSize.base}
       style={ParagraphStyle.normal}
-      type={ParagraphType.medium}
-      children="base normal medium"
+      children="base normal medium-weight"
     />
     <br />
     <Paragraph
       size={ParagraphSize.base}
       style={ParagraphStyle.tall}
-      type={ParagraphType.regular}
-      children="base tall regular"
+      className="font-normal"
+      children="base tall regular-weight"
     />
     <br />
     <Paragraph
       size={ParagraphSize.base}
       style={ParagraphStyle.tall}
-      type={ParagraphType.medium}
-      children="base tall medium"
+      children="base tall medium-weight"
+    />
+    <br />
+    <Paragraph
+      size={ParagraphSize.base}
+      style={ParagraphStyle.tall}
+      className="font-normal"
+      children={
+        <>
+          Some regular-weight text and then <strong>strong text</strong>
+        </>
+      }
     />
   </>
 );
@@ -85,7 +88,6 @@ const InteractiveTemplate: Story<ComponentProps<typeof Paragraph>> = args => {
 export const Interactive = InteractiveTemplate.bind({});
 Interactive.args = {
   children: 'You can change this text',
-  type: ParagraphType.medium,
-  size: ParagraphSize.small,
+  size: ParagraphSize.base,
   style: ParagraphStyle.normal,
 };

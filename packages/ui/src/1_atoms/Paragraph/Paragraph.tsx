@@ -3,15 +3,10 @@ import React, { ReactNode } from 'react';
 import classNames from 'classnames';
 
 import styles from './Paragraph.module.css';
-import {
-  ParagraphSize,
-  ParagraphStyle,
-  ParagraphType,
-} from './Paragraph.types';
+import { ParagraphSize, ParagraphStyle } from './Paragraph.types';
 
 export type ParagraphProps = {
   children: ReactNode;
-  type?: ParagraphType;
   size?: ParagraphSize;
   style?: ParagraphStyle;
   className?: string;
@@ -19,15 +14,13 @@ export type ParagraphProps = {
 
 export const Paragraph: React.FC<ParagraphProps> = ({
   children,
-  type = ParagraphType.medium,
-  size = ParagraphSize.small,
+  size = ParagraphSize.base,
   style = ParagraphStyle.normal,
   className,
 }) => (
   <p
     className={classNames(
       styles.paragraph,
-      styles[type],
       styles[size],
       styles[style],
       className,

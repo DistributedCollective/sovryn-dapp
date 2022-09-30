@@ -1,82 +1,78 @@
 @layer base {
-    html,
+  html,
+  body {
+    @apply h-full w-full font-normal;
+  }
+
+  body {
+    @apply bg-content-main text-primary-content font-body text-base leading-normal transition-colors;
+  }
+
+  @screen lg {
     body {
-      @apply h-full w-full font-normal;
-    }
-  
-    body {
-      @apply bg-content-main text-primary-content font-body text-xs leading-normal transition-colors;
-      font-variant-numeric: tabular-nums;
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
-      overflow: overlay;
-    }
-  
-    @screen lg {
-      body {
-        @apply text-base leading-normal;
-      }
-    }
-  
-    * {
-      @apply font-body scrollbars-wide;
-    }
-  
-    *:focus {
-      outline: 0 !important;
-      outline-offset: 0;
-    }
-  
-    h1,
-    h2,
-    h3,
-    h4,
-    h5,
-    h6 {
-      @apply text-sov-white font-medium;
-      line-height: 1.2;
-    }
-  
-    p {
-      margin-top: 0;
-      margin-bottom: 1rem;
-    }
-  
-    a,
-    a:visited {
-      @apply text-primary no-underline underline;
-    }
-  
-    a:hover,
-    a:active {
-      @apply text-primary underline;
-    }
-  
-    th {
-      text-align: inherit;
-    }
-  
-  
-  
-    /* TODO: remove headline styles once the Headline Component is done. */
-    h1, h2, h3, h4 {
-      text-transform: uppercase;
-    }
-    
-    h1 {
-      @apply text-4xl font-semibold;
-    }
-  
-    h2 {
-      @apply m-0 text-3xl font-semibold normal-case;
-    }
-  
-    h3 {
-      @apply m-0 text-base font-semibold;
-    }
-  
-    h4 {
-      @apply m-0 text-base font-medium text-gray-7;
+      @apply text-base leading-normal;
     }
   }
-  
+
+  * {
+    @apply font-body scrollbars-wide;
+  }
+
+  *:focus {
+    outline: 0 !important;
+    outline-offset: 0;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply text-sov-white font-medium;
+    line-height: 1.2;
+  }
+
+  p {
+    margin-top: 0;
+    margin-bottom: 1rem;
+  }
+
+  a,
+  a:visited {
+    @apply text-primary no-underline underline;
+  }
+
+  a:hover,
+  a:active {
+    @apply text-primary underline;
+  }
+
+  th {
+    text-align: inherit;
+  }
+
+  /* TODO: remove headline styles once the Headline Component is done. */
+  h1,
+  h2,
+  h3,
+  h4 {
+    text-transform: uppercase;
+  }
+
+  h1 {
+    @apply text-4xl font-semibold;
+  }
+
+  h2 {
+    @apply m-0 text-3xl font-semibold normal-case;
+  }
+
+  h3 {
+    @apply m-0 text-base font-semibold;
+  }
+
+  h4 {
+    @apply m-0 text-base font-medium text-gray-7;
+  }
+}

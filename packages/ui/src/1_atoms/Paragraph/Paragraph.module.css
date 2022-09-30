@@ -1,15 +1,6 @@
 .paragraph {
   @apply text-white m-0;
 
-  /* TYPES ================================================================== */
-  &.regular {
-    @apply font-roboto font-normal;
-  }
-
-  &.medium {
-    @apply font-roboto font-medium;
-  }
-
   /* SIZES ================================================================== */
   &.tiny {
     @apply text-tiny;

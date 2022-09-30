@@ -3,11 +3,7 @@ import { render, screen } from '@testing-library/react';
 import React from 'react';
 
 import { Paragraph } from './Paragraph';
-import {
-  ParagraphSize,
-  ParagraphStyle,
-  ParagraphType,
-} from './Paragraph.types';
+import { ParagraphSize, ParagraphStyle } from './Paragraph.types';
 
 describe('Paragraph', () => {
   it('renders a paragraph', () => {
@@ -26,13 +22,6 @@ describe('Paragraph', () => {
     render(<Paragraph children="Paragraph size" size={size} />);
     const paragraph = screen.getByText('Paragraph size').getAttribute('class');
     expect(paragraph).toContain('base');
-  });
-
-  it('should render a paragraph type with a className equal to the regular', () => {
-    const type = ParagraphType.regular;
-    render(<Paragraph children="Paragraph type" type={type} />);
-    const paragraph = screen.getByText('Paragraph type').getAttribute('class');
-    expect(paragraph).toContain('regular');
   });
 
   it('should render a paragraph style with a className equal to the tall', () => {

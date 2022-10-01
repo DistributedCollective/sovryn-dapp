@@ -7,12 +7,12 @@
       name="description"
       content="Web site created using create-react-app"
     />
+    <% if (process.env.NODE_ENV === "production") { %>
     <style type="text/css">
       .osano-cm-widget {
         left: 10px !important;
       }
     </style>
-    <% if (process.env.NODE_ENV === "production") { %>
     <script src="https://cmp.osano.com/16BSnVTBY9ksVax/3abc690b-3747-4ba3-b1fb-fcaefd6ab8c1/osano.js"></script>
     <% } %>
     <% if (process.env.REACT_APP_GOOGLE_ANALYTICS) { %>

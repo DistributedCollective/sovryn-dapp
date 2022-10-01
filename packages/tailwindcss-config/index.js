@@ -96,6 +96,7 @@ module.exports = {
       'gray-8': '#a2a2a2',
       'gray-9': '#c4c4c4',
       // 'gray-10': '#d9d9d9',
+      'gray-11': '#292D36',
       'sov-white': '#e8e8e8',
       white: '#ffffff',
 
@@ -116,8 +117,6 @@ module.exports = {
       'trade-short-50': '#9C3111', // '#D74E0980',
       'trade-short-25': '#75200D', // '#D74E0940',
       'trade-short-10': '#4F1209', // '#D74E091a',
-
-      'dialog-header': '#292D36',
 
       'success-300': '#80FF9B',
       'success-200': '#55F26A',

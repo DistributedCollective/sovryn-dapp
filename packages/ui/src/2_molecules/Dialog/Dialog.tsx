@@ -1,7 +1,6 @@
 import React, {
   useCallback,
   useEffect,
-  useMemo,
   MouseEvent,
   useRef,
 } from 'react';
@@ -40,13 +39,9 @@ export const Dialog: IDialogFunctionComponent<DialogProps> = ({
   closeOnEscape = true,
   initialFocusRef,
 }) => {
-  const sizeClassNames = useMemo(() => dialogSizeMap[width], [width]);
-
   const ref = useRef<HTMLDivElement>(null);
 
-  const handleClose = useCallback(() => {
-    onClose?.();
-  }, [onClose]);
+  const handleClose = useCallback(() => onClose?.(), [onClose]);
 
   const handleChildElementClick = useCallback((event: MouseEvent) => {
     event.stopPropagation();
@@ -101,11 +96,12 @@ export const Dialog: IDialogFunctionComponent<DialogProps> = ({
           <FocusTrap
             active={isOpen}
             focusTrapOptions={{
+              initialFocus: initialFocusRef?.current || undefined,
               fallbackFocus: () => ref.current!,
             }}
           >
             <section
-              className={classNames(styles.dialog, sizeClassNames, className)}
+              className={classNames(styles.dialog, dialogSizeMap[width], className)}
               role="dialog"
               ref={ref}
               onClick={handleChildElementClick}

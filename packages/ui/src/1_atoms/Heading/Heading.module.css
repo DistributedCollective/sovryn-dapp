@@ -1,0 +1,17 @@
+.h1, .h2, .h3 {
+  @apply font-roboto font-medium text-gray-10;
+}
+
+.h1 {
+  @apply text-2xl leading-7;
+}
+
+.h2 {
+  @apply text-base;
+  line-height: 18px;
+}
+
+.h3 {
+  @apply text-xs;
+  line-height: 14px;
+}

@@ -9,18 +9,20 @@ import React, {
 
 import classNames from 'classnames';
 
+import { Icon } from '../../1_atoms/Icon/Icon';
+import { ARROW_DOWN } from '../../1_atoms/Icon/iconNames';
 import { Portal } from '../../1_atoms/Portal/Portal';
 import { useOnClickOutside } from '../../hooks/useOnClickOutside';
 import { Nullable } from '../../types';
 import styles from './Dropdown.module.css';
-import { DropdownColor, DropdownCoords, DropdownMode } from './Dropdown.types';
+import { DropdownCoords, DropdownMode, DropdownSize } from './Dropdown.types';
 import { getDropdownPositionStyles } from './Dropdown.utils';
 
 type DropdownProps = {
   text: ReactNode;
   children: ReactNode;
   mode?: DropdownMode;
-  color?: DropdownColor;
+  size?: DropdownSize;
   onOpen?: () => void;
   onClose?: () => void;
   className?: string;
@@ -32,7 +34,7 @@ export const Dropdown: React.FC<DropdownProps> = ({
   text,
   children,
   mode = DropdownMode.sameWidth,
-  color = DropdownColor.gray3,
+  size = DropdownSize.large,
   onOpen,
   onClose,
   className,
@@ -74,10 +76,12 @@ export const Dropdown: React.FC<DropdownProps> = ({
     return getDropdownPositionStyles(coords, mode);
   }, [coords, mode]);
 
-  const classNameComplete = useMemo(
+  const classNamesComplete = useMemo(
     () =>
-      classNames(styles.button, color, className, { [styles.isOpen]: isOpen }),
-    [color, className, isOpen],
+      classNames(styles.button, styles[size], className, {
+        [styles.isOpen]: isOpen,
+      }),
+    [size, className, isOpen],
   );
 
   const useClickedOutside = useCallback(() => {
@@ -99,24 +103,26 @@ export const Dropdown: React.FC<DropdownProps> = ({
   return (
     <>
       <button
-        className={classNames(classNameComplete)}
+        className={classNames(classNamesComplete)}
         data-action-id={dataActionId}
         onClick={onButtonClick}
         type="button"
         ref={buttonRef}
       >
         {text}
-        <span
-          className={classNames(styles.iconArrow, {
-            'transform rotate-180 rounded-b-none': isOpen,
+        <Icon
+          icon={ARROW_DOWN}
+          size={10}
+          className={classNames('transition-transform ml-2', {
+            'transform rotate-180': isOpen,
           })}
-        ></span>
+        />
       </button>
 
       {isOpen && (
         <Portal target="body">
           <div
-            className={classNames(styles.dropdown, dropdownClassName, color)}
+            className={classNames(styles.dropdown, dropdownClassName)}
             style={dropdownStyles}
             ref={dropdownRef}
           >

@@ -1,1 +1,1 @@
-export * from './DisconnectSubmenu/DisconnectSubmenu';
+export * from './WalletIdentity/WalletIdentity';

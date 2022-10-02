@@ -32,6 +32,10 @@ export type IconProps = {
    * Applied data-action-id value to the element, mainly needed for testing or for GA
    */
   dataActionId?: string;
+  /**
+   * Applied viewBox to the svg element.
+   */
+  viewBox?: string;
 };
 
 export const Icon: React.FC<IconProps> = ({
@@ -40,6 +44,7 @@ export const Icon: React.FC<IconProps> = ({
   inline,
   className,
   dataActionId,
+  viewBox = ViewBoxSize.DEFAULT,
 }) => {
   const isFaIcon = useMemo(() => !!icon && !!icon['prefix'], [icon]);
 
@@ -77,7 +82,7 @@ export const Icon: React.FC<IconProps> = ({
     ));
     return (
       <svg
-        viewBox={ViewBoxSize.DEFAULT}
+        viewBox={viewBox}
         height={iconSize}
         width={iconSize}
         fill="currentColor"

@@ -1,8 +1,6 @@
 import React, { FC, PropsWithChildren } from 'react';
 
-import { Icon, Menu, MenuItem } from '@sovryn/ui';
-
-import styles from './DisconnectSubmenu.module.css';
+import { Menu, MenuItem } from '@sovryn/ui';
 
 export type DisconnectSubmenuProps = {
   onDisconnect: () => void;
@@ -17,15 +15,16 @@ export const DisconnectSubmenu: FC<
   return (
     <Menu className={className}>
       <MenuItem
-        onClick={() => {
-          navigator.clipboard.writeText(address);
+        onClick={async () => {
+          await navigator.clipboard.writeText(address);
+          alert('Address was copied to clipboard.');
         }}
         icon={'copy'}
-        iconProps={{ size: 15 }}
+        iconProps={{ size: 16, className: 'mr-2' }}
         text="Copy Address"
       />
       <MenuItem
-        iconProps={{ size: 16 }}
+        iconProps={{ size: 16, viewBox: '0 0 16 14', className: 'mr-2' }}
         onClick={onDisconnect}
         icon={'exit'}
         text="Disconnect"

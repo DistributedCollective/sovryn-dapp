@@ -18,8 +18,17 @@
     }
 
     & .text {
-      @apply font-semibold text-gray-10 flex items-center;
+      @apply font-semibold flex items-center;
       line-height: 25px;
+    }
+
+    & .text,
+    & .icon {
+      @apply text-gray-10;
+    }
+
+    & .icon {
+      @apply text-gray-10 mr-2;
     }
 
     & .label {
@@ -28,13 +37,13 @@
   }
 
   &:last-child {
-    & .button{
+    & .button {
       @apply mb-0;
     }
   }
 
   &:first-child {
-    & .button{
+    & .button {
       @apply mt-0;
     }
   }

@@ -73,7 +73,9 @@ export const MenuItem: React.FC<MenuItemProps> = ({
           >
             <div className="block leading-none">
               <div className="flex items-center">
-                {icon && <Icon {...iconProps} icon={icon} className="mr-2" />}
+                {icon && (
+                  <Icon {...iconProps} icon={icon} className={styles.icon} />
+                )}
                 <span className={classNames(styles.text)}>{text}</span>
                 <img
                   src={iconNewTab}
@@ -98,7 +100,9 @@ export const MenuItem: React.FC<MenuItemProps> = ({
           >
             <div className="block leading-none">
               <div className="flex items-center">
-                {icon && <Icon {...iconProps} icon={icon} className="mr-2" />}
+                {icon && (
+                  <Icon {...iconProps} icon={icon} className={styles.icon} />
+                )}
                 <span className={classNames(styles.text)}>{text}</span>
               </div>
               {label && <span className={styles.label}>{label}</span>}
@@ -119,7 +123,9 @@ export const MenuItem: React.FC<MenuItemProps> = ({
         >
           <div className="block leading-none">
             <div className="flex items-center">
-              {icon && <Icon {...iconProps} icon={icon} className="mr-2" />}
+              {icon && (
+                <Icon {...iconProps} icon={icon} className={styles.icon} />
+              )}
               <span className={classNames(styles.text)}>{text}</span>
             </div>
             {label && <span className={styles.label}>{label}</span>}

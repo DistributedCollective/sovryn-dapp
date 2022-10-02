@@ -1,4 +1,4 @@
-.button {
+.button[type='button'] {
   @apply flex items-center bg-gray-50 justify-between relative h-full min-w-20 whitespace-nowrap font-roboto text-gray-10 text-xs font-semibold px-2.5 leading-none cursor-pointer select-none transition-colors border rounded border-gray-50;
 
   &.isOpen {

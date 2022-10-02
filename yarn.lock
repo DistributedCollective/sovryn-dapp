@@ -8058,6 +8058,11 @@ etag@~1.8.1:
   resolved "https://registry.yarnpkg.com/etag/-/etag-1.8.1.tgz#41ae2eeb65efa62268aebfea83ac7d79299b0887"
   integrity sha512-aIL5Fx7mawVa300al2BnEE4iNvo1qETxLrPI/o05L7z6go7fCw1J6EQmbK4FmJ2AS7kgVF/KEZWufBfdClMcPg==
 
+ethereum-blockies@^0.1.1:
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/ethereum-blockies/-/ethereum-blockies-0.1.1.tgz#879fe959deef492a7a92b43dc34ae8dc2ee591fc"
+  integrity sha512-ED+noMZ6z7RrzzhvrQna1L30C27MX+ZsdB5c/d5vygXtHjEyAQjQS2TgCYhPxs+z3U+u2YQsL9PiRkNl1f+ugg==
+
 ethers@5.7.1:
   version "5.7.1"
   resolved "https://registry.yarnpkg.com/ethers/-/ethers-5.7.1.tgz#48c83a44900b5f006eb2f65d3ba6277047fd4f33"

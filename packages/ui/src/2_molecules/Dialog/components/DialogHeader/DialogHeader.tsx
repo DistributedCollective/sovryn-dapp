@@ -2,7 +2,7 @@ import { FC, PropsWithChildren } from 'react';
 
 import classNames from 'classnames';
 
-import { Icon } from '../../../1_atoms';
+import { Icon } from '../../../../1_atoms';
 
 type DialogHeaderProps = {
   title: React.ReactNode;

@@ -1,9 +1,4 @@
-import React, {
-  useCallback,
-  useEffect,
-  MouseEvent,
-  useRef,
-} from 'react';
+import React, { useCallback, useEffect, MouseEvent, useRef } from 'react';
 
 import classNames from 'classnames';
 import FocusTrap from 'focus-trap-react';
@@ -101,7 +96,11 @@ export const Dialog: IDialogFunctionComponent<DialogProps> = ({
             }}
           >
             <section
-              className={classNames(styles.dialog, dialogSizeMap[width], className)}
+              className={classNames(
+                styles.dialog,
+                dialogSizeMap[width],
+                className,
+              )}
               role="dialog"
               ref={ref}
               onClick={handleChildElementClick}

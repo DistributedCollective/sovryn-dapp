@@ -4,8 +4,8 @@ import React, { ComponentProps, useCallback, useState } from 'react';
 
 import { Button } from '../../1_atoms';
 import { Dialog } from './Dialog';
-import { DialogBody } from './components/DialogBody';
-import { DialogHeader } from './components/DialogHeader';
+import { DialogBody } from './components/DialogBody/DialogBody';
+import { DialogHeader } from './components/DialogHeader/DialogHeader';
 
 export default {
   title: 'Molecule/Dialog',

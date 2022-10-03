@@ -81,7 +81,9 @@ module.exports = {
       // secondary: '#2A8FCC', //'#2274a5',
       'secondary-75': '#1B73B2', //'#2274a5C0',
       'secondary-50': '#0F5999', //'#2274a580',
+      'secondary-30': '#2067D1',
       'secondary-25': '#064180', //'#2274a540',
+      'secondary-20': '#267DFF',
       'secondary-10': '#042E59', //'#2274a51a',
 
       black: '#000000',

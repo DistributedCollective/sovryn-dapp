@@ -1,11 +1,11 @@
 .host {
-  @apply flex flex-row self-center w-full text-sm leading-snug px-0 font-extralight text-center mt-2 list-none;
+  @apply flex flex-row self-center w-full text-sm leading-snug px-0 font-extralight text-center my-1 list-none;
 }
 .host:after,
 .host:before {
-  @apply flex-1 border-b border-solid border-current m-auto;
+  @apply flex-1 border-b border-solid border-gray-10 m-auto;
 
-  content: "";
+  content: '';
 }
 
 .host:not(:empty):before {
@@ -13,8 +13,4 @@
 }
 .host:not(:empty):after {
   @apply ml-2.5;
-}
-
-.host:empty {
-  @apply mb-2;
 }

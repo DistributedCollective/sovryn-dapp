@@ -5,6 +5,7 @@ import React, {
   MouseEventHandler,
   MouseEvent,
   useEffect,
+  useRef,
 } from 'react';
 
 import classNames from 'classnames';
@@ -40,11 +41,13 @@ export const Overlay: React.FC<OverlayProps> = ({
   isOpen = true,
   align = Align.center,
   alignVertical = AlignVertical.center,
-  background = OverlayBackground.dark75,
+  background = OverlayBackground.default,
   onBlur,
   children,
   portalClassName,
 }) => {
+  const ref = useRef<HTMLDivElement>(null);
+
   const onBlurHandler = useCallback(
     (event: MouseEvent) => {
       onBlur?.(event);
@@ -58,6 +61,8 @@ export const Overlay: React.FC<OverlayProps> = ({
     () =>
       isOpen ? (
         <div
+          ref={ref}
+          tabIndex={-1}
           className={classNames(
             fixed ? 'fixed' : 'absolute',
             'inset-0 flex flex-column',
@@ -96,6 +101,13 @@ export const Overlay: React.FC<OverlayProps> = ({
       };
     }
   }, [fixed, isOpen]);
+
+  useEffect(() => {
+    // focus to element when open
+    if (isOpen && ref.current) {
+      ref.current.focus();
+    }
+  }, [isOpen]);
 
   if (fixed) {
     return (

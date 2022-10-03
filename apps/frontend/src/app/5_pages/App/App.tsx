@@ -54,6 +54,9 @@ function App() {
           quod corrupti rerum voluptatibus? Totam a quas recusandae quasi
           molestiae ipsa omnis dolorum aliquam.
         </p>
+        <p className="text-primary">
+          GTM: {process.env.REACT_APP_GOOGLE_ANALYTICS}
+        </p>
       </header>
       <main>
         <EthersProviderTest />

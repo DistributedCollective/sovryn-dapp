@@ -1,0 +1,25 @@
+.paragraph {
+  @apply text-white m-0;
+
+  /* SIZES ================================================================== */
+  &.tiny {
+    @apply text-tiny;
+  }
+
+  &.small {
+    @apply text-xs;
+  }
+
+  &.base {
+    @apply text-sm;
+  }
+
+  /* STYLES ================================================================== */
+  &.normal {
+    @apply leading-4;
+  }
+
+  &.tall {
+    @apply leading-5;
+  }
+}

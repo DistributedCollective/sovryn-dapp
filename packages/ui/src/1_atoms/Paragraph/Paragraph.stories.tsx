@@ -12,7 +12,7 @@ export default {
 
 const Template: Story<ComponentProps<typeof Paragraph>> = () => (
   <>
-    <Paragraph children="base normal medium-weight (defaults)" />
+    <Paragraph children="small normal medium-weight (defaults)" />
     <br />
     <Paragraph
       size={ParagraphSize.tiny}

@@ -23,4 +23,10 @@ describe('Heading', () => {
     const h3 = screen.getByRole('heading', { level: 3 });
     expect(h3).toBeInTheDocument();
   });
+
+  it('should render a simple string', () => {
+    render(<Heading children="content check" />);
+    const heading = screen.getByRole('heading');
+    expect(heading).toHaveTextContent('content check');
+  });
 });

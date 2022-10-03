@@ -1,0 +1,18 @@
+.link {
+  @apply underline text-xs font-medium font-roboto;
+  line-height: 14px;
+
+  &.primary {
+    @apply text-primary-20;
+    &:hover {
+      @apply text-primary-10;
+    }
+  }
+
+  &.secondary {
+    @apply text-secondary-20;
+    &:hover {
+      @apply text-secondary-30;
+    }
+  }
+}

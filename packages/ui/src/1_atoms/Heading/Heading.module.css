@@ -9,5 +9,5 @@
 
 .h3 {
   @apply text-xs;
-  line-height: 14px;
+  line-height: 0.875rem;
 }

@@ -19,9 +19,7 @@ describe('Paragraph', () => {
 
   it('should render a paragraph size with a className equal to the base', () => {
     render(<Paragraph children="Paragraph size" size={ParagraphSize.base} />);
-    const classes = screen
-      .getByText('Paragraph size')
-      .getAttribute('class');
+    const classes = screen.getByText('Paragraph size').getAttribute('class');
     expect(classes).toContain('base');
   });
 
@@ -29,9 +27,7 @@ describe('Paragraph', () => {
     render(
       <Paragraph children="Paragraph style" style={ParagraphStyle.tall} />,
     );
-    const classes = screen
-      .getByText('Paragraph style')
-      .getAttribute('class');
+    const classes = screen.getByText('Paragraph style').getAttribute('class');
     expect(classes).toContain('tall');
   });
 });

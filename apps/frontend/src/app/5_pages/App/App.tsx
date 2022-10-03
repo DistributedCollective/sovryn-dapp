@@ -67,7 +67,9 @@ function App() {
           onDisconnect={() => {}}
           hideSubmenu
         />
-        {/* <EthersProviderTest /> */}
+        <br />
+        <br />
+        <EthersProviderTest />
       </main>
     </div>
   );

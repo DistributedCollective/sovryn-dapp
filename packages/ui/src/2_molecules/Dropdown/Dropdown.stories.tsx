@@ -1,6 +1,6 @@
 import { Story } from '@storybook/react';
 
-import React, { ComponentProps, useState } from 'react';
+import React, { ComponentProps } from 'react';
 
 import { Menu } from '../Menu/Menu';
 import { MenuItem } from '../Menu/components/MenuItem/MenuItem';
@@ -14,14 +14,7 @@ export default {
 
 const Template: Story<ComponentProps<typeof Dropdown>> = args => (
   <div className="flex justify-center">
-    <div className="mr-10">
-      <p>Small Size</p>
-      <Dropdown {...args} size={DropdownSize.small} />
-    </div>
-    <div>
-      <p>Large size</p>
-      <Dropdown {...args} />
-    </div>
+    <Dropdown {...args} />
   </div>
 );
 
@@ -35,6 +28,8 @@ Basic.args = {
       <MenuItem text="Dropdown Item 3" />
     </Menu>
   ),
+  size: DropdownSize.large,
+  mode: DropdownMode.sameWidth,
 };
 
 const AdvancedTemplate: Story<ComponentProps<typeof Dropdown>> = args => {

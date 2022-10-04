@@ -5,10 +5,9 @@ export enum DropdownMode {
   sameWidth = 'sameWidth',
 }
 
-export enum DropdownColor {
-  gray2 = 'bg-gray-2',
-  gray3 = 'bg-gray-3',
-  gray4 = 'bg-gray-4',
+export enum DropdownSize {
+  large = 'large',
+  small = 'small',
 }
 
 export type DropdownCoords = {

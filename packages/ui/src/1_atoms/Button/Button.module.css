@@ -44,7 +44,7 @@
   }
 
   &.ghost {
-    @apply text-primary-20 border-none bg-none p-0 h-auto font-semibold;
+    @apply text-primary-20 border-none bg-none p-0 h-auto font-semibold text-xs;
 
     &:not(.disabled):not(:disabled):not(.loading):hover,
     &:not(.disabled):not(:disabled):not(.loading):focus,

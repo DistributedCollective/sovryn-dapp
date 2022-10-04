@@ -17,6 +17,11 @@ const Template: Story<ComponentProps<typeof Button>> = args => (
 export const Default = Template.bind({});
 Default.args = {
   text: 'Button',
+  type: ButtonType.button,
+  size: ButtonSize.small,
+  style: ButtonStyle.primary,
+  loading: false,
+  disabled: false,
 };
 
 export const LinkInternal = Template.bind({});
@@ -24,6 +29,10 @@ LinkInternal.args = {
   text: "Internal Link (Doesn't work in Storybook)",
   href: '/?path=/story/atoms-button--default',
   style: ButtonStyle.ghost,
+  type: ButtonType.button,
+  size: ButtonSize.small,
+  loading: false,
+  disabled: false,
 };
 
 export const LinkExternal = Template.bind({});
@@ -32,19 +41,10 @@ LinkExternal.args = {
   href: 'https://live.sovryn.app',
   hrefExternal: true,
   style: ButtonStyle.ghost,
-  size: ButtonSize.large,
-};
-
-const InteractiveTemplate: Story<ComponentProps<typeof Button>> = args => {
-  return <Button {...args} />;
-};
-
-export const Interactive = InteractiveTemplate.bind({});
-Interactive.args = {
-  text: 'Button',
-  type: ButtonType.button,
   size: ButtonSize.small,
-  style: ButtonStyle.primary,
+  type: ButtonType.button,
+  loading: false,
+  disabled: false,
 };
 
 const renderButton = (style: ButtonStyle, size: ButtonSize, props) => (

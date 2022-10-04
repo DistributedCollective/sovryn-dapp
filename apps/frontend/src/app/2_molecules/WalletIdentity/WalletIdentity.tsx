@@ -2,8 +2,7 @@ import React, { FC, PropsWithChildren } from 'react';
 
 import classNames from 'classnames';
 
-import { Dropdown } from '@sovryn/ui';
-import { DropdownSize } from '@sovryn/ui/src/2_molecules/Dropdown/Dropdown.types';
+import { Dropdown, DropdownSize } from '@sovryn/ui';
 
 import styles from './WalletIdentity.module.css';
 import { AddressBadge } from './components/AddressBadge/AddressBadge';

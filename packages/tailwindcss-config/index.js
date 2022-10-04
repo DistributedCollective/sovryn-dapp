@@ -1,6 +1,6 @@
 module.exports = {
   important: true,
-  content: ['./src/**/*.{html,ts,tsx,css}'],
+  content: ['./src/**/*.{html,ts,tsx}'],
   future: {
     purgeLayersByDefault: true,
   },

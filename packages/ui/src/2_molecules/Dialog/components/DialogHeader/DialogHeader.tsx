@@ -21,7 +21,7 @@ export const DialogHeader: FC<DialogHeaderProps> = ({
 }) => (
   <header
     className={classNames(
-      'px-6 py-3.5 relative bg-gray-11 flex flex-row justify-between items-center space-x-4 sm:rounded-t',
+      'px-6 py-3.5 relative bg-gray-90 flex flex-row justify-between items-center space-x-4 sm:rounded-t',
       className,
     )}
   >

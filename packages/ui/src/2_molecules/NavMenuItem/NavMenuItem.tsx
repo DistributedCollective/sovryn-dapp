@@ -24,7 +24,7 @@ export const NavMenuItem: FC<NavMenuItemProps> = ({
   className,
   dataActionId,
 }) => {
-  const ref = useRef<HTMLDivElement>(null);
+  const ref = useRef<HTMLButtonElement>(null);
   const formattedCount = useMemo(
     () =>
       count && count > MAX_NOTIFICATIONS_COUNT
@@ -34,7 +34,8 @@ export const NavMenuItem: FC<NavMenuItemProps> = ({
   );
 
   return (
-    <div
+    <button
+      type="button"
       data-action-id={dataActionId}
       onClick={onClick}
       className={classNames(styles.navMenuItem, className, {
@@ -45,6 +46,6 @@ export const NavMenuItem: FC<NavMenuItemProps> = ({
     >
       {children}
       {formattedCount && <Badge content={formattedCount} />}
-    </div>
+    </button>
   );
 };

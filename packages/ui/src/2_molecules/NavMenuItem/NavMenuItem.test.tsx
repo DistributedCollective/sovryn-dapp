@@ -1,15 +1,18 @@
 import { render } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
-import React, { useCallback, useState } from 'react';
+import React, { useReducer } from 'react';
 
 import { NavMenuItem } from './NavMenuItem';
 
 const TestComponent = () => {
-  const [selected, setSelected] = useState(false);
-  const onClick = useCallback(() => setSelected(selected => !selected), []);
+  const [selected, handleToggle] = useReducer(state => !state, false);
   return (
-    <NavMenuItem children="Menu item" onClick={onClick} isActive={selected} />
+    <NavMenuItem
+      children="Menu item"
+      onClick={handleToggle}
+      isActive={selected}
+    />
   );
 };
 

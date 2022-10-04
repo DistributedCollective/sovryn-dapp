@@ -1,6 +1,6 @@
 import { Story } from '@storybook/react';
 
-import React, { ComponentProps, useCallback, useState } from 'react';
+import React, { ComponentProps, useReducer } from 'react';
 
 import { NavMenuItem } from './NavMenuItem';
 
@@ -21,10 +21,8 @@ const Template: Story<ComponentProps<typeof NavMenuItem>> = () => (
 export const Basic = Template.bind({});
 
 const InteractiveTemplate: Story<ComponentProps<typeof NavMenuItem>> = args => {
-  const [active, setActive] = useState(false);
-  const onClick = useCallback(() => setActive(active => !active), []);
-
-  return <NavMenuItem {...args} onClick={onClick} isActive={active} />;
+  const [active, handleToggle] = useReducer(state => !state, false);
+  return <NavMenuItem {...args} onClick={handleToggle} isActive={active} />;
 };
 
 export const Interactive = InteractiveTemplate.bind({});

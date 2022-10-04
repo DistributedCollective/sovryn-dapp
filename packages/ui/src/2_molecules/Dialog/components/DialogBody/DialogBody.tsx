@@ -9,6 +9,4 @@ type DialogBodyProps = {
 export const DialogBody: FC<PropsWithChildren<DialogBodyProps>> = ({
   children,
   className,
-}) => (
-    <main className={classNames('p-6 text-xs', className)}>{children}</main>
-  );
+}) => <main className={classNames('p-6 text-xs', className)}>{children}</main>;

@@ -74,7 +74,7 @@ export const Dialog: IDialogFunctionComponent<DialogProps> = ({
     if (isOpen && initialFocusRef && initialFocusRef.current) {
       initialFocusRef.current.focus();
     }
-  }, [isOpen]);
+  }, [isOpen, initialFocusRef]);
 
   return (
     <Overlay

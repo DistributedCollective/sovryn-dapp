@@ -4,28 +4,80 @@ import React, { ComponentProps, useCallback, useState } from 'react';
 
 import { Button } from '../../1_atoms';
 import { Dialog } from './Dialog';
+import { DialogBody } from './components/DialogBody/DialogBody';
+import { DialogHeader } from './components/DialogHeader/DialogHeader';
+import { DialogSize } from './Dialog.types';
 
 export default {
   title: 'Molecule/Dialog',
   component: Dialog,
+  parameters: {
+    backgrounds: {
+      // set background to lighter color to make dialog more visible
+      default: 'gray-10',
+    },
+  },
+  argTypes: {
+    children: {
+      type: {
+        required: true,
+      },
+    },
+    className: {
+      defaultValue: '',
+    },
+    dataActionId: {
+      defaultValue: '',
+    },
+    width: {
+      defaultValue: DialogSize.md,
+    },
+  },
 };
 
-const Template: Story<ComponentProps<typeof Dialog>> = args => (
-  <Dialog {...args} />
+const Template: Story<ComponentProps<typeof Dialog>> = ({
+  children,
+  ...args
+}) => (
+  <Dialog {...args}>
+    <DialogBody>{children}</DialogBody>
+  </Dialog>
 );
 
-const NotClosableTemplate: Story<ComponentProps<typeof Dialog>> = args => (
-  <Dialog {...args} onClose={undefined} />
+const NotClosableTemplate: Story<ComponentProps<typeof Dialog>> = ({
+  children,
+  ...args
+}) => (
+  <Dialog {...args} onClose={undefined}>
+    <DialogHeader title="Dialog" />
+    <DialogBody>{children}</DialogBody>
+  </Dialog>
 );
 
-const InteractiveTemplate: Story<ComponentProps<typeof Dialog>> = args => {
+const TemplateWithHeader: Story<ComponentProps<typeof Dialog>> = ({
+  children,
+  ...args
+}) => (
+  <Dialog {...args}>
+    <DialogHeader title="Dialog title" onClose={args.onClose} />
+    <DialogBody>{children}</DialogBody>
+  </Dialog>
+);
+
+const InteractiveTemplate: Story<ComponentProps<typeof Dialog>> = ({
+  children,
+  ...args
+}) => {
   const [open, setOpen] = useState(false);
   const toggleOpen = useCallback(() => setOpen(open => !open), []);
 
   return (
-    <div className="relative mx-auto w-80 h-80 p-8 bg-gray-3 text-center">
+    <div className="relative mx-auto min-h-screen flex items-center justify-center">
       <Button onClick={toggleOpen} text="open" />
-      <Dialog {...args} isOpen={open} onClose={toggleOpen} />
+      <Dialog {...args} isOpen={open} onClose={toggleOpen}>
+        <DialogHeader title="Dialog title" onClose={toggleOpen} />
+        <DialogBody>{children}</DialogBody>
+      </Dialog>
     </div>
   );
 };
@@ -38,7 +90,7 @@ const ChildDialog: React.FC = () => {
     <>
       <Button onClick={toggleOpen} text="open" />
       <Dialog isOpen={open} onClose={toggleOpen}>
-        Opens on top of parent.
+        <DialogBody>Opens on top of parent.</DialogBody>
       </Dialog>
     </>
   );
@@ -50,13 +102,19 @@ Basic.args = {
   isOpen: true,
 };
 
+export const BasicHeader = TemplateWithHeader.bind({});
+BasicHeader.args = {
+  children: 'Dialog Active',
+  isOpen: true,
+};
+
 export const NotClosable = NotClosableTemplate.bind({});
 NotClosable.args = {
   children: 'Dialog Active',
   isOpen: true,
 };
 
-export const LongContent = Template.bind({});
+export const LongContent = TemplateWithHeader.bind({});
 LongContent.args = {
   children: (
     <div>

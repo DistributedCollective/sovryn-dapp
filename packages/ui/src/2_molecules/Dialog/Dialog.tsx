@@ -1,6 +1,7 @@
-import React, { useCallback, useEffect, useMemo, MouseEvent } from 'react';
+import React, { useCallback, useEffect, MouseEvent, useRef } from 'react';
 
 import classNames from 'classnames';
+import FocusTrap from 'focus-trap-react';
 
 import { Overlay, OverlayProps } from '../Overlay/Overlay';
 import styles from './Dialog.module.css';
@@ -18,6 +19,8 @@ type DialogProps = {
   dataActionId?: string;
   overlayProps?: Omit<Partial<OverlayProps>, 'isOpen' | 'fixed'>;
   onClose?: () => void;
+  closeOnEscape?: boolean;
+  initialFocusRef?: React.RefObject<HTMLElement>;
 };
 
 export const Dialog: IDialogFunctionComponent<DialogProps> = ({
@@ -25,15 +28,15 @@ export const Dialog: IDialogFunctionComponent<DialogProps> = ({
   children,
   className,
   width = DialogSize.md,
-  dataActionId,
+  dataActionId = '',
   overlayProps,
   onClose,
+  closeOnEscape = true,
+  initialFocusRef,
 }) => {
-  const sizeClassNames = useMemo(() => dialogSizeMap[width], [width]);
+  const ref = useRef<HTMLDivElement>(null);
 
-  const handleClose = useCallback(() => {
-    onClose?.();
-  }, [onClose]);
+  const handleClose = useCallback(() => onClose?.(), [onClose]);
 
   const handleChildElementClick = useCallback((event: MouseEvent) => {
     event.stopPropagation();
@@ -43,6 +46,35 @@ export const Dialog: IDialogFunctionComponent<DialogProps> = ({
     // make sure that multiple dialogs opened showing up in correct order.
     Dialog.index++;
   }, []);
+
+  useEffect(() => {
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        event.stopPropagation();
+        // close the dialog only if it's the topmost one
+        if (
+          ref.current === document.activeElement ||
+          ref.current?.contains(document.activeElement)
+        ) {
+          handleClose();
+        }
+      }
+    };
+
+    if (closeOnEscape) {
+      document.addEventListener('keydown', handleEscape);
+    }
+
+    return () => {
+      document.removeEventListener('keydown', handleEscape);
+    };
+  }, [handleClose, closeOnEscape]);
+
+  useEffect(() => {
+    if (isOpen && initialFocusRef && initialFocusRef.current) {
+      initialFocusRef.current.focus();
+    }
+  }, [isOpen, initialFocusRef]);
 
   return (
     <Overlay
@@ -56,21 +88,27 @@ export const Dialog: IDialogFunctionComponent<DialogProps> = ({
     >
       <div className={styles.wrapper} data-action-id={dataActionId}>
         <div className={styles.container}>
-          <div
-            className={classNames(styles.dialog, sizeClassNames, className)}
-            onClick={handleChildElementClick}
+          <FocusTrap
+            active={isOpen}
+            focusTrapOptions={{
+              initialFocus: initialFocusRef?.current || undefined,
+              fallbackFocus: () => ref.current!,
+            }}
           >
-            {onClose && (
-              <button
-                className={styles.closeButton}
-                onClick={handleClose}
-                data-action-id={`close-${dataActionId || 'dialog'}`}
-              >
-                <span className="sr-only">close</span>
-              </button>
-            )}
-            {children}
-          </div>
+            <section
+              className={classNames(
+                styles.dialog,
+                dialogSizeMap[width],
+                className,
+              )}
+              role="dialog"
+              ref={ref}
+              onClick={handleChildElementClick}
+              tabIndex={-1}
+            >
+              {children}
+            </section>
+          </FocusTrap>
         </div>
       </div>
     </Overlay>

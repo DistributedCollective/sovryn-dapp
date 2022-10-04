@@ -18,7 +18,7 @@
     }
 
     & .text {
-      @apply font-semibold text-gray-10 flex items-center;
+      @apply font-semibold flex items-center;
       line-height: 25px;
     }
 

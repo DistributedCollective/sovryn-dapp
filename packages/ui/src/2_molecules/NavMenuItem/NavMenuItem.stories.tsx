@@ -9,16 +9,21 @@ export default {
   component: NavMenuItem,
 };
 
-const Template: Story<ComponentProps<typeof NavMenuItem>> = () => (
+const Template: Story<ComponentProps<typeof NavMenuItem>> = args => (
   <>
-    <NavMenuItem children="Zero" count={10} />
-    <NavMenuItem children="Perpetual" className="mx-5" />
-    <NavMenuItem children="999 notifications" count={999} className="mr-5" />
-    <NavMenuItem children="Selected item" count={2} isActive />
+    <NavMenuItem {...args} />
   </>
 );
 
 export const Basic = Template.bind({});
+Basic.args = {
+  children: 'Menu item',
+  count: 100,
+  className: 'm-2',
+  isActive: false,
+  maxNotificationsCount: 99,
+  dataActionId: '',
+};
 
 const InteractiveTemplate: Story<ComponentProps<typeof NavMenuItem>> = args => {
   const [active, handleToggle] = useReducer(state => !state, false);
@@ -30,4 +35,7 @@ Interactive.args = {
   children: 'Menu item',
   count: 1,
   className: 'm-2',
+  isActive: false,
+  maxNotificationsCount: 99,
+  dataActionId: '',
 };

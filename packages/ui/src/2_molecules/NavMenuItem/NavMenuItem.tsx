@@ -1,11 +1,11 @@
-import React, { FC, ReactNode, useMemo, useRef } from 'react';
+import React, { FC, ReactNode, useMemo } from 'react';
 
 import classNames from 'classnames';
 
 import { Badge } from '../../1_atoms/Badge/Badge';
 import styles from './NavMenuItem.module.css';
 
-const MAX_NOTIFICATIONS_COUNT = 99;
+const MAX_COUNT_DEFAULT = 99;
 
 type NavMenuItemProps = {
   count?: number;
@@ -14,6 +14,7 @@ type NavMenuItemProps = {
   isActive?: boolean;
   className?: string;
   dataActionId?: string;
+  maxNotificationsCount?: number;
 };
 
 export const NavMenuItem: FC<NavMenuItemProps> = ({
@@ -23,12 +24,12 @@ export const NavMenuItem: FC<NavMenuItemProps> = ({
   isActive,
   className,
   dataActionId,
+  maxNotificationsCount = MAX_COUNT_DEFAULT,
 }) => {
-  const ref = useRef<HTMLButtonElement>(null);
   const formattedCount = useMemo(
     () =>
-      count && count > MAX_NOTIFICATIONS_COUNT
-        ? MAX_NOTIFICATIONS_COUNT
+      count && count > maxNotificationsCount
+        ? `${maxNotificationsCount}+`
         : count,
     [count],
   );
@@ -42,7 +43,6 @@ export const NavMenuItem: FC<NavMenuItemProps> = ({
         [styles.active]: isActive,
         [styles.count]: formattedCount,
       })}
-      ref={ref}
     >
       {children}
       {formattedCount && <Badge content={formattedCount} />}

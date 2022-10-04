@@ -1,12 +1,12 @@
 .badge {
-  @apply rounded-full inline-flex items-center justify-center overflow-hidden font-roboto not-italic;
+  @apply rounded-full inline-flex items-center justify-center overflow-hidden font-roboto not-italic px-[0.1rem];
 
   &.sm {
-    @apply h-3.5 w-3.5 text-tiny font-medium;
+    @apply h-3.5 min-w-3.5 text-tiny font-medium;
   }
 
   &.md {
-    @apply h-8 w-8 text-sm font-semibold;
+    @apply h-8 min-w-8 text-sm font-semibold;
   }
 
   &.gray {

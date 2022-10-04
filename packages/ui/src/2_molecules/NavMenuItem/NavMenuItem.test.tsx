@@ -40,6 +40,6 @@ describe('NavMenuItem', () => {
     const { getByText } = render(
       <NavMenuItem children="Menu item" count={1000} />,
     );
-    expect(getByText('99')).toBeInTheDocument();
+    expect(getByText('99+')).toBeInTheDocument();
   });
 });

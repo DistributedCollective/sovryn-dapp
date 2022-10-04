@@ -21,7 +21,7 @@ Basic.args = {
   count: 100,
   className: 'm-2',
   isActive: false,
-  maxNotificationsCount: 99,
+  maxCount: 99,
   dataActionId: '',
 };
 
@@ -36,6 +36,6 @@ Interactive.args = {
   count: 1,
   className: 'm-2',
   isActive: false,
-  maxNotificationsCount: 99,
+  maxCount: 99,
   dataActionId: '',
 };

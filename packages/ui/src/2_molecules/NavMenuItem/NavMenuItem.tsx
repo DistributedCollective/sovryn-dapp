@@ -14,7 +14,7 @@ type NavMenuItemProps = {
   isActive?: boolean;
   className?: string;
   dataActionId?: string;
-  maxNotificationsCount?: number;
+  maxCount?: number;
 };
 
 export const NavMenuItem: FC<NavMenuItemProps> = ({
@@ -24,12 +24,12 @@ export const NavMenuItem: FC<NavMenuItemProps> = ({
   isActive,
   className,
   dataActionId,
-  maxNotificationsCount = MAX_COUNT_DEFAULT,
+  maxCount = MAX_COUNT_DEFAULT,
 }) => {
   const formattedCount = useMemo(
     () =>
-      count && count > maxNotificationsCount
-        ? `${maxNotificationsCount}+`
+      count && count > maxCount
+        ? `${maxCount}+`
         : count,
     [count],
   );

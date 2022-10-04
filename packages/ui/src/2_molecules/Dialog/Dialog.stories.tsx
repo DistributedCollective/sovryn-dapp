@@ -6,6 +6,7 @@ import { Button } from '../../1_atoms';
 import { Dialog } from './Dialog';
 import { DialogBody } from './components/DialogBody/DialogBody';
 import { DialogHeader } from './components/DialogHeader/DialogHeader';
+import { DialogSize } from './Dialog.types';
 
 export default {
   title: 'Molecule/Dialog',
@@ -14,6 +15,22 @@ export default {
     backgrounds: {
       // set background to lighter color to make dialog more visible
       default: 'gray-10',
+    },
+  },
+  argTypes: {
+    children: {
+      type: {
+        required: true,
+      },
+    },
+    className: {
+      defaultValue: '',
+    },
+    dataActionId: {
+      defaultValue: '',
+    },
+    width: {
+      defaultValue: DialogSize.md,
     },
   },
 };

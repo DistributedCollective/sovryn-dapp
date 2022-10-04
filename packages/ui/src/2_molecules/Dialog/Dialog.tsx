@@ -28,7 +28,7 @@ export const Dialog: IDialogFunctionComponent<DialogProps> = ({
   children,
   className,
   width = DialogSize.md,
-  dataActionId,
+  dataActionId = '',
   overlayProps,
   onClose,
   closeOnEscape = true,

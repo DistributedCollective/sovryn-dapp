@@ -1,0 +1,68 @@
+.button {
+  @apply font-roboto inline-flex box-border items-center justify-center text-center rounded cursor-pointer transition-colors;
+
+  &.primary {
+    @apply border-t-2 border-t-transparent text-base text-gray-9 rounded-b-none;
+    width: 155px;
+    height: 47px;
+
+    &.normal {
+      @apply font-medium;
+    }
+    &.withBorder.active {
+      @apply border-x border-x-gray-50;
+      &:last-child {
+        @apply border-r-0;
+      }
+      &:first-child {
+        @apply border-l-0;
+      }
+    }
+    &.withBorder:not(.active) {
+      @apply border-b border-b-gray-50;
+    }
+    &.active {
+      @apply text-gray-10 opacity-100 border-t-primary bg-gray-80;
+
+      &.default {
+        @apply border-t-primary-30;
+      }
+      &.buy {
+        @apply border-t-positive;
+      }
+      &.sell {
+        @apply border-t-negative;
+      }
+    }
+  }
+
+  &.secondary {
+    &.normal {
+      @apply font-semibold text-xs px-0.5 py-2;
+      min-width: 54px;
+    }
+    &.small {
+      @apply font-semibold text-tiny px-0.5 py-1;
+      min-width: 41px;
+    }
+    &.active {
+      @apply bg-gray-80;
+
+      &.default {
+        @apply text-primary-30;
+      }
+      &.buy {
+        @apply text-positive;
+      }
+      &.sell {
+        @apply text-negative;
+      }
+    }
+    &:not(.active) {
+      @apply text-gray-10 opacity-75;
+      &:hover {
+        @apply opacity-100;
+      }
+    }
+  }
+}

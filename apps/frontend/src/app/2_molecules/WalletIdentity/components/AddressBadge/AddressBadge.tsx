@@ -26,7 +26,7 @@ export const AddressBadge: FC<PropsWithChildren<AddressBadgeProps>> = ({
   };
 
   return (
-    <span className="flex flex-nowrap flex-row items-center w-full justify-between truncate font-semibold">
+    <span className="flex flex-nowrap flex-row items-center w-full truncate font-semibold">
       <span>
         <img
           className="rounded-full mr-2"

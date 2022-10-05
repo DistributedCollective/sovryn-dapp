@@ -16,7 +16,6 @@ import styles from './MenuItem.module.css';
 type MenuItemProps = {
   className?: string;
   icon?: IconType;
-  iconProps?: Omit<IconProps, 'icon'>;
   text: ReactNode;
   label?: ReactNode;
   disabled?: boolean;
@@ -36,7 +35,6 @@ export const MenuItem: React.FC<MenuItemProps> = ({
   hrefExternal,
   onClick,
   dataActionId,
-  iconProps,
 }) => {
   const onClickHandler = useCallback(
     event => {
@@ -73,9 +71,7 @@ export const MenuItem: React.FC<MenuItemProps> = ({
           >
             <div className="block leading-none">
               <div className="flex items-center">
-                {icon && (
-                  <Icon {...iconProps} icon={icon} className={styles.icon} />
-                )}
+                {icon && <Icon icon={icon} className={styles.icon} />}
                 <span className={classNames(styles.text)}>{text}</span>
                 <img
                   src={iconNewTab}
@@ -100,9 +96,7 @@ export const MenuItem: React.FC<MenuItemProps> = ({
           >
             <div className="block leading-none">
               <div className="flex items-center">
-                {icon && (
-                  <Icon {...iconProps} icon={icon} className={styles.icon} />
-                )}
+                {icon && <Icon icon={icon} className={styles.icon} />}
                 <span className={classNames(styles.text)}>{text}</span>
               </div>
               {label && <span className={styles.label}>{label}</span>}
@@ -123,9 +117,7 @@ export const MenuItem: React.FC<MenuItemProps> = ({
         >
           <div className="block leading-none">
             <div className="flex items-center">
-              {icon && (
-                <Icon {...iconProps} icon={icon} className={styles.icon} />
-              )}
+              {icon && <Icon icon={icon} className={styles.icon} />}
               <span className={classNames(styles.text)}>{text}</span>
             </div>
             {label && <span className={styles.label}>{label}</span>}

@@ -20,15 +20,9 @@ export const DisconnectSubmenu: FC<
           alert('Address was copied to clipboard.');
         }}
         icon={'copy'}
-        iconProps={{ size: 16, className: 'mr-2' }}
         text="Copy Address"
       />
-      <MenuItem
-        iconProps={{ size: 16, viewBox: '0 0 16 14', className: 'mr-2' }}
-        onClick={onDisconnect}
-        icon={'exit'}
-        text="Disconnect"
-      />
+      <MenuItem onClick={onDisconnect} icon={'exit'} text="Disconnect" />
     </Menu>
   );
 };

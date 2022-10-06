@@ -32,8 +32,8 @@
   "scripts": {
     "dev": "craco start",
     "build": "craco build",
-    "test": "craco test --watchAll=false",
-    "test:staged": "craco test --watchAll=false --bail --onlyChanged",
+    "test": "craco test --watchAll=false --passWithNoTests",
+    "test:staged": "craco test --watchAll=false --passWithNoTests --bail --onlyChanged",
     "lint": "eslint -c .eslintrc.js ./"
   },
   "browserslist": {

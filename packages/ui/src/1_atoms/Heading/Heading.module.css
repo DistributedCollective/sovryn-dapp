@@ -1,0 +1,13 @@
+.h1 {
+  @apply text-2xl leading-7;
+}
+
+.h2 {
+  @apply text-base;
+  line-height: 1.125rem;
+}
+
+.h3 {
+  @apply text-xs;
+  line-height: 0.875rem;
+}

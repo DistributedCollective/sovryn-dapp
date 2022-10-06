@@ -9,6 +9,7 @@
     "skipLibCheck": true,
     "module": "ESNext",  
     "declaration": true,
+    "emitDeclarationOnly": true,
     "sourceMap": true,
     "moduleResolution": "node",
     "allowSyntheticDefaultImports": true

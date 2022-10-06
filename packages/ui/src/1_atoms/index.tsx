@@ -3,6 +3,7 @@ export * from './Lead/Lead';
 export * from './Input/Input';
 export * from './InputBase/InputBase';
 export * from './Icon/Icon';
+export * from './Heading/Heading';
 export * from './Portal/Portal';
 export * from './Paragraph/Paragraph';
 export * from './Badge/Badge';

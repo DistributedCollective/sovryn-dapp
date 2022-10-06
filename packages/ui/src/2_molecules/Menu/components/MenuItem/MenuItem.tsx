@@ -68,13 +68,13 @@ export const MenuItem: React.FC<MenuItemProps> = ({
             onClick={onClickHandler}
             data-action-id={dataActionId}
           >
-            <div className="block leading-none">
-              <div className="flex items-center">
-                {icon && <Icon icon={icon} className="mr-2" />}
+            <div className={styles.hostBlock}>
+              <div className={styles.hostFlex}>
+                {icon && <Icon icon={icon} className={styles.icon} />}
                 <span className={classNames(styles.text)}>{text}</span>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  className="ml-2 h-5 w-5 inline-block"
+                  className={styles.externalIcon}
                   viewBox="0 0 24 24"
                   fill="#D9D9D9"
                 >
@@ -97,9 +97,9 @@ export const MenuItem: React.FC<MenuItemProps> = ({
             onClick={onClickHandler}
             data-action-id={dataActionId}
           >
-            <div className="block leading-none">
-              <div className="flex items-center">
-                {icon && <Icon icon={icon} className="mr-2" />}
+            <div className={styles.hostBlock}>
+              <div className={styles.hostFlex}>
+                {icon && <Icon icon={icon} className={styles.icon} />}
                 <span className={classNames(styles.text)}>{text}</span>
               </div>
               {label && <span className={styles.label}>{label}</span>}
@@ -118,9 +118,9 @@ export const MenuItem: React.FC<MenuItemProps> = ({
           onClick={onClickHandler}
           data-action-id={dataActionId}
         >
-          <div className="block leading-none">
-            <div className="flex items-center">
-              {icon && <Icon icon={icon} className="mr-2" />}
+          <div className={styles.hostBlock}>
+            <div className={styles.hostFlex}>
+              {icon && <Icon icon={icon} className={styles.icon} />}
               <span className={classNames(styles.text)}>{text}</span>
             </div>
             {label && <span className={styles.label}>{label}</span>}

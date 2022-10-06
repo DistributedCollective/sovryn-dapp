@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Lead } from '@sovryn/ui';
+import { Button, Lead } from '@sovryn/ui';
 
 import { EthersProviderTest } from '../../3_organisms/EthersProviderTest';
 import { useTheme } from '../../../hooks/useTheme';
@@ -21,6 +21,8 @@ function App() {
         </a>
         <Lead test={false}>abc</Lead>
         <Lead test={true}>def</Lead>
+
+        <Button text="Hello." />
 
         <div className="flex items-center gap-4">
           <div

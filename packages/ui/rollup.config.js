@@ -1,17 +1,18 @@
-import resolve from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
+import resolve from '@rollup/plugin-node-resolve';
 import typescript from '@rollup/plugin-typescript';
-import { terser } from 'rollup-plugin-terser';
+
+import dts from 'rollup-plugin-dts';
 import external from 'rollup-plugin-exclude-dependencies-from-bundle';
 import postcss from 'rollup-plugin-postcss';
-import dts from 'rollup-plugin-dts';
+import { terser } from 'rollup-plugin-terser';
 
 const packageJson = require('./package.json');
 
 /**
  * @type {import('rollup').RollupOptions}
  */
-export default [
+const config = [
   {
     input: 'src/index.ts',
     output: [
@@ -32,7 +33,13 @@ export default [
       resolve(),
       commonjs(),
       typescript({ tsconfig: './tsconfig.json' }),
-      postcss(),
+      postcss({
+        modules: {
+          generateScopedName: '[hash:base64:8]',
+        },
+        autoModules: true,
+        minimize: true,
+      }),
       terser(),
     ],
   },
@@ -43,3 +50,5 @@ export default [
     plugins: [dts()],
   },
 ];
+
+export default config;

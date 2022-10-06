@@ -1,3 +1,5 @@
+@import "@sovryn/tailwindcss-config/styles/index.css";
+
 @layer base {
   h1,
   h2,
@@ -16,6 +18,11 @@
     overflow: overlay;
   }
 }
+
 .sb-show-main #root {
   @apply relative block p-4;
+}
+
+.docs-story .innerZoomElementWrapper {
+  @apply p-4;
 }

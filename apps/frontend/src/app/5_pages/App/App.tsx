@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useReducer } from 'react';
 
-import { Button, Lead } from '@sovryn/ui';
+import { Button, Dialog, Dropdown, Lead, noop } from '@sovryn/ui';
 
 import { EthersProviderTest } from '../../3_organisms/EthersProviderTest';
 import { useTheme } from '../../../hooks/useTheme';
@@ -9,6 +9,8 @@ import styles from './App.module.css';
 
 function App() {
   const { handleThemeChange } = useTheme();
+
+  const [isOpen, toggle] = useReducer(p => !p, false);
 
   return (
     <div className="my-2 px-4">
@@ -22,7 +24,25 @@ function App() {
         <Lead test={false}>abc</Lead>
         <Lead test={true}>def</Lead>
 
-        <Button text="Hello." />
+        <Button text="Open Dialog" onClick={toggle} />
+
+        <Dialog isOpen={isOpen} onClose={toggle}>
+          <div className="p-4">Hello.</div>
+        </Dialog>
+
+        <Dropdown text="test">
+          <div>
+            <div className="my-2" onClick={noop}>
+              Dropdown Item 1
+            </div>
+            <div className="my-2" onClick={noop}>
+              Dropdown Item 2
+            </div>
+            <div className="my-2" onClick={noop}>
+              Dropdown Item 3
+            </div>
+          </div>
+        </Dropdown>
 
         <div className="flex items-center gap-4">
           <div

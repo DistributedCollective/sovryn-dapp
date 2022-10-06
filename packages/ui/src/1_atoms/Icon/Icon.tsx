@@ -52,7 +52,7 @@ export const Icon: React.FC<IconProps> = ({
   }, [inline, size]);
 
   const inlineBlock = useMemo(
-    () => (inline ? 'inline-block' : 'block'),
+    () => (inline ? styles.iconInlineBlock : styles.iconBlock),
     [inline],
   );
 

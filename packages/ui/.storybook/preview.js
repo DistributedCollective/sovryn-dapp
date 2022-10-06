@@ -3,7 +3,7 @@ import resolveConfig from 'tailwindcss/resolveConfig';
 
 import tailwindConfig from '@sovryn/tailwindcss-config/index';
 
-import '../styles/index.css';
+import './tailwind.css';
 
 const config = resolveConfig(tailwindConfig);
 

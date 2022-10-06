@@ -21,3 +21,10 @@
 .dropdown {
   @apply absolute overflow-x-auto mt-1 transition-colors;
 }
+
+.icon {
+  @apply transition-transform ml-2;
+  &.isOpen {
+    @apply transform rotate-180;
+  }
+}

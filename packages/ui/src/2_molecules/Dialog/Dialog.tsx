@@ -82,7 +82,7 @@ export const Dialog: IDialogFunctionComponent<DialogProps> = ({
       isOpen={isOpen}
       fixed
       portalTarget="body"
-      portalClassName="relative"
+      portalClassName={styles.overlay}
       onBlur={handleClose}
       {...overlayProps}
     >

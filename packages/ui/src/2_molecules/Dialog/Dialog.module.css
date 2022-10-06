@@ -9,6 +9,10 @@
   }
 }
 
+.overlay {
+  @apply relative;
+}
+
 .dialog {
   @apply relative bg-sovryn-black text-gray-10 p-0 mx-auto min-h-full;
   @screen sm {
@@ -18,4 +22,52 @@
   &:focus {
     @apply outline-none;
   }
+}
+
+.dialogXs {
+  @apply w-full sm:max-w-xs;
+}
+
+.dialogSm {
+  @apply w-full sm:max-w-sm;
+}
+
+.dialogMd {
+  @apply w-full sm:max-w-md;
+}
+
+.dialogLg {
+  @apply max-w-lg;
+}
+
+.dialogXl {
+  @apply max-w-xl;
+}
+
+.dialog2Xl {
+  @apply max-w-2xl;
+}
+
+.dialog3Xl {
+  @apply max-w-3xl;
+}
+
+.dialog4Xl {
+  @apply max-w-4xl;
+}
+
+.dialog5Xl {
+  @apply max-w-5xl;
+}
+
+.dialog6Xl {
+  @apply max-w-6xl;
+}
+
+.dialog7Xl {
+  @apply max-w-7xl;
+}
+
+.dialogFull {
+  @apply w-full;
 }

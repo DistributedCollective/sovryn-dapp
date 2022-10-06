@@ -57,6 +57,10 @@
     "identity-obj-proxy": "3.0.0",
     "react-router-dom": "6.3.0"
   },
+  "peerDependencies": {
+    "react": ">=18.2",
+    "react-dom": ">=18.2"
+  },
   "files": [
     "dist"
   ]

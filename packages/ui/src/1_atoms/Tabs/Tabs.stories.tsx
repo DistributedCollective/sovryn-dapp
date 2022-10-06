@@ -22,17 +22,17 @@ Basic.args = {
     {
       label: 'Buy',
       content: <div>Buy</div>,
-      color: TabColor.buy,
+      activeColor: TabColor.buy,
     },
     {
       label: 'Sell',
       content: <div>Sell</div>,
-      color: TabColor.sell,
+      activeColor: TabColor.sell,
     },
     {
       label: 'Disabled',
       content: <div>Disabled</div>,
-      color: TabColor.sell,
+      activeColor: TabColor.sell,
       disabled: true,
     },
   ],

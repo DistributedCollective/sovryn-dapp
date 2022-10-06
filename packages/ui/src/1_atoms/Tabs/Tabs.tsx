@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useCallback } from 'react';
+import React, { useMemo, useCallback } from 'react';
 
 import classNames from 'classnames';
 
@@ -10,16 +10,15 @@ interface ITabItem {
   content: React.ReactNode;
   disabled?: boolean;
   dataActionId?: string;
-  color?: TabColor;
+  activeColor?: TabColor;
 }
 
 type TabsProps = {
   className?: string;
   contentClassName?: string;
-  index?: number;
+  index: number;
   items: ITabItem[];
   onChange?: (index: number) => void;
-  dataActionId?: string;
   style?: TabStyle;
   size?: TabSize;
   withBorder?: boolean;
@@ -27,29 +26,25 @@ type TabsProps = {
 
 export const Tabs: React.FC<TabsProps> = ({
   items,
-  index = 0,
+  index,
   onChange,
   className,
   contentClassName,
-  dataActionId,
   style = TabStyle.primary,
   size = TabSize.normal,
   withBorder = false,
 }) => {
-  const [activeTab, setActiveTab] = useState(index);
-
   const selectTab = useCallback(
     (item: ITabItem, index: number) => {
       if (item.disabled) {
         return;
       }
-      setActiveTab(index);
       onChange?.(index);
     },
     [onChange],
   );
 
-  const content = useMemo(() => items[activeTab]?.content, [activeTab, items]);
+  const content = useMemo(() => items[index]?.content, [index, items]);
 
   return (
     <div className={classNames(className, 'inline-flex flex-col')}>
@@ -63,15 +58,15 @@ export const Tabs: React.FC<TabsProps> = ({
           },
         )}
       >
-        {items.map((item, index) => (
+        {items.map((item, i) => (
           <Tab
-            key={index}
-            active={index === activeTab}
+            key={i}
+            active={index === i}
             disabled={item.disabled}
-            onClick={() => selectTab(item, index)}
+            onClick={() => selectTab(item, i)}
             content={item.label}
             dataActionId={item.dataActionId}
-            color={item.color}
+            color={item.activeColor}
             style={style}
             size={size}
             withBorder={withBorder}

@@ -3,7 +3,7 @@
 
   &.primary {
     @apply border-t-2 border-t-transparent text-base text-gray-9 rounded-b-none;
-    width: 155px;
+    min-width: 155px;
     height: 47px;
 
     &.normal {

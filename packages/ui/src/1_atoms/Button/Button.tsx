@@ -1,4 +1,4 @@
-import React, { MouseEventHandler, ReactNode, useMemo } from 'react';
+import React, { MouseEventHandler, ReactNode, useMemo, forwardRef, LegacyRef } from 'react';
 
 import classNames from 'classnames';
 import { Link } from 'react-router-dom';
@@ -20,7 +20,7 @@ export interface IButtonProps {
   dataActionId?: string;
 }
 
-export const Button: React.FC<IButtonProps> = ({
+export const Button = forwardRef<HTMLButtonElement | HTMLAnchorElement, IButtonProps>(({
   text,
   href,
   hrefExternal,
@@ -32,7 +32,7 @@ export const Button: React.FC<IButtonProps> = ({
   loading,
   className,
   dataActionId,
-}) => {
+}, ref) => {
   const classNamesComplete = useMemo(
     () =>
       classNames(
@@ -56,6 +56,7 @@ export const Button: React.FC<IButtonProps> = ({
     if (hrefExternal) {
       return (
         <a
+          ref={ref as LegacyRef<HTMLAnchorElement>}
           className={classNamesComplete}
           href={href}
           target="_blank"
@@ -69,6 +70,7 @@ export const Button: React.FC<IButtonProps> = ({
     } else {
       return (
         <Link
+          ref={ref as React.Ref<HTMLAnchorElement>}
           to={href}
           className={classNamesComplete}
           onClick={onClickHandler}
@@ -81,6 +83,7 @@ export const Button: React.FC<IButtonProps> = ({
   } else {
     return (
       <button
+        ref={ref as LegacyRef<HTMLButtonElement>}
         type={type}
         disabled={disabled}
         className={classNamesComplete}
@@ -91,4 +94,4 @@ export const Button: React.FC<IButtonProps> = ({
       </button>
     );
   }
-};
+});

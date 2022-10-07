@@ -1,7 +1,7 @@
-import { screen, render } from '@testing-library/react';
+import { screen, render, waitFor, act } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
-import React from 'react';
+import React, { createRef } from 'react';
 
 import { Dropdown } from './Dropdown';
 
@@ -29,5 +29,15 @@ describe('Dropdown', () => {
     userEvent.click(document.body);
     const dropdownOption = screen.queryByText('Option');
     expect(dropdownOption).not.toBeInTheDocument();
+  });
+
+  test('should open dropdown programically', () => {
+    const data = <div>Option</div>;
+    const ref = createRef<HTMLButtonElement>();
+    const { getByText } = render(<Dropdown ref={ref} text="Dropdown" children={data} />);
+    waitFor(() => ref.current);
+    act(() => ref.current?.click());
+    const dropdownOption = screen.queryByText('Option');
+    expect(dropdownOption).toBeInTheDocument();
   });
 });

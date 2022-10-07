@@ -1,7 +1,9 @@
 import React, {
+  forwardRef,
   ReactNode,
   useCallback,
   useEffect,
+  useImperativeHandle,
   useMemo,
   useRef,
   useState,
@@ -30,7 +32,7 @@ type DropdownProps = {
   dropdownClassName?: string;
 };
 
-export const Dropdown: React.FC<DropdownProps> = ({
+export const Dropdown = forwardRef<HTMLButtonElement, DropdownProps>(({
   text,
   children,
   mode = DropdownMode.sameWidth,
@@ -40,11 +42,14 @@ export const Dropdown: React.FC<DropdownProps> = ({
   className,
   dataActionId,
   dropdownClassName,
-}) => {
+}, ref) => {
   const buttonRef = useRef<HTMLButtonElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const [isOpen, setOpen] = useState(false);
   const [coords, setCoords] = useState<Nullable<DropdownCoords>>(null);
+
+  useImperativeHandle(ref, () => buttonRef.current!);
+
   const onButtonClick = useCallback(
     () => setOpen(prevValue => !prevValue),
     [setOpen],
@@ -132,4 +137,4 @@ export const Dropdown: React.FC<DropdownProps> = ({
       )}
     </>
   );
-};
+});

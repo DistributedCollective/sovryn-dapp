@@ -2,13 +2,16 @@ import React, { FC, PropsWithChildren, useEffect, useState } from 'react';
 
 import classNames from 'classnames';
 
-import { Chain, getProvider } from '@sovryn/ethers-provider';
+import { Button } from '@sovryn/ui';
+import { ButtonSize } from '@sovryn/ui/src/1_atoms/Button/Button.types';
 
+import { WalletIdentity } from '../WalletIdentity/WalletIdentity';
 import styles from './ConnectWalletButton.module.css';
 
 export type ConnectWalletButtonProps = {
+  onConnect: () => void;
   onDisconnect: () => void;
-  address: string;
+  address: string | undefined;
   className?: string;
   dataActionId?: string;
   hideSubmenu?: boolean;
@@ -16,19 +19,31 @@ export type ConnectWalletButtonProps = {
 
 export const ConnectWalletButton: FC<
   PropsWithChildren<ConnectWalletButtonProps>
-> = ({ address, onDisconnect, className, hideSubmenu = false }) => {
-  const [address, setAddress] = useState();
-useEffect(() => {
-  const sub = onboard.state.select('wallets').pipe(startWith(state.get().wallets), takeLast()).subscribe(wallets => {
-   if (wallets.length) {
-     console.log('connected', wallets[0].address);
-     setAddress(wallets[0].address);
-   } else {
-     console.log('not connected');
-     setAddress(undefined);
-   }
-  });
-}, []);
-
-  return <div>ConnectWalletButton</div>;
+> = ({
+  address,
+  onDisconnect,
+  onConnect,
+  className,
+  hideSubmenu = false,
+  dataActionId,
+}) => {
+  if (!address) {
+    return (
+      <Button
+        text="Connect wallet"
+        onClick={onConnect}
+        size={ButtonSize.sm}
+        className="text-white"
+        dataActionId={dataActionId}
+      />
+    );
+  } else {
+    return (
+      <WalletIdentity
+        onDisconnect={onDisconnect}
+        address={address}
+        dataActionId={dataActionId}
+      />
+    );
+  }
 };

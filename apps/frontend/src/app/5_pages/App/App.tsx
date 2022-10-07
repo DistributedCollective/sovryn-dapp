@@ -1,10 +1,13 @@
-import React, { useReducer } from 'react';
+import React, { useCallback, useEffect, useState, useReducer } from 'react';
 
+import { WalletState } from '@sovryn/onboard-core';
 import { Button, Dialog, Dropdown, Lead, noop } from '@sovryn/ui';
 
 import { WalletIdentity } from '../../2_molecules';
+import { ConnectWalletButton } from '../../2_molecules/ConnectWalletButton/ConnectWalletButton';
 import { EthersProviderTest } from '../../3_organisms/EthersProviderTest';
 import { useTheme } from '../../../hooks/useTheme';
+import { onboard } from '../../../lib/connector';
 import { AppTheme } from '../../../types/tailwind';
 import styles from './App.module.css';
 
@@ -12,6 +15,19 @@ function App() {
   const { handleThemeChange } = useTheme();
 
   const [isOpen, toggle] = useReducer(p => !p, false);
+  const [wallets, setWallets] = useState<WalletState[]>([]);
+
+  const handleConnectClick = useCallback(() => {
+    onboard.connectWallet('injected');
+  }, []);
+  const disconnect = useCallback(async () => {
+    await onboard.disconnectWallet(wallets[0].label);
+  }, [wallets]);
+
+  useEffect(() => {
+    const sub = onboard.state.select('wallets').subscribe(setWallets);
+    return () => sub.unsubscribe();
+  }, []);
 
   return (
     <div className="my-2 px-4">
@@ -82,16 +98,14 @@ function App() {
         </p>
       </header>
       <main>
-        <WalletIdentity
-          address="0x71C7656EC7ab88b098defB751B7401B5f6d8976F"
-          onDisconnect={() => {}}
-        />
-        <br />
-        <WalletIdentity
-          address="0x71C7656EC7ab88b098defB751B7401B5f6d8976F"
-          onDisconnect={() => {}}
-          hideSubmenu
-        />
+        <div>
+          <ConnectWalletButton
+            onConnect={handleConnectClick}
+            onDisconnect={disconnect}
+            address={wallets[0]?.accounts[0]?.address}
+          />
+        </div>
+
         <br />
         <br />
         <EthersProviderTest />

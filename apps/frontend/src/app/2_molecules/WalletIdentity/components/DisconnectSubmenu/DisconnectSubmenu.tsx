@@ -15,7 +15,7 @@ export const DisconnectSubmenu: FC<
   const copyAddress = useCallback(async () => {
     await navigator.clipboard.writeText(address);
     alert('Address was copied to clipboard.');
-  }, []);
+  }, [address]);
 
   return (
     <Menu className={className}>

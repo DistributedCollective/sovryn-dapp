@@ -93,7 +93,7 @@ export const Icon: React.FC<IconProps> = ({
         {paths}
       </svg>
     );
-  }, [icon, inline, size, inlineBlock, className, dataActionId]);
+  }, [viewBox, icon, inline, size, inlineBlock, className, dataActionId]);
 
   return (
     <>

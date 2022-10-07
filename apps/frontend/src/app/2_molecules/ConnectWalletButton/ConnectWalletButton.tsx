@@ -1,12 +1,8 @@
-import React, { FC, PropsWithChildren, useEffect, useState } from 'react';
-
-import classNames from 'classnames';
+import React, { FC, PropsWithChildren } from 'react';
 
 import { Button } from '@sovryn/ui';
-import { ButtonSize } from '@sovryn/ui/src/1_atoms/Button/Button.types';
 
 import { WalletIdentity } from '../WalletIdentity/WalletIdentity';
-import styles from './ConnectWalletButton.module.css';
 
 export type ConnectWalletButtonProps = {
   onConnect: () => void;
@@ -14,26 +10,17 @@ export type ConnectWalletButtonProps = {
   address: string | undefined;
   className?: string;
   dataActionId?: string;
-  hideSubmenu?: boolean;
 };
 
 export const ConnectWalletButton: FC<
   PropsWithChildren<ConnectWalletButtonProps>
-> = ({
-  address,
-  onDisconnect,
-  onConnect,
-  className,
-  hideSubmenu = false,
-  dataActionId,
-}) => {
+> = ({ address, onDisconnect, onConnect, className, dataActionId }) => {
   if (!address) {
     return (
       <Button
         text="Connect wallet"
         onClick={onConnect}
-        size={ButtonSize.sm}
-        className="text-white"
+        className={className}
         dataActionId={dataActionId}
       />
     );
@@ -43,6 +30,7 @@ export const ConnectWalletButton: FC<
         onDisconnect={onDisconnect}
         address={address}
         dataActionId={dataActionId}
+        className={className}
       />
     );
   }

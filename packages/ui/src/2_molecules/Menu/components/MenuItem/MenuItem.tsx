@@ -8,7 +8,7 @@ import React, {
 import classNames from 'classnames';
 import { Link, useLocation } from 'react-router-dom';
 
-import { Icon, IconProps } from '../../../../1_atoms';
+import { Icon } from '../../../../1_atoms';
 import { IconType } from '../../../../1_atoms/Icon/Icon.types';
 import iconNewTab from '../../../../../assets/storybook/iconNewTab.svg';
 import styles from './MenuItem.module.css';
@@ -132,7 +132,6 @@ export const MenuItem: React.FC<MenuItemProps> = ({
     onClickHandler,
     dataActionId,
     icon,
-    iconProps,
     text,
     label,
     isActive,

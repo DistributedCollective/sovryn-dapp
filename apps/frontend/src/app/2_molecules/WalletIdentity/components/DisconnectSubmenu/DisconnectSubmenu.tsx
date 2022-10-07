@@ -11,16 +11,26 @@ export type DisconnectSubmenuProps = {
 
 export const DisconnectSubmenu: FC<
   PropsWithChildren<DisconnectSubmenuProps>
-> = ({ address, onDisconnect, className }) => {
+> = ({ address, onDisconnect, className, dataActionId }) => {
   const copyAddress = useCallback(async () => {
     await navigator.clipboard.writeText(address);
     alert('Address was copied to clipboard.');
-  }, []);
+  }, [address]);
 
   return (
     <Menu className={className}>
-      <MenuItem onClick={copyAddress} icon={'copy'} text="Copy Address" />
-      <MenuItem onClick={onDisconnect} icon={'exit'} text="Disconnect" />
+      <MenuItem
+        dataActionId={dataActionId + '-copy'}
+        onClick={copyAddress}
+        icon={'copy'}
+        text="Copy Address"
+      />
+      <MenuItem
+        dataActionId={dataActionId + '-exit'}
+        onClick={onDisconnect}
+        icon={'exit'}
+        text="Disconnect"
+      />
     </Menu>
   );
 };

@@ -2733,6 +2733,19 @@
     lodash.partition "^4.6.0"
     rxjs "^7.5.6"
 
+"@sovryn/onboard-core@0.0.2":
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/@sovryn/onboard-core/-/onboard-core-0.0.2.tgz#f70f1136d91a7b87a7598c59964863534c4950a5"
+  integrity sha512-Gmchytb0EV8GqZRXedMJ1Vedku2DGCcXmNc+Oj08zCg+RDF4u93LfMzanT8pZ7CY/z/loXR/kKOrKQLnBKhvPw==
+  dependencies:
+    "@sovryn/onboard-common" "*"
+    bowser "^2.11.0"
+    ethers "^5.7.0"
+    eventemitter3 "^4.0.7"
+    joi "^17.6.0"
+    lodash.partition "^4.6.0"
+    rxjs "^7.5.6"
+
 "@sovryn/onboard-hw-common@*":
   version "0.0.1"
   resolved "https://registry.yarnpkg.com/@sovryn/onboard-hw-common/-/onboard-hw-common-0.0.1.tgz#53099c1e658856d4cab231e26524fb0b73922fda"
@@ -15409,14 +15422,6 @@ stream-browserify@^2.0.1:
   dependencies:
     inherits "~2.0.1"
     readable-stream "^2.0.2"
-
-stream-browserify@^3.0.0:
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/stream-browserify/-/stream-browserify-3.0.0.tgz#22b0a2850cdf6503e73085da1fc7b7d0c2122f2f"
-  integrity sha512-H73RAHsVBapbim0tU2JwwOiXUj+fikfiaoYAKHF3VJfA0pe2BCzkhAHBlLG6REzE+2WNZcxOXjK7lkso+9euLA==
-  dependencies:
-    inherits "~2.0.4"
-    readable-stream "^3.5.0"
 
 stream-each@^1.1.0:
   version "1.2.3"

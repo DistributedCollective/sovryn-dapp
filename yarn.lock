@@ -2712,7 +2712,7 @@
   dependencies:
     "@sinonjs/commons" "^1.7.0"
 
-"@sovryn/onboard-common@*", "@sovryn/onboard-common@^0.0.1":
+"@sovryn/onboard-common@*", "@sovryn/onboard-common@0.0.1":
   version "0.0.1"
   resolved "https://registry.yarnpkg.com/@sovryn/onboard-common/-/onboard-common-0.0.1.tgz#d98c8aa842e4054b313d357a217b67eb618af0c2"
   integrity sha512-m/01kyNT15Cj8cjMxqeaAF3nrMy9cO/QLGUg67UH3cXU95buT1BYuaqiuaT1on/NgwDka8ccsRZ/vGaWfKIRFA==
@@ -2720,10 +2720,23 @@
     ethers "^5.7.0"
     joi "^17.6.0"
 
-"@sovryn/onboard-core@*", "@sovryn/onboard-core@^0.0.1":
+"@sovryn/onboard-core@*":
   version "0.0.1"
   resolved "https://registry.yarnpkg.com/@sovryn/onboard-core/-/onboard-core-0.0.1.tgz#c2b40bb65ccb838cbb49603305f689092522a94d"
   integrity sha512-Go4ZsWEa0M924ZFsRV+bi70WWCRpCA/Gb3zOOLGRbtxHyDWpkGOJy1QygoXf8GW5tIesFX+pC7gTR7KYurRfYg==
+  dependencies:
+    "@sovryn/onboard-common" "*"
+    bowser "^2.11.0"
+    ethers "^5.7.0"
+    eventemitter3 "^4.0.7"
+    joi "^17.6.0"
+    lodash.partition "^4.6.0"
+    rxjs "^7.5.6"
+
+"@sovryn/onboard-core@0.0.2":
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/@sovryn/onboard-core/-/onboard-core-0.0.2.tgz#f70f1136d91a7b87a7598c59964863534c4950a5"
+  integrity sha512-Gmchytb0EV8GqZRXedMJ1Vedku2DGCcXmNc+Oj08zCg+RDF4u93LfMzanT8pZ7CY/z/loXR/kKOrKQLnBKhvPw==
   dependencies:
     "@sovryn/onboard-common" "*"
     bowser "^2.11.0"
@@ -2745,7 +2758,7 @@
     joi "^17.6.0"
     rxjs "^7.5.6"
 
-"@sovryn/onboard-injected@^0.0.1":
+"@sovryn/onboard-injected@0.0.1":
   version "0.0.1"
   resolved "https://registry.yarnpkg.com/@sovryn/onboard-injected/-/onboard-injected-0.0.1.tgz#b55727b1aef711f4cb0a8ccfb54975d0e470163f"
   integrity sha512-rzOWlMUr0OEGOIeMxp5ycprU7VvIPpV9cgXbey/2PoesBLZY/k99L+I1VJDfO+2cxi40g1YJk7sI+VcB8fZKqQ==
@@ -2758,7 +2771,7 @@
     lodash.uniqby "^4.7.0"
     rxjs "^7.5.6"
 
-"@sovryn/onboard-react@^0.0.2":
+"@sovryn/onboard-react@0.0.2":
   version "0.0.2"
   resolved "https://registry.yarnpkg.com/@sovryn/onboard-react/-/onboard-react-0.0.2.tgz#1560dd26866d13c18825614fd7eaf990bf90fe2b"
   integrity sha512-BimHLF2vVJXySxbHfOn0VpQlBOK+YTFNnnRjUvdV7LN9/xjE4qcO/p4JZfEiQr+JAlyQPmLHfkTkZoWEMYTmrw==
@@ -15374,6 +15387,14 @@ storybook-css-modules@1.0.8:
   resolved "https://registry.npmjs.org/storybook-css-modules/-/storybook-css-modules-1.0.8.tgz"
   integrity sha512-anITwllH6nLw0quPElVBLRrE8QDbcRv0Dgl8sKLOc4uiqw+g1GE2l21Stjx3Wyv2O6ZKJScbyOpOuuz3SmeaOQ==
 
+stream-browserify@3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/stream-browserify/-/stream-browserify-3.0.0.tgz#22b0a2850cdf6503e73085da1fc7b7d0c2122f2f"
+  integrity sha512-H73RAHsVBapbim0tU2JwwOiXUj+fikfiaoYAKHF3VJfA0pe2BCzkhAHBlLG6REzE+2WNZcxOXjK7lkso+9euLA==
+  dependencies:
+    inherits "~2.0.4"
+    readable-stream "^3.5.0"
+
 stream-browserify@^2.0.1:
   version "2.0.2"
   resolved "https://registry.npmjs.org/stream-browserify/-/stream-browserify-2.0.2.tgz"
@@ -15381,14 +15402,6 @@ stream-browserify@^2.0.1:
   dependencies:
     inherits "~2.0.1"
     readable-stream "^2.0.2"
-
-stream-browserify@^3.0.0:
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/stream-browserify/-/stream-browserify-3.0.0.tgz#22b0a2850cdf6503e73085da1fc7b7d0c2122f2f"
-  integrity sha512-H73RAHsVBapbim0tU2JwwOiXUj+fikfiaoYAKHF3VJfA0pe2BCzkhAHBlLG6REzE+2WNZcxOXjK7lkso+9euLA==
-  dependencies:
-    inherits "~2.0.4"
-    readable-stream "^3.5.0"
 
 stream-each@^1.1.0:
   version "1.2.3"

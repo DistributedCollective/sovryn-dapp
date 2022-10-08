@@ -5,7 +5,7 @@
   "dependencies": {
     "@sovryn/ethers-provider": "*",
     "@sovryn/onboard-common": "0.0.1",
-    "@sovryn/onboard-core": "0.0.1",
+    "@sovryn/onboard-core": "0.0.2",
     "@sovryn/onboard-injected": "0.0.1",
     "@sovryn/onboard-react": "0.0.2",
     "@sovryn/tailwindcss-config": "*",

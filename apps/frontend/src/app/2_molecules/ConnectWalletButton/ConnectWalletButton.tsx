@@ -8,13 +8,21 @@ export type ConnectWalletButtonProps = {
   onConnect: () => void;
   onDisconnect: () => void;
   address: string | undefined;
+  pending?: boolean;
   className?: string;
   dataActionId?: string;
 };
 
 export const ConnectWalletButton: FC<
   PropsWithChildren<ConnectWalletButtonProps>
-> = ({ address, onDisconnect, onConnect, className, dataActionId }) => {
+> = ({
+  address,
+  pending,
+  onDisconnect,
+  onConnect,
+  className,
+  dataActionId,
+}) => {
   if (!address) {
     return (
       <Button
@@ -22,6 +30,7 @@ export const ConnectWalletButton: FC<
         onClick={onConnect}
         className={className}
         dataActionId={dataActionId}
+        disabled={pending}
       />
     );
   } else {

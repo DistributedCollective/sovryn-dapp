@@ -12,7 +12,8 @@ function App() {
   const { handleThemeChange } = useTheme();
 
   const [isOpen, toggle] = useReducer(p => !p, false);
-  const { connectWallet, disconnectWallet, wallets } = useWalletConnect();
+  const { connectWallet, disconnectWallet, wallets, pending } =
+    useWalletConnect();
 
   return (
     <div className="my-2 px-4">
@@ -88,6 +89,7 @@ function App() {
             onConnect={connectWallet}
             onDisconnect={disconnectWallet}
             address={wallets[0]?.accounts[0]?.address}
+            pending={pending}
           />
         </div>
 

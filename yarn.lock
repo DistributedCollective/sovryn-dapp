@@ -2720,20 +2720,7 @@
     ethers "^5.7.0"
     joi "^17.6.0"
 
-"@sovryn/onboard-core@*":
-  version "0.0.1"
-  resolved "https://registry.yarnpkg.com/@sovryn/onboard-core/-/onboard-core-0.0.1.tgz#c2b40bb65ccb838cbb49603305f689092522a94d"
-  integrity sha512-Go4ZsWEa0M924ZFsRV+bi70WWCRpCA/Gb3zOOLGRbtxHyDWpkGOJy1QygoXf8GW5tIesFX+pC7gTR7KYurRfYg==
-  dependencies:
-    "@sovryn/onboard-common" "*"
-    bowser "^2.11.0"
-    ethers "^5.7.0"
-    eventemitter3 "^4.0.7"
-    joi "^17.6.0"
-    lodash.partition "^4.6.0"
-    rxjs "^7.5.6"
-
-"@sovryn/onboard-core@0.0.2":
+"@sovryn/onboard-core@*", "@sovryn/onboard-core@0.0.2":
   version "0.0.2"
   resolved "https://registry.yarnpkg.com/@sovryn/onboard-core/-/onboard-core-0.0.2.tgz#f70f1136d91a7b87a7598c59964863534c4950a5"
   integrity sha512-Gmchytb0EV8GqZRXedMJ1Vedku2DGCcXmNc+Oj08zCg+RDF4u93LfMzanT8pZ7CY/z/loXR/kKOrKQLnBKhvPw==

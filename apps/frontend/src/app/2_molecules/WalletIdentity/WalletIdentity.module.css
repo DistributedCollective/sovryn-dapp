@@ -1,3 +1,3 @@
-.address-badge {
+.addressBadge {
   @apply inline-flex items-center bg-gray-50 h-8 font-roboto text-gray-10 text-xs font-semibold px-2.5 leading-none select-none rounded;
 }

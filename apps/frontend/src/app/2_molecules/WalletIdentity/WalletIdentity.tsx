@@ -1,4 +1,4 @@
-import React, { FC, PropsWithChildren } from 'react';
+import React, { FC } from 'react';
 
 import classNames from 'classnames';
 
@@ -16,7 +16,7 @@ export type WalletIdentityProps = {
   hideSubmenu?: boolean;
 };
 
-export const WalletIdentity: FC<PropsWithChildren<WalletIdentityProps>> = ({
+export const WalletIdentity: FC<WalletIdentityProps> = ({
   address,
   onDisconnect,
   className,
@@ -24,7 +24,7 @@ export const WalletIdentity: FC<PropsWithChildren<WalletIdentityProps>> = ({
 }) => {
   if (hideSubmenu) {
     return (
-      <div className={classNames(styles['address-badge'], className)}>
+      <div className={classNames(styles['addressBadge'], className)}>
         <AddressBadge address={address} />
       </div>
     );

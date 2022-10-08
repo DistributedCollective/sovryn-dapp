@@ -1,4 +1,4 @@
-import React, { FC, PropsWithChildren, useCallback } from 'react';
+import React, { FC, useCallback } from 'react';
 
 import { Menu, MenuItem } from '@sovryn/ui';
 
@@ -9,9 +9,11 @@ export type DisconnectSubmenuProps = {
   dataActionId?: string;
 };
 
-export const DisconnectSubmenu: FC<
-  PropsWithChildren<DisconnectSubmenuProps>
-> = ({ address, onDisconnect, className }) => {
+export const DisconnectSubmenu: FC<DisconnectSubmenuProps> = ({
+  address,
+  onDisconnect,
+  className,
+}) => {
   const copyAddress = useCallback(async () => {
     await navigator.clipboard.writeText(address);
     alert('Address was copied to clipboard.');

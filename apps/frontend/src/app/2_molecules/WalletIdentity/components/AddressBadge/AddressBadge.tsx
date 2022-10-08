@@ -1,4 +1,4 @@
-import React, { FC, PropsWithChildren } from 'react';
+import React, { FC } from 'react';
 
 import blockies from 'ethereum-blockies';
 
@@ -8,9 +8,7 @@ export type AddressBadgeProps = {
   address: string;
 };
 
-export const AddressBadge: FC<PropsWithChildren<AddressBadgeProps>> = ({
-  address,
-}) => {
+export const AddressBadge: FC<AddressBadgeProps> = ({ address }) => {
   const getWalletAddrBlockieImg = (): string => {
     return blockies
       .create({

@@ -8,7 +8,7 @@ export const useWalletConnect = () => {
   const [wallets, setWallets] = useState<WalletState[]>([]);
 
   const connectWallet = useCallback(() => {
-    onboard.connectWallet('injected');
+    onboard.connectWallet();
   }, []);
   const disconnectWallet = useCallback(async () => {
     await onboard.disconnectWallet(wallets[0].label);

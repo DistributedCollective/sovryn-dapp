@@ -14,6 +14,8 @@ export type WalletIdentityProps = {
   className?: string;
   dataActionId?: string;
   hideSubmenu?: boolean;
+  startLength?: number;
+  endLength?: number;
 };
 
 export const WalletIdentity: FC<WalletIdentityProps> = ({
@@ -21,18 +23,30 @@ export const WalletIdentity: FC<WalletIdentityProps> = ({
   onDisconnect,
   className,
   hideSubmenu = false,
+  startLength,
+  endLength,
 }) => {
   if (hideSubmenu) {
     return (
       <div className={classNames(styles['addressBadge'], className)}>
-        <AddressBadge address={address} />
+        <AddressBadge
+          address={address}
+          startLength={startLength}
+          endLength={endLength}
+        />
       </div>
     );
   }
   return (
     <Dropdown
       className={classNames('w-40', className)}
-      text={<AddressBadge address={address} />}
+      text={
+        <AddressBadge
+          address={address}
+          startLength={startLength}
+          endLength={endLength}
+        />
+      }
       size={DropdownSize.small}
     >
       <DisconnectSubmenu onDisconnect={onDisconnect} address={address} />

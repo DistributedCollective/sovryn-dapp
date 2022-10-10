@@ -6,9 +6,15 @@ import { prettyTx } from '../../../../utils';
 
 export type AddressBadgeProps = {
   address: string;
+  startLength?: number;
+  endLength?: number;
 };
 
-export const AddressBadge: FC<AddressBadgeProps> = ({ address }) => {
+export const AddressBadge: FC<AddressBadgeProps> = ({
+  address,
+  startLength = 6,
+  endLength = 4,
+}) => {
   const getWalletAddrBlockieImg = (): string => {
     return blockies
       .create({
@@ -32,7 +38,7 @@ export const AddressBadge: FC<AddressBadgeProps> = ({ address }) => {
           alt="wallet address"
         />
       </span>
-      <span>{prettyTx(address || '', 4, 4)}</span>
+      <span>{prettyTx(address || '', startLength, endLength)}</span>
     </span>
   );
 };

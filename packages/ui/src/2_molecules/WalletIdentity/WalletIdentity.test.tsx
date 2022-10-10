@@ -1,16 +1,89 @@
 import { render } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 
 import React from 'react';
 
+import { prettyTx } from '../../utils';
 import { WalletIdentity } from './WalletIdentity';
 
+jest.mock('react-router', () => ({
+  ...(jest.requireActual('react-router') as {}),
+  useLocation: jest.fn().mockImplementation(() => {
+    return { pathname: '/testroute', search: '', hash: '', state: null };
+  }),
+}));
+
+Object.assign(navigator, {
+  clipboard: {
+    writeText: () => {},
+  },
+});
+
 describe('WalletIdentity', () => {
-  test('renders WalletIdentity', () => {
-    render(
+  beforeEach(() => {
+    jest.spyOn(navigator.clipboard, 'writeText');
+    jest.spyOn(window, 'alert').mockImplementation(() => {});
+  });
+
+  test('renders WalletIdentity', async () => {
+    const testAddress = '0x32Be343B94f860124dC4fEe278FDCBD38C102D88';
+    const { getByText } = render(
       <WalletIdentity
-        address="0x32Be343B94f860124dC4fEe278FDCBD38C102D88"
+        address={testAddress}
         onDisconnect={() => {}}
+        startLength={4}
+        endLength={4}
+        dataActionId="address-badge"
       />,
     );
+    const addressBadge = getByText(prettyTx(testAddress, 4, 4));
+
+    expect(addressBadge).toBeDefined();
+    expect(addressBadge).toHaveAttribute('data-action-id', 'address-badge');
+  });
+
+  test('renders copy address', async () => {
+    const testAddress = '0x32Be343B94f860124dC4fEe278FDCBD38C102D88';
+    const { getByText } = render(
+      <WalletIdentity
+        address={testAddress}
+        onDisconnect={() => {}}
+        startLength={4}
+        endLength={4}
+        dataActionId="address-badge"
+      />,
+    );
+    const addressBadge = getByText(prettyTx(testAddress, 4, 4));
+
+    userEvent.click(addressBadge);
+
+    const copyButton = getByText('Copy Address');
+    expect(copyButton).toBeInTheDocument();
+
+    userEvent.click(copyButton);
+    expect(navigator.clipboard.writeText).toHaveBeenCalledWith(testAddress);
+  });
+
+  test('dissconnect button', async () => {
+    const dissconnectFunction = jest.fn();
+    const testAddress = '0x32Be343B94f860124dC4fEe278FDCBD38C102D88';
+    const { getByText } = render(
+      <WalletIdentity
+        address={testAddress}
+        onDisconnect={dissconnectFunction}
+        startLength={4}
+        endLength={4}
+        dataActionId="address-badge"
+      />,
+    );
+    const addressBadge = getByText(prettyTx(testAddress, 4, 4));
+
+    userEvent.click(addressBadge);
+
+    const disconnectButton = getByText('Disconnect');
+    expect(disconnectButton).toBeInTheDocument();
+
+    userEvent.click(disconnectButton);
+    expect(dissconnectFunction).toHaveBeenCalled();
   });
 });

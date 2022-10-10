@@ -25,26 +25,29 @@ export const WalletIdentity: FC<WalletIdentityProps> = ({
   hideSubmenu = false,
   startLength = 4,
   endLength = 4,
+  dataActionId,
 }) => {
   if (hideSubmenu) {
     return (
-      <div className={classNames(styles['addressBadge'], className)}>
+      <div className={classNames(styles.addressBadge, className)}>
         <AddressBadge
           address={address}
           startLength={startLength}
           endLength={endLength}
+          dataActionId={dataActionId}
         />
       </div>
     );
   }
   return (
     <Dropdown
-      className={classNames('w-40', className)}
+      className={classNames(styles.dropdown, className)}
       text={
         <AddressBadge
           address={address}
           startLength={startLength}
           endLength={endLength}
+          dataActionId={dataActionId}
         />
       }
       size={DropdownSize.small}

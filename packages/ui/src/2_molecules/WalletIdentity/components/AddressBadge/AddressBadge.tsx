@@ -3,17 +3,20 @@ import React, { FC } from 'react';
 import blockies from 'ethereum-blockies';
 
 import { prettyTx } from '../../../../utils';
+import styles from './AddressBadge.module.css';
 
 export type AddressBadgeProps = {
   address: string;
   startLength?: number;
   endLength?: number;
+  dataActionId?: string;
 };
 
 export const AddressBadge: FC<AddressBadgeProps> = ({
   address,
-  startLength = 6,
+  startLength = 4,
   endLength = 4,
+  dataActionId,
 }) => {
   const getWalletAddrBlockieImg = (): string => {
     return blockies
@@ -30,15 +33,17 @@ export const AddressBadge: FC<AddressBadgeProps> = ({
   };
 
   return (
-    <span className="flex flex-nowrap flex-row items-center w-full truncate font-semibold">
+    <span className={styles.addressBadge}>
       <span>
         <img
-          className="rounded-full mr-2"
+          className={styles.walletLogo}
           src={getWalletAddrBlockieImg()}
           alt="wallet address"
         />
       </span>
-      <span>{prettyTx(address || '', startLength, endLength)}</span>
+      <span data-action-id={dataActionId}>
+        {prettyTx(address || '', startLength, endLength)}
+      </span>
     </span>
   );
 };

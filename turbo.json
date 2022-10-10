@@ -17,6 +17,9 @@
       "dependsOn": ["^build"],
       "outputs": ["dist/**"]
     },
+    "test:staged": {
+      "cache": false
+    },
     "coverage": {
       "dependsOn": ["^build"],
       "outputs": ["dist/**", "coverage/**"]

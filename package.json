@@ -12,6 +12,7 @@
     "lint": "turbo run lint",
     "format": "prettier --write \"**/*.{ts,tsx,md,js}\"",
     "test": "turbo run test",
+    "test:staged": "turbo run test:staged",
     "coverage": "turbo run coverage",
     "storybook": "turbo run storybook",
     "prepare": "husky install"
@@ -30,7 +31,10 @@
     "node": ">=14.0.0"
   },
   "lint-staged": {
-    "*.{js,ts,tsx}": "prettier --write"
+    "*.{js,ts,tsx}": [
+      "eslint --fix --max-warnings=0",
+      "prettier --write"
+    ]
   },
   "packageManager": "yarn@1.19.1"
 }

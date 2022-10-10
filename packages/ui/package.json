@@ -9,6 +9,7 @@
     "build": "rollup -c",
     "dev": "rollup -c --watch",
     "test": "jest --passWithNoTests",
+    "test:staged": "jest --passWithNoTests --bail --onlyChanged",
     "lint": "eslint ./",
     "storybook": "start-storybook -p 6006 --quiet",
     "build-storybook": "build-storybook"

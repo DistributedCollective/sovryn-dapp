@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 
 import blockies from 'ethereum-blockies';
 
-import { prettyTx } from '../../../../../utils/helpers';
+import { prettyTx } from '../../../../utils';
 
 export type AddressBadgeProps = {
   address: string;

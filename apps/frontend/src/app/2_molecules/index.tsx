@@ -1,1 +1,1 @@
-export * from './WalletIdentity/WalletIdentity';
+export * from './ConnectWalletButton/ConnectWalletButton';

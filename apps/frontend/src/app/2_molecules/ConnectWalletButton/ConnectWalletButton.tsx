@@ -1,8 +1,7 @@
 import React, { FC, PropsWithChildren } from 'react';
 
 import { Button } from '@sovryn/ui';
-
-import { WalletIdentity } from '../WalletIdentity/WalletIdentity';
+import { WalletIdentity } from '@sovryn/ui';
 
 export type ConnectWalletButtonProps = {
   onConnect: () => void;

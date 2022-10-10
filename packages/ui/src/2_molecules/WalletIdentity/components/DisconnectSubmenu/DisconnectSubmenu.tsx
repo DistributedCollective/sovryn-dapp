@@ -1,6 +1,6 @@
 import React, { FC, useCallback } from 'react';
 
-import { Menu, MenuItem } from '@sovryn/ui';
+import { Menu, MenuItem } from '../../../Menu/Menu';
 
 export type DisconnectSubmenuProps = {
   onDisconnect: () => void;

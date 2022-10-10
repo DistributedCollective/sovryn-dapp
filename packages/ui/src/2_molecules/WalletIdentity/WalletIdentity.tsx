@@ -2,8 +2,8 @@ import React, { FC } from 'react';
 
 import classNames from 'classnames';
 
-import { Dropdown, DropdownSize } from '@sovryn/ui';
-
+import { Dropdown } from '../Dropdown/Dropdown';
+import { DropdownSize } from '../Dropdown/Dropdown.types';
 import styles from './WalletIdentity.module.css';
 import { AddressBadge } from './components/AddressBadge/AddressBadge';
 import { DisconnectSubmenu } from './components/DisconnectSubmenu/DisconnectSubmenu';

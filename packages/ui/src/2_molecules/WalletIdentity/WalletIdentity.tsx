@@ -23,8 +23,8 @@ export const WalletIdentity: FC<WalletIdentityProps> = ({
   onDisconnect,
   className,
   hideSubmenu = false,
-  startLength,
-  endLength,
+  startLength = 4,
+  endLength = 4,
 }) => {
   if (hideSubmenu) {
     return (

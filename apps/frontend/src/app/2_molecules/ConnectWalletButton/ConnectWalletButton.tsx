@@ -39,6 +39,10 @@ export const ConnectWalletButton: FC<
         address={address}
         dataActionId={dataActionId}
         className={className}
+        submenuLabels={{
+          copyAddress: 'Copy Address',
+          disconnect: 'Disconnect',
+        }}
       />
     );
   }

@@ -6,7 +6,10 @@ import { Dropdown } from '../Dropdown/Dropdown';
 import { DropdownSize } from '../Dropdown/Dropdown.types';
 import styles from './WalletIdentity.module.css';
 import { AddressBadge } from './components/AddressBadge/AddressBadge';
-import { DisconnectSubmenu } from './components/DisconnectSubmenu/DisconnectSubmenu';
+import {
+  DisconnectSubmenu,
+  MenuLabels,
+} from './components/DisconnectSubmenu/DisconnectSubmenu';
 
 export type WalletIdentityProps = {
   onDisconnect: () => void;
@@ -14,6 +17,7 @@ export type WalletIdentityProps = {
   className?: string;
   dataActionId?: string;
   hideSubmenu?: boolean;
+  submenuLabels?: MenuLabels;
   startLength?: number;
   endLength?: number;
 };
@@ -26,6 +30,7 @@ export const WalletIdentity: FC<WalletIdentityProps> = ({
   startLength = 4,
   endLength = 4,
   dataActionId,
+  submenuLabels,
 }) => {
   if (hideSubmenu) {
     return (
@@ -52,7 +57,12 @@ export const WalletIdentity: FC<WalletIdentityProps> = ({
       }
       size={DropdownSize.small}
     >
-      <DisconnectSubmenu onDisconnect={onDisconnect} address={address} />
+      <DisconnectSubmenu
+        onDisconnect={onDisconnect}
+        address={address}
+        dataActionId={dataActionId}
+        menuLabels={submenuLabels}
+      />
     </Dropdown>
   );
 };

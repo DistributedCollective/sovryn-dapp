@@ -33,57 +33,64 @@ describe('WalletIdentity', () => {
         onDisconnect={() => {}}
         startLength={4}
         endLength={4}
-        dataActionId="address-badge"
+        dataActionId="walletIdentityTest"
       />,
     );
     const addressBadge = getByText(prettyTx(testAddress, 4, 4));
 
     expect(addressBadge).toBeDefined();
-    expect(addressBadge).toHaveAttribute('data-action-id', 'address-badge');
+    expect(addressBadge).toHaveAttribute(
+      'data-action-id',
+      'walletIdentityTest',
+    );
   });
 
-  test('renders copy address', async () => {
+  test('copy address button', async () => {
     const testAddress = '0x32Be343B94f860124dC4fEe278FDCBD38C102D88';
-    const { getByText } = render(
+    const { getByText, baseElement } = render(
       <WalletIdentity
         address={testAddress}
         onDisconnect={() => {}}
         startLength={4}
         endLength={4}
-        dataActionId="address-badge"
+        dataActionId="walletIdentityTest"
       />,
     );
     const addressBadge = getByText(prettyTx(testAddress, 4, 4));
 
     userEvent.click(addressBadge);
 
-    const copyButton = getByText('Copy Address');
+    const copyButton = baseElement.querySelector(
+      '[data-action-id="walletIdentityTest-menu-copyAddress"]',
+    );
     expect(copyButton).toBeInTheDocument();
 
-    userEvent.click(copyButton);
+    userEvent.click(copyButton!);
     expect(navigator.clipboard.writeText).toHaveBeenCalledWith(testAddress);
   });
 
-  test('dissconnect button', async () => {
-    const dissconnectFunction = jest.fn();
+  test('disconnect button', async () => {
+    const disconnectFunction = jest.fn();
     const testAddress = '0x32Be343B94f860124dC4fEe278FDCBD38C102D88';
-    const { getByText } = render(
+    const { getByText, baseElement } = render(
       <WalletIdentity
         address={testAddress}
-        onDisconnect={dissconnectFunction}
+        onDisconnect={disconnectFunction}
         startLength={4}
         endLength={4}
-        dataActionId="address-badge"
+        dataActionId="disconnectTest"
       />,
     );
     const addressBadge = getByText(prettyTx(testAddress, 4, 4));
 
     userEvent.click(addressBadge);
 
-    const disconnectButton = getByText('Disconnect');
+    const disconnectButton = baseElement.querySelector(
+      '[data-action-id="disconnectTest-menu-disconnect"]',
+    );
     expect(disconnectButton).toBeInTheDocument();
 
-    userEvent.click(disconnectButton);
-    expect(dissconnectFunction).toHaveBeenCalled();
+    userEvent.click(disconnectButton!);
+    expect(disconnectFunction).toHaveBeenCalled();
   });
 });

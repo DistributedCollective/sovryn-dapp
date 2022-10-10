@@ -17,6 +17,12 @@ export default {
     hideSubmenu: {
       defaultValue: false,
     },
+    startLength: {
+      defaultValue: 4,
+    },
+    endLength: {
+      defaultValue: 4,
+    },
   },
 } as ComponentMeta<typeof WalletIdentity>;
 
@@ -28,6 +34,11 @@ export const _WalletIdentity = Template.bind({});
 _WalletIdentity.args = {
   onDisconnect: () => alert('disconnected'),
   address: '0xEDb8897aB6E907bc63CB256f74437D36298507E2',
+  dataActionId: 'walletIdentity',
+  submenuLabels: {
+    copyAddress: 'Copy Address',
+    disconnect: 'Disconnect',
+  },
 };
 
 const DisconnectSubmenuTemplate: Story<

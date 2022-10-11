@@ -8,7 +8,7 @@ export type MenuLabels = {
 };
 
 export type DisconnectSubmenuProps = {
-  onDisconnect: () => void;
+  onDisconnect?: () => void;
   address: string;
   className?: string;
   dataActionId?: string;
@@ -37,12 +37,16 @@ export const DisconnectSubmenu: FC<DisconnectSubmenuProps> = ({
         }-menu-copyAddress`}
         text={menuLabels?.copyAddress || 'Copy Address'}
       />
-      <MenuItem
-        onClick={onDisconnect}
-        icon="exit"
-        dataActionId={`${dataActionId || 'disconnect-submenu'}-menu-disconnect`}
-        text={menuLabels?.disconnect || 'Disconnect'}
-      />
+      {onDisconnect && (
+        <MenuItem
+          onClick={onDisconnect}
+          icon="exit"
+          dataActionId={`${
+            dataActionId || 'disconnect-submenu'
+          }-menu-disconnect`}
+          text={menuLabels?.disconnect || 'Disconnect'}
+        />
+      )}
     </Menu>
   );
 };

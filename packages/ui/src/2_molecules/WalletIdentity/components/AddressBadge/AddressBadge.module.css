@@ -1,5 +1,5 @@
 .addressBadge {
-  @apply flex flex-nowrap flex-row items-center w-full truncate font-semibold;
+  @apply flex flex-nowrap flex-row items-center w-full truncate font-semibold text-sm;
   .walletLogo {
     @apply rounded-full mr-2;
   }

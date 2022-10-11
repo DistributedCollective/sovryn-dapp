@@ -12,7 +12,7 @@ import {
 } from './components/DisconnectSubmenu/DisconnectSubmenu';
 
 export type WalletIdentityProps = {
-  onDisconnect: () => void;
+  onDisconnect?: () => void;
   address: string;
   className?: string;
   dataActionId?: string;

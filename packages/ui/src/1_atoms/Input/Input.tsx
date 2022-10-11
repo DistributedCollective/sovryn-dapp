@@ -32,6 +32,8 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
 
     useImperativeHandle(ref, () => inputRef.current);
 
+    console.log(`test`);
+
     return (
       <div className={classNames(styles.wrapper, className)}>
         <div className="relative flex-grow">

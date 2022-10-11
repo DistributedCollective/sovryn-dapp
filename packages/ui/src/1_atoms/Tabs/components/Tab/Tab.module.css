@@ -1,10 +1,9 @@
 .button {
-  @apply font-roboto inline-flex box-border items-center justify-center text-center rounded cursor-pointer transition-colors;
+  @apply cursor-pointer inline-flex box-border items-center justify-center text-center rounded cursor-pointer transition-colors;
 
   &.primary {
-    @apply border-t-2 border-t-transparent text-base text-gray-9 rounded-b-none;
-    min-width: 155px;
-    height: 47px;
+    @apply border-t-2 border-t-transparent text-base text-gray-9 rounded-b-none h-12;
+    min-width: 10rem;
 
     &.normal {
       @apply font-medium;
@@ -21,48 +20,35 @@
     &.withBorder:not(.active) {
       @apply border-b border-b-gray-50;
     }
+    &:not(:disabled):not(.active):hover {
+      @apply text-gray-10;
+    }
     &.active {
-      @apply text-gray-10 opacity-100 border-t-primary bg-gray-80;
-
-      &.default {
-        @apply border-t-primary-30;
-      }
-      &.buy {
-        @apply border-t-positive;
-      }
-      &.sell {
-        @apply border-t-negative;
-      }
+      @apply text-gray-10 bg-gray-80;
     }
   }
 
   &.secondary {
     &.normal {
-      @apply font-semibold text-xs px-0.5 py-2;
-      min-width: 54px;
+      @apply font-semibold text-xs px-0.5 py-2 mx-0.5;
+      min-width: 3.5rem;
     }
     &.small {
-      @apply font-semibold text-tiny px-0.5 py-1;
-      min-width: 41px;
+      @apply font-semibold text-tiny px-0.5 py-1 mx-0.5;
+      min-width: 2.5rem;
     }
     &.active {
       @apply bg-gray-80;
-
-      &.default {
-        @apply text-primary-30;
-      }
-      &.buy {
-        @apply text-positive;
-      }
-      &.sell {
-        @apply text-negative;
-      }
     }
     &:not(.active) {
       @apply text-gray-10 opacity-75;
-      &:hover {
+      &:not(:disabled):hover {
         @apply opacity-100;
       }
     }
+  }
+
+  &:disabled {
+    @apply text-gray-9/65 cursor-not-allowed;
   }
 }

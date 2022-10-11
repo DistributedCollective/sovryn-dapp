@@ -3,13 +3,7 @@ export enum TabSize {
   normal = 'normal',
 }
 
-export enum TabStyle {
+export enum TabType {
   primary = 'primary',
   secondary = 'secondary',
-}
-
-export enum TabColor {
-  default = 'default',
-  buy = 'buy',
-  sell = 'sell',
 }

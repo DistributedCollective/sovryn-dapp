@@ -1,44 +1,81 @@
 import { Story } from '@storybook/react';
 
-import React, { ComponentProps } from 'react';
+import React, { ComponentProps, useState } from 'react';
 
 import { Tabs } from './Tabs';
-import { TabColor, TabSize, TabStyle } from './Tabs.types';
+import { TabSize, TabType } from './Tabs.types';
 
 export default {
   title: 'Atoms/Tabs',
   component: Tabs,
 };
 
-const Template: Story<ComponentProps<typeof Tabs>> = args => <Tabs {...args} />;
+const Template: Story<ComponentProps<typeof Tabs>> = args => {
+  const [index, setIndex] = useState(args.index);
+  return <Tabs {...args} onChange={setIndex} index={index} />;
+};
 
-export const Basic = Template.bind({});
-Basic.args = {
+export const Primary = Template.bind();
+Primary.args = {
   items: [
     {
       label: 'Default',
       content: <div>Default</div>,
+      activeClassName: 'border-t-primary-30',
     },
     {
       label: 'Buy',
       content: <div>Buy</div>,
-      activeColor: TabColor.buy,
+
+      activeClassName: 'border-t-positive',
     },
     {
       label: 'Sell',
       content: <div>Sell</div>,
-      activeColor: TabColor.sell,
+      activeClassName: 'border-t-negative',
     },
     {
       label: 'Disabled',
       content: <div>Disabled</div>,
-      activeColor: TabColor.sell,
       disabled: true,
+      activeClassName: '',
     },
   ],
   index: 0,
   withBorder: true,
   contentClassName: 'p-4',
-  style: TabStyle.primary,
   size: TabSize.normal,
+  type: TabType.primary,
+};
+
+export const Secondary = Template.bind();
+Secondary.args = {
+  items: [
+    {
+      label: 'Default',
+      content: <div>Default</div>,
+      activeClassName: 'text-primary-30',
+    },
+    {
+      label: 'Buy',
+      content: <div>Buy</div>,
+      activeClassName: 'text-positive',
+    },
+    {
+      label: 'Sell',
+      content: <div>Sell</div>,
+      activeClassName: 'text-negative',
+    },
+    {
+      label: 'Disabled',
+      content: <div>Disabled</div>,
+      disabled: true,
+      activeClassName: '',
+    },
+  ],
+  index: 0,
+  withBorder: true,
+  contentClassName: 'p-4',
+  size: TabSize.normal,
+  type: TabType.secondary,
 };

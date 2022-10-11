@@ -2,7 +2,7 @@ import React from 'react';
 
 import classNames from 'classnames';
 
-import { TabColor, TabSize, TabStyle } from '../../Tabs.types';
+import { TabSize, TabType } from '../../Tabs.types';
 import styles from './Tab.module.css';
 
 type TabProps = {
@@ -12,10 +12,10 @@ type TabProps = {
   onClick: () => void;
   className?: string;
   dataActionId?: string;
-  color?: TabColor;
-  style: TabStyle;
+  type: TabType;
   size: TabSize;
   withBorder: boolean;
+  activeClassName?: string;
 };
 
 export const Tab: React.FC<TabProps> = ({
@@ -25,25 +25,23 @@ export const Tab: React.FC<TabProps> = ({
   disabled,
   className,
   dataActionId,
-  color = TabColor.default,
-  style,
+  type,
   size,
   withBorder,
+  activeClassName = '',
 }) => (
   <button
     type="button"
     className={classNames(
       {
-        'cursor-pointer': !disabled,
-        'opacity-60 cursor-not-allowed': disabled,
         [styles.active]: active,
         [styles.withBorder]: withBorder,
+        [activeClassName]: active,
       },
       className,
       styles.button,
       styles[size],
-      styles[style],
-      styles[color],
+      styles[type],
     )}
     onClick={onClick}
     data-action-id={dataActionId}

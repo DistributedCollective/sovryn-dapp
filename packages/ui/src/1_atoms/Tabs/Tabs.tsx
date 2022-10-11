@@ -2,7 +2,8 @@ import React, { useMemo, useCallback } from 'react';
 
 import classNames from 'classnames';
 
-import { TabColor, TabSize, TabStyle } from './Tabs.types';
+import styles from './Tabs.module.css';
+import { TabSize, TabType } from './Tabs.types';
 import { Tab } from './components/Tab/Tab';
 
 interface ITabItem {
@@ -10,7 +11,7 @@ interface ITabItem {
   content: React.ReactNode;
   disabled?: boolean;
   dataActionId?: string;
-  activeColor?: TabColor;
+  activeClassName?: string;
 }
 
 type TabsProps = {
@@ -19,7 +20,7 @@ type TabsProps = {
   index: number;
   items: ITabItem[];
   onChange?: (index: number) => void;
-  style?: TabStyle;
+  type?: TabType;
   size?: TabSize;
   withBorder?: boolean;
 };
@@ -30,7 +31,7 @@ export const Tabs: React.FC<TabsProps> = ({
   onChange,
   className,
   contentClassName,
-  style = TabStyle.primary,
+  type = TabType.primary,
   size = TabSize.normal,
   withBorder = false,
 }) => {
@@ -47,16 +48,11 @@ export const Tabs: React.FC<TabsProps> = ({
   const content = useMemo(() => items[index]?.content, [index, items]);
 
   return (
-    <div className={classNames(className, 'inline-flex flex-col')}>
+    <div className={classNames(styles.wrapper, className)}>
       <div
-        className={classNames(
-          'inline-flex rounded-t items-center flex-nowrap overflow-auto',
-          {
-            'border border-b-0 border-gray-50':
-              withBorder && style === TabStyle.primary,
-            'bg-gray-80-ol': style === TabStyle.primary,
-          },
-        )}
+        className={classNames(styles.tabs, styles[type], {
+          [styles.withBorder]: withBorder,
+        })}
       >
         {items.map((item, i) => (
           <Tab
@@ -66,19 +62,22 @@ export const Tabs: React.FC<TabsProps> = ({
             onClick={() => selectTab(item, i)}
             content={item.label}
             dataActionId={item.dataActionId}
-            color={item.activeColor}
-            style={style}
+            type={type}
             size={size}
             withBorder={withBorder}
+            activeClassName={item.activeClassName}
           />
         ))}
       </div>
       <div
-        className={classNames(contentClassName, {
-          'border-b border-x border-gray-50':
-            withBorder && style === TabStyle.primary,
-          'bg-gray-80 rounded-b': style === TabStyle.primary,
-        })}
+        className={classNames(
+          styles.content,
+          styles[type],
+          {
+            [styles.withBorder]: withBorder,
+          },
+          contentClassName,
+        )}
       >
         {content}
       </div>

@@ -42,7 +42,6 @@ module.exports = {
       'sovryn-black': '#0D0D0F',
       'gray-90': '#16171C',
       'gray-80': '#1E2128',
-      'gray-80-ol': 'rgba(30, 33, 40, 0.65)',
       'gray-70': '#2C303B',
       'gray-70-ol': 'rgba(44, 48, 59, 0.65)',
       'gray-60': '#333845',
@@ -186,6 +185,9 @@ module.exports = {
       },
       scale: {
         85: '.85',
+      },
+      opacity: {
+        65: '.65',
       },
     },
   },

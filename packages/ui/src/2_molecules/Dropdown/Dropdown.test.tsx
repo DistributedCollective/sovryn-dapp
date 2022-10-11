@@ -34,7 +34,7 @@ describe('Dropdown', () => {
   test('should open dropdown programically', () => {
     const data = <div>Option</div>;
     const ref = createRef<HTMLButtonElement>();
-    const { getByText } = render(<Dropdown ref={ref} text="Dropdown" children={data} />);
+    render(<Dropdown ref={ref} text="Dropdown" children={data} />);
     waitFor(() => ref.current);
     act(() => ref.current?.click());
     const dropdownOption = screen.queryByText('Option');

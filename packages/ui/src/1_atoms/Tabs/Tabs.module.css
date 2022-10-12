@@ -1,11 +1,14 @@
 .wrapper {
   @apply inline-flex flex-col;
+
   .tabs {
     @apply inline-flex rounded-t items-center flex-nowrap overflow-auto;
+
     &.primaryWithBorder,
     &.primary {
       @apply bg-gray-80/65;
     }
+
     &.primaryWithBorder {
       @apply border border-b-0 border-gray-50;
     }
@@ -15,6 +18,7 @@
     &.primary {
       @apply bg-gray-80 rounded-b;
     }
+
     &.primaryWithBorder {
       @apply border-b border-x border-gray-50;
     }

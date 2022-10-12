@@ -2733,19 +2733,6 @@
     lodash.partition "^4.6.0"
     rxjs "^7.5.6"
 
-"@sovryn/onboard-core@0.0.2":
-  version "0.0.2"
-  resolved "https://registry.yarnpkg.com/@sovryn/onboard-core/-/onboard-core-0.0.2.tgz#f70f1136d91a7b87a7598c59964863534c4950a5"
-  integrity sha512-Gmchytb0EV8GqZRXedMJ1Vedku2DGCcXmNc+Oj08zCg+RDF4u93LfMzanT8pZ7CY/z/loXR/kKOrKQLnBKhvPw==
-  dependencies:
-    "@sovryn/onboard-common" "*"
-    bowser "^2.11.0"
-    ethers "^5.7.0"
-    eventemitter3 "^4.0.7"
-    joi "^17.6.0"
-    lodash.partition "^4.6.0"
-    rxjs "^7.5.6"
-
 "@sovryn/onboard-hw-common@*":
   version "0.0.1"
   resolved "https://registry.yarnpkg.com/@sovryn/onboard-hw-common/-/onboard-hw-common-0.0.1.tgz#53099c1e658856d4cab231e26524fb0b73922fda"
@@ -10382,7 +10369,7 @@ javascript-natural-sort@0.7.1:
   resolved "https://registry.npmjs.org/javascript-natural-sort/-/javascript-natural-sort-0.7.1.tgz"
   integrity sha512-nO6jcEfZWQXDhOiBtG2KvKyEptz7RVbpGP4vTD2hLBdmNQSsCiicO2Ioinv6UI4y9ukqnBpy+XZ9H6uLNgJTlw==
 
-jest-canvas-mock@^2.4.0:
+jest-canvas-mock@2.4.0:
   version "2.4.0"
   resolved "https://registry.yarnpkg.com/jest-canvas-mock/-/jest-canvas-mock-2.4.0.tgz#947b71442d7719f8e055decaecdb334809465341"
   integrity sha512-mmMpZzpmLzn5vepIaHk5HoH3Ka4WykbSoLuG/EKoJd0x0ID/t+INo1l8ByfcUJuDM+RIsL4QDg/gDnBbrj2/IQ==

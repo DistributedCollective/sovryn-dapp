@@ -1,11 +1,15 @@
 {
   "name": "@sovryn/ui",
   "version": "0.0.0",
-  "main": "index.ts",
-  "types": "index.ts",
+  "main": "./dist/index.js",
+  "module": "./dist/index.esm.js",
+  "types": "./dist/typings.d.ts",
   "license": "MIT",
   "scripts": {
+    "build": "rollup -c",
+    "dev": "rollup -c --watch",
     "test": "jest --passWithNoTests",
+    "test:staged": "jest --passWithNoTests --bail --onlyChanged",
     "lint": "eslint ./",
     "storybook": "start-storybook -p 6006 --quiet",
     "build-storybook": "build-storybook"
@@ -13,6 +17,9 @@
   "devDependencies": {
     "@babel/core": "7.18.5",
     "@babel/preset-typescript": "7.18.6",
+    "@rollup/plugin-commonjs": "22.0.2",
+    "@rollup/plugin-node-resolve": "14.1.0",
+    "@rollup/plugin-typescript": "8.5.0",
     "@sovryn/eslint-config-custom": "*",
     "@sovryn/tsconfig": "*",
     "@storybook/addon-actions": "6.5.9",
@@ -33,6 +40,11 @@
     "jest-environment-jsdom": "29.0.3",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "rollup": "2.79.1",
+    "rollup-plugin-dts": "4.2.2",
+    "rollup-plugin-exclude-dependencies-from-bundle": "1.1.22",
+    "rollup-plugin-postcss": "4.0.2",
+    "rollup-plugin-terser": "7.0.2",
     "storybook-css-modules": "1.0.8",
     "typescript": "4.5.2"
   },
@@ -46,7 +58,15 @@
     "identity-obj-proxy": "3.0.0",
     "react-router-dom": "6.3.0"
   },
+  "peerDependencies": {
+    "react": ">=18.2",
+    "react-dom": ">=18.2"
+  },
   "files": [
-    "dist"
+    "dist/index.js",
+    "dist/index.esm.js",
+    "dist/index.js.map",
+    "dist/index.esm.js.map",
+    "dist/typings.d.ts"
   ]
 }

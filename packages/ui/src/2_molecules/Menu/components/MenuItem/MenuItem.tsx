@@ -10,7 +10,6 @@ import { Link, useLocation } from 'react-router-dom';
 
 import { Icon } from '../../../../1_atoms';
 import { IconType } from '../../../../1_atoms/Icon/Icon.types';
-import iconNewTab from '../../../../../assets/storybook/iconNewTab.svg';
 import styles from './MenuItem.module.css';
 
 type MenuItemProps = {
@@ -69,15 +68,19 @@ export const MenuItem: React.FC<MenuItemProps> = ({
             onClick={onClickHandler}
             data-action-id={dataActionId}
           >
-            <div className="block leading-none">
-              <div className="flex items-center">
-                {icon && <Icon icon={icon} className="mr-2" />}
+            <div className={styles.hostBlock}>
+              <div className={styles.hostFlex}>
+                {icon && <Icon icon={icon} className={styles.icon} />}
                 <span className={classNames(styles.text)}>{text}</span>
-                <img
-                  src={iconNewTab}
-                  className="ml-2 h-5"
-                  alt="external link"
-                />
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className={styles.externalIcon}
+                  viewBox="0 0 24 24"
+                  fill="#D9D9D9"
+                >
+                  <path d="M0 0h24v24H0z" fill="none" />
+                  <path d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z" />
+                </svg>
               </div>
               {label && <span className={styles.label}>{label}</span>}
             </div>
@@ -94,9 +97,9 @@ export const MenuItem: React.FC<MenuItemProps> = ({
             onClick={onClickHandler}
             data-action-id={dataActionId}
           >
-            <div className="block leading-none">
-              <div className="flex items-center">
-                {icon && <Icon icon={icon} className="mr-2" />}
+            <div className={styles.hostBlock}>
+              <div className={styles.hostFlex}>
+                {icon && <Icon icon={icon} className={styles.icon} />}
                 <span className={classNames(styles.text)}>{text}</span>
               </div>
               {label && <span className={styles.label}>{label}</span>}
@@ -115,9 +118,9 @@ export const MenuItem: React.FC<MenuItemProps> = ({
           onClick={onClickHandler}
           data-action-id={dataActionId}
         >
-          <div className="block leading-none">
-            <div className="flex items-center">
-              {icon && <Icon icon={icon} className="mr-2" />}
+          <div className={styles.hostBlock}>
+            <div className={styles.hostFlex}>
+              {icon && <Icon icon={icon} className={styles.icon} />}
               <span className={classNames(styles.text)}>{text}</span>
             </div>
             {label && <span className={styles.label}>{label}</span>}

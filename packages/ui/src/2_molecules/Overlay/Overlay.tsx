@@ -12,6 +12,7 @@ import classNames from 'classnames';
 
 import { Portal } from '../../1_atoms/Portal/Portal';
 import { Align, AlignVertical } from '../../types/tailwind';
+import styles from './Overlay.module.css';
 import {
   OverlayBackground,
   OverlayBackgroundClassName,
@@ -64,8 +65,8 @@ export const Overlay: React.FC<OverlayProps> = ({
           ref={ref}
           tabIndex={-1}
           className={classNames(
-            fixed ? 'fixed' : 'absolute',
-            'inset-0 flex flex-column',
+            styles.overlay,
+            fixed ? [styles.__fixed] : [styles.__absolute],
             AlignClassName[align],
             AlignVerticalClassName[alignVertical],
             OverlayBackgroundClassName[background],
@@ -92,10 +93,10 @@ export const Overlay: React.FC<OverlayProps> = ({
 
   useEffect(() => {
     if (fixed && isOpen) {
-      document.body.className += ' overflow-hidden';
+      document.body.className += ` ${styles.disableScroll}`;
       return () => {
         document.body.className = document.body.className.replace(
-          ' overflow-hidden',
+          ` ${styles.disableScroll}`,
           '',
         );
       };

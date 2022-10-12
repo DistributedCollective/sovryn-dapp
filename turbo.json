@@ -9,11 +9,16 @@
       "cache": false
     },
     "dev": {
+      "dependsOn": ["^build"],
+      "outputs": ["dist/**", "build/**"],
       "cache": false
     },
     "test": {
       "dependsOn": ["^build"],
       "outputs": ["dist/**"]
+    },
+    "test:staged": {
+      "cache": false
     },
     "coverage": {
       "dependsOn": ["^build"],

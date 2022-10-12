@@ -118,8 +118,8 @@ export const Dropdown = forwardRef<HTMLButtonElement, DropdownProps>(({
         <Icon
           icon={ARROW_DOWN}
           size={10}
-          className={classNames('transition-transform ml-2', {
-            'transform rotate-180': isOpen,
+          className={classNames(styles.icon, {
+            [styles.isOpen]: isOpen,
           })}
         />
       </button>

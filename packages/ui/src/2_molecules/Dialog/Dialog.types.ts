@@ -1,5 +1,7 @@
 import type { FunctionComponent } from 'react';
 
+import styles from './Dialog.module.css';
+
 export interface IDialogFunctionComponent<T = {}> extends FunctionComponent<T> {
   index: number;
 }
@@ -20,16 +22,16 @@ export enum DialogSize {
 }
 
 export const dialogSizeMap: Record<DialogSize, string> = {
-  [DialogSize.xs]: 'w-full sm:max-w-xs',
-  [DialogSize.sm]: 'w-full sm:max-w-sm',
-  [DialogSize.md]: 'w-full sm:max-w-md',
-  [DialogSize.lg]: 'max-w-lg',
-  [DialogSize.xl]: 'max-w-xl',
-  [DialogSize.xl2]: 'max-w-2xl',
-  [DialogSize.xl3]: 'max-w-3xl',
-  [DialogSize.xl4]: 'max-w-4xl',
-  [DialogSize.xl5]: 'max-w-5xl',
-  [DialogSize.xl6]: 'max-w-6xl',
-  [DialogSize.xl7]: 'max-w-7xl',
-  [DialogSize.full]: 'w-full',
+  [DialogSize.xs]: styles.dialogXs,
+  [DialogSize.sm]: styles.dialogSm,
+  [DialogSize.md]: styles.dialogMd,
+  [DialogSize.lg]: styles.dialogLg,
+  [DialogSize.xl]: styles.dialogXl,
+  [DialogSize.xl2]: styles.dialog2Xl,
+  [DialogSize.xl3]: styles.dialog3Xl,
+  [DialogSize.xl4]: styles.dialog4Xl,
+  [DialogSize.xl5]: styles.dialog5Xl,
+  [DialogSize.xl6]: styles.dialog6Xl,
+  [DialogSize.xl7]: styles.dialog7Xl,
+  [DialogSize.full]: styles.dialogFull,
 };

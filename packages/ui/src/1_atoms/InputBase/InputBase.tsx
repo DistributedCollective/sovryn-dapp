@@ -10,7 +10,7 @@ import React, {
 
 import debounceCallback from 'lodash.debounce';
 
-import { noop } from '../../utils.ts';
+import { noop } from '../../utils';
 
 export type InputBaseProps = Omit<HTMLProps<HTMLInputElement>, 'ref'> & {
   debounce?: number;
@@ -28,7 +28,7 @@ export const InputBase = React.forwardRef<HTMLInputElement, InputBaseProps>(
   ) => {
     const [renderedValue, setRenderedValue] = useState<
       string | string[] | number | undefined
-    >(value);
+    >(value as string);
 
     const shouldAllowChanges = useMemo(
       () => !props.readOnly && !props.disabled,
@@ -61,7 +61,7 @@ export const InputBase = React.forwardRef<HTMLInputElement, InputBaseProps>(
     // updating value if it was changed by parent component
     useEffect(() => {
       if (shouldAllowChanges) {
-        setRenderedValue(value);
+        setRenderedValue(value as string);
       }
     }, [shouldAllowChanges, value]);
 

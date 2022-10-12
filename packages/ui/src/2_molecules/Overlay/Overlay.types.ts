@@ -1,4 +1,5 @@
 import { Align, AlignVertical } from '../../types/tailwind';
+import styles from './Overlay.module.css';
 
 export enum OverlayBackground {
   transparent = 'transparent',
@@ -8,18 +9,18 @@ export enum OverlayBackground {
 export const OverlayBackgroundClassName: {
   [key in OverlayBackground]: string;
 } = {
-  [OverlayBackground.transparent]: 'bg-transparent',
-  [OverlayBackground.default]: 'bg-gray-70-ol',
+  [OverlayBackground.transparent]: styles.bgTransparent,
+  [OverlayBackground.default]: styles.bgDefault,
 };
 
 export const AlignClassName: { [key in Align]: string } = {
-  [Align.left]: 'justify-start',
-  [Align.center]: 'justify-center',
-  [Align.right]: 'justify-end',
+  [Align.left]: styles.alignLeft,
+  [Align.center]: styles.alignCenter,
+  [Align.right]: styles.veritcalRight,
 };
 
 export const AlignVerticalClassName: { [key in AlignVertical]: string } = {
-  [AlignVertical.top]: 'items-start',
-  [AlignVertical.center]: 'items-center',
-  [AlignVertical.bottom]: 'items-end',
+  [AlignVertical.top]: styles.veritcalTop,
+  [AlignVertical.center]: styles.verticalCenter,
+  [AlignVertical.bottom]: styles.verticalBottom,
 };

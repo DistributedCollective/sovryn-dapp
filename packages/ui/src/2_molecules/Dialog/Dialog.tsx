@@ -11,6 +11,9 @@ import {
   IDialogFunctionComponent,
 } from './Dialog.types';
 
+export * from './components/DialogBody/DialogBody';
+export * from './components/DialogHeader/DialogHeader';
+
 type DialogProps = {
   isOpen: boolean;
   children: React.ReactNode;
@@ -82,7 +85,7 @@ export const Dialog: IDialogFunctionComponent<DialogProps> = ({
       isOpen={isOpen}
       fixed
       portalTarget="body"
-      portalClassName="relative"
+      portalClassName={styles.overlay}
       onBlur={handleClose}
       {...overlayProps}
     >

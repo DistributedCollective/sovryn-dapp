@@ -1,6 +1,5 @@
-import { fireEvent, render, screen } from '@testing-library/react';
-
-import React from 'react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import React, { createRef } from 'react';
 
 import { Input } from './Input';
 
@@ -39,4 +38,12 @@ test('renders numeric input and does not allow to enter non-numeric values', () 
 
   fireEvent.change(input, { target: { value: '56' } });
   expect(input.value).toBe('56');
+});
+
+test('focus the input', () => {
+  const ref = createRef<HTMLInputElement>();
+  render(<Input value="focus" ref={ref} />);
+  waitFor(() => ref.current);
+  ref.current?.focus();
+  expect(document.activeElement).toBe(ref.current);
 });

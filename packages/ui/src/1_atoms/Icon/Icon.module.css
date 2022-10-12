@@ -2,3 +2,11 @@
   @apply w-full h-full;
   fill: currentColor;
 }
+
+.iconBlock {
+  @apply block;
+}
+
+.iconInlineBlock {
+  @apply inline-block;
+}

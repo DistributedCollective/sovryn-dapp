@@ -39,3 +39,19 @@
     }
   }
 }
+
+.hostBlock {
+  @apply block leading-none;
+}
+
+.hostFlex {
+  @apply flex items-center;
+}
+
+.icon {
+  @apply mr-2;
+}
+
+.externalIcon {
+  @apply ml-2 h-5 w-5 inline-block;
+}

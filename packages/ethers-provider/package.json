@@ -11,7 +11,8 @@
   "scripts": {
     "dev": "tsup --watch",
     "build": "tsup",
-    "test": "jest",
+    "test": "jest --passWithNoTests",
+    "test:staged": "jest --passWithNoTests --bail --onlyChanged",
     "coverage": "jest --coverage",
     "lint": "eslint ./src/**/*.ts"
   },

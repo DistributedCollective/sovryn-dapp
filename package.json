@@ -8,24 +8,33 @@
   ],
   "scripts": {
     "build": "turbo run build",
-    "dev": "turbo run dev --parallel",
+    "dev": "turbo run dev",
     "lint": "turbo run lint",
     "format": "prettier --write \"**/*.{ts,tsx,md,js}\"",
     "test": "turbo run test",
+    "test:staged": "turbo run test:staged",
     "coverage": "turbo run coverage",
-    "storybook": "turbo run storybook"
+    "storybook": "turbo run storybook",
+    "prepare": "husky install"
   },
   "devDependencies": {
     "@sovryn/eslint-config-custom": "*",
-    "prettier": "latest",
-    "turbo": "latest"
+    "@trivago/prettier-plugin-sort-imports": "3.3.0",
+    "husky": "8.0.1",
+    "lint-staged": "13.0.3",
+    "prettier": "2.7.1",
+    "turbo": "latest",
+    "typescript": "4.8.4"
   },
   "engines": {
     "npm": ">=7.0.0",
     "node": ">=14.0.0"
   },
-  "dependencies": {
-    "@trivago/prettier-plugin-sort-imports": "^3.3.0"
+  "lint-staged": {
+    "*.{js,ts,tsx}": [
+      "eslint --fix --max-warnings=0",
+      "prettier --write"
+    ]
   },
-  "packageManager": "yarn@1.22.10"
+  "packageManager": "yarn@1.19.1"
 }

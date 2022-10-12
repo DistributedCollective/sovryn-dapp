@@ -1,0 +1,3 @@
+.container {
+  @apply p-6 text-xs;
+}

@@ -1,3 +1,7 @@
+.heading {
+  @apply text-gray-10;
+}
+
 .h1 {
   @apply text-2xl leading-7;
 }

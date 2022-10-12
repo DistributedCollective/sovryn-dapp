@@ -1,7 +1,7 @@
-import { IconProp, SizeProp } from '@fortawesome/fontawesome-svg-core';
+import type { IconProp, SizeProp } from '@fortawesome/fontawesome-svg-core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-import React, { useMemo } from 'react';
+import React, { ReactNode, useMemo } from 'react';
 
 import classNames from 'classnames';
 
@@ -52,7 +52,7 @@ export const Icon: React.FC<IconProps> = ({
   }, [inline, size]);
 
   const inlineBlock = useMemo(
-    () => (inline ? 'inline-block' : 'block'),
+    () => (inline ? styles.iconInlineBlock : styles.iconBlock),
     [inline],
   );
 
@@ -66,7 +66,7 @@ export const Icon: React.FC<IconProps> = ({
           style={{ width: iconSize, height: iconSize }}
           data-action-id={dataActionId}
         >
-          {icon}
+          {icon as ReactNode}
         </div>
       );
     }

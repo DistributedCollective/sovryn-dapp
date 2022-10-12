@@ -2,6 +2,8 @@ import { FC, PropsWithChildren } from 'react';
 
 import classNames from 'classnames';
 
+import styles from './DialogBody.module.css';
+
 type DialogBodyProps = {
   className?: string;
 };
@@ -9,4 +11,6 @@ type DialogBodyProps = {
 export const DialogBody: FC<PropsWithChildren<DialogBodyProps>> = ({
   children,
   className,
-}) => <main className={classNames('p-6 text-xs', className)}>{children}</main>;
+}) => (
+  <main className={classNames(styles.container, className)}>{children}</main>
+);

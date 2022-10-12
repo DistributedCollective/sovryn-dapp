@@ -22,7 +22,6 @@ type TabsProps = {
   onChange?: (index: number) => void;
   type?: TabType;
   size?: TabSize;
-  withBorder?: boolean;
 };
 
 export const Tabs: React.FC<TabsProps> = ({
@@ -33,14 +32,12 @@ export const Tabs: React.FC<TabsProps> = ({
   contentClassName,
   type = TabType.primary,
   size = TabSize.normal,
-  withBorder = false,
 }) => {
   const selectTab = useCallback(
     (item: ITabItem, index: number) => {
-      if (item.disabled) {
-        return;
+      if (!item.disabled) {
+        onChange?.(index);
       }
-      onChange?.(index);
     },
     [onChange],
   );
@@ -49,11 +46,7 @@ export const Tabs: React.FC<TabsProps> = ({
 
   return (
     <div className={classNames(styles.wrapper, className)}>
-      <div
-        className={classNames(styles.tabs, styles[type], {
-          [styles.withBorder]: withBorder,
-        })}
-      >
+      <div className={classNames(styles.tabs, styles[type])}>
         {items.map((item, i) => (
           <Tab
             key={i}
@@ -64,20 +57,12 @@ export const Tabs: React.FC<TabsProps> = ({
             dataActionId={item.dataActionId}
             type={type}
             size={size}
-            withBorder={withBorder}
             activeClassName={item.activeClassName}
           />
         ))}
       </div>
       <div
-        className={classNames(
-          styles.content,
-          styles[type],
-          {
-            [styles.withBorder]: withBorder,
-          },
-          contentClassName,
-        )}
+        className={classNames(styles.content, styles[type], contentClassName)}
       >
         {content}
       </div>

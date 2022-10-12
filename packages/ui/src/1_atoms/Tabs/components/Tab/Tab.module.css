@@ -1,6 +1,7 @@
 .button {
   @apply cursor-pointer inline-flex box-border items-center justify-center text-center rounded cursor-pointer transition-colors;
 
+  &.primaryWithBorder,
   &.primary {
     @apply border-t-2 border-t-transparent text-base text-gray-9 rounded-b-none h-12;
     min-width: 10rem;
@@ -8,24 +9,25 @@
     &.normal {
       @apply font-medium;
     }
-    &.withBorder.active {
-      @apply border-x border-x-gray-50;
-      &:last-child {
-        @apply border-r-0;
-      }
-      &:first-child {
-        @apply border-l-0;
-      }
-    }
-    &.withBorder:not(.active) {
-      @apply border-b border-b-gray-50;
-    }
     &:not(:disabled):not(.active):hover {
       @apply text-gray-10;
     }
     &.active {
       @apply text-gray-10 bg-gray-80;
     }
+  }
+
+  &.primaryWithBorder.active {
+    @apply border-x border-x-gray-50;
+    &:last-child {
+      @apply border-r-0;
+    }
+    &:first-child {
+      @apply border-l-0;
+    }
+  }
+  &.primaryWithBorder:not(.active) {
+    @apply border-b border-b-gray-50;
   }
 
   &.secondary {

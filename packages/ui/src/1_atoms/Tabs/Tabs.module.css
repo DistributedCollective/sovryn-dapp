@@ -2,19 +2,21 @@
   @apply inline-flex flex-col;
   .tabs {
     @apply inline-flex rounded-t items-center flex-nowrap overflow-auto;
+    &.primaryWithBorder,
     &.primary {
       @apply bg-gray-80/65;
-      &.withBorder {
-        @apply border border-b-0 border-gray-50;
-      }
+    }
+    &.primaryWithBorder {
+      @apply border border-b-0 border-gray-50;
     }
   }
   .content {
+    &.primaryWithBorder,
     &.primary {
       @apply bg-gray-80 rounded-b;
-      &.withBorder {
-        @apply border-b border-x border-gray-50;
-      }
+    }
+    &.primaryWithBorder {
+      @apply border-b border-x border-gray-50;
     }
   }
 }

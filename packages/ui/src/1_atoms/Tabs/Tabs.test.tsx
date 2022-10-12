@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { render } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import React from 'react';
@@ -22,15 +22,15 @@ const items = [
 ];
 
 describe('Tabs', () => {
-  it('renders Tabs', () => {
-    render(<Tabs items={items} index={1} />);
+  it('renders tabs', () => {
+    const { getByText } = render(<Tabs items={items} index={1} />);
 
-    expect(screen.getByText('0')).toBeInTheDocument();
-    expect(screen.getByText('1')).toBeInTheDocument();
-    expect(screen.getByText('content-1')).toBeInTheDocument();
+    expect(getByText('0')).toBeInTheDocument();
+    expect(getByText('1')).toBeInTheDocument();
+    expect(getByText('content-1')).toBeInTheDocument();
   });
 
-  it('switch between Tabs', () => {
+  it('switch between tabs', () => {
     const onChange = jest.fn();
     const { getByText } = render(
       <Tabs items={items} index={1} onChange={onChange} />,
@@ -41,7 +41,7 @@ describe('Tabs', () => {
     expect(onChange).toBeCalledWith(0);
   });
 
-  it('switch to disabled Tab', () => {
+  it('does not switch to a disabled tab', () => {
     const onChange = jest.fn();
     const { getByText } = render(
       <Tabs items={items} index={1} onChange={onChange} />,

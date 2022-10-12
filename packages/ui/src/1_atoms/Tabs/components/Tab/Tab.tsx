@@ -14,7 +14,6 @@ type TabProps = {
   dataActionId?: string;
   type: TabType;
   size: TabSize;
-  withBorder: boolean;
   activeClassName?: string;
 };
 
@@ -27,7 +26,6 @@ export const Tab: React.FC<TabProps> = ({
   dataActionId,
   type,
   size,
-  withBorder,
   activeClassName = '',
 }) => (
   <button
@@ -35,7 +33,6 @@ export const Tab: React.FC<TabProps> = ({
     className={classNames(
       {
         [styles.active]: active,
-        [styles.withBorder]: withBorder,
         [activeClassName]: active,
       },
       className,

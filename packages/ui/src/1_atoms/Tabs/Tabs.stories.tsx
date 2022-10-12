@@ -45,7 +45,7 @@ Primary.args = {
     },
   ],
   index: 0,
-  contentClassName: 'p-4',
+  contentClassName: 'p-6',
   size: TabSize.normal,
   type: TabType.primaryWithBorder,
 };

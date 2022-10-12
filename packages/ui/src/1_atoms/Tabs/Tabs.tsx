@@ -51,12 +51,14 @@ export const Tabs: React.FC<TabsProps> = ({
           <Tab
             key={i}
             active={index === i}
+            index={i}
             disabled={item.disabled}
             onClick={() => selectTab(item, i)}
             content={item.label}
             dataActionId={item.dataActionId}
             type={type}
             size={size}
+            activeIndex={index}
             activeClassName={item.activeClassName}
           />
         ))}

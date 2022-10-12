@@ -16,7 +16,7 @@
   .content {
     &.primaryWithBorder,
     &.primary {
-      @apply bg-gray-80 rounded-b;
+      @apply bg-gray-80 rounded-b text-gray-10;
     }
 
     &.primaryWithBorder {

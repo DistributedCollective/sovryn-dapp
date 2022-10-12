@@ -1,5 +1,5 @@
 .button {
-  @apply cursor-pointer inline-flex box-border items-center justify-center text-center rounded cursor-pointer transition-colors;
+  @apply cursor-pointer inline-flex box-border items-center justify-center text-center rounded cursor-pointer transition-colors relative;
 
   &.primaryWithBorder,
   &.primary {
@@ -19,8 +19,12 @@
     }
   }
 
+  &.primaryWithBorder {
+    @apply border-b;
+  }
+
   &.primaryWithBorder.active {
-    @apply border-x border-x-gray-50;
+    @apply border-x border-x-gray-50 pb-0.5 border-b-transparent;
 
     &:last-child {
       @apply border-r-0;
@@ -32,7 +36,12 @@
   }
 
   &.primaryWithBorder:not(.active) {
-    @apply border-b border-b-gray-50;
+    @apply border-b-gray-50 border-r border-r-gray-50 rounded-none border-t-0;
+
+    &:last-child,
+    &.noRightBorder {
+      @apply border-r-0;
+    }
   }
 
   &.secondary {

@@ -1,5 +1,3 @@
-export const noop = () => {};
-
 export const prettyTx = (
   text: string,
   startLength: number = 6,

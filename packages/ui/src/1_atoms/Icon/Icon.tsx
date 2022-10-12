@@ -9,7 +9,7 @@ import styles from './Icon.module.css';
 import { IconType, ViewBoxSize, STANDARD, INLINE, SM } from './Icon.types';
 import { IconSvgPaths } from './iconSvgPaths';
 
-type IconProps = {
+export type IconProps = {
   /**
    * Name of a Sovryn UI icon, or an custom SVG element, or an Fontawesome imported icon to render.
    * This prop is required because it determines the content of the component
@@ -32,6 +32,10 @@ type IconProps = {
    * Applied data-action-id value to the element, mainly needed for testing or for GA
    */
   dataActionId?: string;
+  /**
+   * Applied viewBox to the svg element.
+   */
+  viewBox?: string;
 };
 
 export const Icon: React.FC<IconProps> = ({
@@ -40,6 +44,7 @@ export const Icon: React.FC<IconProps> = ({
   inline,
   className,
   dataActionId,
+  viewBox = ViewBoxSize.DEFAULT,
 }) => {
   const isFaIcon = useMemo(() => !!icon && !!icon['prefix'], [icon]);
 
@@ -77,7 +82,7 @@ export const Icon: React.FC<IconProps> = ({
     ));
     return (
       <svg
-        viewBox={ViewBoxSize.DEFAULT}
+        viewBox={viewBox}
         height={iconSize}
         width={iconSize}
         fill="currentColor"
@@ -88,7 +93,7 @@ export const Icon: React.FC<IconProps> = ({
         {paths}
       </svg>
     );
-  }, [icon, inline, size, inlineBlock, className, dataActionId]);
+  }, [viewBox, icon, inline, size, inlineBlock, className, dataActionId]);
 
   return (
     <>

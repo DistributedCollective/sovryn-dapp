@@ -5,6 +5,7 @@ module.exports = {
     '!<rootDir>/src/**/*.d.ts',
   ],
   testEnvironment: 'jsdom',
+  setupFiles: ['jest-canvas-mock'],
   setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
   testMatch: [
     '<rootDir>/src/**/__tests__/**/*.{js,jsx,ts,tsx}',
@@ -13,5 +14,4 @@ module.exports = {
   moduleNameMapper: {
     '\\.(css|scss)$': 'identity-obj-proxy',
   },
-  resetMocks: true,
 };

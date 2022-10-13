@@ -1,4 +1,4 @@
-import { ComponentStory, ComponentMeta, Story } from '@storybook/react';
+import { ComponentMeta, Story } from '@storybook/react';
 
 import React, { ComponentProps } from 'react';
 

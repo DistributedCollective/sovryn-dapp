@@ -21,3 +21,5 @@ export const TREND_ARROW_DOWN = 'trend-arrow-down';
 export const WARNING = 'warning';
 export const WITHDRAW = 'withdraw';
 export const X_MARK = 'x-mark';
+export const COPY = 'copy';
+export const EXIT = 'exit';

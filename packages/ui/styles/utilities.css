@@ -1,5 +1,0 @@
-@layer utilities {
-  .test {
-    @apply text-warning-50;
-  }
-}

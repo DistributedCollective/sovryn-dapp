@@ -3,6 +3,7 @@ import { FC, PropsWithChildren } from 'react';
 import classNames from 'classnames';
 
 import { Icon } from '../../../../1_atoms';
+import styles from './DialogHeader.module.css';
 
 type DialogHeaderProps = {
   title: React.ReactNode;
@@ -19,12 +20,7 @@ export const DialogHeader: FC<DialogHeaderProps> = ({
   onClose,
   renderTitle = title => <DefaultTitle>{title}</DefaultTitle>,
 }) => (
-  <header
-    className={classNames(
-      'px-6 py-3.5 relative bg-gray-90 flex flex-row justify-between items-center space-x-4 sm:rounded-t',
-      className,
-    )}
-  >
+  <header className={classNames(styles.container, className)}>
     {renderTitle(title)}
     {onClose && (
       <button onClick={onClose} data-action-id={dataActionId}>

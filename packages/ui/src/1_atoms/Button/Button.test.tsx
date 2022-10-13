@@ -1,7 +1,9 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import React from 'react';
+
+import { MemoryRouter } from 'react-router-dom';
 
 import { Button } from './Button';
 
@@ -11,6 +13,7 @@ describe('Button', () => {
     render(<Button text="Button" />);
     expect(screen.getByText('Button')).toBeInTheDocument();
   });
+
   it('eventHandler called on click', () => {
     const handleClick = jest.fn();
     render(<Button text="Button" onClick={handleClick} />);
@@ -25,6 +28,41 @@ describe('Button', () => {
     const button = screen.getByText('Button');
     userEvent.click(button);
     expect(handleClick).toHaveBeenCalledTimes(0);
+  });
+
+  it('can be focused when using refs (button)', () => {
+    const ref = React.createRef<HTMLButtonElement>();
+    render(<Button text="Button" ref={ref} />);
+    waitFor(() => ref.current);
+    ref.current?.focus();
+    expect(document.activeElement).toEqual(ref.current);
+  });
+
+  it('can be focused when using refs (hyperlink / external)', () => {
+    const ref = React.createRef<HTMLAnchorElement>();
+    render(
+      <Button
+        text="Hyperlink"
+        ref={ref}
+        href="https://www.sovryn.app"
+        hrefExternal
+      />,
+    );
+    waitFor(() => ref.current);
+    ref.current?.focus();
+    expect(document.activeElement).toEqual(ref.current);
+  });
+
+  it('can be focused when using refs (router link)', () => {
+    const ref = React.createRef<HTMLAnchorElement>();
+    render(
+      <MemoryRouter>
+        <Button text="Hyperlink" ref={ref} href="/" />
+      </MemoryRouter>,
+    );
+    waitFor(() => ref.current);
+    ref.current?.focus();
+    expect(document.activeElement).toEqual(ref.current);
   });
 
   // uncomment these test cases once Paragraph component will be merged (https://github.com/DistributedCollective/sovryn-dapp/pull/13)

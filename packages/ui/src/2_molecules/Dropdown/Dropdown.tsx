@@ -1,7 +1,9 @@
 import React, {
+  forwardRef,
   ReactNode,
   useCallback,
   useEffect,
+  useImperativeHandle,
   useMemo,
   useRef,
   useState,
@@ -30,106 +32,114 @@ type DropdownProps = {
   dropdownClassName?: string;
 };
 
-export const Dropdown: React.FC<DropdownProps> = ({
-  text,
-  children,
-  mode = DropdownMode.sameWidth,
-  size = DropdownSize.large,
-  onOpen,
-  onClose,
-  className,
-  dataActionId,
-  dropdownClassName,
-}) => {
-  const buttonRef = useRef<HTMLButtonElement>(null);
-  const dropdownRef = useRef<HTMLDivElement>(null);
-  const [isOpen, setOpen] = useState(false);
-  const [coords, setCoords] = useState<Nullable<DropdownCoords>>(null);
-  const onButtonClick = useCallback(
-    () => setOpen(prevValue => !prevValue),
-    [setOpen],
-  );
+export const Dropdown = forwardRef<HTMLButtonElement, DropdownProps>(
+  (
+    {
+      text,
+      children,
+      mode = DropdownMode.sameWidth,
+      size = DropdownSize.large,
+      onOpen,
+      onClose,
+      className,
+      dataActionId,
+      dropdownClassName,
+    },
+    ref,
+  ) => {
+    const buttonRef = useRef<HTMLButtonElement>(null);
+    const dropdownRef = useRef<HTMLDivElement>(null);
+    const [isOpen, setOpen] = useState(false);
+    const [coords, setCoords] = useState<Nullable<DropdownCoords>>(null);
 
-  const getCoords = useCallback(() => {
-    const button = buttonRef.current?.getBoundingClientRect();
-    const dropdownWidth = dropdownRef.current?.getBoundingClientRect().width;
-    const windowWidth = document.body.getBoundingClientRect().width;
-    const scrollOffset = window.scrollY;
-    if (button && dropdownWidth) {
-      const { top, left, right, width, height } = button;
-      return {
-        top: top + height + scrollOffset,
-        left: left,
-        right: right,
-        buttonWidth: width,
-        windowWidth: windowWidth,
-        dropdownWidth: dropdownWidth,
-      };
-    }
-    return null;
-  }, []);
+    useImperativeHandle(ref, () => buttonRef.current!);
 
-  const dropdownStyles = useMemo(() => {
-    if (!coords) {
-      return;
-    }
-    return getDropdownPositionStyles(coords, mode);
-  }, [coords, mode]);
+    const onButtonClick = useCallback(
+      () => setOpen(prevValue => !prevValue),
+      [setOpen],
+    );
 
-  const classNamesComplete = useMemo(
-    () =>
-      classNames(styles.button, styles[size], className, {
-        [styles.isOpen]: isOpen,
-      }),
-    [size, className, isOpen],
-  );
+    const getCoords = useCallback(() => {
+      const button = buttonRef.current?.getBoundingClientRect();
+      const dropdownWidth = dropdownRef.current?.getBoundingClientRect().width;
+      const windowWidth = document.body.getBoundingClientRect().width;
+      const scrollOffset = window.scrollY;
+      if (button && dropdownWidth) {
+        const { top, left, right, width, height } = button;
+        return {
+          top: top + height + scrollOffset,
+          left: left,
+          right: right,
+          buttonWidth: width,
+          windowWidth: windowWidth,
+          dropdownWidth: dropdownWidth,
+        };
+      }
+      return null;
+    }, []);
 
-  const useClickedOutside = useCallback(() => {
-    setOpen(false);
-    onClose?.();
-  }, [onClose]);
+    const dropdownStyles = useMemo(() => {
+      if (!coords) {
+        return;
+      }
+      return getDropdownPositionStyles(coords, mode);
+    }, [coords, mode]);
 
-  useOnClickOutside([buttonRef, dropdownRef], useClickedOutside);
+    const classNamesComplete = useMemo(
+      () =>
+        classNames(styles.button, styles[size], className, {
+          [styles.isOpen]: isOpen,
+        }),
+      [size, className, isOpen],
+    );
 
-  useEffect(() => {
-    if (!isOpen) {
-      return;
-    }
-    const coords = getCoords();
-    setCoords(coords);
-    onOpen?.();
-  }, [isOpen, getCoords, onOpen, mode]);
+    const useClickedOutside = useCallback(() => {
+      setOpen(false);
+      onClose?.();
+    }, [onClose]);
 
-  return (
-    <>
-      <button
-        className={classNames(classNamesComplete)}
-        data-action-id={dataActionId}
-        onClick={onButtonClick}
-        type="button"
-        ref={buttonRef}
-      >
-        {text}
-        <Icon
-          icon={ARROW_DOWN}
-          size={10}
-          className={classNames('transition-transform ml-2', {
-            'transform rotate-180': isOpen,
-          })}
-        />
-      </button>
+    useOnClickOutside([buttonRef, dropdownRef], useClickedOutside);
 
-      {isOpen && (
-        <Portal target="body">
-          <div
-            className={classNames(styles.dropdown, dropdownClassName)}
-            style={dropdownStyles}
-            ref={dropdownRef}
-          >
-            {children}
-          </div>
-        </Portal>
-      )}
-    </>
-  );
-};
+    useEffect(() => {
+      if (!isOpen) {
+        return;
+      }
+      const coords = getCoords();
+      setCoords(coords);
+      onOpen?.();
+    }, [isOpen, getCoords, onOpen, mode]);
+
+    return (
+      <>
+        <button
+          className={classNames(classNamesComplete)}
+          data-action-id={dataActionId}
+          onClick={onButtonClick}
+          type="button"
+          ref={buttonRef}
+        >
+          {text}
+          <Icon
+            icon={ARROW_DOWN}
+            size={10}
+            className={classNames(styles.icon, {
+              [styles.isOpen]: isOpen,
+            })}
+          />
+        </button>
+
+        {isOpen && (
+          <Portal target="body">
+            <div
+              className={classNames(styles.dropdown, dropdownClassName)}
+              style={dropdownStyles}
+              ref={dropdownRef}
+            >
+              {children}
+            </div>
+          </Portal>
+        )}
+      </>
+    );
+  },
+);

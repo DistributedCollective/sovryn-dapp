@@ -1,4 +1,10 @@
-import React, { MouseEventHandler, ReactNode, useMemo } from 'react';
+import React, {
+  MouseEventHandler,
+  ReactNode,
+  useMemo,
+  forwardRef,
+  LegacyRef,
+} from 'react';
 
 import classNames from 'classnames';
 import { Link } from 'react-router-dom';
@@ -20,75 +26,86 @@ export interface IButtonProps {
   dataActionId?: string;
 }
 
-export const Button: React.FC<IButtonProps> = ({
-  text,
-  href,
-  hrefExternal,
-  onClick,
-  size = ButtonSize.small,
-  style = ButtonStyle.primary,
-  type = ButtonType.button,
-  disabled,
-  loading,
-  className,
-  dataActionId,
-}) => {
-  const classNamesComplete = useMemo(
-    () =>
-      classNames(
-        styles.button,
-        loading && styles.loading,
-        styles[size],
-        styles[style],
-        styles[type],
-        disabled && styles.disabled,
-        className,
-      ),
-    [loading, size, style, type, disabled, className],
-  );
+export const Button = forwardRef<
+  HTMLButtonElement | HTMLAnchorElement,
+  IButtonProps
+>(
+  (
+    {
+      text,
+      href,
+      hrefExternal,
+      onClick,
+      size = ButtonSize.small,
+      style = ButtonStyle.primary,
+      type = ButtonType.button,
+      disabled,
+      loading,
+      className,
+      dataActionId,
+    },
+    ref,
+  ) => {
+    const classNamesComplete = useMemo(
+      () =>
+        classNames(
+          styles.button,
+          loading && styles.loading,
+          styles[size],
+          styles[style],
+          styles[type],
+          disabled && styles.disabled,
+          className,
+        ),
+      [loading, size, style, type, disabled, className],
+    );
 
-  const onClickHandler = useMemo(
-    () => (!disabled && !loading ? onClick : undefined),
-    [disabled, loading, onClick],
-  );
+    const onClickHandler = useMemo(
+      () => (!disabled && !loading ? onClick : undefined),
+      [disabled, loading, onClick],
+    );
 
-  if (href) {
-    if (hrefExternal) {
-      return (
-        <a
-          className={classNamesComplete}
-          href={href}
-          target="_blank"
-          rel="noreferrer"
-          onClick={onClickHandler}
-          data-action-id={dataActionId}
-        >
-          {text}
-        </a>
-      );
+    if (href) {
+      if (hrefExternal) {
+        return (
+          <a
+            ref={ref as LegacyRef<HTMLAnchorElement>}
+            className={classNamesComplete}
+            href={href}
+            target="_blank"
+            rel="noreferrer"
+            onClick={onClickHandler}
+            data-action-id={dataActionId}
+          >
+            {text}
+          </a>
+        );
+      } else {
+        return (
+          <Link
+            ref={ref as React.Ref<HTMLAnchorElement>}
+            to={href}
+            className={classNamesComplete}
+            onClick={onClickHandler}
+            data-action-id={dataActionId}
+          >
+            {text}
+          </Link>
+        );
+      }
     } else {
       return (
-        <Link
-          to={href}
+        <button
+          ref={ref as LegacyRef<HTMLButtonElement>}
+          type={type}
+          disabled={disabled}
           className={classNamesComplete}
           onClick={onClickHandler}
           data-action-id={dataActionId}
         >
           {text}
-        </Link>
+        </button>
       );
     }
-  } else {
-    return (
-      <button
-        type={type}
-        disabled={disabled}
-        className={classNamesComplete}
-        onClick={onClickHandler}
-        data-action-id={dataActionId}
-      >
-        {text}
-      </button>
-    );
-  }
-};
+  },
+);

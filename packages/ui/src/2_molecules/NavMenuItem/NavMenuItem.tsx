@@ -27,11 +27,8 @@ export const NavMenuItem: FC<NavMenuItemProps> = ({
   maxCount = MAX_COUNT_DEFAULT,
 }) => {
   const formattedCount = useMemo(
-    () =>
-      count && count > maxCount
-        ? `${maxCount}+`
-        : count,
-    [count],
+    () => (count && count > maxCount ? `${maxCount}+` : count),
+    [count, maxCount],
   );
 
   return (

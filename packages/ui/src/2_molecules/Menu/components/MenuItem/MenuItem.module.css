@@ -22,20 +22,45 @@
       line-height: 25px;
     }
 
+    & .text,
+    & .icon {
+      @apply text-gray-10;
+    }
+
+    & .icon {
+      @apply text-gray-10 mr-2;
+    }
+
     & .label {
       @apply text-gray-30 font-normal text-tiny inline-block leading-none pointer-events-none;
     }
   }
 
   &:last-child {
-    & .button{
+    & .button {
       @apply mb-0;
     }
   }
 
   &:first-child {
-    & .button{
+    & .button {
       @apply mt-0;
     }
   }
+}
+
+.hostBlock {
+  @apply block leading-none;
+}
+
+.hostFlex {
+  @apply flex items-center;
+}
+
+.icon {
+  @apply mr-2;
+}
+
+.externalIcon {
+  @apply ml-2 h-5 w-5 inline-block;
 }

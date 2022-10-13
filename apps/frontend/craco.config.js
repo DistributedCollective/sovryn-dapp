@@ -19,6 +19,7 @@ module.exports = {
           configFile: 'tsconfig.json',
         },
       });
+      config.resolve.fallback = { stream: require.resolve('readable-stream') };
       return config;
     },
   },

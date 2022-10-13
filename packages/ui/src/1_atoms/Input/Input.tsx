@@ -34,13 +34,13 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
 
     return (
       <div className={classNames(styles.wrapper, className)}>
-        <div className="relative flex-grow">
+        <div className={styles.container}>
           <InputBase
             ref={inputRef}
             className={classNames(styles.input, classNameInput, {
               [styles.invalid]: invalid,
-              'h-10': size === InputSize.large,
-              'h-8': size === InputSize.small,
+              [styles.large]: size === InputSize.large,
+              [styles.small]: size === InputSize.small,
             })}
             type={type}
             {...rest}

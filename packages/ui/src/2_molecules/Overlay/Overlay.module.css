@@ -1,0 +1,47 @@
+.disableScroll {
+  @apply overflow-hidden;
+}
+
+.overlay {
+  @apply inset-0 flex flex-col;
+
+  &.__fixed {
+    @apply fixed;
+  }
+
+  &.__absolute {
+    @apply absolute;
+  }
+}
+
+.bgTransparent {
+  @apply bg-transparent;
+}
+
+.bgDefault {
+  @apply bg-gray-70-ol;
+}
+
+.alignLeft {
+  @apply justify-start;
+}
+
+.alignCenter {
+  @apply justify-center;
+}
+
+.alignRight {
+  @apply justify-end;
+}
+
+.verticalTop {
+  @apply items-start;
+}
+
+.verticalCenter {
+  @apply items-center;
+}
+
+.verticalBottom {
+  @apply items-end;
+}

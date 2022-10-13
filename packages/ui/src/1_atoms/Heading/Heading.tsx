@@ -19,7 +19,7 @@ export const Heading: FC<HeadingProps> = ({
   React.createElement(
     type,
     {
-      className: classNames(styles[type], className),
+      className: classNames(styles.heading, styles[type], className),
     },
     children,
   );

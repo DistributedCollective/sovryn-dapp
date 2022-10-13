@@ -1,14 +1,19 @@
-import React from 'react';
+import React, { useReducer } from 'react';
 
-import { Lead } from '@sovryn/ui';
+import { Button, Dialog, Dropdown, Lead, noop } from '@sovryn/ui';
 
-import { EthersProviderTest } from '../../3_organisms/EthersProviderTest';
+import { ConnectWalletButton } from '../../2_molecules/ConnectWalletButton/ConnectWalletButton';
 import { useTheme } from '../../../hooks/useTheme';
+import { useWalletConnect } from '../../../hooks/useWalletConnect';
 import { AppTheme } from '../../../types/tailwind';
 import styles from './App.module.css';
 
 function App() {
   const { handleThemeChange } = useTheme();
+
+  const [isOpen, toggle] = useReducer(p => !p, false);
+  const { connectWallet, disconnectWallet, wallets, pending } =
+    useWalletConnect();
 
   return (
     <div className="my-2 px-4">
@@ -21,6 +26,26 @@ function App() {
         </a>
         <Lead test={false}>abc</Lead>
         <Lead test={true}>def</Lead>
+
+        <Button text="Open Dialog" onClick={toggle} />
+
+        <Dialog isOpen={isOpen} onClose={toggle}>
+          <div className="p-4">Hello.</div>
+        </Dialog>
+
+        <Dropdown text="test">
+          <div>
+            <div className="my-2" onClick={noop}>
+              Dropdown Item 1
+            </div>
+            <div className="my-2" onClick={noop}>
+              Dropdown Item 2
+            </div>
+            <div className="my-2" onClick={noop}>
+              Dropdown Item 3
+            </div>
+          </div>
+        </Dropdown>
 
         <div className="flex items-center gap-4">
           <div
@@ -59,7 +84,17 @@ function App() {
         </p>
       </header>
       <main>
-        <EthersProviderTest />
+        <div>
+          <ConnectWalletButton
+            onConnect={connectWallet}
+            onDisconnect={disconnectWallet}
+            address={wallets[0]?.accounts[0]?.address}
+            pending={pending}
+          />
+        </div>
+
+        <br />
+        <br />
       </main>
     </div>
   );

@@ -11,7 +11,7 @@ type TabProps = {
   active: boolean;
   onClick: () => void;
   className?: string;
-  dataActionId?: string;
+  dataLayoutId?: string;
   type: TabType;
   size: TabSize;
   activeClassName?: string;
@@ -24,7 +24,7 @@ export const Tab: React.FC<TabProps> = ({
   onClick,
   disabled,
   className,
-  dataActionId,
+  dataLayoutId,
   type,
   size,
   active,
@@ -46,7 +46,7 @@ export const Tab: React.FC<TabProps> = ({
       styles[type],
     )}
     onClick={onClick}
-    data-action-id={dataActionId}
+    data-layout-id={dataLayoutId}
     disabled={disabled}
   >
     {content}

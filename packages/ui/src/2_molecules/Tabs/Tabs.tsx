@@ -6,11 +6,11 @@ import styles from './Tabs.module.css';
 import { TabSize, TabType } from './Tabs.types';
 import { Tab } from './components/Tab/Tab';
 
-interface ITabItem {
+export interface ITabItem {
   label: React.ReactNode;
   content: React.ReactNode;
   disabled?: boolean;
-  dataActionId?: string;
+  dataLayoutId?: string;
   activeClassName?: string;
 }
 
@@ -55,7 +55,7 @@ export const Tabs: React.FC<TabsProps> = ({
             disabled={item.disabled}
             onClick={() => selectTab(item, i)}
             content={item.label}
-            dataActionId={item.dataActionId}
+            dataLayoutId={item.dataLayoutId}
             type={type}
             size={size}
             activeIndex={index}

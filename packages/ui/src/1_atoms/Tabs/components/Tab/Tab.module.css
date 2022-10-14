@@ -1,9 +1,8 @@
 .button {
   @apply cursor-pointer inline-flex box-border items-center justify-center text-center rounded cursor-pointer transition-colors relative;
 
-  &.primaryWithBorder,
   &.primary {
-    @apply border-t-2 border-t-transparent text-base text-gray-9 rounded-b-none h-12;
+    @apply border-t-2 border-t-transparent border-b text-base text-gray-10/50 rounded-b-none h-12;
     min-width: 10rem;
 
     &.normal {
@@ -15,16 +14,8 @@
     }
 
     &.active {
-      @apply text-gray-10 bg-gray-80;
+      @apply text-gray-10 bg-gray-90 border-x border-x-gray-50 pb-0.5 border-b-transparent;
     }
-  }
-
-  &.primaryWithBorder {
-    @apply border-b;
-  }
-
-  &.primaryWithBorder.active {
-    @apply border-x border-x-gray-50 pb-0.5 border-b-transparent;
 
     &:last-child {
       @apply border-r-0;
@@ -33,14 +24,14 @@
     &:first-child {
       @apply border-l-0;
     }
-  }
 
-  &.primaryWithBorder:not(.active) {
-    @apply border-b-gray-50 border-r border-r-gray-50 rounded-none border-t-0;
+    &:not(.active) {
+      @apply bg-gray-80 border-b-gray-50 border-r border-r-gray-50 rounded-none border-t-0;
 
-    &:last-child,
-    &.noRightBorder {
-      @apply border-r-0;
+      &:last-child,
+      &.noRightBorder {
+        @apply border-r-0;
+      }
     }
   }
 
@@ -56,18 +47,18 @@
     }
 
     &.active {
-      @apply bg-gray-80;
+      @apply bg-gray-70;
     }
 
     &:not(.active) {
-      @apply text-gray-10 opacity-75;
+      @apply text-gray-10/75;
       &:not(:disabled):hover {
-        @apply opacity-100;
+        @apply text-gray-10;
       }
     }
   }
 
   &:disabled {
-    @apply text-gray-9/65 cursor-not-allowed;
+    @apply cursor-not-allowed;
   }
 }

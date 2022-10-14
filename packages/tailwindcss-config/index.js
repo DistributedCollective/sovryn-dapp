@@ -55,7 +55,7 @@ module.exports = {
       'primary-20': '#F5A549',
       'primary-10': '#FFDAA7',
 
-      negative: '#FF6868',
+      negative: '#FF0D39',
       positive: '#72EADE',
 
       error: '#FF0000',

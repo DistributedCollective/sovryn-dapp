@@ -46,8 +46,9 @@ Primary.args = {
   ],
   index: 0,
   contentClassName: 'p-6',
+  className: '',
   size: TabSize.normal,
-  type: TabType.primaryWithBorder,
+  type: TabType.primary,
 };
 
 export const Secondary = Template.bind();
@@ -56,7 +57,7 @@ Secondary.args = {
     {
       label: 'Default',
       content: <div>Default</div>,
-      activeClassName: 'text-primary-30',
+      activeClassName: 'text-primary-20',
       dataActionId: 'default',
     },
     {
@@ -81,6 +82,7 @@ Secondary.args = {
   ],
   index: 0,
   contentClassName: 'p-4',
+  className: '',
   size: TabSize.normal,
   type: TabType.secondary,
 };

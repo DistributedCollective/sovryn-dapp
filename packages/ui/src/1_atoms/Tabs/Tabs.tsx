@@ -28,7 +28,7 @@ export const Tabs: React.FC<TabsProps> = ({
   items,
   index,
   onChange,
-  className,
+  className = '',
   contentClassName,
   type = TabType.primary,
   size = TabSize.normal,

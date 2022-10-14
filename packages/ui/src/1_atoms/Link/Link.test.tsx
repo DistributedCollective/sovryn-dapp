@@ -4,7 +4,7 @@ import React from 'react';
 
 import { Link } from './Link';
 
-test.only('renders Link with action id', () => {
+test('renders Link with action id', () => {
   const { getByTestId } = render(
     <Link
       text="sovryn-link"

@@ -1,0 +1,64 @@
+.button {
+  @apply cursor-pointer inline-flex box-border items-center justify-center text-center rounded cursor-pointer transition-colors relative;
+
+  &.primary {
+    @apply border-t-2 border-t-transparent border-b text-base text-gray-10/50 rounded-b-none h-12;
+    min-width: 10rem;
+
+    &.normal {
+      @apply font-medium;
+    }
+
+    &:not(:disabled):not(.active):hover {
+      @apply text-gray-10;
+    }
+
+    &.active {
+      @apply text-gray-10 bg-gray-90 border-x border-x-gray-50 pb-0.5 border-b-transparent;
+    }
+
+    &:last-child {
+      @apply border-r-0;
+    }
+
+    &:first-child {
+      @apply border-l-0;
+    }
+
+    &:not(.active) {
+      @apply bg-gray-80 border-b-gray-50 border-r border-r-gray-50 rounded-none border-t-0;
+
+      &:last-child,
+      &.noRightBorder {
+        @apply border-r-0;
+      }
+    }
+  }
+
+  &.secondary {
+    &.normal {
+      @apply font-semibold text-xs px-0.5 py-2 mx-0.5;
+      min-width: 3.5rem;
+    }
+
+    &.small {
+      @apply font-semibold text-tiny px-0.5 py-1 mx-0.5;
+      min-width: 2.5rem;
+    }
+
+    &.active {
+      @apply bg-gray-70;
+    }
+
+    &:not(.active) {
+      @apply text-gray-10/75;
+      &:not(:disabled):hover {
+        @apply text-gray-10;
+      }
+    }
+  }
+
+  &:disabled {
+    @apply cursor-not-allowed;
+  }
+}

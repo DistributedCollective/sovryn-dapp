@@ -22,7 +22,7 @@ Basic.args = {
   className: 'm-2',
   isActive: false,
   maxCount: 99,
-  dataActionId: '',
+  dataLayoutId: '',
 };
 
 const InteractiveTemplate: Story<ComponentProps<typeof NavMenuItem>> = args => {
@@ -37,5 +37,5 @@ Interactive.args = {
   className: 'm-2',
   isActive: false,
   maxCount: 99,
-  dataActionId: '',
+  dataLayoutId: '',
 };

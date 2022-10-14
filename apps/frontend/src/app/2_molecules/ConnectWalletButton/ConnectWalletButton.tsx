@@ -9,7 +9,7 @@ export type ConnectWalletButtonProps = {
   address: string | undefined;
   pending?: boolean;
   className?: string;
-  dataActionId?: string;
+  dataLayoutId?: string;
 };
 
 export const ConnectWalletButton: FC<
@@ -20,7 +20,7 @@ export const ConnectWalletButton: FC<
   onDisconnect,
   onConnect,
   className,
-  dataActionId,
+  dataLayoutId,
 }) => {
   if (!address) {
     return (
@@ -28,7 +28,7 @@ export const ConnectWalletButton: FC<
         text="Connect wallet"
         onClick={onConnect}
         className={className}
-        dataActionId={dataActionId}
+        dataLayoutId={dataLayoutId}
         disabled={pending}
       />
     );
@@ -37,7 +37,7 @@ export const ConnectWalletButton: FC<
       <WalletIdentity
         onDisconnect={onDisconnect}
         address={address}
-        dataActionId={dataActionId}
+        dataLayoutId={dataLayoutId}
         className={className}
         submenuLabels={{
           copyAddress: 'Copy Address',

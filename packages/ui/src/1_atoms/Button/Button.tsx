@@ -23,7 +23,7 @@ export interface IButtonProps {
   disabled?: boolean;
   loading?: boolean;
   className?: string;
-  dataActionId?: string;
+  dataLayoutId?: string;
 }
 
 export const Button = forwardRef<
@@ -42,7 +42,7 @@ export const Button = forwardRef<
       disabled,
       loading,
       className,
-      dataActionId,
+      dataLayoutId,
     },
     ref,
   ) => {
@@ -75,7 +75,7 @@ export const Button = forwardRef<
             target="_blank"
             rel="noreferrer"
             onClick={onClickHandler}
-            data-action-id={dataActionId}
+            data-layout-id={dataLayoutId}
           >
             {text}
           </a>
@@ -87,7 +87,7 @@ export const Button = forwardRef<
             to={href}
             className={classNamesComplete}
             onClick={onClickHandler}
-            data-action-id={dataActionId}
+            data-layout-id={dataLayoutId}
           >
             {text}
           </Link>
@@ -101,7 +101,7 @@ export const Button = forwardRef<
           disabled={disabled}
           className={classNamesComplete}
           onClick={onClickHandler}
-          data-action-id={dataActionId}
+          data-layout-id={dataLayoutId}
         >
           {text}
         </button>

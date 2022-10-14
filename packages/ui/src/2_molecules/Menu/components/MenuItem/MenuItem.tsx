@@ -21,7 +21,7 @@ type MenuItemProps = {
   href?: string;
   hrefExternal?: boolean;
   onClick?: MouseEventHandler;
-  dataActionId?: string;
+  dataLayoutId?: string;
 };
 
 export const MenuItem: React.FC<MenuItemProps> = ({
@@ -33,7 +33,7 @@ export const MenuItem: React.FC<MenuItemProps> = ({
   href,
   hrefExternal,
   onClick,
-  dataActionId,
+  dataLayoutId,
 }) => {
   const onClickHandler = useCallback(
     event => {
@@ -66,7 +66,7 @@ export const MenuItem: React.FC<MenuItemProps> = ({
             target="_blank"
             rel="noreferrer"
             onClick={onClickHandler}
-            data-action-id={dataActionId}
+            data-layout-id={dataLayoutId}
           >
             <div className={styles.hostBlock}>
               <div className={styles.hostFlex}>
@@ -87,7 +87,7 @@ export const MenuItem: React.FC<MenuItemProps> = ({
               [styles.active]: isActive,
             })}
             onClick={onClickHandler}
-            data-action-id={dataActionId}
+            data-layout-id={dataLayoutId}
           >
             <div className={styles.hostBlock}>
               <div className={styles.hostFlex}>
@@ -108,7 +108,7 @@ export const MenuItem: React.FC<MenuItemProps> = ({
             [styles.disabled]: disabled,
           })}
           onClick={onClickHandler}
-          data-action-id={dataActionId}
+          data-layout-id={dataLayoutId}
         >
           <div className={styles.hostBlock}>
             <div className={styles.hostFlex}>
@@ -125,7 +125,7 @@ export const MenuItem: React.FC<MenuItemProps> = ({
     hrefExternal,
     disabled,
     onClickHandler,
-    dataActionId,
+    dataLayoutId,
     icon,
     text,
     label,

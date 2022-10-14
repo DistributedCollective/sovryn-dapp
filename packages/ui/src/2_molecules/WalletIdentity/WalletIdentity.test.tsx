@@ -47,7 +47,7 @@ describe('WalletIdentity', () => {
 
   test('copy address button', async () => {
     const testAddress = '0x32Be343B94f860124dC4fEe278FDCBD38C102D88';
-    const { getByText, baseElement } = render(
+    const { getByText, getByTestId } = render(
       <WalletIdentity
         address={testAddress}
         onDisconnect={() => {}}
@@ -60,9 +60,7 @@ describe('WalletIdentity', () => {
 
     userEvent.click(addressBadge);
 
-    const copyButton = baseElement.querySelector(
-      '[data-layout-id="walletIdentityTest-menu-copyAddress"]',
-    );
+    const copyButton = getByTestId('walletIdentityTest-menu-copyAddress');
     expect(copyButton).toBeInTheDocument();
 
     userEvent.click(copyButton!);
@@ -72,7 +70,7 @@ describe('WalletIdentity', () => {
   test('disconnect button', async () => {
     const disconnectFunction = jest.fn();
     const testAddress = '0x32Be343B94f860124dC4fEe278FDCBD38C102D88';
-    const { getByText, baseElement } = render(
+    const { getByText, getByTestId } = render(
       <WalletIdentity
         address={testAddress}
         onDisconnect={disconnectFunction}
@@ -85,9 +83,7 @@ describe('WalletIdentity', () => {
 
     userEvent.click(addressBadge);
 
-    const disconnectButton = baseElement.querySelector(
-      '[data-layout-id="disconnectTest-menu-disconnect"]',
-    );
+    const disconnectButton = getByTestId('disconnectTest-menu-disconnect');
     expect(disconnectButton).toBeInTheDocument();
 
     userEvent.click(disconnectButton!);

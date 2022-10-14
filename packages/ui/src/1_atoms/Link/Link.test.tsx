@@ -9,10 +9,10 @@ test('renders Link with action id', () => {
     <Link
       text="sovryn-link"
       href="https://live.sovryn.app/"
-      dataActionId="sovryn-link"
+      dataLayoutId="sovryn-link"
     />,
   );
-  expect(screen.findAllByRole('a[data-action-id="sovryn-link"]')).toBeDefined();
+  expect(screen.findAllByRole('a[data-layout-id="sovryn-link"]')).toBeDefined();
 });
 
 test('renders Link with href link', () => {

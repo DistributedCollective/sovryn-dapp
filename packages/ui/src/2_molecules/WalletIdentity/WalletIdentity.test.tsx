@@ -33,14 +33,14 @@ describe('WalletIdentity', () => {
         onDisconnect={() => {}}
         startLength={4}
         endLength={4}
-        dataActionId="walletIdentityTest"
+        dataLayoutId="walletIdentityTest"
       />,
     );
     const addressBadge = getByText(prettyTx(testAddress, 4, 4));
 
     expect(addressBadge).toBeDefined();
     expect(addressBadge).toHaveAttribute(
-      'data-action-id',
+      'data-layout-id',
       'walletIdentityTest',
     );
   });
@@ -53,7 +53,7 @@ describe('WalletIdentity', () => {
         onDisconnect={() => {}}
         startLength={4}
         endLength={4}
-        dataActionId="walletIdentityTest"
+        dataLayoutId="walletIdentityTest"
       />,
     );
     const addressBadge = getByText(prettyTx(testAddress, 4, 4));
@@ -61,7 +61,7 @@ describe('WalletIdentity', () => {
     userEvent.click(addressBadge);
 
     const copyButton = baseElement.querySelector(
-      '[data-action-id="walletIdentityTest-menu-copyAddress"]',
+      '[data-layout-id="walletIdentityTest-menu-copyAddress"]',
     );
     expect(copyButton).toBeInTheDocument();
 
@@ -78,7 +78,7 @@ describe('WalletIdentity', () => {
         onDisconnect={disconnectFunction}
         startLength={4}
         endLength={4}
-        dataActionId="disconnectTest"
+        dataLayoutId="disconnectTest"
       />,
     );
     const addressBadge = getByText(prettyTx(testAddress, 4, 4));
@@ -86,7 +86,7 @@ describe('WalletIdentity', () => {
     userEvent.click(addressBadge);
 
     const disconnectButton = baseElement.querySelector(
-      '[data-action-id="disconnectTest-menu-disconnect"]',
+      '[data-layout-id="disconnectTest-menu-disconnect"]',
     );
     expect(disconnectButton).toBeInTheDocument();
 

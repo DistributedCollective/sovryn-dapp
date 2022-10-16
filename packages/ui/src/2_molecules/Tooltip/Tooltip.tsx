@@ -30,7 +30,7 @@ type TooltipProps = {
   children: ReactNode;
   className?: string;
   tooltipClassName?: string;
-  dataActionId?: string;
+  dataLayoutId?: string;
   placement?: TooltipPlacement;
   onShow?: () => void;
   onHide?: () => void;
@@ -43,7 +43,7 @@ export const Tooltip: FC<TooltipProps> = ({
   children,
   className,
   tooltipClassName,
-  dataActionId,
+  dataLayoutId,
   placement = TooltipPlacement.TOP,
   onShow,
   onHide,
@@ -97,7 +97,7 @@ export const Tooltip: FC<TooltipProps> = ({
 
   const getElementProps = useCallback(() => {
     const attributes = {
-      'data-action-id': dataActionId,
+      'data-layout-id': dataLayoutId,
       className: className,
       ref: targetRef,
     };
@@ -110,7 +110,7 @@ export const Tooltip: FC<TooltipProps> = ({
     };
     return { ...attributes, ...events };
   }, [
-    dataActionId,
+    dataLayoutId,
     targetRef,
     className,
     trigger,

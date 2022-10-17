@@ -1,7 +1,7 @@
 import { ReactNode } from 'react';
 
 export type VerticalTabsProps = {
-  items: VerticalTabsItemProps[];
+  items: VerticalTabsItem[];
   selectedIndex: number;
   className?: string;
   tabsClassName?: string;
@@ -11,10 +11,15 @@ export type VerticalTabsProps = {
   footer?: (props: VerticalTabsProps) => ReactNode;
 };
 
-export type VerticalTabsItemProps = {
+export type VerticalTabsItem = {
   label: ReactNode;
   content: ReactNode;
   infoText?: ReactNode;
   disabled?: boolean;
   dataActionId?: string;
+};
+
+export type VerticalTabsItemButtonProps = VerticalTabsItem & {
+  active: boolean;
+  onClick: () => void;
 };

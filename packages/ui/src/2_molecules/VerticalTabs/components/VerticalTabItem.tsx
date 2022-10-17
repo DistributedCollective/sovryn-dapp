@@ -1,14 +1,9 @@
-import { FC } from 'react';
+import React, { FC } from 'react';
 
 import classNames from 'classnames';
 
-import { VerticalTabsItemProps } from '../VerticalTabs.types';
+import { VerticalTabsItemButtonProps } from '../VerticalTabs.types';
 import styles from './VerticalTabItem.module.css';
-
-export type VerticalTabsItemButtonProps = VerticalTabsItemProps & {
-  active: boolean;
-  onClick: () => void;
-};
 
 export const VerticalTabItem: FC<VerticalTabsItemButtonProps> = ({
   disabled,

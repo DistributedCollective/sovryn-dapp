@@ -97,7 +97,6 @@ InDialog.args = {
   header: () => <Heading>Connect Wallet</Heading>,
   tabsClassName: 'rounded-l-lg',
   className: 'rounded-lg',
-  tabIndicatorColor: 'rgba(13, 13, 15)',
 };
 InDialog.parameters = {
   layout: 'centered',

@@ -23,5 +23,3 @@ export const WITHDRAW = 'withdraw';
 export const X_MARK = 'x-mark';
 export const COPY = 'copy';
 export const EXIT = 'exit';
-export const LEDGER = 'ledger';
-export const TREZOR = 'trezor';

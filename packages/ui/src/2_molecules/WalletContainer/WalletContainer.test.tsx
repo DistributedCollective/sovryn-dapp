@@ -11,10 +11,10 @@ describe('WalletContainer', () => {
     expect(getByText('Ledger')).toBeInTheDocument();
   });
 
-  it('should render a component with icon', () => {
+  it('should render a component with an icon', () => {
     const { findByRole } = render(
-      <WalletContainer name="Ledger" icon={<Icon icon="ledger" />} />,
+      <WalletContainer name="Ledger" icon={<Icon icon="info" />} />,
     );
-    expect(findByRole('svg[data-icon="ledger"]')).toBeDefined();
+    expect(findByRole('svg[data-icon="info"]')).toBeDefined();
   });
 });

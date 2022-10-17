@@ -25,9 +25,9 @@ export const WalletContainer: FC<WalletContainerProps> = ({
       data-layout-id={dataLayoutId}
       className={classNames(className, styles.walletContainer)}
     >
-      <div className="flex items-center justify-center">
+      <div className={styles.label}>
         {name}
-        {tooltip && <Icon icon="info" className="ml-1.5" size={10} />}
+        {tooltip && <Icon icon="info" size={10} />}
       </div>{' '}
       {icon && <div className={styles.icon}>{icon}</div>}
     </div>

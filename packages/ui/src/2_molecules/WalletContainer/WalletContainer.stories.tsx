@@ -28,14 +28,14 @@ const Advanced: Story<ComponentProps<typeof WalletContainer>> = args => (
     <WalletContainer
       {...args}
       name="Ledger"
-      icon={<Icon icon="ledger" size={24} className="text-primary-20" />}
+      icon={<Icon icon="warning" size={24} className="text-warning" />}
     />
     <br />
     <WalletContainer
       {...args}
       name="Trezor"
       tooltip="tooltip"
-      icon={<Icon icon="trezor" size={25} className="text-gray-20" />}
+      icon={<Icon icon="success-icon" size={25} className="text-primary" />}
     />
   </div>
 );

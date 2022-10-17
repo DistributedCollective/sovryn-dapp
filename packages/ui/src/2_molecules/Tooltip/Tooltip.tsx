@@ -15,8 +15,14 @@ import classNames from 'classnames';
 
 import { Portal } from '../../1_atoms/Portal/Portal';
 import { Nullable } from '../../types';
+import { noop } from '../../utils';
 import styles from './Tooltip.module.css';
-import { TooltipCoords, TooltipPlacement } from './Tooltip.types';
+import {
+  TooltipElements,
+  TooltipPlacement,
+  TooltipTrigger,
+  TooltipEvents,
+} from './Tooltip.types';
 import { CLOSE_DELAY, getTooltipPosition } from './Tooltip.utils';
 
 type TooltipProps = {
@@ -24,10 +30,12 @@ type TooltipProps = {
   children: ReactNode;
   className?: string;
   tooltipClassName?: string;
-  dataActionId?: string;
+  dataLayoutId?: string;
   placement?: TooltipPlacement;
   onShow?: () => void;
   onHide?: () => void;
+  disabled?: boolean;
+  trigger?: TooltipTrigger;
 };
 
 export const Tooltip: FC<TooltipProps> = ({
@@ -35,59 +43,81 @@ export const Tooltip: FC<TooltipProps> = ({
   children,
   className,
   tooltipClassName,
-  dataActionId,
+  dataLayoutId,
   placement = TooltipPlacement.TOP,
   onShow,
   onHide,
+  disabled = false,
+  trigger = TooltipTrigger.hover,
 }) => {
   const tooltipRef = useRef<HTMLDivElement>(null);
-  const elementRef = useRef<HTMLElement>(null);
-  const [coords, setCoords] = useState<Nullable<TooltipCoords>>(null);
+  const targetRef = useRef<HTMLElement>(null);
+  const [elements, setElements] = useState<Nullable<TooltipElements>>(null);
   const [isVisible, setIsVisible] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   const [shouldHide, setShouldHide] = useState(false);
   const isHoveredRef = useRef(isHovered);
   isHoveredRef.current = isHovered;
 
-  const getCoords = useCallback(() => {
-    const element = elementRef.current?.getBoundingClientRect();
+  const getElements = useCallback(() => {
+    const target = targetRef.current?.getBoundingClientRect();
     const tooltip = tooltipRef.current?.getBoundingClientRect();
-    const scrollOffset = window.scrollY;
-    if (element && tooltip) {
-      const { top, left, right, bottom, width, height } = element;
-      const { width: tooltipWidth, height: tooltipHeight } = tooltip;
-      return {
-        top: top + scrollOffset,
-        left: left,
-        right: right,
-        bottom: bottom,
-        tooltipWidth: tooltipWidth,
-        tooltipHeight: tooltipHeight,
-        elementWidth: width,
-        elementHeight: height,
-      };
+    if (target && tooltip) {
+      return { target, tooltip };
     }
     return null;
   }, []);
 
+  const updateElements = useCallback(() => {
+    const elements = getElements();
+    setElements(elements);
+  }, [getElements, setElements]);
+
   const tooltipPosition = useMemo(() => {
-    if (!coords) {
+    if (!elements) {
       return;
     }
-    return getTooltipPosition(coords, placement);
-  }, [coords, placement]);
+    return getTooltipPosition(elements, placement);
+  }, [elements, placement]);
 
-  const onMouseEnter = useCallback(() => {
-    setIsVisible(true);
-  }, [setIsVisible]);
+  const handleShow = useCallback(() => {
+    setIsVisible(prevValue => !prevValue);
+    if (isVisible) {
+      setShouldHide(true);
+    }
+  }, [setIsVisible, setShouldHide, isVisible]);
 
-  const onMouseLeave = useCallback(() => {
+  const handleHide = useCallback(() => {
     setShouldHide(true);
   }, [setShouldHide]);
 
   const onMouseHover = useCallback(() => {
     setIsHovered(prevValue => !prevValue);
   }, [setIsHovered]);
+
+  const getElementProps = useCallback(() => {
+    const attributes = {
+      'data-layout-id': dataLayoutId,
+      className: className,
+      ref: targetRef,
+    };
+    const events = !disabled && {
+      onMouseEnter: trigger === TooltipTrigger.hover ? handleShow : noop,
+      onMouseLeave: trigger === TooltipTrigger.hover ? handleHide : noop,
+      onClick: trigger === TooltipTrigger.click ? handleShow : noop,
+      onFocus: trigger === TooltipTrigger.focus ? handleShow : noop,
+      onBlur: trigger === TooltipTrigger.focus ? handleHide : noop,
+    };
+    return { ...attributes, ...events };
+  }, [
+    dataLayoutId,
+    targetRef,
+    className,
+    trigger,
+    handleShow,
+    handleHide,
+    disabled,
+  ]);
 
   useEffect(() => {
     if (shouldHide && !isHoveredRef.current) {
@@ -96,47 +126,41 @@ export const Tooltip: FC<TooltipProps> = ({
         setShouldHide(false);
         setIsVisible(false);
       }, CLOSE_DELAY);
-
       return () => clearTimeout(timeout);
     }
-  }, [
-    shouldHide,
-    isHoveredRef.current,
-    onHide,
-    setShouldHide,
-    setIsVisible,
-    CLOSE_DELAY,
-  ]);
+  }, [shouldHide, onHide, setShouldHide, setIsVisible]);
+
+  useEffect(() => {
+    Object.values(TooltipEvents).forEach(event =>
+      window.addEventListener(event, updateElements),
+    );
+    return () => {
+      Object.values(TooltipEvents).forEach(event =>
+        window.removeEventListener(event, updateElements),
+      );
+    };
+  }, [updateElements]);
 
   useEffect(() => {
     if (!isVisible) {
       return;
     }
-    const coords = getCoords();
-    setCoords(coords);
+    updateElements();
     onShow?.();
-  }, [isVisible, getCoords, placement, setCoords]);
+  }, [isVisible, updateElements, onShow]);
 
   return (
     <>
-      {cloneElement(Children.only(children) as ReactElement, {
-        'data-action-id': dataActionId,
-        className: className,
-        ref: elementRef,
-        onMouseEnter: onMouseEnter,
-        onMouseLeave: onMouseLeave,
-        onFocus: onMouseEnter,
-        onBlur: onMouseLeave,
-      })}
-      {isVisible && (
+      {cloneElement(Children.only(children) as ReactElement, getElementProps())}
+      {isVisible && !disabled && (
         <Portal target="body">
           <div
             className={classNames(
               styles.tooltip,
-              `${styles[placement]}`,
+              styles[tooltipPosition?.arrowStyles],
               tooltipClassName,
             )}
-            style={tooltipPosition}
+            style={tooltipPosition?.positionStyles}
             ref={tooltipRef}
             role="tooltip"
             onMouseEnter={onMouseHover}

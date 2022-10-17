@@ -13,13 +13,19 @@ export enum TooltipPlacement {
   RIGHT_END = 'right-end',
 }
 
-export type TooltipCoords = {
-  top: number;
-  left: number;
-  right: number;
-  bottom: number;
-  elementWidth: number;
-  elementHeight: number;
-  tooltipWidth: number;
-  tooltipHeight: number;
+export enum TooltipTrigger {
+  hover = 'hover',
+  focus = 'focus',
+  click = 'click',
+}
+
+export type TooltipElements = {
+  target: DOMRect;
+  tooltip: DOMRect;
 };
+
+export enum TooltipEvents {
+  resize = 'resize',
+  scroll = 'scroll',
+  wheel = 'wheel',
+}

@@ -2,9 +2,9 @@ import { Story } from '@storybook/react';
 
 import React, { ComponentProps } from 'react';
 
-import { Icon, Link } from '../../1_atoms';
+import { Button, Icon, Link } from '../../1_atoms';
 import { Tooltip } from './Tooltip';
-import { TooltipPlacement } from './Tooltip.types';
+import { TooltipPlacement, TooltipTrigger } from './Tooltip.types';
 
 export default {
   title: 'Molecule/Tooltip',
@@ -12,7 +12,7 @@ export default {
 };
 
 const Template: Story<ComponentProps<typeof Tooltip>> = args => (
-  <div className="flex justify-center mt-32">
+  <div className="flex justify-center items-center h-96 w-full">
     <Tooltip {...args} />
   </div>
 );
@@ -20,14 +20,14 @@ const Template: Story<ComponentProps<typeof Tooltip>> = args => (
 export const Basic = Template.bind({});
 Basic.args = {
   content: (
-    <>
+    <div className="max-w-52">
       Click here to fund your wallet and get started with Sovryn
       <Link
         className="mt-4 block text-blue-2 hover:no-underline"
         text="Read more"
         href="#"
       />
-    </>
+    </div>
   ),
   children: (
     <div>
@@ -36,16 +36,18 @@ Basic.args = {
   ),
   className: '',
   tooltipClassName: '',
-  dataActionId: '',
+  dataLayoutId: '',
   placement: TooltipPlacement.TOP,
+  disabled: false,
+  trigger: TooltipTrigger.hover,
 };
 
 const InteractiveTemplate: Story<ComponentProps<typeof Tooltip>> = args => (
   <div className="flex justify-center mt-32">
     <Tooltip
       {...args}
-      onHide={() => alert('onHide event called')}
-      onShow={() => alert('onSHow event called')}
+      onHide={() => console.log('onHide event called')}
+      onShow={() => console.log('onShow event called')}
     />
   </div>
 );
@@ -53,22 +55,24 @@ const InteractiveTemplate: Story<ComponentProps<typeof Tooltip>> = args => (
 export const Interactive = InteractiveTemplate.bind({});
 Interactive.args = {
   content: (
-    <>
+    <div className="max-w-52">
       Click here to fund your wallet and get started with Sovryn
       <Link
         className="mt-4 block text-blue-2 hover:no-underline"
         text="Read more"
         href="#"
       />
-    </>
+    </div>
   ),
   children: (
     <div>
-      <Icon icon="info" />
+      <Button text="Info" />
     </div>
   ),
   className: '',
   tooltipClassName: '',
-  dataActionId: '',
+  dataLayoutId: '',
   placement: TooltipPlacement.TOP,
+  disabled: false,
+  trigger: TooltipTrigger.hover,
 };

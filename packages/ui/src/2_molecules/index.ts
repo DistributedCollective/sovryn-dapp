@@ -5,3 +5,4 @@ export * from './Dropdown/Dropdown.types';
 export * from './Menu/Menu';
 export * from './WalletIdentity/WalletIdentity';
 export * from './Tooltip/Tooltip';
+export * from './Tabs/Tabs';

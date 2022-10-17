@@ -26,7 +26,7 @@ export default {
     className: {
       defaultValue: '',
     },
-    dataActionId: {
+    dataLayoutId: {
       defaultValue: '',
     },
     width: {

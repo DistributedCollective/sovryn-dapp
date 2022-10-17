@@ -19,7 +19,7 @@ type DialogProps = {
   children: React.ReactNode;
   className?: string;
   width?: DialogSize;
-  dataActionId?: string;
+  dataLayoutId?: string;
   overlayProps?: Omit<Partial<OverlayProps>, 'isOpen' | 'fixed'>;
   onClose?: () => void;
   closeOnEscape?: boolean;
@@ -31,7 +31,7 @@ export const Dialog: IDialogFunctionComponent<DialogProps> = ({
   children,
   className,
   width = DialogSize.md,
-  dataActionId = '',
+  dataLayoutId = '',
   overlayProps,
   onClose,
   closeOnEscape = true,
@@ -89,7 +89,7 @@ export const Dialog: IDialogFunctionComponent<DialogProps> = ({
       onBlur={handleClose}
       {...overlayProps}
     >
-      <div className={styles.wrapper} data-action-id={dataActionId}>
+      <div className={styles.wrapper} data-layout-id={dataLayoutId}>
         <div className={styles.container}>
           <FocusTrap
             active={isOpen}

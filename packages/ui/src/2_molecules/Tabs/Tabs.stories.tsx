@@ -6,7 +6,7 @@ import { Tabs } from './Tabs';
 import { TabSize, TabType } from './Tabs.types';
 
 export default {
-  title: 'Atoms/Tabs',
+  title: 'Molecule/Tabs',
   component: Tabs,
 };
 
@@ -15,33 +15,33 @@ const Template: Story<ComponentProps<typeof Tabs>> = args => {
   return <Tabs {...args} onChange={setIndex} index={index} />;
 };
 
-export const Primary = Template.bind();
+export const Primary = Template.bind({});
 Primary.args = {
   items: [
     {
       label: 'Default',
       content: <div>Default</div>,
       activeClassName: 'border-t-primary-30',
-      dataActionId: 'default',
+      dataLayoutId: 'default',
     },
     {
       label: 'Buy',
       content: <div>Buy</div>,
       activeClassName: 'border-t-positive',
-      dataActionId: 'buy',
+      dataLayoutId: 'buy',
     },
     {
       label: 'Sell',
       content: <div>Sell</div>,
       activeClassName: 'border-t-negative',
-      dataActionId: 'sell',
+      dataLayoutId: 'sell',
     },
     {
       label: 'Disabled',
       content: <div>Disabled</div>,
       disabled: true,
       activeClassName: '',
-      dataActionId: 'disabled',
+      dataLayoutId: 'disabled',
     },
   ],
   index: 0,
@@ -51,33 +51,33 @@ Primary.args = {
   type: TabType.primary,
 };
 
-export const Secondary = Template.bind();
+export const Secondary = Template.bind({});
 Secondary.args = {
   items: [
     {
       label: 'Default',
       content: <div>Default</div>,
       activeClassName: 'text-primary-20',
-      dataActionId: 'default',
+      dataLayoutId: 'default',
     },
     {
       label: 'Buy',
       content: <div>Buy</div>,
       activeClassName: 'text-positive',
-      dataActionId: 'buy',
+      dataLayoutId: 'buy',
     },
     {
       label: 'Sell',
       content: <div>Sell</div>,
       activeClassName: 'text-negative',
-      dataActionId: 'sell',
+      dataLayoutId: 'sell',
     },
     {
       label: 'Disabled',
       content: <div>Disabled</div>,
       disabled: true,
       activeClassName: '',
-      dataActionId: 'disabled',
+      dataLayoutId: 'disabled',
     },
   ],
   index: 0,

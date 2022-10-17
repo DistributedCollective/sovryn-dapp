@@ -14,6 +14,7 @@ import React, {
 import classNames from 'classnames';
 
 import { Portal } from '../../1_atoms/Portal/Portal';
+import { useOnClickOutside } from '../../hooks/useOnClickOutside';
 import { Nullable } from '../../types';
 import { noop } from '../../utils';
 import styles from './Tooltip.module.css';
@@ -119,8 +120,10 @@ export const Tooltip: FC<TooltipProps> = ({
     disabled,
   ]);
 
+  useOnClickOutside([targetRef, tooltipRef], handleHide);
+
   useEffect(() => {
-    if (shouldHide && !isHoveredRef.current) {
+    if (shouldHide && !isHovered) {
       const timeout = setTimeout(() => {
         onHide?.();
         setShouldHide(false);
@@ -128,7 +131,7 @@ export const Tooltip: FC<TooltipProps> = ({
       }, CLOSE_DELAY);
       return () => clearTimeout(timeout);
     }
-  }, [shouldHide, onHide, setShouldHide, setIsVisible]);
+  }, [shouldHide, onHide, setShouldHide, setIsVisible, isHovered]);
 
   useEffect(() => {
     Object.values(TooltipEvents).forEach(event =>

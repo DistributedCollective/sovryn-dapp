@@ -15,7 +15,7 @@ import classNames from 'classnames';
 
 import { Portal } from '../../1_atoms/Portal/Portal';
 import { useOnClickOutside } from '../../hooks/useOnClickOutside';
-import { Nullable } from '../../types';
+import { DATA_ATTRIBUTE, Nullable } from '../../types';
 import { noop } from '../../utils';
 import styles from './Tooltip.module.css';
 import {
@@ -57,8 +57,6 @@ export const Tooltip: FC<TooltipProps> = ({
   const [isVisible, setIsVisible] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   const [shouldHide, setShouldHide] = useState(false);
-  const isHoveredRef = useRef(isHovered);
-  isHoveredRef.current = isHovered;
 
   const getElements = useCallback(() => {
     const target = targetRef.current?.getBoundingClientRect();
@@ -69,10 +67,10 @@ export const Tooltip: FC<TooltipProps> = ({
     return null;
   }, []);
 
-  const updateElements = useCallback(() => {
-    const elements = getElements();
-    setElements(elements);
-  }, [getElements, setElements]);
+  const updateElements = useCallback(
+    () => setElements(getElements()),
+    [getElements, setElements],
+  );
 
   const tooltipPosition = useMemo(() => {
     if (!elements) {
@@ -88,17 +86,16 @@ export const Tooltip: FC<TooltipProps> = ({
     }
   }, [setIsVisible, setShouldHide, isVisible]);
 
-  const handleHide = useCallback(() => {
-    setShouldHide(true);
-  }, [setShouldHide]);
+  const handleHide = useCallback(() => setShouldHide(true), [setShouldHide]);
 
-  const onMouseHover = useCallback(() => {
-    setIsHovered(prevValue => !prevValue);
-  }, [setIsHovered]);
+  const onMouseHover = useCallback(
+    () => setIsHovered(prevValue => !prevValue),
+    [setIsHovered],
+  );
 
   const getElementProps = useCallback(() => {
     const attributes = {
-      'data-layout-id': dataLayoutId,
+      [DATA_ATTRIBUTE]: dataLayoutId,
       className: className,
       ref: targetRef,
     };

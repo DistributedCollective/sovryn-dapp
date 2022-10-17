@@ -1,16 +1,16 @@
 export enum TooltipPlacement {
-  BOTTOM_END = 'bottom-end',
-  BOTTOM_START = 'bottom-start',
+  BOTTOM_END = 'bottomEnd',
+  BOTTOM_START = 'bottomStart',
   BOTTOM = 'bottom',
-  TOP_END = 'top-end',
-  TOP_START = 'top-start',
+  TOP_END = 'topEnd',
+  TOP_START = 'topStart',
   TOP = 'top',
   LEFT = 'left',
-  LEFT_START = 'left-start',
-  LEFT_END = 'left-end',
+  LEFT_START = 'leftStart',
+  LEFT_END = 'leftEnd',
   RIGHT = 'right',
-  RIGHT_START = 'right-start',
-  RIGHT_END = 'right-end',
+  RIGHT_START = 'rightStart',
+  RIGHT_END = 'rightEnd',
 }
 
 export enum TooltipTrigger {

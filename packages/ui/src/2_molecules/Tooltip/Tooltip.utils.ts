@@ -111,11 +111,11 @@ export const getTooltipPosition = (
       top: `${scrollOffset - tooltipHeight - OFFSET_DEFAULT}px`,
       left: `${left + width / 2 - tooltipWidth / 2}px`,
     },
-    'top-start': {
+    topStart: {
       top: `${scrollOffset - tooltipHeight - OFFSET_DEFAULT}px`,
       left: `${left - tooltipWidth + width / 2 + OFFSET_DEFAULT}px`,
     },
-    'top-end': {
+    topEnd: {
       top: `${scrollOffset - tooltipHeight - OFFSET_DEFAULT}px`,
       left: `${right - width / 2 - OFFSET_DEFAULT}px`,
     },
@@ -123,11 +123,11 @@ export const getTooltipPosition = (
       top: `${bottom + OFFSET_DEFAULT}px`,
       left: `${left + width / 2 - tooltipWidth / 2}px`,
     },
-    'bottom-start': {
+    bottomStart: {
       top: `${bottom + OFFSET_DEFAULT}px`,
       left: `${left - tooltipWidth + width / 2 + OFFSET_DEFAULT}px`,
     },
-    'bottom-end': {
+    bottomEnd: {
       top: `${bottom + OFFSET_DEFAULT}px`,
       left: `${right - width / 2 - OFFSET_DEFAULT}px`,
     },
@@ -135,11 +135,11 @@ export const getTooltipPosition = (
       left: `${left - tooltipWidth - OFFSET_DEFAULT}px`,
       top: `${scrollOffset - tooltipHeight / 2 + height / 2}px`,
     },
-    'left-start': {
+    leftStart: {
       left: `${left - tooltipWidth - OFFSET_DEFAULT}px`,
       top: `${scrollOffset - tooltipHeight + height / 2 + OFFSET_DEFAULT}px`,
     },
-    'left-end': {
+    leftEnd: {
       left: `${left - tooltipWidth - OFFSET_DEFAULT}px`,
       top: `${bottom - height / 2 - OFFSET_DEFAULT}px`,
     },
@@ -147,11 +147,11 @@ export const getTooltipPosition = (
       left: `${left + width + OFFSET_DEFAULT}px`,
       top: `${scrollOffset - tooltipHeight / 2 + height / 2}px`,
     },
-    'right-start': {
+    rightStart: {
       left: `${left + width + OFFSET_DEFAULT}px`,
       top: `${scrollOffset - tooltipHeight + height / 2 + OFFSET_DEFAULT}px`,
     },
-    'right-end': {
+    rightEnd: {
       left: `${left + width + OFFSET_DEFAULT}px`,
       top: `${bottom - height / 2 - OFFSET_DEFAULT}px`,
     },

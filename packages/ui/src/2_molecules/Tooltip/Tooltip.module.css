@@ -1,88 +1,87 @@
 .tooltip {
-    @apply bg-gray-10 rounded p-3 text-gray-1 absolute inline-block min-w-5 max-w-72 leading-5 opacity-0;
+  @apply bg-gray-10 rounded p-3 text-gray-90 absolute inline-block min-w-5 max-w-72 leading-5 opacity-0;
 
-    &.bottom,
-    &.bottom-start,
-    &.bottom-end,
-    &.top,
-    &.top-start,
-    &.top-end,
-    &.left,
-    &.left-start,
-    &.left-end,
-    &.right,
-    &.right-start,
-    &.right-end {
-        @apply opacity-100;
-        &:after {
-            @apply content-[''] absolute w-0 h-0 border-solid;
-        }
+  &.bottom,
+  &.bottomStart,
+  &.bottomEnd,
+  &.top,
+  &.topStart,
+  &.topEnd,
+  &.left,
+  &.leftStart,
+  &.leftEnd,
+  &.right,
+  &.rightStart,
+  &.rightEnd {
+    @apply opacity-100;
+    &:after {
+      @apply content-[''] absolute w-0 h-0 border-solid;
     }
+  }
 
-    &.top,
-    &.top-start,
-    &.top-end {
-        &:after {
-            @apply border-t-[0.656rem] border-b-0 border-t-gray-10 border-b-transparent -bottom-[0.656rem] border-x-[0.516rem] border-x-transparent;
-        }
+  &.top,
+  &.topStart,
+  &.topEnd {
+    &:after {
+      @apply border-t-[0.656rem] border-b-0 border-t-gray-10 border-b-transparent -bottom-[0.656rem] border-x-[0.516rem] border-x-transparent;
     }
+  }
 
-    &.right,
-    &.right-start,
-    &.right-end {
-        &:after {
-            @apply border-r-[0.656rem] border-l-0 border-r-gray-10 border-l-transparent -left-[0.656rem] border-y-[0.516rem] border-y-transparent;
-        }
+  &.right,
+  &.rightStart,
+  &.rightEnd {
+    &:after {
+      @apply border-r-[0.656rem] border-l-0 border-r-gray-10 border-l-transparent -left-[0.656rem] border-y-[0.516rem] border-y-transparent;
     }
+  }
 
-    &.left,
-    &.left-start,
-    &.left-end {
-        &:after {
-            @apply border-l-[0.656rem] border-r-0 border-l-gray-10 border-r-transparent -right-[0.656rem] border-y-[0.516rem] border-y-transparent;
-        }
+  &.left,
+  &.leftStart,
+  &.leftEnd {
+    &:after {
+      @apply border-l-[0.656rem] border-r-0 border-l-gray-10 border-r-transparent -right-[0.656rem] border-y-[0.516rem] border-y-transparent;
     }
+  }
 
-    &.bottom,
-    &.bottom-start,
-    &.bottom-end {
-        &:after {
-            @apply border-b-[0.656rem] border-t-0 border-b-gray-10 border-t-transparent -top-[0.656rem] border-x-[0.516rem] border-x-transparent;
-        }
+  &.bottom,
+  &.bottomStart,
+  &.bottomEnd {
+    &:after {
+      @apply border-b-[0.656rem] border-t-0 border-b-gray-10 border-t-transparent -top-[0.656rem] border-x-[0.516rem] border-x-transparent;
     }
+  }
 
-    &.top,
-    &.bottom {
-        &:after {
-            @apply left-0 right-0 m-auto;
-        }
-        &-end {
-            &:after {
-                @apply left-4 right-auto;
-            }
-        }
-        &-start {
-
-            &:after {
-                @apply left-auto right-4;
-            }
-        }
+  &.top,
+  &.bottom {
+    &:after {
+      @apply left-0 right-0 m-auto;
     }
-
-    &.left,
-    &.right {
-        &:after {
-            @apply top-0 bottom-0 m-auto;
-        }
-        &-start {
-            &:after {
-                @apply top-auto bottom-4;
-            }
-        }
-        &-end {
-            &:after {
-                @apply top-4 bottom-auto;
-            }
-        }
+    &Start {
+      &:after {
+        @apply left-auto right-4;
+      }
     }
+    &End {
+      &:after {
+        @apply left-4 right-auto;
+      }
+    }
+  }
+
+  &.left,
+  &.right {
+    &:after {
+      @apply top-0 bottom-0 m-auto;
+    }
+    &Start {
+      &:after {
+        @apply top-auto bottom-4;
+      }
+    }
+    &End {
+      &:after {
+        @apply top-4 bottom-auto;
+      }
+    }
+  }
 }

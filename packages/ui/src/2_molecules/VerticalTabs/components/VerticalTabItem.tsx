@@ -7,7 +7,6 @@ import styles from './VerticalTabItem.module.css';
 
 export type VerticalTabsItemButtonProps = VerticalTabsItemProps & {
   active: boolean;
-  activeIndicatorBgColor: string;
   onClick: () => void;
 };
 
@@ -18,27 +17,17 @@ export const VerticalTabItem: FC<VerticalTabsItemButtonProps> = ({
   active,
   dataActionId,
   onClick,
-  activeIndicatorBgColor,
 }) => {
   return (
     <button
       className={classNames(styles.button, { [styles.active]: active })}
       disabled={disabled}
       data-action-id={dataActionId}
+      data-active={active}
       onClick={onClick}
     >
       <p className={styles.label}>{label}</p>
       {infoText && <small className={styles.info}>{infoText}</small>}
-      {active && (
-        <div
-          className={classNames(styles.activeButtonIndicator, {
-            [styles.withInfoText]: infoText,
-          })}
-          style={{
-            borderColor: `transparent ${activeIndicatorBgColor} transparent transparent`,
-          }}
-        />
-      )}
     </button>
   );
 };

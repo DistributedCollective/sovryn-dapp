@@ -1,6 +1,6 @@
 import { Story } from '@storybook/react';
 
-import React, { ComponentProps, useReducer, useState } from 'react';
+import { ComponentProps, useReducer, useState } from 'react';
 
 import { Button, Heading } from '../../1_atoms';
 import { Dialog } from '../Dialog/Dialog';
@@ -28,7 +28,7 @@ const Template: Story<ComponentProps<typeof VerticalTabs>> = args => {
 
 const DialogTemplate: Story<ComponentProps<typeof VerticalTabs>> = args => {
   const [selectedIndex, setSelectedIndex] = useState(0);
-  const [isDialogOpen, toggle] = useReducer(a => !a, true);
+  const [isDialogOpen, toggle] = useReducer(a => !a, false);
   return (
     <>
       <Button onClick={toggle} text="Open Dialog" />
@@ -53,8 +53,10 @@ Basic.args = {
   items: [
     { label: 'Tab 1', content: 'Tab 1 Content' },
     { label: 'Tab 2', content: 'Tab 2 Content' },
+    { label: 'Tab 3', content: 'Tab 3 Content' },
     {
-      label: 'Long List',
+      label: 'Tab4 ',
+      infoText: 'Example with long content',
       content: (
         <div>
           <Heading>Long List</Heading>
@@ -96,4 +98,7 @@ InDialog.args = {
   tabsClassName: 'rounded-l-lg',
   className: 'rounded-lg',
   tabIndicatorColor: 'rgba(13, 13, 15)',
+};
+InDialog.parameters = {
+  layout: 'centered',
 };

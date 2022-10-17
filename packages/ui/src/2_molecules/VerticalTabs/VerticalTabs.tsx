@@ -1,16 +1,18 @@
-import { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { FC, useCallback, useEffect, useMemo, useRef } from 'react';
 
 import classNames from 'classnames';
 
 import styles from './VerticalTabs.module.css';
 import { VerticalTabsProps } from './VerticalTabs.types';
 import { VerticalTabItem } from './components/VerticalTabItem';
-import { findParentBackgroundColorAndElement } from './utils';
+
+const INDICATOR_SIZE = 16;
 
 export const VerticalTabs: FC<VerticalTabsProps> = ({
   selectedIndex = 0,
   ...props
 }) => {
+  const sidebarRef = useRef<HTMLElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
 
   const maybeRenderHeader = useMemo(() => {
@@ -47,31 +49,41 @@ export const VerticalTabs: FC<VerticalTabsProps> = ({
     [props],
   );
 
-  const [detectedIndicatorBgColor, setDetectedIndicatorBgColor] =
-    useState('transparent');
+  const moveIndicator = useCallback(() => {
+    if (sidebarRef.current) {
+      const sidebarRect = sidebarRef.current.getBoundingClientRect();
+      const tabRect = sidebarRef.current
+        ?.querySelector('[data-active=true]')
+        ?.getBoundingClientRect();
+      if (tabRect) {
+        const top =
+          tabRect.top -
+          INDICATOR_SIZE / 2 +
+          tabRect.height / 4 -
+          sidebarRect.top;
+        const middle = top + INDICATOR_SIZE;
+        const bottom = middle + INDICATOR_SIZE;
+        const left = sidebarRect.width - INDICATOR_SIZE;
 
-  const indicatorBgColor = useMemo(
-    () => props.tabIndicatorColor || detectedIndicatorBgColor,
-    [props.tabIndicatorColor, detectedIndicatorBgColor],
-  );
-
-  useEffect(() => {
-    if (contentRef.current && window !== undefined) {
-      if (
-        getComputedStyle(contentRef.current).display &&
-        !props.tabIndicatorColor
-      ) {
-        const [bgColor] = findParentBackgroundColorAndElement(
-          contentRef.current,
+        sidebarRef.current.style.setProperty(
+          'clip-path',
+          `polygon(0 0, 100% 0, 100% ${top}px, ${left}px ${middle}px, 100% ${bottom}px, 100% 100%, 0 100%)`,
         );
-        setDetectedIndicatorBgColor(bgColor);
       }
     }
-  }, [props.tabIndicatorColor]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedIndex, props.items]);
+
+  useEffect(() => {
+    moveIndicator();
+  }, [moveIndicator]);
 
   return (
     <section className={classNames(styles.container, props.className)}>
-      <aside className={classNames(styles.aside, props.tabsClassName)}>
+      <aside
+        className={classNames(styles.aside, props.tabsClassName)}
+        ref={sidebarRef}
+      >
         {maybeRenderHeader}
         <div className={styles.tabs}>
           {props.items.map((item, index) => (
@@ -79,7 +91,6 @@ export const VerticalTabs: FC<VerticalTabsProps> = ({
               key={index}
               active={index === selectedIndex}
               onClick={handleTabClick(index)}
-              activeIndicatorBgColor={indicatorBgColor}
               {...item}
             />
           ))}

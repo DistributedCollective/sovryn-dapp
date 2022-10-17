@@ -3,7 +3,6 @@ import { ReactNode } from 'react';
 export type VerticalTabsProps = {
   items: VerticalTabsItemProps[];
   selectedIndex: number;
-  tabIndicatorColor?: string;
   className?: string;
   tabsClassName?: string;
   contentClassName?: string;

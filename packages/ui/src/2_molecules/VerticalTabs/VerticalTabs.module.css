@@ -1,10 +1,11 @@
 .container {
-  @apply w-full h-full flex flex-row justify-center items-start relative;
+  @apply w-full min-h-full flex flex-row justify-center items-start relative;
 }
 
 .aside {
-  @apply w-1/4 h-full bg-gray-80 p-[1.25rem] flex-shrink-0 flex-grow-0 w-[19.25rem] relative
+  @apply h-full min-h-full bg-gray-80 p-[1.25rem] flex-shrink-0 flex-grow-0 w-[19.25rem] relative
     flex flex-col justify-between items-start;
+  transition: clip-path 0.3s ease-in-out;
 }
 
 .header {
@@ -20,7 +21,7 @@
 }
 
 .content {
-  @apply w-3/4 h-full p-[3.25rem] relative overflow-y-auto;
+  @apply w-full h-full p-[3.25rem] relative overflow-y-auto;
   background-color: inherit;
 }
 

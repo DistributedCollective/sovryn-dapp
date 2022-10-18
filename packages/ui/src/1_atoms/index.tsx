@@ -1,5 +1,4 @@
 export * from './Button/Button';
-export * from './Lead/Lead';
 export * from './Input/Input';
 export * from './InputBase/InputBase';
 export * from './Icon/Icon';

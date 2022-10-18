@@ -11,7 +11,7 @@ export type LinkProps = {
   openNewTab?: boolean;
   className?: string;
   style?: LinkStyle;
-  dataActionId?: string;
+  dataLayoutId?: string;
 };
 
 export const Link: FC<PropsWithChildren<LinkProps>> = ({
@@ -20,7 +20,7 @@ export const Link: FC<PropsWithChildren<LinkProps>> = ({
   openNewTab = true,
   className,
   style = LinkStyle.primary,
-  dataActionId,
+  dataLayoutId,
 }) => {
   return (
     <a
@@ -28,7 +28,7 @@ export const Link: FC<PropsWithChildren<LinkProps>> = ({
       href={href}
       target={openNewTab ? 'blank' : undefined}
       className={classNames(className, styles.link, styles[style])}
-      data-action-id={dataActionId}
+      data-layout-id={dataLayoutId}
     >
       {text}
     </a>

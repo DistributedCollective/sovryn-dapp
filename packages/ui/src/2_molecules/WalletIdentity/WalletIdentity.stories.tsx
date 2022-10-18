@@ -1,4 +1,4 @@
-import { ComponentStory, ComponentMeta, Story } from '@storybook/react';
+import { ComponentMeta, Story } from '@storybook/react';
 
 import React, { ComponentProps } from 'react';
 
@@ -34,7 +34,7 @@ export const _WalletIdentity = Template.bind({});
 _WalletIdentity.args = {
   onDisconnect: () => alert('disconnected'),
   address: '0xEDb8897aB6E907bc63CB256f74437D36298507E2',
-  dataActionId: 'walletIdentity',
+  dataLayoutId: 'walletIdentity',
   submenuLabels: {
     copyAddress: 'Copy Address',
     disconnect: 'Disconnect',

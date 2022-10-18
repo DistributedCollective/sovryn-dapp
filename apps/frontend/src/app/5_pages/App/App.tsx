@@ -1,6 +1,6 @@
 import React, { useReducer } from 'react';
 
-import { Button, Dialog, Dropdown, Lead, noop } from '@sovryn/ui';
+import { Button, Dialog, Dropdown, noop } from '@sovryn/ui';
 
 import { ConnectWalletButton } from '../../2_molecules/ConnectWalletButton/ConnectWalletButton';
 import { useTheme } from '../../../hooks/useTheme';
@@ -24,8 +24,6 @@ function App() {
         <a href="https://reactjs.org" target="_blank" rel="noopener noreferrer">
           Learn React
         </a>
-        <Lead test={false}>abc</Lead>
-        <Lead test={true}>def</Lead>
 
         <Button text="Open Dialog" onClick={toggle} />
 

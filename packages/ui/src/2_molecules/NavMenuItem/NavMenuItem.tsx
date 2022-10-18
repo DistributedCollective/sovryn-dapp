@@ -13,7 +13,7 @@ type NavMenuItemProps = {
   children: ReactNode;
   isActive?: boolean;
   className?: string;
-  dataActionId?: string;
+  dataLayoutId?: string;
   maxCount?: number;
 };
 
@@ -23,7 +23,7 @@ export const NavMenuItem: FC<NavMenuItemProps> = ({
   children,
   isActive,
   className,
-  dataActionId,
+  dataLayoutId,
   maxCount = MAX_COUNT_DEFAULT,
 }) => {
   const formattedCount = useMemo(
@@ -34,7 +34,7 @@ export const NavMenuItem: FC<NavMenuItemProps> = ({
   return (
     <button
       type="button"
-      data-action-id={dataActionId}
+      data-layout-id={dataLayoutId}
       onClick={onClick}
       className={classNames(styles.navMenuItem, className, {
         [styles.active]: isActive,

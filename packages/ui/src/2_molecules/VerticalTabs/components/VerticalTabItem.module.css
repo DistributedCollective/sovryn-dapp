@@ -5,10 +5,10 @@
   }
 
   & p {
-    @apply text-base leading-[1.171875rem];
+    @apply text-base;
   }
   
   & small {
-    @apply block text-xs leading-[0.87875rem] mt-2;
+    @apply block text-xs mt-2;
   }
 }

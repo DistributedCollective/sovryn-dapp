@@ -34,7 +34,7 @@ const Advanced: Story<ComponentProps<typeof WalletContainer>> = args => (
     <WalletContainer
       {...args}
       name="Ledger"
-      icon={<Icon icon={IconNames.LEDGER} size={24} className="text-warning" />}
+      icon={<Icon icon={IconNames.INFO} size={24} className="text-warning" />}
       onClick={() => alert('Ledger clicked')}
     />
     <br />
@@ -42,7 +42,13 @@ const Advanced: Story<ComponentProps<typeof WalletContainer>> = args => (
       {...args}
       name="Trezor"
       tooltip="tooltip"
-      icon={<Icon icon={IconNames.TREZOR} size={25} className="text-primary" />}
+      icon={
+        <Icon
+          icon={IconNames.NOTIFICATIONS}
+          size={25}
+          className="text-primary"
+        />
+      }
       onClick={() => alert('Trezor clicked')}
     />
   </div>

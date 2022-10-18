@@ -28,9 +28,6 @@ export enum IconNames {
   X_MARK = 'x-mark',
   COPY = 'copy',
   EXIT = 'exit',
-
-  LEDGER = 'ledger',
-  TREZOR = 'trezor',
 }
 
 export type IconName = typeof IconNames[keyof typeof IconNames];

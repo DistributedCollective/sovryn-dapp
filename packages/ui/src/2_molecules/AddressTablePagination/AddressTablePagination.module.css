@@ -1,0 +1,10 @@
+.AddressTablePagination {
+    @apply flex justify-center;
+
+    & > button {
+        @apply mx-8 bg-transparent border-none outline-none cursor-pointer transition-opacity;
+        &:disabled {
+            @apply opacity-50 cursor-not-allowed;
+        }
+    }
+}

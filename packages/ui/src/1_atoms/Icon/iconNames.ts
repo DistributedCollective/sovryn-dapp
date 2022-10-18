@@ -2,6 +2,7 @@ export const ARROW_DOWN_WIDE = 'arrow-down-wide';
 export const ARROW_DOWN = 'arrow-down';
 export const ARROW_RIGHT = 'arrow-right';
 export const ARROW_FORWARD = 'arrow-forward';
+export const ARROW_BACK = 'arrow-back';
 export const DEPOSIT = 'deposit';
 export const EDIT = 'edit';
 export const FAILED_TX = 'failed-tx';

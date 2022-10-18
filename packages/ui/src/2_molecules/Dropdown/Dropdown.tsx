@@ -12,7 +12,7 @@ import React, {
 import classNames from 'classnames';
 
 import { Icon } from '../../1_atoms/Icon/Icon';
-import { ARROW_DOWN } from '../../1_atoms/Icon/iconNames';
+import { IconNames } from '../../1_atoms/Icon/Icon.types';
 import { Portal } from '../../1_atoms/Portal/Portal';
 import { useOnClickOutside } from '../../hooks/useOnClickOutside';
 import { Nullable } from '../../types';
@@ -120,7 +120,7 @@ export const Dropdown = forwardRef<HTMLButtonElement, DropdownProps>(
         >
           {text}
           <Icon
-            icon={ARROW_DOWN}
+            icon={IconNames.ARROW_DOWN}
             size={10}
             className={classNames(styles.icon, {
               [styles.isOpen]: isOpen,

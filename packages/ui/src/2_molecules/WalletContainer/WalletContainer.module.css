@@ -1,0 +1,21 @@
+.walletContainer {
+  @apply flex items-center justify-between w-full h-12 pl-4 pr-3 transition-colors rounded bg-gray-70 text-gray-10 text-opacity-75;
+
+  &:hover {
+    @apply text-opacity-100 cursor-pointer bg-gray-60;
+    & .icon {
+      @apply grayscale-0;
+    }
+  }
+
+  & .icon {
+    @apply h-[2.125rem] w-[2.125rem] rounded p-[0.313rem] bg-gray-10 bg-opacity-10 text-center grayscale;
+  }
+  & .label {
+    @apply flex items-center justify-center;
+
+    & > svg {
+      @apply ml-1.5;
+    }
+  }
+}

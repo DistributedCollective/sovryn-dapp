@@ -4,8 +4,7 @@ import { Story } from '@storybook/react';
 import React, { ComponentProps, useMemo } from 'react';
 
 import { Icon } from './Icon';
-import { IconName } from './Icon.types';
-import * as IconNames from './iconNames';
+import { IconName, IconNames } from './Icon.types';
 
 export default {
   title: 'Atoms/Icon',

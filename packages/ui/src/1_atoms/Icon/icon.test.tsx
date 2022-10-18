@@ -4,7 +4,7 @@ import { render, screen } from '@testing-library/react';
 import React from 'react';
 
 import { Icon } from './Icon';
-import { WARNING } from './iconNames';
+import { IconNames } from './Icon.types';
 
 const customIcon = (
   <svg width="20" height="20" data-icon="customIcon" viewBox="0 0 20 20">
@@ -27,7 +27,7 @@ describe('Test for all icon types', () => {
   });
 
   test('renders an icon from Sovryn Library', () => {
-    render(<Icon icon={WARNING} />);
+    render(<Icon icon={IconNames.WARNING} />);
     expect(screen.findAllByRole('svg[data-icon="warning"]')).toBeDefined();
   });
 });

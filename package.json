@@ -15,7 +15,8 @@
     "test:staged": "turbo run test:staged",
     "coverage": "turbo run coverage",
     "storybook": "turbo run storybook",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "publish-packages": "turbo run build lint test --filter=./packages/* && changeset publish"
   },
   "devDependencies": {
     "@sovryn/eslint-config-custom": "*",
@@ -36,5 +37,8 @@
       "prettier --write"
     ]
   },
-  "packageManager": "yarn@1.19.1"
+  "packageManager": "yarn@1.19.1",
+  "dependencies": {
+    "@changesets/cli": "^2.25.0"
+  }
 }

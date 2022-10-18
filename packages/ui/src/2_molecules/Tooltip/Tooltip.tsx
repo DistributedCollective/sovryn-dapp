@@ -45,7 +45,7 @@ export const Tooltip: FC<TooltipProps> = ({
   className,
   tooltipClassName,
   dataLayoutId,
-  placement = TooltipPlacement.TOP,
+  placement = TooltipPlacement.top,
   onShow,
   onHide,
   disabled = false,
@@ -73,10 +73,9 @@ export const Tooltip: FC<TooltipProps> = ({
   );
 
   const tooltipPosition = useMemo(() => {
-    if (!elements) {
-      return;
+    if (elements) {
+      return getTooltipPosition(elements, placement);
     }
-    return getTooltipPosition(elements, placement);
   }, [elements, placement]);
 
   const handleShow = useCallback(() => {
@@ -93,7 +92,7 @@ export const Tooltip: FC<TooltipProps> = ({
     [setIsHovered],
   );
 
-  const getElementProps = useCallback(() => {
+  const elementProps = useMemo(() => {
     const attributes = {
       [DATA_ATTRIBUTE]: dataLayoutId,
       className: className,
@@ -142,16 +141,15 @@ export const Tooltip: FC<TooltipProps> = ({
   }, [updateElements]);
 
   useEffect(() => {
-    if (!isVisible) {
-      return;
+    if (isVisible) {
+      updateElements();
+      onShow?.();
     }
-    updateElements();
-    onShow?.();
   }, [isVisible, updateElements, onShow]);
 
   return (
     <>
-      {cloneElement(Children.only(children) as ReactElement, getElementProps())}
+      {cloneElement(Children.only(children) as ReactElement, elementProps)}
       {isVisible && !disabled && (
         <Portal target="body">
           <div

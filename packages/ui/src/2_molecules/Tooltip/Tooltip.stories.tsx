@@ -37,7 +37,7 @@ Basic.args = {
   className: '',
   tooltipClassName: '',
   dataLayoutId: '',
-  placement: TooltipPlacement.TOP,
+  placement: TooltipPlacement.top,
   disabled: false,
   trigger: TooltipTrigger.hover,
 };
@@ -72,7 +72,7 @@ Interactive.args = {
   className: '',
   tooltipClassName: '',
   dataLayoutId: '',
-  placement: TooltipPlacement.TOP,
+  placement: TooltipPlacement.top,
   disabled: false,
   trigger: TooltipTrigger.hover,
 };

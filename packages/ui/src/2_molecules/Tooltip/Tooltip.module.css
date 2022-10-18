@@ -2,17 +2,17 @@
   @apply bg-gray-10 rounded p-3 text-gray-90 absolute inline-block min-w-5 max-w-72 leading-5 opacity-0;
 
   &.bottom,
-  &.bottomStart,
-  &.bottomEnd,
+  &.bottom-start,
+  &.bottom-end,
   &.top,
-  &.topStart,
-  &.topEnd,
+  &.top-start,
+  &.top-end,
   &.left,
-  &.leftStart,
-  &.leftEnd,
+  &.left-start,
+  &.left-end,
   &.right,
-  &.rightStart,
-  &.rightEnd {
+  &.right-start,
+  &.right-end {
     @apply opacity-100;
     &:after {
       @apply content-[''] absolute w-0 h-0 border-solid;
@@ -20,32 +20,32 @@
   }
 
   &.top,
-  &.topStart,
-  &.topEnd {
+  &.top-start,
+  &.top-end {
     &:after {
       @apply border-t-[0.656rem] border-b-0 border-t-gray-10 border-b-transparent -bottom-[0.656rem] border-x-[0.516rem] border-x-transparent;
     }
   }
 
   &.right,
-  &.rightStart,
-  &.rightEnd {
+  &.right-start,
+  &.right-end {
     &:after {
       @apply border-r-[0.656rem] border-l-0 border-r-gray-10 border-l-transparent -left-[0.656rem] border-y-[0.516rem] border-y-transparent;
     }
   }
 
   &.left,
-  &.leftStart,
-  &.leftEnd {
+  &.left-start,
+  &.left-end {
     &:after {
       @apply border-l-[0.656rem] border-r-0 border-l-gray-10 border-r-transparent -right-[0.656rem] border-y-[0.516rem] border-y-transparent;
     }
   }
 
   &.bottom,
-  &.bottomStart,
-  &.bottomEnd {
+  &.bottom-start,
+  &.bottom-end {
     &:after {
       @apply border-b-[0.656rem] border-t-0 border-b-gray-10 border-t-transparent -top-[0.656rem] border-x-[0.516rem] border-x-transparent;
     }
@@ -56,12 +56,12 @@
     &:after {
       @apply left-0 right-0 m-auto;
     }
-    &Start {
+    &-start {
       &:after {
         @apply left-auto right-4;
       }
     }
-    &End {
+    &-end {
       &:after {
         @apply left-4 right-auto;
       }
@@ -73,12 +73,12 @@
     &:after {
       @apply top-0 bottom-0 m-auto;
     }
-    &Start {
+    &-start {
       &:after {
         @apply top-auto bottom-4;
       }
     }
-    &End {
+    &-end {
       &:after {
         @apply top-4 bottom-auto;
       }

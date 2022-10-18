@@ -84,7 +84,7 @@ describe('Tooltip', () => {
     const { getByRole, getByText } = render(
       <Tooltip
         children={<button>Text</button>}
-        placement={TooltipPlacement.BOTTOM}
+        placement={TooltipPlacement.bottom}
         content={<>Tooltip</>}
       />,
     );

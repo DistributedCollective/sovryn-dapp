@@ -3,6 +3,7 @@ import { Story } from '@storybook/react';
 import React, { ComponentProps } from 'react';
 
 import { Icon } from '../../1_atoms/Icon/Icon';
+import { IconNames } from '../../1_atoms/Icon/Icon.types';
 import { WalletContainer } from './WalletContainer';
 
 export default {
@@ -33,7 +34,7 @@ const Advanced: Story<ComponentProps<typeof WalletContainer>> = args => (
     <WalletContainer
       {...args}
       name="Ledger"
-      icon={<Icon icon="warning" size={24} className="text-warning" />}
+      icon={<Icon icon={IconNames.LEDGER} size={24} className="text-warning" />}
       onClick={() => alert('Ledger clicked')}
     />
     <br />
@@ -41,7 +42,7 @@ const Advanced: Story<ComponentProps<typeof WalletContainer>> = args => (
       {...args}
       name="Trezor"
       tooltip="tooltip"
-      icon={<Icon icon="success-icon" size={25} className="text-primary" />}
+      icon={<Icon icon={IconNames.TREZOR} size={25} className="text-primary" />}
       onClick={() => alert('Trezor clicked')}
     />
   </div>

@@ -11,7 +11,12 @@ export default {
 };
 
 const Template: Story<ComponentProps<typeof WalletContainer>> = args => (
-  <WalletContainer {...args} />
+  <div style={{ width: '200px' }}>
+    <WalletContainer
+      {...args}
+      onClick={() => alert('WalletContainer clicked')}
+    />
+  </div>
 );
 
 export const Basic = Template.bind({});
@@ -24,11 +29,12 @@ Basic.args = {
 };
 
 const Advanced: Story<ComponentProps<typeof WalletContainer>> = args => (
-  <div>
+  <div style={{ width: '200px' }}>
     <WalletContainer
       {...args}
       name="Ledger"
       icon={<Icon icon="warning" size={24} className="text-warning" />}
+      onClick={() => alert('Ledger clicked')}
     />
     <br />
     <WalletContainer
@@ -36,6 +42,7 @@ const Advanced: Story<ComponentProps<typeof WalletContainer>> = args => (
       name="Trezor"
       tooltip="tooltip"
       icon={<Icon icon="success-icon" size={25} className="text-primary" />}
+      onClick={() => alert('Trezor clicked')}
     />
   </div>
 );

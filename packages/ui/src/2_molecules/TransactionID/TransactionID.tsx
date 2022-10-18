@@ -30,16 +30,16 @@ export const TransactionID: React.FC<TransactionIDProps> = ({
   dataLayoutId,
   isNativeBtc,
   isAddress,
-  ...props
+  value,
 }) => {
-  const value = useMemo(() => {
-    if (props.value?.length && startLength && endLength) {
-      const start = props.value.substr(0, startLength);
-      const end = props.value.substr(-endLength);
+  const transactionId = useMemo(() => {
+    if (value?.length && startLength && endLength) {
+      const start = value.substr(0, startLength);
+      const end = value.substr(-endLength);
       return `${start} ··· ${end}`;
     }
-    return props.value;
-  }, [props.value, startLength, endLength]);
+    return value;
+  }, [value, startLength, endLength]);
 
   const url = useMemo(() => {
     if (isNativeBtc) {
@@ -49,27 +49,28 @@ export const TransactionID: React.FC<TransactionIDProps> = ({
   }, [isNativeBtc, chainId]);
 
   const copyAddress = useCallback(async () => {
-    await navigator.clipboard.writeText(props.value);
+    await navigator.clipboard.writeText(value);
     alert('Address was copied to clipboard.');
-  }, [props.value]);
+  }, [value]);
 
   return (
     <Tooltip
       content={
         <span className="flex items-center">
-          {props.value}
-          <span className={styles.icon} onClick={copyAddress}>
+          {value}
+          <span
+            data-layout-id="transaction-copy"
+            className={styles.icon}
+            onClick={copyAddress}
+          >
             <Icon icon={COPY} />
           </span>
           <a
             className={styles.icon}
-            href={
-              isAddress
-                ? `${url}/address/${props.value}`
-                : `${url}/tx/${props.value}`
-            }
+            href={isAddress ? `${url}/address/${value}` : `${url}/tx/${value}`}
             target="_blank"
             rel="noreferrer noopener"
+            data-layout-id="transaction-link"
           >
             <Icon icon={NEW_TAB} />
           </a>
@@ -78,11 +79,11 @@ export const TransactionID: React.FC<TransactionIDProps> = ({
       trigger={TooltipTrigger.click}
       className={classNames(styles.link, className)}
       tooltipClassName={styles.tooltip}
-      dataLayoutId={dataLayoutId}
-      placement={TooltipPlacement.BOTTOM_END}
+      placement={TooltipPlacement.bottomEnd}
       disabled={hideTooltip}
+      dataLayoutId={dataLayoutId}
     >
-      <div>{value}</div>
+      <div>{transactionId}</div>
     </Tooltip>
   );
 };

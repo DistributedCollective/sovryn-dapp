@@ -1,28 +1,14 @@
 .button {
-  @apply w-full block text-left text-gray-10 text-opacity-50 font-medium font-roboto;
+  @apply w-full block text-left text-gray-10 text-opacity-50 font-medium;
   &.active {
     @apply text-opacity-100;
   }
 
   & p {
     @apply text-base leading-[1.171875rem];
-
   }
   
   & small {
     @apply block text-xs leading-[0.87875rem] mt-2;
-  }
-}
-
-
-.activeButtonIndicator {
-  --indicator-bg-color: #000;
-  @apply absolute right-0 w-0 h-0;
-  transform: translate(0, -1.7rem);
-  border-style: solid;
-  border-width: 0.96875rem 1.28125rem 0.96875rem 0;
-  border-color: transparent var(--indicator-bg-color) transparent transparent;
-  &.withInfoText {
-    transform: translate(0, -2.5625rem);
   }
 }

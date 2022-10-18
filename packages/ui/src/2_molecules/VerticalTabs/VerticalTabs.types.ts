@@ -16,7 +16,7 @@ export type VerticalTabsItem = {
   content: ReactNode;
   infoText?: ReactNode;
   disabled?: boolean;
-  dataActionId?: string;
+  dataLayoutId?: string;
 };
 
 export type VerticalTabsItemButtonProps = VerticalTabsItem & {

@@ -10,14 +10,14 @@ export const VerticalTabItem: FC<VerticalTabsItemButtonProps> = ({
   label,
   infoText,
   active,
-  dataActionId,
+  dataLayoutId,
   onClick,
 }) => {
   return (
     <button
       className={classNames(styles.button, { [styles.active]: active })}
       disabled={disabled}
-      data-action-id={dataActionId}
+      data-layout-id={dataLayoutId}
       data-active={active}
       onClick={onClick}
     >

@@ -17,11 +17,9 @@
 }
 
 .tabs {
-  @apply w-full flex flex-col justify-center items-center gap-y-[2.5rem];
+  @apply w-full flex flex-col justify-center items-center gap-y-10;
 }
 
 .content {
   @apply w-full h-full p-[3.25rem] relative overflow-y-auto;
-  background-color: inherit;
 }
-

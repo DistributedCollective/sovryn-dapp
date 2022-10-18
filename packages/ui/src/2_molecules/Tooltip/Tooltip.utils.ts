@@ -54,9 +54,19 @@ export const getTooltipPosition = (
     }
     switch (position) {
       case TooltipPlacement.top:
-        return canOpenAbove
-          ? TooltipPlacement.top
-          : getPosition(TooltipPlacement.topStart);
+        if (canOpenAbove) {
+          if (canOpenLeft && canOpenRight) {
+            return TooltipPlacement.top;
+          } else if (canOpenLeft) {
+            return TooltipPlacement.topStart;
+          } else if (canOpenRight) {
+            return TooltipPlacement.topEnd;
+          } else {
+            return TooltipPlacement.top;
+          }
+        } else {
+          return getPosition(TooltipPlacement.bottom);
+        }
       case TooltipPlacement.topStart:
         return canOpenAbove && canOpenLeft
           ? TooltipPlacement.topStart
@@ -66,9 +76,19 @@ export const getTooltipPosition = (
           ? TooltipPlacement.topEnd
           : getPosition(TooltipPlacement.bottom);
       case TooltipPlacement.bottom:
-        return canOpenUnder
-          ? TooltipPlacement.bottom
-          : getPosition(TooltipPlacement.bottomStart);
+        if (canOpenUnder) {
+          if (canOpenLeft && canOpenRight) {
+            return TooltipPlacement.bottom;
+          } else if (canOpenLeft) {
+            return TooltipPlacement.bottomStart;
+          } else if (canOpenRight) {
+            return TooltipPlacement.bottomEnd;
+          } else {
+            return TooltipPlacement.bottom;
+          }
+        } else {
+          return getPosition(TooltipPlacement.left);
+        }
       case TooltipPlacement.bottomStart:
         return canOpenUnder && canOpenLeft
           ? TooltipPlacement.bottomStart
@@ -78,9 +98,19 @@ export const getTooltipPosition = (
           ? TooltipPlacement.bottomEnd
           : getPosition(TooltipPlacement.left);
       case TooltipPlacement.left:
-        return canOpenLeft && canOpenVerticalCenter
-          ? TooltipPlacement.left
-          : getPosition(TooltipPlacement.leftStart);
+        if (canOpenLeft) {
+          if (canOpenVerticalCenter) {
+            return TooltipPlacement.left;
+          } else if (canOpenVerticalStart) {
+            return TooltipPlacement.leftStart;
+          } else if (canOpenVerticalEnd) {
+            return TooltipPlacement.leftEnd;
+          } else {
+            return TooltipPlacement.left;
+          }
+        } else {
+          return getPosition(TooltipPlacement.right);
+        }
       case TooltipPlacement.leftStart:
         return canOpenLeft && canOpenVerticalStart
           ? TooltipPlacement.leftStart
@@ -88,11 +118,21 @@ export const getTooltipPosition = (
       case TooltipPlacement.leftEnd:
         return canOpenLeft && canOpenVerticalEnd
           ? TooltipPlacement.leftEnd
-          : getPosition(TooltipPlacement.top);
+          : getPosition(TooltipPlacement.right);
       case TooltipPlacement.right:
-        return canOpenRight && canOpenVerticalCenter
-          ? TooltipPlacement.right
-          : getPosition(TooltipPlacement.rightStart);
+        if (canOpenRight) {
+          if (canOpenVerticalCenter) {
+            return TooltipPlacement.right;
+          } else if (canOpenVerticalStart) {
+            return TooltipPlacement.rightStart;
+          } else if (canOpenVerticalEnd) {
+            return TooltipPlacement.rightEnd;
+          } else {
+            return TooltipPlacement.left;
+          }
+        } else {
+          return getPosition(TooltipPlacement.top);
+        }
       case TooltipPlacement.rightStart:
         return canOpenRight && canOpenVerticalStart
           ? TooltipPlacement.rightStart
@@ -120,15 +160,15 @@ export const getTooltipPosition = (
       left: `${right - width / 2 - OFFSET_DEFAULT}px`,
     },
     bottom: {
-      top: `${bottom + OFFSET_DEFAULT}px`,
+      top: `${scrollOffset + height + OFFSET_DEFAULT}px`,
       left: `${left + width / 2 - tooltipWidth / 2}px`,
     },
     'bottom-start': {
-      top: `${bottom + OFFSET_DEFAULT}px`,
+      top: `${scrollOffset + height + OFFSET_DEFAULT}px`,
       left: `${left - tooltipWidth + width / 2 + OFFSET_DEFAULT}px`,
     },
     'bottom-end': {
-      top: `${bottom + OFFSET_DEFAULT}px`,
+      top: `${scrollOffset + height + OFFSET_DEFAULT}px`,
       left: `${right - width / 2 - OFFSET_DEFAULT}px`,
     },
     left: {

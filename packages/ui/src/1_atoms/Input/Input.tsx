@@ -9,7 +9,7 @@ import { InputSize } from './Input.types';
 export type InputProps = Omit<InputBaseProps, 'ref'> & {
   classNameInput?: string;
   invalid?: boolean;
-  dataActionId?: string;
+  dataLayoutId?: string;
   size?: InputSize;
 };
 
@@ -20,7 +20,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
       classNameInput,
       type,
       invalid,
-      dataActionId,
+      dataLayoutId,
       size = InputSize.small,
       ...rest
     },
@@ -44,7 +44,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
             })}
             type={type}
             {...rest}
-            dataActionId={dataActionId}
+            dataLayoutId={dataLayoutId}
           />
         </div>
       </div>

@@ -1,0 +1,17 @@
+.wrapper {
+  @apply inline-flex flex-col;
+
+  .tabs {
+    @apply inline-flex rounded-t items-center flex-nowrap overflow-auto;
+
+    &.primary {
+      @apply border border-b-0 border-gray-50 bg-gray-90;
+    }
+  }
+
+  .content {
+    &.primary {
+      @apply bg-gray-90 rounded-b text-gray-10 border-b border-x border-gray-50;
+    }
+  }
+}

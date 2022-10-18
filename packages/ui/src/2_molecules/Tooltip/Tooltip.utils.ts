@@ -53,54 +53,54 @@ export const getTooltipPosition = (
       return placement;
     }
     switch (position) {
-      case TooltipPlacement.TOP:
+      case TooltipPlacement.top:
         return canOpenAbove
-          ? TooltipPlacement.TOP
-          : getPosition(TooltipPlacement.TOP_START);
-      case TooltipPlacement.TOP_START:
+          ? TooltipPlacement.top
+          : getPosition(TooltipPlacement.topStart);
+      case TooltipPlacement.topStart:
         return canOpenAbove && canOpenLeft
-          ? TooltipPlacement.TOP_START
-          : getPosition(TooltipPlacement.TOP_END);
-      case TooltipPlacement.TOP_END:
+          ? TooltipPlacement.topStart
+          : getPosition(TooltipPlacement.topEnd);
+      case TooltipPlacement.topEnd:
         return canOpenAbove && canOpenRight
-          ? TooltipPlacement.TOP_END
-          : getPosition(TooltipPlacement.BOTTOM);
-      case TooltipPlacement.BOTTOM:
+          ? TooltipPlacement.topEnd
+          : getPosition(TooltipPlacement.bottom);
+      case TooltipPlacement.bottom:
         return canOpenUnder
-          ? TooltipPlacement.BOTTOM
-          : getPosition(TooltipPlacement.BOTTOM_START);
-      case TooltipPlacement.BOTTOM_START:
+          ? TooltipPlacement.bottom
+          : getPosition(TooltipPlacement.bottomStart);
+      case TooltipPlacement.bottomStart:
         return canOpenUnder && canOpenLeft
-          ? TooltipPlacement.BOTTOM_START
-          : getPosition(TooltipPlacement.BOTTOM_END);
-      case TooltipPlacement.BOTTOM_END:
+          ? TooltipPlacement.bottomStart
+          : getPosition(TooltipPlacement.bottomEnd);
+      case TooltipPlacement.bottomEnd:
         return canOpenUnder && canOpenRight
-          ? TooltipPlacement.BOTTOM_END
-          : getPosition(TooltipPlacement.LEFT);
-      case TooltipPlacement.LEFT:
+          ? TooltipPlacement.bottomEnd
+          : getPosition(TooltipPlacement.left);
+      case TooltipPlacement.left:
         return canOpenLeft && canOpenVerticalCenter
-          ? TooltipPlacement.LEFT
-          : getPosition(TooltipPlacement.LEFT_START);
-      case TooltipPlacement.LEFT_START:
+          ? TooltipPlacement.left
+          : getPosition(TooltipPlacement.leftStart);
+      case TooltipPlacement.leftStart:
         return canOpenLeft && canOpenVerticalStart
-          ? TooltipPlacement.LEFT_START
-          : getPosition(TooltipPlacement.LEFT_END);
-      case TooltipPlacement.LEFT_END:
+          ? TooltipPlacement.leftStart
+          : getPosition(TooltipPlacement.leftEnd);
+      case TooltipPlacement.leftEnd:
         return canOpenLeft && canOpenVerticalEnd
-          ? TooltipPlacement.LEFT_END
-          : getPosition(TooltipPlacement.TOP);
-      case TooltipPlacement.RIGHT:
+          ? TooltipPlacement.leftEnd
+          : getPosition(TooltipPlacement.top);
+      case TooltipPlacement.right:
         return canOpenRight && canOpenVerticalCenter
-          ? TooltipPlacement.RIGHT
-          : getPosition(TooltipPlacement.RIGHT_START);
-      case TooltipPlacement.RIGHT_START:
+          ? TooltipPlacement.right
+          : getPosition(TooltipPlacement.rightStart);
+      case TooltipPlacement.rightStart:
         return canOpenRight && canOpenVerticalStart
-          ? TooltipPlacement.RIGHT_START
-          : getPosition(TooltipPlacement.RIGHT_END);
-      case TooltipPlacement.RIGHT_END:
+          ? TooltipPlacement.rightStart
+          : getPosition(TooltipPlacement.rightEnd);
+      case TooltipPlacement.rightEnd:
         return canOpenRight && canOpenVerticalEnd
-          ? TooltipPlacement.RIGHT_END
-          : getPosition(TooltipPlacement.TOP);
+          ? TooltipPlacement.rightEnd
+          : getPosition(TooltipPlacement.top);
       default:
         return placement;
     }

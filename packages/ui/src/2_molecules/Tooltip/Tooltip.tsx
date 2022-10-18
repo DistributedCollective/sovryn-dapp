@@ -14,7 +14,8 @@ import React, {
 import classNames from 'classnames';
 
 import { Portal } from '../../1_atoms/Portal/Portal';
-import { Nullable } from '../../types';
+import { useOnClickOutside } from '../../hooks/useOnClickOutside';
+import { DATA_ATTRIBUTE, Nullable } from '../../types';
 import { noop } from '../../utils';
 import styles from './Tooltip.module.css';
 import {
@@ -44,7 +45,7 @@ export const Tooltip: FC<TooltipProps> = ({
   className,
   tooltipClassName,
   dataLayoutId,
-  placement = TooltipPlacement.TOP,
+  placement = TooltipPlacement.top,
   onShow,
   onHide,
   disabled = false,
@@ -56,8 +57,6 @@ export const Tooltip: FC<TooltipProps> = ({
   const [isVisible, setIsVisible] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   const [shouldHide, setShouldHide] = useState(false);
-  const isHoveredRef = useRef(isHovered);
-  isHoveredRef.current = isHovered;
 
   const getElements = useCallback(() => {
     const target = targetRef.current?.getBoundingClientRect();
@@ -68,16 +67,15 @@ export const Tooltip: FC<TooltipProps> = ({
     return null;
   }, []);
 
-  const updateElements = useCallback(() => {
-    const elements = getElements();
-    setElements(elements);
-  }, [getElements, setElements]);
+  const updateElements = useCallback(
+    () => setElements(getElements()),
+    [getElements, setElements],
+  );
 
   const tooltipPosition = useMemo(() => {
-    if (!elements) {
-      return;
+    if (elements) {
+      return getTooltipPosition(elements, placement);
     }
-    return getTooltipPosition(elements, placement);
   }, [elements, placement]);
 
   const handleShow = useCallback(() => {
@@ -87,17 +85,16 @@ export const Tooltip: FC<TooltipProps> = ({
     }
   }, [setIsVisible, setShouldHide, isVisible]);
 
-  const handleHide = useCallback(() => {
-    setShouldHide(true);
-  }, [setShouldHide]);
+  const handleHide = useCallback(() => setShouldHide(true), [setShouldHide]);
 
-  const onMouseHover = useCallback(() => {
-    setIsHovered(prevValue => !prevValue);
-  }, [setIsHovered]);
+  const onMouseHover = useCallback(
+    () => setIsHovered(prevValue => !prevValue),
+    [setIsHovered],
+  );
 
-  const getElementProps = useCallback(() => {
+  const elementProps = useMemo(() => {
     const attributes = {
-      'data-layout-id': dataLayoutId,
+      [DATA_ATTRIBUTE]: dataLayoutId,
       className: className,
       ref: targetRef,
     };
@@ -119,8 +116,10 @@ export const Tooltip: FC<TooltipProps> = ({
     disabled,
   ]);
 
+  useOnClickOutside([targetRef, tooltipRef], handleHide);
+
   useEffect(() => {
-    if (shouldHide && !isHoveredRef.current) {
+    if (shouldHide && !isHovered) {
       const timeout = setTimeout(() => {
         onHide?.();
         setShouldHide(false);
@@ -128,7 +127,7 @@ export const Tooltip: FC<TooltipProps> = ({
       }, CLOSE_DELAY);
       return () => clearTimeout(timeout);
     }
-  }, [shouldHide, onHide, setShouldHide, setIsVisible]);
+  }, [shouldHide, onHide, setShouldHide, setIsVisible, isHovered]);
 
   useEffect(() => {
     Object.values(TooltipEvents).forEach(event =>
@@ -142,16 +141,15 @@ export const Tooltip: FC<TooltipProps> = ({
   }, [updateElements]);
 
   useEffect(() => {
-    if (!isVisible) {
-      return;
+    if (isVisible) {
+      updateElements();
+      onShow?.();
     }
-    updateElements();
-    onShow?.();
   }, [isVisible, updateElements, onShow]);
 
   return (
     <>
-      {cloneElement(Children.only(children) as ReactElement, getElementProps())}
+      {cloneElement(Children.only(children) as ReactElement, elementProps)}
       {isVisible && !disabled && (
         <Portal target="body">
           <div

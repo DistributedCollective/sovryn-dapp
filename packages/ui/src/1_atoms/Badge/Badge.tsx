@@ -10,7 +10,7 @@ export type BadgeProps = {
   className?: string;
   style?: BadgeStyle;
   size?: BadgeSize;
-  dataActionId?: string;
+  dataLayoutId?: string;
 };
 
 export const Badge: FC<PropsWithChildren<BadgeProps>> = ({
@@ -18,7 +18,7 @@ export const Badge: FC<PropsWithChildren<BadgeProps>> = ({
   className,
   style = BadgeStyle.gray,
   size = BadgeSize.sm,
-  dataActionId,
+  dataLayoutId,
 }) => {
   return (
     <span
@@ -28,7 +28,7 @@ export const Badge: FC<PropsWithChildren<BadgeProps>> = ({
         styles[style],
         styles[size],
       )}
-      data-action-id={dataActionId}
+      data-layout-id={dataLayoutId}
     >
       {content}
     </span>

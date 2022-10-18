@@ -37,5 +37,8 @@
       "prettier --write"
     ]
   },
-  "packageManager": "yarn@1.19.1"
+  "packageManager": "yarn@1.19.1",
+  "dependencies": {
+    "@changesets/cli": "^2.25.0"
+  }
 }

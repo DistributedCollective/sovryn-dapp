@@ -11,7 +11,7 @@ type WalletContainerProps = {
   tooltip?: string;
   className?: string;
   dataLayoutId?: string;
-};
+} & React.ButtonHTMLAttributes<HTMLButtonElement>;
 
 export const WalletContainer: FC<WalletContainerProps> = ({
   name,
@@ -19,17 +19,19 @@ export const WalletContainer: FC<WalletContainerProps> = ({
   tooltip,
   className,
   dataLayoutId,
+  ...buttonProps
 }) => {
   return (
-    <div
+    <button
       data-layout-id={dataLayoutId}
       className={classNames(className, styles.walletContainer)}
+      {...buttonProps}
     >
       <div className={styles.label}>
         {name}
         {tooltip && <Icon icon="info" size={10} />}
       </div>{' '}
       {icon && <div className={styles.icon}>{icon}</div>}
-    </div>
+    </button>
   );
 };

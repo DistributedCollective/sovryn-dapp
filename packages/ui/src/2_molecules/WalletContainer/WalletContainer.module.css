@@ -1,5 +1,5 @@
 .walletContainer {
-  @apply flex items-center justify-between h-12 pl-4 pr-3 transition-colors rounded bg-gray-70 text-gray-10 text-opacity-75;
+  @apply flex items-center justify-between w-full h-12 pl-4 pr-3 transition-colors rounded bg-gray-70 text-gray-10 text-opacity-75;
 
   &:hover {
     @apply text-opacity-100 cursor-pointer bg-gray-60;

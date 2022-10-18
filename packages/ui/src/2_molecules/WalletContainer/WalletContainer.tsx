@@ -1,4 +1,4 @@
-import React, { FC, ReactNode } from 'react';
+import React, { ReactNode, forwardRef, LegacyRef } from 'react';
 
 import classNames from 'classnames';
 
@@ -13,16 +13,13 @@ type WalletContainerProps = {
   dataLayoutId?: string;
 } & React.ButtonHTMLAttributes<HTMLButtonElement>;
 
-export const WalletContainer: FC<WalletContainerProps> = ({
-  name,
-  icon,
-  tooltip,
-  className,
-  dataLayoutId,
-  ...buttonProps
-}) => {
+export const WalletContainer = forwardRef<
+  HTMLButtonElement,
+  WalletContainerProps
+>(({ name, icon, tooltip, className, dataLayoutId, ...buttonProps }, ref) => {
   return (
     <button
+      ref={ref as LegacyRef<HTMLButtonElement>}
       data-layout-id={dataLayoutId}
       className={classNames(className, styles.walletContainer)}
       {...buttonProps}
@@ -34,4 +31,4 @@ export const WalletContainer: FC<WalletContainerProps> = ({
       {icon && <div className={styles.icon}>{icon}</div>}
     </button>
   );
-};
+});

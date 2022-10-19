@@ -1,4 +1,4 @@
-import { screen, render } from '@testing-library/react';
+import { render } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import React from 'react';
@@ -6,16 +6,20 @@ import React from 'react';
 import { AddressTablePagination } from './AddressTablePagination';
 
 describe('AddressTablePagination', () => {
-  it('renders a AddressTablePagination', () => {
+  it('renders AddressTablePagination', () => {
     const onPageChange = jest.fn();
-    render(<AddressTablePagination onPageChange={onPageChange} />);
-    expect(screen.findAllByRole('svg[data-icon="arrow-back"]')).toBeDefined();
+    const { findAllByRole } = render(
+      <AddressTablePagination onPageChange={onPageChange} />,
+    );
+    expect(findAllByRole('svg[data-icon="arrow-back"]')).toBeDefined();
   });
 
-  it('does not allow to click on a disabled button', () => {
+  it('does not allow to click Previous without clicking Next first', () => {
     const onPageChange = jest.fn();
-    render(<AddressTablePagination onPageChange={onPageChange} />);
-    screen.getAllByRole('button').forEach(element => {
+    const { getAllByRole } = render(
+      <AddressTablePagination onPageChange={onPageChange} />,
+    );
+    getAllByRole('button').forEach(element => {
       userEvent.click(element);
     });
     expect(onPageChange).toBeCalledTimes(1);

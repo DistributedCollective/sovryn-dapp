@@ -9,28 +9,29 @@ type AddressTablePaginationProps = {
   onPageChange: (value: number) => void;
   className?: string;
   dataLayoutId?: string;
-  limit?: number;
+  itemsPerPage?: number;
 };
 
-const DEFAULT_LIMIT = 5;
+const DEFAULT_ITEMS_PER_PAGE = 5;
 
 export const AddressTablePagination: FC<AddressTablePaginationProps> = ({
   onPageChange,
   className,
   dataLayoutId,
-  limit = DEFAULT_LIMIT,
+  itemsPerPage = DEFAULT_ITEMS_PER_PAGE,
 }) => {
   const [offset, setOffset] = useState(0);
+  console.log(offset);
 
-  const handleMoveRight = useCallback(() => {
-    setOffset(offset + limit);
-    onPageChange(offset);
-  }, [setOffset, offset, limit, onPageChange]);
+  const handleClickNext = useCallback(() => {
+    setOffset(offset + itemsPerPage);
+    onPageChange(offset + itemsPerPage);
+  }, [setOffset, offset, itemsPerPage, onPageChange]);
 
-  const handleMoveLeft = useCallback(() => {
-    setOffset(offset - limit);
-    onPageChange(offset);
-  }, [setOffset, offset, limit, onPageChange]);
+  const handleClickPrevious = useCallback(() => {
+    setOffset(offset - itemsPerPage);
+    onPageChange(offset - itemsPerPage);
+  }, [setOffset, offset, itemsPerPage, onPageChange]);
 
   const isDisabled = useMemo(() => offset <= 0, [offset]);
 
@@ -39,10 +40,10 @@ export const AddressTablePagination: FC<AddressTablePaginationProps> = ({
       data-layout-id={dataLayoutId}
       className={classnames(styles.AddressTablePagination, className)}
     >
-      <button type="button" disabled={isDisabled} onClick={handleMoveLeft}>
+      <button type="button" disabled={isDisabled} onClick={handleClickPrevious}>
         <Icon icon="arrow-back" size={12} />
       </button>
-      <button type="button" onClick={handleMoveRight}>
+      <button type="button" onClick={handleClickNext}>
         <Icon icon="arrow-forward" size={12} />
       </button>
     </div>

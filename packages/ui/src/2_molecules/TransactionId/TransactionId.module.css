@@ -1,13 +1,9 @@
 .link {
   @apply inline-flex underline text-primary-20 text-xs font-medium cursor-pointer;
-
-  &:hover {
-    @apply text-primary-20;
-  }
 }
 
 .active {
-  @apply text-primary-10;
+  @apply text-primary-20;
 }
 
 .icon {

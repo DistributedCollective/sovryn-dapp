@@ -1,0 +1,14 @@
+.button {
+  @apply w-full block text-left text-gray-10 text-opacity-50 font-medium;
+  &.active, &:hover {
+    @apply text-opacity-100;
+  }
+
+  & p {
+    @apply text-base;
+  }
+  
+  & small {
+    @apply block text-xs mt-2;
+  }
+}

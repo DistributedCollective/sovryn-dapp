@@ -4,6 +4,7 @@ export * from './Dropdown/Dropdown';
 export * from './Dropdown/Dropdown.types';
 export * from './Menu/Menu';
 export * from './WalletIdentity/WalletIdentity';
-export * from './Tooltip/Tooltip';
 export * from './Tabs/Tabs';
+export * from './VerticalTabs';
+export * from './Tooltip/Tooltip';
 export * from './TransactionId/TransactionId';

@@ -1,0 +1,19 @@
+.link {
+  @apply inline-flex underline text-primary-20/50 text-xs font-medium cursor-pointer;
+
+  &:hover {
+    @apply text-primary-20;
+  }
+}
+
+.active {
+  @apply text-primary-20;
+}
+
+.icon {
+  @apply ml-1 cursor-pointer hover:bg-gray-20 p-1 rounded text-gray-50;
+}
+
+.tooltip {
+  @apply text-gray-50 max-w-fit;
+}

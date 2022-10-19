@@ -6,3 +6,4 @@ export * from './Menu/Menu';
 export * from './WalletIdentity/WalletIdentity';
 export * from './Tooltip/Tooltip';
 export * from './Tabs/Tabs';
+export * from './TransactionId/TransactionId';

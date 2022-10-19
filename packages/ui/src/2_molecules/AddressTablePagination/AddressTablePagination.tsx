@@ -21,7 +21,6 @@ export const AddressTablePagination: FC<AddressTablePaginationProps> = ({
   itemsPerPage = DEFAULT_ITEMS_PER_PAGE,
 }) => {
   const [offset, setOffset] = useState(0);
-  console.log(offset);
 
   const handleClickNext = useCallback(() => {
     setOffset(offset + itemsPerPage);

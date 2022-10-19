@@ -46,7 +46,7 @@ export const parameters = {
       },
     })),
   },
-  layout: 'fullscreen',
+  layout: 'padded',
   options: {
     storySort: {
       order: [

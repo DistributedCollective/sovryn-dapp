@@ -19,8 +19,12 @@
   }
 }
 
+.sb-main-fullscreen #root {
+  @apply h-screen;
+}
+
 .sb-show-main #root {
-  @apply relative block p-4;
+  @apply relative block;
 }
 
 .docs-story .innerZoomElementWrapper {

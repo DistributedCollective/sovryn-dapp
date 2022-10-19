@@ -1,10 +1,3 @@
-export const chains = {
-  mainnet: 30,
-  testnet: 31,
-};
-
-export const currentChainId = chains.mainnet;
-
 export const blockExplorers = {
   1: 'https://etherscan.io',
   3: 'https://ropsten.etherscan.io',

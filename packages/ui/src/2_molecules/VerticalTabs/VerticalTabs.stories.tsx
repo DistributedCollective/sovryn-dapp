@@ -8,7 +8,7 @@ import { Dialog } from '../Dialog/Dialog';
 import { DialogSize } from '../Dialog/Dialog.types';
 import { VerticalTabs } from './VerticalTabs';
 
-const EXCLUDED_CONTROLS = ['header', 'footer', 'onChange', 'selectedIndex'];
+const EXCLUDED_CONTROLS = ['header', 'footer', 'onChange'];
 
 export default {
   title: 'Molecule/VerticalTabs',

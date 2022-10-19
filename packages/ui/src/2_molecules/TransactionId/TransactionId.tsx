@@ -41,7 +41,14 @@ export const TransactionId: React.FC<TransactionIdProps> = ({
     alert('Address was copied to clipboard.');
   }, [value]);
 
-  return (
+  return hideTooltip ? (
+    <Link
+      className={classNames(styles.link, className)}
+      href={href}
+      text={formattedValue}
+      dataLayoutId={dataLayoutId}
+    />
+  ) : (
     <Tooltip
       content={
         <span className="flex items-center">
@@ -66,7 +73,6 @@ export const TransactionId: React.FC<TransactionIdProps> = ({
       className={classNames(styles.link, className)}
       tooltipClassName={styles.tooltip}
       placement={TooltipPlacement.bottom}
-      disabled={hideTooltip}
       dataLayoutId={dataLayoutId}
       activeClassName={styles.active}
     >

@@ -19,5 +19,5 @@ export const _TransactionId = Template.bind({});
 _TransactionId.args = {
   value: '0xEDb8897aB6E907bc63CB256f74437D36298507E2',
   dataLayoutId: 'address-id',
-  href: 'https://explorer.rsk.co/search/0xEDb8897aB6E907bc63CB256f74437D36298507E2',
+  href: 'https://explorer.rsk.co/address/0xEDb8897aB6E907bc63CB256f74437D36298507E2',
 };

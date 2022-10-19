@@ -1,29 +1,34 @@
+import { useArgs } from '@storybook/client-api';
 import { Story } from '@storybook/react';
 
-import { ComponentProps, useReducer, useState } from 'react';
+import { ComponentProps, useCallback, useReducer, useState } from 'react';
 
 import { Button, Heading } from '../../1_atoms';
 import { Dialog } from '../Dialog/Dialog';
 import { DialogSize } from '../Dialog/Dialog.types';
 import { VerticalTabs } from './VerticalTabs';
 
+const EXCLUDED_CONTROLS = ['header', 'footer', 'onChange', 'selectedIndex'];
+
 export default {
   title: 'Molecule/VerticalTabs',
   component: VerticalTabs,
   parameters: {
     layout: 'fullscreen',
+    controls: {
+      exclude: EXCLUDED_CONTROLS,
+    },
   },
 };
 
 const Template: Story<ComponentProps<typeof VerticalTabs>> = args => {
-  const [selectedIndex, setSelectedIndex] = useState(0);
-  return (
-    <VerticalTabs
-      {...args}
-      selectedIndex={selectedIndex}
-      onChange={setSelectedIndex}
-    />
+  const [, updateArgs] = useArgs();
+  const handleOnChange = useCallback(
+    (index: number) => updateArgs({ selectedIndex: index }),
+    [updateArgs],
   );
+
+  return <VerticalTabs {...args} onChange={handleOnChange} />;
 };
 
 const DialogTemplate: Story<ComponentProps<typeof VerticalTabs>> = args => {
@@ -69,10 +74,14 @@ Basic.args = {
       ),
     },
   ],
+  selectedIndex: 0,
   header: props => (
     <Heading>Selected: {props.items[props.selectedIndex].label}</Heading>
   ),
   footer: () => <div>Footer</div>,
+  className: '',
+  tabsClassName: '',
+  contentClassName: '',
 };
 
 export const InDialog = DialogTemplate.bind({});
@@ -98,6 +107,10 @@ InDialog.args = {
   tabsClassName: 'rounded-l-lg',
   className: 'rounded-lg',
 };
+
 InDialog.parameters = {
   layout: 'centered',
+  controls: {
+    exclude: [...EXCLUDED_CONTROLS, 'selectedIndex'],
+  },
 };

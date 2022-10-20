@@ -55,6 +55,8 @@ export const Basic = Template.bind({});
 Basic.args = {
   columns,
   rows,
+  dataAttribute: 'addressTable',
+  rowKey: row => `my-custom-key-${row.index}`,
 };
 
 export const WithRowClickHandler = Template.bind({});
@@ -63,6 +65,7 @@ WithRowClickHandler.args = {
   rows,
   onRowClick: row =>
     alert(`Row with index ${row.index} and address ${row.address} was clicked`),
+  dataAttribute: 'addressTable',
 };
 
 export const NoData = Template.bind({});

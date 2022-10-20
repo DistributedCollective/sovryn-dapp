@@ -1,15 +1,15 @@
 .row {
-  @apply cursor-pointer sm:cursor-auto outline outline-2 outline-gray-70 rounded bg-gray-90 text-xs font-medium;
+  @apply cursor-pointer sm:cursor-auto outline outline-1 outline-gray-70 rounded bg-gray-90 text-xs font-medium;
 
   & > td {
     @apply py-3 px-4;
 
     &:first-child {
-      @apply pl-5;
+      @apply pl-5 rounded-l;
     }
 
     &:last-child {
-      @apply pr-5;
+      @apply pr-5 rounded-r;
     }
   }
 }

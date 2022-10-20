@@ -6,6 +6,7 @@ export enum IconNames {
   ARROW_DOWN_WIDE = 'arrow-down-wide',
   ARROW_DOWN = 'arrow-down',
   ARROW_RIGHT = 'arrow-right',
+  ARROW_BACK = 'arrow-back',
   ARROW_FORWARD = 'arrow-forward',
   DEPOSIT = 'deposit',
   EDIT = 'edit',

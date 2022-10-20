@@ -15,6 +15,7 @@ export type TableBaseProps<RowType extends RowObject> = {
   noData?: ReactNode;
   onRowClick?: (row: RowType) => void;
   dataAttribute?: string;
+  isClickable?: boolean;
 };
 
 // No React.FC, since doesn't support Generic PropTypes
@@ -26,6 +27,7 @@ export const TableBase = <RowType extends RowObject>({
   noData,
   onRowClick,
   dataAttribute,
+  isClickable,
 }: TableBaseProps<RowType>) => {
   return (
     <table
@@ -58,6 +60,7 @@ export const TableBase = <RowType extends RowObject>({
               index={index}
               onRowClick={onRowClick}
               dataAttribute={dataAttribute}
+              isClickable={isClickable}
             />
           ))
         ) : (

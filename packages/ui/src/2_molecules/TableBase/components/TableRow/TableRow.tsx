@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 
 import classNames from 'classnames';
 
@@ -12,6 +12,7 @@ type TableRowProps<RowType extends RowObject> = {
   index: number;
   onRowClick?: (row: RowType) => void;
   dataAttribute?: string;
+  isClickable?: boolean;
 };
 
 export const TableRow = <RowType extends RowObject>({
@@ -20,14 +21,22 @@ export const TableRow = <RowType extends RowObject>({
   index,
   onRowClick = noop,
   dataAttribute,
+  isClickable,
 }: TableRowProps<RowType>) => {
-  const onClick = useCallback(() => onRowClick?.(row), [onRowClick, row]);
+  const [isSelected, setIsSelected] = useState(false);
+  const onClick = useCallback(() => {
+    setIsSelected(prevValue => !prevValue);
+    onRowClick?.(row);
+  }, [onRowClick, row]);
 
   return (
     <>
       <tr
         key={index}
-        className={styles.row}
+        className={classNames(styles.row, {
+          [styles.clickable]: isClickable,
+          [styles.active]: isClickable && isSelected,
+        })}
         onClick={onClick}
         data-layout-id={`${dataAttribute}-row-${index}`}
       >

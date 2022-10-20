@@ -14,6 +14,18 @@
   }
 }
 
+.clickable {
+  @apply cursor-pointer;
+
+  &:hover {
+    @apply outline-gray-50;
+  }
+}
+
+.active {
+  @apply outline-gray-50 bg-gray-70;
+}
+
 .text {
   &Left {
     @apply text-left;

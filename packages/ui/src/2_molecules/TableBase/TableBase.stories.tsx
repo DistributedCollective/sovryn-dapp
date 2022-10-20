@@ -66,6 +66,7 @@ WithRowClickHandler.args = {
   onRowClick: row =>
     alert(`Row with index ${row.index} and address ${row.address} was clicked`),
   dataAttribute: 'addressTable',
+  isClickable: true,
 };
 
 export const NoData = Template.bind({});

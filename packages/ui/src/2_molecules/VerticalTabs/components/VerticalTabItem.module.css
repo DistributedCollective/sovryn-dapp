@@ -1,16 +1,8 @@
 .button {
-
-  border-width: 0;
-  border-style: solid;
-  border-color: theme('borderColor.DEFAULT', currentColor);
-
   @apply w-full block text-left text-gray-10 text-opacity-50 font-medium bg-transparent;
+
   &.active, &:hover {
     @apply text-opacity-100;
-  }
-
-  &:focus {
-    @apply outline-none;
   }
 
   & p {

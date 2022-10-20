@@ -1,0 +1,33 @@
+.row {
+  @apply cursor-pointer sm:cursor-auto border border-solid border-gray-70 rounded bg-gray-90 text-xs font-medium;
+
+  & > td {
+    @apply py-3 px-4;
+
+    &:first-child {
+      @apply pl-5;
+    }
+
+    &:last-child {
+      @apply pr-5;
+    }
+  }
+}
+
+.text {
+  &Left {
+    @apply text-left;
+  }
+
+  &Center {
+    @apply text-center;
+  }
+
+  &Right {
+    @apply text-right;
+  }
+}
+
+.spacer {
+  @apply h-2;
+}

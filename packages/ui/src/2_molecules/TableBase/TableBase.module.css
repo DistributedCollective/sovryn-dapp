@@ -1,0 +1,31 @@
+.table {
+  @apply w-full min-w-auto h-full min-h-auto;
+}
+
+.text {
+  &Left {
+    @apply text-left;
+  }
+
+  &Center {
+    @apply text-center;
+  }
+
+  &Right {
+    @apply text-right;
+  }
+}
+
+.noData {
+  @apply relative px-4 py-4 text-center;
+}
+
+.header {
+  @apply text-xs font-medium;
+}
+
+.body {
+  &:before {
+    @apply content-['@'] block leading-3 invisible;
+  }
+}

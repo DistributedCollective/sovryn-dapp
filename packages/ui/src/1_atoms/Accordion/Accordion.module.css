@@ -3,7 +3,7 @@
 }
 
 .label {
-  @apply flex flex-row cursor-pointer content-center;
+  @apply flex flex-row cursor-pointer items-stretch;
 
   &.disabled,
   &:disabled {
@@ -13,6 +13,13 @@
 
 .arrow {
   @apply ml-2 flex flex-col items-center justify-center;
+}
+
+.icon {
+  @apply transition-transform;
+  &.isOpen {
+    @apply transform rotate-180;
+  }
 }
 
 .content {

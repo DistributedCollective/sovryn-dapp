@@ -15,7 +15,7 @@ describe('Accordion', () => {
     expect(getByText('Test')).toBeInTheDocument();
   });
 
-  it('eventHandler called on click', () => {
+  it('calls eventHandler on click', () => {
     const handleClick = jest.fn();
     const { getByTestId } = render(
       <Accordion

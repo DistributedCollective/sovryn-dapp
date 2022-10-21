@@ -1,4 +1,4 @@
-import React, { ReactNode, FC } from 'react';
+import React, { ReactNode, FC, useCallback } from 'react';
 
 import classNames from 'classnames';
 
@@ -9,7 +9,7 @@ import { IconNames } from '../Icon/Icon.types';
 import styles from './Accordion.module.css';
 
 export interface IAccordionProps {
-  label: string | ReactNode;
+  label: ReactNode;
   children: ReactNode;
   className?: string;
   disabled?: boolean;
@@ -27,13 +27,18 @@ export const Accordion: FC<IAccordionProps> = ({
   onClick,
   dataLayoutId,
 }) => {
+  const onClickCallback = useCallback(
+    () => !disabled && onClick?.(!open),
+    [disabled, open, onClick],
+  );
+
   return (
     <div className={classNames(styles.accordion, className)}>
-      <div
+      <button
         className={classNames(styles.label, {
           [styles.disabled]: disabled,
         })}
-        onClick={() => !disabled && onClick?.(!open)}
+        onClick={onClickCallback}
         data-layout-id={dataLayoutId}
       >
         <>
@@ -45,11 +50,14 @@ export const Accordion: FC<IAccordionProps> = ({
         </>
         <div className={styles.arrow}>
           <Icon
-            icon={open ? IconNames.ARROW_DOWN : IconNames.ARROW_UP}
+            icon={IconNames.ARROW_UP}
             size={8}
+            className={classNames(styles.icon, {
+              [styles.isOpen]: open,
+            })}
           />
         </div>
-      </div>
+      </button>
       {open && (
         <div
           className={styles.content}

@@ -7,3 +7,4 @@ export * from './WalletIdentity/WalletIdentity';
 export * from './Tabs/Tabs';
 export * from './VerticalTabs';
 export * from './Tooltip/Tooltip';
+export * from './Header/Header';

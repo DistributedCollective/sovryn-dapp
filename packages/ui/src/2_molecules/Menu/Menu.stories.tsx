@@ -23,12 +23,7 @@ _Menu.args = {
   className: 'max-w-xs',
   children: [
     <MenuItem text="Alpha" label="href" href="/" />,
-    <MenuItem
-      text="Beta"
-      label="href external"
-      href="https://sovryn.app"
-      hrefExternal
-    />,
+    <MenuItem text="Beta" label="href external" href="https://sovryn.app" />,
     <MenuItem text="Gamma" label="with icon and label" icon={faArchway} />,
     <MenuSeparator />,
     <MenuItem text="Delta" label="onClick" onClick={console.log} />,
@@ -39,7 +34,6 @@ _Menu.args = {
       text="Theta"
       label="href external disabled"
       href="https://sovryn.app"
-      hrefExternal
       disabled
     />,
     <MenuItem

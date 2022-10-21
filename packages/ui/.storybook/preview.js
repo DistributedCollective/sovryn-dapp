@@ -1,4 +1,3 @@
-import { MemoryRouter } from 'react-router-dom';
 import resolveConfig from 'tailwindcss/resolveConfig';
 
 import tailwindConfig from '@sovryn/tailwindcss-config/index';
@@ -11,14 +10,6 @@ const screens = {
   xs: '320px',
   ...config.theme.screens,
 };
-
-export const decorators = [
-  Story => (
-    <MemoryRouter>
-      <Story />
-    </MemoryRouter>
-  ),
-];
 
 const backgrounds = Object.entries(config.theme.backgroundColor).map(
   ([name, value]) => ({ name, value }),

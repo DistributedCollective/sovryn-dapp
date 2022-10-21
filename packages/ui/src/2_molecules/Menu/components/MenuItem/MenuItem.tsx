@@ -6,7 +6,6 @@ import React, {
 } from 'react';
 
 import classNames from 'classnames';
-import { Link, useLocation } from 'react-router-dom';
 
 import { Icon } from '../../../../1_atoms';
 import { IconType } from '../../../../1_atoms/Icon/Icon.types';
@@ -18,6 +17,7 @@ type MenuItemProps = {
   text: ReactNode;
   label?: ReactNode;
   disabled?: boolean;
+  isActive?: boolean;
   href?: string;
   hrefExternal?: boolean;
   onClick?: MouseEventHandler;
@@ -31,9 +31,10 @@ export const MenuItem: React.FC<MenuItemProps> = ({
   label,
   disabled,
   href,
-  hrefExternal,
+  isActive,
   onClick,
   dataLayoutId,
+  hrefExternal,
 }) => {
   const onClickHandler = useCallback(
     event => {
@@ -47,58 +48,32 @@ export const MenuItem: React.FC<MenuItemProps> = ({
     [onClick, disabled],
   );
 
-  const location = useLocation();
-
-  const isActive = useMemo(
-    () => href && href === location.pathname,
-    [href, location.pathname],
-  );
-
   const button = useMemo(() => {
     if (href) {
-      if (hrefExternal) {
-        return (
-          <a
-            className={classNames(styles.button, {
-              [styles.disabled]: disabled,
-            })}
-            href={href}
-            target="_blank"
-            rel="noreferrer"
-            onClick={onClickHandler}
-            data-layout-id={dataLayoutId}
-          >
-            <div className={styles.hostBlock}>
-              <div className={styles.hostFlex}>
-                {icon && <Icon icon={icon} className={styles.icon} />}
-                <span className={classNames(styles.text)}>{text}</span>
+      return (
+        <a
+          className={classNames(styles.button, {
+            [styles.disabled]: disabled,
+            [styles.active]: isActive,
+          })}
+          href={href}
+          target="_blank"
+          rel="noreferrer"
+          onClick={onClickHandler}
+          data-layout-id={dataLayoutId}
+        >
+          <div className={styles.hostBlock}>
+            <div className={styles.hostFlex}>
+              {icon && <Icon icon={icon} className={styles.icon} />}
+              <span className={classNames(styles.text)}>{text}</span>
+              {hrefExternal && (
                 <Icon icon={'new-tab'} className={styles.externalIcon} />
-              </div>
-              {label && <span className={styles.label}>{label}</span>}
+              )}
             </div>
-          </a>
-        );
-      } else {
-        return (
-          <Link
-            to={href}
-            className={classNames(styles.button, {
-              [styles.disabled]: disabled,
-              [styles.active]: isActive,
-            })}
-            onClick={onClickHandler}
-            data-layout-id={dataLayoutId}
-          >
-            <div className={styles.hostBlock}>
-              <div className={styles.hostFlex}>
-                {icon && <Icon icon={icon} className={styles.icon} />}
-                <span className={classNames(styles.text)}>{text}</span>
-              </div>
-              {label && <span className={styles.label}>{label}</span>}
-            </div>
-          </Link>
-        );
-      }
+            {label && <span className={styles.label}>{label}</span>}
+          </div>
+        </a>
+      );
     } else {
       return (
         <button
@@ -106,6 +81,7 @@ export const MenuItem: React.FC<MenuItemProps> = ({
           disabled={disabled}
           className={classNames(styles.button, {
             [styles.disabled]: disabled,
+            [styles.active]: isActive,
           })}
           onClick={onClickHandler}
           data-layout-id={dataLayoutId}

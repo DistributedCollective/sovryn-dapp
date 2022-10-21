@@ -6,13 +6,6 @@ import React from 'react';
 import { prettyTx } from '../../utils';
 import { WalletIdentity } from './WalletIdentity';
 
-jest.mock('react-router', () => ({
-  ...(jest.requireActual('react-router') as {}),
-  useLocation: jest.fn().mockImplementation(() => {
-    return { pathname: '/testroute', search: '', hash: '', state: null };
-  }),
-}));
-
 Object.assign(navigator, {
   clipboard: {
     writeText: () => {},

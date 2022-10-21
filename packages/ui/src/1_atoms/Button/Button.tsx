@@ -7,7 +7,6 @@ import React, {
 } from 'react';
 
 import classNames from 'classnames';
-import { Link } from 'react-router-dom';
 
 import styles from './Button.module.css';
 import { ButtonType, ButtonSize, ButtonStyle } from './Button.types';
@@ -15,7 +14,6 @@ import { ButtonType, ButtonSize, ButtonStyle } from './Button.types';
 export interface IButtonProps {
   text: ReactNode;
   href?: string;
-  hrefExternal?: boolean;
   onClick?: MouseEventHandler;
   type?: ButtonType;
   size?: ButtonSize;
@@ -34,7 +32,6 @@ export const Button = forwardRef<
     {
       text,
       href,
-      hrefExternal,
       onClick,
       size = ButtonSize.small,
       style = ButtonStyle.primary,
@@ -66,33 +63,19 @@ export const Button = forwardRef<
     );
 
     if (href) {
-      if (hrefExternal) {
-        return (
-          <a
-            ref={ref as LegacyRef<HTMLAnchorElement>}
-            className={classNamesComplete}
-            href={href}
-            target="_blank"
-            rel="noreferrer"
-            onClick={onClickHandler}
-            data-layout-id={dataLayoutId}
-          >
-            {text}
-          </a>
-        );
-      } else {
-        return (
-          <Link
-            ref={ref as React.Ref<HTMLAnchorElement>}
-            to={href}
-            className={classNamesComplete}
-            onClick={onClickHandler}
-            data-layout-id={dataLayoutId}
-          >
-            {text}
-          </Link>
-        );
-      }
+      return (
+        <a
+          ref={ref as LegacyRef<HTMLAnchorElement>}
+          className={classNamesComplete}
+          href={href}
+          target="_blank"
+          rel="noreferrer"
+          onClick={onClickHandler}
+          data-layout-id={dataLayoutId}
+        >
+          {text}
+        </a>
+      );
     } else {
       return (
         <button

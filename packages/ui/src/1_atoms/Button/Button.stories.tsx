@@ -39,7 +39,6 @@ export const LinkExternal = Template.bind({});
 LinkExternal.args = {
   text: 'External Link',
   href: 'https://live.sovryn.app',
-  hrefExternal: true,
   style: ButtonStyle.ghost,
   size: ButtonSize.small,
   type: ButtonType.button,

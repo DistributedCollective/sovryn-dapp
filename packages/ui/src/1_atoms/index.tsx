@@ -7,3 +7,4 @@ export * from './Portal/Portal';
 export * from './Paragraph/Paragraph';
 export * from './Badge/Badge';
 export * from './Link/Link';
+export * from './Accordion';

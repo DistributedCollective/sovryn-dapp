@@ -1,0 +1,20 @@
+.accordion {
+  @apply flex flex-col my-3;
+}
+
+.label {
+  @apply flex flex-row cursor-pointer content-center;
+
+  &.disabled,
+  &:disabled {
+    @apply opacity-30 cursor-default;
+  }
+}
+
+.arrow {
+  @apply ml-2 flex flex-col items-center justify-center;
+}
+
+.content {
+  @apply mt-2;
+}

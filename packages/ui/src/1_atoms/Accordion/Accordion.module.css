@@ -7,7 +7,7 @@
 
   &.disabled,
   &:disabled {
-    @apply opacity-30 cursor-default;
+    @apply opacity-50 cursor-default;
   }
 }
 

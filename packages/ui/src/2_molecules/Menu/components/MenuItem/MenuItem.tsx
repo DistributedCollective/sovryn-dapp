@@ -57,8 +57,8 @@ export const MenuItem: React.FC<MenuItemProps> = ({
             [styles.active]: isActive,
           })}
           href={href}
-          target="_blank"
-          rel="noreferrer"
+          target={hrefExternal ? '_blank' : undefined}
+          rel="noopener noreferrer"
           onClick={onClickHandler}
           data-layout-id={dataLayoutId}
         >

@@ -14,6 +14,7 @@ import { ButtonType, ButtonSize, ButtonStyle } from './Button.types';
 export interface IButtonProps {
   text: ReactNode;
   href?: string;
+  hrefExternal?: boolean;
   onClick?: MouseEventHandler;
   type?: ButtonType;
   size?: ButtonSize;
@@ -32,6 +33,7 @@ export const Button = forwardRef<
     {
       text,
       href,
+      hrefExternal,
       onClick,
       size = ButtonSize.small,
       style = ButtonStyle.primary,
@@ -68,8 +70,8 @@ export const Button = forwardRef<
           ref={ref as LegacyRef<HTMLAnchorElement>}
           className={classNamesComplete}
           href={href}
-          target="_blank"
-          rel="noreferrer"
+          target={hrefExternal ? '_blank' : undefined}
+          rel="noopener noreferrer"
           onClick={onClickHandler}
           data-layout-id={dataLayoutId}
         >

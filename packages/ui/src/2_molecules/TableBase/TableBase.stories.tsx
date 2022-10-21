@@ -10,18 +10,18 @@ const columns = [
   {
     id: 'index',
     title: 'Index',
-    align: Align.center,
+    align: Align.left,
     cellRenderer: row => `${row.index}.`,
   },
   {
     id: 'address',
     title: 'Address',
-    align: Align.center,
+    align: Align.left,
   },
   {
     id: 'balance',
     title: 'Balance',
-    align: Align.center,
+    align: Align.left,
     cellRenderer: row => `${row.balance} RBTC`,
   },
 ];
@@ -46,7 +46,7 @@ export default {
 };
 
 const Template: Story<ComponentProps<typeof TableBase>> = args => (
-  <div className="max-w-lg">
+  <div className="max-w-sm">
     <TableBase {...args} />
   </div>
 );

@@ -5,6 +5,6 @@ export * from './Menu';
 export * from './WalletIdentity';
 export * from './Tabs';
 export * from './VerticalTabs';
-export * from './Header/Header';
+export * from './Header';
 export * from './Tooltip';
 export * from './WalletContainer';

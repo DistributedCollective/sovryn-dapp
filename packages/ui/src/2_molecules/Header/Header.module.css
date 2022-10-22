@@ -7,13 +7,9 @@
 }
 
 .logo {
-  @apply max-h-7;
+  @apply max-h-7 mr-11;
 }
 
 .menuItems {
-  @apply mx-11 flex items-center;
-}
-
-.secondaryContent {
-  @apply mr-11;
+  @apply mr-11 flex items-center;
 }

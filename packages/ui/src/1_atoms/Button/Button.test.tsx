@@ -67,13 +67,18 @@ describe('Button', () => {
   });
 
   it('should render a button size with a className equal to the large', () => {
-    render(<Button text="Button size" size={ButtonSize.large} />);
-    const classes = screen.getByText('Button size').getAttribute('class');
+    const { getByText } = render(
+      <Button text="Button size" size={ButtonSize.large} />,
+    );
+    const classes = getByText('Button size').getAttribute('class');
     expect(classes).toContain('large');
   });
+
   it('should render a button style with a className equal to the secondary', () => {
-    render(<Button text="Button style" style={ButtonStyle.secondary} />);
-    const classes = screen.getByText('Button style').getAttribute('class');
+    const { getByText } = render(
+      <Button text="Button style" style={ButtonStyle.secondary} />,
+    );
+    const classes = getByText('Button style').getAttribute('class');
     expect(classes).toContain('secondary');
   });
 });

@@ -1,5 +1,9 @@
 .link {
   @apply inline-flex underline text-primary-20 text-xs font-medium cursor-pointer transition-colors;
+
+  &:hover {
+    @apply text-primary-10;
+  }
 }
 
 .icon {

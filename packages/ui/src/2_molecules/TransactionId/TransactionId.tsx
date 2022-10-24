@@ -30,11 +30,11 @@ export const TransactionId: React.FC<TransactionIdProps> = ({
   href,
 }) => {
   const formattedValue = useMemo(() => {
-    if (value?.length && startLength && endLength) {
+    if (value?.length && startLength && endLength && !hideTooltip) {
       return prettyTx(value, startLength, endLength);
     }
     return value;
-  }, [value, startLength, endLength]);
+  }, [value, startLength, endLength, hideTooltip]);
 
   const copyAddress = useCallback(async () => {
     await navigator.clipboard.writeText(value);
@@ -74,7 +74,6 @@ export const TransactionId: React.FC<TransactionIdProps> = ({
       tooltipClassName={styles.tooltip}
       placement={TooltipPlacement.bottom}
       dataLayoutId={dataLayoutId}
-      activeClassName={styles.active}
     >
       <div>{formattedValue}</div>
     </Tooltip>

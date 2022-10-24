@@ -1,5 +1,11 @@
 # @sovryn/ui
 
+## 0.0.4
+
+### Patch Changes
+
+- 75c42f2: SOV-786: remove react-router as UI dependency
+
 ## 0.0.3
 
 ### Patch Changes

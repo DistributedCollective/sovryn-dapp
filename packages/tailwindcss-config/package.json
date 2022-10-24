@@ -1,11 +1,11 @@
 {
   "name": "@sovryn/tailwindcss-config",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "main": "index.js",
-  "private": true,
   "files": [
     "index.js",
-    "postcss.config.js"
+    "postcss.config.js",
+    "styles"
   ],
   "dependencies": {
     "autoprefixer": "^10.4.7",

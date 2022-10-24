@@ -8,6 +8,7 @@ export enum IconNames {
   ARROW_RIGHT = 'arrow-right',
   ARROW_BACK = 'arrow-back',
   ARROW_FORWARD = 'arrow-forward',
+  ARROW_BACK = 'arrow-back',
   DEPOSIT = 'deposit',
   EDIT = 'edit',
   FAILED_TX = 'failed-tx',

@@ -4,9 +4,6 @@ import classNames from 'classnames';
 
 import styles from './Menu.module.css';
 
-export * from './components/MenuItem/MenuItem';
-export * from './components/MenuSeparator/MenuSeparator';
-
 type MenuProps = {
   className?: string;
   children?: ReactNode;

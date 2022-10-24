@@ -16,14 +16,12 @@ export const SimpleTableRow: FC<SimpleTableRowProps> = ({
   dataLayoutId,
   label,
   value,
-}) => {
-  return (
-    <div
-      className={classNames(styles.row, className)}
-      data-layout-id={dataLayoutId}
-    >
-      <span>{label}</span>
-      <span className={styles.value}>{value}</span>
-    </div>
-  );
-};
+}) => (
+  <div
+    className={classNames(styles.row, className)}
+    data-layout-id={dataLayoutId}
+  >
+    <span>{label}</span>
+    <span className={styles.value}>{value}</span>
+  </div>
+);

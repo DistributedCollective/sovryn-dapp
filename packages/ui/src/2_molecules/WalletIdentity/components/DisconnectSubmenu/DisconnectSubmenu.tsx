@@ -1,6 +1,6 @@
 import React, { FC, useCallback } from 'react';
 
-import { Menu, MenuItem } from '../../../Menu/Menu';
+import { Menu, MenuItem } from '../../../Menu';
 
 export type MenuLabels = {
   copyAddress: string;

@@ -15,19 +15,17 @@ export const SimpleTable: FC<PropsWithChildren<SimpleTableProps>> = ({
   dataLayoutId,
   children,
   border,
-}) => {
-  return (
-    <div
-      className={classNames(
-        styles.simpleTable,
-        {
-          [styles.withBorder]: border,
-        },
-        className,
-      )}
-      data-layout-id={dataLayoutId}
-    >
-      {children}
-    </div>
-  );
-};
+}) => (
+  <div
+    className={classNames(
+      styles.simpleTable,
+      {
+        [styles.withBorder]: border,
+      },
+      className,
+    )}
+    data-layout-id={dataLayoutId}
+  >
+    {children}
+  </div>
+);

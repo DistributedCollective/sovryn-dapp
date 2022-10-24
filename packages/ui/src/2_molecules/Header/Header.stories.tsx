@@ -2,7 +2,7 @@ import { Story } from '@storybook/react';
 
 import React, { ComponentProps } from 'react';
 
-import { Button } from '../../1_atoms';
+import { Button, Link } from '../../1_atoms';
 import { ButtonStyle } from '../../1_atoms/Button/Button.types';
 import SovrynLogo from '../../../assets/images/logo-sovryn.svg';
 import { NavMenuItem } from '../NavMenuItem/NavMenuItem';
@@ -32,7 +32,7 @@ const Template: Story<ComponentProps<typeof Header>> = args => (
 export const Basic = Template.bind({});
 Basic.args = {
   dataLayoutId: '',
-  logo: <img src={SovrynLogo} alt="Sovryn logo" />,
+  logo: <Link href="/" text={<img src={SovrynLogo} alt="Sovryn logo" />} />,
   menuItems: (
     <>
       <NavMenuItem children="Zero" />

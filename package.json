@@ -16,7 +16,7 @@
     "coverage": "turbo run coverage",
     "storybook": "turbo run storybook",
     "prepare": "husky install",
-    "publish-packages": "turbo run build lint test --filter=./packages/* && changeset publish"
+    "release-packages": "turbo run build lint test --filter=./packages/* && changeset publish"
   },
   "devDependencies": {
     "@sovryn/eslint-config-custom": "*",

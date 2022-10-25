@@ -3,6 +3,8 @@ import type { IconProp } from '@fortawesome/fontawesome-svg-core';
 import { ReactNode } from 'react';
 
 export enum IconNames {
+  ARROW_UP = 'arrow-up',
+  ARROW_BACK = 'arrow-back',
   ARROW_DOWN_WIDE = 'arrow-down-wide',
   ARROW_DOWN = 'arrow-down',
   ARROW_RIGHT = 'arrow-right',
@@ -10,6 +12,7 @@ export enum IconNames {
   ARROW_FORWARD = 'arrow-forward',
   ARROW_BACK = 'arrow-back',
   DEPOSIT = 'deposit',
+  DISCONNECT = 'disconnect',
   EDIT = 'edit',
   FAILED_TX = 'failed-tx',
   INFO = 'info',

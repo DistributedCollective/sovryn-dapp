@@ -1,0 +1,71 @@
+.wrapper {
+  @apply w-full max-w-xs flex flex-row justify-between items-center;
+}
+
+.container {
+  @apply text-xs relative flex text-gray-20 flex-grow rounded bg-gray-70 items-center px-2 outline outline-1 outline-gray-50;
+
+  &:hover {
+    @apply outline-gray-40;
+  }
+}
+
+.labelWrapper {
+  @apply flex;
+}
+
+.label {
+  @apply font-semibold pr-2;
+}
+
+.icon {
+  @apply flex items-center;
+}
+
+.input {
+  @apply bg-transparent appearance-none focus:outline-none w-full px-2 leading-tight text-xs font-medium text-gray-20 text-right;
+
+  &::placeholder {
+    @apply text-gray-30;
+  }
+
+  &:disabled {
+    &::placeholder {
+      @apply text-gray-30/50;
+    }
+  }
+
+  &[type='number'] {
+    &::-webkit-inner-spin-button,
+    &::-webkit-outer-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
+    appearance: textfield;
+  }
+}
+
+.invalid {
+  @apply outline outline-1 outline-error-light bg-gray-60;
+}
+
+.focus {
+  @apply outline outline-1 outline-primary-20 bg-gray-70;
+}
+
+.disabled {
+  @apply cursor-not-allowed bg-gray-70-ol text-gray-20/50 pointer-events-none;
+}
+
+.readOnly {
+  @apply bg-gray-70/50 outline outline-1 outline-gray-50 text-gray-20 pointer-events-none;
+}
+
+.large {
+  @apply h-10;
+}
+
+.small {
+  @apply h-8;
+}

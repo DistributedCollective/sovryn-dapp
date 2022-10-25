@@ -18,10 +18,6 @@
   @apply font-semibold pr-2;
 }
 
-.icon {
-  @apply flex items-center;
-}
-
 .input {
   @apply bg-transparent appearance-none focus:outline-none w-full px-2 leading-tight text-xs font-medium text-gray-20 text-right;
 

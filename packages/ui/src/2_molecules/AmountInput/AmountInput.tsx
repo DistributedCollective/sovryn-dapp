@@ -8,9 +8,9 @@ import React, {
 
 import classNames from 'classnames';
 
-import { Icon, InputProps, InputSize } from '../../1_atoms';
+import { InputProps, InputSize } from '../../1_atoms';
 import { InputBase } from '../../1_atoms/InputBase/InputBase';
-import { Tooltip } from '../Tooltip';
+import { HelperButton } from '../HelperButton/HelperButton';
 import styles from './AmountInput.module.css';
 
 export enum AmountInputVariant {
@@ -72,16 +72,7 @@ export const AmountInput = React.forwardRef<HTMLInputElement, AmountInputProps>(
         >
           <div className={styles.labelWrapper}>
             <div className={styles.label}>{label}</div>
-            {tooltip && (
-              <Tooltip
-                content={tooltip}
-                children={
-                  <div>
-                    <Icon size={10} icon="info" />
-                  </div>
-                }
-              />
-            )}
+            {tooltip && <HelperButton content={tooltip} />}
           </div>
           <InputBase
             ref={inputRef}

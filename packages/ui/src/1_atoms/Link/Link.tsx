@@ -27,7 +27,7 @@ export const Link: FC<PropsWithChildren<LinkProps>> = ({
       rel="noopener noreferrer"
       href={href}
       target={openNewTab ? 'blank' : undefined}
-      className={classNames(className, styles.link, styles[style])}
+      className={classNames(styles.link, styles[style], className)}
       data-layout-id={dataLayoutId}
     >
       {text}

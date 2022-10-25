@@ -1,0 +1,16 @@
+.formGroup {
+  @apply text-xs font-medium;
+
+  .formLabel {
+    @apply block text-gray-10 mb-2;
+
+    .heading {
+      @apply flex items-center gap-1.5;
+    }
+  }
+
+  .errorLabel {
+    @apply block text-error-light mt-2;
+    line-height: 0.875rem;
+  }
+}

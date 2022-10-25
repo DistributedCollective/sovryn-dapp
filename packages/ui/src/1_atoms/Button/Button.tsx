@@ -7,7 +7,6 @@ import React, {
 } from 'react';
 
 import classNames from 'classnames';
-import { Link } from 'react-router-dom';
 
 import styles from './Button.module.css';
 import { ButtonType, ButtonSize, ButtonStyle } from './Button.types';
@@ -66,33 +65,19 @@ export const Button = forwardRef<
     );
 
     if (href) {
-      if (hrefExternal) {
-        return (
-          <a
-            ref={ref as LegacyRef<HTMLAnchorElement>}
-            className={classNamesComplete}
-            href={href}
-            target="_blank"
-            rel="noreferrer"
-            onClick={onClickHandler}
-            data-layout-id={dataLayoutId}
-          >
-            {text}
-          </a>
-        );
-      } else {
-        return (
-          <Link
-            ref={ref as React.Ref<HTMLAnchorElement>}
-            to={href}
-            className={classNamesComplete}
-            onClick={onClickHandler}
-            data-layout-id={dataLayoutId}
-          >
-            {text}
-          </Link>
-        );
-      }
+      return (
+        <a
+          ref={ref as LegacyRef<HTMLAnchorElement>}
+          className={classNamesComplete}
+          href={href}
+          target={hrefExternal ? '_blank' : undefined}
+          rel="noopener noreferrer"
+          onClick={onClickHandler}
+          data-layout-id={dataLayoutId}
+        >
+          {text}
+        </a>
+      );
     } else {
       return (
         <button

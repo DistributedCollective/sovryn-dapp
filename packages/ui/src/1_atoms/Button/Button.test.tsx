@@ -3,8 +3,6 @@ import userEvent from '@testing-library/user-event';
 
 import React from 'react';
 
-import { MemoryRouter } from 'react-router-dom';
-
 import { Button } from './Button';
 import { ButtonSize, ButtonStyle } from './Button.types';
 
@@ -39,28 +37,9 @@ describe('Button', () => {
     expect(document.activeElement).toEqual(ref.current);
   });
 
-  it('can be focused when using refs (hyperlink / external)', () => {
+  it('can be focused when using refs (hyperlink)', () => {
     const ref = React.createRef<HTMLAnchorElement>();
-    render(
-      <Button
-        text="Hyperlink"
-        ref={ref}
-        href="https://www.sovryn.app"
-        hrefExternal
-      />,
-    );
-    waitFor(() => ref.current);
-    ref.current?.focus();
-    expect(document.activeElement).toEqual(ref.current);
-  });
-
-  it('can be focused when using refs (router link)', () => {
-    const ref = React.createRef<HTMLAnchorElement>();
-    render(
-      <MemoryRouter>
-        <Button text="Hyperlink" ref={ref} href="/" />
-      </MemoryRouter>,
-    );
+    render(<Button text="Hyperlink" ref={ref} href="https://www.sovryn.app" />);
     waitFor(() => ref.current);
     ref.current?.focus();
     expect(document.activeElement).toEqual(ref.current);

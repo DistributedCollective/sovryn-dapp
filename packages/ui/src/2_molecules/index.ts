@@ -6,5 +6,7 @@ export * from './WalletIdentity';
 export * from './Tabs';
 export * from './VerticalTabs';
 export * from './Header';
+export * from './SimpleTable';
+export * from './TransactionId';
 export * from './Tooltip';
 export * from './WalletContainer';

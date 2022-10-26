@@ -16,11 +16,15 @@ const Template: Story<ComponentProps<typeof AmountInput>> = args => (
 );
 
 const AdvancedTemplate: Story<ComponentProps<typeof AmountInput>> = args => {
-  const [value, setValue] = useState('hello world');
+  const [value, setValue] = useState(6);
 
   return (
     <div className="w-64">
-      <AmountInput {...args} value={value} onChangeText={setValue} />
+      <AmountInput
+        {...args}
+        value={value}
+        onChangeText={value => setValue(Number(value))}
+      />
       <p>
         This value will change after {args.debounce}ms: {value}
       </p>
@@ -33,7 +37,7 @@ Basic.args = {
   label: 'Amount',
   tooltip: 'This is something useful',
   unit: 'RBTC',
-  value: 0.025,
+  value: 123,
   disabled: false,
   readOnly: false,
 };
@@ -41,4 +45,12 @@ Basic.args = {
 export const DebouncedInput = AdvancedTemplate.bind({});
 DebouncedInput.args = {
   debounce: 300,
+};
+
+export const LongDecimals = Template.bind({});
+LongDecimals.args = {
+  label: 'Amount',
+  unit: 'RBTC',
+  value: 0.12345678,
+  numDecimals: 3,
 };

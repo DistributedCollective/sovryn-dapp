@@ -2,13 +2,14 @@ import React, {
   ReactNode,
   useCallback,
   useImperativeHandle,
+  useMemo,
   useRef,
   useState,
 } from 'react';
 
 import classNames from 'classnames';
 
-import { InputProps, InputSize } from '../../1_atoms';
+import { InputProps } from '../../1_atoms';
 import { InputBase } from '../../1_atoms/InputBase/InputBase';
 import { HelperButton } from '../HelperButton/HelperButton';
 import styles from './AmountInput.module.css';
@@ -18,7 +19,7 @@ export enum AmountInputVariant {
   small = 'small',
 }
 
-type AmountInputProps = InputProps & {
+type AmountInputProps = Omit<InputProps, 'size'> & {
   label?: ReactNode;
   tooltip?: ReactNode;
   variant?: AmountInputVariant;
@@ -41,9 +42,9 @@ export const AmountInput = React.forwardRef<HTMLInputElement, AmountInputProps>(
       maxAmount,
       label,
       invalid,
-      size = InputSize.small,
       dataLayoutId,
       type,
+      value,
       ...rest
     },
     ref,
@@ -57,6 +58,30 @@ export const AmountInput = React.forwardRef<HTMLInputElement, AmountInputProps>(
     const [focused, setFocused] = useState(false);
     const onFocus = useCallback(() => setFocused(prevValue => !prevValue), []);
     const onBlur = useCallback(() => setFocused(false), []);
+
+    const formattedValue = useMemo(() => {
+      if (!value) {
+        return 0;
+      }
+      if (!numDecimals) {
+        return value;
+      }
+
+      const decimalLength = value.toString().split(/[,.]/)[1]?.length || 0;
+      if (decimalLength <= numDecimals) {
+        return value;
+      }
+
+      const unformattedValue =
+        typeof value === 'string' ? Number(value) : value;
+
+      return unformattedValue
+        .toLocaleString(navigator.language, {
+          minimumFractionDigits: numDecimals,
+          maximumFractionDigits: numDecimals,
+        })
+        .replace(',', '.');
+    }, [numDecimals, value]);
 
     return (
       <div className={classNames(styles.wrapper, className)}>
@@ -76,15 +101,16 @@ export const AmountInput = React.forwardRef<HTMLInputElement, AmountInputProps>(
           </div>
           <InputBase
             ref={inputRef}
+            lang={navigator.language}
             className={classNames(styles.input, classNameInput, {
               [styles.disabled]: rest.disabled,
             })}
             type="number"
-            {...rest}
             dataLayoutId={dataLayoutId}
-            lang={navigator.language}
             onFocus={onFocus}
             onBlur={onBlur}
+            value={formattedValue}
+            {...rest}
           />
           {unit && <div>{unit}</div>}
         </div>

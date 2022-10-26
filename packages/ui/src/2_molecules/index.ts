@@ -7,3 +7,5 @@ export * from './Tabs';
 export * from './VerticalTabs';
 export * from './Tooltip';
 export * from './WalletContainer';
+export * from './AmountInput';
+export * from './HelperButton';

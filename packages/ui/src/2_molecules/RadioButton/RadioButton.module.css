@@ -1,0 +1,73 @@
+.radioButton {
+  @apply flex items-center mb-3;
+
+  &.disabled {
+    & label {
+      @apply text-opacity-50 cursor-not-allowed;
+
+      & input {
+        @apply border-opacity-50;
+
+        &:checked {
+          @apply border-opacity-50;
+
+          &:hover {
+            @apply border-gray-30 border-opacity-50;
+          }
+
+          &:after {
+            @apply bg-opacity-50;
+          }
+
+        }
+      }
+
+      & + * {
+        @apply opacity-50 pointer-events-none;
+      }
+    }
+  }
+}
+
+.label {
+  @apply text-gray-10 flex items-center cursor-pointer mr-1.5 leading-4;
+
+  & input {
+    @apply border-gray-40 border-2 w-5 h-5 rounded-full appearance-none mr-2.5 cursor-pointer transition-colors;
+
+    &:after {
+      content: '';
+    }
+
+    &:after {
+      @apply block m-[0.175rem] w-2.5 h-2.5 rounded-full transition-colors;
+    }
+
+    &:checked {
+      @apply border-primary-30;
+
+      &:hover {
+        @apply border-primary-30;
+      }
+
+      &:after {
+        @apply bg-primary-30;
+      }
+    }
+    &:disabled {
+      @apply cursor-not-allowed border-gray-30;
+
+      &:checked {
+        &:after {
+          @apply bg-gray-30;
+        }
+      }
+    }
+  }
+
+  &:hover {
+    & input {
+      @apply border-gray-30;
+    }
+  }
+}

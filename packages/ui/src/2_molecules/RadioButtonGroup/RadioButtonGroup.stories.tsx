@@ -1,0 +1,72 @@
+import { Story } from '@storybook/react';
+
+import React, { ComponentProps, useCallback } from 'react';
+
+import { Icon } from '../../1_atoms';
+import { Input } from '../../1_atoms/Input';
+import { Tooltip } from '../Tooltip';
+import { RadioButtonGroup } from './RadioButtonGroup';
+
+export default {
+  title: 'Molecule/RadioButtonGroup',
+  component: RadioButtonGroup,
+};
+
+const Template: Story<ComponentProps<typeof RadioButtonGroup>> = args => {
+  const onChange = useCallback(
+    e => alert(`Selected value is ${e.target.value}`),
+    [],
+  );
+  return (
+    <>
+      <RadioButtonGroup {...args} onChange={onChange} />
+      <Input className="ml-8" />
+    </>
+  );
+};
+
+const options = [
+  {
+    label: 'Custom amount',
+    name: 'settings',
+  },
+  {
+    label: 'Unlimited amount',
+    name: 'settings',
+  },
+  {
+    label: 'Amount with icon',
+    labelInfo: (
+      <Tooltip
+        content="Tooltip info"
+        children={
+          <div>
+            <Icon icon="info" size={10} />
+          </div>
+        }
+      />
+    ),
+    name: 'settings',
+  },
+  {
+    label: 'Disabled amount',
+    name: 'settings',
+    disabled: true,
+    labelInfo: (
+      <Tooltip
+        content="Tooltip info"
+        children={
+          <div>
+            <Icon icon="info" size={10} />
+          </div>
+        }
+      />
+    ),
+  },
+];
+
+export const Basic = Template.bind({});
+Basic.args = {
+  label: 'Advanced settings',
+  options: options,
+};

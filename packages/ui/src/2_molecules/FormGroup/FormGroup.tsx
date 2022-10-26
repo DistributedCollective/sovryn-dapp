@@ -40,7 +40,11 @@ export const FormGroup: React.FC<PropsWithChildren<FormGroupProps>> = ({
     )}
     {children}
     {errorLabel && (
-      <span data-layout-id="error-message" className={styles.errorLabel}>
+      <span
+        data-layout-id={`${dataLayoutId}__error-message`}
+        className={styles.errorLabel}
+      >
+        ``
         {errorLabel}
       </span>
     )}

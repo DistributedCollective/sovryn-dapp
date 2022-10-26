@@ -8,7 +8,6 @@ import { FormGroup } from './FormGroup';
 test('renders FormGroup with label and subtext', () => {
   const { getByTestId, getByText } = render(
     <FormGroup
-      className={''}
       label={'label'}
       subtext={'subtext'}
       children={<Input placeholder="Text" dataLayoutId="form-input" />}
@@ -24,12 +23,12 @@ test('renders FormGroup with label and subtext', () => {
 test('FromGroup renders erorr message', () => {
   const { getByTestId } = render(
     <FormGroup
-      className={''}
       label={'label'}
       children={<Input placeholder="Text" />}
       errorLabel="wrong"
+      dataLayoutId="group-2"
     />,
   );
 
-  expect(getByTestId('error-message')).toHaveTextContent('wrong');
+  expect(getByTestId('group-2__error-message')).toHaveTextContent('wrong');
 });

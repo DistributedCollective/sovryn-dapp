@@ -46,6 +46,7 @@ module.exports = {
       'gray-70-ol': 'rgba(44, 48, 59, 0.65)',
       'gray-60': '#333845',
       'gray-50': '#484D59',
+      'gray-40': '#82868F',
       'gray-30': '#B6BAC2',
       'gray-20': '#E6E6E8',
       'gray-10': '#F5F5F5',

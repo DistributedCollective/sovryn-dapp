@@ -14,36 +14,36 @@ import { InputBase } from '../../1_atoms/InputBase/InputBase';
 import { HelperButton } from '../HelperButton/HelperButton';
 import styles from './AmountInput.module.css';
 
+const DEFAULT_DECIMAL_PRECISION = 6;
+
 export enum AmountInputVariant {
   large = 'large',
   small = 'small',
 }
 
-type AmountInputProps = Omit<InputProps, 'size'> & {
+type AmountInputProps = Omit<InputProps, 'classNameInput' | 'type' | 'size'> & {
   label?: ReactNode;
-  tooltip?: ReactNode;
   variant?: AmountInputVariant;
+  tooltip?: ReactNode;
   useAmountButtons?: boolean;
-  numDecimals?: number;
+  decimalPrecision?: number;
   unit?: ReactNode;
-  maxAmount?: ReactNode;
+  maxAmount?: number;
 };
 
 export const AmountInput = React.forwardRef<HTMLInputElement, AmountInputProps>(
   (
     {
       className,
-      classNameInput,
       tooltip,
-      variant = AmountInputVariant.small,
-      useAmountButtons,
-      numDecimals,
+      variant = AmountInputVariant.large,
+      useAmountButtons = false,
+      decimalPrecision = DEFAULT_DECIMAL_PRECISION,
       unit,
       maxAmount,
       label,
       invalid,
       dataLayoutId,
-      type,
       value,
       ...rest
     },
@@ -56,19 +56,19 @@ export const AmountInput = React.forwardRef<HTMLInputElement, AmountInputProps>(
     useImperativeHandle(ref, () => inputRef.current);
 
     const [focused, setFocused] = useState(false);
-    const onFocus = useCallback(() => setFocused(prevValue => !prevValue), []);
+    const onFocus = useCallback(() => setFocused(true), []);
     const onBlur = useCallback(() => setFocused(false), []);
 
     const formattedValue = useMemo(() => {
       if (!value) {
         return 0;
       }
-      if (!numDecimals) {
+      if (!decimalPrecision) {
         return value;
       }
 
       const decimalLength = value.toString().split(/[,.]/)[1]?.length || 0;
-      if (decimalLength <= numDecimals) {
+      if (decimalLength <= decimalPrecision) {
         return value;
       }
 
@@ -77,11 +77,11 @@ export const AmountInput = React.forwardRef<HTMLInputElement, AmountInputProps>(
 
       return unformattedValue
         .toLocaleString(navigator.language, {
-          minimumFractionDigits: numDecimals,
-          maximumFractionDigits: numDecimals,
+          minimumFractionDigits: decimalPrecision,
+          maximumFractionDigits: decimalPrecision,
         })
         .replace(',', '.');
-    }, [numDecimals, value]);
+    }, [decimalPrecision, value]);
 
     return (
       <div className={classNames(styles.wrapper, className)}>
@@ -95,14 +95,17 @@ export const AmountInput = React.forwardRef<HTMLInputElement, AmountInputProps>(
             [styles.readOnly]: rest.readOnly,
           })}
         >
-          <div className={styles.labelWrapper}>
-            <div className={styles.label}>{label}</div>
-            {tooltip && <HelperButton content={tooltip} />}
-          </div>
+          {label && (
+            <div className={styles.labelWrapper}>
+              <div className={styles.label}>{label}</div>
+              {tooltip && <HelperButton content={tooltip} />}
+            </div>
+          )}
+
           <InputBase
             ref={inputRef}
             lang={navigator.language}
-            className={classNames(styles.input, classNameInput, {
+            className={classNames(styles.input, {
               [styles.disabled]: rest.disabled,
             })}
             type="number"
@@ -112,6 +115,7 @@ export const AmountInput = React.forwardRef<HTMLInputElement, AmountInputProps>(
             value={formattedValue}
             {...rest}
           />
+
           {unit && <div>{unit}</div>}
         </div>
       </div>

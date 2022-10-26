@@ -29,7 +29,11 @@ describe('AmountInput', () => {
 
   test('correctly formats a number value', () => {
     const { getByTestId } = render(
-      <AmountInput value={0.12345678} numDecimals={3} dataLayoutId="test" />,
+      <AmountInput
+        value={0.12345678}
+        decimalPrecision={3}
+        dataLayoutId="test"
+      />,
     );
 
     const amountInput = getByTestId('test');
@@ -38,7 +42,11 @@ describe('AmountInput', () => {
 
   test('correctly formats a string value', () => {
     const { getByTestId } = render(
-      <AmountInput value="0.12345678" numDecimals={3} dataLayoutId="test" />,
+      <AmountInput
+        value="0.12345678"
+        decimalPrecision={3}
+        dataLayoutId="test"
+      />,
     );
 
     const amountInput = getByTestId('test');

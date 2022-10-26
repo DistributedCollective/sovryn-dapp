@@ -1,8 +1,8 @@
 import { Story } from '@storybook/react';
 
-import React, { ComponentProps, useState } from 'react';
+import React, { ComponentProps } from 'react';
 
-import { AmountInput } from './AmountInput';
+import { AmountInput, AmountInputVariant } from './AmountInput';
 
 export default {
   title: 'Molecule/AmountInput',
@@ -15,23 +15,6 @@ const Template: Story<ComponentProps<typeof AmountInput>> = args => (
   </div>
 );
 
-const AdvancedTemplate: Story<ComponentProps<typeof AmountInput>> = args => {
-  const [value, setValue] = useState(6);
-
-  return (
-    <div className="w-64">
-      <AmountInput
-        {...args}
-        value={value}
-        onChangeText={value => setValue(Number(value))}
-      />
-      <p>
-        This value will change after {args.debounce}ms: {value}
-      </p>
-    </div>
-  );
-};
-
 export const Basic = Template.bind({});
 Basic.args = {
   label: 'Amount',
@@ -40,17 +23,32 @@ Basic.args = {
   value: 123,
   disabled: false,
   readOnly: false,
+  dataLayoutId: 'amountInput',
+  variant: AmountInputVariant.small,
 };
 
-export const DebouncedInput = AdvancedTemplate.bind({});
-DebouncedInput.args = {
-  debounce: 300,
+export const WithoutLabel = Template.bind({});
+WithoutLabel.args = {
+  unit: 'RBTC',
+  value: 123,
+  disabled: false,
+  readOnly: false,
+  dataLayoutId: 'amountInput',
 };
 
-export const LongDecimals = Template.bind({});
-LongDecimals.args = {
+export const WithoutLabelAndUnit = Template.bind({});
+WithoutLabelAndUnit.args = {
+  value: 123,
+  disabled: false,
+  readOnly: false,
+  dataLayoutId: 'amountInput',
+};
+
+export const LargeDecimal = Template.bind({});
+LargeDecimal.args = {
   label: 'Amount',
   unit: 'RBTC',
   value: 0.12345678,
-  numDecimals: 3,
+  decimalPrecision: 3,
+  dataLayoutId: 'amountInput',
 };

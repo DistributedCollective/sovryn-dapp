@@ -1,5 +1,5 @@
 ---
-"@sovryn/ui": patch
+'@sovryn/ui': patch
 ---
 
 feat: TransactionId component

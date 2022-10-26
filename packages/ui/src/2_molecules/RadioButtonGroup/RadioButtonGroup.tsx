@@ -11,8 +11,9 @@ export const RadioButtonGroup: FC<RadioButtonGroupProps> = ({
   label,
   options,
   onChange,
+  dataLayoutId,
 }) => (
-  <fieldset className={styles.radioButtonGroup}>
+  <fieldset className={styles.radioButtonGroup} data-layout-id={dataLayoutId}>
     <legend>{label}</legend>
     {options.map(
       ({ label, name, disabled, labelInfo }: RadioButtonOption, index) => {

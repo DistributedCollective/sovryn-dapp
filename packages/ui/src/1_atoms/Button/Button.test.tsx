@@ -4,6 +4,7 @@ import userEvent from '@testing-library/user-event';
 import React from 'react';
 
 import { Button } from './Button';
+import { ButtonSize, ButtonStyle } from './Button.types';
 
 // import { ButtonSize, ButtonStyle } from './Button.types';
 describe('Button', () => {
@@ -44,15 +45,19 @@ describe('Button', () => {
     expect(document.activeElement).toEqual(ref.current);
   });
 
-  // uncomment these test cases once Paragraph component will be merged (https://github.com/DistributedCollective/sovryn-dapp/pull/13)
-  // it('should render a button size with a className equal to the large', () => {
-  //   render(<Button text="Button size" size={ButtonSize.large} />);
-  //   const classes = screen.getByText('Button size').getAttribute('class');
-  //   expect(button).toContain('large');
-  // });
-  // it('should render a button style with a className equal to the secondary', () => {
-  //   render(<Button text="Button style" style={ButtonStyle.secondary} />);
-  //   const classes = screen.getByText('Button style').getAttribute('class');
-  //   expect(button).toContain('secondary');
-  // });
+  it('should render a button size with a className equal to the large', () => {
+    const { getByText } = render(
+      <Button text="Button size" size={ButtonSize.large} />,
+    );
+    const classes = getByText('Button size').getAttribute('class');
+    expect(classes).toContain('large');
+  });
+
+  it('should render a button style with a className equal to the secondary', () => {
+    const { getByText } = render(
+      <Button text="Button style" style={ButtonStyle.secondary} />,
+    );
+    const classes = getByText('Button style').getAttribute('class');
+    expect(classes).toContain('secondary');
+  });
 });

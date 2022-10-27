@@ -9,10 +9,12 @@ const options = [
   {
     label: 'Custom amount',
     name: 'settings',
+    value: 'custom_amount',
   },
   {
     label: 'Unlimited amount',
     name: 'settings',
+    value: 'unlimited_amount',
   },
 ];
 

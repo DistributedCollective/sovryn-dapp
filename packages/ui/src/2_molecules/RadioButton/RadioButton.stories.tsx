@@ -10,9 +10,7 @@ export default {
 };
 
 const Template: Story<ComponentProps<typeof RadioButton>> = args => (
-  <>
-    <RadioButton {...args} />
-  </>
+  <RadioButton {...args} />
 );
 
 export const Basic = Template.bind({});
@@ -22,4 +20,6 @@ Basic.args = {
   className: '',
   dataLayoutId: '',
   labelInfo: '',
+  disabled: false,
+  name: '',
 };

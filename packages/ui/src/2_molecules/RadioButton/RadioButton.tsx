@@ -24,7 +24,7 @@ export const RadioButton = forwardRef<HTMLInputElement, IRadioButtonProps>(
         />
         {label}
       </label>
-      {labelInfo}
+      <div>{labelInfo}</div>
     </div>
   ),
 );

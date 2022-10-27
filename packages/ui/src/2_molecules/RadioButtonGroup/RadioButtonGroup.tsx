@@ -12,21 +12,25 @@ export const RadioButtonGroup: FC<RadioButtonGroupProps> = ({
   options,
   onChange,
   dataLayoutId,
+  defaultChecked = 0,
 }) => (
   <fieldset className={styles.radioButtonGroup} data-layout-id={dataLayoutId}>
     <legend>{label}</legend>
     {options.map(
-      ({ label, name, disabled, labelInfo }: RadioButtonOption, index) => {
+      (
+        { label, value, name, disabled, labelInfo }: RadioButtonOption,
+        index,
+      ) => {
         const id = `radio-option-${label}`;
         return (
           <RadioButton
             id={id}
             key={id}
             label={label}
-            value={label}
+            value={value}
             name={name}
             disabled={disabled}
-            defaultChecked={index === 0}
+            defaultChecked={index === defaultChecked}
             onChange={onChange}
             labelInfo={labelInfo}
           />

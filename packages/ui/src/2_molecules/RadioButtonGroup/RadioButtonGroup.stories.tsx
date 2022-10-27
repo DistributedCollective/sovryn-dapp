@@ -29,10 +29,12 @@ const options = [
   {
     label: 'Custom amount',
     name: 'settings',
+    value: 'custom_amount',
   },
   {
     label: 'Unlimited amount',
     name: 'settings',
+    value: 'unlimited_amount',
   },
   {
     label: 'Amount with icon',
@@ -47,6 +49,7 @@ const options = [
       />
     ),
     name: 'settings',
+    value: 'amount_with_icon',
   },
   {
     label: 'Disabled amount',
@@ -62,6 +65,7 @@ const options = [
         }
       />
     ),
+    value: 'disabled_amount',
   },
 ];
 

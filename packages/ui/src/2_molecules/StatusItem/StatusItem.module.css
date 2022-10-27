@@ -1,0 +1,12 @@
+.statusItem {
+  @apply flex items-center;
+  & > span {
+    &:first-child {
+      @apply mr-2;
+    }
+  }
+}
+
+.error {
+  @apply text-error;
+}

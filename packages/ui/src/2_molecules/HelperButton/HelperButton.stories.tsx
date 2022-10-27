@@ -2,6 +2,7 @@ import { Story } from '@storybook/react';
 
 import React, { ComponentProps } from 'react';
 
+import { Link } from '../../1_atoms';
 import { HelperButton } from './HelperButton';
 
 export default {
@@ -21,16 +22,13 @@ Basic.args = {
     <div>
       <div>
         A web3 wallet is a home for your digital assets. You can use it to send,
-        receive, and store digital assets.“
+        receive, and store digital assets.
       </div>
       <div>
-        <a
+        <Link
+          text="Read more"
           href="https://wiki.sovryn.app/en/getting-started/wallet-setup"
-          target="_blank"
-          rel="noreferrer"
-        >
-          Read more
-        </a>
+        />
       </div>
     </div>
   ),

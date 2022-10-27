@@ -1,6 +1,6 @@
 import { Story } from '@storybook/react';
 
-import React, { ComponentProps } from 'react';
+import React, { ComponentProps, useState } from 'react';
 
 import { AmountInput, AmountInputVariant } from './AmountInput';
 
@@ -9,11 +9,15 @@ export default {
   component: AmountInput,
 };
 
-const Template: Story<ComponentProps<typeof AmountInput>> = args => (
-  <div className="w-64">
-    <AmountInput {...args} />
-  </div>
-);
+const Template: Story<ComponentProps<typeof AmountInput>> = args => {
+  const [value, setValue] = useState(args.value || '0');
+
+  return (
+    <div className="w-64">
+      <AmountInput {...args} onChangeText={setValue} value={value} />
+    </div>
+  );
+};
 
 export const Basic = Template.bind({});
 Basic.args = {

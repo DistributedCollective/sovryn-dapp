@@ -2,7 +2,6 @@ import React, {
   ReactNode,
   useCallback,
   useImperativeHandle,
-  useMemo,
   useRef,
   useState,
 } from 'react';
@@ -21,7 +20,10 @@ export enum AmountInputVariant {
   small = 'small',
 }
 
-type AmountInputProps = Omit<InputProps, 'classNameInput' | 'type' | 'size'> & {
+type AmountInputProps = Omit<
+  InputProps,
+  'classNameInput' | 'type' | 'size' | 'value'
+> & {
   label?: ReactNode;
   variant?: AmountInputVariant;
   tooltip?: ReactNode;
@@ -29,6 +31,7 @@ type AmountInputProps = Omit<InputProps, 'classNameInput' | 'type' | 'size'> & {
   decimalPrecision?: number;
   unit?: ReactNode;
   maxAmount?: number;
+  value?: string | number;
 };
 
 export const AmountInput = React.forwardRef<HTMLInputElement, AmountInputProps>(
@@ -45,6 +48,9 @@ export const AmountInput = React.forwardRef<HTMLInputElement, AmountInputProps>(
       invalid,
       dataLayoutId,
       value,
+      onChangeText,
+      onChange,
+      onBlur,
       ...rest
     },
     ref,
@@ -55,33 +61,62 @@ export const AmountInput = React.forwardRef<HTMLInputElement, AmountInputProps>(
 
     useImperativeHandle(ref, () => inputRef.current);
 
+    const formatValue = useCallback(
+      (value: string | number) => {
+        if (!value) {
+          return 0;
+        }
+        if (!decimalPrecision) {
+          return value;
+        }
+
+        const decimalLength = value.toString().split(/[,.]/)[1]?.length || 0;
+        if (decimalLength <= decimalPrecision) {
+          return value;
+        }
+
+        const unformattedValue =
+          typeof value === 'string' ? Number(value) : value;
+
+        return unformattedValue
+          .toLocaleString(navigator.language, {
+            minimumFractionDigits: decimalPrecision,
+            maximumFractionDigits: decimalPrecision,
+          })
+          .replace(',', '.');
+      },
+      [decimalPrecision],
+    );
+
+    const onChangeTextHandler = useCallback(
+      (value: string) => {
+        onChangeText?.(String(formatValue(value)));
+      },
+      [formatValue, onChangeText],
+    );
+
     const [focused, setFocused] = useState(false);
     const onFocus = useCallback(() => setFocused(true), []);
-    const onBlur = useCallback(() => setFocused(false), []);
 
-    const formattedValue = useMemo(() => {
-      if (!value) {
-        return 0;
-      }
-      if (!decimalPrecision) {
-        return value;
-      }
+    const onBlurHandler = useCallback(
+      (
+        event: React.FocusEvent<HTMLInputElement> &
+          React.ChangeEvent<HTMLInputElement>,
+      ) => {
+        onBlur?.(event);
+        setFocused(false);
+        onChangeTextHandler(event.target.value);
+      },
+      [onBlur, onChangeTextHandler],
+    );
 
-      const decimalLength = value.toString().split(/[,.]/)[1]?.length || 0;
-      if (decimalLength <= decimalPrecision) {
-        return value;
-      }
-
-      const unformattedValue =
-        typeof value === 'string' ? Number(value) : value;
-
-      return unformattedValue
-        .toLocaleString(navigator.language, {
-          minimumFractionDigits: decimalPrecision,
-          maximumFractionDigits: decimalPrecision,
-        })
-        .replace(',', '.');
-    }, [decimalPrecision, value]);
+    const onChangeHandler = useCallback(
+      (event: React.FormEvent<HTMLInputElement>) => {
+        event.preventDefault();
+        event.stopPropagation();
+      },
+      [],
+    );
 
     return (
       <div className={classNames(styles.wrapper, className)}>
@@ -106,13 +141,15 @@ export const AmountInput = React.forwardRef<HTMLInputElement, AmountInputProps>(
             ref={inputRef}
             lang={navigator.language}
             className={classNames(styles.input, {
-              [styles.disabled]: rest.disabled,
+              [styles.disabledInput]: rest.disabled,
             })}
             type="number"
             dataLayoutId={dataLayoutId}
             onFocus={onFocus}
-            onBlur={onBlur}
-            value={formattedValue}
+            onBlur={onBlurHandler}
+            value={formatValue(value || 0)}
+            onChange={onChangeHandler}
+            onChangeText={onChangeTextHandler}
             {...rest}
           />
 

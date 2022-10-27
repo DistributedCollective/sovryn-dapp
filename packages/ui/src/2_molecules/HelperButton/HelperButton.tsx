@@ -6,8 +6,6 @@ import { Icon } from '../../1_atoms';
 import { Tooltip } from '../Tooltip';
 import styles from './HelperButton.module.css';
 
-const iconSize = 8.33;
-
 type HelperButtonProps = {
   content: ReactNode;
   className?: string;
@@ -25,7 +23,7 @@ export const HelperButton: React.FC<HelperButtonProps> = ({
     dataLayoutId={dataAttribute}
   >
     <div>
-      <Icon size={iconSize} icon="info" />
+      <Icon size={12} icon="info" />
     </div>
   </Tooltip>
 );

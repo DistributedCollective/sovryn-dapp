@@ -1,5 +1,5 @@
 .formGroup {
-  @apply text-xs font-medium;
+  @apply font-medium;
 
   .formLabel {
     @apply block text-gray-10 mb-2;

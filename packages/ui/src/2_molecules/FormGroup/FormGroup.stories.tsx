@@ -21,8 +21,8 @@ const Template: Story<ComponentProps<typeof FormGroup>> = args => (
   <FormGroup {...args} />
 );
 
-export const _FormGroup = Template.bind({});
-_FormGroup.args = {
+export const Basic = Template.bind({});
+Basic.args = {
   className: '',
   label: 'label',
   helper: <Icon icon={IconNames.INFO} size={10} />,
@@ -30,8 +30,8 @@ _FormGroup.args = {
   children: <Input placeholder="Text" />,
 };
 
-export const _FormGroupInvalid = Template.bind({});
-_FormGroupInvalid.args = {
+export const Invalid = Template.bind({});
+Invalid.args = {
   className: '',
   label: 'Label',
   helper: <Icon icon={IconNames.INFO} size={10} />,
@@ -39,8 +39,8 @@ _FormGroupInvalid.args = {
   errorLabel: 'This field is not valid',
 };
 
-export const _FormGroupButton = Template.bind({});
-_FormGroupButton.args = {
+export const WithButton = Template.bind({});
+WithButton.args = {
   className: '',
   label: 'Label',
   helper: <Icon icon={IconNames.INFO} size={10} />,

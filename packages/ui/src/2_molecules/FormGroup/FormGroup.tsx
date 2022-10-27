@@ -11,7 +11,6 @@ type FormGroupProps = {
   helper?: ReactNode;
   subtext?: string;
   dataLayoutId?: string;
-  //You need to pass invalid={!!errorLabel} to the children if you want the invalid style applied there
   errorLabel?: string;
 };
 

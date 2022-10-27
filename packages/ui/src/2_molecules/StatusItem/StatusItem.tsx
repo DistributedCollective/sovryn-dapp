@@ -4,11 +4,11 @@ import classNames from 'classnames';
 
 import { Icon, Heading, Badge, BadgeSize, HeadingType } from '../../1_atoms';
 import styles from './StatusItem.module.css';
-import { StatusEnum } from './StatusItem.types';
+import { StatusType } from './StatusItem.types';
 import { getStatusClass, getStatusIcon } from './StatusItem.utils';
 
 type StatusItemProps = {
-  status: StatusEnum;
+  status: StatusType;
   content: ReactNode;
   label?: ReactNode;
   className?: string;
@@ -16,7 +16,7 @@ type StatusItemProps = {
 };
 
 export const StatusItem: FC<StatusItemProps> = ({
-  status = StatusEnum.idle,
+  status = StatusType.idle,
   content,
   label,
   className,
@@ -29,7 +29,7 @@ export const StatusItem: FC<StatusItemProps> = ({
     <Badge
       size={BadgeSize.md}
       content={
-        status === StatusEnum.idle ? (
+        status === StatusType.idle ? (
           content
         ) : (
           <Icon
@@ -43,7 +43,7 @@ export const StatusItem: FC<StatusItemProps> = ({
     {label && (
       <Heading
         className={classNames({
-          [styles.error]: status === StatusEnum.error,
+          [styles.error]: status === StatusType.error,
         })}
         type={HeadingType.h2}
         children={label}

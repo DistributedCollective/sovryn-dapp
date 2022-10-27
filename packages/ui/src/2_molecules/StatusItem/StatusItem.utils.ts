@@ -1,23 +1,25 @@
-import { StatusEnum } from './StatusItem.types';
+import { IconNames } from '../../1_atoms';
+import styles from './StatusItem.module.css';
+import { StatusType } from './StatusItem.types';
 
-export const getStatusIcon = (status: StatusEnum) => {
+export const getStatusIcon = (status: StatusType) => {
   switch (status) {
-    case StatusEnum.success:
-      return 'success-icon';
-    case StatusEnum.error:
-      return 'failed-tx';
-    case StatusEnum.pending:
-      return 'pending';
+    case StatusType.success:
+      return IconNames.SUCCESS_ICON;
+    case StatusType.error:
+      return IconNames.FAILED_TX;
+    case StatusType.pending:
+      return IconNames.PENDING;
   }
 };
 
-export const getStatusClass = (status: StatusEnum) => {
+export const getStatusClass = (status: StatusType) => {
   switch (status) {
-    case StatusEnum.success:
-      return 'text-success';
-    case StatusEnum.error:
-      return 'text-error';
-    case StatusEnum.pending:
-      return 'text-sov-white';
+    case StatusType.success:
+      return styles.success;
+    case StatusType.error:
+      return styles.error;
+    case StatusType.pending:
+      return styles.pending;
   }
 };

@@ -3,7 +3,7 @@ import { ComponentStory, ComponentMeta } from '@storybook/react';
 import React from 'react';
 
 import { StatusItem } from './StatusItem';
-import { StatusEnum } from './StatusItem.types';
+import { StatusType } from './StatusItem.types';
 
 export default {
   title: 'Molecule/StatusItem',
@@ -16,7 +16,7 @@ const Template: ComponentStory<typeof StatusItem> = args => (
 
 export const Default = Template.bind({});
 Default.args = {
-  status: StatusEnum.idle,
+  status: StatusType.idle,
   label: 'Lorem Ipsum',
   content: '1',
   dataLayoutId: '',
@@ -25,10 +25,10 @@ Default.args = {
 
 const AllTemplate: ComponentStory<typeof StatusItem> = args => (
   <>
-    <StatusItem {...args} status={StatusEnum.idle} content="1" />
-    <StatusItem {...args} status={StatusEnum.success} />
-    <StatusItem {...args} status={StatusEnum.error} />
-    <StatusItem {...args} status={StatusEnum.pending} />
+    <StatusItem {...args} status={StatusType.idle} content="1" />
+    <StatusItem {...args} status={StatusType.success} />
+    <StatusItem {...args} status={StatusType.error} />
+    <StatusItem {...args} status={StatusType.pending} />
   </>
 );
 

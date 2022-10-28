@@ -8,6 +8,7 @@ import React, {
 
 import classNames from 'classnames';
 
+import { DATA_ATTRIBUTE } from '../../types';
 import styles from './Button.module.css';
 import { ButtonType, ButtonSize, ButtonStyle } from './Button.types';
 
@@ -73,7 +74,7 @@ export const Button = forwardRef<
           target={hrefExternal ? '_blank' : undefined}
           rel="noopener noreferrer"
           onClick={onClickHandler}
-          data-layout-id={dataLayoutId}
+          {...{ [DATA_ATTRIBUTE]: dataLayoutId }}
         >
           {text}
         </a>
@@ -86,7 +87,7 @@ export const Button = forwardRef<
           disabled={disabled}
           className={classNamesComplete}
           onClick={onClickHandler}
-          data-layout-id={dataLayoutId}
+          {...{ [DATA_ATTRIBUTE]: dataLayoutId }}
         >
           {text}
         </button>

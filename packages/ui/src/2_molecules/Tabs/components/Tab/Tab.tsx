@@ -3,6 +3,7 @@ import React from 'react';
 import classNames from 'classnames';
 
 import { TabSize, TabType } from '../../Tabs.types';
+import { DATA_ATTRIBUTE } from '../../types';
 import styles from './Tab.module.css';
 
 type TabProps = {
@@ -46,7 +47,7 @@ export const Tab: React.FC<TabProps> = ({
       styles[type],
     )}
     onClick={onClick}
-    data-layout-id={dataLayoutId}
+    {...{ [DATA_ATTRIBUTE]: dataLayoutId }}
     disabled={disabled}
   >
     {content}

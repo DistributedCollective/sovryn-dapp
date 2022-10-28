@@ -3,6 +3,7 @@ import userEvent from '@testing-library/user-event';
 
 import React from 'react';
 
+import { DATA_ATTRIBUTE } from '../../types';
 import { Accordion } from './Accordion';
 
 describe('Accordion', () => {
@@ -38,7 +39,7 @@ describe('Accordion', () => {
           dataLayoutId="accordion-simple"
           open
         >
-          <div data-layout-id="content-to-show">Content</div>
+          <div {...{ [DATA_ATTRIBUTE]: 'content-to-show' }}>Content</div>
         </Accordion>,
       );
     };
@@ -48,7 +49,7 @@ describe('Accordion', () => {
         dataLayoutId="accordion-simple"
         onClick={handleClick}
       >
-        <div data-layout-id="original-content">Content</div>
+        <div>Content</div>
       </Accordion>,
     );
     userEvent.click(getByTestId('accordion-simple'));

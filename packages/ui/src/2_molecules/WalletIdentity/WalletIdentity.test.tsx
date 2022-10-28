@@ -20,7 +20,7 @@ describe('WalletIdentity', () => {
 
   test('renders WalletIdentity', async () => {
     const testAddress = '0x32Be343B94f860124dC4fEe278FDCBD38C102D88';
-    const { getByText } = render(
+    const { getByTestId } = render(
       <WalletIdentity
         address={testAddress}
         onDisconnect={() => {}}
@@ -29,13 +29,9 @@ describe('WalletIdentity', () => {
         dataLayoutId="walletIdentityTest"
       />,
     );
-    const addressBadge = getByText(prettyTx(testAddress, 4, 4));
+    const addressBadge = getByTestId('walletIdentityTest');
 
     expect(addressBadge).toBeDefined();
-    expect(addressBadge).toHaveAttribute(
-      'data-layout-id',
-      'walletIdentityTest',
-    );
   });
 
   test('copy address button', async () => {

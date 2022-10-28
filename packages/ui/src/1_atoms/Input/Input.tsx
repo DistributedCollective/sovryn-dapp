@@ -2,6 +2,7 @@ import React, { useImperativeHandle, useRef } from 'react';
 
 import classNames from 'classnames';
 
+import { DATA_ATTRIBUTE } from '../../types';
 import { InputBase, InputBaseProps } from '../InputBase/InputBase';
 import styles from './Input.module.css';
 import { InputSize } from './Input.types';
@@ -44,7 +45,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
             })}
             type={type}
             {...rest}
-            dataLayoutId={dataLayoutId}
+            {...{ [DATA_ATTRIBUTE]: dataLayoutId }}
           />
         </div>
       </div>

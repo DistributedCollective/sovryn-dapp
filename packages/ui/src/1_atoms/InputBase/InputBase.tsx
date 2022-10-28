@@ -10,6 +10,7 @@ import React, {
 
 import debounceCallback from 'lodash.debounce';
 
+import { DATA_ATTRIBUTE } from '../../types';
 import { noop } from '../../utils';
 
 export type InputBaseProps = Omit<HTMLProps<HTMLInputElement>, 'ref'> & {
@@ -71,7 +72,7 @@ export const InputBase = React.forwardRef<HTMLInputElement, InputBaseProps>(
         ref={ref}
         value={renderedValue}
         onChange={shouldAllowChanges ? handleChange : noop}
-        data-layout-id={dataLayoutId}
+        {...{ [DATA_ATTRIBUTE]: dataLayoutId }}
       />
     );
   },

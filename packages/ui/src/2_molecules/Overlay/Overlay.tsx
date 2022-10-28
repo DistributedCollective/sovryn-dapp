@@ -11,6 +11,7 @@ import React, {
 import classNames from 'classnames';
 
 import { Portal } from '../../1_atoms/Portal/Portal';
+import { DATA_ATTRIBUTE } from '../../types';
 import { Align, AlignVertical } from '../../types/tailwind';
 import styles from './Overlay.module.css';
 import {
@@ -76,7 +77,7 @@ export const Overlay: React.FC<OverlayProps> = ({
           )}
           style={!fixed && zIndex ? { zIndex } : undefined}
           onClick={onBlurHandler}
-          data-layout-id={dataLayoutId}
+          {...{ [DATA_ATTRIBUTE]: dataLayoutId }}
         >
           {children}
         </div>

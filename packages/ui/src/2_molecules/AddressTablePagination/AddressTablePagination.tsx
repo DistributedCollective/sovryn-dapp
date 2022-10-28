@@ -3,6 +3,7 @@ import React, { FC, useCallback, useMemo, useState } from 'react';
 import classnames from 'classnames';
 
 import { Icon } from '../../1_atoms';
+import { DATA_ATTRIBUTE } from '../../types';
 import styles from './AddressTablePagination.module.css';
 
 type AddressTablePaginationProps = {
@@ -36,7 +37,7 @@ export const AddressTablePagination: FC<AddressTablePaginationProps> = ({
 
   return (
     <div
-      data-layout-id={dataLayoutId}
+      {...{ [DATA_ATTRIBUTE]: dataLayoutId }}
       className={classnames(styles.AddressTablePagination, className)}
     >
       <button type="button" disabled={isDisabled} onClick={handleClickPrevious}>

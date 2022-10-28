@@ -3,7 +3,7 @@ import React, { FC, ReactNode, useMemo } from 'react';
 import classNames from 'classnames';
 
 import { Badge } from '../../1_atoms/Badge/Badge';
-import { DATA_ATTRIBUTE } from '../../types';
+import { DATA_ATTRIBUTE } from '../../utils/constants';
 import styles from './NavMenuItem.module.css';
 
 const MAX_COUNT_DEFAULT = 99;

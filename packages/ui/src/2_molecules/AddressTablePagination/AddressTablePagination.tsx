@@ -3,7 +3,7 @@ import React, { FC, useCallback, useMemo, useState } from 'react';
 import classnames from 'classnames';
 
 import { Icon } from '../../1_atoms';
-import { DATA_ATTRIBUTE } from '../../types';
+import { DATA_ATTRIBUTE } from '../../utils/constants';
 import styles from './AddressTablePagination.module.css';
 
 type AddressTablePaginationProps = {

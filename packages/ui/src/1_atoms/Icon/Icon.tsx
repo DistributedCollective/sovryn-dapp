@@ -5,7 +5,7 @@ import React, { ReactNode, useMemo } from 'react';
 
 import classNames from 'classnames';
 
-import { DATA_ATTRIBUTE } from '../../types';
+import { DATA_ATTRIBUTE } from '../../utils/constants';
 import styles from './Icon.module.css';
 import { IconType, ViewBoxSize, STANDARD, INLINE, SM } from './Icon.types';
 import { IconSvgPaths } from './iconSvgPaths';

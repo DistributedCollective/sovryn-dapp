@@ -1,6 +1,6 @@
 import React, { FC, ReactNode } from 'react';
 
-import { DATA_ATTRIBUTE } from '../../types';
+import { DATA_ATTRIBUTE } from '../../utils/constants';
 import styles from './Header.module.css';
 
 type HeaderProps = {

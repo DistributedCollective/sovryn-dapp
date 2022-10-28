@@ -3,7 +3,7 @@ import { FC, PropsWithChildren } from 'react';
 import classNames from 'classnames';
 
 import { Icon } from '../../../../1_atoms';
-import { DATA_ATTRIBUTE } from '../../../../types';
+import { DATA_ATTRIBUTE } from '../../../../utils/constants';
 import styles from './DialogHeader.module.css';
 
 type DialogHeaderProps = {

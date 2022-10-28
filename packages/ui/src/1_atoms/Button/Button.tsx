@@ -8,7 +8,7 @@ import React, {
 
 import classNames from 'classnames';
 
-import { DATA_ATTRIBUTE } from '../../types';
+import { DATA_ATTRIBUTE } from '../../utils/constants';
 import styles from './Button.module.css';
 import { ButtonType, ButtonSize, ButtonStyle } from './Button.types';
 

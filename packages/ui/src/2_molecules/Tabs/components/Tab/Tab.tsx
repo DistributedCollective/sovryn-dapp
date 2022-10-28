@@ -2,7 +2,7 @@ import React from 'react';
 
 import classNames from 'classnames';
 
-import { DATA_ATTRIBUTE } from '../../../../types';
+import { DATA_ATTRIBUTE } from '../../../../utils/constants';
 import { TabSize, TabType } from '../../Tabs.types';
 import styles from './Tab.module.css';
 

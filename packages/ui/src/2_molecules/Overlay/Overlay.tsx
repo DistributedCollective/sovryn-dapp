@@ -11,8 +11,8 @@ import React, {
 import classNames from 'classnames';
 
 import { Portal } from '../../1_atoms/Portal/Portal';
-import { DATA_ATTRIBUTE } from '../../types';
 import { Align, AlignVertical } from '../../types/tailwind';
+import { DATA_ATTRIBUTE } from '../../utils/constants';
 import styles from './Overlay.module.css';
 import {
   OverlayBackground,

@@ -10,8 +10,8 @@ import React, {
 
 import debounceCallback from 'lodash.debounce';
 
-import { DATA_ATTRIBUTE } from '../../types';
 import { noop } from '../../utils';
+import { DATA_ATTRIBUTE } from '../../utils/constants';
 
 export type InputBaseProps = Omit<HTMLProps<HTMLInputElement>, 'ref'> & {
   debounce?: number;

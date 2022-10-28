@@ -2,7 +2,7 @@ import React, { ReactNode, FC, useCallback } from 'react';
 
 import classNames from 'classnames';
 
-import { DATA_ATTRIBUTE } from '../../types';
+import { DATA_ATTRIBUTE } from '../../utils/constants';
 import { Heading } from '../Heading/Heading';
 import { HeadingType } from '../Heading/Heading.types';
 import { Icon } from '../Icon/Icon';

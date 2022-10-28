@@ -2,7 +2,7 @@ import React, { FC, PropsWithChildren, ReactNode } from 'react';
 
 import classNames from 'classnames';
 
-import { DATA_ATTRIBUTE } from '../../types';
+import { DATA_ATTRIBUTE } from '../../utils/constants';
 import styles from './Badge.module.css';
 import { BadgeSize, BadgeStyle } from './Badge.types';
 

@@ -2,8 +2,8 @@ import React, { FC } from 'react';
 
 import blockies from 'ethereum-blockies';
 
-import { DATA_ATTRIBUTE } from '../../../../types';
 import { prettyTx } from '../../../../utils';
+import { DATA_ATTRIBUTE } from '../../../../utils/constants';
 import styles from './AddressBadge.module.css';
 
 export type AddressBadgeProps = {

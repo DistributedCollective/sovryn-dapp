@@ -3,7 +3,7 @@ import React, { FC, ReactNode } from 'react';
 import classNames from 'classnames';
 
 import { Icon, Heading, Badge, BadgeSize, HeadingType } from '../../1_atoms';
-import { DATA_ATTRIBUTE } from '../../types';
+import { DATA_ATTRIBUTE } from '../../utils/constants';
 import styles from './StatusItem.module.css';
 import { StatusType } from './StatusItem.types';
 import { getStatusClass, getStatusIcon } from './StatusItem.utils';

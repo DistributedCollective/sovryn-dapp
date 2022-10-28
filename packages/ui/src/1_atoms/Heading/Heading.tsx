@@ -2,7 +2,7 @@ import React, { FC, ReactNode } from 'react';
 
 import classNames from 'classnames';
 
-import { DATA_ATTRIBUTE } from '../../types';
+import { DATA_ATTRIBUTE } from '../../utils/constants';
 import styles from './Heading.module.css';
 import { HeadingType } from './Heading.types';
 

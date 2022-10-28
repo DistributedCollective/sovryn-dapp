@@ -3,7 +3,7 @@ import React, { ReactNode, forwardRef, LegacyRef } from 'react';
 import classNames from 'classnames';
 
 import { Icon } from '../../1_atoms/Icon/Icon';
-import { DATA_ATTRIBUTE } from '../../types';
+import { DATA_ATTRIBUTE } from '../../utils/constants';
 import styles from './WalletContainer.module.css';
 
 type WalletContainerProps = {

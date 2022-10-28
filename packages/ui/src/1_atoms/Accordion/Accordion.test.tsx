@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event';
 
 import React from 'react';
 
-import { DATA_ATTRIBUTE } from '../../types';
+import { DATA_ATTRIBUTE } from '../../utils/constants';
 import { Accordion } from './Accordion';
 
 describe('Accordion', () => {

@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 
 import classNames from 'classnames';
 
-import { DATA_ATTRIBUTE } from '../../../types';
+import { DATA_ATTRIBUTE } from '../../../utils/constants';
 import { VerticalTabsItemButtonProps } from '../VerticalTabs.types';
 import styles from './VerticalTabItem.module.css';
 

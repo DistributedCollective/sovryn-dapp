@@ -2,7 +2,7 @@ import React, { useImperativeHandle, useRef } from 'react';
 
 import classNames from 'classnames';
 
-import { DATA_ATTRIBUTE } from '../../types';
+import { DATA_ATTRIBUTE } from '../../utils/constants';
 import { InputBase, InputBaseProps } from '../InputBase/InputBase';
 import styles from './Input.module.css';
 import { InputSize } from './Input.types';

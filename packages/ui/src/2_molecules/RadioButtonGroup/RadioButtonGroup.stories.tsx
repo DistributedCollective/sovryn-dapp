@@ -1,6 +1,6 @@
 import { Story } from '@storybook/react';
 
-import React, { ComponentProps, useCallback } from 'react';
+import React, { ComponentProps, useCallback, useState } from 'react';
 
 import { Icon } from '../../1_atoms';
 import { Input } from '../../1_atoms/Input';
@@ -12,29 +12,16 @@ export default {
   component: RadioButtonGroup,
 };
 
-const Template: Story<ComponentProps<typeof RadioButtonGroup>> = args => {
-  const onChange = useCallback(
-    e => alert(`Selected value is ${e.target.value}`),
-    [],
-  );
-  return (
-    <>
-      <RadioButtonGroup {...args} onChange={onChange} />
-      <Input className="ml-8" />
-    </>
-  );
-};
-
 const options = [
-  {
-    label: 'Custom amount',
-    name: 'settings',
-    value: 'custom_amount',
-  },
   {
     label: 'Unlimited amount',
     name: 'settings',
     value: 'unlimited_amount',
+  },
+  {
+    label: 'Custom amount',
+    name: 'settings',
+    value: 'custom_amount',
   },
   {
     label: 'Amount with icon',
@@ -68,6 +55,20 @@ const options = [
     value: 'disabled_amount',
   },
 ];
+
+const Template: Story<ComponentProps<typeof RadioButtonGroup>> = args => {
+  const [selectedItem, setSelectedItem] = useState(options[0].value);
+  const onChange = useCallback(e => {
+    console.log(`Selected value is ${e.target.value}`);
+    setSelectedItem(e.target.value);
+  }, []);
+  return (
+    <>
+      <RadioButtonGroup {...args} onChange={onChange} />
+      {selectedItem === 'custom_amount' && <Input className="ml-8" />}
+    </>
+  );
+};
 
 export const Basic = Template.bind({});
 Basic.args = {

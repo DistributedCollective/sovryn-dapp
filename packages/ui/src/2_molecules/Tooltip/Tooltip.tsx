@@ -15,8 +15,9 @@ import classNames from 'classnames';
 
 import { Portal } from '../../1_atoms/Portal/Portal';
 import { useOnClickOutside } from '../../hooks/useOnClickOutside';
+import { Nullable } from '../../types';
 import { noop } from '../../utils';
-import { DATA_ATTRIBUTE, Nullable } from '../../utils/constants';
+import { DATA_ATTRIBUTE } from '../../utils/constants';
 import styles from './Tooltip.module.css';
 import {
   TooltipElements,

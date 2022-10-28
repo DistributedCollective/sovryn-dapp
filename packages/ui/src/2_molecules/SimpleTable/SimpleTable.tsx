@@ -2,7 +2,7 @@ import React, { FC, PropsWithChildren } from 'react';
 
 import classNames from 'classnames';
 
-import { DATA_ATTRIBUTE } from '../../utils/constants';
+import { applyDataAttr } from '../../utils';
 import styles from './SimpleTable.module.css';
 
 type SimpleTableProps = {
@@ -25,7 +25,7 @@ export const SimpleTable: FC<PropsWithChildren<SimpleTableProps>> = ({
       },
       className,
     )}
-    {...{ [DATA_ATTRIBUTE]: dataLayoutId }}
+    {...applyDataAttr(dataLayoutId)}
   >
     {children}
   </div>

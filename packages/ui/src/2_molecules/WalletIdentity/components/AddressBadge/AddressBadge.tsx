@@ -3,7 +3,7 @@ import React, { FC } from 'react';
 import blockies from 'ethereum-blockies';
 
 import { prettyTx } from '../../../../utils';
-import { DATA_ATTRIBUTE } from '../../../../utils/constants';
+import { applyDataAttr } from '../../../../utils';
 import styles from './AddressBadge.module.css';
 
 export type AddressBadgeProps = {
@@ -42,7 +42,7 @@ export const AddressBadge: FC<AddressBadgeProps> = ({
           alt="wallet address"
         />
       </span>
-      <span {...{ [DATA_ATTRIBUTE]: dataLayoutId }}>
+      <span {...applyDataAttr(dataLayoutId)}>
         {prettyTx(address || '', startLength, endLength)}
       </span>
     </span>

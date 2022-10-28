@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event';
 
 import React from 'react';
 
-import { DATA_ATTRIBUTE } from '../../utils/constants';
+import { applyDataAttr } from '../../utils';
 import { Accordion } from './Accordion';
 
 describe('Accordion', () => {
@@ -39,7 +39,7 @@ describe('Accordion', () => {
           dataLayoutId="accordion-simple"
           open
         >
-          <div {...{ [DATA_ATTRIBUTE]: 'content-to-show' }}>Content</div>
+          <div {...applyDataAttr('content-to-show')}>Content</div>
         </Accordion>,
       );
     };

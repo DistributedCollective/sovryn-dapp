@@ -9,7 +9,7 @@ import classNames from 'classnames';
 
 import { Icon } from '../../../../1_atoms';
 import { IconType } from '../../../../1_atoms/Icon/Icon.types';
-import { DATA_ATTRIBUTE } from '../../../../utils/constants';
+import { applyDataAttr } from '../../../../utils';
 import styles from './MenuItem.module.css';
 
 type MenuItemProps = {
@@ -61,7 +61,7 @@ export const MenuItem: React.FC<MenuItemProps> = ({
           target={hrefExternal ? '_blank' : undefined}
           rel="noopener noreferrer"
           onClick={onClickHandler}
-          {...{ [DATA_ATTRIBUTE]: dataLayoutId }}
+          {...applyDataAttr(dataLayoutId)}
         >
           <div className={styles.hostBlock}>
             <div className={styles.hostFlex}>
@@ -85,7 +85,7 @@ export const MenuItem: React.FC<MenuItemProps> = ({
             [styles.active]: isActive,
           })}
           onClick={onClickHandler}
-          {...{ [DATA_ATTRIBUTE]: dataLayoutId }}
+          {...applyDataAttr(dataLayoutId)}
         >
           <div className={styles.hostBlock}>
             <div className={styles.hostFlex}>

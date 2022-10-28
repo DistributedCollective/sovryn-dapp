@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 
 import classNames from 'classnames';
 
-import { DATA_ATTRIBUTE } from '../../../utils/constants';
+import { applyDataAttr } from '../../../utils';
 import { VerticalTabsItemButtonProps } from '../VerticalTabs.types';
 import styles from './VerticalTabItem.module.css';
 
@@ -18,7 +18,7 @@ export const VerticalTabItem: FC<VerticalTabsItemButtonProps> = ({
     <button
       className={classNames(styles.button, { [styles.active]: active })}
       disabled={disabled}
-      {...{ [DATA_ATTRIBUTE]: dataLayoutId }}
+      {...applyDataAttr(dataLayoutId)}
       data-active={active}
       onClick={onClick}
     >

@@ -5,7 +5,7 @@ import React, { ReactNode, useMemo } from 'react';
 
 import classNames from 'classnames';
 
-import { DATA_ATTRIBUTE } from '../../utils/constants';
+import { applyDataAttr } from '../../utils';
 import styles from './Icon.module.css';
 import { IconType, ViewBoxSize, STANDARD, INLINE, SM } from './Icon.types';
 import { IconSvgPaths } from './iconSvgPaths';
@@ -70,7 +70,7 @@ export const Icon: React.FC<IconProps> = ({
         <div
           className={classNames(className, styles.customIcon, inlineBlock)}
           style={{ width: iconSize, height: iconSize }}
-          {...{ [DATA_ATTRIBUTE]: dataLayoutId }}
+          {...applyDataAttr(dataLayoutId)}
         >
           {icon as ReactNode}
         </div>
@@ -89,7 +89,7 @@ export const Icon: React.FC<IconProps> = ({
         fill="currentColor"
         className={classNames(className, inlineBlock)}
         data-icon={icon}
-        {...{ [DATA_ATTRIBUTE]: dataLayoutId }}
+        {...applyDataAttr(dataLayoutId)}
       >
         {paths}
       </svg>
@@ -103,7 +103,7 @@ export const Icon: React.FC<IconProps> = ({
           className={classNames(className, inlineBlock)}
           size={iconFaSize}
           icon={icon as IconProp}
-          {...{ [DATA_ATTRIBUTE]: dataLayoutId }}
+          {...applyDataAttr(dataLayoutId)}
         />
       ) : (
         renderIcon

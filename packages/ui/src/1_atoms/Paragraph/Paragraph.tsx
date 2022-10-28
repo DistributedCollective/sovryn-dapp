@@ -2,7 +2,7 @@ import React, { ReactNode } from 'react';
 
 import classNames from 'classnames';
 
-import { DATA_ATTRIBUTE } from '../../utils/constants';
+import { applyDataAttr } from '../../utils';
 import styles from './Paragraph.module.css';
 import { ParagraphSize, ParagraphStyle } from './Paragraph.types';
 
@@ -28,7 +28,7 @@ export const Paragraph: React.FC<ParagraphProps> = ({
       styles[style],
       className,
     )}
-    {...{ [DATA_ATTRIBUTE]: dataLayoutId }}
+    {...applyDataAttr(dataLayoutId)}
   >
     {children}
   </p>

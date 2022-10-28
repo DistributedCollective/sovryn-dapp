@@ -12,7 +12,7 @@ import classNames from 'classnames';
 
 import { Portal } from '../../1_atoms/Portal/Portal';
 import { Align, AlignVertical } from '../../types/tailwind';
-import { DATA_ATTRIBUTE } from '../../utils/constants';
+import { applyDataAttr } from '../../utils';
 import styles from './Overlay.module.css';
 import {
   OverlayBackground,
@@ -77,7 +77,7 @@ export const Overlay: React.FC<OverlayProps> = ({
           )}
           style={!fixed && zIndex ? { zIndex } : undefined}
           onClick={onBlurHandler}
-          {...{ [DATA_ATTRIBUTE]: dataLayoutId }}
+          {...applyDataAttr(dataLayoutId)}
         >
           {children}
         </div>

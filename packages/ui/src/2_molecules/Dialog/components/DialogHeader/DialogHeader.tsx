@@ -3,7 +3,7 @@ import { FC, PropsWithChildren } from 'react';
 import classNames from 'classnames';
 
 import { Icon } from '../../../../1_atoms';
-import { DATA_ATTRIBUTE } from '../../../../utils/constants';
+import { applyDataAttr } from '../../../../utils';
 import styles from './DialogHeader.module.css';
 
 type DialogHeaderProps = {
@@ -24,7 +24,7 @@ export const DialogHeader: FC<DialogHeaderProps> = ({
   <header className={classNames(styles.container, className)}>
     {renderTitle(title)}
     {onClose && (
-      <button onClick={onClose} {...{ [DATA_ATTRIBUTE]: dataLayoutId }}>
+      <button onClick={onClose} {...applyDataAttr(dataLayoutId)}>
         <Icon icon="x-mark" size={12} />
         <span className="sr-only">Close</span>
       </button>

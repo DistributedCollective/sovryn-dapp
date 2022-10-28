@@ -6,7 +6,7 @@ import { Icon, Link } from '../../1_atoms';
 import { IconNames } from '../../1_atoms/Icon/Icon.types';
 import { LinkStyle } from '../../1_atoms/Link/Link.types';
 import { prettyTx } from '../../utils';
-import { DATA_ATTRIBUTE } from '../../utils/constants';
+import { applyDataAttr } from '../../utils';
 import { Tooltip } from '../Tooltip';
 import { TooltipPlacement, TooltipTrigger } from '../Tooltip/Tooltip.types';
 import styles from './TransactionId.module.css';
@@ -55,7 +55,7 @@ export const TransactionId: React.FC<TransactionIdProps> = ({
         <span className="flex items-center">
           {value}
           <span
-            {...{ [DATA_ATTRIBUTE]: 'transaction-copy' }}
+            {...applyDataAttr('transaction-copy')}
             className={styles.icon}
             onClick={copyAddress}
           >

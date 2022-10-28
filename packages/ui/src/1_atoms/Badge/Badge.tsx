@@ -2,7 +2,7 @@ import React, { FC, PropsWithChildren, ReactNode } from 'react';
 
 import classNames from 'classnames';
 
-import { DATA_ATTRIBUTE } from '../../utils/constants';
+import { applyDataAttr } from '../../utils';
 import styles from './Badge.module.css';
 import { BadgeSize, BadgeStyle } from './Badge.types';
 
@@ -29,7 +29,7 @@ export const Badge: FC<PropsWithChildren<BadgeProps>> = ({
         styles[style],
         styles[size],
       )}
-      {...{ [DATA_ATTRIBUTE]: dataLayoutId }}
+      {...applyDataAttr(dataLayoutId)}
     >
       {content}
     </span>

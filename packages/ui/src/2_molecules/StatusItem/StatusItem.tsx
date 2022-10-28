@@ -3,7 +3,7 @@ import React, { FC, ReactNode } from 'react';
 import classNames from 'classnames';
 
 import { Icon, Heading, Badge, BadgeSize, HeadingType } from '../../1_atoms';
-import { DATA_ATTRIBUTE } from '../../utils/constants';
+import { applyDataAttr } from '../../utils';
 import styles from './StatusItem.module.css';
 import { StatusType } from './StatusItem.types';
 import { getStatusClass, getStatusIcon } from './StatusItem.utils';
@@ -25,7 +25,7 @@ export const StatusItem: FC<StatusItemProps> = ({
 }) => (
   <div
     className={classNames(styles.statusItem, className)}
-    {...{ [DATA_ATTRIBUTE]: dataLayoutId }}
+    {...applyDataAttr(dataLayoutId)}
   >
     <Badge
       size={BadgeSize.md}

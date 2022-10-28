@@ -54,6 +54,7 @@
         @apply bg-primary-30;
       }
     }
+
     &:disabled {
       @apply cursor-not-allowed border-gray-30;
 

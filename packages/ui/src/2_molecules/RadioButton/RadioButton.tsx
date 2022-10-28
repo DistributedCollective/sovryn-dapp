@@ -7,7 +7,7 @@ import { IRadioButtonProps } from './RadioButton.types';
 
 export const RadioButton = forwardRef<HTMLInputElement, IRadioButtonProps>(
   (
-    { id, label, disabled, className, dataLayoutId, labelInfo, ...rest },
+    { id, label, disabled, name, className, dataLayoutId, labelInfo, ...rest },
     ref,
   ) => (
     <div
@@ -20,6 +20,7 @@ export const RadioButton = forwardRef<HTMLInputElement, IRadioButtonProps>(
           disabled={disabled}
           data-layout-id={dataLayoutId}
           ref={ref as LegacyRef<HTMLInputElement>}
+          name={name}
           {...rest}
         />
         {label}

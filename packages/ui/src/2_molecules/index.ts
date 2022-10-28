@@ -11,3 +11,4 @@ export * from './TransactionId';
 export * from './Tooltip';
 export * from './WalletContainer';
 export * from './AddressTablePagination';
+export * from './StatusItem';

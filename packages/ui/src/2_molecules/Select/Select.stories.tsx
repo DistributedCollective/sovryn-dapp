@@ -51,22 +51,3 @@ Basic.args = {
   value: options[0].value,
   options,
 };
-
-// const AdvancedTemplate: Story<ComponentProps<typeof Dropdown>> = args => {
-//   return <Dropdown {...args} />;
-// };
-
-// export const Interactive = AdvancedTemplate.bind({});
-// Interactive.args = {
-//   text: 'Mode control',
-//   size: DropdownSize.large,
-//   className: 'm-auto',
-//   mode: DropdownMode.center,
-//   children: (
-//     <Menu>
-//       <MenuItem text="Dropdown Menu Item 1" />
-//       <MenuItem text="Dropdown Menu Item 2" />
-//       <MenuItem text="Dropdown Menu Item 3" />
-//     </Menu>
-//   ),
-// };

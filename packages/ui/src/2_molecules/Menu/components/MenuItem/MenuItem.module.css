@@ -32,7 +32,7 @@
     }
 
     & .label {
-      @apply text-gray-30 font-normal text-tiny inline-block leading-none pointer-events-none pointer-events-none;
+      @apply text-gray-30 font-normal text-tiny inline-block leading-none pointer-events-none;
     }
   }
 

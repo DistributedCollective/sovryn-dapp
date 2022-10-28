@@ -2,7 +2,7 @@ import React, { PropsWithChildren, ReactNode } from 'react';
 
 import classNames from 'classnames';
 
-import { Heading, HeadingType, Paragraph } from '../../1_atoms';
+import { Heading, HeadingType, Paragraph, ParagraphSize } from '../../1_atoms';
 import styles from './FormGroup.module.css';
 
 type FormGroupProps = {
@@ -34,7 +34,11 @@ export const FormGroup: React.FC<PropsWithChildren<FormGroupProps>> = ({
             {label} {helper}
           </Heading>
         )}
-        {subtext && <Paragraph>{subtext}</Paragraph>}
+        {subtext && (
+          <Paragraph size={ParagraphSize.tiny} className={styles.subtext}>
+            {subtext}
+          </Paragraph>
+        )}
       </label>
     )}
     {children}

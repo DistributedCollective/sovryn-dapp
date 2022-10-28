@@ -24,9 +24,9 @@ const Template: Story<ComponentProps<typeof FormGroup>> = args => (
 export const Basic = Template.bind({});
 Basic.args = {
   className: '',
-  label: 'label',
+  label: 'Label',
   helper: <Icon icon={IconNames.INFO} size={10} />,
-  subtext: 'subtext subtext',
+  subtext: 'A description of this form element to aid in populating the field.',
   children: <Input placeholder="Text" />,
 };
 
@@ -35,6 +35,7 @@ Invalid.args = {
   className: '',
   label: 'Label',
   helper: <Icon icon={IconNames.INFO} size={10} />,
+  subtext: 'A description of this form element to aid in populating the field.',
   children: <Input placeholder="Text" invalid />,
   errorLabel: 'This field is not valid',
 };
@@ -44,6 +45,7 @@ WithButton.args = {
   className: '',
   label: 'Label',
   helper: <Icon icon={IconNames.INFO} size={10} />,
+  subtext: 'A description of this form element to aid in populating the field.',
   children: (
     <Button size={ButtonSize.large} style={ButtonStyle.secondary} text="test" />
   ),

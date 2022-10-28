@@ -9,6 +9,10 @@
     }
   }
 
+  .subtext {
+    @apply my-1 font-normal;
+  }
+
   .errorLabel {
     @apply block text-error-light mt-2;
     line-height: 0.875rem;

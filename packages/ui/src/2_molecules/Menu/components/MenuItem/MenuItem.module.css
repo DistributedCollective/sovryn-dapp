@@ -24,7 +24,7 @@
 
     & .text,
     & .icon {
-      @apply text-gray-10;
+      @apply text-gray-10 pointer-events-none;
     }
 
     & .icon {
@@ -32,7 +32,7 @@
     }
 
     & .label {
-      @apply text-gray-30 font-normal text-tiny inline-block leading-none pointer-events-none;
+      @apply text-gray-30 font-normal text-tiny inline-block leading-none pointer-events-none pointer-events-none;
     }
   }
 
@@ -50,15 +50,15 @@
 }
 
 .hostBlock {
-  @apply block leading-none;
+  @apply block leading-none pointer-events-none;
 }
 
 .hostFlex {
-  @apply flex items-center;
+  @apply flex items-center pointer-events-none;
 }
 
 .icon {
-  @apply mr-2;
+  @apply mr-2 pointer-events-none;
 }
 
 .externalIcon {

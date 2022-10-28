@@ -1,5 +1,5 @@
 ---
-"@sovryn/ui": patch
+'@sovryn/ui': patch
 ---
 
 fix: remove duplicated icon types

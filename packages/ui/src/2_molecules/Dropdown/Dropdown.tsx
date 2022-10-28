@@ -20,7 +20,7 @@ import styles from './Dropdown.module.css';
 import { DropdownCoords, DropdownMode, DropdownSize } from './Dropdown.types';
 import { getDropdownPositionStyles } from './Dropdown.utils';
 
-type DropdownProps = {
+export type DropdownProps = {
   text: ReactNode;
   children: ReactNode;
   mode?: DropdownMode;
@@ -30,6 +30,8 @@ type DropdownProps = {
   className?: string;
   dataLayoutId?: string;
   dropdownClassName?: string;
+  closeOnClick?: boolean;
+  usePortal?: boolean;
 };
 
 export const Dropdown = forwardRef<HTMLButtonElement, DropdownProps>(
@@ -44,6 +46,8 @@ export const Dropdown = forwardRef<HTMLButtonElement, DropdownProps>(
       className,
       dataLayoutId,
       dropdownClassName,
+      closeOnClick,
+      usePortal = true,
     },
     ref,
   ) => {
@@ -109,6 +113,27 @@ export const Dropdown = forwardRef<HTMLButtonElement, DropdownProps>(
       onOpen?.();
     }, [isOpen, getCoords, onOpen, mode]);
 
+    const renderDropdown = useMemo(
+      () => (
+        <div
+          className={classNames(styles.dropdown, dropdownClassName)}
+          onClick={closeOnClick ? onButtonClick : undefined}
+          style={usePortal ? dropdownStyles : undefined}
+          ref={dropdownRef}
+        >
+          {children}
+        </div>
+      ),
+      [
+        dropdownClassName,
+        closeOnClick,
+        onButtonClick,
+        usePortal,
+        dropdownStyles,
+        children,
+      ],
+    );
+
     return (
       <>
         <button
@@ -129,15 +154,13 @@ export const Dropdown = forwardRef<HTMLButtonElement, DropdownProps>(
         </button>
 
         {isOpen && (
-          <Portal target="body">
-            <div
-              className={classNames(styles.dropdown, dropdownClassName)}
-              style={dropdownStyles}
-              ref={dropdownRef}
-            >
-              {children}
-            </div>
-          </Portal>
+          <>
+            {usePortal ? (
+              <Portal target="body">{renderDropdown}</Portal>
+            ) : (
+              renderDropdown
+            )}
+          </>
         )}
       </>
     );

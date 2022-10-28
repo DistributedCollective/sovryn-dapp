@@ -2,8 +2,8 @@ import React from 'react';
 
 import classNames from 'classnames';
 
+import { DATA_ATTRIBUTE } from '../../../../types';
 import { TabSize, TabType } from '../../Tabs.types';
-import { DATA_ATTRIBUTE } from '../../types';
 import styles from './Tab.module.css';
 
 type TabProps = {

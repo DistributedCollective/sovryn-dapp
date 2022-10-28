@@ -9,7 +9,7 @@ import classNames from 'classnames';
 
 import { Icon } from '../../../../1_atoms';
 import { IconType } from '../../../../1_atoms/Icon/Icon.types';
-import { DATA_ATTRIBUTE } from '../../types';
+import { DATA_ATTRIBUTE } from '../../../../types';
 import styles from './MenuItem.module.css';
 
 type MenuItemProps = {

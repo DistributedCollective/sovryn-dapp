@@ -1,5 +1,6 @@
 import React, { FC } from 'react';
 
+import { Heading, HeadingType } from '../../1_atoms';
 import { RadioButton } from '../RadioButton';
 import styles from './RadioButtonGroup.module.css';
 import {
@@ -15,7 +16,9 @@ export const RadioButtonGroup: FC<RadioButtonGroupProps> = ({
   defaultChecked = 0,
 }) => (
   <fieldset className={styles.radioButtonGroup} data-layout-id={dataLayoutId}>
-    <legend>{label}</legend>
+    <Heading type={HeadingType.h3} className={styles.headingLabel}>
+      {label}
+    </Heading>
     {options.map(
       (
         { label, value, name, disabled, labelInfo }: RadioButtonOption,

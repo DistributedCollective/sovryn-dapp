@@ -1,7 +1,7 @@
 .radioButtonGroup {
   @apply border-none mb-3;
 
-  & > legend {
-    @apply font-bold mb-3 leading-4;
+  .headingLabel {
+    @apply mb-3;
   }
 }

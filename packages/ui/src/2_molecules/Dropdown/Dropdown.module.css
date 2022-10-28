@@ -19,8 +19,7 @@
 }
 
 .dropdown {
-  @apply absolute overflow-x-auto mt-1 transition-colors;
-  z-index: 9999;
+  @apply absolute overflow-x-auto mt-1 transition-colors z-[9999];
 }
 
 .icon {

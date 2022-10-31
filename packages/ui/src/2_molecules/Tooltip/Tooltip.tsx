@@ -16,8 +16,7 @@ import classNames from 'classnames';
 import { Portal } from '../../1_atoms/Portal/Portal';
 import { useOnClickOutside } from '../../hooks/useOnClickOutside';
 import { Nullable } from '../../types';
-import { noop } from '../../utils';
-import { DATA_ATTRIBUTE } from '../../utils/constants';
+import { noop, applyDataAttr } from '../../utils';
 import styles from './Tooltip.module.css';
 import {
   TooltipElements,
@@ -96,11 +95,17 @@ export const Tooltip: FC<TooltipProps> = ({
   );
 
   const elementProps = useMemo(() => {
-    const attributes = {
-      [DATA_ATTRIBUTE]: dataLayoutId,
-      className: classNames(className, isVisible ? activeClassName : undefined),
-      ref: targetRef,
-    };
+    const attributes = Object.assign(
+      {
+        className: classNames(
+          className,
+          isVisible ? activeClassName : undefined,
+        ),
+        ref: targetRef,
+      },
+      applyDataAttr(dataLayoutId),
+    );
+
     const events = !disabled && {
       onMouseEnter: trigger === TooltipTrigger.hover ? handleShow : noop,
       onMouseLeave: trigger === TooltipTrigger.hover ? handleHide : noop,

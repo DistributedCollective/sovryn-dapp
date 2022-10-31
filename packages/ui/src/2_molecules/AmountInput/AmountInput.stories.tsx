@@ -10,7 +10,7 @@ export default {
 };
 
 const Template: Story<ComponentProps<typeof AmountInput>> = args => {
-  const [value, setValue] = useState(args.value || '0');
+  const [value, setValue] = useState((args.value as string) || '0');
 
   return (
     <div className="w-64">

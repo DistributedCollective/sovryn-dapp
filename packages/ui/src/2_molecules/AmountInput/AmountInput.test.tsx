@@ -1,4 +1,4 @@
-import { render } from '@testing-library/react';
+import { render, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import React from 'react';
@@ -27,7 +27,7 @@ describe('AmountInput', () => {
     expect(unit).toBeInTheDocument();
   });
 
-  test('correctly formats a number value', () => {
+  test('correctly formats initial number value', () => {
     const { getByTestId } = render(
       <AmountInput
         value={0.12345678}
@@ -40,7 +40,7 @@ describe('AmountInput', () => {
     expect(amountInput).toHaveValue(0.123);
   });
 
-  test('correctly formats a string value', () => {
+  test('correctly formats initial string value', () => {
     const { getByTestId } = render(
       <AmountInput
         value="0.12345678"
@@ -51,6 +51,30 @@ describe('AmountInput', () => {
 
     const amountInput = getByTestId('test');
     expect(amountInput).toHaveValue(0.123);
+  });
+
+  test('correctly formats a value when rounding down', async () => {
+    const { getByTestId } = render(
+      <AmountInput value={0.123} decimalPrecision={3} dataLayoutId="test" />,
+    );
+
+    const amountInput = getByTestId('test');
+
+    userEvent.type(amountInput, '1112');
+
+    await waitFor(() => expect(amountInput).toHaveValue(0.123));
+  });
+
+  test('correctly formats a value when rounding up', async () => {
+    const { getByTestId } = render(
+      <AmountInput value={0.123} decimalPrecision={3} dataLayoutId="test" />,
+    );
+
+    const amountInput = getByTestId('test');
+
+    userEvent.type(amountInput, '5556');
+
+    await waitFor(() => expect(amountInput).toHaveValue(0.124));
   });
 
   test('allows value changes', () => {

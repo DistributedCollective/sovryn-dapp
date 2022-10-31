@@ -49,7 +49,6 @@ export const AmountInput = React.forwardRef<HTMLInputElement, AmountInputProps>(
       dataLayoutId,
       value,
       onChangeText,
-      onChange,
       onBlur,
       ...rest
     },
@@ -64,22 +63,24 @@ export const AmountInput = React.forwardRef<HTMLInputElement, AmountInputProps>(
     const formatValue = useCallback(
       (value: string | number) => {
         if (!value) {
-          return 0;
+          return '0';
         }
-        if (!decimalPrecision) {
-          return value;
+        const { language } = navigator;
+
+        if (decimalPrecision === undefined) {
+          return value.toLocaleString(language);
         }
 
         const decimalLength = value.toString().split(/[,.]/)[1]?.length || 0;
         if (decimalLength <= decimalPrecision) {
-          return value;
+          return value.toLocaleString(language);
         }
 
         const unformattedValue =
           typeof value === 'string' ? Number(value) : value;
 
         return unformattedValue
-          .toLocaleString(navigator.language, {
+          .toLocaleString(language, {
             minimumFractionDigits: decimalPrecision,
             maximumFractionDigits: decimalPrecision,
           })
@@ -88,11 +89,16 @@ export const AmountInput = React.forwardRef<HTMLInputElement, AmountInputProps>(
       [decimalPrecision],
     );
 
+    const [formattedValue, setFormattedValue] = useState(
+      formatValue(value as string),
+    );
+
     const onChangeTextHandler = useCallback(
       (value: string) => {
-        onChangeText?.(String(formatValue(value)));
+        setFormattedValue(formatValue(value));
+        onChangeText?.(formattedValue);
       },
-      [formatValue, onChangeText],
+      [formatValue, formattedValue, onChangeText],
     );
 
     const [focused, setFocused] = useState(false);
@@ -108,14 +114,6 @@ export const AmountInput = React.forwardRef<HTMLInputElement, AmountInputProps>(
         onChangeTextHandler(event.target.value);
       },
       [onBlur, onChangeTextHandler],
-    );
-
-    const onChangeHandler = useCallback(
-      (event: React.FormEvent<HTMLInputElement>) => {
-        event.preventDefault();
-        event.stopPropagation();
-      },
-      [],
     );
 
     return (
@@ -147,8 +145,7 @@ export const AmountInput = React.forwardRef<HTMLInputElement, AmountInputProps>(
             dataLayoutId={dataLayoutId}
             onFocus={onFocus}
             onBlur={onBlurHandler}
-            value={formatValue(value || 0)}
-            onChange={onChangeHandler}
+            value={formattedValue}
             onChangeText={onChangeTextHandler}
             {...rest}
           />

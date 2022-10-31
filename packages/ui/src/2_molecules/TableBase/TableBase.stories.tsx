@@ -2,7 +2,7 @@ import { Story } from '@storybook/react';
 
 import React, { ComponentProps } from 'react';
 
-import { prettyTx } from '../../utils';
+import { TransactionId } from '../TransactionId';
 import { TableBase } from './TableBase';
 import { Align } from './TableBase.types';
 
@@ -30,12 +30,22 @@ const columns = [
 const rows = [
   {
     index: 1,
-    address: prettyTx('0xbcb5a190ACCbc80F4F2c130b5876521E4D5A2C0a', 6, 4),
+    address: (
+      <TransactionId
+        value="0xbcb5a190ACCbc80F4F2c130b5876521E4D5A2C0a"
+        href="https://explorer.testnet.rsk.co/address/0xbcb5a190accbc80f4f2c130b5876521e4d5a2c0a"
+      />
+    ),
     balance: 0.2,
   },
   {
     index: 2,
-    address: prettyTx('0xop42490ACCbc50F4F9c130b5876521I1q7b3C0p', 6, 4),
+    address: (
+      <TransactionId
+        value="0xop42490ACCbc50F4F9c130b5876521I1q7b3C0p"
+        href="https://explorer.testnet.rsk.co/address/0xop42490ACCbc50F4F9c130b5876521I1q7b3C0p"
+      />
+    ),
     balance: 2,
   },
 ];
@@ -64,7 +74,9 @@ WithRowClickHandler.args = {
   columns,
   rows,
   onRowClick: row =>
-    alert(`Row with index ${row.index} and address ${row.address} was clicked`),
+    alert(
+      `Row with index ${row.index} and balance ${row.balance} RBTC was clicked`,
+    ),
   dataAttribute: 'addressTable',
   isClickable: true,
 };

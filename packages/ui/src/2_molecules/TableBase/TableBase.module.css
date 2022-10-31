@@ -25,7 +25,7 @@
 }
 
 .header {
-  @apply text-xs font-medium;
+  @apply text-xs font-medium leading-[0.875rem];
 }
 
 .body {

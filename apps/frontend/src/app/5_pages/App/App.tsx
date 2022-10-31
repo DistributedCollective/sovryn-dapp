@@ -1,16 +1,18 @@
 import React, { useReducer } from 'react';
+import { useTranslation } from 'react-i18next';
 
-import { Button, Dialog, Dropdown, noop } from '@sovryn/ui';
+import { Button, Dialog, Dropdown, Menu, MenuItem } from '@sovryn/ui';
 
 import { ConnectWalletButton } from '../../2_molecules/ConnectWalletButton/ConnectWalletButton';
 import { useTheme } from '../../../hooks/useTheme';
 import { useWalletConnect } from '../../../hooks/useWalletConnect';
 import { AppTheme } from '../../../types/tailwind';
+import { translations } from '../../../locales/i18n';
 import styles from './App.module.css';
 
 function App() {
   const { handleThemeChange } = useTheme();
-
+  const { t } = useTranslation();
   const [isOpen, toggle] = useReducer(p => !p, false);
   const { connectWallet, disconnectWallet, wallets, pending } =
     useWalletConnect();
@@ -31,18 +33,12 @@ function App() {
           <div className="p-4">Hello.</div>
         </Dialog>
 
-        <Dropdown text="test">
-          <div>
-            <div className="my-2" onClick={noop}>
-              Dropdown Item 1
-            </div>
-            <div className="my-2" onClick={noop}>
-              Dropdown Item 2
-            </div>
-            <div className="my-2" onClick={noop}>
-              Dropdown Item 3
-            </div>
-          </div>
+        <Dropdown text="Dropdown Menu" className="my-4">
+          <Menu>
+            <MenuItem text="Item 1" />
+            <MenuItem text="Item 2" />
+            <MenuItem text="Item 3" />
+          </Menu>
         </Dropdown>
 
         <div className="flex items-center gap-4">
@@ -93,6 +89,8 @@ function App() {
 
         <br />
         <br />
+
+        <p>{t(translations.wallet)}</p>
       </main>
     </div>
   );

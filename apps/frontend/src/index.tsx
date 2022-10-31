@@ -7,6 +7,7 @@ import { OnboardProvider } from '@sovryn/onboard-react';
 
 import App from './app/5_pages/App/App';
 import { onboard } from './lib/connector';
+import './locales/i18n';
 import './styles/tailwindcss/index.css';
 
 const root = ReactDOM.createRoot(

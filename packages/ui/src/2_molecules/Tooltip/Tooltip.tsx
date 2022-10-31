@@ -30,6 +30,7 @@ type TooltipProps = {
   content: ReactNode;
   children: ReactNode;
   className?: string;
+  activeClassName?: string;
   tooltipClassName?: string;
   dataLayoutId?: string;
   placement?: TooltipPlacement;
@@ -43,6 +44,7 @@ export const Tooltip: FC<TooltipProps> = ({
   content,
   children,
   className,
+  activeClassName,
   tooltipClassName,
   dataLayoutId,
   placement = TooltipPlacement.top,
@@ -95,7 +97,7 @@ export const Tooltip: FC<TooltipProps> = ({
   const elementProps = useMemo(() => {
     const attributes = {
       [DATA_ATTRIBUTE]: dataLayoutId,
-      className: className,
+      className: classNames(className, isVisible ? activeClassName : undefined),
       ref: targetRef,
     };
     const events = !disabled && {
@@ -108,12 +110,13 @@ export const Tooltip: FC<TooltipProps> = ({
     return { ...attributes, ...events };
   }, [
     dataLayoutId,
-    targetRef,
     className,
+    activeClassName,
+    isVisible,
+    disabled,
     trigger,
     handleShow,
     handleHide,
-    disabled,
   ]);
 
   useOnClickOutside([targetRef, tooltipRef], handleHide);

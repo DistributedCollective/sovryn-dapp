@@ -1,0 +1,7 @@
+.row {
+  @apply grid grid-cols-2 text-gray-30 text-xs font-medium mb-3 last:mb-0 leading-[0.875rem];
+
+  .value {
+    @apply text-right;
+  }
+}

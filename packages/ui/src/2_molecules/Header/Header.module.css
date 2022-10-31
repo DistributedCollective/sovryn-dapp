@@ -1,0 +1,15 @@
+.header {
+  @apply bg-gray-90 h-16 w-full flex align-middle justify-between px-11;
+
+  & > div {
+    @apply flex items-center;
+  }
+}
+
+.logo {
+  @apply max-h-7 mr-11;
+}
+
+.menuItems {
+  @apply mr-11 flex items-center;
+}

@@ -15,7 +15,7 @@ describe('Tooltip', () => {
     jest.useRealTimers();
   });
 
-  test('should render a tooltip on hover in and hide on hover out', () => {
+  it('should render a tooltip on hover in and hide on hover out', () => {
     const { getByRole, queryByText } = render(
       <Tooltip children={<button>Text</button>} content={<>Tooltip</>} />,
     );
@@ -28,6 +28,18 @@ describe('Tooltip', () => {
       jest.runAllTimers();
     });
     expect(tooltip).not.toBeInTheDocument();
+  });
+
+  it('should render a tooltip with data attribute', () => {
+    const { getByTestId } = render(
+      <Tooltip
+        children={<button>Text</button>}
+        content={<>Tooltip</>}
+        dataLayoutId="tooltip-storybook-id"
+      />,
+    );
+    const tooltip = getByTestId('tooltip-storybook-id');
+    expect(tooltip).toBeInTheDocument();
   });
 
   it('should render a tooltip on focus in and hide on focus out', async () => {

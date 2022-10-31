@@ -1,3 +1,5 @@
+const webpack = require('webpack');
+
 module.exports = {
   style: {
     postcss: {
@@ -19,7 +21,16 @@ module.exports = {
           configFile: 'tsconfig.json',
         },
       });
-      config.resolve.fallback = { stream: require.resolve('readable-stream') };
+      config.ignoreWarnings = [/Failed to parse source map/];
+      config.resolve.fallback = {
+        stream: require.resolve('readable-stream'),
+        buffer: require.resolve('buffer'),
+      };
+      config.plugins = (config.plugins || []).concat([
+        new webpack.ProvidePlugin({
+          Buffer: ['buffer', 'Buffer'],
+        }),
+      ]);
       return config;
     },
   },

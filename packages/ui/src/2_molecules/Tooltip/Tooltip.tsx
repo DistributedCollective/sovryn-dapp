@@ -15,8 +15,8 @@ import classNames from 'classnames';
 
 import { Portal } from '../../1_atoms/Portal/Portal';
 import { useOnClickOutside } from '../../hooks/useOnClickOutside';
-import { DATA_ATTRIBUTE, Nullable } from '../../types';
-import { noop } from '../../utils';
+import { Nullable } from '../../types';
+import { noop, applyDataAttr } from '../../utils';
 import styles from './Tooltip.module.css';
 import {
   TooltipElements,
@@ -30,6 +30,7 @@ type TooltipProps = {
   content: ReactNode;
   children: ReactNode;
   className?: string;
+  activeClassName?: string;
   tooltipClassName?: string;
   dataLayoutId?: string;
   placement?: TooltipPlacement;
@@ -43,6 +44,7 @@ export const Tooltip: FC<TooltipProps> = ({
   content,
   children,
   className,
+  activeClassName,
   tooltipClassName,
   dataLayoutId,
   placement = TooltipPlacement.top,
@@ -93,11 +95,17 @@ export const Tooltip: FC<TooltipProps> = ({
   );
 
   const elementProps = useMemo(() => {
-    const attributes = {
-      [DATA_ATTRIBUTE]: dataLayoutId,
-      className: className,
-      ref: targetRef,
-    };
+    const attributes = Object.assign(
+      {
+        className: classNames(
+          className,
+          isVisible ? activeClassName : undefined,
+        ),
+        ref: targetRef,
+      },
+      applyDataAttr(dataLayoutId),
+    );
+
     const events = !disabled && {
       onMouseEnter: trigger === TooltipTrigger.hover ? handleShow : noop,
       onMouseLeave: trigger === TooltipTrigger.hover ? handleHide : noop,
@@ -108,12 +116,13 @@ export const Tooltip: FC<TooltipProps> = ({
     return { ...attributes, ...events };
   }, [
     dataLayoutId,
-    targetRef,
     className,
+    activeClassName,
+    isVisible,
+    disabled,
     trigger,
     handleShow,
     handleHide,
-    disabled,
   ]);
 
   useOnClickOutside([targetRef, tooltipRef], handleHide);

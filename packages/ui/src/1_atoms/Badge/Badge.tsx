@@ -2,6 +2,7 @@ import React, { FC, PropsWithChildren, ReactNode } from 'react';
 
 import classNames from 'classnames';
 
+import { applyDataAttr } from '../../utils';
 import styles from './Badge.module.css';
 import { BadgeSize, BadgeStyle } from './Badge.types';
 
@@ -28,7 +29,7 @@ export const Badge: FC<PropsWithChildren<BadgeProps>> = ({
         styles[style],
         styles[size],
       )}
-      data-layout-id={dataLayoutId}
+      {...applyDataAttr(dataLayoutId)}
     >
       {content}
     </span>

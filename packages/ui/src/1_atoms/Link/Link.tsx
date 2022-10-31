@@ -2,6 +2,7 @@ import React, { FC, PropsWithChildren, ReactNode } from 'react';
 
 import classNames from 'classnames';
 
+import { applyDataAttr } from '../../utils';
 import styles from './Link.module.css';
 import { LinkStyle } from './Link.types';
 
@@ -27,8 +28,8 @@ export const Link: FC<PropsWithChildren<LinkProps>> = ({
       rel="noopener noreferrer"
       href={href}
       target={openNewTab ? 'blank' : undefined}
-      className={classNames(className, styles.link, styles[style])}
-      data-layout-id={dataLayoutId}
+      className={classNames(styles.link, styles[style], className)}
+      {...applyDataAttr(dataLayoutId)}
     >
       {text}
     </a>

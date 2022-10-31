@@ -1,0 +1,7 @@
+.simpleTable {
+  @apply p-3 flex flex-col bg-gray-80 rounded;
+
+  &.withBorder {
+    @apply border border-gray-50;
+  }
+}

@@ -2,6 +2,7 @@ import React, { FC, ReactNode } from 'react';
 
 import classNames from 'classnames';
 
+import { DATA_ATTRIBUTE } from '../../utils/constants';
 import styles from './Heading.module.css';
 import { HeadingType } from './Heading.types';
 
@@ -22,7 +23,7 @@ export const Heading: FC<HeadingProps> = ({
     type,
     {
       className: classNames(styles.heading, styles[type], className),
-      'data-layout-id': dataLayoutId,
+      [DATA_ATTRIBUTE]: dataLayoutId,
     },
     children,
   );

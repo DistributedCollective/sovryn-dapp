@@ -3,9 +3,8 @@ import userEvent from '@testing-library/user-event';
 
 import React from 'react';
 
-import { MemoryRouter } from 'react-router-dom';
-
 import { Button } from './Button';
+import { ButtonSize, ButtonStyle } from './Button.types';
 
 // import { ButtonSize, ButtonStyle } from './Button.types';
 describe('Button', () => {
@@ -38,42 +37,27 @@ describe('Button', () => {
     expect(document.activeElement).toEqual(ref.current);
   });
 
-  it('can be focused when using refs (hyperlink / external)', () => {
+  it('can be focused when using refs (hyperlink)', () => {
     const ref = React.createRef<HTMLAnchorElement>();
-    render(
-      <Button
-        text="Hyperlink"
-        ref={ref}
-        href="https://www.sovryn.app"
-        hrefExternal
-      />,
-    );
+    render(<Button text="Hyperlink" ref={ref} href="https://www.sovryn.app" />);
     waitFor(() => ref.current);
     ref.current?.focus();
     expect(document.activeElement).toEqual(ref.current);
   });
 
-  it('can be focused when using refs (router link)', () => {
-    const ref = React.createRef<HTMLAnchorElement>();
-    render(
-      <MemoryRouter>
-        <Button text="Hyperlink" ref={ref} href="/" />
-      </MemoryRouter>,
+  it('should render a button size with a className equal to the large', () => {
+    const { getByText } = render(
+      <Button text="Button size" size={ButtonSize.large} />,
     );
-    waitFor(() => ref.current);
-    ref.current?.focus();
-    expect(document.activeElement).toEqual(ref.current);
+    const classes = getByText('Button size').getAttribute('class');
+    expect(classes).toContain('large');
   });
 
-  // uncomment these test cases once Paragraph component will be merged (https://github.com/DistributedCollective/sovryn-dapp/pull/13)
-  // it('should render a button size with a className equal to the large', () => {
-  //   render(<Button text="Button size" size={ButtonSize.large} />);
-  //   const classes = screen.getByText('Button size').getAttribute('class');
-  //   expect(button).toContain('large');
-  // });
-  // it('should render a button style with a className equal to the secondary', () => {
-  //   render(<Button text="Button style" style={ButtonStyle.secondary} />);
-  //   const classes = screen.getByText('Button style').getAttribute('class');
-  //   expect(button).toContain('secondary');
-  // });
+  it('should render a button style with a className equal to the secondary', () => {
+    const { getByText } = render(
+      <Button text="Button style" style={ButtonStyle.secondary} />,
+    );
+    const classes = getByText('Button style').getAttribute('class');
+    expect(classes).toContain('secondary');
+  });
 });

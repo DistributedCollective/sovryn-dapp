@@ -16,6 +16,7 @@ import { IconNames } from '../../1_atoms/Icon/Icon.types';
 import { Portal } from '../../1_atoms/Portal/Portal';
 import { useOnClickOutside } from '../../hooks/useOnClickOutside';
 import { Nullable } from '../../types';
+import { applyDataAttr } from '../../utils';
 import styles from './Dropdown.module.css';
 import { DropdownCoords, DropdownMode, DropdownSize } from './Dropdown.types';
 import { getDropdownPositionStyles } from './Dropdown.utils';
@@ -113,7 +114,7 @@ export const Dropdown = forwardRef<HTMLButtonElement, DropdownProps>(
       <>
         <button
           className={classNames(classNamesComplete)}
-          data-layout-id={dataLayoutId}
+          {...applyDataAttr(dataLayoutId)}
           onClick={onButtonClick}
           type="button"
           ref={buttonRef}

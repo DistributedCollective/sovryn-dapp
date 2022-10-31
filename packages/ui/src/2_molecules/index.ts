@@ -12,3 +12,5 @@ export * from './Tooltip';
 export * from './WalletContainer';
 export * from './RadioButton';
 export * from './RadioButtonGroup';
+export * from './AddressTablePagination';
+export * from './StatusItem';

@@ -1,9 +1,11 @@
 import Onboard from '@sovryn/onboard-core';
 import injectedModule from '@sovryn/onboard-injected';
+import walletConnectModule from '@sovryn/onboard-walletconnect';
 
 const injected = injectedModule();
+const walletConnect = walletConnectModule();
 export const onboard = Onboard({
-  wallets: [injected],
+  wallets: [injected, walletConnect],
   chains: [
     {
       id: '0x1e',

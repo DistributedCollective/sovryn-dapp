@@ -2,11 +2,11 @@ import React, { useCallback, useMemo } from 'react';
 
 import classNames from 'classnames';
 
-import { Tooltip } from '..';
 import { Icon, Link } from '../../1_atoms';
 import { IconNames } from '../../1_atoms/Icon/Icon.types';
 import { LinkStyle } from '../../1_atoms/Link/Link.types';
 import { prettyTx } from '../../utils';
+import { Tooltip } from '../Tooltip';
 import { TooltipPlacement, TooltipTrigger } from '../Tooltip/Tooltip.types';
 import styles from './TransactionId.module.css';
 

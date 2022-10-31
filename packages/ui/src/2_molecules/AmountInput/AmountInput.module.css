@@ -50,16 +50,16 @@
   @apply outline outline-1 outline-primary-20 bg-gray-70;
 }
 
+.readOnly {
+  @apply bg-gray-70/50 outline outline-1 outline-gray-50 text-gray-20 pointer-events-none;
+}
+
 .disabled {
   @apply cursor-not-allowed bg-gray-70-ol text-gray-20/50 pointer-events-none;
 }
 
 .disabledInput {
   @apply text-gray-20/50;
-}
-
-.readOnly {
-  @apply bg-gray-70/50 outline outline-1 outline-gray-50 text-gray-20 pointer-events-none;
 }
 
 .large {

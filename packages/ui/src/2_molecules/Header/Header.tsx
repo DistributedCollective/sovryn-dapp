@@ -1,5 +1,6 @@
 import React, { FC, ReactNode } from 'react';
 
+import { applyDataAttr } from '../../utils';
 import styles from './Header.module.css';
 
 type HeaderProps = {
@@ -15,7 +16,7 @@ export const Header: FC<HeaderProps> = ({
   menuItems,
   secondaryContent,
 }) => (
-  <header data-layout-id={dataLayoutId} className={styles.header}>
+  <header {...applyDataAttr(dataLayoutId)} className={styles.header}>
     <div>
       {logo && <div className={styles.logo}>{logo}</div>}
       {menuItems && <div className={styles.menuItems}>{menuItems}</div>}

@@ -3,6 +3,7 @@ import React, { FC, ReactNode, useMemo } from 'react';
 import classNames from 'classnames';
 
 import { Badge } from '../../1_atoms/Badge/Badge';
+import { applyDataAttr } from '../../utils';
 import styles from './NavMenuItem.module.css';
 
 const MAX_COUNT_DEFAULT = 99;
@@ -34,7 +35,7 @@ export const NavMenuItem: FC<NavMenuItemProps> = ({
   return (
     <button
       type="button"
-      data-layout-id={dataLayoutId}
+      {...applyDataAttr(dataLayoutId)}
       onClick={onClick}
       className={classNames(styles.navMenuItem, className, {
         [styles.active]: isActive,

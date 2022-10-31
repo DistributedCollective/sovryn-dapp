@@ -3,6 +3,7 @@ import React, { useCallback, useEffect, MouseEvent, useRef } from 'react';
 import classNames from 'classnames';
 import FocusTrap from 'focus-trap-react';
 
+import { applyDataAttr } from '../../utils';
 import { Overlay, OverlayProps } from '../Overlay/Overlay';
 import styles from './Dialog.module.css';
 import {
@@ -86,7 +87,7 @@ export const Dialog: IDialogFunctionComponent<DialogProps> = ({
       onBlur={handleClose}
       {...overlayProps}
     >
-      <div className={styles.wrapper} data-layout-id={dataLayoutId}>
+      <div className={styles.wrapper} {...applyDataAttr(dataLayoutId)}>
         <div className={styles.container}>
           <FocusTrap
             active={isOpen}

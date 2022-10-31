@@ -1,0 +1,7 @@
+.radioButtonGroup {
+  @apply border-none mb-3;
+
+  .headingLabel {
+    @apply mb-3;
+  }
+}

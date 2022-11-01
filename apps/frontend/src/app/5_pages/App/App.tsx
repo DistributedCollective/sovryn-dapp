@@ -1,8 +1,9 @@
 import React, { useReducer } from 'react';
 
-import { Button, Dialog, Dropdown, noop } from '@sovryn/ui';
+import { Button, Dialog, Dropdown, noop, StatusType } from '@sovryn/ui';
 
 import { ConnectWalletButton } from '../../2_molecules/ConnectWalletButton/ConnectWalletButton';
+import { TransactionStep } from '../../3_organisms/TransactionStep/TransactionStep';
 import { useTheme } from '../../../hooks/useTheme';
 import { useWalletConnect } from '../../../hooks/useWalletConnect';
 import { AppTheme } from '../../../types/tailwind';
@@ -82,6 +83,20 @@ function App() {
         </p>
       </header>
       <main>
+        <TransactionStep
+          step="1"
+          title="Approve FISH tokens"
+          subtitle="Allow Sovryn protocol to use FISH tokens for the trade"
+          txDetails={{
+            amount: '0.17519949',
+            token: 'FISH',
+            gasFee: '0.00006191',
+          }}
+          status={StatusType.idle}
+        />
+        <br />
+        <br />
+        <br />
         <div>
           <ConnectWalletButton
             onConnect={connectWallet}

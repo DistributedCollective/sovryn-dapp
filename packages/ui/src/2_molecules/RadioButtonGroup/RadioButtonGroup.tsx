@@ -16,9 +16,11 @@ export const RadioButtonGroup: FC<RadioButtonGroupProps> = ({
   defaultChecked = 0,
 }) => (
   <fieldset className={styles.radioButtonGroup} data-layout-id={dataLayoutId}>
-    <Heading type={HeadingType.h3} className={styles.headingLabel}>
-      {label}
-    </Heading>
+    {label && (
+      <Heading type={HeadingType.h3} className={styles.headingLabel}>
+        {label}
+      </Heading>
+    )}
     {options.map(
       (
         { label, value, name, disabled, labelInfo }: RadioButtonOption,

@@ -9,7 +9,7 @@ export type RadioButtonOption = {
 };
 
 export type RadioButtonGroupProps = {
-  label: string;
+  label?: string;
   options: RadioButtonOption[];
   onChange?: ChangeEventHandler<HTMLInputElement>;
   dataLayoutId?: string;

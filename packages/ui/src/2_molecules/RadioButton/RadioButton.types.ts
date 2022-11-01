@@ -9,4 +9,5 @@ export interface IRadioButtonProps
   labelInfo?: ReactNode;
   disabled?: boolean;
   name?: string;
+  content?: ReactNode;
 }

@@ -51,7 +51,7 @@ export const Accordion: FC<IAccordionProps> = ({
         </>
         <div className={styles.arrow}>
           <Icon
-            icon={IconNames.ARROW_UP}
+            icon={IconNames.ARROW_DOWN}
             size={8}
             className={classNames(styles.icon, {
               [styles.isOpen]: open,

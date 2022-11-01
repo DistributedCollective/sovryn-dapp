@@ -14,5 +14,13 @@
     "^app/",
     "^[./|~/]"
   ],
-  "importOrderSeparation": true
+  "importOrderSeparation": true,
+  "overrides": [
+    {
+      "files": ["apps/frontend/src/locales/**/*.json"],
+      "options": {
+        "tabWidth": 4
+      }
+    }
+  ]
 }

@@ -1,4 +1,6 @@
-import React, { useReducer } from 'react';
+import React, { useReducer, useState } from 'react';
+
+import i18next from 'i18next';
 import { useTranslation } from 'react-i18next';
 
 import { Button, Dialog, Dropdown, Menu, MenuItem } from '@sovryn/ui';
@@ -6,8 +8,8 @@ import { Button, Dialog, Dropdown, Menu, MenuItem } from '@sovryn/ui';
 import { ConnectWalletButton } from '../../2_molecules/ConnectWalletButton/ConnectWalletButton';
 import { useTheme } from '../../../hooks/useTheme';
 import { useWalletConnect } from '../../../hooks/useWalletConnect';
+import { translations, languages } from '../../../locales/i18n';
 import { AppTheme } from '../../../types/tailwind';
-import { translations } from '../../../locales/i18n';
 import styles from './App.module.css';
 
 function App() {
@@ -16,6 +18,13 @@ function App() {
   const [isOpen, toggle] = useReducer(p => !p, false);
   const { connectWallet, disconnectWallet, wallets, pending } =
     useWalletConnect();
+
+  const [currentLang, setCurrentLang] = useState(i18next.language);
+
+  const changeLanguage = lng => {
+    i18next.changeLanguage(lng);
+    setCurrentLang(lng);
+  };
 
   return (
     <div className="my-2 px-4">
@@ -33,11 +42,14 @@ function App() {
           <div className="p-4">Hello.</div>
         </Dialog>
 
-        <Dropdown text="Dropdown Menu" className="my-4">
+        <Dropdown text={currentLang.toUpperCase()} className="my-4">
           <Menu>
-            <MenuItem text="Item 1" />
-            <MenuItem text="Item 2" />
-            <MenuItem text="Item 3" />
+            {languages.map(lng => (
+              <MenuItem
+                text={lng.toUpperCase()}
+                onClick={() => changeLanguage(lng)}
+              />
+            ))}
           </Menu>
         </Dropdown>
 

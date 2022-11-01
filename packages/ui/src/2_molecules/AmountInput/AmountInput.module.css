@@ -55,7 +55,7 @@
 }
 
 .disabled {
-  @apply cursor-not-allowed bg-gray-70-ol text-gray-20/50 pointer-events-none;
+  @apply cursor-not-allowed bg-gray-70-ol text-gray-20/50 pointer-events-none outline-none;
 }
 
 .disabledInput {

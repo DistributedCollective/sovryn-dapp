@@ -45,8 +45,12 @@ export const InputBase = React.forwardRef<HTMLInputElement, InputBaseProps>(
           }
           onChangeText?.(event.currentTarget.value);
           onChange?.(event);
+
+          if (event.currentTarget.value !== value) {
+            setRenderedValue(value as string);
+          }
         }, debounce),
-      [debounce, onChange, onChangeText],
+      [debounce, onChange, onChangeText, value],
     );
 
     const handleChange = useCallback(

@@ -1,19 +1,33 @@
-import React, { useReducer } from 'react';
+import React, { useCallback, useReducer, useState } from 'react';
 
-import { Button, Dialog, Dropdown, noop } from '@sovryn/ui';
+import i18next from 'i18next';
+import { useTranslation } from 'react-i18next';
+
+import { Button, Dialog, Dropdown, Menu, MenuItem } from '@sovryn/ui';
 
 import { ConnectWalletButton } from '../../2_molecules/ConnectWalletButton/ConnectWalletButton';
 import { useTheme } from '../../../hooks/useTheme';
 import { useWalletConnect } from '../../../hooks/useWalletConnect';
+import { translations, languages } from '../../../locales/i18n';
 import { AppTheme } from '../../../types/tailwind';
 import styles from './App.module.css';
 
 function App() {
   const { handleThemeChange } = useTheme();
-
+  const { t } = useTranslation();
   const [isOpen, toggle] = useReducer(p => !p, false);
   const { connectWallet, disconnectWallet, wallets, pending } =
     useWalletConnect();
+
+  const [currentLang, setCurrentLang] = useState(i18next.language);
+
+  const changeLanguage = useCallback(
+    (lng: string) => () => {
+      i18next.changeLanguage(lng);
+      setCurrentLang(lng);
+    },
+    [],
+  );
 
   return (
     <div className="my-2 px-4">
@@ -31,18 +45,15 @@ function App() {
           <div className="p-4">Hello.</div>
         </Dialog>
 
-        <Dropdown text="test">
-          <div>
-            <div className="my-2" onClick={noop}>
-              Dropdown Item 1
-            </div>
-            <div className="my-2" onClick={noop}>
-              Dropdown Item 2
-            </div>
-            <div className="my-2" onClick={noop}>
-              Dropdown Item 3
-            </div>
-          </div>
+        <Dropdown text={currentLang.toUpperCase()} className="my-4">
+          <Menu>
+            {languages.map(lng => (
+              <MenuItem
+                text={lng.toUpperCase()}
+                onClick={changeLanguage(lng)}
+              />
+            ))}
+          </Menu>
         </Dropdown>
 
         <div className="flex items-center gap-4">
@@ -93,6 +104,8 @@ function App() {
 
         <br />
         <br />
+
+        <p>{t(translations.wallet)}</p>
       </main>
     </div>
   );

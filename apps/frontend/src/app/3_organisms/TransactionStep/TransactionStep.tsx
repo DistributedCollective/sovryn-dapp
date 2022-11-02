@@ -2,7 +2,12 @@ import React, { FC, useCallback, useState } from 'react';
 
 import {
   Accordion,
-  Input,
+  AmountInput,
+  Button,
+  ButtonType,
+  ButtonStyle,
+  Heading,
+  HeadingType,
   Paragraph,
   RadioButtonGroup,
   SimpleTable,
@@ -30,7 +35,9 @@ const options = [
     label: 'Custom amount',
     name: 'settings',
     value: 'custom_amount',
-    contentToShow: <Input className="ml-7 mb-5" />,
+    contentToShow: (
+      <AmountInput label="Amount" className="ml-7 mb-5 max-w-60" min={0} />
+    ),
   },
   {
     label: 'Unlimited amount',
@@ -46,7 +53,7 @@ export const TransactionStep: FC<TransactionStepProps> = ({
   txDetails,
 }) => {
   const [advanced, setAdvanced] = useState(false);
-  const [selectedItem, setSelectedItem] = useState(options[0].value);
+  const [, setSelectedItem] = useState(options[0].value);
   const onChange = useCallback(e => {
     setSelectedItem(e.target.value);
   }, []);
@@ -56,7 +63,7 @@ export const TransactionStep: FC<TransactionStepProps> = ({
       <StatusItem content={step} label={title} status={status} />
       <div className="ml-10">
         {subtitle && <Paragraph className="text-gray-30">{subtitle}</Paragraph>}
-        <SimpleTable className="max-w-80 mt-3">
+        <SimpleTable className="max-w-72 mt-3">
           {txDetails?.amount && (
             <SimpleTableRow
               label="Amount"
@@ -77,10 +84,31 @@ export const TransactionStep: FC<TransactionStepProps> = ({
           open={advanced}
           onClick={() => setAdvanced(!advanced)}
         >
-          <RadioButtonGroup options={options} onChange={onChange} />
+          <RadioButtonGroup
+            options={options}
+            onChange={onChange}
+            className="mt-1"
+          />
+          <Heading type={HeadingType.h3} className="mb-3">
+            Approval gas setting
+          </Heading>
+          <AmountInput
+            label="Gas limit"
+            className="mt-2 mb-4 max-w-64"
+            min={0}
+          />
+          <AmountInput
+            label="Gas price"
+            unit="Gwei"
+            className="mb-4 max-w-64"
+            min={0}
+          />
+          <Button
+            style={ButtonStyle.ghost}
+            type={ButtonType.reset}
+            text="Reset values"
+          />
         </Accordion>
-
-        {selectedItem === 'custom_amount' && <div>Custom</div>}
       </div>
     </div>
   );

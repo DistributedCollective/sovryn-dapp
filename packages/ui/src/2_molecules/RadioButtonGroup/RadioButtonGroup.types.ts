@@ -15,4 +15,5 @@ export type RadioButtonGroupProps = {
   onChange?: ChangeEventHandler<HTMLInputElement>;
   dataLayoutId?: string;
   defaultChecked?: number;
+  className?: string;
 };

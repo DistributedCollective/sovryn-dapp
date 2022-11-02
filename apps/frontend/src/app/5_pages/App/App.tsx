@@ -3,7 +3,14 @@ import React, { useCallback, useReducer, useState } from 'react';
 import i18next from 'i18next';
 import { useTranslation } from 'react-i18next';
 
-import { Button, Dialog, Dropdown, Menu, MenuItem } from '@sovryn/ui';
+import {
+  Button,
+  Dialog,
+  Dropdown,
+  Menu,
+  MenuItem,
+  StatusType,
+} from '@sovryn/ui';
 
 import { ConnectWalletButton } from '../../2_molecules/ConnectWalletButton/ConnectWalletButton';
 import { TransactionStep } from '../../3_organisms/TransactionStep/TransactionStep';

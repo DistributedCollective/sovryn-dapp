@@ -10,6 +10,8 @@ export * from './SimpleTable';
 export * from './TransactionId';
 export * from './Tooltip';
 export * from './WalletContainer';
+export * from './AmountInput';
+export * from './HelperButton';
 export * from './RadioButton';
 export * from './RadioButtonGroup';
 export * from './AddressTablePagination';

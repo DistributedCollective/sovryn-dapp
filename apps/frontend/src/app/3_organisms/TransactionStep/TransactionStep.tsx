@@ -14,9 +14,10 @@ import {
   SimpleTableRow,
   StatusItem,
   StatusType,
+  TransactionId,
 } from '@sovryn/ui';
 
-import { TransactionGas } from '../components/TransactionGas';
+import { TransactionGas } from '../components/TransactionGas/TransactionGas';
 
 interface TransactionDetails {
   amount?: string;
@@ -30,6 +31,7 @@ export type TransactionStepProps = {
   step: string;
   status: StatusType;
   txDetails?: TransactionDetails;
+  txID?: string;
 };
 
 const options = [
@@ -53,6 +55,7 @@ export const TransactionStep: FC<TransactionStepProps> = ({
   title,
   subtitle,
   txDetails,
+  txID,
 }) => {
   const [advanced, setAdvanced] = useState(false);
   const [, setSelectedItem] = useState(options[0].value);
@@ -78,6 +81,17 @@ export const TransactionStep: FC<TransactionStepProps> = ({
             value={txDetails?.gasFee + ' rBTC'}
             valueClassName="text-primary-10"
           />
+          {txID && (
+            <SimpleTableRow
+              label="TX ID"
+              value={
+                <TransactionId
+                  href={`https://explorer.rsk.co/address/${txID}`}
+                  value={txID}
+                />
+              }
+            />
+          )}
         </SimpleTable>
 
         <Accordion

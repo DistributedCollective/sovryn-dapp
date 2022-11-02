@@ -93,6 +93,7 @@ function App() {
             gasFee: '0.00006191',
           }}
           status={StatusType.idle}
+          txID="0xEDb8897aB6E907bc63CB256f74437D36298507E2"
         />
         <br />
         <br />

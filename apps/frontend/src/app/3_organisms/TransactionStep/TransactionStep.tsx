@@ -16,6 +16,8 @@ import {
   StatusType,
 } from '@sovryn/ui';
 
+import { TransactionGas } from '../components/TransactionGas';
+
 interface TransactionDetails {
   amount?: string;
   gasFee: string;
@@ -92,17 +94,7 @@ export const TransactionStep: FC<TransactionStepProps> = ({
           <Heading type={HeadingType.h3} className="mb-3">
             Approval gas setting
           </Heading>
-          <AmountInput
-            label="Gas limit"
-            className="mt-2 mb-4 max-w-64"
-            min={0}
-          />
-          <AmountInput
-            label="Gas price"
-            unit="Gwei"
-            className="mb-4 max-w-64"
-            min={0}
-          />
+          <TransactionGas limit="0" price="0" />
           <Button
             style={ButtonStyle.ghost}
             type={ButtonType.reset}

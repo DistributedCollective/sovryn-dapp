@@ -21,10 +21,13 @@ function App() {
 
   const [currentLang, setCurrentLang] = useState(i18next.language);
 
-  const changeLanguage = useCallback((lng: string) => {
-    i18next.changeLanguage(lng);
-    setCurrentLang(lng);
-  }, []);
+  const changeLanguage = useCallback(
+    (lng: string) => () => {
+      i18next.changeLanguage(lng);
+      setCurrentLang(lng);
+    },
+    [],
+  );
 
   return (
     <div className="my-2 px-4">
@@ -47,7 +50,7 @@ function App() {
             {languages.map(lng => (
               <MenuItem
                 text={lng.toUpperCase()}
-                onClick={() => changeLanguage(lng)}
+                onClick={changeLanguage(lng)}
               />
             ))}
           </Menu>

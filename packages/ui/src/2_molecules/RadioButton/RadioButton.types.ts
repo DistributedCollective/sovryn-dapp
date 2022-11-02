@@ -10,4 +10,5 @@ export interface IRadioButtonProps
   disabled?: boolean;
   name?: string;
   content?: ReactNode;
+  contentToShow?: ReactNode;
 }

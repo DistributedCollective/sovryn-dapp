@@ -23,7 +23,14 @@ export const RadioButtonGroup: FC<RadioButtonGroupProps> = ({
     )}
     {options.map(
       (
-        { label, value, name, disabled, labelInfo }: RadioButtonOption,
+        {
+          label,
+          value,
+          name,
+          disabled,
+          labelInfo,
+          contentToShow,
+        }: RadioButtonOption,
         index,
       ) => {
         const id = `radio-option-${label}`;
@@ -38,6 +45,7 @@ export const RadioButtonGroup: FC<RadioButtonGroupProps> = ({
             defaultChecked={index === defaultChecked}
             onChange={onChange}
             labelInfo={labelInfo}
+            contentToShow={contentToShow}
           />
         );
       },

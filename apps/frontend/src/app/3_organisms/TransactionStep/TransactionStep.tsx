@@ -2,6 +2,7 @@ import React, { FC, useCallback, useState } from 'react';
 
 import {
   Accordion,
+  Input,
   Paragraph,
   RadioButtonGroup,
   SimpleTable,
@@ -29,6 +30,7 @@ const options = [
     label: 'Custom amount',
     name: 'settings',
     value: 'custom_amount',
+    contentToShow: <Input className="ml-7 mb-5" />,
   },
   {
     label: 'Unlimited amount',

@@ -1,4 +1,4 @@
-import React, { useReducer, useState } from 'react';
+import React, { useCallback, useReducer, useState } from 'react';
 
 import i18next from 'i18next';
 import { useTranslation } from 'react-i18next';
@@ -21,10 +21,10 @@ function App() {
 
   const [currentLang, setCurrentLang] = useState(i18next.language);
 
-  const changeLanguage = lng => {
+  const changeLanguage = useCallback((lng: string) => {
     i18next.changeLanguage(lng);
     setCurrentLang(lng);
-  };
+  }, []);
 
   return (
     <div className="my-2 px-4">

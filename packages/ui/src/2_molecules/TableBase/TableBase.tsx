@@ -2,6 +2,7 @@ import React, { ReactNode } from 'react';
 
 import classNames from 'classnames';
 
+import { applyDataAttr } from '../../utils';
 import styles from './TableBase.module.css';
 import { ColumnOptions, RowObject } from './TableBase.types';
 import { TableRow } from './components/TableRow/TableRow';
@@ -32,7 +33,7 @@ export const TableBase = <RowType extends RowObject>({
   return (
     <table
       className={classNames(styles.table, className)}
-      data-layout-id={dataAttribute}
+      {...applyDataAttr(dataAttribute)}
     >
       <thead>
         <tr>

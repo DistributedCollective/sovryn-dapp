@@ -34,25 +34,6 @@ export type TransactionStepProps = {
   txID?: string;
 };
 
-const options = [
-  {
-    label: 'Custom amount',
-    name: 'settings',
-    value: 'custom_amount',
-    contentToShow: (
-      <AmountInput label="Amount" className="ml-7 mb-5 max-w-60" min={0} />
-    ),
-    helper:
-      'Limiting the amount of approved tokens as an additional security measure may result higher fees',
-  },
-  {
-    label: 'Unlimited amount',
-    name: 'settings',
-    value: 'unlimited_amount',
-    helper:
-      'Limiting the amount of approved tokens as an additional security measure may result higher fees',
-  },
-];
 export const TransactionStep: FC<TransactionStepProps> = ({
   step,
   status,
@@ -61,8 +42,34 @@ export const TransactionStep: FC<TransactionStepProps> = ({
   txDetails,
   txID,
 }) => {
+  const [selectedItem, setSelectedItem] = useState('custom_amount');
+
+  const options = [
+    {
+      label: 'Custom amount',
+      name: 'settings',
+      value: 'custom_amount',
+      contentToShow: (
+        <AmountInput
+          disabled={selectedItem !== 'custom_amount'}
+          label="Amount"
+          className="ml-7 mb-5 max-w-60"
+          min={0}
+        />
+      ),
+      helper:
+        'Limiting the amount of approved tokens as an additional security measure may result higher fees',
+    },
+    {
+      label: 'Unlimited amount',
+      name: 'settings',
+      value: 'unlimited_amount',
+      helper:
+        'Limiting the amount of approved tokens as an additional security measure may result higher fees',
+    },
+  ];
+
   const [advanced, setAdvanced] = useState(false);
-  const [, setSelectedItem] = useState(options[0].value);
   const onChange = useCallback(e => {
     setSelectedItem(e.target.value);
   }, []);

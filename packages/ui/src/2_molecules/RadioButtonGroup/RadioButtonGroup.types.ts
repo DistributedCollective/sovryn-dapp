@@ -7,6 +7,7 @@ export type RadioButtonOption = {
   labelInfo?: ReactNode;
   disabled?: boolean;
   contentToShow?: ReactNode;
+  helper?: ReactNode;
 };
 
 export type RadioButtonGroupProps = {

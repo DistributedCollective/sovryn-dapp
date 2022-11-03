@@ -2,6 +2,8 @@ import React, { forwardRef, LegacyRef } from 'react';
 
 import classNames from 'classnames';
 
+import { applyDataAttr } from '../../utils';
+import { HelperButton } from '../HelperButton';
 import styles from './RadioButton.module.css';
 import { IRadioButtonProps } from './RadioButton.types';
 
@@ -16,6 +18,7 @@ export const RadioButton = forwardRef<HTMLInputElement, IRadioButtonProps>(
       dataLayoutId,
       labelInfo,
       contentToShow,
+      helper,
       ...rest
     },
     ref,
@@ -29,12 +32,14 @@ export const RadioButton = forwardRef<HTMLInputElement, IRadioButtonProps>(
             id={id}
             type="radio"
             disabled={disabled}
-            data-layout-id={dataLayoutId}
+            {...applyDataAttr(dataLayoutId)}
             ref={ref as LegacyRef<HTMLInputElement>}
             name={name}
             {...rest}
           />
           {label}
+
+          {helper && <HelperButton className="ml-1.5" content={helper} />}
         </label>
         <div>{labelInfo}</div>
       </div>

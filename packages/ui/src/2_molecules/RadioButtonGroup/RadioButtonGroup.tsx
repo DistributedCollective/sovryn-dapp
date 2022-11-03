@@ -36,6 +36,7 @@ export const RadioButtonGroup: FC<RadioButtonGroupProps> = ({
           disabled,
           labelInfo,
           contentToShow,
+          helper,
         }: RadioButtonOption,
         index,
       ) => {
@@ -52,6 +53,7 @@ export const RadioButtonGroup: FC<RadioButtonGroupProps> = ({
             onChange={onChange}
             labelInfo={labelInfo}
             contentToShow={contentToShow}
+            helper={helper}
           />
         );
       },

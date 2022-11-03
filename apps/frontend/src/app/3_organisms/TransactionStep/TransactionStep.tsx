@@ -17,7 +17,7 @@ import {
   TransactionId,
 } from '@sovryn/ui';
 
-import { TransactionGas } from '../components/TransactionGas/TransactionGas';
+import { TransactionGas } from './components/TransactionGas/TransactionGas';
 
 interface TransactionDetails {
   amount?: string;
@@ -42,11 +42,15 @@ const options = [
     contentToShow: (
       <AmountInput label="Amount" className="ml-7 mb-5 max-w-60" min={0} />
     ),
+    helper:
+      'Limiting the amount of approved tokens as an additional security measure may result higher fees',
   },
   {
     label: 'Unlimited amount',
     name: 'settings',
     value: 'unlimited_amount',
+    helper:
+      'Limiting the amount of approved tokens as an additional security measure may result higher fees',
   },
 ];
 export const TransactionStep: FC<TransactionStepProps> = ({
@@ -97,8 +101,9 @@ export const TransactionStep: FC<TransactionStepProps> = ({
         <Accordion
           className="mt-4 text-xs"
           label="Advanced Settings"
-          open={advanced}
+          open={advanced && status === StatusType.idle}
           onClick={() => setAdvanced(!advanced)}
+          disabled={status !== StatusType.idle}
         >
           <RadioButtonGroup
             options={options}
@@ -108,7 +113,7 @@ export const TransactionStep: FC<TransactionStepProps> = ({
           <Heading type={HeadingType.h3} className="mb-3">
             Approval gas setting
           </Heading>
-          <TransactionGas limit="0" price="0" />
+          <TransactionGas className="mt-2 mb-4 max-w-64" limit="0" price="0" />
           <Button
             style={ButtonStyle.ghost}
             type={ButtonType.reset}

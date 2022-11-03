@@ -2,7 +2,7 @@ import React, { useCallback, useState } from 'react';
 
 import classNames from 'classnames';
 
-import { noop } from '../../../../utils';
+import { noop, applyDataAttr } from '../../../../utils';
 import { RowObject, ColumnOptions } from '../../TableBase.types';
 import styles from './TableRow.module.css';
 
@@ -38,7 +38,7 @@ export const TableRow = <RowType extends RowObject>({
           [styles.active]: isClickable && isSelected,
         })}
         onClick={onClick}
-        data-layout-id={`${dataAttribute}-row-${index}`}
+        {...applyDataAttr(`${dataAttribute}-row-${index}`)}
       >
         {columns.map(column => (
           <td

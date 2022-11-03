@@ -2,7 +2,7 @@ import React, { ReactNode, FC, useCallback } from 'react';
 
 import classNames from 'classnames';
 
-import { DATA_ATTRIBUTE } from '../../utils/constants';
+import { applyDataAttr } from '../../utils';
 import { Heading } from '../Heading/Heading';
 import { HeadingType } from '../Heading/Heading.types';
 import { Icon } from '../Icon/Icon';
@@ -40,7 +40,7 @@ export const Accordion: FC<IAccordionProps> = ({
           [styles.disabled]: disabled,
         })}
         onClick={onClickCallback}
-        {...{ [DATA_ATTRIBUTE]: dataLayoutId }}
+        {...applyDataAttr(dataLayoutId)}
       >
         <>
           {typeof label === 'string' ? (
@@ -62,7 +62,7 @@ export const Accordion: FC<IAccordionProps> = ({
       {open && (
         <div
           className={styles.content}
-          {...{ [DATA_ATTRIBUTE]: `${dataLayoutId}-content` }}
+          {...applyDataAttr(`${dataLayoutId}-content`)}
         >
           {children}
         </div>

@@ -3,6 +3,7 @@ import React, { PropsWithChildren, ReactNode } from 'react';
 import classNames from 'classnames';
 
 import { Heading, HeadingType, Paragraph, ParagraphSize } from '../../1_atoms';
+import { applyDataAttr } from '../../utils';
 import styles from './FormGroup.module.css';
 
 type FormGroupProps = {
@@ -24,7 +25,7 @@ export const FormGroup: React.FC<PropsWithChildren<FormGroupProps>> = ({
   dataLayoutId,
 }) => (
   <div
-    data-layout-id={dataLayoutId}
+    {...applyDataAttr(dataLayoutId)}
     className={classNames(className, styles.formGroup)}
   >
     {(label || subtext) && (
@@ -44,7 +45,7 @@ export const FormGroup: React.FC<PropsWithChildren<FormGroupProps>> = ({
     {children}
     {errorLabel && (
       <span
-        data-layout-id={`${dataLayoutId}__error-message`}
+        {...applyDataAttr(`${dataLayoutId}__error-message`)}
         className={styles.errorLabel}
       >
         {errorLabel}

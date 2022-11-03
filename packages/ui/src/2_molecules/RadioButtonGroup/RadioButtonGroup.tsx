@@ -3,6 +3,7 @@ import React, { FC } from 'react';
 import classNames from 'classnames';
 
 import { Heading, HeadingType } from '../../1_atoms';
+import { applyDataAttr } from '../../utils';
 import { RadioButton } from '../RadioButton';
 import styles from './RadioButtonGroup.module.css';
 import {
@@ -20,7 +21,7 @@ export const RadioButtonGroup: FC<RadioButtonGroupProps> = ({
 }) => (
   <fieldset
     className={classNames(styles.radioButtonGroup, className)}
-    data-layout-id={dataLayoutId}
+    {...applyDataAttr(dataLayoutId)}
   >
     {label && (
       <Heading type={HeadingType.h3} className={styles.headingLabel}>

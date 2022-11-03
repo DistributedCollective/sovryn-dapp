@@ -9,6 +9,7 @@
   "scripts": {
     "build": "turbo run build",
     "dev": "turbo run dev",
+    "dev:staging": "cross-env APP_MODE=staging turbo run dev --parallel",
     "lint": "turbo run lint",
     "format": "prettier --write \"**/*.{ts,tsx,md,js,json}\"",
     "test": "turbo run test",
@@ -25,7 +26,9 @@
     "lint-staged": "13.0.3",
     "prettier": "2.7.1",
     "turbo": "latest",
-    "typescript": "4.8.4"
+    "typescript": "4.8.4",
+    "cross-env": "7.0.3",
+    "dotenv-cra": "3.0.2"
   },
   "engines": {
     "npm": ">=7.0.0",

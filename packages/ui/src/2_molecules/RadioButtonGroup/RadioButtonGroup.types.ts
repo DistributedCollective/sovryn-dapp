@@ -6,12 +6,15 @@ export type RadioButtonOption = {
   name?: string;
   labelInfo?: ReactNode;
   disabled?: boolean;
+  contentToShow?: ReactNode;
+  helper?: ReactNode;
 };
 
 export type RadioButtonGroupProps = {
-  label: string;
+  label?: string;
   options: RadioButtonOption[];
   onChange?: ChangeEventHandler<HTMLInputElement>;
   dataLayoutId?: string;
   defaultChecked?: number;
+  className?: string;
 };

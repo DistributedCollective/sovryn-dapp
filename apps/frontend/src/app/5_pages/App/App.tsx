@@ -3,9 +3,17 @@ import React, { useCallback, useReducer, useState } from 'react';
 import i18next from 'i18next';
 import { useTranslation } from 'react-i18next';
 
-import { Button, Dialog, Dropdown, Menu, MenuItem } from '@sovryn/ui';
+import {
+  Button,
+  Dialog,
+  Dropdown,
+  Menu,
+  MenuItem,
+  StatusType,
+} from '@sovryn/ui';
 
 import { ConnectWalletButton } from '../../2_molecules/ConnectWalletButton/ConnectWalletButton';
+import { TransactionStep } from '../../3_organisms/TransactionStep/TransactionStep';
 import { useTheme } from '../../../hooks/useTheme';
 import { useWalletConnect } from '../../../hooks/useWalletConnect';
 import { translations, languages } from '../../../locales/i18n';
@@ -93,6 +101,21 @@ function App() {
         </p>
       </header>
       <main>
+        <TransactionStep
+          step="1"
+          title="Approve FISH tokens"
+          subtitle="Allow Sovryn protocol to use FISH tokens for the trade"
+          txDetails={{
+            amount: '0.17519949',
+            token: 'FISH',
+            gasFee: '0.00006191',
+          }}
+          status={StatusType.idle}
+          txID="0xEDb8897aB6E907bc63CB256f74437D36298507E2"
+        />
+        <br />
+        <br />
+        <br />
         <div>
           <ConnectWalletButton
             onConnect={connectWallet}

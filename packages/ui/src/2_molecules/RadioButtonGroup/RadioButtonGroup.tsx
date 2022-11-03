@@ -1,5 +1,7 @@
 import React, { FC } from 'react';
 
+import classNames from 'classnames';
+
 import { Heading, HeadingType } from '../../1_atoms';
 import { RadioButton } from '../RadioButton';
 import styles from './RadioButtonGroup.module.css';
@@ -14,14 +16,28 @@ export const RadioButtonGroup: FC<RadioButtonGroupProps> = ({
   onChange,
   dataLayoutId,
   defaultChecked = 0,
+  className,
 }) => (
-  <fieldset className={styles.radioButtonGroup} data-layout-id={dataLayoutId}>
-    <Heading type={HeadingType.h3} className={styles.headingLabel}>
-      {label}
-    </Heading>
+  <fieldset
+    className={classNames(styles.radioButtonGroup, className)}
+    data-layout-id={dataLayoutId}
+  >
+    {label && (
+      <Heading type={HeadingType.h3} className={styles.headingLabel}>
+        {label}
+      </Heading>
+    )}
     {options.map(
       (
-        { label, value, name, disabled, labelInfo }: RadioButtonOption,
+        {
+          label,
+          value,
+          name,
+          disabled,
+          labelInfo,
+          contentToShow,
+          helper,
+        }: RadioButtonOption,
         index,
       ) => {
         const id = `radio-option-${label}`;
@@ -36,6 +52,8 @@ export const RadioButtonGroup: FC<RadioButtonGroupProps> = ({
             defaultChecked={index === defaultChecked}
             onChange={onChange}
             labelInfo={labelInfo}
+            contentToShow={contentToShow}
+            helper={helper}
           />
         );
       },

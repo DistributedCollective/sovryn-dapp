@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback, useReducer, useState } from 'react';
+import React, { useCallback, useReducer, useState } from 'react';
 
 import i18next from 'i18next';
 import { useTranslation } from 'react-i18next';
@@ -19,12 +19,6 @@ import { useWalletConnect } from '../../../hooks/useWalletConnect';
 import { translations, languages } from '../../../locales/i18n';
 import { AppTheme } from '../../../types/tailwind';
 import styles from './App.module.css';
-import {
-  findContract,
-  getLoanTokenContract,
-  getProtocolContract,
-  getTokenContract,
-} from '../../../utils/contracts';
 
 function App() {
   const { handleThemeChange } = useTheme();
@@ -32,16 +26,6 @@ function App() {
   const [isOpen, toggle] = useReducer(p => !p, false);
   const { connectWallet, disconnectWallet, wallets, pending } =
     useWalletConnect();
-
-  useEffect(() => {
-    getTokenContract('xusd').then(e => console.log('xusd', e));
-    getLoanTokenContract('ixusd').then(e => console.log('ixusd', e));
-    getProtocolContract('swapNetwork').then(e => console.log('swapNetwork', e));
-    getProtocolContract('protocol').then(e => console.log('protocol', e));
-    findContract('0x98aCE08D2b759a265ae326F010496bcD63C15afc').then(e =>
-      console.log('find by address', e),
-    );
-  }, []);
 
   const [currentLang, setCurrentLang] = useState(i18next.language);
 

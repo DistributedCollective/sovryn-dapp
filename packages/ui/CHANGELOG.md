@@ -1,5 +1,23 @@
 # @sovryn/ui
 
+## 0.0.5
+
+### Patch Changes
+
+- ccf4a26: [StatusItem] - add component
+- 04869b5: SOV-678: TableBase (AddressTable) component
+- 4fd7e46: fix: export missing components & circular dependencies
+- 319d944: Feat/sov 789 d 2 header component
+- 4be658a: SOV-140 - feat: simple table component
+- faa8341: SOV-894: add select component
+- 68b5b4d: SOV-809: AmountInput component
+- f744382: fix: remove duplicated icon types
+- b789f54: feat: TransactionId component
+- 03d959e: feat: FormGroup component
+- 96ffcf0: Feat/sov 568 d 2 radio button component implementation
+- 6820d8f: chore: refactor data-layout-id prop names to constant
+- 731ef10: Accordion Component SOV-567
+
 ## 0.0.4
 
 ### Patch Changes

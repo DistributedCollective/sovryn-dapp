@@ -36,13 +36,15 @@
   }
 
   &.secondary {
+    @apply bg-gray-80 mx-1.5;
+
     &.normal {
-      @apply font-semibold text-xs px-0.5 py-2 mx-0.5;
+      @apply font-semibold text-xs px-3 py-2;
       min-width: 3.5rem;
     }
 
     &.small {
-      @apply font-semibold text-tiny px-0.5 py-1 mx-0.5;
+      @apply font-semibold text-tiny px-2 py-1;
       min-width: 2.5rem;
     }
 
@@ -51,7 +53,7 @@
     }
 
     &:not(.active) {
-      @apply text-gray-10/75;
+      @apply text-gray-30/75;
       &:not(:disabled):hover {
         @apply text-gray-10;
       }

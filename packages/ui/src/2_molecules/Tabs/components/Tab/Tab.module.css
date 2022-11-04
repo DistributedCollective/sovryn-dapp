@@ -38,6 +38,14 @@
   &.secondary {
     @apply bg-gray-80 mx-1.5;
 
+    &:first-child {
+      @apply ml-0;
+    }
+
+    &:last-child {
+      @apply mr-0;
+    }
+
     &.normal {
       @apply font-semibold text-xs px-3 py-2;
       min-width: 3.5rem;

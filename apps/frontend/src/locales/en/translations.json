@@ -1,3 +1,11 @@
 {
-    "wallet": "wallet"
+    "wallet": "wallet",
+    "common": {
+        "socials": {
+            "discord": "Discord",
+            "twitter": "Twitter",
+            "telegram": "Telegram",
+            "github": "Github"
+        }
+    }
 }

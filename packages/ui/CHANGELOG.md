@@ -1,5 +1,12 @@
 # @sovryn/ui
 
+## 0.0.6
+
+### Patch Changes
+
+- 5321c95: Sov 808 d 2 transaction step component
+- e4df0aa: chore: use data attribute util in new components
+
 ## 0.0.5
 
 ### Patch Changes

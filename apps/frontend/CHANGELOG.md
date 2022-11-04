@@ -1,5 +1,14 @@
 # frontend
 
+## 0.1.2
+
+### Patch Changes
+
+- 5321c95: Sov 808 d 2 transaction step component
+- Updated dependencies [5321c95]
+- Updated dependencies [e4df0aa]
+  - @sovryn/ui@0.0.6
+
 ## 0.1.1
 
 ### Patch Changes

@@ -3,7 +3,7 @@ import React, { FC } from 'react';
 import classNames from 'classnames';
 import { useTranslation } from 'react-i18next';
 
-import { applyDataAttr, Icon } from '@sovryn/ui';
+import { applyDataAttr, Icon, LinkBase } from '@sovryn/ui';
 
 import { translations } from '../../../locales/i18n';
 import { sovrynLinks } from '../../../utils/constants';
@@ -12,7 +12,7 @@ import styles from './SocialLinks.module.css';
 export type SocialLinksProps = {
   className?: string;
   innerClassName?: string;
-  dataAttributeId?: string;
+  dataAttribute?: string;
 };
 
 const socials = [
@@ -41,29 +41,28 @@ const socials = [
 export const SocialLinks: FC<SocialLinksProps> = ({
   className,
   innerClassName,
-  dataAttributeId,
+  dataAttribute,
 }) => {
   const { t } = useTranslation();
 
   return (
     <div
       className={classNames(styles.socials, className)}
-      {...applyDataAttr(dataAttributeId)}
+      {...applyDataAttr(dataAttribute)}
     >
       {socials.map(item => (
-        <a
+        <LinkBase
           href={item.url}
           className={classNames(styles.container, innerClassName)}
-          target="_blank"
-          rel="noopener noreferrer"
+          openNewTab
           title={t(translations.common.socials[item.id])}
           key={item.id}
-          {...applyDataAttr(`${dataAttributeId}-${item.id}`)}
+          dataAttribute={`${dataAttribute}-${item.id}`}
         >
           <div className={styles.ring}>
             <Icon icon={item.icon} size={10} />
           </div>
-        </a>
+        </LinkBase>
       ))}
     </div>
   );

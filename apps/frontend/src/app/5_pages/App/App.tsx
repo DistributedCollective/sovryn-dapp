@@ -59,6 +59,7 @@ function App() {
               <MenuItem
                 text={lng.toUpperCase()}
                 onClick={changeLanguage(lng)}
+                key={lng}
               />
             ))}
           </Menu>
@@ -132,7 +133,7 @@ function App() {
 
         <br />
         <div className="w-32">
-          <SocialLinks dataAttributeId="socials" />
+          <SocialLinks dataAttribute="socials" />
         </div>
       </main>
     </div>

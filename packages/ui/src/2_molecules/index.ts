@@ -18,3 +18,4 @@ export * from './AddressTablePagination';
 export * from './Select';
 export * from './StatusItem';
 export * from './FormGroup';
+export * from './TableBase';

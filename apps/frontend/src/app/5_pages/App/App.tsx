@@ -13,7 +13,8 @@ import {
 } from '@sovryn/ui';
 
 import { SocialLinks, ConnectWalletButton } from '../../2_molecules';
-import { TransactionStep, Header } from '../../3_organisms';
+import { DappHeader } from '../../3_organisms/DappHeader/DappHeader';
+import { TransactionStep } from '../../3_organisms';
 import { useTheme } from '../../../hooks/useTheme';
 import { useWalletConnect } from '../../../hooks/useWalletConnect';
 import { translations, languages } from '../../../locales/i18n';
@@ -39,7 +40,7 @@ function App() {
 
   return (
     <>
-      <Header />
+      <DappHeader />
       <div className="my-2 px-4">
         <div>
           <p className={styles.test}>
@@ -53,11 +54,11 @@ function App() {
             Learn React
           </a>
 
-          <Button text="Open Dialog" onClick={toggle} />
+            <Button text="Open Dialog" onClick={toggle} />
 
-          <Dialog isOpen={isOpen} onClose={toggle}>
-            <div className="p-4">Hello.</div>
-          </Dialog>
+            <Dialog isOpen={isOpen} onClose={toggle}>
+              <div className="p-4">Hello.</div>
+            </Dialog>
 
           <Dropdown text={currentLang.toUpperCase()} className="my-4">
             <Menu>
@@ -132,8 +133,8 @@ function App() {
             />
           </div>
 
-          <br />
-          <br />
+            <br />
+            <br />
 
           <p>{t(translations.wallet)}</p>
           <br />

@@ -10,7 +10,7 @@ import {
 } from '@sovryn/ui';
 
 import { ConnectWalletButton } from '../../2_molecules';
-import { useWalletConnect } from '../../../hooks/useWalletConnect';
+import { useWalletConnect } from '../../../hooks';
 
 export const DappHeader: FC = () => {
   const { connectWallet, disconnectWallet, wallets, pending } =

@@ -2,6 +2,7 @@ export * from './Overlay';
 export * from './Dialog';
 export * from './Dropdown';
 export * from './Menu';
+export * from './NavMenuItem';
 export * from './WalletIdentity';
 export * from './Tabs';
 export * from './VerticalTabs';

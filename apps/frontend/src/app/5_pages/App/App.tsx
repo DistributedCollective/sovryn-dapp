@@ -13,8 +13,7 @@ import {
 } from '@sovryn/ui';
 
 import { SocialLinks, ConnectWalletButton } from '../../2_molecules';
-import { DappHeader } from '../../3_organisms/DappHeader/DappHeader';
-import { TransactionStep } from '../../3_organisms';
+import { TransactionStep, Header } from '../../3_organisms';
 import { useTheme } from '../../../hooks/useTheme';
 import { useWalletConnect } from '../../../hooks/useWalletConnect';
 import { translations, languages } from '../../../locales/i18n';
@@ -40,7 +39,7 @@ function App() {
 
   return (
     <>
-      <DappHeader />
+      <Header />
       <div className="my-2 px-4">
         <div>
           <p className={styles.test}>

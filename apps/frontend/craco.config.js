@@ -1,5 +1,10 @@
+const dotenvCra = require('dotenv-cra');
 const webpack = require('webpack');
 
+const appMode = process.env.APP_MODE;
+if (appMode) {
+  dotenvCra.config({ env: appMode });
+}
 module.exports = {
   style: {
     postcss: {

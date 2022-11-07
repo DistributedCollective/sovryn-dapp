@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 
 import {
   Dropdown,
-  Header,
+  Header as UIHeader,
   Menu,
   MenuItem,
   NavMenuItem,
@@ -12,13 +12,13 @@ import {
 import { ConnectWalletButton } from '../../2_molecules';
 import { useWalletConnect } from '../../../hooks';
 
-export const DappHeader: FC = () => {
+export const Header: FC = () => {
   const { connectWallet, disconnectWallet, wallets, pending } =
     useWalletConnect();
 
   return (
-    <Header
-      logo={<div className="w-[102px] h-[28px] bg-white rounded" />}
+    <UIHeader
+      logo={<div>Sovryn</div>}
       menuItems={
         <>
           <NavMenuItem className="mr-2" isActive children="Zero" />
@@ -34,7 +34,7 @@ export const DappHeader: FC = () => {
             pending={pending}
           />
 
-          <Dropdown size={DropdownSize.small} text={'EN'} className="mr-1 ml-6">
+          <Dropdown size={DropdownSize.small} text="EN" className="mr-1 ml-6">
             <Menu>
               <MenuItem text="EN" />
               <MenuItem text="ES" />

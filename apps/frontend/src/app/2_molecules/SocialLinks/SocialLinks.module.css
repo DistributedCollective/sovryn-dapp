@@ -14,7 +14,6 @@
   }
 
   .ring {
-    @apply border rounded-full p-1.5 flex justify-center items-center hover:bg-gray-80;
-    border-color: rgba(255, 255, 255, 0.1);
+    @apply border border-white/10 rounded-full p-1.5 flex justify-center items-center hover:bg-gray-80;
   }
 }

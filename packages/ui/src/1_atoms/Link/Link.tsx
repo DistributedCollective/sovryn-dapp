@@ -1,8 +1,8 @@
-import React, { FC, PropsWithChildren, ReactNode } from 'react';
+import React, { FC, ReactNode } from 'react';
 
 import classNames from 'classnames';
 
-import { applyDataAttr } from '../../utils';
+import { LinkBase } from '../LinkBase/LinkBase';
 import styles from './Link.module.css';
 import { LinkStyle } from './Link.types';
 
@@ -15,23 +15,20 @@ export type LinkProps = {
   dataLayoutId?: string;
 };
 
-export const Link: FC<PropsWithChildren<LinkProps>> = ({
+export const Link: FC<LinkProps> = ({
   text,
   href,
   openNewTab = true,
   className,
   style = LinkStyle.primary,
   dataLayoutId,
-}) => {
-  return (
-    <a
-      rel="noopener noreferrer"
-      href={href}
-      target={openNewTab ? 'blank' : undefined}
-      className={classNames(styles.link, styles[style], className)}
-      {...applyDataAttr(dataLayoutId)}
-    >
-      {text}
-    </a>
-  );
-};
+}) => (
+  <LinkBase
+    href={href}
+    openNewTab={openNewTab}
+    className={classNames(styles.link, styles[style], className)}
+    dataAttribute={dataLayoutId}
+  >
+    {text}
+  </LinkBase>
+);

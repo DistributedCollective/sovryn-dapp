@@ -1,0 +1,19 @@
+.socials {
+  @apply flex;
+
+  > .container {
+    @apply mx-0.5 text-white;
+
+    &:first-child {
+      @apply ml-0;
+    }
+
+    &:last-child {
+      @apply mr-0;
+    }
+  }
+
+  .ring {
+    @apply border border-white/10 rounded-full p-1.5 flex justify-center items-center hover:bg-gray-80;
+  }
+}

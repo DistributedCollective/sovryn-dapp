@@ -24,11 +24,7 @@ export const VerticalTabItem: FC<VerticalTabsItemButtonProps> = ({
       onClick={onClick}
     >
       <Paragraph size={ParagraphSize.base}>{label}</Paragraph>
-      {infoText && (
-        <Paragraph size={ParagraphSize.small} className={styles.info}>
-          {infoText}
-        </Paragraph>
-      )}
+      {infoText && <Paragraph className={styles.info}>{infoText}</Paragraph>}
     </button>
   );
 };

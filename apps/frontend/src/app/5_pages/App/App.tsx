@@ -12,7 +12,7 @@ import {
   StatusType,
 } from '@sovryn/ui';
 
-import { SocialLinks, ConnectWalletButton } from '../../2_molecules/ConnectWalletButton/ConnectWalletButton';
+import { SocialLinks, ConnectWalletButton } from '../../2_molecules';
 import { TransactionStep, Header } from '../../3_organisms';
 import { useTheme } from '../../../hooks/useTheme';
 import { useWalletConnect } from '../../../hooks/useWalletConnect';
@@ -134,7 +134,7 @@ function App() {
 
           <br />
           <br />
-          
+
           <p>{t(translations.wallet)}</p>
           <br />
           <div className="w-32">

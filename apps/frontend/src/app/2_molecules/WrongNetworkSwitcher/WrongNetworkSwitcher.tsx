@@ -1,6 +1,7 @@
 import React, { FC, useCallback, useMemo } from 'react';
 
 import classNames from 'classnames';
+import { useTranslation } from 'react-i18next';
 
 import { ChainIds } from '@sovryn/ethers-provider';
 import {
@@ -14,12 +15,15 @@ import {
 
 import { useWalletConnect } from '../../../hooks';
 
-type WrongNetworkProps = {
+type WrongNetworkSwitcherProps = {
   className?: string;
 };
 
-export const WrongNetwork: FC<WrongNetworkProps> = ({ className }) => {
+export const WrongNetworkSwitcher: FC<WrongNetworkSwitcherProps> = ({
+  className,
+}) => {
   const { wallets, switchNetwork } = useWalletConnect();
+  const { t } = useTranslation();
 
   const isWrongChain = useMemo(() => {
     return (
@@ -51,12 +55,11 @@ export const WrongNetwork: FC<WrongNetworkProps> = ({ className }) => {
           className="text-gray-80 font-medium"
           size={ParagraphSize.base}
         >
-          Wrong network
+          {t('wrongNetworkSwitcher.title')}
         </Paragraph>
       </div>
       <Paragraph className="mt-3 ml-7 text-gray-80 font-medium">
-        We detected that you are curently conected to the wrong network. please
-        swich to the RSK network in your browser wallet
+        {t('wrongNetworkSwitcher.description')}
       </Paragraph>
       <Button
         className="mb-2 mt-7 ml-7"

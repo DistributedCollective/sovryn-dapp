@@ -9,7 +9,7 @@ import {
   DropdownSize,
 } from '@sovryn/ui';
 
-import { ConnectWalletButton, WrongNetwork } from '../../2_molecules';
+import { ConnectWalletButton, WrongNetworkSwitcher } from '../../2_molecules';
 import { useWalletConnect } from '../../../hooks';
 
 export const Header: FC = () => {
@@ -34,7 +34,7 @@ export const Header: FC = () => {
               address={wallets[0]?.accounts[0]?.address}
               pending={pending}
             />
-            <WrongNetwork className="absolute top-full mt-2.5 right-0" />
+            <WrongNetworkSwitcher className="absolute top-full mt-2.5 right-0" />
           </div>
 
           <Dropdown size={DropdownSize.small} text="EN" className="mr-1 ml-6">

@@ -7,7 +7,7 @@ import { InputBase, InputBaseProps } from '../InputBase/InputBase';
 import styles from './Input.module.css';
 import { InputSize } from './Input.types';
 
-export type InputProps = Omit<InputBaseProps, 'ref'> & {
+export type InputProps = Omit<InputBaseProps, 'ref' | 'size'> & {
   classNameInput?: string;
   invalid?: boolean;
   dataLayoutId?: string;

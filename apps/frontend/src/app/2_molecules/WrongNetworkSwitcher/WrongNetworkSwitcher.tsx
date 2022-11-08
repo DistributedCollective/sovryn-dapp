@@ -52,13 +52,13 @@ export const WrongNetworkSwitcher: FC<WrongNetworkSwitcherProps> = ({
           size={18}
         />
         <Paragraph
-          className="text-gray-80 font-medium"
+          className="text-sovryn-black font-medium"
           size={ParagraphSize.base}
         >
           {t('wrongNetworkSwitcher.title')}
         </Paragraph>
       </div>
-      <Paragraph className="mt-3 ml-7 text-gray-80 font-medium">
+      <Paragraph className="mt-3 ml-7 text-sovryn-black font-medium">
         {t('wrongNetworkSwitcher.description')}
       </Paragraph>
       <Button

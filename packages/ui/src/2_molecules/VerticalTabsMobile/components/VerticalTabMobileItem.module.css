@@ -1,0 +1,11 @@
+.button {
+    @apply w-full text-left text-gray-10 font-medium bg-gray-80 border border-gray-50 rounded px-3 py-2;
+
+    & p {
+      @apply text-base leading-5;
+    }
+
+    & small {
+      @apply block text-xs leading-[0.875rem] mt-2 text-gray-30;
+    }
+  }

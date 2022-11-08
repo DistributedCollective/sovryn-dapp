@@ -1,0 +1,26 @@
+.container {
+  @apply w-full relative;
+}
+
+.aside {
+  @apply bg-gray-90 py-6 px-7 relative flex flex-col justify-between items-start;
+}
+
+.header {
+  @apply pb-6 w-full relative;
+}
+
+.tabs {
+  @apply w-full flex flex-col justify-center items-center gap-y-3;
+}
+
+.content {
+  @apply w-full h-full bg-gray-90 py-6 px-7 relative overflow-y-auto;
+}
+
+.buttonBack {
+  @apply flex items-center text-sm mb-11;
+  & svg {
+    @apply bg-gray-70 w-6 h-6 p-1 mr-2 rounded flex items-center justify-center;
+  }
+}

@@ -20,6 +20,12 @@ export const useWalletConnect = () => {
     await onboard.disconnectWallet();
   }, []);
 
+  const switchNetwork = useCallback(async (chainId: string | number) => {
+    await onboard.setChain({
+      chainId,
+    });
+  }, []);
+
   useEffect(() => {
     const sub = connectWallet$
       .asObservable()
@@ -40,5 +46,6 @@ export const useWalletConnect = () => {
     disconnectWallet,
     wallets,
     pending,
+    switchNetwork,
   };
 };

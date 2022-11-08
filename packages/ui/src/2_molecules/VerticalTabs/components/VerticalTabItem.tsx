@@ -2,6 +2,7 @@ import React, { FC } from 'react';
 
 import classNames from 'classnames';
 
+import { Paragraph, ParagraphSize } from '../../../1_atoms';
 import { applyDataAttr } from '../../../utils';
 import { VerticalTabsItemButtonProps } from '../VerticalTabs.types';
 import styles from './VerticalTabItem.module.css';
@@ -22,8 +23,12 @@ export const VerticalTabItem: FC<VerticalTabsItemButtonProps> = ({
       data-active={active}
       onClick={onClick}
     >
-      <p className={styles.label}>{label}</p>
-      {infoText && <small className={styles.info}>{infoText}</small>}
+      <Paragraph size={ParagraphSize.base}>{label}</Paragraph>
+      {infoText && (
+        <Paragraph size={ParagraphSize.small} className={styles.info}>
+          {infoText}
+        </Paragraph>
+      )}
     </button>
   );
 };

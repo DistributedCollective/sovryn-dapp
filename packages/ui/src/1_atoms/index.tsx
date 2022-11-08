@@ -6,4 +6,5 @@ export * from './Portal';
 export * from './Paragraph';
 export * from './Badge';
 export * from './Link';
+export * from './LinkBase';
 export * from './Accordion';

@@ -12,7 +12,10 @@ import debounceCallback from 'lodash.debounce';
 
 import { noop, applyDataAttr } from '../../utils';
 
-export type InputBaseProps = Omit<HTMLProps<HTMLInputElement>, 'ref'> & {
+export type InputBaseProps = Omit<
+  HTMLProps<HTMLInputElement>,
+  'ref' | 'size'
+> & {
   debounce?: number;
   dataLayoutId?: string;
   onChangeText?: (value: string) => void;

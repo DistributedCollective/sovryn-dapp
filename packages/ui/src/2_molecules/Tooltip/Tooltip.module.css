@@ -1,5 +1,6 @@
 .tooltip {
   @apply bg-gray-10 rounded p-3 text-gray-90 absolute inline-block min-w-5 max-w-72 leading-5 opacity-0;
+  z-index: 999999;
 
   &.bottom,
   &.bottom-start,

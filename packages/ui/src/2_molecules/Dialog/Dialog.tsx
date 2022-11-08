@@ -22,6 +22,7 @@ type DialogProps = {
   onClose?: () => void;
   closeOnEscape?: boolean;
   initialFocusRef?: React.RefObject<HTMLElement>;
+  disableFocusTrap?: boolean;
 };
 
 export const Dialog: IDialogFunctionComponent<DialogProps> = ({
@@ -34,6 +35,7 @@ export const Dialog: IDialogFunctionComponent<DialogProps> = ({
   onClose,
   closeOnEscape = true,
   initialFocusRef,
+  disableFocusTrap,
 }) => {
   const ref = useRef<HTMLDivElement>(null);
 
@@ -90,7 +92,7 @@ export const Dialog: IDialogFunctionComponent<DialogProps> = ({
       <div className={styles.wrapper} {...applyDataAttr(dataLayoutId)}>
         <div className={styles.container}>
           <FocusTrap
-            active={isOpen}
+            active={isOpen && !disableFocusTrap}
             focusTrapOptions={{
               initialFocus: initialFocusRef?.current || undefined,
               fallbackFocus: () => ref.current!,

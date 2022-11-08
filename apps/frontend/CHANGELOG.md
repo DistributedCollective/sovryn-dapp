@@ -1,5 +1,21 @@
 # frontend
 
+## 0.1.3
+
+### Patch Changes
+
+- 548f6a1: feat: dapp header added
+- 4b5c737: SOV-807: Environment switching
+- 51b7c57: SOV-828: SocialLinks and LinkBase components
+- Updated dependencies [548f6a1]
+- Updated dependencies [801e2b8]
+- Updated dependencies [07712d9]
+- Updated dependencies [2f26923]
+- Updated dependencies [51b7c57]
+- Updated dependencies [801e2b8]
+- Updated dependencies [49455af]
+  - @sovryn/ui@0.0.7
+
 ## 0.1.2
 
 ### Patch Changes

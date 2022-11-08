@@ -1,4 +1,5 @@
 import { ChainId } from '@sovryn/ethers-provider';
+
 import { Network, networkMap } from '../config/networks';
 
 export const getNetworkByChainId = (chainId: ChainId): Network => {

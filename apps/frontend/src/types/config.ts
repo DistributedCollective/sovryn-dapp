@@ -1,6 +1,8 @@
-import type { ChainId } from '@sovryn/ethers-provider';
 import { ContractInterface } from 'ethers';
-import contracts from '../config/contracts';
+
+import type { ChainId } from '@sovryn/ethers-provider';
+
+import { contracts } from '../config/contracts';
 
 export type ContractGroup = keyof typeof contracts;
 

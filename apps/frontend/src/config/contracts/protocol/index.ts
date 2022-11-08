@@ -1,7 +1,10 @@
 import { AsyncContractConfigData } from '../../../types/config';
+import { Network } from '../../networks';
 import rsk from './rsk';
 
-const protocol: Record<string, Record<string, AsyncContractConfigData>> = {
+const protocol: Partial<
+  Record<Network, Record<string, AsyncContractConfigData>>
+> = {
   rsk,
 };
 

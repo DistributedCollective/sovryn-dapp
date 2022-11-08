@@ -1,15 +1,17 @@
-import { ChainId } from '@sovryn/ethers-provider';
+import { ContractInterface } from 'ethers';
 import get from 'lodash.get';
 import set from 'lodash.set';
+
+import { ChainId } from '@sovryn/ethers-provider';
+
 import { Network } from '../../config/networks';
-import { getChainIdByNetwork, getNetworkByChainId } from '../helpers';
 import type {
   AsyncContractConfigData,
   ContractConfigData,
   ContractData,
   ContractGroup,
 } from '../../types/config';
-import { ContractInterface } from 'ethers';
+import { getChainIdByNetwork, getNetworkByChainId } from '../helpers';
 
 const cacheByAddress = new Map<string, ContractData>();
 const cacheByKey: Record<
@@ -23,7 +25,9 @@ export const findContract = async (address: string): Promise<ContractData> => {
     return cacheByAddress.get(address)!;
   }
 
-  const contracts = await import('../../config/contracts').then(m => m.default);
+  const contracts = await import('../../config/contracts').then(
+    m => m.contracts,
+  );
 
   const groups = Object.keys(contracts);
   let contractData: ContractData | undefined;
@@ -71,7 +75,9 @@ export const getContract = async (
     return cached;
   }
 
-  const contracts = await import('../../config/contracts').then(m => m.default);
+  const contracts = await import('../../config/contracts').then(
+    m => m.contracts,
+  );
 
   const contract: string | AsyncContractConfigData = get(contracts, [
     group,

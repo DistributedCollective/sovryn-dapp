@@ -1,6 +1,6 @@
 import { ChainIds } from '@sovryn/ethers-provider';
 
-import contracts from '../../config/contracts';
+import { contracts } from '../../config/contracts';
 import {
   getLoanTokenContract,
   getProtocolContract,

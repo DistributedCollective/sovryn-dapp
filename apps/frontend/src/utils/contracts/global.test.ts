@@ -1,7 +1,7 @@
 import { ChainIds } from '@sovryn/ethers-provider';
 
 import erc20 from '../../config/abis/erc20.json';
-import contracts from '../../config/contracts';
+import { contracts } from '../../config/contracts';
 import { findContract, getContract, getContractGroupAbi } from './global';
 
 const RSK_XUSD_ADDRESS = contracts.tokens.rsk?.xusd!;
@@ -44,7 +44,7 @@ describe('utils/contracts/global.ts', () => {
   });
 
   describe('getContract', () => {
-    it('get xusd contract', async () => {
+    it('gets xusd contract', async () => {
       const token = await getContract('xusd', 'tokens', ChainIds.RSK_MAINNET);
       expect(token.address).toBe(RSK_XUSD_ADDRESS.toLowerCase());
     });

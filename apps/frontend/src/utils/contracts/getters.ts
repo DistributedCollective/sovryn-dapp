@@ -1,4 +1,5 @@
 import { ChainId, ChainIds } from '@sovryn/ethers-provider';
+
 import { ContractConfigData } from '../../types/config';
 import { getContract } from './global';
 

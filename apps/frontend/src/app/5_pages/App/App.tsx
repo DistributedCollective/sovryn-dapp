@@ -53,11 +53,11 @@ function App() {
             Learn React
           </a>
 
-            <Button text="Open Dialog" onClick={toggle} />
+          <Button text="Open Dialog" onClick={toggle} />
 
-            <Dialog isOpen={isOpen} onClose={toggle}>
-              <div className="p-4">Hello.</div>
-            </Dialog>
+          <Dialog isOpen={isOpen} onClose={toggle}>
+            <div className="p-4">Hello.</div>
+          </Dialog>
 
           <Dropdown text={currentLang.toUpperCase()} className="my-4">
             <Menu>
@@ -132,8 +132,8 @@ function App() {
             />
           </div>
 
-            <br />
-            <br />
+          <br />
+          <br />
 
           <p>{t(translations.wallet)}</p>
           <br />

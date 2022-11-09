@@ -1,5 +1,17 @@
 # @sovryn/ui
 
+## 0.0.7
+
+### Patch Changes
+
+- 548f6a1: feat: dapp header added
+- 801e2b8: SOV-631: fix input size prop and tooltip z-index
+- 07712d9: SOV-931: use Paragraph component for vertical tabs
+- 2f26923: SOV-931: match figma for VerticalTabs menu labels
+- 51b7c57: SOV-828: SocialLinks and LinkBase components
+- 801e2b8: SOV-631: add posibility to disable focus trap from dialog
+- 49455af: SOV-892: Tab component styling updates
+
 ## 0.0.6
 
 ### Patch Changes

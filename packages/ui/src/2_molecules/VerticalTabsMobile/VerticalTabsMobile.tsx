@@ -5,7 +5,6 @@ import classNames from 'classnames';
 import styles from './VerticalTabsMobile.module.css';
 import { VerticalTabsMobileProps } from './VerticalTabsMobile.types';
 import { VerticalTabMobileItem } from './components/VerticalTabMobileItem';
-import { Icon } from '../../1_atoms';
 
 export const VerticalTabsMobile: FC<VerticalTabsMobileProps> = ({
   selectedIndex = null,
@@ -13,7 +12,6 @@ export const VerticalTabsMobile: FC<VerticalTabsMobileProps> = ({
 }) => {
   const sidebarRef = useRef<HTMLElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
-  const handleBack = useCallback(() => props.onChange?.(null), [props]);
 
   const maybeRenderHeader = useMemo(() => {
     if (props.header) {
@@ -61,9 +59,6 @@ export const VerticalTabsMobile: FC<VerticalTabsMobileProps> = ({
           className={classNames(styles.content, props.contentClassName)}
           ref={contentRef}
         >
-          <button onClick={handleBack} className={styles.buttonBack}>
-            <Icon icon="arrow-back" size={14} /> Back to wallet menu
-          </button>
           {renderContent}
         </div>
       )}

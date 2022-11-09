@@ -16,11 +16,12 @@
 
 .content {
   @apply w-full h-full bg-gray-90 py-6 px-7 relative overflow-y-auto;
-}
-
-.buttonBack {
-  @apply flex items-center text-sm mb-11;
-  & svg {
-    @apply bg-gray-70 w-6 h-6 p-1 mr-2 rounded flex items-center justify-center;
+  & button {
+    &:first-child {
+      @apply flex items-center text-sm mb-11;
+      & svg {
+        @apply bg-gray-70 w-6 h-6 p-1 mr-2 rounded flex items-center justify-center;
+      }
+    }
   }
 }

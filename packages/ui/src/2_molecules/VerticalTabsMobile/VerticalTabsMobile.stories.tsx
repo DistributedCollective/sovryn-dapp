@@ -3,7 +3,7 @@ import { Story } from '@storybook/react';
 
 import { ComponentProps, useCallback, useReducer, useState } from 'react';
 
-import { Button, Heading } from '../../1_atoms';
+import { Button, Heading, Icon } from '../../1_atoms';
 import { Dialog } from '../Dialog/Dialog';
 import { DialogSize } from '../Dialog/Dialog.types';
 import { VerticalTabsMobile } from './VerticalTabsMobile';
@@ -53,14 +53,47 @@ const DialogTemplate: Story<
 export const Basic = Template.bind({});
 Basic.args = {
   items: [
-    { label: 'Tab 1', content: 'Tab 1 Content' },
-    { label: 'Tab 2', content: 'Tab 2 Content' },
-    { label: 'Tab 3', content: 'Tab 3 Content' },
+    {
+      label: 'Tab 1',
+      content: (
+        <>
+          <button>
+            <Icon icon="arrow-back" size={14} /> Back to wallet menu
+          </button>{' '}
+          Tab 1 Content
+        </>
+      ),
+    },
+    {
+      label: 'Tab 2',
+      content: (
+        <>
+          <button>
+            <Icon icon="arrow-back" size={14} /> Back to wallet menu
+          </button>{' '}
+          Tab 2 Content
+        </>
+      ),
+    },
+    {
+      label: 'Tab 3',
+      content: (
+        <>
+          <button>
+            <Icon icon="arrow-back" size={14} /> Back to wallet menu
+          </button>{' '}
+          Tab 3 Content
+        </>
+      ),
+    },
     {
       label: 'Tab4 ',
       infoText: 'Example with long content',
       content: (
         <div>
+          <button>
+            <Icon icon="arrow-back" size={14} /> Back to wallet menu
+          </button>{' '}
           <Heading>Long List</Heading>
           <ol>
             {new Array(100).fill('Row').map((item, index) => (

@@ -3,7 +3,6 @@ import React, { FC, useCallback, useMemo } from 'react';
 import classNames from 'classnames';
 import { useTranslation } from 'react-i18next';
 
-import { ChainIds } from '@sovryn/ethers-provider';
 import {
   Button,
   ButtonStyle,
@@ -14,6 +13,7 @@ import {
 } from '@sovryn/ui';
 
 import { useWalletConnect } from '../../../hooks';
+import { requiredChain } from '../../../utils/constants';
 
 type WrongNetworkSwitcherProps = {
   className?: string;
@@ -28,12 +28,12 @@ export const WrongNetworkSwitcher: FC<WrongNetworkSwitcherProps> = ({
   const isWrongChain = useMemo(() => {
     return (
       wallets[0]?.accounts[0]?.address &&
-      wallets[0].chains[0].id !== ChainIds.RSK_TESTNET
+      wallets[0].chains[0].id !== requiredChain
     );
   }, [wallets]);
 
   const switchChain = useCallback(() => {
-    switchNetwork(ChainIds.RSK_TESTNET);
+    switchNetwork(requiredChain);
   }, [switchNetwork]);
 
   if (!isWrongChain) return null;
@@ -59,7 +59,7 @@ export const WrongNetworkSwitcher: FC<WrongNetworkSwitcherProps> = ({
         </Paragraph>
       </div>
       <Paragraph className="mt-3 ml-7 text-sovryn-black font-medium">
-        {t('wrongNetworkSwitcher.description')}
+        {t('wrongNetworkSwitcher.description', { network: requiredChain })}
       </Paragraph>
       <Button
         className="mb-2 mt-7 ml-7"

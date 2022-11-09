@@ -10,6 +10,6 @@
     },
     "wrongNetworkSwitcher": {
         "title": "Wrong network",
-        "description": "We detected that you are curently conected to the wrong network. please swich to the RSK network in your browser wallet"
+        "description": "We detected that you are currently connected to the wrong network. Please switch your wallet to use {{network}} network."
     }
 }

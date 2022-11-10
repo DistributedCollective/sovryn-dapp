@@ -1,5 +1,14 @@
 # frontend
 
+## 0.1.4
+
+### Patch Changes
+
+- 6a9f57d: SOV-826: Add SovrynLogo component
+- 9d45ade: SOV-813: add helper functions to find contracts
+- Updated dependencies [c106055]
+  - @sovryn/ui@0.0.8
+
 ## 0.1.3
 
 ### Patch Changes

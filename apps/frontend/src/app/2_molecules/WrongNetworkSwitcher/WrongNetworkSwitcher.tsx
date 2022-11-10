@@ -36,7 +36,9 @@ export const WrongNetworkSwitcher: FC<WrongNetworkSwitcherProps> = ({
     switchNetwork(requiredChain);
   }, [switchNetwork]);
 
-  if (!isWrongChain) return null;
+  if (!isWrongChain) {
+    return null;
+  }
 
   return (
     <div

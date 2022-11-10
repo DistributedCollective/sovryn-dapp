@@ -3,5 +3,5 @@
 }
 
 .dropdown {
-  width: 170px;
+  @apply w-40;
 }

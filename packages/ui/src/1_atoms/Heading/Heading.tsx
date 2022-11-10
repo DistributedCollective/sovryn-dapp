@@ -22,7 +22,7 @@ export const Heading: FC<HeadingProps> = ({
   React.createElement(
     type,
     {
-      className: classNames(styles.heading, styles[type], className),
+      className: classNames(styles[type], className),
       [DATA_ATTRIBUTE]: dataLayoutId,
     },
     children,

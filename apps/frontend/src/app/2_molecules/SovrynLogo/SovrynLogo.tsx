@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useMemo } from 'react';
 
 import { applyDataAttr, LinkBase } from '@sovryn/ui';
 
@@ -19,7 +19,7 @@ export const SovrynLogo: React.FC<SovrynLogoProps> = ({
   dataAttribute,
   className,
 }) => {
-  const Logo = useCallback(
+  const Logo = useMemo(
     () => (
       <img
         src={image}
@@ -36,10 +36,10 @@ export const SovrynLogo: React.FC<SovrynLogoProps> = ({
     <>
       {link ? (
         <LinkBase href={link} openNewTab={false}>
-          <Logo />
+          {Logo}
         </LinkBase>
       ) : (
-        <Logo />
+        { Logo }
       )}
     </>
   );

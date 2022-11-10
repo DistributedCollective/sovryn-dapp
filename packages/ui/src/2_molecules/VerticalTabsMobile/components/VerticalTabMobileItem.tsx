@@ -10,16 +10,14 @@ export const VerticalTabMobileItem: FC<VerticalTabMobileItemButtonProps> = ({
   infoText,
   dataLayoutId,
   onClick,
-}) => {
-  return (
-    <button
-      className={styles.button}
-      disabled={disabled}
-      {...applyDataAttr(dataLayoutId)}
-      onClick={onClick}
-    >
-      <p className={styles.label}>{label}</p>
-      {infoText && <small className={styles.info}>{infoText}</small>}
-    </button>
-  );
-};
+}) => (
+  <button
+    className={styles.button}
+    disabled={disabled}
+    {...applyDataAttr(dataLayoutId)}
+    onClick={onClick}
+  >
+    <p className={styles.label}>{label}</p>
+    {infoText && <small className={styles.info}>{infoText}</small>}
+  </button>
+);

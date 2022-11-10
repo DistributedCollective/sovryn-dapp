@@ -1,12 +1,16 @@
 import { useArgs } from '@storybook/client-api';
 import { Story } from '@storybook/react';
 
-import { ComponentProps, useCallback, useReducer, useState } from 'react';
+import { ComponentProps, FC, useCallback, useReducer, useState } from 'react';
 
 import { Button, Heading, Icon } from '../../1_atoms';
 import { Dialog } from '../Dialog/Dialog';
 import { DialogSize } from '../Dialog/Dialog.types';
 import { VerticalTabsMobile } from './VerticalTabsMobile';
+
+type ButtonBackProps = {
+  onClick: () => void;
+};
 
 const EXCLUDED_CONTROLS = ['header', 'onChange'];
 
@@ -19,6 +23,19 @@ export default {
       exclude: EXCLUDED_CONTROLS,
     },
   },
+};
+
+const ButtonBack: FC<ButtonBackProps> = ({ onClick }) => {
+  return (
+    <button className="flex items-center text-sm mb-11" onClick={onClick}>
+      <Icon
+        icon="arrow-back"
+        className="bg-gray-70 w-6 h-6 p-1 mr-2 rounded flex items-center justify-center"
+        size={14}
+      />
+      Back to wallet menu
+    </button>
+  );
 };
 
 const Template: Story<ComponentProps<typeof VerticalTabsMobile>> = args => {
@@ -47,10 +64,7 @@ const DialogTemplate: Story<ComponentProps<typeof VerticalTabsMobile>> = () => {
               label: 'Tab 1',
               content: (
                 <>
-                  <button onClick={() => setSelectedIndex(null)}>
-                    <Icon icon="arrow-back" size={14} />
-                    Back to wallet menu
-                  </button>
+                  <ButtonBack onClick={() => setSelectedIndex(null)} />
                   Tab 1 Content
                 </>
               ),
@@ -59,10 +73,7 @@ const DialogTemplate: Story<ComponentProps<typeof VerticalTabsMobile>> = () => {
               label: 'Tab 2',
               content: (
                 <>
-                  <button onClick={() => setSelectedIndex(null)}>
-                    <Icon icon="arrow-back" size={14} />
-                    Back to wallet menu
-                  </button>
+                  <ButtonBack onClick={() => setSelectedIndex(null)} />
                   Tab 2 Content
                 </>
               ),
@@ -83,10 +94,7 @@ Basic.args = {
       label: 'Tab 1',
       content: (
         <>
-          <button onClick={() => alert('backButton clicked')}>
-            <Icon icon="arrow-back" size={14} />
-            Back to wallet menu
-          </button>{' '}
+          <ButtonBack onClick={() => alert('backButton clicked')} />
           Tab 1 Content
         </>
       ),
@@ -95,10 +103,7 @@ Basic.args = {
       label: 'Tab 2',
       content: (
         <>
-          <button onClick={() => alert('backButton clicked')}>
-            <Icon icon="arrow-back" size={14} />
-            Back to wallet menu
-          </button>{' '}
+          <ButtonBack onClick={() => alert('backButton clicked')} />
           Tab 2 Content
         </>
       ),
@@ -107,10 +112,7 @@ Basic.args = {
       label: 'Tab 3',
       content: (
         <>
-          <button onClick={() => alert('backButton clicked')}>
-            <Icon icon="arrow-back" size={14} />
-            Back to wallet menu
-          </button>{' '}
+          <ButtonBack onClick={() => alert('backButton clicked')} />
           Tab 3 Content
         </>
       ),

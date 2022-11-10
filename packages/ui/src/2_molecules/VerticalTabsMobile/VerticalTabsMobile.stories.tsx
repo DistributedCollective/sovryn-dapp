@@ -31,9 +31,7 @@ const Template: Story<ComponentProps<typeof VerticalTabsMobile>> = args => {
   return <VerticalTabsMobile {...args} onChange={handleOnChange} />;
 };
 
-const DialogTemplate: Story<
-  ComponentProps<typeof VerticalTabsMobile>
-> = args => {
+const DialogTemplate: Story<ComponentProps<typeof VerticalTabsMobile>> = () => {
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const [isDialogOpen, toggle] = useReducer(a => !a, false);
   return (
@@ -41,7 +39,35 @@ const DialogTemplate: Story<
       <Button onClick={toggle} text="Open Dialog" />
       <Dialog isOpen={isDialogOpen} width={DialogSize.xl2}>
         <VerticalTabsMobile
-          {...args}
+          className="rounded-lg"
+          tabsClassName="rounded-l-lg"
+          header={() => <p>Select the type of wallet you have</p>}
+          items={[
+            {
+              label: 'Tab 1',
+              content: (
+                <>
+                  <button onClick={() => setSelectedIndex(null)}>
+                    <Icon icon="arrow-back" size={14} />
+                    Back to wallet menu
+                  </button>
+                  Tab 1 Content
+                </>
+              ),
+            },
+            {
+              label: 'Tab 2',
+              content: (
+                <>
+                  <button onClick={() => setSelectedIndex(null)}>
+                    <Icon icon="arrow-back" size={14} />
+                    Back to wallet menu
+                  </button>
+                  Tab 2 Content
+                </>
+              ),
+            },
+          ]}
           selectedIndex={selectedIndex}
           onChange={setSelectedIndex}
         />
@@ -57,8 +83,9 @@ Basic.args = {
       label: 'Tab 1',
       content: (
         <>
-          <button>
-            <Icon icon="arrow-back" size={14} /> Back to wallet menu
+          <button onClick={() => alert('backButton clicked')}>
+            <Icon icon="arrow-back" size={14} />
+            Back to wallet menu
           </button>{' '}
           Tab 1 Content
         </>
@@ -68,8 +95,9 @@ Basic.args = {
       label: 'Tab 2',
       content: (
         <>
-          <button>
-            <Icon icon="arrow-back" size={14} /> Back to wallet menu
+          <button onClick={() => alert('backButton clicked')}>
+            <Icon icon="arrow-back" size={14} />
+            Back to wallet menu
           </button>{' '}
           Tab 2 Content
         </>
@@ -79,8 +107,9 @@ Basic.args = {
       label: 'Tab 3',
       content: (
         <>
-          <button>
-            <Icon icon="arrow-back" size={14} /> Back to wallet menu
+          <button onClick={() => alert('backButton clicked')}>
+            <Icon icon="arrow-back" size={14} />
+            Back to wallet menu
           </button>{' '}
           Tab 3 Content
         </>
@@ -91,8 +120,9 @@ Basic.args = {
       infoText: 'Example with long content',
       content: (
         <div>
-          <button>
-            <Icon icon="arrow-back" size={14} /> Back to wallet menu
+          <button onClick={() => alert('backButton clicked')}>
+            <Icon icon="arrow-back" size={14} />
+            Back to wallet menu
           </button>{' '}
           <Heading>Long List</Heading>
           <ol>
@@ -111,32 +141,7 @@ Basic.args = {
 };
 
 export const InDialog = DialogTemplate.bind({});
-InDialog.args = {
-  items: [
-    {
-      label: 'Hardware Wallet',
-      infoText: 'Select the hardware wallet you want to connect',
-      content: 'Content of HW tab',
-    },
-    {
-      label: 'Browser Wallet',
-      infoText: 'Select the web3 wallet you want to connect',
-      content: 'Content of BW tab',
-    },
-    {
-      label: "Don't have a wallet?",
-      infoText: 'Read the following instructions',
-      content: 'Content of wallet info',
-    },
-  ],
-  header: () => <p>Select the type of wallet you have</p>,
-  tabsClassName: 'rounded-l-lg',
-  className: 'rounded-lg',
-};
 
 InDialog.parameters = {
   layout: 'centered',
-  controls: {
-    exclude: [...EXCLUDED_CONTROLS, 'selectedIndex'],
-  },
 };

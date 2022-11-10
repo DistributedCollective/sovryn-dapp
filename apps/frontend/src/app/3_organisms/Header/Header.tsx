@@ -10,6 +10,8 @@ import {
 } from '@sovryn/ui';
 
 import { ConnectWalletButton, WrongNetworkSwitcher } from '../../2_molecules';
+import { SovrynLogo } from '../../2_molecules/SovrynLogo/SovrynLogo';
+
 import { useWalletConnect } from '../../../hooks';
 
 export const Header: FC = () => {
@@ -18,7 +20,7 @@ export const Header: FC = () => {
 
   return (
     <UIHeader
-      logo={<div>Sovryn</div>}
+      logo={<SovrynLogo dataAttribute="logo" text="Sovryn" link="/" />}
       menuItems={
         <>
           <NavMenuItem className="mr-2" isActive children="Zero" />

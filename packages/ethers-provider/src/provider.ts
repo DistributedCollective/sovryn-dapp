@@ -32,7 +32,7 @@ export function getProvider(
     throw new Error('No chain found');
   }
 
-  const rpc = chain.rpcUrl === 'string' ? chain.rpcUrl : chain.rpcUrl[0];
+  const rpc = typeof chain.rpcUrl === 'string' ? chain.rpcUrl : chain.rpcUrl[0];
 
   if (!ethersProviders[rpc]) {
     if (Array.isArray(chain.rpcUrl)) {

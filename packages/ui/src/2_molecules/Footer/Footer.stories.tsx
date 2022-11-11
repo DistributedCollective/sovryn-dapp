@@ -48,7 +48,7 @@ Basic.args = {
   ),
   links: (
     <>
-      <Link href="/zero" text="Zero" className="mr-2" />
+      <Link href="/zero" text="Zero" className="mr-7" />
       <Link href="/perpetuals" text="Perpetuals" />
     </>
   ),
@@ -57,7 +57,7 @@ Basic.args = {
       {socials.map(item => (
         <LinkBase
           key={item.id}
-          className="ml-2 border border-white/10 text-sov-white rounded-full w-6 h-6 p-0.5 flex justify-center items-center hover:bg-gray-80"
+          className="ml-2 border border-white/10 text-sov-white rounded-full w-6 h-6 p-1.5 flex justify-center items-center hover:bg-gray-80"
           href="/"
           children={<Icon icon={item.icon} size={14} />}
         />

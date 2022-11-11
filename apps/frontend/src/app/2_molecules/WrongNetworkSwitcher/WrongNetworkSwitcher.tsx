@@ -12,12 +12,14 @@ import {
   ParagraphSize,
 } from '@sovryn/ui';
 
+import { chains, defaultChainId } from '../../../config/chains';
 import { useWalletConnect } from '../../../hooks';
-import { requiredChain } from '../../../utils/constants';
 
 type WrongNetworkSwitcherProps = {
   className?: string;
 };
+
+const defaultChain = chains.find(chain => chain.id === defaultChainId);
 
 export const WrongNetworkSwitcher: FC<WrongNetworkSwitcherProps> = ({
   className,
@@ -28,12 +30,12 @@ export const WrongNetworkSwitcher: FC<WrongNetworkSwitcherProps> = ({
   const isWrongChain = useMemo(() => {
     return (
       wallets[0]?.accounts[0]?.address &&
-      wallets[0].chains[0].id !== requiredChain
+      wallets[0].chains[0].id !== defaultChainId
     );
   }, [wallets]);
 
   const switchChain = useCallback(() => {
-    switchNetwork(requiredChain);
+    switchNetwork(defaultChainId);
   }, [switchNetwork]);
 
   if (!isWrongChain) {
@@ -61,7 +63,9 @@ export const WrongNetworkSwitcher: FC<WrongNetworkSwitcherProps> = ({
         </Paragraph>
       </div>
       <Paragraph className="mt-3 ml-7 text-sovryn-black font-medium">
-        {t('wrongNetworkSwitcher.description', { network: requiredChain })}
+        {t('wrongNetworkSwitcher.description', {
+          network: defaultChain?.label,
+        })}
       </Paragraph>
       <Button
         className="mb-2 mt-7 ml-7"

@@ -8,7 +8,7 @@ import { Footer } from './Footer';
 
 const socials = [
   {
-    id: 'twitter',
+    id: 'discord',
     icon: 'discord-logo',
   },
   {

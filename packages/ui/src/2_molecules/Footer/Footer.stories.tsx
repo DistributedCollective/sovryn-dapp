@@ -96,3 +96,21 @@ const Advanced: Story<ComponentProps<typeof Footer>> = args => (
 
 export const FixedFooter = Advanced.bind({});
 FixedFooter.args = footerArgs;
+
+const LargeScreen: Story<ComponentProps<typeof Footer>> = args => (
+  <div className="min-h-[100rem] bg-gray-90">
+    <Header
+      logo={
+        <Link
+          href="/"
+          text={<img className="max-h-4" src={SovrynLogo} alt="Sovryn logo" />}
+        />
+      }
+    />
+    <p className="p-4">Scroll down...</p>
+    <Footer {...args} />
+  </div>
+);
+
+export const LargeScreenFooter = LargeScreen.bind({});
+LargeScreenFooter.args = footerArgs;

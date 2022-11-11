@@ -1,0 +1,67 @@
+import { Story } from '@storybook/react';
+
+import React, { ComponentProps } from 'react';
+
+import { Icon, Link, LinkBase } from '../../1_atoms';
+import SovrynLogo from '../../../assets/images/logo-sovryn.svg';
+import { Footer } from './Footer';
+
+const socials = [
+  {
+    id: 'twitter',
+    icon: 'discord-logo',
+  },
+  {
+    id: 'github',
+    icon: 'github-logo',
+  },
+];
+
+export default {
+  title: 'Molecule/Footer',
+  component: Footer,
+  parameters: {
+    backgrounds: {
+      default: 'custom',
+      values: [
+        {
+          name: 'custom',
+          value: 'white',
+        },
+      ],
+    },
+  },
+};
+
+const Template: Story<ComponentProps<typeof Footer>> = args => (
+  <Footer {...args} />
+);
+
+export const Basic = Template.bind({});
+Basic.args = {
+  dataLayoutId: '',
+  leftContent: (
+    <Link
+      href="/"
+      text={<img className="max-h-4" src={SovrynLogo} alt="Sovryn logo" />}
+    />
+  ),
+  links: (
+    <>
+      <Link href="/zero" text="Zero" className="mr-2" />
+      <Link href="/perpetuals" text="Perpetuals" />
+    </>
+  ),
+  rightContent: (
+    <>
+      {socials.map(item => (
+        <LinkBase
+          key={item.id}
+          className="ml-2 border border-white/10 text-sov-white rounded-full w-6 h-6 p-0.5 flex justify-center items-center hover:bg-gray-80"
+          href="/"
+          children={<Icon icon={item.icon} size={14} />}
+        />
+      ))}
+    </>
+  ),
+};

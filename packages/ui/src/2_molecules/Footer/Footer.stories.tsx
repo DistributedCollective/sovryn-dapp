@@ -4,6 +4,7 @@ import React, { ComponentProps } from 'react';
 
 import { Icon, Link, LinkBase } from '../../1_atoms';
 import SovrynLogo from '../../../assets/images/logo-sovryn.svg';
+import { Header } from '../Header';
 import { Footer } from './Footer';
 
 const socials = [
@@ -17,28 +18,7 @@ const socials = [
   },
 ];
 
-export default {
-  title: 'Molecule/Footer',
-  component: Footer,
-  parameters: {
-    backgrounds: {
-      default: 'custom',
-      values: [
-        {
-          name: 'custom',
-          value: 'white',
-        },
-      ],
-    },
-  },
-};
-
-const Template: Story<ComponentProps<typeof Footer>> = args => (
-  <Footer {...args} />
-);
-
-export const Basic = Template.bind({});
-Basic.args = {
+const footerArgs = {
   dataLayoutId: '',
   leftContent: (
     <Link
@@ -76,3 +56,43 @@ Basic.args = {
     </>
   ),
 };
+
+export default {
+  title: 'Molecule/Footer',
+  component: Footer,
+  parameters: {
+    backgrounds: {
+      default: 'custom',
+      values: [
+        {
+          name: 'custom',
+          value: 'white',
+        },
+      ],
+    },
+  },
+};
+
+const Template: Story<ComponentProps<typeof Footer>> = args => (
+  <Footer {...args} />
+);
+
+export const Basic = Template.bind({});
+Basic.args = footerArgs;
+
+const Advanced: Story<ComponentProps<typeof Footer>> = args => (
+  <div className="min-h-96 bg-gray-90">
+    <Header
+      logo={
+        <Link
+          href="/"
+          text={<img className="max-h-4" src={SovrynLogo} alt="Sovryn logo" />}
+        />
+      }
+    />
+    <Footer {...args} />
+  </div>
+);
+
+export const FixedFooter = Advanced.bind({});
+FixedFooter.args = footerArgs;

@@ -1,20 +1,19 @@
 import { providers } from 'ethers';
 
+import { FallbackProvider } from './lib/fallback-provider';
 import { state } from './store';
 import type { Chain, ChainId } from './types';
 
 export const ethersProviders: {
-  [key: string]: providers.StaticJsonRpcProvider;
+  [key: string]: providers.Provider;
 } = {};
 
-export function getProvider(): providers.StaticJsonRpcProvider;
-export function getProvider(
-  chain: ChainId | Chain,
-): providers.StaticJsonRpcProvider;
+export function getProvider(): providers.Provider;
+export function getProvider(chain: ChainId | Chain): providers.Provider;
 
 export function getProvider(
   chainOrChainId?: ChainId | Chain,
-): providers.StaticJsonRpcProvider {
+): providers.Provider {
   let chain: Chain | undefined;
 
   if (chainOrChainId === undefined) {
@@ -33,13 +32,22 @@ export function getProvider(
     throw new Error('No chain found');
   }
 
-  if (!ethersProviders[chain.rpcUrl]) {
-    ethersProviders[chain.rpcUrl] = new providers.StaticJsonRpcProvider(
-      chain.providerConnectionInfo && chain.providerConnectionInfo.url
-        ? chain.providerConnectionInfo
-        : chain.rpcUrl,
-    );
+  const rpc = typeof chain.rpcUrl === 'string' ? chain.rpcUrl : chain.rpcUrl[0];
+
+  if (!ethersProviders[rpc]) {
+    if (Array.isArray(chain.rpcUrl)) {
+      const rpcs = chain.rpcUrl.map(
+        url => new providers.StaticJsonRpcProvider(url),
+      );
+      ethersProviders[rpc] = new FallbackProvider(rpcs, 1);
+    } else {
+      ethersProviders[rpc] = new providers.StaticJsonRpcProvider(
+        chain.providerConnectionInfo && chain.providerConnectionInfo.url
+          ? chain.providerConnectionInfo
+          : rpc,
+      );
+    }
   }
 
-  return ethersProviders[chain.rpcUrl];
+  return ethersProviders[rpc];
 }

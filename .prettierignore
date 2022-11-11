@@ -5,3 +5,4 @@ package-lock.json
 yarn.lock
 **/build
 **/dist
+packages/ethers-provider/src/lib

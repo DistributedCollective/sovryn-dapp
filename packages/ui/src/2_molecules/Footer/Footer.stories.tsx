@@ -48,8 +48,19 @@ Basic.args = {
   ),
   links: (
     <>
-      <Link href="/zero" text="Zero" className="mr-7" />
-      <Link href="/perpetuals" text="Perpetuals" />
+      <Link href="/" text="Getting started" className="mr-7" />
+      <Link
+        href="https://live.sovryn.app"
+        openNewTab
+        text="Sovryn Alpha"
+        className="mr-7"
+      />
+      <Link
+        href="https://www.sovryn.app/blog"
+        openNewTab
+        text="Blog"
+        className="mr-7"
+      />
     </>
   ),
   rightContent: (

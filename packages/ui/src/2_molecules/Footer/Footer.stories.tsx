@@ -80,7 +80,7 @@ const Template: Story<ComponentProps<typeof Footer>> = args => (
 export const Basic = Template.bind({});
 Basic.args = footerArgs;
 
-const Advanced: Story<ComponentProps<typeof Footer>> = args => (
+const MidHeight: Story<ComponentProps<typeof Footer>> = args => (
   <div className="min-h-96 bg-gray-90">
     <Header
       logo={
@@ -94,10 +94,10 @@ const Advanced: Story<ComponentProps<typeof Footer>> = args => (
   </div>
 );
 
-export const FixedFooter = Advanced.bind({});
-FixedFooter.args = footerArgs;
+export const MidContentHeight = MidHeight.bind({});
+MidContentHeight.args = footerArgs;
 
-const LargeScreen: Story<ComponentProps<typeof Footer>> = args => (
+const HightHeight: Story<ComponentProps<typeof Footer>> = args => (
   <div className="min-h-[100rem] bg-gray-90">
     <Header
       logo={
@@ -112,5 +112,5 @@ const LargeScreen: Story<ComponentProps<typeof Footer>> = args => (
   </div>
 );
 
-export const LargeScreenFooter = LargeScreen.bind({});
-LargeScreenFooter.args = footerArgs;
+export const HightContentHeight = HightHeight.bind({});
+HightContentHeight.args = footerArgs;

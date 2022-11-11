@@ -26,8 +26,9 @@ describe('actions and state', () => {
   it('should add new chain', () => {
     addChains(chains);
     const newChain = {
-      id: ChainIds.MAINNET,
-      label: 'Mainnet',
+      id: ChainIds.ROPSTEN,
+      label: 'Ropsten',
+      symbol: 'rETH',
       rpcUrl: 'https://updated-url.com',
     };
     updateChain(newChain);

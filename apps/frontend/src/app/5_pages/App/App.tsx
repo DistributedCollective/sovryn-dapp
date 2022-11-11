@@ -13,12 +13,12 @@ import {
 } from '@sovryn/ui';
 
 import { SocialLinks, ConnectWalletButton } from '../../2_molecules';
+import { ExampleProviderCall } from '../../2_molecules/ExampleProviderCall';
 import { TransactionStep, Header } from '../../3_organisms';
 import { useTheme } from '../../../hooks/useTheme';
 import { useWalletConnect } from '../../../hooks/useWalletConnect';
 import { translations, languages } from '../../../locales/i18n';
 import { AppTheme } from '../../../types/tailwind';
-import styles from './App.module.css';
 
 function App() {
   const { handleThemeChange } = useTheme();
@@ -42,16 +42,9 @@ function App() {
       <Header />
       <div className="my-2 px-4">
         <div>
-          <p className={styles.test}>
-            Edit <code>src/App.tsx</code> and save to reload.
-          </p>
-          <a
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
+          <ExampleProviderCall />
+
+          <hr className="my-12" />
 
           <Button text="Open Dialog" onClick={toggle} />
 

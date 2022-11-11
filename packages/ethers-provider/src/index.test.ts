@@ -26,6 +26,7 @@ describe('#init', () => {
     const newChain = {
       id: '123',
       label: 'New Chain',
+      symbol: 'NEW',
       rpcUrl: 'http://localhost:8545',
     };
     config.addChains([newChain]);
@@ -39,7 +40,7 @@ describe('#init', () => {
       label: 'Updated Chain',
     };
     config.updateChain(updatedChain);
-    expect(config.chains()).toEqual([updatedChain, chains[1]]);
+    expect(config.chains()).toEqual([updatedChain, chains[1], chains[2]]);
   });
 
   it('should be able to subscribe to observable (with seed data)', done => {

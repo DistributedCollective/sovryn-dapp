@@ -1,5 +1,15 @@
 # frontend
 
+## 0.1.5
+
+### Patch Changes
+
+- fd6cfc2: SOV-817: blockchain rpc fallback
+- Updated dependencies [fd6cfc2]
+- Updated dependencies [ae7b3f8]
+  - @sovryn/ethers-provider@0.0.1
+  - @sovryn/ui@0.0.9
+
 ## 0.1.4
 
 ### Patch Changes

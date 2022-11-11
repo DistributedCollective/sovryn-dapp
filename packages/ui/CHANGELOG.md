@@ -1,5 +1,11 @@
 # @sovryn/ui
 
+## 0.0.9
+
+### Patch Changes
+
+- ae7b3f8: chore: add missing arrow icons
+
 ## 0.0.8
 
 ### Patch Changes

@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 
 import { startWith } from 'rxjs/operators';
 
+import { ChainId } from '@sovryn/ethers-provider';
 import { WalletState } from '@sovryn/onboard-core';
 import { connectWallet$ } from '@sovryn/onboard-core/dist/streams';
 
@@ -19,6 +20,14 @@ export const useWalletConnect = () => {
   const disconnectWallet = useCallback(async () => {
     await onboard.disconnectWallet();
   }, []);
+
+  const switchNetwork = useCallback(
+    (chainId: ChainId) =>
+      onboard.setChain({
+        chainId,
+      }),
+    [],
+  );
 
   useEffect(() => {
     const sub = connectWallet$
@@ -40,5 +49,6 @@ export const useWalletConnect = () => {
     disconnectWallet,
     wallets,
     pending,
+    switchNetwork,
   };
 };

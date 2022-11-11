@@ -9,8 +9,9 @@ import {
   DropdownSize,
 } from '@sovryn/ui';
 
-import { ConnectWalletButton } from '../../2_molecules';
+import { ConnectWalletButton, WrongNetworkSwitcher } from '../../2_molecules';
 import { SovrynLogo } from '../../2_molecules/SovrynLogo/SovrynLogo';
+
 import { useWalletConnect } from '../../../hooks';
 
 export const Header: FC = () => {
@@ -28,12 +29,15 @@ export const Header: FC = () => {
       }
       secondaryContent={
         <>
-          <ConnectWalletButton
-            onConnect={connectWallet}
-            onDisconnect={disconnectWallet}
-            address={wallets[0]?.accounts[0]?.address}
-            pending={pending}
-          />
+          <div className="relative">
+            <ConnectWalletButton
+              onConnect={connectWallet}
+              onDisconnect={disconnectWallet}
+              address={wallets[0]?.accounts[0]?.address}
+              pending={pending}
+            />
+            <WrongNetworkSwitcher className="absolute top-full mt-2.5 right-0" />
+          </div>
 
           <Dropdown size={DropdownSize.small} text="EN" className="mr-1 ml-6">
             <Menu>

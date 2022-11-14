@@ -1,24 +1,22 @@
 import React, { useCallback, useReducer, useState } from 'react';
 
+import { ethers } from 'ethers';
 import i18next from 'i18next';
 import { useTranslation } from 'react-i18next';
 
-import {
-  Button,
-  Dialog,
-  Dropdown,
-  Menu,
-  MenuItem,
-  StatusType,
-} from '@sovryn/ui';
+import { ChainIds } from '@sovryn/ethers-provider';
+import { Button, Dialog, Dropdown, Menu, MenuItem } from '@sovryn/ui';
 
 import { SocialLinks, ConnectWalletButton } from '../../2_molecules';
 import { ExampleProviderCall } from '../../2_molecules/ExampleProviderCall';
-import { TransactionStep, Header } from '../../3_organisms';
+import { Header } from '../../3_organisms';
+import { TransactionStepDialog } from '../../3_organisms/TransactionStepDialog/TransactionStepDialog';
+import { Transaction } from '../../3_organisms/TransactionStepDialog/TransactionStepDialog.types';
 import { useTheme } from '../../../hooks/useTheme';
 import { useWalletConnect } from '../../../hooks/useWalletConnect';
 import { translations, languages } from '../../../locales/i18n';
 import { AppTheme } from '../../../types/tailwind';
+import { getTokenContract } from '../../../utils/contracts';
 
 function App() {
   const { handleThemeChange } = useTheme();
@@ -37,9 +35,45 @@ function App() {
     [],
   );
 
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [open, setOpen] = useState(false);
+
+  const approve = async () => {
+    if (!wallets[0].provider) return;
+    const { address, abi } = await getTokenContract(
+      'xusd',
+      ChainIds.RSK_MAINNET,
+    );
+    const provider = new ethers.providers.Web3Provider(wallets[0].provider);
+    const signer = provider.getSigner();
+    const xusd = new ethers.Contract(address, abi, signer);
+
+    setTransactions([
+      {
+        title: 'Approve XUSD tokens',
+        subtitle: 'Allow Sovryn protocol to use XUSD tokens for the trade',
+        contract: xusd,
+        fnName: 'approve',
+        args: ['0x1B888038505d3Fd0b577d7076d355ED21b93cEfE', 1000],
+      },
+      {
+        title: 'Transfer XUSD tokens',
+        contract: xusd,
+        fnName: 'transfer',
+        args: ['0x716A9720B0D57549Bc9Dbf3257E3D54584d4b0b4', 1000],
+      },
+    ]);
+    setOpen(true);
+  };
   return (
     <>
       <Header />
+      <TransactionStepDialog
+        transactions={transactions}
+        isOpen={open}
+        onClose={() => setOpen(false)}
+      />
+      <Button text="approve" onClick={approve} />
       <div className="my-2 px-4">
         <div>
           <ExampleProviderCall />
@@ -101,18 +135,6 @@ function App() {
           </p>
         </div>
         <main>
-          <TransactionStep
-            step="1"
-            title="Approve FISH tokens"
-            subtitle="Allow Sovryn protocol to use FISH tokens for the trade"
-            txDetails={{
-              amount: '0.17519949',
-              token: 'FISH',
-              gasFee: '0.00006191',
-            }}
-            status={StatusType.idle}
-            txID="0xEDb8897aB6E907bc63CB256f74437D36298507E2"
-          />
           <br />
           <br />
           <br />

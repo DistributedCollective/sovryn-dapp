@@ -1,2 +1,2 @@
 export * from './Header/Header';
-export * from './TransactionStep/TransactionStep';
+export * from './TransactionStepDialog/components/TransactionStep/TransactionStep';

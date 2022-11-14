@@ -17,7 +17,8 @@ import {
   TransactionId,
 } from '@sovryn/ui';
 
-import { TransactionGas } from './components/TransactionGas/TransactionGas';
+import { Transaction, TxCustom } from '../../TransactionStepDialog.types';
+import { TransactionGas } from '../TransactionGas/TransactionGas';
 
 interface TransactionDetails {
   amount?: string;
@@ -26,10 +27,12 @@ interface TransactionDetails {
 }
 
 export type TransactionStepProps = {
-  title: string;
-  subtitle?: string;
-  step: string;
+  transaction: Transaction;
+  step: string | number;
   status: StatusType;
+  config: TxCustom;
+  updateConfig: (config: TxCustom) => void;
+
   txDetails?: TransactionDetails;
   txID?: string;
 };
@@ -37,24 +40,34 @@ export type TransactionStepProps = {
 export const TransactionStep: FC<TransactionStepProps> = ({
   step,
   status,
-  title,
-  subtitle,
+  transaction,
   txDetails,
   txID,
+  config,
+  updateConfig,
 }) => {
-  const [selectedItem, setSelectedItem] = useState('custom_amount');
+  const { title, subtitle } = transaction;
 
-  const options = [
+  const amountOptions = [
     {
       label: 'Custom amount',
-      name: 'settings',
+      name: 'settings-' + step,
       value: 'custom_amount',
       contentToShow: (
         <AmountInput
-          disabled={selectedItem !== 'custom_amount'}
+          disabled={config.unlimitedAmount}
           label="Amount"
           className="ml-7 mb-5 max-w-60"
           min={0}
+          decimalPrecision={18}
+          debounce={0}
+          value={config.amount?.toString()}
+          onChange={e =>
+            updateConfig({
+              ...config,
+              amount: Number(e.target.value),
+            })
+          }
         />
       ),
       helper:
@@ -62,7 +75,7 @@ export const TransactionStep: FC<TransactionStepProps> = ({
     },
     {
       label: 'Unlimited amount',
-      name: 'settings',
+      name: 'settings-' + step,
       value: 'unlimited_amount',
       helper:
         'Limiting the amount of approved tokens as an additional security measure may result higher fees',
@@ -70,9 +83,18 @@ export const TransactionStep: FC<TransactionStepProps> = ({
   ];
 
   const [advanced, setAdvanced] = useState(false);
-  const onChange = useCallback(e => {
-    setSelectedItem(e.target.value);
-  }, []);
+  const onChange = useCallback(
+    e => {
+      updateConfig({
+        ...config,
+        unlimitedAmount: e.target.value === 'unlimited_amount',
+      });
+    },
+    [config, updateConfig],
+  );
+  const disabledSettings = ![StatusType.idle, StatusType.error].includes(
+    status,
+  );
 
   return (
     <div className="flex flex-col">
@@ -80,10 +102,12 @@ export const TransactionStep: FC<TransactionStepProps> = ({
       <div className="ml-10">
         {subtitle && <Paragraph className="text-gray-30">{subtitle}</Paragraph>}
         <SimpleTable className="max-w-72 mt-3">
-          {txDetails?.amount && (
+          {config.amount !== undefined && (
             <SimpleTableRow
               label="Amount"
-              value={`${txDetails?.amount} ${txDetails?.token}`}
+              value={`${
+                config.unlimitedAmount ? 'unlimited' : config.amount.toString()
+              } ${config.symbol}`}
               valueClassName="text-primary-10"
             />
           )}
@@ -108,18 +132,24 @@ export const TransactionStep: FC<TransactionStepProps> = ({
         <Accordion
           className="mt-4 text-xs"
           label="Advanced Settings"
-          open={advanced && status === StatusType.idle}
+          open={advanced && !disabledSettings}
           onClick={() => setAdvanced(!advanced)}
-          disabled={status !== StatusType.idle}
+          disabled={disabledSettings}
         >
-          <RadioButtonGroup
-            options={options}
-            onChange={onChange}
-            className="mt-1"
-          />
-          <Heading type={HeadingType.h3} className="mb-3">
-            Approval gas setting
-          </Heading>
+          {config.amount !== undefined && (
+            <>
+              <RadioButtonGroup
+                options={amountOptions}
+                onChange={onChange}
+                className="mt-1"
+                defaultChecked={config.unlimitedAmount ? 1 : 0}
+              />
+              <Heading type={HeadingType.h3} className="mb-3">
+                Approval gas setting
+              </Heading>
+            </>
+          )}
+
           <TransactionGas className="mt-2 mb-4 max-w-64" limit="0" price="0" />
           <Button
             style={ButtonStyle.ghost}

@@ -1,5 +1,9 @@
-import React, { FC, useCallback, useState } from 'react';
+import React, { FC, useCallback, useEffect, useState } from 'react';
 
+import { ethers } from 'ethers';
+import { formatUnits, parseUnits } from 'ethers/lib/utils';
+
+import { getProvider } from '@sovryn/ethers-provider';
 import {
   Accordion,
   AmountInput,
@@ -17,7 +21,9 @@ import {
   TransactionId,
 } from '@sovryn/ui';
 
-import { Transaction, TxCustom } from '../../TransactionStepDialog.types';
+import ERC20_ABI from '../../../../../config/abis/erc20.json';
+import { defaultChainId } from '../../../../../config/chains';
+import { Transaction, TxConfig } from '../../TransactionStepDialog.types';
 import { TransactionGas } from '../TransactionGas/TransactionGas';
 
 interface TransactionDetails {
@@ -30,8 +36,9 @@ export type TransactionStepProps = {
   transaction: Transaction;
   step: string | number;
   status: StatusType;
-  config: TxCustom;
-  updateConfig: (config: TxCustom) => void;
+  config: TxConfig;
+  updateConfig: (config: TxConfig) => void;
+  reset: () => void;
 
   txDetails?: TransactionDetails;
   txID?: string;
@@ -45,8 +52,40 @@ export const TransactionStep: FC<TransactionStepProps> = ({
   txID,
   config,
   updateConfig,
+  reset,
 }) => {
+  const [decimals, setDecimals] = useState(0);
+  const [symbol, setSymbol] = useState('');
+
   const { title, subtitle } = transaction;
+
+  useEffect(() => {
+    const init = async () => {
+      const contract = new ethers.Contract(
+        transaction.contract.address,
+        ERC20_ABI,
+        getProvider(defaultChainId),
+      );
+
+      contract.decimals().then(d => setDecimals(d));
+      contract.symbol().then(s => setSymbol(s));
+    };
+
+    if (config.amount !== undefined) {
+      init();
+    }
+  }, [
+    config.amount,
+    transaction.args,
+    transaction.contract.address,
+    transaction.contract.estimateGas,
+    transaction.fnName,
+  ]);
+
+  const parsedAmount =
+    decimals && config.amount !== undefined
+      ? formatUnits(config.amount?.toString(), decimals)
+      : '';
 
   const amountOptions = [
     {
@@ -55,17 +94,17 @@ export const TransactionStep: FC<TransactionStepProps> = ({
       value: 'custom_amount',
       contentToShow: (
         <AmountInput
-          disabled={config.unlimitedAmount}
+          disabled={!!config.unlimitedAmount}
           label="Amount"
           className="ml-7 mb-5 max-w-60"
           min={0}
           decimalPrecision={18}
           debounce={0}
-          value={config.amount?.toString()}
+          value={parsedAmount}
           onChange={e =>
             updateConfig({
               ...config,
-              amount: Number(e.target.value),
+              amount: parseUnits(String(e.target.value), decimals),
             })
           }
         />
@@ -106,8 +145,8 @@ export const TransactionStep: FC<TransactionStepProps> = ({
             <SimpleTableRow
               label="Amount"
               value={`${
-                config.unlimitedAmount ? 'unlimited' : config.amount.toString()
-              } ${config.symbol}`}
+                config.unlimitedAmount ? 'unlimited' : parsedAmount
+              } ${symbol}`}
               valueClassName="text-primary-10"
             />
           )}
@@ -150,11 +189,16 @@ export const TransactionStep: FC<TransactionStepProps> = ({
             </>
           )}
 
-          <TransactionGas className="mt-2 mb-4 max-w-64" limit="0" price="0" />
+          <TransactionGas
+            className="mt-2 mb-4 max-w-64"
+            limit={config.gasLimit?.toString()}
+            price={config.gasPrice?.toString()}
+          />
           <Button
             style={ButtonStyle.ghost}
             type={ButtonType.reset}
             text="Reset values"
+            onClick={reset}
           />
         </Accordion>
       </div>

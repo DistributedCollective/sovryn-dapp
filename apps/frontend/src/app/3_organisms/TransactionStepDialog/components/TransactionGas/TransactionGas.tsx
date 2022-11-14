@@ -3,8 +3,8 @@ import React, { FC } from 'react';
 import { AmountInput } from '@sovryn/ui';
 
 export type TransactionGasProps = {
-  limit: string;
-  price: string;
+  limit?: string;
+  price?: string;
   className?: string;
 };
 

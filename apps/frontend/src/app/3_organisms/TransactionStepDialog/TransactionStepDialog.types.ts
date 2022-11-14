@@ -1,17 +1,11 @@
 import { BigNumberish, ethers } from 'ethers';
 
 export interface TxConfig {
+  amount?: BigNumberish;
+  unlimitedAmount?: boolean;
   gasLimit?: BigNumberish;
   gasPrice?: BigNumberish;
   value?: BigNumberish;
-}
-
-export interface TxCustom {
-  amount?: BigNumberish;
-  unlimitedAmount?: boolean;
-  decimals?: number;
-  symbol?: string;
-  config?: TxConfig;
 }
 
 export interface Transaction {

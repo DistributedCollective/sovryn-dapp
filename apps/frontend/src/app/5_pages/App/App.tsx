@@ -1,6 +1,7 @@
 import React, { useCallback, useReducer, useState } from 'react';
 
 import { ethers } from 'ethers';
+import { parseUnits } from 'ethers/lib/utils';
 import i18next from 'i18next';
 import { useTranslation } from 'react-i18next';
 
@@ -54,14 +55,14 @@ function App() {
         subtitle: 'Allow Sovryn protocol to use XUSD tokens for the trade',
         contract: xusd,
         fnName: 'approve',
-        args: ['0x1B888038505d3Fd0b577d7076d355ED21b93cEfE', 1000],
+        args: ['0x716A9720B0D57549Bc9Dbf3257E3D54584d4b0b4', parseUnits('10')],
       },
-      {
-        title: 'Transfer XUSD tokens',
-        contract: xusd,
-        fnName: 'transfer',
-        args: ['0x716A9720B0D57549Bc9Dbf3257E3D54584d4b0b4', 1000],
-      },
+      // {
+      //   title: 'Transfer XUSD tokens',
+      //   contract: xusd,
+      //   fnName: 'transfer',
+      //   args: ['0x716A9720B0D57549Bc9Dbf3257E3D54584d4b0b4', parseUnits('10')],
+      // },
     ]);
     setOpen(true);
   };
@@ -72,6 +73,7 @@ function App() {
         transactions={transactions}
         isOpen={open}
         onClose={() => setOpen(false)}
+        title="Transaction approval"
       />
       <Button text="approve" onClick={approve} />
       <div className="my-2 px-4">

@@ -45,7 +45,11 @@ const Template: Story<ComponentProps<typeof VerticalTabsMobile>> = args => {
     [updateArgs],
   );
 
-  return <VerticalTabsMobile {...args} onChange={handleOnChange} />;
+  return (
+    <div className="flex flex-col justify-center h-screen">
+      <VerticalTabsMobile {...args} onChange={handleOnChange} />
+    </div>
+  );
 };
 
 const DialogTemplate: Story<ComponentProps<typeof VerticalTabsMobile>> = () => {
@@ -58,7 +62,11 @@ const DialogTemplate: Story<ComponentProps<typeof VerticalTabsMobile>> = () => {
         <VerticalTabsMobile
           className="rounded-lg"
           tabsClassName="rounded-l-lg"
-          header={() => <p>Select the type of wallet you have</p>}
+          header={() => (
+            <p className="text-sm text-gray-10">
+              Select the type of wallet you have
+            </p>
+          )}
           items={[
             {
               label: 'Tab 1',
@@ -136,7 +144,7 @@ Basic.args = {
       ),
     },
   ],
-  header: () => <p>Select the tab</p>,
+  header: () => <p className="text-sm text-gray-10">Select the tab</p>,
   className: '',
   tabsClassName: '',
   contentClassName: '',

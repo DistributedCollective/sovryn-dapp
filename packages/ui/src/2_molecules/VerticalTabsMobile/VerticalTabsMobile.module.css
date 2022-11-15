@@ -3,7 +3,7 @@
 }
 
 .aside {
-  @apply bg-gray-90 py-6 px-7 relative flex flex-col justify-between items-start;
+  @apply bg-gray-90 py-6 px-4 relative flex flex-col justify-between items-start;
 }
 
 .header {

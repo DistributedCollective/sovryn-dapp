@@ -1,23 +1,23 @@
 import React, { FC, useCallback, useState } from 'react';
+
+import classNames from 'classnames';
+import i18next from 'i18next';
 import { reactLocalStorage } from 'reactjs-localstorage';
 
-import i18next from 'i18next';
-import classNames from 'classnames';
-
 import { Menu, MenuItem } from '@sovryn/ui/src/2_molecules';
-import { applyDataAttr } from '@sovryn/ui/src/utils';
 import { Dropdown } from '@sovryn/ui/src/2_molecules/Dropdown';
+import { applyDataAttr } from '@sovryn/ui/src/utils';
 
 import { languages, languageLocalStorageKey } from '../../../locales/i18n';
 
 type LanguageSelectorProps = {
   className?: string;
-  dataLayoutId?: string;
+  dataAttribute?: string;
 };
 
 export const LanguageSelector: FC<LanguageSelectorProps> = ({
   className,
-  dataLayoutId,
+  dataAttribute,
 }) => {
   const [currentLang, setCurrentLang] = useState(
     i18next.language || reactLocalStorage.get('i18nextLng'),
@@ -36,7 +36,8 @@ export const LanguageSelector: FC<LanguageSelectorProps> = ({
     <Dropdown
       text={currentLang.toUpperCase()}
       className={classNames(className)}
-      {...applyDataAttr(dataLayoutId)}
+      {...applyDataAttr(dataAttribute)}
+      closeOnClick
     >
       <Menu>
         {languages.map(language => (

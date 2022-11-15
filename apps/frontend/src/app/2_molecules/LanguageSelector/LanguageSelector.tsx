@@ -5,7 +5,7 @@ import i18next from 'i18next';
 import { reactLocalStorage } from 'reactjs-localstorage';
 
 import { Menu, MenuItem } from '@sovryn/ui/src/2_molecules';
-import { Dropdown } from '@sovryn/ui/src/2_molecules/Dropdown';
+import { Dropdown, DropdownSize } from '@sovryn/ui/src/2_molecules/Dropdown';
 import { applyDataAttr } from '@sovryn/ui/src/utils';
 
 import { languages, languageLocalStorageKey } from '../../../locales/i18n';
@@ -37,6 +37,7 @@ export const LanguageSelector: FC<LanguageSelectorProps> = ({
       text={currentLang.toUpperCase()}
       className={classNames(className)}
       {...applyDataAttr(dataAttribute)}
+      size={DropdownSize.small}
       closeOnClick
     >
       <Menu>

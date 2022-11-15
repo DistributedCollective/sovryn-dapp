@@ -1,5 +1,7 @@
 import React, { FC } from 'react';
+
 import { Link, Footer as UIFooter } from '@sovryn/ui';
+
 import { SocialLinks } from '../../2_molecules';
 import { SovrynLogo } from '../../2_molecules/SovrynLogo/SovrynLogo';
 
@@ -39,7 +41,14 @@ export const Footer: FC = () => {
 
   return (
     <UIFooter
-      leftContent={<SovrynLogo dataAttribute="logo" text="Sovryn" link="/" />}
+      leftContent={
+        <SovrynLogo
+          dataAttribute="logo"
+          className="max-h-4 max-w-fit"
+          text="Sovryn"
+          link="/"
+        />
+      }
       links={
         <>
           {links.map(link => (

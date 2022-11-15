@@ -15,11 +15,11 @@ import {
 import { ConnectWalletButton } from '../../2_molecules';
 import { ExampleProviderCall } from '../../2_molecules/ExampleProviderCall';
 import { TransactionStep, Header } from '../../3_organisms';
+import { Footer } from '../../3_organisms/Footer/Footer';
 import { useTheme } from '../../../hooks/useTheme';
 import { useWalletConnect } from '../../../hooks/useWalletConnect';
 import { translations, languages } from '../../../locales/i18n';
 import { AppTheme } from '../../../types/tailwind';
-import { Footer } from '../../3_organisms/Footer/Footer';
 
 function App() {
   const { handleThemeChange } = useTheme();

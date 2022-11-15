@@ -12,13 +12,14 @@ import {
   StatusType,
 } from '@sovryn/ui';
 
-import { SocialLinks, ConnectWalletButton } from '../../2_molecules';
+import { ConnectWalletButton } from '../../2_molecules';
 import { ExampleProviderCall } from '../../2_molecules/ExampleProviderCall';
 import { TransactionStep, Header } from '../../3_organisms';
 import { useTheme } from '../../../hooks/useTheme';
 import { useWalletConnect } from '../../../hooks/useWalletConnect';
 import { translations, languages } from '../../../locales/i18n';
 import { AppTheme } from '../../../types/tailwind';
+import { Footer } from '../../3_organisms/Footer/Footer';
 
 function App() {
   const { handleThemeChange } = useTheme();
@@ -38,7 +39,7 @@ function App() {
   );
 
   return (
-    <>
+    <div className="relative">
       <Header />
       <div className="my-2 px-4">
         <div>
@@ -129,13 +130,10 @@ function App() {
           <br />
 
           <p>{t(translations.wallet)}</p>
-          <br />
-          <div className="w-32">
-            <SocialLinks dataAttribute="socials" />
-          </div>
         </main>
       </div>
-    </>
+      <Footer />
+    </div>
   );
 }
 

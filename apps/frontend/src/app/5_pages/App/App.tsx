@@ -43,7 +43,7 @@ function App() {
     if (!wallets[0].provider) return;
     const { address, abi } = await getTokenContract(
       'xusd',
-      ChainIds.RSK_MAINNET,
+      ChainIds.RSK_TESTNET,
     );
     const provider = new ethers.providers.Web3Provider(wallets[0].provider);
     const signer = provider.getSigner();

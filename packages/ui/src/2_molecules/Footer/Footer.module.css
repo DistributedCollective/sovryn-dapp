@@ -17,7 +17,7 @@
 }
 
 .links {
-  @apply mt-3;
+  @apply mt-3 flex-wrap justify-center;
 }
 
 @screen sm {
@@ -34,6 +34,6 @@
   }
 
   .links {
-    @apply mt-0;
+    @apply mt-0 flex-nowrap justify-start;
   }
 }

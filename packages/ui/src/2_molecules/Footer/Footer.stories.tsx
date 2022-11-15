@@ -23,23 +23,44 @@ const footerArgs = {
   leftContent: (
     <Link
       href="/"
-      text={<img className="max-h-4" src={SovrynLogo} alt="Sovryn logo" />}
+      text={
+        <img className="max-h-4 max-w-fit" src={SovrynLogo} alt="Sovryn logo" />
+      }
     />
   ),
   links: (
     <>
-      <Link href="/" text="Getting started" className="mr-7" />
+      <Link href="/" text="Getting started" className="mr-7 mb-5 sm:mb-0" />
       <Link
         href="https://live.sovryn.app"
         openNewTab
         text="Sovryn Alpha"
-        className="mr-7"
+        className="mr-7 mb-5 sm:mb-0"
       />
       <Link
         href="https://www.sovryn.app/blog"
         openNewTab
         text="Blog"
-        className="mr-7"
+        className="mr-7 mb-5 sm:mb-0"
+      />
+      <Link href="#" openNewTab text="Security" className="mr-7 mb-5 sm:mb-0" />
+      <Link
+        href="#"
+        openNewTab
+        text="Fee prices"
+        className="mr-7 mb-5 sm:mb-0"
+      />
+      <Link
+        href="#"
+        openNewTab
+        text="Terms & Conditions"
+        className="mr-7 mb-5 sm:mb-0"
+      />
+      <Link
+        href="#"
+        openNewTab
+        text="Privacy policy"
+        className="mr-7 mb-5 sm:mb-0"
       />
     </>
   ),

@@ -29,7 +29,7 @@ export const ExampleProviderCall = () => {
   );
 
   const getSymbol = useCallback(
-    () => setSymbol(chains.find(item => item.id === chainId)?.symbol || 'RBTC'),
+    () => setSymbol(chains.find(item => item.id === chainId)?.token || 'RBTC'),
     [chainId],
   );
 

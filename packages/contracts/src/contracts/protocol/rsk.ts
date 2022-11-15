@@ -1,4 +1,4 @@
-import type { AsyncContractConfigData } from '../../../types/config';
+import { AsyncContractConfigData } from '../../types';
 
 export const rsk: Record<string, AsyncContractConfigData> = {
   protocol: {

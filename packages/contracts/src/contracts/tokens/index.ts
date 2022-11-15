@@ -1,4 +1,5 @@
-import { Network } from '../../networks';
+import type { Network } from '@sovryn/ethers-provider';
+
 import { rsk } from './rsk';
 import { rskTestnet } from './rskTestnet';
 

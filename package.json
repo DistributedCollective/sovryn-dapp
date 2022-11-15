@@ -36,7 +36,7 @@
   },
   "lint-staged": {
     "*.{js,ts,tsx}": [
-      "eslint --fix --max-warnings=0 --ignore-pattern !packages/ui/.storybook",
+      "eslint --fix --max-warnings=0 --ignore-pattern !packages/ui/.storybook --ignore-pattern !.babelrc.js",
       "prettier --write"
     ]
   },

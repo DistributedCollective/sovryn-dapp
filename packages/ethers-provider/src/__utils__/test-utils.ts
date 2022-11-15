@@ -11,20 +11,20 @@ export const chains: Chain[] = [
   {
     id: ChainIds.RSK_MAINNET,
     label: 'RSK Mainnet',
-    symbol: 'RBTC',
+    token: 'RBTC',
     rpcUrl: ['https://public-node.rsk.co', 'https://mainnet.sovryn.app/rpc'],
   },
   {
     id: ChainIds.RSK_TESTNET,
     label: 'RSK Testnet',
-    symbol: 'tRBTC',
+    token: 'tRBTC',
     rpcUrl: 'https://public-node.testnet.rsk.co',
     providerConnectionInfo: provider.connection,
   },
   {
     id: ChainIds.MAINNET,
     label: 'Ethereum Mainnet',
-    symbol: 'ETH',
+    token: 'ETH',
     rpcUrl: ['https://google.com', 'https://cloudflare-eth.com/'],
   },
 ];

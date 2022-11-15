@@ -2,7 +2,7 @@ import { ContractInterface } from 'ethers';
 
 import type { ChainId } from '@sovryn/ethers-provider';
 
-import { contracts } from '../config/contracts';
+import { contracts } from './contracts';
 
 export type ContractGroup = keyof typeof contracts;
 

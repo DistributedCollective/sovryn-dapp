@@ -1,8 +1,10 @@
 import { ComponentStory, ComponentMeta } from '@storybook/react';
 
 import React from 'react';
-import { animationMap } from './animation-map';
+
 import { Lottie } from './Lottie';
+import { LottieAnimation } from './Lottie.types';
+import { animationMap } from './animation-map';
 
 export default {
   title: 'Atoms/Lottie',
@@ -43,7 +45,7 @@ const AllVariantsTemplate: ComponentStory<typeof Lottie> = ({
   <div className="flex gap-4">
     {Object.keys(animationMap).map(item => (
       <div className="w-48 h-48" key={item}>
-        <Lottie {...args} animation={item} />
+        <Lottie {...args} animation={item as LottieAnimation} />
       </div>
     ))}
   </div>

@@ -3,7 +3,7 @@
   "version": "0.1.5",
   "private": true,
   "dependencies": {
-    "@sovryn/ethers-provider": "0.0.0",
+    "@sovryn/ethers-provider": "0.0.1",
     "@sovryn/contracts": "0.0.0",
     "@sovryn/onboard-common": "0.0.1",
     "@sovryn/onboard-core": "0.0.2",

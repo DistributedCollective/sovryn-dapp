@@ -120,7 +120,8 @@ export const AmountInput = React.forwardRef<HTMLInputElement, AmountInputProps>(
     // updating value if it was changed by parent component
     useEffect(() => {
       setFormattedValue(formatValue(value as string));
-    }, [formatValue, value]);
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [value]);
 
     return (
       <div className={classNames(styles.wrapper, className)}>

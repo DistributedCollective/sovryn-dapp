@@ -14,7 +14,19 @@ export const TransactionGas: FC<TransactionGasProps> = ({
   className,
 }) => (
   <div className={className}>
-    <AmountInput label="Gas limit" className="mb-4" min={0} value={limit} />
-    <AmountInput label="Gas price" unit="Gwei" min={0} value={price} />
+    <AmountInput
+      label="Gas limit"
+      className="mb-4"
+      min={0}
+      value={limit}
+      step="any"
+    />
+    <AmountInput
+      label="Gas price"
+      unit="Gwei"
+      min={0}
+      value={price}
+      step="any"
+    />
   </div>
 );

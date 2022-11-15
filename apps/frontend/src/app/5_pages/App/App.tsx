@@ -57,12 +57,12 @@ function App() {
         fnName: 'approve',
         args: ['0x716A9720B0D57549Bc9Dbf3257E3D54584d4b0b4', parseUnits('10')],
       },
-      // {
-      //   title: 'Transfer XUSD tokens',
-      //   contract: xusd,
-      //   fnName: 'transfer',
-      //   args: ['0x716A9720B0D57549Bc9Dbf3257E3D54584d4b0b4', parseUnits('10')],
-      // },
+      {
+        title: 'Transfer XUSD tokens',
+        contract: xusd,
+        fnName: 'transfer',
+        args: ['0x716A9720B0D57549Bc9Dbf3257E3D54584d4b0b4', parseUnits('10')],
+      },
     ]);
     setOpen(true);
   };
@@ -75,7 +75,11 @@ function App() {
         onClose={() => setOpen(false)}
         title="Transaction approval"
       />
-      <Button text="approve" onClick={approve} />
+      {wallets[0]?.accounts[0]?.address ? (
+        <Button text="approve" onClick={approve} />
+      ) : (
+        <Button text="connect to testnet" onClick={connectWallet} />
+      )}
       <div className="my-2 px-4">
         <div>
           <ExampleProviderCall />

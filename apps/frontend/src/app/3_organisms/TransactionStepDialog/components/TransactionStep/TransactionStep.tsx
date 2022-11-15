@@ -1,9 +1,8 @@
 import React, { FC, useCallback, useEffect, useState } from 'react';
 
-import { ethers } from 'ethers';
 import { formatUnits, parseUnits } from 'ethers/lib/utils';
+import { bignumber } from 'mathjs';
 
-import { getProvider } from '@sovryn/ethers-provider';
 import {
   Accordion,
   AmountInput,
@@ -21,16 +20,9 @@ import {
   TransactionId,
 } from '@sovryn/ui';
 
-import ERC20_ABI from '../../../../../config/abis/erc20.json';
-import { defaultChainId } from '../../../../../config/chains';
+import { useGasPrice } from '../../../../../hooks/useGasPrice';
+import { tokens } from '../../../tokens';
 import { Transaction, TxConfig } from '../../TransactionStepDialog.types';
-import { TransactionGas } from '../TransactionGas/TransactionGas';
-
-interface TransactionDetails {
-  amount?: string;
-  gasFee: string;
-  token: string;
-}
 
 export type TransactionStepProps = {
   transaction: Transaction;
@@ -38,9 +30,7 @@ export type TransactionStepProps = {
   status: StatusType;
   config: TxConfig;
   updateConfig: (config: TxConfig) => void;
-  reset: () => void;
 
-  txDetails?: TransactionDetails;
   txID?: string;
 };
 
@@ -48,43 +38,57 @@ export const TransactionStep: FC<TransactionStepProps> = ({
   step,
   status,
   transaction,
-  txDetails,
   txID,
   config,
   updateConfig,
-  reset,
 }) => {
-  const [decimals, setDecimals] = useState(0);
-  const [symbol, setSymbol] = useState('');
+  const gasPrice = useGasPrice();
+
+  const token = tokens.find(
+    token =>
+      token.address.toLowerCase() ===
+      transaction.contract.address.toLowerCase(),
+  );
 
   const { title, subtitle } = transaction;
 
-  useEffect(() => {
-    const init = async () => {
-      const contract = new ethers.Contract(
-        transaction.contract.address,
-        ERC20_ABI,
-        getProvider(defaultChainId),
-      );
+  const resetConfig = useCallback(async () => {
+    try {
+      const gasLimit = await transaction.contract.estimateGas[
+        transaction.fnName
+      ](...transaction.args);
 
-      contract.decimals().then(d => setDecimals(d));
-      contract.symbol().then(s => setSymbol(s));
-    };
-
-    if (config.amount !== undefined) {
-      init();
+      updateConfig({
+        ...transaction.config,
+        unlimitedAmount: config.unlimitedAmount,
+        amount:
+          transaction.fnName === 'approve' ? transaction.args[1] : undefined,
+        gasPrice,
+        gasLimit,
+      });
+    } catch (error) {
+      console.log('error', error);
     }
   }, [
-    config.amount,
+    config.unlimitedAmount,
+    gasPrice,
     transaction.args,
-    transaction.contract.address,
+    transaction.config,
     transaction.contract.estimateGas,
     transaction.fnName,
+    updateConfig,
   ]);
 
+  useEffect(() => {
+    if (gasPrice) {
+      resetConfig();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [gasPrice]);
+
   const parsedAmount =
-    decimals && config.amount !== undefined
-      ? formatUnits(config.amount?.toString(), decimals)
+    token?.decimals && config.amount !== undefined
+      ? formatUnits(config.amount?.toString(), token?.decimals)
       : '';
 
   const amountOptions = [
@@ -99,12 +103,11 @@ export const TransactionStep: FC<TransactionStepProps> = ({
           className="ml-7 mb-5 max-w-60"
           min={0}
           decimalPrecision={18}
-          debounce={0}
           value={parsedAmount}
           onChange={e =>
             updateConfig({
               ...config,
-              amount: parseUnits(String(e.target.value), decimals),
+              amount: parseUnits(String(e.target.value), token?.decimals),
             })
           }
         />
@@ -135,6 +138,14 @@ export const TransactionStep: FC<TransactionStepProps> = ({
     status,
   );
 
+  const estimatedGasFee =
+    config.gasLimit && gasPrice
+      ? bignumber(gasPrice)
+          .mul(config.gasLimit?.toString())
+          .div(10 ** 9)
+          .toFixed(8)
+      : '';
+
   return (
     <div className="flex flex-col">
       <StatusItem content={step} label={title} status={status} />
@@ -144,15 +155,15 @@ export const TransactionStep: FC<TransactionStepProps> = ({
           {config.amount !== undefined && (
             <SimpleTableRow
               label="Amount"
-              value={`${
-                config.unlimitedAmount ? 'unlimited' : parsedAmount
-              } ${symbol}`}
+              value={`${config.unlimitedAmount ? '∞' : parsedAmount} ${
+                token?.symbol
+              }`}
               valueClassName="text-primary-10"
             />
           )}
           <SimpleTableRow
             label="Estimated gas fee"
-            value={txDetails?.gasFee + ' rBTC'}
+            value={estimatedGasFee + ' rBTC'}
             valueClassName="text-primary-10"
           />
           {txID && (
@@ -188,17 +199,39 @@ export const TransactionStep: FC<TransactionStepProps> = ({
               </Heading>
             </>
           )}
-
-          <TransactionGas
-            className="mt-2 mb-4 max-w-64"
-            limit={config.gasLimit?.toString()}
-            price={config.gasPrice?.toString()}
-          />
+          <div className="mt-2 mb-4 max-w-64">
+            <AmountInput
+              label="Gas limit"
+              className="mb-4"
+              min={0}
+              value={config.gasLimit?.toString()}
+              onChange={e =>
+                updateConfig({
+                  ...config,
+                  gasLimit: e.target.value,
+                })
+              }
+              step="any"
+            />
+            <AmountInput
+              label="Gas price"
+              unit="Gwei"
+              min={0}
+              value={config.gasPrice?.toString()}
+              onChange={e =>
+                updateConfig({
+                  ...config,
+                  gasPrice: e.target.value,
+                })
+              }
+              step="any"
+            />
+          </div>
           <Button
             style={ButtonStyle.ghost}
             type={ButtonType.reset}
             text="Reset values"
-            onClick={reset}
+            onClick={resetConfig}
           />
         </Accordion>
       </div>

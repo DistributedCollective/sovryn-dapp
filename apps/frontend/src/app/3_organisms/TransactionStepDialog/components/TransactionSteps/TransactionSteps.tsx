@@ -1,8 +1,10 @@
 import React, { FC, useCallback, useEffect, useState } from 'react';
 
+import { ethers } from 'ethers';
+import { parseUnits } from 'ethers/lib/utils';
+
 import { Button, StatusType } from '@sovryn/ui';
 
-import { useGasPrice } from '../../../../../hooks/useGasPrice';
 import { Transaction, TxConfig } from '../../TransactionStepDialog.types';
 import { TransactionStep } from '../TransactionStep/TransactionStep';
 
@@ -16,7 +18,6 @@ export const TransactionSteps: FC<TransactionStepsProps> = ({
   const [configs, setConfigs] = useState<TxConfig[]>([]);
   const [step, setStep] = useState(-1);
   const [error, setError] = useState(false);
-  const gasPrice = useGasPrice();
 
   useEffect(() => {
     const initilize = async () => {
@@ -44,9 +45,22 @@ export const TransactionSteps: FC<TransactionStepsProps> = ({
       }
       for (; i < transactions.length; i++) {
         setStep(i);
+        const config = configs[i];
+        const args = transactions[i].args;
+        if (transactions[i].fnName === 'approve') {
+          args[1] = config.unlimitedAmount
+            ? ethers.constants.MaxUint256
+            : config.amount;
+        }
         const tx = await transactions[i].contract[transactions[i].fnName](
-          ...transactions[i].args,
-          { ...transactions[i].config },
+          ...args,
+          {
+            ...transactions[i].config,
+            gasPrice: config.gasPrice
+              ? parseUnits(config.gasPrice?.toString() || '0', 9)
+              : undefined,
+            gasLimit: config.gasLimit ? config.gasLimit?.toString() : undefined,
+          },
         );
         await tx.wait();
       }
@@ -56,7 +70,7 @@ export const TransactionSteps: FC<TransactionStepsProps> = ({
       console.log('error:', error);
       setError(true);
     }
-  }, [error, step, transactions]);
+  }, [configs, error, step, transactions]);
 
   const getStatus = (i: number) => {
     if (i < step) {
@@ -79,24 +93,6 @@ export const TransactionSteps: FC<TransactionStepsProps> = ({
     setConfigs(list);
   };
 
-  const reset = async (index: number) => {
-    try {
-      const tx = transactions[index];
-
-      const gasLimit = await tx.contract.estimateGas[tx.fnName](...tx.args);
-
-      updateConfig(index, {
-        ...tx.config,
-        unlimitedAmount: configs[index].unlimitedAmount,
-        amount: tx.fnName === 'approve' ? tx.args[1] : undefined,
-        gasLimit,
-        gasPrice,
-      });
-    } catch (error) {
-      console.log('error:', error);
-    }
-  };
-
   return (
     <div className="flex flex-col gap-4">
       {transactions.map((tx, i) => (
@@ -107,7 +103,6 @@ export const TransactionSteps: FC<TransactionStepsProps> = ({
           status={getStatus(i)}
           config={configs[i]}
           updateConfig={(config: TxConfig) => updateConfig(i, config)}
-          reset={() => reset(i)}
         />
       ))}
       <Button className="w-full mt-7" text="Confirm" onClick={submit} />

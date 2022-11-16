@@ -5,21 +5,20 @@ import { parseUnits } from 'ethers/lib/utils';
 
 import { Button, Icon, IconNames, StatusType } from '@sovryn/ui';
 
-import { useGasPrice } from '../../../../../hooks/useGasPrice';
 import { Transaction, TxConfig } from '../../TransactionStepDialog.types';
 import { TransactionStep } from '../TransactionStep/TransactionStep';
 
 export type TransactionStepsProps = {
   transactions: Transaction[];
   onSuccess?: () => void;
+  gasPrice: string;
 };
 
 export const TransactionSteps: FC<TransactionStepsProps> = ({
   transactions,
   onSuccess,
+  gasPrice,
 }) => {
-  const gasPrice = useGasPrice();
-
   const [configs, setConfigs] = useState<TxConfig[]>([]);
   const [step, setStep] = useState(-1);
   const [error, setError] = useState(false);
@@ -37,6 +36,8 @@ export const TransactionSteps: FC<TransactionStepsProps> = ({
           gasPrice,
           gasLimit: gasLimit.toString(),
         });
+
+        console.log(i, ' is done');
       }
       setConfigs(list);
     };

@@ -18,6 +18,7 @@ import {
   StatusItem,
   StatusType,
   TransactionId,
+  HelperButton,
 } from '@sovryn/ui';
 
 import { tokens } from '../../../tokens';
@@ -168,7 +169,12 @@ export const TransactionStep: FC<TransactionStepProps> = ({
             />
           )}
           <SimpleTableRow
-            label="Estimated gas fee"
+            label={
+              <span className="flex items-center">
+                Estimated gas fee
+                <HelperButton className="ml-1.5" content="Estimated gas fee" />
+              </span>
+            }
             value={estimatedGasFee + ' rBTC'}
             valueClassName="text-primary-10"
           />

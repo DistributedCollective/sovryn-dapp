@@ -1,4 +1,4 @@
-import React, { useReducer, useState } from 'react';
+import React, { useReducer } from 'react';
 
 import { ethers } from 'ethers';
 import { parseUnits } from 'ethers/lib/utils';
@@ -11,8 +11,8 @@ import { SocialLinks, ConnectWalletButton } from '../../2_molecules';
 import { ExampleProviderCall } from '../../2_molecules/ExampleProviderCall';
 import { Header } from '../../3_organisms';
 import { TransactionStepDialog } from '../../3_organisms/TransactionStepDialog/TransactionStepDialog';
-import { Transaction } from '../../3_organisms/TransactionStepDialog/TransactionStepDialog.types';
 import { defaultChainId } from '../../../config/chains';
+import { useTransactionContext } from '../../../context/transactionContext';
 import { useTheme } from '../../../hooks/useTheme';
 import { useWalletConnect } from '../../../hooks/useWalletConnect';
 import { translations } from '../../../locales/i18n';
@@ -25,8 +25,7 @@ function App() {
   const { connectWallet, disconnectWallet, wallets, pending } =
     useWalletConnect();
 
-  const [transactions, setTransactions] = useState<Transaction[]>([]);
-  const [open, setOpen] = useState(false);
+  const { setTransactions, setIsOpen, setTitle } = useTransactionContext();
 
   const approve = async () => {
     if (!wallets[0].provider) return;
@@ -41,26 +40,22 @@ function App() {
         subtitle: 'Allow Sovryn protocol to use XUSD tokens for the trade',
         contract: xusd,
         fnName: 'approve',
-        args: ['0x716A9720B0D57549Bc9Dbf3257E3D54584d4b0b4', parseUnits('1')],
+        args: ['0x716A9720B0D57549Bc9Dbf3257E3D54584d4b0b4', parseUnits('2')],
       },
       {
-        title: 'Transfer XUSD tokens',
+        title: `Transfer 2 XUSD tokens`,
         contract: xusd,
         fnName: 'transfer',
-        args: ['0x716A9720B0D57549Bc9Dbf3257E3D54584d4b0b4', parseUnits('1')],
+        args: ['0x716A9720B0D57549Bc9Dbf3257E3D54584d4b0b4', parseUnits('2')],
       },
     ]);
-    setOpen(true);
+    setTitle('Transaction approval');
+    setIsOpen(true);
   };
   return (
     <>
       <Header />
-      <TransactionStepDialog
-        transactions={transactions}
-        isOpen={open}
-        onClose={() => setOpen(false)}
-        title="Transaction approval"
-      />
+      <TransactionStepDialog />
 
       <div className="my-2 px-4">
         <div>

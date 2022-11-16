@@ -24,7 +24,7 @@
 }
 
 .sb-show-main #root {
-  @apply relative block;
+  @apply relative block min-h-8;
 }
 
 .docs-story .innerZoomElementWrapper {

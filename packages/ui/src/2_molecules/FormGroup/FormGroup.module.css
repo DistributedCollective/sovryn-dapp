@@ -14,7 +14,7 @@
   }
 
   .errorLabel {
-    @apply block text-error-light mt-2;
+    @apply block text-error-light mt-2 text-sm;
     line-height: 0.875rem;
   }
 }

@@ -1,15 +1,9 @@
 import React, { FC } from 'react';
 
-import {
-  Dropdown,
-  Header as UIHeader,
-  Menu,
-  MenuItem,
-  NavMenuItem,
-  DropdownSize,
-} from '@sovryn/ui';
+import { Header as UIHeader, NavMenuItem } from '@sovryn/ui';
 
 import { ConnectWalletButton, WrongNetworkSwitcher } from '../../2_molecules';
+import { LanguageSelector } from '../../2_molecules/LanguageSelector/LanguageSelector';
 import { SovrynLogo } from '../../2_molecules/SovrynLogo/SovrynLogo';
 import { useWalletConnect } from '../../../hooks';
 
@@ -38,12 +32,7 @@ export const Header: FC = () => {
             <WrongNetworkSwitcher className="absolute top-full mt-2.5 right-0" />
           </div>
 
-          <Dropdown size={DropdownSize.small} text="EN" className="mr-1 ml-6">
-            <Menu>
-              <MenuItem text="EN" />
-              <MenuItem text="ES" />
-            </Menu>
-          </Dropdown>
+          <LanguageSelector className="mr-1 ml-6" />
         </>
       }
     />

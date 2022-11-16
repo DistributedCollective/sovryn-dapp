@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useEffect, useState } from 'react';
+import React, { FC, useCallback, useMemo, useState } from 'react';
 
 import { formatUnits, parseUnits } from 'ethers/lib/utils';
 import { bignumber } from 'mathjs';
@@ -20,7 +20,6 @@ import {
   TransactionId,
 } from '@sovryn/ui';
 
-import { useGasPrice } from '../../../../../hooks/useGasPrice';
 import { tokens } from '../../../tokens';
 import { Transaction, TxConfig } from '../../TransactionStepDialog.types';
 
@@ -30,20 +29,19 @@ export type TransactionStepProps = {
   status: StatusType;
   config: TxConfig;
   updateConfig: (config: TxConfig) => void;
-
-  txID?: string;
+  gasPrice: string;
+  isLoading: boolean;
 };
 
 export const TransactionStep: FC<TransactionStepProps> = ({
   step,
   status,
   transaction,
-  txID,
   config,
+  gasPrice,
   updateConfig,
+  isLoading,
 }) => {
-  const gasPrice = useGasPrice();
-
   const token = tokens.find(
     token =>
       token.address.toLowerCase() ===
@@ -64,7 +62,7 @@ export const TransactionStep: FC<TransactionStepProps> = ({
         amount:
           transaction.fnName === 'approve' ? transaction.args[1] : undefined,
         gasPrice,
-        gasLimit,
+        gasLimit: gasLimit.toString(),
       });
     } catch (error) {
       console.log('error', error);
@@ -79,17 +77,17 @@ export const TransactionStep: FC<TransactionStepProps> = ({
     updateConfig,
   ]);
 
-  useEffect(() => {
-    if (gasPrice) {
-      resetConfig();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [gasPrice]);
-
-  const parsedAmount =
-    token?.decimals && config.amount !== undefined
+  const parsedAmount = useMemo(() => {
+    return token?.decimals && config.amount !== undefined
       ? formatUnits(config.amount?.toString(), token?.decimals)
       : '';
+  }, [config.amount, token?.decimals]);
+
+  const minAmount = useMemo(() => {
+    return transaction.fnName === 'approve'
+      ? formatUnits(transaction.args[1], token?.decimals)
+      : '0';
+  }, [token?.decimals, transaction.args, transaction.fnName]);
 
   const amountOptions = [
     {
@@ -101,7 +99,7 @@ export const TransactionStep: FC<TransactionStepProps> = ({
           disabled={!!config.unlimitedAmount}
           label="Amount"
           className="ml-7 mb-5 max-w-60"
-          min={0}
+          min={minAmount}
           decimalPrecision={18}
           value={parsedAmount}
           onChange={e =>
@@ -134,23 +132,31 @@ export const TransactionStep: FC<TransactionStepProps> = ({
     },
     [config, updateConfig],
   );
-  const disabledSettings = ![StatusType.idle, StatusType.error].includes(
-    status,
-  );
+  const disabledSettings =
+    isLoading || ![StatusType.idle, StatusType.error].includes(status);
 
-  const estimatedGasFee =
-    config.gasLimit && gasPrice
-      ? bignumber(gasPrice)
+  const estimatedGasFee = useMemo(() => {
+    return config.gasLimit && config.gasPrice
+      ? bignumber(config.gasPrice?.toString())
           .mul(config.gasLimit?.toString())
           .div(10 ** 9)
           .toFixed(8)
       : '';
+  }, [config.gasLimit, config.gasPrice]);
 
   return (
     <div className="flex flex-col">
       <StatusItem content={step} label={title} status={status} />
       <div className="ml-10">
-        {subtitle && <Paragraph className="text-gray-30">{subtitle}</Paragraph>}
+        {status === StatusType.error && (
+          <Paragraph className="text-error-light">
+            Your transaction has failed. <br />
+            Please close or retry your transaction
+          </Paragraph>
+        )}
+        {subtitle && status !== StatusType.error && (
+          <Paragraph className="text-gray-30">{subtitle}</Paragraph>
+        )}
         <SimpleTable className="max-w-72 mt-3">
           {config.amount !== undefined && (
             <SimpleTableRow
@@ -166,13 +172,13 @@ export const TransactionStep: FC<TransactionStepProps> = ({
             value={estimatedGasFee + ' rBTC'}
             valueClassName="text-primary-10"
           />
-          {txID && (
+          {config.hash && (
             <SimpleTableRow
               label="TX ID"
               value={
                 <TransactionId
-                  href={`https://explorer.rsk.co/address/${txID}`}
-                  value={txID}
+                  href={`https://explorer.testnet.rsk.co/tx/${config.hash}`}
+                  value={config.hash}
                 />
               }
             />

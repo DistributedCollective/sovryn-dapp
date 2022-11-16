@@ -21,7 +21,7 @@ export const TransactionStepDialog: FC<TransactionStepDialogProps> = ({
   <Dialog width={DialogSize.sm} isOpen={isOpen} onClose={onClose}>
     <DialogHeader onClose={onClose} title={title} />
     <DialogBody>
-      <TransactionSteps transactions={transactions} />
+      <TransactionSteps transactions={transactions} onSuccess={onClose} />
     </DialogBody>
   </Dialog>
 );

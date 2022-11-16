@@ -5,7 +5,6 @@ import { parseUnits } from 'ethers/lib/utils';
 import i18next from 'i18next';
 import { useTranslation } from 'react-i18next';
 
-import { ChainIds } from '@sovryn/ethers-provider';
 import { Button, Dialog, Dropdown, Menu, MenuItem } from '@sovryn/ui';
 
 import { SocialLinks, ConnectWalletButton } from '../../2_molecules';
@@ -13,6 +12,7 @@ import { ExampleProviderCall } from '../../2_molecules/ExampleProviderCall';
 import { Header } from '../../3_organisms';
 import { TransactionStepDialog } from '../../3_organisms/TransactionStepDialog/TransactionStepDialog';
 import { Transaction } from '../../3_organisms/TransactionStepDialog/TransactionStepDialog.types';
+import { defaultChainId } from '../../../config/chains';
 import { useTheme } from '../../../hooks/useTheme';
 import { useWalletConnect } from '../../../hooks/useWalletConnect';
 import { translations, languages } from '../../../locales/i18n';
@@ -41,10 +41,7 @@ function App() {
 
   const approve = async () => {
     if (!wallets[0].provider) return;
-    const { address, abi } = await getTokenContract(
-      'xusd',
-      ChainIds.RSK_TESTNET,
-    );
+    const { address, abi } = await getTokenContract('xusd', defaultChainId);
     const provider = new ethers.providers.Web3Provider(wallets[0].provider);
     const signer = provider.getSigner();
     const xusd = new ethers.Contract(address, abi, signer);
@@ -55,13 +52,13 @@ function App() {
         subtitle: 'Allow Sovryn protocol to use XUSD tokens for the trade',
         contract: xusd,
         fnName: 'approve',
-        args: ['0x716A9720B0D57549Bc9Dbf3257E3D54584d4b0b4', parseUnits('10')],
+        args: ['0x716A9720B0D57549Bc9Dbf3257E3D54584d4b0b4', parseUnits('1')],
       },
       {
         title: 'Transfer XUSD tokens',
         contract: xusd,
         fnName: 'transfer',
-        args: ['0x716A9720B0D57549Bc9Dbf3257E3D54584d4b0b4', parseUnits('10')],
+        args: ['0x716A9720B0D57549Bc9Dbf3257E3D54584d4b0b4', parseUnits('1')],
       },
     ]);
     setOpen(true);
@@ -75,14 +72,18 @@ function App() {
         onClose={() => setOpen(false)}
         title="Transaction approval"
       />
-      {wallets[0]?.accounts[0]?.address ? (
-        <Button text="approve" onClick={approve} />
-      ) : (
-        <Button text="connect to testnet" onClick={connectWallet} />
-      )}
+
       <div className="my-2 px-4">
         <div>
           <ExampleProviderCall />
+
+          <hr className="my-12" />
+
+          {wallets[0]?.accounts[0]?.address ? (
+            <Button text="Approve" onClick={approve} />
+          ) : (
+            <Button text="Connect to RSK Testnet" onClick={connectWallet} />
+          )}
 
           <hr className="my-12" />
 

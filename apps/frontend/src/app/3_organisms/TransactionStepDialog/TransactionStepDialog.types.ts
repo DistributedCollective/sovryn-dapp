@@ -3,9 +3,10 @@ import { BigNumberish, ethers } from 'ethers';
 export interface TxConfig {
   amount?: BigNumberish;
   unlimitedAmount?: boolean;
-  gasLimit?: BigNumberish;
-  gasPrice?: BigNumberish;
+  gasLimit?: string;
+  gasPrice?: string;
   value?: BigNumberish;
+  hash?: string;
 }
 
 export interface Transaction {
@@ -15,4 +16,5 @@ export interface Transaction {
   fnName: string;
   args: any[];
   config?: TxConfig;
+  onComplete?: (hash: string) => void;
 }

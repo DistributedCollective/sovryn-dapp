@@ -22,6 +22,22 @@ export default {
         options: [true, 1, 2, 3, 4, 5],
       },
     },
+    autoplay: {
+      control: {
+        type: 'boolean',
+        value: true,
+      },
+    },
+    autoPlay: {
+      table: {
+        disable: true,
+      },
+    },
+    renderer: {
+      table: {
+        disable: true,
+      },
+    },
   },
 } as ComponentMeta<typeof Lottie>;
 

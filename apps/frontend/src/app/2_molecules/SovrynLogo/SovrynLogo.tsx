@@ -1,7 +1,5 @@
 import React, { useMemo } from 'react';
 
-import classNames from 'classnames';
-
 import { applyDataAttr, LinkBase } from '@sovryn/ui';
 
 import sovrynLogo from '../../../assets/images/sovryn-logo.svg';
@@ -24,7 +22,7 @@ export const SovrynLogo: React.FC<SovrynLogoProps> = ({
 }) => {
   const Logo = useMemo(
     () => (
-      <div className={classNames(styles.logo)}>
+      <div className={styles.logo}>
         <img
           src={image}
           className={className}

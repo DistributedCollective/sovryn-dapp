@@ -40,13 +40,13 @@ function App() {
         subtitle: 'Allow Sovryn protocol to use XUSD tokens for the trade',
         contract: xusd,
         fnName: 'approve',
-        args: ['0x716A9720B0D57549Bc9Dbf3257E3D54584d4b0b4', parseUnits('2')],
+        args: [ethers.constants.AddressZero, parseUnits('2')],
       },
       {
         title: `Transfer 2 XUSD tokens`,
         contract: xusd,
         fnName: 'transfer',
-        args: ['0x716A9720B0D57549Bc9Dbf3257E3D54584d4b0b4', parseUnits('2')],
+        args: [ethers.constants.AddressZero, parseUnits('2')],
       },
     ]);
     setTitle('Transaction approval');

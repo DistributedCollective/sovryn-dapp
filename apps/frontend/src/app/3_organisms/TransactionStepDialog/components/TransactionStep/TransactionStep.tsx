@@ -21,7 +21,8 @@ import {
   HelperButton,
 } from '@sovryn/ui';
 
-import { tokens } from '../../../tokens';
+import { chains, defaultChainId } from '../../../../../config/chains';
+import { tokens } from '../../../../../config/tokens';
 import { Transaction, TxConfig } from '../../TransactionStepDialog.types';
 
 export type TransactionStepProps = {
@@ -33,6 +34,8 @@ export type TransactionStepProps = {
   gasPrice: string;
   isLoading: boolean;
 };
+
+const chain = chains.find(chain => chain.id === defaultChainId);
 
 export const TransactionStep: FC<TransactionStepProps> = ({
   step,
@@ -183,7 +186,7 @@ export const TransactionStep: FC<TransactionStepProps> = ({
               label="TX ID"
               value={
                 <TransactionId
-                  href={`https://explorer.testnet.rsk.co/tx/${config.hash}`}
+                  href={`${chain?.blockExplorerUrl}/${config.hash}`}
                   value={config.hash}
                 />
               }

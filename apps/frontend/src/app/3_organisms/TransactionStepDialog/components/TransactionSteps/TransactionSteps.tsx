@@ -36,8 +36,6 @@ export const TransactionSteps: FC<TransactionStepsProps> = ({
           gasPrice,
           gasLimit: gasLimit.toString(),
         });
-
-        console.log(i, ' is done');
       }
       setConfigs(list);
     };

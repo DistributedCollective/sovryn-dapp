@@ -15,7 +15,7 @@ export const Footer: FC = () => {
       name: 'Getting started',
     },
     {
-      id: 'dapp-alfa',
+      id: 'dapp-alpha',
       href: sovrynLinks.dappAlpha,
       name: 'Sovryn Alpha',
     },

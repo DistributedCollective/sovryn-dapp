@@ -3,8 +3,9 @@ import { state } from './store';
 import { addChains, updateChain } from './store/actions';
 import { Chain } from './types';
 
-export { ChainIds } from './chains';
+export * from './chains';
 export * from './types';
+export * from './utils';
 
 const API = {
   getProvider,

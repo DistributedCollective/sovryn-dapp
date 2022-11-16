@@ -2,16 +2,19 @@ import { ContractInterface } from 'ethers';
 import get from 'lodash.get';
 import set from 'lodash.set';
 
-import { ChainId } from '@sovryn/ethers-provider';
+import {
+  ChainId,
+  getChainIdByNetwork,
+  getNetworkByChainId,
+  Network,
+} from '@sovryn/ethers-provider';
 
-import { Network } from '../../config/networks';
-import type {
+import {
   AsyncContractConfigData,
   ContractConfigData,
   ContractData,
   ContractGroup,
-} from '../../types/config';
-import { getChainIdByNetwork, getNetworkByChainId } from '../helpers';
+} from '../types';
 
 const cacheByAddress = new Map<string, ContractData>();
 const cacheByKey: Record<
@@ -25,9 +28,7 @@ export const findContract = async (address: string): Promise<ContractData> => {
     return cacheByAddress.get(address)!;
   }
 
-  const contracts = await import('../../config/contracts').then(
-    m => m.contracts,
-  );
+  const contracts = await import('../contracts').then(m => m.contracts);
 
   const groups = Object.keys(contracts);
   let contractData: ContractData | undefined;
@@ -75,9 +76,7 @@ export const getContract = async (
     return cached;
   }
 
-  const contracts = await import('../../config/contracts').then(
-    m => m.contracts,
-  );
+  const contracts = await import('../contracts').then(m => m.contracts);
 
   const contract: string | AsyncContractConfigData = get(contracts, [
     group,
@@ -114,7 +113,7 @@ export const getContractGroupAbi = async (
   switch (group) {
     case 'tokens':
     case 'loanTokens':
-      return (await import('../../config/abis/erc20.json')).default;
+      return (await import('../abis/erc20.json')).default;
     default:
       throw new Error(`getContractGroupAbi: Unknown group: ${group}`);
   }

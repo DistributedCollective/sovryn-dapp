@@ -1,5 +1,21 @@
 # frontend
 
+## 0.1.6
+
+### Patch Changes
+
+- 9dbd23a: feat: dapp header added
+- 9ee9581: SOV-1016: change how chains are defined and used
+- Updated dependencies [9dbd23a]
+- Updated dependencies [bfc048a]
+- Updated dependencies [9ee9581]
+- Updated dependencies [9ee9581]
+- Updated dependencies [630653f]
+- Updated dependencies [ef15b51]
+  - @sovryn/ui@0.0.10
+  - @sovryn/ethers-provider@0.0.2
+  - @sovryn/contracts@0.0.1
+
 ## 0.1.5
 
 ### Patch Changes

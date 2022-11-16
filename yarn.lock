@@ -4683,6 +4683,11 @@
     "@types/scheduler" "*"
     csstype "^3.0.2"
 
+"@types/reactjs-localstorage@1.0.0":
+  version "1.0.0"
+  resolved "https://registry.npmjs.org/@types/reactjs-localstorage/-/reactjs-localstorage-1.0.0.tgz#10b2c562e0eb467d25b3adb8b4671ec8df0bfbec"
+  integrity sha512-0Y3f/vGR3yz46yfoqtyVljTfnKxYZVC87p2AXouO3Fc14/aBOUt8oKTLCDej8/sd5+yqx6WA2YBUsT2eSXx5cA==
+
 "@types/resolve@1.17.1":
   version "1.17.1"
   resolved "https://registry.npmjs.org/@types/resolve/-/resolve-1.17.1.tgz"
@@ -15142,6 +15147,11 @@ react@18.2.0:
   integrity sha512-/3IjMdb2L9QbBdWiW5e3P2/npwMBaU9mHCSCUzNln0ZCYbcfTsGbTJrU/kGemdH2IWmB2ioZ+zkxtmq6g09fGQ==
   dependencies:
     loose-envify "^1.1.0"
+
+reactjs-localstorage@1.0.1:
+  version "1.0.1"
+  resolved "https://registry.npmjs.org/reactjs-localstorage/-/reactjs-localstorage-1.0.1.tgz#0c4311527d9e9abb31dc1c40d64cb886204e0f23"
+  integrity sha512-eNSwfiVyVDhfjw9h83PBvgqQcFxmyK6KGPrPlutuaaTlALRZVQLZ0MAN72iU9UT+bKtscwtdogHQ2ikZ7rjT+w==
 
 read-cache@^1.0.0:
   version "1.0.0"

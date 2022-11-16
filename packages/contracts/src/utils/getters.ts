@@ -1,6 +1,6 @@
 import { ChainId, ChainIds } from '@sovryn/ethers-provider';
 
-import { ContractConfigData } from '../../types/config';
+import { ContractConfigData } from '../types';
 import { getContract } from './global';
 
 export const getTokenContract = async (

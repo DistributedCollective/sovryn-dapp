@@ -1,7 +1,7 @@
 import { ChainIds } from '@sovryn/ethers-provider';
 
-import erc20 from '../../config/abis/erc20.json';
-import { contracts } from '../../config/contracts';
+import erc20 from '../abis/erc20.json';
+import { contracts } from '../contracts';
 import { findContract, getContract, getContractGroupAbi } from './global';
 
 const RSK_XUSD_ADDRESS = contracts.tokens.rsk?.xusd!;

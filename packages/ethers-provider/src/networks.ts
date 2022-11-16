@@ -1,4 +1,4 @@
-import { ChainIds } from '@sovryn/ethers-provider';
+import { ChainIds } from './chains';
 
 export const networkMap = {
   [ChainIds.RSK_MAINNET]: 'rsk',
@@ -9,5 +9,3 @@ export const networkMap = {
   [ChainIds.BSC_MAINNET]: 'bsc',
   [ChainIds.BSC_TESTNET]: 'bscTestnet',
 } as const;
-
-export type Network = typeof networkMap[keyof typeof networkMap];

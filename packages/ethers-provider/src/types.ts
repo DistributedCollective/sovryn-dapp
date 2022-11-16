@@ -1,6 +1,7 @@
 import type { ConnectionInfo } from 'ethers/lib/utils';
 
 import type { ChainIds } from './chains';
+import { networkMap } from './networks';
 
 export type ChainId = ChainIds | string;
 
@@ -8,10 +9,12 @@ export interface Chain {
   id: ChainId;
   rpcUrl: string | string[];
   label: string;
-  symbol: string;
-  providerConnectionInfo?: ConnectionInfo;
+  token: string;
   blockExplorerUrl?: string;
+  providerConnectionInfo?: ConnectionInfo;
 }
+
+export type Network = typeof networkMap[keyof typeof networkMap];
 
 export type AppState = {
   chains: Chain[];

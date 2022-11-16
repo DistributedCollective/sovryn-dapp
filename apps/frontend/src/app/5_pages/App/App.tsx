@@ -1,11 +1,11 @@
-import React, { useCallback, useReducer, useState } from 'react';
+import React, { useReducer, useState } from 'react';
 
 import { ethers } from 'ethers';
 import { parseUnits } from 'ethers/lib/utils';
-import i18next from 'i18next';
 import { useTranslation } from 'react-i18next';
 
-import { Button, Dialog, Dropdown, Menu, MenuItem } from '@sovryn/ui';
+import { getTokenContract } from '@sovryn/contracts';
+import { Button, Dialog } from '@sovryn/ui';
 
 import { SocialLinks, ConnectWalletButton } from '../../2_molecules';
 import { ExampleProviderCall } from '../../2_molecules/ExampleProviderCall';
@@ -15,9 +15,8 @@ import { Transaction } from '../../3_organisms/TransactionStepDialog/Transaction
 import { defaultChainId } from '../../../config/chains';
 import { useTheme } from '../../../hooks/useTheme';
 import { useWalletConnect } from '../../../hooks/useWalletConnect';
-import { translations, languages } from '../../../locales/i18n';
+import { translations } from '../../../locales/i18n';
 import { AppTheme } from '../../../types/tailwind';
-import { getTokenContract } from '../../../utils/contracts';
 
 function App() {
   const { handleThemeChange } = useTheme();
@@ -25,16 +24,6 @@ function App() {
   const [isOpen, toggle] = useReducer(p => !p, false);
   const { connectWallet, disconnectWallet, wallets, pending } =
     useWalletConnect();
-
-  const [currentLang, setCurrentLang] = useState(i18next.language);
-
-  const changeLanguage = useCallback(
-    (lng: string) => () => {
-      i18next.changeLanguage(lng);
-      setCurrentLang(lng);
-    },
-    [],
-  );
 
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [open, setOpen] = useState(false);
@@ -92,18 +81,6 @@ function App() {
           <Dialog isOpen={isOpen} onClose={toggle}>
             <div className="p-4">Hello.</div>
           </Dialog>
-
-          <Dropdown text={currentLang.toUpperCase()} className="my-4">
-            <Menu>
-              {languages.map(lng => (
-                <MenuItem
-                  text={lng.toUpperCase()}
-                  onClick={changeLanguage(lng)}
-                  key={lng}
-                />
-              ))}
-            </Menu>
-          </Dropdown>
 
           <div className="flex items-center gap-4">
             <div

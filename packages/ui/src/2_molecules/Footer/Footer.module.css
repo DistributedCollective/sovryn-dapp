@@ -1,0 +1,39 @@
+.footer {
+  @apply absolute bottom-0 left-0 right-0 flex-col justify-center items-center bg-gray-90 min-h-8 w-full flex px-6 pt-6;
+
+  & > div {
+    @apply my-3;
+  }
+}
+
+.leftContent,
+.rightContent,
+.links {
+  @apply flex items-center;
+}
+
+.leftContent {
+  @apply flex-col gap-x-14;
+}
+
+.links {
+  @apply mt-3 flex-wrap justify-center;
+}
+
+@screen sm {
+  .footer {
+    @apply justify-between flex-row py-0;
+
+    & > div {
+      @apply my-0;
+    }
+  }
+
+  .leftContent {
+    @apply flex-row;
+  }
+
+  .links {
+    @apply mt-0 flex-nowrap justify-start;
+  }
+}

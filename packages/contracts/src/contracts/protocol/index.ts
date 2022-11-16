@@ -1,5 +1,6 @@
-import { AsyncContractConfigData } from '../../../types/config';
-import { Network } from '../../networks';
+import { Network } from '@sovryn/ethers-provider';
+
+import { AsyncContractConfigData } from '../../types';
 import { rsk } from './rsk';
 
 export const protocol: Partial<

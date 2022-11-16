@@ -4,7 +4,7 @@
   "private": true,
   "dependencies": {
     "@sovryn/ethers-provider": "*",
-    "@sovryn/contracts": "0.0.1",
+    "@sovryn/contracts": "*",
     "@sovryn/onboard-common": "0.0.1",
     "@sovryn/onboard-core": "0.0.2",
     "@sovryn/onboard-injected": "0.0.1",

@@ -21,7 +21,7 @@ function App() {
     useWalletConnect();
 
   return (
-    <div className="relative">
+    <>
       <Header />
       <div className="my-2 px-4">
         <div>
@@ -103,7 +103,7 @@ function App() {
         </main>
       </div>
       <Footer />
-    </div>
+    </>
   );
 }
 

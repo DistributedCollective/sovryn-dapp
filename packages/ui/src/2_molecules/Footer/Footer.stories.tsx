@@ -102,7 +102,7 @@ export const Basic = Template.bind({});
 Basic.args = footerArgs;
 
 const MidHeight: Story<ComponentProps<typeof Footer>> = args => (
-  <div className="min-h-96 bg-gray-70">
+  <div className="min-h-96 bg-gray-70 flex flex-col">
     <Header
       logo={
         <Link
@@ -119,7 +119,7 @@ export const MidContentHeight = MidHeight.bind({});
 MidContentHeight.args = footerArgs;
 
 const HightHeight: Story<ComponentProps<typeof Footer>> = args => (
-  <div className="min-h-[100rem] bg-gray-70">
+  <div className="min-h-[100rem] bg-gray-70 flex flex-col">
     <Header
       logo={
         <Link

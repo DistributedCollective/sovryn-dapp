@@ -1,5 +1,14 @@
 # @sovryn/ui
 
+## 0.0.10
+
+### Patch Changes
+
+- 9dbd23a: feat: dapp header added
+- bfc048a: fix: error label font size of form group
+- 630653f: [VerticalTabsMobile] - add a component
+- ef15b51: [Footer] - add a component
+
 ## 0.0.9
 
 ### Patch Changes

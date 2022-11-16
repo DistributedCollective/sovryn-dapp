@@ -3,10 +3,9 @@ import React, { FC } from 'react';
 import { Header as UIHeader, NavMenuItem } from '@sovryn/ui';
 
 import { ConnectWalletButton, WrongNetworkSwitcher } from '../../2_molecules';
-import { SovrynLogo } from '../../2_molecules/SovrynLogo/SovrynLogo';
-
-import { useWalletConnect } from '../../../hooks';
 import { LanguageSelector } from '../../2_molecules/LanguageSelector/LanguageSelector';
+import { SovrynLogo } from '../../2_molecules/SovrynLogo/SovrynLogo';
+import { useWalletConnect } from '../../../hooks';
 
 export const Header: FC = () => {
   const { connectWallet, disconnectWallet, wallets, pending } =

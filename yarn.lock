@@ -4676,7 +4676,7 @@
     "@types/scheduler" "*"
     csstype "^3.0.2"
 
-"@types/reactjs-localstorage@^1.0.0":
+"@types/reactjs-localstorage@1.0.0":
   version "1.0.0"
   resolved "https://registry.npmjs.org/@types/reactjs-localstorage/-/reactjs-localstorage-1.0.0.tgz#10b2c562e0eb467d25b3adb8b4671ec8df0bfbec"
   integrity sha512-0Y3f/vGR3yz46yfoqtyVljTfnKxYZVC87p2AXouO3Fc14/aBOUt8oKTLCDej8/sd5+yqx6WA2YBUsT2eSXx5cA==

@@ -4,9 +4,13 @@ import classNames from 'classnames';
 import i18next from 'i18next';
 import { reactLocalStorage } from 'reactjs-localstorage';
 
-import { Menu, MenuItem } from '@sovryn/ui/src/2_molecules';
-import { Dropdown, DropdownSize } from '@sovryn/ui/src/2_molecules/Dropdown';
-import { applyDataAttr } from '@sovryn/ui/src/utils';
+import {
+  Menu,
+  MenuItem,
+  Dropdown,
+  DropdownSize,
+  applyDataAttr,
+} from '@sovryn/ui';
 
 import { languages, languageLocalStorageKey } from '../../../locales/i18n';
 

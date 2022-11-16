@@ -1,7 +1,9 @@
-import LottieView from 'lottie-react';
 import React, { FC, useEffect, useState } from 'react';
-import { animationMap } from './animation-map';
+
+import LottieView from 'lottie-react';
+
 import { LottieProps } from './Lottie.types';
+import { animationMap } from './animation-map';
 
 export const Lottie: FC<LottieProps> = ({ animation, ...props }) => {
   const [animationData, setAnimationData] = useState<unknown>();

@@ -11,7 +11,6 @@ import {
 
 import { ConnectWalletButton, WrongNetworkSwitcher } from '../../2_molecules';
 import { SovrynLogo } from '../../2_molecules/SovrynLogo/SovrynLogo';
-
 import { useWalletConnect } from '../../../hooks';
 
 export const Header: FC = () => {

@@ -28,8 +28,9 @@ module.exports = {
       });
       config.ignoreWarnings = [/Failed to parse source map/];
       config.resolve.fallback = {
-        stream: require.resolve('readable-stream'),
+        stream: require.resolve('stream-browserify'),
         buffer: require.resolve('buffer'),
+        crypto: require.resolve('crypto-browserify'),
       };
       config.plugins = (config.plugins || []).concat([
         new webpack.ProvidePlugin({

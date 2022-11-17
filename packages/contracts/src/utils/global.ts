@@ -14,6 +14,9 @@ import {
   ContractConfigData,
   ContractData,
   ContractGroup,
+  SupportedTokenList,
+  SupportedTokens,
+  TokenDetailsData,
 } from '../types';
 
 const cacheByAddress = new Map<string, ContractData>();
@@ -117,4 +120,35 @@ export const getContractGroupAbi = async (
     default:
       throw new Error(`getContractGroupAbi: Unknown group: ${group}`);
   }
+};
+
+export const getTokenDetailsData = async (
+  name: SupportedTokens,
+  chainId: ChainId,
+): Promise<TokenDetailsData> => {
+  const tokenBaseInfo = SupportedTokenList?.[name];
+
+  if (!tokenBaseInfo) {
+    throw new Error(`getTokenDetails: Unsupported token: ${name}`);
+  }
+
+  const contract = await getContract(name, 'tokens', chainId);
+
+  const tokenLogo = await import(`../tokenDetails/logos/xusd`).then(
+    item => item.default,
+  );
+
+  if (!tokenLogo) {
+    throw new Error(`getTokenDetails: Logo not found for token: ${name}`);
+  }
+
+  const tokenDetails: TokenDetailsData = {
+    address: contract.address,
+    abi: contract.abi,
+    symbol: tokenBaseInfo.symbol,
+    decimalPrecision: tokenBaseInfo.decimalPrecision,
+    icon: tokenLogo,
+  };
+
+  return tokenDetails;
 };

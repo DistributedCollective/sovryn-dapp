@@ -18,3 +18,7 @@ export type DropdownCoords = {
   windowWidth: number;
   dropdownWidth: number;
 };
+
+export enum DropdownEvents {
+  resize = 'resize',
+}

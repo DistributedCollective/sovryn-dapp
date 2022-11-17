@@ -18,7 +18,12 @@ import { useOnClickOutside } from '../../hooks/useOnClickOutside';
 import { Nullable } from '../../types';
 import { applyDataAttr } from '../../utils';
 import styles from './Dropdown.module.css';
-import { DropdownCoords, DropdownMode, DropdownSize } from './Dropdown.types';
+import {
+  DropdownCoords,
+  DropdownEvents,
+  DropdownMode,
+  DropdownSize,
+} from './Dropdown.types';
 import { getDropdownPositionStyles } from './Dropdown.utils';
 
 export type DropdownProps = {
@@ -84,10 +89,9 @@ export const Dropdown = forwardRef<HTMLButtonElement, DropdownProps>(
     }, []);
 
     const dropdownStyles = useMemo(() => {
-      if (!coords) {
-        return;
+      if (coords) {
+        return getDropdownPositionStyles(coords, mode);
       }
-      return getDropdownPositionStyles(coords, mode);
     }, [coords, mode]);
 
     const classNamesComplete = useMemo(
@@ -105,19 +109,31 @@ export const Dropdown = forwardRef<HTMLButtonElement, DropdownProps>(
 
     useOnClickOutside([buttonRef, dropdownRef], useClickedOutside);
 
+    const updateCoords = useCallback(
+      () => setCoords(getCoords()),
+      [getCoords, setCoords],
+    );
+
     useEffect(() => {
-      if (!isOpen) {
-        return;
+      window.addEventListener(DropdownEvents.resize, updateCoords);
+      return () => {
+        window.removeEventListener(DropdownEvents.resize, updateCoords);
+      };
+    }, [updateCoords]);
+
+    useEffect(() => {
+      if (isOpen) {
+        updateCoords();
+        onOpen?.();
       }
-      const coords = getCoords();
-      setCoords(coords);
-      onOpen?.();
-    }, [isOpen, getCoords, onOpen, mode]);
+    }, [isOpen, updateCoords, onOpen, mode]);
 
     const renderDropdown = useMemo(
       () => (
         <div
-          className={classNames(styles.dropdown, dropdownClassName)}
+          className={classNames(styles.dropdown, dropdownClassName, {
+            [styles.isVisible]: isOpen,
+          })}
           onClick={closeOnClick ? onButtonClick : undefined}
           style={usePortal ? dropdownStyles : undefined}
           ref={dropdownRef}
@@ -132,6 +148,7 @@ export const Dropdown = forwardRef<HTMLButtonElement, DropdownProps>(
         usePortal,
         dropdownStyles,
         children,
+        isOpen,
       ],
     );
 

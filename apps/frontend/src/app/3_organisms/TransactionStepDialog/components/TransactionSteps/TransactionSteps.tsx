@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useEffect, useState } from 'react';
+import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 
 import { ethers } from 'ethers';
 import { parseUnits } from 'ethers/lib/utils';
@@ -95,21 +95,28 @@ export const TransactionSteps: FC<TransactionStepsProps> = ({
     }
   }, [configs, error, step, transactions]);
 
-  const getStatus = (i: number) => {
-    if (i < step) {
-      return StatusType.success;
-    }
-    if (i === step) {
-      if (error) {
-        return StatusType.error;
+  const getStatus = useCallback(
+    (i: number) => {
+      if (i < step) {
+        return StatusType.success;
       }
-      return StatusType.pending;
-    }
-    return StatusType.idle;
-  };
-  const isLoading = step > -1 && step < transactions.length && !error;
+      if (i === step) {
+        if (error) {
+          return StatusType.error;
+        }
+        return StatusType.pending;
+      }
+      return StatusType.idle;
+    },
+    [error, step],
+  );
 
-  if (!configs.length)
+  const isLoading = useMemo(
+    () => step > -1 && step < transactions.length && !error,
+    [error, step, transactions.length],
+  );
+
+  if (!configs.length) {
     return (
       <Icon
         size={30}
@@ -117,6 +124,7 @@ export const TransactionSteps: FC<TransactionStepsProps> = ({
         icon={IconNames.PENDING}
       />
     );
+  }
 
   return (
     <div className="flex flex-col gap-4">

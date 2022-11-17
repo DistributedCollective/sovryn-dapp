@@ -1,4 +1,4 @@
-import React, { useReducer } from 'react';
+import React, { useCallback, useReducer } from 'react';
 
 import { ethers } from 'ethers';
 import { parseUnits } from 'ethers/lib/utils';
@@ -27,7 +27,7 @@ function App() {
 
   const { setTransactions, setIsOpen, setTitle } = useTransactionContext();
 
-  const approve = async () => {
+  const approve = useCallback(async () => {
     if (!wallets[0].provider) return;
     const { address, abi } = await getTokenContract('xusd', defaultChainId);
     const provider = new ethers.providers.Web3Provider(wallets[0].provider);
@@ -51,7 +51,7 @@ function App() {
     ]);
     setTitle('Transaction approval');
     setIsOpen(true);
-  };
+  }, [setIsOpen, setTitle, setTransactions, wallets]);
   return (
     <>
       <Header />

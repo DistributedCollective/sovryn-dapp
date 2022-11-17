@@ -46,10 +46,14 @@ export const TransactionStep: FC<TransactionStepProps> = ({
   updateConfig,
   isLoading,
 }) => {
-  const token = tokens.find(
-    token =>
-      token.address.toLowerCase() ===
-      transaction.contract.address.toLowerCase(),
+  const token = useMemo(
+    () =>
+      tokens.find(
+        token =>
+          token.address.toLowerCase() ===
+          transaction.contract.address.toLowerCase(),
+      ),
+    [transaction.contract.address],
   );
 
   const { title, subtitle } = transaction;
@@ -93,38 +97,41 @@ export const TransactionStep: FC<TransactionStepProps> = ({
       : '0';
   }, [token?.decimals, transaction.args, transaction.fnName]);
 
-  const amountOptions = [
-    {
-      label: 'Custom amount',
-      name: 'settings-' + step,
-      value: 'custom_amount',
-      contentToShow: (
-        <AmountInput
-          disabled={!!config.unlimitedAmount}
-          label="Amount"
-          className="ml-7 mb-5 max-w-60"
-          min={minAmount}
-          decimalPrecision={18}
-          value={parsedAmount}
-          onChange={e =>
-            updateConfig({
-              ...config,
-              amount: parseUnits(String(e.target.value), token?.decimals),
-            })
-          }
-        />
-      ),
-      helper:
-        'Limiting the amount of approved tokens as an additional security measure may result higher fees',
-    },
-    {
-      label: 'Unlimited amount',
-      name: 'settings-' + step,
-      value: 'unlimited_amount',
-      helper:
-        'Limiting the amount of approved tokens as an additional security measure may result higher fees',
-    },
-  ];
+  const amountOptions = useMemo(
+    () => [
+      {
+        label: 'Custom amount',
+        name: 'settings-' + step,
+        value: 'custom_amount',
+        contentToShow: (
+          <AmountInput
+            disabled={!!config.unlimitedAmount}
+            label="Amount"
+            className="ml-7 mb-5 max-w-60"
+            min={minAmount}
+            decimalPrecision={18}
+            value={parsedAmount}
+            onChange={e =>
+              updateConfig({
+                ...config,
+                amount: parseUnits(String(e.target.value), token?.decimals),
+              })
+            }
+          />
+        ),
+        helper:
+          'Limiting the amount of approved tokens as an additional security measure may result higher fees',
+      },
+      {
+        label: 'Unlimited amount',
+        name: 'settings-' + step,
+        value: 'unlimited_amount',
+        helper:
+          'Limiting the amount of approved tokens as an additional security measure may result higher fees',
+      },
+    ],
+    [config, minAmount, parsedAmount, step, token?.decimals, updateConfig],
+  );
 
   const [advanced, setAdvanced] = useState(false);
   const onChange = useCallback(
@@ -210,7 +217,7 @@ export const TransactionStep: FC<TransactionStepProps> = ({
                 defaultChecked={config.unlimitedAmount ? 1 : 0}
               />
               <Heading type={HeadingType.h3} className="mb-3">
-                Approval gas setting
+                Gas Settings
               </Heading>
             </>
           )}

@@ -3,8 +3,9 @@
   "version": "0.1.6",
   "private": true,
   "dependencies": {
-    "@sovryn/ethers-provider": "*",
+    "@loadable/component": "5.15.2",
     "@sovryn/contracts": "*",
+    "@sovryn/ethers-provider": "*",
     "@sovryn/onboard-common": "0.0.1",
     "@sovryn/onboard-core": "0.0.2",
     "@sovryn/onboard-injected": "0.0.1",

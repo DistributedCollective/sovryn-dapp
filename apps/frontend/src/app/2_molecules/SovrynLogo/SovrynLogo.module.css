@@ -1,0 +1,9 @@
+.logo {
+  @apply flex items-center text-xs text-gray-20;
+}
+
+.link {
+   &:hover {
+    @apply text-gray-20;
+  }
+}

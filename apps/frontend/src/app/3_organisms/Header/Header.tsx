@@ -13,7 +13,7 @@ export const Header: FC = () => {
 
   return (
     <UIHeader
-      logo={<SovrynLogo dataAttribute="logo" text="Sovryn" link="/" />}
+      logo={<SovrynLogo dataAttribute="logo" link="/" />}
       menuItems={
         <>
           <NavMenuItem className="mr-2" isActive children="Zero" />

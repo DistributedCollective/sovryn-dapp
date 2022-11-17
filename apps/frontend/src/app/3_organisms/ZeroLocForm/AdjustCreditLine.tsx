@@ -134,7 +134,6 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
 
   return (
     <>
-      {collateralAmount} | {collateralValue} | {maxCollateralAmount}
       <FormGroup
         label={
           <CustomLabel

@@ -132,7 +132,7 @@ export const Dropdown = forwardRef<HTMLButtonElement, DropdownProps>(
       () => (
         <div
           className={classNames(styles.dropdown, dropdownClassName, {
-            [styles.isVisible]: isOpen,
+            [styles.isVisible]: dropdownStyles,
           })}
           onClick={closeOnClick ? onButtonClick : undefined}
           style={usePortal ? dropdownStyles : undefined}
@@ -148,7 +148,6 @@ export const Dropdown = forwardRef<HTMLButtonElement, DropdownProps>(
         usePortal,
         dropdownStyles,
         children,
-        isOpen,
       ],
     );
 

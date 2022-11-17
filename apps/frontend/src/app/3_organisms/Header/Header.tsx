@@ -32,7 +32,7 @@ export const Header: FC = () => {
             <WrongNetworkSwitcher className="absolute top-full mt-2.5 right-0" />
           </div>
 
-          <LanguageSelector className="mr-1 ml-6" />
+          <LanguageSelector className="mr-1 ml-6 font-medium" />
         </>
       }
     />

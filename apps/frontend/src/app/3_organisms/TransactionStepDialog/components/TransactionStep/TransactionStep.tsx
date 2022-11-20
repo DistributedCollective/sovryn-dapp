@@ -23,6 +23,7 @@ import {
 
 import { chains, defaultChainId } from '../../../../../config/chains';
 import { tokens } from '../../../../../config/tokens';
+import { APPROVAL_FUNCTION } from '../../../../../utils/constants';
 import { Transaction, TxConfig } from '../../TransactionStepDialog.types';
 
 export type TransactionStepProps = {
@@ -68,7 +69,9 @@ export const TransactionStep: FC<TransactionStepProps> = ({
         ...transaction.config,
         unlimitedAmount: config.unlimitedAmount,
         amount:
-          transaction.fnName === 'approve' ? transaction.args[1] : undefined,
+          transaction.fnName === APPROVAL_FUNCTION
+            ? transaction.args[1]
+            : undefined,
         gasPrice,
         gasLimit: gasLimit.toString(),
       });
@@ -92,7 +95,7 @@ export const TransactionStep: FC<TransactionStepProps> = ({
   }, [config.amount, token?.decimals]);
 
   const minAmount = useMemo(() => {
-    return transaction.fnName === 'approve'
+    return transaction.fnName === APPROVAL_FUNCTION
       ? formatUnits(transaction.args[1], token?.decimals)
       : '0';
   }, [token?.decimals, transaction.args, transaction.fnName]);
@@ -107,7 +110,6 @@ export const TransactionStep: FC<TransactionStepProps> = ({
           <AmountInput
             disabled={!!config.unlimitedAmount}
             label="Amount"
-            className="ml-7 mb-5 max-w-60"
             min={minAmount}
             decimalPrecision={18}
             value={parsedAmount}

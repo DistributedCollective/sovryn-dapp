@@ -8,3 +8,5 @@ export const sovrynLinks = {
 };
 
 export const requiredChain = ChainIds.RSK_TESTNET;
+
+export const APPROVAL_FUNCTION = 'approve';

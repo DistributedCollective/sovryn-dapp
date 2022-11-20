@@ -17,6 +17,7 @@ import { useTheme } from '../../../hooks/useTheme';
 import { useWalletConnect } from '../../../hooks/useWalletConnect';
 import { translations } from '../../../locales/i18n';
 import { AppTheme } from '../../../types/tailwind';
+import { APPROVAL_FUNCTION } from '../../../utils/constants';
 
 function App() {
   const { handleThemeChange } = useTheme();
@@ -39,7 +40,7 @@ function App() {
         title: 'Approve XUSD tokens',
         subtitle: 'Allow Sovryn protocol to use XUSD tokens for the trade',
         contract: xusd,
-        fnName: 'approve',
+        fnName: APPROVAL_FUNCTION,
         args: [ethers.constants.AddressZero, parseUnits('2')],
       },
       {

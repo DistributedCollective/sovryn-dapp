@@ -5,6 +5,7 @@ import { parseUnits } from 'ethers/lib/utils';
 
 import { Button, Icon, IconNames, StatusType } from '@sovryn/ui';
 
+import { APPROVAL_FUNCTION } from '../../../../../utils/constants';
 import { Transaction, TxConfig } from '../../TransactionStepDialog.types';
 import { TransactionStep } from '../TransactionStep/TransactionStep';
 
@@ -31,8 +32,8 @@ export const TransactionSteps: FC<TransactionStepsProps> = ({
         const gasLimit = await tx.contract.estimateGas[tx.fnName](...tx.args);
         list.push({
           ...tx.config,
-          amount: tx.fnName === 'approve' ? tx.args[1] : undefined,
-          unlimitedAmount: tx.fnName === 'approve' ? false : undefined,
+          amount: tx.fnName === APPROVAL_FUNCTION ? tx.args[1] : undefined,
+          unlimitedAmount: tx.fnName === APPROVAL_FUNCTION ? false : undefined,
           gasPrice,
           gasLimit: gasLimit.toString(),
         });
@@ -65,7 +66,7 @@ export const TransactionSteps: FC<TransactionStepsProps> = ({
         setStep(i);
         const config = configs[i];
         const args = transactions[i].args;
-        if (transactions[i].fnName === 'approve') {
+        if (transactions[i].fnName === APPROVAL_FUNCTION) {
           args[1] = config.unlimitedAmount
             ? ethers.constants.MaxUint256
             : config.amount;

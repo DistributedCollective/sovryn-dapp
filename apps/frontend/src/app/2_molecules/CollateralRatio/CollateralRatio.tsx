@@ -1,5 +1,7 @@
 import React, { FC } from 'react';
 
+import { useTranslation } from 'react-i18next';
+
 import {
   Heading,
   HealthBar,
@@ -17,6 +19,8 @@ export const CollateralRatio: FC<CollateralRatioProps> = ({
   value,
   minCRatio,
 }) => {
+  const { t } = useTranslation();
+
   return (
     <div className="w-80">
       <div className="flex items-center justify-between mb-3">
@@ -24,8 +28,11 @@ export const CollateralRatio: FC<CollateralRatioProps> = ({
           className="text-gray-10 flex items-center"
           type={HeadingType.h3}
         >
-          Collateral Ratio
-          <HelperButton className="ml-1.5" content="Collateral Ratio" />
+          {t('collateralRatio.title')}
+          <HelperButton
+            className="ml-1.5"
+            content={t('collateralRatio.tooltip')}
+          />
         </Heading>
         <Heading
           className="text-gray-30 flex items-center"
@@ -42,7 +49,7 @@ export const CollateralRatio: FC<CollateralRatioProps> = ({
         value={value}
       />
       <Paragraph className="text-gray-30 flex items-center mt-2.5">
-        Collateral ratio must be above {minCRatio}%
+        {t('collateralRatio.description', { value: minCRatio })}
       </Paragraph>
     </div>
   );

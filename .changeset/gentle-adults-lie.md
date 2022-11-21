@@ -3,4 +3,4 @@
 "@sovryn/ui": patch
 ---
 
-Sov 1010 zero collateral ratio healthbar component
+SOV-1010: zero collateral ratio healthbar component

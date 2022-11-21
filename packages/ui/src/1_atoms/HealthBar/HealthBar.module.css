@@ -1,0 +1,29 @@
+.healthBar {
+  @apply min-w-80 w-full flex items-center gap-0.5 relative;
+
+  &.disabled {
+    @apply opacity-50;
+  }
+
+  .low,
+  .middle,
+  .high {
+    @apply rounded-sm h-1.5;
+  }
+
+  .middle {
+    @apply bg-primary-75;
+  }
+
+  .low {
+    @apply bg-negative;
+  }
+
+  .high {
+    @apply bg-success;
+  }
+
+  .tick {
+    @apply absolute border border-white border-gray-10 w-2.5 h-2.5 rounded-sm transition-all -translate-x-full bg-gray-70-ol;
+  }
+}

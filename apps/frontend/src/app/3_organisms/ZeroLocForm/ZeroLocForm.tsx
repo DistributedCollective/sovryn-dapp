@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { FC } from 'react';
 
 import { useTranslation } from 'react-i18next';
@@ -11,22 +11,34 @@ export const ZeroLocForm: FC = () => {
   const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState(0);
 
+  const [hasLoan, setHasLoan] = useState(false);
+
   const [collateralValue, setCollateralValue] = useState('0');
   const [creditValue, setCreditValue] = useState('0');
+
+  const onCreditLineSubmitted = useCallback(() => {
+    setHasLoan(true);
+  }, []);
+
+  const AdjustCreditLineComp = useMemo(
+    () => (
+      <AdjustCreditLine
+        collateralValue={collateralValue}
+        creditValue={creditValue}
+        onCollateralChange={setCollateralValue}
+        onCreditChange={setCreditValue}
+        onSubmit={onCreditLineSubmitted}
+      />
+    ),
+    [collateralValue, creditValue, onCreditLineSubmitted],
+  );
 
   const tabs = useMemo(
     () =>
       [
         {
           label: t('zeroLocForm.tabs.adjust'),
-          content: (
-            <AdjustCreditLine
-              collateralValue={collateralValue}
-              creditValue={creditValue}
-              onCollateralChange={setCollateralValue}
-              onCreditChange={setCreditValue}
-            />
-          ),
+          content: <>{AdjustCreditLineComp}</>,
           activeClassName: 'border-t-primary-30',
         },
         {
@@ -35,7 +47,7 @@ export const ZeroLocForm: FC = () => {
           activeClassName: 'border-t-primary-30',
         },
       ] as ITabItem[],
-    [collateralValue, creditValue, t],
+    [AdjustCreditLineComp, t],
   );
 
   return (
@@ -50,12 +62,20 @@ export const ZeroLocForm: FC = () => {
           <p>{creditValue}</p>
         </div>
       </div>
-      <Tabs
-        items={tabs}
-        index={activeTab}
-        onChange={setActiveTab}
-        contentClassName="px-5 pt-8 pb-6"
-      />
+
+      {!hasLoan ? (
+        <div className="pt-8 px-5 pb-7 border rounded border-gray-50 bg-gray-90">
+          {AdjustCreditLineComp}
+        </div>
+      ) : (
+        <Tabs
+          items={tabs}
+          index={activeTab}
+          onChange={setActiveTab}
+          contentClassName="px-5 pt-8 pb-6"
+          className="w-full"
+        />
+      )}
     </>
   );
 };

@@ -1,7 +1,14 @@
-import React, { useCallback, useMemo, useState } from 'react';
-import { FC } from 'react';
+import React, { ChangeEvent, useCallback, useMemo, useState, FC } from 'react';
 
-import { AmountInput, FormGroup, Select, SelectOption } from '@sovryn/ui';
+import {
+  AmountInput,
+  Button,
+  ButtonStyle,
+  ButtonType,
+  FormGroup,
+  Select,
+  SelectOption,
+} from '@sovryn/ui';
 
 import { CustomLabel } from './CustomLabel';
 
@@ -10,6 +17,7 @@ type AdjustCreditLineProps = {
   creditValue: string;
   onCollateralChange: (value: string) => void;
   onCreditChange: (value: string) => void;
+  onSubmit: () => void;
 };
 
 export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
@@ -17,10 +25,15 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
   creditValue,
   onCollateralChange,
   onCreditChange,
+  onSubmit,
 }) => {
   const [collateralAmount, setCollateralAmount] = useState('0');
   const [creditAmount, setCreditAmount] = useState('0');
   const [creditToken, setCreditToken] = useState('DLLR');
+
+  // todo: these needs to be retrieved
+  const maxCollateralAmount = 10000;
+  const maxCreditAmount = 5000;
 
   const tokens = useMemo(
     () =>
@@ -44,9 +57,6 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
       ] as SelectOption[],
     [],
   );
-
-  // todo
-  const maxCollateralAmount = useMemo(() => 100000, []);
 
   const handleMaxCollateralAmountClick = useCallback(
     () => onCollateralChange(String(maxCollateralAmount)),
@@ -78,9 +88,6 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
       ),
     [collateralAmount, collateralValue, onCollateralChange],
   );
-
-  // todo
-  const maxCreditAmount = useMemo(() => 100000, []);
 
   const handleMaxCreditAmountClick = useCallback(
     () => onCreditChange(String(maxCreditAmount)),
@@ -132,8 +139,27 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
     [creditAmount, creditValue],
   );
 
+  const handleCollateralAmountChange = useCallback(
+    (event: ChangeEvent<HTMLInputElement>) =>
+      setCollateralAmount(event.currentTarget.value),
+    [],
+  );
+
+  const handleCreditAmountChange = useCallback(
+    (event: ChangeEvent<HTMLInputElement>) =>
+      setCreditAmount(event.currentTarget.value),
+    [],
+  );
+
+  const handleResetClick = useCallback(() => {
+    setCollateralAmount('0');
+    setCreditAmount('0');
+    onCollateralChange('0');
+    onCreditChange('0');
+  }, [onCollateralChange, onCreditChange]);
+
   return (
-    <>
+    <div className="w-full">
       <FormGroup
         label={
           <CustomLabel
@@ -147,10 +173,14 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
             onDecreaseClicked={handleDecreaseCollateralAmountClick}
           />
         }
+        className="max-w-none"
       >
         <AmountInput
           value={collateralAmount}
-          onChange={e => setCollateralAmount(e.target.value)}
+          onChange={handleCollateralAmountChange}
+          label="Amount"
+          tooltip="Amount of collateral to add or remove"
+          className="max-w-none"
         />
       </FormGroup>
       <FormGroup
@@ -166,12 +196,15 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
             onDecreaseClicked={handleDecreaseCreditAmountClick}
           />
         }
-        className="mt-8"
+        className="mt-8 w-full"
       >
-        <div className="flex flex-row justify-between items-center gap-3">
+        <div className="w-full flex flex-row justify-between items-center gap-3">
           <AmountInput
             value={creditAmount}
-            onChange={e => setCreditAmount(e.target.value)}
+            onChange={handleCreditAmountChange}
+            label="Amount"
+            tooltip="Amount of debt to add or remove"
+            className="w-full flex-grow-0 flex-shrink"
           />
           <Select
             value={creditToken}
@@ -180,6 +213,22 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
           />
         </div>
       </FormGroup>
-    </>
+      <div className="mt-8 flex flex-row items-center justify-between gap-8">
+        <Button
+          type={ButtonType.reset}
+          style={ButtonStyle.secondary}
+          text="Cancel"
+          className="w-full"
+          onClick={handleResetClick}
+        />
+        <Button
+          type={ButtonType.reset}
+          style={ButtonStyle.primary}
+          text="Confirm"
+          className="w-full"
+          onClick={onSubmit}
+        />
+      </div>
+    </div>
   );
 };

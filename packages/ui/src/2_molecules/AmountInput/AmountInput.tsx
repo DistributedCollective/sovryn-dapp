@@ -1,6 +1,7 @@
 import React, {
   ReactNode,
   useCallback,
+  useEffect,
   useImperativeHandle,
   useRef,
   useState,
@@ -115,6 +116,11 @@ export const AmountInput = React.forwardRef<HTMLInputElement, AmountInputProps>(
       },
       [onBlur, onChangeTextHandler],
     );
+
+    // Update value when value prop is changed outside of the component
+    useEffect(() => {
+      setFormattedValue(formatValue(value as string));
+    }, [value, formatValue]);
 
     return (
       <div className={classNames(styles.wrapper, className)}>

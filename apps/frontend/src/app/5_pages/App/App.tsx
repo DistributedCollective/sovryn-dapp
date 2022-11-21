@@ -6,6 +6,7 @@ import { Button, Dialog, StatusType } from '@sovryn/ui';
 
 import { ConnectWalletButton } from '../../2_molecules';
 import { ExampleProviderCall } from '../../2_molecules/ExampleProviderCall';
+import { ExampleTokenDetails } from '../../2_molecules/ExampleTokenDetails';
 import { TransactionStep, Header } from '../../3_organisms';
 import { Footer } from '../../3_organisms/Footer/Footer';
 import { useTheme } from '../../../hooks/useTheme';
@@ -26,6 +27,7 @@ function App() {
       <div className="my-2 px-4">
         <div>
           <ExampleProviderCall />
+          <ExampleTokenDetails />
 
           <hr className="my-12" />
 

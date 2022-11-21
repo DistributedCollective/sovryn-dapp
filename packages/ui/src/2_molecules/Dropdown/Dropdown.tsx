@@ -73,11 +73,10 @@ export const Dropdown = forwardRef<HTMLButtonElement, DropdownProps>(
       const button = buttonRef.current?.getBoundingClientRect();
       const dropdownWidth = dropdownRef.current?.getBoundingClientRect().width;
       const windowWidth = document.body.getBoundingClientRect().width;
-      const scrollOffset = window.scrollY;
       if (button && dropdownWidth) {
         const { top, left, right, width, height } = button;
         return {
-          top: top + height + scrollOffset,
+          top: top + height,
           left: left,
           right: right,
           buttonWidth: width,
@@ -115,9 +114,13 @@ export const Dropdown = forwardRef<HTMLButtonElement, DropdownProps>(
     );
 
     useEffect(() => {
-      window.addEventListener(DropdownEvents.resize, updateCoords);
+      Object.values(DropdownEvents).forEach(event =>
+        window.addEventListener(event, updateCoords),
+      );
       return () => {
-        window.removeEventListener(DropdownEvents.resize, updateCoords);
+        Object.values(DropdownEvents).forEach(event =>
+          window.removeEventListener(event, updateCoords),
+        );
       };
     }, [updateCoords]);
 

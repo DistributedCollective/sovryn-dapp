@@ -21,4 +21,6 @@ export type DropdownCoords = {
 
 export enum DropdownEvents {
   resize = 'resize',
+  scroll = 'scroll',
+  wheel = 'wheel',
 }

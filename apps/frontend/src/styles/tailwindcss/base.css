@@ -30,7 +30,7 @@
 
   a,
   a:visited {
-    @apply text-primary no-underline underline;
+    @apply text-primary no-underline;
   }
 
   a:hover,
@@ -40,5 +40,9 @@
 
   th {
     text-align: inherit;
+  }
+
+  #root {
+    @apply flex flex-col min-h-full;
   }
 }

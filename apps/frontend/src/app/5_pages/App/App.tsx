@@ -4,9 +4,11 @@ import { useTranslation } from 'react-i18next';
 
 import { Button, Dialog, StatusType } from '@sovryn/ui';
 
-import { SocialLinks, ConnectWalletButton } from '../../2_molecules';
+import { ConnectWalletButton } from '../../2_molecules';
 import { ExampleProviderCall } from '../../2_molecules/ExampleProviderCall';
+import { ExampleTokenDetails } from '../../2_molecules/ExampleTokenDetails';
 import { TransactionStep, Header } from '../../3_organisms';
+import { Footer } from '../../3_organisms/Footer/Footer';
 import { useTheme } from '../../../hooks/useTheme';
 import { useWalletConnect } from '../../../hooks/useWalletConnect';
 import { translations } from '../../../locales/i18n';
@@ -25,6 +27,7 @@ function App() {
       <div className="my-2 px-4">
         <div>
           <ExampleProviderCall />
+          <ExampleTokenDetails />
 
           <hr className="my-12" />
 
@@ -99,12 +102,9 @@ function App() {
           <br />
 
           <p>{t(translations.wallet)}</p>
-          <br />
-          <div className="w-32">
-            <SocialLinks dataAttribute="socials" />
-          </div>
         </main>
       </div>
+      <Footer />
     </>
   );
 }

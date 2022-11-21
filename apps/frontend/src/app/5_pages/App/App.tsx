@@ -17,9 +17,7 @@ const App: FC = () => (
           Sovryn Dapp is currently under construction.
         </Heading>
       </div>
-      <div className="w-full justify-self-end">
-        <DebugContent />
-      </div>
+      <DebugContent />
     </PageContainer>
   </>
 );

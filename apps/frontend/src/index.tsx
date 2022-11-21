@@ -8,7 +8,6 @@ import { OnboardProvider } from '@sovryn/onboard-react';
 
 import App from './app/5_pages/App/App';
 import { chains } from './config/chains';
-import { onboard } from './lib/connector';
 import './locales/i18n';
 import './styles/tailwindcss/index.css';
 
@@ -21,7 +20,7 @@ root.render(
   <React.StrictMode>
     <BrowserRouter>
       <App />
-      <OnboardProvider onboard={onboard} />
+      <OnboardProvider />
     </BrowserRouter>
   </React.StrictMode>,
 );

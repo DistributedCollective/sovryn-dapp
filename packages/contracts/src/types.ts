@@ -32,20 +32,7 @@ export enum SupportedTokens {
 export type TokenBaseInfo = {
   symbol: SupportedTokens;
   decimalPrecision: number;
-  iconName: string;
-};
-
-export const SupportedTokenList: Record<SupportedTokens, TokenBaseInfo> = {
-  [SupportedTokens.xusd]: {
-    symbol: SupportedTokens.xusd,
-    decimalPrecision: 18,
-    iconName: 'xusd.svg',
-  },
-  [SupportedTokens.sov]: {
-    symbol: SupportedTokens.sov,
-    decimalPrecision: 18,
-    iconName: 'sov.svg',
-  },
+  getIcon: () => Promise<string>;
 };
 
 export type TokenDetailsData = {
@@ -53,5 +40,5 @@ export type TokenDetailsData = {
   abi: ContractInterface;
   symbol: SupportedTokens;
   decimalPrecision: number;
-  icon: string;
+  icon?: string;
 };

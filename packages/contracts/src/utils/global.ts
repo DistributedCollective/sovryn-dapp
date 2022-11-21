@@ -9,13 +9,14 @@ import {
   Network,
 } from '@sovryn/ethers-provider';
 
+import { SupportedTokenList } from '../tokenDetails';
 import {
   AsyncContractConfigData,
   ContractConfigData,
   ContractData,
   ContractGroup,
-  SupportedTokenList,
   SupportedTokens,
+  TokenBaseInfo,
   TokenDetailsData,
 } from '../types';
 
@@ -24,6 +25,7 @@ const cacheByKey: Record<
   ChainId,
   Record<ContractGroup, Record<string, ContractConfigData>>
 > = {};
+const iconCache = new Map<SupportedTokens, string>();
 
 export const findContract = async (address: string): Promise<ContractData> => {
   address = address.toLowerCase();
@@ -122,32 +124,43 @@ export const getContractGroupAbi = async (
   }
 };
 
+export const resolveIcon = async (tokenBaseInfo: TokenBaseInfo) => {
+  const { symbol, getIcon } = tokenBaseInfo;
+
+  if (iconCache.has(symbol)) {
+    return iconCache.get(symbol);
+  }
+
+  const icon = await getIcon();
+
+  if (!icon) {
+    throw new Error(`getTokenDetails: Icon not found for token: ${symbol}`);
+  }
+
+  iconCache.set(symbol, icon);
+  return icon;
+};
+
 export const getTokenDetailsData = async (
   name: SupportedTokens,
   chainId: ChainId,
 ): Promise<TokenDetailsData> => {
-  const tokenBaseInfo = SupportedTokenList?.[name];
+  const tokenBaseInfo = SupportedTokenList.find(token => token.symbol === name);
 
   if (!tokenBaseInfo) {
     throw new Error(`getTokenDetails: Unsupported token: ${name}`);
   }
 
-  const contract = await getContract(name, 'tokens', chainId);
+  const { address, abi } = await getContract(name, 'tokens', chainId);
 
-  const tokenLogo = await import(`../tokenDetails/logos/xusd`).then(
-    item => item.default,
-  );
-
-  if (!tokenLogo) {
-    throw new Error(`getTokenDetails: Logo not found for token: ${name}`);
-  }
+  const icon = await resolveIcon(tokenBaseInfo);
 
   const tokenDetails: TokenDetailsData = {
-    address: contract.address,
-    abi: contract.abi,
+    address,
+    abi,
     symbol: tokenBaseInfo.symbol,
     decimalPrecision: tokenBaseInfo.decimalPrecision,
-    icon: tokenLogo,
+    icon,
   };
 
   return tokenDetails;

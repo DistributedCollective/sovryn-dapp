@@ -1,17 +1,12 @@
-import React, { useEffect, useReducer, useState } from 'react';
+import React, { useReducer } from 'react';
 
 import { useTranslation } from 'react-i18next';
 
-import {
-  getTokenDetails,
-  SupportedTokens,
-  TokenDetailsData,
-} from '@sovryn/contracts';
-import { ChainIds } from '@sovryn/ethers-provider';
 import { Button, Dialog, StatusType } from '@sovryn/ui';
 
 import { SocialLinks, ConnectWalletButton } from '../../2_molecules';
 import { ExampleProviderCall } from '../../2_molecules/ExampleProviderCall';
+import { ExampleTokenDetails } from '../../2_molecules/ExampleTokenDetails';
 import { TransactionStep, Header } from '../../3_organisms';
 import { useTheme } from '../../../hooks/useTheme';
 import { useWalletConnect } from '../../../hooks/useWalletConnect';
@@ -25,39 +20,13 @@ function App() {
   const { connectWallet, disconnectWallet, wallets, pending } =
     useWalletConnect();
 
-  const [tokenDetails, setTokenDetails] = useState<TokenDetailsData>();
-
-  useEffect(() => {
-    const getDetails = async () => {
-      const details: TokenDetailsData = await getTokenDetails(
-        SupportedTokens.xusd,
-        ChainIds.RSK_MAINNET,
-      );
-
-      return details;
-    };
-    getDetails().then(setTokenDetails);
-  }, []);
-
   return (
     <>
       <Header />
       <div className="my-2 px-4">
         <div>
           <ExampleProviderCall />
-
-          <div>
-            <div>Token details for XUSD on RSK Mainnet</div>
-            <div>address: {tokenDetails?.address}</div>
-            <div>symbol: {tokenDetails?.symbol}</div>
-            <div>decimalPrecision: {tokenDetails?.decimalPrecision}</div>
-            <div>
-              logo:{' '}
-              <div
-                dangerouslySetInnerHTML={{ __html: tokenDetails?.icon || '' }}
-              />
-            </div>
-          </div>
+          <ExampleTokenDetails />
 
           <hr className="my-12" />
 

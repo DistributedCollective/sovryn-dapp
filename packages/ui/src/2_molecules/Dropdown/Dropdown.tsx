@@ -18,7 +18,12 @@ import { useOnClickOutside } from '../../hooks/useOnClickOutside';
 import { Nullable } from '../../types';
 import { applyDataAttr } from '../../utils';
 import styles from './Dropdown.module.css';
-import { DropdownCoords, DropdownMode, DropdownSize } from './Dropdown.types';
+import {
+  DropdownCoords,
+  DropdownEvents,
+  DropdownMode,
+  DropdownSize,
+} from './Dropdown.types';
 import { getDropdownPositionStyles } from './Dropdown.utils';
 
 export type DropdownProps = {
@@ -68,11 +73,10 @@ export const Dropdown = forwardRef<HTMLButtonElement, DropdownProps>(
       const button = buttonRef.current?.getBoundingClientRect();
       const dropdownWidth = dropdownRef.current?.getBoundingClientRect().width;
       const windowWidth = document.body.getBoundingClientRect().width;
-      const scrollOffset = window.scrollY;
       if (button && dropdownWidth) {
         const { top, left, right, width, height } = button;
         return {
-          top: top + height + scrollOffset,
+          top: top + height,
           left: left,
           right: right,
           buttonWidth: width,
@@ -84,10 +88,9 @@ export const Dropdown = forwardRef<HTMLButtonElement, DropdownProps>(
     }, []);
 
     const dropdownStyles = useMemo(() => {
-      if (!coords) {
-        return;
+      if (coords) {
+        return getDropdownPositionStyles(coords, mode);
       }
-      return getDropdownPositionStyles(coords, mode);
     }, [coords, mode]);
 
     const classNamesComplete = useMemo(
@@ -105,19 +108,35 @@ export const Dropdown = forwardRef<HTMLButtonElement, DropdownProps>(
 
     useOnClickOutside([buttonRef, dropdownRef], useClickedOutside);
 
+    const updateCoords = useCallback(
+      () => setCoords(getCoords()),
+      [getCoords, setCoords],
+    );
+
     useEffect(() => {
-      if (!isOpen) {
-        return;
+      Object.values(DropdownEvents).forEach(event =>
+        window.addEventListener(event, updateCoords),
+      );
+      return () => {
+        Object.values(DropdownEvents).forEach(event =>
+          window.removeEventListener(event, updateCoords),
+        );
+      };
+    }, [updateCoords]);
+
+    useEffect(() => {
+      if (isOpen) {
+        updateCoords();
+        onOpen?.();
       }
-      const coords = getCoords();
-      setCoords(coords);
-      onOpen?.();
-    }, [isOpen, getCoords, onOpen, mode]);
+    }, [isOpen, updateCoords, onOpen, mode]);
 
     const renderDropdown = useMemo(
       () => (
         <div
-          className={classNames(styles.dropdown, dropdownClassName)}
+          className={classNames(styles.dropdown, dropdownClassName, {
+            [styles.isVisible]: dropdownStyles,
+          })}
           onClick={closeOnClick ? onButtonClick : undefined}
           style={usePortal ? dropdownStyles : undefined}
           ref={dropdownRef}

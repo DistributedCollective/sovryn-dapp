@@ -2,23 +2,15 @@ import React, { FC } from 'react';
 
 import { useTranslation } from 'react-i18next';
 
-import {
-  Heading,
-  HealthBar,
-  HeadingType,
-  HelperButton,
-  Paragraph,
-} from '@sovryn/ui';
+import { Heading, HealthBar, HeadingType, HelperButton } from '@sovryn/ui';
+
+import { translations } from '../../../locales/i18n';
 
 export type CollateralRatioProps = {
   value?: number;
-  minCRatio: number;
 };
 
-export const CollateralRatio: FC<CollateralRatioProps> = ({
-  value,
-  minCRatio,
-}) => {
+export const CollateralRatio: FC<CollateralRatioProps> = ({ value }) => {
   const { t } = useTranslation();
 
   return (
@@ -28,10 +20,10 @@ export const CollateralRatio: FC<CollateralRatioProps> = ({
           className="text-gray-10 flex items-center"
           type={HeadingType.h3}
         >
-          {t('collateralRatio.title')}
+          {t(translations.collateralRatio.title)}
           <HelperButton
             className="ml-1.5"
-            content={t('collateralRatio.tooltip')}
+            content={t(translations.collateralRatio.tooltip)}
           />
         </Heading>
         <Heading
@@ -48,9 +40,6 @@ export const CollateralRatio: FC<CollateralRatioProps> = ({
         end={250}
         value={value}
       />
-      <Paragraph className="text-gray-30 flex items-center mt-2.5">
-        {t('collateralRatio.description', { value: minCRatio })}
-      </Paragraph>
     </div>
   );
 };

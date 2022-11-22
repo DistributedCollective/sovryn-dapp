@@ -14,7 +14,6 @@
     },
     "collateralRatio": {
         "title": "Collateral Ratio",
-        "tooltip": "Collateral Ratio",
-        "description": "Collateral ratio must be above {{value}}%"
+        "tooltip": "Collateral Ratio"
     }
 }

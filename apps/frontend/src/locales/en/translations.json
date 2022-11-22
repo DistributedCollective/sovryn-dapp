@@ -6,6 +6,9 @@
             "twitter": "Twitter",
             "telegram": "Telegram",
             "github": "Github"
+        },
+        "buttons": {
+            "switch": "Switch"
         }
     },
     "wrongNetworkSwitcher": {

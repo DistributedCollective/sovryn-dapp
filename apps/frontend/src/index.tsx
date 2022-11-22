@@ -1,3 +1,5 @@
+import { ApolloProvider, ApolloClient, InMemoryCache } from '@apollo/client';
+
 import React from 'react';
 
 import ReactDOM from 'react-dom/client';
@@ -10,8 +12,16 @@ import App from './app/5_pages/App/App';
 import { chains } from './config/chains';
 import './locales/i18n';
 import './styles/tailwindcss/index.css';
+import { graphRskUrl } from './utils/constants';
 
 setupChains(chains);
+
+const rskClient = new ApolloClient({
+  uri: graphRskUrl,
+  cache: new InMemoryCache({
+    resultCaching: false,
+  }),
+});
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement,
@@ -19,8 +29,10 @@ const root = ReactDOM.createRoot(
 root.render(
   <React.StrictMode>
     <BrowserRouter>
-      <App />
-      <OnboardProvider />
+      <ApolloProvider client={rskClient}>
+        <App />
+        <OnboardProvider />
+      </ApolloProvider>
     </BrowserRouter>
   </React.StrictMode>,
 );

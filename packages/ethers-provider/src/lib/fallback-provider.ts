@@ -419,8 +419,8 @@ async function getRunner(
     case 'getGasPrice':
       return provider[method]();
     case 'getEtherPrice':
-      if ((provider).getEtherPrice) {
-        return (provider).getEtherPrice();
+      if (provider.getEtherPrice) {
+        return provider.getEtherPrice();
       }
       break;
     case 'getBalance':
@@ -553,7 +553,7 @@ export class FallbackProvider extends BaseProvider {
 
     // Are all providers' networks are known
     let networkOrReady: Network | Promise<Network> = checkNetworks(
-      providerConfigs.map(c => (c.provider).network),
+      providerConfigs.map(c => c.provider.network),
     );
 
     // Not all networks are known; we must stall

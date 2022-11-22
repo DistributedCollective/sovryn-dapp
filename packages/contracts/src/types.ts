@@ -23,3 +23,22 @@ export type ContractData = {
   group: ContractGroup;
   name: string;
 };
+
+export enum SupportedTokens {
+  xusd = 'xusd',
+  sov = 'sov',
+}
+
+export type TokenBaseInfo = {
+  symbol: SupportedTokens;
+  decimalPrecision: number;
+  getIcon: () => Promise<string>;
+};
+
+export type TokenDetailsData = {
+  address: string;
+  abi: ContractInterface;
+  symbol: SupportedTokens;
+  decimalPrecision: number;
+  icon?: string;
+};

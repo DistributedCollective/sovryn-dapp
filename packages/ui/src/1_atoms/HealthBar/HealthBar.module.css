@@ -1,29 +1,38 @@
 .healthBar {
   @apply min-w-80 w-full flex items-center gap-0.5 relative;
 
-  &.disabled {
-    @apply opacity-50;
-  }
-
+  .blur,
   .low,
   .middle,
   .high {
-    @apply rounded-sm h-1.5;
+    @apply rounded-sm h-1.5 relative;
   }
 
   .middle {
-    @apply bg-primary-75;
+    @apply bg-primary-75/50;
+
+    .blur {
+      @apply bg-primary-75;
+    }
   }
 
   .low {
-    @apply bg-negative;
+    @apply bg-negative/50;
+
+    .blur {
+      @apply bg-negative;
+    }
   }
 
   .high {
-    @apply bg-success;
+    @apply bg-success/50;
+
+    .blur {
+      @apply bg-success;
+    }
   }
 
-  .tick {
-    @apply absolute border border-white border-gray-10 w-2.5 h-2.5 rounded-sm transition-all -translate-x-full bg-gray-70-ol;
+  .blur {
+    @apply absolute left-0 h-1.5;
   }
 }

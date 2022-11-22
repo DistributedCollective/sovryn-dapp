@@ -25,10 +25,12 @@ Default.args = {
   value: 200,
 };
 
-const _Disabled: ComponentStory<typeof HealthBar> = args => (
-  <div className="w-[355px]">
-    <HealthBar {...args} value={undefined} />
-  </div>
-);
+export const Disabled = Template.bind({});
 
-export const Disabled = _Disabled.bind({});
+Disabled.args = {
+  start: 90,
+  end: 250,
+  middleStart: 110,
+  middleEnd: 150,
+  value: undefined,
+};

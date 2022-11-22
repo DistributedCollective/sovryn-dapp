@@ -43,7 +43,7 @@ export const SovrynLogo: React.FC<SovrynLogoProps> = ({
           {Logo}
         </LinkBase>
       ) : (
-        { Logo }
+        <>{Logo}</>
       )}
     </>
   );

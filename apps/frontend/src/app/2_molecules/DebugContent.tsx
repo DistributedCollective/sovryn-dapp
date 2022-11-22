@@ -8,6 +8,7 @@ import { TransactionStepDialog } from '../3_organisms';
 import { useTheme, useWalletConnect } from '../../hooks';
 import { translations } from '../../locales/i18n';
 import { AppTheme } from '../../types/tailwind';
+import { CollateralRatio } from './CollateralRatio/CollateralRatio';
 import { ConnectWalletButton } from './ConnectWalletButton/ConnectWalletButton';
 import { ExampleProviderCall } from './ExampleProviderCall';
 import { APPROVAL_FUNCTION } from '../../utils/constants';
@@ -115,6 +116,7 @@ export const DebugContent = () => {
       <p className="text-primary">
         GTM: {process.env.REACT_APP_GOOGLE_ANALYTICS}
       </p>
+      <CollateralRatio value={200} />
       <br />
       <br />
       <br />

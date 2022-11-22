@@ -21,8 +21,8 @@
     "@rollup/plugin-node-resolve": "14.1.0",
     "@rollup/plugin-typescript": "8.5.0",
     "@sovryn/eslint-config-custom": "*",
-    "@sovryn/tsconfig": "*",
     "@sovryn/tailwindcss-config": "*",
+    "@sovryn/tsconfig": "*",
     "@storybook/addon-actions": "6.5.9",
     "@storybook/addon-essentials": "6.5.9",
     "@storybook/addon-interactions": "6.5.9",
@@ -57,7 +57,8 @@
     "classnames": "2.3.1",
     "focus-trap-react": "10.0.0",
     "identity-obj-proxy": "3.0.0",
-    "jest-canvas-mock": "2.4.0"
+    "jest-canvas-mock": "2.4.0",
+    "lottie-react": "2.3.1"
   },
   "peerDependencies": {
     "react": "18.2.0",

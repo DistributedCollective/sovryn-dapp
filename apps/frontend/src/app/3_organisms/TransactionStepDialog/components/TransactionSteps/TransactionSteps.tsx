@@ -25,7 +25,7 @@ export const TransactionSteps: FC<TransactionStepsProps> = ({
   const [error, setError] = useState(false);
 
   useEffect(() => {
-    const initilize = async () => {
+    const initialize = async () => {
       const list: TxConfig[] = [];
       for (let i = 0; i < transactions.length; i++) {
         const tx = transactions[i];
@@ -42,7 +42,7 @@ export const TransactionSteps: FC<TransactionStepsProps> = ({
     };
 
     if (gasPrice) {
-      initilize();
+      initialize();
     }
   }, [gasPrice, transactions]);
 

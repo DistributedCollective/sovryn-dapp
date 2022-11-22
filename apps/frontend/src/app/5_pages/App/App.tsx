@@ -7,9 +7,11 @@ import { useTranslation } from 'react-i18next';
 import { getTokenContract } from '@sovryn/contracts';
 import { Button, Dialog } from '@sovryn/ui';
 
-import { SocialLinks, ConnectWalletButton } from '../../2_molecules';
+import { ConnectWalletButton } from '../../2_molecules';
 import { ExampleProviderCall } from '../../2_molecules/ExampleProviderCall';
+import { ExampleTokenDetails } from '../../2_molecules/ExampleTokenDetails';
 import { Header } from '../../3_organisms';
+import { Footer } from '../../3_organisms/Footer/Footer';
 import { TransactionStepDialog } from '../../3_organisms/TransactionStepDialog/TransactionStepDialog';
 import { defaultChainId } from '../../../config/chains';
 import { useTransactionContext } from '../../../context/transactionContext';
@@ -61,6 +63,7 @@ function App() {
       <div className="my-2 px-4">
         <div>
           <ExampleProviderCall />
+          <ExampleTokenDetails />
 
           <hr className="my-12" />
 
@@ -131,12 +134,9 @@ function App() {
           <br />
 
           <p>{t(translations.wallet)}</p>
-          <br />
-          <div className="w-32">
-            <SocialLinks dataAttribute="socials" />
-          </div>
         </main>
       </div>
+      <Footer />
     </>
   );
 }

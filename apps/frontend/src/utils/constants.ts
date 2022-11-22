@@ -5,6 +5,9 @@ export const sovrynLinks = {
   telegram: 'https://t.me/SovrynBitcoin',
   twitter: 'https://twitter.com/Sovrynbtc',
   github: 'https://github.com/DistributedCollective',
+  wiki: 'https://wiki.sovryn.app/en/',
+  dappAlpha: 'https://live.sovryn.app/',
+  blog: 'https://www.sovryn.app/blog',
 };
 
 export const requiredChain = ChainIds.RSK_TESTNET;

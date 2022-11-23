@@ -17,7 +17,9 @@
     "coverage": "turbo run coverage",
     "storybook": "turbo run storybook",
     "prepare": "husky install",
-    "release-packages": "turbo run build lint test --filter=./packages/* && changeset publish"
+    "release-packages": "turbo run build lint test --filter=./packages/* && changeset publish",
+    "generate:graphql:fetch:testnet": "turbo run generate:graphql:fetch:testnet",
+    "generate:graphql:fetch:mainnet": "turbo run generate:graphql:fetch:mainnet"
   },
   "devDependencies": {
     "@sovryn/eslint-config-custom": "*",

@@ -8,6 +8,7 @@ import { TransactionStepDialog } from '../3_organisms';
 import { useTheme, useWalletConnect } from '../../hooks';
 import { translations } from '../../locales/i18n';
 import { AppTheme } from '../../types/tailwind';
+import { useGetTokenRatesQuery } from '../../utils/graphql/rsk/generated';
 import { CollateralRatio } from './CollateralRatio/CollateralRatio';
 import { ConnectWalletButton } from './ConnectWalletButton/ConnectWalletButton';
 import { ExampleProviderCall } from './ExampleProviderCall';
@@ -29,6 +30,7 @@ export const DebugContent = () => {
   const { connectWallet, disconnectWallet, wallets, pending } =
     useWalletConnect();
 
+  const { data } = useGetTokenRatesQuery();
   const { setTransactions, setIsOpen, setTitle } = useTransactionContext();
 
   const approve = useCallback(async () => {
@@ -68,6 +70,11 @@ export const DebugContent = () => {
       <TransactionStepDialog />
       <ExampleProviderCall />
       <ExampleTokenDetails />
+
+      <div>
+        USD price of SOV from the graph:{' '}
+        {data?.tokens.find(token => token.symbol === 'SOV')?.lastPriceUsd}
+      </div>
 
       <hr className="my-12" />
 

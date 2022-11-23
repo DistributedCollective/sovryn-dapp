@@ -106,7 +106,7 @@ BaseCheckbox.args = {
   checked: true,
   indeterminate: false,
   disabled: false,
-  dataLayoutId: '',
+  dataAttribute: '',
 };
 
 export const WithLabel = Template.bind({});
@@ -115,7 +115,7 @@ WithLabel.args = {
   checked: true,
   indeterminate: false,
   disabled: false,
-  dataLayoutId: '',
+  dataAttribute: '',
 };
 
 export const TableWithCheckboxes = TableTemplate.bind({});
@@ -126,7 +126,7 @@ TableWithCheckboxes.parameters = {
       'checked',
       'indeterminate',
       'disabled',
-      'dataLayoutId',
+      'dataAttribute',
       'onChangeValue',
       'containerClassName',
     ],

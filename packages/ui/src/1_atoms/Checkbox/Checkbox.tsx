@@ -21,7 +21,7 @@ export type CheckboxProps = Omit<
   'ref' | 'size'
 > & {
   indeterminate?: boolean;
-  dataLayoutId?: string;
+  dataAttribute?: string;
   onChangeValue?: (value: boolean) => void;
   /** @deprecated Use onChangeText if possible */
   onChange?: ChangeEventHandler<HTMLInputElement>;
@@ -33,7 +33,7 @@ export const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>(
   (
     {
       checked,
-      dataLayoutId,
+      dataAttribute,
       onChange,
       onChangeValue,
       indeterminate,
@@ -64,7 +64,7 @@ export const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>(
       <label className={classNames(styles.container, containerClassName)}>
         <input
           {...props}
-          {...applyDataAttr(dataLayoutId)}
+          {...applyDataAttr(dataAttribute)}
           ref={innerRef}
           type="checkbox"
           checked={checked}

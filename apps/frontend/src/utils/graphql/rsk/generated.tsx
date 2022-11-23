@@ -20,9 +20,9 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
-  BigDecimal: string;
-  BigInt: string;
-  Bytes: string;
+  BigDecimal: any;
+  BigInt: any;
+  Bytes: any;
 };
 
 export type BitcoinTransfer = {
@@ -12233,8 +12233,8 @@ export type GetTokenRatesQuery = {
     __typename?: 'Token';
     id: string;
     symbol?: string | null;
-    lastPriceBtc: string;
-    lastPriceUsd: string;
+    lastPriceBtc: any;
+    lastPriceUsd: any;
   }>;
 };
 

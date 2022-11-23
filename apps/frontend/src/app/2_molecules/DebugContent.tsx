@@ -1,4 +1,4 @@
-import React, { useReducer } from 'react';
+import React, { useMemo, useReducer } from 'react';
 
 import { useTranslation } from 'react-i18next';
 
@@ -12,6 +12,7 @@ import { useGetTokenRatesQuery } from '../../utils/graphql/rsk/generated';
 import { CollateralRatio } from './CollateralRatio/CollateralRatio';
 import { ConnectWalletButton } from './ConnectWalletButton/ConnectWalletButton';
 import { ExampleProviderCall } from './ExampleProviderCall';
+import { ExampleTokenDetails } from './ExampleTokenDetails';
 
 // usage example, to be removed
 export const DebugContent = () => {
@@ -21,16 +22,36 @@ export const DebugContent = () => {
   const { connectWallet, disconnectWallet, wallets, pending } =
     useWalletConnect();
 
-  const { data } = useGetTokenRatesQuery();
+  // const perpsClient = new ApolloClient({
+  //   uri: graphPerpsUrl,
+  //   cache: new InMemoryCache({
+  //     resultCaching: false,
+  //   }),
+  // });
+
+  const { data: tokensData } = useGetTokenRatesQuery({
+    pollInterval: 0,
+  });
+
+  // const { data: tradesData } = useGetTradesQuery({
+  //   client: perpsClient,
+  // });
+
+  const sovToken = useMemo(
+    () =>
+      tokensData
+        ? tokensData?.tokens.find(token => token.symbol === 'SOV')
+        : undefined,
+    [tokensData],
+  );
 
   return (
     <Accordion label="Debug content" open={isOpen} onClick={toggle}>
       <ExampleProviderCall />
 
-      <div>
-        USD price of SOV from the graph:{' '}
-        {data?.tokens.find(token => token.symbol === 'SOV')?.lastPriceUsd}
-      </div>
+      <div>USD price of SOV from the RSK graph: {sovToken?.lastPriceUsd}</div>
+
+      <ExampleTokenDetails />
 
       <hr className="my-12" />
 

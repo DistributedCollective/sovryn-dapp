@@ -1,9 +1,11 @@
 generates:
-  ./src/utils/graphql/rsk/schema.graphql:
-    schema:
-      - ${REACT_APP_GRAPH_RSK}
-    plugins:
-      - schema-ast
+  {
+    './src/utils/graphql/rsk/schema.graphql':
+      { schema: '${REACT_APP_GRAPH_RSK}', plugins: ['schema-ast'] },
+    './src/utils/graphql/perps/schema.graphql':
+      { schema: '${REACT_APP_GRAPH_PERPS}', plugins: ['schema-ast'] },
+  }
+
 hooks:
   afterAllFileWrite:
     - prettier ./src/utils/graphql/**/schema.graphql --write

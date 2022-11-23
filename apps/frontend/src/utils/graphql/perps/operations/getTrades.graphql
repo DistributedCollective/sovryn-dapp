@@ -1,0 +1,9 @@
+query getTrades {
+  trades {
+    id
+    trader {
+      id
+    }
+    price
+  }
+}

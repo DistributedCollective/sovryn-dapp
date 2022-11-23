@@ -1,9 +1,10 @@
-import React, { FC } from 'react';
+import React, { FC, ReactNode } from 'react';
 
 import classNames from 'classnames';
 
 import { Dropdown } from '../Dropdown/Dropdown';
 import { DropdownSize } from '../Dropdown/Dropdown.types';
+import { WalletBalance } from '../WalletBalance';
 import styles from './WalletIdentity.module.css';
 import { AddressBadge } from './components/AddressBadge/AddressBadge';
 import {
@@ -20,6 +21,7 @@ export type WalletIdentityProps = {
   submenuLabels?: MenuLabels;
   startLength?: number;
   endLength?: number;
+  balance?: ReactNode;
 };
 
 export const WalletIdentity: FC<WalletIdentityProps> = ({
@@ -31,6 +33,7 @@ export const WalletIdentity: FC<WalletIdentityProps> = ({
   endLength = 4,
   dataLayoutId,
   submenuLabels,
+  balance,
 }) => {
   if (hideSubmenu) {
     return (
@@ -47,6 +50,7 @@ export const WalletIdentity: FC<WalletIdentityProps> = ({
   return (
     <Dropdown
       className={classNames(styles.dropdown, className)}
+      dropdownClassName={styles.dropdownMenu}
       text={
         <AddressBadge
           address={address}
@@ -57,6 +61,7 @@ export const WalletIdentity: FC<WalletIdentityProps> = ({
       }
       size={DropdownSize.small}
     >
+      {balance && <WalletBalance children={balance} />}
       <DisconnectSubmenu
         onDisconnect={onDisconnect}
         address={address}

@@ -49,6 +49,7 @@ export const WrongNetworkSwitcher: FC<WrongNetworkSwitcherProps> = ({
       onClick={switchChain}
       type={NotificationType.warning}
       title={t('wrongNetworkSwitcher.title')}
+      className="absolute top-full right-0"
     />
   );
 };

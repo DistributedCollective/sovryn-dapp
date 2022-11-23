@@ -1,0 +1,37 @@
+.container {
+  @apply flex flex-row justify-start items-center gap-2;
+}
+
+
+.input {
+  @apply w-0 h-0 absolute;
+  top: -999999px;
+  left: -999999px;
+}
+
+.checkbox {
+  @apply inline-block cursor-pointer p-1 text-gray-10;
+
+  & > div {
+    @apply w-5 h-5 border-2 border-gray-40 rounded transition-colors duration-200 flex justify-center items-center;
+  }
+
+  &.checked > div {
+    @apply border-primary bg-primary;
+  }
+
+  &.indeterminate > div {
+    @apply bg-transparent border-gray-40 text-gray-40;
+  }
+
+  &.disabled {
+    @apply text-gray-50 cursor-not-allowed;
+    & > div {
+      @apply border-gray-50;
+    }
+
+    &.checked > div, &.indeterminate > div {
+      @apply border-gray-70 bg-gray-70;
+    }
+  }
+}

@@ -38,7 +38,10 @@ describe('Notification', () => {
 
   it('renders a notification with an action button', () => {
     const { getByText } = render(
-      <Notification buttonLabel="switch network" title="Notification" />,
+      <Notification
+        content={<button>switch network</button>}
+        title="Notification"
+      />,
     );
     const notification = getByText('switch network');
     expect(notification).toHaveTextContent('switch network');

@@ -2,10 +2,17 @@ import React, { FC, useCallback, useMemo } from 'react';
 
 import { useTranslation } from 'react-i18next';
 
-import { Paragraph, Notification, NotificationType } from '@sovryn/ui';
+import {
+  Paragraph,
+  Notification,
+  NotificationType,
+  Button,
+  ButtonStyle,
+} from '@sovryn/ui';
 
 import { chains, defaultChainId } from '../../../config/chains';
 import { useWalletConnect } from '../../../hooks';
+import styles from './WrongNetworkSwitcher.module.css';
 
 type WrongNetworkSwitcherProps = {
   className?: string;
@@ -43,10 +50,14 @@ export const WrongNetworkSwitcher: FC<WrongNetworkSwitcherProps> = ({
               network: defaultChain?.label,
             })}
           </Paragraph>
+          <Button
+            className={styles.button}
+            style={ButtonStyle.secondary}
+            text={t('common.buttons.switch')}
+            onClick={switchChain}
+          />
         </>
       }
-      buttonLabel={t('common.buttons.switch')}
-      onClick={switchChain}
       type={NotificationType.warning}
       title={t('wrongNetworkSwitcher.title')}
       className={className}

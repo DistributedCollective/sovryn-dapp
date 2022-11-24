@@ -4,7 +4,7 @@ import { ethers } from 'ethers';
 import { parseUnits } from 'ethers/lib/utils';
 import { useTranslation } from 'react-i18next';
 
-import { getTokenContract } from '@sovryn/contracts';
+import { getTokenDetails, SupportedTokens } from '@sovryn/contracts';
 import { Button, Dialog } from '@sovryn/ui';
 
 import { ConnectWalletButton } from '../../2_molecules';
@@ -32,24 +32,29 @@ function App() {
 
   const approve = useCallback(async () => {
     if (!wallets[0].provider) return;
-    const { address, abi } = await getTokenContract('xusd', defaultChainId);
+
+    const { address, abi, symbol } = await getTokenDetails(
+      SupportedTokens.xusd,
+      defaultChainId,
+    );
+
     const provider = new ethers.providers.Web3Provider(wallets[0].provider);
     const signer = provider.getSigner();
     const xusd = new ethers.Contract(address, abi, signer);
 
     setTransactions([
       {
-        title: 'Approve XUSD tokens',
-        subtitle: 'Allow Sovryn protocol to use XUSD tokens for the trade',
+        title: `Approve ${symbol} tokens`,
+        subtitle: `Allow Sovryn protocol to use ${symbol} tokens for the trade`,
         contract: xusd,
         fnName: APPROVAL_FUNCTION,
-        args: [ethers.constants.AddressZero, parseUnits('2')],
+        args: [address, parseUnits('2')],
       },
       {
-        title: `Transfer 2 XUSD tokens`,
+        title: `Transfer 2 ${symbol} tokens`,
         contract: xusd,
         fnName: 'transfer',
-        args: [ethers.constants.AddressZero, parseUnits('2')],
+        args: [wallets[0]?.accounts[0]?.address, parseUnits('2')],
       },
     ]);
     setTitle('Transaction approval');

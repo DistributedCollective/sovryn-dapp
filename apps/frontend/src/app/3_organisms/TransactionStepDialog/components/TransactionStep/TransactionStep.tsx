@@ -108,7 +108,7 @@ export const TransactionStep: FC<TransactionStepProps> = ({
         value: 'custom_amount',
         contentToShow: (
           <AmountInput
-            className="mb-3"
+            className="mb-3 ml-8 w-56"
             disabled={!!config.unlimitedAmount}
             label="Amount"
             min={minAmount}

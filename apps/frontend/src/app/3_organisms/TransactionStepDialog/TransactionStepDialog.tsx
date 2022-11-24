@@ -12,7 +12,12 @@ export const TransactionStepDialog: FC = () => {
   const gasPrice = useGasPrice();
 
   return (
-    <Dialog width={DialogSize.sm} isOpen={isOpen} onClose={onClose}>
+    <Dialog
+      width={DialogSize.sm}
+      isOpen={isOpen}
+      onClose={onClose}
+      disableFocusTrap
+    >
       <DialogHeader onClose={onClose} title={title} />
       <DialogBody>
         <TransactionSteps

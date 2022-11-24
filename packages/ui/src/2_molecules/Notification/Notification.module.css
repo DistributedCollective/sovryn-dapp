@@ -1,5 +1,5 @@
 .notification {
-  @apply mt-2.5 bg-gray-20 z-10 rounded border-l-[3px] px-4 py-3 w-80 shadow-md;
+  @apply relative mt-2.5 bg-gray-20 z-10 rounded border-l-[3px] px-4 py-3 w-80 shadow-md;
 
   &.warning {
     @apply border-l-warning;
@@ -25,7 +25,7 @@
     }
   }
 
-  & > div {
+ & .title {
     @apply flex items-center;
     & svg {
       @apply mr-2;
@@ -43,10 +43,6 @@
 
 .icon {
   @apply mr-2;
-}
-
-.button {
-  @apply mb-2 mt-7 ml-7;
 }
 
 .close {

@@ -20,7 +20,7 @@ const Component: FC<CheckboxProps> = props => {
 describe('Checkbox', () => {
   it('has a checkbox input', () => {
     const { container } = render(<Checkbox />);
-    expect(container.querySelector('input[type=checkbox')).toBeInTheDocument();
+    expect(container.querySelector('input[type=checkbox]')).toBeInTheDocument();
   });
 
   it('renders checkbox label', () => {
@@ -31,7 +31,7 @@ describe('Checkbox', () => {
   it('does not have checked state', () => {
     const { container } = render(<Checkbox />);
     const input = container.querySelector(
-      'input[type=checkbox',
+      'input[type=checkbox]',
     ) as HTMLInputElement;
     expect(input.checked).toBe(false);
   });
@@ -39,7 +39,7 @@ describe('Checkbox', () => {
   it('has checked state', () => {
     const { container } = render(<Checkbox checked />);
     const input = container.querySelector(
-      'input[type=checkbox',
+      'input[type=checkbox]',
     ) as HTMLInputElement;
     expect(input.checked).toBe(true);
   });
@@ -47,7 +47,7 @@ describe('Checkbox', () => {
   it('does not have indeterminate state', () => {
     const { container } = render(<Checkbox />);
     const input = container.querySelector(
-      'input[type=checkbox',
+      'input[type=checkbox]',
     ) as HTMLInputElement;
     expect(input.indeterminate).toBe(false);
   });
@@ -55,7 +55,7 @@ describe('Checkbox', () => {
   it('has indeterminate state', () => {
     const { container } = render(<Checkbox indeterminate />);
     const input = container.querySelector(
-      'input[type=checkbox',
+      'input[type=checkbox]',
     ) as HTMLInputElement;
     expect(input.indeterminate).toBe(true);
   });
@@ -63,7 +63,7 @@ describe('Checkbox', () => {
   it('does not have disabled state', () => {
     const { container } = render(<Checkbox />);
     const input = container.querySelector(
-      'input[type=checkbox',
+      'input[type=checkbox]',
     ) as HTMLInputElement;
     expect(input.disabled).toBe(false);
   });
@@ -71,7 +71,7 @@ describe('Checkbox', () => {
   it('has disabled state', () => {
     const { container } = render(<Checkbox disabled />);
     const input = container.querySelector(
-      'input[type=checkbox',
+      'input[type=checkbox]',
     ) as HTMLInputElement;
     expect(input.disabled).toBe(true);
   });
@@ -80,7 +80,7 @@ describe('Checkbox', () => {
     const mockFunction = jest.fn();
     const { container } = render(<Checkbox onChange={mockFunction} />);
     const input = container.querySelector(
-      'input[type=checkbox',
+      'input[type=checkbox]',
     ) as HTMLInputElement;
     userEvent.click(input);
     expect(mockFunction).toBeCalledTimes(1);
@@ -90,7 +90,7 @@ describe('Checkbox', () => {
     const mockFunction = jest.fn();
     const { container } = render(<Checkbox onChangeValue={mockFunction} />);
     const input = container.querySelector(
-      'input[type=checkbox',
+      'input[type=checkbox]',
     ) as HTMLInputElement;
     userEvent.click(input);
     expect(mockFunction).toBeCalledTimes(1);
@@ -99,7 +99,7 @@ describe('Checkbox', () => {
   it('changes checked state on click', () => {
     const { container } = render(<Component />);
     const input = container.querySelector(
-      'input[type=checkbox',
+      'input[type=checkbox]',
     ) as HTMLInputElement;
     expect(input.checked).toBe(false);
     userEvent.click(input);
@@ -109,7 +109,7 @@ describe('Checkbox', () => {
   it('does not change state for disabled checkbox', () => {
     const { container } = render(<Component disabled />);
     const input = container.querySelector(
-      'input[type=checkbox',
+      'input[type=checkbox]',
     ) as HTMLInputElement;
     expect(input.checked).toBe(false);
     userEvent.click(input);

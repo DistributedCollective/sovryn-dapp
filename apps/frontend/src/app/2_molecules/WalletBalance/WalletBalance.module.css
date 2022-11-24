@@ -1,0 +1,7 @@
+.walletBalance {
+  @apply mb-3;
+}
+
+.row {
+  @apply uppercase text-sov-white;
+}

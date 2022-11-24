@@ -4,7 +4,6 @@ import classNames from 'classnames';
 
 import { Dropdown } from '../Dropdown/Dropdown';
 import { DropdownSize } from '../Dropdown/Dropdown.types';
-import { WalletBalance } from '../WalletBalance';
 import styles from './WalletIdentity.module.css';
 import { AddressBadge } from './components/AddressBadge/AddressBadge';
 import {
@@ -61,7 +60,7 @@ export const WalletIdentity: FC<WalletIdentityProps> = ({
       }
       size={DropdownSize.small}
     >
-      {balance && <WalletBalance children={balance} />}
+      {balance}
       <DisconnectSubmenu
         onDisconnect={onDisconnect}
         address={address}

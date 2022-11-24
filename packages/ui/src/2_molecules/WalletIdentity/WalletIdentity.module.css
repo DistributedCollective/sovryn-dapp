@@ -4,8 +4,8 @@
 
 .dropdown {
   @apply w-40;
+}
 
-  &Menu {
-    @apply p-3 bg-gray-90;
-  }
+.dropdownMenu {
+  @apply p-3 bg-gray-90;
 }

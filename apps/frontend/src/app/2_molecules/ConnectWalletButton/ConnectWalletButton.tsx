@@ -1,9 +1,9 @@
 import React, { FC, PropsWithChildren } from 'react';
 
-import { Button, SimpleTableRow } from '@sovryn/ui';
+import { Button } from '@sovryn/ui';
 import { WalletIdentity } from '@sovryn/ui';
 
-import { Asset } from '../../../types/assets';
+import { WalletBalance } from '../WalletBalance/WalletBalance';
 
 export type ConnectWalletButtonProps = {
   onConnect: () => void;
@@ -41,14 +41,7 @@ export const ConnectWalletButton: FC<
         address={address}
         dataLayoutId={dataLayoutId}
         className={className}
-        balance={Object.values(Asset).map(asset => (
-          <SimpleTableRow
-            key={asset}
-            className="text-sov-white"
-            label={asset}
-            value="0"
-          />
-        ))}
+        balance={<WalletBalance />}
         submenuLabels={{
           copyAddress: 'Copy Address',
           disconnect: 'Disconnect',

@@ -1,0 +1,58 @@
+.notification {
+  @apply relative mt-2.5 bg-gray-20 z-10 rounded border-l-[3px] px-4 py-3 w-80 shadow-md;
+
+  &.warning {
+    @apply border-l-warning;
+
+    & svg {
+      @apply text-warning;
+    }
+  }
+
+  &.error {
+    @apply border-l-error;
+
+    & svg {
+      @apply text-error;
+    }
+  }
+
+  &.success {
+    @apply border-l-success;
+
+    & svg {
+      @apply text-success;
+    }
+  }
+
+ & .title {
+    @apply flex items-center;
+    & svg {
+      @apply mr-2;
+    }
+  }
+}
+
+.content {
+  @apply mt-3 ml-7 text-sovryn-black font-medium;
+}
+
+.title {
+  @apply text-sovryn-black font-medium;
+}
+
+.icon {
+  @apply mr-2;
+}
+
+.close {
+  @apply absolute right-4 top-4;
+
+  & svg[data-icon='x-mark'] {
+    @apply text-sovryn-black;
+  }
+
+  & > span {
+    @apply sr-only;
+  }
+}

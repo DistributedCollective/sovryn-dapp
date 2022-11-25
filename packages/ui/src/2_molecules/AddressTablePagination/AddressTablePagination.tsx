@@ -1,51 +1,102 @@
-import React, { FC, useCallback, useMemo, useState } from 'react';
+import React, { FC } from 'react';
 
-import classnames from 'classnames';
+import classNames from 'classnames';
 
-import { Icon } from '../../1_atoms';
+import { Icon, IconNames } from '../../1_atoms';
 import { applyDataAttr } from '../../utils';
 import styles from './AddressTablePagination.module.css';
 
 type AddressTablePaginationProps = {
-  onPageChange: (value: number) => void;
   className?: string;
   dataLayoutId?: string;
-  itemsPerPage?: number;
+  pageSize: number;
+  pageIndex: number;
+  pageCount?: number;
+  canNextPage: boolean;
+  canPreviousPage: boolean;
+  nextPage: () => void;
+  previousPage: () => void;
+  gotoPage: (page: number) => void;
+  length?: number;
 };
 
-const DEFAULT_ITEMS_PER_PAGE = 5;
-
 export const AddressTablePagination: FC<AddressTablePaginationProps> = ({
-  onPageChange,
   className,
   dataLayoutId,
-  itemsPerPage = DEFAULT_ITEMS_PER_PAGE,
+  previousPage,
+  nextPage,
+  canNextPage,
+  canPreviousPage,
+  pageIndex,
+  pageCount,
+  gotoPage,
 }) => {
-  const [offset, setOffset] = useState(0);
-
-  const handleClickNext = useCallback(() => {
-    setOffset(offset + itemsPerPage);
-    onPageChange(offset + itemsPerPage);
-  }, [setOffset, offset, itemsPerPage, onPageChange]);
-
-  const handleClickPrevious = useCallback(() => {
-    setOffset(offset - itemsPerPage);
-    onPageChange(offset - itemsPerPage);
-  }, [setOffset, offset, itemsPerPage, onPageChange]);
-
-  const isDisabled = useMemo(() => offset <= 0, [offset]);
-
   return (
     <div
       {...applyDataAttr(dataLayoutId)}
-      className={classnames(styles.AddressTablePagination, className)}
+      className={classNames(styles.AddressTablePagination, className)}
     >
-      <button type="button" disabled={isDisabled} onClick={handleClickPrevious}>
-        <Icon icon="arrow-back" size={12} />
+      {pageCount !== undefined && (
+        <button
+          className={styles.action}
+          type="button"
+          disabled={pageIndex === 0}
+          onClick={() => gotoPage(0)}
+        >
+          <Icon icon={IconNames.DOUBLE_LEFT} size={12} />
+        </button>
+      )}
+      <button
+        className={styles.action}
+        type="button"
+        disabled={!canPreviousPage}
+        onClick={previousPage}
+        {...applyDataAttr(`${dataLayoutId}-previous`)}
+      >
+        <Icon icon={IconNames.ARROW_BACK} size={12} />
       </button>
-      <button type="button" onClick={handleClickNext}>
-        <Icon icon="arrow-forward" size={12} />
+      {pageCount !== undefined ? (
+        <>
+          {new Array(pageCount).fill(0).map((_item, index) => (
+            <button
+              className={classNames(styles.page, {
+                [styles.active]: index === pageIndex,
+              })}
+              onClick={() => gotoPage(index)}
+            >
+              {index + 1}
+            </button>
+          ))}
+        </>
+      ) : (
+        <button className={classNames(styles.page, styles.active)}>
+          {pageIndex + 1}
+        </button>
+      )}
+      <button
+        className={styles.action}
+        type="button"
+        disabled={!canNextPage}
+        onClick={nextPage}
+        {...applyDataAttr(`${dataLayoutId}-next`)}
+      >
+        <Icon icon={IconNames.ARROW_FORWARD} size={12} />
       </button>
+
+      {pageCount !== undefined && (
+        <button
+          className={styles.action}
+          type="button"
+          disabled={pageIndex + 1 === pageCount}
+          onClick={() => gotoPage(pageCount - 1)}
+        >
+          <Icon
+            className={styles.doubleRight}
+            icon={IconNames.DOUBLE_LEFT}
+            size={12}
+          />
+        </button>
+      )}
     </div>
   );
 };

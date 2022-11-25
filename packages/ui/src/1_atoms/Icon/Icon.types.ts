@@ -25,6 +25,7 @@ export enum IconNames {
   TRANSFER = 'transfer',
   TREND_ARROW_UP = 'trend-arrow-up',
   TREND_ARROW_DOWN = 'trend-arrow-down',
+  DOUBLE_LEFT = 'double-left',
   ARROW_LEFT = 'arrow-left',
   ARROW_RIGHT = 'arrow-right',
   WARNING = 'warning',

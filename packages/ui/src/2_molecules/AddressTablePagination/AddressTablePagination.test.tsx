@@ -7,21 +7,39 @@ import { AddressTablePagination } from './AddressTablePagination';
 
 describe('AddressTablePagination', () => {
   it('renders AddressTablePagination', () => {
-    const onPageChange = jest.fn();
+    const gotoPage = jest.fn();
     const { findAllByRole } = render(
-      <AddressTablePagination onPageChange={onPageChange} />,
+      <AddressTablePagination
+        canNextPage
+        canPreviousPage
+        gotoPage={gotoPage}
+        nextPage={() => gotoPage(2)}
+        pageCount={4}
+        pageIndex={1}
+        pageSize={4}
+        previousPage={() => gotoPage(0)}
+      />,
     );
     expect(findAllByRole('svg[data-icon="arrow-back"]')).toBeDefined();
   });
 
   it('does not allow to click Previous without clicking Next first', () => {
-    const onPageChange = jest.fn();
-    const { getAllByRole } = render(
-      <AddressTablePagination onPageChange={onPageChange} />,
+    const gotoPage = jest.fn();
+    const { getByTestId } = render(
+      <AddressTablePagination
+        canNextPage
+        canPreviousPage
+        gotoPage={gotoPage}
+        nextPage={() => gotoPage(2)}
+        pageCount={4}
+        pageIndex={1}
+        pageSize={4}
+        previousPage={() => gotoPage(0)}
+        dataLayoutId="sovryn-table"
+      />,
     );
-    getAllByRole('button').forEach(element => {
-      userEvent.click(element);
-    });
-    expect(onPageChange).toBeCalledTimes(1);
+
+    userEvent.click(getByTestId('sovryn-table-next'));
+    expect(gotoPage).toBeCalledTimes(1);
   });
 });

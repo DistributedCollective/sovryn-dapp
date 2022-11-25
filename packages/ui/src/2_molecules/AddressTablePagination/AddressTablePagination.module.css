@@ -1,10 +1,23 @@
 .AddressTablePagination {
-    @apply flex justify-center;
+  @apply flex items-center;
 
-    & > button {
-        @apply mx-8 bg-transparent border-none outline-none cursor-pointer transition-opacity;
-        &:disabled {
-            @apply opacity-50 cursor-not-allowed;
-        }
+  & > .action {
+    @apply bg-transparent border-none outline-none cursor-pointer transition-opacity mx-1;
+
+    &:disabled {
+      @apply opacity-50 cursor-not-allowed;
     }
+  }
+
+  * > .doubleRight {
+    @apply rotate-180;
+  }
+
+  & > .page {
+    @apply h-6 w-6 rounded mx-1 flex justify-center items-center hover:bg-gray-70 transition-colors;
+
+    &.active {
+      @apply bg-gray-70;
+    }
+  }
 }

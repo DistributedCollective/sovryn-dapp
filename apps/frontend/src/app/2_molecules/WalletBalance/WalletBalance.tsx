@@ -5,17 +5,14 @@ import { SimpleTable, SimpleTableRow } from '@sovryn/ui';
 
 import styles from './WalletBalance.module.css';
 
-export const WalletBalance: FC = () => {
-  const tokensToDisplay = useMemo(
-    () => [
-      SupportedTokens.rbtc,
-      SupportedTokens.zusd,
-      SupportedTokens.xusd,
-      SupportedTokens.dllr,
-    ],
-    [],
-  );
+const tokensToDisplay = [
+  SupportedTokens.rbtc,
+  SupportedTokens.zusd,
+  SupportedTokens.xusd,
+  SupportedTokens.dllr,
+];
 
+export const WalletBalance: FC = () => {
   const tokenOptions = useMemo(
     () =>
       SupportedTokenList.map(token => (
@@ -27,7 +24,7 @@ export const WalletBalance: FC = () => {
         />
         //TODO: hardcoded, need to remove filter once we have a full list of tokens and ask Gilad to provide token symbols
       )).filter(token => tokensToDisplay.includes(token.props.label)),
-    [tokensToDisplay],
+    [],
   );
 
   return (

@@ -29,7 +29,11 @@ export const TransactionSteps: FC<TransactionStepsProps> = ({
       const list: TxConfig[] = [];
       for (let i = 0; i < transactions.length; i++) {
         const tx = transactions[i];
-        const gasLimit = await tx.contract.estimateGas[tx.fnName](...tx.args);
+        const args = [...tx.args];
+        if (tx.fnName === APPROVAL_FUNCTION) {
+          args[1] = ethers.constants.MaxUint256;
+        }
+        const gasLimit = await tx.contract.estimateGas[tx.fnName](...args);
         list.push({
           ...tx.config,
           amount: tx.fnName === APPROVAL_FUNCTION ? tx.args[1] : undefined,
@@ -65,7 +69,7 @@ export const TransactionSteps: FC<TransactionStepsProps> = ({
       for (; i < transactions.length; i++) {
         setStep(i);
         const config = configs[i];
-        const args = transactions[i].args;
+        const args = [...transactions[i].args];
         if (transactions[i].fnName === APPROVAL_FUNCTION) {
           args[1] = config.unlimitedAmount
             ? ethers.constants.MaxUint256

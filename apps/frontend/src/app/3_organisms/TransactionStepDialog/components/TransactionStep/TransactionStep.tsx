@@ -1,5 +1,6 @@
 import React, { FC, useCallback, useMemo, useState } from 'react';
 
+import classNames from 'classnames';
 import { formatUnits, parseUnits } from 'ethers/lib/utils';
 import { bignumber } from 'mathjs';
 
@@ -178,7 +179,10 @@ export const TransactionStep: FC<TransactionStepProps> = ({
               value={`${config.unlimitedAmount ? '∞' : parsedAmount} ${
                 token?.symbol
               }`}
-              valueClassName="text-primary-10"
+              valueClassName={classNames(
+                isLoading ? 'text-gray-30' : 'text-primary-10',
+                'whitespace-nowrap overflow-auto',
+              )}
             />
           )}
           <SimpleTableRow
@@ -189,14 +193,17 @@ export const TransactionStep: FC<TransactionStepProps> = ({
               </span>
             }
             value={estimatedGasFee + ' rBTC'}
-            valueClassName="text-primary-10"
+            valueClassName={classNames(
+              isLoading ? 'text-gray-30' : 'text-primary-10',
+              'whitespace-nowrap overflow-auto',
+            )}
           />
           {config.hash && (
             <SimpleTableRow
               label="TX ID"
               value={
                 <TransactionId
-                  href={`${chain?.blockExplorerUrl}/${config.hash}`}
+                  href={`${chain?.blockExplorerUrl}/tx/${config.hash}`}
                   value={config.hash}
                 />
               }

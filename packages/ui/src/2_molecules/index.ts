@@ -6,6 +6,7 @@ export * from './NavMenuItem';
 export * from './WalletIdentity';
 export * from './Tabs';
 export * from './VerticalTabs';
+export * from './VerticalTabsMobile';
 export * from './Header';
 export * from './Footer';
 export * from './SimpleTable';

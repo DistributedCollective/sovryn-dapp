@@ -17,7 +17,7 @@ export const WalletBalance: FC = () => {
     () =>
       SupportedTokenList.map(token => (
         <SimpleTableRow
-          className={styles.row}
+          className={styles.tableRow}
           key={token.symbol}
           label={token.symbol}
           value="0" //TODO get balance from the wallet, task SOV-1101

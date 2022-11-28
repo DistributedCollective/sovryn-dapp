@@ -2,6 +2,6 @@
   @apply mb-3;
 }
 
-.row {
+.tableRow {
   @apply uppercase text-gray-10;
 }

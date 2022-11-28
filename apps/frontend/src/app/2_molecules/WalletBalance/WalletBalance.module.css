@@ -2,6 +2,10 @@
   @apply mb-3;
 }
 
-.row {
-  @apply uppercase text-gray-10;
+.tableRow {
+  @apply uppercase;
+
+  & > span {
+    @apply text-gray-10;
+  }
 }

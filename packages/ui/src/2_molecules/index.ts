@@ -1,5 +1,6 @@
 export * from './Overlay';
 export * from './Dialog';
+export * from './SimpleTable';
 export * from './Dropdown';
 export * from './Menu';
 export * from './NavMenuItem';
@@ -8,7 +9,6 @@ export * from './Tabs';
 export * from './VerticalTabs';
 export * from './Header';
 export * from './Footer';
-export * from './SimpleTable';
 export * from './TransactionId';
 export * from './Tooltip';
 export * from './WalletContainer';

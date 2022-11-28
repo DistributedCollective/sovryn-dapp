@@ -3,5 +3,5 @@
 }
 
 .row {
-  @apply uppercase text-sov-white;
+  @apply uppercase text-gray-10;
 }

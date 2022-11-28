@@ -1,7 +1,7 @@
 .walletBalance {
-  @apply mb-3;
+  @apply mb-3 text-gray-10;
 }
 
 .tableRow {
-  @apply uppercase text-gray-10;
+  @apply uppercase;
 }

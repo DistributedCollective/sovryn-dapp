@@ -1,23 +1,39 @@
 import React, { useCallback } from 'react';
 
-import { providers, utils } from 'ethers';
+import { utils } from 'ethers';
 
 import { Button } from '@sovryn/ui';
 
 import { useWalletConnect } from '../../hooks';
-import { getExampleMessageToSign } from '../../utils/helpers';
+import { signTypedData } from '../../utils/helpers';
 
 export const ExampleTypedDataSign: React.FC = () => {
   const { wallets } = useWalletConnect();
 
   const signTypedMessage = useCallback(async () => {
-    const data = getExampleMessageToSign(parseInt(wallets[0].chains[0].id));
+    const data = {
+      domain: {
+        chainId: parseInt(wallets[0].chains[0].id),
+        name: 'Ether Mail',
+        verifyingContract: '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC',
+        version: '1',
+      },
 
-    const signer = new providers.Web3Provider(wallets[0].provider);
+      exampleMessage: {
+        content: 'an example message',
+      },
 
-    const signature = await signer
-      .getSigner()
-      ._signTypedData(data.domain, data.types, data.exampleMessage);
+      types: {
+        exampleMessage: [{ name: 'content', type: 'string' }],
+      },
+    };
+
+    const signature = await signTypedData(
+      wallets[0].provider,
+      data.domain,
+      data.types,
+      data.exampleMessage,
+    );
 
     const signerVerification = utils.verifyTypedData(
       data.domain,

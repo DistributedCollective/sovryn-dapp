@@ -1,4 +1,6 @@
-import { MESSAGE_TYPES } from './constants';
+import { providers, TypedDataDomain, TypedDataField } from 'ethers';
+
+import { EIP1193Provider } from '@sovryn/onboard-common';
 
 export const prettyTx = (
   text: string,
@@ -10,19 +12,20 @@ export const prettyTx = (
   return `${start} ··· ${end}`;
 };
 
-export const getExampleMessageToSign = (chainId: number) => ({
-  domain: {
-    chainId,
-    name: 'Ether Mail',
-    verifyingContract: '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC',
-    version: '1',
-  },
-
-  exampleMessage: {
-    content: 'an example message',
-  },
-
-  types: {
-    exampleMessage: MESSAGE_TYPES.exampleMessage,
-  },
-});
+export const signTypedData = async (
+  provider: EIP1193Provider,
+  domain: TypedDataDomain,
+  types: Record<string, Array<TypedDataField>>,
+  data: Record<string, any>,
+) => {
+  // A Signer MUST always make sure, that if present, the "from" field
+  //  matches the Signer, before sending or signing a transaction
+  // A Signer SHOULD always wrap private information (such as a private
+  //  key or mnemonic) in a function, so that console.log does not leak
+  //  the data
+  const signer = new providers.Web3Provider(provider);
+  const signature = await signer
+    .getSigner()
+    ._signTypedData(domain, types, data);
+  return signature;
+};

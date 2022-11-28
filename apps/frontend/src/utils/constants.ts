@@ -13,7 +13,3 @@ export const sovrynLinks = {
 export const requiredChain = ChainIds.RSK_TESTNET;
 
 export const APPROVAL_FUNCTION = 'approve';
-
-export const MESSAGE_TYPES = {
-  exampleMessage: [{ name: 'content', type: 'string' }],
-};

@@ -21,7 +21,7 @@ export const SimpleTableRow: FC<SimpleTableRowProps> = ({
   value,
 }) => (
   <div
-    className={classNames(styles.row, className)}
+    className={classNames(className, styles.row)}
     {...applyDataAttr(dataLayoutId)}
   >
     <span>{label}</span>

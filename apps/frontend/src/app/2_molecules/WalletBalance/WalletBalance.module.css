@@ -2,7 +2,7 @@
   @apply mb-3;
 }
 
-.tableRow {
+.row {
   @apply uppercase;
 
   & > span {

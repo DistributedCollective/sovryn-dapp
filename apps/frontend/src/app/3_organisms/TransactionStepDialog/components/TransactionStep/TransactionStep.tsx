@@ -180,7 +180,9 @@ export const TransactionStep: FC<TransactionStepProps> = ({
                 token?.symbol
               }`}
               valueClassName={classNames(
-                isLoading ? 'text-gray-30' : 'text-primary-10',
+                isLoading || status === StatusType.success
+                  ? 'text-gray-30'
+                  : 'text-primary-10',
                 'whitespace-nowrap overflow-auto',
               )}
             />

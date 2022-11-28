@@ -10,6 +10,7 @@ import { Button, Dialog } from '@sovryn/ui';
 import { ConnectWalletButton } from '../../2_molecules';
 import { ExampleProviderCall } from '../../2_molecules/ExampleProviderCall';
 import { ExampleTokenDetails } from '../../2_molecules/ExampleTokenDetails';
+import { ExampleTypedDataSign } from '../../2_molecules/ExampleTypedDataSign';
 import { Header } from '../../3_organisms';
 import { Footer } from '../../3_organisms/Footer/Footer';
 import { TransactionStepDialog } from '../../3_organisms/TransactionStepDialog/TransactionStepDialog';
@@ -60,6 +61,7 @@ function App() {
     setTitle('Transaction approval');
     setIsOpen(true);
   }, [setIsOpen, setTitle, setTransactions, wallets]);
+
   return (
     <>
       <Header />
@@ -73,7 +75,10 @@ function App() {
           <hr className="my-12" />
 
           {wallets[0]?.accounts[0]?.address ? (
-            <Button text="Approve" onClick={approve} />
+            <div>
+              <Button text="Approve" onClick={approve} />
+              <ExampleTypedDataSign />
+            </div>
           ) : (
             <Button text="Connect to RSK Testnet" onClick={connectWallet} />
           )}

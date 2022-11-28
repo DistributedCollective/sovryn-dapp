@@ -3,9 +3,14 @@ import { ChainId, ChainIds } from '@sovryn/ethers-provider';
 import {
   ContractConfigData,
   SupportedTokens,
+  TokenBaseInfo,
   TokenDetailsData,
 } from '../types';
-import { getContract, getTokenDetailsData } from './global';
+import {
+  getContract,
+  getTokenDetailsData,
+  getTokenInfoByAddress,
+} from './global';
 
 export const getTokenContract = async (
   token: string,
@@ -26,3 +31,7 @@ export const getTokenDetails = async (
   token: SupportedTokens,
   chain: ChainId = ChainIds.RSK_MAINNET,
 ): Promise<TokenDetailsData> => getTokenDetailsData(token, chain);
+
+export const getTokenInfo = async (
+  address: string,
+): Promise<TokenBaseInfo | undefined> => getTokenInfoByAddress(address);

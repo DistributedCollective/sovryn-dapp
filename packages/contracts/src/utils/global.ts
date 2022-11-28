@@ -165,3 +165,10 @@ export const getTokenDetailsData = async (
 
   return tokenDetails;
 };
+
+export const getTokenInfoByAddress = async (
+  address: string,
+): Promise<TokenBaseInfo | undefined> => {
+  const contract = await findContract(address);
+  return SupportedTokenList.find(token => token.symbol === contract.name);
+};

@@ -1,9 +1,10 @@
-import React, { FC, useCallback, useMemo, useState } from 'react';
+import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 
 import classNames from 'classnames';
 import { formatUnits, parseUnits } from 'ethers/lib/utils';
 import { bignumber } from 'mathjs';
 
+import { getTokenInfo, TokenBaseInfo } from '@sovryn/contracts';
 import {
   Accordion,
   AmountInput,
@@ -23,7 +24,6 @@ import {
 } from '@sovryn/ui';
 
 import { chains, defaultChainId } from '../../../../../config/chains';
-import { tokens } from '../../../../../config/tokens';
 import { APPROVAL_FUNCTION } from '../../../../../utils/constants';
 import { Transaction, TxConfig } from '../../TransactionStepDialog.types';
 
@@ -48,15 +48,12 @@ export const TransactionStep: FC<TransactionStepProps> = ({
   updateConfig,
   isLoading,
 }) => {
-  const token = useMemo(
-    () =>
-      tokens.find(
-        token =>
-          token.address.toLowerCase() ===
-          transaction.contract.address.toLowerCase(),
-      ),
-    [transaction.contract.address],
-  );
+  const [token, setToken] = useState<TokenBaseInfo | undefined>();
+
+  useEffect(() => {
+    (() => getTokenInfo(transaction.contract.address).then(setToken))();
+    //eslint-disable-next-line
+  }, []);
 
   const { title, subtitle } = transaction;
 
@@ -90,16 +87,16 @@ export const TransactionStep: FC<TransactionStepProps> = ({
   ]);
 
   const parsedAmount = useMemo(() => {
-    return token?.decimals && config.amount !== undefined
-      ? formatUnits(config.amount?.toString(), token?.decimals)
+    return token?.decimalPrecision && config.amount !== undefined
+      ? formatUnits(config.amount?.toString(), token?.decimalPrecision)
       : '';
-  }, [config.amount, token?.decimals]);
+  }, [config.amount, token?.decimalPrecision]);
 
   const minAmount = useMemo(() => {
     return transaction.fnName === APPROVAL_FUNCTION
-      ? formatUnits(transaction.args[1], token?.decimals)
+      ? formatUnits(transaction.args[1], token?.decimalPrecision)
       : '0';
-  }, [token?.decimals, transaction.args, transaction.fnName]);
+  }, [token?.decimalPrecision, transaction.args, transaction.fnName]);
 
   const amountOptions = useMemo(
     () => [
@@ -118,7 +115,10 @@ export const TransactionStep: FC<TransactionStepProps> = ({
             onChange={e =>
               updateConfig({
                 ...config,
-                amount: parseUnits(String(e.target.value), token?.decimals),
+                amount: parseUnits(
+                  String(e.target.value),
+                  token?.decimalPrecision,
+                ),
               })
             }
           />
@@ -134,7 +134,14 @@ export const TransactionStep: FC<TransactionStepProps> = ({
           'Limiting the amount of approved tokens as an additional security measure may result higher fees',
       },
     ],
-    [config, minAmount, parsedAmount, step, token?.decimals, updateConfig],
+    [
+      config,
+      minAmount,
+      parsedAmount,
+      step,
+      token?.decimalPrecision,
+      updateConfig,
+    ],
   );
 
   const [advanced, setAdvanced] = useState(false);

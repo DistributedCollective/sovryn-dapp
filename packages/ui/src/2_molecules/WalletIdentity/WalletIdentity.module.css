@@ -9,3 +9,7 @@
 .dropdownMenu {
   @apply p-3 bg-gray-90;
 }
+
+.disconnectSubmenu {
+  @apply font-medium;
+}

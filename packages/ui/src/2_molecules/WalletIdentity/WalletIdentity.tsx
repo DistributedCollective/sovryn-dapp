@@ -66,6 +66,7 @@ export const WalletIdentity: FC<WalletIdentityProps> = ({
         address={address}
         dataLayoutId={dataLayoutId}
         menuLabels={submenuLabels}
+        className={styles.disconnectSubmenu}
       />
     </Dropdown>
   );

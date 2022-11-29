@@ -1,5 +1,34 @@
 # frontend
 
+## 0.1.7
+
+### Patch Changes
+
+- 7c12339: SOV-1087: add getTokenInfoByAddress, use in tx flow
+- 92f76c8: [Footer] - add a footer to the dapp2
+- 9ceba15: SOV-823: add transaction approval dialog
+- d0ee401: SOV-1010: zero collateral ratio healthbar component
+- 008dd28: SOV-106: Graph configuration
+- aa14f3f: SOV-1024: Add Test Zero Contract call
+- 76f263c: SOV-914: Page Container
+- f3ce804: Add WalletBalance component
+- 79a4bd3: [Notification] - add component
+- bb93084: [LanguageSelector] - add component
+- 993adcc: SOV-1071: Add token details list to contracts package
+- Updated dependencies [7c12339]
+- Updated dependencies [92f76c8]
+- Updated dependencies [9ceba15]
+- Updated dependencies [8178479]
+- Updated dependencies [976d6f3]
+- Updated dependencies [d0ee401]
+- Updated dependencies [477760b]
+- Updated dependencies [f3ce804]
+- Updated dependencies [79a4bd3]
+- Updated dependencies [993adcc]
+- Updated dependencies [6e8ad26]
+  - @sovryn/contracts@0.0.2
+  - @sovryn/ui@0.0.11
+
 ## 0.1.6
 
 ### Patch Changes

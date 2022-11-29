@@ -3,6 +3,8 @@ import React, { FC, PropsWithChildren } from 'react';
 import { Button } from '@sovryn/ui';
 import { WalletIdentity } from '@sovryn/ui';
 
+import { WalletBalance } from '../WalletBalance/WalletBalance';
+
 export type ConnectWalletButtonProps = {
   onConnect: () => void;
   onDisconnect: () => void;
@@ -39,6 +41,7 @@ export const ConnectWalletButton: FC<
         address={address}
         dataLayoutId={dataLayoutId}
         className={className}
+        balance={<WalletBalance />}
         submenuLabels={{
           copyAddress: 'Copy Address',
           disconnect: 'Disconnect',

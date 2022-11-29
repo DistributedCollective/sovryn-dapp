@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, ReactNode } from 'react';
 
 import classNames from 'classnames';
 
@@ -20,6 +20,7 @@ export type WalletIdentityProps = {
   submenuLabels?: MenuLabels;
   startLength?: number;
   endLength?: number;
+  balance?: ReactNode;
 };
 
 export const WalletIdentity: FC<WalletIdentityProps> = ({
@@ -31,6 +32,7 @@ export const WalletIdentity: FC<WalletIdentityProps> = ({
   endLength = 4,
   dataLayoutId,
   submenuLabels,
+  balance,
 }) => {
   if (hideSubmenu) {
     return (
@@ -47,6 +49,7 @@ export const WalletIdentity: FC<WalletIdentityProps> = ({
   return (
     <Dropdown
       className={classNames(styles.dropdown, className)}
+      dropdownClassName={styles.dropdownMenu}
       text={
         <AddressBadge
           address={address}
@@ -57,11 +60,13 @@ export const WalletIdentity: FC<WalletIdentityProps> = ({
       }
       size={DropdownSize.small}
     >
+      {balance}
       <DisconnectSubmenu
         onDisconnect={onDisconnect}
         address={address}
         dataLayoutId={dataLayoutId}
         menuLabels={submenuLabels}
+        className={styles.disconnectSubmenu}
       />
     </Dropdown>
   );

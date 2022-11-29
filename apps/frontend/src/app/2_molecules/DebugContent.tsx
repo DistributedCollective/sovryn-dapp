@@ -11,6 +11,7 @@ import { AppTheme } from '../../types/tailwind';
 import { useGetTokenRatesQuery } from '../../utils/graphql/rsk/generated';
 import { CollateralRatio } from './CollateralRatio/CollateralRatio';
 import { ConnectWalletButton } from './ConnectWalletButton/ConnectWalletButton';
+import { ExampleContractCall } from './ExampleContractCall';
 import { ExampleProviderCall } from './ExampleProviderCall';
 import { APPROVAL_FUNCTION } from '../../utils/constants';
 import { defaultChainId } from '../../config/chains';
@@ -70,6 +71,8 @@ export const DebugContent = () => {
       <TransactionStepDialog />
       <ExampleProviderCall />
       <ExampleTokenDetails />
+
+      <ExampleContractCall />
 
       <div>
         USD price of SOV from the graph:{' '}

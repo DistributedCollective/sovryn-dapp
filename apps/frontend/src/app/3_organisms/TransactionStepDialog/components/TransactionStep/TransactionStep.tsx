@@ -4,7 +4,7 @@ import classNames from 'classnames';
 import { formatUnits, parseUnits } from 'ethers/lib/utils';
 import { bignumber } from 'mathjs';
 
-import { getTokenInfo, TokenBaseInfo } from '@sovryn/contracts';
+import { getTokenDetailsByAddress, TokenBaseInfo } from '@sovryn/contracts';
 import {
   Accordion,
   AmountInput,
@@ -51,9 +51,9 @@ export const TransactionStep: FC<TransactionStepProps> = ({
   const [token, setToken] = useState<TokenBaseInfo | undefined>();
 
   useEffect(() => {
-    (() => getTokenInfo(transaction.contract.address).then(setToken))();
-    //eslint-disable-next-line
-  }, []);
+    (() =>
+      getTokenDetailsByAddress(transaction.contract.address).then(setToken))();
+  }, [transaction.contract.address]);
 
   const { title, subtitle } = transaction;
 

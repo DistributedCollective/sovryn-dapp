@@ -166,9 +166,28 @@ export const getTokenDetailsData = async (
   return tokenDetails;
 };
 
-export const getTokenInfoByAddress = async (
+export const getTokenDetailsDataByAddress = async (
   address: string,
-): Promise<TokenBaseInfo | undefined> => {
+): Promise<TokenDetailsData> => {
   const contract = await findContract(address);
-  return SupportedTokenList.find(token => token.symbol === contract.name);
+
+  const tokenBaseInfo = SupportedTokenList.find(
+    token => token.symbol === contract.name,
+  );
+
+  if (!tokenBaseInfo) {
+    throw new Error(`getTokenDetails: Unsupported token: ${address}`);
+  }
+
+  const icon = await resolveIcon(tokenBaseInfo);
+
+  const tokenDetails: TokenDetailsData = {
+    address,
+    abi: contract.abi,
+    symbol: tokenBaseInfo.symbol,
+    decimalPrecision: tokenBaseInfo.decimalPrecision,
+    icon,
+  };
+
+  return tokenDetails;
 };

@@ -13,7 +13,7 @@
 }
 
 .pending {
-  @apply text-sov-white;
+  @apply text-sov-white animate-spin;
 }
 
 .success {

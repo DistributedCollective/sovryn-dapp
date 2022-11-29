@@ -1,5 +1,19 @@
 # @sovryn/ui
 
+## 0.0.11
+
+### Patch Changes
+
+- 92f76c8: [Footer] - add a footer to the dapp2
+- 9ceba15: SOV-823: add transaction approval dialog
+- 8178479: SOV-1007: add checkbox component
+- 976d6f3: chore: fixed dropdown issue when resizing the screen
+- d0ee401: SOV-1010: zero collateral ratio healthbar component
+- 477760b: add vertical mobile tab export
+- f3ce804: Add WalletBalance component
+- 79a4bd3: [Notification] - add component
+- 6e8ad26: SOV-451: add component for Lottie animations
+
 ## 0.0.10
 
 ### Patch Changes

@@ -1,0 +1,45 @@
+.row {
+  @apply cursor-pointer sm:cursor-auto outline outline-1 outline-gray-70 rounded text-xs font-semibold font-medium;
+
+  & > td {
+    @apply py-6 px-4;
+
+    &:first-child {
+      @apply rounded-l;
+    }
+
+    &:last-child {
+      @apply rounded-r;
+    }
+  }
+}
+
+.clickable {
+  @apply cursor-pointer;
+
+  &:hover {
+    @apply outline-gray-50;
+  }
+}
+
+.active {
+  @apply outline-gray-50 bg-gray-70;
+}
+
+.text {
+  &Left {
+    @apply text-left;
+  }
+
+  &Center {
+    @apply text-center;
+  }
+
+  &Right {
+    @apply text-right;
+  }
+}
+
+.spacer {
+  @apply h-2;
+}

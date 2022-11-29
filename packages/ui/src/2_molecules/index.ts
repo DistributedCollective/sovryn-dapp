@@ -23,3 +23,4 @@ export * from './StatusItem';
 export * from './FormGroup';
 export * from './TableBase';
 export * from './Notification';
+export * from './Table';

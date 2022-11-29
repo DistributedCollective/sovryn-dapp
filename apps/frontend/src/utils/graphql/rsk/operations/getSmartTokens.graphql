@@ -1,0 +1,17 @@
+query getSmartTokens(
+  $skip: Int!
+  $pageSize: Int!
+  $orderBy: SmartToken_orderBy
+  $orderDirection: OrderDirection
+) {
+  smartTokens(
+    first: $pageSize
+    skip: $skip
+    orderBy: $orderBy
+    orderDirection: $orderDirection
+  ) {
+    id
+    name
+    decimals
+  }
+}

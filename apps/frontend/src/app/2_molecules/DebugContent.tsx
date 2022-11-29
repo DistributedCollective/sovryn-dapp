@@ -11,6 +11,7 @@ import { AppTheme } from '../../types/tailwind';
 import { useGetTokenRatesQuery } from '../../utils/graphql/rsk/generated';
 import { CollateralRatio } from './CollateralRatio/CollateralRatio';
 import { ConnectWalletButton } from './ConnectWalletButton/ConnectWalletButton';
+import { ExampleContractCall } from './ExampleContractCall';
 import { ExampleProviderCall } from './ExampleProviderCall';
 
 // usage example, to be removed
@@ -26,6 +27,8 @@ export const DebugContent = () => {
   return (
     <Accordion label="Debug content" open={isOpen} onClick={toggle}>
       <ExampleProviderCall />
+
+      <ExampleContractCall />
 
       <div>
         USD price of SOV from the graph:{' '}

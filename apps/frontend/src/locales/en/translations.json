@@ -6,6 +6,9 @@
             "twitter": "Twitter",
             "telegram": "Telegram",
             "github": "Github"
+        },
+        "buttons": {
+            "switch": "Switch"
         }
     },
     "wrongNetworkSwitcher": {
@@ -17,5 +20,9 @@
         "adjust": "Adjust",
         "close": "Close"
       }
+    },
+    "collateralRatio": {
+        "title": "Collateral Ratio",
+        "tooltip": "Collateral Ratio"
     }
 }

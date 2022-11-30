@@ -36,6 +36,7 @@ export enum IconNames {
   TWITTER_LOGO = 'twitter-logo',
   TELEGRAM_LOGO = 'telegram-logo',
   GITHUB_LOGO = 'github-logo',
+  CHECK = 'check',
 }
 
 export type IconName = typeof IconNames[keyof typeof IconNames];

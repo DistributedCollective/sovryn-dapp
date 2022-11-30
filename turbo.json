@@ -26,6 +26,12 @@
     },
     "storybook": {
       "outputs": []
+    },
+    "generate:graphql:fetch:testnet": {
+      "outputs": []
+    },
+    "generate:graphql:fetch:mainnet": {
+      "outputs": []
     }
   }
 }

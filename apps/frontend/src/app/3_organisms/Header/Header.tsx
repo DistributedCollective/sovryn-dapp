@@ -15,7 +15,7 @@ export const Header: FC = () => {
 
   return (
     <UIHeader
-      logo={<SovrynLogo dataAttribute="logo" text="Sovryn" link="/" />}
+      logo={<SovrynLogo dataAttribute="logo" link="/" />}
       menuItems={
         <>
           <Link to="/">Home</Link>
@@ -33,10 +33,10 @@ export const Header: FC = () => {
               address={wallets[0]?.accounts[0]?.address}
               pending={pending}
             />
-            <WrongNetworkSwitcher className="absolute top-full mt-2.5 right-0" />
+            <WrongNetworkSwitcher className="absolute top-full right-0" />
           </div>
 
-          <LanguageSelector className="mr-1 ml-6" />
+          <LanguageSelector className="mr-1 ml-6 font-medium" />
         </>
       }
     />

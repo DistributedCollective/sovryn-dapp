@@ -1,5 +1,6 @@
 import React, { FC, useCallback } from 'react';
 
+import { IconNames } from '../../../../1_atoms';
 import { Menu, MenuItem } from '../../../Menu';
 
 export type MenuLabels = {
@@ -31,7 +32,7 @@ export const DisconnectSubmenu: FC<DisconnectSubmenuProps> = ({
     <Menu className={className}>
       <MenuItem
         onClick={copyAddress}
-        icon="copy"
+        icon={IconNames.COPY}
         dataLayoutId={`${
           dataLayoutId || 'disconnect-submenu'
         }-menu-copyAddress`}
@@ -40,7 +41,7 @@ export const DisconnectSubmenu: FC<DisconnectSubmenuProps> = ({
       {onDisconnect && (
         <MenuItem
           onClick={onDisconnect}
-          icon="exit"
+          icon={IconNames.EXIT}
           dataLayoutId={`${
             dataLayoutId || 'disconnect-submenu'
           }-menu-disconnect`}

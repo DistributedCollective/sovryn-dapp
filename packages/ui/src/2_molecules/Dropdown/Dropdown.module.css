@@ -19,7 +19,11 @@
 }
 
 .dropdown {
-  @apply absolute overflow-x-auto mt-1 transition-colors z-[9999];
+  @apply fixed overflow-x-auto mt-1 transition-colors z-[9999] opacity-0;
+
+  &.isVisible {
+    @apply opacity-100;
+  }
 }
 
 .icon {

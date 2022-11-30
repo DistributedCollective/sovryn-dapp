@@ -9,11 +9,15 @@ import {
   Network,
 } from '@sovryn/ethers-provider';
 
+import { SupportedTokenList } from '../tokenDetails';
 import {
   AsyncContractConfigData,
   ContractConfigData,
   ContractData,
   ContractGroup,
+  SupportedTokens,
+  TokenBaseInfo,
+  TokenDetailsData,
 } from '../types';
 
 const cacheByAddress = new Map<string, ContractData>();
@@ -21,6 +25,7 @@ const cacheByKey: Record<
   ChainId,
   Record<ContractGroup, Record<string, ContractConfigData>>
 > = {};
+const iconCache = new Map<SupportedTokens, string>();
 
 export const findContract = async (address: string): Promise<ContractData> => {
   address = address.toLowerCase();
@@ -117,4 +122,72 @@ export const getContractGroupAbi = async (
     default:
       throw new Error(`getContractGroupAbi: Unknown group: ${group}`);
   }
+};
+
+export const resolveIcon = async (tokenBaseInfo: TokenBaseInfo) => {
+  const { symbol, getIcon } = tokenBaseInfo;
+
+  if (iconCache.has(symbol)) {
+    return iconCache.get(symbol);
+  }
+
+  const icon = await getIcon();
+
+  if (!icon) {
+    throw new Error(`getTokenDetails: Icon not found for token: ${symbol}`);
+  }
+
+  iconCache.set(symbol, icon);
+  return icon;
+};
+
+export const getTokenDetailsData = async (
+  name: SupportedTokens,
+  chainId: ChainId,
+): Promise<TokenDetailsData> => {
+  const tokenBaseInfo = SupportedTokenList.find(token => token.symbol === name);
+
+  if (!tokenBaseInfo) {
+    throw new Error(`getTokenDetails: Unsupported token: ${name}`);
+  }
+
+  const { address, abi } = await getContract(name, 'tokens', chainId);
+
+  const icon = await resolveIcon(tokenBaseInfo);
+
+  const tokenDetails: TokenDetailsData = {
+    address,
+    abi,
+    symbol: tokenBaseInfo.symbol,
+    decimalPrecision: tokenBaseInfo.decimalPrecision,
+    icon,
+  };
+
+  return tokenDetails;
+};
+
+export const getTokenDetailsDataByAddress = async (
+  address: string,
+): Promise<TokenDetailsData> => {
+  const contract = await findContract(address);
+
+  const tokenBaseInfo = SupportedTokenList.find(
+    token => token.symbol === contract.name,
+  );
+
+  if (!tokenBaseInfo) {
+    throw new Error(`getTokenDetails: Unsupported token: ${address}`);
+  }
+
+  const icon = await resolveIcon(tokenBaseInfo);
+
+  const tokenDetails: TokenDetailsData = {
+    address,
+    abi: contract.abi,
+    symbol: tokenBaseInfo.symbol,
+    decimalPrecision: tokenBaseInfo.decimalPrecision,
+    icon,
+  };
+
+  return tokenDetails;
 };

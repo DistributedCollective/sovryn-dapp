@@ -117,10 +117,11 @@ export const AmountInput = React.forwardRef<HTMLInputElement, AmountInputProps>(
       [onBlur, onChangeTextHandler],
     );
 
-    // Update value when value prop is changed outside of the component
+    // updating value if it was changed by parent component
     useEffect(() => {
       setFormattedValue(formatValue(value as string));
-    }, [value, formatValue]);
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [value]);
 
     return (
       <div className={classNames(styles.wrapper, className)}>

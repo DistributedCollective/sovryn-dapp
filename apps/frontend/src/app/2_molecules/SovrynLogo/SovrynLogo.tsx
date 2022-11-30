@@ -3,6 +3,7 @@ import React, { useMemo } from 'react';
 import { applyDataAttr, LinkBase } from '@sovryn/ui';
 
 import sovrynLogo from '../../../assets/images/sovryn-logo.svg';
+import styles from './SovrynLogo.module.css';
 
 type SovrynLogoProps = {
   image?: string;
@@ -21,13 +22,16 @@ export const SovrynLogo: React.FC<SovrynLogoProps> = ({
 }) => {
   const Logo = useMemo(
     () => (
-      <img
-        src={image}
-        className={className}
-        alt={text}
-        title={text}
-        {...applyDataAttr(dataAttribute)}
-      />
+      <div className={styles.logo}>
+        <img
+          src={image}
+          className={className}
+          alt={text}
+          title={text}
+          {...applyDataAttr(dataAttribute)}
+        />{' '}
+        {text}
+      </div>
     ),
     [className, dataAttribute, image, text],
   );
@@ -35,11 +39,11 @@ export const SovrynLogo: React.FC<SovrynLogoProps> = ({
   return (
     <>
       {link ? (
-        <LinkBase href={link} openNewTab={false}>
+        <LinkBase href={link} openNewTab={false} className={styles.link}>
           {Logo}
         </LinkBase>
       ) : (
-        { Logo }
+        <>{Logo}</>
       )}
     </>
   );

@@ -41,7 +41,7 @@ export const RadioButtonGroup: FC<RadioButtonGroupProps> = ({
         }: RadioButtonOption,
         index,
       ) => {
-        const id = `radio-option-${label}`;
+        const id = `radio-option-${name}-${label}`;
         return (
           <RadioButton
             id={id}

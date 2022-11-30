@@ -4,6 +4,10 @@
   &:hover {
     @apply text-primary-10;
   }
+
+  .icon {
+    @apply text-gray-50 hover:text-gray-50;
+  }
 }
 
 .icon {

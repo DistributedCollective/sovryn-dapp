@@ -1,5 +1,5 @@
 .footer {
-  @apply absolute bottom-0 left-0 right-0 flex-col justify-center items-center bg-gray-90 min-h-8 w-full flex px-6 pt-6;
+  @apply flex-col justify-center items-center bg-gray-90 min-h-8 w-full flex px-6 pt-6 mt-auto;
 
   & > div {
     @apply my-3;

@@ -5,7 +5,7 @@ import { applyDataAttr } from '../../../../utils';
 import styles from './PaginationButton.module.css';
 
 type PaginationButtonProps = {
-  dataLayoutId?: string;
+  dataAttribute?: string;
   disabled: boolean;
   onClick?: MouseEventHandler;
   icon: IconType;
@@ -17,14 +17,14 @@ export const PaginationButton: FC<PaginationButtonProps> = ({
   onClick,
   icon,
   iconClassName,
-  dataLayoutId,
+  dataAttribute,
 }) => (
   <button
     className={styles.button}
     type="button"
     disabled={disabled}
     onClick={onClick}
-    {...applyDataAttr(dataLayoutId)}
+    {...applyDataAttr(dataAttribute)}
   >
     <Icon className={iconClassName} icon={icon} size={12} />
   </button>

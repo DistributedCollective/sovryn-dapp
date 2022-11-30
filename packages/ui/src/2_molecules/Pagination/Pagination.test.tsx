@@ -9,23 +9,22 @@ describe('Pagination', () => {
   it('renders Pagination', () => {
     const gotoPage = jest.fn();
     const { findAllByRole } = render(
-      <Pagination setPage={gotoPage} page={0} totalItems={20} />,
+      <Pagination onChange={gotoPage} page={0} totalItems={20} />,
     );
     expect(findAllByRole('svg[data-icon="arrow-back"]')).toBeDefined();
   });
 
-  it('does not allow to click Previous without clicking Next first', () => {
+  it('previous button is disabled on first page', () => {
     const gotoPage = jest.fn();
     const { getByTestId } = render(
       <Pagination
-        setPage={gotoPage}
+        onChange={gotoPage}
         page={0}
         totalItems={20}
-        dataLayoutId="sovryn-table"
+        dataAttribute="sovryn-table"
       />,
     );
-
-    userEvent.click(getByTestId('sovryn-table-next'));
-    expect(gotoPage).toBeCalledTimes(1);
+    userEvent.click(getByTestId('sovryn-table-previous'));
+    expect(gotoPage).toBeCalledTimes(0);
   });
 });

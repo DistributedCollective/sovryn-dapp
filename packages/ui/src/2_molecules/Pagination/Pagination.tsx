@@ -10,34 +10,36 @@ import { usePaginate } from './hooks/usePaginate';
 
 type PaginationProps = {
   className?: string;
-  dataLayoutId?: string;
-  pageSize?: number;
+  dataAttribute?: string;
+  itemsPerPage?: number;
   page: number;
-  setPage: (page: number) => void;
+  onChange: (page: number) => void;
   totalItems?: number;
-  hideLeftArrow?: boolean;
-  hideRightArrow?: boolean;
+  hideFirstPageButton?: boolean;
+  hideLastPageButton?: boolean;
 };
 
 const DEFAULT_ITEMS_PER_PAGE = 5;
 
 export const Pagination: FC<PaginationProps> = ({
   className,
-  dataLayoutId,
-  pageSize = DEFAULT_ITEMS_PER_PAGE,
+  dataAttribute,
+  itemsPerPage = DEFAULT_ITEMS_PER_PAGE,
   page,
-  setPage,
+  onChange,
   totalItems,
-  hideLeftArrow,
-  hideRightArrow,
+  hideFirstPageButton,
+  hideLastPageButton,
 }) => {
   const {
     isNextButtonDisabled,
     isPreviousButtonDisabled,
     onPreviousPage,
     onNextPage,
+    onFirstPage,
+    onLastPage,
     totalPages,
-  } = usePaginate(page, setPage, pageSize, totalItems);
+  } = usePaginate(page, onChange, itemsPerPage, totalItems);
 
   if (totalItems === 0) {
     return null;
@@ -45,22 +47,22 @@ export const Pagination: FC<PaginationProps> = ({
 
   return (
     <div
-      {...applyDataAttr(dataLayoutId)}
+      {...applyDataAttr(dataAttribute)}
       className={classNames(styles.paginationWrapper, className)}
     >
-      {!hideLeftArrow && (
+      {!hideFirstPageButton && (
         <PaginationButton
           disabled={page === 0}
-          onClick={() => setPage(0)}
+          onClick={onFirstPage}
           icon={IconNames.DOUBLE_LEFT}
-          dataLayoutId={`${dataLayoutId}-first`}
+          dataAttribute={`${dataAttribute}-first`}
         />
       )}
       <PaginationButton
         disabled={isPreviousButtonDisabled}
         onClick={onPreviousPage}
         icon={IconNames.ARROW_BACK}
-        dataLayoutId={`${dataLayoutId}-previous`}
+        dataAttribute={`${dataAttribute}-previous`}
       />
       {totalPages !== undefined ? (
         <>
@@ -70,7 +72,7 @@ export const Pagination: FC<PaginationProps> = ({
               className={classNames(styles.page, {
                 [styles.active]: index === page,
               })}
-              onClick={() => setPage(index)}
+              onClick={() => onChange(index)}
             >
               {index + 1}
             </button>
@@ -84,16 +86,16 @@ export const Pagination: FC<PaginationProps> = ({
       <PaginationButton
         disabled={isNextButtonDisabled}
         onClick={onNextPage}
-        dataLayoutId={`${dataLayoutId}-next`}
+        dataAttribute={`${dataAttribute}-next`}
         icon={IconNames.ARROW_FORWARD}
       />
-      {totalPages !== undefined && !hideRightArrow && (
+      {totalPages !== undefined && !hideLastPageButton && (
         <PaginationButton
           disabled={page + 1 === totalPages}
-          onClick={() => setPage(totalPages - 1)}
+          onClick={onLastPage}
           icon={IconNames.DOUBLE_LEFT}
           iconClassName={styles.doubleRight}
-          dataLayoutId={`${dataLayoutId}-last`}
+          dataAttribute={`${dataAttribute}-last`}
         />
       )}
     </div>

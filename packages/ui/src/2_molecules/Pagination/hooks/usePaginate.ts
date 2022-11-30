@@ -3,13 +3,15 @@ import { useCallback, useMemo } from 'react';
 export const usePaginate = (
   pageIndex: number,
   setPageIndex: (page: number) => void,
-  pageSize: number,
+  itemsPerPage: number,
   listLength?: number,
 ) => {
   const totalPages = useMemo(
     () =>
-      listLength !== undefined ? Math.ceil(listLength / pageSize) : undefined,
-    [listLength, pageSize],
+      listLength !== undefined
+        ? Math.ceil(listLength / itemsPerPage)
+        : undefined,
+    [listLength, itemsPerPage],
   );
   const isNextButtonDisabled = useMemo(
     () => totalPages !== undefined && pageIndex >= totalPages - 1,
@@ -26,11 +28,19 @@ export const usePaginate = (
     [pageIndex, setPageIndex],
   );
 
+  const onFirstPage = useCallback(() => setPageIndex(0), [setPageIndex]);
+  const onLastPage = useCallback(
+    () => totalPages !== undefined && setPageIndex(totalPages - 1),
+    [totalPages, setPageIndex],
+  );
+
   return {
     isNextButtonDisabled,
     isPreviousButtonDisabled,
+    totalPages,
     onPreviousPage,
     onNextPage,
-    totalPages,
+    onFirstPage,
+    onLastPage,
   };
 };

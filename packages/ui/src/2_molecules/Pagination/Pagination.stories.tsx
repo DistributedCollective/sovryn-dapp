@@ -11,25 +11,25 @@ export default {
 
 const Template: Story<ComponentProps<typeof Pagination>> = args => {
   const [page, setPage] = useState(0);
-  return <Pagination {...args} page={page} setPage={setPage} />;
+  return <Pagination {...args} page={page} onChange={setPage} />;
 };
 
 export const Basic = Template.bind({});
 Basic.args = {
   className: '',
-  dataLayoutId: '',
-  pageSize: 6,
+  dataAttribute: '',
+  itemsPerPage: 6,
   totalItems: 22,
 };
 
 const _WithNoTotalItems: Story<ComponentProps<typeof Pagination>> = args => {
   const [page, setPage] = useState(0);
-  return <Pagination {...args} page={page} setPage={setPage} />;
+  return <Pagination {...args} page={page} onChange={setPage} />;
 };
 
 export const WithNoTotalItems = _WithNoTotalItems.bind({});
 _WithNoTotalItems.args = {
   className: '',
-  dataLayoutId: '',
-  pageSize: 6,
+  dataAttribute: '',
+  itemsPerPage: 6,
 };

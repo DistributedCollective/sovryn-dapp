@@ -9,8 +9,7 @@ const gasLimit = 47254;
 describe('utils/math.ts', () => {
   describe('toWei()', () => {
     it('converts floating numbers to wei', () => {
-      const value = toWei(gasPrice).toString();
-      expect(value).toEqual('65164000000000000');
+      expect(toWei(gasPrice).toString()).toEqual('65164000000000000');
     });
 
     it('converts gwei floating numbers to wei', () => {
@@ -21,8 +20,7 @@ describe('utils/math.ts', () => {
     });
 
     it('converts full number to wei', () => {
-      const value = toWei(47254).toString();
-      expect(value).toEqual('47254000000000000000000');
+      expect(toWei(47254).toString()).toEqual('47254000000000000000000');
     });
 
     it('converts 1 wei to 1**0', () => {
@@ -130,7 +128,6 @@ describe('ethers/lib/utils', () => {
   });
 
   it('adds comma as thousands separator', () => {
-    const value = commify(123456.789);
-    expect(value).toBe('123,456.789');
+    expect(commify(123456.789)).toBe('123,456.789');
   });
 });

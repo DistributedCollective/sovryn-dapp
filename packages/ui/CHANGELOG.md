@@ -1,5 +1,11 @@
 # @sovryn/ui
 
+## 0.0.12
+
+### Patch Changes
+
+- b87945b: SOV-1085: Update AmountInput styles
+
 ## 0.0.11
 
 ### Patch Changes

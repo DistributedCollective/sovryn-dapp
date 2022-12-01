@@ -43,7 +43,7 @@
 }
 
 .invalid {
-  @apply outline outline-1 outline-error-light bg-gray-70;
+  @apply outline outline-1 outline-error-light bg-gray-60;
 
   &:hover {
     @apply outline-error-light;

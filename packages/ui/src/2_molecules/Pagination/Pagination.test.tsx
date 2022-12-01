@@ -14,6 +14,20 @@ describe('Pagination', () => {
     expect(findAllByRole('svg[data-icon="arrow-back"]')).toBeDefined();
   });
 
+  it('next button works as expected', () => {
+    const gotoPage = jest.fn();
+    const { getByTestId } = render(
+      <Pagination
+        onChange={gotoPage}
+        page={0}
+        totalItems={20}
+        dataAttribute="sovryn-table"
+      />,
+    );
+    userEvent.click(getByTestId('sovryn-table-next'));
+    expect(gotoPage).toBeCalledWith(1);
+  });
+
   it('previous button is disabled on first page', () => {
     const gotoPage = jest.fn();
     const { getByTestId } = render(

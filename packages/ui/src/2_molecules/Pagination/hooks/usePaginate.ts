@@ -1,37 +1,34 @@
 import { useCallback, useMemo } from 'react';
 
 export const usePaginate = (
-  pageIndex: number,
-  setPageIndex: (page: number) => void,
+  page: number,
+  onChange: (page: number) => void,
   itemsPerPage: number,
-  listLength?: number,
+  totalItems?: number,
 ) => {
   const totalPages = useMemo(
     () =>
-      listLength !== undefined
-        ? Math.ceil(listLength / itemsPerPage)
+      totalItems !== undefined
+        ? Math.ceil(totalItems / itemsPerPage)
         : undefined,
-    [listLength, itemsPerPage],
+    [totalItems, itemsPerPage],
   );
   const isNextButtonDisabled = useMemo(
-    () => totalPages !== undefined && pageIndex >= totalPages - 1,
-    [totalPages, pageIndex],
+    () => totalPages !== undefined && page >= totalPages - 1,
+    [totalPages, page],
   );
-  const isPreviousButtonDisabled = useMemo(() => pageIndex < 1, [pageIndex]);
+  const isPreviousButtonDisabled = useMemo(() => page < 1, [page]);
 
-  const onNextPage = useCallback(
-    () => setPageIndex(pageIndex + 1),
-    [pageIndex, setPageIndex],
-  );
+  const onNextPage = useCallback(() => onChange(page + 1), [page, onChange]);
   const onPreviousPage = useCallback(
-    () => setPageIndex(Math.max(pageIndex - 1, 0)),
-    [pageIndex, setPageIndex],
+    () => onChange(Math.max(page - 1, 0)),
+    [page, onChange],
   );
 
-  const onFirstPage = useCallback(() => setPageIndex(0), [setPageIndex]);
+  const onFirstPage = useCallback(() => onChange(0), [onChange]);
   const onLastPage = useCallback(
-    () => totalPages !== undefined && setPageIndex(totalPages - 1),
-    [totalPages, setPageIndex],
+    () => totalPages !== undefined && onChange(totalPages - 1),
+    [totalPages, onChange],
   );
 
   return {

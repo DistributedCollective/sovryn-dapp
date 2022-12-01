@@ -1,5 +1,12 @@
 # @sovryn/contracts
 
+## 0.0.2
+
+### Patch Changes
+
+- 7c12339: SOV-1087: add getTokenInfoByAddress, use in tx flow
+- 993adcc: SOV-1071: Add token details list to contracts package
+
 ## 0.0.1
 
 ### Patch Changes

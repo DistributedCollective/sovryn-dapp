@@ -1,7 +1,7 @@
 import { Chain, ChainIds } from '@sovryn/ethers-provider';
 
 export const defaultChainId =
-  process.env.REACT_APP_CHAIN_ID || ChainIds.RSK_MAINNET;
+  process.env.REACT_APP_CHAIN_ID || ChainIds.RSK_TESTNET;
 
 export const chains: Chain[] = [
   {

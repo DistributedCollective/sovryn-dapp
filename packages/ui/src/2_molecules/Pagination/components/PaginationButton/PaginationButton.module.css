@@ -1,0 +1,7 @@
+.button {
+  @apply text-gray-10 bg-transparent border-none outline-none cursor-pointer transition-opacity mx-1;
+
+  &:disabled {
+    @apply opacity-50 cursor-not-allowed;
+  }
+}

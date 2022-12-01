@@ -8,9 +8,6 @@
   &:hover {
     @apply outline-gray-40;
   }
-  /* &not(.focus):hover {
-    @apply outline-gray-40;
-  } */
 }
 
 .labelWrapper {

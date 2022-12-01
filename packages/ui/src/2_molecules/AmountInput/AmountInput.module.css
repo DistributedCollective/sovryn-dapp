@@ -8,6 +8,9 @@
   &:hover {
     @apply outline-gray-40;
   }
+  /* &not(.focus):hover {
+    @apply outline-gray-40;
+  } */
 }
 
 .labelWrapper {
@@ -44,10 +47,18 @@
 
 .invalid {
   @apply outline outline-1 outline-error-light bg-gray-70;
+
+  &:hover {
+    @apply outline-error-light;
+  }
 }
 
 .focus {
   @apply outline outline-1 outline-primary-20 bg-gray-70;
+
+  &:hover {
+    @apply outline-primary-20;
+  }
 }
 
 .readOnly {

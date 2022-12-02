@@ -6,7 +6,7 @@
   }
 
   .page {
-    @apply h-[1.625rem] w-6 rounded mx-1 flex justify-center items-center hover:bg-gray-70 transition-colors;
+    @apply h-[1.625rem] w-6 rounded mx-1 flex justify-center items-center hover:bg-gray-70 transition-colors text-xs;
 
     &.active {
       @apply bg-gray-70;

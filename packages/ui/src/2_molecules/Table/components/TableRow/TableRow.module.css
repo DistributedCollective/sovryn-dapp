@@ -2,7 +2,7 @@
   @apply cursor-pointer sm:cursor-auto outline outline-1 outline-gray-70 rounded text-xs font-semibold font-medium;
 
   & > td {
-    @apply py-6 px-4;
+    @apply py-6 px-5;
 
     &:first-child {
       @apply rounded-l;
@@ -41,5 +41,5 @@
 }
 
 .spacer {
-  @apply h-2;
+  @apply h-2.5;
 }

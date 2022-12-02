@@ -12239,6 +12239,8 @@ export type GetSmartTokensQuery = {
     id: string;
     name?: string | null;
     decimals?: number | null;
+    symbol?: string | null;
+    owner: string;
   }>;
 };
 
@@ -12271,6 +12273,8 @@ export const GetSmartTokensDocument = gql`
       id
       name
       decimals
+      symbol
+      owner
     }
   }
 `;

@@ -76,7 +76,8 @@ const Template: Story<ComponentProps<typeof Table>> = args => {
 export const Basic = Template.bind({});
 Basic.args = {
   columns,
-  rows,
+  isLoading: true,
+  rows: [],
   dataAttribute: 'addressTable',
   rowKey: row => `my-custom-key-${row.index}`,
 };

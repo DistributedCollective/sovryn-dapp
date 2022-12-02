@@ -1,0 +1,15 @@
+.wrapper {
+  @apply relative;
+
+  .button {
+    @apply border border-transparent flex items-center justify-center h-5 w-5 bg-gray-80 rounded-sm ml-2 hover:bg-gray-60 transition-colors;
+
+    &.active {
+      @apply border-gray-50 bg-gray-60;
+    }
+  }
+
+  .filter {
+    @apply mt-1 bg-gray-80 rounded px-2 py-3 absolute top-full right-0 translate-x-1/4 w-44;
+  }
+}

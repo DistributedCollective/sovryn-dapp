@@ -1,8 +1,12 @@
+.wrapper {
+  @apply bg-gray-90 px-6 py-4;
+}
+
 .table {
   @apply w-full min-w-auto h-full min-h-auto;
 
   & th {
-    @apply px-4;
+    @apply px-5 pb-3;
   }
 }
 
@@ -21,7 +25,11 @@
 }
 
 .noData {
-  @apply relative px-4 py-4 text-center;
+  @apply relative px-5 py-6 text-center;
+}
+
+.loading {
+  @apply h-6 block bg-gray-50 rounded animate-pulse;
 }
 
 .header {
@@ -33,10 +41,6 @@
     .title {
       @apply flex items-center cursor-pointer select-none;
     }
-  }
-
-  .filters {
-    @apply flex items-center justify-center h-5 w-5 bg-gray-80 rounded-sm ml-2;
   }
 }
 

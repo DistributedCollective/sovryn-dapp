@@ -3,6 +3,7 @@ import React, {
   PropsWithChildren,
   useContext,
   useEffect,
+  useState,
 } from 'react';
 
 import axios from 'axios';
@@ -14,7 +15,7 @@ type Maintenance = {
   isInMaintenance: boolean;
 };
 
-type MaintenanceModeContextValue = {
+export type MaintenanceModeContextValue = {
   [id: string]: Maintenance;
 };
 
@@ -29,24 +30,32 @@ export const useMaintenanceModeContext = () =>
 export const MaintenanceModeContextProvider: React.FC<PropsWithChildren> = ({
   children,
 }) => {
+  const [maintenanceStates, setMaintenanceStates] =
+    useState<MaintenanceModeContextValue>(initialContext);
+
   useEffect(() => {
     const fetchCall = () =>
       axios
         .get('https://maintenance-mode.test.sovryn.app/maintenance')
-        .then(result => {
-          console.log(`${JSON.stringify(result)}`);
-        });
+        .then(result => setMaintenanceStates(parseResult(result)));
 
-    const intervalId = setInterval(fetchCall, 60000);
+    const intervalId = setInterval(fetchCall, 10000);
 
     return () => {
       clearInterval(intervalId);
     };
-  }, []);
+  }, [maintenanceStates]);
 
   return (
-    <MaintenanceModeContext.Provider value={initialContext}>
+    <MaintenanceModeContext.Provider value={maintenanceStates}>
       {children}
     </MaintenanceModeContext.Provider>
   );
+};
+
+const parseResult = (fetchResult: any) => {
+  const result = {};
+  fetchResult?.data.forEach(item => (result[item.name] = item));
+
+  return result;
 };

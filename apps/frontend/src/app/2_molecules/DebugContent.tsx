@@ -11,6 +11,7 @@ import { TransactionStepDialog } from '../3_organisms';
 import { defaultChainId } from '../../config/chains';
 import { useTransactionContext } from '../../contexts/TransactionContext';
 import { useTheme, useWalletConnect } from '../../hooks';
+import { useMaintenance } from '../../hooks/useMaintenance';
 import { translations } from '../../locales/i18n';
 import { AppTheme } from '../../types/tailwind';
 import { APPROVAL_FUNCTION } from '../../utils/constants';
@@ -33,7 +34,8 @@ export const DebugContent = () => {
   const { data } = useGetTokenRatesQuery();
   const { setTransactions, setIsOpen, setTitle } = useTransactionContext();
 
-  // const test = useMaintenanceModeContext();
+  const { checkMaintenance, States } = useMaintenance();
+  const perpsLockedTest = checkMaintenance(States.PERPETUALS_GSN);
 
   const approve = useCallback(async () => {
     if (!wallets[0].provider) {
@@ -81,6 +83,11 @@ export const DebugContent = () => {
       </div>
 
       <hr className="my-12" />
+
+      <div>
+        Perpetuals GSN maintenance mode on TESTNET is{' '}
+        {perpsLockedTest ? 'ON' : 'OFF'}
+      </div>
 
       {wallets[0]?.accounts[0]?.address ? (
         <div>

@@ -9,7 +9,7 @@ import { Accordion, Button } from '@sovryn/ui';
 
 import { TransactionStepDialog } from '../3_organisms';
 import { defaultChainId } from '../../config/chains';
-import { useTransactionContext } from '../../context/transactionContext';
+import { useTransactionContext } from '../../contexts/TransactionContext';
 import { useTheme, useWalletConnect } from '../../hooks';
 import { translations } from '../../locales/i18n';
 import { AppTheme } from '../../types/tailwind';
@@ -32,6 +32,8 @@ export const DebugContent = () => {
 
   const { data } = useGetTokenRatesQuery();
   const { setTransactions, setIsOpen, setTitle } = useTransactionContext();
+
+  // const test = useMaintenanceModeContext();
 
   const approve = useCallback(async () => {
     if (!wallets[0].provider) {

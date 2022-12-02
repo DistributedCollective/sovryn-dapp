@@ -3,7 +3,7 @@
 }
 
 .container {
-  @apply text-xs relative flex text-gray-20 flex-grow rounded bg-gray-70 items-center px-2 outline outline-1 outline-gray-50;
+  @apply text-xs relative flex text-gray-20 flex-grow rounded bg-gray-60 items-center px-2 outline outline-1 outline-gray-50;
 
   &:hover {
     @apply outline-gray-40;
@@ -44,10 +44,18 @@
 
 .invalid {
   @apply outline outline-1 outline-error-light bg-gray-60;
+
+  &:hover {
+    @apply outline-error-light;
+  }
 }
 
 .focus {
   @apply outline outline-1 outline-primary-20 bg-gray-70;
+
+  &:hover {
+    @apply outline-primary-20;
+  }
 }
 
 .readOnly {

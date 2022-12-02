@@ -1,5 +1,13 @@
 # frontend
 
+## 0.1.8
+
+### Patch Changes
+
+- dd61879: SOV-1086: feat: helper functions for working with ethers bignumbers
+- Updated dependencies [b87945b]
+  - @sovryn/ui@0.0.12
+
 ## 0.1.7
 
 ### Patch Changes

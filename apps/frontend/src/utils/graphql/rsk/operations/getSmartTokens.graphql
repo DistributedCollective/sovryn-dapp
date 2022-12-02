@@ -3,12 +3,14 @@ query getSmartTokens(
   $pageSize: Int!
   $orderBy: SmartToken_orderBy
   $orderDirection: OrderDirection
+  $filters: SmartToken_filter
 ) {
   smartTokens(
     first: $pageSize
     skip: $skip
     orderBy: $orderBy
     orderDirection: $orderDirection
+    where: $filters
   ) {
     id
     name

@@ -12230,6 +12230,7 @@ export type GetSmartTokensQueryVariables = Exact<{
   pageSize: Scalars['Int'];
   orderBy?: InputMaybe<SmartToken_OrderBy>;
   orderDirection?: InputMaybe<OrderDirection>;
+  filters?: InputMaybe<SmartToken_Filter>;
 }>;
 
 export type GetSmartTokensQuery = {
@@ -12263,12 +12264,14 @@ export const GetSmartTokensDocument = gql`
     $pageSize: Int!
     $orderBy: SmartToken_orderBy
     $orderDirection: OrderDirection
+    $filters: SmartToken_filter
   ) {
     smartTokens(
       first: $pageSize
       skip: $skip
       orderBy: $orderBy
       orderDirection: $orderDirection
+      where: $filters
     ) {
       id
       name
@@ -12295,6 +12298,7 @@ export const GetSmartTokensDocument = gql`
  *      pageSize: // value for 'pageSize'
  *      orderBy: // value for 'orderBy'
  *      orderDirection: // value for 'orderDirection'
+ *      filters: // value for 'filters'
  *   },
  * });
  */

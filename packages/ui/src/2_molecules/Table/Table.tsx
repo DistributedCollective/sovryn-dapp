@@ -7,13 +7,15 @@ import { applyDataAttr } from '../../utils';
 import { ColumnOptions, RowObject } from '../TableBase';
 import styles from './Table.module.css';
 import { OrderDirection, OrderOptions } from './Table.types';
-import { Filter } from './components/Filter/Filter';
 import { TableRow } from './components/TableRow/TableRow';
 import rowStyles from './components/TableRow/TableRow.module.css';
 
 export type TableProps<RowType extends RowObject> = {
   className?: string;
-  columns: (ColumnOptions<RowType> & { filter?: ReactNode })[];
+  columns: (ColumnOptions<RowType> & {
+    filter?: ReactNode;
+    sortable?: boolean;
+  })[];
   rows?: RowType[];
   rowKey?: (row: RowType) => number | string;
   noData?: ReactNode;
@@ -59,6 +61,10 @@ export const Table = <RowType extends RowObject>({
                 <span className={styles.headerContent}>
                   <span
                     onClick={() => {
+                      if (!column.sortable) {
+                        return;
+                      }
+
                       if (
                         orderOptions?.orderBy === column.id &&
                         orderOptions?.orderDirection === OrderDirection.Asc
@@ -81,30 +87,29 @@ export const Table = <RowType extends RowObject>({
                   >
                     <>
                       {column.title || column.id}
-                      {orderOptions?.orderBy === column.id && (
-                        <>
-                          {orderOptions?.orderDirection ===
-                          OrderDirection.Asc ? (
-                            <Icon
-                              icon={IconNames.ARROW_RIGHT}
-                              className="-rotate-90 ml-2"
-                              size={12}
-                            />
-                          ) : (
-                            <Icon
-                              icon={IconNames.ARROW_RIGHT}
-                              className="rotate-90 ml-2"
-                              size={12}
-                            />
-                          )}
-                        </>
-                      )}
+                      {orderOptions?.orderBy === column.id &&
+                        column.sortable && (
+                          <>
+                            {orderOptions?.orderDirection ===
+                            OrderDirection.Asc ? (
+                              <Icon
+                                icon={IconNames.ARROW_RIGHT}
+                                className="-rotate-90 ml-2"
+                                size={12}
+                              />
+                            ) : (
+                              <Icon
+                                icon={IconNames.ARROW_RIGHT}
+                                className="rotate-90 ml-2"
+                                size={12}
+                              />
+                            )}
+                          </>
+                        )}
                     </>
                   </span>
 
-                  {isValidElement(column.filter) && (
-                    <Filter>{column.filter}</Filter>
-                  )}
+                  {isValidElement(column.filter) && column.filter}
                 </span>
               </th>
             ))}

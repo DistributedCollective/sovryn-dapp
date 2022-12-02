@@ -1,0 +1,3 @@
+.filter {
+  @apply mt-1 bg-gray-80 rounded px-2 py-3 absolute top-full right-0 translate-x-1/4 w-44 z-50;
+}

@@ -16,6 +16,7 @@ import { translations } from '../../locales/i18n';
 import { AppTheme } from '../../types/tailwind';
 import { APPROVAL_FUNCTION } from '../../utils/constants';
 import { useGetTokenRatesQuery } from '../../utils/graphql/rsk/generated';
+import { isMainnet } from '../../utils/helpers';
 import { CollateralRatio } from './CollateralRatio/CollateralRatio';
 import { ConnectWalletButton } from './ConnectWalletButton/ConnectWalletButton';
 import { ExampleContractCall } from './ExampleContractCall';
@@ -84,9 +85,9 @@ export const DebugContent = () => {
 
       <hr className="my-12" />
 
-      <div>
-        Perpetuals GSN maintenance mode on TESTNET is{' '}
-        {perpsLockedTest ? 'ON' : 'OFF'}
+      <div className="mb-12">
+        Perpetuals GSN maintenance mode on {isMainnet() ? 'MAINNET' : 'TESTNET'}{' '}
+        is {perpsLockedTest ? 'ON' : 'OFF'}
       </div>
 
       {wallets[0]?.accounts[0]?.address ? (

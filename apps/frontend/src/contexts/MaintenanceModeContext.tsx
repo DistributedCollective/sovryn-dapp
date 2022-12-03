@@ -8,6 +8,8 @@ import React, {
 
 import axios from 'axios';
 
+import { getServicesConfig } from '../utils/helpers';
+
 type Maintenance = {
   id: number;
   name: string;
@@ -27,6 +29,8 @@ const MaintenanceModeContext =
 export const useMaintenanceModeContext = () =>
   useContext(MaintenanceModeContext);
 
+const servicesConfig = getServicesConfig();
+
 export const MaintenanceModeContextProvider: React.FC<PropsWithChildren> = ({
   children,
 }) => {
@@ -36,7 +40,7 @@ export const MaintenanceModeContextProvider: React.FC<PropsWithChildren> = ({
   useEffect(() => {
     const fetchCall = () =>
       axios
-        .get('https://maintenance-mode.test.sovryn.app/maintenance')
+        .get(servicesConfig.maintenance)
         .then(result => setMaintenanceStates(parseResult(result)));
 
     const intervalId = setInterval(fetchCall, 10000);

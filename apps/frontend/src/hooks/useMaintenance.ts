@@ -1,11 +1,9 @@
 import { useCallback, useMemo } from 'react';
 
-import {
-  MaintenanceModeContextValue,
-  useMaintenanceModeContext,
-} from '../contexts/MaintenanceModeContext';
+import { useMaintenanceModeContext } from '../contexts/MaintenanceModeContext';
+import { MaintenanceStates } from '../types/maintenanceState';
 
-// items and values should match those from Maintenance db table
+// TODO: clean up and leave only relevant items and values from Maintenance db table
 enum States {
   FULL = 'full',
   OPEN_MARGIN_TRADES = 'openMarginTrades',
@@ -67,8 +65,7 @@ type MaintenanceResult = {
 };
 
 export function useMaintenance() {
-  const maintenanceStates: MaintenanceModeContextValue =
-    useMaintenanceModeContext();
+  const maintenanceStates: MaintenanceStates = useMaintenanceModeContext();
 
   const checkMaintenance = useCallback(
     (...names: States[]): boolean => {

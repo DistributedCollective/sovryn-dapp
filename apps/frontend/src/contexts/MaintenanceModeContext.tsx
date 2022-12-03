@@ -8,23 +8,13 @@ import React, {
 
 import axios from 'axios';
 
+import { MaintenanceStates } from '../types/maintenanceState';
 import { getServicesConfig } from '../utils/helpers';
 
-type Maintenance = {
-  id: number;
-  name: string;
-  label: string;
-  isInMaintenance: boolean;
-};
-
-export type MaintenanceModeContextValue = {
-  [id: string]: Maintenance;
-};
-
-const initialContext = {};
+const initialContextValue = {};
 
 const MaintenanceModeContext =
-  createContext<MaintenanceModeContextValue>(initialContext);
+  createContext<MaintenanceStates>(initialContextValue);
 
 export const useMaintenanceModeContext = () =>
   useContext(MaintenanceModeContext);
@@ -35,15 +25,15 @@ export const MaintenanceModeContextProvider: React.FC<PropsWithChildren> = ({
   children,
 }) => {
   const [maintenanceStates, setMaintenanceStates] =
-    useState<MaintenanceModeContextValue>(initialContext);
+    useState<MaintenanceStates>(initialContextValue);
 
   useEffect(() => {
     const fetchCall = () =>
       axios
         .get(servicesConfig.maintenance)
-        .then(result => setMaintenanceStates(parseResult(result)));
+        .then(result => setMaintenanceStates(parseStates(result)));
 
-    const intervalId = setInterval(fetchCall, 10000);
+    const intervalId = setInterval(fetchCall, 60000);
 
     return () => {
       clearInterval(intervalId);
@@ -57,7 +47,7 @@ export const MaintenanceModeContextProvider: React.FC<PropsWithChildren> = ({
   );
 };
 
-const parseResult = (fetchResult: any) => {
+const parseStates = fetchResult => {
   const result = {};
   fetchResult?.data.forEach(item => (result[item.name] = item));
 

@@ -17,7 +17,7 @@ export * from './AmountInput';
 export * from './HelperButton';
 export * from './RadioButton';
 export * from './RadioButtonGroup';
-export * from './AddressTablePagination';
+export * from './Pagination';
 export * from './Select';
 export * from './StatusItem';
 export * from './FormGroup';

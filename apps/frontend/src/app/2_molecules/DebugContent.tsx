@@ -1,25 +1,24 @@
 import React, { useCallback, useReducer } from 'react';
 
+import { ethers } from 'ethers';
+import { parseUnits } from 'ethers/lib/utils';
 import { useTranslation } from 'react-i18next';
 
+import { getTokenDetails, SupportedTokens } from '@sovryn/contracts';
 import { Accordion, Button } from '@sovryn/ui';
 
 import { TransactionStepDialog } from '../3_organisms';
+import { defaultChainId } from '../../config/chains';
+import { useTransactionContext } from '../../context/transactionContext';
 import { useTheme, useWalletConnect } from '../../hooks';
 import { translations } from '../../locales/i18n';
 import { AppTheme } from '../../types/tailwind';
+import { APPROVAL_FUNCTION } from '../../utils/constants';
 import { useGetTokenRatesQuery } from '../../utils/graphql/rsk/generated';
 import { CollateralRatio } from './CollateralRatio/CollateralRatio';
 import { ConnectWalletButton } from './ConnectWalletButton/ConnectWalletButton';
 import { ExampleContractCall } from './ExampleContractCall';
 import { ExampleProviderCall } from './ExampleProviderCall';
-import { APPROVAL_FUNCTION } from '../../utils/constants';
-import { defaultChainId } from '../../config/chains';
-import { useTransactionContext } from '../../context/transactionContext';
-import { ethers } from 'ethers';
-import { parseUnits } from 'ethers/lib/utils';
-
-import { getTokenDetails, SupportedTokens } from '@sovryn/contracts';
 import { ExampleTokenDetails } from './ExampleTokenDetails';
 import { ExampleTypedDataSign } from './ExampleTypedDataSign';
 

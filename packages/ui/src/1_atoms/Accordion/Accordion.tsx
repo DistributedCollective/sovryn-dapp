@@ -11,12 +11,13 @@ import styles from './Accordion.module.css';
 
 export interface IAccordionProps {
   label: ReactNode;
+  labelClassName?: string;
   children: ReactNode;
   className?: string;
   disabled?: boolean;
   open?: boolean;
   onClick?: (toOpen: boolean) => void;
-  dataLayoutId?: string;
+  dataAttribute?: string;
 }
 
 export const Accordion: FC<IAccordionProps> = ({
@@ -26,7 +27,8 @@ export const Accordion: FC<IAccordionProps> = ({
   disabled = false,
   open = false,
   onClick,
-  dataLayoutId,
+  dataAttribute,
+  labelClassName,
 }) => {
   const onClickCallback = useCallback(
     () => !disabled && onClick?.(!open),
@@ -36,11 +38,15 @@ export const Accordion: FC<IAccordionProps> = ({
   return (
     <div className={classNames(styles.accordion, className)}>
       <button
-        className={classNames(styles.label, {
-          [styles.disabled]: disabled,
-        })}
+        className={classNames(
+          styles.label,
+          {
+            [styles.disabled]: disabled,
+          },
+          labelClassName,
+        )}
         onClick={onClickCallback}
-        {...applyDataAttr(dataLayoutId)}
+        {...applyDataAttr(dataAttribute)}
       >
         <>
           {typeof label === 'string' ? (
@@ -62,7 +68,7 @@ export const Accordion: FC<IAccordionProps> = ({
       {open && (
         <div
           className={styles.content}
-          {...applyDataAttr(`${dataLayoutId}-content`)}
+          {...applyDataAttr(`${dataAttribute}-content`)}
         >
           {children}
         </div>

@@ -1,4 +1,4 @@
-import { ReactNode, useState } from 'react';
+import { ReactNode, useCallback, useState } from 'react';
 
 import { Accordion } from '../../../../../1_atoms';
 import { noop } from '../../../../../utils';
@@ -9,23 +9,23 @@ import styles from './TableMobileRow.module.css';
 type TableRowProps<RowType extends RowObject> = {
   columns: ColumnOptions<RowType>[];
   row: RowType;
-  index: number;
   onRowClick?: (row: RowType) => void;
   dataAttribute?: string;
-  isClickable?: boolean;
   title: ReactNode;
 };
 
 export const TableMobileRow = <RowType extends RowObject>({
   columns,
   row,
-  title,
-  index,
   onRowClick = noop,
   dataAttribute,
-  isClickable,
+  title,
 }: TableRowProps<RowType>) => {
   const [open, setOpen] = useState(false);
+
+  const onClick = useCallback(() => {
+    onRowClick?.(row);
+  }, [onRowClick, row]);
 
   return (
     <Accordion
@@ -33,8 +33,10 @@ export const TableMobileRow = <RowType extends RowObject>({
       open={open}
       onClick={setOpen}
       label={title}
+      labelClassName={styles.accordion}
+      dataAttribute={dataAttribute}
     >
-      <div className={styles.row}>
+      <div onClick={onClick} className={styles.row}>
         {columns.map(column => (
           <SimpleTableRow
             key={column.id.toString()}

@@ -5,3 +5,7 @@
     @apply flex flex-col mt-3;
   }
 }
+
+.accordion {
+  @apply justify-between;
+}

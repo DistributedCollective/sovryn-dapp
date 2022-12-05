@@ -1,5 +1,19 @@
 # frontend
 
+## 0.1.9
+
+### Patch Changes
+
+- b3cc7d0: SOV-1010: zero collateral ratio healthbar component
+- b3cc7d0: SOV-106: Graph configuration
+- b3cc7d0: SOV-914: Page Container
+- b3cc7d0: [Notification] - add component
+- Updated dependencies [b3cc7d0]
+- Updated dependencies [b3cc7d0]
+- Updated dependencies [b3cc7d0]
+- Updated dependencies [b3cc7d0]
+  - @sovryn/ui@0.0.13
+
 ## 0.1.8
 
 ### Patch Changes

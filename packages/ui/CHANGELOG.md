@@ -1,5 +1,14 @@
 # @sovryn/ui
 
+## 0.0.13
+
+### Patch Changes
+
+- b3cc7d0: SOV-1007: add checkbox component
+- b3cc7d0: chore: fixed dropdown issue when resizing the screen
+- b3cc7d0: SOV-1010: zero collateral ratio healthbar component
+- b3cc7d0: [Notification] - add component
+
 ## 0.0.12
 
 ### Patch Changes

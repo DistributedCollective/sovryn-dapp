@@ -2,50 +2,10 @@
   @apply bg-gray-90 px-6 py-4;
 }
 
-.table {
-  @apply w-full min-w-auto h-full min-h-auto;
-
-  & th {
-    @apply px-5 pb-3;
-  }
+.desktop {
+  @apply hidden md:block;
 }
 
-.text {
-  &Left {
-    @apply text-left;
-  }
-
-  &Center {
-    @apply text-center;
-  }
-
-  &Right {
-    @apply text-right;
-  }
-}
-
-.noData {
-  @apply relative px-5 py-6 text-center;
-}
-
-.loading {
-  @apply h-6 block bg-gray-50 rounded animate-pulse;
-}
-
-.header {
-  @apply text-xs font-medium leading-[0.875rem];
-
-  .headerContent {
-    @apply flex items-center;
-
-    .title {
-      @apply flex items-center cursor-pointer select-none;
-    }
-  }
-}
-
-.body {
-  &:before {
-    @apply content-['@'] block leading-3 invisible;
-  }
+.mobile {
+  @apply block md:hidden;
 }

@@ -12,7 +12,6 @@ type FilterProps = {
 };
 
 export const Filter: FC<FilterProps> = ({ filterList, onClose, onChange }) => {
-  console.log('filterList:', filterList);
   const [filters, setFilters] = useState(
     filterList.map(item => !!item.checked),
   );

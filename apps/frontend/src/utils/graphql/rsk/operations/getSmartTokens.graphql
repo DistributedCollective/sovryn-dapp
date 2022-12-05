@@ -17,5 +17,6 @@ query getSmartTokens(
     decimals
     symbol
     owner
+    addedToRegistryBlockNumber
   }
 }

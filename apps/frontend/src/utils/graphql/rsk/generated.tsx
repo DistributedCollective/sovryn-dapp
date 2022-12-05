@@ -12242,6 +12242,7 @@ export type GetSmartTokensQuery = {
     decimals?: number | null;
     symbol?: string | null;
     owner: string;
+    addedToRegistryBlockNumber?: number | null;
   }>;
 };
 
@@ -12278,6 +12279,7 @@ export const GetSmartTokensDocument = gql`
       decimals
       symbol
       owner
+      addedToRegistryBlockNumber
     }
   }
 `;

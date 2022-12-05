@@ -62,18 +62,21 @@ export const SmartTokens = () => {
 
   const columns = [
     {
-      id: 'id',
-      title: 'ID',
+      id: 'addedToRegistryBlockNumber',
+      title: 'Block Number',
+      sample: '6666666',
+      sortable: true,
     },
     {
       id: 'name',
       title: 'Name',
       sortable: true,
+      sample: 'BProRBTC Liquidity Pool',
     },
     {
       id: 'symbol',
       title: 'Symbol',
-      sortable: true,
+      sample: 'BProRBTC',
     },
     {
       id: 'decimals',
@@ -81,12 +84,13 @@ export const SmartTokens = () => {
       filter: (
         <TableFilter filterList={decimalFilters} onChange={updateFilters} />
       ),
+      sample: '18',
     },
   ];
 
   useEffect(() => {
     setPage(0);
-  }, [orderOptions]);
+  }, [orderOptions, filters]);
 
   return (
     <div className="my-8">
@@ -96,6 +100,7 @@ export const SmartTokens = () => {
         columns={columns}
         rows={tokens}
         isLoading={loading}
+        rowTitle={row => <>{row.name}</>}
       />
       <Pagination
         page={page}

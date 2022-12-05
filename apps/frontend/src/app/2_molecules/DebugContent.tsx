@@ -67,7 +67,12 @@ export const DebugContent = () => {
   }, [setIsOpen, setTitle, setTransactions, wallets]);
 
   return (
-    <Accordion label="Debug content" open={isOpen} onClick={toggle}>
+    <Accordion
+      className="my-3"
+      label="Debug content"
+      open={isOpen}
+      onClick={toggle}
+    >
       <TransactionStepDialog />
       <ExampleProviderCall />
       <ExampleTokenDetails />

@@ -1,4 +1,4 @@
-import React, { FC, useRef, useState } from 'react';
+import React, { FC, useCallback, useMemo, useRef, useState } from 'react';
 
 import classNames from 'classnames';
 
@@ -21,12 +21,19 @@ export const TableFilter: FC<TableFilterProps> = ({ filterList, onChange }) => {
 
   useOnClickOutside([buttonRef, filterRef], () => setShow(false));
 
+  const isActive = useMemo(
+    () => show || filterList.some(f => f.checked === true),
+    [show, filterList],
+  );
+
+  const toggleFilters = useCallback(() => setShow(!show), [show]);
+
   return (
     <div ref={filterRef} className={styles.wrapper}>
       <button
-        onClick={() => setShow(!show)}
+        onClick={toggleFilters}
         className={classNames(styles.button, {
-          [styles.active]: show,
+          [styles.active]: isActive,
         })}
         ref={buttonRef}
       >

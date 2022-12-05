@@ -1,5 +1,5 @@
 .accordion {
-  @apply flex flex-col my-3;
+  @apply flex flex-col;
 }
 
 .label {

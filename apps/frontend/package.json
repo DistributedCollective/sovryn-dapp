@@ -14,7 +14,7 @@
     "@sovryn/onboard-hw-common": "0.0.2",
     "@sovryn/onboard-injected": "0.0.1",
     "@sovryn/onboard-ledger": "0.0.2",
-    "@sovryn/onboard-react": "0.0.3",
+    "@sovryn/onboard-react": "0.0.4",
     "@sovryn/onboard-trezor": "0.0.2",
     "@sovryn/onboard-walletconnect": "0.0.1",
     "@sovryn/tailwindcss-config": "*",
@@ -56,6 +56,7 @@
     "@types/reactjs-localstorage": "1.0.0",
     "stream-browserify": "^3.0.0",
     "ts-loader": "^9.3.1",
+    "tty-browserify": "^0.0.1",
     "typescript": "^4.7.4",
     "webpack": "^5.74.0"
   },
@@ -82,5 +83,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "resolutions": {
+    "rxjs": "7.5.6"
   }
 }

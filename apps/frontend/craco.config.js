@@ -31,6 +31,7 @@ module.exports = {
         stream: require.resolve('stream-browserify'),
         buffer: require.resolve('buffer'),
         crypto: require.resolve('crypto-browserify'),
+        tty: require.resolve('tty-browserify'),
       };
       config.plugins = (config.plugins || []).concat([
         new webpack.ProvidePlugin({

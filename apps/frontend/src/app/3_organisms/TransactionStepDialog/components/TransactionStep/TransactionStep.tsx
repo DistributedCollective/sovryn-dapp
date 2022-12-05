@@ -2,7 +2,6 @@ import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 
 import classNames from 'classnames';
 import { formatUnits, parseUnits } from 'ethers/lib/utils';
-import { bignumber } from 'mathjs';
 
 import { getTokenDetailsByAddress, TokenDetailsData } from '@sovryn/contracts';
 import {
@@ -25,6 +24,7 @@ import {
 
 import { chains, defaultChainId } from '../../../../../config/chains';
 import { APPROVAL_FUNCTION } from '../../../../../utils/constants';
+import { fromWei, toWei } from '../../../../../utils/math';
 import { Transaction, TxConfig } from '../../TransactionStepDialog.types';
 
 export type TransactionStepProps = {
@@ -159,10 +159,13 @@ export const TransactionStep: FC<TransactionStepProps> = ({
 
   const estimatedGasFee = useMemo(() => {
     return config.gasLimit && config.gasPrice
-      ? bignumber(config.gasPrice?.toString())
-          .mul(config.gasLimit?.toString())
-          .div(10 ** 9)
-          .toFixed(8)
+      ? Number(
+          fromWei(
+            toWei(config.gasPrice?.toString())
+              .mul(config.gasLimit?.toString())
+              .div(10 ** 9),
+          ),
+        ).toFixed(8)
       : '';
   }, [config.gasLimit, config.gasPrice]);
 

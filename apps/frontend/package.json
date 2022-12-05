@@ -15,7 +15,7 @@
     "@sovryn/onboard-hw-common": "0.0.2",
     "@sovryn/onboard-injected": "0.0.1",
     "@sovryn/onboard-ledger": "0.0.2",
-    "@sovryn/onboard-react": "0.0.3",
+    "@sovryn/onboard-react": "0.0.4",
     "@sovryn/onboard-trezor": "0.0.2",
     "@sovryn/onboard-walletconnect": "0.0.1",
     "@sovryn/tailwindcss-config": "*",

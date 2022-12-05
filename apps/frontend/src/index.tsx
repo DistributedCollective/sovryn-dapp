@@ -1,5 +1,5 @@
-import loadable from '@loadable/component';
 import { ApolloProvider, ApolloClient, InMemoryCache } from '@apollo/client';
+import loadable from '@loadable/component';
 
 import React from 'react';
 
@@ -54,14 +54,11 @@ const root = ReactDOM.createRoot(
 );
 root.render(
   <React.StrictMode>
-    <RouterProvider router={router}>
-       <ApolloProvider client={rskClient}>
-        <TransactionProvider>
-          <App />
-        </TransactionProvider>
-        <OnboardProvider />
-      </ApolloProvider>
-    </RouterProvider>
-    <OnboardProvider onboard={onboard} />
+    <ApolloProvider client={rskClient}>
+      <RouterProvider router={router} />
+      <TransactionProvider />
+      <OnboardProvider />
+    </ApolloProvider>
+    <OnboardProvider />
   </React.StrictMode>,
 );

@@ -1,2 +1,2 @@
 export * from './Table';
-export { OrderDirection } from './Table.types';
+export type { OrderDirection, OrderOptions } from './Table.types';

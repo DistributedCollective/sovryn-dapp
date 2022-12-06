@@ -1,0 +1,71 @@
+.dialog {
+  @apply py-7 px-4;
+
+  & > h1, & > h2 {
+    @apply leading-5;
+  }
+
+  & > h1 {
+    @apply mb-3 font-normal;
+  }
+
+  & > h2 {
+    @apply mb-4;
+  }
+
+  @screen md {
+    @apply px-6;
+  }
+}
+
+.content {
+  @apply flex-col py-5 px-3 rounded bg-gray-80 mb-5;
+
+  @screen md {
+    @apply mb-[4.5rem] py-7 px-5;
+  }
+}
+
+.box {
+  @apply flex border-b border-b-gray-60 mb-6 pb-0;
+
+  &:last-child {
+    @apply border-b-0 mb-0;
+  }
+
+  @screen md {
+    @apply pb-6;
+  }
+}
+
+.boxContent {
+  @apply flex flex-col items-start justify-start;
+
+  & > h2, & > h3 {
+    @apply leading-5 mb-2;
+  }
+
+  & > h2 {
+    @apply text-white;
+  }
+
+  & > h3 {
+    @apply text-gray-10 font-medium;
+  }
+}
+
+.image {
+  @apply bg-gray-70 min-w-[4.375rem] h-[4.375rem] rounded mr-4;
+
+  @screen md {
+    @apply mr-[1.375rem];
+  }
+}
+
+.pagination {
+  @apply mb-10;
+}
+
+.actions {
+  @apply flex items-center justify-between;
+}

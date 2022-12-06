@@ -18,5 +18,32 @@
     "collateralRatio": {
         "title": "Collateral Ratio",
         "tooltip": "Collateral Ratio"
+    },
+    "gettingStartedPopup": {
+        "title": "Put your loan to work",
+        "description": "Here are a few ideas for what you can do with your loan:",
+        "content": {
+            "pool": {
+                "title": "Pool",
+                "description": "Earn BTC by depositing into the Zero Stability Pool or Sovryn DLLR/RBTC Pool."
+            },
+            "lend": {
+                "title": "Lend",
+                "description": "Earn interest by providing liquidity to the Sovryn lending protocol."
+            },
+            "trade": {
+                "title": "Trade",
+                "description": "Buy more BTC or other assets using the Sovryn exchange protocol."
+            },
+            "bridge": {
+                "title": "Bridge",
+                "description": "Convert your loan into popular stablecoins on BSC and Ethereum."
+            }
+        },
+        "buttons": {
+            "gotIt": "Got it",
+            "doNotShowAgain": "Don't show again",
+            "learnMore": "Learn more"
+        }
     }
 }

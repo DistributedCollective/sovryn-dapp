@@ -83,54 +83,56 @@ export const GettingStartedPopup: FC = () => {
   }, []);
 
   return (
-    <Dialog isOpen={isOpen} className={styles.dialog}>
-      <Heading type={HeadingType.h1}>
-        {t(translations.gettingStartedPopup.title)}
-      </Heading>
-      <Heading type={HeadingType.h2}>
-        {t(translations.gettingStartedPopup.description)}
-      </Heading>
-      <div className={styles.content}>
-        {items.map(item => (
-          <div className={styles.box} key={item.name}>
-            <div className={styles.image}></div>
-            <div className={styles.boxContent}>
-              <Heading type={HeadingType.h2}>{item.name}</Heading>
-              <Heading type={HeadingType.h3}>{item.description}</Heading>
-              <Link
-                text={t(translations.gettingStartedPopup.buttons.learnMore)}
-                href={item.href}
-                openNewTab
-              />
+    <Dialog isOpen={isOpen}>
+      <div className={styles.dialog}>
+        <Heading type={HeadingType.h1}>
+          {t(translations.gettingStartedPopup.title)}
+        </Heading>
+        <Heading type={HeadingType.h2}>
+          {t(translations.gettingStartedPopup.description)}
+        </Heading>
+        <div className={styles.content}>
+          {items.map(item => (
+            <div className={styles.box} key={item.name}>
+              <div className={styles.image}></div>
+              <div className={styles.boxContent}>
+                <Heading type={HeadingType.h2}>{item.name}</Heading>
+                <Heading type={HeadingType.h3}>{item.description}</Heading>
+                <Link
+                  text={t(translations.gettingStartedPopup.buttons.learnMore)}
+                  href={item.href}
+                  openNewTab
+                />
+              </div>
             </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
 
-      {isMobile && (
-        <div className={styles.pagination}>
-          <Pagination
-            itemsPerPage={DEFAULT_PAGE_SIZE}
-            hideFirstPageButton
-            hideLastPageButton
-            totalItems={data.length}
-            page={page}
-            onChange={setPage}
+        {isMobile && (
+          <div className={styles.pagination}>
+            <Pagination
+              itemsPerPage={DEFAULT_PAGE_SIZE}
+              hideFirstPageButton
+              hideLastPageButton
+              totalItems={data.length}
+              page={page}
+              onChange={setPage}
+            />
+          </div>
+        )}
+
+        <div className={styles.actions}>
+          <Checkbox
+            onChangeValue={setChecked}
+            label={t(translations.gettingStartedPopup.buttons.doNotShowAgain)}
+            checked={checked}
+          />
+          <Button
+            type={ButtonType.button}
+            text={t(translations.gettingStartedPopup.buttons.gotIt)}
+            onClick={onClick}
           />
         </div>
-      )}
-
-      <div className={styles.actions}>
-        <Checkbox
-          onChangeValue={setChecked}
-          label={t(translations.gettingStartedPopup.buttons.doNotShowAgain)}
-          checked={checked}
-        />
-        <Button
-          type={ButtonType.button}
-          text={t(translations.gettingStartedPopup.buttons.gotIt)}
-          onClick={onClick}
-        />
       </div>
     </Dialog>
   );

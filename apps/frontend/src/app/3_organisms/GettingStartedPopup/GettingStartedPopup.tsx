@@ -1,4 +1,10 @@
-import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
+import React, {
+  FC,
+  useCallback,
+  useLayoutEffect,
+  useMemo,
+  useState,
+} from 'react';
 
 import { useTranslation } from 'react-i18next';
 import { reactLocalStorage } from 'reactjs-localstorage';
@@ -21,12 +27,19 @@ import styles from './GettingStartedPopup.module.css';
 
 const pageSize = 1;
 
-export const GettingStartedPopup: FC = () => {
+type GettingStartedPopupProps = {
+  isOpen: boolean;
+  onConfirm: () => void;
+};
+
+export const GettingStartedPopup: FC<GettingStartedPopupProps> = ({
+  isOpen,
+  onConfirm,
+}) => {
   const { t } = useTranslation();
   const localStorageKey = 'gettingStartedPopup';
   const { isMobile } = useIsMobile();
   const [page, setPage] = useState(0);
-  const [isOpen, setIsOpen] = useState(false);
   const [checked, setChecked] = useState(false);
   const pageOffset = useMemo(() => page + pageSize, [page]);
 
@@ -73,15 +86,15 @@ export const GettingStartedPopup: FC = () => {
     if (checked) {
       reactLocalStorage.set(localStorageKey, 'false');
     }
-    setIsOpen(false);
-  }, [checked]);
+    onConfirm();
+  }, [checked, onConfirm]);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const localStorage = reactLocalStorage.get(localStorageKey);
-    if (!localStorage) {
-      setIsOpen(true);
+    if (localStorage && isOpen) {
+      onConfirm();
     }
-  }, []);
+  }, [isOpen, onConfirm]);
 
   return (
     <Dialog isOpen={isOpen}>

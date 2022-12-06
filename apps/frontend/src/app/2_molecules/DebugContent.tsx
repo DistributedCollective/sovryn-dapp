@@ -1,11 +1,11 @@
-import React, { useCallback, useReducer } from 'react';
+import React, { useCallback, useReducer, useState } from 'react';
 
 import { ethers } from 'ethers';
 import { parseUnits } from 'ethers/lib/utils';
 import { useTranslation } from 'react-i18next';
 
 import { getTokenDetails, SupportedTokens } from '@sovryn/contracts';
-import { Accordion, Button, Dialog } from '@sovryn/ui';
+import { Accordion, Button } from '@sovryn/ui';
 
 import { TransactionStepDialog } from '../3_organisms';
 import { GettingStartedPopup } from '../3_organisms/GettingStartedPopup/GettingStartedPopup';
@@ -32,7 +32,7 @@ export const DebugContent = () => {
   const [isOpen, toggle] = useReducer(p => !p, false);
   const { connectWallet, disconnectWallet, wallets, pending } =
     useWalletConnect();
-  const [isPopupOpen, togglePopup] = useReducer(p => !p, false);
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
 
   const { data } = useGetTokenRatesQuery();
   const { setTransactions, setIsOpen, setTitle } = useTransactionContext();
@@ -157,20 +157,16 @@ export const DebugContent = () => {
       <div className="mt-10 py-10 border-t border-b">
         <h2>Getting started popup</h2>
         <br />
-        <Button text="Open Getting Started Popup" onClick={togglePopup} />
+        <Button
+          text="Open Getting Started Popup"
+          onClick={() => setIsPopupOpen(true)}
+        />
 
         {isPopupOpen && (
-          <>
-            <Dialog
-              isOpen={isPopupOpen}
-              onClose={togglePopup}
-              className="p-10 text-center"
-            >
-              <p>Placeholder for ZERO LOC transaction dialog</p>
-              <Button text="Close" onClick={togglePopup} />
-            </Dialog>
-            <GettingStartedPopup />
-          </>
+          <GettingStartedPopup
+            isOpen={isPopupOpen}
+            onConfirm={() => setIsPopupOpen(false)}
+          />
         )}
       </div>
     </Accordion>

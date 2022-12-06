@@ -19,15 +19,16 @@ import { translations } from '../../../locales/i18n';
 import { sovrynWikiLinks } from '../../../utils/constants';
 import styles from './GettingStartedPopup.module.css';
 
-const DEFAULT_PAGE_SIZE = 1;
+const pageSize = 1;
 
 export const GettingStartedPopup: FC = () => {
   const { t } = useTranslation();
+  const localStorageKey = 'gettingStartedPopup';
   const { isMobile } = useIsMobile();
   const [page, setPage] = useState(0);
   const [isOpen, setIsOpen] = useState(false);
   const [checked, setChecked] = useState(false);
-  const pageOffset = useMemo(() => page + DEFAULT_PAGE_SIZE, [page]);
+  const pageOffset = useMemo(() => page + pageSize, [page]);
 
   const data = useMemo(
     () => [
@@ -70,13 +71,13 @@ export const GettingStartedPopup: FC = () => {
 
   const onClick = useCallback(() => {
     if (checked) {
-      reactLocalStorage.set('gettingStartedPopup', 'false');
+      reactLocalStorage.set(localStorageKey, 'false');
     }
     setIsOpen(false);
   }, [checked]);
 
   useEffect(() => {
-    const localStorage = reactLocalStorage.get('gettingStartedPopup');
+    const localStorage = reactLocalStorage.get(localStorageKey);
     if (!localStorage) {
       setIsOpen(true);
     }
@@ -85,19 +86,26 @@ export const GettingStartedPopup: FC = () => {
   return (
     <Dialog isOpen={isOpen}>
       <div className={styles.dialog}>
-        <Heading type={HeadingType.h1}>
+        <Heading className={styles.title} type={HeadingType.h1}>
           {t(translations.gettingStartedPopup.title)}
         </Heading>
-        <Heading type={HeadingType.h2}>
+        <Heading className={styles.description} type={HeadingType.h2}>
           {t(translations.gettingStartedPopup.description)}
         </Heading>
         <div className={styles.content}>
           {items.map(item => (
-            <div className={styles.box} key={item.name}>
+            <div className={styles.itemWrapper} key={item.name}>
               <div className={styles.image}></div>
-              <div className={styles.boxContent}>
-                <Heading type={HeadingType.h2}>{item.name}</Heading>
-                <Heading type={HeadingType.h3}>{item.description}</Heading>
+              <div className={styles.texts}>
+                <Heading className={styles.name} type={HeadingType.h2}>
+                  {item.name}
+                </Heading>
+                <Heading
+                  className={styles.itemDescription}
+                  type={HeadingType.h3}
+                >
+                  {item.description}
+                </Heading>
                 <Link
                   text={t(translations.gettingStartedPopup.buttons.learnMore)}
                   href={item.href}
@@ -111,7 +119,7 @@ export const GettingStartedPopup: FC = () => {
         {isMobile && (
           <div className={styles.pagination}>
             <Pagination
-              itemsPerPage={DEFAULT_PAGE_SIZE}
+              itemsPerPage={pageSize}
               hideFirstPageButton
               hideLastPageButton
               totalItems={data.length}

@@ -1,21 +1,17 @@
 .dialog {
   @apply py-7 px-4;
 
-  & > h1, & > h2 {
-    @apply leading-5;
-  }
-
-  & > h1 {
-    @apply mb-3 font-normal;
-  }
-
-  & > h2 {
-    @apply mb-4;
-  }
-
   @screen md {
     @apply px-6;
   }
+}
+
+.title {
+  @apply mb-3 font-normal;
+}
+
+.description {
+  @apply mb-4;
 }
 
 .content {
@@ -26,7 +22,7 @@
   }
 }
 
-.box {
+.itemWrapper {
   @apply flex border-b border-b-gray-60 mb-6 pb-0;
 
   &:last-child {
@@ -38,20 +34,20 @@
   }
 }
 
-.boxContent {
+.texts {
   @apply flex flex-col items-start justify-start;
+}
 
-  & > h2, & > h3 {
-    @apply leading-5 mb-2;
-  }
+.name, .itemDescription {
+  @apply mb-2;
+}
 
-  & > h2 {
-    @apply text-white;
-  }
+.name {
+  @apply text-white;
+}
 
-  & > h3 {
-    @apply text-gray-10 font-medium;
-  }
+.itemDescription  {
+  @apply text-gray-10 font-medium;
 }
 
 .image {

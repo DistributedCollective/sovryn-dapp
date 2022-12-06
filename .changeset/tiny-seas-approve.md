@@ -2,4 +2,4 @@
 "frontend": patch
 ---
 
-Zero: LOC getting started popup
+SOV-1090: Zero - LOC getting started popup

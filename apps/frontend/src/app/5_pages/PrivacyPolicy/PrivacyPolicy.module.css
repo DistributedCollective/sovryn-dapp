@@ -1,0 +1,14 @@
+.wrapper {
+  > table {
+    @apply border;
+  }
+
+  table p {
+    @apply mb-0;
+  }
+
+  td,
+  th {
+    @apply px-4 py-3;
+  }
+}

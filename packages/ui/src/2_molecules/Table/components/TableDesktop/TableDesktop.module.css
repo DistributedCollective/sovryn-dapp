@@ -43,7 +43,7 @@
     }
 
     .icon {
-      @apply ml-2 opacity-50;
+      @apply ml-2 opacity-50 hover:opacity-100;
 
       &.active {
         @apply opacity-100;

@@ -11,6 +11,8 @@ export const TableMobile = <RowType extends RowObject>({
   rowTitle,
   onRowClick,
   dataAttribute,
+  noData,
+  isLoading,
 }: TableProps<RowType>) => (
   <div className={styles.wrapper}>
     {rows &&
@@ -25,5 +27,17 @@ export const TableMobile = <RowType extends RowObject>({
           dataAttribute={dataAttribute}
         />
       ))}
+
+    {(!rows || rows.length === 0) && (
+      <>
+        {isLoading ? (
+          <div className={styles.noData}>
+            <span className={styles.loading} />
+          </div>
+        ) : (
+          <div className={styles.noData}>{noData ? noData : 'No data'}</div>
+        )}
+      </>
+    )}
   </div>
 );

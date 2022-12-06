@@ -1,6 +1,6 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 
-import { Table, OrderDirection, OrderOptions, Pagination } from '@sovryn/ui';
+import { Table, OrderOptions, Pagination, OrderDirection } from '@sovryn/ui';
 
 import {
   InputMaybe,
@@ -32,9 +32,10 @@ export const SmartTokens = () => {
       filters,
     },
   });
+
   const tokens = data?.smartTokens || [];
 
-  const updateFilters = (filterList: FilterType[]) => {
+  const updateFilters = useCallback((filterList: FilterType[]) => {
     setFilters({
       ...filterList
         .filter(f => !!f.checked)
@@ -46,7 +47,7 @@ export const SmartTokens = () => {
           {},
         ),
     } as InputMaybe<SmartToken_Filter>);
-  };
+  }, []);
 
   const decimalFilters = useMemo(
     () => [
@@ -60,37 +61,50 @@ export const SmartTokens = () => {
     [filters],
   );
 
-  const columns = [
-    {
-      id: 'addedToRegistryBlockNumber',
-      title: 'Block Number',
-      sample: '6666666',
-      sortable: true,
-    },
-    {
-      id: 'name',
-      title: 'Name',
-      sortable: true,
-      sample: 'BProRBTC Liquidity Pool',
-    },
-    {
-      id: 'symbol',
-      title: 'Symbol',
-      sample: 'BProRBTC',
-    },
-    {
-      id: 'decimals',
-      title: 'Decimals',
-      filter: (
-        <TableFilter filterList={decimalFilters} onChange={updateFilters} />
-      ),
-      sample: '18',
-    },
-  ];
+  const columns = useMemo(
+    () => [
+      {
+        id: 'addedToRegistryBlockNumber',
+        title: 'Block Number',
+        sample: '6666666',
+        sortable: true,
+      },
+      {
+        id: 'name',
+        title: 'Name',
+        sortable: true,
+        sample: 'BProRBTC Liquidity Pool',
+      },
+      {
+        id: 'symbol',
+        title: 'Symbol',
+        sample: 'BProRBTC',
+      },
+      {
+        id: 'decimals',
+        title: 'Decimals',
+        filter: (
+          <TableFilter filterList={decimalFilters} onChange={updateFilters} />
+        ),
+        sample: '18',
+      },
+    ],
+    [decimalFilters, updateFilters],
+  );
 
   useEffect(() => {
     setPage(0);
   }, [orderOptions, filters]);
+
+  const onPageChange = useCallback(
+    (value: number) => {
+      if (tokens.length < pageSize && value > page) {
+        return;
+      }
+      setPage(value);
+    },
+    [page, tokens.length],
+  );
 
   return (
     <div className="my-8 bg-gray-80 md:bg-transparent">
@@ -106,12 +120,7 @@ export const SmartTokens = () => {
         page={page}
         hideFirstPageButton
         className="pb-6 mt-3 md:pb-0 md:mt-6 justify-center md:justify-start"
-        onChange={(value: number) => {
-          if (tokens.length < pageSize && value > page) {
-            return;
-          }
-          setPage(value);
-        }}
+        onChange={onPageChange}
         itemsPerPage={pageSize}
       />
     </div>

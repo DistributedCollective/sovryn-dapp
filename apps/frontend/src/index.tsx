@@ -6,8 +6,8 @@ import ReactDOM from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
 
 import setupChains from '@sovryn/ethers-provider';
+import { OnboardProvider } from '@sovryn/onboard-react';
 
-// import { OnboardProvider } from '@sovryn/onboard-react';
 import App from './app/5_pages/App/App';
 import { chains } from './config/chains';
 import { TransactionProvider } from './context/transactionContext';
@@ -34,7 +34,7 @@ root.render(
         <TransactionProvider>
           <App />
         </TransactionProvider>
-        {/* <OnboardProvider /> */}
+        <OnboardProvider />
       </ApolloProvider>
     </BrowserRouter>
   </React.StrictMode>,

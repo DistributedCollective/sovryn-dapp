@@ -1,9 +1,5 @@
-.wrapper {
-  @apply bg-gray-70 my-1 px-3 py-2.5 rounded;
-
-  .row {
-    @apply flex flex-col mt-3;
-  }
+.row {
+  @apply flex flex-col mt-3;
 }
 
 .accordion {

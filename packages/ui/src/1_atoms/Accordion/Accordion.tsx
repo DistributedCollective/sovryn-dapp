@@ -8,6 +8,7 @@ import { HeadingType } from '../Heading/Heading.types';
 import { Icon } from '../Icon/Icon';
 import { IconNames } from '../Icon/Icon.types';
 import styles from './Accordion.module.css';
+import { AccordionStyle } from './Accordion.types';
 
 export interface IAccordionProps {
   label: ReactNode;
@@ -18,6 +19,7 @@ export interface IAccordionProps {
   open?: boolean;
   onClick?: (toOpen: boolean) => void;
   dataAttribute?: string;
+  style?: AccordionStyle;
 }
 
 export const Accordion: FC<IAccordionProps> = ({
@@ -29,6 +31,7 @@ export const Accordion: FC<IAccordionProps> = ({
   onClick,
   dataAttribute,
   labelClassName,
+  style = AccordionStyle.primary,
 }) => {
   const onClickCallback = useCallback(
     () => !disabled && onClick?.(!open),
@@ -36,7 +39,7 @@ export const Accordion: FC<IAccordionProps> = ({
   );
 
   return (
-    <div className={classNames(styles.accordion, className)}>
+    <div className={classNames(styles.accordion, styles[style], className)}>
       <button
         className={classNames(
           styles.label,

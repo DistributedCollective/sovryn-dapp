@@ -76,10 +76,10 @@ const Template: Story<ComponentProps<typeof Table>> = args => {
 export const Basic = Template.bind({});
 Basic.args = {
   columns,
-  isLoading: true,
-  rows: [],
+  rows,
   dataAttribute: 'addressTable',
   rowKey: row => `my-custom-key-${row.index}`,
+  rowTitle: row => row.address,
 };
 
 export const WithRowClickHandler = Template.bind({});
@@ -92,6 +92,7 @@ WithRowClickHandler.args = {
     ),
   dataAttribute: 'addressTable',
   isClickable: true,
+  rowTitle: row => row.address,
 };
 
 export const NoData = Template.bind({});

@@ -1,6 +1,6 @@
 import { ReactNode, useCallback, useState } from 'react';
 
-import { Accordion } from '../../../../../1_atoms';
+import { Accordion, AccordionStyle } from '../../../../../1_atoms';
 import { noop } from '../../../../../utils';
 import { SimpleTableRow } from '../../../../SimpleTable';
 import { ColumnOptions, RowObject } from '../../../../TableBase';
@@ -29,12 +29,12 @@ export const TableMobileRow = <RowType extends RowObject>({
 
   return (
     <Accordion
-      className={styles.wrapper}
       open={open}
       onClick={setOpen}
       label={title}
       labelClassName={styles.accordion}
       dataAttribute={dataAttribute}
+      style={AccordionStyle.secondary}
     >
       <div onClick={onClick} className={styles.row}>
         {columns.map(column => (

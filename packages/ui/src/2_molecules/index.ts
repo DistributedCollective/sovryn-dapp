@@ -1,5 +1,3 @@
-import { Pagination as AddressTablePagination } from './Pagination';
-
 export * from './Overlay';
 export * from './Dialog';
 export * from './Dropdown';
@@ -26,4 +24,3 @@ export * from './FormGroup';
 export * from './TableBase';
 export * from './Notification';
 export * from './Table';
-export { AddressTablePagination };

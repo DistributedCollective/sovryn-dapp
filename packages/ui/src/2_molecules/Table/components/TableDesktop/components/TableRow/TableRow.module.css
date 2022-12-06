@@ -14,18 +14,6 @@
   }
 }
 
-.sampleRow {
-  @apply invisible;
-
-  & > td {
-    @apply px-5;
-  }
-
-  & > td > div {
-    @apply max-h-0;
-  }
-}
-
 .clickable {
   @apply cursor-pointer;
 

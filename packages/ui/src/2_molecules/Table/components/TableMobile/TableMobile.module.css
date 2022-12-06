@@ -3,9 +3,9 @@
 }
 
 .loading {
-  @apply h-6 block bg-gray-50 rounded animate-pulse;
+  @apply h-10 block bg-gray-50 rounded animate-pulse;
 }
 
 .noData {
-  @apply relative text-center mt-3;
+  @apply relative text-center my-1;
 }

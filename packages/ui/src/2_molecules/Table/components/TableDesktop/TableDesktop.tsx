@@ -6,9 +6,9 @@ import { Icon, IconNames } from '../../../../1_atoms';
 import { applyDataAttr } from '../../../../utils';
 import { RowObject } from '../../../TableBase';
 import { ColumnOptions, OrderDirection, TableProps } from '../../Table.types';
-import { TableRow } from '../TableRow/TableRow';
-import rowStyles from '../TableRow/TableRow.module.css';
 import styles from './TableDesktop.module.css';
+import { TableRow } from './components/TableRow/TableRow';
+import rowStyles from './components/TableRow/TableRow.module.css';
 
 // No React.FC, since doesn't support Generic PropTypes
 export const TableDesktop = <RowType extends RowObject>({
@@ -115,7 +115,7 @@ export const TableDesktop = <RowType extends RowObject>({
           ))}
         {(!rows || rows.length === 0) && (
           <>
-            <tr className={rowStyles.sampleRow}>
+            <tr className={styles.sampleRow}>
               {columns.map(column => (
                 <td key={column.id.toString()}>
                   <div>{column.sample}</div>

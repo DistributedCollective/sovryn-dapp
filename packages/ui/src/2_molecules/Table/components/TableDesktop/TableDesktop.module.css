@@ -65,3 +65,15 @@
     @apply content-['@'] block leading-3 invisible;
   }
 }
+
+.sampleRow {
+  @apply invisible;
+
+  & > td {
+    @apply px-5;
+  }
+
+  & > td > div {
+    @apply max-h-0;
+  }
+}

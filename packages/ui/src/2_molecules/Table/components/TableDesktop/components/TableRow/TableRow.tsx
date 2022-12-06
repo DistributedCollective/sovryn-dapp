@@ -2,8 +2,8 @@ import React, { useCallback, useState } from 'react';
 
 import classNames from 'classnames';
 
-import { noop, applyDataAttr } from '../../../../utils';
-import { ColumnOptions, RowObject } from '../../../TableBase';
+import { noop, applyDataAttr } from '../../../../../../utils';
+import { ColumnOptions, RowObject } from '../../../../../TableBase';
 import styles from './TableRow.module.css';
 
 type TableRowProps<RowType extends RowObject> = {

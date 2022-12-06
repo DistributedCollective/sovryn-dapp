@@ -93,7 +93,7 @@ export const SmartTokens = () => {
   }, [orderOptions, filters]);
 
   return (
-    <div className="my-8">
+    <div className="my-8 bg-gray-80 md:bg-transparent">
       <Table
         setOrderOptions={setOrderOptions}
         orderOptions={orderOptions}
@@ -104,7 +104,8 @@ export const SmartTokens = () => {
       />
       <Pagination
         page={page}
-        className="mt-6"
+        hideFirstPageButton
+        className="pb-6 mt-3 md:pb-0 md:mt-6 justify-center md:justify-start"
         onChange={(value: number) => {
           if (tokens.length < pageSize && value > page) {
             return;

@@ -35,7 +35,27 @@
     @apply flex items-center;
 
     .title {
-      @apply flex items-center cursor-pointer select-none;
+      @apply flex items-center select-none;
+    }
+
+    .sortable {
+      @apply cursor-pointer;
+    }
+
+    .icon {
+      @apply ml-2 opacity-50;
+
+      &.active {
+        @apply opacity-100;
+      }
+
+      &.up {
+        @apply -rotate-90 ml-2;
+      }
+
+      &.down {
+        @apply rotate-90 ml-2;
+      }
     }
   }
 }

@@ -1,11 +1,7 @@
-.wrapper {
-  @apply bg-gray-90 px-6 py-4;
-}
-
 .desktop {
-  @apply hidden md:block;
+  @apply hidden md:block bg-gray-90 px-6 py-4;
 }
 
 .mobile {
-  @apply block md:hidden;
+  @apply block md:hidden p-4;
 }

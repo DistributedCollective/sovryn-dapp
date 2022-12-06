@@ -7,15 +7,13 @@ import { TableMobile } from './components/TableMobile/TableMobile';
 // No React.FC, since doesn't support Generic PropTypes
 export const Table = <RowType extends RowObject>(
   props: TableProps<RowType>,
-) => {
-  return (
-    <div className={styles.wrapper}>
-      <div className={styles.desktop}>
-        <TableDesktop {...props} />
-      </div>
-      <div className={styles.mobile}>
-        <TableMobile {...props} />
-      </div>
+) => (
+  <>
+    <div className={styles.desktop}>
+      <TableDesktop {...props} />
     </div>
-  );
-};
+    <div className={styles.mobile}>
+      <TableMobile {...props} />
+    </div>
+  </>
+);

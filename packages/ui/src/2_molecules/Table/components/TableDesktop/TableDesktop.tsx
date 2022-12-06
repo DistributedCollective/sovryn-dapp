@@ -1,11 +1,11 @@
-import React, { isValidElement } from 'react';
+import React, { isValidElement, useCallback } from 'react';
 
 import classNames from 'classnames';
 
 import { Icon, IconNames } from '../../../../1_atoms';
 import { applyDataAttr } from '../../../../utils';
 import { RowObject } from '../../../TableBase';
-import { OrderDirection, TableProps } from '../../Table.types';
+import { ColumnOptions, OrderDirection, TableProps } from '../../Table.types';
 import { TableRow } from '../TableRow/TableRow';
 import rowStyles from '../TableRow/TableRow.module.css';
 import styles from './TableDesktop.module.css';
@@ -24,6 +24,24 @@ export const TableDesktop = <RowType extends RowObject>({
   setOrderOptions,
   isLoading,
 }: TableProps<RowType>) => {
+  const onColumnClick = useCallback(
+    (column: ColumnOptions<RowType>) => {
+      if (!column.sortable) {
+        return;
+      }
+
+      setOrderOptions?.({
+        orderBy: column.id.toString(),
+        orderDirection:
+          orderOptions?.orderBy === column.id
+            ? orderOptions?.orderDirection === OrderDirection.Asc
+              ? OrderDirection.Desc
+              : OrderDirection.Asc
+            : OrderDirection.Asc,
+      });
+    },
+    [orderOptions?.orderBy, orderOptions?.orderDirection, setOrderOptions],
+  );
   return (
     <table
       className={classNames(styles.table, className)}
@@ -42,44 +60,36 @@ export const TableDesktop = <RowType extends RowObject>({
             >
               <span className={styles.headerContent}>
                 <span
-                  onClick={() => {
-                    if (!column.sortable) {
-                      return;
-                    }
-
-                    setOrderOptions?.({
-                      orderBy: column.id.toString(),
-                      orderDirection:
-                        orderOptions?.orderBy === column.id
-                          ? orderOptions?.orderDirection === OrderDirection.Asc
-                            ? OrderDirection.Desc
-                            : OrderDirection.Asc
-                          : OrderDirection.Asc,
-                    });
-                  }}
-                  className={styles.title}
+                  onClick={() => onColumnClick(column)}
+                  className={classNames(styles.title, {
+                    [styles.sortable]: column.sortable,
+                  })}
                 >
                   <>
                     {column.title || column.id}
-                    {orderOptions?.orderBy === column.id.toString() &&
-                      column.sortable && (
-                        <>
-                          {orderOptions?.orderDirection ===
-                          OrderDirection.Asc ? (
-                            <Icon
-                              icon={IconNames.ARROW_RIGHT}
-                              className="-rotate-90 ml-2"
-                              size={12}
-                            />
-                          ) : (
-                            <Icon
-                              icon={IconNames.ARROW_RIGHT}
-                              className="rotate-90 ml-2"
-                              size={12}
-                            />
-                          )}
-                        </>
-                      )}
+                    {column.sortable && (
+                      <>
+                        {orderOptions?.orderDirection === OrderDirection.Asc ? (
+                          <Icon
+                            icon={IconNames.ARROW_RIGHT}
+                            className={classNames(styles.icon, styles.up, {
+                              [styles.active]:
+                                orderOptions?.orderBy === column.id.toString(),
+                            })}
+                            size={12}
+                          />
+                        ) : (
+                          <Icon
+                            icon={IconNames.ARROW_RIGHT}
+                            className={classNames(styles.icon, styles.down, {
+                              [styles.active]:
+                                orderOptions?.orderBy === column.id.toString(),
+                            })}
+                            size={12}
+                          />
+                        )}
+                      </>
+                    )}
                   </>
                 </span>
 

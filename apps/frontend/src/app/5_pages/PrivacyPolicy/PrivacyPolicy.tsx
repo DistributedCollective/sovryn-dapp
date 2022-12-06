@@ -6,9 +6,7 @@ import styles from './PrivacyPolicy.module.css';
 const PrivacyPolicy: FC = () => (
   <PageContainer contentClassName="container">
     <div className={styles.wrapper}>
-      <p className="text-center text-2xl">
-        <strong>Sovryn&ndash; Privacy Policy</strong>
-      </p>
+      <h1 className="text-center text-2xl">Sovryn&ndash; Privacy Policy</h1>
       <br />
       <ul>
         <li>

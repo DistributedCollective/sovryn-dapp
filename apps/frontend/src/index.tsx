@@ -10,6 +10,7 @@ import { OnboardProvider } from '@sovryn/onboard-react';
 
 import App from './app/5_pages/App/App';
 import PrivacyPolicy from './app/5_pages/PrivacyPolicy/PrivacyPolicy';
+import TermsOfUse from './app/5_pages/TermsOfUse/TermsOfUse';
 import { chains } from './config/chains';
 import { TransactionProvider } from './context/transactionContext';
 import './locales/i18n';
@@ -35,7 +36,11 @@ root.render(
       <ApolloProvider client={rskClient}>
         <TransactionProvider>
           <Routes>
-            <Route path="/policies/terms-of-use" element={<PrivacyPolicy />} />
+            <Route
+              path="/policies/privacy-policy"
+              element={<PrivacyPolicy />}
+            />
+            <Route path="/policies/terms-of-use" element={<TermsOfUse />} />
             <Route path="*" element={<App />} />
           </Routes>
         </TransactionProvider>

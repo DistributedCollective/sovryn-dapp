@@ -1,6 +1,7 @@
 import React, { ChangeEvent, useCallback, useMemo, useState, FC } from 'react';
 
 import { commify } from 'ethers/lib/utils';
+import { useTranslation } from 'react-i18next';
 
 import {
   AmountInput,
@@ -9,11 +10,13 @@ import {
   ButtonType,
   FormGroup,
   HealthBar,
+  HelperButton,
   Select,
   SelectOption,
   SimpleTable,
 } from '@sovryn/ui';
 
+import { translations } from '../../../locales/i18n';
 import { Label } from './CustomLabel';
 import { Row } from './SimpleTableRow';
 import { AmountType } from './types';
@@ -43,8 +46,8 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
   const [creditToken, setCreditToken] = useState('DLLR');
 
   // todo: these needs to be retrieved
-  const maxCollateralAmount = 10000;
-  const maxCreditAmount = 5000;
+  const maxCollateralAmount = 1;
+  const maxCreditAmount = 100;
 
   const tokens = useMemo(
     () =>
@@ -119,6 +122,8 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
     return (newCollateral / newDebt) * 100;
   }, [newCollateral, newDebt]);
 
+  const { t } = useTranslation();
+
   return (
     <div className="w-full">
       <FormGroup
@@ -129,11 +134,11 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
             tabs={[
               {
                 value: AmountType.Add,
-                label: 'Borrow',
+                label: t(translations.adjustCreditLine.actions.borrow),
               },
               {
                 value: AmountType.Remove,
-                label: 'Repay',
+                label: t(translations.adjustCreditLine.actions.repay),
               },
             ]}
             activeTab={debtType}
@@ -147,8 +152,8 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
           <AmountInput
             value={creditAmount}
             onChange={handleCreditAmountChange}
-            label="Amount"
-            tooltip="Amount of debt to add or remove"
+            label={t(translations.adjustCreditLine.fields.debt.amount)}
+            tooltip={t(translations.adjustCreditLine.fields.debt.tooltip)}
             className="w-full flex-grow-0 flex-shrink"
           />
           <Select
@@ -166,11 +171,13 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
             tabs={[
               {
                 value: AmountType.Add,
-                label: 'Add collateral',
+                label: t(translations.adjustCreditLine.actions.addCollateral),
               },
               {
                 value: AmountType.Remove,
-                label: 'Withdraw collateral',
+                label: t(
+                  translations.adjustCreditLine.actions.withdrawCollateral,
+                ),
               },
             ]}
             activeTab={collateralType}
@@ -183,8 +190,8 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
         <AmountInput
           value={collateralAmount}
           onChange={handleCollateralAmountChange}
-          label="Amount"
-          tooltip="Amount of collateral to add or remove"
+          label={t(translations.adjustCreditLine.fields.collateral.amount)}
+          tooltip={t(translations.adjustCreditLine.fields.collateral.tooltip)}
           className="max-w-none"
           unit="RBTC"
         />
@@ -192,8 +199,8 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
       <div className="my-6">
         <SimpleTable>
           <Row
-            label="New debt"
-            tooltip="This is a tooltip"
+            label={t(translations.adjustCreditLine.labels.newDebt)}
+            tooltip={t(translations.adjustCreditLine.labels.newDebtTooltip)}
             value={
               <>
                 {newDebt.toFixed(3)} {creditToken}
@@ -202,15 +209,24 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
             valueClassName="text-primary-10"
           />
           <Row
-            label="New collateral"
-            tooltip="This is a tooltip"
+            label={t(translations.adjustCreditLine.labels.newCollateral)}
+            tooltip={t(
+              translations.adjustCreditLine.labels.newCollateralTooltip,
+            )}
             value={<>{newCollateral.toFixed(3)} RBTC</>}
           />
         </SimpleTable>
       </div>
 
       <div className="flex flex-row justify-between items-center mb-3">
-        <div>Collateral ratio</div>
+        <div className="flex flex-row justify-start items-center gap-2">
+          <span>{t(translations.adjustCreditLine.labels.collateralRatio)}</span>
+          <HelperButton
+            content={t(
+              translations.adjustCreditLine.labels.collateralRatioTooltip,
+            )}
+          />
+        </div>
         <div className="text-primary-10">{ratio}%</div>
       </div>
       <HealthBar
@@ -224,25 +240,34 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
       <div className="mt-6">
         <SimpleTable>
           <Row
-            label="Liquidation price"
-            tooltip="This is a tooltip"
+            label={t(translations.adjustCreditLine.labels.liquidationPrice)}
+            tooltip={t(
+              translations.adjustCreditLine.labels.liquidationPriceTooltip,
+            )}
             value={<>{commify(15023)} USD</>}
             valueClassName="text-primary-10"
           />
           <Row
-            label="Liquidation price (Recovery Mode)"
-            tooltip="This is a tooltip"
+            label={t(
+              translations.adjustCreditLine.labels.recoveryLiquidationPrice,
+            )}
+            tooltip={t(
+              translations.adjustCreditLine.labels
+                .recoveryLiquidationPriceTooltip,
+            )}
             value={<>{commify(17653)} USD</>}
             valueClassName="text-primary-10"
           />
           <Row
-            label="RBTC Price"
-            tooltip="This is a tooltip"
+            label={t(translations.adjustCreditLine.labels.rbtcPrice)}
+            tooltip={t(translations.adjustCreditLine.labels.rbtcPriceTooltip)}
             value={<>{commify(20000)} USD</>}
           />
           <Row
-            label="Origination Fee"
-            tooltip="This is a tooltip"
+            label={t(translations.adjustCreditLine.labels.originationFee)}
+            tooltip={t(
+              translations.adjustCreditLine.labels.originationFeeTooltip,
+            )}
             value={<>{commify(0.5)}%</>}
           />
         </SimpleTable>
@@ -251,7 +276,7 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
         <Button
           type={ButtonType.reset}
           style={ButtonStyle.primary}
-          text="Confirm"
+          text={t(translations.common.buttons.confirm)}
           className="w-full"
           onClick={handleFormSubmit}
         />

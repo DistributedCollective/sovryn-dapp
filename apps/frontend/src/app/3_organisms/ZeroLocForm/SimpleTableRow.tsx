@@ -1,6 +1,6 @@
 import React, { FC, ReactNode } from 'react';
 
-import { Icon, IconNames, SimpleTableRow, Tooltip } from '@sovryn/ui';
+import { HelperButton, SimpleTableRow } from '@sovryn/ui';
 
 export type RowProps = {
   label: string;
@@ -15,11 +15,7 @@ export const Row: FC<RowProps> = ({ label, tooltip, ...props }) => (
     label={
       <div className="flex flex-row gap-2 justify-start items-center whitespace-nowrap">
         {label}
-        {tooltip && (
-          <Tooltip content={tooltip}>
-            <Icon icon={IconNames.INFO} size={12} />
-          </Tooltip>
-        )}
+        {tooltip && <HelperButton content={tooltip} />}
       </div>
     }
     {...props}

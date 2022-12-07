@@ -39,7 +39,7 @@ export const Label: FC<CustomLabelProps> = ({
           <button
             key={tab.value}
             className={classNames(
-              'font-roboto font-semibold text-xs px-3 py-1 rounded bg-gray-80 whitespace-nowrap',
+              'font-roboto font-semibold text-[11px] px-3 py-1 rounded bg-gray-80 whitespace-nowrap',
               {
                 'text-gray-30 text-opacity-75':
                   !tab.disabled && tab.value !== activeTab,
@@ -56,7 +56,7 @@ export const Label: FC<CustomLabelProps> = ({
       </div>
       <button
         onClick={onMaxAmountClicked}
-        className="text-gray-20 text-xs underline"
+        className="text-gray-20 text-[11px] underline whitespace-nowrap"
       >
         (max {maxAmount.toFixed(4)} {symbol})
       </button>

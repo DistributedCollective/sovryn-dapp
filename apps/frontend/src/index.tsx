@@ -1,4 +1,5 @@
 import { ApolloProvider, ApolloClient, InMemoryCache } from '@apollo/client';
+import loadable from '@loadable/component';
 
 import React from 'react';
 
@@ -8,14 +9,19 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import setupChains from '@sovryn/ethers-provider';
 import { OnboardProvider } from '@sovryn/onboard-react';
 
-import App from './app/5_pages/App/App';
-import PrivacyPolicy from './app/5_pages/PrivacyPolicy/PrivacyPolicy';
-import TermsOfUse from './app/5_pages/TermsOfUse/TermsOfUse';
 import { chains } from './config/chains';
 import { TransactionProvider } from './context/transactionContext';
 import './locales/i18n';
 import './styles/tailwindcss/index.css';
 import { graphRskUrl } from './utils/constants';
+
+const App = loadable(() => import('./app/5_pages/App/App'));
+const PrivacyPolicy = loadable(
+  () => import('./app/5_pages/PrivacyPolicy/PrivacyPolicy'),
+);
+const TermsOfUse = loadable(
+  () => import('./app/5_pages/TermsOfUse/TermsOfUse'),
+);
 
 setupChains(chains);
 

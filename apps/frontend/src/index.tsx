@@ -10,7 +10,8 @@ import setupChains from '@sovryn/ethers-provider';
 import { OnboardProvider } from '@sovryn/onboard-react';
 
 import { chains } from './config/chains';
-import { TransactionProvider } from './context/transactionContext';
+import { MaintenanceModeContextProvider } from './contexts/MaintenanceModeContext';
+import { TransactionProvider } from './contexts/TransactionContext';
 import './locales/i18n';
 import './styles/tailwindcss/index.css';
 import { graphRskUrl } from './utils/constants';
@@ -40,16 +41,18 @@ root.render(
   <React.StrictMode>
     <BrowserRouter>
       <ApolloProvider client={rskClient}>
-        <TransactionProvider>
-          <Routes>
-            <Route
-              path="/policies/privacy-policy"
-              element={<PrivacyPolicy />}
-            />
-            <Route path="/policies/terms-of-use" element={<TermsOfUse />} />
-            <Route path="*" element={<App />} />
-          </Routes>
-        </TransactionProvider>
+        <MaintenanceModeContextProvider>
+          <TransactionProvider>
+            <Routes>
+              <Route
+                path="/policies/privacy-policy"
+                element={<PrivacyPolicy />}
+              />
+              <Route path="/policies/terms-of-use" element={<TermsOfUse />} />
+              <Route path="*" element={<App />} />
+            </Routes>
+          </TransactionProvider>
+        </MaintenanceModeContextProvider>
         <OnboardProvider />
       </ApolloProvider>
     </BrowserRouter>

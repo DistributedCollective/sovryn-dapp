@@ -54,11 +54,12 @@ const root = ReactDOM.createRoot(
 );
 root.render(
   <React.StrictMode>
-    <ApolloProvider client={rskClient}>
-      <RouterProvider router={router} />
-      <TransactionProvider />
-      <OnboardProvider />
-    </ApolloProvider>
+    <TransactionProvider>
+      <ApolloProvider client={rskClient}>
+        <RouterProvider router={router} />
+        <OnboardProvider />
+      </ApolloProvider>
+    </TransactionProvider>
     <OnboardProvider />
   </React.StrictMode>,
 );

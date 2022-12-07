@@ -1,56 +1,58 @@
-import React, { FC } from 'react';
+import React, { FC, useCallback } from 'react';
 
 import classNames from 'classnames';
 
+import { AmountType } from './types';
+
+type Tab = {
+  value: AmountType;
+  label: string;
+  disabled?: boolean;
+};
+
 type CustomLabelProps = {
-  title: string;
   maxAmount: number;
   symbol: string;
-  disableIncrease?: boolean;
-  disableDecrease?: boolean;
-  onIncreaseClicked: () => void;
-  onDecreaseClicked: () => void;
+  tabs: Tab[];
+  activeTab: AmountType;
+  onTabChange: (value: AmountType) => void;
   onMaxAmountClicked: () => void;
 };
 
-export const CustomLabel: FC<CustomLabelProps> = ({
-  title,
+export const Label: FC<CustomLabelProps> = ({
   maxAmount,
   symbol,
-  disableDecrease,
-  disableIncrease,
+  tabs,
+  activeTab,
+  onTabChange,
   onMaxAmountClicked,
-  onDecreaseClicked,
-  onIncreaseClicked,
 }) => {
+  const handleTabChange = useCallback(
+    (value: AmountType) => () => onTabChange(value),
+    [onTabChange],
+  );
+
   return (
     <div className="w-full flex flex-row justify-between gap-4 items-center">
       <div className="flex flex-row items-center justify-start gap-2">
-        <span className="text-sm">{title}</span>
-        <button
-          className={classNames(
-            'font-roboto font-semibold text-xs p-1 rounded bg-gray-50 text-gray-20',
-            {
-              'bg-gray-70 text-gray-40 cursor-not-allowed': disableIncrease,
-            },
-          )}
-          onClick={onIncreaseClicked}
-          disabled={disableIncrease}
-        >
-          +
-        </button>
-        <button
-          className={classNames(
-            'font-roboto font-semibold text-xs p-1 rounded bg-gray-50 text-gray-20',
-            {
-              'bg-gray-70 text-gray-40 cursor-not-allowed': disableDecrease,
-            },
-          )}
-          onClick={onDecreaseClicked}
-          disabled={disableDecrease}
-        >
-          -
-        </button>
+        {tabs.map(tab => (
+          <button
+            key={tab.value}
+            className={classNames(
+              'font-roboto font-semibold text-xs px-3 py-1 rounded bg-gray-80 whitespace-nowrap',
+              {
+                'text-gray-30 text-opacity-75':
+                  !tab.disabled && tab.value !== activeTab,
+                'text-gray-40 cursor-not-allowed': tab.disabled,
+                'bg-gray-70 text-primary-20': tab.value === activeTab,
+              },
+            )}
+            onClick={handleTabChange(tab.value)}
+            disabled={tab.disabled}
+          >
+            {tab.label}
+          </button>
+        ))}
       </div>
       <button
         onClick={onMaxAmountClicked}

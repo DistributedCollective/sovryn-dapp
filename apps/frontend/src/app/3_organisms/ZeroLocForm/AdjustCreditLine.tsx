@@ -1,32 +1,43 @@
 import React, { ChangeEvent, useCallback, useMemo, useState, FC } from 'react';
 
+import { commify } from 'ethers/lib/utils';
+
 import {
   AmountInput,
   Button,
   ButtonStyle,
   ButtonType,
   FormGroup,
+  HealthBar,
   Select,
   SelectOption,
+  SimpleTable,
 } from '@sovryn/ui';
 
-import { CustomLabel } from './CustomLabel';
+import { Label } from './CustomLabel';
+import { Row } from './SimpleTableRow';
+import { AmountType } from './types';
+import { normalizeAmountByType } from './utils';
+
+type SubmitValue = {
+  debt: string;
+  collateral: string;
+};
 
 type AdjustCreditLineProps = {
   collateralValue: string;
   creditValue: string;
-  onCollateralChange: (value: string) => void;
-  onCreditChange: (value: string) => void;
-  onSubmit: () => void;
+  onSubmit: (value: SubmitValue) => void;
 };
 
 export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
   collateralValue,
   creditValue,
-  onCollateralChange,
-  onCreditChange,
   onSubmit,
 }) => {
+  const [debtType, setDebtType] = useState(AmountType.Add);
+  const [collateralType, setCollateralType] = useState(AmountType.Add);
+
   const [collateralAmount, setCollateralAmount] = useState('0');
   const [creditAmount, setCreditAmount] = useState('0');
   const [creditToken, setCreditToken] = useState('DLLR');
@@ -59,84 +70,13 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
   );
 
   const handleMaxCollateralAmountClick = useCallback(
-    () => onCollateralChange(String(maxCollateralAmount)),
-    [maxCollateralAmount, onCollateralChange],
-  );
-
-  const handleIncreaseCollateralAmountClick = useCallback(
-    () =>
-      onCollateralChange(
-        String(
-          Math.min(
-            Number(collateralValue) + Number(collateralAmount),
-            maxCollateralAmount,
-          ),
-        ),
-      ),
-    [
-      collateralAmount,
-      collateralValue,
-      maxCollateralAmount,
-      onCollateralChange,
-    ],
-  );
-
-  const handleDecreaseCollateralAmountClick = useCallback(
-    () =>
-      onCollateralChange(
-        String(Math.max(Number(collateralValue) - Number(collateralAmount), 0)),
-      ),
-    [collateralAmount, collateralValue, onCollateralChange],
+    () => setCollateralAmount(String(maxCollateralAmount)),
+    [maxCollateralAmount],
   );
 
   const handleMaxCreditAmountClick = useCallback(
-    () => onCreditChange(String(maxCreditAmount)),
-    [maxCreditAmount, onCreditChange],
-  );
-
-  const handleIncreaseCreditAmountClick = useCallback(
-    () =>
-      onCreditChange(
-        String(
-          Math.min(Number(creditValue) + Number(creditAmount), maxCreditAmount),
-        ),
-      ),
-    [creditAmount, creditValue, maxCreditAmount, onCreditChange],
-  );
-
-  const handleDecreaseCreditAmountClick = useCallback(
-    () =>
-      onCreditChange(
-        String(Math.max(Number(creditValue) - Number(creditAmount), 0)),
-      ),
-    [creditAmount, creditValue, onCreditChange],
-  );
-
-  const increaseCollateralAmountDisabled = useMemo(
-    () =>
-      Number(collateralAmount) + Number(collateralValue) >
-        maxCollateralAmount || collateralAmount === '0',
-    [collateralAmount, collateralValue, maxCollateralAmount],
-  );
-
-  const decreaseCollateralAmountDisabled = useMemo(
-    () =>
-      Number(collateralValue) - Number(collateralAmount) < 0 ||
-      collateralAmount === '0',
-    [collateralAmount, collateralValue],
-  );
-
-  const increaseCreditAmountDisabled = useMemo(
-    () =>
-      Number(creditAmount) + Number(creditValue) > maxCreditAmount ||
-      creditAmount === '0',
-    [creditAmount, creditValue, maxCreditAmount],
-  );
-
-  const decreaseCreditAmountDisabled = useMemo(
-    () =>
-      Number(creditValue) - Number(creditAmount) < 0 || creditAmount === '0',
-    [creditAmount, creditValue],
+    () => setCreditAmount(String(maxCreditAmount)),
+    [maxCreditAmount],
   );
 
   const handleCollateralAmountChange = useCallback(
@@ -151,52 +91,57 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
     [],
   );
 
-  const handleResetClick = useCallback(() => {
-    setCollateralAmount('0');
-    setCreditAmount('0');
-    onCollateralChange('0');
-    onCreditChange('0');
-  }, [onCollateralChange, onCreditChange]);
+  const newDebt = useMemo(
+    () =>
+      Number(creditValue) +
+      normalizeAmountByType(Number(creditAmount), debtType),
+    [creditAmount, creditValue, debtType],
+  );
+  const newCollateral = useMemo(
+    () =>
+      Number(collateralValue) +
+      normalizeAmountByType(Number(collateralAmount), collateralType),
+    [collateralAmount, collateralType, collateralValue],
+  );
+
+  const handleFormSubmit = useCallback(() => {
+    onSubmit({
+      debt: String(newDebt),
+      collateral: String(newCollateral),
+    });
+  }, [newCollateral, newDebt, onSubmit]);
+
+  // todo: convert collateral and debt to same asset before calculating actual ratio
+  const ratio = useMemo(() => {
+    if (newDebt === 0) {
+      return 0;
+    }
+    return (newCollateral / newDebt) * 100;
+  }, [newCollateral, newDebt]);
 
   return (
     <div className="w-full">
       <FormGroup
         label={
-          <CustomLabel
-            title="Collateral"
-            symbol="RBTC"
-            maxAmount={maxCollateralAmount}
-            disableIncrease={increaseCollateralAmountDisabled}
-            disableDecrease={decreaseCollateralAmountDisabled}
-            onMaxAmountClicked={handleMaxCollateralAmountClick}
-            onIncreaseClicked={handleIncreaseCollateralAmountClick}
-            onDecreaseClicked={handleDecreaseCollateralAmountClick}
-          />
-        }
-        className="max-w-none"
-      >
-        <AmountInput
-          value={collateralAmount}
-          onChange={handleCollateralAmountChange}
-          label="Amount"
-          tooltip="Amount of collateral to add or remove"
-          className="max-w-none"
-        />
-      </FormGroup>
-      <FormGroup
-        label={
-          <CustomLabel
-            title="Debt"
+          <Label
             symbol={creditToken}
             maxAmount={maxCreditAmount}
-            disableIncrease={increaseCreditAmountDisabled}
-            disableDecrease={decreaseCreditAmountDisabled}
+            tabs={[
+              {
+                value: AmountType.Add,
+                label: 'Borrow',
+              },
+              {
+                value: AmountType.Remove,
+                label: 'Repay',
+              },
+            ]}
+            activeTab={debtType}
+            onTabChange={setDebtType}
             onMaxAmountClicked={handleMaxCreditAmountClick}
-            onIncreaseClicked={handleIncreaseCreditAmountClick}
-            onDecreaseClicked={handleDecreaseCreditAmountClick}
           />
         }
-        className="mt-8 w-full"
+        className="w-full"
       >
         <div className="w-full flex flex-row justify-between items-center gap-3">
           <AmountInput
@@ -213,20 +158,102 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
           />
         </div>
       </FormGroup>
-      <div className="mt-8 flex flex-row items-center justify-between gap-8">
-        <Button
-          type={ButtonType.reset}
-          style={ButtonStyle.secondary}
-          text="Cancel"
-          className="w-full"
-          onClick={handleResetClick}
+      <FormGroup
+        label={
+          <Label
+            symbol="RBTC"
+            maxAmount={maxCollateralAmount}
+            tabs={[
+              {
+                value: AmountType.Add,
+                label: 'Add collateral',
+              },
+              {
+                value: AmountType.Remove,
+                label: 'Withdraw collateral',
+              },
+            ]}
+            activeTab={collateralType}
+            onTabChange={setCollateralType}
+            onMaxAmountClicked={handleMaxCollateralAmountClick}
+          />
+        }
+        className="max-w-none mt-8"
+      >
+        <AmountInput
+          value={collateralAmount}
+          onChange={handleCollateralAmountChange}
+          label="Amount"
+          tooltip="Amount of collateral to add or remove"
+          className="max-w-none"
+          unit="RBTC"
         />
+      </FormGroup>
+      <div className="my-6">
+        <SimpleTable>
+          <Row
+            label="New debt"
+            tooltip="This is a tooltip"
+            value={
+              <>
+                {newDebt.toFixed(3)} {creditToken}
+              </>
+            }
+            valueClassName="text-primary-10"
+          />
+          <Row
+            label="New collateral"
+            tooltip="This is a tooltip"
+            value={<>{newCollateral.toFixed(3)} RBTC</>}
+          />
+        </SimpleTable>
+      </div>
+
+      <div className="flex flex-row justify-between items-center mb-3">
+        <div>Collateral ratio</div>
+        <div className="text-primary-10">{ratio}%</div>
+      </div>
+      <HealthBar
+        start={70}
+        middleStart={110}
+        middleEnd={150}
+        end={200}
+        value={ratio}
+      />
+
+      <div className="mt-6">
+        <SimpleTable>
+          <Row
+            label="Liquidation price"
+            tooltip="This is a tooltip"
+            value={<>{commify(15023)} USD</>}
+            valueClassName="text-primary-10"
+          />
+          <Row
+            label="Liquidation price (Recovery Mode)"
+            tooltip="This is a tooltip"
+            value={<>{commify(17653)} USD</>}
+            valueClassName="text-primary-10"
+          />
+          <Row
+            label="RBTC Price"
+            tooltip="This is a tooltip"
+            value={<>{commify(20000)} USD</>}
+          />
+          <Row
+            label="Origination Fee"
+            tooltip="This is a tooltip"
+            value={<>{commify(0.5)}%</>}
+          />
+        </SimpleTable>
+      </div>
+      <div className="mt-8 flex flex-row items-center justify-between gap-8">
         <Button
           type={ButtonType.reset}
           style={ButtonStyle.primary}
           text="Confirm"
           className="w-full"
-          onClick={onSubmit}
+          onClick={handleFormSubmit}
         />
       </div>
     </div>

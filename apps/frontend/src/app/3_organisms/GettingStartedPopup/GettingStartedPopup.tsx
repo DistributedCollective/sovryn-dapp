@@ -26,6 +26,8 @@ import { sovrynWikiLinks } from '../../../utils/constants';
 import styles from './GettingStartedPopup.module.css';
 
 const pageSize = 1;
+const localStorageKey = 'gettingStartedPopup';
+const translationBasePath = translations.gettingStartedPopup.content;
 
 type GettingStartedPopupProps = {
   isOpen: boolean;
@@ -37,7 +39,6 @@ export const GettingStartedPopup: FC<GettingStartedPopupProps> = ({
   onConfirm,
 }) => {
   const { t } = useTranslation();
-  const localStorageKey = 'gettingStartedPopup';
   const { isMobile } = useIsMobile();
   const [page, setPage] = useState(0);
   const [checked, setChecked] = useState(false);
@@ -46,31 +47,23 @@ export const GettingStartedPopup: FC<GettingStartedPopupProps> = ({
   const data = useMemo(
     () => [
       {
-        name: t(translations.gettingStartedPopup.content.pool.title),
-        description: t(
-          translations.gettingStartedPopup.content.pool.description,
-        ),
+        name: t(translationBasePath.pool.title),
+        description: t(translationBasePath.pool.description),
         href: sovrynWikiLinks.pool,
       },
       {
-        name: t(translations.gettingStartedPopup.content.lend.title),
-        description: t(
-          translations.gettingStartedPopup.content.lend.description,
-        ),
+        name: t(translationBasePath.lend.title),
+        description: t(translationBasePath.lend.description),
         href: sovrynWikiLinks.lend,
       },
       {
-        name: t(translations.gettingStartedPopup.content.trade.title),
-        description: t(
-          translations.gettingStartedPopup.content.trade.description,
-        ),
+        name: t(translationBasePath.trade.title),
+        description: t(translationBasePath.trade.description),
         href: sovrynWikiLinks.trade,
       },
       {
-        name: t(translations.gettingStartedPopup.content.bridge.title),
-        description: t(
-          translations.gettingStartedPopup.content.bridge.description,
-        ),
+        name: t(translationBasePath.bridge.title),
+        description: t(translationBasePath.bridge.description),
         href: sovrynWikiLinks.bridge,
       },
     ],
@@ -79,7 +72,7 @@ export const GettingStartedPopup: FC<GettingStartedPopupProps> = ({
 
   const items = useMemo(
     () => (isMobile ? data.slice(page, pageOffset) : data),
-    [data, pageOffset, isMobile, page],
+    [isMobile, data, page, pageOffset],
   );
 
   const onClick = useCallback(() => {

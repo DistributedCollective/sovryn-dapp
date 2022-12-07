@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 
 import axios from 'axios';
+import { useTranslation } from 'react-i18next';
 
 import {
   Button,
@@ -16,6 +17,7 @@ import {
 } from '@sovryn/ui';
 
 import { useAccount } from '../../../hooks/useAccount';
+import { translations } from '../../../locales/i18n';
 import {
   getServicesConfig,
   parseJwt,
@@ -32,11 +34,13 @@ type EmailNotificationSettingsDialogProps = {
 const servicesConfig = getServicesConfig();
 
 const notificationServiceUrl = servicesConfig.notification;
+const userEndpoint = `${notificationServiceUrl}user/`;
 
 export const EmailNotificationSettingsDialog: React.FC<
   EmailNotificationSettingsDialogProps
 > = ({ isOpen, onClose }) => {
   const { account, provider } = useAccount();
+  const { t } = useTranslation();
 
   const [notificationToken, setNotificationToken] = useState<string | null>(
     null,
@@ -84,7 +88,7 @@ export const EmailNotificationSettingsDialog: React.FC<
     }
   }, [account, isOpen, notificationToken, resetNotification]);
 
-  const getToken = async () => {
+  const getToken = useCallback(async () => {
     if (!account) {
       return;
     }
@@ -93,22 +97,17 @@ export const EmailNotificationSettingsDialog: React.FC<
     const message = `Login to backend on: ${timestamp}`;
 
     const { data: alreadyUser } = await axios.get(
-      notificationServiceUrl + 'user/isUser/' + account,
+      `${userEndpoint}/isUser/${account}`,
     );
 
     return signMessage(provider, message)
       .then(signedMessage =>
         axios
-          .post(
-            notificationServiceUrl +
-              'user/' +
-              (alreadyUser ? 'auth' : 'register'),
-            {
-              signedMessage,
-              message,
-              walletAddress: account,
-            },
-          )
+          .post(`${userEndpoint}${alreadyUser ? 'auth' : 'register'}`, {
+            signedMessage,
+            message,
+            walletAddress: account,
+          })
           .then(res => {
             if (res.data && res.data.token) {
               setNotificationToken(res.data.token);
@@ -120,9 +119,29 @@ export const EmailNotificationSettingsDialog: React.FC<
         console.error(error);
         onClose();
       });
-  };
+  }, [account, onClose, provider]);
 
-  const getUser = () => {
+  const handleUserDataResponse = useCallback(
+    (response: Promise<any>) => {
+      response
+        .then(result => {
+          if (result.data) {
+            setNotificationUser(result.data);
+            setEmail(result.data?.email);
+          }
+        })
+        .catch(error => {
+          console.log(error);
+          if (error?.response?.status === 401) {
+            getToken();
+          }
+        })
+        .finally(() => setLoading(false));
+    },
+    [getToken],
+  );
+
+  const getUser = useCallback(() => {
     if (!account || !notificationToken) {
       return;
     }
@@ -135,82 +154,64 @@ export const EmailNotificationSettingsDialog: React.FC<
 
     setLoading(true);
 
-    axios
-      .get(notificationServiceUrl + 'user/' + userId, {
+    const promise = axios.get(`${userEndpoint}${userId}`, {
+      headers: {
+        Authorization: 'bearer ' + notificationToken,
+      },
+    });
+
+    handleUserDataResponse(promise);
+  }, [account, handleUserDataResponse, notificationToken]);
+
+  const updateUser = useCallback(() => {
+    if (!account || !notificationToken) {
+      return;
+    }
+
+    const userId = parseJwt(notificationToken)?.sub;
+    if (!userId) {
+      return;
+    }
+
+    setLoading(true);
+
+    const promise = axios.put(
+      `${userEndpoint}${account}`,
+      {
+        walletAddress: account,
+        email: email || undefined,
+      },
+      {
         headers: {
           Authorization: 'bearer ' + notificationToken,
         },
-      })
-      .then(res => {
-        if (res.data) {
-          setNotificationUser(res.data);
-          setEmail(res.data?.email);
-        }
-      })
-      .catch(error => {
-        console.log(error);
-        if (error?.response?.status === 401) {
-          getToken();
-        }
-      })
-      .finally(() => setLoading(false));
-  };
+      },
+    );
 
-  const updateUser = () => {
-    if (!account || !notificationToken) {
-      return;
-    }
-
-    const userId = parseJwt(notificationToken)?.sub;
-    if (!userId) {
-      return;
-    }
-
-    setLoading(true);
-
-    axios
-      .put(
-        notificationServiceUrl + 'user/' + account,
-        {
-          walletAddress: account,
-          email: email || undefined,
-        },
-        {
-          headers: {
-            Authorization: 'bearer ' + notificationToken,
-          },
-        },
-      )
-      .then(res => {
-        if (res.data) {
-          setNotificationUser(res.data);
-          setEmail(res.data?.email);
-        }
-        onClose();
-      })
-      .catch(error => {
-        console.log(error);
-        if (error?.response?.status === 401) {
-          getToken();
-        }
-      })
-      .finally(() => setLoading(false));
-  };
+    handleUserDataResponse(promise);
+  }, [account, email, handleUserDataResponse, notificationToken]);
 
   return (
     <Dialog isOpen={isOpen} width={DialogSize.sm}>
-      <DialogHeader onClose={onClose} title="Notifications" />
+      <DialogHeader
+        onClose={onClose}
+        title={t(translations.emailNotificationsDialog.dialogTitle)}
+      />
       <DialogBody className="p-6">
         <div className="p-6 bg-gray-90">
           <Paragraph style={ParagraphStyle.tall}>
-            Notifications on the status of your line of credit are sent to your
-            email after you sign it with your wallet
+            {t(translations.emailNotificationsDialog.title)}
           </Paragraph>
-          <FormGroup className="mt-6 mb-4" label="Email address">
+          <FormGroup
+            className="mt-6 mb-4"
+            label={t(translations.emailNotificationsDialog.emailInputLabel)}
+          >
             <Input
               value={email}
               onChangeText={setEmail}
-              placeholder="Enter email"
+              placeholder={t(
+                translations.emailNotificationsDialog.emailInputPlaceholder,
+              )}
               disabled={loading || !notificationToken}
             />
           </FormGroup>
@@ -222,13 +223,13 @@ export const EmailNotificationSettingsDialog: React.FC<
         <div className="mt-4 flex justify-between">
           <Button
             onClick={onClose}
-            text="Cancel"
+            text={t(translations.common.buttons.cancel)}
             style={ButtonStyle.secondary}
             className="mr-4 w-[49%]"
           />
           <Button
             onClick={updateUser}
-            text="Save"
+            text={t(translations.common.buttons.save)}
             disabled={loading || !notificationToken || !emailIsValid}
             className="w-[49%]"
           />

@@ -9,12 +9,14 @@ import { Accordion, Button } from '@sovryn/ui';
 
 import { TransactionStepDialog } from '../3_organisms';
 import { defaultChainId } from '../../config/chains';
-import { useTransactionContext } from '../../context/transactionContext';
+import { useTransactionContext } from '../../contexts/TransactionContext';
 import { useTheme, useWalletConnect } from '../../hooks';
+import { useMaintenance } from '../../hooks/useMaintenance';
 import { translations } from '../../locales/i18n';
 import { AppTheme } from '../../types/tailwind';
 import { APPROVAL_FUNCTION } from '../../utils/constants';
 import { useGetTokenRatesQuery } from '../../utils/graphql/rsk/generated';
+import { isMainnet } from '../../utils/helpers';
 import { CollateralRatio } from './CollateralRatio/CollateralRatio';
 import { ConnectWalletButton } from './ConnectWalletButton/ConnectWalletButton';
 import { ExampleContractCall } from './ExampleContractCall';
@@ -33,6 +35,9 @@ export const DebugContent = () => {
 
   const { data } = useGetTokenRatesQuery();
   const { setTransactions, setIsOpen, setTitle } = useTransactionContext();
+
+  const { checkMaintenance, States } = useMaintenance();
+  const perpsLockedTest = checkMaintenance(States.PERPETUALS_GSN);
 
   const approve = useCallback(async () => {
     if (!wallets[0].provider) {
@@ -88,6 +93,11 @@ export const DebugContent = () => {
       </div>
 
       <hr className="my-12" />
+
+      <div className="mb-12">
+        Perpetuals GSN maintenance mode on {isMainnet() ? 'MAINNET' : 'TESTNET'}{' '}
+        is {perpsLockedTest ? 'ON' : 'OFF'}
+      </div>
 
       {wallets[0]?.accounts[0]?.address ? (
         <div>

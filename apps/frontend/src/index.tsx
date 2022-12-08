@@ -10,7 +10,8 @@ import { OnboardProvider } from '@sovryn/onboard-react';
 
 import App from './app/5_pages/App/App';
 import { chains } from './config/chains';
-import { TransactionProvider } from './context/transactionContext';
+import { MaintenanceModeContextProvider } from './contexts/MaintenanceModeContext';
+import { TransactionProvider } from './contexts/TransactionContext';
 import './locales/i18n';
 import './styles/tailwindcss/index.css';
 import { graphRskUrl } from './utils/constants';
@@ -31,9 +32,11 @@ root.render(
   <React.StrictMode>
     <BrowserRouter>
       <ApolloProvider client={rskClient}>
-        <TransactionProvider>
-          <App />
-        </TransactionProvider>
+        <MaintenanceModeContextProvider>
+          <TransactionProvider>
+            <App />
+          </TransactionProvider>
+        </MaintenanceModeContextProvider>
         <OnboardProvider />
       </ApolloProvider>
     </BrowserRouter>

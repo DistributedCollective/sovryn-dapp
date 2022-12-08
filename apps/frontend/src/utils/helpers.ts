@@ -2,6 +2,8 @@ import { providers, TypedDataDomain, TypedDataField } from 'ethers';
 
 import { EIP1193Provider } from '@sovryn/onboard-common';
 
+import { servicesConfig } from './constants';
+
 export const prettyTx = (
   text: string,
   startLength: number = 6,
@@ -29,3 +31,8 @@ export const signTypedData = async (
     ._signTypedData(domain, types, data);
   return signature;
 };
+
+export const isMainnet = () => process.env.REACT_APP_NETWORK === 'mainnet';
+
+export const getServicesConfig = () =>
+  servicesConfig[isMainnet() ? 'mainnet' : 'testnet'];

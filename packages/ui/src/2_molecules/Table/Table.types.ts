@@ -13,7 +13,7 @@ export type ColumnOptions<RowType extends RowObject> = {
   ) => ReactNode;
   filter?: ReactNode;
   sortable?: boolean;
-  sample?: ReactNode;
+  sampleData?: ReactNode;
 };
 
 export type TableProps<RowType extends RowObject> = {

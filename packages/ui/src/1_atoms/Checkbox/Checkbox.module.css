@@ -5,8 +5,8 @@
 
 .input {
   @apply w-0 h-0 absolute;
-  top: -999999px;
-  left: -999999px;
+  top: 0;
+  left: 0;
 }
 
 .checkbox {

@@ -2,13 +2,14 @@ import React, { isValidElement, useCallback } from 'react';
 
 import classNames from 'classnames';
 
-import { Icon, IconNames } from '../../../../1_atoms';
 import { applyDataAttr } from '../../../../utils';
 import { RowObject } from '../../../TableBase';
+import { TableRow } from '../../../TableRow';
+import rowStyles from '../../../TableRow/TableRow.module.css';
+import { TableRowSize } from '../../../TableRow/TableRow.types';
 import { ColumnOptions, OrderDirection, TableProps } from '../../Table.types';
 import styles from './TableDesktop.module.css';
-import { TableRow } from './components/TableRow/TableRow';
-import rowStyles from './components/TableRow/TableRow.module.css';
+import { SortDirection } from './components/SortDirection/SortDirection';
 
 // No React.FC, since doesn't support Generic PropTypes
 export const TableDesktop = <RowType extends RowObject>({
@@ -24,24 +25,29 @@ export const TableDesktop = <RowType extends RowObject>({
   setOrderOptions,
   isLoading,
 }: TableProps<RowType>) => {
-  const onColumnClick = useCallback(
+  const onHeaderClick = useCallback(
     (column: ColumnOptions<RowType>) => {
       if (!column.sortable) {
         return;
       }
 
+      let orderDirection = OrderDirection.Asc;
+
+      if (
+        orderOptions?.orderBy === column.id &&
+        orderOptions?.orderDirection === OrderDirection.Asc
+      ) {
+        orderDirection = OrderDirection.Desc;
+      }
+
       setOrderOptions?.({
         orderBy: column.id.toString(),
-        orderDirection:
-          orderOptions?.orderBy === column.id
-            ? orderOptions?.orderDirection === OrderDirection.Asc
-              ? OrderDirection.Desc
-              : OrderDirection.Asc
-            : OrderDirection.Asc,
+        orderDirection,
       });
     },
     [orderOptions?.orderBy, orderOptions?.orderDirection, setOrderOptions],
   );
+
   return (
     <table
       className={classNames(styles.table, className)}
@@ -60,7 +66,7 @@ export const TableDesktop = <RowType extends RowObject>({
             >
               <span className={styles.headerContent}>
                 <span
-                  onClick={() => onColumnClick(column)}
+                  onClick={() => onHeaderClick(column)}
                   className={classNames(styles.title, {
                     [styles.sortable]: column.sortable,
                   })}
@@ -68,27 +74,12 @@ export const TableDesktop = <RowType extends RowObject>({
                   <>
                     {column.title || column.id}
                     {column.sortable && (
-                      <>
-                        {orderOptions?.orderDirection === OrderDirection.Asc ? (
-                          <Icon
-                            icon={IconNames.ARROW_RIGHT}
-                            className={classNames(styles.icon, styles.up, {
-                              [styles.active]:
-                                orderOptions?.orderBy === column.id.toString(),
-                            })}
-                            size={12}
-                          />
-                        ) : (
-                          <Icon
-                            icon={IconNames.ARROW_RIGHT}
-                            className={classNames(styles.icon, styles.down, {
-                              [styles.active]:
-                                orderOptions?.orderBy === column.id.toString(),
-                            })}
-                            size={12}
-                          />
-                        )}
-                      </>
+                      <SortDirection
+                        orderBy={orderOptions?.orderBy}
+                        orderDirection={orderOptions?.orderDirection}
+                        id={column.id.toString()}
+                        className={styles.icon}
+                      />
                     )}
                   </>
                 </span>
@@ -111,6 +102,8 @@ export const TableDesktop = <RowType extends RowObject>({
               onRowClick={onRowClick}
               dataAttribute={dataAttribute}
               isClickable={isClickable}
+              className={styles.row}
+              size={TableRowSize.large}
             />
           ))}
         {(!rows || rows.length === 0) && (
@@ -118,17 +111,22 @@ export const TableDesktop = <RowType extends RowObject>({
             <tr className={styles.sampleRow}>
               {columns.map(column => (
                 <td key={column.id.toString()}>
-                  <div>{column.sample}</div>
+                  <div className={styles.content}>{column.sampleData}</div>
                 </td>
               ))}
             </tr>
 
             {isLoading ? (
-              <tr className={rowStyles.row}>
-                <td className={styles.noData} colSpan={999}>
-                  <span className={styles.loading} />
-                </td>
-              </tr>
+              Array.from(Array(4).keys()).map(i => (
+                <>
+                  <tr className={rowStyles.row}>
+                    <td className={styles.noData} colSpan={999}>
+                      <span className={styles.loading} />
+                    </td>
+                  </tr>
+                  <tr className={styles.spacer}></tr>
+                </>
+              ))
             ) : (
               <tr className={rowStyles.row}>
                 <td className={styles.noData} colSpan={999}>

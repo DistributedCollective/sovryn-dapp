@@ -1,9 +1,15 @@
 .row {
-  @apply cursor-pointer sm:cursor-auto outline outline-1 outline-gray-70 rounded text-xs font-semibold font-medium;
+  @apply cursor-pointer sm:cursor-auto outline outline-1 outline-gray-70 rounded bg-gray-90 text-xs font-medium;
+
+  &.small > td {
+    @apply py-2.5 px-5;
+  }
+
+  &.large > td {
+    @apply py-6 px-5;
+  }
 
   & > td {
-    @apply py-6 px-5;
-
     &:first-child {
       @apply rounded-l;
     }
@@ -40,6 +46,10 @@
   }
 }
 
-.spacer {
+.spacer.small {
+  @apply h-2;
+}
+
+.spacer.large {
   @apply h-2.5;
 }

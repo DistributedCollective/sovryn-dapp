@@ -9,7 +9,7 @@ import {
   useGetSmartTokensQuery,
 } from '../../utils/graphql/rsk/generated';
 import { TableFilter } from './TableFilter/TableFilter';
-import { FilterType } from './TableFilter/TableFilter.types';
+import { Filter } from './TableFilter/TableFilter.types';
 
 // usage example, to be removed
 const pageSize = 5;
@@ -35,7 +35,7 @@ export const SmartTokens = () => {
 
   const tokens = data?.smartTokens || [];
 
-  const updateFilters = useCallback((filterList: FilterType[]) => {
+  const updateFilters = useCallback((filterList: Filter[]) => {
     setFilters({
       ...filterList
         .filter(f => !!f.checked)
@@ -58,6 +58,14 @@ export const SmartTokens = () => {
         checked: Object.hasOwn(filters || {}, 'decimals_lt'),
       },
     ],
+    [filters],
+  );
+
+  const noDataLabel = useMemo(
+    () =>
+      Object.keys(filters || {}).length > 0
+        ? 'No data with the current filters'
+        : 'No data',
     [filters],
   );
 
@@ -107,7 +115,7 @@ export const SmartTokens = () => {
   );
 
   return (
-    <div className="my-8 bg-gray-80 md:bg-transparent">
+    <div className="my-8 bg-gray-80 md:bg-gray-90 p-4 md:px-6 md:py-4">
       <Table
         setOrderOptions={setOrderOptions}
         orderOptions={orderOptions}
@@ -115,6 +123,7 @@ export const SmartTokens = () => {
         rows={tokens}
         isLoading={loading}
         rowTitle={row => <>{row.name}</>}
+        noData={noDataLabel}
       />
       <Pagination
         page={page}

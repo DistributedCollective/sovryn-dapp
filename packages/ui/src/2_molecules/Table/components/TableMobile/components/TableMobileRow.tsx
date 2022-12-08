@@ -6,7 +6,7 @@ import { SimpleTableRow } from '../../../../SimpleTable';
 import { ColumnOptions, RowObject } from '../../../../TableBase';
 import styles from './TableMobileRow.module.css';
 
-type TableRowProps<RowType extends RowObject> = {
+type TableMobileRowProps<RowType extends RowObject> = {
   columns: ColumnOptions<RowType>[];
   row: RowType;
   onRowClick?: (row: RowType) => void;
@@ -20,7 +20,7 @@ export const TableMobileRow = <RowType extends RowObject>({
   onRowClick = noop,
   dataAttribute,
   title,
-}: TableRowProps<RowType>) => {
+}: TableMobileRowProps<RowType>) => {
   const [open, setOpen] = useState(false);
 
   const onClick = useCallback(() => {

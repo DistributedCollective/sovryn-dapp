@@ -21,7 +21,7 @@
 }
 
 .noData {
-  @apply relative px-5 py-6 text-center;
+  @apply relative py-6 px-5 text-center;
 }
 
 .loading {
@@ -40,21 +40,9 @@
 
     .sortable {
       @apply cursor-pointer;
-    }
 
-    .icon {
-      @apply ml-2 opacity-50 hover:opacity-100;
-
-      &.active {
+      &:hover .icon {
         @apply opacity-100;
-      }
-
-      &.up {
-        @apply -rotate-90 ml-2;
-      }
-
-      &.down {
-        @apply rotate-90 ml-2;
       }
     }
   }
@@ -73,7 +61,11 @@
     @apply px-5;
   }
 
-  & > td > div {
+  .content {
     @apply max-h-0;
   }
+}
+
+.spacer {
+  @apply h-2.5;
 }

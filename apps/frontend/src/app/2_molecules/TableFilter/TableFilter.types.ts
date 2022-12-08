@@ -1,4 +1,4 @@
-export type FilterType = {
+export type Filter = {
   label: string;
   filter: string;
   value: string | number;

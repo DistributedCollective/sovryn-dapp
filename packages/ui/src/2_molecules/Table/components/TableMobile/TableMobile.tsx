@@ -1,3 +1,5 @@
+import classNames from 'classnames';
+
 import { RowObject } from '../../../TableBase';
 import { TableProps } from '../../Table.types';
 import styles from './TableMobile.module.css';
@@ -13,8 +15,9 @@ export const TableMobile = <RowType extends RowObject>({
   dataAttribute,
   noData,
   isLoading,
+  className,
 }: TableProps<RowType>) => (
-  <div className={styles.wrapper}>
+  <div className={classNames(styles.wrapper, className)}>
     {rows &&
       rows.length >= 1 &&
       rows.map((row, index) => (

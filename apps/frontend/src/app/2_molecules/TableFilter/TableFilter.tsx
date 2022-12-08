@@ -5,7 +5,7 @@ import classNames from 'classnames';
 import { Icon, IconNames, useOnClickOutside } from '@sovryn/ui';
 
 import styles from './TableFilter.module.css';
-import { FilterType } from './TableFilter.types';
+import { Filter as FilterType } from './TableFilter.types';
 import { Filter } from './components/Filter/Filter';
 
 type TableFilterProps = {
@@ -28,6 +28,8 @@ export const TableFilter: FC<TableFilterProps> = ({ filterList, onChange }) => {
 
   const toggleFilters = useCallback(() => setShow(!show), [show]);
 
+  const onClose = useCallback(() => setShow(false), []);
+
   return (
     <div ref={filterRef} className={styles.wrapper}>
       <button
@@ -40,11 +42,7 @@ export const TableFilter: FC<TableFilterProps> = ({ filterList, onChange }) => {
         <Icon icon={IconNames.FUNNEL} size={12} viewBox="0 0 12 8" />
       </button>
       {show && (
-        <Filter
-          filterList={filterList}
-          onClose={() => setShow(false)}
-          onChange={onChange}
-        />
+        <Filter filterList={filterList} onClose={onClose} onChange={onChange} />
       )}
     </div>
   );

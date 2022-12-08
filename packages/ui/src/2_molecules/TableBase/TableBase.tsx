@@ -3,10 +3,10 @@ import React, { ReactNode } from 'react';
 import classNames from 'classnames';
 
 import { applyDataAttr } from '../../utils';
+import { TableRow } from '../TableRow';
+import rowStyles from '../TableRow/TableRow.module.css';
 import styles from './TableBase.module.css';
 import { ColumnOptions, RowObject } from './TableBase.types';
-import { TableRow } from './components/TableRow/TableRow';
-import rowStyles from './components/TableRow/TableRow.module.css';
 
 export type TableBaseProps<RowType extends RowObject> = {
   className?: string;

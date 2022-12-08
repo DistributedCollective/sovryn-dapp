@@ -1,9 +1,7 @@
 import { Story } from '@storybook/react';
 
-import React, { ComponentProps, useState } from 'react';
+import React, { ComponentProps, useMemo, useState } from 'react';
 
-import { Align } from '../TableBase';
-import { TransactionId } from '../TransactionId';
 import { Table } from './Table';
 import { OrderDirection, OrderOptions } from './Table.types';
 
@@ -11,43 +9,36 @@ const columns = [
   {
     id: 'index',
     title: 'Index',
-    align: Align.left,
     cellRenderer: row => `${row.index}.`,
+    sortable: true,
   },
   {
-    id: 'address',
-    title: 'Address',
-    align: Align.left,
+    id: 'block',
+    title: 'Block',
+    sortable: true,
   },
   {
     id: 'balance',
     title: 'Balance',
-    align: Align.left,
     cellRenderer: row => `${row.balance} RBTC`,
   },
 ];
 
-// TODO: Change hardcoded addresses for TransactionId component once it's merged
 const rows = [
   {
     index: 1,
-    address: (
-      <TransactionId
-        value="0xbcb5a190ACCbc80F4F2c130b5876521E4D5A2C0a"
-        href="https://explorer.testnet.rsk.co/address/0xbcb5a190accbc80f4f2c130b5876521e4d5a2c0a"
-      />
-    ),
+    block: 1000,
     balance: 0.2,
   },
   {
     index: 2,
-    address: (
-      <TransactionId
-        value="0xop42490ACCbc50F4F9c130b5876521I1q7b3C0p"
-        href="https://explorer.testnet.rsk.co/address/0xop42490ACCbc50F4F9c130b5876521I1q7b3C0p"
-      />
-    ),
+    block: 2000,
     balance: 2,
+  },
+  {
+    index: 3,
+    block: 1500,
+    balance: 3,
   },
 ];
 
@@ -58,14 +49,31 @@ export default {
 
 const Template: Story<ComponentProps<typeof Table>> = args => {
   const [orderOptions, setOrderOptions] = useState<OrderOptions>({
-    orderBy: '',
+    orderBy: 'block',
     orderDirection: OrderDirection.Asc,
   });
+
+  const rows = useMemo(() => {
+    if (!orderOptions || !orderOptions.orderBy) {
+      return args.rows;
+    }
+    const rows = [...(args.rows || [])];
+    const direction =
+      orderOptions.orderDirection === OrderDirection.Asc ? 1 : -1;
+
+    rows.sort((a, b) =>
+      b[orderOptions.orderBy || ''] > a[orderOptions.orderBy || '']
+        ? direction
+        : -direction,
+    );
+    return rows;
+  }, [args.rows, orderOptions]);
 
   return (
     <div className="max-w-sm">
       <Table
         {...args}
+        rows={rows}
         setOrderOptions={setOrderOptions}
         orderOptions={orderOptions}
       />
@@ -77,21 +85,7 @@ export const Basic = Template.bind({});
 Basic.args = {
   columns,
   rows,
-  dataAttribute: 'addressTable',
-  rowKey: row => `my-custom-key-${row.index}`,
-  rowTitle: row => row.address,
-};
-
-export const WithRowClickHandler = Template.bind({});
-WithRowClickHandler.args = {
-  columns,
-  rows,
-  onRowClick: row =>
-    alert(
-      `Row with index ${row.index} and balance ${row.balance} RBTC was clicked`,
-    ),
-  dataAttribute: 'addressTable',
-  isClickable: true,
+  dataAttribute: 'balanceTable',
   rowTitle: row => row.address,
 };
 

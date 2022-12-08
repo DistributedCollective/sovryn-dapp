@@ -14,6 +14,7 @@ import {
   startCall,
 } from '../store/rxjs/provider-cache';
 import { getRskChainId } from '../utils/chain';
+import { useBlockNumber } from './useBlockNumber';
 import { useIsMounted } from './useIsMounted';
 import { useWalletConnect } from './useWalletConnect';
 
@@ -25,6 +26,7 @@ export const useAssetBalance = (
 ): CacheCallResponse<string> => {
   const { wallets } = useWalletConnect();
   const isMounted = useIsMounted();
+  const blockNumber = useBlockNumber();
 
   const account = useMemo(
     () => wallets[walletIndex]?.accounts[0]?.address,
@@ -48,6 +50,7 @@ export const useAssetBalance = (
       const tokenDetails = await getTokenDetails(asset, chainId);
 
       const hashedArgs = idHash([
+        blockNumber,
         tokenDetails.address,
         tokenDetails.address === constants.AddressZero
           ? 'nativeBalance'
@@ -68,9 +71,7 @@ export const useAssetBalance = (
                 tokenDetails.address,
                 tokenDetails.abi,
                 getProvider(chainId),
-              )
-                .balanceOf(account)
-                .then(result => result.toString());
+              ).balanceOf(account);
 
       startCall(hashedArgs, callback, options);
     };
@@ -82,7 +83,7 @@ export const useAssetBalance = (
         sub.unsubscribe();
       }
     };
-  }, [account, asset, chainId, isMounted, options]);
+  }, [account, asset, chainId, blockNumber, isMounted, options]);
 
   return useMemo(
     () => ({ ...state, value: state.value === null ? '0' : state.value }),

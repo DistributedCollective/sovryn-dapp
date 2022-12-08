@@ -12,7 +12,7 @@ type SubjectState = {
   timestamp: number;
   ttl: number;
   promise: Promise<any>;
-  result: CacheCallResponse;
+  result: CacheCallResponse<any>;
 };
 
 type SubjectMap = {

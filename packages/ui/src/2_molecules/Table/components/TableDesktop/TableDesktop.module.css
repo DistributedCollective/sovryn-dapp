@@ -1,0 +1,79 @@
+.table {
+  @apply w-full min-w-auto h-full min-h-auto;
+
+  & th {
+    @apply px-5 pb-3;
+  }
+}
+
+.text {
+  &Left {
+    @apply text-left;
+  }
+
+  &Center {
+    @apply text-center;
+  }
+
+  &Right {
+    @apply text-right;
+  }
+}
+
+.noData {
+  @apply relative px-5 py-6 text-center;
+}
+
+.loading {
+  @apply h-6 block bg-gray-50 rounded animate-pulse;
+}
+
+.header {
+  @apply text-xs font-medium leading-[0.875rem];
+
+  .headerContent {
+    @apply flex items-center;
+
+    .title {
+      @apply flex items-center select-none;
+    }
+
+    .sortable {
+      @apply cursor-pointer;
+    }
+
+    .icon {
+      @apply ml-2 opacity-50 hover:opacity-100;
+
+      &.active {
+        @apply opacity-100;
+      }
+
+      &.up {
+        @apply -rotate-90 ml-2;
+      }
+
+      &.down {
+        @apply rotate-90 ml-2;
+      }
+    }
+  }
+}
+
+.body {
+  &:before {
+    @apply content-['@'] block leading-3 invisible;
+  }
+}
+
+.sampleRow {
+  @apply invisible;
+
+  & > td {
+    @apply px-5;
+  }
+
+  & > td > div {
+    @apply max-h-0;
+  }
+}

@@ -9,7 +9,7 @@ import { Accordion } from './Accordion';
 describe('Accordion', () => {
   it('renders accordion', () => {
     const { getByText } = render(
-      <Accordion label="Test" dataLayoutId="accordion-simple">
+      <Accordion label="Test" dataAttribute="accordion-simple">
         <div>Content</div>
       </Accordion>,
     );
@@ -21,7 +21,7 @@ describe('Accordion', () => {
     const { getByTestId } = render(
       <Accordion
         label="Test (click to toggle)"
-        dataLayoutId="accordion-simple"
+        dataAttribute="accordion-simple"
         onClick={handleClick}
       >
         <div>Content</div>
@@ -36,7 +36,7 @@ describe('Accordion', () => {
       render(
         <Accordion
           label="Test (click to toggle)"
-          dataLayoutId="accordion-simple"
+          dataAttribute="accordion-simple"
           open
         >
           <div {...applyDataAttr('content-to-show')}>Content</div>
@@ -46,7 +46,7 @@ describe('Accordion', () => {
     const { getByTestId } = render(
       <Accordion
         label="Test (click to toggle)"
-        dataLayoutId="accordion-simple"
+        dataAttribute="accordion-simple"
         onClick={handleClick}
       >
         <div>Content</div>
@@ -61,7 +61,7 @@ describe('Accordion', () => {
     const { getByTestId } = render(
       <Accordion
         label="Test (click to toggle)"
-        dataLayoutId="accordion-simple"
+        dataAttribute="accordion-simple"
         onClick={handleClick}
         disabled
       >

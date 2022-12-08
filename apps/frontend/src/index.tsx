@@ -12,17 +12,25 @@ import { OnboardProvider } from '@sovryn/onboard-react';
 import { MainLayout } from './app/4_templates/MainLayout/MainLayout';
 import { ErrorPage } from './app/5_pages/ErrorPage/ErrorPage';
 import { chains } from './config/chains';
-import { TransactionProvider } from './context/transactionContext';
+import { MaintenanceModeContextProvider } from './contexts/MaintenanceModeContext';
+import { TransactionProvider } from './contexts/TransactionContext';
 import './locales/i18n';
 import './styles/tailwindcss/index.css';
 import { graphRskUrl } from './utils/constants';
-
-setupChains(chains);
 
 const Home = loadable(() => import('./app/5_pages/App/App'));
 const Zero = loadable(() => import('./app/5_pages/ZeroPage/ZeroPage'), {
   resolveComponent: components => components.ZeroPage,
 });
+
+const PrivacyPolicy = loadable(
+  () => import('./app/5_pages/PrivacyPolicy/PrivacyPolicy'),
+);
+const TermsOfUse = loadable(
+  () => import('./app/5_pages/TermsOfUse/TermsOfUse'),
+);
+
+setupChains(chains);
 
 const router = createBrowserRouter([
   {
@@ -38,6 +46,14 @@ const router = createBrowserRouter([
         path: '/zero',
         element: <Zero />,
       },
+      {
+        path: '/policies/terms-of-use',
+        element: <TermsOfUse />,
+      },
+      {
+        path: '/policies/privacy-policy',
+        element: <PrivacyPolicy />,
+      },
     ],
   },
 ]);
@@ -52,12 +68,15 @@ const rskClient = new ApolloClient({
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement,
 );
+
 root.render(
   <React.StrictMode>
     <TransactionProvider>
       <ApolloProvider client={rskClient}>
-        <RouterProvider router={router} />
-        <OnboardProvider />
+        <MaintenanceModeContextProvider>
+          <RouterProvider router={router} />
+          <OnboardProvider />
+        </MaintenanceModeContextProvider>
       </ApolloProvider>
     </TransactionProvider>
     <OnboardProvider />

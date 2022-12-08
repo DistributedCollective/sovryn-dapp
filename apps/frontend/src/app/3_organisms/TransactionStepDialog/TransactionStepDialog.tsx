@@ -2,7 +2,7 @@ import React, { FC, useCallback } from 'react';
 
 import { Dialog, DialogBody, DialogHeader, DialogSize } from '@sovryn/ui';
 
-import { useTransactionContext } from '../../../context/transactionContext';
+import { useTransactionContext } from '../../../contexts/TransactionContext';
 import { useGasPrice } from '../../../hooks/useGasPrice';
 import { TransactionSteps } from './components/TransactionSteps/TransactionSteps';
 

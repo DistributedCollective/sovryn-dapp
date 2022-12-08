@@ -14,7 +14,8 @@ import { InputBase } from '../../1_atoms/InputBase/InputBase';
 import { HelperButton } from '../HelperButton/HelperButton';
 import styles from './AmountInput.module.css';
 
-const DEFAULT_DECIMAL_PRECISION = 6;
+const DEFAULT_DECIMAL_PRECISION = 18;
+const MAX_VALUE = 999999999;
 
 export enum AmountInputVariant {
   large = 'large',
@@ -68,26 +69,24 @@ export const AmountInput = React.forwardRef<HTMLInputElement, AmountInputProps>(
         }
         const { language } = navigator;
 
-        if (decimalPrecision === undefined) {
-          return value.toLocaleString(language);
+        let unformattedNumberValue = Number(value);
+
+        if (maxAmount && unformattedNumberValue > maxAmount) {
+          unformattedNumberValue = maxAmount;
         }
 
-        const decimalLength = value.toString().split(/[,.]/)[1]?.length || 0;
-        if (decimalLength <= decimalPrecision) {
-          return value.toLocaleString(language);
+        if (unformattedNumberValue >= MAX_VALUE + 1) {
+          unformattedNumberValue = MAX_VALUE;
         }
 
-        const unformattedValue =
-          typeof value === 'string' ? Number(value) : value;
-
-        return unformattedValue
+        return unformattedNumberValue
           .toLocaleString(language, {
-            minimumFractionDigits: decimalPrecision,
             maximumFractionDigits: decimalPrecision,
+            useGrouping: false,
           })
           .replace(',', '.');
       },
-      [decimalPrecision],
+      [decimalPrecision, maxAmount],
     );
 
     const [formattedValue, setFormattedValue] = useState(

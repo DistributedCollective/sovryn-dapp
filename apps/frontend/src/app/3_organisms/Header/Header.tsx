@@ -1,7 +1,5 @@
 import React, { FC } from 'react';
 
-import { Link } from 'react-router-dom';
-
 import { Header as UIHeader, NavMenuItem } from '@sovryn/ui';
 
 import { ConnectWalletButton, WrongNetworkSwitcher } from '../../2_molecules';
@@ -18,8 +16,6 @@ export const Header: FC = () => {
       logo={<SovrynLogo dataAttribute="logo" link="/" />}
       menuItems={
         <>
-          <Link to="/">Home</Link>
-          <Link to="/zero">Zero</Link>
           <NavMenuItem className="mr-2" isActive children="Zero" />
           <NavMenuItem children="Perpetuals" />
         </>

@@ -23,6 +23,7 @@ import { ExampleContractCall } from './ExampleContractCall';
 import { ExampleProviderCall } from './ExampleProviderCall';
 import { ExampleTokenDetails } from './ExampleTokenDetails';
 import { ExampleTypedDataSign } from './ExampleTypedDataSign';
+import { Export } from './Export/Export';
 
 // usage example, to be removed
 export const DebugContent = () => {
@@ -77,6 +78,17 @@ export const DebugContent = () => {
       <ExampleTokenDetails />
 
       <ExampleContractCall />
+
+      <Export
+        data={[
+          ['test', '1'],
+          ['test', '3'],
+          ['test', '3'],
+          ['test', '4'],
+        ]}
+        filename="List"
+        headers={['Test', 'Test2']}
+      />
 
       <div>
         USD price of SOV from the graph:{' '}

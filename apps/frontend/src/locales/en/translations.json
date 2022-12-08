@@ -18,5 +18,28 @@
     "collateralRatio": {
         "title": "Collateral Ratio",
         "tooltip": "Collateral Ratio"
+    },
+    "transactionHistory": {
+        "title": "My transaction history",
+        "tabs": {
+            "lineOfCredit": "Line of credit",
+            "stabilityPool": "Stability Pool",
+            "liquidation": "Liquidation",
+            "redemption": "Redemption",
+            "conversion": "Conversion",
+            "fastBTC": "FastBTC"
+        },
+        "table": {
+            "timestamp": "Timestamp",
+            "transactionType": "Transaction Type",
+            "collateralChange": "Collateral Change",
+            "newCollateralBalance": "New Collateral Balance",
+            "debtChange": "Debt Change",
+            "liquidationReserve": "Liquidation Reserve",
+            "newDebt": "New Debt",
+            "originationFee": "Origination Fee (ZUSD)",
+            "networkFee": "Network Fee",
+            "transactionID": "Transaction ID"
+        }
     }
 }

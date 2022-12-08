@@ -18,6 +18,8 @@ export const APPROVAL_FUNCTION = 'approve';
 
 export const graphRskUrl = process.env.REACT_APP_GRAPH_RSK;
 
+export const graphZeroUrl = process.env.REACT_APP_GRAPH_ZERO;
+
 export const servicesConfig = {
   [Environments.Testnet]: {
     [Services.Maintenance]:

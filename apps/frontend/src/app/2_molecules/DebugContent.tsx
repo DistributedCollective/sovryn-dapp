@@ -7,7 +7,7 @@ import { useTranslation } from 'react-i18next';
 import { getTokenDetails, SupportedTokens } from '@sovryn/contracts';
 import { Accordion, Button } from '@sovryn/ui';
 
-import { TransactionStepDialog } from '../3_organisms';
+import { TransactionHistoryFrame, TransactionStepDialog } from '../3_organisms';
 import { defaultChainId } from '../../config/chains';
 import { useTransactionContext } from '../../contexts/TransactionContext';
 import { useTheme, useWalletConnect } from '../../hooks';
@@ -151,6 +151,8 @@ export const DebugContent = () => {
       <br />
       <br />
       <p>{t(translations.wallet)}</p>
+
+      <TransactionHistoryFrame />
     </Accordion>
   );
 };

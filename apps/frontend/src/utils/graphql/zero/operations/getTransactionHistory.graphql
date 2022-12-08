@@ -1,0 +1,19 @@
+query getTransactionHistory($user: ID!) {
+  trove(id: $user) {
+    id
+    changes {
+      transaction {
+        id
+        timestamp
+      }
+      collateralBefore
+      collateralChange
+      collateralAfter
+      debtBefore
+      debtChange
+      debtAfter
+      borrowingFee
+      troveOperation
+    }
+  }
+}

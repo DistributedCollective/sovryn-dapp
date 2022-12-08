@@ -14,6 +14,21 @@ generates:
         Bytes: string
         BigInt: string
         BigDecimal: string
+  ./src/utils/graphql/zero/generated.tsx:
+    schema:
+      - './src/utils/graphql/zero/schema.graphql'
+    documents:
+      - './src/utils/graphql/zero/operations/*.graphql'
+    plugins:
+      - typescript
+      - typescript-operations
+      - typescript-react-apollo
+    config:
+      withHooks: true
+      scalars:
+        Bytes: string
+        BigInt: string
+        BigDecimal: string
 hooks:
   afterAllFileWrite:
     - prettier ./src/utils/graphql --write

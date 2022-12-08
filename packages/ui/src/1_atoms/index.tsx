@@ -10,3 +10,4 @@ export * from './LinkBase';
 export * from './Accordion';
 export * from './HealthBar';
 export * from './Checkbox';
+export * from './DynamicValue';

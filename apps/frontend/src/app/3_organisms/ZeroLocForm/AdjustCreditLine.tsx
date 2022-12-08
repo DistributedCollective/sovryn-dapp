@@ -8,6 +8,7 @@ import {
   Button,
   ButtonStyle,
   ButtonType,
+  DynamicValue,
   FormGroup,
   HealthBar,
   HelperButton,
@@ -202,18 +203,29 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
             label={t(translations.adjustCreditLine.labels.newDebt)}
             tooltip={t(translations.adjustCreditLine.labels.newDebtTooltip)}
             value={
-              <>
-                {newDebt.toFixed(3)} {creditToken}
-              </>
+              <DynamicValue
+                initialValue={Number(creditValue)}
+                value={newDebt}
+                renderer={value => (
+                  <>
+                    {value.toFixed(3)} {creditToken}
+                  </>
+                )}
+              />
             }
-            valueClassName="text-primary-10"
           />
           <Row
             label={t(translations.adjustCreditLine.labels.newCollateral)}
             tooltip={t(
               translations.adjustCreditLine.labels.newCollateralTooltip,
             )}
-            value={<>{newCollateral.toFixed(3)} RBTC</>}
+            value={
+              <DynamicValue
+                initialValue={Number(collateralValue)}
+                value={newCollateral}
+                renderer={value => <>{value.toFixed(3)} RBTC</>}
+              />
+            }
           />
         </SimpleTable>
       </div>
@@ -227,7 +239,13 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
             )}
           />
         </div>
-        <div className="text-primary-10">{ratio}%</div>
+        <div className="text-primary-10">
+          <DynamicValue
+            initialValue={0 /* todo: calculate initial ratio once possible */}
+            value={ratio}
+            renderer={value => <>{value}%</>}
+          />
+        </div>
       </div>
       <HealthBar
         start={70}
@@ -244,8 +262,13 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
             tooltip={t(
               translations.adjustCreditLine.labels.liquidationPriceTooltip,
             )}
-            value={<>{commify(15023)} USD</>}
-            valueClassName="text-primary-10"
+            value={
+              <DynamicValue
+                initialValue={0}
+                value={15023}
+                renderer={value => <>{commify(value)} USD</>}
+              />
+            }
           />
           <Row
             label={t(
@@ -255,7 +278,13 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
               translations.adjustCreditLine.labels
                 .recoveryLiquidationPriceTooltip,
             )}
-            value={<>{commify(17653)} USD</>}
+            value={
+              <DynamicValue
+                initialValue={0}
+                value={17653}
+                renderer={value => <>{commify(value)} USD</>}
+              />
+            }
             valueClassName="text-primary-10"
           />
           <Row

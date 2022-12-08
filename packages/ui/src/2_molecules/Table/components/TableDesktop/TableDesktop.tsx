@@ -9,7 +9,7 @@ import rowStyles from '../../../TableRow/TableRow.module.css';
 import { TableRowSize } from '../../../TableRow/TableRow.types';
 import { ColumnOptions, OrderDirection, TableProps } from '../../Table.types';
 import styles from './TableDesktop.module.css';
-import { SortDirection } from './components/SortDirection/SortDirection';
+import { OrderDirectionIcon } from './components/OrderDirectionIcon/OrderDirectionIcon';
 
 // No React.FC, since doesn't support Generic PropTypes
 export const TableDesktop = <RowType extends RowObject>({
@@ -74,7 +74,7 @@ export const TableDesktop = <RowType extends RowObject>({
                   <>
                     {column.title || column.id}
                     {column.sortable && (
-                      <SortDirection
+                      <OrderDirectionIcon
                         orderBy={orderOptions?.orderBy}
                         orderDirection={orderOptions?.orderDirection}
                         id={column.id.toString()}

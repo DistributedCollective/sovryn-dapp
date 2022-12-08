@@ -31,11 +31,11 @@ export const Filter: FC<FilterProps> = ({ filterList, onClose, onChange }) => {
   return (
     <div className={styles.filter}>
       <div>
-        {filterList.map((filterItem, index) => (
+        {filters.map((filterItem, index) => (
           <Checkbox
             key={filterItem.filter}
             label={filterItem.label}
-            checked={!!filters[index].checked}
+            checked={filterItem.checked}
             onChange={e => updateFilters(e.target.checked, index)}
           />
         ))}

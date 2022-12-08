@@ -62,31 +62,47 @@ export const EmailNotificationSettingsDialog: React.FC<
     setNotificationWallet(null);
   }, []);
 
-  useEffect(() => {
-    if (account && notificationWallet !== account) {
-      resetNotification();
-    }
-  }, [account, notificationWallet, resetNotification]);
+  const isSubmitDisabled = useMemo(
+    () => loading || !notificationToken || !emailIsValid || !email,
+    [email, emailIsValid, loading, notificationToken],
+  );
+
+  const shouldFetchToken = useMemo(
+    () => isOpen && !notificationToken,
+    [isOpen, notificationToken],
+  );
+
+  const shouldFetchUser = useMemo(
+    () => notificationToken && isOpen && !notificationUser,
+    [isOpen, notificationToken, notificationUser],
+  );
+
+  const wasAccountDisconnected = useMemo(
+    () =>
+      (isOpen && !account && notificationToken) ||
+      (account && notificationWallet !== account),
+    [account, isOpen, notificationToken, notificationWallet],
+  );
 
   useEffect(() => {
-    if (isOpen && !notificationToken) {
+    if (wasAccountDisconnected) {
+      resetNotification();
+    }
+  }, [resetNotification, wasAccountDisconnected]);
+
+  useEffect(() => {
+    if (shouldFetchToken) {
       getToken();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isOpen]);
+  }, [shouldFetchToken]);
 
   useEffect(() => {
-    if (notificationToken && isOpen && !notificationUser) {
+    if (shouldFetchUser) {
       getUser();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [notificationToken, isOpen, notificationUser]);
-
-  useEffect(() => {
-    if (isOpen && !account && notificationToken) {
-      resetNotification();
-    }
-  }, [account, isOpen, notificationToken, resetNotification]);
+  }, [shouldFetchUser]);
 
   const getToken = useCallback(async () => {
     if (!account) {
@@ -230,7 +246,7 @@ export const EmailNotificationSettingsDialog: React.FC<
           <Button
             onClick={updateUser}
             text={t(translations.common.buttons.save)}
-            disabled={loading || !notificationToken || !emailIsValid}
+            disabled={isSubmitDisabled}
             className="w-[49%]"
           />
         </div>

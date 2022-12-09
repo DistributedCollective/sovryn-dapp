@@ -60,11 +60,17 @@ export const EmailNotificationSettingsDialog: React.FC<
     setNotificationToken(null);
     setNotificationUser(null);
     setNotificationWallet(null);
+    setEmail('');
   }, []);
 
   const isSubmitDisabled = useMemo(
-    () => loading || !notificationToken || !emailIsValid || !email,
-    [email, emailIsValid, loading, notificationToken],
+    () =>
+      loading ||
+      !notificationToken ||
+      !emailIsValid ||
+      !email ||
+      email === notificationUser?.email,
+    [email, emailIsValid, loading, notificationToken, notificationUser?.email],
   );
 
   const shouldFetchToken = useMemo(
@@ -79,9 +85,9 @@ export const EmailNotificationSettingsDialog: React.FC<
 
   const wasAccountDisconnected = useMemo(
     () =>
-      (isOpen && !account && notificationToken) ||
+      (notificationToken && !account) ||
       (account && notificationWallet !== account),
-    [account, isOpen, notificationToken, notificationWallet],
+    [account, notificationToken, notificationWallet],
   );
 
   useEffect(() => {
@@ -207,10 +213,15 @@ export const EmailNotificationSettingsDialog: React.FC<
     handleUserDataResponse(promise);
   }, [account, email, handleUserDataResponse, notificationToken]);
 
+  const onCloseHandler = useCallback(() => {
+    setEmail(notificationUser?.email || '');
+    onClose();
+  }, [notificationUser?.email, onClose]);
+
   return (
     <Dialog isOpen={isOpen} width={DialogSize.sm}>
       <DialogHeader
-        onClose={onClose}
+        onClose={onCloseHandler}
         title={t(translations.emailNotificationsDialog.dialogTitle)}
       />
       <DialogBody className="p-6">
@@ -238,7 +249,7 @@ export const EmailNotificationSettingsDialog: React.FC<
 
         <div className="mt-4 flex justify-between">
           <Button
-            onClick={onClose}
+            onClick={onCloseHandler}
             text={t(translations.common.buttons.cancel)}
             style={ButtonStyle.secondary}
             className="mr-4 w-[49%]"

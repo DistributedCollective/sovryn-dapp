@@ -169,4 +169,18 @@ describe('AmountInput', () => {
 
     expect(amountInput).toHaveValue(4.56);
   });
+
+  test('does not round to max value if max amount is less than the max value', async () => {
+    const { getByTestId } = render(
+      <AmountInput
+        value={999999994}
+        maxAmount={999999990}
+        dataLayoutId="test"
+      />,
+    );
+
+    const amountInput = getByTestId('test');
+
+    expect(amountInput).toHaveValue(999999990);
+  });
 });

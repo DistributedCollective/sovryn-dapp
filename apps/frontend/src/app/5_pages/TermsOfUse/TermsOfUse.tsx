@@ -1,10 +1,9 @@
 import React, { FC } from 'react';
 
-import { PageContainer } from '../../4_templates';
 import styles from './TermsOfUse.module.css';
 
 const TermsOfUse: FC = () => (
-  <PageContainer contentClassName="container">
+  <>
     <div className={styles.wrapper}>
       <h1 className="text-center text-2xl">SOVRYN &ndash; TERMS OF SERVICE</h1>
       <ol>
@@ -928,7 +927,7 @@ const TermsOfUse: FC = () => (
       </p>
       <br />
     </div>
-  </PageContainer>
+  </>
 );
 
 export default TermsOfUse;

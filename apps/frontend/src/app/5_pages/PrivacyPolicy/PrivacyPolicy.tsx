@@ -1,10 +1,9 @@
 import React, { FC } from 'react';
 
-import { PageContainer } from '../../4_templates';
 import styles from './PrivacyPolicy.module.css';
 
 const PrivacyPolicy: FC = () => (
-  <PageContainer contentClassName="container">
+  <>
     <div className={styles.wrapper}>
       <h1 className="text-center text-2xl">Sovryn&ndash; Privacy Policy</h1>
       <br />
@@ -730,7 +729,7 @@ const PrivacyPolicy: FC = () => (
       </p>
       <br />
     </div>
-  </PageContainer>
+  </>
 );
 
 export default PrivacyPolicy;

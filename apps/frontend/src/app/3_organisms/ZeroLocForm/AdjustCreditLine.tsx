@@ -19,7 +19,7 @@ import {
 
 import { translations } from '../../../locales/i18n';
 import { Label } from './CustomLabel';
-import { Row } from './SimpleTableRow';
+import { Row } from './Row';
 import { AmountType } from './types';
 import { normalizeAmountByType } from './utils';
 
@@ -125,6 +125,43 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
 
   const { t } = useTranslation();
 
+  const debtTabs = useMemo(
+    () => [
+      {
+        value: AmountType.Add,
+        label: t(translations.adjustCreditLine.actions.borrow),
+      },
+      {
+        value: AmountType.Remove,
+        label: t(translations.adjustCreditLine.actions.repay),
+      },
+    ],
+    [t],
+  );
+
+  const collateraltabs = useMemo(
+    () => [
+      {
+        value: AmountType.Add,
+        label: t(translations.adjustCreditLine.actions.addCollateral),
+      },
+      {
+        value: AmountType.Remove,
+        label: t(translations.adjustCreditLine.actions.withdrawCollateral),
+      },
+    ],
+    [t],
+  );
+
+  const newDebtRenderer = useCallback(
+    (value: number) => (
+      <>
+        {value.toFixed(3)} {creditToken}
+      </>
+    ),
+    [creditToken],
+  );
+
   return (
     <div className="w-full">
       <FormGroup
@@ -132,16 +169,7 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
           <Label
             symbol={creditToken}
             maxAmount={maxCreditAmount}
-            tabs={[
-              {
-                value: AmountType.Add,
-                label: t(translations.adjustCreditLine.actions.borrow),
-              },
-              {
-                value: AmountType.Remove,
-                label: t(translations.adjustCreditLine.actions.repay),
-              },
-            ]}
+            tabs={debtTabs}
             activeTab={debtType}
             onTabChange={setDebtType}
             onMaxAmountClicked={handleMaxCreditAmountClick}
@@ -169,18 +197,7 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
           <Label
             symbol="RBTC"
             maxAmount={maxCollateralAmount}
-            tabs={[
-              {
-                value: AmountType.Add,
-                label: t(translations.adjustCreditLine.actions.addCollateral),
-              },
-              {
-                value: AmountType.Remove,
-                label: t(
-                  translations.adjustCreditLine.actions.withdrawCollateral,
-                ),
-              },
-            ]}
+            tabs={collateraltabs}
             activeTab={collateralType}
             onTabChange={setCollateralType}
             onMaxAmountClicked={handleMaxCollateralAmountClick}
@@ -206,11 +223,7 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
               <DynamicValue
                 initialValue={Number(creditValue)}
                 value={newDebt}
-                renderer={value => (
-                  <>
-                    {value.toFixed(3)} {creditToken}
-                  </>
-                )}
+                renderer={newDebtRenderer}
               />
             }
           />

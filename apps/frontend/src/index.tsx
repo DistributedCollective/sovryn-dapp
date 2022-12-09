@@ -1,3 +1,4 @@
+import './wdyr';
 import { ApolloProvider, ApolloClient, InMemoryCache } from '@apollo/client';
 import loadable from '@loadable/component';
 
@@ -9,14 +10,17 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import setupChains from '@sovryn/ethers-provider';
 import { OnboardProvider } from '@sovryn/onboard-react';
 
-import { MainLayout } from './app/4_templates/MainLayout/MainLayout';
-import { ErrorPage } from './app/5_pages/ErrorPage/ErrorPage';
 import { chains } from './config/chains';
 import { MaintenanceModeContextProvider } from './contexts/MaintenanceModeContext';
 import { TransactionProvider } from './contexts/TransactionContext';
 import './locales/i18n';
 import './styles/tailwindcss/index.css';
 import { graphRskUrl } from './utils/constants';
+
+import { PageContainer } from './app/4_templates';
+import { ErrorPage } from './app/5_pages/ErrorPage/ErrorPage';
+
+setupChains(chains);
 
 const Home = loadable(() => import('./app/5_pages/App/App'));
 const Zero = loadable(() => import('./app/5_pages/ZeroPage/ZeroPage'), {
@@ -30,22 +34,26 @@ const TermsOfUse = loadable(
   () => import('./app/5_pages/TermsOfUse/TermsOfUse'),
 );
 
-setupChains(chains);
-
 const router = createBrowserRouter([
   {
     path: '/',
-    element: <MainLayout />,
+    element: <PageContainer className="flex flex-col" />,
     errorElement: <ErrorPage />,
     children: [
       {
         path: '/',
         element: <Home />,
+        index: true,
       },
       {
         path: '/zero',
         element: <Zero />,
       },
+    ],
+  },
+  {
+    element: <PageContainer contentClassName="container" />,
+    children: [
       {
         path: '/policies/terms-of-use',
         element: <TermsOfUse />,

@@ -1,4 +1,4 @@
 export enum AmountType {
-  Add,
-  Remove,
+  Add = 'Add',
+  Remove = 'Remove',
 }

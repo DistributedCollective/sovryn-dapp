@@ -1,5 +1,13 @@
 import { hashMessage } from 'ethers/lib/utils';
-import { BehaviorSubject, distinctUntilKeyChanged, map, filter } from 'rxjs';
+import {
+  BehaviorSubject,
+  distinctUntilKeyChanged,
+  map,
+  filter,
+  firstValueFrom,
+} from 'rxjs';
+
+import { ChainId, getProvider } from '@sovryn/ethers-provider';
 
 export type CacheCallResponse<T = string> = {
   value: T;
@@ -29,6 +37,7 @@ export type CacheCallOptions = {
 
 const INITIAL_STATE: SubjectMap = {};
 const DEFAULT_TTL = 1000 * 60 * 2; // 2 minutes
+const TINY_TTL = 1000 * 30; // 30 seconds
 
 const store = new BehaviorSubject<SubjectMap>(INITIAL_STATE);
 
@@ -123,3 +132,33 @@ export const idHash = (args: any[]) => {
   const json = JSON.stringify(params);
   return hashMessage(json);
 };
+
+export const asyncCall = async <T>(
+  id: string,
+  promise: () => Promise<T>,
+  options: Partial<CacheCallOptions> = {
+    fallbackToPreviousResult: true,
+    ttl: DEFAULT_TTL,
+    force: false,
+  },
+) => {
+  const result$ = observeCall(id);
+
+  startCall(id, promise, options);
+
+  return (await firstValueFrom(result$)).promise.then(e => {
+    if (e instanceof Error) {
+      throw e;
+    }
+    return e;
+  });
+};
+
+export const getBlockNumber = async (
+  chainId: ChainId = getBlockNumber(),
+): Promise<number> =>
+  asyncCall(
+    `${chainId}_blockNumber`,
+    () => getProvider(chainId).getBlockNumber(),
+    { ttl: TINY_TTL },
+  );

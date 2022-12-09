@@ -5,7 +5,6 @@ import { ChainId, getProvider } from '@sovryn/ethers-provider';
 import {
   CacheCallOptions,
   CacheCallResponse,
-  idHash,
   observeCall,
   startCall,
 } from '../store/rxjs/provider-cache';
@@ -31,11 +30,15 @@ export const useBlockNumber = (
       return;
     }
 
-    const hashedArgs = idHash([chainId, 'blockNumber']);
+    const sub = observeCall(`${chainId}_blockNumber`).subscribe(e =>
+      setState(e.result),
+    );
 
-    const sub = observeCall(hashedArgs).subscribe(e => setState(e.result));
-
-    startCall(hashedArgs, () => getProvider(chainId).getBlockNumber(), options);
+    startCall(
+      `${chainId}_blockNumber`,
+      () => getProvider(chainId).getBlockNumber(),
+      options,
+    );
 
     return () => {
       sub.unsubscribe();

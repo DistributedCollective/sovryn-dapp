@@ -1,5 +1,5 @@
 .row {
-  @apply cursor-pointer sm:cursor-auto outline outline-1 outline-gray-70 rounded bg-gray-90 text-xs font-medium;
+  @apply cursor-pointer sm:cursor-auto outline outline-1 outline-gray-70 rounded text-xs font-medium;
 
   &.small > td {
     @apply py-2.5 px-5;

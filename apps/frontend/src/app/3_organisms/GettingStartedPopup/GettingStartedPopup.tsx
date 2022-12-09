@@ -16,6 +16,8 @@ import {
   Dialog,
   Heading,
   HeadingType,
+  Icon,
+  IconNames,
   Link,
   Pagination,
 } from '@sovryn/ui';
@@ -25,7 +27,7 @@ import { translations } from '../../../locales/i18n';
 import { sovrynWikiLinks } from '../../../utils/constants';
 import styles from './GettingStartedPopup.module.css';
 
-const pageSize = 1;
+const PAGE_SIZE = 2;
 const localStorageKey = 'gettingStartedPopup';
 const translationBasePath = translations.gettingStartedPopup.content;
 
@@ -42,7 +44,7 @@ export const GettingStartedPopup: FC<GettingStartedPopupProps> = ({
   const { isMobile } = useIsMobile();
   const [page, setPage] = useState(0);
   const [checked, setChecked] = useState(false);
-  const pageOffset = useMemo(() => page + pageSize, [page]);
+  const pageOffset = useMemo(() => page + PAGE_SIZE, [page]);
 
   const data = useMemo(
     () => [
@@ -50,21 +52,25 @@ export const GettingStartedPopup: FC<GettingStartedPopupProps> = ({
         name: t(translationBasePath.pool.title),
         description: t(translationBasePath.pool.description),
         href: sovrynWikiLinks.pool,
+        icon: IconNames.EARN_3,
       },
       {
         name: t(translationBasePath.lend.title),
         description: t(translationBasePath.lend.description),
         href: sovrynWikiLinks.lend,
+        icon: IconNames.LEND,
       },
       {
         name: t(translationBasePath.trade.title),
         description: t(translationBasePath.trade.description),
         href: sovrynWikiLinks.trade,
+        icon: IconNames.TRADING,
       },
       {
         name: t(translationBasePath.bridge.title),
         description: t(translationBasePath.bridge.description),
         href: sovrynWikiLinks.bridge,
+        icon: IconNames.SWAP,
       },
     ],
     [t],
@@ -101,7 +107,9 @@ export const GettingStartedPopup: FC<GettingStartedPopupProps> = ({
         <div className={styles.content}>
           {items.map(item => (
             <div className={styles.itemWrapper} key={item.name}>
-              <div className={styles.image}></div>
+              <div className={styles.image}>
+                <Icon size={70} icon={item.icon} />
+              </div>
               <div className={styles.texts}>
                 <Heading className={styles.name} type={HeadingType.h2}>
                   {item.name}
@@ -125,7 +133,7 @@ export const GettingStartedPopup: FC<GettingStartedPopupProps> = ({
         {isMobile && (
           <div className={styles.pagination}>
             <Pagination
-              itemsPerPage={pageSize}
+              itemsPerPage={PAGE_SIZE}
               hideFirstPageButton
               hideLastPageButton
               totalItems={data.length}

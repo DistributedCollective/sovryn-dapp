@@ -19,6 +19,7 @@ import { useGetTokenRatesQuery } from '../../utils/graphql/rsk/generated';
 import { isMainnet } from '../../utils/helpers';
 import { CollateralRatio } from './CollateralRatio/CollateralRatio';
 import { ConnectWalletButton } from './ConnectWalletButton/ConnectWalletButton';
+import { ExampleBalanceCall } from './ExampleBalanceCall';
 import { ExampleContractCall } from './ExampleContractCall';
 import { ExampleProviderCall } from './ExampleProviderCall';
 import { ExampleTokenDetails } from './ExampleTokenDetails';
@@ -75,6 +76,7 @@ export const DebugContent = () => {
       <TransactionStepDialog />
       <ExampleProviderCall />
       <ExampleTokenDetails />
+      <ExampleBalanceCall />
 
       <ExampleContractCall />
 

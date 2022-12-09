@@ -1,5 +1,6 @@
 {
     "wallet": "wallet",
+    "exportCSV": "Export to CSV",
     "common": {
         "socials": {
             "discord": "Discord",

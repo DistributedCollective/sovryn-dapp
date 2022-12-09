@@ -1,4 +1,4 @@
-import React, { useCallback, useReducer } from 'react';
+import React, { useCallback, useReducer, useState } from 'react';
 
 import { ethers } from 'ethers';
 import { parseUnits } from 'ethers/lib/utils';
@@ -8,6 +8,7 @@ import { getTokenDetails, SupportedTokens } from '@sovryn/contracts';
 import { Accordion, Button } from '@sovryn/ui';
 
 import { TransactionStepDialog } from '../3_organisms';
+import { GettingStartedPopup } from '../3_organisms/GettingStartedPopup/GettingStartedPopup';
 import { defaultChainId } from '../../config/chains';
 import { useTransactionContext } from '../../contexts/TransactionContext';
 import { useTheme, useWalletConnect } from '../../hooks';
@@ -32,6 +33,7 @@ export const DebugContent = () => {
   const [isOpen, toggle] = useReducer(p => !p, false);
   const { connectWallet, disconnectWallet, wallets, pending } =
     useWalletConnect();
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
 
   const { data } = useGetTokenRatesQuery();
   const { setTransactions, setIsOpen, setTitle } = useTransactionContext();
@@ -153,6 +155,22 @@ export const DebugContent = () => {
       <br />
       <br />
       <p>{t(translations.wallet)}</p>
+
+      <div className="mt-10 py-10 border-t border-b">
+        <h2>Getting started popup</h2>
+        <br />
+        <Button
+          text="Open Getting Started Popup"
+          onClick={() => setIsPopupOpen(true)}
+        />
+
+        {isPopupOpen && (
+          <GettingStartedPopup
+            isOpen={isPopupOpen}
+            onConfirm={() => setIsPopupOpen(false)}
+          />
+        )}
+      </div>
     </Accordion>
   );
 };

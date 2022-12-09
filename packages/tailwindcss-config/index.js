@@ -40,6 +40,7 @@ module.exports = {
 
       // New color palette
       'sovryn-black': '#0D0D0F',
+      'sovryn-blue': '#24D0C6',
       'gray-90': '#16171C',
       'gray-80': '#1E2128',
       'gray-70': '#2C303B',

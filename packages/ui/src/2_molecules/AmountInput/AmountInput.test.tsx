@@ -159,4 +159,14 @@ describe('AmountInput', () => {
 
     expect(amountInput).toHaveValue(10);
   });
+
+  test('does not allow to enter less than min amount value', async () => {
+    const { getByTestId } = render(
+      <AmountInput value={3} min={4.56} dataLayoutId="test" />,
+    );
+
+    const amountInput = getByTestId('test');
+
+    expect(amountInput).toHaveValue(4.56);
+  });
 });

@@ -79,6 +79,10 @@ export const AmountInput = React.forwardRef<HTMLInputElement, AmountInputProps>(
           unformattedNumberValue = MAX_VALUE;
         }
 
+        if (rest?.min && unformattedNumberValue < rest.min) {
+          unformattedNumberValue = Number(rest.min);
+        }
+
         return unformattedNumberValue
           .toLocaleString(language, {
             maximumFractionDigits: decimalPrecision,
@@ -86,7 +90,7 @@ export const AmountInput = React.forwardRef<HTMLInputElement, AmountInputProps>(
           })
           .replace(',', '.');
       },
-      [decimalPrecision, maxAmount],
+      [decimalPrecision, maxAmount, rest.min],
     );
 
     const [formattedValue, setFormattedValue] = useState(

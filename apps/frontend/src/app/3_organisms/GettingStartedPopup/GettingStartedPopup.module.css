@@ -1,0 +1,68 @@
+.dialog {
+  @apply py-7 px-4;
+
+  @screen md {
+    @apply px-6;
+  }
+}
+
+.title {
+  @apply mb-3 font-normal;
+}
+
+.description {
+  @apply mb-4;
+}
+
+.content {
+  @apply flex-col py-5 px-3 rounded bg-gray-80 mb-5;
+
+  @screen md {
+    @apply mb-[4.5rem] py-7 px-5;
+  }
+}
+
+.itemWrapper {
+  @apply flex border-b border-b-gray-60 py-6;
+
+  &:first-child {
+    @apply pt-0;
+  }
+
+  &:last-child {
+    @apply border-b-0 pb-0;
+  }
+}
+
+.texts {
+  @apply flex flex-col items-start justify-start;
+}
+
+.name,
+.itemDescription {
+  @apply mb-2;
+}
+
+.name {
+  @apply text-white;
+}
+
+.itemDescription {
+  @apply text-gray-10 font-medium;
+}
+
+.image {
+  @apply bg-gray-70 min-w-[4.375rem] h-[4.375rem] rounded mr-4 text-sovryn-blue;
+
+  @screen md {
+    @apply mr-[1.375rem];
+  }
+}
+
+.pagination {
+  @apply mb-10;
+}
+
+.actions {
+  @apply flex items-center justify-between;
+}

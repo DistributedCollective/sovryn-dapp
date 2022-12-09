@@ -34,10 +34,10 @@ describe('utils/contracts/global.ts', () => {
     it('throws error if contract is unknown', async () => {
       expect.assertions(1);
       try {
-        await findContract('0x0000000000000000000000000000000000000000');
+        await findContract('0x0000000000000000000000000000000000000001');
       } catch (e) {
         expect(e.message).toBe(
-          'findContract: Unknown contract: 0x0000000000000000000000000000000000000000',
+          'findContract: Unknown contract: 0x0000000000000000000000000000000000000001',
         );
       }
     });

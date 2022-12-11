@@ -13,7 +13,7 @@ export const ZeroPage: FC = () => {
   return (
     <div className="container max-w-7xl mt-24">
       <div className="w-96">
-        <Dialog width={DialogSize.sm} isOpen>
+        <Dialog width={DialogSize.sm} isOpen disableFocusTrap>
           <DialogHeader title="Adjust" onClose={noop} />
           <DialogBody>
             <AdjustCreditLine

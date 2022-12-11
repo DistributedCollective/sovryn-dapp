@@ -1,8 +1,8 @@
 import React, { ChangeEvent, useCallback, useMemo, useState, FC } from 'react';
 
-import { commify } from 'ethers/lib/utils';
 import { useTranslation } from 'react-i18next';
 
+import { SupportedTokens } from '@sovryn/contracts';
 import {
   AmountInput,
   Button,
@@ -13,15 +13,19 @@ import {
   HealthBar,
   HelperButton,
   Select,
-  SelectOption,
   SimpleTable,
 } from '@sovryn/ui';
 
 import { translations } from '../../../locales/i18n';
-import { Label } from './CustomLabel';
+import { formatValue } from '../../../utils/math';
+import { Label } from './Label';
 import { Row } from './Row';
-import { AmountType } from './types';
+import { AmountType, tokens } from './types';
 import { normalizeAmountByType } from './utils';
+
+// todo: these needs to be retrieved
+const maxCollateralAmount = 1;
+const maxCreditAmount = 100;
 
 type SubmitValue = {
   debt: string;
@@ -44,43 +48,18 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
 
   const [collateralAmount, setCollateralAmount] = useState('0');
   const [creditAmount, setCreditAmount] = useState('0');
-  const [creditToken, setCreditToken] = useState('DLLR');
-
-  // todo: these needs to be retrieved
-  const maxCollateralAmount = 1;
-  const maxCreditAmount = 100;
-
-  const tokens = useMemo(
-    () =>
-      [
-        {
-          label: 'DLLR',
-          value: 'DLLR',
-        },
-        {
-          label: 'ZUSD',
-          value: 'ZUSD',
-        },
-        {
-          label: 'XUSD',
-          value: 'XUSD',
-        },
-        {
-          label: 'SOV',
-          value: 'SOV',
-        },
-      ] as SelectOption[],
-    [],
+  const [creditToken, setCreditToken] = useState<SupportedTokens>(
+    SupportedTokens.dllr,
   );
 
   const handleMaxCollateralAmountClick = useCallback(
     () => setCollateralAmount(String(maxCollateralAmount)),
-    [maxCollateralAmount],
+    [],
   );
 
   const handleMaxCreditAmountClick = useCallback(
     () => setCreditAmount(String(maxCreditAmount)),
-    [maxCreditAmount],
+    [],
   );
 
   const handleCollateralAmountChange = useCallback(
@@ -156,7 +135,7 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
   const newDebtRenderer = useCallback(
     (value: number) => (
       <>
-        {value.toFixed(3)} {creditToken}
+        {formatValue(value, 3)} {creditToken.toUpperCase()}
       </>
     ),
     [creditToken],
@@ -181,6 +160,7 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
           <AmountInput
             value={creditAmount}
             onChange={handleCreditAmountChange}
+            maxAmount={maxCreditAmount}
             label={t(translations.adjustCreditLine.fields.debt.amount)}
             tooltip={t(translations.adjustCreditLine.fields.debt.tooltip)}
             className="w-full flex-grow-0 flex-shrink"
@@ -208,6 +188,7 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
         <AmountInput
           value={collateralAmount}
           onChange={handleCollateralAmountChange}
+          maxAmount={maxCollateralAmount}
           label={t(translations.adjustCreditLine.fields.collateral.amount)}
           tooltip={t(translations.adjustCreditLine.fields.collateral.tooltip)}
           className="max-w-none"
@@ -236,7 +217,7 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
               <DynamicValue
                 initialValue={Number(collateralValue)}
                 value={newCollateral}
-                renderer={value => <>{value.toFixed(3)} RBTC</>}
+                renderer={value => <>{formatValue(value, 3)} RBTC</>}
               />
             }
           />
@@ -279,7 +260,7 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
               <DynamicValue
                 initialValue={0}
                 value={15023}
-                renderer={value => <>{commify(value)} USD</>}
+                renderer={value => <>{formatValue(value, 3)} USD</>}
               />
             }
           />
@@ -295,7 +276,7 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
               <DynamicValue
                 initialValue={0}
                 value={17653}
-                renderer={value => <>{commify(value)} USD</>}
+                renderer={value => <>{formatValue(value, 3)} USD</>}
               />
             }
             valueClassName="text-primary-10"
@@ -303,14 +284,14 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
           <Row
             label={t(translations.adjustCreditLine.labels.rbtcPrice)}
             tooltip={t(translations.adjustCreditLine.labels.rbtcPriceTooltip)}
-            value={<>{commify(20000)} USD</>}
+            value={<>{formatValue(20000, 3)} USD</>}
           />
           <Row
             label={t(translations.adjustCreditLine.labels.originationFee)}
             tooltip={t(
               translations.adjustCreditLine.labels.originationFeeTooltip,
             )}
-            value={<>{commify(0.5)}%</>}
+            value={<>{formatValue(0.5, 1)}%</>}
           />
         </SimpleTable>
       </div>

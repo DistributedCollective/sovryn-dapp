@@ -12,6 +12,13 @@ export const sovrynLinks = {
   blog: 'https://www.sovryn.app/blog',
 };
 
+export const sovrynWikiLinks = {
+  pool: 'https://wiki.sovryn.app/en/sovryn-dapp/market-making',
+  lend: 'https://wiki.sovryn.app/en/sovryn-dapp/lending',
+  trade: 'https://wiki.sovryn.app/en/sovryn-dapp/trading',
+  bridge: 'https://wiki.sovryn.app/en/sovryn-dapp/bridge',
+};
+
 export const requiredChain = ChainIds.RSK_TESTNET;
 
 export const APPROVAL_FUNCTION = 'approve';

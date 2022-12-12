@@ -29,8 +29,10 @@ export const servicesConfig = {
   [Environments.Testnet]: {
     [Services.Maintenance]:
       'https://maintenance-mode.test.sovryn.app/maintenance',
+    [Services.Notification]: 'https://notify.test.sovryn.app/',
   },
   [Environments.Mainnet]: {
     [Services.Maintenance]: 'https://maintenance-mode.sovryn.app/maintenance',
+    [Services.Notification]: 'https://notify.sovryn.app/',
   },
 };

@@ -8,6 +8,7 @@ import { getTokenDetails, SupportedTokens } from '@sovryn/contracts';
 import { Accordion, Button } from '@sovryn/ui';
 
 import { TransactionStepDialog } from '../3_organisms';
+import { EmailNotificationSettingsDialog } from '../3_organisms/EmailNotificationSettingsDialog/EmailNotificationSettingsDialog';
 import { GettingStartedPopup } from '../3_organisms/GettingStartedPopup/GettingStartedPopup';
 import { defaultChainId } from '../../config/chains';
 import { useTransactionContext } from '../../contexts/TransactionContext';
@@ -34,6 +35,11 @@ export const DebugContent = () => {
   const { connectWallet, disconnectWallet, wallets, pending } =
     useWalletConnect();
   const [isPopupOpen, setIsPopupOpen] = useState(false);
+
+  const [
+    isEmailNotificationSettingsDialogOpen,
+    setIsEmailNotificationSettingsDialogOpen,
+  ] = useState(false);
 
   const { data } = useGetTokenRatesQuery();
   const { setTransactions, setIsOpen, setTitle } = useTransactionContext();
@@ -85,6 +91,17 @@ export const DebugContent = () => {
       <div>
         USD price of SOV from the graph:{' '}
         {data?.tokens.find(token => token.symbol === 'SOV')?.lastPriceUsd}
+      </div>
+
+      <div className="my-12">
+        <Button
+          text="Click to open email notification settings dialog"
+          onClick={() => setIsEmailNotificationSettingsDialogOpen(true)}
+        />
+        <EmailNotificationSettingsDialog
+          isOpen={isEmailNotificationSettingsDialogOpen}
+          onClose={() => setIsEmailNotificationSettingsDialogOpen(false)}
+        />
       </div>
 
       <hr className="my-12" />

@@ -8,7 +8,7 @@ import styles from './FormGroup.module.css';
 
 type FormGroupProps = {
   className?: string;
-  label?: string;
+  label?: ReactNode;
   helper?: ReactNode;
   subtext?: string;
   dataLayoutId?: string;

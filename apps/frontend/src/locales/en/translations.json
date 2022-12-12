@@ -101,7 +101,7 @@
             "increasedDebt": "Increased Debt",
             "decreasedDebt": "Decreased Debt"
         }
-    }
+    },
     "errorPage": {
         "title": "Error",
         "description": "Something went wrong. Please try again later."

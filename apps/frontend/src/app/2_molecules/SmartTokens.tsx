@@ -127,7 +127,6 @@ export const SmartTokens = () => {
       />
       <Pagination
         page={page}
-        hideFirstPageButton
         className="pb-6 mt-3 md:pb-0 md:mt-6 justify-center md:justify-start"
         onChange={onPageChange}
         itemsPerPage={pageSize}

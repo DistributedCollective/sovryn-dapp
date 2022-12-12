@@ -1,0 +1,35 @@
+query getTrove(
+  $user: ID!
+  $skip: Int!
+  $pageSize: Int!
+  $orderBy: TroveChange_orderBy
+  $orderDirection: OrderDirection
+  $filters: TroveChange_filter
+) {
+  trove(id: $user) {
+    id
+    changes(
+      first: $pageSize
+      skip: $skip
+      orderBy: $orderBy
+      orderDirection: $orderDirection
+      where: $filters
+    ) {
+      transaction {
+        id
+        timestamp
+      }
+      collateralBefore
+      collateralChange
+      collateralAfter
+      debtBefore
+      debtChange
+      debtAfter
+      borrowingFee
+      troveOperation
+      redemption {
+        partial
+      }
+    }
+  }
+}

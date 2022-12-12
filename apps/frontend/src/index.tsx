@@ -12,6 +12,7 @@ import App from './app/5_pages/App/App';
 import { chains } from './config/chains';
 import { MaintenanceModeContextProvider } from './contexts/MaintenanceModeContext';
 import { TransactionProvider } from './contexts/TransactionContext';
+import './locales/dayjs';
 import './locales/i18n';
 import './styles/tailwindcss/index.css';
 import { graphRskUrl } from './utils/constants';

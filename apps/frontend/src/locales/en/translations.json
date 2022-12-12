@@ -38,8 +38,29 @@
             "liquidationReserve": "Liquidation Reserve",
             "newDebt": "New Debt",
             "originationFee": "Origination Fee (ZUSD)",
-            "networkFee": "Network Fee",
-            "transactionID": "Transaction ID"
+            "transactionID": "Transaction ID",
+            "noData": "No data",
+            "noDataWithFilters": "No data with the current filters"
+        },
+        "troveTypes": {
+            "open": "Open Line of Credit",
+            "adjust": "Adjust Line of Credit",
+            "close": "Close Line of Credit",
+            "withdraw": "Withdraw surplus",
+            "liquidation": "Liquidation",
+            "redemption": "Redemption",
+            "accrueRewards": "Accrue Rewards"
+        },
+        "stabilityDeposit": {
+            "transfer": "Transfer gain to Line of Credit",
+            "withdraw": "Withdraw Tokens",
+            "deposit": "Deposit Tokens"
+        },
+        "filters": {
+            "increasedCollateral": "Increased Collateral",
+            "decreasedCollateral": "Decreased Collateral",
+            "increasedDebt": "Increased Debt",
+            "decreasedDebt": "Decreased Debt"
         }
     }
 }

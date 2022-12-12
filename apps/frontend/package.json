@@ -20,6 +20,7 @@
     "@sovryn/tailwindcss-config": "*",
     "@sovryn/ui": "*",
     "classnames": "2.3.2",
+    "dayjs": "1.11.7",
     "env-cmd": "10.1.0",
     "ethers": "5.7.1",
     "graphql": "16.6.0",

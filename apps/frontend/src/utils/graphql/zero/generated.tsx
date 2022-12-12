@@ -3179,11 +3179,33 @@ export enum _SubgraphErrorPolicy_ {
   Deny = 'deny',
 }
 
-export type GetTransactionHistoryQueryVariables = Exact<{
-  user: Scalars['ID'];
+export type GetStabilityDepositChangesQueryVariables = Exact<{
+  filters?: InputMaybe<StabilityDepositChange_Filter>;
 }>;
 
-export type GetTransactionHistoryQuery = {
+export type GetStabilityDepositChangesQuery = {
+  __typename?: 'Query';
+  stabilityDepositChanges: Array<{
+    __typename?: 'StabilityDepositChange';
+    depositedAmountBefore: string;
+    depositedAmountAfter: string;
+    depositedAmountChange: string;
+    collateralGain?: string | null;
+    stabilityDepositOperation: StabilityDepositOperation;
+    transaction: { __typename?: 'Transaction'; timestamp: number; id: string };
+  }>;
+};
+
+export type GetTroveQueryVariables = Exact<{
+  user: Scalars['ID'];
+  skip: Scalars['Int'];
+  pageSize: Scalars['Int'];
+  orderBy?: InputMaybe<TroveChange_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+  filters?: InputMaybe<TroveChange_Filter>;
+}>;
+
+export type GetTroveQuery = {
   __typename?: 'Query';
   trove?: {
     __typename?: 'Trove';
@@ -3203,15 +3225,95 @@ export type GetTransactionHistoryQuery = {
         id: string;
         timestamp: number;
       };
+      redemption?: { __typename?: 'Redemption'; partial: boolean } | null;
     }>;
   } | null;
 };
 
-export const GetTransactionHistoryDocument = gql`
-  query getTransactionHistory($user: ID!) {
+export const GetStabilityDepositChangesDocument = gql`
+  query getStabilityDepositChanges($filters: StabilityDepositChange_filter) {
+    stabilityDepositChanges(where: $filters) {
+      depositedAmountBefore
+      depositedAmountAfter
+      depositedAmountChange
+      collateralGain
+      stabilityDepositOperation
+      transaction {
+        timestamp
+        id
+      }
+    }
+  }
+`;
+
+/**
+ * __useGetStabilityDepositChangesQuery__
+ *
+ * To run a query within a React component, call `useGetStabilityDepositChangesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetStabilityDepositChangesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetStabilityDepositChangesQuery({
+ *   variables: {
+ *      filters: // value for 'filters'
+ *   },
+ * });
+ */
+export function useGetStabilityDepositChangesQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    GetStabilityDepositChangesQuery,
+    GetStabilityDepositChangesQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    GetStabilityDepositChangesQuery,
+    GetStabilityDepositChangesQueryVariables
+  >(GetStabilityDepositChangesDocument, options);
+}
+export function useGetStabilityDepositChangesLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    GetStabilityDepositChangesQuery,
+    GetStabilityDepositChangesQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    GetStabilityDepositChangesQuery,
+    GetStabilityDepositChangesQueryVariables
+  >(GetStabilityDepositChangesDocument, options);
+}
+export type GetStabilityDepositChangesQueryHookResult = ReturnType<
+  typeof useGetStabilityDepositChangesQuery
+>;
+export type GetStabilityDepositChangesLazyQueryHookResult = ReturnType<
+  typeof useGetStabilityDepositChangesLazyQuery
+>;
+export type GetStabilityDepositChangesQueryResult = Apollo.QueryResult<
+  GetStabilityDepositChangesQuery,
+  GetStabilityDepositChangesQueryVariables
+>;
+export const GetTroveDocument = gql`
+  query getTrove(
+    $user: ID!
+    $skip: Int!
+    $pageSize: Int!
+    $orderBy: TroveChange_orderBy
+    $orderDirection: OrderDirection
+    $filters: TroveChange_filter
+  ) {
     trove(id: $user) {
       id
-      changes {
+      changes(
+        first: $pageSize
+        skip: $skip
+        orderBy: $orderBy
+        orderDirection: $orderDirection
+        where: $filters
+      ) {
         transaction {
           id
           timestamp
@@ -3224,58 +3326,61 @@ export const GetTransactionHistoryDocument = gql`
         debtAfter
         borrowingFee
         troveOperation
+        redemption {
+          partial
+        }
       }
     }
   }
 `;
 
 /**
- * __useGetTransactionHistoryQuery__
+ * __useGetTroveQuery__
  *
- * To run a query within a React component, call `useGetTransactionHistoryQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetTransactionHistoryQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useGetTroveQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetTroveQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useGetTransactionHistoryQuery({
+ * const { data, loading, error } = useGetTroveQuery({
  *   variables: {
  *      user: // value for 'user'
+ *      skip: // value for 'skip'
+ *      pageSize: // value for 'pageSize'
+ *      orderBy: // value for 'orderBy'
+ *      orderDirection: // value for 'orderDirection'
+ *      filters: // value for 'filters'
  *   },
  * });
  */
-export function useGetTransactionHistoryQuery(
-  baseOptions: Apollo.QueryHookOptions<
-    GetTransactionHistoryQuery,
-    GetTransactionHistoryQueryVariables
-  >,
+export function useGetTroveQuery(
+  baseOptions: Apollo.QueryHookOptions<GetTroveQuery, GetTroveQueryVariables>,
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<
-    GetTransactionHistoryQuery,
-    GetTransactionHistoryQueryVariables
-  >(GetTransactionHistoryDocument, options);
+  return Apollo.useQuery<GetTroveQuery, GetTroveQueryVariables>(
+    GetTroveDocument,
+    options,
+  );
 }
-export function useGetTransactionHistoryLazyQuery(
+export function useGetTroveLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
-    GetTransactionHistoryQuery,
-    GetTransactionHistoryQueryVariables
+    GetTroveQuery,
+    GetTroveQueryVariables
   >,
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<
-    GetTransactionHistoryQuery,
-    GetTransactionHistoryQueryVariables
-  >(GetTransactionHistoryDocument, options);
+  return Apollo.useLazyQuery<GetTroveQuery, GetTroveQueryVariables>(
+    GetTroveDocument,
+    options,
+  );
 }
-export type GetTransactionHistoryQueryHookResult = ReturnType<
-  typeof useGetTransactionHistoryQuery
+export type GetTroveQueryHookResult = ReturnType<typeof useGetTroveQuery>;
+export type GetTroveLazyQueryHookResult = ReturnType<
+  typeof useGetTroveLazyQuery
 >;
-export type GetTransactionHistoryLazyQueryHookResult = ReturnType<
-  typeof useGetTransactionHistoryLazyQuery
->;
-export type GetTransactionHistoryQueryResult = Apollo.QueryResult<
-  GetTransactionHistoryQuery,
-  GetTransactionHistoryQueryVariables
+export type GetTroveQueryResult = Apollo.QueryResult<
+  GetTroveQuery,
+  GetTroveQueryVariables
 >;

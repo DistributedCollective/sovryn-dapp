@@ -41,7 +41,7 @@ export const DebugContent = () => {
 
   const { data } = useGetTokenRatesQuery();
   const { setTransactions, setIsOpen, setTitle } = useTransactionContext();
-  const [getTranscations] = useGetTransactionsLazyQuery();
+  const [getTransactions] = useGetTransactionsLazyQuery();
 
   const { checkMaintenance, States } = useMaintenance();
   const perpsLockedTest = checkMaintenance(States.PERPETUALS_GSN);
@@ -79,7 +79,7 @@ export const DebugContent = () => {
   }, [setIsOpen, setTitle, setTransactions, wallets]);
 
   const exportData = useCallback(async () => {
-    const { data } = await getTranscations();
+    const { data } = await getTransactions();
     let transactions = data?.transactions || [];
 
     return transactions.map(tx => ({
@@ -88,7 +88,7 @@ export const DebugContent = () => {
       gasPrice: tx.gasPrice,
       gasLimit: tx.gasLimit,
     }));
-  }, [getTranscations]);
+  }, [getTransactions]);
 
   return (
     <Accordion label="Debug content" open={isOpen} onClick={toggle}>

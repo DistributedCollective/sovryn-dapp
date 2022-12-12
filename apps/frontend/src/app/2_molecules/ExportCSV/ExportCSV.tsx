@@ -26,8 +26,8 @@ export const ExportCSV: React.FC<ExportCSVProps> = ({
     setIsLoading(true);
     try {
       const data = await getData();
-      const csvdata = createCSV(data);
-      downloadCSV(csvdata, filename);
+      const csvData = createCSV(data);
+      downloadCSV(csvData, filename);
     } catch (error) {
       console.error(error);
     } finally {

@@ -2,15 +2,12 @@ import { Data } from './ExportCSV.types';
 
 export const downloadCSV = (data, filename: string) => {
   const blob = new Blob([data], { type: 'text/csv' });
-
   const url = window.URL.createObjectURL(blob);
+  const downloadLink = document.createElement('a');
 
-  const a = document.createElement('a');
-
-  a.setAttribute('href', url);
-
-  a.setAttribute('download', `${filename}.csv`);
-  a.click();
+  downloadLink.href = url;
+  downloadLink.setAttribute('download', `${filename}.csv`);
+  downloadLink.click();
 };
 
 export const createCSV = (data: Data[]) => {
@@ -22,8 +19,8 @@ export const createCSV = (data: Data[]) => {
 
   csvRows.join('\n');
 
-  data.forEach(d => {
-    csvRows.push(Object.values(d).join(','));
+  data.forEach(item => {
+    csvRows.push(Object.values(item).join(','));
     csvRows.join('\n');
   });
 

@@ -1,0 +1,13 @@
+query getTransactions {
+  transactions(first: 500) {
+    id
+    gasPrice
+    gasLimit
+    to
+    blockNumber
+    timestamp
+    from {
+      id
+    }
+  }
+}

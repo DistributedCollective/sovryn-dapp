@@ -17,7 +17,10 @@ import { useMaintenance } from '../../hooks/useMaintenance';
 import { translations } from '../../locales/i18n';
 import { AppTheme } from '../../types/tailwind';
 import { APPROVAL_FUNCTION } from '../../utils/constants';
-import { useGetTokenRatesQuery } from '../../utils/graphql/rsk/generated';
+import {
+  useGetTokenRatesQuery,
+  useGetTransactionsLazyQuery,
+} from '../../utils/graphql/rsk/generated';
 import { isMainnet } from '../../utils/helpers';
 import { CollateralRatio } from './CollateralRatio/CollateralRatio';
 import { ConnectWalletButton } from './ConnectWalletButton/ConnectWalletButton';
@@ -26,6 +29,7 @@ import { ExampleContractCall } from './ExampleContractCall';
 import { ExampleProviderCall } from './ExampleProviderCall';
 import { ExampleTokenDetails } from './ExampleTokenDetails';
 import { ExampleTypedDataSign } from './ExampleTypedDataSign';
+import { ExportCSV } from './ExportCSV/ExportCSV';
 
 // usage example, to be removed
 export const DebugContent = () => {
@@ -43,6 +47,7 @@ export const DebugContent = () => {
 
   const { data } = useGetTokenRatesQuery();
   const { setTransactions, setIsOpen, setTitle } = useTransactionContext();
+  const [getTransactions] = useGetTransactionsLazyQuery();
 
   const { checkMaintenance, States } = useMaintenance();
   const perpsLockedTest = checkMaintenance(States.PERPETUALS_GSN);
@@ -79,6 +84,18 @@ export const DebugContent = () => {
     setIsOpen(true);
   }, [setIsOpen, setTitle, setTransactions, wallets]);
 
+  const exportData = useCallback(async () => {
+    const { data } = await getTransactions();
+    let transactions = data?.transactions || [];
+
+    return transactions.map(tx => ({
+      from: tx.from.id,
+      to: tx.to,
+      gasPrice: tx.gasPrice,
+      gasLimit: tx.gasLimit,
+    }));
+  }, [getTransactions]);
+
   return (
     <Accordion label="Debug content" open={isOpen} onClick={toggle}>
       <TransactionStepDialog />
@@ -87,6 +104,8 @@ export const DebugContent = () => {
       <ExampleBalanceCall />
 
       <ExampleContractCall />
+
+      <ExportCSV getData={exportData} filename="transactions" />
 
       <div>
         USD price of SOV from the graph:{' '}

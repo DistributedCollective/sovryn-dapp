@@ -5,4 +5,5 @@ export enum Environments {
 
 export enum Services {
   Maintenance = 'maintenance',
+  Notification = 'notification',
 }

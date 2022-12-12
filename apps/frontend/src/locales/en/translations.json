@@ -9,8 +9,11 @@
         },
         "buttons": {
             "switch": "Switch",
-            "confirm": "Confirm"
-        }
+            "confirm": "Confirm",
+            "save": "Save",
+            "cancel": "Cancel"
+        },
+        "na": "N/A"
     },
     "wrongNetworkSwitcher": {
         "title": "Wrong network",
@@ -85,5 +88,11 @@
             "doNotShowAgain": "Don't show again",
             "learnMore": "Learn more"
         }
+    },
+    "emailNotificationsDialog": {
+        "dialogTitle": "Notifications",
+        "title": "Notifications on the status of your line of credit are sent to your email after you sign it with your wallet",
+        "emailInputLabel": "Email address",
+        "emailInputPlaceholder": "Enter Email"
     }
 }

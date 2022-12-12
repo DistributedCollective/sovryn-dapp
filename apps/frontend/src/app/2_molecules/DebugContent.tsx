@@ -29,8 +29,8 @@ import { ExampleContractCall } from './ExampleContractCall';
 import { ExampleProviderCall } from './ExampleProviderCall';
 import { ExampleTokenDetails } from './ExampleTokenDetails';
 import { ExampleTypedDataSign } from './ExampleTypedDataSign';
-import { SmartTokens } from './SmartTokens';
 import { ExportCSV } from './ExportCSV/ExportCSV';
+import { SmartTokens } from './SmartTokens';
 
 // usage example, to be removed
 export const DebugContent = () => {

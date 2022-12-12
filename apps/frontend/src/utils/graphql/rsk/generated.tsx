@@ -12259,6 +12259,22 @@ export type GetTokenRatesQuery = {
   }>;
 };
 
+export type GetTransactionsQueryVariables = Exact<{ [key: string]: never }>;
+
+export type GetTransactionsQuery = {
+  __typename?: 'Query';
+  transactions: Array<{
+    __typename?: 'Transaction';
+    id: string;
+    gasPrice: string;
+    gasLimit: string;
+    to?: string | null;
+    blockNumber: number;
+    timestamp: number;
+    from: { __typename?: 'User'; id: string };
+  }>;
+};
+
 export const GetSmartTokensDocument = gql`
   query getSmartTokens(
     $skip: Int!
@@ -12338,23 +12354,6 @@ export type GetSmartTokensQueryResult = Apollo.QueryResult<
   GetSmartTokensQuery,
   GetSmartTokensQueryVariables
 >;
-
-export type GetTransactionsQueryVariables = Exact<{ [key: string]: never }>;
-
-export type GetTransactionsQuery = {
-  __typename?: 'Query';
-  transactions: Array<{
-    __typename?: 'Transaction';
-    id: string;
-    gasPrice: string;
-    gasLimit: string;
-    to?: string | null;
-    blockNumber: number;
-    timestamp: number;
-    from: { __typename?: 'User'; id: string };
-  }>;
-};
-
 export const GetTokenRatesDocument = gql`
   query getTokenRates {
     tokens {

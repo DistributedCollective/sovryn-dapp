@@ -4,16 +4,16 @@ import classNames from 'classnames';
 
 import { Icon, IconNames } from '../../../../../../1_atoms';
 import { OrderDirection } from '../../../../Table.types';
-import styles from './SortDirection.module.css';
+import styles from './OrderDirectionIcon.module.css';
 
-type SortDirectionProps = {
+type OrderDirectionIconProps = {
   orderBy?: string;
   id?: string;
   orderDirection?: OrderDirection;
   className?: string;
 };
 
-export const SortDirection: FC<SortDirectionProps> = ({
+export const OrderDirectionIcon: FC<OrderDirectionIconProps> = ({
   orderBy,
   id,
   orderDirection,

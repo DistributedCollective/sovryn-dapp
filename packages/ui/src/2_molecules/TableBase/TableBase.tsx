@@ -62,6 +62,7 @@ export const TableBase = <RowType extends RowObject>({
               onRowClick={onRowClick}
               dataAttribute={dataAttribute}
               isClickable={isClickable}
+              className={styles.row}
             />
           ))
         ) : (

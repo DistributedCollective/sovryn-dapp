@@ -47,7 +47,7 @@ export const fromWeiFixed = (
   value: BigNumberish,
   decimals: number = DEFAULT_DECIMALS,
   unitName: BigNumberish = DEFAULT_UNIT,
-): string => Number(Number(fromWei(value, unitName))).toFixed(decimals);
+): string => Number(fromWei(value, unitName)).toFixed(decimals);
 
 export const formatValue = (value: number, precision: number = 0) =>
   value.toLocaleString(navigator.language, {

@@ -59,7 +59,7 @@ export const Label: FC<CustomLabelProps> = ({
         onClick={onMaxAmountClicked}
         className="text-gray-20 text-[11px] underline whitespace-nowrap"
       >
-        (max {formatValue(maxAmount, 4)} {symbol})
+        (max {formatValue(maxAmount, 4)} {symbol.toUpperCase()})
       </button>
     </div>
   );

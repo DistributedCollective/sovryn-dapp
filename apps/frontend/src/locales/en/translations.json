@@ -10,54 +10,55 @@
         "buttons": {
             "switch": "Switch",
             "confirm": "Confirm"
-        }
+        },
+        "na": "N/A"
     },
     "wrongNetworkSwitcher": {
         "title": "Wrong network",
         "description": "We detected that you are currently connected to the wrong network. Please switch your wallet to use {{network}} network."
     },
     "adjustCreditLine": {
-      "actions": {
-        "borrow": "Borrow",
-        "repay": "Repay",
-        "addCollateral": "Add collateral",
-        "withdrawCollateral": "Withdraw collateral"
-      },
-      "max": "Max {{value}} {{symbol}}",
-      "fields": {
-        "debt": {
-          "amount": "Amount",
-          "tooltip": "Amount of debt to add or remove"
+        "actions": {
+            "borrow": "Borrow",
+            "repay": "Repay",
+            "addCollateral": "Add collateral",
+            "withdrawCollateral": "Withdraw collateral"
         },
-        "collateral": {
-          "amount": "Amount",
-          "tooltip": "Amount of collateral to add or remove"
+        "max": "Max {{value}} {{symbol}}",
+        "fields": {
+            "debt": {
+                "amount": "Amount",
+                "tooltip": "Amount of debt to add or remove"
+            },
+            "collateral": {
+                "amount": "Amount",
+                "tooltip": "Amount of collateral to add or remove"
+            }
+        },
+        "labels": {
+            "newDebt": "New debt",
+            "newDebtTooltip": "New debt amount",
+            "newCollateral": "New collateral",
+            "newCollateralTooltip": "New collateral amount",
+            "collateralRatio": "Collateral ratio",
+            "collateralRatioTooltip": "Collateral ratio after the transaction",
+            "liquidationPrice": "Liquidation price",
+            "liquidationPriceTooltip": "Liquidation price after the transaction",
+            "recoveryLiquidationPrice": "Liquidation price (Recovery Mode)",
+            "recoveryLiquidationPriceTooltip": "Liquidation price after the transaction",
+            "rbtcPrice": "RBTC price",
+            "rbtcPriceTooltip": "RBTC price in USD",
+            "originationFee": "Origination fee",
+            "originationFeeTooltip": "Origination fee in percentage"
         }
-      },
-      "labels": {
-        "newDebt": "New debt",
-        "newDebtTooltip": "New debt amount",
-        "newCollateral": "New collateral",
-        "newCollateralTooltip": "New collateral amount",
-        "collateralRatio": "Collateral ratio",
-        "collateralRatioTooltip": "Collateral ratio after the transaction",
-        "liquidationPrice": "Liquidation price",
-        "liquidationPriceTooltip": "Liquidation price after the transaction",
-        "recoveryLiquidationPrice": "Liquidation price (Recovery Mode)",
-        "recoveryLiquidationPriceTooltip": "Liquidation price after the transaction",
-        "rbtcPrice": "RBTC price",
-        "rbtcPriceTooltip": "RBTC price in USD",
-        "originationFee": "Origination fee",
-        "originationFeeTooltip": "Origination fee in percentage"
-      }
     },
     "collateralRatio": {
         "title": "Collateral Ratio",
         "tooltip": "Collateral Ratio"
     },
     "errorPage": {
-      "title": "Error",
-       "description": "Something went wrong. Please try again later."
+        "title": "Error",
+        "description": "Something went wrong. Please try again later."
     },
     "gettingStartedPopup": {
         "title": "Put your loan to work",

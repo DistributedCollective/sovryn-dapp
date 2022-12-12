@@ -1,4 +1,3 @@
-import './wdyr';
 import { ApolloProvider, ApolloClient, InMemoryCache } from '@apollo/client';
 import loadable from '@loadable/component';
 
@@ -10,15 +9,15 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import setupChains from '@sovryn/ethers-provider';
 import { OnboardProvider } from '@sovryn/onboard-react';
 
+import { PageContainer } from './app/4_templates';
+import { ErrorPage } from './app/5_pages/ErrorPage/ErrorPage';
 import { chains } from './config/chains';
 import { MaintenanceModeContextProvider } from './contexts/MaintenanceModeContext';
 import { TransactionProvider } from './contexts/TransactionContext';
 import './locales/i18n';
 import './styles/tailwindcss/index.css';
 import { graphRskUrl } from './utils/constants';
-
-import { PageContainer } from './app/4_templates';
-import { ErrorPage } from './app/5_pages/ErrorPage/ErrorPage';
+import './wdyr';
 
 setupChains(chains);
 

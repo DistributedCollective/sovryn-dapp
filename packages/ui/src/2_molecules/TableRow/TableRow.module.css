@@ -6,7 +6,7 @@
   }
 
   &.large > td {
-    @apply py-6 px-5;
+    @apply px-5 h-[3.75rem];
   }
 
   & > td {

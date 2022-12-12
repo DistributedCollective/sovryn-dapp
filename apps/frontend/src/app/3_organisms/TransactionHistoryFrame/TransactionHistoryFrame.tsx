@@ -308,7 +308,12 @@ export const TransactionHistoryFrame: FC = () => {
           <div className="uppercase">
             {item.borrowingFee ? (
               <>
-                {item.borrowingFee} {SupportedTokens.zusd}
+                {item.borrowingFee} {SupportedTokens.zusd} (
+                {(
+                  (Number(item.borrowingFee) / Number(item.debtAfter)) *
+                  100
+                ).toFixed(2)}
+                %)
               </>
             ) : (
               '—'

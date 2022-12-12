@@ -42,3 +42,35 @@ export function dateFormat(timestamp: number) {
   const stamp = dayjs.tz(Number(timestamp) * 1e3, 'UTC');
   return stamp.format(`YYYY-MM-DD-HH:MM:ss`);
 }
+
+export const signMessage = async (
+  provider: EIP1193Provider,
+  message: string,
+) => {
+  const signer = new providers.Web3Provider(provider);
+  const signature = await signer.getSigner().signMessage(message);
+
+  return signature;
+};
+
+export const validateEmail = (email: string) => {
+  // eslint-disable-next-line no-useless-escape
+  const re =
+    /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  return re.test(email);
+};
+
+export const parseJwt = (token: string) => {
+  var base64Url = token.split('.')[1];
+  var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+  var jsonPayload = decodeURIComponent(
+    atob(base64)
+      .split('')
+      .map(function (c) {
+        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+      })
+      .join(''),
+  );
+
+  return JSON.parse(jsonPayload);
+};

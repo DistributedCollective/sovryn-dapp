@@ -39,6 +39,10 @@ export enum IconNames {
   GITHUB_LOGO = 'github-logo',
   CHECK = 'check',
   FUNNEL = 'funnel',
+  EARN_3 = 'earn-3',
+  LEND = 'lend',
+  SWAP = 'swap',
+  TRADING = 'trading',
 }
 
 export type IconName = typeof IconNames[keyof typeof IconNames];

@@ -31,12 +31,12 @@ export const Footer: FC = () => {
     },
     {
       id: 'terms',
-      href: '#',
+      href: '/policies/terms-of-use',
       name: 'Terms & Conditions',
     },
     {
       id: 'policy',
-      href: '#',
+      href: '/policies/privacy-policy',
       name: 'Privacy policy',
     },
   ];

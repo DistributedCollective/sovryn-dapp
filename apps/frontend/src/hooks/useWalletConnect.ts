@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { startWith } from 'rxjs/operators';
 
@@ -44,11 +44,20 @@ export const useWalletConnect = () => {
     return () => sub.unsubscribe();
   }, []);
 
+  const account = useMemo(() => wallets[0]?.accounts[0]?.address, [wallets]);
+
+  const getAccount = useCallback(
+    (index: number) => wallets[index]?.accounts[0]?.address,
+    [wallets],
+  );
+
   return {
     connectWallet,
     disconnectWallet,
     wallets,
+    account,
     pending,
     switchNetwork,
+    getAccount,
   };
 };

@@ -1,6 +1,7 @@
-import React, { FC, ReactNode } from 'react';
+import React, { FC } from 'react';
 
 import classNames from 'classnames';
+import { Outlet } from 'react-router-dom';
 
 import { applyDataAttr } from '@sovryn/ui';
 
@@ -10,14 +11,12 @@ type PageContainerProps = {
   className?: string;
   contentClassName?: string;
   dataAttribute?: string;
-  children?: ReactNode;
 };
 
 export const PageContainer: FC<PageContainerProps> = ({
   className,
   contentClassName,
   dataAttribute,
-  children,
 }) => (
   <div
     className={classNames('flex flex-col flex-grow', className)}
@@ -25,7 +24,7 @@ export const PageContainer: FC<PageContainerProps> = ({
   >
     <Header />
     <div className={classNames('my-2 px-4 flex-grow', contentClassName)}>
-      {children}
+      <Outlet />
     </div>
     <div className="shrink">
       <Footer />

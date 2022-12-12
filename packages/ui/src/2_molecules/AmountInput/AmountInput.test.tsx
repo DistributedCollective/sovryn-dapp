@@ -126,4 +126,61 @@ describe('AmountInput', () => {
     const amountInput = getByTestId('test');
     expect(amountInput).toHaveProperty('lang', 'sk-SK');
   });
+
+  test('does not allow to enter more than 9 whole numbers', async () => {
+    const { getByTestId } = render(
+      <AmountInput value={2} dataLayoutId="test" />,
+    );
+
+    const amountInput = getByTestId('test');
+
+    userEvent.clear(amountInput);
+    userEvent.paste(amountInput, '10000000000000');
+
+    await waitFor(() => expect(amountInput).toHaveValue(999999999));
+  });
+
+  test('trims unnecessary zeros at the end', async () => {
+    const { getByTestId } = render(
+      <AmountInput value="0.065000" decimalPrecision={6} dataLayoutId="test" />,
+    );
+
+    const amountInput = getByTestId('test');
+
+    expect(amountInput).toHaveValue(0.065);
+  });
+
+  test('does not allow to enter more than max amount value', async () => {
+    const { getByTestId } = render(
+      <AmountInput value={12} maxAmount={10} dataLayoutId="test" />,
+    );
+
+    const amountInput = getByTestId('test');
+
+    expect(amountInput).toHaveValue(10);
+  });
+
+  test('does not allow to enter less than min amount value', async () => {
+    const { getByTestId } = render(
+      <AmountInput value={3} min={4.56} dataLayoutId="test" />,
+    );
+
+    const amountInput = getByTestId('test');
+
+    expect(amountInput).toHaveValue(4.56);
+  });
+
+  test('does not round to max value if max amount is less than the max value', async () => {
+    const { getByTestId } = render(
+      <AmountInput
+        value={999999994}
+        maxAmount={999999990}
+        dataLayoutId="test"
+      />,
+    );
+
+    const amountInput = getByTestId('test');
+
+    expect(amountInput).toHaveValue(999999990);
+  });
 });

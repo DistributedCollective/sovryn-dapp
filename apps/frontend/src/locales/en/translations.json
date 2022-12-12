@@ -60,15 +60,6 @@
         "tooltip": "Collateral Ratio"
     },
     "transactionHistory": {
-        "title": "My transaction history",
-        "tabs": {
-            "lineOfCredit": "Line of credit",
-            "stabilityPool": "Stability Pool",
-            "liquidation": "Liquidation",
-            "redemption": "Redemption",
-            "conversion": "Conversion",
-            "fastBTC": "FastBTC"
-        },
         "table": {
             "timestamp": "Timestamp",
             "transactionType": "Transaction Type",
@@ -88,6 +79,7 @@
             "close": "Close Line of Credit",
             "withdraw": "Withdraw surplus",
             "liquidation": "Liquidation",
+            "liquidationRecovery": "Liquidation (Recovery mode)",
             "redemption": "Redemption",
             "accrueRewards": "Accrue Rewards"
         },

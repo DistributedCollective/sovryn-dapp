@@ -89,7 +89,6 @@ export const TransactionHistoryFrame: FC = () => {
     if (!data) {
       return null;
     }
-    console.log(data.trove?.changes);
 
     return data.trove?.changes;
   }, [data]);
@@ -485,6 +484,11 @@ export const TransactionHistoryFrame: FC = () => {
     [page, troves, pageSize],
   );
 
+  const isNextButtonDisabled = useMemo(
+    () => !loading && troves?.length < pageSize,
+    [loading, troves, pageSize],
+  );
+
   const exportData = useCallback(() => {
     if (!troves) {
       alert(t(translations.transactionHistory.actions.noDataToExport));
@@ -534,6 +538,7 @@ export const TransactionHistoryFrame: FC = () => {
           className="md:pb-6 mt-3 md:mt-6 justify-center md:justify-start"
           onChange={onPageChange}
           itemsPerPage={pageSize}
+          isNextButtonDisabled={isNextButtonDisabled}
           dataAttribute="transaction-history-pagination"
         />
       </div>

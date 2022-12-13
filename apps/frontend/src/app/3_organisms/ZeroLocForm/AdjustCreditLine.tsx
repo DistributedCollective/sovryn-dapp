@@ -292,10 +292,10 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
         </div>
       </div>
       <HealthBar
-        start={70}
+        start={90}
         middleStart={110}
         middleEnd={150}
-        end={200}
+        end={250}
         value={ratio}
       />
 

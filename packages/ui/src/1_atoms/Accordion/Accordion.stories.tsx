@@ -33,7 +33,7 @@ Default.args = {
   label: 'Test (click to toggle)',
   children: <div>Simple Test content</div>,
   disabled: false,
-  dataLayoutId: 'accordion-simple',
+  dataAttribute: 'accordion-simple',
 };
 
 export const RichContent = Template.bind({});
@@ -56,7 +56,7 @@ RichContent.args = {
     </div>
   ),
   disabled: false,
-  dataLayoutId: 'accordion-richcontent',
+  dataAttribute: 'accordion-richcontent',
 };
 
 export const OpenAndDisabled = Template.bind({});
@@ -80,5 +80,5 @@ OpenAndDisabled.args = {
   ),
   disabled: true,
   open: true,
-  dataLayoutId: 'accordion-opendisabled',
+  dataAttribute: 'accordion-opendisabled',
 };

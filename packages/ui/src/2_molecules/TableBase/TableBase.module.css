@@ -33,3 +33,7 @@
     @apply content-['@'] block leading-3 invisible;
   }
 }
+
+.row {
+  @apply bg-gray-90;
+}

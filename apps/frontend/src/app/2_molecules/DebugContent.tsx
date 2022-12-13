@@ -30,6 +30,7 @@ import { ExampleProviderCall } from './ExampleProviderCall';
 import { ExampleTokenDetails } from './ExampleTokenDetails';
 import { ExampleTypedDataSign } from './ExampleTypedDataSign';
 import { ExportCSV } from './ExportCSV/ExportCSV';
+import { SmartTokens } from './SmartTokens';
 
 // usage example, to be removed
 export const DebugContent = () => {
@@ -97,7 +98,12 @@ export const DebugContent = () => {
   }, [getTransactions]);
 
   return (
-    <Accordion label="Debug content" open={isOpen} onClick={toggle}>
+    <Accordion
+      className="my-3"
+      label="Debug content"
+      open={isOpen}
+      onClick={toggle}
+    >
       <TransactionStepDialog />
       <ExampleProviderCall />
       <ExampleTokenDetails />
@@ -105,6 +111,8 @@ export const DebugContent = () => {
 
       <ExampleContractCall />
 
+      <SmartTokens />
+      <ExampleContractCall />
       <ExportCSV getData={exportData} filename="transactions" />
 
       <div>

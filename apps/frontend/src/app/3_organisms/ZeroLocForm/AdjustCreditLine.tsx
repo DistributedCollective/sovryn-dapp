@@ -149,7 +149,7 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
     [t],
   );
 
-  const collateraltabs = useMemo(
+  const collateralTabs = useMemo(
     () => [
       {
         value: AmountType.Add,
@@ -164,12 +164,25 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
   );
 
   const newDebtRenderer = useCallback(
-    (value: number) => (
-      <>
-        {formatValue(value, 3)} {creditToken.toUpperCase()}
-      </>
-    ),
-    [creditToken],
+    (value: number) =>
+      value === 0 ? (
+        t(translations.common.na)
+      ) : (
+        <>
+          {formatValue(value, 3)} {creditToken.toUpperCase()}
+        </>
+      ),
+    [creditToken, t],
+  );
+
+  const newCollateralRenderer = useCallback(
+    (value: number) =>
+      value === 0 ? (
+        t(translations.common.na)
+      ) : (
+        <>{formatValue(value, 3)} RBTC</>
+      ),
+    [t],
   );
 
   const liquidationPrice = useMemo(() => Number(rbtcPrice) / 1.1, [rbtcPrice]);
@@ -214,7 +227,7 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
           <Label
             symbol="RBTC"
             maxAmount={maxCollateralAmount}
-            tabs={collateraltabs}
+            tabs={collateralTabs}
             activeTab={collateralType}
             onTabChange={setCollateralType}
             onMaxAmountClicked={handleMaxCollateralAmountClick}
@@ -254,7 +267,7 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
               <DynamicValue
                 initialValue={Number(collateralValue)}
                 value={newCollateral}
-                renderer={value => <>{formatValue(value, 3)} RBTC</>}
+                renderer={newCollateralRenderer}
               />
             }
           />

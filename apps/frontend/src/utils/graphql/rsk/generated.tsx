@@ -12259,6 +12259,22 @@ export type GetTokenRatesQuery = {
   }>;
 };
 
+export type GetTransactionsQueryVariables = Exact<{ [key: string]: never }>;
+
+export type GetTransactionsQuery = {
+  __typename?: 'Query';
+  transactions: Array<{
+    __typename?: 'Transaction';
+    id: string;
+    gasPrice: string;
+    gasLimit: string;
+    to?: string | null;
+    blockNumber: number;
+    timestamp: number;
+    from: { __typename?: 'User'; id: string };
+  }>;
+};
+
 export const GetSmartTokensDocument = gql`
   query getSmartTokens(
     $skip: Int!
@@ -12397,4 +12413,69 @@ export type GetTokenRatesLazyQueryHookResult = ReturnType<
 export type GetTokenRatesQueryResult = Apollo.QueryResult<
   GetTokenRatesQuery,
   GetTokenRatesQueryVariables
+>;
+export const GetTransactionsDocument = gql`
+  query getTransactions {
+    transactions(first: 500) {
+      id
+      gasPrice
+      gasLimit
+      to
+      blockNumber
+      timestamp
+      from {
+        id
+      }
+    }
+  }
+`;
+
+/**
+ * __useGetTransactionsQuery__
+ *
+ * To run a query within a React component, call `useGetTransactionsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetTransactionsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetTransactionsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetTransactionsQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    GetTransactionsQuery,
+    GetTransactionsQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<GetTransactionsQuery, GetTransactionsQueryVariables>(
+    GetTransactionsDocument,
+    options,
+  );
+}
+export function useGetTransactionsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    GetTransactionsQuery,
+    GetTransactionsQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    GetTransactionsQuery,
+    GetTransactionsQueryVariables
+  >(GetTransactionsDocument, options);
+}
+export type GetTransactionsQueryHookResult = ReturnType<
+  typeof useGetTransactionsQuery
+>;
+export type GetTransactionsLazyQueryHookResult = ReturnType<
+  typeof useGetTransactionsLazyQuery
+>;
+export type GetTransactionsQueryResult = Apollo.QueryResult<
+  GetTransactionsQuery,
+  GetTransactionsQueryVariables
 >;

@@ -43,6 +43,7 @@ export enum IconNames {
   SWAP = 'swap',
   TRADING = 'trading',
   FUNNEL = 'funnel',
+  LINK = 'link',
 }
 
 export type IconName = typeof IconNames[keyof typeof IconNames];

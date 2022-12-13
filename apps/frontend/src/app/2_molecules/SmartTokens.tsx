@@ -114,6 +114,11 @@ export const SmartTokens = () => {
     [page, tokens.length],
   );
 
+  const isNextButtonDisabled = useMemo(
+    () => !loading && tokens.length < pageSize,
+    [loading, tokens.length],
+  );
+
   return (
     <div className="my-8 bg-gray-80 md:bg-gray-90 p-4 md:px-6 md:py-4">
       <Table
@@ -130,6 +135,7 @@ export const SmartTokens = () => {
         className="pb-6 mt-3 md:pb-0 md:mt-6 justify-center md:justify-start"
         onChange={onPageChange}
         itemsPerPage={pageSize}
+        isNextButtonDisabled={isNextButtonDisabled}
       />
     </div>
   );

@@ -1,5 +1,6 @@
 {
     "wallet": "wallet",
+    "exportCSV": "Export to CSV",
     "common": {
         "socials": {
             "discord": "Discord",
@@ -8,15 +9,91 @@
             "github": "Github"
         },
         "buttons": {
-            "switch": "Switch"
-        }
+            "switch": "Switch",
+            "confirm": "Confirm",
+            "save": "Save",
+            "cancel": "Cancel"
+        },
+        "na": "N/A"
     },
     "wrongNetworkSwitcher": {
         "title": "Wrong network",
         "description": "We detected that you are currently connected to the wrong network. Please switch your wallet to use {{network}} network."
     },
+    "adjustCreditLine": {
+        "actions": {
+            "borrow": "Borrow",
+            "repay": "Repay",
+            "addCollateral": "Add collateral",
+            "withdrawCollateral": "Withdraw collateral"
+        },
+        "max": "Max {{value}} {{symbol}}",
+        "fields": {
+            "debt": {
+                "amount": "Amount",
+                "tooltip": "Amount of debt to add or remove"
+            },
+            "collateral": {
+                "amount": "Amount",
+                "tooltip": "Amount of collateral to add or remove"
+            }
+        },
+        "labels": {
+            "newDebt": "New debt",
+            "newDebtTooltip": "New debt amount",
+            "newCollateral": "New collateral",
+            "newCollateralTooltip": "New collateral amount",
+            "collateralRatio": "Collateral ratio",
+            "collateralRatioTooltip": "Collateral ratio after the transaction",
+            "liquidationPrice": "Liquidation price",
+            "liquidationPriceTooltip": "Liquidation price after the transaction",
+            "recoveryLiquidationPrice": "Liquidation price (Recovery Mode)",
+            "recoveryLiquidationPriceTooltip": "Liquidation price after the transaction",
+            "rbtcPrice": "RBTC price",
+            "rbtcPriceTooltip": "RBTC price in USD",
+            "originationFee": "Origination fee",
+            "originationFeeTooltip": "Origination fee in percentage"
+        }
+    },
     "collateralRatio": {
         "title": "Collateral Ratio",
         "tooltip": "Collateral Ratio"
+    },
+    "errorPage": {
+        "title": "Error",
+        "description": "Something went wrong. Please try again later."
+    },
+    "gettingStartedPopup": {
+        "title": "Put your loan to work",
+        "description": "Here are a few ideas for what you can do with your loan:",
+        "content": {
+            "pool": {
+                "title": "Pool",
+                "description": "Earn BTC by depositing into the Zero Stability Pool or Sovryn DLLR/RBTC Pool."
+            },
+            "lend": {
+                "title": "Lend",
+                "description": "Earn interest by providing liquidity to the Sovryn lending protocol."
+            },
+            "trade": {
+                "title": "Trade",
+                "description": "Buy more BTC or other assets using the Sovryn exchange protocol."
+            },
+            "bridge": {
+                "title": "Bridge",
+                "description": "Convert your loan into popular stablecoins on BSC and Ethereum."
+            }
+        },
+        "buttons": {
+            "gotIt": "Got it",
+            "doNotShowAgain": "Don't show again",
+            "learnMore": "Learn more"
+        }
+    },
+    "emailNotificationsDialog": {
+        "dialogTitle": "Notifications",
+        "title": "Notifications on the status of your line of credit are sent to your email after you sign it with your wallet",
+        "emailInputLabel": "Email address",
+        "emailInputPlaceholder": "Enter Email"
     }
 }

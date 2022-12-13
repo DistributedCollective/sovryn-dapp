@@ -48,3 +48,8 @@ export const fromWeiFixed = (
   decimals: number = DEFAULT_DECIMALS,
   unitName: BigNumberish = DEFAULT_UNIT,
 ): string => Number(fromWei(value, unitName)).toFixed(decimals);
+
+export const formatValue = (value: number, precision: number = 0) =>
+  value.toLocaleString(navigator.language, {
+    maximumFractionDigits: precision,
+  });

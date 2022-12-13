@@ -344,6 +344,10 @@ export const TransactionHistoryFrame: FC = () => {
               <Tooltip
                 content={
                   <>
+                    {renderSign(
+                      item.troveOperation,
+                      Number(item.collateralAfter),
+                    )}
                     {item.debtChange} {SupportedTokens.zusd}
                   </>
                 }
@@ -353,10 +357,10 @@ export const TransactionHistoryFrame: FC = () => {
                 dataLayoutId="debt-change-tooltip"
               >
                 <span>
-                  {item.troveOperation === TroveOperation.OpenTrove && '+'}
-                  {item.troveOperation === TroveOperation.AdjustTrove &&
-                    Number(item.debtChange) > 0 &&
-                    '+'}
+                  {renderSign(
+                    item.troveOperation,
+                    Number(item.collateralAfter),
+                  )}
                   {formatValue(Number(item.debtChange), 2)}{' '}
                   {SupportedTokens.zusd}
                 </span>

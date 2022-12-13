@@ -199,7 +199,8 @@ export const DebugContent = () => {
       <br />
       <br />
       <p>{t(translations.wallet)}</p>
-
+      <h3>An example of the Transaction Frame</h3>
+      <br />
       <TransactionHistoryFrame />
 
       <div className="mt-10 py-10 border-t border-b">

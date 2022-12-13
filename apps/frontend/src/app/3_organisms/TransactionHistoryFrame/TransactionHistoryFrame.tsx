@@ -17,6 +17,7 @@ import {
   TransactionId,
 } from '@sovryn/ui';
 
+import { ExportCSV } from '../../2_molecules/ExportCSV/ExportCSV';
 import { TableFilter } from '../../2_molecules/TableFilter/TableFilter';
 import { Filter } from '../../2_molecules/TableFilter/TableFilter.types';
 import { chains, defaultChainId } from '../../../config/chains';
@@ -478,36 +479,57 @@ export const TransactionHistoryFrame: FC = () => {
     [page, troves?.length],
   );
 
+  const exportData = useCallback(async () => {
+    return troves.map((tx: TroveChange) => ({
+      timestamp: dateFormat(tx.transaction.timestamp),
+      transactionType: getTroveType(tx.troveOperation),
+      collateralChange: tx.collateralChange,
+      newCollateralBalance: tx.collateralAfter,
+      debtChange: tx.debtChange,
+      liquidationReserveAmount: renderLiquidationReserve(tx),
+      newDebtBalance: tx.debtAfter,
+      originationFee: tx.borrowingFee,
+      transactionID: tx.transaction.id,
+    }));
+  }, [troves, getTroveType, renderLiquidationReserve]);
+
   useEffect(() => {
     setPage(0);
   }, [orderOptions, filters]);
 
   return (
-    <div className="bg-gray-80 py-4 px-6 rounded">
-      <Table
-        setOrderOptions={setOrderOptions}
-        orderOptions={orderOptions}
-        columns={columns}
-        rows={troves}
-        rowTitle={row => (
-          <Paragraph size={ParagraphSize.small}>
-            {getTroveType(row.troveOperation)} -{' '}
-            {dateFormat(row.transaction.timestamp)}
-          </Paragraph>
-        )}
-        isLoading={loading}
-        className="bg-gray-80 text-gray-10 md:px-6 md:py-4"
-        noData={noDataLabel}
-        dataAttribute="transaction-history-table"
+    <>
+      <ExportCSV
+        getData={exportData}
+        filename="transactions"
+        className="mb-7"
       />
-      <Pagination
-        page={page}
-        hideFirstPageButton
-        className="md:pb-6 mt-3 md:mt-6 justify-center md:justify-start"
-        onChange={onPageChange}
-        itemsPerPage={pageSize}
-        dataAttribute="transaction-history-pagination"
-      />
-    </div>
+      <div className="bg-gray-80 py-4 px-6 rounded">
+        <Table
+          setOrderOptions={setOrderOptions}
+          orderOptions={orderOptions}
+          columns={columns}
+          rows={troves}
+          rowTitle={row => (
+            <Paragraph size={ParagraphSize.small}>
+              {getTroveType(row.troveOperation)} -{' '}
+              {dateFormat(row.transaction.timestamp)}
+            </Paragraph>
+          )}
+          isLoading={loading}
+          className="bg-gray-80 text-gray-10 md:px-6 md:py-4"
+          noData={noDataLabel}
+          dataAttribute="transaction-history-table"
+        />
+        <Pagination
+          page={page}
+          hideFirstPageButton
+          className="md:pb-6 mt-3 md:mt-6 justify-center md:justify-start"
+          onChange={onPageChange}
+          itemsPerPage={pageSize}
+          dataAttribute="transaction-history-pagination"
+        />
+      </div>
+    </>
   );
 };

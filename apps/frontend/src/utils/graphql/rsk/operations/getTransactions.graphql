@@ -1,5 +1,5 @@
-query getTransactions {
-  transactions(first: 500) {
+query getTransactions($limit: Int!) {
+  transactions(first: $limit) {
     id
     gasPrice
     gasLimit

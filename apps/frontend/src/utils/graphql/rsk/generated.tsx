@@ -12259,7 +12259,9 @@ export type GetTokenRatesQuery = {
   }>;
 };
 
-export type GetTransactionsQueryVariables = Exact<{ [key: string]: never }>;
+export type GetTransactionsQueryVariables = Exact<{
+  limit: Scalars['Int'];
+}>;
 
 export type GetTransactionsQuery = {
   __typename?: 'Query';
@@ -12415,8 +12417,8 @@ export type GetTokenRatesQueryResult = Apollo.QueryResult<
   GetTokenRatesQueryVariables
 >;
 export const GetTransactionsDocument = gql`
-  query getTransactions {
-    transactions(first: 500) {
+  query getTransactions($limit: Int!) {
+    transactions(first: $limit) {
       id
       gasPrice
       gasLimit
@@ -12442,11 +12444,12 @@ export const GetTransactionsDocument = gql`
  * @example
  * const { data, loading, error } = useGetTransactionsQuery({
  *   variables: {
+ *      limit: // value for 'limit'
  *   },
  * });
  */
 export function useGetTransactionsQuery(
-  baseOptions?: Apollo.QueryHookOptions<
+  baseOptions: Apollo.QueryHookOptions<
     GetTransactionsQuery,
     GetTransactionsQueryVariables
   >,

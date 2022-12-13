@@ -16,7 +16,7 @@ import { useTheme, useWalletConnect } from '../../hooks';
 import { useMaintenance } from '../../hooks/useMaintenance';
 import { translations } from '../../locales/i18n';
 import { AppTheme } from '../../types/tailwind';
-import { APPROVAL_FUNCTION } from '../../utils/constants';
+import { APPROVAL_FUNCTION, EXPORT_RECORD_LIMIT } from '../../utils/constants';
 import {
   useGetTokenRatesQuery,
   useGetTransactionsLazyQuery,
@@ -86,7 +86,9 @@ export const DebugContent = () => {
   }, [setIsOpen, setTitle, setTransactions, wallets]);
 
   const exportData = useCallback(async () => {
-    const { data } = await getTransactions();
+    const { data } = await getTransactions({
+      variables: { limit: EXPORT_RECORD_LIMIT },
+    });
     let transactions = data?.transactions || [];
 
     return transactions.map(tx => ({

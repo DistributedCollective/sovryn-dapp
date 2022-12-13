@@ -1,5 +1,3 @@
-import { ApolloClient, InMemoryCache, useQuery } from '@apollo/client';
-
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 
 import { useTranslation } from 'react-i18next';
@@ -22,32 +20,25 @@ import { TableFilter } from '../../2_molecules/TableFilter/TableFilter';
 import { Filter } from '../../2_molecules/TableFilter/TableFilter.types';
 import { chains, defaultChainId } from '../../../config/chains';
 import { translations } from '../../../locales/i18n';
-import { graphZeroUrl } from '../../../utils/constants';
+import { EXPORT_RECORD_LIMIT } from '../../../utils/constants';
 import {
-  GetTroveDocument,
   InputMaybe,
   TroveChange,
   TroveChange_Filter,
-  TroveChange_OrderBy,
   TroveOperation,
 } from '../../../utils/graphql/zero/generated';
 import { dateFormat } from '../../../utils/helpers';
 import { formatValue } from '../../../utils/math';
-
-const zeroClient = new ApolloClient({
-  uri: graphZeroUrl,
-  cache: new InMemoryCache({
-    resultCaching: false,
-  }),
-});
+import { useGetTroves } from './hooks/useGetTroves';
 
 // TODO usage example, to be removed
-const pageSize = 10;
+const DEFAULT_PAGE_SIZE = 10;
 const liquidationReserveAmount = 20;
 
 export const TransactionHistoryFrame: FC = () => {
   const { t } = useTranslation();
   const [page, setPage] = useState(0);
+  const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE);
   const chain = chains.find(chain => chain.id === defaultChainId);
   const [filters, setFilters] = useState<
     InputMaybe<TroveChange_Filter> | undefined
@@ -58,19 +49,7 @@ export const TransactionHistoryFrame: FC = () => {
     orderDirection: OrderDirection.Desc,
   });
 
-  const { loading, data } = useQuery(GetTroveDocument, {
-    variables: {
-      //TODO: switch to the user's address
-      //hardcoded address for testing
-      user: '0xd0af98aeb84ca58c0efb2b5dbd80297be02259dc',
-      skip: page * pageSize,
-      pageSize,
-      orderBy: (orderOptions.orderBy as TroveChange_OrderBy) || undefined,
-      orderDirection: orderOptions.orderDirection || undefined,
-      filters,
-    },
-    client: zeroClient,
-  });
+  const { data, loading } = useGetTroves(pageSize, page, filters, orderOptions);
 
   const noDataLabel = useMemo(
     () =>
@@ -110,39 +89,10 @@ export const TransactionHistoryFrame: FC = () => {
     if (!data) {
       return null;
     }
+    console.log(data.trove?.changes);
+
     return data.trove?.changes;
   }, [data]);
-
-  const renderLiquidationReserve = useCallback((trove: TroveChange) => {
-    const { troveOperation, redemption } = trove;
-    const operations = [
-      TroveOperation.LiquidateInNormalMode,
-      TroveOperation.LiquidateInRecoveryMode,
-      TroveOperation.CloseTrove,
-    ];
-
-    if (troveOperation === TroveOperation.OpenTrove) {
-      return (
-        <>
-          +{liquidationReserveAmount} {SupportedTokens.zusd}
-        </>
-      );
-    }
-
-    if (
-      operations.some(item => item.includes(troveOperation)) ||
-      (troveOperation === TroveOperation.RedeemCollateral &&
-        redemption?.partial === true)
-    ) {
-      return (
-        <>
-          -{liquidationReserveAmount} {SupportedTokens.zusd}
-        </>
-      );
-    }
-
-    return '—';
-  }, []);
 
   const transactionTypeFilters = useMemo(() => {
     return Object.keys(TroveOperation).map(key => ({
@@ -150,9 +100,9 @@ export const TransactionHistoryFrame: FC = () => {
       filter: 'troveOperation_in',
       value: TroveOperation[key],
       checked:
-        (filters &&
-          filters['troveOperation_in']?.includes(TroveOperation[key])) ||
-        false,
+        filters && filters['troveOperation_in']?.includes(TroveOperation[key])
+          ? true
+          : false,
     }));
   }, [filters, getTroveType]);
 
@@ -192,6 +142,29 @@ export const TransactionHistoryFrame: FC = () => {
     [t, filters],
   );
 
+  const renderLiquidationReserve = useCallback((trove: TroveChange) => {
+    const { troveOperation, redemption } = trove;
+    const operations = [
+      TroveOperation.LiquidateInNormalMode,
+      TroveOperation.LiquidateInRecoveryMode,
+      TroveOperation.CloseTrove,
+    ];
+
+    if (troveOperation === TroveOperation.OpenTrove) {
+      return `+${liquidationReserveAmount} ${SupportedTokens.zusd}`;
+    }
+
+    if (
+      operations.some(item => item.includes(troveOperation)) ||
+      (troveOperation === TroveOperation.RedeemCollateral &&
+        redemption?.partial === true)
+    ) {
+      return `-${liquidationReserveAmount} ${SupportedTokens.zusd}`;
+    }
+
+    return '—';
+  }, []);
+
   const updateFilters = useCallback((filterList: Filter[]) => {
     setFilters({
       ...filterList
@@ -222,6 +195,193 @@ export const TransactionHistoryFrame: FC = () => {
     [],
   );
 
+  const renderDebtChange = useCallback(
+    (trove: TroveChange) => (
+      <>
+        {trove.debtChange.length ? (
+          <Tooltip
+            content={
+              <>
+                {renderSign(
+                  trove.troveOperation,
+                  Number(trove.collateralAfter),
+                )}
+                {trove.debtChange} {SupportedTokens.zusd}
+              </>
+            }
+            trigger={TooltipTrigger.click}
+            className="cursor-pointer uppercase"
+            tooltipClassName="uppercase"
+            dataLayoutId="debt-change-tooltip"
+          >
+            <span>
+              {renderSign(trove.troveOperation, Number(trove.collateralAfter))}
+              {formatValue(Number(trove.debtChange), 2)} {SupportedTokens.zusd}
+            </span>
+          </Tooltip>
+        ) : (
+          '—'
+        )}
+      </>
+    ),
+    [renderSign],
+  );
+
+  const renderNewDebt = useCallback(
+    (trove: TroveChange) => (
+      <>
+        {trove.debtAfter.length ? (
+          <Tooltip
+            content={
+              <>
+                {trove.redemption?.partial === true ? 0 : trove.debtAfter}{' '}
+                {SupportedTokens.zusd}
+              </>
+            }
+            trigger={TooltipTrigger.click}
+            className="cursor-pointer uppercase"
+            tooltipClassName="uppercase"
+            dataLayoutId="collateral-change-tooltip"
+          >
+            <span>
+              {trove.redemption?.partial === true
+                ? 0
+                : formatValue(Number(trove.debtAfter), 2)}{' '}
+              {SupportedTokens.zusd}
+            </span>
+          </Tooltip>
+        ) : (
+          '—'
+        )}
+      </>
+    ),
+    [],
+  );
+
+  const renderCollateralChange = useCallback(
+    (trove: TroveChange) => (
+      <>
+        {trove.collateralChange.length ? (
+          <Tooltip
+            content={
+              <>
+                {renderSign(
+                  trove.troveOperation,
+                  Number(trove.collateralChange),
+                )}
+                {trove.collateralChange} {SupportedTokens.rbtc}
+              </>
+            }
+            trigger={TooltipTrigger.click}
+            className="cursor-pointer uppercase"
+            tooltipClassName="uppercase"
+            dataLayoutId="collateral-change-tooltip"
+          >
+            <span>
+              {renderSign(trove.troveOperation, Number(trove.collateralChange))}
+              {formatValue(Number(trove.collateralChange), 6)}{' '}
+              {SupportedTokens.rbtc}
+            </span>
+          </Tooltip>
+        ) : (
+          '—'
+        )}
+      </>
+    ),
+    [renderSign],
+  );
+
+  const renderCollateralBalance = useCallback(
+    (trove: TroveChange) => (
+      <>
+        {trove.collateralAfter.length ? (
+          <Tooltip
+            content={
+              <>
+                {trove.redemption?.partial === true ? (
+                  0
+                ) : (
+                  <>
+                    {trove.troveOperation === TroveOperation.OpenTrove &&
+                      renderSign(
+                        trove.troveOperation,
+                        Number(trove.collateralAfter),
+                      )}
+                    {trove.collateralAfter} {SupportedTokens.rbtc}
+                  </>
+                )}
+              </>
+            }
+            trigger={TooltipTrigger.click}
+            className="cursor-pointer uppercase"
+            tooltipClassName="uppercase"
+            dataLayoutId="new-collateral-tooltip"
+          >
+            <span>
+              {trove.redemption?.partial === true ? (
+                0
+              ) : (
+                <>
+                  {trove.troveOperation === TroveOperation.OpenTrove &&
+                    renderSign(
+                      trove.troveOperation,
+                      Number(trove.collateralAfter),
+                    )}
+                  {formatValue(Number(trove.collateralAfter), 6)}{' '}
+                  {SupportedTokens.rbtc}
+                </>
+              )}
+            </span>
+          </Tooltip>
+        ) : (
+          '—'
+        )}
+      </>
+    ),
+    [renderSign],
+  );
+
+  const renderOriginationFee = useCallback(
+    (trove: TroveChange) => (
+      <>
+        {trove.borrowingFee ? (
+          <Tooltip
+            content={`${trove.borrowingFee} {SupportedTokens.zusd}`}
+            trigger={TooltipTrigger.click}
+            className="cursor-pointer uppercase"
+            tooltipClassName="uppercase"
+            dataLayoutId="collateral-change-tooltip"
+          >
+            <span>
+              {formatValue(Number(trove.borrowingFee), 2)}{' '}
+              {SupportedTokens.zusd} (
+              {formatValue(
+                (Number(trove.borrowingFee) / Number(trove.debtAfter)) * 100,
+                2,
+              )}
+              %)
+            </span>
+          </Tooltip>
+        ) : (
+          '—'
+        )}
+      </>
+    ),
+    [],
+  );
+
+  const generateRowTitle = useCallback(
+    (trove: TroveChange) => {
+      return (
+        <Paragraph size={ParagraphSize.small}>
+          {getTroveType(trove.troveOperation)} -{' '}
+          {dateFormat(trove.transaction.timestamp)}
+        </Paragraph>
+      );
+    },
+    [getTroveType],
+  );
+
   const columns = useMemo(
     () => [
       {
@@ -234,8 +394,7 @@ export const TransactionHistoryFrame: FC = () => {
       {
         id: 'transactionType',
         title: t(translations.transactionHistory.table.transactionType),
-        cellRenderer: (item: TroveChange) =>
-          `${getTroveType(item.troveOperation)}`,
+        cellRenderer: (item: TroveChange) => getTroveType(item.troveOperation),
         filter: (
           <TableFilter
             filterList={transactionTypeFilters}
@@ -246,38 +405,7 @@ export const TransactionHistoryFrame: FC = () => {
       {
         id: 'collateralChange',
         title: t(translations.transactionHistory.table.collateralChange),
-        cellRenderer: (item: TroveChange) => (
-          <>
-            {item.collateralChange.length ? (
-              <Tooltip
-                content={
-                  <>
-                    {renderSign(
-                      item.troveOperation,
-                      Number(item.collateralChange),
-                    )}
-                    {item.collateralChange} {SupportedTokens.rbtc}
-                  </>
-                }
-                trigger={TooltipTrigger.click}
-                className="cursor-pointer uppercase"
-                tooltipClassName="uppercase"
-                dataLayoutId="collateral-change-tooltip"
-              >
-                <span>
-                  {renderSign(
-                    item.troveOperation,
-                    Number(item.collateralChange),
-                  )}
-                  {formatValue(Number(item.collateralChange), 6)}{' '}
-                  {SupportedTokens.rbtc}
-                </span>
-              </Tooltip>
-            ) : (
-              '—'
-            )}
-          </>
-        ),
+        cellRenderer: (item: TroveChange) => renderCollateralChange(item),
         filter: (
           <TableFilter
             filterList={collateralChangeFilters}
@@ -288,88 +416,12 @@ export const TransactionHistoryFrame: FC = () => {
       {
         id: 'newCollateralBalance',
         title: t(translations.transactionHistory.table.newCollateralBalance),
-        cellRenderer: (item: TroveChange) => (
-          <>
-            {item.collateralAfter.length ? (
-              <Tooltip
-                content={
-                  <>
-                    {item.redemption?.partial === true ? (
-                      0
-                    ) : (
-                      <>
-                        {item.troveOperation === TroveOperation.OpenTrove &&
-                          renderSign(
-                            item.troveOperation,
-                            Number(item.collateralAfter),
-                          )}
-                        {item.collateralAfter} {SupportedTokens.rbtc}
-                      </>
-                    )}
-                  </>
-                }
-                trigger={TooltipTrigger.click}
-                className="cursor-pointer uppercase"
-                tooltipClassName="uppercase"
-                dataLayoutId="new-collateral-tooltip"
-              >
-                <span>
-                  {item.redemption?.partial === true ? (
-                    0
-                  ) : (
-                    <>
-                      {item.troveOperation === TroveOperation.OpenTrove &&
-                        renderSign(
-                          item.troveOperation,
-                          Number(item.collateralAfter),
-                        )}
-                      {formatValue(Number(item.collateralAfter), 6)}{' '}
-                      {SupportedTokens.rbtc}
-                    </>
-                  )}
-                </span>
-              </Tooltip>
-            ) : (
-              '—'
-            )}
-          </>
-        ),
+        cellRenderer: (item: TroveChange) => renderCollateralBalance(item),
       },
       {
         id: 'debtChange',
         title: t(translations.transactionHistory.table.debtChange),
-        cellRenderer: (item: TroveChange) => (
-          <>
-            {item.debtChange.length ? (
-              <Tooltip
-                content={
-                  <>
-                    {renderSign(
-                      item.troveOperation,
-                      Number(item.collateralAfter),
-                    )}
-                    {item.debtChange} {SupportedTokens.zusd}
-                  </>
-                }
-                trigger={TooltipTrigger.click}
-                className="cursor-pointer uppercase"
-                tooltipClassName="uppercase"
-                dataLayoutId="debt-change-tooltip"
-              >
-                <span>
-                  {renderSign(
-                    item.troveOperation,
-                    Number(item.collateralAfter),
-                  )}
-                  {formatValue(Number(item.debtChange), 2)}{' '}
-                  {SupportedTokens.zusd}
-                </span>
-              </Tooltip>
-            ) : (
-              '—'
-            )}
-          </>
-        ),
+        cellRenderer: (item: TroveChange) => renderDebtChange(item),
         filter: (
           <TableFilter
             filterList={debtChangeFilters}
@@ -387,66 +439,12 @@ export const TransactionHistoryFrame: FC = () => {
       {
         id: 'newDebt',
         title: t(translations.transactionHistory.table.newDebt),
-        cellRenderer: (item: TroveChange) => (
-          <>
-            {item.debtAfter.length ? (
-              <Tooltip
-                content={
-                  <>
-                    {item.redemption?.partial === true ? 0 : item.debtAfter}{' '}
-                    {SupportedTokens.zusd}
-                  </>
-                }
-                trigger={TooltipTrigger.click}
-                className="cursor-pointer uppercase"
-                tooltipClassName="uppercase"
-                dataLayoutId="collateral-change-tooltip"
-              >
-                <span>
-                  {item.redemption?.partial === true
-                    ? 0
-                    : formatValue(Number(item.debtAfter), 2)}{' '}
-                  {SupportedTokens.zusd}
-                </span>
-              </Tooltip>
-            ) : (
-              '—'
-            )}
-          </>
-        ),
+        cellRenderer: (item: TroveChange) => renderNewDebt(item),
       },
       {
         id: 'originationFee',
         title: t(translations.transactionHistory.table.originationFee),
-        cellRenderer: (item: TroveChange) => (
-          <>
-            {item.borrowingFee ? (
-              <Tooltip
-                content={
-                  <>
-                    {item.borrowingFee} {SupportedTokens.zusd}
-                  </>
-                }
-                trigger={TooltipTrigger.click}
-                className="cursor-pointer uppercase"
-                tooltipClassName="uppercase"
-                dataLayoutId="collateral-change-tooltip"
-              >
-                <span>
-                  {formatValue(Number(item.borrowingFee), 2)}{' '}
-                  {SupportedTokens.zusd} (
-                  {formatValue(
-                    (Number(item.borrowingFee) / Number(item.debtAfter)) * 100,
-                    2,
-                  )}
-                  %)
-                </span>
-              </Tooltip>
-            ) : (
-              '—'
-            )}
-          </>
-        ),
+        cellRenderer: (item: TroveChange) => renderOriginationFee(item),
       },
       {
         id: 'transactionID',
@@ -466,7 +464,11 @@ export const TransactionHistoryFrame: FC = () => {
       getTroveType,
       transactionTypeFilters,
       updateFilters,
-      renderSign,
+      renderNewDebt,
+      renderDebtChange,
+      renderOriginationFee,
+      renderCollateralBalance,
+      renderCollateralChange,
       renderLiquidationReserve,
       collateralChangeFilters,
       debtChangeFilters,
@@ -480,13 +482,15 @@ export const TransactionHistoryFrame: FC = () => {
       }
       setPage(value);
     },
-    [page, troves?.length],
+    [page, troves, pageSize],
   );
 
   const exportData = useCallback(() => {
     if (!troves) {
       alert(t(translations.transactionHistory.actions.noDataToExport));
     }
+
+    setPageSize(EXPORT_RECORD_LIMIT);
 
     return troves.map((tx: TroveChange) => ({
       timestamp: dateFormat(tx.transaction.timestamp),
@@ -496,7 +500,7 @@ export const TransactionHistoryFrame: FC = () => {
       debtChange: tx.debtChange,
       liquidationReserveAmount: renderLiquidationReserve(tx),
       newDebtBalance: tx.debtAfter,
-      originationFee: tx.borrowingFee,
+      originationFee: tx.borrowingFee || '—',
       transactionID: tx.transaction.id,
     }));
   }, [t, troves, getTroveType, renderLiquidationReserve]);
@@ -511,6 +515,7 @@ export const TransactionHistoryFrame: FC = () => {
         getData={exportData}
         filename="transactions"
         className="mb-7"
+        onExportEnd={() => setPageSize(DEFAULT_PAGE_SIZE)}
       />
       <div className="bg-gray-80 py-4 px-6 rounded">
         <Table
@@ -518,12 +523,7 @@ export const TransactionHistoryFrame: FC = () => {
           orderOptions={orderOptions}
           columns={columns}
           rows={troves}
-          rowTitle={row => (
-            <Paragraph size={ParagraphSize.small}>
-              {getTroveType(row.troveOperation)} -{' '}
-              {dateFormat(row.transaction.timestamp)}
-            </Paragraph>
-          )}
+          rowTitle={row => generateRowTitle(row)}
           isLoading={loading}
           className="bg-gray-80 text-gray-10 md:px-6 md:py-4"
           noData={noDataLabel}
@@ -531,7 +531,6 @@ export const TransactionHistoryFrame: FC = () => {
         />
         <Pagination
           page={page}
-          hideFirstPageButton
           className="md:pb-6 mt-3 md:mt-6 justify-center md:justify-start"
           onChange={onPageChange}
           itemsPerPage={pageSize}

@@ -38,3 +38,5 @@ export const servicesConfig = {
     [Services.Notification]: 'https://notify.sovryn.app/',
   },
 };
+
+export const EXPORT_RECORD_LIMIT = 500;

@@ -12,12 +12,14 @@ type ExportCSVProps = {
   className?: string;
   filename: string;
   getData: () => Promise<Data[]>;
+  onExportEnd?: () => void;
 };
 
 export const ExportCSV: React.FC<ExportCSVProps> = ({
   className,
   filename,
   getData,
+  onExportEnd,
 }) => {
   const [isLoading, setIsLoading] = useState(false);
   const { t } = useTranslation();
@@ -32,8 +34,9 @@ export const ExportCSV: React.FC<ExportCSVProps> = ({
       console.error(error);
     } finally {
       setIsLoading(false);
+      onExportEnd?.();
     }
-  }, [filename, getData]);
+  }, [filename, getData, onExportEnd]);
 
   return (
     <Button

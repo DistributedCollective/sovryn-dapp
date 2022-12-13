@@ -185,10 +185,22 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
     [t],
   );
 
-  const liquidationPrice = useMemo(() => Number(rbtcPrice) / 1.1, [rbtcPrice]);
+  const initialLiquidationPrice = useMemo(
+    () => 1.1 * (Number(creditValue) / Number(collateralValue)),
+    [creditValue, collateralValue],
+  );
+  const initialLiquidationPriceRecoveryMode = useMemo(
+    () => 1.5 * (Number(creditValue) / Number(collateralValue)),
+    [creditValue, collateralValue],
+  );
+
+  const liquidationPrice = useMemo(
+    () => 1.1 * (newDebt / newCollateral),
+    [newDebt, newCollateral],
+  );
   const liquidationPriceRecoveryMode = useMemo(
-    () => Number(rbtcPrice) / 1.5,
-    [rbtcPrice],
+    () => 1.5 * (newDebt / newCollateral),
+    [newDebt, newCollateral],
   );
 
   return (
@@ -308,7 +320,7 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
             )}
             value={
               <DynamicValue
-                initialValue={liquidationPrice}
+                initialValue={initialLiquidationPrice}
                 value={liquidationPrice}
                 renderer={value => <>{formatValue(value, 3)} USD</>}
               />
@@ -324,7 +336,7 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
             )}
             value={
               <DynamicValue
-                initialValue={liquidationPriceRecoveryMode}
+                initialValue={initialLiquidationPriceRecoveryMode}
                 value={liquidationPriceRecoveryMode}
                 renderer={value => <>{formatValue(value, 3)} USD</>}
               />

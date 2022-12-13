@@ -2,9 +2,10 @@ import React, { useCallback, useState } from 'react';
 
 import classNames from 'classnames';
 
-import { noop, applyDataAttr } from '../../../../utils';
-import { RowObject, ColumnOptions } from '../../TableBase.types';
+import { noop, applyDataAttr } from '../../utils';
+import { ColumnOptions, RowObject } from '../TableBase';
 import styles from './TableRow.module.css';
+import { TableRowSize } from './TableRow.types';
 
 type TableRowProps<RowType extends RowObject> = {
   columns: ColumnOptions<RowType>[];
@@ -13,6 +14,8 @@ type TableRowProps<RowType extends RowObject> = {
   onRowClick?: (row: RowType) => void;
   dataAttribute?: string;
   isClickable?: boolean;
+  className?: string;
+  size?: TableRowSize;
 };
 
 export const TableRow = <RowType extends RowObject>({
@@ -22,6 +25,8 @@ export const TableRow = <RowType extends RowObject>({
   onRowClick = noop,
   dataAttribute,
   isClickable,
+  className,
+  size = TableRowSize.small,
 }: TableRowProps<RowType>) => {
   const [isSelected, setIsSelected] = useState(false);
   const onClick = useCallback(() => {
@@ -33,7 +38,7 @@ export const TableRow = <RowType extends RowObject>({
     <>
       <tr
         key={index}
-        className={classNames(styles.row, {
+        className={classNames(styles.row, className, styles[size], {
           [styles.clickable]: isClickable,
           [styles.active]: isClickable && isSelected,
         })}
@@ -53,7 +58,7 @@ export const TableRow = <RowType extends RowObject>({
           </td>
         ))}
       </tr>
-      <tr className={styles.spacer}></tr>
+      <tr className={classNames(styles.spacer, styles[size])}></tr>
     </>
   );
 };

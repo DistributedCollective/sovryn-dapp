@@ -12225,6 +12225,27 @@ export enum _SubgraphErrorPolicy_ {
   Deny = 'deny',
 }
 
+export type GetSmartTokensQueryVariables = Exact<{
+  skip: Scalars['Int'];
+  pageSize: Scalars['Int'];
+  orderBy?: InputMaybe<SmartToken_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+  filters?: InputMaybe<SmartToken_Filter>;
+}>;
+
+export type GetSmartTokensQuery = {
+  __typename?: 'Query';
+  smartTokens: Array<{
+    __typename?: 'SmartToken';
+    id: string;
+    name?: string | null;
+    decimals?: number | null;
+    symbol?: string | null;
+    owner: string;
+    addedToRegistryBlockNumber?: number | null;
+  }>;
+};
+
 export type GetTokenRatesQueryVariables = Exact<{ [key: string]: never }>;
 
 export type GetTokenRatesQuery = {
@@ -12238,6 +12259,85 @@ export type GetTokenRatesQuery = {
   }>;
 };
 
+export const GetSmartTokensDocument = gql`
+  query getSmartTokens(
+    $skip: Int!
+    $pageSize: Int!
+    $orderBy: SmartToken_orderBy
+    $orderDirection: OrderDirection
+    $filters: SmartToken_filter
+  ) {
+    smartTokens(
+      first: $pageSize
+      skip: $skip
+      orderBy: $orderBy
+      orderDirection: $orderDirection
+      where: $filters
+    ) {
+      id
+      name
+      decimals
+      symbol
+      owner
+      addedToRegistryBlockNumber
+    }
+  }
+`;
+
+/**
+ * __useGetSmartTokensQuery__
+ *
+ * To run a query within a React component, call `useGetSmartTokensQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetSmartTokensQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetSmartTokensQuery({
+ *   variables: {
+ *      skip: // value for 'skip'
+ *      pageSize: // value for 'pageSize'
+ *      orderBy: // value for 'orderBy'
+ *      orderDirection: // value for 'orderDirection'
+ *      filters: // value for 'filters'
+ *   },
+ * });
+ */
+export function useGetSmartTokensQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    GetSmartTokensQuery,
+    GetSmartTokensQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<GetSmartTokensQuery, GetSmartTokensQueryVariables>(
+    GetSmartTokensDocument,
+    options,
+  );
+}
+export function useGetSmartTokensLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    GetSmartTokensQuery,
+    GetSmartTokensQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<GetSmartTokensQuery, GetSmartTokensQueryVariables>(
+    GetSmartTokensDocument,
+    options,
+  );
+}
+export type GetSmartTokensQueryHookResult = ReturnType<
+  typeof useGetSmartTokensQuery
+>;
+export type GetSmartTokensLazyQueryHookResult = ReturnType<
+  typeof useGetSmartTokensLazyQuery
+>;
+export type GetSmartTokensQueryResult = Apollo.QueryResult<
+  GetSmartTokensQuery,
+  GetSmartTokensQueryVariables
+>;
 export const GetTokenRatesDocument = gql`
   query getTokenRates {
     tokens {

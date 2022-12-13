@@ -1,0 +1,7 @@
+.desktop {
+  @apply hidden md:block;
+}
+
+.mobile {
+  @apply block md:hidden;
+}

@@ -26,6 +26,7 @@ import { ExampleContractCall } from './ExampleContractCall';
 import { ExampleProviderCall } from './ExampleProviderCall';
 import { ExampleTokenDetails } from './ExampleTokenDetails';
 import { ExampleTypedDataSign } from './ExampleTypedDataSign';
+import { SmartTokens } from './SmartTokens';
 
 // usage example, to be removed
 export const DebugContent = () => {
@@ -80,12 +81,20 @@ export const DebugContent = () => {
   }, [setIsOpen, setTitle, setTransactions, wallets]);
 
   return (
-    <Accordion label="Debug content" open={isOpen} onClick={toggle}>
+    <Accordion
+      className="my-3"
+      label="Debug content"
+      open={isOpen}
+      onClick={toggle}
+    >
       <TransactionStepDialog />
       <ExampleProviderCall />
       <ExampleTokenDetails />
       <ExampleBalanceCall />
 
+      <ExampleContractCall />
+
+      <SmartTokens />
       <ExampleContractCall />
 
       <div>

@@ -111,10 +111,9 @@ export const DebugContent = () => {
 
       <ExampleContractCall />
 
-      <ExportCSV getData={exportData} filename="transactions" />
-
       <SmartTokens />
       <ExampleContractCall />
+      <ExportCSV getData={exportData} filename="transactions" />
 
       <div>
         USD price of SOV from the graph:{' '}

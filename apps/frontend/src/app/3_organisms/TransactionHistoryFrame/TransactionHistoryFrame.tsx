@@ -479,7 +479,11 @@ export const TransactionHistoryFrame: FC = () => {
     [page, troves?.length],
   );
 
-  const exportData = useCallback(async () => {
+  const exportData = useCallback(() => {
+    if (!troves) {
+      alert(t(translations.transactionHistory.actions.noDataToExport));
+    }
+
     return troves.map((tx: TroveChange) => ({
       timestamp: dateFormat(tx.transaction.timestamp),
       transactionType: getTroveType(tx.troveOperation),
@@ -491,7 +495,7 @@ export const TransactionHistoryFrame: FC = () => {
       originationFee: tx.borrowingFee,
       transactionID: tx.transaction.id,
     }));
-  }, [troves, getTroveType, renderLiquidationReserve]);
+  }, [t, troves, getTroveType, renderLiquidationReserve]);
 
   useEffect(() => {
     setPage(0);

@@ -93,6 +93,9 @@
             "decreasedCollateral": "Decreased Collateral",
             "increasedDebt": "Increased Debt",
             "decreasedDebt": "Decreased Debt"
+        },
+        "actions": {
+            "noDataToExport": "No data to export"
         }
     },
     "errorPage": {

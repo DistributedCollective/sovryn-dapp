@@ -1,0 +1,52 @@
+.label {
+  @apply relative inline-flex items-center align-middle cursor-pointer select-none text-sm leading-4;
+
+  input {
+    @apply left-0 opacity-0 absolute top-0 w-0 h-0;
+
+    ~ .indicator {
+      @apply bg-gray-50;
+    }
+
+    &:checked {
+      ~ .indicator {
+        @apply bg-primary-30;
+
+        &:before {
+          @apply -ml-0.5;
+          left: calc(100% - 1rem);
+
+          @screen lg {
+            left: calc(100% - 1rem);
+          }
+        }
+      }
+    }
+  }
+}
+
+.indicator {
+  @apply bg-gray-50 border-0 h-5 relative select-none rounded-2xl mr-2.5 min-w-9;
+
+  &:before {
+    content: '';
+    @apply absolute rounded-full h-4 w-4 bg-white left-0 m-0.5;
+    transition: left 0.1s cubic-bezier(0.4, 1, 0.75, 0.9);
+  }
+}
+
+.disabled {
+  @apply cursor-not-allowed opacity-50;
+}
+
+.labelRight {
+  @apply flex-row-reverse;
+}
+
+.labelLeft {
+  @apply ml-2.5;
+}
+
+.inlineBlock {
+  @apply inline-block;
+}

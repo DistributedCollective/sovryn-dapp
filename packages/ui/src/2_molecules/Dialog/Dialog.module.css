@@ -71,3 +71,11 @@
 .dialogFull {
   @apply w-full;
 }
+
+.buttonClose {
+  @apply absolute top-4 right-4 p-2 z-[999] sm:hidden;
+}
+
+.buttonCloseIcon {
+  @apply text-sov-white;
+}

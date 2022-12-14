@@ -3,6 +3,7 @@ import React, { useCallback, useEffect, MouseEvent, useRef } from 'react';
 import classNames from 'classnames';
 import FocusTrap from 'focus-trap-react';
 
+import { Button, ButtonStyle, Icon } from '../../1_atoms';
 import { applyDataAttr } from '../../utils';
 import { Overlay, OverlayProps } from '../Overlay/Overlay';
 import styles from './Dialog.module.css';
@@ -91,6 +92,18 @@ export const Dialog: IDialogFunctionComponent<DialogProps> = ({
     >
       <div className={styles.wrapper} {...applyDataAttr(dataLayoutId)}>
         <div className={styles.container}>
+          <Button
+            style={ButtonStyle.ghost}
+            text={
+              <Icon
+                className={styles.buttonCloseIcon}
+                icon="x-mark"
+                size={24}
+              />
+            }
+            onClick={handleClose}
+            className={styles.buttonClose}
+          />
           <FocusTrap
             active={isOpen && !disableFocusTrap}
             focusTrapOptions={{

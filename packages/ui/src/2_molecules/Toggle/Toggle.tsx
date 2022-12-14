@@ -1,4 +1,4 @@
-import React, { ReactNode, useMemo } from 'react';
+import React, { forwardRef, ReactNode, useMemo } from 'react';
 
 import classNames from 'classnames';
 
@@ -21,48 +21,54 @@ type ToggleProps = {
   inline?: boolean;
 };
 
-export const Toggle: React.FC<ToggleProps> = ({
-  label,
-  alignment,
-  onChange,
-  checked,
-  disabled,
-  dataAttribute,
-  className,
-  inline,
-}) => {
-  const isRightAligned = useMemo(
-    () => alignment === ToggleAlignment.RIGHT,
-    [alignment],
-  );
+export const Toggle = forwardRef<HTMLInputElement, ToggleProps>(
+  (
+    {
+      label,
+      alignment,
+      onChange,
+      checked,
+      disabled,
+      dataAttribute,
+      className,
+      inline,
+    },
+    ref,
+  ) => {
+    const isRightAligned = useMemo(
+      () => alignment === ToggleAlignment.RIGHT,
+      [alignment],
+    );
 
-  return (
-    <div
-      className={classNames(className, {
-        [styles.inlineBlock]: inline,
-      })}
-    >
-      <label
-        className={classNames(
-          styles.label,
-          { [styles.disabled]: disabled },
-          { [styles.labelRight]: isRightAligned },
-        )}
+    return (
+      <div
+        className={classNames(className, {
+          [styles.inlineBlock]: inline,
+        })}
       >
-        <input
-          type="checkbox"
-          checked={checked}
-          disabled={disabled}
-          onChange={onChange}
-          {...applyDataAttr(dataAttribute)}
-        />
-        <span
-          className={classNames(styles.indicator, {
-            [styles.labelLeft]: isRightAligned,
-          })}
-        />
-        {label}
-      </label>
-    </div>
-  );
-};
+        <label
+          className={classNames(
+            styles.label,
+            { [styles.disabled]: disabled },
+            { [styles.labelRight]: isRightAligned },
+          )}
+        >
+          <input
+            ref={ref}
+            type="checkbox"
+            checked={checked}
+            disabled={disabled}
+            onChange={onChange}
+            {...applyDataAttr(dataAttribute)}
+          />
+          <span
+            className={classNames(styles.indicator, {
+              [styles.labelLeft]: isRightAligned,
+            })}
+          />
+          {label}
+        </label>
+      </div>
+    );
+  },
+);

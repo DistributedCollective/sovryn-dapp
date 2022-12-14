@@ -1,29 +1,85 @@
-import React, { FC, useState } from 'react';
+import { Fees, UserTrove } from '@sovryn-zero/lib-base';
+import { EthersLiquity, ReadableEthersLiquity } from '@sovryn-zero/lib-ethers';
 
-import { Dialog, DialogBody, DialogHeader, DialogSize, noop } from '@sovryn/ui';
+import React, { FC, useEffect, useReducer, useState } from 'react';
+
+import { useRouteLoaderData } from 'react-router-dom';
+
+import {
+  Button,
+  Dialog,
+  DialogBody,
+  DialogHeader,
+  DialogSize,
+  Heading,
+  noop,
+} from '@sovryn/ui';
 
 import { AdjustCreditLine } from '../../3_organisms/ZeroLocForm/AdjustCreditLine';
+import { useWalletConnect } from '../../../hooks';
 
 export const ZeroPage: FC = () => {
-  const [value, setValue] = useState({
-    debt: '0',
-    collateral: '0',
-  });
+  const { liquity } = useRouteLoaderData('zero') as {
+    liquity: EthersLiquity;
+    provider: ReadableEthersLiquity;
+  };
+
+  const [open, toggle] = useReducer(v => !v, false);
+  const [trove, setTrove] = useState<UserTrove>();
+  const [btcPrice, setBtcPrice] = useState('0');
+  const [fees, setFees] = useState<Fees>();
+
+  const { account } = useWalletConnect();
+
+  useEffect(() => {
+    liquity
+      .getPrice()
+      .then(e => e.toString())
+      .then(setBtcPrice);
+
+    liquity.getFees().then(setFees);
+  }, [liquity]);
+
+  useEffect(() => {
+    if (account && liquity) {
+      liquity.getTrove(account).then(setTrove);
+    }
+  }, [account, liquity]);
 
   return (
     <div className="container max-w-7xl mt-24">
-      <div className="w-96">
-        <Dialog width={DialogSize.sm} isOpen disableFocusTrap>
-          <DialogHeader title="Adjust" onClose={noop} />
-          <DialogBody>
-            <AdjustCreditLine
-              collateralValue={value.collateral}
-              creditValue={value.debt}
-              onSubmit={setValue}
-            />
-          </DialogBody>
-        </Dialog>
-      </div>
+      {account ? (
+        <>
+          <Heading>Example</Heading>
+          <div className="flex flex-row justify-start items-center text-black gap-8 mt-8">
+            <div className="bg-gray-30 p-3">
+              <div>Debt</div>
+              <div>{trove?.debt.toString() ?? '0'}</div>
+            </div>
+            <div className="bg-gray-30 p-3">
+              <div>Collateral</div>
+              <div>{trove?.collateral.toString() ?? '0'}</div>
+            </div>
+          </div>
+
+          <Button text="Adjust" onClick={toggle} className="mt-8" />
+        </>
+      ) : (
+        <>Connect first.</>
+      )}
+
+      <Dialog width={DialogSize.sm} isOpen={open} disableFocusTrap>
+        <DialogHeader title="Adjust" onClose={toggle} />
+        <DialogBody>
+          <AdjustCreditLine
+            collateralValue={trove?.collateral.toString() ?? '0'}
+            creditValue={trove?.debt.toString() ?? '0'}
+            onSubmit={noop}
+            rbtcPrice={btcPrice}
+            fees={fees}
+          />
+        </DialogBody>
+      </Dialog>
     </div>
   );
 };

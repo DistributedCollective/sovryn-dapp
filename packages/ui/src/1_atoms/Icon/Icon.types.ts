@@ -38,11 +38,11 @@ export enum IconNames {
   TELEGRAM_LOGO = 'telegram-logo',
   GITHUB_LOGO = 'github-logo',
   CHECK = 'check',
-  FUNNEL = 'funnel',
   EARN_3 = 'earn-3',
   LEND = 'lend',
   SWAP = 'swap',
   TRADING = 'trading',
+  FUNNEL = 'funnel',
   LINK = 'link',
 }
 

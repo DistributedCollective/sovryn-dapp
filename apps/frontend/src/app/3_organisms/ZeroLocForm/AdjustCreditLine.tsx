@@ -1,3 +1,5 @@
+import { Fees } from '@sovryn-zero/lib-base';
+
 import React, { ChangeEvent, useCallback, useMemo, useState, FC } from 'react';
 
 import { useTranslation } from 'react-i18next';
@@ -16,15 +18,15 @@ import {
   SimpleTable,
 } from '@sovryn/ui';
 
+import { useAssetBalance } from '../../../hooks/useAssetBalance';
 import { translations } from '../../../locales/i18n';
-import { formatValue } from '../../../utils/math';
+import { formatValue, fromWei } from '../../../utils/math';
 import { Label } from './Label';
 import { Row } from './Row';
 import { AmountType, tokens } from './types';
 import { normalizeAmountByType } from './utils';
 
 // todo: these needs to be retrieved
-const maxCollateralAmount = 1;
 const maxCreditAmount = 100;
 
 type SubmitValue = {
@@ -36,12 +38,16 @@ type AdjustCreditLineProps = {
   collateralValue: string;
   creditValue: string;
   onSubmit: (value: SubmitValue) => void;
+  rbtcPrice?: string;
+  fees?: Fees;
 };
 
 export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
   collateralValue,
   creditValue,
   onSubmit,
+  rbtcPrice,
+  fees,
 }) => {
   const [debtType, setDebtType] = useState(AmountType.Add);
   const [collateralType, setCollateralType] = useState(AmountType.Add);
@@ -52,9 +58,23 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
     SupportedTokens.dllr,
   );
 
+  const { value: maxCollateralAmountWei } = useAssetBalance(
+    SupportedTokens.rbtc,
+  );
+
+  const maxCollateralAmount = useMemo(
+    () =>
+      Number(
+        collateralType === AmountType.Add
+          ? fromWei(maxCollateralAmountWei)
+          : collateralValue,
+      ),
+    [collateralType, collateralValue, maxCollateralAmountWei],
+  );
+
   const handleMaxCollateralAmountClick = useCallback(
     () => setCollateralAmount(String(maxCollateralAmount)),
-    [],
+    [maxCollateralAmount],
   );
 
   const handleMaxCreditAmountClick = useCallback(
@@ -94,13 +114,24 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
     });
   }, [newCollateral, newDebt, onSubmit]);
 
-  // todo: convert collateral and debt to same asset before calculating actual ratio
-  const ratio = useMemo(() => {
-    if (newDebt === 0) {
+  const initialRatio = useMemo(() => {
+    if ([collateralValue, creditValue, rbtcPrice].some(v => !v)) {
       return 0;
     }
-    return (newCollateral / newDebt) * 100;
-  }, [newCollateral, newDebt]);
+    return (
+      ((Number(collateralValue) * Number(rbtcPrice)) / Number(creditValue)) *
+      100
+    );
+  }, [collateralValue, creditValue, rbtcPrice]);
+
+  const ratio = useMemo(() => {
+    if ([newCollateral, newDebt, rbtcPrice].some(v => !v)) {
+      return 0;
+    }
+    return (
+      ((Number(newCollateral) * Number(rbtcPrice)) / Number(newDebt)) * 100
+    );
+  }, [newCollateral, newDebt, rbtcPrice]);
 
   const { t } = useTranslation();
 
@@ -152,6 +183,24 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
         <>{formatValue(value, 3)} RBTC</>
       ),
     [t],
+  );
+
+  const initialLiquidationPrice = useMemo(
+    () => 1.1 * (Number(creditValue) / Number(collateralValue)),
+    [creditValue, collateralValue],
+  );
+  const initialLiquidationPriceRecoveryMode = useMemo(
+    () => 1.5 * (Number(creditValue) / Number(collateralValue)),
+    [creditValue, collateralValue],
+  );
+
+  const liquidationPrice = useMemo(
+    () => 1.1 * (newDebt / newCollateral),
+    [newDebt, newCollateral],
+  );
+  const liquidationPriceRecoveryMode = useMemo(
+    () => 1.5 * (newDebt / newCollateral),
+    [newDebt, newCollateral],
   );
 
   return (
@@ -248,17 +297,17 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
         </div>
         <div className="text-primary-10">
           <DynamicValue
-            initialValue={0 /* todo: calculate initial ratio once possible */}
+            initialValue={initialRatio}
             value={ratio}
-            renderer={value => <>{value}%</>}
+            renderer={value => <>{formatValue(value, 3)}%</>}
           />
         </div>
       </div>
       <HealthBar
-        start={70}
+        start={90}
         middleStart={110}
         middleEnd={150}
-        end={200}
+        end={250}
         value={ratio}
       />
 
@@ -271,8 +320,8 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
             )}
             value={
               <DynamicValue
-                initialValue={0}
-                value={15023}
+                initialValue={initialLiquidationPrice}
+                value={liquidationPrice}
                 renderer={value => <>{formatValue(value, 3)} USD</>}
               />
             }
@@ -287,8 +336,8 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
             )}
             value={
               <DynamicValue
-                initialValue={0}
-                value={17653}
+                initialValue={initialLiquidationPriceRecoveryMode}
+                value={liquidationPriceRecoveryMode}
                 renderer={value => <>{formatValue(value, 3)} USD</>}
               />
             }
@@ -297,14 +346,16 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
           <Row
             label={t(translations.adjustCreditLine.labels.rbtcPrice)}
             tooltip={t(translations.adjustCreditLine.labels.rbtcPriceTooltip)}
-            value={<>{formatValue(20000, 3)} USD</>}
+            value={<>{formatValue(Number(rbtcPrice), 3)} USD</>}
           />
           <Row
             label={t(translations.adjustCreditLine.labels.originationFee)}
             tooltip={t(
               translations.adjustCreditLine.labels.originationFeeTooltip,
             )}
-            value={<>{formatValue(0.5, 1)}%</>}
+            value={
+              <>{formatValue(Number(fees?.borrowingRate().mul(100)), 1)}%</>
+            }
           />
         </SimpleTable>
       </div>

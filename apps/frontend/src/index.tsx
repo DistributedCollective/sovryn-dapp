@@ -11,6 +11,7 @@ import { OnboardProvider } from '@sovryn/onboard-react';
 
 import { PageContainer } from './app/4_templates';
 import { ErrorPage } from './app/5_pages/ErrorPage/ErrorPage';
+import { zeroPageLoader } from './app/5_pages/ZeroPage/loader';
 import { chains } from './config/chains';
 import { MaintenanceModeContextProvider } from './contexts/MaintenanceModeContext';
 import { TransactionProvider } from './contexts/TransactionContext';
@@ -45,8 +46,15 @@ const router = createBrowserRouter([
         index: true,
       },
       {
+        id: 'zero',
         path: '/zero',
-        element: <Zero />,
+        loader: zeroPageLoader,
+        children: [
+          {
+            element: <Zero />,
+            index: true,
+          },
+        ],
       },
     ],
   },

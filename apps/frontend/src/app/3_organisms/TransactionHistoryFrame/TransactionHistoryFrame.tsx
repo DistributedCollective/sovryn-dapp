@@ -130,17 +130,14 @@ export const TransactionHistoryFrame: FC = () => {
    */
   const getFinalFilters = useCallback(() => {
     const newFilters = { ...filters };
-
     if (collateralChangeFilters.every(filter => filter.checked)) {
-      delete newFilters['collateralChange_gte'];
-      delete newFilters['collateralChange_lte'];
+      collateralChangeFilters.forEach(item => delete newFilters[item.filter]);
     }
     if (debtChangeFilters.every(filter => filter.checked)) {
-      delete newFilters['debtChange_gte'];
-      delete newFilters['debtChange_lte'];
+      debtChangeFilters.forEach(item => delete newFilters[item.filter]);
     }
     if (transactionTypeFilters.every(filter => filter.checked)) {
-      delete newFilters['troveOperation_in'];
+      transactionTypeFilters.forEach(item => delete newFilters[item.filter]);
     }
     return newFilters;
   }, [
@@ -156,7 +153,6 @@ export const TransactionHistoryFrame: FC = () => {
     getFinalFilters(),
     orderOptions,
   );
-  console.log(filters);
 
   const noDataLabel = useMemo(
     () =>

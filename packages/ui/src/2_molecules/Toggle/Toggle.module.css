@@ -1,5 +1,5 @@
 .label {
-  @apply relative inline-flex items-center align-middle cursor-pointer select-none text-sm leading-4;
+  @apply relative inline-flex items-center align-middle cursor-pointer select-none text-xs leading-[0.875rem] font-medium;
 
   input {
     @apply left-0 opacity-0 absolute top-0 w-0 h-0;

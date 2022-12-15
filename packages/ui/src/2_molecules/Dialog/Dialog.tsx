@@ -3,7 +3,6 @@ import React, { useCallback, useEffect, MouseEvent, useRef } from 'react';
 import classNames from 'classnames';
 import FocusTrap from 'focus-trap-react';
 
-import { Button, ButtonStyle, Icon } from '../../1_atoms';
 import { applyDataAttr } from '../../utils';
 import { Overlay, OverlayProps } from '../Overlay/Overlay';
 import styles from './Dialog.module.css';
@@ -24,6 +23,7 @@ type DialogProps = {
   closeOnEscape?: boolean;
   initialFocusRef?: React.RefObject<HTMLElement>;
   disableFocusTrap?: boolean;
+  buttonCloseText?: string;
 };
 
 export const Dialog: IDialogFunctionComponent<DialogProps> = ({
@@ -37,6 +37,7 @@ export const Dialog: IDialogFunctionComponent<DialogProps> = ({
   closeOnEscape = true,
   initialFocusRef,
   disableFocusTrap,
+  buttonCloseText = 'Maybe Later',
 }) => {
   const ref = useRef<HTMLDivElement>(null);
 
@@ -92,18 +93,6 @@ export const Dialog: IDialogFunctionComponent<DialogProps> = ({
     >
       <div className={styles.wrapper} {...applyDataAttr(dataLayoutId)}>
         <div className={styles.container}>
-          <Button
-            style={ButtonStyle.ghost}
-            text={
-              <Icon
-                className={styles.buttonCloseIcon}
-                icon="x-mark"
-                size={24}
-              />
-            }
-            onClick={handleClose}
-            className={styles.buttonClose}
-          />
           <FocusTrap
             active={isOpen && !disableFocusTrap}
             focusTrapOptions={{
@@ -123,6 +112,9 @@ export const Dialog: IDialogFunctionComponent<DialogProps> = ({
               tabIndex={-1}
             >
               {children}
+              <button onClick={handleClose} className={styles.buttonClose}>
+                {buttonCloseText}
+              </button>
             </section>
           </FocusTrap>
         </div>

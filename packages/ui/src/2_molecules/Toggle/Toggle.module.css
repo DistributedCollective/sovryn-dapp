@@ -39,11 +39,11 @@
   @apply cursor-not-allowed opacity-50;
 }
 
-.labelRight {
+.labelLeft {
   @apply flex-row-reverse;
 }
 
-.labelLeft {
+.inputRight {
   @apply ml-2.5;
 }
 

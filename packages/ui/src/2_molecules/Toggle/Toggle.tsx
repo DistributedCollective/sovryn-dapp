@@ -50,7 +50,7 @@ export const Toggle = forwardRef<HTMLInputElement, ToggleProps>(
           className={classNames(
             styles.label,
             { [styles.disabled]: disabled },
-            { [styles.labelRight]: isRightAligned },
+            { [styles.labelLeft]: isRightAligned },
           )}
         >
           <input
@@ -63,7 +63,7 @@ export const Toggle = forwardRef<HTMLInputElement, ToggleProps>(
           />
           <span
             className={classNames(styles.indicator, {
-              [styles.labelLeft]: isRightAligned,
+              [styles.inputRight]: isRightAligned,
             })}
           />
           {label}

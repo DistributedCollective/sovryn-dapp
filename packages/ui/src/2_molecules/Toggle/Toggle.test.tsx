@@ -23,8 +23,8 @@ describe('Toggle', () => {
     const label = getByText('Custom label');
     expect(label).toBeInTheDocument();
 
-    // Toggle is right-aligned by default
-    expect(label).toHaveClass('labelRight');
+    // label is displayed on the left side by default
+    expect(label).toHaveClass('labelLeft');
   });
 
   test('renders with a label on the left', () => {
@@ -41,7 +41,7 @@ describe('Toggle', () => {
 
     expect(label).toBeInTheDocument();
     expect(label).toHaveClass('label');
-    expect(label).not.toHaveClass('labelRight');
+    expect(label).not.toHaveClass('labelLeft');
   });
 
   test('onChange is called after clicking on the label', () => {

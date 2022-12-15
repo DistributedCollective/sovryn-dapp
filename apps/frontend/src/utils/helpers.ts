@@ -40,7 +40,7 @@ export const getServicesConfig = () =>
 
 export const dateFormat = (timestamp: number) => {
   const stamp = dayjs.tz(Number(timestamp) * 1e3, 'UTC');
-  return stamp.format(`YYYY-MM-DD-HH:MM:ss`);
+  return stamp.format(`YYYY-MM-DD HH:MM:ss +UTC`);
 };
 
 export const signMessage = async (

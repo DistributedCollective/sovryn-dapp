@@ -13,6 +13,13 @@ const Zero = loadable(() => import('./app/5_pages/ZeroPage/ZeroPage'), {
 });
 
 const Debug = loadable(() => import('./app/5_pages/App/App'));
+const EarnPage = loadable(() => import('./app/5_pages/EarnPage/EarnPage'));
+const ConvertPage = loadable(
+  () => import('./app/5_pages/ConvertPage/ConvertPage'),
+);
+const HistoryPage = loadable(
+  () => import('./app/5_pages/HistoryPage/HistoryPage'),
+);
 
 const PrivacyPolicy = loadable(
   () => import('./app/5_pages/PrivacyPolicy/PrivacyPolicy'),
@@ -34,11 +41,15 @@ export const router = createBrowserRouter([
       },
       {
         path: '/earn',
-        element: <>Earn</>,
+        element: <EarnPage />,
       },
       {
         path: '/convert',
-        element: <>Convert</>,
+        element: <ConvertPage />,
+      },
+      {
+        path: '/history',
+        element: <HistoryPage />,
       },
       {
         path: '/debug-content',

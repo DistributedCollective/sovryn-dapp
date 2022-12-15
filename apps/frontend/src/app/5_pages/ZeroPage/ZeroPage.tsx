@@ -29,7 +29,7 @@ export const ZeroPage: FC = () => {
   const [btcPrice, setBtcPrice] = useState('0');
   const [fees, setFees] = useState<Fees>();
 
-  const { account } = useWalletConnect();
+  const { account, connectWallet } = useWalletConnect();
 
   useEffect(() => {
     liquity
@@ -65,7 +65,7 @@ export const ZeroPage: FC = () => {
           <Button text="Adjust" onClick={toggle} className="mt-8" />
         </>
       ) : (
-        <>Connect first.</>
+        <Button text="Connect first...." onClick={connectWallet} />
       )}
 
       <Dialog width={DialogSize.sm} isOpen={open} disableFocusTrap>

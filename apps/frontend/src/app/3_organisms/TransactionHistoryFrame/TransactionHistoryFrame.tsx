@@ -40,9 +40,7 @@ export const TransactionHistoryFrame: FC = () => {
   const [page, setPage] = useState(0);
   const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE);
   const chain = chains.find(chain => chain.id === defaultChainId);
-  const [filters, setFilters] = useState<
-    InputMaybe<TroveChange_Filter> | undefined
-  >();
+  const [filters, setFilters] = useState<InputMaybe<TroveChange_Filter>>({});
 
   const [orderOptions, setOrderOptions] = useState<OrderOptions>({
     orderBy: 'sequenceNumber',
@@ -164,22 +162,31 @@ export const TransactionHistoryFrame: FC = () => {
     return '—';
   }, []);
 
-  const updateFilters = useCallback((filterList: Filter[]) => {
-    setFilters({
-      ...filterList
-        .filter(f => !!f.checked)
+  const updateFilters = useCallback(
+    (filterList: Filter[]) => {
+      const previousFilters = { ...filters };
+
+      filterList.forEach(filter => {
+        delete previousFilters[filter.filter];
+      });
+
+      const updatedFilters = filterList
+        .filter(f => f.checked)
         .reduce(
-          (accum, curr) => ({
-            ...accum,
-            [curr.filter]:
-              curr.filter === 'troveOperation_in'
-                ? [...(accum[curr.filter] || []), curr.value]
-                : curr.value,
+          (acc, filter) => ({
+            ...acc,
+            [filter.filter]:
+              filter.filter === 'troveOperation_in'
+                ? [...(acc[filter.filter] || []), filter.value]
+                : filter.value,
           }),
           {},
-        ),
-    } as InputMaybe<TroveChange_Filter>);
-  }, []);
+        );
+
+      setFilters({ ...previousFilters, ...updatedFilters });
+    },
+    [filters],
+  );
 
   const renderSign = useCallback(
     (troveOperation: TroveOperation, value: number) => {
@@ -345,7 +352,7 @@ export const TransactionHistoryFrame: FC = () => {
       <>
         {trove.borrowingFee ? (
           <Tooltip
-            content={`${trove.borrowingFee} {SupportedTokens.zusd}`}
+            content={`${trove.borrowingFee} ${SupportedTokens.zusd}`}
             trigger={TooltipTrigger.click}
             className="cursor-pointer uppercase"
             tooltipClassName="uppercase"

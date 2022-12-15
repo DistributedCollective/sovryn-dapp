@@ -1,12 +1,11 @@
 import React, { FC, PropsWithChildren } from 'react';
 
 import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
 
-import { Button } from '@sovryn/ui';
-import { WalletIdentity } from '@sovryn/ui';
+import { Button, Menu, MenuItem, WalletIdentity } from '@sovryn/ui';
 
 import { translations } from '../../../locales/i18n';
-import { WalletBalance } from '../WalletBalance/WalletBalance';
 
 export type ConnectWalletButtonProps = {
   onConnect: () => void;
@@ -45,7 +44,21 @@ export const ConnectWalletButton: FC<
         address={address}
         dataLayoutId={dataLayoutId}
         className={className}
-        balance={<WalletBalance />}
+        balance={
+          <Menu className="mb-4">
+            <Link to="/rewards" className="no-underline">
+              <MenuItem text={t(translations.connectWalletButton.rewards)} />
+            </Link>
+            <Link to="/notifications" className="no-underline">
+              <MenuItem
+                text={t(translations.connectWalletButton.notifications)}
+              />
+            </Link>
+            <Link to="/history" className="no-underline">
+              <MenuItem text={t(translations.connectWalletButton.history)} />
+            </Link>
+          </Menu>
+        }
         submenuLabels={{
           copyAddress: t(translations.connectWalletButton.copyAddress),
           disconnect: t(translations.connectWalletButton.disconnect),

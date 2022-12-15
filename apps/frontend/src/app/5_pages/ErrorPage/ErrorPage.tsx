@@ -10,8 +10,6 @@ export const ErrorPage: FC = () => {
   const { t } = useTranslation();
   const error = useRouteError() as Error & { statusText?: string };
 
-  console.log(error);
-
   return (
     <>
       <Header />

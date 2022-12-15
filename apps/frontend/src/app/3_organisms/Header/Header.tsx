@@ -1,5 +1,7 @@
 import React, { FC, useCallback, useReducer } from 'react';
 
+import { useTranslation } from 'react-i18next';
+
 import {
   Button,
   ButtonStyle,
@@ -12,8 +14,10 @@ import { ConnectWalletButton, WrongNetworkSwitcher } from '../../2_molecules';
 import { NavLink } from '../../2_molecules/NavLink/NavLink';
 import { SovrynLogo } from '../../2_molecules/SovrynLogo/SovrynLogo';
 import { useWalletConnect } from '../../../hooks';
+import { translations } from '../../../locales/i18n';
 
 export const Header: FC = () => {
+  const { t } = useTranslation();
   const [isOpen, toggle] = useReducer(v => !v, false);
   const { connectWallet, disconnectWallet, account, pending } =
     useWalletConnect();
@@ -47,13 +51,13 @@ export const Header: FC = () => {
       menuItems={
         <ol className="flex flex-col gap-4 lg:flex-row">
           <NavLink to="/" end onClick={handleNavClick}>
-            Home
+            {t(translations.header.nav.home)}
           </NavLink>
           <NavLink to="/earn" onClick={handleNavClick}>
-            Earn
+            {t(translations.header.nav.earn)}
           </NavLink>
           <NavLink to="/convert" onClick={handleNavClick}>
-            Convert
+            {t(translations.header.nav.convert)}
           </NavLink>
           <NavLink to="/debug-content" onClick={handleNavClick}>
             *Debug Content*
@@ -74,7 +78,10 @@ export const Header: FC = () => {
       extraContent={
         <>
           {account && (
-            <Button text="Fund Wallet" style={ButtonStyle.secondary} />
+            <Button
+              text={t(translations.header.funding)}
+              style={ButtonStyle.secondary}
+            />
           )}
         </>
       }

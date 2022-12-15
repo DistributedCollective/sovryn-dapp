@@ -98,7 +98,18 @@
     },
     "connectWalletButton": {
         "connect": "Get started",
+        "rewards": "Rewards",
+        "notifications": "Notifications",
+        "history": "Transaction History",
         "copyAddress": "Copy address",
         "disconnect": "Disconnect"
+    },
+    "header": {
+        "funding": "Funding",
+        "nav": {
+            "home": "Home",
+            "earn": "Earn",
+            "convert": "Convert"
+        }
     }
 }

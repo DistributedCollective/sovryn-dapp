@@ -47,16 +47,6 @@ export const TransactionHistoryFrame: FC = () => {
     orderDirection: OrderDirection.Desc,
   });
 
-  const { data, loading } = useGetTroves(pageSize, page, filters, orderOptions);
-
-  const noDataLabel = useMemo(
-    () =>
-      Object.keys(filters || {}).length > 0
-        ? t(translations.transactionHistory.table.noDataWithFilters)
-        : t(translations.transactionHistory.table.noData),
-    [t, filters],
-  );
-
   const getTroveType = useCallback(
     (trove: TroveOperation) => {
       switch (trove) {
@@ -82,14 +72,6 @@ export const TransactionHistoryFrame: FC = () => {
     },
     [t],
   );
-
-  const troves = useMemo(() => {
-    if (!data) {
-      return null;
-    }
-
-    return data.trove?.changes;
-  }, [data]);
 
   const transactionTypeFilters = useMemo(() => {
     return Object.keys(TroveOperation).map(key => ({
@@ -139,6 +121,59 @@ export const TransactionHistoryFrame: FC = () => {
     [t, filters],
   );
 
+  /**
+   * @description
+   * This function is used to remove the filters that are not needed in the query,
+   * if they are all checked inside of the filter group.
+   * For example, if all the filters in collateralChangeFilters are checked,
+   * then we don't need to send the collateralChange_gte and collateralChange_lte filters to the query.
+   */
+  const getFinalFilters = useCallback(() => {
+    const newFilters = { ...filters };
+
+    if (collateralChangeFilters.every(filter => filter.checked)) {
+      delete newFilters['collateralChange_gte'];
+      delete newFilters['collateralChange_lte'];
+    }
+    if (debtChangeFilters.every(filter => filter.checked)) {
+      delete newFilters['debtChange_gte'];
+      delete newFilters['debtChange_lte'];
+    }
+    if (transactionTypeFilters.every(filter => filter.checked)) {
+      delete newFilters['troveOperation_in'];
+    }
+    return newFilters;
+  }, [
+    filters,
+    collateralChangeFilters,
+    debtChangeFilters,
+    transactionTypeFilters,
+  ]);
+
+  const { data, loading } = useGetTroves(
+    pageSize,
+    page,
+    getFinalFilters(),
+    orderOptions,
+  );
+  console.log(filters);
+
+  const noDataLabel = useMemo(
+    () =>
+      Object.keys(filters || {}).length > 0
+        ? t(translations.transactionHistory.table.noDataWithFilters)
+        : t(translations.transactionHistory.table.noData),
+    [t, filters],
+  );
+
+  const troves = useMemo(() => {
+    if (!data) {
+      return null;
+    }
+
+    return data.trove?.changes;
+  }, [data]);
+
   const renderLiquidationReserve = useCallback((trove: TroveChange) => {
     const { troveOperation, redemption } = trove;
     const operations = [
@@ -182,11 +217,6 @@ export const TransactionHistoryFrame: FC = () => {
           }),
           {},
         );
-
-      if (filterList.every(filter => filter.checked)) {
-        setFilters({ ...previousFilters, ...{} });
-        return;
-      }
       setFilters({ ...previousFilters, ...updatedFilters });
     },
     [filters],

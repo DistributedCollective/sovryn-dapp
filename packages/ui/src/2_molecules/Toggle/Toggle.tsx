@@ -15,7 +15,7 @@ type ToggleProps = {
   alignment?: ToggleAlignment;
   onChange: () => void;
   checked: boolean;
-  disabled: boolean;
+  disabled?: boolean;
   dataAttribute?: string;
   className?: string;
   inline?: boolean;
@@ -25,7 +25,7 @@ export const Toggle = forwardRef<HTMLInputElement, ToggleProps>(
   (
     {
       label,
-      alignment,
+      alignment = ToggleAlignment.RIGHT,
       onChange,
       checked,
       disabled,

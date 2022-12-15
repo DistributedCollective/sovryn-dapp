@@ -26,7 +26,7 @@
 }
 
 .indicator {
-  @apply bg-gray-50 border-0 h-5 relative select-none rounded-2xl mr-2.5 min-w-9;
+  @apply bg-gray-50 border-0 h-5 relative select-none rounded-2xl mr-6 min-w-9;
 
   &:before {
     content: '';
@@ -44,7 +44,7 @@
 }
 
 .inputRight {
-  @apply ml-2.5;
+  @apply ml-6 mr-0;
 }
 
 .inlineBlock {

@@ -57,7 +57,7 @@ describe('Toggle', () => {
     expect(mockFunction).toBeCalledTimes(1);
   });
 
-  test('onChange is not called if disabled is set to true', () => {
+  test('onChange is not called if disabled is set to true and toggle clicked', () => {
     const mockFunction = jest.fn();
 
     const { getByText } = render(

@@ -95,5 +95,10 @@
         "title": "Notifications on the status of your line of credit are sent to your email after you sign it with your wallet",
         "emailInputLabel": "Email address",
         "emailInputPlaceholder": "Enter Email"
+    },
+    "connectWalletButton": {
+        "connect": "Get started",
+        "copyAddress": "Copy address",
+        "disconnect": "Disconnect"
     }
 }

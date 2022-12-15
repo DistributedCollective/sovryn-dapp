@@ -8,7 +8,9 @@ import { translations } from '../../../locales/i18n';
 
 export const ErrorPage: FC = () => {
   const { t } = useTranslation();
-  const error: any = useRouteError();
+  const error = useRouteError() as Error & { statusText?: string };
+
+  console.log(error);
 
   return (
     <>
@@ -19,6 +21,9 @@ export const ErrorPage: FC = () => {
         <p>
           <i>{error.statusText || error.message}</i>
         </p>
+        {process.env.NODE_ENV === 'development' && (
+          <pre>{JSON.stringify(error, undefined, 2)}</pre>
+        )}
       </div>
       <Footer />
     </>

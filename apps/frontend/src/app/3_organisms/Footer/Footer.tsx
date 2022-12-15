@@ -53,16 +53,11 @@ export const Footer: FC = () => {
         />
       }
       links={
-        <>
+        <div className="flex flex-row justify-center flex-wrap gap-x-7 gap-y-5">
           {footerLinks.map(link => (
-            <Link
-              key={link.id}
-              href={link.href}
-              text={link.name}
-              className="mr-7 mb-5 sm:mb-0"
-            />
+            <Link key={link.id} href={link.href} text={link.name} />
           ))}
-        </>
+        </div>
       }
       rightContent={<SocialLinks />}
     />

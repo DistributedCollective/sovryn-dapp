@@ -1,8 +1,11 @@
 import React, { FC, PropsWithChildren } from 'react';
 
+import { useTranslation } from 'react-i18next';
+
 import { Button } from '@sovryn/ui';
 import { WalletIdentity } from '@sovryn/ui';
 
+import { translations } from '../../../locales/i18n';
 import { WalletBalance } from '../WalletBalance/WalletBalance';
 
 export type ConnectWalletButtonProps = {
@@ -24,10 +27,11 @@ export const ConnectWalletButton: FC<
   className,
   dataLayoutId,
 }) => {
+  const { t } = useTranslation();
   if (!address) {
     return (
       <Button
-        text="Connect wallet"
+        text={t(translations.connectWalletButton.connect)}
         onClick={onConnect}
         className={className}
         dataLayoutId={dataLayoutId}
@@ -43,8 +47,8 @@ export const ConnectWalletButton: FC<
         className={className}
         balance={<WalletBalance />}
         submenuLabels={{
-          copyAddress: 'Copy Address',
-          disconnect: 'Disconnect',
+          copyAddress: t(translations.connectWalletButton.copyAddress),
+          disconnect: t(translations.connectWalletButton.disconnect),
         }}
       />
     );

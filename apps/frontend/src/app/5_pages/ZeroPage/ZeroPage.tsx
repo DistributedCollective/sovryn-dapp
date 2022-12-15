@@ -3,7 +3,7 @@ import { EthersLiquity, ReadableEthersLiquity } from '@sovryn-zero/lib-ethers';
 
 import React, { FC, useEffect, useReducer, useState } from 'react';
 
-import { useRouteLoaderData } from 'react-router-dom';
+import { useLoaderData } from 'react-router-dom';
 
 import {
   Button,
@@ -19,7 +19,7 @@ import { AdjustCreditLine } from '../../3_organisms/ZeroLocForm/AdjustCreditLine
 import { useWalletConnect } from '../../../hooks';
 
 export const ZeroPage: FC = () => {
-  const { liquity } = useRouteLoaderData('zero') as {
+  const { liquity } = useLoaderData() as {
     liquity: EthersLiquity;
     provider: ReadableEthersLiquity;
   };

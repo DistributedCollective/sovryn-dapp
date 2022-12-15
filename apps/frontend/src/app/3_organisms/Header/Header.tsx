@@ -1,38 +1,81 @@
-import React, { FC } from 'react';
+import React, { FC, useCallback, useReducer } from 'react';
 
-import { Header as UIHeader, NavMenuItem } from '@sovryn/ui';
+import {
+  Button,
+  ButtonStyle,
+  Header as UIHeader,
+  Icon,
+  IconNames,
+} from '@sovryn/ui';
 
 import { ConnectWalletButton, WrongNetworkSwitcher } from '../../2_molecules';
-import { LanguageSelector } from '../../2_molecules/LanguageSelector/LanguageSelector';
+import { NavLink } from '../../2_molecules/NavLink/NavLink';
 import { SovrynLogo } from '../../2_molecules/SovrynLogo/SovrynLogo';
 import { useWalletConnect } from '../../../hooks';
 
 export const Header: FC = () => {
-  const { connectWallet, disconnectWallet, wallets, pending } =
+  const [isOpen, toggle] = useReducer(v => !v, false);
+  const { connectWallet, disconnectWallet, account, pending } =
     useWalletConnect();
+
+  const handleNavClick = useCallback(() => {
+    if (isOpen) {
+      toggle();
+    }
+  }, [isOpen]);
 
   return (
     <UIHeader
-      logo={<SovrynLogo dataAttribute="logo" link="/" />}
+      logo={
+        <SovrynLogo dataAttribute="logo" link="/" onClick={handleNavClick} />
+      }
+      isOpen={isOpen}
+      menuIcon={
+        <Button
+          text={
+            <Icon
+              icon={isOpen ? IconNames.X_MARK : IconNames.HAMBURGER_MENU}
+              viewBox={isOpen ? '0 0 24 24' : '0 0 16 16'}
+              size={16}
+            />
+          }
+          style={ButtonStyle.ghost}
+          onClick={toggle}
+          className="text-white"
+        />
+      }
       menuItems={
-        <>
-          <NavMenuItem className="mr-2" isActive children="Zero" />
-          <NavMenuItem children="Perpetuals" />
-        </>
+        <ol className="flex flex-col gap-4 lg:flex-row">
+          <NavLink to="/" end onClick={handleNavClick}>
+            Home
+          </NavLink>
+          <NavLink to="/earn" onClick={handleNavClick}>
+            Earn
+          </NavLink>
+          <NavLink to="/convert" onClick={handleNavClick}>
+            Convert
+          </NavLink>
+          <NavLink to="/debug-content" onClick={handleNavClick}>
+            *Debug Content*
+          </NavLink>
+        </ol>
       }
       secondaryContent={
+        <div className="relative">
+          <ConnectWalletButton
+            onConnect={connectWallet}
+            onDisconnect={disconnectWallet}
+            address={account}
+            pending={pending}
+          />
+          <WrongNetworkSwitcher className="absolute top-full right-0" />
+        </div>
+      }
+      extraContent={
         <>
-          <div className="relative">
-            <ConnectWalletButton
-              onConnect={connectWallet}
-              onDisconnect={disconnectWallet}
-              address={wallets[0]?.accounts[0]?.address}
-              pending={pending}
-            />
-            <WrongNetworkSwitcher className="absolute top-full right-0" />
-          </div>
-
-          <LanguageSelector className="mr-1 ml-6 font-medium" />
+          {account && (
+            <Button text="Fund Wallet" style={ButtonStyle.secondary} />
+          )}
         </>
       }
     />

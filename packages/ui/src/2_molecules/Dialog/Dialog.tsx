@@ -37,7 +37,7 @@ export const Dialog: IDialogFunctionComponent<DialogProps> = ({
   closeOnEscape = true,
   initialFocusRef,
   disableFocusTrap,
-  buttonCloseText = 'Maybe Later',
+  buttonCloseText,
 }) => {
   const ref = useRef<HTMLDivElement>(null);
 
@@ -112,9 +112,11 @@ export const Dialog: IDialogFunctionComponent<DialogProps> = ({
               tabIndex={-1}
             >
               {children}
-              <button onClick={handleClose} className={styles.buttonClose}>
-                {buttonCloseText}
-              </button>
+              {buttonCloseText && (
+                <button onClick={handleClose} className={styles.buttonClose}>
+                  {buttonCloseText}
+                </button>
+              )}
             </section>
           </FocusTrap>
         </div>

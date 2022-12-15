@@ -183,6 +183,10 @@ export const TransactionHistoryFrame: FC = () => {
           {},
         );
 
+      if (filterList.every(filter => filter.checked)) {
+        setFilters({ ...previousFilters, ...{} });
+        return;
+      }
       setFilters({ ...previousFilters, ...updatedFilters });
     },
     [filters],

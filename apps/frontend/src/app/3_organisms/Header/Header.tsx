@@ -39,7 +39,6 @@ export const Header: FC = () => {
           text={
             <Icon
               icon={isOpen ? IconNames.X_MARK : IconNames.HAMBURGER_MENU}
-              viewBox={isOpen ? '0 0 24 24' : '0 0 16 16'}
               size={16}
             />
           }

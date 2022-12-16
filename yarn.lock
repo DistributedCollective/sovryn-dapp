@@ -4207,7 +4207,7 @@
   resolved "https://registry.yarnpkg.com/@sovryn-zero/lib-ethers/-/lib-ethers-1.0.0-early.access.1.tgz#ce9a2ae0bb6c9ab807af37f6ba7f28ef1bc1ecf9"
   integrity sha512-NRMhgYhis512TD6SmyLmzItFcKGrXIV7XYrD8xsiHJGYcsbjwcGFRi/Vst2bdIoYWnufudl1WNkOrDOpKZn2jA==
 
-"@sovryn/onboard-common@*", "@sovryn/onboard-common@0.0.1":
+"@sovryn/onboard-common@*":
   version "0.0.1"
   resolved "https://registry.yarnpkg.com/@sovryn/onboard-common/-/onboard-common-0.0.1.tgz#d98c8aa842e4054b313d357a217b67eb618af0c2"
   integrity sha512-m/01kyNT15Cj8cjMxqeaAF3nrMy9cO/QLGUg67UH3cXU95buT1BYuaqiuaT1on/NgwDka8ccsRZ/vGaWfKIRFA==
@@ -4223,7 +4223,7 @@
     ethers "^5.7.0"
     joi "^17.6.0"
 
-"@sovryn/onboard-core@*", "@sovryn/onboard-core@0.0.3":
+"@sovryn/onboard-core@*":
   version "0.0.3"
   resolved "https://registry.yarnpkg.com/@sovryn/onboard-core/-/onboard-core-0.0.3.tgz#da9da00301c4f395bc4d37b591d3cdbc128dfb52"
   integrity sha512-k/pzqAtvIQ2tFBglFmRg+H1Ezvc5fB6wwn5xPdtBVz2ZaLZzqGQJ4npfxCQf5zIPlY8DCgC1cux3FCgIUUG7+g==
@@ -4249,7 +4249,7 @@
     lodash.partition "^4.6.0"
     rxjs "^7.5.6"
 
-"@sovryn/onboard-hw-common@*", "@sovryn/onboard-hw-common@0.0.2":
+"@sovryn/onboard-hw-common@*":
   version "0.0.2"
   resolved "https://registry.yarnpkg.com/@sovryn/onboard-hw-common/-/onboard-hw-common-0.0.2.tgz#a08dcd77dd43cf558d849b03db0fdaaf3ec8820c"
   integrity sha512-G+c3Sa28gr2igOD1JeB+R6KWwJOOfqQRT/lTzn2iHefOvVqNp39lfak+m6cN9o7GQ2FGP6JqWOv8QLOAlCbjEw==

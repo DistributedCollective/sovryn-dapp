@@ -1,5 +1,11 @@
 # @sovryn/ui
 
+## 0.0.15
+
+### Patch Changes
+
+- 5250faa: SOV-1243: chore: added close button on mobile
+
 ## 0.0.14
 
 ### Patch Changes

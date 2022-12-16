@@ -30,6 +30,7 @@ import { ExampleProviderCall } from './ExampleProviderCall';
 import { ExampleTokenDetails } from './ExampleTokenDetails';
 import { ExampleTypedDataSign } from './ExampleTypedDataSign';
 import { ExportCSV } from './ExportCSV/ExportCSV';
+import { LOCStatus } from './LOCStatus/LOCStatus';
 import { SmartTokens } from './SmartTokens';
 
 // usage example, to be removed
@@ -104,6 +105,11 @@ export const DebugContent = () => {
       open={isOpen}
       onClick={toggle}
     >
+      <div className="mt-5 py-10 border-b">
+        <LOCStatus collateral={0.51} debt={5000} cRatio={200} />
+        <LOCStatus className="mt-4" withdrawalSurplus={0.5} />
+      </div>
+
       <TransactionStepDialog />
       <ExampleProviderCall />
       <ExampleTokenDetails />

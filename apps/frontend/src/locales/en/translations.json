@@ -95,5 +95,14 @@
         "title": "Notifications on the status of your line of credit are sent to your email after you sign it with your wallet",
         "emailInputLabel": "Email address",
         "emailInputPlaceholder": "Enter Email"
+    },
+    "LOCStatus": {
+        "withdrawalSurplus": "withdrawal surplus",
+        "currentCollateral": "Current collateral",
+        "currentDebt": "Current debt",
+        "collateralRatio": "Collateral ratio",
+        "withdraw": "Withdraw",
+        "adjust": "Adjust",
+        "close": "Close"
     }
 }

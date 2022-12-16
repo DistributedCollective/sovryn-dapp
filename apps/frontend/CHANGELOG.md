@@ -1,5 +1,36 @@
 # frontend
 
+## 0.1.10
+
+### Patch Changes
+
+- 8a26b54: Sov 1091 csv export implementation
+- 2e208ec: SOV-1010: zero collateral ratio healthbar component
+- 264874c: SOV-106: Graph configuration
+- 027814b: SOV-1101: utility hook to retrieve asset balance
+- 240dd5a: SOV-1024: Add Test Zero Contract call
+- 79378c9: feat: Privacy Policy & Terms of Use
+- b883727: SOV-814: Maintenance mode setup
+- 63be5ae: SOV-914: Page Container
+- 5857a84: Add WalletBalance component
+- 1fa8e30: [Notification] - add component
+- 94a5869: Feat/sov 1018 zero loc transaction history frame
+- 8bc8e1a: SOV-1090: Zero - LOC getting started popup
+- 2543b10: SOV-994: Email notification settings dialog
+- Updated dependencies [df8a16f]
+- Updated dependencies [8a26b54]
+- Updated dependencies [718c6a7]
+- Updated dependencies [7ea9995]
+- Updated dependencies [2e208ec]
+- Updated dependencies [027814b]
+- Updated dependencies [9f13eb2]
+- Updated dependencies [5857a84]
+- Updated dependencies [1fa8e30]
+- Updated dependencies [8547bb8]
+- Updated dependencies [43137ba]
+  - @sovryn/ui@0.0.14
+  - @sovryn/contracts@0.0.3
+
 ## 0.1.9
 
 ### Patch Changes

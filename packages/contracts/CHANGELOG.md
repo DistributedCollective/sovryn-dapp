@@ -1,5 +1,11 @@
 # @sovryn/contracts
 
+## 0.0.3
+
+### Patch Changes
+
+- 027814b: SOV-1101: utility hook to retrieve asset balance
+
 ## 0.0.2
 
 ### Patch Changes

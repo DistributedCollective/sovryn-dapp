@@ -26,7 +26,7 @@
 }
 
 .indicator {
-  @apply bg-gray-50 border-0 h-5 relative select-none rounded-2xl mr-6 min-w-9;
+  @apply bg-gray-50 border-0 h-5 relative select-none rounded-2xl mr-6 min-w-9 transition-colors;
 
   &:before {
     content: '';

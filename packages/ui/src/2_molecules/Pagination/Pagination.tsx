@@ -17,6 +17,7 @@ type PaginationProps = {
   totalItems?: number;
   hideFirstPageButton?: boolean;
   hideLastPageButton?: boolean;
+  isNextButtonDisabled?: boolean;
 };
 
 const DEFAULT_ITEMS_PER_PAGE = 5;
@@ -30,9 +31,10 @@ export const Pagination: FC<PaginationProps> = ({
   totalItems,
   hideFirstPageButton,
   hideLastPageButton,
+  isNextButtonDisabled,
 }) => {
   const {
-    isNextButtonDisabled,
+    isNextButtonDisabled: nextButtonDisabled,
     isPreviousButtonDisabled,
     onPreviousPage,
     onNextPage,
@@ -84,7 +86,7 @@ export const Pagination: FC<PaginationProps> = ({
         </button>
       )}
       <PaginationButton
-        disabled={isNextButtonDisabled}
+        disabled={nextButtonDisabled || !!isNextButtonDisabled}
         onClick={onNextPage}
         dataAttribute={`${dataAttribute}-next`}
         icon={IconNames.ARROW_FORWARD}

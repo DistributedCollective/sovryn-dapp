@@ -1,0 +1,3565 @@
+"""
+creates a virtual field on the entity that may be queried but cannot be set manually through the mappings API.
+"""
+directive @derivedFrom(field: String!) on FIELD_DEFINITION
+
+"""
+Marks the GraphQL type as indexable entity.  Each type that should be an entity is required to be annotated with this directive.
+"""
+directive @entity on OBJECT
+
+"""
+Defined a Subgraph ID for an object type
+"""
+directive @subgraphId(id: String!) on OBJECT
+
+scalar BigDecimal
+
+scalar BigInt
+
+"""
+The block at which the query should be executed.
+"""
+input Block_height {
+  """
+  Value containing a block hash
+  """
+  hash: Bytes
+
+  """
+  Value containing a block number
+  """
+  number: Int
+
+  "Value containing the minimum block number. \nIn the case of `number_gte`, the query will be executed on the latest block only if\nthe subgraph has progressed to or past the minimum block number.\nDefaults to the latest block when omitted.\n"
+  number_gte: Int
+}
+
+scalar Bytes
+
+interface Change {
+  """
+  Same as sequence number, but as an ID (string)
+  """
+  id: ID!
+
+  """
+  Can be used to correctly sort changes even if they were made by the same transaction
+  """
+  sequenceNumber: Int!
+  systemStateAfter: SystemState!
+  systemStateBefore: SystemState!
+
+  """
+  Transaction that made this change
+  """
+  transaction: Transaction!
+}
+
+input Change_filter {
+  id: ID
+  id_gt: ID
+  id_gte: ID
+  id_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_not: ID
+  id_not_in: [ID!]
+  sequenceNumber: Int
+  sequenceNumber_gt: Int
+  sequenceNumber_gte: Int
+  sequenceNumber_in: [Int!]
+  sequenceNumber_lt: Int
+  sequenceNumber_lte: Int
+  sequenceNumber_not: Int
+  sequenceNumber_not_in: [Int!]
+  systemStateAfter: String
+  systemStateAfter_contains: String
+  systemStateAfter_contains_nocase: String
+  systemStateAfter_ends_with: String
+  systemStateAfter_ends_with_nocase: String
+  systemStateAfter_gt: String
+  systemStateAfter_gte: String
+  systemStateAfter_in: [String!]
+  systemStateAfter_lt: String
+  systemStateAfter_lte: String
+  systemStateAfter_not: String
+  systemStateAfter_not_contains: String
+  systemStateAfter_not_contains_nocase: String
+  systemStateAfter_not_ends_with: String
+  systemStateAfter_not_ends_with_nocase: String
+  systemStateAfter_not_in: [String!]
+  systemStateAfter_not_starts_with: String
+  systemStateAfter_not_starts_with_nocase: String
+  systemStateAfter_starts_with: String
+  systemStateAfter_starts_with_nocase: String
+  systemStateBefore: String
+  systemStateBefore_contains: String
+  systemStateBefore_contains_nocase: String
+  systemStateBefore_ends_with: String
+  systemStateBefore_ends_with_nocase: String
+  systemStateBefore_gt: String
+  systemStateBefore_gte: String
+  systemStateBefore_in: [String!]
+  systemStateBefore_lt: String
+  systemStateBefore_lte: String
+  systemStateBefore_not: String
+  systemStateBefore_not_contains: String
+  systemStateBefore_not_contains_nocase: String
+  systemStateBefore_not_ends_with: String
+  systemStateBefore_not_ends_with_nocase: String
+  systemStateBefore_not_in: [String!]
+  systemStateBefore_not_starts_with: String
+  systemStateBefore_not_starts_with_nocase: String
+  systemStateBefore_starts_with: String
+  systemStateBefore_starts_with_nocase: String
+  transaction: String
+  transaction_contains: String
+  transaction_contains_nocase: String
+  transaction_ends_with: String
+  transaction_ends_with_nocase: String
+  transaction_gt: String
+  transaction_gte: String
+  transaction_in: [String!]
+  transaction_lt: String
+  transaction_lte: String
+  transaction_not: String
+  transaction_not_contains: String
+  transaction_not_contains_nocase: String
+  transaction_not_ends_with: String
+  transaction_not_ends_with_nocase: String
+  transaction_not_in: [String!]
+  transaction_not_starts_with: String
+  transaction_not_starts_with_nocase: String
+  transaction_starts_with: String
+  transaction_starts_with_nocase: String
+}
+
+enum Change_orderBy {
+  id
+  sequenceNumber
+  systemStateAfter
+  systemStateBefore
+  transaction
+}
+
+type CollSurplusChange implements Change {
+  collSurplusAfter: BigDecimal!
+  collSurplusBefore: BigDecimal!
+  collSurplusChange: BigDecimal!
+  id: ID!
+  sequenceNumber: Int!
+  systemStateAfter: SystemState!
+  systemStateBefore: SystemState!
+  transaction: Transaction!
+  user: User!
+}
+
+input CollSurplusChange_filter {
+  collSurplusAfter: BigDecimal
+  collSurplusAfter_gt: BigDecimal
+  collSurplusAfter_gte: BigDecimal
+  collSurplusAfter_in: [BigDecimal!]
+  collSurplusAfter_lt: BigDecimal
+  collSurplusAfter_lte: BigDecimal
+  collSurplusAfter_not: BigDecimal
+  collSurplusAfter_not_in: [BigDecimal!]
+  collSurplusBefore: BigDecimal
+  collSurplusBefore_gt: BigDecimal
+  collSurplusBefore_gte: BigDecimal
+  collSurplusBefore_in: [BigDecimal!]
+  collSurplusBefore_lt: BigDecimal
+  collSurplusBefore_lte: BigDecimal
+  collSurplusBefore_not: BigDecimal
+  collSurplusBefore_not_in: [BigDecimal!]
+  collSurplusChange: BigDecimal
+  collSurplusChange_gt: BigDecimal
+  collSurplusChange_gte: BigDecimal
+  collSurplusChange_in: [BigDecimal!]
+  collSurplusChange_lt: BigDecimal
+  collSurplusChange_lte: BigDecimal
+  collSurplusChange_not: BigDecimal
+  collSurplusChange_not_in: [BigDecimal!]
+  id: ID
+  id_gt: ID
+  id_gte: ID
+  id_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_not: ID
+  id_not_in: [ID!]
+  sequenceNumber: Int
+  sequenceNumber_gt: Int
+  sequenceNumber_gte: Int
+  sequenceNumber_in: [Int!]
+  sequenceNumber_lt: Int
+  sequenceNumber_lte: Int
+  sequenceNumber_not: Int
+  sequenceNumber_not_in: [Int!]
+  systemStateAfter: String
+  systemStateAfter_contains: String
+  systemStateAfter_contains_nocase: String
+  systemStateAfter_ends_with: String
+  systemStateAfter_ends_with_nocase: String
+  systemStateAfter_gt: String
+  systemStateAfter_gte: String
+  systemStateAfter_in: [String!]
+  systemStateAfter_lt: String
+  systemStateAfter_lte: String
+  systemStateAfter_not: String
+  systemStateAfter_not_contains: String
+  systemStateAfter_not_contains_nocase: String
+  systemStateAfter_not_ends_with: String
+  systemStateAfter_not_ends_with_nocase: String
+  systemStateAfter_not_in: [String!]
+  systemStateAfter_not_starts_with: String
+  systemStateAfter_not_starts_with_nocase: String
+  systemStateAfter_starts_with: String
+  systemStateAfter_starts_with_nocase: String
+  systemStateBefore: String
+  systemStateBefore_contains: String
+  systemStateBefore_contains_nocase: String
+  systemStateBefore_ends_with: String
+  systemStateBefore_ends_with_nocase: String
+  systemStateBefore_gt: String
+  systemStateBefore_gte: String
+  systemStateBefore_in: [String!]
+  systemStateBefore_lt: String
+  systemStateBefore_lte: String
+  systemStateBefore_not: String
+  systemStateBefore_not_contains: String
+  systemStateBefore_not_contains_nocase: String
+  systemStateBefore_not_ends_with: String
+  systemStateBefore_not_ends_with_nocase: String
+  systemStateBefore_not_in: [String!]
+  systemStateBefore_not_starts_with: String
+  systemStateBefore_not_starts_with_nocase: String
+  systemStateBefore_starts_with: String
+  systemStateBefore_starts_with_nocase: String
+  transaction: String
+  transaction_contains: String
+  transaction_contains_nocase: String
+  transaction_ends_with: String
+  transaction_ends_with_nocase: String
+  transaction_gt: String
+  transaction_gte: String
+  transaction_in: [String!]
+  transaction_lt: String
+  transaction_lte: String
+  transaction_not: String
+  transaction_not_contains: String
+  transaction_not_contains_nocase: String
+  transaction_not_ends_with: String
+  transaction_not_ends_with_nocase: String
+  transaction_not_in: [String!]
+  transaction_not_starts_with: String
+  transaction_not_starts_with_nocase: String
+  transaction_starts_with: String
+  transaction_starts_with_nocase: String
+  user: String
+  user_contains: String
+  user_contains_nocase: String
+  user_ends_with: String
+  user_ends_with_nocase: String
+  user_gt: String
+  user_gte: String
+  user_in: [String!]
+  user_lt: String
+  user_lte: String
+  user_not: String
+  user_not_contains: String
+  user_not_contains_nocase: String
+  user_not_ends_with: String
+  user_not_ends_with_nocase: String
+  user_not_in: [String!]
+  user_not_starts_with: String
+  user_not_starts_with_nocase: String
+  user_starts_with: String
+  user_starts_with_nocase: String
+}
+
+enum CollSurplusChange_orderBy {
+  collSurplusAfter
+  collSurplusBefore
+  collSurplusChange
+  id
+  sequenceNumber
+  systemStateAfter
+  systemStateBefore
+  transaction
+  user
+}
+
+type Global {
+  changeCount: Int!
+
+  """
+  Only used internally as temporary storage. Will always be null in queries
+  """
+  currentLiquidation: Liquidation
+
+  """
+  Only used internally as temporary storage. Will always be null in queries
+  """
+  currentRedemption: Redemption
+  currentSystemState: SystemState
+
+  """
+  There should be only one System entity with an ID of 'only'
+  """
+  id: ID!
+  liquidationCount: Int!
+  numberOfLiquidatedTroves: Int!
+  numberOfOpenTroves: Int!
+  numberOfRedeemedTroves: Int!
+  numberOfTrovesClosedByOwner: Int!
+
+  """
+  Total redistributed per-stake collateral
+  """
+  rawTotalRedistributedCollateral: BigInt!
+
+  """
+  Total redistributed per-stake debt
+  """
+  rawTotalRedistributedDebt: BigInt!
+  redemptionCount: Int!
+  systemStateCount: Int!
+
+  """
+  Only used internally as temporary storage. Will always be null in queries
+  """
+  tmpDepositUpdate: BigInt
+
+  """
+  Total amount of ZUSD paid as borrowing fees converted to RBTC
+  """
+  totalBorrowingFeesPaidRBTC: BigDecimal!
+
+  """
+  Total amount of ZUSD paid as borrowing fees
+  """
+  totalBorrowingFeesPaidZUSD: BigDecimal!
+  totalLiquidationCompensation: BigDecimal!
+  totalLiquidationVolume: BigDecimal!
+  totalNumberOfTroves: Int!
+
+  """
+  Total amount of RBTC paid as redemption fees
+  """
+  totalRedemptionFeesPaidRBTC: BigDecimal!
+
+  """
+  Total amount of RBTC paid as redemption fees converted to ZUSD
+  """
+  totalRedemptionFeesPaidZUSD: BigDecimal!
+  totalStabilityPoolProfits: BigDecimal!
+  transactionCount: Int!
+}
+
+input Global_filter {
+  changeCount: Int
+  changeCount_gt: Int
+  changeCount_gte: Int
+  changeCount_in: [Int!]
+  changeCount_lt: Int
+  changeCount_lte: Int
+  changeCount_not: Int
+  changeCount_not_in: [Int!]
+  currentLiquidation: String
+  currentLiquidation_contains: String
+  currentLiquidation_contains_nocase: String
+  currentLiquidation_ends_with: String
+  currentLiquidation_ends_with_nocase: String
+  currentLiquidation_gt: String
+  currentLiquidation_gte: String
+  currentLiquidation_in: [String!]
+  currentLiquidation_lt: String
+  currentLiquidation_lte: String
+  currentLiquidation_not: String
+  currentLiquidation_not_contains: String
+  currentLiquidation_not_contains_nocase: String
+  currentLiquidation_not_ends_with: String
+  currentLiquidation_not_ends_with_nocase: String
+  currentLiquidation_not_in: [String!]
+  currentLiquidation_not_starts_with: String
+  currentLiquidation_not_starts_with_nocase: String
+  currentLiquidation_starts_with: String
+  currentLiquidation_starts_with_nocase: String
+  currentRedemption: String
+  currentRedemption_contains: String
+  currentRedemption_contains_nocase: String
+  currentRedemption_ends_with: String
+  currentRedemption_ends_with_nocase: String
+  currentRedemption_gt: String
+  currentRedemption_gte: String
+  currentRedemption_in: [String!]
+  currentRedemption_lt: String
+  currentRedemption_lte: String
+  currentRedemption_not: String
+  currentRedemption_not_contains: String
+  currentRedemption_not_contains_nocase: String
+  currentRedemption_not_ends_with: String
+  currentRedemption_not_ends_with_nocase: String
+  currentRedemption_not_in: [String!]
+  currentRedemption_not_starts_with: String
+  currentRedemption_not_starts_with_nocase: String
+  currentRedemption_starts_with: String
+  currentRedemption_starts_with_nocase: String
+  currentSystemState: String
+  currentSystemState_contains: String
+  currentSystemState_contains_nocase: String
+  currentSystemState_ends_with: String
+  currentSystemState_ends_with_nocase: String
+  currentSystemState_gt: String
+  currentSystemState_gte: String
+  currentSystemState_in: [String!]
+  currentSystemState_lt: String
+  currentSystemState_lte: String
+  currentSystemState_not: String
+  currentSystemState_not_contains: String
+  currentSystemState_not_contains_nocase: String
+  currentSystemState_not_ends_with: String
+  currentSystemState_not_ends_with_nocase: String
+  currentSystemState_not_in: [String!]
+  currentSystemState_not_starts_with: String
+  currentSystemState_not_starts_with_nocase: String
+  currentSystemState_starts_with: String
+  currentSystemState_starts_with_nocase: String
+  id: ID
+  id_gt: ID
+  id_gte: ID
+  id_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_not: ID
+  id_not_in: [ID!]
+  liquidationCount: Int
+  liquidationCount_gt: Int
+  liquidationCount_gte: Int
+  liquidationCount_in: [Int!]
+  liquidationCount_lt: Int
+  liquidationCount_lte: Int
+  liquidationCount_not: Int
+  liquidationCount_not_in: [Int!]
+  numberOfLiquidatedTroves: Int
+  numberOfLiquidatedTroves_gt: Int
+  numberOfLiquidatedTroves_gte: Int
+  numberOfLiquidatedTroves_in: [Int!]
+  numberOfLiquidatedTroves_lt: Int
+  numberOfLiquidatedTroves_lte: Int
+  numberOfLiquidatedTroves_not: Int
+  numberOfLiquidatedTroves_not_in: [Int!]
+  numberOfOpenTroves: Int
+  numberOfOpenTroves_gt: Int
+  numberOfOpenTroves_gte: Int
+  numberOfOpenTroves_in: [Int!]
+  numberOfOpenTroves_lt: Int
+  numberOfOpenTroves_lte: Int
+  numberOfOpenTroves_not: Int
+  numberOfOpenTroves_not_in: [Int!]
+  numberOfRedeemedTroves: Int
+  numberOfRedeemedTroves_gt: Int
+  numberOfRedeemedTroves_gte: Int
+  numberOfRedeemedTroves_in: [Int!]
+  numberOfRedeemedTroves_lt: Int
+  numberOfRedeemedTroves_lte: Int
+  numberOfRedeemedTroves_not: Int
+  numberOfRedeemedTroves_not_in: [Int!]
+  numberOfTrovesClosedByOwner: Int
+  numberOfTrovesClosedByOwner_gt: Int
+  numberOfTrovesClosedByOwner_gte: Int
+  numberOfTrovesClosedByOwner_in: [Int!]
+  numberOfTrovesClosedByOwner_lt: Int
+  numberOfTrovesClosedByOwner_lte: Int
+  numberOfTrovesClosedByOwner_not: Int
+  numberOfTrovesClosedByOwner_not_in: [Int!]
+  rawTotalRedistributedCollateral: BigInt
+  rawTotalRedistributedCollateral_gt: BigInt
+  rawTotalRedistributedCollateral_gte: BigInt
+  rawTotalRedistributedCollateral_in: [BigInt!]
+  rawTotalRedistributedCollateral_lt: BigInt
+  rawTotalRedistributedCollateral_lte: BigInt
+  rawTotalRedistributedCollateral_not: BigInt
+  rawTotalRedistributedCollateral_not_in: [BigInt!]
+  rawTotalRedistributedDebt: BigInt
+  rawTotalRedistributedDebt_gt: BigInt
+  rawTotalRedistributedDebt_gte: BigInt
+  rawTotalRedistributedDebt_in: [BigInt!]
+  rawTotalRedistributedDebt_lt: BigInt
+  rawTotalRedistributedDebt_lte: BigInt
+  rawTotalRedistributedDebt_not: BigInt
+  rawTotalRedistributedDebt_not_in: [BigInt!]
+  redemptionCount: Int
+  redemptionCount_gt: Int
+  redemptionCount_gte: Int
+  redemptionCount_in: [Int!]
+  redemptionCount_lt: Int
+  redemptionCount_lte: Int
+  redemptionCount_not: Int
+  redemptionCount_not_in: [Int!]
+  systemStateCount: Int
+  systemStateCount_gt: Int
+  systemStateCount_gte: Int
+  systemStateCount_in: [Int!]
+  systemStateCount_lt: Int
+  systemStateCount_lte: Int
+  systemStateCount_not: Int
+  systemStateCount_not_in: [Int!]
+  tmpDepositUpdate: BigInt
+  tmpDepositUpdate_gt: BigInt
+  tmpDepositUpdate_gte: BigInt
+  tmpDepositUpdate_in: [BigInt!]
+  tmpDepositUpdate_lt: BigInt
+  tmpDepositUpdate_lte: BigInt
+  tmpDepositUpdate_not: BigInt
+  tmpDepositUpdate_not_in: [BigInt!]
+  totalBorrowingFeesPaidRBTC: BigDecimal
+  totalBorrowingFeesPaidRBTC_gt: BigDecimal
+  totalBorrowingFeesPaidRBTC_gte: BigDecimal
+  totalBorrowingFeesPaidRBTC_in: [BigDecimal!]
+  totalBorrowingFeesPaidRBTC_lt: BigDecimal
+  totalBorrowingFeesPaidRBTC_lte: BigDecimal
+  totalBorrowingFeesPaidRBTC_not: BigDecimal
+  totalBorrowingFeesPaidRBTC_not_in: [BigDecimal!]
+  totalBorrowingFeesPaidZUSD: BigDecimal
+  totalBorrowingFeesPaidZUSD_gt: BigDecimal
+  totalBorrowingFeesPaidZUSD_gte: BigDecimal
+  totalBorrowingFeesPaidZUSD_in: [BigDecimal!]
+  totalBorrowingFeesPaidZUSD_lt: BigDecimal
+  totalBorrowingFeesPaidZUSD_lte: BigDecimal
+  totalBorrowingFeesPaidZUSD_not: BigDecimal
+  totalBorrowingFeesPaidZUSD_not_in: [BigDecimal!]
+  totalLiquidationCompensation: BigDecimal
+  totalLiquidationCompensation_gt: BigDecimal
+  totalLiquidationCompensation_gte: BigDecimal
+  totalLiquidationCompensation_in: [BigDecimal!]
+  totalLiquidationCompensation_lt: BigDecimal
+  totalLiquidationCompensation_lte: BigDecimal
+  totalLiquidationCompensation_not: BigDecimal
+  totalLiquidationCompensation_not_in: [BigDecimal!]
+  totalLiquidationVolume: BigDecimal
+  totalLiquidationVolume_gt: BigDecimal
+  totalLiquidationVolume_gte: BigDecimal
+  totalLiquidationVolume_in: [BigDecimal!]
+  totalLiquidationVolume_lt: BigDecimal
+  totalLiquidationVolume_lte: BigDecimal
+  totalLiquidationVolume_not: BigDecimal
+  totalLiquidationVolume_not_in: [BigDecimal!]
+  totalNumberOfTroves: Int
+  totalNumberOfTroves_gt: Int
+  totalNumberOfTroves_gte: Int
+  totalNumberOfTroves_in: [Int!]
+  totalNumberOfTroves_lt: Int
+  totalNumberOfTroves_lte: Int
+  totalNumberOfTroves_not: Int
+  totalNumberOfTroves_not_in: [Int!]
+  totalRedemptionFeesPaidRBTC: BigDecimal
+  totalRedemptionFeesPaidRBTC_gt: BigDecimal
+  totalRedemptionFeesPaidRBTC_gte: BigDecimal
+  totalRedemptionFeesPaidRBTC_in: [BigDecimal!]
+  totalRedemptionFeesPaidRBTC_lt: BigDecimal
+  totalRedemptionFeesPaidRBTC_lte: BigDecimal
+  totalRedemptionFeesPaidRBTC_not: BigDecimal
+  totalRedemptionFeesPaidRBTC_not_in: [BigDecimal!]
+  totalRedemptionFeesPaidZUSD: BigDecimal
+  totalRedemptionFeesPaidZUSD_gt: BigDecimal
+  totalRedemptionFeesPaidZUSD_gte: BigDecimal
+  totalRedemptionFeesPaidZUSD_in: [BigDecimal!]
+  totalRedemptionFeesPaidZUSD_lt: BigDecimal
+  totalRedemptionFeesPaidZUSD_lte: BigDecimal
+  totalRedemptionFeesPaidZUSD_not: BigDecimal
+  totalRedemptionFeesPaidZUSD_not_in: [BigDecimal!]
+  totalStabilityPoolProfits: BigDecimal
+  totalStabilityPoolProfits_gt: BigDecimal
+  totalStabilityPoolProfits_gte: BigDecimal
+  totalStabilityPoolProfits_in: [BigDecimal!]
+  totalStabilityPoolProfits_lt: BigDecimal
+  totalStabilityPoolProfits_lte: BigDecimal
+  totalStabilityPoolProfits_not: BigDecimal
+  totalStabilityPoolProfits_not_in: [BigDecimal!]
+  transactionCount: Int
+  transactionCount_gt: Int
+  transactionCount_gte: Int
+  transactionCount_in: [Int!]
+  transactionCount_lt: Int
+  transactionCount_lte: Int
+  transactionCount_not: Int
+  transactionCount_not_in: [Int!]
+}
+
+enum Global_orderBy {
+  changeCount
+  currentLiquidation
+  currentRedemption
+  currentSystemState
+  id
+  liquidationCount
+  numberOfLiquidatedTroves
+  numberOfOpenTroves
+  numberOfRedeemedTroves
+  numberOfTrovesClosedByOwner
+  rawTotalRedistributedCollateral
+  rawTotalRedistributedDebt
+  redemptionCount
+  systemStateCount
+  tmpDepositUpdate
+  totalBorrowingFeesPaidRBTC
+  totalBorrowingFeesPaidZUSD
+  totalLiquidationCompensation
+  totalLiquidationVolume
+  totalNumberOfTroves
+  totalRedemptionFeesPaidRBTC
+  totalRedemptionFeesPaidZUSD
+  totalStabilityPoolProfits
+  transactionCount
+}
+
+type Liquidation {
+  collGasCompensation: BigDecimal!
+  id: ID!
+  liquidatedCollateral: BigDecimal!
+  liquidatedDebt: BigDecimal!
+  liquidator: User!
+  sequenceNumber: Int!
+  tokenGasCompensation: BigDecimal!
+  transaction: Transaction!
+  troveChanges(
+    first: Int = 100
+    orderBy: TroveChange_orderBy
+    orderDirection: OrderDirection
+    skip: Int = 0
+    where: TroveChange_filter
+  ): [TroveChange!]!
+}
+
+input Liquidation_filter {
+  collGasCompensation: BigDecimal
+  collGasCompensation_gt: BigDecimal
+  collGasCompensation_gte: BigDecimal
+  collGasCompensation_in: [BigDecimal!]
+  collGasCompensation_lt: BigDecimal
+  collGasCompensation_lte: BigDecimal
+  collGasCompensation_not: BigDecimal
+  collGasCompensation_not_in: [BigDecimal!]
+  id: ID
+  id_gt: ID
+  id_gte: ID
+  id_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_not: ID
+  id_not_in: [ID!]
+  liquidatedCollateral: BigDecimal
+  liquidatedCollateral_gt: BigDecimal
+  liquidatedCollateral_gte: BigDecimal
+  liquidatedCollateral_in: [BigDecimal!]
+  liquidatedCollateral_lt: BigDecimal
+  liquidatedCollateral_lte: BigDecimal
+  liquidatedCollateral_not: BigDecimal
+  liquidatedCollateral_not_in: [BigDecimal!]
+  liquidatedDebt: BigDecimal
+  liquidatedDebt_gt: BigDecimal
+  liquidatedDebt_gte: BigDecimal
+  liquidatedDebt_in: [BigDecimal!]
+  liquidatedDebt_lt: BigDecimal
+  liquidatedDebt_lte: BigDecimal
+  liquidatedDebt_not: BigDecimal
+  liquidatedDebt_not_in: [BigDecimal!]
+  liquidator: String
+  liquidator_contains: String
+  liquidator_contains_nocase: String
+  liquidator_ends_with: String
+  liquidator_ends_with_nocase: String
+  liquidator_gt: String
+  liquidator_gte: String
+  liquidator_in: [String!]
+  liquidator_lt: String
+  liquidator_lte: String
+  liquidator_not: String
+  liquidator_not_contains: String
+  liquidator_not_contains_nocase: String
+  liquidator_not_ends_with: String
+  liquidator_not_ends_with_nocase: String
+  liquidator_not_in: [String!]
+  liquidator_not_starts_with: String
+  liquidator_not_starts_with_nocase: String
+  liquidator_starts_with: String
+  liquidator_starts_with_nocase: String
+  sequenceNumber: Int
+  sequenceNumber_gt: Int
+  sequenceNumber_gte: Int
+  sequenceNumber_in: [Int!]
+  sequenceNumber_lt: Int
+  sequenceNumber_lte: Int
+  sequenceNumber_not: Int
+  sequenceNumber_not_in: [Int!]
+  tokenGasCompensation: BigDecimal
+  tokenGasCompensation_gt: BigDecimal
+  tokenGasCompensation_gte: BigDecimal
+  tokenGasCompensation_in: [BigDecimal!]
+  tokenGasCompensation_lt: BigDecimal
+  tokenGasCompensation_lte: BigDecimal
+  tokenGasCompensation_not: BigDecimal
+  tokenGasCompensation_not_in: [BigDecimal!]
+  transaction: String
+  transaction_contains: String
+  transaction_contains_nocase: String
+  transaction_ends_with: String
+  transaction_ends_with_nocase: String
+  transaction_gt: String
+  transaction_gte: String
+  transaction_in: [String!]
+  transaction_lt: String
+  transaction_lte: String
+  transaction_not: String
+  transaction_not_contains: String
+  transaction_not_contains_nocase: String
+  transaction_not_ends_with: String
+  transaction_not_ends_with_nocase: String
+  transaction_not_in: [String!]
+  transaction_not_starts_with: String
+  transaction_not_starts_with_nocase: String
+  transaction_starts_with: String
+  transaction_starts_with_nocase: String
+}
+
+enum Liquidation_orderBy {
+  collGasCompensation
+  id
+  liquidatedCollateral
+  liquidatedDebt
+  liquidator
+  sequenceNumber
+  tokenGasCompensation
+  transaction
+  troveChanges
+}
+
+"""
+Defines the order direction, either ascending or descending
+"""
+enum OrderDirection {
+  asc
+  desc
+}
+
+type PriceChange implements Change {
+  id: ID!
+  priceChange: BigDecimal!
+  sequenceNumber: Int!
+  systemStateAfter: SystemState!
+  systemStateBefore: SystemState!
+  transaction: Transaction!
+}
+
+input PriceChange_filter {
+  id: ID
+  id_gt: ID
+  id_gte: ID
+  id_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_not: ID
+  id_not_in: [ID!]
+  priceChange: BigDecimal
+  priceChange_gt: BigDecimal
+  priceChange_gte: BigDecimal
+  priceChange_in: [BigDecimal!]
+  priceChange_lt: BigDecimal
+  priceChange_lte: BigDecimal
+  priceChange_not: BigDecimal
+  priceChange_not_in: [BigDecimal!]
+  sequenceNumber: Int
+  sequenceNumber_gt: Int
+  sequenceNumber_gte: Int
+  sequenceNumber_in: [Int!]
+  sequenceNumber_lt: Int
+  sequenceNumber_lte: Int
+  sequenceNumber_not: Int
+  sequenceNumber_not_in: [Int!]
+  systemStateAfter: String
+  systemStateAfter_contains: String
+  systemStateAfter_contains_nocase: String
+  systemStateAfter_ends_with: String
+  systemStateAfter_ends_with_nocase: String
+  systemStateAfter_gt: String
+  systemStateAfter_gte: String
+  systemStateAfter_in: [String!]
+  systemStateAfter_lt: String
+  systemStateAfter_lte: String
+  systemStateAfter_not: String
+  systemStateAfter_not_contains: String
+  systemStateAfter_not_contains_nocase: String
+  systemStateAfter_not_ends_with: String
+  systemStateAfter_not_ends_with_nocase: String
+  systemStateAfter_not_in: [String!]
+  systemStateAfter_not_starts_with: String
+  systemStateAfter_not_starts_with_nocase: String
+  systemStateAfter_starts_with: String
+  systemStateAfter_starts_with_nocase: String
+  systemStateBefore: String
+  systemStateBefore_contains: String
+  systemStateBefore_contains_nocase: String
+  systemStateBefore_ends_with: String
+  systemStateBefore_ends_with_nocase: String
+  systemStateBefore_gt: String
+  systemStateBefore_gte: String
+  systemStateBefore_in: [String!]
+  systemStateBefore_lt: String
+  systemStateBefore_lte: String
+  systemStateBefore_not: String
+  systemStateBefore_not_contains: String
+  systemStateBefore_not_contains_nocase: String
+  systemStateBefore_not_ends_with: String
+  systemStateBefore_not_ends_with_nocase: String
+  systemStateBefore_not_in: [String!]
+  systemStateBefore_not_starts_with: String
+  systemStateBefore_not_starts_with_nocase: String
+  systemStateBefore_starts_with: String
+  systemStateBefore_starts_with_nocase: String
+  transaction: String
+  transaction_contains: String
+  transaction_contains_nocase: String
+  transaction_ends_with: String
+  transaction_ends_with_nocase: String
+  transaction_gt: String
+  transaction_gte: String
+  transaction_in: [String!]
+  transaction_lt: String
+  transaction_lte: String
+  transaction_not: String
+  transaction_not_contains: String
+  transaction_not_contains_nocase: String
+  transaction_not_ends_with: String
+  transaction_not_ends_with_nocase: String
+  transaction_not_in: [String!]
+  transaction_not_starts_with: String
+  transaction_not_starts_with_nocase: String
+  transaction_starts_with: String
+  transaction_starts_with_nocase: String
+}
+
+enum PriceChange_orderBy {
+  id
+  priceChange
+  sequenceNumber
+  systemStateAfter
+  systemStateBefore
+  transaction
+}
+
+type Query {
+  """
+  Access to subgraph metadata
+  """
+  _meta(block: Block_height): _Meta_
+  change(
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+    id: ID!
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): Change
+  changes(
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+    first: Int = 100
+    orderBy: Change_orderBy
+    orderDirection: OrderDirection
+    skip: Int = 0
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+    where: Change_filter
+  ): [Change!]!
+  collSurplusChange(
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+    id: ID!
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): CollSurplusChange
+  collSurplusChanges(
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+    first: Int = 100
+    orderBy: CollSurplusChange_orderBy
+    orderDirection: OrderDirection
+    skip: Int = 0
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+    where: CollSurplusChange_filter
+  ): [CollSurplusChange!]!
+  global(
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+    id: ID!
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): Global
+  globals(
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+    first: Int = 100
+    orderBy: Global_orderBy
+    orderDirection: OrderDirection
+    skip: Int = 0
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+    where: Global_filter
+  ): [Global!]!
+  liquidation(
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+    id: ID!
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): Liquidation
+  liquidations(
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+    first: Int = 100
+    orderBy: Liquidation_orderBy
+    orderDirection: OrderDirection
+    skip: Int = 0
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+    where: Liquidation_filter
+  ): [Liquidation!]!
+  priceChange(
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+    id: ID!
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): PriceChange
+  priceChanges(
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+    first: Int = 100
+    orderBy: PriceChange_orderBy
+    orderDirection: OrderDirection
+    skip: Int = 0
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+    where: PriceChange_filter
+  ): [PriceChange!]!
+  redemption(
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+    id: ID!
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): Redemption
+  redemptionRaw(
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+    id: ID!
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): RedemptionRaw
+  redemptionRaws(
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+    first: Int = 100
+    orderBy: RedemptionRaw_orderBy
+    orderDirection: OrderDirection
+    skip: Int = 0
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+    where: RedemptionRaw_filter
+  ): [RedemptionRaw!]!
+  redemptions(
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+    first: Int = 100
+    orderBy: Redemption_orderBy
+    orderDirection: OrderDirection
+    skip: Int = 0
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+    where: Redemption_filter
+  ): [Redemption!]!
+  revenueDailies(
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+    first: Int = 100
+    orderBy: RevenueDaily_orderBy
+    orderDirection: OrderDirection
+    skip: Int = 0
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+    where: RevenueDaily_filter
+  ): [RevenueDaily!]!
+  revenueDaily(
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+    id: ID!
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): RevenueDaily
+  revenueWeeklies(
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+    first: Int = 100
+    orderBy: RevenueWeekly_orderBy
+    orderDirection: OrderDirection
+    skip: Int = 0
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+    where: RevenueWeekly_filter
+  ): [RevenueWeekly!]!
+  revenueWeekly(
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+    id: ID!
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): RevenueWeekly
+  stabilityDeposit(
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+    id: ID!
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): StabilityDeposit
+  stabilityDepositChange(
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+    id: ID!
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): StabilityDepositChange
+  stabilityDepositChanges(
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+    first: Int = 100
+    orderBy: StabilityDepositChange_orderBy
+    orderDirection: OrderDirection
+    skip: Int = 0
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+    where: StabilityDepositChange_filter
+  ): [StabilityDepositChange!]!
+  stabilityDeposits(
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+    first: Int = 100
+    orderBy: StabilityDeposit_orderBy
+    orderDirection: OrderDirection
+    skip: Int = 0
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+    where: StabilityDeposit_filter
+  ): [StabilityDeposit!]!
+  systemState(
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+    id: ID!
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): SystemState
+  systemStates(
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+    first: Int = 100
+    orderBy: SystemState_orderBy
+    orderDirection: OrderDirection
+    skip: Int = 0
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+    where: SystemState_filter
+  ): [SystemState!]!
+  token(
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+    id: ID!
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): Token
+  tokenAllowance(
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+    id: ID!
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): TokenAllowance
+  tokenAllowances(
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+    first: Int = 100
+    orderBy: TokenAllowance_orderBy
+    orderDirection: OrderDirection
+    skip: Int = 0
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+    where: TokenAllowance_filter
+  ): [TokenAllowance!]!
+  tokenBalance(
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+    id: ID!
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): TokenBalance
+  tokenBalances(
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+    first: Int = 100
+    orderBy: TokenBalance_orderBy
+    orderDirection: OrderDirection
+    skip: Int = 0
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+    where: TokenBalance_filter
+  ): [TokenBalance!]!
+  tokens(
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+    first: Int = 100
+    orderBy: Token_orderBy
+    orderDirection: OrderDirection
+    skip: Int = 0
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+    where: Token_filter
+  ): [Token!]!
+  transaction(
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+    id: ID!
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): Transaction
+  transactions(
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+    first: Int = 100
+    orderBy: Transaction_orderBy
+    orderDirection: OrderDirection
+    skip: Int = 0
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+    where: Transaction_filter
+  ): [Transaction!]!
+  trove(
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+    id: ID!
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): Trove
+  troveChange(
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+    id: ID!
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): TroveChange
+  troveChanges(
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+    first: Int = 100
+    orderBy: TroveChange_orderBy
+    orderDirection: OrderDirection
+    skip: Int = 0
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+    where: TroveChange_filter
+  ): [TroveChange!]!
+  troves(
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+    first: Int = 100
+    orderBy: Trove_orderBy
+    orderDirection: OrderDirection
+    skip: Int = 0
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+    where: Trove_filter
+  ): [Trove!]!
+  user(
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+    id: ID!
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): User
+  users(
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+    first: Int = 100
+    orderBy: User_orderBy
+    orderDirection: OrderDirection
+    skip: Int = 0
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+    where: User_filter
+  ): [User!]!
+}
+
+type Redemption {
+  collateralRedeemed: BigDecimal!
+  fee: BigDecimal!
+  id: ID!
+  partial: Boolean!
+  redeemer: User!
+  sequenceNumber: Int!
+  tokensActuallyRedeemed: BigDecimal!
+  tokensAttemptedToRedeem: BigDecimal!
+  transaction: Transaction!
+  troveChanges(
+    first: Int = 100
+    orderBy: TroveChange_orderBy
+    orderDirection: OrderDirection
+    skip: Int = 0
+    where: TroveChange_filter
+  ): [TroveChange!]!
+}
+
+type RedemptionRaw {
+  _RBTCFee: BigInt!
+  _RBTCSent: BigInt!
+  _actualZUSDAmount: BigInt!
+  _attemptedZUSDAmount: BigInt!
+  id: ID!
+}
+
+input RedemptionRaw_filter {
+  _RBTCFee: BigInt
+  _RBTCFee_gt: BigInt
+  _RBTCFee_gte: BigInt
+  _RBTCFee_in: [BigInt!]
+  _RBTCFee_lt: BigInt
+  _RBTCFee_lte: BigInt
+  _RBTCFee_not: BigInt
+  _RBTCFee_not_in: [BigInt!]
+  _RBTCSent: BigInt
+  _RBTCSent_gt: BigInt
+  _RBTCSent_gte: BigInt
+  _RBTCSent_in: [BigInt!]
+  _RBTCSent_lt: BigInt
+  _RBTCSent_lte: BigInt
+  _RBTCSent_not: BigInt
+  _RBTCSent_not_in: [BigInt!]
+  _actualZUSDAmount: BigInt
+  _actualZUSDAmount_gt: BigInt
+  _actualZUSDAmount_gte: BigInt
+  _actualZUSDAmount_in: [BigInt!]
+  _actualZUSDAmount_lt: BigInt
+  _actualZUSDAmount_lte: BigInt
+  _actualZUSDAmount_not: BigInt
+  _actualZUSDAmount_not_in: [BigInt!]
+  _attemptedZUSDAmount: BigInt
+  _attemptedZUSDAmount_gt: BigInt
+  _attemptedZUSDAmount_gte: BigInt
+  _attemptedZUSDAmount_in: [BigInt!]
+  _attemptedZUSDAmount_lt: BigInt
+  _attemptedZUSDAmount_lte: BigInt
+  _attemptedZUSDAmount_not: BigInt
+  _attemptedZUSDAmount_not_in: [BigInt!]
+  id: ID
+  id_gt: ID
+  id_gte: ID
+  id_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_not: ID
+  id_not_in: [ID!]
+}
+
+enum RedemptionRaw_orderBy {
+  _RBTCFee
+  _RBTCSent
+  _actualZUSDAmount
+  _attemptedZUSDAmount
+  id
+}
+
+input Redemption_filter {
+  collateralRedeemed: BigDecimal
+  collateralRedeemed_gt: BigDecimal
+  collateralRedeemed_gte: BigDecimal
+  collateralRedeemed_in: [BigDecimal!]
+  collateralRedeemed_lt: BigDecimal
+  collateralRedeemed_lte: BigDecimal
+  collateralRedeemed_not: BigDecimal
+  collateralRedeemed_not_in: [BigDecimal!]
+  fee: BigDecimal
+  fee_gt: BigDecimal
+  fee_gte: BigDecimal
+  fee_in: [BigDecimal!]
+  fee_lt: BigDecimal
+  fee_lte: BigDecimal
+  fee_not: BigDecimal
+  fee_not_in: [BigDecimal!]
+  id: ID
+  id_gt: ID
+  id_gte: ID
+  id_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_not: ID
+  id_not_in: [ID!]
+  partial: Boolean
+  partial_in: [Boolean!]
+  partial_not: Boolean
+  partial_not_in: [Boolean!]
+  redeemer: String
+  redeemer_contains: String
+  redeemer_contains_nocase: String
+  redeemer_ends_with: String
+  redeemer_ends_with_nocase: String
+  redeemer_gt: String
+  redeemer_gte: String
+  redeemer_in: [String!]
+  redeemer_lt: String
+  redeemer_lte: String
+  redeemer_not: String
+  redeemer_not_contains: String
+  redeemer_not_contains_nocase: String
+  redeemer_not_ends_with: String
+  redeemer_not_ends_with_nocase: String
+  redeemer_not_in: [String!]
+  redeemer_not_starts_with: String
+  redeemer_not_starts_with_nocase: String
+  redeemer_starts_with: String
+  redeemer_starts_with_nocase: String
+  sequenceNumber: Int
+  sequenceNumber_gt: Int
+  sequenceNumber_gte: Int
+  sequenceNumber_in: [Int!]
+  sequenceNumber_lt: Int
+  sequenceNumber_lte: Int
+  sequenceNumber_not: Int
+  sequenceNumber_not_in: [Int!]
+  tokensActuallyRedeemed: BigDecimal
+  tokensActuallyRedeemed_gt: BigDecimal
+  tokensActuallyRedeemed_gte: BigDecimal
+  tokensActuallyRedeemed_in: [BigDecimal!]
+  tokensActuallyRedeemed_lt: BigDecimal
+  tokensActuallyRedeemed_lte: BigDecimal
+  tokensActuallyRedeemed_not: BigDecimal
+  tokensActuallyRedeemed_not_in: [BigDecimal!]
+  tokensAttemptedToRedeem: BigDecimal
+  tokensAttemptedToRedeem_gt: BigDecimal
+  tokensAttemptedToRedeem_gte: BigDecimal
+  tokensAttemptedToRedeem_in: [BigDecimal!]
+  tokensAttemptedToRedeem_lt: BigDecimal
+  tokensAttemptedToRedeem_lte: BigDecimal
+  tokensAttemptedToRedeem_not: BigDecimal
+  tokensAttemptedToRedeem_not_in: [BigDecimal!]
+  transaction: String
+  transaction_contains: String
+  transaction_contains_nocase: String
+  transaction_ends_with: String
+  transaction_ends_with_nocase: String
+  transaction_gt: String
+  transaction_gte: String
+  transaction_in: [String!]
+  transaction_lt: String
+  transaction_lte: String
+  transaction_not: String
+  transaction_not_contains: String
+  transaction_not_contains_nocase: String
+  transaction_not_ends_with: String
+  transaction_not_ends_with_nocase: String
+  transaction_not_in: [String!]
+  transaction_not_starts_with: String
+  transaction_not_starts_with_nocase: String
+  transaction_starts_with: String
+  transaction_starts_with_nocase: String
+}
+
+enum Redemption_orderBy {
+  collateralRedeemed
+  fee
+  id
+  partial
+  redeemer
+  sequenceNumber
+  tokensActuallyRedeemed
+  tokensAttemptedToRedeem
+  transaction
+  troveChanges
+}
+
+type RevenueDaily {
+  borrowFeeRBTC: BigDecimal!
+  borrowFeeZUSD: BigDecimal!
+  id: ID!
+
+  "The liquidation compensation is equal to 0.5% of the RBTC collateral liquidated in a given time period.\n"
+  liquidationCompensation: BigDecimal!
+
+  "Liquidation volume is the total amount of RBTC collateral liquidated in the given time period. \n"
+  liquidationVolume: BigDecimal!
+  periodStartUnix: BigInt!
+  redemptionFeeRBTC: BigDecimal!
+  redemptionFeeZUSD: BigDecimal!
+
+  "Stability Pool profit is the sum of profits accrued to the SP in the given time period; \neach profit event is calculated at the time of each liquidation transaction as: \namount of RBTC collateral sent to the SP at the time of the liquidation - (amount of ZUSD taken from the SP to service the liquidation / USD price of RBTC at the time of the liquidation)\n"
+  stabilityPoolProfit: BigDecimal!
+}
+
+input RevenueDaily_filter {
+  borrowFeeRBTC: BigDecimal
+  borrowFeeRBTC_gt: BigDecimal
+  borrowFeeRBTC_gte: BigDecimal
+  borrowFeeRBTC_in: [BigDecimal!]
+  borrowFeeRBTC_lt: BigDecimal
+  borrowFeeRBTC_lte: BigDecimal
+  borrowFeeRBTC_not: BigDecimal
+  borrowFeeRBTC_not_in: [BigDecimal!]
+  borrowFeeZUSD: BigDecimal
+  borrowFeeZUSD_gt: BigDecimal
+  borrowFeeZUSD_gte: BigDecimal
+  borrowFeeZUSD_in: [BigDecimal!]
+  borrowFeeZUSD_lt: BigDecimal
+  borrowFeeZUSD_lte: BigDecimal
+  borrowFeeZUSD_not: BigDecimal
+  borrowFeeZUSD_not_in: [BigDecimal!]
+  id: ID
+  id_gt: ID
+  id_gte: ID
+  id_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_not: ID
+  id_not_in: [ID!]
+  liquidationCompensation: BigDecimal
+  liquidationCompensation_gt: BigDecimal
+  liquidationCompensation_gte: BigDecimal
+  liquidationCompensation_in: [BigDecimal!]
+  liquidationCompensation_lt: BigDecimal
+  liquidationCompensation_lte: BigDecimal
+  liquidationCompensation_not: BigDecimal
+  liquidationCompensation_not_in: [BigDecimal!]
+  liquidationVolume: BigDecimal
+  liquidationVolume_gt: BigDecimal
+  liquidationVolume_gte: BigDecimal
+  liquidationVolume_in: [BigDecimal!]
+  liquidationVolume_lt: BigDecimal
+  liquidationVolume_lte: BigDecimal
+  liquidationVolume_not: BigDecimal
+  liquidationVolume_not_in: [BigDecimal!]
+  periodStartUnix: BigInt
+  periodStartUnix_gt: BigInt
+  periodStartUnix_gte: BigInt
+  periodStartUnix_in: [BigInt!]
+  periodStartUnix_lt: BigInt
+  periodStartUnix_lte: BigInt
+  periodStartUnix_not: BigInt
+  periodStartUnix_not_in: [BigInt!]
+  redemptionFeeRBTC: BigDecimal
+  redemptionFeeRBTC_gt: BigDecimal
+  redemptionFeeRBTC_gte: BigDecimal
+  redemptionFeeRBTC_in: [BigDecimal!]
+  redemptionFeeRBTC_lt: BigDecimal
+  redemptionFeeRBTC_lte: BigDecimal
+  redemptionFeeRBTC_not: BigDecimal
+  redemptionFeeRBTC_not_in: [BigDecimal!]
+  redemptionFeeZUSD: BigDecimal
+  redemptionFeeZUSD_gt: BigDecimal
+  redemptionFeeZUSD_gte: BigDecimal
+  redemptionFeeZUSD_in: [BigDecimal!]
+  redemptionFeeZUSD_lt: BigDecimal
+  redemptionFeeZUSD_lte: BigDecimal
+  redemptionFeeZUSD_not: BigDecimal
+  redemptionFeeZUSD_not_in: [BigDecimal!]
+  stabilityPoolProfit: BigDecimal
+  stabilityPoolProfit_gt: BigDecimal
+  stabilityPoolProfit_gte: BigDecimal
+  stabilityPoolProfit_in: [BigDecimal!]
+  stabilityPoolProfit_lt: BigDecimal
+  stabilityPoolProfit_lte: BigDecimal
+  stabilityPoolProfit_not: BigDecimal
+  stabilityPoolProfit_not_in: [BigDecimal!]
+}
+
+enum RevenueDaily_orderBy {
+  borrowFeeRBTC
+  borrowFeeZUSD
+  id
+  liquidationCompensation
+  liquidationVolume
+  periodStartUnix
+  redemptionFeeRBTC
+  redemptionFeeZUSD
+  stabilityPoolProfit
+}
+
+type RevenueWeekly {
+  borrowFeeRBTC: BigDecimal!
+  borrowFeeZUSD: BigDecimal!
+  id: ID!
+
+  "The liquidation compensation is equal to 0.5% of the RBTC collateral liquidated in a given time period.\n"
+  liquidationCompensation: BigDecimal!
+
+  "Liquidation volume is the total amount of RBTC collateral liquidated in the given time period. \n"
+  liquidationVolume: BigDecimal!
+  periodStartUnix: BigInt!
+  redemptionFeeRBTC: BigDecimal!
+  redemptionFeeZUSD: BigDecimal!
+
+  "Stability Pool profit is the sum of profits accrued to the SP in the given time period; \neach profit event is calculated at the time of each liquidation transaction as: \n(USD price of RBTC at the time of the liquidation / amount of RBTC collateral sent to the SP at the time of the liquidation) - (amount of ZUSD taken from the SP to service the liquidation / USD price of RBTC at the time of the liquidation)\n"
+  stabilityPoolProfit: BigDecimal!
+}
+
+input RevenueWeekly_filter {
+  borrowFeeRBTC: BigDecimal
+  borrowFeeRBTC_gt: BigDecimal
+  borrowFeeRBTC_gte: BigDecimal
+  borrowFeeRBTC_in: [BigDecimal!]
+  borrowFeeRBTC_lt: BigDecimal
+  borrowFeeRBTC_lte: BigDecimal
+  borrowFeeRBTC_not: BigDecimal
+  borrowFeeRBTC_not_in: [BigDecimal!]
+  borrowFeeZUSD: BigDecimal
+  borrowFeeZUSD_gt: BigDecimal
+  borrowFeeZUSD_gte: BigDecimal
+  borrowFeeZUSD_in: [BigDecimal!]
+  borrowFeeZUSD_lt: BigDecimal
+  borrowFeeZUSD_lte: BigDecimal
+  borrowFeeZUSD_not: BigDecimal
+  borrowFeeZUSD_not_in: [BigDecimal!]
+  id: ID
+  id_gt: ID
+  id_gte: ID
+  id_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_not: ID
+  id_not_in: [ID!]
+  liquidationCompensation: BigDecimal
+  liquidationCompensation_gt: BigDecimal
+  liquidationCompensation_gte: BigDecimal
+  liquidationCompensation_in: [BigDecimal!]
+  liquidationCompensation_lt: BigDecimal
+  liquidationCompensation_lte: BigDecimal
+  liquidationCompensation_not: BigDecimal
+  liquidationCompensation_not_in: [BigDecimal!]
+  liquidationVolume: BigDecimal
+  liquidationVolume_gt: BigDecimal
+  liquidationVolume_gte: BigDecimal
+  liquidationVolume_in: [BigDecimal!]
+  liquidationVolume_lt: BigDecimal
+  liquidationVolume_lte: BigDecimal
+  liquidationVolume_not: BigDecimal
+  liquidationVolume_not_in: [BigDecimal!]
+  periodStartUnix: BigInt
+  periodStartUnix_gt: BigInt
+  periodStartUnix_gte: BigInt
+  periodStartUnix_in: [BigInt!]
+  periodStartUnix_lt: BigInt
+  periodStartUnix_lte: BigInt
+  periodStartUnix_not: BigInt
+  periodStartUnix_not_in: [BigInt!]
+  redemptionFeeRBTC: BigDecimal
+  redemptionFeeRBTC_gt: BigDecimal
+  redemptionFeeRBTC_gte: BigDecimal
+  redemptionFeeRBTC_in: [BigDecimal!]
+  redemptionFeeRBTC_lt: BigDecimal
+  redemptionFeeRBTC_lte: BigDecimal
+  redemptionFeeRBTC_not: BigDecimal
+  redemptionFeeRBTC_not_in: [BigDecimal!]
+  redemptionFeeZUSD: BigDecimal
+  redemptionFeeZUSD_gt: BigDecimal
+  redemptionFeeZUSD_gte: BigDecimal
+  redemptionFeeZUSD_in: [BigDecimal!]
+  redemptionFeeZUSD_lt: BigDecimal
+  redemptionFeeZUSD_lte: BigDecimal
+  redemptionFeeZUSD_not: BigDecimal
+  redemptionFeeZUSD_not_in: [BigDecimal!]
+  stabilityPoolProfit: BigDecimal
+  stabilityPoolProfit_gt: BigDecimal
+  stabilityPoolProfit_gte: BigDecimal
+  stabilityPoolProfit_in: [BigDecimal!]
+  stabilityPoolProfit_lt: BigDecimal
+  stabilityPoolProfit_lte: BigDecimal
+  stabilityPoolProfit_not: BigDecimal
+  stabilityPoolProfit_not_in: [BigDecimal!]
+}
+
+enum RevenueWeekly_orderBy {
+  borrowFeeRBTC
+  borrowFeeZUSD
+  id
+  liquidationCompensation
+  liquidationVolume
+  periodStartUnix
+  redemptionFeeRBTC
+  redemptionFeeZUSD
+  stabilityPoolProfit
+}
+
+type StabilityDeposit {
+  changes(
+    first: Int = 100
+    orderBy: StabilityDepositChange_orderBy
+    orderDirection: OrderDirection
+    skip: Int = 0
+    where: StabilityDepositChange_filter
+  ): [StabilityDepositChange!]!
+  depositedAmount: BigDecimal!
+
+  """
+  Owner's ID + '-' + an incremented integer
+  """
+  id: ID!
+  owner: User!
+}
+
+type StabilityDepositChange implements Change {
+  collateralGain: BigDecimal
+  depositedAmountAfter: BigDecimal!
+  depositedAmountBefore: BigDecimal!
+  depositedAmountChange: BigDecimal!
+  id: ID!
+  sequenceNumber: Int!
+  stabilityDeposit: StabilityDeposit!
+  stabilityDepositOperation: StabilityDepositOperation!
+  systemStateAfter: SystemState!
+  systemStateBefore: SystemState!
+  transaction: Transaction!
+}
+
+input StabilityDepositChange_filter {
+  collateralGain: BigDecimal
+  collateralGain_gt: BigDecimal
+  collateralGain_gte: BigDecimal
+  collateralGain_in: [BigDecimal!]
+  collateralGain_lt: BigDecimal
+  collateralGain_lte: BigDecimal
+  collateralGain_not: BigDecimal
+  collateralGain_not_in: [BigDecimal!]
+  depositedAmountAfter: BigDecimal
+  depositedAmountAfter_gt: BigDecimal
+  depositedAmountAfter_gte: BigDecimal
+  depositedAmountAfter_in: [BigDecimal!]
+  depositedAmountAfter_lt: BigDecimal
+  depositedAmountAfter_lte: BigDecimal
+  depositedAmountAfter_not: BigDecimal
+  depositedAmountAfter_not_in: [BigDecimal!]
+  depositedAmountBefore: BigDecimal
+  depositedAmountBefore_gt: BigDecimal
+  depositedAmountBefore_gte: BigDecimal
+  depositedAmountBefore_in: [BigDecimal!]
+  depositedAmountBefore_lt: BigDecimal
+  depositedAmountBefore_lte: BigDecimal
+  depositedAmountBefore_not: BigDecimal
+  depositedAmountBefore_not_in: [BigDecimal!]
+  depositedAmountChange: BigDecimal
+  depositedAmountChange_gt: BigDecimal
+  depositedAmountChange_gte: BigDecimal
+  depositedAmountChange_in: [BigDecimal!]
+  depositedAmountChange_lt: BigDecimal
+  depositedAmountChange_lte: BigDecimal
+  depositedAmountChange_not: BigDecimal
+  depositedAmountChange_not_in: [BigDecimal!]
+  id: ID
+  id_gt: ID
+  id_gte: ID
+  id_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_not: ID
+  id_not_in: [ID!]
+  sequenceNumber: Int
+  sequenceNumber_gt: Int
+  sequenceNumber_gte: Int
+  sequenceNumber_in: [Int!]
+  sequenceNumber_lt: Int
+  sequenceNumber_lte: Int
+  sequenceNumber_not: Int
+  sequenceNumber_not_in: [Int!]
+  stabilityDeposit: String
+  stabilityDepositOperation: StabilityDepositOperation
+  stabilityDepositOperation_in: [StabilityDepositOperation!]
+  stabilityDepositOperation_not: StabilityDepositOperation
+  stabilityDepositOperation_not_in: [StabilityDepositOperation!]
+  stabilityDeposit_contains: String
+  stabilityDeposit_contains_nocase: String
+  stabilityDeposit_ends_with: String
+  stabilityDeposit_ends_with_nocase: String
+  stabilityDeposit_gt: String
+  stabilityDeposit_gte: String
+  stabilityDeposit_in: [String!]
+  stabilityDeposit_lt: String
+  stabilityDeposit_lte: String
+  stabilityDeposit_not: String
+  stabilityDeposit_not_contains: String
+  stabilityDeposit_not_contains_nocase: String
+  stabilityDeposit_not_ends_with: String
+  stabilityDeposit_not_ends_with_nocase: String
+  stabilityDeposit_not_in: [String!]
+  stabilityDeposit_not_starts_with: String
+  stabilityDeposit_not_starts_with_nocase: String
+  stabilityDeposit_starts_with: String
+  stabilityDeposit_starts_with_nocase: String
+  systemStateAfter: String
+  systemStateAfter_contains: String
+  systemStateAfter_contains_nocase: String
+  systemStateAfter_ends_with: String
+  systemStateAfter_ends_with_nocase: String
+  systemStateAfter_gt: String
+  systemStateAfter_gte: String
+  systemStateAfter_in: [String!]
+  systemStateAfter_lt: String
+  systemStateAfter_lte: String
+  systemStateAfter_not: String
+  systemStateAfter_not_contains: String
+  systemStateAfter_not_contains_nocase: String
+  systemStateAfter_not_ends_with: String
+  systemStateAfter_not_ends_with_nocase: String
+  systemStateAfter_not_in: [String!]
+  systemStateAfter_not_starts_with: String
+  systemStateAfter_not_starts_with_nocase: String
+  systemStateAfter_starts_with: String
+  systemStateAfter_starts_with_nocase: String
+  systemStateBefore: String
+  systemStateBefore_contains: String
+  systemStateBefore_contains_nocase: String
+  systemStateBefore_ends_with: String
+  systemStateBefore_ends_with_nocase: String
+  systemStateBefore_gt: String
+  systemStateBefore_gte: String
+  systemStateBefore_in: [String!]
+  systemStateBefore_lt: String
+  systemStateBefore_lte: String
+  systemStateBefore_not: String
+  systemStateBefore_not_contains: String
+  systemStateBefore_not_contains_nocase: String
+  systemStateBefore_not_ends_with: String
+  systemStateBefore_not_ends_with_nocase: String
+  systemStateBefore_not_in: [String!]
+  systemStateBefore_not_starts_with: String
+  systemStateBefore_not_starts_with_nocase: String
+  systemStateBefore_starts_with: String
+  systemStateBefore_starts_with_nocase: String
+  transaction: String
+  transaction_contains: String
+  transaction_contains_nocase: String
+  transaction_ends_with: String
+  transaction_ends_with_nocase: String
+  transaction_gt: String
+  transaction_gte: String
+  transaction_in: [String!]
+  transaction_lt: String
+  transaction_lte: String
+  transaction_not: String
+  transaction_not_contains: String
+  transaction_not_contains_nocase: String
+  transaction_not_ends_with: String
+  transaction_not_ends_with_nocase: String
+  transaction_not_in: [String!]
+  transaction_not_starts_with: String
+  transaction_not_starts_with_nocase: String
+  transaction_starts_with: String
+  transaction_starts_with_nocase: String
+}
+
+enum StabilityDepositChange_orderBy {
+  collateralGain
+  depositedAmountAfter
+  depositedAmountBefore
+  depositedAmountChange
+  id
+  sequenceNumber
+  stabilityDeposit
+  stabilityDepositOperation
+  systemStateAfter
+  systemStateBefore
+  transaction
+}
+
+enum StabilityDepositOperation {
+  depositTokens
+  withdrawCollateralGain
+  withdrawTokens
+}
+
+input StabilityDeposit_filter {
+  depositedAmount: BigDecimal
+  depositedAmount_gt: BigDecimal
+  depositedAmount_gte: BigDecimal
+  depositedAmount_in: [BigDecimal!]
+  depositedAmount_lt: BigDecimal
+  depositedAmount_lte: BigDecimal
+  depositedAmount_not: BigDecimal
+  depositedAmount_not_in: [BigDecimal!]
+  id: ID
+  id_gt: ID
+  id_gte: ID
+  id_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_not: ID
+  id_not_in: [ID!]
+  owner: String
+  owner_contains: String
+  owner_contains_nocase: String
+  owner_ends_with: String
+  owner_ends_with_nocase: String
+  owner_gt: String
+  owner_gte: String
+  owner_in: [String!]
+  owner_lt: String
+  owner_lte: String
+  owner_not: String
+  owner_not_contains: String
+  owner_not_contains_nocase: String
+  owner_not_ends_with: String
+  owner_not_ends_with_nocase: String
+  owner_not_in: [String!]
+  owner_not_starts_with: String
+  owner_not_starts_with_nocase: String
+  owner_starts_with: String
+  owner_starts_with_nocase: String
+}
+
+enum StabilityDeposit_orderBy {
+  changes
+  depositedAmount
+  id
+  owner
+}
+
+type Subscription {
+  """
+  Access to subgraph metadata
+  """
+  _meta(block: Block_height): _Meta_
+  change(
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+    id: ID!
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): Change
+  changes(
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+    first: Int = 100
+    orderBy: Change_orderBy
+    orderDirection: OrderDirection
+    skip: Int = 0
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+    where: Change_filter
+  ): [Change!]!
+  collSurplusChange(
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+    id: ID!
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): CollSurplusChange
+  collSurplusChanges(
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+    first: Int = 100
+    orderBy: CollSurplusChange_orderBy
+    orderDirection: OrderDirection
+    skip: Int = 0
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+    where: CollSurplusChange_filter
+  ): [CollSurplusChange!]!
+  global(
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+    id: ID!
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): Global
+  globals(
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+    first: Int = 100
+    orderBy: Global_orderBy
+    orderDirection: OrderDirection
+    skip: Int = 0
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+    where: Global_filter
+  ): [Global!]!
+  liquidation(
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+    id: ID!
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): Liquidation
+  liquidations(
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+    first: Int = 100
+    orderBy: Liquidation_orderBy
+    orderDirection: OrderDirection
+    skip: Int = 0
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+    where: Liquidation_filter
+  ): [Liquidation!]!
+  priceChange(
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+    id: ID!
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): PriceChange
+  priceChanges(
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+    first: Int = 100
+    orderBy: PriceChange_orderBy
+    orderDirection: OrderDirection
+    skip: Int = 0
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+    where: PriceChange_filter
+  ): [PriceChange!]!
+  redemption(
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+    id: ID!
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): Redemption
+  redemptionRaw(
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+    id: ID!
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): RedemptionRaw
+  redemptionRaws(
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+    first: Int = 100
+    orderBy: RedemptionRaw_orderBy
+    orderDirection: OrderDirection
+    skip: Int = 0
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+    where: RedemptionRaw_filter
+  ): [RedemptionRaw!]!
+  redemptions(
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+    first: Int = 100
+    orderBy: Redemption_orderBy
+    orderDirection: OrderDirection
+    skip: Int = 0
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+    where: Redemption_filter
+  ): [Redemption!]!
+  revenueDailies(
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+    first: Int = 100
+    orderBy: RevenueDaily_orderBy
+    orderDirection: OrderDirection
+    skip: Int = 0
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+    where: RevenueDaily_filter
+  ): [RevenueDaily!]!
+  revenueDaily(
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+    id: ID!
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): RevenueDaily
+  revenueWeeklies(
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+    first: Int = 100
+    orderBy: RevenueWeekly_orderBy
+    orderDirection: OrderDirection
+    skip: Int = 0
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+    where: RevenueWeekly_filter
+  ): [RevenueWeekly!]!
+  revenueWeekly(
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+    id: ID!
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): RevenueWeekly
+  stabilityDeposit(
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+    id: ID!
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): StabilityDeposit
+  stabilityDepositChange(
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+    id: ID!
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): StabilityDepositChange
+  stabilityDepositChanges(
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+    first: Int = 100
+    orderBy: StabilityDepositChange_orderBy
+    orderDirection: OrderDirection
+    skip: Int = 0
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+    where: StabilityDepositChange_filter
+  ): [StabilityDepositChange!]!
+  stabilityDeposits(
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+    first: Int = 100
+    orderBy: StabilityDeposit_orderBy
+    orderDirection: OrderDirection
+    skip: Int = 0
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+    where: StabilityDeposit_filter
+  ): [StabilityDeposit!]!
+  systemState(
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+    id: ID!
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): SystemState
+  systemStates(
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+    first: Int = 100
+    orderBy: SystemState_orderBy
+    orderDirection: OrderDirection
+    skip: Int = 0
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+    where: SystemState_filter
+  ): [SystemState!]!
+  token(
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+    id: ID!
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): Token
+  tokenAllowance(
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+    id: ID!
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): TokenAllowance
+  tokenAllowances(
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+    first: Int = 100
+    orderBy: TokenAllowance_orderBy
+    orderDirection: OrderDirection
+    skip: Int = 0
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+    where: TokenAllowance_filter
+  ): [TokenAllowance!]!
+  tokenBalance(
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+    id: ID!
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): TokenBalance
+  tokenBalances(
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+    first: Int = 100
+    orderBy: TokenBalance_orderBy
+    orderDirection: OrderDirection
+    skip: Int = 0
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+    where: TokenBalance_filter
+  ): [TokenBalance!]!
+  tokens(
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+    first: Int = 100
+    orderBy: Token_orderBy
+    orderDirection: OrderDirection
+    skip: Int = 0
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+    where: Token_filter
+  ): [Token!]!
+  transaction(
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+    id: ID!
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): Transaction
+  transactions(
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+    first: Int = 100
+    orderBy: Transaction_orderBy
+    orderDirection: OrderDirection
+    skip: Int = 0
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+    where: Transaction_filter
+  ): [Transaction!]!
+  trove(
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+    id: ID!
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): Trove
+  troveChange(
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+    id: ID!
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): TroveChange
+  troveChanges(
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+    first: Int = 100
+    orderBy: TroveChange_orderBy
+    orderDirection: OrderDirection
+    skip: Int = 0
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+    where: TroveChange_filter
+  ): [TroveChange!]!
+  troves(
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+    first: Int = 100
+    orderBy: Trove_orderBy
+    orderDirection: OrderDirection
+    skip: Int = 0
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+    where: Trove_filter
+  ): [Trove!]!
+  user(
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+    id: ID!
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): User
+  users(
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+    first: Int = 100
+    orderBy: User_orderBy
+    orderDirection: OrderDirection
+    skip: Int = 0
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+    where: User_filter
+  ): [User!]!
+}
+
+type SystemState {
+  cause: Change
+  collSurplusPoolBalance: BigDecimal!
+
+  """
+  Sequence number as an ID (string)
+  """
+  id: ID!
+  price: BigDecimal
+
+  """
+  Can be used to chronologically sort SystemStates
+  """
+  sequenceNumber: Int!
+  tokensInStabilityPool: BigDecimal!
+  totalCollateral: BigDecimal!
+  totalCollateralRatio: BigDecimal
+  totalDebt: BigDecimal!
+}
+
+input SystemState_filter {
+  collSurplusPoolBalance: BigDecimal
+  collSurplusPoolBalance_gt: BigDecimal
+  collSurplusPoolBalance_gte: BigDecimal
+  collSurplusPoolBalance_in: [BigDecimal!]
+  collSurplusPoolBalance_lt: BigDecimal
+  collSurplusPoolBalance_lte: BigDecimal
+  collSurplusPoolBalance_not: BigDecimal
+  collSurplusPoolBalance_not_in: [BigDecimal!]
+  id: ID
+  id_gt: ID
+  id_gte: ID
+  id_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_not: ID
+  id_not_in: [ID!]
+  price: BigDecimal
+  price_gt: BigDecimal
+  price_gte: BigDecimal
+  price_in: [BigDecimal!]
+  price_lt: BigDecimal
+  price_lte: BigDecimal
+  price_not: BigDecimal
+  price_not_in: [BigDecimal!]
+  sequenceNumber: Int
+  sequenceNumber_gt: Int
+  sequenceNumber_gte: Int
+  sequenceNumber_in: [Int!]
+  sequenceNumber_lt: Int
+  sequenceNumber_lte: Int
+  sequenceNumber_not: Int
+  sequenceNumber_not_in: [Int!]
+  tokensInStabilityPool: BigDecimal
+  tokensInStabilityPool_gt: BigDecimal
+  tokensInStabilityPool_gte: BigDecimal
+  tokensInStabilityPool_in: [BigDecimal!]
+  tokensInStabilityPool_lt: BigDecimal
+  tokensInStabilityPool_lte: BigDecimal
+  tokensInStabilityPool_not: BigDecimal
+  tokensInStabilityPool_not_in: [BigDecimal!]
+  totalCollateral: BigDecimal
+  totalCollateralRatio: BigDecimal
+  totalCollateralRatio_gt: BigDecimal
+  totalCollateralRatio_gte: BigDecimal
+  totalCollateralRatio_in: [BigDecimal!]
+  totalCollateralRatio_lt: BigDecimal
+  totalCollateralRatio_lte: BigDecimal
+  totalCollateralRatio_not: BigDecimal
+  totalCollateralRatio_not_in: [BigDecimal!]
+  totalCollateral_gt: BigDecimal
+  totalCollateral_gte: BigDecimal
+  totalCollateral_in: [BigDecimal!]
+  totalCollateral_lt: BigDecimal
+  totalCollateral_lte: BigDecimal
+  totalCollateral_not: BigDecimal
+  totalCollateral_not_in: [BigDecimal!]
+  totalDebt: BigDecimal
+  totalDebt_gt: BigDecimal
+  totalDebt_gte: BigDecimal
+  totalDebt_in: [BigDecimal!]
+  totalDebt_lt: BigDecimal
+  totalDebt_lte: BigDecimal
+  totalDebt_not: BigDecimal
+  totalDebt_not_in: [BigDecimal!]
+}
+
+enum SystemState_orderBy {
+  cause
+  collSurplusPoolBalance
+  id
+  price
+  sequenceNumber
+  tokensInStabilityPool
+  totalCollateral
+  totalCollateralRatio
+  totalDebt
+}
+
+type Token {
+  allowances(
+    first: Int = 100
+    orderBy: TokenAllowance_orderBy
+    orderDirection: OrderDirection
+    skip: Int = 0
+    where: TokenAllowance_filter
+  ): [TokenAllowance!]
+  balances(
+    first: Int = 100
+    orderBy: TokenBalance_orderBy
+    orderDirection: OrderDirection
+    skip: Int = 0
+    where: TokenBalance_filter
+  ): [TokenBalance!]
+  id: ID!
+  name: String!
+  symbol: String!
+  totalSupply: BigInt!
+}
+
+type TokenAllowance {
+  id: ID!
+  owner: User!
+  spender: User!
+  token: Token!
+  value: BigInt!
+}
+
+input TokenAllowance_filter {
+  id: ID
+  id_gt: ID
+  id_gte: ID
+  id_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_not: ID
+  id_not_in: [ID!]
+  owner: String
+  owner_contains: String
+  owner_contains_nocase: String
+  owner_ends_with: String
+  owner_ends_with_nocase: String
+  owner_gt: String
+  owner_gte: String
+  owner_in: [String!]
+  owner_lt: String
+  owner_lte: String
+  owner_not: String
+  owner_not_contains: String
+  owner_not_contains_nocase: String
+  owner_not_ends_with: String
+  owner_not_ends_with_nocase: String
+  owner_not_in: [String!]
+  owner_not_starts_with: String
+  owner_not_starts_with_nocase: String
+  owner_starts_with: String
+  owner_starts_with_nocase: String
+  spender: String
+  spender_contains: String
+  spender_contains_nocase: String
+  spender_ends_with: String
+  spender_ends_with_nocase: String
+  spender_gt: String
+  spender_gte: String
+  spender_in: [String!]
+  spender_lt: String
+  spender_lte: String
+  spender_not: String
+  spender_not_contains: String
+  spender_not_contains_nocase: String
+  spender_not_ends_with: String
+  spender_not_ends_with_nocase: String
+  spender_not_in: [String!]
+  spender_not_starts_with: String
+  spender_not_starts_with_nocase: String
+  spender_starts_with: String
+  spender_starts_with_nocase: String
+  token: String
+  token_contains: String
+  token_contains_nocase: String
+  token_ends_with: String
+  token_ends_with_nocase: String
+  token_gt: String
+  token_gte: String
+  token_in: [String!]
+  token_lt: String
+  token_lte: String
+  token_not: String
+  token_not_contains: String
+  token_not_contains_nocase: String
+  token_not_ends_with: String
+  token_not_ends_with_nocase: String
+  token_not_in: [String!]
+  token_not_starts_with: String
+  token_not_starts_with_nocase: String
+  token_starts_with: String
+  token_starts_with_nocase: String
+  value: BigInt
+  value_gt: BigInt
+  value_gte: BigInt
+  value_in: [BigInt!]
+  value_lt: BigInt
+  value_lte: BigInt
+  value_not: BigInt
+  value_not_in: [BigInt!]
+}
+
+enum TokenAllowance_orderBy {
+  id
+  owner
+  spender
+  token
+  value
+}
+
+type TokenBalance {
+  balance: BigInt!
+  id: ID!
+  owner: User!
+  token: Token!
+}
+
+input TokenBalance_filter {
+  balance: BigInt
+  balance_gt: BigInt
+  balance_gte: BigInt
+  balance_in: [BigInt!]
+  balance_lt: BigInt
+  balance_lte: BigInt
+  balance_not: BigInt
+  balance_not_in: [BigInt!]
+  id: ID
+  id_gt: ID
+  id_gte: ID
+  id_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_not: ID
+  id_not_in: [ID!]
+  owner: String
+  owner_contains: String
+  owner_contains_nocase: String
+  owner_ends_with: String
+  owner_ends_with_nocase: String
+  owner_gt: String
+  owner_gte: String
+  owner_in: [String!]
+  owner_lt: String
+  owner_lte: String
+  owner_not: String
+  owner_not_contains: String
+  owner_not_contains_nocase: String
+  owner_not_ends_with: String
+  owner_not_ends_with_nocase: String
+  owner_not_in: [String!]
+  owner_not_starts_with: String
+  owner_not_starts_with_nocase: String
+  owner_starts_with: String
+  owner_starts_with_nocase: String
+  token: String
+  token_contains: String
+  token_contains_nocase: String
+  token_ends_with: String
+  token_ends_with_nocase: String
+  token_gt: String
+  token_gte: String
+  token_in: [String!]
+  token_lt: String
+  token_lte: String
+  token_not: String
+  token_not_contains: String
+  token_not_contains_nocase: String
+  token_not_ends_with: String
+  token_not_ends_with_nocase: String
+  token_not_in: [String!]
+  token_not_starts_with: String
+  token_not_starts_with_nocase: String
+  token_starts_with: String
+  token_starts_with_nocase: String
+}
+
+enum TokenBalance_orderBy {
+  balance
+  id
+  owner
+  token
+}
+
+input Token_filter {
+  id: ID
+  id_gt: ID
+  id_gte: ID
+  id_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_not: ID
+  id_not_in: [ID!]
+  name: String
+  name_contains: String
+  name_contains_nocase: String
+  name_ends_with: String
+  name_ends_with_nocase: String
+  name_gt: String
+  name_gte: String
+  name_in: [String!]
+  name_lt: String
+  name_lte: String
+  name_not: String
+  name_not_contains: String
+  name_not_contains_nocase: String
+  name_not_ends_with: String
+  name_not_ends_with_nocase: String
+  name_not_in: [String!]
+  name_not_starts_with: String
+  name_not_starts_with_nocase: String
+  name_starts_with: String
+  name_starts_with_nocase: String
+  symbol: String
+  symbol_contains: String
+  symbol_contains_nocase: String
+  symbol_ends_with: String
+  symbol_ends_with_nocase: String
+  symbol_gt: String
+  symbol_gte: String
+  symbol_in: [String!]
+  symbol_lt: String
+  symbol_lte: String
+  symbol_not: String
+  symbol_not_contains: String
+  symbol_not_contains_nocase: String
+  symbol_not_ends_with: String
+  symbol_not_ends_with_nocase: String
+  symbol_not_in: [String!]
+  symbol_not_starts_with: String
+  symbol_not_starts_with_nocase: String
+  symbol_starts_with: String
+  symbol_starts_with_nocase: String
+  totalSupply: BigInt
+  totalSupply_gt: BigInt
+  totalSupply_gte: BigInt
+  totalSupply_in: [BigInt!]
+  totalSupply_lt: BigInt
+  totalSupply_lte: BigInt
+  totalSupply_not: BigInt
+  totalSupply_not_in: [BigInt!]
+}
+
+enum Token_orderBy {
+  allowances
+  balances
+  id
+  name
+  symbol
+  totalSupply
+}
+
+type Transaction {
+  blockNumber: Int!
+  changes(
+    first: Int = 100
+    orderBy: Change_orderBy
+    orderDirection: OrderDirection
+    skip: Int = 0
+    where: Change_filter
+  ): [Change!]!
+
+  """
+  Transaction hash
+  """
+  id: ID!
+
+  """
+  Can be used to correctly sort transactions even if they were mined in the same block
+  """
+  sequenceNumber: Int!
+
+  """
+  Timestamp of block that included this transaction (seconds since epoch)
+  """
+  timestamp: Int!
+}
+
+input Transaction_filter {
+  blockNumber: Int
+  blockNumber_gt: Int
+  blockNumber_gte: Int
+  blockNumber_in: [Int!]
+  blockNumber_lt: Int
+  blockNumber_lte: Int
+  blockNumber_not: Int
+  blockNumber_not_in: [Int!]
+  id: ID
+  id_gt: ID
+  id_gte: ID
+  id_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_not: ID
+  id_not_in: [ID!]
+  sequenceNumber: Int
+  sequenceNumber_gt: Int
+  sequenceNumber_gte: Int
+  sequenceNumber_in: [Int!]
+  sequenceNumber_lt: Int
+  sequenceNumber_lte: Int
+  sequenceNumber_not: Int
+  sequenceNumber_not_in: [Int!]
+  timestamp: Int
+  timestamp_gt: Int
+  timestamp_gte: Int
+  timestamp_in: [Int!]
+  timestamp_lt: Int
+  timestamp_lte: Int
+  timestamp_not: Int
+  timestamp_not_in: [Int!]
+}
+
+enum Transaction_orderBy {
+  blockNumber
+  changes
+  id
+  sequenceNumber
+  timestamp
+}
+
+type Trove {
+  changes(
+    first: Int = 100
+    orderBy: TroveChange_orderBy
+    orderDirection: OrderDirection
+    skip: Int = 0
+    where: TroveChange_filter
+  ): [TroveChange!]!
+  collateral: BigDecimal!
+
+  """
+  Ordering by this field will result in the same ordering as collateral ratio (except reversed)
+  """
+  collateralRatioSortKey: BigInt
+  debt: BigDecimal!
+
+  """
+  Owner's ID
+  """
+  id: ID!
+  owner: User!
+  rawCollateral: BigInt!
+  rawDebt: BigInt!
+
+  """
+  The value of total redistributed per-stake collateral the last time rewards were applied
+  """
+  rawSnapshotOfTotalRedistributedCollateral: BigInt!
+
+  """
+  The value of total redistributed per-stake debt the last time rewards were applied
+  """
+  rawSnapshotOfTotalRedistributedDebt: BigInt!
+  rawStake: BigInt!
+  status: TroveStatus!
+}
+
+type TroveChange implements Change {
+  borrowingFee: BigDecimal
+  collateralAfter: BigDecimal!
+  collateralBefore: BigDecimal!
+  collateralChange: BigDecimal!
+  collateralRatioAfter: BigDecimal
+  collateralRatioBefore: BigDecimal
+  debtAfter: BigDecimal!
+  debtBefore: BigDecimal!
+  debtChange: BigDecimal!
+  id: ID!
+  liquidation: Liquidation
+  redemption: Redemption
+  sequenceNumber: Int!
+  systemStateAfter: SystemState!
+  systemStateBefore: SystemState!
+  transaction: Transaction!
+  trove: Trove!
+  troveOperation: TroveOperation!
+}
+
+input TroveChange_filter {
+  borrowingFee: BigDecimal
+  borrowingFee_gt: BigDecimal
+  borrowingFee_gte: BigDecimal
+  borrowingFee_in: [BigDecimal!]
+  borrowingFee_lt: BigDecimal
+  borrowingFee_lte: BigDecimal
+  borrowingFee_not: BigDecimal
+  borrowingFee_not_in: [BigDecimal!]
+  collateralAfter: BigDecimal
+  collateralAfter_gt: BigDecimal
+  collateralAfter_gte: BigDecimal
+  collateralAfter_in: [BigDecimal!]
+  collateralAfter_lt: BigDecimal
+  collateralAfter_lte: BigDecimal
+  collateralAfter_not: BigDecimal
+  collateralAfter_not_in: [BigDecimal!]
+  collateralBefore: BigDecimal
+  collateralBefore_gt: BigDecimal
+  collateralBefore_gte: BigDecimal
+  collateralBefore_in: [BigDecimal!]
+  collateralBefore_lt: BigDecimal
+  collateralBefore_lte: BigDecimal
+  collateralBefore_not: BigDecimal
+  collateralBefore_not_in: [BigDecimal!]
+  collateralChange: BigDecimal
+  collateralChange_gt: BigDecimal
+  collateralChange_gte: BigDecimal
+  collateralChange_in: [BigDecimal!]
+  collateralChange_lt: BigDecimal
+  collateralChange_lte: BigDecimal
+  collateralChange_not: BigDecimal
+  collateralChange_not_in: [BigDecimal!]
+  collateralRatioAfter: BigDecimal
+  collateralRatioAfter_gt: BigDecimal
+  collateralRatioAfter_gte: BigDecimal
+  collateralRatioAfter_in: [BigDecimal!]
+  collateralRatioAfter_lt: BigDecimal
+  collateralRatioAfter_lte: BigDecimal
+  collateralRatioAfter_not: BigDecimal
+  collateralRatioAfter_not_in: [BigDecimal!]
+  collateralRatioBefore: BigDecimal
+  collateralRatioBefore_gt: BigDecimal
+  collateralRatioBefore_gte: BigDecimal
+  collateralRatioBefore_in: [BigDecimal!]
+  collateralRatioBefore_lt: BigDecimal
+  collateralRatioBefore_lte: BigDecimal
+  collateralRatioBefore_not: BigDecimal
+  collateralRatioBefore_not_in: [BigDecimal!]
+  debtAfter: BigDecimal
+  debtAfter_gt: BigDecimal
+  debtAfter_gte: BigDecimal
+  debtAfter_in: [BigDecimal!]
+  debtAfter_lt: BigDecimal
+  debtAfter_lte: BigDecimal
+  debtAfter_not: BigDecimal
+  debtAfter_not_in: [BigDecimal!]
+  debtBefore: BigDecimal
+  debtBefore_gt: BigDecimal
+  debtBefore_gte: BigDecimal
+  debtBefore_in: [BigDecimal!]
+  debtBefore_lt: BigDecimal
+  debtBefore_lte: BigDecimal
+  debtBefore_not: BigDecimal
+  debtBefore_not_in: [BigDecimal!]
+  debtChange: BigDecimal
+  debtChange_gt: BigDecimal
+  debtChange_gte: BigDecimal
+  debtChange_in: [BigDecimal!]
+  debtChange_lt: BigDecimal
+  debtChange_lte: BigDecimal
+  debtChange_not: BigDecimal
+  debtChange_not_in: [BigDecimal!]
+  id: ID
+  id_gt: ID
+  id_gte: ID
+  id_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_not: ID
+  id_not_in: [ID!]
+  liquidation: String
+  liquidation_contains: String
+  liquidation_contains_nocase: String
+  liquidation_ends_with: String
+  liquidation_ends_with_nocase: String
+  liquidation_gt: String
+  liquidation_gte: String
+  liquidation_in: [String!]
+  liquidation_lt: String
+  liquidation_lte: String
+  liquidation_not: String
+  liquidation_not_contains: String
+  liquidation_not_contains_nocase: String
+  liquidation_not_ends_with: String
+  liquidation_not_ends_with_nocase: String
+  liquidation_not_in: [String!]
+  liquidation_not_starts_with: String
+  liquidation_not_starts_with_nocase: String
+  liquidation_starts_with: String
+  liquidation_starts_with_nocase: String
+  redemption: String
+  redemption_contains: String
+  redemption_contains_nocase: String
+  redemption_ends_with: String
+  redemption_ends_with_nocase: String
+  redemption_gt: String
+  redemption_gte: String
+  redemption_in: [String!]
+  redemption_lt: String
+  redemption_lte: String
+  redemption_not: String
+  redemption_not_contains: String
+  redemption_not_contains_nocase: String
+  redemption_not_ends_with: String
+  redemption_not_ends_with_nocase: String
+  redemption_not_in: [String!]
+  redemption_not_starts_with: String
+  redemption_not_starts_with_nocase: String
+  redemption_starts_with: String
+  redemption_starts_with_nocase: String
+  sequenceNumber: Int
+  sequenceNumber_gt: Int
+  sequenceNumber_gte: Int
+  sequenceNumber_in: [Int!]
+  sequenceNumber_lt: Int
+  sequenceNumber_lte: Int
+  sequenceNumber_not: Int
+  sequenceNumber_not_in: [Int!]
+  systemStateAfter: String
+  systemStateAfter_contains: String
+  systemStateAfter_contains_nocase: String
+  systemStateAfter_ends_with: String
+  systemStateAfter_ends_with_nocase: String
+  systemStateAfter_gt: String
+  systemStateAfter_gte: String
+  systemStateAfter_in: [String!]
+  systemStateAfter_lt: String
+  systemStateAfter_lte: String
+  systemStateAfter_not: String
+  systemStateAfter_not_contains: String
+  systemStateAfter_not_contains_nocase: String
+  systemStateAfter_not_ends_with: String
+  systemStateAfter_not_ends_with_nocase: String
+  systemStateAfter_not_in: [String!]
+  systemStateAfter_not_starts_with: String
+  systemStateAfter_not_starts_with_nocase: String
+  systemStateAfter_starts_with: String
+  systemStateAfter_starts_with_nocase: String
+  systemStateBefore: String
+  systemStateBefore_contains: String
+  systemStateBefore_contains_nocase: String
+  systemStateBefore_ends_with: String
+  systemStateBefore_ends_with_nocase: String
+  systemStateBefore_gt: String
+  systemStateBefore_gte: String
+  systemStateBefore_in: [String!]
+  systemStateBefore_lt: String
+  systemStateBefore_lte: String
+  systemStateBefore_not: String
+  systemStateBefore_not_contains: String
+  systemStateBefore_not_contains_nocase: String
+  systemStateBefore_not_ends_with: String
+  systemStateBefore_not_ends_with_nocase: String
+  systemStateBefore_not_in: [String!]
+  systemStateBefore_not_starts_with: String
+  systemStateBefore_not_starts_with_nocase: String
+  systemStateBefore_starts_with: String
+  systemStateBefore_starts_with_nocase: String
+  transaction: String
+  transaction_contains: String
+  transaction_contains_nocase: String
+  transaction_ends_with: String
+  transaction_ends_with_nocase: String
+  transaction_gt: String
+  transaction_gte: String
+  transaction_in: [String!]
+  transaction_lt: String
+  transaction_lte: String
+  transaction_not: String
+  transaction_not_contains: String
+  transaction_not_contains_nocase: String
+  transaction_not_ends_with: String
+  transaction_not_ends_with_nocase: String
+  transaction_not_in: [String!]
+  transaction_not_starts_with: String
+  transaction_not_starts_with_nocase: String
+  transaction_starts_with: String
+  transaction_starts_with_nocase: String
+  trove: String
+  troveOperation: TroveOperation
+  troveOperation_in: [TroveOperation!]
+  troveOperation_not: TroveOperation
+  troveOperation_not_in: [TroveOperation!]
+  trove_contains: String
+  trove_contains_nocase: String
+  trove_ends_with: String
+  trove_ends_with_nocase: String
+  trove_gt: String
+  trove_gte: String
+  trove_in: [String!]
+  trove_lt: String
+  trove_lte: String
+  trove_not: String
+  trove_not_contains: String
+  trove_not_contains_nocase: String
+  trove_not_ends_with: String
+  trove_not_ends_with_nocase: String
+  trove_not_in: [String!]
+  trove_not_starts_with: String
+  trove_not_starts_with_nocase: String
+  trove_starts_with: String
+  trove_starts_with_nocase: String
+}
+
+enum TroveChange_orderBy {
+  borrowingFee
+  collateralAfter
+  collateralBefore
+  collateralChange
+  collateralRatioAfter
+  collateralRatioBefore
+  debtAfter
+  debtBefore
+  debtChange
+  id
+  liquidation
+  redemption
+  sequenceNumber
+  systemStateAfter
+  systemStateBefore
+  transaction
+  trove
+  troveOperation
+}
+
+enum TroveOperation {
+  accrueRewards
+  adjustTrove
+  closeTrove
+  liquidateInNormalMode
+  liquidateInRecoveryMode
+  openTrove
+  redeemCollateral
+}
+
+enum TroveStatus {
+  closedByLiquidation
+  closedByOwner
+  closedByRedemption
+  open
+}
+
+input Trove_filter {
+  collateral: BigDecimal
+  collateralRatioSortKey: BigInt
+  collateralRatioSortKey_gt: BigInt
+  collateralRatioSortKey_gte: BigInt
+  collateralRatioSortKey_in: [BigInt!]
+  collateralRatioSortKey_lt: BigInt
+  collateralRatioSortKey_lte: BigInt
+  collateralRatioSortKey_not: BigInt
+  collateralRatioSortKey_not_in: [BigInt!]
+  collateral_gt: BigDecimal
+  collateral_gte: BigDecimal
+  collateral_in: [BigDecimal!]
+  collateral_lt: BigDecimal
+  collateral_lte: BigDecimal
+  collateral_not: BigDecimal
+  collateral_not_in: [BigDecimal!]
+  debt: BigDecimal
+  debt_gt: BigDecimal
+  debt_gte: BigDecimal
+  debt_in: [BigDecimal!]
+  debt_lt: BigDecimal
+  debt_lte: BigDecimal
+  debt_not: BigDecimal
+  debt_not_in: [BigDecimal!]
+  id: ID
+  id_gt: ID
+  id_gte: ID
+  id_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_not: ID
+  id_not_in: [ID!]
+  owner: String
+  owner_contains: String
+  owner_contains_nocase: String
+  owner_ends_with: String
+  owner_ends_with_nocase: String
+  owner_gt: String
+  owner_gte: String
+  owner_in: [String!]
+  owner_lt: String
+  owner_lte: String
+  owner_not: String
+  owner_not_contains: String
+  owner_not_contains_nocase: String
+  owner_not_ends_with: String
+  owner_not_ends_with_nocase: String
+  owner_not_in: [String!]
+  owner_not_starts_with: String
+  owner_not_starts_with_nocase: String
+  owner_starts_with: String
+  owner_starts_with_nocase: String
+  rawCollateral: BigInt
+  rawCollateral_gt: BigInt
+  rawCollateral_gte: BigInt
+  rawCollateral_in: [BigInt!]
+  rawCollateral_lt: BigInt
+  rawCollateral_lte: BigInt
+  rawCollateral_not: BigInt
+  rawCollateral_not_in: [BigInt!]
+  rawDebt: BigInt
+  rawDebt_gt: BigInt
+  rawDebt_gte: BigInt
+  rawDebt_in: [BigInt!]
+  rawDebt_lt: BigInt
+  rawDebt_lte: BigInt
+  rawDebt_not: BigInt
+  rawDebt_not_in: [BigInt!]
+  rawSnapshotOfTotalRedistributedCollateral: BigInt
+  rawSnapshotOfTotalRedistributedCollateral_gt: BigInt
+  rawSnapshotOfTotalRedistributedCollateral_gte: BigInt
+  rawSnapshotOfTotalRedistributedCollateral_in: [BigInt!]
+  rawSnapshotOfTotalRedistributedCollateral_lt: BigInt
+  rawSnapshotOfTotalRedistributedCollateral_lte: BigInt
+  rawSnapshotOfTotalRedistributedCollateral_not: BigInt
+  rawSnapshotOfTotalRedistributedCollateral_not_in: [BigInt!]
+  rawSnapshotOfTotalRedistributedDebt: BigInt
+  rawSnapshotOfTotalRedistributedDebt_gt: BigInt
+  rawSnapshotOfTotalRedistributedDebt_gte: BigInt
+  rawSnapshotOfTotalRedistributedDebt_in: [BigInt!]
+  rawSnapshotOfTotalRedistributedDebt_lt: BigInt
+  rawSnapshotOfTotalRedistributedDebt_lte: BigInt
+  rawSnapshotOfTotalRedistributedDebt_not: BigInt
+  rawSnapshotOfTotalRedistributedDebt_not_in: [BigInt!]
+  rawStake: BigInt
+  rawStake_gt: BigInt
+  rawStake_gte: BigInt
+  rawStake_in: [BigInt!]
+  rawStake_lt: BigInt
+  rawStake_lte: BigInt
+  rawStake_not: BigInt
+  rawStake_not_in: [BigInt!]
+  status: TroveStatus
+  status_in: [TroveStatus!]
+  status_not: TroveStatus
+  status_not_in: [TroveStatus!]
+}
+
+enum Trove_orderBy {
+  changes
+  collateral
+  collateralRatioSortKey
+  debt
+  id
+  owner
+  rawCollateral
+  rawDebt
+  rawSnapshotOfTotalRedistributedCollateral
+  rawSnapshotOfTotalRedistributedDebt
+  rawStake
+  status
+}
+
+type User {
+  allowances(
+    first: Int = 100
+    orderBy: TokenAllowance_orderBy
+    orderDirection: OrderDirection
+    skip: Int = 0
+    where: TokenAllowance_filter
+  ): [TokenAllowance!]
+  balances(
+    first: Int = 100
+    orderBy: TokenBalance_orderBy
+    orderDirection: OrderDirection
+    skip: Int = 0
+    where: TokenBalance_filter
+  ): [TokenBalance!]
+  collSurplus: BigDecimal!
+  collSurplusChanges(
+    first: Int = 100
+    orderBy: CollSurplusChange_orderBy
+    orderDirection: OrderDirection
+    skip: Int = 0
+    where: CollSurplusChange_filter
+  ): [CollSurplusChange!]!
+
+  """
+  User's Ethereum address as a hex-string
+  """
+  id: ID!
+  liquidations(
+    first: Int = 100
+    orderBy: Liquidation_orderBy
+    orderDirection: OrderDirection
+    skip: Int = 0
+    where: Liquidation_filter
+  ): [Liquidation!]!
+  redemptions(
+    first: Int = 100
+    orderBy: Redemption_orderBy
+    orderDirection: OrderDirection
+    skip: Int = 0
+    where: Redemption_filter
+  ): [Redemption!]!
+  stabilityDeposit: StabilityDeposit
+  trove: Trove
+}
+
+input User_filter {
+  collSurplus: BigDecimal
+  collSurplus_gt: BigDecimal
+  collSurplus_gte: BigDecimal
+  collSurplus_in: [BigDecimal!]
+  collSurplus_lt: BigDecimal
+  collSurplus_lte: BigDecimal
+  collSurplus_not: BigDecimal
+  collSurplus_not_in: [BigDecimal!]
+  id: ID
+  id_gt: ID
+  id_gte: ID
+  id_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_not: ID
+  id_not_in: [ID!]
+  stabilityDeposit: String
+  stabilityDeposit_contains: String
+  stabilityDeposit_contains_nocase: String
+  stabilityDeposit_ends_with: String
+  stabilityDeposit_ends_with_nocase: String
+  stabilityDeposit_gt: String
+  stabilityDeposit_gte: String
+  stabilityDeposit_in: [String!]
+  stabilityDeposit_lt: String
+  stabilityDeposit_lte: String
+  stabilityDeposit_not: String
+  stabilityDeposit_not_contains: String
+  stabilityDeposit_not_contains_nocase: String
+  stabilityDeposit_not_ends_with: String
+  stabilityDeposit_not_ends_with_nocase: String
+  stabilityDeposit_not_in: [String!]
+  stabilityDeposit_not_starts_with: String
+  stabilityDeposit_not_starts_with_nocase: String
+  stabilityDeposit_starts_with: String
+  stabilityDeposit_starts_with_nocase: String
+  trove: String
+  trove_contains: String
+  trove_contains_nocase: String
+  trove_ends_with: String
+  trove_ends_with_nocase: String
+  trove_gt: String
+  trove_gte: String
+  trove_in: [String!]
+  trove_lt: String
+  trove_lte: String
+  trove_not: String
+  trove_not_contains: String
+  trove_not_contains_nocase: String
+  trove_not_ends_with: String
+  trove_not_ends_with_nocase: String
+  trove_not_in: [String!]
+  trove_not_starts_with: String
+  trove_not_starts_with_nocase: String
+  trove_starts_with: String
+  trove_starts_with_nocase: String
+}
+
+enum User_orderBy {
+  allowances
+  balances
+  collSurplus
+  collSurplusChanges
+  id
+  liquidations
+  redemptions
+  stabilityDeposit
+  trove
+}
+
+type _Block_ {
+  """
+  The hash of the block
+  """
+  hash: Bytes
+
+  """
+  The block number
+  """
+  number: Int!
+}
+
+"""
+The type for the top-level _meta field
+"""
+type _Meta_ {
+  "Information about a specific subgraph block. The hash of the block\nwill be null if the _meta field has a block constraint that asks for\na block number. It will be filled if the _meta field has no block constraint\nand therefore asks for the latest  block\n"
+  block: _Block_!
+
+  """
+  The deployment ID
+  """
+  deployment: String!
+
+  """
+  If `true`, the subgraph encountered indexing errors at some past block
+  """
+  hasIndexingErrors: Boolean!
+}
+
+enum _SubgraphErrorPolicy_ {
+  """
+  Data will be returned even if the subgraph has indexing errors
+  """
+  allow
+
+  """
+  If the subgraph has indexing errors, data will be omitted. The default.
+  """
+  deny
+}

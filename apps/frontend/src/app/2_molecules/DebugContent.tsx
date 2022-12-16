@@ -7,7 +7,7 @@ import { useTranslation } from 'react-i18next';
 import { getTokenDetails, SupportedTokens } from '@sovryn/contracts';
 import { Accordion, Button } from '@sovryn/ui';
 
-import { TransactionStepDialog } from '../3_organisms';
+import { TransactionHistoryFrame, TransactionStepDialog } from '../3_organisms';
 import { EmailNotificationSettingsDialog } from '../3_organisms/EmailNotificationSettingsDialog/EmailNotificationSettingsDialog';
 import { GettingStartedPopup } from '../3_organisms/GettingStartedPopup/GettingStartedPopup';
 import { defaultChainId } from '../../config/chains';
@@ -16,7 +16,7 @@ import { useTheme, useWalletConnect } from '../../hooks';
 import { useMaintenance } from '../../hooks/useMaintenance';
 import { translations } from '../../locales/i18n';
 import { AppTheme } from '../../types/tailwind';
-import { APPROVAL_FUNCTION } from '../../utils/constants';
+import { APPROVAL_FUNCTION, EXPORT_RECORD_LIMIT } from '../../utils/constants';
 import {
   useGetTokenRatesQuery,
   useGetTransactionsLazyQuery,
@@ -86,7 +86,9 @@ export const DebugContent = () => {
   }, [setIsOpen, setTitle, setTransactions, wallets]);
 
   const exportData = useCallback(async () => {
-    const { data } = await getTransactions();
+    const { data } = await getTransactions({
+      variables: { limit: EXPORT_RECORD_LIMIT },
+    });
     let transactions = data?.transactions || [];
 
     return transactions.map(tx => ({
@@ -199,6 +201,10 @@ export const DebugContent = () => {
       <br />
       <br />
       <p>{t(translations.wallet)}</p>
+
+      <h3>An example of the Transaction Frame</h3>
+      <br />
+      <TransactionHistoryFrame />
 
       <div className="mt-10 py-10 border-t border-b">
         <h2>Getting started popup</h2>

@@ -71,3 +71,7 @@
 .dialogFull {
   @apply w-full;
 }
+
+.buttonClose {
+  @apply mt-4 text-sm underline leading-[0.875rem] text-gray-30 text-center sm:hidden;
+}

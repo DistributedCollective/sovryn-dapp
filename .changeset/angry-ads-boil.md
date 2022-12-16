@@ -2,4 +2,4 @@
 "@sovryn/ui": patch
 ---
 
-chore: added close button on mobile
+SOV-1243: chore: added close button on mobile

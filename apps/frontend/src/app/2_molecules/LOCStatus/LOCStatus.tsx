@@ -14,6 +14,7 @@ export type LOCStatusProps = {
   withdrawalSurplus?: number;
   collateral?: number;
   debt?: number;
+  debtSymbol?: string;
   cRatio?: number;
   onAdjust?: () => void;
   onClose?: () => void;
@@ -29,6 +30,7 @@ export const LOCStatus: FC<LOCStatusProps> = ({
   onClose,
   onWithdraw,
   className,
+  debtSymbol = '',
 }) => {
   const { t } = useTranslation();
   const showOpenLOC = withdrawalSurplus === 0 && collateral > 0;
@@ -55,14 +57,21 @@ export const LOCStatus: FC<LOCStatusProps> = ({
             />
             <LOCStat
               label={t('LOCStatus.currentDebt')}
-              value={<CountUp separator="," suffix=" ZUSD" end={debt} />}
+              value={
+                <CountUp
+                  duration={0.7}
+                  separator=","
+                  suffix={` ${debtSymbol}`}
+                  end={debt}
+                />
+              }
             />
             <LOCStat
               label={t('LOCStatus.collateralRatio')}
               value={
                 <div className="flex items-center">
                   <CRatioIndicator className="mr-3" value={cRatio} />
-                  <CountUp suffix="%" end={cRatio} />
+                  <CountUp duration={0.7} suffix="%" end={cRatio} />
                 </div>
               }
             />

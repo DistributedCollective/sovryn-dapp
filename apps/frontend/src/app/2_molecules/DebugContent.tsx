@@ -106,7 +106,12 @@ export const DebugContent = () => {
       onClick={toggle}
     >
       <div className="mt-5 py-10 border-b">
-        <LOCStatus collateral={0.51} debt={5000} cRatio={200} />
+        <LOCStatus
+          collateral={0.51}
+          debt={5000}
+          debtSymbol={SupportedTokens.zusd.toUpperCase()}
+          cRatio={200}
+        />
         <LOCStatus className="mt-4" withdrawalSurplus={0.5} />
       </div>
 

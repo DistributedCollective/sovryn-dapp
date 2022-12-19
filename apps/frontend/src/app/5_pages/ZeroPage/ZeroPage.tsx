@@ -16,6 +16,7 @@ import {
 } from '@sovryn/ui';
 
 import { AdjustCreditLine } from '../../3_organisms/ZeroLocForm/AdjustCreditLine';
+import { CloseCreditLine } from '../../3_organisms/ZeroLocForm/CloseCreditLine';
 import { useWalletConnect } from '../../../hooks';
 
 export const ZeroPage: FC = () => {
@@ -25,9 +26,11 @@ export const ZeroPage: FC = () => {
   };
 
   const [open, toggle] = useReducer(v => !v, false);
+  const [openClosePopup, toggleClosePopup] = useReducer(v => !v, false);
   const [trove, setTrove] = useState<UserTrove>();
   const [btcPrice, setBtcPrice] = useState('0');
   const [fees, setFees] = useState<Fees>();
+  const [zusdBalance, setZusdBalance] = React.useState('');
 
   const { account } = useWalletConnect();
 
@@ -43,6 +46,17 @@ export const ZeroPage: FC = () => {
   useEffect(() => {
     if (account && liquity) {
       liquity.getTrove(account).then(setTrove);
+    }
+  }, [account, liquity]);
+
+  useEffect(() => {
+    const getZUSDBalance = async () => {
+      const balance = (await liquity.getZUSDBalance(account)).toString();
+      return balance;
+    };
+
+    if (account && liquity) {
+      getZUSDBalance().then(balance => setZusdBalance(balance));
     }
   }, [account, liquity]);
 
@@ -63,6 +77,11 @@ export const ZeroPage: FC = () => {
           </div>
 
           <Button text="Adjust" onClick={toggle} className="mt-8" />
+          <Button
+            text="Close Line of Credit"
+            onClick={toggleClosePopup}
+            className="mt-8 ml-4"
+          />
         </>
       ) : (
         <>Connect first.</>
@@ -77,6 +96,18 @@ export const ZeroPage: FC = () => {
             onSubmit={noop}
             rbtcPrice={btcPrice}
             fees={fees}
+          />
+        </DialogBody>
+      </Dialog>
+
+      <Dialog width={DialogSize.sm} isOpen={openClosePopup} disableFocusTrap>
+        <DialogHeader title="Close" onClose={toggleClosePopup} />
+        <DialogBody>
+          <CloseCreditLine
+            onSubmit={noop}
+            creditValue={trove?.debt.toString() ?? '0'}
+            collateralValue={trove?.collateral.toString() ?? '0'}
+            availableBalance={zusdBalance}
           />
         </DialogBody>
       </Dialog>

@@ -55,6 +55,16 @@
             "originationFeeTooltip": "Origination fee in percentage"
         }
     },
+    "closeCreditLine": {
+        "selectToken": "Select the token you'd like to pay your debt with:",
+        "fields": {
+            "collateral": {
+                "label": "Collateral to receive",
+                "tooltip": "Amount of collateral to receive"
+            }
+        },
+        "error": "You need an additional {{amount}} {{token}} in order to close your line of credit."
+    },
     "collateralRatio": {
         "title": "Collateral Ratio",
         "tooltip": "Collateral Ratio"

@@ -3,8 +3,8 @@ import { useCallback, useMemo } from 'react';
 import { useMaintenanceModeContext } from '../contexts/MaintenanceModeContext';
 import { MaintenanceStates } from '../types/maintenanceState';
 
-// TODO: clean up and leave only relevant items and values from Maintenance db table
 enum States {
+  // D1 states left here for reference
   FULL = 'full',
   OPEN_MARGIN_TRADES = 'openMarginTrades',
   ADD_TO_MARGIN_TRADES = 'addToMarginTrades',
@@ -21,7 +21,6 @@ enum States {
   STOP_BORROW = 'stopBorrow',
   ADD_LIQUIDITY = 'addLiquidity',
   REMOVE_LIQUIDITY = 'removeLiquidity',
-  FASTBTC = 'fastBTC',
   TRANSACK = 'transack',
 
   BRIDGE = 'bridge',
@@ -58,6 +57,20 @@ enum States {
   PERPETUALS_ACCOUNT_TRANSFER = 'perpetualsAccountTransfer',
   PERPETUALS_TRADE = 'perpetualsTrade',
   PERPETUALS_GSN = 'perpetualsGsn',
+
+  // D2 states
+  FULLD2 = 'fullD2',
+  FASTBTC = 'fastBTC', // shared between D1 and D2
+  ZERO_CONVERT = 'zeroConvert',
+  ZERO_OPEN_LOC = 'zeroOpenLOC',
+  ZERO_ADJUST_LOC = 'zeroAdjustLOC',
+  ZERO_CLOSE_LOC = 'zeroCloseLOC',
+  ZERO_STABILITY_ADD = 'zeroStabilityAdd',
+  ZERO_STABILITY_REMOVE = 'zeroStabilityRemove',
+  ZERO_STABILITY_CLAIM = 'zeroStabilityClaim',
+  ZERO_REDEMPTIONS = 'zeroRedemptions',
+  ZERO_DLLR = 'zeroDLLR',
+  ZERO_EXPORT_CSV = 'zeroExportCSV',
 }
 
 type MaintenanceResult = {

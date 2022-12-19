@@ -1,5 +1,4 @@
 import React, { FC, useCallback, useMemo, useState } from 'react';
-import { useEffect } from 'react';
 
 import { useTranslation } from 'react-i18next';
 
@@ -19,6 +18,7 @@ import { AssetRenderer } from '../../2_molecules/AssetRenderer/AssetRenderer';
 import { translations } from '../../../locales/i18n';
 import { formatValue } from '../../../utils/math';
 import { Row } from './Row';
+import { availableTokens } from './utils';
 
 type CloseCreditLineProps = {
   collateralValue: string;
@@ -34,13 +34,6 @@ export const CloseCreditLine: FC<CloseCreditLineProps> = ({
   onSubmit,
 }) => {
   const { t } = useTranslation();
-  const [error, setError] = useState(false);
-  const availableTokens = [SupportedTokens.dllr, SupportedTokens.zusd];
-  const tokens = availableTokens.map(token => ({
-    value: token,
-    label: token.toUpperCase(),
-  }));
-
   const [creditToken, setCreditToken] = useState<SupportedTokens>(
     SupportedTokens.dllr,
   );
@@ -55,11 +48,10 @@ export const CloseCreditLine: FC<CloseCreditLineProps> = ({
     return Number(availableBalance) - Number(creditValue);
   }, [availableBalance, creditValue]);
 
-  useEffect(() => {
-    Number(availableBalance) < Number(creditValue)
-      ? setError(true)
-      : setError(false);
-  }, [creditValue, availableBalance]);
+  const hasError = useMemo(
+    () => Number(availableBalance) < Number(creditValue),
+    [creditValue, availableBalance],
+  );
 
   return (
     <>
@@ -83,7 +75,10 @@ export const CloseCreditLine: FC<CloseCreditLineProps> = ({
             <Select
               value={creditToken}
               onChange={setCreditToken}
-              options={tokens}
+              options={availableTokens([
+                SupportedTokens.dllr,
+                SupportedTokens.zusd,
+              ])}
               labelRenderer={({ value }) => (
                 <AssetRenderer
                   dataAttribute="close-credit-line-credit-asset"
@@ -108,7 +103,7 @@ export const CloseCreditLine: FC<CloseCreditLineProps> = ({
         />
       </SimpleTable>
 
-      {error && (
+      {hasError && (
         <Paragraph
           children={t(translations.closeCreditLine.error, {
             amount: insufficientBalance,
@@ -124,7 +119,7 @@ export const CloseCreditLine: FC<CloseCreditLineProps> = ({
         <Button
           text={t(translations.common.buttons.confirm)}
           className="w-full"
-          disabled={error}
+          disabled={hasError}
           onClick={onSubmit}
           dataLayoutId="close-credit-line-confirm"
         />

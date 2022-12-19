@@ -11,7 +11,7 @@ export const Footer: FC = () => {
   const footerLinks = [
     {
       id: 'start',
-      href: sovrynLinks.wiki + 'getting-started',
+      href: sovrynLinks.wiki + '/getting-started',
       name: 'Getting started',
     },
     {

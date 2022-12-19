@@ -7,6 +7,7 @@ import { Button, Menu, MenuItem, WalletIdentity } from '@sovryn/ui';
 
 import { EmailNotificationSettingsDialog } from '../../3_organisms/EmailNotificationSettingsDialog/EmailNotificationSettingsDialog';
 import { translations } from '../../../locales/i18n';
+import { sovrynLinks } from '../../../utils/constants';
 
 export type ConnectWalletButtonProps = {
   onConnect: () => void;
@@ -52,7 +53,7 @@ export const ConnectWalletButton: FC<
               <MenuItem
                 text={t(translations.connectWalletButton.rewards)}
                 className="no-underline"
-                href="https://live.sovryn.app/reward"
+                href={`${sovrynLinks.dappAlpha}/rewards`}
                 hrefExternal
               />
               <MenuItem

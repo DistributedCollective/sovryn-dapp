@@ -51,7 +51,7 @@ export const DebugContent = () => {
   const [getTransactions] = useGetTransactionsLazyQuery();
 
   const { checkMaintenance, States } = useMaintenance();
-  const perpsLockedTest = checkMaintenance(States.PERPETUALS_GSN);
+  const dappLockedTest = checkMaintenance(States.FULLD2);
 
   const approve = useCallback(async () => {
     if (!wallets[0].provider) {
@@ -136,8 +136,8 @@ export const DebugContent = () => {
       <hr className="my-12" />
 
       <div className="mb-12">
-        Perpetuals GSN maintenance mode on {isMainnet() ? 'MAINNET' : 'TESTNET'}{' '}
-        is {perpsLockedTest ? 'ON' : 'OFF'}
+        Dapp2 maintenance mode for {isMainnet() ? 'MAINNET' : 'TESTNET'} is{' '}
+        {dappLockedTest ? 'ON' : 'OFF'}
       </div>
 
       {wallets[0]?.accounts[0]?.address ? (

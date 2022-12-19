@@ -2,6 +2,8 @@ import React, { FC } from 'react';
 
 import classNames from 'classnames';
 
+import { CR_THRESHOLDS } from '../../../../../utils/constants';
+
 export type CRatioIndicatorProps = {
   className?: string;
   value: number;
@@ -16,9 +18,10 @@ export const CRatioIndicator: FC<CRatioIndicatorProps> = ({
       'w-2.5 h-2.5 rounded-full transition-colors',
       className,
       {
-        'bg-success': value >= 150,
-        'bg-primary-75': 100 <= value && value < 150,
-        'bg-negative': value < 100,
+        'bg-success': value >= CR_THRESHOLDS.middleEnd,
+        'bg-primary-75':
+          CR_THRESHOLDS.middleStart <= value && value < CR_THRESHOLDS.middleEnd,
+        'bg-negative': value < CR_THRESHOLDS.middleStart,
       },
     )}
   />

@@ -23,6 +23,13 @@ export const requiredChain = ChainIds.RSK_TESTNET;
 
 export const APPROVAL_FUNCTION = 'approve';
 
+export const CR_THRESHOLDS = {
+  start: 90,
+  middleStart: 110,
+  middleEnd: 150,
+  end: 250,
+};
+
 export const graphRskUrl = process.env.REACT_APP_GRAPH_RSK;
 
 export const servicesConfig = {

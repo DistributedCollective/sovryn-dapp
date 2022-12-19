@@ -66,7 +66,8 @@ export const CloseCreditLine: FC<CloseCreditLineProps> = ({
       <Paragraph
         className="font-medium"
         size={ParagraphSize.base}
-        children={t(translations.closeCreditLine.selectToken)}
+        children={t(translations.closeCreditLine.title)}
+        dataLayoutId="close-credit-line"
       />
 
       <FormGroup className="w-full mt-5">
@@ -75,6 +76,7 @@ export const CloseCreditLine: FC<CloseCreditLineProps> = ({
             size={InputSize.large}
             value={creditValue}
             className="w-full flex-grow-0 flex-shrink"
+            dataLayoutId="close-credit-line-credit-amount"
             readOnly
           />
           <div className="min-w-24">
@@ -83,14 +85,22 @@ export const CloseCreditLine: FC<CloseCreditLineProps> = ({
               onChange={setCreditToken}
               options={tokens}
               labelRenderer={({ value }) => (
-                <AssetRenderer showAssetLogo asset={SupportedTokens[value]} />
+                <AssetRenderer
+                  dataAttribute="close-credit-line-credit-asset"
+                  showAssetLogo
+                  asset={SupportedTokens[value]}
+                />
               )}
+              dataLayoutId="close-credit-line-credit-token"
             />
           </div>
         </div>
       </FormGroup>
 
-      <SimpleTable className="max-w-none mt-5">
+      <SimpleTable
+        className="max-w-none mt-5"
+        dataLayoutId="close-credit-line-table"
+      >
         <Row
           label={t(translations.closeCreditLine.fields.collateral.label)}
           tooltip={t(translations.closeCreditLine.fields.collateral.tooltip)}
@@ -106,6 +116,7 @@ export const CloseCreditLine: FC<CloseCreditLineProps> = ({
           })}
           className="text-error-light mt-4"
           size={ParagraphSize.small}
+          dataLayoutId="close-credit-line-error"
         />
       )}
 
@@ -115,6 +126,7 @@ export const CloseCreditLine: FC<CloseCreditLineProps> = ({
           className="w-full"
           disabled={error}
           onClick={onSubmit}
+          dataLayoutId="close-credit-line-confirm"
         />
       </div>
     </>

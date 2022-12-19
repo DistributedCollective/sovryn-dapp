@@ -5,6 +5,7 @@ import { useEffect } from 'react';
 import classNames from 'classnames';
 
 import { SupportedTokenList, SupportedTokens } from '@sovryn/contracts';
+import { applyDataAttr } from '@sovryn/ui';
 
 import styles from './AssetRenderer.module.css';
 
@@ -26,6 +27,10 @@ type AssetRendererProps = {
    * Applied classNames to the outer element.
    * */
   className?: string;
+  /**
+   * Applied data-layout-id to the outer element.
+   * */
+  dataAttribute?: string;
 };
 
 export const AssetRenderer: FC<AssetRendererProps> = ({
@@ -33,6 +38,7 @@ export const AssetRenderer: FC<AssetRendererProps> = ({
   showAssetLogo,
   assetClassName,
   className,
+  dataAttribute,
 }) => {
   const [logo, setLogo] = useState('');
   const getAssetLogo = useCallback((asset: SupportedTokens) => {
@@ -52,7 +58,10 @@ export const AssetRenderer: FC<AssetRendererProps> = ({
   }, [asset, getAssetLogo]);
 
   return (
-    <div className={classNames(styles.container, className)}>
+    <div
+      className={classNames(styles.container, className)}
+      {...applyDataAttr(dataAttribute)}
+    >
       {showAssetLogo && (
         <div
           className={styles.assetLogo}

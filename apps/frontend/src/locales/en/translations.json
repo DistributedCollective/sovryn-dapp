@@ -56,7 +56,7 @@
         }
     },
     "closeCreditLine": {
-        "selectToken": "Select the token you'd like to pay your debt with:",
+        "title": "Select the token you'd like to pay your debt with:",
         "fields": {
             "collateral": {
                 "label": "Collateral to receive",

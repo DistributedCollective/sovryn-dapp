@@ -48,7 +48,7 @@ export const ConnectWalletButton: FC<
           address={address}
           dataLayoutId={dataLayoutId}
           className={className}
-          balance={
+          content={
             <Menu className="mb-4">
               <MenuItem
                 text={t(translations.connectWalletButton.rewards)}
@@ -56,13 +56,13 @@ export const ConnectWalletButton: FC<
                 href={`${sovrynLinks.dappAlpha}/rewards`}
                 hrefExternal
               />
-              <MenuItem
-                text={t(translations.connectWalletButton.notifications)}
-                onClick={toggle}
-              />
               <Link to="/history" className="no-underline">
                 <MenuItem text={t(translations.connectWalletButton.history)} />
               </Link>
+              <MenuItem
+                text={t(translations.connectWalletButton.settings)}
+                onClick={toggle}
+              />
             </Menu>
           }
           submenuLabels={{

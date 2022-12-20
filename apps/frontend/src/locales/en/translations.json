@@ -99,7 +99,7 @@
     "connectWalletButton": {
         "connect": "Get started",
         "rewards": "Rewards",
-        "notifications": "Notifications",
+        "settings": "Settings",
         "history": "Transaction History",
         "copyAddress": "Copy address",
         "disconnect": "Disconnect"

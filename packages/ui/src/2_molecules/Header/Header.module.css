@@ -3,7 +3,7 @@
 }
 
 .logo {
-  @apply hidden lg:flex max-h-7 flex-shrink-0 flex-grow-0 mr-11;
+  @apply hidden lg:flex max-h-7 flex-shrink-0 flex-grow-0 mr-7;
 }
 
 .primaryContent {

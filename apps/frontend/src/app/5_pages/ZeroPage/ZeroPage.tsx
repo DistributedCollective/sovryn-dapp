@@ -56,7 +56,7 @@ export const ZeroPage: FC = () => {
     };
 
     if (account && liquity) {
-      getZUSDBalance().then(balance => setZusdBalance(balance));
+      getZUSDBalance().then(setZusdBalance);
     }
   }, [account, liquity]);
 

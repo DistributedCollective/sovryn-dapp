@@ -1,5 +1,5 @@
 .container {
-  @apply flex items-center;
+  @apply flex items-center mr-2;
 }
 
 .assetLogo svg {

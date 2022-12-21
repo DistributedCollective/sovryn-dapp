@@ -10,6 +10,7 @@ import {
   InputSize,
   Paragraph,
   ParagraphSize,
+  ParagraphStyle,
   Select,
   SimpleTable,
 } from '@sovryn/ui';
@@ -18,7 +19,7 @@ import { AssetRenderer } from '../../2_molecules/AssetRenderer/AssetRenderer';
 import { translations } from '../../../locales/i18n';
 import { formatValue } from '../../../utils/math';
 import { Row } from './Row';
-import { availableTokens } from './utils';
+import { tokensToOptions } from './utils';
 
 type CloseCreditLineProps = {
   collateralValue: string;
@@ -60,6 +61,7 @@ export const CloseCreditLine: FC<CloseCreditLineProps> = ({
         size={ParagraphSize.base}
         children={t(translations.closeCreditLine.title)}
         dataLayoutId="close-credit-line"
+        style={ParagraphStyle.tall}
       />
 
       <FormGroup className="w-full mt-5">
@@ -71,11 +73,11 @@ export const CloseCreditLine: FC<CloseCreditLineProps> = ({
             dataLayoutId="close-credit-line-credit-amount"
             readOnly
           />
-          <div className="min-w-24">
+          <div className="min-w-[6.313rem]">
             <Select
               value={creditToken}
               onChange={setCreditToken}
-              options={availableTokens([
+              options={tokensToOptions([
                 SupportedTokens.dllr,
                 SupportedTokens.zusd,
               ])}

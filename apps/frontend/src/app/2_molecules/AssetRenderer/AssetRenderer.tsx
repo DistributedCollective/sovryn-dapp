@@ -4,7 +4,11 @@ import { useEffect } from 'react';
 
 import classNames from 'classnames';
 
-import { SupportedTokenList, SupportedTokens } from '@sovryn/contracts';
+import {
+  getTokenDetails,
+  SupportedTokenList,
+  SupportedTokens,
+} from '@sovryn/contracts';
 import { applyDataAttr } from '@sovryn/ui';
 
 import styles from './AssetRenderer.module.css';
@@ -28,7 +32,7 @@ type AssetRendererProps = {
    * */
   className?: string;
   /**
-   * Applied data-layout-id to the outer element.
+   * Applied data attribute to the outer element.
    * */
   dataAttribute?: string;
 };
@@ -40,7 +44,7 @@ export const AssetRenderer: FC<AssetRendererProps> = ({
   className,
   dataAttribute,
 }) => {
-  const [logo, setLogo] = useState('');
+  const [logo, setLogo] = useState<string | undefined>('');
   const getAssetLogo = useCallback((asset: SupportedTokens) => {
     const assetData = SupportedTokenList.find(item => item.symbol === asset);
     if (!assetData) {
@@ -50,19 +54,20 @@ export const AssetRenderer: FC<AssetRendererProps> = ({
   }, []);
 
   useEffect(() => {
-    const getLogo = async () => {
-      const logo = await getAssetLogo(asset);
-      setLogo(logo);
-    };
-    getLogo();
-  }, [asset, getAssetLogo]);
+    const getLogo = async () =>
+      await getTokenDetails(asset)
+        .then(item => setLogo(item.icon))
+        .catch(() => setLogo(''));
+
+    showAssetLogo && !logo && getLogo();
+  }, [asset, showAssetLogo, getAssetLogo, logo]);
 
   return (
     <div
       className={classNames(styles.container, className)}
       {...applyDataAttr(dataAttribute)}
     >
-      {showAssetLogo && (
+      {showAssetLogo && logo && (
         <div
           className={styles.assetLogo}
           dangerouslySetInnerHTML={{ __html: logo }}

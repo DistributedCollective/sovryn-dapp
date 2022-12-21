@@ -12,7 +12,7 @@ export const normalizeAmountByType = (
   return Math.abs(amount) * -1;
 };
 
-export const availableTokens = (tokens: SupportedTokens[]) =>
+export const tokensToOptions = (tokens: SupportedTokens[]) =>
   tokens.map(token => ({
     value: token,
     label: token.toUpperCase(),

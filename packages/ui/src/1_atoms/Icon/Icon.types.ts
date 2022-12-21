@@ -44,6 +44,7 @@ export enum IconNames {
   TRADING = 'trading',
   FUNNEL = 'funnel',
   LINK = 'link',
+  HAMBURGER_MENU = 'hamburger-menu',
 }
 
 export type IconName = typeof IconNames[keyof typeof IconNames];

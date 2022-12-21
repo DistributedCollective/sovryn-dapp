@@ -134,5 +134,21 @@
         "title": "Notifications on the status of your line of credit are sent to your email after you sign it with your wallet",
         "emailInputLabel": "Email address",
         "emailInputPlaceholder": "Enter Email"
+    },
+    "connectWalletButton": {
+        "connect": "Get started",
+        "rewards": "Rewards",
+        "settings": "Settings",
+        "history": "Transaction History",
+        "copyAddress": "Copy address",
+        "disconnect": "Disconnect"
+    },
+    "header": {
+        "funding": "Funding",
+        "nav": {
+            "home": "Home",
+            "earn": "Earn",
+            "convert": "Convert"
+        }
     }
 }

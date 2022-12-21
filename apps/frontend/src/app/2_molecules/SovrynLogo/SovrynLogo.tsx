@@ -1,6 +1,8 @@
 import React, { useMemo } from 'react';
 
-import { applyDataAttr, LinkBase } from '@sovryn/ui';
+import { Link, To } from 'react-router-dom';
+
+import { applyDataAttr } from '@sovryn/ui';
 
 import sovrynLogo from '../../../assets/images/sovryn-logo.svg';
 import styles from './SovrynLogo.module.css';
@@ -8,9 +10,10 @@ import styles from './SovrynLogo.module.css';
 type SovrynLogoProps = {
   image?: string;
   text?: string;
-  link?: string;
+  link?: To;
   dataAttribute?: string;
   className?: string;
+  onClick?: () => void;
 };
 
 export const SovrynLogo: React.FC<SovrynLogoProps> = ({
@@ -19,6 +22,7 @@ export const SovrynLogo: React.FC<SovrynLogoProps> = ({
   link,
   dataAttribute,
   className,
+  onClick,
 }) => {
   const Logo = useMemo(
     () => (
@@ -39,9 +43,9 @@ export const SovrynLogo: React.FC<SovrynLogoProps> = ({
   return (
     <>
       {link ? (
-        <LinkBase href={link} openNewTab={false} className={styles.link}>
+        <Link to={link} className={styles.link} onClick={onClick}>
           {Logo}
-        </LinkBase>
+        </Link>
       ) : (
         <>{Logo}</>
       )}

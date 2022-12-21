@@ -1,6 +1,6 @@
 import React, { FC, ReactNode } from 'react';
 
-import { Heading, HeadingType, Paragraph } from '@sovryn/ui';
+import { Paragraph } from '@sovryn/ui';
 
 export type LOCStatProps = {
   label: ReactNode;
@@ -12,9 +12,9 @@ export const LOCStat: FC<LOCStatProps> = ({ value, label }) => {
     <div className="flex flex-col min-w-60">
       <Paragraph className="text-gray-30 mb-2 font-medium">{label}</Paragraph>
       <div className="bg-gray-80 py-4 px-3.5 rounded text-gray-10">
-        <Heading className="font-medium" type={HeadingType.h1}>
+        <span className="font-medium text-[2.25rem] leading-[2.625rem]">
           {value}
-        </Heading>
+        </span>
       </div>
     </div>
   );

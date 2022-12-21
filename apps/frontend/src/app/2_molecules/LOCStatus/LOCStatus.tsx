@@ -4,7 +4,7 @@ import classNames from 'classnames';
 import CountUp from 'react-countup';
 import { useTranslation } from 'react-i18next';
 
-import { Button, ButtonSize, ButtonStyle } from '@sovryn/ui';
+import { Button, ButtonSize, ButtonStyle, HelperButton } from '@sovryn/ui';
 
 import { CRatioIndicator } from './components/CRatioIndicator/CRatioIndicator';
 import { LOCStat } from './components/LOCStat/LOCStat';
@@ -67,7 +67,12 @@ export const LOCStatus: FC<LOCStatusProps> = ({
               }
             />
             <LOCStat
-              label={t('LOCStatus.collateralRatio')}
+              label={
+                <div className="flex items-center">
+                  {t('LOCStatus.collateralRatio')}
+                  <HelperButton className="ml-1.5" content="Collateral Ratio" />
+                </div>
+              }
               value={
                 <div className="flex items-center">
                   <CRatioIndicator className="mr-3" value={cRatio} />

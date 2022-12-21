@@ -5,7 +5,7 @@ import { parseUnits } from 'ethers/lib/utils';
 import { useTranslation } from 'react-i18next';
 
 import { getTokenDetails, SupportedTokens } from '@sovryn/contracts';
-import { Accordion, Button } from '@sovryn/ui';
+import { Accordion, AmountInput, Button } from '@sovryn/ui';
 
 import { TransactionStepDialog } from '../3_organisms';
 import { EmailNotificationSettingsDialog } from '../3_organisms/EmailNotificationSettingsDialog/EmailNotificationSettingsDialog';
@@ -47,6 +47,7 @@ export const DebugContent = () => {
     setIsEmailNotificationSettingsDialogOpen,
   ] = useState(false);
 
+  const [cRatio, setCRatio] = useState(200);
   const { data } = useGetTokenRatesQuery();
   const { setTransactions, setIsOpen, setTitle } = useTransactionContext();
   const [getTransactions] = useGetTransactionsLazyQuery();
@@ -106,11 +107,17 @@ export const DebugContent = () => {
       onClick={toggle}
     >
       <div className="mt-5 py-10 border-b">
+        <AmountInput
+          className="mb-2"
+          label="Collateral ratio"
+          value={cRatio}
+          onChange={e => setCRatio(Number(e.target.value))}
+        />
         <LOCStatus
           collateral={0.51}
           debt={5000}
           debtSymbol={SupportedTokens.zusd.toUpperCase()}
-          cRatio={200}
+          cRatio={cRatio}
         />
         <LOCStatus className="mt-4" withdrawalSurplus={0.5} />
       </div>

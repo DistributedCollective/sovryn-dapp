@@ -135,6 +135,15 @@
         "emailInputLabel": "Email address",
         "emailInputPlaceholder": "Enter Email"
     },
+    "LOCStatus": {
+        "withdrawalSurplus": "withdrawal surplus",
+        "currentCollateral": "Current collateral",
+        "currentDebt": "Current debt",
+        "collateralRatio": "Collateral ratio",
+        "withdraw": "Withdraw",
+        "adjust": "Adjust",
+        "close": "Close"
+    },
     "connectWalletButton": {
         "connect": "Get started",
         "rewards": "Rewards",

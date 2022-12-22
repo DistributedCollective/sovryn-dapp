@@ -3230,6 +3230,60 @@ export type GetTroveQuery = {
   } | null;
 };
 
+export type GetTrovesQueryVariables = Exact<{
+  first: Scalars['Int'];
+}>;
+
+export type GetTrovesQuery = {
+  __typename?: 'Query';
+  troves: Array<{
+    __typename?: 'Trove';
+    changes: Array<{
+      __typename?: 'TroveChange';
+      id: string;
+      sequenceNumber: number;
+      transaction: {
+        __typename?: 'Transaction';
+        id: string;
+        sequenceNumber: number;
+      };
+      trove: {
+        __typename?: 'Trove';
+        collateralRatioSortKey?: string | null;
+        collateral: string;
+        debt: string;
+      };
+    }>;
+  }>;
+};
+
+export type GetUserOpenTroveQueryVariables = Exact<{
+  user: Scalars['ID'];
+}>;
+
+export type GetUserOpenTroveQuery = {
+  __typename?: 'Query';
+  trove?: {
+    __typename?: 'Trove';
+    changes: Array<{
+      __typename?: 'TroveChange';
+      id: string;
+      sequenceNumber: number;
+      transaction: {
+        __typename?: 'Transaction';
+        id: string;
+        sequenceNumber: number;
+      };
+      trove: {
+        __typename?: 'Trove';
+        collateralRatioSortKey?: string | null;
+        collateral: string;
+        debt: string;
+      };
+    }>;
+  } | null;
+};
+
 export const GetStabilityDepositChangesDocument = gql`
   query getStabilityDepositChanges($filters: StabilityDepositChange_filter) {
     stabilityDepositChanges(where: $filters) {
@@ -3383,4 +3437,152 @@ export type GetTroveLazyQueryHookResult = ReturnType<
 export type GetTroveQueryResult = Apollo.QueryResult<
   GetTroveQuery,
   GetTroveQueryVariables
+>;
+export const GetTrovesDocument = gql`
+  query getTroves($first: Int!) {
+    troves(
+      orderDirection: desc
+      orderBy: collateralRatioSortKey
+      first: $first
+      where: { status: open }
+    ) {
+      changes(
+        where: { troveOperation: openTrove }
+        orderBy: sequenceNumber
+        orderDirection: desc
+      ) {
+        id
+        sequenceNumber
+        transaction {
+          id
+          sequenceNumber
+        }
+        trove {
+          collateralRatioSortKey
+          collateral
+          debt
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useGetTrovesQuery__
+ *
+ * To run a query within a React component, call `useGetTrovesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetTrovesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetTrovesQuery({
+ *   variables: {
+ *      first: // value for 'first'
+ *   },
+ * });
+ */
+export function useGetTrovesQuery(
+  baseOptions: Apollo.QueryHookOptions<GetTrovesQuery, GetTrovesQueryVariables>,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<GetTrovesQuery, GetTrovesQueryVariables>(
+    GetTrovesDocument,
+    options,
+  );
+}
+export function useGetTrovesLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    GetTrovesQuery,
+    GetTrovesQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<GetTrovesQuery, GetTrovesQueryVariables>(
+    GetTrovesDocument,
+    options,
+  );
+}
+export type GetTrovesQueryHookResult = ReturnType<typeof useGetTrovesQuery>;
+export type GetTrovesLazyQueryHookResult = ReturnType<
+  typeof useGetTrovesLazyQuery
+>;
+export type GetTrovesQueryResult = Apollo.QueryResult<
+  GetTrovesQuery,
+  GetTrovesQueryVariables
+>;
+export const GetUserOpenTroveDocument = gql`
+  query getUserOpenTrove($user: ID!) {
+    trove(id: $user) {
+      changes(
+        where: { troveOperation: openTrove }
+        orderBy: sequenceNumber
+        orderDirection: desc
+      ) {
+        id
+        sequenceNumber
+        transaction {
+          id
+          sequenceNumber
+        }
+        trove {
+          collateralRatioSortKey
+          collateral
+          debt
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useGetUserOpenTroveQuery__
+ *
+ * To run a query within a React component, call `useGetUserOpenTroveQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetUserOpenTroveQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetUserOpenTroveQuery({
+ *   variables: {
+ *      user: // value for 'user'
+ *   },
+ * });
+ */
+export function useGetUserOpenTroveQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    GetUserOpenTroveQuery,
+    GetUserOpenTroveQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<GetUserOpenTroveQuery, GetUserOpenTroveQueryVariables>(
+    GetUserOpenTroveDocument,
+    options,
+  );
+}
+export function useGetUserOpenTroveLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    GetUserOpenTroveQuery,
+    GetUserOpenTroveQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    GetUserOpenTroveQuery,
+    GetUserOpenTroveQueryVariables
+  >(GetUserOpenTroveDocument, options);
+}
+export type GetUserOpenTroveQueryHookResult = ReturnType<
+  typeof useGetUserOpenTroveQuery
+>;
+export type GetUserOpenTroveLazyQueryHookResult = ReturnType<
+  typeof useGetUserOpenTroveLazyQuery
+>;
+export type GetUserOpenTroveQueryResult = Apollo.QueryResult<
+  GetUserOpenTroveQuery,
+  GetUserOpenTroveQueryVariables
 >;

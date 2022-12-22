@@ -207,8 +207,7 @@ export const Chart: FC = () => {
   }, [data, activeBar]);
 
   useEffect(() => {
-    if (userOpenTrove?.trove !== null && !loadingUserOpenTrove && !activeBar) {
-      setData([]);
+    if (userOpenTrove?.trove && !loadingUserOpenTrove && !activeBar) {
       const { transaction, trove } = userOpenTrove.trove.changes[0];
       setData([
         {
@@ -232,15 +231,15 @@ export const Chart: FC = () => {
 
   useEffect(() => {
     if (!loadingTroves && troves && !loadingUserOpenTrove) {
-      const { trove } = userOpenTrove.trove?.changes[0] || {};
-      const trovesData = troves.troves.map((item: TroveData) => ({
-        sequenceNumber: item.changes[0].trove.collateralRatioSortKey.toString(),
-        tx: item.changes[0].transaction.id,
-        collateralAmount: item.changes[0].trove.collateral,
-        debtAmount: item.changes[0].trove.debt,
+      const { trove } = userOpenTrove?.trove?.changes[0] || {};
+      const trovesData = troves.troves.map(({ changes }: TroveData) => ({
+        sequenceNumber: changes[0].trove.collateralRatioSortKey.toString(),
+        tx: changes[0].transaction.id,
+        collateralAmount: changes[0].trove.collateral,
+        debtAmount: changes[0].trove.debt,
         collateralRatio: calculateCollateralRatio(
-          item.changes[0].trove.collateral,
-          item.changes[0].trove.debt,
+          changes[0].trove.collateral,
+          changes[0].trove.debt,
           price,
         ),
       }));

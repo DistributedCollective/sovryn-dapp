@@ -2,7 +2,7 @@ import { Story } from '@storybook/react';
 
 import React, { ComponentProps } from 'react';
 
-import { Button, Link } from '../../1_atoms';
+import { Button, Icon, IconNames, Link } from '../../1_atoms';
 import { ButtonStyle } from '../../1_atoms/Button/Button.types';
 import SovrynLogo from '../../../assets/images/logo-sovryn.svg';
 import { NavMenuItem } from '../NavMenuItem/NavMenuItem';
@@ -38,6 +38,13 @@ Basic.args = {
       <NavMenuItem children="Zero" />
       <NavMenuItem children="Perpetuals" />
     </>
+  ),
+  menuIcon: (
+    <Button
+      text={<Icon icon={IconNames.X_MARK} size={16} />}
+      style={ButtonStyle.ghost}
+      className="text-white"
+    />
   ),
   secondaryContent: (
     <>

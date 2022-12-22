@@ -1,7 +1,7 @@
 @layer base {
   html,
   body {
-    @apply h-full w-full font-normal;
+    @apply h-full w-full font-normal overflow-x-hidden;
   }
 
   body {

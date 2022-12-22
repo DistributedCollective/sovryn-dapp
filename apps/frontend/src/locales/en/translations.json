@@ -59,6 +59,45 @@
         "title": "Collateral Ratio",
         "tooltip": "Collateral Ratio"
     },
+    "transactionHistory": {
+        "table": {
+            "timestamp": "Timestamp",
+            "transactionType": "Transaction Type",
+            "collateralChange": "Collateral Change",
+            "newCollateralBalance": "New Collateral Balance",
+            "debtChange": "Debt Change",
+            "liquidationReserve": "Liquidation Reserve",
+            "newDebt": "New Debt",
+            "originationFee": "Origination Fee (ZUSD)",
+            "transactionID": "Transaction ID",
+            "noData": "No data",
+            "noDataWithFilters": "No data with the current filters"
+        },
+        "troveTypes": {
+            "open": "Open Line of Credit",
+            "adjust": "Adjust Line of Credit",
+            "close": "Close Line of Credit",
+            "withdraw": "Withdraw surplus",
+            "liquidation": "Liquidation",
+            "liquidationRecovery": "Liquidation (Recovery mode)",
+            "redemption": "Redemption",
+            "accrueRewards": "Accrue Rewards"
+        },
+        "stabilityDeposit": {
+            "transfer": "Transfer gain to Line of Credit",
+            "withdraw": "Withdraw Tokens",
+            "deposit": "Deposit Tokens"
+        },
+        "filters": {
+            "increasedCollateral": "Increased Collateral",
+            "decreasedCollateral": "Decreased Collateral",
+            "increasedDebt": "Increased Debt",
+            "decreasedDebt": "Decreased Debt"
+        },
+        "actions": {
+            "noDataToExport": "No data to export"
+        }
+    },
     "errorPage": {
         "title": "Error",
         "description": "Something went wrong. Please try again later."
@@ -104,5 +143,21 @@
         "withdraw": "Withdraw",
         "adjust": "Adjust",
         "close": "Close"
+    },
+    "connectWalletButton": {
+        "connect": "Get started",
+        "rewards": "Rewards",
+        "settings": "Settings",
+        "history": "Transaction History",
+        "copyAddress": "Copy address",
+        "disconnect": "Disconnect"
+    },
+    "header": {
+        "funding": "Funding",
+        "nav": {
+            "home": "Home",
+            "earn": "Earn",
+            "convert": "Convert"
+        }
     }
 }

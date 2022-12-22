@@ -1,15 +1,58 @@
 .header {
-  @apply bg-gray-90 h-16 w-full flex align-middle justify-between px-11;
-
-  & > div {
-    @apply flex items-center;
-  }
+  @apply bg-gray-90 h-16 w-full px-4 lg:px-11 flex items-center justify-between gap-4 relative;
 }
 
 .logo {
-  @apply max-h-7 mr-11;
+  @apply hidden lg:flex max-h-7 flex-shrink-0 flex-grow-0 mr-7;
 }
 
-.menuItems {
-  @apply mr-11 flex items-center;
+.primaryContent {
+  @apply flex items-center justify-start gap-11 flex-shrink-0;
+}
+
+.secondaryContent {
+  @apply flex items-center justify-end gap-4;
+}
+
+.leftContent {
+  @apply flex items-center justify-start gap-4;
+}
+
+.menuIcon {
+  @apply lg:hidden;
+}
+
+@media (max-width: calc(theme(screens.lg) - 1px)) {
+  .nav {
+    @apply hidden absolute top-16 right-0 left-0 w-full flex-col
+     justify-start items-start z-10 bg-gray-90 p-4 gap-4 border-b border-gray-50 pb-12;
+    &.navOpen {
+      @apply flex;
+    }
+  }
+}
+
+@screen lg {
+  .nav {
+    @apply flex flex-row justify-start items-center gap-2;
+    & > ol {
+      @apply flex flex-row justify-start items-center gap-2;
+    }
+  }
+}
+
+.mobileContent {
+  @apply mb-14 flex flex-row items-center justify-between w-full lg:hidden;
+}
+
+.mobileContentLogo {
+  @apply justify-self-start;
+}
+
+.mobileExtraContent {
+  @apply justify-self-end;
+}
+
+.extraContentDesktop {
+  @apply hidden lg:flex;
 }

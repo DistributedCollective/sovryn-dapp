@@ -1,0 +1,13 @@
+query getStabilityDepositChanges($filters: StabilityDepositChange_filter) {
+  stabilityDepositChanges(where: $filters) {
+    depositedAmountBefore
+    depositedAmountAfter
+    depositedAmountChange
+    collateralGain
+    stabilityDepositOperation
+    transaction {
+      timestamp
+      id
+    }
+  }
+}

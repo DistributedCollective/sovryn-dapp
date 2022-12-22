@@ -1,5 +1,5 @@
 .healthBar {
-  @apply min-w-80 w-full flex items-center gap-0.5 relative;
+  @apply w-full flex items-center gap-0.5 relative;
 
   .blur,
   .low,

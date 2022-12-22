@@ -1,5 +1,26 @@
 # @sovryn/ui
 
+## 0.0.15
+
+### Patch Changes
+
+- 5250faa: SOV-1243: chore: added close button on mobile
+
+## 0.0.14
+
+### Patch Changes
+
+- df8a16f: SOV-1131: Limit AmountInput
+- 8a26b54: Sov 1091 csv export implementation
+- 718c6a7: SOV-1007: add checkbox component
+- 7ea9995: chore: fixed dropdown issue when resizing the screen
+- 2e208ec: SOV-1010: zero collateral ratio healthbar component
+- 9f13eb2: add vertical mobile tab export
+- 5857a84: Add WalletBalance component
+- 1fa8e30: [Notification] - add component
+- 8547bb8: SOV-145: Toggle UI component
+- 43137ba: SOV-1013: fix AmountInput and Tabs component
+
 ## 0.0.13
 
 ### Patch Changes

@@ -1,9 +1,13 @@
-import React, { FC, PropsWithChildren } from 'react';
+import React, { FC, PropsWithChildren, useReducer } from 'react';
 
-import { Button } from '@sovryn/ui';
-import { WalletIdentity } from '@sovryn/ui';
+import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
 
-import { WalletBalance } from '../WalletBalance/WalletBalance';
+import { Button, Menu, MenuItem, WalletIdentity } from '@sovryn/ui';
+
+import { EmailNotificationSettingsDialog } from '../../3_organisms/EmailNotificationSettingsDialog/EmailNotificationSettingsDialog';
+import { translations } from '../../../locales/i18n';
+import { sovrynLinks } from '../../../utils/constants';
 
 export type ConnectWalletButtonProps = {
   onConnect: () => void;
@@ -24,10 +28,12 @@ export const ConnectWalletButton: FC<
   className,
   dataLayoutId,
 }) => {
+  const { t } = useTranslation();
+  const [isOpen, toggle] = useReducer(state => !state, false);
   if (!address) {
     return (
       <Button
-        text="Connect wallet"
+        text={t(translations.connectWalletButton.connect)}
         onClick={onConnect}
         className={className}
         dataLayoutId={dataLayoutId}
@@ -36,17 +42,36 @@ export const ConnectWalletButton: FC<
     );
   } else {
     return (
-      <WalletIdentity
-        onDisconnect={onDisconnect}
-        address={address}
-        dataLayoutId={dataLayoutId}
-        className={className}
-        balance={<WalletBalance />}
-        submenuLabels={{
-          copyAddress: 'Copy Address',
-          disconnect: 'Disconnect',
-        }}
-      />
+      <>
+        <WalletIdentity
+          onDisconnect={onDisconnect}
+          address={address}
+          dataLayoutId={dataLayoutId}
+          className={className}
+          content={
+            <Menu className="mb-4">
+              <MenuItem
+                text={t(translations.connectWalletButton.rewards)}
+                className="no-underline"
+                href={`${sovrynLinks.dappAlpha}/rewards`}
+                hrefExternal
+              />
+              <Link to="/history" className="no-underline">
+                <MenuItem text={t(translations.connectWalletButton.history)} />
+              </Link>
+              <MenuItem
+                text={t(translations.connectWalletButton.settings)}
+                onClick={toggle}
+              />
+            </Menu>
+          }
+          submenuLabels={{
+            copyAddress: t(translations.connectWalletButton.copyAddress),
+            disconnect: t(translations.connectWalletButton.disconnect),
+          }}
+        />
+        <EmailNotificationSettingsDialog isOpen={isOpen} onClose={toggle} />
+      </>
     );
   }
 };

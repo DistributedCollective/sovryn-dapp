@@ -53,7 +53,8 @@ export const TransactionId: React.FC<TransactionIdProps> = ({
     <Tooltip
       content={
         <span className="flex items-center">
-          {value}
+          <span className="hidden sm:block">{value}</span>
+          <span className="block sm:hidden">{formattedValue}</span>
           <span
             {...applyDataAttr('transaction-copy')}
             className={styles.icon}

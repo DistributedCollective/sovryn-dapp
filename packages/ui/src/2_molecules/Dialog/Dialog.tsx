@@ -23,6 +23,7 @@ type DialogProps = {
   closeOnEscape?: boolean;
   initialFocusRef?: React.RefObject<HTMLElement>;
   disableFocusTrap?: boolean;
+  buttonCloseText?: string;
 };
 
 export const Dialog: IDialogFunctionComponent<DialogProps> = ({
@@ -36,6 +37,7 @@ export const Dialog: IDialogFunctionComponent<DialogProps> = ({
   closeOnEscape = true,
   initialFocusRef,
   disableFocusTrap,
+  buttonCloseText,
 }) => {
   const ref = useRef<HTMLDivElement>(null);
 
@@ -110,6 +112,11 @@ export const Dialog: IDialogFunctionComponent<DialogProps> = ({
               tabIndex={-1}
             >
               {children}
+              {buttonCloseText && (
+                <button onClick={handleClose} className={styles.buttonClose}>
+                  {buttonCloseText}
+                </button>
+              )}
             </section>
           </FocusTrap>
         </div>

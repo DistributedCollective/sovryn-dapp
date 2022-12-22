@@ -139,9 +139,7 @@ export const Chart: FC = () => {
             color: chartConfig.defaultColor,
           },
           ticks: {
-            callback: function (value) {
-              return Number(value + 1).toFixed(0);
-            },
+            callback: value => Number(value + 1).toFixed(0),
             color: chartConfig.fontColor,
             font: {
               family: chartConfig.defaultFont,
@@ -165,9 +163,7 @@ export const Chart: FC = () => {
             color: chartConfig.defaultColor,
           },
           ticks: {
-            callback: function (value) {
-              return Number(value).toFixed(2) + '%';
-            },
+            callback: value => Number(value).toFixed(2) + '%',
             color: chartConfig.fontColor,
             font: {
               family: chartConfig.defaultFont,
@@ -196,11 +192,10 @@ export const Chart: FC = () => {
             xAxisKey: ChartSortingType.sequenceNumber,
             yAxisKey: ChartSortingType.collateralRatio,
           },
-          backgroundColor: bar => {
-            return activeBar && bar.parsed.y === activeBar
+          backgroundColor: bar =>
+            activeBar && bar.parsed.y === activeBar
               ? chartConfig.activeColor
-              : chartConfig.defaultColor;
-          },
+              : chartConfig.defaultColor,
         },
       ],
     };

@@ -88,6 +88,7 @@ export const CloseCreditLine: FC<CloseCreditLineProps> = ({
                   asset={SupportedTokens[value]}
                 />
               )}
+              className="w-full"
               dataLayoutId="close-credit-line-credit-token"
             />
           </div>

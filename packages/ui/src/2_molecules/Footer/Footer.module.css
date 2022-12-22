@@ -1,5 +1,5 @@
 .footer {
-  @apply flex-col justify-center items-center bg-gray-90 min-h-8 w-full flex px-6 pt-6 mt-auto;
+  @apply flex-col justify-center items-center bg-gray-90 min-h-8 w-full flex px-4 pt-6 lg:px-6 mt-auto;
 
   & > div {
     @apply my-3;
@@ -20,7 +20,7 @@
   @apply mt-3 flex-wrap justify-center;
 }
 
-@screen sm {
+@screen lg {
   .footer {
     @apply justify-between flex-row py-0;
 

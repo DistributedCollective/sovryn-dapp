@@ -3,7 +3,7 @@ import { EthersLiquity, ReadableEthersLiquity } from '@sovryn-zero/lib-ethers';
 
 import React, { FC, useEffect, useReducer, useState } from 'react';
 
-import { useRouteLoaderData } from 'react-router-dom';
+import { useLoaderData } from 'react-router-dom';
 
 import {
   Button,
@@ -20,7 +20,7 @@ import { AdjustCreditLine } from '../../3_organisms/ZeroLocForm/AdjustCreditLine
 import { useWalletConnect } from '../../../hooks';
 
 export const ZeroPage: FC = () => {
-  const { liquity } = useRouteLoaderData('zero') as {
+  const { liquity } = useLoaderData() as {
     liquity: EthersLiquity;
     provider: ReadableEthersLiquity;
   };
@@ -30,7 +30,7 @@ export const ZeroPage: FC = () => {
   const [btcPrice, setBtcPrice] = useState('0');
   const [fees, setFees] = useState<Fees>();
 
-  const { account } = useWalletConnect();
+  const { account, connectWallet } = useWalletConnect();
 
   useEffect(() => {
     liquity
@@ -68,7 +68,7 @@ export const ZeroPage: FC = () => {
           <Chart />
         </>
       ) : (
-        <>Connect first.</>
+        <Button text="Connect first...." onClick={connectWallet} />
       )}
 
       <Dialog width={DialogSize.sm} isOpen={open} disableFocusTrap>

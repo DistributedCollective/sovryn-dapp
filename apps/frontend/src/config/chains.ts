@@ -1,4 +1,4 @@
-import { Chain, ChainIds } from '@sovryn/ethers-provider';
+import setup, { Chain, ChainIds } from '@sovryn/ethers-provider';
 
 export const defaultChainId =
   process.env.REACT_APP_CHAIN_ID || ChainIds.RSK_TESTNET;
@@ -33,3 +33,5 @@ export const chains: Chain[] = [
     blockExplorerUrl: 'https://explorer.testnet.rsk.co',
   },
 ];
+
+setup(chains);

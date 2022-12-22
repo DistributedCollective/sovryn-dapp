@@ -53,7 +53,7 @@ export const MenuItem: React.FC<MenuItemProps> = ({
     if (href) {
       return (
         <a
-          className={classNames(styles.button, {
+          className={classNames(styles.button, className, {
             [styles.disabled]: disabled,
             [styles.active]: isActive,
           })}
@@ -80,7 +80,7 @@ export const MenuItem: React.FC<MenuItemProps> = ({
         <button
           type="button"
           disabled={disabled}
-          className={classNames(styles.button, {
+          className={classNames(styles.button, className, {
             [styles.disabled]: disabled,
             [styles.active]: isActive,
           })}
@@ -107,6 +107,7 @@ export const MenuItem: React.FC<MenuItemProps> = ({
     text,
     label,
     isActive,
+    className,
   ]);
 
   return <li className={classNames(styles.host, className)}>{button}</li>;

@@ -20,7 +20,7 @@ export type WalletIdentityProps = {
   submenuLabels?: MenuLabels;
   startLength?: number;
   endLength?: number;
-  balance?: ReactNode;
+  content?: ReactNode;
 };
 
 export const WalletIdentity: FC<WalletIdentityProps> = ({
@@ -32,7 +32,7 @@ export const WalletIdentity: FC<WalletIdentityProps> = ({
   endLength = 4,
   dataLayoutId,
   submenuLabels,
-  balance,
+  content,
 }) => {
   if (hideSubmenu) {
     return (
@@ -60,7 +60,7 @@ export const WalletIdentity: FC<WalletIdentityProps> = ({
       }
       size={DropdownSize.small}
     >
-      {balance}
+      {content}
       <DisconnectSubmenu
         onDisconnect={onDisconnect}
         address={address}

@@ -14,10 +14,10 @@ describe('Header', () => {
   });
 
   it('renders header with logo', () => {
-    const { getByRole } = render(
+    const { getAllByRole } = render(
       <Header logo={<img src={Logo} alt="logo" />} />,
     );
-    expect(getByRole('img')).toBeDefined();
+    expect(getAllByRole('img')).toBeDefined();
   });
 
   it('renders header with menu items', () => {

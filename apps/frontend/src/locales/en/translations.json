@@ -142,5 +142,30 @@
         "debtAmount": "Debt Amount",
         "redemptionBuffer": "Redemption Buffer",
         "noData": "No data"
+    },
+    "LOCStatus": {
+        "withdrawalSurplus": "withdrawal surplus",
+        "currentCollateral": "Current collateral",
+        "currentDebt": "Current debt",
+        "collateralRatio": "Collateral ratio",
+        "withdraw": "Withdraw",
+        "adjust": "Adjust",
+        "close": "Close"
+    },
+    "connectWalletButton": {
+        "connect": "Get started",
+        "rewards": "Rewards",
+        "settings": "Settings",
+        "history": "Transaction History",
+        "copyAddress": "Copy address",
+        "disconnect": "Disconnect"
+    },
+    "header": {
+        "funding": "Funding",
+        "nav": {
+            "home": "Home",
+            "earn": "Earn",
+            "convert": "Convert"
+        }
     }
 }

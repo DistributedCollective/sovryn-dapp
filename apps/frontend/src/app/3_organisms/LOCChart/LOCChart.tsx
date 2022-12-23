@@ -52,7 +52,7 @@ ChartJS.register(
  * @returns Chart component with data
  */
 
-export const Chart: FC = () => {
+export const LOCChart: FC = () => {
   const { t } = useTranslation();
   const [data, setData] = useState<ChartDataStructure>([]);
   const [activeBar, setActiveBar] = useState<number | null>(null);

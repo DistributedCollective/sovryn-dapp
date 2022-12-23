@@ -15,7 +15,7 @@ import {
   noop,
 } from '@sovryn/ui';
 
-import { Chart } from '../../3_organisms/Chart/Chart';
+import { LOCChart } from '../../3_organisms/LOCChart/LOCChart';
 import { AdjustCreditLine } from '../../3_organisms/ZeroLocForm/AdjustCreditLine';
 import { useWalletConnect } from '../../../hooks';
 
@@ -65,7 +65,7 @@ export const ZeroPage: FC = () => {
 
           <Button text="Adjust" onClick={toggle} className="mt-8" />
 
-          <Chart />
+          <LOCChart />
         </>
       ) : (
         <Button text="Connect first...." onClick={connectWallet} />

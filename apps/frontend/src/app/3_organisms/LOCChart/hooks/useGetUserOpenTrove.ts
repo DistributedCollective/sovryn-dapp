@@ -4,7 +4,7 @@ import { useMemo } from 'react';
 
 import { useWalletConnect } from '../../../../hooks/useWalletConnect';
 import { graphZeroUrl } from '../../../../utils/constants';
-import { GetUserOpenTroveDocument } from './../../../../utils/graphql/zero/generated';
+import { GetUserOpenTroveDocument } from '../../../../utils/graphql/zero/generated';
 
 const zeroClient = new ApolloClient({
   uri: graphZeroUrl,

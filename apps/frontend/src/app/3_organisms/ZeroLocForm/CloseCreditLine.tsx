@@ -6,6 +6,7 @@ import { SupportedTokens } from '@sovryn/contracts';
 import {
   Button,
   FormGroup,
+  Icon,
   Input,
   InputSize,
   Paragraph,
@@ -108,11 +109,16 @@ export const CloseCreditLine: FC<CloseCreditLineProps> = ({
 
       {hasError && (
         <Paragraph
-          children={t(translations.closeCreditLine.error, {
-            amount: insufficientBalance,
-            token: creditToken.toUpperCase(),
-          })}
-          className="text-error-light mt-4"
+          children={
+            <div className="flex justify-center items-center mt-4 p-2 rounded bolder-error bg-error bg-opacity-20">
+              <Icon icon="failed-tx" size={20} className="mr-3 w-5 min-w-5" />
+              {t(translations.closeCreditLine.error, {
+                amount: insufficientBalance,
+                token: creditToken.toUpperCase(),
+              })}
+            </div>
+          }
+          className="text-error-light mt-4 font-medium"
           size={ParagraphSize.small}
           dataLayoutId="close-credit-line-error"
         />

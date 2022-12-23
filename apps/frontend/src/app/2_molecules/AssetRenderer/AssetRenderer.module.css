@@ -1,0 +1,11 @@
+.container {
+  @apply flex items-center mr-2;
+}
+
+.assetLogo svg {
+  @apply mr-2 w-5 h-5;
+}
+
+.asset {
+  @apply uppercase font-semibold text-xs;
+}

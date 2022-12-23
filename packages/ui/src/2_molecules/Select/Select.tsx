@@ -14,13 +14,14 @@ export type SelectProps<T = string> = {
     'text' | 'children' | 'dataLayoutId' | 'closeOnClick'
   >;
   labelRenderer?: (props: SelectProps<T>) => ReactNode;
+  className?: string;
 };
 
 export const Select = <T extends string>({
   labelRenderer = DefaultLabelRenderer,
   ...props
 }: SelectProps<T>) => {
-  const { options, onChange, dropdownProps, dataLayoutId } = props;
+  const { options, onChange, dropdownProps, dataLayoutId, className } = props;
 
   const handleOptionClick = useCallback(
     (option: SelectOption<T>) => () => onChange(option.value),
@@ -32,6 +33,7 @@ export const Select = <T extends string>({
       text={labelRenderer(props)}
       dataLayoutId={dataLayoutId}
       closeOnClick
+      className={className}
       {...dropdownProps}
     >
       <Menu>

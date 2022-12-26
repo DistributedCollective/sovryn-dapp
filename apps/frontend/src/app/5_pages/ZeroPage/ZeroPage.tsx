@@ -15,6 +15,7 @@ import {
   noop,
 } from '@sovryn/ui';
 
+import { SystemStats } from '../../2_molecules/SystemStats/SystemStats';
 import { AdjustCreditLine } from '../../3_organisms/ZeroLocForm/AdjustCreditLine';
 import { useWalletConnect } from '../../../hooks';
 
@@ -65,7 +66,12 @@ export const ZeroPage: FC = () => {
           <Button text="Adjust" onClick={toggle} className="mt-8" />
         </>
       ) : (
-        <Button text="Connect first...." onClick={connectWallet} />
+        <>
+          <Button text="Connect first...." onClick={connectWallet} />
+          <hr />
+          <br />
+          <SystemStats />
+        </>
       )}
 
       <Dialog width={DialogSize.sm} isOpen={open} disableFocusTrap>

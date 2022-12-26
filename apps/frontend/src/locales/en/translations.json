@@ -159,5 +159,24 @@
             "earn": "Earn",
             "convert": "Convert"
         }
+    },
+    "stats": {
+        "zero": {
+            "title": "Zero statistics",
+            "rbtcInLoc": "RBTC in Lines of Credit",
+            "loc": "Lines of credit",
+            "zusdSupply": "ZUSD supply",
+            "zusdInStabilityPool": "ZUSD in Stability Pool",
+            "totalCollateralRatio": "Total Collateral Ratio",
+            "protocolStatus": "Protocol Status (Normal/Recovery Mode)"
+        },
+        "ecosystem": {
+            "title": "Ecosystem statistics",
+            "babelFishZUSDBalance": "BabelFish ZUSD balance",
+            "babelFishDLLRBalance": "BabelFish DLLR balance",
+            "myntZUSDBalance": "Mynt ZUSD balance",
+            "myntDOCBalance": "Mynt DOC balance",
+            "totalDLLRSupply": "Total DLLR supply"
+        }
     }
 }

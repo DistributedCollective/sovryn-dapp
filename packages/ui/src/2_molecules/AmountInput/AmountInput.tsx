@@ -99,10 +99,12 @@ export const AmountInput = React.forwardRef<HTMLInputElement, AmountInputProps>(
 
     const onChangeTextHandler = useCallback(
       (value: string) => {
-        setFormattedValue(formatValue(value));
+        const formattedValue = formatValue(value);
+
         onChangeText?.(formattedValue);
+        setFormattedValue(formattedValue);
       },
-      [formatValue, formattedValue, onChangeText],
+      [formatValue, onChangeText],
     );
 
     const [focused, setFocused] = useState(false);

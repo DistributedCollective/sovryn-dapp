@@ -20,7 +20,7 @@ export const HelperButton: React.FC<HelperButtonProps> = ({
   <Tooltip
     content={content}
     className={classNames(styles.wrapper, className)}
-    dataLayoutId={dataAttribute}
+    dataAttribute={dataAttribute}
   >
     <div>
       <Icon size={12} icon="info" />

@@ -12,7 +12,7 @@ type TabProps = {
   active: boolean;
   onClick: () => void;
   className?: string;
-  dataLayoutId?: string;
+  dataAttribute?: string;
   type: TabType;
   size: TabSize;
   activeClassName?: string;
@@ -25,7 +25,7 @@ export const Tab: React.FC<TabProps> = ({
   onClick,
   disabled,
   className,
-  dataLayoutId,
+  dataAttribute,
   type,
   size,
   active,
@@ -47,7 +47,7 @@ export const Tab: React.FC<TabProps> = ({
       styles[type],
     )}
     onClick={onClick}
-    {...applyDataAttr(dataLayoutId)}
+    {...applyDataAttr(dataAttribute)}
     disabled={disabled}
   >
     {content}

@@ -9,23 +9,23 @@ const items = [
   {
     label: '0',
     content: 'content-0',
-    dataLayoutId: 'tab-0',
+    dataAttribute: 'tab-0',
   },
   {
     label: '1',
     content: 'content-1',
-    dataLayoutId: 'tab-1',
+    dataAttribute: 'tab-1',
   },
   {
     label: 'disabled',
     content: 'disabled-content',
     disabled: true,
-    dataLayoutId: 'tab-disabled',
+    dataAttribute: 'tab-disabled',
   },
 ];
 
 describe('Tabs', () => {
-  it('renders tabs and dataLayoutIds', () => {
+  it('renders tabs and dataAttributes', () => {
     const { getByTestId } = render(<Tabs items={items} index={1} />);
     expect(getByTestId('tab-0')).toBeInTheDocument();
     expect(getByTestId('tab-1')).toBeInTheDocument();

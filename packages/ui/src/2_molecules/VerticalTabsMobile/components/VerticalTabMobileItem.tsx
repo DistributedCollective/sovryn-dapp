@@ -8,13 +8,13 @@ export const VerticalTabMobileItem: FC<VerticalTabMobileItemButtonProps> = ({
   disabled,
   label,
   infoText,
-  dataLayoutId,
+  dataAttribute,
   onClick,
 }) => (
   <button
     className={styles.button}
     disabled={disabled}
-    {...applyDataAttr(dataLayoutId)}
+    {...applyDataAttr(dataAttribute)}
     onClick={onClick}
   >
     <p className={styles.label}>{label}</p>

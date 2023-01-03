@@ -13,7 +13,7 @@ describe('TransactionId', () => {
     const { getByTestId } = render(
       <TransactionId
         value={testAddress}
-        dataLayoutId="address"
+        dataAttribute="address"
         href={`https://explorer.rsk.co/search/${testAddress}`}
       />,
     );
@@ -27,7 +27,7 @@ describe('TransactionId', () => {
     const { getByTestId } = render(
       <TransactionId
         value={testAddress}
-        dataLayoutId="address"
+        dataAttribute="address"
         href={`https://explorer.rsk.co/search/${testAddress}`}
       />,
     );

@@ -11,8 +11,8 @@ describe('FormGroup', () => {
       <FormGroup
         label="label"
         subtext="subtext"
-        children={<Input placeholder="Text" dataLayoutId="form-input" />}
-        dataLayoutId="group-1"
+        children={<Input placeholder="Text" dataAttribute="form-input" />}
+        dataAttribute="group-1"
       />,
     );
     expect(getByTestId('group-1')).toBeDefined();
@@ -27,7 +27,7 @@ describe('FormGroup', () => {
         label="label"
         children={<Input placeholder="Text" />}
         errorLabel="wrong"
-        dataLayoutId="group-2"
+        dataAttribute="group-2"
       />,
     );
 

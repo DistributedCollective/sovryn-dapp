@@ -27,7 +27,7 @@ Basic.args = {
   value: 123,
   disabled: false,
   readOnly: false,
-  dataLayoutId: 'amountInput',
+  dataAttribute: 'amountInput',
   variant: AmountInputVariant.small,
 };
 
@@ -37,7 +37,7 @@ WithoutLabel.args = {
   value: 123,
   disabled: false,
   readOnly: false,
-  dataLayoutId: 'amountInput',
+  dataAttribute: 'amountInput',
 };
 
 export const WithoutLabelAndUnit = Template.bind({});
@@ -45,7 +45,7 @@ WithoutLabelAndUnit.args = {
   value: 123,
   disabled: false,
   readOnly: false,
-  dataLayoutId: 'amountInput',
+  dataAttribute: 'amountInput',
 };
 
 export const LargeDecimal = Template.bind({});
@@ -54,5 +54,5 @@ LargeDecimal.args = {
   unit: 'RBTC',
   value: 0.12345678,
   decimalPrecision: 3,
-  dataLayoutId: 'amountInput',
+  dataAttribute: 'amountInput',
 };

@@ -2,7 +2,6 @@ import React, { useImperativeHandle, useRef } from 'react';
 
 import classNames from 'classnames';
 
-import { applyDataAttr } from '../../utils';
 import { InputBase, InputBaseProps } from '../InputBase/InputBase';
 import styles from './Input.module.css';
 import { InputSize } from './Input.types';
@@ -10,7 +9,6 @@ import { InputSize } from './Input.types';
 export type InputProps = Omit<InputBaseProps, 'ref' | 'size'> & {
   classNameInput?: string;
   invalid?: boolean;
-  dataLayoutId?: string;
   size?: InputSize;
 };
 
@@ -21,7 +19,6 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
       classNameInput,
       type,
       invalid,
-      dataLayoutId,
       size = InputSize.small,
       ...rest
     },
@@ -45,7 +42,6 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
             })}
             type={type}
             {...rest}
-            {...applyDataAttr(dataLayoutId)}
           />
         </div>
       </div>

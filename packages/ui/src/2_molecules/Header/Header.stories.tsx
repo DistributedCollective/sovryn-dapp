@@ -31,7 +31,7 @@ const Template: Story<ComponentProps<typeof Header>> = args => (
 
 export const Basic = Template.bind({});
 Basic.args = {
-  dataLayoutId: '',
+  dataAttribute: '',
   logo: <Link href="/" text={<img src={SovrynLogo} alt="Sovryn logo" />} />,
   menuItems: (
     <>

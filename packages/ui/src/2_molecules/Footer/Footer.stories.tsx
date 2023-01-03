@@ -19,7 +19,7 @@ const socials = [
 ];
 
 const footerArgs = {
-  dataLayoutId: '',
+  dataAttribute: '',
   leftContent: (
     <Link
       href="/"

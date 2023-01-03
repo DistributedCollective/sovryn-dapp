@@ -26,7 +26,7 @@ describe('WalletIdentity', () => {
         onDisconnect={() => {}}
         startLength={4}
         endLength={4}
-        dataLayoutId="walletIdentityTest"
+        dataAttribute="walletIdentityTest"
       />,
     );
     const addressBadge = getByTestId('walletIdentityTest');
@@ -42,7 +42,7 @@ describe('WalletIdentity', () => {
         onDisconnect={() => {}}
         startLength={4}
         endLength={4}
-        dataLayoutId="walletIdentityTest"
+        dataAttribute="walletIdentityTest"
       />,
     );
     const addressBadge = getByText(prettyTx(testAddress, 4, 4));
@@ -65,7 +65,7 @@ describe('WalletIdentity', () => {
         onDisconnect={disconnectFunction}
         startLength={4}
         endLength={4}
-        dataLayoutId="disconnectTest"
+        dataAttribute="disconnectTest"
       />,
     );
     const addressBadge = getByText(prettyTx(testAddress, 4, 4));

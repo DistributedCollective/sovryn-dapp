@@ -18,6 +18,6 @@ const Template: Story<ComponentProps<typeof TransactionId>> = args => (
 export const _TransactionId = Template.bind({});
 _TransactionId.args = {
   value: '0xEDb8897aB6E907bc63CB256f74437D36298507E2',
-  dataLayoutId: 'address-id',
+  dataAttribute: 'address-id',
   href: 'https://explorer.rsk.co/address/0xEDb8897aB6E907bc63CB256f74437D36298507E2',
 };

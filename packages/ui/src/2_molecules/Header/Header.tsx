@@ -6,7 +6,7 @@ import { applyDataAttr } from '../../utils';
 import styles from './Header.module.css';
 
 type HeaderProps = {
-  dataLayoutId?: string;
+  dataAttribute?: string;
   logo?: ReactNode;
   menuItems?: ReactNode;
   secondaryContent?: ReactNode;
@@ -16,7 +16,7 @@ type HeaderProps = {
 };
 
 export const Header: FC<HeaderProps> = ({
-  dataLayoutId,
+  dataAttribute,
   logo,
   menuItems,
   secondaryContent,
@@ -24,7 +24,7 @@ export const Header: FC<HeaderProps> = ({
   isOpen,
   menuIcon,
 }) => (
-  <header {...applyDataAttr(dataLayoutId)} className={styles.header}>
+  <header {...applyDataAttr(dataAttribute)} className={styles.header}>
     <div className={styles.leftContent}>
       {logo && <div className={styles.logo}>{logo}</div>}
       {menuIcon && <div className={styles.menuIcon}>{menuIcon}</div>}

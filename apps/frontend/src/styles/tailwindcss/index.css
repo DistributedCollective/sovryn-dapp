@@ -1,13 +1,14 @@
 /* Imports tailwind itself */
-@import "@sovryn/tailwindcss-config/styles/index.css";
+@import '@sovryn/tailwindcss-config/styles/index.css';
 
 /* Shared tailwind styles (global) */
-@import "@sovryn/tailwindcss-config/styles/base.css";
-@import "@sovryn/tailwindcss-config/styles/components.css";
-@import "@sovryn/tailwindcss-config/styles/utilities.css";
+@import '@sovryn/tailwindcss-config/styles/base.css';
+@import '@sovryn/tailwindcss-config/styles/components.css';
+@import '@sovryn/tailwindcss-config/styles/utilities.css';
 
 /* Dapp specific global styles */
-@import "./base.css";
-@import "./components.css";
-@import "./utilities.css";
-@import "./variables.css";
+@import './base.css';
+@import './components.css';
+@import './utilities.css';
+@import './variables.css';
+@import './overrides.css';

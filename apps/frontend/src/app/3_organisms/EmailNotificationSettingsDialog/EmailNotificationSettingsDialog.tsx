@@ -25,63 +25,14 @@ import {
   signMessage,
   validateEmail,
 } from '../../../utils/helpers';
-import { NotificationUser } from './EmailNotificationSettingsDialog.types';
-
-enum NotificationMessageType {
-  ZeroBelowCcr = 'ZeroBelowCcr',
-  ZeroCcr = 'ZeroCcr',
-  ZeroCriticalIcrNormal = 'ZeroCriticalIcrNormal',
-  ZeroCriticalIcrRecovery = 'ZeroCriticalIcrRecovery',
-  ZeroGain = 'ZeroGain',
-  ZeroLiquidation = 'ZeroLiquidation',
-  ZeroLiquidationSurplus = 'ZeroLiquidationSurplus',
-  ZeroLowTcr = 'ZeroLowTcr',
-  ZeroRecovery = 'ZeroRecovery',
-}
-
-type Notification = {
-  notification: NotificationMessageType;
-  isSubscribed: boolean;
-};
-
-const defaultSubscriptionsArray: Notification[] = [
-  {
-    notification: NotificationMessageType.ZeroBelowCcr,
-    isSubscribed: false,
-  },
-  {
-    notification: NotificationMessageType.ZeroCcr,
-    isSubscribed: false,
-  },
-  {
-    notification: NotificationMessageType.ZeroCriticalIcrNormal,
-    isSubscribed: false,
-  },
-  {
-    notification: NotificationMessageType.ZeroCriticalIcrRecovery,
-    isSubscribed: false,
-  },
-  {
-    notification: NotificationMessageType.ZeroGain,
-    isSubscribed: false,
-  },
-  {
-    notification: NotificationMessageType.ZeroLiquidation,
-    isSubscribed: false,
-  },
-  {
-    notification: NotificationMessageType.ZeroLiquidationSurplus,
-    isSubscribed: false,
-  },
-  {
-    notification: NotificationMessageType.ZeroLowTcr,
-    isSubscribed: false,
-  },
-  {
-    notification: NotificationMessageType.ZeroRecovery,
-    isSubscribed: false,
-  },
-];
+import {
+  AlertGroup,
+  GroupsToNotificationsMapping,
+  NotificationUser,
+  Notification,
+  defaultSubscriptionsArray,
+} from './EmailNotificationSettingsDialog.types';
+import { isSubscribedToGroup } from './EmailNotificationSettingsDialog.utils';
 
 type EmailNotificationSettingsDialogProps = {
   isOpen: boolean;
@@ -112,6 +63,11 @@ export const EmailNotificationSettingsDialog: React.FC<
   const [email, setEmail] = useState('');
 
   const [toggleStates, setToggleStates] = useState(defaultSubscriptionsArray);
+
+  const [marginCallsToggle, setMarginCallsToggle] = useState(false);
+  const [liquidationsToggle, setLiquidationsToggle] = useState(false);
+  const [stabilityPoolToggle, setStabilityPoolToggle] = useState(false);
+  const [systemToggle, setSystemToggle] = useState(false);
 
   const emailIsValid = useMemo(() => !email || validateEmail(email), [email]);
 
@@ -207,29 +163,29 @@ export const EmailNotificationSettingsDialog: React.FC<
   }, [account, onClose, provider]);
 
   const setSubscriptions = useCallback((subscriptions: Notification[]) => {
-    let toggleStatesArray: Notification[] = [];
-
-    subscriptions.forEach(item =>
-      toggleStatesArray.push({
-        notification: item.notification,
-        isSubscribed: item.isSubscribed,
-      }),
-    );
+    const toggleStatesArray: Notification[] = subscriptions.map(item => ({
+      notification: item.notification,
+      isSubscribed: item.isSubscribed,
+    }));
 
     setToggleStates(toggleStatesArray);
+
+    setMarginCallsToggle(
+      isSubscribedToGroup(AlertGroup.MarginCalls, toggleStatesArray),
+    );
+    setLiquidationsToggle(
+      isSubscribedToGroup(AlertGroup.Liquidations, toggleStatesArray),
+    );
+    setStabilityPoolToggle(
+      isSubscribedToGroup(AlertGroup.StabilityPool, toggleStatesArray),
+    );
+    setSystemToggle(isSubscribedToGroup(AlertGroup.System, toggleStatesArray));
   }, []);
 
-  const isToggled = useCallback(
-    (state: NotificationMessageType) =>
-      toggleStates.find(item => item.notification === state)?.isSubscribed ||
-      false,
-    [toggleStates],
-  );
-
   const updateState = useCallback(
-    (state: NotificationMessageType) => {
+    (group: AlertGroup) => {
       const newState = toggleStates.map(item => {
-        if (item.notification === state) {
+        if (GroupsToNotificationsMapping[group].includes(item.notification)) {
           return {
             notification: item.notification,
             isSubscribed: !item.isSubscribed,
@@ -243,6 +199,26 @@ export const EmailNotificationSettingsDialog: React.FC<
     },
     [toggleStates],
   );
+
+  const marginCallsToggleHandler = useCallback(() => {
+    updateState(AlertGroup.MarginCalls);
+    setMarginCallsToggle(prevValue => !prevValue);
+  }, [updateState]);
+
+  const liquidationsToggleHandler = useCallback(() => {
+    updateState(AlertGroup.Liquidations);
+    setLiquidationsToggle(prevValue => !prevValue);
+  }, [updateState]);
+
+  const stabilityPoolToggleHandler = useCallback(() => {
+    updateState(AlertGroup.StabilityPool);
+    setStabilityPoolToggle(prevValue => !prevValue);
+  }, [updateState]);
+
+  const systemToggleHandler = useCallback(() => {
+    updateState(AlertGroup.System);
+    setSystemToggle(prevValue => !prevValue);
+  }, [updateState]);
 
   const handleUserDataResponse = useCallback(
     (response: Promise<any>) => {
@@ -347,61 +323,27 @@ export const EmailNotificationSettingsDialog: React.FC<
           </FormGroup>
           <div className="bg-gray-80 rounded p-4">
             <Toggle
-              checked={isToggled(NotificationMessageType.ZeroBelowCcr)}
-              onChange={() => updateState(NotificationMessageType.ZeroBelowCcr)}
-              label="ZeroBelowCcr"
+              checked={marginCallsToggle}
+              onChange={marginCallsToggleHandler}
+              label="Margin call alerts"
             />
+
             <Toggle
-              checked={isToggled(NotificationMessageType.ZeroCcr)}
-              onChange={() => updateState(NotificationMessageType.ZeroCcr)}
-              label="ZeroCcr"
+              checked={liquidationsToggle}
+              onChange={liquidationsToggleHandler}
+              label="Liquidation alerts"
             />
+
             <Toggle
-              checked={isToggled(NotificationMessageType.ZeroCriticalIcrNormal)}
-              onChange={() =>
-                updateState(NotificationMessageType.ZeroCriticalIcrNormal)
-              }
-              label="ZeroCriticalIcrNormal"
+              checked={stabilityPoolToggle}
+              onChange={stabilityPoolToggleHandler}
+              label="Stability pool alerts"
             />
+
             <Toggle
-              checked={isToggled(
-                NotificationMessageType.ZeroCriticalIcrRecovery,
-              )}
-              onChange={() =>
-                updateState(NotificationMessageType.ZeroCriticalIcrRecovery)
-              }
-              label="ZeroCriticalIcrRecovery"
-            />
-            <Toggle
-              checked={isToggled(NotificationMessageType.ZeroGain)}
-              onChange={() => updateState(NotificationMessageType.ZeroGain)}
-              label="ZeroGain"
-            />
-            <Toggle
-              checked={isToggled(NotificationMessageType.ZeroLiquidation)}
-              onChange={() =>
-                updateState(NotificationMessageType.ZeroLiquidation)
-              }
-              label="ZeroLiquidation"
-            />
-            <Toggle
-              checked={isToggled(
-                NotificationMessageType.ZeroLiquidationSurplus,
-              )}
-              onChange={() =>
-                updateState(NotificationMessageType.ZeroLiquidationSurplus)
-              }
-              label="ZeroLiquidationSurplus"
-            />
-            <Toggle
-              checked={isToggled(NotificationMessageType.ZeroLowTcr)}
-              onChange={() => updateState(NotificationMessageType.ZeroLowTcr)}
-              label="ZeroLowTcr"
-            />
-            <Toggle
-              checked={isToggled(NotificationMessageType.ZeroRecovery)}
-              onChange={() => updateState(NotificationMessageType.ZeroRecovery)}
-              label="ZeroRecovery"
+              checked={systemToggle}
+              onChange={systemToggleHandler}
+              label="System alerts"
             />
           </div>
         </div>

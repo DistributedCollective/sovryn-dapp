@@ -48,7 +48,7 @@ export const AmountInput = React.forwardRef<HTMLInputElement, AmountInputProps>(
       maxAmount,
       label,
       invalid,
-      dataLayoutId,
+      dataAttribute,
       value,
       onChangeText,
       onBlur,
@@ -152,7 +152,7 @@ export const AmountInput = React.forwardRef<HTMLInputElement, AmountInputProps>(
               [styles.disabledInput]: rest.disabled,
             })}
             type="number"
-            dataLayoutId={dataLayoutId}
+            dataAttribute={dataAttribute}
             onFocus={onFocus}
             onBlur={onBlurHandler}
             value={formattedValue}

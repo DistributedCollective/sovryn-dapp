@@ -9,14 +9,14 @@ import styles from './DialogHeader.module.css';
 type DialogHeaderProps = {
   title: React.ReactNode;
   className?: string;
-  dataLayoutId?: string;
+  dataAttribute?: string;
   onClose?: () => void;
   renderTitle?: (title: React.ReactNode) => React.ReactNode;
 };
 
 export const DialogHeader: FC<DialogHeaderProps> = ({
   title,
-  dataLayoutId,
+  dataAttribute,
   className,
   onClose,
   renderTitle = title => <DefaultTitle>{title}</DefaultTitle>,
@@ -24,7 +24,7 @@ export const DialogHeader: FC<DialogHeaderProps> = ({
   <header className={classNames(styles.container, className)}>
     {renderTitle(title)}
     {onClose && (
-      <button onClick={onClose} {...applyDataAttr(dataLayoutId)}>
+      <button onClick={onClose} {...applyDataAttr(dataAttribute)}>
         <Icon icon="x-mark" size={12} />
         <span className="sr-only">Close</span>
       </button>

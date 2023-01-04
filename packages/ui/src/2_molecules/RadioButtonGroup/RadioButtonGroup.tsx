@@ -15,13 +15,13 @@ export const RadioButtonGroup: FC<RadioButtonGroupProps> = ({
   label,
   options,
   onChange,
-  dataLayoutId,
+  dataAttribute,
   defaultChecked = 0,
   className,
 }) => (
   <fieldset
     className={classNames(styles.radioButtonGroup, className)}
-    {...applyDataAttr(dataLayoutId)}
+    {...applyDataAttr(dataAttribute)}
   >
     {label && (
       <Heading type={HeadingType.h3} className={styles.headingLabel}>

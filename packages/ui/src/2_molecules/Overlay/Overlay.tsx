@@ -33,7 +33,7 @@ export type OverlayProps = {
   onBlur?: MouseEventHandler;
   children: ReactNode;
   portalClassName?: string;
-  dataLayoutId?: string;
+  dataAttribute?: string;
 };
 
 export const Overlay: React.FC<OverlayProps> = ({
@@ -48,7 +48,7 @@ export const Overlay: React.FC<OverlayProps> = ({
   onBlur,
   children,
   portalClassName,
-  dataLayoutId,
+  dataAttribute,
 }) => {
   const ref = useRef<HTMLDivElement>(null);
 
@@ -77,7 +77,7 @@ export const Overlay: React.FC<OverlayProps> = ({
           )}
           style={!fixed && zIndex ? { zIndex } : undefined}
           onClick={onBlurHandler}
-          {...applyDataAttr(dataLayoutId)}
+          {...applyDataAttr(dataAttribute)}
         >
           {children}
         </div>
@@ -92,7 +92,7 @@ export const Overlay: React.FC<OverlayProps> = ({
       className,
       zIndex,
       onBlurHandler,
-      dataLayoutId,
+      dataAttribute,
     ],
   );
 

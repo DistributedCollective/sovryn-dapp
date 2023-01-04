@@ -17,7 +17,7 @@ export type TransactionIdProps = {
   endLength?: number;
   className?: string;
   hideTooltip?: boolean;
-  dataLayoutId?: string;
+  dataAttribute?: string;
   href: string;
 };
 
@@ -26,7 +26,7 @@ export const TransactionId: React.FC<TransactionIdProps> = ({
   endLength = 4,
   className,
   hideTooltip,
-  dataLayoutId,
+  dataAttribute,
   value,
   href,
 }) => {
@@ -47,7 +47,7 @@ export const TransactionId: React.FC<TransactionIdProps> = ({
       className={classNames(styles.link, className)}
       href={href}
       text={formattedValue}
-      dataLayoutId={dataLayoutId}
+      dataAttribute={dataAttribute}
     />
   ) : (
     <Tooltip
@@ -66,7 +66,7 @@ export const TransactionId: React.FC<TransactionIdProps> = ({
             className={styles.icon}
             href={href}
             text={<Icon icon={IconNames.NEW_TAB} />}
-            dataLayoutId="transaction-link"
+            dataAttribute="transaction-link"
             style={LinkStyle.custom}
           />
         </span>
@@ -75,7 +75,7 @@ export const TransactionId: React.FC<TransactionIdProps> = ({
       className={classNames(styles.link, className)}
       tooltipClassName={styles.tooltip}
       placement={TooltipPlacement.bottom}
-      dataLayoutId={dataLayoutId}
+      dataAttribute={dataAttribute}
     >
       <div>{formattedValue}</div>
     </Tooltip>

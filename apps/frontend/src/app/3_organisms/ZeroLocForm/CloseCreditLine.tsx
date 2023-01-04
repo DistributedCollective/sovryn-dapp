@@ -61,7 +61,7 @@ export const CloseCreditLine: FC<CloseCreditLineProps> = ({
         className="font-medium"
         size={ParagraphSize.base}
         children={t(translations.closeCreditLine.title)}
-        dataLayoutId="close-credit-line"
+        dataAttribute="close-credit-line"
         style={ParagraphStyle.tall}
       />
 
@@ -71,7 +71,7 @@ export const CloseCreditLine: FC<CloseCreditLineProps> = ({
             size={InputSize.large}
             value={creditValue}
             className="w-full flex-grow-0 flex-shrink"
-            dataLayoutId="close-credit-line-credit-amount"
+            dataAttribute="close-credit-line-credit-amount"
             readOnly
           />
           <div className="min-w-[6.313rem]">
@@ -90,7 +90,7 @@ export const CloseCreditLine: FC<CloseCreditLineProps> = ({
                 />
               )}
               className="w-full"
-              dataLayoutId="close-credit-line-credit-token"
+              dataAttribute="close-credit-line-credit-token"
             />
           </div>
         </div>
@@ -98,7 +98,7 @@ export const CloseCreditLine: FC<CloseCreditLineProps> = ({
 
       <SimpleTable
         className="max-w-none mt-5"
-        dataLayoutId="close-credit-line-table"
+        dataAttribute="close-credit-line-table"
       >
         <Row
           label={t(translations.closeCreditLine.fields.collateral.label)}
@@ -120,7 +120,7 @@ export const CloseCreditLine: FC<CloseCreditLineProps> = ({
           }
           className="text-error-light mt-4 font-medium"
           size={ParagraphSize.small}
-          dataLayoutId="close-credit-line-error"
+          dataAttribute="close-credit-line-error"
         />
       )}
 
@@ -130,7 +130,7 @@ export const CloseCreditLine: FC<CloseCreditLineProps> = ({
           className="w-full"
           disabled={hasError}
           onClick={onSubmit}
-          dataLayoutId="close-credit-line-confirm"
+          dataAttribute="close-credit-line-confirm"
         />
       </div>
     </>

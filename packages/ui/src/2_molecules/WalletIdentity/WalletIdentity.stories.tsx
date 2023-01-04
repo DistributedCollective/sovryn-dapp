@@ -34,7 +34,7 @@ export const _WalletIdentity = Template.bind({});
 _WalletIdentity.args = {
   onDisconnect: () => alert('disconnected'),
   address: '0xEDb8897aB6E907bc63CB256f74437D36298507E2',
-  dataLayoutId: 'walletIdentity',
+  dataAttribute: 'walletIdentity',
   submenuLabels: {
     copyAddress: 'Copy Address',
     disconnect: 'Disconnect',

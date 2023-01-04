@@ -35,7 +35,7 @@ describe('Tooltip', () => {
       <Tooltip
         children={<button>Text</button>}
         content={<>Tooltip</>}
-        dataLayoutId="tooltip-storybook-id"
+        dataAttribute="tooltip-storybook-id"
       />,
     );
     const tooltip = getByTestId('tooltip-storybook-id');

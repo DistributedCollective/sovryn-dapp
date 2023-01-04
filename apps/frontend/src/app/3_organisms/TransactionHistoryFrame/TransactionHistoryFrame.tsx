@@ -248,7 +248,7 @@ export const TransactionHistoryFrame: FC = () => {
             trigger={TooltipTrigger.click}
             className="cursor-pointer uppercase"
             tooltipClassName="uppercase"
-            dataLayoutId="debt-change-tooltip"
+            dataAttribute="debt-change-tooltip"
           >
             <span>
               {renderSign(trove.troveOperation, Number(trove.collateralAfter))}
@@ -277,7 +277,7 @@ export const TransactionHistoryFrame: FC = () => {
             trigger={TooltipTrigger.click}
             className="cursor-pointer uppercase"
             tooltipClassName="uppercase"
-            dataLayoutId="collateral-change-tooltip"
+            dataAttribute="collateral-change-tooltip"
           >
             <span>
               {trove.redemption?.partial === true
@@ -311,7 +311,7 @@ export const TransactionHistoryFrame: FC = () => {
             trigger={TooltipTrigger.click}
             className="cursor-pointer uppercase"
             tooltipClassName="uppercase"
-            dataLayoutId="collateral-change-tooltip"
+            dataAttribute="collateral-change-tooltip"
           >
             <span>
               {renderSign(trove.troveOperation, Number(trove.collateralChange))}
@@ -351,7 +351,7 @@ export const TransactionHistoryFrame: FC = () => {
             trigger={TooltipTrigger.click}
             className="cursor-pointer uppercase"
             tooltipClassName="uppercase"
-            dataLayoutId="new-collateral-tooltip"
+            dataAttribute="new-collateral-tooltip"
           >
             <span>
               {trove.redemption?.partial === true ? (
@@ -386,7 +386,7 @@ export const TransactionHistoryFrame: FC = () => {
             trigger={TooltipTrigger.click}
             className="cursor-pointer uppercase"
             tooltipClassName="uppercase"
-            dataLayoutId="collateral-change-tooltip"
+            dataAttribute="collateral-change-tooltip"
           >
             <span>
               {formatValue(Number(trove.borrowingFee), 2)}{' '}
@@ -489,7 +489,7 @@ export const TransactionHistoryFrame: FC = () => {
           <TransactionId
             href={`${chain?.blockExplorerUrl}/tx/${item.transaction.id}`}
             value={item.transaction.id}
-            dataLayoutId="history-address-id"
+            dataAttribute="history-address-id"
           />
         ),
       },

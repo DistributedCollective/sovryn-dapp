@@ -14,6 +14,7 @@ import {
   Input,
   Paragraph,
   ParagraphStyle,
+  Toggle,
 } from '@sovryn/ui';
 
 import { useAccount } from '../../../hooks/useAccount';
@@ -25,6 +26,62 @@ import {
   validateEmail,
 } from '../../../utils/helpers';
 import { NotificationUser } from './EmailNotificationSettingsDialog.types';
+
+enum NotificationMessageType {
+  ZeroBelowCcr = 'ZeroBelowCcr',
+  ZeroCcr = 'ZeroCcr',
+  ZeroCriticalIcrNormal = 'ZeroCriticalIcrNormal',
+  ZeroCriticalIcrRecovery = 'ZeroCriticalIcrRecovery',
+  ZeroGain = 'ZeroGain',
+  ZeroLiquidation = 'ZeroLiquidation',
+  ZeroLiquidationSurplus = 'ZeroLiquidationSurplus',
+  ZeroLowTcr = 'ZeroLowTcr',
+  ZeroRecovery = 'ZeroRecovery',
+}
+
+type Notification = {
+  notification: NotificationMessageType;
+  isSubscribed: boolean;
+};
+
+const defaultSubscriptionsArray: Notification[] = [
+  {
+    notification: NotificationMessageType.ZeroBelowCcr,
+    isSubscribed: false,
+  },
+  {
+    notification: NotificationMessageType.ZeroCcr,
+    isSubscribed: false,
+  },
+  {
+    notification: NotificationMessageType.ZeroCriticalIcrNormal,
+    isSubscribed: false,
+  },
+  {
+    notification: NotificationMessageType.ZeroCriticalIcrRecovery,
+    isSubscribed: false,
+  },
+  {
+    notification: NotificationMessageType.ZeroGain,
+    isSubscribed: false,
+  },
+  {
+    notification: NotificationMessageType.ZeroLiquidation,
+    isSubscribed: false,
+  },
+  {
+    notification: NotificationMessageType.ZeroLiquidationSurplus,
+    isSubscribed: false,
+  },
+  {
+    notification: NotificationMessageType.ZeroLowTcr,
+    isSubscribed: false,
+  },
+  {
+    notification: NotificationMessageType.ZeroRecovery,
+    isSubscribed: false,
+  },
+];
 
 type EmailNotificationSettingsDialogProps = {
   isOpen: boolean;
@@ -54,6 +111,8 @@ export const EmailNotificationSettingsDialog: React.FC<
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState('');
 
+  const [toggleStates, setToggleStates] = useState(defaultSubscriptionsArray);
+
   const emailIsValid = useMemo(() => !email || validateEmail(email), [email]);
 
   const resetNotification = useCallback(() => {
@@ -61,6 +120,7 @@ export const EmailNotificationSettingsDialog: React.FC<
     setNotificationUser(null);
     setNotificationWallet(null);
     setEmail('');
+    setToggleStates(defaultSubscriptionsArray);
   }, []);
 
   const isSubmitDisabled = useMemo(
@@ -129,6 +189,9 @@ export const EmailNotificationSettingsDialog: React.FC<
             signedMessage,
             message,
             walletAddress: account,
+            ...(alreadyUser
+              ? ''
+              : { subscriptions: defaultSubscriptionsArray }),
           })
           .then(res => {
             if (res.data && res.data.token) {
@@ -143,6 +206,44 @@ export const EmailNotificationSettingsDialog: React.FC<
       });
   }, [account, onClose, provider]);
 
+  const setSubscriptions = useCallback((subscriptions: Notification[]) => {
+    let toggleStatesArray: Notification[] = [];
+
+    subscriptions.forEach(item =>
+      toggleStatesArray.push({
+        notification: item.notification,
+        isSubscribed: item.isSubscribed,
+      }),
+    );
+
+    setToggleStates(toggleStatesArray);
+  }, []);
+
+  const isToggled = useCallback(
+    (state: NotificationMessageType) =>
+      toggleStates.find(item => item.notification === state)?.isSubscribed ||
+      false,
+    [toggleStates],
+  );
+
+  const updateState = useCallback(
+    (state: NotificationMessageType) => {
+      const newState = toggleStates.map(item => {
+        if (item.notification === state) {
+          return {
+            notification: item.notification,
+            isSubscribed: !item.isSubscribed,
+          };
+        }
+
+        return item;
+      });
+
+      setToggleStates(newState);
+    },
+    [toggleStates],
+  );
+
   const handleUserDataResponse = useCallback(
     (response: Promise<any>) => {
       response
@@ -150,6 +251,7 @@ export const EmailNotificationSettingsDialog: React.FC<
           if (result.data) {
             setNotificationUser(result.data);
             setEmail(result.data?.email);
+            setSubscriptions(result.data?.subscriptions);
           }
         })
         .catch(error => {
@@ -160,7 +262,7 @@ export const EmailNotificationSettingsDialog: React.FC<
         })
         .finally(() => setLoading(false));
     },
-    [getToken],
+    [getToken, setSubscriptions],
   );
 
   const getUser = useCallback(() => {
@@ -202,6 +304,7 @@ export const EmailNotificationSettingsDialog: React.FC<
       {
         walletAddress: account,
         email: email || undefined,
+        subscriptions: toggleStates,
       },
       {
         headers: {
@@ -211,7 +314,7 @@ export const EmailNotificationSettingsDialog: React.FC<
     );
 
     handleUserDataResponse(promise);
-  }, [account, email, handleUserDataResponse, notificationToken]);
+  }, [account, email, handleUserDataResponse, notificationToken, toggleStates]);
 
   const onCloseHandler = useCallback(() => {
     setEmail(notificationUser?.email || '');
@@ -243,7 +346,63 @@ export const EmailNotificationSettingsDialog: React.FC<
             />
           </FormGroup>
           <div className="bg-gray-80 rounded p-4">
-            A placeholder for toggle switch buttons
+            <Toggle
+              checked={isToggled(NotificationMessageType.ZeroBelowCcr)}
+              onChange={() => updateState(NotificationMessageType.ZeroBelowCcr)}
+              label="ZeroBelowCcr"
+            />
+            <Toggle
+              checked={isToggled(NotificationMessageType.ZeroCcr)}
+              onChange={() => updateState(NotificationMessageType.ZeroCcr)}
+              label="ZeroCcr"
+            />
+            <Toggle
+              checked={isToggled(NotificationMessageType.ZeroCriticalIcrNormal)}
+              onChange={() =>
+                updateState(NotificationMessageType.ZeroCriticalIcrNormal)
+              }
+              label="ZeroCriticalIcrNormal"
+            />
+            <Toggle
+              checked={isToggled(
+                NotificationMessageType.ZeroCriticalIcrRecovery,
+              )}
+              onChange={() =>
+                updateState(NotificationMessageType.ZeroCriticalIcrRecovery)
+              }
+              label="ZeroCriticalIcrRecovery"
+            />
+            <Toggle
+              checked={isToggled(NotificationMessageType.ZeroGain)}
+              onChange={() => updateState(NotificationMessageType.ZeroGain)}
+              label="ZeroGain"
+            />
+            <Toggle
+              checked={isToggled(NotificationMessageType.ZeroLiquidation)}
+              onChange={() =>
+                updateState(NotificationMessageType.ZeroLiquidation)
+              }
+              label="ZeroLiquidation"
+            />
+            <Toggle
+              checked={isToggled(
+                NotificationMessageType.ZeroLiquidationSurplus,
+              )}
+              onChange={() =>
+                updateState(NotificationMessageType.ZeroLiquidationSurplus)
+              }
+              label="ZeroLiquidationSurplus"
+            />
+            <Toggle
+              checked={isToggled(NotificationMessageType.ZeroLowTcr)}
+              onChange={() => updateState(NotificationMessageType.ZeroLowTcr)}
+              label="ZeroLowTcr"
+            />
+            <Toggle
+              checked={isToggled(NotificationMessageType.ZeroRecovery)}
+              onChange={() => updateState(NotificationMessageType.ZeroRecovery)}
+              label="ZeroRecovery"
+            />
           </div>
         </div>
 

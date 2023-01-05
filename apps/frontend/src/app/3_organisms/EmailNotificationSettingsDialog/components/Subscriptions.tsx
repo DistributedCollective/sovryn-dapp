@@ -2,7 +2,7 @@ import React from 'react';
 
 import { useTranslation } from 'react-i18next';
 
-import { Toggle } from '@sovryn/ui';
+import { Toggle, ToggleAlignment } from '@sovryn/ui';
 
 import { translations } from '../../../../locales/i18n';
 import { useEmailNotificationSettingsContext } from '../contexts/EmailNotificationSettingsContext';
@@ -33,6 +33,8 @@ export const Subscriptions: React.FC = () => {
         label={t(
           translations.emailNotificationsDialog.alertGroups.marginCallsToggle,
         )}
+        className="mb-7"
+        alignment={ToggleAlignment.LEFT}
       />
 
       <Toggle
@@ -41,6 +43,8 @@ export const Subscriptions: React.FC = () => {
         label={t(
           translations.emailNotificationsDialog.alertGroups.liquidationsToggle,
         )}
+        className="mb-7"
+        alignment={ToggleAlignment.LEFT}
       />
 
       <Toggle
@@ -49,6 +53,8 @@ export const Subscriptions: React.FC = () => {
         label={t(
           translations.emailNotificationsDialog.alertGroups.stabilityPoolToggle,
         )}
+        className="mb-7"
+        alignment={ToggleAlignment.LEFT}
       />
 
       <Toggle
@@ -57,6 +63,7 @@ export const Subscriptions: React.FC = () => {
         label={t(
           translations.emailNotificationsDialog.alertGroups.systemToggle,
         )}
+        alignment={ToggleAlignment.LEFT}
       />
     </div>
   );

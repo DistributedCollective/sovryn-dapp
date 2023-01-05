@@ -27,22 +27,22 @@ import {
 } from '../../../utils/helpers';
 import {
   AlertGroup,
-  GroupsToNotificationsMapping,
+  AlertGroupToNotificationsMapping,
   NotificationUser,
   Notification,
   defaultSubscriptionsArray,
 } from './EmailNotificationSettingsDialog.types';
 import { isSubscribedToGroup } from './EmailNotificationSettingsDialog.utils';
 
-type EmailNotificationSettingsDialogProps = {
-  isOpen: boolean;
-  onClose: () => void;
-};
-
 const servicesConfig = getServicesConfig();
 
 const notificationServiceUrl = servicesConfig.notification;
 const userEndpoint = `${notificationServiceUrl}user/`;
+
+type EmailNotificationSettingsDialogProps = {
+  isOpen: boolean;
+  onClose: () => void;
+};
 
 export const EmailNotificationSettingsDialog: React.FC<
   EmailNotificationSettingsDialogProps
@@ -62,7 +62,7 @@ export const EmailNotificationSettingsDialog: React.FC<
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState('');
 
-  const [toggleStates, setToggleStates] = useState(defaultSubscriptionsArray);
+  const [subscriptions, setSubscriptions] = useState(defaultSubscriptionsArray);
 
   const [marginCallsToggle, setMarginCallsToggle] = useState(false);
   const [liquidationsToggle, setLiquidationsToggle] = useState(false);
@@ -76,7 +76,11 @@ export const EmailNotificationSettingsDialog: React.FC<
     setNotificationUser(null);
     setNotificationWallet(null);
     setEmail('');
-    setToggleStates(defaultSubscriptionsArray);
+    setSubscriptions(defaultSubscriptionsArray);
+    setMarginCallsToggle(false);
+    setLiquidationsToggle(false);
+    setStabilityPoolToggle(false);
+    setSystemToggle(false);
   }, []);
 
   const isSubmitDisabled = useMemo(
@@ -162,30 +166,37 @@ export const EmailNotificationSettingsDialog: React.FC<
       });
   }, [account, onClose, provider]);
 
-  const setSubscriptions = useCallback((subscriptions: Notification[]) => {
-    const toggleStatesArray: Notification[] = subscriptions.map(item => ({
-      notification: item.notification,
-      isSubscribed: item.isSubscribed,
-    }));
+  const parseSubscriptionsResponse = useCallback(
+    (subscriptions: Notification[]) => {
+      const parsedSubscriptions: Notification[] = subscriptions.map(item => ({
+        notification: item.notification,
+        isSubscribed: item.isSubscribed,
+      }));
 
-    setToggleStates(toggleStatesArray);
+      setSubscriptions(parsedSubscriptions);
 
-    setMarginCallsToggle(
-      isSubscribedToGroup(AlertGroup.MarginCalls, toggleStatesArray),
-    );
-    setLiquidationsToggle(
-      isSubscribedToGroup(AlertGroup.Liquidations, toggleStatesArray),
-    );
-    setStabilityPoolToggle(
-      isSubscribedToGroup(AlertGroup.StabilityPool, toggleStatesArray),
-    );
-    setSystemToggle(isSubscribedToGroup(AlertGroup.System, toggleStatesArray));
-  }, []);
+      setMarginCallsToggle(
+        isSubscribedToGroup(AlertGroup.MarginCalls, parsedSubscriptions),
+      );
+      setLiquidationsToggle(
+        isSubscribedToGroup(AlertGroup.Liquidations, parsedSubscriptions),
+      );
+      setStabilityPoolToggle(
+        isSubscribedToGroup(AlertGroup.StabilityPool, parsedSubscriptions),
+      );
+      setSystemToggle(
+        isSubscribedToGroup(AlertGroup.System, parsedSubscriptions),
+      );
+    },
+    [],
+  );
 
-  const updateState = useCallback(
+  const updateSubscriptions = useCallback(
     (group: AlertGroup) => {
-      const newState = toggleStates.map(item => {
-        if (GroupsToNotificationsMapping[group].includes(item.notification)) {
+      const newSubscriptionsState = subscriptions.map(item => {
+        if (
+          AlertGroupToNotificationsMapping[group].includes(item.notification)
+        ) {
           return {
             notification: item.notification,
             isSubscribed: !item.isSubscribed,
@@ -195,30 +206,30 @@ export const EmailNotificationSettingsDialog: React.FC<
         return item;
       });
 
-      setToggleStates(newState);
+      setSubscriptions(newSubscriptionsState);
     },
-    [toggleStates],
+    [subscriptions],
   );
 
   const marginCallsToggleHandler = useCallback(() => {
-    updateState(AlertGroup.MarginCalls);
+    updateSubscriptions(AlertGroup.MarginCalls);
     setMarginCallsToggle(prevValue => !prevValue);
-  }, [updateState]);
+  }, [updateSubscriptions]);
 
   const liquidationsToggleHandler = useCallback(() => {
-    updateState(AlertGroup.Liquidations);
+    updateSubscriptions(AlertGroup.Liquidations);
     setLiquidationsToggle(prevValue => !prevValue);
-  }, [updateState]);
+  }, [updateSubscriptions]);
 
   const stabilityPoolToggleHandler = useCallback(() => {
-    updateState(AlertGroup.StabilityPool);
+    updateSubscriptions(AlertGroup.StabilityPool);
     setStabilityPoolToggle(prevValue => !prevValue);
-  }, [updateState]);
+  }, [updateSubscriptions]);
 
   const systemToggleHandler = useCallback(() => {
-    updateState(AlertGroup.System);
+    updateSubscriptions(AlertGroup.System);
     setSystemToggle(prevValue => !prevValue);
-  }, [updateState]);
+  }, [updateSubscriptions]);
 
   const handleUserDataResponse = useCallback(
     (response: Promise<any>) => {
@@ -227,7 +238,7 @@ export const EmailNotificationSettingsDialog: React.FC<
           if (result.data) {
             setNotificationUser(result.data);
             setEmail(result.data?.email);
-            setSubscriptions(result.data?.subscriptions);
+            parseSubscriptionsResponse(result.data?.subscriptions);
           }
         })
         .catch(error => {
@@ -238,7 +249,7 @@ export const EmailNotificationSettingsDialog: React.FC<
         })
         .finally(() => setLoading(false));
     },
-    [getToken, setSubscriptions],
+    [getToken, parseSubscriptionsResponse],
   );
 
   const getUser = useCallback(() => {
@@ -280,7 +291,7 @@ export const EmailNotificationSettingsDialog: React.FC<
       {
         walletAddress: account,
         email: email || undefined,
-        subscriptions: toggleStates,
+        subscriptions: subscriptions,
       },
       {
         headers: {
@@ -290,7 +301,13 @@ export const EmailNotificationSettingsDialog: React.FC<
     );
 
     handleUserDataResponse(promise);
-  }, [account, email, handleUserDataResponse, notificationToken, toggleStates]);
+  }, [
+    account,
+    email,
+    handleUserDataResponse,
+    notificationToken,
+    subscriptions,
+  ]);
 
   const onCloseHandler = useCallback(() => {
     setEmail(notificationUser?.email || '');
@@ -325,25 +342,36 @@ export const EmailNotificationSettingsDialog: React.FC<
             <Toggle
               checked={marginCallsToggle}
               onChange={marginCallsToggleHandler}
-              label="Margin call alerts"
+              label={t(
+                translations.emailNotificationsDialog.alertGroups
+                  .marginCallsToggle,
+              )}
             />
 
             <Toggle
               checked={liquidationsToggle}
               onChange={liquidationsToggleHandler}
-              label="Liquidation alerts"
+              label={t(
+                translations.emailNotificationsDialog.alertGroups
+                  .liquidationsToggle,
+              )}
             />
 
             <Toggle
               checked={stabilityPoolToggle}
               onChange={stabilityPoolToggleHandler}
-              label="Stability pool alerts"
+              label={t(
+                translations.emailNotificationsDialog.alertGroups
+                  .stabilityPoolToggle,
+              )}
             />
 
             <Toggle
               checked={systemToggle}
               onChange={systemToggleHandler}
-              label="System alerts"
+              label={t(
+                translations.emailNotificationsDialog.alertGroups.systemToggle,
+              )}
             />
           </div>
         </div>

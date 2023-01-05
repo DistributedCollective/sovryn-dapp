@@ -27,7 +27,7 @@ export enum AlertGroup {
   System = 'System',
 }
 
-export const GroupsToNotificationsMapping: Record<
+export const AlertGroupToNotificationsMapping: Record<
   AlertGroup,
   NotificationMessageType[]
 > = {

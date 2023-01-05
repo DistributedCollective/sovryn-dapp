@@ -1,20 +1,20 @@
 import {
   Notification,
   AlertGroup,
-  GroupsToNotificationsMapping,
+  AlertGroupToNotificationsMapping,
 } from './EmailNotificationSettingsDialog.types';
 
 export const isSubscribedToGroup = (
   group: AlertGroup,
-  states: Notification[],
+  subscriptions: Notification[],
 ) => {
-  const groupSubscriptions = states
+  const groupNotifications = subscriptions
     .map(item =>
-      GroupsToNotificationsMapping[group].includes(item.notification)
+      AlertGroupToNotificationsMapping[group].includes(item.notification)
         ? item
         : null,
     )
-    .filter(item => item);
+    .filter(item => item !== null);
 
-  return groupSubscriptions.every(item => item?.isSubscribed);
+  return groupNotifications.every(item => item?.isSubscribed);
 };

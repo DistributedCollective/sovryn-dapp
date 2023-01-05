@@ -1,28 +1,37 @@
-import { useCallback, useState } from 'react';
+import { useCallback } from 'react';
 
 import {
   AlertGroup,
   AlertGroupToNotificationsMapping,
   Notification,
-  defaultSubscriptionsArray,
 } from '../EmailNotificationSettingsDialog.types';
 import { isSubscribedToGroup } from '../EmailNotificationSettingsDialog.utils';
+import { useEmailNotificationSettingsContext } from '../contexts/EmailNotificationSettingsContext';
 
 export const useHandleSubscriptions = () => {
-  const [subscriptions, setSubscriptions] = useState(defaultSubscriptionsArray);
-
-  const [marginCallsToggle, setMarginCallsToggle] = useState(false);
-  const [liquidationsToggle, setLiquidationsToggle] = useState(false);
-  const [stabilityPoolToggle, setStabilityPoolToggle] = useState(false);
-  const [systemToggle, setSystemToggle] = useState(false);
+  const {
+    subscriptions,
+    setSubscriptions,
+    resetSubscriptions: resetSubscriptionsState,
+    setMarginCallsToggle,
+    setLiquidationsToggle,
+    setStabilityPoolToggle,
+    setSystemToggle,
+  } = useEmailNotificationSettingsContext();
 
   const resetSubscriptions = useCallback(() => {
-    setSubscriptions(defaultSubscriptionsArray);
+    resetSubscriptionsState();
     setMarginCallsToggle(false);
     setLiquidationsToggle(false);
     setStabilityPoolToggle(false);
     setSystemToggle(false);
-  }, []);
+  }, [
+    resetSubscriptionsState,
+    setMarginCallsToggle,
+    setLiquidationsToggle,
+    setStabilityPoolToggle,
+    setSystemToggle,
+  ]);
 
   const parseSubscriptionsResponse = useCallback(
     (subscriptions: Notification[]) => {
@@ -46,7 +55,13 @@ export const useHandleSubscriptions = () => {
         isSubscribedToGroup(AlertGroup.System, parsedSubscriptions),
       );
     },
-    [],
+    [
+      setSubscriptions,
+      setMarginCallsToggle,
+      setLiquidationsToggle,
+      setStabilityPoolToggle,
+      setSystemToggle,
+    ],
   );
 
   const updateSubscriptions = useCallback(
@@ -66,35 +81,30 @@ export const useHandleSubscriptions = () => {
 
       setSubscriptions(newSubscriptionsState);
     },
-    [subscriptions],
+    [subscriptions, setSubscriptions],
   );
 
   const marginCallsToggleHandler = useCallback(() => {
     updateSubscriptions(AlertGroup.MarginCalls);
     setMarginCallsToggle(prevValue => !prevValue);
-  }, [updateSubscriptions]);
+  }, [updateSubscriptions, setMarginCallsToggle]);
 
   const liquidationsToggleHandler = useCallback(() => {
     updateSubscriptions(AlertGroup.Liquidations);
     setLiquidationsToggle(prevValue => !prevValue);
-  }, [updateSubscriptions]);
+  }, [updateSubscriptions, setLiquidationsToggle]);
 
   const stabilityPoolToggleHandler = useCallback(() => {
     updateSubscriptions(AlertGroup.StabilityPool);
     setStabilityPoolToggle(prevValue => !prevValue);
-  }, [updateSubscriptions]);
+  }, [updateSubscriptions, setStabilityPoolToggle]);
 
   const systemToggleHandler = useCallback(() => {
     updateSubscriptions(AlertGroup.System);
     setSystemToggle(prevValue => !prevValue);
-  }, [updateSubscriptions]);
+  }, [updateSubscriptions, setSystemToggle]);
 
   return {
-    subscriptions,
-    marginCallsToggle,
-    liquidationsToggle,
-    stabilityPoolToggle,
-    systemToggle,
     resetSubscriptions,
     parseSubscriptionsResponse,
     marginCallsToggleHandler,

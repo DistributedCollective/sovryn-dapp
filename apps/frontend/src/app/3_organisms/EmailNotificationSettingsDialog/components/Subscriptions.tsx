@@ -5,29 +5,25 @@ import { useTranslation } from 'react-i18next';
 import { Toggle } from '@sovryn/ui';
 
 import { translations } from '../../../../locales/i18n';
+import { useEmailNotificationSettingsContext } from '../contexts/EmailNotificationSettingsContext';
+import { useHandleSubscriptions } from '../hooks/useHandleSubscriptions';
 
-type SubscriptionsProps = {
-  marginCallsToggle: boolean;
-  liquidationsToggle: boolean;
-  stabilityPoolToggle: boolean;
-  systemToggle: boolean;
-  marginCallsToggleHandler: () => void;
-  liquidationsToggleHandler: () => void;
-  stabilityPoolToggleHandler: () => void;
-  systemToggleHandler: () => void;
-};
-
-export const Subscriptions: React.FC<SubscriptionsProps> = ({
-  marginCallsToggle,
-  liquidationsToggle,
-  stabilityPoolToggle,
-  systemToggle,
-  marginCallsToggleHandler,
-  liquidationsToggleHandler,
-  stabilityPoolToggleHandler,
-  systemToggleHandler,
-}) => {
+export const Subscriptions: React.FC = () => {
   const { t } = useTranslation();
+
+  const {
+    marginCallsToggle,
+    liquidationsToggle,
+    stabilityPoolToggle,
+    systemToggle,
+  } = useEmailNotificationSettingsContext();
+
+  const {
+    marginCallsToggleHandler,
+    liquidationsToggleHandler,
+    stabilityPoolToggleHandler,
+    systemToggleHandler,
+  } = useHandleSubscriptions();
 
   return (
     <div className="bg-gray-80 rounded p-4">

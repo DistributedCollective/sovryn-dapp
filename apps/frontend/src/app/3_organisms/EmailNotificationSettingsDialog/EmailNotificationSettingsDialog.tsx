@@ -29,6 +29,10 @@ import {
   defaultSubscriptionsArray,
 } from './EmailNotificationSettingsDialog.types';
 import { Subscriptions } from './components/Subscriptions';
+import {
+  EmailNotificationSettingsContextProvider,
+  useEmailNotificationSettingsContext,
+} from './contexts/EmailNotificationSettingsContext';
 import { useHandleSubscriptions } from './hooks/useHandleSubscriptions';
 
 const servicesConfig = getServicesConfig();
@@ -41,7 +45,7 @@ type EmailNotificationSettingsDialogProps = {
   onClose: () => void;
 };
 
-export const EmailNotificationSettingsDialog: React.FC<
+const EmailNotificationSettingsDialogComponent: React.FC<
   EmailNotificationSettingsDialogProps
 > = ({ isOpen, onClose }) => {
   const { account, provider } = useAccount();
@@ -59,19 +63,10 @@ export const EmailNotificationSettingsDialog: React.FC<
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState('');
 
-  const {
-    subscriptions,
-    marginCallsToggle,
-    liquidationsToggle,
-    stabilityPoolToggle,
-    systemToggle,
-    resetSubscriptions,
-    parseSubscriptionsResponse,
-    marginCallsToggleHandler,
-    liquidationsToggleHandler,
-    stabilityPoolToggleHandler,
-    systemToggleHandler,
-  } = useHandleSubscriptions();
+  const { subscriptions } = useEmailNotificationSettingsContext();
+
+  const { resetSubscriptions, parseSubscriptionsResponse } =
+    useHandleSubscriptions();
 
   const emailIsValid = useMemo(() => !email || validateEmail(email), [email]);
 
@@ -274,16 +269,7 @@ export const EmailNotificationSettingsDialog: React.FC<
             />
           </FormGroup>
 
-          <Subscriptions
-            marginCallsToggle={marginCallsToggle}
-            liquidationsToggle={liquidationsToggle}
-            stabilityPoolToggle={stabilityPoolToggle}
-            systemToggle={systemToggle}
-            marginCallsToggleHandler={marginCallsToggleHandler}
-            liquidationsToggleHandler={liquidationsToggleHandler}
-            stabilityPoolToggleHandler={stabilityPoolToggleHandler}
-            systemToggleHandler={systemToggleHandler}
-          />
+          <Subscriptions />
         </div>
 
         <div className="mt-4 flex justify-between">
@@ -304,3 +290,14 @@ export const EmailNotificationSettingsDialog: React.FC<
     </Dialog>
   );
 };
+
+export const EmailNotificationSettingsDialog: React.FC<
+  EmailNotificationSettingsDialogProps
+> = ({ isOpen, onClose }) => (
+  <EmailNotificationSettingsContextProvider>
+    <EmailNotificationSettingsDialogComponent
+      isOpen={isOpen}
+      onClose={onClose}
+    />
+  </EmailNotificationSettingsContextProvider>
+);

@@ -14,7 +14,6 @@ import {
   Input,
   Paragraph,
   ParagraphStyle,
-  Toggle,
 } from '@sovryn/ui';
 
 import { useAccount } from '../../../hooks/useAccount';
@@ -26,13 +25,11 @@ import {
   validateEmail,
 } from '../../../utils/helpers';
 import {
-  AlertGroup,
-  AlertGroupToNotificationsMapping,
   NotificationUser,
-  Notification,
   defaultSubscriptionsArray,
 } from './EmailNotificationSettingsDialog.types';
-import { isSubscribedToGroup } from './EmailNotificationSettingsDialog.utils';
+import { Subscriptions } from './components/Subscriptions';
+import { useHandleSubscriptions } from './hooks/useHandleSubscriptions';
 
 const servicesConfig = getServicesConfig();
 
@@ -62,12 +59,19 @@ export const EmailNotificationSettingsDialog: React.FC<
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState('');
 
-  const [subscriptions, setSubscriptions] = useState(defaultSubscriptionsArray);
-
-  const [marginCallsToggle, setMarginCallsToggle] = useState(false);
-  const [liquidationsToggle, setLiquidationsToggle] = useState(false);
-  const [stabilityPoolToggle, setStabilityPoolToggle] = useState(false);
-  const [systemToggle, setSystemToggle] = useState(false);
+  const {
+    subscriptions,
+    marginCallsToggle,
+    liquidationsToggle,
+    stabilityPoolToggle,
+    systemToggle,
+    resetSubscriptions,
+    parseSubscriptionsResponse,
+    marginCallsToggleHandler,
+    liquidationsToggleHandler,
+    stabilityPoolToggleHandler,
+    systemToggleHandler,
+  } = useHandleSubscriptions();
 
   const emailIsValid = useMemo(() => !email || validateEmail(email), [email]);
 
@@ -76,12 +80,8 @@ export const EmailNotificationSettingsDialog: React.FC<
     setNotificationUser(null);
     setNotificationWallet(null);
     setEmail('');
-    setSubscriptions(defaultSubscriptionsArray);
-    setMarginCallsToggle(false);
-    setLiquidationsToggle(false);
-    setStabilityPoolToggle(false);
-    setSystemToggle(false);
-  }, []);
+    resetSubscriptions();
+  }, [resetSubscriptions]);
 
   const isSubmitDisabled = useMemo(
     () =>
@@ -165,71 +165,6 @@ export const EmailNotificationSettingsDialog: React.FC<
         onClose();
       });
   }, [account, onClose, provider]);
-
-  const parseSubscriptionsResponse = useCallback(
-    (subscriptions: Notification[]) => {
-      const parsedSubscriptions: Notification[] = subscriptions.map(item => ({
-        notification: item.notification,
-        isSubscribed: item.isSubscribed,
-      }));
-
-      setSubscriptions(parsedSubscriptions);
-
-      setMarginCallsToggle(
-        isSubscribedToGroup(AlertGroup.MarginCalls, parsedSubscriptions),
-      );
-      setLiquidationsToggle(
-        isSubscribedToGroup(AlertGroup.Liquidations, parsedSubscriptions),
-      );
-      setStabilityPoolToggle(
-        isSubscribedToGroup(AlertGroup.StabilityPool, parsedSubscriptions),
-      );
-      setSystemToggle(
-        isSubscribedToGroup(AlertGroup.System, parsedSubscriptions),
-      );
-    },
-    [],
-  );
-
-  const updateSubscriptions = useCallback(
-    (group: AlertGroup) => {
-      const newSubscriptionsState = subscriptions.map(item => {
-        if (
-          AlertGroupToNotificationsMapping[group].includes(item.notification)
-        ) {
-          return {
-            notification: item.notification,
-            isSubscribed: !item.isSubscribed,
-          };
-        }
-
-        return item;
-      });
-
-      setSubscriptions(newSubscriptionsState);
-    },
-    [subscriptions],
-  );
-
-  const marginCallsToggleHandler = useCallback(() => {
-    updateSubscriptions(AlertGroup.MarginCalls);
-    setMarginCallsToggle(prevValue => !prevValue);
-  }, [updateSubscriptions]);
-
-  const liquidationsToggleHandler = useCallback(() => {
-    updateSubscriptions(AlertGroup.Liquidations);
-    setLiquidationsToggle(prevValue => !prevValue);
-  }, [updateSubscriptions]);
-
-  const stabilityPoolToggleHandler = useCallback(() => {
-    updateSubscriptions(AlertGroup.StabilityPool);
-    setStabilityPoolToggle(prevValue => !prevValue);
-  }, [updateSubscriptions]);
-
-  const systemToggleHandler = useCallback(() => {
-    updateSubscriptions(AlertGroup.System);
-    setSystemToggle(prevValue => !prevValue);
-  }, [updateSubscriptions]);
 
   const handleUserDataResponse = useCallback(
     (response: Promise<any>) => {
@@ -338,42 +273,17 @@ export const EmailNotificationSettingsDialog: React.FC<
               disabled={loading || !notificationToken}
             />
           </FormGroup>
-          <div className="bg-gray-80 rounded p-4">
-            <Toggle
-              checked={marginCallsToggle}
-              onChange={marginCallsToggleHandler}
-              label={t(
-                translations.emailNotificationsDialog.alertGroups
-                  .marginCallsToggle,
-              )}
-            />
 
-            <Toggle
-              checked={liquidationsToggle}
-              onChange={liquidationsToggleHandler}
-              label={t(
-                translations.emailNotificationsDialog.alertGroups
-                  .liquidationsToggle,
-              )}
-            />
-
-            <Toggle
-              checked={stabilityPoolToggle}
-              onChange={stabilityPoolToggleHandler}
-              label={t(
-                translations.emailNotificationsDialog.alertGroups
-                  .stabilityPoolToggle,
-              )}
-            />
-
-            <Toggle
-              checked={systemToggle}
-              onChange={systemToggleHandler}
-              label={t(
-                translations.emailNotificationsDialog.alertGroups.systemToggle,
-              )}
-            />
-          </div>
+          <Subscriptions
+            marginCallsToggle={marginCallsToggle}
+            liquidationsToggle={liquidationsToggle}
+            stabilityPoolToggle={stabilityPoolToggle}
+            systemToggle={systemToggle}
+            marginCallsToggleHandler={marginCallsToggleHandler}
+            liquidationsToggleHandler={liquidationsToggleHandler}
+            stabilityPoolToggleHandler={stabilityPoolToggleHandler}
+            systemToggleHandler={systemToggleHandler}
+          />
         </div>
 
         <div className="mt-4 flex justify-between">

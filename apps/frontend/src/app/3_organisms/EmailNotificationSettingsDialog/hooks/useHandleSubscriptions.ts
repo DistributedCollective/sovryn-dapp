@@ -17,6 +17,7 @@ export const useHandleSubscriptions = () => {
     setLiquidationsToggle,
     setStabilityPoolToggle,
     setSystemToggle,
+    setServerSubscriptionsState,
   } = useEmailNotificationSettingsContext();
 
   const resetSubscriptions = useCallback(() => {
@@ -41,6 +42,7 @@ export const useHandleSubscriptions = () => {
       }));
 
       setSubscriptions(parsedSubscriptions);
+      setServerSubscriptionsState(parsedSubscriptions);
 
       setMarginCallsToggle(
         isSubscribedToGroup(AlertGroup.MarginCalls, parsedSubscriptions),
@@ -61,6 +63,7 @@ export const useHandleSubscriptions = () => {
       setLiquidationsToggle,
       setStabilityPoolToggle,
       setSystemToggle,
+      setServerSubscriptionsState,
     ],
   );
 

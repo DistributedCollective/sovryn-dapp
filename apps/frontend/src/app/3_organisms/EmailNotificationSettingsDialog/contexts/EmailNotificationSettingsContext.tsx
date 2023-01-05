@@ -5,6 +5,7 @@ import React, {
   SetStateAction,
   useCallback,
   useContext,
+  useEffect,
   useState,
 } from 'react';
 
@@ -13,6 +14,7 @@ import { noop } from '@sovryn/ui';
 import { Notification } from '../EmailNotificationSettingsDialog.types';
 
 type EmailNotificationSettingsContextValue = {
+  setServerSubscriptionsState: Dispatch<SetStateAction<Notification[]>>;
   subscriptions: Notification[];
   setSubscriptions: Dispatch<SetStateAction<Notification[]>>;
   resetSubscriptions: () => void;
@@ -24,9 +26,11 @@ type EmailNotificationSettingsContextValue = {
   setStabilityPoolToggle: React.Dispatch<React.SetStateAction<boolean>>;
   systemToggle: boolean;
   setSystemToggle: React.Dispatch<React.SetStateAction<boolean>>;
+  haveSubscriptionsBeenUpdated: boolean;
 };
 
 const defaultContextValue: EmailNotificationSettingsContextValue = {
+  setServerSubscriptionsState: noop,
   subscriptions: [],
   setSubscriptions: noop,
   resetSubscriptions: noop,
@@ -38,6 +42,7 @@ const defaultContextValue: EmailNotificationSettingsContextValue = {
   setStabilityPoolToggle: noop,
   systemToggle: false,
   setSystemToggle: noop,
+  haveSubscriptionsBeenUpdated: false,
 };
 
 const EmailNotificationSettingsContext =
@@ -53,6 +58,13 @@ export const EmailNotificationSettingsContextProvider: React.FC<
     defaultContextValue.subscriptions,
   );
 
+  const [serverSubscriptionsState, setServerSubscriptionsState] = useState(
+    defaultContextValue.subscriptions,
+  );
+
+  const [haveSubscriptionsBeenUpdated, setHaveSubscriptionsBeenUpdated] =
+    useState(defaultContextValue.haveSubscriptionsBeenUpdated);
+
   const [marginCallsToggle, setMarginCallsToggle] = useState(false);
   const [liquidationsToggle, setLiquidationsToggle] = useState(false);
   const [stabilityPoolToggle, setStabilityPoolToggle] = useState(false);
@@ -62,9 +74,24 @@ export const EmailNotificationSettingsContextProvider: React.FC<
     setSubscriptions(defaultContextValue.subscriptions);
   }, []);
 
+  useEffect(() => {
+    if (subscriptions.length > 0 && serverSubscriptionsState.length > 0) {
+      const haveSubscriptionsBeenUpdated = subscriptions.some(
+        item =>
+          item.isSubscribed !==
+          serverSubscriptionsState.find(
+            serverItem => serverItem.notification === item.notification,
+          )!.isSubscribed,
+      );
+
+      setHaveSubscriptionsBeenUpdated(haveSubscriptionsBeenUpdated);
+    }
+  }, [subscriptions, serverSubscriptionsState]);
+
   return (
     <EmailNotificationSettingsContext.Provider
       value={{
+        setServerSubscriptionsState,
         subscriptions,
         setSubscriptions,
         resetSubscriptions,
@@ -76,6 +103,7 @@ export const EmailNotificationSettingsContextProvider: React.FC<
         setStabilityPoolToggle,
         systemToggle,
         setSystemToggle,
+        haveSubscriptionsBeenUpdated,
       }}
     >
       {children}

@@ -63,7 +63,8 @@ const EmailNotificationSettingsDialogComponent: React.FC<
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState('');
 
-  const { subscriptions } = useEmailNotificationSettingsContext();
+  const { subscriptions, haveSubscriptionsBeenUpdated } =
+    useEmailNotificationSettingsContext();
 
   const { resetSubscriptions, parseSubscriptionsResponse } =
     useHandleSubscriptions();
@@ -84,8 +85,15 @@ const EmailNotificationSettingsDialogComponent: React.FC<
       !notificationToken ||
       !emailIsValid ||
       !email ||
-      email === notificationUser?.email,
-    [email, emailIsValid, loading, notificationToken, notificationUser?.email],
+      (email === notificationUser?.email && !haveSubscriptionsBeenUpdated),
+    [
+      email,
+      emailIsValid,
+      loading,
+      notificationToken,
+      notificationUser?.email,
+      haveSubscriptionsBeenUpdated,
+    ],
   );
 
   const shouldFetchToken = useMemo(

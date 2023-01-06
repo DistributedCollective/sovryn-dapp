@@ -102,8 +102,8 @@ const EmailNotificationSettingsDialogComponent: React.FC<
   );
 
   const shouldFetchUser = useMemo(
-    () => notificationToken && isOpen && !notificationUser,
-    [isOpen, notificationToken, notificationUser],
+    () => notificationToken && isOpen,
+    [isOpen, notificationToken],
   );
 
   const wasAccountDisconnected = useMemo(

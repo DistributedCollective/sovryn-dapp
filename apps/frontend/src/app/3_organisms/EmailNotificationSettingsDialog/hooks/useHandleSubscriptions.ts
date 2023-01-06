@@ -3,6 +3,7 @@ import { useCallback } from 'react';
 import {
   AlertGroup,
   AlertGroupToNotificationsMapping,
+  defaultSubscriptionsArray,
   Notification,
 } from '../EmailNotificationSettingsDialog.types';
 import { isSubscribedToGroup } from '../EmailNotificationSettingsDialog.utils';
@@ -69,7 +70,10 @@ export const useHandleSubscriptions = () => {
 
   const updateSubscriptions = useCallback(
     (group: AlertGroup) => {
-      const newSubscriptionsState = subscriptions.map(item => {
+      const oldSubscriptionsState =
+        subscriptions.length > 0 ? subscriptions : defaultSubscriptionsArray;
+
+      const newSubscriptionsState = oldSubscriptionsState.map(item => {
         if (
           AlertGroupToNotificationsMapping[group].includes(item.notification)
         ) {

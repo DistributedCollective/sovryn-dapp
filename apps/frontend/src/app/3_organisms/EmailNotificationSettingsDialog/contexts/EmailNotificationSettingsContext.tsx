@@ -75,6 +75,20 @@ export const EmailNotificationSettingsContextProvider: React.FC<
   }, []);
 
   useEffect(() => {
+    // New users or previously registered users without any subscriptions
+    if (subscriptions.length > 0 && serverSubscriptionsState.length === 0) {
+      const isSubscribedToSomething = subscriptions.some(
+        item => item.isSubscribed,
+      );
+
+      if (isSubscribedToSomething) {
+        setHaveSubscriptionsBeenUpdated(true);
+      } else if (!isSubscribedToSomething && haveSubscriptionsBeenUpdated) {
+        setHaveSubscriptionsBeenUpdated(false);
+      }
+    }
+
+    // Regular users with existing subscriptions
     if (subscriptions.length > 0 && serverSubscriptionsState.length > 0) {
       const haveSubscriptionsBeenUpdated = subscriptions.some(
         item =>
@@ -86,7 +100,7 @@ export const EmailNotificationSettingsContextProvider: React.FC<
 
       setHaveSubscriptionsBeenUpdated(haveSubscriptionsBeenUpdated);
     }
-  }, [subscriptions, serverSubscriptionsState]);
+  }, [subscriptions, serverSubscriptionsState, haveSubscriptionsBeenUpdated]);
 
   return (
     <EmailNotificationSettingsContext.Provider

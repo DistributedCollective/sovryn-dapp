@@ -8,6 +8,10 @@ export const isSubscribedToGroup = (
   group: AlertGroup,
   subscriptions: Notification[],
 ) => {
+  if (subscriptions.length === 0) {
+    return false;
+  }
+
   const groupNotifications = subscriptions
     .map(item =>
       AlertGroupToNotificationsMapping[group].includes(item.notification)

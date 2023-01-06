@@ -115,9 +115,9 @@ export const AmountInput = React.forwardRef<HTMLInputElement, AmountInputProps>(
         event: React.FocusEvent<HTMLInputElement> &
           React.ChangeEvent<HTMLInputElement>,
       ) => {
+        onChangeTextHandler(event.target.value);
         onBlur?.(event);
         setFocused(false);
-        onChangeTextHandler(event.target.value);
       },
       [onBlur, onChangeTextHandler],
     );
@@ -159,6 +159,7 @@ export const AmountInput = React.forwardRef<HTMLInputElement, AmountInputProps>(
             onBlur={onBlurHandler}
             value={formattedValue}
             onChangeText={onChangeTextHandler}
+            debounce={0}
             {...rest}
           />
 

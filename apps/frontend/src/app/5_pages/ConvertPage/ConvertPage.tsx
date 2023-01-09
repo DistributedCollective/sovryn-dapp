@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useState } from 'react';
+import React, { FC, useCallback, useMemo, useState } from 'react';
 
 import { useTranslation } from 'react-i18next';
 
@@ -17,8 +17,9 @@ import {
   Select,
 } from '@sovryn/ui';
 
+import { useAssetBalance } from '../../../hooks/useAssetBalance';
 import { translations } from '../../../locales/i18n';
-import { formatValue } from '../../../utils/math';
+import { formatValue, fromWei } from '../../../utils/math';
 
 const allowedTokens = [
   SupportedTokens.dllr,
@@ -32,9 +33,6 @@ const tokens = SupportedTokenList.filter(item =>
   value: token.symbol,
   label: token.symbol.toUpperCase(),
 }));
-
-// TODO: This will be replaced by a fetched token balance
-const MAX_CONVERT_VALUE = 100;
 
 const commonTranslations = translations.common;
 const pageTranslations = translations.convertPage;
@@ -51,9 +49,15 @@ const ConvertPage: FC = () => {
     SupportedTokens.dllr,
   );
 
+  const maxSourceAmountWei = useAssetBalance(sourceToken).value;
+  const maxSourceAmount = useMemo(
+    () => fromWei(maxSourceAmountWei),
+    [maxSourceAmountWei],
+  );
+
   const onMaximumSourceAmountClick = useCallback(
-    () => setSourceAmount(String(MAX_CONVERT_VALUE)),
-    [],
+    () => setSourceAmount(maxSourceAmount),
+    [maxSourceAmount],
   );
 
   const onSwitchClick = useCallback(() => {
@@ -79,7 +83,8 @@ const ConvertPage: FC = () => {
               onClick={onMaximumSourceAmountClick}
               className="text-gray-20 text-xs font-medium underline whitespace-nowrap"
             >
-              ({t(commonTranslations.max)} {formatValue(MAX_CONVERT_VALUE, 4)}{' '}
+              ({t(commonTranslations.max)}{' '}
+              {formatValue(Number(maxSourceAmount), 4)}{' '}
               {sourceToken.toUpperCase()})
             </button>
           </div>
@@ -88,7 +93,7 @@ const ConvertPage: FC = () => {
             <AmountInput
               value={sourceAmount}
               onChangeText={setSourceAmount}
-              maxAmount={MAX_CONVERT_VALUE}
+              maxAmount={Number(maxSourceAmount)}
               label={t(commonTranslations.amount)}
               tooltip={t(pageTranslations.form.sourceAmountTooltip)}
               min={0}

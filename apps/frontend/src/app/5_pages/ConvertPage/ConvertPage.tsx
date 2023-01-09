@@ -51,6 +51,13 @@ const ConvertPage: FC = () => {
     [],
   );
 
+  const onSwitchClick = useCallback(() => {
+    setDestinationToken(sourceToken);
+    setSourceToken(destinationToken);
+    setSourceAmount('0');
+    setDestinationAmount('0');
+  }, [destinationToken, sourceToken]);
+
   return (
     <div className="w-full flex flex-col items-center mt-24">
       <Heading>Convert</Heading>
@@ -88,7 +95,10 @@ const ConvertPage: FC = () => {
         </div>
 
         <div className="flex justify-center rounded-full -mt-3.5">
-          <button className="w-11 h-11 rounded-full bg-gray-90 flex justify-center items-center">
+          <button
+            className="w-11 h-11 rounded-full bg-gray-90 flex justify-center items-center"
+            onClick={onSwitchClick}
+          >
             <Icon icon={IconNames.PENDING} className="text-gray-50" size={24} />
           </button>
         </div>

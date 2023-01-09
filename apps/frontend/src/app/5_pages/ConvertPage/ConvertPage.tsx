@@ -1,6 +1,6 @@
 import React, { FC, useCallback, useState } from 'react';
 
-import { t } from 'i18next';
+import { useTranslation } from 'react-i18next';
 
 import { SupportedTokenList, SupportedTokens } from '@sovryn/contracts';
 import {
@@ -36,7 +36,12 @@ const tokens = SupportedTokenList.filter(item =>
 // TODO: This will be replaced by a fetched token balance
 const MAX_CONVERT_VALUE = 100;
 
+const commonTranslations = translations.common;
+const pageTranslations = translations.convertPage;
+
 const ConvertPage: FC = () => {
+  const { t } = useTranslation();
+
   const [sourceAmount, setSourceAmount] = useState('0');
   const [sourceToken, setSourceToken] = useState<SupportedTokens>(
     SupportedTokens.dllr,
@@ -60,19 +65,21 @@ const ConvertPage: FC = () => {
 
   return (
     <div className="w-full flex flex-col items-center mt-24">
-      <Heading>Convert</Heading>
-      <Paragraph className="mt-4">Convert between assets</Paragraph>
+      <Heading>{t(pageTranslations.title)}</Heading>
+      <Paragraph className="mt-4">{t(pageTranslations.subtitle)}</Paragraph>
 
       <div className="mt-12 border border-gray-50 rounded w-[23.625rem] p-6 bg-gray-90">
         <div className="bg-gray-80 rounded p-6">
           <div className="w-full flex flex-row justify-between items-center">
-            <Paragraph size={ParagraphSize.base}>Convert from</Paragraph>
+            <Paragraph size={ParagraphSize.base}>
+              {t(pageTranslations.form.convertFrom)}
+            </Paragraph>
 
             <button
               onClick={onMaximumSourceAmountClick}
               className="text-gray-20 text-xs font-medium underline whitespace-nowrap"
             >
-              (max {formatValue(MAX_CONVERT_VALUE, 4)}{' '}
+              ({t(commonTranslations.max)} {formatValue(MAX_CONVERT_VALUE, 4)}{' '}
               {sourceToken.toUpperCase()})
             </button>
           </div>
@@ -82,8 +89,8 @@ const ConvertPage: FC = () => {
               value={sourceAmount}
               onChangeText={setSourceAmount}
               maxAmount={MAX_CONVERT_VALUE}
-              label="Amount"
-              tooltip="Important info"
+              label={t(commonTranslations.amount)}
+              tooltip={t(pageTranslations.form.sourceAmountTooltip)}
               className="w-full flex-grow-0 flex-shrink"
             />
             <Select
@@ -104,14 +111,16 @@ const ConvertPage: FC = () => {
         </div>
 
         <div className="bg-gray-80 rounded p-6 -mt-3.5">
-          <Paragraph size={ParagraphSize.base}>Convert to</Paragraph>
+          <Paragraph size={ParagraphSize.base}>
+            {t(pageTranslations.form.convertTo)}
+          </Paragraph>
 
           <div className="w-full flex flex-row justify-between items-center gap-3 mt-3.5">
             <AmountInput
               value={destinationAmount}
               onChangeText={setDestinationAmount}
-              label="Amount"
-              tooltip="Important info"
+              label={t(commonTranslations.amount)}
+              tooltip={t(pageTranslations.form.destinationAmountTooltip)}
               className="w-full flex-grow-0 flex-shrink"
             />
             <Select
@@ -125,7 +134,7 @@ const ConvertPage: FC = () => {
         <Button
           type={ButtonType.reset}
           style={ButtonStyle.primary}
-          text={t(translations.common.buttons.confirm)}
+          text={t(commonTranslations.buttons.confirm)}
           className="w-full mt-8"
           onClick={noop}
         />

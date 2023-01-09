@@ -1,8 +1,15 @@
 import React, { FC, useCallback, useMemo, useState } from 'react';
+import { useEffect } from 'react';
 
+import { ethers } from 'ethers';
 import { useTranslation } from 'react-i18next';
 
-import { SupportedTokenList, SupportedTokens } from '@sovryn/contracts';
+import {
+  SupportedTokenList,
+  SupportedTokens,
+  getProtocolContract,
+  getTokenDetails,
+} from '@sovryn/contracts';
 import {
   AmountInput,
   Button,
@@ -11,15 +18,19 @@ import {
   Heading,
   Icon,
   IconNames,
-  noop,
   Paragraph,
   ParagraphSize,
   Select,
 } from '@sovryn/ui';
 
+import { TransactionStepDialog } from '../../3_organisms';
+import { defaultChainId } from '../../../config/chains';
+import { useTransactionContext } from '../../../contexts/TransactionContext';
+import { useWalletConnect } from '../../../hooks';
+import { useAccount } from '../../../hooks/useAccount';
 import { useAssetBalance } from '../../../hooks/useAssetBalance';
 import { translations } from '../../../locales/i18n';
-import { formatValue, fromWei } from '../../../utils/math';
+import { formatValue, fromWei, toWei } from '../../../utils/math';
 
 const allowedTokens = [
   SupportedTokens.dllr,
@@ -39,6 +50,8 @@ const pageTranslations = translations.convertPage;
 
 const ConvertPage: FC = () => {
   const { t } = useTranslation();
+  const { wallets } = useWalletConnect();
+  const { account } = useAccount();
 
   const [sourceAmount, setSourceAmount] = useState('0');
   const [sourceToken, setSourceToken] = useState<SupportedTokens>(
@@ -66,6 +79,55 @@ const ConvertPage: FC = () => {
     setSourceAmount('0');
     setDestinationAmount('0');
   }, [destinationToken, sourceToken]);
+
+  useEffect(() => {
+    if (sourceAmount !== '0') {
+      setDestinationAmount(sourceAmount);
+    }
+  }, [sourceAmount]);
+
+  const { setTransactions, setIsOpen, setTitle } = useTransactionContext();
+
+  const dllrToBasset = useCallback(async () => {
+    if (!wallets[0].provider || sourceToken !== SupportedTokens.dllr) {
+      return;
+    }
+
+    const { address, abi } = await getProtocolContract(
+      'massetManager',
+      defaultChainId,
+    );
+
+    const provider = new ethers.providers.Web3Provider(wallets[0].provider);
+    const signer = provider.getSigner();
+    const massetManager = new ethers.Contract(address, abi, signer);
+
+    const { address: destinationTokenAddress } = await getTokenDetails(
+      destinationToken,
+      defaultChainId,
+    );
+
+    setTransactions([
+      {
+        title: 'Redeem DLLR for bAsset',
+        contract: massetManager,
+        fnName: 'redeemTo',
+        args: [destinationTokenAddress, toWei(sourceAmount), account],
+      },
+    ]);
+
+    setTitle('DLLR to bAsset conversion');
+    setIsOpen(true);
+  }, [
+    wallets,
+    sourceToken,
+    destinationToken,
+    sourceAmount,
+    account,
+    setTransactions,
+    setTitle,
+    setIsOpen,
+  ]);
 
   return (
     <div className="w-full flex flex-col items-center mt-24">
@@ -144,9 +206,10 @@ const ConvertPage: FC = () => {
           style={ButtonStyle.primary}
           text={t(commonTranslations.buttons.confirm)}
           className="w-full mt-8"
-          onClick={noop}
+          onClick={dllrToBasset}
         />
       </div>
+      <TransactionStepDialog />
     </div>
   );
 };

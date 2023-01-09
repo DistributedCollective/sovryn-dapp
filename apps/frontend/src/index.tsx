@@ -10,6 +10,7 @@ import { OnboardProvider } from '@sovryn/onboard-react';
 // chain config must be imported before other files
 import './config/chains';
 import { MaintenanceModeContextProvider } from './contexts/MaintenanceModeContext';
+import { NotificationProvider } from './contexts/NotificationContext';
 import { TransactionProvider } from './contexts/TransactionContext';
 import './locales/dayjs';
 import './locales/i18n';
@@ -34,8 +35,10 @@ root.render(
     <TransactionProvider>
       <ApolloProvider client={rskClient}>
         <MaintenanceModeContextProvider>
-          <RouterProvider router={router} />
-          <OnboardProvider />
+          <NotificationProvider>
+            <RouterProvider router={router} />
+            <OnboardProvider />
+          </NotificationProvider>
         </MaintenanceModeContextProvider>
       </ApolloProvider>
     </TransactionProvider>

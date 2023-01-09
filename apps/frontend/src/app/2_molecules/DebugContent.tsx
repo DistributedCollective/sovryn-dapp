@@ -112,16 +112,18 @@ export const DebugContent = () => {
     >
       <Button
         onClick={() =>
-          addNotification({
-            type: NotificationType.success,
-            title: 'Transaction approved' + Math.floor(Math.random() * 1000),
-            content: '',
-            dataAttribute: '',
-            className: '',
-            timeout: 0,
-            dismissible: true,
-            id: Math.floor(Math.random() * 1000),
-          })
+          addNotification(
+            {
+              type: NotificationType.success,
+              title: 'Transaction approved' + Math.floor(Math.random() * 1000),
+              content: '',
+              dataAttribute: '',
+              className: '',
+              dismissible: true,
+              id: Math.floor(Math.random() * 1000),
+            },
+            0,
+          )
         }
         className="mt-4"
         text="Add Notifcation"

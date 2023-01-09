@@ -8,8 +8,6 @@ export type NotificationItem = {
   content?: ReactNode;
   type?: NotificationType;
   title: string;
-  timeout: number;
   dismissible?: boolean;
-  id: number;
-  onClose?: (id: number) => void;
+  id: number | string;
 };

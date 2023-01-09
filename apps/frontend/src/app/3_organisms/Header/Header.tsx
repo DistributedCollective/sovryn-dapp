@@ -10,10 +10,10 @@ import {
   IconNames,
 } from '@sovryn/ui';
 
-import { ConnectWalletButton, WrongNetworkSwitcher } from '../../2_molecules';
+import { ConnectWalletButton } from '../../2_molecules';
 import { NavLink } from '../../2_molecules/NavLink/NavLink';
 import { SovrynLogo } from '../../2_molecules/SovrynLogo/SovrynLogo';
-import { useWalletConnect } from '../../../hooks';
+import { useWalletConnect, useWrongNetworkCheck } from '../../../hooks';
 import { translations } from '../../../locales/i18n';
 
 export const Header: FC = () => {
@@ -21,6 +21,7 @@ export const Header: FC = () => {
   const [isOpen, toggle] = useReducer(v => !v, false);
   const { connectWallet, disconnectWallet, account, pending } =
     useWalletConnect();
+  useWrongNetworkCheck();
 
   const handleNavClick = useCallback(() => {
     if (isOpen) {
@@ -71,7 +72,6 @@ export const Header: FC = () => {
             address={account}
             pending={pending}
           />
-          <WrongNetworkSwitcher className="absolute top-full right-0" />
         </div>
       }
       extraContent={

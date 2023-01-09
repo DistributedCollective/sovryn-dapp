@@ -7,13 +7,17 @@ import { NotificationStack } from './NotificationStack';
 
 export default {
   title: 'Molecule/NotificationStack',
-  component: Notification,
+  component: NotificationStack,
 };
 
 const Template: Story<ComponentProps<typeof NotificationStack>> = args => {
   const [items, setItems] = useState([...args.items]);
-  const onClose = (id: number) =>
+  const onClose = (id: number | string) => {
+    console.log('onClose', id, items);
     setItems(items.filter(item => id !== item.id));
+  };
+  // fireTime and timeout
+  // now >fireTime + timeout;
   return <NotificationStack items={items} onClose={onClose} />;
 };
 
@@ -25,8 +29,6 @@ Basic.args = {
       title: 'Transaction approved',
       content: '',
       dataAttribute: '',
-      className: '',
-      timeout: 0,
       dismissible: true,
       id: 1,
     },
@@ -34,11 +36,17 @@ Basic.args = {
       type: NotificationType.warning,
       title: 'Contract is paused',
       dataAttribute: '',
-      className: 'mt-4',
       content: 'test',
-      timeout: 0,
       dismissible: true,
       id: 2,
+    },
+    {
+      type: NotificationType.warning,
+      title: 'Contract is paused',
+      dataAttribute: '',
+      content: 'test test',
+      dismissible: true,
+      id: 3,
     },
   ],
 };

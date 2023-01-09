@@ -68,7 +68,7 @@ const ConvertPage: FC = () => {
       <Heading>{t(pageTranslations.title)}</Heading>
       <Paragraph className="mt-4">{t(pageTranslations.subtitle)}</Paragraph>
 
-      <div className="mt-12 border border-gray-50 rounded w-[23.625rem] p-6 bg-gray-90">
+      <div className="mt-12 border border-gray-50 rounded w-[28rem] p-6 bg-gray-90">
         <div className="bg-gray-80 rounded p-6">
           <div className="w-full flex flex-row justify-between items-center">
             <Paragraph size={ParagraphSize.base}>
@@ -84,13 +84,15 @@ const ConvertPage: FC = () => {
             </button>
           </div>
 
-          <div className="w-full flex flex-row justify-between items-center gap-3 mt-3.5">
+          <div className="w-full flex flex-row justify-between items-center gap-3  mt-3.5">
             <AmountInput
               value={sourceAmount}
               onChangeText={setSourceAmount}
               maxAmount={MAX_CONVERT_VALUE}
               label={t(commonTranslations.amount)}
               tooltip={t(pageTranslations.form.sourceAmountTooltip)}
+              min={0}
+              decimalPrecision={1}
               className="w-full flex-grow-0 flex-shrink"
             />
             <Select
@@ -121,6 +123,7 @@ const ConvertPage: FC = () => {
               onChangeText={setDestinationAmount}
               label={t(commonTranslations.amount)}
               tooltip={t(pageTranslations.form.destinationAmountTooltip)}
+              readOnly
               className="w-full flex-grow-0 flex-shrink"
             />
             <Select

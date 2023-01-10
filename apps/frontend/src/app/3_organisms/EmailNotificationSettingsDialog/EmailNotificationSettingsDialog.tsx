@@ -48,7 +48,7 @@ type EmailNotificationSettingsDialogProps = {
 const EmailNotificationSettingsDialogComponent: React.FC<
   EmailNotificationSettingsDialogProps
 > = ({ isOpen, onClose }) => {
-  const { account, provider } = useAccount();
+  const { account, eip1193Provider: provider } = useAccount();
   const { t } = useTranslation();
 
   const [notificationToken, setNotificationToken] = useState<string | null>(

@@ -28,7 +28,6 @@ import { TransactionStepDialog } from '../../3_organisms';
 import { Transaction } from '../../3_organisms/TransactionStepDialog/TransactionStepDialog.types';
 import { defaultChainId } from '../../../config/chains';
 import { useTransactionContext } from '../../../contexts/TransactionContext';
-import { useWalletConnect } from '../../../hooks';
 import { useAccount } from '../../../hooks/useAccount';
 import { useAssetBalance } from '../../../hooks/useAssetBalance';
 import { translations } from '../../../locales/i18n';
@@ -52,8 +51,7 @@ const pageTranslations = translations.convertPage;
 
 const ConvertPage: FC = () => {
   const { t } = useTranslation();
-  const { wallets } = useWalletConnect();
-  const { account } = useAccount();
+  const { account, signer } = useAccount();
 
   const [sourceAmount, setSourceAmount] = useState('0');
   const [sourceToken, setSourceToken] = useState<SupportedTokens>(
@@ -103,7 +101,7 @@ const ConvertPage: FC = () => {
   const { setTransactions, setIsOpen, setTitle } = useTransactionContext();
 
   const dllrToBasset = useCallback(async () => {
-    if (!wallets[0].provider || sourceToken !== SupportedTokens.dllr) {
+    if (!signer || sourceToken !== SupportedTokens.dllr) {
       return;
     }
 
@@ -112,8 +110,6 @@ const ConvertPage: FC = () => {
       defaultChainId,
     );
 
-    const provider = new ethers.providers.Web3Provider(wallets[0].provider);
-    const signer = provider.getSigner();
     const massetManager = new ethers.Contract(address, abi, signer);
 
     const { address: destinationTokenAddress } = await getTokenDetails(
@@ -133,18 +129,18 @@ const ConvertPage: FC = () => {
     setTitle('DLLR to bAsset conversion');
     setIsOpen(true);
   }, [
-    wallets,
     sourceToken,
+    signer,
     destinationToken,
+    setTransactions,
     sourceAmount,
     account,
-    setTransactions,
     setTitle,
     setIsOpen,
   ]);
 
   const bassetToDllr = useCallback(async () => {
-    if (!wallets[0].provider || sourceToken === SupportedTokens.dllr) {
+    if (!signer || sourceToken === SupportedTokens.dllr) {
       return;
     }
 
@@ -153,8 +149,6 @@ const ConvertPage: FC = () => {
       defaultChainId,
     );
 
-    const provider = new ethers.providers.Web3Provider(wallets[0].provider);
-    const signer = provider.getSigner();
     const massetManager = new ethers.Contract(address, abi, signer);
 
     const { address: bassetAddress, abi: bassetAbi } = await getTokenDetails(
@@ -165,8 +159,6 @@ const ConvertPage: FC = () => {
     const bassetToken = new ethers.Contract(bassetAddress, bassetAbi, signer);
 
     const allowance = await bassetToken.allowance(account, address);
-
-    console.log(`allowance is: ${allowance}`);
 
     const transactions: Transaction[] = [];
 
@@ -190,10 +182,10 @@ const ConvertPage: FC = () => {
 
     setTransactions(transactions);
 
-    setTitle('DLLR to bAsset conversion');
+    setTitle('bAsset to DLLR conversion');
     setIsOpen(true);
   }, [
-    wallets,
+    signer,
     sourceToken,
     account,
     sourceAmount,

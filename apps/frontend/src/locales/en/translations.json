@@ -143,7 +143,13 @@
         "dialogTitle": "Notifications",
         "title": "Notifications on the status of your line of credit are sent to your email after you sign it with your wallet",
         "emailInputLabel": "Email address",
-        "emailInputPlaceholder": "Enter Email"
+        "emailInputPlaceholder": "Enter Email",
+        "alertGroups": {
+            "marginCallsToggle": "Margin call alerts",
+            "liquidationsToggle": "Liquidation alerts",
+            "stabilityPoolToggle": "Stability pool alerts",
+            "systemToggle": "System alerts"
+        }
     },
     "LOCStatus": {
         "withdrawalSurplus": "withdrawal surplus",

@@ -24,19 +24,28 @@ import {
   signMessage,
   validateEmail,
 } from '../../../utils/helpers';
-import { NotificationUser } from './EmailNotificationSettingsDialog.types';
-
-type EmailNotificationSettingsDialogProps = {
-  isOpen: boolean;
-  onClose: () => void;
-};
+import {
+  NotificationUser,
+  defaultSubscriptionsArray,
+} from './EmailNotificationSettingsDialog.types';
+import { Subscriptions } from './components/Subscriptions';
+import {
+  EmailNotificationSettingsContextProvider,
+  useEmailNotificationSettingsContext,
+} from './contexts/EmailNotificationSettingsContext';
+import { useHandleSubscriptions } from './hooks/useHandleSubscriptions';
 
 const servicesConfig = getServicesConfig();
 
 const notificationServiceUrl = servicesConfig.notification;
 const userEndpoint = `${notificationServiceUrl}user/`;
 
-export const EmailNotificationSettingsDialog: React.FC<
+type EmailNotificationSettingsDialogProps = {
+  isOpen: boolean;
+  onClose: () => void;
+};
+
+const EmailNotificationSettingsDialogComponent: React.FC<
   EmailNotificationSettingsDialogProps
 > = ({ isOpen, onClose }) => {
   const { account, provider } = useAccount();
@@ -54,6 +63,12 @@ export const EmailNotificationSettingsDialog: React.FC<
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState('');
 
+  const { subscriptions, haveSubscriptionsBeenUpdated } =
+    useEmailNotificationSettingsContext();
+
+  const { resetSubscriptions, parseSubscriptionsResponse } =
+    useHandleSubscriptions();
+
   const emailIsValid = useMemo(() => !email || validateEmail(email), [email]);
 
   const resetNotification = useCallback(() => {
@@ -61,7 +76,8 @@ export const EmailNotificationSettingsDialog: React.FC<
     setNotificationUser(null);
     setNotificationWallet(null);
     setEmail('');
-  }, []);
+    resetSubscriptions();
+  }, [resetSubscriptions]);
 
   const isSubmitDisabled = useMemo(
     () =>
@@ -69,8 +85,15 @@ export const EmailNotificationSettingsDialog: React.FC<
       !notificationToken ||
       !emailIsValid ||
       !email ||
-      email === notificationUser?.email,
-    [email, emailIsValid, loading, notificationToken, notificationUser?.email],
+      (email === notificationUser?.email && !haveSubscriptionsBeenUpdated),
+    [
+      email,
+      emailIsValid,
+      loading,
+      notificationToken,
+      notificationUser?.email,
+      haveSubscriptionsBeenUpdated,
+    ],
   );
 
   const shouldFetchToken = useMemo(
@@ -79,8 +102,8 @@ export const EmailNotificationSettingsDialog: React.FC<
   );
 
   const shouldFetchUser = useMemo(
-    () => notificationToken && isOpen && !notificationUser,
-    [isOpen, notificationToken, notificationUser],
+    () => notificationToken && isOpen,
+    [isOpen, notificationToken],
   );
 
   const wasAccountDisconnected = useMemo(
@@ -129,6 +152,9 @@ export const EmailNotificationSettingsDialog: React.FC<
             signedMessage,
             message,
             walletAddress: account,
+            ...(alreadyUser
+              ? ''
+              : { subscriptions: defaultSubscriptionsArray }),
           })
           .then(res => {
             if (res.data && res.data.token) {
@@ -150,6 +176,7 @@ export const EmailNotificationSettingsDialog: React.FC<
           if (result.data) {
             setNotificationUser(result.data);
             setEmail(result.data?.email);
+            parseSubscriptionsResponse(result.data?.subscriptions);
           }
         })
         .catch(error => {
@@ -160,7 +187,7 @@ export const EmailNotificationSettingsDialog: React.FC<
         })
         .finally(() => setLoading(false));
     },
-    [getToken],
+    [getToken, parseSubscriptionsResponse],
   );
 
   const getUser = useCallback(() => {
@@ -202,6 +229,7 @@ export const EmailNotificationSettingsDialog: React.FC<
       {
         walletAddress: account,
         email: email || undefined,
+        subscriptions: subscriptions,
       },
       {
         headers: {
@@ -211,7 +239,13 @@ export const EmailNotificationSettingsDialog: React.FC<
     );
 
     handleUserDataResponse(promise);
-  }, [account, email, handleUserDataResponse, notificationToken]);
+  }, [
+    account,
+    email,
+    handleUserDataResponse,
+    notificationToken,
+    subscriptions,
+  ]);
 
   const onCloseHandler = useCallback(() => {
     setEmail(notificationUser?.email || '');
@@ -242,9 +276,8 @@ export const EmailNotificationSettingsDialog: React.FC<
               disabled={loading || !notificationToken}
             />
           </FormGroup>
-          <div className="bg-gray-80 rounded p-4">
-            A placeholder for toggle switch buttons
-          </div>
+
+          <Subscriptions />
         </div>
 
         <div className="mt-4 flex justify-between">
@@ -265,3 +298,14 @@ export const EmailNotificationSettingsDialog: React.FC<
     </Dialog>
   );
 };
+
+export const EmailNotificationSettingsDialog: React.FC<
+  EmailNotificationSettingsDialogProps
+> = ({ isOpen, onClose }) => (
+  <EmailNotificationSettingsContextProvider>
+    <EmailNotificationSettingsDialogComponent
+      isOpen={isOpen}
+      onClose={onClose}
+    />
+  </EmailNotificationSettingsContextProvider>
+);

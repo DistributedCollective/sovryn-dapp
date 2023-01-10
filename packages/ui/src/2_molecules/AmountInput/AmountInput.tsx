@@ -14,7 +14,7 @@ import { InputBase } from '../../1_atoms/InputBase/InputBase';
 import { HelperButton } from '../HelperButton/HelperButton';
 import styles from './AmountInput.module.css';
 
-const DEFAULT_DECIMAL_PRECISION = 18;
+const MAX_DECIMALS = 18;
 const MAX_VALUE = 999999999;
 
 export enum AmountInputVariant {
@@ -43,7 +43,7 @@ export const AmountInput = React.forwardRef<HTMLInputElement, AmountInputProps>(
       tooltip,
       variant = AmountInputVariant.large,
       useAmountButtons = false,
-      decimalPrecision = DEFAULT_DECIMAL_PRECISION,
+      decimalPrecision = MAX_DECIMALS,
       unit,
       maxAmount,
       label,
@@ -67,28 +67,29 @@ export const AmountInput = React.forwardRef<HTMLInputElement, AmountInputProps>(
         if (!value) {
           return '0';
         }
-        const { language } = navigator;
 
-        let unformattedNumberValue = Number(value);
+        let unformattedNumberValue = String(value);
 
-        if (maxAmount && unformattedNumberValue > maxAmount) {
-          unformattedNumberValue = maxAmount;
+        if (maxAmount && Number(unformattedNumberValue) > maxAmount) {
+          unformattedNumberValue = String(maxAmount);
         }
 
-        if (unformattedNumberValue >= MAX_VALUE + 1) {
-          unformattedNumberValue = MAX_VALUE;
+        if (Number(unformattedNumberValue) >= MAX_VALUE + 1) {
+          unformattedNumberValue = String(MAX_VALUE);
         }
 
-        if (rest?.min && unformattedNumberValue < rest.min) {
-          unformattedNumberValue = Number(rest.min);
+        if (rest?.min && Number(unformattedNumberValue) < Number(rest.min)) {
+          unformattedNumberValue = String(rest.min);
         }
 
-        return unformattedNumberValue
-          .toLocaleString(language, {
-            maximumFractionDigits: decimalPrecision,
-            useGrouping: false,
-          })
-          .replace(',', '.');
+        const [integerPart] = unformattedNumberValue.split('.');
+
+        const decimals = Math.min(decimalPrecision, MAX_DECIMALS);
+
+        return String(unformattedNumberValue).slice(
+          0,
+          integerPart.length + decimals + 1,
+        );
       },
       [decimalPrecision, maxAmount, rest.min],
     );

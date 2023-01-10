@@ -1,15 +1,9 @@
 import React, { FC, useCallback, useMemo, useState } from 'react';
 import { useEffect } from 'react';
 
-import { BigNumber, ethers } from 'ethers';
 import { useTranslation } from 'react-i18next';
 
-import {
-  SupportedTokenList,
-  SupportedTokens,
-  getProtocolContract,
-  getTokenDetails,
-} from '@sovryn/contracts';
+import { SupportedTokens } from '@sovryn/contracts';
 import {
   AmountInput,
   Button,
@@ -21,69 +15,50 @@ import {
   Paragraph,
   ParagraphSize,
   Select,
-  SelectOption,
 } from '@sovryn/ui';
 
 import { TransactionStepDialog } from '../../3_organisms';
-import { Transaction } from '../../3_organisms/TransactionStepDialog/TransactionStepDialog.types';
-import { defaultChainId } from '../../../config/chains';
-import { useTransactionContext } from '../../../contexts/TransactionContext';
-import { useAccount } from '../../../hooks/useAccount';
 import { useAssetBalance } from '../../../hooks/useAssetBalance';
 import { translations } from '../../../locales/i18n';
-import { formatValue, fromWei, toWei } from '../../../utils/math';
-
-const allowedTokens = [
-  SupportedTokens.dllr,
-  SupportedTokens.zusd,
-  SupportedTokens.doc,
-];
-
-const tokens: SelectOption<SupportedTokens>[] = SupportedTokenList.filter(
-  item => allowedTokens.includes(item.symbol),
-).map(token => ({
-  value: token.symbol,
-  label: token.symbol.toUpperCase(),
-}));
+import { formatValue, fromWei } from '../../../utils/math';
+import { tokenOptions } from './ConvertPage.types';
+import { useHandleSubmit } from './hooks/useHandleSubmit';
 
 const commonTranslations = translations.common;
 const pageTranslations = translations.convertPage;
 
 const ConvertPage: FC = () => {
   const { t } = useTranslation();
-  const { account, signer } = useAccount();
 
-  const [sourceAmount, setSourceAmount] = useState('0');
+  const [amount, setAmount] = useState('0');
   const [sourceToken, setSourceToken] = useState<SupportedTokens>(
     SupportedTokens.dllr,
   );
 
   const destinationTokenOptions = useMemo(
-    () => tokens.filter(item => item.value !== sourceToken),
+    () => tokenOptions.filter(item => item.value !== sourceToken),
     [sourceToken],
   );
 
-  const [destinationAmount, setDestinationAmount] = useState('0');
   const [destinationToken, setDestinationToken] = useState<SupportedTokens>(
     destinationTokenOptions[0].value,
   );
 
-  const maxSourceAmountWei = useAssetBalance(sourceToken).value;
-  const maxSourceAmount = useMemo(
-    () => fromWei(maxSourceAmountWei),
-    [maxSourceAmountWei],
+  const sourceTokenBalanceWei = useAssetBalance(sourceToken).value;
+  const sourceTokenBalance = useMemo(
+    () => fromWei(sourceTokenBalanceWei),
+    [sourceTokenBalanceWei],
   );
 
-  const onMaximumSourceAmountClick = useCallback(
-    () => setSourceAmount(maxSourceAmount),
-    [maxSourceAmount],
+  const onMaximumAmountClick = useCallback(
+    () => setAmount(sourceTokenBalance),
+    [sourceTokenBalance],
   );
 
   const onSwitchClick = useCallback(() => {
     setDestinationToken(sourceToken);
     setSourceToken(destinationToken);
-    setSourceAmount('0');
-    setDestinationAmount('0');
+    setAmount('0');
   }, [destinationToken, sourceToken]);
 
   useEffect(() => {
@@ -92,110 +67,7 @@ const ConvertPage: FC = () => {
     }
   }, [destinationToken, destinationTokenOptions, sourceToken]);
 
-  const { setTransactions, setIsOpen, setTitle } = useTransactionContext();
-
-  const dllrToBasset = useCallback(async () => {
-    if (!signer || sourceToken !== SupportedTokens.dllr) {
-      return;
-    }
-
-    const { address, abi } = await getProtocolContract(
-      'massetManager',
-      defaultChainId,
-    );
-
-    const massetManager = new ethers.Contract(address, abi, signer);
-
-    const { address: destinationTokenAddress } = await getTokenDetails(
-      destinationToken,
-      defaultChainId,
-    );
-
-    setTransactions([
-      {
-        title: 'Redeem DLLR for bAsset',
-        contract: massetManager,
-        fnName: 'redeemTo',
-        args: [destinationTokenAddress, toWei(sourceAmount), account],
-      },
-    ]);
-
-    setTitle('DLLR to bAsset conversion');
-    setIsOpen(true);
-  }, [
-    sourceToken,
-    signer,
-    destinationToken,
-    setTransactions,
-    sourceAmount,
-    account,
-    setTitle,
-    setIsOpen,
-  ]);
-
-  const bassetToDllr = useCallback(async () => {
-    if (!signer || sourceToken === SupportedTokens.dllr) {
-      return;
-    }
-
-    const { address, abi } = await getProtocolContract(
-      'massetManager',
-      defaultChainId,
-    );
-
-    const massetManager = new ethers.Contract(address, abi, signer);
-
-    const { address: bassetAddress, abi: bassetAbi } = await getTokenDetails(
-      sourceToken,
-      defaultChainId,
-    );
-
-    const bassetToken = new ethers.Contract(bassetAddress, bassetAbi, signer);
-
-    const allowance = await bassetToken.allowance(account, address);
-
-    const transactions: Transaction[] = [];
-
-    const weiSourceAmount = toWei(sourceAmount);
-
-    if (BigNumber.from(allowance).lt(weiSourceAmount)) {
-      transactions.push({
-        title: 'Approve',
-        contract: bassetToken,
-        fnName: 'approve',
-        args: [address, weiSourceAmount],
-      });
-    }
-
-    transactions.push({
-      title: 'Deposit bAsset for DLLR',
-      contract: massetManager,
-      fnName: 'mintTo',
-      args: [bassetAddress, toWei(sourceAmount), account],
-    });
-
-    setTransactions(transactions);
-
-    setTitle('bAsset to DLLR conversion');
-    setIsOpen(true);
-  }, [
-    signer,
-    sourceToken,
-    account,
-    sourceAmount,
-    setTransactions,
-    setTitle,
-    setIsOpen,
-  ]);
-
-  const handleSubmit = useCallback(() => {
-    sourceToken === SupportedTokens.dllr ? dllrToBasset() : bassetToDllr();
-  }, [bassetToDllr, dllrToBasset, sourceToken]);
-
-  const handleSourceAmountChange = useCallback((value: string) => {
-    setSourceAmount(value);
-    setDestinationAmount(value); // this could potentially change in the future if we have different conversion rates than 1:1
-  }, []);
+  const handleSubmit = useHandleSubmit(sourceToken, destinationToken, amount);
 
   return (
     <div className="w-full flex flex-col items-center mt-24">
@@ -210,20 +82,20 @@ const ConvertPage: FC = () => {
             </Paragraph>
 
             <button
-              onClick={onMaximumSourceAmountClick}
+              onClick={onMaximumAmountClick}
               className="text-gray-20 text-xs font-medium underline whitespace-nowrap"
             >
               ({t(commonTranslations.max)}{' '}
-              {formatValue(Number(maxSourceAmount), 4)}{' '}
+              {formatValue(Number(sourceTokenBalance), 4)}{' '}
               {sourceToken.toUpperCase()})
             </button>
           </div>
 
           <div className="w-full flex flex-row justify-between items-center gap-3  mt-3.5">
             <AmountInput
-              value={sourceAmount}
-              onChangeText={handleSourceAmountChange}
-              maxAmount={Number(maxSourceAmount)}
+              value={amount}
+              onChangeText={setAmount}
+              maxAmount={Number(sourceTokenBalance)}
               label={t(commonTranslations.amount)}
               tooltip={t(pageTranslations.form.sourceAmountTooltip)}
               min={0}
@@ -233,7 +105,7 @@ const ConvertPage: FC = () => {
             <Select
               value={sourceToken}
               onChange={setSourceToken}
-              options={tokens}
+              options={tokenOptions}
             />
           </div>
         </div>
@@ -254,7 +126,7 @@ const ConvertPage: FC = () => {
 
           <div className="w-full flex flex-row justify-between items-center gap-3 mt-3.5">
             <AmountInput
-              value={destinationAmount}
+              value={amount}
               label={t(commonTranslations.amount)}
               tooltip={t(pageTranslations.form.destinationAmountTooltip)}
               readOnly

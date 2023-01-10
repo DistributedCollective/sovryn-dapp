@@ -67,9 +67,7 @@ export const InputBase = React.forwardRef<HTMLInputElement, InputBaseProps>(
 
     // updating value if it was changed by parent component
     useEffect(() => {
-      if (shouldAllowChanges) {
-        setRenderedValue(value as string);
-      }
+      setRenderedValue(value as string);
     }, [shouldAllowChanges, value]);
 
     return (

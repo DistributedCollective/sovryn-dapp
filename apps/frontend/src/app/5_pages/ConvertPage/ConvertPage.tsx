@@ -87,12 +87,6 @@ const ConvertPage: FC = () => {
   }, [destinationToken, sourceToken]);
 
   useEffect(() => {
-    if (sourceAmount !== '0') {
-      setDestinationAmount(sourceAmount);
-    }
-  }, [sourceAmount]);
-
-  useEffect(() => {
     if (sourceToken === destinationToken) {
       setDestinationToken(destinationTokenOptions[0].value);
     }
@@ -198,6 +192,11 @@ const ConvertPage: FC = () => {
     sourceToken === SupportedTokens.dllr ? dllrToBasset() : bassetToDllr();
   }, [bassetToDllr, dllrToBasset, sourceToken]);
 
+  const handleSourceAmountChange = useCallback((value: string) => {
+    setSourceAmount(value);
+    setDestinationAmount(value); // this could potentially change in the future if we have different conversion rates than 1:1
+  }, []);
+
   return (
     <div className="w-full flex flex-col items-center mt-24">
       <Heading>{t(pageTranslations.title)}</Heading>
@@ -223,7 +222,7 @@ const ConvertPage: FC = () => {
           <div className="w-full flex flex-row justify-between items-center gap-3  mt-3.5">
             <AmountInput
               value={sourceAmount}
-              onChangeText={setSourceAmount}
+              onChangeText={handleSourceAmountChange}
               maxAmount={Number(maxSourceAmount)}
               label={t(commonTranslations.amount)}
               tooltip={t(pageTranslations.form.sourceAmountTooltip)}
@@ -256,7 +255,6 @@ const ConvertPage: FC = () => {
           <div className="w-full flex flex-row justify-between items-center gap-3 mt-3.5">
             <AmountInput
               value={destinationAmount}
-              onChangeText={setDestinationAmount}
               label={t(commonTranslations.amount)}
               tooltip={t(pageTranslations.form.destinationAmountTooltip)}
               readOnly

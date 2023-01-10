@@ -110,24 +110,38 @@ export const DebugContent = () => {
       open={isOpen}
       onClick={toggle}
     >
-      <Button
-        onClick={() =>
-          addNotification(
-            {
-              type: NotificationType.success,
-              title: 'Transaction approved' + Math.floor(Math.random() * 1000),
+      <div className="flex itmes-center gap-4 mt-4">
+        <Button
+          onClick={() =>
+            addNotification(
+              {
+                type: NotificationType.success,
+                title:
+                  'Transaction approved ' + Math.floor(Math.random() * 1000),
+                content: '',
+                dismissible: true,
+                id: Math.floor(Math.random() * 1000),
+              },
+              0,
+            )
+          }
+          text="Add Notifcation"
+        />
+
+        <Button
+          onClick={() =>
+            addNotification({
+              type: NotificationType.error,
+              title: 'Transaction error ' + Math.floor(Math.random() * 1000),
               content: '',
-              dataAttribute: '',
-              className: '',
               dismissible: true,
               id: Math.floor(Math.random() * 1000),
-            },
-            0,
-          )
-        }
-        className="mt-4"
-        text="Add Notifcation"
-      />
+            })
+          }
+          text="Add Notifcation With Timer"
+        />
+      </div>
+
       <div className="mt-5 py-10 border-b">
         <AmountInput
           className="mb-2"

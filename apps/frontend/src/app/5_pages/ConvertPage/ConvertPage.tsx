@@ -18,10 +18,12 @@ import {
 } from '@sovryn/ui';
 
 import { TransactionStepDialog } from '../../3_organisms';
-import { useAssetBalance } from '../../../hooks/useAssetBalance';
+import { useAccount } from '../../../hooks/useAccount';
 import { translations } from '../../../locales/i18n';
-import { formatValue, fromWei } from '../../../utils/math';
+import { formatValue } from '../../../utils/math';
 import { tokenOptions } from './ConvertPage.types';
+import { useGetDefaultSourceToken } from './hooks/useGetDefaultSourceToken';
+import { useGetSourceTokenBalance } from './hooks/useGetSourceTokenBalance';
 import { useHandleSubmit } from './hooks/useHandleSubmit';
 
 const commonTranslations = translations.common;
@@ -29,11 +31,13 @@ const pageTranslations = translations.convertPage;
 
 const ConvertPage: FC = () => {
   const { t } = useTranslation();
+  const { account } = useAccount();
+
+  const defaultSourceToken = useGetDefaultSourceToken();
 
   const [amount, setAmount] = useState('0');
-  const [sourceToken, setSourceToken] = useState<SupportedTokens>(
-    SupportedTokens.dllr,
-  );
+  const [sourceToken, setSourceToken] =
+    useState<SupportedTokens>(defaultSourceToken);
 
   const destinationTokenOptions = useMemo(
     () => tokenOptions.filter(item => item.value !== sourceToken),
@@ -44,11 +48,7 @@ const ConvertPage: FC = () => {
     destinationTokenOptions[0].value,
   );
 
-  const sourceTokenBalanceWei = useAssetBalance(sourceToken).value;
-  const sourceTokenBalance = useMemo(
-    () => fromWei(sourceTokenBalanceWei),
-    [sourceTokenBalanceWei],
-  );
+  const sourceTokenBalance = useGetSourceTokenBalance(sourceToken);
 
   const onMaximumAmountClick = useCallback(
     () => setAmount(sourceTokenBalance),
@@ -61,13 +61,31 @@ const ConvertPage: FC = () => {
     setAmount('0');
   }, [destinationToken, sourceToken]);
 
+  const onSourceTokenChange = useCallback((value: SupportedTokens) => {
+    setSourceToken(value);
+    setAmount('0');
+  }, []);
+
   useEffect(() => {
     if (sourceToken === destinationToken) {
       setDestinationToken(destinationTokenOptions[0].value);
     }
   }, [destinationToken, destinationTokenOptions, sourceToken]);
 
+  useEffect(() => {
+    setSourceToken(defaultSourceToken);
+  }, [defaultSourceToken]);
+
   const handleSubmit = useHandleSubmit(sourceToken, destinationToken, amount);
+
+  const isSubmitDisabled = useMemo(
+    () =>
+      !account ||
+      !amount ||
+      Number(amount) <= 0 ||
+      Number(amount) > Number(sourceTokenBalance),
+    [account, amount, sourceTokenBalance],
+  );
 
   return (
     <div className="w-full flex flex-col items-center mt-24">
@@ -104,7 +122,7 @@ const ConvertPage: FC = () => {
             />
             <Select
               value={sourceToken}
-              onChange={setSourceToken}
+              onChange={onSourceTokenChange}
               options={tokenOptions}
             />
           </div>
@@ -145,6 +163,7 @@ const ConvertPage: FC = () => {
           style={ButtonStyle.primary}
           text={t(commonTranslations.buttons.confirm)}
           className="w-full mt-8"
+          disabled={isSubmitDisabled}
           onClick={handleSubmit}
         />
       </div>

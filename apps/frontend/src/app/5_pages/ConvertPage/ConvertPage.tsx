@@ -1,7 +1,7 @@
 import React, { FC, useCallback, useMemo, useState } from 'react';
 import { useEffect } from 'react';
 
-import { ethers } from 'ethers';
+import { BigNumber, ethers } from 'ethers';
 import { useTranslation } from 'react-i18next';
 
 import {
@@ -25,6 +25,7 @@ import {
 } from '@sovryn/ui';
 
 import { TransactionStepDialog } from '../../3_organisms';
+import { Transaction } from '../../3_organisms/TransactionStepDialog/TransactionStepDialog.types';
 import { defaultChainId } from '../../../config/chains';
 import { useTransactionContext } from '../../../contexts/TransactionContext';
 import { useWalletConnect } from '../../../hooks';
@@ -142,6 +143,69 @@ const ConvertPage: FC = () => {
     setIsOpen,
   ]);
 
+  const bassetToDllr = useCallback(async () => {
+    if (!wallets[0].provider || sourceToken === SupportedTokens.dllr) {
+      return;
+    }
+
+    const { address, abi } = await getProtocolContract(
+      'massetManager',
+      defaultChainId,
+    );
+
+    const provider = new ethers.providers.Web3Provider(wallets[0].provider);
+    const signer = provider.getSigner();
+    const massetManager = new ethers.Contract(address, abi, signer);
+
+    const { address: bassetAddress, abi: bassetAbi } = await getTokenDetails(
+      sourceToken,
+      defaultChainId,
+    );
+
+    const bassetToken = new ethers.Contract(bassetAddress, bassetAbi, signer);
+
+    const allowance = await bassetToken.allowance(account, address);
+
+    console.log(`allowance is: ${allowance}`);
+
+    const transactions: Transaction[] = [];
+
+    const weiSourceAmount = toWei(sourceAmount);
+
+    if (BigNumber.from(allowance).lt(weiSourceAmount)) {
+      transactions.push({
+        title: 'Approve',
+        contract: bassetToken,
+        fnName: 'approve',
+        args: [address, weiSourceAmount],
+      });
+    }
+
+    transactions.push({
+      title: 'Deposit bAsset for DLLR',
+      contract: massetManager,
+      fnName: 'mintTo',
+      args: [bassetAddress, toWei(sourceAmount), account],
+    });
+
+    setTransactions(transactions);
+
+    setTitle('DLLR to bAsset conversion');
+    setIsOpen(true);
+  }, [
+    wallets,
+    sourceToken,
+    account,
+    sourceAmount,
+    setTransactions,
+    setTitle,
+    setIsOpen,
+  ]);
+
+  const handleSubmit = useCallback(() => {
+    sourceToken === SupportedTokens.dllr ? dllrToBasset() : bassetToDllr();
+  }, [bassetToDllr, dllrToBasset, sourceToken]);
+
   return (
     <div className="w-full flex flex-col items-center mt-24">
       <Heading>{t(pageTranslations.title)}</Heading>
@@ -219,7 +283,7 @@ const ConvertPage: FC = () => {
           style={ButtonStyle.primary}
           text={t(commonTranslations.buttons.confirm)}
           className="w-full mt-8"
-          onClick={dllrToBasset}
+          onClick={handleSubmit}
         />
       </div>
       <TransactionStepDialog />

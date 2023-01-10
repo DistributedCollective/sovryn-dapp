@@ -21,6 +21,7 @@ import {
   Paragraph,
   ParagraphSize,
   Select,
+  SelectOption,
 } from '@sovryn/ui';
 
 import { TransactionStepDialog } from '../../3_organisms';
@@ -38,8 +39,8 @@ const allowedTokens = [
   SupportedTokens.doc,
 ];
 
-const tokens = SupportedTokenList.filter(item =>
-  allowedTokens.includes(item.symbol),
+const tokens: SelectOption<SupportedTokens>[] = SupportedTokenList.filter(
+  item => allowedTokens.includes(item.symbol),
 ).map(token => ({
   value: token.symbol,
   label: token.symbol.toUpperCase(),
@@ -57,9 +58,15 @@ const ConvertPage: FC = () => {
   const [sourceToken, setSourceToken] = useState<SupportedTokens>(
     SupportedTokens.dllr,
   );
+
+  const destinationTokenOptions = useMemo(
+    () => tokens.filter(item => item.value !== sourceToken),
+    [sourceToken],
+  );
+
   const [destinationAmount, setDestinationAmount] = useState('0');
   const [destinationToken, setDestinationToken] = useState<SupportedTokens>(
-    SupportedTokens.dllr,
+    destinationTokenOptions[0].value,
   );
 
   const maxSourceAmountWei = useAssetBalance(sourceToken).value;
@@ -85,6 +92,12 @@ const ConvertPage: FC = () => {
       setDestinationAmount(sourceAmount);
     }
   }, [sourceAmount]);
+
+  useEffect(() => {
+    if (sourceToken === destinationToken) {
+      setDestinationToken(destinationTokenOptions[0].value);
+    }
+  }, [destinationToken, destinationTokenOptions, sourceToken]);
 
   const { setTransactions, setIsOpen, setTitle } = useTransactionContext();
 
@@ -196,7 +209,7 @@ const ConvertPage: FC = () => {
             <Select
               value={destinationToken}
               onChange={setDestinationToken}
-              options={tokens}
+              options={destinationTokenOptions}
             />
           </div>
         </div>

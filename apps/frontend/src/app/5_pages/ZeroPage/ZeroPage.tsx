@@ -15,6 +15,7 @@ import {
   noop,
 } from '@sovryn/ui';
 
+import { LOCChart } from '../../3_organisms/LOCChart/LOCChart';
 import { AdjustCreditLine } from '../../3_organisms/ZeroLocForm/AdjustCreditLine';
 import { CloseCreditLine } from '../../3_organisms/ZeroLocForm/CloseCreditLine';
 import { useWalletConnect } from '../../../hooks';
@@ -86,6 +87,7 @@ export const ZeroPage: FC = () => {
       ) : (
         <Button text="Connect first...." onClick={connectWallet} />
       )}
+      <LOCChart />
 
       <Dialog width={DialogSize.sm} isOpen={open} disableFocusTrap>
         <DialogHeader title="Adjust" onClose={toggle} />

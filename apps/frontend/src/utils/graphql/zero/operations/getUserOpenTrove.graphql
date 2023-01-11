@@ -1,0 +1,21 @@
+query getUserOpenTrove($user: ID!) {
+  trove(id: $user) {
+    changes(
+      where: { troveOperation: openTrove }
+      orderBy: sequenceNumber
+      orderDirection: desc
+    ) {
+      id
+      sequenceNumber
+      transaction {
+        id
+        sequenceNumber
+      }
+      trove {
+        collateralRatioSortKey
+        collateral
+        debt
+      }
+    }
+  }
+}

@@ -151,6 +151,14 @@
             "systemToggle": "System alerts"
         }
     },
+    "chart": {
+        "collateralRatio": "Collateral ratio",
+        "myCollateralRatio": "My Collateral ratio",
+        "collateralAmount": "Collateral Amount",
+        "debtAmount": "Debt Amount",
+        "redemptionBuffer": "Redemption Buffer",
+        "noData": "No data"
+    },
     "LOCStatus": {
         "withdrawalSurplus": "withdrawal surplus",
         "currentCollateral": "Current collateral",

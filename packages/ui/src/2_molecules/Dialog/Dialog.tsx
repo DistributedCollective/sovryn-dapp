@@ -113,7 +113,11 @@ export const Dialog: IDialogFunctionComponent<DialogProps> = ({
             >
               {children}
               {buttonCloseText && (
-                <button onClick={handleClose} className={styles.buttonClose}>
+                <button
+                  onClick={handleClose}
+                  className={styles.buttonClose}
+                  {...applyDataAttr(`${dataAttribute}-close`)}
+                >
                   {buttonCloseText}
                 </button>
               )}

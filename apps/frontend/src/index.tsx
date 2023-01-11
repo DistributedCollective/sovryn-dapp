@@ -37,11 +37,11 @@ root.render(
         <MaintenanceModeContextProvider>
           <NotificationProvider>
             <RouterProvider router={router} />
-            <OnboardProvider />
+            <OnboardProvider dataAttribute="dapp-onboard" />
           </NotificationProvider>
         </MaintenanceModeContextProvider>
       </ApolloProvider>
     </TransactionProvider>
-    <OnboardProvider />
+    <OnboardProvider dataAttribute="dapp-onboard" />
   </React.StrictMode>,
 );

@@ -211,7 +211,7 @@
         "form": {
             "convertFrom": "Convert from",
             "sourceAmountTooltip": "Important info",
-            "convertTo": "Convert to"
+            "convertTo": "To"
         }
     }
 }

@@ -21,7 +21,7 @@ import { TransactionStepDialog } from '../../3_organisms';
 import { useAccount } from '../../../hooks/useAccount';
 import { translations } from '../../../locales/i18n';
 import { formatValue } from '../../../utils/math';
-import { tokenOptions } from './ConvertPage.types';
+import { bassets, tokenOptions } from './ConvertPage.types';
 import { useGetDefaultSourceToken } from './hooks/useGetDefaultSourceToken';
 import { useGetSourceTokenBalance } from './hooks/useGetSourceTokenBalance';
 import { useHandleSubmit } from './hooks/useHandleSubmit';
@@ -39,10 +39,18 @@ const ConvertPage: FC = () => {
   const [sourceToken, setSourceToken] =
     useState<SupportedTokens>(defaultSourceToken);
 
-  const destinationTokenOptions = useMemo(
+  const tokenOptionsWithoutSourceToken = useMemo(
     () => tokenOptions.filter(item => item.value !== sourceToken),
     [sourceToken],
   );
+
+  const [destinationTokenOptions, setDestinationTokenOptions] = useState(
+    tokenOptionsWithoutSourceToken,
+  );
+
+  useEffect(() => {
+    setDestinationTokenOptions(tokenOptionsWithoutSourceToken);
+  }, [tokenOptionsWithoutSourceToken]);
 
   const [destinationToken, setDestinationToken] = useState<SupportedTokens>(
     destinationTokenOptions[0].value,
@@ -68,13 +76,30 @@ const ConvertPage: FC = () => {
 
   useEffect(() => {
     if (sourceToken === destinationToken) {
-      setDestinationToken(destinationTokenOptions[0].value);
+      if (destinationTokenOptions.length === 1) {
+        setDestinationTokenOptions(tokenOptionsWithoutSourceToken);
+      }
+      setDestinationToken(tokenOptionsWithoutSourceToken[0].value);
     }
-  }, [destinationToken, destinationTokenOptions, sourceToken]);
+  }, [
+    destinationToken,
+    destinationTokenOptions,
+    sourceToken,
+    tokenOptionsWithoutSourceToken,
+  ]);
 
   useEffect(() => {
     setSourceToken(defaultSourceToken);
   }, [defaultSourceToken]);
+
+  useEffect(() => {
+    if (bassets.includes(sourceToken)) {
+      setDestinationToken(SupportedTokens.dllr);
+      setDestinationTokenOptions(
+        tokenOptions.filter(item => item.value === SupportedTokens.dllr),
+      );
+    }
+  }, [sourceToken]);
 
   const handleSubmit = useHandleSubmit(sourceToken, destinationToken, amount);
 
@@ -117,7 +142,6 @@ const ConvertPage: FC = () => {
               label={t(commonTranslations.amount)}
               tooltip={t(pageTranslations.form.sourceAmountTooltip)}
               min={0}
-              decimalPrecision={1}
               className="w-full flex-grow-0 flex-shrink"
             />
             <Select
@@ -146,7 +170,6 @@ const ConvertPage: FC = () => {
             <AmountInput
               value={amount}
               label={t(commonTranslations.amount)}
-              tooltip={t(pageTranslations.form.destinationAmountTooltip)}
               readOnly
               className="w-full flex-grow-0 flex-shrink"
             />

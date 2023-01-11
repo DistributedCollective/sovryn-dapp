@@ -17,6 +17,7 @@ import {
   Select,
 } from '@sovryn/ui';
 
+import { AssetRenderer } from '../../2_molecules/AssetRenderer/AssetRenderer';
 import { TransactionStepDialog } from '../../3_organisms';
 import { useAccount } from '../../../hooks/useAccount';
 import { translations } from '../../../locales/i18n';
@@ -148,6 +149,10 @@ const ConvertPage: FC = () => {
               value={sourceToken}
               onChange={onSourceTokenChange}
               options={tokenOptions}
+              labelRenderer={() => (
+                <AssetRenderer showAssetLogo asset={sourceToken} />
+              )}
+              className="min-w-min"
             />
           </div>
         </div>
@@ -177,6 +182,10 @@ const ConvertPage: FC = () => {
               value={destinationToken}
               onChange={setDestinationToken}
               options={destinationTokenOptions}
+              labelRenderer={() => (
+                <AssetRenderer showAssetLogo asset={destinationToken} />
+              )}
+              className="min-w-min"
             />
           </div>
         </div>

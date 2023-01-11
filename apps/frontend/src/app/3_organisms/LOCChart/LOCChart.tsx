@@ -20,8 +20,14 @@ import { translations } from '../../../locales/i18n';
 import { formatValue } from '../../../utils/math';
 import { useGetRBTCPrice } from './hooks/useGetRBTCPrice';
 import { useGetTroves } from './hooks/useGetTroves';
+import { useGetTrovesPositions } from './hooks/useGetTrovesPositions';
 import { useGetUserOpenTrove } from './hooks/useGetUserOpenTrove';
-import { ChartDataStructure, ChartSortingType, TroveData } from './types';
+import {
+  ChartDataStructure,
+  ChartSortingType,
+  TroveData,
+  TrovesFilterType,
+} from './types';
 import { calculateCollateralRatio, chartConfig, sortData } from './utils';
 
 ChartJS.register(
@@ -44,7 +50,8 @@ ChartJS.register(
  * Process of getting data:
  * 1. Getting User Open Trove data
  * 2. Setting activeBar for chart (for highlighting User Open Trove)
- * 3. Getting 20 first troves with open status
+ * 3. Getting 20 first troves with open status if user not logged in,
+ *    otherwise getting 10 above and 10 below users LOC
  * 4. Calculating collateral ratio for each trove
  * 5. Sorting all troves by collateralRatio in ascending order
  * 6. Setting data for chart
@@ -57,6 +64,7 @@ export const LOCChart: FC = () => {
   const [data, setData] = useState<ChartDataStructure>([]);
   const [activeBar, setActiveBar] = useState<number | null>(null);
   const { price } = useGetRBTCPrice();
+  const [userCollateralRatio, setUserCollateralRatio] = useState('');
 
   const options = useMemo(() => {
     return {
@@ -181,6 +189,12 @@ export const LOCChart: FC = () => {
   const { data: userOpenTrove, loading: loadingUserOpenTrove } =
     useGetUserOpenTrove();
 
+  const { data: userOpenTroveAbove, loading: loadingUserOpenTroveAbove } =
+    useGetTrovesPositions(userCollateralRatio, TrovesFilterType.above);
+
+  const { data: userOpenTroveBelow, loading: loadingUserOpenTroveBelow } =
+    useGetTrovesPositions(userCollateralRatio, TrovesFilterType.below);
+
   const { data: troves, loading: loadingTroves } = useGetTroves();
 
   const datasets: ChartData<'bar', ChartDataStructure> = useMemo(() => {
@@ -202,9 +216,23 @@ export const LOCChart: FC = () => {
   }, [data, activeBar]);
 
   useEffect(() => {
-    if (userOpenTrove?.trove && !loadingUserOpenTrove && !activeBar) {
+    if (!loadingUserOpenTrove && userOpenTrove?.trove) {
+      const { trove } = userOpenTrove.trove.changes[0];
+      setUserCollateralRatio(trove.collateralRatioSortKey.toString());
+    }
+  }, [userOpenTrove, loadingUserOpenTrove]);
+
+  useEffect(() => {
+    if (
+      userCollateralRatio &&
+      userOpenTroveAbove &&
+      userOpenTroveBelow &&
+      !loadingUserOpenTroveAbove &&
+      !loadingUserOpenTroveBelow
+    ) {
       const { transaction, trove } = userOpenTrove.trove.changes[0];
-      setData([
+
+      const userTrove = [
         {
           sequenceNumber: trove.collateralRatioSortKey.toString(),
           tx: transaction.id,
@@ -216,17 +244,56 @@ export const LOCChart: FC = () => {
             price,
           ),
         },
-      ]);
+      ];
+
+      const trovesDataAbove = userOpenTroveAbove.troves.map(
+        ({ changes }: TroveData) => ({
+          sequenceNumber: changes[0].trove.collateralRatioSortKey.toString(),
+          tx: changes[0].transaction.id,
+          collateralAmount: changes[0].trove.collateral,
+          debtAmount: changes[0].trove.debt,
+          collateralRatio: calculateCollateralRatio(
+            changes[0].trove.collateral,
+            changes[0].trove.debt,
+            price,
+          ),
+        }),
+      );
+
+      const trovesDataBelow = userOpenTroveBelow.troves.map(
+        ({ changes }: TroveData) => ({
+          sequenceNumber: changes[0].trove.collateralRatioSortKey.toString(),
+          tx: changes[0].transaction.id,
+          collateralAmount: changes[0].trove.collateral,
+          debtAmount: changes[0].trove.debt,
+          collateralRatio: calculateCollateralRatio(
+            changes[0].trove.collateral,
+            changes[0].trove.debt,
+            price,
+          ),
+        }),
+      );
+
+      setData(sortData([...trovesDataBelow, ...userTrove, ...trovesDataAbove]));
 
       setActiveBar(
         calculateCollateralRatio(trove.collateral, trove.debt, price),
       );
     }
-  }, [userOpenTrove, loadingUserOpenTrove, price, activeBar]);
+  }, [
+    userOpenTrove,
+    userCollateralRatio,
+    userOpenTroveAbove,
+    userOpenTroveBelow,
+    loadingUserOpenTrove,
+    loadingUserOpenTroveAbove,
+    loadingUserOpenTroveBelow,
+    price,
+    activeBar,
+  ]);
 
   useEffect(() => {
-    if (!loadingTroves && troves && !loadingUserOpenTrove) {
-      const { trove } = userOpenTrove?.trove?.changes[0] || {};
+    if (!loadingTroves && troves && !loadingUserOpenTrove && !userOpenTrove) {
       const trovesData = troves.troves.map(({ changes }: TroveData) => ({
         sequenceNumber: changes[0].trove.collateralRatioSortKey.toString(),
         tx: changes[0].transaction.id,
@@ -239,7 +306,7 @@ export const LOCChart: FC = () => {
         ),
       }));
 
-      setData(sortData([trove, ...trovesData]));
+      setData(sortData([...trovesData]));
     }
   }, [price, troves, loadingTroves, userOpenTrove, loadingUserOpenTrove]);
 

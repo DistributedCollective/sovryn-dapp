@@ -83,11 +83,11 @@ export const ZeroPage: FC = () => {
             onClick={toggleClosePopup}
             className="mt-8 ml-4"
           />
-          <LOCChart />
         </>
       ) : (
         <Button text="Connect first...." onClick={connectWallet} />
       )}
+      <LOCChart />
 
       <Dialog width={DialogSize.sm} isOpen={open} disableFocusTrap>
         <DialogHeader title="Adjust" onClose={toggle} />

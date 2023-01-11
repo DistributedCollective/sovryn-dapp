@@ -25,3 +25,8 @@ export enum ChartSortingType {
   sequenceNumber = 'sequenceNumber',
   collateralRatio = 'collateralRatio',
 }
+
+export enum TrovesFilterType {
+  above = 'above',
+  below = 'below',
+}

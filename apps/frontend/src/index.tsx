@@ -42,6 +42,5 @@ root.render(
         </MaintenanceModeContextProvider>
       </ApolloProvider>
     </TransactionProvider>
-    <OnboardProvider dataAttribute="dapp-onboard" />
   </React.StrictMode>,
 );

@@ -23,7 +23,7 @@ import { translations } from '../../../locales/i18n';
 import { formatValue } from '../../../utils/math';
 import { bassets, tokenOptions } from './ConvertPage.types';
 import { useGetDefaultSourceToken } from './hooks/useGetDefaultSourceToken';
-import { useGetSourceTokenBalance } from './hooks/useGetSourceTokenBalance';
+import { useGetMaximumAvailableAmount } from './hooks/useGetMaximumAvailableAmount';
 import { useHandleSubmit } from './hooks/useHandleSubmit';
 
 const commonTranslations = translations.common;
@@ -56,11 +56,11 @@ const ConvertPage: FC = () => {
     destinationTokenOptions[0].value,
   );
 
-  const sourceTokenBalance = useGetSourceTokenBalance(sourceToken);
+  const maximumAmountToConvert = useGetMaximumAvailableAmount(sourceToken);
 
   const onMaximumAmountClick = useCallback(
-    () => setAmount(sourceTokenBalance),
-    [sourceTokenBalance],
+    () => setAmount(maximumAmountToConvert),
+    [maximumAmountToConvert],
   );
 
   const onSwitchClick = useCallback(() => {
@@ -108,8 +108,8 @@ const ConvertPage: FC = () => {
       !account ||
       !amount ||
       Number(amount) <= 0 ||
-      Number(amount) > Number(sourceTokenBalance),
-    [account, amount, sourceTokenBalance],
+      Number(amount) > Number(maximumAmountToConvert),
+    [account, amount, maximumAmountToConvert],
   );
 
   return (
@@ -129,7 +129,7 @@ const ConvertPage: FC = () => {
               className="text-gray-20 text-xs font-medium underline whitespace-nowrap"
             >
               ({t(commonTranslations.max)}{' '}
-              {formatValue(Number(sourceTokenBalance), 4)}{' '}
+              {formatValue(Number(maximumAmountToConvert), 4)}{' '}
               {sourceToken.toUpperCase()})
             </button>
           </div>
@@ -138,7 +138,7 @@ const ConvertPage: FC = () => {
             <AmountInput
               value={amount}
               onChangeText={setAmount}
-              maxAmount={Number(sourceTokenBalance)}
+              maxAmount={Number(maximumAmountToConvert)}
               label={t(commonTranslations.amount)}
               tooltip={t(pageTranslations.form.sourceAmountTooltip)}
               min={0}

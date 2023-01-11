@@ -6,12 +6,12 @@ import { useAssetBalance } from '../../../../hooks/useAssetBalance';
 import { fromWei } from '../../../../utils/math';
 
 export const useGetSourceTokenBalance = (sourceToken: SupportedTokens) => {
-  const balanceWei = useAssetBalance(sourceToken).value;
+  const { value: weiBalance } = useAssetBalance(sourceToken);
 
   const balance = useMemo(
-    () => String(Number(fromWei(balanceWei))),
-    [balanceWei],
+    () => String(Number(fromWei(weiBalance))),
+    [weiBalance],
   );
 
-  return balance;
+  return { weiBalance, balance };
 };

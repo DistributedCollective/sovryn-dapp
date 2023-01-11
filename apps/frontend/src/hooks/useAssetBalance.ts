@@ -20,6 +20,7 @@ import { useWalletConnect } from './useWalletConnect';
 export const useAssetBalance = (
   asset: SupportedTokens,
   chainId: ChainId = getRskChainId(),
+  address: string | null = null,
   walletIndex: number = 0,
   options?: Partial<CacheCallOptions>,
 ): CacheCallResponse<string> => {
@@ -27,8 +28,8 @@ export const useAssetBalance = (
   const isMounted = useIsMounted();
 
   const account = useMemo(
-    () => wallets[walletIndex]?.accounts[0]?.address,
-    [walletIndex, wallets],
+    () => address || wallets[walletIndex]?.accounts[0]?.address,
+    [address, walletIndex, wallets],
   );
 
   const [state, setState] = useState<CacheCallResponse<string>>({

@@ -1,0 +1,8 @@
+.NotificationStack {
+  @apply fixed flex flex-col items-center mx-auto left-0 right-0 w-fit;
+  z-index: 999999;
+}
+
+.dismissible {
+  @apply order-1;
+}

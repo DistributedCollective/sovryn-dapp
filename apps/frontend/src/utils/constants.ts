@@ -47,3 +47,5 @@ export const servicesConfig = {
 };
 
 export const EXPORT_RECORD_LIMIT = 500;
+
+export const DEFAULT_TIMEOUT_SECONDS = 5000;

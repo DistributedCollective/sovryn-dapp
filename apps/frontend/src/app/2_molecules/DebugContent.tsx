@@ -7,7 +7,7 @@ import { useTranslation } from 'react-i18next';
 import { getTokenDetails, SupportedTokens } from '@sovryn/contracts';
 import { Accordion, Button } from '@sovryn/ui';
 
-import { TransactionHistoryFrame, TransactionStepDialog } from '../3_organisms';
+import { TransactionHistoryFrame } from '../3_organisms';
 import { EmailNotificationSettingsDialog } from '../3_organisms/EmailNotificationSettingsDialog/EmailNotificationSettingsDialog';
 import { GettingStartedPopup } from '../3_organisms/GettingStartedPopup/GettingStartedPopup';
 import { defaultChainId } from '../../config/chains';
@@ -106,7 +106,6 @@ export const DebugContent = () => {
       open={isOpen}
       onClick={toggle}
     >
-      <TransactionStepDialog />
       <ExampleProviderCall />
       <ExampleTokenDetails />
       <ExampleBalanceCall />

@@ -7,6 +7,7 @@ import { RouterProvider } from 'react-router-dom';
 
 import { OnboardProvider } from '@sovryn/onboard-react';
 
+import { TransactionStepDialog } from './app/3_organisms';
 // chain config must be imported before other files
 import './config/chains';
 import { MaintenanceModeContextProvider } from './contexts/MaintenanceModeContext';
@@ -30,7 +31,7 @@ const root = ReactDOM.createRoot(
 );
 
 root.render(
-  <React.StrictMode>
+  <>
     <TransactionProvider>
       <ApolloProvider client={rskClient}>
         <MaintenanceModeContextProvider>
@@ -38,7 +39,8 @@ root.render(
           <OnboardProvider />
         </MaintenanceModeContextProvider>
       </ApolloProvider>
+      <TransactionStepDialog />
     </TransactionProvider>
     <OnboardProvider />
-  </React.StrictMode>,
+  </>,
 );

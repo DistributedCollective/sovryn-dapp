@@ -29,7 +29,7 @@ import { normalizeAmountByType } from './utils';
 // todo: these needs to be retrieved
 const maxCreditAmount = 100;
 
-type SubmitValue = {
+export type SubmitValue = {
   debt: string;
   collateral: string;
 };

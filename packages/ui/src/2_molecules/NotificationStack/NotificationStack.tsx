@@ -28,7 +28,9 @@ export const NotificationStack: React.FC<NotificationStackProps> = ({
       ({ className, dataAttribute, content, type, title, dismissible, id }) => (
         <Notification
           key={id}
-          className={className}
+          className={classNames(className, {
+            [styles.dismissible]: dismissible,
+          })}
           dataAttribute={dataAttribute}
           onClose={dismissible ? () => onClose?.(id) : undefined}
           content={content}

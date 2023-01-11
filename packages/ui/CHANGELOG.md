@@ -1,5 +1,13 @@
 # @sovryn/ui
 
+## 0.0.17
+
+### Patch Changes
+
+- db0d93c: SOV-1355: add data attribute to Dialog close button
+- 9ee7347: SOV-1191: Email notification dialog integration
+- c10e41c: SOV-1278: Fix AmountInput formatting
+
 ## 0.0.16
 
 ### Patch Changes

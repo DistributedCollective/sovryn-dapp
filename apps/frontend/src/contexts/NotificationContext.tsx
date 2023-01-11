@@ -9,6 +9,8 @@ import React, {
 
 import { NotificationItem, NotificationStack } from '@sovryn/ui';
 
+import { DEFAULT_TIMEOUT_SECONDS } from '../utils/constants';
+
 interface Notification extends NotificationItem {
   timeout?: number;
   timestamp: number;
@@ -27,17 +29,19 @@ export const useNotificationContext = () => {
   return useContext(NotificationContext) as NotificationContextInterface;
 };
 
-interface Props {
+interface NotificationProviderProps {
   children?: React.ReactNode;
 }
 
-export const NotificationProvider: React.FC<Props> = ({ children }) => {
-  const [time, setTime] = useState(new Date().getTime());
+export const NotificationProvider: React.FC<NotificationProviderProps> = ({
+  children,
+}) => {
+  const [time, setTime] = useState(Date.now());
   const [notifications, setNotifications] = useState<Notification[]>([]);
 
   useEffect(() => {
     const intervalId = setInterval(() => {
-      setTime(new Date().getTime());
+      setTime(Date.now());
     }, 1000);
 
     return () => {
@@ -46,14 +50,14 @@ export const NotificationProvider: React.FC<Props> = ({ children }) => {
   }, []);
 
   const addNotification = useCallback(
-    (notification: NotificationItem, timeout = 5000) => {
+    (notification: NotificationItem, timeout = DEFAULT_TIMEOUT_SECONDS) => {
       if (notifications.find(item => item.id === notification.id)) {
         return;
       }
       const prvNotifications = [...notifications];
       prvNotifications.unshift({
         ...notification,
-        timestamp: new Date().getTime(),
+        timestamp: Date.now(),
         timeout,
       });
       setNotifications(prvNotifications);

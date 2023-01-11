@@ -12,12 +12,9 @@ export default {
 
 const Template: Story<ComponentProps<typeof NotificationStack>> = args => {
   const [items, setItems] = useState([...args.items]);
-  const onClose = (id: number | string) => {
-    console.log('onClose', id, items);
+  const onClose = (id: number | string) =>
     setItems(items.filter(item => id !== item.id));
-  };
-  // fireTime and timeout
-  // now >fireTime + timeout;
+
   return <NotificationStack items={items} onClose={onClose} />;
 };
 

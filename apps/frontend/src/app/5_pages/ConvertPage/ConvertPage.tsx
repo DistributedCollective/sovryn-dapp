@@ -113,11 +113,11 @@ const ConvertPage: FC = () => {
   );
 
   return (
-    <div className="w-full flex flex-col items-center mt-24">
+    <div className="w-full flex flex-col items-center mt-9 sm:mt-24">
       <Heading>{t(pageTranslations.title)}</Heading>
       <Paragraph className="mt-4">{t(pageTranslations.subtitle)}</Paragraph>
 
-      <div className="mt-12 border border-gray-50 rounded w-[28rem] p-6 bg-gray-90">
+      <div className="mt-12 w-full p-0 sm:border sm:border-gray-50 sm:rounded sm:w-[28rem] sm:p-6 sm:bg-gray-90">
         <div className="bg-gray-80 rounded p-6">
           <div className="w-full flex flex-row justify-between items-center">
             <Paragraph size={ParagraphSize.base}>

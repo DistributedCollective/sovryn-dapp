@@ -1,5 +1,12 @@
 # @sovryn/ui
 
+## 0.0.16
+
+### Patch Changes
+
+- 748bcd8: SOV-1364: Use dataAttribute instead of dataLayoutId in props
+- 79fa9e3: fix: upgrade ui elements
+
 ## 0.0.15
 
 ### Patch Changes

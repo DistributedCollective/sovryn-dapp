@@ -13,7 +13,7 @@ type StatusItemProps = {
   content: ReactNode;
   label?: ReactNode;
   className?: string;
-  dataLayoutId?: string;
+  dataAttribute?: string;
 };
 
 export const StatusItem: FC<StatusItemProps> = ({
@@ -21,11 +21,11 @@ export const StatusItem: FC<StatusItemProps> = ({
   content,
   label,
   className,
-  dataLayoutId,
+  dataAttribute,
 }) => (
   <div
     className={classNames(styles.statusItem, className)}
-    {...applyDataAttr(dataLayoutId)}
+    {...applyDataAttr(dataAttribute)}
   >
     <Badge
       size={BadgeSize.md}

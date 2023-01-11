@@ -15,7 +15,7 @@ export type WalletIdentityProps = {
   onDisconnect?: () => void;
   address: string;
   className?: string;
-  dataLayoutId?: string;
+  dataAttribute?: string;
   hideSubmenu?: boolean;
   submenuLabels?: MenuLabels;
   startLength?: number;
@@ -30,7 +30,7 @@ export const WalletIdentity: FC<WalletIdentityProps> = ({
   hideSubmenu = false,
   startLength = 4,
   endLength = 4,
-  dataLayoutId,
+  dataAttribute,
   submenuLabels,
   content,
 }) => {
@@ -41,7 +41,7 @@ export const WalletIdentity: FC<WalletIdentityProps> = ({
           address={address}
           startLength={startLength}
           endLength={endLength}
-          dataLayoutId={dataLayoutId}
+          dataAttribute={dataAttribute}
         />
       </div>
     );
@@ -55,7 +55,7 @@ export const WalletIdentity: FC<WalletIdentityProps> = ({
           address={address}
           startLength={startLength}
           endLength={endLength}
-          dataLayoutId={dataLayoutId}
+          dataAttribute={dataAttribute}
         />
       }
       size={DropdownSize.small}
@@ -64,7 +64,7 @@ export const WalletIdentity: FC<WalletIdentityProps> = ({
       <DisconnectSubmenu
         onDisconnect={onDisconnect}
         address={address}
-        dataLayoutId={dataLayoutId}
+        dataAttribute={dataAttribute}
         menuLabels={submenuLabels}
         className={styles.disconnectSubmenu}
       />

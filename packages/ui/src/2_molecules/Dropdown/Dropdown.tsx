@@ -34,7 +34,7 @@ export type DropdownProps = {
   onOpen?: () => void;
   onClose?: () => void;
   className?: string;
-  dataLayoutId?: string;
+  dataAttribute?: string;
   dropdownClassName?: string;
   closeOnClick?: boolean;
   usePortal?: boolean;
@@ -50,7 +50,7 @@ export const Dropdown = forwardRef<HTMLButtonElement, DropdownProps>(
       onOpen,
       onClose,
       className,
-      dataLayoutId,
+      dataAttribute,
       dropdownClassName,
       closeOnClick,
       usePortal = true,
@@ -158,7 +158,7 @@ export const Dropdown = forwardRef<HTMLButtonElement, DropdownProps>(
       <>
         <button
           className={classNames(classNamesComplete)}
-          {...applyDataAttr(dataLayoutId)}
+          {...applyDataAttr(dataAttribute)}
           onClick={onButtonClick}
           type="button"
           ref={buttonRef}

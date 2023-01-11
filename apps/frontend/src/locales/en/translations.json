@@ -55,6 +55,16 @@
             "originationFeeTooltip": "Origination fee in percentage"
         }
     },
+    "closeCreditLine": {
+        "title": "Select the token you'd like to pay your debt with:",
+        "fields": {
+            "collateral": {
+                "label": "Collateral to receive",
+                "tooltip": "Amount of collateral to receive"
+            }
+        },
+        "error": "You need an additional {{amount}} {{token}} in order to close your line of credit."
+    },
     "collateralRatio": {
         "title": "Collateral Ratio",
         "tooltip": "Collateral Ratio"
@@ -133,7 +143,22 @@
         "dialogTitle": "Notifications",
         "title": "Notifications on the status of your line of credit are sent to your email after you sign it with your wallet",
         "emailInputLabel": "Email address",
-        "emailInputPlaceholder": "Enter Email"
+        "emailInputPlaceholder": "Enter Email",
+        "alertGroups": {
+            "marginCallsToggle": "Margin call alerts",
+            "liquidationsToggle": "Liquidation alerts",
+            "stabilityPoolToggle": "Stability pool alerts",
+            "systemToggle": "System alerts"
+        }
+    },
+    "LOCStatus": {
+        "withdrawalSurplus": "withdrawal surplus",
+        "currentCollateral": "Current collateral",
+        "currentDebt": "Current debt",
+        "collateralRatio": "Collateral ratio",
+        "withdraw": "Withdraw",
+        "adjust": "Adjust",
+        "close": "Close"
     },
     "connectWalletButton": {
         "connect": "Get started",

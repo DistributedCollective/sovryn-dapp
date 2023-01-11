@@ -24,3 +24,4 @@ export * from './FormGroup';
 export * from './TableBase';
 export * from './Notification';
 export * from './Table';
+export * from './Toggle';

@@ -7,7 +7,7 @@ import styles from './HealthBar.module.css';
 
 export type HealthBarProps = {
   className?: string;
-  dataLayoutId?: string;
+  dataAttribute?: string;
   start: number;
   end: number;
   middleStart: number;
@@ -17,7 +17,7 @@ export type HealthBarProps = {
 
 export const HealthBar: FC<HealthBarProps> = ({
   className,
-  dataLayoutId,
+  dataAttribute,
   start,
   end,
   middleStart,
@@ -42,7 +42,7 @@ export const HealthBar: FC<HealthBarProps> = ({
 
   return (
     <div
-      {...applyDataAttr(dataLayoutId)}
+      {...applyDataAttr(dataAttribute)}
       className={classNames(styles.healthBar, className)}
     >
       <div

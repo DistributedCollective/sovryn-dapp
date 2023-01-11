@@ -33,7 +33,7 @@ export const openTrove = async (
   const hints = await getHints(newTrove);
 
   return {
-    value,
+    value: value.hex,
     args: [maxBorrowingRate.hex, borrowZUSD.hex, ...hints],
   };
 };
@@ -64,9 +64,9 @@ export const adjustTrove = async (
   const hints = await getHints(finalTrove);
 
   return {
-    value,
+    value: value.hex,
     args: [
-      maxBorrowingRate,
+      maxBorrowingRate.hex,
       (withdrawCollateral ?? Decimal.ZERO).hex,
       (borrowZUSD ?? repayZUSD ?? Decimal.ZERO).hex,
       !!borrowZUSD,

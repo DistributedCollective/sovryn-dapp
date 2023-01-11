@@ -32,7 +32,7 @@ type TooltipProps = {
   className?: string;
   activeClassName?: string;
   tooltipClassName?: string;
-  dataLayoutId?: string;
+  dataAttribute?: string;
   placement?: TooltipPlacement;
   onShow?: () => void;
   onHide?: () => void;
@@ -46,7 +46,7 @@ export const Tooltip: FC<TooltipProps> = ({
   className,
   activeClassName,
   tooltipClassName,
-  dataLayoutId,
+  dataAttribute,
   placement = TooltipPlacement.top,
   onShow,
   onHide,
@@ -103,7 +103,7 @@ export const Tooltip: FC<TooltipProps> = ({
         ),
         ref: targetRef,
       },
-      applyDataAttr(dataLayoutId),
+      applyDataAttr(dataAttribute),
     );
 
     const events = !disabled && {
@@ -115,7 +115,7 @@ export const Tooltip: FC<TooltipProps> = ({
     };
     return { ...attributes, ...events };
   }, [
-    dataLayoutId,
+    dataAttribute,
     className,
     activeClassName,
     isVisible,

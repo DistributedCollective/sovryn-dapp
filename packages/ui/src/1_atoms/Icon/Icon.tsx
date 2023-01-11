@@ -32,7 +32,7 @@ export type IconProps = {
   /**
    * Applied data-layout-id value to the element, mainly needed for testing or for GA
    */
-  dataLayoutId?: string;
+  dataAttribute?: string;
   /**
    * Applied viewBox to the svg element.
    */
@@ -44,7 +44,7 @@ export const Icon: React.FC<IconProps> = ({
   size = STANDARD,
   inline,
   className,
-  dataLayoutId,
+  dataAttribute,
   viewBox = ViewBoxSize.DEFAULT,
 }) => {
   const isFaIcon = useMemo(() => !!icon && !!icon['prefix'], [icon]);
@@ -70,7 +70,7 @@ export const Icon: React.FC<IconProps> = ({
         <div
           className={classNames(className, styles.customIcon, inlineBlock)}
           style={{ width: iconSize, height: iconSize }}
-          {...applyDataAttr(dataLayoutId)}
+          {...applyDataAttr(dataAttribute)}
         >
           {icon as ReactNode}
         </div>
@@ -89,12 +89,12 @@ export const Icon: React.FC<IconProps> = ({
         fill="currentColor"
         className={classNames(className, inlineBlock)}
         data-icon={icon}
-        {...applyDataAttr(dataLayoutId)}
+        {...applyDataAttr(dataAttribute)}
       >
         {paths}
       </svg>
     );
-  }, [viewBox, icon, inline, size, inlineBlock, className, dataLayoutId]);
+  }, [viewBox, icon, inline, size, inlineBlock, className, dataAttribute]);
 
   return (
     <>
@@ -103,7 +103,7 @@ export const Icon: React.FC<IconProps> = ({
           className={classNames(className, inlineBlock)}
           size={iconFaSize}
           icon={icon as IconProp}
-          {...applyDataAttr(dataLayoutId)}
+          {...applyDataAttr(dataAttribute)}
         />
       ) : (
         renderIcon

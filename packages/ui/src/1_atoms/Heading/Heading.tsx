@@ -10,20 +10,20 @@ export type HeadingProps = {
   children?: ReactNode;
   type?: HeadingType;
   className?: string;
-  dataLayoutId?: string;
+  dataAttribute?: string;
 };
 
 export const Heading: FC<HeadingProps> = ({
   children,
   type = HeadingType.h1,
   className,
-  dataLayoutId,
+  dataAttribute,
 }) =>
   React.createElement(
     type,
     {
       className: classNames(styles[type], className),
-      [DATA_ATTRIBUTE]: dataLayoutId,
+      [DATA_ATTRIBUTE]: dataAttribute,
     },
     children,
   );

@@ -12,7 +12,7 @@ export type DisconnectSubmenuProps = {
   onDisconnect?: () => void;
   address: string;
   className?: string;
-  dataLayoutId?: string;
+  dataAttribute?: string;
   menuLabels?: MenuLabels;
 };
 
@@ -20,7 +20,7 @@ export const DisconnectSubmenu: FC<DisconnectSubmenuProps> = ({
   address,
   onDisconnect,
   className,
-  dataLayoutId,
+  dataAttribute,
   menuLabels,
 }) => {
   const copyAddress = useCallback(async () => {
@@ -33,8 +33,8 @@ export const DisconnectSubmenu: FC<DisconnectSubmenuProps> = ({
       <MenuItem
         onClick={copyAddress}
         icon={IconNames.COPY}
-        dataLayoutId={`${
-          dataLayoutId || 'disconnect-submenu'
+        dataAttribute={`${
+          dataAttribute || 'disconnect-submenu'
         }-menu-copyAddress`}
         text={menuLabels?.copyAddress || 'Copy Address'}
       />
@@ -42,8 +42,8 @@ export const DisconnectSubmenu: FC<DisconnectSubmenuProps> = ({
         <MenuItem
           onClick={onDisconnect}
           icon={IconNames.EXIT}
-          dataLayoutId={`${
-            dataLayoutId || 'disconnect-submenu'
+          dataAttribute={`${
+            dataAttribute || 'disconnect-submenu'
           }-menu-disconnect`}
           text={menuLabels?.disconnect || 'Disconnect'}
         />

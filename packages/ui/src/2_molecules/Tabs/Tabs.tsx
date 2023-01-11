@@ -10,7 +10,7 @@ export interface ITabItem {
   label: React.ReactNode;
   content: React.ReactNode;
   disabled?: boolean;
-  dataLayoutId?: string;
+  dataAttribute?: string;
   activeClassName?: string;
 }
 
@@ -55,7 +55,7 @@ export const Tabs: React.FC<TabsProps> = ({
             disabled={item.disabled}
             onClick={() => selectTab(item, i)}
             content={item.label}
-            dataLayoutId={item.dataLayoutId}
+            dataAttribute={item.dataAttribute}
             type={type}
             size={size}
             activeIndex={index}

@@ -5,9 +5,9 @@ import { parseUnits } from 'ethers/lib/utils';
 import { useTranslation } from 'react-i18next';
 
 import { getTokenDetails, SupportedTokens } from '@sovryn/contracts';
-import { Accordion, Button } from '@sovryn/ui';
+import { Accordion, AmountInput, Button } from '@sovryn/ui';
 
-import { TransactionHistoryFrame } from '../3_organisms';
+import { TransactionHistoryFrame, TransactionStepDialog } from '../3_organisms';
 import { EmailNotificationSettingsDialog } from '../3_organisms/EmailNotificationSettingsDialog/EmailNotificationSettingsDialog';
 import { GettingStartedPopup } from '../3_organisms/GettingStartedPopup/GettingStartedPopup';
 import { defaultChainId } from '../../config/chains';
@@ -30,6 +30,7 @@ import { ExampleProviderCall } from './ExampleProviderCall';
 import { ExampleTokenDetails } from './ExampleTokenDetails';
 import { ExampleTypedDataSign } from './ExampleTypedDataSign';
 import { ExportCSV } from './ExportCSV/ExportCSV';
+import { LOCStatus } from './LOCStatus/LOCStatus';
 import { SmartTokens } from './SmartTokens';
 
 // usage example, to be removed
@@ -46,12 +47,13 @@ export const DebugContent = () => {
     setIsEmailNotificationSettingsDialogOpen,
   ] = useState(false);
 
+  const [cRatio, setCRatio] = useState(200);
   const { data } = useGetTokenRatesQuery();
   const { setTransactions, setIsOpen, setTitle } = useTransactionContext();
   const [getTransactions] = useGetTransactionsLazyQuery();
 
   const { checkMaintenance, States } = useMaintenance();
-  const perpsLockedTest = checkMaintenance(States.PERPETUALS_GSN);
+  const dappLockedTest = checkMaintenance(States.FULLD2);
 
   const approve = useCallback(async () => {
     if (!wallets[0].provider) {
@@ -106,6 +108,23 @@ export const DebugContent = () => {
       open={isOpen}
       onClick={toggle}
     >
+      <div className="mt-5 py-10 border-b">
+        <AmountInput
+          className="mb-2"
+          label="Collateral ratio"
+          value={cRatio}
+          onChange={e => setCRatio(Number(e.target.value))}
+        />
+        <LOCStatus
+          collateral={0.51}
+          debt={5000}
+          debtSymbol={SupportedTokens.zusd.toUpperCase()}
+          cRatio={cRatio}
+        />
+        <LOCStatus className="mt-4" withdrawalSurplus={0.5} />
+      </div>
+
+      <TransactionStepDialog />
       <ExampleProviderCall />
       <ExampleTokenDetails />
       <ExampleBalanceCall />
@@ -135,8 +154,8 @@ export const DebugContent = () => {
       <hr className="my-12" />
 
       <div className="mb-12">
-        Perpetuals GSN maintenance mode on {isMainnet() ? 'MAINNET' : 'TESTNET'}{' '}
-        is {perpsLockedTest ? 'ON' : 'OFF'}
+        Dapp2 maintenance mode for {isMainnet() ? 'MAINNET' : 'TESTNET'} is{' '}
+        {dappLockedTest ? 'ON' : 'OFF'}
       </div>
 
       {wallets[0]?.accounts[0]?.address ? (

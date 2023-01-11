@@ -13,12 +13,14 @@ import {
   DialogHeader,
   DialogSize,
   Heading,
+  noop,
 } from '@sovryn/ui';
 
 import {
   AdjustCreditLine,
   SubmitValue,
 } from '../../3_organisms/ZeroLocForm/AdjustCreditLine';
+import { CloseCreditLine } from '../../3_organisms/ZeroLocForm/CloseCreditLine';
 import { useTransactionContext } from '../../../contexts/TransactionContext';
 import { useWalletConnect } from '../../../hooks';
 import { getRskChainId } from '../../../utils/chain';
@@ -32,13 +34,26 @@ export const ZeroPage: FC = () => {
   const { setTransactions, setIsOpen } = useTransactionContext();
 
   const [open, toggle] = useReducer(v => !v, false);
+  const [openClosePopup, toggleClosePopup] = useReducer(v => !v, false);
   const [trove, setTrove] = useState<UserTrove>();
+  const [zusdBalance, setZusdBalance] = React.useState('');
 
   const { account, getWallet, connectWallet } = useWalletConnect();
 
   useEffect(() => {
     if (account && liquity) {
       liquity.getTrove(account).then(setTrove);
+    }
+  }, [account, liquity]);
+
+  useEffect(() => {
+    const getZUSDBalance = async () => {
+      const balance = (await liquity.getZUSDBalance(account)).toString();
+      return balance;
+    };
+
+    if (account && liquity) {
+      getZUSDBalance().then(setZusdBalance);
     }
   }, [account, liquity]);
 
@@ -61,16 +76,17 @@ export const ZeroPage: FC = () => {
 
         if (trove?.debt?.gt(0)) {
           const adjustedTrove = await adjustTrove(wallet.accounts[0].address, {
-            borrowZUSD: toWei(value.debt).toHexString(),
-            depositCollateral: toWei(value.collateral).toHexString(),
+            borrowZUSD: toWei(value.debt).toString(),
+            depositCollateral: toWei(value.collateral).toString(),
           });
+          console.log('adjustedTrove', adjustedTrove);
           setTransactions([
             {
               title: 'Adjusting Trove',
               contract,
               fnName: 'adjustTrove',
               config: {
-                value: adjustedTrove.value.hex,
+                value: adjustedTrove.value,
               },
               args: adjustedTrove.args,
               onComplete: hash => console.log('hash', hash),
@@ -79,16 +95,17 @@ export const ZeroPage: FC = () => {
           setIsOpen(true);
         } else {
           const openedTrove = await openTrove({
-            borrowZUSD: toWei(value.debt).toHexString(),
-            depositCollateral: toWei(value.collateral).toHexString(),
+            borrowZUSD: toWei(value.debt).toString(),
+            depositCollateral: toWei(value.collateral).toString(),
           });
+          console.log('openedTrove', openedTrove);
           setTransactions([
             {
               title: 'Open Trove',
               contract,
               fnName: 'openTrove',
               config: {
-                value: openedTrove.value.hex,
+                value: openedTrove.value,
               },
               args: openedTrove.args,
               onComplete: hash => console.log('hash', hash),
@@ -126,6 +143,11 @@ export const ZeroPage: FC = () => {
                     onClick={toggle}
                     className="mt-8"
                   />
+                  <Button
+                    text="Close Line of Credit"
+                    onClick={toggleClosePopup}
+                    className="mt-8 ml-4"
+                  />
                 </>
               ) : (
                 <Button text="Connect first...." onClick={connectWallet} />
@@ -150,6 +172,18 @@ export const ZeroPage: FC = () => {
           )}
         </Await>
       </React.Suspense>
+
+      <Dialog width={DialogSize.sm} isOpen={openClosePopup} disableFocusTrap>
+        <DialogHeader title="Close" onClose={toggleClosePopup} />
+        <DialogBody>
+          <CloseCreditLine
+            onSubmit={noop}
+            creditValue={trove?.debt.toString() ?? '0'}
+            collateralValue={trove?.collateral.toString() ?? '0'}
+            availableBalance={zusdBalance}
+          />
+        </DialogBody>
+      </Dialog>
     </div>
   );
 };

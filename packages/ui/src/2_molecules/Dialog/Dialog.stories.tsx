@@ -26,7 +26,7 @@ export default {
     className: {
       defaultValue: '',
     },
-    dataLayoutId: {
+    dataAttribute: {
       defaultValue: '',
     },
     width: {

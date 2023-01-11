@@ -13,7 +13,7 @@ describe('HealthBar', () => {
         middleStart={110}
         middleEnd={150}
         value={200}
-        dataLayoutId="health"
+        dataAttribute="health"
       />,
     );
     const healthBar = getByTestId('health');
@@ -28,7 +28,7 @@ describe('HealthBar', () => {
         middleStart={110}
         middleEnd={150}
         value={200}
-        dataLayoutId="health"
+        dataAttribute="health"
       />,
     );
     const ranges = getByTestId('health').querySelectorAll('div');

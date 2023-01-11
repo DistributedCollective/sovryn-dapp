@@ -15,7 +15,7 @@ export type VerticalTabsMobileItem = {
   content: ReactNode;
   infoText?: ReactNode;
   disabled?: boolean;
-  dataLayoutId?: string;
+  dataAttribute?: string;
 };
 
 export type VerticalTabMobileItemButtonProps = VerticalTabsMobileItem & {

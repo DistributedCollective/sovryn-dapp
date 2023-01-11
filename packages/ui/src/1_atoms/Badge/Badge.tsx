@@ -11,7 +11,7 @@ export type BadgeProps = {
   className?: string;
   style?: BadgeStyle;
   size?: BadgeSize;
-  dataLayoutId?: string;
+  dataAttribute?: string;
 };
 
 export const Badge: FC<PropsWithChildren<BadgeProps>> = ({
@@ -19,7 +19,7 @@ export const Badge: FC<PropsWithChildren<BadgeProps>> = ({
   className,
   style = BadgeStyle.gray,
   size = BadgeSize.sm,
-  dataLayoutId,
+  dataAttribute,
 }) => {
   return (
     <span
@@ -29,7 +29,7 @@ export const Badge: FC<PropsWithChildren<BadgeProps>> = ({
         styles[style],
         styles[size],
       )}
-      {...applyDataAttr(dataLayoutId)}
+      {...applyDataAttr(dataAttribute)}
     >
       {content}
     </span>

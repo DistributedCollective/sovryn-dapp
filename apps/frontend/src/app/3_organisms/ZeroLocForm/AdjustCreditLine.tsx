@@ -20,6 +20,7 @@ import {
 
 import { useAssetBalance } from '../../../hooks/useAssetBalance';
 import { translations } from '../../../locales/i18n';
+import { CR_THRESHOLDS } from '../../../utils/constants';
 import { formatValue, fromWei } from '../../../utils/math';
 import { Label } from './Label';
 import { Row } from './Row';
@@ -304,10 +305,10 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
         </div>
       </div>
       <HealthBar
-        start={90}
-        middleStart={110}
-        middleEnd={150}
-        end={250}
+        start={CR_THRESHOLDS.start}
+        middleStart={CR_THRESHOLDS.middleStart}
+        middleEnd={CR_THRESHOLDS.middleEnd}
+        end={CR_THRESHOLDS.end}
         value={ratio}
       />
 

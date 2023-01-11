@@ -11,17 +11,17 @@ type WalletContainerProps = {
   icon?: ReactNode;
   tooltip?: string;
   className?: string;
-  dataLayoutId?: string;
+  dataAttribute?: string;
 } & React.ButtonHTMLAttributes<HTMLButtonElement>;
 
 export const WalletContainer = forwardRef<
   HTMLButtonElement,
   WalletContainerProps
->(({ name, icon, tooltip, className, dataLayoutId, ...buttonProps }, ref) => {
+>(({ name, icon, tooltip, className, dataAttribute, ...buttonProps }, ref) => {
   return (
     <button
       ref={ref as LegacyRef<HTMLButtonElement>}
-      {...applyDataAttr(dataLayoutId)}
+      {...applyDataAttr(dataAttribute)}
       className={classNames(className, styles.walletContainer)}
       {...buttonProps}
     >

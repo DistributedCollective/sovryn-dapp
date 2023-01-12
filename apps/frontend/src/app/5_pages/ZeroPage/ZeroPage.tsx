@@ -1,4 +1,9 @@
-import { Fees, UserTrove } from '@sovryn-zero/lib-base';
+import {
+  Decimalish,
+  Fees,
+  TroveAdjustmentParams,
+  UserTrove,
+} from '@sovryn-zero/lib-base';
 
 import React, { FC, useCallback, useEffect, useReducer, useState } from 'react';
 
@@ -24,7 +29,6 @@ import { CloseCreditLine } from '../../3_organisms/ZeroLocForm/CloseCreditLine';
 import { useTransactionContext } from '../../../contexts/TransactionContext';
 import { useWalletConnect } from '../../../hooks';
 import { getRskChainId } from '../../../utils/chain';
-import { toWei } from '../../../utils/math';
 import { ZeroPageLoaderData } from './loader';
 import { adjustTrove, openTrove } from './utils/trove-manager';
 
@@ -75,10 +79,28 @@ export const ZeroPage: FC = () => {
         );
 
         if (trove?.debt?.gt(0)) {
-          const adjustedTrove = await adjustTrove(wallet.accounts[0].address, {
-            borrowZUSD: toWei(value.debt).toString(),
-            depositCollateral: toWei(value.collateral).toString(),
-          });
+          const params: Partial<TroveAdjustmentParams<Decimalish>> = {};
+
+          if (value.borrow) {
+            params.borrowZUSD = value.borrow;
+          }
+
+          if (value.repay) {
+            params.repayZUSD = value.repay;
+          }
+
+          if (value.depositCollateral) {
+            params.depositCollateral = value.depositCollateral;
+          }
+
+          if (value.withdrawCollateral) {
+            params.withdrawCollateral = value.withdrawCollateral;
+          }
+
+          const adjustedTrove = await adjustTrove(
+            wallet.accounts[0].address,
+            params,
+          );
           console.log('adjustedTrove', adjustedTrove);
           setTransactions([
             {
@@ -95,8 +117,8 @@ export const ZeroPage: FC = () => {
           setIsOpen(true);
         } else {
           const openedTrove = await openTrove({
-            borrowZUSD: toWei(value.debt).toString(),
-            depositCollateral: toWei(value.collateral).toString(),
+            borrowZUSD: value.borrow,
+            depositCollateral: value.depositCollateral,
           });
           setTransactions([
             {

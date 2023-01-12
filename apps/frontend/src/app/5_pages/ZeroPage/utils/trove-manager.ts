@@ -30,7 +30,7 @@ export const openTrove = async (
 
   const value = depositCollateral ?? Decimal.ZERO;
 
-  const hints = await getHints(newTrove);
+  const hints = await ethers.populate.findHints(newTrove);
 
   return {
     value: value.hex,
@@ -61,7 +61,7 @@ export const adjustTrove = async (
 
   const value = depositCollateral ?? Decimal.ZERO;
 
-  const hints = await getHints(finalTrove);
+  const hints = await ethers.populate.findHints(finalTrove);
 
   return {
     value: value.hex,
@@ -73,9 +73,4 @@ export const adjustTrove = async (
       ...hints,
     ],
   };
-};
-
-// todo: implement / use from lib when available
-const getHints = (a: any): any => {
-  return [];
 };

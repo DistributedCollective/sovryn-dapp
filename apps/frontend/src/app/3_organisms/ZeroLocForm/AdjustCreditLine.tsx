@@ -29,8 +29,10 @@ import { AmountType, tokens } from './types';
 import { normalizeAmountByType } from './utils';
 
 export type SubmitValue = {
-  debt: string;
-  collateral: string;
+  borrow: string;
+  repay: string;
+  depositCollateral: string;
+  withdrawCollateral: string;
 };
 
 type AdjustCreditLineProps = {
@@ -123,11 +125,26 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
   );
 
   const handleFormSubmit = useCallback(() => {
-    onSubmit({
-      debt: String(newDebt),
-      collateral: String(newCollateral),
-    });
-  }, [newCollateral, newDebt, onSubmit]);
+    let value: Partial<SubmitValue> = {};
+
+    if (debtType === AmountType.Add) {
+      value.borrow = creditAmount;
+    }
+
+    if (debtType === AmountType.Remove) {
+      value.repay = creditAmount;
+    }
+
+    if (collateralType === AmountType.Add) {
+      value.depositCollateral = collateralAmount;
+    }
+
+    if (collateralType === AmountType.Remove) {
+      value.withdrawCollateral = collateralAmount;
+    }
+
+    onSubmit(value as SubmitValue);
+  }, [collateralAmount, collateralType, creditAmount, debtType, onSubmit]);
 
   const initialRatio = useMemo(() => {
     if ([collateralValue, creditValue, rbtcPrice].some(v => !v)) {

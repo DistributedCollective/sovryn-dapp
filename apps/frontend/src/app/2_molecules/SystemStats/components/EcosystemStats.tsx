@@ -22,11 +22,10 @@ import {
 } from '@sovryn/ui';
 
 import { translations } from '../../../../locales/i18n';
-import { formatValue } from '../../../../utils/math';
+import { formatValue, fromWeiFixed } from '../../../../utils/math';
 import { useGetAssetBalance } from '../hooks/useGetAssetBalance';
 import { useGetTotalSupply } from '../hooks/useGetTotalSupply';
 import { TokenType } from '../types';
-import { parseBalance } from '../utils';
 
 type EcosystemStatsProps = {
   className?: string;
@@ -53,10 +52,10 @@ export const EcosystemStats: FC<EcosystemStatsProps> = ({
     () =>
       babelFishZUSDBalance && zeroPrice
         ? `${formatValue(
-            Number(parseBalance(babelFishZUSDBalance)),
+            Number(fromWeiFixed(babelFishZUSDBalance)),
             0,
           )} ${SupportedTokens.rbtc.toUpperCase()} ($${formatValue(
-            Number(parseBalance(babelFishZUSDBalance)) * Number(zeroPrice),
+            Number(fromWeiFixed(babelFishZUSDBalance)) * Number(zeroPrice),
             2,
           )}M)`
         : 0,
@@ -72,7 +71,7 @@ export const EcosystemStats: FC<EcosystemStatsProps> = ({
     () =>
       babelFishDLLRBalance
         ? `${formatValue(
-            Number(parseBalance(babelFishDLLRBalance)),
+            Number(fromWeiFixed(babelFishDLLRBalance)),
             2,
           )} ${SupportedTokens.dllr.toUpperCase()}`
         : 0,
@@ -88,7 +87,7 @@ export const EcosystemStats: FC<EcosystemStatsProps> = ({
     () =>
       myntZUSDBalance
         ? `${formatValue(
-            Number(parseBalance(myntZUSDBalance)),
+            Number(fromWeiFixed(myntZUSDBalance)),
             2,
           )} ${SupportedTokens.zusd.toUpperCase()}`
         : 0,
@@ -104,7 +103,7 @@ export const EcosystemStats: FC<EcosystemStatsProps> = ({
     () =>
       myntDOCBalance
         ? `${formatValue(
-            Number(parseBalance(myntDOCBalance)),
+            Number(fromWeiFixed(myntDOCBalance)),
             2,
           )} ${SupportedTokens.doc.toUpperCase()}`
         : 0,
@@ -117,7 +116,7 @@ export const EcosystemStats: FC<EcosystemStatsProps> = ({
     () =>
       totalDLLRSupply
         ? `${formatValue(
-            Number(parseBalance(totalDLLRSupply)),
+            Number(fromWeiFixed(totalDLLRSupply)),
             2,
           )} ${SupportedTokens.dllr.toUpperCase()}`
         : 0,

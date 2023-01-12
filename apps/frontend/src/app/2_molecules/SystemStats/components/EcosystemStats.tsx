@@ -105,7 +105,10 @@ export const EcosystemStats: FC<EcosystemStatsProps> = ({
   const renderTotalDLLRSupply = useMemo(
     () =>
       totalDLLRSupply
-        ? `${formatValue(Number(parseBalance(totalDLLRSupply)), 2)}%`
+        ? `${formatValue(
+            Number(parseBalance(totalDLLRSupply)),
+            2,
+          )} ${SupportedTokens.dllr.toUpperCase()}`
         : 0,
     [totalDLLRSupply],
   );

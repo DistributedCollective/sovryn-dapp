@@ -23,7 +23,7 @@ export type CheckboxProps = Omit<
   indeterminate?: boolean;
   dataAttribute?: string;
   onChangeValue?: (value: boolean) => void;
-  /** @deprecated Use onChangeText if possible */
+  /** @deprecated Use onChangeValue if possible */
   onChange?: ChangeEventHandler<HTMLInputElement>;
   label?: ReactNode;
   containerClassName?: string;

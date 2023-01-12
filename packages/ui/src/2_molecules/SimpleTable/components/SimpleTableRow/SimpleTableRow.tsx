@@ -8,7 +8,7 @@ import styles from './SimpleTableRow.module.css';
 type SimpleTableRowProps = {
   className?: string;
   valueClassName?: string;
-  dataLayoutId?: string;
+  dataAttribute?: string;
   label: ReactNode;
   value: ReactNode;
 };
@@ -16,13 +16,13 @@ type SimpleTableRowProps = {
 export const SimpleTableRow: FC<SimpleTableRowProps> = ({
   className,
   valueClassName,
-  dataLayoutId,
+  dataAttribute,
   label,
   value,
 }) => (
   <div
     className={classNames(styles.row, className)}
-    {...applyDataAttr(dataLayoutId)}
+    {...applyDataAttr(dataAttribute)}
   >
     <span>{label}</span>
     <span className={classNames(styles.value, valueClassName)}>{value}</span>

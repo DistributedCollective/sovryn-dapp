@@ -1,5 +1,29 @@
 # frontend
 
+## 0.1.12
+
+### Patch Changes
+
+- 3969a12: SOV-1406: fix: pagination in WalletConnect modal
+- 9ee7347: SOV-1191: Email notification dialog integration
+- Updated dependencies [db0d93c]
+- Updated dependencies [9ee7347]
+- Updated dependencies [c10e41c]
+  - @sovryn/ui@0.0.17
+
+## 0.1.11
+
+### Patch Changes
+
+- 748bcd8: SOV-1364: Use dataAttribute instead of dataLayoutId in props
+- 7bf1be6: add close LOC popup
+- 7899d32: SOV-1181: feat: add D2 maintenance states
+- 654ad44: SOV-1116: feat: add LOCStatus component
+- 61e02ca: SOV-1243: update onboard-react package version
+- Updated dependencies [748bcd8]
+- Updated dependencies [79fa9e3]
+  - @sovryn/ui@0.0.16
+
 ## 0.1.10
 
 ### Patch Changes

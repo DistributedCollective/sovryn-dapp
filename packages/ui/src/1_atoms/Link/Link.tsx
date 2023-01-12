@@ -12,7 +12,7 @@ export type LinkProps = {
   openNewTab?: boolean;
   className?: string;
   style?: LinkStyle;
-  dataLayoutId?: string;
+  dataAttribute?: string;
 };
 
 export const Link: FC<LinkProps> = ({
@@ -21,13 +21,13 @@ export const Link: FC<LinkProps> = ({
   openNewTab = true,
   className,
   style = LinkStyle.primary,
-  dataLayoutId,
+  dataAttribute,
 }) => (
   <LinkBase
     href={href}
     openNewTab={openNewTab}
     className={classNames(styles.link, styles[style], className)}
-    dataAttribute={dataLayoutId}
+    dataAttribute={dataAttribute}
   >
     {text}
   </LinkBase>

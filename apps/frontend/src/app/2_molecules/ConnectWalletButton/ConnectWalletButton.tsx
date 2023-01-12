@@ -15,7 +15,7 @@ export type ConnectWalletButtonProps = {
   address: string | undefined;
   pending?: boolean;
   className?: string;
-  dataLayoutId?: string;
+  dataAttribute?: string;
 };
 
 export const ConnectWalletButton: FC<
@@ -26,7 +26,7 @@ export const ConnectWalletButton: FC<
   onDisconnect,
   onConnect,
   className,
-  dataLayoutId,
+  dataAttribute,
 }) => {
   const { t } = useTranslation();
   const [isOpen, toggle] = useReducer(state => !state, false);
@@ -36,7 +36,7 @@ export const ConnectWalletButton: FC<
         text={t(translations.connectWalletButton.connect)}
         onClick={onConnect}
         className={className}
-        dataLayoutId={dataLayoutId}
+        dataAttribute={dataAttribute}
         disabled={pending}
       />
     );
@@ -46,7 +46,7 @@ export const ConnectWalletButton: FC<
         <WalletIdentity
           onDisconnect={onDisconnect}
           address={address}
-          dataLayoutId={dataLayoutId}
+          dataAttribute={dataAttribute}
           className={className}
           content={
             <Menu className="mb-4">

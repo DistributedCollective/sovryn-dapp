@@ -7,7 +7,7 @@ import { SimpleTableRow } from './components/SimpleTableRow/SimpleTableRow';
 
 test('renders simple table', () => {
   const { getByTestId, getByText } = render(
-    <SimpleTable dataLayoutId="table">
+    <SimpleTable dataAttribute="table">
       <SimpleTableRow label="label" value="value" />
     </SimpleTable>,
   );

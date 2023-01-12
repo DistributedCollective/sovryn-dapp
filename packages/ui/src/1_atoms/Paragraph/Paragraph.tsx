@@ -11,7 +11,7 @@ export type ParagraphProps = {
   size?: ParagraphSize;
   style?: ParagraphStyle;
   className?: string;
-  dataLayoutId?: string;
+  dataAttribute?: string;
 };
 
 export const Paragraph: React.FC<ParagraphProps> = ({
@@ -19,7 +19,7 @@ export const Paragraph: React.FC<ParagraphProps> = ({
   size = ParagraphSize.small,
   style = ParagraphStyle.normal,
   className,
-  dataLayoutId,
+  dataAttribute,
 }) => (
   <p
     className={classNames(
@@ -28,7 +28,7 @@ export const Paragraph: React.FC<ParagraphProps> = ({
       styles[style],
       className,
     )}
-    {...applyDataAttr(dataLayoutId)}
+    {...applyDataAttr(dataAttribute)}
   >
     {children}
   </p>

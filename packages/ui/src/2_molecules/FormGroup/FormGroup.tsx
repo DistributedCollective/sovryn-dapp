@@ -11,7 +11,7 @@ type FormGroupProps = {
   label?: ReactNode;
   helper?: ReactNode;
   subtext?: string;
-  dataLayoutId?: string;
+  dataAttribute?: string;
   errorLabel?: string;
 };
 
@@ -22,10 +22,10 @@ export const FormGroup: React.FC<PropsWithChildren<FormGroupProps>> = ({
   subtext,
   children,
   errorLabel,
-  dataLayoutId,
+  dataAttribute,
 }) => (
   <div
-    {...applyDataAttr(dataLayoutId)}
+    {...applyDataAttr(dataAttribute)}
     className={classNames(className, styles.formGroup)}
   >
     {(label || subtext) && (
@@ -45,7 +45,7 @@ export const FormGroup: React.FC<PropsWithChildren<FormGroupProps>> = ({
     {children}
     {errorLabel && (
       <span
-        {...applyDataAttr(`${dataLayoutId}__error-message`)}
+        {...applyDataAttr(`${dataAttribute}__error-message`)}
         className={styles.errorLabel}
       >
         {errorLabel}

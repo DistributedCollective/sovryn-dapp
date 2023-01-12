@@ -10,14 +10,14 @@ export type AddressBadgeProps = {
   address: string;
   startLength?: number;
   endLength?: number;
-  dataLayoutId?: string;
+  dataAttribute?: string;
 };
 
 export const AddressBadge: FC<AddressBadgeProps> = ({
   address,
   startLength = 4,
   endLength = 4,
-  dataLayoutId,
+  dataAttribute,
 }) => {
   const getWalletAddrBlockieImg = (): string => {
     return blockies
@@ -42,7 +42,7 @@ export const AddressBadge: FC<AddressBadgeProps> = ({
           alt="wallet address"
         />
       </span>
-      <span {...applyDataAttr(dataLayoutId)}>
+      <span {...applyDataAttr(dataAttribute)}>
         {prettyTx(address || '', startLength, endLength)}
       </span>
     </span>

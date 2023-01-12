@@ -7,13 +7,13 @@ import styles from './SimpleTable.module.css';
 
 type SimpleTableProps = {
   className?: string;
-  dataLayoutId?: string;
+  dataAttribute?: string;
   border?: boolean;
 };
 
 export const SimpleTable: FC<PropsWithChildren<SimpleTableProps>> = ({
   className,
-  dataLayoutId,
+  dataAttribute,
   children,
   border,
 }) => (
@@ -25,7 +25,7 @@ export const SimpleTable: FC<PropsWithChildren<SimpleTableProps>> = ({
       },
       className,
     )}
-    {...applyDataAttr(dataLayoutId)}
+    {...applyDataAttr(dataAttribute)}
   >
     {children}
   </div>

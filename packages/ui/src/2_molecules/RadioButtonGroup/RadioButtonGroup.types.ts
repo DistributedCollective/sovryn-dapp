@@ -14,7 +14,7 @@ export type RadioButtonGroupProps = {
   label?: string;
   options: RadioButtonOption[];
   onChange?: ChangeEventHandler<HTMLInputElement>;
-  dataLayoutId?: string;
+  dataAttribute?: string;
   defaultChecked?: number;
   className?: string;
 };

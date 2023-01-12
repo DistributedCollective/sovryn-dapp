@@ -19,7 +19,7 @@ Default.args = {
   status: StatusType.idle,
   label: 'Lorem Ipsum',
   content: '1',
-  dataLayoutId: '',
+  dataAttribute: '',
   className: '',
 };
 
@@ -35,6 +35,6 @@ const AllTemplate: ComponentStory<typeof StatusItem> = args => (
 export const All = AllTemplate.bind({});
 All.args = {
   label: 'Lorem Ipsum',
-  dataLayoutId: '',
+  dataAttribute: '',
   className: 'my-4',
 };

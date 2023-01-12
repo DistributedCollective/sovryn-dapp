@@ -17,7 +17,7 @@ export type InputBaseProps = Omit<
   'ref' | 'size'
 > & {
   debounce?: number;
-  dataLayoutId?: string;
+  dataAttribute?: string;
   onChangeText?: (value: string) => void;
   /** @deprecated Use onChangeText if possible */
   onChange?: ChangeEventHandler<HTMLInputElement>;
@@ -26,7 +26,7 @@ export type InputBaseProps = Omit<
 // Important: Do not export out of UI package, should be only used by other components!
 export const InputBase = React.forwardRef<HTMLInputElement, InputBaseProps>(
   (
-    { value, debounce = 500, dataLayoutId, onChange, onChangeText, ...props },
+    { value, debounce = 500, dataAttribute, onChange, onChangeText, ...props },
     ref,
   ) => {
     const [renderedValue, setRenderedValue] = useState<
@@ -78,7 +78,7 @@ export const InputBase = React.forwardRef<HTMLInputElement, InputBaseProps>(
         ref={ref}
         value={renderedValue}
         onChange={shouldAllowChanges ? handleChange : noop}
-        {...applyDataAttr(dataLayoutId)}
+        {...applyDataAttr(dataAttribute)}
       />
     );
   },

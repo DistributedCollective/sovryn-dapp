@@ -1,0 +1,26 @@
+query getTroves($first: Int!) {
+  troves(
+    orderDirection: desc
+    orderBy: collateralRatioSortKey
+    first: $first
+    where: { status: open }
+  ) {
+    changes(
+      where: { troveOperation: openTrove }
+      orderBy: sequenceNumber
+      orderDirection: desc
+    ) {
+      id
+      sequenceNumber
+      transaction {
+        id
+        sequenceNumber
+      }
+      trove {
+        collateralRatioSortKey
+        collateral
+        debt
+      }
+    }
+  }
+}

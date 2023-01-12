@@ -18,7 +18,7 @@ Basic.args = {
   label: 'Custom amount',
   id: 'label',
   className: '',
-  dataLayoutId: '',
+  dataAttribute: '',
   labelInfo: '',
   disabled: false,
   name: '',

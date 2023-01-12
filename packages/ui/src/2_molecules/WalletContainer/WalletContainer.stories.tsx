@@ -25,7 +25,7 @@ Basic.args = {
   name: 'Ledger',
   icon: '',
   tooltip: '',
-  dataLayoutId: '',
+  dataAttribute: '',
   className: '',
 };
 
@@ -56,6 +56,6 @@ const Advanced: Story<ComponentProps<typeof WalletContainer>> = args => (
 
 export const WithIcon = Advanced.bind({});
 WithIcon.args = {
-  dataLayoutId: '',
+  dataAttribute: '',
   className: '',
 };

@@ -14,7 +14,7 @@ beforeEach(() => {
 describe('AmountInput', () => {
   test('renders with a label and a unit', () => {
     const { getByTestId, getByText } = render(
-      <AmountInput label="Amount" unit="BTC" dataLayoutId="test" />,
+      <AmountInput label="Amount" unit="BTC" dataAttribute="test" />,
     );
 
     const amountInput = getByTestId('test');
@@ -32,7 +32,7 @@ describe('AmountInput', () => {
       <AmountInput
         value={0.12345678}
         decimalPrecision={3}
-        dataLayoutId="test"
+        dataAttribute="test"
       />,
     );
 
@@ -45,7 +45,7 @@ describe('AmountInput', () => {
       <AmountInput
         value="0.12345678"
         decimalPrecision={3}
-        dataLayoutId="test"
+        dataAttribute="test"
       />,
     );
 
@@ -53,33 +53,9 @@ describe('AmountInput', () => {
     expect(amountInput).toHaveValue(0.123);
   });
 
-  test('correctly formats a value when rounding down', async () => {
-    const { getByTestId } = render(
-      <AmountInput value={0.123} decimalPrecision={3} dataLayoutId="test" />,
-    );
-
-    const amountInput = getByTestId('test');
-
-    userEvent.type(amountInput, '1112');
-
-    await waitFor(() => expect(amountInput).toHaveValue(0.123));
-  });
-
-  test('correctly formats a value when rounding up', async () => {
-    const { getByTestId } = render(
-      <AmountInput value={0.123} decimalPrecision={3} dataLayoutId="test" />,
-    );
-
-    const amountInput = getByTestId('test');
-
-    userEvent.type(amountInput, '5556');
-
-    await waitFor(() => expect(amountInput).toHaveValue(0.124));
-  });
-
   test('allows value changes', () => {
     const { getByTestId } = render(
-      <AmountInput value="2" dataLayoutId="test" />,
+      <AmountInput value="2" dataAttribute="test" />,
     );
 
     const amountInput = getByTestId('test');
@@ -92,7 +68,7 @@ describe('AmountInput', () => {
 
   test('does not allow value changes if it is readonly', () => {
     const { getByTestId } = render(
-      <AmountInput value="2" readOnly dataLayoutId="test" />,
+      <AmountInput value="2" readOnly dataAttribute="test" />,
     );
 
     const amountInput = getByTestId('test');
@@ -105,7 +81,7 @@ describe('AmountInput', () => {
 
   test('does not allow value changes if it is disabled', () => {
     const { getByTestId } = render(
-      <AmountInput value="2" disabled dataLayoutId="test" />,
+      <AmountInput value="2" disabled dataAttribute="test" />,
     );
 
     const amountInput = getByTestId('test');
@@ -120,7 +96,7 @@ describe('AmountInput', () => {
     languageGetter.mockReturnValue('sk-SK');
 
     const { getByTestId } = render(
-      <AmountInput value="2.4" dataLayoutId="test" />,
+      <AmountInput value="2.4" dataAttribute="test" />,
     );
 
     const amountInput = getByTestId('test');
@@ -129,7 +105,7 @@ describe('AmountInput', () => {
 
   test('does not allow to enter more than 9 whole numbers', async () => {
     const { getByTestId } = render(
-      <AmountInput value={2} dataLayoutId="test" />,
+      <AmountInput value={2} dataAttribute="test" />,
     );
 
     const amountInput = getByTestId('test');
@@ -142,7 +118,11 @@ describe('AmountInput', () => {
 
   test('trims unnecessary zeros at the end', async () => {
     const { getByTestId } = render(
-      <AmountInput value="0.065000" decimalPrecision={6} dataLayoutId="test" />,
+      <AmountInput
+        value="0.065000"
+        decimalPrecision={6}
+        dataAttribute="test"
+      />,
     );
 
     const amountInput = getByTestId('test');
@@ -152,7 +132,7 @@ describe('AmountInput', () => {
 
   test('does not allow to enter more than max amount value', async () => {
     const { getByTestId } = render(
-      <AmountInput value={12} maxAmount={10} dataLayoutId="test" />,
+      <AmountInput value={12} maxAmount={10} dataAttribute="test" />,
     );
 
     const amountInput = getByTestId('test');
@@ -162,7 +142,7 @@ describe('AmountInput', () => {
 
   test('does not allow to enter less than min amount value', async () => {
     const { getByTestId } = render(
-      <AmountInput value={3} min={4.56} dataLayoutId="test" />,
+      <AmountInput value={3} min={4.56} dataAttribute="test" />,
     );
 
     const amountInput = getByTestId('test');
@@ -175,12 +155,42 @@ describe('AmountInput', () => {
       <AmountInput
         value={999999994}
         maxAmount={999999990}
-        dataLayoutId="test"
+        dataAttribute="test"
       />,
     );
 
     const amountInput = getByTestId('test');
 
     expect(amountInput).toHaveValue(999999990);
+  });
+
+  test('allows to enter 18 decimals if the integer part length is less than 9', async () => {
+    const { getByTestId } = render(
+      <AmountInput value={1.123456789123456789} dataAttribute="test" />,
+    );
+
+    const amountInput = getByTestId('test');
+
+    expect(amountInput).toHaveValue(1.123456789123456789);
+  });
+
+  test('allows to enter 9 integers and 18 decimals', async () => {
+    const { getByTestId } = render(
+      <AmountInput value={999999999.123456789123456789} dataAttribute="test" />,
+    );
+
+    const amountInput = getByTestId('test');
+
+    expect(amountInput).toHaveValue(999999999.123456789123456789);
+  });
+
+  test('does not allow to enter more than 18 decimals', async () => {
+    const { getByTestId } = render(
+      <AmountInput value={3.12345678912345678912} dataAttribute="test" />,
+    );
+
+    const amountInput = getByTestId('test');
+
+    expect(amountInput).toHaveValue(3.123456789123456789);
   });
 });

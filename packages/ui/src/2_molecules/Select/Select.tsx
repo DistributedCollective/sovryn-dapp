@@ -8,19 +8,20 @@ export type SelectProps<T = string> = {
   value: T;
   options: SelectOption<T>[];
   onChange: (value: T) => void;
-  dataLayoutId?: string;
+  dataAttribute?: string;
   dropdownProps?: Omit<
     DropdownProps,
-    'text' | 'children' | 'dataLayoutId' | 'closeOnClick'
+    'text' | 'children' | 'dataAttribute' | 'closeOnClick'
   >;
   labelRenderer?: (props: SelectProps<T>) => ReactNode;
+  className?: string;
 };
 
 export const Select = <T extends string>({
   labelRenderer = DefaultLabelRenderer,
   ...props
 }: SelectProps<T>) => {
-  const { options, onChange, dropdownProps, dataLayoutId } = props;
+  const { options, onChange, dropdownProps, dataAttribute, className } = props;
 
   const handleOptionClick = useCallback(
     (option: SelectOption<T>) => () => onChange(option.value),
@@ -30,8 +31,9 @@ export const Select = <T extends string>({
   return (
     <Dropdown
       text={labelRenderer(props)}
-      dataLayoutId={dataLayoutId}
+      dataAttribute={dataAttribute}
       closeOnClick
+      className={className}
       {...dropdownProps}
     >
       <Menu>
@@ -40,7 +42,7 @@ export const Select = <T extends string>({
             key={option.value.toString()}
             text={option.label}
             onClick={handleOptionClick(option)}
-            dataLayoutId={`${dataLayoutId}__option-${option.value}`}
+            dataAttribute={`${dataAttribute}__option-${option.value}`}
             isActive={option.value === props.value}
           />
         ))}

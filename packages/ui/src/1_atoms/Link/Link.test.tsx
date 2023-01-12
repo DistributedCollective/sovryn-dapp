@@ -9,7 +9,7 @@ test('renders Link with action id', () => {
     <Link
       text="sovryn-link"
       href="https://live.sovryn.app/"
-      dataLayoutId="sovryn-link"
+      dataAttribute="sovryn-link"
     />,
   );
   expect(getByTestId('sovryn-link')).toBeDefined();

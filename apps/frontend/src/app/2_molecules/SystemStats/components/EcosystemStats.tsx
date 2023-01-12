@@ -1,7 +1,15 @@
-import React, { FC } from 'react';
+import { Decimal } from '@sovryn-zero/lib-base';
+import {
+  EthersLiquity,
+  ReadableEthersLiquityWithStore,
+} from '@sovryn-zero/lib-ethers';
+
+import React, { FC, useEffect, useMemo, useState } from 'react';
 
 import { useTranslation } from 'react-i18next';
+import { useLoaderData } from 'react-router-dom';
 
+import { SupportedTokens } from '@sovryn/contracts';
 import {
   applyDataAttr,
   Icon,
@@ -14,6 +22,11 @@ import {
 } from '@sovryn/ui';
 
 import { translations } from '../../../../locales/i18n';
+import { formatValue } from '../../../../utils/math';
+import { useGetAssetBalance } from '../hooks/useGetAssetBalance';
+import { useGetTotalSupply } from '../hooks/useGetTotalSupply';
+import { TokenType } from '../types';
+import { parseBalance } from '../utils';
 
 type EcosystemStatsProps = {
   className?: string;
@@ -25,6 +38,82 @@ export const EcosystemStats: FC<EcosystemStatsProps> = ({
   dataAttribute,
 }) => {
   const { t } = useTranslation();
+  const [zeroPrice, setZeroPrice] = useState<Decimal>();
+  const { liquity } = useLoaderData() as {
+    liquity: EthersLiquity;
+    provider: ReadableEthersLiquityWithStore;
+  };
+
+  const { value: babelFishZUSDBalance } = useGetAssetBalance(
+    SupportedTokens.zusd,
+    TokenType.babelfish,
+  );
+
+  const renderBabelFishZUSDBalance = useMemo(
+    () =>
+      babelFishZUSDBalance && zeroPrice
+        ? `${formatValue(
+            Number(parseBalance(babelFishZUSDBalance)),
+            0,
+          )} ${SupportedTokens.rbtc.toUpperCase()} ($${formatValue(
+            Number(parseBalance(babelFishZUSDBalance)) * Number(zeroPrice),
+            2,
+          )}M)`
+        : 0,
+    [zeroPrice, babelFishZUSDBalance],
+  );
+
+  const { value: babelFishDLLRBalance } = useGetAssetBalance(
+    SupportedTokens.dllr,
+    TokenType.babelfish,
+  );
+
+  const { value: myntZUSDBalance } = useGetAssetBalance(
+    SupportedTokens.zusd,
+    TokenType.mynt,
+  );
+
+  const renderMyntZUSDBalance = useMemo(
+    () =>
+      myntZUSDBalance
+        ? `${formatValue(
+            Number(parseBalance(myntZUSDBalance)),
+            2,
+          )} ${SupportedTokens.zusd.toUpperCase()}`
+        : 0,
+    [myntZUSDBalance],
+  );
+
+  const { value: myntDOCBalance } = useGetAssetBalance(
+    SupportedTokens.doc,
+    TokenType.mynt,
+  );
+
+  const renderMyntDOCBalance = useMemo(
+    () =>
+      myntDOCBalance
+        ? `${formatValue(
+            Number(parseBalance(myntDOCBalance)),
+            2,
+          )} ${SupportedTokens.doc.toUpperCase()}`
+        : 0,
+    [myntDOCBalance],
+  );
+
+  const { value: totalDLLRSupply } = useGetTotalSupply(SupportedTokens.dllr);
+
+  const renderTotalDLLRSupply = useMemo(
+    () =>
+      totalDLLRSupply
+        ? `${formatValue(Number(parseBalance(totalDLLRSupply)), 2)}%`
+        : 0,
+    [totalDLLRSupply],
+  );
+
+  useEffect(() => {
+    liquity.getPrice().then(result => setZeroPrice(result));
+  }, [liquity]);
+
   return (
     <div className={className} {...applyDataAttr(dataAttribute)}>
       <Paragraph
@@ -54,26 +143,26 @@ export const EcosystemStats: FC<EcosystemStatsProps> = ({
               </Tooltip>
             </div>
           }
-          value="0"
+          value={renderBabelFishZUSDBalance}
         />
         <SimpleTableRow
           className="mb-8"
           label={t(translations.stats.ecosystem.babelFishDLLRBalance)}
-          value="0"
+          value={parseBalance(babelFishDLLRBalance)}
         />
         <SimpleTableRow
           className="mb-8"
           label={t(translations.stats.ecosystem.myntZUSDBalance)}
-          value="0"
+          value={renderMyntZUSDBalance}
         />
         <SimpleTableRow
           className="mb-8"
           label={t(translations.stats.ecosystem.myntDOCBalance)}
-          value="0"
+          value={renderMyntDOCBalance}
         />
         <SimpleTableRow
           label={t(translations.stats.ecosystem.totalDLLRSupply)}
-          value="0"
+          value={renderTotalDLLRSupply}
         />
       </SimpleTable>
     </div>

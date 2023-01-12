@@ -53,7 +53,7 @@ export const ZeroStats: FC<ZeroStatsProps> = ({ className, dataAttribute }) => {
       rbtcInLoc && zeroPrice
         ? `${formatValue(
             Number(rbtcInLoc),
-            6,
+            0,
           )} ${SupportedTokens.rbtc.toUpperCase()} ($${formatValue(
             Number(rbtcInLoc) * Number(zeroPrice),
             2,

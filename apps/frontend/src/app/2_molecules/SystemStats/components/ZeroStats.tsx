@@ -131,7 +131,7 @@ export const ZeroStats: FC<ZeroStatsProps> = ({ className, dataAttribute }) => {
         {t(translations.stats.zero.title)}
       </Paragraph>
       <SimpleTable
-        dataLayoutId="system-statistics"
+        dataAttribute="system-statistics"
         className="max-w-[23.125rem]"
       >
         <SimpleTableRow
@@ -142,7 +142,7 @@ export const ZeroStats: FC<ZeroStatsProps> = ({ className, dataAttribute }) => {
               <Tooltip
                 className="ml-2"
                 content={t(translations.stats.zero.rbtcInLoc)}
-                dataLayoutId="system-statistics-tooltip-rbtc-in-loc"
+                dataAttribute="system-statistics-tooltip-rbtc-in-loc"
               >
                 <div>
                   <Icon size={12} icon="info" />

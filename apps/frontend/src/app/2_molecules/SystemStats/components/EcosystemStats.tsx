@@ -124,7 +124,7 @@ export const EcosystemStats: FC<EcosystemStatsProps> = ({
         {t(translations.stats.ecosystem.title)}
       </Paragraph>
       <SimpleTable
-        dataLayoutId="system-statistics"
+        dataAttribute="system-statistics"
         className="max-w-[23.125rem]"
       >
         <SimpleTableRow
@@ -135,7 +135,7 @@ export const EcosystemStats: FC<EcosystemStatsProps> = ({
               <Tooltip
                 className="ml-2"
                 content={t(translations.stats.ecosystem.babelFishZUSDBalance)}
-                dataLayoutId="system-statistics-tooltip-rbtc-in-loc"
+                dataAttribute="system-statistics-tooltip-rbtc-in-loc"
               >
                 <div>
                   <Icon size={12} icon="info" />

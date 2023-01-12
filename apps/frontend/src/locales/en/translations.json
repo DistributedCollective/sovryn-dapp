@@ -210,8 +210,8 @@
         "subtitle": "Convert between assets",
         "form": {
             "convertFrom": "Convert from",
-            "sourceAmountTooltip": "Important info",
-            "convertTo": "To"
+            "convertTo": "To",
+            "invalidAmountError": "Exceeds maximum amount"
         }
     }
 }

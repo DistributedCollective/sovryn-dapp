@@ -7,9 +7,19 @@ import { getProtocolContract, SupportedTokens } from '@sovryn/contracts';
 import { defaultChainId } from '../../../../config/chains';
 import { useAssetBalance } from '../../../../hooks/useAssetBalance';
 import { fromWei } from '../../../../utils/math';
+import { bassets, masset } from '../ConvertPage.types';
 import { useGetSourceTokenBalance } from './useGetSourceTokenBalance';
 
-export const useGetMaximumAvailableAmount = (sourceToken: SupportedTokens) => {
+export const useGetMaximumAvailableAmount = (
+  sourceToken: SupportedTokens,
+  destinationToken: SupportedTokens,
+) => {
+  //  bAsset => DLLR conversion
+  const isMint = useMemo(
+    () => bassets.includes(sourceToken) && destinationToken === masset,
+    [destinationToken, sourceToken],
+  );
+
   const { weiBalance: sourceTokenWeiBalance, balance: sourceTokenBalance } =
     useGetSourceTokenBalance(sourceToken);
 
@@ -27,22 +37,24 @@ export const useGetMaximumAvailableAmount = (sourceToken: SupportedTokens) => {
     getMassetManagerDetails().then(result => setMassetManagerAddress(result));
   }, []);
 
-  const { value: aggregatorWeiBalance } = useAssetBalance(
-    sourceToken,
+  const { value: destinationTokenAggregatorWeiBalance } = useAssetBalance(
+    destinationToken,
     defaultChainId,
     massetManagerAddress,
   );
 
-  const aggregatorBalance = useMemo(
-    () => String(Number(fromWei(aggregatorWeiBalance))),
-    [aggregatorWeiBalance],
+  const destinationTokenAggregatorBalance = useMemo(
+    () => String(Number(fromWei(destinationTokenAggregatorWeiBalance))),
+    [destinationTokenAggregatorWeiBalance],
   );
 
-  if (sourceToken === SupportedTokens.dllr) {
+  if (isMint) {
     return sourceTokenBalance;
   }
 
-  return BigNumber.from(sourceTokenWeiBalance).lt(aggregatorWeiBalance)
+  return BigNumber.from(sourceTokenWeiBalance).lt(
+    destinationTokenAggregatorWeiBalance,
+  )
     ? sourceTokenBalance
-    : aggregatorBalance;
+    : destinationTokenAggregatorBalance;
 };

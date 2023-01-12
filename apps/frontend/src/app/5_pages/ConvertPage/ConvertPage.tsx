@@ -57,7 +57,15 @@ const ConvertPage: FC = () => {
     destinationTokenOptions[0].value,
   );
 
-  const maximumAmountToConvert = useGetMaximumAvailableAmount(sourceToken);
+  const maximumAmountToConvert = useGetMaximumAvailableAmount(
+    sourceToken,
+    destinationToken,
+  );
+
+  const isValidAmount = useMemo(
+    () => Number(amount) <= Number(maximumAmountToConvert),
+    [amount, maximumAmountToConvert],
+  );
 
   const onMaximumAmountClick = useCallback(
     () => setAmount(maximumAmountToConvert),
@@ -139,12 +147,13 @@ const ConvertPage: FC = () => {
             <AmountInput
               value={amount}
               onChangeText={setAmount}
-              maxAmount={Number(maximumAmountToConvert)}
               label={t(commonTranslations.amount)}
-              tooltip={t(pageTranslations.form.sourceAmountTooltip)}
               min={0}
+              invalid={!isValidAmount}
+              disabled={!account}
               className="w-full flex-grow-0 flex-shrink"
             />
+
             <Select
               value={sourceToken}
               onChange={onSourceTokenChange}
@@ -155,6 +164,12 @@ const ConvertPage: FC = () => {
               className="min-w-min"
             />
           </div>
+
+          {!isValidAmount && (
+            <Paragraph className="text-error-light font-medium mt-2">
+              {t(pageTranslations.form.invalidAmountError)}
+            </Paragraph>
+          )}
         </div>
 
         <div className="flex justify-center rounded-full -mt-3.5">

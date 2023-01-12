@@ -27,9 +27,6 @@ import { Row } from './Row';
 import { AmountType, tokens } from './types';
 import { normalizeAmountByType } from './utils';
 
-// todo: these needs to be retrieved
-const maxCreditAmount = 100;
-
 export type SubmitValue = {
   debt: string;
   collateral: string;
@@ -56,43 +53,13 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
   const [collateralAmount, setCollateralAmount] = useState('0');
   const [creditAmount, setCreditAmount] = useState('0');
   const [creditToken, setCreditToken] = useState<SupportedTokens>(
-    SupportedTokens.dllr,
+    SupportedTokens.zusd,
   );
+
+  const { value: creditBalanceInWei } = useAssetBalance(creditToken);
 
   const { value: maxCollateralAmountWei } = useAssetBalance(
     SupportedTokens.rbtc,
-  );
-
-  const maxCollateralAmount = useMemo(
-    () =>
-      Number(
-        collateralType === AmountType.Add
-          ? fromWei(maxCollateralAmountWei)
-          : collateralValue,
-      ),
-    [collateralType, collateralValue, maxCollateralAmountWei],
-  );
-
-  const handleMaxCollateralAmountClick = useCallback(
-    () => setCollateralAmount(String(maxCollateralAmount)),
-    [maxCollateralAmount],
-  );
-
-  const handleMaxCreditAmountClick = useCallback(
-    () => setCreditAmount(String(maxCreditAmount)),
-    [],
-  );
-
-  const handleCollateralAmountChange = useCallback(
-    (event: ChangeEvent<HTMLInputElement>) =>
-      setCollateralAmount(event.currentTarget.value),
-    [],
-  );
-
-  const handleCreditAmountChange = useCallback(
-    (event: ChangeEvent<HTMLInputElement>) =>
-      setCreditAmount(event.currentTarget.value),
-    [],
   );
 
   const newDebt = useMemo(
@@ -106,6 +73,52 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
       Number(collateralValue) +
       normalizeAmountByType(Number(collateralAmount), collateralType),
     [collateralAmount, collateralType, collateralValue],
+  );
+
+  const maxCollateralAmount = useMemo(
+    () =>
+      Number(
+        collateralType === AmountType.Add
+          ? fromWei(maxCollateralAmountWei)
+          : collateralValue,
+      ),
+    [collateralType, collateralValue, maxCollateralAmountWei],
+  );
+
+  const maxCreditAmount = useMemo(() => {
+    return Number(
+      debtType === AmountType.Add
+        ? (maxCollateralAmount * Number(rbtcPrice || '0')) / 1.1
+        : Math.min(Number(fromWei(creditBalanceInWei)), Number(creditValue)),
+    );
+  }, [
+    debtType,
+    maxCollateralAmount,
+    rbtcPrice,
+    creditBalanceInWei,
+    creditValue,
+  ]);
+
+  const handleMaxCollateralAmountClick = useCallback(
+    () => setCollateralAmount(String(maxCollateralAmount)),
+    [maxCollateralAmount],
+  );
+
+  const handleMaxCreditAmountClick = useCallback(
+    () => setCreditAmount(String(maxCreditAmount)),
+    [maxCreditAmount],
+  );
+
+  const handleCollateralAmountChange = useCallback(
+    (event: ChangeEvent<HTMLInputElement>) =>
+      setCollateralAmount(event.currentTarget.value),
+    [],
+  );
+
+  const handleCreditAmountChange = useCallback(
+    (event: ChangeEvent<HTMLInputElement>) =>
+      setCreditAmount(event.currentTarget.value),
+    [],
   );
 
   const handleFormSubmit = useCallback(() => {

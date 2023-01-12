@@ -25,7 +25,7 @@ import { formatValue } from '../../../utils/math';
 import { bassets, tokenOptions } from './ConvertPage.types';
 import { useGetDefaultSourceToken } from './hooks/useGetDefaultSourceToken';
 import { useGetMaximumAvailableAmount } from './hooks/useGetMaximumAvailableAmount';
-import { useHandleSubmit } from './hooks/useHandleSubmit';
+import { useHandleConversion } from './hooks/useHandleConversion';
 
 const commonTranslations = translations.common;
 const pageTranslations = translations.convertPage;
@@ -110,7 +110,18 @@ const ConvertPage: FC = () => {
     }
   }, [sourceToken]);
 
-  const handleSubmit = useHandleSubmit(sourceToken, destinationToken, amount);
+  const getAssetRenderer = useCallback(
+    (token: SupportedTokens) => (
+      <AssetRenderer showAssetLogo asset={token} assetClassName="font-medium" />
+    ),
+    [],
+  );
+
+  const handleSubmit = useHandleConversion(
+    sourceToken,
+    destinationToken,
+    amount,
+  );
 
   const isSubmitDisabled = useMemo(
     () =>
@@ -122,20 +133,27 @@ const ConvertPage: FC = () => {
   );
 
   return (
-    <div className="w-full flex flex-col items-center mt-9 sm:mt-24">
-      <Heading>{t(pageTranslations.title)}</Heading>
-      <Paragraph className="mt-4">{t(pageTranslations.subtitle)}</Paragraph>
+    <div className="w-full flex flex-col items-center text-gray-10 mt-9 sm:mt-24">
+      <Heading className="text-base sm:text-2xl">
+        {t(pageTranslations.title)}
+      </Heading>
+      <Paragraph
+        size={ParagraphSize.base}
+        className="mt-2.5 sm:mt-4 sm:text-base"
+      >
+        {t(pageTranslations.subtitle)}
+      </Paragraph>
 
       <div className="mt-12 w-full p-0 sm:border sm:border-gray-50 sm:rounded sm:w-[28rem] sm:p-6 sm:bg-gray-90">
         <div className="bg-gray-80 rounded p-6">
           <div className="w-full flex flex-row justify-between items-center">
-            <Paragraph size={ParagraphSize.base}>
+            <Paragraph size={ParagraphSize.base} className="font-medium">
               {t(pageTranslations.form.convertFrom)}
             </Paragraph>
 
             <button
               onClick={onMaximumAmountClick}
-              className="text-gray-20 text-xs font-medium underline whitespace-nowrap"
+              className="text-xs font-medium underline whitespace-nowrap"
             >
               ({t(commonTranslations.max)}{' '}
               {formatValue(Number(maximumAmountToConvert), 4)}{' '}
@@ -158,10 +176,8 @@ const ConvertPage: FC = () => {
               value={sourceToken}
               onChange={onSourceTokenChange}
               options={tokenOptions}
-              labelRenderer={() => (
-                <AssetRenderer showAssetLogo asset={sourceToken} />
-              )}
-              className="min-w-min"
+              labelRenderer={() => getAssetRenderer(sourceToken)}
+              className="min-w-[6.7rem]"
             />
           </div>
 
@@ -182,7 +198,7 @@ const ConvertPage: FC = () => {
         </div>
 
         <div className="bg-gray-80 rounded p-6 -mt-3.5">
-          <Paragraph size={ParagraphSize.base}>
+          <Paragraph size={ParagraphSize.base} className="font-medium">
             {t(pageTranslations.form.convertTo)}
           </Paragraph>
 
@@ -197,10 +213,8 @@ const ConvertPage: FC = () => {
               value={destinationToken}
               onChange={setDestinationToken}
               options={destinationTokenOptions}
-              labelRenderer={() => (
-                <AssetRenderer showAssetLogo asset={destinationToken} />
-              )}
-              className="min-w-min"
+              labelRenderer={() => getAssetRenderer(destinationToken)}
+              className="min-w-[6.7rem]"
             />
           </div>
         </div>

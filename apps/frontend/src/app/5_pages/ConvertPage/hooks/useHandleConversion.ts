@@ -14,7 +14,7 @@ import { useTransactionContext } from '../../../../contexts/TransactionContext';
 import { useAccount } from '../../../../hooks/useAccount';
 import { toWei } from '../../../../utils/math';
 
-export const useHandleSubmit = (
+export const useHandleConversion = (
   sourceToken: SupportedTokens,
   destinationToken: SupportedTokens,
   amount: string,

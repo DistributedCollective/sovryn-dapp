@@ -30,6 +30,7 @@ export enum SupportedTokens {
   xusd = 'xusd',
   dllr = 'dllr',
   sov = 'sov',
+  doc = 'doc',
 }
 
 export type TokenBaseInfo = {

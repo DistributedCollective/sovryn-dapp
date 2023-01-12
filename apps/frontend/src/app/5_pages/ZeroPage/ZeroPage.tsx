@@ -15,6 +15,7 @@ import {
   noop,
 } from '@sovryn/ui';
 
+import { SystemStats } from '../../2_molecules/SystemStats/SystemStats';
 import { LOCChart } from '../../3_organisms/LOCChart/LOCChart';
 import { AdjustCreditLine } from '../../3_organisms/ZeroLocForm/AdjustCreditLine';
 import { CloseCreditLine } from '../../3_organisms/ZeroLocForm/CloseCreditLine';
@@ -85,7 +86,12 @@ export const ZeroPage: FC = () => {
           />
         </>
       ) : (
-        <Button text="Connect first...." onClick={connectWallet} />
+        <>
+          <Button text="Connect first...." onClick={connectWallet} />
+          <hr />
+          <br />
+          <SystemStats />
+        </>
       )}
       <LOCChart />
 

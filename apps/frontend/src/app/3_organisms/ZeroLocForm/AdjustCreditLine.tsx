@@ -22,6 +22,7 @@ import { useAssetBalance } from '../../../hooks/useAssetBalance';
 import { translations } from '../../../locales/i18n';
 import { CR_THRESHOLDS } from '../../../utils/constants';
 import { formatValue, fromWei } from '../../../utils/math';
+import { CurrentTroveData } from './CurrentTroveData';
 import { Label } from './Label';
 import { Row } from './Row';
 import { AmountType, tokens } from './types';
@@ -217,8 +218,22 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
     [newDebt, newCollateral],
   );
 
+  const hasTrove = useMemo(
+    () => collateralValue !== '0' && creditValue !== '0',
+    [collateralValue, creditValue],
+  );
+
   return (
     <div className="w-full">
+      {hasTrove && (
+        <CurrentTroveData
+          className="sm:hidden"
+          creditValue={creditValue}
+          collateralValue={collateralValue}
+          rbtcPrice={rbtcPrice || '0'}
+        />
+      )}
+
       <FormGroup
         label={
           <Label

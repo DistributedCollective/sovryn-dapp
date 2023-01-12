@@ -26,6 +26,7 @@ type DialogProps = {
   dataAttribute?: string;
   overlayProps?: Omit<Partial<OverlayProps>, 'isOpen' | 'fixed'>;
   onClose?: () => void;
+  mobileView?: boolean;
   closeOnEscape?: boolean;
   initialFocusRef?: React.RefObject<HTMLElement>;
   disableFocusTrap?: boolean;
@@ -40,6 +41,7 @@ export const Dialog: IDialogFunctionComponent<DialogProps> = ({
   dataAttribute = '',
   overlayProps,
   onClose,
+  mobileView,
   closeOnEscape = true,
   initialFocusRef,
   disableFocusTrap,

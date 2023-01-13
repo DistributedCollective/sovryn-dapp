@@ -1,0 +1,7 @@
+.desktop {
+  @apply hidden lg:block;
+}
+
+.mobile {
+  @apply block lg:hidden;
+}

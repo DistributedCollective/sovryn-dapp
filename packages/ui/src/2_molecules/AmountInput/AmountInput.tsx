@@ -86,8 +86,11 @@ export const AmountInput = React.forwardRef<HTMLInputElement, AmountInputProps>(
 
         const decimals = Math.min(decimalPrecision, MAX_DECIMALS);
 
+        const startingIndex =
+          integerPart.length > 1 && integerPart.startsWith('0') ? 1 : 0;
+
         return String(unformattedNumberValue).slice(
-          0,
+          startingIndex,
           integerPart.length + decimals + 1,
         );
       },

@@ -1,9 +1,12 @@
+import { addresses } from '@sovryn-zero/lib-ethers/dist/deployments/default/rsksovrynmainnet.json';
+
 import { AsyncContractConfigData } from '../../types';
 
 export const rsk: Record<string, AsyncContractConfigData> = {
   borrowerOperations: {
-    address: '0x135A1545fa1B2989251921737CD7862c98244FbF',
+    address: addresses.borrowerOperations,
     getAbi: async () =>
-      (await import('../../abis/zero/borrowerOperations.json')).default,
+      (await import('@sovryn-zero/lib-ethers/dist/abi/BorrowerOperations.json'))
+        .default,
   },
 };

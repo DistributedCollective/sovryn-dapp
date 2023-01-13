@@ -14,7 +14,9 @@
             "save": "Save",
             "cancel": "Cancel"
         },
-        "na": "N/A"
+        "na": "N/A",
+        "max": "max",
+        "amount": "Amount"
     },
     "wrongNetworkSwitcher": {
         "title": "Wrong network",
@@ -201,6 +203,15 @@
             "myntZUSDBalance": "Mynt ZUSD balance",
             "myntDOCBalance": "Mynt DOC balance",
             "totalDLLRSupply": "Total DLLR supply"
+        }
+    },
+    "convertPage": {
+        "title": "Convert",
+        "subtitle": "Convert between assets",
+        "form": {
+            "convertFrom": "Convert from",
+            "convertTo": "To",
+            "invalidAmountError": "Exceeds maximum amount"
         }
     }
 }

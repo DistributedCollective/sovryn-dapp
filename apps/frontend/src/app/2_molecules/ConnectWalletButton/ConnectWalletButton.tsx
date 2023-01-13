@@ -1,11 +1,18 @@
-import React, { FC, PropsWithChildren, useReducer } from 'react';
+import React, { FC, PropsWithChildren, useCallback, useReducer } from 'react';
 
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 
-import { Button, Menu, MenuItem, WalletIdentity } from '@sovryn/ui';
+import {
+  Button,
+  Menu,
+  MenuItem,
+  NotificationType,
+  WalletIdentity,
+} from '@sovryn/ui';
 
 import { EmailNotificationSettingsDialog } from '../../3_organisms/EmailNotificationSettingsDialog/EmailNotificationSettingsDialog';
+import { useNotificationContext } from '../../../contexts/NotificationContext';
 import { translations } from '../../../locales/i18n';
 import { sovrynLinks } from '../../../utils/constants';
 
@@ -30,6 +37,21 @@ export const ConnectWalletButton: FC<
 }) => {
   const { t } = useTranslation();
   const [isOpen, toggle] = useReducer(state => !state, false);
+  const { addNotification } = useNotificationContext();
+
+  const onCopyAddress = useCallback(() => {
+    addNotification(
+      {
+        type: NotificationType.success,
+        title: 'Address was copied to clipboard.',
+        content: '',
+        dismissible: true,
+        id: Math.floor(Math.random() * 1000),
+      },
+      5000,
+    );
+  }, [addNotification]);
+
   if (!address) {
     return (
       <Button
@@ -45,6 +67,7 @@ export const ConnectWalletButton: FC<
       <>
         <WalletIdentity
           onDisconnect={onDisconnect}
+          onCopyAddress={onCopyAddress}
           address={address}
           dataAttribute={dataAttribute}
           className={className}

@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 
 import { SupportedTokens } from '@sovryn/contracts';
 import {
+  NotificationType,
   OrderDirection,
   OrderOptions,
   Pagination,
@@ -19,6 +20,7 @@ import { ExportCSV } from '../../2_molecules/ExportCSV/ExportCSV';
 import { TableFilter } from '../../2_molecules/TableFilter/TableFilter';
 import { Filter } from '../../2_molecules/TableFilter/TableFilter.types';
 import { chains, defaultChainId } from '../../../config/chains';
+import { useNotificationContext } from '../../../contexts/NotificationContext';
 import { translations } from '../../../locales/i18n';
 import { EXPORT_RECORD_LIMIT } from '../../../utils/constants';
 import {
@@ -43,6 +45,7 @@ export const TransactionHistoryFrame: FC<TransactionHistoryFrameProps> = ({
   account,
 }) => {
   const { t } = useTranslation();
+  const { addNotification } = useNotificationContext();
   const [page, setPage] = useState(0);
   const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE);
   const chain = chains.find(chain => chain.id === defaultChainId);
@@ -535,7 +538,16 @@ export const TransactionHistoryFrame: FC<TransactionHistoryFrameProps> = ({
 
   const exportData = useCallback(() => {
     if (!troves) {
-      alert(t(translations.transactionHistory.actions.noDataToExport));
+      addNotification(
+        {
+          type: NotificationType.success,
+          title: t(translations.transactionHistory.actions.noDataToExport),
+          content: '',
+          dismissible: true,
+          id: Math.floor(Math.random() * 1000),
+        },
+        5000,
+      );
     }
 
     setPageSize(EXPORT_RECORD_LIMIT);
@@ -551,7 +563,7 @@ export const TransactionHistoryFrame: FC<TransactionHistoryFrameProps> = ({
       originationFee: tx.borrowingFee || '-',
       transactionID: tx.transaction.id,
     }));
-  }, [t, troves, getTroveType, renderLiquidationReserve]);
+  }, [t, troves, addNotification, getTroveType, renderLiquidationReserve]);
 
   useEffect(() => {
     setPage(0);

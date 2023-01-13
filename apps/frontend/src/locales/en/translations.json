@@ -1,6 +1,7 @@
 {
     "wallet": "wallet",
     "exportCSV": "Export to CSV",
+    "copyAddress": "Address was copied to clipboard.",
     "common": {
         "socials": {
             "discord": "Discord",

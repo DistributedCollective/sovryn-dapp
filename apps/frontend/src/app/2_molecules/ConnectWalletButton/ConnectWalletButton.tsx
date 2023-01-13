@@ -43,14 +43,14 @@ export const ConnectWalletButton: FC<
     addNotification(
       {
         type: NotificationType.success,
-        title: 'Address was copied to clipboard.',
+        title: t(translations.copyAddress),
         content: '',
         dismissible: true,
         id: Math.floor(Math.random() * 1000),
       },
       5000,
     );
-  }, [addNotification]);
+  }, [t, addNotification]);
 
   if (!address) {
     return (

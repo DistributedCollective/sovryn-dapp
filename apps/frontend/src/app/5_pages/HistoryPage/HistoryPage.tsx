@@ -1,7 +1,5 @@
 import React, { FC, useMemo, useState } from 'react';
 
-import classNames from 'classnames';
-
 import { Heading, Select, SelectOption, Tabs } from '@sovryn/ui';
 
 import { TransactionHistoryFrame } from '../../3_organisms';
@@ -64,18 +62,18 @@ const HistoryPage: FC = () => {
 
   return (
     <div className="w-full text-gray-10 mt-9 lg:mt-10">
-      <Heading className="pb-14 text-base lg:pb-6 lg:text-2xl">
+      <Heading className="pb-2 text-center text-base lg:pb-6 lg:text-2xl">
         My transaction history
       </Heading>
       <div className="w-full">
-        <div className={classNames(styles.mobile)}>
+        <div className={styles.mobileSelect}>
           <Select
             options={options}
             value={String(index)}
             onChange={(value: string) => setIndex(Number(value))}
           />
         </div>
-        <div className={classNames(styles.desktop)}>
+        <div className={styles.desktop}>
           <Tabs
             items={items}
             onChange={setIndex}
@@ -83,7 +81,7 @@ const HistoryPage: FC = () => {
             className="w-full"
           />
         </div>
-        <div className={classNames(styles.mobile)}>
+        <div className={styles.mobile}>
           {index === 0 && locHistoryFrame}
           {index > 0 && <ComingSoon />}
         </div>

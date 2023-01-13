@@ -5,3 +5,7 @@
 .mobile {
   @apply block lg:hidden;
 }
+
+.mobileSelect {
+  @apply flex mt-6 justify-center lg:hidden;
+}

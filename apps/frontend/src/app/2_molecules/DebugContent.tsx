@@ -256,7 +256,7 @@ export const DebugContent = () => {
 
       <h3>An example of the Transaction Frame</h3>
       <br />
-      <TransactionHistoryFrame />
+      <TransactionHistoryFrame account={wallets[0]?.accounts[0]?.address} />
 
       <div className="mt-10 py-10 border-t border-b">
         <h2>Getting started popup</h2>

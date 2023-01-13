@@ -1,7 +1,7 @@
 .desktop {
-  @apply hidden md:block;
+  @apply hidden lg:block;
 }
 
 .mobile {
-  @apply block md:hidden;
+  @apply block lg:hidden;
 }

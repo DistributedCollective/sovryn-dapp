@@ -35,7 +35,13 @@ import { useGetTroves } from './hooks/useGetTroves';
 const DEFAULT_PAGE_SIZE = 10;
 const liquidationReserveAmount = 20;
 
-export const TransactionHistoryFrame: FC = () => {
+interface TransactionHistoryFrameProps {
+  account: string;
+}
+
+export const TransactionHistoryFrame: FC<TransactionHistoryFrameProps> = ({
+  account,
+}) => {
   const { t } = useTranslation();
   const [page, setPage] = useState(0);
   const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE);
@@ -148,6 +154,7 @@ export const TransactionHistoryFrame: FC = () => {
   ]);
 
   const { data, loading } = useGetTroves(
+    account,
     pageSize,
     page,
     getFinalFilters(),
@@ -190,7 +197,7 @@ export const TransactionHistoryFrame: FC = () => {
       return `-${liquidationReserveAmount} ${SupportedTokens.zusd}`;
     }
 
-    return '—';
+    return '-';
   }, []);
 
   const updateFilters = useCallback(
@@ -256,7 +263,7 @@ export const TransactionHistoryFrame: FC = () => {
             </span>
           </Tooltip>
         ) : (
-          '—'
+          '-'
         )}
       </>
     ),
@@ -287,7 +294,7 @@ export const TransactionHistoryFrame: FC = () => {
             </span>
           </Tooltip>
         ) : (
-          '—'
+          '-'
         )}
       </>
     ),
@@ -320,7 +327,7 @@ export const TransactionHistoryFrame: FC = () => {
             </span>
           </Tooltip>
         ) : (
-          '—'
+          '-'
         )}
       </>
     ),
@@ -370,7 +377,7 @@ export const TransactionHistoryFrame: FC = () => {
             </span>
           </Tooltip>
         ) : (
-          '—'
+          '-'
         )}
       </>
     ),
@@ -399,7 +406,7 @@ export const TransactionHistoryFrame: FC = () => {
             </span>
           </Tooltip>
         ) : (
-          '—'
+          '-'
         )}
       </>
     ),
@@ -541,7 +548,7 @@ export const TransactionHistoryFrame: FC = () => {
       debtChange: tx.debtChange,
       liquidationReserveAmount: renderLiquidationReserve(tx),
       newDebtBalance: tx.debtAfter,
-      originationFee: tx.borrowingFee || '—',
+      originationFee: tx.borrowingFee || '-',
       transactionID: tx.transaction.id,
     }));
   }, [t, troves, getTroveType, renderLiquidationReserve]);

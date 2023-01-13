@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { Fragment, useCallback, useState } from 'react';
 
 import classNames from 'classnames';
 
@@ -35,7 +35,7 @@ export const TableRow = <RowType extends RowObject>({
   }, [onRowClick, row]);
 
   return (
-    <>
+    <Fragment key={index}>
       <tr
         key={index}
         className={classNames(styles.row, className, styles[size], {
@@ -59,6 +59,6 @@ export const TableRow = <RowType extends RowObject>({
         ))}
       </tr>
       <tr className={classNames(styles.spacer, styles[size])}></tr>
-    </>
+    </Fragment>
   );
 };

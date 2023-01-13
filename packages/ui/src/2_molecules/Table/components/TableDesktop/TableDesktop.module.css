@@ -2,7 +2,7 @@
   @apply w-full min-w-auto h-full min-h-auto;
 
   & th {
-    @apply px-5 pb-3;
+    @apply px-4 pb-3;
   }
 }
 
@@ -35,7 +35,7 @@
     @apply flex items-center;
 
     .title {
-      @apply flex items-center select-none;
+      @apply flex flex-row flex-shrink basis-0 items-center select-none min-w-fit;
     }
 
     .sortable {

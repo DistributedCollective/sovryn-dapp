@@ -9,7 +9,7 @@ import { useAccount } from '../../../hooks/useAccount';
 import styles from './HistoryPage.module.css';
 
 const ComingSoon = () => (
-  <div className="px-4 py-12 flex flex-row justify-center">
+  <div className="px-4 py-12 rounded my-4 lg:rounded-none lg:my-0 flex flex-row justify-center bg-gray-80">
     <Heading className="inline">Coming soon...</Heading>
   </div>
 );

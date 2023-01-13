@@ -574,10 +574,10 @@ export const TransactionHistoryFrame: FC<TransactionHistoryFrameProps> = ({
       <ExportCSV
         getData={exportData}
         filename="transactions"
-        className="mb-7"
+        className="mb-7 hidden lg:inline-flex"
         onExportEnd={() => setPageSize(DEFAULT_PAGE_SIZE)}
       />
-      <div className="bg-gray-80 py-4 px-6 rounded">
+      <div className="bg-gray-80 py-4 px-4 rounded">
         <Table
           setOrderOptions={setOrderOptions}
           orderOptions={orderOptions}

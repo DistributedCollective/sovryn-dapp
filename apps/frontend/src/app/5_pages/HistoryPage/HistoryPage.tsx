@@ -21,7 +21,7 @@ const HistoryPage: FC = () => {
   const { account } = useAccount();
   const locHistoryFrame = useMemo(
     () => (
-      <div className="p-4">
+      <div className="px-0 py-4 lg:p-4">
         <TransactionHistoryFrame account={account} />
       </div>
     ),
@@ -63,8 +63,8 @@ const HistoryPage: FC = () => {
   );
 
   return (
-    <div className="w-full text-gray-10 mt-9 sm:mt-24">
-      <Heading className="pb-6 text-base sm:text-2xl">
+    <div className="w-full text-gray-10 mt-9 lg:mt-10">
+      <Heading className="pb-14 text-base lg:pb-6 lg:text-2xl">
         My transaction history
       </Heading>
       <div className="w-full">

@@ -585,13 +585,13 @@ export const TransactionHistoryFrame: FC<TransactionHistoryFrameProps> = ({
           rows={troves}
           rowTitle={row => generateRowTitle(row)}
           isLoading={loading}
-          className="bg-gray-80 text-gray-10 md:px-6 md:py-4"
+          className="bg-gray-80 text-gray-10 lg:px-6 lg:py-4"
           noData={noDataLabel}
           dataAttribute="transaction-history-table"
         />
         <Pagination
           page={page}
-          className="md:pb-6 mt-3 md:mt-6 justify-center md:justify-start"
+          className="lg:pb-6 mt-3 lg:mt-6 justify-center lg:justify-start"
           onChange={onPageChange}
           itemsPerPage={pageSize}
           isNextButtonDisabled={isNextButtonDisabled}

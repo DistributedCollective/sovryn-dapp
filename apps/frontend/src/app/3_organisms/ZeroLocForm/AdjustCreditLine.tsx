@@ -18,6 +18,7 @@ import {
   SimpleTable,
 } from '@sovryn/ui';
 
+import { AssetRenderer } from '../../2_molecules/AssetRenderer/AssetRenderer';
 import { useAssetBalance } from '../../../hooks/useAssetBalance';
 import { translations } from '../../../locales/i18n';
 import { CR_THRESHOLDS } from '../../../utils/constants';
@@ -28,6 +29,11 @@ import { Row } from './Row';
 import { AmountType, tokens } from './types';
 import { normalizeAmountByType } from './utils';
 
+export enum AdjustCreditLineType {
+  Open,
+  Adjust,
+}
+
 export type SubmitValue = {
   borrow: string;
   repay: string;
@@ -36,6 +42,7 @@ export type SubmitValue = {
 };
 
 type AdjustCreditLineProps = {
+  type: AdjustCreditLineType;
   collateralValue: string;
   creditValue: string;
   onSubmit: (value: SubmitValue) => void;
@@ -44,6 +51,7 @@ type AdjustCreditLineProps = {
 };
 
 export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
+  type,
   collateralValue,
   creditValue,
   onSubmit,
@@ -176,9 +184,10 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
       {
         value: AmountType.Remove,
         label: t(translations.adjustCreditLine.actions.repay),
+        disabled: type === AdjustCreditLineType.Open,
       },
     ],
-    [t],
+    [t, type],
   );
 
   const collateralTabs = useMemo(
@@ -190,9 +199,10 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
       {
         value: AmountType.Remove,
         label: t(translations.adjustCreditLine.actions.withdrawCollateral),
+        disabled: type === AdjustCreditLineType.Open,
       },
     ],
-    [t],
+    [t, type],
   );
 
   const newDebtRenderer = useCallback(
@@ -277,6 +287,14 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
             value={creditToken}
             onChange={setCreditToken}
             options={tokens}
+            className="flex-grow flex-shrink-0"
+            labelRenderer={({ value }) => (
+              <AssetRenderer
+                dataAttribute="adjust-credit-line-credit-asset"
+                showAssetLogo
+                asset={SupportedTokens[value]}
+              />
+            )}
           />
         </div>
       </FormGroup>

@@ -8,6 +8,7 @@ import {
 import React, { FC, useCallback, useEffect, useReducer, useState } from 'react';
 
 import { Contract, providers } from 'ethers';
+import { t } from 'i18next';
 import { Await, useLoaderData } from 'react-router-dom';
 
 import { getContract } from '@sovryn/contracts';
@@ -17,12 +18,13 @@ import {
   DialogBody,
   DialogHeader,
   DialogSize,
-  noop,
+  Paragraph,
 } from '@sovryn/ui';
 
 import { LOCStatus } from '../../2_molecules/LOCStatus/LOCStatus';
 import {
   AdjustCreditLine,
+  AdjustCreditLineType,
   SubmitValue,
 } from '../../3_organisms/ZeroLocForm/AdjustCreditLine';
 import { CloseCreditLine } from '../../3_organisms/ZeroLocForm/CloseCreditLine';
@@ -139,6 +141,35 @@ export const ZeroPage: FC = () => {
     [getWallet, setIsOpen, setTransactions, trove?.debt],
   );
 
+  const handleTroveClose = useCallback(async () => {
+    const wallet = getWallet(0);
+
+    if (wallet?.provider) {
+      const { address, abi } = await getContract(
+        'borrowerOperations',
+        'zero',
+        getRskChainId(),
+      );
+
+      const contract = new Contract(
+        address,
+        abi,
+        new providers.Web3Provider(wallet.provider).getSigner(),
+      );
+
+      setTransactions([
+        {
+          title: 'Close Trove',
+          contract,
+          fnName: 'closeTrove',
+          args: [],
+          onComplete: hash => console.log('hash', hash),
+        },
+      ]);
+      setIsOpen(true);
+    }
+  }, [getWallet, setIsOpen, setTransactions]);
+
   return (
     <div className="container max-w-7xl mt-24">
       <React.Suspense fallback={<p>Loading stuff...</p>}>
@@ -147,18 +178,30 @@ export const ZeroPage: FC = () => {
             <>
               {account ? (
                 <>
-                  <LOCStatus
-                    collateral={Number(trove?.collateral ?? 0)}
-                    debt={Number(trove?.debt ?? 0)}
-                    cRatio={
-                      ((Number(trove?.collateral ?? 0) * Number(price)) /
-                        Number(trove?.debt ?? 0)) *
-                      100
-                    }
-                    debtSymbol={'ZUSD'}
-                    onAdjust={toggle}
-                    onClose={toggleClosePopup}
-                  />
+                  {trove?.debt?.gt(0) ? (
+                    <LOCStatus
+                      collateral={Number(trove?.collateral ?? 0)}
+                      debt={Number(trove?.debt ?? 0)}
+                      cRatio={
+                        ((Number(trove?.collateral ?? 0) * Number(price)) /
+                          Number(trove?.debt ?? 0)) *
+                        100
+                      }
+                      debtSymbol={'ZUSD'}
+                      onAdjust={toggle}
+                      onClose={toggleClosePopup}
+                    />
+                  ) : (
+                    <>
+                      <Paragraph>****** It should be banner....</Paragraph>
+                      <div className="mt-8">
+                        <Button
+                          text={t('zeroPage.loc.open')}
+                          onClick={toggle}
+                        />
+                      </div>
+                    </>
+                  )}
                 </>
               ) : (
                 <Button text="Connect first...." onClick={connectWallet} />
@@ -171,11 +214,20 @@ export const ZeroPage: FC = () => {
                 mobileView
               >
                 <DialogHeader
-                  title={trove?.debt?.lte(0) ? 'Open' : 'Adjust'}
+                  title={
+                    trove?.debt?.lte(0)
+                      ? t('zeroPage.loc.open')
+                      : t('zeroPage.loc.adjust')
+                  }
                   onClose={toggle}
                 />
                 <DialogBody>
                   <AdjustCreditLine
+                    type={
+                      trove?.debt?.lte(0)
+                        ? AdjustCreditLineType.Open
+                        : AdjustCreditLineType.Adjust
+                    }
                     collateralValue={trove?.collateral.toString() ?? '0'}
                     creditValue={trove?.debt.toString() ?? '0'}
                     onSubmit={handleTroveSubmit}
@@ -190,10 +242,13 @@ export const ZeroPage: FC = () => {
                 isOpen={openClosePopup}
                 disableFocusTrap
               >
-                <DialogHeader title="Close" onClose={toggleClosePopup} />
+                <DialogHeader
+                  title={t('zeroPage.loc.adjust')}
+                  onClose={toggleClosePopup}
+                />
                 <DialogBody>
                   <CloseCreditLine
-                    onSubmit={noop}
+                    onSubmit={handleTroveClose}
                     creditValue={trove?.debt.toString() ?? '0'}
                     collateralValue={trove?.collateral.toString() ?? '0'}
                     availableBalance={zusdBalance}

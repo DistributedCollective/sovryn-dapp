@@ -78,10 +78,7 @@ export const CloseCreditLine: FC<CloseCreditLineProps> = ({
             <Select
               value={creditToken}
               onChange={setCreditToken}
-              options={tokensToOptions([
-                SupportedTokens.dllr,
-                SupportedTokens.zusd,
-              ])}
+              options={tokensToOptions([SupportedTokens.zusd])}
               labelRenderer={({ value }) => (
                 <AssetRenderer
                   dataAttribute="close-credit-line-credit-asset"

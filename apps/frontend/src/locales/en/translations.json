@@ -175,5 +175,12 @@
             "earn": "Earn",
             "convert": "Convert"
         }
+    },
+    "zeroPage": {
+      "loc": {
+        "open": "Open",
+        "adjust": "Adjust",
+        "close": "Close"
+      }
     }
 }

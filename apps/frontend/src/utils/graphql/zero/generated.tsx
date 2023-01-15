@@ -3179,6 +3179,16 @@ export enum _SubgraphErrorPolicy_ {
   Deny = 'deny',
 }
 
+export type GetLowestTrovesQueryVariables = Exact<{
+  first: Scalars['Int'];
+  userCollateralRatioKey?: InputMaybe<Scalars['BigInt']>;
+}>;
+
+export type GetLowestTrovesQuery = {
+  __typename?: 'Query';
+  troves: Array<{ __typename?: 'Trove'; collateral: string; debt: string }>;
+};
+
 export type GetStabilityDepositChangesQueryVariables = Exact<{
   filters?: InputMaybe<StabilityDepositChange_Filter>;
 }>;
@@ -3340,6 +3350,71 @@ export type GetUserOpenTroveQuery = {
   } | null;
 };
 
+export const GetLowestTrovesDocument = gql`
+  query getLowestTroves($first: Int!, $userCollateralRatioKey: BigInt) {
+    troves(
+      orderDirection: desc
+      orderBy: collateralRatioSortKey
+      first: $first
+      where: { collateralRatioSortKey_lt: $userCollateralRatioKey }
+    ) {
+      collateral
+      debt
+    }
+  }
+`;
+
+/**
+ * __useGetLowestTrovesQuery__
+ *
+ * To run a query within a React component, call `useGetLowestTrovesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetLowestTrovesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetLowestTrovesQuery({
+ *   variables: {
+ *      first: // value for 'first'
+ *      userCollateralRatioKey: // value for 'userCollateralRatioKey'
+ *   },
+ * });
+ */
+export function useGetLowestTrovesQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    GetLowestTrovesQuery,
+    GetLowestTrovesQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<GetLowestTrovesQuery, GetLowestTrovesQueryVariables>(
+    GetLowestTrovesDocument,
+    options,
+  );
+}
+export function useGetLowestTrovesLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    GetLowestTrovesQuery,
+    GetLowestTrovesQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    GetLowestTrovesQuery,
+    GetLowestTrovesQueryVariables
+  >(GetLowestTrovesDocument, options);
+}
+export type GetLowestTrovesQueryHookResult = ReturnType<
+  typeof useGetLowestTrovesQuery
+>;
+export type GetLowestTrovesLazyQueryHookResult = ReturnType<
+  typeof useGetLowestTrovesLazyQuery
+>;
+export type GetLowestTrovesQueryResult = Apollo.QueryResult<
+  GetLowestTrovesQuery,
+  GetLowestTrovesQueryVariables
+>;
 export const GetStabilityDepositChangesDocument = gql`
   query getStabilityDepositChanges($filters: StabilityDepositChange_filter) {
     stabilityDepositChanges(where: $filters) {

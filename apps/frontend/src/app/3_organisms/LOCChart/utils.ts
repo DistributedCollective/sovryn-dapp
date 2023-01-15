@@ -30,3 +30,13 @@ export const calculateCollateralRatio = (
 
 export const sortData = (data: ChartDataStructure) =>
   data.sort((a, b) => a.collateralRatio - b.collateralRatio);
+
+export const calculateRedemptionBuffer = (
+  debt: number,
+  collateral: number,
+  collateralRatio: number,
+) => {
+  const collateralRatioValue = (collateralRatio + 0.01) / 100; //user’s CR + 0.01%
+  const minimumLOCRedemption = debt - collateral / collateralRatioValue;
+  return minimumLOCRedemption;
+};

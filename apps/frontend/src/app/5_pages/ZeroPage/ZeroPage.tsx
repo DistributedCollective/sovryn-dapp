@@ -103,7 +103,6 @@ export const ZeroPage: FC = () => {
             wallet.accounts[0].address,
             params,
           );
-          console.log('adjustedTrove', adjustedTrove);
           setTransactions([
             {
               title: 'Adjusting Trove',
@@ -111,6 +110,7 @@ export const ZeroPage: FC = () => {
               fnName: 'adjustTrove',
               config: {
                 value: adjustedTrove.value,
+                gasLimit: '650000',
               },
               args: adjustedTrove.args,
               onComplete: hash => console.log('hash', hash),
@@ -129,6 +129,7 @@ export const ZeroPage: FC = () => {
               fnName: 'openTrove',
               config: {
                 value: openedTrove.value,
+                gasLimit: '900000',
               },
               args: openedTrove.args,
               onComplete: hash => console.log('hash', hash),

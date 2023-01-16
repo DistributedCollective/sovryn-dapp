@@ -33,13 +33,17 @@ export const TransactionSteps: FC<TransactionStepsProps> = ({
         if (tx.fnName === APPROVAL_FUNCTION) {
           args[1] = ethers.constants.MaxUint256;
         }
-        const gasLimit = await tx.contract.estimateGas[tx.fnName](...args);
+        const gasLimit =
+          tx.config?.gasLimit ??
+          (await tx.contract.estimateGas[tx.fnName](...args).then(gas =>
+            gas.toString(),
+          ));
         list.push({
           ...tx.config,
           amount: tx.fnName === APPROVAL_FUNCTION ? tx.args[1] : undefined,
           unlimitedAmount: tx.fnName === APPROVAL_FUNCTION ? false : undefined,
           gasPrice,
-          gasLimit: gasLimit.toString(),
+          gasLimit: gasLimit,
         });
       }
       setConfigs(list);

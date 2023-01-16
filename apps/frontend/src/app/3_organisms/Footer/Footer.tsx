@@ -46,7 +46,7 @@ export const Footer: FC = () => {
       leftContent={
         <SovrynLogo
           image={Logo}
-          dataAttribute="logo"
+          dataAttribute="footer-logo"
           className="max-h-4 max-w-fit mr-2"
           text="Powered by Bitcoin"
           link="/"
@@ -59,7 +59,7 @@ export const Footer: FC = () => {
           ))}
         </div>
       }
-      rightContent={<SocialLinks />}
+      rightContent={<SocialLinks dataAttribute="footer-social" />}
     />
   );
 };

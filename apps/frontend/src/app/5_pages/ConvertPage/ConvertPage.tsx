@@ -155,7 +155,7 @@ const ConvertPage: FC = () => {
             <button
               onClick={onMaximumAmountClick}
               className="text-xs font-medium underline whitespace-nowrap"
-              {...applyDataAttr('convert-to-max')}
+              {...applyDataAttr('convert-from-max')}
             >
               ({t(commonTranslations.max)}{' '}
               {formatValue(Number(maximumAmountToConvert), 4)}{' '}

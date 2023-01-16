@@ -34,7 +34,11 @@ export const Header: FC = () => {
     <UIHeader
       dataAttribute="dapp-header"
       logo={
-        <SovrynLogo dataAttribute="logo" link="/" onClick={handleNavClick} />
+        <SovrynLogo
+          dataAttribute="header-logo"
+          link="/"
+          onClick={handleNavClick}
+        />
       }
       isOpen={isOpen}
       menuIcon={

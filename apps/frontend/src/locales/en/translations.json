@@ -16,6 +16,10 @@
             "cancel": "Cancel"
         },
         "na": "N/A",
+        "tables": {
+            "noData": "No data available",
+            "noDataWithFilters": "No data with the current filters"
+        },
         "max": "max",
         "amount": "Amount"
     },
@@ -82,9 +86,7 @@
             "liquidationReserve": "Liquidation Reserve",
             "newDebt": "New Debt",
             "originationFee": "Origination Fee (ZUSD)",
-            "transactionID": "Transaction ID",
-            "noData": "No data",
-            "noDataWithFilters": "No data with the current filters"
+            "transactionID": "Transaction ID"
         },
         "troveTypes": {
             "open": "Open Line of Credit",
@@ -213,6 +215,18 @@
             "convertFrom": "Convert from",
             "convertTo": "To",
             "invalidAmountError": "Exceeds maximum amount"
+        }
+    },
+    "historyPage": {
+        "title": "My transaction history",
+        "table": {
+            "tabs": {
+                "lineOfCredit": "Line of Credit",
+                "stability": "Stability pool",
+                "convert": "Conversion",
+                "funding": "Funding"
+            },
+            "comingSoon": "Coming soon..."
         }
     }
 }

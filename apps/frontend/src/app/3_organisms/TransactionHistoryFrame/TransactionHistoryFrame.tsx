@@ -167,8 +167,8 @@ export const TransactionHistoryFrame: FC<TransactionHistoryFrameProps> = ({
   const noDataLabel = useMemo(
     () =>
       Object.keys(filters || {}).length > 0
-        ? t(translations.transactionHistory.table.noDataWithFilters)
-        : t(translations.transactionHistory.table.noData),
+        ? t(translations.common.tables.noDataWithFilters)
+        : t(translations.common.tables.noData),
     [t, filters],
   );
 

@@ -170,6 +170,7 @@ const ConvertPage: FC = () => {
               invalid={!isValidAmount}
               disabled={!account}
               className="w-full flex-grow-0 flex-shrink"
+              dataAttribute="convert-from-amount"
             />
 
             <Select
@@ -178,6 +179,7 @@ const ConvertPage: FC = () => {
               options={tokenOptions}
               labelRenderer={() => getAssetRenderer(sourceToken)}
               className="min-w-[6.7rem]"
+              dataAttribute="convert-from-asset"
             />
           </div>
 
@@ -208,6 +210,7 @@ const ConvertPage: FC = () => {
               label={t(commonTranslations.amount)}
               readOnly
               className="w-full flex-grow-0 flex-shrink"
+              dataAttribute="convert-to-amount"
             />
             <Select
               value={destinationToken}
@@ -215,6 +218,7 @@ const ConvertPage: FC = () => {
               options={destinationTokenOptions}
               labelRenderer={() => getAssetRenderer(destinationToken)}
               className="min-w-[6.7rem]"
+              dataAttribute="convert-to-asset"
             />
           </div>
         </div>
@@ -226,6 +230,7 @@ const ConvertPage: FC = () => {
           className="w-full mt-8"
           disabled={isSubmitDisabled}
           onClick={handleSubmit}
+          dataAttribute="convert-confirm"
         />
       </div>
       <TransactionStepDialog />

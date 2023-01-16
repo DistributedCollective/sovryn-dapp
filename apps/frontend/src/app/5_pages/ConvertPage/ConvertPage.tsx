@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { SupportedTokens } from '@sovryn/contracts';
 import {
   AmountInput,
+  applyDataAttr,
   Button,
   ButtonStyle,
   ButtonType,
@@ -154,6 +155,7 @@ const ConvertPage: FC = () => {
             <button
               onClick={onMaximumAmountClick}
               className="text-xs font-medium underline whitespace-nowrap"
+              {...applyDataAttr('convert-to-max')}
             >
               ({t(commonTranslations.max)}{' '}
               {formatValue(Number(maximumAmountToConvert), 4)}{' '}
@@ -194,6 +196,7 @@ const ConvertPage: FC = () => {
           <button
             className="w-11 h-11 rounded-full bg-gray-90 flex justify-center items-center"
             onClick={onSwitchClick}
+            {...applyDataAttr('convert-swap-asset')}
           >
             <Icon icon={IconNames.PENDING} className="text-gray-50" size={24} />
           </button>

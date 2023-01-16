@@ -19,7 +19,7 @@
 }
 
 .input {
-  @apply bg-transparent appearance-none focus:outline-none flex-1 px-2 leading-tight text-xs font-medium text-gray-20 text-right;
+  @apply bg-transparent appearance-none focus:outline-none flex-1 px-2 leading-tight text-xs font-medium text-gray-20 text-right w-full;
 
   &::placeholder {
     @apply text-gray-30;

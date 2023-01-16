@@ -14,7 +14,9 @@
             "save": "Save",
             "cancel": "Cancel"
         },
-        "na": "N/A"
+        "na": "N/A",
+        "max": "max",
+        "amount": "Amount"
     },
     "wrongNetworkSwitcher": {
         "title": "Wrong network",
@@ -151,6 +153,14 @@
             "systemToggle": "System alerts"
         }
     },
+    "chart": {
+        "collateralRatio": "Collateral ratio",
+        "myCollateralRatio": "My Collateral ratio",
+        "collateralAmount": "Collateral Amount",
+        "debtAmount": "Debt Amount",
+        "redemptionBuffer": "Redemption Buffer",
+        "noData": "No data"
+    },
     "LOCStatus": {
         "withdrawalSurplus": "withdrawal surplus",
         "currentCollateral": "Current collateral",
@@ -182,5 +192,33 @@
         "adjust": "Adjust",
         "close": "Close"
       }
+    },
+    "stats": {
+        "zero": {
+            "title": "Zero statistics",
+            "rbtcInLoc": "RBTC in Lines of Credit",
+            "loc": "Lines of credit",
+            "zusdSupply": "ZUSD supply",
+            "zusdInStabilityPool": "ZUSD in Stability Pool",
+            "totalCollateralRatio": "Total Collateral Ratio",
+            "protocolStatus": "Protocol Status (Normal/Recovery Mode)"
+        },
+        "ecosystem": {
+            "title": "Ecosystem statistics",
+            "babelFishZUSDBalance": "BabelFish ZUSD balance",
+            "babelFishDLLRBalance": "BabelFish DLLR balance",
+            "myntZUSDBalance": "Mynt ZUSD balance",
+            "myntDOCBalance": "Mynt DOC balance",
+            "totalDLLRSupply": "Total DLLR supply"
+        }
+    },
+    "convertPage": {
+        "title": "Convert",
+        "subtitle": "Convert between assets",
+        "form": {
+            "convertFrom": "Convert from",
+            "convertTo": "To",
+            "invalidAmountError": "Exceeds maximum amount"
+        }
     }
 }

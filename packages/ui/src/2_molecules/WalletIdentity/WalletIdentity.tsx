@@ -59,6 +59,7 @@ export const WalletIdentity: FC<WalletIdentityProps> = ({
         />
       }
       size={DropdownSize.small}
+      closeOnClick
     >
       {content}
       <DisconnectSubmenu

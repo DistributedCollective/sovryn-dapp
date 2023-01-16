@@ -22,6 +22,8 @@ import {
 } from '@sovryn/ui';
 
 import { LOCStatus } from '../../2_molecules/LOCStatus/LOCStatus';
+import { SystemStats } from '../../2_molecules/SystemStats/SystemStats';
+import { LOCChart } from '../../3_organisms/LOCChart/LOCChart';
 import {
   AdjustCreditLine,
   AdjustCreditLineType,
@@ -205,15 +207,16 @@ export const ZeroPage: FC = () => {
                   )}
                 </>
               ) : (
-                <Button text="Connect first...." onClick={connectWallet} />
+                <>
+                  <Button text="Connect first...." onClick={connectWallet} />
+                  <hr />
+                  <br />
+                  <SystemStats />
+                </>
               )}
+              <LOCChart />
 
-              <Dialog
-                width={DialogSize.sm}
-                isOpen={open}
-                disableFocusTrap
-                mobileView
-              >
+              <Dialog width={DialogSize.sm} isOpen={open} disableFocusTrap>
                 <DialogHeader
                   title={
                     trove?.debt?.lte(0)

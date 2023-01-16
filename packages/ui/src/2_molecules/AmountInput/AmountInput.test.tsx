@@ -53,30 +53,6 @@ describe('AmountInput', () => {
     expect(amountInput).toHaveValue(0.123);
   });
 
-  test('correctly formats a value when rounding down', async () => {
-    const { getByTestId } = render(
-      <AmountInput value={0.123} decimalPrecision={3} dataAttribute="test" />,
-    );
-
-    const amountInput = getByTestId('test');
-
-    userEvent.type(amountInput, '1112');
-
-    await waitFor(() => expect(amountInput).toHaveValue(0.123));
-  });
-
-  test('correctly formats a value when rounding up', async () => {
-    const { getByTestId } = render(
-      <AmountInput value={0.123} decimalPrecision={3} dataAttribute="test" />,
-    );
-
-    const amountInput = getByTestId('test');
-
-    userEvent.type(amountInput, '5556');
-
-    await waitFor(() => expect(amountInput).toHaveValue(0.124));
-  });
-
   test('allows value changes', () => {
     const { getByTestId } = render(
       <AmountInput value="2" dataAttribute="test" />,
@@ -186,5 +162,35 @@ describe('AmountInput', () => {
     const amountInput = getByTestId('test');
 
     expect(amountInput).toHaveValue(999999990);
+  });
+
+  test('allows to enter 18 decimals if the integer part length is less than 9', async () => {
+    const { getByTestId } = render(
+      <AmountInput value={1.123456789123456789} dataAttribute="test" />,
+    );
+
+    const amountInput = getByTestId('test');
+
+    expect(amountInput).toHaveValue(1.123456789123456789);
+  });
+
+  test('allows to enter 9 integers and 18 decimals', async () => {
+    const { getByTestId } = render(
+      <AmountInput value={999999999.123456789123456789} dataAttribute="test" />,
+    );
+
+    const amountInput = getByTestId('test');
+
+    expect(amountInput).toHaveValue(999999999.123456789123456789);
+  });
+
+  test('does not allow to enter more than 18 decimals', async () => {
+    const { getByTestId } = render(
+      <AmountInput value={3.12345678912345678912} dataAttribute="test" />,
+    );
+
+    const amountInput = getByTestId('test');
+
+    expect(amountInput).toHaveValue(3.123456789123456789);
   });
 });

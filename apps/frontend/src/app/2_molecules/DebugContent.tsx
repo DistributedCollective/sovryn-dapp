@@ -5,12 +5,13 @@ import { parseUnits } from 'ethers/lib/utils';
 import { useTranslation } from 'react-i18next';
 
 import { getTokenDetails, SupportedTokens } from '@sovryn/contracts';
-import { Accordion, AmountInput, Button } from '@sovryn/ui';
+import { Accordion, AmountInput, Button, NotificationType } from '@sovryn/ui';
 
 import { TransactionHistoryFrame, TransactionStepDialog } from '../3_organisms';
 import { EmailNotificationSettingsDialog } from '../3_organisms/EmailNotificationSettingsDialog/EmailNotificationSettingsDialog';
 import { GettingStartedPopup } from '../3_organisms/GettingStartedPopup/GettingStartedPopup';
 import { defaultChainId } from '../../config/chains';
+import { useNotificationContext } from '../../contexts/NotificationContext';
 import { useTransactionContext } from '../../contexts/TransactionContext';
 import { useTheme, useWalletConnect } from '../../hooks';
 import { useMaintenance } from '../../hooks/useMaintenance';
@@ -36,6 +37,7 @@ import { SmartTokens } from './SmartTokens';
 // usage example, to be removed
 export const DebugContent = () => {
   const { handleThemeChange } = useTheme();
+  const { addNotification } = useNotificationContext();
   const { t } = useTranslation();
   const [isOpen, toggle] = useReducer(p => !p, false);
   const { connectWallet, disconnectWallet, wallets, pending } =
@@ -108,6 +110,38 @@ export const DebugContent = () => {
       open={isOpen}
       onClick={toggle}
     >
+      <div className="flex itmes-center gap-4 mt-4">
+        <Button
+          onClick={() =>
+            addNotification(
+              {
+                type: NotificationType.success,
+                title:
+                  'Transaction approved ' + Math.floor(Math.random() * 1000),
+                content: '',
+                dismissible: true,
+                id: Math.floor(Math.random() * 1000),
+              },
+              0,
+            )
+          }
+          text="Add Notifcation"
+        />
+
+        <Button
+          onClick={() =>
+            addNotification({
+              type: NotificationType.error,
+              title: 'Transaction error ' + Math.floor(Math.random() * 1000),
+              content: '',
+              dismissible: true,
+              id: Math.floor(Math.random() * 1000),
+            })
+          }
+          text="Add Notifcation With Timer"
+        />
+      </div>
+
       <div className="mt-5 py-10 border-b">
         <AmountInput
           className="mb-2"

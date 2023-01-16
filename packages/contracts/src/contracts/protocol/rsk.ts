@@ -9,4 +9,8 @@ export const rsk: Record<string, AsyncContractConfigData> = {
     address: '0x98aCE08D2b759a265ae326F010496bcD63C15afc',
     getAbi: async () => (await import('../../abis/swapNetwork.json')).default,
   },
+  massetManager: {
+    address: '0xac2d05A148aB512EDEDc7280c00292ED33d31f1A', // TODO: This is testnet address, change it to mainnet
+    getAbi: async () => (await import('../../abis/massetManager.json')).default,
+  },
 };

@@ -1,14 +1,9 @@
 import React, { FC, useState } from 'react';
-import { useCallback } from 'react';
 import { useEffect } from 'react';
 
 import classNames from 'classnames';
 
-import {
-  getTokenDetails,
-  SupportedTokenList,
-  SupportedTokens,
-} from '@sovryn/contracts';
+import { getTokenDetails, SupportedTokens } from '@sovryn/contracts';
 import { applyDataAttr } from '@sovryn/ui';
 
 import styles from './AssetRenderer.module.css';
@@ -44,14 +39,7 @@ export const AssetRenderer: FC<AssetRendererProps> = ({
   className,
   dataAttribute,
 }) => {
-  const [logo, setLogo] = useState<string | undefined>('');
-  const getAssetLogo = useCallback((asset: SupportedTokens) => {
-    const assetData = SupportedTokenList.find(item => item.symbol === asset);
-    if (!assetData) {
-      throw new Error(`Asset ${asset} not found in the list.`);
-    }
-    return assetData.getIcon();
-  }, []);
+  const [logo, setLogo] = useState<string | undefined>(undefined);
 
   useEffect(() => {
     const getLogo = async () =>
@@ -59,8 +47,8 @@ export const AssetRenderer: FC<AssetRendererProps> = ({
         .then(item => setLogo(item.icon))
         .catch(() => setLogo(''));
 
-    showAssetLogo && !logo && getLogo();
-  }, [asset, showAssetLogo, getAssetLogo, logo]);
+    showAssetLogo && getLogo();
+  }, [asset, showAssetLogo]);
 
   return (
     <div

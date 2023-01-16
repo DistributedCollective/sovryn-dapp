@@ -11,6 +11,7 @@ import { TransactionStepDialog } from './app/3_organisms';
 // chain config must be imported before other files
 import './config/chains';
 import { MaintenanceModeContextProvider } from './contexts/MaintenanceModeContext';
+import { NotificationProvider } from './contexts/NotificationContext';
 import { TransactionProvider } from './contexts/TransactionContext';
 import './locales/dayjs';
 import './locales/i18n';
@@ -31,16 +32,17 @@ const root = ReactDOM.createRoot(
 );
 
 root.render(
-  <>
+  <React.StrictMode>
     <TransactionProvider>
       <ApolloProvider client={rskClient}>
         <MaintenanceModeContextProvider>
-          <RouterProvider router={router} />
-          <OnboardProvider />
+          <NotificationProvider>
+            <RouterProvider router={router} />
+            <OnboardProvider dataAttribute="dapp-onboard" />
+          </NotificationProvider>
         </MaintenanceModeContextProvider>
       </ApolloProvider>
       <TransactionStepDialog />
     </TransactionProvider>
-    <OnboardProvider />
-  </>,
+  </React.StrictMode>,
 );

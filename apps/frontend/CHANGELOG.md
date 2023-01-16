@@ -1,5 +1,16 @@
 # frontend
 
+## 0.1.12
+
+### Patch Changes
+
+- 3969a12: SOV-1406: fix: pagination in WalletConnect modal
+- 9ee7347: SOV-1191: Email notification dialog integration
+- Updated dependencies [db0d93c]
+- Updated dependencies [9ee7347]
+- Updated dependencies [c10e41c]
+  - @sovryn/ui@0.0.17
+
 ## 0.1.11
 
 ### Patch Changes

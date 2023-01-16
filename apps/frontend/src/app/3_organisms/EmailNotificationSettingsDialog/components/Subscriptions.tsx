@@ -8,9 +8,9 @@ import { translations } from '../../../../locales/i18n';
 import { useEmailNotificationSettingsContext } from '../contexts/EmailNotificationSettingsContext';
 import { useHandleSubscriptions } from '../hooks/useHandleSubscriptions';
 
-interface SubscriptionsProps {
+type SubscriptionsProps = {
   dataAttribute?: string;
-}
+};
 
 export const Subscriptions: FC<SubscriptionsProps> = ({ dataAttribute }) => {
   const { t } = useTranslation();

@@ -39,6 +39,10 @@ export const signTypedData = async (
   return signature;
 };
 
+export const currentNetwork: Environments = !!process.env.REACT_APP_NETWORK
+  ? (process.env.REACT_APP_NETWORK as Environments)
+  : Environments.Mainnet;
+
 export const isMainnet = () =>
   process.env.REACT_APP_NETWORK === Environments.Mainnet;
 

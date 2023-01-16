@@ -228,5 +228,12 @@
             },
             "comingSoon": "Coming soon..."
         }
+    },
+    "earnPage": {
+        "title": "Earn",
+        "subtitle": "Earn BTC by providing liquidity for liquidations",
+        "form": {
+            "invalidAmountError": "Exceeds maximum amount"
+        }
     }
 }

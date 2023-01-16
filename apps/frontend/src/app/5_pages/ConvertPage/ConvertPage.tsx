@@ -118,7 +118,7 @@ const ConvertPage: FC = () => {
     [],
   );
 
-  const handleSubmit = useHandleConversion(
+  const { handleSubmit } = useHandleConversion(
     sourceToken,
     destinationToken,
     amount,

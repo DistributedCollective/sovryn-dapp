@@ -20,6 +20,7 @@ import {
   StatusType,
   TransactionId,
   HelperButton,
+  noop,
 } from '@sovryn/ui';
 
 import { chains, defaultChainId } from '../../../../../config/chains';
@@ -53,7 +54,9 @@ export const TransactionStep: FC<TransactionStepProps> = ({
 
   useEffect(() => {
     (() =>
-      getTokenDetailsByAddress(transaction.contract.address).then(setToken))();
+      getTokenDetailsByAddress(transaction.contract.address)
+        .then(setToken)
+        .catch(noop))();
   }, [transaction.contract.address]);
 
   const { title, subtitle } = transaction;
@@ -72,7 +75,7 @@ export const TransactionStep: FC<TransactionStepProps> = ({
             ? transaction.args[1]
             : undefined,
         gasPrice,
-        gasLimit: gasLimit.toString(),
+        gasLimit: gasLimit.mul(12).div(10).toString(),
       });
     } catch (error) {
       console.log('error', error);

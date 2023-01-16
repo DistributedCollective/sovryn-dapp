@@ -8,7 +8,7 @@ import { Tab } from './components/Tab/Tab';
 
 export interface ITabItem {
   label: React.ReactNode;
-  content: React.ReactNode;
+  content?: React.ReactNode;
   disabled?: boolean;
   dataAttribute?: string;
   activeClassName?: string;
@@ -63,11 +63,13 @@ export const Tabs: React.FC<TabsProps> = ({
           />
         ))}
       </div>
-      <div
-        className={classNames(styles.content, styles[type], contentClassName)}
-      >
-        {content}
-      </div>
+      {content && (
+        <div
+          className={classNames(styles.content, styles[type], contentClassName)}
+        >
+          {content}
+        </div>
+      )}
     </div>
   );
 };

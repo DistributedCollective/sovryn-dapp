@@ -42,6 +42,7 @@ export const router = createBrowserRouter([
       {
         path: '/earn',
         element: <EarnPage />,
+        loader: zeroPageLoader,
       },
       {
         path: '/convert',

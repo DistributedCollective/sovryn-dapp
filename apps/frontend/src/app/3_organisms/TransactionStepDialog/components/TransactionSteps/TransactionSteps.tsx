@@ -12,12 +12,14 @@ import { TransactionStep } from '../TransactionStep/TransactionStep';
 export type TransactionStepsProps = {
   transactions: Transaction[];
   onSuccess?: () => void;
+  onClose?: () => void;
   gasPrice: string;
 };
 
 export const TransactionSteps: FC<TransactionStepsProps> = ({
   transactions,
   onSuccess,
+  onClose,
   gasPrice,
 }) => {
   const [configs, setConfigs] = useState<TxConfig[]>([]);
@@ -39,7 +41,7 @@ export const TransactionSteps: FC<TransactionStepsProps> = ({
           amount: tx.fnName === APPROVAL_FUNCTION ? tx.args[1] : undefined,
           unlimitedAmount: tx.fnName === APPROVAL_FUNCTION ? false : undefined,
           gasPrice,
-          gasLimit: gasLimit.toString(),
+          gasLimit: gasLimit.mul(12).div(10).toString(),
         });
       }
       setConfigs(list);
@@ -121,6 +123,12 @@ export const TransactionSteps: FC<TransactionStepsProps> = ({
     [error, step, transactions.length],
   );
 
+  useEffect(() => {
+    if (transactions.length > 0 && transactions.length === step) {
+      onSuccess?.();
+    }
+  }, [onSuccess, step, transactions.length]);
+
   if (!configs.length) {
     return (
       <Icon
@@ -153,12 +161,8 @@ export const TransactionSteps: FC<TransactionStepsProps> = ({
         />
       )}
 
-      {onSuccess && transactions.length === step && (
-        <Button
-          text="Done"
-          onClick={onSuccess}
-          className="w-full mt-7"
-        ></Button>
+      {onClose && transactions.length === step && (
+        <Button text="Done" onClick={onClose} className="w-full mt-7"></Button>
       )}
     </div>
   );

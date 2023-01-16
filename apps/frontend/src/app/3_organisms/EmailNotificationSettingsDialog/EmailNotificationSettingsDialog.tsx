@@ -274,10 +274,11 @@ const EmailNotificationSettingsDialogComponent: React.FC<
                 translations.emailNotificationsDialog.emailInputPlaceholder,
               )}
               disabled={loading || !notificationToken}
+              dataAttribute="alert-signup-email"
             />
           </FormGroup>
 
-          <Subscriptions />
+          <Subscriptions dataAttribute="alert-signup-sub" />
         </div>
 
         <div className="mt-4 flex justify-between">
@@ -286,12 +287,14 @@ const EmailNotificationSettingsDialogComponent: React.FC<
             text={t(translations.common.buttons.cancel)}
             style={ButtonStyle.secondary}
             className="mr-4 w-[49%]"
+            dataAttribute="alert-signup-cancel"
           />
           <Button
             onClick={updateUser}
             text={t(translations.common.buttons.save)}
             disabled={isSubmitDisabled}
             className="w-[49%]"
+            dataAttribute="alert-signup-save"
           />
         </div>
       </DialogBody>

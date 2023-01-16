@@ -273,6 +273,7 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
           />
         }
         className="w-full"
+        dataAttribute="adjust-credit-line-credit-amount"
       >
         <div className="w-full flex flex-row justify-between items-center gap-3">
           <AmountInput
@@ -310,6 +311,7 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
           />
         }
         className="max-w-none mt-8"
+        dataAttribute="adjust-credit-line-collateral-amount"
       >
         <AmountInput
           value={collateralAmount}
@@ -430,6 +432,7 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
           text={t(translations.common.buttons.confirm)}
           className="w-full"
           onClick={handleFormSubmit}
+          dataAttribute="adjust-credit-line-confirm-button"
         />
       </div>
     </div>

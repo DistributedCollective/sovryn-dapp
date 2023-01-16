@@ -2,7 +2,7 @@ name: Release packages
 
 on:
   push:
-    branches: [ "dev" ]
+    branches: [ "develop" ]
 
 concurrency: ${{ github.workflow }}-${{ github.ref }}
 

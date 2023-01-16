@@ -55,13 +55,18 @@ export const ConnectWalletButton: FC<
                 className="no-underline"
                 href={`${sovrynLinks.dappAlpha}/rewards`}
                 hrefExternal
+                dataAttribute={`${dataAttribute}-menu-rewards`}
               />
               <Link to="/history" className="no-underline">
-                <MenuItem text={t(translations.connectWalletButton.history)} />
+                <MenuItem
+                  text={t(translations.connectWalletButton.history)}
+                  dataAttribute={`${dataAttribute}-menu-history`}
+                />
               </Link>
               <MenuItem
                 text={t(translations.connectWalletButton.settings)}
                 onClick={toggle}
+                dataAttribute={`${dataAttribute}-menu-settings`}
               />
             </Menu>
           }

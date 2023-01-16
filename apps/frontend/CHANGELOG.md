@@ -1,5 +1,21 @@
 # frontend
 
+## 0.1.13
+
+### Patch Changes
+
+- 6594de0: SOV-1355: bump sovryn-onboard package versions
+- 3e6ab79: SOV-1291: Convert page implementation
+- ac995c7: Sov 1096 notification stack component
+- 8cbb2e3: SOV-1117: add stats component
+- 0df76c5: Feat/sov 1115 zero dashboard loc chart
+- 7207cc3: SOV-1471: add data attributes to Convert page and Connect Wallet button
+- Updated dependencies [3e6ab79]
+- Updated dependencies [ac995c7]
+- Updated dependencies [762eeae]
+  - @sovryn/contracts@0.0.4
+  - @sovryn/ui@0.0.18
+
 ## 0.1.12
 
 ### Patch Changes

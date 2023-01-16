@@ -1,5 +1,12 @@
 # @sovryn/ui
 
+## 0.0.18
+
+### Patch Changes
+
+- ac995c7: Sov 1096 notification stack component
+- 762eeae: SOV-1367: close Wallet Menu when menu item selected
+
 ## 0.0.17
 
 ### Patch Changes

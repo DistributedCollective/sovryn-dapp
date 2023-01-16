@@ -1,5 +1,11 @@
 # @sovryn/contracts
 
+## 0.0.4
+
+### Patch Changes
+
+- 3e6ab79: SOV-1291: Convert page implementation
+
 ## 0.0.3
 
 ### Patch Changes

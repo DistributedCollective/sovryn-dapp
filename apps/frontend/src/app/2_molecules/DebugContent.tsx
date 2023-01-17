@@ -110,7 +110,7 @@ export const DebugContent = () => {
       open={isOpen}
       onClick={toggle}
     >
-      <div className="flex itmes-center gap-4 mt-4">
+      <div className="flex items-center gap-4 mt-4">
         <Button
           onClick={() =>
             addNotification(

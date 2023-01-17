@@ -1,5 +1,6 @@
 import React, { FC, PropsWithChildren, useCallback, useReducer } from 'react';
 
+import { nanoid } from 'nanoid';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 
@@ -40,16 +41,13 @@ export const ConnectWalletButton: FC<
   const { addNotification } = useNotificationContext();
 
   const onCopyAddress = useCallback(() => {
-    addNotification(
-      {
-        type: NotificationType.success,
-        title: t(translations.copyAddress),
-        content: '',
-        dismissible: true,
-        id: Math.floor(Math.random() * 1000),
-      },
-      5000,
-    );
+    addNotification({
+      type: NotificationType.success,
+      title: t(translations.copyAddress),
+      content: '',
+      dismissible: true,
+      id: nanoid(),
+    });
   }, [t, addNotification]);
 
   if (!address) {

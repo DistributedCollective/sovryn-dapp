@@ -5,16 +5,19 @@ import { useTranslation } from 'react-i18next';
 import { Heading, Select, SelectOption, Tabs } from '@sovryn/ui';
 
 import { TransactionHistoryFrame } from '../../3_organisms';
-import { useAccount } from '../../../hooks/useAccount';
 import { translations } from '../../../locales/i18n';
 import styles from './HistoryPage.module.css';
 
 const ACTIVE_CLASSNAME = 'border-t-primary-30';
+const locHistory = (
+  <div className="px-0 py-4 lg:p-4">
+    <TransactionHistoryFrame />
+  </div>
+);
 
 const HistoryPage: FC = () => {
   const { t } = useTranslation();
   const [index, setIndex] = useState(0);
-  const { account } = useAccount();
 
   const comingSoon = useMemo(
     () => (
@@ -25,15 +28,6 @@ const HistoryPage: FC = () => {
       </div>
     ),
     [t],
-  );
-
-  const locHistory = useMemo(
-    () => (
-      <div className="px-0 py-4 lg:p-4">
-        <TransactionHistoryFrame account={account} />
-      </div>
-    ),
-    [account],
   );
 
   const items = useMemo(
@@ -63,11 +57,12 @@ const HistoryPage: FC = () => {
         dataAttribute: 'funding',
       },
     ],
-    [t, comingSoon, locHistory],
+    [t, comingSoon],
   );
 
   const options: SelectOption[] = useMemo(
-    () => items.map((val, i) => ({ value: String(i), label: val.label })),
+    () =>
+      items.map((item, index) => ({ value: String(index), label: item.label })),
     [items],
   );
 
@@ -92,10 +87,7 @@ const HistoryPage: FC = () => {
             className="w-full"
           />
         </div>
-        <div className={styles.mobile}>
-          {index === 0 && locHistory}
-          {index > 0 && comingSoon}
-        </div>
+        <div className={styles.mobile}>{items[index].content}</div>
       </div>
     </div>
   );

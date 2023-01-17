@@ -1,5 +1,6 @@
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 
+import { nanoid } from 'nanoid';
 import { useTranslation } from 'react-i18next';
 
 import { SupportedTokens } from '@sovryn/contracts';
@@ -21,6 +22,7 @@ import { TableFilter } from '../../2_molecules/TableFilter/TableFilter';
 import { Filter } from '../../2_molecules/TableFilter/TableFilter.types';
 import { chains, defaultChainId } from '../../../config/chains';
 import { useNotificationContext } from '../../../contexts/NotificationContext';
+import { useAccount } from '../../../hooks/useAccount';
 import { translations } from '../../../locales/i18n';
 import { EXPORT_RECORD_LIMIT } from '../../../utils/constants';
 import {
@@ -37,14 +39,9 @@ import { useGetTroves } from './hooks/useGetTroves';
 const DEFAULT_PAGE_SIZE = 10;
 const liquidationReserveAmount = 20;
 
-interface TransactionHistoryFrameProps {
-  account: string;
-}
-
-export const TransactionHistoryFrame: FC<TransactionHistoryFrameProps> = ({
-  account,
-}) => {
+export const TransactionHistoryFrame: FC = () => {
   const { t } = useTranslation();
+  const { account } = useAccount();
   const { addNotification } = useNotificationContext();
   const [page, setPage] = useState(0);
   const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE);
@@ -538,16 +535,13 @@ export const TransactionHistoryFrame: FC<TransactionHistoryFrameProps> = ({
 
   const exportData = useCallback(() => {
     if (!troves) {
-      addNotification(
-        {
-          type: NotificationType.success,
-          title: t(translations.transactionHistory.actions.noDataToExport),
-          content: '',
-          dismissible: true,
-          id: Math.floor(Math.random() * 1000),
-        },
-        5000,
-      );
+      addNotification({
+        type: NotificationType.warning,
+        title: t(translations.transactionHistory.actions.noDataToExport),
+        content: '',
+        dismissible: true,
+        id: nanoid(),
+      });
     }
 
     setPageSize(EXPORT_RECORD_LIMIT);
@@ -576,6 +570,7 @@ export const TransactionHistoryFrame: FC<TransactionHistoryFrameProps> = ({
         filename="transactions"
         className="mb-7 hidden lg:inline-flex"
         onExportEnd={() => setPageSize(DEFAULT_PAGE_SIZE)}
+        disabled={!troves}
       />
       <div className="bg-gray-80 py-4 px-4 rounded">
         <Table

@@ -1,4 +1,5 @@
-// import { addresses } from '@sovryn-zero/lib-ethers/dist/deployments/default/rsktestnet.json';
+import { addresses } from '@sovryn-zero/lib-ethers/dist/deployments/default/rsktestnet.json';
+
 import { constants } from 'ethers';
 
 export const rskTestnet: Record<string, string> = {
@@ -9,5 +10,5 @@ export const rskTestnet: Record<string, string> = {
   mynt: '0xac2d05A148aB512EDEDc7280c00292ED33d31f1A',
   doc: '0xcb46c0ddc60d18efeb0e586c17af6ea36452dae0',
   babelfish: '0x1572D7E4a78A8AD14AE722E6fE5f5600a2c7A149',
-  zusd: '0xe67cbA98C183A1693fC647d63AeeEC4053656dBB',
+  zusd: addresses.zusdToken,
 };

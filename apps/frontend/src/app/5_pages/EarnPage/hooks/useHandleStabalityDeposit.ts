@@ -17,8 +17,8 @@ export const useHandleStabalityDeposit = (
   amount: string,
   isDeposit: boolean,
 ) => {
-  const sourceToken = isDeposit ? token : SupportedTokens.dllr;
-  const destinationToken = isDeposit ? SupportedTokens.dllr : token;
+  const destinationToken = isDeposit ? SupportedTokens.zusd : token;
+  const sourceToken = isDeposit ? SupportedTokens.dllr : token;
   const { getDepositTokenTransactions, getWithdrawTokensTransactions } =
     useHandleConversion(sourceToken, destinationToken, amount);
   const { signer } = useAccount();
@@ -46,7 +46,7 @@ export const useHandleStabalityDeposit = (
     });
 
     if (token !== SupportedTokens.zusd) {
-      transactions.push(...(await getWithdrawTokensTransactions()));
+      transactions.push(...(await getDepositTokenTransactions()));
     }
 
     setTransactions(transactions);
@@ -55,7 +55,7 @@ export const useHandleStabalityDeposit = (
   }, [
     amount,
     getStabilityPoolContract,
-    getWithdrawTokensTransactions,
+    getDepositTokenTransactions,
     setIsOpen,
     setTitle,
     setTransactions,
@@ -64,7 +64,7 @@ export const useHandleStabalityDeposit = (
   const deposit = useCallback(async () => {
     const transactions: Transaction[] = [];
     if (token !== SupportedTokens.zusd) {
-      transactions.push(...(await getDepositTokenTransactions()));
+      transactions.push(...(await getWithdrawTokensTransactions()));
     }
 
     const stabilityPool = await getStabilityPoolContract();
@@ -81,7 +81,7 @@ export const useHandleStabalityDeposit = (
     setIsOpen(true);
   }, [
     amount,
-    getDepositTokenTransactions,
+    getWithdrawTokensTransactions,
     getStabilityPoolContract,
     setIsOpen,
     setTitle,

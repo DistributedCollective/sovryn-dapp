@@ -96,10 +96,10 @@ export const useHandleStabalityDeposit = (
     setTransactions,
     token,
   ]);
-  const handleSubmit = useCallback(() => {
-    isDeposit ? deposit() : withdraw();
-    // contract.provideToSP(toWei(2), ethers.constants.AddressZero);
-  }, [deposit, isDeposit, withdraw]);
+  const handleSubmit = useCallback(
+    () => (isDeposit ? deposit() : withdraw()),
+    [deposit, isDeposit, withdraw],
+  );
 
   return handleSubmit;
 };

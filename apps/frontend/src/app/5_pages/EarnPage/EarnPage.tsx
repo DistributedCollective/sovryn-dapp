@@ -6,12 +6,14 @@ import {
 
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 
+import classNames from 'classnames';
 import { useTranslation } from 'react-i18next';
 import { useLoaderData } from 'react-router-dom';
 
 import { SupportedTokens } from '@sovryn/contracts';
 import {
   AmountInput,
+  applyDataAttr,
   Button,
   ButtonStyle,
   ButtonType,
@@ -43,12 +45,11 @@ const EarnPage: FC = () => {
   const [amount, setAmount] = useState('0');
   const [poolBalance, setPoolBalance] = useState('0');
   const [ZUSDInStabilityPool, setZUSDInStabilityPool] = useState('0');
-  const [sourceToken, setSourceToken] = useState<SupportedTokens>(
-    SupportedTokens.dllr,
-  );
+  const [token, setToken] = useState<SupportedTokens>(SupportedTokens.dllr);
+  const [isLoading, setIsLoading] = useState(false);
 
   const { account } = useAccount();
-  const { value: weiBalance } = useAssetBalance(sourceToken);
+  const { t } = useTranslation();
 
   const { liquity } = useLoaderData() as {
     liquity: EthersLiquity;
@@ -57,9 +58,11 @@ const EarnPage: FC = () => {
 
   const getStabilityDeposit = useCallback(() => {
     if (account) {
+      setIsLoading(true);
       liquity
         .getStabilityDeposit(account)
-        .then(result => setPoolBalance(result.currentZUSD.toString()));
+        .then(result => setPoolBalance(result.currentZUSD.toString()))
+        .finally(() => setIsLoading(false));
     }
   }, [account, liquity]);
 
@@ -80,36 +83,53 @@ const EarnPage: FC = () => {
   const actions = useMemo(() => {
     const tabs = [
       {
-        label: 'Deposit',
+        label: t(commonTranslations.deposit),
         activeClassName: 'text-primary-20',
+        dataAttribute: 'deposit',
       },
     ];
 
     if (!BigNumber.from(toWei(poolBalance)).isZero()) {
       tabs.push({
-        label: 'Withdraw',
+        label: t(commonTranslations.withdraw),
         activeClassName: 'text-primary-20',
+        dataAttribute: 'withdraw',
       });
     } else {
       setIndex(0);
     }
 
     return tabs;
-  }, [poolBalance]);
+  }, [poolBalance, t]);
 
   const isDeposit = useMemo(() => index === 0, [index]);
+
+  const { value: weiBalance } = useAssetBalance(token);
 
   const balance = useMemo(
     () => String(Number(fromWei(weiBalance))),
     [weiBalance],
   );
 
-  const onSourceTokenChange = useCallback((value: SupportedTokens) => {
-    setSourceToken(value);
+  const onTokenChange = useCallback((value: SupportedTokens) => {
+    setToken(value);
     setAmount('0');
   }, []);
 
-  const { t } = useTranslation();
+  const { value: zusdWeiBalance } = useAssetBalance(SupportedTokens.zusd);
+  const { value: dllrWeiBalance } = useAssetBalance(SupportedTokens.dllr);
+
+  useEffect(() => {
+    if (
+      isDeposit &&
+      Number(zusdWeiBalance) > 0 &&
+      Number(dllrWeiBalance) === 0
+    ) {
+      setToken(SupportedTokens.zusd);
+    } else {
+      setToken(SupportedTokens.dllr);
+    }
+  }, [dllrWeiBalance, zusdWeiBalance, isDeposit, isLoading]);
 
   const getAssetRenderer = useCallback(
     (token: SupportedTokens) => (
@@ -119,11 +139,7 @@ const EarnPage: FC = () => {
   );
 
   const onMaximumAmountClick = useCallback(() => setAmount(balance), [balance]);
-  const handleSubmit = useHandleStabalityDeposit(
-    sourceToken,
-    amount,
-    isDeposit,
-  );
+  const handleSubmit = useHandleStabalityDeposit(token, amount, isDeposit);
 
   const poolShare = useMemo(() => {
     if (BigNumber.from(toWei(ZUSDInStabilityPool)).isZero()) {
@@ -135,24 +151,32 @@ const EarnPage: FC = () => {
     ).toString();
   }, [ZUSDInStabilityPool, poolBalance]);
 
+  const isAmountZero = useMemo(() => {
+    return Number(amount) === 0;
+  }, [amount]);
+
   const newPoolBalance = useMemo(() => {
+    if (isAmountZero) {
+      return 'N/A';
+    }
     const newBalance = BigNumber.from(poolBalance).add(
       isDeposit ? amount : -amount,
     );
-    if (newBalance.lt(0) || amount === '0') {
-      return 'N/A';
+    if (newBalance.lt(0)) {
+      return '0';
     }
     return newBalance.toString();
-  }, [amount, poolBalance, isDeposit]);
+  }, [poolBalance, isDeposit, amount, isAmountZero]);
 
   const newPoolBalanceLabel = useMemo(() => {
-    return newPoolBalance === 'N/A'
-      ? newPoolBalance
-      : `${newPoolBalance} ${SupportedTokens.zusd.toUpperCase()}`;
-  }, [newPoolBalance]);
+    if (isAmountZero) {
+      return 'N/A';
+    }
+    return `${newPoolBalance} ${SupportedTokens.zusd.toUpperCase()}`;
+  }, [isAmountZero, newPoolBalance]);
 
   const newPoolShare = useMemo(() => {
-    if (newPoolBalance === 'N/A') {
+    if (isAmountZero) {
       return 'N/A';
     }
 
@@ -167,7 +191,7 @@ const EarnPage: FC = () => {
       BigNumber.from(toWei(newPoolBalance, 24)).div(newZUSDInStabilityPool),
       4,
     ).toString()} %`;
-  }, [ZUSDInStabilityPool, amount, isDeposit, newPoolBalance]);
+  }, [ZUSDInStabilityPool, amount, isAmountZero, isDeposit, newPoolBalance]);
 
   const maximumAmount = useMemo(() => {
     if (isDeposit) {
@@ -182,15 +206,15 @@ const EarnPage: FC = () => {
     [amount, maximumAmount],
   );
 
-  const onTransactionSuccess = useCallback(() => {
-    getStabilityDeposit();
-    getZUSDInStabilityPool();
-  }, [getStabilityDeposit, getZUSDInStabilityPool]);
-
   const isSubmitDisabled = useMemo(
     () => !account || !amount || Number(amount) <= 0 || !isValidAmount,
     [account, amount, isValidAmount],
   );
+
+  const onTransactionSuccess = useCallback(() => {
+    getStabilityDeposit();
+    getZUSDInStabilityPool();
+  }, [getStabilityDeposit, getZUSDInStabilityPool]);
 
   return (
     <div className="w-full flex flex-col items-center text-gray-10 mt-9 sm:mt-24">
@@ -217,9 +241,10 @@ const EarnPage: FC = () => {
           <button
             onClick={onMaximumAmountClick}
             className="text-xs font-medium underline whitespace-nowrap"
+            {...applyDataAttr('max-button')}
           >
             ({t(commonTranslations.max)} {formatValue(Number(balance), 4)}{' '}
-            {sourceToken.toUpperCase()})
+            {token.toUpperCase()})
           </button>
         </div>
 
@@ -232,14 +257,16 @@ const EarnPage: FC = () => {
             max={maximumAmount}
             invalid={!isValidAmount}
             className="w-full flex-grow-0 flex-shrink"
+            {...applyDataAttr('amount-input')}
           />
 
           <Select
-            value={sourceToken}
-            onChange={onSourceTokenChange}
+            value={token}
+            onChange={onTokenChange}
             options={tokenOptions}
-            labelRenderer={() => getAssetRenderer(sourceToken)}
+            labelRenderer={() => getAssetRenderer(token)}
             className="min-w-[6.7rem]"
+            {...applyDataAttr('token-select')}
           />
         </div>
         {!isValidAmount && (
@@ -249,17 +276,29 @@ const EarnPage: FC = () => {
         )}
         <SimpleTable className="mt-3">
           <SimpleTableRow
-            label="Current pool balance"
+            label={t(pageTranslations.currentPoolBalance)}
             value={`${poolBalance} ${SupportedTokens.zusd.toUpperCase()}`}
           />
-          <SimpleTableRow label="Current pool share" value={`${poolShare} %`} />
+          <SimpleTableRow
+            label={t(pageTranslations.currentPoolShare)}
+            value={`${poolShare} %`}
+          />
         </SimpleTable>
         <SimpleTable className="mt-3">
           <SimpleTableRow
-            label="New pool balance"
+            label={t(pageTranslations.newPoolBalance)}
+            valueClassName={classNames('transition-colors', {
+              'text-primary-10': !isAmountZero,
+            })}
             value={newPoolBalanceLabel}
           />
-          <SimpleTableRow label="New pool share" value={newPoolShare} />
+          <SimpleTableRow
+            label={t(pageTranslations.newPoolShare)}
+            valueClassName={classNames('transition-colors', {
+              'text-primary-10': !isAmountZero,
+            })}
+            value={newPoolShare}
+          />
         </SimpleTable>
         <Button
           type={ButtonType.reset}
@@ -268,6 +307,7 @@ const EarnPage: FC = () => {
           className="w-full mt-8"
           onClick={handleSubmit}
           disabled={isSubmitDisabled}
+          {...applyDataAttr('submit')}
         />
       </div>
       <TransactionStepDialog onSuccess={onTransactionSuccess} />

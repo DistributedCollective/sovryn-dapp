@@ -41,7 +41,7 @@ export const TransactionSteps: FC<TransactionStepsProps> = ({
           amount: tx.fnName === APPROVAL_FUNCTION ? tx.args[1] : undefined,
           unlimitedAmount: tx.fnName === APPROVAL_FUNCTION ? false : undefined,
           gasPrice,
-          gasLimit: gasLimit.mul(12).div(10).toString(),
+          gasLimit: gasLimit.mul(15).div(10).toString(),
         });
       }
       setConfigs(list);

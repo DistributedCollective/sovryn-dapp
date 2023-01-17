@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { FC } from 'react';
 
 import { useTranslation } from 'react-i18next';
 
@@ -8,7 +8,11 @@ import { translations } from '../../../../locales/i18n';
 import { useEmailNotificationSettingsContext } from '../contexts/EmailNotificationSettingsContext';
 import { useHandleSubscriptions } from '../hooks/useHandleSubscriptions';
 
-export const Subscriptions: React.FC = () => {
+type SubscriptionsProps = {
+  dataAttribute?: string;
+};
+
+export const Subscriptions: FC<SubscriptionsProps> = ({ dataAttribute }) => {
   const { t } = useTranslation();
 
   const {
@@ -35,6 +39,7 @@ export const Subscriptions: React.FC = () => {
         )}
         className="mb-7"
         alignment={ToggleAlignment.LEFT}
+        dataAttribute={`${dataAttribute}-margincalls`}
       />
 
       <Toggle
@@ -45,6 +50,7 @@ export const Subscriptions: React.FC = () => {
         )}
         className="mb-7"
         alignment={ToggleAlignment.LEFT}
+        dataAttribute={`${dataAttribute}-liquidations`}
       />
 
       <Toggle
@@ -55,6 +61,7 @@ export const Subscriptions: React.FC = () => {
         )}
         className="mb-7"
         alignment={ToggleAlignment.LEFT}
+        dataAttribute={`${dataAttribute}-stability`}
       />
 
       <Toggle
@@ -64,6 +71,7 @@ export const Subscriptions: React.FC = () => {
           translations.emailNotificationsDialog.alertGroups.systemToggle,
         )}
         alignment={ToggleAlignment.LEFT}
+        dataAttribute={`${dataAttribute}-system`}
       />
     </div>
   );

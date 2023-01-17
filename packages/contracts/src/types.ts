@@ -6,8 +6,6 @@ import { contracts } from './contracts';
 
 export type ContractGroup = keyof typeof contracts;
 export type ContractNetworkName = keyof typeof contracts[ContractGroup];
-export type ContractName =
-  keyof typeof contracts[ContractGroup][ContractNetworkName];
 
 export type ContractConfigData = {
   address: string;

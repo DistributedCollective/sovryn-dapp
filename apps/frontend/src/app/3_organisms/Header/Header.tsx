@@ -8,6 +8,7 @@ import {
   Header as UIHeader,
   Icon,
   IconNames,
+  applyDataAttr,
 } from '@sovryn/ui';
 
 import { ConnectWalletButton } from '../../2_molecules';
@@ -31,8 +32,13 @@ export const Header: FC = () => {
 
   return (
     <UIHeader
+      dataAttribute="dapp-header"
       logo={
-        <SovrynLogo dataAttribute="logo" link="/" onClick={handleNavClick} />
+        <SovrynLogo
+          dataAttribute="header-logo"
+          link="/"
+          onClick={handleNavClick}
+        />
       }
       isOpen={isOpen}
       menuIcon={
@@ -50,16 +56,33 @@ export const Header: FC = () => {
       }
       menuItems={
         <ol className="flex flex-col gap-4 lg:flex-row">
-          <NavLink to="/" end onClick={handleNavClick}>
+          <NavLink
+            to="/"
+            end
+            onClick={handleNavClick}
+            {...applyDataAttr('dapp-menu-home')}
+          >
             {t(translations.header.nav.home)}
           </NavLink>
-          <NavLink to="/earn" onClick={handleNavClick}>
+          <NavLink
+            to="/earn"
+            onClick={handleNavClick}
+            {...applyDataAttr('dapp-menu-earn')}
+          >
             {t(translations.header.nav.earn)}
           </NavLink>
-          <NavLink to="/convert" onClick={handleNavClick}>
+          <NavLink
+            to="/convert"
+            onClick={handleNavClick}
+            {...applyDataAttr('dapp-menu-convert')}
+          >
             {t(translations.header.nav.convert)}
           </NavLink>
-          <NavLink to="/debug-content" onClick={handleNavClick}>
+          <NavLink
+            to="/debug-content"
+            onClick={handleNavClick}
+            {...applyDataAttr('dapp-menu-debug')}
+          >
             *Debug Content*
           </NavLink>
         </ol>
@@ -71,6 +94,7 @@ export const Header: FC = () => {
             onDisconnect={disconnectWallet}
             address={account}
             pending={pending}
+            dataAttribute="dapp-header-connect"
           />
         </div>
       }
@@ -80,6 +104,7 @@ export const Header: FC = () => {
             <Button
               text={t(translations.header.funding)}
               style={ButtonStyle.secondary}
+              dataAttribute="dapp-header-funding"
             />
           )}
         </>

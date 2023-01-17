@@ -5,6 +5,7 @@ import {
   getLoanTokenContract,
   getProtocolContract,
   getTokenContract,
+  getZeroContract,
 } from './getters';
 
 describe('utils/contracts/getters.ts', () => {
@@ -41,6 +42,15 @@ describe('utils/contracts/getters.ts', () => {
       const token = await getProtocolContract('swapNetwork');
       expect(token.address).toBe(
         contracts.protocol.rsk?.swapNetwork.address.toLowerCase(),
+      );
+    });
+  });
+
+  describe('getZeroContract', () => {
+    it('load lowercased borrowerOperations contract address', async () => {
+      const contract = await getZeroContract('borrowerOperations');
+      expect(contract.address).toBe(
+        contracts.zero.rsk?.borrowerOperations.address.toLowerCase(),
       );
     });
   });

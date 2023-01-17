@@ -9,4 +9,10 @@ export const rsk: Record<string, AsyncContractConfigData> = {
       (await import('@sovryn-zero/lib-ethers/dist/abi/BorrowerOperations.json'))
         .default,
   },
+  stabilityPool: {
+    address: addresses.stabilityPool,
+    getAbi: async () =>
+      (await import('@sovryn-zero/lib-ethers/dist/abi/StabilityPool.json'))
+        .default,
+  },
 };

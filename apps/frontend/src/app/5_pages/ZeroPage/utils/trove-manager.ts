@@ -15,7 +15,9 @@ const defaultBorrowingRateSlippageTolerance = 0.005; // 0.5%
 export const openTrove = async (
   params: Partial<TroveCreationParams<Decimalish>>,
 ) => {
+  console.log({ params });
   const normalized = _normalizeTroveCreation(params);
+  console.log({ normalized });
   const { depositCollateral, borrowZUSD } = normalized;
 
   const { ethers } = await getZeroProvider();
@@ -30,6 +32,8 @@ export const openTrove = async (
 
   const value = depositCollateral ?? Decimal.ZERO;
 
+  console.log({ value, params, depositCollateral, borrowZUSD });
+
   const hints = await ethers.populate.findHints(newTrove);
 
   return {
@@ -42,7 +46,9 @@ export const adjustTrove = async (
   address: string,
   params: Partial<TroveAdjustmentParams<Decimalish>>,
 ) => {
+  console.log({ address, params });
   const normalized = _normalizeTroveAdjustment(params);
+  console.log({ normalized });
   const { depositCollateral, withdrawCollateral, borrowZUSD, repayZUSD } =
     normalized;
 

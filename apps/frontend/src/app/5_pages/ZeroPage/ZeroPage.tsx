@@ -121,8 +121,8 @@ export const ZeroPage: FC = () => {
           setIsOpen(true);
         } else {
           const openedTrove = await openTrove({
-            borrowZUSD: value.borrow,
-            depositCollateral: value.depositCollateral,
+            borrowZUSD: value.borrow || '0',
+            depositCollateral: value.depositCollateral || '0',
           });
           setTransactions([
             {

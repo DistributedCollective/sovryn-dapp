@@ -1,14 +1,14 @@
-import StabilityPoolABI from '@sovryn-zero/lib-ethers/dist/abi/StabilityPool.json';
-
-import { useCallback, useMemo } from 'react';
+import { useCallback } from 'react';
 
 import { ethers } from 'ethers';
 
 import { SupportedTokens } from '@sovryn/contracts';
+import { getContract } from '@sovryn/contracts';
 
 import { Transaction } from '../../../3_organisms/TransactionStepDialog/TransactionStepDialog.types';
 import { useTransactionContext } from '../../../../contexts/TransactionContext';
 import { useAccount } from '../../../../hooks/useAccount';
+import { getRskChainId } from '../../../../utils/chain';
 import { toWei } from '../../../../utils/math';
 import { useHandleConversion } from '../../ConvertPage/hooks/useHandleConversion';
 
@@ -24,33 +24,23 @@ export const useHandleStabalityDeposit = (
   const { signer } = useAccount();
   const { setTransactions, setIsOpen, setTitle } = useTransactionContext();
 
-  //   const getStabilityPool = useCallback(async () => {
-  // const { address: massetManagerAddress, abi: massetManagerAbi } =
-  //   await getContract('stabilityPool', 'zero', getRskChainId());
+  const getStabilityPoolContract = useCallback(async () => {
+    const { address, abi: massetManagerAbi } = await getContract(
+      'stabilityPool',
+      'zero',
+      getRskChainId(),
+    );
 
-  //     return new ethers.Contract(
-  //       addresses.stabilityPool,
-  //       StabilityPoolABI,
-  //       signer,
-  //     );
-  //   }, [signer]);
-
-  const contract = useMemo(
-    () =>
-      new ethers.Contract(
-        '0xd6eD2f49D0A3bF20126cB78119c7CB24D02d605F',
-        StabilityPoolABI,
-        signer,
-      ),
-    [signer],
-  );
+    return new ethers.Contract(address, massetManagerAbi, signer);
+  }, [signer]);
 
   const withdraw = useCallback(async () => {
     const transactions: Transaction[] = [];
+    const stabilityPool = await getStabilityPoolContract();
 
     transactions.push({
       title: 'Withdraw ZUSD',
-      contract: contract,
+      contract: stabilityPool,
       fnName: 'withdrawFromSP',
       args: [toWei(amount)],
     });
@@ -64,7 +54,7 @@ export const useHandleStabalityDeposit = (
     setIsOpen(true);
   }, [
     amount,
-    contract,
+    getStabilityPoolContract,
     getWithdrawTokensTransactions,
     setIsOpen,
     setTitle,
@@ -77,9 +67,11 @@ export const useHandleStabalityDeposit = (
       transactions.push(...(await getDepositTokenTransactions()));
     }
 
+    const stabilityPool = await getStabilityPoolContract();
+
     transactions.push({
       title: 'Deposit ZUSD',
-      contract: contract,
+      contract: stabilityPool,
       fnName: 'provideToSP',
       args: [toWei(amount), ethers.constants.AddressZero],
     });
@@ -89,8 +81,8 @@ export const useHandleStabalityDeposit = (
     setIsOpen(true);
   }, [
     amount,
-    contract,
     getDepositTokenTransactions,
+    getStabilityPoolContract,
     setIsOpen,
     setTitle,
     setTransactions,

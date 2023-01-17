@@ -131,7 +131,7 @@ export const ZeroPage: FC = () => {
               fnName: 'openTrove',
               config: {
                 value: openedTrove.value,
-                gasLimit: '900000',
+                gasLimit: '1000000',
               },
               args: openedTrove.args,
               onComplete: hash => console.log('hash', hash),

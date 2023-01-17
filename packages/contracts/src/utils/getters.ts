@@ -26,6 +26,11 @@ export const getProtocolContract = async (
   chain: ChainId = ChainIds.RSK_MAINNET,
 ): Promise<ContractConfigData> => getContract(token, 'protocol', chain);
 
+export const getZeroContract = async (
+  token: string,
+  chain: ChainId = ChainIds.RSK_MAINNET,
+): Promise<ContractConfigData> => getContract(token, 'zero', chain);
+
 export const getTokenDetails = async (
   token: SupportedTokens,
   chain: ChainId = ChainIds.RSK_MAINNET,

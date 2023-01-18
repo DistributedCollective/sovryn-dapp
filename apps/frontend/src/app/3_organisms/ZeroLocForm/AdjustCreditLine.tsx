@@ -1,5 +1,3 @@
-import { Fees } from '@sovryn-zero/lib-base';
-
 import React, { ChangeEvent, useCallback, useMemo, useState, FC } from 'react';
 
 import { useTranslation } from 'react-i18next';
@@ -26,34 +24,19 @@ import { formatValue, fromWei } from '../../../utils/math';
 import { CurrentTroveData } from './CurrentTroveData';
 import { Label } from './Label';
 import { Row } from './Row';
-import { AmountType, tokens } from './types';
+import {
+  AdjustCreditLineProps,
+  AmountType,
+  CreditLineSubmitValue,
+  CreditLineType,
+  tokens,
+} from './types';
 import { normalizeAmountByType } from './utils';
-
-export enum AdjustCreditLineType {
-  Open,
-  Adjust,
-}
-
-export type SubmitValue = {
-  borrow: string;
-  repay: string;
-  depositCollateral: string;
-  withdrawCollateral: string;
-};
-
-type AdjustCreditLineProps = {
-  type: AdjustCreditLineType;
-  collateralValue: string;
-  creditValue: string;
-  onSubmit: (value: SubmitValue) => void;
-  rbtcPrice?: string;
-  fees?: Fees;
-};
 
 export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
   type,
-  collateralValue,
-  creditValue,
+  existingCollateral,
+  existingDebt,
   onSubmit,
   rbtcPrice,
   fees,
@@ -62,52 +45,52 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
   const [collateralType, setCollateralType] = useState(AmountType.Add);
 
   const [collateralAmount, setCollateralAmount] = useState('0');
-  const [creditAmount, setCreditAmount] = useState('0');
-  const [creditToken, setCreditToken] = useState<SupportedTokens>(
+  const [debtAmount, setDebtAmount] = useState('0');
+  const [debtToken, setDebtToken] = useState<SupportedTokens>(
     SupportedTokens.zusd,
   );
 
-  const { value: creditBalanceInWei } = useAssetBalance(creditToken);
+  const { value: creditWeiBalance } = useAssetBalance(debtToken);
 
-  const { value: maxCollateralAmountWei } = useAssetBalance(
+  const { value: maxCollateralWeiAmount } = useAssetBalance(
     SupportedTokens.rbtc,
   );
 
   const newDebt = useMemo(
     () =>
-      Number(creditValue) +
-      normalizeAmountByType(Number(creditAmount), debtType),
-    [creditAmount, creditValue, debtType],
+      Number(existingDebt) +
+      normalizeAmountByType(Number(debtAmount), debtType),
+    [debtAmount, existingDebt, debtType],
   );
   const newCollateral = useMemo(
     () =>
-      Number(collateralValue) +
+      Number(existingCollateral) +
       normalizeAmountByType(Number(collateralAmount), collateralType),
-    [collateralAmount, collateralType, collateralValue],
+    [collateralAmount, collateralType, existingCollateral],
   );
 
   const maxCollateralAmount = useMemo(
     () =>
       Number(
         collateralType === AmountType.Add
-          ? fromWei(maxCollateralAmountWei)
-          : collateralValue,
+          ? fromWei(maxCollateralWeiAmount)
+          : existingCollateral,
       ),
-    [collateralType, collateralValue, maxCollateralAmountWei],
+    [collateralType, existingCollateral, maxCollateralWeiAmount],
   );
 
   const maxCreditAmount = useMemo(() => {
     return Number(
       debtType === AmountType.Add
         ? (maxCollateralAmount * Number(rbtcPrice || '0')) / 1.1
-        : Math.min(Number(fromWei(creditBalanceInWei)), Number(creditValue)),
+        : Math.min(Number(fromWei(creditWeiBalance)), Number(existingDebt)),
     );
   }, [
     debtType,
     maxCollateralAmount,
     rbtcPrice,
-    creditBalanceInWei,
-    creditValue,
+    creditWeiBalance,
+    existingDebt,
   ]);
 
   const handleMaxCollateralAmountClick = useCallback(
@@ -116,7 +99,7 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
   );
 
   const handleMaxCreditAmountClick = useCallback(
-    () => setCreditAmount(String(maxCreditAmount)),
+    () => setDebtAmount(String(maxCreditAmount)),
     [maxCreditAmount],
   );
 
@@ -128,41 +111,46 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
 
   const handleCreditAmountChange = useCallback(
     (event: ChangeEvent<HTMLInputElement>) =>
-      setCreditAmount(event.currentTarget.value),
+      setDebtAmount(event.currentTarget.value),
     [],
   );
 
+  const isIncreasingDebt = useMemo(
+    () => debtType === AmountType.Add,
+    [debtType],
+  );
+
+  const isIncreasingCollateral = useMemo(
+    () => collateralType === AmountType.Add,
+    [collateralType],
+  );
+
   const handleFormSubmit = useCallback(() => {
-    let value: Partial<SubmitValue> = {};
+    let value: Partial<CreditLineSubmitValue> = {};
 
-    if (debtType === AmountType.Add) {
-      value.borrow = creditAmount;
-    }
+    value[isIncreasingCollateral ? 'depositCollateral' : 'withdrawCollateral'] =
+      collateralAmount;
+    value[isIncreasingDebt ? 'borrow' : 'repay'] = debtAmount;
 
-    if (debtType === AmountType.Remove) {
-      value.repay = creditAmount;
-    }
-
-    if (collateralType === AmountType.Add) {
-      value.depositCollateral = collateralAmount;
-    }
-
-    if (collateralType === AmountType.Remove) {
-      value.withdrawCollateral = collateralAmount;
-    }
-
-    onSubmit(value as SubmitValue);
-  }, [collateralAmount, collateralType, creditAmount, debtType, onSubmit]);
+    onSubmit(value as CreditLineSubmitValue);
+  }, [
+    collateralAmount,
+    debtAmount,
+    isIncreasingCollateral,
+    isIncreasingDebt,
+    onSubmit,
+  ]);
 
   const initialRatio = useMemo(() => {
-    if ([collateralValue, creditValue, rbtcPrice].some(v => !v)) {
+    if ([existingCollateral, existingDebt, rbtcPrice].some(v => !v)) {
       return 0;
     }
     return (
-      ((Number(collateralValue) * Number(rbtcPrice)) / Number(creditValue)) *
+      ((Number(existingCollateral) * Number(rbtcPrice)) /
+        Number(existingDebt)) *
       100
     );
-  }, [collateralValue, creditValue, rbtcPrice]);
+  }, [existingCollateral, existingDebt, rbtcPrice]);
 
   const ratio = useMemo(() => {
     if ([newCollateral, newDebt, rbtcPrice].some(v => !v)) {
@@ -184,7 +172,7 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
       {
         value: AmountType.Remove,
         label: t(translations.adjustCreditLine.actions.repay),
-        disabled: type === AdjustCreditLineType.Open,
+        disabled: type === CreditLineType.Open,
       },
     ],
     [t, type],
@@ -199,7 +187,7 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
       {
         value: AmountType.Remove,
         label: t(translations.adjustCreditLine.actions.withdrawCollateral),
-        disabled: type === AdjustCreditLineType.Open,
+        disabled: type === CreditLineType.Open,
       },
     ],
     [t, type],
@@ -211,10 +199,10 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
         t(translations.common.na)
       ) : (
         <>
-          {formatValue(value, 3)} {creditToken.toUpperCase()}
+          {formatValue(value, 3)} {debtToken.toUpperCase()}
         </>
       ),
-    [creditToken, t],
+    [debtToken, t],
   );
 
   const newCollateralRenderer = useCallback(
@@ -228,12 +216,12 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
   );
 
   const initialLiquidationPrice = useMemo(
-    () => 1.1 * (Number(creditValue) / Number(collateralValue)),
-    [creditValue, collateralValue],
+    () => 1.1 * (Number(existingDebt) / Number(existingCollateral)),
+    [existingDebt, existingCollateral],
   );
   const initialLiquidationPriceRecoveryMode = useMemo(
-    () => 1.5 * (Number(creditValue) / Number(collateralValue)),
-    [creditValue, collateralValue],
+    () => 1.5 * (Number(existingDebt) / Number(existingCollateral)),
+    [existingCollateral, existingDebt],
   );
 
   const liquidationPrice = useMemo(
@@ -246,8 +234,8 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
   );
 
   const hasTrove = useMemo(
-    () => collateralValue !== '0' && creditValue !== '0',
-    [collateralValue, creditValue],
+    () => existingCollateral !== '0' && existingDebt !== '0',
+    [existingCollateral, existingDebt],
   );
 
   return (
@@ -255,8 +243,8 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
       {hasTrove && (
         <CurrentTroveData
           className="sm:hidden"
-          creditValue={creditValue}
-          collateralValue={collateralValue}
+          debt={existingDebt}
+          collateral={existingCollateral}
           rbtcPrice={rbtcPrice || '0'}
         />
       )}
@@ -264,7 +252,7 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
       <FormGroup
         label={
           <Label
-            symbol={creditToken}
+            symbol={debtToken}
             maxAmount={maxCreditAmount}
             tabs={debtTabs}
             activeTab={debtType}
@@ -277,7 +265,7 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
       >
         <div className="w-full flex flex-row justify-between items-center gap-3">
           <AmountInput
-            value={creditAmount}
+            value={debtAmount}
             onChange={handleCreditAmountChange}
             maxAmount={maxCreditAmount}
             label={t(translations.adjustCreditLine.fields.debt.amount)}
@@ -285,8 +273,8 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
             className="w-full flex-grow-0 flex-shrink"
           />
           <Select
-            value={creditToken}
-            onChange={setCreditToken}
+            value={debtToken}
+            onChange={setDebtToken}
             options={tokens}
             className="flex-grow flex-shrink-0"
             labelRenderer={({ value }) => (
@@ -330,7 +318,7 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
             tooltip={t(translations.adjustCreditLine.labels.newDebtTooltip)}
             value={
               <DynamicValue
-                initialValue={Number(creditValue)}
+                initialValue={Number(existingDebt)}
                 value={newDebt}
                 renderer={newDebtRenderer}
               />
@@ -343,7 +331,7 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
             )}
             value={
               <DynamicValue
-                initialValue={Number(collateralValue)}
+                initialValue={Number(existingDebt)}
                 value={newCollateral}
                 renderer={newCollateralRenderer}
               />

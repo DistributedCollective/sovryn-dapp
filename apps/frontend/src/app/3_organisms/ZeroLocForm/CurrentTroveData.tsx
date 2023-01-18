@@ -6,27 +6,27 @@ import { HelperButton } from '@sovryn/ui';
 
 import { CRatioIndicator } from '../../2_molecules/LOCStatus/components/CRatioIndicator/CRatioIndicator';
 import { formatValue } from '../../../utils/math';
+import { COLLATERAL_TOKEN, DEBT_TOKEN } from './constants';
 
-export type CurrentTroveDataProps = {
-  creditValue: string;
-  collateralValue: string;
+type CurrentTroveDataProps = {
+  debt: string;
+  collateral: string;
   rbtcPrice: string;
   className?: string;
 };
 
 export const CurrentTroveData: FC<CurrentTroveDataProps> = ({
   className,
-  creditValue,
+  debt,
   rbtcPrice,
-  collateralValue,
+  collateral,
 }) => {
   const { t } = useTranslation();
   const collateralRatio = useMemo(
     () =>
-      ((parseFloat(collateralValue) * parseFloat(rbtcPrice)) /
-        parseFloat(creditValue)) *
+      ((parseFloat(collateral) * parseFloat(rbtcPrice)) / parseFloat(debt)) *
       100,
-    [collateralValue, creditValue, rbtcPrice],
+    [collateral, debt, rbtcPrice],
   );
 
   return (
@@ -34,11 +34,11 @@ export const CurrentTroveData: FC<CurrentTroveDataProps> = ({
       <div className="w-full flex flex-row justify-between items-center mb-12 gap-4">
         <Column
           label={t('LOCStatus.currentDebt')}
-          value={`${formatValue(Number(creditValue), 2)} ZUSD`}
+          value={`${formatValue(Number(debt), 2)} ${DEBT_TOKEN}`}
         />
         <Column
           label={t('LOCStatus.currentCollateral')}
-          value={`${formatValue(Number(collateralValue), 4)} RBTC`}
+          value={`${formatValue(Number(collateral), 4)} ${COLLATERAL_TOKEN}`}
         />
         <Column
           label={

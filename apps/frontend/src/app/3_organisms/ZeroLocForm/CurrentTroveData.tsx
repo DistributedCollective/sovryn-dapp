@@ -34,11 +34,14 @@ export const CurrentTroveData: FC<CurrentTroveDataProps> = ({
       <div className="w-full flex flex-row justify-between items-center mb-12 gap-4">
         <Column
           label={t('LOCStatus.currentDebt')}
-          value={`${formatValue(Number(debt), 2)} ${DEBT_TOKEN}`}
+          value={`${formatValue(Number(debt), 2)} ${DEBT_TOKEN.toUpperCase()}`}
         />
         <Column
           label={t('LOCStatus.currentCollateral')}
-          value={`${formatValue(Number(collateral), 4)} ${COLLATERAL_TOKEN}`}
+          value={`${formatValue(
+            Number(collateral),
+            4,
+          )} ${COLLATERAL_TOKEN.toUpperCase()}`}
         />
         <Column
           label={

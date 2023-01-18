@@ -198,7 +198,7 @@ export const ZeroPage: FC = () => {
                       collateral={collateral}
                       debt={debt}
                       cRatio={getRatio(price)}
-                      debtSymbol={DEBT_TOKEN}
+                      debtSymbol={DEBT_TOKEN.toUpperCase()}
                       onAdjust={toggle}
                       onClose={toggleClosePopup}
                     />

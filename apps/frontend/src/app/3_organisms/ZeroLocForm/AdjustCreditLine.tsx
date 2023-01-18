@@ -87,11 +87,11 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
   const maxCollateralAmount = useMemo(
     () =>
       Number(
-        collateralType === AmountType.Add
+        isIncreasingCollateral
           ? fromWei(maxCollateralWeiAmount)
           : existingCollateral,
       ),
-    [collateralType, existingCollateral, maxCollateralWeiAmount],
+    [existingCollateral, isIncreasingCollateral, maxCollateralWeiAmount],
   );
 
   const maxCreditAmount = useMemo(() => {

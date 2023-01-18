@@ -18,6 +18,7 @@ import { prettyTx } from '@sovryn/ui';
 
 import { translations } from '../../../locales/i18n';
 import { formatValue } from '../../../utils/math';
+import { useGetLowestTroves } from './hooks/useGetLowestTroves';
 import { useGetRBTCPrice } from './hooks/useGetRBTCPrice';
 import { useGetTroves } from './hooks/useGetTroves';
 import { useGetTrovesPositions } from './hooks/useGetTrovesPositions';
@@ -28,7 +29,12 @@ import {
   TroveData,
   TrovesFilterType,
 } from './types';
-import { calculateCollateralRatio, chartConfig, sortData } from './utils';
+import {
+  calculateCollateralRatio,
+  calculateRedemptionBuffer,
+  chartConfig,
+  sortData,
+} from './utils';
 
 ChartJS.register(
   CategoryScale,
@@ -65,6 +71,7 @@ export const LOCChart: FC = () => {
   const [activeBar, setActiveBar] = useState<number | null>(null);
   const { price } = useGetRBTCPrice();
   const [userCollateralRatio, setUserCollateralRatio] = useState('');
+  const [redemptionBuffer, setRedemptionBuffer] = useState(0);
 
   const options = useMemo(() => {
     return {
@@ -88,7 +95,7 @@ export const LOCChart: FC = () => {
             beforeBody: context => {
               const { collateralAmount, tx, debtAmount, collateralRatio } =
                 context[0].raw;
-              return [
+              const tooltipContent = [
                 prettyTx(tx),
                 `${t(translations.chart.collateralAmount)}: ${formatValue(
                   Number(collateralAmount),
@@ -102,10 +109,17 @@ export const LOCChart: FC = () => {
                   Number(collateralRatio),
                   0,
                 )}%`,
-                // `${t(
-                //   translations.chart.redemptionBuffer,
-                // )}: XXX ${SupportedTokens.zusd.toUpperCase()}`,
               ];
+
+              if (context[0].raw.sequenceNumber === userCollateralRatio) {
+                tooltipContent.push(
+                  `${t(translations.chart.redemptionBuffer)}: ${formatValue(
+                    redemptionBuffer,
+                    2,
+                  )} ${SupportedTokens.zusd.toUpperCase()}`,
+                );
+              }
+              return tooltipContent;
             },
           },
         },
@@ -184,10 +198,29 @@ export const LOCChart: FC = () => {
         },
       },
     };
-  }, [t, activeBar]);
+  }, [t, activeBar, userCollateralRatio, redemptionBuffer]);
 
   const { data: userOpenTrove, loading: loadingUserOpenTrove } =
     useGetUserOpenTrove();
+
+  const { data: lowestTroves, loading: loadingLowestTroves } =
+    useGetLowestTroves(userCollateralRatio);
+
+  useEffect(() => {
+    if (!loadingLowestTroves) {
+      const redemptionBuffer = lowestTroves?.troves.reduce(
+        (acc, curr) =>
+          acc +
+          calculateRedemptionBuffer(
+            Number(curr.debt),
+            Number(curr.collateral),
+            Number(userCollateralRatio),
+          ),
+        0,
+      );
+      setRedemptionBuffer(redemptionBuffer);
+    }
+  }, [lowestTroves, loadingLowestTroves, userCollateralRatio]);
 
   const { data: userOpenTroveAbove, loading: loadingUserOpenTroveAbove } =
     useGetTrovesPositions(userCollateralRatio, TrovesFilterType.above);

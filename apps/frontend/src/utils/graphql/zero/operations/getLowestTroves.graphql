@@ -1,0 +1,11 @@
+query getLowestTroves($first: Int!, $userCollateralRatioKey: BigInt) {
+  troves(
+    orderDirection: desc
+    orderBy: collateralRatioSortKey
+    first: $first
+    where: { collateralRatioSortKey_lt: $userCollateralRatioKey }
+  ) {
+    collateral
+    debt
+  }
+}

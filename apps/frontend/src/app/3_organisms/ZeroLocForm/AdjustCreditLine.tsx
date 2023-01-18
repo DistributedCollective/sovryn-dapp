@@ -17,10 +17,12 @@ import {
 } from '@sovryn/ui';
 
 import { AssetRenderer } from '../../2_molecules/AssetRenderer/AssetRenderer';
+import { BORROW_ASSETS } from '../../5_pages/ZeroPage/constants';
 import { useAssetBalance } from '../../../hooks/useAssetBalance';
 import { translations } from '../../../locales/i18n';
 import { CR_THRESHOLDS } from '../../../utils/constants';
 import { formatValue, fromWei } from '../../../utils/math';
+import { tokensToOptions } from '../../../utils/tokens';
 import { CurrentTroveData } from './CurrentTroveData';
 import { Label } from './Label';
 import { Row } from './Row';
@@ -29,7 +31,6 @@ import {
   AmountType,
   CreditLineSubmitValue,
   CreditLineType,
-  tokens,
 } from './types';
 import { normalizeAmountByType } from './utils';
 
@@ -275,7 +276,7 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
           <Select
             value={debtToken}
             onChange={setDebtToken}
-            options={tokens}
+            options={tokensToOptions(BORROW_ASSETS)}
             className="flex-grow flex-shrink-0"
             labelRenderer={({ value }) => (
               <AssetRenderer

@@ -19,8 +19,8 @@ import {
 import { AssetRenderer } from '../../2_molecules/AssetRenderer/AssetRenderer';
 import { translations } from '../../../locales/i18n';
 import { formatValue } from '../../../utils/math';
+import { tokensToOptions } from '../../../utils/tokens';
 import { Row } from './Row';
-import { tokensToOptions } from './utils';
 
 type CloseCreditLineProps = {
   collateralValue: string;

@@ -1,5 +1,3 @@
-import { SupportedTokens } from '@sovryn/contracts';
-
 import { AmountType } from './types';
 
 export const normalizeAmountByType = (
@@ -11,9 +9,3 @@ export const normalizeAmountByType = (
   }
   return Math.abs(amount) * -1;
 };
-
-export const tokensToOptions = (tokens: SupportedTokens[]) =>
-  tokens.map(token => ({
-    value: token,
-    label: token.toUpperCase(),
-  }));

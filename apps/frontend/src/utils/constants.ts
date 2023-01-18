@@ -49,3 +49,6 @@ export const servicesConfig = {
 export const EXPORT_RECORD_LIMIT = 500;
 
 export const DEFAULT_TIMEOUT_SECONDS = 5000;
+
+export const GAS_LIMIT_OPEN_TROVE = 1_000_000;
+export const GAS_LIMIT_ADJUST_TROVE = 650_000;

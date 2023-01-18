@@ -5,7 +5,14 @@ import {
   UserTrove,
 } from '@sovryn-zero/lib-base';
 
-import React, { FC, useCallback, useEffect, useReducer, useState } from 'react';
+import React, {
+  FC,
+  useCallback,
+  useEffect,
+  useMemo,
+  useReducer,
+  useState,
+} from 'react';
 
 import { Contract } from 'ethers';
 import { t } from 'i18next';
@@ -36,6 +43,10 @@ import { useWalletConnect } from '../../../hooks';
 import { useAccount } from '../../../hooks/useAccount';
 import { translations } from '../../../locales/i18n';
 import { getRskChainId } from '../../../utils/chain';
+import {
+  GAS_LIMIT_ADJUST_TROVE,
+  GAS_LIMIT_OPEN_TROVE,
+} from '../../../utils/constants';
 import { ZeroPageLoaderData } from './loader';
 import { adjustTrove, openTrove } from './utils/trove-manager';
 
@@ -107,7 +118,7 @@ export const ZeroPage: FC = () => {
               fnName: 'adjustTrove',
               config: {
                 value: adjustedTrove.value,
-                gasLimit: '650000',
+                gasLimit: GAS_LIMIT_ADJUST_TROVE,
               },
               args: adjustedTrove.args,
             },
@@ -125,7 +136,7 @@ export const ZeroPage: FC = () => {
               fnName: 'openTrove',
               config: {
                 value: openedTrove.value,
-                gasLimit: '1000000',
+                gasLimit: GAS_LIMIT_OPEN_TROVE,
               },
               args: openedTrove.args,
             },
@@ -159,6 +170,23 @@ export const ZeroPage: FC = () => {
     }
   }, [provider, setIsOpen, setTransactions, signer]);
 
+  const getRatio = useCallback(
+    (price: string) => {
+      return (
+        ((Number(trove?.collateral ?? 0) * Number(price)) /
+          Number(trove?.debt ?? 0)) *
+        100
+      );
+    },
+    [trove?.collateral, trove?.debt],
+  );
+
+  const collateral = useMemo(
+    () => Number(trove?.collateral ?? 0),
+    [trove?.collateral],
+  );
+  const debt = useMemo(() => Number(trove?.debt ?? 0), [trove?.debt]);
+
   return (
     <div className="container max-w-7xl mt-24">
       <React.Suspense fallback={<p>Loading stuff...</p>}>
@@ -169,13 +197,9 @@ export const ZeroPage: FC = () => {
                 <>
                   {trove?.debt?.gt(0) ? (
                     <LOCStatus
-                      collateral={Number(trove?.collateral ?? 0)}
-                      debt={Number(trove?.debt ?? 0)}
-                      cRatio={
-                        ((Number(trove?.collateral ?? 0) * Number(price)) /
-                          Number(trove?.debt ?? 0)) *
-                        100
-                      }
+                      collateral={collateral}
+                      debt={debt}
+                      cRatio={getRatio(price)}
                       debtSymbol={DEBT_TOKEN}
                       onAdjust={toggle}
                       onClose={toggleClosePopup}
@@ -218,8 +242,8 @@ export const ZeroPage: FC = () => {
                         ? CreditLineType.Open
                         : CreditLineType.Adjust
                     }
-                    existingCollateral={trove?.collateral.toString() ?? '0'}
-                    existingDebt={trove?.debt.toString() ?? '0'}
+                    existingCollateral={String(collateral)}
+                    existingDebt={String(debt)}
                     onSubmit={handleTroveSubmit}
                     rbtcPrice={price}
                     fees={fees}

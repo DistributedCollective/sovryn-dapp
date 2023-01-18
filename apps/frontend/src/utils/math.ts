@@ -25,10 +25,24 @@ export const toWei = (
   }
 
   const number = Number(value);
-  if (!Number.isNaN(number) && Number.isFinite(number) && value % 1 !== 0) {
-    return parseUnits(number.toString(), unitName);
-  }
+  if (!Number.isNaN(number) && Number.isFinite(number)) {
+    if (value % 1 !== 0) {
+      return parseUnits(number.toString(), unitName);
+    } else {
+      const numberish = String(value);
+      const [integer, decimals] = numberish.split('.');
 
+      const bnInteger = BigNumber.from(integer).mul(
+        BigNumber.from(10).pow(unitName),
+      );
+
+      const bnDecimals = BigNumber.from(decimals).mul(
+        BigNumber.from(10).pow(parseUnitValue(unitName) - decimals.length),
+      );
+
+      return bnDecimals.add(bnInteger);
+    }
+  }
   throw new Error(`Invalid BigNumberish value: ${value}`);
 };
 
@@ -53,3 +67,13 @@ export const formatValue = (value: number, precision: number = 0) =>
   value.toLocaleString(navigator.language, {
     maximumFractionDigits: precision,
   });
+
+export const parseUnitValue = (unitName: BigNumberish): number => {
+  if (typeof unitName === 'string') {
+    const index = unitNames.indexOf(unitName);
+    if (index !== -1) {
+      unitName = 3 * index;
+    }
+  }
+  return Number(unitName);
+};

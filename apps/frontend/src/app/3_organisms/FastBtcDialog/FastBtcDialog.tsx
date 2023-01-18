@@ -26,7 +26,7 @@ export const FastBtcDialog: React.FC<FastBtcDialogProps> = ({
       label: 'Receive',
       infoText:
         'Transfer BTC from the bitcoin network to your Rootstock address',
-      content: <ReceiveFlow />,
+      content: <ReceiveFlow onClose={onClose} />,
     },
     {
       label: 'Send',

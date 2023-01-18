@@ -34,7 +34,7 @@ export const ZeroPage: FC = () => {
   const [fees, setFees] = useState<Fees>();
   const [zusdBalance, setZusdBalance] = React.useState('');
 
-  const { account, connectWallet } = useWalletConnect();
+  const { account } = useWalletConnect();
 
   useEffect(() => {
     liquity
@@ -64,7 +64,7 @@ export const ZeroPage: FC = () => {
 
   return (
     <div className="container max-w-7xl mt-24">
-      {account ? (
+      {account && (
         <>
           <Heading>Example</Heading>
           <div className="flex flex-row justify-start items-center text-black gap-8 mt-8">
@@ -85,14 +85,8 @@ export const ZeroPage: FC = () => {
             className="mt-8 ml-4"
           />
         </>
-      ) : (
-        <>
-          <Button text="Connect first...." onClick={connectWallet} />
-          <hr />
-          <br />
-          <SystemStats />
-        </>
       )}
+      <SystemStats />
       <LOCChart />
 
       <Dialog width={DialogSize.sm} isOpen={open} disableFocusTrap>

@@ -13,6 +13,7 @@ import {
 
 export type WalletIdentityProps = {
   onDisconnect?: () => void;
+  onCopyAddress?: () => void;
   address: string;
   className?: string;
   dataAttribute?: string;
@@ -24,8 +25,9 @@ export type WalletIdentityProps = {
 };
 
 export const WalletIdentity: FC<WalletIdentityProps> = ({
-  address,
   onDisconnect,
+  onCopyAddress,
+  address,
   className,
   hideSubmenu = false,
   startLength = 4,
@@ -64,6 +66,7 @@ export const WalletIdentity: FC<WalletIdentityProps> = ({
       {content}
       <DisconnectSubmenu
         onDisconnect={onDisconnect}
+        onCopyAddress={onCopyAddress}
         address={address}
         dataAttribute={dataAttribute}
         menuLabels={submenuLabels}

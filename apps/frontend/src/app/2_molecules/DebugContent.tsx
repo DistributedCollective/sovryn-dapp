@@ -2,12 +2,13 @@ import React, { useCallback, useReducer, useState } from 'react';
 
 import { ethers } from 'ethers';
 import { parseUnits } from 'ethers/lib/utils';
+import { nanoid } from 'nanoid';
 import { useTranslation } from 'react-i18next';
 
 import { getTokenDetails, SupportedTokens } from '@sovryn/contracts';
 import { Accordion, AmountInput, Button, NotificationType } from '@sovryn/ui';
 
-import { TransactionHistoryFrame, TransactionStepDialog } from '../3_organisms';
+import { TransactionStepDialog } from '../3_organisms';
 import { EmailNotificationSettingsDialog } from '../3_organisms/EmailNotificationSettingsDialog/EmailNotificationSettingsDialog';
 import { GettingStartedPopup } from '../3_organisms/GettingStartedPopup/GettingStartedPopup';
 import { defaultChainId } from '../../config/chains';
@@ -120,7 +121,7 @@ export const DebugContent = () => {
                   'Transaction approved ' + Math.floor(Math.random() * 1000),
                 content: '',
                 dismissible: true,
-                id: Math.floor(Math.random() * 1000),
+                id: nanoid(),
               },
               0,
             )
@@ -135,7 +136,7 @@ export const DebugContent = () => {
               title: 'Transaction error ' + Math.floor(Math.random() * 1000),
               content: '',
               dismissible: true,
-              id: Math.floor(Math.random() * 1000),
+              id: nanoid(),
             })
           }
           text="Add Notifcation With Timer"
@@ -253,10 +254,6 @@ export const DebugContent = () => {
       <br />
       <br />
       <p>{t(translations.wallet)}</p>
-
-      <h3>An example of the Transaction Frame</h3>
-      <br />
-      <TransactionHistoryFrame />
 
       <div className="mt-10 py-10 border-t border-b">
         <h2>Getting started popup</h2>

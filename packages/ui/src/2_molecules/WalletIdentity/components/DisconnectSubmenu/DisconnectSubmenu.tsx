@@ -10,6 +10,7 @@ export type MenuLabels = {
 
 export type DisconnectSubmenuProps = {
   onDisconnect?: () => void;
+  onCopyAddress?: () => void;
   address: string;
   className?: string;
   dataAttribute?: string;
@@ -19,14 +20,15 @@ export type DisconnectSubmenuProps = {
 export const DisconnectSubmenu: FC<DisconnectSubmenuProps> = ({
   address,
   onDisconnect,
+  onCopyAddress,
   className,
   dataAttribute,
   menuLabels,
 }) => {
   const copyAddress = useCallback(async () => {
     await navigator.clipboard.writeText(address);
-    alert('Address was copied to clipboard.');
-  }, [address]);
+    onCopyAddress?.();
+  }, [onCopyAddress, address]);
 
   return (
     <Menu className={className}>

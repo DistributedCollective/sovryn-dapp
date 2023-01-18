@@ -208,16 +208,16 @@ export const LOCChart: FC = () => {
 
   useEffect(() => {
     if (!loadingLowestTroves) {
-      const redemptionBuffer = lowestTroves?.troves.reduce((acc, curr) => {
-        return (
+      const redemptionBuffer = lowestTroves?.troves.reduce(
+        (acc, curr) =>
           acc +
           calculateRedemptionBuffer(
             Number(curr.debt),
             Number(curr.collateral),
             Number(userCollateralRatio),
-          )
-        );
-      }, 0);
+          ),
+        0,
+      );
       setRedemptionBuffer(redemptionBuffer);
     }
   }, [lowestTroves, loadingLowestTroves, userCollateralRatio]);

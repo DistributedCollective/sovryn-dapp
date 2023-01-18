@@ -7,7 +7,7 @@ import { DepositContext, DepositStep } from '../../../contexts/deposit-context';
 
 export const btcInSatoshis = 100000000; // TODO: Make a global constant
 
-const asset = SupportedTokens.rbtc;
+const asset = SupportedTokens.rbtc; // TODO: Extract it somewhere else
 
 type StatusScreenProps = {
   onClose: () => void;

@@ -191,6 +191,11 @@
         "open": "Open",
         "adjust": "Adjust",
         "close": "Close"
+      },
+      "tx": {
+        "adjustTrove": "Adjust Trove",
+        "closeTrove": "Close Trove",
+        "openTrove": "Open Trove"
       }
     },
     "stats": {

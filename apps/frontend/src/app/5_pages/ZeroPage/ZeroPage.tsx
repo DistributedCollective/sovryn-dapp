@@ -61,7 +61,7 @@ export const ZeroPage: FC = () => {
   const [zusdBalance, setZusdBalance] = React.useState('');
 
   const { connectWallet } = useWalletConnect();
-  const { signer, provider, account } = useAccount();
+  const { signer, account } = useAccount();
 
   useEffect(() => {
     if (account && liquity) {
@@ -80,9 +80,17 @@ export const ZeroPage: FC = () => {
     }
   }, [account, liquity]);
 
+  const collateral = useMemo(
+    () => Number(trove?.collateral ?? 0),
+    [trove?.collateral],
+  );
+  const debt = useMemo(() => Number(trove?.debt ?? 0), [trove?.debt]);
+
+  const hasLoc = useMemo(() => trove?.debt?.gt(0), [trove?.debt]);
+
   const handleTroveSubmit = useCallback(
     async (value: CreditLineSubmitValue) => {
-      if (provider) {
+      if (signer) {
         const { address, abi } = await getContract(
           'borrowerOperations',
           'zero',
@@ -91,7 +99,7 @@ export const ZeroPage: FC = () => {
 
         const contract = new Contract(address, abi, signer);
 
-        if (trove?.debt?.gt(0)) {
+        if (hasLoc) {
           const params: Partial<TroveAdjustmentParams<Decimalish>> = {};
 
           if (value.borrow) {
@@ -113,7 +121,7 @@ export const ZeroPage: FC = () => {
           const adjustedTrove = await adjustTrove(account, params);
           setTransactions([
             {
-              title: 'Adjusting Trove',
+              title: t(translations.zeroPage.tx.adjustTrove),
               contract,
               fnName: 'adjustTrove',
               config: {
@@ -131,7 +139,7 @@ export const ZeroPage: FC = () => {
           });
           setTransactions([
             {
-              title: 'Open Trove',
+              title: t(translations.zeroPage.tx.openTrove),
               contract,
               fnName: 'openTrove',
               config: {
@@ -145,11 +153,11 @@ export const ZeroPage: FC = () => {
         }
       }
     },
-    [account, provider, setIsOpen, setTransactions, signer, trove?.debt],
+    [account, hasLoc, setIsOpen, setTransactions, signer],
   );
 
   const handleTroveClose = useCallback(async () => {
-    if (provider) {
+    if (signer) {
       const { address, abi } = await getContract(
         'borrowerOperations',
         'zero',
@@ -160,7 +168,7 @@ export const ZeroPage: FC = () => {
 
       setTransactions([
         {
-          title: 'Close Trove',
+          title: t(translations.zeroPage.tx.closeTrove),
           contract,
           fnName: 'closeTrove',
           args: [],
@@ -168,24 +176,14 @@ export const ZeroPage: FC = () => {
       ]);
       setIsOpen(true);
     }
-  }, [provider, setIsOpen, setTransactions, signer]);
+  }, [setIsOpen, setTransactions, signer]);
 
   const getRatio = useCallback(
     (price: string) => {
-      return (
-        ((Number(trove?.collateral ?? 0) * Number(price)) /
-          Number(trove?.debt ?? 0)) *
-        100
-      );
+      return ((collateral * Number(price)) / debt) * 100;
     },
-    [trove?.collateral, trove?.debt],
+    [collateral, debt],
   );
-
-  const collateral = useMemo(
-    () => Number(trove?.collateral ?? 0),
-    [trove?.collateral],
-  );
-  const debt = useMemo(() => Number(trove?.debt ?? 0), [trove?.debt]);
 
   return (
     <div className="container max-w-7xl mt-24">
@@ -195,7 +193,7 @@ export const ZeroPage: FC = () => {
             <>
               {account ? (
                 <>
-                  {trove?.debt?.gt(0) ? (
+                  {hasLoc ? (
                     <LOCStatus
                       collateral={collateral}
                       debt={debt}
@@ -229,7 +227,7 @@ export const ZeroPage: FC = () => {
               <Dialog width={DialogSize.sm} isOpen={open} disableFocusTrap>
                 <DialogHeader
                   title={
-                    trove?.debt?.lte(0)
+                    !hasLoc
                       ? t(translations.zeroPage.loc.open)
                       : t(translations.zeroPage.loc.adjust)
                   }
@@ -237,11 +235,7 @@ export const ZeroPage: FC = () => {
                 />
                 <DialogBody>
                   <AdjustCreditLine
-                    type={
-                      trove?.debt?.lte(0)
-                        ? CreditLineType.Open
-                        : CreditLineType.Adjust
-                    }
+                    type={!hasLoc ? CreditLineType.Open : CreditLineType.Adjust}
                     existingCollateral={String(collateral)}
                     existingDebt={String(debt)}
                     onSubmit={handleTroveSubmit}
@@ -263,8 +257,8 @@ export const ZeroPage: FC = () => {
                 <DialogBody>
                   <CloseCreditLine
                     onSubmit={handleTroveClose}
-                    creditValue={trove?.debt.toString() ?? '0'}
-                    collateralValue={trove?.collateral.toString() ?? '0'}
+                    creditValue={String(debt)}
+                    collateralValue={String(collateral)}
                     availableBalance={zusdBalance}
                   />
                 </DialogBody>

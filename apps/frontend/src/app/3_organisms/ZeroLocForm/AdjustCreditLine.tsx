@@ -27,6 +27,10 @@ import { CurrentTroveData } from './CurrentTroveData';
 import { Label } from './Label';
 import { Row } from './Row';
 import {
+  CRITICAL_COLLATERAL_RATIO,
+  MINIMUM_COLLATERAL_RATIO,
+} from './constants';
+import {
   AdjustCreditLineProps,
   AmountType,
   CreditLineSubmitValue,
@@ -57,6 +61,16 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
     SupportedTokens.rbtc,
   );
 
+  const isIncreasingDebt = useMemo(
+    () => debtType === AmountType.Add,
+    [debtType],
+  );
+
+  const isIncreasingCollateral = useMemo(
+    () => collateralType === AmountType.Add,
+    [collateralType],
+  );
+
   const newDebt = useMemo(
     () =>
       Number(existingDebt) +
@@ -82,12 +96,13 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
 
   const maxCreditAmount = useMemo(() => {
     return Number(
-      debtType === AmountType.Add
-        ? (maxCollateralAmount * Number(rbtcPrice || '0')) / 1.1
+      isIncreasingDebt
+        ? (maxCollateralAmount * Number(rbtcPrice || '0')) /
+            MINIMUM_COLLATERAL_RATIO
         : Math.min(Number(fromWei(creditWeiBalance)), Number(existingDebt)),
     );
   }, [
-    debtType,
+    isIncreasingDebt,
     maxCollateralAmount,
     rbtcPrice,
     creditWeiBalance,
@@ -114,16 +129,6 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
     (event: ChangeEvent<HTMLInputElement>) =>
       setDebtAmount(event.currentTarget.value),
     [],
-  );
-
-  const isIncreasingDebt = useMemo(
-    () => debtType === AmountType.Add,
-    [debtType],
-  );
-
-  const isIncreasingCollateral = useMemo(
-    () => collateralType === AmountType.Add,
-    [collateralType],
   );
 
   const handleFormSubmit = useCallback(() => {
@@ -217,20 +222,24 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
   );
 
   const initialLiquidationPrice = useMemo(
-    () => 1.1 * (Number(existingDebt) / Number(existingCollateral)),
+    () =>
+      MINIMUM_COLLATERAL_RATIO *
+      (Number(existingDebt) / Number(existingCollateral)),
     [existingDebt, existingCollateral],
   );
   const initialLiquidationPriceRecoveryMode = useMemo(
-    () => 1.5 * (Number(existingDebt) / Number(existingCollateral)),
+    () =>
+      CRITICAL_COLLATERAL_RATIO *
+      (Number(existingDebt) / Number(existingCollateral)),
     [existingCollateral, existingDebt],
   );
 
   const liquidationPrice = useMemo(
-    () => 1.1 * (newDebt / newCollateral),
+    () => MINIMUM_COLLATERAL_RATIO * (newDebt / newCollateral),
     [newDebt, newCollateral],
   );
   const liquidationPriceRecoveryMode = useMemo(
-    () => 1.5 * (newDebt / newCollateral),
+    () => CRITICAL_COLLATERAL_RATIO * (newDebt / newCollateral),
     [newDebt, newCollateral],
   );
 

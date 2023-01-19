@@ -1,0 +1,19 @@
+.wrapper {
+  @apply flex flex-col items-center h-screen mt-28;
+}
+
+.content {
+  @apply w-full border border-gray-50 rounded sm:w-[25rem] p-3 bg-gray-90
+}
+
+.rewards {
+  @apply bg-gray-70 rounded p-6 text-center mb-6;
+}
+
+.amount {
+  @apply text-2xl leading-7 uppercase;
+}
+
+.actions {
+  @apply flex flex-row justify-center gap-3;
+}

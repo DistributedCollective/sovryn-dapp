@@ -72,6 +72,13 @@ export const Header: FC = () => {
             {t(translations.header.nav.earn)}
           </NavLink>
           <NavLink
+            to="/rewards"
+            onClick={handleNavClick}
+            {...applyDataAttr('dapp-menu-rewards')}
+          >
+            {t(translations.header.nav.rewards)}
+          </NavLink>
+          <NavLink
             to="/convert"
             onClick={handleNavClick}
             {...applyDataAttr('dapp-menu-convert')}

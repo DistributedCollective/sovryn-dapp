@@ -252,7 +252,7 @@ const EarnPage: FC = () => {
           <AmountInput
             value={amount}
             onChangeText={setAmount}
-            label={'amount'}
+            label={t(translations.common.amount)}
             min={0}
             max={maximumAmount}
             invalid={!isValidAmount}

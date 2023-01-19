@@ -10,10 +10,10 @@ import {
   startCall,
 } from '../../../store/rxjs/provider-cache';
 
-const BLOCK_FETCH_INTERVAL = 15_000; // 30 seconds
+const BLOCK_FETCH_INTERVAL = 15_000; // 15 seconds
 
 const options: Partial<CacheCallOptions> = {
-  ttl: 15_000, // 30 seconds,
+  ttl: 7_000, // 7 seconds
   fallbackToPreviousResult: true,
 };
 

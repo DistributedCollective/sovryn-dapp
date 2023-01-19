@@ -162,7 +162,8 @@
         "collateralAmount": "Collateral Amount",
         "debtAmount": "Debt Amount",
         "redemptionBuffer": "Redemption Buffer",
-        "noData": "No data"
+        "noData": "No data",
+        "systemLinesCredit": "System lines of credit"
     },
     "LOCStatus": {
         "withdrawalSurplus": "withdrawal surplus",

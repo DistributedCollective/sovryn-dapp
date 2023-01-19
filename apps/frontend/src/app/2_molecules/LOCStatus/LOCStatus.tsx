@@ -11,11 +11,11 @@ import { LOCStat } from './components/LOCStat/LOCStat';
 
 export type LOCStatusProps = {
   className?: string;
-  withdrawalSurplus?: number;
-  collateral?: number;
-  debt?: number;
+  withdrawalSurplus?: number | string;
+  collateral?: number | string;
+  debt?: number | string;
   debtSymbol?: string;
-  cRatio?: number;
+  cRatio?: number | string;
   onAdjust?: () => void;
   onClose?: () => void;
   onWithdraw?: () => void;
@@ -62,7 +62,7 @@ export const LOCStatus: FC<LOCStatusProps> = ({
                   duration={0.7}
                   separator=","
                   suffix={` ${debtSymbol}`}
-                  end={debt}
+                  end={Number(debt)}
                 />
               }
             />
@@ -75,8 +75,8 @@ export const LOCStatus: FC<LOCStatusProps> = ({
               }
               value={
                 <div className="flex items-center">
-                  <CRatioIndicator className="mr-3" value={cRatio} />
-                  <CountUp duration={0.7} suffix="%" end={cRatio} />
+                  <CRatioIndicator className="mr-3" value={Number(cRatio)} />
+                  <CountUp duration={0.7} suffix="%" end={Number(cRatio)} />
                 </div>
               }
             />

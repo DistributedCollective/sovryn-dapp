@@ -76,6 +76,7 @@ export const LOCChart: FC = () => {
   const options = useMemo(() => {
     return {
       responsive: true,
+      maintainAspectRatio: false,
       plugins: {
         tooltip: {
           borderRadius: chartConfig.tooltipBorderRadius,
@@ -251,7 +252,7 @@ export const LOCChart: FC = () => {
   useEffect(() => {
     if (!loadingUserOpenTrove && userOpenTrove?.trove) {
       const { trove } = userOpenTrove.trove.changes[0];
-      setUserCollateralRatio(trove.collateralRatioSortKey.toString());
+      setUserCollateralRatio(trove.collateralRatioSortKey?.toString());
     }
   }, [userOpenTrove, loadingUserOpenTrove]);
 

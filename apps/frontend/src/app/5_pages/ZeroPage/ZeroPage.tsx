@@ -1,40 +1,56 @@
-import { Fees, UserTrove } from '@sovryn-zero/lib-base';
+import { Decimal, Fees, UserTrove } from '@sovryn-zero/lib-base';
 import { EthersLiquity, ReadableEthersLiquity } from '@sovryn-zero/lib-ethers';
 
-import React, { FC, useEffect, useReducer, useState } from 'react';
+import React, { FC, useEffect, useMemo, useReducer, useState } from 'react';
 
+import { useTranslation } from 'react-i18next';
 import { useLoaderData } from 'react-router-dom';
 
+import { SupportedTokens } from '@sovryn/contracts';
 import {
-  Button,
   Dialog,
   DialogBody,
   DialogHeader,
   DialogSize,
-  Heading,
   noop,
+  Paragraph,
+  ParagraphSize,
+  ParagraphStyle,
 } from '@sovryn/ui';
 
+import { DashboardWelcomeBanner } from '../../2_molecules/DashboardWelcomeBanner/DashboardWelcomeBanner';
+import { LOCStatus } from '../../2_molecules/LOCStatus/LOCStatus';
 import { SystemStats } from '../../2_molecules/SystemStats/SystemStats';
+import { TransactionStepDialog } from '../../3_organisms';
 import { LOCChart } from '../../3_organisms/LOCChart/LOCChart';
 import { AdjustCreditLine } from '../../3_organisms/ZeroLocForm/AdjustCreditLine';
 import { CloseCreditLine } from '../../3_organisms/ZeroLocForm/CloseCreditLine';
 import { useWalletConnect } from '../../../hooks';
+import { translations } from '../../../locales/i18n';
+import { formatValue } from '../../../utils/math';
+import { useClaimCollateralSurplus } from './hooks/useClaimCollateralSurplus';
+import { useLOC } from './hooks/useLOC';
 
 export const ZeroPage: FC = () => {
+  const { t } = useTranslation();
   const { liquity } = useLoaderData() as {
     liquity: EthersLiquity;
     provider: ReadableEthersLiquity;
   };
 
-  const [open, toggle] = useReducer(v => !v, false);
+  const [openAdjust, toggleOpenAdjust] = useReducer(v => !v, false);
   const [openClosePopup, toggleClosePopup] = useReducer(v => !v, false);
   const [trove, setTrove] = useState<UserTrove>();
+  const [price, setPrice] = useState<Decimal>();
+  const [collateralSurplusBalance, setCollateralSurplusBalance] =
+    useState<Decimal>();
   const [btcPrice, setBtcPrice] = useState('0');
   const [fees, setFees] = useState<Fees>();
   const [zusdBalance, setZusdBalance] = React.useState('');
-
   const { account } = useWalletConnect();
+
+  const claimCollateralSurplus = useClaimCollateralSurplus();
+  const { closeLOC } = useLOC();
 
   useEffect(() => {
     liquity
@@ -48,6 +64,15 @@ export const ZeroPage: FC = () => {
   useEffect(() => {
     if (account && liquity) {
       liquity.getTrove(account).then(setTrove);
+      liquity
+        .getCollateralSurplusBalance(account)
+        .then(setCollateralSurplusBalance);
+    }
+  }, [account, liquity]);
+
+  useEffect(() => {
+    if (liquity) {
+      liquity.getPrice().then(setPrice);
     }
   }, [account, liquity]);
 
@@ -62,35 +87,61 @@ export const ZeroPage: FC = () => {
     }
   }, [account, liquity]);
 
+  const cRatio = useMemo(() => {
+    return formatValue(
+      Number(
+        trove
+          ?.collateralRatio(price || 0)
+          .mul(100)
+          .toString(),
+      ),
+      2,
+    );
+  }, [price, trove]);
+
+  const showWelcomeBanner =
+    !account ||
+    (Number(collateralSurplusBalance?.toString()) === 0 &&
+      Number(trove?.collateral?.toString()) === 0);
+
   return (
     <div className="container max-w-7xl mt-24">
-      {account && (
-        <>
-          <Heading>Example</Heading>
-          <div className="flex flex-row justify-start items-center text-black gap-8 mt-8">
-            <div className="bg-gray-30 p-3">
-              <div>Debt</div>
-              <div>{trove?.debt.toString() ?? '0'}</div>
-            </div>
-            <div className="bg-gray-30 p-3">
-              <div>Collateral</div>
-              <div>{trove?.collateral.toString() ?? '0'}</div>
-            </div>
-          </div>
+      {showWelcomeBanner && <DashboardWelcomeBanner />}
 
-          <Button text="Adjust" onClick={toggle} className="mt-8" />
-          <Button
-            text="Close Line of Credit"
-            onClick={toggleClosePopup}
-            className="mt-8 ml-4"
-          />
-        </>
+      {!showWelcomeBanner && (
+        <LOCStatus
+          className="mb-6"
+          collateral={formatValue(Number(trove?.collateral?.toString()), 4)}
+          debt={formatValue(Number(trove?.debt?.toString()), 2)}
+          debtSymbol={SupportedTokens.zusd.toUpperCase()}
+          cRatio={cRatio}
+          onClose={toggleClosePopup}
+          onAdjust={toggleOpenAdjust}
+          withdrawalSurplus={Number(collateralSurplusBalance?.toString())}
+          onWithdraw={claimCollateralSurplus}
+        />
       )}
-      <SystemStats />
-      <LOCChart />
 
-      <Dialog width={DialogSize.sm} isOpen={open} disableFocusTrap>
-        <DialogHeader title="Adjust" onClose={toggle} />
+      <div className="flex-col lg:flex-row flex items-stretch bg-gray-90 p-6 rounded gap-20">
+        <div className="min-w-[23rem]">
+          <SystemStats />
+        </div>
+        <div className="flex-1 flex flex-col">
+          <Paragraph
+            size={ParagraphSize.base}
+            style={ParagraphStyle.normal}
+            className="mb-6"
+          >
+            {t(translations.chart.systemLinesCredit)}
+          </Paragraph>
+          <div className="bg-gray-80 rounded flex-1 pt-2 px-2 flex items-center">
+            <LOCChart />
+          </div>
+        </div>
+      </div>
+
+      <Dialog width={DialogSize.sm} isOpen={openAdjust} disableFocusTrap>
+        <DialogHeader title="Adjust" onClose={toggleOpenAdjust} />
         <DialogBody>
           <AdjustCreditLine
             collateralValue={trove?.collateral.toString() ?? '0'}
@@ -106,13 +157,14 @@ export const ZeroPage: FC = () => {
         <DialogHeader title="Close" onClose={toggleClosePopup} />
         <DialogBody>
           <CloseCreditLine
-            onSubmit={noop}
+            onSubmit={closeLOC}
             creditValue={trove?.debt.toString() ?? '0'}
             collateralValue={trove?.collateral.toString() ?? '0'}
             availableBalance={zusdBalance}
           />
         </DialogBody>
       </Dialog>
+      <TransactionStepDialog />
     </div>
   );
 };

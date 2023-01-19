@@ -1,11 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
-import { ethers } from 'ethers';
-
-import { getProtocolContract } from '@sovryn/contracts';
-
-import { Chains, defaultChainId } from '../../../../config/chains';
-import { useAccount } from '../../../../hooks/useAccount';
+import { Chains } from '../../../../config/chains';
+import { useGetProtocolContract } from '../../../../hooks/useGetContract';
 import {
   defaultValue,
   WithdrawContextStateType,
@@ -13,33 +9,33 @@ import {
 
 export function useWithdrawBridgeConfig(network: Chains = Chains.RSK) {
   const [state, setState] = useState<WithdrawContextStateType>(defaultValue);
-  const { signer } = useAccount();
 
-  const getFastBtcBridgeContract = useCallback(async () => {
-    const { address, abi } = await getProtocolContract(
-      'fastBtcBridge',
-      defaultChainId,
-    );
-    return new ethers.Contract(address, abi, signer);
-  }, [signer]);
+  const fastBtcBridgeContract = useGetProtocolContract('fastBtcBridge');
 
   const getFastBtcBridgeParams = useCallback(async () => {
-    const fastBtcBridge = await getFastBtcBridgeContract();
+    let minTransferSatoshi = 0;
+    let maxTransferSatoshi = 0;
+    let feeStructures = {
+      baseFeeSatoshi: 0,
+      dynamicFee: 0,
+    };
 
-    const minTransferSatoshi = await fastBtcBridge.minTransferSatoshi();
-    const maxTransferSatoshi = await fastBtcBridge.maxTransferSatoshi();
-    const currentFeeStructureIndex =
-      await fastBtcBridge.currentFeeStructureIndex();
-    const feeStructures = await fastBtcBridge.feeStructures(
-      currentFeeStructureIndex,
-    );
+    if (fastBtcBridgeContract) {
+      minTransferSatoshi = await fastBtcBridgeContract.minTransferSatoshi();
+      maxTransferSatoshi = await fastBtcBridgeContract.maxTransferSatoshi();
+      const currentFeeStructureIndex =
+        await fastBtcBridgeContract.currentFeeStructureIndex();
+      feeStructures = await fastBtcBridgeContract.feeStructures(
+        currentFeeStructureIndex,
+      );
+    }
 
     return {
       minTransferSatoshi: minTransferSatoshi,
       maxTransferSatoshi: maxTransferSatoshi,
       feeStructures: feeStructures,
     };
-  }, [getFastBtcBridgeContract]);
+  }, [fastBtcBridgeContract]);
 
   useEffect(() => {
     getFastBtcBridgeParams()

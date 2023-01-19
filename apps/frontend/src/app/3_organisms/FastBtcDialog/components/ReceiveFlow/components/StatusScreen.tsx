@@ -1,13 +1,10 @@
 import React, { useContext, useMemo } from 'react';
 
-import { SupportedTokens } from '@sovryn/contracts';
 import { Button, Heading, TransactionId } from '@sovryn/ui';
 
+import { formatValue } from '../../../../../../utils/math';
+import { FAST_BTC_ASSET } from '../../../constants';
 import { DepositContext, DepositStep } from '../../../contexts/deposit-context';
-
-export const btcInSatoshis = 100000000; // TODO: Make a global constant
-
-const asset = SupportedTokens.rbtc; // TODO: Extract it somewhere else
 
 type StatusScreenProps = {
   onClose: () => void;
@@ -68,7 +65,7 @@ export const StatusScreen: React.FC<StatusScreenProps> = ({ onClose }) => {
         label: 'Amount:',
         value: (
           <span>
-            {Number(Number(amount).toFixed(8))} {asset.toUpperCase()}
+            {formatValue(amount, 8)} {FAST_BTC_ASSET.toUpperCase()}
           </span>
         ),
       },
@@ -77,7 +74,7 @@ export const StatusScreen: React.FC<StatusScreenProps> = ({ onClose }) => {
         label: 'Fees:',
         value: (
           <span>
-            {Number(Number(feeAmount).toFixed(8))} {asset.toUpperCase()}
+            {formatValue(feeAmount, 8)} {FAST_BTC_ASSET.toUpperCase()}
           </span>
         ),
       },
@@ -86,7 +83,7 @@ export const StatusScreen: React.FC<StatusScreenProps> = ({ onClose }) => {
         label: 'Received:',
         value: (
           <span>
-            {Number(Number(receiveAmount).toFixed(8))} {asset.toUpperCase()}
+            {formatValue(receiveAmount, 8)} {FAST_BTC_ASSET.toUpperCase()}
           </span>
         ),
       },

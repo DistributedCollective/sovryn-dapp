@@ -14,16 +14,15 @@ import {
 import { defaultChainId } from '../../../../../../config/chains';
 import { useAssetBalance } from '../../../../../../hooks/useAssetBalance';
 import { useMaintenance } from '../../../../../../hooks/useMaintenance';
+import { btcInSatoshis } from '../../../../../../utils/constants';
 import { formatValue, fromWei } from '../../../../../../utils/math';
+import { FAST_BTC_ASSET } from '../../../constants';
 import {
   WithdrawContext,
   WithdrawStep,
 } from '../../../contexts/withdraw-context';
-import { btcInSatoshis } from '../../ReceiveFlow/components/StatusScreen';
 
 export const GAS_LIMIT_FAST_BTC_WITHDRAW = 300000; // TODO: Find a suitable place for it
-
-const asset = SupportedTokens.rbtc; // TODO: Extract it somewhere else
 
 export const AmountForm: React.FC = () => {
   const { amount, limits, set } = useContext(WithdrawContext);
@@ -85,7 +84,8 @@ export const AmountForm: React.FC = () => {
             className="text-xs font-medium underline whitespace-nowrap"
             {...applyDataAttr('convert-to-max')}
           >
-            Max {formatValue(Number(rbtcBalance), 4)} {asset.toUpperCase()})
+            Max {formatValue(Number(rbtcBalance), 4)}{' '}
+            {FAST_BTC_ASSET.toUpperCase()})
           </button>
         </div>
 

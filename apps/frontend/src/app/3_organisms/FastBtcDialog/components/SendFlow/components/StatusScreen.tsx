@@ -1,17 +1,12 @@
 import React, { useCallback, useContext, useMemo } from 'react';
 
-import { ethers } from 'ethers';
-
-import { getProtocolContract, SupportedTokens } from '@sovryn/contracts';
 import { Button, Heading, TransactionId } from '@sovryn/ui';
 
-import { defaultChainId } from '../../../../../../config/chains';
-import { useAccount } from '../../../../../../hooks/useAccount';
+import { useGetProtocolContract } from '../../../../../../hooks/useGetContract';
 import { formatValue, fromWei, toWei } from '../../../../../../utils/math';
 import { TransactionStepDialog } from '../../../../TransactionStepDialog';
+import { FAST_BTC_ASSET } from '../../../constants';
 import { WithdrawContext } from '../../../contexts/withdraw-context';
-
-const asset = SupportedTokens.rbtc;
 
 type StatusScreenProps = {
   txHash?: string;
@@ -22,32 +17,22 @@ export const StatusScreen: React.FC<StatusScreenProps> = ({
   txHash,
   onClose,
 }) => {
-  const { signer } = useAccount();
   const { amount, address, aggregatorLimits } = useContext(WithdrawContext);
 
   // TODO: Unify this screen and ReviewScreen because all of the computations are the same
   const weiAmount = toWei(amount);
 
   // TODO: Create a global function/hook
-  const getFastBtcBridgeContract = useCallback(async () => {
-    const { address, abi } = await getProtocolContract(
-      'fastBtcBridge',
-      defaultChainId,
-    );
-    return new ethers.Contract(address, abi, signer);
-  }, [signer]);
+  const fastBtcBridgeContract = useGetProtocolContract('fastBtcBridge');
 
-  //   console.log(`I am in Status Screen, txHash is: ${txHash}`);
-
-  const calculateCurrentFeeWei = useCallback(async () => {
-    const fastBtcBridgeContract = await getFastBtcBridgeContract();
-
-    return fastBtcBridgeContract.calculateCurrentFeeWei(weiAmount);
-  }, [getFastBtcBridgeContract, weiAmount]);
+  const calculateCurrentFeeWei = useCallback(
+    async () => fastBtcBridgeContract?.calculateCurrentFeeWei(weiAmount),
+    [fastBtcBridgeContract, weiAmount],
+  );
 
   const feesPaid = useMemo(() => {
     let currentFeeWei = 0;
-    calculateCurrentFeeWei().then(result => (currentFeeWei = result));
+    calculateCurrentFeeWei().then(result => (currentFeeWei = result || 0));
 
     return Number(fromWei(currentFeeWei)) + aggregatorLimits.min;
   }, [calculateCurrentFeeWei, aggregatorLimits.min]);
@@ -67,7 +52,7 @@ export const StatusScreen: React.FC<StatusScreenProps> = ({
         label: 'Amount',
         value: (
           <>
-            {formatValue(Number(amount), 8)} {asset.toUpperCase()}
+            {formatValue(Number(amount), 8)} {FAST_BTC_ASSET.toUpperCase()}
           </>
         ),
       },
@@ -85,7 +70,7 @@ export const StatusScreen: React.FC<StatusScreenProps> = ({
         label: 'Fees',
         value: (
           <>
-            {formatValue(feesPaid, 8)} {asset.toUpperCase()}
+            {formatValue(feesPaid, 8)} {FAST_BTC_ASSET.toUpperCase()}
           </>
         ),
       },
@@ -93,7 +78,7 @@ export const StatusScreen: React.FC<StatusScreenProps> = ({
         label: 'Received',
         value: (
           <>
-            {formatValue(receiveAmount, 8)} {asset.toUpperCase()}
+            {formatValue(receiveAmount, 8)} {FAST_BTC_ASSET.toUpperCase()}
           </>
         ),
       },

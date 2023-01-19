@@ -16,8 +16,6 @@ type ReceiveFlowProps = {
 };
 
 export const ReceiveFlow: React.FC<ReceiveFlowProps> = ({ onClose }) => {
-  // const { signer } = useAccount();
-
   const [state, setState] = useState<DepositContextStateType>(defaultValue);
   const { step } = state;
 

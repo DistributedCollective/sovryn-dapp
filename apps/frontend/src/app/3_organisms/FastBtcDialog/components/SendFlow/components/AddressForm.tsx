@@ -11,14 +11,11 @@ import {
   getAddressInfo,
   AddressType,
 } from 'bitcoin-address-validation';
-import { ethers } from 'ethers';
 import debounce from 'lodash.debounce';
 
-import { getProtocolContract } from '@sovryn/contracts';
 import { Button, FormGroup, Heading, Input } from '@sovryn/ui';
 
-import { defaultChainId } from '../../../../../../config/chains';
-import { useAccount } from '../../../../../../hooks/useAccount';
+import { useGetProtocolContract } from '../../../../../../hooks/useGetContract';
 import { useMaintenance } from '../../../../../../hooks/useMaintenance';
 import { currentNetwork } from '../../../../../../utils/helpers';
 import {
@@ -34,8 +31,9 @@ enum AddressValidationState {
 }
 
 export const AddressForm: React.FC = () => {
-  const { signer } = useAccount();
   const { address, set } = useContext(WithdrawContext);
+
+  const fastBtcBridgeContract = useGetProtocolContract('fastBtcBridge');
 
   const { checkMaintenance, States } = useMaintenance();
   const fastBtcLocked = checkMaintenance(States.FASTBTC);
@@ -60,23 +58,15 @@ export const AddressForm: React.FC = () => {
     [set, value],
   );
 
-  // TODO: Create a global function/hook
-  const getFastBtcBridgeContract = useCallback(async () => {
-    const { address, abi } = await getProtocolContract(
-      'fastBtcBridge',
-      defaultChainId,
-    );
-    return new ethers.Contract(address, abi, signer);
-  }, [signer]);
-
   const validateAddress = useCallback(
     async (address: string) => {
       setAddressValidationState(AddressValidationState.LOADING);
       let result = false;
       const isValidBtcAddress = validate(address);
 
-      const fastBtcBridgeContract = await getFastBtcBridgeContract();
-
+      if (!fastBtcBridgeContract) {
+        return;
+      }
       const isValid = fastBtcBridgeContract.isValidBtcAddress(address);
 
       if (isValidBtcAddress && isValid) {
@@ -93,7 +83,7 @@ export const AddressForm: React.FC = () => {
         result ? AddressValidationState.VALID : AddressValidationState.INVALID,
       );
     },
-    [getFastBtcBridgeContract],
+    [fastBtcBridgeContract],
   );
 
   // eslint-disable-next-line react-hooks/exhaustive-deps

@@ -1,12 +1,7 @@
 import React, { useCallback, useContext, useState } from 'react';
 
-import { ethers } from 'ethers';
-
-import { getProtocolContract } from '@sovryn/contracts';
-
-import { defaultChainId } from '../../../../../../config/chains';
 import { useTransactionContext } from '../../../../../../contexts/TransactionContext';
-import { useAccount } from '../../../../../../hooks/useAccount';
+import { useGetProtocolContract } from '../../../../../../hooks/useGetContract';
 import { toWei } from '../../../../../../utils/math';
 import {
   WithdrawContext,
@@ -23,47 +18,39 @@ type ConfirmationScreensProps = {
 export const ConfirmationScreens: React.FC<ConfirmationScreensProps> = ({
   onClose,
 }) => {
-  const { signer } = useAccount();
   const { step, address, amount, set } = useContext(WithdrawContext);
 
   const { setTransactions, setTitle, setIsOpen } = useTransactionContext();
 
   const [txHash, setTxHash] = useState<string | undefined>(undefined);
 
-  // TODO: Create a global function/hook
-  const getFastBtcBridgeContract = useCallback(async () => {
-    const { address, abi } = await getProtocolContract(
-      'fastBtcBridge',
-      defaultChainId,
-    );
-    return new ethers.Contract(address, abi, signer);
-  }, [signer]);
+  const fastBtcBridgeContract = useGetProtocolContract('fastBtcBridge');
 
   const handleConfirm = useCallback(async () => {
     set(prevState => ({ ...prevState, step: WithdrawStep.CONFIRM }));
 
-    const fastBtcBridgeContract = await getFastBtcBridgeContract();
-
-    setTransactions([
-      {
-        title: 'Send RBTC',
-        contract: fastBtcBridgeContract,
-        fnName: 'transferToBtc',
-        args: [address],
-        config: {
-          value: toWei(amount),
-          gasLimit: String(GAS_LIMIT_FAST_BTC_WITHDRAW),
+    if (fastBtcBridgeContract) {
+      setTransactions([
+        {
+          title: 'Send RBTC',
+          contract: fastBtcBridgeContract,
+          fnName: 'transferToBtc',
+          args: [address],
+          config: {
+            value: toWei(amount),
+            gasLimit: String(GAS_LIMIT_FAST_BTC_WITHDRAW),
+          },
+          onComplete: setTxHash,
         },
-        onComplete: setTxHash,
-      },
-    ]);
+      ]);
 
-    setTitle('Send RBTC via Fast BTC');
-    setIsOpen(true);
+      setTitle('Send RBTC via Fast BTC');
+      setIsOpen(true);
+    }
   }, [
     address,
     amount,
-    getFastBtcBridgeContract,
+    fastBtcBridgeContract,
     set,
     setIsOpen,
     setTitle,

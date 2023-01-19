@@ -14,6 +14,7 @@ import {
   startCall,
 } from '../store/rxjs/provider-cache';
 import { getRskChainId } from '../utils/chain';
+import { useBlockNumber } from './useBlockNumber';
 import { useIsMounted } from './useIsMounted';
 import { useWalletConnect } from './useWalletConnect';
 
@@ -24,6 +25,7 @@ export const useAssetBalance = (
   walletIndex: number = 0,
   options?: Partial<CacheCallOptions>,
 ): CacheCallResponse<string> => {
+  const { value: block } = useBlockNumber(chainId);
   const { wallets } = useWalletConnect();
   const isMounted = useIsMounted();
 
@@ -83,7 +85,7 @@ export const useAssetBalance = (
         sub.unsubscribe();
       }
     };
-  }, [account, asset, chainId, isMounted, options]);
+  }, [account, asset, chainId, isMounted, options, block]);
 
   return useMemo(
     () => ({ ...state, value: state.value === null ? '0' : state.value }),

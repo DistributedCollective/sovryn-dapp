@@ -15,6 +15,7 @@ import { defaultChainId } from '../../config/chains';
 import { useNotificationContext } from '../../contexts/NotificationContext';
 import { useTransactionContext } from '../../contexts/TransactionContext';
 import { useTheme, useWalletConnect } from '../../hooks';
+import { useBlockNumber } from '../../hooks/useBlockNumber';
 import { useMaintenance } from '../../hooks/useMaintenance';
 import { translations } from '../../locales/i18n';
 import { AppTheme } from '../../types/tailwind';
@@ -104,6 +105,8 @@ export const DebugContent = () => {
     }));
   }, [getTransactions]);
 
+  const { value: block } = useBlockNumber();
+
   return (
     <Accordion
       className="my-3"
@@ -111,6 +114,7 @@ export const DebugContent = () => {
       open={isOpen}
       onClick={toggle}
     >
+      <div>Block: {block}</div>
       <div className="flex items-center gap-4 mt-4">
         <Button
           onClick={() =>

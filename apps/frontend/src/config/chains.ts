@@ -15,11 +15,7 @@ export const chains: Chain[] = [
     id: ChainIds.MAINNET,
     label: 'Ethereum',
     token: 'ETH',
-    rpcUrl: [
-      'https://main-light.eth.linkpool.io',
-      'https://cloudflare-eth.com/',
-      'https://api.mycryptoapi.com/eth',
-    ],
+    rpcUrl: ['https://cloudflare-eth.com/'],
     blockExplorerUrl: 'https://etherscan.io',
   },
   {

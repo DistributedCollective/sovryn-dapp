@@ -7,6 +7,7 @@ import { getTokenDetails, getTokenContract } from '@sovryn/contracts';
 import { SupportedTokens } from '@sovryn/contracts';
 import { getProvider } from '@sovryn/ethers-provider';
 
+import { useBlockNumber } from '../../../../hooks/useBlockNumber';
 import {
   idHash,
   CacheCallResponse,
@@ -21,6 +22,7 @@ export const useGetAssetBalance = (
   contractToken: string,
   chainId = getRskChainId(),
 ): CacheCallResponse<string> => {
+  const { value: block } = useBlockNumber(chainId);
   const [state, setState] = useState<CacheCallResponse<string>>({
     value: '0',
     loading: false,
@@ -62,7 +64,7 @@ export const useGetAssetBalance = (
         sub.unsubscribe();
       }
     };
-  }, [asset, chainId, contractToken]);
+  }, [asset, chainId, contractToken, block]);
 
   return { ...state, value: state.value === null ? '0' : state.value };
 };

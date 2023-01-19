@@ -7,6 +7,7 @@ import { RouterProvider } from 'react-router-dom';
 
 import { OnboardProvider } from '@sovryn/onboard-react';
 
+import { NetworkProvider } from './app/3_organisms/NetworkProvider/NetworkProvider';
 // chain config must be imported before other files
 import './config/chains';
 import { MaintenanceModeContextProvider } from './contexts/MaintenanceModeContext';
@@ -32,15 +33,17 @@ const root = ReactDOM.createRoot(
 
 root.render(
   <React.StrictMode>
-    <TransactionProvider>
-      <ApolloProvider client={rskClient}>
-        <MaintenanceModeContextProvider>
-          <NotificationProvider>
-            <RouterProvider router={router} />
-            <OnboardProvider dataAttribute="dapp-onboard" />
-          </NotificationProvider>
-        </MaintenanceModeContextProvider>
-      </ApolloProvider>
-    </TransactionProvider>
+    <NetworkProvider>
+      <TransactionProvider>
+        <ApolloProvider client={rskClient}>
+          <MaintenanceModeContextProvider>
+            <NotificationProvider>
+              <RouterProvider router={router} />
+              <OnboardProvider dataAttribute="dapp-onboard" />
+            </NotificationProvider>
+          </MaintenanceModeContextProvider>
+        </ApolloProvider>
+      </TransactionProvider>
+    </NetworkProvider>
   </React.StrictMode>,
 );

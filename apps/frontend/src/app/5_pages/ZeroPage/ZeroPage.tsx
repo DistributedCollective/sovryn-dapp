@@ -1,4 +1,5 @@
 import {
+  Decimal,
   Decimalish,
   Fees,
   TroveAdjustmentParams,
@@ -21,16 +22,22 @@ import { Await, useLoaderData } from 'react-router-dom';
 import { getContract } from '@sovryn/contracts';
 import {
   Button,
+  ButtonSize,
+  ButtonStyle,
   Dialog,
   DialogBody,
   DialogHeader,
   DialogSize,
   Paragraph,
+  ParagraphSize,
+  ParagraphStyle,
 } from '@sovryn/ui';
 
+import { DashboardWelcomeBanner } from '../../2_molecules/DashboardWelcomeBanner/DashboardWelcomeBanner';
 import { LOCStatus } from '../../2_molecules/LOCStatus/LOCStatus';
 import { SystemStats } from '../../2_molecules/SystemStats/SystemStats';
 import { LOCChart } from '../../3_organisms/LOCChart/LOCChart';
+import { useGetUserOpenTrove } from '../../3_organisms/LOCChart/hooks/useGetUserOpenTrove';
 import { AdjustCreditLine } from '../../3_organisms/ZeroLocForm/AdjustCreditLine';
 import { CloseCreditLine } from '../../3_organisms/ZeroLocForm/CloseCreditLine';
 import { DEBT_TOKEN } from '../../3_organisms/ZeroLocForm/constants';
@@ -47,6 +54,7 @@ import {
   GAS_LIMIT_ADJUST_TROVE,
   GAS_LIMIT_OPEN_TROVE,
 } from '../../../utils/constants';
+import { useClaimCollateralSurplus } from './hooks/useClaimCollateralSurplus';
 import { ZeroPageLoaderData } from './loader';
 import { adjustTrove, openTrove } from './utils/trove-manager';
 
@@ -59,15 +67,29 @@ export const ZeroPage: FC = () => {
   const [openClosePopup, toggleClosePopup] = useReducer(v => !v, false);
   const [trove, setTrove] = useState<UserTrove>();
   const [zusdBalance, setZusdBalance] = React.useState('');
+  const [collateralSurplusBalance, setCollateralSurplusBalance] =
+    useState<Decimal>();
+
+  const { refetch } = useGetUserOpenTrove();
 
   const { connectWallet } = useWalletConnect();
   const { signer, account } = useAccount();
+  const claimCollateralSurplus = useClaimCollateralSurplus();
 
-  useEffect(() => {
+  const getTroves = useCallback(() => {
     if (account && liquity) {
       liquity.getTrove(account).then(setTrove);
     }
   }, [account, liquity]);
+
+  useEffect(() => {
+    if (account && liquity) {
+      getTroves();
+      liquity
+        .getCollateralSurplusBalance(account)
+        .then(setCollateralSurplusBalance);
+    }
+  }, [account, liquity, getTroves]);
 
   useEffect(() => {
     const getZUSDBalance = async () => {
@@ -87,6 +109,17 @@ export const ZeroPage: FC = () => {
   const debt = useMemo(() => Number(trove?.debt ?? 0), [trove?.debt]);
 
   const hasLoc = useMemo(() => trove?.debt?.gt(0), [trove?.debt]);
+  const isLoading = useMemo(
+    () =>
+      account &&
+      (trove === undefined || collateralSurplusBalance === undefined),
+    [account, collateralSurplusBalance, trove],
+  );
+
+  const showWelcomeBanner = useMemo(
+    () => !account || (!hasLoc && collateralSurplusBalance?.eq(0)),
+    [account, collateralSurplusBalance, hasLoc],
+  );
 
   const handleTroveSubmit = useCallback(
     async (value: CreditLineSubmitValue) => {
@@ -129,6 +162,10 @@ export const ZeroPage: FC = () => {
                 gasLimit: GAS_LIMIT_ADJUST_TROVE,
               },
               args: adjustedTrove.args,
+              onComplete: () => {
+                getTroves();
+                refetch();
+              },
             },
           ]);
           setIsOpen(true);
@@ -147,13 +184,17 @@ export const ZeroPage: FC = () => {
                 gasLimit: GAS_LIMIT_OPEN_TROVE,
               },
               args: openedTrove.args,
+              onComplete: () => {
+                refetch();
+                getTroves();
+              },
             },
           ]);
           setIsOpen(true);
         }
       }
     },
-    [account, hasLoc, setIsOpen, setTransactions, signer],
+    [account, hasLoc, setIsOpen, setTransactions, signer, getTroves, refetch],
   );
 
   const handleTroveClose = useCallback(async () => {
@@ -172,11 +213,15 @@ export const ZeroPage: FC = () => {
           contract,
           fnName: 'closeTrove',
           args: [],
+          onComplete: () => {
+            refetch();
+            getTroves();
+          },
         },
       ]);
       setIsOpen(true);
     }
-  }, [setIsOpen, setTransactions, signer]);
+  }, [setIsOpen, setTransactions, signer, getTroves, refetch]);
 
   const getRatio = useCallback(
     (price: string) => {
@@ -186,43 +231,80 @@ export const ZeroPage: FC = () => {
   );
 
   return (
-    <div className="container max-w-7xl mt-24">
+    <div className="container max-w-7xl md:mt-16 md:mb-40 mt-4 mb-7">
       <React.Suspense fallback={<p>Loading stuff...</p>}>
         <Await resolve={deferedData} errorElement={<p>Error loading stuff!</p>}>
           {([price, fees]: [string, Fees]) => (
             <>
-              {account ? (
-                <>
-                  {hasLoc ? (
-                    <LOCStatus
-                      collateral={collateral}
-                      debt={debt}
-                      cRatio={getRatio(price)}
-                      debtSymbol={DEBT_TOKEN.toUpperCase()}
-                      onAdjust={toggle}
-                      onClose={toggleClosePopup}
+              {!showWelcomeBanner && !isLoading && (
+                <LOCStatus
+                  className="mb-6"
+                  collateral={collateral}
+                  debt={debt}
+                  cRatio={getRatio(price)}
+                  debtSymbol={DEBT_TOKEN.toUpperCase()}
+                  onAdjust={toggle}
+                  onClose={toggleClosePopup}
+                  withdrawalSurplus={Number(
+                    collateralSurplusBalance?.toString(),
+                  )}
+                  onWithdraw={claimCollateralSurplus}
+                />
+              )}
+              {showWelcomeBanner && !isLoading && (
+                <DashboardWelcomeBanner
+                  openLOC={toggle}
+                  connectWallet={connectWallet}
+                />
+              )}
+
+              <div className="flex-col-reverse lg:flex-row flex items-stretch md:bg-gray-90 md:p-6 rounded gap-9 md:gap-20">
+                <div className="md:min-w-[23rem] min-w-auto">
+                  <SystemStats />
+                </div>
+                <div className="md:hidden flex items-center w-full gap-3 mb-6">
+                  {collateralSurplusBalance?.gt(0) && (
+                    <Button
+                      text={t('LOCStatus.withdraw')}
+                      style={ButtonStyle.primary}
+                      size={ButtonSize.large}
+                      onClick={claimCollateralSurplus}
+                      className="flex-1"
                     />
-                  ) : (
+                  )}
+                  {hasLoc && (
                     <>
-                      <Paragraph>****** It should be banner....</Paragraph>
-                      <div className="mt-8">
-                        <Button
-                          text={t(translations.zeroPage.loc.open)}
-                          onClick={toggle}
-                        />
-                      </div>
+                      <Button
+                        text={t('LOCStatus.adjust')}
+                        style={ButtonStyle.primary}
+                        size={ButtonSize.large}
+                        onClick={toggle}
+                        className="flex-1"
+                      />
+                      <Button
+                        text={t('LOCStatus.close')}
+                        style={ButtonStyle.secondary}
+                        size={ButtonSize.large}
+                        onClick={toggleClosePopup}
+                        className="flex-1"
+                      />
                     </>
                   )}
-                </>
-              ) : (
-                <>
-                  <Button text="Connect first...." onClick={connectWallet} />
-                  <hr />
-                  <br />
-                  <SystemStats />
-                </>
-              )}
-              <LOCChart />
+                </div>
+                <div className="flex-1 flex flex-col">
+                  <Paragraph
+                    size={ParagraphSize.base}
+                    style={ParagraphStyle.normal}
+                    className="mb-3 md:mb-6"
+                  >
+                    {t(translations.chart.systemLinesCredit)}
+                  </Paragraph>
+
+                  <div className="h-80 md:flex-1 bg-gray-80 rounded pt-2 px-2 flex items-center">
+                    <LOCChart />
+                  </div>
+                </div>
+              </div>
 
               <Dialog width={DialogSize.sm} isOpen={open} disableFocusTrap>
                 <DialogHeader

@@ -22,10 +22,10 @@ export const useGetUserOpenTrove = () => {
     [account],
   );
 
-  const { loading, data } = useQuery(GetUserOpenTroveDocument, {
+  const { loading, data, refetch } = useQuery(GetUserOpenTroveDocument, {
     variables: troveConfig,
     client: zeroClient,
   });
 
-  return { loading, data };
+  return { loading, data, refetch };
 };

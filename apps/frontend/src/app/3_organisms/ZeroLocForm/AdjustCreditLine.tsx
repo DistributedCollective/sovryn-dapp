@@ -252,7 +252,6 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
     <div className="w-full">
       {hasTrove && (
         <CurrentTroveData
-          className="sm:hidden"
           debt={existingDebt}
           collateral={existingCollateral}
           rbtcPrice={rbtcPrice || '0'}

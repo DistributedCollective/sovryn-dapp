@@ -23,7 +23,7 @@ export const PageContainer: FC<PageContainerProps> = ({
     {...applyDataAttr(dataAttribute)}
   >
     <Header />
-    <div className={classNames('my-2 px-4 flex-grow', contentClassName)}>
+    <div className={classNames('my-2 md:px-4 flex-grow', contentClassName)}>
       <Outlet />
     </div>
     <div className="shrink">

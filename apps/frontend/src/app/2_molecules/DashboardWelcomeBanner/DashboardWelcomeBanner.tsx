@@ -7,28 +7,49 @@ import { useWalletConnect } from '../../../hooks';
 import { useAssetBalance } from '../../../hooks/useAssetBalance';
 
 export type DashboardWelcomeBannerProps = {
-  className?: string;
+  openLOC: () => void;
+  connectWallet: () => void;
 };
 
 export const DashboardWelcomeBanner: FC<DashboardWelcomeBannerProps> = ({
-  className,
+  openLOC,
+  connectWallet,
 }) => {
   const { account } = useWalletConnect();
-  const { value } = useAssetBalance(SupportedTokens.rbtc);
+  const { value, loading } = useAssetBalance(SupportedTokens.rbtc);
 
   if (!account) {
-    return <div>Get Start Banner</div>;
+    return (
+      <div className="flex justify-center mb-9">
+        Get Started Banner!!
+        <Button
+          className="ml-2"
+          text="Get Started!"
+          onClick={connectWallet}
+        ></Button>
+      </div>
+    );
+  }
+  if (loading) {
+    return null;
   }
   if (Number(value) === 0) {
     return (
       <div className="flex justify-end mb-9">
-        <Button text="Fund your wallet"></Button>
+        <Button
+          className="flex-1 md:flex-initial"
+          text="Fund your wallet"
+        ></Button>
       </div>
     );
   }
   return (
     <div className="flex justify-end mb-9">
-      <Button text="Open line of credit"></Button>
+      <Button
+        className="flex-1 md:flex-initial"
+        onClick={openLOC}
+        text="Open line of credit"
+      ></Button>
     </div>
   );
 };

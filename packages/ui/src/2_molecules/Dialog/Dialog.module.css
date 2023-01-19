@@ -14,7 +14,7 @@
 }
 
 .dialog {
-  @apply relative bg-sovryn-black text-gray-10 p-0 mx-auto min-h-full;
+  @apply relative md:border border-gray-50 bg-sovryn-black text-gray-10 p-0 mx-auto min-h-full;
   @screen sm {
     @apply min-h-0 my-16 rounded;
   }

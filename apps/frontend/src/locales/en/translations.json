@@ -187,6 +187,7 @@
         "nav": {
             "home": "Home",
             "earn": "Earn",
+            "rewards": "Rewards",
             "convert": "Convert"
         }
     },
@@ -238,6 +239,12 @@
         "actions": {
             "transferToLOC": "Transfer to LOC",
             "withdraw": "Withdraw"
+        },
+        "tx": {
+            "withdraw": "Withdraw",
+            "withdrawGains": "Withdraw gains",
+            "transferToLOC": "Transfer gains to LOC",
+            "transfer": "Transfer"
         }
     }
 }

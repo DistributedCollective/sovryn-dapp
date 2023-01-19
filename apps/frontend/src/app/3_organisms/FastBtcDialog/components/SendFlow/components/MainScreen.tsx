@@ -1,6 +1,6 @@
 import React, { useCallback, useContext } from 'react';
 
-import { Button } from '@sovryn/ui';
+import { Button, ButtonStyle } from '@sovryn/ui';
 
 import { useAccount } from '../../../../../../hooks/useAccount';
 import { useMaintenance } from '../../../../../../hooks/useMaintenance';
@@ -8,6 +8,7 @@ import {
   WithdrawContext,
   WithdrawStep,
 } from '../../../contexts/withdraw-context';
+import { Instructions } from '../../Instructions';
 
 export const MainScreen: React.FC = () => {
   const { account } = useAccount();
@@ -23,12 +24,18 @@ export const MainScreen: React.FC = () => {
 
   return (
     <div>
-      <div>TBD: Instructions</div>
+      <Instructions />
 
       {fastBtcLocked ? (
         <div>Fast BTC is locked</div>
       ) : (
-        <Button disabled={!account} onClick={onContinueClick} text="Continue" />
+        <Button
+          disabled={!account}
+          onClick={onContinueClick}
+          text="Continue"
+          className="w-full"
+          style={ButtonStyle.secondary}
+        />
       )}
     </div>
   );

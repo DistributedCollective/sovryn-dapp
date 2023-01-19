@@ -1,6 +1,13 @@
 import React, { useCallback, useState } from 'react';
 
-import { Dialog, DialogSize, VerticalTabs, VerticalTabsItem } from '@sovryn/ui';
+import {
+  Button,
+  Dialog,
+  DialogSize,
+  Heading,
+  VerticalTabs,
+  VerticalTabsItem,
+} from '@sovryn/ui';
 
 import { ReceiveFlow } from './components/ReceiveFlow/ReceiveFlow';
 import { SendFlow } from './components/SendFlow/SendFlow';
@@ -42,6 +49,13 @@ export const FastBtcDialog: React.FC<FastBtcDialogProps> = ({
         items={items}
         onChange={onChangeIndex}
         selectedIndex={index}
+        tabsClassName="min-h-[36rem]"
+        header={() => (
+          <>
+            <Heading>Funding</Heading>
+          </>
+        )}
+        footer={() => <Button text="Close" onClick={onClose} />}
       />
     </Dialog>
   );

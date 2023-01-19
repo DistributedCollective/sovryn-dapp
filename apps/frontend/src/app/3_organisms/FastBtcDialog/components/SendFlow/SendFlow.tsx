@@ -17,7 +17,7 @@ export const SendFlow: React.FC<SendFlowProps> = ({ onClose }) => {
 
   return (
     <WithdrawContext.Provider value={value}>
-      <div>
+      <div className="mt-12">
         {step === WithdrawStep.MAIN && <MainScreen />}
         {step === WithdrawStep.AMOUNT && <AmountForm />}
         {step === WithdrawStep.ADDRESS && <AddressForm />}

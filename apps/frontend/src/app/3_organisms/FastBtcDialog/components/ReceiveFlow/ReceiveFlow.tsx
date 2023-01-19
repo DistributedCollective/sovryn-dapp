@@ -174,7 +174,7 @@ export const ReceiveFlow: React.FC<ReceiveFlowProps> = ({ onClose }) => {
 
   return (
     <DepositContext.Provider value={value}>
-      <div>
+      <div className="mt-12">
         {step === DepositStep.MAIN && <MainScreen />}
 
         {/* TODO: Find out if it's required */}

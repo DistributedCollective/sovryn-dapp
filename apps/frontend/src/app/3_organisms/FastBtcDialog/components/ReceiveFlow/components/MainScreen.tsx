@@ -1,10 +1,11 @@
 import React, { useCallback, useContext } from 'react';
 
-import { Button } from '@sovryn/ui';
+import { Button, ButtonStyle } from '@sovryn/ui';
 
 import { useAccount } from '../../../../../../hooks/useAccount';
 import { useMaintenance } from '../../../../../../hooks/useMaintenance';
 import { DepositContext } from '../../../contexts/deposit-context';
+import { Instructions } from '../../Instructions';
 
 export const MainScreen: React.FC = () => {
   const { account } = useAccount();
@@ -21,7 +22,7 @@ export const MainScreen: React.FC = () => {
 
   return (
     <div>
-      <div>TBD: Instructions</div>
+      <Instructions />
 
       {addressError && <div>{addressError}</div>}
 
@@ -31,6 +32,8 @@ export const MainScreen: React.FC = () => {
         <Button
           disabled={!account || !ready || addressLoading}
           onClick={onContinueClick}
+          className="w-full"
+          style={ButtonStyle.secondary}
           text="Continue"
         />
       )}

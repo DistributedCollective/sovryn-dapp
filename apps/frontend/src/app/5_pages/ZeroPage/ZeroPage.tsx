@@ -1,78 +1,71 @@
-import { Decimal, Fees, UserTrove } from '@sovryn-zero/lib-base';
-import { EthersLiquity, ReadableEthersLiquity } from '@sovryn-zero/lib-ethers';
-
-import React, { FC, useEffect, useMemo, useReducer, useState } from 'react';
-
-import { useTranslation } from 'react-i18next';
-import { useLoaderData } from 'react-router-dom';
-
-import { SupportedTokens } from '@sovryn/contracts';
 import {
+  Decimalish,
+  Fees,
+  TroveAdjustmentParams,
+  UserTrove,
+} from '@sovryn-zero/lib-base';
+
+import React, {
+  FC,
+  useCallback,
+  useEffect,
+  useMemo,
+  useReducer,
+  useState,
+} from 'react';
+
+import { Contract } from 'ethers';
+import { t } from 'i18next';
+import { Await, useLoaderData } from 'react-router-dom';
+
+import { getContract } from '@sovryn/contracts';
+import {
+  Button,
   Dialog,
   DialogBody,
   DialogHeader,
   DialogSize,
-  noop,
   Paragraph,
-  ParagraphSize,
-  ParagraphStyle,
 } from '@sovryn/ui';
 
-import { DashboardWelcomeBanner } from '../../2_molecules/DashboardWelcomeBanner/DashboardWelcomeBanner';
 import { LOCStatus } from '../../2_molecules/LOCStatus/LOCStatus';
 import { SystemStats } from '../../2_molecules/SystemStats/SystemStats';
-import { TransactionStepDialog } from '../../3_organisms';
 import { LOCChart } from '../../3_organisms/LOCChart/LOCChart';
 import { AdjustCreditLine } from '../../3_organisms/ZeroLocForm/AdjustCreditLine';
 import { CloseCreditLine } from '../../3_organisms/ZeroLocForm/CloseCreditLine';
+import { DEBT_TOKEN } from '../../3_organisms/ZeroLocForm/constants';
+import {
+  CreditLineSubmitValue,
+  CreditLineType,
+} from '../../3_organisms/ZeroLocForm/types';
+import { useTransactionContext } from '../../../contexts/TransactionContext';
 import { useWalletConnect } from '../../../hooks';
+import { useAccount } from '../../../hooks/useAccount';
 import { translations } from '../../../locales/i18n';
-import { formatValue } from '../../../utils/math';
-import { useClaimCollateralSurplus } from './hooks/useClaimCollateralSurplus';
-import { useLOC } from './hooks/useLOC';
+import { getRskChainId } from '../../../utils/chain';
+import {
+  GAS_LIMIT_ADJUST_TROVE,
+  GAS_LIMIT_OPEN_TROVE,
+} from '../../../utils/constants';
+import { ZeroPageLoaderData } from './loader';
+import { adjustTrove, openTrove } from './utils/trove-manager';
 
 export const ZeroPage: FC = () => {
-  const { t } = useTranslation();
-  const { liquity } = useLoaderData() as {
-    liquity: EthersLiquity;
-    provider: ReadableEthersLiquity;
-  };
+  const { liquity, deferedData } = useLoaderData() as ZeroPageLoaderData;
 
-  const [openAdjust, toggleOpenAdjust] = useReducer(v => !v, false);
+  const { setTransactions, setIsOpen } = useTransactionContext();
+
+  const [open, toggle] = useReducer(v => !v, false);
   const [openClosePopup, toggleClosePopup] = useReducer(v => !v, false);
   const [trove, setTrove] = useState<UserTrove>();
-  const [price, setPrice] = useState<Decimal>();
-  const [collateralSurplusBalance, setCollateralSurplusBalance] =
-    useState<Decimal>();
-  const [btcPrice, setBtcPrice] = useState('0');
-  const [fees, setFees] = useState<Fees>();
   const [zusdBalance, setZusdBalance] = React.useState('');
-  const { account } = useWalletConnect();
 
-  const claimCollateralSurplus = useClaimCollateralSurplus();
-  const { closeLOC } = useLOC();
-
-  useEffect(() => {
-    liquity
-      .getPrice()
-      .then(e => e.toString())
-      .then(setBtcPrice);
-
-    liquity.getFees().then(setFees);
-  }, [liquity]);
+  const { connectWallet } = useWalletConnect();
+  const { signer, account } = useAccount();
 
   useEffect(() => {
     if (account && liquity) {
       liquity.getTrove(account).then(setTrove);
-      liquity
-        .getCollateralSurplusBalance(account)
-        .then(setCollateralSurplusBalance);
-    }
-  }, [account, liquity]);
-
-  useEffect(() => {
-    if (liquity) {
-      liquity.getPrice().then(setPrice);
     }
   }, [account, liquity]);
 
@@ -87,84 +80,193 @@ export const ZeroPage: FC = () => {
     }
   }, [account, liquity]);
 
-  const cRatio = useMemo(() => {
-    return formatValue(
-      Number(
-        trove
-          ?.collateralRatio(price || 0)
-          .mul(100)
-          .toString(),
-      ),
-      2,
-    );
-  }, [price, trove]);
+  const collateral = useMemo(
+    () => Number(trove?.collateral ?? 0),
+    [trove?.collateral],
+  );
+  const debt = useMemo(() => Number(trove?.debt ?? 0), [trove?.debt]);
 
-  const showWelcomeBanner =
-    !account ||
-    (Number(collateralSurplusBalance?.toString()) === 0 &&
-      Number(trove?.collateral?.toString()) === 0);
+  const hasLoc = useMemo(() => trove?.debt?.gt(0), [trove?.debt]);
+
+  const handleTroveSubmit = useCallback(
+    async (value: CreditLineSubmitValue) => {
+      if (signer) {
+        const { address, abi } = await getContract(
+          'borrowerOperations',
+          'zero',
+          getRskChainId(),
+        );
+
+        const contract = new Contract(address, abi, signer);
+
+        if (hasLoc) {
+          const params: Partial<TroveAdjustmentParams<Decimalish>> = {};
+
+          if (value.borrow) {
+            params.borrowZUSD = value.borrow;
+          }
+
+          if (value.repay) {
+            params.repayZUSD = value.repay;
+          }
+
+          if (value.depositCollateral) {
+            params.depositCollateral = value.depositCollateral;
+          }
+
+          if (value.withdrawCollateral) {
+            params.withdrawCollateral = value.withdrawCollateral;
+          }
+
+          const adjustedTrove = await adjustTrove(account, params);
+          setTransactions([
+            {
+              title: t(translations.zeroPage.tx.adjustTrove),
+              contract,
+              fnName: 'adjustTrove',
+              config: {
+                value: adjustedTrove.value,
+                gasLimit: GAS_LIMIT_ADJUST_TROVE,
+              },
+              args: adjustedTrove.args,
+            },
+          ]);
+          setIsOpen(true);
+        } else {
+          const openedTrove = await openTrove({
+            borrowZUSD: value.borrow || '0',
+            depositCollateral: value.depositCollateral || '0',
+          });
+          setTransactions([
+            {
+              title: t(translations.zeroPage.tx.openTrove),
+              contract,
+              fnName: 'openTrove',
+              config: {
+                value: openedTrove.value,
+                gasLimit: GAS_LIMIT_OPEN_TROVE,
+              },
+              args: openedTrove.args,
+            },
+          ]);
+          setIsOpen(true);
+        }
+      }
+    },
+    [account, hasLoc, setIsOpen, setTransactions, signer],
+  );
+
+  const handleTroveClose = useCallback(async () => {
+    if (signer) {
+      const { address, abi } = await getContract(
+        'borrowerOperations',
+        'zero',
+        getRskChainId(),
+      );
+
+      const contract = new Contract(address, abi, signer);
+
+      setTransactions([
+        {
+          title: t(translations.zeroPage.tx.closeTrove),
+          contract,
+          fnName: 'closeTrove',
+          args: [],
+        },
+      ]);
+      setIsOpen(true);
+    }
+  }, [setIsOpen, setTransactions, signer]);
+
+  const getRatio = useCallback(
+    (price: string) => {
+      return ((collateral * Number(price)) / debt) * 100;
+    },
+    [collateral, debt],
+  );
 
   return (
     <div className="container max-w-7xl mt-24">
-      {showWelcomeBanner && <DashboardWelcomeBanner />}
+      <React.Suspense fallback={<p>Loading stuff...</p>}>
+        <Await resolve={deferedData} errorElement={<p>Error loading stuff!</p>}>
+          {([price, fees]: [string, Fees]) => (
+            <>
+              {account ? (
+                <>
+                  {hasLoc ? (
+                    <LOCStatus
+                      collateral={collateral}
+                      debt={debt}
+                      cRatio={getRatio(price)}
+                      debtSymbol={DEBT_TOKEN.toUpperCase()}
+                      onAdjust={toggle}
+                      onClose={toggleClosePopup}
+                    />
+                  ) : (
+                    <>
+                      <Paragraph>****** It should be banner....</Paragraph>
+                      <div className="mt-8">
+                        <Button
+                          text={t(translations.zeroPage.loc.open)}
+                          onClick={toggle}
+                        />
+                      </div>
+                    </>
+                  )}
+                </>
+              ) : (
+                <>
+                  <Button text="Connect first...." onClick={connectWallet} />
+                  <hr />
+                  <br />
+                  <SystemStats />
+                </>
+              )}
+              <LOCChart />
 
-      {!showWelcomeBanner && (
-        <LOCStatus
-          className="mb-6"
-          collateral={formatValue(Number(trove?.collateral?.toString()), 4)}
-          debt={formatValue(Number(trove?.debt?.toString()), 2)}
-          debtSymbol={SupportedTokens.zusd.toUpperCase()}
-          cRatio={cRatio}
-          onClose={toggleClosePopup}
-          onAdjust={toggleOpenAdjust}
-          withdrawalSurplus={Number(collateralSurplusBalance?.toString())}
-          onWithdraw={claimCollateralSurplus}
-        />
-      )}
+              <Dialog width={DialogSize.sm} isOpen={open} disableFocusTrap>
+                <DialogHeader
+                  title={
+                    !hasLoc
+                      ? t(translations.zeroPage.loc.open)
+                      : t(translations.zeroPage.loc.adjust)
+                  }
+                  onClose={toggle}
+                />
+                <DialogBody>
+                  <AdjustCreditLine
+                    type={!hasLoc ? CreditLineType.Open : CreditLineType.Adjust}
+                    existingCollateral={String(collateral)}
+                    existingDebt={String(debt)}
+                    onSubmit={handleTroveSubmit}
+                    rbtcPrice={price}
+                    fees={fees}
+                  />
+                </DialogBody>
+              </Dialog>
 
-      <div className="flex-col lg:flex-row flex items-stretch bg-gray-90 p-6 rounded gap-20">
-        <div className="min-w-[23rem]">
-          <SystemStats />
-        </div>
-        <div className="flex-1 flex flex-col">
-          <Paragraph
-            size={ParagraphSize.base}
-            style={ParagraphStyle.normal}
-            className="mb-6"
-          >
-            {t(translations.chart.systemLinesCredit)}
-          </Paragraph>
-          <div className="bg-gray-80 rounded flex-1 pt-2 px-2 flex items-center">
-            <LOCChart />
-          </div>
-        </div>
-      </div>
-
-      <Dialog width={DialogSize.sm} isOpen={openAdjust} disableFocusTrap>
-        <DialogHeader title="Adjust" onClose={toggleOpenAdjust} />
-        <DialogBody>
-          <AdjustCreditLine
-            collateralValue={trove?.collateral.toString() ?? '0'}
-            creditValue={trove?.debt.toString() ?? '0'}
-            onSubmit={noop}
-            rbtcPrice={btcPrice}
-            fees={fees}
-          />
-        </DialogBody>
-      </Dialog>
-
-      <Dialog width={DialogSize.sm} isOpen={openClosePopup} disableFocusTrap>
-        <DialogHeader title="Close" onClose={toggleClosePopup} />
-        <DialogBody>
-          <CloseCreditLine
-            onSubmit={closeLOC}
-            creditValue={trove?.debt.toString() ?? '0'}
-            collateralValue={trove?.collateral.toString() ?? '0'}
-            availableBalance={zusdBalance}
-          />
-        </DialogBody>
-      </Dialog>
-      <TransactionStepDialog />
+              <Dialog
+                width={DialogSize.sm}
+                isOpen={openClosePopup}
+                disableFocusTrap
+              >
+                <DialogHeader
+                  title={t(translations.zeroPage.loc.close)}
+                  onClose={toggleClosePopup}
+                />
+                <DialogBody>
+                  <CloseCreditLine
+                    onSubmit={handleTroveClose}
+                    creditValue={String(debt)}
+                    collateralValue={String(collateral)}
+                    availableBalance={zusdBalance}
+                  />
+                </DialogBody>
+              </Dialog>
+            </>
+          )}
+        </Await>
+      </React.Suspense>
     </div>
   );
 };

@@ -7,6 +7,7 @@ import { RouterProvider } from 'react-router-dom';
 
 import { OnboardProvider } from '@sovryn/onboard-react';
 
+import { TransactionStepDialog } from './app/3_organisms';
 // chain config must be imported before other files
 import './config/chains';
 import { MaintenanceModeContextProvider } from './contexts/MaintenanceModeContext';
@@ -41,6 +42,7 @@ root.render(
           </NotificationProvider>
         </MaintenanceModeContextProvider>
       </ApolloProvider>
+      <TransactionStepDialog />
     </TransactionProvider>
   </React.StrictMode>,
 );

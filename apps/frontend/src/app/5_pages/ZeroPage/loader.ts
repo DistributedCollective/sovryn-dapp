@@ -1,14 +1,25 @@
+import { Fees } from '@sovryn-zero/lib-base';
 import { EthersLiquity, ReadableEthersLiquity } from '@sovryn-zero/lib-ethers';
 
-import { getProvider } from '@sovryn/ethers-provider';
+import { defer } from 'react-router-dom';
 
-import { getRskChainId } from '../../../utils/chain';
+import { getZeroProvider } from './utils/zero-provider';
+
+export type ZeroPageLoaderData = {
+  liquity: EthersLiquity;
+  provider: ReadableEthersLiquity;
+  deferedData: Promise<[string, Fees]>;
+};
 
 export const zeroPageLoader = async () => {
-  const provider = await ReadableEthersLiquity.connect(
-    getProvider(getRskChainId()),
-    { useStore: 'blockPolled' },
-  );
-  const liquity = new EthersLiquity(provider);
-  return { liquity, provider };
+  const { provider, ethers } = await getZeroProvider();
+
+  return defer({
+    liquity: ethers,
+    provider,
+    deferedData: Promise.all([
+      ethers.getPrice().then(result => result.toString()),
+      ethers.getFees(),
+    ]),
+  });
 };

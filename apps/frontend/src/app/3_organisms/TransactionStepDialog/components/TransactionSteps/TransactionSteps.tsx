@@ -2,9 +2,11 @@ import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 
 import { ethers } from 'ethers';
 import { parseUnits } from 'ethers/lib/utils';
+import { useTranslation } from 'react-i18next';
 
 import { Button, Icon, IconNames, StatusType } from '@sovryn/ui';
 
+import { translations } from '../../../../../locales/i18n';
 import { APPROVAL_FUNCTION } from '../../../../../utils/constants';
 import { Transaction, TxConfig } from '../../TransactionStepDialog.types';
 import { TransactionStep } from '../TransactionStep/TransactionStep';
@@ -25,6 +27,7 @@ export const TransactionSteps: FC<TransactionStepsProps> = ({
   const [configs, setConfigs] = useState<TxConfig[]>([]);
   const [step, setStep] = useState(-1);
   const [error, setError] = useState(false);
+  const { t } = useTranslation();
 
   useEffect(() => {
     const initialize = async () => {
@@ -41,7 +44,8 @@ export const TransactionSteps: FC<TransactionStepsProps> = ({
           amount: tx.fnName === APPROVAL_FUNCTION ? tx.args[1] : undefined,
           unlimitedAmount: tx.fnName === APPROVAL_FUNCTION ? false : undefined,
           gasPrice,
-          gasLimit: gasLimit.mul(15).div(10).toString(),
+          //TODO: replace with default gas limit - increase gas limit by 20% to make sure tx won't fail
+          gasLimit: gasLimit.mul(20).div(10).toString(),
         });
       }
       setConfigs(list);
@@ -162,7 +166,11 @@ export const TransactionSteps: FC<TransactionStepsProps> = ({
       )}
 
       {onClose && transactions.length === step && (
-        <Button text="Done" onClick={onClose} className="w-full mt-7"></Button>
+        <Button
+          text={t(translations.common.done)}
+          onClick={onClose}
+          className="w-full mt-7"
+        ></Button>
       )}
     </div>
   );

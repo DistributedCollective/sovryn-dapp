@@ -12,13 +12,14 @@ import { getRskChainId } from '../../../../utils/chain';
 import { toWei } from '../../../../utils/math';
 import { useHandleConversion } from '../../ConvertPage/hooks/useHandleConversion';
 
-export const useHandleStabalityDeposit = (
+export const useHandleStabilityDeposit = (
   token: SupportedTokens,
   amount: string,
   isDeposit: boolean,
 ) => {
+  const sourceToken = isDeposit ? token : SupportedTokens.zusd;
   const destinationToken = isDeposit ? SupportedTokens.zusd : token;
-  const sourceToken = isDeposit ? SupportedTokens.dllr : token;
+
   const { getDepositTokenTransactions, getWithdrawTokensTransactions } =
     useHandleConversion(sourceToken, destinationToken, amount);
   const { signer } = useAccount();

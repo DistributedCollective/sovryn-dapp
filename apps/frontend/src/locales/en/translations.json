@@ -23,7 +23,8 @@
         "max": "max",
         "amount": "Amount",
         "deposit": "Deposit",
-        "withdraw": "Withdraw"
+        "withdraw": "Withdraw",
+        "done": "Done"
     },
     "wrongNetworkSwitcher": {
         "title": "Wrong network",

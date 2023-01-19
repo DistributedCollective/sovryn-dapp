@@ -35,7 +35,7 @@ import { useAssetBalance } from '../../../hooks/useAssetBalance';
 import { translations } from '../../../locales/i18n';
 import { formatValue, fromWei, toWei } from '../../../utils/math';
 import { tokenOptions } from './EarnPage.types';
-import { useHandleStabalityDeposit } from './hooks/useHandleStabalityDeposit';
+import { useHandleStabilityDeposit } from './hooks/useHandleStabilityDeposit';
 
 const commonTranslations = translations.common;
 const pageTranslations = translations.earnPage;
@@ -85,7 +85,7 @@ const EarnPage: FC = () => {
       {
         label: t(commonTranslations.deposit),
         activeClassName: 'text-primary-20',
-        dataAttribute: 'deposit',
+        dataAttribute: 'earn-deposit',
       },
     ];
 
@@ -93,7 +93,7 @@ const EarnPage: FC = () => {
       tabs.push({
         label: t(commonTranslations.withdraw),
         activeClassName: 'text-primary-20',
-        dataAttribute: 'withdraw',
+        dataAttribute: 'earn-withdraw',
       });
     } else {
       setIndex(0);
@@ -139,7 +139,7 @@ const EarnPage: FC = () => {
   );
 
   const onMaximumAmountClick = useCallback(() => setAmount(balance), [balance]);
-  const handleSubmit = useHandleStabalityDeposit(token, amount, isDeposit);
+  const handleSubmit = useHandleStabilityDeposit(token, amount, isDeposit);
 
   const poolShare = useMemo(() => {
     if (BigNumber.from(toWei(ZUSDInStabilityPool)).isZero()) {
@@ -157,7 +157,7 @@ const EarnPage: FC = () => {
 
   const newPoolBalance = useMemo(() => {
     if (isAmountZero) {
-      return 'N/A';
+      return t(commonTranslations.na);
     }
     const newBalance = BigNumber.from(poolBalance).add(
       isDeposit ? amount : -amount,
@@ -166,18 +166,18 @@ const EarnPage: FC = () => {
       return '0';
     }
     return newBalance.toString();
-  }, [poolBalance, isDeposit, amount, isAmountZero]);
+  }, [isAmountZero, poolBalance, isDeposit, amount, t]);
 
   const newPoolBalanceLabel = useMemo(() => {
     if (isAmountZero) {
-      return 'N/A';
+      return t(commonTranslations.na);
     }
     return `${newPoolBalance} ${SupportedTokens.zusd.toUpperCase()}`;
-  }, [isAmountZero, newPoolBalance]);
+  }, [isAmountZero, newPoolBalance, t]);
 
   const newPoolShare = useMemo(() => {
     if (isAmountZero) {
-      return 'N/A';
+      return t(commonTranslations.na);
     }
 
     const newZUSDInStabilityPool = toWei(ZUSDInStabilityPool).add(
@@ -191,7 +191,7 @@ const EarnPage: FC = () => {
       BigNumber.from(toWei(newPoolBalance, 24)).div(newZUSDInStabilityPool),
       4,
     ).toString()} %`;
-  }, [ZUSDInStabilityPool, amount, isAmountZero, isDeposit, newPoolBalance]);
+  }, [ZUSDInStabilityPool, amount, isAmountZero, isDeposit, newPoolBalance, t]);
 
   const maximumAmount = useMemo(() => {
     if (isDeposit) {
@@ -241,7 +241,7 @@ const EarnPage: FC = () => {
           <button
             onClick={onMaximumAmountClick}
             className="text-xs font-medium underline whitespace-nowrap"
-            {...applyDataAttr('max-button')}
+            {...applyDataAttr('earn-max-button')}
           >
             ({t(commonTranslations.max)} {formatValue(Number(balance), 4)}{' '}
             {token.toUpperCase()})
@@ -257,7 +257,7 @@ const EarnPage: FC = () => {
             max={maximumAmount}
             invalid={!isValidAmount}
             className="w-full flex-grow-0 flex-shrink"
-            {...applyDataAttr('amount-input')}
+            {...applyDataAttr('earn-amount-input')}
           />
 
           <Select
@@ -266,7 +266,7 @@ const EarnPage: FC = () => {
             options={tokenOptions}
             labelRenderer={() => getAssetRenderer(token)}
             className="min-w-[6.7rem]"
-            {...applyDataAttr('token-select')}
+            {...applyDataAttr('earn-token-select')}
           />
         </div>
         {!isValidAmount && (
@@ -307,7 +307,7 @@ const EarnPage: FC = () => {
           className="w-full mt-8"
           onClick={handleSubmit}
           disabled={isSubmitDisabled}
-          {...applyDataAttr('submit')}
+          {...applyDataAttr('earn-submit')}
         />
       </div>
       <TransactionStepDialog onSuccess={onTransactionSuccess} />

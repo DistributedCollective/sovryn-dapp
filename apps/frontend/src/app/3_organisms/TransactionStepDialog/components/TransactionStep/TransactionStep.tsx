@@ -75,8 +75,8 @@ export const TransactionStep: FC<TransactionStepProps> = ({
             ? transaction.args[1]
             : undefined,
         gasPrice,
-        //Increase gas limit by 20% to make sure tx won't fail for this reason
-        gasLimit: gasLimit.mul(15).div(10).toString(),
+        //TODO: replace with default gas limit - increase gas limit by 20% to make sure tx won't fail
+        gasLimit: gasLimit.mul(20).div(10).toString(),
       });
     } catch (error) {
       console.log('error', error);

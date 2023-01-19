@@ -52,6 +52,12 @@ export const useGetMaximumAvailableAmount = (
   if (isMint) {
     return sourceTokenBalance;
   }
+  console.log(
+    'isMint:',
+    BigNumber.from(sourceTokenWeiBalance).lt(
+      destinationTokenAggregatorWeiBalance,
+    ),
+  );
 
   return BigNumber.from(sourceTokenWeiBalance).lt(
     destinationTokenAggregatorWeiBalance,

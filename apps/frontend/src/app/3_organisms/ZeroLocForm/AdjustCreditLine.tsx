@@ -1,4 +1,13 @@
-import React, { ChangeEvent, useCallback, useMemo, useState, FC } from 'react';
+import { _getContracts } from '@sovryn-zero/lib-ethers/dist/src/EthersLiquityConnection';
+
+import React, {
+  ChangeEvent,
+  useCallback,
+  useMemo,
+  useState,
+  FC,
+  useEffect,
+} from 'react';
 
 import { useTranslation } from 'react-i18next';
 
@@ -16,12 +25,16 @@ import {
   SimpleTable,
 } from '@sovryn/ui';
 
+import { ErrorData, ErrorLevel } from '../../1_atoms/ErrorBadge/ErrorBadge';
 import { AssetRenderer } from '../../2_molecules/AssetRenderer/AssetRenderer';
+import { ErrorList } from '../../2_molecules/ErrorList/ErrorList';
 import { BORROW_ASSETS } from '../../5_pages/ZeroPage/constants';
+import { getZeroProvider } from '../../5_pages/ZeroPage/utils/zero-provider';
 import { useAssetBalance } from '../../../hooks/useAssetBalance';
+import { useCall } from '../../../hooks/useCall';
 import { translations } from '../../../locales/i18n';
 import { CR_THRESHOLDS } from '../../../utils/constants';
-import { formatValue, fromWei } from '../../../utils/math';
+import { formatValue, fromWei, toWei } from '../../../utils/math';
 import { tokensToOptions } from '../../../utils/tokens';
 import { CurrentTroveData } from './CurrentTroveData';
 import { Label } from './Label';
@@ -46,6 +59,23 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
   rbtcPrice,
   fees,
 }) => {
+  const [tcr, getTcr] = useCall<number>(async () => {
+    const { ethers } = await getZeroProvider();
+    const price = toWei(
+      rbtcPrice
+        ? rbtcPrice.toString()
+        : await ethers.getPrice().then(value => value.toString()),
+    );
+    return await _getContracts(ethers.connection)
+      .troveManager.getTCR(price)
+      .then(fromWei)
+      .then(Number);
+  }, [rbtcPrice]);
+
+  useEffect(() => {
+    getTcr().catch(console.error);
+  }, [getTcr]);
+
   const [debtType, setDebtType] = useState(AmountType.Add);
   const [collateralType, setCollateralType] = useState(AmountType.Add);
 
@@ -248,6 +278,81 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
     [existingCollateral, existingDebt],
   );
 
+  const errors = useMemo(() => {
+    const list: ErrorData[] = [];
+
+    const userRatio = ratio / 100;
+    const tcrPlus10 = tcr * 1.1;
+
+    const tcrPercent = formatValue(tcr * 100, 2);
+    const tcrPlus10Percent = formatValue(tcrPlus10 * 100, 2);
+    const ccrPercent = formatValue(CRITICAL_COLLATERAL_RATIO * 100, 2);
+    const mcrPercent = formatValue(MINIMUM_COLLATERAL_RATIO * 100, 2);
+
+    // System is in recovery mode:
+    if (tcr && tcr <= CRITICAL_COLLATERAL_RATIO) {
+      // Warning: If the system is in recovery mode and the values the user is typing
+      //  are causing the collateral ratio to be less than 10% above the TCR.
+      if (userRatio < tcrPlus10) {
+        list.push({
+          level: ErrorLevel.Warning,
+          message: `Keeping your collateral ratio above ${tcrPlus10Percent}% can reduce the risk of liquidation in cases of market volatility`,
+          weight: 4,
+        });
+      }
+
+      // Critical: If the system is in recovery mode and the values the user is typing
+      //  are causing the collateral ratio to be below the TCR.
+      if (userRatio < tcr) {
+        list.push({
+          level: ErrorLevel.Critical,
+          message: `Your collateral ratio is below the TCR of ${tcrPercent}%`,
+          weight: 2,
+        });
+      }
+    }
+    // System is in normal mode:
+    else {
+      // Warning: If the system is in normal mode and the values the user is typing
+      //  are causing the collateral ratio to be above the MCR and below the CCR (i.e., between 110% and 150%)
+      if (
+        userRatio > MINIMUM_COLLATERAL_RATIO &&
+        userRatio < CRITICAL_COLLATERAL_RATIO
+      ) {
+        list.push({
+          level: ErrorLevel.Warning,
+          message: `Keeping your collateral ratio above ${ccrPercent}% can help avoid liquidation under recovery mode`,
+          weight: 3,
+        });
+      }
+
+      // Critical: If the system is in normal mode and the values the user is typing are causing the
+      //  collateral ratio to be below the MCR (i.e., below 110%)
+      if (userRatio < MINIMUM_COLLATERAL_RATIO) {
+        list.push({
+          level: ErrorLevel.Critical,
+          message: `Collateral ratio must be at least ${mcrPercent}%`,
+          weight: 1,
+        });
+      }
+    }
+
+    return list;
+  }, [tcr, ratio]);
+
+  const submitButtonDisabled = useMemo(() => {
+    const hasCriticalError = errors.some(
+      error => error.level === ErrorLevel.Critical,
+    );
+    const collateral = Number(collateralAmount);
+    const debt = Number(debtAmount);
+    const isFormValid =
+      Number(existingDebt) > 0
+        ? collateral > 0 && debt > 0
+        : collateral > 0 || debt > 0;
+    return hasCriticalError || !isFormValid;
+  }, [collateralAmount, debtAmount, errors, existingDebt]);
+
   return (
     <div className="w-full">
       {hasTrove && (
@@ -375,6 +480,8 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
         value={ratio}
       />
 
+      <ErrorList errors={errors} />
+
       <div className="mt-6">
         <SimpleTable>
           <Row
@@ -431,6 +538,7 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
           className="w-full"
           onClick={handleFormSubmit}
           dataAttribute="adjust-credit-line-confirm-button"
+          disabled={submitButtonDisabled}
         />
       </div>
     </div>

@@ -25,3 +25,13 @@ export type AdjustCreditLineProps = {
   rbtcPrice?: string;
   fees?: Fees;
 };
+
+export enum TroveErrorLevel {
+  Warning = 'Warning',
+  Critical = 'Critical',
+}
+
+export type TroveError = {
+  level: TroveErrorLevel;
+  message: string;
+};

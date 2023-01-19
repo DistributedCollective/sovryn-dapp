@@ -5,6 +5,7 @@ import { interval, startWith } from 'rxjs';
 import { getProvider } from '@sovryn/ethers-provider';
 
 import { chains } from '../../../config/chains';
+
 import {
   CacheCallOptions,
   startCall,

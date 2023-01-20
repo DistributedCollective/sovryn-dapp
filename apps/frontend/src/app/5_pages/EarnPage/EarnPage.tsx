@@ -140,7 +140,14 @@ const EarnPage: FC = () => {
 
   useEffect(() => setAmount('0'), [isDeposit]);
 
-  const onMaximumAmountClick = useCallback(() => setAmount(balance), [balance]);
+  const maximumAmount = useMemo(
+    () => (isDeposit ? balance : poolBalance),
+    [balance, isDeposit, poolBalance],
+  );
+  const onMaximumAmountClick = useCallback(
+    () => setAmount(maximumAmount),
+    [maximumAmount],
+  );
   const handleSubmit = useHandleStabilityDeposit(token, amount, isDeposit);
 
   const poolShare = useMemo(() => {
@@ -195,14 +202,6 @@ const EarnPage: FC = () => {
     ).toString()} %`;
   }, [ZUSDInStabilityPool, amount, isAmountZero, isDeposit, newPoolBalance, t]);
 
-  const maximumAmount = useMemo(() => {
-    if (isDeposit) {
-      return balance;
-    } else {
-      return poolBalance;
-    }
-  }, [balance, isDeposit, poolBalance]);
-
   const isValidAmount = useMemo(
     () => Number(amount) <= Number(maximumAmount),
     [amount, maximumAmount],
@@ -248,7 +247,7 @@ const EarnPage: FC = () => {
             className="text-xs font-medium underline whitespace-nowrap"
             {...applyDataAttr('earn-max-button')}
           >
-            ({t(commonTranslations.max)} {formatValue(Number(balance), 4)}{' '}
+            ({t(commonTranslations.max)} {formatValue(Number(maximumAmount), 4)}{' '}
             {token.toUpperCase()})
           </button>
         </div>

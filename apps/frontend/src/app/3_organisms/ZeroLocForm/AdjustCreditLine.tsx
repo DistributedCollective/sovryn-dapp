@@ -296,7 +296,9 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
       if (userRatio < tcrPlus10) {
         list.push({
           level: ErrorLevel.Warning,
-          message: `Keeping your collateral ratio above ${tcrPlus10Percent}% can reduce the risk of liquidation in cases of market volatility`,
+          message: t(translations.zeroPage.loc.errors.ratioWarningInRecovery, {
+            value: tcrPlus10Percent,
+          }),
           weight: 4,
         });
       }
@@ -306,7 +308,9 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
       if (userRatio < tcr) {
         list.push({
           level: ErrorLevel.Critical,
-          message: `Your collateral ratio is below the TCR of ${tcrPercent}%`,
+          message: t(translations.zeroPage.loc.errors.ratioErrorInRecovery, {
+            value: tcrPercent,
+          }),
           weight: 2,
         });
       }
@@ -321,7 +325,9 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
       ) {
         list.push({
           level: ErrorLevel.Warning,
-          message: `Keeping your collateral ratio above ${ccrPercent}% can help avoid liquidation under recovery mode`,
+          message: t(translations.zeroPage.loc.errors.ratioWarning, {
+            value: ccrPercent,
+          }),
           weight: 3,
         });
       }
@@ -331,14 +337,16 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
       if (userRatio < MINIMUM_COLLATERAL_RATIO) {
         list.push({
           level: ErrorLevel.Critical,
-          message: `Collateral ratio must be at least ${mcrPercent}%`,
+          message: t(translations.zeroPage.loc.errors.ratioError, {
+            value: mcrPercent,
+          }),
           weight: 1,
         });
       }
     }
 
     return list;
-  }, [tcr, ratio]);
+  }, [ratio, tcr, t]);
 
   const submitButtonDisabled = useMemo(() => {
     const hasCriticalError = errors.some(

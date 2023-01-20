@@ -25,6 +25,8 @@ export const sovrynWikiLinks = {
   bridge: 'https://wiki.sovryn.app/en/sovryn-dapp/bridge',
 };
 
+export const helpdeskLink = 'https://help.sovryn.app/';
+
 export const requiredChain = ChainIds.RSK_TESTNET;
 
 export const APPROVAL_FUNCTION = 'approve';

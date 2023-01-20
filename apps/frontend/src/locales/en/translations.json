@@ -220,6 +220,17 @@
             "invalidAmountError": "Exceeds maximum amount"
         }
     },
+    "earnPage": {
+        "title": "Stability pool",
+        "subtitle": "Earn BTC by providing liquidity for liquidations",
+        "form": {
+            "invalidAmountError": "Exceeds maximum amount"
+        },
+        "currentPoolShare": "Current pool share",
+        "currentPoolBalance": "Current pool balance",
+        "newPoolShare": "New pool share",
+        "newPoolBalance": "New pool balance"
+    },
     "historyPage": {
         "title": "My transaction history",
         "table": {
@@ -231,16 +242,5 @@
             },
             "comingSoon": "Coming soon..."
         }
-    },
-    "earnPage": {
-        "title": "Earn",
-        "subtitle": "Earn BTC by providing liquidity for liquidations",
-        "form": {
-            "invalidAmountError": "Exceeds maximum amount"
-        },
-        "currentPoolShare": "Current pool share",
-        "currentPoolBalance": "Current pool balance",
-        "newPoolShare": "New pool share",
-        "newPoolBalance": "New pool balance"
     }
 }

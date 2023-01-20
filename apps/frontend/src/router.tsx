@@ -5,6 +5,7 @@ import React from 'react';
 import { createBrowserRouter } from 'react-router-dom';
 
 import { PageContainer } from './app/4_templates';
+import { earnPageLoader } from './app/5_pages/EarnPage/loader';
 import { ErrorPage } from './app/5_pages/ErrorPage/ErrorPage';
 import { zeroPageLoader } from './app/5_pages/ZeroPage/loader';
 
@@ -42,7 +43,7 @@ export const router = createBrowserRouter([
       {
         path: '/earn',
         element: <EarnPage />,
-        loader: zeroPageLoader,
+        loader: earnPageLoader,
       },
       {
         path: '/convert',

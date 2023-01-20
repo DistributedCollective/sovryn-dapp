@@ -138,6 +138,8 @@ const EarnPage: FC = () => {
     [],
   );
 
+  useEffect(() => setAmount('0'), [isDeposit]);
+
   const onMaximumAmountClick = useCallback(() => setAmount(balance), [balance]);
   const handleSubmit = useHandleStabilityDeposit(token, amount, isDeposit);
 
@@ -236,6 +238,9 @@ const EarnPage: FC = () => {
             items={actions}
             onChange={setIndex}
             index={index}
+            className={classNames({
+              invisible: BigNumber.from(toWei(poolBalance)).isZero(),
+            })}
           />
 
           <button
@@ -255,6 +260,7 @@ const EarnPage: FC = () => {
             label={t(translations.common.amount)}
             min={0}
             max={maximumAmount}
+            disabled={!account}
             invalid={!isValidAmount}
             className="w-full flex-grow-0 flex-shrink"
             {...applyDataAttr('earn-amount-input')}

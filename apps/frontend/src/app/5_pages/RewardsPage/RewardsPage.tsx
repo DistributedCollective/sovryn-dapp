@@ -23,8 +23,8 @@ import {
 
 import { TransactionStepDialog } from '../../3_organisms';
 import { useAccount } from '../../../hooks/useAccount';
+import { useGetOpenTrove } from '../../../hooks/zero/useGetOpenTrove';
 import { translations } from '../../../locales/i18n';
-import { useGetOpenTrove } from './hooks/useGetOpenTrove';
 import { useHandleRewards } from './hooks/useHandleRewards';
 import { RewardsAction } from './types';
 

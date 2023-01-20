@@ -2,9 +2,9 @@ import { ApolloClient, InMemoryCache, useQuery } from '@apollo/client';
 
 import { useEffect, useMemo, useState } from 'react';
 
-import { useWalletConnect } from '../../../../hooks/useWalletConnect';
-import { graphZeroUrl } from '../../../../utils/constants';
-import { GetUserOpenTroveDocument } from '../../../../utils/graphql/zero/generated';
+import { graphZeroUrl } from '../../utils/constants';
+import { GetUserOpenTroveDocument } from '../../utils/graphql/zero/generated';
+import { useWalletConnect } from '../useWalletConnect';
 
 const zeroClient = new ApolloClient({
   uri: graphZeroUrl,

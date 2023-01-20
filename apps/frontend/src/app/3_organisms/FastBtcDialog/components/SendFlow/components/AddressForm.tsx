@@ -128,15 +128,14 @@ export const AddressForm: React.FC = () => {
         <Input onChangeText={setValue} value={value} />
       </div>
 
-      <div className="px-8">
-        <Button
-          text={t(translations.common.buttons.continue)}
-          onClick={onContinueClick}
-          disabled={isSubmitDisabled}
-          style={ButtonStyle.secondary}
-          className="mt-10 w-full"
-        />
-      </div>
+      <Button
+        text={t(translations.common.buttons.continue)}
+        onClick={onContinueClick}
+        disabled={isSubmitDisabled}
+        style={ButtonStyle.secondary}
+        className="mt-10 w-full"
+      />
+
       {fastBtcLocked && <div>Fast BTC is in maintenance mode</div>}
     </div>
   );

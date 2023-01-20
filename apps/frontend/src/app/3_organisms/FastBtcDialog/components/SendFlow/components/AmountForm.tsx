@@ -116,15 +116,14 @@ export const AmountForm: React.FC = () => {
 
         <TransferPolicies />
 
-        <div className="px-8">
-          <Button
-            text={t(translations.common.buttons.continue)}
-            onClick={onContinueClick}
-            disabled={invalid || fastBtcLocked}
-            style={ButtonStyle.secondary}
-            className="mt-10 w-full"
-          />
-        </div>
+        <Button
+          text={t(translations.common.buttons.continue)}
+          onClick={onContinueClick}
+          disabled={invalid || fastBtcLocked}
+          style={ButtonStyle.secondary}
+          className="mt-10 w-full"
+        />
+
         {fastBtcLocked && <div>Fast BTC is in maintenance mode</div>}
       </div>
     </>

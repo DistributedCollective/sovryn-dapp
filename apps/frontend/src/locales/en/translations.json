@@ -332,6 +332,12 @@
             "line4": "Allow up to {{hours}} hrs to process",
             "line5": "If your transaction takes longer than {{hours}} hrs please <0>create a support ticket</0>",
             "line5cta": "create a support ticket"
+        },
+        "limits": {
+            "title": "Transfer policies",
+            "minimumAmount": "Minimum amount",
+            "maximumAmount": "Maximum amount",
+            "serviceFee": "Service fee"
         }
     }
 }

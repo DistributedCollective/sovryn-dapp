@@ -8,6 +8,7 @@ import { prettyTx, Icon, IconNames } from '@sovryn/ui';
 
 import { DepositContext } from '../../../contexts/deposit-context';
 import { URIType } from '../../../types';
+import { TransferPolicies } from './TransferPolicies';
 
 const config = resolveConfig(tailwindConfig);
 
@@ -23,7 +24,9 @@ export const AddressForm: React.FC = () => {
 
   return (
     <>
-      <div className="full mb-8">
+      <div className="full">
+        <TransferPolicies />
+
         <div>
           <div className="h-full bg-white rounded">
             <QRCode

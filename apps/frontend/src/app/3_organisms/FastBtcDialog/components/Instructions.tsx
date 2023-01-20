@@ -15,7 +15,7 @@ export const Instructions: React.FC = () => {
   return (
     <>
       <Heading type={HeadingType.h2} className="font-medium leading-[1.375rem]">
-        {t(translation.title)}
+        {t(translation.title)}:
       </Heading>
 
       <ul className="list-disc list-inside text-xs leading-5 font-medium text-gray-30 mt-4 mb-12">

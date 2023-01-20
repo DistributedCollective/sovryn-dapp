@@ -1,8 +1,16 @@
-import React, { useCallback, useContext, useState } from 'react';
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
+
+import { BigNumber } from 'ethers';
 
 import { useTransactionContext } from '../../../../../../contexts/TransactionContext';
 import { useGetProtocolContract } from '../../../../../../hooks/useGetContract';
-import { toWei } from '../../../../../../utils/math';
+import { fromWei, toWei } from '../../../../../../utils/math';
 import {
   WithdrawContext,
   WithdrawStep,
@@ -23,8 +31,41 @@ export const ConfirmationScreens: React.FC<ConfirmationScreensProps> = ({
   const { setTransactions, setTitle, setIsOpen } = useTransactionContext();
 
   const [txHash, setTxHash] = useState<string | undefined>(undefined);
+  const [currentFeeWei, setCurrentFeeWei] = useState(BigNumber.from(0));
 
   const fastBtcBridgeContract = useGetProtocolContract('fastBtcBridge');
+
+  const weiAmount = useMemo(() => toWei(amount), [amount]);
+
+  const getCurrentFeeWei = useCallback(async () => {
+    const currentFeeWei = await fastBtcBridgeContract?.calculateCurrentFeeWei(
+      weiAmount,
+    );
+
+    setCurrentFeeWei(currentFeeWei);
+  }, [fastBtcBridgeContract, weiAmount]);
+
+  useEffect(() => {
+    getCurrentFeeWei().then();
+  }, [getCurrentFeeWei]);
+
+  const feesPaid = useMemo(
+    () =>
+      currentFeeWei && currentFeeWei.gt(0) ? Number(fromWei(currentFeeWei)) : 0,
+    [currentFeeWei],
+  );
+
+  const receiveAmount = useMemo(
+    () =>
+      Number(
+        fromWei(
+          currentFeeWei && currentFeeWei.gt(0)
+            ? weiAmount.sub(currentFeeWei)
+            : weiAmount,
+        ),
+      ),
+    [currentFeeWei, weiAmount],
+  );
 
   const handleConfirm = useCallback(async () => {
     set(prevState => ({ ...prevState, step: WithdrawStep.CONFIRM }));
@@ -58,8 +99,21 @@ export const ConfirmationScreens: React.FC<ConfirmationScreensProps> = ({
   ]);
 
   if (step === WithdrawStep.REVIEW) {
-    return <ReviewScreen onConfirm={handleConfirm} />;
+    return (
+      <ReviewScreen
+        onConfirm={handleConfirm}
+        feesPaid={feesPaid}
+        receiveAmount={receiveAmount}
+      />
+    );
   }
 
-  return <StatusScreen txHash={txHash} onClose={onClose} />;
+  return (
+    <StatusScreen
+      txHash={txHash}
+      onClose={onClose}
+      feesPaid={feesPaid}
+      receiveAmount={receiveAmount}
+    />
+  );
 };

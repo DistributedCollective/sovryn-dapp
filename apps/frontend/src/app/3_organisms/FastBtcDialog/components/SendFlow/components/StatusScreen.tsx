@@ -1,46 +1,26 @@
-import React, { useCallback, useContext, useMemo } from 'react';
+import React, { useContext, useMemo } from 'react';
 
 import { Button, Heading, TransactionId } from '@sovryn/ui';
 
-import { useGetProtocolContract } from '../../../../../../hooks/useGetContract';
-import { formatValue, fromWei, toWei } from '../../../../../../utils/math';
+import { formatValue } from '../../../../../../utils/math';
 import { TransactionStepDialog } from '../../../../TransactionStepDialog';
 import { FAST_BTC_ASSET } from '../../../constants';
 import { WithdrawContext } from '../../../contexts/withdraw-context';
 
 type StatusScreenProps = {
+  feesPaid: number;
+  receiveAmount: number;
   txHash?: string;
   onClose: () => void;
 };
 
 export const StatusScreen: React.FC<StatusScreenProps> = ({
+  feesPaid,
+  receiveAmount,
   txHash,
   onClose,
 }) => {
-  const { amount, address, aggregatorLimits } = useContext(WithdrawContext);
-
-  // TODO: Unify this screen and ReviewScreen because all of the computations are the same
-  const weiAmount = toWei(amount);
-
-  // TODO: Create a global function/hook
-  const fastBtcBridgeContract = useGetProtocolContract('fastBtcBridge');
-
-  const calculateCurrentFeeWei = useCallback(
-    async () => fastBtcBridgeContract?.calculateCurrentFeeWei(weiAmount),
-    [fastBtcBridgeContract, weiAmount],
-  );
-
-  const feesPaid = useMemo(() => {
-    let currentFeeWei = 0;
-    calculateCurrentFeeWei().then(result => (currentFeeWei = result || 0));
-
-    return Number(fromWei(currentFeeWei)) + aggregatorLimits.min;
-  }, [calculateCurrentFeeWei, aggregatorLimits.min]);
-
-  const receiveAmount = useMemo(
-    () => Number(fromWei(weiAmount)) - feesPaid,
-    [weiAmount, feesPaid],
-  );
+  const { amount, address } = useContext(WithdrawContext);
 
   const items = useMemo(
     () => [

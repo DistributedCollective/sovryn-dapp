@@ -1,54 +1,26 @@
-import React, { useCallback, useContext, useMemo } from 'react';
+import React, { useContext, useMemo } from 'react';
 
 import { Button, Heading, TransactionId } from '@sovryn/ui';
 
-import { useGetProtocolContract } from '../../../../../../hooks/useGetContract';
 import { useMaintenance } from '../../../../../../hooks/useMaintenance';
-import { formatValue, fromWei, toWei } from '../../../../../../utils/math';
+import { formatValue } from '../../../../../../utils/math';
 import { FAST_BTC_ASSET } from '../../../constants';
 import { WithdrawContext } from '../../../contexts/withdraw-context';
 
 type ReviewScreenProps = {
+  feesPaid: number;
+  receiveAmount: number;
   onConfirm: () => void;
 };
 
-export const ReviewScreen: React.FC<ReviewScreenProps> = ({ onConfirm }) => {
-  const { amount, address, aggregatorLimits } = useContext(WithdrawContext);
+export const ReviewScreen: React.FC<ReviewScreenProps> = ({
+  onConfirm,
+  feesPaid,
+  receiveAmount,
+}) => {
+  const { amount, address } = useContext(WithdrawContext);
   const { checkMaintenance, States } = useMaintenance();
   const fastBtcLocked = checkMaintenance(States.FASTBTC);
-
-  const weiAmount = toWei(amount);
-
-  const fastBtcBridgeContract = useGetProtocolContract('fastBtcBridge');
-
-  const calculateCurrentFeeWei = useCallback(
-    async () => fastBtcBridgeContract?.calculateCurrentFeeWei(weiAmount),
-    [fastBtcBridgeContract, weiAmount],
-  );
-
-  // TODO: Use this once I have fix for toWei method
-  //   const feesPaid = useMemo(
-  //     () =>
-  //       bignumber(calculateCurrentFeeWei).add(aggregatorLimits.fee).toString(),
-  //     [calculateCurrentFeeWei, aggregatorLimits.fee],
-  //   );
-
-  //   const receiveAmount = useMemo(
-  //     () => bignumber(weiAmount).minus(feesPaid).toString(),
-  //     [weiAmount, feesPaid],
-  //   );
-
-  const feesPaid = useMemo(() => {
-    let currentFeeWei = 0;
-    calculateCurrentFeeWei().then(result => (currentFeeWei = result || 0));
-
-    return Number(fromWei(currentFeeWei)) + aggregatorLimits.min;
-  }, [calculateCurrentFeeWei, aggregatorLimits.min]);
-
-  const receiveAmount = useMemo(
-    () => Number(fromWei(weiAmount)) - feesPaid,
-    [weiAmount, feesPaid],
-  );
 
   const items = useMemo(
     () => [

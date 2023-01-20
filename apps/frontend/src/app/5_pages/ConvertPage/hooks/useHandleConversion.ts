@@ -8,8 +8,9 @@ import {
   getTokenDetails,
 } from '@sovryn/contracts';
 
-import { Transaction } from '../../../3_organisms/TransactionStepDialog/TransactionStepDialog.types';
 import { defaultChainId } from '../../../../config/chains';
+
+import { Transaction } from '../../../3_organisms/TransactionStepDialog/TransactionStepDialog.types';
 import { useTransactionContext } from '../../../../contexts/TransactionContext';
 import { useAccount } from '../../../../hooks/useAccount';
 import { toWei } from '../../../../utils/math';

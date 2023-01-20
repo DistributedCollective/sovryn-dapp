@@ -23,6 +23,7 @@ import {
 } from '@sovryn/ui';
 
 import { chains, defaultChainId } from '../../../../../config/chains';
+
 import { APPROVAL_FUNCTION } from '../../../../../utils/constants';
 import { fromWei, toWei } from '../../../../../utils/math';
 import { Transaction, TxConfig } from '../../TransactionStepDialog.types';

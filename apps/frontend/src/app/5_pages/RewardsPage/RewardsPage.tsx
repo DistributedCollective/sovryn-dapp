@@ -24,7 +24,6 @@ import {
 import { TransactionStepDialog } from '../../3_organisms';
 import { useAccount } from '../../../hooks/useAccount';
 import { translations } from '../../../locales/i18n';
-import styles from './RewardsPage.module.css';
 import { useGetOpenTrove } from './hooks/useGetOpenTrove';
 import { useHandleRewards } from './hooks/useHandleRewards';
 import { RewardsAction } from './types';
@@ -57,38 +56,29 @@ const RewardsPage: FC = () => {
   }, [liquity, account]);
 
   return (
-    <div className={styles.wrapper}>
-      <Heading
-        className="font-medium mb-4"
-        type={HeadingType.h1}
-        {...applyDataAttr('rewards-title')}
-      >
+    <div className="flex flex-col items-center mt-28">
+      <Heading className="font-medium mb-4" type={HeadingType.h1}>
         {t(translations.rewardPage.title)}
       </Heading>
       <Paragraph
         style={ParagraphStyle.tall}
         className="font-medium mb-[3.25rem]"
         size={ParagraphSize.base}
-        {...applyDataAttr('rewards-subtitle')}
       >
         {t(translations.rewardPage.subtitle)}
       </Paragraph>
 
-      <div className={styles.content}>
-        <div className={styles.rewards}>
-          <Paragraph
-            className="font-medium mb-2"
-            size={ParagraphSize.small}
-            {...applyDataAttr('rewards-stability-pool-rewards')}
-          >
+      <div className="border border-gray-50 rounded w-full sm:w-[25rem] p-3 bg-gray-90">
+        <div className="bg-gray-70 rounded p-6 text-center mb-6">
+          <Paragraph className="font-medium mb-2" size={ParagraphSize.small}>
             {t(translations.rewardPage.stabilityPoolRewards)}
           </Paragraph>
-          <div className={styles.amount}>
+          <div className="text-2xl leading-7 uppercase">
             {amount?.prettify(4)} {t(translations.rewardPage.btc)}
           </div>
         </div>
 
-        <div className={styles.actions}>
+        <div className="flex flex-row justify-center gap-3">
           <Button
             type={ButtonType.button}
             style={ButtonStyle.secondary}

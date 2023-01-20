@@ -348,6 +348,10 @@
             "amountForm": {
                 "title": "Enter amount of Rootstock BTC to send",
                 "amountLabel": "Send"
+            },
+            "addressForm": {
+                "title": "Enter recipient's bitcoin address",
+                "addressLabel": "Address"
             }
         }
     }

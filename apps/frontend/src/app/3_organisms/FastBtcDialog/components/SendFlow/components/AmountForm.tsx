@@ -44,7 +44,7 @@ export const AmountForm: React.FC = () => {
 
   const rbtcBalance = useMemo(() => fromWei(rbtcWeiBalance), [rbtcWeiBalance]);
 
-  const [value, setValue] = useState(amount);
+  const [value, setValue] = useState(amount || '0');
 
   const invalid = useMemo(() => {
     if (value === '0') {

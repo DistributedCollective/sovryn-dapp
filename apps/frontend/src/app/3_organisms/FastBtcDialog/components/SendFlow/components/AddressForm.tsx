@@ -11,12 +11,22 @@ import {
   getAddressInfo,
   AddressType,
 } from 'bitcoin-address-validation';
+import { t } from 'i18next';
 import debounce from 'lodash.debounce';
 
-import { Button, FormGroup, Heading, Input } from '@sovryn/ui';
+import {
+  Button,
+  ButtonStyle,
+  Heading,
+  HeadingType,
+  Input,
+  Paragraph,
+  ParagraphSize,
+} from '@sovryn/ui';
 
 import { useGetProtocolContract } from '../../../../../../hooks/useGetContract';
 import { useMaintenance } from '../../../../../../hooks/useMaintenance';
+import { translations } from '../../../../../../locales/i18n';
 import { currentNetwork } from '../../../../../../utils/helpers';
 import {
   WithdrawContext,
@@ -99,20 +109,35 @@ export const AddressForm: React.FC = () => {
     }
   }, [delayedOnChange, value]);
 
+  const isSubmitDisabled = useMemo(
+    () => invalid || fastBtcLocked || !value || value === '',
+    [fastBtcLocked, invalid, value],
+  );
+
   return (
-    <>
-      <Heading>Enter recipient's bitcoin address</Heading>
+    <div className="text-center">
+      <Heading type={HeadingType.h2} className="font-medium mb-8">
+        {t(translations.fastBtc.send.addressForm.title)}
+      </Heading>
 
-      <FormGroup label="Address">
-        <Input onChangeText={setValue} />
-      </FormGroup>
+      <div className="text-left">
+        <Paragraph size={ParagraphSize.base} className="font-medium mb-3">
+          {t(translations.fastBtc.send.addressForm.addressLabel)}
+        </Paragraph>
 
-      <Button
-        text="Continue"
-        onClick={onContinueClick}
-        disabled={invalid || fastBtcLocked}
-      />
+        <Input onChangeText={setValue} value={value} />
+      </div>
+
+      <div className="px-8">
+        <Button
+          text={t(translations.common.buttons.continue)}
+          onClick={onContinueClick}
+          disabled={isSubmitDisabled}
+          style={ButtonStyle.secondary}
+          className="mt-10 w-full"
+        />
+      </div>
       {fastBtcLocked && <div>Fast BTC is in maintenance mode</div>}
-    </>
+    </div>
   );
 };

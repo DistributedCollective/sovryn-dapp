@@ -113,6 +113,19 @@
             "noDataToExport": "No data to export"
         }
     },
+    "redemptionsHistory": {
+        "table": {
+            "timestamp": "Timestamp",
+            "zusdRedeemed": "ZUSD Redeemed",
+            "rbtcReceived": "RBTC Received",
+            "redemptionFee": "Redemption Fee (RBTC)",
+            "networkFee": "Network Fee",
+            "transactionID": "Transaction ID"
+        },
+        "actions": {
+            "noDataToExport": "No data to export"
+        }
+    },
     "errorPage": {
         "title": "Error",
         "description": "Something went wrong. Please try again later."
@@ -222,6 +235,7 @@
         "table": {
             "tabs": {
                 "lineOfCredit": "Line of Credit",
+                "redemptions": "Redemptions",
                 "stability": "Stability pool",
                 "convert": "Conversion",
                 "funding": "Funding"

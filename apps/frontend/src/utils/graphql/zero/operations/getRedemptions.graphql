@@ -1,0 +1,27 @@
+query getRedemptions(
+  $skip: Int!
+  $pageSize: Int!
+  $orderBy: Redemption_orderBy
+  $orderDirection: OrderDirection
+  $filters: Redemption_filter
+) {
+  redemptions(
+    first: $pageSize
+    skip: $skip
+    orderBy: $orderBy
+    orderDirection: $orderDirection
+    where: $filters
+  ) {
+    id
+    fee
+    partial
+    sequenceNumber
+    collateralRedeemed
+    tokensActuallyRedeemed
+    tokensAttemptedToRedeem
+    transaction {
+      id
+      timestamp
+    }
+  }
+}

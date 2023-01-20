@@ -1,19 +1,24 @@
 import React, { useCallback, useContext, useMemo, useState } from 'react';
 
 import { BigNumber } from 'ethers';
+import { useTranslation } from 'react-i18next';
 
 import { SupportedTokens } from '@sovryn/contracts';
 import {
   AmountInput,
   applyDataAttr,
   Button,
+  ButtonStyle,
   Heading,
+  HeadingType,
   Paragraph,
+  ParagraphSize,
 } from '@sovryn/ui';
 
 import { defaultChainId } from '../../../../../../config/chains';
 import { useAssetBalance } from '../../../../../../hooks/useAssetBalance';
 import { useMaintenance } from '../../../../../../hooks/useMaintenance';
+import { translations } from '../../../../../../locales/i18n';
 import { btcInSatoshis } from '../../../../../../utils/constants';
 import { formatValue, fromWei } from '../../../../../../utils/math';
 import { FAST_BTC_ASSET } from '../../../constants';
@@ -21,10 +26,13 @@ import {
   WithdrawContext,
   WithdrawStep,
 } from '../../../contexts/withdraw-context';
+import { TransferPolicies } from './TransferPolicies';
 
 export const GAS_LIMIT_FAST_BTC_WITHDRAW = 300000; // TODO: Find a suitable place for it
 
 export const AmountForm: React.FC = () => {
+  const { t } = useTranslation();
+
   const { amount, limits, set } = useContext(WithdrawContext);
 
   const { checkMaintenance, States } = useMaintenance();
@@ -73,33 +81,46 @@ export const AmountForm: React.FC = () => {
 
   return (
     <>
-      <Heading>Enter amount of Rootstock BTC to send</Heading>
+      <Heading type={HeadingType.h2} className="font-medium mb-8">
+        {t(translations.fastBtc.send.amountForm.title)}
+      </Heading>
 
       <div>
-        <div className="flex">
-          <Paragraph>Send</Paragraph>
+        <div className="flex items-center justify-between mb-3">
+          <Paragraph size={ParagraphSize.base} className="font-medium">
+            {t(translations.fastBtc.send.amountForm.amountLabel)}
+          </Paragraph>
 
           <button
             onClick={onMaximumAmountClick}
             className="text-xs font-medium underline whitespace-nowrap"
             {...applyDataAttr('convert-to-max')}
           >
-            Max {formatValue(Number(rbtcBalance), 4)}{' '}
+            ({t(translations.common.max)} {formatValue(Number(rbtcBalance), 4)}{' '}
             {FAST_BTC_ASSET.toUpperCase()})
           </button>
         </div>
 
         <div>
-          <AmountInput onChangeText={setValue} decimalPrecision={8} />
+          <AmountInput
+            label={t(translations.common.amount)}
+            onChangeText={setValue}
+            decimalPrecision={8}
+            unit={FAST_BTC_ASSET.toUpperCase()}
+          />
         </div>
 
-        <div>TBD: Policies</div>
+        <TransferPolicies />
 
-        <Button
-          text="Continue"
-          onClick={onContinueClick}
-          disabled={invalid || fastBtcLocked}
-        />
+        <div className="px-8">
+          <Button
+            text={t(translations.common.buttons.continue)}
+            onClick={onContinueClick}
+            disabled={invalid || fastBtcLocked}
+            style={ButtonStyle.secondary}
+            className="mt-10 w-full"
+          />
+        </div>
         {fastBtcLocked && <div>Fast BTC is in maintenance mode</div>}
       </div>
     </>

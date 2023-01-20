@@ -49,7 +49,8 @@ export const FastBtcDialog: React.FC<FastBtcDialogProps> = ({
         items={items}
         onChange={onChangeIndex}
         selectedIndex={index}
-        tabsClassName="min-h-[36rem]"
+        tabsClassName="min-h-[39rem]"
+        contentClassName="p-10"
         header={() => (
           <>
             <Heading>Funding</Heading>

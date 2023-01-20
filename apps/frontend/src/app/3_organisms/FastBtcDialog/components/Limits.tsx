@@ -12,16 +12,18 @@ type LimitsProps = {
   minimumAmount: string;
   maximumAmount: string;
   serviceFee: string;
+  className?: string;
 };
 
 export const Limits: React.FC<LimitsProps> = ({
   minimumAmount,
   maximumAmount,
   serviceFee,
+  className,
 }) => {
   const { t } = useTranslation();
 
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(true);
   const onClick = useCallback((toOpen: boolean) => setOpen(toOpen), []);
 
   return (
@@ -46,7 +48,7 @@ export const Limits: React.FC<LimitsProps> = ({
             </div>
           </div>
         }
-        className="mb-6"
+        className={className}
         open={open}
         onClick={onClick}
       />

@@ -1,11 +1,21 @@
 import React, { useCallback, useContext, useMemo } from 'react';
 
+import { nanoid } from 'nanoid';
 import QRCode from 'qrcode.react';
+import { useTranslation } from 'react-i18next';
 import resolveConfig from 'tailwindcss/resolveConfig';
 
 import tailwindConfig from '@sovryn/tailwindcss-config';
-import { prettyTx, Icon, IconNames } from '@sovryn/ui';
+import {
+  prettyTx,
+  Icon,
+  IconNames,
+  Paragraph,
+  NotificationType,
+} from '@sovryn/ui';
 
+import { useNotificationContext } from '../../../../../../contexts/NotificationContext';
+import { translations } from '../../../../../../locales/i18n';
 import { DepositContext } from '../../../contexts/deposit-context';
 import { URIType } from '../../../types';
 import { TransferPolicies } from './TransferPolicies';
@@ -13,39 +23,50 @@ import { TransferPolicies } from './TransferPolicies';
 const config = resolveConfig(tailwindConfig);
 
 export const AddressForm: React.FC = () => {
-  const { address } = useContext(DepositContext);
+  const { t } = useTranslation();
 
-  const formattedAddress = useMemo(() => prettyTx(address, 12, 12), [address]);
+  const { address } = useContext(DepositContext);
+  const { addNotification } = useNotificationContext();
+
+  const formattedAddress = useMemo(() => prettyTx(address, 11, 12), [address]);
 
   const copyAddress = useCallback(async () => {
     await navigator.clipboard.writeText(address);
-    alert('Address was copied to clipboard.');
-  }, [address]);
+
+    addNotification({
+      type: NotificationType.success,
+      title: t(translations.fastBtc.addressForm.copyAddressSuccess),
+      content: '',
+      dismissible: true,
+      id: nanoid(),
+    });
+  }, [addNotification, address, t]);
 
   return (
     <>
       <div className="full">
         <TransferPolicies />
 
-        <div>
-          <div className="h-full bg-white rounded">
+        <Paragraph className="font-medium mb-2">
+          {t(translations.fastBtc.addressForm.title)}:
+        </Paragraph>
+
+        <div className="bg-gray-80 border rounded border-gray-50 p-6 text-xs">
+          <div className="h-48 bg-white justify-center items-center flex rounded">
             <QRCode
               value={`${URIType.BITCOIN}${address}`}
               renderAs="svg"
               bgColor="white"
               fgColor={config?.theme?.colors?.['gray-80'] || 'black'}
               includeMargin={false}
-              className="rounded"
+              className="rounded w-36 h-36"
             />
           </div>
 
-          <div className="flex">
+          <div className="flex justify-between mt-5 items-center bg-gray-70 border rounded border-gray-50 py-2 pl-3 pr-2 text-gray-30">
             <div>{formattedAddress}</div>
 
-            <span
-              className="ml-1 cursor-pointer hover:bg-gray-20 p-1 rounded text-gray-50"
-              onClick={copyAddress}
-            >
+            <span className="cursor-pointer rounded" onClick={copyAddress}>
               <Icon icon={IconNames.COPY} />
             </span>
           </div>

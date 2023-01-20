@@ -14,7 +14,8 @@
             "confirm": "Confirm",
             "save": "Save",
             "cancel": "Cancel",
-            "withdraw": "Withdraw"
+            "withdraw": "Withdraw",
+            "continue": "Continue"
         },
         "na": "N/A",
         "tables": {
@@ -338,6 +339,16 @@
             "minimumAmount": "Minimum amount",
             "maximumAmount": "Maximum amount",
             "serviceFee": "Service fee"
+        },
+        "addressForm": {
+            "title": "Send BTC to this address",
+            "copyAddressSuccess": "Address was copied to clipboard."
+        },
+        "send": {
+            "amountForm": {
+                "title": "Enter amount of Rootstock BTC to send",
+                "amountLabel": "Send"
+            }
         }
     }
 }

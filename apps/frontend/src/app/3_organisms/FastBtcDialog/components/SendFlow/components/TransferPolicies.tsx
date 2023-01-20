@@ -62,6 +62,7 @@ export const TransferPolicies: React.FC = () => {
       minimumAmount={minimumAmount}
       maximumAmount={maximumAmount}
       serviceFee={serviceFee}
+      className="mt-8"
     />
   );
 };

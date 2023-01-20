@@ -262,7 +262,8 @@ export const LOCChart: FC = () => {
       userOpenTroveAbove &&
       userOpenTroveBelow &&
       !loadingUserOpenTroveAbove &&
-      !loadingUserOpenTroveBelow
+      !loadingUserOpenTroveBelow &&
+      userOpenTrove.trove
     ) {
       const { transaction, trove } = userOpenTrove.trove.changes[0];
 

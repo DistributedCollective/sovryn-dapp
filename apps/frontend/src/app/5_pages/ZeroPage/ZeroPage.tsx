@@ -1,10 +1,4 @@
-import {
-  Decimal,
-  Decimalish,
-  Fees,
-  TroveAdjustmentParams,
-  UserTrove,
-} from '@sovryn-zero/lib-base';
+import { Decimal, Fees, UserTrove } from '@sovryn-zero/lib-base';
 
 import React, {
   FC,
@@ -15,11 +9,9 @@ import React, {
   useState,
 } from 'react';
 
-import { Contract } from 'ethers';
 import { t } from 'i18next';
 import { Await, useLoaderData } from 'react-router-dom';
 
-import { getContract } from '@sovryn/contracts';
 import {
   Button,
   ButtonSize,
@@ -41,27 +33,16 @@ import { useGetUserOpenTrove } from '../../3_organisms/LOCChart/hooks/useGetUser
 import { AdjustCreditLine } from '../../3_organisms/ZeroLocForm/AdjustCreditLine';
 import { CloseCreditLine } from '../../3_organisms/ZeroLocForm/CloseCreditLine';
 import { DEBT_TOKEN } from '../../3_organisms/ZeroLocForm/constants';
-import {
-  CreditLineSubmitValue,
-  CreditLineType,
-} from '../../3_organisms/ZeroLocForm/types';
-import { useTransactionContext } from '../../../contexts/TransactionContext';
+import { CreditLineType } from '../../3_organisms/ZeroLocForm/types';
 import { useWalletConnect } from '../../../hooks';
 import { useAccount } from '../../../hooks/useAccount';
 import { translations } from '../../../locales/i18n';
-import { getRskChainId } from '../../../utils/chain';
-import {
-  GAS_LIMIT_ADJUST_TROVE,
-  GAS_LIMIT_OPEN_TROVE,
-} from '../../../utils/constants';
 import { useClaimCollateralSurplus } from './hooks/useClaimCollateralSurplus';
+import { useHandleTrove } from './hooks/useHandleTrove';
 import { ZeroPageLoaderData } from './loader';
-import { adjustTrove, openTrove } from './utils/trove-manager';
 
 export const ZeroPage: FC = () => {
   const { liquity, deferedData } = useLoaderData() as ZeroPageLoaderData;
-
-  const { setTransactions, setIsOpen } = useTransactionContext();
 
   const [open, toggle] = useReducer(v => !v, false);
   const [openClosePopup, toggleClosePopup] = useReducer(v => !v, false);
@@ -73,7 +54,7 @@ export const ZeroPage: FC = () => {
   const { refetch } = useGetUserOpenTrove();
 
   const { connectWallet } = useWalletConnect();
-  const { signer, account } = useAccount();
+  const { account } = useAccount();
   const claimCollateralSurplus = useClaimCollateralSurplus();
 
   const getTroves = useCallback(() => {
@@ -108,7 +89,7 @@ export const ZeroPage: FC = () => {
   );
   const debt = useMemo(() => Number(trove?.debt ?? 0), [trove?.debt]);
 
-  const hasLoc = useMemo(() => trove?.debt?.gt(0), [trove?.debt]);
+  const hasLoc = useMemo(() => !!trove?.debt?.gt(0), [trove?.debt]);
   const isLoading = useMemo(
     () =>
       account &&
@@ -120,108 +101,10 @@ export const ZeroPage: FC = () => {
     () => !account || (!hasLoc && collateralSurplusBalance?.eq(0)),
     [account, collateralSurplusBalance, hasLoc],
   );
-
-  const handleTroveSubmit = useCallback(
-    async (value: CreditLineSubmitValue) => {
-      if (signer) {
-        const { address, abi } = await getContract(
-          'borrowerOperations',
-          'zero',
-          getRskChainId(),
-        );
-
-        const contract = new Contract(address, abi, signer);
-
-        if (hasLoc) {
-          const params: Partial<TroveAdjustmentParams<Decimalish>> = {};
-
-          if (value.borrow) {
-            params.borrowZUSD = value.borrow;
-          }
-
-          if (value.repay) {
-            params.repayZUSD = value.repay;
-          }
-
-          if (value.depositCollateral) {
-            params.depositCollateral = value.depositCollateral;
-          }
-
-          if (value.withdrawCollateral) {
-            params.withdrawCollateral = value.withdrawCollateral;
-          }
-
-          const adjustedTrove = await adjustTrove(account, params);
-          setTransactions([
-            {
-              title: t(translations.zeroPage.tx.adjustTrove),
-              contract,
-              fnName: 'adjustTrove',
-              config: {
-                value: adjustedTrove.value,
-                gasLimit: GAS_LIMIT_ADJUST_TROVE,
-              },
-              args: adjustedTrove.args,
-              onComplete: () => {
-                getTroves();
-                refetch();
-              },
-            },
-          ]);
-          setIsOpen(true);
-        } else {
-          const openedTrove = await openTrove({
-            borrowZUSD: value.borrow || '0',
-            depositCollateral: value.depositCollateral || '0',
-          });
-          setTransactions([
-            {
-              title: t(translations.zeroPage.tx.openTrove),
-              contract,
-              fnName: 'openTrove',
-              config: {
-                value: openedTrove.value,
-                gasLimit: GAS_LIMIT_OPEN_TROVE,
-              },
-              args: openedTrove.args,
-              onComplete: () => {
-                refetch();
-                getTroves();
-              },
-            },
-          ]);
-          setIsOpen(true);
-        }
-      }
-    },
-    [account, hasLoc, setIsOpen, setTransactions, signer, getTroves, refetch],
-  );
-
-  const handleTroveClose = useCallback(async () => {
-    if (signer) {
-      const { address, abi } = await getContract(
-        'borrowerOperations',
-        'zero',
-        getRskChainId(),
-      );
-
-      const contract = new Contract(address, abi, signer);
-
-      setTransactions([
-        {
-          title: t(translations.zeroPage.tx.closeTrove),
-          contract,
-          fnName: 'closeTrove',
-          args: [],
-          onComplete: () => {
-            refetch();
-            getTroves();
-          },
-        },
-      ]);
-      setIsOpen(true);
-    }
-  }, [setIsOpen, setTransactions, signer, getTroves, refetch]);
+  const { handleTroveClose, handleTroveSubmit } = useHandleTrove(hasLoc, () => {
+    getTroves();
+    refetch();
+  });
 
   const getRatio = useCallback(
     (price: string) => {
@@ -300,7 +183,7 @@ export const ZeroPage: FC = () => {
                     {t(translations.chart.systemLinesCredit)}
                   </Paragraph>
 
-                  <div className="h-80 md:flex-1 bg-gray-80 rounded pt-2 px-2 flex items-center">
+                  <div className="h-80 md:flex-1 bg-gray-80 rounded pt-2 pr-2 flex items-center">
                     <LOCChart />
                   </div>
                 </div>

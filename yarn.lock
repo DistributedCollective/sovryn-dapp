@@ -4217,7 +4217,7 @@
   dependencies:
     "@sinonjs/commons" "^1.7.0"
 
-"@sovryn-zero/lib-base@1.0.0-early.access.3":
+"@sovryn-zero/lib-base@^1.0.0-early.access.3":
   version "1.0.0-early.access.3"
   resolved "https://registry.yarnpkg.com/@sovryn-zero/lib-base/-/lib-base-1.0.0-early.access.3.tgz#6a2dace7705143543bc2e0adc2d3917b8665876f"
   integrity sha512-hmOoI/pLPOiEqUhMqW6Y36viIMvWo8gZ8fshXGgCto4RI9C/vxp6acHcsT5GGtCCv98hYRWydRfBEHvcMPnMFA==
@@ -4228,6 +4228,12 @@
   version "1.0.0-early.access.6"
   resolved "https://registry.yarnpkg.com/@sovryn-zero/lib-ethers/-/lib-ethers-1.0.0-early.access.6.tgz#aea3f813c29366c21768d0ef87907d2923da6a1b"
   integrity sha512-/rjvwoBm+ds3TxhPmjotwwE4Q6/nkoLC6stgmBd1+JH4vipsJnaLc/hpzqi+WzurZBt9jXKsej9XkC9trQExKQ==
+
+"@sovryn-zero/lib-ethers@file:apps/frontend/sovryn-zero-lib-ethers-v1.0.0-early.access.7.tgz":
+  version "1.0.0-early.access.7"
+  resolved "file:apps/frontend/sovryn-zero-lib-ethers-v1.0.0-early.access.7.tgz#78ebfcb3a0204efc70365bf496f2c3a7f4955bea"
+  dependencies:
+    patch-package "^6.5.1"
 
 "@sovryn/onboard-common@*":
   version "0.0.1"

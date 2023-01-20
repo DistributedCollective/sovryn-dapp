@@ -1,6 +1,5 @@
 import React, { useCallback, useContext, useMemo, useState } from 'react';
 
-import { BigNumber } from 'ethers';
 import { useTranslation } from 'react-i18next';
 
 import { SupportedTokens } from '@sovryn/contracts';
@@ -20,7 +19,7 @@ import { useAssetBalance } from '../../../../../../hooks/useAssetBalance';
 import { useMaintenance } from '../../../../../../hooks/useMaintenance';
 import { translations } from '../../../../../../locales/i18n';
 import { btcInSatoshis } from '../../../../../../utils/constants';
-import { formatValue, fromWei } from '../../../../../../utils/math';
+import { formatValue, fromWei, toWei } from '../../../../../../utils/math';
 import { FAST_BTC_ASSET } from '../../../constants';
 import {
   WithdrawContext,
@@ -48,18 +47,22 @@ export const AmountForm: React.FC = () => {
   const [value, setValue] = useState(amount);
 
   const invalid = useMemo(() => {
+    if (value === '0') {
+      return true;
+    }
+
     const amount = value;
     const satoshiAmount = Number(amount) * btcInSatoshis;
-    const satoshiAmountBigNumber = BigNumber.from(satoshiAmount);
+
     if (
-      satoshiAmountBigNumber.lte(0) ||
-      satoshiAmountBigNumber.lt(limits.min) ||
-      satoshiAmountBigNumber.gt(limits.max)
+      satoshiAmount < 0 ||
+      satoshiAmount < limits.min ||
+      satoshiAmount > limits.max
     ) {
       return true;
     }
 
-    return satoshiAmountBigNumber
+    return toWei(amount)
       .add(GAS_LIMIT_FAST_BTC_WITHDRAW)
       .gt(rbtcWeiBalance || '0');
   }, [value, limits.min, limits.max, rbtcWeiBalance]);
@@ -107,6 +110,7 @@ export const AmountForm: React.FC = () => {
             onChangeText={setValue}
             decimalPrecision={8}
             unit={FAST_BTC_ASSET.toUpperCase()}
+            value={value}
           />
         </div>
 

@@ -7,7 +7,7 @@
     "@apollo/react-hooks": "4.0.0",
     "@loadable/component": "5.15.2",
     "@sovryn-zero/lib-base": "1.0.0-early.access.3",
-    "@sovryn-zero/lib-ethers": "1.0.0-early.access.4",
+    "@sovryn-zero/lib-ethers": "1.0.0-early.access.7",
     "@sovryn/contracts": "*",
     "@sovryn/ethers-provider": "*",
     "@sovryn/onboard-common": "0.0.3",

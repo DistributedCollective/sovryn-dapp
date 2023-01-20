@@ -63,6 +63,7 @@ export const GAS_LIMIT_ADJUST_TROVE = 650_000;
 export const GAS_LIMIT_STABILITY_POOL = 500_000;
 export const btcInSatoshis = 100000000;
 
+// TODO: Refactor it into a similar config we have in dapp v1 (blockExplorers constant)
 export const rskExplorer = {
   [Environments.Mainnet]: 'https://explorer.rsk.co',
   [Environments.Testnet]: 'https://explorer.testnet.rsk.co',

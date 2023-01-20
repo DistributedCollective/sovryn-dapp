@@ -1,35 +1,57 @@
-import React, { useContext, useMemo } from 'react';
+import React, { useMemo } from 'react';
 
-import { Button, Heading, TransactionId } from '@sovryn/ui';
+import classNames from 'classnames';
+import { t } from 'i18next';
+
+import { Button, Heading, HeadingType, TransactionId } from '@sovryn/ui';
 
 import { useMaintenance } from '../../../../../../hooks/useMaintenance';
+import { translations } from '../../../../../../locales/i18n';
+import {
+  getBtcExplorerUrl,
+  getRskExplorerUrl,
+} from '../../../../../../utils/helpers';
 import { formatValue } from '../../../../../../utils/math';
 import { FAST_BTC_ASSET } from '../../../constants';
-import { WithdrawContext } from '../../../contexts/withdraw-context';
+
+const translation = translations.fastBtc.send.confirmationScreens;
 
 type ReviewScreenProps = {
+  from: string;
+  to: string;
+  amount: string;
   feesPaid: number;
   receiveAmount: number;
   onConfirm: () => void;
 };
 
 export const ReviewScreen: React.FC<ReviewScreenProps> = ({
+  amount,
   onConfirm,
   feesPaid,
   receiveAmount,
+  from,
+  to,
 }) => {
-  const { amount, address } = useContext(WithdrawContext);
   const { checkMaintenance, States } = useMaintenance();
   const fastBtcLocked = checkMaintenance(States.FASTBTC);
 
   const items = useMemo(
     () => [
       {
-        label: 'Date and Time',
-        value: new Date().toLocaleDateString(),
+        label: t(translation.from),
+        value: (
+          <TransactionId value={from} href={`${getRskExplorerUrl()}/${from}`} />
+        ),
       },
       {
-        label: 'Amount',
+        label: t(translation.to),
+        value: (
+          <TransactionId value={to} href={`${getBtcExplorerUrl()}/${to}`} />
+        ),
+      },
+      {
+        label: t(translation.sending),
         value: (
           <>
             {formatValue(Number(amount), 8)} {FAST_BTC_ASSET.toUpperCase()}
@@ -37,17 +59,7 @@ export const ReviewScreen: React.FC<ReviewScreenProps> = ({
         ),
       },
       {
-        label: 'Address',
-        value: (
-          <TransactionId
-            value={address}
-            hideTooltip
-            href={`https://live.blockcypher.com/btc-testnet/tx/${address}`}
-          />
-        ),
-      },
-      {
-        label: 'Fees',
+        label: t(translation.serviceFee),
         value: (
           <>
             {formatValue(feesPaid, 8)} {FAST_BTC_ASSET.toUpperCase()}
@@ -55,7 +67,7 @@ export const ReviewScreen: React.FC<ReviewScreenProps> = ({
         ),
       },
       {
-        label: 'Received',
+        label: t(translation.receiving),
         value: (
           <>
             {formatValue(receiveAmount, 8)} {FAST_BTC_ASSET.toUpperCase()}
@@ -63,16 +75,22 @@ export const ReviewScreen: React.FC<ReviewScreenProps> = ({
         ),
       },
     ],
-    [address, amount, feesPaid, receiveAmount],
+    [amount, feesPaid, from, receiveAmount, to],
   );
 
   return (
-    <>
-      <Heading>Transfer details</Heading>
+    <div className="text-center">
+      <Heading type={HeadingType.h2} className="font-medium mb-8">
+        {t(translation.reviewTitle)}
+      </Heading>
 
-      <div>
-        {items.map(({ label, value }) => (
-          <div>
+      <div className="bg-gray-80 border rounded border-gray-50 p-3 text-xs text-gray-30">
+        {items.map(({ label, value }, index) => (
+          <div
+            className={classNames('flex justify-between', {
+              'mb-3': index !== items.length - 1,
+            })}
+          >
             <span>{label} </span>
             <span>{value}</span>
           </div>
@@ -80,9 +98,13 @@ export const ReviewScreen: React.FC<ReviewScreenProps> = ({
       </div>
 
       <div className="mt-8">
-        <Button text="Confirm" onClick={onConfirm} disabled={fastBtcLocked} />
+        <Button
+          text={t(translations.common.buttons.confirm)}
+          onClick={onConfirm}
+          disabled={fastBtcLocked}
+        />
         {fastBtcLocked && <div>Fast BTC is in maintenance mode</div>}
       </div>
-    </>
+    </div>
   );
 };

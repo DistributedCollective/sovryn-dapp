@@ -15,7 +15,8 @@
             "save": "Save",
             "cancel": "Cancel",
             "withdraw": "Withdraw",
-            "continue": "Continue"
+            "continue": "Continue",
+            "done": "Done"
         },
         "na": "N/A",
         "tables": {
@@ -352,6 +353,17 @@
             "addressForm": {
                 "title": "Enter recipient's bitcoin address",
                 "addressLabel": "Address"
+            },
+            "confirmationScreens": {
+                "reviewTitle": "Transfer details",
+                "statusTitleProcessing": "Transfer processing...",
+                "statusTitleComplete": "Transfer complete",
+                "from": "From",
+                "to": "To",
+                "sending": "Sending",
+                "serviceFee": "Service fee",
+                "receiving": "Receiving",
+                "hash": "Rootstock TXID"
             }
         }
     }

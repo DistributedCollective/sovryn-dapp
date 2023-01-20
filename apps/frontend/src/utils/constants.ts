@@ -62,3 +62,13 @@ export const GAS_LIMIT_OPEN_TROVE = 1_000_000;
 export const GAS_LIMIT_ADJUST_TROVE = 650_000;
 export const GAS_LIMIT_STABILITY_POOL = 500_000;
 export const btcInSatoshis = 100000000;
+
+export const rskExplorer = {
+  [Environments.Mainnet]: 'https://explorer.rsk.co',
+  [Environments.Testnet]: 'https://explorer.testnet.rsk.co',
+};
+
+export const btcExplorer = {
+  [Environments.Mainnet]: 'https://live.blockcypher.com/btc',
+  [Environments.Testnet]: 'https://live.blockcypher.com/btc-testnet',
+};

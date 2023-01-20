@@ -9,6 +9,7 @@ import React, {
 import { BigNumber } from 'ethers';
 
 import { useTransactionContext } from '../../../../../../contexts/TransactionContext';
+import { useAccount } from '../../../../../../hooks/useAccount';
 import { useGetProtocolContract } from '../../../../../../hooks/useGetContract';
 import { fromWei, toWei } from '../../../../../../utils/math';
 import {
@@ -26,6 +27,7 @@ type ConfirmationScreensProps = {
 export const ConfirmationScreens: React.FC<ConfirmationScreensProps> = ({
   onClose,
 }) => {
+  const { account } = useAccount();
   const { step, address, amount, set } = useContext(WithdrawContext);
 
   const { setTransactions, setTitle, setIsOpen } = useTransactionContext();
@@ -104,6 +106,9 @@ export const ConfirmationScreens: React.FC<ConfirmationScreensProps> = ({
         onConfirm={handleConfirm}
         feesPaid={feesPaid}
         receiveAmount={receiveAmount}
+        from={account}
+        to={address}
+        amount={amount}
       />
     );
   }
@@ -114,6 +119,9 @@ export const ConfirmationScreens: React.FC<ConfirmationScreensProps> = ({
       onClose={onClose}
       feesPaid={feesPaid}
       receiveAmount={receiveAmount}
+      from={account}
+      to={address}
+      amount={amount}
     />
   );
 };

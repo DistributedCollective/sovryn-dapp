@@ -38,6 +38,12 @@ describe('utils/math.ts', () => {
       expect(toWei(1, 'ether').toString()).toEqual('1000000000000000000');
     });
 
+    it('correctly converts string with a lot of decimals', () => {
+      expect(toWei('200.99999999999999999').toString()).toEqual(
+        '200999999999999999990',
+      );
+    });
+
     it('fails for unexpected value', () => {
       expect(() => toWei('error')).toThrowError(
         'Invalid BigNumberish value: error',

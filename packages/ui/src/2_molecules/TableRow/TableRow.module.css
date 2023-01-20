@@ -2,11 +2,11 @@
   @apply cursor-pointer sm:cursor-auto outline outline-1 outline-gray-70 rounded text-xs font-medium;
 
   &.small > td {
-    @apply py-2.5 px-5;
+    @apply py-2.5 px-4;
   }
 
   &.large > td {
-    @apply px-5 h-[3.75rem];
+    @apply px-4 h-[3.75rem];
   }
 
   & > td {

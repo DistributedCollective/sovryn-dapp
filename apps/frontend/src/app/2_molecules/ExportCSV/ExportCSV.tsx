@@ -13,6 +13,7 @@ type ExportCSVProps = {
   filename: string;
   getData: () => Promise<Data[]>;
   onExportEnd?: () => void;
+  disabled?: boolean;
 };
 
 export const ExportCSV: React.FC<ExportCSVProps> = ({
@@ -20,6 +21,7 @@ export const ExportCSV: React.FC<ExportCSVProps> = ({
   filename,
   getData,
   onExportEnd,
+  disabled = false,
 }) => {
   const [isLoading, setIsLoading] = useState(false);
   const { t } = useTranslation();
@@ -56,6 +58,7 @@ export const ExportCSV: React.FC<ExportCSVProps> = ({
       loading={isLoading}
       style={ButtonStyle.secondary}
       className={className}
+      disabled={disabled}
     />
   );
 };

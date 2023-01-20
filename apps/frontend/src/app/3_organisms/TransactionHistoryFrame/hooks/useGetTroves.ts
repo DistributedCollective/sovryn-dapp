@@ -20,6 +20,7 @@ const zeroClient = new ApolloClient({
 });
 
 export const useGetTroves = (
+  account: string,
   pageSize: number,
   page: number,
   filters: InputMaybe<TroveChange_Filter> | undefined,
@@ -27,16 +28,14 @@ export const useGetTroves = (
 ) => {
   const troveConfig = useMemo(
     () => ({
-      //TODO: switch to the user's address
-      //hardcoded address for testing
-      user: '0xd0af98aeb84ca58c0efb2b5dbd80297be02259dc',
+      user: account,
       skip: page * pageSize,
       pageSize,
       orderBy: (orderOptions.orderBy as TroveChange_OrderBy) || undefined,
       orderDirection: orderOptions.orderDirection || undefined,
       filters,
     }),
-    [page, orderOptions, filters, pageSize],
+    [account, page, orderOptions, filters, pageSize],
   );
 
   const { loading, data } = useQuery(GetTroveDocument, {

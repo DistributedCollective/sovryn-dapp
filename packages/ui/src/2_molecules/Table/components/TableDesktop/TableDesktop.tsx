@@ -1,4 +1,4 @@
-import React, { isValidElement, useCallback } from 'react';
+import React, { Fragment, isValidElement, useCallback } from 'react';
 
 import classNames from 'classnames';
 
@@ -118,14 +118,14 @@ export const TableDesktop = <RowType extends RowObject>({
 
             {isLoading ? (
               Array.from(Array(4).keys()).map(i => (
-                <>
+                <Fragment key={i}>
                   <tr className={rowStyles.row}>
                     <td className={styles.noData} colSpan={999}>
                       <span className={styles.loading} />
                     </td>
                   </tr>
                   <tr className={styles.spacer}></tr>
-                </>
+                </Fragment>
               ))
             ) : (
               <tr className={rowStyles.row}>

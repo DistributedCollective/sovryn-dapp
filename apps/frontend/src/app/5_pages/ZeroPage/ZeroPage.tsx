@@ -13,6 +13,7 @@ import { t } from 'i18next';
 import { Await, useLoaderData } from 'react-router-dom';
 
 import {
+  applyDataAttr,
   Button,
   ButtonSize,
   ButtonStyle,
@@ -154,6 +155,7 @@ export const ZeroPage: FC = () => {
                       size={ButtonSize.large}
                       onClick={claimCollateralSurplus}
                       className="flex-1"
+                      {...applyDataAttr('zero-withdraw')}
                     />
                   )}
                   {hasLoc && (
@@ -164,6 +166,7 @@ export const ZeroPage: FC = () => {
                         size={ButtonSize.large}
                         onClick={toggle}
                         className="flex-1"
+                        {...applyDataAttr('zero-adjust')}
                       />
                       <Button
                         text={t('LOCStatus.close')}
@@ -171,6 +174,7 @@ export const ZeroPage: FC = () => {
                         size={ButtonSize.large}
                         onClick={toggleClosePopup}
                         className="flex-1"
+                        {...applyDataAttr('zero-close')}
                       />
                     </>
                   )}

@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { Paragraph, NotificationType, Button, ButtonStyle } from '@sovryn/ui';
 
 import { chains, defaultChainId } from '../config/chains';
+
 import { useNotificationContext } from '../contexts/NotificationContext';
 import { useWalletConnect } from './useWalletConnect';
 

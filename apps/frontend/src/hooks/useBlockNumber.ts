@@ -15,7 +15,10 @@ const DEFAULT_BLOCK_TTL = 30 * 1000; // 30 seconds
 
 export const useBlockNumber = (
   chainId: ChainId = getRskChainId(),
-  options: Partial<CacheCallOptions> = { ttl: DEFAULT_BLOCK_TTL },
+  options: Partial<CacheCallOptions> = {
+    ttl: DEFAULT_BLOCK_TTL,
+    fallbackToPreviousResult: true,
+  },
 ): CacheCallResponse<number> => {
   const isMounted = useIsMounted();
 

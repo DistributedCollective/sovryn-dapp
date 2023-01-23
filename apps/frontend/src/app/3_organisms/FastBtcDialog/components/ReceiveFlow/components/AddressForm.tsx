@@ -34,8 +34,6 @@ export const AddressForm: React.FC = () => {
 
   const { isSignatureValid, loading } = useValidateFederators();
 
-  console.log(`isSignatureValid: ${isSignatureValid} , loading: ${loading}`);
-
   const formattedAddress = useMemo(() => prettyTx(address, 12, 12), [address]);
 
   const copyAddress = useCallback(async () => {

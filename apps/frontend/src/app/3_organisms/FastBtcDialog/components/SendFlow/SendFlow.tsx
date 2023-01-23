@@ -1,4 +1,6 @@
-import React from 'react';
+import React, { useCallback } from 'react';
+
+import { Icon, IconNames } from '@sovryn/ui';
 
 import { WithdrawContext, WithdrawStep } from '../../contexts/withdraw-context';
 import { useWithdrawBridgeConfig } from '../../hooks/useWithdrawBridgeConfig';
@@ -7,16 +9,45 @@ import { AmountForm } from './components/AmountForm';
 import { ConfirmationScreens } from './components/ConfirmationScreens';
 import { MainScreen } from './components/MainScreen';
 
+const allowedStepsToGoBackFrom = [
+  WithdrawStep.AMOUNT,
+  WithdrawStep.ADDRESS,
+  WithdrawStep.REVIEW,
+];
+
+const getBackStep = (step: WithdrawStep) => {
+  switch (step) {
+    case WithdrawStep.AMOUNT:
+      return WithdrawStep.MAIN;
+    case WithdrawStep.ADDRESS:
+      return WithdrawStep.AMOUNT;
+    case WithdrawStep.REVIEW:
+      return WithdrawStep.ADDRESS;
+    default:
+      return WithdrawStep.AMOUNT;
+  }
+};
+
 type SendFlowProps = {
   onClose: () => void;
 };
 
 export const SendFlow: React.FC<SendFlowProps> = ({ onClose }) => {
   const value = useWithdrawBridgeConfig();
-  const { step } = value;
+  const { step, set } = value;
+
+  const onBackClick = useCallback(() => {
+    set(prevState => ({ ...prevState, step: getBackStep(step) }));
+  }, [set, step]);
 
   return (
     <WithdrawContext.Provider value={value}>
+      {allowedStepsToGoBackFrom.includes(step) && (
+        <button onClick={onBackClick}>
+          <Icon icon={IconNames.ARROW_LEFT} className="w-3 h-3" />
+        </button>
+      )}
+
       <div className="mt-12">
         {step === WithdrawStep.MAIN && <MainScreen />}
         {step === WithdrawStep.AMOUNT && <AmountForm />}

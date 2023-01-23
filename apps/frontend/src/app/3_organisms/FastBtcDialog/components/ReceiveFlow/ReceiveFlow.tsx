@@ -1,5 +1,7 @@
 import React, { useCallback, useEffect, useState, useMemo } from 'react';
 
+import { Icon, IconNames } from '@sovryn/ui';
+
 import { useGetProtocolContract } from '../../../../../hooks/useGetContract';
 import {
   defaultValue,
@@ -134,8 +136,18 @@ export const ReceiveFlow: React.FC<ReceiveFlowProps> = ({ onClose }) => {
     }
   }, [ready, getTxAmount]);
 
+  const onBackClick = useCallback(() => {
+    setState(prevState => ({ ...prevState, step: DepositStep.MAIN }));
+  }, []);
+
   return (
     <DepositContext.Provider value={value}>
+      {step === DepositStep.ADDRESS && (
+        <button onClick={onBackClick}>
+          <Icon icon={IconNames.ARROW_LEFT} className="w-3 h-3" />
+        </button>
+      )}
+
       <div className="mt-12">
         {step === DepositStep.MAIN && <MainScreen />}
 

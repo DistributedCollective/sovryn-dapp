@@ -1,7 +1,11 @@
 import React, { useCallback, useState } from 'react';
 
+import { t } from 'i18next';
+
 import {
+  AddressBadge,
   Button,
+  ButtonStyle,
   Dialog,
   DialogSize,
   Heading,
@@ -9,8 +13,12 @@ import {
   VerticalTabsItem,
 } from '@sovryn/ui';
 
+import { useAccount } from '../../../hooks/useAccount';
+import { translations } from '../../../locales/i18n';
 import { ReceiveFlow } from './components/ReceiveFlow/ReceiveFlow';
 import { SendFlow } from './components/SendFlow/SendFlow';
+
+const translation = translations.fastBtc.mainScreen;
 
 type FastBtcDialogProps = {
   isOpen: boolean;
@@ -22,6 +30,7 @@ export const FastBtcDialog: React.FC<FastBtcDialogProps> = ({
   onClose,
 }) => {
   const [index, setIndex] = useState(0);
+  const { account } = useAccount();
 
   const onChangeIndex = useCallback((index: number | null) => {
     index !== null ? setIndex(index) : setIndex(0);
@@ -30,15 +39,13 @@ export const FastBtcDialog: React.FC<FastBtcDialogProps> = ({
 
   const items: VerticalTabsItem[] = [
     {
-      label: 'Receive',
-      infoText:
-        'Transfer BTC from the bitcoin network to your Rootstock address',
+      label: t(translation.tabs.receiveLabel),
+      infoText: t(translation.tabs.receiveInfoText),
       content: <ReceiveFlow onClose={onClose} />,
     },
     {
-      label: 'Send',
-      infoText:
-        'Transfer BTC from the Rootstock network to a specified bitcoin address',
+      label: t(translation.tabs.sendLabel),
+      infoText: t(translation.tabs.sendInfoText),
       content: <SendFlow onClose={onClose} />,
     },
   ];
@@ -49,14 +56,25 @@ export const FastBtcDialog: React.FC<FastBtcDialogProps> = ({
         items={items}
         onChange={onChangeIndex}
         selectedIndex={index}
-        tabsClassName="min-h-[39rem]"
+        tabsClassName="min-h-[39rem] block pt-0 relative"
+        headerClassName="pb-0"
+        footerClassName="absolute bottom-5 left-5"
         contentClassName="p-10"
         header={() => (
           <>
-            <Heading>Funding</Heading>
+            <div className="rounded bg-gray-60 px-2 py-1 w-fit mb-9">
+              <AddressBadge address={account} />
+            </div>
+            <Heading className="mb-6">{t(translation.title)}</Heading>
           </>
         )}
-        footer={() => <Button text="Close" onClick={onClose} />}
+        footer={() => (
+          <Button
+            text={t(translations.common.buttons.close)}
+            onClick={onClose}
+            style={ButtonStyle.ghost}
+          />
+        )}
       />
     </Dialog>
   );

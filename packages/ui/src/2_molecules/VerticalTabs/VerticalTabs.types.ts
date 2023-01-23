@@ -6,6 +6,8 @@ export type VerticalTabsProps = {
   className?: string;
   tabsClassName?: string;
   contentClassName?: string;
+  headerClassName?: string;
+  footerClassName?: string;
   onChange?: (index: number) => void;
   header?: (props: VerticalTabsProps) => ReactNode;
   footer?: (props: VerticalTabsProps) => ReactNode;

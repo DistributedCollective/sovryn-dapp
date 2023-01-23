@@ -16,7 +16,8 @@
             "cancel": "Cancel",
             "withdraw": "Withdraw",
             "continue": "Continue",
-            "done": "Done"
+            "done": "Done",
+            "close": "Close"
         },
         "na": "N/A",
         "tables": {
@@ -326,6 +327,15 @@
         }
     },
     "fastBtc": {
+        "mainScreen": {
+            "title": "Funding",
+            "tabs": {
+                "receiveLabel": "Receive",
+                "receiveInfoText": "Transfer BTC from the bitcoin network to your Rootstock address",
+                "sendLabel": "Send",
+                "sendInfoText": "Transfer BTC from the Rootstock network to a specified bitcoin address"
+            }
+        },
         "instructions": {
             "title": "Instructions",
             "line1": "Only transfer BTC from the bitcoin network",

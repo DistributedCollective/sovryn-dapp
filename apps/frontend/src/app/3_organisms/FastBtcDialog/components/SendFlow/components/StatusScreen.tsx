@@ -19,7 +19,6 @@ import {
   getRskExplorerUrl,
 } from '../../../../../../utils/helpers';
 import { formatValue } from '../../../../../../utils/math';
-import { TransactionStepDialog } from '../../../../TransactionStepDialog';
 import { FAST_BTC_ASSET } from '../../../constants';
 
 const translation = translations.fastBtc.send.confirmationScreens;
@@ -126,7 +125,6 @@ export const StatusScreen: React.FC<StatusScreenProps> = ({
         onClick={onClose}
         className="mt-8 w-full"
       />
-      <TransactionStepDialog disableFocusTrap={false} />
     </div>
   );
 };

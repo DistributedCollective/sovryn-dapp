@@ -1,10 +1,11 @@
-import React, { useMemo } from 'react';
+import React, { useCallback, useContext, useMemo } from 'react';
 
 import classNames from 'classnames';
 import { t } from 'i18next';
 
 import { Button, Heading, HeadingType, TransactionId } from '@sovryn/ui';
 
+import { useTransactionContext } from '../../../../../../contexts/TransactionContext';
 import { useMaintenance } from '../../../../../../hooks/useMaintenance';
 import { translations } from '../../../../../../locales/i18n';
 import {
@@ -12,7 +13,12 @@ import {
   getRskExplorerUrl,
 } from '../../../../../../utils/helpers';
 import { formatValue } from '../../../../../../utils/math';
+import { TransactionStepDialog } from '../../../../TransactionStepDialog';
 import { FAST_BTC_ASSET } from '../../../constants';
+import {
+  WithdrawContext,
+  WithdrawStep,
+} from '../../../contexts/withdraw-context';
 
 const translation = translations.fastBtc.send.confirmationScreens;
 
@@ -35,6 +41,9 @@ export const ReviewScreen: React.FC<ReviewScreenProps> = ({
 }) => {
   const { checkMaintenance, States } = useMaintenance();
   const fastBtcLocked = checkMaintenance(States.FASTBTC);
+
+  const { set } = useContext(WithdrawContext);
+  const { setIsOpen } = useTransactionContext();
 
   const items = useMemo(
     () => [
@@ -78,6 +87,11 @@ export const ReviewScreen: React.FC<ReviewScreenProps> = ({
     [amount, feesPaid, from, receiveAmount, to],
   );
 
+  const onTransactionConfirm = useCallback(() => {
+    set(prevState => ({ ...prevState, step: WithdrawStep.CONFIRM }));
+    setIsOpen(false);
+  }, [set, setIsOpen]);
+
   return (
     <div className="text-center">
       <Heading type={HeadingType.h2} className="font-medium mb-8">
@@ -106,6 +120,10 @@ export const ReviewScreen: React.FC<ReviewScreenProps> = ({
         />
         {fastBtcLocked && <div>Fast BTC is in maintenance mode</div>}
       </div>
+      <TransactionStepDialog
+        disableFocusTrap={false}
+        onConfirm={onTransactionConfirm}
+      />
     </div>
   );
 };

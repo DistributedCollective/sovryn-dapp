@@ -28,7 +28,7 @@ export const ConfirmationScreens: React.FC<ConfirmationScreensProps> = ({
   onClose,
 }) => {
   const { account } = useAccount();
-  const { step, address, amount, set } = useContext(WithdrawContext);
+  const { step, address, amount } = useContext(WithdrawContext);
 
   const { setTransactions, setTitle, setIsOpen } = useTransactionContext();
 
@@ -70,8 +70,6 @@ export const ConfirmationScreens: React.FC<ConfirmationScreensProps> = ({
   );
 
   const handleConfirm = useCallback(async () => {
-    set(prevState => ({ ...prevState, step: WithdrawStep.CONFIRM }));
-
     if (fastBtcBridgeContract) {
       setTransactions([
         {
@@ -94,7 +92,6 @@ export const ConfirmationScreens: React.FC<ConfirmationScreensProps> = ({
     address,
     amount,
     fastBtcBridgeContract,
-    set,
     setIsOpen,
     setTitle,
     setTransactions,

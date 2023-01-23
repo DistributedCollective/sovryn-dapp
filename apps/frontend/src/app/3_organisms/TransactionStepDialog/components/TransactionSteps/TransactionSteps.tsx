@@ -16,6 +16,7 @@ export type TransactionStepsProps = {
   onSuccess?: () => void;
   onClose?: () => void;
   gasPrice: string;
+  onConfirm?: () => void;
 };
 
 export const TransactionSteps: FC<TransactionStepsProps> = ({
@@ -23,6 +24,7 @@ export const TransactionSteps: FC<TransactionStepsProps> = ({
   onSuccess,
   onClose,
   gasPrice,
+  onConfirm,
 }) => {
   const [configs, setConfigs] = useState<TxConfig[]>([]);
   const [step, setStep] = useState(-1);
@@ -109,6 +111,11 @@ export const TransactionSteps: FC<TransactionStepsProps> = ({
     }
   }, [configs, error, step, transactions]);
 
+  const onConfirmHandler = useCallback(() => {
+    submit();
+    onConfirm?.();
+  }, [onConfirm, submit]);
+
   const getStatus = useCallback(
     (i: number) => {
       if (i < step) {
@@ -164,7 +171,7 @@ export const TransactionSteps: FC<TransactionStepsProps> = ({
         <Button
           className="w-full mt-7"
           text={error ? 'Retry' : 'Confirm'}
-          onClick={submit}
+          onClick={onConfirmHandler}
         />
       )}
 

@@ -1,142 +1,159 @@
 import React, { useContext, useMemo } from 'react';
 
-import { Button, Heading, TransactionId } from '@sovryn/ui';
+import classNames from 'classnames';
+import { t } from 'i18next';
 
-import { formatValue } from '../../../../../../utils/math';
-import { FAST_BTC_ASSET } from '../../../constants';
+import {
+  Button,
+  Heading,
+  HeadingType,
+  Icon,
+  IconNames,
+  TransactionId,
+} from '@sovryn/ui';
+
+import { StatusIcon } from '../../../../../2_molecules/StatusIcon/StatusIcon';
+import { useAccount } from '../../../../../../hooks/useAccount';
+import { translations } from '../../../../../../locales/i18n';
+import { btcInSatoshis } from '../../../../../../utils/constants';
+import {
+  getBtcExplorerUrl,
+  getRskExplorerUrl,
+} from '../../../../../../utils/helpers';
+import { formatValue, fromWei, toWei } from '../../../../../../utils/math';
+import { DEPOSIT_FEE_SATS, FAST_BTC_ASSET } from '../../../constants';
 import { DepositContext, DepositStep } from '../../../contexts/deposit-context';
+
+const translation = translations.fastBtc.receive.statusScreen;
 
 type StatusScreenProps = {
   onClose: () => void;
 };
 
 export const StatusScreen: React.FC<StatusScreenProps> = ({ onClose }) => {
+  const { account } = useAccount();
   const { step, depositTx, transferTx } = useContext(DepositContext);
 
   const isProcessing = useMemo(() => step === DepositStep.PROCESSING, [step]);
 
-  // TODO: Use this once we fix the problem with toWei method
-  //   const feeAmount = useMemo(
-  //     () => BigNumber.from(DEPOSIT_FEE_SATS).div(btcInSatoshis).toString(),
-  //     [],
-  //   );
-
-  //   const amount = useMemo(() => {
-  //     if (depositTx) {
-  //       return depositTx.value;
-  //     }
-  //     if (transferTx) {
-  //       return BigNumber.from(transferTx?.value || 0)
-  //         .add(feeAmount)
-  //         .toString();
-  //     }
-  //     return 0;
-  //   }, [depositTx, transferTx, feeAmount]);
-
-  //   const receiveAmount = useMemo(
-  //     () => BigNumber.from(amount).sub(feeAmount).toString(),
-  //     [amount, feeAmount],
-  //   );
-
-  const feeAmount = 0.00006;
+  const feeAmount = useMemo(() => toWei(DEPOSIT_FEE_SATS / btcInSatoshis), []);
 
   const amount = useMemo(() => {
     if (depositTx) {
       return depositTx.value;
     }
     if (transferTx) {
-      return transferTx.value + Number(feeAmount);
+      return toWei(transferTx?.value || 0)
+        .add(feeAmount)
+        .toString();
     }
     return 0;
   }, [depositTx, transferTx, feeAmount]);
 
   const receiveAmount = useMemo(
-    () => amount - Number(feeAmount),
+    () => fromWei(toWei(amount).sub(feeAmount)),
     [amount, feeAmount],
   );
 
   const items = useMemo(
     () => [
       {
-        label: 'Date & Time:',
-        value: new Date().toLocaleDateString(),
-      },
-      {
-        label: 'Amount:',
+        label: t(translation.to),
         value: (
-          <span>
-            {formatValue(amount, 8)} {FAST_BTC_ASSET.toUpperCase()}
-          </span>
+          <TransactionId
+            value={account}
+            href={`${getRskExplorerUrl()}/${account}`}
+          />
         ),
       },
-
       {
-        label: 'Fees:',
+        label: t(translation.sending),
         value: (
-          <span>
-            {formatValue(feeAmount, 8)} {FAST_BTC_ASSET.toUpperCase()}
-          </span>
+          <>
+            {formatValue(Number(amount), 8)} {FAST_BTC_ASSET.toUpperCase()}
+          </>
         ),
       },
-
       {
-        label: 'Received:',
+        label: t(translation.serviceFee),
         value: (
-          <span>
-            {formatValue(receiveAmount, 8)} {FAST_BTC_ASSET.toUpperCase()}
-          </span>
+          <>
+            {formatValue(Number(fromWei(feeAmount)), 8)}{' '}
+            {FAST_BTC_ASSET.toUpperCase()}
+          </>
+        ),
+      },
+      {
+        label: t(translation.receiving),
+        value: (
+          <>
+            {formatValue(Number(receiveAmount), 8)}{' '}
+            {FAST_BTC_ASSET.toUpperCase()}
+          </>
+        ),
+      },
+      {
+        label: t(translation.bitcoinTxId),
+        value: depositTx ? (
+          <>
+            <TransactionId
+              value={depositTx.txHash}
+              href={`${getBtcExplorerUrl()}/${depositTx.txHash}`}
+            />
+          </>
+        ) : (
+          <Icon icon={IconNames.PENDING} />
+        ),
+      },
+      {
+        label: t(translation.rootstockTxId),
+        value: transferTx ? (
+          <>
+            <TransactionId
+              value={transferTx.txHash}
+              href={`${getRskExplorerUrl()}/${transferTx.txHash}`}
+            />
+          </>
+        ) : (
+          <Icon icon={IconNames.PENDING} />
         ),
       },
     ],
-    [amount, feeAmount, receiveAmount],
+    [account, amount, depositTx, feeAmount, receiveAmount, transferTx],
   );
 
   return (
     <>
-      <div>
-        <Heading>
-          {isProcessing ? 'Transfer processing...' : 'Transfer complete'}
+      <div className="text-center">
+        <Heading type={HeadingType.h2} className="font-medium mb-6">
+          {isProcessing
+            ? t(translation.statusTitleProcessing)
+            : t(translation.statusTitleComplete)}
         </Heading>
 
-        <div>TBD: Icon</div>
+        <div className="mb-6">
+          <StatusIcon isConfirmed={!isProcessing} />
+        </div>
 
-        <div>
-          {items.map(({ label, value }) => (
-            <div>
+        <div className="bg-gray-80 border rounded border-gray-50 p-3 text-xs text-gray-30">
+          {items.map(({ label, value }, index) => (
+            <div
+              className={classNames('flex justify-between', {
+                'mb-3': index !== items.length - 1,
+              })}
+            >
               <span>{label} </span>
               <span>{value}</span>
             </div>
           ))}
         </div>
-
-        {depositTx && (
-          <div>
-            <span>Tx ID: </span>
-            <span>
-              <TransactionId
-                value={depositTx.txHash}
-                hideTooltip
-                href={`https://live.blockcypher.com/btc-testnet/tx/${depositTx.txHash}`}
-              />
-            </span>
-          </div>
-        )}
-
-        {transferTx && (
-          <div>
-            <span>Tx Hash: </span>
-            <span>
-              <TransactionId
-                value={transferTx.txHash}
-                hideTooltip
-                href={`https://live.blockcypher.com/btc-testnet/tx/${transferTx.txHash}`}
-              />
-            </span>
-          </div>
-        )}
       </div>
 
-      <Button text="Done" onClick={onClose} className="mt-8" />
+      <Button
+        text={t(translations.common.buttons.done)}
+        onClick={onClose}
+        className="mt-8 w-full"
+      />
     </>
   );
 };

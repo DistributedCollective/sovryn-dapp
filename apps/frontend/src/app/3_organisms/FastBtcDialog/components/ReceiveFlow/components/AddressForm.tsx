@@ -28,7 +28,7 @@ export const AddressForm: React.FC = () => {
   const { address } = useContext(DepositContext);
   const { addNotification } = useNotificationContext();
 
-  const formattedAddress = useMemo(() => prettyTx(address, 11, 12), [address]);
+  const formattedAddress = useMemo(() => prettyTx(address, 12, 12), [address]);
 
   const copyAddress = useCallback(async () => {
     await navigator.clipboard.writeText(address);

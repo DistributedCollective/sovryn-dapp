@@ -3,7 +3,14 @@ import React, { useMemo } from 'react';
 import classNames from 'classnames';
 import { t } from 'i18next';
 
-import { Button, Heading, HeadingType, TransactionId } from '@sovryn/ui';
+import {
+  Button,
+  Heading,
+  HeadingType,
+  Icon,
+  IconNames,
+  TransactionId,
+} from '@sovryn/ui';
 
 import { StatusIcon } from '../../../../../2_molecules/StatusIcon/StatusIcon';
 import { translations } from '../../../../../../locales/i18n';
@@ -76,11 +83,13 @@ export const StatusScreen: React.FC<StatusScreenProps> = ({
       },
       {
         label: t(translation.hash),
-        value: (
+        value: txHash ? (
           <TransactionId
-            value={txHash || ''}
+            value={txHash}
             href={`${getRskExplorerUrl()}/${txHash}`}
           />
+        ) : (
+          <Icon icon={IconNames.PENDING} />
         ),
       },
     ],
@@ -115,7 +124,7 @@ export const StatusScreen: React.FC<StatusScreenProps> = ({
       <Button
         text={t(translations.common.buttons.done)}
         onClick={onClose}
-        className="mt-8"
+        className="mt-8 w-full"
       />
       <TransactionStepDialog disableFocusTrap={false} />
     </div>

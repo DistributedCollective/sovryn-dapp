@@ -102,6 +102,7 @@ export const ReviewScreen: React.FC<ReviewScreenProps> = ({
           text={t(translations.common.buttons.confirm)}
           onClick={onConfirm}
           disabled={fastBtcLocked}
+          className="w-full"
         />
         {fastBtcLocked && <div>Fast BTC is in maintenance mode</div>}
       </div>

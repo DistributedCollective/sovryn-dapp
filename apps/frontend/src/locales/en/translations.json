@@ -365,6 +365,18 @@
                 "receiving": "Receiving",
                 "hash": "Rootstock TXID"
             }
+        },
+        "receive": {
+            "statusScreen": {
+                "statusTitleProcessing": "Transfer processing...",
+                "statusTitleComplete": "Transfer complete",
+                "to": "To",
+                "sending": "Sending",
+                "serviceFee": "Service fee",
+                "receiving": "Receiving",
+                "bitcoinTxId": "Bitcoin TXID",
+                "rootstockTxId": "Rootstock TXID"
+            }
         }
     }
 }

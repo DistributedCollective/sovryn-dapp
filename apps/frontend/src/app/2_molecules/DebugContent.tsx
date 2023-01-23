@@ -92,11 +92,12 @@ export const DebugContent = () => {
     setIsOpen(true);
   }, [setIsOpen, setTitle, setTransactions, wallets]);
 
+  const NUM_LOCS_TO_LIQ = 10;
   const liquidateLowestLocs = useCallback(async () => {
     if (!wallets[0].provider) {
       return;
     }
-    const NUM_LOCS_TO_LIQ = 10;
+
     const provider = new ethers.providers.Web3Provider(wallets[0].provider);
     const signer = provider.getSigner();
 
@@ -194,7 +195,7 @@ export const DebugContent = () => {
             <Button text="Approve" onClick={approve} />
             <ExampleTypedDataSign />
             <Button
-              text="Liquidate lowest 2 LoCs"
+              text={`Liquidate lowest ${NUM_LOCS_TO_LIQ} LoCs`}
               className="mx-4"
               onClick={liquidateLowestLocs}
             />

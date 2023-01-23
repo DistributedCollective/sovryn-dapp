@@ -3179,6 +3179,27 @@ export enum _SubgraphErrorPolicy_ {
   Deny = 'deny',
 }
 
+export type GetCollSurplusChangesQueryVariables = Exact<{
+  skip: Scalars['Int'];
+  pageSize: Scalars['Int'];
+  orderBy?: InputMaybe<CollSurplusChange_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+  filters?: InputMaybe<CollSurplusChange_Filter>;
+}>;
+
+export type GetCollSurplusChangesQuery = {
+  __typename?: 'Query';
+  collSurplusChanges: Array<{
+    __typename?: 'CollSurplusChange';
+    id: string;
+    collSurplusChange: string;
+    collSurplusBefore: string;
+    collSurplusAfter: string;
+    user: { __typename?: 'User'; id: string };
+    transaction: { __typename?: 'Transaction'; id: string; timestamp: number };
+  }>;
+};
+
 export type GetLowestTrovesQueryVariables = Exact<{
   first: Scalars['Int'];
   userCollateralRatioKey?: InputMaybe<Scalars['BigInt']>;
@@ -3350,6 +3371,90 @@ export type GetUserOpenTroveQuery = {
   } | null;
 };
 
+export const GetCollSurplusChangesDocument = gql`
+  query getCollSurplusChanges(
+    $skip: Int!
+    $pageSize: Int!
+    $orderBy: CollSurplusChange_orderBy
+    $orderDirection: OrderDirection
+    $filters: CollSurplusChange_filter
+  ) {
+    collSurplusChanges(
+      first: $pageSize
+      skip: $skip
+      orderBy: $orderBy
+      orderDirection: $orderDirection
+      where: $filters
+    ) {
+      id
+      user {
+        id
+      }
+      collSurplusChange
+      collSurplusBefore
+      collSurplusAfter
+      transaction {
+        id
+        timestamp
+      }
+    }
+  }
+`;
+
+/**
+ * __useGetCollSurplusChangesQuery__
+ *
+ * To run a query within a React component, call `useGetCollSurplusChangesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetCollSurplusChangesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetCollSurplusChangesQuery({
+ *   variables: {
+ *      skip: // value for 'skip'
+ *      pageSize: // value for 'pageSize'
+ *      orderBy: // value for 'orderBy'
+ *      orderDirection: // value for 'orderDirection'
+ *      filters: // value for 'filters'
+ *   },
+ * });
+ */
+export function useGetCollSurplusChangesQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    GetCollSurplusChangesQuery,
+    GetCollSurplusChangesQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    GetCollSurplusChangesQuery,
+    GetCollSurplusChangesQueryVariables
+  >(GetCollSurplusChangesDocument, options);
+}
+export function useGetCollSurplusChangesLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    GetCollSurplusChangesQuery,
+    GetCollSurplusChangesQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    GetCollSurplusChangesQuery,
+    GetCollSurplusChangesQueryVariables
+  >(GetCollSurplusChangesDocument, options);
+}
+export type GetCollSurplusChangesQueryHookResult = ReturnType<
+  typeof useGetCollSurplusChangesQuery
+>;
+export type GetCollSurplusChangesLazyQueryHookResult = ReturnType<
+  typeof useGetCollSurplusChangesLazyQuery
+>;
+export type GetCollSurplusChangesQueryResult = Apollo.QueryResult<
+  GetCollSurplusChangesQuery,
+  GetCollSurplusChangesQueryVariables
+>;
 export const GetLowestTrovesDocument = gql`
   query getLowestTroves($first: Int!, $userCollateralRatioKey: BigInt) {
     troves(

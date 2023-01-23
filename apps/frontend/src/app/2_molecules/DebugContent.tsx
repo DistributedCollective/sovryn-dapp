@@ -11,6 +11,7 @@ import { Accordion, AmountInput, Button, NotificationType } from '@sovryn/ui';
 import { defaultChainId } from '../../config/chains';
 
 import { TransactionStepDialog } from '../3_organisms';
+import { CollateralSurplusHistoryFrame } from '../3_organisms/CollateralSurplusWithdrawals/CollateralSurplusWithdrawals';
 import { EmailNotificationSettingsDialog } from '../3_organisms/EmailNotificationSettingsDialog/EmailNotificationSettingsDialog';
 import { GettingStartedPopup } from '../3_organisms/GettingStartedPopup/GettingStartedPopup';
 import { useNotificationContext } from '../../contexts/NotificationContext';
@@ -147,7 +148,6 @@ export const DebugContent = () => {
           text="Add Notifcation With Timer"
         />
       </div>
-
       <div className="mt-5 py-10 border-b">
         <AmountInput
           className="mb-2"
@@ -163,23 +163,26 @@ export const DebugContent = () => {
         />
         <LOCStatus className="mt-4" withdrawalSurplus={0.5} />
       </div>
-
+      <br />
+      <br />
+      Collateral surplus withdrawals
+      <br />
+      <br />
+      <CollateralSurplusHistoryFrame />
+      <br />
+      <br />
       <TransactionStepDialog />
       <ExampleProviderCall />
       <ExampleTokenDetails />
       <ExampleBalanceCall />
-
       <ExampleContractCall />
-
       <SmartTokens />
       <ExampleContractCall />
       <ExportCSV getData={exportData} filename="transactions" />
-
       <div>
         USD price of SOV from the graph:{' '}
         {data?.tokens.find(token => token.symbol === 'SOV')?.lastPriceUsd}
       </div>
-
       <div className="my-12">
         <Button
           text="Click to open email notification settings dialog"
@@ -190,14 +193,11 @@ export const DebugContent = () => {
           onClose={() => setIsEmailNotificationSettingsDialogOpen(false)}
         />
       </div>
-
       <hr className="my-12" />
-
       <div className="mb-12">
         Dapp2 maintenance mode for {isMainnet() ? 'MAINNET' : 'TESTNET'} is{' '}
         {dappLockedTest ? 'ON' : 'OFF'}
       </div>
-
       {wallets[0]?.accounts[0]?.address ? (
         <div>
           <Button text="Approve" onClick={approve} />
@@ -207,7 +207,6 @@ export const DebugContent = () => {
         <Button text="Connect to RSK Testnet" onClick={connectWallet} />
       )}
       <hr className="my-12" />
-
       <div className="flex items-center gap-4">
         <div
           className="cursor-pointer"
@@ -255,11 +254,9 @@ export const DebugContent = () => {
           pending={pending}
         />
       </div>
-
       <br />
       <br />
       <p>{t(translations.wallet)}</p>
-
       <div className="mt-10 py-10 border-t border-b">
         <h2>Getting started popup</h2>
         <br />

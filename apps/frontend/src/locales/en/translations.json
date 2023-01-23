@@ -228,5 +228,18 @@
             },
             "comingSoon": "Coming soon..."
         }
+    },
+    "collateralSurplusHistory": {
+        "table": {
+            "timestamp": "Timestamp",
+            "transactionType": "Transaction Type",
+            "collateralChange": "Collateral Change",
+            "transactionID": "Transaction ID",
+            "withdrawSurplus": "Withdraw surplus",
+            "depositSurplus": "Deposit surplus"
+        },
+        "actions": {
+            "noDataToExport": "No data to export"
+        }
     }
 }

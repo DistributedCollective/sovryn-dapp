@@ -343,7 +343,8 @@
         },
         "addressForm": {
             "title": "Send BTC to this address",
-            "copyAddressSuccess": "Address was copied to clipboard."
+            "copyAddressSuccess": "Address was copied to clipboard.",
+            "invalidSignatures": "We had an error while trying to verify a deposit address"
         },
         "send": {
             "amountForm": {

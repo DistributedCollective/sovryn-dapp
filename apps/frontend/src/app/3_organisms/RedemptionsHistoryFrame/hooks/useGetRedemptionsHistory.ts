@@ -1,22 +1,13 @@
-import { ApolloClient, InMemoryCache, useQuery } from '@apollo/client';
-
 import { useMemo } from 'react';
 
 import { OrderOptions } from '@sovryn/ui';
 
-import { graphZeroUrl } from '../../../../utils/constants';
-import { Redemption_OrderBy } from '../../../../utils/graphql/zero/generated';
+import { zeroClient } from '../../../../utils/clients';
 import {
-  GetRedemptionsDocument,
-  Redemption_Filter,
-} from './../../../../utils/graphql/zero/generated';
-
-const zeroClient = new ApolloClient({
-  uri: graphZeroUrl,
-  cache: new InMemoryCache({
-    resultCaching: false,
-  }),
-});
+  Redemption_OrderBy,
+  useGetRedemptionsQuery,
+} from '../../../../utils/graphql/zero/generated';
+import { Redemption_Filter } from './../../../../utils/graphql/zero/generated';
 
 export const useGetRedemptionsHistory = (
   account: string,
@@ -37,7 +28,7 @@ export const useGetRedemptionsHistory = (
     [page, orderOptions, pageSize, account],
   );
 
-  const { loading, data } = useQuery(GetRedemptionsDocument, {
+  const { loading, data } = useGetRedemptionsQuery({
     variables: redemptionConfig,
     client: zeroClient,
   });

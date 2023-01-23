@@ -15,6 +15,7 @@ import {
   Tooltip,
   TooltipTrigger,
   TransactionId,
+  applyDataAttr,
 } from '@sovryn/ui';
 
 import { chains, defaultChainId } from '../../../config/chains';
@@ -54,11 +55,7 @@ export const RedemptionsHistoryFrame: FC = () => {
   );
 
   const redemptions = useMemo(() => {
-    if (!data) {
-      return null;
-    }
-
-    return data.redemptions;
+    return (data?.redemptions as Redemption[]) || [];
   }, [data]);
 
   const generateRowTitle = useCallback((redemption: Redemption) => {
@@ -83,7 +80,7 @@ export const RedemptionsHistoryFrame: FC = () => {
             trigger={TooltipTrigger.click}
             className="cursor-pointer uppercase"
             tooltipClassName="uppercase"
-            dataAttribute="collateral-change-tooltip"
+            {...applyDataAttr('redemption-history-zusd-redeemed')}
           >
             <span>
               {formatValue(Number(redemption.tokensActuallyRedeemed), 2)}{' '}
@@ -112,7 +109,7 @@ export const RedemptionsHistoryFrame: FC = () => {
             trigger={TooltipTrigger.click}
             className="cursor-pointer uppercase"
             tooltipClassName="uppercase"
-            dataAttribute="collateral-change-tooltip"
+            {...applyDataAttr('redemption-history-rbtc-received')}
           >
             <span>
               {formatValue(Number(redemption.collateralRedeemed), 6)}{' '}
@@ -140,7 +137,7 @@ export const RedemptionsHistoryFrame: FC = () => {
             trigger={TooltipTrigger.click}
             className="cursor-pointer uppercase"
             tooltipClassName="uppercase"
-            dataAttribute="collateral-change-tooltip"
+            {...applyDataAttr('redemption-history-fee')}
           >
             <span>
               {formatValue(Number(redemption.fee), 6)}{' '}
@@ -167,17 +164,17 @@ export const RedemptionsHistoryFrame: FC = () => {
       {
         id: 'zusdRedeemed',
         title: t(translations.redemptionsHistory.table.zusdRedeemed),
-        cellRenderer: (item: Redemption) => renderZUSDRedeemed(item),
+        cellRenderer: renderZUSDRedeemed,
       },
       {
         id: 'rbtcReceived',
         title: t(translations.redemptionsHistory.table.rbtcReceived),
-        cellRenderer: (item: Redemption) => renderRBTCReceived(item),
+        cellRenderer: renderRBTCReceived,
       },
       {
         id: 'redemptionFee',
         title: t(translations.redemptionsHistory.table.redemptionFee),
-        cellRenderer: (item: Redemption) => renderRedemptionFee(item),
+        cellRenderer: renderRedemptionFee,
       },
       {
         id: 'transactionID',
@@ -186,7 +183,7 @@ export const RedemptionsHistoryFrame: FC = () => {
           <TransactionId
             href={`${chain?.blockExplorerUrl}/tx/${item.transaction.id}`}
             value={item.transaction.id}
-            dataAttribute="history-address-id"
+            {...applyDataAttr('redemption-history-address-id')}
           />
         ),
       },
@@ -196,12 +193,12 @@ export const RedemptionsHistoryFrame: FC = () => {
 
   const onPageChange = useCallback(
     (value: number) => {
-      if (redemptions?.length < pageSize && value > page) {
+      if (redemptions.length < pageSize && value > page) {
         return;
       }
       setPage(value);
     },
-    [page, redemptions, pageSize],
+    [page, redemptions?.length, pageSize],
   );
 
   const isNextButtonDisabled = useMemo(
@@ -209,7 +206,7 @@ export const RedemptionsHistoryFrame: FC = () => {
     [loading, redemptions, pageSize],
   );
 
-  const exportData = useCallback(() => {
+  const exportData = useCallback(async () => {
     if (!redemptions) {
       addNotification({
         type: NotificationType.warning,
@@ -222,7 +219,7 @@ export const RedemptionsHistoryFrame: FC = () => {
 
     setPageSize(EXPORT_RECORD_LIMIT);
 
-    return redemptions.map((tx: Redemption) => ({
+    return redemptions.map(tx => ({
       timestamp: dateFormat(tx.transaction.timestamp),
       zusdRedeemed: tx.tokensActuallyRedeemed,
       rbtcReceived: tx.collateralRedeemed,
@@ -250,11 +247,11 @@ export const RedemptionsHistoryFrame: FC = () => {
           orderOptions={orderOptions}
           columns={columns}
           rows={redemptions}
-          rowTitle={row => generateRowTitle(row)}
+          rowTitle={generateRowTitle}
           isLoading={loading}
           className="bg-gray-80 text-gray-10 lg:px-6 lg:py-4"
           noData={t(translations.common.tables.noData)}
-          dataAttribute="transaction-history-table"
+          {...applyDataAttr('redemption-history-table')}
         />
         <Pagination
           page={page}
@@ -262,7 +259,7 @@ export const RedemptionsHistoryFrame: FC = () => {
           onChange={onPageChange}
           itemsPerPage={pageSize}
           isNextButtonDisabled={isNextButtonDisabled}
-          dataAttribute="transaction-history-pagination"
+          {...applyDataAttr('redemption-history-pagination')}
         />
       </div>
     </>

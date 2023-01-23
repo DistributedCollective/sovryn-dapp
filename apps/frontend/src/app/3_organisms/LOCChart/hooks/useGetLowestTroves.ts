@@ -1,16 +1,9 @@
-import { ApolloClient, InMemoryCache, useQuery } from '@apollo/client';
+import { useQuery } from '@apollo/client';
 
-import { graphZeroUrl } from '../../../../utils/constants';
+import { zeroClient } from '../../../../utils/clients';
 import { GetLowestTrovesDocument } from '../../../../utils/graphql/zero/generated';
 
 const trovesCount = 100;
-
-const zeroClient = new ApolloClient({
-  uri: graphZeroUrl,
-  cache: new InMemoryCache({
-    resultCaching: false,
-  }),
-});
 
 export const useGetLowestTroves = (userCollateralRatioKey: string) => {
   const { loading, data } = useQuery(GetLowestTrovesDocument, {

@@ -17,6 +17,7 @@ import {
 import { useNotificationContext } from '../../../../../../contexts/NotificationContext';
 import { translations } from '../../../../../../locales/i18n';
 import { DepositContext } from '../../../contexts/deposit-context';
+import { useValidateFederators } from '../../../hooks/useValidateFederators';
 import { URIType } from '../../../types';
 import { TransferPolicies } from './TransferPolicies';
 
@@ -27,6 +28,10 @@ export const AddressForm: React.FC = () => {
 
   const { address } = useContext(DepositContext);
   const { addNotification } = useNotificationContext();
+
+  const { isSignatureValid, loading } = useValidateFederators();
+
+  console.log(`isSignatureValid: ${isSignatureValid} , loading: ${loading}`);
 
   const formattedAddress = useMemo(() => prettyTx(address, 12, 12), [address]);
 

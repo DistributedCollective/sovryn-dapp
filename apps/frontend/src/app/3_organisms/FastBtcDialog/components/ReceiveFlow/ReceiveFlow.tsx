@@ -1,10 +1,12 @@
 import React, { useCallback, useEffect, useState, useMemo } from 'react';
 
+import { useGetProtocolContract } from '../../../../../hooks/useGetContract';
 import {
   defaultValue,
   DepositContext,
   DepositContextStateType,
   DepositStep,
+  Signature,
 } from '../../contexts/deposit-context';
 import { useDepositSocket } from '../../hooks/useDepositSocket';
 import { AddressForm } from './components/AddressForm';
@@ -19,26 +21,21 @@ export const ReceiveFlow: React.FC<ReceiveFlowProps> = ({ onClose }) => {
   const [state, setState] = useState<DepositContextStateType>(defaultValue);
   const { step } = state;
 
-  // const [requiredSigners, setRequiredSigners] = useState<number | undefined>();
+  const [requiredSigners, setRequiredSigners] = useState<number | undefined>();
 
-  // const getFastBtcMultisigContract = useCallback(async () => {
-  //   const { address, abi } = await getProtocolContract(
-  //     'fastBtcMultisig',
-  //     defaultChainId,
-  //   );
-  //   return new ethers.Contract(address, abi, signer);
-  // }, [signer]);
+  const fastBtcMultisigContract = useGetProtocolContract('fastBtcMultisig');
 
-  // useEffect(() => {
-  //   const getRequiredSigners = async () => {
-  //     const fastBtcMultisigContract = await getFastBtcMultisigContract();
+  const getRequiredSigners = useCallback(async () => {
+    const requiredSigners = await fastBtcMultisigContract?.required();
 
-  //     const requiredSigners = await fastBtcMultisigContract.required();
-  //     setRequiredSigners(requiredSigners);
-  //   };
+    if (requiredSigners && requiredSigners > 0) {
+      setRequiredSigners(requiredSigners);
+    }
+  }, [fastBtcMultisigContract]);
 
-  //   getRequiredSigners();
-  // }, [getFastBtcMultisigContract]);
+  useEffect(() => {
+    getRequiredSigners().then();
+  }, [getRequiredSigners]);
 
   const handleEvents = useCallback((type: string, value: any) => {
     switch (type) {
@@ -68,42 +65,6 @@ export const ReceiveFlow: React.FC<ReceiveFlowProps> = ({ onClose }) => {
   const { ready, getDepositAddress, getTxAmount } =
     useDepositSocket(handleEvents);
 
-  // const handleAddressRequest = useCallback(
-  //   (address: string) => {
-  //     setState(prevState => ({
-  //       ...prevState,
-  //       addressLoading: true,
-  //     }));
-  //     getDepositAddress(address)
-  //       .then(response => {
-  //         if (
-  //           requiredSigners !== undefined &&
-  //           response.signatures.length >= requiredSigners
-  //         ) {
-  //           setState(prevState => ({
-  //             ...prevState,
-  //             addressLoading: false,
-  //             address: response.btcadr,
-  //             step: DepositStep.VALIDATION,
-  //             signatures: response.signatures as Signature[],
-  //           }));
-  //         } else {
-  //           handleAddressRequest(address);
-  //         }
-  //       })
-  //       .catch(error => {
-  //         console.error(error);
-  //         setState(prevState => ({
-  //           ...prevState,
-  //           addressLoading: false,
-  //           address: '',
-  //           addressError: error.message,
-  //         }));
-  //       });
-  //   },
-  //   [getDepositAddress, requiredSigners],
-  // );
-
   const handleAddressRequest = useCallback(
     (address: string) => {
       setState(prevState => ({
@@ -112,12 +73,20 @@ export const ReceiveFlow: React.FC<ReceiveFlowProps> = ({ onClose }) => {
       }));
       getDepositAddress(address)
         .then(response => {
-          setState(prevState => ({
-            ...prevState,
-            addressLoading: false,
-            address: response.btcadr,
-            step: DepositStep.ADDRESS,
-          }));
+          if (
+            requiredSigners !== undefined &&
+            response.signatures.length >= requiredSigners
+          ) {
+            setState(prevState => ({
+              ...prevState,
+              addressLoading: false,
+              address: response.btcadr,
+              step: DepositStep.ADDRESS,
+              signatures: response.signatures as Signature[],
+            }));
+          } else {
+            handleAddressRequest(address);
+          }
         })
         .catch(error => {
           console.error(error);
@@ -129,15 +98,8 @@ export const ReceiveFlow: React.FC<ReceiveFlowProps> = ({ onClose }) => {
           }));
         });
     },
-    [getDepositAddress],
+    [getDepositAddress, requiredSigners],
   );
-
-  // const handleValidation = useCallback(() => {
-  //   setState(prevState => ({
-  //     ...prevState,
-  //     step: DepositStep.ADDRESS,
-  //   }));
-  // }, []);
 
   const value = useMemo(
     () => ({
@@ -176,11 +138,6 @@ export const ReceiveFlow: React.FC<ReceiveFlowProps> = ({ onClose }) => {
     <DepositContext.Provider value={value}>
       <div className="mt-12">
         {step === DepositStep.MAIN && <MainScreen />}
-
-        {/* TODO: Find out if it's required */}
-        {/* {step === DepositStep.VALIDATION && (
-          <SignatureValidation onClick={handleValidation} />
-        )} */}
 
         {step === DepositStep.ADDRESS && <AddressForm />}
         {[DepositStep.PROCESSING, DepositStep.COMPLETED].includes(step) && (

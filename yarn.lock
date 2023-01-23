@@ -4224,10 +4224,15 @@
   dependencies:
     "@ethersproject/bignumber" "5.0.15"
 
-"@sovryn-zero/lib-ethers@1.0.0-early.access.6":
-  version "1.0.0-early.access.6"
-  resolved "https://registry.yarnpkg.com/@sovryn-zero/lib-ethers/-/lib-ethers-1.0.0-early.access.6.tgz#aea3f813c29366c21768d0ef87907d2923da6a1b"
-  integrity sha512-/rjvwoBm+ds3TxhPmjotwwE4Q6/nkoLC6stgmBd1+JH4vipsJnaLc/hpzqi+WzurZBt9jXKsej9XkC9trQExKQ==
+"@sovryn-zero/lib-ethers@1.0.0-early.access.4":
+  version "1.0.0-early.access.4"
+  resolved "https://registry.yarnpkg.com/@sovryn-zero/lib-ethers/-/lib-ethers-1.0.0-early.access.4.tgz#e72c9e2e90c0cdf3e6fc5245e0601ccc381c6ace"
+  integrity sha512-TjIxuD3UliR1ItX/+DBBFYZdU6Arw7enUlbAVMVMxcW7c9IH4WNjNMDcDoveIFxGus1T+G4YSCYlpN1imkiQQw==
+
+"@sovryn-zero/lib-ethers@1.0.0-early.access.7":
+  version "1.0.0-early.access.7"
+  resolved "https://registry.yarnpkg.com/@sovryn-zero/lib-ethers/-/lib-ethers-1.0.0-early.access.7.tgz#1753daae6655d7f6ebf49da88c2e82ad81a53ee0"
+  integrity sha512-9gFtEe1vS8KWjkKkOfR72AonHAqySUy90abYjq+mT9sa8L6WkF3fhZOQB1Pqf9KfO7xUbdlaoVj2N2zeZRcQ/w==
 
 "@sovryn/onboard-common@*":
   version "0.0.1"

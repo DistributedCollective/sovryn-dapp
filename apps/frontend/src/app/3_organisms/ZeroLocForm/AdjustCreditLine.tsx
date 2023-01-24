@@ -218,7 +218,7 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
     return (
       ((Number(existingCollateral) * Number(rbtcPrice)) /
         Number(existingDebt)) *
-      100
+        100 || 0
     );
   }, [existingCollateral, existingDebt, rbtcPrice]);
 
@@ -227,7 +227,7 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
       return 0;
     }
     return (
-      ((Number(newCollateral) * Number(rbtcPrice)) / Number(newDebt)) * 100
+      ((Number(newCollateral) * Number(rbtcPrice)) / Number(newDebt)) * 100 || 0
     );
   }, [newCollateral, newDebt, rbtcPrice]);
 
@@ -291,7 +291,7 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
 
   const liquidationPriceRenderer = useCallback(
     (value: number) =>
-      isNaN(value) ? (
+      value === 0 ? (
         t(translations.common.na)
       ) : (
         <>{formatValue(value, 3)} USD</>
@@ -308,22 +308,22 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
   const initialLiquidationPrice = useMemo(
     () =>
       MINIMUM_COLLATERAL_RATIO *
-      (Number(existingDebt) / Number(existingCollateral)),
+        (Number(existingDebt) / Number(existingCollateral)) || 0,
     [existingDebt, existingCollateral],
   );
   const initialLiquidationPriceRecoveryMode = useMemo(
     () =>
       CRITICAL_COLLATERAL_RATIO *
-      (Number(existingDebt) / Number(existingCollateral)),
+        (Number(existingDebt) / Number(existingCollateral)) || 0,
     [existingCollateral, existingDebt],
   );
 
   const liquidationPrice = useMemo(
-    () => MINIMUM_COLLATERAL_RATIO * (newDebt / newCollateral),
+    () => MINIMUM_COLLATERAL_RATIO * (newDebt / newCollateral) || 0,
     [newDebt, newCollateral],
   );
   const liquidationPriceRecoveryMode = useMemo(
-    () => CRITICAL_COLLATERAL_RATIO * (newDebt / newCollateral),
+    () => CRITICAL_COLLATERAL_RATIO * (newDebt / newCollateral) || 0,
     [newDebt, newCollateral],
   );
 
@@ -520,7 +520,7 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
               )}
               value={
                 <DynamicValue
-                  initialValue={Number(existingDebt)}
+                  initialValue={Number(existingCollateral)}
                   value={newCollateral}
                   renderer={newCollateralRenderer}
                 />

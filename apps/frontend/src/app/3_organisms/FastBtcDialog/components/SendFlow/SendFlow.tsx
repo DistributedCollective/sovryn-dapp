@@ -1,9 +1,9 @@
 import React, { useCallback } from 'react';
 
-import { Icon, IconNames } from '@sovryn/ui';
-
 import { WithdrawContext, WithdrawStep } from '../../contexts/withdraw-context';
 import { useWithdrawBridgeConfig } from '../../hooks/useWithdrawBridgeConfig';
+import { GoBackButton } from '../GoBackButton';
+import { MobileCloseButton } from '../MobileCloseButton';
 import { AddressForm } from './components/AddressForm';
 import { AmountForm } from './components/AmountForm';
 import { ConfirmationScreens } from './components/ConfirmationScreens';
@@ -43,12 +43,10 @@ export const SendFlow: React.FC<SendFlowProps> = ({ onClose }) => {
   return (
     <WithdrawContext.Provider value={value}>
       {allowedStepsToGoBackFrom.includes(step) && (
-        <button onClick={onBackClick}>
-          <Icon icon={IconNames.ARROW_LEFT} className="w-3 h-3" />
-        </button>
+        <GoBackButton onClick={onBackClick} />
       )}
 
-      <div className="mt-12">
+      <div className="mt-0 md:mt-12">
         {step === WithdrawStep.MAIN && <MainScreen />}
         {step === WithdrawStep.AMOUNT && <AmountForm />}
         {step === WithdrawStep.ADDRESS && <AddressForm />}
@@ -59,6 +57,8 @@ export const SendFlow: React.FC<SendFlowProps> = ({ onClose }) => {
           WithdrawStep.COMPLETED,
         ].includes(step) && <ConfirmationScreens onClose={onClose} />}
       </div>
+
+      <MobileCloseButton onClick={onClose} />
     </WithdrawContext.Provider>
   );
 };

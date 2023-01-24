@@ -15,6 +15,7 @@ import {
 } from '@sovryn/ui';
 
 import { defaultChainId } from '../../../../../../config/chains';
+
 import { useAssetBalance } from '../../../../../../hooks/useAssetBalance';
 import { useMaintenance } from '../../../../../../hooks/useMaintenance';
 import { translations } from '../../../../../../locales/i18n';
@@ -111,6 +112,7 @@ export const AmountForm: React.FC = () => {
             decimalPrecision={8}
             unit={FAST_BTC_ASSET.toUpperCase()}
             value={value}
+            className="max-w-none"
           />
         </div>
 

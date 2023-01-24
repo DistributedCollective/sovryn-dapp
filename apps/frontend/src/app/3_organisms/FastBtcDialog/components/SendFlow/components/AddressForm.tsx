@@ -125,7 +125,7 @@ export const AddressForm: React.FC = () => {
           {t(translations.fastBtc.send.addressForm.addressLabel)}
         </Paragraph>
 
-        <Input onChangeText={setValue} value={value} />
+        <Input onChangeText={setValue} value={value} className="max-w-none" />
       </div>
 
       <Button

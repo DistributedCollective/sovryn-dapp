@@ -1,7 +1,5 @@
 import React, { useCallback, useEffect, useState, useMemo } from 'react';
 
-import { Icon, IconNames } from '@sovryn/ui';
-
 import { useGetProtocolContract } from '../../../../../hooks/useGetContract';
 import {
   defaultValue,
@@ -11,6 +9,8 @@ import {
   Signature,
 } from '../../contexts/deposit-context';
 import { useDepositSocket } from '../../hooks/useDepositSocket';
+import { GoBackButton } from '../GoBackButton';
+import { MobileCloseButton } from '../MobileCloseButton';
 import { AddressForm } from './components/AddressForm';
 import { MainScreen } from './components/MainScreen';
 import { StatusScreen } from './components/StatusScreen';
@@ -142,13 +142,9 @@ export const ReceiveFlow: React.FC<ReceiveFlowProps> = ({ onClose }) => {
 
   return (
     <DepositContext.Provider value={value}>
-      {step === DepositStep.ADDRESS && (
-        <button onClick={onBackClick}>
-          <Icon icon={IconNames.ARROW_LEFT} className="w-3 h-3" />
-        </button>
-      )}
+      {step === DepositStep.ADDRESS && <GoBackButton onClick={onBackClick} />}
 
-      <div className="mt-12">
+      <div className="mt-0 md:mt-12">
         {step === DepositStep.MAIN && <MainScreen />}
 
         {step === DepositStep.ADDRESS && <AddressForm />}
@@ -156,6 +152,8 @@ export const ReceiveFlow: React.FC<ReceiveFlowProps> = ({ onClose }) => {
           <StatusScreen onClose={onClose} />
         )}
       </div>
+
+      <MobileCloseButton onClick={onClose} />
     </DepositContext.Provider>
   );
 };

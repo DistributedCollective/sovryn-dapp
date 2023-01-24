@@ -76,7 +76,7 @@ export const FastBtcDialog: React.FC<FastBtcDialogProps> = ({
         items={items}
         onChange={onChangeIndex}
         className="w-full md:hidden"
-        contentClassName="p-10 h-full"
+        contentClassName="pt-9 px-6 pb-7 h-full"
       />
       <VerticalTabs
         items={items}

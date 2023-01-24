@@ -72,6 +72,7 @@ export const ZeroPage: FC = () => {
   useEffect(() => {
     const getZUSDBalance = async () => {
       const balance = (await liquity.getZUSDBalance(account)).toString();
+      console.log('balance', balance);
       return balance;
     };
 
@@ -234,14 +235,18 @@ export const ZeroPage: FC = () => {
                   onClose={toggle}
                 />
                 <DialogBody>
-                  <AdjustCreditLine
-                    type={!hasLoc ? CreditLineType.Open : CreditLineType.Adjust}
-                    existingCollateral={String(collateral)}
-                    existingDebt={String(debt)}
-                    onSubmit={handleTroveSubmit}
-                    rbtcPrice={price}
-                    fees={fees}
-                  />
+                  {open && (
+                    <AdjustCreditLine
+                      type={
+                        !hasLoc ? CreditLineType.Open : CreditLineType.Adjust
+                      }
+                      existingCollateral={String(collateral)}
+                      existingDebt={String(debt)}
+                      onSubmit={handleTroveSubmit}
+                      rbtcPrice={price}
+                      fees={fees}
+                    />
+                  )}
                 </DialogBody>
               </Dialog>
 

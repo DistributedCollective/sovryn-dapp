@@ -9,7 +9,7 @@ export type ErrorListProps = {
 
 export const ErrorList: FC<ErrorListProps> = ({ errors, showSingleError }) => {
   const items = useMemo(
-    () => errors.sort((a, b) => (a.weight || 1) - (b.weight || 1)),
+    () => errors.sort((a, b) => (b.weight || 1) - (a.weight || 1)),
     [errors],
   );
 

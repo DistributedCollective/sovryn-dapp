@@ -42,6 +42,7 @@ import { Row } from './Row';
 import {
   CRITICAL_COLLATERAL_RATIO,
   MINIMUM_COLLATERAL_RATIO,
+  MIN_DEBT_SIZE,
 } from './constants';
 import {
   AdjustCreditLineProps,
@@ -59,6 +60,11 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
   rbtcPrice,
   fees,
 }) => {
+  const hasTrove = useMemo(
+    () => existingCollateral !== '0' && existingDebt !== '0',
+    [existingCollateral, existingDebt],
+  );
+
   const [tcr, getTcr] = useCall<number>(async () => {
     const { ethers } = await getZeroProvider();
     const price = toWei(
@@ -79,6 +85,7 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
   const [debtType, setDebtType] = useState(AmountType.Add);
   const [collateralType, setCollateralType] = useState(AmountType.Add);
 
+  const [fieldsTouched, setFieldsTouched] = useState(false);
   const [collateralAmount, setCollateralAmount] = useState('0');
   const [debtAmount, setDebtAmount] = useState('0');
   const [debtToken, setDebtToken] = useState<SupportedTokens>(
@@ -139,25 +146,30 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
     existingDebt,
   ]);
 
-  const handleMaxCollateralAmountClick = useCallback(
-    () => setCollateralAmount(String(maxCollateralAmount)),
-    [maxCollateralAmount],
-  );
+  const handleMaxCollateralAmountClick = useCallback(() => {
+    setCollateralAmount(String(maxCollateralAmount));
 
-  const handleMaxCreditAmountClick = useCallback(
-    () => setDebtAmount(String(maxCreditAmount)),
-    [maxCreditAmount],
-  );
+    setFieldsTouched(true);
+  }, [maxCollateralAmount]);
+
+  const handleMaxCreditAmountClick = useCallback(() => {
+    setDebtAmount(String(maxCreditAmount));
+    setFieldsTouched(true);
+  }, [maxCreditAmount]);
 
   const handleCollateralAmountChange = useCallback(
-    (event: ChangeEvent<HTMLInputElement>) =>
-      setCollateralAmount(event.currentTarget.value),
+    (event: ChangeEvent<HTMLInputElement>) => {
+      setCollateralAmount(event.currentTarget.value);
+      setFieldsTouched(true);
+    },
     [],
   );
 
   const handleCreditAmountChange = useCallback(
-    (event: ChangeEvent<HTMLInputElement>) =>
-      setDebtAmount(event.currentTarget.value),
+    (event: ChangeEvent<HTMLInputElement>) => {
+      setDebtAmount(event.currentTarget.value);
+      setFieldsTouched(true);
+    },
     [],
   );
 
@@ -218,7 +230,11 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
     () => [
       {
         value: AmountType.Add,
-        label: t(translations.adjustCreditLine.actions.addCollateral),
+        label: t(
+          hasTrove
+            ? translations.adjustCreditLine.actions.addCollateral
+            : translations.adjustCreditLine.actions.collateral,
+        ),
       },
       {
         value: AmountType.Remove,
@@ -226,7 +242,7 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
         disabled: type === CreditLineType.Open,
       },
     ],
-    [t, type],
+    [hasTrove, t, type],
   );
 
   const newDebtRenderer = useCallback(
@@ -248,6 +264,22 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
       ) : (
         <>{formatValue(value, 3)} RBTC</>
       ),
+    [t],
+  );
+
+  const liquidationPriceRenderer = useCallback(
+    (value: number) =>
+      isNaN(value) ? (
+        t(translations.common.na)
+      ) : (
+        <>{formatValue(value, 3)} USD</>
+      ),
+    [t],
+  );
+
+  const collateralRatioRenderer = useCallback(
+    (value: number) =>
+      value === 0 ? t(translations.common.na) : <>{formatValue(value, 3)}%</>,
     [t],
   );
 
@@ -273,12 +305,10 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
     [newDebt, newCollateral],
   );
 
-  const hasTrove = useMemo(
-    () => existingCollateral !== '0' && existingDebt !== '0',
-    [existingCollateral, existingDebt],
-  );
-
   const errors = useMemo(() => {
+    if (!fieldsTouched) {
+      return [];
+    }
     const list: ErrorData[] = [];
 
     const userRatio = ratio / 100;
@@ -345,8 +375,20 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
       }
     }
 
+    if (!hasTrove) {
+      if (newDebt < MIN_DEBT_SIZE) {
+        list.push({
+          level: ErrorLevel.Critical,
+          message: t(translations.zeroPage.loc.errors.debtTooLow, {
+            value: `${formatValue(MIN_DEBT_SIZE)} ${debtToken.toUpperCase()}`,
+          }),
+          weight: 5,
+        });
+      }
+    }
+
     return list;
-  }, [ratio, tcr, t]);
+  }, [fieldsTouched, ratio, tcr, hasTrove, t, newDebt, debtToken]);
 
   const submitButtonDisabled = useMemo(() => {
     const hasCriticalError = errors.some(
@@ -365,7 +407,6 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
     <div className="w-full">
       {hasTrove && (
         <CurrentTroveData
-          className="sm:hidden"
           debt={existingDebt}
           collateral={existingCollateral}
           rbtcPrice={rbtcPrice || '0'}
@@ -381,6 +422,7 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
             activeTab={debtType}
             onTabChange={setDebtType}
             onMaxAmountClicked={handleMaxCreditAmountClick}
+            hasTrove={hasTrove}
           />
         }
         className="w-full"
@@ -419,6 +461,7 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
             activeTab={collateralType}
             onTabChange={setCollateralType}
             onMaxAmountClicked={handleMaxCollateralAmountClick}
+            hasTrove={hasTrove}
           />
         }
         className="max-w-none mt-8"
@@ -434,36 +477,38 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
           unit="RBTC"
         />
       </FormGroup>
-      <div className="my-6">
-        <SimpleTable>
-          <Row
-            label={t(translations.adjustCreditLine.labels.newDebt)}
-            tooltip={t(translations.adjustCreditLine.labels.newDebtTooltip)}
-            value={
-              <DynamicValue
-                initialValue={Number(existingDebt)}
-                value={newDebt}
-                renderer={newDebtRenderer}
-              />
-            }
-          />
-          <Row
-            label={t(translations.adjustCreditLine.labels.newCollateral)}
-            tooltip={t(
-              translations.adjustCreditLine.labels.newCollateralTooltip,
-            )}
-            value={
-              <DynamicValue
-                initialValue={Number(existingDebt)}
-                value={newCollateral}
-                renderer={newCollateralRenderer}
-              />
-            }
-          />
-        </SimpleTable>
-      </div>
+      {hasTrove && (
+        <div className="mt-6">
+          <SimpleTable>
+            <Row
+              label={t(translations.adjustCreditLine.labels.newDebt)}
+              tooltip={t(translations.adjustCreditLine.labels.newDebtTooltip)}
+              value={
+                <DynamicValue
+                  initialValue={Number(existingDebt)}
+                  value={newDebt}
+                  renderer={newDebtRenderer}
+                />
+              }
+            />
+            <Row
+              label={t(translations.adjustCreditLine.labels.newCollateral)}
+              tooltip={t(
+                translations.adjustCreditLine.labels.newCollateralTooltip,
+              )}
+              value={
+                <DynamicValue
+                  initialValue={Number(existingDebt)}
+                  value={newCollateral}
+                  renderer={newCollateralRenderer}
+                />
+              }
+            />
+          </SimpleTable>
+        </div>
+      )}
 
-      <div className="flex flex-row justify-between items-center mb-3">
+      <div className="flex flex-row justify-between items-center mt-6 mb-3">
         <div className="flex flex-row justify-start items-center gap-2">
           <span>{t(translations.adjustCreditLine.labels.collateralRatio)}</span>
           <HelperButton
@@ -476,7 +521,7 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
           <DynamicValue
             initialValue={initialRatio}
             value={ratio}
-            renderer={value => <>{formatValue(value, 3)}%</>}
+            renderer={collateralRatioRenderer}
           />
         </div>
       </div>
@@ -488,7 +533,7 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
         value={ratio}
       />
 
-      <ErrorList errors={errors} />
+      <ErrorList errors={errors} showSingleError />
 
       <div className="mt-6">
         <SimpleTable>
@@ -501,7 +546,7 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
               <DynamicValue
                 initialValue={initialLiquidationPrice}
                 value={liquidationPrice}
-                renderer={value => <>{formatValue(value, 3)} USD</>}
+                renderer={liquidationPriceRenderer}
               />
             }
           />
@@ -517,7 +562,7 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
               <DynamicValue
                 initialValue={initialLiquidationPriceRecoveryMode}
                 value={liquidationPriceRecoveryMode}
-                renderer={value => <>{formatValue(value, 3)} USD</>}
+                renderer={liquidationPriceRenderer}
               />
             }
             valueClassName="text-primary-10"

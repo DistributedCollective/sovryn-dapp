@@ -9,6 +9,7 @@ import React, {
   useEffect,
 } from 'react';
 
+import { BigNumber } from 'ethers';
 import { useTranslation } from 'react-i18next';
 
 import { SupportedTokens } from '@sovryn/contracts';
@@ -32,8 +33,14 @@ import { BORROW_ASSETS } from '../../5_pages/ZeroPage/constants';
 import { getZeroProvider } from '../../5_pages/ZeroPage/utils/zero-provider';
 import { useAssetBalance } from '../../../hooks/useAssetBalance';
 import { useCall } from '../../../hooks/useCall';
+import { useGasPrice } from '../../../hooks/useGasPrice';
 import { translations } from '../../../locales/i18n';
-import { CR_THRESHOLDS } from '../../../utils/constants';
+import {
+  CR_THRESHOLDS,
+  GAS_LIMIT_ADJUST_TROVE,
+  GAS_LIMIT_OPEN_TROVE,
+} from '../../../utils/constants';
+import { composeGas } from '../../../utils/helpers';
 import { formatValue, fromWei, toWei } from '../../../utils/math';
 import { tokensToOptions } from '../../../utils/tokens';
 import { CurrentTroveData } from './CurrentTroveData';
@@ -121,14 +128,29 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
     [collateralAmount, collateralType, existingCollateral],
   );
 
+  const rbtcGasPrice = useGasPrice();
+
   const maxCollateralAmount = useMemo(
     () =>
       Number(
         isIncreasingCollateral
-          ? fromWei(maxCollateralWeiAmount)
+          ? fromWei(
+              BigNumber.from(maxCollateralWeiAmount).sub(
+                composeGas(
+                  rbtcGasPrice || '0',
+                  hasTrove ? GAS_LIMIT_ADJUST_TROVE : GAS_LIMIT_OPEN_TROVE,
+                ),
+              ),
+            )
           : existingCollateral,
       ),
-    [existingCollateral, isIncreasingCollateral, maxCollateralWeiAmount],
+    [
+      existingCollateral,
+      hasTrove,
+      isIncreasingCollateral,
+      maxCollateralWeiAmount,
+      rbtcGasPrice,
+    ],
   );
 
   const maxCreditAmount = useMemo(() => {

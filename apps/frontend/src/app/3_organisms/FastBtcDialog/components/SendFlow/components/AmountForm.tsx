@@ -85,7 +85,7 @@ export const AmountForm: React.FC = () => {
 
   return (
     <>
-      <Heading type={HeadingType.h2} className="font-medium mb-8">
+      <Heading type={HeadingType.h2} className="font-medium mb-8 text-center">
         {t(translations.fastBtc.send.amountForm.title)}
       </Heading>
 

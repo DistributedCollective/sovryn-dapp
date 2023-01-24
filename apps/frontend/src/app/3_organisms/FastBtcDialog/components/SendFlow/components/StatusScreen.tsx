@@ -23,6 +23,9 @@ import { FAST_BTC_ASSET } from '../../../constants';
 
 const translation = translations.fastBtc.send.confirmationScreens;
 
+const rskExplorerUrl = getRskExplorerUrl();
+const btcExplorerUrl = getBtcExplorerUrl();
+
 type StatusScreenProps = {
   from: string;
   to: string;
@@ -47,13 +50,16 @@ export const StatusScreen: React.FC<StatusScreenProps> = ({
       {
         label: t(translation.from),
         value: (
-          <TransactionId value={from} href={`${getRskExplorerUrl()}/${from}`} />
+          <TransactionId
+            value={from}
+            href={`${rskExplorerUrl}/address/${from}`}
+          />
         ),
       },
       {
         label: t(translation.to),
         value: (
-          <TransactionId value={to} href={`${getBtcExplorerUrl()}/${to}`} />
+          <TransactionId value={to} href={`${btcExplorerUrl}/address/${to}`} />
         ),
       },
       {
@@ -85,7 +91,7 @@ export const StatusScreen: React.FC<StatusScreenProps> = ({
         value: txHash ? (
           <TransactionId
             value={txHash}
-            href={`${getRskExplorerUrl()}/${txHash}`}
+            href={`${rskExplorerUrl}/tx/${txHash}`}
           />
         ) : (
           <Icon icon={IconNames.PENDING} />

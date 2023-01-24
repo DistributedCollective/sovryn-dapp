@@ -26,6 +26,9 @@ import { DepositContext, DepositStep } from '../../../contexts/deposit-context';
 
 const translation = translations.fastBtc.receive.statusScreen;
 
+const rskExplorerUrl = getRskExplorerUrl();
+const btcExplorerUrl = getBtcExplorerUrl();
+
 type StatusScreenProps = {
   onClose: () => void;
 };
@@ -62,7 +65,7 @@ export const StatusScreen: React.FC<StatusScreenProps> = ({ onClose }) => {
         value: (
           <TransactionId
             value={account}
-            href={`${getRskExplorerUrl()}/${account}`}
+            href={`${rskExplorerUrl}/address/${account}`}
           />
         ),
       },
@@ -98,7 +101,7 @@ export const StatusScreen: React.FC<StatusScreenProps> = ({ onClose }) => {
           <>
             <TransactionId
               value={depositTx.txHash}
-              href={`${getBtcExplorerUrl()}/${depositTx.txHash}`}
+              href={`${btcExplorerUrl}/tx/${depositTx.txHash}`}
             />
           </>
         ) : (
@@ -111,7 +114,7 @@ export const StatusScreen: React.FC<StatusScreenProps> = ({ onClose }) => {
           <>
             <TransactionId
               value={transferTx.txHash}
-              href={`${getRskExplorerUrl()}/${transferTx.txHash}`}
+              href={`${rskExplorerUrl}/tx/${transferTx.txHash}`}
             />
           </>
         ) : (

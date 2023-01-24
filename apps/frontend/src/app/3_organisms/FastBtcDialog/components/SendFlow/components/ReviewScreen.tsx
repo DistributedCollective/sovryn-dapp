@@ -22,6 +22,9 @@ import {
 
 const translation = translations.fastBtc.send.confirmationScreens;
 
+const rskExplorerUrl = getRskExplorerUrl();
+const btcExplorerUrl = getBtcExplorerUrl();
+
 type ReviewScreenProps = {
   from: string;
   to: string;
@@ -50,13 +53,16 @@ export const ReviewScreen: React.FC<ReviewScreenProps> = ({
       {
         label: t(translation.from),
         value: (
-          <TransactionId value={from} href={`${getRskExplorerUrl()}/${from}`} />
+          <TransactionId
+            value={from}
+            href={`${rskExplorerUrl}/address/${from}`}
+          />
         ),
       },
       {
         label: t(translation.to),
         value: (
-          <TransactionId value={to} href={`${getBtcExplorerUrl()}/${to}`} />
+          <TransactionId value={to} href={`${btcExplorerUrl}/address/${to}`} />
         ),
       },
       {

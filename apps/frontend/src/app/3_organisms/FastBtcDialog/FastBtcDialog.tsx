@@ -26,11 +26,13 @@ const translation = translations.fastBtc.mainScreen;
 type FastBtcDialogProps = {
   isOpen: boolean;
   onClose: () => void;
+  shouldHideSend?: boolean;
 };
 
 export const FastBtcDialog: React.FC<FastBtcDialogProps> = ({
   isOpen,
   onClose,
+  shouldHideSend = false,
 }) => {
   const [index, setIndex] = useState(0);
   const { account } = useAccount();
@@ -41,8 +43,19 @@ export const FastBtcDialog: React.FC<FastBtcDialogProps> = ({
     index !== null ? setIndex(index) : setIndex(0);
   }, []);
 
-  const items = useMemo(
-    () => [
+  const items = useMemo(() => {
+    if (shouldHideSend) {
+      return [
+        {
+          label: t(translation.tabs.receiveLabel),
+          infoText: t(translation.tabs.receiveInfoText),
+          content: <ReceiveFlow onClose={onClose} />,
+          activeClassName: ACTIVE_CLASSNAME,
+        },
+      ];
+    }
+
+    return [
       {
         label: t(translation.tabs.receiveLabel),
         infoText: t(translation.tabs.receiveInfoText),
@@ -55,9 +68,8 @@ export const FastBtcDialog: React.FC<FastBtcDialogProps> = ({
         content: <SendFlow onClose={onClose} />,
         activeClassName: ACTIVE_CLASSNAME,
       },
-    ],
-    [onClose],
-  );
+    ];
+  }, [onClose, shouldHideSend]);
 
   const dialogSize = useMemo(
     () => (isMobile ? DialogSize.md : DialogSize.xl2),

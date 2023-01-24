@@ -2,4 +2,4 @@
 "frontend": patch
 ---
 
-feat: collateral surplus withdrawal history table
+SOV-1334: collateral surplus withdrawal history table

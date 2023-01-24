@@ -56,7 +56,7 @@ const RewardsPage: FC = () => {
   }, [liquity, account]);
 
   return (
-    <div className="flex flex-col items-center mt-28">
+    <div className="flex flex-col items-center mt-6 sm:mt-28">
       <Heading className="font-medium mb-4" type={HeadingType.h1}>
         {t(translations.rewardPage.title)}
       </Heading>
@@ -70,7 +70,10 @@ const RewardsPage: FC = () => {
 
       <div className="border border-gray-50 rounded w-full sm:w-[25rem] p-3 bg-gray-90">
         <div className="bg-gray-70 rounded p-6 text-center mb-6">
-          <Paragraph className="font-medium mb-2" size={ParagraphSize.small}>
+          <Paragraph
+            className="font-medium mb-2 text-gray-10"
+            size={ParagraphSize.small}
+          >
             {t(translations.rewardPage.stabilityPoolRewards)}
           </Paragraph>
           <div className="text-2xl leading-7 uppercase">

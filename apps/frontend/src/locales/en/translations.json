@@ -231,7 +231,7 @@
         }
     },
     "rewardPage": {
-        "title": "Reward",
+        "title": "Rewards",
         "subtitle": "Collect rewards earned",
         "stabilityPoolRewards": "Stability pool rewards",
         "btc": "BTC",

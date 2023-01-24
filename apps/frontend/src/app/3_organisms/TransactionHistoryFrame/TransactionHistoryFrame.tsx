@@ -17,10 +17,11 @@ import {
   TransactionId,
 } from '@sovryn/ui';
 
+import { chains, defaultChainId } from '../../../config/chains';
+
 import { ExportCSV } from '../../2_molecules/ExportCSV/ExportCSV';
 import { TableFilter } from '../../2_molecules/TableFilter/TableFilter';
 import { Filter } from '../../2_molecules/TableFilter/TableFilter.types';
-import { chains, defaultChainId } from '../../../config/chains';
 import { useNotificationContext } from '../../../contexts/NotificationContext';
 import { useAccount } from '../../../hooks/useAccount';
 import { translations } from '../../../locales/i18n';

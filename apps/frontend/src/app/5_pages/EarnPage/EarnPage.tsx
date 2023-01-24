@@ -168,13 +168,13 @@ const EarnPage: FC = () => {
     if (isAmountZero) {
       return t(commonTranslations.na);
     }
-    const newBalance = BigNumber.from(poolBalance).add(
-      isDeposit ? amount : -amount,
+    const newBalance = BigNumber.from(toWei(poolBalance)).add(
+      toWei(isDeposit ? amount : -amount),
     );
     if (newBalance.lt(0)) {
       return '0';
     }
-    return newBalance.toString();
+    return fromWei(newBalance);
   }, [isAmountZero, poolBalance, isDeposit, amount, t]);
 
   const newPoolBalanceLabel = useMemo(() => {

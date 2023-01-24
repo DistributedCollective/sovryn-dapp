@@ -29,7 +29,6 @@ import {
 import { DashboardWelcomeBanner } from '../../2_molecules/DashboardWelcomeBanner/DashboardWelcomeBanner';
 import { LOCStatus } from '../../2_molecules/LOCStatus/LOCStatus';
 import { SystemStats } from '../../2_molecules/SystemStats/SystemStats';
-import { TransactionStepDialog } from '../../3_organisms';
 import { LOCChart } from '../../3_organisms/LOCChart/LOCChart';
 import { useGetUserOpenTrove } from '../../3_organisms/LOCChart/hooks/useGetUserOpenTrove';
 import { AdjustCreditLine } from '../../3_organisms/ZeroLocForm/AdjustCreditLine';
@@ -237,7 +236,6 @@ export const ZeroPage: FC = () => {
           )}
         </Await>
       </React.Suspense>
-      <TransactionStepDialog />
     </div>
   );
 };

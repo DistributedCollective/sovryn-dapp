@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 
 import { Trans, useTranslation } from 'react-i18next';
 
@@ -7,10 +7,20 @@ import { Heading, HeadingType, Link } from '@sovryn/ui';
 import { translations } from '../../../../locales/i18n';
 import { helpdeskLink } from '../../../../utils/constants';
 
-const translation = translations.fastBtc.instructions;
+type InstructionsProps = {
+  isReceive?: boolean;
+};
 
-export const Instructions: React.FC = () => {
+export const Instructions: React.FC<InstructionsProps> = ({ isReceive }) => {
   const { t } = useTranslation();
+
+  const translation = useMemo(
+    () =>
+      isReceive
+        ? translations.fastBtc.receiveInstructions
+        : translations.fastBtc.sendInstructions,
+    [isReceive],
+  );
 
   return (
     <>

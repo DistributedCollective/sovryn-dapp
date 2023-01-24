@@ -22,7 +22,7 @@ export const MainScreen: React.FC = () => {
 
   return (
     <div>
-      <Instructions />
+      <Instructions isReceive />
 
       {addressError && <div>{addressError}</div>}
 

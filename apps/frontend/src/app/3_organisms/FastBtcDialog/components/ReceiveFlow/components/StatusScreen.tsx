@@ -135,7 +135,10 @@ export const StatusScreen: React.FC<StatusScreenProps> = ({ onClose }) => {
         </Heading>
 
         <div className="mb-6">
-          <StatusIcon isConfirmed={!isProcessing} />
+          <StatusIcon
+            isConfirmed={!isProcessing}
+            dataAttribute="fastBtc-receive"
+          />
         </div>
 
         <div className="bg-gray-80 border rounded border-gray-50 p-3 text-xs text-gray-30">
@@ -156,6 +159,7 @@ export const StatusScreen: React.FC<StatusScreenProps> = ({ onClose }) => {
         text={t(translations.common.buttons.done)}
         onClick={onClose}
         className="mt-8 w-full"
+        dataAttribute="fastBtc-receive-done-button"
       />
     </>
   );

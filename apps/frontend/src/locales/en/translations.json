@@ -172,7 +172,9 @@
             "liquidationsToggle": "Liquidation alerts",
             "stabilityPoolToggle": "Stability pool alerts",
             "systemToggle": "System alerts"
-        }
+        },
+        "successMessage": "Your preferences have been saved.",
+        "errorMessage": "Something went wrong, please try again."
     },
     "chart": {
         "collateralRatio": "Collateral ratio",

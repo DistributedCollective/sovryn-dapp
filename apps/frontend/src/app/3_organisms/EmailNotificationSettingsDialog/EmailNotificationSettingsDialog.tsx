@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 
 import axios from 'axios';
+import { nanoid } from 'nanoid';
 import { useTranslation } from 'react-i18next';
 
 import {
@@ -12,10 +13,12 @@ import {
   DialogSize,
   FormGroup,
   Input,
+  NotificationType,
   Paragraph,
   ParagraphStyle,
 } from '@sovryn/ui';
 
+import { useNotificationContext } from '../../../contexts/NotificationContext';
 import { useAccount } from '../../../hooks/useAccount';
 import { translations } from '../../../locales/i18n';
 import {
@@ -49,6 +52,7 @@ const EmailNotificationSettingsDialogComponent: React.FC<
   EmailNotificationSettingsDialogProps
 > = ({ isOpen, onClose }) => {
   const { account, eip1193Provider: provider } = useAccount();
+  const { addNotification } = useNotificationContext();
   const { t } = useTranslation();
 
   const [notificationToken, setNotificationToken] = useState<string | null>(
@@ -177,17 +181,33 @@ const EmailNotificationSettingsDialogComponent: React.FC<
             setNotificationUser(result.data);
             setEmail(result.data?.email);
             parseSubscriptionsResponse(result.data?.subscriptions);
+
+            addNotification({
+              type: NotificationType.success,
+              title: t(translations.emailNotificationsDialog.successMessage),
+              content: '',
+              dismissible: true,
+              id: nanoid(),
+            });
           }
         })
         .catch(error => {
           console.log(error);
+          addNotification({
+            type: NotificationType.error,
+            title: t(translations.emailNotificationsDialog.errorMessage),
+            content: '',
+            dismissible: true,
+            id: nanoid(),
+          });
+
           if (error?.response?.status === 401) {
             getToken();
           }
         })
         .finally(() => setLoading(false));
     },
-    [getToken, parseSubscriptionsResponse],
+    [getToken, t, addNotification, parseSubscriptionsResponse],
   );
 
   const getUser = useCallback(() => {

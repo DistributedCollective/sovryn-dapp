@@ -397,20 +397,8 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
       }
     }
 
-    if (!hasTrove) {
-      if (newDebt < MIN_DEBT_SIZE) {
-        list.push({
-          level: ErrorLevel.Critical,
-          message: t(translations.zeroPage.loc.errors.debtTooLow, {
-            value: `${formatValue(MIN_DEBT_SIZE)} ${debtToken.toUpperCase()}`,
-          }),
-          weight: 5,
-        });
-      }
-    }
-
     return list;
-  }, [fieldsTouched, ratio, tcr, hasTrove, t, newDebt, debtToken]);
+  }, [fieldsTouched, ratio, tcr, t]);
 
   const submitButtonDisabled = useMemo(() => {
     const hasCriticalError = errors.some(
@@ -424,6 +412,37 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
         : collateral > 0 || debt > 0;
     return hasCriticalError || !isFormValid;
   }, [collateralAmount, debtAmount, errors, existingDebt]);
+
+  const debtError = useMemo(() => {
+    if (!fieldsTouched) {
+      return undefined;
+    }
+
+    if (newDebt < MIN_DEBT_SIZE) {
+      return t(translations.zeroPage.loc.errors.debtTooLow, {
+        value: `${formatValue(MIN_DEBT_SIZE)} ${debtToken.toUpperCase()}`,
+      });
+    }
+
+    return undefined;
+  }, [debtToken, fieldsTouched, newDebt, t]);
+
+  const collateralError = useMemo(() => {
+    if (!fieldsTouched) {
+      return undefined;
+    }
+
+    if (toWei(collateralAmount).gt(maxCollateralWeiAmount)) {
+      const diff = Number(
+        fromWei(toWei(collateralAmount).sub(maxCollateralWeiAmount)),
+      );
+      return t(translations.zeroPage.loc.errors.balanceTooLow, {
+        value: `${formatValue(diff, 4)} RBTC`,
+      });
+    }
+
+    return undefined;
+  }, [collateralAmount, fieldsTouched, maxCollateralWeiAmount, t]);
 
   return (
     <div className="w-full">
@@ -449,6 +468,7 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
         }
         className="w-full"
         dataAttribute="adjust-credit-line-credit-amount"
+        errorLabel={debtError}
       >
         <div className="w-full flex flex-row justify-between items-center gap-3">
           <AmountInput
@@ -458,6 +478,7 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
             label={t(translations.adjustCreditLine.fields.debt.amount)}
             tooltip={t(translations.adjustCreditLine.fields.debt.tooltip)}
             className="w-full flex-grow-0 flex-shrink"
+            invalid={!!debtError}
           />
           <Select
             value={debtToken}
@@ -488,6 +509,7 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
         }
         className="max-w-none mt-8"
         dataAttribute="adjust-credit-line-collateral-amount"
+        errorLabel={collateralError}
       >
         <AmountInput
           value={collateralAmount}
@@ -497,6 +519,7 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
           tooltip={t(translations.adjustCreditLine.fields.collateral.tooltip)}
           className="max-w-none"
           unit="RBTC"
+          invalid={!!collateralError}
         />
       </FormGroup>
       {hasTrove && (

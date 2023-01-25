@@ -200,7 +200,8 @@
           "ratioErrorInRecovery": "Collateral ratio must be at least {{value}}%",
           "ratioWarning": "Keeping your collateral ratio above {{value}}% can help avoid liquidation under recovery mode",
           "ratioError": "Collateral ratio must be at least {{value}}%",
-          "debtTooLow": "Debt must be at least {{value}}"
+          "debtTooLow": "Debt must be at least {{value}}",
+          "balanceTooLow": "The collateral amount you're trying to deposit exceeds your balance by {{value}}"
         }
       },
       "tx": {

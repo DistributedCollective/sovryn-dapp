@@ -237,7 +237,7 @@ export const LOCChart: FC = () => {
         {
           data: data,
           parsing: {
-            xAxisKey: ChartSortingType.sequenceNumber,
+            xAxisKey: ChartSortingType.tx,
             yAxisKey: ChartSortingType.collateralRatio,
           },
           backgroundColor: bar =>

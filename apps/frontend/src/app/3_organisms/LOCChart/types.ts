@@ -22,7 +22,7 @@ export type TroveData = {
 };
 
 export enum ChartSortingType {
-  sequenceNumber = 'sequenceNumber',
+  tx = 'tx',
   collateralRatio = 'collateralRatio',
 }
 

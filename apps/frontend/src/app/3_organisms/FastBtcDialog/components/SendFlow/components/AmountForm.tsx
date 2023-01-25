@@ -21,14 +21,12 @@ import { useMaintenance } from '../../../../../../hooks/useMaintenance';
 import { translations } from '../../../../../../locales/i18n';
 import { btcInSatoshis } from '../../../../../../utils/constants';
 import { formatValue, fromWei, toWei } from '../../../../../../utils/math';
-import { FAST_BTC_ASSET } from '../../../constants';
+import { Bitcoin, GAS_LIMIT_FAST_BTC_WITHDRAW } from '../../../constants';
 import {
   WithdrawContext,
   WithdrawStep,
 } from '../../../contexts/withdraw-context';
 import { TransferPolicies } from './TransferPolicies';
-
-export const GAS_LIMIT_FAST_BTC_WITHDRAW = 300000; // TODO: Find a suitable place for it
 
 export const AmountForm: React.FC = () => {
   const { t } = useTranslation();
@@ -101,7 +99,7 @@ export const AmountForm: React.FC = () => {
             {...applyDataAttr('convert-to-max')}
           >
             ({t(translations.common.max)} {formatValue(Number(rbtcBalance), 4)}{' '}
-            {FAST_BTC_ASSET.toUpperCase()})
+            {Bitcoin})
           </button>
         </div>
 
@@ -110,7 +108,7 @@ export const AmountForm: React.FC = () => {
             label={t(translations.common.amount)}
             onChangeText={setValue}
             decimalPrecision={8}
-            unit={FAST_BTC_ASSET.toUpperCase()}
+            unit={Bitcoin}
             value={value}
             className="max-w-none"
           />
@@ -126,7 +124,7 @@ export const AmountForm: React.FC = () => {
           className="mt-10 w-full"
         />
 
-        {fastBtcLocked && <div>Fast BTC is in maintenance mode</div>}
+        {fastBtcLocked && <div>{t(translations.maintenanceMode.fastBtc)}</div>}
       </div>
     </>
   );

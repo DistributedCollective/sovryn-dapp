@@ -1,9 +1,12 @@
 import React, { useCallback, useContext } from 'react';
 
+import { t } from 'i18next';
+
 import { Button, ButtonStyle } from '@sovryn/ui';
 
 import { useAccount } from '../../../../../../hooks/useAccount';
 import { useMaintenance } from '../../../../../../hooks/useMaintenance';
+import { translations } from '../../../../../../locales/i18n';
 import { DepositContext } from '../../../contexts/deposit-context';
 import { Instructions } from '../../Instructions';
 
@@ -27,14 +30,14 @@ export const MainScreen: React.FC = () => {
       {addressError && <div>{addressError}</div>}
 
       {fastBtcLocked ? (
-        <div>Fast BTC is locked</div>
+        <div>{t(translations.maintenanceMode.fastBtc)}</div>
       ) : (
         <Button
           disabled={!account || !ready || addressLoading}
           onClick={onContinueClick}
           className="w-full"
           style={ButtonStyle.secondary}
-          text="Continue"
+          text={t(translations.common.buttons.continue)}
         />
       )}
     </div>

@@ -5,6 +5,7 @@ import { Socket, io } from 'socket.io-client';
 import { currentNetwork } from '../../../../utils/helpers';
 import { endpoints } from '../config/endpoints';
 import { DEPOSIT_FEE_SATS, DEPOSIT_FEE_DYNAMIC } from '../constants';
+import { ReceiveEvents } from '../types';
 
 type EventHandler = (event: string, value: any) => void;
 
@@ -44,21 +45,21 @@ export function useDepositSocket(eventHandler?: EventHandler) {
     socket.current.on('connect', () => {
       const s = socket.current;
       setConnected(s?.connected || false);
-      s?.on('txAmount', handleInput('txAmount'));
-      s?.on('depositTx', handleInput('depositTx'));
-      s?.on('transferTx', handleInput('transferTx'));
+      s?.on(ReceiveEvents.txAmount, handleInput(ReceiveEvents.txAmount));
+      s?.on(ReceiveEvents.depositTx, handleInput(ReceiveEvents.depositTx));
+      s?.on(ReceiveEvents.transferTx, handleInput(ReceiveEvents.transferTx));
     });
 
-    socket.current.on('disconnect', () => {
+    socket.current.on(ReceiveEvents.disconnect, () => {
       setConnected(socket.current?.connected || false);
     });
 
     return () => {
       if (socket.current) {
         const s = socket.current;
-        s.off('txAmount');
-        s.off('depositTx');
-        s.off('transferTx');
+        s.off(ReceiveEvents.txAmount);
+        s.off(ReceiveEvents.depositTx);
+        s.off(ReceiveEvents.transferTx);
         s.disconnect();
         socket.current = undefined;
         setConnected(false);
@@ -77,13 +78,17 @@ export function useDepositSocket(eventHandler?: EventHandler) {
         signatures: Array<Object>;
       }>((resolve, reject) => {
         if (socket.current) {
-          socket.current.emit('getDepositAddress', address, (err, res) => {
-            if (res) {
-              resolve(res);
-            } else {
-              reject(new Error(err?.error || err));
-            }
-          });
+          socket.current.emit(
+            ReceiveEvents.getDepositAddress,
+            address,
+            (err, res) => {
+              if (res) {
+                resolve(res);
+              } else {
+                reject(new Error(err?.error || err));
+              }
+            },
+          );
         } else {
           reject(new Error('socket not connected'));
         }
@@ -95,7 +100,7 @@ export function useDepositSocket(eventHandler?: EventHandler) {
     (address: string) =>
       new Promise<HistoryItem[]>((resolve, reject) => {
         if (socket.current) {
-          socket.current.emit('getDepositHistory', address, res =>
+          socket.current.emit(ReceiveEvents.getDepositHistory, address, res =>
             resolve(res),
           );
         } else {
@@ -114,7 +119,7 @@ export function useDepositSocket(eventHandler?: EventHandler) {
         dynamicFee: number;
       }>((resolve, reject) => {
         if (socket.current) {
-          socket.current.emit('txAmount', res => {
+          socket.current.emit(ReceiveEvents.txAmount, res => {
             resolve({
               ...res,
               min: res.min < 0.0005 ? 0.0005 : res.min, // overriding with hardcoded value for now

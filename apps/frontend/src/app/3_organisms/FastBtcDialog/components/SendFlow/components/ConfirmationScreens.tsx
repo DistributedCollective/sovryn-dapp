@@ -14,11 +14,11 @@ import { useTransactionContext } from '../../../../../../contexts/TransactionCon
 import { useAccount } from '../../../../../../hooks/useAccount';
 import { useGetProtocolContract } from '../../../../../../hooks/useGetContract';
 import { fromWei, toWei } from '../../../../../../utils/math';
+import { GAS_LIMIT_FAST_BTC_WITHDRAW } from '../../../constants';
 import {
   WithdrawContext,
   WithdrawStep,
 } from '../../../contexts/withdraw-context';
-import { GAS_LIMIT_FAST_BTC_WITHDRAW } from './AmountForm';
 import { ReviewScreen } from './ReviewScreen';
 import { StatusScreen } from './StatusScreen';
 
@@ -76,7 +76,7 @@ export const ConfirmationScreens: React.FC<ConfirmationScreensProps> = ({
     if (fastBtcBridgeContract) {
       setTransactions([
         {
-          title: 'Send RBTC',
+          title: 'Send BTC',
           contract: fastBtcBridgeContract,
           fnName: 'transferToBtc',
           args: [address],
@@ -93,7 +93,7 @@ export const ConfirmationScreens: React.FC<ConfirmationScreensProps> = ({
         },
       ]);
 
-      setTitle('Send RBTC via Fast BTC');
+      setTitle('Send BTC via Fast BTC');
       setIsOpen(true);
     }
   }, [

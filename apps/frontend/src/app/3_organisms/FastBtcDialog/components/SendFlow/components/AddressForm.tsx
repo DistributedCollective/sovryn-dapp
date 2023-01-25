@@ -136,7 +136,7 @@ export const AddressForm: React.FC = () => {
         className="mt-10 w-full"
       />
 
-      {fastBtcLocked && <div>Fast BTC is in maintenance mode</div>}
+      {fastBtcLocked && <div>{t(translations.maintenanceMode.fastBtc)}</div>}
     </div>
   );
 };

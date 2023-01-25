@@ -347,7 +347,7 @@
         },
         "sendInstructions": {
             "title": "Instructions",
-            "line1": "Only transfer RBTC from the RSK network",
+            "line1": "Only transfer BTC to the bitcoin network",
             "line2": "Do not send less than the minimum amount",
             "line3": "Do not send more than the maximum amount",
             "line4": "Allow up to {{hours}} hrs to process",
@@ -399,5 +399,8 @@
                 "rootstockTxId": "Rootstock TXID"
             }
         }
+    },
+    "maintenanceMode": {
+        "fastBtc": "Fast BTC is locked"
     }
 }

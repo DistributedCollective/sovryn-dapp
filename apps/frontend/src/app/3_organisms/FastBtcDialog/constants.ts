@@ -1,5 +1,3 @@
-import { SupportedTokens } from '@sovryn/contracts';
-
 // https://github.com/DistributedCollective/FastBTC/blob/development/config/config-main.js#L15
 export const DEPOSIT_FEE_SATS = 6000;
 
@@ -10,4 +8,6 @@ export const DEPOSIT_FEE_DYNAMIC = 20;
 // https://github.com/DistributedCollective/bidirectional-fastbtc/blob/master/packages/fastbtc-contracts/contracts/FastBTCBridge.sol#L105
 export const DYNAMIC_FEE_DIVISOR = 10000;
 
-export const FAST_BTC_ASSET = SupportedTokens.rbtc;
+export const Bitcoin = 'BTC';
+
+export const GAS_LIMIT_FAST_BTC_WITHDRAW = 300000;

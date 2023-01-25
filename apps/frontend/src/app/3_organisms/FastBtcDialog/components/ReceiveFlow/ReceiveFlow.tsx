@@ -9,6 +9,7 @@ import {
   Signature,
 } from '../../contexts/deposit-context';
 import { useDepositSocket } from '../../hooks/useDepositSocket';
+import { ReceiveEvents } from '../../types';
 import { GoBackButton } from '../GoBackButton';
 import { MobileCloseButton } from '../MobileCloseButton';
 import { AddressForm } from './components/AddressForm';
@@ -41,20 +42,20 @@ export const ReceiveFlow: React.FC<ReceiveFlowProps> = ({ onClose }) => {
 
   const handleEvents = useCallback((type: string, value: any) => {
     switch (type) {
-      case 'txAmount':
+      case ReceiveEvents.txAmount:
         setState(prevState => ({
           ...prevState,
           limits: { ...value, loading: false },
         }));
         break;
-      case 'depositTx':
+      case ReceiveEvents.depositTx:
         setState(prevState => ({
           ...prevState,
           depositTx: value,
           step: DepositStep.PROCESSING,
         }));
         break;
-      case 'transferTx':
+      case ReceiveEvents.transferTx:
         setState(prevState => ({
           ...prevState,
           transferTx: value,

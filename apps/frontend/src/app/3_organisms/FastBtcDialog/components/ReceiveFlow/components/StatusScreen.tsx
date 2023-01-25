@@ -22,7 +22,7 @@ import {
   getRskExplorerUrl,
 } from '../../../../../../utils/helpers';
 import { formatValue, fromWei, toWei } from '../../../../../../utils/math';
-import { DEPOSIT_FEE_SATS, FAST_BTC_ASSET } from '../../../constants';
+import { Bitcoin, DEPOSIT_FEE_SATS } from '../../../constants';
 import { DepositContext, DepositStep } from '../../../contexts/deposit-context';
 
 const translation = translations.fastBtc.receive.statusScreen;
@@ -74,7 +74,7 @@ export const StatusScreen: React.FC<StatusScreenProps> = ({ onClose }) => {
         label: t(translation.sending),
         value: (
           <>
-            {formatValue(Number(amount), 8)} {FAST_BTC_ASSET.toUpperCase()}
+            {formatValue(Number(amount), 8)} {Bitcoin}
           </>
         ),
       },
@@ -82,8 +82,7 @@ export const StatusScreen: React.FC<StatusScreenProps> = ({ onClose }) => {
         label: t(translation.serviceFee),
         value: (
           <>
-            {formatValue(Number(fromWei(feeAmount)), 8)}{' '}
-            {FAST_BTC_ASSET.toUpperCase()}
+            {formatValue(Number(fromWei(feeAmount)), 8)} {Bitcoin}
           </>
         ),
       },
@@ -91,8 +90,7 @@ export const StatusScreen: React.FC<StatusScreenProps> = ({ onClose }) => {
         label: t(translation.receiving),
         value: (
           <>
-            {formatValue(Number(receiveAmount), 8)}{' '}
-            {FAST_BTC_ASSET.toUpperCase()}
+            {formatValue(Number(receiveAmount), 8)} {Bitcoin}
           </>
         ),
       },

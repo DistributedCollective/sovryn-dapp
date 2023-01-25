@@ -1,9 +1,12 @@
 import React, { useCallback, useContext } from 'react';
 
+import { t } from 'i18next';
+
 import { Button, ButtonStyle } from '@sovryn/ui';
 
 import { useAccount } from '../../../../../../hooks/useAccount';
 import { useMaintenance } from '../../../../../../hooks/useMaintenance';
+import { translations } from '../../../../../../locales/i18n';
 import {
   WithdrawContext,
   WithdrawStep,
@@ -27,12 +30,12 @@ export const MainScreen: React.FC = () => {
       <Instructions />
 
       {fastBtcLocked ? (
-        <div>Fast BTC is locked</div>
+        <div>{t(translations.maintenanceMode.fastBtc)}</div>
       ) : (
         <Button
           disabled={!account}
           onClick={onContinueClick}
-          text="Continue"
+          text={t(translations.common.buttons.continue)}
           className="w-full"
           style={ButtonStyle.secondary}
         />

@@ -13,7 +13,7 @@ import {
 } from '../../../../../../utils/helpers';
 import { formatValue } from '../../../../../../utils/math';
 import { TransactionStepDialog } from '../../../../TransactionStepDialog';
-import { FAST_BTC_ASSET } from '../../../constants';
+import { Bitcoin } from '../../../constants';
 
 const translation = translations.fastBtc.send.confirmationScreens;
 
@@ -61,7 +61,7 @@ export const ReviewScreen: React.FC<ReviewScreenProps> = ({
         label: t(translation.sending),
         value: (
           <>
-            {formatValue(Number(amount), 8)} {FAST_BTC_ASSET.toUpperCase()}
+            {formatValue(Number(amount), 8)} {Bitcoin}
           </>
         ),
       },
@@ -69,7 +69,7 @@ export const ReviewScreen: React.FC<ReviewScreenProps> = ({
         label: t(translation.serviceFee),
         value: (
           <>
-            {formatValue(feesPaid, 8)} {FAST_BTC_ASSET.toUpperCase()}
+            {formatValue(feesPaid, 8)} {Bitcoin}
           </>
         ),
       },
@@ -77,7 +77,7 @@ export const ReviewScreen: React.FC<ReviewScreenProps> = ({
         label: t(translation.receiving),
         value: (
           <>
-            {formatValue(receiveAmount, 8)} {FAST_BTC_ASSET.toUpperCase()}
+            {formatValue(receiveAmount, 8)} {Bitcoin}
           </>
         ),
       },
@@ -112,7 +112,7 @@ export const ReviewScreen: React.FC<ReviewScreenProps> = ({
           disabled={fastBtcLocked}
           className="w-full"
         />
-        {fastBtcLocked && <div>Fast BTC is in maintenance mode</div>}
+        {fastBtcLocked && <div>{t(translations.maintenanceMode.fastBtc)}</div>}
       </div>
       <TransactionStepDialog disableFocusTrap={false} />
     </div>

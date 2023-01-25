@@ -38,7 +38,7 @@ export const LOCStatus: FC<LOCStatusProps> = ({
   return (
     <div
       className={classNames(
-        'bg-gray-90 py-7 px-6 rounded flex justify-between flex-wrap gap-6',
+        'bg-gray-80 md:bg-gray-90 py-7 px-6 rounded flex justify-between flex-wrap gap-6',
         className,
       )}
     >
@@ -84,7 +84,7 @@ export const LOCStatus: FC<LOCStatusProps> = ({
         )}
       </div>
 
-      <div className="flex flex-wrap gap-6">
+      <div className="hidden md:flex flex-wrap gap-6">
         {withdrawalSurplus > 0 && (
           <Button
             text={t('LOCStatus.withdraw')}

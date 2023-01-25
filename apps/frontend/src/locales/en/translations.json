@@ -167,7 +167,8 @@
         "collateralAmount": "Collateral Amount",
         "debtAmount": "Debt Amount",
         "redemptionBuffer": "Redemption Buffer",
-        "noData": "No data"
+        "noData": "No data",
+        "systemLinesCredit": "System lines of credit"
     },
     "LOCStatus": {
         "withdrawalSurplus": "withdrawal surplus",
@@ -195,24 +196,24 @@
         }
     },
     "zeroPage": {
-      "loc": {
-        "open": "Open line of credit",
-        "adjust": "Adjust line of credit",
-        "close": "Close",
-        "errors": {
-          "ratioWarningInRecovery": "Keeping your collateral ratio above {{value}}% can reduce the risk of liquidation in cases of market volatility",
-          "ratioErrorInRecovery": "Collateral ratio must be at least {{value}}%",
-          "ratioWarning": "Keeping your collateral ratio above {{value}}% can help avoid liquidation under recovery mode",
-          "ratioError": "Collateral ratio must be at least {{value}}%",
-          "debtTooLow": "Debt must be at least {{value}}",
-          "balanceTooLow": "The collateral amount you're trying to deposit exceeds your balance by {{value}}"
+        "loc": {
+            "open": "Open line of credit",
+            "adjust": "Adjust line of credit",
+            "close": "Close",
+            "errors": {
+                "ratioWarningInRecovery": "Keeping your collateral ratio above {{value}}% can reduce the risk of liquidation in cases of market volatility",
+                "ratioErrorInRecovery": "Collateral ratio must be at least {{value}}%",
+                "ratioWarning": "Keeping your collateral ratio above {{value}}% can help avoid liquidation under recovery mode",
+                "ratioError": "Collateral ratio must be at least {{value}}%",
+                "debtTooLow": "Debt must be at least {{value}}",
+                "balanceTooLow": "The collateral amount you're trying to deposit exceeds your balance by {{value}}"
+            }
+        },
+        "tx": {
+            "adjustTrove": "Adjust Trove",
+            "closeTrove": "Close Trove",
+            "openTrove": "Open Trove"
         }
-      },
-      "tx": {
-        "adjustTrove": "Adjust Trove",
-        "closeTrove": "Close Trove",
-        "openTrove": "Open Trove"
-      }
     },
     "stats": {
         "zero": {
@@ -264,6 +265,10 @@
             },
             "comingSoon": "Coming soon..."
         }
+    },
+    "dashboardWelcomeBanner": {
+        "fundWallet": "Fund your wallet",
+        "OpenCredit": "Open line of credit"
     },
     "rewardPage": {
         "title": "Rewards",

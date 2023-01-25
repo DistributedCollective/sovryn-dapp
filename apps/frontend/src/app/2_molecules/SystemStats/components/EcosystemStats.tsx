@@ -132,7 +132,7 @@ export const EcosystemStats: FC<EcosystemStatsProps> = ({
       <Paragraph
         size={ParagraphSize.base}
         style={ParagraphStyle.normal}
-        className="mb-6"
+        className="mb-3 md:mb-6"
       >
         {t(translations.stats.ecosystem.title)}
       </Paragraph>

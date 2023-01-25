@@ -1,0 +1,26 @@
+query getCollSurplusChanges(
+  $skip: Int!
+  $pageSize: Int!
+  $orderBy: CollSurplusChange_orderBy
+  $orderDirection: OrderDirection
+  $filters: CollSurplusChange_filter
+) {
+  collSurplusChanges(
+    first: $pageSize
+    skip: $skip
+    orderBy: $orderBy
+    orderDirection: $orderDirection
+    where: $filters
+  ) {
+    id
+    sequenceNumber
+    collSurplusChange
+    user {
+      id
+    }
+    transaction {
+      id
+      timestamp
+    }
+  }
+}

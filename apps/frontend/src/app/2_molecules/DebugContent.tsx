@@ -131,7 +131,7 @@ export const DebugContent = () => {
               0,
             )
           }
-          text="Add Notifcation"
+          text="Add Notification"
         />
 
         <Button
@@ -144,7 +144,7 @@ export const DebugContent = () => {
               id: nanoid(),
             })
           }
-          text="Add Notifcation With Timer"
+          text="Add Notification With Timer"
         />
       </div>
 

@@ -275,7 +275,8 @@
                 "redemptions": "Redemptions",
                 "stability": "Stability pool",
                 "convert": "Conversion",
-                "funding": "Funding"
+                "funding": "Funding",
+                "collateralSurplusWithdrawals": "Collateral surplus withdrawals"
             },
             "comingSoon": "Coming soon..."
         }

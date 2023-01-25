@@ -8,6 +8,7 @@ import {
   TransactionHistoryFrame,
   RedemptionsHistoryFrame,
 } from '../../3_organisms';
+import { CollateralSurplusHistoryFrame } from '../../3_organisms/CollateralSurplusWithdrawals/CollateralSurplusWithdrawals';
 import { translations } from '../../../locales/i18n';
 import styles from './HistoryPage.module.css';
 
@@ -21,6 +22,12 @@ const locHistory = (
 const redemptions = (
   <div className="px-0 py-4 lg:p-4">
     <RedemptionsHistoryFrame />
+  </div>
+);
+
+const collateralSurplusHistory = (
+  <div className="px-0 py-4 lg:p-4">
+    <CollateralSurplusHistoryFrame />
   </div>
 );
 
@@ -71,6 +78,14 @@ const HistoryPage: FC = () => {
         activeClassName: ACTIVE_CLASSNAME,
         dataAttribute: 'funding',
       },
+      {
+        label: t(
+          translations.historyPage.table.tabs.collateralSurplusWithdrawals,
+        ),
+        content: collateralSurplusHistory,
+        activeClassName: ACTIVE_CLASSNAME,
+        dataAttribute: 'collateral-surplus-withdrawals',
+      },
     ],
     [t, comingSoon],
   );
@@ -82,13 +97,14 @@ const HistoryPage: FC = () => {
   );
 
   return (
-    <div className="w-full text-gray-10 mt-9 lg:mt-10">
+    <div className="lg:container w-full text-gray-10 mt-9 lg:mt-10">
       <Heading className="text-center lg:mb-10 lg:text-2xl">
         {t(translations.historyPage.title)}
       </Heading>
       <div className="w-full">
         <div className={styles.mobileSelect}>
           <Select
+            className="min-w-[12rem]"
             options={options}
             value={String(index)}
             onChange={value => setIndex(Number(value))}

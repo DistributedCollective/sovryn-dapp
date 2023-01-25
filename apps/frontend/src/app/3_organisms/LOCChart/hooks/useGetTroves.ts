@@ -1,20 +1,13 @@
-import { ApolloClient, InMemoryCache, useQuery } from '@apollo/client';
+import { useQuery } from '@apollo/client';
 
 import { useMemo } from 'react';
 
 import { useIsMobile } from '../../../../hooks/useIsMobile';
-import { graphZeroUrl } from '../../../../utils/constants';
+import { zeroClient } from '../../../../utils/clients';
 import { GetTrovesDocument } from '../../../../utils/graphql/zero/generated';
 
 const trovesCount = 20;
 const trovesCountMobile = 7;
-
-const zeroClient = new ApolloClient({
-  uri: graphZeroUrl,
-  cache: new InMemoryCache({
-    resultCaching: false,
-  }),
-});
 
 export const useGetTroves = () => {
   const { isMobile } = useIsMobile();

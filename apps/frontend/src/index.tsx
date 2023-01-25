@@ -1,4 +1,4 @@
-import { ApolloProvider, ApolloClient, InMemoryCache } from '@apollo/client';
+import { ApolloProvider } from '@apollo/client';
 
 import './wdyr';
 
@@ -21,14 +21,7 @@ import './locales/dayjs';
 import './locales/i18n';
 import { router } from './router';
 import './styles/tailwindcss/index.css';
-import { graphRskUrl } from './utils/constants';
-
-const rskClient = new ApolloClient({
-  uri: graphRskUrl,
-  cache: new InMemoryCache({
-    resultCaching: false,
-  }),
-});
+import { rskClient } from './utils/clients';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement,

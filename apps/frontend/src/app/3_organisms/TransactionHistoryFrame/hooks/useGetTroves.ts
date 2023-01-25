@@ -1,23 +1,16 @@
-import { ApolloClient, InMemoryCache, useQuery } from '@apollo/client';
+import { useQuery } from '@apollo/client';
 
 import { useMemo } from 'react';
 
 import { OrderOptions } from '@sovryn/ui';
 
-import { graphZeroUrl } from '../../../../utils/constants';
+import { zeroClient } from '../../../../utils/clients';
 import {
   GetTroveDocument,
   InputMaybe,
   TroveChange_Filter,
   TroveChange_OrderBy,
 } from '../../../../utils/graphql/zero/generated';
-
-const zeroClient = new ApolloClient({
-  uri: graphZeroUrl,
-  cache: new InMemoryCache({
-    resultCaching: false,
-  }),
-});
 
 export const useGetTroves = (
   account: string,

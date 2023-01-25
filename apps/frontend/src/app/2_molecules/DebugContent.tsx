@@ -1,4 +1,4 @@
-import React, { useCallback, useReducer, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 
 import { ethers } from 'ethers';
 import { parseUnits } from 'ethers/lib/utils';
@@ -6,7 +6,8 @@ import { nanoid } from 'nanoid';
 import { useTranslation } from 'react-i18next';
 
 import { getTokenDetails, SupportedTokens } from '@sovryn/contracts';
-import { Accordion, AmountInput, Button, NotificationType } from '@sovryn/ui';
+import { getZeroContract } from '@sovryn/contracts';
+import { AmountInput, Button, NotificationType } from '@sovryn/ui';
 
 import { defaultChainId } from '../../config/chains';
 
@@ -43,7 +44,6 @@ export const DebugContent = () => {
   const { handleThemeChange } = useTheme();
   const { addNotification } = useNotificationContext();
   const { t } = useTranslation();
-  const [isOpen, toggle] = useReducer(p => !p, false);
   const { connectWallet, disconnectWallet, wallets, pending } =
     useWalletConnect();
   const [isPopupOpen, setIsPopupOpen] = useState(false);
@@ -93,6 +93,37 @@ export const DebugContent = () => {
     setIsOpen(true);
   }, [setIsOpen, setTitle, setTransactions, wallets]);
 
+  const NUM_LOCS_TO_LIQ = 10;
+  const liquidateLowestLocs = useCallback(async () => {
+    if (!wallets[0].provider) {
+      return;
+    }
+
+    const provider = new ethers.providers.Web3Provider(wallets[0].provider);
+    const signer = provider.getSigner();
+
+    const { address: troveManagerAddress, abi: troveManagerAbi } =
+      await getZeroContract('troveManager', defaultChainId);
+
+    const troveManager = new ethers.Contract(
+      troveManagerAddress,
+      troveManagerAbi,
+      signer,
+    );
+
+    setTransactions([
+      {
+        title: `Liquidating lowest ${NUM_LOCS_TO_LIQ} lines of credit`,
+        subtitle: `Attempting to liquidate lowest ${NUM_LOCS_TO_LIQ} LoCs`,
+        contract: troveManager,
+        fnName: 'liquidateTroves',
+        args: [NUM_LOCS_TO_LIQ],
+      },
+    ]);
+    setTitle('Liquidating');
+    setIsOpen(true);
+  }, [setIsOpen, setTitle, setTransactions, wallets]);
+
   const exportData = useCallback(async () => {
     const { data } = await getTransactions({
       variables: { limit: EXPORT_RECORD_LIMIT },
@@ -110,12 +141,7 @@ export const DebugContent = () => {
   const { value: block } = useBlockNumber();
 
   return (
-    <Accordion
-      className="my-3"
-      label="Debug content"
-      open={isOpen}
-      onClick={toggle}
-    >
+    <>
       <div>Block: {block}</div>
       <div className="flex items-center gap-4 mt-4">
         <Button
@@ -163,14 +189,21 @@ export const DebugContent = () => {
         />
         <LOCStatus className="mt-4" withdrawalSurplus={0.5} />
       </div>
-      <br />
-      <br />
-      Collateral surplus withdrawals
-      <br />
-      <br />
-      <CollateralSurplusHistoryFrame />
-      <br />
-      <br />
+      <div className="my-4">
+        {wallets[0]?.accounts[0]?.address ? (
+          <div>
+            <Button text="Approve" onClick={approve} />
+            <ExampleTypedDataSign />
+            <Button
+              text={`Liquidate lowest ${NUM_LOCS_TO_LIQ} LoCs`}
+              className="mx-4"
+              onClick={liquidateLowestLocs}
+            />
+          </div>
+        ) : (
+          <Button text="Connect to RSK Testnet" onClick={connectWallet} />
+        )}
+      </div>
       <TransactionStepDialog />
       <ExampleProviderCall />
       <ExampleTokenDetails />
@@ -198,14 +231,6 @@ export const DebugContent = () => {
         Dapp2 maintenance mode for {isMainnet() ? 'MAINNET' : 'TESTNET'} is{' '}
         {dappLockedTest ? 'ON' : 'OFF'}
       </div>
-      {wallets[0]?.accounts[0]?.address ? (
-        <div>
-          <Button text="Approve" onClick={approve} />
-          <ExampleTypedDataSign />
-        </div>
-      ) : (
-        <Button text="Connect to RSK Testnet" onClick={connectWallet} />
-      )}
       <hr className="my-12" />
       <div className="flex items-center gap-4">
         <div
@@ -272,6 +297,6 @@ export const DebugContent = () => {
           />
         )}
       </div>
-    </Accordion>
+    </>
   );
 };

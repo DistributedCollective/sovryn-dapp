@@ -9,6 +9,12 @@ export const rskTestnet: Record<string, AsyncContractConfigData> = {
       (await import('@sovryn-zero/lib-ethers/dist/abi/BorrowerOperations.json'))
         .default,
   },
+  troveManager: {
+    address: addresses.troveManager,
+    getAbi: async () =>
+      (await import('@sovryn-zero/lib-ethers/dist/abi/TroveManager.json'))
+      .default,
+  },
   stabilityPool: {
     address: addresses.stabilityPool,
     getAbi: async () =>

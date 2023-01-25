@@ -3192,9 +3192,8 @@ export type GetCollSurplusChangesQuery = {
   collSurplusChanges: Array<{
     __typename?: 'CollSurplusChange';
     id: string;
+    sequenceNumber: number;
     collSurplusChange: string;
-    collSurplusBefore: string;
-    collSurplusAfter: string;
     user: { __typename?: 'User'; id: string };
     transaction: { __typename?: 'Transaction'; id: string; timestamp: number };
   }>;
@@ -3387,12 +3386,11 @@ export const GetCollSurplusChangesDocument = gql`
       where: $filters
     ) {
       id
+      sequenceNumber
+      collSurplusChange
       user {
         id
       }
-      collSurplusChange
-      collSurplusBefore
-      collSurplusAfter
       transaction {
         id
         timestamp

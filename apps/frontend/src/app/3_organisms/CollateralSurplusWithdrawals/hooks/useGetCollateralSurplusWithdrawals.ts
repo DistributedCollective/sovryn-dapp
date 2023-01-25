@@ -1,4 +1,4 @@
-import { ApolloClient, InMemoryCache, useQuery } from '@apollo/client';
+import { ApolloClient, InMemoryCache } from '@apollo/client';
 
 import { useMemo } from 'react';
 
@@ -8,7 +8,7 @@ import { graphZeroUrl } from '../../../../utils/constants';
 import {
   CollSurplusChange_Filter,
   CollSurplusChange_OrderBy,
-  GetCollSurplusChangesDocument,
+  useGetCollSurplusChangesQuery,
 } from './../../../../utils/graphql/zero/generated';
 
 const zeroClient = new ApolloClient({
@@ -38,10 +38,25 @@ export const useGetCollateralSurplusWithdrawals = (
     [page, orderOptions, pageSize, account],
   );
 
-  const { loading, data } = useQuery(GetCollSurplusChangesDocument, {
+  const { loading, data } = useGetCollSurplusChangesQuery({
     variables: config,
     client: zeroClient,
   });
 
-  return { loading, data };
+  const collSurplusChanges = useMemo(() => {
+    if (!data) {
+      return [];
+    }
+
+    return data.collSurplusChanges.map(tx => ({
+      id: tx.id,
+      sequenceNumber: tx.sequenceNumber,
+      collSurplusChange: tx.collSurplusChange,
+      user: tx.user.id,
+      timestamp: tx.transaction.timestamp,
+      hash: tx.transaction.id,
+    }));
+  }, [data]);
+
+  return { loading, data: collSurplusChanges };
 };

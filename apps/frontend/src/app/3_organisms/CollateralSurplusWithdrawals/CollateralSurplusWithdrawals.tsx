@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 
 import { SupportedTokens } from '@sovryn/contracts';
 import {
+  applyDataAttr,
   NotificationType,
   OrderDirection,
   OrderOptions,
@@ -22,7 +23,10 @@ import { useNotificationContext } from '../../../contexts/NotificationContext';
 import { useAccount } from '../../../hooks/useAccount';
 import { translations } from '../../../locales/i18n';
 import { EXPORT_RECORD_LIMIT } from '../../../utils/constants';
-import { CollSurplusChange } from '../../../utils/graphql/zero/generated';
+import {
+  CollSurplusChange_Filter,
+  useGetCollSurplusChangesLazyQuery,
+} from '../../../utils/graphql/zero/generated';
 import { dateFormat } from '../../../utils/helpers';
 import { formatValue } from '../../../utils/math';
 import { useGetCollateralSurplusWithdrawals } from './hooks/useGetCollateralSurplusWithdrawals';
@@ -49,28 +53,19 @@ export const CollateralSurplusHistoryFrame: FC = () => {
     page,
     orderOptions,
   );
+  const [getCollSurplusChanges] = useGetCollSurplusChangesLazyQuery();
 
-  const collSurplusChanges = useMemo(() => {
-    if (!data) {
-      return null;
-    }
-
-    return data.collSurplusChanges;
-  }, [data]);
-
-  const renderCollateralChange = useCallback((row: CollSurplusChange) => {
-    return (
-      <>
-        {formatValue(Math.abs(Number(row.collSurplusChange)), 8)}{' '}
-        {SupportedTokens.rbtc.toUpperCase()}
-      </>
-    );
+  const renderCollateralChange = useCallback((collSurplusChange: string) => {
+    return `${formatValue(
+      Math.abs(Number(collSurplusChange)),
+      8,
+    )} ${SupportedTokens.rbtc.toUpperCase()}`;
   }, []);
 
-  const generateRowTitle = useCallback((row: CollSurplusChange) => {
+  const generateRowTitle = useCallback((row: any) => {
     return (
       <Paragraph size={ParagraphSize.small}>
-        {dateFormat(row.transaction.timestamp)}
+        {dateFormat(row.timestamp)}
       </Paragraph>
     );
   }, []);
@@ -80,8 +75,7 @@ export const CollateralSurplusHistoryFrame: FC = () => {
       {
         id: 'sequenceNumber',
         title: t(translations.collateralSurplusHistory.table.timestamp),
-        cellRenderer: (item: CollSurplusChange) =>
-          dateFormat(item.transaction.timestamp),
+        cellRenderer: (tx: any) => dateFormat(tx.timestamp),
         sortable: true,
       },
       {
@@ -93,16 +87,16 @@ export const CollateralSurplusHistoryFrame: FC = () => {
       {
         id: 'collSurplusChange',
         title: t(translations.collateralSurplusHistory.table.collateralChange),
-        cellRenderer: renderCollateralChange,
+        cellRenderer: tx => renderCollateralChange(tx.collateralChange),
       },
       {
         id: 'transactionID',
         title: t(translations.collateralSurplusHistory.table.transactionID),
-        cellRenderer: (item: CollSurplusChange) => (
+        cellRenderer: (tx: any) => (
           <TransactionId
-            href={`${chain?.blockExplorerUrl}/tx/${item.transaction.id}`}
-            value={item.transaction.id}
-            dataAttribute="history-address-id"
+            href={`${chain?.blockExplorerUrl}/tx/${tx.hash}`}
+            value={tx.hash}
+            {...applyDataAttr('history-address-id')}
           />
         ),
       },
@@ -112,21 +106,33 @@ export const CollateralSurplusHistoryFrame: FC = () => {
 
   const onPageChange = useCallback(
     (value: number) => {
-      if (collSurplusChanges?.length < pageSize && value > page) {
+      if (data?.length < pageSize && value > page) {
         return;
       }
       setPage(value);
     },
-    [page, collSurplusChanges, pageSize],
+    [page, data, pageSize],
   );
 
   const isNextButtonDisabled = useMemo(
-    () => !loading && collSurplusChanges?.length < pageSize,
-    [loading, collSurplusChanges, pageSize],
+    () => !loading && data?.length < pageSize,
+    [loading, data, pageSize],
   );
 
-  const exportData = useCallback(() => {
-    if (!collSurplusChanges) {
+  const exportData = useCallback(async () => {
+    const { data } = await getCollSurplusChanges({
+      variables: {
+        skip: 0,
+        filters: {
+          user_contains: account || '',
+          collSurplusAfter: '0',
+        } as CollSurplusChange_Filter,
+        pageSize: EXPORT_RECORD_LIMIT,
+      },
+    });
+    let list = data?.collSurplusChanges || [];
+
+    if (!list || !list.length) {
       addNotification({
         type: NotificationType.warning,
         title: t(translations.collateralSurplusHistory.actions.noDataToExport),
@@ -136,17 +142,21 @@ export const CollateralSurplusHistoryFrame: FC = () => {
       });
     }
 
-    setPageSize(EXPORT_RECORD_LIMIT);
-
-    return collSurplusChanges.map((tx: CollSurplusChange) => ({
+    return list.map(tx => ({
       timestamp: dateFormat(tx.transaction.timestamp),
-      collateralChange: renderCollateralChange(tx),
+      collateralChange: renderCollateralChange(tx.collSurplusChange),
       transactionType: t(
         translations.collateralSurplusHistory.table.withdrawSurplus,
       ),
       transactionID: tx.transaction.id,
     }));
-  }, [collSurplusChanges, addNotification, t, renderCollateralChange]);
+  }, [
+    account,
+    addNotification,
+    getCollSurplusChanges,
+    renderCollateralChange,
+    t,
+  ]);
 
   useEffect(() => {
     setPage(0);
@@ -159,19 +169,19 @@ export const CollateralSurplusHistoryFrame: FC = () => {
         filename="transactions"
         className="mb-7 hidden lg:inline-flex"
         onExportEnd={() => setPageSize(DEFAULT_PAGE_SIZE)}
-        disabled={!collSurplusChanges || collSurplusChanges.length === 0}
+        disabled={!data || data.length === 0}
       />
       <div className="bg-gray-80 py-4 px-4 rounded">
         <Table
           setOrderOptions={setOrderOptions}
           orderOptions={orderOptions}
           columns={columns}
-          rows={collSurplusChanges}
+          rows={data}
           rowTitle={generateRowTitle}
           isLoading={loading}
           className="bg-gray-80 text-gray-10 lg:px-6 lg:py-4"
           noData={t(translations.common.tables.noData)}
-          dataAttribute="surplus-withdrawals-table"
+          {...applyDataAttr('surplus-withdrawals-table')}
         />
         <Pagination
           page={page}
@@ -179,7 +189,7 @@ export const CollateralSurplusHistoryFrame: FC = () => {
           onChange={onPageChange}
           itemsPerPage={pageSize}
           isNextButtonDisabled={isNextButtonDisabled}
-          dataAttribute="surplus-withdrawals-pagination"
+          {...applyDataAttr('surplus-withdrawals-pagination')}
         />
       </div>
     </>

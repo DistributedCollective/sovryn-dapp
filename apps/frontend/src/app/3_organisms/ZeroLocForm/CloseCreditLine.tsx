@@ -19,8 +19,8 @@ import {
 import { AssetRenderer } from '../../2_molecules/AssetRenderer/AssetRenderer';
 import { translations } from '../../../locales/i18n';
 import { formatValue } from '../../../utils/math';
+import { tokensToOptions } from '../../../utils/tokens';
 import { Row } from './Row';
-import { tokensToOptions } from './utils';
 
 type CloseCreditLineProps = {
   collateralValue: string;
@@ -78,10 +78,7 @@ export const CloseCreditLine: FC<CloseCreditLineProps> = ({
             <Select
               value={creditToken}
               onChange={setCreditToken}
-              options={tokensToOptions([
-                SupportedTokens.dllr,
-                SupportedTokens.zusd,
-              ])}
+              options={tokensToOptions([SupportedTokens.zusd])}
               labelRenderer={({ value }) => (
                 <AssetRenderer
                   dataAttribute="close-credit-line-credit-asset"

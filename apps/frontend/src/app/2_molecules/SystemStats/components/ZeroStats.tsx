@@ -126,7 +126,7 @@ export const ZeroStats: FC<ZeroStatsProps> = ({ className, dataAttribute }) => {
       <Paragraph
         size={ParagraphSize.base}
         style={ParagraphStyle.normal}
-        className="mb-6"
+        className="mb-3 md:mb-6"
       >
         {t(translations.stats.zero.title)}
       </Paragraph>

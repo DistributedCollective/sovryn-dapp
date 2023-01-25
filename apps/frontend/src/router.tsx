@@ -5,6 +5,7 @@ import React from 'react';
 import { createBrowserRouter } from 'react-router-dom';
 
 import { PageContainer } from './app/4_templates';
+import { earnPageLoader } from './app/5_pages/EarnPage/loader';
 import { ErrorPage } from './app/5_pages/ErrorPage/ErrorPage';
 import { zeroPageLoader } from './app/5_pages/ZeroPage/loader';
 
@@ -20,12 +21,14 @@ const ConvertPage = loadable(
 const HistoryPage = loadable(
   () => import('./app/5_pages/HistoryPage/HistoryPage'),
 );
-
 const PrivacyPolicy = loadable(
   () => import('./app/5_pages/PrivacyPolicy/PrivacyPolicy'),
 );
 const TermsOfUse = loadable(
   () => import('./app/5_pages/TermsOfUse/TermsOfUse'),
+);
+const RewardsPage = loadable(
+  () => import('./app/5_pages/RewardsPage/RewardsPage'),
 );
 
 export const router = createBrowserRouter([
@@ -42,6 +45,7 @@ export const router = createBrowserRouter([
       {
         path: '/earn',
         element: <EarnPage />,
+        loader: earnPageLoader,
       },
       {
         path: '/convert',
@@ -54,6 +58,11 @@ export const router = createBrowserRouter([
       {
         path: '/debug-content',
         element: <Debug />,
+      },
+      {
+        path: '/rewards',
+        element: <RewardsPage />,
+        loader: zeroPageLoader,
       },
     ],
   },

@@ -1,118 +1,250 @@
-import { Fees, UserTrove } from '@sovryn-zero/lib-base';
-import { EthersLiquity, ReadableEthersLiquity } from '@sovryn-zero/lib-ethers';
+import { Decimal, Fees, UserTrove } from '@sovryn-zero/lib-base';
 
-import React, { FC, useEffect, useReducer, useState } from 'react';
+import React, {
+  FC,
+  useCallback,
+  useEffect,
+  useMemo,
+  useReducer,
+  useState,
+} from 'react';
 
-import { useLoaderData } from 'react-router-dom';
+import { t } from 'i18next';
+import { Await, useLoaderData } from 'react-router-dom';
 
 import {
+  applyDataAttr,
   Button,
+  ButtonSize,
+  ButtonStyle,
   Dialog,
   DialogBody,
   DialogHeader,
   DialogSize,
-  Heading,
-  noop,
+  Paragraph,
+  ParagraphSize,
+  ParagraphStyle,
 } from '@sovryn/ui';
 
+import { DashboardWelcomeBanner } from '../../2_molecules/DashboardWelcomeBanner/DashboardWelcomeBanner';
+import { LOCStatus } from '../../2_molecules/LOCStatus/LOCStatus';
 import { SystemStats } from '../../2_molecules/SystemStats/SystemStats';
 import { LOCChart } from '../../3_organisms/LOCChart/LOCChart';
+import { useGetUserOpenTrove } from '../../3_organisms/LOCChart/hooks/useGetUserOpenTrove';
 import { AdjustCreditLine } from '../../3_organisms/ZeroLocForm/AdjustCreditLine';
 import { CloseCreditLine } from '../../3_organisms/ZeroLocForm/CloseCreditLine';
+import { DEBT_TOKEN } from '../../3_organisms/ZeroLocForm/constants';
+import { CreditLineType } from '../../3_organisms/ZeroLocForm/types';
 import { useWalletConnect } from '../../../hooks';
+import { useAccount } from '../../../hooks/useAccount';
+import { translations } from '../../../locales/i18n';
+import { useClaimCollateralSurplus } from './hooks/useClaimCollateralSurplus';
+import { useHandleTrove } from './hooks/useHandleTrove';
+import { ZeroPageLoaderData } from './loader';
 
 export const ZeroPage: FC = () => {
-  const { liquity } = useLoaderData() as {
-    liquity: EthersLiquity;
-    provider: ReadableEthersLiquity;
-  };
+  const { liquity, deferedData } = useLoaderData() as ZeroPageLoaderData;
 
   const [open, toggle] = useReducer(v => !v, false);
   const [openClosePopup, toggleClosePopup] = useReducer(v => !v, false);
   const [trove, setTrove] = useState<UserTrove>();
-  const [btcPrice, setBtcPrice] = useState('0');
-  const [fees, setFees] = useState<Fees>();
   const [zusdBalance, setZusdBalance] = React.useState('');
+  const [collateralSurplusBalance, setCollateralSurplusBalance] =
+    useState<Decimal>();
 
-  const { account } = useWalletConnect();
+  const { connectWallet } = useWalletConnect();
+  const { account } = useAccount();
 
-  useEffect(() => {
-    liquity
-      .getPrice()
-      .then(e => e.toString())
-      .then(setBtcPrice);
+  const collateral = useMemo(
+    () => Number(trove?.collateral ?? 0),
+    [trove?.collateral],
+  );
+  const debt = useMemo(() => Number(trove?.debt ?? 0), [trove?.debt]);
+  const hasLoc = useMemo(() => !!trove?.debt?.gt(0), [trove?.debt]);
+  const { refetch: getOpenTroves } = useGetUserOpenTrove();
 
-    liquity.getFees().then(setFees);
-  }, [liquity]);
+  const isLoading = useMemo(
+    () =>
+      account &&
+      (trove === undefined || collateralSurplusBalance === undefined),
+    [account, collateralSurplusBalance, trove],
+  );
+  const showWelcomeBanner = useMemo(
+    () => !account || (!hasLoc && collateralSurplusBalance?.eq(0)),
+    [account, collateralSurplusBalance, hasLoc],
+  );
 
-  useEffect(() => {
+  const getTroves = useCallback(() => {
     if (account && liquity) {
       liquity.getTrove(account).then(setTrove);
     }
   }, [account, liquity]);
-
-  useEffect(() => {
-    const getZUSDBalance = async () => {
-      const balance = (await liquity.getZUSDBalance(account)).toString();
-      return balance;
-    };
-
+  const getCollateralSurplusBalance = useCallback(() => {
     if (account && liquity) {
-      getZUSDBalance().then(setZusdBalance);
+      liquity
+        .getCollateralSurplusBalance(account)
+        .then(setCollateralSurplusBalance);
     }
   }, [account, liquity]);
+  const getZUSDBalance = useCallback(async () => {
+    const balance = (await liquity.getZUSDBalance(account)).toString();
+    setZusdBalance(balance);
+  }, [account, liquity]);
+
+  const claimCollateralSurplus = useClaimCollateralSurplus(
+    getCollateralSurplusBalance,
+  );
+  const { handleTroveSubmit, handleTroveClose } = useHandleTrove(hasLoc, () => {
+    getTroves();
+    getOpenTroves();
+    getZUSDBalance();
+  });
+
+  useEffect(() => {
+    getTroves();
+    getCollateralSurplusBalance();
+  }, [account, liquity, getTroves, getCollateralSurplusBalance]);
+
+  useEffect(() => {
+    if (account && liquity) {
+      getZUSDBalance();
+    }
+  }, [account, liquity, getZUSDBalance]);
+
+  const getRatio = useCallback(
+    (price: string) => {
+      return ((collateral * Number(price)) / debt) * 100;
+    },
+    [collateral, debt],
+  );
 
   return (
-    <div className="container max-w-7xl mt-24">
-      {account && (
-        <>
-          <Heading>Example</Heading>
-          <div className="flex flex-row justify-start items-center text-black gap-8 mt-8">
-            <div className="bg-gray-30 p-3">
-              <div>Debt</div>
-              <div>{trove?.debt.toString() ?? '0'}</div>
-            </div>
-            <div className="bg-gray-30 p-3">
-              <div>Collateral</div>
-              <div>{trove?.collateral.toString() ?? '0'}</div>
-            </div>
-          </div>
+    <div className="px-0 container max-w-7xl md:mt-16 md:mb-40 mt-4 mb-7">
+      <React.Suspense fallback={<p>Loading stuff...</p>}>
+        <Await resolve={deferedData} errorElement={<p>Error loading stuff!</p>}>
+          {([price, fees]: [string, Fees]) => (
+            <>
+              {!showWelcomeBanner && !isLoading && (
+                <LOCStatus
+                  className="mb-6"
+                  collateral={collateral}
+                  debt={debt}
+                  cRatio={getRatio(price)}
+                  debtSymbol={DEBT_TOKEN.toUpperCase()}
+                  onAdjust={toggle}
+                  onClose={toggleClosePopup}
+                  withdrawalSurplus={Number(
+                    collateralSurplusBalance?.toString(),
+                  )}
+                  onWithdraw={claimCollateralSurplus}
+                />
+              )}
 
-          <Button text="Adjust" onClick={toggle} className="mt-8" />
-          <Button
-            text="Close Line of Credit"
-            onClick={toggleClosePopup}
-            className="mt-8 ml-4"
-          />
-        </>
-      )}
-      <SystemStats />
-      <LOCChart />
+              {showWelcomeBanner && !isLoading && (
+                <DashboardWelcomeBanner
+                  openLOC={toggle}
+                  connectWallet={connectWallet}
+                />
+              )}
 
-      <Dialog width={DialogSize.sm} isOpen={open} disableFocusTrap>
-        <DialogHeader title="Adjust" onClose={toggle} />
-        <DialogBody>
-          <AdjustCreditLine
-            collateralValue={trove?.collateral.toString() ?? '0'}
-            creditValue={trove?.debt.toString() ?? '0'}
-            onSubmit={noop}
-            rbtcPrice={btcPrice}
-            fees={fees}
-          />
-        </DialogBody>
-      </Dialog>
+              <div className="flex-col-reverse lg:flex-row flex items-stretch md:bg-gray-90 md:p-6 rounded gap-9 md:gap-20">
+                <div className="md:min-w-[23rem] min-w-auto">
+                  <SystemStats />
+                </div>
+                <div className="md:hidden flex items-center w-full gap-3 mb-6">
+                  {collateralSurplusBalance?.gt(0) && (
+                    <Button
+                      text={t(translations.LOCStatus.withdraw)}
+                      style={ButtonStyle.primary}
+                      size={ButtonSize.large}
+                      onClick={claimCollateralSurplus}
+                      className="flex-1"
+                      {...applyDataAttr('zero-withdraw')}
+                    />
+                  )}
+                  {hasLoc && (
+                    <>
+                      <Button
+                        text={t(translations.LOCStatus.adjust)}
+                        style={ButtonStyle.primary}
+                        size={ButtonSize.large}
+                        onClick={toggle}
+                        className="flex-1"
+                        {...applyDataAttr('zero-adjust')}
+                      />
+                      <Button
+                        text={t(translations.LOCStatus.close)}
+                        style={ButtonStyle.secondary}
+                        size={ButtonSize.large}
+                        onClick={toggleClosePopup}
+                        className="flex-1"
+                        {...applyDataAttr('zero-close')}
+                      />
+                    </>
+                  )}
+                </div>
+                <div className="flex-1 flex flex-col">
+                  <Paragraph
+                    size={ParagraphSize.base}
+                    style={ParagraphStyle.normal}
+                    className="mb-3 md:mb-6"
+                  >
+                    {t(translations.chart.systemLinesCredit)}
+                  </Paragraph>
 
-      <Dialog width={DialogSize.sm} isOpen={openClosePopup} disableFocusTrap>
-        <DialogHeader title="Close" onClose={toggleClosePopup} />
-        <DialogBody>
-          <CloseCreditLine
-            onSubmit={noop}
-            creditValue={trove?.debt.toString() ?? '0'}
-            collateralValue={trove?.collateral.toString() ?? '0'}
-            availableBalance={zusdBalance}
-          />
-        </DialogBody>
-      </Dialog>
+                  <div className="h-80 md:flex-1 bg-gray-80 rounded pt-2 pr-2 flex items-center">
+                    <LOCChart />
+                  </div>
+                </div>
+              </div>
+
+              <Dialog width={DialogSize.sm} isOpen={open} disableFocusTrap>
+                <DialogHeader
+                  title={
+                    !hasLoc
+                      ? t(translations.zeroPage.loc.open)
+                      : t(translations.zeroPage.loc.adjust)
+                  }
+                  onClose={toggle}
+                />
+                <DialogBody>
+                  {open && (
+                    <AdjustCreditLine
+                      type={
+                        !hasLoc ? CreditLineType.Open : CreditLineType.Adjust
+                      }
+                      existingCollateral={String(collateral)}
+                      existingDebt={String(debt)}
+                      onSubmit={handleTroveSubmit}
+                      rbtcPrice={price}
+                      fees={fees}
+                    />
+                  )}
+                </DialogBody>
+              </Dialog>
+
+              <Dialog
+                width={DialogSize.sm}
+                isOpen={openClosePopup}
+                disableFocusTrap
+              >
+                <DialogHeader
+                  title={t(translations.zeroPage.loc.close)}
+                  onClose={toggleClosePopup}
+                />
+                <DialogBody>
+                  <CloseCreditLine
+                    onSubmit={handleTroveClose}
+                    creditValue={String(debt)}
+                    collateralValue={String(collateral)}
+                    availableBalance={zusdBalance}
+                  />
+                </DialogBody>
+              </Dialog>
+            </>
+          )}
+        </Await>
+      </React.Suspense>
     </div>
   );
 };

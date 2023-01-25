@@ -1,9 +1,9 @@
-import { ApolloClient, InMemoryCache, useQuery } from '@apollo/client';
+import { useQuery } from '@apollo/client';
 
 import { useMemo } from 'react';
 
 import { useIsMobile } from '../../../../hooks/useIsMobile';
-import { graphZeroUrl } from '../../../../utils/constants';
+import { zeroClient } from '../../../../utils/clients';
 import {
   GetTrovesAboveDocument,
   GetTrovesBelowDocument,
@@ -12,13 +12,6 @@ import { TrovesFilterType } from '../types';
 
 const trovesCount = 10;
 const trovesCountMobile = 3;
-
-const zeroClient = new ApolloClient({
-  uri: graphZeroUrl,
-  cache: new InMemoryCache({
-    resultCaching: false,
-  }),
-});
 
 export const useGetTrovesPositions = (
   userCollateralRatioKey: string,

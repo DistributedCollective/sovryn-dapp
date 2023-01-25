@@ -3209,6 +3209,29 @@ export type GetLowestTrovesQuery = {
   troves: Array<{ __typename?: 'Trove'; collateral: string; debt: string }>;
 };
 
+export type GetRedemptionsQueryVariables = Exact<{
+  skip: Scalars['Int'];
+  pageSize: Scalars['Int'];
+  orderBy?: InputMaybe<Redemption_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+  filters?: InputMaybe<Redemption_Filter>;
+}>;
+
+export type GetRedemptionsQuery = {
+  __typename?: 'Query';
+  redemptions: Array<{
+    __typename?: 'Redemption';
+    id: string;
+    fee: string;
+    partial: boolean;
+    sequenceNumber: number;
+    collateralRedeemed: string;
+    tokensActuallyRedeemed: string;
+    tokensAttemptedToRedeem: string;
+    transaction: { __typename?: 'Transaction'; id: string; timestamp: number };
+  }>;
+};
+
 export type GetStabilityDepositChangesQueryVariables = Exact<{
   filters?: InputMaybe<StabilityDepositChange_Filter>;
 }>;
@@ -3517,6 +3540,90 @@ export type GetLowestTrovesLazyQueryHookResult = ReturnType<
 export type GetLowestTrovesQueryResult = Apollo.QueryResult<
   GetLowestTrovesQuery,
   GetLowestTrovesQueryVariables
+>;
+export const GetRedemptionsDocument = gql`
+  query getRedemptions(
+    $skip: Int!
+    $pageSize: Int!
+    $orderBy: Redemption_orderBy
+    $orderDirection: OrderDirection
+    $filters: Redemption_filter
+  ) {
+    redemptions(
+      first: $pageSize
+      skip: $skip
+      orderBy: $orderBy
+      orderDirection: $orderDirection
+      where: $filters
+    ) {
+      id
+      fee
+      partial
+      sequenceNumber
+      collateralRedeemed
+      tokensActuallyRedeemed
+      tokensAttemptedToRedeem
+      transaction {
+        id
+        timestamp
+      }
+    }
+  }
+`;
+
+/**
+ * __useGetRedemptionsQuery__
+ *
+ * To run a query within a React component, call `useGetRedemptionsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetRedemptionsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetRedemptionsQuery({
+ *   variables: {
+ *      skip: // value for 'skip'
+ *      pageSize: // value for 'pageSize'
+ *      orderBy: // value for 'orderBy'
+ *      orderDirection: // value for 'orderDirection'
+ *      filters: // value for 'filters'
+ *   },
+ * });
+ */
+export function useGetRedemptionsQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    GetRedemptionsQuery,
+    GetRedemptionsQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<GetRedemptionsQuery, GetRedemptionsQueryVariables>(
+    GetRedemptionsDocument,
+    options,
+  );
+}
+export function useGetRedemptionsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    GetRedemptionsQuery,
+    GetRedemptionsQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<GetRedemptionsQuery, GetRedemptionsQueryVariables>(
+    GetRedemptionsDocument,
+    options,
+  );
+}
+export type GetRedemptionsQueryHookResult = ReturnType<
+  typeof useGetRedemptionsQuery
+>;
+export type GetRedemptionsLazyQueryHookResult = ReturnType<
+  typeof useGetRedemptionsLazyQuery
+>;
+export type GetRedemptionsQueryResult = Apollo.QueryResult<
+  GetRedemptionsQuery,
+  GetRedemptionsQueryVariables
 >;
 export const GetStabilityDepositChangesDocument = gql`
   query getStabilityDepositChanges($filters: StabilityDepositChange_filter) {

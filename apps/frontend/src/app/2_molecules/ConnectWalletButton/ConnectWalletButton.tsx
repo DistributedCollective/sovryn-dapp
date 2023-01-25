@@ -15,7 +15,6 @@ import {
 import { EmailNotificationSettingsDialog } from '../../3_organisms/EmailNotificationSettingsDialog/EmailNotificationSettingsDialog';
 import { useNotificationContext } from '../../../contexts/NotificationContext';
 import { translations } from '../../../locales/i18n';
-import { sovrynLinks } from '../../../utils/constants';
 
 export type ConnectWalletButtonProps = {
   onConnect: () => void;
@@ -71,13 +70,13 @@ export const ConnectWalletButton: FC<
           className={className}
           content={
             <Menu className="mb-4">
-              <MenuItem
-                text={t(translations.connectWalletButton.rewards)}
-                className="no-underline"
-                href={`${sovrynLinks.dappAlpha}/rewards`}
-                hrefExternal
-                dataAttribute={`${dataAttribute}-menu-rewards`}
-              />
+              <Link to="/rewards" className="no-underline">
+                <MenuItem
+                  text={t(translations.connectWalletButton.rewards)}
+                  className="no-underline"
+                  dataAttribute={`${dataAttribute}-menu-rewards`}
+                />
+              </Link>
               <Link to="/history" className="no-underline">
                 <MenuItem
                   text={t(translations.connectWalletButton.history)}

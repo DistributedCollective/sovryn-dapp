@@ -1,4 +1,10 @@
-import React, { useCallback, useEffect, MouseEvent, useRef } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  MouseEvent,
+  useRef,
+  useState,
+} from 'react';
 
 import classNames from 'classnames';
 import FocusTrap from 'focus-trap-react';
@@ -42,6 +48,7 @@ export const Dialog: IDialogFunctionComponent<DialogProps> = ({
   const ref = useRef<HTMLDivElement>(null);
 
   const handleClose = useCallback(() => onClose?.(), [onClose]);
+  const [zIndex, setZIndex] = useState(0);
 
   const handleChildElementClick = useCallback((event: MouseEvent) => {
     event.stopPropagation();
@@ -49,8 +56,11 @@ export const Dialog: IDialogFunctionComponent<DialogProps> = ({
 
   useEffect(() => {
     // make sure that multiple dialogs opened showing up in correct order.
-    Dialog.index++;
-  }, []);
+    if (isOpen) {
+      Dialog.index++;
+      setZIndex(100 + Dialog.index);
+    }
+  }, [isOpen]);
 
   useEffect(() => {
     const handleEscape = (event: KeyboardEvent) => {
@@ -83,7 +93,7 @@ export const Dialog: IDialogFunctionComponent<DialogProps> = ({
 
   return (
     <Overlay
-      zIndex={100 + Dialog.index}
+      zIndex={zIndex}
       isOpen={isOpen}
       fixed
       portalTarget="body"

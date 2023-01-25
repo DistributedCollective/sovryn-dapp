@@ -12,7 +12,6 @@ import { AmountInput, Button, NotificationType } from '@sovryn/ui';
 import { defaultChainId } from '../../config/chains';
 
 import { TransactionStepDialog } from '../3_organisms';
-import { CollateralSurplusHistoryFrame } from '../3_organisms/CollateralSurplusWithdrawals/CollateralSurplusWithdrawals';
 import { EmailNotificationSettingsDialog } from '../3_organisms/EmailNotificationSettingsDialog/EmailNotificationSettingsDialog';
 import { GettingStartedPopup } from '../3_organisms/GettingStartedPopup/GettingStartedPopup';
 import { useNotificationContext } from '../../contexts/NotificationContext';

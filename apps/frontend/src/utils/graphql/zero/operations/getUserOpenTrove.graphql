@@ -12,6 +12,7 @@ query getUserOpenTrove($user: ID!) {
         sequenceNumber
       }
       trove {
+        id
         collateralRatioSortKey
         collateral
         debt

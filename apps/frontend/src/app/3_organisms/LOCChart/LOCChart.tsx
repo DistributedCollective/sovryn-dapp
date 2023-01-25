@@ -94,10 +94,10 @@ export const LOCChart: FC = () => {
             title: () => '',
             label: () => '',
             beforeBody: context => {
-              const { collateralAmount, tx, debtAmount, collateralRatio } =
+              const { collateralAmount, address, debtAmount, collateralRatio } =
                 context[0].raw;
               const tooltipContent = [
-                prettyTx(tx),
+                prettyTx(address),
                 `${t(translations.chart.collateralAmount)}: ${formatValue(
                   Number(collateralAmount),
                   6,
@@ -237,7 +237,7 @@ export const LOCChart: FC = () => {
         {
           data: data,
           parsing: {
-            xAxisKey: ChartSortingType.sequenceNumber,
+            xAxisKey: ChartSortingType.tx,
             yAxisKey: ChartSortingType.collateralRatio,
           },
           backgroundColor: bar =>
@@ -274,6 +274,7 @@ export const LOCChart: FC = () => {
       const userTrove = [
         {
           sequenceNumber: trove.collateralRatioSortKey.toString(),
+          address: trove.id,
           tx: transaction.id,
           collateralAmount: trove.collateral,
           debtAmount: trove.debt,
@@ -288,6 +289,7 @@ export const LOCChart: FC = () => {
       const trovesDataAbove = userOpenTroveAbove.troves.map(
         ({ changes }: TroveData) => ({
           sequenceNumber: changes[0].trove.collateralRatioSortKey.toString(),
+          address: changes[0].trove.id,
           tx: changes[0].transaction.id,
           collateralAmount: changes[0].trove.collateral,
           debtAmount: changes[0].trove.debt,
@@ -302,6 +304,7 @@ export const LOCChart: FC = () => {
       const trovesDataBelow = userOpenTroveBelow.troves.map(
         ({ changes }: TroveData) => ({
           sequenceNumber: changes[0].trove.collateralRatioSortKey.toString(),
+          address: changes[0].trove.id,
           tx: changes[0].transaction.id,
           collateralAmount: changes[0].trove.collateral,
           debtAmount: changes[0].trove.debt,
@@ -335,6 +338,7 @@ export const LOCChart: FC = () => {
     if (!loadingTroves && troves && !loadingUserOpenTrove && !userOpenTrove) {
       const trovesData = troves.troves.map(({ changes }: TroveData) => ({
         sequenceNumber: changes[0].trove.collateralRatioSortKey.toString(),
+        address: changes[0].trove.id,
         tx: changes[0].transaction.id,
         collateralAmount: changes[0].trove.collateral,
         debtAmount: changes[0].trove.debt,

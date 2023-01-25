@@ -25,7 +25,11 @@ import { useNotificationContext } from '../../../contexts/NotificationContext';
 import { useAccount } from '../../../hooks/useAccount';
 import { translations } from '../../../locales/i18n';
 import { EXPORT_RECORD_LIMIT } from '../../../utils/constants';
-import { Redemption } from '../../../utils/graphql/zero/generated';
+import {
+  Redemption,
+  Redemption_Filter,
+  useGetRedemptionsLazyQuery,
+} from '../../../utils/graphql/zero/generated';
 import { dateFormat } from '../../../utils/helpers';
 import { formatValue } from '../../../utils/math';
 import { useGetRedemptionsHistory } from './hooks/useGetRedemptionsHistory';
@@ -53,6 +57,8 @@ export const RedemptionsHistoryFrame: FC = () => {
     page,
     orderOptions,
   );
+
+  const [getRedemptions] = useGetRedemptionsLazyQuery();
 
   const redemptions = useMemo(() => {
     return (data?.redemptions as Redemption[]) || [];
@@ -207,7 +213,19 @@ export const RedemptionsHistoryFrame: FC = () => {
   );
 
   const exportData = useCallback(async () => {
-    if (!redemptions) {
+    const { data } = await getRedemptions({
+      variables: {
+        skip: 0,
+        filters: {
+          redeemer: account || '',
+        } as Redemption_Filter,
+        pageSize: EXPORT_RECORD_LIMIT,
+      },
+    });
+
+    let redemptions = data?.redemptions || [];
+
+    if (!redemptions || !redemptions.length) {
       addNotification({
         type: NotificationType.warning,
         title: t(translations.redemptionsHistory.actions.noDataToExport),
@@ -217,8 +235,6 @@ export const RedemptionsHistoryFrame: FC = () => {
       });
     }
 
-    setPageSize(EXPORT_RECORD_LIMIT);
-
     return redemptions.map(tx => ({
       timestamp: dateFormat(tx.transaction.timestamp),
       zusdRedeemed: tx.tokensActuallyRedeemed,
@@ -226,7 +242,7 @@ export const RedemptionsHistoryFrame: FC = () => {
       redemptionFee: tx.fee,
       transactionID: tx.transaction.id,
     }));
-  }, [t, redemptions, addNotification]);
+  }, [t, account, addNotification, getRedemptions]);
 
   useEffect(() => {
     setPage(0);

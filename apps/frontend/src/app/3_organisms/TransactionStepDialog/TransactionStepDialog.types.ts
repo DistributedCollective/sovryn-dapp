@@ -3,7 +3,7 @@ import { BigNumberish, ethers } from 'ethers';
 export interface TxConfig {
   amount?: BigNumberish;
   unlimitedAmount?: boolean;
-  gasLimit?: string;
+  gasLimit?: BigNumberish;
   gasPrice?: string;
   value?: BigNumberish;
   hash?: string;

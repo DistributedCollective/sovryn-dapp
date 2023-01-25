@@ -31,6 +31,7 @@
         "actions": {
             "borrow": "Borrow",
             "repay": "Repay",
+            "collateral": "Collateral",
             "addCollateral": "Add collateral",
             "withdrawCollateral": "Withdraw collateral"
         },
@@ -188,6 +189,26 @@
             "earn": "Earn",
             "convert": "Convert"
         }
+    },
+    "zeroPage": {
+      "loc": {
+        "open": "Open line of credit",
+        "adjust": "Adjust line of credit",
+        "close": "Close",
+        "errors": {
+          "ratioWarningInRecovery": "Keeping your collateral ratio above {{value}}% can reduce the risk of liquidation in cases of market volatility",
+          "ratioErrorInRecovery": "Collateral ratio must be at least {{value}}%",
+          "ratioWarning": "Keeping your collateral ratio above {{value}}% can help avoid liquidation under recovery mode",
+          "ratioError": "Collateral ratio must be at least {{value}}%",
+          "debtTooLow": "Debt must be at least {{value}}",
+          "balanceTooLow": "The collateral amount you're trying to deposit exceeds your balance by {{value}}"
+        }
+      },
+      "tx": {
+        "adjustTrove": "Adjust Trove",
+        "closeTrove": "Close Trove",
+        "openTrove": "Open Trove"
+      }
     },
     "stats": {
         "zero": {

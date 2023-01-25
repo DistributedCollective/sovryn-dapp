@@ -3,7 +3,11 @@ import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import classNames from 'classnames';
 import { formatUnits, parseUnits } from 'ethers/lib/utils';
 
-import { getTokenDetailsByAddress, TokenDetailsData } from '@sovryn/contracts';
+import {
+  getTokenDetailsByAddress,
+  TokenDetailsData,
+  findContract,
+} from '@sovryn/contracts';
 import {
   Accordion,
   AmountInput,
@@ -20,7 +24,6 @@ import {
   StatusType,
   TransactionId,
   HelperButton,
-  noop,
 } from '@sovryn/ui';
 
 import { chains, defaultChainId } from '../../../../../config/chains';
@@ -53,10 +56,11 @@ export const TransactionStep: FC<TransactionStepProps> = ({
   const [token, setToken] = useState<TokenDetailsData | undefined>();
 
   useEffect(() => {
-    (() =>
-      getTokenDetailsByAddress(transaction.contract.address)
-        .then(setToken)
-        .catch(noop))();
+    findContract(transaction.contract.address).then(result => {
+      if (result.group === 'tokens') {
+        getTokenDetailsByAddress(transaction.contract.address).then(setToken);
+      }
+    });
   }, [transaction.contract.address]);
 
   const { title, subtitle } = transaction;

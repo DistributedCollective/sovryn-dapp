@@ -1,5 +1,10 @@
 import dayjs from 'dayjs';
-import { providers, TypedDataDomain, TypedDataField } from 'ethers';
+import {
+  BigNumberish,
+  providers,
+  TypedDataDomain,
+  TypedDataField,
+} from 'ethers';
 
 import { EIP1193Provider } from '@sovryn/onboard-common';
 
@@ -74,3 +79,12 @@ export const parseJwt = (token: string) => {
 
   return JSON.parse(jsonPayload);
 };
+
+export const valueIsDefined = <T>(
+  entry: [string, T | undefined],
+): entry is [string, T] => entry[1] !== undefined;
+
+export const composeGas = (
+  priceInGwei: BigNumberish,
+  limitInWei: BigNumberish,
+) => Number(priceInGwei) * 1e9 * Number(limitInWei);

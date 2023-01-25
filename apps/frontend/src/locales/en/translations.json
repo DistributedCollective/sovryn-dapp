@@ -13,7 +13,8 @@
             "switch": "Switch",
             "confirm": "Confirm",
             "save": "Save",
-            "cancel": "Cancel"
+            "cancel": "Cancel",
+            "withdraw": "Withdraw"
         },
         "na": "N/A",
         "tables": {
@@ -34,6 +35,7 @@
         "actions": {
             "borrow": "Borrow",
             "repay": "Repay",
+            "collateral": "Collateral",
             "addCollateral": "Add collateral",
             "withdrawCollateral": "Withdraw collateral"
         },
@@ -192,6 +194,26 @@
             "convert": "Convert"
         }
     },
+    "zeroPage": {
+      "loc": {
+        "open": "Open line of credit",
+        "adjust": "Adjust line of credit",
+        "close": "Close",
+        "errors": {
+          "ratioWarningInRecovery": "Keeping your collateral ratio above {{value}}% can reduce the risk of liquidation in cases of market volatility",
+          "ratioErrorInRecovery": "Collateral ratio must be at least {{value}}%",
+          "ratioWarning": "Keeping your collateral ratio above {{value}}% can help avoid liquidation under recovery mode",
+          "ratioError": "Collateral ratio must be at least {{value}}%",
+          "debtTooLow": "Debt must be at least {{value}}",
+          "balanceTooLow": "The collateral amount you're trying to deposit exceeds your balance by {{value}}"
+        }
+      },
+      "tx": {
+        "adjustTrove": "Adjust Trove",
+        "closeTrove": "Close Trove",
+        "openTrove": "Open Trove"
+      }
+    },
     "stats": {
         "zero": {
             "title": "Zero statistics",
@@ -241,6 +263,22 @@
                 "funding": "Funding"
             },
             "comingSoon": "Coming soon..."
+        }
+    },
+    "rewardPage": {
+        "title": "Rewards",
+        "subtitle": "Collect rewards earned",
+        "stabilityPoolRewards": "Stability pool rewards",
+        "btc": "BTC",
+        "actions": {
+            "transferToLOC": "Transfer to LOC",
+            "withdraw": "Withdraw"
+        },
+        "tx": {
+            "withdraw": "Withdraw",
+            "withdrawGains": "Withdraw gains",
+            "transferToLOC": "Transfer gains to LOC",
+            "transfer": "Transfer"
         }
     }
 }

@@ -1,6 +1,25 @@
-import { loadLiquity } from '../../../utils/liquity';
+import { Fees } from '@sovryn-zero/lib-base';
+import { EthersLiquity, ReadableEthersLiquity } from '@sovryn-zero/lib-ethers';
+
+import { defer } from 'react-router-dom';
+
+import { getZeroProvider } from './utils/zero-provider';
+
+export type ZeroPageLoaderData = {
+  liquity: EthersLiquity;
+  provider: ReadableEthersLiquity;
+  deferedData: Promise<[string, Fees]>;
+};
 
 export const zeroPageLoader = async () => {
-  const { liquity, provider } = await loadLiquity();
-  return { liquity, provider };
+  const { provider, ethers } = await getZeroProvider();
+
+  return defer({
+    liquity: ethers,
+    provider,
+    deferedData: Promise.all([
+      ethers.getPrice().then(result => result.toString()),
+      ethers.getFees(),
+    ]),
+  });
 };

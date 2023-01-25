@@ -6,7 +6,13 @@ import { useTransactionContext } from '../../../contexts/TransactionContext';
 import { useGasPrice } from '../../../hooks/useGasPrice';
 import { TransactionSteps } from './components/TransactionSteps/TransactionSteps';
 
-export const TransactionStepDialog: FC = () => {
+type TransactionStepDialogProps = {
+  onSuccess?: () => void;
+};
+
+export const TransactionStepDialog: FC<TransactionStepDialogProps> = ({
+  onSuccess,
+}) => {
   const { transactions, isOpen, setIsOpen, title } = useTransactionContext();
   const onClose = useCallback(() => setIsOpen(false), [setIsOpen]);
   const gasPrice = useGasPrice();
@@ -22,7 +28,8 @@ export const TransactionStepDialog: FC = () => {
       <DialogBody>
         <TransactionSteps
           transactions={transactions}
-          onSuccess={onClose}
+          onClose={onClose}
+          onSuccess={onSuccess}
           gasPrice={gasPrice}
         />
       </DialogBody>

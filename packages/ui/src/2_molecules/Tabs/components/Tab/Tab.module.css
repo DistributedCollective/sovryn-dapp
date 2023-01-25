@@ -36,7 +36,7 @@
   }
 
   &.secondary {
-    @apply bg-gray-80 mx-1.5;
+    @apply bg-gray-80 mx-1;
 
     &:first-child {
       @apply ml-0;
@@ -52,7 +52,7 @@
     }
 
     &.small {
-      @apply font-semibold text-tiny px-2 py-1;
+      @apply font-medium text-tiny px-2 py-1;
       min-width: 2.5rem;
     }
 

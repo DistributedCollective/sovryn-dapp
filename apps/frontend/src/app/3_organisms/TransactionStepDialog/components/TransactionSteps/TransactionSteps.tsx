@@ -2,9 +2,11 @@ import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 
 import { ethers } from 'ethers';
 import { parseUnits } from 'ethers/lib/utils';
+import { useTranslation } from 'react-i18next';
 
 import { Button, Icon, IconNames, StatusType } from '@sovryn/ui';
 
+import { translations } from '../../../../../locales/i18n';
 import { APPROVAL_FUNCTION } from '../../../../../utils/constants';
 import { Transaction, TxConfig } from '../../TransactionStepDialog.types';
 import { TransactionStep } from '../TransactionStep/TransactionStep';
@@ -12,17 +14,20 @@ import { TransactionStep } from '../TransactionStep/TransactionStep';
 export type TransactionStepsProps = {
   transactions: Transaction[];
   onSuccess?: () => void;
+  onClose?: () => void;
   gasPrice: string;
 };
 
 export const TransactionSteps: FC<TransactionStepsProps> = ({
   transactions,
   onSuccess,
+  onClose,
   gasPrice,
 }) => {
   const [configs, setConfigs] = useState<TxConfig[]>([]);
   const [step, setStep] = useState(-1);
   const [error, setError] = useState(false);
+  const { t } = useTranslation();
 
   useEffect(() => {
     const initialize = async () => {
@@ -125,6 +130,12 @@ export const TransactionSteps: FC<TransactionStepsProps> = ({
     [error, step, transactions.length],
   );
 
+  useEffect(() => {
+    if (transactions.length > 0 && transactions.length === step) {
+      onSuccess?.();
+    }
+  }, [onSuccess, step, transactions.length]);
+
   if (!configs.length) {
     return (
       <Icon
@@ -157,10 +168,10 @@ export const TransactionSteps: FC<TransactionStepsProps> = ({
         />
       )}
 
-      {onSuccess && transactions.length === step && (
+      {onClose && transactions.length === step && (
         <Button
-          text="Done"
-          onClick={onSuccess}
+          text={t(translations.common.done)}
+          onClick={onClose}
           className="w-full mt-7"
         ></Button>
       )}

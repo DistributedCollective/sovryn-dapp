@@ -17,6 +17,7 @@ query getTroves($first: Int!) {
         sequenceNumber
       }
       trove {
+        id
         collateralRatioSortKey
         collateral
         debt

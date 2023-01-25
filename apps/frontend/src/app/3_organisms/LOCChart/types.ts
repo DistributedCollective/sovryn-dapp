@@ -14,6 +14,7 @@ export type TroveData = {
       sequenceNumber: string;
     };
     trove: {
+      id: string;
       collateral: number;
       debt: string;
       collateralRatioSortKey: number;

@@ -3259,6 +3259,7 @@ export type GetTrovesQuery = {
       };
       trove: {
         __typename?: 'Trove';
+        id: string;
         collateralRatioSortKey?: string | null;
         collateral: string;
         debt: string;
@@ -3287,6 +3288,7 @@ export type GetTrovesAboveQuery = {
       };
       trove: {
         __typename?: 'Trove';
+        id: string;
         collateralRatioSortKey?: string | null;
         collateral: string;
         debt: string;
@@ -3315,6 +3317,7 @@ export type GetTrovesBelowQuery = {
       };
       trove: {
         __typename?: 'Trove';
+        id: string;
         collateralRatioSortKey?: string | null;
         collateral: string;
         debt: string;
@@ -3342,6 +3345,7 @@ export type GetUserOpenTroveQuery = {
       };
       trove: {
         __typename?: 'Trove';
+        id: string;
         collateralRatioSortKey?: string | null;
         collateral: string;
         debt: string;
@@ -3589,6 +3593,7 @@ export const GetTrovesDocument = gql`
           sequenceNumber
         }
         trove {
+          id
           collateralRatioSortKey
           collateral
           debt
@@ -3666,6 +3671,7 @@ export const GetTrovesAboveDocument = gql`
           sequenceNumber
         }
         trove {
+          id
           collateralRatioSortKey
           collateral
           debt
@@ -3749,6 +3755,7 @@ export const GetTrovesBelowDocument = gql`
           sequenceNumber
         }
         trove {
+          id
           collateralRatioSortKey
           collateral
           debt
@@ -3824,6 +3831,7 @@ export const GetUserOpenTroveDocument = gql`
           sequenceNumber
         }
         trove {
+          id
           collateralRatioSortKey
           collateral
           debt

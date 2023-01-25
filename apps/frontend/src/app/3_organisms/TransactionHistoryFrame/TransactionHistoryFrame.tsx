@@ -31,6 +31,7 @@ import {
   TroveChange,
   TroveChange_Filter,
   TroveOperation,
+  useGetTroveLazyQuery,
 } from '../../../utils/graphql/zero/generated';
 import { dateFormat } from '../../../utils/helpers';
 import { formatValue } from '../../../utils/math';
@@ -162,6 +163,8 @@ export const TransactionHistoryFrame: FC = () => {
     orderOptions,
   );
 
+  const [getTroves] = useGetTroveLazyQuery();
+
   const noDataLabel = useMemo(
     () =>
       Object.keys(filters || {}).length > 0
@@ -178,7 +181,7 @@ export const TransactionHistoryFrame: FC = () => {
     return data.trove?.changes;
   }, [data]);
 
-  const renderLiquidationReserve = useCallback((trove: TroveChange) => {
+  const renderLiquidationReserve = useCallback(trove => {
     const { troveOperation, redemption } = trove;
     const operations = [
       TroveOperation.LiquidateInNormalMode,
@@ -534,8 +537,19 @@ export const TransactionHistoryFrame: FC = () => {
     [loading, troves, pageSize],
   );
 
-  const exportData = useCallback(() => {
-    if (!troves) {
+  const exportData = useCallback(async () => {
+    const { data } = await getTroves({
+      variables: {
+        user: account,
+        skip: 0,
+        pageSize: EXPORT_RECORD_LIMIT,
+        filters: getFinalFilters(),
+      },
+    });
+
+    let troves = data?.trove?.changes || [];
+
+    if (!troves || !troves.length || troves.length === 0) {
       addNotification({
         type: NotificationType.warning,
         title: t(translations.transactionHistory.actions.noDataToExport),
@@ -545,9 +559,7 @@ export const TransactionHistoryFrame: FC = () => {
       });
     }
 
-    setPageSize(EXPORT_RECORD_LIMIT);
-
-    return troves.map((tx: TroveChange) => ({
+    return troves.map(tx => ({
       timestamp: dateFormat(tx.transaction.timestamp),
       transactionType: getTroveType(tx.troveOperation),
       collateralChange: tx.collateralChange,
@@ -558,7 +570,15 @@ export const TransactionHistoryFrame: FC = () => {
       originationFee: tx.borrowingFee || '-',
       transactionID: tx.transaction.id,
     }));
-  }, [t, troves, addNotification, getTroveType, renderLiquidationReserve]);
+  }, [
+    t,
+    account,
+    addNotification,
+    getTroves,
+    getFinalFilters,
+    getTroveType,
+    renderLiquidationReserve,
+  ]);
 
   useEffect(() => {
     setPage(0);

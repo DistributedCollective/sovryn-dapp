@@ -13,7 +13,8 @@
             "switch": "Switch",
             "confirm": "Confirm",
             "save": "Save",
-            "cancel": "Cancel"
+            "cancel": "Cancel",
+            "withdraw": "Withdraw"
         },
         "na": "N/A",
         "tables": {
@@ -21,7 +22,10 @@
             "noDataWithFilters": "No data with the current filters"
         },
         "max": "max",
-        "amount": "Amount"
+        "amount": "Amount",
+        "deposit": "Deposit",
+        "withdraw": "Withdraw",
+        "done": "Done"
     },
     "wrongNetworkSwitcher": {
         "title": "Wrong network",
@@ -31,6 +35,7 @@
         "actions": {
             "borrow": "Borrow",
             "repay": "Repay",
+            "collateral": "Collateral",
             "addCollateral": "Add collateral",
             "withdrawCollateral": "Withdraw collateral"
         },
@@ -113,6 +118,19 @@
             "noDataToExport": "No data to export"
         }
     },
+    "redemptionsHistory": {
+        "table": {
+            "timestamp": "Timestamp",
+            "zusdRedeemed": "ZUSD Redeemed",
+            "rbtcReceived": "RBTC Received",
+            "redemptionFee": "Redemption Fee (RBTC)",
+            "networkFee": "Network Fee",
+            "transactionID": "Transaction ID"
+        },
+        "actions": {
+            "noDataToExport": "No data to export"
+        }
+    },
     "errorPage": {
         "title": "Error",
         "description": "Something went wrong. Please try again later."
@@ -162,7 +180,8 @@
         "collateralAmount": "Collateral Amount",
         "debtAmount": "Debt Amount",
         "redemptionBuffer": "Redemption Buffer",
-        "noData": "No data"
+        "noData": "No data",
+        "systemLinesCredit": "System lines of credit"
     },
     "LOCStatus": {
         "withdrawalSurplus": "withdrawal surplus",
@@ -187,6 +206,26 @@
             "home": "Home",
             "earn": "Earn",
             "convert": "Convert"
+        }
+    },
+    "zeroPage": {
+        "loc": {
+            "open": "Open line of credit",
+            "adjust": "Adjust line of credit",
+            "close": "Close",
+            "errors": {
+                "ratioWarningInRecovery": "Keeping your collateral ratio above {{value}}% can reduce the risk of liquidation in cases of market volatility",
+                "ratioErrorInRecovery": "Collateral ratio must be at least {{value}}%",
+                "ratioWarning": "Keeping your collateral ratio above {{value}}% can help avoid liquidation under recovery mode",
+                "ratioError": "Collateral ratio must be at least {{value}}%",
+                "debtTooLow": "Debt must be at least {{value}}",
+                "balanceTooLow": "The collateral amount you're trying to deposit exceeds your balance by {{value}}"
+            }
+        },
+        "tx": {
+            "adjustTrove": "Adjust Trove",
+            "closeTrove": "Close Trove",
+            "openTrove": "Open Trove"
         }
     },
     "stats": {
@@ -217,16 +256,61 @@
             "invalidAmountError": "Exceeds maximum amount"
         }
     },
+    "earnPage": {
+        "title": "Stability pool",
+        "subtitle": "Earn BTC by providing liquidity for liquidations",
+        "form": {
+            "invalidAmountError": "Exceeds maximum amount"
+        },
+        "currentPoolShare": "Current pool share",
+        "currentPoolBalance": "Current pool balance",
+        "newPoolShare": "New pool share",
+        "newPoolBalance": "New pool balance"
+    },
     "historyPage": {
         "title": "My transaction history",
         "table": {
             "tabs": {
                 "lineOfCredit": "Line of Credit",
+                "redemptions": "Redemptions",
                 "stability": "Stability pool",
                 "convert": "Conversion",
                 "funding": "Funding"
             },
             "comingSoon": "Coming soon..."
+        }
+    },
+    "collateralSurplusHistory": {
+        "table": {
+            "timestamp": "Timestamp",
+            "transactionType": "Transaction Type",
+            "collateralChange": "Collateral Change",
+            "transactionID": "Transaction ID",
+            "withdrawSurplus": "Withdraw surplus",
+            "depositSurplus": "Deposit surplus"
+        },
+        "actions": {
+            "noDataToExport": "No data to export"
+        }
+    },
+    "dashboardWelcomeBanner": {
+        "fundWallet": "Fund your wallet",
+        "OpenCredit": "Open line of credit"
+    },
+    "rewardPage": {
+        "title": "Rewards",
+        "subtitle": "Collect rewards earned",
+        "stabilityPoolRewards": "Stability pool rewards",
+        "btc": "BTC",
+        "actions": {
+            "transferToLOC": "Transfer to LOC",
+            "withdraw": "Withdraw"
+        },
+        "tx": {
+            "withdraw": "Withdraw",
+            "withdrawGains": "Withdraw gains",
+            "transferToLOC": "Transfer gains to LOC",
+            "transfer": "Transfer"
         }
     }
 }

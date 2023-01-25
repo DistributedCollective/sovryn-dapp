@@ -1,4 +1,4 @@
-import { ApolloProvider, ApolloClient, InMemoryCache } from '@apollo/client';
+import { ApolloProvider } from '@apollo/client';
 
 import './wdyr';
 
@@ -12,6 +12,7 @@ import { OnboardProvider } from '@sovryn/onboard-react';
 // chain config must be imported before other internal files
 import './config/chains';
 
+import { TransactionStepDialog } from './app/3_organisms';
 import { NetworkProvider } from './app/3_organisms/NetworkProvider/NetworkProvider';
 import { MaintenanceModeContextProvider } from './contexts/MaintenanceModeContext';
 import { NotificationProvider } from './contexts/NotificationContext';
@@ -20,14 +21,7 @@ import './locales/dayjs';
 import './locales/i18n';
 import { router } from './router';
 import './styles/tailwindcss/index.css';
-import { graphRskUrl } from './utils/constants';
-
-const rskClient = new ApolloClient({
-  uri: graphRskUrl,
-  cache: new InMemoryCache({
-    resultCaching: false,
-  }),
-});
+import { rskClient } from './utils/clients';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement,
@@ -45,6 +39,7 @@ root.render(
             </NotificationProvider>
           </MaintenanceModeContextProvider>
         </ApolloProvider>
+        <TransactionStepDialog />
       </TransactionProvider>
     </NetworkProvider>
   </React.StrictMode>,

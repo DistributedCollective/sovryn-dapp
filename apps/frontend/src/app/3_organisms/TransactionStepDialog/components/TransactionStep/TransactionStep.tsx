@@ -3,7 +3,11 @@ import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import classNames from 'classnames';
 import { formatUnits, parseUnits } from 'ethers/lib/utils';
 
-import { getTokenDetailsByAddress, TokenDetailsData } from '@sovryn/contracts';
+import {
+  getTokenDetailsByAddress,
+  TokenDetailsData,
+  findContract,
+} from '@sovryn/contracts';
 import {
   Accordion,
   AmountInput,
@@ -52,17 +56,22 @@ export const TransactionStep: FC<TransactionStepProps> = ({
   const [token, setToken] = useState<TokenDetailsData | undefined>();
 
   useEffect(() => {
-    (() =>
-      getTokenDetailsByAddress(transaction.contract.address).then(setToken))();
+    findContract(transaction.contract.address).then(result => {
+      if (result.group === 'tokens') {
+        getTokenDetailsByAddress(transaction.contract.address).then(setToken);
+      }
+    });
   }, [transaction.contract.address]);
 
   const { title, subtitle } = transaction;
 
   const resetConfig = useCallback(async () => {
     try {
-      const gasLimit = await transaction.contract.estimateGas[
-        transaction.fnName
-      ](...transaction.args);
+      const gasLimit =
+        transaction.config?.gasLimit ??
+        (await transaction.contract.estimateGas[transaction.fnName](
+          ...transaction.args,
+        ).then(gas => gas.toString()));
 
       updateConfig({
         ...transaction.config,
@@ -72,7 +81,7 @@ export const TransactionStep: FC<TransactionStepProps> = ({
             ? transaction.args[1]
             : undefined,
         gasPrice,
-        gasLimit: gasLimit.toString(),
+        gasLimit,
       });
     } catch (error) {
       console.log('error', error);

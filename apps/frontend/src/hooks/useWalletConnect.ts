@@ -46,6 +46,8 @@ export const useWalletConnect = () => {
 
   const account = useMemo(() => wallets[0]?.accounts[0]?.address, [wallets]);
 
+  const getWallet = useCallback((index: number) => wallets[index], [wallets]);
+
   const getAccount = useCallback(
     (index: number) => wallets[index]?.accounts[0]?.address,
     [wallets],
@@ -59,5 +61,6 @@ export const useWalletConnect = () => {
     pending,
     switchNetwork,
     getAccount,
+    getWallet,
   };
 };

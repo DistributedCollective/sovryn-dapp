@@ -4,7 +4,10 @@ import { useTranslation } from 'react-i18next';
 
 import { Heading, Select, SelectOption, Tabs } from '@sovryn/ui';
 
-import { TransactionHistoryFrame } from '../../3_organisms';
+import {
+  TransactionHistoryFrame,
+  RedemptionsHistoryFrame,
+} from '../../3_organisms';
 import { translations } from '../../../locales/i18n';
 import styles from './HistoryPage.module.css';
 
@@ -12,6 +15,12 @@ const ACTIVE_CLASSNAME = 'border-t-primary-30';
 const locHistory = (
   <div className="px-0 py-4 lg:p-4">
     <TransactionHistoryFrame />
+  </div>
+);
+
+const redemptions = (
+  <div className="px-0 py-4 lg:p-4">
+    <RedemptionsHistoryFrame />
   </div>
 );
 
@@ -37,6 +46,12 @@ const HistoryPage: FC = () => {
         content: locHistory,
         activeClassName: ACTIVE_CLASSNAME,
         dataAttribute: 'loc',
+      },
+      {
+        label: t(translations.historyPage.table.tabs.redemptions),
+        content: redemptions,
+        activeClassName: ACTIVE_CLASSNAME,
+        dataAttribute: 'redemptions',
       },
       {
         label: t(translations.historyPage.table.tabs.stability),

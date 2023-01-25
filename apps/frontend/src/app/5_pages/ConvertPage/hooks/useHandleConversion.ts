@@ -32,11 +32,7 @@ export const useHandleConversion = (
     return new ethers.Contract(massetManagerAddress, massetManagerAbi, signer);
   }, [signer]);
 
-  const withdrawTokens = useCallback(async () => {
-    if (!signer || sourceToken !== SupportedTokens.dllr) {
-      return;
-    }
-
+  const getWithdrawTokensTransactions = useCallback(async () => {
     const massetManager = await getMassetManager();
 
     const { address: bassetAddress } = await getTokenDetails(
@@ -44,34 +40,36 @@ export const useHandleConversion = (
       defaultChainId,
     );
 
-    setTransactions([
+    return [
       {
         title: 'Redeem DLLR for bAsset',
         contract: massetManager,
         fnName: 'redeemTo',
         args: [bassetAddress, weiAmount, account],
       },
-    ]);
+    ];
+  }, [account, destinationToken, getMassetManager, weiAmount]);
+
+  const withdrawTokens = useCallback(async () => {
+    if (!signer || sourceToken !== SupportedTokens.dllr) {
+      return;
+    }
+
+    const transactions = await getWithdrawTokensTransactions();
+    setTransactions(transactions);
 
     setTitle('DLLR to bAsset conversion');
     setIsOpen(true);
   }, [
+    getWithdrawTokensTransactions,
+    setIsOpen,
+    setTitle,
+    setTransactions,
     signer,
     sourceToken,
-    getMassetManager,
-    destinationToken,
-    setTransactions,
-    weiAmount,
-    account,
-    setTitle,
-    setIsOpen,
   ]);
 
-  const depositTokens = useCallback(async () => {
-    if (!signer || destinationToken !== SupportedTokens.dllr) {
-      return;
-    }
-
+  const getDepositTokenTransactions = useCallback(async () => {
     const massetManager = await getMassetManager();
 
     const { address: bassetAddress, abi: bassetAbi } = await getTokenDetails(
@@ -104,17 +102,22 @@ export const useHandleConversion = (
       args: [bassetAddress, weiAmount, account],
     });
 
-    setTransactions(transactions);
+    return transactions;
+  }, [account, getMassetManager, signer, sourceToken, weiAmount]);
 
+  const depositTokens = useCallback(async () => {
+    if (!signer || destinationToken !== SupportedTokens.dllr) {
+      return;
+    }
+    const transactions = await getDepositTokenTransactions();
+
+    setTransactions(transactions);
     setTitle('bAsset to DLLR conversion');
     setIsOpen(true);
   }, [
     signer,
     destinationToken,
-    getMassetManager,
-    sourceToken,
-    account,
-    weiAmount,
+    getDepositTokenTransactions,
     setTransactions,
     setTitle,
     setIsOpen,
@@ -124,5 +127,9 @@ export const useHandleConversion = (
     sourceToken === SupportedTokens.dllr ? withdrawTokens() : depositTokens();
   }, [depositTokens, withdrawTokens, sourceToken]);
 
-  return handleSubmit;
+  return {
+    handleSubmit,
+    getDepositTokenTransactions,
+    getWithdrawTokensTransactions,
+  };
 };

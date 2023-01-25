@@ -533,7 +533,7 @@ export const TransactionHistoryFrame: FC = () => {
   );
 
   const isNextButtonDisabled = useMemo(
-    () => !loading && troves?.length < pageSize,
+    () => !loading && (!troves || troves?.length < pageSize),
     [loading, troves, pageSize],
   );
 

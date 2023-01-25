@@ -8,12 +8,10 @@ import { TransactionSteps } from './components/TransactionSteps/TransactionSteps
 
 type TransactionStepDialogProps = {
   disableFocusTrap?: boolean;
-  onConfirm?: () => void;
 };
 
 export const TransactionStepDialog: FC<TransactionStepDialogProps> = ({
   disableFocusTrap = true,
-  onConfirm,
 }) => {
   const { transactions, isOpen, setIsOpen, title } = useTransactionContext();
   const onClose = useCallback(() => setIsOpen(false), [setIsOpen]);
@@ -33,7 +31,6 @@ export const TransactionStepDialog: FC<TransactionStepDialogProps> = ({
           onClose={onClose}
           onSuccess={onSuccess}
           gasPrice={gasPrice}
-          onConfirm={onConfirm}
         />
       </DialogBody>
     </Dialog>

@@ -8,6 +8,8 @@ import React, {
 
 import { BigNumber } from 'ethers';
 
+import { StatusType } from '@sovryn/ui';
+
 import { useTransactionContext } from '../../../../../../contexts/TransactionContext';
 import { useAccount } from '../../../../../../hooks/useAccount';
 import { useGetProtocolContract } from '../../../../../../hooks/useGetContract';
@@ -28,11 +30,12 @@ export const ConfirmationScreens: React.FC<ConfirmationScreensProps> = ({
   onClose,
 }) => {
   const { account } = useAccount();
-  const { step, address, amount } = useContext(WithdrawContext);
+  const { step, address, amount, set } = useContext(WithdrawContext);
 
   const { setTransactions, setTitle, setIsOpen } = useTransactionContext();
 
   const [txHash, setTxHash] = useState<string | undefined>(undefined);
+  const [txStatus, setTxStatus] = useState(StatusType.idle);
   const [currentFeeWei, setCurrentFeeWei] = useState(BigNumber.from(0));
 
   const fastBtcBridgeContract = useGetProtocolContract('fastBtcBridge');
@@ -81,7 +84,12 @@ export const ConfirmationScreens: React.FC<ConfirmationScreensProps> = ({
             value: toWei(amount),
             gasLimit: String(GAS_LIMIT_FAST_BTC_WITHDRAW),
           },
-          onComplete: setTxHash,
+          onStart: hash => {
+            setTxHash(hash);
+            set(prevState => ({ ...prevState, step: WithdrawStep.CONFIRM }));
+            setIsOpen(false);
+          },
+          onChangeStatus: setTxStatus,
         },
       ]);
 
@@ -92,6 +100,7 @@ export const ConfirmationScreens: React.FC<ConfirmationScreensProps> = ({
     address,
     amount,
     fastBtcBridgeContract,
+    set,
     setIsOpen,
     setTitle,
     setTransactions,
@@ -113,6 +122,7 @@ export const ConfirmationScreens: React.FC<ConfirmationScreensProps> = ({
   return (
     <StatusScreen
       txHash={txHash}
+      txStatus={txStatus}
       onClose={onClose}
       feesPaid={feesPaid}
       receiveAmount={receiveAmount}

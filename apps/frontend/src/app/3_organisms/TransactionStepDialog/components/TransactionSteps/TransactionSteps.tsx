@@ -16,7 +16,6 @@ export type TransactionStepsProps = {
   onSuccess?: () => void;
   onClose?: () => void;
   gasPrice: string;
-  onConfirm?: () => void;
 };
 
 export const TransactionSteps: FC<TransactionStepsProps> = ({
@@ -24,7 +23,6 @@ export const TransactionSteps: FC<TransactionStepsProps> = ({
   onSuccess,
   onClose,
   gasPrice,
-  onConfirm,
 }) => {
   const [configs, setConfigs] = useState<TxConfig[]>([]);
   const [step, setStep] = useState(-1);
@@ -100,21 +98,23 @@ export const TransactionSteps: FC<TransactionStepsProps> = ({
         configs[i] = { ...config, hash: tx.hash };
         setConfigs([...configs]);
 
+        transactions[i].onStart?.(tx.hash);
+        transactions[i].onChangeStatus?.(StatusType.pending);
+
         await tx.wait();
+
+        transactions[i].onChangeStatus?.(StatusType.success);
         transactions[i].onComplete?.(tx.hash);
       }
 
       setStep(transactions.length);
     } catch (error) {
       console.log('error:', error);
+
+      transactions[0].onChangeStatus?.(StatusType.error);
       setError(true);
     }
   }, [configs, error, step, transactions]);
-
-  const onConfirmHandler = useCallback(() => {
-    submit();
-    onConfirm?.();
-  }, [onConfirm, submit]);
 
   const getStatus = useCallback(
     (i: number) => {
@@ -171,7 +171,7 @@ export const TransactionSteps: FC<TransactionStepsProps> = ({
         <Button
           className="w-full mt-7"
           text={error ? 'Retry' : 'Confirm'}
-          onClick={onConfirmHandler}
+          onClick={submit}
         />
       )}
 

@@ -9,6 +9,7 @@ import {
   HeadingType,
   Icon,
   IconNames,
+  StatusType,
   TransactionId,
 } from '@sovryn/ui';
 
@@ -23,6 +24,17 @@ import { FAST_BTC_ASSET } from '../../../constants';
 
 const translation = translations.fastBtc.send.confirmationScreens;
 
+const getTitle = (status: StatusType) => {
+  switch (status) {
+    case StatusType.error:
+      return t(translation.statusTitleFailed);
+    case StatusType.success:
+      return t(translation.statusTitleComplete);
+    default:
+      return t(translation.statusTitleProcessing);
+  }
+};
+
 const rskExplorerUrl = getRskExplorerUrl();
 const btcExplorerUrl = getBtcExplorerUrl();
 
@@ -33,6 +45,7 @@ type StatusScreenProps = {
   feesPaid: number;
   receiveAmount: number;
   txHash?: string;
+  txStatus: StatusType;
   onClose: () => void;
 };
 
@@ -43,6 +56,7 @@ export const StatusScreen: React.FC<StatusScreenProps> = ({
   feesPaid,
   receiveAmount,
   txHash,
+  txStatus,
   onClose,
 }) => {
   const items = useMemo(
@@ -104,13 +118,11 @@ export const StatusScreen: React.FC<StatusScreenProps> = ({
   return (
     <div className="text-center">
       <Heading type={HeadingType.h2} className="font-medium mb-6">
-        {!txHash
-          ? t(translation.statusTitleProcessing)
-          : t(translation.statusTitleComplete)}
+        {getTitle(txStatus)}
       </Heading>
 
       <div className="mb-6">
-        <StatusIcon isConfirmed={!!txHash} dataAttribute="fastBtc-send" />
+        <StatusIcon status={txStatus} dataAttribute="fastBtc-send" />
       </div>
 
       <div className="bg-gray-80 border rounded border-gray-50 p-3 text-xs text-gray-30">
@@ -119,6 +131,7 @@ export const StatusScreen: React.FC<StatusScreenProps> = ({
             className={classNames('flex justify-between', {
               'mb-3': index !== items.length - 1,
             })}
+            key={label}
           >
             <span>{label} </span>
             <span>{value}</span>

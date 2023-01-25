@@ -9,6 +9,7 @@ import {
   HeadingType,
   Icon,
   IconNames,
+  StatusType,
   TransactionId,
 } from '@sovryn/ui';
 
@@ -136,7 +137,7 @@ export const StatusScreen: React.FC<StatusScreenProps> = ({ onClose }) => {
 
         <div className="mb-6">
           <StatusIcon
-            isConfirmed={!isProcessing}
+            status={isProcessing ? StatusType.pending : StatusType.success}
             dataAttribute="fastBtc-receive"
           />
         </div>
@@ -147,6 +148,7 @@ export const StatusScreen: React.FC<StatusScreenProps> = ({ onClose }) => {
               className={classNames('flex justify-between', {
                 'mb-3': index !== items.length - 1,
               })}
+              key={label}
             >
               <span>{label} </span>
               <span>{value}</span>

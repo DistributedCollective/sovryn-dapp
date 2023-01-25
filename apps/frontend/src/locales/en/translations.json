@@ -13,7 +13,8 @@
             "switch": "Switch",
             "confirm": "Confirm",
             "save": "Save",
-            "cancel": "Cancel"
+            "cancel": "Cancel",
+            "withdraw": "Withdraw"
         },
         "na": "N/A",
         "tables": {
@@ -254,5 +255,21 @@
     "dashboardWelcomeBanner": {
         "fundWallet": "Fund your wallet",
         "OpenCredit": "Open line of credit"
+    },
+    "rewardPage": {
+        "title": "Rewards",
+        "subtitle": "Collect rewards earned",
+        "stabilityPoolRewards": "Stability pool rewards",
+        "btc": "BTC",
+        "actions": {
+            "transferToLOC": "Transfer to LOC",
+            "withdraw": "Withdraw"
+        },
+        "tx": {
+            "withdraw": "Withdraw",
+            "withdrawGains": "Withdraw gains",
+            "transferToLOC": "Transfer gains to LOC",
+            "transfer": "Transfer"
+        }
     }
 }

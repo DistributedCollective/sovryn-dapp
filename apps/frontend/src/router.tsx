@@ -20,12 +20,14 @@ const ConvertPage = loadable(
 const HistoryPage = loadable(
   () => import('./app/5_pages/HistoryPage/HistoryPage'),
 );
-
 const PrivacyPolicy = loadable(
   () => import('./app/5_pages/PrivacyPolicy/PrivacyPolicy'),
 );
 const TermsOfUse = loadable(
   () => import('./app/5_pages/TermsOfUse/TermsOfUse'),
+);
+const RewardsPage = loadable(
+  () => import('./app/5_pages/RewardsPage/RewardsPage'),
 );
 
 export const router = createBrowserRouter([
@@ -54,6 +56,11 @@ export const router = createBrowserRouter([
       {
         path: '/debug-content',
         element: <Debug />,
+      },
+      {
+        path: '/rewards',
+        element: <RewardsPage />,
+        loader: zeroPageLoader,
       },
     ],
   },

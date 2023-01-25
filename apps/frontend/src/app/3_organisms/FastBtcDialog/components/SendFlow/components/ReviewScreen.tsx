@@ -114,7 +114,7 @@ export const ReviewScreen: React.FC<ReviewScreenProps> = ({
         />
         {fastBtcLocked && <div>{t(translations.maintenanceMode.fastBtc)}</div>}
       </div>
-      <TransactionStepDialog disableFocusTrap={false} />
+      <TransactionStepDialog disableFocusTrap />
     </div>
   );
 };

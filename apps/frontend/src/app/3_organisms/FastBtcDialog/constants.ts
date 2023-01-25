@@ -10,4 +10,4 @@ export const DYNAMIC_FEE_DIVISOR = 10000;
 
 export const Bitcoin = 'BTC';
 
-export const GAS_LIMIT_FAST_BTC_WITHDRAW = 300000;
+export const GAS_LIMIT_FAST_BTC_WITHDRAW = 200000;

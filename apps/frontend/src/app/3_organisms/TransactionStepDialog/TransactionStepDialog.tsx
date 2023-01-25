@@ -7,10 +7,12 @@ import { useGasPrice } from '../../../hooks/useGasPrice';
 import { TransactionSteps } from './components/TransactionSteps/TransactionSteps';
 
 type TransactionStepDialogProps = {
+  onSuccess?: () => void;
   disableFocusTrap?: boolean;
 };
 
 export const TransactionStepDialog: FC<TransactionStepDialogProps> = ({
+  onSuccess,
   disableFocusTrap = true,
 }) => {
   const { transactions, isOpen, setIsOpen, title } = useTransactionContext();

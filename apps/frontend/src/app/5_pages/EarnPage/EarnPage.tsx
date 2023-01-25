@@ -29,7 +29,6 @@ import {
 } from '@sovryn/ui';
 
 import { AssetRenderer } from '../../2_molecules/AssetRenderer/AssetRenderer';
-import { TransactionStepDialog } from '../../3_organisms';
 import { useAccount } from '../../../hooks/useAccount';
 import { useAssetBalance } from '../../../hooks/useAssetBalance';
 import { translations } from '../../../locales/i18n';
@@ -148,7 +147,18 @@ const EarnPage: FC = () => {
     () => setAmount(maximumAmount),
     [maximumAmount],
   );
-  const handleSubmit = useHandleStabilityDeposit(token, amount, isDeposit);
+
+  const onTransactionSuccess = useCallback(() => {
+    getStabilityDeposit();
+    getZUSDInStabilityPool();
+  }, [getStabilityDeposit, getZUSDInStabilityPool]);
+
+  const handleSubmit = useHandleStabilityDeposit(
+    token,
+    amount,
+    isDeposit,
+    onTransactionSuccess,
+  );
 
   const poolShare = useMemo(() => {
     if (BigNumber.from(toWei(ZUSDInStabilityPool)).isZero()) {
@@ -211,11 +221,6 @@ const EarnPage: FC = () => {
     () => !account || !amount || Number(amount) <= 0 || !isValidAmount,
     [account, amount, isValidAmount],
   );
-
-  const onTransactionSuccess = useCallback(() => {
-    getStabilityDeposit();
-    getZUSDInStabilityPool();
-  }, [getStabilityDeposit, getZUSDInStabilityPool]);
 
   return (
     <div className="w-full flex flex-col items-center text-gray-10 mt-9 sm:mt-24">
@@ -315,7 +320,6 @@ const EarnPage: FC = () => {
           {...applyDataAttr('earn-submit')}
         />
       </div>
-      <TransactionStepDialog onSuccess={onTransactionSuccess} />
     </div>
   );
 };

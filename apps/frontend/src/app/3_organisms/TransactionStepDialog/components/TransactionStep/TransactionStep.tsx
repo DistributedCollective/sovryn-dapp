@@ -67,9 +67,11 @@ export const TransactionStep: FC<TransactionStepProps> = ({
 
   const resetConfig = useCallback(async () => {
     try {
-      const gasLimit = await transaction.contract.estimateGas[
-        transaction.fnName
-      ](...transaction.args);
+      const gasLimit =
+        transaction.config?.gasLimit ??
+        (await transaction.contract.estimateGas[transaction.fnName](
+          ...transaction.args,
+        ).then(gas => gas.toString()));
 
       updateConfig({
         ...transaction.config,
@@ -79,8 +81,7 @@ export const TransactionStep: FC<TransactionStepProps> = ({
             ? transaction.args[1]
             : undefined,
         gasPrice,
-        //TODO: replace with default gas limit - increase gas limit by 20% to make sure tx won't fail
-        gasLimit: gasLimit.mul(20).div(10).toString(),
+        gasLimit,
       });
     } catch (error) {
       console.log('error', error);

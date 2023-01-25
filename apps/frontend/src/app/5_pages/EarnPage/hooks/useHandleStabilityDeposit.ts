@@ -9,6 +9,7 @@ import { Transaction } from '../../../3_organisms/TransactionStepDialog/Transact
 import { useTransactionContext } from '../../../../contexts/TransactionContext';
 import { useAccount } from '../../../../hooks/useAccount';
 import { getRskChainId } from '../../../../utils/chain';
+import { GAS_LIMIT_STABILITY_POOL } from '../../../../utils/constants';
 import { toWei } from '../../../../utils/math';
 import { useHandleConversion } from '../../ConvertPage/hooks/useHandleConversion';
 
@@ -16,6 +17,7 @@ export const useHandleStabilityDeposit = (
   token: SupportedTokens,
   amount: string,
   isDeposit: boolean,
+  onComplete: () => void,
 ) => {
   const sourceToken = isDeposit ? token : SupportedTokens.zusd;
   const destinationToken = isDeposit ? SupportedTokens.zusd : token;
@@ -44,6 +46,10 @@ export const useHandleStabilityDeposit = (
       contract: stabilityPool,
       fnName: 'withdrawFromSP',
       args: [toWei(amount)],
+      onComplete,
+      config: {
+        gasLimit: GAS_LIMIT_STABILITY_POOL,
+      },
     });
 
     if (token !== SupportedTokens.zusd) {
@@ -61,6 +67,7 @@ export const useHandleStabilityDeposit = (
     setTitle,
     setTransactions,
     token,
+    onComplete,
   ]);
   const deposit = useCallback(async () => {
     const transactions: Transaction[] = [];
@@ -75,6 +82,10 @@ export const useHandleStabilityDeposit = (
       contract: stabilityPool,
       fnName: 'provideToSP',
       args: [toWei(amount), ethers.constants.AddressZero],
+      onComplete,
+      config: {
+        gasLimit: GAS_LIMIT_STABILITY_POOL,
+      },
     });
 
     setTransactions(transactions);
@@ -88,6 +99,7 @@ export const useHandleStabilityDeposit = (
     setTitle,
     setTransactions,
     token,
+    onComplete,
   ]);
   const handleSubmit = useCallback(
     () => (isDeposit ? deposit() : withdraw()),

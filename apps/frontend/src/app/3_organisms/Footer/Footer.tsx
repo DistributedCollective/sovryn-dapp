@@ -8,7 +8,13 @@ import { SocialLinks } from '../../2_molecules';
 import { SovrynLogo } from '../../2_molecules/SovrynLogo/SovrynLogo';
 import Logo from '../../../assets/images/sovryn-small-logo.svg';
 import { translations } from '../../../locales/i18n';
-import { sovrynLinks, sovrynWikiLinks } from '../../../utils/constants';
+import { Environments } from '../../../types/global';
+import {
+  sovrynLinks,
+  sovrynAlphaLinks,
+  sovrynWikiLinks,
+} from '../../../utils/constants';
+import { isMainnet } from '../../../utils/helpers';
 
 export const Footer: FC = () => {
   const { t } = useTranslation();
@@ -20,7 +26,9 @@ export const Footer: FC = () => {
     },
     {
       id: 'dapp-alpha',
-      href: sovrynLinks.dappAlpha, //sovrynAlphaLinks[currentNetwork]
+      href: sovrynAlphaLinks[
+        isMainnet() ? Environments.Mainnet : Environments.Testnet
+      ],
       name: t(translations.footer.alpha),
     },
     {

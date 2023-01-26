@@ -8,6 +8,7 @@ import {
 
 import { EIP1193Provider } from '@sovryn/onboard-common';
 
+import { Environments } from '../types/global';
 import { servicesConfig } from './constants';
 
 export const prettyTx = (
@@ -38,10 +39,11 @@ export const signTypedData = async (
   return signature;
 };
 
-export const isMainnet = () => process.env.REACT_APP_NETWORK === 'mainnet';
+export const isMainnet = () =>
+  process.env.REACT_APP_NETWORK === Environments.Mainnet;
 
 export const getServicesConfig = () =>
-  servicesConfig[isMainnet() ? 'mainnet' : 'testnet'];
+  servicesConfig[isMainnet() ? Environments.Mainnet : Environments.Testnet];
 
 export const dateFormat = (timestamp: number) => {
   const stamp = dayjs.tz(Number(timestamp) * 1e3, 'UTC');

@@ -172,7 +172,6 @@ const EmailNotificationSettingsDialogComponent: React.FC<
         addNotification({
           type: NotificationType.error,
           title: t(translations.emailNotificationsDialog.authErorrMessage),
-          content: '',
           dismissible: true,
           id: nanoid(),
         });
@@ -193,7 +192,6 @@ const EmailNotificationSettingsDialogComponent: React.FC<
               addNotification({
                 type: NotificationType.success,
                 title: t(translations.emailNotificationsDialog.successMessage),
-                content: '',
                 dismissible: true,
                 id: nanoid(),
               });
@@ -206,7 +204,6 @@ const EmailNotificationSettingsDialogComponent: React.FC<
             addNotification({
               type: NotificationType.error,
               title: t(translations.emailNotificationsDialog.errorMessage),
-              content: '',
               dismissible: true,
               id: nanoid(),
             });

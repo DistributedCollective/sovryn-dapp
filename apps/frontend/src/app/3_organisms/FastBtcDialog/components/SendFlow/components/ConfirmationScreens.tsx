@@ -82,7 +82,7 @@ export const ConfirmationScreens: React.FC<ConfirmationScreensProps> = ({
           args: [address],
           config: {
             value: toWei(amount),
-            gasLimit: String(GAS_LIMIT_FAST_BTC_WITHDRAW),
+            gasLimit: GAS_LIMIT_FAST_BTC_WITHDRAW,
           },
           onStart: hash => {
             setTxHash(hash);
@@ -105,6 +105,11 @@ export const ConfirmationScreens: React.FC<ConfirmationScreensProps> = ({
     setTitle,
     setTransactions,
   ]);
+
+  const handleRetry = useCallback(() => {
+    set(prevState => ({ ...prevState, step: WithdrawStep.REVIEW }));
+    handleConfirm();
+  }, [handleConfirm, set]);
 
   if (step === WithdrawStep.REVIEW) {
     return (
@@ -129,6 +134,7 @@ export const ConfirmationScreens: React.FC<ConfirmationScreensProps> = ({
       from={account}
       to={address}
       amount={amount}
+      onRetry={handleRetry}
     />
   );
 };

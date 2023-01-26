@@ -47,6 +47,7 @@ type StatusScreenProps = {
   txHash?: string;
   txStatus: StatusType;
   onClose: () => void;
+  onRetry: () => void;
 };
 
 export const StatusScreen: React.FC<StatusScreenProps> = ({
@@ -58,7 +59,13 @@ export const StatusScreen: React.FC<StatusScreenProps> = ({
   txHash,
   txStatus,
   onClose,
+  onRetry,
 }) => {
+  const hasTransactionFailed = useMemo(
+    () => txStatus === StatusType.error,
+    [txStatus],
+  );
+
   const items = useMemo(
     () => [
       {
@@ -140,8 +147,10 @@ export const StatusScreen: React.FC<StatusScreenProps> = ({
       </div>
 
       <Button
-        text={t(translations.common.buttons.done)}
-        onClick={onClose}
+        text={t(
+          translations.common.buttons[hasTransactionFailed ? 'retry' : 'done'],
+        )}
+        onClick={hasTransactionFailed ? onRetry : onClose}
         className="mt-8 w-full"
         dataAttribute="fastBtc-send-done-button"
       />

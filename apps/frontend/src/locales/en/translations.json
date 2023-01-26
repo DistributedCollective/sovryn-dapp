@@ -17,7 +17,8 @@
             "withdraw": "Withdraw",
             "continue": "Continue",
             "done": "Done",
-            "close": "Close"
+            "close": "Close",
+            "retry": "Retry"
         },
         "na": "N/A",
         "tables": {

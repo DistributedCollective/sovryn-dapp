@@ -1,43 +1,52 @@
 import React, { FC } from 'react';
 
+import { useTranslation } from 'react-i18next';
+
 import { Link, Footer as UIFooter } from '@sovryn/ui';
 
 import { SocialLinks } from '../../2_molecules';
 import { SovrynLogo } from '../../2_molecules/SovrynLogo/SovrynLogo';
 import Logo from '../../../assets/images/sovryn-small-logo.svg';
-import { sovrynLinks } from '../../../utils/constants';
+import { translations } from '../../../locales/i18n';
+import { sovrynLinks, sovrynWikiLinks } from '../../../utils/constants';
 
 export const Footer: FC = () => {
+  const { t } = useTranslation();
   const footerLinks = [
     {
       id: 'start',
-      href: sovrynLinks.wiki + '/getting-started',
-      name: 'Getting started',
+      href: `${sovrynWikiLinks.root}/getting-started`,
+      name: t(translations.footer.start),
     },
     {
       id: 'dapp-alpha',
-      href: sovrynLinks.dappAlpha,
-      name: 'Sovryn Alpha',
+      href: sovrynLinks.dappAlpha, //sovrynAlphaLinks[currentNetwork]
+      name: t(translations.footer.alpha),
     },
     {
       id: 'blog',
       href: sovrynLinks.blog,
-      name: 'Blog',
+      name: t(translations.footer.blog),
     },
     {
-      id: 'fee',
-      href: '#',
-      name: 'Fee prices',
+      id: 'security',
+      href: sovrynLinks.security,
+      name: t(translations.footer.security),
+    },
+    {
+      id: 'fees',
+      href: sovrynLinks.fees,
+      name: t(translations.footer.fees),
     },
     {
       id: 'terms',
       href: '/policies/terms-of-use',
-      name: 'Terms & Conditions',
+      name: t(translations.footer.terms),
     },
     {
       id: 'policy',
       href: '/policies/privacy-policy',
-      name: 'Privacy policy',
+      name: t(translations.footer.policy),
     },
   ];
 

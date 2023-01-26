@@ -169,12 +169,19 @@ const EmailNotificationSettingsDialogComponent: React.FC<
       )
       .catch(error => {
         console.error(error);
+        addNotification({
+          type: NotificationType.error,
+          title: t(translations.emailNotificationsDialog.authErorrMessage),
+          content: '',
+          dismissible: true,
+          id: nanoid(),
+        });
         onClose();
       });
-  }, [account, onClose, provider]);
+  }, [account, onClose, provider, t, addNotification]);
 
   const handleUserDataResponse = useCallback(
-    (response: Promise<any>) => {
+    (response: Promise<any>, showNotifications: boolean = false) => {
       response
         .then(result => {
           if (result.data) {
@@ -182,25 +189,28 @@ const EmailNotificationSettingsDialogComponent: React.FC<
             setEmail(result.data?.email);
             parseSubscriptionsResponse(result.data?.subscriptions);
 
+            if (showNotifications) {
+              addNotification({
+                type: NotificationType.success,
+                title: t(translations.emailNotificationsDialog.successMessage),
+                content: '',
+                dismissible: true,
+                id: nanoid(),
+              });
+            }
+          }
+        })
+        .catch(error => {
+          console.log(error);
+          if (showNotifications) {
             addNotification({
-              type: NotificationType.success,
-              title: t(translations.emailNotificationsDialog.successMessage),
+              type: NotificationType.error,
+              title: t(translations.emailNotificationsDialog.errorMessage),
               content: '',
               dismissible: true,
               id: nanoid(),
             });
           }
-        })
-        .catch(error => {
-          console.log(error);
-          addNotification({
-            type: NotificationType.error,
-            title: t(translations.emailNotificationsDialog.errorMessage),
-            content: '',
-            dismissible: true,
-            id: nanoid(),
-          });
-
           if (error?.response?.status === 401) {
             getToken();
           }
@@ -258,7 +268,7 @@ const EmailNotificationSettingsDialogComponent: React.FC<
       },
     );
 
-    handleUserDataResponse(promise);
+    handleUserDataResponse(promise, true);
   }, [
     account,
     email,

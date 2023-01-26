@@ -1,6 +1,7 @@
 import React from 'react';
 
 import classNames from 'classnames';
+import { AnimatePresence } from 'framer-motion';
 
 import { applyDataAttr } from '../../utils';
 import { Notification } from '../Notification/Notification';
@@ -24,20 +25,30 @@ export const NotificationStack: React.FC<NotificationStackProps> = ({
     {...applyDataAttr(dataAttribute)}
     className={classNames(styles.NotificationStack, className)}
   >
-    {items.map(
-      ({ className, dataAttribute, content, type, title, dismissible, id }) => (
-        <Notification
-          key={id}
-          className={classNames(className, {
-            [styles.dismissible]: dismissible,
-          })}
-          dataAttribute={dataAttribute}
-          onClose={dismissible ? () => onClose?.(id) : undefined}
-          content={content}
-          type={type}
-          title={title}
-        />
-      ),
-    )}
+    <AnimatePresence initial={false}>
+      {items.map(
+        ({
+          className,
+          dataAttribute,
+          content,
+          type,
+          title,
+          dismissible,
+          id,
+        }) => (
+          <Notification
+            key={id}
+            className={classNames(className, {
+              [styles.dismissible]: dismissible,
+            })}
+            dataAttribute={dataAttribute}
+            onClose={dismissible ? () => onClose?.(id) : undefined}
+            content={content}
+            type={type}
+            title={title}
+          />
+        ),
+      )}
+    </AnimatePresence>
   </div>
 );

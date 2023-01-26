@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 
-import { useTranslation } from 'react-i18next';
+import { t } from 'i18next';
 
 import { Link, Footer as UIFooter } from '@sovryn/ui';
 
@@ -16,67 +16,64 @@ import {
 } from '../../../utils/constants';
 import { isMainnet } from '../../../utils/helpers';
 
-export const Footer: FC = () => {
-  const { t } = useTranslation();
-  const footerLinks = [
-    {
-      id: 'start',
-      href: `${sovrynWikiLinks.root}/getting-started`,
-      name: t(translations.footer.start),
-    },
-    {
-      id: 'dapp-alpha',
-      href: sovrynAlphaLinks[
-        isMainnet() ? Environments.Mainnet : Environments.Testnet
-      ],
-      name: t(translations.footer.alpha),
-    },
-    {
-      id: 'blog',
-      href: sovrynLinks.blog,
-      name: t(translations.footer.blog),
-    },
-    {
-      id: 'security',
-      href: sovrynLinks.security,
-      name: t(translations.footer.security),
-    },
-    {
-      id: 'fees',
-      href: sovrynLinks.fees,
-      name: t(translations.footer.fees),
-    },
-    {
-      id: 'terms',
-      href: '/policies/terms-of-use',
-      name: t(translations.footer.terms),
-    },
-    {
-      id: 'policy',
-      href: '/policies/privacy-policy',
-      name: t(translations.footer.policy),
-    },
-  ];
+const footerLinks = [
+  {
+    id: 'start',
+    href: `${sovrynWikiLinks.root}/getting-started`,
+    name: t(translations.footer.start),
+  },
+  {
+    id: 'dapp-alpha',
+    href: sovrynAlphaLinks[
+      isMainnet() ? Environments.Mainnet : Environments.Testnet
+    ],
+    name: t(translations.footer.alpha),
+  },
+  {
+    id: 'blog',
+    href: sovrynLinks.blog,
+    name: t(translations.footer.blog),
+  },
+  {
+    id: 'security',
+    href: sovrynLinks.security,
+    name: t(translations.footer.security),
+  },
+  {
+    id: 'fees',
+    href: sovrynLinks.fees,
+    name: t(translations.footer.fees),
+  },
+  {
+    id: 'terms',
+    href: '/policies/terms-of-use',
+    name: t(translations.footer.terms),
+  },
+  {
+    id: 'policy',
+    href: '/policies/privacy-policy',
+    name: t(translations.footer.policy),
+  },
+];
 
-  return (
-    <UIFooter
-      leftContent={
-        <SovrynLogo
-          image={Logo}
-          dataAttribute="footer-logo"
-          className="max-h-4 max-w-fit mr-2"
-          text="Powered by Bitcoin"
-          link="/"
-        />
-      }
-      links={
-        <div className="flex flex-row justify-center flex-wrap gap-x-7 gap-y-5">
-          {footerLinks.map(link => (
-            <Link key={link.id} href={link.href} text={link.name} />
-          ))}
-        </div>
-      }
-      rightContent={<SocialLinks dataAttribute="footer-social" />}
-    />
-  );
-};
+export const Footer: FC = () => (
+  <UIFooter
+    leftContent={
+      <SovrynLogo
+        image={Logo}
+        dataAttribute="footer-logo"
+        className="max-h-4 max-w-fit mr-2"
+        text="Powered by Bitcoin"
+        link="/"
+      />
+    }
+    links={
+      <div className="flex flex-row justify-center flex-wrap gap-x-7 gap-y-5">
+        {footerLinks.map(link => (
+          <Link key={link.id} href={link.href} text={link.name} />
+        ))}
+      </div>
+    }
+    rightContent={<SocialLinks dataAttribute="footer-social" />}
+  />
+);

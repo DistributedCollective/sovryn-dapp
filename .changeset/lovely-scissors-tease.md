@@ -2,4 +2,4 @@
 "@sovryn/ui": patch
 ---
 
-SOV: add animation to notifications
+SOV-1625: add animation to notifications

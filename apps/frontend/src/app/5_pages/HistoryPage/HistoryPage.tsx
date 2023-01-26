@@ -9,6 +9,7 @@ import {
   RedemptionsHistoryFrame,
 } from '../../3_organisms';
 import { CollateralSurplusHistoryFrame } from '../../3_organisms/CollateralSurplusWithdrawals/CollateralSurplusWithdrawals';
+import { RewardHistory } from '../../3_organisms/RewardHistory/RewardHistory';
 import { translations } from '../../../locales/i18n';
 import styles from './HistoryPage.module.css';
 
@@ -28,6 +29,12 @@ const redemptions = (
 const collateralSurplusHistory = (
   <div className="px-0 py-4 lg:p-4">
     <CollateralSurplusHistoryFrame />
+  </div>
+);
+
+const rewardHistory = (
+  <div className="px-0 py-4 lg:p-4">
+    <RewardHistory />
   </div>
 );
 
@@ -85,6 +92,12 @@ const HistoryPage: FC = () => {
         content: collateralSurplusHistory,
         activeClassName: ACTIVE_CLASSNAME,
         dataAttribute: 'collateral-surplus-withdrawals',
+      },
+      {
+        label: t(translations.historyPage.table.tabs.reward),
+        content: rewardHistory,
+        activeClassName: ACTIVE_CLASSNAME,
+        dataAttribute: 'rewards',
       },
     ],
     [t, comingSoon],

@@ -276,7 +276,8 @@
                 "stability": "Stability pool",
                 "convert": "Conversion",
                 "funding": "Funding",
-                "collateralSurplusWithdrawals": "Collateral surplus withdrawals"
+                "collateralSurplusWithdrawals": "Collateral surplus withdrawals",
+                "reward": "Reward"
             },
             "comingSoon": "Coming soon..."
         }
@@ -312,6 +313,17 @@
             "withdrawGains": "Withdraw gains",
             "transferToLOC": "Transfer gains to LOC",
             "transfer": "Transfer"
+        }
+    },
+    "rewardHistoryTable": {
+        "table": {
+            "timestamp": "Timestamp",
+            "transactionType": "Transaction Type",
+            "Reward change": "Reward change",
+            "transactionID": "Transaction ID"
+        },
+        "actions": {
+            "noDataToExport": "No data to export"
         }
     }
 }

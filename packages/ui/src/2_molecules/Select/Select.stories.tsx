@@ -32,6 +32,21 @@ const options: SelectOption[] = [
   },
 ];
 
+const advancedOptions: SelectOption[] = [
+  {
+    value: '1',
+    label: 'Normal Label width',
+  },
+  {
+    value: '2',
+    label: 'Long Label with a lot of text',
+  },
+  {
+    value: '3',
+    label: 'Short Label',
+  },
+];
+
 const Template: Story<ComponentProps<typeof Select>> = args => {
   const [, updateArgs] = useArgs();
   const handleOnChange = useCallback(
@@ -50,4 +65,10 @@ export const Basic = Template.bind({});
 Basic.args = {
   value: options[0].value,
   options,
+};
+
+export const AdvancedSelect = Template.bind({});
+AdvancedSelect.args = {
+  value: advancedOptions[0].value,
+  options: advancedOptions,
 };

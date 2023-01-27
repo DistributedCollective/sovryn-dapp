@@ -8,6 +8,7 @@ export const DEPOSIT_FEE_DYNAMIC = 20;
 // https://github.com/DistributedCollective/bidirectional-fastbtc/blob/master/packages/fastbtc-contracts/contracts/FastBTCBridge.sol#L105
 export const DYNAMIC_FEE_DIVISOR = 10000;
 
+//TODO: refactor into Bitcoin asset definition later
 export const Bitcoin = 'BTC';
 
 export const GAS_LIMIT_FAST_BTC_WITHDRAW = 200000;

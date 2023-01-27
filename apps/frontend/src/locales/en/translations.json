@@ -208,6 +208,15 @@
             "convert": "Convert"
         }
     },
+    "footer": {
+        "start": "Getting started",
+        "alpha": "Sovryn Alpha",
+        "blog": "Blog",
+        "security": "Security",
+        "fees": "Fees",
+        "terms": "Terms of service",
+        "policy": "Privacy policy"
+    },
     "zeroPage": {
         "loc": {
             "open": "Open line of credit",

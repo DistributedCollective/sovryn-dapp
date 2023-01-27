@@ -1,0 +1,24 @@
+query getStabilityPool(
+  $user: ID!
+  $skip: Int!
+  $pageSize: Int!
+  $orderBy: StabilityDepositChange_orderBy
+  $orderDirection: OrderDirection
+) {
+  stabilityDeposits(where: { id: $user }) {
+    changes(
+      first: $pageSize
+      skip: $skip
+      orderBy: $orderBy
+      orderDirection: desc
+    ) {
+      depositedAmountChange
+      depositedAmountAfter
+      stabilityDepositOperation
+      transaction {
+        id
+        timestamp
+      }
+    }
+  }
+}

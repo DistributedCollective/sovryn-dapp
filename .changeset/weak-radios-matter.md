@@ -2,4 +2,4 @@
 "@sovryn/ui": patch
 ---
 
-SOV-1476: select-component-always-takes-shortest-item-width
+SOV-1476: fix Select component always taking shortest item width

@@ -21,6 +21,7 @@ import {
 import { chains, defaultChainId } from '../../../config/chains';
 
 import { ExportCSV } from '../../2_molecules/ExportCSV/ExportCSV';
+import { TransactionTypeRenderer } from '../../2_molecules/TransactionTypeRenderer/TransactionTypeRenderer';
 import { useNotificationContext } from '../../../contexts/NotificationContext';
 import { useAccount } from '../../../hooks/useAccount';
 import { translations } from '../../../locales/i18n';
@@ -29,7 +30,6 @@ import { EXPORT_RECORD_LIMIT } from '../../../utils/constants';
 import {
   StabilityDepositChange,
   StabilityDepositChange_OrderBy,
-  StabilityDepositOperation,
   useGetStabilityPoolLazyQuery,
 } from '../../../utils/graphql/zero/generated';
 import { dateFormat } from '../../../utils/helpers';
@@ -67,29 +67,6 @@ export const StabilityPoolHistoryFrame: FC = () => {
     () =>
       (data?.stabilityDeposits[0]?.changes as StabilityDepositChange[]) || [],
     [data],
-  );
-
-  const getTransactionType = useCallback(
-    (type: StabilityDepositOperation) => {
-      switch (type) {
-        case StabilityDepositOperation.DepositTokens:
-          return t(
-            translations.stabilityPoolHistory.stabilityPoolOperation.deposit,
-          );
-        case StabilityDepositOperation.WithdrawTokens:
-          return t(
-            translations.stabilityPoolHistory.stabilityPoolOperation.withdrawal,
-          );
-        case StabilityDepositOperation.WithdrawCollateralGain:
-          return t(
-            translations.stabilityPoolHistory.stabilityPoolOperation
-              .withdrawCollateralGain,
-          );
-        default:
-          return '';
-      }
-    },
-    [t],
   );
 
   const renderBalanceChange = useCallback(
@@ -166,8 +143,9 @@ export const StabilityPoolHistoryFrame: FC = () => {
       {
         id: 'transactionType',
         title: t(translations.stabilityPoolHistory.table.transactionType),
-        cellRenderer: (row: StabilityDepositChange) =>
-          getTransactionType(row.stabilityDepositOperation),
+        cellRenderer: (row: StabilityDepositChange) => (
+          <TransactionTypeRenderer type={row.stabilityDepositOperation} />
+        ),
       },
       {
         id: 'balanceChange',
@@ -192,7 +170,7 @@ export const StabilityPoolHistoryFrame: FC = () => {
         ),
       },
     ],
-    [t, chain, getTransactionType, renderBalanceChange, renderNewBalance],
+    [t, chain, renderBalanceChange, renderNewBalance],
   );
 
   const onPageChange = useCallback(
@@ -253,7 +231,7 @@ export const StabilityPoolHistoryFrame: FC = () => {
         filename="transactions"
         className="mb-7 hidden lg:inline-flex"
         onExportEnd={() => setPageSize(DEFAULT_PAGE_SIZE)}
-        // disabled={!stabilityDeposits || stabilityDeposits.length === 0}
+        disabled={!stabilityDeposits || stabilityDeposits.length === 0}
       />
       <div className="bg-gray-80 py-4 px-4 rounded">
         <Table

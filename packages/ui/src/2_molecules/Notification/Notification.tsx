@@ -37,9 +37,7 @@ export const Notification: React.FC<NotificationProps> = ({
     )}
     <div className={styles.title}>
       <Icon icon={getIcon(type)} size={18} />
-      <Paragraph className={styles.title} size={ParagraphSize.base}>
-        {title}
-      </Paragraph>
+      <Paragraph size={ParagraphSize.base}>{title}</Paragraph>
     </div>
     {content && <div className={styles.content}>{content}</div>}
   </div>

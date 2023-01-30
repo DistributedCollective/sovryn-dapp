@@ -51,7 +51,11 @@ export const GettingStartedPopup: FC<GettingStartedPopupProps> = ({
       {
         name: t(translationBasePath.pool.title),
         description: t(translationBasePath.pool.description),
-        href: sovrynWikiLinks.pool,
+        href: [sovrynWikiLinks.stabilityPool, sovrynWikiLinks.ammPool],
+        learnMore: [
+          t(translations.gettingStartedPopup.buttons.learnMoreStabilityPool),
+          t(translations.gettingStartedPopup.buttons.learnMoreAMMPool),
+        ],
         icon: IconNames.EARN_3,
       },
       {
@@ -120,11 +124,31 @@ export const GettingStartedPopup: FC<GettingStartedPopupProps> = ({
                 >
                   {item.description}
                 </Heading>
-                <Link
-                  text={t(translations.gettingStartedPopup.buttons.learnMore)}
-                  href={item.href}
-                  openNewTab
-                />
+                {Array.isArray(item.href) ? (
+                  <>
+                    {item.href.map((href, index) => (
+                      <Link
+                        text={
+                          item.learnMore
+                            ? item.learnMore[index]
+                            : t(
+                                translations.gettingStartedPopup.buttons
+                                  .learnMore,
+                              )
+                        }
+                        href={href}
+                        openNewTab
+                        key={index}
+                      />
+                    ))}
+                  </>
+                ) : (
+                  <Link
+                    text={t(translations.gettingStartedPopup.buttons.learnMore)}
+                    href={item.href}
+                    openNewTab
+                  />
+                )}
               </div>
             </div>
           ))}

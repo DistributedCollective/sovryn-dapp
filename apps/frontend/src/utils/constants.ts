@@ -19,10 +19,13 @@ export const sovrynAlphaLinks = {
 
 export const sovrynWikiLinks = {
   root: 'https://wiki.sovryn.app/en',
-  pool: `https://wiki.sovryn.app/en/sovryn-dapp/market-making`,
+  stabilityPool:
+    'https://wiki.sovryn.app/en/sovryn-dapp/subprotocols/zero-zusd#stability-pool',
+  ammPool: 'https://wiki.sovryn.app/en/sovryn-dapp/market-making',
   lend: 'https://wiki.sovryn.app/en/sovryn-dapp/lending',
-  trade: 'https://wiki.sovryn.app/en/sovryn-dapp/trading',
-  bridge: 'https://wiki.sovryn.app/en/sovryn-dapp/bridge',
+  trade: 'https://wiki.sovryn.app/en/technical-documents/amm/sovryn-damm',
+  bridge:
+    'https://babelfish.gitbook.io/the-babelfish-gitbook/tutorials-and-guides/bridges',
 };
 
 export const requiredChain = ChainIds.RSK_TESTNET;

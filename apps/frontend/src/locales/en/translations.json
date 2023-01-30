@@ -159,7 +159,9 @@
         "buttons": {
             "gotIt": "Got it",
             "doNotShowAgain": "Don't show again",
-            "learnMore": "Learn more"
+            "learnMore": "Learn more",
+            "learnMoreStabilityPool": "Learn more - Stability Pool",
+            "learnMoreAMMPool": "Learn more - AMM Pool"
         }
     },
     "emailNotificationsDialog": {

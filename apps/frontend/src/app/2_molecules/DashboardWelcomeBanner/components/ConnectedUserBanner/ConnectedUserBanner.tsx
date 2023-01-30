@@ -28,6 +28,7 @@ export const ConnectedUserBanner: FC<ConnectedUserBannerProps> = ({
         <Button
           className="flex-1 md:flex-initial"
           text={t(translations.dashboardWelcomeBanner.fundWallet)}
+          dataAttribute="zero-fund"
         />
       </div>
     );
@@ -39,6 +40,7 @@ export const ConnectedUserBanner: FC<ConnectedUserBannerProps> = ({
         className="flex-1 md:flex-initial"
         onClick={openLOC}
         text={t(translations.dashboardWelcomeBanner.OpenCredit)}
+        dataAttribute="zero-loc-open"
       />
     </div>
   );

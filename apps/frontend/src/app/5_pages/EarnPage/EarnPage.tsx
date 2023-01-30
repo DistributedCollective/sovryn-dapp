@@ -267,7 +267,7 @@ const EarnPage: FC = () => {
             disabled={!account}
             invalid={!isValidAmount}
             className="w-full flex-grow-0 flex-shrink"
-            {...applyDataAttr('earn-amount-input')}
+            dataAttribute="earn-amount-input"
           />
 
           <Select
@@ -276,7 +276,7 @@ const EarnPage: FC = () => {
             options={tokenOptions}
             labelRenderer={() => getAssetRenderer(token)}
             className="min-w-[6.7rem]"
-            {...applyDataAttr('earn-token-select')}
+            dataAttribute="earn-token-select"
           />
         </div>
         {!isValidAmount && (
@@ -317,7 +317,7 @@ const EarnPage: FC = () => {
           className="w-full mt-8"
           onClick={handleSubmit}
           disabled={isSubmitDisabled}
-          {...applyDataAttr('earn-submit')}
+          dataAttribute="earn-submit"
         />
       </div>
     </div>

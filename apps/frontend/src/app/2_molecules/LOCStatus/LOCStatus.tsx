@@ -91,6 +91,7 @@ export const LOCStatus: FC<LOCStatusProps> = ({
             style={ButtonStyle.primary}
             size={ButtonSize.large}
             onClick={onWithdraw}
+            dataAttribute="zero-loc-surplus-withdraw"
           />
         )}
         {showOpenLOC && (
@@ -100,12 +101,14 @@ export const LOCStatus: FC<LOCStatusProps> = ({
               style={ButtonStyle.primary}
               size={ButtonSize.large}
               onClick={onAdjust}
+              dataAttribute="zero-loc-adjust"
             />
             <Button
               text={t('LOCStatus.close')}
               style={ButtonStyle.secondary}
               size={ButtonSize.large}
               onClick={onClose}
+              dataAttribute="zero-loc-close"
             />
           </>
         )}

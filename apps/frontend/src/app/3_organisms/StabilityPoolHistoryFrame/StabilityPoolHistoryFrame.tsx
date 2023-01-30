@@ -24,6 +24,7 @@ import { ExportCSV } from '../../2_molecules/ExportCSV/ExportCSV';
 import { useNotificationContext } from '../../../contexts/NotificationContext';
 import { useAccount } from '../../../hooks/useAccount';
 import { translations } from '../../../locales/i18n';
+import { zeroClient } from '../../../utils/clients';
 import { EXPORT_RECORD_LIMIT } from '../../../utils/constants';
 import {
   StabilityDepositChange,
@@ -58,13 +59,15 @@ export const StabilityPoolHistoryFrame: FC = () => {
     orderOptions,
   );
 
-  const [getStabilityPool] = useGetStabilityPoolLazyQuery();
+  const [getStabilityPool] = useGetStabilityPoolLazyQuery({
+    client: zeroClient,
+  });
 
-  const stabilityDeposits = useMemo(() => {
-    return (
-      (data?.stabilityDeposits[0].changes as StabilityDepositChange[]) || []
-    );
-  }, [data]);
+  const stabilityDeposits = useMemo(
+    () =>
+      (data?.stabilityDeposits[0]?.changes as StabilityDepositChange[]) || [],
+    [data],
+  );
 
   const getTransactionType = useCallback(
     (type: StabilityDepositOperation) => {
@@ -208,7 +211,7 @@ export const StabilityPoolHistoryFrame: FC = () => {
   );
 
   const exportData = useCallback(async () => {
-    const getData = await getStabilityPool({
+    const { data } = await getStabilityPool({
       variables: {
         user: account,
         skip: 0,
@@ -216,9 +219,9 @@ export const StabilityPoolHistoryFrame: FC = () => {
         orderBy: orderOptions.orderBy as StabilityDepositChange_OrderBy,
         orderDirection: orderOptions.orderDirection,
       },
-    }).then(res => res.data);
+    });
 
-    let list = getData?.stabilityDeposits[0].changes || [];
+    let list = data?.stabilityDeposits[0]?.changes || [];
 
     if (!list || !list.length) {
       addNotification({
@@ -250,7 +253,7 @@ export const StabilityPoolHistoryFrame: FC = () => {
         filename="transactions"
         className="mb-7 hidden lg:inline-flex"
         onExportEnd={() => setPageSize(DEFAULT_PAGE_SIZE)}
-        disabled={!stabilityDeposits || stabilityDeposits.length === 0}
+        // disabled={!stabilityDeposits || stabilityDeposits.length === 0}
       />
       <div className="bg-gray-80 py-4 px-4 rounded">
         <Table

@@ -137,7 +137,6 @@ export const GettingStartedPopup: FC<GettingStartedPopupProps> = ({
                               )
                         }
                         href={href}
-                        openNewTab
                         key={index}
                       />
                     ))}
@@ -146,7 +145,6 @@ export const GettingStartedPopup: FC<GettingStartedPopupProps> = ({
                   <Link
                     text={t(translations.gettingStartedPopup.buttons.learnMore)}
                     href={item.href}
-                    openNewTab
                   />
                 )}
               </div>
@@ -175,7 +173,7 @@ export const GettingStartedPopup: FC<GettingStartedPopupProps> = ({
           />
           <Button
             type={ButtonType.button}
-            text={t(translations.gettingStartedPopup.buttons.gotIt)}
+            text={t(translations.gettingStartedPopup.buttons.finish)}
             onClick={onClick}
           />
         </div>

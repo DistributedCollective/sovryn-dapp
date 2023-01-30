@@ -157,7 +157,7 @@
             }
         },
         "buttons": {
-            "gotIt": "Got it",
+            "finish": "Finish",
             "doNotShowAgain": "Don't show again",
             "learnMore": "Learn more",
             "learnMoreStabilityPool": "Learn more - Stability Pool",

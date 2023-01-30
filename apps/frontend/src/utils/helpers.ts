@@ -9,7 +9,7 @@ import {
 import { EIP1193Provider } from '@sovryn/onboard-common';
 
 import { Environments } from '../types/global';
-import { servicesConfig } from './constants';
+import { btcExplorer, rskExplorer, servicesConfig } from './constants';
 
 export const prettyTx = (
   text: string,
@@ -39,11 +39,21 @@ export const signTypedData = async (
   return signature;
 };
 
+export const currentNetwork: Environments = !!process.env.REACT_APP_NETWORK
+  ? (process.env.REACT_APP_NETWORK as Environments)
+  : Environments.Mainnet;
+
 export const isMainnet = () =>
   process.env.REACT_APP_NETWORK === Environments.Mainnet;
 
 export const getServicesConfig = () =>
   servicesConfig[isMainnet() ? Environments.Mainnet : Environments.Testnet];
+
+export const getRskExplorerUrl = () =>
+  rskExplorer[isMainnet() ? 'mainnet' : 'testnet'];
+
+export const getBtcExplorerUrl = () =>
+  btcExplorer[isMainnet() ? 'mainnet' : 'testnet'];
 
 export const dateFormat = (timestamp: number) => {
   const stamp = dayjs.tz(Number(timestamp) * 1e3, 'UTC');

@@ -98,13 +98,20 @@ export const TransactionSteps: FC<TransactionStepsProps> = ({
         configs[i] = { ...config, hash: tx.hash };
         setConfigs([...configs]);
 
+        transactions[i].onStart?.(tx.hash);
+        transactions[i].onChangeStatus?.(StatusType.pending);
+
         await tx.wait();
+
+        transactions[i].onChangeStatus?.(StatusType.success);
         transactions[i].onComplete?.(tx.hash);
       }
 
       setStep(transactions.length);
     } catch (error) {
       console.log('error:', error);
+
+      transactions[0].onChangeStatus?.(StatusType.error);
       setError(true);
     }
   }, [configs, error, step, transactions]);

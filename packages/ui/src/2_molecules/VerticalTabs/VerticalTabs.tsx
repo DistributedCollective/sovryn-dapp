@@ -18,7 +18,7 @@ export const VerticalTabs: FC<VerticalTabsProps> = ({
   const maybeRenderHeader = useMemo(() => {
     if (props.header) {
       return (
-        <div className={styles.header}>
+        <div className={classNames(styles.header, props.headerClassName)}>
           {props.header({ ...props, selectedIndex })}
         </div>
       );
@@ -29,7 +29,7 @@ export const VerticalTabs: FC<VerticalTabsProps> = ({
   const maybeRenderFooter = useMemo(() => {
     if (props.footer) {
       return (
-        <div className={styles.footer}>
+        <div className={classNames(styles.footer, props.footerClassName)}>
           {props.footer({ ...props, selectedIndex })}
         </div>
       );

@@ -38,7 +38,11 @@
     "react-i18next": "12.0.0",
     "react-router-dom": "6.4.2",
     "react-scripts": "5.0.1",
-    "reactjs-localstorage": "1.0.1"
+    "reactjs-localstorage": "1.0.1",
+    "socket.io-client": "4.5.4",
+    "qrcode.react": "3.1.0",
+    "bitcoin-address-validation": "2.2.1",
+    "ethers-eip712": "0.2.0"
   },
   "devDependencies": {
     "@babel/core": "7.18.2",

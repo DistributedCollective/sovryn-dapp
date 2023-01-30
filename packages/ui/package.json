@@ -20,6 +20,7 @@
     "@rollup/plugin-commonjs": "22.0.2",
     "@rollup/plugin-node-resolve": "14.1.0",
     "@rollup/plugin-typescript": "8.5.0",
+    "@rollup/plugin-json": "6.0.0",
     "@sovryn/eslint-config-custom": "*",
     "@sovryn/tailwindcss-config": "*",
     "@sovryn/tsconfig": "*",

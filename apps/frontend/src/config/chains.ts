@@ -1,5 +1,10 @@
 import setup, { Chain, ChainIds } from '@sovryn/ethers-provider';
 
+export enum Chains {
+  RSK = 'rsk',
+  BSC = 'bsc',
+}
+
 export const defaultChainId =
   process.env.REACT_APP_CHAIN_ID || ChainIds.RSK_TESTNET;
 

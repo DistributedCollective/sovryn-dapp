@@ -214,7 +214,7 @@ export const TransactionStep: FC<TransactionStepProps> = ({
                 <HelperButton className="ml-1.5" content="Estimated gas fee" />
               </span>
             }
-            value={estimatedGasFee + ' rBTC'}
+            value={estimatedGasFee + ' BTC'}
             valueClassName={classNames(
               isLoading ? 'text-gray-30' : 'text-primary-10',
               'whitespace-nowrap overflow-auto',

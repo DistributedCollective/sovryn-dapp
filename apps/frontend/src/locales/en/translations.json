@@ -14,7 +14,11 @@
             "confirm": "Confirm",
             "save": "Save",
             "cancel": "Cancel",
-            "withdraw": "Withdraw"
+            "withdraw": "Withdraw",
+            "continue": "Continue",
+            "done": "Done",
+            "close": "Close",
+            "retry": "Retry"
         },
         "na": "N/A",
         "tables": {
@@ -322,5 +326,82 @@
             "transferToLOC": "Transfer gains to LOC",
             "transfer": "Transfer"
         }
+    },
+    "fastBtc": {
+        "mainScreen": {
+            "title": "Funding",
+            "tabs": {
+                "receiveLabel": "Receive",
+                "receiveInfoText": "Transfer BTC from the bitcoin network to your Rootstock address",
+                "sendLabel": "Send",
+                "sendInfoText": "Transfer BTC from the Rootstock network to a specified bitcoin address"
+            }
+        },
+        "receiveInstructions": {
+            "title": "Instructions",
+            "line1": "Only transfer BTC from the bitcoin network",
+            "line2": "Do not send less than the minimum amount",
+            "line3": "Do not send more than the maximum amount",
+            "line4": "Allow up to {{hours}} hrs to process",
+            "line5": "If your transaction takes longer than {{hours}} hrs please <0>create a support ticket</0>",
+            "line5cta": "create a support ticket"
+        },
+        "sendInstructions": {
+            "title": "Instructions",
+            "line1": "Only transfer BTC to the bitcoin network",
+            "line2": "Do not send less than the minimum amount",
+            "line3": "Do not send more than the maximum amount",
+            "line4": "Allow up to {{hours}} hrs to process",
+            "line5": "If your transaction takes longer than {{hours}} hrs please <0>create a support ticket</0>",
+            "line5cta": "create a support ticket"
+        },
+        "limits": {
+            "title": "Transfer policies",
+            "minimumAmount": "Minimum amount",
+            "maximumAmount": "Maximum amount",
+            "serviceFee": "Service fee"
+        },
+        "addressForm": {
+            "title": "Send BTC to this address",
+            "copyAddressSuccess": "Address was copied to clipboard.",
+            "invalidSignatures": "We had an error while trying to verify a deposit address"
+        },
+        "send": {
+            "amountForm": {
+                "title": "Enter amount of Rootstock BTC to send",
+                "amountLabel": "Send"
+            },
+            "addressForm": {
+                "title": "Enter recipient's bitcoin address",
+                "addressLabel": "Address"
+            },
+            "confirmationScreens": {
+                "reviewTitle": "Transfer details",
+                "statusTitleProcessing": "Transfer processing...",
+                "statusTitleComplete": "Transfer complete",
+                "statusTitleFailed": "Transfer failed",
+                "from": "From",
+                "to": "To",
+                "sending": "Sending",
+                "serviceFee": "Service fee",
+                "receiving": "Receiving",
+                "hash": "Rootstock TXID"
+            }
+        },
+        "receive": {
+            "statusScreen": {
+                "statusTitleProcessing": "Transfer processing...",
+                "statusTitleComplete": "Transfer complete",
+                "to": "To",
+                "sending": "Sending",
+                "serviceFee": "Service fee",
+                "receiving": "Receiving",
+                "bitcoinTxId": "Bitcoin TXID",
+                "rootstockTxId": "Rootstock TXID"
+            }
+        }
+    },
+    "maintenanceMode": {
+        "fastBtc": "Fast BTC is locked"
     }
 }

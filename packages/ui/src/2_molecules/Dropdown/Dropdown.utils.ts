@@ -40,7 +40,8 @@ export const getDropdownPositionStyles = (
     },
     sameWidth: {
       left: `${left}px`,
-      width: `${buttonWidth}px`,
+      minWidth: `${buttonWidth}px`,
+      width: `auto`,
     },
   };
 

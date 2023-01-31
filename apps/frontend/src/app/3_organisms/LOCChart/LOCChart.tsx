@@ -262,7 +262,7 @@ export const LOCChart: FC = () => {
 
   useEffect(() => {
     if (
-      userCollateralRatio.length > 0 &&
+      userCollateralRatio?.length > 0 &&
       userOpenTroveAbove &&
       userOpenTroveBelow &&
       !loadingUserOpenTroveAbove &&

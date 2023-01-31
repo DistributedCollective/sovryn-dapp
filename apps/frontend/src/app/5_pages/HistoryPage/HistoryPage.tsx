@@ -10,6 +10,7 @@ import {
 } from '../../3_organisms';
 import { CollateralSurplusHistoryFrame } from '../../3_organisms/CollateralSurplusWithdrawals/CollateralSurplusWithdrawals';
 import { RewardHistory } from '../../3_organisms/RewardHistory/RewardHistory';
+import { StabilityPoolHistoryFrame } from '../../3_organisms/StabilityPoolHistoryFrame';
 import { translations } from '../../../locales/i18n';
 import styles from './HistoryPage.module.css';
 
@@ -23,6 +24,12 @@ const locHistory = (
 const redemptions = (
   <div className="px-0 py-4 lg:p-4">
     <RedemptionsHistoryFrame />
+  </div>
+);
+
+const stability = (
+  <div className="px-0 py-4 lg:p-4">
+    <StabilityPoolHistoryFrame />
   </div>
 );
 
@@ -69,7 +76,7 @@ const HistoryPage: FC = () => {
       },
       {
         label: t(translations.historyPage.table.tabs.stability),
-        content: comingSoon,
+        content: stability,
         activeClassName: ACTIVE_CLASSNAME,
         dataAttribute: 'stability',
       },

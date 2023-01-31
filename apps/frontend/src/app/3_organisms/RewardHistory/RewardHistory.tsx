@@ -21,6 +21,7 @@ import {
 import { chains, defaultChainId } from '../../../config/chains';
 
 import { ExportCSV } from '../../2_molecules/ExportCSV/ExportCSV';
+import { TransactionTypeRenderer } from '../../2_molecules/TransactionTypeRenderer/TransactionTypeRenderer';
 import { useNotificationContext } from '../../../contexts/NotificationContext';
 import { useAccount } from '../../../hooks/useAccount';
 import { translations } from '../../../locales/i18n';
@@ -88,7 +89,9 @@ export const RewardHistory: FC = () => {
       {
         id: 'stabilityDepositOperation',
         title: t(translations.rewardHistoryTable.table.transactionType),
-        cellRenderer: row => row.stabilityDepositOperation,
+        cellRenderer: (tx: StabilityDepositChange) => (
+          <TransactionTypeRenderer type={tx.stabilityDepositOperation} />
+        ),
       },
       {
         id: 'collateralGain',
@@ -103,7 +106,7 @@ export const RewardHistory: FC = () => {
             trigger={TooltipTrigger.click}
             {...applyDataAttr('reward-history-collateral-gain')}
           >
-            <span>{renderCollateralChange(tx.collateralGain)}</span>
+            <span>{renderCollateralChange(tx.collateralGain || '')}</span>
           </Tooltip>
         ),
       },

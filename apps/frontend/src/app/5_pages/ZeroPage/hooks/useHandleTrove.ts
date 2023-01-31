@@ -6,6 +6,7 @@ import { Contract } from 'ethers';
 import { useTranslation } from 'react-i18next';
 
 import { getContract } from '@sovryn/contracts';
+import { SupportedTokens } from '@sovryn/contracts';
 
 import { CreditLineSubmitValue } from '../../../3_organisms/ZeroLocForm/types';
 import { useTransactionContext } from '../../../../contexts/TransactionContext';
@@ -16,7 +17,7 @@ import {
   GAS_LIMIT_ADJUST_TROVE,
   GAS_LIMIT_OPEN_TROVE,
 } from '../../../../utils/constants';
-import { adjustTrove, openTrove } from '../utils/trove-manager';
+import { adjustNueTrove, adjustTrove, openTrove } from '../utils/trove-manager';
 
 export const useHandleTrove = (hasLoc: boolean, onComplete: () => void) => {
   const { signer, account } = useAccount();
@@ -53,23 +54,40 @@ export const useHandleTrove = (hasLoc: boolean, onComplete: () => void) => {
             params.withdrawCollateral = value.withdrawCollateral;
           }
 
-          const adjustedTrove = await adjustTrove(account, params);
-          setTransactions([
-            {
-              title: t(translations.zeroPage.tx.adjustTrove),
-              contract,
-              fnName: 'adjustTrove',
-              config: {
-                value: adjustedTrove.value,
-                gasLimit: GAS_LIMIT_ADJUST_TROVE,
+          if (value.token === SupportedTokens.dllr) {
+            const adjustedTrove = await adjustNueTrove(account, params, signer);
+            setTransactions(
+              adjustedTrove.map(tx => ({
+                title: tx.title,
+                contract: tx.contract ?? contract,
+                fnName: tx.fn,
+                config: {
+                  value: tx.value,
+                  gasLimit: tx.gas,
+                },
+                args: tx.args,
+                onComplete,
+              })),
+            );
+          } else {
+            const adjustedTrove = await adjustTrove(account, params);
+            setTransactions([
+              {
+                title: t(translations.zeroPage.tx.adjustTrove),
+                contract,
+                fnName: adjustedTrove.fn,
+                config: {
+                  value: adjustedTrove.value,
+                  gasLimit: GAS_LIMIT_ADJUST_TROVE,
+                },
+                args: adjustedTrove.args,
+                onComplete,
               },
-              args: adjustedTrove.args,
-              onComplete,
-            },
-          ]);
+            ]);
+          }
           setIsOpen(true);
         } else {
-          const openedTrove = await openTrove({
+          const openedTrove = await openTrove(value.token, {
             borrowZUSD: value.borrow || '0',
             depositCollateral: value.depositCollateral || '0',
           });
@@ -77,7 +95,7 @@ export const useHandleTrove = (hasLoc: boolean, onComplete: () => void) => {
             {
               title: t(translations.zeroPage.tx.openTrove),
               contract,
-              fnName: 'openTrove',
+              fnName: openedTrove.fn,
               config: {
                 value: openedTrove.value,
                 gasLimit: GAS_LIMIT_OPEN_TROVE,

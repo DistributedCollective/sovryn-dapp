@@ -6,6 +6,8 @@ import { useTranslation } from 'react-i18next';
 
 import { Button, ButtonSize, ButtonStyle, HelperButton } from '@sovryn/ui';
 
+import { COLLATERAL_TOKEN } from '../../3_organisms/ZeroLocForm/constants';
+import { formatValue } from '../../../utils/math';
 import { CRatioIndicator } from './components/CRatioIndicator/CRatioIndicator';
 import { LOCStat } from './components/LOCStat/LOCStat';
 
@@ -53,7 +55,10 @@ export const LOCStatus: FC<LOCStatusProps> = ({
           <>
             <LOCStat
               label={t('LOCStatus.currentCollateral')}
-              value={`${collateral} RBTC`}
+              value={`${formatValue(
+                Number(collateral),
+                4,
+              )} ${COLLATERAL_TOKEN.toUpperCase()}`}
             />
             <LOCStat
               label={t('LOCStatus.currentDebt')}

@@ -319,7 +319,7 @@
         "table": {
             "timestamp": "Timestamp",
             "transactionType": "Transaction Type",
-            "Reward change": "Reward change",
+            "rewardChange": "Reward change",
             "transactionID": "Transaction ID"
         },
         "actions": {

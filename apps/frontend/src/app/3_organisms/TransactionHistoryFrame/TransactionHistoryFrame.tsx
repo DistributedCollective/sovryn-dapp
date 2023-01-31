@@ -25,11 +25,13 @@ import { Filter } from '../../2_molecules/TableFilter/TableFilter.types';
 import { useNotificationContext } from '../../../contexts/NotificationContext';
 import { useAccount } from '../../../hooks/useAccount';
 import { translations } from '../../../locales/i18n';
+import { zeroClient } from '../../../utils/clients';
 import { EXPORT_RECORD_LIMIT } from '../../../utils/constants';
 import {
   InputMaybe,
   TroveChange,
   TroveChange_Filter,
+  TroveChange_OrderBy,
   TroveOperation,
   useGetTroveLazyQuery,
 } from '../../../utils/graphql/zero/generated';
@@ -163,7 +165,9 @@ export const TransactionHistoryFrame: FC = () => {
     orderOptions,
   );
 
-  const [getTroves] = useGetTroveLazyQuery();
+  const [getTroves] = useGetTroveLazyQuery({
+    client: zeroClient,
+  });
 
   const noDataLabel = useMemo(
     () =>
@@ -538,14 +542,16 @@ export const TransactionHistoryFrame: FC = () => {
   );
 
   const exportData = useCallback(async () => {
-    const { data } = await getTroves({
+    const data = await getTroves({
       variables: {
         user: account,
         skip: 0,
         pageSize: EXPORT_RECORD_LIMIT,
-        filters: getFinalFilters(),
+        orderBy: orderOptions.orderBy as TroveChange_OrderBy,
+        orderDirection: orderOptions.orderDirection,
       },
-    });
+      client: zeroClient,
+    }).then(res => res.data);
 
     let troves = data?.trove?.changes || [];
 
@@ -571,11 +577,12 @@ export const TransactionHistoryFrame: FC = () => {
       transactionID: tx.transaction.id,
     }));
   }, [
-    t,
-    account,
-    addNotification,
     getTroves,
-    getFinalFilters,
+    account,
+    orderOptions.orderBy,
+    orderOptions.orderDirection,
+    addNotification,
+    t,
     getTroveType,
     renderLiquidationReserve,
   ]);

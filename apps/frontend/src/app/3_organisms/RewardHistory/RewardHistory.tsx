@@ -14,6 +14,8 @@ import {
   ParagraphSize,
   Table,
   TransactionId,
+  Tooltip,
+  TooltipTrigger,
 } from '@sovryn/ui';
 
 import { chains, defaultChainId } from '../../../config/chains';
@@ -22,8 +24,10 @@ import { ExportCSV } from '../../2_molecules/ExportCSV/ExportCSV';
 import { useNotificationContext } from '../../../contexts/NotificationContext';
 import { useAccount } from '../../../hooks/useAccount';
 import { translations } from '../../../locales/i18n';
+import { zeroClient } from '../../../utils/clients';
 import { EXPORT_RECORD_LIMIT } from '../../../utils/constants';
 import {
+  StabilityDepositChange,
   StabilityDepositChange_Filter,
   useGetStabilityDepositChangesLazyQuery,
 } from '../../../utils/graphql/zero/generated';
@@ -53,7 +57,9 @@ export const RewardHistory: FC = () => {
     page,
     orderOptions,
   );
-  const [getStabilityDeposit] = useGetStabilityDepositChangesLazyQuery();
+  const [getStabilityDeposit] = useGetStabilityDepositChangesLazyQuery({
+    client: zeroClient,
+  });
 
   const renderCollateralChange = useCallback((collateralGain: string) => {
     return `${formatValue(
@@ -62,10 +68,10 @@ export const RewardHistory: FC = () => {
     )} ${SupportedTokens.rbtc.toUpperCase()}`;
   }, []);
 
-  const generateRowTitle = useCallback((row: any) => {
+  const generateRowTitle = useCallback((row: StabilityDepositChange) => {
     return (
       <Paragraph size={ParagraphSize.small}>
-        {dateFormat(row.timestamp)}
+        {dateFormat(row.transaction.timestamp)}
       </Paragraph>
     );
   }, []);
@@ -75,7 +81,8 @@ export const RewardHistory: FC = () => {
       {
         id: 'sequenceNumber',
         title: t(translations.rewardHistoryTable.table.timestamp),
-        cellRenderer: (tx: any) => dateFormat(tx.timestamp),
+        cellRenderer: (tx: StabilityDepositChange) =>
+          dateFormat(tx.transaction.timestamp),
         sortable: true,
       },
       {
@@ -85,17 +92,29 @@ export const RewardHistory: FC = () => {
       },
       {
         id: 'collateralGain',
-        title: t(translations.rewardHistoryTable.table['Reward change']),
-        cellRenderer: tx => renderCollateralChange(tx.collateralGain),
+        title: t(translations.rewardHistoryTable.table.rewardChange),
+        cellRenderer: tx => (
+          <Tooltip
+            content={
+              <>
+                {tx.collateralGain} {SupportedTokens.rbtc.toUpperCase()}
+              </>
+            }
+            trigger={TooltipTrigger.click}
+            {...applyDataAttr('reward-history-collateral-gain')}
+          >
+            <span>{renderCollateralChange(tx.collateralGain)}</span>
+          </Tooltip>
+        ),
       },
       {
         id: 'transactionID',
         title: t(translations.rewardHistoryTable.table.transactionID),
-        cellRenderer: (tx: any) => (
+        cellRenderer: (tx: StabilityDepositChange) => (
           <TransactionId
-            href={`${chain?.blockExplorerUrl}/tx/${tx.hash}`}
-            value={tx.hash}
-            {...applyDataAttr('history-address-id')}
+            href={`${chain?.blockExplorerUrl}/tx/${tx.transaction.id}`}
+            value={tx.transaction.id}
+            {...applyDataAttr('history-reward-address-id')}
           />
         ),
       },

@@ -4,6 +4,7 @@ import { OrderOptions } from '@sovryn/ui';
 
 import { zeroClient } from '../../../../utils/clients';
 import {
+  StabilityDepositChange,
   StabilityDepositChange_Filter,
   StabilityDepositChange_OrderBy,
   useGetStabilityDepositChangesQuery,
@@ -43,15 +44,8 @@ export const useGetRewardHistory = (
       return [];
     }
 
-    return data.stabilityDepositChanges.map(tx => ({
-      sequenceNumber: tx.sequenceNumber,
-      depositedAmountChange: tx.depositedAmountChange,
-      stabilityDepositOperation: tx.stabilityDepositOperation,
-      collateralGain: tx.collateralGain || '',
-      timestamp: tx.transaction.timestamp,
-      hash: tx.transaction.id,
-    }));
+    return data.stabilityDepositChanges;
   }, [data]);
 
-  return { loading, data: stabilityDepositChanges };
+  return { loading, data: stabilityDepositChanges as StabilityDepositChange[] };
 };

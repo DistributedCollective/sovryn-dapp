@@ -132,7 +132,7 @@ export const ZeroStats: FC<ZeroStatsProps> = ({ className, dataAttribute }) => {
       </Paragraph>
       <SimpleTable
         dataAttribute="system-statistics"
-        className="max-w-[23.125rem]"
+        className="lg:max-w-[23.125rem]"
       >
         <SimpleTableRow
           className="mb-5"

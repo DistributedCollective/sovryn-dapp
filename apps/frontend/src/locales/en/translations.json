@@ -210,7 +210,7 @@
     "header": {
         "funding": "Funding",
         "nav": {
-            "home": "Home",
+            "borrow": "Borrow",
             "earn": "Earn",
             "convert": "Convert"
         }

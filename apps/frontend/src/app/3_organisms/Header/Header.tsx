@@ -64,9 +64,9 @@ export const Header: FC = () => {
               to="/"
               end
               onClick={handleNavClick}
-              {...applyDataAttr('dapp-menu-home')}
+              {...applyDataAttr('dapp-menu-borrow')}
             >
-              {t(translations.header.nav.home)}
+              {t(translations.header.nav.borrow)}
             </NavLink>
             <NavLink
               to="/earn"
@@ -98,7 +98,7 @@ export const Header: FC = () => {
               onDisconnect={disconnectWallet}
               address={account}
               pending={pending}
-              dataAttribute="dapp-header-connect"
+              dataAttribute={'dapp-header-connect'}
             />
           </div>
         }

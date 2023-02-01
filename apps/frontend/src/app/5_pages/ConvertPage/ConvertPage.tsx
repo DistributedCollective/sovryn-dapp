@@ -135,12 +135,12 @@ const ConvertPage: FC = () => {
 
   return (
     <div className="w-full flex flex-col items-center text-gray-10 mt-9 sm:mt-24">
-      <Heading className="text-base sm:text-2xl">
+      <Heading className="text-base sm:text-2xl font-medium">
         {t(pageTranslations.title)}
       </Heading>
       <Paragraph
         size={ParagraphSize.base}
-        className="mt-2.5 sm:mt-4 sm:text-base"
+        className="mt-2.5 sm:mt-4 sm:text-base font-medium"
       >
         {t(pageTranslations.subtitle)}
       </Paragraph>
@@ -163,7 +163,7 @@ const ConvertPage: FC = () => {
             </button>
           </div>
 
-          <div className="w-full flex flex-row justify-between items-center gap-3  mt-3.5">
+          <div className="w-full flex flex-row justify-between items-center gap-3 mt-3.5">
             <AmountInput
               value={amount}
               onChangeText={setAmount}
@@ -198,7 +198,11 @@ const ConvertPage: FC = () => {
             onClick={onSwitchClick}
             {...applyDataAttr('convert-swap-asset')}
           >
-            <Icon icon={IconNames.PENDING} className="text-gray-50" size={24} />
+            <Icon
+              icon={IconNames.PENDING}
+              className="text-gray-50 rotate-90 -scale-x-100"
+              size={24}
+            />
           </button>
         </div>
 

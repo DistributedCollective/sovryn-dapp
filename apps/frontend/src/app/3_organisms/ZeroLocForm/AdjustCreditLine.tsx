@@ -95,9 +95,7 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
   const [fieldsTouched, setFieldsTouched] = useState(false);
   const [collateralAmount, setCollateralAmount] = useState('0');
   const [debtAmount, setDebtAmount] = useState('0');
-  const [debtToken, setDebtToken] = useState<SupportedTokens>(
-    SupportedTokens.zusd,
-  );
+  const [debtToken, setDebtToken] = useState<SupportedTokens>(BORROW_ASSETS[0]);
 
   const { value: creditWeiBalance } = useAssetBalance(debtToken);
 
@@ -154,11 +152,12 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
   );
 
   const maxCreditAmount = useMemo(() => {
+    if (!isIncreasingDebt) {
+      return Math.min(Number(fromWei(creditWeiBalance)), Number(existingDebt));
+    }
     return Number(
-      isIncreasingDebt
-        ? (maxCollateralAmount * Number(rbtcPrice || '0')) /
-            MINIMUM_COLLATERAL_RATIO
-        : Math.min(Number(fromWei(creditWeiBalance)), Number(existingDebt)),
+      (maxCollateralAmount * Number(rbtcPrice || '0')) /
+        MINIMUM_COLLATERAL_RATIO,
     );
   }, [
     isIncreasingDebt,
@@ -196,7 +195,9 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
   );
 
   const handleFormSubmit = useCallback(() => {
-    let value: Partial<CreditLineSubmitValue> = {};
+    let value: Partial<CreditLineSubmitValue> = {
+      token: debtToken,
+    };
 
     value[isIncreasingCollateral ? 'depositCollateral' : 'withdrawCollateral'] =
       collateralAmount;
@@ -206,6 +207,7 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
   }, [
     collateralAmount,
     debtAmount,
+    debtToken,
     isIncreasingCollateral,
     isIncreasingDebt,
     onSubmit,
@@ -408,8 +410,8 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
     const debt = Number(debtAmount);
     const isFormValid =
       Number(existingDebt) > 0
-        ? collateral > 0 && debt > 0
-        : collateral > 0 || debt > 0;
+        ? collateral > 0 || debt > 0
+        : collateral > 0 && debt > 0;
     return hasCriticalError || !isFormValid;
   }, [collateralAmount, debtAmount, errors, existingDebt]);
 
@@ -432,9 +434,9 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
       return undefined;
     }
 
-    if (toWei(collateralAmount).gt(maxCollateralWeiAmount)) {
+    if (toWei(collateralAmount || 0).gt(maxCollateralWeiAmount)) {
       const diff = Number(
-        fromWei(toWei(collateralAmount).sub(maxCollateralWeiAmount)),
+        fromWei(toWei(collateralAmount || 0).sub(maxCollateralWeiAmount)),
       );
       return t(translations.zeroPage.loc.errors.balanceTooLow, {
         value: `${formatValue(diff, 4)} RBTC`,

@@ -37,6 +37,7 @@ import { CreditLineType } from '../../3_organisms/ZeroLocForm/types';
 import { useWalletConnect } from '../../../hooks';
 import { useAccount } from '../../../hooks/useAccount';
 import { translations } from '../../../locales/i18n';
+import { LIQUIDATION_RESERVE_AMOUNT } from '../../../utils/constants';
 import { useClaimCollateralSurplus } from './hooks/useClaimCollateralSurplus';
 import { useHandleTrove } from './hooks/useHandleTrove';
 import { ZeroPageLoaderData } from './loader';
@@ -234,7 +235,7 @@ export const ZeroPage: FC = () => {
                 <DialogBody>
                   <CloseCreditLine
                     onSubmit={handleTroveClose}
-                    creditValue={String(debt)}
+                    creditValue={String(debt - LIQUIDATION_RESERVE_AMOUNT)}
                     collateralValue={String(collateral)}
                     availableBalance={zusdBalance}
                   />

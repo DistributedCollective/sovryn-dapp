@@ -25,7 +25,10 @@ import { Filter } from '../../2_molecules/TableFilter/TableFilter.types';
 import { useNotificationContext } from '../../../contexts/NotificationContext';
 import { useAccount } from '../../../hooks/useAccount';
 import { translations } from '../../../locales/i18n';
-import { EXPORT_RECORD_LIMIT } from '../../../utils/constants';
+import {
+  EXPORT_RECORD_LIMIT,
+  LIQUIDATION_RESERVE_AMOUNT,
+} from '../../../utils/constants';
 import {
   InputMaybe,
   TroveChange,
@@ -39,7 +42,6 @@ import { useGetTroves } from './hooks/useGetTroves';
 
 // TODO usage example, to be removed
 const DEFAULT_PAGE_SIZE = 10;
-const liquidationReserveAmount = 20;
 
 export const TransactionHistoryFrame: FC = () => {
   const { t } = useTranslation();
@@ -190,7 +192,7 @@ export const TransactionHistoryFrame: FC = () => {
     ];
 
     if (troveOperation === TroveOperation.OpenTrove) {
-      return `+${liquidationReserveAmount} ${SupportedTokens.zusd}`;
+      return `+${LIQUIDATION_RESERVE_AMOUNT} ${SupportedTokens.zusd}`;
     }
 
     if (
@@ -198,7 +200,7 @@ export const TransactionHistoryFrame: FC = () => {
       (troveOperation === TroveOperation.RedeemCollateral &&
         redemption?.partial === true)
     ) {
-      return `-${liquidationReserveAmount} ${SupportedTokens.zusd}`;
+      return `-${LIQUIDATION_RESERVE_AMOUNT} ${SupportedTokens.zusd}`;
     }
 
     return '-';

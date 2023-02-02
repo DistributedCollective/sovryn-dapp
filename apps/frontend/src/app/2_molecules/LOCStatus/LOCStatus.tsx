@@ -38,7 +38,7 @@ export const LOCStatus: FC<LOCStatusProps> = ({
   return (
     <div
       className={classNames(
-        'bg-gray-80 md:bg-gray-90 py-7 px-6 rounded flex justify-between flex-wrap gap-6',
+        'bg-gray-80 md:bg-gray-90 py-7 px-6 rounded flex justify-between flex-wrap gap-6 items-center',
         className,
       )}
     >

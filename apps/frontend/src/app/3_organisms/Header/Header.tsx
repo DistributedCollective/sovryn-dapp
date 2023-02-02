@@ -1,7 +1,8 @@
-import React, { FC, useCallback, useReducer, useState } from 'react';
+import React, { FC, useCallback, useMemo, useReducer, useState } from 'react';
 
 import { useTranslation } from 'react-i18next';
 
+import { SupportedTokens } from '@sovryn/contracts';
 import {
   Button,
   ButtonStyle,
@@ -15,6 +16,7 @@ import { ConnectWalletButton } from '../../2_molecules';
 import { NavLink } from '../../2_molecules/NavLink/NavLink';
 import { SovrynLogo } from '../../2_molecules/SovrynLogo/SovrynLogo';
 import { useWalletConnect, useWrongNetworkCheck } from '../../../hooks';
+import { useAssetBalance } from '../../../hooks/useAssetBalance';
 import { translations } from '../../../locales/i18n';
 import { FastBtcDialog } from '../FastBtcDialog/FastBtcDialog';
 
@@ -24,6 +26,10 @@ export const Header: FC = () => {
   const { connectWallet, disconnectWallet, account, pending } =
     useWalletConnect();
   useWrongNetworkCheck();
+
+  const { value } = useAssetBalance(SupportedTokens.rbtc);
+
+  const hasRbtcBalance = useMemo(() => Number(value) !== 0, [value]);
 
   const handleNavClick = useCallback(() => {
     if (isOpen) {
@@ -82,28 +88,24 @@ export const Header: FC = () => {
             >
               {t(translations.header.nav.convert)}
             </NavLink>
-            <NavLink
-              to="/debug-content"
-              onClick={handleNavClick}
-              {...applyDataAttr('dapp-menu-debug')}
-            >
-              *Debug Content*
-            </NavLink>
           </ol>
         }
         secondaryContent={
-          <div className="relative">
-            <ConnectWalletButton
-              onConnect={connectWallet}
-              onDisconnect={disconnectWallet}
-              address={account}
-              pending={pending}
-              dataAttribute="dapp-header-connect"
-            />
-          </div>
+          account && (
+            <div className="relative">
+              <ConnectWalletButton
+                onConnect={connectWallet}
+                onDisconnect={disconnectWallet}
+                address={account}
+                pending={pending}
+                dataAttribute="dapp-header-connect"
+              />
+            </div>
+          )
         }
         extraContent={
-          account && (
+          account &&
+          hasRbtcBalance && (
             <Button
               text={t(translations.header.funding)}
               style={ButtonStyle.secondary}

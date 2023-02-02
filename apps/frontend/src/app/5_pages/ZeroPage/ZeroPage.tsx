@@ -118,7 +118,7 @@ export const ZeroPage: FC = () => {
   );
 
   return (
-    <div className="px-0 container max-w-7xl md:mt-16 md:mb-40 mt-4 mb-7">
+    <div className="px-0 container max-w-[100rem] md:mt-16 md:mb-40 mt-4 mb-7">
       <React.Suspense fallback={<p>Loading stuff...</p>}>
         <Await resolve={deferedData} errorElement={<p>Error loading stuff!</p>}>
           {([price, fees]: [string, Fees]) => (
@@ -146,7 +146,7 @@ export const ZeroPage: FC = () => {
                 />
               )}
 
-              <div className="flex-col-reverse lg:flex-row flex items-stretch md:bg-gray-90 md:p-6 rounded gap-9 md:gap-20">
+              <div className="flex-col-reverse lg:flex-row flex items-stretch md:p-6 md:bg-gray-90 rounded gap-9 md:gap-20">
                 <div className="md:min-w-[23rem] min-w-auto">
                   <SystemStats />
                 </div>

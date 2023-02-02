@@ -146,7 +146,7 @@ export const ZeroPage: FC = () => {
                 />
               )}
 
-              <div className="flex-col-reverse lg:flex-row flex items-stretch md:bg-gray-90 rounded gap-9 md:gap-20">
+              <div className="flex-col-reverse lg:flex-row flex items-stretch md:p-6 md:bg-gray-90 rounded gap-9 md:gap-20">
                 <div className="md:min-w-[23rem] min-w-auto">
                   <SystemStats />
                 </div>

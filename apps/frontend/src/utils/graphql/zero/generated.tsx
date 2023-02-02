@@ -849,6 +849,8 @@ export type Query = {
   stabilityDeposits: Array<StabilityDeposit>;
   systemState?: Maybe<SystemState>;
   systemStates: Array<SystemState>;
+  tempDepositUpdate?: Maybe<TempDepositUpdate>;
+  tempDepositUpdates: Array<TempDepositUpdate>;
   token?: Maybe<Token>;
   tokenAllowance?: Maybe<TokenAllowance>;
   tokenAllowances: Array<TokenAllowance>;
@@ -1059,6 +1061,22 @@ export type QuerySystemStatesArgs = {
   skip?: InputMaybe<Scalars['Int']>;
   subgraphError?: _SubgraphErrorPolicy_;
   where?: InputMaybe<SystemState_Filter>;
+};
+
+export type QueryTempDepositUpdateArgs = {
+  block?: InputMaybe<Block_Height>;
+  id: Scalars['ID'];
+  subgraphError?: _SubgraphErrorPolicy_;
+};
+
+export type QueryTempDepositUpdatesArgs = {
+  block?: InputMaybe<Block_Height>;
+  first?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<TempDepositUpdate_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+  skip?: InputMaybe<Scalars['Int']>;
+  subgraphError?: _SubgraphErrorPolicy_;
+  where?: InputMaybe<TempDepositUpdate_Filter>;
 };
 
 export type QueryTokenArgs = {
@@ -1854,6 +1872,8 @@ export type Subscription = {
   stabilityDeposits: Array<StabilityDeposit>;
   systemState?: Maybe<SystemState>;
   systemStates: Array<SystemState>;
+  tempDepositUpdate?: Maybe<TempDepositUpdate>;
+  tempDepositUpdates: Array<TempDepositUpdate>;
   token?: Maybe<Token>;
   tokenAllowance?: Maybe<TokenAllowance>;
   tokenAllowances: Array<TokenAllowance>;
@@ -2066,6 +2086,22 @@ export type SubscriptionSystemStatesArgs = {
   where?: InputMaybe<SystemState_Filter>;
 };
 
+export type SubscriptionTempDepositUpdateArgs = {
+  block?: InputMaybe<Block_Height>;
+  id: Scalars['ID'];
+  subgraphError?: _SubgraphErrorPolicy_;
+};
+
+export type SubscriptionTempDepositUpdatesArgs = {
+  block?: InputMaybe<Block_Height>;
+  first?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<TempDepositUpdate_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+  skip?: InputMaybe<Scalars['Int']>;
+  subgraphError?: _SubgraphErrorPolicy_;
+  where?: InputMaybe<TempDepositUpdate_Filter>;
+};
+
 export type SubscriptionTokenArgs = {
   block?: InputMaybe<Block_Height>;
   id: Scalars['ID'];
@@ -2270,6 +2306,37 @@ export enum SystemState_OrderBy {
   TotalCollateral = 'totalCollateral',
   TotalCollateralRatio = 'totalCollateralRatio',
   TotalDebt = 'totalDebt',
+}
+
+export type TempDepositUpdate = {
+  __typename?: 'TempDepositUpdate';
+  amount?: Maybe<Scalars['BigInt']>;
+  /** ID is transaction hash */
+  id: Scalars['ID'];
+};
+
+export type TempDepositUpdate_Filter = {
+  amount?: InputMaybe<Scalars['BigInt']>;
+  amount_gt?: InputMaybe<Scalars['BigInt']>;
+  amount_gte?: InputMaybe<Scalars['BigInt']>;
+  amount_in?: InputMaybe<Array<Scalars['BigInt']>>;
+  amount_lt?: InputMaybe<Scalars['BigInt']>;
+  amount_lte?: InputMaybe<Scalars['BigInt']>;
+  amount_not?: InputMaybe<Scalars['BigInt']>;
+  amount_not_in?: InputMaybe<Array<Scalars['BigInt']>>;
+  id?: InputMaybe<Scalars['ID']>;
+  id_gt?: InputMaybe<Scalars['ID']>;
+  id_gte?: InputMaybe<Scalars['ID']>;
+  id_in?: InputMaybe<Array<Scalars['ID']>>;
+  id_lt?: InputMaybe<Scalars['ID']>;
+  id_lte?: InputMaybe<Scalars['ID']>;
+  id_not?: InputMaybe<Scalars['ID']>;
+  id_not_in?: InputMaybe<Array<Scalars['ID']>>;
+};
+
+export enum TempDepositUpdate_OrderBy {
+  Amount = 'amount',
+  Id = 'id',
 }
 
 export type Token = {

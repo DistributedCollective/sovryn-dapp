@@ -50,9 +50,9 @@ export const ConnectedUserBanner: FC<ConnectedUserBannerProps> = ({
   }
 
   return (
-    <div className="flex justify-end mb-9">
+    <div className="flex justify-center md:justify-end mb-9">
       <Button
-        className="flex-1 md:flex-initial"
+        className="flex-1 md:flex-initial max-w-[20.5rem] md:max-w-none "
         onClick={onClickHandler}
         text={buttonText}
         dataAttribute={dataAttribute}

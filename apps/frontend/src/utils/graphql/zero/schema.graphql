@@ -1968,6 +1968,7 @@ enum StabilityDepositOperation {
   depositTokens
   withdrawCollateralGain
   withdrawTokens
+  withdrawGainToLineOfCredit
 }
 
 input StabilityDeposit_filter {

@@ -1777,6 +1777,7 @@ export enum StabilityDepositChange_OrderBy {
 export enum StabilityDepositOperation {
   DepositTokens = 'depositTokens',
   WithdrawCollateralGain = 'withdrawCollateralGain',
+  WithdrawGainToLineOfCredit = 'withdrawGainToLineOfCredit',
   WithdrawTokens = 'withdrawTokens',
 }
 

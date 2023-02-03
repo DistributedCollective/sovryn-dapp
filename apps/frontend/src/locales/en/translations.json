@@ -306,7 +306,8 @@
         "stabilityPoolOperation": {
             "deposit": "Deposit",
             "withdrawal": "Withdrawal",
-            "withdrawCollateralGain": "Withdraw collateral gain"
+            "withdrawCollateralGain": "Withdraw collateral gain",
+            "withdrawGainToLineOfCredit": "Withdraw gain to line of credit"
         },
         "actions": {
             "noDataToExport": "No data to export"

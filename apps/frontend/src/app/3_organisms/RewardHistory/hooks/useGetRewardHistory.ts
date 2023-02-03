@@ -28,7 +28,7 @@ export const useGetRewardHistory = (
           'withdrawGainToLineOfCredit',
           'withdrawCollateralGain',
         ],
-        stabilityDeposit: account,
+        stabilityDeposit: account?.toLowerCase(),
       } as StabilityDepositChange_Filter,
     }),
     [page, orderOptions, pageSize, account],

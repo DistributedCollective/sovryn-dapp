@@ -1269,6 +1269,10 @@ export enum _SubgraphErrorPolicy_ {
 
 export type GetUserConversionsQueryVariables = Exact<{
   user?: InputMaybe<Scalars['String']>;
+  skip: Scalars['Int'];
+  pageSize: Scalars['Int'];
+  orderBy?: InputMaybe<Conversion_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
 }>;
 
 export type GetUserConversionsQuery = {
@@ -1284,8 +1288,20 @@ export type GetUserConversionsQuery = {
 };
 
 export const GetUserConversionsDocument = gql`
-  query getUserConversions($user: String) {
-    conversions(where: { user: $user }) {
+  query getUserConversions(
+    $user: String
+    $skip: Int!
+    $pageSize: Int!
+    $orderBy: Conversion_orderBy
+    $orderDirection: OrderDirection
+  ) {
+    conversions(
+      where: { user: $user }
+      first: $pageSize
+      skip: $skip
+      orderBy: $orderBy
+      orderDirection: $orderDirection
+    ) {
       bAsset {
         symbol
       }
@@ -1313,11 +1329,15 @@ export const GetUserConversionsDocument = gql`
  * const { data, loading, error } = useGetUserConversionsQuery({
  *   variables: {
  *      user: // value for 'user'
+ *      skip: // value for 'skip'
+ *      pageSize: // value for 'pageSize'
+ *      orderBy: // value for 'orderBy'
+ *      orderDirection: // value for 'orderDirection'
  *   },
  * });
  */
 export function useGetUserConversionsQuery(
-  baseOptions?: Apollo.QueryHookOptions<
+  baseOptions: Apollo.QueryHookOptions<
     GetUserConversionsQuery,
     GetUserConversionsQueryVariables
   >,

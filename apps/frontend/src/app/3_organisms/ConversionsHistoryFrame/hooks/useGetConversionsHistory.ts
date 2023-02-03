@@ -2,20 +2,35 @@ import { useQuery } from '@apollo/client';
 
 import { useMemo } from 'react';
 
-import { useAccount } from '../../../../hooks/useAccount';
+import { OrderOptions } from '@sovryn/ui';
+
 import { myntClient } from '../../../../utils/clients';
-import { GetUserConversionsDocument } from '../../../../utils/graphql/mynt/generated';
+import {
+  Conversion_OrderBy,
+  GetUserConversionsDocument,
+} from '../../../../utils/graphql/mynt/generated';
 
-export const useGetConversionsHistory = (pageSize: number, page: number) => {
-  const { account } = useAccount();
-
+export const useGetConversionsHistory = (
+  account: string,
+  pageSize: number,
+  page: number,
+  orderOptions: OrderOptions,
+) => {
   const config = useMemo(
     () => ({
       user: account,
       skip: page * pageSize,
       pageSize,
+      orderBy: orderOptions.orderBy as Conversion_OrderBy,
+      orderDirection: orderOptions.orderDirection,
     }),
-    [account, page, pageSize],
+    [
+      account,
+      orderOptions.orderBy,
+      orderOptions.orderDirection,
+      page,
+      pageSize,
+    ],
   );
 
   return useQuery(GetUserConversionsDocument, {

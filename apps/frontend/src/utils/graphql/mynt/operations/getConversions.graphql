@@ -1,5 +1,5 @@
-query getUserConversions($user: String) {
-  conversions(where: { user: $user }) {
+query getUserConversions($user: String, $skip: Int!, $pageSize: Int!) {
+  conversions(where: { user: $user }, first: $pageSize, skip: $skip) {
     bAsset {
       symbol
     }

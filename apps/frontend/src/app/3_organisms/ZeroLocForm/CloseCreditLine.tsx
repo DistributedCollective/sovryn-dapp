@@ -47,7 +47,7 @@ export const CloseCreditLine: FC<CloseCreditLineProps> = ({
   );
 
   const insufficientBalance = useMemo(() => {
-    return Number(availableBalance) - Number(creditValue);
+    return Number(creditValue) - Number(availableBalance);
   }, [availableBalance, creditValue]);
 
   const hasError = useMemo(
@@ -78,7 +78,10 @@ export const CloseCreditLine: FC<CloseCreditLineProps> = ({
             <Select
               value={creditToken}
               onChange={setCreditToken}
-              options={tokensToOptions([SupportedTokens.zusd])}
+              options={tokensToOptions([
+                SupportedTokens.zusd,
+                SupportedTokens.dllr,
+              ])}
               labelRenderer={({ value }) => (
                 <AssetRenderer
                   dataAttribute="close-credit-line-credit-asset"
@@ -107,13 +110,13 @@ export const CloseCreditLine: FC<CloseCreditLineProps> = ({
       {hasError && (
         <Paragraph
           children={
-            <div className="flex justify-center items-center mt-4 p-2 rounded bolder-error bg-error bg-opacity-20">
+            <span className="flex justify-center items-center mt-4 p-2 rounded bolder-error bg-error bg-opacity-20">
               <Icon icon="failed-tx" size={20} className="mr-3 w-5 min-w-5" />
               {t(translations.closeCreditLine.error, {
                 amount: insufficientBalance,
                 token: creditToken.toUpperCase(),
               })}
-            </div>
+            </span>
           }
           className="text-error-light mt-4 font-medium"
           size={ParagraphSize.small}

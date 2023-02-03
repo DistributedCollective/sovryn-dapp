@@ -205,14 +205,14 @@
         "connect": "Get started",
         "rewards": "Rewards",
         "settings": "Settings",
-        "history": "Transaction History",
+        "history": "History",
         "copyAddress": "Copy address",
         "disconnect": "Disconnect"
     },
     "header": {
         "funding": "Funding",
         "nav": {
-            "home": "Home",
+            "borrow": "Borrow",
             "earn": "Earn",
             "convert": "Convert"
         }

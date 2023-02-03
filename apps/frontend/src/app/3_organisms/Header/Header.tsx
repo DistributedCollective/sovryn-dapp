@@ -70,9 +70,9 @@ export const Header: FC = () => {
               to="/"
               end
               onClick={handleNavClick}
-              {...applyDataAttr('dapp-menu-home')}
+              {...applyDataAttr('dapp-menu-borrow')}
             >
-              {t(translations.header.nav.home)}
+              {t(translations.header.nav.borrow)}
             </NavLink>
             <NavLink
               to="/earn"

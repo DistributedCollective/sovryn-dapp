@@ -36,6 +36,9 @@
 
 .texts {
   @apply flex flex-col items-start justify-start;
+  & > a + a {
+    @apply mt-2;
+  }
 }
 
 .name,

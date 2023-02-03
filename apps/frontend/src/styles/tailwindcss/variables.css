@@ -6,7 +6,7 @@ html {
   --color-content-main: #0D0D0F;
 }
 
-html[data-theme="light"] {
+html[data-theme='light'] {
   --color-primary: #570df8;
   --color-primary-content: #0D0D0F;
   --color-secondary: #f000b8;
@@ -14,7 +14,7 @@ html[data-theme="light"] {
   --color-content-main: #ffffff;
 }
 
-html[data-theme="dark"] {
+html[data-theme='dark'] {
   --color-primary: #661ae6;
   --color-primary-content: #ffffff;
   --color-secondary: #d926aa;
@@ -22,9 +22,9 @@ html[data-theme="dark"] {
   --color-content-main: #0D0D0F;
 }
 
-html[data-theme="coffee"] {
+html[data-theme='coffee'] {
   --color-primary: #db924b;
   --color-primary-content: #263e3f;
   --color-secondary: #263e3f;
-  --color-content-main: #756E63;
+  --color-content-main: #756e63;
 }

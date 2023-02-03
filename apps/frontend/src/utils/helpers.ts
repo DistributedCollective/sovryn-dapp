@@ -5,8 +5,10 @@ import {
   TypedDataDomain,
   TypedDataField,
 } from 'ethers';
+import resolveConfig from 'tailwindcss/resolveConfig';
 
 import { EIP1193Provider } from '@sovryn/onboard-common';
+import tailwindConfig from '@sovryn/tailwindcss-config';
 
 import { Environments } from '../types/global';
 import { btcExplorer, rskExplorer, servicesConfig } from './constants';
@@ -100,3 +102,12 @@ export const composeGas = (
   priceInGwei: BigNumberish,
   limitInWei: BigNumberish,
 ) => Number(priceInGwei) * 1e9 * Number(limitInWei);
+
+export const isMobileDevice = () => {
+  const config = resolveConfig(tailwindConfig);
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  const widthToCheck: string = config?.theme?.screens.md; // value will be in format "768px"
+  const screenWidth = window?.visualViewport?.width || 0;
+  return screenWidth < parseInt(widthToCheck || '0');
+};

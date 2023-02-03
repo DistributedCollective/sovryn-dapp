@@ -353,5 +353,5 @@ export const LOCChart: FC = () => {
     }
   }, [price, troves, loadingTroves, userOpenTrove, loadingUserOpenTrove]);
 
-  return <Bar options={options} data={datasets} />;
+  return <Bar className="max-w-full" options={options} data={datasets} />;
 };

@@ -9,6 +9,7 @@ import {
   RedemptionsHistoryFrame,
 } from '../../3_organisms';
 import { CollateralSurplusHistoryFrame } from '../../3_organisms/CollateralSurplusWithdrawals/CollateralSurplusWithdrawals';
+import { ConversionsHistoryFrame } from '../../3_organisms/ConversionsHistoryFrame/ConversionsHistoryFrame';
 import { StabilityPoolHistoryFrame } from '../../3_organisms/StabilityPoolHistoryFrame';
 import { translations } from '../../../locales/i18n';
 import styles from './HistoryPage.module.css';
@@ -35,6 +36,12 @@ const stability = (
 const collateralSurplusHistory = (
   <div className="px-0 py-4 lg:p-4">
     <CollateralSurplusHistoryFrame />
+  </div>
+);
+
+const conversionsHistory = (
+  <div className="px-0 py-4 lg:p-4">
+    <ConversionsHistoryFrame />
   </div>
 );
 
@@ -75,7 +82,7 @@ const HistoryPage: FC = () => {
       },
       {
         label: t(translations.historyPage.table.tabs.convert),
-        content: comingSoon,
+        content: conversionsHistory,
         activeClassName: ACTIVE_CLASSNAME,
         dataAttribute: 'conversion',
       },

@@ -1,0 +1,14 @@
+query getUserConversions($user: String) {
+  conversions(where: { user: $user }) {
+    bAsset {
+      symbol
+    }
+    bassetQuantity
+    massetQuantity
+    type
+    transaction {
+      id
+      timestamp
+    }
+  }
+}

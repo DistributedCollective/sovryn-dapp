@@ -23,7 +23,7 @@ import {
 
 import { translations } from '../../../../locales/i18n';
 import { Bitcoin } from '../../../../utils/constants';
-import { formatValue } from '../../../../utils/math';
+import { formatCompactValue, formatValue } from '../../../../utils/math';
 import { SystemModeType } from '../types';
 import { calculateCollateralRatio } from '../utils';
 
@@ -52,10 +52,13 @@ export const ZeroStats: FC<ZeroStatsProps> = ({ className, dataAttribute }) => {
   const renderRBTCInLoc = useMemo(
     () =>
       rbtcInLoc && zeroPrice
-        ? `${formatValue(Number(rbtcInLoc), 0)} ${Bitcoin} ($${formatValue(
+        ? `${formatValue(
+            Number(rbtcInLoc),
+            0,
+          )} ${Bitcoin} ($${formatCompactValue(
             Number(rbtcInLoc) * Number(zeroPrice),
             2,
-          )}M)`
+          )})`
         : 0,
     [zeroPrice, rbtcInLoc],
   );

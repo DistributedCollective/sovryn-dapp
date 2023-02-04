@@ -143,7 +143,10 @@
             "received": "Received",
             "txId": "TXID"
         },
-        "type": "Convert"
+        "type": "Convert",
+        "actions": {
+            "noDataToExport": "No data to export"
+        }
     },
     "errorPage": {
         "title": "Error",

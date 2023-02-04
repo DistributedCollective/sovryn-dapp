@@ -1,6 +1,7 @@
 import React, { useCallback, useMemo, useState } from 'react';
 
 import { t } from 'i18next';
+import { nanoid } from 'nanoid';
 
 import {
   Table,
@@ -8,19 +9,33 @@ import {
   Pagination,
   OrderOptions,
   OrderDirection,
+  NotificationType,
 } from '@sovryn/ui';
 
+import { ExportCSV } from '../../2_molecules/ExportCSV/ExportCSV';
+import { masset } from '../../5_pages/ConvertPage/ConvertPage.types';
+import { useNotificationContext } from '../../../contexts/NotificationContext';
 import { useAccount } from '../../../hooks/useAccount';
 import { translations } from '../../../locales/i18n';
-import { DEFAULT_HISTORY_FRAME_PAGE_SIZE } from '../../../utils/constants';
-import { Conversion } from '../../../utils/graphql/mynt/generated';
+import {
+  DEFAULT_HISTORY_FRAME_PAGE_SIZE,
+  EXPORT_RECORD_LIMIT,
+} from '../../../utils/constants';
+import {
+  Conversion,
+  ConversionType,
+  useGetUserConversionsLazyQuery,
+} from '../../../utils/graphql/mynt/generated';
+import { dateFormat } from '../../../utils/helpers';
 import { useGetConversionsHistory } from './hooks/useGetConversionsHistory';
 import { columnsConfig, generateRowTitle } from './utils';
 
 export const ConversionsHistoryFrame: React.FC = () => {
   const { account } = useAccount();
   const [page, setPage] = useState(0);
-  const [pageSize] = useState(DEFAULT_HISTORY_FRAME_PAGE_SIZE);
+  const [pageSize, setPageSize] = useState(DEFAULT_HISTORY_FRAME_PAGE_SIZE);
+
+  const { addNotification } = useNotificationContext();
 
   const [orderOptions, setOrderOptions] = useState<OrderOptions>({
     orderBy: 'timestamp',
@@ -54,8 +69,52 @@ export const ConversionsHistoryFrame: React.FC = () => {
     [conversions?.length, loading, pageSize],
   );
 
+  const [getConversions] = useGetUserConversionsLazyQuery();
+
+  const exportData = useCallback(async () => {
+    const { data } = await getConversions({
+      variables: {
+        user: account,
+        skip: 0,
+        pageSize: EXPORT_RECORD_LIMIT,
+      },
+    });
+
+    let conversions = data?.conversions || [];
+
+    if (!conversions || !conversions?.length) {
+      addNotification({
+        type: NotificationType.warning,
+        title: t(translations.conversionsHistory.actions.noDataToExport),
+        dismissible: true,
+        id: nanoid(),
+      });
+    }
+
+    return conversions.map(tx => ({
+      timestamp: dateFormat(tx.transaction.timestamp),
+      transactionType: t(translations.conversionsHistory.type),
+      sent:
+        tx.type === ConversionType.Incoming
+          ? `${tx.bassetQuantity} ${tx.bAsset.symbol}`
+          : `${tx.massetQuantity} ${masset.toUpperCase()}`,
+      received:
+        tx.type === ConversionType.Incoming
+          ? `${tx.massetQuantity} ${masset.toUpperCase()}`
+          : `${tx.bassetQuantity} ${tx.bAsset.symbol}`,
+      TXID: tx.transaction.id,
+    }));
+  }, [account, addNotification, getConversions]);
+
   return (
     <>
+      <ExportCSV
+        getData={exportData}
+        filename="conversion"
+        className="mb-7 hidden lg:inline-flex"
+        onExportEnd={() => setPageSize(DEFAULT_HISTORY_FRAME_PAGE_SIZE)}
+        disabled={!conversions}
+      />
       <div className="bg-gray-80 py-4 px-4 rounded">
         <Table
           setOrderOptions={setOrderOptions}

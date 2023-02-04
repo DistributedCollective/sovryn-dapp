@@ -65,8 +65,8 @@
             "liquidationPriceTooltip": "Liquidation price after the transaction",
             "recoveryLiquidationPrice": "Liquidation price (Recovery Mode)",
             "recoveryLiquidationPriceTooltip": "Liquidation price after the transaction",
-            "rbtcPrice": "RBTC price",
-            "rbtcPriceTooltip": "RBTC price in USD",
+            "rbtcPrice": "BTC price",
+            "rbtcPriceTooltip": "BTC price in USD",
             "originationFee": "Origination fee",
             "originationFeeTooltip": "Origination fee in percentage"
         }
@@ -126,8 +126,8 @@
         "table": {
             "timestamp": "Timestamp",
             "zusdRedeemed": "ZUSD Redeemed",
-            "rbtcReceived": "RBTC Received",
-            "redemptionFee": "Redemption Fee (RBTC)",
+            "rbtcReceived": "BTC Received",
+            "redemptionFee": "Redemption Fee (BTC)",
             "networkFee": "Network Fee",
             "transactionID": "Transaction ID"
         },
@@ -249,7 +249,7 @@
     "stats": {
         "zero": {
             "title": "Zero statistics",
-            "rbtcInLoc": "RBTC in Lines of Credit",
+            "rbtcInLoc": "BTC in Lines of Credit",
             "loc": "Lines of credit",
             "zusdSupply": "ZUSD supply",
             "zusdInStabilityPool": "ZUSD in Stability Pool",

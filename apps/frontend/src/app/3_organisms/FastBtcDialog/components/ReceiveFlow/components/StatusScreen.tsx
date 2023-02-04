@@ -16,13 +16,13 @@ import {
 import { StatusIcon } from '../../../../../2_molecules/StatusIcon/StatusIcon';
 import { useAccount } from '../../../../../../hooks/useAccount';
 import { translations } from '../../../../../../locales/i18n';
-import { btcInSatoshis } from '../../../../../../utils/constants';
+import { Bitcoin, btcInSatoshis } from '../../../../../../utils/constants';
 import {
   getBtcExplorerUrl,
   getRskExplorerUrl,
 } from '../../../../../../utils/helpers';
 import { formatValue, fromWei, toWei } from '../../../../../../utils/math';
-import { Bitcoin, DEPOSIT_FEE_SATS } from '../../../constants';
+import { DEPOSIT_FEE_SATS } from '../../../constants';
 import { DepositContext, DepositStep } from '../../../contexts/deposit-context';
 
 const translation = translations.fastBtc.receive.statusScreen;

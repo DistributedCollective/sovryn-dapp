@@ -23,7 +23,7 @@ export const Basic = Template.bind({});
 Basic.args = {
   label: 'Amount',
   tooltip: 'This is something useful',
-  unit: 'RBTC',
+  unit: 'BTC',
   value: 123,
   disabled: false,
   readOnly: false,
@@ -33,7 +33,7 @@ Basic.args = {
 
 export const WithoutLabel = Template.bind({});
 WithoutLabel.args = {
-  unit: 'RBTC',
+  unit: 'BTC',
   value: 123,
   disabled: false,
   readOnly: false,
@@ -51,7 +51,7 @@ WithoutLabelAndUnit.args = {
 export const LargeDecimal = Template.bind({});
 LargeDecimal.args = {
   label: 'Amount',
-  unit: 'RBTC',
+  unit: 'BTC',
   value: 0.12345678,
   decimalPrecision: 3,
   dataAttribute: 'amountInput',

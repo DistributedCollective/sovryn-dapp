@@ -24,7 +24,7 @@ import { ExportCSV } from '../../2_molecules/ExportCSV/ExportCSV';
 import { useNotificationContext } from '../../../contexts/NotificationContext';
 import { useAccount } from '../../../hooks/useAccount';
 import { translations } from '../../../locales/i18n';
-import { EXPORT_RECORD_LIMIT } from '../../../utils/constants';
+import { Bitcoin, EXPORT_RECORD_LIMIT } from '../../../utils/constants';
 import {
   Redemption,
   Redemption_Filter,
@@ -108,8 +108,7 @@ export const RedemptionsHistoryFrame: FC = () => {
           <Tooltip
             content={
               <>
-                {redemption.collateralRedeemed}{' '}
-                {SupportedTokens.rbtc.toUpperCase()}
+                {redemption.collateralRedeemed} {Bitcoin}
               </>
             }
             trigger={TooltipTrigger.click}
@@ -118,8 +117,7 @@ export const RedemptionsHistoryFrame: FC = () => {
             {...applyDataAttr('redemption-history-rbtc-received')}
           >
             <span>
-              {formatValue(Number(redemption.collateralRedeemed), 6)}{' '}
-              {SupportedTokens.rbtc.toUpperCase()}
+              {formatValue(Number(redemption.collateralRedeemed), 6)} {Bitcoin}
             </span>
           </Tooltip>
         ) : (
@@ -137,7 +135,7 @@ export const RedemptionsHistoryFrame: FC = () => {
           <Tooltip
             content={
               <>
-                {redemption.fee} {SupportedTokens.rbtc.toUpperCase()}
+                {redemption.fee} {Bitcoin}
               </>
             }
             trigger={TooltipTrigger.click}
@@ -146,8 +144,7 @@ export const RedemptionsHistoryFrame: FC = () => {
             {...applyDataAttr('redemption-history-fee')}
           >
             <span>
-              {formatValue(Number(redemption.fee), 6)}{' '}
-              {SupportedTokens.rbtc.toUpperCase()}
+              {formatValue(Number(redemption.fee), 6)} {Bitcoin}
             </span>
           </Tooltip>
         ) : (

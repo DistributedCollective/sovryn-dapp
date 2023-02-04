@@ -75,3 +75,6 @@ export const btcExplorer = {
   [Environments.Mainnet]: 'https://live.blockcypher.com/btc',
   [Environments.Testnet]: 'https://live.blockcypher.com/btc-testnet',
 };
+
+//TODO: refactor into Bitcoin asset definition later
+export const Bitcoin = 'BTC';

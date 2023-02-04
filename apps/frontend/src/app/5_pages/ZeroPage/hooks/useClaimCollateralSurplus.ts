@@ -27,7 +27,7 @@ export const useClaimCollateralSurplus = (onComplete: () => void) => {
 
       setTransactions([
         {
-          title: 'Claim RBTC',
+          title: 'Claim BTC',
           contract: borrowerOperations,
           fnName: 'claimCollateral',
           args: [],

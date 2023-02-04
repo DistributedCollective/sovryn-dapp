@@ -3,7 +3,6 @@ import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { nanoid } from 'nanoid';
 import { useTranslation } from 'react-i18next';
 
-import { SupportedTokens } from '@sovryn/contracts';
 import {
   applyDataAttr,
   NotificationType,
@@ -22,7 +21,7 @@ import { ExportCSV } from '../../2_molecules/ExportCSV/ExportCSV';
 import { useNotificationContext } from '../../../contexts/NotificationContext';
 import { useAccount } from '../../../hooks/useAccount';
 import { translations } from '../../../locales/i18n';
-import { EXPORT_RECORD_LIMIT } from '../../../utils/constants';
+import { Bitcoin, EXPORT_RECORD_LIMIT } from '../../../utils/constants';
 import {
   CollSurplusChange_Filter,
   useGetCollSurplusChangesLazyQuery,
@@ -56,10 +55,7 @@ export const CollateralSurplusHistoryFrame: FC = () => {
   const [getCollSurplusChanges] = useGetCollSurplusChangesLazyQuery();
 
   const renderCollateralChange = useCallback((collSurplusChange: string) => {
-    return `${formatValue(
-      Math.abs(Number(collSurplusChange)),
-      8,
-    )} ${SupportedTokens.rbtc.toUpperCase()}`;
+    return `${formatValue(Math.abs(Number(collSurplusChange)), 8)} ${Bitcoin}`;
   }, []);
 
   const generateRowTitle = useCallback((row: any) => {

@@ -17,6 +17,7 @@ import { SupportedTokens } from '@sovryn/contracts';
 import { prettyTx } from '@sovryn/ui';
 
 import { translations } from '../../../locales/i18n';
+import { Bitcoin } from '../../../utils/constants';
 import { formatValue } from '../../../utils/math';
 import { useGetLowestTroves } from './hooks/useGetLowestTroves';
 import { useGetRBTCPrice } from './hooks/useGetRBTCPrice';
@@ -101,7 +102,7 @@ export const LOCChart: FC = () => {
                 `${t(translations.chart.collateralAmount)}: ${formatValue(
                   Number(collateralAmount),
                   6,
-                )} ${SupportedTokens.rbtc.toUpperCase()}`,
+                )} ${Bitcoin}`,
                 `${t(translations.chart.debtAmount)}: ${formatValue(
                   Number(debtAmount),
                   2,

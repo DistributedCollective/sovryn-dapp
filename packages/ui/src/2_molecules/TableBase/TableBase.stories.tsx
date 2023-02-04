@@ -22,7 +22,7 @@ const columns = [
     id: 'balance',
     title: 'Balance',
     align: Align.left,
-    cellRenderer: row => `${row.balance} RBTC`,
+    cellRenderer: row => `${row.balance} BTC`,
   },
 ];
 
@@ -75,7 +75,7 @@ WithRowClickHandler.args = {
   rows,
   onRowClick: row =>
     alert(
-      `Row with index ${row.index} and balance ${row.balance} RBTC was clicked`,
+      `Row with index ${row.index} and balance ${row.balance} BTC was clicked`,
     ),
   dataAttribute: 'addressTable',
   isClickable: true,

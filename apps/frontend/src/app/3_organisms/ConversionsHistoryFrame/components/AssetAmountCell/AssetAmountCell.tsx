@@ -4,12 +4,12 @@ import { Tooltip, TooltipTrigger } from '@sovryn/ui';
 
 import { formatValue } from '../../../../../utils/math';
 
-type AmountRendererProps = {
+type AssetAmountCellProps = {
   amount: string;
   asset: string;
 };
 
-export const AmountRenderer: React.FC<AmountRendererProps> = ({
+export const AssetAmountCell: React.FC<AssetAmountCellProps> = ({
   amount,
   asset,
 }) => (

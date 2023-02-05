@@ -4,13 +4,15 @@ query getStabilityPool(
   $pageSize: Int!
   $orderBy: StabilityDepositChange_orderBy
   $orderDirection: OrderDirection
+  $filters: StabilityDepositChange_filter
 ) {
   stabilityDeposits(where: { id: $user }) {
     changes(
       first: $pageSize
       skip: $skip
       orderBy: $orderBy
-      orderDirection: desc
+      orderDirection: $orderDirection
+      where: $filters
     ) {
       depositedAmountChange
       depositedAmountAfter
@@ -19,6 +21,7 @@ query getStabilityPool(
         id
         timestamp
       }
+      sequenceNumber
     }
   }
 }

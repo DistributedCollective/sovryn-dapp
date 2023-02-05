@@ -307,6 +307,11 @@
             "withdrawal": "Withdrawal",
             "withdrawCollateralGain": "Withdraw collateral gain"
         },
+        "filters": {
+            "depositTokens": "Deposit",
+            "withdrawTokens": "Withdraw",
+            "withdrawCollateralGain": "Withdraw collateral gain"
+        },
         "actions": {
             "noDataToExport": "No data to export"
         }

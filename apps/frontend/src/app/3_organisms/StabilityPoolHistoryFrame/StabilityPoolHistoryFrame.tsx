@@ -21,6 +21,8 @@ import {
 import { chains, defaultChainId } from '../../../config/chains';
 
 import { ExportCSV } from '../../2_molecules/ExportCSV/ExportCSV';
+import { TableFilter } from '../../2_molecules/TableFilter/TableFilter';
+import { Filter } from '../../2_molecules/TableFilter/TableFilter.types';
 import { TransactionTypeRenderer } from '../../2_molecules/TransactionTypeRenderer/TransactionTypeRenderer';
 import { useNotificationContext } from '../../../contexts/NotificationContext';
 import { useAccount } from '../../../hooks/useAccount';
@@ -29,7 +31,9 @@ import { zeroClient } from '../../../utils/clients';
 import { EXPORT_RECORD_LIMIT } from '../../../utils/constants';
 import {
   StabilityDepositChange,
+  StabilityDepositChange_Filter,
   StabilityDepositChange_OrderBy,
+  StabilityDepositOperation,
   useGetStabilityPoolLazyQuery,
 } from '../../../utils/graphql/zero/generated';
 import { dateFormat } from '../../../utils/helpers';
@@ -42,6 +46,7 @@ export const StabilityPoolHistoryFrame: FC = () => {
   const { t } = useTranslation();
   const { account } = useAccount();
   const { addNotification } = useNotificationContext();
+  const [filters, setFilters] = useState<StabilityDepositChange_Filter>({});
 
   const [page, setPage] = useState(0);
   const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE);
@@ -56,8 +61,42 @@ export const StabilityPoolHistoryFrame: FC = () => {
     account,
     pageSize,
     page,
+    filters,
     orderOptions,
   );
+
+  const transactionTypeChangeFilters = useMemo(
+    () =>
+      Object.keys(StabilityDepositOperation).map(key => ({
+        label: t(
+          translations.stabilityPoolHistory.filters[
+            StabilityDepositOperation[key]
+          ],
+        ),
+        filter: 'stabilityDepositOperation_in',
+        value: StabilityDepositOperation[key],
+        checked: filters['stabilityDepositOperation_in']?.includes(
+          StabilityDepositOperation[key],
+        )
+          ? true
+          : false,
+      })),
+    [t, filters],
+  );
+
+  const updateFilters = useCallback((filterList: Filter[]) => {
+    setFilters({
+      ...filterList
+        .filter(f => !!f.checked)
+        .reduce(
+          (acc, filter) => ({
+            ...acc,
+            [filter.filter]: [...(acc[filter.filter] || []), filter.value],
+          }),
+          {},
+        ),
+    });
+  }, []);
 
   const [getStabilityPool] = useGetStabilityPoolLazyQuery({
     client: zeroClient,
@@ -67,6 +106,14 @@ export const StabilityPoolHistoryFrame: FC = () => {
     () =>
       (data?.stabilityDeposits[0]?.changes as StabilityDepositChange[]) || [],
     [data],
+  );
+
+  const noDataLabel = useMemo(
+    () =>
+      Object.keys(filters || {}).length > 0
+        ? t(translations.common.tables.noDataWithFilters)
+        : t(translations.common.tables.noData),
+    [t, filters],
   );
 
   const renderBalanceChange = useCallback(
@@ -134,7 +181,7 @@ export const StabilityPoolHistoryFrame: FC = () => {
   const columns = useMemo(
     () => [
       {
-        id: 'timestamp',
+        id: 'sequenceNumber',
         title: t(translations.stabilityPoolHistory.table.timestamp),
         cellRenderer: (row: StabilityDepositChange) =>
           dateFormat(row.transaction.timestamp),
@@ -145,6 +192,12 @@ export const StabilityPoolHistoryFrame: FC = () => {
         title: t(translations.stabilityPoolHistory.table.transactionType),
         cellRenderer: (row: StabilityDepositChange) => (
           <TransactionTypeRenderer type={row.stabilityDepositOperation} />
+        ),
+        filter: (
+          <TableFilter
+            filterList={transactionTypeChangeFilters}
+            onChange={updateFilters}
+          />
         ),
       },
       {
@@ -170,7 +223,14 @@ export const StabilityPoolHistoryFrame: FC = () => {
         ),
       },
     ],
-    [t, chain, renderBalanceChange, renderNewBalance],
+    [
+      t,
+      chain,
+      renderBalanceChange,
+      renderNewBalance,
+      updateFilters,
+      transactionTypeChangeFilters,
+    ],
   );
 
   const onPageChange = useCallback(
@@ -196,6 +256,7 @@ export const StabilityPoolHistoryFrame: FC = () => {
         pageSize: EXPORT_RECORD_LIMIT,
         orderBy: orderOptions.orderBy as StabilityDepositChange_OrderBy,
         orderDirection: orderOptions.orderDirection,
+        filters: filters,
       },
     });
 
@@ -218,7 +279,7 @@ export const StabilityPoolHistoryFrame: FC = () => {
       newBalance: tx.depositedAmountAfter,
       transactionID: tx.transaction.id,
     }));
-  }, [t, account, addNotification, getStabilityPool, orderOptions]);
+  }, [t, account, getStabilityPool, orderOptions, filters, addNotification]);
 
   useEffect(() => {
     setPage(0);
@@ -242,7 +303,7 @@ export const StabilityPoolHistoryFrame: FC = () => {
           rowTitle={generateRowTitle}
           isLoading={loading}
           className="bg-gray-80 text-gray-10 lg:px-6 lg:py-4"
-          noData={t(translations.common.tables.noData)}
+          noData={noDataLabel}
           {...applyDataAttr('redemption-history-table')}
         />
         <Pagination

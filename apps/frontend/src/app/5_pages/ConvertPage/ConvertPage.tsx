@@ -4,6 +4,7 @@ import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { SupportedTokens } from '@sovryn/contracts';
+import { SupportedTokenList } from '@sovryn/contracts';
 import {
   AmountInput,
   applyDataAttr,
@@ -23,7 +24,7 @@ import { TransactionStepDialog } from '../../3_organisms';
 import { useAccount } from '../../../hooks/useAccount';
 import { translations } from '../../../locales/i18n';
 import { formatValue } from '../../../utils/math';
-import { bassets, tokenOptions } from './ConvertPage.types';
+import { allowedTokens, bassets } from './ConvertPage.types';
 import { useGetDefaultSourceToken } from './hooks/useGetDefaultSourceToken';
 import { useGetMaximumAvailableAmount } from './hooks/useGetMaximumAvailableAmount';
 import { useHandleConversion } from './hooks/useHandleConversion';
@@ -41,9 +42,26 @@ const ConvertPage: FC = () => {
   const [sourceToken, setSourceToken] =
     useState<SupportedTokens>(defaultSourceToken);
 
+  const tokenOptions = useMemo(
+    () =>
+      SupportedTokenList.filter(item =>
+        allowedTokens.includes(item.symbol),
+      ).map(token => ({
+        value: token.symbol,
+        label: (
+          <AssetRenderer
+            showAssetLogo
+            asset={token.symbol}
+            assetClassName="font-medium"
+          />
+        ),
+      })),
+    [],
+  );
+
   const tokenOptionsWithoutSourceToken = useMemo(
     () => tokenOptions.filter(item => item.value !== sourceToken),
-    [sourceToken],
+    [sourceToken, tokenOptions],
   );
 
   const [destinationTokenOptions, setDestinationTokenOptions] = useState(
@@ -109,7 +127,7 @@ const ConvertPage: FC = () => {
         tokenOptions.filter(item => item.value === SupportedTokens.dllr),
       );
     }
-  }, [sourceToken]);
+  }, [sourceToken, tokenOptions]);
 
   const getAssetRenderer = useCallback(
     (token: SupportedTokens) => (

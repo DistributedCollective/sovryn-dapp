@@ -19,7 +19,6 @@ import {
 import { AssetRenderer } from '../../2_molecules/AssetRenderer/AssetRenderer';
 import { translations } from '../../../locales/i18n';
 import { formatValue } from '../../../utils/math';
-import { tokensToOptions } from '../../../utils/tokens';
 import { Row } from './Row';
 
 type CloseCreditLineProps = {
@@ -55,6 +54,21 @@ export const CloseCreditLine: FC<CloseCreditLineProps> = ({
     [creditValue, availableBalance],
   );
 
+  const tokenOptions = useMemo(
+    () =>
+      [SupportedTokens.zusd, SupportedTokens.dllr].map(token => ({
+        value: token,
+        label: (
+          <AssetRenderer
+            showAssetLogo
+            asset={token}
+            assetClassName="font-medium"
+          />
+        ),
+      })),
+    [],
+  );
+
   return (
     <>
       <Paragraph
@@ -78,10 +92,7 @@ export const CloseCreditLine: FC<CloseCreditLineProps> = ({
             <Select
               value={creditToken}
               onChange={setCreditToken}
-              options={tokensToOptions([
-                SupportedTokens.zusd,
-                SupportedTokens.dllr,
-              ])}
+              options={tokenOptions}
               labelRenderer={({ value }) => (
                 <AssetRenderer
                   dataAttribute="close-credit-line-credit-asset"

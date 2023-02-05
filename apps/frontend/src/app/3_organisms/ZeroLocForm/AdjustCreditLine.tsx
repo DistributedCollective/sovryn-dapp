@@ -42,7 +42,6 @@ import {
 } from '../../../utils/constants';
 import { composeGas } from '../../../utils/helpers';
 import { formatValue, fromWei, toWei } from '../../../utils/math';
-import { tokensToOptions } from '../../../utils/tokens';
 import { CurrentTroveData } from './CurrentTroveData';
 import { Label } from './Label';
 import { Row } from './Row';
@@ -446,6 +445,21 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
     return undefined;
   }, [collateralAmount, fieldsTouched, maxCollateralWeiAmount, t]);
 
+  const tokenOptions = useMemo(
+    () =>
+      BORROW_ASSETS.map(token => ({
+        value: token,
+        label: (
+          <AssetRenderer
+            showAssetLogo
+            asset={token}
+            assetClassName="font-medium"
+          />
+        ),
+      })),
+    [],
+  );
+
   return (
     <div className="w-full">
       {hasTrove && (
@@ -485,7 +499,7 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
           <Select
             value={debtToken}
             onChange={setDebtToken}
-            options={tokensToOptions(BORROW_ASSETS)}
+            options={tokenOptions}
             className="flex-grow flex-shrink-0"
             labelRenderer={({ value }) => (
               <AssetRenderer

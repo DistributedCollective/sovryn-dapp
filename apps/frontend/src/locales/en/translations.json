@@ -69,7 +69,11 @@
             "rbtcPrice": "BTC price",
             "rbtcPriceTooltip": "BTC price in USD",
             "originationFee": "Origination fee",
-            "originationFeeTooltip": "Origination fee in percentage"
+            "originationFeeTooltip": "Origination fee in percentage",
+            "liquidationReserve": "Liquidation Reserve",
+            "liquidationReserveTooltip": "Liquidation Reserve in ZUSD",
+            "totalDebt": "Total debt",
+            "totalDebtTooltip": "Total debt amount"
         }
     },
     "closeCreditLine": {

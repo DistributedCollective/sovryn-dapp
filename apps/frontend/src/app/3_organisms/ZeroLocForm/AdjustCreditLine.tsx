@@ -85,6 +85,8 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
       .then(Number);
   }, [rbtcPrice]);
 
+  const isRecoveryMode = useMemo(() => tcr <= CRITICAL_COLLATERAL_RATIO, [tcr]);
+
   useEffect(() => {
     getTcr().catch(console.error);
   }, [getTcr]);
@@ -128,43 +130,49 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
 
   const rbtcGasPrice = useGasPrice();
 
+  const maxRbtcWeiBalance = useMemo(
+    () =>
+      BigNumber.from(maxCollateralWeiAmount)
+        .sub(
+          composeGas(
+            rbtcGasPrice || '0',
+            hasTrove ? GAS_LIMIT_ADJUST_TROVE : GAS_LIMIT_OPEN_TROVE,
+          ),
+        )
+        .toString(),
+    [hasTrove, maxCollateralWeiAmount, rbtcGasPrice],
+  );
+
   const maxCollateralAmount = useMemo(
     () =>
       Number(
         isIncreasingCollateral
-          ? fromWei(
-              BigNumber.from(maxCollateralWeiAmount).sub(
-                composeGas(
-                  rbtcGasPrice || '0',
-                  hasTrove ? GAS_LIMIT_ADJUST_TROVE : GAS_LIMIT_OPEN_TROVE,
-                ),
-              ),
-            )
+          ? fromWei(maxRbtcWeiBalance)
           : existingCollateral,
       ),
-    [
-      existingCollateral,
-      hasTrove,
-      isIncreasingCollateral,
-      maxCollateralWeiAmount,
-      rbtcGasPrice,
-    ],
+    [existingCollateral, isIncreasingCollateral, maxRbtcWeiBalance],
   );
 
   const maxCreditAmount = useMemo(() => {
-    if (!isIncreasingDebt) {
-      return Math.min(Number(fromWei(creditWeiBalance)), Number(existingDebt));
+    if (isIncreasingDebt) {
+      return (
+        ((Number(existingCollateral) + Number(fromWei(maxRbtcWeiBalance))) *
+          Number(rbtcPrice || '0')) /
+          (isRecoveryMode
+            ? CRITICAL_COLLATERAL_RATIO
+            : MINIMUM_COLLATERAL_RATIO) -
+        Number(existingDebt)
+      );
     }
-    return Number(
-      (maxCollateralAmount * Number(rbtcPrice || '0')) /
-        MINIMUM_COLLATERAL_RATIO,
-    );
+    return Math.min(Number(fromWei(creditWeiBalance)), Number(existingDebt));
   }, [
     isIncreasingDebt,
-    maxCollateralAmount,
-    rbtcPrice,
     creditWeiBalance,
     existingDebt,
+    existingCollateral,
+    maxRbtcWeiBalance,
+    rbtcPrice,
+    isRecoveryMode,
   ]);
 
   const handleMaxCollateralAmountClick = useCallback(() => {

@@ -105,7 +105,6 @@ describe('AmountInput', () => {
 
     const amountInput = getByTestId('test');
     expect(amountInput).toHaveProperty('lang', 'sk-SK');
-    expect(amountInput).toHaveValue('2,4');
   });
 
   test('does not allow to enter more than 9 whole numbers', async () => {

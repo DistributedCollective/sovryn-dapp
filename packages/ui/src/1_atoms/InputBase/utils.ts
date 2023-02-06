@@ -20,6 +20,7 @@ export const prepareValueToRender = (
   lastValue: string,
   type: string,
   locale: string,
+  canEndWithDot: boolean = true,
 ): string => {
   if (type === 'number') {
     const nonNumeric = (value.match(/[^0-9.,]/g) || []).length;
@@ -43,7 +44,9 @@ export const prepareValueToRender = (
     const renderSeperator = getNumberSeperator(locale);
 
     if (value.endsWith('.') || value.endsWith(',')) {
-      return `${value.slice(0, -1)}${renderSeperator}0`;
+      return `${value.slice(0, -1)}${renderSeperator}${
+        canEndWithDot ? '' : '0'
+      }`;
     }
 
     if (separators === 1) {

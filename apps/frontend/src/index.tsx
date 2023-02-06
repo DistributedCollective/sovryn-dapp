@@ -14,6 +14,7 @@ import './config/chains';
 
 import { TransactionStepDialog } from './app/3_organisms';
 import { NetworkProvider } from './app/3_organisms/NetworkProvider/NetworkProvider';
+import { SharedStateProvider } from './app/3_organisms/SharedStateProvider/SharedStateProvider';
 import { MaintenanceModeContextProvider } from './contexts/MaintenanceModeContext';
 import { NotificationProvider } from './contexts/NotificationContext';
 import { TransactionProvider } from './contexts/TransactionContext';
@@ -34,8 +35,10 @@ root.render(
         <ApolloProvider client={rskClient}>
           <MaintenanceModeContextProvider>
             <NotificationProvider>
-              <RouterProvider router={router} />
-              <OnboardProvider dataAttribute="dapp-onboard" />
+              <SharedStateProvider>
+                <RouterProvider router={router} />
+                <OnboardProvider dataAttribute="dapp-onboard" />
+              </SharedStateProvider>
             </NotificationProvider>
           </MaintenanceModeContextProvider>
         </ApolloProvider>

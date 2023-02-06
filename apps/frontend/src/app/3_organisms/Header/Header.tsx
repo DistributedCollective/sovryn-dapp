@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useMemo, useReducer, useState } from 'react';
+import React, { FC, useCallback, useMemo, useReducer } from 'react';
 
 import { useTranslation } from 'react-i18next';
 
@@ -18,7 +18,7 @@ import { SovrynLogo } from '../../2_molecules/SovrynLogo/SovrynLogo';
 import { useWalletConnect, useWrongNetworkCheck } from '../../../hooks';
 import { useAssetBalance } from '../../../hooks/useAssetBalance';
 import { translations } from '../../../locales/i18n';
-import { FastBtcDialog } from '../FastBtcDialog/FastBtcDialog';
+import { sharedState } from '../../../store/rxjs/shared-state';
 
 export const Header: FC = () => {
   const { t } = useTranslation();
@@ -37,7 +37,10 @@ export const Header: FC = () => {
     }
   }, [isOpen]);
 
-  const [isFastBtcDialogOpen, setIsFastBtcDialogOpen] = useState(false);
+  const handleFastBtcClick = useCallback(
+    () => sharedState.actions.openFastBtcDialog(),
+    [],
+  );
 
   return (
     <>
@@ -110,14 +113,10 @@ export const Header: FC = () => {
               text={t(translations.header.funding)}
               style={ButtonStyle.secondary}
               dataAttribute="dapp-header-funding"
-              onClick={() => setIsFastBtcDialogOpen(true)}
+              onClick={handleFastBtcClick}
             />
           )
         }
-      />
-      <FastBtcDialog
-        isOpen={isFastBtcDialogOpen}
-        onClose={() => setIsFastBtcDialogOpen(false)}
       />
     </>
   );

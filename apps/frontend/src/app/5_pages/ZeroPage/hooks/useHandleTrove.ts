@@ -21,7 +21,7 @@ import { adjustNueTrove, adjustTrove, openTrove } from '../utils/trove-manager';
 
 export const useHandleTrove = (hasLoc: boolean, onComplete: () => void) => {
   const { signer, account } = useAccount();
-  const { setTransactions, setIsOpen } = useTransactionContext();
+  const { setTransactions, setIsOpen, setTitle } = useTransactionContext();
   const { t } = useTranslation();
 
   const handleTroveSubmit = useCallback(
@@ -86,6 +86,7 @@ export const useHandleTrove = (hasLoc: boolean, onComplete: () => void) => {
             ]);
           }
           setIsOpen(true);
+          setTitle(t(translations.zeroPage.tx.adjustTitle));
         } else {
           const openedTrove = await openTrove(value.token, {
             borrowZUSD: value.borrow || '0',
@@ -105,10 +106,20 @@ export const useHandleTrove = (hasLoc: boolean, onComplete: () => void) => {
             },
           ]);
           setIsOpen(true);
+          setTitle(t(translations.zeroPage.tx.openTitle));
         }
       }
     },
-    [account, hasLoc, onComplete, setIsOpen, setTransactions, signer, t],
+    [
+      account,
+      hasLoc,
+      onComplete,
+      setIsOpen,
+      setTitle,
+      setTransactions,
+      signer,
+      t,
+    ],
   );
 
   const handleTroveClose = useCallback(async () => {
@@ -131,8 +142,9 @@ export const useHandleTrove = (hasLoc: boolean, onComplete: () => void) => {
         },
       ]);
       setIsOpen(true);
+      setTitle(t(translations.zeroPage.tx.closeTitle));
     }
-  }, [onComplete, setIsOpen, setTransactions, signer, t]);
+  }, [onComplete, setIsOpen, setTitle, setTransactions, signer, t]);
 
   return { handleTroveSubmit, handleTroveClose };
 };

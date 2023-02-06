@@ -7,12 +7,14 @@ import React, {
 } from 'react';
 
 import { BigNumber } from 'ethers';
+import { t } from 'i18next';
 
 import { StatusType } from '@sovryn/ui';
 
 import { useTransactionContext } from '../../../../../../contexts/TransactionContext';
 import { useAccount } from '../../../../../../hooks/useAccount';
 import { useGetProtocolContract } from '../../../../../../hooks/useGetContract';
+import { translations } from '../../../../../../locales/i18n';
 import { fromWei, toWei } from '../../../../../../utils/math';
 import { GAS_LIMIT_FAST_BTC_WITHDRAW } from '../../../constants';
 import {
@@ -76,7 +78,7 @@ export const ConfirmationScreens: React.FC<ConfirmationScreensProps> = ({
     if (fastBtcBridgeContract) {
       setTransactions([
         {
-          title: 'Send BTC',
+          title: t(translations.fastBtc.send.txDialog.sendBTC),
           contract: fastBtcBridgeContract,
           fnName: 'transferToBtc',
           args: [address],
@@ -93,7 +95,7 @@ export const ConfirmationScreens: React.FC<ConfirmationScreensProps> = ({
         },
       ]);
 
-      setTitle('Send BTC via Fast BTC');
+      setTitle(t(translations.fastBtc.send.txDialog.title));
       setIsOpen(true);
     }
   }, [

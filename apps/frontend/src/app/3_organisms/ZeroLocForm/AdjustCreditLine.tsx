@@ -491,7 +491,10 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
 
     if (toWei(newCollateral).lt(toWei(minCollateralAmount))) {
       return t(translations.zeroPage.loc.errors.collateralTooLow, {
-        value: `${formatValue(minCollateralAmount, 4)} RBTC`,
+        value: `${formatValue(
+          minCollateralAmount,
+          4,
+        )} ${SupportedTokens.rbtc.toUpperCase()}`,
       });
     }
 
@@ -515,7 +518,7 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
         fromWei(toWei(collateralAmount).sub(maxCollateralWeiAmount)),
       );
       return t(translations.zeroPage.loc.errors.withdrawBalanceTooLow, {
-        value: `${formatValue(diff, 4)} RBTC`,
+        value: `${formatValue(diff, 4)} ${SupportedTokens.rbtc.toUpperCase()}`,
       });
     }
 

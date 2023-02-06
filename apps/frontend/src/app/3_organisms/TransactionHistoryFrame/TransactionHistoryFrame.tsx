@@ -26,6 +26,7 @@ import { useNotificationContext } from '../../../contexts/NotificationContext';
 import { useAccount } from '../../../hooks/useAccount';
 import { translations } from '../../../locales/i18n';
 import {
+  Bitcoin,
   EXPORT_RECORD_LIMIT,
   LIQUIDATION_RESERVE_AMOUNT,
 } from '../../../utils/constants';
@@ -318,7 +319,7 @@ export const TransactionHistoryFrame: FC = () => {
                   trove.troveOperation,
                   Number(trove.collateralChange),
                 )}
-                {trove.collateralChange} {SupportedTokens.rbtc}
+                {trove.collateralChange} {Bitcoin}
               </>
             }
             trigger={TooltipTrigger.click}
@@ -328,8 +329,7 @@ export const TransactionHistoryFrame: FC = () => {
           >
             <span>
               {renderSign(trove.troveOperation, Number(trove.collateralChange))}
-              {formatValue(Number(trove.collateralChange), 6)}{' '}
-              {SupportedTokens.rbtc}
+              {formatValue(Number(trove.collateralChange), 6)} {Bitcoin}
             </span>
           </Tooltip>
         ) : (
@@ -356,7 +356,7 @@ export const TransactionHistoryFrame: FC = () => {
                         trove.troveOperation,
                         Number(trove.collateralAfter),
                       )}
-                    {trove.collateralAfter} {SupportedTokens.rbtc}
+                    {trove.collateralAfter} {Bitcoin}
                   </>
                 )}
               </>
@@ -376,8 +376,7 @@ export const TransactionHistoryFrame: FC = () => {
                       trove.troveOperation,
                       Number(trove.collateralAfter),
                     )}
-                  {formatValue(Number(trove.collateralAfter), 6)}{' '}
-                  {SupportedTokens.rbtc}
+                  {formatValue(Number(trove.collateralAfter), 6)} {Bitcoin}
                 </>
               )}
             </span>

@@ -19,9 +19,9 @@ import { defaultChainId } from '../../../../../../config/chains';
 import { useAssetBalance } from '../../../../../../hooks/useAssetBalance';
 import { useMaintenance } from '../../../../../../hooks/useMaintenance';
 import { translations } from '../../../../../../locales/i18n';
-import { btcInSatoshis } from '../../../../../../utils/constants';
+import { Bitcoin, btcInSatoshis } from '../../../../../../utils/constants';
 import { formatValue, fromWei, toWei } from '../../../../../../utils/math';
-import { Bitcoin, GAS_LIMIT_FAST_BTC_WITHDRAW } from '../../../constants';
+import { GAS_LIMIT_FAST_BTC_WITHDRAW } from '../../../constants';
 import {
   WithdrawContext,
   WithdrawStep,

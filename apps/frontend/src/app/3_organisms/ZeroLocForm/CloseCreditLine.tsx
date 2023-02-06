@@ -18,6 +18,7 @@ import {
 
 import { AssetRenderer } from '../../2_molecules/AssetRenderer/AssetRenderer';
 import { translations } from '../../../locales/i18n';
+import { Bitcoin } from '../../../utils/constants';
 import { formatValue } from '../../../utils/math';
 import { tokensToOptions } from '../../../utils/tokens';
 import { Row } from './Row';
@@ -41,8 +42,7 @@ export const CloseCreditLine: FC<CloseCreditLineProps> = ({
   );
 
   const collateralValueRenderer = useCallback(
-    (value: number) =>
-      `${formatValue(value, 6)} ${SupportedTokens.rbtc.toUpperCase()}`,
+    (value: number) => `${formatValue(value, 6)} ${Bitcoin}`,
     [],
   );
 

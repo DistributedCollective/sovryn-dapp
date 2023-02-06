@@ -5,8 +5,9 @@ import { useTranslation } from 'react-i18next';
 import { HelperButton } from '@sovryn/ui';
 
 import { CRatioIndicator } from '../../2_molecules/LOCStatus/components/CRatioIndicator/CRatioIndicator';
+import { Bitcoin } from '../../../utils/constants';
 import { formatValue } from '../../../utils/math';
-import { COLLATERAL_TOKEN, DEBT_TOKEN } from './constants';
+import { DEBT_TOKEN } from './constants';
 
 type CurrentTroveDataProps = {
   debt: string;
@@ -38,10 +39,7 @@ export const CurrentTroveData: FC<CurrentTroveDataProps> = ({
         />
         <Column
           label={t('LOCStatus.currentCollateral')}
-          value={`${formatValue(
-            Number(collateral),
-            4,
-          )} ${COLLATERAL_TOKEN.toUpperCase()}`}
+          value={`${formatValue(Number(collateral), 4)} ${Bitcoin}`}
         />
         <Column
           label={

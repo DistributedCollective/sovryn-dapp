@@ -36,6 +36,7 @@ import { useCall } from '../../../hooks/useCall';
 import { useGasPrice } from '../../../hooks/useGasPrice';
 import { translations } from '../../../locales/i18n';
 import {
+  Bitcoin,
   CR_THRESHOLDS,
   GAS_LIMIT_ADJUST_TROVE,
   GAS_LIMIT_OPEN_TROVE,
@@ -286,7 +287,9 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
       value === 0 ? (
         t(translations.common.na)
       ) : (
-        <>{formatValue(value, 3)} RBTC</>
+        <>
+          {formatValue(value, 3)} {Bitcoin}
+        </>
       ),
     [t],
   );
@@ -439,7 +442,7 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
         fromWei(toWei(collateralAmount || 0).sub(maxCollateralWeiAmount)),
       );
       return t(translations.zeroPage.loc.errors.balanceTooLow, {
-        value: `${formatValue(diff, 4)} RBTC`,
+        value: `${formatValue(diff, 4)} ${Bitcoin}`,
       });
     }
 
@@ -500,7 +503,7 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
       <FormGroup
         label={
           <Label
-            symbol="RBTC"
+            symbol={Bitcoin}
             maxAmount={maxCollateralAmount}
             tabs={collateralTabs}
             activeTab={collateralType}
@@ -520,7 +523,7 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
           label={t(translations.adjustCreditLine.fields.collateral.amount)}
           tooltip={t(translations.adjustCreditLine.fields.collateral.tooltip)}
           className="max-w-none"
-          unit="RBTC"
+          unit={Bitcoin}
           invalid={!!collateralError}
         />
       </FormGroup>

@@ -20,7 +20,7 @@ const columns = [
   {
     id: 'balance',
     title: 'Balance',
-    cellRenderer: row => `${row.balance} RBTC`,
+    cellRenderer: row => `${row.balance} BTC`,
   },
 ];
 

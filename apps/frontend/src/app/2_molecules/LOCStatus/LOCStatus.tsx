@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next';
 
 import { Button, ButtonSize, ButtonStyle, HelperButton } from '@sovryn/ui';
 
+import { Bitcoin } from '../../../utils/constants';
 import { CRatioIndicator } from './components/CRatioIndicator/CRatioIndicator';
 import { LOCStat } from './components/LOCStat/LOCStat';
 
@@ -46,14 +47,14 @@ export const LOCStatus: FC<LOCStatusProps> = ({
         {withdrawalSurplus > 0 && (
           <LOCStat
             label={t('LOCStatus.withdrawalSurplus')}
-            value={`${withdrawalSurplus} RBTC`}
+            value={`${withdrawalSurplus} ${Bitcoin}`}
           />
         )}
         {showOpenLOC && (
           <>
             <LOCStat
               label={t('LOCStatus.currentCollateral')}
-              value={`${collateral} RBTC`}
+              value={`${collateral} ${Bitcoin}`}
             />
             <LOCStat
               label={t('LOCStatus.currentDebt')}

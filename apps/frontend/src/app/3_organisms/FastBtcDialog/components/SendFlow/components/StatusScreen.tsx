@@ -15,12 +15,12 @@ import {
 
 import { StatusIcon } from '../../../../../2_molecules/StatusIcon/StatusIcon';
 import { translations } from '../../../../../../locales/i18n';
+import { Bitcoin } from '../../../../../../utils/constants';
 import {
   getBtcExplorerUrl,
   getRskExplorerUrl,
 } from '../../../../../../utils/helpers';
 import { formatValue } from '../../../../../../utils/math';
-import { Bitcoin } from '../../../constants';
 
 const translation = translations.fastBtc.send.confirmationScreens;
 

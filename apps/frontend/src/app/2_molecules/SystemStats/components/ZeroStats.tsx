@@ -22,6 +22,7 @@ import {
 } from '@sovryn/ui';
 
 import { translations } from '../../../../locales/i18n';
+import { Bitcoin } from '../../../../utils/constants';
 import { formatValue } from '../../../../utils/math';
 import { SystemModeType } from '../types';
 import { calculateCollateralRatio } from '../utils';
@@ -51,10 +52,7 @@ export const ZeroStats: FC<ZeroStatsProps> = ({ className, dataAttribute }) => {
   const renderRBTCInLoc = useMemo(
     () =>
       rbtcInLoc && zeroPrice
-        ? `${formatValue(
-            Number(rbtcInLoc),
-            0,
-          )} ${SupportedTokens.rbtc.toUpperCase()} ($${formatValue(
+        ? `${formatValue(Number(rbtcInLoc), 0)} ${Bitcoin} ($${formatValue(
             Number(rbtcInLoc) * Number(zeroPrice),
             2,
           )}M)`

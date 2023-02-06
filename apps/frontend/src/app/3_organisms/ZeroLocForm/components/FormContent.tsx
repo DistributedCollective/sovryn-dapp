@@ -23,7 +23,6 @@ import { BORROW_ASSETS } from '../../../5_pages/ZeroPage/constants';
 import { translations } from '../../../../locales/i18n';
 import { Bitcoin, CR_THRESHOLDS } from '../../../../utils/constants';
 import { formatValue } from '../../../../utils/math';
-import { tokensToOptions } from '../../../../utils/tokens';
 import { CurrentTroveData } from '../CurrentTroveData';
 import { Label } from '../Label';
 import { Row } from '../Row';
@@ -233,6 +232,21 @@ export const FormContent: FC<FormContentProps> = props => {
     [t],
   );
 
+  const tokenOptions = useMemo(
+    () =>
+      BORROW_ASSETS.map(token => ({
+        value: token,
+        label: (
+          <AssetRenderer
+            showAssetLogo
+            asset={token}
+            assetClassName="font-medium"
+          />
+        ),
+      })),
+    [],
+  );
+
   return (
     <div className="w-full">
       {props.hasTrove && (
@@ -273,7 +287,7 @@ export const FormContent: FC<FormContentProps> = props => {
           <Select
             value={props.debtToken}
             onChange={props.onDebtTokenChange}
-            options={tokensToOptions(BORROW_ASSETS)}
+            options={tokenOptions}
             className="flex-grow flex-shrink-0"
             labelRenderer={({ value }) => (
               <AssetRenderer

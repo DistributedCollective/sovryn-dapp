@@ -143,6 +143,17 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
     [hasTrove, maxCollateralWeiAmount, rbtcGasPrice],
   );
 
+  const minCollateralAmount = useMemo(() => {
+    if (!isIncreasingCollateral) {
+      return 0;
+    }
+
+    return (
+      (MIN_DEBT_SIZE / Number(rbtcPrice || '0')) *
+      (isRecoveryMode ? CRITICAL_COLLATERAL_RATIO : MINIMUM_COLLATERAL_RATIO)
+    );
+  }, [isIncreasingCollateral, isRecoveryMode, rbtcPrice]);
+
   const maxCollateralAmount = useMemo(
     () =>
       Number(
@@ -478,6 +489,12 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
       return undefined;
     }
 
+    if (toWei(newCollateral).lt(toWei(minCollateralAmount))) {
+      return t(translations.zeroPage.loc.errors.collateralTooLow, {
+        value: `${formatValue(minCollateralAmount, 4)} RBTC`,
+      });
+    }
+
     if (
       toWei(collateralAmount).gt(maxCollateralWeiAmount) &&
       collateralType === AmountType.Add
@@ -508,6 +525,8 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
     collateralType,
     fieldsTouched,
     maxCollateralWeiAmount,
+    minCollateralAmount,
+    newCollateral,
     t,
   ]);
 

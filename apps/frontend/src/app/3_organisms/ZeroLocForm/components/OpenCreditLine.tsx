@@ -140,11 +140,11 @@ export const OpenCreditLine: FC<OpenCreditLineProps> = ({
     if (!fieldsTouched) {
       return [];
     }
-    const list = checkForSystemErrors(ratio, tcr);
+    const errors = checkForSystemErrors(ratio, tcr);
 
     // Adjusting trove
     if (debtWithFees < MIN_DEBT_SIZE) {
-      list.push({
+      errors.push({
         level: ErrorLevel.Critical,
         message: t(translations.zeroPage.loc.errors.newTotalDebtTooLow, {
           value: formatValue(MIN_DEBT_SIZE, 4),
@@ -154,7 +154,7 @@ export const OpenCreditLine: FC<OpenCreditLineProps> = ({
       });
     }
 
-    return list;
+    return errors;
   }, [fieldsTouched, ratio, tcr, debtWithFees, t, debtToken]);
 
   const debtError = useMemo(() => {

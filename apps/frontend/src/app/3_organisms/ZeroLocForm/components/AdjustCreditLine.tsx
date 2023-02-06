@@ -213,10 +213,10 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
       return [];
     }
 
-    const list = checkForSystemErrors(ratio, tcr);
+    const errors = checkForSystemErrors(ratio, tcr);
 
     if (newDebt < MIN_DEBT_SIZE) {
-      list.push({
+      errors.push({
         level: ErrorLevel.Critical,
         message: t(
           isIncreasingDebt
@@ -231,7 +231,7 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
       });
     }
 
-    return list;
+    return errors;
   }, [fieldsTouched, ratio, tcr, newDebt, isIncreasingDebt, debtToken, t]);
 
   const debtError = useMemo(() => {

@@ -5,12 +5,12 @@ import { useTranslation } from 'react-i18next';
 
 import { SupportedTokens } from '@sovryn/contracts';
 
-import { ErrorData, ErrorLevel } from '../../../1_atoms/ErrorBadge/ErrorBadge';
+import { ErrorLevel } from '../../../1_atoms/ErrorBadge/ErrorBadge';
 import { BORROW_ASSETS } from '../../../5_pages/ZeroPage/constants';
 import { useAssetBalance } from '../../../../hooks/useAssetBalance';
 import { useGasPrice } from '../../../../hooks/useGasPrice';
 import { translations } from '../../../../locales/i18n';
-import { GAS_LIMIT_BLOCK } from '../../../../utils/constants';
+import { MAX_GAS_LIMIT } from '../../../../utils/constants';
 import { composeGas } from '../../../../utils/helpers';
 import { formatValue, fromWei, toWei } from '../../../../utils/math';
 import {
@@ -20,7 +20,11 @@ import {
 } from '../constants';
 import { useZeroData } from '../hooks/useZeroData';
 import { CreditLineSubmitValue } from '../types';
-import { getOriginationFeeAmount, getTotalDebtAmount } from '../utils';
+import {
+  checkForSystemErrors,
+  getOriginationFeeAmount,
+  getTotalDebtAmount,
+} from '../utils';
 import { FormContent } from './FormContent';
 
 export type OpenCreditLineProps = {
@@ -69,7 +73,7 @@ export const OpenCreditLine: FC<OpenCreditLineProps> = ({
   const maxRbtcWeiBalance = useMemo(
     () =>
       BigNumber.from(maxCollateralWeiAmount)
-        .sub(composeGas(rbtcGasPrice || '0', GAS_LIMIT_BLOCK))
+        .sub(composeGas(rbtcGasPrice || '0', MAX_GAS_LIMIT))
         .toString(),
     [maxCollateralWeiAmount, rbtcGasPrice],
   );
@@ -136,15 +140,7 @@ export const OpenCreditLine: FC<OpenCreditLineProps> = ({
     if (!fieldsTouched) {
       return [];
     }
-    const list: ErrorData[] = [];
-
-    const userRatio = ratio / 100;
-    const tcrPlus10 = tcr * 1.1;
-
-    const tcrPercent = formatValue(tcr * 100, 2);
-    const tcrPlus10Percent = formatValue(tcrPlus10 * 100, 2);
-    const ccrPercent = formatValue(CRITICAL_COLLATERAL_RATIO * 100, 2);
-    const mcrPercent = formatValue(MINIMUM_COLLATERAL_RATIO * 100, 2);
+    const list = checkForSystemErrors(ratio, tcr);
 
     // Adjusting trove
     if (debtWithFees < MIN_DEBT_SIZE) {
@@ -155,64 +151,8 @@ export const OpenCreditLine: FC<OpenCreditLineProps> = ({
       });
     }
 
-    // System is in recovery mode:
-    if (tcr && tcr <= CRITICAL_COLLATERAL_RATIO) {
-      // Warning: If the system is in recovery mode and the values the user is typing
-      //  are causing the collateral ratio to be less than 10% above the TCR.
-      if (userRatio < tcrPlus10) {
-        list.push({
-          level: ErrorLevel.Warning,
-          message: t(translations.zeroPage.loc.errors.ratioWarningInRecovery, {
-            value: tcrPlus10Percent,
-          }),
-          weight: 4,
-        });
-      }
-
-      // Critical: If the system is in recovery mode and the values the user is typing
-      //  are causing the collateral ratio to be below the TCR.
-      if (userRatio < tcr) {
-        list.push({
-          level: ErrorLevel.Critical,
-          message: t(translations.zeroPage.loc.errors.ratioErrorInRecovery, {
-            value: tcrPercent,
-          }),
-          weight: 2,
-        });
-      }
-    }
-    // System is in normal mode:
-    else {
-      // Warning: If the system is in normal mode and the values the user is typing
-      //  are causing the collateral ratio to be above the MCR and below the CCR (i.e., between 110% and 150%)
-      if (
-        userRatio > MINIMUM_COLLATERAL_RATIO &&
-        userRatio < CRITICAL_COLLATERAL_RATIO
-      ) {
-        list.push({
-          level: ErrorLevel.Warning,
-          message: t(translations.zeroPage.loc.errors.ratioWarning, {
-            value: ccrPercent,
-          }),
-          weight: 3,
-        });
-      }
-
-      // Critical: If the system is in normal mode and the values the user is typing are causing the
-      //  collateral ratio to be below the MCR (i.e., below 110%)
-      if (userRatio < MINIMUM_COLLATERAL_RATIO) {
-        list.push({
-          level: ErrorLevel.Critical,
-          message: t(translations.zeroPage.loc.errors.ratioError, {
-            value: mcrPercent,
-          }),
-          weight: 1,
-        });
-      }
-    }
-
     return list;
-  }, [fieldsTouched, ratio, tcr, debtWithFees, t]);
+  }, [fieldsTouched, ratio, tcr, debtWithFees]);
 
   const debtError = useMemo(() => {
     if (!fieldsTouched) {

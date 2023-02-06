@@ -115,9 +115,10 @@ export const FormContent: FC<FormContentProps> = props => {
   );
 
   const submitButtonDisabled = useMemo(() => {
-    const hasCriticalError = (props.errors || []).some(
-      error => error.level === ErrorLevel.Critical,
-    );
+    const hasCriticalError =
+      (props.errors || []).some(error => error.level === ErrorLevel.Critical) ||
+      !!props.debtError ||
+      !!props.collateralError;
     const debtSize = Number(props.debtAmount);
     const collateralSize = Number(props.collateralAmount);
     const isFormValid = props.hasTrove
@@ -126,7 +127,9 @@ export const FormContent: FC<FormContentProps> = props => {
     return props.formIsDisabled || hasCriticalError || !isFormValid;
   }, [
     props.collateralAmount,
+    props.collateralError,
     props.debtAmount,
+    props.debtError,
     props.errors,
     props.formIsDisabled,
     props.hasTrove,
@@ -468,7 +471,7 @@ export const FormContent: FC<FormContentProps> = props => {
       </div>
       <div className="mt-8 flex flex-row items-center justify-between gap-8">
         <Button
-          type={ButtonType.reset}
+          type={ButtonType.submit}
           style={ButtonStyle.primary}
           text={t(translations.common.buttons.confirm)}
           className="w-full"

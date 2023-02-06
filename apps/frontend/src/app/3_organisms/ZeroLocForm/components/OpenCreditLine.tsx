@@ -146,13 +146,16 @@ export const OpenCreditLine: FC<OpenCreditLineProps> = ({
     if (debtWithFees < MIN_DEBT_SIZE) {
       list.push({
         level: ErrorLevel.Critical,
-        message: 'The new debt amount has to be at least 200 ZUSD',
+        message: t(translations.zeroPage.loc.errors.newTotalDebtTooLow, {
+          value: formatValue(MIN_DEBT_SIZE, 4),
+          currency: debtToken.toUpperCase(),
+        }),
         weight: 5,
       });
     }
 
     return list;
-  }, [fieldsTouched, ratio, tcr, debtWithFees]);
+  }, [fieldsTouched, ratio, tcr, debtWithFees, t, debtToken]);
 
   const debtError = useMemo(() => {
     if (!fieldsTouched) {

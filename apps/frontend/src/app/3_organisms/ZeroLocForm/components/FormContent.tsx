@@ -186,18 +186,6 @@ export const FormContent: FC<FormContentProps> = props => {
         t(translations.common.na)
       ) : (
         <>
-          {formatValue(value, 3)} {props.debtToken.toUpperCase()}
-        </>
-      ),
-    [props.debtToken, t],
-  );
-
-  const renderFeeAmount = useCallback(
-    (value: number) =>
-      value === 0 ? (
-        t(translations.common.na)
-      ) : (
-        <>
           {formatValue(value, 3)} {SupportedTokens.zusd.toUpperCase()}
         </>
       ),
@@ -381,7 +369,7 @@ export const FormContent: FC<FormContentProps> = props => {
                   <DynamicValue
                     initialValue={0}
                     value={props.liquidationReserve}
-                    renderer={renderFeeAmount}
+                    renderer={renderTotalDebt}
                   />
                 }
               />

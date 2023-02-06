@@ -168,13 +168,20 @@ export const StabilityPoolHistoryFrame: FC = () => {
   );
 
   const generateRowTitle = useCallback(
-    (stabilityDeposit: StabilityDepositChange) => {
-      return (
-        <Paragraph size={ParagraphSize.small}>
+    (stabilityDeposit: StabilityDepositChange) => (
+      <>
+        <Paragraph
+          size={ParagraphSize.small}
+          className="text-ellipsis overflow-hidden whitespace-nowrap"
+        >
+          <TransactionTypeRenderer
+            type={stabilityDeposit.stabilityDepositOperation}
+          />
+          {' - '}
           {dateFormat(stabilityDeposit.transaction.timestamp)}
         </Paragraph>
-      );
-    },
+      </>
+    ),
     [],
   );
 

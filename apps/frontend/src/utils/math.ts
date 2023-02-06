@@ -68,6 +68,12 @@ export const formatValue = (value: number, precision: number = 0) =>
     maximumFractionDigits: precision,
   });
 
+export const formatCompactValue = (value: number, precision: number = 0) =>
+  value.toLocaleString(navigator.language, {
+    maximumFractionDigits: precision,
+    notation: 'compact',
+  });
+
 export const parseUnitValue = (unitName: BigNumberish): number => {
   if (typeof unitName === 'string') {
     const index = unitNames.indexOf(unitName);

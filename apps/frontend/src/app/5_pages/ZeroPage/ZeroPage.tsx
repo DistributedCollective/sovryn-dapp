@@ -102,6 +102,7 @@ export const ZeroPage: FC = () => {
     getCollateralSurplusBalance,
   );
   const { handleTroveSubmit, handleTroveClose } = useHandleTrove(hasLoc, () => {
+    toggle();
     getTroves();
     getOpenTroves();
     getZUSDBalance();

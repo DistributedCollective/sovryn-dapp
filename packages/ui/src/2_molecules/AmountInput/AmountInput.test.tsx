@@ -3,6 +3,8 @@ import userEvent from '@testing-library/user-event';
 
 import React from 'react';
 
+import { act } from 'react-dom/test-utils';
+
 import { AmountInput } from './AmountInput';
 
 let languageGetter;
@@ -37,7 +39,7 @@ describe('AmountInput', () => {
     );
 
     const amountInput = getByTestId('test');
-    expect(amountInput).toHaveValue(0.123);
+    expect(amountInput).toHaveValue('0.123');
   });
 
   test('correctly formats initial string value', () => {
@@ -50,7 +52,7 @@ describe('AmountInput', () => {
     );
 
     const amountInput = getByTestId('test');
-    expect(amountInput).toHaveValue(0.123);
+    expect(amountInput).toHaveValue('0.123');
   });
 
   test('allows value changes', () => {
@@ -59,11 +61,11 @@ describe('AmountInput', () => {
     );
 
     const amountInput = getByTestId('test');
-    expect(amountInput).toHaveValue(2);
+    expect(amountInput).toHaveValue('2');
 
     userEvent.clear(amountInput);
     userEvent.paste(amountInput, '4');
-    expect(amountInput).toHaveValue(4);
+    expect(amountInput).toHaveValue('4');
   });
 
   test('does not allow value changes if it is readonly', () => {
@@ -72,11 +74,11 @@ describe('AmountInput', () => {
     );
 
     const amountInput = getByTestId('test');
-    expect(amountInput).toHaveValue(2);
+    expect(amountInput).toHaveValue('2');
 
     userEvent.clear(amountInput);
     userEvent.paste(amountInput, '4');
-    expect(amountInput).toHaveValue(2);
+    expect(amountInput).toHaveValue('2');
   });
 
   test('does not allow value changes if it is disabled', () => {
@@ -85,11 +87,11 @@ describe('AmountInput', () => {
     );
 
     const amountInput = getByTestId('test');
-    expect(amountInput).toHaveValue(2);
+    expect(amountInput).toHaveValue('2');
 
     userEvent.clear(amountInput);
     userEvent.paste(amountInput, '4');
-    expect(amountInput).toHaveValue(2);
+    expect(amountInput).toHaveValue('2');
   });
 
   test('sets up localization', () => {
@@ -113,10 +115,10 @@ describe('AmountInput', () => {
     userEvent.clear(amountInput);
     userEvent.paste(amountInput, '10000000000000');
 
-    await waitFor(() => expect(amountInput).toHaveValue(999999999));
+    await waitFor(() => expect(amountInput).toHaveValue('999999999'));
   });
 
-  test('trims unnecessary zeros at the end', async () => {
+  test('trims unnecessary zeros at the end on blur', async () => {
     const { getByTestId } = render(
       <AmountInput
         value="0.065000"
@@ -127,17 +129,37 @@ describe('AmountInput', () => {
 
     const amountInput = getByTestId('test');
 
-    expect(amountInput).toHaveValue(0.065);
+    act(() => {
+      amountInput.focus();
+      amountInput.blur();
+    });
+
+    expect(amountInput).toHaveValue('0.065');
   });
 
-  test('does not allow to enter more than max amount value', async () => {
+  test('does allow to enter more than max amount value if useAmountButtons prop is not set', async () => {
     const { getByTestId } = render(
       <AmountInput value={12} maxAmount={10} dataAttribute="test" />,
     );
 
     const amountInput = getByTestId('test');
 
-    expect(amountInput).toHaveValue(10);
+    expect(amountInput).toHaveValue('12');
+  });
+
+  test('does not allow to enter more than max amount value when useAmountButtons prop is set', async () => {
+    const { getByTestId } = render(
+      <AmountInput
+        value={12}
+        maxAmount={10}
+        dataAttribute="test"
+        useAmountButtons
+      />,
+    );
+
+    const amountInput = getByTestId('test');
+
+    expect(amountInput).toHaveValue('10');
   });
 
   test('does not allow to enter less than min amount value', async () => {
@@ -147,7 +169,7 @@ describe('AmountInput', () => {
 
     const amountInput = getByTestId('test');
 
-    expect(amountInput).toHaveValue(4.56);
+    expect(amountInput).toHaveValue('4.56');
   });
 
   test('does not round to max value if max amount is less than the max value', async () => {
@@ -161,36 +183,36 @@ describe('AmountInput', () => {
 
     const amountInput = getByTestId('test');
 
-    expect(amountInput).toHaveValue(999999990);
+    expect(amountInput).toHaveValue('999999994');
   });
 
   test('allows to enter 18 decimals if the integer part length is less than 9', async () => {
     const { getByTestId } = render(
-      <AmountInput value={1.123456789123456789} dataAttribute="test" />,
+      <AmountInput value="1.123456789123456789" dataAttribute="test" />,
     );
 
     const amountInput = getByTestId('test');
 
-    expect(amountInput).toHaveValue(1.123456789123456789);
+    expect(amountInput).toHaveValue('1.123456789123456789');
   });
 
   test('allows to enter 9 integers and 18 decimals', async () => {
     const { getByTestId } = render(
-      <AmountInput value={999999999.123456789123456789} dataAttribute="test" />,
+      <AmountInput value="999999999.123456789123456789" dataAttribute="test" />,
     );
 
     const amountInput = getByTestId('test');
 
-    expect(amountInput).toHaveValue(999999999.123456789123456789);
+    expect(amountInput).toHaveValue('999999999.123456789123456789');
   });
 
   test('does not allow to enter more than 18 decimals', async () => {
     const { getByTestId } = render(
-      <AmountInput value={3.12345678912345678912} dataAttribute="test" />,
+      <AmountInput value="3.12345678912345678912" dataAttribute="test" />,
     );
 
     const amountInput = getByTestId('test');
 
-    expect(amountInput).toHaveValue(3.123456789123456789);
+    expect(amountInput).toHaveValue('3.123456789123456789');
   });
 });

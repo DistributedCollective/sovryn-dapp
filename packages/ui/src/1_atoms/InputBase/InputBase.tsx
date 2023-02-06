@@ -25,6 +25,7 @@ export type InputBaseProps = Omit<
   'ref' | 'size'
 > & {
   debounce?: number;
+
   dataAttribute?: string;
   onChangeText?: (value: string) => void;
   /** @deprecated Use onChangeText if possible */
@@ -42,7 +43,6 @@ export const InputBase = React.forwardRef<HTMLInputElement, InputBaseProps>(
       onChange,
       onChangeText,
       onBlur,
-      onKeyDown,
       ...props
     },
     ref,
@@ -96,6 +96,51 @@ export const InputBase = React.forwardRef<HTMLInputElement, InputBaseProps>(
 
     const handleChange = useCallback(
       (event: ChangeEvent<HTMLInputElement>) => {
+        if (type === 'number') {
+          if (event.target.value === '') {
+            setRenderedValue('');
+            debouncedOnChangeHandler(event);
+            return;
+          }
+
+          // count how much commas and dots are in the value
+          const commas = (event.target.value.match(/,|\./g) || []).length;
+          // if there are more than one comma or dot, use last valid value
+          if (commas > 1) {
+            event.target.value = renderedValue as string;
+            event.currentTarget.value = event.target.value;
+            setRenderedValue(event.target.value);
+            return;
+          }
+
+          const renderSeperator = getNumberSeperator(props.lang);
+
+          if (
+            event.target.value.endsWith('.') ||
+            event.target.value.endsWith(',')
+          ) {
+            setRenderedValue(
+              `${event.target.value.slice(0, -1)}${renderSeperator}`,
+            );
+            return;
+          }
+
+          if (commas === 1) {
+            const [integer, fraction] = event.target.value.split(/,|\./);
+            if (fraction.length) {
+              event.target.value = `${integer}${renderSeperator}${fraction}`;
+              event.currentTarget.value = event.target.value;
+            }
+          }
+
+          // if value is not a number, use last valid value
+          if (isNaN(Number(event.target.value))) {
+            event.target.value = renderedValue as string;
+            event.currentTarget.value = event.target.value;
+            setRenderedValue(event.target.value);
+            return;
+          }
+        }
         event.persist();
 
         const change = prepareValueToRender(

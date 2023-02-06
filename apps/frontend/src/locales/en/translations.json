@@ -18,7 +18,8 @@
             "continue": "Continue",
             "done": "Done",
             "close": "Close",
-            "retry": "Retry"
+            "retry": "Retry",
+            "skip": "Skip"
         },
         "na": "N/A",
         "tables": {
@@ -170,7 +171,7 @@
     },
     "emailNotificationsDialog": {
         "dialogTitle": "Notifications",
-        "title": "Notifications on the status of your line of credit are sent to your email after you sign it with your wallet",
+        "title": "Sign up to receive important notifications about the state of your line of credit and the Zero protocol",
         "emailInputLabel": "Email address",
         "emailInputPlaceholder": "Enter Email",
         "alertGroups": {
@@ -181,7 +182,7 @@
         },
         "successMessage": "Your preferences have been saved.",
         "errorMessage": "Something went wrong, please try again.",
-        "authErorrMessage": "Authentication failed, please try again."
+        "authErrorMessage": "Authentication failed, please try again."
     },
     "chart": {
         "collateralRatio": "Collateral ratio",

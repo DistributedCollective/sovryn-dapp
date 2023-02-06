@@ -10,7 +10,7 @@ import { BORROW_ASSETS } from '../../../5_pages/ZeroPage/constants';
 import { useAssetBalance } from '../../../../hooks/useAssetBalance';
 import { useGasPrice } from '../../../../hooks/useGasPrice';
 import { translations } from '../../../../locales/i18n';
-import { MAX_GAS_LIMIT } from '../../../../utils/constants';
+import { Bitcoin, MAX_GAS_LIMIT } from '../../../../utils/constants';
 import { composeGas } from '../../../../utils/helpers';
 import { formatValue, fromWei, toWei } from '../../../../utils/math';
 import {
@@ -277,7 +277,7 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
     ) {
       const diff = collateralSize - maxCollateralToDepositAmount;
       return t(translations.zeroPage.loc.errors.balanceTooLow, {
-        value: `${formatValue(diff, 4)} ${SupportedTokens.rbtc.toUpperCase()}`,
+        value: `${formatValue(diff, 4)} ${Bitcoin}`,
       });
     }
 
@@ -287,7 +287,7 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
     ) {
       const diff = collateralSize - maxCollateralToWithdrawAmount;
       return t(translations.zeroPage.loc.errors.withdrawBalanceTooLow, {
-        value: `${formatValue(diff, 4)} ${SupportedTokens.rbtc.toUpperCase()}`,
+        value: `${formatValue(diff, 4)} ${Bitcoin}`,
       });
     }
 

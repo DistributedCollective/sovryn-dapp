@@ -21,7 +21,7 @@ import { AssetRenderer } from '../../../2_molecules/AssetRenderer/AssetRenderer'
 import { ErrorList } from '../../../2_molecules/ErrorList/ErrorList';
 import { BORROW_ASSETS } from '../../../5_pages/ZeroPage/constants';
 import { translations } from '../../../../locales/i18n';
-import { CR_THRESHOLDS } from '../../../../utils/constants';
+import { Bitcoin, CR_THRESHOLDS } from '../../../../utils/constants';
 import { formatValue } from '../../../../utils/math';
 import { tokensToOptions } from '../../../../utils/tokens';
 import { CurrentTroveData } from '../CurrentTroveData';
@@ -198,7 +198,7 @@ export const FormContent: FC<FormContentProps> = props => {
         t(translations.common.na)
       ) : (
         <>
-          {formatValue(value, 3)} {SupportedTokens.rbtc.toUpperCase()}
+          {formatValue(value, 3)} {Bitcoin}
         </>
       ),
     [t],

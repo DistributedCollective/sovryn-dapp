@@ -33,7 +33,7 @@ import { useAccount } from '../../../hooks/useAccount';
 import { useAssetBalance } from '../../../hooks/useAssetBalance';
 import { translations } from '../../../locales/i18n';
 import { formatValue, fromWei, toWei } from '../../../utils/math';
-import { tokenOptions } from './EarnPage.types';
+import { tokenList } from './EarnPage.types';
 import { useHandleStabilityDeposit } from './hooks/useHandleStabilityDeposit';
 
 const commonTranslations = translations.common;
@@ -220,6 +220,21 @@ const EarnPage: FC = () => {
   const isSubmitDisabled = useMemo(
     () => !account || !amount || Number(amount) <= 0 || !isValidAmount,
     [account, amount, isValidAmount],
+  );
+
+  const tokenOptions = useMemo(
+    () =>
+      tokenList.map(token => ({
+        value: token.symbol,
+        label: (
+          <AssetRenderer
+            showAssetLogo
+            asset={token.symbol}
+            assetClassName="font-medium"
+          />
+        ),
+      })),
+    [],
   );
 
   return (

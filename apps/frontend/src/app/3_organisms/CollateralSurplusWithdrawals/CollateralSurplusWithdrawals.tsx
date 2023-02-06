@@ -34,13 +34,14 @@ import { dateFormat } from '../../../utils/helpers';
 import { formatValue } from '../../../utils/math';
 import { useGetCollateralSurplusWithdrawals } from './hooks/useGetCollateralSurplusWithdrawals';
 
+const pageSize = DEFAULT_HISTORY_FRAME_PAGE_SIZE;
+
 export const CollateralSurplusHistoryFrame: FC = () => {
   const { t } = useTranslation();
   const { account } = useAccount();
   const { addNotification } = useNotificationContext();
 
   const [page, setPage] = useState(0);
-  const [pageSize, setPageSize] = useState(DEFAULT_HISTORY_FRAME_PAGE_SIZE);
   const chain = chains.find(chain => chain.id === defaultChainId);
 
   const [orderOptions, setOrderOptions] = useState<OrderOptions>({
@@ -109,12 +110,12 @@ export const CollateralSurplusHistoryFrame: FC = () => {
       }
       setPage(value);
     },
-    [page, data, pageSize],
+    [page, data],
   );
 
   const isNextButtonDisabled = useMemo(
     () => !loading && data?.length < pageSize,
-    [loading, data, pageSize],
+    [loading, data],
   );
 
   const exportData = useCallback(async () => {
@@ -166,7 +167,6 @@ export const CollateralSurplusHistoryFrame: FC = () => {
         getData={exportData}
         filename="transactions"
         className="mb-7 hidden lg:inline-flex"
-        onExportEnd={() => setPageSize(DEFAULT_HISTORY_FRAME_PAGE_SIZE)}
         disabled={!data || data.length === 0}
       />
       <div className="bg-gray-80 py-4 px-4 rounded">

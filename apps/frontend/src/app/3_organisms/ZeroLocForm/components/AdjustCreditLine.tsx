@@ -72,15 +72,21 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
 
   const newDebt = useMemo(
     () =>
-      Number(existingDebt) +
-      normalizeAmountByType(Number(debtAmount), debtType),
+      Math.max(
+        Number(existingDebt) +
+          normalizeAmountByType(Number(debtAmount), debtType),
+        0,
+      ),
     [debtAmount, existingDebt, debtType],
   );
 
   const newCollateral = useMemo(
     () =>
-      Number(existingCollateral) +
-      normalizeAmountByType(Number(collateralAmount), collateralType),
+      Math.max(
+        Number(existingCollateral) +
+          normalizeAmountByType(Number(collateralAmount), collateralType),
+        0,
+      ),
     [collateralAmount, collateralType, existingCollateral],
   );
 
@@ -171,7 +177,7 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
   );
 
   const ratio = useMemo(() => {
-    return ((newCollateral * rbtcPrice) / newDebt) * 100;
+    return ((newCollateral * rbtcPrice) / newDebt) * 100 || 0;
   }, [newCollateral, newDebt, rbtcPrice]);
 
   const { t } = useTranslation();
@@ -190,11 +196,11 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
   );
 
   const liquidationPrice = useMemo(
-    () => MINIMUM_COLLATERAL_RATIO * (newDebt / newCollateral),
+    () => MINIMUM_COLLATERAL_RATIO * (newDebt / newCollateral) || 0,
     [newDebt, newCollateral],
   );
   const liquidationPriceInRecoveryMode = useMemo(
-    () => CRITICAL_COLLATERAL_RATIO * (newDebt / newCollateral),
+    () => CRITICAL_COLLATERAL_RATIO * (newDebt / newCollateral) || 0,
     [newDebt, newCollateral],
   );
 
@@ -215,9 +221,15 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
     if (newDebt < MIN_DEBT_SIZE) {
       list.push({
         level: ErrorLevel.Critical,
-        message: isIncreasingDebt
-          ? 'The new debt amount has to be at least 200 ZUSD'
-          : 'Total debt must be at least 200 ZUSD',
+        message: t(
+          isIncreasingDebt
+            ? translations.zeroPage.loc.errors.newTotalDebtTooLow
+            : translations.zeroPage.loc.errors.totalDebtTooLow,
+          {
+            value: formatValue(MIN_DEBT_SIZE, 4),
+            currency: debtToken.toUpperCase(),
+          },
+        ),
         weight: 5,
       });
     }
@@ -279,28 +291,22 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
     }
 
     return list;
-  }, [fieldsTouched, ratio, tcr, newDebt, isIncreasingDebt, t]);
+  }, [fieldsTouched, ratio, tcr, newDebt, t, isIncreasingDebt, debtToken]);
 
   const debtError = useMemo(() => {
     if (!fieldsTouched) {
       return undefined;
     }
 
-    if (
-      toWei(debtAmount).gt(toWei(maxDebtAmount)) &&
-      debtType === AmountType.Remove
-    ) {
-      const diff = Number(fromWei(toWei(debtAmount).sub(toWei(maxDebtAmount))));
+    if (toWei(debtAmount).gt(_debtTokenWeiBalance) && !isIncreasingDebt) {
+      const diff = Number(fromWei(toWei(debtAmount).sub(_debtTokenWeiBalance)));
       return t(translations.zeroPage.loc.errors.repayBalanceTooLow, {
         value: formatValue(diff, 4),
         currency: debtToken.toUpperCase(),
       });
     }
 
-    if (
-      toWei(debtAmount).gt(toWei(maxDebtAmount)) &&
-      debtType === AmountType.Add
-    ) {
+    if (toWei(debtAmount).gt(toWei(maxDebtAmount)) && isIncreasingDebt) {
       const diff = Number(fromWei(toWei(debtAmount).sub(toWei(maxDebtAmount))));
       return t(translations.zeroPage.loc.errors.creditBalanceTooLow, {
         value: formatValue(diff, 4),
@@ -309,7 +315,15 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
     }
 
     return undefined;
-  }, [debtAmount, debtToken, debtType, fieldsTouched, maxDebtAmount, t]);
+  }, [
+    _debtTokenWeiBalance,
+    debtAmount,
+    debtToken,
+    fieldsTouched,
+    isIncreasingDebt,
+    maxDebtAmount,
+    t,
+  ]);
 
   const collateralError = useMemo(() => {
     if (!fieldsTouched) {

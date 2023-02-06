@@ -238,7 +238,11 @@
                 "ratioWarning": "Keeping your collateral ratio above {{value}}% can help avoid liquidation under recovery mode",
                 "ratioError": "Collateral ratio must be at least {{value}}%",
                 "debtTooLow": "Debt must be at least {{value}}",
-                "balanceTooLow": "The collateral amount you're trying to deposit exceeds your balance by {{value}}"
+                "balanceTooLow": "The collateral amount you're trying to deposit exceeds your balance by {{value}}",
+                "collateralTooLow": "Collateral balance must be at least {{value}}",
+                "withdrawBalanceTooLow": "The collateral amount you're trying to withdraw exceeds your trove balance by {{value}}",
+                "repayBalanceTooLow": "The {{currency}} amount you're trying to repay exceeds your balance by {{value}}",
+                "creditBalanceTooLow": "The {{currency}} amount you're trying to borrow exceeds your maximum by {{value}}"
             }
         },
         "tx": {

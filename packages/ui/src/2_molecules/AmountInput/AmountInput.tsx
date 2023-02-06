@@ -70,7 +70,11 @@ export const AmountInput = React.forwardRef<HTMLInputElement, AmountInputProps>(
 
         let unformattedNumberValue = String(value);
 
-        if (maxAmount && Number(unformattedNumberValue) > maxAmount) {
+        if (
+          useAmountButtons &&
+          maxAmount &&
+          Number(unformattedNumberValue) > Number(maxAmount)
+        ) {
           unformattedNumberValue = String(maxAmount);
         }
 
@@ -94,7 +98,7 @@ export const AmountInput = React.forwardRef<HTMLInputElement, AmountInputProps>(
           integerPart.length + decimals + 1,
         );
       },
-      [decimalPrecision, maxAmount, rest.min],
+      [decimalPrecision, maxAmount, rest.min, useAmountButtons],
     );
 
     const [formattedValue, setFormattedValue] = useState(
@@ -163,7 +167,6 @@ export const AmountInput = React.forwardRef<HTMLInputElement, AmountInputProps>(
             onBlur={onBlurHandler}
             value={formattedValue}
             onChangeText={onChangeTextHandler}
-            debounce={0}
             {...rest}
           />
 

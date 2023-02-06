@@ -37,7 +37,6 @@
     "@testing-library/react": "13.3.0",
     "@types/jest": "29.0.1",
     "babel-loader": "8.2.5",
-    "eslint": "7.32.0",
     "ethereum-blockies": "0.1.1",
     "jest": "29.0.3",
     "jest-environment-jsdom": "29.0.3",

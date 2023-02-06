@@ -1,6 +1,7 @@
+import { useArgs } from '@storybook/client-api';
 import { Story } from '@storybook/react';
 
-import React, { ComponentProps, useState } from 'react';
+import React, { ComponentProps, useCallback, useState } from 'react';
 
 import { Input, InputProps } from './Input';
 import { InputSize } from './Input.types';
@@ -21,9 +22,14 @@ export default {
   },
 };
 
-const Template: Story<ComponentProps<typeof Input>> = args => (
-  <Input {...args} />
-);
+const Template: Story<ComponentProps<typeof Input>> = args => {
+  const [, updateArgs] = useArgs();
+  const handleOnChange = useCallback(
+    (value: string) => updateArgs({ value }),
+    [updateArgs],
+  );
+  return <Input {...args} onChangeText={handleOnChange} />;
+};
 
 const AdvancedTemplate: Story<ComponentProps<typeof Input>> = args => {
   const [value, setValue] = useState('hello world');

@@ -31,11 +31,22 @@ test('renders disabled input and does not allow to change its value', () => {
 });
 
 test('renders numeric input and does not allow to enter non-numeric values', () => {
+  render(<Input value="" type="number" />);
+  const input = screen.getByDisplayValue('') as HTMLInputElement;
+
+  fireEvent.change(input, { target: { value: 'Non-numeric value' } });
+  expect(input.value).toBe('');
+
+  fireEvent.change(input, { target: { value: '56' } });
+  expect(input.value).toBe('56');
+});
+
+test('renders numeric input and fallbacks to last valid value if update is non-numeric value', () => {
   render(<Input value="12" type="number" />);
   const input = screen.getByDisplayValue('12') as HTMLInputElement;
 
   fireEvent.change(input, { target: { value: 'Non-numeric value' } });
-  expect(input.value).toBe('');
+  expect(input.value).toBe('12');
 
   fireEvent.change(input, { target: { value: '56' } });
   expect(input.value).toBe('56');

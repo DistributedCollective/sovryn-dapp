@@ -13,6 +13,7 @@ import { defaultChainId } from '../../../../config/chains';
 import { Transaction } from '../../../3_organisms/TransactionStepDialog/TransactionStepDialog.types';
 import { useTransactionContext } from '../../../../contexts/TransactionContext';
 import { useAccount } from '../../../../hooks/useAccount';
+import { GAS_LIMIT_CONVERT } from '../../../../utils/constants';
 import { toWei } from '../../../../utils/math';
 
 export const useHandleConversion = (
@@ -46,6 +47,7 @@ export const useHandleConversion = (
         contract: massetManager,
         fnName: 'redeemTo',
         args: [bassetAddress, weiAmount, account],
+        config: { gasLimit: GAS_LIMIT_CONVERT },
       },
     ];
   }, [account, destinationToken, getMassetManager, weiAmount]);
@@ -100,6 +102,7 @@ export const useHandleConversion = (
       contract: massetManager,
       fnName: 'mintTo',
       args: [bassetAddress, weiAmount, account],
+      config: { gasLimit: GAS_LIMIT_CONVERT },
     });
 
     return transactions;

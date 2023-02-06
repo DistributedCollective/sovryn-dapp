@@ -61,10 +61,11 @@ export const EXPORT_RECORD_LIMIT = 500;
 export const DEFAULT_TIMEOUT_SECONDS = 5000;
 export const LIQUIDATION_RESERVE_AMOUNT = 20;
 export const MAX_GAS_LIMIT = 6_800_000;
-export const GAS_LIMIT_OPEN_TROVE = 1_000_000;
-export const GAS_LIMIT_ADJUST_TROVE = 650_000;
+export const GAS_LIMIT_OPEN_TROVE = 700_000;
+export const GAS_LIMIT_ADJUST_TROVE = 420_000;
+export const GAS_LIMIT_CLOSE_TROVE = 180_000;
+export const GAS_LIMIT_CONVERT = 145_000;
 export const GAS_LIMIT_STABILITY_POOL = 500_000;
-export const btcInSatoshis = 100000000;
 
 // TODO: Refactor it into a similar config we have in dapp v1 (blockExplorers constant)
 export const rskExplorer = {
@@ -76,6 +77,8 @@ export const btcExplorer = {
   [Environments.Mainnet]: 'https://live.blockcypher.com/btc',
   [Environments.Testnet]: 'https://live.blockcypher.com/btc-testnet',
 };
+
+export const btcInSatoshis = 100000000;
 
 //TODO: refactor into Bitcoin asset definition later
 export const Bitcoin = 'BTC';

@@ -428,15 +428,52 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
       });
     }
 
+    if (
+      toWei(debtAmount).gt(toWei(maxCreditAmount)) &&
+      debtType === AmountType.Remove
+    ) {
+      const diff = Number(
+        fromWei(toWei(debtAmount).sub(toWei(maxCreditAmount))),
+      );
+      return t(translations.zeroPage.loc.errors.repayBalanceTooLow, {
+        value: formatValue(diff, 4),
+        currency: debtToken.toUpperCase(),
+      });
+    }
+
+    if (
+      toWei(debtAmount).gt(toWei(maxCreditAmount)) &&
+      debtType === AmountType.Add
+    ) {
+      const diff = Number(
+        fromWei(toWei(debtAmount).sub(toWei(maxCreditAmount))),
+      );
+      return t(translations.zeroPage.loc.errors.creditBalanceTooLow, {
+        value: formatValue(diff, 4),
+        currency: debtToken.toUpperCase(),
+      });
+    }
+
     return undefined;
-  }, [debtToken, fieldsTouched, newDebt, t]);
+  }, [
+    debtAmount,
+    debtToken,
+    debtType,
+    fieldsTouched,
+    maxCreditAmount,
+    newDebt,
+    t,
+  ]);
 
   const collateralError = useMemo(() => {
     if (!fieldsTouched) {
       return undefined;
     }
 
-    if (toWei(collateralAmount || 0).gt(maxCollateralWeiAmount)) {
+    if (
+      toWei(collateralAmount).gt(maxCollateralWeiAmount) &&
+      collateralType === AmountType.Add
+    ) {
       const diff = Number(
         fromWei(toWei(collateralAmount || 0).sub(maxCollateralWeiAmount)),
       );
@@ -445,8 +482,26 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
       });
     }
 
+    if (
+      toWei(collateralAmount).gt(maxCollateralWeiAmount) &&
+      collateralType === AmountType.Remove
+    ) {
+      const diff = Number(
+        fromWei(toWei(collateralAmount).sub(maxCollateralWeiAmount)),
+      );
+      return t(translations.zeroPage.loc.errors.withdrawBalanceTooLow, {
+        value: `${formatValue(diff, 4)} RBTC`,
+      });
+    }
+
     return undefined;
-  }, [collateralAmount, fieldsTouched, maxCollateralWeiAmount, t]);
+  }, [
+    collateralAmount,
+    collateralType,
+    fieldsTouched,
+    maxCollateralWeiAmount,
+    t,
+  ]);
 
   const tokenOptions = useMemo(
     () =>

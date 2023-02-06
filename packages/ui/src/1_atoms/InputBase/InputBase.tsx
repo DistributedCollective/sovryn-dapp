@@ -18,7 +18,6 @@ export type InputBaseProps = Omit<
   'ref' | 'size'
 > & {
   debounce?: number;
-
   dataAttribute?: string;
   onChangeText?: (value: string) => void;
   /** @deprecated Use onChangeText if possible */
@@ -60,12 +59,8 @@ export const InputBase = React.forwardRef<HTMLInputElement, InputBaseProps>(
 
           onChangeText?.(event.currentTarget.value);
           onChange?.(event);
-
-          if (event.currentTarget.value !== value) {
-            setRenderedValue(value as string);
-          }
         }, debounce),
-      [debounce, onChange, onChangeText, value],
+      [debounce, onChange, onChangeText],
     );
 
     const handleChange = useCallback(

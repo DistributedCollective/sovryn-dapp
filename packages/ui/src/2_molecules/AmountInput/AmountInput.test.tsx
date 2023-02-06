@@ -11,6 +11,8 @@ let languageGetter;
 
 beforeEach(() => {
   languageGetter = jest.spyOn(window.navigator, 'language', 'get');
+  // use en-US as default language for tests
+  languageGetter.mockReturnValue('en-US');
 });
 
 describe('AmountInput', () => {
@@ -103,6 +105,7 @@ describe('AmountInput', () => {
 
     const amountInput = getByTestId('test');
     expect(amountInput).toHaveProperty('lang', 'sk-SK');
+    expect(amountInput).toHaveValue('2,4');
   });
 
   test('does not allow to enter more than 9 whole numbers', async () => {

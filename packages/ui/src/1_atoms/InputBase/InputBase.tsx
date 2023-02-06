@@ -6,12 +6,19 @@ import React, {
   ChangeEvent,
   ChangeEventHandler,
   useMemo,
+  useRef,
+  useImperativeHandle,
 } from 'react';
 
 import debounceCallback from 'lodash.debounce';
 
 import { noop, applyDataAttr } from '../../utils';
-import { getNumberSeperator } from '../../utils/helpers';
+import {
+  prepareValueForEvent,
+  prepareValueToRender,
+  parseBetterFloat,
+  removeTrailingZeroes,
+} from './utils';
 
 export type InputBaseProps = Omit<
   HTMLProps<HTMLInputElement>,
@@ -35,10 +42,18 @@ export const InputBase = React.forwardRef<HTMLInputElement, InputBaseProps>(
       onChange,
       onChangeText,
       onBlur,
+      onKeyDown,
       ...props
     },
     ref,
   ) => {
+    const inputRef = useRef<HTMLInputElement>(
+      null,
+    ) as React.MutableRefObject<HTMLInputElement>;
+
+    useImperativeHandle(ref, () => inputRef.current);
+
+    const [cursor, setCursor] = useState<[number, number]>([0, 0]);
     const [renderedValue, setRenderedValue] = useState<
       string | string[] | number | undefined
     >(value as string);
@@ -57,95 +72,114 @@ export const InputBase = React.forwardRef<HTMLInputElement, InputBaseProps>(
             event.currentTarget = event.target;
           }
 
-          onChangeText?.(event.currentTarget.value);
-          onChange?.(event);
+          const e =
+            type === 'number'
+              ? prepareValueForEvent(
+                  event,
+                  parseBetterFloat(event.target.value),
+                )
+              : event;
+
+          onChangeText?.(e.currentTarget.value);
+          onChange?.(e);
         }, debounce),
-      [debounce, onChange, onChangeText],
+      [debounce, onChange, onChangeText, type],
     );
+
+    const updateRenderedValue = useCallback((value: string) => {
+      setCursor([
+        inputRef.current.selectionStart || 0,
+        inputRef.current.selectionEnd || 0,
+      ]);
+      setRenderedValue(value);
+    }, []);
 
     const handleChange = useCallback(
       (event: ChangeEvent<HTMLInputElement>) => {
-        if (type === 'number') {
-          if (event.target.value === '') {
-            setRenderedValue('');
-            debouncedOnChangeHandler(event);
-            return;
-          }
-
-          // count how much commas and dots are in the value
-          const commas = (event.target.value.match(/,|\./g) || []).length;
-          // if there are more than one comma or dot, use last valid value
-          if (commas > 1) {
-            event.target.value = renderedValue as string;
-            event.currentTarget.value = event.target.value;
-            setRenderedValue(event.target.value);
-            return;
-          }
-
-          const renderSeperator = getNumberSeperator(props.lang);
-
-          if (
-            event.target.value.endsWith('.') ||
-            event.target.value.endsWith(',')
-          ) {
-            setRenderedValue(
-              `${event.target.value.slice(0, -1)}${renderSeperator}`,
-            );
-            return;
-          }
-
-          if (commas === 1) {
-            const [integer, fraction] = event.target.value.split(/,|\./);
-            if (fraction.length) {
-              event.target.value = `${integer}${renderSeperator}${fraction}`;
-              event.currentTarget.value = event.target.value;
-            }
-          }
-
-          // if value is not a number, use last valid value
-          if (isNaN(Number(event.target.value))) {
-            event.target.value = renderedValue as string;
-            event.currentTarget.value = event.target.value;
-            setRenderedValue(event.target.value);
-            return;
-          }
-        }
         event.persist();
-        setRenderedValue(event.currentTarget?.value);
+
+        const change = prepareValueToRender(
+          event.target.value,
+          renderedValue as string,
+          type ?? 'text',
+          props.lang ?? navigator.language,
+        );
+
+        updateRenderedValue(change);
         debouncedOnChangeHandler(event);
       },
-      [debouncedOnChangeHandler, props.lang, renderedValue, type],
+      [
+        debouncedOnChangeHandler,
+        props.lang,
+        renderedValue,
+        type,
+        updateRenderedValue,
+      ],
     );
 
     const handleOnBlur = useCallback(
       (event: React.FocusEvent<HTMLInputElement>) => {
+        if (event.currentTarget === null) {
+          event.currentTarget = event.target;
+        }
+
         // fix number value if user leaves input with comma or dot at the end (123. => 123)
-        if (
-          type === 'number' &&
-          (event.target.value.endsWith('.') ||
-            event.target.value.endsWith(',') ||
-            event.target.value.endsWith('0'))
-        ) {
-          event.target.value = parseFloat(event.target.value).toString();
-          event.currentTarget.value = event.target.value;
-          setRenderedValue(event.currentTarget?.value);
-          debouncedOnChangeHandler(event);
+        if (type === 'number') {
+          const e = prepareValueForEvent(
+            event,
+            removeTrailingZeroes(parseBetterFloat(event.target.value)),
+          );
+
+          updateRenderedValue(
+            prepareValueToRender(
+              e.target.value,
+              '',
+              'number',
+              props.lang ?? navigator.language,
+            ),
+          );
+
+          onChangeText?.(e.target.value);
+          onChange?.(e);
+          onBlur?.({
+            ...event,
+            target: e.target,
+            currentTarget: e.currentTarget,
+          });
+          return;
         }
         onBlur?.(event);
       },
-      [debouncedOnChangeHandler, onBlur, type],
+      [onBlur, onChange, onChangeText, props.lang, type, updateRenderedValue],
     );
 
-    // updating value if it was changed by parent component
     useEffect(() => {
-      setRenderedValue(value as string);
-    }, [value]);
+      setRenderedValue(
+        prepareValueToRender(
+          value as string,
+          '',
+          type ?? 'text',
+          props.lang ?? navigator.language,
+        ),
+      );
+    }, [props.lang, type, value]);
+
+    // set cursor position after value was changed
+    useEffect(() => {
+      if (inputRef.current && inputRef.current === document.activeElement) {
+        inputRef.current.setSelectionRange(cursor[0], cursor[1]);
+      }
+    }, [renderedValue, cursor]);
+
+    const isNumeric = useMemo(() => type === 'number', [type]);
 
     return (
       <input
         {...props}
-        type={type === 'number' ? 'text' : type}
-        ref={ref}
+        type={isNumeric ? 'text' : type}
+        inputMode={isNumeric ? 'decimal' : undefined}
+        pattern={isNumeric ? '[0-9]*' : undefined}
+        ref={inputRef}
         value={renderedValue}
         onChange={shouldAllowChanges ? handleChange : noop}
         onBlur={shouldAllowChanges ? handleOnBlur : noop}

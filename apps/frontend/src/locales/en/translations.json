@@ -312,6 +312,28 @@
             "noDataToExport": "No data to export"
         }
     },
+    "stabilityPoolHistory": {
+        "table": {
+            "timestamp": "Timestamp",
+            "transactionType": "Transaction Type",
+            "balanceChange": "Balance Change",
+            "newBalance": "New Balance",
+            "transactionID": "Transaction ID"
+        },
+        "stabilityPoolOperation": {
+            "deposit": "Deposit",
+            "withdrawal": "Withdrawal",
+            "withdrawCollateralGain": "Withdraw collateral gain"
+        },
+        "filters": {
+            "depositTokens": "Deposit",
+            "withdrawTokens": "Withdraw",
+            "withdrawCollateralGain": "Withdraw collateral gain"
+        },
+        "actions": {
+            "noDataToExport": "No data to export"
+        }
+    },
     "dashboardWelcomeBanner": {
         "fundWallet": "Fund your wallet",
         "OpenCredit": "Open line of credit"

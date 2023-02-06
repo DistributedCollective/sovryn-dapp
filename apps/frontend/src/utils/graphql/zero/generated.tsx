@@ -3249,6 +3249,34 @@ export type GetStabilityDepositChangesQuery = {
   }>;
 };
 
+export type GetStabilityPoolQueryVariables = Exact<{
+  user: Scalars['ID'];
+  skip: Scalars['Int'];
+  pageSize: Scalars['Int'];
+  orderBy?: InputMaybe<StabilityDepositChange_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+  filters?: InputMaybe<StabilityDepositChange_Filter>;
+}>;
+
+export type GetStabilityPoolQuery = {
+  __typename?: 'Query';
+  stabilityDeposits: Array<{
+    __typename?: 'StabilityDeposit';
+    changes: Array<{
+      __typename?: 'StabilityDepositChange';
+      depositedAmountChange: string;
+      depositedAmountAfter: string;
+      stabilityDepositOperation: StabilityDepositOperation;
+      sequenceNumber: number;
+      transaction: {
+        __typename?: 'Transaction';
+        id: string;
+        timestamp: number;
+      };
+    }>;
+  }>;
+};
+
 export type GetTroveQueryVariables = Exact<{
   user: Scalars['ID'];
   skip: Scalars['Int'];
@@ -3694,6 +3722,91 @@ export type GetStabilityDepositChangesLazyQueryHookResult = ReturnType<
 export type GetStabilityDepositChangesQueryResult = Apollo.QueryResult<
   GetStabilityDepositChangesQuery,
   GetStabilityDepositChangesQueryVariables
+>;
+export const GetStabilityPoolDocument = gql`
+  query getStabilityPool(
+    $user: ID!
+    $skip: Int!
+    $pageSize: Int!
+    $orderBy: StabilityDepositChange_orderBy
+    $orderDirection: OrderDirection
+    $filters: StabilityDepositChange_filter
+  ) {
+    stabilityDeposits(where: { id: $user }) {
+      changes(
+        first: $pageSize
+        skip: $skip
+        orderBy: $orderBy
+        orderDirection: $orderDirection
+        where: $filters
+      ) {
+        depositedAmountChange
+        depositedAmountAfter
+        stabilityDepositOperation
+        transaction {
+          id
+          timestamp
+        }
+        sequenceNumber
+      }
+    }
+  }
+`;
+
+/**
+ * __useGetStabilityPoolQuery__
+ *
+ * To run a query within a React component, call `useGetStabilityPoolQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetStabilityPoolQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetStabilityPoolQuery({
+ *   variables: {
+ *      user: // value for 'user'
+ *      skip: // value for 'skip'
+ *      pageSize: // value for 'pageSize'
+ *      orderBy: // value for 'orderBy'
+ *      orderDirection: // value for 'orderDirection'
+ *      filters: // value for 'filters'
+ *   },
+ * });
+ */
+export function useGetStabilityPoolQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    GetStabilityPoolQuery,
+    GetStabilityPoolQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<GetStabilityPoolQuery, GetStabilityPoolQueryVariables>(
+    GetStabilityPoolDocument,
+    options,
+  );
+}
+export function useGetStabilityPoolLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    GetStabilityPoolQuery,
+    GetStabilityPoolQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    GetStabilityPoolQuery,
+    GetStabilityPoolQueryVariables
+  >(GetStabilityPoolDocument, options);
+}
+export type GetStabilityPoolQueryHookResult = ReturnType<
+  typeof useGetStabilityPoolQuery
+>;
+export type GetStabilityPoolLazyQueryHookResult = ReturnType<
+  typeof useGetStabilityPoolLazyQuery
+>;
+export type GetStabilityPoolQueryResult = Apollo.QueryResult<
+  GetStabilityPoolQuery,
+  GetStabilityPoolQueryVariables
 >;
 export const GetTroveDocument = gql`
   query getTrove(

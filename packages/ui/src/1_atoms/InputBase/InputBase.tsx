@@ -25,7 +25,6 @@ export type InputBaseProps = Omit<
   'ref' | 'size'
 > & {
   debounce?: number;
-
   dataAttribute?: string;
   onChangeText?: (value: string) => void;
   /** @deprecated Use onChangeText if possible */

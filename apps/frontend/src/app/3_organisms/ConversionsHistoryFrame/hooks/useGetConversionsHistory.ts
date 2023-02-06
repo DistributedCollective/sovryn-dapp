@@ -1,13 +1,10 @@
-import { useQuery } from '@apollo/client';
-
 import { useMemo } from 'react';
 
 import { OrderOptions } from '@sovryn/ui';
 
-import { myntClient } from '../../../../utils/clients';
 import {
   Conversion_OrderBy,
-  GetUserConversionsDocument,
+  useGetUserConversionsQuery,
 } from '../../../../utils/graphql/mynt/generated';
 
 export const useGetConversionsHistory = (
@@ -33,8 +30,5 @@ export const useGetConversionsHistory = (
     ],
   );
 
-  return useQuery(GetUserConversionsDocument, {
-    variables: config,
-    client: myntClient,
-  });
+  return useGetUserConversionsQuery({ variables: config });
 };

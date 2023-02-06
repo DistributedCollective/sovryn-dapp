@@ -30,10 +30,11 @@ import { dateFormat } from '../../../utils/helpers';
 import { useGetConversionsHistory } from './hooks/useGetConversionsHistory';
 import { columnsConfig, generateRowTitle } from './utils';
 
+const pageSize = DEFAULT_HISTORY_FRAME_PAGE_SIZE;
+
 export const ConversionsHistoryFrame: React.FC = () => {
   const { account } = useAccount();
   const [page, setPage] = useState(0);
-  const [pageSize, setPageSize] = useState(DEFAULT_HISTORY_FRAME_PAGE_SIZE);
 
   const { addNotification } = useNotificationContext();
 
@@ -61,12 +62,12 @@ export const ConversionsHistoryFrame: React.FC = () => {
       }
       setPage(value);
     },
-    [conversions.length, page, pageSize],
+    [conversions?.length, page],
   );
 
   const isNextButtonDisabled = useMemo(
     () => !loading && conversions?.length < pageSize,
-    [conversions?.length, loading, pageSize],
+    [conversions?.length, loading],
   );
 
   const [getConversions] = useGetUserConversionsLazyQuery();
@@ -112,7 +113,6 @@ export const ConversionsHistoryFrame: React.FC = () => {
         getData={exportData}
         filename="conversion"
         className="mb-7 hidden lg:inline-flex"
-        onExportEnd={() => setPageSize(DEFAULT_HISTORY_FRAME_PAGE_SIZE)}
         disabled={!conversions}
       />
       <div className="bg-gray-80 py-4 px-4 rounded">

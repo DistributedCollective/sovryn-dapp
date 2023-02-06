@@ -1,3 +1,5 @@
+import { ApolloProvider } from '@apollo/client';
+
 import React, { FC, useMemo, useState } from 'react';
 
 import { useTranslation } from 'react-i18next';
@@ -12,12 +14,15 @@ import { CollateralSurplusHistoryFrame } from '../../3_organisms/CollateralSurpl
 import { ConversionsHistoryFrame } from '../../3_organisms/ConversionsHistoryFrame/ConversionsHistoryFrame';
 import { StabilityPoolHistoryFrame } from '../../3_organisms/StabilityPoolHistoryFrame';
 import { translations } from '../../../locales/i18n';
+import { myntClient, zeroClient } from '../../../utils/clients';
 import styles from './HistoryPage.module.css';
 
 const ACTIVE_CLASSNAME = 'border-t-primary-30';
 const locHistory = (
   <div className="px-0 py-4 lg:p-4">
-    <TransactionHistoryFrame />
+    <ApolloProvider client={zeroClient}>
+      <TransactionHistoryFrame />
+    </ApolloProvider>
   </div>
 );
 
@@ -41,7 +46,9 @@ const collateralSurplusHistory = (
 
 const conversionsHistory = (
   <div className="px-0 py-4 lg:p-4">
-    <ConversionsHistoryFrame />
+    <ApolloProvider client={myntClient}>
+      <ConversionsHistoryFrame />
+    </ApolloProvider>
   </div>
 );
 

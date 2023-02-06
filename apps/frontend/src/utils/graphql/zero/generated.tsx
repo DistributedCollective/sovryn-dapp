@@ -3392,6 +3392,7 @@ export type GetUserOpenTroveQuery = {
         collateralRatioSortKey?: string | null;
         collateral: string;
         debt: string;
+        status: TroveStatus;
       };
     }>;
   } | null;
@@ -4045,6 +4046,7 @@ export const GetUserOpenTroveDocument = gql`
           collateralRatioSortKey
           collateral
           debt
+          status
         }
       }
     }

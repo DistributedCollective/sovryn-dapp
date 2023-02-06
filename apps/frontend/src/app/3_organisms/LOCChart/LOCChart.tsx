@@ -249,6 +249,11 @@ export const LOCChart: FC = () => {
     };
   }, [data, activeBar]);
 
+  const isUserOpenTrove = useMemo(
+    () => userOpenTrove?.trove?.changes[0].trove.status === 'open',
+    [userOpenTrove],
+  );
+
   useEffect(() => {
     if (!loadingUserOpenTrove && userOpenTrove?.trove && !activeBar) {
       const { trove } = userOpenTrove.trove.changes[0];
@@ -257,6 +262,7 @@ export const LOCChart: FC = () => {
     if (activeBar && !userOpenTrove) {
       setActiveBar(null);
       setUserCollateralRatio('');
+      setData([]);
     }
   }, [userOpenTrove, loadingUserOpenTrove, activeBar]);
 
@@ -267,7 +273,7 @@ export const LOCChart: FC = () => {
       userOpenTroveBelow &&
       !loadingUserOpenTroveAbove &&
       !loadingUserOpenTroveBelow &&
-      userOpenTrove
+      isUserOpenTrove
     ) {
       const { transaction, trove } = userOpenTrove.trove.changes[0];
 
@@ -324,6 +330,7 @@ export const LOCChart: FC = () => {
     }
   }, [
     userOpenTrove,
+    isUserOpenTrove,
     userCollateralRatio,
     userOpenTroveAbove,
     userOpenTroveBelow,
@@ -335,7 +342,7 @@ export const LOCChart: FC = () => {
   ]);
 
   useEffect(() => {
-    if (!loadingTroves && troves && !loadingUserOpenTrove && !userOpenTrove) {
+    if (!loadingTroves && troves && !loadingUserOpenTrove && !isUserOpenTrove) {
       const trovesData = troves.troves.map(({ changes }: TroveData) => ({
         sequenceNumber: changes[0].trove.collateralRatioSortKey.toString(),
         address: changes[0].trove.id,
@@ -351,7 +358,7 @@ export const LOCChart: FC = () => {
 
       setData(sortData([...trovesData]));
     }
-  }, [price, troves, loadingTroves, userOpenTrove, loadingUserOpenTrove]);
+  }, [price, troves, loadingTroves, loadingUserOpenTrove, isUserOpenTrove]);
 
   return <Bar className="max-w-full" options={options} data={datasets} />;
 };

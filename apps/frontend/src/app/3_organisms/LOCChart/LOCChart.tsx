@@ -68,7 +68,7 @@ ChartJS.register(
 
 export const LOCChart: FC = () => {
   const { t } = useTranslation();
-  const { account } = useAccount();
+  const account = useAccount();
   const [data, setData] = useState<ChartDataStructure>([]);
   const [activeBar, setActiveBar] = useState<number | null>(null);
   const { price } = useGetRBTCPrice();
@@ -209,13 +209,6 @@ export const LOCChart: FC = () => {
   const { data: lowestTroves, loading: loadingLowestTroves } =
     useGetLowestTroves(userCollateralRatio);
 
-  //update all data for chart if account changed
-  useEffect(() => {
-    if (account) {
-      setData([]);
-    }
-  }, [account]);
-
   useEffect(() => {
     if (!loadingLowestTroves) {
       const redemptionBuffer = lowestTroves?.troves.reduce(
@@ -259,20 +252,21 @@ export const LOCChart: FC = () => {
   }, [data, activeBar]);
 
   const isUserOpenTroveExist = useMemo(
-    () => userOpenTrove?.trove?.changes[0].trove.status === 'open',
-    [userOpenTrove],
+    () => account && userOpenTrove?.trove?.changes[0].trove.status === 'open',
+    [userOpenTrove, account],
   );
 
   useEffect(() => {
-    if (!loadingUserOpenTrove && isUserOpenTroveExist) {
+    if (!loadingUserOpenTrove && isUserOpenTroveExist && !activeBar) {
       const { trove } = userOpenTrove.trove.changes[0];
       setUserCollateralRatio(trove.collateralRatioSortKey?.toString());
     }
     if (!isUserOpenTroveExist) {
       setActiveBar(null);
       setUserCollateralRatio('');
+      setData([]);
     }
-  }, [userOpenTrove, isUserOpenTroveExist, loadingUserOpenTrove]);
+  }, [userOpenTrove, isUserOpenTroveExist, loadingUserOpenTrove, activeBar]);
 
   useEffect(() => {
     if (
@@ -374,11 +368,5 @@ export const LOCChart: FC = () => {
     isUserOpenTroveExist,
   ]);
 
-  return (
-    <>
-      {isUserOpenTroveExist ? 'ok' : 'not ok'}
-      {activeBar ? ' bar ok' : ' bar not'}
-      <Bar className="max-w-full" options={options} data={datasets} />
-    </>
-  );
+  return <Bar className="max-w-full" options={options} data={datasets} />;
 };

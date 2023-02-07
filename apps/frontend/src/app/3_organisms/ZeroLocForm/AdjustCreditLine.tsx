@@ -34,7 +34,9 @@ import { getZeroProvider } from '../../5_pages/ZeroPage/utils/zero-provider';
 import { useAssetBalance } from '../../../hooks/useAssetBalance';
 import { useCall } from '../../../hooks/useCall';
 import { useGasPrice } from '../../../hooks/useGasPrice';
+import { useMaxAssetBalance } from '../../../hooks/useMaxAssetBalance';
 import { translations } from '../../../locales/i18n';
+import { getRskChainId } from '../../../utils/chain';
 import {
   Bitcoin,
   CR_THRESHOLDS,
@@ -101,8 +103,10 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
 
   const { value: creditWeiBalance } = useAssetBalance(debtToken);
 
-  const { value: maxCollateralWeiAmount } = useAssetBalance(
+  const { value: maxCollateralWeiAmount } = useMaxAssetBalance(
     SupportedTokens.rbtc,
+    getRskChainId(),
+    collateralType === AmountType.Add ? GAS_LIMIT_OPEN_TROVE : 0,
   );
 
   const isIncreasingDebt = useMemo(

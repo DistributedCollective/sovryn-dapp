@@ -57,7 +57,6 @@ export const TransactionStep: FC<TransactionStepProps> = ({
 
   useEffect(() => {
     findContract(transaction.contract.address).then(result => {
-      console.log('result', result);
       if (result.group === 'tokens') {
         getTokenDetailsByAddress(transaction.contract.address).then(setToken);
       }

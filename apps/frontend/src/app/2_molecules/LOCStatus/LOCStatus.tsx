@@ -7,7 +7,7 @@ import { useTranslation } from 'react-i18next';
 import { Button, ButtonSize, ButtonStyle, HelperButton } from '@sovryn/ui';
 
 import { Bitcoin } from '../../../utils/constants';
-import { formatValue } from '../../../utils/math';
+import { AmountRenderer } from '../AmountRenderer/AmountRenderer';
 import { CRatioIndicator } from './components/CRatioIndicator/CRatioIndicator';
 import { LOCStat } from './components/LOCStat/LOCStat';
 
@@ -55,7 +55,13 @@ export const LOCStatus: FC<LOCStatusProps> = ({
           <>
             <LOCStat
               label={t('LOCStatus.currentCollateral')}
-              value={`${formatValue(Number(collateral), 4)} ${Bitcoin}`}
+              value={
+                <AmountRenderer
+                  value={collateral}
+                  sufix={Bitcoin}
+                  precision={8}
+                />
+              }
             />
             <LOCStat
               label={t('LOCStatus.currentDebt')}

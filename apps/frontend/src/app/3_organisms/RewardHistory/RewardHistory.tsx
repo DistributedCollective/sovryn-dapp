@@ -14,19 +14,18 @@ import {
   ParagraphSize,
   Table,
   TransactionId,
-  Tooltip,
-  TooltipTrigger,
 } from '@sovryn/ui';
 
 import { chains, defaultChainId } from '../../../config/chains';
 
+import { AmountRenderer } from '../../2_molecules/AmountRenderer/AmountRenderer';
 import { ExportCSV } from '../../2_molecules/ExportCSV/ExportCSV';
 import { TransactionTypeRenderer } from '../../2_molecules/TransactionTypeRenderer/TransactionTypeRenderer';
 import { useNotificationContext } from '../../../contexts/NotificationContext';
 import { useAccount } from '../../../hooks/useAccount';
 import { translations } from '../../../locales/i18n';
 import { zeroClient } from '../../../utils/clients';
-import { EXPORT_RECORD_LIMIT } from '../../../utils/constants';
+import { Bitcoin, EXPORT_RECORD_LIMIT } from '../../../utils/constants';
 import {
   StabilityDepositChange,
   StabilityDepositChange_Filter,
@@ -99,17 +98,12 @@ export const RewardHistory: FC = () => {
         id: 'collateralGain',
         title: t(translations.rewardHistoryTable.table.rewardChange),
         cellRenderer: tx => (
-          <Tooltip
-            content={
-              <>
-                {tx.collateralGain} {SupportedTokens.rbtc.toUpperCase()}
-              </>
-            }
-            trigger={TooltipTrigger.click}
+          <AmountRenderer
+            value={tx.collateralGain || 0}
+            sufix={Bitcoin}
             {...applyDataAttr('reward-history-collateral-gain')}
-          >
-            <span>{renderCollateralChange(tx.collateralGain || '')}</span>
-          </Tooltip>
+            precision={8}
+          />
         ),
       },
       {
@@ -124,7 +118,7 @@ export const RewardHistory: FC = () => {
         ),
       },
     ],
-    [chain?.blockExplorerUrl, renderCollateralChange, t],
+    [chain?.blockExplorerUrl, t],
   );
 
   const onPageChange = useCallback(

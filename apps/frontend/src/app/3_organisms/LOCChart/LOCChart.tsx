@@ -16,14 +16,12 @@ import { useTranslation } from 'react-i18next';
 import { SupportedTokens } from '@sovryn/contracts';
 import { prettyTx } from '@sovryn/ui';
 
-import { useAccount } from '../../../hooks/useAccount';
 import { translations } from '../../../locales/i18n';
 import { formatValue } from '../../../utils/math';
 import { useGetLowestTroves } from './hooks/useGetLowestTroves';
 import { useGetRBTCPrice } from './hooks/useGetRBTCPrice';
 import { useGetTroves } from './hooks/useGetTroves';
 import { useGetTrovesPositions } from './hooks/useGetTrovesPositions';
-import { useGetUserOpenTrove } from './hooks/useGetUserOpenTrove';
 import {
   ChartDataStructure,
   ChartSortingType,
@@ -66,24 +64,31 @@ ChartJS.register(
  * @returns Chart component with data
  */
 
-export const LOCChart: FC = () => {
+type LOCChartProps = {
+  isUserOpenTrove: boolean;
+  userOpenTrove: any;
+};
+
+export const LOCChart: FC<LOCChartProps> = ({
+  isUserOpenTrove,
+  userOpenTrove,
+}) => {
   const { t } = useTranslation();
-  const { account } = useAccount();
   const [data, setData] = useState<ChartDataStructure>([]);
   const [activeBar, setActiveBar] = useState<number | null>(null);
   const { price } = useGetRBTCPrice();
   const [userCollateralRatio, setUserCollateralRatio] = useState('');
   const [redemptionBuffer, setRedemptionBuffer] = useState(0);
 
-  const { data: userOpenTrove, loading: loadingUserOpenTrove } =
-    useGetUserOpenTrove();
+  // const { data: userOpenTrove, loading: loadingUserOpenTrove } =
+  //   useGetUserOpenTrove();
 
-  const isUserOpenTrove = useMemo(() => {
-    if (account) {
-      return userOpenTrove?.trove?.changes[0]?.trove.status === 'open';
-    }
-    return false;
-  }, [userOpenTrove, account]);
+  // const isUserOpenTrove = useMemo(() => {
+  //   if (account) {
+  //     return userOpenTrove?.trove?.changes[0]?.trove.status === 'open';
+  //   }
+  //   return false;
+  // }, [userOpenTrove, account]);
 
   const options = useMemo(() => {
     return {
@@ -261,15 +266,15 @@ export const LOCChart: FC = () => {
   }, [data, activeBar]);
 
   useEffect(() => {
-    if (!loadingUserOpenTrove && userOpenTrove?.trove && !activeBar) {
+    if (userOpenTrove?.trove && !activeBar) {
       const { trove } = userOpenTrove.trove.changes[0];
       setUserCollateralRatio(trove.collateralRatioSortKey?.toString());
     }
-    if (activeBar && !userOpenTrove) {
+    if (activeBar) {
       setActiveBar(null);
       setUserCollateralRatio('');
     }
-  }, [userOpenTrove, loadingUserOpenTrove, activeBar]);
+  }, [userOpenTrove, activeBar]);
 
   useEffect(() => {
     if (
@@ -280,7 +285,7 @@ export const LOCChart: FC = () => {
       !loadingUserOpenTroveBelow &&
       isUserOpenTrove
     ) {
-      const { transaction, trove } = userOpenTrove.trove.changes[0];
+      const { transaction, trove } = userOpenTrove?.trove?.changes[0];
 
       const userTrove = [
         {
@@ -338,7 +343,6 @@ export const LOCChart: FC = () => {
     userCollateralRatio,
     userOpenTroveAbove,
     userOpenTroveBelow,
-    loadingUserOpenTrove,
     loadingUserOpenTroveAbove,
     loadingUserOpenTroveBelow,
     price,
@@ -347,7 +351,7 @@ export const LOCChart: FC = () => {
   ]);
 
   useEffect(() => {
-    if (!loadingTroves && troves && !loadingUserOpenTrove && !isUserOpenTrove) {
+    if (!loadingTroves && troves && !isUserOpenTrove) {
       const trovesData = troves.troves.map(({ changes }: TroveData) => ({
         sequenceNumber: changes[0].trove.collateralRatioSortKey.toString(),
         address: changes[0].trove.id,
@@ -363,7 +367,7 @@ export const LOCChart: FC = () => {
 
       setData(sortData([...trovesData]));
     }
-  }, [price, troves, loadingTroves, isUserOpenTrove, loadingUserOpenTrove]);
+  }, [price, troves, loadingTroves, isUserOpenTrove]);
 
   return (
     <>

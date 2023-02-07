@@ -63,7 +63,7 @@ export const Footer: FC = () => (
         image={Logo}
         dataAttribute="footer-logo"
         className="max-h-4 max-w-fit mr-2"
-        text="Powered by Bitcoin"
+        text="Powered by bitcoin"
         link="/"
       />
     }

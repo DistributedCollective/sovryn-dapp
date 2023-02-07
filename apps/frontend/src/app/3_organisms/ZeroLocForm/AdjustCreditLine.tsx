@@ -106,6 +106,7 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
   const { value: maxCollateralWeiAmount } = useMaxAssetBalance(
     SupportedTokens.rbtc,
     getRskChainId(),
+    // there is no gas limit for withdrawing collateral, only for depositing from user's wallet
     collateralType === AmountType.Add ? GAS_LIMIT_OPEN_TROVE : 0,
   );
 

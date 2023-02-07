@@ -15,12 +15,12 @@ import { useAssetBalance } from './useAssetBalance';
 import { useAsync } from './useAsync';
 import { useGasPrice } from './useGasPrice';
 
-const DEFAULT_GAS_LIMIT = 1000000;
+const MAX_GAS_LIMIT = 68000000; // 6.8M (rsk block gas limit)
 
 export const useMaxAssetBalance = (
   asset: SupportedTokens,
   chainId: ChainId = getRskChainId(),
-  gasLimit: BigNumberish = DEFAULT_GAS_LIMIT,
+  gasLimit: BigNumberish = MAX_GAS_LIMIT,
   options?: Partial<CacheCallOptions>,
 ): CacheCallResponse<string> => {
   const gasPrice = useGasPrice(chainId);

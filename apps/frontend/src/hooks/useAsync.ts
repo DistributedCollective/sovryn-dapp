@@ -4,11 +4,13 @@ export const useAsync = <T>(asyncFunction: () => Promise<T>) => {
   const [value, setValue] = useState<T>();
   // useCallback ensures the below useEffect is not called
   // on every render, but only if asyncFunction changes.
-  const execute = useCallback(() => {
-    return asyncFunction()
-      .then(setValue)
-      .catch(() => setValue(undefined));
-  }, [asyncFunction]);
+  const execute = useCallback(
+    () =>
+      asyncFunction()
+        .then(setValue)
+        .catch(() => setValue(undefined)),
+    [asyncFunction],
+  );
 
   useEffect(() => {
     execute();

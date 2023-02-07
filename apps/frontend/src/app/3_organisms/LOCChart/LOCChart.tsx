@@ -209,10 +209,8 @@ export const LOCChart: FC = () => {
   const { data: lowestTroves, loading: loadingLowestTroves } =
     useGetLowestTroves(userCollateralRatio);
 
+  //update all data for chart if account changed
   useEffect(() => {
-    /**
-     * refresh all data on account change
-     **/
     if (account) {
       setData([]);
     }
@@ -261,12 +259,12 @@ export const LOCChart: FC = () => {
   }, [data, activeBar]);
 
   const isUserOpenTroveExist = useMemo(
-    () => account && userOpenTrove?.trove?.changes[0].trove.status === 'open',
-    [userOpenTrove, account],
+    () => userOpenTrove?.trove?.changes[0].trove.status === 'open',
+    [userOpenTrove],
   );
 
   useEffect(() => {
-    if (!loadingUserOpenTrove && isUserOpenTroveExist && account) {
+    if (!loadingUserOpenTrove && isUserOpenTroveExist && data) {
       const { trove } = userOpenTrove.trove.changes[0];
       setUserCollateralRatio(trove.collateralRatioSortKey?.toString());
     }
@@ -274,7 +272,7 @@ export const LOCChart: FC = () => {
       setActiveBar(null);
       setUserCollateralRatio('');
     }
-  }, [userOpenTrove, isUserOpenTroveExist, loadingUserOpenTrove, account]);
+  }, [userOpenTrove, isUserOpenTroveExist, loadingUserOpenTrove, data]);
 
   useEffect(() => {
     if (
@@ -284,7 +282,7 @@ export const LOCChart: FC = () => {
       !loadingUserOpenTroveAbove &&
       !loadingUserOpenTroveBelow &&
       isUserOpenTroveExist &&
-      account
+      data
     ) {
       const { transaction, trove } = userOpenTrove.trove.changes[0];
 
@@ -350,11 +348,16 @@ export const LOCChart: FC = () => {
     loadingUserOpenTroveBelow,
     price,
     activeBar,
-    account,
+    data,
   ]);
 
   useEffect(() => {
-    if (!loadingTroves && !loadingUserOpenTrove && !isUserOpenTroveExist) {
+    if (
+      !loadingTroves &&
+      !loadingUserOpenTrove &&
+      !isUserOpenTroveExist &&
+      data
+    ) {
       const trovesData = troves.troves.map(({ changes }: TroveData) => ({
         sequenceNumber: changes[0].trove.collateralRatioSortKey.toString(),
         address: changes[0].trove.id,
@@ -376,6 +379,7 @@ export const LOCChart: FC = () => {
     loadingTroves,
     loadingUserOpenTrove,
     isUserOpenTroveExist,
+    data,
   ]);
 
   return (

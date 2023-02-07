@@ -233,10 +233,12 @@ export const LOCChart: FC = () => {
   const { data: userOpenTroveBelow, loading: loadingUserOpenTroveBelow } =
     useGetTrovesPositions(userCollateralRatio, TrovesFilterType.below);
 
-  const isUserOpenTrove = useMemo(
-    () => userOpenTrove?.trove?.changes[0].trove.status === 'open',
-    [userOpenTrove],
-  );
+  const isUserOpenTrove = useMemo(() => {
+    if (account && userOpenTrove) {
+      return userOpenTrove?.trove?.changes[0].trove.status === 'open';
+    }
+    return false;
+  }, [userOpenTrove, account]);
 
   const datasets: ChartData<'bar', ChartDataStructure> = useMemo(() => {
     return {

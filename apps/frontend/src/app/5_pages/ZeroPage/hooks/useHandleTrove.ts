@@ -15,6 +15,7 @@ import { translations } from '../../../../locales/i18n';
 import { getRskChainId } from '../../../../utils/chain';
 import {
   GAS_LIMIT_ADJUST_TROVE,
+  GAS_LIMIT_CLOSE_TROVE,
   GAS_LIMIT_OPEN_TROVE,
 } from '../../../../utils/constants';
 import { adjustNueTrove, adjustTrove, openTrove } from '../utils/trove-manager';
@@ -128,6 +129,9 @@ export const useHandleTrove = (hasLoc: boolean, onComplete: () => void) => {
           fnName: 'closeTrove',
           args: [],
           onComplete,
+          config: {
+            gasLimit: GAS_LIMIT_CLOSE_TROVE,
+          },
         },
       ]);
       setIsOpen(true);

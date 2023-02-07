@@ -45,6 +45,8 @@ export const graphRskUrl = process.env.REACT_APP_GRAPH_RSK;
 
 export const graphZeroUrl = process.env.REACT_APP_GRAPH_ZERO;
 
+export const graphMyntUrl = process.env.REACT_APP_GRAPH_MYNT;
+
 export const servicesConfig = {
   [Environments.Testnet]: {
     [Services.Maintenance]:
@@ -58,6 +60,8 @@ export const servicesConfig = {
 };
 
 export const EXPORT_RECORD_LIMIT = 500;
+export const DEFAULT_HISTORY_FRAME_PAGE_SIZE = 10;
+
 export const DEFAULT_TIMEOUT_SECONDS = 5000;
 export const LIQUIDATION_RESERVE_AMOUNT = 20;
 export const MAX_GAS_LIMIT = 6_800_000;

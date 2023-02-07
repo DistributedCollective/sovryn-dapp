@@ -25,19 +25,13 @@ export type Scalars = {
   Bytes: string;
 };
 
-/** The block at which the query should be executed. */
+export type BlockChangedFilter = {
+  number_gte: Scalars['Int'];
+};
+
 export type Block_Height = {
-  /** Value containing a block hash */
   hash?: InputMaybe<Scalars['Bytes']>;
-  /** Value containing a block number */
   number?: InputMaybe<Scalars['Int']>;
-  /**
-   * Value containing the minimum block number.
-   * In the case of `number_gte`, the query will be executed on the latest block only if
-   * the subgraph has progressed to or past the minimum block number.
-   * Defaults to the latest block when omitted.
-   *
-   */
   number_gte?: InputMaybe<Scalars['Int']>;
 };
 
@@ -46,13 +40,15 @@ export type Change = {
   id: Scalars['ID'];
   /** Can be used to correctly sort changes even if they were made by the same transaction */
   sequenceNumber: Scalars['Int'];
-  systemStateAfter: SystemState;
+  systemStateAfter?: Maybe<SystemState>;
   systemStateBefore: SystemState;
   /** Transaction that made this change */
   transaction: Transaction;
 };
 
 export type Change_Filter = {
+  /** Filter for the block changed event. */
+  _change_block?: InputMaybe<BlockChangedFilter>;
   id?: InputMaybe<Scalars['ID']>;
   id_gt?: InputMaybe<Scalars['ID']>;
   id_gte?: InputMaybe<Scalars['ID']>;
@@ -70,6 +66,7 @@ export type Change_Filter = {
   sequenceNumber_not?: InputMaybe<Scalars['Int']>;
   sequenceNumber_not_in?: InputMaybe<Array<Scalars['Int']>>;
   systemStateAfter?: InputMaybe<Scalars['String']>;
+  systemStateAfter_?: InputMaybe<SystemState_Filter>;
   systemStateAfter_contains?: InputMaybe<Scalars['String']>;
   systemStateAfter_contains_nocase?: InputMaybe<Scalars['String']>;
   systemStateAfter_ends_with?: InputMaybe<Scalars['String']>;
@@ -90,6 +87,7 @@ export type Change_Filter = {
   systemStateAfter_starts_with?: InputMaybe<Scalars['String']>;
   systemStateAfter_starts_with_nocase?: InputMaybe<Scalars['String']>;
   systemStateBefore?: InputMaybe<Scalars['String']>;
+  systemStateBefore_?: InputMaybe<SystemState_Filter>;
   systemStateBefore_contains?: InputMaybe<Scalars['String']>;
   systemStateBefore_contains_nocase?: InputMaybe<Scalars['String']>;
   systemStateBefore_ends_with?: InputMaybe<Scalars['String']>;
@@ -110,6 +108,7 @@ export type Change_Filter = {
   systemStateBefore_starts_with?: InputMaybe<Scalars['String']>;
   systemStateBefore_starts_with_nocase?: InputMaybe<Scalars['String']>;
   transaction?: InputMaybe<Scalars['String']>;
+  transaction_?: InputMaybe<Transaction_Filter>;
   transaction_contains?: InputMaybe<Scalars['String']>;
   transaction_contains_nocase?: InputMaybe<Scalars['String']>;
   transaction_ends_with?: InputMaybe<Scalars['String']>;
@@ -146,13 +145,15 @@ export type CollSurplusChange = Change & {
   collSurplusChange: Scalars['BigDecimal'];
   id: Scalars['ID'];
   sequenceNumber: Scalars['Int'];
-  systemStateAfter: SystemState;
+  systemStateAfter?: Maybe<SystemState>;
   systemStateBefore: SystemState;
   transaction: Transaction;
   user: User;
 };
 
 export type CollSurplusChange_Filter = {
+  /** Filter for the block changed event. */
+  _change_block?: InputMaybe<BlockChangedFilter>;
   collSurplusAfter?: InputMaybe<Scalars['BigDecimal']>;
   collSurplusAfter_gt?: InputMaybe<Scalars['BigDecimal']>;
   collSurplusAfter_gte?: InputMaybe<Scalars['BigDecimal']>;
@@ -194,6 +195,7 @@ export type CollSurplusChange_Filter = {
   sequenceNumber_not?: InputMaybe<Scalars['Int']>;
   sequenceNumber_not_in?: InputMaybe<Array<Scalars['Int']>>;
   systemStateAfter?: InputMaybe<Scalars['String']>;
+  systemStateAfter_?: InputMaybe<SystemState_Filter>;
   systemStateAfter_contains?: InputMaybe<Scalars['String']>;
   systemStateAfter_contains_nocase?: InputMaybe<Scalars['String']>;
   systemStateAfter_ends_with?: InputMaybe<Scalars['String']>;
@@ -214,6 +216,7 @@ export type CollSurplusChange_Filter = {
   systemStateAfter_starts_with?: InputMaybe<Scalars['String']>;
   systemStateAfter_starts_with_nocase?: InputMaybe<Scalars['String']>;
   systemStateBefore?: InputMaybe<Scalars['String']>;
+  systemStateBefore_?: InputMaybe<SystemState_Filter>;
   systemStateBefore_contains?: InputMaybe<Scalars['String']>;
   systemStateBefore_contains_nocase?: InputMaybe<Scalars['String']>;
   systemStateBefore_ends_with?: InputMaybe<Scalars['String']>;
@@ -234,6 +237,7 @@ export type CollSurplusChange_Filter = {
   systemStateBefore_starts_with?: InputMaybe<Scalars['String']>;
   systemStateBefore_starts_with_nocase?: InputMaybe<Scalars['String']>;
   transaction?: InputMaybe<Scalars['String']>;
+  transaction_?: InputMaybe<Transaction_Filter>;
   transaction_contains?: InputMaybe<Scalars['String']>;
   transaction_contains_nocase?: InputMaybe<Scalars['String']>;
   transaction_ends_with?: InputMaybe<Scalars['String']>;
@@ -254,6 +258,7 @@ export type CollSurplusChange_Filter = {
   transaction_starts_with?: InputMaybe<Scalars['String']>;
   transaction_starts_with_nocase?: InputMaybe<Scalars['String']>;
   user?: InputMaybe<Scalars['String']>;
+  user_?: InputMaybe<User_Filter>;
   user_contains?: InputMaybe<Scalars['String']>;
   user_contains_nocase?: InputMaybe<Scalars['String']>;
   user_ends_with?: InputMaybe<Scalars['String']>;
@@ -326,6 +331,8 @@ export type Global = {
 };
 
 export type Global_Filter = {
+  /** Filter for the block changed event. */
+  _change_block?: InputMaybe<BlockChangedFilter>;
   changeCount?: InputMaybe<Scalars['Int']>;
   changeCount_gt?: InputMaybe<Scalars['Int']>;
   changeCount_gte?: InputMaybe<Scalars['Int']>;
@@ -335,6 +342,7 @@ export type Global_Filter = {
   changeCount_not?: InputMaybe<Scalars['Int']>;
   changeCount_not_in?: InputMaybe<Array<Scalars['Int']>>;
   currentLiquidation?: InputMaybe<Scalars['String']>;
+  currentLiquidation_?: InputMaybe<Liquidation_Filter>;
   currentLiquidation_contains?: InputMaybe<Scalars['String']>;
   currentLiquidation_contains_nocase?: InputMaybe<Scalars['String']>;
   currentLiquidation_ends_with?: InputMaybe<Scalars['String']>;
@@ -355,6 +363,7 @@ export type Global_Filter = {
   currentLiquidation_starts_with?: InputMaybe<Scalars['String']>;
   currentLiquidation_starts_with_nocase?: InputMaybe<Scalars['String']>;
   currentRedemption?: InputMaybe<Scalars['String']>;
+  currentRedemption_?: InputMaybe<Redemption_Filter>;
   currentRedemption_contains?: InputMaybe<Scalars['String']>;
   currentRedemption_contains_nocase?: InputMaybe<Scalars['String']>;
   currentRedemption_ends_with?: InputMaybe<Scalars['String']>;
@@ -375,6 +384,7 @@ export type Global_Filter = {
   currentRedemption_starts_with?: InputMaybe<Scalars['String']>;
   currentRedemption_starts_with_nocase?: InputMaybe<Scalars['String']>;
   currentSystemState?: InputMaybe<Scalars['String']>;
+  currentSystemState_?: InputMaybe<SystemState_Filter>;
   currentSystemState_contains?: InputMaybe<Scalars['String']>;
   currentSystemState_contains_nocase?: InputMaybe<Scalars['String']>;
   currentSystemState_ends_with?: InputMaybe<Scalars['String']>;
@@ -607,6 +617,8 @@ export type LiquidationTroveChangesArgs = {
 };
 
 export type Liquidation_Filter = {
+  /** Filter for the block changed event. */
+  _change_block?: InputMaybe<BlockChangedFilter>;
   collGasCompensation?: InputMaybe<Scalars['BigDecimal']>;
   collGasCompensation_gt?: InputMaybe<Scalars['BigDecimal']>;
   collGasCompensation_gte?: InputMaybe<Scalars['BigDecimal']>;
@@ -640,6 +652,7 @@ export type Liquidation_Filter = {
   liquidatedDebt_not?: InputMaybe<Scalars['BigDecimal']>;
   liquidatedDebt_not_in?: InputMaybe<Array<Scalars['BigDecimal']>>;
   liquidator?: InputMaybe<Scalars['String']>;
+  liquidator_?: InputMaybe<User_Filter>;
   liquidator_contains?: InputMaybe<Scalars['String']>;
   liquidator_contains_nocase?: InputMaybe<Scalars['String']>;
   liquidator_ends_with?: InputMaybe<Scalars['String']>;
@@ -676,6 +689,7 @@ export type Liquidation_Filter = {
   tokenGasCompensation_not?: InputMaybe<Scalars['BigDecimal']>;
   tokenGasCompensation_not_in?: InputMaybe<Array<Scalars['BigDecimal']>>;
   transaction?: InputMaybe<Scalars['String']>;
+  transaction_?: InputMaybe<Transaction_Filter>;
   transaction_contains?: InputMaybe<Scalars['String']>;
   transaction_contains_nocase?: InputMaybe<Scalars['String']>;
   transaction_ends_with?: InputMaybe<Scalars['String']>;
@@ -695,6 +709,7 @@ export type Liquidation_Filter = {
   transaction_not_starts_with_nocase?: InputMaybe<Scalars['String']>;
   transaction_starts_with?: InputMaybe<Scalars['String']>;
   transaction_starts_with_nocase?: InputMaybe<Scalars['String']>;
+  troveChanges_?: InputMaybe<TroveChange_Filter>;
 };
 
 export enum Liquidation_OrderBy {
@@ -720,12 +735,14 @@ export type PriceChange = Change & {
   id: Scalars['ID'];
   priceChange: Scalars['BigDecimal'];
   sequenceNumber: Scalars['Int'];
-  systemStateAfter: SystemState;
+  systemStateAfter?: Maybe<SystemState>;
   systemStateBefore: SystemState;
   transaction: Transaction;
 };
 
 export type PriceChange_Filter = {
+  /** Filter for the block changed event. */
+  _change_block?: InputMaybe<BlockChangedFilter>;
   id?: InputMaybe<Scalars['ID']>;
   id_gt?: InputMaybe<Scalars['ID']>;
   id_gte?: InputMaybe<Scalars['ID']>;
@@ -751,6 +768,7 @@ export type PriceChange_Filter = {
   sequenceNumber_not?: InputMaybe<Scalars['Int']>;
   sequenceNumber_not_in?: InputMaybe<Array<Scalars['Int']>>;
   systemStateAfter?: InputMaybe<Scalars['String']>;
+  systemStateAfter_?: InputMaybe<SystemState_Filter>;
   systemStateAfter_contains?: InputMaybe<Scalars['String']>;
   systemStateAfter_contains_nocase?: InputMaybe<Scalars['String']>;
   systemStateAfter_ends_with?: InputMaybe<Scalars['String']>;
@@ -771,6 +789,7 @@ export type PriceChange_Filter = {
   systemStateAfter_starts_with?: InputMaybe<Scalars['String']>;
   systemStateAfter_starts_with_nocase?: InputMaybe<Scalars['String']>;
   systemStateBefore?: InputMaybe<Scalars['String']>;
+  systemStateBefore_?: InputMaybe<SystemState_Filter>;
   systemStateBefore_contains?: InputMaybe<Scalars['String']>;
   systemStateBefore_contains_nocase?: InputMaybe<Scalars['String']>;
   systemStateBefore_ends_with?: InputMaybe<Scalars['String']>;
@@ -791,6 +810,7 @@ export type PriceChange_Filter = {
   systemStateBefore_starts_with?: InputMaybe<Scalars['String']>;
   systemStateBefore_starts_with_nocase?: InputMaybe<Scalars['String']>;
   transaction?: InputMaybe<Scalars['String']>;
+  transaction_?: InputMaybe<Transaction_Filter>;
   transaction_contains?: InputMaybe<Scalars['String']>;
   transaction_contains_nocase?: InputMaybe<Scalars['String']>;
   transaction_ends_with?: InputMaybe<Scalars['String']>;
@@ -849,6 +869,8 @@ export type Query = {
   stabilityDeposits: Array<StabilityDeposit>;
   systemState?: Maybe<SystemState>;
   systemStates: Array<SystemState>;
+  tempDepositUpdate?: Maybe<TempDepositUpdate>;
+  tempDepositUpdates: Array<TempDepositUpdate>;
   token?: Maybe<Token>;
   tokenAllowance?: Maybe<TokenAllowance>;
   tokenAllowances: Array<TokenAllowance>;
@@ -1061,6 +1083,22 @@ export type QuerySystemStatesArgs = {
   where?: InputMaybe<SystemState_Filter>;
 };
 
+export type QueryTempDepositUpdateArgs = {
+  block?: InputMaybe<Block_Height>;
+  id: Scalars['ID'];
+  subgraphError?: _SubgraphErrorPolicy_;
+};
+
+export type QueryTempDepositUpdatesArgs = {
+  block?: InputMaybe<Block_Height>;
+  first?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<TempDepositUpdate_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+  skip?: InputMaybe<Scalars['Int']>;
+  subgraphError?: _SubgraphErrorPolicy_;
+  where?: InputMaybe<TempDepositUpdate_Filter>;
+};
+
 export type QueryTokenArgs = {
   block?: InputMaybe<Block_Height>;
   id: Scalars['ID'];
@@ -1237,6 +1275,8 @@ export type RedemptionRaw_Filter = {
   _attemptedZUSDAmount_lte?: InputMaybe<Scalars['BigInt']>;
   _attemptedZUSDAmount_not?: InputMaybe<Scalars['BigInt']>;
   _attemptedZUSDAmount_not_in?: InputMaybe<Array<Scalars['BigInt']>>;
+  /** Filter for the block changed event. */
+  _change_block?: InputMaybe<BlockChangedFilter>;
   id?: InputMaybe<Scalars['ID']>;
   id_gt?: InputMaybe<Scalars['ID']>;
   id_gte?: InputMaybe<Scalars['ID']>;
@@ -1256,6 +1296,8 @@ export enum RedemptionRaw_OrderBy {
 }
 
 export type Redemption_Filter = {
+  /** Filter for the block changed event. */
+  _change_block?: InputMaybe<BlockChangedFilter>;
   collateralRedeemed?: InputMaybe<Scalars['BigDecimal']>;
   collateralRedeemed_gt?: InputMaybe<Scalars['BigDecimal']>;
   collateralRedeemed_gte?: InputMaybe<Scalars['BigDecimal']>;
@@ -1285,6 +1327,7 @@ export type Redemption_Filter = {
   partial_not?: InputMaybe<Scalars['Boolean']>;
   partial_not_in?: InputMaybe<Array<Scalars['Boolean']>>;
   redeemer?: InputMaybe<Scalars['String']>;
+  redeemer_?: InputMaybe<User_Filter>;
   redeemer_contains?: InputMaybe<Scalars['String']>;
   redeemer_contains_nocase?: InputMaybe<Scalars['String']>;
   redeemer_ends_with?: InputMaybe<Scalars['String']>;
@@ -1329,6 +1372,7 @@ export type Redemption_Filter = {
   tokensAttemptedToRedeem_not?: InputMaybe<Scalars['BigDecimal']>;
   tokensAttemptedToRedeem_not_in?: InputMaybe<Array<Scalars['BigDecimal']>>;
   transaction?: InputMaybe<Scalars['String']>;
+  transaction_?: InputMaybe<Transaction_Filter>;
   transaction_contains?: InputMaybe<Scalars['String']>;
   transaction_contains_nocase?: InputMaybe<Scalars['String']>;
   transaction_ends_with?: InputMaybe<Scalars['String']>;
@@ -1348,6 +1392,7 @@ export type Redemption_Filter = {
   transaction_not_starts_with_nocase?: InputMaybe<Scalars['String']>;
   transaction_starts_with?: InputMaybe<Scalars['String']>;
   transaction_starts_with_nocase?: InputMaybe<Scalars['String']>;
+  troveChanges_?: InputMaybe<TroveChange_Filter>;
 };
 
 export enum Redemption_OrderBy {
@@ -1391,6 +1436,8 @@ export type RevenueDaily = {
 };
 
 export type RevenueDaily_Filter = {
+  /** Filter for the block changed event. */
+  _change_block?: InputMaybe<BlockChangedFilter>;
   borrowFeeRBTC?: InputMaybe<Scalars['BigDecimal']>;
   borrowFeeRBTC_gt?: InputMaybe<Scalars['BigDecimal']>;
   borrowFeeRBTC_gte?: InputMaybe<Scalars['BigDecimal']>;
@@ -1505,6 +1552,8 @@ export type RevenueWeekly = {
 };
 
 export type RevenueWeekly_Filter = {
+  /** Filter for the block changed event. */
+  _change_block?: InputMaybe<BlockChangedFilter>;
   borrowFeeRBTC?: InputMaybe<Scalars['BigDecimal']>;
   borrowFeeRBTC_gt?: InputMaybe<Scalars['BigDecimal']>;
   borrowFeeRBTC_gte?: InputMaybe<Scalars['BigDecimal']>;
@@ -1618,12 +1667,14 @@ export type StabilityDepositChange = Change & {
   sequenceNumber: Scalars['Int'];
   stabilityDeposit: StabilityDeposit;
   stabilityDepositOperation: StabilityDepositOperation;
-  systemStateAfter: SystemState;
+  systemStateAfter?: Maybe<SystemState>;
   systemStateBefore: SystemState;
   transaction: Transaction;
 };
 
 export type StabilityDepositChange_Filter = {
+  /** Filter for the block changed event. */
+  _change_block?: InputMaybe<BlockChangedFilter>;
   collateralGain?: InputMaybe<Scalars['BigDecimal']>;
   collateralGain_gt?: InputMaybe<Scalars['BigDecimal']>;
   collateralGain_gte?: InputMaybe<Scalars['BigDecimal']>;
@@ -1679,6 +1730,7 @@ export type StabilityDepositChange_Filter = {
   stabilityDepositOperation_not_in?: InputMaybe<
     Array<StabilityDepositOperation>
   >;
+  stabilityDeposit_?: InputMaybe<StabilityDeposit_Filter>;
   stabilityDeposit_contains?: InputMaybe<Scalars['String']>;
   stabilityDeposit_contains_nocase?: InputMaybe<Scalars['String']>;
   stabilityDeposit_ends_with?: InputMaybe<Scalars['String']>;
@@ -1699,6 +1751,7 @@ export type StabilityDepositChange_Filter = {
   stabilityDeposit_starts_with?: InputMaybe<Scalars['String']>;
   stabilityDeposit_starts_with_nocase?: InputMaybe<Scalars['String']>;
   systemStateAfter?: InputMaybe<Scalars['String']>;
+  systemStateAfter_?: InputMaybe<SystemState_Filter>;
   systemStateAfter_contains?: InputMaybe<Scalars['String']>;
   systemStateAfter_contains_nocase?: InputMaybe<Scalars['String']>;
   systemStateAfter_ends_with?: InputMaybe<Scalars['String']>;
@@ -1719,6 +1772,7 @@ export type StabilityDepositChange_Filter = {
   systemStateAfter_starts_with?: InputMaybe<Scalars['String']>;
   systemStateAfter_starts_with_nocase?: InputMaybe<Scalars['String']>;
   systemStateBefore?: InputMaybe<Scalars['String']>;
+  systemStateBefore_?: InputMaybe<SystemState_Filter>;
   systemStateBefore_contains?: InputMaybe<Scalars['String']>;
   systemStateBefore_contains_nocase?: InputMaybe<Scalars['String']>;
   systemStateBefore_ends_with?: InputMaybe<Scalars['String']>;
@@ -1739,6 +1793,7 @@ export type StabilityDepositChange_Filter = {
   systemStateBefore_starts_with?: InputMaybe<Scalars['String']>;
   systemStateBefore_starts_with_nocase?: InputMaybe<Scalars['String']>;
   transaction?: InputMaybe<Scalars['String']>;
+  transaction_?: InputMaybe<Transaction_Filter>;
   transaction_contains?: InputMaybe<Scalars['String']>;
   transaction_contains_nocase?: InputMaybe<Scalars['String']>;
   transaction_ends_with?: InputMaybe<Scalars['String']>;
@@ -1777,10 +1832,14 @@ export enum StabilityDepositChange_OrderBy {
 export enum StabilityDepositOperation {
   DepositTokens = 'depositTokens',
   WithdrawCollateralGain = 'withdrawCollateralGain',
+  WithdrawGainToLineOfCredit = 'withdrawGainToLineOfCredit',
   WithdrawTokens = 'withdrawTokens',
 }
 
 export type StabilityDeposit_Filter = {
+  /** Filter for the block changed event. */
+  _change_block?: InputMaybe<BlockChangedFilter>;
+  changes_?: InputMaybe<StabilityDepositChange_Filter>;
   depositedAmount?: InputMaybe<Scalars['BigDecimal']>;
   depositedAmount_gt?: InputMaybe<Scalars['BigDecimal']>;
   depositedAmount_gte?: InputMaybe<Scalars['BigDecimal']>;
@@ -1798,6 +1857,7 @@ export type StabilityDeposit_Filter = {
   id_not?: InputMaybe<Scalars['ID']>;
   id_not_in?: InputMaybe<Array<Scalars['ID']>>;
   owner?: InputMaybe<Scalars['String']>;
+  owner_?: InputMaybe<User_Filter>;
   owner_contains?: InputMaybe<Scalars['String']>;
   owner_contains_nocase?: InputMaybe<Scalars['String']>;
   owner_ends_with?: InputMaybe<Scalars['String']>;
@@ -1854,6 +1914,8 @@ export type Subscription = {
   stabilityDeposits: Array<StabilityDeposit>;
   systemState?: Maybe<SystemState>;
   systemStates: Array<SystemState>;
+  tempDepositUpdate?: Maybe<TempDepositUpdate>;
+  tempDepositUpdates: Array<TempDepositUpdate>;
   token?: Maybe<Token>;
   tokenAllowance?: Maybe<TokenAllowance>;
   tokenAllowances: Array<TokenAllowance>;
@@ -2066,6 +2128,22 @@ export type SubscriptionSystemStatesArgs = {
   where?: InputMaybe<SystemState_Filter>;
 };
 
+export type SubscriptionTempDepositUpdateArgs = {
+  block?: InputMaybe<Block_Height>;
+  id: Scalars['ID'];
+  subgraphError?: _SubgraphErrorPolicy_;
+};
+
+export type SubscriptionTempDepositUpdatesArgs = {
+  block?: InputMaybe<Block_Height>;
+  first?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<TempDepositUpdate_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+  skip?: InputMaybe<Scalars['Int']>;
+  subgraphError?: _SubgraphErrorPolicy_;
+  where?: InputMaybe<TempDepositUpdate_Filter>;
+};
+
 export type SubscriptionTokenArgs = {
   block?: InputMaybe<Block_Height>;
   id: Scalars['ID'];
@@ -2194,6 +2272,8 @@ export type SystemState = {
 };
 
 export type SystemState_Filter = {
+  /** Filter for the block changed event. */
+  _change_block?: InputMaybe<BlockChangedFilter>;
   collSurplusPoolBalance?: InputMaybe<Scalars['BigDecimal']>;
   collSurplusPoolBalance_gt?: InputMaybe<Scalars['BigDecimal']>;
   collSurplusPoolBalance_gte?: InputMaybe<Scalars['BigDecimal']>;
@@ -2272,6 +2352,39 @@ export enum SystemState_OrderBy {
   TotalDebt = 'totalDebt',
 }
 
+export type TempDepositUpdate = {
+  __typename?: 'TempDepositUpdate';
+  amount?: Maybe<Scalars['BigInt']>;
+  /** ID is transaction hash */
+  id: Scalars['ID'];
+};
+
+export type TempDepositUpdate_Filter = {
+  /** Filter for the block changed event. */
+  _change_block?: InputMaybe<BlockChangedFilter>;
+  amount?: InputMaybe<Scalars['BigInt']>;
+  amount_gt?: InputMaybe<Scalars['BigInt']>;
+  amount_gte?: InputMaybe<Scalars['BigInt']>;
+  amount_in?: InputMaybe<Array<Scalars['BigInt']>>;
+  amount_lt?: InputMaybe<Scalars['BigInt']>;
+  amount_lte?: InputMaybe<Scalars['BigInt']>;
+  amount_not?: InputMaybe<Scalars['BigInt']>;
+  amount_not_in?: InputMaybe<Array<Scalars['BigInt']>>;
+  id?: InputMaybe<Scalars['ID']>;
+  id_gt?: InputMaybe<Scalars['ID']>;
+  id_gte?: InputMaybe<Scalars['ID']>;
+  id_in?: InputMaybe<Array<Scalars['ID']>>;
+  id_lt?: InputMaybe<Scalars['ID']>;
+  id_lte?: InputMaybe<Scalars['ID']>;
+  id_not?: InputMaybe<Scalars['ID']>;
+  id_not_in?: InputMaybe<Array<Scalars['ID']>>;
+};
+
+export enum TempDepositUpdate_OrderBy {
+  Amount = 'amount',
+  Id = 'id',
+}
+
 export type Token = {
   __typename?: 'Token';
   allowances?: Maybe<Array<TokenAllowance>>;
@@ -2308,6 +2421,8 @@ export type TokenAllowance = {
 };
 
 export type TokenAllowance_Filter = {
+  /** Filter for the block changed event. */
+  _change_block?: InputMaybe<BlockChangedFilter>;
   id?: InputMaybe<Scalars['ID']>;
   id_gt?: InputMaybe<Scalars['ID']>;
   id_gte?: InputMaybe<Scalars['ID']>;
@@ -2317,6 +2432,7 @@ export type TokenAllowance_Filter = {
   id_not?: InputMaybe<Scalars['ID']>;
   id_not_in?: InputMaybe<Array<Scalars['ID']>>;
   owner?: InputMaybe<Scalars['String']>;
+  owner_?: InputMaybe<User_Filter>;
   owner_contains?: InputMaybe<Scalars['String']>;
   owner_contains_nocase?: InputMaybe<Scalars['String']>;
   owner_ends_with?: InputMaybe<Scalars['String']>;
@@ -2337,6 +2453,7 @@ export type TokenAllowance_Filter = {
   owner_starts_with?: InputMaybe<Scalars['String']>;
   owner_starts_with_nocase?: InputMaybe<Scalars['String']>;
   spender?: InputMaybe<Scalars['String']>;
+  spender_?: InputMaybe<User_Filter>;
   spender_contains?: InputMaybe<Scalars['String']>;
   spender_contains_nocase?: InputMaybe<Scalars['String']>;
   spender_ends_with?: InputMaybe<Scalars['String']>;
@@ -2357,6 +2474,7 @@ export type TokenAllowance_Filter = {
   spender_starts_with?: InputMaybe<Scalars['String']>;
   spender_starts_with_nocase?: InputMaybe<Scalars['String']>;
   token?: InputMaybe<Scalars['String']>;
+  token_?: InputMaybe<Token_Filter>;
   token_contains?: InputMaybe<Scalars['String']>;
   token_contains_nocase?: InputMaybe<Scalars['String']>;
   token_ends_with?: InputMaybe<Scalars['String']>;
@@ -2403,6 +2521,8 @@ export type TokenBalance = {
 };
 
 export type TokenBalance_Filter = {
+  /** Filter for the block changed event. */
+  _change_block?: InputMaybe<BlockChangedFilter>;
   balance?: InputMaybe<Scalars['BigInt']>;
   balance_gt?: InputMaybe<Scalars['BigInt']>;
   balance_gte?: InputMaybe<Scalars['BigInt']>;
@@ -2420,6 +2540,7 @@ export type TokenBalance_Filter = {
   id_not?: InputMaybe<Scalars['ID']>;
   id_not_in?: InputMaybe<Array<Scalars['ID']>>;
   owner?: InputMaybe<Scalars['String']>;
+  owner_?: InputMaybe<User_Filter>;
   owner_contains?: InputMaybe<Scalars['String']>;
   owner_contains_nocase?: InputMaybe<Scalars['String']>;
   owner_ends_with?: InputMaybe<Scalars['String']>;
@@ -2440,6 +2561,7 @@ export type TokenBalance_Filter = {
   owner_starts_with?: InputMaybe<Scalars['String']>;
   owner_starts_with_nocase?: InputMaybe<Scalars['String']>;
   token?: InputMaybe<Scalars['String']>;
+  token_?: InputMaybe<Token_Filter>;
   token_contains?: InputMaybe<Scalars['String']>;
   token_contains_nocase?: InputMaybe<Scalars['String']>;
   token_ends_with?: InputMaybe<Scalars['String']>;
@@ -2469,6 +2591,10 @@ export enum TokenBalance_OrderBy {
 }
 
 export type Token_Filter = {
+  /** Filter for the block changed event. */
+  _change_block?: InputMaybe<BlockChangedFilter>;
+  allowances_?: InputMaybe<TokenAllowance_Filter>;
+  balances_?: InputMaybe<TokenBalance_Filter>;
   id?: InputMaybe<Scalars['ID']>;
   id_gt?: InputMaybe<Scalars['ID']>;
   id_gte?: InputMaybe<Scalars['ID']>;
@@ -2540,12 +2666,35 @@ export type Transaction = {
   __typename?: 'Transaction';
   blockNumber: Scalars['Int'];
   changes: Array<Change>;
+  /**
+   * The account that initiated this transaction. This must be an Account and not a Contract.
+   *
+   */
+  from: Scalars['Bytes'];
+  functionSignature: Scalars['String'];
+  gasLimit: Scalars['BigInt'];
+  gasPrice: Scalars['BigInt'];
+  gasUsed?: Maybe<Scalars['BigInt']>;
   /** Transaction hash */
   id: Scalars['ID'];
+  /**
+   * The index of this transaction within the block
+   *
+   */
+  index: Scalars['Int'];
   /** Can be used to correctly sort transactions even if they were mined in the same block */
   sequenceNumber: Scalars['Int'];
-  /** Timestamp of block that included this transaction (seconds since epoch) */
+  /**
+   * The timestamp the transaction was confirmed
+   *
+   */
   timestamp: Scalars['Int'];
+  /**
+   * The contract the user interacted with
+   *
+   */
+  to?: Maybe<Scalars['Bytes']>;
+  value: Scalars['BigInt'];
 };
 
 export type TransactionChangesArgs = {
@@ -2557,6 +2706,8 @@ export type TransactionChangesArgs = {
 };
 
 export type Transaction_Filter = {
+  /** Filter for the block changed event. */
+  _change_block?: InputMaybe<BlockChangedFilter>;
   blockNumber?: InputMaybe<Scalars['Int']>;
   blockNumber_gt?: InputMaybe<Scalars['Int']>;
   blockNumber_gte?: InputMaybe<Scalars['Int']>;
@@ -2565,6 +2716,56 @@ export type Transaction_Filter = {
   blockNumber_lte?: InputMaybe<Scalars['Int']>;
   blockNumber_not?: InputMaybe<Scalars['Int']>;
   blockNumber_not_in?: InputMaybe<Array<Scalars['Int']>>;
+  from?: InputMaybe<Scalars['Bytes']>;
+  from_contains?: InputMaybe<Scalars['Bytes']>;
+  from_in?: InputMaybe<Array<Scalars['Bytes']>>;
+  from_not?: InputMaybe<Scalars['Bytes']>;
+  from_not_contains?: InputMaybe<Scalars['Bytes']>;
+  from_not_in?: InputMaybe<Array<Scalars['Bytes']>>;
+  functionSignature?: InputMaybe<Scalars['String']>;
+  functionSignature_contains?: InputMaybe<Scalars['String']>;
+  functionSignature_contains_nocase?: InputMaybe<Scalars['String']>;
+  functionSignature_ends_with?: InputMaybe<Scalars['String']>;
+  functionSignature_ends_with_nocase?: InputMaybe<Scalars['String']>;
+  functionSignature_gt?: InputMaybe<Scalars['String']>;
+  functionSignature_gte?: InputMaybe<Scalars['String']>;
+  functionSignature_in?: InputMaybe<Array<Scalars['String']>>;
+  functionSignature_lt?: InputMaybe<Scalars['String']>;
+  functionSignature_lte?: InputMaybe<Scalars['String']>;
+  functionSignature_not?: InputMaybe<Scalars['String']>;
+  functionSignature_not_contains?: InputMaybe<Scalars['String']>;
+  functionSignature_not_contains_nocase?: InputMaybe<Scalars['String']>;
+  functionSignature_not_ends_with?: InputMaybe<Scalars['String']>;
+  functionSignature_not_ends_with_nocase?: InputMaybe<Scalars['String']>;
+  functionSignature_not_in?: InputMaybe<Array<Scalars['String']>>;
+  functionSignature_not_starts_with?: InputMaybe<Scalars['String']>;
+  functionSignature_not_starts_with_nocase?: InputMaybe<Scalars['String']>;
+  functionSignature_starts_with?: InputMaybe<Scalars['String']>;
+  functionSignature_starts_with_nocase?: InputMaybe<Scalars['String']>;
+  gasLimit?: InputMaybe<Scalars['BigInt']>;
+  gasLimit_gt?: InputMaybe<Scalars['BigInt']>;
+  gasLimit_gte?: InputMaybe<Scalars['BigInt']>;
+  gasLimit_in?: InputMaybe<Array<Scalars['BigInt']>>;
+  gasLimit_lt?: InputMaybe<Scalars['BigInt']>;
+  gasLimit_lte?: InputMaybe<Scalars['BigInt']>;
+  gasLimit_not?: InputMaybe<Scalars['BigInt']>;
+  gasLimit_not_in?: InputMaybe<Array<Scalars['BigInt']>>;
+  gasPrice?: InputMaybe<Scalars['BigInt']>;
+  gasPrice_gt?: InputMaybe<Scalars['BigInt']>;
+  gasPrice_gte?: InputMaybe<Scalars['BigInt']>;
+  gasPrice_in?: InputMaybe<Array<Scalars['BigInt']>>;
+  gasPrice_lt?: InputMaybe<Scalars['BigInt']>;
+  gasPrice_lte?: InputMaybe<Scalars['BigInt']>;
+  gasPrice_not?: InputMaybe<Scalars['BigInt']>;
+  gasPrice_not_in?: InputMaybe<Array<Scalars['BigInt']>>;
+  gasUsed?: InputMaybe<Scalars['BigInt']>;
+  gasUsed_gt?: InputMaybe<Scalars['BigInt']>;
+  gasUsed_gte?: InputMaybe<Scalars['BigInt']>;
+  gasUsed_in?: InputMaybe<Array<Scalars['BigInt']>>;
+  gasUsed_lt?: InputMaybe<Scalars['BigInt']>;
+  gasUsed_lte?: InputMaybe<Scalars['BigInt']>;
+  gasUsed_not?: InputMaybe<Scalars['BigInt']>;
+  gasUsed_not_in?: InputMaybe<Array<Scalars['BigInt']>>;
   id?: InputMaybe<Scalars['ID']>;
   id_gt?: InputMaybe<Scalars['ID']>;
   id_gte?: InputMaybe<Scalars['ID']>;
@@ -2573,6 +2774,14 @@ export type Transaction_Filter = {
   id_lte?: InputMaybe<Scalars['ID']>;
   id_not?: InputMaybe<Scalars['ID']>;
   id_not_in?: InputMaybe<Array<Scalars['ID']>>;
+  index?: InputMaybe<Scalars['Int']>;
+  index_gt?: InputMaybe<Scalars['Int']>;
+  index_gte?: InputMaybe<Scalars['Int']>;
+  index_in?: InputMaybe<Array<Scalars['Int']>>;
+  index_lt?: InputMaybe<Scalars['Int']>;
+  index_lte?: InputMaybe<Scalars['Int']>;
+  index_not?: InputMaybe<Scalars['Int']>;
+  index_not_in?: InputMaybe<Array<Scalars['Int']>>;
   sequenceNumber?: InputMaybe<Scalars['Int']>;
   sequenceNumber_gt?: InputMaybe<Scalars['Int']>;
   sequenceNumber_gte?: InputMaybe<Scalars['Int']>;
@@ -2589,14 +2798,36 @@ export type Transaction_Filter = {
   timestamp_lte?: InputMaybe<Scalars['Int']>;
   timestamp_not?: InputMaybe<Scalars['Int']>;
   timestamp_not_in?: InputMaybe<Array<Scalars['Int']>>;
+  to?: InputMaybe<Scalars['Bytes']>;
+  to_contains?: InputMaybe<Scalars['Bytes']>;
+  to_in?: InputMaybe<Array<Scalars['Bytes']>>;
+  to_not?: InputMaybe<Scalars['Bytes']>;
+  to_not_contains?: InputMaybe<Scalars['Bytes']>;
+  to_not_in?: InputMaybe<Array<Scalars['Bytes']>>;
+  value?: InputMaybe<Scalars['BigInt']>;
+  value_gt?: InputMaybe<Scalars['BigInt']>;
+  value_gte?: InputMaybe<Scalars['BigInt']>;
+  value_in?: InputMaybe<Array<Scalars['BigInt']>>;
+  value_lt?: InputMaybe<Scalars['BigInt']>;
+  value_lte?: InputMaybe<Scalars['BigInt']>;
+  value_not?: InputMaybe<Scalars['BigInt']>;
+  value_not_in?: InputMaybe<Array<Scalars['BigInt']>>;
 };
 
 export enum Transaction_OrderBy {
   BlockNumber = 'blockNumber',
   Changes = 'changes',
+  From = 'from',
+  FunctionSignature = 'functionSignature',
+  GasLimit = 'gasLimit',
+  GasPrice = 'gasPrice',
+  GasUsed = 'gasUsed',
   Id = 'id',
+  Index = 'index',
   SequenceNumber = 'sequenceNumber',
   Timestamp = 'timestamp',
+  To = 'to',
+  Value = 'value',
 }
 
 export type Trove = {
@@ -2642,7 +2873,7 @@ export type TroveChange = Change & {
   liquidation?: Maybe<Liquidation>;
   redemption?: Maybe<Redemption>;
   sequenceNumber: Scalars['Int'];
-  systemStateAfter: SystemState;
+  systemStateAfter?: Maybe<SystemState>;
   systemStateBefore: SystemState;
   transaction: Transaction;
   trove: Trove;
@@ -2650,6 +2881,8 @@ export type TroveChange = Change & {
 };
 
 export type TroveChange_Filter = {
+  /** Filter for the block changed event. */
+  _change_block?: InputMaybe<BlockChangedFilter>;
   borrowingFee?: InputMaybe<Scalars['BigDecimal']>;
   borrowingFee_gt?: InputMaybe<Scalars['BigDecimal']>;
   borrowingFee_gte?: InputMaybe<Scalars['BigDecimal']>;
@@ -2731,6 +2964,7 @@ export type TroveChange_Filter = {
   id_not?: InputMaybe<Scalars['ID']>;
   id_not_in?: InputMaybe<Array<Scalars['ID']>>;
   liquidation?: InputMaybe<Scalars['String']>;
+  liquidation_?: InputMaybe<Liquidation_Filter>;
   liquidation_contains?: InputMaybe<Scalars['String']>;
   liquidation_contains_nocase?: InputMaybe<Scalars['String']>;
   liquidation_ends_with?: InputMaybe<Scalars['String']>;
@@ -2751,6 +2985,7 @@ export type TroveChange_Filter = {
   liquidation_starts_with?: InputMaybe<Scalars['String']>;
   liquidation_starts_with_nocase?: InputMaybe<Scalars['String']>;
   redemption?: InputMaybe<Scalars['String']>;
+  redemption_?: InputMaybe<Redemption_Filter>;
   redemption_contains?: InputMaybe<Scalars['String']>;
   redemption_contains_nocase?: InputMaybe<Scalars['String']>;
   redemption_ends_with?: InputMaybe<Scalars['String']>;
@@ -2779,6 +3014,7 @@ export type TroveChange_Filter = {
   sequenceNumber_not?: InputMaybe<Scalars['Int']>;
   sequenceNumber_not_in?: InputMaybe<Array<Scalars['Int']>>;
   systemStateAfter?: InputMaybe<Scalars['String']>;
+  systemStateAfter_?: InputMaybe<SystemState_Filter>;
   systemStateAfter_contains?: InputMaybe<Scalars['String']>;
   systemStateAfter_contains_nocase?: InputMaybe<Scalars['String']>;
   systemStateAfter_ends_with?: InputMaybe<Scalars['String']>;
@@ -2799,6 +3035,7 @@ export type TroveChange_Filter = {
   systemStateAfter_starts_with?: InputMaybe<Scalars['String']>;
   systemStateAfter_starts_with_nocase?: InputMaybe<Scalars['String']>;
   systemStateBefore?: InputMaybe<Scalars['String']>;
+  systemStateBefore_?: InputMaybe<SystemState_Filter>;
   systemStateBefore_contains?: InputMaybe<Scalars['String']>;
   systemStateBefore_contains_nocase?: InputMaybe<Scalars['String']>;
   systemStateBefore_ends_with?: InputMaybe<Scalars['String']>;
@@ -2819,6 +3056,7 @@ export type TroveChange_Filter = {
   systemStateBefore_starts_with?: InputMaybe<Scalars['String']>;
   systemStateBefore_starts_with_nocase?: InputMaybe<Scalars['String']>;
   transaction?: InputMaybe<Scalars['String']>;
+  transaction_?: InputMaybe<Transaction_Filter>;
   transaction_contains?: InputMaybe<Scalars['String']>;
   transaction_contains_nocase?: InputMaybe<Scalars['String']>;
   transaction_ends_with?: InputMaybe<Scalars['String']>;
@@ -2843,6 +3081,7 @@ export type TroveChange_Filter = {
   troveOperation_in?: InputMaybe<Array<TroveOperation>>;
   troveOperation_not?: InputMaybe<TroveOperation>;
   troveOperation_not_in?: InputMaybe<Array<TroveOperation>>;
+  trove_?: InputMaybe<Trove_Filter>;
   trove_contains?: InputMaybe<Scalars['String']>;
   trove_contains_nocase?: InputMaybe<Scalars['String']>;
   trove_ends_with?: InputMaybe<Scalars['String']>;
@@ -2893,6 +3132,7 @@ export enum TroveOperation {
   LiquidateInRecoveryMode = 'liquidateInRecoveryMode',
   OpenTrove = 'openTrove',
   RedeemCollateral = 'redeemCollateral',
+  TransferGainToLineOfCredit = 'transferGainToLineOfCredit',
 }
 
 export enum TroveStatus {
@@ -2903,6 +3143,9 @@ export enum TroveStatus {
 }
 
 export type Trove_Filter = {
+  /** Filter for the block changed event. */
+  _change_block?: InputMaybe<BlockChangedFilter>;
+  changes_?: InputMaybe<TroveChange_Filter>;
   collateral?: InputMaybe<Scalars['BigDecimal']>;
   collateralRatioSortKey?: InputMaybe<Scalars['BigInt']>;
   collateralRatioSortKey_gt?: InputMaybe<Scalars['BigInt']>;
@@ -2936,6 +3179,7 @@ export type Trove_Filter = {
   id_not?: InputMaybe<Scalars['ID']>;
   id_not_in?: InputMaybe<Array<Scalars['ID']>>;
   owner?: InputMaybe<Scalars['String']>;
+  owner_?: InputMaybe<User_Filter>;
   owner_contains?: InputMaybe<Scalars['String']>;
   owner_contains_nocase?: InputMaybe<Scalars['String']>;
   owner_ends_with?: InputMaybe<Scalars['String']>;
@@ -3077,7 +3321,12 @@ export type UserRedemptionsArgs = {
 };
 
 export type User_Filter = {
+  /** Filter for the block changed event. */
+  _change_block?: InputMaybe<BlockChangedFilter>;
+  allowances_?: InputMaybe<TokenAllowance_Filter>;
+  balances_?: InputMaybe<TokenBalance_Filter>;
   collSurplus?: InputMaybe<Scalars['BigDecimal']>;
+  collSurplusChanges_?: InputMaybe<CollSurplusChange_Filter>;
   collSurplus_gt?: InputMaybe<Scalars['BigDecimal']>;
   collSurplus_gte?: InputMaybe<Scalars['BigDecimal']>;
   collSurplus_in?: InputMaybe<Array<Scalars['BigDecimal']>>;
@@ -3093,7 +3342,10 @@ export type User_Filter = {
   id_lte?: InputMaybe<Scalars['ID']>;
   id_not?: InputMaybe<Scalars['ID']>;
   id_not_in?: InputMaybe<Array<Scalars['ID']>>;
+  liquidations_?: InputMaybe<Liquidation_Filter>;
+  redemptions_?: InputMaybe<Redemption_Filter>;
   stabilityDeposit?: InputMaybe<Scalars['String']>;
+  stabilityDeposit_?: InputMaybe<StabilityDeposit_Filter>;
   stabilityDeposit_contains?: InputMaybe<Scalars['String']>;
   stabilityDeposit_contains_nocase?: InputMaybe<Scalars['String']>;
   stabilityDeposit_ends_with?: InputMaybe<Scalars['String']>;
@@ -3114,6 +3366,7 @@ export type User_Filter = {
   stabilityDeposit_starts_with?: InputMaybe<Scalars['String']>;
   stabilityDeposit_starts_with_nocase?: InputMaybe<Scalars['String']>;
   trove?: InputMaybe<Scalars['String']>;
+  trove_?: InputMaybe<Trove_Filter>;
   trove_contains?: InputMaybe<Scalars['String']>;
   trove_contains_nocase?: InputMaybe<Scalars['String']>;
   trove_ends_with?: InputMaybe<Scalars['String']>;

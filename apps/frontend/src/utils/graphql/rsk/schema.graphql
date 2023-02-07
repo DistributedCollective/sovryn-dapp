@@ -1750,11 +1750,11 @@ type CrossTransfer {
   "CreatedAtTx - the transaction at which this transfer was created\n"
   createdAtTx: Transaction!
 
-  "DestinationChain - the destination chain - for outgoing it is BSC/ETH and for incoming it is RSK\n"
-  destinationChain: BridgeChain!
-
   "Direction - the direction of the cross transfer (Incoming or Outgoing)\n"
   direction: CrossDirection!
+
+  "sourceChain - the source chain - for outgoing it is RSK and for incoming it is BSC/ETH\n"
+  externalChain: BridgeChain!
 
   "Address of the user on the external chain (eg Ethereum, BSC etc.)\n"
   externalUser: Bytes
@@ -1762,14 +1762,14 @@ type CrossTransfer {
   "Id - the cross transfer Id - for outgoing it is generated from the cross event params for incoming it is coming from the federation events\n"
   id: ID!
 
+  "IsSigned - is this transfer signed by the federation contract (only relevant for the new federation contracts)\n"
+  isSigned: Boolean!
+
   "originalTokenAddress - the original token address for the transfer (for outgoing it is just the RSK token address)\n"
   originalTokenAddress: Bytes!
 
   "sideToken - the SideToken entity if exist of original token address\n"
   sideToken: SideToken
-
-  "sourceChain - the source chain - for outgoing it is RSK and for incoming it is BSC/ETH\n"
-  sourceChain: BridgeChain!
 
   "SourceChainBlockHash - the source chain block hash of the transfer, for outgoing transfers this is just the RSK block hash\n"
   sourceChainBlockHash: Bytes
@@ -1833,14 +1833,14 @@ input CrossTransfer_filter {
   createdAtTx_not_in: [String!]
   createdAtTx_not_starts_with: String
   createdAtTx_starts_with: String
-  destinationChain: BridgeChain
-  destinationChain_in: [BridgeChain!]
-  destinationChain_not: BridgeChain
-  destinationChain_not_in: [BridgeChain!]
   direction: CrossDirection
   direction_in: [CrossDirection!]
   direction_not: CrossDirection
   direction_not_in: [CrossDirection!]
+  externalChain: BridgeChain
+  externalChain_in: [BridgeChain!]
+  externalChain_not: BridgeChain
+  externalChain_not_in: [BridgeChain!]
   externalUser: Bytes
   externalUser_contains: Bytes
   externalUser_in: [Bytes!]
@@ -1855,6 +1855,10 @@ input CrossTransfer_filter {
   id_lte: ID
   id_not: ID
   id_not_in: [ID!]
+  isSigned: Boolean
+  isSigned_in: [Boolean!]
+  isSigned_not: Boolean
+  isSigned_not_in: [Boolean!]
   originalTokenAddress: Bytes
   originalTokenAddress_contains: Bytes
   originalTokenAddress_in: [Bytes!]
@@ -1875,7 +1879,6 @@ input CrossTransfer_filter {
   sideToken_not_in: [String!]
   sideToken_not_starts_with: String
   sideToken_starts_with: String
-  sourceChain: BridgeChain
   sourceChainBlockHash: Bytes
   sourceChainBlockHash_contains: Bytes
   sourceChainBlockHash_in: [Bytes!]
@@ -1888,9 +1891,6 @@ input CrossTransfer_filter {
   sourceChainTransactionHash_not: Bytes
   sourceChainTransactionHash_not_contains: Bytes
   sourceChainTransactionHash_not_in: [Bytes!]
-  sourceChain_in: [BridgeChain!]
-  sourceChain_not: BridgeChain
-  sourceChain_not_in: [BridgeChain!]
   status: CrossStatus
   status_in: [CrossStatus!]
   status_not: CrossStatus
@@ -1979,13 +1979,13 @@ enum CrossTransfer_orderBy {
   amount
   createdAtTimestamp
   createdAtTx
-  destinationChain
   direction
+  externalChain
   externalUser
   id
+  isSigned
   originalTokenAddress
   sideToken
-  sourceChain
   sourceChainBlockHash
   sourceChainTransactionHash
   status

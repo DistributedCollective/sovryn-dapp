@@ -1,0 +1,26 @@
+query getUserConversions(
+  $user: String
+  $skip: Int!
+  $pageSize: Int!
+  $orderBy: Conversion_orderBy
+  $orderDirection: OrderDirection
+) {
+  conversions(
+    where: { user: $user }
+    first: $pageSize
+    skip: $skip
+    orderBy: $orderBy
+    orderDirection: $orderDirection
+  ) {
+    bAsset {
+      symbol
+    }
+    bassetQuantity
+    massetQuantity
+    type
+    transaction {
+      id
+      timestamp
+    }
+  }
+}

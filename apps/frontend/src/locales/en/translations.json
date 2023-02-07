@@ -140,6 +140,19 @@
             "noDataToExport": "No data to export"
         }
     },
+    "conversionsHistory": {
+        "table": {
+            "timestamp": "Timestamp",
+            "transactionType": "Transaction Type",
+            "sent": "Sent",
+            "received": "Received",
+            "txId": "TXID"
+        },
+        "type": "Convert",
+        "actions": {
+            "noDataToExport": "No data to export"
+        }
+    },
     "errorPage": {
         "title": "Error",
         "description": "Something went wrong. Please try again later."

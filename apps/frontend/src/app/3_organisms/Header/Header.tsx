@@ -1,6 +1,7 @@
 import React, { FC, useCallback, useMemo, useReducer, useState } from 'react';
 
 import { useTranslation } from 'react-i18next';
+import { useLocation } from 'react-router-dom';
 
 import { SupportedTokens } from '@sovryn/contracts';
 import {
@@ -26,6 +27,8 @@ export const Header: FC = () => {
   const { connectWallet, disconnectWallet, account, pending } =
     useWalletConnect();
   useWrongNetworkCheck();
+
+  const { pathname } = useLocation();
 
   const { value } = useAssetBalance(SupportedTokens.rbtc);
 
@@ -91,7 +94,7 @@ export const Header: FC = () => {
           </ol>
         }
         secondaryContent={
-          account && (
+          (account || pathname !== '/') && (
             <div className="relative">
               <ConnectWalletButton
                 onConnect={connectWallet}

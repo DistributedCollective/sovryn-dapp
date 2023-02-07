@@ -9,6 +9,11 @@ generates:
       - ${REACT_APP_GRAPH_ZERO}
     plugins:
       - schema-ast
+  ./src/utils/graphql/mynt/schema.graphql:
+    schema:
+      - ${REACT_APP_GRAPH_MYNT}
+    plugins:
+      - schema-ast
 hooks:
   afterAllFileWrite:
     - prettier ./src/utils/graphql/**/schema.graphql --write

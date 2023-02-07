@@ -9,7 +9,6 @@ import React, {
   useEffect,
 } from 'react';
 
-import { BigNumber } from 'ethers';
 import { useTranslation } from 'react-i18next';
 
 import { SupportedTokens } from '@sovryn/contracts';
@@ -33,17 +32,10 @@ import { BORROW_ASSETS } from '../../5_pages/ZeroPage/constants';
 import { getZeroProvider } from '../../5_pages/ZeroPage/utils/zero-provider';
 import { useAssetBalance } from '../../../hooks/useAssetBalance';
 import { useCall } from '../../../hooks/useCall';
-import { useGasPrice } from '../../../hooks/useGasPrice';
 import { useMaxAssetBalance } from '../../../hooks/useMaxAssetBalance';
 import { translations } from '../../../locales/i18n';
 import { getRskChainId } from '../../../utils/chain';
-import {
-  Bitcoin,
-  CR_THRESHOLDS,
-  GAS_LIMIT_ADJUST_TROVE,
-  GAS_LIMIT_OPEN_TROVE,
-} from '../../../utils/constants';
-import { composeGas } from '../../../utils/helpers';
+import { Bitcoin, CR_THRESHOLDS } from '../../../utils/constants';
 import { formatValue, fromWei, toWei } from '../../../utils/math';
 import { CurrentTroveData } from './CurrentTroveData';
 import { Label } from './Label';
@@ -103,11 +95,11 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
 
   const { value: creditWeiBalance } = useAssetBalance(debtToken);
 
-  const { value: maxCollateralWeiAmount } = useMaxAssetBalance(
+  const { value: maxRbtcWeiBalance } = useMaxAssetBalance(
     SupportedTokens.rbtc,
     getRskChainId(),
     // there is no gas limit for withdrawing collateral, only for depositing from user's wallet
-    collateralType === AmountType.Add ? GAS_LIMIT_OPEN_TROVE : 0,
+    collateralType === AmountType.Add ? undefined : 0,
   );
 
   const isIncreasingDebt = useMemo(
@@ -131,21 +123,6 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
       Number(existingCollateral) +
       normalizeAmountByType(Number(collateralAmount), collateralType),
     [collateralAmount, collateralType, existingCollateral],
-  );
-
-  const rbtcGasPrice = useGasPrice();
-
-  const maxRbtcWeiBalance = useMemo(
-    () =>
-      BigNumber.from(maxCollateralWeiAmount)
-        .sub(
-          composeGas(
-            rbtcGasPrice || '0',
-            hasTrove ? GAS_LIMIT_ADJUST_TROVE : GAS_LIMIT_OPEN_TROVE,
-          ),
-        )
-        .toString(),
-    [hasTrove, maxCollateralWeiAmount, rbtcGasPrice],
   );
 
   const minCollateralAmount = useMemo(() => {
@@ -504,11 +481,11 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
     }
 
     if (
-      toWei(collateralAmount).gt(maxCollateralWeiAmount) &&
+      toWei(collateralAmount).gt(maxRbtcWeiBalance) &&
       collateralType === AmountType.Add
     ) {
       const diff = Number(
-        fromWei(toWei(collateralAmount || 0).sub(maxCollateralWeiAmount)),
+        fromWei(toWei(collateralAmount || 0).sub(maxRbtcWeiBalance)),
       );
       return t(translations.zeroPage.loc.errors.balanceTooLow, {
         value: `${formatValue(diff, 4)} ${Bitcoin}`,
@@ -516,11 +493,11 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
     }
 
     if (
-      toWei(collateralAmount).gt(maxCollateralWeiAmount) &&
+      toWei(collateralAmount).gt(maxRbtcWeiBalance) &&
       collateralType === AmountType.Remove
     ) {
       const diff = Number(
-        fromWei(toWei(collateralAmount).sub(maxCollateralWeiAmount)),
+        fromWei(toWei(collateralAmount).sub(maxRbtcWeiBalance)),
       );
       return t(translations.zeroPage.loc.errors.withdrawBalanceTooLow, {
         value: `${formatValue(diff, 4)} ${SupportedTokens.rbtc.toUpperCase()}`,
@@ -532,7 +509,7 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
     collateralAmount,
     collateralType,
     fieldsTouched,
-    maxCollateralWeiAmount,
+    maxRbtcWeiBalance,
     minCollateralAmount,
     newCollateral,
     t,

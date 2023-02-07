@@ -3285,7 +3285,6 @@ export type GetTroveQuery = {
 
 export type GetTrovesQueryVariables = Exact<{
   first: Scalars['Int'];
-  id: Scalars['ID'];
 }>;
 
 export type GetTrovesQuery = {
@@ -3786,12 +3785,12 @@ export type GetTroveQueryResult = Apollo.QueryResult<
   GetTroveQueryVariables
 >;
 export const GetTrovesDocument = gql`
-  query getTroves($first: Int!, $id: ID!) {
+  query getTroves($first: Int!) {
     troves(
       orderDirection: desc
       orderBy: collateralRatioSortKey
       first: $first
-      where: { status: open, id_not: $id }
+      where: { status: open }
     ) {
       changes(
         where: { troveOperation: openTrove }
@@ -3828,7 +3827,6 @@ export const GetTrovesDocument = gql`
  * const { data, loading, error } = useGetTrovesQuery({
  *   variables: {
  *      first: // value for 'first'
- *      id: // value for 'id'
  *   },
  * });
  */

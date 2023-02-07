@@ -16,7 +16,6 @@ import { useTranslation } from 'react-i18next';
 import { SupportedTokens } from '@sovryn/contracts';
 import { prettyTx } from '@sovryn/ui';
 
-import { useAccount } from '../../../hooks/useAccount';
 import { translations } from '../../../locales/i18n';
 import { formatValue } from '../../../utils/math';
 import { useGetLowestTroves } from './hooks/useGetLowestTroves';
@@ -68,12 +67,20 @@ ChartJS.register(
 
 export const LOCChart: FC = () => {
   const { t } = useTranslation();
-  const account = useAccount();
   const [data, setData] = useState<ChartDataStructure>([]);
   const [activeBar, setActiveBar] = useState<number | null>(null);
   const { price } = useGetRBTCPrice();
   const [userCollateralRatio, setUserCollateralRatio] = useState('');
   const [redemptionBuffer, setRedemptionBuffer] = useState(0);
+
+  const { data: userOpenTrove, loading: loadingUserOpenTrove } =
+    useGetUserOpenTrove();
+
+  const isUserOpenTrove = useMemo(
+    () =>
+      userOpenTrove?.trove?.changes[0]?.trove.status === 'open' ? true : false,
+    [userOpenTrove],
+  );
 
   const options = useMemo(() => {
     return {
@@ -143,7 +150,9 @@ export const LOCChart: FC = () => {
                 fillStyle: chartConfig.activeColor,
                 lineWidth: chartConfig.legendLineWidth,
               };
-              return !activeBar ? [labelDefault] : [labelDefault, labelActive];
+              return !isUserOpenTrove
+                ? [labelDefault]
+                : [labelDefault, labelActive];
             },
           },
         },
@@ -201,12 +210,7 @@ export const LOCChart: FC = () => {
         },
       },
     };
-  }, [t, activeBar, userCollateralRatio, redemptionBuffer]);
-
-  const { data: troves, loading: loadingTroves } = useGetTroves();
-
-  const { data: userOpenTrove, loading: loadingUserOpenTrove } =
-    useGetUserOpenTrove();
+  }, [t, isUserOpenTrove, userCollateralRatio, redemptionBuffer]);
 
   const { data: lowestTroves, loading: loadingLowestTroves } =
     useGetLowestTroves(userCollateralRatio);
@@ -233,12 +237,7 @@ export const LOCChart: FC = () => {
   const { data: userOpenTroveBelow, loading: loadingUserOpenTroveBelow } =
     useGetTrovesPositions(userCollateralRatio, TrovesFilterType.below);
 
-  const isUserOpenTrove = useMemo(() => {
-    if (account && userOpenTrove) {
-      return userOpenTrove?.trove?.changes[0].trove.status === 'open';
-    }
-    return false;
-  }, [userOpenTrove, account]);
+  const { data: troves, loading: loadingTroves } = useGetTroves();
 
   const datasets: ChartData<'bar', ChartDataStructure> = useMemo(() => {
     return {
@@ -250,28 +249,24 @@ export const LOCChart: FC = () => {
             yAxisKey: ChartSortingType.collateralRatio,
           },
           backgroundColor: bar =>
-            isUserOpenTrove && activeBar && bar.parsed.y === activeBar
+            activeBar && bar.parsed.y === activeBar
               ? chartConfig.activeColor
               : chartConfig.defaultColor,
         },
       ],
     };
-  }, [data, activeBar, isUserOpenTrove]);
+  }, [data, activeBar]);
 
   useEffect(() => {
     if (!loadingUserOpenTrove && userOpenTrove?.trove && !activeBar) {
       const { trove } = userOpenTrove.trove.changes[0];
       setUserCollateralRatio(trove.collateralRatioSortKey?.toString());
     }
-  }, [userOpenTrove, loadingUserOpenTrove, activeBar]);
-
-  useEffect(() => {
-    if (!userOpenTrove) {
+    if (activeBar && !userOpenTrove) {
       setActiveBar(null);
       setUserCollateralRatio('');
-      setData([]);
     }
-  }, [userOpenTrove]);
+  }, [userOpenTrove, loadingUserOpenTrove, activeBar]);
 
   useEffect(() => {
     if (
@@ -336,7 +331,6 @@ export const LOCChart: FC = () => {
       );
     }
   }, [
-    userOpenTrove,
     isUserOpenTrove,
     userCollateralRatio,
     userOpenTroveAbove,
@@ -346,6 +340,7 @@ export const LOCChart: FC = () => {
     loadingUserOpenTroveBelow,
     price,
     activeBar,
+    userOpenTrove.trove.changes,
   ]);
 
   useEffect(() => {
@@ -362,13 +357,14 @@ export const LOCChart: FC = () => {
           price,
         ),
       }));
+
       setData(sortData([...trovesData]));
     }
-  }, [price, troves, loadingTroves, loadingUserOpenTrove, isUserOpenTrove]);
+  }, [price, troves, loadingTroves, isUserOpenTrove, loadingUserOpenTrove]);
 
   return (
     <>
-      {account ? 'acc' : 'acc2'} {isUserOpenTrove ? 'open' : 'none'}
+      {isUserOpenTrove ? 'true' : 'false'}{' '}
       <Bar className="max-w-full" options={options} data={datasets} />
     </>
   );

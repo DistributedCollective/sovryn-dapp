@@ -1,9 +1,9 @@
-query getTroves($first: Int!, $id: ID!) {
+query getTroves($first: Int!) {
   troves(
     orderDirection: desc
     orderBy: collateralRatioSortKey
     first: $first
-    where: { status: open, id_not: $id }
+    where: { status: open }
   ) {
     changes(
       where: { troveOperation: openTrove }

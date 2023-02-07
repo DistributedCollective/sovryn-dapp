@@ -254,10 +254,8 @@ export const LOCChart: FC = () => {
     [userOpenTrove],
   );
 
-  console.log('isUserOpenTroveExist', isUserOpenTroveExist);
-
   useEffect(() => {
-    if (!loadingUserOpenTrove && isUserOpenTroveExist && !activeBar) {
+    if (!loadingUserOpenTrove && isUserOpenTroveExist) {
       const { trove } = userOpenTrove.trove.changes[0];
       setUserCollateralRatio(trove.collateralRatioSortKey?.toString());
     }
@@ -265,7 +263,7 @@ export const LOCChart: FC = () => {
       setActiveBar(null);
       setUserCollateralRatio('');
     }
-  }, [userOpenTrove, isUserOpenTroveExist, loadingUserOpenTrove, activeBar]);
+  }, [userOpenTrove, isUserOpenTroveExist, loadingUserOpenTrove]);
 
   useEffect(() => {
     if (
@@ -367,5 +365,11 @@ export const LOCChart: FC = () => {
     isUserOpenTroveExist,
   ]);
 
-  return <Bar className="max-w-full" options={options} data={datasets} />;
+  return (
+    <>
+      {isUserOpenTroveExist ? 'ok' : 'not ok'}
+      {activeBar ? ' bar ok' : ' bar not'}
+      <Bar className="max-w-full" options={options} data={datasets} />
+    </>
+  );
 };

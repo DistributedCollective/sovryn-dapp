@@ -132,19 +132,24 @@ export const ZeroPage: FC = () => {
           {([price, fees]: [string, Fees]) => (
             <>
               {!showWelcomeBanner && !isLoading && (
-                <LOCStatus
-                  className="mb-6"
-                  collateral={collateral}
-                  debt={debt}
-                  cRatio={getRatio(price)}
-                  debtSymbol={DEBT_TOKEN.toUpperCase()}
-                  onAdjust={toggle}
-                  onClose={toggleClosePopup}
-                  withdrawalSurplus={Number(
-                    collateralSurplusBalance?.toString(),
-                  )}
-                  onWithdraw={claimCollateralSurplus}
-                />
+                <>
+                  <LOCStatus
+                    className="mb-6"
+                    collateral={collateral}
+                    debt={debt}
+                    cRatio={getRatio(price)}
+                    debtSymbol={DEBT_TOKEN.toUpperCase()}
+                    onAdjust={toggle}
+                    onClose={toggleClosePopup}
+                    withdrawalSurplus={Number(
+                      collateralSurplusBalance?.toString(),
+                    )}
+                    onWithdraw={claimCollateralSurplus}
+                  />
+                  <div className="h-80 md:flex-1 bg-gray-80 rounded pt-2 pr-2 flex items-center">
+                    <LOCChart />
+                  </div>
+                </>
               )}
 
               {showWelcomeBanner && !isLoading && (

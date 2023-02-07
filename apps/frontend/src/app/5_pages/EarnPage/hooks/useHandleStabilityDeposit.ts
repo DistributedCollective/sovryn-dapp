@@ -45,7 +45,7 @@ export const useHandleStabilityDeposit = (
 
     transactions.push({
       title: t(translations.earnPage.txDialog.withdraw, {
-        asset: token.toUpperCase(),
+        asset: SupportedTokens.zusd.toUpperCase(),
       }),
       contract: stabilityPool,
       fnName: 'withdrawFromSP',
@@ -88,7 +88,7 @@ export const useHandleStabilityDeposit = (
 
     transactions.push({
       title: t(translations.earnPage.txDialog.deposit, {
-        asset: token.toUpperCase(),
+        asset: SupportedTokens.zusd.toUpperCase(),
       }),
       contract: stabilityPool,
       fnName: 'provideToSP',

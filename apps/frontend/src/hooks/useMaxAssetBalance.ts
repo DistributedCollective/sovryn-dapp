@@ -2,7 +2,11 @@ import { useMemo } from 'react';
 
 import { BigNumber, BigNumberish, constants } from 'ethers';
 
-import { getTokenContract, SupportedTokens } from '@sovryn/contracts';
+import {
+  ContractConfigData,
+  getTokenContract,
+  SupportedTokens,
+} from '@sovryn/contracts';
 import { ChainId } from '@sovryn/ethers-provider';
 
 import {
@@ -26,7 +30,9 @@ export const useMaxAssetBalance = (
   const gasPrice = useGasPrice(chainId);
   const balance = useAssetBalance(asset, chainId, null, 0, options);
 
-  const contract = useAsync(() => getTokenContract(asset, chainId));
+  const contract = useAsync<ContractConfigData>(() =>
+    getTokenContract(asset, chainId),
+  );
 
   return useMemo(() => {
     const value = BigNumber.from(balance.value).sub(

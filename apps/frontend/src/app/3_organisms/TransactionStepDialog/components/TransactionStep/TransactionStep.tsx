@@ -57,6 +57,7 @@ export const TransactionStep: FC<TransactionStepProps> = ({
 
   useEffect(() => {
     findContract(transaction.contract.address).then(result => {
+      console.log('result', result);
       if (result.group === 'tokens') {
         getTokenDetailsByAddress(transaction.contract.address).then(setToken);
       }
@@ -196,9 +197,9 @@ export const TransactionStep: FC<TransactionStepProps> = ({
           {config.amount !== undefined && (
             <SimpleTableRow
               label="Amount"
-              value={`${config.unlimitedAmount ? '∞' : parsedAmount} ${
-                token?.symbol
-              }`}
+              value={`${
+                config.unlimitedAmount ? '∞' : parsedAmount
+              } ${token?.symbol?.toUpperCase()}`}
               valueClassName={classNames(
                 isLoading || status === StatusType.success
                   ? 'text-gray-30'

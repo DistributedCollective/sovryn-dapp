@@ -19,6 +19,7 @@ type SubjectState = {
   pending: boolean;
   timestamp: number;
   ttl: number;
+  blockNumber: number;
   promise: Promise<any>;
   result: CacheCallResponse<any>;
 };
@@ -33,6 +34,8 @@ export type CacheCallOptions = {
   force: boolean;
   // when data expires or needs to be refreshed forcely, show previous successful result while loading
   fallbackToPreviousResult: boolean;
+  // if given block number is higher than current block number, data is considered expired
+  blockNumber: number;
 };
 
 const INITIAL_STATE: SubjectMap = {};
@@ -41,22 +44,34 @@ const TINY_TTL = 1000 * 30; // 30 seconds
 
 const store = new BehaviorSubject<SubjectMap>(INITIAL_STATE);
 
+const mergeOptions = (options: Partial<CacheCallOptions>) => ({
+  ttl: options.ttl ?? DEFAULT_TTL,
+  blockNumber: options.blockNumber ?? 0,
+  force: options.force ?? false,
+  fallbackToPreviousResult: options.fallbackToPreviousResult ?? true,
+});
+
 export const startCall = <T>(
   id: string,
   promise: () => Promise<T>,
-  options: Partial<CacheCallOptions> = {
-    fallbackToPreviousResult: true,
-    ttl: DEFAULT_TTL,
-    force: false,
-  },
+  options: Partial<CacheCallOptions> = {},
 ) => {
+  options = mergeOptions(options);
+
   const state = store.getValue();
 
   const now = Date.now();
 
-  if (state.hasOwnProperty(id) && state[id].ttl > now && !options.force) {
+  if (
+    state.hasOwnProperty(id) &&
+    state[id].ttl > now &&
+    (state[id].blockNumber || 0) >= (options.blockNumber || 0) &&
+    !options.force
+  ) {
     return;
   }
+
+  console.log('start', id, options);
 
   const promise$ = promise()
     .then(result => {
@@ -87,6 +102,7 @@ export const startCall = <T>(
       pending: true,
       timestamp: now,
       ttl: now + (options?.ttl ?? DEFAULT_TTL),
+      blockNumber: options?.blockNumber ?? 0,
       promise: promise$,
       result,
     },
@@ -136,11 +152,7 @@ export const idHash = (args: any[]) => {
 export const asyncCall = async <T>(
   id: string,
   promise: () => Promise<T>,
-  options: Partial<CacheCallOptions> = {
-    fallbackToPreviousResult: true,
-    ttl: DEFAULT_TTL,
-    force: false,
-  },
+  options: Partial<CacheCallOptions> = {},
 ) => {
   const result$ = observeCall(id);
 

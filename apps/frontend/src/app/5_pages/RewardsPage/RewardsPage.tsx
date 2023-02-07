@@ -21,7 +21,6 @@ import {
   ParagraphStyle,
 } from '@sovryn/ui';
 
-import { TransactionStepDialog } from '../../3_organisms';
 import { useAccount } from '../../../hooks/useAccount';
 import { useGetOpenTrove } from '../../../hooks/zero/useGetOpenTrove';
 import { translations } from '../../../locales/i18n';
@@ -103,7 +102,6 @@ const RewardsPage: FC = () => {
           )}
         </div>
       </div>
-      <TransactionStepDialog />
     </div>
   );
 };

@@ -264,7 +264,7 @@ export const LOCChart: FC = () => {
   );
 
   useEffect(() => {
-    if (!loadingUserOpenTrove && isUserOpenTroveExist && data) {
+    if (!loadingUserOpenTrove && isUserOpenTroveExist) {
       const { trove } = userOpenTrove.trove.changes[0];
       setUserCollateralRatio(trove.collateralRatioSortKey?.toString());
     }
@@ -272,7 +272,7 @@ export const LOCChart: FC = () => {
       setActiveBar(null);
       setUserCollateralRatio('');
     }
-  }, [userOpenTrove, isUserOpenTroveExist, loadingUserOpenTrove, data]);
+  }, [userOpenTrove, isUserOpenTroveExist, loadingUserOpenTrove]);
 
   useEffect(() => {
     if (
@@ -281,8 +281,7 @@ export const LOCChart: FC = () => {
       userOpenTroveBelow &&
       !loadingUserOpenTroveAbove &&
       !loadingUserOpenTroveBelow &&
-      isUserOpenTroveExist &&
-      data
+      isUserOpenTroveExist
     ) {
       const { transaction, trove } = userOpenTrove.trove.changes[0];
 
@@ -348,16 +347,10 @@ export const LOCChart: FC = () => {
     loadingUserOpenTroveBelow,
     price,
     activeBar,
-    data,
   ]);
 
   useEffect(() => {
-    if (
-      !loadingTroves &&
-      !loadingUserOpenTrove &&
-      !isUserOpenTroveExist &&
-      data
-    ) {
+    if (!loadingTroves && !loadingUserOpenTrove && !isUserOpenTroveExist) {
       const trovesData = troves.troves.map(({ changes }: TroveData) => ({
         sequenceNumber: changes[0].trove.collateralRatioSortKey.toString(),
         address: changes[0].trove.id,
@@ -379,7 +372,6 @@ export const LOCChart: FC = () => {
     loadingTroves,
     loadingUserOpenTrove,
     isUserOpenTroveExist,
-    data,
   ]);
 
   return (

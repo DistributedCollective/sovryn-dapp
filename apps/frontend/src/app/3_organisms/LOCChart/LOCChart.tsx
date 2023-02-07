@@ -16,6 +16,7 @@ import { useTranslation } from 'react-i18next';
 import { SupportedTokens } from '@sovryn/contracts';
 import { prettyTx } from '@sovryn/ui';
 
+import { useAccount } from '../../../hooks/useAccount';
 import { translations } from '../../../locales/i18n';
 import { formatValue } from '../../../utils/math';
 import { useGetLowestTroves } from './hooks/useGetLowestTroves';
@@ -67,6 +68,7 @@ ChartJS.register(
 
 export const LOCChart: FC = () => {
   const { t } = useTranslation();
+  const { account } = useAccount();
   const [data, setData] = useState<ChartDataStructure>([]);
   const [activeBar, setActiveBar] = useState<number | null>(null);
   const { price } = useGetRBTCPrice();
@@ -255,7 +257,7 @@ export const LOCChart: FC = () => {
   );
 
   useEffect(() => {
-    if (!loadingUserOpenTrove && isUserOpenTroveExist) {
+    if (!loadingUserOpenTrove && isUserOpenTroveExist && account) {
       const { trove } = userOpenTrove.trove.changes[0];
       setUserCollateralRatio(trove.collateralRatioSortKey?.toString());
     }
@@ -263,7 +265,7 @@ export const LOCChart: FC = () => {
       setActiveBar(null);
       setUserCollateralRatio('');
     }
-  }, [userOpenTrove, isUserOpenTroveExist, loadingUserOpenTrove]);
+  }, [userOpenTrove, isUserOpenTroveExist, loadingUserOpenTrove, account]);
 
   useEffect(() => {
     if (
@@ -272,7 +274,8 @@ export const LOCChart: FC = () => {
       userOpenTroveBelow &&
       !loadingUserOpenTroveAbove &&
       !loadingUserOpenTroveBelow &&
-      isUserOpenTroveExist
+      isUserOpenTroveExist &&
+      account
     ) {
       const { transaction, trove } = userOpenTrove.trove.changes[0];
 
@@ -338,6 +341,7 @@ export const LOCChart: FC = () => {
     loadingUserOpenTroveBelow,
     price,
     activeBar,
+    account,
   ]);
 
   useEffect(() => {

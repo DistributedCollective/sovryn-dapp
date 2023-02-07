@@ -249,22 +249,23 @@ export const LOCChart: FC = () => {
     };
   }, [data, activeBar]);
 
-  const isUserOpenTrove = useMemo(
+  const isUserOpenTroveExist = useMemo(
     () => userOpenTrove?.trove?.changes[0].trove.status === 'open',
     [userOpenTrove],
   );
 
+  console.log('isUserOpenTroveExist', isUserOpenTroveExist);
+
   useEffect(() => {
-    if (!loadingUserOpenTrove && userOpenTrove?.trove && !activeBar) {
+    if (!loadingUserOpenTrove && isUserOpenTroveExist && !activeBar) {
       const { trove } = userOpenTrove.trove.changes[0];
       setUserCollateralRatio(trove.collateralRatioSortKey?.toString());
     }
-    if (activeBar && !userOpenTrove) {
+    if (!isUserOpenTroveExist) {
       setActiveBar(null);
       setUserCollateralRatio('');
-      setData([]);
     }
-  }, [userOpenTrove, loadingUserOpenTrove, activeBar]);
+  }, [userOpenTrove, isUserOpenTroveExist, loadingUserOpenTrove, activeBar]);
 
   useEffect(() => {
     if (
@@ -273,7 +274,7 @@ export const LOCChart: FC = () => {
       userOpenTroveBelow &&
       !loadingUserOpenTroveAbove &&
       !loadingUserOpenTroveBelow &&
-      isUserOpenTrove
+      isUserOpenTroveExist
     ) {
       const { transaction, trove } = userOpenTrove.trove.changes[0];
 
@@ -330,7 +331,7 @@ export const LOCChart: FC = () => {
     }
   }, [
     userOpenTrove,
-    isUserOpenTrove,
+    isUserOpenTroveExist,
     userCollateralRatio,
     userOpenTroveAbove,
     userOpenTroveBelow,
@@ -342,7 +343,7 @@ export const LOCChart: FC = () => {
   ]);
 
   useEffect(() => {
-    if (!loadingTroves && troves && !loadingUserOpenTrove && !isUserOpenTrove) {
+    if (!loadingTroves && !loadingUserOpenTrove && !isUserOpenTroveExist) {
       const trovesData = troves.troves.map(({ changes }: TroveData) => ({
         sequenceNumber: changes[0].trove.collateralRatioSortKey.toString(),
         address: changes[0].trove.id,
@@ -358,7 +359,13 @@ export const LOCChart: FC = () => {
 
       setData(sortData([...trovesData]));
     }
-  }, [price, troves, loadingTroves, loadingUserOpenTrove, isUserOpenTrove]);
+  }, [
+    price,
+    troves,
+    loadingTroves,
+    loadingUserOpenTrove,
+    isUserOpenTroveExist,
+  ]);
 
   return <Bar className="max-w-full" options={options} data={datasets} />;
 };

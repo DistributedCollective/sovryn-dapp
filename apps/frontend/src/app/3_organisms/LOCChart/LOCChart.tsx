@@ -270,12 +270,12 @@ export const LOCChart: FC = () => {
 
   useEffect(() => {
     //update all data when account changes
-    if (account) {
+    if (!account && !isUserOpenTrove) {
       setActiveBar(null);
       setUserCollateralRatio('');
       setData([]);
     }
-  }, [account]);
+  }, [account, isUserOpenTrove]);
 
   useEffect(() => {
     if (

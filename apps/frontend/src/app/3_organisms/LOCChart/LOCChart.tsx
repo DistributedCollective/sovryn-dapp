@@ -16,6 +16,7 @@ import { useTranslation } from 'react-i18next';
 import { SupportedTokens } from '@sovryn/contracts';
 import { prettyTx } from '@sovryn/ui';
 
+import { useAccount } from '../../../hooks/useAccount';
 import { translations } from '../../../locales/i18n';
 import { formatValue } from '../../../utils/math';
 import { useGetLowestTroves } from './hooks/useGetLowestTroves';
@@ -67,6 +68,7 @@ ChartJS.register(
 
 export const LOCChart: FC = () => {
   const { t } = useTranslation();
+  const account = useAccount();
   const [data, setData] = useState<ChartDataStructure>([]);
   const [activeBar, setActiveBar] = useState<number | null>(null);
   const { price } = useGetRBTCPrice();
@@ -362,5 +364,10 @@ export const LOCChart: FC = () => {
     }
   }, [price, troves, loadingTroves, loadingUserOpenTrove, isUserOpenTrove]);
 
-  return <Bar className="max-w-full" options={options} data={datasets} />;
+  return (
+    <>
+      {account ? 'acc' : 'acc2'} {isUserOpenTrove ? 'open' : 'none'}
+      <Bar className="max-w-full" options={options} data={datasets} />
+    </>
+  );
 };

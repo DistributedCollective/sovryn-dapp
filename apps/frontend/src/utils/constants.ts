@@ -5,10 +5,10 @@ import { Environments, Services } from '../types/global';
 export const sovrynLinks = {
   discord: 'https://discord.gg/kBTNx4zjRf',
   telegram: 'https://t.me/SovrynBitcoin',
-  twitter: 'https://twitter.com/Sovrynbtc',
+  twitter: ' https://twitter.com/SovrynBTC',
   github: 'https://github.com/DistributedCollective',
   blog: 'https://www.sovryn.app/blog',
-  security: 'https://sovryn.app/.well-known/security.txt',
+  security: 'https://wiki.sovryn.app/en/technical-documents#security',
   fees: 'https://wiki.sovryn.app/en/sovryn-dapp/fees#zero-borrowing',
 };
 

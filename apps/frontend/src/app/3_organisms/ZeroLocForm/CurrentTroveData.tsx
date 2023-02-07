@@ -12,7 +12,7 @@ import { DEBT_TOKEN } from './constants';
 type CurrentTroveDataProps = {
   debt: string;
   collateral: string;
-  rbtcPrice: string;
+  rbtcPrice: number;
   className?: string;
 };
 
@@ -24,9 +24,7 @@ export const CurrentTroveData: FC<CurrentTroveDataProps> = ({
 }) => {
   const { t } = useTranslation();
   const collateralRatio = useMemo(
-    () =>
-      ((parseFloat(collateral) * parseFloat(rbtcPrice)) / parseFloat(debt)) *
-      100,
+    () => ((parseFloat(collateral) * rbtcPrice) / parseFloat(debt)) * 100,
     [collateral, debt, rbtcPrice],
   );
 

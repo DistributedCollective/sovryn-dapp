@@ -17,10 +17,11 @@ type Result<T> = [T, () => Promise<T | null>, boolean, Error | null];
 export const useCall = <T>(
   callback: () => Promise<T>,
   deps?: DependencyList,
+  defaultValue?: T,
 ): Result<T> => {
   const callbackRef = useRef(callback);
   const [state, setState] = useState<State<T>>({
-    value: null as T,
+    value: defaultValue ?? null,
     loading: false,
     error: null,
   });

@@ -1,4 +1,9 @@
-import React, { PropsWithChildren, ReactNode } from 'react';
+import React, {
+  PropsWithChildren,
+  ReactNode,
+  useMemo,
+  createElement,
+} from 'react';
 
 import classNames from 'classnames';
 
@@ -13,6 +18,7 @@ type FormGroupProps = {
   subtext?: string;
   dataAttribute?: string;
   errorLabel?: string;
+  labelElement?: keyof React.ReactHTML;
 };
 
 export const FormGroup: React.FC<PropsWithChildren<FormGroupProps>> = ({
@@ -23,33 +29,47 @@ export const FormGroup: React.FC<PropsWithChildren<FormGroupProps>> = ({
   children,
   errorLabel,
   dataAttribute,
-}) => (
-  <div
-    {...applyDataAttr(dataAttribute)}
-    className={classNames(className, styles.formGroup)}
-  >
-    {(label || subtext) && (
-      <label className={styles.formLabel}>
-        {label && (
-          <Heading className={styles.heading} type={HeadingType.h3}>
-            {label} {helper}
-          </Heading>
-        )}
-        {subtext && (
-          <Paragraph size={ParagraphSize.tiny} className={styles.subtext}>
-            {subtext}
-          </Paragraph>
-        )}
-      </label>
-    )}
-    {children}
-    {errorLabel && (
-      <span
-        {...applyDataAttr(`${dataAttribute}__error-message`)}
-        className={styles.errorLabel}
-      >
-        {errorLabel}
-      </span>
-    )}
-  </div>
-);
+  labelElement = 'label',
+}) => {
+  const maybeRenderLabel = useMemo(() => {
+    if (!label && !subtext) {
+      return null;
+    }
+
+    return createElement(labelElement, {
+      className: styles.formLabel,
+      children: (
+        <>
+          {label && (
+            <Heading className={styles.heading} type={HeadingType.h3}>
+              {label} {helper}
+            </Heading>
+          )}
+          {subtext && (
+            <Paragraph size={ParagraphSize.tiny} className={styles.subtext}>
+              {subtext}
+            </Paragraph>
+          )}
+        </>
+      ),
+    });
+  }, [helper, label, labelElement, subtext]);
+
+  return (
+    <div
+      {...applyDataAttr(dataAttribute)}
+      className={classNames(className, styles.formGroup)}
+    >
+      {maybeRenderLabel}
+      {children}
+      {errorLabel && (
+        <span
+          {...applyDataAttr(`${dataAttribute}__error-message`)}
+          className={styles.errorLabel}
+        >
+          {errorLabel}
+        </span>
+      )}
+    </div>
+  );
+};

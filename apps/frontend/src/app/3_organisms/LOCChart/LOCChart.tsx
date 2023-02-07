@@ -201,6 +201,8 @@ export const LOCChart: FC = () => {
     };
   }, [t, activeBar, userCollateralRatio, redemptionBuffer]);
 
+  const { data: troves, loading: loadingTroves } = useGetTroves();
+
   const { data: userOpenTrove, loading: loadingUserOpenTrove } =
     useGetUserOpenTrove();
 
@@ -229,7 +231,10 @@ export const LOCChart: FC = () => {
   const { data: userOpenTroveBelow, loading: loadingUserOpenTroveBelow } =
     useGetTrovesPositions(userCollateralRatio, TrovesFilterType.below);
 
-  const { data: troves, loading: loadingTroves } = useGetTroves();
+  const isUserOpenTrove = useMemo(
+    () => userOpenTrove?.trove?.changes[0].trove.status === 'open',
+    [userOpenTrove],
+  );
 
   const datasets: ChartData<'bar', ChartDataStructure> = useMemo(() => {
     return {
@@ -241,30 +246,28 @@ export const LOCChart: FC = () => {
             yAxisKey: ChartSortingType.collateralRatio,
           },
           backgroundColor: bar =>
-            activeBar && bar.parsed.y === activeBar
+            isUserOpenTrove && activeBar && bar.parsed.y === activeBar
               ? chartConfig.activeColor
               : chartConfig.defaultColor,
         },
       ],
     };
-  }, [data, activeBar]);
-
-  const isUserOpenTrove = useMemo(
-    () => userOpenTrove?.trove?.changes[0].trove.status === 'open',
-    [userOpenTrove],
-  );
+  }, [data, activeBar, isUserOpenTrove]);
 
   useEffect(() => {
     if (!loadingUserOpenTrove && userOpenTrove?.trove && !activeBar) {
       const { trove } = userOpenTrove.trove.changes[0];
       setUserCollateralRatio(trove.collateralRatioSortKey?.toString());
     }
+  }, [userOpenTrove, loadingUserOpenTrove, activeBar]);
+
+  useEffect(() => {
     if (!userOpenTrove) {
       setActiveBar(null);
       setUserCollateralRatio('');
       setData([]);
     }
-  }, [userOpenTrove, loadingUserOpenTrove, activeBar]);
+  }, [userOpenTrove]);
 
   useEffect(() => {
     if (
@@ -355,7 +358,6 @@ export const LOCChart: FC = () => {
           price,
         ),
       }));
-
       setData(sortData([...trovesData]));
     }
   }, [price, troves, loadingTroves, loadingUserOpenTrove, isUserOpenTrove]);

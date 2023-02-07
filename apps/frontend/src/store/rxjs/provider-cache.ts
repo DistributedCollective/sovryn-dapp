@@ -71,8 +71,6 @@ export const startCall = <T>(
     return;
   }
 
-  console.log('start', id, options);
-
   const promise$ = promise()
     .then(result => {
       completeCall(id, result, null);

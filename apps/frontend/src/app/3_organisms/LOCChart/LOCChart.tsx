@@ -340,7 +340,7 @@ export const LOCChart: FC = () => {
     loadingUserOpenTroveBelow,
     price,
     activeBar,
-    userOpenTrove.trove.changes,
+    userOpenTrove,
   ]);
 
   useEffect(() => {

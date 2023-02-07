@@ -210,6 +210,15 @@ export const LOCChart: FC = () => {
     useGetLowestTroves(userCollateralRatio);
 
   useEffect(() => {
+    /**
+     * refresh all data on account change
+     **/
+    if (account) {
+      setData([]);
+    }
+  }, [account]);
+
+  useEffect(() => {
     if (!loadingLowestTroves) {
       const redemptionBuffer = lowestTroves?.troves.reduce(
         (acc, curr) =>
@@ -252,8 +261,8 @@ export const LOCChart: FC = () => {
   }, [data, activeBar]);
 
   const isUserOpenTroveExist = useMemo(
-    () => userOpenTrove?.trove?.changes[0].trove.status === 'open',
-    [userOpenTrove],
+    () => account && userOpenTrove?.trove?.changes[0].trove.status === 'open',
+    [userOpenTrove, account],
   );
 
   useEffect(() => {

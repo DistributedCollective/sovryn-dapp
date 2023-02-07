@@ -251,22 +251,31 @@ export const LOCChart: FC = () => {
     };
   }, [data, activeBar]);
 
-  const isUserOpenTroveExist = useMemo(
-    () => account && userOpenTrove?.trove?.changes[0].trove.status === 'open',
-    [userOpenTrove, account],
+  const isUserOpenTrove = useMemo(
+    () => userOpenTrove?.trove?.changes[0].trove.status === 'open',
+    [userOpenTrove],
   );
 
   useEffect(() => {
-    if (!loadingUserOpenTrove && isUserOpenTroveExist && !activeBar) {
+    if (!loadingUserOpenTrove && userOpenTrove?.trove && !activeBar) {
       const { trove } = userOpenTrove.trove.changes[0];
       setUserCollateralRatio(trove.collateralRatioSortKey?.toString());
     }
-    if (!isUserOpenTroveExist) {
+    if (!userOpenTrove) {
       setActiveBar(null);
       setUserCollateralRatio('');
       setData([]);
     }
-  }, [userOpenTrove, isUserOpenTroveExist, loadingUserOpenTrove, activeBar]);
+  }, [userOpenTrove, loadingUserOpenTrove, activeBar]);
+
+  useEffect(() => {
+    //update all data when account changes
+    if (account) {
+      setActiveBar(null);
+      setUserCollateralRatio('');
+      setData([]);
+    }
+  }, [account]);
 
   useEffect(() => {
     if (
@@ -275,7 +284,7 @@ export const LOCChart: FC = () => {
       userOpenTroveBelow &&
       !loadingUserOpenTroveAbove &&
       !loadingUserOpenTroveBelow &&
-      isUserOpenTroveExist
+      isUserOpenTrove
     ) {
       const { transaction, trove } = userOpenTrove.trove.changes[0];
 
@@ -332,7 +341,7 @@ export const LOCChart: FC = () => {
     }
   }, [
     userOpenTrove,
-    isUserOpenTroveExist,
+    isUserOpenTrove,
     userCollateralRatio,
     userOpenTroveAbove,
     userOpenTroveBelow,
@@ -344,7 +353,7 @@ export const LOCChart: FC = () => {
   ]);
 
   useEffect(() => {
-    if (!loadingTroves && !loadingUserOpenTrove && !isUserOpenTroveExist) {
+    if (!loadingTroves && troves && !loadingUserOpenTrove && !isUserOpenTrove) {
       const trovesData = troves.troves.map(({ changes }: TroveData) => ({
         sequenceNumber: changes[0].trove.collateralRatioSortKey.toString(),
         address: changes[0].trove.id,
@@ -360,13 +369,7 @@ export const LOCChart: FC = () => {
 
       setData(sortData([...trovesData]));
     }
-  }, [
-    price,
-    troves,
-    loadingTroves,
-    loadingUserOpenTrove,
-    isUserOpenTroveExist,
-  ]);
+  }, [price, troves, loadingTroves, loadingUserOpenTrove, isUserOpenTrove]);
 
   return <Bar className="max-w-full" options={options} data={datasets} />;
 };

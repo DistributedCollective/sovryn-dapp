@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 
 import axios from 'axios';
+import { nanoid } from 'nanoid';
 import { useTranslation } from 'react-i18next';
 
 import {
@@ -12,10 +13,12 @@ import {
   DialogSize,
   FormGroup,
   Input,
+  NotificationType,
   Paragraph,
   ParagraphStyle,
 } from '@sovryn/ui';
 
+import { useNotificationContext } from '../../../contexts/NotificationContext';
 import { useAccount } from '../../../hooks/useAccount';
 import { translations } from '../../../locales/i18n';
 import {
@@ -49,6 +52,7 @@ const EmailNotificationSettingsDialogComponent: React.FC<
   EmailNotificationSettingsDialogProps
 > = ({ isOpen, onClose }) => {
   const { account, eip1193Provider: provider } = useAccount();
+  const { addNotification } = useNotificationContext();
   const { t } = useTranslation();
 
   const [notificationToken, setNotificationToken] = useState<string | null>(
@@ -165,29 +169,52 @@ const EmailNotificationSettingsDialogComponent: React.FC<
       )
       .catch(error => {
         console.error(error);
+        addNotification({
+          type: NotificationType.error,
+          title: t(translations.emailNotificationsDialog.authErrorMessage),
+          dismissible: true,
+          id: nanoid(),
+        });
         onClose();
       });
-  }, [account, onClose, provider]);
+  }, [account, onClose, provider, t, addNotification]);
 
   const handleUserDataResponse = useCallback(
-    (response: Promise<any>) => {
+    (response: Promise<any>, showNotifications: boolean = false) => {
       response
         .then(result => {
           if (result.data) {
             setNotificationUser(result.data);
             setEmail(result.data?.email);
             parseSubscriptionsResponse(result.data?.subscriptions);
+
+            if (showNotifications) {
+              addNotification({
+                type: NotificationType.success,
+                title: t(translations.emailNotificationsDialog.successMessage),
+                dismissible: true,
+                id: nanoid(),
+              });
+            }
           }
         })
         .catch(error => {
           console.log(error);
+          if (showNotifications) {
+            addNotification({
+              type: NotificationType.error,
+              title: t(translations.emailNotificationsDialog.errorMessage),
+              dismissible: true,
+              id: nanoid(),
+            });
+          }
           if (error?.response?.status === 401) {
             getToken();
           }
         })
         .finally(() => setLoading(false));
     },
-    [getToken, parseSubscriptionsResponse],
+    [getToken, t, addNotification, parseSubscriptionsResponse],
   );
 
   const getUser = useCallback(() => {
@@ -238,7 +265,7 @@ const EmailNotificationSettingsDialogComponent: React.FC<
       },
     );
 
-    handleUserDataResponse(promise);
+    handleUserDataResponse(promise, true);
   }, [
     account,
     email,
@@ -284,7 +311,7 @@ const EmailNotificationSettingsDialogComponent: React.FC<
         <div className="mt-4 flex justify-between">
           <Button
             onClick={onCloseHandler}
-            text={t(translations.common.buttons.cancel)}
+            text={t(translations.common.buttons.skip)}
             style={ButtonStyle.secondary}
             className="mr-4 w-[49%]"
             dataAttribute="alert-signup-cancel"

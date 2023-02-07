@@ -36,13 +36,13 @@ import { useCall } from '../../../hooks/useCall';
 import { useGasPrice } from '../../../hooks/useGasPrice';
 import { translations } from '../../../locales/i18n';
 import {
+  Bitcoin,
   CR_THRESHOLDS,
   GAS_LIMIT_ADJUST_TROVE,
   GAS_LIMIT_OPEN_TROVE,
 } from '../../../utils/constants';
 import { composeGas } from '../../../utils/helpers';
 import { formatValue, fromWei, toWei } from '../../../utils/math';
-import { tokensToOptions } from '../../../utils/tokens';
 import { CurrentTroveData } from './CurrentTroveData';
 import { Label } from './Label';
 import { Row } from './Row';
@@ -85,6 +85,8 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
       .then(Number);
   }, [rbtcPrice]);
 
+  const isRecoveryMode = useMemo(() => tcr <= CRITICAL_COLLATERAL_RATIO, [tcr]);
+
   useEffect(() => {
     getTcr().catch(console.error);
   }, [getTcr]);
@@ -95,9 +97,7 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
   const [fieldsTouched, setFieldsTouched] = useState(false);
   const [collateralAmount, setCollateralAmount] = useState('0');
   const [debtAmount, setDebtAmount] = useState('0');
-  const [debtToken, setDebtToken] = useState<SupportedTokens>(
-    SupportedTokens.zusd,
-  );
+  const [debtToken, setDebtToken] = useState<SupportedTokens>(BORROW_ASSETS[0]);
 
   const { value: creditWeiBalance } = useAssetBalance(debtToken);
 
@@ -130,42 +130,60 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
 
   const rbtcGasPrice = useGasPrice();
 
+  const maxRbtcWeiBalance = useMemo(
+    () =>
+      BigNumber.from(maxCollateralWeiAmount)
+        .sub(
+          composeGas(
+            rbtcGasPrice || '0',
+            hasTrove ? GAS_LIMIT_ADJUST_TROVE : GAS_LIMIT_OPEN_TROVE,
+          ),
+        )
+        .toString(),
+    [hasTrove, maxCollateralWeiAmount, rbtcGasPrice],
+  );
+
+  const minCollateralAmount = useMemo(() => {
+    if (!isIncreasingCollateral) {
+      return 0;
+    }
+
+    return (
+      (MIN_DEBT_SIZE / Number(rbtcPrice || '0')) *
+      (isRecoveryMode ? CRITICAL_COLLATERAL_RATIO : MINIMUM_COLLATERAL_RATIO)
+    );
+  }, [isIncreasingCollateral, isRecoveryMode, rbtcPrice]);
+
   const maxCollateralAmount = useMemo(
     () =>
       Number(
         isIncreasingCollateral
-          ? fromWei(
-              BigNumber.from(maxCollateralWeiAmount).sub(
-                composeGas(
-                  rbtcGasPrice || '0',
-                  hasTrove ? GAS_LIMIT_ADJUST_TROVE : GAS_LIMIT_OPEN_TROVE,
-                ),
-              ),
-            )
+          ? fromWei(maxRbtcWeiBalance)
           : existingCollateral,
       ),
-    [
-      existingCollateral,
-      hasTrove,
-      isIncreasingCollateral,
-      maxCollateralWeiAmount,
-      rbtcGasPrice,
-    ],
+    [existingCollateral, isIncreasingCollateral, maxRbtcWeiBalance],
   );
 
   const maxCreditAmount = useMemo(() => {
-    return Number(
-      isIncreasingDebt
-        ? (maxCollateralAmount * Number(rbtcPrice || '0')) /
-            MINIMUM_COLLATERAL_RATIO
-        : Math.min(Number(fromWei(creditWeiBalance)), Number(existingDebt)),
-    );
+    if (isIncreasingDebt) {
+      return (
+        ((Number(existingCollateral) + Number(fromWei(maxRbtcWeiBalance))) *
+          Number(rbtcPrice || '0')) /
+          (isRecoveryMode
+            ? CRITICAL_COLLATERAL_RATIO
+            : MINIMUM_COLLATERAL_RATIO) -
+        Number(existingDebt)
+      );
+    }
+    return Math.min(Number(fromWei(creditWeiBalance)), Number(existingDebt));
   }, [
     isIncreasingDebt,
-    maxCollateralAmount,
-    rbtcPrice,
     creditWeiBalance,
     existingDebt,
+    existingCollateral,
+    maxRbtcWeiBalance,
+    rbtcPrice,
+    isRecoveryMode,
   ]);
 
   const handleMaxCollateralAmountClick = useCallback(() => {
@@ -196,7 +214,9 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
   );
 
   const handleFormSubmit = useCallback(() => {
-    let value: Partial<CreditLineSubmitValue> = {};
+    let value: Partial<CreditLineSubmitValue> = {
+      token: debtToken,
+    };
 
     value[isIncreasingCollateral ? 'depositCollateral' : 'withdrawCollateral'] =
       collateralAmount;
@@ -206,6 +226,7 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
   }, [
     collateralAmount,
     debtAmount,
+    debtToken,
     isIncreasingCollateral,
     isIncreasingDebt,
     onSubmit,
@@ -284,7 +305,9 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
       value === 0 ? (
         t(translations.common.na)
       ) : (
-        <>{formatValue(value, 3)} RBTC</>
+        <>
+          {formatValue(value, 3)} {Bitcoin}
+        </>
       ),
     [t],
   );
@@ -408,8 +431,8 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
     const debt = Number(debtAmount);
     const isFormValid =
       Number(existingDebt) > 0
-        ? collateral > 0 && debt > 0
-        : collateral > 0 || debt > 0;
+        ? collateral > 0 || debt > 0
+        : collateral > 0 && debt > 0;
     return hasCriticalError || !isFormValid;
   }, [collateralAmount, debtAmount, errors, existingDebt]);
 
@@ -424,25 +447,106 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
       });
     }
 
+    if (
+      toWei(debtAmount).gt(toWei(maxCreditAmount)) &&
+      debtType === AmountType.Remove
+    ) {
+      const diff = Number(
+        fromWei(toWei(debtAmount).sub(toWei(maxCreditAmount))),
+      );
+      return t(translations.zeroPage.loc.errors.repayBalanceTooLow, {
+        value: formatValue(diff, 4),
+        currency: debtToken.toUpperCase(),
+      });
+    }
+
+    if (
+      toWei(debtAmount).gt(toWei(maxCreditAmount)) &&
+      debtType === AmountType.Add
+    ) {
+      const diff = Number(
+        fromWei(toWei(debtAmount).sub(toWei(maxCreditAmount))),
+      );
+      return t(translations.zeroPage.loc.errors.creditBalanceTooLow, {
+        value: formatValue(diff, 4),
+        currency: debtToken.toUpperCase(),
+      });
+    }
+
     return undefined;
-  }, [debtToken, fieldsTouched, newDebt, t]);
+  }, [
+    debtAmount,
+    debtToken,
+    debtType,
+    fieldsTouched,
+    maxCreditAmount,
+    newDebt,
+    t,
+  ]);
 
   const collateralError = useMemo(() => {
     if (!fieldsTouched) {
       return undefined;
     }
 
-    if (toWei(collateralAmount).gt(maxCollateralWeiAmount)) {
+    if (toWei(newCollateral).lt(toWei(minCollateralAmount))) {
+      return t(translations.zeroPage.loc.errors.collateralTooLow, {
+        value: `${formatValue(
+          minCollateralAmount,
+          4,
+        )} ${SupportedTokens.rbtc.toUpperCase()}`,
+      });
+    }
+
+    if (
+      toWei(collateralAmount).gt(maxCollateralWeiAmount) &&
+      collateralType === AmountType.Add
+    ) {
+      const diff = Number(
+        fromWei(toWei(collateralAmount || 0).sub(maxCollateralWeiAmount)),
+      );
+      return t(translations.zeroPage.loc.errors.balanceTooLow, {
+        value: `${formatValue(diff, 4)} ${Bitcoin}`,
+      });
+    }
+
+    if (
+      toWei(collateralAmount).gt(maxCollateralWeiAmount) &&
+      collateralType === AmountType.Remove
+    ) {
       const diff = Number(
         fromWei(toWei(collateralAmount).sub(maxCollateralWeiAmount)),
       );
-      return t(translations.zeroPage.loc.errors.balanceTooLow, {
-        value: `${formatValue(diff, 4)} RBTC`,
+      return t(translations.zeroPage.loc.errors.withdrawBalanceTooLow, {
+        value: `${formatValue(diff, 4)} ${SupportedTokens.rbtc.toUpperCase()}`,
       });
     }
 
     return undefined;
-  }, [collateralAmount, fieldsTouched, maxCollateralWeiAmount, t]);
+  }, [
+    collateralAmount,
+    collateralType,
+    fieldsTouched,
+    maxCollateralWeiAmount,
+    minCollateralAmount,
+    newCollateral,
+    t,
+  ]);
+
+  const tokenOptions = useMemo(
+    () =>
+      BORROW_ASSETS.map(token => ({
+        value: token,
+        label: (
+          <AssetRenderer
+            showAssetLogo
+            asset={token}
+            assetClassName="font-medium"
+          />
+        ),
+      })),
+    [],
+  );
 
   return (
     <div className="w-full">
@@ -483,7 +587,7 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
           <Select
             value={debtToken}
             onChange={setDebtToken}
-            options={tokensToOptions(BORROW_ASSETS)}
+            options={tokenOptions}
             className="flex-grow flex-shrink-0"
             labelRenderer={({ value }) => (
               <AssetRenderer
@@ -498,7 +602,7 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
       <FormGroup
         label={
           <Label
-            symbol="RBTC"
+            symbol={Bitcoin}
             maxAmount={maxCollateralAmount}
             tabs={collateralTabs}
             activeTab={collateralType}
@@ -518,7 +622,7 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
           label={t(translations.adjustCreditLine.fields.collateral.amount)}
           tooltip={t(translations.adjustCreditLine.fields.collateral.tooltip)}
           className="max-w-none"
-          unit="RBTC"
+          unit={Bitcoin}
           invalid={!!collateralError}
         />
       </FormGroup>

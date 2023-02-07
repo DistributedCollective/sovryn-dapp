@@ -33,7 +33,7 @@ import { useAccount } from '../../../hooks/useAccount';
 import { useAssetBalance } from '../../../hooks/useAssetBalance';
 import { translations } from '../../../locales/i18n';
 import { formatValue, fromWei, toWei } from '../../../utils/math';
-import { tokenOptions } from './EarnPage.types';
+import { tokenList } from './EarnPage.types';
 import { useHandleStabilityDeposit } from './hooks/useHandleStabilityDeposit';
 
 const commonTranslations = translations.common;
@@ -222,6 +222,21 @@ const EarnPage: FC = () => {
     [account, amount, isValidAmount],
   );
 
+  const tokenOptions = useMemo(
+    () =>
+      tokenList.map(token => ({
+        value: token.symbol,
+        label: (
+          <AssetRenderer
+            showAssetLogo
+            asset={token.symbol}
+            assetClassName="font-medium"
+          />
+        ),
+      })),
+    [],
+  );
+
   return (
     <div className="w-full flex flex-col items-center text-gray-10 mt-9 sm:mt-24">
       <Heading className="text-base sm:text-2xl">
@@ -267,7 +282,7 @@ const EarnPage: FC = () => {
             disabled={!account}
             invalid={!isValidAmount}
             className="w-full flex-grow-0 flex-shrink"
-            {...applyDataAttr('earn-amount-input')}
+            dataAttribute="earn-amount-input"
           />
 
           <Select
@@ -276,7 +291,7 @@ const EarnPage: FC = () => {
             options={tokenOptions}
             labelRenderer={() => getAssetRenderer(token)}
             className="min-w-[6.7rem]"
-            {...applyDataAttr('earn-token-select')}
+            dataAttribute="earn-token-select"
           />
         </div>
         {!isValidAmount && (
@@ -317,7 +332,7 @@ const EarnPage: FC = () => {
           className="w-full mt-8"
           onClick={handleSubmit}
           disabled={isSubmitDisabled}
-          {...applyDataAttr('earn-submit')}
+          dataAttribute="earn-submit"
         />
       </div>
     </div>

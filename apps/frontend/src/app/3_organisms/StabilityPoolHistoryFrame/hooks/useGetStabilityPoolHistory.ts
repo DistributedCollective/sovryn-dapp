@@ -7,11 +7,13 @@ import {
   StabilityDepositChange_OrderBy,
   useGetStabilityPoolQuery,
 } from '../../../../utils/graphql/zero/generated';
+import { StabilityDepositChange_Filter } from './../../../../utils/graphql/zero/generated';
 
 export const useGetStabilityPoolHistory = (
   account: string,
   pageSize: number,
   page: number,
+  filters: StabilityDepositChange_Filter,
   orderOptions: OrderOptions,
 ) => {
   const stabilityPoolConfig = useMemo(
@@ -22,8 +24,9 @@ export const useGetStabilityPoolHistory = (
       orderBy:
         (orderOptions.orderBy as StabilityDepositChange_OrderBy) || undefined,
       orderDirection: orderOptions.orderDirection || undefined,
+      filters,
     }),
-    [page, orderOptions, pageSize, account],
+    [page, orderOptions, filters, pageSize, account],
   );
 
   const { loading, data } = useGetStabilityPoolQuery({

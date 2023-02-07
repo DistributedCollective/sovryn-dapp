@@ -3259,6 +3259,7 @@ export type GetStabilityPoolQueryVariables = Exact<{
   pageSize: Scalars['Int'];
   orderBy?: InputMaybe<StabilityDepositChange_OrderBy>;
   orderDirection?: InputMaybe<OrderDirection>;
+  filters?: InputMaybe<StabilityDepositChange_Filter>;
 }>;
 
 export type GetStabilityPoolQuery = {
@@ -3270,6 +3271,7 @@ export type GetStabilityPoolQuery = {
       depositedAmountChange: string;
       depositedAmountAfter: string;
       stabilityDepositOperation: StabilityDepositOperation;
+      sequenceNumber: number;
       transaction: {
         __typename?: 'Transaction';
         id: string;
@@ -3747,13 +3749,15 @@ export const GetStabilityPoolDocument = gql`
     $pageSize: Int!
     $orderBy: StabilityDepositChange_orderBy
     $orderDirection: OrderDirection
+    $filters: StabilityDepositChange_filter
   ) {
     stabilityDeposits(where: { id: $user }) {
       changes(
         first: $pageSize
         skip: $skip
         orderBy: $orderBy
-        orderDirection: desc
+        orderDirection: $orderDirection
+        where: $filters
       ) {
         depositedAmountChange
         depositedAmountAfter
@@ -3762,6 +3766,7 @@ export const GetStabilityPoolDocument = gql`
           id
           timestamp
         }
+        sequenceNumber
       }
     }
   }
@@ -3784,6 +3789,7 @@ export const GetStabilityPoolDocument = gql`
  *      pageSize: // value for 'pageSize'
  *      orderBy: // value for 'orderBy'
  *      orderDirection: // value for 'orderDirection'
+ *      filters: // value for 'filters'
  *   },
  * });
  */

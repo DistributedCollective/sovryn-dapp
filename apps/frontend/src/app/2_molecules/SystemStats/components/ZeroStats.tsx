@@ -22,7 +22,8 @@ import {
 } from '@sovryn/ui';
 
 import { translations } from '../../../../locales/i18n';
-import { formatValue } from '../../../../utils/math';
+import { Bitcoin } from '../../../../utils/constants';
+import { formatCompactValue, formatValue } from '../../../../utils/math';
 import { SystemModeType } from '../types';
 import { calculateCollateralRatio } from '../utils';
 
@@ -54,10 +55,10 @@ export const ZeroStats: FC<ZeroStatsProps> = ({ className, dataAttribute }) => {
         ? `${formatValue(
             Number(rbtcInLoc),
             0,
-          )} ${SupportedTokens.rbtc.toUpperCase()} ($${formatValue(
+          )} ${Bitcoin} ($${formatCompactValue(
             Number(rbtcInLoc) * Number(zeroPrice),
             2,
-          )}M)`
+          )})`
         : 0,
     [zeroPrice, rbtcInLoc],
   );
@@ -132,7 +133,7 @@ export const ZeroStats: FC<ZeroStatsProps> = ({ className, dataAttribute }) => {
       </Paragraph>
       <SimpleTable
         dataAttribute="system-statistics"
-        className="max-w-[23.125rem]"
+        className="lg:max-w-[23.125rem]"
       >
         <SimpleTableRow
           className="mb-5"

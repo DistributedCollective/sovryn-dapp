@@ -4,6 +4,7 @@ import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { SupportedTokens } from '@sovryn/contracts';
+import { SupportedTokenList } from '@sovryn/contracts';
 import {
   AmountInput,
   applyDataAttr,
@@ -23,7 +24,7 @@ import { TransactionStepDialog } from '../../3_organisms';
 import { useAccount } from '../../../hooks/useAccount';
 import { translations } from '../../../locales/i18n';
 import { formatValue } from '../../../utils/math';
-import { bassets, tokenOptions } from './ConvertPage.types';
+import { allowedTokens, bassets } from './ConvertPage.types';
 import { useGetDefaultSourceToken } from './hooks/useGetDefaultSourceToken';
 import { useGetMaximumAvailableAmount } from './hooks/useGetMaximumAvailableAmount';
 import { useHandleConversion } from './hooks/useHandleConversion';
@@ -41,9 +42,26 @@ const ConvertPage: FC = () => {
   const [sourceToken, setSourceToken] =
     useState<SupportedTokens>(defaultSourceToken);
 
+  const tokenOptions = useMemo(
+    () =>
+      SupportedTokenList.filter(item =>
+        allowedTokens.includes(item.symbol),
+      ).map(token => ({
+        value: token.symbol,
+        label: (
+          <AssetRenderer
+            showAssetLogo
+            asset={token.symbol}
+            assetClassName="font-medium"
+          />
+        ),
+      })),
+    [],
+  );
+
   const tokenOptionsWithoutSourceToken = useMemo(
     () => tokenOptions.filter(item => item.value !== sourceToken),
-    [sourceToken],
+    [sourceToken, tokenOptions],
   );
 
   const [destinationTokenOptions, setDestinationTokenOptions] = useState(
@@ -109,7 +127,7 @@ const ConvertPage: FC = () => {
         tokenOptions.filter(item => item.value === SupportedTokens.dllr),
       );
     }
-  }, [sourceToken]);
+  }, [sourceToken, tokenOptions]);
 
   const getAssetRenderer = useCallback(
     (token: SupportedTokens) => (
@@ -135,12 +153,12 @@ const ConvertPage: FC = () => {
 
   return (
     <div className="w-full flex flex-col items-center text-gray-10 mt-9 sm:mt-24">
-      <Heading className="text-base sm:text-2xl">
+      <Heading className="text-base sm:text-2xl font-medium">
         {t(pageTranslations.title)}
       </Heading>
       <Paragraph
         size={ParagraphSize.base}
-        className="mt-2.5 sm:mt-4 sm:text-base"
+        className="mt-2.5 sm:mt-4 sm:text-base font-medium"
       >
         {t(pageTranslations.subtitle)}
       </Paragraph>
@@ -163,7 +181,7 @@ const ConvertPage: FC = () => {
             </button>
           </div>
 
-          <div className="w-full flex flex-row justify-between items-center gap-3  mt-3.5">
+          <div className="w-full flex flex-row justify-between items-center gap-3 mt-3.5">
             <AmountInput
               value={amount}
               onChangeText={setAmount}
@@ -198,7 +216,11 @@ const ConvertPage: FC = () => {
             onClick={onSwitchClick}
             {...applyDataAttr('convert-swap-asset')}
           >
-            <Icon icon={IconNames.PENDING} className="text-gray-50" size={24} />
+            <Icon
+              icon={IconNames.PENDING}
+              className="text-gray-50 rotate-90 -scale-x-100"
+              size={24}
+            />
           </button>
         </div>
 

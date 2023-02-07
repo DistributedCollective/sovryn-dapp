@@ -1,4 +1,5 @@
 import commonjs from '@rollup/plugin-commonjs';
+import json from '@rollup/plugin-json';
 import resolve from '@rollup/plugin-node-resolve';
 import typescript from '@rollup/plugin-typescript';
 
@@ -21,15 +22,18 @@ const config = [
         format: 'cjs',
         sourcemap: true,
         name: 'ui',
+        inlineDynamicImports: true,
       },
       {
         file: packageJson.module,
         format: 'esm',
         sourcemap: true,
+        inlineDynamicImports: true,
       },
     ],
     plugins: [
       external({ peerDependencies: true, dependencies: true }),
+      json(),
       resolve(),
       commonjs(),
       typescript({ tsconfig: './tsconfig.json' }),

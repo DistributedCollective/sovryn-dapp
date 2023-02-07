@@ -72,6 +72,8 @@ export const RewardHistory: FC = () => {
   const generateRowTitle = useCallback((row: StabilityDepositChange) => {
     return (
       <Paragraph size={ParagraphSize.small}>
+        <TransactionTypeRenderer type={row.stabilityDepositOperation} />
+        {' - '}
         {dateFormat(row.transaction.timestamp)}
       </Paragraph>
     );

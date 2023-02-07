@@ -14,7 +14,12 @@
             "confirm": "Confirm",
             "save": "Save",
             "cancel": "Cancel",
-            "withdraw": "Withdraw"
+            "withdraw": "Withdraw",
+            "continue": "Continue",
+            "done": "Done",
+            "close": "Close",
+            "retry": "Retry",
+            "skip": "Skip"
         },
         "na": "N/A",
         "tables": {
@@ -61,8 +66,8 @@
             "liquidationPriceTooltip": "Liquidation price after the transaction",
             "recoveryLiquidationPrice": "Liquidation price (Recovery Mode)",
             "recoveryLiquidationPriceTooltip": "Liquidation price after the transaction",
-            "rbtcPrice": "RBTC price",
-            "rbtcPriceTooltip": "RBTC price in USD",
+            "rbtcPrice": "BTC price",
+            "rbtcPriceTooltip": "BTC price in USD",
             "originationFee": "Origination fee",
             "originationFeeTooltip": "Origination fee in percentage"
         }
@@ -122,8 +127,8 @@
         "table": {
             "timestamp": "Timestamp",
             "zusdRedeemed": "ZUSD Redeemed",
-            "rbtcReceived": "RBTC Received",
-            "redemptionFee": "Redemption Fee (RBTC)",
+            "rbtcReceived": "BTC Received",
+            "redemptionFee": "Redemption Fee (BTC)",
             "networkFee": "Network Fee",
             "transactionID": "Transaction ID"
         },
@@ -157,14 +162,16 @@
             }
         },
         "buttons": {
-            "gotIt": "Got it",
+            "finish": "Finish",
             "doNotShowAgain": "Don't show again",
-            "learnMore": "Learn more"
+            "learnMore": "Learn more",
+            "learnMoreStabilityPool": "Learn more - Stability Pool",
+            "learnMoreAMMPool": "Learn more - AMM Pool"
         }
     },
     "emailNotificationsDialog": {
         "dialogTitle": "Notifications",
-        "title": "Notifications on the status of your line of credit are sent to your email after you sign it with your wallet",
+        "title": "Sign up to receive important notifications about the state of your line of credit and the Zero protocol",
         "emailInputLabel": "Email address",
         "emailInputPlaceholder": "Enter Email",
         "alertGroups": {
@@ -172,7 +179,10 @@
             "liquidationsToggle": "Liquidation alerts",
             "stabilityPoolToggle": "Stability pool alerts",
             "systemToggle": "System alerts"
-        }
+        },
+        "successMessage": "Your preferences have been saved.",
+        "errorMessage": "Something went wrong, please try again.",
+        "authErrorMessage": "Authentication failed, please try again."
     },
     "chart": {
         "collateralRatio": "Collateral ratio",
@@ -196,17 +206,26 @@
         "connect": "Get started",
         "rewards": "Rewards",
         "settings": "Settings",
-        "history": "Transaction History",
+        "history": "History",
         "copyAddress": "Copy address",
         "disconnect": "Disconnect"
     },
     "header": {
         "funding": "Funding",
         "nav": {
-            "home": "Home",
+            "borrow": "Borrow",
             "earn": "Earn",
             "convert": "Convert"
         }
+    },
+    "footer": {
+        "start": "Getting started",
+        "alpha": "Sovryn Alpha",
+        "blog": "Blog",
+        "security": "Security",
+        "fees": "Fees",
+        "terms": "Terms of service",
+        "policy": "Privacy policy"
     },
     "zeroPage": {
         "loc": {
@@ -219,7 +238,11 @@
                 "ratioWarning": "Keeping your collateral ratio above {{value}}% can help avoid liquidation under recovery mode",
                 "ratioError": "Collateral ratio must be at least {{value}}%",
                 "debtTooLow": "Debt must be at least {{value}}",
-                "balanceTooLow": "The collateral amount you're trying to deposit exceeds your balance by {{value}}"
+                "balanceTooLow": "The collateral amount you're trying to deposit exceeds your balance by {{value}}",
+                "collateralTooLow": "Collateral balance must be at least {{value}}",
+                "withdrawBalanceTooLow": "The collateral amount you're trying to withdraw exceeds your trove balance by {{value}}",
+                "repayBalanceTooLow": "The {{currency}} amount you're trying to repay exceeds your balance by {{value}}",
+                "creditBalanceTooLow": "The {{currency}} amount you're trying to borrow exceeds your maximum by {{value}}"
             }
         },
         "tx": {
@@ -231,7 +254,7 @@
     "stats": {
         "zero": {
             "title": "Zero statistics",
-            "rbtcInLoc": "RBTC in Lines of Credit",
+            "rbtcInLoc": "BTC in Lines of Credit",
             "loc": "Lines of credit",
             "zusdSupply": "ZUSD supply",
             "zusdInStabilityPool": "ZUSD in Stability Pool",
@@ -309,6 +332,11 @@
             "withdrawCollateralGain": "Withdraw collateral gain",
             "withdrawGainToLineOfCredit": "Withdraw gain to line of credit"
         },
+        "filters": {
+            "depositTokens": "Deposit",
+            "withdrawTokens": "Withdraw",
+            "withdrawCollateralGain": "Withdraw collateral gain"
+        },
         "actions": {
             "noDataToExport": "No data to export"
         }
@@ -343,5 +371,82 @@
         "actions": {
             "noDataToExport": "No data to export"
         }
+    },
+    "fastBtc": {
+        "mainScreen": {
+            "title": "Funding",
+            "tabs": {
+                "receiveLabel": "Receive",
+                "receiveInfoText": "Transfer BTC from the bitcoin network to your Rootstock address",
+                "sendLabel": "Send",
+                "sendInfoText": "Transfer BTC from the Rootstock network to a specified bitcoin address"
+            }
+        },
+        "receiveInstructions": {
+            "title": "Instructions",
+            "line1": "Only transfer BTC from the bitcoin network",
+            "line2": "Do not send less than the minimum amount",
+            "line3": "Do not send more than the maximum amount",
+            "line4": "Allow up to {{hours}} hrs to process",
+            "line5": "If your transaction takes longer than {{hours}} hrs please <0>create a support ticket</0>",
+            "line5cta": "create a support ticket"
+        },
+        "sendInstructions": {
+            "title": "Instructions",
+            "line1": "Only transfer BTC to the bitcoin network",
+            "line2": "Do not send less than the minimum amount",
+            "line3": "Do not send more than the maximum amount",
+            "line4": "Allow up to {{hours}} hrs to process",
+            "line5": "If your transaction takes longer than {{hours}} hrs please <0>create a support ticket</0>",
+            "line5cta": "create a support ticket"
+        },
+        "limits": {
+            "title": "Transfer policies",
+            "minimumAmount": "Minimum amount",
+            "maximumAmount": "Maximum amount",
+            "serviceFee": "Service fee"
+        },
+        "addressForm": {
+            "title": "Send BTC to this address",
+            "copyAddressSuccess": "Address was copied to clipboard.",
+            "invalidSignatures": "We had an error while trying to verify a deposit address"
+        },
+        "send": {
+            "amountForm": {
+                "title": "Enter amount of Rootstock BTC to send",
+                "amountLabel": "Send"
+            },
+            "addressForm": {
+                "title": "Enter recipient's bitcoin address",
+                "addressLabel": "Address"
+            },
+            "confirmationScreens": {
+                "reviewTitle": "Transfer details",
+                "statusTitleProcessing": "Transfer processing...",
+                "statusTitleComplete": "Transfer complete",
+                "statusTitleFailed": "Transfer failed",
+                "from": "From",
+                "to": "To",
+                "sending": "Sending",
+                "serviceFee": "Service fee",
+                "receiving": "Receiving",
+                "hash": "Rootstock TXID"
+            }
+        },
+        "receive": {
+            "statusScreen": {
+                "statusTitleProcessing": "Transfer processing...",
+                "statusTitleComplete": "Transfer complete",
+                "to": "To",
+                "sending": "Sending",
+                "serviceFee": "Service fee",
+                "receiving": "Receiving",
+                "bitcoinTxId": "Bitcoin TXID",
+                "rootstockTxId": "Rootstock TXID"
+            }
+        }
+    },
+    "maintenanceMode": {
+        "fastBtc": "Fast BTC is locked"
     }
 }

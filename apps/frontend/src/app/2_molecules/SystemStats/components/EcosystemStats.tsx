@@ -22,7 +22,12 @@ import {
 } from '@sovryn/ui';
 
 import { translations } from '../../../../locales/i18n';
-import { formatValue, fromWeiFixed } from '../../../../utils/math';
+import { Bitcoin } from '../../../../utils/constants';
+import {
+  formatCompactValue,
+  formatValue,
+  fromWeiFixed,
+} from '../../../../utils/math';
 import { useGetAssetBalance } from '../hooks/useGetAssetBalance';
 import { useGetTotalSupply } from '../hooks/useGetTotalSupply';
 import { TokenType } from '../types';
@@ -54,10 +59,10 @@ export const EcosystemStats: FC<EcosystemStatsProps> = ({
         ? `${formatValue(
             Number(fromWeiFixed(babelFishZUSDBalance)),
             0,
-          )} ${SupportedTokens.rbtc.toUpperCase()} ($${formatValue(
+          )} ${Bitcoin} ($${formatCompactValue(
             Number(fromWeiFixed(babelFishZUSDBalance)) * Number(zeroPrice),
             2,
-          )}M)`
+          )})`
         : 0,
     [zeroPrice, babelFishZUSDBalance],
   );
@@ -138,7 +143,7 @@ export const EcosystemStats: FC<EcosystemStatsProps> = ({
       </Paragraph>
       <SimpleTable
         dataAttribute="system-statistics"
-        className="max-w-[23.125rem]"
+        className="lg:max-w-[23.125rem]"
       >
         <SimpleTableRow
           className="mb-8"

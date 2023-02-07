@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next';
 
 import { Button, ButtonSize, ButtonStyle, HelperButton } from '@sovryn/ui';
 
-import { COLLATERAL_TOKEN } from '../../3_organisms/ZeroLocForm/constants';
+import { Bitcoin } from '../../../utils/constants';
 import { formatValue } from '../../../utils/math';
 import { CRatioIndicator } from './components/CRatioIndicator/CRatioIndicator';
 import { LOCStat } from './components/LOCStat/LOCStat';
@@ -40,7 +40,7 @@ export const LOCStatus: FC<LOCStatusProps> = ({
   return (
     <div
       className={classNames(
-        'bg-gray-80 md:bg-gray-90 py-7 px-6 rounded flex justify-between flex-wrap gap-6',
+        'bg-gray-80 md:bg-gray-90 py-7 px-6 rounded flex justify-between flex-wrap gap-6 items-center',
         className,
       )}
     >
@@ -48,17 +48,14 @@ export const LOCStatus: FC<LOCStatusProps> = ({
         {withdrawalSurplus > 0 && (
           <LOCStat
             label={t('LOCStatus.withdrawalSurplus')}
-            value={`${withdrawalSurplus} RBTC`}
+            value={`${withdrawalSurplus} ${Bitcoin}`}
           />
         )}
         {showOpenLOC && (
           <>
             <LOCStat
               label={t('LOCStatus.currentCollateral')}
-              value={`${formatValue(
-                Number(collateral),
-                4,
-              )} ${COLLATERAL_TOKEN.toUpperCase()}`}
+              value={`${formatValue(Number(collateral), 4)} ${Bitcoin}`}
             />
             <LOCStat
               label={t('LOCStatus.currentDebt')}
@@ -96,6 +93,7 @@ export const LOCStatus: FC<LOCStatusProps> = ({
             style={ButtonStyle.primary}
             size={ButtonSize.large}
             onClick={onWithdraw}
+            dataAttribute="zero-loc-surplus-withdraw"
           />
         )}
         {showOpenLOC && (
@@ -105,12 +103,14 @@ export const LOCStatus: FC<LOCStatusProps> = ({
               style={ButtonStyle.primary}
               size={ButtonSize.large}
               onClick={onAdjust}
+              dataAttribute="zero-loc-adjust"
             />
             <Button
               text={t('LOCStatus.close')}
               style={ButtonStyle.secondary}
               size={ButtonSize.large}
               onClick={onClose}
+              dataAttribute="zero-loc-close"
             />
           </>
         )}

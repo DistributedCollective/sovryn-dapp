@@ -4,9 +4,8 @@ import userEvent from '@testing-library/user-event';
 import React, { FC, ReactNode, useCallback } from 'react';
 
 import { Select, SelectProps } from './Select';
-import { SelectOption } from './Select.types';
 
-const options: SelectOption[] = [
+const options = [
   {
     value: '1',
     label: 'Option 1',

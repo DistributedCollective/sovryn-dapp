@@ -23,7 +23,7 @@ const testColumns = [
     id: 'balance',
     title: 'Balance',
     align: Align.center,
-    cellRenderer: row => `${row.balance} RBTC`,
+    cellRenderer: row => `${row.balance} BTC`,
   },
 ];
 

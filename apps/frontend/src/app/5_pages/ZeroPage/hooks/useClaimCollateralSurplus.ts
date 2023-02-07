@@ -7,6 +7,7 @@ import { getContract } from '@sovryn/contracts';
 import { useTransactionContext } from '../../../../contexts/TransactionContext';
 import { useAccount } from '../../../../hooks/useAccount';
 import { getRskChainId } from '../../../../utils/chain';
+import { Bitcoin } from '../../../../utils/constants';
 
 export const useClaimCollateralSurplus = (onComplete: () => void) => {
   const { signer } = useAccount();
@@ -27,7 +28,7 @@ export const useClaimCollateralSurplus = (onComplete: () => void) => {
 
       setTransactions([
         {
-          title: 'Claim RBTC',
+          title: `Claim ${Bitcoin}`,
           contract: borrowerOperations,
           fnName: 'claimCollateral',
           args: [],

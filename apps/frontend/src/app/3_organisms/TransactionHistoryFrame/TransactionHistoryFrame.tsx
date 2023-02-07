@@ -26,7 +26,11 @@ import { useNotificationContext } from '../../../contexts/NotificationContext';
 import { useAccount } from '../../../hooks/useAccount';
 import { translations } from '../../../locales/i18n';
 import { zeroClient } from '../../../utils/clients';
-import { EXPORT_RECORD_LIMIT } from '../../../utils/constants';
+import {
+  Bitcoin,
+  EXPORT_RECORD_LIMIT,
+  LIQUIDATION_RESERVE_AMOUNT,
+} from '../../../utils/constants';
 import {
   InputMaybe,
   TroveChange,
@@ -41,7 +45,6 @@ import { useGetTroves } from './hooks/useGetTroves';
 
 // TODO usage example, to be removed
 const DEFAULT_PAGE_SIZE = 10;
-const liquidationReserveAmount = 20;
 
 export const TransactionHistoryFrame: FC = () => {
   const { t } = useTranslation();
@@ -194,7 +197,7 @@ export const TransactionHistoryFrame: FC = () => {
     ];
 
     if (troveOperation === TroveOperation.OpenTrove) {
-      return `+${liquidationReserveAmount} ${SupportedTokens.zusd}`;
+      return `+${LIQUIDATION_RESERVE_AMOUNT} ${SupportedTokens.zusd}`;
     }
 
     if (
@@ -202,7 +205,7 @@ export const TransactionHistoryFrame: FC = () => {
       (troveOperation === TroveOperation.RedeemCollateral &&
         redemption?.partial === true)
     ) {
-      return `-${liquidationReserveAmount} ${SupportedTokens.zusd}`;
+      return `-${LIQUIDATION_RESERVE_AMOUNT} ${SupportedTokens.zusd}`;
     }
 
     return '-';
@@ -320,7 +323,7 @@ export const TransactionHistoryFrame: FC = () => {
                   trove.troveOperation,
                   Number(trove.collateralChange),
                 )}
-                {trove.collateralChange} {SupportedTokens.rbtc}
+                {trove.collateralChange} {Bitcoin}
               </>
             }
             trigger={TooltipTrigger.click}
@@ -330,8 +333,7 @@ export const TransactionHistoryFrame: FC = () => {
           >
             <span>
               {renderSign(trove.troveOperation, Number(trove.collateralChange))}
-              {formatValue(Number(trove.collateralChange), 6)}{' '}
-              {SupportedTokens.rbtc}
+              {formatValue(Number(trove.collateralChange), 6)} {Bitcoin}
             </span>
           </Tooltip>
         ) : (
@@ -358,7 +360,7 @@ export const TransactionHistoryFrame: FC = () => {
                         trove.troveOperation,
                         Number(trove.collateralAfter),
                       )}
-                    {trove.collateralAfter} {SupportedTokens.rbtc}
+                    {trove.collateralAfter} {Bitcoin}
                   </>
                 )}
               </>
@@ -378,8 +380,7 @@ export const TransactionHistoryFrame: FC = () => {
                       trove.troveOperation,
                       Number(trove.collateralAfter),
                     )}
-                  {formatValue(Number(trove.collateralAfter), 6)}{' '}
-                  {SupportedTokens.rbtc}
+                  {formatValue(Number(trove.collateralAfter), 6)} {Bitcoin}
                 </>
               )}
             </span>

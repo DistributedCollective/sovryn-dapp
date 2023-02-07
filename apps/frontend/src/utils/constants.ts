@@ -7,17 +7,28 @@ export const sovrynLinks = {
   telegram: 'https://t.me/SovrynBitcoin',
   twitter: 'https://twitter.com/Sovrynbtc',
   github: 'https://github.com/DistributedCollective',
-  wiki: 'https://wiki.sovryn.app/en',
-  dappAlpha: 'https://live.sovryn.app',
   blog: 'https://www.sovryn.app/blog',
+  security: 'https://sovryn.app/.well-known/security.txt',
+  fees: 'https://wiki.sovryn.app/en/sovryn-dapp/fees#zero-borrowing',
+};
+
+export const sovrynAlphaLinks = {
+  [Environments.Mainnet]: 'https://alpha.sovryn.app/',
+  [Environments.Testnet]: 'https://alpha-test.sovryn.app',
 };
 
 export const sovrynWikiLinks = {
-  pool: 'https://wiki.sovryn.app/en/sovryn-dapp/market-making',
+  root: 'https://wiki.sovryn.app/en',
+  stabilityPool:
+    'https://wiki.sovryn.app/en/sovryn-dapp/subprotocols/zero-zusd#stability-pool',
+  ammPool: 'https://wiki.sovryn.app/en/sovryn-dapp/market-making',
   lend: 'https://wiki.sovryn.app/en/sovryn-dapp/lending',
-  trade: 'https://wiki.sovryn.app/en/sovryn-dapp/trading',
-  bridge: 'https://wiki.sovryn.app/en/sovryn-dapp/bridge',
+  trade: 'https://wiki.sovryn.app/en/technical-documents/amm/sovryn-damm',
+  bridge:
+    'https://babelfish.gitbook.io/the-babelfish-gitbook/tutorials-and-guides/bridges',
 };
+
+export const helpdeskLink = 'https://help.sovryn.app/';
 
 export const requiredChain = ChainIds.RSK_TESTNET;
 
@@ -47,9 +58,23 @@ export const servicesConfig = {
 };
 
 export const EXPORT_RECORD_LIMIT = 500;
-
 export const DEFAULT_TIMEOUT_SECONDS = 5000;
-
+export const LIQUIDATION_RESERVE_AMOUNT = 20;
 export const GAS_LIMIT_OPEN_TROVE = 1_000_000;
 export const GAS_LIMIT_ADJUST_TROVE = 650_000;
 export const GAS_LIMIT_STABILITY_POOL = 500_000;
+export const btcInSatoshis = 100000000;
+
+// TODO: Refactor it into a similar config we have in dapp v1 (blockExplorers constant)
+export const rskExplorer = {
+  [Environments.Mainnet]: 'https://explorer.rsk.co',
+  [Environments.Testnet]: 'https://explorer.testnet.rsk.co',
+};
+
+export const btcExplorer = {
+  [Environments.Mainnet]: 'https://live.blockcypher.com/btc',
+  [Environments.Testnet]: 'https://live.blockcypher.com/btc-testnet',
+};
+
+//TODO: refactor into Bitcoin asset definition later
+export const Bitcoin = 'BTC';

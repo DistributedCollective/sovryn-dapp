@@ -1,6 +1,7 @@
 import React, { ReactNode } from 'react';
 
 import classNames from 'classnames';
+import { motion } from 'framer-motion';
 
 import { Icon, IconNames, Paragraph, ParagraphSize } from '../../1_atoms';
 import { applyDataAttr } from '../../utils';
@@ -25,7 +26,11 @@ export const Notification: React.FC<NotificationProps> = ({
   type = NotificationType.success,
   title,
 }) => (
-  <div
+  <motion.div
+    layout
+    initial={{ opacity: 0, y: 50, scale: 0.3 }}
+    animate={{ opacity: 1, y: 0, scale: 1 }}
+    exit={{ opacity: 0, scale: 0.5, transition: { duration: 0.2 } }}
     {...applyDataAttr(dataAttribute)}
     className={classNames(styles.notification, styles[type], className)}
   >
@@ -37,10 +42,8 @@ export const Notification: React.FC<NotificationProps> = ({
     )}
     <div className={styles.title}>
       <Icon icon={getIcon(type)} size={18} />
-      <Paragraph className={styles.title} size={ParagraphSize.base}>
-        {title}
-      </Paragraph>
+      <Paragraph size={ParagraphSize.base}>{title}</Paragraph>
     </div>
     {content && <div className={styles.content}>{content}</div>}
-  </div>
+  </motion.div>
 );

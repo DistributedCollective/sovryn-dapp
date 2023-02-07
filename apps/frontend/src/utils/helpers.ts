@@ -5,10 +5,13 @@ import {
   TypedDataDomain,
   TypedDataField,
 } from 'ethers';
+import resolveConfig from 'tailwindcss/resolveConfig';
 
 import { EIP1193Provider } from '@sovryn/onboard-common';
+import tailwindConfig from '@sovryn/tailwindcss-config';
 
-import { servicesConfig } from './constants';
+import { Environments } from '../types/global';
+import { btcExplorer, rskExplorer, servicesConfig } from './constants';
 
 export const prettyTx = (
   text: string,
@@ -38,10 +41,21 @@ export const signTypedData = async (
   return signature;
 };
 
-export const isMainnet = () => process.env.REACT_APP_NETWORK === 'mainnet';
+export const currentNetwork: Environments = !!process.env.REACT_APP_NETWORK
+  ? (process.env.REACT_APP_NETWORK as Environments)
+  : Environments.Mainnet;
+
+export const isMainnet = () =>
+  process.env.REACT_APP_NETWORK === Environments.Mainnet;
 
 export const getServicesConfig = () =>
-  servicesConfig[isMainnet() ? 'mainnet' : 'testnet'];
+  servicesConfig[isMainnet() ? Environments.Mainnet : Environments.Testnet];
+
+export const getRskExplorerUrl = () =>
+  rskExplorer[isMainnet() ? 'mainnet' : 'testnet'];
+
+export const getBtcExplorerUrl = () =>
+  btcExplorer[isMainnet() ? 'mainnet' : 'testnet'];
 
 export const dateFormat = (timestamp: number) => {
   const stamp = dayjs.tz(Number(timestamp) * 1e3, 'UTC');
@@ -88,3 +102,12 @@ export const composeGas = (
   priceInGwei: BigNumberish,
   limitInWei: BigNumberish,
 ) => Number(priceInGwei) * 1e9 * Number(limitInWei);
+
+export const isMobileDevice = () => {
+  const config = resolveConfig(tailwindConfig);
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  const widthToCheck: string = config?.theme?.screens.md; // value will be in format "768px"
+  const screenWidth = window?.visualViewport?.width || 0;
+  return screenWidth < parseInt(widthToCheck || '0');
+};

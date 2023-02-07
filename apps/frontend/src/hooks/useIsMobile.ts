@@ -1,31 +1,23 @@
 import { useState, useEffect, useCallback } from 'react';
 
-import resolveConfig from 'tailwindcss/resolveConfig';
-
-import tailwindConfig from '@sovryn/tailwindcss-config';
+import { isMobileDevice } from '../utils/helpers';
 
 export function useIsMobile() {
-  const [isMobile, setIsMobile] = useState(false);
+  const [isMobile, setIsMobile] = useState(isMobileDevice);
 
-  const getPlatformType = useCallback(() => {
-    const config = resolveConfig(tailwindConfig);
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    const widthToCheck: string = config?.theme?.screens.md; // value will be in format "768px"
-    const screenWidth = window?.visualViewport?.width || 0;
-    return screenWidth < parseInt(widthToCheck || '0')
-      ? setIsMobile(true)
-      : setIsMobile(false);
-  }, []);
+  const checkIsMobile = useCallback(
+    () => setIsMobile(isMobileDevice),
+    [setIsMobile],
+  );
 
   useEffect(() => {
-    getPlatformType();
-    window.addEventListener('resize', getPlatformType);
+    checkIsMobile();
+    window.addEventListener('resize', checkIsMobile);
 
     return () => {
-      window.removeEventListener('resize', getPlatformType);
+      window.removeEventListener('resize', checkIsMobile);
     };
-  }, [getPlatformType]);
+  }, [checkIsMobile]);
 
   return { isMobile };
 }

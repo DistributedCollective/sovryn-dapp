@@ -18,8 +18,8 @@ import {
 
 import { AssetRenderer } from '../../2_molecules/AssetRenderer/AssetRenderer';
 import { translations } from '../../../locales/i18n';
+import { Bitcoin } from '../../../utils/constants';
 import { formatValue } from '../../../utils/math';
-import { tokensToOptions } from '../../../utils/tokens';
 import { Row } from './Row';
 
 type CloseCreditLineProps = {
@@ -41,18 +41,32 @@ export const CloseCreditLine: FC<CloseCreditLineProps> = ({
   );
 
   const collateralValueRenderer = useCallback(
-    (value: number) =>
-      `${formatValue(value, 6)} ${SupportedTokens.rbtc.toUpperCase()}`,
+    (value: number) => `${formatValue(value, 6)} ${Bitcoin}`,
     [],
   );
 
   const insufficientBalance = useMemo(() => {
-    return Number(availableBalance) - Number(creditValue);
+    return Number(creditValue) - Number(availableBalance);
   }, [availableBalance, creditValue]);
 
   const hasError = useMemo(
     () => Number(availableBalance) < Number(creditValue),
     [creditValue, availableBalance],
+  );
+
+  const tokenOptions = useMemo(
+    () =>
+      [SupportedTokens.zusd, SupportedTokens.dllr].map(token => ({
+        value: token,
+        label: (
+          <AssetRenderer
+            showAssetLogo
+            asset={token}
+            assetClassName="font-medium"
+          />
+        ),
+      })),
+    [],
   );
 
   return (
@@ -78,7 +92,7 @@ export const CloseCreditLine: FC<CloseCreditLineProps> = ({
             <Select
               value={creditToken}
               onChange={setCreditToken}
-              options={tokensToOptions([SupportedTokens.zusd])}
+              options={tokenOptions}
               labelRenderer={({ value }) => (
                 <AssetRenderer
                   dataAttribute="close-credit-line-credit-asset"
@@ -107,13 +121,13 @@ export const CloseCreditLine: FC<CloseCreditLineProps> = ({
       {hasError && (
         <Paragraph
           children={
-            <div className="flex justify-center items-center mt-4 p-2 rounded bolder-error bg-error bg-opacity-20">
+            <span className="flex justify-center items-center mt-4 p-2 rounded bolder-error bg-error bg-opacity-20">
               <Icon icon="failed-tx" size={20} className="mr-3 w-5 min-w-5" />
               {t(translations.closeCreditLine.error, {
                 amount: insufficientBalance,
                 token: creditToken.toUpperCase(),
               })}
-            </div>
+            </span>
           }
           className="text-error-light mt-4 font-medium"
           size={ParagraphSize.small}

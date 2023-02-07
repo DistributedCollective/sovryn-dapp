@@ -2,12 +2,12 @@ import { useQuery } from '@apollo/client';
 
 import { useMemo } from 'react';
 
+import { useWalletConnect } from '../../../../hooks';
 import { zeroClient } from '../../../../utils/clients';
 import { GetUserOpenTroveDocument } from '../../../../utils/graphql/zero/generated';
-import { useAccount } from './../../../../hooks/useAccount';
 
 export const useGetUserOpenTrove = () => {
-  const { account } = useAccount();
+  const { account } = useWalletConnect();
   const troveConfig = useMemo(
     () => ({
       user: account,

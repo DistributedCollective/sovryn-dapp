@@ -1,5 +1,6 @@
 import React, { FC, useCallback, useMemo } from 'react';
 
+import classNames from 'classnames';
 import { t } from 'i18next';
 import { nanoid } from 'nanoid';
 
@@ -66,6 +67,9 @@ export const AmountRenderer: FC<AmountRendererProps> = ({
           </span>
         </span>
       }
+      className={classNames({
+        'cursor-pointer': !tooltipDisabled,
+      })}
       disabled={tooltipDisabled}
       trigger={TooltipTrigger.click}
       dataAttribute={dataAttribute}

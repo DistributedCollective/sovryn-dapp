@@ -100,9 +100,9 @@ export const RewardHistory: FC = () => {
         cellRenderer: tx => (
           <AmountRenderer
             value={tx.collateralGain || 0}
-            sufix={Bitcoin}
-            {...applyDataAttr('reward-history-collateral-gain')}
+            suffix={Bitcoin}
             precision={8}
+            dataAttribute="reward-history-collateral-gain"
           />
         ),
       },
@@ -113,7 +113,7 @@ export const RewardHistory: FC = () => {
           <TransactionId
             href={`${chain?.blockExplorerUrl}/tx/${tx.transaction.id}`}
             value={tx.transaction.id}
-            {...applyDataAttr('history-reward-address-id')}
+            dataAttribute="history-reward-address-id"
           />
         ),
       },

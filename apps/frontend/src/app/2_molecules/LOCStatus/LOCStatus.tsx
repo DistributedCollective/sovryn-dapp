@@ -58,8 +58,9 @@ export const LOCStatus: FC<LOCStatusProps> = ({
               value={
                 <AmountRenderer
                   value={collateral}
-                  sufix={Bitcoin}
+                  suffix={Bitcoin}
                   precision={8}
+                  dataAttribute="LOC-collateral"
                 />
               }
             />

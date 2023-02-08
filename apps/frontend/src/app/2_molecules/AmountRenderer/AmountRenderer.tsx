@@ -37,7 +37,7 @@ export const AmountRenderer: FC<AmountRendererProps> = ({
     await navigator.clipboard.writeText(String(value));
     addNotification({
       type: NotificationType.success,
-      title: t(translations.copyAddress),
+      title: t(translations.copyAmount),
       content: '',
       dismissible: true,
       id: nanoid(),

@@ -283,6 +283,7 @@ export const FormContent: FC<FormContentProps> = props => {
             tooltip={t(translations.adjustCreditLine.fields.debt.tooltip)}
             className="w-full flex-grow-0 flex-shrink"
             invalid={!!props.debtError}
+            placeholder="0"
           />
           <Select
             value={props.debtToken}
@@ -325,6 +326,7 @@ export const FormContent: FC<FormContentProps> = props => {
           className="max-w-none"
           unit="RBTC"
           invalid={!!props.collateralError}
+          placeholder="0"
         />
       </FormGroup>
       <div className="mt-6">

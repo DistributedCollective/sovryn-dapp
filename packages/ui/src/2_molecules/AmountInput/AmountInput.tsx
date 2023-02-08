@@ -65,7 +65,7 @@ export const AmountInput = React.forwardRef<HTMLInputElement, AmountInputProps>(
     const formatValue = useCallback(
       (value: string | number) => {
         if (!value) {
-          return '0';
+          return '';
         }
 
         let unformattedNumberValue = String(value);

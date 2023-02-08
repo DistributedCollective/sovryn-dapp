@@ -29,6 +29,21 @@ generates:
         Bytes: string
         BigInt: string
         BigDecimal: string
+  ./src/utils/graphql/mynt/generated.tsx:
+    schema:
+      - './src/utils/graphql/mynt/schema.graphql'
+    documents:
+      - './src/utils/graphql/mynt/operations/*.graphql'
+    plugins:
+      - typescript
+      - typescript-operations
+      - typescript-react-apollo
+    config:
+      withHooks: true
+      scalars:
+        Bytes: string
+        BigInt: string
+        BigDecimal: string
 hooks:
   afterAllFileWrite:
     - prettier ./src/utils/graphql --write

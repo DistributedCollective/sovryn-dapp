@@ -28,8 +28,9 @@ import { translations } from '../../../locales/i18n';
 import { zeroClient } from '../../../utils/clients';
 import {
   Bitcoin,
-  EXPORT_RECORD_LIMIT,
   LIQUIDATION_RESERVE_AMOUNT,
+  DEFAULT_HISTORY_FRAME_PAGE_SIZE,
+  EXPORT_RECORD_LIMIT,
 } from '../../../utils/constants';
 import {
   InputMaybe,
@@ -43,15 +44,13 @@ import { dateFormat } from '../../../utils/helpers';
 import { formatValue } from '../../../utils/math';
 import { useGetTroves } from './hooks/useGetTroves';
 
-// TODO usage example, to be removed
-const DEFAULT_PAGE_SIZE = 10;
+const pageSize = DEFAULT_HISTORY_FRAME_PAGE_SIZE;
 
 export const TransactionHistoryFrame: FC = () => {
   const { t } = useTranslation();
   const { account } = useAccount();
   const { addNotification } = useNotificationContext();
   const [page, setPage] = useState(0);
-  const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE);
   const chain = chains.find(chain => chain.id === defaultChainId);
   const [filters, setFilters] = useState<InputMaybe<TroveChange_Filter>>({});
 
@@ -180,13 +179,10 @@ export const TransactionHistoryFrame: FC = () => {
     [t, filters],
   );
 
-  const troves = useMemo(() => {
-    if (!data) {
-      return null;
-    }
-
-    return data.trove?.changes;
-  }, [data]);
+  const troves = useMemo(
+    () => (data?.trove?.changes as TroveChange[]) || [],
+    [data?.trove?.changes],
+  );
 
   const renderLiquidationReserve = useCallback(trove => {
     const { troveOperation, redemption } = trove;
@@ -534,12 +530,12 @@ export const TransactionHistoryFrame: FC = () => {
       }
       setPage(value);
     },
-    [page, troves, pageSize],
+    [page, troves],
   );
 
   const isNextButtonDisabled = useMemo(
     () => !loading && (!troves || troves?.length < pageSize),
-    [loading, troves, pageSize],
+    [loading, troves],
   );
 
   const exportData = useCallback(async () => {
@@ -598,7 +594,6 @@ export const TransactionHistoryFrame: FC = () => {
         getData={exportData}
         filename="transactions"
         className="mb-7 hidden lg:inline-flex"
-        onExportEnd={() => setPageSize(DEFAULT_PAGE_SIZE)}
         disabled={!troves}
       />
       <div className="bg-gray-80 py-4 px-4 rounded">

@@ -31,10 +31,10 @@ import { SystemStats } from '../../2_molecules/SystemStats/SystemStats';
 import { GettingStartedPopup } from '../../3_organisms/GettingStartedPopup/GettingStartedPopup';
 import { LOCChart } from '../../3_organisms/LOCChart/LOCChart';
 import { useGetUserOpenTrove } from '../../3_organisms/LOCChart/hooks/useGetUserOpenTrove';
-import { AdjustCreditLine } from '../../3_organisms/ZeroLocForm/AdjustCreditLine';
 import { CloseCreditLine } from '../../3_organisms/ZeroLocForm/CloseCreditLine';
+import { AdjustCreditLine } from '../../3_organisms/ZeroLocForm/components/AdjustCreditLine';
+import { OpenCreditLine } from '../../3_organisms/ZeroLocForm/components/OpenCreditLine';
 import { DEBT_TOKEN } from '../../3_organisms/ZeroLocForm/constants';
-import { CreditLineType } from '../../3_organisms/ZeroLocForm/types';
 import { useWalletConnect } from '../../../hooks';
 import { useAccount } from '../../../hooks/useAccount';
 import { translations } from '../../../locales/i18n';
@@ -216,16 +216,20 @@ export const ZeroPage: FC = () => {
                   onClose={toggle}
                 />
                 <DialogBody>
-                  {open && (
+                  {open && !hasLoc && (
+                    <OpenCreditLine
+                      onSubmit={handleTroveSubmit}
+                      rbtcPrice={Number(price)}
+                      borrowingRate={Number(fees?.borrowingRate() ?? 0)}
+                    />
+                  )}
+                  {open && hasLoc && (
                     <AdjustCreditLine
-                      type={
-                        !hasLoc ? CreditLineType.Open : CreditLineType.Adjust
-                      }
                       existingCollateral={String(collateral)}
                       existingDebt={String(debt)}
+                      rbtcPrice={Number(price)}
+                      borrowingRate={Number(fees?.borrowingRate() ?? 0)}
                       onSubmit={handleTroveSubmit}
-                      rbtcPrice={price}
-                      fees={fees}
                     />
                   )}
                 </DialogBody>

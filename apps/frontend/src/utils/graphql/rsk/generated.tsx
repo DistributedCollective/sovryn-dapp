@@ -1874,15 +1874,15 @@ export type CrossTransfer = {
    */
   createdAtTx: Transaction;
   /**
-   * DestinationChain - the destination chain - for outgoing it is BSC/ETH and for incoming it is RSK
-   *
-   */
-  destinationChain: BridgeChain;
-  /**
    * Direction - the direction of the cross transfer (Incoming or Outgoing)
    *
    */
   direction: CrossDirection;
+  /**
+   * sourceChain - the source chain - for outgoing it is RSK and for incoming it is BSC/ETH
+   *
+   */
+  externalChain: BridgeChain;
   /**
    * Address of the user on the external chain (eg Ethereum, BSC etc.)
    *
@@ -1894,6 +1894,11 @@ export type CrossTransfer = {
    */
   id: Scalars['ID'];
   /**
+   * IsSigned - is this transfer signed by the federation contract (only relevant for the new federation contracts)
+   *
+   */
+  isSigned: Scalars['Boolean'];
+  /**
    * originalTokenAddress - the original token address for the transfer (for outgoing it is just the RSK token address)
    *
    */
@@ -1903,11 +1908,6 @@ export type CrossTransfer = {
    *
    */
   sideToken?: Maybe<SideToken>;
-  /**
-   * sourceChain - the source chain - for outgoing it is RSK and for incoming it is BSC/ETH
-   *
-   */
-  sourceChain: BridgeChain;
   /**
    * SourceChainBlockHash - the source chain block hash of the transfer, for outgoing transfers this is just the RSK block hash
    *
@@ -1991,14 +1991,14 @@ export type CrossTransfer_Filter = {
   createdAtTx_not_in?: InputMaybe<Array<Scalars['String']>>;
   createdAtTx_not_starts_with?: InputMaybe<Scalars['String']>;
   createdAtTx_starts_with?: InputMaybe<Scalars['String']>;
-  destinationChain?: InputMaybe<BridgeChain>;
-  destinationChain_in?: InputMaybe<Array<BridgeChain>>;
-  destinationChain_not?: InputMaybe<BridgeChain>;
-  destinationChain_not_in?: InputMaybe<Array<BridgeChain>>;
   direction?: InputMaybe<CrossDirection>;
   direction_in?: InputMaybe<Array<CrossDirection>>;
   direction_not?: InputMaybe<CrossDirection>;
   direction_not_in?: InputMaybe<Array<CrossDirection>>;
+  externalChain?: InputMaybe<BridgeChain>;
+  externalChain_in?: InputMaybe<Array<BridgeChain>>;
+  externalChain_not?: InputMaybe<BridgeChain>;
+  externalChain_not_in?: InputMaybe<Array<BridgeChain>>;
   externalUser?: InputMaybe<Scalars['Bytes']>;
   externalUser_contains?: InputMaybe<Scalars['Bytes']>;
   externalUser_in?: InputMaybe<Array<Scalars['Bytes']>>;
@@ -2013,6 +2013,10 @@ export type CrossTransfer_Filter = {
   id_lte?: InputMaybe<Scalars['ID']>;
   id_not?: InputMaybe<Scalars['ID']>;
   id_not_in?: InputMaybe<Array<Scalars['ID']>>;
+  isSigned?: InputMaybe<Scalars['Boolean']>;
+  isSigned_in?: InputMaybe<Array<Scalars['Boolean']>>;
+  isSigned_not?: InputMaybe<Scalars['Boolean']>;
+  isSigned_not_in?: InputMaybe<Array<Scalars['Boolean']>>;
   originalTokenAddress?: InputMaybe<Scalars['Bytes']>;
   originalTokenAddress_contains?: InputMaybe<Scalars['Bytes']>;
   originalTokenAddress_in?: InputMaybe<Array<Scalars['Bytes']>>;
@@ -2033,7 +2037,6 @@ export type CrossTransfer_Filter = {
   sideToken_not_in?: InputMaybe<Array<Scalars['String']>>;
   sideToken_not_starts_with?: InputMaybe<Scalars['String']>;
   sideToken_starts_with?: InputMaybe<Scalars['String']>;
-  sourceChain?: InputMaybe<BridgeChain>;
   sourceChainBlockHash?: InputMaybe<Scalars['Bytes']>;
   sourceChainBlockHash_contains?: InputMaybe<Scalars['Bytes']>;
   sourceChainBlockHash_in?: InputMaybe<Array<Scalars['Bytes']>>;
@@ -2046,9 +2049,6 @@ export type CrossTransfer_Filter = {
   sourceChainTransactionHash_not?: InputMaybe<Scalars['Bytes']>;
   sourceChainTransactionHash_not_contains?: InputMaybe<Scalars['Bytes']>;
   sourceChainTransactionHash_not_in?: InputMaybe<Array<Scalars['Bytes']>>;
-  sourceChain_in?: InputMaybe<Array<BridgeChain>>;
-  sourceChain_not?: InputMaybe<BridgeChain>;
-  sourceChain_not_in?: InputMaybe<Array<BridgeChain>>;
   status?: InputMaybe<CrossStatus>;
   status_in?: InputMaybe<Array<CrossStatus>>;
   status_not?: InputMaybe<CrossStatus>;
@@ -2137,13 +2137,13 @@ export enum CrossTransfer_OrderBy {
   Amount = 'amount',
   CreatedAtTimestamp = 'createdAtTimestamp',
   CreatedAtTx = 'createdAtTx',
-  DestinationChain = 'destinationChain',
   Direction = 'direction',
+  ExternalChain = 'externalChain',
   ExternalUser = 'externalUser',
   Id = 'id',
+  IsSigned = 'isSigned',
   OriginalTokenAddress = 'originalTokenAddress',
   SideToken = 'sideToken',
-  SourceChain = 'sourceChain',
   SourceChainBlockHash = 'sourceChainBlockHash',
   SourceChainTransactionHash = 'sourceChainTransactionHash',
   Status = 'status',

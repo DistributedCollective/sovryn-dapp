@@ -3590,6 +3590,7 @@ export type GetTrovesQuery = {
         collateralRatioSortKey?: string | null;
         collateral: string;
         debt: string;
+        status: TroveStatus;
       };
     }>;
   }>;
@@ -3619,6 +3620,7 @@ export type GetTrovesAboveQuery = {
         collateralRatioSortKey?: string | null;
         collateral: string;
         debt: string;
+        status: TroveStatus;
       };
     }>;
   }>;
@@ -3648,6 +3650,7 @@ export type GetTrovesBelowQuery = {
         collateralRatioSortKey?: string | null;
         collateral: string;
         debt: string;
+        status: TroveStatus;
       };
     }>;
   }>;
@@ -3676,6 +3679,7 @@ export type GetUserOpenTroveQuery = {
         collateralRatioSortKey?: string | null;
         collateral: string;
         debt: string;
+        status: TroveStatus;
       };
     }>;
   } | null;
@@ -3770,7 +3774,7 @@ export const GetLowestTrovesDocument = gql`
       orderDirection: desc
       orderBy: collateralRatioSortKey
       first: $first
-      where: { collateralRatioSortKey_lt: $userCollateralRatioKey }
+      where: { collateralRatioSortKey_gt: $userCollateralRatioKey }
     ) {
       collateral
       debt
@@ -4191,6 +4195,7 @@ export const GetTrovesDocument = gql`
           collateralRatioSortKey
           collateral
           debt
+          status
         }
       }
     }
@@ -4250,7 +4255,7 @@ export const GetTrovesAboveDocument = gql`
       first: $first
       where: {
         status: open
-        collateralRatioSortKey_gt: $userCollateralRatioKey
+        collateralRatioSortKey_lt: $userCollateralRatioKey
       }
     ) {
       changes(
@@ -4269,6 +4274,7 @@ export const GetTrovesAboveDocument = gql`
           collateralRatioSortKey
           collateral
           debt
+          status
         }
       }
     }
@@ -4334,7 +4340,7 @@ export const GetTrovesBelowDocument = gql`
       first: $first
       where: {
         status: open
-        collateralRatioSortKey_lt: $userCollateralRatioKey
+        collateralRatioSortKey_gt: $userCollateralRatioKey
       }
     ) {
       changes(
@@ -4353,6 +4359,7 @@ export const GetTrovesBelowDocument = gql`
           collateralRatioSortKey
           collateral
           debt
+          status
         }
       }
     }
@@ -4429,6 +4436,7 @@ export const GetUserOpenTroveDocument = gql`
           collateralRatioSortKey
           collateral
           debt
+          status
         }
       }
     }

@@ -3,7 +3,7 @@ query getTrovesAbove($first: Int!, $userCollateralRatioKey: BigInt) {
     orderDirection: desc
     orderBy: collateralRatioSortKey
     first: $first
-    where: { status: open, collateralRatioSortKey_gt: $userCollateralRatioKey }
+    where: { status: open, collateralRatioSortKey_lt: $userCollateralRatioKey }
   ) {
     changes(
       where: { troveOperation: openTrove }
@@ -21,6 +21,7 @@ query getTrovesAbove($first: Int!, $userCollateralRatioKey: BigInt) {
         collateralRatioSortKey
         collateral
         debt
+        status
       }
     }
   }

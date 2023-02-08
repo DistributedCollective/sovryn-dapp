@@ -3,7 +3,7 @@ query getLowestTroves($first: Int!, $userCollateralRatioKey: BigInt) {
     orderDirection: desc
     orderBy: collateralRatioSortKey
     first: $first
-    where: { collateralRatioSortKey_lt: $userCollateralRatioKey }
+    where: { collateralRatioSortKey_gt: $userCollateralRatioKey }
   ) {
     collateral
     debt

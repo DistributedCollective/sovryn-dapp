@@ -10,6 +10,7 @@ import { useTransactionContext } from '../../../../contexts/TransactionContext';
 import { useAccount } from '../../../../hooks/useAccount';
 import { translations } from '../../../../locales/i18n';
 import { getRskChainId } from '../../../../utils/chain';
+import { GAS_LIMIT_REWARDS } from '../../../../utils/constants';
 import { toWei } from '../../../../utils/math';
 import { RewardsAction } from './../types';
 
@@ -18,20 +19,25 @@ export const useHandleRewards = (action: RewardsAction, amount: string) => {
   const { signer, account } = useAccount();
   const { setTransactions, setIsOpen, setTitle } = useTransactionContext();
 
+  const isWithdrawTransaction = useMemo(
+    () => action === RewardsAction.withdrawFromSP,
+    [action],
+  );
+
   const title = useMemo(
     () =>
-      action === RewardsAction.withdrawFromSP
+      isWithdrawTransaction
         ? t(translations.rewardPage.tx.withdrawGains)
         : t(translations.rewardPage.tx.transferToLOC),
-    [action, t],
+    [isWithdrawTransaction, t],
   );
 
   const transactionTitle = useMemo(
     () =>
-      action === RewardsAction.withdrawFromSP
+      isWithdrawTransaction
         ? t(translations.rewardPage.tx.withdraw)
         : t(translations.rewardPage.tx.transfer),
-    [action, t],
+    [isWithdrawTransaction, t],
   );
 
   const getStabilityPoolContract = useCallback(async () => {
@@ -52,25 +58,24 @@ export const useHandleRewards = (action: RewardsAction, amount: string) => {
       title: title,
       contract: stabilityPool,
       fnName: action,
-      args:
-        action === RewardsAction.withdrawFromSP
-          ? [toWei(amount)]
-          : [account, account],
+      args: isWithdrawTransaction ? [toWei(amount)] : [account, account],
+      config: { gasLimit: GAS_LIMIT_REWARDS }, // TODO: add a different limit for transfer if needed
     });
 
     setTransactions(transactions);
     setTitle(transactionTitle);
     setIsOpen(true);
   }, [
+    getStabilityPoolContract,
+    title,
+    action,
+    isWithdrawTransaction,
     amount,
     account,
-    action,
-    title,
-    transactionTitle,
-    getStabilityPoolContract,
-    setIsOpen,
-    setTitle,
     setTransactions,
+    setTitle,
+    transactionTitle,
+    setIsOpen,
   ]);
 
   return handleAction;

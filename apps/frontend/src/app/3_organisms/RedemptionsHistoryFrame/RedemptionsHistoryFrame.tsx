@@ -24,7 +24,11 @@ import { ExportCSV } from '../../2_molecules/ExportCSV/ExportCSV';
 import { useNotificationContext } from '../../../contexts/NotificationContext';
 import { useAccount } from '../../../hooks/useAccount';
 import { translations } from '../../../locales/i18n';
-import { Bitcoin, EXPORT_RECORD_LIMIT } from '../../../utils/constants';
+import {
+  Bitcoin,
+  DEFAULT_HISTORY_FRAME_PAGE_SIZE,
+  EXPORT_RECORD_LIMIT,
+} from '../../../utils/constants';
 import {
   Redemption,
   Redemption_Filter,
@@ -34,8 +38,7 @@ import { dateFormat } from '../../../utils/helpers';
 import { formatValue } from '../../../utils/math';
 import { useGetRedemptionsHistory } from './hooks/useGetRedemptionsHistory';
 
-// TODO usage example, to be removed
-const DEFAULT_PAGE_SIZE = 10;
+const pageSize = DEFAULT_HISTORY_FRAME_PAGE_SIZE;
 
 export const RedemptionsHistoryFrame: FC = () => {
   const { t } = useTranslation();
@@ -43,7 +46,6 @@ export const RedemptionsHistoryFrame: FC = () => {
   const { addNotification } = useNotificationContext();
 
   const [page, setPage] = useState(0);
-  const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE);
   const chain = chains.find(chain => chain.id === defaultChainId);
 
   const [orderOptions, setOrderOptions] = useState<OrderOptions>({
@@ -201,12 +203,12 @@ export const RedemptionsHistoryFrame: FC = () => {
       }
       setPage(value);
     },
-    [page, redemptions?.length, pageSize],
+    [page, redemptions.length],
   );
 
   const isNextButtonDisabled = useMemo(
     () => !loading && redemptions?.length < pageSize,
-    [loading, redemptions, pageSize],
+    [loading, redemptions],
   );
 
   const exportData = useCallback(async () => {
@@ -251,7 +253,6 @@ export const RedemptionsHistoryFrame: FC = () => {
         getData={exportData}
         filename="transactions"
         className="mb-7 hidden lg:inline-flex"
-        onExportEnd={() => setPageSize(DEFAULT_PAGE_SIZE)}
         disabled={!redemptions || redemptions.length === 0}
       />
       <div className="bg-gray-80 py-4 px-4 rounded">

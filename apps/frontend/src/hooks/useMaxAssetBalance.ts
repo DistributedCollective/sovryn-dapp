@@ -14,12 +14,11 @@ import {
   CacheCallResponse,
 } from '../store/rxjs/provider-cache';
 import { getRskChainId } from '../utils/chain';
+import { MAX_GAS_LIMIT } from '../utils/constants';
 import { composeGas } from '../utils/helpers';
 import { useAssetBalance } from './useAssetBalance';
 import { useAsync } from './useAsync';
 import { useGasPrice } from './useGasPrice';
-
-const MAX_GAS_LIMIT = 68000000; // 6.8M (rsk block gas limit)
 
 export const useMaxAssetBalance = (
   asset: SupportedTokens,

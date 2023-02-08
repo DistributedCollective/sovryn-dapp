@@ -69,7 +69,11 @@
             "rbtcPrice": "BTC price",
             "rbtcPriceTooltip": "BTC price in USD",
             "originationFee": "Origination fee",
-            "originationFeeTooltip": "Origination fee in percentage"
+            "originationFeeTooltip": "Origination fee in percentage",
+            "liquidationReserve": "Liquidation Reserve",
+            "liquidationReserveTooltip": "Liquidation Reserve in ZUSD",
+            "totalDebt": "Total debt",
+            "totalDebtTooltip": "Total debt amount"
         }
     },
     "closeCreditLine": {
@@ -132,6 +136,19 @@
             "networkFee": "Network Fee",
             "transactionID": "Transaction ID"
         },
+        "actions": {
+            "noDataToExport": "No data to export"
+        }
+    },
+    "conversionsHistory": {
+        "table": {
+            "timestamp": "Timestamp",
+            "transactionType": "Transaction Type",
+            "sent": "Sent",
+            "received": "Received",
+            "txId": "TXID"
+        },
+        "type": "Convert",
         "actions": {
             "noDataToExport": "No data to export"
         }
@@ -242,7 +259,9 @@
                 "collateralTooLow": "Collateral balance must be at least {{value}}",
                 "withdrawBalanceTooLow": "The collateral amount you're trying to withdraw exceeds your trove balance by {{value}}",
                 "repayBalanceTooLow": "The {{currency}} amount you're trying to repay exceeds your balance by {{value}}",
-                "creditBalanceTooLow": "The {{currency}} amount you're trying to borrow exceeds your maximum by {{value}}"
+                "creditBalanceTooLow": "The {{currency}} amount you're trying to borrow exceeds your maximum by {{value}}",
+                "totalDebtTooLow": "The total debt must be at least {{value}} {{currency}}",
+                "newTotalDebtTooLow": "The new total debt must be at least {{value}} {{currency}}"
             }
         },
         "tx": {

@@ -1,15 +1,12 @@
-import { useQuery } from '@apollo/client';
-
 import { useMemo } from 'react';
 
 import { OrderOptions } from '@sovryn/ui';
 
-import { zeroClient } from '../../../../utils/clients';
 import {
-  GetTroveDocument,
   InputMaybe,
   TroveChange_Filter,
   TroveChange_OrderBy,
+  useGetTroveQuery,
 } from '../../../../utils/graphql/zero/generated';
 
 export const useGetTroves = (
@@ -31,10 +28,5 @@ export const useGetTroves = (
     [account, page, orderOptions, filters, pageSize],
   );
 
-  const { loading, data } = useQuery(GetTroveDocument, {
-    variables: troveConfig,
-    client: zeroClient,
-  });
-
-  return { loading, data };
+  return useGetTroveQuery({ variables: troveConfig });
 };

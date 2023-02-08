@@ -227,12 +227,13 @@ export const LOCChart: FC = () => {
             Number(curr.debt),
             Number(curr.collateral),
             Number(userCollateralRatio),
+            price,
           ),
         0,
       );
       setRedemptionBuffer(redemptionBuffer);
     }
-  }, [lowestTroves, loadingLowestTroves, userCollateralRatio]);
+  }, [lowestTroves, loadingLowestTroves, userCollateralRatio, price]);
 
   const { data: userOpenTroveAbove, loading: loadingUserOpenTroveAbove } =
     useGetTrovesPositions(userCollateralRatio, TrovesFilterType.above);

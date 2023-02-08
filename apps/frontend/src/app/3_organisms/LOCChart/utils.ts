@@ -35,8 +35,10 @@ export const calculateRedemptionBuffer = (
   debt: number,
   collateral: number,
   collateralRatio: number,
+  price: string,
 ) => {
   const collateralRatioValue = (collateralRatio + 0.01) / 100; //user’s CR + 0.01%
-  const minimumLOCRedemption = debt - collateral / collateralRatioValue;
+  const minimumLOCRedemption =
+    debt - (collateral * Number(price)) / collateralRatioValue;
   return minimumLOCRedemption;
 };

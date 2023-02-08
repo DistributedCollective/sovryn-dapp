@@ -6,7 +6,7 @@ import { Link, Footer as UIFooter } from '@sovryn/ui';
 
 import { SocialLinks } from '../../2_molecules';
 import { SovrynLogo } from '../../2_molecules/SovrynLogo/SovrynLogo';
-import Logo from '../../../assets/images/sovryn-small-logo.svg';
+import Logo from '../../../assets/images/Bitcoin-logo-small.svg';
 import { translations } from '../../../locales/i18n';
 import { Environments } from '../../../types/global';
 import {

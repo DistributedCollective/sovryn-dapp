@@ -29,8 +29,13 @@ export const TransactionTypeRenderer: FC<TransactionTypeRendererProps> = ({
             translations.stabilityPoolHistory.stabilityPoolOperation
               .withdrawCollateralGain,
           );
+        case StabilityDepositOperation.WithdrawGainToLineOfCredit:
+          return t(
+            translations.stabilityPoolHistory.stabilityPoolOperation
+              .withdrawGainToLineOfCredit,
+          );
         default:
-          return '';
+          return operation;
       }
     },
     [t],

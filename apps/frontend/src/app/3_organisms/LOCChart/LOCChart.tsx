@@ -16,6 +16,7 @@ import { useTranslation } from 'react-i18next';
 import { SupportedTokens } from '@sovryn/contracts';
 import { prettyTx } from '@sovryn/ui';
 
+import { useBlockNumber } from '../../../hooks/useBlockNumber';
 import { translations } from '../../../locales/i18n';
 import { Bitcoin } from '../../../utils/constants';
 import { formatValue } from '../../../utils/math';
@@ -73,6 +74,8 @@ export const LOCChart: FC = () => {
   const { price } = useGetRBTCPrice();
   const [userCollateralRatio, setUserCollateralRatio] = useState('');
   const [redemptionBuffer, setRedemptionBuffer] = useState(0);
+
+  const { value: block } = useBlockNumber();
 
   const options = useMemo(() => {
     return {
@@ -202,11 +205,17 @@ export const LOCChart: FC = () => {
     };
   }, [t, activeBar, userCollateralRatio, redemptionBuffer]);
 
-  const { data: userOpenTrove, loading: loadingUserOpenTrove } =
-    useGetUserOpenTrove();
+  const {
+    data: userOpenTrove,
+    loading: loadingUserOpenTrove,
+    refetch: refetchOpenTrove,
+  } = useGetUserOpenTrove();
 
-  const { data: lowestTroves, loading: loadingLowestTroves } =
-    useGetLowestTroves(userCollateralRatio);
+  const {
+    data: lowestTroves,
+    loading: loadingLowestTroves,
+    refetch: refetchLowestTroves,
+  } = useGetLowestTroves(userCollateralRatio);
 
   useEffect(() => {
     if (!loadingLowestTroves) {
@@ -224,13 +233,38 @@ export const LOCChart: FC = () => {
     }
   }, [lowestTroves, loadingLowestTroves, userCollateralRatio]);
 
-  const { data: userOpenTroveAbove, loading: loadingUserOpenTroveAbove } =
-    useGetTrovesPositions(userCollateralRatio, TrovesFilterType.above);
+  const {
+    data: userOpenTroveAbove,
+    loading: loadingUserOpenTroveAbove,
+    refetch: refetchUserOpenTroveAbove,
+  } = useGetTrovesPositions(userCollateralRatio, TrovesFilterType.above);
 
-  const { data: userOpenTroveBelow, loading: loadingUserOpenTroveBelow } =
-    useGetTrovesPositions(userCollateralRatio, TrovesFilterType.below);
+  const {
+    data: userOpenTroveBelow,
+    loading: loadingUserOpenTroveBelow,
+    refetch: refetchUserOpenTroveBelow,
+  } = useGetTrovesPositions(userCollateralRatio, TrovesFilterType.below);
 
-  const { data: troves, loading: loadingTroves } = useGetTroves();
+  const {
+    data: troves,
+    loading: loadingTroves,
+    refetch: refetchTroves,
+  } = useGetTroves();
+
+  useEffect(() => {
+    refetchOpenTrove();
+    refetchLowestTroves();
+    refetchUserOpenTroveAbove();
+    refetchUserOpenTroveBelow();
+    refetchTroves();
+  }, [
+    refetchTroves,
+    block,
+    refetchOpenTrove,
+    refetchLowestTroves,
+    refetchUserOpenTroveAbove,
+    refetchUserOpenTroveBelow,
+  ]);
 
   const datasets: ChartData<'bar', ChartDataStructure> = useMemo(() => {
     return {

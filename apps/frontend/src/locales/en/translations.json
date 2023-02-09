@@ -2,6 +2,7 @@
     "wallet": "wallet",
     "exportCSV": "Export to CSV",
     "copyAddress": "Address was copied to clipboard.",
+    "copyAmount": "Amount was copied to clipboard.",
     "common": {
         "socials": {
             "discord": "Discord",
@@ -318,7 +319,8 @@
                 "stability": "Stability pool",
                 "convert": "Conversion",
                 "funding": "Funding",
-                "collateralSurplusWithdrawals": "Collateral surplus withdrawals"
+                "collateralSurplusWithdrawals": "Collateral surplus withdrawals",
+                "reward": "Reward"
             },
             "comingSoon": "Coming soon..."
         }
@@ -347,7 +349,8 @@
         "stabilityPoolOperation": {
             "deposit": "Deposit",
             "withdrawal": "Withdrawal",
-            "withdrawCollateralGain": "Withdraw collateral gain"
+            "withdrawCollateralGain": "Withdraw collateral gain",
+            "withdrawGainToLineOfCredit": "Withdraw gain to line of credit"
         },
         "filters": {
             "depositTokens": "Deposit",
@@ -376,6 +379,17 @@
             "withdrawGains": "Withdraw gains",
             "transferToLOC": "Transfer gains to LOC",
             "transfer": "Transfer"
+        }
+    },
+    "rewardHistoryTable": {
+        "table": {
+            "timestamp": "Timestamp",
+            "transactionType": "Transaction Type",
+            "rewardChange": "Reward change",
+            "transactionID": "Transaction ID"
+        },
+        "actions": {
+            "noDataToExport": "No data to export"
         }
     },
     "fastBtc": {

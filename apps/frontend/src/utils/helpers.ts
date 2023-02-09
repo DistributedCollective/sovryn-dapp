@@ -48,6 +48,9 @@ export const currentNetwork: Environments = !!process.env.REACT_APP_NETWORK
 export const isMainnet = () =>
   process.env.REACT_APP_NETWORK === Environments.Mainnet;
 
+export const isTestnetFastBtcEnabled = () =>
+  process.env.REACT_APP_ENABLE_TESTNET_FAST_BTC === 'true';
+
 export const getServicesConfig = () =>
   servicesConfig[isMainnet() ? Environments.Mainnet : Environments.Testnet];
 

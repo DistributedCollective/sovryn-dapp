@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { Chains } from '../../../../config/chains';
+
 import { useGetProtocolContract } from '../../../../hooks/useGetContract';
 import {
   defaultValue,

@@ -28,11 +28,12 @@ import {
   TabType,
 } from '@sovryn/ui';
 
+import { AmountRenderer } from '../../2_molecules/AmountRenderer/AmountRenderer';
 import { AssetRenderer } from '../../2_molecules/AssetRenderer/AssetRenderer';
 import { useAccount } from '../../../hooks/useAccount';
 import { useAssetBalance } from '../../../hooks/useAssetBalance';
 import { translations } from '../../../locales/i18n';
-import { formatValue, fromWei, toWei } from '../../../utils/math';
+import { fromWei, toWei } from '../../../utils/math';
 import { tokenList } from './EarnPage.types';
 import { useHandleStabilityDeposit } from './hooks/useHandleStabilityDeposit';
 
@@ -267,8 +268,13 @@ const EarnPage: FC = () => {
             className="text-xs font-medium underline whitespace-nowrap"
             {...applyDataAttr('earn-max-button')}
           >
-            ({t(commonTranslations.max)} {formatValue(Number(maximumAmount), 4)}{' '}
-            {token.toUpperCase()})
+            ({t(commonTranslations.max)}
+            <AmountRenderer
+              value={maximumAmount}
+              precision={4}
+              suffix={token.toUpperCase()}
+            />
+            )
           </button>
         </div>
 

@@ -1,13 +1,13 @@
-import React, { FC, useCallback, useMemo, useState } from 'react';
+import React, { FC, useMemo } from 'react';
 
 import { t } from 'i18next';
 
 import { SupportedTokens } from '@sovryn/contracts';
 import { Button } from '@sovryn/ui';
 
-import { FastBtcDialog } from '../../../../3_organisms/FastBtcDialog/FastBtcDialog';
 import { useAssetBalance } from '../../../../../hooks/useAssetBalance';
 import { translations } from '../../../../../locales/i18n';
+import { sharedState } from '../../../../../store/rxjs/shared-state';
 
 export type ConnectedUserBannerProps = {
   openLOC: () => void;
@@ -17,19 +17,15 @@ export const ConnectedUserBanner: FC<ConnectedUserBannerProps> = ({
   openLOC,
 }) => {
   const { value, loading } = useAssetBalance(SupportedTokens.rbtc);
-  const [isFastBtcDialogOpen, setIsFastBtcDialogOpen] = useState(false);
-
-  const openFastBtcDialog = useCallback(() => setIsFastBtcDialogOpen(true), []);
-  const closeFastBtcDialog = useCallback(
-    () => setIsFastBtcDialogOpen(false),
-    [],
-  );
 
   const hasRbtcBalance = useMemo(() => Number(value) !== 0, [value]);
 
   const onClickHandler = useMemo(
-    () => (hasRbtcBalance ? openLOC : openFastBtcDialog),
-    [hasRbtcBalance, openLOC, openFastBtcDialog],
+    () =>
+      hasRbtcBalance
+        ? openLOC
+        : () => sharedState.actions.openFastBtcDialog(true),
+    [hasRbtcBalance, openLOC],
   );
 
   const dataAttribute = useMemo(
@@ -56,11 +52,6 @@ export const ConnectedUserBanner: FC<ConnectedUserBannerProps> = ({
         onClick={onClickHandler}
         text={buttonText}
         dataAttribute={dataAttribute}
-      />
-      <FastBtcDialog
-        isOpen={isFastBtcDialogOpen}
-        onClose={closeFastBtcDialog}
-        shouldHideSend
       />
     </div>
   );

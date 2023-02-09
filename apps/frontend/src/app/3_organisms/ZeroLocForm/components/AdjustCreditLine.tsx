@@ -8,6 +8,7 @@ import { SupportedTokens } from '@sovryn/contracts';
 import { ErrorLevel } from '../../../1_atoms/ErrorBadge/ErrorBadge';
 import { BORROW_ASSETS } from '../../../5_pages/ZeroPage/constants';
 import { useAssetBalance } from '../../../../hooks/useAssetBalance';
+import { useMaxAssetBalance } from '../../../../hooks/useMaxAssetBalance';
 import { translations } from '../../../../locales/i18n';
 import { Bitcoin } from '../../../../utils/constants';
 import { formatValue, fromWei, toWei } from '../../../../utils/math';
@@ -56,7 +57,9 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
     [collateralAmount],
   );
 
-  const { value: _maxRbtcWeiBalance } = useAssetBalance(SupportedTokens.rbtc);
+  const { value: _maxRbtcWeiBalance } = useMaxAssetBalance(
+    SupportedTokens.rbtc,
+  );
   const { value: _debtTokenWeiBalance } = useAssetBalance(debtToken);
 
   const isIncreasingDebt = useMemo(

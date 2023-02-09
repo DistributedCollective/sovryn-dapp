@@ -29,10 +29,8 @@ export const useGetStabilityPoolHistory = (
     [page, orderOptions, filters, pageSize, account],
   );
 
-  const { loading, data } = useGetStabilityPoolQuery({
+  return useGetStabilityPoolQuery({
     variables: stabilityPoolConfig,
     client: zeroClient,
   });
-
-  return { loading, data };
 };

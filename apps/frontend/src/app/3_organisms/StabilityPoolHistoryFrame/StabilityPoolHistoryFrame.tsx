@@ -26,6 +26,7 @@ import { Filter } from '../../2_molecules/TableFilter/TableFilter.types';
 import { TransactionTypeRenderer } from '../../2_molecules/TransactionTypeRenderer/TransactionTypeRenderer';
 import { useNotificationContext } from '../../../contexts/NotificationContext';
 import { useAccount } from '../../../hooks/useAccount';
+import { useBlockNumber } from '../../../hooks/useBlockNumber';
 import { translations } from '../../../locales/i18n';
 import { zeroClient } from '../../../utils/clients';
 import { EXPORT_RECORD_LIMIT } from '../../../utils/constants';
@@ -48,6 +49,8 @@ export const StabilityPoolHistoryFrame: FC = () => {
   const { addNotification } = useNotificationContext();
   const [filters, setFilters] = useState<StabilityDepositChange_Filter>({});
 
+  const { value: block } = useBlockNumber();
+
   const [page, setPage] = useState(0);
   const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE);
   const chain = chains.find(chain => chain.id === defaultChainId);
@@ -57,13 +60,17 @@ export const StabilityPoolHistoryFrame: FC = () => {
     orderDirection: OrderDirection.Desc,
   });
 
-  const { data, loading } = useGetStabilityPoolHistory(
+  const { data, loading, refetch } = useGetStabilityPoolHistory(
     account,
     pageSize,
     page,
     filters,
     orderOptions,
   );
+
+  useEffect(() => {
+    refetch();
+  }, [refetch, block]);
 
   const transactionTypeChangeFilters = useMemo(
     () =>

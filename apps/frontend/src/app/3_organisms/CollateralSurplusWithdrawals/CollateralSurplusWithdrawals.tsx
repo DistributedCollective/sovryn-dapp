@@ -20,6 +20,7 @@ import { chains, defaultChainId } from '../../../config/chains';
 import { ExportCSV } from '../../2_molecules/ExportCSV/ExportCSV';
 import { useNotificationContext } from '../../../contexts/NotificationContext';
 import { useAccount } from '../../../hooks/useAccount';
+import { useBlockNumber } from '../../../hooks/useBlockNumber';
 import { translations } from '../../../locales/i18n';
 import {
   Bitcoin,
@@ -44,17 +45,24 @@ export const CollateralSurplusHistoryFrame: FC = () => {
   const [page, setPage] = useState(0);
   const chain = chains.find(chain => chain.id === defaultChainId);
 
+  const { value: block } = useBlockNumber();
+
   const [orderOptions, setOrderOptions] = useState<OrderOptions>({
     orderBy: 'sequenceNumber',
     orderDirection: OrderDirection.Desc,
   });
 
-  const { data, loading } = useGetCollateralSurplusWithdrawals(
+  const { data, loading, refetch } = useGetCollateralSurplusWithdrawals(
     account,
     pageSize,
     page,
     orderOptions,
   );
+
+  useEffect(() => {
+    refetch();
+  }, [refetch, block]);
+
   const [getCollSurplusChanges] = useGetCollSurplusChangesLazyQuery();
 
   const renderCollateralChange = useCallback((collSurplusChange: string) => {

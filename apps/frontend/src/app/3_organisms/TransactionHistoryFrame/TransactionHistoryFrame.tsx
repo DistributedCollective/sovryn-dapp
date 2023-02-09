@@ -24,6 +24,7 @@ import { TableFilter } from '../../2_molecules/TableFilter/TableFilter';
 import { Filter } from '../../2_molecules/TableFilter/TableFilter.types';
 import { useNotificationContext } from '../../../contexts/NotificationContext';
 import { useAccount } from '../../../hooks/useAccount';
+import { useBlockNumber } from '../../../hooks/useBlockNumber';
 import { translations } from '../../../locales/i18n';
 import { zeroClient } from '../../../utils/clients';
 import {
@@ -53,6 +54,8 @@ export const TransactionHistoryFrame: FC = () => {
   const [page, setPage] = useState(0);
   const chain = chains.find(chain => chain.id === defaultChainId);
   const [filters, setFilters] = useState<InputMaybe<TroveChange_Filter>>({});
+
+  const { value: block } = useBlockNumber();
 
   const [orderOptions, setOrderOptions] = useState<OrderOptions>({
     orderBy: 'sequenceNumber',
@@ -159,13 +162,17 @@ export const TransactionHistoryFrame: FC = () => {
     transactionTypeFilters,
   ]);
 
-  const { data, loading } = useGetTroves(
+  const { data, loading, refetch } = useGetTroves(
     account,
     pageSize,
     page,
     getFinalFilters(),
     orderOptions,
   );
+
+  useEffect(() => {
+    refetch();
+  }, [refetch, block]);
 
   const [getTroves] = useGetTroveLazyQuery({
     client: zeroClient,

@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { t } from 'i18next';
 import { nanoid } from 'nanoid';
@@ -16,6 +16,7 @@ import { ExportCSV } from '../../2_molecules/ExportCSV/ExportCSV';
 import { masset } from '../../5_pages/ConvertPage/ConvertPage.types';
 import { useNotificationContext } from '../../../contexts/NotificationContext';
 import { useAccount } from '../../../hooks/useAccount';
+import { useBlockNumber } from '../../../hooks/useBlockNumber';
 import { translations } from '../../../locales/i18n';
 import {
   DEFAULT_HISTORY_FRAME_PAGE_SIZE,
@@ -36,6 +37,8 @@ export const ConversionsHistoryFrame: React.FC = () => {
   const { account } = useAccount();
   const [page, setPage] = useState(0);
 
+  const { value: block } = useBlockNumber();
+
   const { addNotification } = useNotificationContext();
 
   const [orderOptions, setOrderOptions] = useState<OrderOptions>({
@@ -43,12 +46,16 @@ export const ConversionsHistoryFrame: React.FC = () => {
     orderDirection: OrderDirection.Desc,
   });
 
-  const { data, loading } = useGetConversionsHistory(
+  const { data, loading, refetch } = useGetConversionsHistory(
     account,
     pageSize,
     page,
     orderOptions,
   );
+
+  useEffect(() => {
+    refetch();
+  }, [refetch, block]);
 
   const conversions = useMemo(
     () => (data?.conversions as Conversion[]) || [],

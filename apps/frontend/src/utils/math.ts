@@ -93,3 +93,10 @@ export const parseUnitValue = (unitName: BigNumberish): number => {
   }
   return Number(unitName);
 };
+
+export const numeric = (value: number) => {
+  if (isNaN(value) || !isFinite(value) || !value) {
+    return 0;
+  }
+  return value;
+};

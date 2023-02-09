@@ -106,10 +106,7 @@ const EarnPage: FC = () => {
 
   const { value: weiBalance } = useAssetBalance(token);
 
-  const balance = useMemo(
-    () => String(Number(fromWei(weiBalance))),
-    [weiBalance],
-  );
+  const balance = useMemo(() => fromWei(weiBalance), [weiBalance]);
 
   const onTokenChange = useCallback((value: SupportedTokens) => {
     setToken(value);
@@ -144,6 +141,7 @@ const EarnPage: FC = () => {
     () => (isDeposit ? balance : poolBalance),
     [balance, isDeposit, poolBalance],
   );
+
   const onMaximumAmountClick = useCallback(
     () => setAmount(maximumAmount),
     [maximumAmount],
@@ -179,9 +177,12 @@ const EarnPage: FC = () => {
     if (isAmountZero) {
       return t(commonTranslations.na);
     }
-    const newBalance = BigNumber.from(toWei(poolBalance)).add(
-      toWei(isDeposit ? amount : -amount),
-    );
+    let newBalance = BigNumber.from(toWei(poolBalance));
+    if (isDeposit) {
+      newBalance = newBalance.add(toWei(amount));
+    } else {
+      newBalance = newBalance.sub(toWei(amount));
+    }
     if (newBalance.lt(0)) {
       return '0';
     }
@@ -200,9 +201,12 @@ const EarnPage: FC = () => {
       return t(commonTranslations.na);
     }
 
-    const newZUSDInStabilityPool = toWei(ZUSDInStabilityPool).add(
-      toWei(isDeposit ? amount : -amount),
-    );
+    let newZUSDInStabilityPool = toWei(ZUSDInStabilityPool);
+    if (isDeposit) {
+      newZUSDInStabilityPool = newZUSDInStabilityPool.add(toWei(amount));
+    } else {
+      newZUSDInStabilityPool = newZUSDInStabilityPool.sub(toWei(amount));
+    }
 
     if (newZUSDInStabilityPool.isZero()) {
       return '0 %';

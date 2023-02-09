@@ -44,6 +44,10 @@ describe('utils/math.ts', () => {
       );
     });
 
+    it('correctly converts a really small number', () => {
+      expect(toWei('0.0000000000000004').toString()).toEqual('400');
+    });
+
     it('fails for unexpected value', () => {
       expect(() => toWei('error')).toThrowError(
         'Invalid BigNumberish value: error',

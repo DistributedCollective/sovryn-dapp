@@ -13,6 +13,7 @@ import {
 import { Bar } from 'react-chartjs-2';
 
 import { useAccount } from '../../../hooks/useAccount';
+import { useBlockNumber } from '../../../hooks/useBlockNumber';
 import { fromWei, formatValue } from '../../../utils/math';
 import { useGetChartOptions } from './hooks/useGetChartOptions';
 import { useGetGlobalsEntity } from './hooks/useGetGlobalsEntity';
@@ -66,20 +67,25 @@ export const LOCChart: FC = () => {
   const [userCollateralRatio, setUserCollateralRatio] = useState('');
   const [redemptionBuffer, setRedemptionBuffer] = useState(0);
   const [userTrovesBelowCount, setUserTrovesBelowCount] = useState(0);
+  const { value: block } = useBlockNumber();
 
-  const { data: userOpenTrove, loading: loadingUserOpenTrove } =
-    useGetUserOpenTrove();
+  const {
+    data: userOpenTrove,
+    loading: loadingUserOpenTrove,
+    refetch: refetchOpenTrove,
+  } = useGetUserOpenTrove();
 
-  const { data: lowestTroves, loading: loadingLowestTroves } =
-    useGetLowestTroves(userCollateralRatio);
-
-  console.log(lowestTroves);
+  const {
+    data: lowestTroves,
+    loading: loadingLowestTroves,
+    refetch: refetchLowestTroves,
+  } = useGetLowestTroves(userCollateralRatio);
 
   const { data: globalsEntity } = useGetGlobalsEntity();
 
   const hasUserOpenTrove = useMemo(() => {
     if (account) {
-      return userOpenTrove?.trove?.changes[0]?.trove.status === 'open';
+      return userOpenTrove?.trove?.status === 'open';
     }
     return false;
   }, [userOpenTrove, account]);
@@ -107,13 +113,38 @@ export const LOCChart: FC = () => {
     }
   }, [lowestTroves, loadingLowestTroves, userCollateralRatio, price]);
 
-  const { data: userOpenTroveAbove, loading: loadingUserOpenTroveAbove } =
-    useGetTrovesPositions(userCollateralRatio, TrovesFilterType.above);
+  const {
+    data: userOpenTroveAbove,
+    loading: loadingUserOpenTroveAbove,
+    refetch: refetchUserOpenTroveAbove,
+  } = useGetTrovesPositions(userCollateralRatio, TrovesFilterType.above);
 
-  const { data: userOpenTroveBelow, loading: loadingUserOpenTroveBelow } =
-    useGetTrovesPositions(userCollateralRatio, TrovesFilterType.below);
+  const {
+    data: userOpenTroveBelow,
+    loading: loadingUserOpenTroveBelow,
+    refetch: refetchUserOpenTroveBelow,
+  } = useGetTrovesPositions(userCollateralRatio, TrovesFilterType.below);
 
-  const { data: troves, loading: loadingTroves } = useGetTroves();
+  const {
+    data: troves,
+    loading: loadingTroves,
+    refetch: refetchTroves,
+  } = useGetTroves();
+
+  useEffect(() => {
+    refetchOpenTrove();
+    refetchLowestTroves();
+    refetchUserOpenTroveAbove();
+    refetchUserOpenTroveBelow();
+    refetchTroves();
+  }, [
+    refetchTroves,
+    block,
+    refetchOpenTrove,
+    refetchLowestTroves,
+    refetchUserOpenTroveAbove,
+    refetchUserOpenTroveBelow,
+  ]);
 
   const datasets: ChartData<'bar', TroveData[]> = useMemo(() => {
     return {
@@ -141,8 +172,8 @@ export const LOCChart: FC = () => {
 
   useEffect(() => {
     if (!loadingUserOpenTrove && userOpenTrove?.trove) {
-      const { trove } = userOpenTrove.trove.changes[0];
-      setUserCollateralRatio(trove.collateralRatioSortKey?.toString());
+      const { trove } = userOpenTrove;
+      setUserCollateralRatio(trove.collateralRatioSortKey);
       setActiveBar(true);
     }
     if (!userOpenTrove) {
@@ -187,8 +218,8 @@ export const LOCChart: FC = () => {
           debtAmount: Number(trove.debt) + Number(debtAmount),
           collateralRatioSortKey: trove.collateralRatioSortKey,
           collateralRatio: calculateCollateralRatio(
-            Number(trove.collateral),
-            trove.debt,
+            Number(trove.collateral) + Number(collateralAmount),
+            Number(trove.debt) + Number(debtAmount),
             price,
           ),
         },
@@ -201,8 +232,8 @@ export const LOCChart: FC = () => {
           debtAmount: Number(trove.debt) + Number(debtAmount),
           collateralRatioSortKey: trove.collateralRatioSortKey,
           collateralRatio: calculateCollateralRatio(
-            trove.collateral,
-            trove.debt,
+            Number(trove.collateral) + Number(collateralAmount),
+            Number(trove.debt) + Number(debtAmount),
             price,
           ),
         }),
@@ -215,14 +246,14 @@ export const LOCChart: FC = () => {
           debtAmount: Number(trove.debt) + Number(debtAmount),
           collateralRatioSortKey: trove.collateralRatioSortKey,
           collateralRatio: calculateCollateralRatio(
-            trove.collateral,
-            trove.debt,
+            Number(trove.collateral) + Number(collateralAmount),
+            Number(trove.debt) + Number(debtAmount),
             price,
           ),
         }),
       );
 
-      setData(sortData([...trovesDataBelow, ...userTrove, ...trovesDataAbove]));
+      setData([...trovesDataBelow, ...userTrove, ...trovesDataAbove]);
       if (lowestTroves) {
         setUserTrovesBelowCount(
           lowestTroves.troves.length - trovesDataBelow.length,
@@ -257,9 +288,10 @@ export const LOCChart: FC = () => {
         collateralAmount: trove.collateral,
         debtAmount: trove.debt,
         collateralRatioSortKey: trove.collateralRatioSortKey,
+        collateralRatioSortKey_legacy: trove.collateralRatioSortKey_legacy,
         collateralRatio: calculateCollateralRatio(
           trove.collateral,
-          trove.debt,
+          Number(trove.debt),
           price,
         ),
       }));

@@ -20,7 +20,6 @@ import {
 } from '@sovryn/ui';
 
 import { AssetRenderer } from '../../2_molecules/AssetRenderer/AssetRenderer';
-import { TransactionStepDialog } from '../../3_organisms';
 import { useAccount } from '../../../hooks/useAccount';
 import { translations } from '../../../locales/i18n';
 import { formatValue } from '../../../utils/math';
@@ -258,7 +257,6 @@ const ConvertPage: FC = () => {
           dataAttribute="convert-confirm"
         />
       </div>
-      <TransactionStepDialog />
     </div>
   );
 };

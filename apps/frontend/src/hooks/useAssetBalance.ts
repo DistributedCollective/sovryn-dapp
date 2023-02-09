@@ -75,7 +75,10 @@ export const useAssetBalance = (
                 .balanceOf(account)
                 .then(result => result.toString());
 
-      startCall(hashedArgs, callback, options);
+      startCall(hashedArgs, callback, {
+        ...options,
+        blockNumber: options?.blockNumber || block,
+      });
     };
 
     runAsync().catch(e => setState({ value: '0', loading: false, error: e }));

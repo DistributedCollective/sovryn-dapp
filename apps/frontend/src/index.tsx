@@ -42,7 +42,7 @@ root.render(
             </NotificationProvider>
           </MaintenanceModeContextProvider>
         </ApolloProvider>
-        <TransactionStepDialog />
+        <TransactionStepDialog disableFocusTrap />
       </TransactionProvider>
     </NetworkProvider>
   </React.StrictMode>,

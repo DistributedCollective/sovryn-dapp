@@ -82,7 +82,7 @@ export const LOCChart: FC = () => {
   const { data: lowestTroves, loading: loadingLowestTroves } =
     useGetLowestTroves(userCollateralRatio);
 
-  const isUserOpenTrove = useMemo(() => {
+  const hasUserOpenTrove = useMemo(() => {
     if (account) {
       return userOpenTrove?.trove?.changes[0]?.trove.status === 'open';
     }
@@ -180,7 +180,7 @@ export const LOCChart: FC = () => {
       userOpenTroveBelow &&
       !loadingUserOpenTroveAbove &&
       !loadingUserOpenTroveBelow &&
-      isUserOpenTrove
+      hasUserOpenTrove
     ) {
       const { transaction, trove } = userOpenTrove.trove.changes[0];
       const userTrove = [
@@ -246,7 +246,7 @@ export const LOCChart: FC = () => {
   }, [
     userOpenTrove,
     lowestTroves,
-    isUserOpenTrove,
+    hasUserOpenTrove,
     userCollateralRatio,
     userOpenTroveAbove,
     userOpenTroveBelow,
@@ -260,7 +260,12 @@ export const LOCChart: FC = () => {
   ]);
 
   useEffect(() => {
-    if (!loadingTroves && troves && !loadingUserOpenTrove && !isUserOpenTrove) {
+    if (
+      !loadingTroves &&
+      troves &&
+      !loadingUserOpenTrove &&
+      !hasUserOpenTrove
+    ) {
       const trovesData = troves.troves.map(({ changes }: TroveData) => ({
         id: changes[0].sequenceNumber.toString(),
         sequenceNumber: changes[0].trove.collateralRatioSortKey.toString(),
@@ -277,6 +282,6 @@ export const LOCChart: FC = () => {
       setUserTrovesBelowCount(0);
       setData(sortData([...trovesData]));
     }
-  }, [price, troves, loadingTroves, isUserOpenTrove, loadingUserOpenTrove]);
+  }, [price, troves, loadingTroves, hasUserOpenTrove, loadingUserOpenTrove]);
   return <Bar className="max-w-full" options={options} data={datasets} />;
 };

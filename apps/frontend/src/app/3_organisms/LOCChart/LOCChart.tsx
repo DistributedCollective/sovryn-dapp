@@ -1,4 +1,4 @@
-import React, { useEffect, FC, useState, useMemo } from 'react';
+import React, { useEffect, FC, useState, useMemo, useCallback } from 'react';
 
 import {
   Chart as ChartJS,
@@ -12,10 +12,12 @@ import {
 } from 'chart.js';
 import { Bar } from 'react-chartjs-2';
 import { useTranslation } from 'react-i18next';
+import { useLoaderData } from 'react-router-dom';
 
 import { SupportedTokens } from '@sovryn/contracts';
 import { prettyTx } from '@sovryn/ui';
 
+import { ZeroPageLoaderData } from '../../5_pages/ZeroPage/loader';
 import { useAccount } from '../../../hooks/useAccount';
 import { translations } from '../../../locales/i18n';
 import { Bitcoin } from '../../../utils/constants';
@@ -77,6 +79,9 @@ export const LOCChart: FC = () => {
   const [userCollateralRatio, setUserCollateralRatio] = useState('');
   const [redemptionBuffer, setRedemptionBuffer] = useState(0);
   const [xLabels, setXLabels] = useState(0);
+  const { liquity } = useLoaderData() as ZeroPageLoaderData;
+  const [userDebtAmount, setUserDebtAmount] = useState('0');
+  const [userCollateralAmount, setUserCollateralAmount] = useState('0');
 
   const options = useMemo(() => {
     return {
@@ -236,6 +241,21 @@ export const LOCChart: FC = () => {
     }
   }, [lowestTroves, loadingLowestTroves, userCollateralRatio, price]);
 
+  const getTroves = useCallback(() => {
+    if (account && liquity) {
+      liquity.getTrove(account).then(trove => {
+        setUserDebtAmount(trove.debt.toString());
+        setUserCollateralAmount(trove.collateral.toString());
+      });
+    }
+  }, [account, liquity]);
+
+  useEffect(() => {
+    if (account && liquity) {
+      getTroves();
+    }
+  }, [account, liquity, getTroves]);
+
   const { data: userOpenTroveAbove, loading: loadingUserOpenTroveAbove } =
     useGetTrovesPositions(userCollateralRatio, TrovesFilterType.above);
 
@@ -297,11 +317,11 @@ export const LOCChart: FC = () => {
           sequenceNumber: trove.collateralRatioSortKey.toString(),
           address: trove.id,
           tx: transaction.id,
-          collateralAmount: trove.collateral,
-          debtAmount: trove.debt,
+          collateralAmount: userCollateralAmount,
+          debtAmount: userDebtAmount,
           collateralRatio: calculateCollateralRatio(
-            trove.collateral,
-            trove.debt,
+            userCollateralAmount,
+            userDebtAmount,
             price,
           ),
         },
@@ -316,7 +336,7 @@ export const LOCChart: FC = () => {
           collateralAmount: changes[0].trove.collateral,
           debtAmount: changes[0].trove.debt,
           collateralRatio: calculateCollateralRatio(
-            changes[0].trove.collateral,
+            changes[0].trove.collateral.toString(),
             changes[0].trove.debt,
             price,
           ),
@@ -332,7 +352,7 @@ export const LOCChart: FC = () => {
           collateralAmount: changes[0].trove.collateral,
           debtAmount: changes[0].trove.debt,
           collateralRatio: calculateCollateralRatio(
-            changes[0].trove.collateral,
+            changes[0].trove.collateral.toString(),
             changes[0].trove.debt,
             price,
           ),
@@ -346,7 +366,7 @@ export const LOCChart: FC = () => {
       }
 
       setActiveBar(
-        calculateCollateralRatio(trove.collateral, trove.debt, price),
+        calculateCollateralRatio(userCollateralAmount, userDebtAmount, price),
       );
     }
   }, [
@@ -360,6 +380,8 @@ export const LOCChart: FC = () => {
     loadingUserOpenTroveAbove,
     loadingUserOpenTroveBelow,
     price,
+    userCollateralAmount,
+    userDebtAmount,
     activeBar,
   ]);
 
@@ -373,14 +395,12 @@ export const LOCChart: FC = () => {
         collateralAmount: changes[0].trove.collateral,
         debtAmount: changes[0].trove.debt,
         collateralRatio: calculateCollateralRatio(
-          changes[0].trove.collateral,
+          changes[0].trove.collateral.toString(),
           changes[0].trove.debt,
           price,
         ),
       }));
-
       setXLabels(0);
-
       setData(sortData([...trovesData]));
     }
   }, [price, troves, loadingTroves, isUserOpenTrove, loadingUserOpenTrove]);

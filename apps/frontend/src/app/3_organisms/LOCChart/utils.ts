@@ -23,10 +23,10 @@ export const chartConfig = {
 };
 
 export const calculateCollateralRatio = (
-  collateral: number,
+  collateral: string,
   debt: string,
   price: string,
-) => ((collateral * Number(price)) / Number(debt)) * 100;
+) => ((Number(collateral) * Number(price)) / Number(debt)) * 100;
 
 export const sortData = (data: ChartDataStructure) =>
   data.sort((a, b) => a.collateralRatio - b.collateralRatio);

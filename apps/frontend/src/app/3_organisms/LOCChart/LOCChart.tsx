@@ -166,7 +166,6 @@ export const LOCChart: FC = () => {
             color: chartConfig.defaultColor,
           },
           ticks: {
-            callback: value => Number(value + 1).toFixed(0),
             color: chartConfig.fontColor,
             font: {
               family: chartConfig.defaultFont,
@@ -190,7 +189,7 @@ export const LOCChart: FC = () => {
             color: chartConfig.defaultColor,
           },
           ticks: {
-            callback: value => Number(value).toFixed(2) + '%',
+            callback: value => Number(value).toFixed(3) + '%',
             color: chartConfig.fontColor,
             font: {
               family: chartConfig.defaultFont,
@@ -249,7 +248,7 @@ export const LOCChart: FC = () => {
         {
           data: data,
           parsing: {
-            xAxisKey: ChartSortingType.tx,
+            xAxisKey: ChartSortingType.id,
             yAxisKey: ChartSortingType.collateralRatio,
           },
           backgroundColor: bar => {
@@ -292,6 +291,7 @@ export const LOCChart: FC = () => {
       const { transaction, trove } = userOpenTrove.trove.changes[0];
       const userTrove = [
         {
+          id: transaction.sequenceNumber.toString(),
           sequenceNumber: trove.collateralRatioSortKey.toString(),
           address: trove.id,
           tx: transaction.id,
@@ -307,6 +307,7 @@ export const LOCChart: FC = () => {
 
       const trovesDataAbove = userOpenTroveAbove.troves.map(
         ({ changes }: TroveData) => ({
+          id: changes[0].sequenceNumber.toString(),
           sequenceNumber: changes[0].trove.collateralRatioSortKey.toString(),
           address: changes[0].trove.id,
           tx: changes[0].transaction.id,
@@ -322,6 +323,7 @@ export const LOCChart: FC = () => {
 
       const trovesDataBelow = userOpenTroveBelow.troves.map(
         ({ changes }: TroveData) => ({
+          id: changes[0].sequenceNumber.toString(),
           sequenceNumber: changes[0].trove.collateralRatioSortKey.toString(),
           address: changes[0].trove.id,
           tx: changes[0].transaction.id,
@@ -357,6 +359,7 @@ export const LOCChart: FC = () => {
   useEffect(() => {
     if (!loadingTroves && troves && !loadingUserOpenTrove && !isUserOpenTrove) {
       const trovesData = troves.troves.map(({ changes }: TroveData) => ({
+        id: changes[0].sequenceNumber.toString(),
         sequenceNumber: changes[0].trove.collateralRatioSortKey.toString(),
         address: changes[0].trove.id,
         tx: changes[0].transaction.id,
@@ -372,6 +375,5 @@ export const LOCChart: FC = () => {
       setData(sortData([...trovesData]));
     }
   }, [price, troves, loadingTroves, isUserOpenTrove, loadingUserOpenTrove]);
-
   return <Bar className="max-w-full" options={options} data={datasets} />;
 };

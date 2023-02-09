@@ -1,5 +1,6 @@
 export type ChartDataStructure = {
   tx: string;
+  id: string;
   sequenceNumber: string;
   collateralAmount: string;
   debtAmount: string;
@@ -28,6 +29,7 @@ export type TroveData = {
 };
 
 export enum ChartSortingType {
+  id = 'id',
   tx = 'tx',
   collateralRatio = 'collateralRatio',
 }

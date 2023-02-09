@@ -3,6 +3,8 @@ query getLowestTroves($first: Int!, $userCollateralRatioKey: BigInt) {
     orderDirection: desc
     orderBy: collateralRatioSortKey
     first: $first
+    # collateralRatioSortKey_gt will return troves with a collateral ratio lower than the user's
+    # a high collateralRatioSortKey means a low collateral ratio
     where: { collateralRatioSortKey_gt: $userCollateralRatioKey }
   ) {
     collateral

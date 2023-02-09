@@ -76,6 +76,7 @@ export const LOCChart: FC = () => {
   const { price } = useGetRBTCPrice();
   const [userCollateralRatio, setUserCollateralRatio] = useState('');
   const [redemptionBuffer, setRedemptionBuffer] = useState(0);
+  const [xLabels, setXLabels] = useState(0);
 
   const options = useMemo(() => {
     return {
@@ -166,6 +167,7 @@ export const LOCChart: FC = () => {
             color: chartConfig.defaultColor,
           },
           ticks: {
+            callback: value => Number(xLabels + value + 1).toFixed(0),
             color: chartConfig.fontColor,
             font: {
               family: chartConfig.defaultFont,
@@ -202,7 +204,7 @@ export const LOCChart: FC = () => {
         },
       },
     };
-  }, [t, activeBar, userCollateralRatio, redemptionBuffer]);
+  }, [t, activeBar, userCollateralRatio, redemptionBuffer, xLabels]);
 
   const { data: userOpenTrove, loading: loadingUserOpenTrove } =
     useGetUserOpenTrove();
@@ -339,12 +341,17 @@ export const LOCChart: FC = () => {
 
       setData(sortData([...trovesDataBelow, ...userTrove, ...trovesDataAbove]));
 
+      if (lowestTroves) {
+        setXLabels(lowestTroves.troves.length - trovesDataAbove.length);
+      }
+
       setActiveBar(
         calculateCollateralRatio(trove.collateral, trove.debt, price),
       );
     }
   }, [
     userOpenTrove,
+    lowestTroves,
     isUserOpenTrove,
     userCollateralRatio,
     userOpenTroveAbove,
@@ -371,6 +378,8 @@ export const LOCChart: FC = () => {
           price,
         ),
       }));
+
+      setXLabels(0);
 
       setData(sortData([...trovesData]));
     }

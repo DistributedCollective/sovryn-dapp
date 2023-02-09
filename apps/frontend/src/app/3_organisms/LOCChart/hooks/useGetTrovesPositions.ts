@@ -22,7 +22,7 @@ export const useGetTrovesPositions = (
     () => (!isMobile ? trovesCount : trovesCountMobile),
     [isMobile],
   );
-  const { loading, data } = useQuery(
+  return useQuery(
     filter === TrovesFilterType.below
       ? GetTrovesBelowDocument
       : GetTrovesAboveDocument,
@@ -34,6 +34,4 @@ export const useGetTrovesPositions = (
       client: zeroClient,
     },
   );
-
-  return { loading, data };
 };

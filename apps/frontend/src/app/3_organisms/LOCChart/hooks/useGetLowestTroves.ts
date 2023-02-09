@@ -5,14 +5,11 @@ import { GetLowestTrovesDocument } from '../../../../utils/graphql/zero/generate
 
 const trovesCount = 100;
 
-export const useGetLowestTroves = (userCollateralRatioKey: string) => {
-  const { loading, data } = useQuery(GetLowestTrovesDocument, {
+export const useGetLowestTroves = (userCollateralRatioKey: string) =>
+  useQuery(GetLowestTrovesDocument, {
     variables: {
       first: trovesCount,
       userCollateralRatioKey: userCollateralRatioKey,
     },
     client: zeroClient,
   });
-
-  return { loading, data };
-};

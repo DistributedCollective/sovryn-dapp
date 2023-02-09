@@ -56,8 +56,8 @@ export const OpenCreditLine: FC<OpenCreditLineProps> = ({
   );
 
   const originationFee = useMemo(
-    () => getOriginationFeeAmount(debtSize),
-    [debtSize],
+    () => getOriginationFeeAmount(debtSize + liquidationReserve, borrowingRate),
+    [borrowingRate, debtSize, liquidationReserve],
   );
 
   const debtWithFees = useMemo(

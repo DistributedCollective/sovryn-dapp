@@ -288,7 +288,6 @@ export const LOCChart: FC = () => {
         collateralAmount: trove.collateral,
         debtAmount: trove.debt,
         collateralRatioSortKey: trove.collateralRatioSortKey,
-        collateralRatioSortKey_legacy: trove.collateralRatioSortKey_legacy,
         collateralRatio: calculateCollateralRatio(
           trove.collateral,
           Number(trove.debt),

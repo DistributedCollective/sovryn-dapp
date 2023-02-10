@@ -24,7 +24,7 @@ export const chartConfig = {
 
 export const calculateCollateralRatio = (
   collateral: number,
-  debt: string,
+  debt: number,
   price: string,
 ) => ((collateral * Number(price)) / Number(debt)) * 100;
 

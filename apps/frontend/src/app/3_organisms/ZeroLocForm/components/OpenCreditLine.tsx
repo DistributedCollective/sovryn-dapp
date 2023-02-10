@@ -78,12 +78,12 @@ export const OpenCreditLine: FC<OpenCreditLineProps> = ({
     [maxCollateralWeiAmount, rbtcGasPrice],
   );
 
-  const minCollateralAmount = useMemo(() => {
-    return (
-      (MIN_DEBT_SIZE / rbtcPrice) *
-      (isRecoveryMode ? CRITICAL_COLLATERAL_RATIO : MINIMUM_COLLATERAL_RATIO)
-    );
-  }, [isRecoveryMode, rbtcPrice]);
+  const minCollateralAmount = useMemo(
+    () =>
+      (Math.max(MIN_DEBT_SIZE, debtWithFees) / rbtcPrice) *
+      (isRecoveryMode ? CRITICAL_COLLATERAL_RATIO : MINIMUM_COLLATERAL_RATIO),
+    [debtWithFees, isRecoveryMode, rbtcPrice],
+  );
 
   const maxCollateralAmount = useMemo(
     () => Number(fromWei(maxRbtcWeiBalance)),
@@ -195,18 +195,24 @@ export const OpenCreditLine: FC<OpenCreditLineProps> = ({
     }
 
     if (toWei(collateralSize).lt(toWei(minCollateralAmount))) {
-      return t(translations.zeroPage.loc.errors.collateralTooLow, {
-        value: `${formatValue(minCollateralAmount, 4)} ${Bitcoin}`,
-      });
+      return (
+        '222' +
+        t(translations.zeroPage.loc.errors.collateralTooLow, {
+          value: `${formatValue(minCollateralAmount, 4)} ${Bitcoin}`,
+        })
+      );
     }
 
     if (toWei(collateralAmount).gt(maxCollateralWeiAmount)) {
       const diff = Number(
         fromWei(toWei(collateralAmount || 0).sub(maxCollateralWeiAmount)),
       );
-      return t(translations.zeroPage.loc.errors.balanceTooLow, {
-        value: `${formatValue(diff, 4)} ${Bitcoin}`,
-      });
+      return (
+        'ddd' +
+        t(translations.zeroPage.loc.errors.balanceTooLow, {
+          value: `${formatValue(diff, 4)} ${Bitcoin}`,
+        })
+      );
     }
 
     return undefined;

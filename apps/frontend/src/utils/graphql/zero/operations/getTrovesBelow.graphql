@@ -21,6 +21,7 @@ query getTrovesBelow($first: Int!, $userCollateralRatioKey: BigInt) {
         collateralRatioSortKey
         collateral
         debt
+        status
       }
     }
   }

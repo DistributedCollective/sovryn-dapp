@@ -16,6 +16,7 @@ import { useTranslation } from 'react-i18next';
 import { SupportedTokens } from '@sovryn/contracts';
 import { prettyTx } from '@sovryn/ui';
 
+import { useAccount } from '../../../hooks/useAccount';
 import { useBlockNumber } from '../../../hooks/useBlockNumber';
 import { translations } from '../../../locales/i18n';
 import { Bitcoin } from '../../../utils/constants';
@@ -26,6 +27,7 @@ import { useGetTroves } from './hooks/useGetTroves';
 import { useGetTrovesPositions } from './hooks/useGetTrovesPositions';
 import { useGetUserOpenTrove } from './hooks/useGetUserOpenTrove';
 import {
+  ChartBarData,
   ChartDataStructure,
   ChartSortingType,
   TroveData,
@@ -69,6 +71,7 @@ ChartJS.register(
 
 export const LOCChart: FC = () => {
   const { t } = useTranslation();
+  const { account } = useAccount();
   const [data, setData] = useState<ChartDataStructure>([]);
   const [activeBar, setActiveBar] = useState<number | null>(null);
   const { price } = useGetRBTCPrice();
@@ -217,6 +220,13 @@ export const LOCChart: FC = () => {
     refetch: refetchLowestTroves,
   } = useGetLowestTroves(userCollateralRatio);
 
+  const isUserOpenTrove = useMemo(() => {
+    if (account) {
+      return userOpenTrove?.trove?.changes[0]?.trove.status === 'open';
+    }
+    return false;
+  }, [userOpenTrove, account]);
+
   useEffect(() => {
     if (!loadingLowestTroves) {
       const redemptionBuffer = lowestTroves?.troves.reduce(
@@ -275,14 +285,22 @@ export const LOCChart: FC = () => {
             xAxisKey: ChartSortingType.tx,
             yAxisKey: ChartSortingType.collateralRatio,
           },
-          backgroundColor: bar =>
-            activeBar && bar.parsed.y === activeBar
-              ? chartConfig.activeColor
-              : chartConfig.defaultColor,
+          backgroundColor: bar => {
+            if (bar.raw) {
+              const { address } = bar.raw as ChartBarData;
+              return activeBar &&
+                bar.parsed.y === activeBar &&
+                address === account
+                ? chartConfig.activeColor
+                : chartConfig.defaultColor;
+            } else {
+              return chartConfig.defaultColor;
+            }
+          },
         },
       ],
     };
-  }, [data, activeBar]);
+  }, [data, activeBar, account]);
 
   useEffect(() => {
     if (!loadingUserOpenTrove && userOpenTrove?.trove && !activeBar) {
@@ -302,7 +320,7 @@ export const LOCChart: FC = () => {
       userOpenTroveBelow &&
       !loadingUserOpenTroveAbove &&
       !loadingUserOpenTroveBelow &&
-      userOpenTrove
+      isUserOpenTrove
     ) {
       const { transaction, trove } = userOpenTrove.trove.changes[0];
 
@@ -359,6 +377,7 @@ export const LOCChart: FC = () => {
     }
   }, [
     userOpenTrove,
+    isUserOpenTrove,
     userCollateralRatio,
     userOpenTroveAbove,
     userOpenTroveBelow,
@@ -370,7 +389,7 @@ export const LOCChart: FC = () => {
   ]);
 
   useEffect(() => {
-    if (!loadingTroves && troves && !loadingUserOpenTrove && !userOpenTrove) {
+    if (!loadingTroves && troves && !loadingUserOpenTrove && !isUserOpenTrove) {
       const trovesData = troves.troves.map(({ changes }: TroveData) => ({
         sequenceNumber: changes[0].trove.collateralRatioSortKey.toString(),
         address: changes[0].trove.id,
@@ -386,7 +405,14 @@ export const LOCChart: FC = () => {
 
       setData(sortData([...trovesData]));
     }
-  }, [price, troves, loadingTroves, userOpenTrove, loadingUserOpenTrove]);
+  }, [
+    price,
+    troves,
+    loadingTroves,
+    userOpenTrove,
+    loadingUserOpenTrove,
+    isUserOpenTrove,
+  ]);
 
   return <Bar className="max-w-full" options={options} data={datasets} />;
 };

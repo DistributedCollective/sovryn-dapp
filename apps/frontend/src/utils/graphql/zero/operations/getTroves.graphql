@@ -21,6 +21,7 @@ query getTroves($first: Int!) {
         collateralRatioSortKey
         collateral
         debt
+        status
       }
     }
   }

@@ -68,7 +68,7 @@ export const MAX_GAS_LIMIT = 6_800_000;
 export const GAS_LIMIT_OPEN_TROVE = 800_000;
 export const GAS_LIMIT_ADJUST_TROVE = 420_000;
 export const GAS_LIMIT_CLOSE_TROVE = 280_000;
-export const GAS_LIMIT_CONVERT = 145_000;
+export const GAS_LIMIT_CONVERT = 150_000;
 export const GAS_LIMIT_STABILITY_POOL = 250_000;
 export const GAS_LIMIT_REWARDS = 240_000;
 

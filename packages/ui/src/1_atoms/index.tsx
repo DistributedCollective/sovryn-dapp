@@ -12,3 +12,4 @@ export * from './HealthBar';
 export * from './Checkbox';
 export * from './DynamicValue';
 export * from './Lottie';
+export * from './ErrorBadge';

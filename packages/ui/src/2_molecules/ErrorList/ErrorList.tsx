@@ -1,13 +1,18 @@
 import React, { FC, useMemo } from 'react';
 
-import { ErrorBadge, ErrorData } from '../../1_atoms/ErrorBadge/ErrorBadge';
+import { ErrorBadge, ErrorData } from '../../1_atoms';
 
 export type ErrorListProps = {
   errors: ErrorData[];
   showSingleError?: boolean;
+  className?: string;
 };
 
-export const ErrorList: FC<ErrorListProps> = ({ errors, showSingleError }) => {
+export const ErrorList: FC<ErrorListProps> = ({
+  errors,
+  showSingleError,
+  className,
+}) => {
   const items = useMemo(
     () => errors.sort((a, b) => (b.weight || 1) - (a.weight || 1)),
     [errors],
@@ -22,7 +27,7 @@ export const ErrorList: FC<ErrorListProps> = ({ errors, showSingleError }) => {
   }
 
   return (
-    <div className="w-full my-6">
+    <div className={className}>
       {items.map((error, index) => (
         <ErrorBadge key={index} {...error} />
       ))}

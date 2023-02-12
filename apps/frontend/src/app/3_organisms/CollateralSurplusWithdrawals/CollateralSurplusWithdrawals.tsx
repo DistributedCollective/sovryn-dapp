@@ -3,7 +3,6 @@ import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { nanoid } from 'nanoid';
 import { useTranslation } from 'react-i18next';
 
-import { SupportedTokens } from '@sovryn/contracts';
 import {
   applyDataAttr,
   NotificationType,
@@ -21,8 +20,13 @@ import { chains, defaultChainId } from '../../../config/chains';
 import { ExportCSV } from '../../2_molecules/ExportCSV/ExportCSV';
 import { useNotificationContext } from '../../../contexts/NotificationContext';
 import { useAccount } from '../../../hooks/useAccount';
+import { useBlockNumber } from '../../../hooks/useBlockNumber';
 import { translations } from '../../../locales/i18n';
-import { EXPORT_RECORD_LIMIT } from '../../../utils/constants';
+import {
+  Bitcoin,
+  DEFAULT_HISTORY_FRAME_PAGE_SIZE,
+  EXPORT_RECORD_LIMIT,
+} from '../../../utils/constants';
 import {
   CollSurplusChange_Filter,
   useGetCollSurplusChangesLazyQuery,
@@ -31,7 +35,7 @@ import { dateFormat } from '../../../utils/helpers';
 import { formatValue } from '../../../utils/math';
 import { useGetCollateralSurplusWithdrawals } from './hooks/useGetCollateralSurplusWithdrawals';
 
-const DEFAULT_PAGE_SIZE = 10;
+const pageSize = DEFAULT_HISTORY_FRAME_PAGE_SIZE;
 
 export const CollateralSurplusHistoryFrame: FC = () => {
   const { t } = useTranslation();
@@ -39,27 +43,30 @@ export const CollateralSurplusHistoryFrame: FC = () => {
   const { addNotification } = useNotificationContext();
 
   const [page, setPage] = useState(0);
-  const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE);
   const chain = chains.find(chain => chain.id === defaultChainId);
+
+  const { value: block } = useBlockNumber();
 
   const [orderOptions, setOrderOptions] = useState<OrderOptions>({
     orderBy: 'sequenceNumber',
     orderDirection: OrderDirection.Desc,
   });
 
-  const { data, loading } = useGetCollateralSurplusWithdrawals(
+  const { data, loading, refetch } = useGetCollateralSurplusWithdrawals(
     account,
     pageSize,
     page,
     orderOptions,
   );
+
+  useEffect(() => {
+    refetch();
+  }, [refetch, block]);
+
   const [getCollSurplusChanges] = useGetCollSurplusChangesLazyQuery();
 
   const renderCollateralChange = useCallback((collSurplusChange: string) => {
-    return `${formatValue(
-      Math.abs(Number(collSurplusChange)),
-      8,
-    )} ${SupportedTokens.rbtc.toUpperCase()}`;
+    return `${formatValue(Math.abs(Number(collSurplusChange)), 8)} ${Bitcoin}`;
   }, []);
 
   const generateRowTitle = useCallback((row: any) => {
@@ -111,12 +118,12 @@ export const CollateralSurplusHistoryFrame: FC = () => {
       }
       setPage(value);
     },
-    [page, data, pageSize],
+    [page, data],
   );
 
   const isNextButtonDisabled = useMemo(
     () => !loading && data?.length < pageSize,
-    [loading, data, pageSize],
+    [loading, data],
   );
 
   const exportData = useCallback(async () => {
@@ -168,7 +175,6 @@ export const CollateralSurplusHistoryFrame: FC = () => {
         getData={exportData}
         filename="transactions"
         className="mb-7 hidden lg:inline-flex"
-        onExportEnd={() => setPageSize(DEFAULT_PAGE_SIZE)}
         disabled={!data || data.length === 0}
       />
       <div className="bg-gray-80 py-4 px-4 rounded">

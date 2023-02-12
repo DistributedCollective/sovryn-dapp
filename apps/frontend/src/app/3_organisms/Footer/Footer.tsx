@@ -6,7 +6,7 @@ import { Link, Footer as UIFooter } from '@sovryn/ui';
 
 import { SocialLinks } from '../../2_molecules';
 import { SovrynLogo } from '../../2_molecules/SovrynLogo/SovrynLogo';
-import Logo from '../../../assets/images/sovryn-small-logo.svg';
+import Logo from '../../../assets/images/Bitcoin-logo-small.svg';
 import { translations } from '../../../locales/i18n';
 import { Environments } from '../../../types/global';
 import {
@@ -63,7 +63,7 @@ export const Footer: FC = () => (
         image={Logo}
         dataAttribute="footer-logo"
         className="max-h-4 max-w-fit mr-2"
-        text="Powered by Bitcoin"
+        text="Powered by bitcoin"
         link="/"
       />
     }

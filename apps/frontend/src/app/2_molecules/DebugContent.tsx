@@ -11,7 +11,6 @@ import { AmountInput, Button, NotificationType } from '@sovryn/ui';
 
 import { defaultChainId } from '../../config/chains';
 
-import { TransactionStepDialog } from '../3_organisms';
 import { EmailNotificationSettingsDialog } from '../3_organisms/EmailNotificationSettingsDialog/EmailNotificationSettingsDialog';
 import { GettingStartedPopup } from '../3_organisms/GettingStartedPopup/GettingStartedPopup';
 import { useNotificationContext } from '../../contexts/NotificationContext';
@@ -203,7 +202,6 @@ export const DebugContent = () => {
           <Button text="Connect to RSK Testnet" onClick={connectWallet} />
         )}
       </div>
-      <TransactionStepDialog />
       <ExampleProviderCall />
       <ExampleTokenDetails />
       <ExampleBalanceCall />

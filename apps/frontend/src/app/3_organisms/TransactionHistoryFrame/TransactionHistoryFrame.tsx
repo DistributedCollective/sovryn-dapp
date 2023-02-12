@@ -24,15 +24,20 @@ import { TableFilter } from '../../2_molecules/TableFilter/TableFilter';
 import { Filter } from '../../2_molecules/TableFilter/TableFilter.types';
 import { useNotificationContext } from '../../../contexts/NotificationContext';
 import { useAccount } from '../../../hooks/useAccount';
+import { useBlockNumber } from '../../../hooks/useBlockNumber';
 import { translations } from '../../../locales/i18n';
+import { zeroClient } from '../../../utils/clients';
 import {
-  EXPORT_RECORD_LIMIT,
+  Bitcoin,
   LIQUIDATION_RESERVE_AMOUNT,
+  DEFAULT_HISTORY_FRAME_PAGE_SIZE,
+  EXPORT_RECORD_LIMIT,
 } from '../../../utils/constants';
 import {
   InputMaybe,
   TroveChange,
   TroveChange_Filter,
+  TroveChange_OrderBy,
   TroveOperation,
   useGetTroveLazyQuery,
 } from '../../../utils/graphql/zero/generated';
@@ -40,17 +45,17 @@ import { dateFormat } from '../../../utils/helpers';
 import { formatValue } from '../../../utils/math';
 import { useGetTroves } from './hooks/useGetTroves';
 
-// TODO usage example, to be removed
-const DEFAULT_PAGE_SIZE = 10;
+const pageSize = DEFAULT_HISTORY_FRAME_PAGE_SIZE;
 
 export const TransactionHistoryFrame: FC = () => {
   const { t } = useTranslation();
   const { account } = useAccount();
   const { addNotification } = useNotificationContext();
   const [page, setPage] = useState(0);
-  const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE);
   const chain = chains.find(chain => chain.id === defaultChainId);
   const [filters, setFilters] = useState<InputMaybe<TroveChange_Filter>>({});
+
+  const { value: block } = useBlockNumber();
 
   const [orderOptions, setOrderOptions] = useState<OrderOptions>({
     orderBy: 'sequenceNumber',
@@ -157,7 +162,7 @@ export const TransactionHistoryFrame: FC = () => {
     transactionTypeFilters,
   ]);
 
-  const { data, loading } = useGetTroves(
+  const { data, loading, refetch } = useGetTroves(
     account,
     pageSize,
     page,
@@ -165,7 +170,13 @@ export const TransactionHistoryFrame: FC = () => {
     orderOptions,
   );
 
-  const [getTroves] = useGetTroveLazyQuery();
+  useEffect(() => {
+    refetch();
+  }, [refetch, block]);
+
+  const [getTroves] = useGetTroveLazyQuery({
+    client: zeroClient,
+  });
 
   const noDataLabel = useMemo(
     () =>
@@ -175,13 +186,10 @@ export const TransactionHistoryFrame: FC = () => {
     [t, filters],
   );
 
-  const troves = useMemo(() => {
-    if (!data) {
-      return null;
-    }
-
-    return data.trove?.changes;
-  }, [data]);
+  const troves = useMemo(
+    () => (data?.trove?.changes as TroveChange[]) || [],
+    [data?.trove?.changes],
+  );
 
   const renderLiquidationReserve = useCallback(trove => {
     const { troveOperation, redemption } = trove;
@@ -318,7 +326,7 @@ export const TransactionHistoryFrame: FC = () => {
                   trove.troveOperation,
                   Number(trove.collateralChange),
                 )}
-                {trove.collateralChange} {SupportedTokens.rbtc}
+                {trove.collateralChange} {Bitcoin}
               </>
             }
             trigger={TooltipTrigger.click}
@@ -328,8 +336,7 @@ export const TransactionHistoryFrame: FC = () => {
           >
             <span>
               {renderSign(trove.troveOperation, Number(trove.collateralChange))}
-              {formatValue(Number(trove.collateralChange), 6)}{' '}
-              {SupportedTokens.rbtc}
+              {formatValue(Number(trove.collateralChange), 6)} {Bitcoin}
             </span>
           </Tooltip>
         ) : (
@@ -356,7 +363,7 @@ export const TransactionHistoryFrame: FC = () => {
                         trove.troveOperation,
                         Number(trove.collateralAfter),
                       )}
-                    {trove.collateralAfter} {SupportedTokens.rbtc}
+                    {trove.collateralAfter} {Bitcoin}
                   </>
                 )}
               </>
@@ -376,8 +383,7 @@ export const TransactionHistoryFrame: FC = () => {
                       trove.troveOperation,
                       Number(trove.collateralAfter),
                     )}
-                  {formatValue(Number(trove.collateralAfter), 6)}{' '}
-                  {SupportedTokens.rbtc}
+                  {formatValue(Number(trove.collateralAfter), 6)} {Bitcoin}
                 </>
               )}
             </span>
@@ -531,23 +537,25 @@ export const TransactionHistoryFrame: FC = () => {
       }
       setPage(value);
     },
-    [page, troves, pageSize],
+    [page, troves],
   );
 
   const isNextButtonDisabled = useMemo(
     () => !loading && (!troves || troves?.length < pageSize),
-    [loading, troves, pageSize],
+    [loading, troves],
   );
 
   const exportData = useCallback(async () => {
-    const { data } = await getTroves({
+    const data = await getTroves({
       variables: {
         user: account,
         skip: 0,
         pageSize: EXPORT_RECORD_LIMIT,
-        filters: getFinalFilters(),
+        orderBy: orderOptions.orderBy as TroveChange_OrderBy,
+        orderDirection: orderOptions.orderDirection,
       },
-    });
+      client: zeroClient,
+    }).then(res => res.data);
 
     let troves = data?.trove?.changes || [];
 
@@ -573,11 +581,12 @@ export const TransactionHistoryFrame: FC = () => {
       transactionID: tx.transaction.id,
     }));
   }, [
-    t,
-    account,
-    addNotification,
     getTroves,
-    getFinalFilters,
+    account,
+    orderOptions.orderBy,
+    orderOptions.orderDirection,
+    addNotification,
+    t,
     getTroveType,
     renderLiquidationReserve,
   ]);
@@ -592,7 +601,6 @@ export const TransactionHistoryFrame: FC = () => {
         getData={exportData}
         filename="transactions"
         className="mb-7 hidden lg:inline-flex"
-        onExportEnd={() => setPageSize(DEFAULT_PAGE_SIZE)}
         disabled={!troves}
       />
       <div className="bg-gray-80 py-4 px-4 rounded">

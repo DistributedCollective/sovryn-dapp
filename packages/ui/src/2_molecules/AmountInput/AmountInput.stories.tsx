@@ -1,6 +1,7 @@
+import { useArgs } from '@storybook/client-api';
 import { Story } from '@storybook/react';
 
-import React, { ComponentProps, useState } from 'react';
+import React, { ComponentProps, useCallback } from 'react';
 
 import { AmountInput, AmountInputVariant } from './AmountInput';
 
@@ -10,11 +11,16 @@ export default {
 };
 
 const Template: Story<ComponentProps<typeof AmountInput>> = args => {
-  const [value, setValue] = useState((args.value as string) || '0');
+  const [, updateArgs] = useArgs();
+  const handleOnChange = useCallback(
+    (value: string) => updateArgs({ value }),
+    [updateArgs],
+  );
 
   return (
     <div className="w-64">
-      <AmountInput {...args} onChangeText={setValue} value={value} />
+      <AmountInput {...args} onChangeText={handleOnChange} />
+      <p>Value: {args.value}</p>
     </div>
   );
 };
@@ -23,7 +29,7 @@ export const Basic = Template.bind({});
 Basic.args = {
   label: 'Amount',
   tooltip: 'This is something useful',
-  unit: 'RBTC',
+  unit: 'BTC',
   value: 123,
   disabled: false,
   readOnly: false,
@@ -33,7 +39,7 @@ Basic.args = {
 
 export const WithoutLabel = Template.bind({});
 WithoutLabel.args = {
-  unit: 'RBTC',
+  unit: 'BTC',
   value: 123,
   disabled: false,
   readOnly: false,
@@ -51,7 +57,7 @@ WithoutLabelAndUnit.args = {
 export const LargeDecimal = Template.bind({});
 LargeDecimal.args = {
   label: 'Amount',
-  unit: 'RBTC',
+  unit: 'BTC',
   value: 0.12345678,
   decimalPrecision: 3,
   dataAttribute: 'amountInput',

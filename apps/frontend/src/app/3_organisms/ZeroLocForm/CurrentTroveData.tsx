@@ -4,14 +4,16 @@ import { useTranslation } from 'react-i18next';
 
 import { HelperButton } from '@sovryn/ui';
 
+import { AmountRenderer } from '../../2_molecules/AmountRenderer/AmountRenderer';
 import { CRatioIndicator } from '../../2_molecules/LOCStatus/components/CRatioIndicator/CRatioIndicator';
+import { Bitcoin } from '../../../utils/constants';
 import { formatValue } from '../../../utils/math';
-import { COLLATERAL_TOKEN, DEBT_TOKEN } from './constants';
+import { DEBT_TOKEN } from './constants';
 
 type CurrentTroveDataProps = {
   debt: string;
   collateral: string;
-  rbtcPrice: string;
+  rbtcPrice: number;
   className?: string;
 };
 
@@ -23,9 +25,7 @@ export const CurrentTroveData: FC<CurrentTroveDataProps> = ({
 }) => {
   const { t } = useTranslation();
   const collateralRatio = useMemo(
-    () =>
-      ((parseFloat(collateral) * parseFloat(rbtcPrice)) / parseFloat(debt)) *
-      100,
+    () => ((parseFloat(collateral) * rbtcPrice) / parseFloat(debt)) * 100,
     [collateral, debt, rbtcPrice],
   );
 
@@ -38,10 +38,9 @@ export const CurrentTroveData: FC<CurrentTroveDataProps> = ({
         />
         <Column
           label={t('LOCStatus.currentCollateral')}
-          value={`${formatValue(
-            Number(collateral),
-            4,
-          )} ${COLLATERAL_TOKEN.toUpperCase()}`}
+          value={
+            <AmountRenderer value={collateral} suffix={Bitcoin} precision={4} />
+          }
         />
         <Column
           label={

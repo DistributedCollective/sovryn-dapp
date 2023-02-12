@@ -18,8 +18,8 @@ import {
 
 import { AssetRenderer } from '../../2_molecules/AssetRenderer/AssetRenderer';
 import { translations } from '../../../locales/i18n';
+import { Bitcoin } from '../../../utils/constants';
 import { formatValue } from '../../../utils/math';
-import { tokensToOptions } from '../../../utils/tokens';
 import { Row } from './Row';
 
 type CloseCreditLineProps = {
@@ -41,8 +41,7 @@ export const CloseCreditLine: FC<CloseCreditLineProps> = ({
   );
 
   const collateralValueRenderer = useCallback(
-    (value: number) =>
-      `${formatValue(value, 6)} ${SupportedTokens.rbtc.toUpperCase()}`,
+    (value: number) => `${formatValue(value, 6)} ${Bitcoin}`,
     [],
   );
 
@@ -53,6 +52,21 @@ export const CloseCreditLine: FC<CloseCreditLineProps> = ({
   const hasError = useMemo(
     () => Number(availableBalance) < Number(creditValue),
     [creditValue, availableBalance],
+  );
+
+  const tokenOptions = useMemo(
+    () =>
+      [SupportedTokens.zusd, SupportedTokens.dllr].map(token => ({
+        value: token,
+        label: (
+          <AssetRenderer
+            showAssetLogo
+            asset={token}
+            assetClassName="font-medium"
+          />
+        ),
+      })),
+    [],
   );
 
   return (
@@ -78,10 +92,7 @@ export const CloseCreditLine: FC<CloseCreditLineProps> = ({
             <Select
               value={creditToken}
               onChange={setCreditToken}
-              options={tokensToOptions([
-                SupportedTokens.zusd,
-                SupportedTokens.dllr,
-              ])}
+              options={tokenOptions}
               labelRenderer={({ value }) => (
                 <AssetRenderer
                   dataAttribute="close-credit-line-credit-asset"

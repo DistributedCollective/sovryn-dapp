@@ -17,21 +17,13 @@ scalar BigDecimal
 
 scalar BigInt
 
-"""
-The block at which the query should be executed.
-"""
+input BlockChangedFilter {
+  number_gte: Int!
+}
+
 input Block_height {
-  """
-  Value containing a block hash
-  """
   hash: Bytes
-
-  """
-  Value containing a block number
-  """
   number: Int
-
-  "Value containing the minimum block number. \nIn the case of `number_gte`, the query will be executed on the latest block only if\nthe subgraph has progressed to or past the minimum block number.\nDefaults to the latest block when omitted.\n"
   number_gte: Int
 }
 
@@ -47,7 +39,7 @@ interface Change {
   Can be used to correctly sort changes even if they were made by the same transaction
   """
   sequenceNumber: Int!
-  systemStateAfter: SystemState!
+  systemStateAfter: SystemState
   systemStateBefore: SystemState!
 
   """
@@ -57,6 +49,10 @@ interface Change {
 }
 
 input Change_filter {
+  """
+  Filter for the block changed event.
+  """
+  _change_block: BlockChangedFilter
   id: ID
   id_gt: ID
   id_gte: ID
@@ -74,6 +70,7 @@ input Change_filter {
   sequenceNumber_not: Int
   sequenceNumber_not_in: [Int!]
   systemStateAfter: String
+  systemStateAfter_: SystemState_filter
   systemStateAfter_contains: String
   systemStateAfter_contains_nocase: String
   systemStateAfter_ends_with: String
@@ -94,6 +91,7 @@ input Change_filter {
   systemStateAfter_starts_with: String
   systemStateAfter_starts_with_nocase: String
   systemStateBefore: String
+  systemStateBefore_: SystemState_filter
   systemStateBefore_contains: String
   systemStateBefore_contains_nocase: String
   systemStateBefore_ends_with: String
@@ -114,6 +112,7 @@ input Change_filter {
   systemStateBefore_starts_with: String
   systemStateBefore_starts_with_nocase: String
   transaction: String
+  transaction_: Transaction_filter
   transaction_contains: String
   transaction_contains_nocase: String
   transaction_ends_with: String
@@ -149,13 +148,17 @@ type CollSurplusChange implements Change {
   collSurplusChange: BigDecimal!
   id: ID!
   sequenceNumber: Int!
-  systemStateAfter: SystemState!
+  systemStateAfter: SystemState
   systemStateBefore: SystemState!
   transaction: Transaction!
   user: User!
 }
 
 input CollSurplusChange_filter {
+  """
+  Filter for the block changed event.
+  """
+  _change_block: BlockChangedFilter
   collSurplusAfter: BigDecimal
   collSurplusAfter_gt: BigDecimal
   collSurplusAfter_gte: BigDecimal
@@ -197,6 +200,7 @@ input CollSurplusChange_filter {
   sequenceNumber_not: Int
   sequenceNumber_not_in: [Int!]
   systemStateAfter: String
+  systemStateAfter_: SystemState_filter
   systemStateAfter_contains: String
   systemStateAfter_contains_nocase: String
   systemStateAfter_ends_with: String
@@ -217,6 +221,7 @@ input CollSurplusChange_filter {
   systemStateAfter_starts_with: String
   systemStateAfter_starts_with_nocase: String
   systemStateBefore: String
+  systemStateBefore_: SystemState_filter
   systemStateBefore_contains: String
   systemStateBefore_contains_nocase: String
   systemStateBefore_ends_with: String
@@ -237,6 +242,7 @@ input CollSurplusChange_filter {
   systemStateBefore_starts_with: String
   systemStateBefore_starts_with_nocase: String
   transaction: String
+  transaction_: Transaction_filter
   transaction_contains: String
   transaction_contains_nocase: String
   transaction_ends_with: String
@@ -257,6 +263,7 @@ input CollSurplusChange_filter {
   transaction_starts_with: String
   transaction_starts_with_nocase: String
   user: String
+  user_: User_filter
   user_contains: String
   user_contains_nocase: String
   user_ends_with: String
@@ -358,6 +365,10 @@ type Global {
 }
 
 input Global_filter {
+  """
+  Filter for the block changed event.
+  """
+  _change_block: BlockChangedFilter
   changeCount: Int
   changeCount_gt: Int
   changeCount_gte: Int
@@ -367,6 +378,7 @@ input Global_filter {
   changeCount_not: Int
   changeCount_not_in: [Int!]
   currentLiquidation: String
+  currentLiquidation_: Liquidation_filter
   currentLiquidation_contains: String
   currentLiquidation_contains_nocase: String
   currentLiquidation_ends_with: String
@@ -387,6 +399,7 @@ input Global_filter {
   currentLiquidation_starts_with: String
   currentLiquidation_starts_with_nocase: String
   currentRedemption: String
+  currentRedemption_: Redemption_filter
   currentRedemption_contains: String
   currentRedemption_contains_nocase: String
   currentRedemption_ends_with: String
@@ -407,6 +420,7 @@ input Global_filter {
   currentRedemption_starts_with: String
   currentRedemption_starts_with_nocase: String
   currentSystemState: String
+  currentSystemState_: SystemState_filter
   currentSystemState_contains: String
   currentSystemState_contains_nocase: String
   currentSystemState_ends_with: String
@@ -634,6 +648,10 @@ type Liquidation {
 }
 
 input Liquidation_filter {
+  """
+  Filter for the block changed event.
+  """
+  _change_block: BlockChangedFilter
   collGasCompensation: BigDecimal
   collGasCompensation_gt: BigDecimal
   collGasCompensation_gte: BigDecimal
@@ -667,6 +685,7 @@ input Liquidation_filter {
   liquidatedDebt_not: BigDecimal
   liquidatedDebt_not_in: [BigDecimal!]
   liquidator: String
+  liquidator_: User_filter
   liquidator_contains: String
   liquidator_contains_nocase: String
   liquidator_ends_with: String
@@ -703,6 +722,7 @@ input Liquidation_filter {
   tokenGasCompensation_not: BigDecimal
   tokenGasCompensation_not_in: [BigDecimal!]
   transaction: String
+  transaction_: Transaction_filter
   transaction_contains: String
   transaction_contains_nocase: String
   transaction_ends_with: String
@@ -722,6 +742,7 @@ input Liquidation_filter {
   transaction_not_starts_with_nocase: String
   transaction_starts_with: String
   transaction_starts_with_nocase: String
+  troveChanges_: TroveChange_filter
 }
 
 enum Liquidation_orderBy {
@@ -748,12 +769,16 @@ type PriceChange implements Change {
   id: ID!
   priceChange: BigDecimal!
   sequenceNumber: Int!
-  systemStateAfter: SystemState!
+  systemStateAfter: SystemState
   systemStateBefore: SystemState!
   transaction: Transaction!
 }
 
 input PriceChange_filter {
+  """
+  Filter for the block changed event.
+  """
+  _change_block: BlockChangedFilter
   id: ID
   id_gt: ID
   id_gte: ID
@@ -779,6 +804,7 @@ input PriceChange_filter {
   sequenceNumber_not: Int
   sequenceNumber_not_in: [Int!]
   systemStateAfter: String
+  systemStateAfter_: SystemState_filter
   systemStateAfter_contains: String
   systemStateAfter_contains_nocase: String
   systemStateAfter_ends_with: String
@@ -799,6 +825,7 @@ input PriceChange_filter {
   systemStateAfter_starts_with: String
   systemStateAfter_starts_with_nocase: String
   systemStateBefore: String
+  systemStateBefore_: SystemState_filter
   systemStateBefore_contains: String
   systemStateBefore_contains_nocase: String
   systemStateBefore_ends_with: String
@@ -819,6 +846,7 @@ input PriceChange_filter {
   systemStateBefore_starts_with: String
   systemStateBefore_starts_with_nocase: String
   transaction: String
+  transaction_: Transaction_filter
   transaction_contains: String
   transaction_contains_nocase: String
   transaction_ends_with: String
@@ -1190,6 +1218,34 @@ type Query {
     subgraphError: _SubgraphErrorPolicy_! = deny
     where: SystemState_filter
   ): [SystemState!]!
+  tempDepositUpdate(
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+    id: ID!
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): TempDepositUpdate
+  tempDepositUpdates(
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+    first: Int = 100
+    orderBy: TempDepositUpdate_orderBy
+    orderDirection: OrderDirection
+    skip: Int = 0
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+    where: TempDepositUpdate_filter
+  ): [TempDepositUpdate!]!
   token(
     """
     The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
@@ -1448,6 +1504,11 @@ input RedemptionRaw_filter {
   _attemptedZUSDAmount_lte: BigInt
   _attemptedZUSDAmount_not: BigInt
   _attemptedZUSDAmount_not_in: [BigInt!]
+
+  """
+  Filter for the block changed event.
+  """
+  _change_block: BlockChangedFilter
   id: ID
   id_gt: ID
   id_gte: ID
@@ -1467,6 +1528,10 @@ enum RedemptionRaw_orderBy {
 }
 
 input Redemption_filter {
+  """
+  Filter for the block changed event.
+  """
+  _change_block: BlockChangedFilter
   collateralRedeemed: BigDecimal
   collateralRedeemed_gt: BigDecimal
   collateralRedeemed_gte: BigDecimal
@@ -1496,6 +1561,7 @@ input Redemption_filter {
   partial_not: Boolean
   partial_not_in: [Boolean!]
   redeemer: String
+  redeemer_: User_filter
   redeemer_contains: String
   redeemer_contains_nocase: String
   redeemer_ends_with: String
@@ -1540,6 +1606,7 @@ input Redemption_filter {
   tokensAttemptedToRedeem_not: BigDecimal
   tokensAttemptedToRedeem_not_in: [BigDecimal!]
   transaction: String
+  transaction_: Transaction_filter
   transaction_contains: String
   transaction_contains_nocase: String
   transaction_ends_with: String
@@ -1559,6 +1626,7 @@ input Redemption_filter {
   transaction_not_starts_with_nocase: String
   transaction_starts_with: String
   transaction_starts_with_nocase: String
+  troveChanges_: TroveChange_filter
 }
 
 enum Redemption_orderBy {
@@ -1593,6 +1661,10 @@ type RevenueDaily {
 }
 
 input RevenueDaily_filter {
+  """
+  Filter for the block changed event.
+  """
+  _change_block: BlockChangedFilter
   borrowFeeRBTC: BigDecimal
   borrowFeeRBTC_gt: BigDecimal
   borrowFeeRBTC_gte: BigDecimal
@@ -1698,6 +1770,10 @@ type RevenueWeekly {
 }
 
 input RevenueWeekly_filter {
+  """
+  Filter for the block changed event.
+  """
+  _change_block: BlockChangedFilter
   borrowFeeRBTC: BigDecimal
   borrowFeeRBTC_gt: BigDecimal
   borrowFeeRBTC_gte: BigDecimal
@@ -1810,12 +1886,16 @@ type StabilityDepositChange implements Change {
   sequenceNumber: Int!
   stabilityDeposit: StabilityDeposit!
   stabilityDepositOperation: StabilityDepositOperation!
-  systemStateAfter: SystemState!
+  systemStateAfter: SystemState
   systemStateBefore: SystemState!
   transaction: Transaction!
 }
 
 input StabilityDepositChange_filter {
+  """
+  Filter for the block changed event.
+  """
+  _change_block: BlockChangedFilter
   collateralGain: BigDecimal
   collateralGain_gt: BigDecimal
   collateralGain_gte: BigDecimal
@@ -1869,6 +1949,7 @@ input StabilityDepositChange_filter {
   stabilityDepositOperation_in: [StabilityDepositOperation!]
   stabilityDepositOperation_not: StabilityDepositOperation
   stabilityDepositOperation_not_in: [StabilityDepositOperation!]
+  stabilityDeposit_: StabilityDeposit_filter
   stabilityDeposit_contains: String
   stabilityDeposit_contains_nocase: String
   stabilityDeposit_ends_with: String
@@ -1889,6 +1970,7 @@ input StabilityDepositChange_filter {
   stabilityDeposit_starts_with: String
   stabilityDeposit_starts_with_nocase: String
   systemStateAfter: String
+  systemStateAfter_: SystemState_filter
   systemStateAfter_contains: String
   systemStateAfter_contains_nocase: String
   systemStateAfter_ends_with: String
@@ -1909,6 +1991,7 @@ input StabilityDepositChange_filter {
   systemStateAfter_starts_with: String
   systemStateAfter_starts_with_nocase: String
   systemStateBefore: String
+  systemStateBefore_: SystemState_filter
   systemStateBefore_contains: String
   systemStateBefore_contains_nocase: String
   systemStateBefore_ends_with: String
@@ -1929,6 +2012,7 @@ input StabilityDepositChange_filter {
   systemStateBefore_starts_with: String
   systemStateBefore_starts_with_nocase: String
   transaction: String
+  transaction_: Transaction_filter
   transaction_contains: String
   transaction_contains_nocase: String
   transaction_ends_with: String
@@ -1967,10 +2051,17 @@ enum StabilityDepositChange_orderBy {
 enum StabilityDepositOperation {
   depositTokens
   withdrawCollateralGain
+  withdrawGainToLineOfCredit
   withdrawTokens
+  withdrawGainToLineOfCredit
 }
 
 input StabilityDeposit_filter {
+  """
+  Filter for the block changed event.
+  """
+  _change_block: BlockChangedFilter
+  changes_: StabilityDepositChange_filter
   depositedAmount: BigDecimal
   depositedAmount_gt: BigDecimal
   depositedAmount_gte: BigDecimal
@@ -1988,6 +2079,7 @@ input StabilityDeposit_filter {
   id_not: ID
   id_not_in: [ID!]
   owner: String
+  owner_: User_filter
   owner_contains: String
   owner_contains_nocase: String
   owner_ends_with: String
@@ -2357,6 +2449,34 @@ type Subscription {
     subgraphError: _SubgraphErrorPolicy_! = deny
     where: SystemState_filter
   ): [SystemState!]!
+  tempDepositUpdate(
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+    id: ID!
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): TempDepositUpdate
+  tempDepositUpdates(
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+    first: Int = 100
+    orderBy: TempDepositUpdate_orderBy
+    orderDirection: OrderDirection
+    skip: Int = 0
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+    where: TempDepositUpdate_filter
+  ): [TempDepositUpdate!]!
   token(
     """
     The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
@@ -2576,6 +2696,10 @@ type SystemState {
 }
 
 input SystemState_filter {
+  """
+  Filter for the block changed event.
+  """
+  _change_block: BlockChangedFilter
   collSurplusPoolBalance: BigDecimal
   collSurplusPoolBalance_gt: BigDecimal
   collSurplusPoolBalance_gte: BigDecimal
@@ -2654,6 +2778,43 @@ enum SystemState_orderBy {
   totalDebt
 }
 
+type TempDepositUpdate {
+  amount: BigInt
+
+  """
+  ID is transaction hash
+  """
+  id: ID!
+}
+
+input TempDepositUpdate_filter {
+  """
+  Filter for the block changed event.
+  """
+  _change_block: BlockChangedFilter
+  amount: BigInt
+  amount_gt: BigInt
+  amount_gte: BigInt
+  amount_in: [BigInt!]
+  amount_lt: BigInt
+  amount_lte: BigInt
+  amount_not: BigInt
+  amount_not_in: [BigInt!]
+  id: ID
+  id_gt: ID
+  id_gte: ID
+  id_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_not: ID
+  id_not_in: [ID!]
+}
+
+enum TempDepositUpdate_orderBy {
+  amount
+  id
+}
+
 type Token {
   allowances(
     first: Int = 100
@@ -2684,6 +2845,10 @@ type TokenAllowance {
 }
 
 input TokenAllowance_filter {
+  """
+  Filter for the block changed event.
+  """
+  _change_block: BlockChangedFilter
   id: ID
   id_gt: ID
   id_gte: ID
@@ -2693,6 +2858,7 @@ input TokenAllowance_filter {
   id_not: ID
   id_not_in: [ID!]
   owner: String
+  owner_: User_filter
   owner_contains: String
   owner_contains_nocase: String
   owner_ends_with: String
@@ -2713,6 +2879,7 @@ input TokenAllowance_filter {
   owner_starts_with: String
   owner_starts_with_nocase: String
   spender: String
+  spender_: User_filter
   spender_contains: String
   spender_contains_nocase: String
   spender_ends_with: String
@@ -2733,6 +2900,7 @@ input TokenAllowance_filter {
   spender_starts_with: String
   spender_starts_with_nocase: String
   token: String
+  token_: Token_filter
   token_contains: String
   token_contains_nocase: String
   token_ends_with: String
@@ -2778,6 +2946,10 @@ type TokenBalance {
 }
 
 input TokenBalance_filter {
+  """
+  Filter for the block changed event.
+  """
+  _change_block: BlockChangedFilter
   balance: BigInt
   balance_gt: BigInt
   balance_gte: BigInt
@@ -2795,6 +2967,7 @@ input TokenBalance_filter {
   id_not: ID
   id_not_in: [ID!]
   owner: String
+  owner_: User_filter
   owner_contains: String
   owner_contains_nocase: String
   owner_ends_with: String
@@ -2815,6 +2988,7 @@ input TokenBalance_filter {
   owner_starts_with: String
   owner_starts_with_nocase: String
   token: String
+  token_: Token_filter
   token_contains: String
   token_contains_nocase: String
   token_ends_with: String
@@ -2844,6 +3018,12 @@ enum TokenBalance_orderBy {
 }
 
 input Token_filter {
+  """
+  Filter for the block changed event.
+  """
+  _change_block: BlockChangedFilter
+  allowances_: TokenAllowance_filter
+  balances_: TokenBalance_filter
   id: ID
   id_gt: ID
   id_gte: ID
@@ -2921,23 +3101,39 @@ type Transaction {
     where: Change_filter
   ): [Change!]!
 
+  "The account that initiated this transaction. This must be an Account and not a Contract.\n"
+  from: Bytes!
+  functionSignature: String!
+  gasLimit: BigInt!
+  gasPrice: BigInt!
+  gasUsed: BigInt
+
   """
   Transaction hash
   """
   id: ID!
+
+  "The index of this transaction within the block\n"
+  index: Int!
 
   """
   Can be used to correctly sort transactions even if they were mined in the same block
   """
   sequenceNumber: Int!
 
-  """
-  Timestamp of block that included this transaction (seconds since epoch)
-  """
+  "The timestamp the transaction was confirmed\n"
   timestamp: Int!
+
+  "The contract the user interacted with\n"
+  to: Bytes
+  value: BigInt!
 }
 
 input Transaction_filter {
+  """
+  Filter for the block changed event.
+  """
+  _change_block: BlockChangedFilter
   blockNumber: Int
   blockNumber_gt: Int
   blockNumber_gte: Int
@@ -2946,6 +3142,56 @@ input Transaction_filter {
   blockNumber_lte: Int
   blockNumber_not: Int
   blockNumber_not_in: [Int!]
+  from: Bytes
+  from_contains: Bytes
+  from_in: [Bytes!]
+  from_not: Bytes
+  from_not_contains: Bytes
+  from_not_in: [Bytes!]
+  functionSignature: String
+  functionSignature_contains: String
+  functionSignature_contains_nocase: String
+  functionSignature_ends_with: String
+  functionSignature_ends_with_nocase: String
+  functionSignature_gt: String
+  functionSignature_gte: String
+  functionSignature_in: [String!]
+  functionSignature_lt: String
+  functionSignature_lte: String
+  functionSignature_not: String
+  functionSignature_not_contains: String
+  functionSignature_not_contains_nocase: String
+  functionSignature_not_ends_with: String
+  functionSignature_not_ends_with_nocase: String
+  functionSignature_not_in: [String!]
+  functionSignature_not_starts_with: String
+  functionSignature_not_starts_with_nocase: String
+  functionSignature_starts_with: String
+  functionSignature_starts_with_nocase: String
+  gasLimit: BigInt
+  gasLimit_gt: BigInt
+  gasLimit_gte: BigInt
+  gasLimit_in: [BigInt!]
+  gasLimit_lt: BigInt
+  gasLimit_lte: BigInt
+  gasLimit_not: BigInt
+  gasLimit_not_in: [BigInt!]
+  gasPrice: BigInt
+  gasPrice_gt: BigInt
+  gasPrice_gte: BigInt
+  gasPrice_in: [BigInt!]
+  gasPrice_lt: BigInt
+  gasPrice_lte: BigInt
+  gasPrice_not: BigInt
+  gasPrice_not_in: [BigInt!]
+  gasUsed: BigInt
+  gasUsed_gt: BigInt
+  gasUsed_gte: BigInt
+  gasUsed_in: [BigInt!]
+  gasUsed_lt: BigInt
+  gasUsed_lte: BigInt
+  gasUsed_not: BigInt
+  gasUsed_not_in: [BigInt!]
   id: ID
   id_gt: ID
   id_gte: ID
@@ -2954,6 +3200,14 @@ input Transaction_filter {
   id_lte: ID
   id_not: ID
   id_not_in: [ID!]
+  index: Int
+  index_gt: Int
+  index_gte: Int
+  index_in: [Int!]
+  index_lt: Int
+  index_lte: Int
+  index_not: Int
+  index_not_in: [Int!]
   sequenceNumber: Int
   sequenceNumber_gt: Int
   sequenceNumber_gte: Int
@@ -2970,14 +3224,36 @@ input Transaction_filter {
   timestamp_lte: Int
   timestamp_not: Int
   timestamp_not_in: [Int!]
+  to: Bytes
+  to_contains: Bytes
+  to_in: [Bytes!]
+  to_not: Bytes
+  to_not_contains: Bytes
+  to_not_in: [Bytes!]
+  value: BigInt
+  value_gt: BigInt
+  value_gte: BigInt
+  value_in: [BigInt!]
+  value_lt: BigInt
+  value_lte: BigInt
+  value_not: BigInt
+  value_not_in: [BigInt!]
 }
 
 enum Transaction_orderBy {
   blockNumber
   changes
+  from
+  functionSignature
+  gasLimit
+  gasPrice
+  gasUsed
   id
+  index
   sequenceNumber
   timestamp
+  to
+  value
 }
 
 type Trove {
@@ -3031,7 +3307,7 @@ type TroveChange implements Change {
   liquidation: Liquidation
   redemption: Redemption
   sequenceNumber: Int!
-  systemStateAfter: SystemState!
+  systemStateAfter: SystemState
   systemStateBefore: SystemState!
   transaction: Transaction!
   trove: Trove!
@@ -3039,6 +3315,10 @@ type TroveChange implements Change {
 }
 
 input TroveChange_filter {
+  """
+  Filter for the block changed event.
+  """
+  _change_block: BlockChangedFilter
   borrowingFee: BigDecimal
   borrowingFee_gt: BigDecimal
   borrowingFee_gte: BigDecimal
@@ -3120,6 +3400,7 @@ input TroveChange_filter {
   id_not: ID
   id_not_in: [ID!]
   liquidation: String
+  liquidation_: Liquidation_filter
   liquidation_contains: String
   liquidation_contains_nocase: String
   liquidation_ends_with: String
@@ -3140,6 +3421,7 @@ input TroveChange_filter {
   liquidation_starts_with: String
   liquidation_starts_with_nocase: String
   redemption: String
+  redemption_: Redemption_filter
   redemption_contains: String
   redemption_contains_nocase: String
   redemption_ends_with: String
@@ -3168,6 +3450,7 @@ input TroveChange_filter {
   sequenceNumber_not: Int
   sequenceNumber_not_in: [Int!]
   systemStateAfter: String
+  systemStateAfter_: SystemState_filter
   systemStateAfter_contains: String
   systemStateAfter_contains_nocase: String
   systemStateAfter_ends_with: String
@@ -3188,6 +3471,7 @@ input TroveChange_filter {
   systemStateAfter_starts_with: String
   systemStateAfter_starts_with_nocase: String
   systemStateBefore: String
+  systemStateBefore_: SystemState_filter
   systemStateBefore_contains: String
   systemStateBefore_contains_nocase: String
   systemStateBefore_ends_with: String
@@ -3208,6 +3492,7 @@ input TroveChange_filter {
   systemStateBefore_starts_with: String
   systemStateBefore_starts_with_nocase: String
   transaction: String
+  transaction_: Transaction_filter
   transaction_contains: String
   transaction_contains_nocase: String
   transaction_ends_with: String
@@ -3232,6 +3517,7 @@ input TroveChange_filter {
   troveOperation_in: [TroveOperation!]
   troveOperation_not: TroveOperation
   troveOperation_not_in: [TroveOperation!]
+  trove_: Trove_filter
   trove_contains: String
   trove_contains_nocase: String
   trove_ends_with: String
@@ -3282,6 +3568,7 @@ enum TroveOperation {
   liquidateInRecoveryMode
   openTrove
   redeemCollateral
+  transferGainToLineOfCredit
 }
 
 enum TroveStatus {
@@ -3292,6 +3579,11 @@ enum TroveStatus {
 }
 
 input Trove_filter {
+  """
+  Filter for the block changed event.
+  """
+  _change_block: BlockChangedFilter
+  changes_: TroveChange_filter
   collateral: BigDecimal
   collateralRatioSortKey: BigInt
   collateralRatioSortKey_gt: BigInt
@@ -3325,6 +3617,7 @@ input Trove_filter {
   id_not: ID
   id_not_in: [ID!]
   owner: String
+  owner_: User_filter
   owner_contains: String
   owner_contains_nocase: String
   owner_ends_with: String
@@ -3452,7 +3745,14 @@ type User {
 }
 
 input User_filter {
+  """
+  Filter for the block changed event.
+  """
+  _change_block: BlockChangedFilter
+  allowances_: TokenAllowance_filter
+  balances_: TokenBalance_filter
   collSurplus: BigDecimal
+  collSurplusChanges_: CollSurplusChange_filter
   collSurplus_gt: BigDecimal
   collSurplus_gte: BigDecimal
   collSurplus_in: [BigDecimal!]
@@ -3468,7 +3768,10 @@ input User_filter {
   id_lte: ID
   id_not: ID
   id_not_in: [ID!]
+  liquidations_: Liquidation_filter
+  redemptions_: Redemption_filter
   stabilityDeposit: String
+  stabilityDeposit_: StabilityDeposit_filter
   stabilityDeposit_contains: String
   stabilityDeposit_contains_nocase: String
   stabilityDeposit_ends_with: String
@@ -3489,6 +3792,7 @@ input User_filter {
   stabilityDeposit_starts_with: String
   stabilityDeposit_starts_with_nocase: String
   trove: String
+  trove_: Trove_filter
   trove_contains: String
   trove_contains_nocase: String
   trove_ends_with: String

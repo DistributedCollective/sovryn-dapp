@@ -28,10 +28,8 @@ export const useGetRedemptionsHistory = (
     [page, orderOptions, pageSize, account],
   );
 
-  const { loading, data } = useGetRedemptionsQuery({
+  return useGetRedemptionsQuery({
     variables: redemptionConfig,
     client: zeroClient,
   });
-
-  return { loading, data };
 };

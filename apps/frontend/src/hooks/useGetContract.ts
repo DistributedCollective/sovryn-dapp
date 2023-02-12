@@ -6,6 +6,7 @@ import { getProtocolContract } from '@sovryn/contracts';
 import { ChainId } from '@sovryn/ethers-provider';
 
 import { defaultChainId } from '../config/chains';
+
 import { useAccount } from './useAccount';
 
 export const useGetProtocolContract = (

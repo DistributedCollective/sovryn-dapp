@@ -7,13 +7,12 @@ import { Button, Heading, HeadingType, TransactionId } from '@sovryn/ui';
 
 import { useMaintenance } from '../../../../../../hooks/useMaintenance';
 import { translations } from '../../../../../../locales/i18n';
+import { Bitcoin } from '../../../../../../utils/constants';
 import {
   getBtcExplorerUrl,
   getRskExplorerUrl,
 } from '../../../../../../utils/helpers';
 import { formatValue } from '../../../../../../utils/math';
-import { TransactionStepDialog } from '../../../../TransactionStepDialog';
-import { Bitcoin } from '../../../constants';
 
 const translation = translations.fastBtc.send.confirmationScreens;
 
@@ -114,7 +113,6 @@ export const ReviewScreen: React.FC<ReviewScreenProps> = ({
         />
         {fastBtcLocked && <div>{t(translations.maintenanceMode.fastBtc)}</div>}
       </div>
-      <TransactionStepDialog disableFocusTrap />
     </div>
   );
 };

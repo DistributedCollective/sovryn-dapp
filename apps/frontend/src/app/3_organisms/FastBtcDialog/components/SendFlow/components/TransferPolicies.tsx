@@ -1,8 +1,8 @@
 import React, { useContext, useMemo } from 'react';
 
-import { btcInSatoshis } from '../../../../../../utils/constants';
+import { Bitcoin, btcInSatoshis } from '../../../../../../utils/constants';
 import { formatValue } from '../../../../../../utils/math';
-import { Bitcoin, DYNAMIC_FEE_DIVISOR } from '../../../constants';
+import { DYNAMIC_FEE_DIVISOR } from '../../../constants';
 import { WithdrawContext } from '../../../contexts/withdraw-context';
 import { Limits } from '../../Limits';
 

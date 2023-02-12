@@ -171,7 +171,7 @@ const EmailNotificationSettingsDialogComponent: React.FC<
         console.error(error);
         addNotification({
           type: NotificationType.error,
-          title: t(translations.emailNotificationsDialog.authErorrMessage),
+          title: t(translations.emailNotificationsDialog.authErrorMessage),
           dismissible: true,
           id: nanoid(),
         });
@@ -311,7 +311,7 @@ const EmailNotificationSettingsDialogComponent: React.FC<
         <div className="mt-4 flex justify-between">
           <Button
             onClick={onCloseHandler}
-            text={t(translations.common.buttons.cancel)}
+            text={t(translations.common.buttons.skip)}
             style={ButtonStyle.secondary}
             className="mr-4 w-[49%]"
             dataAttribute="alert-signup-cancel"

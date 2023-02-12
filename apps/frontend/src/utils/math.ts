@@ -24,10 +24,15 @@ export const toWei = (
     return BigNumber.from(value).mul(BigNumber.from(10).pow(unitName));
   }
 
-  const number = Number(value);
-  if (!Number.isNaN(number) && Number.isFinite(number)) {
-    if (value % 1 !== 0) {
-      return parseUnits(number.toString(), unitName);
+  const numberIsANumber =
+    Number(value)
+      .toString()
+      .replace(/[0-9.]/g, '').length === 0;
+  const stringIsANumber = String(value).replace(/[0-9.]/g, '').length === 0;
+
+  if (numberIsANumber && stringIsANumber) {
+    if (Number(value) % 1 !== 0) {
+      return parseUnits(String(value), unitName);
     } else {
       const numberish = String(value);
       const [integer, decimals] = numberish.split('.');
@@ -43,6 +48,11 @@ export const toWei = (
       return bnDecimals.add(bnInteger);
     }
   }
+
+  if (stringIsANumber) {
+    return parseUnits(value, unitName);
+  }
+
   throw new Error(`Invalid BigNumberish value: ${value}`);
 };
 
@@ -66,6 +76,12 @@ export const fromWeiFixed = (
 export const formatValue = (value: number, precision: number = 0) =>
   value.toLocaleString(navigator.language, {
     maximumFractionDigits: precision,
+  });
+
+export const formatCompactValue = (value: number, precision: number = 0) =>
+  value.toLocaleString(navigator.language, {
+    maximumFractionDigits: precision,
+    notation: 'compact',
   });
 
 export const parseUnitValue = (unitName: BigNumberish): number => {

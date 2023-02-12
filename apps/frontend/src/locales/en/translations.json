@@ -2,6 +2,7 @@
     "wallet": "wallet",
     "exportCSV": "Export to CSV",
     "copyAddress": "Address was copied to clipboard.",
+    "copyAmount": "Amount was copied to clipboard.",
     "common": {
         "socials": {
             "discord": "Discord",
@@ -18,7 +19,8 @@
             "continue": "Continue",
             "done": "Done",
             "close": "Close",
-            "retry": "Retry"
+            "retry": "Retry",
+            "skip": "Skip"
         },
         "na": "N/A",
         "tables": {
@@ -65,10 +67,14 @@
             "liquidationPriceTooltip": "Liquidation price after the transaction",
             "recoveryLiquidationPrice": "Liquidation price (Recovery Mode)",
             "recoveryLiquidationPriceTooltip": "Liquidation price after the transaction",
-            "rbtcPrice": "RBTC price",
-            "rbtcPriceTooltip": "RBTC price in USD",
+            "rbtcPrice": "BTC price",
+            "rbtcPriceTooltip": "BTC price in USD",
             "originationFee": "Origination fee",
-            "originationFeeTooltip": "Origination fee in percentage"
+            "originationFeeTooltip": "Origination fee in percentage",
+            "liquidationReserve": "Liquidation Reserve",
+            "liquidationReserveTooltip": "Liquidation Reserve in ZUSD",
+            "totalDebt": "Total debt",
+            "totalDebtTooltip": "Total debt amount"
         }
     },
     "closeCreditLine": {
@@ -126,11 +132,24 @@
         "table": {
             "timestamp": "Timestamp",
             "zusdRedeemed": "ZUSD Redeemed",
-            "rbtcReceived": "RBTC Received",
-            "redemptionFee": "Redemption Fee (RBTC)",
+            "rbtcReceived": "BTC Received",
+            "redemptionFee": "Redemption Fee (BTC)",
             "networkFee": "Network Fee",
             "transactionID": "Transaction ID"
         },
+        "actions": {
+            "noDataToExport": "No data to export"
+        }
+    },
+    "conversionsHistory": {
+        "table": {
+            "timestamp": "Timestamp",
+            "transactionType": "Transaction Type",
+            "sent": "Sent",
+            "received": "Received",
+            "txId": "TXID"
+        },
+        "type": "Convert",
         "actions": {
             "noDataToExport": "No data to export"
         }
@@ -170,7 +189,7 @@
     },
     "emailNotificationsDialog": {
         "dialogTitle": "Notifications",
-        "title": "Notifications on the status of your line of credit are sent to your email after you sign it with your wallet",
+        "title": "Sign up to receive important notifications about the state of your line of credit and the Zero protocol",
         "emailInputLabel": "Email address",
         "emailInputPlaceholder": "Enter Email",
         "alertGroups": {
@@ -181,7 +200,7 @@
         },
         "successMessage": "Your preferences have been saved.",
         "errorMessage": "Something went wrong, please try again.",
-        "authErorrMessage": "Authentication failed, please try again."
+        "authErrorMessage": "Authentication failed, please try again."
     },
     "chart": {
         "collateralRatio": "Collateral ratio",
@@ -237,7 +256,13 @@
                 "ratioWarning": "Keeping your collateral ratio above {{value}}% can help avoid liquidation under recovery mode",
                 "ratioError": "Collateral ratio must be at least {{value}}%",
                 "debtTooLow": "Debt must be at least {{value}}",
-                "balanceTooLow": "The collateral amount you're trying to deposit exceeds your balance by {{value}}"
+                "balanceTooLow": "The collateral amount you're trying to deposit exceeds your balance by {{value}}",
+                "collateralTooLow": "Collateral balance must be at least {{value}}",
+                "withdrawBalanceTooLow": "The collateral amount you're trying to withdraw exceeds your trove balance by {{value}}",
+                "repayBalanceTooLow": "The {{currency}} amount you're trying to repay exceeds your balance by {{value}}",
+                "creditBalanceTooLow": "The {{currency}} amount you're trying to borrow exceeds your maximum by {{value}}",
+                "totalDebtTooLow": "The total debt must be at least {{value}} {{currency}}",
+                "newTotalDebtTooLow": "The new total debt must be at least {{value}} {{currency}}"
             }
         },
         "tx": {
@@ -258,7 +283,7 @@
     "stats": {
         "zero": {
             "title": "Zero statistics",
-            "rbtcInLoc": "RBTC in Lines of Credit",
+            "rbtcInLoc": "BTC in Lines of Credit",
             "loc": "Lines of credit",
             "zusdSupply": "ZUSD supply",
             "zusdInStabilityPool": "ZUSD in Stability Pool",
@@ -315,7 +340,8 @@
                 "stability": "Stability pool",
                 "convert": "Conversion",
                 "funding": "Funding",
-                "collateralSurplusWithdrawals": "Collateral surplus withdrawals"
+                "collateralSurplusWithdrawals": "Collateral surplus withdrawals",
+                "reward": "Reward"
             },
             "comingSoon": "Coming soon..."
         }
@@ -328,6 +354,29 @@
             "transactionID": "Transaction ID",
             "withdrawSurplus": "Withdraw surplus",
             "depositSurplus": "Deposit surplus"
+        },
+        "actions": {
+            "noDataToExport": "No data to export"
+        }
+    },
+    "stabilityPoolHistory": {
+        "table": {
+            "timestamp": "Timestamp",
+            "transactionType": "Transaction Type",
+            "balanceChange": "Balance Change",
+            "newBalance": "New Balance",
+            "transactionID": "Transaction ID"
+        },
+        "stabilityPoolOperation": {
+            "deposit": "Deposit",
+            "withdrawal": "Withdrawal",
+            "withdrawCollateralGain": "Withdraw collateral gain",
+            "withdrawGainToLineOfCredit": "Withdraw gain to line of credit"
+        },
+        "filters": {
+            "depositTokens": "Deposit",
+            "withdrawTokens": "Withdraw",
+            "withdrawCollateralGain": "Withdraw collateral gain"
         },
         "actions": {
             "noDataToExport": "No data to export"
@@ -351,6 +400,17 @@
             "withdrawGains": "Withdraw rewards",
             "transferToLOC": "Transfer rewards",
             "transfer": "Transfer rewards to line of credit"
+        }
+    },
+    "rewardHistoryTable": {
+        "table": {
+            "timestamp": "Timestamp",
+            "transactionType": "Transaction Type",
+            "rewardChange": "Reward change",
+            "transactionID": "Transaction ID"
+        },
+        "actions": {
+            "noDataToExport": "No data to export"
         }
     },
     "fastBtc": {

@@ -266,9 +266,18 @@
             }
         },
         "tx": {
-            "adjustTrove": "Adjust Trove",
-            "closeTrove": "Close Trove",
-            "openTrove": "Open Trove"
+            "adjustTrove": "Adjust",
+            "closeTrove": "Close",
+            "openTrove": "Open",
+            "adjustTitle": "Adjust line of credit",
+            "closeTitle": "Close line of credit",
+            "openTitle": "Open line of credit",
+            "claimSurplusTitle": "Claim surplus BTC collateral",
+            "claimSurplus": "Claim surplus",
+            "addCollateral": "Add Collateral",
+            "withdrawCollateral": "Withdraw Collateral",
+            "repay": "Repay {{asset}}",
+            "borrow": "Borrow {{asset}}"
         }
     },
     "stats": {
@@ -297,6 +306,12 @@
             "convertFrom": "Convert from",
             "convertTo": "To",
             "invalidAmountError": "Exceeds maximum amount"
+        },
+        "txDialog": {
+            "convertTitle": "Convert {{from}} to {{to}}",
+            "approveTitle": "Approve transferring {{asset}}",
+            "convert": "Convert {{asset}}",
+            "approve": "Approve {{asset}}"
         }
     },
     "earnPage": {
@@ -308,7 +323,13 @@
         "currentPoolShare": "Current pool share",
         "currentPoolBalance": "Current pool balance",
         "newPoolShare": "New pool share",
-        "newPoolBalance": "New pool balance"
+        "newPoolBalance": "New pool balance",
+        "txDialog": {
+            "withdrawTitle": "Withdraw {{asset}} from the stability pool",
+            "withdraw": "Withdraw {{asset}}",
+            "depositTitle": "Deposit {{asset}} to the stability pool",
+            "deposit": "Deposit {{asset}}"
+        }
     },
     "historyPage": {
         "title": "My transaction history",
@@ -375,10 +396,10 @@
             "withdraw": "Withdraw"
         },
         "tx": {
-            "withdraw": "Withdraw",
-            "withdrawGains": "Withdraw gains",
-            "transferToLOC": "Transfer gains to LOC",
-            "transfer": "Transfer"
+            "withdraw": "Withdraw rewards to your address",
+            "withdrawGains": "Withdraw rewards",
+            "transferToLOC": "Transfer rewards",
+            "transfer": "Transfer rewards to line of credit"
         }
     },
     "rewardHistoryTable": {
@@ -451,6 +472,10 @@
                 "serviceFee": "Service fee",
                 "receiving": "Receiving",
                 "hash": "Rootstock TXID"
+            },
+            "txDialog": {
+                "title": "Send BTC to the bitcoin network",
+                "sendBTC": "Send BTC"
             }
         },
         "receive": {

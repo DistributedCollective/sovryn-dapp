@@ -2,4 +2,4 @@
 '@sovryn/ui': patch
 ---
 
-fix: expose amount input props type
+SOV-1521: expose amount input props type

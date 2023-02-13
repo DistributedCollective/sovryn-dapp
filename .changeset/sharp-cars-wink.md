@@ -2,4 +2,4 @@
 'frontend': patch
 ---
 
-fix: max collateral amounts with deducted fees
+SOV-1521: max collateral amounts with deducted fees

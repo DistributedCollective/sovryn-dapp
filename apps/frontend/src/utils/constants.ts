@@ -65,7 +65,7 @@ export const DEFAULT_HISTORY_FRAME_PAGE_SIZE = 10;
 export const DEFAULT_TIMEOUT_SECONDS = 5000;
 export const LIQUIDATION_RESERVE_AMOUNT = 20;
 export const MAX_GAS_LIMIT = 6_800_000;
-export const GAS_LIMIT_OPEN_TROVE = 800_000;
+export const GAS_LIMIT_OPEN_TROVE = 950_000;
 export const GAS_LIMIT_ADJUST_TROVE = 420_000;
 export const GAS_LIMIT_CLOSE_TROVE = 280_000;
 export const GAS_LIMIT_CONVERT = 150_000;
@@ -87,3 +87,5 @@ export const btcInSatoshis = 100000000;
 
 //TODO: refactor into Bitcoin asset definition later
 export const Bitcoin = 'BTC';
+
+export const rskFaucet = 'https://faucet.rsk.co';

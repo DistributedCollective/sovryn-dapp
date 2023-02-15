@@ -19,6 +19,7 @@ import {
   parseBetterFloat,
   removeTrailingZeroes,
   getIOSInputEventHandlers,
+  isIOS,
 } from './utils';
 
 export type InputBaseProps = Omit<
@@ -118,11 +119,26 @@ export const InputBase = React.forwardRef<HTMLInputElement, InputBaseProps>(
       ],
     );
 
+    const resetIOSStylesOnBlur = useCallback(
+      (event: React.FocusEvent<HTMLInputElement>) => {
+        if (event.currentTarget === null) {
+          event.currentTarget = event.target;
+        }
+
+        if (isIOS()) {
+          event.currentTarget.style.fontSize = 'inherit';
+        }
+      },
+      [],
+    );
+
     const handleOnBlur = useCallback(
       (event: React.FocusEvent<HTMLInputElement>) => {
         if (event.currentTarget === null) {
           event.currentTarget = event.target;
         }
+
+        resetIOSStylesOnBlur(event);
 
         // fix number value if user leaves input with comma or dot at the end (123. => 123)
         if (type === 'number') {
@@ -152,7 +168,15 @@ export const InputBase = React.forwardRef<HTMLInputElement, InputBaseProps>(
         }
         onBlur?.(event);
       },
-      [onBlur, onChange, onChangeText, props.lang, type, updateRenderedValue],
+      [
+        onBlur,
+        onChange,
+        onChangeText,
+        props.lang,
+        resetIOSStylesOnBlur,
+        type,
+        updateRenderedValue,
+      ],
     );
 
     useEffect(() => {
@@ -188,7 +212,7 @@ export const InputBase = React.forwardRef<HTMLInputElement, InputBaseProps>(
         ref={inputRef}
         value={renderedValue}
         onChange={shouldAllowChanges ? handleChange : noop}
-        onBlur={shouldAllowChanges ? handleOnBlur : noop}
+        onBlur={shouldAllowChanges ? handleOnBlur : resetIOSStylesOnBlur}
         {...applyDataAttr(dataAttribute)}
       />
     );

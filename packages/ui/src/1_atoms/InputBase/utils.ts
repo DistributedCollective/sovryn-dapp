@@ -111,10 +111,7 @@ export const getIOSInputEventHandlers = () => {
 
   return {
     onTouchStart: e => {
-      e.currentTarget.style.fontSize = '16px';
-    },
-    onBlur: e => {
-      e.currentTarget.style.fontSize = 'inherit';
+      e.currentTarget.style.fontSize = '1rem';
     },
   };
 };

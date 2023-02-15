@@ -9,7 +9,6 @@ import React, { FC, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLoaderData } from 'react-router-dom';
 
-import { applyDataAttr } from '@sovryn/ui';
 import {
   Button,
   ButtonStyle,
@@ -21,10 +20,13 @@ import {
   ParagraphStyle,
 } from '@sovryn/ui';
 
+import { AmountRenderer } from '../../2_molecules/AmountRenderer/AmountRenderer';
+import { BTC_TRUNCATE_COUNT } from '../../3_organisms/ZeroLocForm/constants';
 import { useAccount } from '../../../hooks/useAccount';
 import { useBlockNumber } from '../../../hooks/useBlockNumber';
 import { useGetOpenTrove } from '../../../hooks/zero/useGetOpenTrove';
 import { translations } from '../../../locales/i18n';
+import { Bitcoin } from '../../../utils/constants';
 import { useHandleRewards } from './hooks/useHandleRewards';
 import { RewardsAction } from './types';
 
@@ -78,7 +80,14 @@ const RewardsPage: FC = () => {
             {t(translations.rewardPage.stabilityPoolRewards)}
           </Paragraph>
           <div className="text-2xl leading-7 uppercase">
-            {amount?.prettify(4)} {t(translations.rewardPage.btc)}
+            {
+              <AmountRenderer
+                value={amount.toString()}
+                suffix={Bitcoin}
+                precision={BTC_TRUNCATE_COUNT}
+                dataAttribute="rewards-amount"
+              />
+            }
           </div>
         </div>
 
@@ -90,7 +99,7 @@ const RewardsPage: FC = () => {
             className="w-full max-w-48"
             onClick={handleWithdraw}
             disabled={Number(amount) === 0 || !signer}
-            {...applyDataAttr('rewards-withdraw')}
+            dataAttribute="rewards-withdraw"
           />
           {isOpenTroveExists && Number(amount) > 0 && signer && (
             <Button
@@ -99,7 +108,7 @@ const RewardsPage: FC = () => {
               text={t(translations.rewardPage.actions.transferToLOC)}
               className="w-full"
               onClick={handleTransferToLOC}
-              {...applyDataAttr('rewards-transfer-to-loc')}
+              dataAttribute="rewards-transfer-to-loc"
             />
           )}
         </div>

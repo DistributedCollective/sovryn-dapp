@@ -206,7 +206,7 @@ export const ZeroPage: FC = () => {
                 </div>
               </div>
 
-              <Dialog width={DialogSize.sm} isOpen={open} disableFocusTrap>
+              <Dialog width={DialogSize.md} isOpen={open} disableFocusTrap>
                 <DialogHeader
                   title={
                     !hasLoc
@@ -241,7 +241,7 @@ export const ZeroPage: FC = () => {
               />
 
               <Dialog
-                width={DialogSize.sm}
+                width={DialogSize.md}
                 isOpen={openClosePopup}
                 disableFocusTrap
               >

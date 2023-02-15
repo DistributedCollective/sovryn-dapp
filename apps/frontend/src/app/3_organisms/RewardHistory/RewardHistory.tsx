@@ -5,7 +5,6 @@ import { useTranslation } from 'react-i18next';
 
 import { SupportedTokens } from '@sovryn/contracts';
 import {
-  applyDataAttr,
   NotificationType,
   OrderDirection,
   OrderOptions,
@@ -199,7 +198,7 @@ export const RewardHistory: FC = () => {
           isLoading={loading}
           className="bg-gray-80 text-gray-10 lg:px-6 lg:py-4"
           noData={t(translations.common.tables.noData)}
-          {...applyDataAttr('reward-history-table')}
+          dataAttribute="reward-history-table"
         />
         <Pagination
           page={page}
@@ -207,7 +206,7 @@ export const RewardHistory: FC = () => {
           onChange={onPageChange}
           itemsPerPage={pageSize}
           isNextButtonDisabled={isNextButtonDisabled}
-          {...applyDataAttr('reward-history-pagination')}
+          dataAttribute="reward-history-pagination"
         />
       </div>
     </>

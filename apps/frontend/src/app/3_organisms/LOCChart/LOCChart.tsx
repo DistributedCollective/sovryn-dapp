@@ -111,7 +111,7 @@ export const LOCChart: FC = () => {
                 )} ${Bitcoin}`,
                 `${t(translations.chart.debtAmount)}: ${formatValue(
                   Number(debtAmount),
-                  2,
+                  4,
                 )} ${SupportedTokens.zusd.toUpperCase()}`,
                 `${t(translations.chart.collateralRatio)}: ${formatValue(
                   Number(collateralRatio),
@@ -123,7 +123,7 @@ export const LOCChart: FC = () => {
                 tooltipContent.push(
                   `${t(translations.chart.redemptionBuffer)}: ${formatValue(
                     redemptionBuffer,
-                    2,
+                    4,
                   )} ${SupportedTokens.zusd.toUpperCase()}`,
                 );
               }

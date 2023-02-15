@@ -12,14 +12,12 @@ import {
   Paragraph,
   ParagraphSize,
   Table,
-  Tooltip,
-  TooltipTrigger,
   TransactionId,
-  applyDataAttr,
 } from '@sovryn/ui';
 
 import { chains, defaultChainId } from '../../../config/chains';
 
+import { AmountRenderer } from '../../2_molecules/AmountRenderer/AmountRenderer';
 import { ExportCSV } from '../../2_molecules/ExportCSV/ExportCSV';
 import { TableFilter } from '../../2_molecules/TableFilter/TableFilter';
 import { Filter } from '../../2_molecules/TableFilter/TableFilter.types';
@@ -38,7 +36,7 @@ import {
   useGetStabilityPoolLazyQuery,
 } from '../../../utils/graphql/zero/generated';
 import { dateFormat } from '../../../utils/helpers';
-import { formatValue } from '../../../utils/math';
+import { ASSET_TRUNCATE_COUNT } from '../ZeroLocForm/constants';
 import { useGetStabilityPoolHistory } from './hooks/useGetStabilityPoolHistory';
 
 const DEFAULT_PAGE_SIZE = 10;
@@ -127,17 +125,12 @@ export const StabilityPoolHistoryFrame: FC = () => {
     (balance: string) => (
       <>
         {balance.length ? (
-          <Tooltip
-            content={`${balance} ${SupportedTokens.zusd}`}
-            trigger={TooltipTrigger.click}
-            className="cursor-pointer uppercase"
-            tooltipClassName="uppercase"
-            {...applyDataAttr('stability-pool-history-balance-change')}
-          >
-            <span>
-              {formatValue(Number(balance), 2)} {SupportedTokens.zusd}
-            </span>
-          </Tooltip>
+          <AmountRenderer
+            value={balance}
+            suffix={SupportedTokens.zusd}
+            precision={ASSET_TRUNCATE_COUNT}
+            dataAttribute="stability-pool-history-balance-change"
+          />
         ) : (
           '-'
         )}
@@ -150,22 +143,12 @@ export const StabilityPoolHistoryFrame: FC = () => {
     (stabilityDeposit: StabilityDepositChange) => (
       <>
         {stabilityDeposit ? (
-          <Tooltip
-            content={
-              <>
-                {stabilityDeposit.depositedAmountAfter} {SupportedTokens.zusd}
-              </>
-            }
-            trigger={TooltipTrigger.click}
-            className="cursor-pointer uppercase"
-            tooltipClassName="uppercase"
-            {...applyDataAttr('stability-pool-history-new-balance')}
-          >
-            <span>
-              {formatValue(Number(stabilityDeposit.depositedAmountAfter), 2)}{' '}
-              {SupportedTokens.zusd}
-            </span>
-          </Tooltip>
+          <AmountRenderer
+            value={stabilityDeposit.depositedAmountAfter}
+            suffix={SupportedTokens.zusd}
+            precision={ASSET_TRUNCATE_COUNT}
+            dataAttribute="stability-pool-history-new-balance"
+          />
         ) : (
           '-'
         )}
@@ -232,7 +215,7 @@ export const StabilityPoolHistoryFrame: FC = () => {
           <TransactionId
             href={`${chain?.blockExplorerUrl}/tx/${row.transaction.id}`}
             value={row.transaction.id}
-            {...applyDataAttr('stability-pool-history-address-id')}
+            dataAttribute="stability-pool-history-address-id"
           />
         ),
       },
@@ -318,7 +301,7 @@ export const StabilityPoolHistoryFrame: FC = () => {
           isLoading={loading}
           className="bg-gray-80 text-gray-10 lg:px-6 lg:py-4"
           noData={noDataLabel}
-          {...applyDataAttr('redemption-history-table')}
+          dataAttribute="stability-pool-history-table"
         />
         <Pagination
           page={page}
@@ -326,7 +309,7 @@ export const StabilityPoolHistoryFrame: FC = () => {
           onChange={onPageChange}
           itemsPerPage={pageSize}
           isNextButtonDisabled={isNextButtonDisabled}
-          {...applyDataAttr('redemption-history-pagination')}
+          dataAttribute="stability-pool-history-pagination"
         />
       </div>
     </>

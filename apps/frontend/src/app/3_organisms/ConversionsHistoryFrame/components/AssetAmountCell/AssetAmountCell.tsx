@@ -1,8 +1,7 @@
 import React from 'react';
 
-import { Tooltip, TooltipTrigger } from '@sovryn/ui';
-
-import { formatValue } from '../../../../../utils/math';
+import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRenderer';
+import { BTC_TRUNCATE_COUNT } from '../../../ZeroLocForm/constants';
 
 type AssetAmountCellProps = {
   amount: string;
@@ -13,13 +12,10 @@ export const AssetAmountCell: React.FC<AssetAmountCellProps> = ({
   amount,
   asset,
 }) => (
-  <Tooltip
-    content={<span>{`${formatValue(Number(amount), 18)} ${asset}`}</span>}
-    trigger={TooltipTrigger.click}
-    className="cursor-pointer uppercase"
-    tooltipClassName="uppercase"
+  <AmountRenderer
+    value={amount}
+    suffix={asset}
+    precision={BTC_TRUNCATE_COUNT}
     dataAttribute="conversion-sent-tooltip"
-  >
-    <span>{`${formatValue(Number(amount), 6)} ${asset}`}</span>
-  </Tooltip>
+  />
 );

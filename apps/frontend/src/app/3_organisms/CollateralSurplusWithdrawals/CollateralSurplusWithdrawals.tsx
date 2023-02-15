@@ -4,7 +4,6 @@ import { nanoid } from 'nanoid';
 import { useTranslation } from 'react-i18next';
 
 import {
-  applyDataAttr,
   NotificationType,
   OrderDirection,
   OrderOptions,
@@ -17,6 +16,7 @@ import {
 
 import { chains, defaultChainId } from '../../../config/chains';
 
+import { AmountRenderer } from '../../2_molecules/AmountRenderer/AmountRenderer';
 import { ExportCSV } from '../../2_molecules/ExportCSV/ExportCSV';
 import { useNotificationContext } from '../../../contexts/NotificationContext';
 import { useAccount } from '../../../hooks/useAccount';
@@ -33,6 +33,7 @@ import {
 } from '../../../utils/graphql/zero/generated';
 import { dateFormat } from '../../../utils/helpers';
 import { formatValue } from '../../../utils/math';
+import { BTC_TRUNCATE_COUNT } from '../ZeroLocForm/constants';
 import { useGetCollateralSurplusWithdrawals } from './hooks/useGetCollateralSurplusWithdrawals';
 
 const pageSize = DEFAULT_HISTORY_FRAME_PAGE_SIZE;
@@ -65,9 +66,17 @@ export const CollateralSurplusHistoryFrame: FC = () => {
 
   const [getCollSurplusChanges] = useGetCollSurplusChangesLazyQuery();
 
-  const renderCollateralChange = useCallback((collSurplusChange: string) => {
-    return `${formatValue(Math.abs(Number(collSurplusChange)), 8)} ${Bitcoin}`;
-  }, []);
+  const renderCollateralChange = useCallback(
+    (collSurplusChange: string) => (
+      <AmountRenderer
+        value={collSurplusChange}
+        suffix={Bitcoin}
+        precision={BTC_TRUNCATE_COUNT}
+        dataAttribute="surplus-withdrawals-collateral"
+      />
+    ),
+    [],
+  );
 
   const generateRowTitle = useCallback((row: any) => {
     return (
@@ -103,7 +112,7 @@ export const CollateralSurplusHistoryFrame: FC = () => {
           <TransactionId
             href={`${chain?.blockExplorerUrl}/tx/${tx.hash}`}
             value={tx.hash}
-            {...applyDataAttr('history-address-id')}
+            dataAttribute="history-address-id"
           />
         ),
       },
@@ -151,19 +160,16 @@ export const CollateralSurplusHistoryFrame: FC = () => {
 
     return list.map(tx => ({
       timestamp: dateFormat(tx.transaction.timestamp),
-      collateralChange: renderCollateralChange(tx.collSurplusChange),
+      collateralChange: `${formatValue(
+        Math.abs(Number(tx.collSurplusChange)),
+        8,
+      )} ${Bitcoin}`,
       transactionType: t(
         translations.collateralSurplusHistory.table.withdrawSurplus,
       ),
       transactionID: tx.transaction.id,
     }));
-  }, [
-    account,
-    addNotification,
-    getCollSurplusChanges,
-    renderCollateralChange,
-    t,
-  ]);
+  }, [account, addNotification, getCollSurplusChanges, t]);
 
   useEffect(() => {
     setPage(0);
@@ -187,7 +193,7 @@ export const CollateralSurplusHistoryFrame: FC = () => {
           isLoading={loading}
           className="bg-gray-80 text-gray-10 lg:px-6 lg:py-4"
           noData={t(translations.common.tables.noData)}
-          {...applyDataAttr('surplus-withdrawals-table')}
+          dataAttribute="surplus-withdrawals-table"
         />
         <Pagination
           page={page}
@@ -195,7 +201,7 @@ export const CollateralSurplusHistoryFrame: FC = () => {
           onChange={onPageChange}
           itemsPerPage={pageSize}
           isNextButtonDisabled={isNextButtonDisabled}
-          {...applyDataAttr('surplus-withdrawals-pagination')}
+          dataAttribute="surplus-withdrawals-pagination"
         />
       </div>
     </>

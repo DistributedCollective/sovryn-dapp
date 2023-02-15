@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next';
 
 import { Button, ButtonSize, ButtonStyle, HelperButton } from '@sovryn/ui';
 
+import { BTC_TRUNCATE_COUNT } from '../../3_organisms/ZeroLocForm/constants';
 import { Bitcoin } from '../../../utils/constants';
 import { AmountRenderer } from '../AmountRenderer/AmountRenderer';
 import { CRatioIndicator } from './components/CRatioIndicator/CRatioIndicator';
@@ -59,7 +60,7 @@ export const LOCStatus: FC<LOCStatusProps> = ({
                 <AmountRenderer
                   value={collateral}
                   suffix={Bitcoin}
-                  precision={8}
+                  precision={BTC_TRUNCATE_COUNT}
                   dataAttribute="LOC-collateral"
                 />
               }

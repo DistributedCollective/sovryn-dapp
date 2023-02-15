@@ -12,13 +12,12 @@ import {
   Paragraph,
   ParagraphSize,
   Table,
-  Tooltip,
-  TooltipTrigger,
   TransactionId,
 } from '@sovryn/ui';
 
 import { chains, defaultChainId } from '../../../config/chains';
 
+import { AmountRenderer } from '../../2_molecules/AmountRenderer/AmountRenderer';
 import { ExportCSV } from '../../2_molecules/ExportCSV/ExportCSV';
 import { TableFilter } from '../../2_molecules/TableFilter/TableFilter';
 import { Filter } from '../../2_molecules/TableFilter/TableFilter.types';
@@ -43,6 +42,10 @@ import {
 } from '../../../utils/graphql/zero/generated';
 import { dateFormat } from '../../../utils/helpers';
 import { formatValue } from '../../../utils/math';
+import {
+  ASSET_TRUNCATE_COUNT,
+  BTC_TRUNCATE_COUNT,
+} from '../ZeroLocForm/constants';
 import { useGetTroves } from './hooks/useGetTroves';
 
 const pageSize = DEFAULT_HISTORY_FRAME_PAGE_SIZE;
@@ -256,26 +259,15 @@ export const TransactionHistoryFrame: FC = () => {
     (trove: TroveChange) => (
       <>
         {trove.debtChange.length ? (
-          <Tooltip
-            content={
-              <>
-                {renderSign(
-                  trove.troveOperation,
-                  Number(trove.collateralAfter),
-                )}
-                {trove.debtChange} {SupportedTokens.zusd}
-              </>
-            }
-            trigger={TooltipTrigger.click}
-            className="cursor-pointer uppercase"
-            tooltipClassName="uppercase"
-            dataAttribute="debt-change-tooltip"
-          >
-            <span>
-              {renderSign(trove.troveOperation, Number(trove.collateralAfter))}
-              {formatValue(Number(trove.debtChange), 2)} {SupportedTokens.zusd}
-            </span>
-          </Tooltip>
+          <>
+            {renderSign(trove.troveOperation, Number(trove.collateralAfter))}
+            <AmountRenderer
+              value={trove.debtChange}
+              suffix={SupportedTokens.zusd}
+              precision={ASSET_TRUNCATE_COUNT}
+              dataAttribute="transaction-history-debt-change"
+            />
+          </>
         ) : (
           '-'
         )}
@@ -288,25 +280,12 @@ export const TransactionHistoryFrame: FC = () => {
     (trove: TroveChange) => (
       <>
         {trove.debtAfter.length ? (
-          <Tooltip
-            content={
-              <>
-                {trove.redemption?.partial === true ? 0 : trove.debtAfter}{' '}
-                {SupportedTokens.zusd}
-              </>
-            }
-            trigger={TooltipTrigger.click}
-            className="cursor-pointer uppercase"
-            tooltipClassName="uppercase"
-            dataAttribute="collateral-change-tooltip"
-          >
-            <span>
-              {trove.redemption?.partial === true
-                ? 0
-                : formatValue(Number(trove.debtAfter), 2)}{' '}
-              {SupportedTokens.zusd}
-            </span>
-          </Tooltip>
+          <AmountRenderer
+            value={trove.debtAfter}
+            suffix={SupportedTokens.zusd}
+            precision={ASSET_TRUNCATE_COUNT}
+            dataAttribute="transaction-history-new-debt"
+          />
         ) : (
           '-'
         )}
@@ -319,26 +298,15 @@ export const TransactionHistoryFrame: FC = () => {
     (trove: TroveChange) => (
       <>
         {trove.collateralChange.length ? (
-          <Tooltip
-            content={
-              <>
-                {renderSign(
-                  trove.troveOperation,
-                  Number(trove.collateralChange),
-                )}
-                {trove.collateralChange} {Bitcoin}
-              </>
-            }
-            trigger={TooltipTrigger.click}
-            className="cursor-pointer uppercase"
-            tooltipClassName="uppercase"
-            dataAttribute="collateral-change-tooltip"
-          >
-            <span>
-              {renderSign(trove.troveOperation, Number(trove.collateralChange))}
-              {formatValue(Number(trove.collateralChange), 6)} {Bitcoin}
-            </span>
-          </Tooltip>
+          <>
+            {renderSign(trove.troveOperation, Number(trove.collateralChange))}
+            <AmountRenderer
+              value={trove.collateralChange}
+              suffix={Bitcoin}
+              precision={BTC_TRUNCATE_COUNT}
+              dataAttribute="transaction-history-collateral-change"
+            />
+          </>
         ) : (
           '-'
         )}
@@ -351,43 +319,16 @@ export const TransactionHistoryFrame: FC = () => {
     (trove: TroveChange) => (
       <>
         {trove.collateralAfter.length ? (
-          <Tooltip
-            content={
-              <>
-                {trove.redemption?.partial === true ? (
-                  0
-                ) : (
-                  <>
-                    {trove.troveOperation === TroveOperation.OpenTrove &&
-                      renderSign(
-                        trove.troveOperation,
-                        Number(trove.collateralAfter),
-                      )}
-                    {trove.collateralAfter} {Bitcoin}
-                  </>
-                )}
-              </>
-            }
-            trigger={TooltipTrigger.click}
-            className="cursor-pointer uppercase"
-            tooltipClassName="uppercase"
-            dataAttribute="new-collateral-tooltip"
-          >
-            <span>
-              {trove.redemption?.partial === true ? (
-                0
-              ) : (
-                <>
-                  {trove.troveOperation === TroveOperation.OpenTrove &&
-                    renderSign(
-                      trove.troveOperation,
-                      Number(trove.collateralAfter),
-                    )}
-                  {formatValue(Number(trove.collateralAfter), 6)} {Bitcoin}
-                </>
-              )}
-            </span>
-          </Tooltip>
+          <>
+            {trove.troveOperation === TroveOperation.OpenTrove &&
+              renderSign(trove.troveOperation, Number(trove.collateralAfter))}
+            <AmountRenderer
+              value={trove.collateralAfter}
+              suffix={Bitcoin}
+              precision={BTC_TRUNCATE_COUNT}
+              dataAttribute="transaction-history-collateral-balance"
+            />
+          </>
         ) : (
           '-'
         )}
@@ -400,23 +341,20 @@ export const TransactionHistoryFrame: FC = () => {
     (trove: TroveChange) => (
       <>
         {trove.borrowingFee ? (
-          <Tooltip
-            content={`${trove.borrowingFee} ${SupportedTokens.zusd}`}
-            trigger={TooltipTrigger.click}
-            className="cursor-pointer uppercase"
-            tooltipClassName="uppercase"
-            dataAttribute="collateral-change-tooltip"
-          >
-            <span>
-              {formatValue(Number(trove.borrowingFee), 2)}{' '}
-              {SupportedTokens.zusd} (
-              {formatValue(
-                (Number(trove.borrowingFee) / Number(trove.debtAfter)) * 100,
-                2,
-              )}
-              %)
-            </span>
-          </Tooltip>
+          <>
+            <AmountRenderer
+              value={trove.borrowingFee}
+              suffix={SupportedTokens.zusd}
+              precision={ASSET_TRUNCATE_COUNT}
+              dataAttribute="transaction-history-borrowing-fee"
+            />{' '}
+            (
+            {formatValue(
+              (Number(trove.borrowingFee) / Number(trove.debtAfter)) * 100,
+              2,
+            )}
+            %)
+          </>
         ) : (
           '-'
         )}

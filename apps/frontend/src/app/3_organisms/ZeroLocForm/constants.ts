@@ -7,3 +7,6 @@ export const MIN_DEBT_SIZE = 200; // 200 ZUSD
 
 export const DEBT_TOKEN = SupportedTokens.zusd;
 export const COLLATERAL_TOKEN = SupportedTokens.rbtc;
+
+export const BTC_TRUNCATE_COUNT = 8;
+export const ASSET_TRUNCATE_COUNT = 4;

@@ -30,6 +30,7 @@ import {
 
 import { AmountRenderer } from '../../2_molecules/AmountRenderer/AmountRenderer';
 import { AssetRenderer } from '../../2_molecules/AssetRenderer/AssetRenderer';
+import { ASSET_TRUNCATE_COUNT } from '../../3_organisms/ZeroLocForm/constants';
 import { useAccount } from '../../../hooks/useAccount';
 import { useAssetBalance } from '../../../hooks/useAssetBalance';
 import { translations } from '../../../locales/i18n';
@@ -193,7 +194,13 @@ const EarnPage: FC = () => {
     if (isAmountZero) {
       return t(commonTranslations.na);
     }
-    return `${newPoolBalance} ${SupportedTokens.zusd.toUpperCase()}`;
+    return (
+      <AmountRenderer
+        value={newPoolBalance}
+        suffix={SupportedTokens.zusd}
+        precision={ASSET_TRUNCATE_COUNT}
+      />
+    );
   }, [isAmountZero, newPoolBalance, t]);
 
   const newPoolShare = useMemo(() => {
@@ -312,7 +319,13 @@ const EarnPage: FC = () => {
         <SimpleTable className="mt-3">
           <SimpleTableRow
             label={t(pageTranslations.currentPoolBalance)}
-            value={`${poolBalance} ${SupportedTokens.zusd.toUpperCase()}`}
+            value={
+              <AmountRenderer
+                value={poolBalance}
+                suffix={SupportedTokens.zusd}
+                precision={ASSET_TRUNCATE_COUNT}
+              />
+            }
           />
           <SimpleTableRow
             label={t(pageTranslations.currentPoolShare)}

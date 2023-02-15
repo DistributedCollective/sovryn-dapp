@@ -16,11 +16,12 @@ import {
   SimpleTable,
 } from '@sovryn/ui';
 
+import { AmountRenderer } from '../../2_molecules/AmountRenderer/AmountRenderer';
 import { AssetRenderer } from '../../2_molecules/AssetRenderer/AssetRenderer';
 import { translations } from '../../../locales/i18n';
 import { Bitcoin } from '../../../utils/constants';
-import { formatValue } from '../../../utils/math';
 import { Row } from './Row';
+import { BTC_TRUNCATE_COUNT } from './constants';
 
 type CloseCreditLineProps = {
   collateralValue: string;
@@ -41,7 +42,13 @@ export const CloseCreditLine: FC<CloseCreditLineProps> = ({
   );
 
   const collateralValueRenderer = useCallback(
-    (value: number) => `${formatValue(value, 6)} ${Bitcoin}`,
+    (value: number) => (
+      <AmountRenderer
+        value={value}
+        suffix={Bitcoin}
+        precision={BTC_TRUNCATE_COUNT}
+      />
+    ),
     [],
   );
 

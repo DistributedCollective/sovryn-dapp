@@ -253,7 +253,7 @@ export const LOCChart: FC = () => {
         }),
       );
 
-      setData([...trovesDataBelow, ...userTrove, ...trovesDataAbove]);
+      setData(sortData([...trovesDataBelow, ...userTrove, ...trovesDataAbove]));
       if (lowestTroves) {
         setUserTrovesBelowCount(
           lowestTroves.troves.length - trovesDataBelow.length,

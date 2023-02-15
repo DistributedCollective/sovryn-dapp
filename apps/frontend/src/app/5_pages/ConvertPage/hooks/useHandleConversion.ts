@@ -11,7 +11,10 @@ import {
 
 import { defaultChainId } from '../../../../config/chains';
 
-import { Transaction } from '../../../3_organisms/TransactionStepDialog/TransactionStepDialog.types';
+import {
+  Transaction,
+  TxType,
+} from '../../../3_organisms/TransactionStepDialog/TransactionStepDialog.types';
 import { useTransactionContext } from '../../../../contexts/TransactionContext';
 import { useAccount } from '../../../../hooks/useAccount';
 import { translations } from '../../../../locales/i18n';
@@ -48,12 +51,15 @@ export const useHandleConversion = (
         title: t(translations.convertPage.txDialog.convert, {
           asset: sourceToken.toUpperCase(),
         }),
-        contract: massetManager,
-        fnName: 'redeemTo',
-        args: [bassetAddress, weiAmount, account],
-        config: { gasLimit: GAS_LIMIT_CONVERT },
+        request: {
+          type: TxType.signTransaction,
+          contract: massetManager,
+          fnName: 'redeemTo',
+          args: [bassetAddress, weiAmount, account],
+          gasLimit: GAS_LIMIT_CONVERT,
+        },
       },
-    ];
+    ] as Transaction[];
   }, [account, destinationToken, getMassetManager, sourceToken, weiAmount]);
 
   const withdrawTokens = useCallback(async () => {
@@ -103,9 +109,12 @@ export const useHandleConversion = (
         title: t(translations.convertPage.txDialog.approve, {
           asset: sourceToken.toUpperCase(),
         }),
-        contract: bassetToken,
-        fnName: 'approve',
-        args: [massetManager.address, weiAmount],
+        request: {
+          type: TxType.signTransaction,
+          contract: bassetToken,
+          fnName: 'approve',
+          args: [massetManager.address, weiAmount],
+        },
       });
     }
 
@@ -113,10 +122,13 @@ export const useHandleConversion = (
       title: t(translations.convertPage.txDialog.convert, {
         asset: sourceToken.toUpperCase(),
       }),
-      contract: massetManager,
-      fnName: 'mintTo',
-      args: [bassetAddress, weiAmount, account],
-      config: { gasLimit: GAS_LIMIT_CONVERT },
+      request: {
+        type: TxType.signTransaction,
+        contract: massetManager,
+        fnName: 'mintTo',
+        args: [bassetAddress, weiAmount, account],
+        gasLimit: GAS_LIMIT_CONVERT,
+      },
     });
 
     return transactions;

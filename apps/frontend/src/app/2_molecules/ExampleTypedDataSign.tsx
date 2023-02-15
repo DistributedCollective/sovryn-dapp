@@ -1,16 +1,22 @@
 import React, { useCallback } from 'react';
 
-import { utils } from 'ethers';
+import { utils, ethers } from 'ethers';
 
 import { Button } from '@sovryn/ui';
 
+import { TxType } from '../3_organisms/TransactionStepDialog/TransactionStepDialog.types';
+import { useTransactionContext } from '../../contexts/TransactionContext';
 import { useWalletConnect } from '../../hooks';
-import { signTypedData } from '../../utils/helpers';
 
 export const ExampleTypedDataSign: React.FC = () => {
   const { wallets } = useWalletConnect();
+  const { setTransactions, setIsOpen, setTitle } = useTransactionContext();
 
   const signTypedMessage = useCallback(async () => {
+    const signer = new ethers.providers.Web3Provider(
+      wallets[0].provider,
+    ).getSigner();
+
     const data = {
       domain: {
         chainId: parseInt(wallets[0].chains[0].id),
@@ -28,27 +34,36 @@ export const ExampleTypedDataSign: React.FC = () => {
       },
     };
 
-    const signature = await signTypedData(
-      wallets[0].provider,
-      data.domain,
-      data.types,
-      data.exampleMessage,
-    );
+    setTransactions([
+      {
+        title: `Sign typed data`,
+        request: {
+          type: TxType.signTypedData,
+          signer,
+          domain: data.domain,
+          types: data.types,
+          value: data.exampleMessage,
+        },
+        onComplete: signature => {
+          const signerVerification = utils.verifyTypedData(
+            data.domain,
+            data.types,
+            data.exampleMessage,
+            signature,
+          );
 
-    const signerVerification = utils.verifyTypedData(
-      data.domain,
-      data.types,
-      data.exampleMessage,
-      signature,
-    );
-
-    alert(
-      wallets[0]?.accounts[0]?.address.toLowerCase() ===
-        signerVerification.toLowerCase()
-        ? 'Signature verified'
-        : 'Signature verification failed',
-    );
-  }, [wallets]);
+          alert(
+            wallets[0]?.accounts[0]?.address.toLowerCase() ===
+              signerVerification.toLowerCase()
+              ? 'Signature verified'
+              : 'Signature verification failed',
+          );
+        },
+      },
+    ]);
+    setTitle('sign data');
+    setIsOpen(true);
+  }, [setIsOpen, setTitle, setTransactions, wallets]);
 
   return (
     <Button

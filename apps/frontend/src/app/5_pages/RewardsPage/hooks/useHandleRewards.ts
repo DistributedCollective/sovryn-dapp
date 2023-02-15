@@ -5,7 +5,10 @@ import { useTranslation } from 'react-i18next';
 
 import { getContract } from '@sovryn/contracts';
 
-import { Transaction } from '../../../3_organisms/TransactionStepDialog/TransactionStepDialog.types';
+import {
+  Transaction,
+  TxType,
+} from '../../../3_organisms/TransactionStepDialog/TransactionStepDialog.types';
 import { useTransactionContext } from '../../../../contexts/TransactionContext';
 import { useAccount } from '../../../../hooks/useAccount';
 import { translations } from '../../../../locales/i18n';
@@ -56,10 +59,13 @@ export const useHandleRewards = (action: RewardsAction, amount: string) => {
 
     transactions.push({
       title: title,
-      contract: stabilityPool,
-      fnName: action,
-      args: isWithdrawTransaction ? [toWei(amount)] : [account, account],
-      config: { gasLimit: GAS_LIMIT_REWARDS }, // TODO: add a different limit for transfer if needed
+      request: {
+        type: TxType.signTransaction,
+        contract: stabilityPool,
+        fnName: action,
+        args: isWithdrawTransaction ? [toWei(amount)] : [account, account],
+        gasLimit: GAS_LIMIT_REWARDS,
+      },
     });
 
     setTransactions(transactions);

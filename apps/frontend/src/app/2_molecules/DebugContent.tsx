@@ -13,6 +13,11 @@ import { defaultChainId } from '../../config/chains';
 
 import { EmailNotificationSettingsDialog } from '../3_organisms/EmailNotificationSettingsDialog/EmailNotificationSettingsDialog';
 import { GettingStartedPopup } from '../3_organisms/GettingStartedPopup/GettingStartedPopup';
+import {
+  TransactionReceiptStatus,
+  TxType,
+} from '../3_organisms/TransactionStepDialog/TransactionStepDialog.types';
+import { isTypedDataRequest } from '../3_organisms/TransactionStepDialog/helpers';
 import { useNotificationContext } from '../../contexts/NotificationContext';
 import { useTransactionContext } from '../../contexts/TransactionContext';
 import { useTheme, useWalletConnect } from '../../hooks';
@@ -76,15 +81,79 @@ export const DebugContent = () => {
       {
         title: `Approve ${symbol} tokens`,
         subtitle: `Allow Sovryn protocol to use ${symbol} tokens for the trade`,
-        contract: xusd,
-        fnName: APPROVAL_FUNCTION,
-        args: [address, parseUnits('2')],
+        request: {
+          type: TxType.signTransaction,
+          contract: xusd,
+          fnName: APPROVAL_FUNCTION,
+          args: [address, parseUnits('2')],
+        },
       },
       {
         title: `Transfer 2 ${symbol} tokens`,
-        contract: xusd,
-        fnName: 'transfer',
-        args: [wallets[0]?.accounts[0]?.address, parseUnits('2')],
+        request: {
+          type: TxType.signTransaction,
+          contract: xusd,
+          fnName: 'transfer',
+          args: [wallets[0]?.accounts[0]?.address, parseUnits('2')],
+        },
+      },
+    ]);
+    setTitle('Transaction approval');
+    setIsOpen(true);
+  }, [setIsOpen, setTitle, setTransactions, wallets]);
+
+  const multisig = useCallback(async () => {
+    if (!wallets[0].provider) {
+      return;
+    }
+
+    const provider = new ethers.providers.Web3Provider(wallets[0].provider);
+    const signer = provider.getSigner();
+
+    setTransactions([
+      {
+        title: `Sign a message`,
+        subtitle: `Sign a 'Hello world' message`,
+        request: {
+          type: TxType.signMessage,
+          signer,
+          message: 'Hello world',
+        },
+        onComplete: hash => console.log('onComplete #1', hash),
+      },
+      {
+        title: `Sign a typed data`,
+        subtitle:
+          'Sign a typed data which value is taken from the previous step',
+        request: {
+          type: TxType.signTypedData,
+          signer,
+          domain: {
+            name: 'Sovryn',
+            version: '1',
+          },
+          types: {
+            value: [
+              { name: 'content', type: 'string' },
+              { name: 'hash', type: 'string' },
+            ],
+          },
+          value: {
+            content: 'Hello world',
+            hash: '0x0',
+          },
+        },
+        updateHandler: (request, receipts) => {
+          if (isTypedDataRequest(request)) {
+            // take receipt from the first step
+            const receipt = receipts[0];
+            if (receipt.status === TransactionReceiptStatus.success) {
+              request.value.hash = receipt.response;
+            }
+          }
+          return request;
+        },
+        onComplete: hash => console.log('onComplete #2', hash),
       },
     ]);
     setTitle('Transaction approval');
@@ -113,9 +182,12 @@ export const DebugContent = () => {
       {
         title: `Liquidating lowest ${NUM_LOCS_TO_LIQ} lines of credit`,
         subtitle: `Attempting to liquidate lowest ${NUM_LOCS_TO_LIQ} LoCs`,
-        contract: troveManager,
-        fnName: 'liquidateTroves',
-        args: [NUM_LOCS_TO_LIQ],
+        request: {
+          type: TxType.signTransaction,
+          contract: troveManager,
+          fnName: 'liquidateTroves',
+          args: [NUM_LOCS_TO_LIQ],
+        },
       },
     ]);
     setTitle('Liquidating');
@@ -191,6 +263,11 @@ export const DebugContent = () => {
         {wallets[0]?.accounts[0]?.address ? (
           <div>
             <Button text="Approve" onClick={approve} />
+            <Button
+              text="Multiple Signatures"
+              onClick={multisig}
+              className="mx-4"
+            />
             <ExampleTypedDataSign />
             <Button
               text={`Liquidate lowest ${NUM_LOCS_TO_LIQ} LoCs`}

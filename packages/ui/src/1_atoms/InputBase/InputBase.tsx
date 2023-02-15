@@ -18,6 +18,7 @@ import {
   prepareValueToRender,
   parseBetterFloat,
   removeTrailingZeroes,
+  getIOSInputEventHandlers,
 } from './utils';
 
 export type InputBaseProps = Omit<
@@ -180,6 +181,7 @@ export const InputBase = React.forwardRef<HTMLInputElement, InputBaseProps>(
     return (
       <input
         {...props}
+        {...getIOSInputEventHandlers()}
         type={isNumeric ? 'text' : type}
         inputMode={isNumeric ? 'decimal' : undefined}
         pattern={isNumeric ? '[0-9]*' : undefined}

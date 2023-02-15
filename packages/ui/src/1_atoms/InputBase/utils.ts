@@ -98,3 +98,23 @@ export const removeTrailingZeroes = (value: string) => {
   }
   return value;
 };
+
+export const isIOS = () =>
+  (/iPad|iPhone|iPod/.test(navigator.platform) ||
+    (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)) &&
+  !(window as any).MSStream;
+
+export const getIOSInputEventHandlers = () => {
+  if (!isIOS()) {
+    return {};
+  }
+
+  return {
+    onTouchStart: e => {
+      e.currentTarget.style.fontSize = '16px';
+    },
+    onBlur: e => {
+      e.currentTarget.style.fontSize = '';
+    },
+  };
+};

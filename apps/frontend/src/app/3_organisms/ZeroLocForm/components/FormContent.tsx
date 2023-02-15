@@ -302,7 +302,7 @@ export const FormContent: FC<FormContentProps> = props => {
       <FormGroup
         label={
           <Label
-            symbol="RBTC"
+            symbol={Bitcoin}
             maxAmount={props.maxCollateralAmount}
             tabs={collateralTabs}
             activeTab={props.hasTrove ? props.collateralType : AmountType.Add}
@@ -323,7 +323,7 @@ export const FormContent: FC<FormContentProps> = props => {
           label={t(translations.adjustCreditLine.fields.collateral.amount)}
           tooltip={t(translations.adjustCreditLine.fields.collateral.tooltip)}
           className="max-w-none"
-          unit="RBTC"
+          unit={Bitcoin}
           invalid={!!props.collateralError}
         />
       </FormGroup>

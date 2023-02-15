@@ -128,7 +128,7 @@ export const ZeroPage: FC = () => {
 
   return (
     <div className="px-0 container max-w-[100rem] md:mb-2 mt-4 mb-7">
-      <React.Suspense fallback={<p>Loading stuff...</p>}>
+      <React.Suspense fallback={<p>Loading...</p>}>
         <Await resolve={deferedData} errorElement={<p>Error loading stuff!</p>}>
           {([price, fees]: [string, Fees]) => (
             <>

@@ -45,7 +45,7 @@ export const TransactionSteps: FC<TransactionStepsProps> = ({
 
   useEffect(() => {
     const initialize = async () => {
-      const list: TransactionStepData[] = [];
+      const steps: TransactionStepData[] = [];
       for (let i = 0; i < transactions.length; i++) {
         const { request } = transactions[i];
 
@@ -77,10 +77,10 @@ export const TransactionSteps: FC<TransactionStepsProps> = ({
           item.config.gasPrice = request.gasPrice ?? gasPrice;
         }
 
-        list.push(item);
+        steps.push(item);
       }
 
-      setStepData(list);
+      setStepData(steps);
     };
 
     if (gasPrice) {

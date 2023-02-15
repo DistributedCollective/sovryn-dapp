@@ -1,21 +1,23 @@
 import React, { useCallback } from 'react';
 
-import { utils, ethers } from 'ethers';
+import { utils } from 'ethers';
 
 import { Button } from '@sovryn/ui';
 
-import { TxType } from '../3_organisms/TransactionStepDialog/TransactionStepDialog.types';
+import { TransactionType } from '../3_organisms/TransactionStepDialog/TransactionStepDialog.types';
 import { useTransactionContext } from '../../contexts/TransactionContext';
 import { useWalletConnect } from '../../hooks';
+import { useAccount } from '../../hooks/useAccount';
 
 export const ExampleTypedDataSign: React.FC = () => {
   const { wallets } = useWalletConnect();
   const { setTransactions, setIsOpen, setTitle } = useTransactionContext();
+  const { signer, account } = useAccount();
 
   const signTypedMessage = useCallback(async () => {
-    const signer = new ethers.providers.Web3Provider(
-      wallets[0].provider,
-    ).getSigner();
+    if (!signer) {
+      return;
+    }
 
     const data = {
       domain: {
@@ -38,7 +40,7 @@ export const ExampleTypedDataSign: React.FC = () => {
       {
         title: `Sign typed data`,
         request: {
-          type: TxType.signTypedData,
+          type: TransactionType.signTypedData,
           signer,
           domain: data.domain,
           types: data.types,
@@ -53,8 +55,7 @@ export const ExampleTypedDataSign: React.FC = () => {
           );
 
           alert(
-            wallets[0]?.accounts[0]?.address.toLowerCase() ===
-              signerVerification.toLowerCase()
+            account.toLowerCase() === signerVerification.toLowerCase()
               ? 'Signature verified'
               : 'Signature verification failed',
           );
@@ -63,7 +64,7 @@ export const ExampleTypedDataSign: React.FC = () => {
     ]);
     setTitle('sign data');
     setIsOpen(true);
-  }, [setIsOpen, setTitle, setTransactions, wallets]);
+  }, [account, setIsOpen, setTitle, setTransactions, signer, wallets]);
 
   return (
     <Button

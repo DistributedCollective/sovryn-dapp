@@ -16,7 +16,7 @@ import { useAccount } from '../../../../../../hooks/useAccount';
 import { useGetProtocolContract } from '../../../../../../hooks/useGetContract';
 import { translations } from '../../../../../../locales/i18n';
 import { fromWei, toWei } from '../../../../../../utils/math';
-import { TxType } from '../../../../TransactionStepDialog/TransactionStepDialog.types';
+import { TransactionType } from '../../../../TransactionStepDialog/TransactionStepDialog.types';
 import { GAS_LIMIT_FAST_BTC_WITHDRAW } from '../../../constants';
 import {
   WithdrawContext,
@@ -81,7 +81,7 @@ export const ConfirmationScreens: React.FC<ConfirmationScreensProps> = ({
         {
           title: t(translations.fastBtc.send.txDialog.sendBTC),
           request: {
-            type: TxType.signTransaction,
+            type: TransactionType.signTransaction,
             contract: fastBtcBridgeContract,
             fnName: 'transferToBtc',
             args: [address],

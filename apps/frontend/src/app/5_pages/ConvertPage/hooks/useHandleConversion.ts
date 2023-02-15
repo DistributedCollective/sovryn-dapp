@@ -13,7 +13,7 @@ import { defaultChainId } from '../../../../config/chains';
 
 import {
   Transaction,
-  TxType,
+  TransactionType,
 } from '../../../3_organisms/TransactionStepDialog/TransactionStepDialog.types';
 import { useTransactionContext } from '../../../../contexts/TransactionContext';
 import { useAccount } from '../../../../hooks/useAccount';
@@ -52,7 +52,7 @@ export const useHandleConversion = (
           asset: sourceToken.toUpperCase(),
         }),
         request: {
-          type: TxType.signTransaction,
+          type: TransactionType.signTransaction,
           contract: massetManager,
           fnName: 'redeemTo',
           args: [bassetAddress, weiAmount, account],
@@ -110,7 +110,7 @@ export const useHandleConversion = (
           asset: sourceToken.toUpperCase(),
         }),
         request: {
-          type: TxType.signTransaction,
+          type: TransactionType.signTransaction,
           contract: bassetToken,
           fnName: 'approve',
           args: [massetManager.address, weiAmount],
@@ -123,7 +123,7 @@ export const useHandleConversion = (
         asset: sourceToken.toUpperCase(),
       }),
       request: {
-        type: TxType.signTransaction,
+        type: TransactionType.signTransaction,
         contract: massetManager,
         fnName: 'mintTo',
         args: [bassetAddress, weiAmount, account],

@@ -7,7 +7,7 @@ import { getContract } from '@sovryn/contracts';
 
 import {
   Transaction,
-  TxType,
+  TransactionType,
 } from '../../../3_organisms/TransactionStepDialog/TransactionStepDialog.types';
 import { useTransactionContext } from '../../../../contexts/TransactionContext';
 import { useAccount } from '../../../../hooks/useAccount';
@@ -60,7 +60,7 @@ export const useHandleRewards = (action: RewardsAction, amount: string) => {
     transactions.push({
       title: title,
       request: {
-        type: TxType.signTransaction,
+        type: TransactionType.signTransaction,
         contract: stabilityPool,
         fnName: action,
         args: isWithdrawTransaction ? [toWei(amount)] : [account, account],

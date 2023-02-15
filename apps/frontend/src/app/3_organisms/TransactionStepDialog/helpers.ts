@@ -3,17 +3,20 @@ import {
   SignTransactionRequest,
   SignTypedDataRequest,
   TransactionRequest,
-  TxType,
+  TransactionType,
 } from './TransactionStepDialog.types';
 
 export const isMessageSignatureRequest = (
   request: TransactionRequest,
-): request is SignMessageRequest => request.type === TxType.signMessage;
+): request is SignMessageRequest =>
+  request.type === TransactionType.signMessage;
 
 export const isTypedDataRequest = (
   request: TransactionRequest,
-): request is SignTypedDataRequest => request.type === TxType.signTypedData;
+): request is SignTypedDataRequest =>
+  request.type === TransactionType.signTypedData;
 
 export const isTransactionRequest = (
   request: TransactionRequest,
-): request is SignTransactionRequest => request.type === TxType.signTransaction;
+): request is SignTransactionRequest =>
+  request.type === TransactionType.signTransaction;

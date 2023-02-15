@@ -8,7 +8,7 @@ import { getContract } from '@sovryn/contracts';
 
 import {
   Transaction,
-  TxType,
+  TransactionType,
 } from '../../../3_organisms/TransactionStepDialog/TransactionStepDialog.types';
 import { useTransactionContext } from '../../../../contexts/TransactionContext';
 import { useAccount } from '../../../../hooks/useAccount';
@@ -51,7 +51,7 @@ export const useHandleStabilityDeposit = (
         asset: SupportedTokens.zusd.toUpperCase(),
       }),
       request: {
-        type: TxType.signTransaction,
+        type: TransactionType.signTransaction,
         contract: stabilityPool,
         fnName: 'withdrawFromSP',
         args: [toWei(amount)],
@@ -95,7 +95,7 @@ export const useHandleStabilityDeposit = (
         asset: SupportedTokens.zusd.toUpperCase(),
       }),
       request: {
-        type: TxType.signTransaction,
+        type: TransactionType.signTransaction,
         contract: stabilityPool,
         fnName: 'provideToSP',
         args: [toWei(amount), ethers.constants.AddressZero],

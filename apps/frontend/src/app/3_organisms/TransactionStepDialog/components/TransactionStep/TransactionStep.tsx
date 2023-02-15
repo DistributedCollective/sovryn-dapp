@@ -32,16 +32,19 @@ import { APPROVAL_FUNCTION } from '../../../../../utils/constants';
 import { fromWei, toWei } from '../../../../../utils/math';
 import {
   Transaction,
-  TxConfig,
-  TxType,
+  TransactionConfig,
+  SignTransactionRequest,
+  TransactionReceipt,
 } from '../../TransactionStepDialog.types';
+import { isTransactionRequest } from '../../helpers';
 
 export type TransactionStepProps = {
   transaction: Transaction;
   step: string | number;
   status: StatusType;
-  config: TxConfig;
-  updateConfig: (config: TxConfig) => void;
+  config: TransactionConfig;
+  receipt: TransactionReceipt;
+  updateConfig: (config: TransactionConfig) => void;
   gasPrice: string;
   isLoading: boolean;
 };
@@ -53,47 +56,54 @@ export const TransactionStep: FC<TransactionStepProps> = ({
   status,
   transaction,
   config,
+  receipt,
   gasPrice,
   updateConfig,
   isLoading,
 }) => {
-  const { request } = transaction;
+  const { request, title, subtitle } = transaction;
   const [token, setToken] = useState<TokenDetailsData | undefined>();
 
+  const isTransaction = useMemo(() => isTransactionRequest(request), [request]);
+
   useEffect(() => {
-    if (transaction.request.type === TxType.signTransaction) {
-      const contract = transaction.request.contract;
+    if (isTransaction) {
+      const contract = (request as SignTransactionRequest).contract;
       findContract(contract.address).then(result => {
         if (result.group === 'tokens') {
           getTokenDetailsByAddress(contract.address).then(setToken);
         }
       });
     }
-  }, [transaction.request]);
-
-  const { title, subtitle } = transaction;
+  }, [isTransaction, request]);
 
   const resetConfig = useCallback(async () => {
-    if (request.type === TxType.signTransaction) {
+    if (isTransaction) {
       try {
+        const {
+          contract,
+          fnName,
+          args,
+          gasLimit: _gasLimit,
+          gasPrice: _gasPrice,
+        } = request as SignTransactionRequest;
         const gasLimit =
-          request.gasLimit ??
-          (await request.contract.estimateGas[request.fnName](
-            ...request.args,
-          ).then(gas => gas.toString()));
+          _gasLimit ??
+          (await contract.estimateGas[fnName](...args).then(gas =>
+            gas.toString(),
+          ));
 
         updateConfig({
           unlimitedAmount: false,
-          amount:
-            request.fnName === APPROVAL_FUNCTION ? request.args[1] : undefined,
-          gasPrice,
+          amount: fnName === APPROVAL_FUNCTION ? args[1] : undefined,
+          gasPrice: _gasPrice ?? gasPrice,
           gasLimit,
         });
       } catch (error) {
         console.log('error', error);
       }
     }
-  }, [gasPrice, request, updateConfig]);
+  }, [gasPrice, isTransaction, request, updateConfig]);
 
   const parsedAmount = useMemo(() => {
     return token?.decimalPrecision && config.amount !== undefined
@@ -102,13 +112,14 @@ export const TransactionStep: FC<TransactionStepProps> = ({
   }, [config.amount, token?.decimalPrecision]);
 
   const minAmount = useMemo(() => {
-    if (request.type === TxType.signTransaction) {
-      return request.fnName === APPROVAL_FUNCTION
-        ? formatUnits(request.args[1], token?.decimalPrecision)
+    if (isTransaction) {
+      const { fnName, args } = request as SignTransactionRequest;
+      return fnName === APPROVAL_FUNCTION
+        ? formatUnits(args[1], token?.decimalPrecision)
         : '0';
     }
     return '0';
-  }, [request, token?.decimalPrecision]);
+  }, [isTransaction, request, token?.decimalPrecision]);
 
   const amountOptions = useMemo(
     () => [
@@ -195,7 +206,7 @@ export const TransactionStep: FC<TransactionStepProps> = ({
           <Paragraph className="text-gray-30">{subtitle}</Paragraph>
         )}
 
-        {request.type === TxType.signTransaction && (
+        {isTransaction && (
           <>
             <SimpleTable className="max-w-72 mt-3">
               {config.amount !== undefined && (
@@ -228,13 +239,13 @@ export const TransactionStep: FC<TransactionStepProps> = ({
                   'whitespace-nowrap overflow-auto',
                 )}
               />
-              {config.hash && (
+              {receipt.response && (
                 <SimpleTableRow
                   label="TX ID"
                   value={
                     <TransactionId
-                      href={`${chain?.blockExplorerUrl}/tx/${config.hash}`}
-                      value={config.hash}
+                      href={`${chain?.blockExplorerUrl}/tx/${receipt.response}`}
+                      value={receipt.response}
                     />
                   }
                 />

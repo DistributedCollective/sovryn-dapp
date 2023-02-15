@@ -4,20 +4,17 @@ import { BigNumberish, TypedDataDomain, TypedDataField, ethers } from 'ethers';
 
 import { StatusType } from '@sovryn/ui';
 
-export interface TxConfig {
+export interface TransactionConfig {
   amount?: BigNumberish;
   unlimitedAmount?: boolean;
   gasLimit?: BigNumberish;
   gasPrice?: string;
-  value?: BigNumberish;
-  // @deprecated use receipt.response instead
-  hash?: string;
 }
 
-export type TxConf = {
+export type TransactionStepData = {
   transaction: Transaction;
   receipt: TransactionReceipt;
-  config: TxConfig;
+  config: TransactionConfig;
 };
 
 export type Transaction = {
@@ -33,20 +30,20 @@ export type Transaction = {
   ) => TransactionRequest;
 };
 
-export enum TxType {
+export enum TransactionType {
   signMessage = 'sign',
   signTypedData = 'signTypedData',
   signTransaction = 'signTransaction',
 }
 
 export type SignMessageRequest = {
-  type: TxType.signMessage;
+  type: TransactionType.signMessage;
   signer: JsonRpcSigner;
   message: string;
 };
 
 export type SignTypedDataRequest = {
-  type: TxType.signTypedData;
+  type: TransactionType.signTypedData;
   signer: JsonRpcSigner;
   domain: TypedDataDomain;
   types: Record<string, Array<TypedDataField>>;
@@ -54,7 +51,7 @@ export type SignTypedDataRequest = {
 };
 
 export type SignTransactionRequest = {
-  type: TxType.signTransaction;
+  type: TransactionType.signTransaction;
   contract: ethers.Contract;
   fnName: string;
   args: any[];
@@ -74,13 +71,8 @@ export enum TransactionReceiptStatus {
   error = 'error',
 }
 
-export type TransactionReceipt =
-  | {
-      status: TransactionReceiptStatus.success;
-      request: TransactionRequest;
-      response: string;
-    }
-  | {
-      status: TransactionReceiptStatus.pending | TransactionReceiptStatus.error;
-      request: TransactionRequest;
-    };
+export type TransactionReceipt = {
+  status: TransactionReceiptStatus;
+  request: TransactionRequest;
+  response?: string;
+};

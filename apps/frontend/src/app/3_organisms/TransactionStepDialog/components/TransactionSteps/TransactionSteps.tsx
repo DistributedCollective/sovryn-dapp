@@ -12,10 +12,16 @@ import { sleep } from '../../../../../utils/helpers';
 import {
   Transaction,
   TransactionReceiptStatus,
-  TxConf,
-  TxConfig,
-  TxType,
+  TransactionStepData,
+  TransactionType,
+  TransactionConfig,
+  TransactionReceipt,
 } from '../../TransactionStepDialog.types';
+import {
+  isMessageSignatureRequest,
+  isTransactionRequest,
+  isTypedDataRequest,
+} from '../../helpers';
 import { TransactionStep } from '../TransactionStep/TransactionStep';
 
 export type TransactionStepsProps = {
@@ -31,7 +37,7 @@ export const TransactionSteps: FC<TransactionStepsProps> = ({
   onClose,
   gasPrice,
 }) => {
-  const [items, setItems] = useState<TxConf[]>([]);
+  const [stepData, setStepData] = useState<TransactionStepData[]>([]);
 
   const [step, setStep] = useState(-1);
   const [error, setError] = useState(false);
@@ -39,11 +45,11 @@ export const TransactionSteps: FC<TransactionStepsProps> = ({
 
   useEffect(() => {
     const initialize = async () => {
-      const list: TxConf[] = [];
+      const list: TransactionStepData[] = [];
       for (let i = 0; i < transactions.length; i++) {
         const { request } = transactions[i];
 
-        const item: TxConf = {
+        const item: TransactionStepData = {
           transaction: transactions[i],
           receipt: {
             status: TransactionReceiptStatus.pending,
@@ -52,28 +58,29 @@ export const TransactionSteps: FC<TransactionStepsProps> = ({
           config: {},
         };
 
-        if (request.type === TxType.signTransaction) {
-          const args = [...request.args];
-          if (request.fnName === APPROVAL_FUNCTION) {
-            args[1] = ethers.constants.MaxUint256;
+        if (request.type === TransactionType.signTransaction) {
+          const { contract, fnName, args, gasLimit } = request;
+          const _args = [...args];
+          if (fnName === APPROVAL_FUNCTION) {
+            _args[1] = ethers.constants.MaxUint256;
           }
           item.config.gasLimit =
-            request.gasLimit ??
-            (await request.contract.estimateGas[request.fnName](...args).then(
-              gas => gas.toString(),
+            gasLimit ??
+            (await contract.estimateGas[fnName](..._args).then(gas =>
+              gas.toString(),
             ));
 
           item.config.amount =
-            request.fnName === APPROVAL_FUNCTION ? request.args[1] : undefined;
+            fnName === APPROVAL_FUNCTION ? request.args[1] : undefined;
           item.config.unlimitedAmount =
-            request.fnName === APPROVAL_FUNCTION ? false : undefined;
+            fnName === APPROVAL_FUNCTION ? false : undefined;
           item.config.gasPrice = request.gasPrice ?? gasPrice;
         }
 
         list.push(item);
       }
 
-      setItems(list);
+      setStepData(list);
     };
 
     if (gasPrice) {
@@ -82,8 +89,8 @@ export const TransactionSteps: FC<TransactionStepsProps> = ({
   }, [gasPrice, transactions]);
 
   const updateConfig = useCallback(
-    (index: number, config: TxConfig) => {
-      setItems(items => {
+    (index: number, config: TransactionConfig) => {
+      setStepData(items => {
         if (items[index]) {
           const copy = [...items];
           copy[index].config = config;
@@ -92,11 +99,25 @@ export const TransactionSteps: FC<TransactionStepsProps> = ({
         return items;
       });
     },
-    [setItems],
+    [setStepData],
+  );
+
+  const updateReceipt = useCallback(
+    (index: number, receipt: TransactionReceipt) => {
+      setStepData(items => {
+        if (items[index]) {
+          const copy = [...items];
+          copy[index].receipt = receipt;
+          return copy;
+        }
+        return items;
+      });
+    },
+    [setStepData],
   );
 
   const handleUpdates = useCallback(() => {
-    setItems(items =>
+    setStepData(items =>
       items.map(item => {
         if (item.transaction.updateHandler) {
           item.transaction.request = item.transaction.updateHandler(
@@ -118,9 +139,9 @@ export const TransactionSteps: FC<TransactionStepsProps> = ({
       }
       for (; i < transactions.length; i++) {
         setStep(i);
-        const config = items[i].config;
+        const config = stepData[i].config;
         const { request } = transactions[i];
-        if (request.type === TxType.signTransaction) {
+        if (isTransactionRequest(request)) {
           const args = [...request.args];
           if (request.fnName === APPROVAL_FUNCTION) {
             args[1] = config.unlimitedAmount
@@ -135,7 +156,11 @@ export const TransactionSteps: FC<TransactionStepsProps> = ({
             gasLimit: config.gasLimit ? config.gasLimit?.toString() : undefined,
           });
 
-          updateConfig(i, { ...config, hash: tx.hash });
+          updateReceipt(i, {
+            status: TransactionReceiptStatus.pending,
+            request,
+            response: tx.hash,
+          });
 
           transactions[i].onStart?.(tx.hash);
           transactions[i].onChangeStatus?.(StatusType.pending);
@@ -145,27 +170,27 @@ export const TransactionSteps: FC<TransactionStepsProps> = ({
           transactions[i].onChangeStatus?.(StatusType.success);
           transactions[i].onComplete?.(tx.hash);
 
-          items[i].receipt = {
+          updateReceipt(i, {
             status: TransactionReceiptStatus.success,
             request,
             response: tx.hash,
-          };
+          });
 
           handleUpdates();
-        } else if (request.type === TxType.signMessage) {
+        } else if (isMessageSignatureRequest(request)) {
           const signature = await request.signer.signMessage(request.message);
 
           transactions[i].onChangeStatus?.(StatusType.success);
           transactions[i].onComplete?.(signature);
 
-          items[i].receipt = {
+          updateReceipt(i, {
             status: TransactionReceiptStatus.success,
             request,
             response: signature,
-          };
+          });
 
           handleUpdates();
-        } else if (request.type === TxType.signTypedData) {
+        } else if (isTypedDataRequest(request)) {
           const signature = await request.signer._signTypedData(
             request.domain,
             request.types,
@@ -175,11 +200,11 @@ export const TransactionSteps: FC<TransactionStepsProps> = ({
           transactions[i].onChangeStatus?.(StatusType.success);
           transactions[i].onComplete?.(signature);
 
-          items[i].receipt = {
+          updateReceipt(i, {
             status: TransactionReceiptStatus.success,
             request,
             response: signature,
-          };
+          });
 
           handleUpdates();
         } else {
@@ -203,7 +228,7 @@ export const TransactionSteps: FC<TransactionStepsProps> = ({
 
       setError(true);
     }
-  }, [error, handleUpdates, items, step, transactions, updateConfig]);
+  }, [error, transactions, step, stepData, updateReceipt, handleUpdates]);
 
   const getStatus = useCallback(
     (i: number) => {
@@ -232,9 +257,13 @@ export const TransactionSteps: FC<TransactionStepsProps> = ({
     }
   }, [onSuccess, step, transactions.length]);
 
-  const getConfig = useCallback((i: number) => items[i].config, [items]);
+  const getConfig = useCallback((i: number) => stepData[i].config, [stepData]);
+  const getReceipt = useCallback(
+    (i: number) => stepData[i].receipt,
+    [stepData],
+  );
 
-  if (!items.length) {
+  if (!stepData.length) {
     return (
       <Icon
         size={30}
@@ -254,7 +283,8 @@ export const TransactionSteps: FC<TransactionStepsProps> = ({
           status={getStatus(i)}
           isLoading={isLoading}
           config={getConfig(i)}
-          updateConfig={(config: TxConfig) => updateConfig(i, config)}
+          receipt={getReceipt(i)}
+          updateConfig={(config: TransactionConfig) => updateConfig(i, config)}
           gasPrice={gasPrice}
         />
       ))}

@@ -15,12 +15,13 @@ import { EmailNotificationSettingsDialog } from '../3_organisms/EmailNotificatio
 import { GettingStartedPopup } from '../3_organisms/GettingStartedPopup/GettingStartedPopup';
 import {
   TransactionReceiptStatus,
-  TxType,
+  TransactionType,
 } from '../3_organisms/TransactionStepDialog/TransactionStepDialog.types';
 import { isTypedDataRequest } from '../3_organisms/TransactionStepDialog/helpers';
 import { useNotificationContext } from '../../contexts/NotificationContext';
 import { useTransactionContext } from '../../contexts/TransactionContext';
 import { useTheme, useWalletConnect } from '../../hooks';
+import { useAccount } from '../../hooks/useAccount';
 import { useBlockNumber } from '../../hooks/useBlockNumber';
 import { useMaintenance } from '../../hooks/useMaintenance';
 import { translations } from '../../locales/i18n';
@@ -47,8 +48,8 @@ export const DebugContent = () => {
   const { handleThemeChange } = useTheme();
   const { addNotification } = useNotificationContext();
   const { t } = useTranslation();
-  const { connectWallet, disconnectWallet, wallets, pending } =
-    useWalletConnect();
+  const { connectWallet, disconnectWallet, pending } = useWalletConnect();
+  const { account, signer } = useAccount();
   const [isPopupOpen, setIsPopupOpen] = useState(false);
 
   const [
@@ -65,7 +66,7 @@ export const DebugContent = () => {
   const dappLockedTest = checkMaintenance(States.FULLD2);
 
   const approve = useCallback(async () => {
-    if (!wallets[0].provider) {
+    if (!signer) {
       return;
     }
     const { address, abi, symbol } = await getTokenDetails(
@@ -73,8 +74,6 @@ export const DebugContent = () => {
       defaultChainId,
     );
 
-    const provider = new ethers.providers.Web3Provider(wallets[0].provider);
-    const signer = provider.getSigner();
     const xusd = new ethers.Contract(address, abi, signer);
 
     setTransactions([
@@ -82,7 +81,7 @@ export const DebugContent = () => {
         title: `Approve ${symbol} tokens`,
         subtitle: `Allow Sovryn protocol to use ${symbol} tokens for the trade`,
         request: {
-          type: TxType.signTransaction,
+          type: TransactionType.signTransaction,
           contract: xusd,
           fnName: APPROVAL_FUNCTION,
           args: [address, parseUnits('2')],
@@ -91,31 +90,28 @@ export const DebugContent = () => {
       {
         title: `Transfer 2 ${symbol} tokens`,
         request: {
-          type: TxType.signTransaction,
+          type: TransactionType.signTransaction,
           contract: xusd,
           fnName: 'transfer',
-          args: [wallets[0]?.accounts[0]?.address, parseUnits('2')],
+          args: [account, parseUnits('2')],
         },
       },
     ]);
     setTitle('Transaction approval');
     setIsOpen(true);
-  }, [setIsOpen, setTitle, setTransactions, wallets]);
+  }, [account, setIsOpen, setTitle, setTransactions, signer]);
 
   const multisig = useCallback(async () => {
-    if (!wallets[0].provider) {
+    if (!signer) {
       return;
     }
-
-    const provider = new ethers.providers.Web3Provider(wallets[0].provider);
-    const signer = provider.getSigner();
 
     setTransactions([
       {
         title: `Sign a message`,
         subtitle: `Sign a 'Hello world' message`,
         request: {
-          type: TxType.signMessage,
+          type: TransactionType.signMessage,
           signer,
           message: 'Hello world',
         },
@@ -126,7 +122,7 @@ export const DebugContent = () => {
         subtitle:
           'Sign a typed data which value is taken from the previous step',
         request: {
-          type: TxType.signTypedData,
+          type: TransactionType.signTypedData,
           signer,
           domain: {
             name: 'Sovryn',
@@ -158,16 +154,13 @@ export const DebugContent = () => {
     ]);
     setTitle('Transaction approval');
     setIsOpen(true);
-  }, [setIsOpen, setTitle, setTransactions, wallets]);
+  }, [setIsOpen, setTitle, setTransactions, signer]);
 
   const NUM_LOCS_TO_LIQ = 10;
   const liquidateLowestLocs = useCallback(async () => {
-    if (!wallets[0].provider) {
+    if (!signer) {
       return;
     }
-
-    const provider = new ethers.providers.Web3Provider(wallets[0].provider);
-    const signer = provider.getSigner();
 
     const { address: troveManagerAddress, abi: troveManagerAbi } =
       await getZeroContract('troveManager', defaultChainId);
@@ -183,7 +176,7 @@ export const DebugContent = () => {
         title: `Liquidating lowest ${NUM_LOCS_TO_LIQ} lines of credit`,
         subtitle: `Attempting to liquidate lowest ${NUM_LOCS_TO_LIQ} LoCs`,
         request: {
-          type: TxType.signTransaction,
+          type: TransactionType.signTransaction,
           contract: troveManager,
           fnName: 'liquidateTroves',
           args: [NUM_LOCS_TO_LIQ],
@@ -192,7 +185,7 @@ export const DebugContent = () => {
     ]);
     setTitle('Liquidating');
     setIsOpen(true);
-  }, [setIsOpen, setTitle, setTransactions, wallets]);
+  }, [setIsOpen, setTitle, setTransactions, signer]);
 
   const exportData = useCallback(async () => {
     const { data } = await getTransactions({
@@ -260,7 +253,7 @@ export const DebugContent = () => {
         <LOCStatus className="mt-4" withdrawalSurplus={0.5} />
       </div>
       <div className="my-4">
-        {wallets[0]?.accounts[0]?.address ? (
+        {account ? (
           <div>
             <Button text="Approve" onClick={approve} />
             <Button
@@ -349,7 +342,7 @@ export const DebugContent = () => {
         <ConnectWalletButton
           onConnect={connectWallet}
           onDisconnect={disconnectWallet}
-          address={wallets[0]?.accounts[0]?.address}
+          address={account}
           pending={pending}
         />
       </div>

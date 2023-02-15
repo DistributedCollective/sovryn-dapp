@@ -8,7 +8,7 @@ import { useTranslation } from 'react-i18next';
 import { getContract } from '@sovryn/contracts';
 import { SupportedTokens } from '@sovryn/contracts';
 
-import { TxType } from '../../../3_organisms/TransactionStepDialog/TransactionStepDialog.types';
+import { TransactionType } from '../../../3_organisms/TransactionStepDialog/TransactionStepDialog.types';
 import { CreditLineSubmitValue } from '../../../3_organisms/ZeroLocForm/types';
 import { useTransactionContext } from '../../../../contexts/TransactionContext';
 import { useAccount } from '../../../../hooks/useAccount';
@@ -62,7 +62,7 @@ export const useHandleTrove = (hasLoc: boolean, onComplete: () => void) => {
               adjustedTrove.map(tx => ({
                 title: tx.title,
                 request: {
-                  type: TxType.signTransaction,
+                  type: TransactionType.signTransaction,
                   contract: tx.contract ?? contract,
                   fnName: tx.fn,
                   args: tx.args,
@@ -78,7 +78,7 @@ export const useHandleTrove = (hasLoc: boolean, onComplete: () => void) => {
               {
                 title: t(translations.zeroPage.tx.adjustTrove),
                 request: {
-                  type: TxType.signTransaction,
+                  type: TransactionType.signTransaction,
                   contract,
                   fnName: adjustedTrove.fn,
                   args: adjustedTrove.args,
@@ -100,7 +100,7 @@ export const useHandleTrove = (hasLoc: boolean, onComplete: () => void) => {
             {
               title: t(translations.zeroPage.tx.openTrove),
               request: {
-                type: TxType.signTransaction,
+                type: TransactionType.signTransaction,
                 contract,
                 fnName: openedTrove.fn,
                 args: openedTrove.args,
@@ -141,7 +141,7 @@ export const useHandleTrove = (hasLoc: boolean, onComplete: () => void) => {
         {
           title: t(translations.zeroPage.tx.closeTrove),
           request: {
-            type: TxType.signTransaction,
+            type: TransactionType.signTransaction,
             contract,
             fnName: 'closeTrove',
             args: [],

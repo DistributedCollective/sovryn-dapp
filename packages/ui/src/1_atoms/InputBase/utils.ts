@@ -113,5 +113,8 @@ export const getIOSInputEventHandlers = () => {
     onTouchStart: e => {
       e.currentTarget.style.fontSize = '1rem';
     },
+    onFocus: e => {
+      e.currentTarget.style.fontSize = '1rem';
+    },
   };
 };

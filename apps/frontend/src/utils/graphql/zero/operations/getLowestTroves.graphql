@@ -1,13 +1,21 @@
-query getLowestTroves($first: Int!, $userCollateralRatioKey: BigInt) {
+query getLowestTroves($first: Int!, $userCollateralRatioKey: BigDecimal) {
   troves(
     orderDirection: desc
     orderBy: collateralRatioSortKey
     first: $first
     # collateralRatioSortKey_gt will return troves with a collateral ratio lower than the user's
     # a high collateralRatioSortKey means a low collateral ratio
-    where: { collateralRatioSortKey_gt: $userCollateralRatioKey }
+    where: { status: open, collateralRatioSortKey_gt: $userCollateralRatioKey }
   ) {
+    id
     collateral
     debt
+    status
+    collateralRatioSortKey
+    rawCollateral
+    rawDebt
+    rawSnapshotOfTotalRedistributedCollateral
+    rawSnapshotOfTotalRedistributedDebt
+    rawStake
   }
 }

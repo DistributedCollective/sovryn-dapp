@@ -7,14 +7,15 @@ import { translations } from '../../../../locales/i18n';
 import { Bitcoin } from '../../../../utils/constants';
 import { formatValue } from '../../../../utils/math';
 import { chartConfig } from '../utils';
+import { useAccount } from './../../../../hooks/useAccount';
 
 export const useGetChartOptions = (
-  userCollateralRatio: string,
+  activeBar: boolean,
   redemptionBuffer: number,
-  activeBar: number | null,
   userTrovesBelowCount: number,
 ) => {
   const { t } = useTranslation();
+  const { account } = useAccount();
   return {
     responsive: true,
     maintainAspectRatio: false,
@@ -35,10 +36,10 @@ export const useGetChartOptions = (
           title: () => '',
           label: () => '',
           beforeBody: context => {
-            const { collateralAmount, address, debtAmount, collateralRatio } =
+            const { collateralAmount, id, debtAmount, collateralRatio } =
               context[0].raw;
             const tooltipContent = [
-              prettyTx(address),
+              prettyTx(id),
               `${t(translations.chart.collateralAmount)}: ${formatValue(
                 Number(collateralAmount),
                 6,
@@ -53,7 +54,7 @@ export const useGetChartOptions = (
               )}%`,
             ];
 
-            if (context[0].raw.sequenceNumber === userCollateralRatio) {
+            if (context[0].raw.id === account && activeBar) {
               tooltipContent.push(
                 `${t(translations.chart.redemptionBuffer)}: ${formatValue(
                   redemptionBuffer,

@@ -1,17 +1,20 @@
 import React, { FC, useMemo } from 'react';
 
 import { ErrorBadge, ErrorData } from '../../1_atoms';
+import { applyDataAttr } from '../../utils';
 
 export type ErrorListProps = {
   errors: ErrorData[];
   showSingleError?: boolean;
   className?: string;
+  dataAttribute?: string;
 };
 
 export const ErrorList: FC<ErrorListProps> = ({
   errors,
   showSingleError,
   className,
+  dataAttribute,
 }) => {
   const items = useMemo(
     () => errors.sort((a, b) => (b.weight || 1) - (a.weight || 1)),
@@ -27,7 +30,7 @@ export const ErrorList: FC<ErrorListProps> = ({
   }
 
   return (
-    <div className={className}>
+    <div {...applyDataAttr(dataAttribute)} className={className}>
       {items.map((error, index) => (
         <ErrorBadge key={index} {...error} />
       ))}

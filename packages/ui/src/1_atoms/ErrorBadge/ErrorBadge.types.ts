@@ -8,4 +8,5 @@ export type ErrorData = {
   message: string;
   weight?: number;
   className?: string;
+  dataAttribute?: string;
 };

@@ -14,19 +14,8 @@ describe('ErrorBadge', () => {
         dataAttribute="error"
       />,
     );
-    const errorBadge = getByTestId('error');
+    const errorBadge = getByTestId('error-message');
     expect(errorBadge).toBeInTheDocument();
-  });
-
-  it('renders a ErrorBadge', () => {
-    const { getByTestId } = render(
-      <ErrorBadge
-        message="recovery mode"
-        level={ErrorLevel.Warning}
-        dataAttribute="error"
-      />,
-    );
-    const errorBadge = getByTestId('error');
     expect(errorBadge).toHaveTextContent('recovery mode');
   });
 });

@@ -7,9 +7,7 @@ import styles from './ErrorBadge.module.css';
 import { ErrorData } from './ErrorBadge.types';
 import { getIcon } from './ErrorBadge.utils';
 
-export type ErrorBadgeProps = ErrorData & {
-  dataAttribute?: string;
-};
+export type ErrorBadgeProps = ErrorData;
 
 export const ErrorBadge: FC<ErrorBadgeProps> = ({
   level,
@@ -18,10 +16,14 @@ export const ErrorBadge: FC<ErrorBadgeProps> = ({
   className,
 }) => (
   <div
+    {...applyDataAttr(dataAttribute)}
     className={classNames(styles.error, styles[level.toLowerCase()], className)}
   >
     <div>{getIcon(level)}</div>
-    <div {...applyDataAttr(dataAttribute)} className={styles.message}>
+    <div
+      {...applyDataAttr(`${dataAttribute}-message`)}
+      className={styles.message}
+    >
       {message}
     </div>
   </div>

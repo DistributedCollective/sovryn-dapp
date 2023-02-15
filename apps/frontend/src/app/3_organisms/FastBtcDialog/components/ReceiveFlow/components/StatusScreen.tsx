@@ -158,6 +158,7 @@ export const StatusScreen: React.FC<StatusScreenProps> = ({ onClose }) => {
       <Button
         text={t(translations.common.buttons.done)}
         onClick={onClose}
+        disabled={isProcessing}
         className="mt-8 w-full"
         dataAttribute="fastBtc-receive-done-button"
       />

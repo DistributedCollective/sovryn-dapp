@@ -45,6 +45,7 @@ export const InputBase = React.forwardRef<HTMLInputElement, InputBaseProps>(
       onChangeText,
       onBlur,
       onKeyDown,
+      onFocus,
       ...props
     },
     ref,
@@ -132,6 +133,21 @@ export const InputBase = React.forwardRef<HTMLInputElement, InputBaseProps>(
       [],
     );
 
+    const handleOnFocus = useCallback(
+      (event: React.FocusEvent<HTMLInputElement>) => {
+        if (event.currentTarget === null) {
+          event.currentTarget = event.target;
+        }
+
+        if (isIOS()) {
+          event.currentTarget.style.fontSize = '1rem';
+        }
+
+        onFocus?.(event);
+      },
+      [onFocus],
+    );
+
     const handleOnBlur = useCallback(
       (event: React.FocusEvent<HTMLInputElement>) => {
         if (event.currentTarget === null) {
@@ -213,6 +229,7 @@ export const InputBase = React.forwardRef<HTMLInputElement, InputBaseProps>(
         value={renderedValue}
         onChange={shouldAllowChanges ? handleChange : noop}
         onBlur={shouldAllowChanges ? handleOnBlur : resetIOSStylesOnBlur}
+        onFocus={handleOnFocus}
         {...applyDataAttr(dataAttribute)}
       />
     );

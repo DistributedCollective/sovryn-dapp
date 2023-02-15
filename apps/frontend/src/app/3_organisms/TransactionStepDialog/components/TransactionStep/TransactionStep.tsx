@@ -239,6 +239,7 @@ export const TransactionStep: FC<TransactionStepProps> = ({
           open={advanced && !disabledSettings}
           onClick={() => setAdvanced(!advanced)}
           disabled={disabledSettings}
+          dataAttribute="tx-dialog-settings"
         >
           {config.amount !== undefined && (
             <>
@@ -286,6 +287,7 @@ export const TransactionStep: FC<TransactionStepProps> = ({
             type={ButtonType.reset}
             text="Reset values"
             onClick={resetConfig}
+            dataAttribute="tx-dialog-settings-reset"
           />
         </Accordion>
       </div>

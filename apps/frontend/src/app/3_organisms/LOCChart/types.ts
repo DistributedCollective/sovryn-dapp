@@ -1,34 +1,17 @@
-export type ChartDataStructure = {
-  tx: string;
-  sequenceNumber: string;
-  collateralAmount: string;
-  debtAmount: string;
-  collateralRatio: number;
-}[];
-
-export type ChartBarData = {
-  address: string;
-};
-
 export type TroveData = {
-  changes: {
-    sequenceNumber: string;
-    transaction: {
-      id: string;
-      sequenceNumber: string;
-    };
-    trove: {
-      id: string;
-      collateral: number;
-      debt: string;
-      collateralRatioSortKey: number;
-      address: string;
-    };
-  }[];
+  id: string;
+  debt: string;
+  rawStake: string;
+  collateral: number;
+  collateralRatio: number;
+  collateralRatioSortKey: string;
+  collateralRatioSortKey_legacy: string;
+  rawSnapshotOfTotalRedistributedDebt: string;
+  rawSnapshotOfTotalRedistributedCollateral: string;
 };
 
 export enum ChartSortingType {
-  tx = 'tx',
+  id = 'id',
   collateralRatio = 'collateralRatio',
 }
 

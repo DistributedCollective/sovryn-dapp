@@ -6,6 +6,8 @@ import { useTranslation } from 'react-i18next';
 import { SupportedTokens } from '@sovryn/contracts';
 import {
   applyDataAttr,
+  ErrorBadge,
+  ErrorLevel,
   NotificationType,
   OrderDirection,
   OrderOptions,
@@ -23,6 +25,7 @@ import { ExportCSV } from '../../2_molecules/ExportCSV/ExportCSV';
 import { TransactionTypeRenderer } from '../../2_molecules/TransactionTypeRenderer/TransactionTypeRenderer';
 import { useNotificationContext } from '../../../contexts/NotificationContext';
 import { useAccount } from '../../../hooks/useAccount';
+import { useMaintenance } from '../../../hooks/useMaintenance';
 import { translations } from '../../../locales/i18n';
 import { zeroClient } from '../../../utils/clients';
 import { Bitcoin, EXPORT_RECORD_LIMIT } from '../../../utils/constants';
@@ -180,15 +183,25 @@ export const RewardHistory: FC = () => {
     setPage(0);
   }, [orderOptions]);
 
+  const { checkMaintenance, States } = useMaintenance();
+  const exportLocked = checkMaintenance(States.ZERO_EXPORT_CSV);
+
   return (
     <>
-      <ExportCSV
-        getData={exportData}
-        filename="transactions"
-        className="mb-7 hidden lg:inline-flex"
-        onExportEnd={() => setPageSize(DEFAULT_PAGE_SIZE)}
-        disabled={!data || data.length === 0}
-      />
+      <div className="flex flex-col items-start mb-7 hidden lg:inline-flex">
+        <ExportCSV
+          getData={exportData}
+          filename="transactions"
+          onExportEnd={() => setPageSize(DEFAULT_PAGE_SIZE)}
+          disabled={!data || data.length === 0 || exportLocked}
+        />
+        {exportLocked && (
+          <ErrorBadge
+            level={ErrorLevel.Warning}
+            message={t(translations.maintenanceMode.featureDisabled)}
+          />
+        )}
+      </div>
       <div className="bg-gray-80 py-4 px-4 rounded">
         <Table
           setOrderOptions={setOrderOptions}

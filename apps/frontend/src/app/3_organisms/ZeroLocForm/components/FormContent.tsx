@@ -9,6 +9,7 @@ import {
   ButtonStyle,
   ButtonType,
   DynamicValue,
+  ErrorBadge,
   ErrorData,
   ErrorLevel,
   ErrorList,
@@ -21,6 +22,7 @@ import {
 
 import { AssetRenderer } from '../../../2_molecules/AssetRenderer/AssetRenderer';
 import { BORROW_ASSETS } from '../../../5_pages/ZeroPage/constants';
+import { useMaintenance } from '../../../../hooks/useMaintenance';
 import { translations } from '../../../../locales/i18n';
 import { Bitcoin, CR_THRESHOLDS } from '../../../../utils/constants';
 import { formatValue } from '../../../../utils/math';
@@ -81,6 +83,11 @@ export type FormContentProps = {
 // using props instead of destructuring to make use of the type
 export const FormContent: FC<FormContentProps> = props => {
   const { t } = useTranslation();
+  const { checkMaintenance, States } = useMaintenance();
+  const actionLocked = checkMaintenance(
+    props.hasTrove ? States.ZERO_ADJUST_LOC : States.ZERO_OPEN_LOC,
+  );
+  const dllrLocked = checkMaintenance(States.ZERO_DLLR);
 
   const debtTabs = useMemo(
     () => [
@@ -114,6 +121,12 @@ export const FormContent: FC<FormContentProps> = props => {
     [props.hasTrove, t],
   );
 
+  const locked = useMemo(
+    () =>
+      actionLocked || (dllrLocked && props.debtToken === SupportedTokens.dllr),
+    [actionLocked, dllrLocked, props.debtToken],
+  );
+
   const submitButtonDisabled = useMemo(() => {
     const hasCriticalError =
       (props.errors || []).some(error => error.level === ErrorLevel.Critical) ||
@@ -124,7 +137,7 @@ export const FormContent: FC<FormContentProps> = props => {
     const isFormValid = props.hasTrove
       ? debtSize !== 0 || collateralSize !== 0
       : collateralSize > 0 && debtSize > 0;
-    return props.formIsDisabled || hasCriticalError || !isFormValid;
+    return props.formIsDisabled || hasCriticalError || !isFormValid || locked;
   }, [
     props.collateralAmount,
     props.collateralError,
@@ -133,6 +146,7 @@ export const FormContent: FC<FormContentProps> = props => {
     props.errors,
     props.formIsDisabled,
     props.hasTrove,
+    locked,
   ]);
 
   const handleDebtTypeChange = useCallback(
@@ -483,6 +497,12 @@ export const FormContent: FC<FormContentProps> = props => {
           disabled={submitButtonDisabled}
         />
       </div>
+      {locked && (
+        <ErrorBadge
+          level={ErrorLevel.Warning}
+          message={t(translations.maintenanceMode.featureDisabled)}
+        />
+      )}
     </div>
   );
 };

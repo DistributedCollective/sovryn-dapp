@@ -16,6 +16,8 @@ import {
   TooltipTrigger,
   TransactionId,
   applyDataAttr,
+  ErrorBadge,
+  ErrorLevel,
 } from '@sovryn/ui';
 
 import { chains, defaultChainId } from '../../../config/chains';
@@ -24,6 +26,7 @@ import { ExportCSV } from '../../2_molecules/ExportCSV/ExportCSV';
 import { useNotificationContext } from '../../../contexts/NotificationContext';
 import { useAccount } from '../../../hooks/useAccount';
 import { useBlockNumber } from '../../../hooks/useBlockNumber';
+import { useMaintenance } from '../../../hooks/useMaintenance';
 import { translations } from '../../../locales/i18n';
 import {
   Bitcoin,
@@ -254,14 +257,24 @@ export const RedemptionsHistoryFrame: FC = () => {
     setPage(0);
   }, [orderOptions]);
 
+  const { checkMaintenance, States } = useMaintenance();
+  const exportLocked = checkMaintenance(States.ZERO_EXPORT_CSV);
+
   return (
     <>
-      <ExportCSV
-        getData={exportData}
-        filename="transactions"
-        className="mb-7 hidden lg:inline-flex"
-        disabled={!redemptions || redemptions.length === 0}
-      />
+      <div className="flex flex-col items-start mb-7 hidden lg:inline-flex">
+        <ExportCSV
+          getData={exportData}
+          filename="transactions"
+          disabled={!redemptions || redemptions.length === 0 || exportLocked}
+        />
+        {exportLocked && (
+          <ErrorBadge
+            level={ErrorLevel.Warning}
+            message={t(translations.maintenanceMode.featureDisabled)}
+          />
+        )}
+      </div>
       <div className="bg-gray-80 py-4 px-4 rounded">
         <Table
           setOrderOptions={setOrderOptions}

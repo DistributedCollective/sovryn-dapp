@@ -11,6 +11,8 @@ import {
   Button,
   ButtonStyle,
   ButtonType,
+  ErrorBadge,
+  ErrorLevel,
   Heading,
   Icon,
   IconNames,
@@ -21,6 +23,7 @@ import {
 
 import { AssetRenderer } from '../../2_molecules/AssetRenderer/AssetRenderer';
 import { useAccount } from '../../../hooks/useAccount';
+import { useMaintenance } from '../../../hooks/useMaintenance';
 import { translations } from '../../../locales/i18n';
 import { formatValue } from '../../../utils/math';
 import { allowedTokens, bassets } from './ConvertPage.types';
@@ -40,6 +43,10 @@ const ConvertPage: FC = () => {
   const [amount, setAmount] = useState('0');
   const [sourceToken, setSourceToken] =
     useState<SupportedTokens>(defaultSourceToken);
+
+  const { checkMaintenance, States } = useMaintenance();
+  const convertLocked = checkMaintenance(States.ZERO_CONVERT);
+  const dllrLocked = checkMaintenance(States.ZERO_DLLR);
 
   const tokenOptions = useMemo(
     () =>
@@ -140,14 +147,21 @@ const ConvertPage: FC = () => {
     destinationToken,
     amount,
   );
-
+  const locked = useMemo(
+    () =>
+      convertLocked ||
+      (dllrLocked &&
+        [sourceToken, destinationToken].includes(SupportedTokens.dllr)),
+    [convertLocked, destinationToken, dllrLocked, sourceToken],
+  );
   const isSubmitDisabled = useMemo(
     () =>
+      locked ||
       !account ||
       !amount ||
       Number(amount) <= 0 ||
       Number(amount) > Number(maximumAmountToConvert),
-    [account, amount, maximumAmountToConvert],
+    [account, amount, maximumAmountToConvert, locked],
   );
 
   return (
@@ -256,6 +270,13 @@ const ConvertPage: FC = () => {
           onClick={handleSubmit}
           dataAttribute="convert-confirm"
         />
+
+        {locked && (
+          <ErrorBadge
+            level={ErrorLevel.Warning}
+            message={t(translations.maintenanceMode.featureDisabled)}
+          />
+        )}
       </div>
     </div>
   );

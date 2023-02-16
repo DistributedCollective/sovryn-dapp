@@ -8,10 +8,9 @@ import { ErrorLevel } from '@sovryn/ui';
 
 import { BORROW_ASSETS } from '../../../5_pages/ZeroPage/constants';
 import { useAssetBalance } from '../../../../hooks/useAssetBalance';
-import { useGasPrice } from '../../../../hooks/useGasPrice';
+import { useMaxAssetBalance } from '../../../../hooks/useMaxAssetBalance';
 import { translations } from '../../../../locales/i18n';
-import { Bitcoin, MAX_GAS_LIMIT } from '../../../../utils/constants';
-import { composeGas } from '../../../../utils/helpers';
+import { Bitcoin } from '../../../../utils/constants';
 import { formatValue, fromWei, toWei } from '../../../../utils/math';
 import {
   CRITICAL_COLLATERAL_RATIO,
@@ -58,11 +57,10 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
     [collateralAmount],
   );
 
-  // todo: use hook once merged
-  const { value: _maxRbtcWeiBalance } = useAssetBalance(SupportedTokens.rbtc);
+  const { value: _maxRbtcWeiBalance } = useMaxAssetBalance(
+    SupportedTokens.rbtc,
+  );
   const { value: _debtTokenWeiBalance } = useAssetBalance(debtToken);
-
-  const rbtcGasPrice = useGasPrice();
 
   const isIncreasingDebt = useMemo(
     () => debtType === AmountType.Add,
@@ -95,16 +93,10 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
   );
 
   const maxCollateralToDepositAmount = useMemo(
-    () =>
-      Number(
-        fromWei(
-          BigNumber.from(_maxRbtcWeiBalance)
-            .sub(composeGas(rbtcGasPrice || '0', MAX_GAS_LIMIT))
-            .toString(),
-        ),
-      ),
-    [_maxRbtcWeiBalance, rbtcGasPrice],
+    () => Number(fromWei(BigNumber.from(_maxRbtcWeiBalance))),
+    [_maxRbtcWeiBalance],
   );
+
   const maxCollateralToWithdrawAmount = useMemo(
     () =>
       Math.max(

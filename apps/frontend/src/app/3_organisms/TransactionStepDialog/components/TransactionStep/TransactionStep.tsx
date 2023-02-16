@@ -33,7 +33,6 @@ import { fromWei, toWei } from '../../../../../utils/math';
 import {
   Transaction,
   TransactionConfig,
-  SignTransactionRequest,
   TransactionReceipt,
 } from '../../TransactionStepDialog.types';
 import { isTransactionRequest } from '../../helpers';
@@ -64,31 +63,29 @@ export const TransactionStep: FC<TransactionStepProps> = ({
   const { request, title, subtitle } = transaction;
   const [token, setToken] = useState<TokenDetailsData | undefined>();
 
-  const isTransaction = useMemo(() => isTransactionRequest(request), [request]);
-
   useEffect(() => {
-    if (isTransaction) {
-      const contract = (request as SignTransactionRequest).contract;
+    if (isTransactionRequest(request)) {
+      const { contract } = request;
       findContract(contract.address).then(result => {
         if (result.group === 'tokens') {
           getTokenDetailsByAddress(contract.address).then(setToken);
         }
       });
     }
-  }, [isTransaction, request]);
+  }, [request]);
 
   const resetConfig = useCallback(async () => {
-    if (isTransaction) {
+    if (isTransactionRequest(request)) {
       try {
         const {
           contract,
           fnName,
           args,
-          gasLimit: _gasLimit,
-          gasPrice: _gasPrice,
-        } = request as SignTransactionRequest;
+          gasLimit: requestGasLimit,
+          gasPrice: requestGasPrice,
+        } = request;
         const gasLimit =
-          _gasLimit ??
+          requestGasLimit ??
           (await contract.estimateGas[fnName](...args).then(gas =>
             gas.toString(),
           ));
@@ -96,14 +93,14 @@ export const TransactionStep: FC<TransactionStepProps> = ({
         updateConfig({
           unlimitedAmount: false,
           amount: fnName === APPROVAL_FUNCTION ? args[1] : undefined,
-          gasPrice: _gasPrice ?? gasPrice,
+          gasPrice: requestGasPrice ?? gasPrice,
           gasLimit,
         });
       } catch (error) {
         console.log('error', error);
       }
     }
-  }, [gasPrice, isTransaction, request, updateConfig]);
+  }, [gasPrice, request, updateConfig]);
 
   const parsedAmount = useMemo(() => {
     return token?.decimalPrecision && config.amount !== undefined
@@ -112,14 +109,14 @@ export const TransactionStep: FC<TransactionStepProps> = ({
   }, [config.amount, token?.decimalPrecision]);
 
   const minAmount = useMemo(() => {
-    if (isTransaction) {
-      const { fnName, args } = request as SignTransactionRequest;
+    if (isTransactionRequest(request)) {
+      const { fnName, args } = request;
       return fnName === APPROVAL_FUNCTION
         ? formatUnits(args[1], token?.decimalPrecision)
         : '0';
     }
     return '0';
-  }, [isTransaction, request, token?.decimalPrecision]);
+  }, [request, token?.decimalPrecision]);
 
   const amountOptions = useMemo(
     () => [
@@ -206,7 +203,7 @@ export const TransactionStep: FC<TransactionStepProps> = ({
           <Paragraph className="text-gray-30">{subtitle}</Paragraph>
         )}
 
-        {isTransaction && (
+        {isTransactionRequest(request) && (
           <>
             <SimpleTable className="max-w-72 mt-3">
               {config.amount !== undefined && (

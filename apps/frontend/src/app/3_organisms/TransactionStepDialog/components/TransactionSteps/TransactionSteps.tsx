@@ -13,7 +13,6 @@ import {
   Transaction,
   TransactionReceiptStatus,
   TransactionStepData,
-  TransactionType,
   TransactionConfig,
   TransactionReceipt,
 } from '../../TransactionStepDialog.types';
@@ -58,20 +57,20 @@ export const TransactionSteps: FC<TransactionStepsProps> = ({
           config: {},
         };
 
-        if (request.type === TransactionType.signTransaction) {
-          const { contract, fnName, args, gasLimit } = request;
-          const _args = [...args];
+        if (isTransactionRequest(request)) {
+          const { contract, fnName, args: requestArgs, gasLimit } = request;
+          const args = [...requestArgs];
           if (fnName === APPROVAL_FUNCTION) {
-            _args[1] = ethers.constants.MaxUint256;
+            args[1] = ethers.constants.MaxUint256;
           }
           item.config.gasLimit =
             gasLimit ??
-            (await contract.estimateGas[fnName](..._args).then(gas =>
+            (await contract.estimateGas[fnName](...args).then(gas =>
               gas.toString(),
             ));
 
           item.config.amount =
-            fnName === APPROVAL_FUNCTION ? request.args[1] : undefined;
+            fnName === APPROVAL_FUNCTION ? requestArgs[1] : undefined;
           item.config.unlimitedAmount =
             fnName === APPROVAL_FUNCTION ? false : undefined;
           item.config.gasPrice = request.gasPrice ?? gasPrice;

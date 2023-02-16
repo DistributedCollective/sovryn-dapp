@@ -100,7 +100,7 @@ export const AmountForm: React.FC = () => {
           <button
             onClick={onMaximumAmountClick}
             className="text-xs font-medium underline whitespace-nowrap"
-            {...applyDataAttr('convert-to-max')}
+            {...applyDataAttr('funding-send-amount-max')}
           >
             ({t(translations.common.max)}{' '}
             <AmountRenderer
@@ -131,6 +131,7 @@ export const AmountForm: React.FC = () => {
           disabled={invalid || fastBtcLocked}
           style={ButtonStyle.secondary}
           className="mt-10 w-full"
+          dataAttribute="funding-send-amount-confirm"
         />
 
         {fastBtcLocked && <div>{t(translations.maintenanceMode.fastBtc)}</div>}

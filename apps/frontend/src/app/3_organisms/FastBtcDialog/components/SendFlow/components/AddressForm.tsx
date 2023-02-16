@@ -134,6 +134,7 @@ export const AddressForm: React.FC = () => {
         disabled={isSubmitDisabled}
         style={ButtonStyle.secondary}
         className="mt-10 w-full"
+        dataAttribute="funding-send-address-confirm"
       />
 
       {fastBtcLocked && <div>{t(translations.maintenanceMode.fastBtc)}</div>}

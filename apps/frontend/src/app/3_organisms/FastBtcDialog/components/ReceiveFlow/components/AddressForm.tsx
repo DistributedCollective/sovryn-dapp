@@ -15,6 +15,7 @@ import {
   NotificationType,
   Lottie,
   ParagraphStyle,
+  applyDataAttr,
 } from '@sovryn/ui';
 
 import { useNotificationContext } from '../../../../../../contexts/NotificationContext';
@@ -102,7 +103,11 @@ export const AddressForm: React.FC = () => {
             <div className="flex justify-between mt-5 items-center bg-gray-70 border rounded border-gray-50 py-2 pl-3 pr-2 text-gray-30">
               <div>{formattedAddress}</div>
 
-              <span className="cursor-pointer rounded" onClick={copyAddress}>
+              <span
+                className="cursor-pointer rounded"
+                onClick={copyAddress}
+                {...applyDataAttr('funding-receive-address-copy')}
+              >
                 <Icon icon={IconNames.COPY} />
               </span>
             </div>

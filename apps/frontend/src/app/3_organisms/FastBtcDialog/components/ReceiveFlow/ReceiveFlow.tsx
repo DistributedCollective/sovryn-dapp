@@ -154,7 +154,7 @@ export const ReceiveFlow: React.FC<ReceiveFlowProps> = ({ onClose }) => {
         )}
       </div>
 
-      <MobileCloseButton onClick={onClose} />
+      <MobileCloseButton onClick={onClose} dataAttribute="funding-close" />
     </DepositContext.Provider>
   );
 };

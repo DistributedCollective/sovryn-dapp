@@ -113,6 +113,7 @@ export const FastBtcDialog: React.FC<FastBtcDialogProps> = ({
             text={t(translations.common.buttons.close)}
             onClick={onClose}
             style={ButtonStyle.ghost}
+            dataAttribute="funding-close"
           />
         )}
       />

@@ -9,6 +9,9 @@ import {
   ButtonStyle,
   ButtonType,
   DynamicValue,
+  ErrorData,
+  ErrorLevel,
+  ErrorList,
   FormGroup,
   HealthBar,
   HelperButton,
@@ -16,9 +19,7 @@ import {
   SimpleTable,
 } from '@sovryn/ui';
 
-import { ErrorData, ErrorLevel } from '../../../1_atoms/ErrorBadge/ErrorBadge';
 import { AssetRenderer } from '../../../2_molecules/AssetRenderer/AssetRenderer';
-import { ErrorList } from '../../../2_molecules/ErrorList/ErrorList';
 import { BORROW_ASSETS } from '../../../5_pages/ZeroPage/constants';
 import { translations } from '../../../../locales/i18n';
 import { Bitcoin, CR_THRESHOLDS } from '../../../../utils/constants';

@@ -1,0 +1,15 @@
+.error {
+  @apply flex flex-row justify-center items-center gap-3 p-2 my-2 rounded;
+
+  &.warning {
+    @apply bg-opacity-[0.15] bg-primary-75 text-primary-75 border border-primary-75;
+  }
+
+  &.critical {
+    @apply bg-opacity-[0.15] bg-error-light text-error-light border border-error-light;
+  }
+
+  .message {
+    @apply font-medium text-xs;
+  }
+}

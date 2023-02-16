@@ -63,16 +63,6 @@ export const OpenCreditLine: FC<OpenCreditLineProps> = ({
     [debtSize, borrowingRate, liquidationReserve],
   );
 
-  const rbtcGasPrice = useGasPrice();
-
-  const maxRbtcWeiBalance = useMemo(
-    () =>
-      BigNumber.from(maxCollateralWeiAmount)
-        .sub(composeGas(rbtcGasPrice || '0', MAX_GAS_LIMIT))
-        .toString(),
-    [maxCollateralWeiAmount, rbtcGasPrice],
-  );
-
   const minCollateralAmount = useMemo(
     () =>
       (Math.max(MIN_DEBT_SIZE, debtWithFees) / rbtcPrice) *

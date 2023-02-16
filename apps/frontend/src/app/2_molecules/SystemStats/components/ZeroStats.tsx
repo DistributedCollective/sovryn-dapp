@@ -22,8 +22,8 @@ import {
 } from '@sovryn/ui';
 
 import {
-  ASSET_TRUNCATE_COUNT,
-  BTC_TRUNCATE_COUNT,
+  TOKEN_RENDER_PRECISION,
+  BTC_RENDER_PRECISION,
 } from '../../../3_organisms/ZeroLocForm/constants';
 import { useBlockNumber } from '../../../../hooks/useBlockNumber';
 import { translations } from '../../../../locales/i18n';
@@ -63,7 +63,7 @@ export const ZeroStats: FC<ZeroStatsProps> = ({ className, dataAttribute }) => {
           <AmountRenderer
             value={rbtcInLoc}
             suffix={Bitcoin}
-            precision={BTC_TRUNCATE_COUNT}
+            precision={BTC_RENDER_PRECISION}
             dataAttribute="zero-statistics-rbtc-in-loc"
           />{' '}
           (${formatCompactValue(Number(rbtcInLoc) * Number(zeroPrice), 2)})
@@ -80,7 +80,7 @@ export const ZeroStats: FC<ZeroStatsProps> = ({ className, dataAttribute }) => {
         <AmountRenderer
           value={zusdSupply.toString()}
           suffix={SupportedTokens.zusd}
-          precision={ASSET_TRUNCATE_COUNT}
+          precision={TOKEN_RENDER_PRECISION}
           dataAttribute="zero-statistics-zusd-supply"
         />
       ) : (
@@ -96,7 +96,7 @@ export const ZeroStats: FC<ZeroStatsProps> = ({ className, dataAttribute }) => {
           <AmountRenderer
             value={zusdInStabilityPool.toString()}
             suffix={SupportedTokens.zusd}
-            precision={ASSET_TRUNCATE_COUNT}
+            precision={TOKEN_RENDER_PRECISION}
             dataAttribute="zero-statistics-zusd-in-stability-pool"
           />{' '}
           (${zeroInStabilityPoolPercent})

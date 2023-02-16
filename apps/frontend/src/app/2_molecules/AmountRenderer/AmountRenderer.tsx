@@ -3,6 +3,7 @@ import React, { FC, useCallback, useMemo } from 'react';
 import classNames from 'classnames';
 import { t } from 'i18next';
 import { nanoid } from 'nanoid';
+import CountUp from 'react-countup';
 
 import {
   Icon,
@@ -23,6 +24,7 @@ type AmountRendererProps = {
   suffix?: string;
   prefix?: string;
   dataAttribute?: string;
+  isAnimated?: boolean;
 };
 
 export const AmountRenderer: FC<AmountRendererProps> = ({
@@ -32,6 +34,7 @@ export const AmountRenderer: FC<AmountRendererProps> = ({
   suffix = '',
   prefix = '',
   dataAttribute,
+  isAnimated = false,
 }) => {
   const { addNotification } = useNotificationContext();
   const copyAddress = useCallback(async () => {
@@ -74,11 +77,24 @@ export const AmountRenderer: FC<AmountRendererProps> = ({
       trigger={TooltipTrigger.click}
       dataAttribute={dataAttribute}
     >
-      <span className={className}>
-        {`${prefix} ${
-          !tooltipDisabled ? '~' : ''
-        }${formattedValue} ${suffix.toUpperCase()}`}
-      </span>
+      {isAnimated ? (
+        <div>
+          {!tooltipDisabled ? '~' : ''}
+          <CountUp
+            duration={0.7}
+            decimals={precision}
+            separator=","
+            suffix={` ${suffix}`}
+            end={Number(formattedValue)}
+          />
+        </div>
+      ) : (
+        <span className={className}>
+          {`${prefix}${
+            !tooltipDisabled ? '~' : ''
+          }${formattedValue} ${suffix.toUpperCase()}`}
+        </span>
+      )}
     </Tooltip>
   );
 };

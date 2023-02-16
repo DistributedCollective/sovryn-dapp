@@ -21,7 +21,7 @@ import { AssetRenderer } from '../../2_molecules/AssetRenderer/AssetRenderer';
 import { translations } from '../../../locales/i18n';
 import { Bitcoin } from '../../../utils/constants';
 import { Row } from './Row';
-import { BTC_TRUNCATE_COUNT } from './constants';
+import { BTC_RENDER_PRECISION } from './constants';
 
 type CloseCreditLineProps = {
   collateralValue: string;
@@ -46,7 +46,7 @@ export const CloseCreditLine: FC<CloseCreditLineProps> = ({
       <AmountRenderer
         value={value}
         suffix={Bitcoin}
-        precision={BTC_TRUNCATE_COUNT}
+        precision={BTC_RENDER_PRECISION}
       />
     ),
     [],

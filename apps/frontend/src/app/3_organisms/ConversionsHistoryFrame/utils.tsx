@@ -6,6 +6,7 @@ import { Paragraph, ParagraphSize, TransactionId } from '@sovryn/ui';
 
 import { chains, defaultChainId } from '../../../config/chains';
 
+import { AmountRenderer } from '../../2_molecules/AmountRenderer/AmountRenderer';
 import { masset } from '../../5_pages/ConvertPage/ConvertPage.types';
 import { translations } from '../../../locales/i18n';
 import {
@@ -13,7 +14,7 @@ import {
   ConversionType,
 } from '../../../utils/graphql/mynt/generated';
 import { dateFormat } from '../../../utils/helpers';
-import { AssetAmountCell } from './components/AssetAmountCell/AssetAmountCell';
+import { BTC_RENDER_PRECISION } from '../ZeroLocForm/constants';
 
 const sentAmountRenderer = (item: Conversion) => {
   const isIncomingTransaction = item.type === ConversionType.Incoming; // bAsset -> mAsset
@@ -25,7 +26,13 @@ const sentAmountRenderer = (item: Conversion) => {
     ? item.bAsset.symbol
     : masset.toUpperCase();
 
-  return <AssetAmountCell amount={amount} asset={asset!} />;
+  return (
+    <AmountRenderer
+      value={amount}
+      suffix={asset!}
+      precision={BTC_RENDER_PRECISION}
+    />
+  );
 };
 
 const receivedAmountRenderer = (item: Conversion) => {
@@ -38,7 +45,13 @@ const receivedAmountRenderer = (item: Conversion) => {
     ? masset.toUpperCase()
     : item.bAsset.symbol;
 
-  return <AssetAmountCell amount={amount} asset={asset!} />;
+  return (
+    <AmountRenderer
+      value={amount}
+      suffix={asset!}
+      precision={BTC_RENDER_PRECISION}
+    />
+  );
 };
 
 const transactionIdRenderer = (item: Conversion) => {

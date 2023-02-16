@@ -33,7 +33,7 @@ import {
 } from '../../../utils/graphql/zero/generated';
 import { dateFormat } from '../../../utils/helpers';
 import { formatValue } from '../../../utils/math';
-import { BTC_TRUNCATE_COUNT } from '../ZeroLocForm/constants';
+import { BTC_RENDER_PRECISION } from '../ZeroLocForm/constants';
 import { useGetCollateralSurplusWithdrawals } from './hooks/useGetCollateralSurplusWithdrawals';
 
 const pageSize = DEFAULT_HISTORY_FRAME_PAGE_SIZE;
@@ -71,7 +71,7 @@ export const CollateralSurplusHistoryFrame: FC = () => {
       <AmountRenderer
         value={collSurplusChange}
         suffix={Bitcoin}
-        precision={BTC_TRUNCATE_COUNT}
+        precision={BTC_RENDER_PRECISION}
         dataAttribute="surplus-withdrawals-collateral"
       />
     ),
@@ -162,7 +162,7 @@ export const CollateralSurplusHistoryFrame: FC = () => {
       timestamp: dateFormat(tx.transaction.timestamp),
       collateralChange: `${formatValue(
         Math.abs(Number(tx.collSurplusChange)),
-        8,
+        BTC_RENDER_PRECISION,
       )} ${Bitcoin}`,
       transactionType: t(
         translations.collateralSurplusHistory.table.withdrawSurplus,

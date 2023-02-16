@@ -9,8 +9,8 @@ import { CRatioIndicator } from '../../2_molecules/LOCStatus/components/CRatioIn
 import { Bitcoin } from '../../../utils/constants';
 import { formatValue } from '../../../utils/math';
 import {
-  ASSET_TRUNCATE_COUNT,
-  BTC_TRUNCATE_COUNT,
+  TOKEN_RENDER_PRECISION,
+  BTC_RENDER_PRECISION,
   DEBT_TOKEN,
 } from './constants';
 
@@ -41,8 +41,8 @@ export const CurrentTroveData: FC<CurrentTroveDataProps> = ({
           value={
             <AmountRenderer
               value={debt}
-              suffix={DEBT_TOKEN.toUpperCase()}
-              precision={ASSET_TRUNCATE_COUNT}
+              suffix={DEBT_TOKEN}
+              precision={TOKEN_RENDER_PRECISION}
             />
           }
         />
@@ -52,7 +52,7 @@ export const CurrentTroveData: FC<CurrentTroveDataProps> = ({
             <AmountRenderer
               value={collateral}
               suffix={Bitcoin}
-              precision={BTC_TRUNCATE_COUNT}
+              precision={BTC_RENDER_PRECISION}
             />
           }
         />

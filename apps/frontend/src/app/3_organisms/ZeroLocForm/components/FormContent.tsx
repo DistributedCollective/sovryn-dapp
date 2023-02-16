@@ -27,7 +27,7 @@ import { formatValue } from '../../../../utils/math';
 import { CurrentTroveData } from '../CurrentTroveData';
 import { Label } from '../Label';
 import { Row } from '../Row';
-import { ASSET_TRUNCATE_COUNT, BTC_TRUNCATE_COUNT } from '../constants';
+import { TOKEN_RENDER_PRECISION, BTC_RENDER_PRECISION } from '../constants';
 import { AmountType } from '../types';
 
 export type OpenTroveProps = {
@@ -189,7 +189,7 @@ export const FormContent: FC<FormContentProps> = props => {
         <AmountRenderer
           value={value}
           suffix={SupportedTokens.zusd}
-          precision={ASSET_TRUNCATE_COUNT}
+          precision={TOKEN_RENDER_PRECISION}
         />
       ),
     [t],
@@ -203,7 +203,7 @@ export const FormContent: FC<FormContentProps> = props => {
         <AmountRenderer
           value={value}
           suffix={Bitcoin}
-          precision={BTC_TRUNCATE_COUNT}
+          precision={BTC_RENDER_PRECISION}
         />
       ),
     [t],
@@ -218,7 +218,7 @@ export const FormContent: FC<FormContentProps> = props => {
           <AmountRenderer
             value={value}
             suffix={SupportedTokens.zusd}
-            precision={ASSET_TRUNCATE_COUNT}
+            precision={TOKEN_RENDER_PRECISION}
           />{' '}
           ({formatValue(props.borrowingRate * 100, 2)}%)
         </>
@@ -234,7 +234,7 @@ export const FormContent: FC<FormContentProps> = props => {
         <AmountRenderer
           value={value}
           suffix={USD}
-          precision={ASSET_TRUNCATE_COUNT}
+          precision={TOKEN_RENDER_PRECISION}
         />
       ),
     [t],
@@ -248,7 +248,7 @@ export const FormContent: FC<FormContentProps> = props => {
         <AmountRenderer
           value={value}
           suffix={USD}
-          precision={ASSET_TRUNCATE_COUNT}
+          precision={TOKEN_RENDER_PRECISION}
         />
       ),
     [t],

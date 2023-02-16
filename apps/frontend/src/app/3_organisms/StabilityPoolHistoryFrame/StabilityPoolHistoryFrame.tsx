@@ -36,7 +36,7 @@ import {
   useGetStabilityPoolLazyQuery,
 } from '../../../utils/graphql/zero/generated';
 import { dateFormat } from '../../../utils/helpers';
-import { ASSET_TRUNCATE_COUNT } from '../ZeroLocForm/constants';
+import { TOKEN_RENDER_PRECISION } from '../ZeroLocForm/constants';
 import { useGetStabilityPoolHistory } from './hooks/useGetStabilityPoolHistory';
 
 const DEFAULT_PAGE_SIZE = 10;
@@ -128,7 +128,7 @@ export const StabilityPoolHistoryFrame: FC = () => {
           <AmountRenderer
             value={balance}
             suffix={SupportedTokens.zusd}
-            precision={ASSET_TRUNCATE_COUNT}
+            precision={TOKEN_RENDER_PRECISION}
             dataAttribute="stability-pool-history-balance-change"
           />
         ) : (
@@ -146,7 +146,7 @@ export const StabilityPoolHistoryFrame: FC = () => {
           <AmountRenderer
             value={stabilityDeposit.depositedAmountAfter}
             suffix={SupportedTokens.zusd}
-            precision={ASSET_TRUNCATE_COUNT}
+            precision={TOKEN_RENDER_PRECISION}
             dataAttribute="stability-pool-history-new-balance"
           />
         ) : (

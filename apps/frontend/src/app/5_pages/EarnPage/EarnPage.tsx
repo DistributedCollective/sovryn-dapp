@@ -30,7 +30,7 @@ import {
 
 import { AmountRenderer } from '../../2_molecules/AmountRenderer/AmountRenderer';
 import { AssetRenderer } from '../../2_molecules/AssetRenderer/AssetRenderer';
-import { ASSET_TRUNCATE_COUNT } from '../../3_organisms/ZeroLocForm/constants';
+import { TOKEN_RENDER_PRECISION } from '../../3_organisms/ZeroLocForm/constants';
 import { useAccount } from '../../../hooks/useAccount';
 import { useAssetBalance } from '../../../hooks/useAssetBalance';
 import { translations } from '../../../locales/i18n';
@@ -198,7 +198,7 @@ const EarnPage: FC = () => {
       <AmountRenderer
         value={newPoolBalance}
         suffix={SupportedTokens.zusd}
-        precision={ASSET_TRUNCATE_COUNT}
+        precision={TOKEN_RENDER_PRECISION}
       />
     );
   }, [isAmountZero, newPoolBalance, t]);
@@ -323,7 +323,7 @@ const EarnPage: FC = () => {
               <AmountRenderer
                 value={poolBalance}
                 suffix={SupportedTokens.zusd}
-                precision={ASSET_TRUNCATE_COUNT}
+                precision={TOKEN_RENDER_PRECISION}
               />
             }
           />

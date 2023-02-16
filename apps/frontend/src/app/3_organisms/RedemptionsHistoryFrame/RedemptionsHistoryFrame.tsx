@@ -35,8 +35,8 @@ import {
 } from '../../../utils/graphql/zero/generated';
 import { dateFormat } from '../../../utils/helpers';
 import {
-  ASSET_TRUNCATE_COUNT,
-  BTC_TRUNCATE_COUNT,
+  TOKEN_RENDER_PRECISION,
+  BTC_RENDER_PRECISION,
 } from '../ZeroLocForm/constants';
 import { useGetRedemptionsHistory } from './hooks/useGetRedemptionsHistory';
 
@@ -89,7 +89,7 @@ export const RedemptionsHistoryFrame: FC = () => {
           <AmountRenderer
             value={redemption.tokensActuallyRedeemed}
             suffix={SupportedTokens.zusd}
-            precision={ASSET_TRUNCATE_COUNT}
+            precision={TOKEN_RENDER_PRECISION}
             dataAttribute="redemption-history-zusd-redeemed"
           />
         ) : (
@@ -107,7 +107,7 @@ export const RedemptionsHistoryFrame: FC = () => {
           <AmountRenderer
             value={redemption.collateralRedeemed}
             suffix={Bitcoin}
-            precision={BTC_TRUNCATE_COUNT}
+            precision={BTC_RENDER_PRECISION}
             dataAttribute="redemption-history-rbtc-received"
           />
         ) : (
@@ -125,7 +125,7 @@ export const RedemptionsHistoryFrame: FC = () => {
           <AmountRenderer
             value={redemption.fee}
             suffix={Bitcoin}
-            precision={BTC_TRUNCATE_COUNT}
+            precision={BTC_RENDER_PRECISION}
             dataAttribute="redemption-history-fee"
           />
         ) : (

@@ -22,8 +22,8 @@ import {
 } from '@sovryn/ui';
 
 import {
-  ASSET_TRUNCATE_COUNT,
-  BTC_TRUNCATE_COUNT,
+  TOKEN_RENDER_PRECISION,
+  BTC_RENDER_PRECISION,
 } from '../../../3_organisms/ZeroLocForm/constants';
 import { translations } from '../../../../locales/i18n';
 import { Bitcoin } from '../../../../utils/constants';
@@ -65,7 +65,7 @@ export const EcosystemStats: FC<EcosystemStatsProps> = ({
           <AmountRenderer
             value={fromWeiFixed(babelFishZUSDBalance)}
             suffix={Bitcoin}
-            precision={BTC_TRUNCATE_COUNT}
+            precision={BTC_RENDER_PRECISION}
             dataAttribute="ecosystem-statistics-babel-fish-zusd-balance"
           />{' '}
           ($
@@ -92,7 +92,7 @@ export const EcosystemStats: FC<EcosystemStatsProps> = ({
         <AmountRenderer
           value={fromWei(babelFishDLLRBalance)}
           suffix={SupportedTokens.dllr}
-          precision={ASSET_TRUNCATE_COUNT}
+          precision={TOKEN_RENDER_PRECISION}
           dataAttribute="ecosystem-statistics-babel-fish-dllr-balance"
         />
       ) : (
@@ -112,7 +112,7 @@ export const EcosystemStats: FC<EcosystemStatsProps> = ({
         <AmountRenderer
           value={fromWei(myntZUSDBalance)}
           suffix={SupportedTokens.zusd}
-          precision={ASSET_TRUNCATE_COUNT}
+          precision={TOKEN_RENDER_PRECISION}
           dataAttribute="ecosystem-statistics-mynt-zusd-balance"
         />
       ) : (
@@ -132,7 +132,7 @@ export const EcosystemStats: FC<EcosystemStatsProps> = ({
         <AmountRenderer
           value={fromWei(myntDOCBalance)}
           suffix={SupportedTokens.doc}
-          precision={ASSET_TRUNCATE_COUNT}
+          precision={TOKEN_RENDER_PRECISION}
           dataAttribute="ecosystem-statistics-mynt-doc-balance"
         />
       ) : (
@@ -149,7 +149,7 @@ export const EcosystemStats: FC<EcosystemStatsProps> = ({
         <AmountRenderer
           value={fromWei(totalDLLRSupply)}
           suffix={SupportedTokens.dllr}
-          precision={ASSET_TRUNCATE_COUNT}
+          precision={TOKEN_RENDER_PRECISION}
           dataAttribute="ecosystem-statistics-total-dllr-supply"
         />
       ) : (

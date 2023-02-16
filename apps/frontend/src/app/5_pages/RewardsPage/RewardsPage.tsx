@@ -21,7 +21,7 @@ import {
 } from '@sovryn/ui';
 
 import { AmountRenderer } from '../../2_molecules/AmountRenderer/AmountRenderer';
-import { BTC_TRUNCATE_COUNT } from '../../3_organisms/ZeroLocForm/constants';
+import { BTC_RENDER_PRECISION } from '../../3_organisms/ZeroLocForm/constants';
 import { useAccount } from '../../../hooks/useAccount';
 import { useBlockNumber } from '../../../hooks/useBlockNumber';
 import { useGetOpenTrove } from '../../../hooks/zero/useGetOpenTrove';
@@ -84,7 +84,7 @@ const RewardsPage: FC = () => {
               <AmountRenderer
                 value={amount.toString()}
                 suffix={Bitcoin}
-                precision={BTC_TRUNCATE_COUNT}
+                precision={BTC_RENDER_PRECISION}
                 dataAttribute="rewards-amount"
               />
             }

@@ -6,7 +6,10 @@ import { useTranslation } from 'react-i18next';
 
 import { Button, ButtonSize, ButtonStyle, HelperButton } from '@sovryn/ui';
 
-import { BTC_TRUNCATE_COUNT } from '../../3_organisms/ZeroLocForm/constants';
+import {
+  TOKEN_RENDER_PRECISION,
+  BTC_RENDER_PRECISION,
+} from '../../3_organisms/ZeroLocForm/constants';
 import { Bitcoin } from '../../../utils/constants';
 import { AmountRenderer } from '../AmountRenderer/AmountRenderer';
 import { CRatioIndicator } from './components/CRatioIndicator/CRatioIndicator';
@@ -60,7 +63,7 @@ export const LOCStatus: FC<LOCStatusProps> = ({
                 <AmountRenderer
                   value={collateral}
                   suffix={Bitcoin}
-                  precision={BTC_TRUNCATE_COUNT}
+                  precision={BTC_RENDER_PRECISION}
                   dataAttribute="LOC-collateral"
                 />
               }
@@ -68,11 +71,12 @@ export const LOCStatus: FC<LOCStatusProps> = ({
             <LOCStat
               label={t('LOCStatus.currentDebt')}
               value={
-                <CountUp
-                  duration={0.7}
-                  separator=","
-                  suffix={` ${debtSymbol}`}
-                  end={debt}
+                <AmountRenderer
+                  value={debt}
+                  suffix={debtSymbol}
+                  precision={TOKEN_RENDER_PRECISION}
+                  dataAttribute="LOC-debt"
+                  isAnimated
                 />
               }
             />

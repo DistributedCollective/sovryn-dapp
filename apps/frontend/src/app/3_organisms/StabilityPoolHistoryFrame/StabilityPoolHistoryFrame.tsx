@@ -15,7 +15,6 @@ import {
   Tooltip,
   TooltipTrigger,
   TransactionId,
-  applyDataAttr,
 } from '@sovryn/ui';
 
 import { chains, defaultChainId } from '../../../config/chains';
@@ -132,7 +131,7 @@ export const StabilityPoolHistoryFrame: FC = () => {
             trigger={TooltipTrigger.click}
             className="cursor-pointer uppercase"
             tooltipClassName="uppercase"
-            {...applyDataAttr('stability-pool-history-balance-change')}
+            dataAttribute="stability-pool-history-balance-change"
           >
             <span>
               {formatValue(Number(balance), 2)} {SupportedTokens.zusd}
@@ -159,7 +158,7 @@ export const StabilityPoolHistoryFrame: FC = () => {
             trigger={TooltipTrigger.click}
             className="cursor-pointer uppercase"
             tooltipClassName="uppercase"
-            {...applyDataAttr('stability-pool-history-new-balance')}
+            dataAttribute="stability-pool-history-new-balance"
           >
             <span>
               {formatValue(Number(stabilityDeposit.depositedAmountAfter), 2)}{' '}
@@ -232,7 +231,7 @@ export const StabilityPoolHistoryFrame: FC = () => {
           <TransactionId
             href={`${chain?.blockExplorerUrl}/tx/${row.transaction.id}`}
             value={row.transaction.id}
-            {...applyDataAttr('stability-pool-history-address-id')}
+            dataAttribute="stability-pool-history-address-id"
           />
         ),
       },
@@ -318,7 +317,7 @@ export const StabilityPoolHistoryFrame: FC = () => {
           isLoading={loading}
           className="bg-gray-80 text-gray-10 lg:px-6 lg:py-4"
           noData={noDataLabel}
-          {...applyDataAttr('redemption-history-table')}
+          dataAttribute="redemption-history-table"
         />
         <Pagination
           page={page}
@@ -326,7 +325,7 @@ export const StabilityPoolHistoryFrame: FC = () => {
           onChange={onPageChange}
           itemsPerPage={pageSize}
           isNextButtonDisabled={isNextButtonDisabled}
-          {...applyDataAttr('redemption-history-pagination')}
+          dataAttribute="redemption-history-pagination"
         />
       </div>
     </>

@@ -5,7 +5,6 @@ import { nanoid } from 'nanoid';
 
 import {
   Table,
-  applyDataAttr,
   Pagination,
   OrderOptions,
   OrderDirection,
@@ -132,7 +131,7 @@ export const ConversionsHistoryFrame: React.FC = () => {
           isLoading={loading}
           className="bg-gray-80 text-gray-10 lg:px-6 lg:py-4"
           noData={t(translations.common.tables.noData)}
-          {...applyDataAttr('conversions-history-table')}
+          dataAttribute="conversions-history-table"
         />
         <Pagination
           page={page}
@@ -140,7 +139,7 @@ export const ConversionsHistoryFrame: React.FC = () => {
           onChange={onPageChange}
           itemsPerPage={pageSize}
           isNextButtonDisabled={isNextButtonDisabled}
-          {...applyDataAttr('conversions-history-pagination')}
+          dataAttribute="conversions-history-pagination"
         />
       </div>
     </>

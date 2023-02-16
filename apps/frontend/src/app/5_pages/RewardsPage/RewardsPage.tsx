@@ -9,7 +9,6 @@ import React, { FC, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLoaderData } from 'react-router-dom';
 
-import { applyDataAttr } from '@sovryn/ui';
 import {
   Button,
   ButtonStyle,
@@ -90,7 +89,7 @@ const RewardsPage: FC = () => {
             className="w-full max-w-48"
             onClick={handleWithdraw}
             disabled={Number(amount) === 0 || !signer}
-            {...applyDataAttr('rewards-withdraw')}
+            dataAttribute="rewards-withdraw"
           />
           {isOpenTroveExists && Number(amount) > 0 && signer && (
             <Button
@@ -99,7 +98,7 @@ const RewardsPage: FC = () => {
               text={t(translations.rewardPage.actions.transferToLOC)}
               className="w-full"
               onClick={handleTransferToLOC}
-              {...applyDataAttr('rewards-transfer-to-loc')}
+              dataAttribute="rewards-transfer-to-loc"
             />
           )}
         </div>

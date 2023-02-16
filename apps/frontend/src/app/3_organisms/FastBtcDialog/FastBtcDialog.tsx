@@ -51,6 +51,7 @@ export const FastBtcDialog: React.FC<FastBtcDialogProps> = ({
           infoText: t(translation.tabs.receiveInfoText),
           content: <ReceiveFlow onClose={onClose} />,
           activeClassName: ACTIVE_CLASSNAME,
+          dataAttribute: 'funding-receive',
         },
       ];
     }
@@ -61,12 +62,14 @@ export const FastBtcDialog: React.FC<FastBtcDialogProps> = ({
         infoText: t(translation.tabs.receiveInfoText),
         content: <ReceiveFlow onClose={onClose} />,
         activeClassName: ACTIVE_CLASSNAME,
+        dataAttribute: 'funding-receive',
       },
       {
         label: t(translation.tabs.sendLabel),
         infoText: t(translation.tabs.sendInfoText),
         content: <SendFlow onClose={onClose} />,
         activeClassName: ACTIVE_CLASSNAME,
+        dataAttribute: 'funding-send',
       },
     ];
   }, [onClose, shouldHideSend]);

@@ -5,6 +5,7 @@ import { t } from 'i18next';
 
 import { getContract } from '@sovryn/contracts';
 
+import { TransactionType } from '../../../3_organisms/TransactionStepDialog/TransactionStepDialog.types';
 import { useTransactionContext } from '../../../../contexts/TransactionContext';
 import { useAccount } from '../../../../hooks/useAccount';
 import { translations } from '../../../../locales/i18n';
@@ -30,9 +31,12 @@ export const useClaimCollateralSurplus = (onComplete: () => void) => {
       setTransactions([
         {
           title: t(translations.zeroPage.tx.claimSurplus),
-          contract: borrowerOperations,
-          fnName: 'claimCollateral',
-          args: [],
+          request: {
+            type: TransactionType.signTransaction,
+            contract: borrowerOperations,
+            fnName: 'claimCollateral',
+            args: [],
+          },
           onComplete,
         },
       ]);

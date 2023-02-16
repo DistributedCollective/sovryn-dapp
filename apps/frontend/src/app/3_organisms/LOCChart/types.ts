@@ -6,6 +6,10 @@ export type ChartDataStructure = {
   collateralRatio: number;
 }[];
 
+export type ChartBarData = {
+  address: string;
+};
+
 export type TroveData = {
   changes: {
     sequenceNumber: string;
@@ -18,6 +22,7 @@ export type TroveData = {
       collateral: number;
       debt: string;
       collateralRatioSortKey: number;
+      address: string;
     };
   }[];
 };

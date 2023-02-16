@@ -1,13 +1,15 @@
 import { useCallback } from 'react';
 
 import { ethers } from 'ethers';
+import { t } from 'i18next';
 
 import { getContract } from '@sovryn/contracts';
 
+import { TransactionType } from '../../../3_organisms/TransactionStepDialog/TransactionStepDialog.types';
 import { useTransactionContext } from '../../../../contexts/TransactionContext';
 import { useAccount } from '../../../../hooks/useAccount';
+import { translations } from '../../../../locales/i18n';
 import { getRskChainId } from '../../../../utils/chain';
-import { Bitcoin } from '../../../../utils/constants';
 
 export const useClaimCollateralSurplus = (onComplete: () => void) => {
   const { signer } = useAccount();
@@ -28,14 +30,17 @@ export const useClaimCollateralSurplus = (onComplete: () => void) => {
 
       setTransactions([
         {
-          title: `Claim ${Bitcoin}`,
-          contract: borrowerOperations,
-          fnName: 'claimCollateral',
-          args: [],
+          title: t(translations.zeroPage.tx.claimSurplus),
+          request: {
+            type: TransactionType.signTransaction,
+            contract: borrowerOperations,
+            fnName: 'claimCollateral',
+            args: [],
+          },
           onComplete,
         },
       ]);
-      setTitle('Claim collateral surplus');
+      setTitle(t(translations.zeroPage.tx.claimSurplusTitle));
       setIsOpen(true);
     } catch (error) {
       console.log('error:', error);

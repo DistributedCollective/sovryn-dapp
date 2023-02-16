@@ -15,12 +15,10 @@ export const useGetTroves = () => {
     () => (!isMobile ? trovesCount : trovesCountMobile),
     [isMobile],
   );
-  const { loading, data } = useQuery(GetTrovesDocument, {
+  return useQuery(GetTrovesDocument, {
     variables: {
       first: trovesCountToFetch,
     },
     client: zeroClient,
   });
-
-  return { loading, data };
 };

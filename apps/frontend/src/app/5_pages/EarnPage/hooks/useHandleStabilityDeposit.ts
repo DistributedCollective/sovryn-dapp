@@ -1,13 +1,18 @@
 import { useCallback } from 'react';
 
 import { ethers } from 'ethers';
+import { t } from 'i18next';
 
 import { SupportedTokens } from '@sovryn/contracts';
 import { getContract } from '@sovryn/contracts';
 
-import { Transaction } from '../../../3_organisms/TransactionStepDialog/TransactionStepDialog.types';
+import {
+  Transaction,
+  TransactionType,
+} from '../../../3_organisms/TransactionStepDialog/TransactionStepDialog.types';
 import { useTransactionContext } from '../../../../contexts/TransactionContext';
 import { useAccount } from '../../../../hooks/useAccount';
+import { translations } from '../../../../locales/i18n';
 import { getRskChainId } from '../../../../utils/chain';
 import { GAS_LIMIT_STABILITY_POOL } from '../../../../utils/constants';
 import { toWei } from '../../../../utils/math';
@@ -42,14 +47,17 @@ export const useHandleStabilityDeposit = (
     const stabilityPool = await getStabilityPoolContract();
 
     transactions.push({
-      title: 'Withdraw ZUSD',
-      contract: stabilityPool,
-      fnName: 'withdrawFromSP',
-      args: [toWei(amount)],
-      onComplete,
-      config: {
+      title: t(translations.earnPage.txDialog.withdraw, {
+        asset: SupportedTokens.zusd.toUpperCase(),
+      }),
+      request: {
+        type: TransactionType.signTransaction,
+        contract: stabilityPool,
+        fnName: 'withdrawFromSP',
+        args: [toWei(amount)],
         gasLimit: GAS_LIMIT_STABILITY_POOL,
       },
+      onComplete,
     });
 
     if (token !== SupportedTokens.zusd) {
@@ -57,7 +65,11 @@ export const useHandleStabilityDeposit = (
     }
 
     setTransactions(transactions);
-    setTitle('Withdraw from stability pool');
+    setTitle(
+      t(translations.earnPage.txDialog.withdrawTitle, {
+        asset: token.toUpperCase(),
+      }),
+    );
     setIsOpen(true);
   }, [
     amount,
@@ -69,6 +81,7 @@ export const useHandleStabilityDeposit = (
     token,
     onComplete,
   ]);
+
   const deposit = useCallback(async () => {
     const transactions: Transaction[] = [];
     if (token !== SupportedTokens.zusd) {
@@ -78,18 +91,25 @@ export const useHandleStabilityDeposit = (
     const stabilityPool = await getStabilityPoolContract();
 
     transactions.push({
-      title: 'Deposit ZUSD',
-      contract: stabilityPool,
-      fnName: 'provideToSP',
-      args: [toWei(amount), ethers.constants.AddressZero],
-      onComplete,
-      config: {
+      title: t(translations.earnPage.txDialog.deposit, {
+        asset: SupportedTokens.zusd.toUpperCase(),
+      }),
+      request: {
+        type: TransactionType.signTransaction,
+        contract: stabilityPool,
+        fnName: 'provideToSP',
+        args: [toWei(amount), ethers.constants.AddressZero],
         gasLimit: GAS_LIMIT_STABILITY_POOL,
       },
+      onComplete,
     });
 
     setTransactions(transactions);
-    setTitle('Deposit into stability pool');
+    setTitle(
+      t(translations.earnPage.txDialog.depositTitle, {
+        asset: token.toUpperCase(),
+      }),
+    );
     setIsOpen(true);
   }, [
     amount,

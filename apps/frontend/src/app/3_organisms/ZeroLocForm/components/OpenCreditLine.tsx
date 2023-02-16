@@ -1,17 +1,14 @@
 import React, { useCallback, useMemo, useState, FC } from 'react';
 
-import { BigNumber } from 'ethers';
 import { useTranslation } from 'react-i18next';
 
 import { SupportedTokens } from '@sovryn/contracts';
 
 import { ErrorLevel } from '../../../1_atoms/ErrorBadge/ErrorBadge';
 import { BORROW_ASSETS } from '../../../5_pages/ZeroPage/constants';
-import { useAssetBalance } from '../../../../hooks/useAssetBalance';
-import { useGasPrice } from '../../../../hooks/useGasPrice';
+import { useMaxAssetBalance } from '../../../../hooks/useMaxAssetBalance';
 import { translations } from '../../../../locales/i18n';
-import { Bitcoin, MAX_GAS_LIMIT } from '../../../../utils/constants';
-import { composeGas } from '../../../../utils/helpers';
+import { Bitcoin } from '../../../../utils/constants';
 import { formatValue, fromWei, toWei } from '../../../../utils/math';
 import {
   CRITICAL_COLLATERAL_RATIO,
@@ -51,9 +48,7 @@ export const OpenCreditLine: FC<OpenCreditLineProps> = ({
     [collateralAmount],
   );
 
-  const { value: maxCollateralWeiAmount } = useAssetBalance(
-    SupportedTokens.rbtc,
-  );
+  const { value: maxRbtcWeiBalance } = useMaxAssetBalance(SupportedTokens.rbtc);
 
   const originationFee = useMemo(
     () => getOriginationFeeAmount(debtSize),
@@ -203,9 +198,9 @@ export const OpenCreditLine: FC<OpenCreditLineProps> = ({
       );
     }
 
-    if (toWei(collateralAmount).gt(maxCollateralWeiAmount)) {
+    if (toWei(collateralAmount).gt(maxRbtcWeiBalance)) {
       const diff = Number(
-        fromWei(toWei(collateralAmount || 0).sub(maxCollateralWeiAmount)),
+        fromWei(toWei(collateralAmount || 0).sub(maxRbtcWeiBalance)),
       );
       return (
         'ddd' +
@@ -220,7 +215,7 @@ export const OpenCreditLine: FC<OpenCreditLineProps> = ({
     collateralAmount,
     collateralSize,
     fieldsTouched,
-    maxCollateralWeiAmount,
+    maxRbtcWeiBalance,
     minCollateralAmount,
     t,
   ]);

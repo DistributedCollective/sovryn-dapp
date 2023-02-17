@@ -19,6 +19,7 @@ import {
   SimpleTable,
 } from '@sovryn/ui';
 
+import { AmountRenderer } from '../../../2_molecules/AmountRenderer/AmountRenderer';
 import { AssetRenderer } from '../../../2_molecules/AssetRenderer/AssetRenderer';
 import { BORROW_ASSETS } from '../../../5_pages/ZeroPage/constants';
 import { translations } from '../../../../locales/i18n';

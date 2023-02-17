@@ -3,8 +3,8 @@ import React, { useCallback, useMemo, useState, FC } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { SupportedTokens } from '@sovryn/contracts';
+import { ErrorLevel } from '@sovryn/ui';
 
-import { ErrorLevel } from '../../../1_atoms/ErrorBadge/ErrorBadge';
 import { BORROW_ASSETS } from '../../../5_pages/ZeroPage/constants';
 import { useMaxAssetBalance } from '../../../../hooks/useMaxAssetBalance';
 import { translations } from '../../../../locales/i18n';

@@ -1,5 +1,7 @@
 import React, { FC, useMemo } from 'react';
 
+import classNames from 'classnames';
+
 import { applyDataAttr } from '@sovryn/ui';
 
 import bannerDesktop from '../../../assets/images/Desktop_Banner_1.2.svg';
@@ -11,11 +13,13 @@ import { ConnectedUserBanner } from './components/ConnectedUserBanner/ConnectedU
 export type DashboardWelcomeBannerProps = {
   openLOC: () => void;
   connectWallet: () => void;
+  className?: string;
 };
 
 export const DashboardWelcomeBanner: FC<DashboardWelcomeBannerProps> = ({
   openLOC,
   connectWallet,
+  className,
 }) => {
   const { account } = useWalletConnect();
   const { isMobile } = useIsMobile();
@@ -28,7 +32,7 @@ export const DashboardWelcomeBanner: FC<DashboardWelcomeBannerProps> = ({
   if (!account) {
     return (
       <div
-        className="flex justify-center cursor-pointer mb-10 md:mb-[3.75rem]"
+        className={classNames('flex justify-center cursor-pointer', className)}
         onClick={connectWallet}
       >
         <img

@@ -4,8 +4,8 @@ import { BigNumber } from 'ethers';
 import { useTranslation } from 'react-i18next';
 
 import { SupportedTokens } from '@sovryn/contracts';
+import { ErrorLevel } from '@sovryn/ui';
 
-import { ErrorLevel } from '../../../1_atoms/ErrorBadge/ErrorBadge';
 import { BORROW_ASSETS } from '../../../5_pages/ZeroPage/constants';
 import { useAssetBalance } from '../../../../hooks/useAssetBalance';
 import { useMaxAssetBalance } from '../../../../hooks/useMaxAssetBalance';

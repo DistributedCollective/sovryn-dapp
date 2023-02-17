@@ -30,14 +30,20 @@ import { chains, defaultChainId } from '../../../../../config/chains';
 
 import { APPROVAL_FUNCTION } from '../../../../../utils/constants';
 import { fromWei, toWei } from '../../../../../utils/math';
-import { Transaction, TxConfig } from '../../TransactionStepDialog.types';
+import {
+  Transaction,
+  TransactionConfig,
+  TransactionReceipt,
+} from '../../TransactionStepDialog.types';
+import { isTransactionRequest } from '../../helpers';
 
 export type TransactionStepProps = {
   transaction: Transaction;
   step: string | number;
   status: StatusType;
-  config: TxConfig;
-  updateConfig: (config: TxConfig) => void;
+  config: TransactionConfig;
+  receipt: TransactionReceipt;
+  updateConfig: (config: TransactionConfig) => void;
   gasPrice: string;
   isLoading: boolean;
 };
@@ -49,52 +55,52 @@ export const TransactionStep: FC<TransactionStepProps> = ({
   status,
   transaction,
   config,
+  receipt,
   gasPrice,
   updateConfig,
   isLoading,
 }) => {
+  const { request, title, subtitle } = transaction;
   const [token, setToken] = useState<TokenDetailsData | undefined>();
 
   useEffect(() => {
-    findContract(transaction.contract.address).then(result => {
-      if (result.group === 'tokens') {
-        getTokenDetailsByAddress(transaction.contract.address).then(setToken);
-      }
-    });
-  }, [transaction.contract.address]);
-
-  const { title, subtitle } = transaction;
+    if (isTransactionRequest(request)) {
+      const { contract } = request;
+      findContract(contract.address).then(result => {
+        if (result.group === 'tokens') {
+          getTokenDetailsByAddress(contract.address).then(setToken);
+        }
+      });
+    }
+  }, [request]);
 
   const resetConfig = useCallback(async () => {
-    try {
-      const gasLimit =
-        transaction.config?.gasLimit ??
-        (await transaction.contract.estimateGas[transaction.fnName](
-          ...transaction.args,
-        ).then(gas => gas.toString()));
+    if (isTransactionRequest(request)) {
+      try {
+        const {
+          contract,
+          fnName,
+          args,
+          gasLimit: requestGasLimit,
+          gasPrice: requestGasPrice,
+        } = request;
+        const gasLimit =
+          requestGasLimit ??
+          (await contract.estimateGas[fnName](...args).then(gas =>
+            gas.toString(),
+          ));
 
-      updateConfig({
-        ...transaction.config,
-        unlimitedAmount: config.unlimitedAmount,
-        amount:
-          transaction.fnName === APPROVAL_FUNCTION
-            ? transaction.args[1]
-            : undefined,
-        gasPrice,
-        gasLimit,
-      });
-    } catch (error) {
-      console.log('error', error);
+        updateConfig({
+          unlimitedAmount: false,
+          amount: fnName === APPROVAL_FUNCTION ? args[1] : undefined,
+          gasPrice: requestGasPrice ?? gasPrice,
+          gasLimit,
+        });
+      } catch (error) {
+        console.log('error', error);
+      }
     }
-  }, [
-    config.unlimitedAmount,
-    gasPrice,
-    transaction.args,
-    transaction.config,
-    transaction.contract.estimateGas,
-    transaction.fnName,
-    updateConfig,
-  ]);
+  }, [gasPrice, request, updateConfig]);
 
   const parsedAmount = useMemo(() => {
     return token?.decimalPrecision && config.amount !== undefined
@@ -103,10 +109,14 @@ export const TransactionStep: FC<TransactionStepProps> = ({
   }, [config.amount, token?.decimalPrecision]);
 
   const minAmount = useMemo(() => {
-    return transaction.fnName === APPROVAL_FUNCTION
-      ? formatUnits(transaction.args[1], token?.decimalPrecision)
-      : '0';
-  }, [token?.decimalPrecision, transaction.args, transaction.fnName]);
+    if (isTransactionRequest(request)) {
+      const { fnName, args } = request;
+      return fnName === APPROVAL_FUNCTION
+        ? formatUnits(args[1], token?.decimalPrecision)
+        : '0';
+    }
+    return '0';
+  }, [request, token?.decimalPrecision]);
 
   const amountOptions = useMemo(
     () => [
@@ -116,7 +126,7 @@ export const TransactionStep: FC<TransactionStepProps> = ({
         value: 'custom_amount',
         contentToShow: (
           <AmountInput
-            className="mb-3 ml-8 w-56"
+            className="mb-3 ml-8 w-64"
             disabled={!!config.unlimitedAmount}
             label="Amount"
             min={minAmount}
@@ -192,102 +202,110 @@ export const TransactionStep: FC<TransactionStepProps> = ({
         {subtitle && status !== StatusType.error && (
           <Paragraph className="text-gray-30">{subtitle}</Paragraph>
         )}
-        <SimpleTable className="max-w-72 mt-3">
-          {config.amount !== undefined && (
-            <SimpleTableRow
-              label="Amount"
-              value={`${
-                config.unlimitedAmount ? '∞' : parsedAmount
-              } ${token?.symbol?.toUpperCase()}`}
-              valueClassName={classNames(
-                isLoading || status === StatusType.success
-                  ? 'text-gray-30'
-                  : 'text-primary-10',
-                'whitespace-nowrap overflow-auto',
-              )}
-            />
-          )}
-          <SimpleTableRow
-            label={
-              <span className="flex items-center">
-                Estimated gas fee
-                <HelperButton className="ml-1.5" content="Estimated gas fee" />
-              </span>
-            }
-            value={estimatedGasFee + ' BTC'}
-            valueClassName={classNames(
-              isLoading ? 'text-gray-30' : 'text-primary-10',
-              'whitespace-nowrap overflow-auto',
-            )}
-          />
-          {config.hash && (
-            <SimpleTableRow
-              label="TX ID"
-              value={
-                <TransactionId
-                  href={`${chain?.blockExplorerUrl}/tx/${config.hash}`}
-                  value={config.hash}
-                />
-              }
-            />
-          )}
-        </SimpleTable>
 
-        <Accordion
-          className="mt-4 mb-3 text-xs"
-          label="Advanced Settings"
-          open={advanced && !disabledSettings}
-          onClick={() => setAdvanced(!advanced)}
-          disabled={disabledSettings}
-        >
-          {config.amount !== undefined && (
-            <>
-              <RadioButtonGroup
-                options={amountOptions}
-                onChange={onChange}
-                className="mt-1"
-                defaultChecked={config.unlimitedAmount ? 1 : 0}
+        {isTransactionRequest(request) && (
+          <>
+            <SimpleTable className="max-w-72 mt-3">
+              {config.amount !== undefined && (
+                <SimpleTableRow
+                  label="Amount"
+                  value={`${
+                    config.unlimitedAmount ? '∞' : parsedAmount
+                  } ${token?.symbol?.toUpperCase()}`}
+                  valueClassName={classNames(
+                    isLoading || status === StatusType.success
+                      ? 'text-gray-30'
+                      : 'text-primary-10',
+                    'whitespace-nowrap overflow-auto',
+                  )}
+                />
+              )}
+              <SimpleTableRow
+                label={
+                  <span className="flex items-center">
+                    Estimated gas fee
+                    <HelperButton
+                      className="ml-1.5"
+                      content="Estimated gas fee"
+                    />
+                  </span>
+                }
+                value={estimatedGasFee + ' BTC'}
+                valueClassName={classNames(
+                  isLoading ? 'text-gray-30' : 'text-primary-10',
+                  'whitespace-nowrap overflow-auto',
+                )}
               />
-              <Heading type={HeadingType.h3} className="mb-3">
-                Gas Settings
-              </Heading>
-            </>
-          )}
-          <div className="mt-2 mb-4 max-w-64">
-            <AmountInput
-              label="Gas limit"
-              className="mb-4"
-              min={0}
-              value={config.gasLimit?.toString()}
-              onChange={e =>
-                updateConfig({
-                  ...config,
-                  gasLimit: e.target.value,
-                })
-              }
-              step="any"
-            />
-            <AmountInput
-              label="Gas price"
-              unit="Gwei"
-              min={0}
-              value={config.gasPrice?.toString()}
-              onChange={e =>
-                updateConfig({
-                  ...config,
-                  gasPrice: e.target.value,
-                })
-              }
-              step="any"
-            />
-          </div>
-          <Button
-            style={ButtonStyle.ghost}
-            type={ButtonType.reset}
-            text="Reset values"
-            onClick={resetConfig}
-          />
-        </Accordion>
+              {receipt.response && (
+                <SimpleTableRow
+                  label="TX ID"
+                  value={
+                    <TransactionId
+                      href={`${chain?.blockExplorerUrl}/tx/${receipt.response}`}
+                      value={receipt.response}
+                    />
+                  }
+                />
+              )}
+            </SimpleTable>
+
+            <Accordion
+              className="mt-4 mb-3 text-xs"
+              label="Advanced Settings"
+              open={advanced && !disabledSettings}
+              onClick={() => setAdvanced(!advanced)}
+              disabled={disabledSettings}
+            >
+              {config.amount !== undefined && (
+                <>
+                  <RadioButtonGroup
+                    options={amountOptions}
+                    onChange={onChange}
+                    className="mt-1"
+                    defaultChecked={config.unlimitedAmount ? 1 : 0}
+                  />
+                  <Heading type={HeadingType.h3} className="mb-3">
+                    Gas Settings
+                  </Heading>
+                </>
+              )}
+              <div className="mt-2 mb-4 max-w-72">
+                <AmountInput
+                  label="Gas limit"
+                  className="mb-4"
+                  min={0}
+                  value={config.gasLimit?.toString()}
+                  onChange={e =>
+                    updateConfig({
+                      ...config,
+                      gasLimit: e.target.value,
+                    })
+                  }
+                  step="any"
+                />
+                <AmountInput
+                  label="Gas price"
+                  unit="Gwei"
+                  min={0}
+                  value={config.gasPrice?.toString()}
+                  onChange={e =>
+                    updateConfig({
+                      ...config,
+                      gasPrice: e.target.value,
+                    })
+                  }
+                  step="any"
+                />
+              </div>
+              <Button
+                style={ButtonStyle.ghost}
+                type={ButtonType.reset}
+                text="Reset values"
+                onClick={resetConfig}
+              />
+            </Accordion>
+          </>
+        )}
       </div>
     </div>
   );

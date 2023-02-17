@@ -11,13 +11,14 @@ scalar BigInt
 type BitcoinTransfer {
   amountBTC: BigDecimal!
   bitcoinTxHash: Bytes!
-  btcAddress: String!
+  btcAddress: String
   createdAtBlockNumber: Int!
   createdAtTimestamp: Int!
   createdAtTx: Transaction!
+  direction: BitcoinTransferDirection!
   feeBTC: BigDecimal!
   id: ID!
-  nonce: Int!
+  nonce: Int
   status: BitcoinTransferStatus!
   totalAmountBTC: BigDecimal!
   updatedAtBlockNumber: Int!
@@ -95,6 +96,11 @@ enum BitcoinTransferBatchSending_orderBy {
   timestamp
   transaction
   transferBatchSize
+}
+
+enum BitcoinTransferDirection {
+  INCOMING
+  OUTGOING
 }
 
 enum BitcoinTransferStatus {
@@ -176,6 +182,10 @@ input BitcoinTransfer_filter {
   createdAtTx_not_in: [String!]
   createdAtTx_not_starts_with: String
   createdAtTx_starts_with: String
+  direction: BitcoinTransferDirection
+  direction_in: [BitcoinTransferDirection!]
+  direction_not: BitcoinTransferDirection
+  direction_not_in: [BitcoinTransferDirection!]
   feeBTC: BigDecimal
   feeBTC_gt: BigDecimal
   feeBTC_gte: BigDecimal
@@ -265,6 +275,7 @@ enum BitcoinTransfer_orderBy {
   createdAtBlockNumber
   createdAtTimestamp
   createdAtTx
+  direction
   feeBTC
   id
   nonce
@@ -4266,6 +4277,133 @@ enum Network {
   Testnet
 }
 
+type NewBitcoinTransferIncoming {
+  amountWei: BigInt!
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  btcTxHash: Bytes!
+  btcTxVout: BigInt!
+  emittedBy: Bytes!
+  feeWei: BigInt!
+  id: ID!
+  rskAddress: Bytes!
+  timestamp: BigInt!
+  transaction: Transaction!
+  transactionHash: Bytes!
+}
+
+input NewBitcoinTransferIncoming_filter {
+  amountWei: BigInt
+  amountWei_gt: BigInt
+  amountWei_gte: BigInt
+  amountWei_in: [BigInt!]
+  amountWei_lt: BigInt
+  amountWei_lte: BigInt
+  amountWei_not: BigInt
+  amountWei_not_in: [BigInt!]
+  blockNumber: BigInt
+  blockNumber_gt: BigInt
+  blockNumber_gte: BigInt
+  blockNumber_in: [BigInt!]
+  blockNumber_lt: BigInt
+  blockNumber_lte: BigInt
+  blockNumber_not: BigInt
+  blockNumber_not_in: [BigInt!]
+  blockTimestamp: BigInt
+  blockTimestamp_gt: BigInt
+  blockTimestamp_gte: BigInt
+  blockTimestamp_in: [BigInt!]
+  blockTimestamp_lt: BigInt
+  blockTimestamp_lte: BigInt
+  blockTimestamp_not: BigInt
+  blockTimestamp_not_in: [BigInt!]
+  btcTxHash: Bytes
+  btcTxHash_contains: Bytes
+  btcTxHash_in: [Bytes!]
+  btcTxHash_not: Bytes
+  btcTxHash_not_contains: Bytes
+  btcTxHash_not_in: [Bytes!]
+  btcTxVout: BigInt
+  btcTxVout_gt: BigInt
+  btcTxVout_gte: BigInt
+  btcTxVout_in: [BigInt!]
+  btcTxVout_lt: BigInt
+  btcTxVout_lte: BigInt
+  btcTxVout_not: BigInt
+  btcTxVout_not_in: [BigInt!]
+  emittedBy: Bytes
+  emittedBy_contains: Bytes
+  emittedBy_in: [Bytes!]
+  emittedBy_not: Bytes
+  emittedBy_not_contains: Bytes
+  emittedBy_not_in: [Bytes!]
+  feeWei: BigInt
+  feeWei_gt: BigInt
+  feeWei_gte: BigInt
+  feeWei_in: [BigInt!]
+  feeWei_lt: BigInt
+  feeWei_lte: BigInt
+  feeWei_not: BigInt
+  feeWei_not_in: [BigInt!]
+  id: ID
+  id_gt: ID
+  id_gte: ID
+  id_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_not: ID
+  id_not_in: [ID!]
+  rskAddress: Bytes
+  rskAddress_contains: Bytes
+  rskAddress_in: [Bytes!]
+  rskAddress_not: Bytes
+  rskAddress_not_contains: Bytes
+  rskAddress_not_in: [Bytes!]
+  timestamp: BigInt
+  timestamp_gt: BigInt
+  timestamp_gte: BigInt
+  timestamp_in: [BigInt!]
+  timestamp_lt: BigInt
+  timestamp_lte: BigInt
+  timestamp_not: BigInt
+  timestamp_not_in: [BigInt!]
+  transaction: String
+  transactionHash: Bytes
+  transactionHash_contains: Bytes
+  transactionHash_in: [Bytes!]
+  transactionHash_not: Bytes
+  transactionHash_not_contains: Bytes
+  transactionHash_not_in: [Bytes!]
+  transaction_contains: String
+  transaction_ends_with: String
+  transaction_gt: String
+  transaction_gte: String
+  transaction_in: [String!]
+  transaction_lt: String
+  transaction_lte: String
+  transaction_not: String
+  transaction_not_contains: String
+  transaction_not_ends_with: String
+  transaction_not_in: [String!]
+  transaction_not_starts_with: String
+  transaction_starts_with: String
+}
+
+enum NewBitcoinTransferIncoming_orderBy {
+  amountWei
+  blockNumber
+  blockTimestamp
+  btcTxHash
+  btcTxVout
+  emittedBy
+  feeWei
+  id
+  rskAddress
+  timestamp
+  transaction
+  transactionHash
+}
+
 type OrderCanceled {
   emittedBy: Bytes!
   hash: Bytes!
@@ -6662,6 +6800,34 @@ type Query {
     subgraphError: _SubgraphErrorPolicy_! = deny
     where: MarginOrderFilled_filter
   ): [MarginOrderFilled!]!
+  newBitcoinTransferIncoming(
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+    id: ID!
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): NewBitcoinTransferIncoming
+  newBitcoinTransferIncomings(
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+    first: Int = 100
+    orderBy: NewBitcoinTransferIncoming_orderBy
+    orderDirection: OrderDirection
+    skip: Int = 0
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+    where: NewBitcoinTransferIncoming_filter
+  ): [NewBitcoinTransferIncoming!]!
   orderCanceled(
     """
     The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
@@ -9206,6 +9372,34 @@ type Subscription {
     subgraphError: _SubgraphErrorPolicy_! = deny
     where: MarginOrderFilled_filter
   ): [MarginOrderFilled!]!
+  newBitcoinTransferIncoming(
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+    id: ID!
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): NewBitcoinTransferIncoming
+  newBitcoinTransferIncomings(
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+    first: Int = 100
+    orderBy: NewBitcoinTransferIncoming_orderBy
+    orderDirection: OrderDirection
+    skip: Int = 0
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+    where: NewBitcoinTransferIncoming_filter
+  ): [NewBitcoinTransferIncoming!]!
   orderCanceled(
     """
     The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.

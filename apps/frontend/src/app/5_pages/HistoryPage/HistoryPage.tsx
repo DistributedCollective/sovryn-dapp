@@ -12,6 +12,7 @@ import {
 } from '../../3_organisms';
 import { CollateralSurplusHistoryFrame } from '../../3_organisms/CollateralSurplusWithdrawals/CollateralSurplusWithdrawals';
 import { ConversionsHistoryFrame } from '../../3_organisms/ConversionsHistoryFrame/ConversionsHistoryFrame';
+import { FundingHistoryFrame } from '../../3_organisms/FundingHistoryFrame/FundingHistoryFrame';
 import { RewardHistory } from '../../3_organisms/RewardHistory/RewardHistory';
 import { StabilityPoolHistoryFrame } from '../../3_organisms/StabilityPoolHistoryFrame';
 import { translations } from '../../../locales/i18n';
@@ -59,20 +60,15 @@ const conversionsHistory = (
   </div>
 );
 
+const fundingHistory = (
+  <div className="px-0 py-4 lg:p-4">
+    <FundingHistoryFrame />
+  </div>
+);
+
 const HistoryPage: FC = () => {
   const { t } = useTranslation();
   const [index, setIndex] = useState(0);
-
-  const comingSoon = useMemo(
-    () => (
-      <div className="px-4 py-12 rounded my-4 lg:rounded-none lg:my-0 flex flex-row justify-center bg-gray-80">
-        <Heading className="inline">
-          {t(translations.historyPage.table.comingSoon)}
-        </Heading>
-      </div>
-    ),
-    [t],
-  );
 
   const items = useMemo(
     () => [
@@ -102,7 +98,7 @@ const HistoryPage: FC = () => {
       },
       {
         label: t(translations.historyPage.table.tabs.funding),
-        content: comingSoon,
+        content: fundingHistory,
         activeClassName: ACTIVE_CLASSNAME,
         dataAttribute: 'funding',
       },
@@ -121,7 +117,7 @@ const HistoryPage: FC = () => {
         dataAttribute: 'rewards',
       },
     ],
-    [t, comingSoon],
+    [t],
   );
 
   const options: SelectOption[] = useMemo(

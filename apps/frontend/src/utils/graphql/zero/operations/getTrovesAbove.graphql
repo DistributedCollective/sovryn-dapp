@@ -1,4 +1,4 @@
-query getTrovesAbove($first: Int!, $userCollateralRatioKey: BigInt) {
+query getTrovesAbove($first: Int!, $userCollateralRatioKey: BigDecimal) {
   troves(
     orderDirection: desc
     orderBy: collateralRatioSortKey

@@ -2834,8 +2834,9 @@ export type Trove = {
   __typename?: 'Trove';
   changes: Array<TroveChange>;
   collateral: Scalars['BigDecimal'];
+  collateralRatioSortKey?: Maybe<Scalars['BigDecimal']>;
   /** Ordering by this field will result in the same ordering as collateral ratio (except reversed) */
-  collateralRatioSortKey?: Maybe<Scalars['BigInt']>;
+  collateralRatioSortKey_legacy?: Maybe<Scalars['BigInt']>;
   debt: Scalars['BigDecimal'];
   /** Owner's ID */
   id: Scalars['ID'];
@@ -3147,14 +3148,22 @@ export type Trove_Filter = {
   _change_block?: InputMaybe<BlockChangedFilter>;
   changes_?: InputMaybe<TroveChange_Filter>;
   collateral?: InputMaybe<Scalars['BigDecimal']>;
-  collateralRatioSortKey?: InputMaybe<Scalars['BigInt']>;
-  collateralRatioSortKey_gt?: InputMaybe<Scalars['BigInt']>;
-  collateralRatioSortKey_gte?: InputMaybe<Scalars['BigInt']>;
-  collateralRatioSortKey_in?: InputMaybe<Array<Scalars['BigInt']>>;
-  collateralRatioSortKey_lt?: InputMaybe<Scalars['BigInt']>;
-  collateralRatioSortKey_lte?: InputMaybe<Scalars['BigInt']>;
-  collateralRatioSortKey_not?: InputMaybe<Scalars['BigInt']>;
-  collateralRatioSortKey_not_in?: InputMaybe<Array<Scalars['BigInt']>>;
+  collateralRatioSortKey?: InputMaybe<Scalars['BigDecimal']>;
+  collateralRatioSortKey_gt?: InputMaybe<Scalars['BigDecimal']>;
+  collateralRatioSortKey_gte?: InputMaybe<Scalars['BigDecimal']>;
+  collateralRatioSortKey_in?: InputMaybe<Array<Scalars['BigDecimal']>>;
+  collateralRatioSortKey_legacy?: InputMaybe<Scalars['BigInt']>;
+  collateralRatioSortKey_legacy_gt?: InputMaybe<Scalars['BigInt']>;
+  collateralRatioSortKey_legacy_gte?: InputMaybe<Scalars['BigInt']>;
+  collateralRatioSortKey_legacy_in?: InputMaybe<Array<Scalars['BigInt']>>;
+  collateralRatioSortKey_legacy_lt?: InputMaybe<Scalars['BigInt']>;
+  collateralRatioSortKey_legacy_lte?: InputMaybe<Scalars['BigInt']>;
+  collateralRatioSortKey_legacy_not?: InputMaybe<Scalars['BigInt']>;
+  collateralRatioSortKey_legacy_not_in?: InputMaybe<Array<Scalars['BigInt']>>;
+  collateralRatioSortKey_lt?: InputMaybe<Scalars['BigDecimal']>;
+  collateralRatioSortKey_lte?: InputMaybe<Scalars['BigDecimal']>;
+  collateralRatioSortKey_not?: InputMaybe<Scalars['BigDecimal']>;
+  collateralRatioSortKey_not_in?: InputMaybe<Array<Scalars['BigDecimal']>>;
   collateral_gt?: InputMaybe<Scalars['BigDecimal']>;
   collateral_gte?: InputMaybe<Scalars['BigDecimal']>;
   collateral_in?: InputMaybe<Array<Scalars['BigDecimal']>>;
@@ -3255,6 +3264,7 @@ export enum Trove_OrderBy {
   Changes = 'changes',
   Collateral = 'collateral',
   CollateralRatioSortKey = 'collateralRatioSortKey',
+  CollateralRatioSortKeyLegacy = 'collateralRatioSortKey_legacy',
   Debt = 'debt',
   Id = 'id',
   Owner = 'owner',
@@ -3454,7 +3464,7 @@ export type GetCollSurplusChangesQuery = {
 
 export type GetLowestTrovesQueryVariables = Exact<{
   first: Scalars['Int'];
-  userCollateralRatioKey?: InputMaybe<Scalars['BigInt']>;
+  userCollateralRatioKey?: InputMaybe<Scalars['BigDecimal']>;
 }>;
 
 export type GetLowestTrovesQuery = {
@@ -3598,7 +3608,7 @@ export type GetTrovesQuery = {
 
 export type GetTrovesAboveQueryVariables = Exact<{
   first: Scalars['Int'];
-  userCollateralRatioKey?: InputMaybe<Scalars['BigInt']>;
+  userCollateralRatioKey?: InputMaybe<Scalars['BigDecimal']>;
 }>;
 
 export type GetTrovesAboveQuery = {
@@ -3628,7 +3638,7 @@ export type GetTrovesAboveQuery = {
 
 export type GetTrovesBelowQueryVariables = Exact<{
   first: Scalars['Int'];
-  userCollateralRatioKey?: InputMaybe<Scalars['BigInt']>;
+  userCollateralRatioKey?: InputMaybe<Scalars['BigDecimal']>;
 }>;
 
 export type GetTrovesBelowQuery = {
@@ -3769,7 +3779,7 @@ export type GetCollSurplusChangesQueryResult = Apollo.QueryResult<
   GetCollSurplusChangesQueryVariables
 >;
 export const GetLowestTrovesDocument = gql`
-  query getLowestTroves($first: Int!, $userCollateralRatioKey: BigInt) {
+  query getLowestTroves($first: Int!, $userCollateralRatioKey: BigDecimal) {
     troves(
       orderDirection: desc
       orderBy: collateralRatioSortKey
@@ -4248,7 +4258,7 @@ export type GetTrovesQueryResult = Apollo.QueryResult<
   GetTrovesQueryVariables
 >;
 export const GetTrovesAboveDocument = gql`
-  query getTrovesAbove($first: Int!, $userCollateralRatioKey: BigInt) {
+  query getTrovesAbove($first: Int!, $userCollateralRatioKey: BigDecimal) {
     troves(
       orderDirection: desc
       orderBy: collateralRatioSortKey
@@ -4333,7 +4343,7 @@ export type GetTrovesAboveQueryResult = Apollo.QueryResult<
   GetTrovesAboveQueryVariables
 >;
 export const GetTrovesBelowDocument = gql`
-  query getTrovesBelow($first: Int!, $userCollateralRatioKey: BigInt) {
+  query getTrovesBelow($first: Int!, $userCollateralRatioKey: BigDecimal) {
     troves(
       orderDirection: desc
       orderBy: collateralRatioSortKey

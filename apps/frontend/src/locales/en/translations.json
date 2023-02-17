@@ -141,6 +141,23 @@
             "noDataToExport": "No data to export"
         }
     },
+    "fundingHistory": {
+        "table": {
+            "timestamp": "Timestamp",
+            "transactionType": "Transaction type",
+            "sent": "Sent",
+            "received": "Received",
+            "serviceFee": "Service fee",
+            "txId": "TXID"
+        },
+        "transactionType": {
+            "part1": "FastBTC deposit (Part 1)",
+            "part2": "FastBTC deposit (Part 2)"
+        },
+        "actions": {
+            "noDataToExport": "No data to export"
+        }
+    },
     "conversionsHistory": {
         "table": {
             "timestamp": "Timestamp",

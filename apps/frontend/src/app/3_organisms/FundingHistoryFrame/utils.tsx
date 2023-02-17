@@ -2,20 +2,17 @@ import React from 'react';
 
 import { t } from 'i18next';
 
-import {
-  applyDataAttr,
-  Paragraph,
-  ParagraphSize,
-  TransactionId,
-} from '@sovryn/ui';
-
-import { chains, defaultChainId } from '../../../config/chains';
+import { Paragraph, ParagraphSize, TransactionId } from '@sovryn/ui';
 
 import { AmountRenderer } from '../../2_molecules/AmountRenderer/AmountRenderer';
 import { translations } from '../../../locales/i18n';
 import { Bitcoin } from '../../../utils/constants';
 import { BitcoinTransferDirection } from '../../../utils/graphql/rsk/generated';
-import { dateFormat } from '../../../utils/helpers';
+import {
+  dateFormat,
+  getBtcExplorerUrl,
+  getRskExplorerUrl,
+} from '../../../utils/helpers';
 import { FundingHistoryType } from './types';
 
 export const generateRowTitle = (item: FundingHistoryType) => (
@@ -26,6 +23,9 @@ export const generateRowTitle = (item: FundingHistoryType) => (
   </Paragraph>
 );
 
+const rskExplorerUrl = getRskExplorerUrl();
+const btcExplorerUrl = getBtcExplorerUrl();
+
 const transactionTypeRenderer = (item: FundingHistoryType) => {
   const type =
     item.type === BitcoinTransferDirection.Incoming
@@ -35,7 +35,7 @@ const transactionTypeRenderer = (item: FundingHistoryType) => {
 };
 
 const renderSentAmount = (item: FundingHistoryType) => {
-  if (item.sent === null) {
+  if (item.sent === '-') {
     return '⁠—';
   }
 
@@ -49,7 +49,7 @@ const renderSentAmount = (item: FundingHistoryType) => {
   );
 };
 const renderReceivedAmount = (item: FundingHistoryType) => {
-  if (item.received === null) {
+  if (item.received === '-') {
     return '⁠—';
   }
 
@@ -64,7 +64,7 @@ const renderReceivedAmount = (item: FundingHistoryType) => {
 };
 
 const renderServiceFee = (item: FundingHistoryType) => {
-  if (item.serviceFee === null) {
+  if (item.serviceFee === '-') {
     return '⁠—';
   }
 
@@ -79,12 +79,16 @@ const renderServiceFee = (item: FundingHistoryType) => {
 };
 
 const renderTXID = (item: FundingHistoryType) => {
-  const chain = chains.find(chain => chain.id === defaultChainId);
+  const href =
+    item.type === BitcoinTransferDirection.Outgoing
+      ? `${rskExplorerUrl}/tx/${item.txHash}`
+      : `${btcExplorerUrl}/tx/${item.txHash}`;
+
   return (
     <TransactionId
-      href={`${chain?.blockExplorerUrl}/tx/${item.txHash}`}
+      href={href}
       value={item.txHash}
-      {...applyDataAttr('funding-history-address-id')}
+      dataAttribute="funding-history-address-id"
     />
   );
 };

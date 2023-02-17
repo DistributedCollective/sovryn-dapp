@@ -9,7 +9,6 @@ import {
   OrderOptions,
   Pagination,
   Table,
-  applyDataAttr,
 } from '@sovryn/ui';
 
 import { ExportCSV } from '../../2_molecules/ExportCSV/ExportCSV';
@@ -57,6 +56,8 @@ export const FundingHistoryFrame: FC = () => {
     orderOptions,
   );
 
+  console.log(data);
+
   useEffect(() => {
     refetch();
   }, [refetch, block]);
@@ -79,21 +80,21 @@ export const FundingHistoryFrame: FC = () => {
             timestamp: item.createdAtTimestamp,
             type: BitcoinTransferDirection.Incoming,
             sent: item.totalAmountBTC,
-            received: null,
-            serviceFee: null,
+            received: '-',
+            serviceFee: '-',
             txHash: item.bitcoinTxHash,
           };
 
           const row2 = {
             timestamp: item.createdAtTimestamp,
             type: BitcoinTransferDirection.Outgoing,
-            sent: null,
+            sent: '-',
             received: item.totalAmountBTC,
             serviceFee: item.feeBTC,
             txHash: item.createdAtTx.id,
           };
 
-          acc.push(row1, row2);
+          acc.push(row2, row1);
           return acc;
         },
         [],
@@ -146,21 +147,21 @@ export const FundingHistoryFrame: FC = () => {
           timestamp: item.createdAtTimestamp,
           type: t(translations.fundingHistory.transactionType.part1),
           sent: item.totalAmountBTC,
-          received: null,
-          serviceFee: null,
+          received: '-',
+          serviceFee: '-',
           txHash: item.bitcoinTxHash,
         };
 
         const row2 = {
           timestamp: item.createdAtTimestamp,
           type: t(translations.fundingHistory.transactionType.part2),
-          sent: null,
+          sent: '-',
           received: item.totalAmountBTC,
           serviceFee: item.feeBTC,
           txHash: item.createdAtTx.id,
         };
 
-        acc.push(row1, row2);
+        acc.push(row2, row1);
         return acc;
       },
       [],
@@ -191,7 +192,7 @@ export const FundingHistoryFrame: FC = () => {
           isLoading={loading}
           className="bg-gray-80 text-gray-10 lg:px-6 lg:py-4"
           noData={t(translations.common.tables.noData)}
-          {...applyDataAttr('funding-history-table')}
+          dataAttribute="funding-history-table"
         />
         <Pagination
           page={page}
@@ -199,7 +200,7 @@ export const FundingHistoryFrame: FC = () => {
           onChange={onPageChange}
           itemsPerPage={pageSize}
           isNextButtonDisabled={isNextButtonDisabled}
-          {...applyDataAttr('funding-history-pagination')}
+          dataAttribute="funding-history-pagination"
         />
       </div>
     </>

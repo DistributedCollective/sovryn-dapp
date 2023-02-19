@@ -77,19 +77,6 @@ export const FundingHistoryFrame: FC = () => {
       const data: FundingHistoryType[] = funding.reduce(
         (acc: FundingHistoryType[], item) => {
           acc.push(
-            //TODO: reverse order after testing
-            {
-              timestamp: item.createdAtTimestamp,
-              type: item.direction,
-              order: 1,
-              sent: item.totalAmountBTC,
-              received: '-',
-              serviceFee: '-',
-              txHash:
-                item.direction === BitcoinTransferDirection.Outgoing
-                  ? item.createdAtTx.id
-                  : item.bitcoinTxHash,
-            },
             {
               timestamp: item.createdAtTimestamp,
               type: item.direction,
@@ -101,6 +88,18 @@ export const FundingHistoryFrame: FC = () => {
                 item.direction === BitcoinTransferDirection.Outgoing
                   ? item.bitcoinTxHash
                   : item.createdAtTx.id,
+            },
+            {
+              timestamp: item.createdAtTimestamp,
+              type: item.direction,
+              order: 1,
+              sent: item.totalAmountBTC,
+              received: '-',
+              serviceFee: '-',
+              txHash:
+                item.direction === BitcoinTransferDirection.Outgoing
+                  ? item.createdAtTx.id
+                  : item.bitcoinTxHash,
             },
           );
           return acc;

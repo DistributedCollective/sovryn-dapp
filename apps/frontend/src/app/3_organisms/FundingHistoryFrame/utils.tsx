@@ -64,8 +64,8 @@ const renderServiceFee = (item: FundingHistoryType) => (
 
 const renderTXID = (item: FundingHistoryType) => {
   const href =
-    (item.type === BitcoinTransferDirection.Outgoing && item.order === 2) ||
-    (item.type === BitcoinTransferDirection.Incoming && item.order === 1)
+    (item.type === BitcoinTransferDirection.Outgoing && item.order === 1) ||
+    (item.type === BitcoinTransferDirection.Incoming && item.order === 2)
       ? `${rskExplorerUrl}/tx/${item.txHash}`
       : `${btcExplorerUrl}/tx/${item.txHash}`;
 

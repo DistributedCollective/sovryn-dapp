@@ -6,7 +6,10 @@ import { t } from 'i18next';
 import { SupportedTokens } from '@sovryn/contracts';
 import { getContract } from '@sovryn/contracts';
 
-import { Transaction } from '../../../3_organisms/TransactionStepDialog/TransactionStepDialog.types';
+import {
+  Transaction,
+  TransactionType,
+} from '../../../3_organisms/TransactionStepDialog/TransactionStepDialog.types';
 import { useTransactionContext } from '../../../../contexts/TransactionContext';
 import { useAccount } from '../../../../hooks/useAccount';
 import { translations } from '../../../../locales/i18n';
@@ -47,13 +50,14 @@ export const useHandleStabilityDeposit = (
       title: t(translations.earnPage.txDialog.withdraw, {
         asset: SupportedTokens.zusd.toUpperCase(),
       }),
-      contract: stabilityPool,
-      fnName: 'withdrawFromSP',
-      args: [toWei(amount)],
-      onComplete,
-      config: {
+      request: {
+        type: TransactionType.signTransaction,
+        contract: stabilityPool,
+        fnName: 'withdrawFromSP',
+        args: [toWei(amount)],
         gasLimit: GAS_LIMIT_STABILITY_POOL,
       },
+      onComplete,
     });
 
     if (token !== SupportedTokens.zusd) {
@@ -90,13 +94,14 @@ export const useHandleStabilityDeposit = (
       title: t(translations.earnPage.txDialog.deposit, {
         asset: SupportedTokens.zusd.toUpperCase(),
       }),
-      contract: stabilityPool,
-      fnName: 'provideToSP',
-      args: [toWei(amount), ethers.constants.AddressZero],
-      onComplete,
-      config: {
+      request: {
+        type: TransactionType.signTransaction,
+        contract: stabilityPool,
+        fnName: 'provideToSP',
+        args: [toWei(amount), ethers.constants.AddressZero],
         gasLimit: GAS_LIMIT_STABILITY_POOL,
       },
+      onComplete,
     });
 
     setTransactions(transactions);

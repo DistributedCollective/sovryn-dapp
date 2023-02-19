@@ -45,7 +45,7 @@ export const FundingHistoryFrame: FC = () => {
   const [page, setPage] = useState(0);
 
   const [orderOptions, setOrderOptions] = useState<OrderOptions>({
-    orderBy: 'updatedAtTimestamp',
+    orderBy: 'createdAtTimestamp',
     orderDirection: OrderDirection.Desc,
   });
 

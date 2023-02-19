@@ -56,8 +56,6 @@ export const FundingHistoryFrame: FC = () => {
     orderOptions,
   );
 
-  console.log(data);
-
   useEffect(() => {
     refetch();
   }, [refetch, block]);
@@ -150,27 +148,44 @@ export const FundingHistoryFrame: FC = () => {
     //split each row returned from the graph into 2 rows (part 1 and part 2)
     const fundingData: FundingHistoryType[] = funding.reduce(
       (acc: FundingHistoryType[], item) => {
-        const row1 = {
-          timestamp: item.createdAtTimestamp,
-          type: t(translations.fundingHistory.transactionType.withdraw.part1), //TODO: Fix
-          order: 1,
-          sent: item.totalAmountBTC,
-          received: '-',
-          serviceFee: '-',
-          txHash: item.bitcoinTxHash,
-        };
-
-        const row2 = {
-          timestamp: item.createdAtTimestamp,
-          type: t(translations.fundingHistory.transactionType.withdraw.part2), //TODO: Fix
-          order: 2,
-          sent: '-',
-          received: item.totalAmountBTC,
-          serviceFee: item.feeBTC,
-          txHash: item.createdAtTx.id,
-        };
-
-        acc.push(row2, row1);
+        acc.push(
+          {
+            timestamp: item.createdAtTimestamp,
+            type: t(
+              translations.fundingHistory.transactionType[
+                item.direction === BitcoinTransferDirection.Outgoing
+                  ? 'withdraw'
+                  : 'deposit'
+              ].part2,
+            ),
+            order: 2,
+            sent: '-',
+            received: item.amountBTC,
+            serviceFee: item.feeBTC,
+            txHash:
+              item.direction === BitcoinTransferDirection.Outgoing
+                ? item.bitcoinTxHash
+                : item.createdAtTx.id,
+          },
+          {
+            timestamp: item.createdAtTimestamp,
+            type: t(
+              translations.fundingHistory.transactionType[
+                item.direction === BitcoinTransferDirection.Outgoing
+                  ? 'withdraw'
+                  : 'deposit'
+              ].part1,
+            ),
+            order: 1,
+            sent: item.totalAmountBTC,
+            received: '-',
+            serviceFee: '-',
+            txHash:
+              item.direction === BitcoinTransferDirection.Outgoing
+                ? item.createdAtTx.id
+                : item.bitcoinTxHash,
+          },
+        );
         return acc;
       },
       [],

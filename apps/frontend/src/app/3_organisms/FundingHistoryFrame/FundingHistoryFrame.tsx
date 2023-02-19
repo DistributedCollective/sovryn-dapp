@@ -74,6 +74,8 @@ export const FundingHistoryFrame: FC = () => {
       //split each row returned from the graph into 2 rows (part 1 and part 2)
       const data: FundingHistoryType[] = funding.reduce(
         (acc: FundingHistoryType[], item) => {
+          const isOutgoing =
+            item.direction === BitcoinTransferDirection.Outgoing;
           acc.push(
             {
               timestamp: item.createdAtTimestamp,
@@ -82,10 +84,7 @@ export const FundingHistoryFrame: FC = () => {
               sent: '-',
               received: item.amountBTC,
               serviceFee: item.feeBTC,
-              txHash:
-                item.direction === BitcoinTransferDirection.Outgoing
-                  ? item.bitcoinTxHash
-                  : item.createdAtTx.id,
+              txHash: isOutgoing ? item.bitcoinTxHash : item.createdAtTx.id,
             },
             {
               timestamp: item.createdAtTimestamp,
@@ -94,10 +93,7 @@ export const FundingHistoryFrame: FC = () => {
               sent: item.totalAmountBTC,
               received: '-',
               serviceFee: '-',
-              txHash:
-                item.direction === BitcoinTransferDirection.Outgoing
-                  ? item.createdAtTx.id
-                  : item.bitcoinTxHash,
+              txHash: isOutgoing ? item.createdAtTx.id : item.bitcoinTxHash,
             },
           );
           return acc;
@@ -148,42 +144,33 @@ export const FundingHistoryFrame: FC = () => {
     //split each row returned from the graph into 2 rows (part 1 and part 2)
     const fundingData: FundingHistoryType[] = funding.reduce(
       (acc: FundingHistoryType[], item) => {
+        const isOutgoing = item.direction === BitcoinTransferDirection.Outgoing;
         acc.push(
           {
             timestamp: item.createdAtTimestamp,
             type: t(
               translations.fundingHistory.transactionType[
-                item.direction === BitcoinTransferDirection.Outgoing
-                  ? 'withdraw'
-                  : 'deposit'
+                isOutgoing ? 'withdraw' : 'deposit'
               ].part2,
             ),
             order: 2,
             sent: '-',
             received: item.amountBTC,
             serviceFee: item.feeBTC,
-            txHash:
-              item.direction === BitcoinTransferDirection.Outgoing
-                ? item.bitcoinTxHash
-                : item.createdAtTx.id,
+            txHash: isOutgoing ? item.bitcoinTxHash : item.createdAtTx.id,
           },
           {
             timestamp: item.createdAtTimestamp,
             type: t(
               translations.fundingHistory.transactionType[
-                item.direction === BitcoinTransferDirection.Outgoing
-                  ? 'withdraw'
-                  : 'deposit'
+                isOutgoing ? 'withdraw' : 'deposit'
               ].part1,
             ),
             order: 1,
             sent: item.totalAmountBTC,
             received: '-',
             serviceFee: '-',
-            txHash:
-              item.direction === BitcoinTransferDirection.Outgoing
-                ? item.createdAtTx.id
-                : item.bitcoinTxHash,
+            txHash: isOutgoing ? item.createdAtTx.id : item.bitcoinTxHash,
           },
         );
         return acc;

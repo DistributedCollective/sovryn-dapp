@@ -151,8 +151,14 @@
             "txId": "TXID"
         },
         "transactionType": {
-            "part1": "FastBTC deposit (Part 1)",
-            "part2": "FastBTC deposit (Part 2)"
+            "deposit": {
+                "part1": "FastBTC deposit (Part 1)",
+                "part2": "FastBTC deposit (Part 2)"
+            },
+            "withdraw": {
+                "part1": "FastBTC withdrawal (Part 1)",
+                "part2": "FastBTC withdrawal (Part 2)"
+            }
         },
         "actions": {
             "noDataToExport": "No data to export"

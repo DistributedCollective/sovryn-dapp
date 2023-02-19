@@ -27,60 +27,45 @@ const rskExplorerUrl = getRskExplorerUrl();
 const btcExplorerUrl = getBtcExplorerUrl();
 
 const transactionTypeRenderer = (item: FundingHistoryType) => {
-  const type =
-    item.type === BitcoinTransferDirection.Incoming
-      ? t(translations.fundingHistory.transactionType.part1)
-      : t(translations.fundingHistory.transactionType.part2);
+  const type = t(
+    translations.fundingHistory.transactionType[
+      item.type === BitcoinTransferDirection.Outgoing ? 'withdraw' : 'deposit'
+    ][`part${item.order}`],
+  );
   return type;
 };
 
-const renderSentAmount = (item: FundingHistoryType) => {
-  if (item.sent === '-') {
-    return '⁠—';
-  }
+const renderSentAmount = (item: FundingHistoryType) => (
+  <AmountRenderer
+    value={item.sent}
+    suffix={Bitcoin}
+    precision={8}
+    dataAttribute="funding-history-sent"
+  />
+);
 
-  return (
-    <AmountRenderer
-      value={item.sent}
-      suffix={Bitcoin}
-      precision={8}
-      dataAttribute="funding-history-sent"
-    />
-  );
-};
-const renderReceivedAmount = (item: FundingHistoryType) => {
-  if (item.received === '-') {
-    return '⁠—';
-  }
+const renderReceivedAmount = (item: FundingHistoryType) => (
+  <AmountRenderer
+    value={item.received}
+    suffix={Bitcoin}
+    precision={8}
+    dataAttribute="funding-history-received"
+  />
+);
 
-  return (
-    <AmountRenderer
-      value={item.received}
-      suffix={Bitcoin}
-      precision={8}
-      dataAttribute="funding-history-received"
-    />
-  );
-};
-
-const renderServiceFee = (item: FundingHistoryType) => {
-  if (item.serviceFee === '-') {
-    return '⁠—';
-  }
-
-  return (
-    <AmountRenderer
-      value={item.serviceFee}
-      suffix={Bitcoin}
-      precision={8}
-      dataAttribute="funding-history-service-fee"
-    />
-  );
-};
+const renderServiceFee = (item: FundingHistoryType) => (
+  <AmountRenderer
+    value={item.serviceFee}
+    suffix={Bitcoin}
+    precision={8}
+    dataAttribute="funding-history-service-fee"
+  />
+);
 
 const renderTXID = (item: FundingHistoryType) => {
   const href =
-    item.type === BitcoinTransferDirection.Outgoing
+    (item.type === BitcoinTransferDirection.Outgoing && item.order === 2) ||
+    (item.type === BitcoinTransferDirection.Incoming && item.order === 1)
       ? `${rskExplorerUrl}/tx/${item.txHash}`
       : `${btcExplorerUrl}/tx/${item.txHash}`;
 

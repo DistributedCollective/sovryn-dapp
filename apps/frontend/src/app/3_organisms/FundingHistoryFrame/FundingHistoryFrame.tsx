@@ -76,25 +76,33 @@ export const FundingHistoryFrame: FC = () => {
       //split each row returned from the graph into 2 rows (part 1 and part 2)
       const data: FundingHistoryType[] = funding.reduce(
         (acc: FundingHistoryType[], item) => {
-          const row1 = {
-            timestamp: item.createdAtTimestamp,
-            type: BitcoinTransferDirection.Incoming,
-            sent: item.totalAmountBTC,
-            received: '-',
-            serviceFee: '-',
-            txHash: item.bitcoinTxHash,
-          };
-
-          const row2 = {
-            timestamp: item.createdAtTimestamp,
-            type: BitcoinTransferDirection.Outgoing,
-            sent: '-',
-            received: item.totalAmountBTC,
-            serviceFee: item.feeBTC,
-            txHash: item.createdAtTx.id,
-          };
-
-          acc.push(row2, row1);
+          acc.push(
+            //TODO: reverse order after testing
+            {
+              timestamp: item.createdAtTimestamp,
+              type: item.direction,
+              order: 1,
+              sent: item.totalAmountBTC,
+              received: '-',
+              serviceFee: '-',
+              txHash:
+                item.direction === BitcoinTransferDirection.Outgoing
+                  ? item.createdAtTx.id
+                  : item.bitcoinTxHash,
+            },
+            {
+              timestamp: item.createdAtTimestamp,
+              type: item.direction,
+              order: 2,
+              sent: '-',
+              received: item.amountBTC,
+              serviceFee: item.feeBTC,
+              txHash:
+                item.direction === BitcoinTransferDirection.Outgoing
+                  ? item.bitcoinTxHash
+                  : item.createdAtTx.id,
+            },
+          );
           return acc;
         },
         [],
@@ -145,7 +153,8 @@ export const FundingHistoryFrame: FC = () => {
       (acc: FundingHistoryType[], item) => {
         const row1 = {
           timestamp: item.createdAtTimestamp,
-          type: t(translations.fundingHistory.transactionType.part1),
+          type: t(translations.fundingHistory.transactionType.withdraw.part1), //TODO: Fix
+          order: 1,
           sent: item.totalAmountBTC,
           received: '-',
           serviceFee: '-',
@@ -154,7 +163,8 @@ export const FundingHistoryFrame: FC = () => {
 
         const row2 = {
           timestamp: item.createdAtTimestamp,
-          type: t(translations.fundingHistory.transactionType.part2),
+          type: t(translations.fundingHistory.transactionType.withdraw.part2), //TODO: Fix
+          order: 2,
           sent: '-',
           received: item.totalAmountBTC,
           serviceFee: item.feeBTC,

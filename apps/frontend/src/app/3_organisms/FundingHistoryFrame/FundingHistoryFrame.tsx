@@ -33,6 +33,35 @@ import { columnsConfig, generateRowTitle } from './utils';
 
 const pageSize = DEFAULT_HISTORY_FRAME_PAGE_SIZE;
 
+//split each row returned from the graph into 2 rows (part 1 and part 2)
+const parseData = item => {
+  const isOutgoing = item.direction === BitcoinTransferDirection.Outgoing;
+  return [
+    {
+      timestamp: item.createdAtTimestamp,
+      type: item.direction,
+      order: 2,
+      sent: '-',
+      received: item.amountBTC,
+      serviceFee: item.feeBTC,
+      txHash: isOutgoing
+        ? item.bitcoinTxHash.substring(2) //TODO: remove after issue fixed on Graph
+        : item.createdAtTx.id,
+    },
+    {
+      timestamp: item.createdAtTimestamp,
+      type: item.direction,
+      order: 1,
+      sent: item.totalAmountBTC,
+      received: '-',
+      serviceFee: '-',
+      txHash: isOutgoing
+        ? item.createdAtTx.id
+        : item.bitcoinTxHash.substring(2), //TODO: remove after issue fixed on Graph
+    },
+  ];
+};
+
 export const FundingHistoryFrame: FC = () => {
   const { t } = useTranslation();
   const { account } = useAccount();
@@ -73,35 +102,7 @@ export const FundingHistoryFrame: FC = () => {
     if (account && funding) {
       //split each row returned from the graph into 2 rows (part 1 and part 2)
       const data: FundingHistoryType[] = funding.reduce(
-        (acc: FundingHistoryType[], item) => {
-          const isOutgoing =
-            item.direction === BitcoinTransferDirection.Outgoing;
-          acc.push(
-            {
-              timestamp: item.createdAtTimestamp,
-              type: item.direction,
-              order: 2,
-              sent: '-',
-              received: item.amountBTC,
-              serviceFee: item.feeBTC,
-              txHash: isOutgoing
-                ? item.bitcoinTxHash.substring(2) //TODO: remove after issue fixed on Graph
-                : item.createdAtTx.id,
-            },
-            {
-              timestamp: item.createdAtTimestamp,
-              type: item.direction,
-              order: 1,
-              sent: item.totalAmountBTC,
-              received: '-',
-              serviceFee: '-',
-              txHash: isOutgoing
-                ? item.createdAtTx.id
-                : item.bitcoinTxHash.substring(2), //TODO: remove after issue fixed on Graph
-            },
-          );
-          return acc;
-        },
+        (acc: FundingHistoryType[], item) => acc.concat(parseData(item)),
         [],
       );
       setFundingHistory(data);
@@ -145,40 +146,29 @@ export const FundingHistoryFrame: FC = () => {
         id: nanoid(),
       });
     }
-    //split each row returned from the graph into 2 rows (part 1 and part 2)
+
     const fundingData: FundingHistoryType[] = funding.reduce(
       (acc: FundingHistoryType[], item) => {
         const isOutgoing = item.direction === BitcoinTransferDirection.Outgoing;
+        const rows = parseData(item);
+
+        // format labels for exports
         acc.push(
           {
-            timestamp: item.createdAtTimestamp,
+            ...rows[0],
             type: t(
               translations.fundingHistory.transactionType[
                 isOutgoing ? 'withdraw' : 'deposit'
               ].part2,
             ),
-            order: 2,
-            sent: '-',
-            received: item.amountBTC,
-            serviceFee: item.feeBTC,
-            txHash: isOutgoing
-              ? item.bitcoinTxHash.substring(2) //TODO: remove after issue fixed on Graph
-              : item.createdAtTx.id,
           },
           {
-            timestamp: item.createdAtTimestamp,
+            ...rows[1],
             type: t(
               translations.fundingHistory.transactionType[
                 isOutgoing ? 'withdraw' : 'deposit'
               ].part1,
             ),
-            order: 1,
-            sent: item.totalAmountBTC,
-            received: '-',
-            serviceFee: '-',
-            txHash: isOutgoing
-              ? item.createdAtTx.id
-              : item.bitcoinTxHash.substring(2), //TODO: remove after issue fixed on Graph
           },
         );
         return acc;

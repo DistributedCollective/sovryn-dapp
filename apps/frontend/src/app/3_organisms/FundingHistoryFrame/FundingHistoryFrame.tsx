@@ -29,7 +29,11 @@ import {
 } from '../../../utils/graphql/rsk/generated';
 import { useGetFundingHistory } from './hooks/useGetFundingHistory';
 import { FundingHistoryType } from './types';
-import { columnsConfig, generateRowTitle } from './utils';
+import {
+  columnsConfig,
+  generateRowTitle,
+  transactionTypeRenderer,
+} from './utils';
 
 const pageSize = DEFAULT_HISTORY_FRAME_PAGE_SIZE;
 
@@ -100,7 +104,6 @@ export const FundingHistoryFrame: FC = () => {
 
   useEffect(() => {
     if (account && funding) {
-      //split each row returned from the graph into 2 rows (part 1 and part 2)
       const data: FundingHistoryType[] = funding.reduce(
         (acc: FundingHistoryType[], item) => acc.concat(parseData(item)),
         [],
@@ -149,26 +152,17 @@ export const FundingHistoryFrame: FC = () => {
 
     const fundingData: FundingHistoryType[] = funding.reduce(
       (acc: FundingHistoryType[], item) => {
-        const isOutgoing = item.direction === BitcoinTransferDirection.Outgoing;
         const rows = parseData(item);
 
         // format labels for exports
         acc.push(
           {
             ...rows[0],
-            type: t(
-              translations.fundingHistory.transactionType[
-                isOutgoing ? 'withdraw' : 'deposit'
-              ].part2,
-            ),
+            type: transactionTypeRenderer(rows[0]),
           },
           {
             ...rows[1],
-            type: t(
-              translations.fundingHistory.transactionType[
-                isOutgoing ? 'withdraw' : 'deposit'
-              ].part1,
-            ),
+            type: transactionTypeRenderer(rows[1]),
           },
         );
         return acc;

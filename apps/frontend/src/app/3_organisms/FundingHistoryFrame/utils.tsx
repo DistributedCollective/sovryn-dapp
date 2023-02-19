@@ -26,7 +26,7 @@ export const generateRowTitle = (item: FundingHistoryType) => (
 const rskExplorerUrl = getRskExplorerUrl();
 const btcExplorerUrl = getBtcExplorerUrl();
 
-const transactionTypeRenderer = (item: FundingHistoryType) => {
+export const transactionTypeRenderer = (item: FundingHistoryType) => {
   const type = t(
     translations.fundingHistory.transactionType[
       item.type === BitcoinTransferDirection.Outgoing ? 'withdraw' : 'deposit'

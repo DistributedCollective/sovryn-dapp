@@ -28,7 +28,11 @@ import { useAccount } from '../../../hooks/useAccount';
 import { useMaintenance } from '../../../hooks/useMaintenance';
 import { translations } from '../../../locales/i18n';
 import { zeroClient } from '../../../utils/clients';
-import { Bitcoin, EXPORT_RECORD_LIMIT } from '../../../utils/constants';
+import {
+  Bitcoin,
+  DEFAULT_HISTORY_FRAME_PAGE_SIZE,
+  EXPORT_RECORD_LIMIT,
+} from '../../../utils/constants';
 import {
   StabilityDepositChange,
   StabilityDepositChange_Filter,
@@ -38,7 +42,7 @@ import { dateFormat } from '../../../utils/helpers';
 import { formatValue } from '../../../utils/math';
 import { useGetRewardHistory } from './hooks/useGetRewardHistory';
 
-const DEFAULT_PAGE_SIZE = 10;
+const pageSize = DEFAULT_HISTORY_FRAME_PAGE_SIZE;
 
 export const RewardHistory: FC = () => {
   const { t } = useTranslation();
@@ -46,7 +50,6 @@ export const RewardHistory: FC = () => {
   const { addNotification } = useNotificationContext();
 
   const [page, setPage] = useState(0);
-  const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE);
   const chain = chains.find(chain => chain.id === defaultChainId);
 
   const [orderOptions, setOrderOptions] = useState<OrderOptions>({
@@ -131,12 +134,12 @@ export const RewardHistory: FC = () => {
       }
       setPage(value);
     },
-    [page, data, pageSize],
+    [page, data],
   );
 
   const isNextButtonDisabled = useMemo(
     () => !loading && data?.length < pageSize,
-    [loading, data, pageSize],
+    [loading, data],
   );
 
   const exportData = useCallback(async () => {
@@ -188,11 +191,10 @@ export const RewardHistory: FC = () => {
 
   return (
     <>
-      <div className="flex flex-col items-start mb-7 hidden lg:inline-flex">
+      <div className="flex flex-row items-center gap-4 mb-7 hidden lg:inline-flex">
         <ExportCSV
           getData={exportData}
-          filename="transactions"
-          onExportEnd={() => setPageSize(DEFAULT_PAGE_SIZE)}
+          filename="rewards"
           disabled={!data || data.length === 0 || exportLocked}
         />
         {exportLocked && (

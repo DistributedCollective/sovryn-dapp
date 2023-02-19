@@ -177,10 +177,10 @@ export const CollateralSurplusHistoryFrame: FC = () => {
 
   return (
     <>
-      <div className="flex flex-col items-start mb-7 hidden lg:inline-flex">
+      <div className="flex flex-row items-center gap-4 mb-7 hidden lg:inline-flex">
         <ExportCSV
           getData={exportData}
-          filename="transactions"
+          filename="collateral surplus withdrawals"
           disabled={!data || data.length === 0 || exportLocked}
         />
         {exportLocked && (

@@ -61,14 +61,14 @@ export const CloseCreditLine: FC<CloseCreditLineProps> = ({
     [creditValue, availableBalance],
   );
 
-  const locked = useMemo(
+  const isInMaintenance = useMemo(
     () => closeLocked || (dllrLocked && creditToken === SupportedTokens.dllr),
     [closeLocked, dllrLocked, creditToken],
   );
 
   const submitButtonDisabled = useMemo(
-    () => hasError || locked,
-    [locked, hasError],
+    () => hasError || isInMaintenance,
+    [isInMaintenance, hasError],
   );
 
   const tokenOptions = useMemo(
@@ -161,7 +161,7 @@ export const CloseCreditLine: FC<CloseCreditLineProps> = ({
           dataAttribute="close-credit-line-confirm"
         />
       </div>
-      {locked && (
+      {isInMaintenance && (
         <ErrorBadge
           level={ErrorLevel.Warning}
           message={t(translations.maintenanceMode.featureDisabled)}

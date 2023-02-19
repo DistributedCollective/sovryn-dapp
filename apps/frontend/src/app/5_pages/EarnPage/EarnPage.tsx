@@ -231,15 +231,19 @@ const EarnPage: FC = () => {
     [amount, maximumAmount],
   );
 
-  const locked = useMemo(
+  const isInMaintenance = useMemo(
     () => actionLocked || (dllrLocked && token === SupportedTokens.dllr),
     [actionLocked, dllrLocked, token],
   );
 
   const isSubmitDisabled = useMemo(
     () =>
-      !account || !amount || Number(amount) <= 0 || !isValidAmount || locked,
-    [account, amount, isValidAmount, locked],
+      !account ||
+      !amount ||
+      Number(amount) <= 0 ||
+      !isValidAmount ||
+      isInMaintenance,
+    [account, amount, isValidAmount, isInMaintenance],
   );
 
   const tokenOptions = useMemo(
@@ -359,7 +363,7 @@ const EarnPage: FC = () => {
           disabled={isSubmitDisabled}
           dataAttribute="earn-submit"
         />
-        {locked && (
+        {isInMaintenance && (
           <ErrorBadge
             level={ErrorLevel.Warning}
             message={t(translations.maintenanceMode.featureDisabled)}

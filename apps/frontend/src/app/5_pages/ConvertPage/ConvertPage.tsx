@@ -147,7 +147,7 @@ const ConvertPage: FC = () => {
     destinationToken,
     amount,
   );
-  const locked = useMemo(
+  const isInMaintenance = useMemo(
     () =>
       convertLocked ||
       (dllrLocked &&
@@ -156,12 +156,12 @@ const ConvertPage: FC = () => {
   );
   const isSubmitDisabled = useMemo(
     () =>
-      locked ||
+      isInMaintenance ||
       !account ||
       !amount ||
       Number(amount) <= 0 ||
       Number(amount) > Number(maximumAmountToConvert),
-    [account, amount, maximumAmountToConvert, locked],
+    [account, amount, maximumAmountToConvert, isInMaintenance],
   );
 
   return (
@@ -271,7 +271,7 @@ const ConvertPage: FC = () => {
           dataAttribute="convert-confirm"
         />
 
-        {locked && (
+        {isInMaintenance && (
           <ErrorBadge
             level={ErrorLevel.Warning}
             message={t(translations.maintenanceMode.featureDisabled)}

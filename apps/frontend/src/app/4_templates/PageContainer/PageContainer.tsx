@@ -28,7 +28,9 @@ export const PageContainer: FC<PageContainerProps> = ({
       className={classNames('flex flex-col flex-grow', className)}
       {...applyDataAttr(dataAttribute)}
     >
-      {!dappLocked && (
+      {dappLocked ? (
+        <DappLocked />
+      ) : (
         <>
           <Header />
           <div className={classNames('my-2 px-4 flex-grow', contentClassName)}>
@@ -36,7 +38,6 @@ export const PageContainer: FC<PageContainerProps> = ({
           </div>
         </>
       )}
-      {dappLocked && <DappLocked />}
       <div className="shrink">
         <Footer />
       </div>

@@ -32,7 +32,10 @@ import { useBlockNumber } from '../../../hooks/useBlockNumber';
 import { useMaintenance } from '../../../hooks/useMaintenance';
 import { translations } from '../../../locales/i18n';
 import { zeroClient } from '../../../utils/clients';
-import { EXPORT_RECORD_LIMIT } from '../../../utils/constants';
+import {
+  DEFAULT_HISTORY_FRAME_PAGE_SIZE,
+  EXPORT_RECORD_LIMIT,
+} from '../../../utils/constants';
 import {
   StabilityDepositChange,
   StabilityDepositChange_Filter,
@@ -44,7 +47,7 @@ import { dateFormat } from '../../../utils/helpers';
 import { formatValue } from '../../../utils/math';
 import { useGetStabilityPoolHistory } from './hooks/useGetStabilityPoolHistory';
 
-const DEFAULT_PAGE_SIZE = 10;
+const pageSize = DEFAULT_HISTORY_FRAME_PAGE_SIZE;
 
 export const StabilityPoolHistoryFrame: FC = () => {
   const { t } = useTranslation();
@@ -55,7 +58,6 @@ export const StabilityPoolHistoryFrame: FC = () => {
   const { value: block } = useBlockNumber();
 
   const [page, setPage] = useState(0);
-  const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE);
   const chain = chains.find(chain => chain.id === defaultChainId);
 
   const [orderOptions, setOrderOptions] = useState<OrderOptions>({
@@ -257,12 +259,12 @@ export const StabilityPoolHistoryFrame: FC = () => {
       }
       setPage(value);
     },
-    [page, stabilityDeposits?.length, pageSize],
+    [page, stabilityDeposits.length],
   );
 
   const isNextButtonDisabled = useMemo(
     () => !loading && stabilityDeposits?.length < pageSize,
-    [loading, stabilityDeposits, pageSize],
+    [loading, stabilityDeposits],
   );
 
   const exportData = useCallback(async () => {
@@ -307,11 +309,10 @@ export const StabilityPoolHistoryFrame: FC = () => {
 
   return (
     <>
-      <div className="flex flex-col items-start mb-7 hidden lg:inline-flex">
+      <div className="flex flex-row items-center gap-4 mb-7 hidden lg:inline-flex">
         <ExportCSV
           getData={exportData}
-          filename="transactions"
-          onExportEnd={() => setPageSize(DEFAULT_PAGE_SIZE)}
+          filename="stability pool transactions"
           disabled={
             !stabilityDeposits || stabilityDeposits.length === 0 || exportLocked
           }

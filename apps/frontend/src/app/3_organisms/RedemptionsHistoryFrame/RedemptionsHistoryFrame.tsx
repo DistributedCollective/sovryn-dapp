@@ -262,10 +262,10 @@ export const RedemptionsHistoryFrame: FC = () => {
 
   return (
     <>
-      <div className="flex flex-col items-start mb-7 hidden lg:inline-flex">
+      <div className="flex flex-row items-center gap-4 mb-7 hidden lg:inline-flex">
         <ExportCSV
           getData={exportData}
-          filename="transactions"
+          filename="redemptions"
           disabled={!redemptions || redemptions.length === 0 || exportLocked}
         />
         {exportLocked && (

@@ -35,32 +35,49 @@ const transactionTypeRenderer = (item: FundingHistoryType) => {
   return type;
 };
 
-const renderSentAmount = (item: FundingHistoryType) => (
-  <AmountRenderer
-    value={item.sent}
-    suffix={Bitcoin}
-    precision={8}
-    dataAttribute="funding-history-sent"
-  />
-);
+const renderSentAmount = (item: FundingHistoryType) => {
+  if (item.sent === '-') {
+    return '⁠—';
+  }
 
-const renderReceivedAmount = (item: FundingHistoryType) => (
-  <AmountRenderer
-    value={item.received}
-    suffix={Bitcoin}
-    precision={8}
-    dataAttribute="funding-history-received"
-  />
-);
+  return (
+    <AmountRenderer
+      value={item.sent}
+      suffix={Bitcoin}
+      precision={8}
+      dataAttribute="funding-history-sent"
+    />
+  );
+};
+const renderReceivedAmount = (item: FundingHistoryType) => {
+  if (item.received === '-') {
+    return '⁠—';
+  }
 
-const renderServiceFee = (item: FundingHistoryType) => (
-  <AmountRenderer
-    value={item.serviceFee}
-    suffix={Bitcoin}
-    precision={8}
-    dataAttribute="funding-history-service-fee"
-  />
-);
+  return (
+    <AmountRenderer
+      value={item.received}
+      suffix={Bitcoin}
+      precision={8}
+      dataAttribute="funding-history-received"
+    />
+  );
+};
+
+const renderServiceFee = (item: FundingHistoryType) => {
+  if (item.serviceFee === '-') {
+    return '⁠—';
+  }
+
+  return (
+    <AmountRenderer
+      value={item.serviceFee}
+      suffix={Bitcoin}
+      precision={8}
+      dataAttribute="funding-history-service-fee"
+    />
+  );
+};
 
 const renderTXID = (item: FundingHistoryType) => {
   const href =

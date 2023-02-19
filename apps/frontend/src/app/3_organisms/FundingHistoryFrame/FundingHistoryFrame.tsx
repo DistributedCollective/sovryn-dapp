@@ -84,7 +84,9 @@ export const FundingHistoryFrame: FC = () => {
               sent: '-',
               received: item.amountBTC,
               serviceFee: item.feeBTC,
-              txHash: isOutgoing ? item.bitcoinTxHash : item.createdAtTx.id,
+              txHash: isOutgoing
+                ? item.bitcoinTxHash.substring(2) //TODO: remove after issue fixed on Graph
+                : item.createdAtTx.id,
             },
             {
               timestamp: item.createdAtTimestamp,
@@ -93,7 +95,9 @@ export const FundingHistoryFrame: FC = () => {
               sent: item.totalAmountBTC,
               received: '-',
               serviceFee: '-',
-              txHash: isOutgoing ? item.createdAtTx.id : item.bitcoinTxHash,
+              txHash: isOutgoing
+                ? item.createdAtTx.id
+                : item.bitcoinTxHash.substring(2), //TODO: remove after issue fixed on Graph
             },
           );
           return acc;
@@ -157,7 +161,9 @@ export const FundingHistoryFrame: FC = () => {
             sent: '-',
             received: item.amountBTC,
             serviceFee: item.feeBTC,
-            txHash: isOutgoing ? item.bitcoinTxHash : item.createdAtTx.id,
+            txHash: isOutgoing
+              ? item.bitcoinTxHash.substring(2) //TODO: remove after issue fixed on Graph
+              : item.createdAtTx.id,
           },
           {
             timestamp: item.createdAtTimestamp,
@@ -170,7 +176,9 @@ export const FundingHistoryFrame: FC = () => {
             sent: item.totalAmountBTC,
             received: '-',
             serviceFee: '-',
-            txHash: isOutgoing ? item.createdAtTx.id : item.bitcoinTxHash,
+            txHash: isOutgoing
+              ? item.createdAtTx.id
+              : item.bitcoinTxHash.substring(2), //TODO: remove after issue fixed on Graph
           },
         );
         return acc;

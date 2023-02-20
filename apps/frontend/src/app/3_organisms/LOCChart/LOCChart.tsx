@@ -188,9 +188,10 @@ export const LOCChart: FC<LOCChartProps> = ({ isDefaultView = false }) => {
       if (index === -1) {
         return;
       }
-      const halfCount = Math.floor((trovesCountToShow - 1) / 2);
+
+      const centerIndex = (trovesCountToShow - 1) / 2;
       const shiftTroves =
-        index > halfCount ? index - halfCount : halfCount - index - 1;
+        index > centerIndex ? index - centerIndex : centerIndex - index - 1;
 
       //setting the start point for the chart axis X
       setStartAxisXCount(shiftTroves);

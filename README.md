@@ -107,7 +107,7 @@ All UI components for general use are located in `@sovryn/ui` package. Each comp
 
 ### Storybook
 
-We use Storybook to provide API style docs and examples for our UI components. Any new components should have stories added to them that include all available properties that can be passed in, and some specific examples for major common variations. For specific implementation examples, you can search the codebase for files named `index.stories.tsx`.
+We use Storybook to provide API style docs and examples for our UI components. Any new components should have stories added to them that include all available properties that can be passed in, and some specific examples for major common variations. For specific implementation examples, you can search the codebase for filenames ending in `.stories.tsx`.
 
 To test components via Storybook on your local machine:
 

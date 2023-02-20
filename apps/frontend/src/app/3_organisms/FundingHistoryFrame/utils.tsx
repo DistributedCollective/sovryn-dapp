@@ -26,11 +26,12 @@ export const generateRowTitle = (item: FundingHistoryType) => (
 const rskExplorerUrl = getRskExplorerUrl();
 const btcExplorerUrl = getBtcExplorerUrl();
 
-const transactionTypeRenderer = (item: FundingHistoryType) => {
-  const type =
-    item.type === BitcoinTransferDirection.Incoming
-      ? t(translations.fundingHistory.transactionType.part1)
-      : t(translations.fundingHistory.transactionType.part2);
+export const transactionTypeRenderer = (item: FundingHistoryType) => {
+  const type = t(
+    translations.fundingHistory.transactionType[
+      item.type === BitcoinTransferDirection.Outgoing ? 'withdraw' : 'deposit'
+    ][`part${item.order}`],
+  );
   return type;
 };
 
@@ -80,7 +81,8 @@ const renderServiceFee = (item: FundingHistoryType) => {
 
 const renderTXID = (item: FundingHistoryType) => {
   const href =
-    item.type === BitcoinTransferDirection.Outgoing
+    (item.type === BitcoinTransferDirection.Outgoing && item.order === 1) ||
+    (item.type === BitcoinTransferDirection.Incoming && item.order === 2)
       ? `${rskExplorerUrl}/tx/${item.txHash}`
       : `${btcExplorerUrl}/tx/${item.txHash}`;
 

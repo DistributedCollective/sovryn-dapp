@@ -29,9 +29,42 @@ import {
 } from '../../../utils/graphql/rsk/generated';
 import { useGetFundingHistory } from './hooks/useGetFundingHistory';
 import { FundingHistoryType } from './types';
-import { columnsConfig, generateRowTitle } from './utils';
+import {
+  columnsConfig,
+  generateRowTitle,
+  transactionTypeRenderer,
+} from './utils';
 
 const pageSize = DEFAULT_HISTORY_FRAME_PAGE_SIZE;
+
+//split each row returned from the graph into 2 rows (part 1 and part 2)
+const parseData = item => {
+  const isOutgoing = item.direction === BitcoinTransferDirection.Outgoing;
+  return [
+    {
+      timestamp: item.createdAtTimestamp,
+      type: item.direction,
+      order: 2,
+      sent: '-',
+      received: item.amountBTC,
+      serviceFee: item.feeBTC,
+      txHash: isOutgoing
+        ? item.bitcoinTxHash.substring(2) //TODO: remove after issue fixed on Graph
+        : item.createdAtTx.id,
+    },
+    {
+      timestamp: item.createdAtTimestamp,
+      type: item.direction,
+      order: 1,
+      sent: item.totalAmountBTC,
+      received: '-',
+      serviceFee: '-',
+      txHash: isOutgoing
+        ? item.createdAtTx.id
+        : item.bitcoinTxHash.substring(2), //TODO: remove after issue fixed on Graph
+    },
+  ];
+};
 
 export const FundingHistoryFrame: FC = () => {
   const { t } = useTranslation();
@@ -45,7 +78,7 @@ export const FundingHistoryFrame: FC = () => {
   const [page, setPage] = useState(0);
 
   const [orderOptions, setOrderOptions] = useState<OrderOptions>({
-    orderBy: 'updatedAtTimestamp',
+    orderBy: 'createdAtTimestamp',
     orderDirection: OrderDirection.Desc,
   });
 
@@ -55,8 +88,6 @@ export const FundingHistoryFrame: FC = () => {
     page,
     orderOptions,
   );
-
-  console.log(data);
 
   useEffect(() => {
     refetch();
@@ -73,30 +104,8 @@ export const FundingHistoryFrame: FC = () => {
 
   useEffect(() => {
     if (account && funding) {
-      //split each row returned from the graph into 2 rows (part 1 and part 2)
       const data: FundingHistoryType[] = funding.reduce(
-        (acc: FundingHistoryType[], item) => {
-          const row1 = {
-            timestamp: item.createdAtTimestamp,
-            type: BitcoinTransferDirection.Incoming,
-            sent: item.totalAmountBTC,
-            received: '-',
-            serviceFee: '-',
-            txHash: item.bitcoinTxHash,
-          };
-
-          const row2 = {
-            timestamp: item.createdAtTimestamp,
-            type: BitcoinTransferDirection.Outgoing,
-            sent: '-',
-            received: item.totalAmountBTC,
-            serviceFee: item.feeBTC,
-            txHash: item.createdAtTx.id,
-          };
-
-          acc.push(row2, row1);
-          return acc;
-        },
+        (acc: FundingHistoryType[], item) => acc.concat(parseData(item)),
         [],
       );
       setFundingHistory(data);
@@ -140,28 +149,22 @@ export const FundingHistoryFrame: FC = () => {
         id: nanoid(),
       });
     }
-    //split each row returned from the graph into 2 rows (part 1 and part 2)
+
     const fundingData: FundingHistoryType[] = funding.reduce(
       (acc: FundingHistoryType[], item) => {
-        const row1 = {
-          timestamp: item.createdAtTimestamp,
-          type: t(translations.fundingHistory.transactionType.part1),
-          sent: item.totalAmountBTC,
-          received: '-',
-          serviceFee: '-',
-          txHash: item.bitcoinTxHash,
-        };
+        const rows = parseData(item);
 
-        const row2 = {
-          timestamp: item.createdAtTimestamp,
-          type: t(translations.fundingHistory.transactionType.part2),
-          sent: '-',
-          received: item.totalAmountBTC,
-          serviceFee: item.feeBTC,
-          txHash: item.createdAtTx.id,
-        };
-
-        acc.push(row2, row1);
+        // format labels for exports
+        acc.push(
+          {
+            ...rows[0],
+            type: transactionTypeRenderer(rows[0]),
+          },
+          {
+            ...rows[1],
+            type: transactionTypeRenderer(rows[1]),
+          },
+        );
         return acc;
       },
       [],

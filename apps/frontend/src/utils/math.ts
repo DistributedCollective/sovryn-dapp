@@ -93,3 +93,20 @@ export const parseUnitValue = (unitName: BigNumberish): number => {
   }
   return Number(unitName);
 };
+
+export const getThousandSeparator = (value: string, precision: number) => {
+  const formattedNumber = Number(value).toLocaleString(navigator.language, {
+    maximumFractionDigits: precision,
+  });
+  const thousandSeparator = formattedNumber.match(/[^0-9]/g)?.[0] ?? '.';
+  return thousandSeparator;
+};
+
+// get the decimal part length of the number
+export const decimalPartLength = (value: string): number => {
+  const decimalIndex = value.indexOf('.');
+  if (decimalIndex === -1) {
+    return 0;
+  }
+  return value.substring(decimalIndex + 1).length;
+};

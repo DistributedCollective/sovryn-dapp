@@ -15,7 +15,11 @@ import {
 
 import { useNotificationContext } from '../../../contexts/NotificationContext';
 import { translations } from '../../../locales/i18n';
-import { formatValue } from '../../../utils/math';
+import {
+  decimalPartLength,
+  formatValue,
+  getThousandSeparator,
+} from '../../../utils/math';
 
 type AmountRendererProps = {
   value: string | number;
@@ -52,30 +56,14 @@ export const AmountRenderer: FC<AmountRendererProps> = ({
     [precision, value],
   );
 
+  const decimals = useMemo(() => {
+    const decimalCount = decimalPartLength(value.toString());
+    return decimalCount > precision ? precision : decimalCount;
+  }, [value, precision]);
+
   const tooltipDisabled = useMemo(
-    () => Number(formattedValue.split(',').join('')) === Number(value),
-    [formattedValue, value],
-  );
-
-  const countDecimalPlaces = useCallback((num, decimals) => {
-    let str = (+num).toFixed(decimals); //  Round the number to {decimals} decimal count
-    while (str.charAt(str.length - 1) === '0') {
-      str = str.slice(0, -1); // remove non-significant zeros
-    }
-    if (str.charAt(str.length - 1) === '.') {
-      str = str.slice(0, -1); // remove a dot if it is at the end of a string
-    }
-    const decimalPart = str.split('.')[1]; // get the decimal part of the number
-    const decimalCount = decimalPart ? decimalPart.length : 0; // count the number of decimals
-    return { number: str, decimalCount: decimalCount };
-  }, []);
-
-  const decimals = useMemo(
-    () =>
-      countDecimalPlaces(value, precision).decimalCount > 0
-        ? countDecimalPlaces(value, precision).decimalCount
-        : 0,
-    [value, countDecimalPlaces, precision],
+    () => precision >= decimalPartLength(value.toString()),
+    [precision, value],
   );
 
   return (
@@ -104,9 +92,8 @@ export const AmountRenderer: FC<AmountRendererProps> = ({
             start={0}
             end={Number(value)}
             duration={0.7}
-            separator=","
+            separator={getThousandSeparator(value.toString(), precision)}
             decimals={decimals}
-            decimal="."
             prefix={!tooltipDisabled ? '~' : ''}
             suffix={` ${suffix}`}
           />

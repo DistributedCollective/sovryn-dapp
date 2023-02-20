@@ -12,13 +12,13 @@
 
 ## What's inside?
 
-This is a turborepo for the Sovryn dApp and associated packages that are used to construct the user interface.
+This is a turborepo for the Sovryn dapp and it's associated packages.
 
 ### Apps and Packages
 
-- `frontend`: a react app
-- `@sovryn/ui`: a stub React component library shared by our apps
-- `@sovryn/contracts`: smart contract definition including ABIs, token details, contract addresses for main/testnet environments, and utilty functions for interacting with Sovryn smart contracts
+- `frontend`: Sovryn dapp Frontend
+- `@sovryn/ui`: Sovryn UI Library. Suite of React Typescript UI components that can be used in any dapp that wants to adhere to Sovryn UX
+- `@sovryn/contracts`: smart contract definition including ABIs, token details, contract addresses for all chain environments, and utilty functions for interacting with Sovryn smart contracts. Further details on contracts used here can be found in the various [DistributedCollective repositories](https://github.com/DistributedCollective).
 - `@sovryn/ethers-provider`: helper functions for accessing ethers static provider
 - `@sovryn/eslint-config-custom`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
 - `@sovryn/tailwindcss-config`: `tailwindcss` configuration
@@ -101,9 +101,9 @@ The `develop` branch acts as a testnet containing the latest changes. The `main`
 
 Ask in the `#technical-discussion` channel of the Sovryn Discord server when unsure if the feature qualifies as major or minor.
 
-### Working With UI
+### Working With Sovryn UI LIbrary
 
-All generic UI components located in `@sovryn/ui` package. Each component must include a Storybook example and Jest tests that verify functionality is working as intended. Figma designs for all components, and general design guidelines that we followed when constructing this library, can be found [here](https://www.figma.com/file/Ig2ZfR16Svs8In7yibukrO/Sovryn-UI-Library).
+All UI components for general use are located in `@sovryn/ui` package. Each component must include a Storybook example and Jest tests that verify functionality is working as intended. Components should not include implementation specific details (e.g. contract addresses, complex state, hardcoded text), and instead expose these via component props. Figma designs for all components, and general design guidelines that we followed when constructing this library, can be found [here](https://www.figma.com/file/Ig2ZfR16Svs8In7yibukrO/Sovryn-UI-Library).
 
 ### Storybook
 
@@ -121,7 +121,7 @@ To test components on a deployed PR link, look for `sovryn-storybook` comment in
 
 ## Security Vulnerabilities
 
-If you discover a security vulnerability within DApp, please submit your bug report to [Immunefi](https://immunefi.com/bounty/sovryn/) (there are bounty rewards). All security vulnerabilities will be promptly addressed.
+If you discover a security vulnerability within the dapp code in `apps/frontend`, please submit your bug report to [Immunefi](https://immunefi.com/bounty/sovryn/) (there are bounty rewards). All security vulnerabilities will be promptly addressed.
 
 ## Code of Conduct
 
@@ -129,4 +129,4 @@ This project has adopted the [Microsoft Open Source Code of Conduct](https://ope
 
 ## Licence
 
-The Sovryn DApp is open-sourced software licensed under the [MIT license](LICENSE).
+The Sovryn dapp is open-sourced software licensed under the [MIT license](LICENSE).

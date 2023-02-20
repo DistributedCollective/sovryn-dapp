@@ -57,6 +57,27 @@ export const AmountRenderer: FC<AmountRendererProps> = ({
     [formattedValue, value],
   );
 
+  const countDecimalPlaces = useCallback((num, decimals) => {
+    let str = (+num).toFixed(decimals); //  Round the number to {decimals} decimal count
+    while (str.charAt(str.length - 1) === '0') {
+      str = str.slice(0, -1); // remove non-significant zeros
+    }
+    if (str.charAt(str.length - 1) === '.') {
+      str = str.slice(0, -1); // remove a dot if it is at the end of a string
+    }
+    const decimalPart = str.split('.')[1]; // get the decimal part of the number
+    const decimalCount = decimalPart ? decimalPart.length : 0; // count the number of decimals
+    return { number: str, decimalCount: decimalCount };
+  }, []);
+
+  const decimals = useMemo(
+    () =>
+      countDecimalPlaces(value, precision).decimalCount > 0
+        ? countDecimalPlaces(value, precision).decimalCount
+        : 0,
+    [value, countDecimalPlaces, precision],
+  );
+
   return (
     <Tooltip
       content={
@@ -79,13 +100,15 @@ export const AmountRenderer: FC<AmountRendererProps> = ({
     >
       {isAnimated ? (
         <div>
-          {!tooltipDisabled ? '~' : ''}
           <CountUp
+            start={0}
+            end={Number(value)}
             duration={0.7}
-            decimals={precision}
             separator=","
+            decimals={decimals}
+            decimal="."
+            prefix={!tooltipDisabled ? '~' : ''}
             suffix={` ${suffix}`}
-            end={Number(formattedValue)}
           />
         </div>
       ) : (

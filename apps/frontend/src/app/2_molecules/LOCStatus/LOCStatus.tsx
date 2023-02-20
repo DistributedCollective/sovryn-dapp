@@ -65,6 +65,7 @@ export const LOCStatus: FC<LOCStatusProps> = ({
                   suffix={Bitcoin}
                   precision={BTC_RENDER_PRECISION}
                   dataAttribute="LOC-collateral"
+                  isAnimated
                 />
               }
             />

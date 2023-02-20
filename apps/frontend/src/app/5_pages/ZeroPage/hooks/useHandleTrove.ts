@@ -2,13 +2,14 @@ import { Decimalish, TroveAdjustmentParams } from '@sovryn-zero/lib-base';
 
 import { useCallback } from 'react';
 
-import { Contract } from 'ethers';
+import { Contract, ethers } from 'ethers';
 import { useTranslation } from 'react-i18next';
 
 import { getContract } from '@sovryn/contracts';
 import { SupportedTokens, getTokenContract } from '@sovryn/contracts';
 
 import {
+  Transaction,
   TransactionReceiptStatus,
   TransactionType,
 } from '../../../3_organisms/TransactionStepDialog/TransactionStepDialog.types';
@@ -23,7 +24,7 @@ import {
   GAS_LIMIT_CLOSE_TROVE,
   GAS_LIMIT_OPEN_TROVE,
 } from '../../../../utils/constants';
-import { adjustNueTrove, adjustTrove, openTrove } from '../utils/trove-manager';
+import { adjustTrove, openTrove } from '../utils/trove-manager';
 import { isTransactionRequest } from '../../../3_organisms/TransactionStepDialog/helpers';
 import { loadLiquity } from '../../../../utils/liquity';
 import { toWei } from '../../../../utils/math';
@@ -64,39 +65,96 @@ export const useHandleTrove = (hasLoc: boolean, onComplete: () => void) => {
             params.withdrawCollateral = value.withdrawCollateral;
           }
 
-          if (value.token === SupportedTokens.dllr) {
-            const adjustedTrove = await adjustNueTrove(account, params, signer);
-            setTransactions(
-              adjustedTrove.map(tx => ({
-                title: tx.title,
-                request: {
-                  type: TransactionType.signTransaction,
-                  contract: tx.contract ?? contract,
-                  fnName: tx.fn,
-                  args: tx.args,
-                  value: tx.value,
-                  gasLimit: tx.gas,
-                },
-                onComplete,
-              })),
+          const isDllr = value.token === SupportedTokens.dllr;
+          const transactions: Transaction[] = [];
+
+          if (isDllr && params.repayZUSD) {
+            const { address: tokenAddress } = await getTokenContract(
+              SupportedTokens.dllr,
+              getRskChainId(),
             );
-          } else {
-            const adjustedTrove = await adjustTrove(account, params);
-            setTransactions([
-              {
-                title: t(translations.zeroPage.tx.adjustTrove),
-                request: {
-                  type: TransactionType.signTransaction,
-                  contract,
-                  fnName: adjustedTrove.fn,
-                  args: adjustedTrove.args,
-                  value: adjustedTrove.value,
-                  gasLimit: GAS_LIMIT_ADJUST_TROVE,
-                },
-                onComplete,
+            transactions.push({
+              title: t(translations.zeroPage.tx.permitDLLR),
+              request: {
+                type: TransactionType.signPermit,
+                signer,
+                token: tokenAddress,
+                owner: account,
+                spender: address,
+                value: toWei(params.repayZUSD.toString()).toString(),
+                deadline: dayjs().add(1, 'hour').unix(),
               },
-            ]);
+            });
           }
+
+          const adjustedTrove = await adjustTrove(value.token, account, params);
+          const defaultDllPermit = {
+            deadline: 0,
+            v: 0,
+            r: ethers.constants.HashZero,
+            s: ethers.constants.HashZero,
+          };
+
+          transactions.push({
+            title: t(translations.zeroPage.tx.adjustTrove),
+            request: {
+              type: TransactionType.signTransaction,
+              contract,
+              fnName: adjustedTrove.fn,
+              args: isDllr
+                ? [...adjustedTrove.args, defaultDllPermit]
+                : adjustedTrove.args,
+              value: adjustedTrove.value,
+              gasLimit: GAS_LIMIT_ADJUST_TROVE,
+            },
+            onComplete,
+            updateHandler: (request, receipts) => {
+              if (
+                receipts.length === 2 &&
+                receipts[0].status === TransactionReceiptStatus.success &&
+                isTransactionRequest(request)
+              ) {
+                request.args = [...adjustedTrove.args, receipts[0].response];
+              }
+              return request;
+            },
+          });
+
+          setTransactions(transactions);
+
+          // if (value.token === SupportedTokens.dllr) {
+          //   const adjustedTrove = await adjustNueTrove(account, params, signer);
+          //   setTransactions(
+          //     adjustedTrove.map(tx => ({
+          //       title: tx.title,
+          //       request: {
+          //         type: TransactionType.signTransaction,
+          //         contract: tx.contract ?? contract,
+          //         fnName: tx.fn,
+          //         args: tx.args,
+          //         value: tx.value,
+          //         gasLimit: tx.gas,
+          //       },
+          //       onComplete,
+          //     })),
+          //   );
+          // } else {
+          //   const adjustedTrove = await adjustTrove(account, params);
+          //   setTransactions([
+          // {
+          //   title: t(translations.zeroPage.tx.adjustTrove),
+          //   request: {
+          //     type: TransactionType.signTransaction,
+          //     contract,
+          //     fnName: adjustedTrove.fn,
+          //     args: adjustedTrove.args,
+          //     value: adjustedTrove.value,
+          //     gasLimit: GAS_LIMIT_ADJUST_TROVE,
+          //   },
+          //   onComplete,
+          // },
+          //   ]);
+          // }
           setIsOpen(true);
           setTitle(t(translations.zeroPage.tx.adjustTitle));
         } else {

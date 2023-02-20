@@ -113,6 +113,9 @@ export const getIOSInputEventHandlers = () => {
     onTouchStart: e => {
       e.currentTarget.style.fontSize = '1rem';
     },
+    onTouchMove: e => {
+      e.currentTarget.style.fontSize = '1rem';
+    },
     onPointerEnter: e => {
       e.currentTarget.style.fontSize = '1rem';
     },

@@ -165,7 +165,9 @@ export const LOCChart: FC<LOCChartProps> = ({ isDefaultView = false }) => {
           ),
         };
       });
+
       setData(updatedTroves);
+
       setDataToShow(updatedTroves.slice(0, trovesCountToShow - 1));
     }
   }, [
@@ -174,35 +176,31 @@ export const LOCChart: FC<LOCChartProps> = ({ isDefaultView = false }) => {
     globalsEntity,
     price,
     account,
+    loadingUserOpenTrove,
     trovesCountToShow,
     isDefaultView,
   ]);
 
   useEffect(() => {
-    if (!loadingUserOpenTrove && hasUserOpenTrove) {
+    if (!loadingUserOpenTrove && hasUserOpenTrove && data && troves) {
       const isUserTrove = (trove: TroveData) => trove.id === account;
       const index = data.findIndex(isUserTrove);
+      if (index === -1) {
+        return;
+      }
+      const halfCount = Math.floor((trovesCountToShow - 1) / 2);
+      const shiftTroves =
+        index > halfCount ? index - halfCount : halfCount - index - 1;
 
       //setting the start point for the chart axis X
-      setStartAxisXCount(
-        isMobile
-          ? index - (trovesCountToShow - 1) / 2
-          : index - (trovesCountToShow - 1) / 2,
-      );
+      setStartAxisXCount(shiftTroves);
 
       if (lowestTroves.length === 0) {
         setLowestTroves(data.slice(0, index));
       }
 
       //cutting an array up to 21 elements, 10 from the left and 10 from the right, starting from user trove index
-      const slicedData = data
-        .slice()
-        .splice(
-          isMobile
-            ? index - (trovesCountToShow - 1) / 2
-            : index - (trovesCountToShow - 1) / 2,
-          trovesCountToShow,
-        );
+      const slicedData = data.slice().splice(shiftTroves, trovesCountToShow);
       setDataToShow(slicedData);
       setUserCollateralRatio(data[index].collateralRatio);
       setActiveBar(true);
@@ -211,11 +209,11 @@ export const LOCChart: FC<LOCChartProps> = ({ isDefaultView = false }) => {
     hasUserOpenTrove,
     loadingUserOpenTrove,
     data,
+    troves,
     account,
     lowestTroves,
     userCollateralRatio,
     activeBar,
-    isMobile,
     trovesCountToShow,
   ]);
 

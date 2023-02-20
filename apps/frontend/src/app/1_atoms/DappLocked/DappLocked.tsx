@@ -14,7 +14,7 @@ export const DappLocked: FC = () => (
         className="w-8 mx-auto mb-5"
         dataAttribute="header-logo"
       />
-      <p className="mb-0 max-w-xs mx-auto text-center">
+      <p className="mb-0 max-w-xs mx-auto text-center text-sm">
         <Trans i18nKey={translations.maintenanceMode.fullD2} />
       </p>
     </div>

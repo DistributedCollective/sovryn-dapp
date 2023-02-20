@@ -493,7 +493,7 @@
     },
     "maintenanceMode": {
         "fastBtc": "Fast BTC is locked",
-        "fullD2": "Sovryn is in maintenance mode.<br/>Follow the social channels linked in the footer for further updates.",
+        "fullD2": "Sovryn is in maintenance mode. Follow the social channels linked in the footer for further updates.",
         "featureDisabled": "This feature is currently disabled"
     }
 }

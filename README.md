@@ -16,7 +16,7 @@ This is a turborepo for the Sovryn dapp and it's associated packages.
 
 ### Apps and Packages
 
-- `frontend`: Sovryn dapp Frontend
+- `frontend`: Sovryn dapp Frontend. Utilizes other packages in this repo and [sovryn-onboard](https://github.com/DistributedCollective/sovryn-onboard) to provide Web3 interactions
 - `@sovryn/ui`: Sovryn UI Library. Suite of React Typescript UI components that can be used in any dapp that wants to adhere to Sovryn UX
 - `@sovryn/contracts`: smart contract definition including ABIs, token details, contract addresses for all chain environments, and utilty functions for interacting with Sovryn smart contracts. Further details on contracts used here can be found in the various [DistributedCollective repositories](https://github.com/DistributedCollective).
 - `@sovryn/ethers-provider`: helper functions for accessing ethers static provider

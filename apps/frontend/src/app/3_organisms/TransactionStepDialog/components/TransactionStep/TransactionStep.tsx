@@ -242,7 +242,7 @@ export const TransactionStep: FC<TransactionStepProps> = ({
                   value={
                     <TransactionId
                       href={`${chain?.blockExplorerUrl}/tx/${receipt.response}`}
-                      value={receipt.response}
+                      value={receipt.response as string}
                     />
                   }
                 />

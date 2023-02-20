@@ -6,9 +6,12 @@ import { Contract } from 'ethers';
 import { useTranslation } from 'react-i18next';
 
 import { getContract } from '@sovryn/contracts';
-import { SupportedTokens } from '@sovryn/contracts';
+import { SupportedTokens, getTokenContract } from '@sovryn/contracts';
 
-import { TransactionType } from '../../../3_organisms/TransactionStepDialog/TransactionStepDialog.types';
+import {
+  TransactionReceiptStatus,
+  TransactionType,
+} from '../../../3_organisms/TransactionStepDialog/TransactionStepDialog.types';
 import { CreditLineSubmitValue } from '../../../3_organisms/ZeroLocForm/types';
 import { useTransactionContext } from '../../../../contexts/TransactionContext';
 import { useAccount } from '../../../../hooks/useAccount';
@@ -16,10 +19,15 @@ import { translations } from '../../../../locales/i18n';
 import { getRskChainId } from '../../../../utils/chain';
 import {
   GAS_LIMIT_ADJUST_TROVE,
+  GAS_LIMIT_CLOSE_DLLR_TROVE,
   GAS_LIMIT_CLOSE_TROVE,
   GAS_LIMIT_OPEN_TROVE,
 } from '../../../../utils/constants';
 import { adjustNueTrove, adjustTrove, openTrove } from '../utils/trove-manager';
+import { isTransactionRequest } from '../../../3_organisms/TransactionStepDialog/helpers';
+import { loadLiquity } from '../../../../utils/liquity';
+import { toWei } from '../../../../utils/math';
+import dayjs from 'dayjs';
 
 export const useHandleTrove = (hasLoc: boolean, onComplete: () => void) => {
   const { signer, account } = useAccount();
@@ -127,33 +135,86 @@ export const useHandleTrove = (hasLoc: boolean, onComplete: () => void) => {
     ],
   );
 
-  const handleTroveClose = useCallback(async () => {
-    if (signer) {
-      const { address, abi } = await getContract(
-        'borrowerOperations',
-        'zero',
-        getRskChainId(),
-      );
+  const handleTroveClose = useCallback(
+    async (token: SupportedTokens) => {
+      if (signer) {
+        const { address, abi } = await getContract(
+          'borrowerOperations',
+          'zero',
+          getRskChainId(),
+        );
+        const contract = new Contract(address, abi, signer);
 
-      const contract = new Contract(address, abi, signer);
+        if (token === SupportedTokens.dllr) {
+          const { address: tokenAddress } = await getTokenContract(
+            SupportedTokens.dllr,
+            getRskChainId(),
+          );
 
-      setTransactions([
-        {
-          title: t(translations.zeroPage.tx.closeTrove),
-          request: {
-            type: TransactionType.signTransaction,
-            contract,
-            fnName: 'closeTrove',
-            args: [],
-            gasLimit: GAS_LIMIT_CLOSE_TROVE,
-          },
-          onComplete,
-        },
-      ]);
-      setIsOpen(true);
-      setTitle(t(translations.zeroPage.tx.closeTitle));
-    }
-  }, [onComplete, setIsOpen, setTitle, setTransactions, signer, t]);
+          const { liquity } = await loadLiquity();
+          const value = await liquity
+            .getTrove(account)
+            .then(trove => toWei(trove.netDebt.toString()).toString());
+
+          setTransactions([
+            {
+              title: t(translations.zeroPage.tx.permitDLLR),
+              request: {
+                type: TransactionType.signPermit,
+                signer,
+                token: tokenAddress,
+                owner: account,
+                spender: address,
+                value,
+                deadline: dayjs().add(1, 'hour').unix(),
+              },
+            },
+            {
+              title: t(translations.zeroPage.tx.closeTroveDLLR),
+              request: {
+                type: TransactionType.signTransaction,
+                contract,
+                fnName: 'closeNueTrove',
+                args: [],
+                gasLimit: GAS_LIMIT_CLOSE_DLLR_TROVE,
+              },
+              onComplete,
+              updateHandler: (request, receipts) => {
+                if (
+                  receipts.length > 0 &&
+                  receipts[0].status === TransactionReceiptStatus.success &&
+                  isTransactionRequest(request)
+                ) {
+                  request.args = [receipts[0].response];
+                }
+                return request;
+              },
+            },
+          ]);
+        } else if (token === SupportedTokens.zusd) {
+          setTransactions([
+            {
+              title: t(translations.zeroPage.tx.closeTrove),
+              request: {
+                type: TransactionType.signTransaction,
+                contract,
+                fnName: 'closeTrove',
+                args: [],
+                gasLimit: GAS_LIMIT_CLOSE_TROVE,
+              },
+              onComplete,
+            },
+          ]);
+        } else {
+          throw new Error('Unsupported token');
+        }
+
+        setIsOpen(true);
+        setTitle(t(translations.zeroPage.tx.closeTitle));
+      }
+    },
+    [account, onComplete, setIsOpen, setTitle, setTransactions, signer, t],
+  );
 
   return { handleTroveSubmit, handleTroveClose };
 };

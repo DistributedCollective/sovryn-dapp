@@ -26,7 +26,7 @@ type CloseCreditLineProps = {
   collateralValue: string;
   creditValue: string;
   availableBalance: string;
-  onSubmit: () => void;
+  onSubmit: (token: SupportedTokens) => void;
 };
 
 export const CloseCreditLine: FC<CloseCreditLineProps> = ({
@@ -43,6 +43,11 @@ export const CloseCreditLine: FC<CloseCreditLineProps> = ({
   const collateralValueRenderer = useCallback(
     (value: number) => `${formatValue(value, 6)} ${Bitcoin}`,
     [],
+  );
+
+  const handleSubmit = useCallback(
+    () => onSubmit(creditToken),
+    [creditToken, onSubmit],
   );
 
   const insufficientBalance = useMemo(() => {
@@ -140,7 +145,7 @@ export const CloseCreditLine: FC<CloseCreditLineProps> = ({
           text={t(translations.common.buttons.confirm)}
           className="w-full"
           disabled={hasError}
-          onClick={onSubmit}
+          onClick={handleSubmit}
           dataAttribute="close-credit-line-confirm"
         />
       </div>

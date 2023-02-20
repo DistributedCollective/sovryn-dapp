@@ -267,7 +267,9 @@
         },
         "tx": {
             "adjustTrove": "Adjust",
-            "closeTrove": "Close",
+            "permitDLLR": "Allow spending DLLR",
+            "closeTrove": "Close using ZUSD",
+            "closeTroveDLLR": "Close using DLLR",
             "openTrove": "Open",
             "adjustTitle": "Adjust line of credit",
             "closeTitle": "Close line of credit",

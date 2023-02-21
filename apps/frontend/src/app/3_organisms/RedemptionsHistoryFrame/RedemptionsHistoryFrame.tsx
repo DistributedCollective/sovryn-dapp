@@ -24,6 +24,7 @@ import { ExportCSV } from '../../2_molecules/ExportCSV/ExportCSV';
 import { useNotificationContext } from '../../../contexts/NotificationContext';
 import { useAccount } from '../../../hooks/useAccount';
 import { useBlockNumber } from '../../../hooks/useBlockNumber';
+import { useCopyAddress } from '../../../hooks/useCopyAddress';
 import { translations } from '../../../locales/i18n';
 import {
   Bitcoin,
@@ -45,7 +46,7 @@ export const RedemptionsHistoryFrame: FC = () => {
   const { t } = useTranslation();
   const { account } = useAccount();
   const { addNotification } = useNotificationContext();
-
+  const onCopyAddress = useCopyAddress();
   const { value: block } = useBlockNumber();
 
   const [page, setPage] = useState(0);
@@ -195,12 +196,20 @@ export const RedemptionsHistoryFrame: FC = () => {
           <TransactionId
             href={`${chain?.blockExplorerUrl}/tx/${item.transaction.id}`}
             value={item.transaction.id}
-            {...applyDataAttr('redemption-history-address-id')}
+            dataAttribute="redemption-history-address-id"
+            onCopyAddress={onCopyAddress}
           />
         ),
       },
     ],
-    [t, chain, renderZUSDRedeemed, renderRBTCReceived, renderRedemptionFee],
+    [
+      t,
+      chain,
+      renderZUSDRedeemed,
+      renderRBTCReceived,
+      renderRedemptionFee,
+      onCopyAddress,
+    ],
   );
 
   const onPageChange = useCallback(

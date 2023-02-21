@@ -15,6 +15,7 @@ import {
 
 import { StatusIcon } from '../../../../../2_molecules/StatusIcon/StatusIcon';
 import { useAccount } from '../../../../../../hooks/useAccount';
+import { useCopyAddress } from '../../../../../../hooks/useCopyAddress';
 import { translations } from '../../../../../../locales/i18n';
 import { Bitcoin, btcInSatoshis } from '../../../../../../utils/constants';
 import {
@@ -37,6 +38,7 @@ type StatusScreenProps = {
 export const StatusScreen: React.FC<StatusScreenProps> = ({ onClose }) => {
   const { account } = useAccount();
   const { step, depositTx, transferTx } = useContext(DepositContext);
+  const onCopyAddress = useCopyAddress();
 
   const isProcessing = useMemo(() => step === DepositStep.PROCESSING, [step]);
 
@@ -67,6 +69,7 @@ export const StatusScreen: React.FC<StatusScreenProps> = ({ onClose }) => {
           <TransactionId
             value={account}
             href={`${rskExplorerUrl}/address/${account}`}
+            onCopyAddress={onCopyAddress}
           />
         ),
       },
@@ -101,6 +104,7 @@ export const StatusScreen: React.FC<StatusScreenProps> = ({ onClose }) => {
             <TransactionId
               value={depositTx.txHash}
               href={`${btcExplorerUrl}/tx/${depositTx.txHash}`}
+              onCopyAddress={onCopyAddress}
             />
           </>
         ) : (
@@ -114,6 +118,7 @@ export const StatusScreen: React.FC<StatusScreenProps> = ({ onClose }) => {
             <TransactionId
               value={transferTx.txHash}
               href={`${rskExplorerUrl}/tx/${transferTx.txHash}`}
+              onCopyAddress={onCopyAddress}
             />
           </>
         ) : (
@@ -121,7 +126,15 @@ export const StatusScreen: React.FC<StatusScreenProps> = ({ onClose }) => {
         ),
       },
     ],
-    [account, amount, depositTx, feeAmount, receiveAmount, transferTx],
+    [
+      account,
+      amount,
+      depositTx,
+      feeAmount,
+      receiveAmount,
+      transferTx,
+      onCopyAddress,
+    ],
   );
 
   return (

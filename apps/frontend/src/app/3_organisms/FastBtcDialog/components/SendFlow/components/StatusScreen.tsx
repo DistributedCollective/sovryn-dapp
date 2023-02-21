@@ -14,6 +14,7 @@ import {
 } from '@sovryn/ui';
 
 import { StatusIcon } from '../../../../../2_molecules/StatusIcon/StatusIcon';
+import { useCopyAddress } from '../../../../../../hooks/useCopyAddress';
 import { translations } from '../../../../../../locales/i18n';
 import { Bitcoin } from '../../../../../../utils/constants';
 import {
@@ -61,6 +62,7 @@ export const StatusScreen: React.FC<StatusScreenProps> = ({
   onClose,
   onRetry,
 }) => {
+  const onCopyAddress = useCopyAddress();
   const hasTransactionFailed = useMemo(
     () => txStatus === StatusType.error,
     [txStatus],
@@ -79,13 +81,18 @@ export const StatusScreen: React.FC<StatusScreenProps> = ({
           <TransactionId
             value={from}
             href={`${rskExplorerUrl}/address/${from}`}
+            onCopyAddress={onCopyAddress}
           />
         ),
       },
       {
         label: t(translation.to),
         value: (
-          <TransactionId value={to} href={`${btcExplorerUrl}/address/${to}`} />
+          <TransactionId
+            value={to}
+            href={`${btcExplorerUrl}/address/${to}`}
+            onCopyAddress={onCopyAddress}
+          />
         ),
       },
       {
@@ -118,13 +125,14 @@ export const StatusScreen: React.FC<StatusScreenProps> = ({
           <TransactionId
             value={txHash}
             href={`${rskExplorerUrl}/tx/${txHash}`}
+            onCopyAddress={onCopyAddress}
           />
         ) : (
           <Icon icon={IconNames.PENDING} />
         ),
       },
     ],
-    [amount, feesPaid, from, receiveAmount, to, txHash],
+    [amount, feesPaid, from, receiveAmount, to, txHash, onCopyAddress],
   );
 
   return (

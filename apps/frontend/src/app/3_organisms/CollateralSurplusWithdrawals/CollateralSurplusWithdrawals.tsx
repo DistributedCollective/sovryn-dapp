@@ -21,6 +21,7 @@ import { ExportCSV } from '../../2_molecules/ExportCSV/ExportCSV';
 import { useNotificationContext } from '../../../contexts/NotificationContext';
 import { useAccount } from '../../../hooks/useAccount';
 import { useBlockNumber } from '../../../hooks/useBlockNumber';
+import { useCopyAddress } from '../../../hooks/useCopyAddress';
 import { translations } from '../../../locales/i18n';
 import {
   Bitcoin,
@@ -41,6 +42,7 @@ export const CollateralSurplusHistoryFrame: FC = () => {
   const { t } = useTranslation();
   const { account } = useAccount();
   const { addNotification } = useNotificationContext();
+  const onCopyAddress = useCopyAddress();
 
   const [page, setPage] = useState(0);
   const chain = chains.find(chain => chain.id === defaultChainId);
@@ -101,14 +103,15 @@ export const CollateralSurplusHistoryFrame: FC = () => {
         title: t(translations.collateralSurplusHistory.table.transactionID),
         cellRenderer: (tx: any) => (
           <TransactionId
+            onCopyAddress={onCopyAddress}
             href={`${chain?.blockExplorerUrl}/tx/${tx.hash}`}
             value={tx.hash}
-            {...applyDataAttr('history-address-id')}
+            dataAttribute="history-address-id"
           />
         ),
       },
     ],
-    [chain?.blockExplorerUrl, renderCollateralChange, t],
+    [chain?.blockExplorerUrl, renderCollateralChange, t, onCopyAddress],
   );
 
   const onPageChange = useCallback(

@@ -25,6 +25,7 @@ import { Filter } from '../../2_molecules/TableFilter/TableFilter.types';
 import { useNotificationContext } from '../../../contexts/NotificationContext';
 import { useAccount } from '../../../hooks/useAccount';
 import { useBlockNumber } from '../../../hooks/useBlockNumber';
+import { useCopyAddress } from '../../../hooks/useCopyAddress';
 import { translations } from '../../../locales/i18n';
 import { zeroClient } from '../../../utils/clients';
 import {
@@ -54,6 +55,7 @@ export const TransactionHistoryFrame: FC = () => {
   const [page, setPage] = useState(0);
   const chain = chains.find(chain => chain.id === defaultChainId);
   const [filters, setFilters] = useState<InputMaybe<TroveChange_Filter>>({});
+  const onCopyAddress = useCopyAddress();
 
   const { value: block } = useBlockNumber();
 
@@ -506,6 +508,7 @@ export const TransactionHistoryFrame: FC = () => {
         title: t(translations.transactionHistory.table.transactionID),
         cellRenderer: (item: TroveChange) => (
           <TransactionId
+            onCopyAddress={onCopyAddress}
             href={`${chain?.blockExplorerUrl}/tx/${item.transaction.id}`}
             value={item.transaction.id}
             dataAttribute="history-address-id"
@@ -527,6 +530,7 @@ export const TransactionHistoryFrame: FC = () => {
       renderLiquidationReserve,
       collateralChangeFilters,
       debtChangeFilters,
+      onCopyAddress,
     ],
   );
 

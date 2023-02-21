@@ -23,6 +23,7 @@ import { ExportCSV } from '../../2_molecules/ExportCSV/ExportCSV';
 import { TransactionTypeRenderer } from '../../2_molecules/TransactionTypeRenderer/TransactionTypeRenderer';
 import { useNotificationContext } from '../../../contexts/NotificationContext';
 import { useAccount } from '../../../hooks/useAccount';
+import { useCopyAddress } from '../../../hooks/useCopyAddress';
 import { translations } from '../../../locales/i18n';
 import { zeroClient } from '../../../utils/clients';
 import { Bitcoin, EXPORT_RECORD_LIMIT } from '../../../utils/constants';
@@ -41,6 +42,7 @@ export const RewardHistory: FC = () => {
   const { t } = useTranslation();
   const { account } = useAccount();
   const { addNotification } = useNotificationContext();
+  const onCopyAddress = useCopyAddress();
 
   const [page, setPage] = useState(0);
   const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE);
@@ -114,11 +116,12 @@ export const RewardHistory: FC = () => {
             href={`${chain?.blockExplorerUrl}/tx/${tx.transaction.id}`}
             value={tx.transaction.id}
             dataAttribute="history-reward-address-id"
+            onCopyAddress={onCopyAddress}
           />
         ),
       },
     ],
-    [chain?.blockExplorerUrl, t],
+    [chain?.blockExplorerUrl, t, onCopyAddress],
   );
 
   const onPageChange = useCallback(

@@ -5,6 +5,7 @@ import { t } from 'i18next';
 
 import { Button, Heading, HeadingType, TransactionId } from '@sovryn/ui';
 
+import { useCopyAddress } from '../../../../../../hooks/useCopyAddress';
 import { useMaintenance } from '../../../../../../hooks/useMaintenance';
 import { translations } from '../../../../../../locales/i18n';
 import { Bitcoin } from '../../../../../../utils/constants';
@@ -38,6 +39,7 @@ export const ReviewScreen: React.FC<ReviewScreenProps> = ({
 }) => {
   const { checkMaintenance, States } = useMaintenance();
   const fastBtcLocked = checkMaintenance(States.FASTBTC);
+  const onCopyAddress = useCopyAddress();
 
   const items = useMemo(
     () => [
@@ -47,13 +49,18 @@ export const ReviewScreen: React.FC<ReviewScreenProps> = ({
           <TransactionId
             value={from}
             href={`${rskExplorerUrl}/address/${from}`}
+            onCopyAddress={onCopyAddress}
           />
         ),
       },
       {
         label: t(translation.to),
         value: (
-          <TransactionId value={to} href={`${btcExplorerUrl}/address/${to}`} />
+          <TransactionId
+            value={to}
+            href={`${btcExplorerUrl}/address/${to}`}
+            onCopyAddress={onCopyAddress}
+          />
         ),
       },
       {
@@ -81,7 +88,7 @@ export const ReviewScreen: React.FC<ReviewScreenProps> = ({
         ),
       },
     ],
-    [amount, feesPaid, from, receiveAmount, to],
+    [amount, feesPaid, from, receiveAmount, to, onCopyAddress],
   );
 
   return (

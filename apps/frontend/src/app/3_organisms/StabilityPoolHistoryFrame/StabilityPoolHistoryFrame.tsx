@@ -27,6 +27,7 @@ import { TransactionTypeRenderer } from '../../2_molecules/TransactionTypeRender
 import { useNotificationContext } from '../../../contexts/NotificationContext';
 import { useAccount } from '../../../hooks/useAccount';
 import { useBlockNumber } from '../../../hooks/useBlockNumber';
+import { useCopyAddress } from '../../../hooks/useCopyAddress';
 import { translations } from '../../../locales/i18n';
 import { zeroClient } from '../../../utils/clients';
 import { EXPORT_RECORD_LIMIT } from '../../../utils/constants';
@@ -48,7 +49,7 @@ export const StabilityPoolHistoryFrame: FC = () => {
   const { account } = useAccount();
   const { addNotification } = useNotificationContext();
   const [filters, setFilters] = useState<StabilityDepositChange_Filter>({});
-
+  const onCopyAddress = useCopyAddress();
   const { value: block } = useBlockNumber();
 
   const [page, setPage] = useState(0);
@@ -232,7 +233,8 @@ export const StabilityPoolHistoryFrame: FC = () => {
           <TransactionId
             href={`${chain?.blockExplorerUrl}/tx/${row.transaction.id}`}
             value={row.transaction.id}
-            {...applyDataAttr('stability-pool-history-address-id')}
+            dataAttribute="stability-pool-history-address-id"
+            onCopyAddress={onCopyAddress}
           />
         ),
       },
@@ -244,6 +246,7 @@ export const StabilityPoolHistoryFrame: FC = () => {
       renderNewBalance,
       updateFilters,
       transactionTypeChangeFilters,
+      onCopyAddress,
     ],
   );
 

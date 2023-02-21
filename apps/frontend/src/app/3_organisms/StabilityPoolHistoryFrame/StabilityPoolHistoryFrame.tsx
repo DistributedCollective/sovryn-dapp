@@ -16,6 +16,8 @@ import {
   TooltipTrigger,
   TransactionId,
   applyDataAttr,
+  ErrorBadge,
+  ErrorLevel,
 } from '@sovryn/ui';
 
 import { chains, defaultChainId } from '../../../config/chains';
@@ -27,9 +29,13 @@ import { TransactionTypeRenderer } from '../../2_molecules/TransactionTypeRender
 import { useNotificationContext } from '../../../contexts/NotificationContext';
 import { useAccount } from '../../../hooks/useAccount';
 import { useBlockNumber } from '../../../hooks/useBlockNumber';
+import { useMaintenance } from '../../../hooks/useMaintenance';
 import { translations } from '../../../locales/i18n';
 import { zeroClient } from '../../../utils/clients';
-import { EXPORT_RECORD_LIMIT } from '../../../utils/constants';
+import {
+  DEFAULT_HISTORY_FRAME_PAGE_SIZE,
+  EXPORT_RECORD_LIMIT,
+} from '../../../utils/constants';
 import {
   StabilityDepositChange,
   StabilityDepositChange_Filter,
@@ -41,7 +47,7 @@ import { dateFormat } from '../../../utils/helpers';
 import { formatValue } from '../../../utils/math';
 import { useGetStabilityPoolHistory } from './hooks/useGetStabilityPoolHistory';
 
-const DEFAULT_PAGE_SIZE = 10;
+const pageSize = DEFAULT_HISTORY_FRAME_PAGE_SIZE;
 
 export const StabilityPoolHistoryFrame: FC = () => {
   const { account } = useAccount();
@@ -51,7 +57,6 @@ export const StabilityPoolHistoryFrame: FC = () => {
   const { value: block } = useBlockNumber();
 
   const [page, setPage] = useState(0);
-  const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE);
   const chain = chains.find(chain => chain.id === defaultChainId);
 
   const [orderOptions, setOrderOptions] = useState<OrderOptions>({
@@ -252,12 +257,12 @@ export const StabilityPoolHistoryFrame: FC = () => {
       }
       setPage(value);
     },
-    [page, stabilityDeposits?.length, pageSize],
+    [page, stabilityDeposits.length],
   );
 
   const isNextButtonDisabled = useMemo(
     () => !loading && stabilityDeposits?.length < pageSize,
-    [loading, stabilityDeposits, pageSize],
+    [loading, stabilityDeposits],
   );
 
   const exportData = useCallback(async () => {
@@ -297,15 +302,26 @@ export const StabilityPoolHistoryFrame: FC = () => {
     setPage(0);
   }, [orderOptions]);
 
+  const { checkMaintenance, States } = useMaintenance();
+  const exportLocked = checkMaintenance(States.ZERO_EXPORT_CSV);
+
   return (
     <>
-      <ExportCSV
-        getData={exportData}
-        filename="transactions"
-        className="mb-7 hidden lg:inline-flex"
-        onExportEnd={() => setPageSize(DEFAULT_PAGE_SIZE)}
-        disabled={!stabilityDeposits || stabilityDeposits.length === 0}
-      />
+      <div className="flex flex-row items-center gap-4 mb-7 hidden lg:inline-flex">
+        <ExportCSV
+          getData={exportData}
+          filename="stability pool transactions"
+          disabled={
+            !stabilityDeposits || stabilityDeposits.length === 0 || exportLocked
+          }
+        />
+        {exportLocked && (
+          <ErrorBadge
+            level={ErrorLevel.Warning}
+            message={t(translations.maintenanceMode.featureDisabled)}
+          />
+        )}
+      </div>
       <div className="bg-gray-80 py-4 px-4 rounded">
         <Table
           setOrderOptions={setOrderOptions}

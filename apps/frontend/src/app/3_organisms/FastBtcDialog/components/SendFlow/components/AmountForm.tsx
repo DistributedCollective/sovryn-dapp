@@ -8,6 +8,8 @@ import {
   applyDataAttr,
   Button,
   ButtonStyle,
+  ErrorBadge,
+  ErrorLevel,
   Heading,
   HeadingType,
   Paragraph,
@@ -131,7 +133,12 @@ export const AmountForm: React.FC = () => {
           className="mt-10 w-full"
         />
 
-        {fastBtcLocked && <div>{t(translations.maintenanceMode.fastBtc)}</div>}
+        {fastBtcLocked && (
+          <ErrorBadge
+            level={ErrorLevel.Warning}
+            message={t(translations.maintenanceMode.fastBtc)}
+          />
+        )}
       </div>
     </>
   );

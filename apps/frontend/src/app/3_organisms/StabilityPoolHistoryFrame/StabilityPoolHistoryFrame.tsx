@@ -1,7 +1,7 @@
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 
+import { t } from 'i18next';
 import { nanoid } from 'nanoid';
-import { useTranslation } from 'react-i18next';
 
 import { SupportedTokens } from '@sovryn/contracts';
 import {
@@ -44,7 +44,6 @@ import { useGetStabilityPoolHistory } from './hooks/useGetStabilityPoolHistory';
 const DEFAULT_PAGE_SIZE = 10;
 
 export const StabilityPoolHistoryFrame: FC = () => {
-  const { t } = useTranslation();
   const { account } = useAccount();
   const { addNotification } = useNotificationContext();
   const [filters, setFilters] = useState<StabilityDepositChange_Filter>({});
@@ -88,7 +87,7 @@ export const StabilityPoolHistoryFrame: FC = () => {
           ? true
           : false,
       })),
-    [t, filters],
+    [filters],
   );
 
   const updateFilters = useCallback((filterList: Filter[]) => {
@@ -120,7 +119,7 @@ export const StabilityPoolHistoryFrame: FC = () => {
       Object.keys(filters || {}).length > 0
         ? t(translations.common.tables.noDataWithFilters)
         : t(translations.common.tables.noData),
-    [t, filters],
+    [filters],
   );
 
   const renderBalanceChange = useCallback(
@@ -238,7 +237,6 @@ export const StabilityPoolHistoryFrame: FC = () => {
       },
     ],
     [
-      t,
       chain,
       renderBalanceChange,
       renderNewBalance,
@@ -293,7 +291,7 @@ export const StabilityPoolHistoryFrame: FC = () => {
       newBalance: tx.depositedAmountAfter,
       transactionID: tx.transaction.id,
     }));
-  }, [t, account, getStabilityPool, orderOptions, filters, addNotification]);
+  }, [account, getStabilityPool, orderOptions, filters, addNotification]);
 
   useEffect(() => {
     setPage(0);

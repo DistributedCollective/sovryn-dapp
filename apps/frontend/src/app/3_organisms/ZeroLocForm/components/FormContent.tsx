@@ -1,6 +1,6 @@
 import React, { useCallback, useMemo, FC } from 'react';
 
-import { useTranslation } from 'react-i18next';
+import { t } from 'i18next';
 
 import { SupportedTokens } from '@sovryn/contracts';
 import {
@@ -80,8 +80,6 @@ export type FormContentProps = {
 
 // using props instead of destructuring to make use of the type
 export const FormContent: FC<FormContentProps> = props => {
-  const { t } = useTranslation();
-
   const debtTabs = useMemo(
     () => [
       {
@@ -93,7 +91,7 @@ export const FormContent: FC<FormContentProps> = props => {
         label: t(translations.adjustCreditLine.actions.repay),
       },
     ],
-    [t],
+    [],
   );
 
   const collateralTabs = useMemo(
@@ -111,7 +109,7 @@ export const FormContent: FC<FormContentProps> = props => {
         label: t(translations.adjustCreditLine.actions.withdrawCollateral),
       },
     ],
-    [props.hasTrove, t],
+    [props.hasTrove],
   );
 
   const submitButtonDisabled = useMemo(() => {
@@ -189,7 +187,7 @@ export const FormContent: FC<FormContentProps> = props => {
           {formatValue(value, 3)} {SupportedTokens.zusd.toUpperCase()}
         </>
       ),
-    [t],
+    [],
   );
 
   const renderTotalCollateral = useCallback(
@@ -201,7 +199,7 @@ export const FormContent: FC<FormContentProps> = props => {
           {formatValue(value, 3)} {Bitcoin}
         </>
       ),
-    [t],
+    [],
   );
 
   const renderOriginationFee = useCallback(
@@ -214,7 +212,7 @@ export const FormContent: FC<FormContentProps> = props => {
           {formatValue(props.borrowingRate * 100, 2)}%)
         </>
       ),
-    [props.borrowingRate, t],
+    [props.borrowingRate],
   );
 
   const renderLiquidationPrice = useCallback(
@@ -224,13 +222,13 @@ export const FormContent: FC<FormContentProps> = props => {
       ) : (
         <>{formatValue(value, 3)} USD</>
       ),
-    [t],
+    [],
   );
 
   const renderCollateralRatio = useCallback(
     (value: number) =>
       value === 0 ? t(translations.common.na) : <>{formatValue(value, 3)}%</>,
-    [t],
+    [],
   );
 
   const tokenOptions = useMemo(

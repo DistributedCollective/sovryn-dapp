@@ -2,7 +2,7 @@ import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 
 import { ethers } from 'ethers';
 import { parseUnits } from 'ethers/lib/utils';
-import { useTranslation } from 'react-i18next';
+import { t } from 'i18next';
 
 import { Button, Icon, IconNames, StatusType } from '@sovryn/ui';
 
@@ -40,7 +40,6 @@ export const TransactionSteps: FC<TransactionStepsProps> = ({
 
   const [step, setStep] = useState(-1);
   const [error, setError] = useState(false);
-  const { t } = useTranslation();
 
   useEffect(() => {
     const initialize = async () => {

@@ -1,7 +1,7 @@
 import React, { useCallback, useMemo, useState, FC } from 'react';
 
 import { BigNumber } from 'ethers';
-import { useTranslation } from 'react-i18next';
+import { t } from 'i18next';
 
 import { SupportedTokens } from '@sovryn/contracts';
 import { ErrorLevel } from '@sovryn/ui';
@@ -176,8 +176,6 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
     return ((newCollateral * rbtcPrice) / newDebt) * 100 || 0;
   }, [newCollateral, newDebt, rbtcPrice]);
 
-  const { t } = useTranslation();
-
   const initialLiquidationPrice = useMemo(
     () =>
       MINIMUM_COLLATERAL_RATIO *
@@ -224,7 +222,7 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
     }
 
     return errors;
-  }, [fieldsTouched, ratio, tcr, newDebt, isIncreasingDebt, debtToken, t]);
+  }, [fieldsTouched, ratio, tcr, newDebt, isIncreasingDebt, debtToken]);
 
   const debtError = useMemo(() => {
     if (!fieldsTouched) {
@@ -255,7 +253,6 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
     fieldsTouched,
     isIncreasingDebt,
     maxDebtAmount,
-    t,
   ]);
 
   const collateralError = useMemo(() => {
@@ -289,7 +286,6 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
     collateralSize,
     maxCollateralToDepositAmount,
     isIncreasingCollateral,
-    t,
     maxCollateralToWithdrawAmount,
   ]);
 

@@ -15,7 +15,6 @@ import {
   Tooltip,
   TooltipTrigger,
   TransactionId,
-  applyDataAttr,
   ErrorBadge,
   ErrorLevel,
 } from '@sovryn/ui';

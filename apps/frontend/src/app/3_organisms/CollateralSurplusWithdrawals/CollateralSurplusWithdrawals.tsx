@@ -4,7 +4,6 @@ import { t } from 'i18next';
 import { nanoid } from 'nanoid';
 
 import {
-  applyDataAttr,
   ErrorBadge,
   ErrorLevel,
   NotificationType,

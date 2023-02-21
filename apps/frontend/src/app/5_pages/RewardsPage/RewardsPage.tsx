@@ -10,7 +10,6 @@ import { t } from 'i18next';
 import { useLoaderData } from 'react-router-dom';
 
 import {
-  applyDataAttr,
   ErrorBadge,
   ErrorLevel,
   Button,

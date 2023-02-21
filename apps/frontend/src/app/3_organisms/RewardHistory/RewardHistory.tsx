@@ -5,7 +5,6 @@ import { nanoid } from 'nanoid';
 
 import { SupportedTokens } from '@sovryn/contracts';
 import {
-  applyDataAttr,
   ErrorBadge,
   ErrorLevel,
   NotificationType,

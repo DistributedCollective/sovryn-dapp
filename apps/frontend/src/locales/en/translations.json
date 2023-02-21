@@ -340,7 +340,7 @@
                 "stability": "Stability pool",
                 "convert": "Conversion",
                 "funding": "Funding",
-                "collateralSurplusWithdrawals": "Collateral surplus withdrawals",
+                "collateralSurplusWithdrawals": "Collateral surplus",
                 "reward": "Reward"
             },
             "comingSoon": "Coming soon..."

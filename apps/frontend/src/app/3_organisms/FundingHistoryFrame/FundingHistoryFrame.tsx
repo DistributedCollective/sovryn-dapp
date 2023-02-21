@@ -23,7 +23,6 @@ import {
 } from '../../../utils/constants';
 import {
   BitcoinTransfer,
-  BitcoinTransferDirection,
   BitcoinTransfer_OrderBy,
   useGetFundingLazyQuery,
 } from '../../../utils/graphql/rsk/generated';
@@ -32,47 +31,16 @@ import { FundingHistoryType } from './types';
 import {
   columnsConfig,
   generateRowTitle,
+  parseData,
   transactionTypeRenderer,
 } from './utils';
 
 const pageSize = DEFAULT_HISTORY_FRAME_PAGE_SIZE;
 
-//split each row returned from the graph into 2 rows (part 1 and part 2)
-const parseData = item => {
-  const isOutgoing = item.direction === BitcoinTransferDirection.Outgoing;
-  return [
-    {
-      timestamp: item.createdAtTimestamp,
-      type: item.direction,
-      order: 2,
-      sent: '-',
-      received: item.amountBTC,
-      serviceFee: item.feeBTC,
-      txHash: isOutgoing
-        ? item.bitcoinTxHash.substring(2) //TODO: remove after issue fixed on Graph
-        : item.createdAtTx.id,
-    },
-    {
-      timestamp: item.createdAtTimestamp,
-      type: item.direction,
-      order: 1,
-      sent: item.totalAmountBTC,
-      received: '-',
-      serviceFee: '-',
-      txHash: isOutgoing
-        ? item.createdAtTx.id
-        : item.bitcoinTxHash.substring(2), //TODO: remove after issue fixed on Graph
-    },
-  ];
-};
-
 export const FundingHistoryFrame: FC = () => {
   const { t } = useTranslation();
   const { account } = useAccount();
   const { addNotification } = useNotificationContext();
-  const [fundingHistory, setFundingHistory] = useState<FundingHistoryType[]>(
-    [],
-  );
   const { value: block } = useBlockNumber();
 
   const [page, setPage] = useState(0);
@@ -102,14 +70,15 @@ export const FundingHistoryFrame: FC = () => {
     [data],
   );
 
-  useEffect(() => {
+  const fundingHistory = useMemo(() => {
     if (account && funding) {
       const data: FundingHistoryType[] = funding.reduce(
         (acc: FundingHistoryType[], item) => acc.concat(parseData(item)),
         [],
       );
-      setFundingHistory(data);
+      return data;
     }
+    return [];
   }, [funding, account]);
 
   const onPageChange = useCallback(

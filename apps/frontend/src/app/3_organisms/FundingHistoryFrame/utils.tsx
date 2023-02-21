@@ -95,6 +95,35 @@ const renderTXID = (item: FundingHistoryType) => {
   );
 };
 
+//split each row returned from the graph into 2 rows (part 1 and part 2)
+export const parseData = item => {
+  const isOutgoing = item.direction === BitcoinTransferDirection.Outgoing;
+  return [
+    {
+      timestamp: item.createdAtTimestamp,
+      type: item.direction,
+      order: 2,
+      sent: '-',
+      received: item.amountBTC,
+      serviceFee: item.feeBTC,
+      txHash: isOutgoing
+        ? item.bitcoinTxHash.substring(2) //TODO: remove after issue fixed on Graph
+        : item.createdAtTx.id,
+    },
+    {
+      timestamp: item.createdAtTimestamp,
+      type: item.direction,
+      order: 1,
+      sent: item.totalAmountBTC,
+      received: '-',
+      serviceFee: '-',
+      txHash: isOutgoing
+        ? item.createdAtTx.id
+        : item.bitcoinTxHash.substring(2), //TODO: remove after issue fixed on Graph
+    },
+  ];
+};
+
 export const columnsConfig = [
   {
     id: 'updatedAtTimestamp',

@@ -14,7 +14,6 @@ import {
   Paragraph,
   ParagraphSize,
   Table,
-  TransactionId,
 } from '@sovryn/ui';
 
 import { chains, defaultChainId } from '../../../config/chains';

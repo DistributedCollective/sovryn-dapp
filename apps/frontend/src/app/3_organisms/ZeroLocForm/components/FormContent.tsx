@@ -9,7 +9,8 @@ import {
   ButtonStyle,
   ButtonType,
   DynamicValue,
-  ErrorData,
+  ErrorBadge,
+  ErrorBadgeProps,
   ErrorLevel,
   ErrorList,
   FormGroup,
@@ -21,6 +22,7 @@ import {
 
 import { AssetRenderer } from '../../../2_molecules/AssetRenderer/AssetRenderer';
 import { BORROW_ASSETS } from '../../../5_pages/ZeroPage/constants';
+import { useMaintenance } from '../../../../hooks/useMaintenance';
 import { translations } from '../../../../locales/i18n';
 import { Bitcoin, CR_THRESHOLDS } from '../../../../utils/constants';
 import { formatValue } from '../../../../utils/math';
@@ -75,11 +77,16 @@ export type FormContentProps = {
   formIsDisabled?: boolean;
   debtError?: string;
   collateralError?: string;
-  errors?: ErrorData[];
+  errors?: ErrorBadgeProps[];
 } & (OpenTroveProps | AdjustTroveProps);
 
 // using props instead of destructuring to make use of the type
 export const FormContent: FC<FormContentProps> = props => {
+  const { checkMaintenance, States } = useMaintenance();
+  const actionLocked = checkMaintenance(
+    props.hasTrove ? States.ZERO_ADJUST_LOC : States.ZERO_OPEN_LOC,
+  );
+  const dllrLocked = checkMaintenance(States.ZERO_DLLR);
   const debtTabs = useMemo(
     () => [
       {
@@ -112,6 +119,12 @@ export const FormContent: FC<FormContentProps> = props => {
     [props.hasTrove],
   );
 
+  const isInMaintenance = useMemo(
+    () =>
+      actionLocked || (dllrLocked && props.debtToken === SupportedTokens.dllr),
+    [actionLocked, dllrLocked, props.debtToken],
+  );
+
   const submitButtonDisabled = useMemo(() => {
     const hasCriticalError =
       (props.errors || []).some(error => error.level === ErrorLevel.Critical) ||
@@ -122,7 +135,12 @@ export const FormContent: FC<FormContentProps> = props => {
     const isFormValid = props.hasTrove
       ? debtSize !== 0 || collateralSize !== 0
       : collateralSize > 0 && debtSize > 0;
-    return props.formIsDisabled || hasCriticalError || !isFormValid;
+    return (
+      props.formIsDisabled ||
+      hasCriticalError ||
+      !isFormValid ||
+      isInMaintenance
+    );
   }, [
     props.collateralAmount,
     props.collateralError,
@@ -131,6 +149,7 @@ export const FormContent: FC<FormContentProps> = props => {
     props.errors,
     props.formIsDisabled,
     props.hasTrove,
+    isInMaintenance,
   ]);
 
   const handleDebtTypeChange = useCallback(
@@ -483,6 +502,12 @@ export const FormContent: FC<FormContentProps> = props => {
           disabled={submitButtonDisabled}
         />
       </div>
+      {isInMaintenance && (
+        <ErrorBadge
+          level={ErrorLevel.Warning}
+          message={t(translations.maintenanceMode.featureDisabled)}
+        />
+      )}
     </div>
   );
 };

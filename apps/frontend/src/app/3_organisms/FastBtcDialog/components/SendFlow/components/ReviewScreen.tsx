@@ -3,7 +3,14 @@ import React, { useMemo } from 'react';
 import classNames from 'classnames';
 import { t } from 'i18next';
 
-import { Button, Heading, HeadingType, TransactionId } from '@sovryn/ui';
+import {
+  Button,
+  ErrorBadge,
+  ErrorLevel,
+  Heading,
+  HeadingType,
+  TransactionId,
+} from '@sovryn/ui';
 
 import { useMaintenance } from '../../../../../../hooks/useMaintenance';
 import { translations } from '../../../../../../locales/i18n';
@@ -112,7 +119,12 @@ export const ReviewScreen: React.FC<ReviewScreenProps> = ({
           className="w-full"
           dataAttribute="funding-send-confirm"
         />
-        {fastBtcLocked && <div>{t(translations.maintenanceMode.fastBtc)}</div>}
+        {fastBtcLocked && (
+          <ErrorBadge
+            level={ErrorLevel.Warning}
+            message={t(translations.maintenanceMode.fastBtc)}
+          />
+        )}
       </div>
     </div>
   );

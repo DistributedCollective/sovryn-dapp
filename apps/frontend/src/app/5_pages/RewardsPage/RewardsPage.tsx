@@ -4,12 +4,15 @@ import {
   ReadableEthersLiquityWithStore,
 } from '@sovryn-zero/lib-ethers';
 
-import React, { FC, useEffect, useState } from 'react';
+import React, { FC, useEffect, useMemo, useState } from 'react';
 
 import { t } from 'i18next';
 import { useLoaderData } from 'react-router-dom';
 
 import {
+  applyDataAttr,
+  ErrorBadge,
+  ErrorLevel,
   Button,
   ButtonStyle,
   ButtonType,
@@ -22,6 +25,7 @@ import {
 
 import { useAccount } from '../../../hooks/useAccount';
 import { useBlockNumber } from '../../../hooks/useBlockNumber';
+import { useMaintenance } from '../../../hooks/useMaintenance';
 import { useGetOpenTrove } from '../../../hooks/zero/useGetOpenTrove';
 import { translations } from '../../../locales/i18n';
 import { useHandleRewards } from './hooks/useHandleRewards';
@@ -32,6 +36,9 @@ const RewardsPage: FC = () => {
   const [amount, setAmount] = useState<Decimal>(Decimal.from(0));
   const isOpenTroveExists = useGetOpenTrove();
   const { value: block } = useBlockNumber();
+
+  const { checkMaintenance, States } = useMaintenance();
+  const claimLocked = checkMaintenance(States.ZERO_STABILITY_CLAIM);
 
   const { liquity } = useLoaderData() as {
     liquity: EthersLiquity;
@@ -53,6 +60,11 @@ const RewardsPage: FC = () => {
       .getStabilityDeposit(account)
       .then(result => setAmount(result.collateralGain));
   }, [liquity, account, block]);
+
+  const claimDisabled = useMemo(
+    () => Number(amount) === 0 || !signer || claimLocked,
+    [amount, claimLocked, signer],
+  );
 
   return (
     <div className="flex flex-col items-center mt-6 sm:mt-28">
@@ -87,7 +99,7 @@ const RewardsPage: FC = () => {
             text={t(translations.rewardPage.actions.withdraw)}
             className="w-full max-w-48"
             onClick={handleWithdraw}
-            disabled={Number(amount) === 0 || !signer}
+            disabled={claimDisabled}
             dataAttribute="rewards-withdraw"
           />
           {isOpenTroveExists && Number(amount) > 0 && signer && (
@@ -97,10 +109,18 @@ const RewardsPage: FC = () => {
               text={t(translations.rewardPage.actions.transferToLOC)}
               className="w-full"
               onClick={handleTransferToLOC}
+              disabled={claimLocked}
               dataAttribute="rewards-transfer-to-loc"
             />
           )}
         </div>
+
+        {claimLocked && (
+          <ErrorBadge
+            level={ErrorLevel.Warning}
+            message={t(translations.maintenanceMode.featureDisabled)}
+          />
+        )}
       </div>
     </div>
   );

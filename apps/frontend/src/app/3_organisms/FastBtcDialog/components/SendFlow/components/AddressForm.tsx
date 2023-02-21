@@ -17,6 +17,8 @@ import debounce from 'lodash.debounce';
 import {
   Button,
   ButtonStyle,
+  ErrorBadge,
+  ErrorLevel,
   Heading,
   HeadingType,
   Input,
@@ -137,7 +139,12 @@ export const AddressForm: React.FC = () => {
         dataAttribute="funding-send-address-confirm"
       />
 
-      {fastBtcLocked && <div>{t(translations.maintenanceMode.fastBtc)}</div>}
+      {fastBtcLocked && (
+        <ErrorBadge
+          level={ErrorLevel.Warning}
+          message={t(translations.maintenanceMode.fastBtc)}
+        />
+      )}
     </div>
   );
 };

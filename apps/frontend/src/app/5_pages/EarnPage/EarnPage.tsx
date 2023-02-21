@@ -17,6 +17,8 @@ import {
   Button,
   ButtonStyle,
   ButtonType,
+  ErrorBadge,
+  ErrorLevel,
   Heading,
   Paragraph,
   ParagraphSize,
@@ -33,6 +35,7 @@ import { AssetRenderer } from '../../2_molecules/AssetRenderer/AssetRenderer';
 import { useAccount } from '../../../hooks/useAccount';
 import { useAmountInput } from '../../../hooks/useAmountInput';
 import { useAssetBalance } from '../../../hooks/useAssetBalance';
+import { useMaintenance } from '../../../hooks/useMaintenance';
 import { translations } from '../../../locales/i18n';
 import { fromWei, toWei } from '../../../utils/math';
 import { tokenList } from './EarnPage.types';
@@ -103,6 +106,12 @@ const EarnPage: FC = () => {
   }, [poolBalance]);
 
   const isDeposit = useMemo(() => index === 0, [index]);
+
+  const { checkMaintenance, States } = useMaintenance();
+  const actionLocked = checkMaintenance(
+    isDeposit ? States.ZERO_STABILITY_ADD : States.ZERO_STABILITY_REMOVE,
+  );
+  const dllrLocked = checkMaintenance(States.ZERO_DLLR);
 
   const { value: weiBalance } = useAssetBalance(token);
 
@@ -225,9 +234,19 @@ const EarnPage: FC = () => {
     [amount, maximumAmount],
   );
 
+  const isInMaintenance = useMemo(
+    () => actionLocked || (dllrLocked && token === SupportedTokens.dllr),
+    [actionLocked, dllrLocked, token],
+  );
+
   const isSubmitDisabled = useMemo(
-    () => !account || !amount || Number(amount) <= 0 || !isValidAmount,
-    [account, amount, isValidAmount],
+    () =>
+      !account ||
+      !amount ||
+      Number(amount) <= 0 ||
+      !isValidAmount ||
+      isInMaintenance,
+    [account, amount, isValidAmount, isInMaintenance],
   );
 
   const tokenOptions = useMemo(
@@ -348,6 +367,12 @@ const EarnPage: FC = () => {
           disabled={isSubmitDisabled}
           dataAttribute="earn-submit"
         />
+        {isInMaintenance && (
+          <ErrorBadge
+            level={ErrorLevel.Warning}
+            message={t(translations.maintenanceMode.featureDisabled)}
+          />
+        )}
       </div>
     </div>
   );

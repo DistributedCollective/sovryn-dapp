@@ -1,9 +1,9 @@
 import React, { useCallback, useContext, useMemo } from 'react';
 
 import classNames from 'classnames';
+import { t } from 'i18next';
 import { nanoid } from 'nanoid';
 import QRCode from 'qrcode.react';
-import { useTranslation } from 'react-i18next';
 import resolveConfig from 'tailwindcss/resolveConfig';
 
 import tailwindConfig from '@sovryn/tailwindcss-config';
@@ -27,8 +27,6 @@ import { TransferPolicies } from './TransferPolicies';
 const config = resolveConfig(tailwindConfig);
 
 export const AddressForm: React.FC = () => {
-  const { t } = useTranslation();
-
   const { address } = useContext(DepositContext);
   const { addNotification } = useNotificationContext();
 
@@ -46,7 +44,7 @@ export const AddressForm: React.FC = () => {
       dismissible: true,
       id: nanoid(),
     });
-  }, [addNotification, address, t]);
+  }, [addNotification, address]);
 
   const hasValidationBeenUnsuccessful = useMemo(
     () => !loading && !isSignatureValid,

@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 
 import classNames from 'classnames';
-import { useTranslation } from 'react-i18next';
+import { t } from 'i18next';
 
 import { applyDataAttr, Icon, LinkBase } from '@sovryn/ui';
 
@@ -43,8 +43,6 @@ export const SocialLinks: FC<SocialLinksProps> = ({
   innerClassName,
   dataAttribute,
 }) => {
-  const { t } = useTranslation();
-
   return (
     <div
       className={classNames(styles.socials, className)}

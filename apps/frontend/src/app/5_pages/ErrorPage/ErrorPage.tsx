@@ -1,13 +1,12 @@
 import React, { FC } from 'react';
 
-import { useTranslation } from 'react-i18next';
+import { t } from 'i18next';
 import { useRouteError } from 'react-router-dom';
 
 import { Footer, Header } from '../../3_organisms';
 import { translations } from '../../../locales/i18n';
 
 export const ErrorPage: FC = () => {
-  const { t } = useTranslation();
   const error = useRouteError() as Error & { statusText?: string };
 
   return (

@@ -1,10 +1,12 @@
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 
+import { t } from 'i18next';
 import { nanoid } from 'nanoid';
-import { useTranslation } from 'react-i18next';
 
 import { SupportedTokens } from '@sovryn/contracts';
 import {
+  ErrorBadge,
+  ErrorLevel,
   NotificationType,
   OrderDirection,
   OrderOptions,
@@ -49,7 +51,6 @@ import { useGetTroves } from './hooks/useGetTroves';
 const pageSize = DEFAULT_HISTORY_FRAME_PAGE_SIZE;
 
 export const TransactionHistoryFrame: FC = () => {
-  const { t } = useTranslation();
   const { account } = useAccount();
   const { addNotification } = useNotificationContext();
   const [page, setPage] = useState(0);
@@ -59,36 +60,36 @@ export const TransactionHistoryFrame: FC = () => {
 
   const { value: block } = useBlockNumber();
 
+  const { checkMaintenance, States } = useMaintenance();
+  const exportLocked = checkMaintenance(States.ZERO_EXPORT_CSV);
+
   const [orderOptions, setOrderOptions] = useState<OrderOptions>({
     orderBy: 'sequenceNumber',
     orderDirection: OrderDirection.Desc,
   });
 
-  const getTroveType = useCallback(
-    (trove: TroveOperation) => {
-      switch (trove) {
-        case TroveOperation.OpenTrove:
-          return t(translations.transactionHistory.troveTypes.open);
-        case TroveOperation.CloseTrove:
-          return t(translations.transactionHistory.troveTypes.close);
-        case TroveOperation.AdjustTrove:
-          return t(translations.transactionHistory.troveTypes.adjust);
-        case TroveOperation.RedeemCollateral:
-          return t(translations.transactionHistory.troveTypes.redemption);
-        case TroveOperation.LiquidateInNormalMode:
-          return t(translations.transactionHistory.troveTypes.liquidation);
-        case TroveOperation.LiquidateInRecoveryMode:
-          return t(
-            translations.transactionHistory.troveTypes.liquidationRecovery,
-          );
-        case TroveOperation.AccrueRewards:
-          return t(translations.transactionHistory.troveTypes.accrueRewards);
-        default:
-          return '';
-      }
-    },
-    [t],
-  );
+  const getTroveType = useCallback((trove: TroveOperation) => {
+    switch (trove) {
+      case TroveOperation.OpenTrove:
+        return t(translations.transactionHistory.troveTypes.open);
+      case TroveOperation.CloseTrove:
+        return t(translations.transactionHistory.troveTypes.close);
+      case TroveOperation.AdjustTrove:
+        return t(translations.transactionHistory.troveTypes.adjust);
+      case TroveOperation.RedeemCollateral:
+        return t(translations.transactionHistory.troveTypes.redemption);
+      case TroveOperation.LiquidateInNormalMode:
+        return t(translations.transactionHistory.troveTypes.liquidation);
+      case TroveOperation.LiquidateInRecoveryMode:
+        return t(
+          translations.transactionHistory.troveTypes.liquidationRecovery,
+        );
+      case TroveOperation.AccrueRewards:
+        return t(translations.transactionHistory.troveTypes.accrueRewards);
+      default:
+        return '';
+    }
+  }, []);
 
   const transactionTypeFilters = useMemo(() => {
     return Object.keys(TroveOperation).map(key => ({
@@ -117,7 +118,7 @@ export const TransactionHistoryFrame: FC = () => {
         checked: Object.hasOwn(filters || {}, 'collateralChange_lte'),
       },
     ],
-    [t, filters],
+    [filters],
   );
 
   const debtChangeFilters = useMemo(
@@ -135,7 +136,7 @@ export const TransactionHistoryFrame: FC = () => {
         checked: Object.hasOwn(filters || {}, 'debtChange_lte'),
       },
     ],
-    [t, filters],
+    [filters],
   );
 
   /**
@@ -185,7 +186,7 @@ export const TransactionHistoryFrame: FC = () => {
       Object.keys(filters || {}).length > 0
         ? t(translations.common.tables.noDataWithFilters)
         : t(translations.common.tables.noData),
-    [t, filters],
+    [filters],
   );
 
   const troves = useMemo(
@@ -517,7 +518,6 @@ export const TransactionHistoryFrame: FC = () => {
       },
     ],
     [
-      t,
       chain,
       getTroveType,
       transactionTypeFilters,
@@ -590,7 +590,6 @@ export const TransactionHistoryFrame: FC = () => {
     orderOptions.orderBy,
     orderOptions.orderDirection,
     addNotification,
-    t,
     getTroveType,
     renderLiquidationReserve,
   ]);
@@ -601,12 +600,20 @@ export const TransactionHistoryFrame: FC = () => {
 
   return (
     <>
-      <ExportCSV
-        getData={exportData}
-        filename="transactions"
-        className="mb-7 hidden lg:inline-flex"
-        disabled={!troves}
-      />
+      <div className="flex flex-row items-center gap-4 mb-7 hidden lg:inline-flex">
+        <ExportCSV
+          getData={exportData}
+          filename="transactions"
+          disabled={!troves || exportLocked}
+        />
+        {exportLocked && (
+          <ErrorBadge
+            level={ErrorLevel.Warning}
+            message={t(translations.maintenanceMode.featureDisabled)}
+          />
+        )}
+      </div>
+
       <div className="bg-gray-80 py-4 px-4 rounded">
         <Table
           setOrderOptions={setOrderOptions}

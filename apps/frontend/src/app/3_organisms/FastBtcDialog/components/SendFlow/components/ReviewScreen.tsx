@@ -3,7 +3,14 @@ import React, { useMemo } from 'react';
 import classNames from 'classnames';
 import { t } from 'i18next';
 
-import { Button, Heading, HeadingType, TransactionId } from '@sovryn/ui';
+import {
+  Button,
+  ErrorBadge,
+  ErrorLevel,
+  Heading,
+  HeadingType,
+  TransactionId,
+} from '@sovryn/ui';
 
 import { useCopyAddress } from '../../../../../../hooks/useCopyAddress';
 import { useMaintenance } from '../../../../../../hooks/useMaintenance';
@@ -118,7 +125,12 @@ export const ReviewScreen: React.FC<ReviewScreenProps> = ({
           disabled={fastBtcLocked}
           className="w-full"
         />
-        {fastBtcLocked && <div>{t(translations.maintenanceMode.fastBtc)}</div>}
+        {fastBtcLocked && (
+          <ErrorBadge
+            level={ErrorLevel.Warning}
+            message={t(translations.maintenanceMode.fastBtc)}
+          />
+        )}
       </div>
     </div>
   );

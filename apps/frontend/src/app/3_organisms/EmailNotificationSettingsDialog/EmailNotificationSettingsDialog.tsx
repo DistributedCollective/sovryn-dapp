@@ -1,8 +1,8 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 
 import axios from 'axios';
+import { t } from 'i18next';
 import { nanoid } from 'nanoid';
-import { useTranslation } from 'react-i18next';
 
 import {
   Button,
@@ -53,7 +53,6 @@ const EmailNotificationSettingsDialogComponent: React.FC<
 > = ({ isOpen, onClose }) => {
   const { account, eip1193Provider: provider } = useAccount();
   const { addNotification } = useNotificationContext();
-  const { t } = useTranslation();
 
   const [notificationToken, setNotificationToken] = useState<string | null>(
     null,
@@ -177,7 +176,7 @@ const EmailNotificationSettingsDialogComponent: React.FC<
         });
         onClose();
       });
-  }, [account, onClose, provider, t, addNotification]);
+  }, [account, onClose, provider, addNotification]);
 
   const handleUserDataResponse = useCallback(
     (response: Promise<any>, showNotifications: boolean = false) => {
@@ -214,7 +213,7 @@ const EmailNotificationSettingsDialogComponent: React.FC<
         })
         .finally(() => setLoading(false));
     },
-    [getToken, t, addNotification, parseSubscriptionsResponse],
+    [getToken, addNotification, parseSubscriptionsResponse],
   );
 
   const getUser = useCallback(() => {

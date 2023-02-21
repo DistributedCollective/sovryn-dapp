@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useMemo } from 'react';
 
-import { useTranslation } from 'react-i18next';
+import { t } from 'i18next';
 
 import { Paragraph, NotificationType, Button, ButtonStyle } from '@sovryn/ui';
 
@@ -16,7 +16,6 @@ const WrongNetworkSwitcherId = 'WrongNetworkSwitcher';
 export const useWrongNetworkCheck = () => {
   const { addNotification, removeNotification } = useNotificationContext();
   const { wallets, switchNetwork } = useWalletConnect();
-  const { t } = useTranslation();
 
   const isWrongChain = useMemo(() => {
     return (

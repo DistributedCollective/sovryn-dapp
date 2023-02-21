@@ -6,7 +6,7 @@ import React, {
   useState,
 } from 'react';
 
-import { useTranslation } from 'react-i18next';
+import { t } from 'i18next';
 import { reactLocalStorage } from 'reactjs-localstorage';
 
 import {
@@ -40,7 +40,6 @@ export const GettingStartedPopup: FC<GettingStartedPopupProps> = ({
   isOpen,
   onConfirm,
 }) => {
-  const { t } = useTranslation();
   const { isMobile } = useIsMobile();
   const [page, setPage] = useState(0);
   const [checked, setChecked] = useState(false);
@@ -77,7 +76,7 @@ export const GettingStartedPopup: FC<GettingStartedPopupProps> = ({
         icon: IconNames.SWAP,
       },
     ],
-    [t],
+    [],
   );
 
   const items = useMemo(

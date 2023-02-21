@@ -1,6 +1,6 @@
 import React, { useCallback, useState } from 'react';
 
-import { useTranslation } from 'react-i18next';
+import { t } from 'i18next';
 
 import { Accordion } from '@sovryn/ui';
 
@@ -21,8 +21,6 @@ export const Limits: React.FC<LimitsProps> = ({
   serviceFee,
   className,
 }) => {
-  const { t } = useTranslation();
-
   const [open, setOpen] = useState(true);
   const onClick = useCallback((toOpen: boolean) => setOpen(toOpen), []);
 

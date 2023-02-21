@@ -9,9 +9,9 @@ import {
   ErrorLevel,
   Heading,
   HeadingType,
-  TransactionId,
 } from '@sovryn/ui';
 
+import { TxIdWithNotification } from '../../../../../2_molecules/TxIdWithNotification/TransactionIdWithNotification';
 import { useMaintenance } from '../../../../../../hooks/useMaintenance';
 import { translations } from '../../../../../../locales/i18n';
 import { Bitcoin } from '../../../../../../utils/constants';
@@ -51,7 +51,7 @@ export const ReviewScreen: React.FC<ReviewScreenProps> = ({
       {
         label: t(translation.from),
         value: (
-          <TransactionId
+          <TxIdWithNotification
             value={from}
             href={`${rskExplorerUrl}/address/${from}`}
           />
@@ -60,7 +60,10 @@ export const ReviewScreen: React.FC<ReviewScreenProps> = ({
       {
         label: t(translation.to),
         value: (
-          <TransactionId value={to} href={`${btcExplorerUrl}/address/${to}`} />
+          <TxIdWithNotification
+            value={to}
+            href={`${btcExplorerUrl}/address/${to}`}
+          />
         ),
       },
       {

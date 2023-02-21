@@ -22,12 +22,12 @@ import {
   SimpleTableRow,
   StatusItem,
   StatusType,
-  TransactionId,
   HelperButton,
 } from '@sovryn/ui';
 
 import { chains, defaultChainId } from '../../../../../config/chains';
 
+import { TxIdWithNotification } from '../../../../2_molecules/TxIdWithNotification/TransactionIdWithNotification';
 import { APPROVAL_FUNCTION } from '../../../../../utils/constants';
 import { fromWei, toWei } from '../../../../../utils/math';
 import {
@@ -62,7 +62,6 @@ export const TransactionStep: FC<TransactionStepProps> = ({
 }) => {
   const { request, title, subtitle } = transaction;
   const [token, setToken] = useState<TokenDetailsData | undefined>();
-
   useEffect(() => {
     if (isTransactionRequest(request)) {
       const { contract } = request;
@@ -240,7 +239,7 @@ export const TransactionStep: FC<TransactionStepProps> = ({
                 <SimpleTableRow
                   label="TX ID"
                   value={
-                    <TransactionId
+                    <TxIdWithNotification
                       href={`${chain?.blockExplorerUrl}/tx/${receipt.response}`}
                       value={receipt.response}
                     />

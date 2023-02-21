@@ -13,12 +13,12 @@ import {
   Paragraph,
   ParagraphSize,
   Table,
-  TransactionId,
 } from '@sovryn/ui';
 
 import { chains, defaultChainId } from '../../../config/chains';
 
 import { ExportCSV } from '../../2_molecules/ExportCSV/ExportCSV';
+import { TxIdWithNotification } from '../../2_molecules/TxIdWithNotification/TransactionIdWithNotification';
 import { useNotificationContext } from '../../../contexts/NotificationContext';
 import { useAccount } from '../../../hooks/useAccount';
 import { useBlockNumber } from '../../../hooks/useBlockNumber';
@@ -101,7 +101,7 @@ export const CollateralSurplusHistoryFrame: FC = () => {
         id: 'transactionID',
         title: t(translations.collateralSurplusHistory.table.transactionID),
         cellRenderer: (tx: any) => (
-          <TransactionId
+          <TxIdWithNotification
             href={`${chain?.blockExplorerUrl}/tx/${tx.hash}`}
             value={tx.hash}
             dataAttribute="history-address-id"

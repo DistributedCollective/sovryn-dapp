@@ -1,7 +1,7 @@
 import React, { FC, useCallback, useMemo, useState } from 'react';
 import { useEffect } from 'react';
 
-import { useTranslation } from 'react-i18next';
+import { t } from 'i18next';
 
 import { SupportedTokens } from '@sovryn/contracts';
 import { SupportedTokenList } from '@sovryn/contracts';
@@ -21,6 +21,7 @@ import {
 
 import { AssetRenderer } from '../../2_molecules/AssetRenderer/AssetRenderer';
 import { useAccount } from '../../../hooks/useAccount';
+import { useAmountInput } from '../../../hooks/useAmountInput';
 import { translations } from '../../../locales/i18n';
 import { formatValue } from '../../../utils/math';
 import { allowedTokens, bassets } from './ConvertPage.types';
@@ -32,12 +33,11 @@ const commonTranslations = translations.common;
 const pageTranslations = translations.convertPage;
 
 const ConvertPage: FC = () => {
-  const { t } = useTranslation();
   const { account } = useAccount();
 
   const defaultSourceToken = useGetDefaultSourceToken();
 
-  const [amount, setAmount] = useState('0');
+  const [amountInput, setAmount, amount] = useAmountInput('');
   const [sourceToken, setSourceToken] =
     useState<SupportedTokens>(defaultSourceToken);
 
@@ -87,19 +87,22 @@ const ConvertPage: FC = () => {
 
   const onMaximumAmountClick = useCallback(
     () => setAmount(maximumAmountToConvert),
-    [maximumAmountToConvert],
+    [maximumAmountToConvert, setAmount],
   );
 
   const onSwitchClick = useCallback(() => {
     setDestinationToken(sourceToken);
     setSourceToken(destinationToken);
-    setAmount('0');
-  }, [destinationToken, sourceToken]);
+    setAmount('');
+  }, [destinationToken, setAmount, sourceToken]);
 
-  const onSourceTokenChange = useCallback((value: SupportedTokens) => {
-    setSourceToken(value);
-    setAmount('0');
-  }, []);
+  const onSourceTokenChange = useCallback(
+    (value: SupportedTokens) => {
+      setSourceToken(value);
+      setAmount('');
+    },
+    [setAmount],
+  );
 
   useEffect(() => {
     if (sourceToken === destinationToken) {
@@ -182,7 +185,7 @@ const ConvertPage: FC = () => {
 
           <div className="w-full flex flex-row justify-between items-center gap-3 mt-3.5">
             <AmountInput
-              value={amount}
+              value={amountInput}
               onChangeText={setAmount}
               label={t(commonTranslations.amount)}
               min={0}
@@ -190,6 +193,7 @@ const ConvertPage: FC = () => {
               disabled={!account}
               className="w-full flex-grow-0 flex-shrink"
               dataAttribute="convert-from-amount"
+              placeholder="0"
             />
 
             <Select
@@ -233,6 +237,7 @@ const ConvertPage: FC = () => {
               value={amount}
               label={t(commonTranslations.amount)}
               readOnly
+              placeholder="0"
               className="w-full flex-grow-0 flex-shrink"
               dataAttribute="convert-to-amount"
             />

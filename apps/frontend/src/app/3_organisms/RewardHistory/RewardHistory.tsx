@@ -1,7 +1,7 @@
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 
+import { t } from 'i18next';
 import { nanoid } from 'nanoid';
-import { useTranslation } from 'react-i18next';
 
 import { SupportedTokens } from '@sovryn/contracts';
 import {
@@ -37,7 +37,6 @@ import { useGetRewardHistory } from './hooks/useGetRewardHistory';
 const DEFAULT_PAGE_SIZE = 10;
 
 export const RewardHistory: FC = () => {
-  const { t } = useTranslation();
   const { account } = useAccount();
   const { addNotification } = useNotificationContext();
 
@@ -117,7 +116,7 @@ export const RewardHistory: FC = () => {
         ),
       },
     ],
-    [chain?.blockExplorerUrl, t],
+    [chain?.blockExplorerUrl],
   );
 
   const onPageChange = useCallback(
@@ -167,13 +166,7 @@ export const RewardHistory: FC = () => {
       stabilityDepositOperation: tx.stabilityDepositOperation,
       transactionID: tx.transaction.id,
     }));
-  }, [
-    account,
-    addNotification,
-    getStabilityDeposit,
-    renderCollateralChange,
-    t,
-  ]);
+  }, [account, addNotification, getStabilityDeposit, renderCollateralChange]);
 
   useEffect(() => {
     setPage(0);

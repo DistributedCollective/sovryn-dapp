@@ -1,6 +1,6 @@
 import React, { useCallback, useMemo, FC } from 'react';
 
-import { useTranslation } from 'react-i18next';
+import { t } from 'i18next';
 
 import { SupportedTokens } from '@sovryn/contracts';
 import {
@@ -9,6 +9,9 @@ import {
   ButtonStyle,
   ButtonType,
   DynamicValue,
+  ErrorData,
+  ErrorLevel,
+  ErrorList,
   FormGroup,
   HealthBar,
   HelperButton,
@@ -16,9 +19,7 @@ import {
   SimpleTable,
 } from '@sovryn/ui';
 
-import { ErrorData, ErrorLevel } from '../../../1_atoms/ErrorBadge/ErrorBadge';
 import { AssetRenderer } from '../../../2_molecules/AssetRenderer/AssetRenderer';
-import { ErrorList } from '../../../2_molecules/ErrorList/ErrorList';
 import { BORROW_ASSETS } from '../../../5_pages/ZeroPage/constants';
 import { translations } from '../../../../locales/i18n';
 import { Bitcoin, CR_THRESHOLDS } from '../../../../utils/constants';
@@ -79,8 +80,6 @@ export type FormContentProps = {
 
 // using props instead of destructuring to make use of the type
 export const FormContent: FC<FormContentProps> = props => {
-  const { t } = useTranslation();
-
   const debtTabs = useMemo(
     () => [
       {
@@ -92,7 +91,7 @@ export const FormContent: FC<FormContentProps> = props => {
         label: t(translations.adjustCreditLine.actions.repay),
       },
     ],
-    [t],
+    [],
   );
 
   const collateralTabs = useMemo(
@@ -110,7 +109,7 @@ export const FormContent: FC<FormContentProps> = props => {
         label: t(translations.adjustCreditLine.actions.withdrawCollateral),
       },
     ],
-    [props.hasTrove, t],
+    [props.hasTrove],
   );
 
   const submitButtonDisabled = useMemo(() => {
@@ -188,7 +187,7 @@ export const FormContent: FC<FormContentProps> = props => {
           {formatValue(value, 3)} {SupportedTokens.zusd.toUpperCase()}
         </>
       ),
-    [t],
+    [],
   );
 
   const renderTotalCollateral = useCallback(
@@ -200,7 +199,7 @@ export const FormContent: FC<FormContentProps> = props => {
           {formatValue(value, 3)} {Bitcoin}
         </>
       ),
-    [t],
+    [],
   );
 
   const renderOriginationFee = useCallback(
@@ -213,7 +212,7 @@ export const FormContent: FC<FormContentProps> = props => {
           {formatValue(props.borrowingRate * 100, 2)}%)
         </>
       ),
-    [props.borrowingRate, t],
+    [props.borrowingRate],
   );
 
   const renderLiquidationPrice = useCallback(
@@ -223,13 +222,13 @@ export const FormContent: FC<FormContentProps> = props => {
       ) : (
         <>{formatValue(value, 3)} USD</>
       ),
-    [t],
+    [],
   );
 
   const renderCollateralRatio = useCallback(
     (value: number) =>
       value === 0 ? t(translations.common.na) : <>{formatValue(value, 3)}%</>,
-    [t],
+    [],
   );
 
   const tokenOptions = useMemo(
@@ -283,6 +282,7 @@ export const FormContent: FC<FormContentProps> = props => {
             tooltip={t(translations.adjustCreditLine.fields.debt.tooltip)}
             className="w-full flex-grow-0 flex-shrink"
             invalid={!!props.debtError}
+            placeholder="0"
           />
           <Select
             value={props.debtToken}
@@ -325,6 +325,7 @@ export const FormContent: FC<FormContentProps> = props => {
           className="max-w-none"
           unit={Bitcoin}
           invalid={!!props.collateralError}
+          placeholder="0"
         />
       </FormGroup>
       <div className="mt-6">

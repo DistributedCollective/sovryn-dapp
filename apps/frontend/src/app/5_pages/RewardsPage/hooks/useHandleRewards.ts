@@ -1,11 +1,14 @@
 import { useCallback, useMemo } from 'react';
 
 import { ethers } from 'ethers';
-import { useTranslation } from 'react-i18next';
+import { t } from 'i18next';
 
 import { getContract } from '@sovryn/contracts';
 
-import { Transaction } from '../../../3_organisms/TransactionStepDialog/TransactionStepDialog.types';
+import {
+  Transaction,
+  TransactionType,
+} from '../../../3_organisms/TransactionStepDialog/TransactionStepDialog.types';
 import { useTransactionContext } from '../../../../contexts/TransactionContext';
 import { useAccount } from '../../../../hooks/useAccount';
 import { translations } from '../../../../locales/i18n';
@@ -15,7 +18,6 @@ import { toWei } from '../../../../utils/math';
 import { RewardsAction } from './../types';
 
 export const useHandleRewards = (action: RewardsAction, amount: string) => {
-  const { t } = useTranslation();
   const { signer, account } = useAccount();
   const { setTransactions, setIsOpen, setTitle } = useTransactionContext();
 
@@ -29,7 +31,7 @@ export const useHandleRewards = (action: RewardsAction, amount: string) => {
       isWithdrawTransaction
         ? t(translations.rewardPage.tx.withdrawGains)
         : t(translations.rewardPage.tx.transferToLOC),
-    [isWithdrawTransaction, t],
+    [isWithdrawTransaction],
   );
 
   const transactionTitle = useMemo(
@@ -37,7 +39,7 @@ export const useHandleRewards = (action: RewardsAction, amount: string) => {
       isWithdrawTransaction
         ? t(translations.rewardPage.tx.withdraw)
         : t(translations.rewardPage.tx.transfer),
-    [isWithdrawTransaction, t],
+    [isWithdrawTransaction],
   );
 
   const getStabilityPoolContract = useCallback(async () => {
@@ -56,10 +58,13 @@ export const useHandleRewards = (action: RewardsAction, amount: string) => {
 
     transactions.push({
       title: title,
-      contract: stabilityPool,
-      fnName: action,
-      args: isWithdrawTransaction ? [toWei(amount)] : [account, account],
-      config: { gasLimit: GAS_LIMIT_REWARDS }, // TODO: add a different limit for transfer if needed
+      request: {
+        type: TransactionType.signTransaction,
+        contract: stabilityPool,
+        fnName: action,
+        args: isWithdrawTransaction ? [toWei(amount)] : [account, account],
+        gasLimit: GAS_LIMIT_REWARDS,
+      },
     });
 
     setTransactions(transactions);

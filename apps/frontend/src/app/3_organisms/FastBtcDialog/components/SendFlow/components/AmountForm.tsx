@@ -1,6 +1,6 @@
 import React, { useCallback, useContext, useMemo, useState } from 'react';
 
-import { useTranslation } from 'react-i18next';
+import { t } from 'i18next';
 
 import { SupportedTokens } from '@sovryn/contracts';
 import {
@@ -31,8 +31,6 @@ import {
 import { TransferPolicies } from './TransferPolicies';
 
 export const AmountForm: React.FC = () => {
-  const { t } = useTranslation();
-
   const { amount, limits, set } = useContext(WithdrawContext);
 
   const { checkMaintenance, States } = useMaintenance();

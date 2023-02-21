@@ -1,7 +1,7 @@
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 
+import { t } from 'i18next';
 import { nanoid } from 'nanoid';
-import { useTranslation } from 'react-i18next';
 
 import { SupportedTokens } from '@sovryn/contracts';
 import {
@@ -41,7 +41,6 @@ import { useGetRedemptionsHistory } from './hooks/useGetRedemptionsHistory';
 const pageSize = DEFAULT_HISTORY_FRAME_PAGE_SIZE;
 
 export const RedemptionsHistoryFrame: FC = () => {
-  const { t } = useTranslation();
   const { account } = useAccount();
   const { addNotification } = useNotificationContext();
 
@@ -199,7 +198,7 @@ export const RedemptionsHistoryFrame: FC = () => {
         ),
       },
     ],
-    [t, chain, renderZUSDRedeemed, renderRBTCReceived, renderRedemptionFee],
+    [chain, renderZUSDRedeemed, renderRBTCReceived, renderRedemptionFee],
   );
 
   const onPageChange = useCallback(
@@ -247,7 +246,7 @@ export const RedemptionsHistoryFrame: FC = () => {
       redemptionFee: tx.fee,
       transactionID: tx.transaction.id,
     }));
-  }, [t, account, addNotification, getRedemptions]);
+  }, [account, addNotification, getRedemptions]);
 
   useEffect(() => {
     setPage(0);

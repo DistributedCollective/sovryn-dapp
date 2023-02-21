@@ -15,6 +15,8 @@ import {
   ParagraphSize,
   Table,
   TransactionId,
+  ErrorBadge,
+  ErrorLevel,
 } from '@sovryn/ui';
 
 import { chains, defaultChainId } from '../../../config/chains';
@@ -24,6 +26,7 @@ import { ExportCSV } from '../../2_molecules/ExportCSV/ExportCSV';
 import { TableFilter } from '../../2_molecules/TableFilter/TableFilter';
 import { Filter } from '../../2_molecules/TableFilter/TableFilter.types';
 import { TransactionTypeRenderer } from '../../2_molecules/TransactionTypeRenderer/TransactionTypeRenderer';
+import { TxIdWithNotification } from '../../2_molecules/TxIdWithNotification/TransactionIdWithNotification';
 import { useNotificationContext } from '../../../contexts/NotificationContext';
 import { useAccount } from '../../../hooks/useAccount';
 import { useBlockNumber } from '../../../hooks/useBlockNumber';
@@ -51,7 +54,6 @@ export const StabilityPoolHistoryFrame: FC = () => {
   const { account } = useAccount();
   const { addNotification } = useNotificationContext();
   const [filters, setFilters] = useState<StabilityDepositChange_Filter>({});
-
   const { value: block } = useBlockNumber();
 
   const [page, setPage] = useState(0);
@@ -216,7 +218,7 @@ export const StabilityPoolHistoryFrame: FC = () => {
         id: 'transactionID',
         title: t(translations.stabilityPoolHistory.table.transactionID),
         cellRenderer: (row: StabilityDepositChange) => (
-          <TransactionId
+          <TxIdWithNotification
             href={`${chain?.blockExplorerUrl}/tx/${row.transaction.id}`}
             value={row.transaction.id}
             dataAttribute="stability-pool-history-address-id"

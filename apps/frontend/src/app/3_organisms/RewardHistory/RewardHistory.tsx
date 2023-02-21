@@ -14,7 +14,6 @@ import {
   Paragraph,
   ParagraphSize,
   Table,
-  TransactionId,
 } from '@sovryn/ui';
 
 import { chains, defaultChainId } from '../../../config/chains';
@@ -22,6 +21,7 @@ import { chains, defaultChainId } from '../../../config/chains';
 import { AmountRenderer } from '../../2_molecules/AmountRenderer/AmountRenderer';
 import { ExportCSV } from '../../2_molecules/ExportCSV/ExportCSV';
 import { TransactionTypeRenderer } from '../../2_molecules/TransactionTypeRenderer/TransactionTypeRenderer';
+import { TxIdWithNotification } from '../../2_molecules/TxIdWithNotification/TransactionIdWithNotification';
 import { useNotificationContext } from '../../../contexts/NotificationContext';
 import { useAccount } from '../../../hooks/useAccount';
 import { useMaintenance } from '../../../hooks/useMaintenance';
@@ -114,7 +114,7 @@ export const RewardHistory: FC = () => {
         id: 'transactionID',
         title: t(translations.rewardHistoryTable.table.transactionID),
         cellRenderer: (tx: StabilityDepositChange) => (
-          <TransactionId
+          <TxIdWithNotification
             href={`${chain?.blockExplorerUrl}/tx/${tx.transaction.id}`}
             value={tx.transaction.id}
             dataAttribute="history-reward-address-id"

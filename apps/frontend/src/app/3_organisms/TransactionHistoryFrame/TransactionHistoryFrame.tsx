@@ -23,6 +23,7 @@ import { AmountRenderer } from '../../2_molecules/AmountRenderer/AmountRenderer'
 import { ExportCSV } from '../../2_molecules/ExportCSV/ExportCSV';
 import { TableFilter } from '../../2_molecules/TableFilter/TableFilter';
 import { Filter } from '../../2_molecules/TableFilter/TableFilter.types';
+import { TxIdWithNotification } from '../../2_molecules/TxIdWithNotification/TransactionIdWithNotification';
 import { useNotificationContext } from '../../../contexts/NotificationContext';
 import { useAccount } from '../../../hooks/useAccount';
 import { useBlockNumber } from '../../../hooks/useBlockNumber';
@@ -445,7 +446,7 @@ export const TransactionHistoryFrame: FC = () => {
         id: 'transactionID',
         title: t(translations.transactionHistory.table.transactionID),
         cellRenderer: (item: TroveChange) => (
-          <TransactionId
+          <TxIdWithNotification
             href={`${chain?.blockExplorerUrl}/tx/${item.transaction.id}`}
             value={item.transaction.id}
             dataAttribute="history-address-id"

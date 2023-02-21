@@ -1,5 +1,6 @@
 import { useCallback } from 'react';
 
+import { t } from 'i18next';
 import { nanoid } from 'nanoid';
 
 import { NotificationType } from '@sovryn/ui';
@@ -13,7 +14,7 @@ export const useCopyAddress = () => {
   return useCallback(() => {
     addNotification({
       type: NotificationType.success,
-      title: translations.copyAddress,
+      title: t(translations.copyAddress),
       content: '',
       dismissible: true,
       id: nanoid(),

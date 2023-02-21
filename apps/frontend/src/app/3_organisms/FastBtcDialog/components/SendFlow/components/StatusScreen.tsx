@@ -134,7 +134,7 @@ export const StatusScreen: React.FC<StatusScreenProps> = ({
       </Heading>
 
       <div className="mb-6">
-        <StatusIcon status={txStatus} dataAttribute="fastBtc-send" />
+        <StatusIcon status={txStatus} dataAttribute="funding-send-status" />
       </div>
 
       <div className="bg-gray-80 border rounded border-gray-50 p-3 text-xs text-gray-30">
@@ -158,7 +158,9 @@ export const StatusScreen: React.FC<StatusScreenProps> = ({
         onClick={hasTransactionFailed ? onRetry : onClose}
         disabled={isDoneButtonDisabled}
         className="mt-8 w-full"
-        dataAttribute="fastBtc-send-done-button"
+        dataAttribute={`funding-send-${
+          hasTransactionFailed ? 'retry' : 'done'
+        }`}
       />
     </div>
   );

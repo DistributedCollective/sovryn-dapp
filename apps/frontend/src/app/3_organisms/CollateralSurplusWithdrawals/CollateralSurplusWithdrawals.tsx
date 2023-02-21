@@ -4,7 +4,6 @@ import { t } from 'i18next';
 import { nanoid } from 'nanoid';
 
 import {
-  applyDataAttr,
   ErrorBadge,
   ErrorLevel,
   NotificationType,
@@ -105,7 +104,7 @@ export const CollateralSurplusHistoryFrame: FC = () => {
           <TransactionId
             href={`${chain?.blockExplorerUrl}/tx/${tx.hash}`}
             value={tx.hash}
-            {...applyDataAttr('history-address-id')}
+            dataAttribute="history-address-id"
           />
         ),
       },
@@ -193,7 +192,7 @@ export const CollateralSurplusHistoryFrame: FC = () => {
           isLoading={loading}
           className="bg-gray-80 text-gray-10 lg:px-6 lg:py-4"
           noData={t(translations.common.tables.noData)}
-          {...applyDataAttr('surplus-withdrawals-table')}
+          dataAttribute="surplus-withdrawals-table"
         />
         <Pagination
           page={page}
@@ -201,7 +200,7 @@ export const CollateralSurplusHistoryFrame: FC = () => {
           onChange={onPageChange}
           itemsPerPage={pageSize}
           isNextButtonDisabled={isNextButtonDisabled}
-          {...applyDataAttr('surplus-withdrawals-pagination')}
+          dataAttribute="surplus-withdrawals-pagination"
         />
       </div>
     </>

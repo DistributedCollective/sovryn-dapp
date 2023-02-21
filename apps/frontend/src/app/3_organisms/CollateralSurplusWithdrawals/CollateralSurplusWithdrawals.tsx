@@ -1,7 +1,7 @@
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 
+import { t } from 'i18next';
 import { nanoid } from 'nanoid';
-import { useTranslation } from 'react-i18next';
 
 import {
   applyDataAttr,
@@ -41,7 +41,6 @@ import { useGetCollateralSurplusWithdrawals } from './hooks/useGetCollateralSurp
 const pageSize = DEFAULT_HISTORY_FRAME_PAGE_SIZE;
 
 export const CollateralSurplusHistoryFrame: FC = () => {
-  const { t } = useTranslation();
   const { account } = useAccount();
   const { addNotification } = useNotificationContext();
 
@@ -111,7 +110,7 @@ export const CollateralSurplusHistoryFrame: FC = () => {
         ),
       },
     ],
-    [chain?.blockExplorerUrl, renderCollateralChange, t],
+    [chain?.blockExplorerUrl, renderCollateralChange],
   );
 
   const onPageChange = useCallback(
@@ -160,13 +159,7 @@ export const CollateralSurplusHistoryFrame: FC = () => {
       ),
       transactionID: tx.transaction.id,
     }));
-  }, [
-    account,
-    addNotification,
-    getCollSurplusChanges,
-    renderCollateralChange,
-    t,
-  ]);
+  }, [account, addNotification, getCollSurplusChanges, renderCollateralChange]);
 
   useEffect(() => {
     setPage(0);

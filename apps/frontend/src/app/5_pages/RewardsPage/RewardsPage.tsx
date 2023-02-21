@@ -6,7 +6,7 @@ import {
 
 import React, { FC, useEffect, useMemo, useState } from 'react';
 
-import { useTranslation } from 'react-i18next';
+import { t } from 'i18next';
 import { useLoaderData } from 'react-router-dom';
 
 import { applyDataAttr, ErrorBadge, ErrorLevel } from '@sovryn/ui';
@@ -30,7 +30,6 @@ import { useHandleRewards } from './hooks/useHandleRewards';
 import { RewardsAction } from './types';
 
 const RewardsPage: FC = () => {
-  const { t } = useTranslation();
   const { account, signer } = useAccount();
   const [amount, setAmount] = useState<Decimal>(Decimal.from(0));
   const isOpenTroveExists = useGetOpenTrove();

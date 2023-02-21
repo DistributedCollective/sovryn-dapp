@@ -1,6 +1,6 @@
 import React, { FC, useCallback } from 'react';
 
-import { useTranslation } from 'react-i18next';
+import { t } from 'i18next';
 
 import { translations } from '../../../locales/i18n';
 import { StabilityDepositOperation } from '../../../utils/graphql/zero/generated';
@@ -12,7 +12,6 @@ type TransactionTypeRendererProps = {
 export const TransactionTypeRenderer: FC<TransactionTypeRendererProps> = ({
   type,
 }) => {
-  const { t } = useTranslation();
   const getTransactionType = useCallback(
     (operation: StabilityDepositOperation) => {
       switch (operation) {
@@ -38,7 +37,7 @@ export const TransactionTypeRenderer: FC<TransactionTypeRendererProps> = ({
           return operation;
       }
     },
-    [t],
+    [],
   );
 
   return <>{getTransactionType(type)}</>;

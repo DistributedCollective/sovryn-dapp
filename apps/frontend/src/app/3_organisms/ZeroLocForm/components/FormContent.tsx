@@ -1,6 +1,6 @@
 import React, { useCallback, useMemo, FC } from 'react';
 
-import { useTranslation } from 'react-i18next';
+import { t } from 'i18next';
 
 import { SupportedTokens } from '@sovryn/contracts';
 import {
@@ -88,7 +88,6 @@ export const FormContent: FC<FormContentProps> = props => {
     props.hasTrove ? States.ZERO_ADJUST_LOC : States.ZERO_OPEN_LOC,
   );
   const dllrLocked = checkMaintenance(States.ZERO_DLLR);
-
   const debtTabs = useMemo(
     () => [
       {
@@ -100,7 +99,7 @@ export const FormContent: FC<FormContentProps> = props => {
         label: t(translations.adjustCreditLine.actions.repay),
       },
     ],
-    [t],
+    [],
   );
 
   const collateralTabs = useMemo(
@@ -118,7 +117,7 @@ export const FormContent: FC<FormContentProps> = props => {
         label: t(translations.adjustCreditLine.actions.withdrawCollateral),
       },
     ],
-    [props.hasTrove, t],
+    [props.hasTrove],
   );
 
   const isInMaintenance = useMemo(
@@ -208,7 +207,7 @@ export const FormContent: FC<FormContentProps> = props => {
           {formatValue(value, 3)} {SupportedTokens.zusd.toUpperCase()}
         </>
       ),
-    [t],
+    [],
   );
 
   const renderTotalCollateral = useCallback(
@@ -220,7 +219,7 @@ export const FormContent: FC<FormContentProps> = props => {
           {formatValue(value, 3)} {Bitcoin}
         </>
       ),
-    [t],
+    [],
   );
 
   const renderOriginationFee = useCallback(
@@ -233,7 +232,7 @@ export const FormContent: FC<FormContentProps> = props => {
           {formatValue(props.borrowingRate * 100, 2)}%)
         </>
       ),
-    [props.borrowingRate, t],
+    [props.borrowingRate],
   );
 
   const renderLiquidationPrice = useCallback(
@@ -243,13 +242,13 @@ export const FormContent: FC<FormContentProps> = props => {
       ) : (
         <>{formatValue(value, 3)} USD</>
       ),
-    [t],
+    [],
   );
 
   const renderCollateralRatio = useCallback(
     (value: number) =>
       value === 0 ? t(translations.common.na) : <>{formatValue(value, 3)}%</>,
-    [t],
+    [],
   );
 
   const tokenOptions = useMemo(
@@ -303,6 +302,7 @@ export const FormContent: FC<FormContentProps> = props => {
             tooltip={t(translations.adjustCreditLine.fields.debt.tooltip)}
             className="w-full flex-grow-0 flex-shrink"
             invalid={!!props.debtError}
+            placeholder="0"
           />
           <Select
             value={props.debtToken}
@@ -345,6 +345,7 @@ export const FormContent: FC<FormContentProps> = props => {
           className="max-w-none"
           unit={Bitcoin}
           invalid={!!props.collateralError}
+          placeholder="0"
         />
       </FormGroup>
       <div className="mt-6">

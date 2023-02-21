@@ -82,7 +82,6 @@ export type FormContentProps = {
 
 // using props instead of destructuring to make use of the type
 export const FormContent: FC<FormContentProps> = props => {
-  const { t } = useTranslation();
   const { checkMaintenance, States } = useMaintenance();
   const actionLocked = checkMaintenance(
     props.hasTrove ? States.ZERO_ADJUST_LOC : States.ZERO_OPEN_LOC,

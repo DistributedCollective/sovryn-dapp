@@ -291,6 +291,7 @@ export const TransactionSteps: FC<TransactionStepsProps> = ({
           className="w-full mt-7"
           text={error ? 'Retry' : 'Confirm'}
           onClick={submit}
+          dataAttribute={`tx-dialog-${error ? 'retry' : 'confirm'}`}
         />
       )}
       {onClose && transactions.length === step && (
@@ -298,6 +299,7 @@ export const TransactionSteps: FC<TransactionStepsProps> = ({
           text={t(translations.common.done)}
           onClick={onClose}
           className="w-full mt-7"
+          dataAttribute="tx-dialog-done"
         ></Button>
       )}
     </div>

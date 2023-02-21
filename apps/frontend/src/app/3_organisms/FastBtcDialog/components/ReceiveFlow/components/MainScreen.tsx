@@ -41,6 +41,7 @@ export const MainScreen: React.FC = () => {
           className="w-full"
           style={ButtonStyle.secondary}
           text={t(translations.common.buttons.continue)}
+          dataAttribute="funding-receive-instructions-confirm"
         />
       )}
     </div>

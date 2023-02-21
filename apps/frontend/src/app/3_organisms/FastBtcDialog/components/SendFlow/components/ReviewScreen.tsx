@@ -124,6 +124,7 @@ export const ReviewScreen: React.FC<ReviewScreenProps> = ({
           onClick={onConfirm}
           disabled={fastBtcLocked}
           className="w-full"
+          dataAttribute="funding-send-confirm"
         />
         {fastBtcLocked && (
           <ErrorBadge

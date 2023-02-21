@@ -250,13 +250,13 @@ export const TransactionStep: FC<TransactionStepProps> = ({
                 />
               )}
             </SimpleTable>
-
             <Accordion
               className="mt-4 mb-3 text-xs"
               label="Advanced Settings"
               open={advanced && !disabledSettings}
               onClick={() => setAdvanced(!advanced)}
               disabled={disabledSettings}
+              dataAttribute="tx-dialog-settings"
             >
               {config.amount !== undefined && (
                 <>
@@ -304,6 +304,7 @@ export const TransactionStep: FC<TransactionStepProps> = ({
                 type={ButtonType.reset}
                 text="Reset values"
                 onClick={resetConfig}
+                dataAttribute="tx-dialog-settings-reset"
               />
             </Accordion>
           </>

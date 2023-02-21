@@ -9,8 +9,9 @@ import React, { FC, useEffect, useMemo, useState } from 'react';
 import { t } from 'i18next';
 import { useLoaderData } from 'react-router-dom';
 
-import { applyDataAttr, ErrorBadge, ErrorLevel } from '@sovryn/ui';
 import {
+  ErrorBadge,
+  ErrorLevel,
   Button,
   ButtonStyle,
   ButtonType,
@@ -98,7 +99,7 @@ const RewardsPage: FC = () => {
             className="w-full max-w-48"
             onClick={handleWithdraw}
             disabled={claimDisabled}
-            {...applyDataAttr('rewards-withdraw')}
+            dataAttribute="rewards-withdraw"
           />
           {isOpenTroveExists && Number(amount) > 0 && signer && (
             <Button
@@ -108,7 +109,7 @@ const RewardsPage: FC = () => {
               className="w-full"
               onClick={handleTransferToLOC}
               disabled={claimLocked}
-              {...applyDataAttr('rewards-transfer-to-loc')}
+              dataAttribute="rewards-transfer-to-loc"
             />
           )}
         </div>

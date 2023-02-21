@@ -149,7 +149,7 @@ export const StatusScreen: React.FC<StatusScreenProps> = ({ onClose }) => {
         <div className="mb-6">
           <StatusIcon
             status={isProcessing ? StatusType.pending : StatusType.success}
-            dataAttribute="fastBtc-receive"
+            dataAttribute="funding-receive-status"
           />
         </div>
 
@@ -173,7 +173,7 @@ export const StatusScreen: React.FC<StatusScreenProps> = ({ onClose }) => {
         onClick={onClose}
         disabled={isProcessing}
         className="mt-8 w-full"
-        dataAttribute="fastBtc-receive-done-button"
+        dataAttribute="funding-receive-done"
       />
     </>
   );

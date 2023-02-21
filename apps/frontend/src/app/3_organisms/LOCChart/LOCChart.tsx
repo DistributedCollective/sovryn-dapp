@@ -188,10 +188,11 @@ export const LOCChart: FC<LOCChartProps> = ({ isDefaultView = false }) => {
       if (index === -1) {
         return;
       }
+      console.log(index);
 
       const centerIndex = (trovesCountToShow - 1) / 2;
       const shiftTroves =
-        index > centerIndex ? index - centerIndex : centerIndex - index - 1;
+        index >= centerIndex ? index - centerIndex : centerIndex - index;
 
       //setting the start point for the chart axis X
       setStartAxisXCount(shiftTroves);
@@ -200,9 +201,18 @@ export const LOCChart: FC<LOCChartProps> = ({ isDefaultView = false }) => {
         setLowestTroves(data.slice(0, index));
       }
 
-      //cutting an array up to 21 elements, 10 from the left and 10 from the right, starting from user trove index
-      const slicedData = data.slice().splice(shiftTroves, trovesCountToShow);
-      setDataToShow(slicedData);
+      if (index < centerIndex) {
+        //don't cutting an array, if the user trove is in the first 10 elements
+        setDataToShow(data.slice(0, trovesCountToShow));
+      } else {
+        //cutting an array up to 21 elements, 10 from the left and 10 from the right, starting from user trove index
+        const slicedData = data.slice(
+          shiftTroves,
+          shiftTroves + trovesCountToShow,
+        );
+        setDataToShow(slicedData);
+      }
+
       setUserCollateralRatio(data[index].collateralRatio);
       setActiveBar(true);
     }

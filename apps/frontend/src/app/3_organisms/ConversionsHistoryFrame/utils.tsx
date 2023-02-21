@@ -12,7 +12,7 @@ import {
 } from '../../../utils/graphql/mynt/generated';
 import { dateFormat } from '../../../utils/helpers';
 import { AssetAmountCell } from './components/AssetAmountCell/AssetAmountCell';
-import { TransactionIdRenderer } from './components/TransactionIdRender/TransactionIdRender';
+import { TransactionIdRenderer } from './components/TransactionIdRenderer/TransactionIdRenderer';
 
 const sentAmountRenderer = (item: Conversion) => {
   const isIncomingTransaction = item.type === ConversionType.Incoming; // bAsset -> mAsset

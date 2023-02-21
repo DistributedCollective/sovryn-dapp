@@ -7,9 +7,9 @@ import { chains, defaultChainId } from '../../../../../config/chains';
 import { useCopyAddress } from '../../../../../hooks/useCopyAddress';
 import { Conversion } from '../../../../../utils/graphql/mynt/generated';
 
-interface TransactionIdRendererProps {
+type TransactionIdRendererProps = {
   item: Conversion;
-}
+};
 
 export const TransactionIdRenderer: React.FC<TransactionIdRendererProps> = ({
   item,

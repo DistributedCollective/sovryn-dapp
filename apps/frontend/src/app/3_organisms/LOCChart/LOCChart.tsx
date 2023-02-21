@@ -10,8 +10,8 @@ import {
   Tooltip,
   Legend,
 } from 'chart.js';
+import { t } from 'i18next';
 import { Bar } from 'react-chartjs-2';
-import { useTranslation } from 'react-i18next';
 
 import { SupportedTokens } from '@sovryn/contracts';
 import { prettyTx } from '@sovryn/ui';
@@ -70,7 +70,6 @@ ChartJS.register(
  */
 
 export const LOCChart: FC = () => {
-  const { t } = useTranslation();
   const { account } = useAccount();
   const [data, setData] = useState<ChartDataStructure>([]);
   const [activeBar, setActiveBar] = useState<number | null>(null);
@@ -206,7 +205,7 @@ export const LOCChart: FC = () => {
         },
       },
     };
-  }, [t, activeBar, userCollateralRatio, redemptionBuffer]);
+  }, [activeBar, userCollateralRatio, redemptionBuffer]);
 
   const {
     data: userOpenTrove,

@@ -1,7 +1,7 @@
 import React, { FC, PropsWithChildren, useCallback, useReducer } from 'react';
 
+import { t } from 'i18next';
 import { nanoid } from 'nanoid';
-import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 
 import {
@@ -35,7 +35,6 @@ export const ConnectWalletButton: FC<
   className,
   dataAttribute,
 }) => {
-  const { t } = useTranslation();
   const [isOpen, toggle] = useReducer(state => !state, false);
   const { addNotification } = useNotificationContext();
 
@@ -47,7 +46,7 @@ export const ConnectWalletButton: FC<
       dismissible: true,
       id: nanoid(),
     });
-  }, [t, addNotification]);
+  }, [addNotification]);
 
   if (!address) {
     return (

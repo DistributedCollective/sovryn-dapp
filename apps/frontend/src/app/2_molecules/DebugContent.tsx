@@ -2,8 +2,8 @@ import React, { useCallback, useState } from 'react';
 
 import { ethers } from 'ethers';
 import { parseUnits } from 'ethers/lib/utils';
+import { t } from 'i18next';
 import { nanoid } from 'nanoid';
-import { useTranslation } from 'react-i18next';
 
 import { getTokenDetails, SupportedTokens } from '@sovryn/contracts';
 import { getZeroContract } from '@sovryn/contracts';
@@ -47,7 +47,7 @@ import { SmartTokens } from './SmartTokens';
 export const DebugContent = () => {
   const { handleThemeChange } = useTheme();
   const { addNotification } = useNotificationContext();
-  const { t } = useTranslation();
+
   const { connectWallet, disconnectWallet, pending } = useWalletConnect();
   const { account, signer } = useAccount();
   const [isPopupOpen, setIsPopupOpen] = useState(false);

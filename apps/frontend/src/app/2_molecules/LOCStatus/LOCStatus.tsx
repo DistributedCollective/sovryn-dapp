@@ -1,8 +1,8 @@
 import React, { FC } from 'react';
 
 import classNames from 'classnames';
+import { t } from 'i18next';
 import CountUp from 'react-countup';
-import { useTranslation } from 'react-i18next';
 
 import { Button, ButtonSize, ButtonStyle, HelperButton } from '@sovryn/ui';
 
@@ -34,7 +34,6 @@ export const LOCStatus: FC<LOCStatusProps> = ({
   className,
   debtSymbol = '',
 }) => {
-  const { t } = useTranslation();
   const showOpenLOC = withdrawalSurplus === 0 && collateral > 0;
 
   return (

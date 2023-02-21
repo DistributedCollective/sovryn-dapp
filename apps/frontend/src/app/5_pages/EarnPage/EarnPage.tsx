@@ -7,7 +7,7 @@ import {
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 
 import classNames from 'classnames';
-import { useTranslation } from 'react-i18next';
+import { t } from 'i18next';
 import { useLoaderData } from 'react-router-dom';
 
 import { SupportedTokens } from '@sovryn/contracts';
@@ -50,7 +50,6 @@ const EarnPage: FC = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   const { account } = useAccount();
-  const { t } = useTranslation();
 
   const { liquity } = useLoaderData() as {
     liquity: EthersLiquity;
@@ -101,7 +100,7 @@ const EarnPage: FC = () => {
     }
 
     return tabs;
-  }, [poolBalance, t]);
+  }, [poolBalance]);
 
   const isDeposit = useMemo(() => index === 0, [index]);
 
@@ -191,14 +190,14 @@ const EarnPage: FC = () => {
       return '0';
     }
     return fromWei(newBalance);
-  }, [isAmountZero, poolBalance, isDeposit, amount, t]);
+  }, [isAmountZero, poolBalance, isDeposit, amount]);
 
   const newPoolBalanceLabel = useMemo(() => {
     if (isAmountZero) {
       return t(commonTranslations.na);
     }
     return `${newPoolBalance} ${SupportedTokens.zusd.toUpperCase()}`;
-  }, [isAmountZero, newPoolBalance, t]);
+  }, [isAmountZero, newPoolBalance]);
 
   const newPoolShare = useMemo(() => {
     if (isAmountZero) {
@@ -219,7 +218,7 @@ const EarnPage: FC = () => {
       BigNumber.from(toWei(newPoolBalance, 24)).div(newZUSDInStabilityPool),
       4,
     ).toString()} %`;
-  }, [ZUSDInStabilityPool, amount, isAmountZero, isDeposit, newPoolBalance, t]);
+  }, [ZUSDInStabilityPool, amount, isAmountZero, isDeposit, newPoolBalance]);
 
   const isValidAmount = useMemo(
     () => Number(amount) <= Number(maximumAmount),

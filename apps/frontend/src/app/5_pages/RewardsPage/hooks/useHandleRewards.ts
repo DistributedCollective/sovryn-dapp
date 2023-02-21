@@ -1,7 +1,7 @@
 import { useCallback, useMemo } from 'react';
 
 import { ethers } from 'ethers';
-import { useTranslation } from 'react-i18next';
+import { t } from 'i18next';
 
 import { getContract } from '@sovryn/contracts';
 
@@ -18,7 +18,6 @@ import { toWei } from '../../../../utils/math';
 import { RewardsAction } from './../types';
 
 export const useHandleRewards = (action: RewardsAction, amount: string) => {
-  const { t } = useTranslation();
   const { signer, account } = useAccount();
   const { setTransactions, setIsOpen, setTitle } = useTransactionContext();
 
@@ -32,7 +31,7 @@ export const useHandleRewards = (action: RewardsAction, amount: string) => {
       isWithdrawTransaction
         ? t(translations.rewardPage.tx.withdrawGains)
         : t(translations.rewardPage.tx.transferToLOC),
-    [isWithdrawTransaction, t],
+    [isWithdrawTransaction],
   );
 
   const transactionTitle = useMemo(
@@ -40,7 +39,7 @@ export const useHandleRewards = (action: RewardsAction, amount: string) => {
       isWithdrawTransaction
         ? t(translations.rewardPage.tx.withdraw)
         : t(translations.rewardPage.tx.transfer),
-    [isWithdrawTransaction, t],
+    [isWithdrawTransaction],
   );
 
   const getStabilityPoolContract = useCallback(async () => {

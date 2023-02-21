@@ -1,6 +1,6 @@
 import React, { FC, useCallback, useMemo, useState } from 'react';
 
-import { useTranslation } from 'react-i18next';
+import { t } from 'i18next';
 
 import { SupportedTokens } from '@sovryn/contracts';
 import {
@@ -35,7 +35,6 @@ export const CloseCreditLine: FC<CloseCreditLineProps> = ({
   availableBalance,
   onSubmit,
 }) => {
-  const { t } = useTranslation();
   const [creditToken, setCreditToken] = useState<SupportedTokens>(
     SupportedTokens.dllr,
   );

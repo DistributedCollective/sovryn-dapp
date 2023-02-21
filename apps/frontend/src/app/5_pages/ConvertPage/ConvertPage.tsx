@@ -1,7 +1,7 @@
 import React, { FC, useCallback, useMemo, useState } from 'react';
 import { useEffect } from 'react';
 
-import { useTranslation } from 'react-i18next';
+import { t } from 'i18next';
 
 import { SupportedTokens } from '@sovryn/contracts';
 import { SupportedTokenList } from '@sovryn/contracts';
@@ -33,7 +33,6 @@ const commonTranslations = translations.common;
 const pageTranslations = translations.convertPage;
 
 const ConvertPage: FC = () => {
-  const { t } = useTranslation();
   const { account } = useAccount();
 
   const defaultSourceToken = useGetDefaultSourceToken();

@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 
-import { useTranslation } from 'react-i18next';
+import { t } from 'i18next';
 
 import { Heading, HealthBar, HeadingType, HelperButton } from '@sovryn/ui';
 
@@ -11,8 +11,6 @@ export type CollateralRatioProps = {
 };
 
 export const CollateralRatio: FC<CollateralRatioProps> = ({ value }) => {
-  const { t } = useTranslation();
-
   return (
     <div className="w-80">
       <div className="flex items-center justify-between mb-3">

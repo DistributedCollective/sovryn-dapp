@@ -1,6 +1,6 @@
 import React, { useCallback, useMemo, useState, FC } from 'react';
 
-import { useTranslation } from 'react-i18next';
+import { t } from 'i18next';
 
 import { SupportedTokens } from '@sovryn/contracts';
 import { ErrorLevel } from '@sovryn/ui';
@@ -112,8 +112,6 @@ export const OpenCreditLine: FC<OpenCreditLineProps> = ({
     );
   }, [collateralAmount, debtAmount, debtWithFees, rbtcPrice]);
 
-  const { t } = useTranslation();
-
   const liquidationPrice = useMemo(
     () => MINIMUM_COLLATERAL_RATIO * (debtSize / Number(collateralAmount)),
     [debtSize, collateralAmount],
@@ -142,7 +140,7 @@ export const OpenCreditLine: FC<OpenCreditLineProps> = ({
     }
 
     return errors;
-  }, [fieldsTouched, ratio, tcr, debtWithFees, t, debtToken]);
+  }, [fieldsTouched, ratio, tcr, debtWithFees, debtToken]);
 
   const debtError = useMemo(() => {
     if (!fieldsTouched) {
@@ -173,7 +171,6 @@ export const OpenCreditLine: FC<OpenCreditLineProps> = ({
     fieldsTouched,
     liquidationReserve,
     maxDebtAmount,
-    t,
   ]);
 
   const collateralError = useMemo(() => {
@@ -209,7 +206,6 @@ export const OpenCreditLine: FC<OpenCreditLineProps> = ({
     fieldsTouched,
     maxRbtcWeiBalance,
     minCollateralAmount,
-    t,
   ]);
 
   const handleFormEdit = useCallback(() => setFieldsTouched(true), []);

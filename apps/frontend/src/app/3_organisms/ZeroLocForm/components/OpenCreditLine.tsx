@@ -53,8 +53,8 @@ export const OpenCreditLine: FC<OpenCreditLineProps> = ({
   const { value: maxRbtcWeiBalance } = useMaxAssetBalance(SupportedTokens.rbtc);
 
   const originationFee = useMemo(
-    () => getOriginationFeeAmount(debtSize + liquidationReserve, borrowingRate),
-    [borrowingRate, debtSize, liquidationReserve],
+    () => getOriginationFeeAmount(debtSize, borrowingRate),
+    [borrowingRate, debtSize],
   );
 
   const debtWithFees = useMemo(

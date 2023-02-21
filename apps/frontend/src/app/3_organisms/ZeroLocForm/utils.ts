@@ -30,10 +30,8 @@ export const getTotalBorrowingFees = (
   originationFeeRate: number = 0.005,
   liquidationReserve: number = 20,
 ) =>
-  getOriginationFeeAmount(
-    borrowAmount + liquidationReserve,
-    originationFeeRate,
-  ) + liquidationReserve;
+  getOriginationFeeAmount(borrowAmount, originationFeeRate) +
+  liquidationReserve;
 
 export const getTotalDebtAmount = (
   borrowAmount: number,

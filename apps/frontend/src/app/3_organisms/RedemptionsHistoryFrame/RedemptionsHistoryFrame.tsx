@@ -23,6 +23,7 @@ import { chains, defaultChainId } from '../../../config/chains';
 import { ExportCSV } from '../../2_molecules/ExportCSV/ExportCSV';
 import { useNotificationContext } from '../../../contexts/NotificationContext';
 import { useAccount } from '../../../hooks/useAccount';
+import { useBlockNumber } from '../../../hooks/useBlockNumber';
 import { translations } from '../../../locales/i18n';
 import {
   Bitcoin,
@@ -45,6 +46,8 @@ export const RedemptionsHistoryFrame: FC = () => {
   const { account } = useAccount();
   const { addNotification } = useNotificationContext();
 
+  const { value: block } = useBlockNumber();
+
   const [page, setPage] = useState(0);
   const chain = chains.find(chain => chain.id === defaultChainId);
 
@@ -53,12 +56,16 @@ export const RedemptionsHistoryFrame: FC = () => {
     orderDirection: OrderDirection.Desc,
   });
 
-  const { data, loading } = useGetRedemptionsHistory(
+  const { data, loading, refetch } = useGetRedemptionsHistory(
     account,
     pageSize,
     page,
     orderOptions,
   );
+
+  useEffect(() => {
+    refetch();
+  }, [refetch, block]);
 
   const [getRedemptions] = useGetRedemptionsLazyQuery();
 

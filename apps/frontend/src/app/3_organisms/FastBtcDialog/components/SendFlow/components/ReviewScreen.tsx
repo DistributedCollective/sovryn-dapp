@@ -13,7 +13,6 @@ import {
   getRskExplorerUrl,
 } from '../../../../../../utils/helpers';
 import { formatValue } from '../../../../../../utils/math';
-import { TransactionStepDialog } from '../../../../TransactionStepDialog';
 
 const translation = translations.fastBtc.send.confirmationScreens;
 
@@ -114,7 +113,6 @@ export const ReviewScreen: React.FC<ReviewScreenProps> = ({
         />
         {fastBtcLocked && <div>{t(translations.maintenanceMode.fastBtc)}</div>}
       </div>
-      <TransactionStepDialog disableFocusTrap />
     </div>
   );
 };

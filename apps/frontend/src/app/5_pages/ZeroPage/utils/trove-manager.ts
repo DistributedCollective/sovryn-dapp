@@ -9,6 +9,7 @@ import {
 } from '@sovryn-zero/lib-base';
 
 import { BigNumber, Contract, ethers, Signer } from 'ethers';
+import { t } from 'i18next';
 
 import {
   getProtocolContract,
@@ -18,6 +19,7 @@ import {
 
 import { defaultChainId } from '../../../../config/chains';
 
+import { translations } from '../../../../locales/i18n';
 import { GAS_LIMIT_ADJUST_TROVE } from '../../../../utils/constants';
 import { getZeroProvider } from './zero-provider';
 
@@ -124,7 +126,9 @@ export const adjustNueTrove = async (
     );
 
     transactions.push({
-      title: 'Convert DLLR to ZUSD',
+      title: t(translations.convertPage.txDialog.convert, {
+        asset: SupportedTokens.dllr.toUpperCase(),
+      }),
       contract: massetManager,
       fn: 'redeemTo',
       args: [bassetAddress, normalized.repayZUSD.bigNumber, address],
@@ -134,7 +138,9 @@ export const adjustNueTrove = async (
     const repayTx = await adjustTrove(address, params);
     transactions.push({
       ...repayTx,
-      title: 'Repay ZUSD',
+      title: t(translations.zeroPage.tx.repay, {
+        asset: SupportedTokens.zusd.toUpperCase(),
+      }),
       gas: GAS_LIMIT_ADJUST_TROVE,
     });
     return transactions;
@@ -145,7 +151,9 @@ export const adjustNueTrove = async (
     const borrowTx = await adjustTrove(address, params);
     transactions.push({
       ...borrowTx,
-      title: 'Borrow ZUSD',
+      title: t(translations.zeroPage.tx.borrow, {
+        asset: SupportedTokens.zusd.toUpperCase(),
+      }),
       gas: GAS_LIMIT_ADJUST_TROVE,
     });
 
@@ -166,7 +174,9 @@ export const adjustNueTrove = async (
 
     if (BigNumber.from(allowance).lt(normalized.borrowZUSD.bigNumber)) {
       transactions.push({
-        title: 'Approve',
+        title: t(translations.convertPage.txDialog.approve, {
+          asset: bassetToken.toUpperCase(),
+        }),
         contract: bassetToken,
         fn: 'approve',
         args: [massetManager.address, normalized.borrowZUSD.bigNumber],
@@ -176,7 +186,9 @@ export const adjustNueTrove = async (
 
     // convert ZUSD to DLLR
     transactions.push({
-      title: 'Convert ZUSD to DLLR',
+      title: t(translations.convertPage.txDialog.convert, {
+        asset: SupportedTokens.zusd.toUpperCase(),
+      }),
       contract: massetManager,
       fn: 'mintTo',
       args: [bassetAddress, normalized.borrowZUSD.bigNumber, address],
@@ -195,8 +207,8 @@ export const adjustNueTrove = async (
         ...tx,
         gas: GAS_LIMIT_ADJUST_TROVE,
         title: normalized.depositCollateral
-          ? 'Add Collateral'
-          : 'Withdraw Collateral',
+          ? t(translations.zeroPage.tx.addCollateral)
+          : t(translations.zeroPage.tx.withdrawCollateral),
       },
     ];
   }

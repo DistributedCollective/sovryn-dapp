@@ -1,6 +1,7 @@
 import { useCallback, useMemo } from 'react';
 
 import { ethers, BigNumber } from 'ethers';
+import { t } from 'i18next';
 
 import {
   SupportedTokens,
@@ -10,9 +11,13 @@ import {
 
 import { defaultChainId } from '../../../../config/chains';
 
-import { Transaction } from '../../../3_organisms/TransactionStepDialog/TransactionStepDialog.types';
+import {
+  Transaction,
+  TransactionType,
+} from '../../../3_organisms/TransactionStepDialog/TransactionStepDialog.types';
 import { useTransactionContext } from '../../../../contexts/TransactionContext';
 import { useAccount } from '../../../../hooks/useAccount';
+import { translations } from '../../../../locales/i18n';
 import { GAS_LIMIT_CONVERT } from '../../../../utils/constants';
 import { toWei } from '../../../../utils/math';
 
@@ -43,14 +48,19 @@ export const useHandleConversion = (
 
     return [
       {
-        title: 'Redeem DLLR for bAsset',
-        contract: massetManager,
-        fnName: 'redeemTo',
-        args: [bassetAddress, weiAmount, account],
-        config: { gasLimit: GAS_LIMIT_CONVERT },
+        title: t(translations.convertPage.txDialog.convert, {
+          asset: sourceToken.toUpperCase(),
+        }),
+        request: {
+          type: TransactionType.signTransaction,
+          contract: massetManager,
+          fnName: 'redeemTo',
+          args: [bassetAddress, weiAmount, account],
+          gasLimit: GAS_LIMIT_CONVERT,
+        },
       },
-    ];
-  }, [account, destinationToken, getMassetManager, weiAmount]);
+    ] as Transaction[];
+  }, [account, destinationToken, getMassetManager, sourceToken, weiAmount]);
 
   const withdrawTokens = useCallback(async () => {
     if (!signer || sourceToken !== SupportedTokens.dllr) {
@@ -60,15 +70,21 @@ export const useHandleConversion = (
     const transactions = await getWithdrawTokensTransactions();
     setTransactions(transactions);
 
-    setTitle('DLLR to bAsset conversion');
+    setTitle(
+      t(translations.convertPage.txDialog.convertTitle, {
+        to: destinationToken.toUpperCase(),
+        from: SupportedTokens.dllr.toUpperCase(),
+      }),
+    );
     setIsOpen(true);
   }, [
-    getWithdrawTokensTransactions,
-    setIsOpen,
-    setTitle,
-    setTransactions,
     signer,
     sourceToken,
+    getWithdrawTokensTransactions,
+    setTransactions,
+    setTitle,
+    destinationToken,
+    setIsOpen,
   ]);
 
   const getDepositTokenTransactions = useCallback(async () => {
@@ -90,19 +106,29 @@ export const useHandleConversion = (
 
     if (BigNumber.from(allowance).lt(weiAmount)) {
       transactions.push({
-        title: 'Approve',
-        contract: bassetToken,
-        fnName: 'approve',
-        args: [massetManager.address, weiAmount],
+        title: t(translations.convertPage.txDialog.approve, {
+          asset: sourceToken.toUpperCase(),
+        }),
+        request: {
+          type: TransactionType.signTransaction,
+          contract: bassetToken,
+          fnName: 'approve',
+          args: [massetManager.address, weiAmount],
+        },
       });
     }
 
     transactions.push({
-      title: 'Deposit bAsset for DLLR',
-      contract: massetManager,
-      fnName: 'mintTo',
-      args: [bassetAddress, weiAmount, account],
-      config: { gasLimit: GAS_LIMIT_CONVERT },
+      title: t(translations.convertPage.txDialog.convert, {
+        asset: sourceToken.toUpperCase(),
+      }),
+      request: {
+        type: TransactionType.signTransaction,
+        contract: massetManager,
+        fnName: 'mintTo',
+        args: [bassetAddress, weiAmount, account],
+        gasLimit: GAS_LIMIT_CONVERT,
+      },
     });
 
     return transactions;
@@ -115,7 +141,12 @@ export const useHandleConversion = (
     const transactions = await getDepositTokenTransactions();
 
     setTransactions(transactions);
-    setTitle('bAsset to DLLR conversion');
+    setTitle(
+      t(translations.convertPage.txDialog.convertTitle, {
+        from: sourceToken.toUpperCase(),
+        to: SupportedTokens.dllr.toUpperCase(),
+      }),
+    );
     setIsOpen(true);
   }, [
     signer,
@@ -123,6 +154,7 @@ export const useHandleConversion = (
     getDepositTokenTransactions,
     setTransactions,
     setTitle,
+    sourceToken,
     setIsOpen,
   ]);
 

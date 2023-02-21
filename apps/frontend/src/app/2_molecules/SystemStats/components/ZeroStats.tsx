@@ -21,6 +21,7 @@ import {
   Tooltip,
 } from '@sovryn/ui';
 
+import { useBlockNumber } from '../../../../hooks/useBlockNumber';
 import { translations } from '../../../../locales/i18n';
 import { Bitcoin } from '../../../../utils/constants';
 import { formatCompactValue, formatValue } from '../../../../utils/math';
@@ -34,6 +35,7 @@ type ZeroStatsProps = {
 
 export const ZeroStats: FC<ZeroStatsProps> = ({ className, dataAttribute }) => {
   const { t } = useTranslation();
+  const { value: blockNumber } = useBlockNumber();
   const [lineOfCredit, setLineOfCredit] = useState('0');
   const [zusdInStabilityPool, setZusdInStabilityPool] = useState<Decimal>();
   const [zusdSupply, setZusdSupply] = useState<Decimal>();
@@ -98,7 +100,7 @@ export const ZeroStats: FC<ZeroStatsProps> = ({ className, dataAttribute }) => {
     liquity
       .getNumberOfTroves()
       .then(result => setLineOfCredit(result.toString()));
-  }, [liquity]);
+  }, [liquity, blockNumber]);
 
   useEffect(() => {
     liquity.getTotal().then(result => {
@@ -120,7 +122,7 @@ export const ZeroStats: FC<ZeroStatsProps> = ({ className, dataAttribute }) => {
         setZeroInStabilityPoolPercent(percent?.toString(2));
       }
     });
-  }, [liquity, zeroPrice, zusdInStabilityPool]);
+  }, [liquity, zeroPrice, zusdInStabilityPool, blockNumber]);
 
   return (
     <div className={className} {...applyDataAttr(dataAttribute)}>

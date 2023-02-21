@@ -114,3 +114,6 @@ export const isMobileDevice = () => {
   const screenWidth = window?.visualViewport?.width || 0;
   return screenWidth < parseInt(widthToCheck || '0');
 };
+
+export const sleep = (ms: number) =>
+  new Promise(resolve => setTimeout(resolve, ms));

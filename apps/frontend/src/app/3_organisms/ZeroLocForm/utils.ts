@@ -1,6 +1,7 @@
 import { t } from 'i18next';
 
-import { ErrorData, ErrorLevel } from '../../1_atoms/ErrorBadge/ErrorBadge';
+import { ErrorData, ErrorLevel } from '@sovryn/ui';
+
 import { translations } from '../../../locales/i18n';
 import { formatValue } from '../../../utils/math';
 import {

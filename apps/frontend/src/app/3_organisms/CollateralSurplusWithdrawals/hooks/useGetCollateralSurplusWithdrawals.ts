@@ -29,7 +29,7 @@ export const useGetCollateralSurplusWithdrawals = (
     [page, orderOptions, pageSize, account],
   );
 
-  const { loading, data } = useGetCollSurplusChangesQuery({
+  const { loading, data, refetch } = useGetCollSurplusChangesQuery({
     variables: config,
     client: zeroClient,
   });
@@ -49,5 +49,5 @@ export const useGetCollateralSurplusWithdrawals = (
     }));
   }, [data]);
 
-  return { loading, data: collSurplusChanges };
+  return { loading, data: collSurplusChanges, refetch };
 };

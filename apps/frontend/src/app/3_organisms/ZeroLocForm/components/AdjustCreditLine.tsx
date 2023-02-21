@@ -4,14 +4,14 @@ import { BigNumber } from 'ethers';
 import { useTranslation } from 'react-i18next';
 
 import { SupportedTokens } from '@sovryn/contracts';
+import { ErrorLevel } from '@sovryn/ui';
 
-import { ErrorLevel } from '../../../1_atoms/ErrorBadge/ErrorBadge';
 import { BORROW_ASSETS } from '../../../5_pages/ZeroPage/constants';
+import { useAmountInput } from '../../../../hooks/useAmountInput';
 import { useAssetBalance } from '../../../../hooks/useAssetBalance';
-import { useGasPrice } from '../../../../hooks/useGasPrice';
+import { useMaxAssetBalance } from '../../../../hooks/useMaxAssetBalance';
 import { translations } from '../../../../locales/i18n';
-import { Bitcoin, MAX_GAS_LIMIT } from '../../../../utils/constants';
-import { composeGas } from '../../../../utils/helpers';
+import { Bitcoin } from '../../../../utils/constants';
 import { formatValue, fromWei, toWei } from '../../../../utils/math';
 import {
   CRITICAL_COLLATERAL_RATIO,
@@ -48,8 +48,9 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
   const [collateralType, setCollateralType] = useState(AmountType.Add);
 
   const [fieldsTouched, setFieldsTouched] = useState(false);
-  const [collateralAmount, setCollateralAmount] = useState('0');
-  const [debtAmount, setDebtAmount] = useState('0');
+  const [collateralAmountInput, setCollateralAmount, collateralAmount] =
+    useAmountInput('');
+  const [debtAmountInput, setDebtAmount, debtAmount] = useAmountInput('');
   const [debtToken, setDebtToken] = useState<SupportedTokens>(BORROW_ASSETS[0]);
 
   const debtSize = useMemo(() => Number(debtAmount || 0), [debtAmount]);
@@ -58,11 +59,10 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
     [collateralAmount],
   );
 
-  // todo: use hook once merged
-  const { value: _maxRbtcWeiBalance } = useAssetBalance(SupportedTokens.rbtc);
+  const { value: _maxRbtcWeiBalance } = useMaxAssetBalance(
+    SupportedTokens.rbtc,
+  );
   const { value: _debtTokenWeiBalance } = useAssetBalance(debtToken);
-
-  const rbtcGasPrice = useGasPrice();
 
   const isIncreasingDebt = useMemo(
     () => debtType === AmountType.Add,
@@ -95,16 +95,10 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
   );
 
   const maxCollateralToDepositAmount = useMemo(
-    () =>
-      Number(
-        fromWei(
-          BigNumber.from(_maxRbtcWeiBalance)
-            .sub(composeGas(rbtcGasPrice || '0', MAX_GAS_LIMIT))
-            .toString(),
-        ),
-      ),
-    [_maxRbtcWeiBalance, rbtcGasPrice],
+    () => Number(fromWei(BigNumber.from(_maxRbtcWeiBalance))),
+    [_maxRbtcWeiBalance],
   );
+
   const maxCollateralToWithdrawAmount = useMemo(
     () =>
       Math.max(
@@ -330,14 +324,14 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
       originationFee={originationFee}
       existingCollateral={existingCollateral}
       existingDebt={existingDebt}
-      debtAmount={debtAmount}
+      debtAmount={debtAmountInput}
       maxDebtAmount={maxDebtAmount}
       onDebtAmountChange={setDebtAmount}
       debtToken={debtToken}
       onDebtTokenChange={setDebtToken}
       debtType={debtType}
       onDebtTypeChange={setDebtType}
-      collateralAmount={collateralAmount}
+      collateralAmount={collateralAmountInput}
       maxCollateralAmount={maxCollateralAmount}
       onCollateralAmountChange={setCollateralAmount}
       collateralType={collateralType}

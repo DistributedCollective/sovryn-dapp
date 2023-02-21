@@ -13,16 +13,15 @@ import {
   Paragraph,
   ParagraphSize,
   Table,
-  TransactionId,
 } from '@sovryn/ui';
 
 import { chains, defaultChainId } from '../../../config/chains';
 
 import { ExportCSV } from '../../2_molecules/ExportCSV/ExportCSV';
+import { TxIdWithNotification } from '../../2_molecules/TxIdWithNotification/TransactionIdWithNotification';
 import { useNotificationContext } from '../../../contexts/NotificationContext';
 import { useAccount } from '../../../hooks/useAccount';
 import { useBlockNumber } from '../../../hooks/useBlockNumber';
-import { useCopyAddress } from '../../../hooks/useCopyAddress';
 import { useMaintenance } from '../../../hooks/useMaintenance';
 import { translations } from '../../../locales/i18n';
 import {
@@ -43,7 +42,6 @@ const pageSize = DEFAULT_HISTORY_FRAME_PAGE_SIZE;
 export const CollateralSurplusHistoryFrame: FC = () => {
   const { account } = useAccount();
   const { addNotification } = useNotificationContext();
-  const onCopyAddress = useCopyAddress();
 
   const [page, setPage] = useState(0);
   const chain = chains.find(chain => chain.id === defaultChainId);
@@ -103,8 +101,7 @@ export const CollateralSurplusHistoryFrame: FC = () => {
         id: 'transactionID',
         title: t(translations.collateralSurplusHistory.table.transactionID),
         cellRenderer: (tx: any) => (
-          <TransactionId
-            onCopyAddress={onCopyAddress}
+          <TxIdWithNotification
             href={`${chain?.blockExplorerUrl}/tx/${tx.hash}`}
             value={tx.hash}
             dataAttribute="history-address-id"
@@ -112,7 +109,7 @@ export const CollateralSurplusHistoryFrame: FC = () => {
         ),
       },
     ],
-    [chain?.blockExplorerUrl, renderCollateralChange, onCopyAddress],
+    [chain?.blockExplorerUrl, renderCollateralChange],
   );
 
   const onPageChange = useCallback(

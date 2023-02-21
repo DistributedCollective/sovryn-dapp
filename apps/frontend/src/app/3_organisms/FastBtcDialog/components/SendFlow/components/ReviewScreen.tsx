@@ -9,10 +9,9 @@ import {
   ErrorLevel,
   Heading,
   HeadingType,
-  TransactionId,
 } from '@sovryn/ui';
 
-import { useCopyAddress } from '../../../../../../hooks/useCopyAddress';
+import { TxIdWithNotification } from '../../../../../2_molecules/TxIdWithNotification/TransactionIdWithNotification';
 import { useMaintenance } from '../../../../../../hooks/useMaintenance';
 import { translations } from '../../../../../../locales/i18n';
 import { Bitcoin } from '../../../../../../utils/constants';
@@ -46,27 +45,24 @@ export const ReviewScreen: React.FC<ReviewScreenProps> = ({
 }) => {
   const { checkMaintenance, States } = useMaintenance();
   const fastBtcLocked = checkMaintenance(States.FASTBTC);
-  const onCopyAddress = useCopyAddress();
 
   const items = useMemo(
     () => [
       {
         label: t(translation.from),
         value: (
-          <TransactionId
+          <TxIdWithNotification
             value={from}
             href={`${rskExplorerUrl}/address/${from}`}
-            onCopyAddress={onCopyAddress}
           />
         ),
       },
       {
         label: t(translation.to),
         value: (
-          <TransactionId
+          <TxIdWithNotification
             value={to}
             href={`${btcExplorerUrl}/address/${to}`}
-            onCopyAddress={onCopyAddress}
           />
         ),
       },
@@ -95,7 +91,7 @@ export const ReviewScreen: React.FC<ReviewScreenProps> = ({
         ),
       },
     ],
-    [amount, feesPaid, from, receiveAmount, to, onCopyAddress],
+    [amount, feesPaid, from, receiveAmount, to],
   );
 
   return (

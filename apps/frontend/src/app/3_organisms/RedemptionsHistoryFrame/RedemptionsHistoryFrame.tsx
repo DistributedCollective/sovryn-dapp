@@ -14,7 +14,6 @@ import {
   Table,
   Tooltip,
   TooltipTrigger,
-  TransactionId,
   ErrorBadge,
   ErrorLevel,
 } from '@sovryn/ui';
@@ -22,10 +21,10 @@ import {
 import { chains, defaultChainId } from '../../../config/chains';
 
 import { ExportCSV } from '../../2_molecules/ExportCSV/ExportCSV';
+import { TxIdWithNotification } from '../../2_molecules/TxIdWithNotification/TransactionIdWithNotification';
 import { useNotificationContext } from '../../../contexts/NotificationContext';
 import { useAccount } from '../../../hooks/useAccount';
 import { useBlockNumber } from '../../../hooks/useBlockNumber';
-import { useCopyAddress } from '../../../hooks/useCopyAddress';
 import { useMaintenance } from '../../../hooks/useMaintenance';
 import { translations } from '../../../locales/i18n';
 import {
@@ -47,7 +46,6 @@ const pageSize = DEFAULT_HISTORY_FRAME_PAGE_SIZE;
 export const RedemptionsHistoryFrame: FC = () => {
   const { account } = useAccount();
   const { addNotification } = useNotificationContext();
-  const onCopyAddress = useCopyAddress();
   const { value: block } = useBlockNumber();
 
   const [page, setPage] = useState(0);
@@ -194,22 +192,15 @@ export const RedemptionsHistoryFrame: FC = () => {
         id: 'transactionID',
         title: t(translations.redemptionsHistory.table.transactionID),
         cellRenderer: (item: Redemption) => (
-          <TransactionId
+          <TxIdWithNotification
             href={`${chain?.blockExplorerUrl}/tx/${item.transaction.id}`}
             value={item.transaction.id}
             dataAttribute="redemption-history-address-id"
-            onCopyAddress={onCopyAddress}
           />
         ),
       },
     ],
-    [
-      chain,
-      renderZUSDRedeemed,
-      renderRBTCReceived,
-      renderRedemptionFee,
-      onCopyAddress,
-    ],
+    [chain, renderZUSDRedeemed, renderRBTCReceived, renderRedemptionFee],
   );
 
   const onPageChange = useCallback(

@@ -14,7 +14,6 @@ import {
   Paragraph,
   ParagraphSize,
   Table,
-  TransactionId,
 } from '@sovryn/ui';
 
 import { chains, defaultChainId } from '../../../config/chains';
@@ -22,9 +21,9 @@ import { chains, defaultChainId } from '../../../config/chains';
 import { AmountRenderer } from '../../2_molecules/AmountRenderer/AmountRenderer';
 import { ExportCSV } from '../../2_molecules/ExportCSV/ExportCSV';
 import { TransactionTypeRenderer } from '../../2_molecules/TransactionTypeRenderer/TransactionTypeRenderer';
+import { TxIdWithNotification } from '../../2_molecules/TxIdWithNotification/TransactionIdWithNotification';
 import { useNotificationContext } from '../../../contexts/NotificationContext';
 import { useAccount } from '../../../hooks/useAccount';
-import { useCopyAddress } from '../../../hooks/useCopyAddress';
 import { useMaintenance } from '../../../hooks/useMaintenance';
 import { translations } from '../../../locales/i18n';
 import { zeroClient } from '../../../utils/clients';
@@ -47,7 +46,6 @@ const pageSize = DEFAULT_HISTORY_FRAME_PAGE_SIZE;
 export const RewardHistory: FC = () => {
   const { account } = useAccount();
   const { addNotification } = useNotificationContext();
-  const onCopyAddress = useCopyAddress();
 
   const [page, setPage] = useState(0);
   const chain = chains.find(chain => chain.id === defaultChainId);
@@ -116,16 +114,15 @@ export const RewardHistory: FC = () => {
         id: 'transactionID',
         title: t(translations.rewardHistoryTable.table.transactionID),
         cellRenderer: (tx: StabilityDepositChange) => (
-          <TransactionId
+          <TxIdWithNotification
             href={`${chain?.blockExplorerUrl}/tx/${tx.transaction.id}`}
             value={tx.transaction.id}
             dataAttribute="history-reward-address-id"
-            onCopyAddress={onCopyAddress}
           />
         ),
       },
     ],
-    [chain?.blockExplorerUrl, onCopyAddress],
+    [chain?.blockExplorerUrl],
   );
 
   const onPageChange = useCallback(

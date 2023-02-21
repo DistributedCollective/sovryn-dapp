@@ -25,6 +25,7 @@ import { TransactionTypeRenderer } from '../../2_molecules/TransactionTypeRender
 import { useNotificationContext } from '../../../contexts/NotificationContext';
 import { useAccount } from '../../../hooks/useAccount';
 import { useCopyAddress } from '../../../hooks/useCopyAddress';
+import { useMaintenance } from '../../../hooks/useMaintenance';
 import { translations } from '../../../locales/i18n';
 import { zeroClient } from '../../../utils/clients';
 import {

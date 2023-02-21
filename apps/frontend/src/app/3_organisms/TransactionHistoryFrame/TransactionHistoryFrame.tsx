@@ -28,6 +28,7 @@ import { useNotificationContext } from '../../../contexts/NotificationContext';
 import { useAccount } from '../../../hooks/useAccount';
 import { useBlockNumber } from '../../../hooks/useBlockNumber';
 import { useCopyAddress } from '../../../hooks/useCopyAddress';
+import { useMaintenance } from '../../../hooks/useMaintenance';
 import { translations } from '../../../locales/i18n';
 import { zeroClient } from '../../../utils/clients';
 import {

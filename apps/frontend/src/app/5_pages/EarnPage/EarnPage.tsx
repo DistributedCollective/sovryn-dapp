@@ -31,6 +31,7 @@ import {
 import { AmountRenderer } from '../../2_molecules/AmountRenderer/AmountRenderer';
 import { AssetRenderer } from '../../2_molecules/AssetRenderer/AssetRenderer';
 import { useAccount } from '../../../hooks/useAccount';
+import { useAmountInput } from '../../../hooks/useAmountInput';
 import { useAssetBalance } from '../../../hooks/useAssetBalance';
 import { translations } from '../../../locales/i18n';
 import { fromWei, toWei } from '../../../utils/math';
@@ -42,7 +43,7 @@ const pageTranslations = translations.earnPage;
 
 const EarnPage: FC = () => {
   const [index, setIndex] = useState(0);
-  const [amount, setAmount] = useState('0');
+  const [amountInput, setAmount, amount] = useAmountInput('');
   const [poolBalance, setPoolBalance] = useState('0');
   const [ZUSDInStabilityPool, setZUSDInStabilityPool] = useState('0');
   const [token, setToken] = useState<SupportedTokens>(SupportedTokens.dllr);
@@ -108,10 +109,13 @@ const EarnPage: FC = () => {
 
   const balance = useMemo(() => fromWei(weiBalance), [weiBalance]);
 
-  const onTokenChange = useCallback((value: SupportedTokens) => {
-    setToken(value);
-    setAmount('0');
-  }, []);
+  const onTokenChange = useCallback(
+    (value: SupportedTokens) => {
+      setToken(value);
+      setAmount('');
+    },
+    [setAmount],
+  );
 
   const { value: zusdWeiBalance } = useAssetBalance(SupportedTokens.zusd);
   const { value: dllrWeiBalance } = useAssetBalance(SupportedTokens.dllr);
@@ -135,7 +139,7 @@ const EarnPage: FC = () => {
     [],
   );
 
-  useEffect(() => setAmount('0'), [isDeposit]);
+  useEffect(() => setAmount(''), [isDeposit, setAmount]);
 
   const maximumAmount = useMemo(
     () => (isDeposit ? balance : poolBalance),
@@ -144,7 +148,7 @@ const EarnPage: FC = () => {
 
   const onMaximumAmountClick = useCallback(
     () => setAmount(maximumAmount),
-    [maximumAmount],
+    [maximumAmount, setAmount],
   );
 
   const onTransactionSuccess = useCallback(() => {
@@ -284,7 +288,7 @@ const EarnPage: FC = () => {
 
         <div className="w-full flex flex-row justify-between items-center gap-3 mt-3.5">
           <AmountInput
-            value={amount}
+            value={amountInput}
             onChangeText={setAmount}
             label={t(translations.common.amount)}
             min={0}
@@ -293,6 +297,7 @@ const EarnPage: FC = () => {
             invalid={!isValidAmount}
             className="w-full flex-grow-0 flex-shrink"
             dataAttribute="earn-amount-input"
+            placeholder="0"
           />
 
           <Select

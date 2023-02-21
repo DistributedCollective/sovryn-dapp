@@ -6,6 +6,7 @@ import { SupportedTokens } from '@sovryn/contracts';
 import { ErrorLevel } from '@sovryn/ui';
 
 import { BORROW_ASSETS } from '../../../5_pages/ZeroPage/constants';
+import { useAmountInput } from '../../../../hooks/useAmountInput';
 import { useMaxAssetBalance } from '../../../../hooks/useMaxAssetBalance';
 import { translations } from '../../../../locales/i18n';
 import { Bitcoin } from '../../../../utils/constants';
@@ -38,8 +39,9 @@ export const OpenCreditLine: FC<OpenCreditLineProps> = ({
   const { tcr, liquidationReserve, isRecoveryMode } = useZeroData(rbtcPrice);
 
   const [fieldsTouched, setFieldsTouched] = useState(false);
-  const [collateralAmount, setCollateralAmount] = useState('0');
-  const [debtAmount, setDebtAmount] = useState('0');
+  const [collateralAmountInput, setCollateralAmount, collateralAmount] =
+    useAmountInput('');
+  const [debtAmountInput, setDebtAmount, debtAmount] = useAmountInput('');
   const [debtToken, setDebtToken] = useState<SupportedTokens>(BORROW_ASSETS[0]);
 
   const debtSize = useMemo(() => Number(debtAmount || 0), [debtAmount]);
@@ -229,12 +231,12 @@ export const OpenCreditLine: FC<OpenCreditLineProps> = ({
       liquidationReserve={debtWithFees > 0 ? liquidationReserve : 0}
       borrowingRate={borrowingRate}
       originationFee={originationFee}
-      debtAmount={debtAmount}
+      debtAmount={debtAmountInput}
       maxDebtAmount={maxDebtAmount}
       onDebtAmountChange={setDebtAmount}
       debtToken={debtToken}
       onDebtTokenChange={setDebtToken}
-      collateralAmount={collateralAmount}
+      collateralAmount={collateralAmountInput}
       maxCollateralAmount={maxCollateralAmount}
       onCollateralAmountChange={setCollateralAmount}
       initialRatio={0}

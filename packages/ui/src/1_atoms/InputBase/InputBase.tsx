@@ -130,15 +130,17 @@ export const InputBase = React.forwardRef<HTMLInputElement, InputBaseProps>(
             removeTrailingZeroes(parseBetterFloat(event.target.value)),
           );
 
-          updateRenderedValue(
-            prepareValueToRender(
-              e.target.value,
-              '',
-              'number',
-              props.lang ?? navigator.language,
-              false,
-            ),
-          );
+          if (event.target.value !== '') {
+            updateRenderedValue(
+              prepareValueToRender(
+                e.target.value,
+                '',
+                'number',
+                props.lang ?? navigator.language,
+                false,
+              ),
+            );
+          }
 
           onChangeText?.(e.target.value);
           onChange?.(e);

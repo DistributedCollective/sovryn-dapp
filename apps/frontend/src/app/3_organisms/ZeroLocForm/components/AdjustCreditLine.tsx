@@ -7,6 +7,7 @@ import { SupportedTokens } from '@sovryn/contracts';
 import { ErrorLevel } from '@sovryn/ui';
 
 import { BORROW_ASSETS } from '../../../5_pages/ZeroPage/constants';
+import { useAmountInput } from '../../../../hooks/useAmountInput';
 import { useAssetBalance } from '../../../../hooks/useAssetBalance';
 import { useMaxAssetBalance } from '../../../../hooks/useMaxAssetBalance';
 import { translations } from '../../../../locales/i18n';
@@ -47,8 +48,9 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
   const [collateralType, setCollateralType] = useState(AmountType.Add);
 
   const [fieldsTouched, setFieldsTouched] = useState(false);
-  const [collateralAmount, setCollateralAmount] = useState('0');
-  const [debtAmount, setDebtAmount] = useState('0');
+  const [collateralAmountInput, setCollateralAmount, collateralAmount] =
+    useAmountInput('');
+  const [debtAmountInput, setDebtAmount, debtAmount] = useAmountInput('');
   const [debtToken, setDebtToken] = useState<SupportedTokens>(BORROW_ASSETS[0]);
 
   const debtSize = useMemo(() => Number(debtAmount || 0), [debtAmount]);
@@ -322,14 +324,14 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
       originationFee={originationFee}
       existingCollateral={existingCollateral}
       existingDebt={existingDebt}
-      debtAmount={debtAmount}
+      debtAmount={debtAmountInput}
       maxDebtAmount={maxDebtAmount}
       onDebtAmountChange={setDebtAmount}
       debtToken={debtToken}
       onDebtTokenChange={setDebtToken}
       debtType={debtType}
       onDebtTypeChange={setDebtType}
-      collateralAmount={collateralAmount}
+      collateralAmount={collateralAmountInput}
       maxCollateralAmount={maxCollateralAmount}
       onCollateralAmountChange={setCollateralAmount}
       collateralType={collateralType}

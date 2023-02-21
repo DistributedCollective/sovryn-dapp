@@ -255,7 +255,7 @@ export const FormContent: FC<FormContentProps> = props => {
           precision={TOKEN_RENDER_PRECISION}
         />
       ),
-    [t],
+    [],
   );
 
   const renderRBTCPrice = useCallback(

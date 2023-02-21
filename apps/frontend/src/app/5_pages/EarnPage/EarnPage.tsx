@@ -214,7 +214,7 @@ const EarnPage: FC = () => {
         precision={TOKEN_RENDER_PRECISION}
       />
     );
-  }, [isAmountZero, newPoolBalance, t]);
+  }, [isAmountZero, newPoolBalance]);
 
   const newPoolShare = useMemo(() => {
     if (isAmountZero) {

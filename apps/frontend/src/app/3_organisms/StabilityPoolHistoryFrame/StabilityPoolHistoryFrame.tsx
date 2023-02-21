@@ -5,6 +5,8 @@ import { nanoid } from 'nanoid';
 
 import { SupportedTokens } from '@sovryn/contracts';
 import {
+  ErrorBadge,
+  ErrorLevel,
   NotificationType,
   OrderDirection,
   OrderOptions,
@@ -288,7 +290,7 @@ export const StabilityPoolHistoryFrame: FC = () => {
 
   return (
     <>
-      <div className="flex flex-row items-center gap-4 mb-7 hidden lg:inline-flex">
+      <div className="flex-row items-center gap-4 mb-7 hidden lg:inline-flex">
         <ExportCSV
           getData={exportData}
           filename="stability pool transactions"

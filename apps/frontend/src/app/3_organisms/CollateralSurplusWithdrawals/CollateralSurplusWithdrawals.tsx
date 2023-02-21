@@ -4,6 +4,8 @@ import { t } from 'i18next';
 import { nanoid } from 'nanoid';
 
 import {
+  ErrorBadge,
+  ErrorLevel,
   NotificationType,
   OrderDirection,
   OrderOptions,
@@ -169,7 +171,7 @@ export const CollateralSurplusHistoryFrame: FC = () => {
       ),
       transactionID: tx.transaction.id,
     }));
-  }, [account, addNotification, getCollSurplusChanges, renderCollateralChange]);
+  }, [account, addNotification, getCollSurplusChanges]);
 
   useEffect(() => {
     setPage(0);
@@ -180,7 +182,7 @@ export const CollateralSurplusHistoryFrame: FC = () => {
 
   return (
     <>
-      <div className="flex flex-row items-center gap-4 mb-7 hidden lg:inline-flex">
+      <div className="flex-row items-center gap-4 mb-7 hidden lg:inline-flex">
         <ExportCSV
           getData={exportData}
           filename="collateral surplus withdrawals"

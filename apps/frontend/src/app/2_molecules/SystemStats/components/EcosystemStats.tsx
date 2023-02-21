@@ -6,7 +6,7 @@ import {
 
 import React, { FC, useEffect, useMemo, useState } from 'react';
 
-import { useTranslation } from 'react-i18next';
+import { t } from 'i18next';
 import { useLoaderData } from 'react-router-dom';
 
 import { SupportedTokens } from '@sovryn/contracts';
@@ -41,7 +41,6 @@ export const EcosystemStats: FC<EcosystemStatsProps> = ({
   className,
   dataAttribute,
 }) => {
-  const { t } = useTranslation();
   const [zeroPrice, setZeroPrice] = useState<Decimal>();
   const { liquity } = useLoaderData() as {
     liquity: EthersLiquity;

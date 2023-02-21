@@ -2,7 +2,7 @@ import React, { useCallback, useContext } from 'react';
 
 import { t } from 'i18next';
 
-import { Button, ButtonStyle } from '@sovryn/ui';
+import { Button, ButtonStyle, ErrorBadge, ErrorLevel } from '@sovryn/ui';
 
 import { useAccount } from '../../../../../../hooks/useAccount';
 import { useMaintenance } from '../../../../../../hooks/useMaintenance';
@@ -30,7 +30,10 @@ export const MainScreen: React.FC = () => {
       <Instructions />
 
       {fastBtcLocked ? (
-        <div>{t(translations.maintenanceMode.fastBtc)}</div>
+        <ErrorBadge
+          level={ErrorLevel.Warning}
+          message={t(translations.maintenanceMode.fastBtc)}
+        />
       ) : (
         <Button
           disabled={!account}

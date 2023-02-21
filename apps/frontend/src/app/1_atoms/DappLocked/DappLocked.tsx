@@ -15,9 +15,9 @@ export const DappLocked: FC = () => (
         dataAttribute="header-logo"
       />
       <p className="max-w-xs mx-auto text-center text-sm leading-4 mb-1">
-        {t(translations.maintenanceMode.fullD2.title)}
-        <br />
-        <br />
+        <div className="mb-6">
+          {t(translations.maintenanceMode.fullD2.title)}
+        </div>
         {t(translations.maintenanceMode.fullD2.description)}
       </p>
     </div>

@@ -121,40 +121,6 @@ export const useHandleTrove = (hasLoc: boolean, onComplete: () => void) => {
           });
 
           setTransactions(transactions);
-
-          // if (value.token === SupportedTokens.dllr) {
-          //   const adjustedTrove = await adjustNueTrove(account, params, signer);
-          //   setTransactions(
-          //     adjustedTrove.map(tx => ({
-          //       title: tx.title,
-          //       request: {
-          //         type: TransactionType.signTransaction,
-          //         contract: tx.contract ?? contract,
-          //         fnName: tx.fn,
-          //         args: tx.args,
-          //         value: tx.value,
-          //         gasLimit: tx.gas,
-          //       },
-          //       onComplete,
-          //     })),
-          //   );
-          // } else {
-          //   const adjustedTrove = await adjustTrove(account, params);
-          //   setTransactions([
-          // {
-          //   title: t(translations.zeroPage.tx.adjustTrove),
-          //   request: {
-          //     type: TransactionType.signTransaction,
-          //     contract,
-          //     fnName: adjustedTrove.fn,
-          //     args: adjustedTrove.args,
-          //     value: adjustedTrove.value,
-          //     gasLimit: GAS_LIMIT_ADJUST_TROVE,
-          //   },
-          //   onComplete,
-          // },
-          //   ]);
-          // }
           setIsOpen(true);
           setTitle(t(translations.zeroPage.tx.adjustTitle));
         } else {

@@ -18,7 +18,7 @@ This is a turborepo for the Sovryn dapp and it's associated packages.
 
 - `frontend`: Sovryn dapp Frontend. Utilizes other packages in this repo and [sovryn-onboard](https://github.com/DistributedCollective/sovryn-onboard) to provide Web3 interactions
 - `@sovryn/ui`: Sovryn UI Library. Suite of React Typescript UI components that can be used in any dapp that wants to adhere to Sovryn UX
-- `@sovryn/contracts`: smart contract definition including ABIs, token details, contract addresses for all chain environments, and utilty functions for interacting with Sovryn smart contracts. Further details on contracts used here can be found in the various [DistributedCollective repositories](https://github.com/DistributedCollective).
+- `@sovryn/contracts`: smart contract definition including ABIs, token details, contract addresses for all chain environments, and utility functions for interacting with Sovryn smart contracts. Further details on contracts used here can be found in the various [DistributedCollective repositories](https://github.com/DistributedCollective).
 - `@sovryn/ethers-provider`: helper functions for accessing ethers static provider
 - `@sovryn/eslint-config-custom`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
 - `@sovryn/tailwindcss-config`: `tailwindcss` configuration
@@ -91,7 +91,7 @@ Remember, bug reports are created in the hope that others with the same problem 
 
 ### Which Branch?
 
-The `develop` branch acts as a testnet containing the latest changes. The `main` branch is production branch for the **app.sovryn.com**. Depending on your feature you are contributing with, select the proper branch as a starting point. Most of the time, it will be the `develop` branch unless you provide hotfixes or features that should be released before other features - then it can be `main`. By doing so, we merge all features to `develop` and then `develop` to `main` to make one big release batch, after full testing and review.
+The `develop` branch acts as a testnet containing the latest changes. The `main` branch is production branch for the site hosted at **sovryn.app**. Depending on your feature you are contributing with, select the proper branch as a starting point. Most of the time, it will be the `develop` branch unless you provide hotfixes or features that should be released before other features - then it can be `main`. By doing so, we merge all features to `develop` and then `develop` to `main` to make one big release batch, after full testing and review.
 
 **All** bug fixes should be sent to the latest stable `main` branch. Bug fixes should never be sent to the development branch unless they fix features that exist only in the upcoming release.
 
@@ -115,7 +115,7 @@ To test components via Storybook on your local machine:
 - run `yarn storybook` to load the development server.
 - access Storybook dev server on `localhost:6006`.
 - if the docs fail to load and you see an error `cannot read properties of undefined (reading 'storyStore')`, the package installation is likely broken and you will need to clear `node_modules` folder and follow first two steps again.
-- changes can now be made to `index.stories.tsx` files and the development server will hot-reload automatically.
+- changes can now be made to `.stories.tsx` files and the development server will hot-reload automatically.
 
 To test components on a deployed PR link, look for `sovryn-storybook` comment in PR thread. If you would like to see the existing components in the Sovryn UI Library without running the code locally, the latest Storybook built from our `develop` branch can always be found [here](https://dev--sovryn-storybook.netlify.app/).
 

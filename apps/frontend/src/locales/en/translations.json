@@ -273,7 +273,6 @@
         },
         "tx": {
             "adjustTrove": "Adjust",
-            "permitDLLR": "Allow spending DLLR",
             "closeTrove": "Close using ZUSD",
             "closeTroveDLLR": "Close using DLLR",
             "openTrove": "Open",

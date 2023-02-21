@@ -17,6 +17,7 @@ import {
 } from '@sovryn/ui';
 
 import { AssetRenderer } from '../../2_molecules/AssetRenderer/AssetRenderer';
+import { useAssetBalance } from '../../../hooks/useAssetBalance';
 import { translations } from '../../../locales/i18n';
 import { Bitcoin } from '../../../utils/constants';
 import { formatValue } from '../../../utils/math';
@@ -25,20 +26,20 @@ import { Row } from './Row';
 type CloseCreditLineProps = {
   collateralValue: string;
   creditValue: string;
-  availableBalance: string;
   onSubmit: (token: SupportedTokens) => void;
 };
 
 export const CloseCreditLine: FC<CloseCreditLineProps> = ({
   collateralValue,
   creditValue,
-  availableBalance,
   onSubmit,
 }) => {
   const { t } = useTranslation();
   const [creditToken, setCreditToken] = useState<SupportedTokens>(
     SupportedTokens.dllr,
   );
+
+  const { parsedValue: availableBalance } = useAssetBalance(creditToken);
 
   const collateralValueRenderer = useCallback(
     (value: number) => `${formatValue(value, 6)} ${Bitcoin}`,

@@ -6,13 +6,13 @@ import { Contract, ethers } from 'ethers';
 import { useTranslation } from 'react-i18next';
 
 import { getContract } from '@sovryn/contracts';
-import { SupportedTokens, getTokenContract } from '@sovryn/contracts';
+import { SupportedTokens } from '@sovryn/contracts';
 
 import {
   Transaction,
-  TransactionReceiptStatus,
   TransactionType,
 } from '../../../3_organisms/TransactionStepDialog/TransactionStepDialog.types';
+import { isTransactionRequest } from '../../../3_organisms/TransactionStepDialog/helpers';
 import { CreditLineSubmitValue } from '../../../3_organisms/ZeroLocForm/types';
 import { useTransactionContext } from '../../../../contexts/TransactionContext';
 import { useAccount } from '../../../../hooks/useAccount';
@@ -24,11 +24,13 @@ import {
   GAS_LIMIT_CLOSE_TROVE,
   GAS_LIMIT_OPEN_TROVE,
 } from '../../../../utils/constants';
-import { adjustTrove, openTrove } from '../utils/trove-manager';
-import { isTransactionRequest } from '../../../3_organisms/TransactionStepDialog/helpers';
 import { loadLiquity } from '../../../../utils/liquity';
 import { toWei } from '../../../../utils/math';
-import dayjs from 'dayjs';
+import {
+  permitHandler,
+  preparePermitTransaction,
+} from '../../../../utils/transactions';
+import { adjustTrove, openTrove } from '../utils/trove-manager';
 
 export const useHandleTrove = (hasLoc: boolean, onComplete: () => void) => {
   const { signer, account } = useAccount();
@@ -69,22 +71,14 @@ export const useHandleTrove = (hasLoc: boolean, onComplete: () => void) => {
           const transactions: Transaction[] = [];
 
           if (isDllr && params.repayZUSD) {
-            const { address: tokenAddress } = await getTokenContract(
-              SupportedTokens.dllr,
-              getRskChainId(),
-            );
-            transactions.push({
-              title: t(translations.zeroPage.tx.permitDLLR),
-              request: {
-                type: TransactionType.signPermit,
+            transactions.push(
+              await preparePermitTransaction({
                 signer,
-                token: tokenAddress,
-                owner: account,
+                token: SupportedTokens.dllr,
                 spender: address,
                 value: toWei(params.repayZUSD.toString()).toString(),
-                deadline: dayjs().add(1, 'hour').unix(),
-              },
-            });
+              }),
+            );
           }
 
           const adjustedTrove = await adjustTrove(value.token, account, params);
@@ -108,16 +102,12 @@ export const useHandleTrove = (hasLoc: boolean, onComplete: () => void) => {
               gasLimit: GAS_LIMIT_ADJUST_TROVE,
             },
             onComplete,
-            updateHandler: (request, receipts) => {
-              if (
-                receipts.length === 2 &&
-                receipts[0].status === TransactionReceiptStatus.success &&
-                isTransactionRequest(request)
-              ) {
-                request.args = [...adjustedTrove.args, receipts[0].response];
+            updateHandler: permitHandler((req, res) => {
+              if (isTransactionRequest(req) && isDllr) {
+                req.args = [...adjustedTrove.args, res];
               }
-              return request;
-            },
+              return req;
+            }),
           });
 
           setTransactions(transactions);
@@ -168,31 +158,21 @@ export const useHandleTrove = (hasLoc: boolean, onComplete: () => void) => {
           getRskChainId(),
         );
         const contract = new Contract(address, abi, signer);
+        const isDllr = token === SupportedTokens.dllr;
 
-        if (token === SupportedTokens.dllr) {
-          const { address: tokenAddress } = await getTokenContract(
-            SupportedTokens.dllr,
-            getRskChainId(),
-          );
-
+        if (isDllr) {
           const { liquity } = await loadLiquity();
           const value = await liquity
             .getTrove(account)
             .then(trove => toWei(trove.netDebt.toString()).toString());
 
           setTransactions([
-            {
-              title: t(translations.zeroPage.tx.permitDLLR),
-              request: {
-                type: TransactionType.signPermit,
-                signer,
-                token: tokenAddress,
-                owner: account,
-                spender: address,
-                value,
-                deadline: dayjs().add(1, 'hour').unix(),
-              },
-            },
+            await preparePermitTransaction({
+              signer,
+              token: SupportedTokens.dllr,
+              spender: address,
+              value,
+            }),
             {
               title: t(translations.zeroPage.tx.closeTroveDLLR),
               request: {
@@ -203,16 +183,12 @@ export const useHandleTrove = (hasLoc: boolean, onComplete: () => void) => {
                 gasLimit: GAS_LIMIT_CLOSE_DLLR_TROVE,
               },
               onComplete,
-              updateHandler: (request, receipts) => {
-                if (
-                  receipts.length > 0 &&
-                  receipts[0].status === TransactionReceiptStatus.success &&
-                  isTransactionRequest(request)
-                ) {
-                  request.args = [receipts[0].response];
+              updateHandler: permitHandler((req, res) => {
+                if (isTransactionRequest(req)) {
+                  req.args = [res];
                 }
-                return request;
-              },
+                return req;
+              }),
             },
           ]);
         } else if (token === SupportedTokens.zusd) {

@@ -14,9 +14,12 @@ import {
   startCall,
 } from '../store/rxjs/provider-cache';
 import { getRskChainId } from '../utils/chain';
+import { fromWei } from '../utils/math';
 import { useBlockNumber } from './useBlockNumber';
 import { useIsMounted } from './useIsMounted';
 import { useWalletConnect } from './useWalletConnect';
+
+type AssetBalanceResponse = CacheCallResponse<string> & { parsedValue: string };
 
 export const useAssetBalance = (
   asset: SupportedTokens,
@@ -24,7 +27,7 @@ export const useAssetBalance = (
   address: string | null = null,
   walletIndex: number = 0,
   options?: Partial<CacheCallOptions>,
-): CacheCallResponse<string> => {
+): AssetBalanceResponse => {
   const { value: block } = useBlockNumber(chainId);
   const { wallets } = useWalletConnect();
   const isMounted = useIsMounted();
@@ -34,8 +37,9 @@ export const useAssetBalance = (
     [address, walletIndex, wallets],
   );
 
-  const [state, setState] = useState<CacheCallResponse<string>>({
+  const [state, setState] = useState<AssetBalanceResponse>({
     value: '0',
+    parsedValue: '0',
     loading: false,
     error: null,
   });
@@ -58,7 +62,12 @@ export const useAssetBalance = (
         account,
       ]);
 
-      sub = observeCall(hashedArgs).subscribe(e => setState(e.result));
+      sub = observeCall(hashedArgs).subscribe(e =>
+        setState({
+          ...e.result,
+          parsedValue: fromWei(e.result.value, tokenDetails.decimalPrecision),
+        }),
+      );
 
       const callback =
         tokenDetails.address === constants.AddressZero
@@ -81,7 +90,9 @@ export const useAssetBalance = (
       });
     };
 
-    runAsync().catch(e => setState({ value: '0', loading: false, error: e }));
+    runAsync().catch(e =>
+      setState({ value: '0', parsedValue: '0', loading: false, error: e }),
+    );
 
     return () => {
       if (sub) {
@@ -91,7 +102,11 @@ export const useAssetBalance = (
   }, [account, asset, chainId, isMounted, options, block]);
 
   return useMemo(
-    () => ({ ...state, value: state.value === null ? '0' : state.value }),
+    () => ({
+      ...state,
+      value: state.value === null ? '0' : state.value,
+      parsedValue: state.parsedValue === null ? '0' : state.parsedValue,
+    }),
     [state],
   );
 };

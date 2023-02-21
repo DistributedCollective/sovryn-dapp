@@ -6,6 +6,9 @@ import { formatUnits, parseUnits } from 'ethers/lib/utils';
 const DEFAULT_UNIT = 18;
 const DEFAULT_DECIMALS = 6;
 
+const DEFAULT_DECIMALS_SEPARATOR = '.';
+const DEFAULT_THOUSANDS_SEPARATOR = ',';
+
 const unitNames = ['wei', 'kwei', 'mwei', 'gwei', 'szabo', 'finney', 'ether'];
 
 // helper function to convert any type of ethers value to wei.
@@ -94,19 +97,22 @@ export const parseUnitValue = (unitName: BigNumberish): number => {
   return Number(unitName);
 };
 
-export const getThousandSeparator = (value: string, precision: number) => {
-  const formattedNumber = Number(value).toLocaleString(navigator.language, {
-    maximumFractionDigits: precision,
-  });
-  const thousandSeparator = formattedNumber.match(/[^0-9]/g)?.[0] ?? '.';
-  return thousandSeparator;
+export const getLocaleSeparators = () => {
+  const number = 1200.4;
+
+  const formattedValue = new Intl.NumberFormat(
+    navigator.language,
+  ).formatToParts(number);
+
+  return {
+    decimal:
+      formattedValue.find(part => part.type === 'decimal')?.value ||
+      DEFAULT_DECIMALS_SEPARATOR,
+    thousand:
+      formattedValue.find(part => part.type === 'group')?.value ||
+      DEFAULT_THOUSANDS_SEPARATOR,
+  };
 };
 
-// get the decimal part length of the number
-export const decimalPartLength = (value: string): number => {
-  const decimalIndex = value.indexOf('.');
-  if (decimalIndex === -1) {
-    return 0;
-  }
-  return value.substring(decimalIndex + 1).length;
-};
+export const getDecimalPartLength = (value: string | number) =>
+  value.toString().split('.')?.[1]?.length || 0;

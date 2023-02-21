@@ -16,10 +16,12 @@ import {
 import { useNotificationContext } from '../../../contexts/NotificationContext';
 import { translations } from '../../../locales/i18n';
 import {
-  decimalPartLength,
   formatValue,
-  getThousandSeparator,
+  getDecimalPartLength,
+  getLocaleSeparators,
 } from '../../../utils/math';
+
+const { decimal, thousand } = getLocaleSeparators();
 
 type AmountRendererProps = {
   value: string | number;
@@ -41,8 +43,10 @@ export const AmountRenderer: FC<AmountRendererProps> = ({
   isAnimated = false,
 }) => {
   const { addNotification } = useNotificationContext();
+
   const copyAddress = useCallback(async () => {
     await navigator.clipboard.writeText(String(value));
+
     addNotification({
       type: NotificationType.success,
       title: t(translations.copyAmount),
@@ -51,18 +55,29 @@ export const AmountRenderer: FC<AmountRendererProps> = ({
       id: nanoid(),
     });
   }, [addNotification, value]);
-  const formattedValue = useMemo(
-    () => formatValue(Number(value), precision),
-    [precision, value],
+
+  const formattedValue = useMemo(() => {
+    const numberValue = Number(value);
+    const decimals = getDecimalPartLength(numberValue);
+
+    if (decimals > precision) {
+      return Number(numberValue.toString().slice(0, -(decimals - precision))); // trimming the difference between the number of decimals we have and the precision we want, cannot use toFixed() as we need to round down
+    }
+    return numberValue;
+  }, [precision, value]);
+
+  const localeFormattedValue = useMemo(
+    () => formatValue(formattedValue, precision), // we need to format formattedValue to make sure we round down (formatValue function rounds up)
+    [formattedValue, precision],
   );
 
-  const decimals = useMemo(() => {
-    const decimalCount = decimalPartLength(value.toString());
-    return decimalCount > precision ? precision : decimalCount;
-  }, [value, precision]);
+  const formattedValueDecimals = useMemo(
+    () => getDecimalPartLength(formattedValue),
+    [formattedValue],
+  );
 
   const tooltipDisabled = useMemo(
-    () => precision >= decimalPartLength(value.toString()),
+    () => getDecimalPartLength(value) <= precision,
     [precision, value],
   );
 
@@ -90,19 +105,20 @@ export const AmountRenderer: FC<AmountRendererProps> = ({
         <div>
           <CountUp
             start={0}
-            end={Number(value)}
+            end={formattedValue}
             duration={0.7}
-            separator={getThousandSeparator(value.toString(), precision)}
-            decimals={decimals}
+            separator={thousand}
+            decimals={formattedValueDecimals}
+            decimal={decimal}
             prefix={!tooltipDisabled ? '~' : ''}
-            suffix={` ${suffix}`}
+            suffix={` ${suffix.toUpperCase()}`}
           />
         </div>
       ) : (
         <span className={className}>
           {`${prefix}${
             !tooltipDisabled ? '~' : ''
-          }${formattedValue} ${suffix.toUpperCase()}`}
+          }${localeFormattedValue} ${suffix.toUpperCase()}`}
         </span>
       )}
     </Tooltip>

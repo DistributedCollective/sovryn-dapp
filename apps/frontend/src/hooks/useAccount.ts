@@ -11,7 +11,7 @@ export const useAccount = () => {
   const signer = web3provider?.getSigner();
 
   return {
-    account: '0xaaa5a190accbc50f4f9c130b5876521e4d5f9d6c',
+    account: wallets[0]?.accounts[0]?.address || '',
     eip1193Provider: wallets[0]?.provider,
     provider: web3provider,
     signer,

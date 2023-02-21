@@ -1,6 +1,6 @@
 import React, { useCallback, useState } from 'react';
 
-import { useTranslation } from 'react-i18next';
+import { t } from 'i18next';
 
 import { Button, ButtonStyle, Icon, IconNames } from '@sovryn/ui';
 
@@ -24,7 +24,6 @@ export const ExportCSV: React.FC<ExportCSVProps> = ({
   disabled = false,
 }) => {
   const [isLoading, setIsLoading] = useState(false);
-  const { t } = useTranslation();
 
   const onSubmit = useCallback(async () => {
     setIsLoading(true);

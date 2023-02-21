@@ -3,7 +3,7 @@ export enum ErrorLevel {
   Critical = 'Critical',
 }
 
-export type ErrorData = {
+export type ErrorBadgeProps = {
   level: ErrorLevel;
   message: string;
   weight?: number;

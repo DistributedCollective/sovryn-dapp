@@ -1,7 +1,7 @@
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 
+import { t } from 'i18next';
 import { nanoid } from 'nanoid';
-import { useTranslation } from 'react-i18next';
 
 import { SupportedTokens } from '@sovryn/contracts';
 import {
@@ -22,6 +22,7 @@ import { ExportCSV } from '../../2_molecules/ExportCSV/ExportCSV';
 import { useNotificationContext } from '../../../contexts/NotificationContext';
 import { useAccount } from '../../../hooks/useAccount';
 import { useBlockNumber } from '../../../hooks/useBlockNumber';
+import { useMaintenance } from '../../../hooks/useMaintenance';
 import { translations } from '../../../locales/i18n';
 import {
   Bitcoin,
@@ -43,7 +44,6 @@ import { useGetRedemptionsHistory } from './hooks/useGetRedemptionsHistory';
 const pageSize = DEFAULT_HISTORY_FRAME_PAGE_SIZE;
 
 export const RedemptionsHistoryFrame: FC = () => {
-  const { t } = useTranslation();
   const { account } = useAccount();
   const { addNotification } = useNotificationContext();
 
@@ -167,12 +167,12 @@ export const RedemptionsHistoryFrame: FC = () => {
           <TransactionId
             href={`${chain?.blockExplorerUrl}/tx/${item.transaction.id}`}
             value={item.transaction.id}
-            dataAttribute="redemption-history-transaction-id"
+            dataAttribute="redemption-history-address-id"
           />
         ),
       },
     ],
-    [t, chain, renderZUSDRedeemed, renderRBTCReceived, renderRedemptionFee],
+    [chain, renderZUSDRedeemed, renderRBTCReceived, renderRedemptionFee],
   );
 
   const onPageChange = useCallback(
@@ -220,20 +220,30 @@ export const RedemptionsHistoryFrame: FC = () => {
       redemptionFee: tx.fee,
       transactionID: tx.transaction.id,
     }));
-  }, [t, account, addNotification, getRedemptions]);
+  }, [account, addNotification, getRedemptions]);
 
   useEffect(() => {
     setPage(0);
   }, [orderOptions]);
 
+  const { checkMaintenance, States } = useMaintenance();
+  const exportLocked = checkMaintenance(States.ZERO_EXPORT_CSV);
+
   return (
     <>
-      <ExportCSV
-        getData={exportData}
-        filename="transactions"
-        className="mb-7 hidden lg:inline-flex"
-        disabled={!redemptions || redemptions.length === 0}
-      />
+      <div className="flex flex-row items-center gap-4 mb-7 hidden lg:inline-flex">
+        <ExportCSV
+          getData={exportData}
+          filename="redemptions"
+          disabled={!redemptions || redemptions.length === 0 || exportLocked}
+        />
+        {exportLocked && (
+          <ErrorBadge
+            level={ErrorLevel.Warning}
+            message={t(translations.maintenanceMode.featureDisabled)}
+          />
+        )}
+      </div>
       <div className="bg-gray-80 py-4 px-4 rounded">
         <Table
           setOrderOptions={setOrderOptions}

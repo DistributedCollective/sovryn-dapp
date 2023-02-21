@@ -1,6 +1,6 @@
 import React, { FC, ReactNode, useMemo } from 'react';
 
-import { useTranslation } from 'react-i18next';
+import { t } from 'i18next';
 
 import { HelperButton } from '@sovryn/ui';
 
@@ -27,7 +27,6 @@ export const CurrentTroveData: FC<CurrentTroveDataProps> = ({
   rbtcPrice,
   collateral,
 }) => {
-  const { t } = useTranslation();
   const collateralRatio = useMemo(
     () => ((parseFloat(collateral) * rbtcPrice) / parseFloat(debt)) * 100,
     [collateral, debt, rbtcPrice],

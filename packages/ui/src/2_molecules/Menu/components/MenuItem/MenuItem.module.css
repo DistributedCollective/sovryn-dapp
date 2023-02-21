@@ -62,5 +62,5 @@
 }
 
 .externalIcon {
-  @apply ml-2 h-5 w-5 inline-block;
+  @apply ml-2 h-5 w-5 inline-block text-gray-10;
 }

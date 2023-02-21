@@ -66,6 +66,11 @@ export const StatusScreen: React.FC<StatusScreenProps> = ({
     [txStatus],
   );
 
+  const isDoneButtonDisabled = useMemo(
+    () => txStatus === StatusType.pending,
+    [txStatus],
+  );
+
   const items = useMemo(
     () => [
       {
@@ -151,6 +156,7 @@ export const StatusScreen: React.FC<StatusScreenProps> = ({
           translations.common.buttons[hasTransactionFailed ? 'retry' : 'done'],
         )}
         onClick={hasTransactionFailed ? onRetry : onClose}
+        disabled={isDoneButtonDisabled}
         className="mt-8 w-full"
         dataAttribute="fastBtc-send-done-button"
       />

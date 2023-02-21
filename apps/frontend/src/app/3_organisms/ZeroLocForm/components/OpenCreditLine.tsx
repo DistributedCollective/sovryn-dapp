@@ -1,18 +1,15 @@
 import React, { useCallback, useMemo, useState, FC } from 'react';
 
-import { BigNumber } from 'ethers';
 import { useTranslation } from 'react-i18next';
 
 import { SupportedTokens } from '@sovryn/contracts';
+import { ErrorLevel } from '@sovryn/ui';
 
-import { ErrorLevel } from '../../../1_atoms/ErrorBadge/ErrorBadge';
 import { BORROW_ASSETS } from '../../../5_pages/ZeroPage/constants';
 import { useAmountInput } from '../../../../hooks/useAmountInput';
-import { useAssetBalance } from '../../../../hooks/useAssetBalance';
-import { useGasPrice } from '../../../../hooks/useGasPrice';
+import { useMaxAssetBalance } from '../../../../hooks/useMaxAssetBalance';
 import { translations } from '../../../../locales/i18n';
-import { Bitcoin, MAX_GAS_LIMIT } from '../../../../utils/constants';
-import { composeGas } from '../../../../utils/helpers';
+import { Bitcoin } from '../../../../utils/constants';
 import { formatValue, fromWei, toWei } from '../../../../utils/math';
 import {
   CRITICAL_COLLATERAL_RATIO,
@@ -53,9 +50,7 @@ export const OpenCreditLine: FC<OpenCreditLineProps> = ({
     [collateralAmount],
   );
 
-  const { value: maxCollateralWeiAmount } = useAssetBalance(
-    SupportedTokens.rbtc,
-  );
+  const { value: maxRbtcWeiBalance } = useMaxAssetBalance(SupportedTokens.rbtc);
 
   const originationFee = useMemo(
     () => getOriginationFeeAmount(debtSize),
@@ -70,22 +65,12 @@ export const OpenCreditLine: FC<OpenCreditLineProps> = ({
     [debtSize, borrowingRate, liquidationReserve],
   );
 
-  const rbtcGasPrice = useGasPrice();
-
-  const maxRbtcWeiBalance = useMemo(
+  const minCollateralAmount = useMemo(
     () =>
-      BigNumber.from(maxCollateralWeiAmount)
-        .sub(composeGas(rbtcGasPrice || '0', MAX_GAS_LIMIT))
-        .toString(),
-    [maxCollateralWeiAmount, rbtcGasPrice],
+      (Math.max(MIN_DEBT_SIZE, debtWithFees) / rbtcPrice) *
+      (isRecoveryMode ? CRITICAL_COLLATERAL_RATIO : MINIMUM_COLLATERAL_RATIO),
+    [debtWithFees, isRecoveryMode, rbtcPrice],
   );
-
-  const minCollateralAmount = useMemo(() => {
-    return (
-      (MIN_DEBT_SIZE / rbtcPrice) *
-      (isRecoveryMode ? CRITICAL_COLLATERAL_RATIO : MINIMUM_COLLATERAL_RATIO)
-    );
-  }, [isRecoveryMode, rbtcPrice]);
 
   const maxCollateralAmount = useMemo(
     () => Number(fromWei(maxRbtcWeiBalance)),
@@ -197,18 +182,24 @@ export const OpenCreditLine: FC<OpenCreditLineProps> = ({
     }
 
     if (toWei(collateralSize).lt(toWei(minCollateralAmount))) {
-      return t(translations.zeroPage.loc.errors.collateralTooLow, {
-        value: `${formatValue(minCollateralAmount, 4)} ${Bitcoin}`,
-      });
+      return (
+        '222' +
+        t(translations.zeroPage.loc.errors.collateralTooLow, {
+          value: `${formatValue(minCollateralAmount, 4)} ${Bitcoin}`,
+        })
+      );
     }
 
-    if (toWei(collateralAmount).gt(maxCollateralWeiAmount)) {
+    if (toWei(collateralAmount).gt(maxRbtcWeiBalance)) {
       const diff = Number(
-        fromWei(toWei(collateralAmount || 0).sub(maxCollateralWeiAmount)),
+        fromWei(toWei(collateralAmount || 0).sub(maxRbtcWeiBalance)),
       );
-      return t(translations.zeroPage.loc.errors.balanceTooLow, {
-        value: `${formatValue(diff, 4)} ${Bitcoin}`,
-      });
+      return (
+        'ddd' +
+        t(translations.zeroPage.loc.errors.balanceTooLow, {
+          value: `${formatValue(diff, 4)} ${Bitcoin}`,
+        })
+      );
     }
 
     return undefined;
@@ -216,7 +207,7 @@ export const OpenCreditLine: FC<OpenCreditLineProps> = ({
     collateralAmount,
     collateralSize,
     fieldsTouched,
-    maxCollateralWeiAmount,
+    maxRbtcWeiBalance,
     minCollateralAmount,
     t,
   ]);

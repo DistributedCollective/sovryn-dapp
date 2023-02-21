@@ -1,13 +1,24 @@
-query getStabilityDepositChanges($filters: StabilityDepositChange_filter) {
-  stabilityDepositChanges(where: $filters) {
-    depositedAmountBefore
-    depositedAmountAfter
-    depositedAmountChange
-    collateralGain
-    stabilityDepositOperation
+query getStabilityDepositChanges(
+  $skip: Int!
+  $pageSize: Int!
+  $orderBy: StabilityDepositChange_orderBy
+  $orderDirection: OrderDirection
+  $filters: StabilityDepositChange_filter
+) {
+  stabilityDepositChanges(
+    first: $pageSize
+    skip: $skip
+    orderBy: $orderBy
+    orderDirection: $orderDirection
+    where: $filters
+  ) {
+    sequenceNumber
     transaction {
-      timestamp
       id
+      timestamp
     }
+    depositedAmountChange
+    stabilityDepositOperation
+    collateralGain
   }
 }

@@ -11,26 +11,29 @@
     "@sovryn/contracts": "*",
     "@sovryn/ethers-provider": "*",
     "@sovryn/onboard-common": "0.0.3",
-    "@sovryn/onboard-core": "0.0.4",
-    "@sovryn/onboard-hw-common": "0.0.3",
-    "@sovryn/onboard-injected": "0.0.3",
-    "@sovryn/onboard-ledger": "0.0.4",
-    "@sovryn/onboard-react": "0.0.10",
-    "@sovryn/onboard-trezor": "0.0.4",
-    "@sovryn/onboard-walletconnect": "0.0.3",
+    "@sovryn/onboard-core": "0.0.5",
+    "@sovryn/onboard-hw-common": "0.0.4",
+    "@sovryn/onboard-injected": "0.0.4",
+    "@sovryn/onboard-ledger": "0.0.5",
+    "@sovryn/onboard-react": "0.0.12",
+    "@sovryn/onboard-trezor": "0.0.5",
+    "@sovryn/onboard-walletconnect": "0.0.4",
     "@sovryn/tailwindcss-config": "*",
     "@sovryn/ui": "*",
+    "bitcoin-address-validation": "2.2.1",
     "chart.js": "4.1.1",
     "classnames": "2.3.2",
     "dayjs": "1.11.7",
     "env-cmd": "10.1.0",
     "ethers": "5.7.1",
+    "ethers-eip712": "0.2.0",
     "graphql": "16.6.0",
     "i18next": "22.0.4",
     "i18next-browser-languagedetector": "7.0.0",
     "lodash.get": "4.4.2",
     "lodash.set": "4.3.2",
     "nanoid": "4.0.0",
+    "qrcode.react": "3.1.0",
     "react": "18.2.0",
     "react-chartjs-2": "5.1.0",
     "react-countup": "6.4.0",
@@ -39,10 +42,8 @@
     "react-router-dom": "6.4.2",
     "react-scripts": "5.0.1",
     "reactjs-localstorage": "1.0.1",
-    "socket.io-client": "4.5.4",
-    "qrcode.react": "3.1.0",
-    "bitcoin-address-validation": "2.2.1",
-    "ethers-eip712": "0.2.0"
+    "rxjs": "7.5.6",
+    "socket.io-client": "4.5.4"
   },
   "devDependencies": {
     "@babel/core": "7.18.2",
@@ -93,5 +94,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "resolutions": {
+    "rxjs": "7.5.6"
   }
 }

@@ -8,6 +8,7 @@ import { useTranslation } from 'react-i18next';
 import { getContract } from '@sovryn/contracts';
 import { SupportedTokens } from '@sovryn/contracts';
 
+import { TransactionType } from '../../../3_organisms/TransactionStepDialog/TransactionStepDialog.types';
 import { CreditLineSubmitValue } from '../../../3_organisms/ZeroLocForm/types';
 import { useTransactionContext } from '../../../../contexts/TransactionContext';
 import { useAccount } from '../../../../hooks/useAccount';
@@ -22,7 +23,7 @@ import { adjustNueTrove, adjustTrove, openTrove } from '../utils/trove-manager';
 
 export const useHandleTrove = (hasLoc: boolean, onComplete: () => void) => {
   const { signer, account } = useAccount();
-  const { setTransactions, setIsOpen } = useTransactionContext();
+  const { setTransactions, setIsOpen, setTitle } = useTransactionContext();
   const { t } = useTranslation();
 
   const handleTroveSubmit = useCallback(
@@ -60,13 +61,14 @@ export const useHandleTrove = (hasLoc: boolean, onComplete: () => void) => {
             setTransactions(
               adjustedTrove.map(tx => ({
                 title: tx.title,
-                contract: tx.contract ?? contract,
-                fnName: tx.fn,
-                config: {
+                request: {
+                  type: TransactionType.signTransaction,
+                  contract: tx.contract ?? contract,
+                  fnName: tx.fn,
+                  args: tx.args,
                   value: tx.value,
                   gasLimit: tx.gas,
                 },
-                args: tx.args,
                 onComplete,
               })),
             );
@@ -75,18 +77,20 @@ export const useHandleTrove = (hasLoc: boolean, onComplete: () => void) => {
             setTransactions([
               {
                 title: t(translations.zeroPage.tx.adjustTrove),
-                contract,
-                fnName: adjustedTrove.fn,
-                config: {
+                request: {
+                  type: TransactionType.signTransaction,
+                  contract,
+                  fnName: adjustedTrove.fn,
+                  args: adjustedTrove.args,
                   value: adjustedTrove.value,
                   gasLimit: GAS_LIMIT_ADJUST_TROVE,
                 },
-                args: adjustedTrove.args,
                 onComplete,
               },
             ]);
           }
           setIsOpen(true);
+          setTitle(t(translations.zeroPage.tx.adjustTitle));
         } else {
           const openedTrove = await openTrove(value.token, {
             borrowZUSD: value.borrow || '0',
@@ -95,21 +99,32 @@ export const useHandleTrove = (hasLoc: boolean, onComplete: () => void) => {
           setTransactions([
             {
               title: t(translations.zeroPage.tx.openTrove),
-              contract,
-              fnName: openedTrove.fn,
-              config: {
+              request: {
+                type: TransactionType.signTransaction,
+                contract,
+                fnName: openedTrove.fn,
+                args: openedTrove.args,
                 value: openedTrove.value,
                 gasLimit: GAS_LIMIT_OPEN_TROVE,
               },
-              args: openedTrove.args,
               onComplete,
             },
           ]);
           setIsOpen(true);
+          setTitle(t(translations.zeroPage.tx.openTitle));
         }
       }
     },
-    [account, hasLoc, onComplete, setIsOpen, setTransactions, signer, t],
+    [
+      account,
+      hasLoc,
+      onComplete,
+      setIsOpen,
+      setTitle,
+      setTransactions,
+      signer,
+      t,
+    ],
   );
 
   const handleTroveClose = useCallback(async () => {
@@ -125,18 +140,20 @@ export const useHandleTrove = (hasLoc: boolean, onComplete: () => void) => {
       setTransactions([
         {
           title: t(translations.zeroPage.tx.closeTrove),
-          contract,
-          fnName: 'closeTrove',
-          args: [],
-          onComplete,
-          config: {
+          request: {
+            type: TransactionType.signTransaction,
+            contract,
+            fnName: 'closeTrove',
+            args: [],
             gasLimit: GAS_LIMIT_CLOSE_TROVE,
           },
+          onComplete,
         },
       ]);
       setIsOpen(true);
+      setTitle(t(translations.zeroPage.tx.closeTitle));
     }
-  }, [onComplete, setIsOpen, setTransactions, signer, t]);
+  }, [onComplete, setIsOpen, setTitle, setTransactions, signer, t]);
 
   return { handleTroveSubmit, handleTroveClose };
 };

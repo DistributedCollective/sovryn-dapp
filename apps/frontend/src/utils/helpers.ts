@@ -48,6 +48,9 @@ export const currentNetwork: Environments = !!process.env.REACT_APP_NETWORK
 export const isMainnet = () =>
   process.env.REACT_APP_NETWORK === Environments.Mainnet;
 
+export const isTestnetFastBtcEnabled = () =>
+  process.env.REACT_APP_ENABLE_TESTNET_FAST_BTC === 'true';
+
 export const getServicesConfig = () =>
   servicesConfig[isMainnet() ? Environments.Mainnet : Environments.Testnet];
 
@@ -111,3 +114,6 @@ export const isMobileDevice = () => {
   const screenWidth = window?.visualViewport?.width || 0;
   return screenWidth < parseInt(widthToCheck || '0');
 };
+
+export const sleep = (ms: number) =>
+  new Promise(resolve => setTimeout(resolve, ms));

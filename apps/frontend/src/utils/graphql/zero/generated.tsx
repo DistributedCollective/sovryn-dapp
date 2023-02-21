@@ -3486,6 +3486,10 @@ export type GetRedemptionsQuery = {
 };
 
 export type GetStabilityDepositChangesQueryVariables = Exact<{
+  skip: Scalars['Int'];
+  pageSize: Scalars['Int'];
+  orderBy?: InputMaybe<StabilityDepositChange_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
   filters?: InputMaybe<StabilityDepositChange_Filter>;
 }>;
 
@@ -3493,12 +3497,11 @@ export type GetStabilityDepositChangesQuery = {
   __typename?: 'Query';
   stabilityDepositChanges: Array<{
     __typename?: 'StabilityDepositChange';
-    depositedAmountBefore: string;
-    depositedAmountAfter: string;
+    sequenceNumber: number;
     depositedAmountChange: string;
-    collateralGain?: string | null;
     stabilityDepositOperation: StabilityDepositOperation;
-    transaction: { __typename?: 'Transaction'; timestamp: number; id: string };
+    collateralGain?: string | null;
+    transaction: { __typename?: 'Transaction'; id: string; timestamp: number };
   }>;
 };
 
@@ -3587,6 +3590,7 @@ export type GetTrovesQuery = {
         collateralRatioSortKey?: string | null;
         collateral: string;
         debt: string;
+        status: TroveStatus;
       };
     }>;
   }>;
@@ -3616,6 +3620,7 @@ export type GetTrovesAboveQuery = {
         collateralRatioSortKey?: string | null;
         collateral: string;
         debt: string;
+        status: TroveStatus;
       };
     }>;
   }>;
@@ -3645,6 +3650,7 @@ export type GetTrovesBelowQuery = {
         collateralRatioSortKey?: string | null;
         collateral: string;
         debt: string;
+        status: TroveStatus;
       };
     }>;
   }>;
@@ -3673,6 +3679,7 @@ export type GetUserOpenTroveQuery = {
         collateralRatioSortKey?: string | null;
         collateral: string;
         debt: string;
+        status: TroveStatus;
       };
     }>;
   } | null;
@@ -3911,17 +3918,28 @@ export type GetRedemptionsQueryResult = Apollo.QueryResult<
   GetRedemptionsQueryVariables
 >;
 export const GetStabilityDepositChangesDocument = gql`
-  query getStabilityDepositChanges($filters: StabilityDepositChange_filter) {
-    stabilityDepositChanges(where: $filters) {
-      depositedAmountBefore
-      depositedAmountAfter
-      depositedAmountChange
-      collateralGain
-      stabilityDepositOperation
+  query getStabilityDepositChanges(
+    $skip: Int!
+    $pageSize: Int!
+    $orderBy: StabilityDepositChange_orderBy
+    $orderDirection: OrderDirection
+    $filters: StabilityDepositChange_filter
+  ) {
+    stabilityDepositChanges(
+      first: $pageSize
+      skip: $skip
+      orderBy: $orderBy
+      orderDirection: $orderDirection
+      where: $filters
+    ) {
+      sequenceNumber
       transaction {
-        timestamp
         id
+        timestamp
       }
+      depositedAmountChange
+      stabilityDepositOperation
+      collateralGain
     }
   }
 `;
@@ -3938,12 +3956,16 @@ export const GetStabilityDepositChangesDocument = gql`
  * @example
  * const { data, loading, error } = useGetStabilityDepositChangesQuery({
  *   variables: {
+ *      skip: // value for 'skip'
+ *      pageSize: // value for 'pageSize'
+ *      orderBy: // value for 'orderBy'
+ *      orderDirection: // value for 'orderDirection'
  *      filters: // value for 'filters'
  *   },
  * });
  */
 export function useGetStabilityDepositChangesQuery(
-  baseOptions?: Apollo.QueryHookOptions<
+  baseOptions: Apollo.QueryHookOptions<
     GetStabilityDepositChangesQuery,
     GetStabilityDepositChangesQueryVariables
   >,
@@ -4173,6 +4195,7 @@ export const GetTrovesDocument = gql`
           collateralRatioSortKey
           collateral
           debt
+          status
         }
       }
     }
@@ -4251,6 +4274,7 @@ export const GetTrovesAboveDocument = gql`
           collateralRatioSortKey
           collateral
           debt
+          status
         }
       }
     }
@@ -4335,6 +4359,7 @@ export const GetTrovesBelowDocument = gql`
           collateralRatioSortKey
           collateral
           debt
+          status
         }
       }
     }
@@ -4411,6 +4436,7 @@ export const GetUserOpenTroveDocument = gql`
           collateralRatioSortKey
           collateral
           debt
+          status
         }
       }
     }

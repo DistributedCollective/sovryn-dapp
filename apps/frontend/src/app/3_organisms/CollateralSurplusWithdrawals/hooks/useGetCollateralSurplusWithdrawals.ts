@@ -1,22 +1,13 @@
-import { ApolloClient, InMemoryCache } from '@apollo/client';
-
 import { useMemo } from 'react';
 
 import { OrderOptions } from '@sovryn/ui';
 
-import { graphZeroUrl } from '../../../../utils/constants';
+import { zeroClient } from '../../../../utils/clients';
 import {
   CollSurplusChange_Filter,
   CollSurplusChange_OrderBy,
   useGetCollSurplusChangesQuery,
 } from './../../../../utils/graphql/zero/generated';
-
-const zeroClient = new ApolloClient({
-  uri: graphZeroUrl,
-  cache: new InMemoryCache({
-    resultCaching: false,
-  }),
-});
 
 export const useGetCollateralSurplusWithdrawals = (
   account: string,
@@ -38,7 +29,7 @@ export const useGetCollateralSurplusWithdrawals = (
     [page, orderOptions, pageSize, account],
   );
 
-  const { loading, data } = useGetCollSurplusChangesQuery({
+  const { loading, data, refetch } = useGetCollSurplusChangesQuery({
     variables: config,
     client: zeroClient,
   });
@@ -58,5 +49,5 @@ export const useGetCollateralSurplusWithdrawals = (
     }));
   }, [data]);
 
-  return { loading, data: collSurplusChanges };
+  return { loading, data: collSurplusChanges, refetch };
 };

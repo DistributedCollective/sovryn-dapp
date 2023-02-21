@@ -24,7 +24,9 @@ import { TableFilter } from '../../2_molecules/TableFilter/TableFilter';
 import { Filter } from '../../2_molecules/TableFilter/TableFilter.types';
 import { useNotificationContext } from '../../../contexts/NotificationContext';
 import { useAccount } from '../../../hooks/useAccount';
+import { useBlockNumber } from '../../../hooks/useBlockNumber';
 import { translations } from '../../../locales/i18n';
+import { zeroClient } from '../../../utils/clients';
 import {
   Bitcoin,
   LIQUIDATION_RESERVE_AMOUNT,
@@ -35,6 +37,7 @@ import {
   InputMaybe,
   TroveChange,
   TroveChange_Filter,
+  TroveChange_OrderBy,
   TroveOperation,
   useGetTroveLazyQuery,
 } from '../../../utils/graphql/zero/generated';
@@ -51,6 +54,8 @@ export const TransactionHistoryFrame: FC = () => {
   const [page, setPage] = useState(0);
   const chain = chains.find(chain => chain.id === defaultChainId);
   const [filters, setFilters] = useState<InputMaybe<TroveChange_Filter>>({});
+
+  const { value: block } = useBlockNumber();
 
   const [orderOptions, setOrderOptions] = useState<OrderOptions>({
     orderBy: 'sequenceNumber',
@@ -157,7 +162,7 @@ export const TransactionHistoryFrame: FC = () => {
     transactionTypeFilters,
   ]);
 
-  const { data, loading } = useGetTroves(
+  const { data, loading, refetch } = useGetTroves(
     account,
     pageSize,
     page,
@@ -165,7 +170,13 @@ export const TransactionHistoryFrame: FC = () => {
     orderOptions,
   );
 
-  const [getTroves] = useGetTroveLazyQuery();
+  useEffect(() => {
+    refetch();
+  }, [refetch, block]);
+
+  const [getTroves] = useGetTroveLazyQuery({
+    client: zeroClient,
+  });
 
   const noDataLabel = useMemo(
     () =>
@@ -535,14 +546,16 @@ export const TransactionHistoryFrame: FC = () => {
   );
 
   const exportData = useCallback(async () => {
-    const { data } = await getTroves({
+    const data = await getTroves({
       variables: {
         user: account,
         skip: 0,
         pageSize: EXPORT_RECORD_LIMIT,
-        filters: getFinalFilters(),
+        orderBy: orderOptions.orderBy as TroveChange_OrderBy,
+        orderDirection: orderOptions.orderDirection,
       },
-    });
+      client: zeroClient,
+    }).then(res => res.data);
 
     let troves = data?.trove?.changes || [];
 
@@ -568,11 +581,12 @@ export const TransactionHistoryFrame: FC = () => {
       transactionID: tx.transaction.id,
     }));
   }, [
-    t,
-    account,
-    addNotification,
     getTroves,
-    getFinalFilters,
+    account,
+    orderOptions.orderBy,
+    orderOptions.orderDirection,
+    addNotification,
+    t,
     getTroveType,
     renderLiquidationReserve,
   ]);

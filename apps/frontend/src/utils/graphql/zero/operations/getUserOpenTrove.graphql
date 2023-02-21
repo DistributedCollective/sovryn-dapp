@@ -16,6 +16,7 @@ query getUserOpenTrove($user: ID!) {
         collateralRatioSortKey
         collateral
         debt
+        status
       }
     }
   }

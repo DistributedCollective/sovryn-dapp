@@ -22,7 +22,7 @@ export enum AmountInputVariant {
   small = 'small',
 }
 
-type AmountInputProps = Omit<
+export type AmountInputProps = Omit<
   InputProps,
   'classNameInput' | 'type' | 'size' | 'value'
 > & {

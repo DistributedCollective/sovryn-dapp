@@ -21,8 +21,8 @@ import {
   ParagraphStyle,
 } from '@sovryn/ui';
 
-import { TransactionStepDialog } from '../../3_organisms';
 import { useAccount } from '../../../hooks/useAccount';
+import { useBlockNumber } from '../../../hooks/useBlockNumber';
 import { useGetOpenTrove } from '../../../hooks/zero/useGetOpenTrove';
 import { translations } from '../../../locales/i18n';
 import { useHandleRewards } from './hooks/useHandleRewards';
@@ -33,6 +33,7 @@ const RewardsPage: FC = () => {
   const { account, signer } = useAccount();
   const [amount, setAmount] = useState<Decimal>(Decimal.from(0));
   const isOpenTroveExists = useGetOpenTrove();
+  const { value: block } = useBlockNumber();
 
   const { liquity } = useLoaderData() as {
     liquity: EthersLiquity;
@@ -53,7 +54,7 @@ const RewardsPage: FC = () => {
     liquity
       .getStabilityDeposit(account)
       .then(result => setAmount(result.collateralGain));
-  }, [liquity, account]);
+  }, [liquity, account, block]);
 
   return (
     <div className="flex flex-col items-center mt-6 sm:mt-28">
@@ -103,7 +104,6 @@ const RewardsPage: FC = () => {
           )}
         </div>
       </div>
-      <TransactionStepDialog />
     </div>
   );
 };

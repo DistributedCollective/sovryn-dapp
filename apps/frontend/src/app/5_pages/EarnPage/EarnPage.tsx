@@ -28,12 +28,13 @@ import {
   TabType,
 } from '@sovryn/ui';
 
+import { AmountRenderer } from '../../2_molecules/AmountRenderer/AmountRenderer';
 import { AssetRenderer } from '../../2_molecules/AssetRenderer/AssetRenderer';
 import { useAccount } from '../../../hooks/useAccount';
 import { useAmountInput } from '../../../hooks/useAmountInput';
 import { useAssetBalance } from '../../../hooks/useAssetBalance';
 import { translations } from '../../../locales/i18n';
-import { formatValue, fromWei, toWei } from '../../../utils/math';
+import { fromWei, toWei } from '../../../utils/math';
 import { tokenList } from './EarnPage.types';
 import { useHandleStabilityDeposit } from './hooks/useHandleStabilityDeposit';
 
@@ -106,10 +107,7 @@ const EarnPage: FC = () => {
 
   const { value: weiBalance } = useAssetBalance(token);
 
-  const balance = useMemo(
-    () => String(Number(fromWei(weiBalance))),
-    [weiBalance],
-  );
+  const balance = useMemo(() => fromWei(weiBalance), [weiBalance]);
 
   const onTokenChange = useCallback(
     (value: SupportedTokens) => {
@@ -147,6 +145,7 @@ const EarnPage: FC = () => {
     () => (isDeposit ? balance : poolBalance),
     [balance, isDeposit, poolBalance],
   );
+
   const onMaximumAmountClick = useCallback(
     () => setAmount(maximumAmount),
     [maximumAmount, setAmount],
@@ -182,9 +181,12 @@ const EarnPage: FC = () => {
     if (isAmountZero) {
       return t(commonTranslations.na);
     }
-    const newBalance = BigNumber.from(toWei(poolBalance)).add(
-      toWei(isDeposit ? amount : -amount),
-    );
+    let newBalance = BigNumber.from(toWei(poolBalance));
+    if (isDeposit) {
+      newBalance = newBalance.add(toWei(amount));
+    } else {
+      newBalance = newBalance.sub(toWei(amount));
+    }
     if (newBalance.lt(0)) {
       return '0';
     }
@@ -203,9 +205,12 @@ const EarnPage: FC = () => {
       return t(commonTranslations.na);
     }
 
-    const newZUSDInStabilityPool = toWei(ZUSDInStabilityPool).add(
-      toWei(isDeposit ? amount : -amount),
-    );
+    let newZUSDInStabilityPool = toWei(ZUSDInStabilityPool);
+    if (isDeposit) {
+      newZUSDInStabilityPool = newZUSDInStabilityPool.add(toWei(amount));
+    } else {
+      newZUSDInStabilityPool = newZUSDInStabilityPool.sub(toWei(amount));
+    }
 
     if (newZUSDInStabilityPool.isZero()) {
       return '0 %';
@@ -271,8 +276,13 @@ const EarnPage: FC = () => {
             className="text-xs font-medium underline whitespace-nowrap"
             {...applyDataAttr('earn-max-button')}
           >
-            ({t(commonTranslations.max)} {formatValue(Number(maximumAmount), 4)}{' '}
-            {token.toUpperCase()})
+            ({t(commonTranslations.max)}
+            <AmountRenderer
+              value={maximumAmount}
+              precision={4}
+              suffix={token.toUpperCase()}
+            />
+            )
           </button>
         </div>
 

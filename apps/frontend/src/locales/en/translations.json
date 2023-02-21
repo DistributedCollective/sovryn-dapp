@@ -31,7 +31,13 @@
         "amount": "Amount",
         "deposit": "Deposit",
         "withdraw": "Withdraw",
-        "done": "Done"
+        "done": "Done",
+        "tx": {
+          "signPermitTitle": "Permit {{symbol}}",
+          "signPermitSubtitle": "Sign a permit to allow the contract to spend your {{symbol}}",
+          "signApproveTitle": "Approve {{symbol}}",
+          "signApproveSubtitle": "Approve {{symbol}} to be spent by the contract"
+        }
     },
     "wrongNetworkSwitcher": {
         "title": "Wrong network",

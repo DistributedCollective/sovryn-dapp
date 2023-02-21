@@ -71,6 +71,7 @@ export const GAS_LIMIT_CLOSE_TROVE = 280_000;
 export const GAS_LIMIT_CLOSE_DLLR_TROVE = 500_000;
 export const GAS_LIMIT_CONVERT = 150_000;
 export const GAS_LIMIT_STABILITY_POOL = 250_000;
+export const GAS_LIMIT_STABILITY_POOL_DLLR = 500_000;
 export const GAS_LIMIT_REWARDS = 240_000;
 
 // TODO: Refactor it into a similar config we have in dapp v1 (blockExplorers constant)

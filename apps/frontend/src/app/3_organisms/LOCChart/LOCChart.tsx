@@ -390,7 +390,7 @@ export const LOCChart: FC = () => {
   useEffect(() => {
     if (!loadingTroves && troves && !loadingUserOpenTrove && !isUserOpenTrove) {
       const trovesData = troves.troves.map(({ changes }: TroveData) => ({
-        sequenceNumber: changes[0].trove.collateralRatioSortKey.toString(),
+        sequenceNumber: changes[0].trove?.collateralRatioSortKey?.toString(),
         address: changes[0].trove.id,
         tx: changes[0].transaction.id,
         collateralAmount: changes[0].trove.collateral,

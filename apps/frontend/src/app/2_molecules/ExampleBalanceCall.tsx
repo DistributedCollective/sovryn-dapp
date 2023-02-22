@@ -6,7 +6,6 @@ import { FormGroup, Select } from '@sovryn/ui';
 import { defaultChainId } from '../../config/chains';
 
 import { useAssetBalance } from '../../hooks/useAssetBalance';
-import { fromWei } from '../../utils/math';
 
 // just an usage example, to be removed
 export const ExampleBalanceCall = () => {
@@ -34,7 +33,7 @@ export const ExampleBalanceCall = () => {
 
       <div className="flex flex-row gap-4">
         <div>
-          Balance: {fromWei(result.balance)} {token}
+          Balance: {result.balance} {token}
         </div>
       </div>
       {result.error && (

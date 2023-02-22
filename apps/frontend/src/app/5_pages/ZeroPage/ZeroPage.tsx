@@ -96,10 +96,22 @@ export const ZeroPage: FC = () => {
   const claimCollateralSurplus = useClaimCollateralSurplus(
     getCollateralSurplusBalance,
   );
-  const { handleTroveSubmit, handleTroveClose } = useHandleTrove(hasLoc, () => {
-    toggle();
-    getTroves();
-    getOpenTroves();
+  const { handleTroveSubmit, handleTroveClose } = useHandleTrove(hasLoc, {
+    onTroveOpened: () => {
+      toggle();
+      getTroves();
+      getOpenTroves();
+    },
+    onTroveAdjusted: () => {
+      toggle();
+      getTroves();
+      getOpenTroves();
+    },
+    onTroveClosed: () => {
+      toggleClosePopup();
+      getTroves();
+      getOpenTroves();
+    },
   });
 
   useEffect(() => {

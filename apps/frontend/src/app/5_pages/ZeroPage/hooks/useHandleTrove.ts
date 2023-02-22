@@ -33,7 +33,16 @@ import {
 } from '../../../../utils/transactions';
 import { adjustTrove, openTrove } from '../utils/trove-manager';
 
-export const useHandleTrove = (hasLoc: boolean, onComplete: () => void) => {
+type HandleTroveCallbacks = {
+  onTroveOpened: () => void;
+  onTroveAdjusted: () => void;
+  onTroveClosed: () => void;
+};
+
+export const useHandleTrove = (
+  hasLoc: boolean,
+  callbacks?: Partial<HandleTroveCallbacks>,
+) => {
   const { signer, account } = useAccount();
   const { setTransactions, setIsOpen, setTitle } = useTransactionContext();
 
@@ -95,7 +104,7 @@ export const useHandleTrove = (hasLoc: boolean, onComplete: () => void) => {
               value: adjustedTrove.value,
               gasLimit: GAS_LIMIT_ADJUST_TROVE,
             },
-            onComplete,
+            onComplete: callbacks?.onTroveAdjusted,
             updateHandler: permitHandler((req, res) => {
               if (isTransactionRequest(req) && isDllr) {
                 req.args = [...adjustedTrove.args, res];
@@ -123,7 +132,7 @@ export const useHandleTrove = (hasLoc: boolean, onComplete: () => void) => {
                 value: openedTrove.value,
                 gasLimit: GAS_LIMIT_OPEN_TROVE,
               },
-              onComplete,
+              onComplete: callbacks?.onTroveOpened,
             },
           ]);
           setIsOpen(true);
@@ -131,7 +140,16 @@ export const useHandleTrove = (hasLoc: boolean, onComplete: () => void) => {
         }
       }
     },
-    [account, hasLoc, onComplete, setIsOpen, setTitle, setTransactions, signer],
+    [
+      account,
+      callbacks?.onTroveAdjusted,
+      callbacks?.onTroveOpened,
+      hasLoc,
+      setIsOpen,
+      setTitle,
+      setTransactions,
+      signer,
+    ],
   );
 
   const handleTroveClose = useCallback(
@@ -167,7 +185,7 @@ export const useHandleTrove = (hasLoc: boolean, onComplete: () => void) => {
                 args: [],
                 gasLimit: GAS_LIMIT_CLOSE_DLLR_TROVE,
               },
-              onComplete,
+              onComplete: callbacks?.onTroveClosed,
               updateHandler: permitHandler((req, res) => {
                 if (isTransactionRequest(req)) {
                   req.args = [res];
@@ -187,7 +205,7 @@ export const useHandleTrove = (hasLoc: boolean, onComplete: () => void) => {
                 args: [],
                 gasLimit: GAS_LIMIT_CLOSE_TROVE,
               },
-              onComplete,
+              onComplete: callbacks?.onTroveClosed,
             },
           ]);
         } else {
@@ -198,7 +216,14 @@ export const useHandleTrove = (hasLoc: boolean, onComplete: () => void) => {
         setTitle(t(translations.zeroPage.tx.closeTitle));
       }
     },
-    [account, onComplete, setIsOpen, setTitle, setTransactions, signer],
+    [
+      account,
+      callbacks?.onTroveClosed,
+      setIsOpen,
+      setTitle,
+      setTransactions,
+      signer,
+    ],
   );
 
   return { handleTroveSubmit, handleTroveClose };

@@ -302,7 +302,7 @@ const EarnPage: FC = () => {
             className="text-xs font-medium underline whitespace-nowrap"
             {...applyDataAttr('earn-max-button')}
           >
-            ({t(commonTranslations.max)}
+            ({t(commonTranslations.max)}{' '}
             <AmountRenderer
               value={maximumAmount}
               precision={4}

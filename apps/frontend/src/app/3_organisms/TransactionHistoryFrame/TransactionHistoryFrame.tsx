@@ -261,15 +261,15 @@ export const TransactionHistoryFrame: FC = () => {
     (trove: TroveChange) => (
       <>
         {trove.debtChange.length ? (
-          <>
-            {renderSign(trove.troveOperation, Number(trove.collateralAfter))}
-            <AmountRenderer
-              value={trove.debtChange}
-              suffix={SupportedTokens.zusd}
-              precision={TOKEN_RENDER_PRECISION}
-              dataAttribute="transaction-history-debt-change"
-            />
-          </>
+          <AmountRenderer
+            value={trove.debtChange}
+            suffix={SupportedTokens.zusd}
+            precision={TOKEN_RENDER_PRECISION}
+            dataAttribute="transaction-history-debt-change"
+            prefix={
+              renderSign(trove.troveOperation, Number(trove.debtChange)) ?? ''
+            }
+          />
         ) : (
           '-'
         )}
@@ -300,15 +300,18 @@ export const TransactionHistoryFrame: FC = () => {
     (trove: TroveChange) => (
       <>
         {trove.collateralChange.length ? (
-          <>
-            {renderSign(trove.troveOperation, Number(trove.collateralChange))}
-            <AmountRenderer
-              value={trove.collateralChange}
-              suffix={Bitcoin}
-              precision={BTC_RENDER_PRECISION}
-              dataAttribute="transaction-history-collateral-change"
-            />
-          </>
+          <AmountRenderer
+            value={trove.collateralChange}
+            suffix={Bitcoin}
+            precision={BTC_RENDER_PRECISION}
+            dataAttribute="transaction-history-collateral-change"
+            prefix={
+              renderSign(
+                trove.troveOperation,
+                Number(trove.collateralChange),
+              ) ?? ''
+            }
+          />
         ) : (
           '-'
         )}
@@ -321,16 +324,20 @@ export const TransactionHistoryFrame: FC = () => {
     (trove: TroveChange) => (
       <>
         {trove.collateralAfter.length ? (
-          <>
-            {trove.troveOperation === TroveOperation.OpenTrove &&
-              renderSign(trove.troveOperation, Number(trove.collateralAfter))}
-            <AmountRenderer
-              value={trove.collateralAfter}
-              suffix={Bitcoin}
-              precision={BTC_RENDER_PRECISION}
-              dataAttribute="transaction-history-collateral-balance"
-            />
-          </>
+          <AmountRenderer
+            value={trove.collateralAfter}
+            suffix={Bitcoin}
+            precision={BTC_RENDER_PRECISION}
+            dataAttribute="transaction-history-collateral-balance"
+            prefix={
+              trove.troveOperation === TroveOperation.OpenTrove
+                ? renderSign(
+                    trove.troveOperation,
+                    Number(trove.collateralAfter),
+                  ) || ''
+                : ''
+            }
+          />
         ) : (
           '-'
         )}

@@ -110,15 +110,15 @@ export const AmountRenderer: FC<AmountRendererProps> = ({
             separator={thousand}
             decimals={formattedValueDecimals}
             decimal={decimal}
-            prefix={!tooltipDisabled ? '~' : ''}
+            prefix={!tooltipDisabled ? '~ ' : ''}
             suffix={` ${suffix.toUpperCase()}`}
           />
         </div>
       ) : (
         <span className={className}>
-          {`${prefix}${
-            !tooltipDisabled ? '~' : ''
-          }${localeFormattedValue} ${suffix.toUpperCase()}`}
+          {`${
+            !tooltipDisabled ? '~ ' : ''
+          }${prefix}${localeFormattedValue} ${suffix.toUpperCase()}`}
         </span>
       )}
     </Tooltip>

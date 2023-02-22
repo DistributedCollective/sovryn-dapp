@@ -83,6 +83,10 @@ const renderServiceFee = (item: FundingHistoryType) => {
 };
 
 const renderTXID = (item: FundingHistoryType) => {
+  if (!item.txHash) {
+    return '⁠—';
+  }
+
   const href =
     (item.type === BitcoinTransferDirection.Outgoing && item.order === 1) ||
     (item.type === BitcoinTransferDirection.Incoming && item.order === 2)
@@ -122,7 +126,7 @@ export const parseData = (item: BitcoinTransfer) => {
       serviceFee: '-',
       txHash: isOutgoing
         ? item.createdAtTx.id
-        : item.bitcoinTxHash.substring(2), //TODO: remove after issue fixed on Graph
+        : item.bitcoinTxHash?.substring(2), //TODO: remove after issue fixed on Graph
     },
   ] as FundingHistoryType[];
 };

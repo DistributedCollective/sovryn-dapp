@@ -34,7 +34,7 @@ export const ExampleBalanceCall = () => {
 
       <div className="flex flex-row gap-4">
         <div>
-          Balance: {fromWei(result.value)} {token}
+          Balance: {fromWei(result.balance)} {token}
         </div>
       </div>
       {result.error && (

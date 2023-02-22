@@ -16,9 +16,9 @@ export type ConnectedUserBannerProps = {
 export const ConnectedUserBanner: FC<ConnectedUserBannerProps> = ({
   openLOC,
 }) => {
-  const { value, loading } = useAssetBalance(SupportedTokens.rbtc);
+  const { weiBalance, loading } = useAssetBalance(SupportedTokens.rbtc);
 
-  const hasRbtcBalance = useMemo(() => Number(value) !== 0, [value]);
+  const hasRbtcBalance = useMemo(() => Number(weiBalance) !== 0, [weiBalance]);
 
   const onClickHandler = useMemo(
     () =>

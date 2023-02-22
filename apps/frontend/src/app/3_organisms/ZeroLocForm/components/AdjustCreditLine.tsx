@@ -57,10 +57,10 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
     [collateralAmount],
   );
 
-  const { value: _maxRbtcWeiBalance } = useMaxAssetBalance(
+  const { weiBalance: _maxRbtcWeiBalance } = useMaxAssetBalance(
     SupportedTokens.rbtc,
   );
-  const { value: _debtTokenWeiBalance } = useAssetBalance(debtToken);
+  const { weiBalance: _debtTokenWeiBalance } = useAssetBalance(debtToken);
 
   const isIncreasingDebt = useMemo(
     () => debtType === AmountType.Add,

@@ -104,7 +104,7 @@ const EarnPage: FC = () => {
 
   const isDeposit = useMemo(() => index === 0, [index]);
 
-  const { value: weiBalance } = useAssetBalance(token);
+  const { weiBalance } = useAssetBalance(token);
 
   const balance = useMemo(() => fromWei(weiBalance), [weiBalance]);
 
@@ -113,8 +113,8 @@ const EarnPage: FC = () => {
     setAmount('0');
   }, []);
 
-  const { value: zusdWeiBalance } = useAssetBalance(SupportedTokens.zusd);
-  const { value: dllrWeiBalance } = useAssetBalance(SupportedTokens.dllr);
+  const { weiBalance: zusdWeiBalance } = useAssetBalance(SupportedTokens.zusd);
+  const { weiBalance: dllrWeiBalance } = useAssetBalance(SupportedTokens.dllr);
 
   useEffect(() => {
     if (
@@ -150,6 +150,7 @@ const EarnPage: FC = () => {
   const onTransactionSuccess = useCallback(() => {
     getStabilityDeposit();
     getZUSDInStabilityPool();
+    setAmount('0');
   }, [getStabilityDeposit, getZUSDInStabilityPool]);
 
   const handleSubmit = useHandleStabilityDeposit(

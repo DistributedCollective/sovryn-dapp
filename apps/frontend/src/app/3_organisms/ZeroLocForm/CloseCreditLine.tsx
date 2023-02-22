@@ -39,7 +39,7 @@ export const CloseCreditLine: FC<CloseCreditLineProps> = ({
     SupportedTokens.dllr,
   );
 
-  const { parsedValue: availableBalance } = useAssetBalance(creditToken);
+  const { balance: availableBalance } = useAssetBalance(creditToken);
 
   const collateralValueRenderer = useCallback(
     (value: number) => `${formatValue(value, 6)} ${Bitcoin}`,

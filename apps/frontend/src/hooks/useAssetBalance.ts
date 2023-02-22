@@ -8,7 +8,6 @@ import { ChainId, getProvider } from '@sovryn/ethers-provider';
 
 import {
   CacheCallOptions,
-  CacheCallResponse,
   idHash,
   observeCall,
   startCall,
@@ -19,7 +18,13 @@ import { useBlockNumber } from './useBlockNumber';
 import { useIsMounted } from './useIsMounted';
 import { useWalletConnect } from './useWalletConnect';
 
-type AssetBalanceResponse = CacheCallResponse<string> & { parsedValue: string };
+export type AssetBalanceResponse = {
+  balance: string;
+  weiBalance: string;
+  decimalPrecision?: number;
+  loading: boolean;
+  error: Error | null;
+};
 
 export const useAssetBalance = (
   asset: SupportedTokens,
@@ -38,8 +43,8 @@ export const useAssetBalance = (
   );
 
   const [state, setState] = useState<AssetBalanceResponse>({
-    value: '0',
-    parsedValue: '0',
+    balance: '0',
+    weiBalance: '0',
     loading: false,
     error: null,
   });
@@ -65,7 +70,12 @@ export const useAssetBalance = (
       sub = observeCall(hashedArgs).subscribe(e =>
         setState({
           ...e.result,
-          parsedValue: fromWei(e.result.value, tokenDetails.decimalPrecision),
+          weiBalance: e.result.value,
+          balance: fromWei(
+            e.result.value === null ? 0 : e.result.value,
+            tokenDetails.decimalPrecision,
+          ),
+          decimalPrecision: tokenDetails.decimalPrecision,
         }),
       );
 
@@ -91,7 +101,13 @@ export const useAssetBalance = (
     };
 
     runAsync().catch(e =>
-      setState({ value: '0', parsedValue: '0', loading: false, error: e }),
+      setState(prev => ({
+        ...prev,
+        weiBalance: '0',
+        balance: '0',
+        loading: false,
+        error: e,
+      })),
     );
 
     return () => {
@@ -104,8 +120,7 @@ export const useAssetBalance = (
   return useMemo(
     () => ({
       ...state,
-      value: state.value === null ? '0' : state.value,
-      parsedValue: state.parsedValue === null ? '0' : state.parsedValue,
+      weiBalance: state.weiBalance === null ? '0' : state.weiBalance,
     }),
     [state],
   );

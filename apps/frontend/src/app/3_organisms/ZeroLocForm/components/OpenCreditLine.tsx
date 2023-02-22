@@ -48,7 +48,9 @@ export const OpenCreditLine: FC<OpenCreditLineProps> = ({
     [collateralAmount],
   );
 
-  const { value: maxRbtcWeiBalance } = useMaxAssetBalance(SupportedTokens.rbtc);
+  const { weiBalance: maxRbtcWeiBalance } = useMaxAssetBalance(
+    SupportedTokens.rbtc,
+  );
 
   const originationFee = useMemo(
     () => getOriginationFeeAmount(debtSize),

@@ -2,7 +2,7 @@ import { Decimalish, TroveAdjustmentParams } from '@sovryn-zero/lib-base';
 
 import { useCallback } from 'react';
 
-import { Contract, ethers } from 'ethers';
+import { Contract } from 'ethers';
 import { useTranslation } from 'react-i18next';
 
 import { getContract } from '@sovryn/contracts';
@@ -29,6 +29,7 @@ import { toWei } from '../../../../utils/math';
 import {
   permitHandler,
   preparePermitTransaction,
+  UNSIGNED_PERMIT,
 } from '../../../../utils/transactions';
 import { adjustTrove, openTrove } from '../utils/trove-manager';
 
@@ -82,12 +83,6 @@ export const useHandleTrove = (hasLoc: boolean, onComplete: () => void) => {
           }
 
           const adjustedTrove = await adjustTrove(value.token, account, params);
-          const defaultDllPermit = {
-            deadline: 0,
-            v: 0,
-            r: ethers.constants.HashZero,
-            s: ethers.constants.HashZero,
-          };
 
           transactions.push({
             title: t(translations.zeroPage.tx.adjustTrove),
@@ -96,7 +91,7 @@ export const useHandleTrove = (hasLoc: boolean, onComplete: () => void) => {
               contract,
               fnName: adjustedTrove.fn,
               args: isDllr
-                ? [...adjustedTrove.args, defaultDllPermit]
+                ? [...adjustedTrove.args, UNSIGNED_PERMIT]
                 : adjustedTrove.args,
               value: adjustedTrove.value,
               gasLimit: GAS_LIMIT_ADJUST_TROVE,

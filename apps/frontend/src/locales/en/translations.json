@@ -148,7 +148,7 @@
             "sent": "Sent",
             "received": "Received",
             "serviceFee": "Service fee",
-            "txId": "TXID"
+            "txId": "Transaction ID"
         },
         "transactionType": {
             "deposit": {
@@ -170,7 +170,7 @@
             "transactionType": "Transaction Type",
             "sent": "Sent",
             "received": "Received",
-            "txId": "TXID"
+            "txId": "Transaction ID"
         },
         "type": "Convert",
         "actions": {

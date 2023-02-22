@@ -7,7 +7,10 @@ import { Paragraph, ParagraphSize, TransactionId } from '@sovryn/ui';
 import { AmountRenderer } from '../../2_molecules/AmountRenderer/AmountRenderer';
 import { translations } from '../../../locales/i18n';
 import { Bitcoin } from '../../../utils/constants';
-import { BitcoinTransferDirection } from '../../../utils/graphql/rsk/generated';
+import {
+  BitcoinTransfer,
+  BitcoinTransferDirection,
+} from '../../../utils/graphql/rsk/generated';
 import {
   dateFormat,
   getBtcExplorerUrl,
@@ -96,7 +99,7 @@ const renderTXID = (item: FundingHistoryType) => {
 };
 
 //split each row returned from the graph into 2 rows (part 1 and part 2)
-export const parseData = item => {
+export const parseData = (item: BitcoinTransfer) => {
   const isOutgoing = item.direction === BitcoinTransferDirection.Outgoing;
   return [
     {
@@ -107,7 +110,7 @@ export const parseData = item => {
       received: item.amountBTC,
       serviceFee: item.feeBTC,
       txHash: isOutgoing
-        ? item.bitcoinTxHash.substring(2) //TODO: remove after issue fixed on Graph
+        ? item.bitcoinTxHash?.substring(2) //TODO: remove after issue fixed on Graph
         : item.createdAtTx.id,
     },
     {
@@ -121,12 +124,12 @@ export const parseData = item => {
         ? item.createdAtTx.id
         : item.bitcoinTxHash.substring(2), //TODO: remove after issue fixed on Graph
     },
-  ];
+  ] as FundingHistoryType[];
 };
 
 export const columnsConfig = [
   {
-    id: 'updatedAtTimestamp',
+    id: 'createdAtTimestamp',
     title: t(translations.fundingHistory.table.timestamp),
     cellRenderer: (item: FundingHistoryType) => dateFormat(item.timestamp),
     sortable: true,

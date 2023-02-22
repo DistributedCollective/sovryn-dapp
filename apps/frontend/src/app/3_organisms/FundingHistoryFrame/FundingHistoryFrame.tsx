@@ -121,19 +121,21 @@ export const FundingHistoryFrame: FC = () => {
 
     const fundingData: FundingHistoryType[] = funding.reduce(
       (acc: FundingHistoryType[], item) => {
-        const rows = parseData(item);
+        const rows = parseData(item as BitcoinTransfer);
 
-        // format labels for exports
-        acc.push(
-          {
-            ...rows[0],
-            type: transactionTypeRenderer(rows[0]),
-          },
-          {
-            ...rows[1],
-            type: transactionTypeRenderer(rows[1]),
-          },
-        );
+        // make sure rows has at least 2 elements before using spread operator
+        if (rows.length >= 2) {
+          acc.push(
+            {
+              ...rows[0],
+              type: transactionTypeRenderer(rows[0]),
+            },
+            {
+              ...rows[1],
+              type: transactionTypeRenderer(rows[1]),
+            },
+          );
+        }
         return acc;
       },
       [],

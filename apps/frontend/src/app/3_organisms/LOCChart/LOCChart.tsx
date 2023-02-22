@@ -199,6 +199,7 @@ export const LOCChart: FC<LOCChartProps> = ({ isDefaultView = false }) => {
       if (index < centerIndex) {
         //don't cutting an array, if the user trove is in the first 10 elements
         setDataToShow(data.slice(0, trovesCountToShow));
+        setStartAxisXCount(0);
       } else {
         //setting the start point for the chart axis X
         setStartAxisXCount(shiftTroves);

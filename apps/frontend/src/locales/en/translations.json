@@ -101,7 +101,7 @@
             "liquidationReserve": "Liquidation Reserve",
             "newDebt": "New Debt",
             "originationFee": "Origination Fee (ZUSD)",
-            "transactionID": "Transaction ID"
+            "transactionID": "TXID"
         },
         "troveTypes": {
             "open": "Open Line of Credit",
@@ -135,7 +135,7 @@
             "rbtcReceived": "BTC Received",
             "redemptionFee": "Redemption Fee (BTC)",
             "networkFee": "Network Fee",
-            "transactionID": "Transaction ID"
+            "transactionID": "TXID"
         },
         "actions": {
             "noDataToExport": "No data to export"
@@ -148,7 +148,7 @@
             "sent": "Sent",
             "received": "Received",
             "serviceFee": "Service fee",
-            "txId": "Transaction ID"
+            "txId": "TXID"
         },
         "transactionType": {
             "deposit": {
@@ -170,7 +170,7 @@
             "transactionType": "Transaction Type",
             "sent": "Sent",
             "received": "Received",
-            "txId": "Transaction ID"
+            "txId": "TXID"
         },
         "type": "Convert",
         "actions": {
@@ -374,7 +374,7 @@
             "timestamp": "Timestamp",
             "transactionType": "Transaction Type",
             "collateralChange": "Collateral Change",
-            "transactionID": "Transaction ID",
+            "transactionID": "TXID",
             "withdrawSurplus": "Withdraw surplus",
             "depositSurplus": "Deposit surplus"
         },
@@ -388,7 +388,7 @@
             "transactionType": "Transaction Type",
             "balanceChange": "Balance Change",
             "newBalance": "New Balance",
-            "transactionID": "Transaction ID"
+            "transactionID": "TXID"
         },
         "stabilityPoolOperation": {
             "deposit": "Deposit",
@@ -430,7 +430,7 @@
             "timestamp": "Timestamp",
             "transactionType": "Transaction Type",
             "rewardChange": "Reward change",
-            "transactionID": "Transaction ID"
+            "transactionID": "TXID"
         },
         "actions": {
             "noDataToExport": "No data to export"

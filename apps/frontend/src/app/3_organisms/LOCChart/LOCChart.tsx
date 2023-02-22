@@ -235,12 +235,13 @@ export const LOCChart: FC<LOCChartProps> = ({ isDefaultView = false }) => {
             Number(curr.debt),
             Number(curr.collateral),
             Number(userCollateralRatio),
+            price,
           )
         );
       }, 0);
       setRedemptionBuffer(redemptionBuffer);
     }
-  }, [lowestTroves, userCollateralRatio]);
+  }, [lowestTroves, userCollateralRatio, price]);
 
   useEffect(() => {
     //reset values when the user is not in the troves list or not connected

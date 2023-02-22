@@ -84,18 +84,16 @@
     "generate:graphql:fetch:testnet": "env-cmd -f .env.development.local graphql-codegen -c codegen.fetch.yml",
     "generate:graphql:fetch:mainnet": "env-cmd -f .env.staging graphql-codegen -c codegen.fetch.yml"
   },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
-  },
+  "browserslist": [
+    "last 5 chrome version",
+    "last 5 and_chr version",
+    "last 5 electron version",
+    "last 5 firefox version",
+    "last 5 edge version",
+    "last 5 opera version",
+    "last 5 safari version",
+    "last 5 ios version"
+  ],
   "resolutions": {
     "rxjs": "7.5.6"
   }

@@ -1,9 +1,9 @@
 import React, { useCallback, useContext, useMemo } from 'react';
 
 import classNames from 'classnames';
+import { t } from 'i18next';
 import { nanoid } from 'nanoid';
 import QRCode from 'qrcode.react';
-import { useTranslation } from 'react-i18next';
 import resolveConfig from 'tailwindcss/resolveConfig';
 
 import tailwindConfig from '@sovryn/tailwindcss-config';
@@ -15,6 +15,7 @@ import {
   NotificationType,
   Lottie,
   ParagraphStyle,
+  applyDataAttr,
 } from '@sovryn/ui';
 
 import { useNotificationContext } from '../../../../../../contexts/NotificationContext';
@@ -27,8 +28,6 @@ import { TransferPolicies } from './TransferPolicies';
 const config = resolveConfig(tailwindConfig);
 
 export const AddressForm: React.FC = () => {
-  const { t } = useTranslation();
-
   const { address } = useContext(DepositContext);
   const { addNotification } = useNotificationContext();
 
@@ -46,7 +45,7 @@ export const AddressForm: React.FC = () => {
       dismissible: true,
       id: nanoid(),
     });
-  }, [addNotification, address, t]);
+  }, [addNotification, address]);
 
   const hasValidationBeenUnsuccessful = useMemo(
     () => !loading && !isSignatureValid,
@@ -102,7 +101,11 @@ export const AddressForm: React.FC = () => {
             <div className="flex justify-between mt-5 items-center bg-gray-70 border rounded border-gray-50 py-2 pl-3 pr-2 text-gray-30">
               <div>{formattedAddress}</div>
 
-              <span className="cursor-pointer rounded" onClick={copyAddress}>
+              <span
+                className="cursor-pointer rounded"
+                onClick={copyAddress}
+                {...applyDataAttr('funding-receive-address-copy')}
+              >
                 <Icon icon={IconNames.COPY} />
               </span>
             </div>

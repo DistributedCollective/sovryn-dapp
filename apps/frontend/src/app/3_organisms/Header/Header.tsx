@@ -1,6 +1,6 @@
 import React, { FC, useCallback, useMemo, useReducer } from 'react';
 
-import { useTranslation } from 'react-i18next';
+import { t } from 'i18next';
 import { useLocation } from 'react-router-dom';
 
 import { SupportedTokens } from '@sovryn/contracts';
@@ -24,7 +24,6 @@ import { sharedState } from '../../../store/rxjs/shared-state';
 import { isMainnet, isTestnetFastBtcEnabled } from '../../../utils/helpers';
 
 export const Header: FC = () => {
-  const { t } = useTranslation();
   const [isOpen, toggle] = useReducer(v => !v, false);
   const { connectWallet, disconnectWallet, account, pending } =
     useWalletConnect();

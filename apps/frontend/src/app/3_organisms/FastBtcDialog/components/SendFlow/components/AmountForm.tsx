@@ -1,6 +1,6 @@
 import React, { useCallback, useContext, useMemo, useState } from 'react';
 
-import { useTranslation } from 'react-i18next';
+import { t } from 'i18next';
 
 import { SupportedTokens } from '@sovryn/contracts';
 import {
@@ -8,6 +8,8 @@ import {
   applyDataAttr,
   Button,
   ButtonStyle,
+  ErrorBadge,
+  ErrorLevel,
   Heading,
   HeadingType,
   Paragraph,
@@ -31,8 +33,6 @@ import {
 import { TransferPolicies } from './TransferPolicies';
 
 export const AmountForm: React.FC = () => {
-  const { t } = useTranslation();
-
   const { amount, limits, set } = useContext(WithdrawContext);
 
   const { checkMaintenance, States } = useMaintenance();
@@ -100,7 +100,7 @@ export const AmountForm: React.FC = () => {
           <button
             onClick={onMaximumAmountClick}
             className="text-xs font-medium underline whitespace-nowrap"
-            {...applyDataAttr('convert-to-max')}
+            {...applyDataAttr('funding-send-amount-max')}
           >
             ({t(translations.common.max)}{' '}
             <AmountRenderer
@@ -131,9 +131,15 @@ export const AmountForm: React.FC = () => {
           disabled={invalid || fastBtcLocked}
           style={ButtonStyle.secondary}
           className="mt-10 w-full"
+          dataAttribute="funding-send-amount-confirm"
         />
 
-        {fastBtcLocked && <div>{t(translations.maintenanceMode.fastBtc)}</div>}
+        {fastBtcLocked && (
+          <ErrorBadge
+            level={ErrorLevel.Warning}
+            message={t(translations.maintenanceMode.fastBtc)}
+          />
+        )}
       </div>
     </>
   );

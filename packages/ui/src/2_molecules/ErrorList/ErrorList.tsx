@@ -1,10 +1,10 @@
 import React, { FC, useMemo } from 'react';
 
-import { ErrorBadge, ErrorData } from '../../1_atoms';
+import { ErrorBadge, ErrorBadgeProps } from '../../1_atoms';
 import { applyDataAttr } from '../../utils';
 
 export type ErrorListProps = {
-  errors: ErrorData[];
+  errors: ErrorBadgeProps[];
   showSingleError?: boolean;
   className?: string;
   dataAttribute?: string;

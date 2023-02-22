@@ -1,9 +1,9 @@
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
-import { signERC2612Permit } from 'eth-permit';
 
+import { signERC2612Permit } from 'eth-permit';
 import { ethers } from 'ethers';
 import { parseUnits } from 'ethers/lib/utils';
-import { useTranslation } from 'react-i18next';
+import { t } from 'i18next';
 
 import { Button, Icon, IconNames, StatusType } from '@sovryn/ui';
 
@@ -42,7 +42,6 @@ export const TransactionSteps: FC<TransactionStepsProps> = ({
 
   const [step, setStep] = useState(-1);
   const [error, setError] = useState(false);
-  const { t } = useTranslation();
 
   useEffect(() => {
     const initialize = async () => {
@@ -315,6 +314,7 @@ export const TransactionSteps: FC<TransactionStepsProps> = ({
           className="w-full mt-7"
           text={error ? 'Retry' : 'Confirm'}
           onClick={submit}
+          dataAttribute={`tx-dialog-${error ? 'retry' : 'confirm'}`}
         />
       )}
       {onClose && transactions.length === step && (
@@ -322,6 +322,7 @@ export const TransactionSteps: FC<TransactionStepsProps> = ({
           text={t(translations.common.done)}
           onClick={onClose}
           className="w-full mt-7"
+          dataAttribute="tx-dialog-done"
         ></Button>
       )}
     </div>

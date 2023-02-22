@@ -3,7 +3,7 @@ import { Decimalish, TroveAdjustmentParams } from '@sovryn-zero/lib-base';
 import { useCallback } from 'react';
 
 import { Contract } from 'ethers';
-import { useTranslation } from 'react-i18next';
+import { t } from 'i18next';
 
 import { getContract } from '@sovryn/contracts';
 import { SupportedTokens } from '@sovryn/contracts';
@@ -36,7 +36,6 @@ import { adjustTrove, openTrove } from '../utils/trove-manager';
 export const useHandleTrove = (hasLoc: boolean, onComplete: () => void) => {
   const { signer, account } = useAccount();
   const { setTransactions, setIsOpen, setTitle } = useTransactionContext();
-  const { t } = useTranslation();
 
   const handleTroveSubmit = useCallback(
     async (value: CreditLineSubmitValue) => {
@@ -132,16 +131,7 @@ export const useHandleTrove = (hasLoc: boolean, onComplete: () => void) => {
         }
       }
     },
-    [
-      account,
-      hasLoc,
-      onComplete,
-      setIsOpen,
-      setTitle,
-      setTransactions,
-      signer,
-      t,
-    ],
+    [account, hasLoc, onComplete, setIsOpen, setTitle, setTransactions, signer],
   );
 
   const handleTroveClose = useCallback(
@@ -208,7 +198,7 @@ export const useHandleTrove = (hasLoc: boolean, onComplete: () => void) => {
         setTitle(t(translations.zeroPage.tx.closeTitle));
       }
     },
-    [account, onComplete, setIsOpen, setTitle, setTransactions, signer, t],
+    [account, onComplete, setIsOpen, setTitle, setTransactions, signer],
   );
 
   return { handleTroveSubmit, handleTroveClose };

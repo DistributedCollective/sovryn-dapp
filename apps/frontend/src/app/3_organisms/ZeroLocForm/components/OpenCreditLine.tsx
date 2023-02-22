@@ -1,11 +1,12 @@
 import React, { useCallback, useMemo, useState, FC } from 'react';
 
-import { useTranslation } from 'react-i18next';
+import { t } from 'i18next';
 
 import { SupportedTokens } from '@sovryn/contracts';
 import { ErrorLevel } from '@sovryn/ui';
 
 import { BORROW_ASSETS } from '../../../5_pages/ZeroPage/constants';
+import { useAmountInput } from '../../../../hooks/useAmountInput';
 import { useMaxAssetBalance } from '../../../../hooks/useMaxAssetBalance';
 import { translations } from '../../../../locales/i18n';
 import { Bitcoin } from '../../../../utils/constants';
@@ -38,8 +39,9 @@ export const OpenCreditLine: FC<OpenCreditLineProps> = ({
   const { tcr, liquidationReserve, isRecoveryMode } = useZeroData(rbtcPrice);
 
   const [fieldsTouched, setFieldsTouched] = useState(false);
-  const [collateralAmount, setCollateralAmount] = useState('0');
-  const [debtAmount, setDebtAmount] = useState('0');
+  const [collateralAmountInput, setCollateralAmount, collateralAmount] =
+    useAmountInput('');
+  const [debtAmountInput, setDebtAmount, debtAmount] = useAmountInput('');
   const [debtToken, setDebtToken] = useState<SupportedTokens>(BORROW_ASSETS[0]);
 
   const debtSize = useMemo(() => Number(debtAmount || 0), [debtAmount]);
@@ -65,12 +67,12 @@ export const OpenCreditLine: FC<OpenCreditLineProps> = ({
     [debtSize, borrowingRate, liquidationReserve],
   );
 
-  const minCollateralAmount = useMemo(() => {
-    return (
-      (MIN_DEBT_SIZE / rbtcPrice) *
-      (isRecoveryMode ? CRITICAL_COLLATERAL_RATIO : MINIMUM_COLLATERAL_RATIO)
-    );
-  }, [isRecoveryMode, rbtcPrice]);
+  const minCollateralAmount = useMemo(
+    () =>
+      (Math.max(MIN_DEBT_SIZE, debtWithFees) / rbtcPrice) *
+      (isRecoveryMode ? CRITICAL_COLLATERAL_RATIO : MINIMUM_COLLATERAL_RATIO),
+    [debtWithFees, isRecoveryMode, rbtcPrice],
+  );
 
   const maxCollateralAmount = useMemo(
     () => Number(fromWei(maxRbtcWeiBalance)),
@@ -112,8 +114,6 @@ export const OpenCreditLine: FC<OpenCreditLineProps> = ({
     );
   }, [collateralAmount, debtAmount, debtWithFees, rbtcPrice]);
 
-  const { t } = useTranslation();
-
   const liquidationPrice = useMemo(
     () => MINIMUM_COLLATERAL_RATIO * (debtSize / Number(collateralAmount)),
     [debtSize, collateralAmount],
@@ -142,7 +142,7 @@ export const OpenCreditLine: FC<OpenCreditLineProps> = ({
     }
 
     return errors;
-  }, [fieldsTouched, ratio, tcr, debtWithFees, t, debtToken]);
+  }, [fieldsTouched, ratio, tcr, debtWithFees, debtToken]);
 
   const debtError = useMemo(() => {
     if (!fieldsTouched) {
@@ -173,7 +173,6 @@ export const OpenCreditLine: FC<OpenCreditLineProps> = ({
     fieldsTouched,
     liquidationReserve,
     maxDebtAmount,
-    t,
   ]);
 
   const collateralError = useMemo(() => {
@@ -182,18 +181,24 @@ export const OpenCreditLine: FC<OpenCreditLineProps> = ({
     }
 
     if (toWei(collateralSize).lt(toWei(minCollateralAmount))) {
-      return t(translations.zeroPage.loc.errors.collateralTooLow, {
-        value: `${formatValue(minCollateralAmount, 4)} ${Bitcoin}`,
-      });
+      return (
+        '222' +
+        t(translations.zeroPage.loc.errors.collateralTooLow, {
+          value: `${formatValue(minCollateralAmount, 4)} ${Bitcoin}`,
+        })
+      );
     }
 
     if (toWei(collateralAmount).gt(maxRbtcWeiBalance)) {
       const diff = Number(
         fromWei(toWei(collateralAmount || 0).sub(maxRbtcWeiBalance)),
       );
-      return t(translations.zeroPage.loc.errors.balanceTooLow, {
-        value: `${formatValue(diff, 4)} ${Bitcoin}`,
-      });
+      return (
+        'ddd' +
+        t(translations.zeroPage.loc.errors.balanceTooLow, {
+          value: `${formatValue(diff, 4)} ${Bitcoin}`,
+        })
+      );
     }
 
     return undefined;
@@ -203,7 +208,6 @@ export const OpenCreditLine: FC<OpenCreditLineProps> = ({
     fieldsTouched,
     maxRbtcWeiBalance,
     minCollateralAmount,
-    t,
   ]);
 
   const handleFormEdit = useCallback(() => setFieldsTouched(true), []);
@@ -225,12 +229,12 @@ export const OpenCreditLine: FC<OpenCreditLineProps> = ({
       liquidationReserve={debtWithFees > 0 ? liquidationReserve : 0}
       borrowingRate={borrowingRate}
       originationFee={originationFee}
-      debtAmount={debtAmount}
+      debtAmount={debtAmountInput}
       maxDebtAmount={maxDebtAmount}
       onDebtAmountChange={setDebtAmount}
       debtToken={debtToken}
       onDebtTokenChange={setDebtToken}
-      collateralAmount={collateralAmount}
+      collateralAmount={collateralAmountInput}
       maxCollateralAmount={maxCollateralAmount}
       onCollateralAmountChange={setCollateralAmount}
       initialRatio={0}

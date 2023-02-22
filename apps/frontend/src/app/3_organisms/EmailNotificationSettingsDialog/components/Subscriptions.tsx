@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 
-import { useTranslation } from 'react-i18next';
+import { t } from 'i18next';
 
 import { Toggle, ToggleAlignment } from '@sovryn/ui';
 
@@ -13,8 +13,6 @@ type SubscriptionsProps = {
 };
 
 export const Subscriptions: FC<SubscriptionsProps> = ({ dataAttribute }) => {
-  const { t } = useTranslation();
-
   const {
     marginCallsToggle,
     liquidationsToggle,

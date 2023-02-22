@@ -63,7 +63,7 @@ export const LOCStatus: FC<LOCStatusProps> = ({
                   value={collateral}
                   suffix={Bitcoin}
                   precision={BTC_RENDER_PRECISION}
-                  dataAttribute="LOC-collateral"
+                  dataAttribute="loc-status-collateral"
                   isAnimated
                 />
               }
@@ -75,7 +75,7 @@ export const LOCStatus: FC<LOCStatusProps> = ({
                   value={debt}
                   suffix={debtSymbol}
                   precision={TOKEN_RENDER_PRECISION}
-                  dataAttribute="LOC-debt"
+                  dataAttribute="loc-status-debt"
                   isAnimated
                 />
               }

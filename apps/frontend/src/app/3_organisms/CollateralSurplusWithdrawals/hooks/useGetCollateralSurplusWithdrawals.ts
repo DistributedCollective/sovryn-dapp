@@ -22,7 +22,7 @@ export const useGetCollateralSurplusWithdrawals = (
       orderBy: (orderOptions.orderBy as CollSurplusChange_OrderBy) || undefined,
       orderDirection: orderOptions.orderDirection || undefined,
       filters: {
-        user_contains: account || '',
+        user_contains: account?.toLowerCase() || '',
         collSurplusAfter: '0',
       } as CollSurplusChange_Filter,
     }),

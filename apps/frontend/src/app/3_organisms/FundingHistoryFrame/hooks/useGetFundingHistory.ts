@@ -16,7 +16,7 @@ export const useGetFundingHistory = (
 ) => {
   const config = useMemo(
     () => ({
-      user: account,
+      user: account?.toLowerCase(),
       skip: page * pageSize,
       pageSize,
       orderBy: orderOptions.orderBy as BitcoinTransfer_OrderBy,

@@ -24,6 +24,14 @@
         },
         "na": "N/A",
         "tables": {
+            "columnTitles": {
+                "timestamp": "Timestamp",
+                "transactionType": "Transaction Type",
+                "transactionID": "Transaction ID"
+            },
+            "actions": {
+                "noDataToExport": "No data to export"
+            },
             "noData": "No data available",
             "noDataWithFilters": "No data with the current filters"
         },
@@ -31,194 +39,7 @@
         "amount": "Amount",
         "deposit": "Deposit",
         "withdraw": "Withdraw",
-        "done": "Done"
-    },
-    "wrongNetworkSwitcher": {
-        "title": "Wrong network",
-        "description": "We detected that you are currently connected to the wrong network. Please switch your wallet to use {{network}} network."
-    },
-    "adjustCreditLine": {
-        "actions": {
-            "borrow": "Borrow",
-            "repay": "Repay",
-            "collateral": "Collateral",
-            "addCollateral": "Add collateral",
-            "withdrawCollateral": "Withdraw collateral"
-        },
-        "max": "Max {{value}} {{symbol}}",
-        "fields": {
-            "debt": {
-                "amount": "Amount",
-                "tooltip": "Amount of debt to add or remove"
-            },
-            "collateral": {
-                "amount": "Amount",
-                "tooltip": "Amount of collateral to add or remove"
-            }
-        },
-        "labels": {
-            "newDebt": "New debt",
-            "newDebtTooltip": "New debt amount",
-            "newCollateral": "New collateral",
-            "newCollateralTooltip": "New collateral amount",
-            "collateralRatio": "Collateral ratio",
-            "collateralRatioTooltip": "Collateral ratio after the transaction",
-            "liquidationPrice": "Liquidation price",
-            "liquidationPriceTooltip": "Liquidation price after the transaction",
-            "recoveryLiquidationPrice": "Liquidation price (Recovery Mode)",
-            "recoveryLiquidationPriceTooltip": "Liquidation price after the transaction",
-            "rbtcPrice": "BTC price",
-            "rbtcPriceTooltip": "BTC price in USD",
-            "originationFee": "Origination fee",
-            "originationFeeTooltip": "Origination fee in percentage",
-            "liquidationReserve": "Liquidation Reserve",
-            "liquidationReserveTooltip": "Liquidation Reserve in ZUSD",
-            "totalDebt": "Total debt",
-            "totalDebtTooltip": "Total debt amount"
-        }
-    },
-    "closeCreditLine": {
-        "title": "Select the token you'd like to pay your debt with:",
-        "fields": {
-            "collateral": {
-                "label": "Collateral to receive",
-                "tooltip": "Amount of collateral to receive"
-            }
-        },
-        "error": "You need an additional {{amount}} {{token}} in order to close your line of credit."
-    },
-    "collateralRatio": {
-        "title": "Collateral Ratio",
-        "tooltip": "Collateral Ratio"
-    },
-    "transactionHistory": {
-        "table": {
-            "timestamp": "Timestamp",
-            "transactionType": "Transaction Type",
-            "collateralChange": "Collateral Change",
-            "newCollateralBalance": "New Collateral Balance",
-            "debtChange": "Debt Change",
-            "liquidationReserve": "Liquidation Reserve",
-            "newDebt": "New Debt",
-            "originationFee": "Origination Fee (ZUSD)",
-            "transactionID": "Transaction ID"
-        },
-        "troveTypes": {
-            "open": "Open Line of Credit",
-            "adjust": "Adjust Line of Credit",
-            "close": "Close Line of Credit",
-            "withdraw": "Withdraw surplus",
-            "liquidation": "Liquidation",
-            "liquidationRecovery": "Liquidation (Recovery mode)",
-            "redemption": "Redemption",
-            "accrueRewards": "Accrue Rewards"
-        },
-        "stabilityDeposit": {
-            "transfer": "Transfer gain to Line of Credit",
-            "withdraw": "Withdraw Tokens",
-            "deposit": "Deposit Tokens"
-        },
-        "filters": {
-            "increasedCollateral": "Increased Collateral",
-            "decreasedCollateral": "Decreased Collateral",
-            "increasedDebt": "Increased Debt",
-            "decreasedDebt": "Decreased Debt"
-        },
-        "actions": {
-            "noDataToExport": "No data to export"
-        }
-    },
-    "redemptionsHistory": {
-        "table": {
-            "timestamp": "Timestamp",
-            "zusdRedeemed": "ZUSD Redeemed",
-            "rbtcReceived": "BTC Received",
-            "redemptionFee": "Redemption Fee (BTC)",
-            "networkFee": "Network Fee",
-            "transactionID": "Transaction ID"
-        },
-        "actions": {
-            "noDataToExport": "No data to export"
-        }
-    },
-    "conversionsHistory": {
-        "table": {
-            "timestamp": "Timestamp",
-            "transactionType": "Transaction Type",
-            "sent": "Sent",
-            "received": "Received",
-            "txId": "TXID"
-        },
-        "type": "Convert",
-        "actions": {
-            "noDataToExport": "No data to export"
-        }
-    },
-    "errorPage": {
-        "title": "Error",
-        "description": "Something went wrong. Please try again later."
-    },
-    "gettingStartedPopup": {
-        "title": "Put your loan to work",
-        "description": "Here are a few ideas for what you can do with your loan:",
-        "content": {
-            "pool": {
-                "title": "Pool",
-                "description": "Earn BTC by depositing into the Zero Stability Pool or Sovryn DLLR/RBTC Pool."
-            },
-            "lend": {
-                "title": "Lend",
-                "description": "Earn interest by providing liquidity to the Sovryn lending protocol."
-            },
-            "trade": {
-                "title": "Trade",
-                "description": "Buy more BTC or other assets using the Sovryn exchange protocol."
-            },
-            "bridge": {
-                "title": "Bridge",
-                "description": "Convert your loan into popular stablecoins on BSC and Ethereum."
-            }
-        },
-        "buttons": {
-            "finish": "Finish",
-            "doNotShowAgain": "Don't show again",
-            "learnMore": "Learn more",
-            "learnMoreStabilityPool": "Learn more - Stability Pool",
-            "learnMoreAMMPool": "Learn more - AMM Pool"
-        }
-    },
-    "emailNotificationsDialog": {
-        "dialogTitle": "Notifications",
-        "title": "Sign up to receive important notifications about the state of your line of credit and the Zero protocol",
-        "emailInputLabel": "Email address",
-        "emailInputPlaceholder": "Enter Email",
-        "alertGroups": {
-            "marginCallsToggle": "Margin call alerts",
-            "liquidationsToggle": "Liquidation alerts",
-            "stabilityPoolToggle": "Stability pool alerts",
-            "systemToggle": "System alerts"
-        },
-        "successMessage": "Your preferences have been saved.",
-        "errorMessage": "Something went wrong, please try again.",
-        "authErrorMessage": "Authentication failed, please try again."
-    },
-    "chart": {
-        "collateralRatio": "Collateral ratio",
-        "myCollateralRatio": "My Collateral ratio",
-        "collateralAmount": "Collateral Amount",
-        "debtAmount": "Debt Amount",
-        "redemptionBuffer": "Redemption Buffer",
-        "noData": "No data",
-        "systemLinesCredit": "System lines of credit"
-    },
-    "LOCStatus": {
-        "withdrawalSurplus": "withdrawal surplus",
-        "currentCollateral": "Current collateral",
-        "currentDebt": "Current debt",
-        "collateralRatio": "Collateral ratio",
-        "withdraw": "Withdraw",
-        "adjust": "Adjust",
-        "close": "Close"
+        "txId": "TX ID"
     },
     "connectWalletButton": {
         "connect": "Get started",
@@ -245,7 +66,71 @@
         "terms": "Terms of service",
         "policy": "Privacy policy"
     },
+    "wrongNetworkSwitcher": {
+        "title": "Wrong network",
+        "description": "We detected that you are currently connected to the wrong network. Please switch your wallet to use {{network}} network."
+    },
+    "errorPage": {
+        "title": "Error",
+        "description": "Something went wrong. Please try again later."
+    },
+    "maintenanceMode": {
+        "fastBtc": "Fast BTC is locked",
+        "featureDisabled": "This feature is currently disabled",
+        "fullD2": {
+            "title": "Sovryn is in maintenance mode.",
+            "description": "Follow the social channels linked in the footer for further updates."
+        }
+    },
+    "transactionStep": {
+        "customAmount": "Custom amount",
+        "customAmountTooltip": "Limiting the amount of approved tokens as an additional security measure may result higher fees",
+        "unlimitedAmount": "Unlimited amount",
+        "unlimitedAmountTooltip": "Limiting the amount of approved tokens as an additional security measure may result higher fees",
+        "transactionFailedTitle": "Your transaction has failed.",
+        "transactionFailedSubtitle": "Please close or retry your transaction",
+        "estimatedGasFee": "Estimated gas fee",
+        "advancedSettings": "Advanced Settings",
+        "gasSettings": "Gas Settings",
+        "gasLimit": "Gas limit",
+        "gasPrice": "Gas price",
+        "resetValues": "Reset values"
+    },
+
     "zeroPage": {
+        "dashboardWelcomeBanner": {
+            "fundWallet": "Fund your wallet",
+            "OpenCredit": "Open line of credit"
+        },
+        "gettingStartedPopup": {
+            "title": "Put your loan to work",
+            "description": "Here are a few ideas for what you can do with your loan:",
+            "content": {
+                "pool": {
+                    "title": "Pool",
+                    "description": "Earn BTC by depositing into the Zero Stability Pool or Sovryn DLLR/RBTC Pool."
+                },
+                "lend": {
+                    "title": "Lend",
+                    "description": "Earn interest by providing liquidity to the Sovryn lending protocol."
+                },
+                "trade": {
+                    "title": "Trade",
+                    "description": "Buy more BTC or other assets using the Sovryn exchange protocol."
+                },
+                "bridge": {
+                    "title": "Bridge",
+                    "description": "Convert your loan into popular stablecoins on BSC and Ethereum."
+                }
+            },
+            "buttons": {
+                "finish": "Finish",
+                "doNotShowAgain": "Don't show again",
+                "learnMore": "Learn more",
+                "learnMoreStabilityPool": "Learn more - Stability Pool",
+                "learnMoreAMMPool": "Learn more - AMM Pool"
+            }
+        },
         "loc": {
             "open": "Open line of credit",
             "adjust": "Adjust line of credit",
@@ -299,21 +184,77 @@
             "totalDLLRSupply": "Total DLLR supply"
         }
     },
-    "convertPage": {
-        "title": "Convert",
-        "subtitle": "Convert between assets",
-        "form": {
-            "convertFrom": "Convert from",
-            "convertTo": "To",
-            "invalidAmountError": "Exceeds maximum amount"
+    "adjustCreditLine": {
+        "actions": {
+            "borrow": "Borrow",
+            "repay": "Repay",
+            "collateral": "Collateral",
+            "addCollateral": "Add collateral",
+            "withdrawCollateral": "Withdraw collateral"
         },
-        "txDialog": {
-            "convertTitle": "Convert {{from}} to {{to}}",
-            "approveTitle": "Approve transferring {{asset}}",
-            "convert": "Convert {{asset}}",
-            "approve": "Approve {{asset}}"
+        "max": "Max {{value}} {{symbol}}",
+        "fields": {
+            "debt": {
+                "tooltip": "Amount of debt to add or remove"
+            },
+            "collateral": {
+                "tooltip": "Amount of collateral to add or remove"
+            }
+        },
+        "labels": {
+            "newDebt": "New debt",
+            "newDebtTooltip": "New debt amount",
+            "newCollateral": "New collateral",
+            "newCollateralTooltip": "New collateral amount",
+            "collateralRatio": "Collateral ratio",
+            "collateralRatioTooltip": "Collateral ratio after the transaction",
+            "liquidationPrice": "Liquidation price",
+            "liquidationPriceTooltip": "Liquidation price after the transaction",
+            "recoveryLiquidationPrice": "Liquidation price (Recovery Mode)",
+            "recoveryLiquidationPriceTooltip": "Liquidation price after the transaction",
+            "rbtcPrice": "BTC price",
+            "rbtcPriceTooltip": "BTC price in USD",
+            "originationFee": "Origination fee",
+            "originationFeeTooltip": "Origination fee in percentage",
+            "liquidationReserve": "Liquidation Reserve",
+            "liquidationReserveTooltip": "Liquidation Reserve in ZUSD",
+            "totalDebt": "Total debt",
+            "totalDebtTooltip": "Total debt amount"
         }
     },
+    "closeCreditLine": {
+        "title": "Select the token you'd like to pay your debt with:",
+        "fields": {
+            "collateral": {
+                "label": "Collateral to receive",
+                "tooltip": "Amount of collateral to receive"
+            }
+        },
+        "error": "You need an additional {{amount}} {{token}} in order to close your line of credit."
+    },
+    "collateralRatio": {
+        "title": "Collateral Ratio",
+        "tooltip": "Collateral Ratio"
+    },
+    "chart": {
+        "collateralRatio": "Collateral ratio",
+        "myCollateralRatio": "My Collateral ratio",
+        "collateralAmount": "Collateral Amount",
+        "debtAmount": "Debt Amount",
+        "redemptionBuffer": "Redemption Buffer",
+        "noData": "No data",
+        "systemLinesCredit": "System lines of credit"
+    },
+    "LOCStatus": {
+        "withdrawalSurplus": "withdrawal surplus",
+        "currentCollateral": "Current collateral",
+        "currentDebt": "Current debt",
+        "collateralRatio": "Collateral ratio",
+        "withdraw": "Withdraw",
+        "adjust": "Adjust",
+        "close": "Close"
+    },
+
     "earnPage": {
         "title": "Stability pool",
         "subtitle": "Earn BTC by providing liquidity for liquidations",
@@ -331,88 +272,23 @@
             "deposit": "Deposit {{asset}}"
         }
     },
-    "historyPage": {
-        "title": "My transaction history",
-        "table": {
-            "tabs": {
-                "lineOfCredit": "Line of Credit",
-                "redemptions": "Redemptions",
-                "stability": "Stability pool",
-                "convert": "Conversion",
-                "funding": "Funding",
-                "collateralSurplusWithdrawals": "Collateral surplus",
-                "reward": "Reward"
-            },
-            "comingSoon": "Coming soon..."
+
+    "convertPage": {
+        "title": "Convert",
+        "subtitle": "Convert between assets",
+        "form": {
+            "convertFrom": "Convert from",
+            "convertTo": "To",
+            "invalidAmountError": "Exceeds maximum amount"
+        },
+        "txDialog": {
+            "convertTitle": "Convert {{from}} to {{to}}",
+            "approveTitle": "Approve transferring {{asset}}",
+            "convert": "Convert {{asset}}",
+            "approve": "Approve {{asset}}"
         }
     },
-    "collateralSurplusHistory": {
-        "table": {
-            "timestamp": "Timestamp",
-            "transactionType": "Transaction Type",
-            "collateralChange": "Collateral Change",
-            "transactionID": "Transaction ID",
-            "withdrawSurplus": "Withdraw surplus",
-            "depositSurplus": "Deposit surplus"
-        },
-        "actions": {
-            "noDataToExport": "No data to export"
-        }
-    },
-    "stabilityPoolHistory": {
-        "table": {
-            "timestamp": "Timestamp",
-            "transactionType": "Transaction Type",
-            "balanceChange": "Balance Change",
-            "newBalance": "New Balance",
-            "transactionID": "Transaction ID"
-        },
-        "stabilityPoolOperation": {
-            "deposit": "Deposit",
-            "withdrawal": "Withdrawal",
-            "withdrawCollateralGain": "Withdraw collateral gain",
-            "withdrawGainToLineOfCredit": "Withdraw gain to line of credit"
-        },
-        "filters": {
-            "depositTokens": "Deposit",
-            "withdrawTokens": "Withdraw",
-            "withdrawCollateralGain": "Withdraw collateral gain"
-        },
-        "actions": {
-            "noDataToExport": "No data to export"
-        }
-    },
-    "dashboardWelcomeBanner": {
-        "fundWallet": "Fund your wallet",
-        "OpenCredit": "Open line of credit"
-    },
-    "rewardPage": {
-        "title": "Rewards",
-        "subtitle": "Collect rewards earned",
-        "stabilityPoolRewards": "Stability pool rewards",
-        "btc": "BTC",
-        "actions": {
-            "transferToLOC": "Transfer to LOC",
-            "withdraw": "Withdraw"
-        },
-        "tx": {
-            "withdraw": "Withdraw rewards to your address",
-            "withdrawGains": "Withdraw rewards",
-            "transferToLOC": "Transfer rewards",
-            "transfer": "Transfer rewards to line of credit"
-        }
-    },
-    "rewardHistoryTable": {
-        "table": {
-            "timestamp": "Timestamp",
-            "transactionType": "Transaction Type",
-            "rewardChange": "Reward change",
-            "transactionID": "Transaction ID"
-        },
-        "actions": {
-            "noDataToExport": "No data to export"
-        }
-    },
+
     "fastBtc": {
         "mainScreen": {
             "title": "Funding",
@@ -491,12 +367,129 @@
             }
         }
     },
-    "maintenanceMode": {
-        "fastBtc": "Fast BTC is locked",
-        "featureDisabled": "This feature is currently disabled",
-        "fullD2": {
-            "title": "Sovryn is in maintenance mode.",
-            "description": "Follow the social channels linked in the footer for further updates."
+
+    "rewardPage": {
+        "title": "Rewards",
+        "subtitle": "Collect rewards earned",
+        "stabilityPoolRewards": "Stability pool rewards",
+        "btc": "BTC",
+        "actions": {
+            "transferToLOC": "Transfer to LOC",
+            "withdraw": "Withdraw"
+        },
+        "tx": {
+            "withdraw": "Withdraw rewards to your address",
+            "withdrawGains": "Withdraw rewards",
+            "transferToLOC": "Transfer rewards",
+            "transfer": "Transfer rewards to line of credit"
         }
+    },
+
+    "historyPage": {
+        "title": "My transaction history",
+        "table": {
+            "tabs": {
+                "lineOfCredit": "Line of Credit",
+                "redemptions": "Redemptions",
+                "stability": "Stability pool",
+                "convert": "Conversion",
+                "funding": "Funding",
+                "collateralSurplusWithdrawals": "Collateral surplus",
+                "reward": "Reward"
+            },
+            "comingSoon": "Coming soon..."
+        }
+    },
+    "transactionHistory": {
+        "table": {
+            "collateralChange": "Collateral Change",
+            "newCollateralBalance": "New Collateral Balance",
+            "debtChange": "Debt Change",
+            "liquidationReserve": "Liquidation Reserve",
+            "newDebt": "New Debt",
+            "originationFee": "Origination Fee (ZUSD)"
+        },
+        "troveTypes": {
+            "open": "Open Line of Credit",
+            "adjust": "Adjust Line of Credit",
+            "close": "Close Line of Credit",
+            "withdraw": "Withdraw surplus",
+            "liquidation": "Liquidation",
+            "liquidationRecovery": "Liquidation (Recovery mode)",
+            "redemption": "Redemption",
+            "accrueRewards": "Accrue Rewards"
+        },
+        "stabilityDeposit": {
+            "transfer": "Transfer gain to Line of Credit",
+            "withdraw": "Withdraw Tokens",
+            "deposit": "Deposit Tokens"
+        },
+        "filters": {
+            "increasedCollateral": "Increased Collateral",
+            "decreasedCollateral": "Decreased Collateral",
+            "increasedDebt": "Increased Debt",
+            "decreasedDebt": "Decreased Debt"
+        }
+    },
+    "redemptionsHistory": {
+        "table": {
+            "zusdRedeemed": "ZUSD Redeemed",
+            "rbtcReceived": "BTC Received",
+            "redemptionFee": "Redemption Fee (BTC)",
+            "networkFee": "Network Fee"
+        }
+    },
+    "conversionsHistory": {
+        "table": {
+            "sent": "Sent",
+            "received": "Received",
+            "txId": "TXID"
+        },
+        "type": "Convert"
+    },
+    "collateralSurplusHistory": {
+        "table": {
+            "collateralChange": "Collateral Change",
+            "withdrawSurplus": "Withdraw surplus",
+            "depositSurplus": "Deposit surplus"
+        }
+    },
+    "stabilityPoolHistory": {
+        "table": {
+            "balanceChange": "Balance Change",
+            "newBalance": "New Balance"
+        },
+        "stabilityPoolOperation": {
+            "deposit": "Deposit",
+            "withdrawal": "Withdrawal",
+            "withdrawCollateralGain": "Withdraw collateral gain",
+            "withdrawGainToLineOfCredit": "Withdraw gain to line of credit"
+        },
+        "filters": {
+            "depositTokens": "Deposit",
+            "withdrawTokens": "Withdraw",
+            "withdrawCollateralGain": "Withdraw collateral gain"
+        }
+    },
+    "rewardHistory": {
+        "table": {
+            "rewardChange": "Reward change"
+        }
+    },
+
+    "emailNotificationsDialog": {
+        "dialogTitle": "Notifications",
+        "title": "Sign up to receive important notifications about the state of your line of credit and the Zero protocol",
+        "emailInputLabel": "Email address",
+        "emailInputPlaceholder": "Enter Email",
+        "alertGroups": {
+            "marginCallsToggle": "Margin call alerts",
+            "liquidationsToggle": "Liquidation alerts",
+            "stabilityPoolToggle": "Stability pool alerts",
+            "systemToggle": "System alerts"
+        },
+        "successMessage": "Your preferences have been saved.",
+        "errorMessage": "Something went wrong, please try again.",
+        "authErrorMessage": "Authentication failed, please try again."
     }
 }

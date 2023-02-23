@@ -198,14 +198,14 @@ export const StabilityPoolHistoryFrame: FC = () => {
     () => [
       {
         id: 'sequenceNumber',
-        title: t(translations.stabilityPoolHistory.table.timestamp),
+        title: t(translations.common.tables.columnTitles.timestamp),
         cellRenderer: (row: StabilityDepositChange) =>
           dateFormat(row.transaction.timestamp),
         sortable: true,
       },
       {
         id: 'transactionType',
-        title: t(translations.stabilityPoolHistory.table.transactionType),
+        title: t(translations.common.tables.columnTitles.transactionType),
         cellRenderer: (row: StabilityDepositChange) => (
           <TransactionTypeRenderer type={row.stabilityDepositOperation} />
         ),
@@ -229,7 +229,7 @@ export const StabilityPoolHistoryFrame: FC = () => {
       },
       {
         id: 'transactionID',
-        title: t(translations.stabilityPoolHistory.table.transactionID),
+        title: t(translations.common.tables.columnTitles.transactionID),
         cellRenderer: (row: StabilityDepositChange) => (
           <TxIdWithNotification
             href={`${chain?.blockExplorerUrl}/tx/${row.transaction.id}`}
@@ -280,7 +280,7 @@ export const StabilityPoolHistoryFrame: FC = () => {
     if (!list || !list.length) {
       addNotification({
         type: NotificationType.warning,
-        title: t(translations.stabilityPoolHistory.actions.noDataToExport),
+        title: t(translations.common.tables.actions.noDataToExport),
         content: '',
         dismissible: true,
         id: nanoid(),

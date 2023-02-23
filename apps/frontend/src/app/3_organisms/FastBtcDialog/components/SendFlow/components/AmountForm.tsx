@@ -1,11 +1,11 @@
 import React, { useCallback, useContext, useMemo, useState } from 'react';
 
+import { formatUnits } from 'ethers/lib/utils';
 import { t } from 'i18next';
 
 import { SupportedTokens } from '@sovryn/contracts';
 import {
   AmountInput,
-  applyDataAttr,
   Button,
   ButtonStyle,
   ErrorBadge,
@@ -18,7 +18,7 @@ import {
 
 import { defaultChainId } from '../../../../../../config/chains';
 
-import { AmountRenderer } from '../../../../../2_molecules/AmountRenderer/AmountRenderer';
+import { MaxButton } from '../../../../../2_molecules/MaxButton/MaxButton';
 import { useAssetBalance } from '../../../../../../hooks/useAssetBalance';
 import { useMaintenance } from '../../../../../../hooks/useMaintenance';
 import { useMaxAssetBalance } from '../../../../../../hooks/useMaxAssetBalance';
@@ -70,11 +70,6 @@ export const AmountForm: React.FC = () => {
       .gt(rbtcWeiBalance || '0');
   }, [value, limits.min, limits.max, rbtcWeiBalance]);
 
-  const onMaximumAmountClick = useCallback(
-    () => setValue(maxRbtcBalance),
-    [maxRbtcBalance],
-  );
-
   const onContinueClick = useCallback(
     () =>
       set(prevState => ({
@@ -83,6 +78,22 @@ export const AmountForm: React.FC = () => {
         step: WithdrawStep.ADDRESS,
       })),
     [set, value],
+  );
+
+  const maxAmount = useMemo(() => {
+    return Math.min(Number(formatUnits(limits.max, 8)), Number(maxRbtcBalance));
+  }, [limits.max, maxRbtcBalance]);
+
+  const maxExceed = useMemo(() => {
+    if (value === '0') {
+      return false;
+    }
+    return toWei(value).gt(toWei(maxAmount));
+  }, [maxAmount, value]);
+
+  const onMaximumAmountClick = useCallback(
+    () => setValue(String(maxAmount)),
+    [maxAmount],
   );
 
   return (
@@ -97,19 +108,13 @@ export const AmountForm: React.FC = () => {
             {t(translations.fastBtc.send.amountForm.amountLabel)}
           </Paragraph>
 
-          <button
+          <MaxButton
             onClick={onMaximumAmountClick}
-            className="text-xs font-medium underline whitespace-nowrap"
-            {...applyDataAttr('funding-send-amount-max')}
-          >
-            ({t(translations.common.max)}{' '}
-            <AmountRenderer
-              value={maxRbtcBalance}
-              suffix={Bitcoin}
-              precision={8}
-            />
-            )
-          </button>
+            value={maxAmount}
+            token={Bitcoin}
+            precision={8}
+            dataAttribute="funding-send-amount-max"
+          />
         </div>
 
         <div>
@@ -120,7 +125,14 @@ export const AmountForm: React.FC = () => {
             unit={Bitcoin}
             value={value}
             className="max-w-none"
+            invalid={maxExceed}
           />
+
+          {maxExceed && (
+            <Paragraph className="text-error-light font-medium mt-2">
+              {t(translations.fastBtc.send.addressForm.maxExceed)}
+            </Paragraph>
+          )}
         </div>
 
         <TransferPolicies />

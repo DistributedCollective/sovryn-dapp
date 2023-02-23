@@ -2,7 +2,7 @@ import React, { FC, useCallback } from 'react';
 
 import classNames from 'classnames';
 
-import { formatValue } from '../../../utils/math';
+import { MaxButton } from '../../2_molecules/MaxButton/MaxButton';
 import { AmountType } from './types';
 
 type Tab = {
@@ -61,12 +61,13 @@ export const Label: FC<CustomLabelProps> = ({
       ) : (
         <>{tabs[0].label}</>
       )}
-      <button
+
+      <MaxButton
         onClick={onMaxAmountClicked}
-        className="text-gray-20 text-[11px] underline whitespace-nowrap"
-      >
-        (max {formatValue(maxAmount, 4)} {symbol.toUpperCase()})
-      </button>
+        value={maxAmount}
+        token={symbol}
+        dataAttribute="convert-from-max"
+      />
     </div>
   );
 };

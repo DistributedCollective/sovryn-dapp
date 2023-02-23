@@ -156,11 +156,7 @@ export const OpenCreditLine: FC<OpenCreditLineProps> = ({
     }
 
     if (toWei(debtAmount).gt(toWei(maxDebtAmount))) {
-      const diff = Number(fromWei(toWei(debtAmount).sub(toWei(maxDebtAmount))));
-      return t(translations.zeroPage.loc.errors.creditBalanceTooLow, {
-        value: formatValue(diff, 4),
-        currency: debtToken.toUpperCase(),
-      });
+      return t(translations.zeroPage.loc.errors.maxExceed);
     }
 
     return undefined;
@@ -179,24 +175,13 @@ export const OpenCreditLine: FC<OpenCreditLineProps> = ({
     }
 
     if (toWei(collateralSize).lt(toWei(minCollateralAmount))) {
-      return (
-        '222' +
-        t(translations.zeroPage.loc.errors.collateralTooLow, {
-          value: `${formatValue(minCollateralAmount, 4)} ${Bitcoin}`,
-        })
-      );
+      return t(translations.zeroPage.loc.errors.collateralTooLow, {
+        value: `${formatValue(minCollateralAmount, 4)} ${Bitcoin}`,
+      });
     }
 
     if (toWei(collateralAmount).gt(maxRbtcWeiBalance)) {
-      const diff = Number(
-        fromWei(toWei(collateralAmount || 0).sub(maxRbtcWeiBalance)),
-      );
-      return (
-        'ddd' +
-        t(translations.zeroPage.loc.errors.balanceTooLow, {
-          value: `${formatValue(diff, 4)} ${Bitcoin}`,
-        })
-      );
+      return t(translations.zeroPage.loc.errors.maxExceed);
     }
 
     return undefined;

@@ -22,11 +22,11 @@ import {
 } from '@sovryn/ui';
 
 import { AssetRenderer } from '../../2_molecules/AssetRenderer/AssetRenderer';
+import { MaxButton } from '../../2_molecules/MaxButton/MaxButton';
 import { useAccount } from '../../../hooks/useAccount';
-import { useMaintenance } from '../../../hooks/useMaintenance';
 import { useAmountInput } from '../../../hooks/useAmountInput';
+import { useMaintenance } from '../../../hooks/useMaintenance';
 import { translations } from '../../../locales/i18n';
-import { formatValue } from '../../../utils/math';
 import { allowedTokens, bassets } from './ConvertPage.types';
 import { useGetDefaultSourceToken } from './hooks/useGetDefaultSourceToken';
 import { useGetMaximumAvailableAmount } from './hooks/useGetMaximumAvailableAmount';
@@ -186,15 +186,12 @@ const ConvertPage: FC = () => {
               {t(pageTranslations.form.convertFrom)}
             </Paragraph>
 
-            <button
+            <MaxButton
               onClick={onMaximumAmountClick}
-              className="text-xs font-medium underline whitespace-nowrap"
-              {...applyDataAttr('convert-from-max')}
-            >
-              ({t(commonTranslations.max)}{' '}
-              {formatValue(Number(maximumAmountToConvert), 4)}{' '}
-              {sourceToken.toUpperCase()})
-            </button>
+              value={maximumAmountToConvert}
+              token={sourceToken}
+              dataAttribute="convert-from-max"
+            />
           </div>
 
           <div className="w-full flex flex-row justify-between items-center gap-3 mt-3.5">

@@ -10,34 +10,23 @@ import {
   Tooltip,
   Legend,
 } from 'chart.js';
-import { t } from 'i18next';
 import { Bar } from 'react-chartjs-2';
-
-import { SupportedTokens } from '@sovryn/contracts';
-import { prettyTx } from '@sovryn/ui';
 
 import { useAccount } from '../../../hooks/useAccount';
 import { useBlockNumber } from '../../../hooks/useBlockNumber';
-import { translations } from '../../../locales/i18n';
-import { Bitcoin } from '../../../utils/constants';
-import { formatValue } from '../../../utils/math';
-import { useGetLowestTroves } from './hooks/useGetLowestTroves';
+import { useIsMobile } from '../../../hooks/useIsMobile';
+import { TroveStatus } from '../../../utils/graphql/zero/generated';
+import { fromWei } from '../../../utils/math';
+import { useGetChartOptions } from './hooks/useGetChartOptions';
+import { useGetGlobalsEntity } from './hooks/useGetGlobalsEntity';
 import { useGetRBTCPrice } from './hooks/useGetRBTCPrice';
 import { useGetTroves } from './hooks/useGetTroves';
-import { useGetTrovesPositions } from './hooks/useGetTrovesPositions';
 import { useGetUserOpenTrove } from './hooks/useGetUserOpenTrove';
-import {
-  ChartBarData,
-  ChartDataStructure,
-  ChartSortingType,
-  TroveData,
-  TrovesFilterType,
-} from './types';
+import { ChartSortingType, TroveData } from './types';
 import {
   calculateCollateralRatio,
   calculateRedemptionBuffer,
   chartConfig,
-  sortData,
 } from './utils';
 
 ChartJS.register(
@@ -69,143 +58,27 @@ ChartJS.register(
  * @returns Chart component with data
  */
 
-export const LOCChart: FC = () => {
-  const { account } = useAccount();
-  const [data, setData] = useState<ChartDataStructure>([]);
-  const [activeBar, setActiveBar] = useState<number | null>(null);
-  const { price } = useGetRBTCPrice();
-  const [userCollateralRatio, setUserCollateralRatio] = useState('');
-  const [redemptionBuffer, setRedemptionBuffer] = useState(0);
+type LOCChartProps = {
+  isDefaultView?: boolean;
+};
 
+export const LOCChart: FC<LOCChartProps> = ({ isDefaultView = false }) => {
+  const { account } = useAccount();
+  const { isMobile } = useIsMobile();
+  const [data, setData] = useState<TroveData[]>([]);
+  const [dataToShow, setDataToShow] = useState<TroveData[]>([]);
+  const { price } = useGetRBTCPrice();
+  const [activeBar, setActiveBar] = useState(false);
+  const [userCollateralRatio, setUserCollateralRatio] = useState(0);
+  const [redemptionBuffer, setRedemptionBuffer] = useState(0);
+  const [startAxisXCount, setStartAxisXCount] = useState(0);
+  const [lowestTroves, setLowestTroves] = useState<TroveData[]>([]);
   const { value: block } = useBlockNumber();
 
-  const options = useMemo(() => {
-    return {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: {
-        tooltip: {
-          borderRadius: chartConfig.tooltipBorderRadius,
-          yAlign: 'bottom' as const,
-          backgroundColor: chartConfig.fontColor,
-          padding: chartConfig.tooltipPadding,
-          caretSize: chartConfig.caretSize,
-          bodyColor: chartConfig.borderColor,
-          bodyFont: {
-            family: chartConfig.defaultFont,
-            weight: chartConfig.weight,
-            lineHeight: chartConfig.tooltipLineHeight,
-          },
-          callbacks: {
-            title: () => '',
-            label: () => '',
-            beforeBody: context => {
-              const { collateralAmount, address, debtAmount, collateralRatio } =
-                context[0].raw;
-              const tooltipContent = [
-                prettyTx(address),
-                `${t(translations.chart.collateralAmount)}: ${formatValue(
-                  Number(collateralAmount),
-                  6,
-                )} ${Bitcoin}`,
-                `${t(translations.chart.debtAmount)}: ${formatValue(
-                  Number(debtAmount),
-                  2,
-                )} ${SupportedTokens.zusd.toUpperCase()}`,
-                `${t(translations.chart.collateralRatio)}: ${formatValue(
-                  Number(collateralRatio),
-                  0,
-                )}%`,
-              ];
-
-              if (context[0].raw.sequenceNumber === userCollateralRatio) {
-                tooltipContent.push(
-                  `${t(translations.chart.redemptionBuffer)}: ${formatValue(
-                    redemptionBuffer,
-                    2,
-                  )} ${SupportedTokens.zusd.toUpperCase()}`,
-                );
-              }
-              return tooltipContent;
-            },
-          },
-        },
-        legend: {
-          labels: {
-            color: chartConfig.fontColor,
-            boxWidth: chartConfig.legendBoxWidth,
-            generateLabels: () => {
-              const labelDefault = {
-                text: t(translations.chart.collateralRatio),
-                fontColor: chartConfig.fontColor,
-                fillStyle: chartConfig.defaultColor,
-                lineWidth: chartConfig.legendLineWidth,
-              };
-              const labelActive = {
-                text: t(translations.chart.myCollateralRatio),
-                fontColor: chartConfig.fontColor,
-                fillStyle: chartConfig.activeColor,
-                lineWidth: chartConfig.legendLineWidth,
-              };
-              return !activeBar ? [labelDefault] : [labelDefault, labelActive];
-            },
-          },
-        },
-      },
-      scales: {
-        x: {
-          suggestedMax: chartConfig.maxValue,
-          suggestedMin: chartConfig.minValue,
-          grid: {
-            drawOnChartArea: false,
-            drawTicks: true,
-            tickColor: chartConfig.defaultColor,
-            tickLength: chartConfig.tickLength,
-            lineWidth: chartConfig.lineWidth,
-            offset: false,
-          },
-          border: {
-            color: chartConfig.defaultColor,
-          },
-          ticks: {
-            callback: value => Number(value + 1).toFixed(0),
-            color: chartConfig.fontColor,
-            font: {
-              family: chartConfig.defaultFont,
-              size: chartConfig.fontSize,
-              weight: chartConfig.weight,
-            },
-            padding: chartConfig.tickPadding,
-            beginAtZero: true,
-          },
-        },
-        y: {
-          gridDashType: 'dash',
-          grid: {
-            drawOnChartArea: false,
-            drawTicks: true,
-            tickColor: chartConfig.defaultColor,
-            tickLength: chartConfig.tickLength,
-            lineWidth: chartConfig.lineWidth,
-          },
-          border: {
-            color: chartConfig.defaultColor,
-          },
-          ticks: {
-            callback: value => Number(value).toFixed(2) + '%',
-            color: chartConfig.fontColor,
-            font: {
-              family: chartConfig.defaultFont,
-              size: chartConfig.tickSize,
-              weight: chartConfig.weight,
-            },
-            padding: chartConfig.tickPadding,
-            beginAtZero: true,
-          },
-        },
-      },
-    };
-  }, [activeBar, userCollateralRatio, redemptionBuffer]);
+  const trovesCountToShow = useMemo(
+    () => (isMobile ? chartConfig.minValue : chartConfig.maxValue),
+    [isMobile],
+  );
 
   const {
     data: userOpenTrove,
@@ -213,83 +86,34 @@ export const LOCChart: FC = () => {
     refetch: refetchOpenTrove,
   } = useGetUserOpenTrove();
 
-  const {
-    data: lowestTroves,
-    loading: loadingLowestTroves,
-    refetch: refetchLowestTroves,
-  } = useGetLowestTroves(userCollateralRatio);
+  const { data: globalsEntity } = useGetGlobalsEntity();
 
-  const isUserOpenTrove = useMemo(() => {
+  const hasUserOpenTrove = useMemo(() => {
     if (account) {
-      return userOpenTrove?.trove?.changes[0]?.trove.status === 'open';
+      return userOpenTrove?.trove?.status === TroveStatus.Open;
     }
     return false;
   }, [userOpenTrove, account]);
 
-  useEffect(() => {
-    if (!loadingLowestTroves) {
-      const redemptionBuffer = lowestTroves?.troves.reduce(
-        (acc, curr) =>
-          acc +
-          calculateRedemptionBuffer(
-            Number(curr.debt),
-            Number(curr.collateral),
-            Number(userCollateralRatio),
-          ),
-        0,
-      );
-      setRedemptionBuffer(redemptionBuffer);
-    }
-  }, [lowestTroves, loadingLowestTroves, userCollateralRatio]);
+  const options = useGetChartOptions(
+    activeBar,
+    redemptionBuffer,
+    startAxisXCount,
+  );
 
-  const {
-    data: userOpenTroveAbove,
-    loading: loadingUserOpenTroveAbove,
-    refetch: refetchUserOpenTroveAbove,
-  } = useGetTrovesPositions(userCollateralRatio, TrovesFilterType.above);
-
-  const {
-    data: userOpenTroveBelow,
-    loading: loadingUserOpenTroveBelow,
-    refetch: refetchUserOpenTroveBelow,
-  } = useGetTrovesPositions(userCollateralRatio, TrovesFilterType.below);
-
-  const {
-    data: troves,
-    loading: loadingTroves,
-    refetch: refetchTroves,
-  } = useGetTroves();
-
-  useEffect(() => {
-    refetchOpenTrove();
-    refetchLowestTroves();
-    refetchUserOpenTroveAbove();
-    refetchUserOpenTroveBelow();
-    refetchTroves();
-  }, [
-    refetchTroves,
-    block,
-    refetchOpenTrove,
-    refetchLowestTroves,
-    refetchUserOpenTroveAbove,
-    refetchUserOpenTroveBelow,
-  ]);
-
-  const datasets: ChartData<'bar', ChartDataStructure> = useMemo(() => {
+  const datasets: ChartData<'bar', TroveData[]> = useMemo(() => {
     return {
       datasets: [
         {
-          data: data,
+          data: dataToShow,
           parsing: {
-            xAxisKey: ChartSortingType.tx,
+            xAxisKey: ChartSortingType.id,
             yAxisKey: ChartSortingType.collateralRatio,
           },
           backgroundColor: bar => {
             if (bar.raw) {
-              const { address } = bar.raw as ChartBarData;
-              return activeBar &&
-                bar.parsed.y === activeBar &&
-                address === account
+              const { id } = bar.raw as TroveData;
+              return id === account
                 ? chartConfig.activeColor
                 : chartConfig.defaultColor;
             } else {
@@ -299,119 +123,141 @@ export const LOCChart: FC = () => {
         },
       ],
     };
-  }, [data, activeBar, account]);
+  }, [dataToShow, account]);
+
+  const {
+    data: troves,
+    loading: loadingTroves,
+    refetch: refetchTroves,
+  } = useGetTroves();
 
   useEffect(() => {
-    if (!loadingUserOpenTrove && userOpenTrove?.trove && !activeBar) {
-      const { trove } = userOpenTrove.trove.changes[0];
-      setUserCollateralRatio(trove.collateralRatioSortKey?.toString());
-    }
-    if (activeBar && !userOpenTrove) {
-      setActiveBar(null);
-      setUserCollateralRatio('');
-    }
-  }, [userOpenTrove, loadingUserOpenTrove, activeBar]);
+    if (troves && !loadingTroves && globalsEntity && !isDefaultView) {
+      const updatedTroves = troves.troves.map((trove: TroveData) => {
+        const totalDebt = globalsEntity?.globals[0].rawTotalRedistributedDebt;
+        const snapshotOfTotalDebt = trove.rawSnapshotOfTotalRedistributedDebt;
+        const totalCollateral =
+          globalsEntity?.globals[0].rawTotalRedistributedCollateral;
+        const snapshotOfTotalCollateral =
+          trove.rawSnapshotOfTotalRedistributedCollateral;
+        const stake = trove.rawStake;
 
-  useEffect(() => {
-    if (
-      userCollateralRatio?.length > 0 &&
-      userOpenTroveAbove &&
-      userOpenTroveBelow &&
-      !loadingUserOpenTroveAbove &&
-      !loadingUserOpenTroveBelow &&
-      isUserOpenTrove
-    ) {
-      const { transaction, trove } = userOpenTrove.trove.changes[0];
+        const debtAmount =
+          (Number(fromWei(totalDebt)) - Number(fromWei(snapshotOfTotalDebt))) *
+            Number(fromWei(stake)) +
+          Number(trove.debt);
 
-      const userTrove = [
-        {
-          sequenceNumber: trove.collateralRatioSortKey.toString(),
-          address: trove.id,
-          tx: transaction.id,
-          collateralAmount: trove.collateral,
-          debtAmount: trove.debt,
+        const collateralAmount =
+          (Number(fromWei(totalCollateral)) -
+            Number(fromWei(snapshotOfTotalCollateral))) *
+            Number(fromWei(stake)) +
+          Number(trove.collateral);
+
+        return {
+          id: trove.id,
+          collateral: collateralAmount,
+          debt: debtAmount,
+          collateralRatioSortKey_legacy: trove.collateralRatioSortKey_legacy,
           collateralRatio: calculateCollateralRatio(
-            trove.collateral,
-            trove.debt,
+            collateralAmount,
+            debtAmount,
             price,
           ),
-        },
-      ];
+        };
+      });
 
-      const trovesDataAbove = userOpenTroveAbove.troves.map(
-        ({ changes }: TroveData) => ({
-          sequenceNumber: changes[0].trove.collateralRatioSortKey.toString(),
-          address: changes[0].trove.id,
-          tx: changes[0].transaction.id,
-          collateralAmount: changes[0].trove.collateral,
-          debtAmount: changes[0].trove.debt,
-          collateralRatio: calculateCollateralRatio(
-            changes[0].trove.collateral,
-            changes[0].trove.debt,
-            price,
-          ),
-        }),
-      );
+      setData(updatedTroves);
 
-      const trovesDataBelow = userOpenTroveBelow.troves.map(
-        ({ changes }: TroveData) => ({
-          sequenceNumber: changes[0].trove.collateralRatioSortKey.toString(),
-          address: changes[0].trove.id,
-          tx: changes[0].transaction.id,
-          collateralAmount: changes[0].trove.collateral,
-          debtAmount: changes[0].trove.debt,
-          collateralRatio: calculateCollateralRatio(
-            changes[0].trove.collateral,
-            changes[0].trove.debt,
-            price,
-          ),
-        }),
-      );
-
-      setData(sortData([...trovesDataBelow, ...userTrove, ...trovesDataAbove]));
-
-      setActiveBar(
-        calculateCollateralRatio(trove.collateral, trove.debt, price),
-      );
+      setDataToShow(updatedTroves.slice(0, trovesCountToShow - 1));
     }
   }, [
-    userOpenTrove,
-    isUserOpenTrove,
-    userCollateralRatio,
-    userOpenTroveAbove,
-    userOpenTroveBelow,
-    loadingUserOpenTrove,
-    loadingUserOpenTroveAbove,
-    loadingUserOpenTroveBelow,
-    price,
-    activeBar,
-  ]);
-
-  useEffect(() => {
-    if (!loadingTroves && troves && !loadingUserOpenTrove && !isUserOpenTrove) {
-      const trovesData = troves.troves.map(({ changes }: TroveData) => ({
-        sequenceNumber: changes[0].trove?.collateralRatioSortKey?.toString(),
-        address: changes[0].trove.id,
-        tx: changes[0].transaction.id,
-        collateralAmount: changes[0].trove.collateral,
-        debtAmount: changes[0].trove.debt,
-        collateralRatio: calculateCollateralRatio(
-          changes[0].trove.collateral,
-          changes[0].trove.debt,
-          price,
-        ),
-      }));
-
-      setData(sortData([...trovesData]));
-    }
-  }, [
-    price,
     troves,
     loadingTroves,
-    userOpenTrove,
+    globalsEntity,
+    price,
+    account,
     loadingUserOpenTrove,
-    isUserOpenTrove,
+    trovesCountToShow,
+    isDefaultView,
   ]);
+
+  useEffect(() => {
+    if (!loadingUserOpenTrove && hasUserOpenTrove && data && troves) {
+      const isUserTrove = (trove: TroveData) => trove.id === account;
+      const index = data.findIndex(isUserTrove);
+      if (index === -1) {
+        return;
+      }
+
+      const centerIndex = (trovesCountToShow - 1) / 2;
+      const shiftTroves = index >= centerIndex ? index - centerIndex : index;
+
+      if (lowestTroves.length === 0) {
+        setLowestTroves(data.slice(0, index));
+      }
+
+      if (index < centerIndex) {
+        //don't cutting an array, if the user trove is in the first 10 elements
+        setDataToShow(data.slice(0, trovesCountToShow));
+        setStartAxisXCount(0);
+      } else {
+        //setting the start point for the chart axis X
+        setStartAxisXCount(shiftTroves);
+        //cutting an array up to 21 elements, 10 from the left and 10 from the right, starting from user trove index
+        const slicedData = data.slice(
+          shiftTroves,
+          shiftTroves + trovesCountToShow,
+        );
+        setDataToShow(slicedData);
+      }
+
+      setUserCollateralRatio(data[index].collateralRatio);
+      setActiveBar(true);
+    }
+  }, [
+    hasUserOpenTrove,
+    loadingUserOpenTrove,
+    data,
+    troves,
+    account,
+    lowestTroves,
+    userCollateralRatio,
+    activeBar,
+    trovesCountToShow,
+  ]);
+
+  useEffect(() => {
+    //calculating the redemption buffer for the user trove
+    if (lowestTroves.length !== 0 && userCollateralRatio > 0) {
+      const redemptionBuffer = lowestTroves.reduce((acc, curr) => {
+        return (
+          acc +
+          calculateRedemptionBuffer(
+            Number(curr.debt),
+            Number(curr.collateral),
+            Number(userCollateralRatio),
+            price,
+          )
+        );
+      }, 0);
+      setRedemptionBuffer(redemptionBuffer);
+    }
+  }, [lowestTroves, userCollateralRatio, price]);
+
+  useEffect(() => {
+    //reset values when the user is not in the troves list or not connected
+    if (!hasUserOpenTrove || !account || isDefaultView) {
+      setRedemptionBuffer(0);
+      setStartAxisXCount(0);
+      setLowestTroves([]);
+      setActiveBar(false);
+    }
+  }, [hasUserOpenTrove, account, isDefaultView]);
+
+  useEffect(() => {
+    refetchOpenTrove();
+    refetchTroves();
+  }, [refetchTroves, block, refetchOpenTrove]);
 
   return <Bar className="max-w-full" options={options} data={datasets} />;
 };

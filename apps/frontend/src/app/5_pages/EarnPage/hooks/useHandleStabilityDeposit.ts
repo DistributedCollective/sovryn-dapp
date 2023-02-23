@@ -10,6 +10,7 @@ import {
   Transaction,
   TransactionType,
 } from '../../../3_organisms/TransactionStepDialog/TransactionStepDialog.types';
+import { isTransactionRequest } from '../../../3_organisms/TransactionStepDialog/helpers';
 import { useTransactionContext } from '../../../../contexts/TransactionContext';
 import { useAccount } from '../../../../hooks/useAccount';
 import { translations } from '../../../../locales/i18n';
@@ -24,7 +25,6 @@ import {
   permitHandler,
   preparePermitTransaction,
 } from '../../../../utils/transactions';
-import { isTransactionRequest } from '../../../3_organisms/TransactionStepDialog/helpers';
 
 export const useHandleStabilityDeposit = (
   token: SupportedTokens,

@@ -1,9 +1,12 @@
 import { JsonRpcSigner } from '@ethersproject/providers';
-import { getTokenContract, SupportedTokens } from '@sovryn/contracts';
-import { ChainId } from '@sovryn/ethers-provider';
+
 import dayjs, { ManipulateType } from 'dayjs';
 import { BigNumber, BigNumberish, ethers } from 'ethers';
 import { t } from 'i18next';
+
+import { getTokenContract, SupportedTokens } from '@sovryn/contracts';
+import { ChainId } from '@sovryn/ethers-provider';
+
 import {
   PermitResponse,
   Transaction,

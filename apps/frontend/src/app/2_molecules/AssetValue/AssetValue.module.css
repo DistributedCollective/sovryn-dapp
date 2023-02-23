@@ -1,0 +1,11 @@
+.tooltip {
+  @apply flex cursor-pointer uppercase;
+}
+
+.tooltipContent {
+  @apply inline-flex;
+}
+
+.asset {
+  @apply flex ml-1;
+}

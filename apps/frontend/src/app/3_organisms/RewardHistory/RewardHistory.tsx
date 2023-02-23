@@ -86,21 +86,21 @@ export const RewardHistory: FC = () => {
     () => [
       {
         id: 'sequenceNumber',
-        title: t(translations.rewardHistoryTable.table.timestamp),
+        title: t(translations.common.tables.columnTitles.timestamp),
         cellRenderer: (tx: StabilityDepositChange) =>
           dateFormat(tx.transaction.timestamp),
         sortable: true,
       },
       {
         id: 'stabilityDepositOperation',
-        title: t(translations.rewardHistoryTable.table.transactionType),
+        title: t(translations.common.tables.columnTitles.transactionType),
         cellRenderer: (tx: StabilityDepositChange) => (
           <TransactionTypeRenderer type={tx.stabilityDepositOperation} />
         ),
       },
       {
         id: 'collateralGain',
-        title: t(translations.rewardHistoryTable.table.rewardChange),
+        title: t(translations.rewardHistory.table.rewardChange),
         cellRenderer: tx => (
           <AmountRenderer
             value={tx.collateralGain || 0}
@@ -112,7 +112,7 @@ export const RewardHistory: FC = () => {
       },
       {
         id: 'transactionID',
-        title: t(translations.rewardHistoryTable.table.transactionID),
+        title: t(translations.common.tables.columnTitles.transactionID),
         cellRenderer: (tx: StabilityDepositChange) => (
           <TxIdWithNotification
             href={`${chain?.blockExplorerUrl}/tx/${tx.transaction.id}`}
@@ -159,7 +159,7 @@ export const RewardHistory: FC = () => {
     if (!list || !list.length) {
       addNotification({
         type: NotificationType.warning,
-        title: t(translations.rewardHistoryTable.actions.noDataToExport),
+        title: t(translations.common.tables.actions.noDataToExport),
         content: '',
         dismissible: true,
         id: nanoid(),

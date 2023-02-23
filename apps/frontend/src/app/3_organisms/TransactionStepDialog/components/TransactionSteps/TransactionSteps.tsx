@@ -312,14 +312,14 @@ export const TransactionSteps: FC<TransactionStepsProps> = ({
       {!isLoading && transactions.length > step && (
         <Button
           className="w-full mt-7"
-          text={error ? 'Retry' : 'Confirm'}
+          text={t(translations.common.buttons[error ? 'retry' : 'confirm'])}
           onClick={submit}
           dataAttribute={`tx-dialog-${error ? 'retry' : 'confirm'}`}
         />
       )}
       {onClose && transactions.length === step && (
         <Button
-          text={t(translations.common.done)}
+          text={t(translations.common.buttons.done)}
           onClick={onClose}
           className="w-full mt-7"
           dataAttribute="tx-dialog-done"

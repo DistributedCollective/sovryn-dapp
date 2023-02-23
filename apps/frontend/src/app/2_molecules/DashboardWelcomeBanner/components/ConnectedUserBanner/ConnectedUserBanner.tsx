@@ -36,8 +36,8 @@ export const ConnectedUserBanner: FC<ConnectedUserBannerProps> = ({
   const buttonText = useMemo(
     () =>
       hasRbtcBalance
-        ? t(translations.dashboardWelcomeBanner.OpenCredit)
-        : t(translations.dashboardWelcomeBanner.fundWallet),
+        ? t(translations.zeroPage.dashboardWelcomeBanner.OpenCredit)
+        : t(translations.zeroPage.dashboardWelcomeBanner.fundWallet),
     [hasRbtcBalance],
   );
 

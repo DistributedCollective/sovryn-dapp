@@ -17,7 +17,7 @@ export const chains: Chain[] = [
         label: 'Rootstock',
         token: 'RBTC',
         rpcUrl: [
-          'https://mainnet.sovryn.app/rpc',
+          'https://rsk-live.sovryn.app/rpc',
           'https://public-node.rsk.co',
         ],
         blockExplorerUrl: 'https://explorer.rsk.co',

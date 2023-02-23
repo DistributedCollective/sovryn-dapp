@@ -82,13 +82,13 @@ export const CollateralSurplusHistoryFrame: FC = () => {
     () => [
       {
         id: 'sequenceNumber',
-        title: t(translations.collateralSurplusHistory.table.timestamp),
+        title: t(translations.common.tables.columnTitles.timestamp),
         cellRenderer: (tx: any) => dateFormat(tx.timestamp),
         sortable: true,
       },
       {
         id: 'withdrawSurplus',
-        title: t(translations.collateralSurplusHistory.table.transactionType),
+        title: t(translations.common.tables.columnTitles.transactionType),
         cellRenderer: () =>
           t(translations.collateralSurplusHistory.table.withdrawSurplus),
       },
@@ -99,7 +99,7 @@ export const CollateralSurplusHistoryFrame: FC = () => {
       },
       {
         id: 'transactionID',
-        title: t(translations.collateralSurplusHistory.table.transactionID),
+        title: t(translations.common.tables.columnTitles.transactionID),
         cellRenderer: (tx: any) => (
           <TxIdWithNotification
             href={`${chain?.blockExplorerUrl}/tx/${tx.hash}`}
@@ -143,7 +143,7 @@ export const CollateralSurplusHistoryFrame: FC = () => {
     if (!list || !list.length) {
       addNotification({
         type: NotificationType.warning,
-        title: t(translations.collateralSurplusHistory.actions.noDataToExport),
+        title: t(translations.common.tables.actions.noDataToExport),
         content: '',
         dismissible: true,
         id: nanoid(),

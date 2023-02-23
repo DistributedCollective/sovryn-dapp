@@ -29,7 +29,7 @@ import styles from './GettingStartedPopup.module.css';
 
 const PAGE_SIZE = 2;
 const localStorageKey = 'gettingStartedPopup';
-const translationBasePath = translations.gettingStartedPopup.content;
+const translationBasePath = translations.zeroPage.gettingStartedPopup.content;
 
 type GettingStartedPopupProps = {
   isOpen: boolean;
@@ -52,8 +52,11 @@ export const GettingStartedPopup: FC<GettingStartedPopupProps> = ({
         description: t(translationBasePath.pool.description),
         href: [sovrynWikiLinks.stabilityPool, sovrynWikiLinks.ammPool],
         learnMore: [
-          t(translations.gettingStartedPopup.buttons.learnMoreStabilityPool),
-          t(translations.gettingStartedPopup.buttons.learnMoreAMMPool),
+          t(
+            translations.zeroPage.gettingStartedPopup.buttons
+              .learnMoreStabilityPool,
+          ),
+          t(translations.zeroPage.gettingStartedPopup.buttons.learnMoreAMMPool),
         ],
         icon: IconNames.EARN_3,
       },
@@ -102,10 +105,10 @@ export const GettingStartedPopup: FC<GettingStartedPopupProps> = ({
     <Dialog isOpen={isOpen}>
       <div className={styles.dialog}>
         <Heading className={styles.title} type={HeadingType.h1}>
-          {t(translations.gettingStartedPopup.title)}
+          {t(translations.zeroPage.gettingStartedPopup.title)}
         </Heading>
         <Heading className={styles.description} type={HeadingType.h2}>
-          {t(translations.gettingStartedPopup.description)}
+          {t(translations.zeroPage.gettingStartedPopup.description)}
         </Heading>
         <div className={styles.content}>
           {items.map(item => (
@@ -131,8 +134,8 @@ export const GettingStartedPopup: FC<GettingStartedPopupProps> = ({
                           item.learnMore
                             ? item.learnMore[index]
                             : t(
-                                translations.gettingStartedPopup.buttons
-                                  .learnMore,
+                                translations.zeroPage.gettingStartedPopup
+                                  .buttons.learnMore,
                               )
                         }
                         href={href}
@@ -142,7 +145,10 @@ export const GettingStartedPopup: FC<GettingStartedPopupProps> = ({
                   </>
                 ) : (
                   <Link
-                    text={t(translations.gettingStartedPopup.buttons.learnMore)}
+                    text={t(
+                      translations.zeroPage.gettingStartedPopup.buttons
+                        .learnMore,
+                    )}
                     href={item.href}
                   />
                 )}
@@ -167,12 +173,14 @@ export const GettingStartedPopup: FC<GettingStartedPopupProps> = ({
         <div className={styles.actions}>
           <Checkbox
             onChangeValue={setChecked}
-            label={t(translations.gettingStartedPopup.buttons.doNotShowAgain)}
+            label={t(
+              translations.zeroPage.gettingStartedPopup.buttons.doNotShowAgain,
+            )}
             checked={checked}
           />
           <Button
             type={ButtonType.button}
-            text={t(translations.gettingStartedPopup.buttons.finish)}
+            text={t(translations.zeroPage.gettingStartedPopup.buttons.finish)}
             onClick={onClick}
           />
         </div>

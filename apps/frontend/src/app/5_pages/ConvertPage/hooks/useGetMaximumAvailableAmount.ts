@@ -52,7 +52,7 @@ export const useGetMaximumAvailableAmount = (
   );
 
   const destinationTokenAggregatorBalance = useMemo(
-    () => String(Number(fromWei(destinationTokenAggregatorWeiBalance))),
+    () => fromWei(destinationTokenAggregatorWeiBalance).toString(),
     [destinationTokenAggregatorWeiBalance],
   );
 

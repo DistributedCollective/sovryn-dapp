@@ -6,14 +6,25 @@ import { t } from 'i18next';
 import { SupportedTokens } from '@sovryn/contracts';
 import { getContract } from '@sovryn/contracts';
 
-import { Transaction } from '../../../3_organisms/TransactionStepDialog/TransactionStepDialog.types';
+import {
+  Transaction,
+  TransactionType,
+} from '../../../3_organisms/TransactionStepDialog/TransactionStepDialog.types';
+import { isTransactionRequest } from '../../../3_organisms/TransactionStepDialog/helpers';
 import { useTransactionContext } from '../../../../contexts/TransactionContext';
 import { useAccount } from '../../../../hooks/useAccount';
 import { translations } from '../../../../locales/i18n';
 import { getRskChainId } from '../../../../utils/chain';
-import { GAS_LIMIT_STABILITY_POOL } from '../../../../utils/constants';
+import {
+  GAS_LIMIT_STABILITY_POOL,
+  GAS_LIMIT_STABILITY_POOL_DLLR,
+} from '../../../../utils/constants';
 import { toWei } from '../../../../utils/math';
-import { useHandleConversion } from '../../ConvertPage/hooks/useHandleConversion';
+import {
+  UNSIGNED_PERMIT,
+  permitHandler,
+  preparePermitTransaction,
+} from '../../../../utils/transactions';
 
 export const useHandleStabilityDeposit = (
   token: SupportedTokens,
@@ -21,11 +32,8 @@ export const useHandleStabilityDeposit = (
   isDeposit: boolean,
   onComplete: () => void,
 ) => {
-  const sourceToken = isDeposit ? token : SupportedTokens.zusd;
-  const destinationToken = isDeposit ? SupportedTokens.zusd : token;
+  const isDllrToken = token === SupportedTokens.dllr;
 
-  const { getDepositTokenTransactions, getWithdrawTokensTransactions } =
-    useHandleConversion(sourceToken, destinationToken, amount);
   const { signer } = useAccount();
   const { setTransactions, setIsOpen, setTitle } = useTransactionContext();
 
@@ -40,27 +48,30 @@ export const useHandleStabilityDeposit = (
   }, [signer]);
 
   const withdraw = useCallback(async () => {
-    const transactions: Transaction[] = [];
+    if (!signer) {
+      return;
+    }
     const stabilityPool = await getStabilityPoolContract();
 
-    transactions.push({
-      title: t(translations.earnPage.txDialog.withdraw, {
-        asset: SupportedTokens.zusd.toUpperCase(),
-      }),
-      contract: stabilityPool,
-      fnName: 'withdrawFromSP',
-      args: [toWei(amount)],
-      onComplete,
-      config: {
-        gasLimit: GAS_LIMIT_STABILITY_POOL,
+    setTransactions([
+      {
+        title: t(translations.earnPage.txDialog.withdraw, {
+          asset: token.toUpperCase(),
+        }),
+        request: {
+          type: TransactionType.signTransaction,
+          contract: stabilityPool,
+          fnName: isDllrToken
+            ? 'withdrawFromSpAndConvertToDLLR'
+            : 'withdrawFromSP',
+          args: [toWei(amount)],
+          gasLimit: isDllrToken
+            ? GAS_LIMIT_STABILITY_POOL_DLLR
+            : GAS_LIMIT_STABILITY_POOL,
+        },
+        onComplete,
       },
-    });
-
-    if (token !== SupportedTokens.zusd) {
-      transactions.push(...(await getDepositTokenTransactions()));
-    }
-
-    setTransactions(transactions);
+    ]);
     setTitle(
       t(translations.earnPage.txDialog.withdrawTitle, {
         asset: token.toUpperCase(),
@@ -68,35 +79,57 @@ export const useHandleStabilityDeposit = (
     );
     setIsOpen(true);
   }, [
-    amount,
+    signer,
     getStabilityPoolContract,
-    getDepositTokenTransactions,
-    setIsOpen,
-    setTitle,
     setTransactions,
-    token,
+    isDllrToken,
+    amount,
     onComplete,
+    setTitle,
+    token,
+    setIsOpen,
   ]);
 
   const deposit = useCallback(async () => {
-    const transactions: Transaction[] = [];
-    if (token !== SupportedTokens.zusd) {
-      transactions.push(...(await getWithdrawTokensTransactions()));
+    if (!signer) {
+      return;
     }
-
     const stabilityPool = await getStabilityPoolContract();
+    const weiAmount = toWei(amount).toString();
+    const transactions: Transaction[] = [];
+    if (isDllrToken) {
+      transactions.push(
+        await preparePermitTransaction({
+          token: SupportedTokens.dllr,
+          signer,
+          spender: stabilityPool.address,
+          value: weiAmount,
+        }),
+      );
+    }
 
     transactions.push({
       title: t(translations.earnPage.txDialog.deposit, {
-        asset: SupportedTokens.zusd.toUpperCase(),
+        asset: token.toUpperCase(),
       }),
-      contract: stabilityPool,
-      fnName: 'provideToSP',
-      args: [toWei(amount), ethers.constants.AddressZero],
-      onComplete,
-      config: {
-        gasLimit: GAS_LIMIT_STABILITY_POOL,
+      request: {
+        type: TransactionType.signTransaction,
+        contract: stabilityPool,
+        fnName: isDllrToken ? 'provideToSpFromDLLR' : 'provideToSP',
+        args: isDllrToken
+          ? [weiAmount, UNSIGNED_PERMIT]
+          : [weiAmount, ethers.constants.AddressZero],
+        gasLimit: isDllrToken
+          ? GAS_LIMIT_STABILITY_POOL_DLLR
+          : GAS_LIMIT_STABILITY_POOL,
       },
+      onComplete,
+      updateHandler: permitHandler((req, res) => {
+        if (isTransactionRequest(req) && isDllrToken) {
+          req.args[1] = res;
+        }
+        return req;
+      }),
     });
 
     setTransactions(transactions);
@@ -107,14 +140,15 @@ export const useHandleStabilityDeposit = (
     );
     setIsOpen(true);
   }, [
-    amount,
-    getWithdrawTokensTransactions,
+    signer,
     getStabilityPoolContract,
-    setIsOpen,
-    setTitle,
-    setTransactions,
+    amount,
+    isDllrToken,
     token,
     onComplete,
+    setTransactions,
+    setTitle,
+    setIsOpen,
   ]);
   const handleSubmit = useCallback(
     () => (isDeposit ? deposit() : withdraw()),

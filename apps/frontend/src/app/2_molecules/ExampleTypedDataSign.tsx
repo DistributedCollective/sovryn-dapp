@@ -4,13 +4,21 @@ import { utils } from 'ethers';
 
 import { Button } from '@sovryn/ui';
 
+import { TransactionType } from '../3_organisms/TransactionStepDialog/TransactionStepDialog.types';
+import { useTransactionContext } from '../../contexts/TransactionContext';
 import { useWalletConnect } from '../../hooks';
-import { signTypedData } from '../../utils/helpers';
+import { useAccount } from '../../hooks/useAccount';
 
 export const ExampleTypedDataSign: React.FC = () => {
   const { wallets } = useWalletConnect();
+  const { setTransactions, setIsOpen, setTitle } = useTransactionContext();
+  const { signer, account } = useAccount();
 
   const signTypedMessage = useCallback(async () => {
+    if (!signer) {
+      return;
+    }
+
     const data = {
       domain: {
         chainId: parseInt(wallets[0].chains[0].id),
@@ -28,27 +36,35 @@ export const ExampleTypedDataSign: React.FC = () => {
       },
     };
 
-    const signature = await signTypedData(
-      wallets[0].provider,
-      data.domain,
-      data.types,
-      data.exampleMessage,
-    );
+    setTransactions([
+      {
+        title: `Sign typed data`,
+        request: {
+          type: TransactionType.signTypedData,
+          signer,
+          domain: data.domain,
+          types: data.types,
+          value: data.exampleMessage,
+        },
+        onComplete: signature => {
+          const signerVerification = utils.verifyTypedData(
+            data.domain,
+            data.types,
+            data.exampleMessage,
+            signature,
+          );
 
-    const signerVerification = utils.verifyTypedData(
-      data.domain,
-      data.types,
-      data.exampleMessage,
-      signature,
-    );
-
-    alert(
-      wallets[0]?.accounts[0]?.address.toLowerCase() ===
-        signerVerification.toLowerCase()
-        ? 'Signature verified'
-        : 'Signature verification failed',
-    );
-  }, [wallets]);
+          alert(
+            account.toLowerCase() === signerVerification.toLowerCase()
+              ? 'Signature verified'
+              : 'Signature verification failed',
+          );
+        },
+      },
+    ]);
+    setTitle('sign data');
+    setIsOpen(true);
+  }, [account, setIsOpen, setTitle, setTransactions, signer, wallets]);
 
   return (
     <Button

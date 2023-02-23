@@ -18,6 +18,8 @@ import {
   prepareValueToRender,
   parseBetterFloat,
   removeTrailingZeroes,
+  getIOSInputEventHandlers,
+  isIOS,
 } from './utils';
 
 export type InputBaseProps = Omit<
@@ -43,6 +45,7 @@ export const InputBase = React.forwardRef<HTMLInputElement, InputBaseProps>(
       onChangeText,
       onBlur,
       onKeyDown,
+      onFocus,
       ...props
     },
     ref,
@@ -117,11 +120,41 @@ export const InputBase = React.forwardRef<HTMLInputElement, InputBaseProps>(
       ],
     );
 
+    const resetIOSStylesOnBlur = useCallback(
+      (event: React.FocusEvent<HTMLInputElement>) => {
+        if (event.currentTarget === null) {
+          event.currentTarget = event.target;
+        }
+
+        if (isIOS()) {
+          event.currentTarget.style.fontSize = 'inherit';
+        }
+      },
+      [],
+    );
+
+    const handleOnFocus = useCallback(
+      (event: React.FocusEvent<HTMLInputElement>) => {
+        if (event.currentTarget === null) {
+          event.currentTarget = event.target;
+        }
+
+        if (isIOS()) {
+          event.currentTarget.style.fontSize = '1rem';
+        }
+
+        onFocus?.(event);
+      },
+      [onFocus],
+    );
+
     const handleOnBlur = useCallback(
       (event: React.FocusEvent<HTMLInputElement>) => {
         if (event.currentTarget === null) {
           event.currentTarget = event.target;
         }
+
+        resetIOSStylesOnBlur(event);
 
         // fix number value if user leaves input with comma or dot at the end (123. => 123)
         if (type === 'number') {
@@ -130,15 +163,17 @@ export const InputBase = React.forwardRef<HTMLInputElement, InputBaseProps>(
             removeTrailingZeroes(parseBetterFloat(event.target.value)),
           );
 
-          updateRenderedValue(
-            prepareValueToRender(
-              e.target.value,
-              '',
-              'number',
-              props.lang ?? navigator.language,
-              false,
-            ),
-          );
+          if (event.target.value !== '') {
+            updateRenderedValue(
+              prepareValueToRender(
+                e.target.value,
+                '',
+                'number',
+                props.lang ?? navigator.language,
+                false,
+              ),
+            );
+          }
 
           onChangeText?.(e.target.value);
           onChange?.(e);
@@ -151,7 +186,15 @@ export const InputBase = React.forwardRef<HTMLInputElement, InputBaseProps>(
         }
         onBlur?.(event);
       },
-      [onBlur, onChange, onChangeText, props.lang, type, updateRenderedValue],
+      [
+        onBlur,
+        onChange,
+        onChangeText,
+        props.lang,
+        resetIOSStylesOnBlur,
+        type,
+        updateRenderedValue,
+      ],
     );
 
     useEffect(() => {
@@ -180,13 +223,15 @@ export const InputBase = React.forwardRef<HTMLInputElement, InputBaseProps>(
     return (
       <input
         {...props}
+        {...getIOSInputEventHandlers()}
         type={isNumeric ? 'text' : type}
         inputMode={isNumeric ? 'decimal' : undefined}
         pattern={isNumeric ? '[0-9]*' : undefined}
         ref={inputRef}
         value={renderedValue}
         onChange={shouldAllowChanges ? handleChange : noop}
-        onBlur={shouldAllowChanges ? handleOnBlur : noop}
+        onBlur={shouldAllowChanges ? handleOnBlur : resetIOSStylesOnBlur}
+        onFocus={handleOnFocus}
         {...applyDataAttr(dataAttribute)}
       />
     );

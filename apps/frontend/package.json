@@ -15,7 +15,7 @@
     "@sovryn/onboard-hw-common": "0.0.4",
     "@sovryn/onboard-injected": "0.0.4",
     "@sovryn/onboard-ledger": "0.0.5",
-    "@sovryn/onboard-react": "0.0.11",
+    "@sovryn/onboard-react": "0.0.12",
     "@sovryn/onboard-trezor": "0.0.5",
     "@sovryn/onboard-walletconnect": "0.0.4",
     "@sovryn/tailwindcss-config": "*",
@@ -25,6 +25,7 @@
     "classnames": "2.3.2",
     "dayjs": "1.11.7",
     "env-cmd": "10.1.0",
+    "eth-permit": "^0.2.3",
     "ethers": "5.7.1",
     "ethers-eip712": "0.2.0",
     "graphql": "16.6.0",
@@ -83,18 +84,16 @@
     "generate:graphql:fetch:testnet": "env-cmd -f .env.development.local graphql-codegen -c codegen.fetch.yml",
     "generate:graphql:fetch:mainnet": "env-cmd -f .env.staging graphql-codegen -c codegen.fetch.yml"
   },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
-  },
+  "browserslist": [
+    "last 5 chrome version",
+    "last 5 and_chr version",
+    "last 5 electron version",
+    "last 5 firefox version",
+    "last 5 edge version",
+    "last 5 opera version",
+    "last 5 safari version",
+    "last 5 ios version"
+  ],
   "resolutions": {
     "rxjs": "7.5.6"
   }

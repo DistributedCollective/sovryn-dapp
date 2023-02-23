@@ -1,10 +1,12 @@
 import React, { FC, useCallback, useMemo, useState } from 'react';
 
-import { useTranslation } from 'react-i18next';
+import { t } from 'i18next';
 
 import { SupportedTokens } from '@sovryn/contracts';
 import {
   Button,
+  ErrorBadge,
+  ErrorLevel,
   FormGroup,
   Icon,
   Input,
@@ -17,6 +19,8 @@ import {
 } from '@sovryn/ui';
 
 import { AssetRenderer } from '../../2_molecules/AssetRenderer/AssetRenderer';
+import { useAssetBalance } from '../../../hooks/useAssetBalance';
+import { useMaintenance } from '../../../hooks/useMaintenance';
 import { translations } from '../../../locales/i18n';
 import { Bitcoin } from '../../../utils/constants';
 import { formatValue } from '../../../utils/math';
@@ -25,24 +29,32 @@ import { Row } from './Row';
 type CloseCreditLineProps = {
   collateralValue: string;
   creditValue: string;
-  availableBalance: string;
-  onSubmit: () => void;
+  onSubmit: (token: SupportedTokens) => void;
 };
 
 export const CloseCreditLine: FC<CloseCreditLineProps> = ({
   collateralValue,
   creditValue,
-  availableBalance,
   onSubmit,
 }) => {
-  const { t } = useTranslation();
   const [creditToken, setCreditToken] = useState<SupportedTokens>(
     SupportedTokens.dllr,
   );
 
+  const { checkMaintenance, States } = useMaintenance();
+  const closeLocked = checkMaintenance(States.ZERO_CLOSE_LOC);
+  const dllrLocked = checkMaintenance(States.ZERO_DLLR);
+
+  const { balance: availableBalance } = useAssetBalance(creditToken);
+
   const collateralValueRenderer = useCallback(
     (value: number) => `${formatValue(value, 6)} ${Bitcoin}`,
     [],
+  );
+
+  const handleSubmit = useCallback(
+    () => onSubmit(creditToken),
+    [creditToken, onSubmit],
   );
 
   const insufficientBalance = useMemo(() => {
@@ -52,6 +64,16 @@ export const CloseCreditLine: FC<CloseCreditLineProps> = ({
   const hasError = useMemo(
     () => Number(availableBalance) < Number(creditValue),
     [creditValue, availableBalance],
+  );
+
+  const isInMaintenance = useMemo(
+    () => closeLocked || (dllrLocked && creditToken === SupportedTokens.dllr),
+    [closeLocked, dllrLocked, creditToken],
+  );
+
+  const submitButtonDisabled = useMemo(
+    () => hasError || isInMaintenance,
+    [isInMaintenance, hasError],
   );
 
   const tokenOptions = useMemo(
@@ -139,11 +161,17 @@ export const CloseCreditLine: FC<CloseCreditLineProps> = ({
         <Button
           text={t(translations.common.buttons.confirm)}
           className="w-full"
-          disabled={hasError}
-          onClick={onSubmit}
+          disabled={submitButtonDisabled}
+          onClick={handleSubmit}
           dataAttribute="close-credit-line-confirm"
         />
       </div>
+      {isInMaintenance && (
+        <ErrorBadge
+          level={ErrorLevel.Warning}
+          message={t(translations.maintenanceMode.featureDisabled)}
+        />
+      )}
     </>
   );
 };

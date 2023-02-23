@@ -1,12 +1,13 @@
 import React, { useCallback, useMemo, useState, FC } from 'react';
 
 import { BigNumber } from 'ethers';
-import { useTranslation } from 'react-i18next';
+import { t } from 'i18next';
 
 import { SupportedTokens } from '@sovryn/contracts';
+import { ErrorLevel } from '@sovryn/ui';
 
-import { ErrorLevel } from '../../../1_atoms/ErrorBadge/ErrorBadge';
 import { BORROW_ASSETS } from '../../../5_pages/ZeroPage/constants';
+import { useAmountInput } from '../../../../hooks/useAmountInput';
 import { useAssetBalance } from '../../../../hooks/useAssetBalance';
 import { useMaxAssetBalance } from '../../../../hooks/useMaxAssetBalance';
 import { translations } from '../../../../locales/i18n';
@@ -47,8 +48,9 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
   const [collateralType, setCollateralType] = useState(AmountType.Add);
 
   const [fieldsTouched, setFieldsTouched] = useState(false);
-  const [collateralAmount, setCollateralAmount] = useState('0');
-  const [debtAmount, setDebtAmount] = useState('0');
+  const [collateralAmountInput, setCollateralAmount, collateralAmount] =
+    useAmountInput('');
+  const [debtAmountInput, setDebtAmount, debtAmount] = useAmountInput('');
   const [debtToken, setDebtToken] = useState<SupportedTokens>(BORROW_ASSETS[0]);
 
   const debtSize = useMemo(() => Number(debtAmount || 0), [debtAmount]);
@@ -57,10 +59,10 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
     [collateralAmount],
   );
 
-  const { value: _maxRbtcWeiBalance } = useMaxAssetBalance(
+  const { weiBalance: _maxRbtcWeiBalance } = useMaxAssetBalance(
     SupportedTokens.rbtc,
   );
-  const { value: _debtTokenWeiBalance } = useAssetBalance(debtToken);
+  const { weiBalance: _debtTokenWeiBalance } = useAssetBalance(debtToken);
 
   const isIncreasingDebt = useMemo(
     () => debtType === AmountType.Add,
@@ -176,8 +178,6 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
     return ((newCollateral * rbtcPrice) / newDebt) * 100 || 0;
   }, [newCollateral, newDebt, rbtcPrice]);
 
-  const { t } = useTranslation();
-
   const initialLiquidationPrice = useMemo(
     () =>
       MINIMUM_COLLATERAL_RATIO *
@@ -224,7 +224,7 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
     }
 
     return errors;
-  }, [fieldsTouched, ratio, tcr, newDebt, isIncreasingDebt, debtToken, t]);
+  }, [fieldsTouched, ratio, tcr, newDebt, isIncreasingDebt, debtToken]);
 
   const debtError = useMemo(() => {
     if (!fieldsTouched) {
@@ -255,7 +255,6 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
     fieldsTouched,
     isIncreasingDebt,
     maxDebtAmount,
-    t,
   ]);
 
   const collateralError = useMemo(() => {
@@ -289,7 +288,6 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
     collateralSize,
     maxCollateralToDepositAmount,
     isIncreasingCollateral,
-    t,
     maxCollateralToWithdrawAmount,
   ]);
 
@@ -322,14 +320,14 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
       originationFee={originationFee}
       existingCollateral={existingCollateral}
       existingDebt={existingDebt}
-      debtAmount={debtAmount}
+      debtAmount={debtAmountInput}
       maxDebtAmount={maxDebtAmount}
       onDebtAmountChange={setDebtAmount}
       debtToken={debtToken}
       onDebtTokenChange={setDebtToken}
       debtType={debtType}
       onDebtTypeChange={setDebtType}
-      collateralAmount={collateralAmount}
+      collateralAmount={collateralAmountInput}
       maxCollateralAmount={maxCollateralAmount}
       onCollateralAmountChange={setCollateralAmount}
       collateralType={collateralType}

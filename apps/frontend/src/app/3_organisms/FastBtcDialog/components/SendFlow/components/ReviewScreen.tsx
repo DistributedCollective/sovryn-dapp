@@ -3,8 +3,15 @@ import React, { useMemo } from 'react';
 import classNames from 'classnames';
 import { t } from 'i18next';
 
-import { Button, Heading, HeadingType, TransactionId } from '@sovryn/ui';
+import {
+  Button,
+  ErrorBadge,
+  ErrorLevel,
+  Heading,
+  HeadingType,
+} from '@sovryn/ui';
 
+import { TxIdWithNotification } from '../../../../../2_molecules/TxIdWithNotification/TransactionIdWithNotification';
 import { useMaintenance } from '../../../../../../hooks/useMaintenance';
 import { translations } from '../../../../../../locales/i18n';
 import { Bitcoin } from '../../../../../../utils/constants';
@@ -44,7 +51,7 @@ export const ReviewScreen: React.FC<ReviewScreenProps> = ({
       {
         label: t(translation.from),
         value: (
-          <TransactionId
+          <TxIdWithNotification
             value={from}
             href={`${rskExplorerUrl}/address/${from}`}
           />
@@ -53,7 +60,10 @@ export const ReviewScreen: React.FC<ReviewScreenProps> = ({
       {
         label: t(translation.to),
         value: (
-          <TransactionId value={to} href={`${btcExplorerUrl}/address/${to}`} />
+          <TxIdWithNotification
+            value={to}
+            href={`${btcExplorerUrl}/address/${to}`}
+          />
         ),
       },
       {
@@ -110,8 +120,14 @@ export const ReviewScreen: React.FC<ReviewScreenProps> = ({
           onClick={onConfirm}
           disabled={fastBtcLocked}
           className="w-full"
+          dataAttribute="funding-send-confirm"
         />
-        {fastBtcLocked && <div>{t(translations.maintenanceMode.fastBtc)}</div>}
+        {fastBtcLocked && (
+          <ErrorBadge
+            level={ErrorLevel.Warning}
+            message={t(translations.maintenanceMode.fastBtc)}
+          />
+        )}
       </div>
     </div>
   );

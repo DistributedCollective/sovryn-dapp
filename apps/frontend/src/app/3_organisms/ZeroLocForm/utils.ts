@@ -1,6 +1,7 @@
 import { t } from 'i18next';
 
-import { ErrorData, ErrorLevel } from '../../1_atoms/ErrorBadge/ErrorBadge';
+import { ErrorBadgeProps, ErrorLevel } from '@sovryn/ui';
+
 import { translations } from '../../../locales/i18n';
 import { formatValue } from '../../../utils/math';
 import {
@@ -41,7 +42,7 @@ export const getTotalDebtAmount = (
   getTotalBorrowingFees(borrowAmount, originationFeeRate, liquidationReserve);
 
 export const checkForSystemErrors = (ratio: number, tcr: number) => {
-  const list: ErrorData[] = [];
+  const list: ErrorBadgeProps[] = [];
 
   const userRatio = ratio / 100;
   const tcrPlus10 = tcr * 1.1;

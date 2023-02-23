@@ -45,7 +45,7 @@ export const useGetMaximumAvailableAmount = (
     });
   }, [isMounted]);
 
-  const { value: destinationTokenAggregatorWeiBalance } = useAssetBalance(
+  const { weiBalance: destinationTokenAggregatorWeiBalance } = useAssetBalance(
     destinationToken,
     defaultChainId,
     massetManagerAddress,

@@ -32,17 +32,17 @@ root.render(
   <React.StrictMode>
     <NetworkProvider>
       <TransactionProvider>
-        <ApolloProvider client={rskClient}>
-          <MaintenanceModeContextProvider>
-            <NotificationProvider>
+        <NotificationProvider>
+          <ApolloProvider client={rskClient}>
+            <MaintenanceModeContextProvider>
               <SharedStateProvider>
                 <RouterProvider router={router} />
                 <OnboardProvider dataAttribute="dapp-onboard" />
               </SharedStateProvider>
-            </NotificationProvider>
-          </MaintenanceModeContextProvider>
-        </ApolloProvider>
-        <TransactionStepDialog disableFocusTrap />
+            </MaintenanceModeContextProvider>
+          </ApolloProvider>
+          <TransactionStepDialog disableFocusTrap />
+        </NotificationProvider>
       </TransactionProvider>
     </NetworkProvider>
   </React.StrictMode>,

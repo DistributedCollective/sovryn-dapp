@@ -1,11 +1,12 @@
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 
+import { t } from 'i18next';
 import { nanoid } from 'nanoid';
-import { useTranslation } from 'react-i18next';
 
 import { SupportedTokens } from '@sovryn/contracts';
 import {
-  applyDataAttr,
+  ErrorBadge,
+  ErrorLevel,
   NotificationType,
   OrderDirection,
   OrderOptions,
@@ -13,7 +14,6 @@ import {
   Paragraph,
   ParagraphSize,
   Table,
-  TransactionId,
 } from '@sovryn/ui';
 
 import { chains, defaultChainId } from '../../../config/chains';
@@ -21,11 +21,17 @@ import { chains, defaultChainId } from '../../../config/chains';
 import { AmountRenderer } from '../../2_molecules/AmountRenderer/AmountRenderer';
 import { ExportCSV } from '../../2_molecules/ExportCSV/ExportCSV';
 import { TransactionTypeRenderer } from '../../2_molecules/TransactionTypeRenderer/TransactionTypeRenderer';
+import { TxIdWithNotification } from '../../2_molecules/TxIdWithNotification/TransactionIdWithNotification';
 import { useNotificationContext } from '../../../contexts/NotificationContext';
 import { useAccount } from '../../../hooks/useAccount';
+import { useMaintenance } from '../../../hooks/useMaintenance';
 import { translations } from '../../../locales/i18n';
 import { zeroClient } from '../../../utils/clients';
-import { Bitcoin, EXPORT_RECORD_LIMIT } from '../../../utils/constants';
+import {
+  Bitcoin,
+  DEFAULT_HISTORY_FRAME_PAGE_SIZE,
+  EXPORT_RECORD_LIMIT,
+} from '../../../utils/constants';
 import {
   StabilityDepositChange,
   StabilityDepositChange_Filter,
@@ -35,15 +41,13 @@ import { dateFormat } from '../../../utils/helpers';
 import { formatValue } from '../../../utils/math';
 import { useGetRewardHistory } from './hooks/useGetRewardHistory';
 
-const DEFAULT_PAGE_SIZE = 10;
+const pageSize = DEFAULT_HISTORY_FRAME_PAGE_SIZE;
 
 export const RewardHistory: FC = () => {
-  const { t } = useTranslation();
   const { account } = useAccount();
   const { addNotification } = useNotificationContext();
 
   const [page, setPage] = useState(0);
-  const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE);
   const chain = chains.find(chain => chain.id === defaultChainId);
 
   const [orderOptions, setOrderOptions] = useState<OrderOptions>({
@@ -82,21 +86,21 @@ export const RewardHistory: FC = () => {
     () => [
       {
         id: 'sequenceNumber',
-        title: t(translations.rewardHistoryTable.table.timestamp),
+        title: t(translations.common.tables.columnTitles.timestamp),
         cellRenderer: (tx: StabilityDepositChange) =>
           dateFormat(tx.transaction.timestamp),
         sortable: true,
       },
       {
         id: 'stabilityDepositOperation',
-        title: t(translations.rewardHistoryTable.table.transactionType),
+        title: t(translations.common.tables.columnTitles.transactionType),
         cellRenderer: (tx: StabilityDepositChange) => (
           <TransactionTypeRenderer type={tx.stabilityDepositOperation} />
         ),
       },
       {
         id: 'collateralGain',
-        title: t(translations.rewardHistoryTable.table.rewardChange),
+        title: t(translations.rewardHistory.table.rewardChange),
         cellRenderer: tx => (
           <AmountRenderer
             value={tx.collateralGain || 0}
@@ -108,9 +112,9 @@ export const RewardHistory: FC = () => {
       },
       {
         id: 'transactionID',
-        title: t(translations.rewardHistoryTable.table.transactionID),
+        title: t(translations.common.tables.columnTitles.transactionID),
         cellRenderer: (tx: StabilityDepositChange) => (
-          <TransactionId
+          <TxIdWithNotification
             href={`${chain?.blockExplorerUrl}/tx/${tx.transaction.id}`}
             value={tx.transaction.id}
             dataAttribute="history-reward-address-id"
@@ -118,7 +122,7 @@ export const RewardHistory: FC = () => {
         ),
       },
     ],
-    [chain?.blockExplorerUrl, t],
+    [chain?.blockExplorerUrl],
   );
 
   const onPageChange = useCallback(
@@ -128,12 +132,12 @@ export const RewardHistory: FC = () => {
       }
       setPage(value);
     },
-    [page, data, pageSize],
+    [page, data],
   );
 
   const isNextButtonDisabled = useMemo(
     () => !loading && data?.length < pageSize,
-    [loading, data, pageSize],
+    [loading, data],
   );
 
   const exportData = useCallback(async () => {
@@ -155,7 +159,7 @@ export const RewardHistory: FC = () => {
     if (!list || !list.length) {
       addNotification({
         type: NotificationType.warning,
-        title: t(translations.rewardHistoryTable.actions.noDataToExport),
+        title: t(translations.common.tables.actions.noDataToExport),
         content: '',
         dismissible: true,
         id: nanoid(),
@@ -168,27 +172,30 @@ export const RewardHistory: FC = () => {
       stabilityDepositOperation: tx.stabilityDepositOperation,
       transactionID: tx.transaction.id,
     }));
-  }, [
-    account,
-    addNotification,
-    getStabilityDeposit,
-    renderCollateralChange,
-    t,
-  ]);
+  }, [account, addNotification, getStabilityDeposit, renderCollateralChange]);
 
   useEffect(() => {
     setPage(0);
   }, [orderOptions]);
 
+  const { checkMaintenance, States } = useMaintenance();
+  const exportLocked = checkMaintenance(States.ZERO_EXPORT_CSV);
+
   return (
     <>
-      <ExportCSV
-        getData={exportData}
-        filename="transactions"
-        className="mb-7 hidden lg:inline-flex"
-        onExportEnd={() => setPageSize(DEFAULT_PAGE_SIZE)}
-        disabled={!data || data.length === 0}
-      />
+      <div className="flex flex-row items-center gap-4 mb-7 hidden lg:inline-flex">
+        <ExportCSV
+          getData={exportData}
+          filename="rewards"
+          disabled={!data || data.length === 0 || exportLocked}
+        />
+        {exportLocked && (
+          <ErrorBadge
+            level={ErrorLevel.Warning}
+            message={t(translations.maintenanceMode.featureDisabled)}
+          />
+        )}
+      </div>
       <div className="bg-gray-80 py-4 px-4 rounded">
         <Table
           setOrderOptions={setOrderOptions}
@@ -199,7 +206,7 @@ export const RewardHistory: FC = () => {
           isLoading={loading}
           className="bg-gray-80 text-gray-10 lg:px-6 lg:py-4"
           noData={t(translations.common.tables.noData)}
-          {...applyDataAttr('reward-history-table')}
+          dataAttribute="reward-history-table"
         />
         <Pagination
           page={page}
@@ -207,7 +214,7 @@ export const RewardHistory: FC = () => {
           onChange={onPageChange}
           itemsPerPage={pageSize}
           isNextButtonDisabled={isNextButtonDisabled}
-          {...applyDataAttr('reward-history-pagination')}
+          dataAttribute="reward-history-pagination"
         />
       </div>
     </>

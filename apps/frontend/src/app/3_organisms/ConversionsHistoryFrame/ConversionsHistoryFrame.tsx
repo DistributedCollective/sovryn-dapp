@@ -5,11 +5,12 @@ import { nanoid } from 'nanoid';
 
 import {
   Table,
-  applyDataAttr,
   Pagination,
   OrderOptions,
   OrderDirection,
   NotificationType,
+  ErrorBadge,
+  ErrorLevel,
 } from '@sovryn/ui';
 
 import { ExportCSV } from '../../2_molecules/ExportCSV/ExportCSV';
@@ -17,6 +18,7 @@ import { masset } from '../../5_pages/ConvertPage/ConvertPage.types';
 import { useNotificationContext } from '../../../contexts/NotificationContext';
 import { useAccount } from '../../../hooks/useAccount';
 import { useBlockNumber } from '../../../hooks/useBlockNumber';
+import { useMaintenance } from '../../../hooks/useMaintenance';
 import { translations } from '../../../locales/i18n';
 import {
   DEFAULT_HISTORY_FRAME_PAGE_SIZE,
@@ -93,7 +95,7 @@ export const ConversionsHistoryFrame: React.FC = () => {
     if (!conversions || !conversions?.length) {
       addNotification({
         type: NotificationType.warning,
-        title: t(translations.conversionsHistory.actions.noDataToExport),
+        title: t(translations.common.tables.actions.noDataToExport),
         dismissible: true,
         id: nanoid(),
       });
@@ -114,14 +116,24 @@ export const ConversionsHistoryFrame: React.FC = () => {
     }));
   }, [account, addNotification, getConversions]);
 
+  const { checkMaintenance, States } = useMaintenance();
+  const exportLocked = checkMaintenance(States.ZERO_EXPORT_CSV);
+
   return (
     <>
-      <ExportCSV
-        getData={exportData}
-        filename="conversion"
-        className="mb-7 hidden lg:inline-flex"
-        disabled={!conversions}
-      />
+      <div className="flex flex-row items-center gap-4 mb-7 hidden lg:inline-flex">
+        <ExportCSV
+          getData={exportData}
+          filename="conversions"
+          disabled={!conversions || exportLocked}
+        />
+        {exportLocked && (
+          <ErrorBadge
+            level={ErrorLevel.Warning}
+            message={t(translations.maintenanceMode.featureDisabled)}
+          />
+        )}
+      </div>
       <div className="bg-gray-80 py-4 px-4 rounded">
         <Table
           setOrderOptions={setOrderOptions}
@@ -132,7 +144,7 @@ export const ConversionsHistoryFrame: React.FC = () => {
           isLoading={loading}
           className="bg-gray-80 text-gray-10 lg:px-6 lg:py-4"
           noData={t(translations.common.tables.noData)}
-          {...applyDataAttr('conversions-history-table')}
+          dataAttribute="conversions-history-table"
         />
         <Pagination
           page={page}
@@ -140,7 +152,7 @@ export const ConversionsHistoryFrame: React.FC = () => {
           onChange={onPageChange}
           itemsPerPage={pageSize}
           isNextButtonDisabled={isNextButtonDisabled}
-          {...applyDataAttr('conversions-history-pagination')}
+          dataAttribute="conversions-history-pagination"
         />
       </div>
     </>

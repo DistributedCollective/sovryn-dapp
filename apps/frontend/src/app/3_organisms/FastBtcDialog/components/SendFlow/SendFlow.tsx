@@ -58,7 +58,7 @@ export const SendFlow: React.FC<SendFlowProps> = ({ onClose }) => {
         ].includes(step) && <ConfirmationScreens onClose={onClose} />}
       </div>
 
-      <MobileCloseButton onClick={onClose} />
+      <MobileCloseButton onClick={onClose} dataAttribute="funding-close" />
     </WithdrawContext.Provider>
   );
 };

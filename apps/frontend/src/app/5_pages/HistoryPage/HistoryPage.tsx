@@ -2,7 +2,7 @@ import { ApolloProvider } from '@apollo/client';
 
 import React, { FC, useMemo, useState } from 'react';
 
-import { useTranslation } from 'react-i18next';
+import { t } from 'i18next';
 
 import { Heading, Select, SelectOption, Tabs } from '@sovryn/ui';
 
@@ -60,7 +60,6 @@ const conversionsHistory = (
 );
 
 const HistoryPage: FC = () => {
-  const { t } = useTranslation();
   const [index, setIndex] = useState(0);
 
   const comingSoon = useMemo(
@@ -71,7 +70,7 @@ const HistoryPage: FC = () => {
         </Heading>
       </div>
     ),
-    [t],
+    [],
   );
 
   const items = useMemo(
@@ -121,7 +120,7 @@ const HistoryPage: FC = () => {
         dataAttribute: 'rewards',
       },
     ],
-    [t, comingSoon],
+    [comingSoon],
   );
 
   const options: SelectOption[] = useMemo(

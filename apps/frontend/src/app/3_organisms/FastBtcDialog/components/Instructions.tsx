@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react';
 
-import { Trans, useTranslation } from 'react-i18next';
+import { t } from 'i18next';
+import { Trans } from 'react-i18next';
 
 import { Heading, HeadingType, Link } from '@sovryn/ui';
 
@@ -12,8 +13,6 @@ type InstructionsProps = {
 };
 
 export const Instructions: React.FC<InstructionsProps> = ({ isReceive }) => {
-  const { t } = useTranslation();
-
   const translation = useMemo(
     () =>
       isReceive

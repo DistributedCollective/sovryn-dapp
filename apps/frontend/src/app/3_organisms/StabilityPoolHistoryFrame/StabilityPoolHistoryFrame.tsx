@@ -1,7 +1,7 @@
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 
+import { t } from 'i18next';
 import { nanoid } from 'nanoid';
-import { useTranslation } from 'react-i18next';
 
 import { SupportedTokens } from '@sovryn/contracts';
 import {
@@ -14,8 +14,8 @@ import {
   Table,
   Tooltip,
   TooltipTrigger,
-  TransactionId,
-  applyDataAttr,
+  ErrorBadge,
+  ErrorLevel,
 } from '@sovryn/ui';
 
 import { chains, defaultChainId } from '../../../config/chains';
@@ -24,12 +24,17 @@ import { ExportCSV } from '../../2_molecules/ExportCSV/ExportCSV';
 import { TableFilter } from '../../2_molecules/TableFilter/TableFilter';
 import { Filter } from '../../2_molecules/TableFilter/TableFilter.types';
 import { TransactionTypeRenderer } from '../../2_molecules/TransactionTypeRenderer/TransactionTypeRenderer';
+import { TxIdWithNotification } from '../../2_molecules/TxIdWithNotification/TransactionIdWithNotification';
 import { useNotificationContext } from '../../../contexts/NotificationContext';
 import { useAccount } from '../../../hooks/useAccount';
 import { useBlockNumber } from '../../../hooks/useBlockNumber';
+import { useMaintenance } from '../../../hooks/useMaintenance';
 import { translations } from '../../../locales/i18n';
 import { zeroClient } from '../../../utils/clients';
-import { EXPORT_RECORD_LIMIT } from '../../../utils/constants';
+import {
+  DEFAULT_HISTORY_FRAME_PAGE_SIZE,
+  EXPORT_RECORD_LIMIT,
+} from '../../../utils/constants';
 import {
   StabilityDepositChange,
   StabilityDepositChange_Filter,
@@ -41,18 +46,15 @@ import { dateFormat } from '../../../utils/helpers';
 import { formatValue } from '../../../utils/math';
 import { useGetStabilityPoolHistory } from './hooks/useGetStabilityPoolHistory';
 
-const DEFAULT_PAGE_SIZE = 10;
+const pageSize = DEFAULT_HISTORY_FRAME_PAGE_SIZE;
 
 export const StabilityPoolHistoryFrame: FC = () => {
-  const { t } = useTranslation();
   const { account } = useAccount();
   const { addNotification } = useNotificationContext();
   const [filters, setFilters] = useState<StabilityDepositChange_Filter>({});
-
   const { value: block } = useBlockNumber();
 
   const [page, setPage] = useState(0);
-  const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE);
   const chain = chains.find(chain => chain.id === defaultChainId);
 
   const [orderOptions, setOrderOptions] = useState<OrderOptions>({
@@ -88,7 +90,7 @@ export const StabilityPoolHistoryFrame: FC = () => {
           ? true
           : false,
       })),
-    [t, filters],
+    [filters],
   );
 
   const updateFilters = useCallback((filterList: Filter[]) => {
@@ -120,7 +122,7 @@ export const StabilityPoolHistoryFrame: FC = () => {
       Object.keys(filters || {}).length > 0
         ? t(translations.common.tables.noDataWithFilters)
         : t(translations.common.tables.noData),
-    [t, filters],
+    [filters],
   );
 
   const renderBalanceChange = useCallback(
@@ -132,7 +134,7 @@ export const StabilityPoolHistoryFrame: FC = () => {
             trigger={TooltipTrigger.click}
             className="cursor-pointer uppercase"
             tooltipClassName="uppercase"
-            {...applyDataAttr('stability-pool-history-balance-change')}
+            dataAttribute="stability-pool-history-balance-change"
           >
             <span>
               {formatValue(Number(balance), 2)} {SupportedTokens.zusd}
@@ -159,7 +161,7 @@ export const StabilityPoolHistoryFrame: FC = () => {
             trigger={TooltipTrigger.click}
             className="cursor-pointer uppercase"
             tooltipClassName="uppercase"
-            {...applyDataAttr('stability-pool-history-new-balance')}
+            dataAttribute="stability-pool-history-new-balance"
           >
             <span>
               {formatValue(Number(stabilityDeposit.depositedAmountAfter), 2)}{' '}
@@ -196,14 +198,14 @@ export const StabilityPoolHistoryFrame: FC = () => {
     () => [
       {
         id: 'sequenceNumber',
-        title: t(translations.stabilityPoolHistory.table.timestamp),
+        title: t(translations.common.tables.columnTitles.timestamp),
         cellRenderer: (row: StabilityDepositChange) =>
           dateFormat(row.transaction.timestamp),
         sortable: true,
       },
       {
         id: 'transactionType',
-        title: t(translations.stabilityPoolHistory.table.transactionType),
+        title: t(translations.common.tables.columnTitles.transactionType),
         cellRenderer: (row: StabilityDepositChange) => (
           <TransactionTypeRenderer type={row.stabilityDepositOperation} />
         ),
@@ -227,18 +229,17 @@ export const StabilityPoolHistoryFrame: FC = () => {
       },
       {
         id: 'transactionID',
-        title: t(translations.stabilityPoolHistory.table.transactionID),
+        title: t(translations.common.tables.columnTitles.transactionID),
         cellRenderer: (row: StabilityDepositChange) => (
-          <TransactionId
+          <TxIdWithNotification
             href={`${chain?.blockExplorerUrl}/tx/${row.transaction.id}`}
             value={row.transaction.id}
-            {...applyDataAttr('stability-pool-history-address-id')}
+            dataAttribute="stability-pool-history-address-id"
           />
         ),
       },
     ],
     [
-      t,
       chain,
       renderBalanceChange,
       renderNewBalance,
@@ -254,12 +255,12 @@ export const StabilityPoolHistoryFrame: FC = () => {
       }
       setPage(value);
     },
-    [page, stabilityDeposits?.length, pageSize],
+    [page, stabilityDeposits.length],
   );
 
   const isNextButtonDisabled = useMemo(
     () => !loading && stabilityDeposits?.length < pageSize,
-    [loading, stabilityDeposits, pageSize],
+    [loading, stabilityDeposits],
   );
 
   const exportData = useCallback(async () => {
@@ -279,7 +280,7 @@ export const StabilityPoolHistoryFrame: FC = () => {
     if (!list || !list.length) {
       addNotification({
         type: NotificationType.warning,
-        title: t(translations.stabilityPoolHistory.actions.noDataToExport),
+        title: t(translations.common.tables.actions.noDataToExport),
         content: '',
         dismissible: true,
         id: nanoid(),
@@ -293,21 +294,32 @@ export const StabilityPoolHistoryFrame: FC = () => {
       newBalance: tx.depositedAmountAfter,
       transactionID: tx.transaction.id,
     }));
-  }, [t, account, getStabilityPool, orderOptions, filters, addNotification]);
+  }, [account, getStabilityPool, orderOptions, filters, addNotification]);
 
   useEffect(() => {
     setPage(0);
   }, [orderOptions]);
 
+  const { checkMaintenance, States } = useMaintenance();
+  const exportLocked = checkMaintenance(States.ZERO_EXPORT_CSV);
+
   return (
     <>
-      <ExportCSV
-        getData={exportData}
-        filename="transactions"
-        className="mb-7 hidden lg:inline-flex"
-        onExportEnd={() => setPageSize(DEFAULT_PAGE_SIZE)}
-        disabled={!stabilityDeposits || stabilityDeposits.length === 0}
-      />
+      <div className="flex flex-row items-center gap-4 mb-7 hidden lg:inline-flex">
+        <ExportCSV
+          getData={exportData}
+          filename="stability pool transactions"
+          disabled={
+            !stabilityDeposits || stabilityDeposits.length === 0 || exportLocked
+          }
+        />
+        {exportLocked && (
+          <ErrorBadge
+            level={ErrorLevel.Warning}
+            message={t(translations.maintenanceMode.featureDisabled)}
+          />
+        )}
+      </div>
       <div className="bg-gray-80 py-4 px-4 rounded">
         <Table
           setOrderOptions={setOrderOptions}
@@ -318,7 +330,7 @@ export const StabilityPoolHistoryFrame: FC = () => {
           isLoading={loading}
           className="bg-gray-80 text-gray-10 lg:px-6 lg:py-4"
           noData={noDataLabel}
-          {...applyDataAttr('redemption-history-table')}
+          dataAttribute="redemption-history-table"
         />
         <Pagination
           page={page}
@@ -326,7 +338,7 @@ export const StabilityPoolHistoryFrame: FC = () => {
           onChange={onPageChange}
           itemsPerPage={pageSize}
           isNextButtonDisabled={isNextButtonDisabled}
-          {...applyDataAttr('redemption-history-pagination')}
+          dataAttribute="redemption-history-pagination"
         />
       </div>
     </>

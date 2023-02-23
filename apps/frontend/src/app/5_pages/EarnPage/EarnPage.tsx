@@ -7,7 +7,7 @@ import {
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 
 import classNames from 'classnames';
-import { useTranslation } from 'react-i18next';
+import { t } from 'i18next';
 import { useLoaderData } from 'react-router-dom';
 
 import { SupportedTokens } from '@sovryn/contracts';
@@ -17,6 +17,8 @@ import {
   Button,
   ButtonStyle,
   ButtonType,
+  ErrorBadge,
+  ErrorLevel,
   Heading,
   Paragraph,
   ParagraphSize,
@@ -31,7 +33,9 @@ import {
 import { AmountRenderer } from '../../2_molecules/AmountRenderer/AmountRenderer';
 import { AssetRenderer } from '../../2_molecules/AssetRenderer/AssetRenderer';
 import { useAccount } from '../../../hooks/useAccount';
+import { useAmountInput } from '../../../hooks/useAmountInput';
 import { useAssetBalance } from '../../../hooks/useAssetBalance';
+import { useMaintenance } from '../../../hooks/useMaintenance';
 import { translations } from '../../../locales/i18n';
 import { fromWei, toWei } from '../../../utils/math';
 import { tokenList } from './EarnPage.types';
@@ -42,14 +46,13 @@ const pageTranslations = translations.earnPage;
 
 const EarnPage: FC = () => {
   const [index, setIndex] = useState(0);
-  const [amount, setAmount] = useState('0');
+  const [amountInput, setAmount, amount] = useAmountInput('');
   const [poolBalance, setPoolBalance] = useState('0');
   const [ZUSDInStabilityPool, setZUSDInStabilityPool] = useState('0');
   const [token, setToken] = useState<SupportedTokens>(SupportedTokens.dllr);
   const [isLoading, setIsLoading] = useState(false);
 
   const { account } = useAccount();
-  const { t } = useTranslation();
 
   const { liquity } = useLoaderData() as {
     liquity: EthersLiquity;
@@ -100,21 +103,30 @@ const EarnPage: FC = () => {
     }
 
     return tabs;
-  }, [poolBalance, t]);
+  }, [poolBalance]);
 
   const isDeposit = useMemo(() => index === 0, [index]);
 
-  const { value: weiBalance } = useAssetBalance(token);
+  const { checkMaintenance, States } = useMaintenance();
+  const actionLocked = checkMaintenance(
+    isDeposit ? States.ZERO_STABILITY_ADD : States.ZERO_STABILITY_REMOVE,
+  );
+  const dllrLocked = checkMaintenance(States.ZERO_DLLR);
+
+  const { weiBalance } = useAssetBalance(token);
 
   const balance = useMemo(() => fromWei(weiBalance), [weiBalance]);
 
-  const onTokenChange = useCallback((value: SupportedTokens) => {
-    setToken(value);
-    setAmount('0');
-  }, []);
+  const onTokenChange = useCallback(
+    (value: SupportedTokens) => {
+      setToken(value);
+      setAmount('');
+    },
+    [setAmount],
+  );
 
-  const { value: zusdWeiBalance } = useAssetBalance(SupportedTokens.zusd);
-  const { value: dllrWeiBalance } = useAssetBalance(SupportedTokens.dllr);
+  const { weiBalance: zusdWeiBalance } = useAssetBalance(SupportedTokens.zusd);
+  const { weiBalance: dllrWeiBalance } = useAssetBalance(SupportedTokens.dllr);
 
   useEffect(() => {
     if (
@@ -135,7 +147,7 @@ const EarnPage: FC = () => {
     [],
   );
 
-  useEffect(() => setAmount('0'), [isDeposit]);
+  useEffect(() => setAmount(''), [isDeposit, setAmount]);
 
   const maximumAmount = useMemo(
     () => (isDeposit ? balance : poolBalance),
@@ -144,13 +156,14 @@ const EarnPage: FC = () => {
 
   const onMaximumAmountClick = useCallback(
     () => setAmount(maximumAmount),
-    [maximumAmount],
+    [maximumAmount, setAmount],
   );
 
   const onTransactionSuccess = useCallback(() => {
     getStabilityDeposit();
     getZUSDInStabilityPool();
-  }, [getStabilityDeposit, getZUSDInStabilityPool]);
+    setAmount('0');
+  }, [getStabilityDeposit, getZUSDInStabilityPool, setAmount]);
 
   const handleSubmit = useHandleStabilityDeposit(
     token,
@@ -187,14 +200,14 @@ const EarnPage: FC = () => {
       return '0';
     }
     return fromWei(newBalance);
-  }, [isAmountZero, poolBalance, isDeposit, amount, t]);
+  }, [isAmountZero, poolBalance, isDeposit, amount]);
 
   const newPoolBalanceLabel = useMemo(() => {
     if (isAmountZero) {
       return t(commonTranslations.na);
     }
     return `${newPoolBalance} ${SupportedTokens.zusd.toUpperCase()}`;
-  }, [isAmountZero, newPoolBalance, t]);
+  }, [isAmountZero, newPoolBalance]);
 
   const newPoolShare = useMemo(() => {
     if (isAmountZero) {
@@ -215,16 +228,26 @@ const EarnPage: FC = () => {
       BigNumber.from(toWei(newPoolBalance, 24)).div(newZUSDInStabilityPool),
       4,
     ).toString()} %`;
-  }, [ZUSDInStabilityPool, amount, isAmountZero, isDeposit, newPoolBalance, t]);
+  }, [ZUSDInStabilityPool, amount, isAmountZero, isDeposit, newPoolBalance]);
 
   const isValidAmount = useMemo(
     () => Number(amount) <= Number(maximumAmount),
     [amount, maximumAmount],
   );
 
+  const isInMaintenance = useMemo(
+    () => actionLocked || (dllrLocked && token === SupportedTokens.dllr),
+    [actionLocked, dllrLocked, token],
+  );
+
   const isSubmitDisabled = useMemo(
-    () => !account || !amount || Number(amount) <= 0 || !isValidAmount,
-    [account, amount, isValidAmount],
+    () =>
+      !account ||
+      !amount ||
+      Number(amount) <= 0 ||
+      !isValidAmount ||
+      isInMaintenance,
+    [account, amount, isValidAmount, isInMaintenance],
   );
 
   const tokenOptions = useMemo(
@@ -284,7 +307,7 @@ const EarnPage: FC = () => {
 
         <div className="w-full flex flex-row justify-between items-center gap-3 mt-3.5">
           <AmountInput
-            value={amount}
+            value={amountInput}
             onChangeText={setAmount}
             label={t(translations.common.amount)}
             min={0}
@@ -293,6 +316,7 @@ const EarnPage: FC = () => {
             invalid={!isValidAmount}
             className="w-full flex-grow-0 flex-shrink"
             dataAttribute="earn-amount-input"
+            placeholder="0"
           />
 
           <Select
@@ -344,6 +368,12 @@ const EarnPage: FC = () => {
           disabled={isSubmitDisabled}
           dataAttribute="earn-submit"
         />
+        {isInMaintenance && (
+          <ErrorBadge
+            level={ErrorLevel.Warning}
+            message={t(translations.maintenanceMode.featureDisabled)}
+          />
+        )}
       </div>
     </div>
   );

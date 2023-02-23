@@ -10,10 +10,10 @@ import {
   Icon,
   IconNames,
   StatusType,
-  TransactionId,
 } from '@sovryn/ui';
 
 import { StatusIcon } from '../../../../../2_molecules/StatusIcon/StatusIcon';
+import { TxIdWithNotification } from '../../../../../2_molecules/TxIdWithNotification/TransactionIdWithNotification';
 import { useAccount } from '../../../../../../hooks/useAccount';
 import { translations } from '../../../../../../locales/i18n';
 import { Bitcoin, btcInSatoshis } from '../../../../../../utils/constants';
@@ -64,7 +64,7 @@ export const StatusScreen: React.FC<StatusScreenProps> = ({ onClose }) => {
       {
         label: t(translation.to),
         value: (
-          <TransactionId
+          <TxIdWithNotification
             value={account}
             href={`${rskExplorerUrl}/address/${account}`}
           />
@@ -98,7 +98,7 @@ export const StatusScreen: React.FC<StatusScreenProps> = ({ onClose }) => {
         label: t(translation.bitcoinTxId),
         value: depositTx ? (
           <>
-            <TransactionId
+            <TxIdWithNotification
               value={depositTx.txHash}
               href={`${btcExplorerUrl}/tx/${depositTx.txHash}`}
             />
@@ -111,7 +111,7 @@ export const StatusScreen: React.FC<StatusScreenProps> = ({ onClose }) => {
         label: t(translation.rootstockTxId),
         value: transferTx ? (
           <>
-            <TransactionId
+            <TxIdWithNotification
               value={transferTx.txHash}
               href={`${rskExplorerUrl}/tx/${transferTx.txHash}`}
             />
@@ -136,7 +136,7 @@ export const StatusScreen: React.FC<StatusScreenProps> = ({ onClose }) => {
         <div className="mb-6">
           <StatusIcon
             status={isProcessing ? StatusType.pending : StatusType.success}
-            dataAttribute="fastBtc-receive"
+            dataAttribute="funding-receive-status"
           />
         </div>
 
@@ -160,7 +160,7 @@ export const StatusScreen: React.FC<StatusScreenProps> = ({ onClose }) => {
         onClick={onClose}
         disabled={isProcessing}
         className="mt-8 w-full"
-        dataAttribute="fastBtc-receive-done-button"
+        dataAttribute="funding-receive-done"
       />
     </>
   );

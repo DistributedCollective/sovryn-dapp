@@ -1,5 +1,6 @@
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 
+import { signERC2612Permit } from 'eth-permit';
 import { ethers } from 'ethers';
 import { parseUnits } from 'ethers/lib/utils';
 import { t } from 'i18next';
@@ -18,6 +19,7 @@ import {
 } from '../../TransactionStepDialog.types';
 import {
   isMessageSignatureRequest,
+  isPermitRequest,
   isTransactionRequest,
   isTypedDataRequest,
 } from '../../helpers';
@@ -202,6 +204,27 @@ export const TransactionSteps: FC<TransactionStepsProps> = ({
             status: TransactionReceiptStatus.success,
             request,
             response: signature,
+          });
+
+          handleUpdates();
+        } else if (isPermitRequest(request)) {
+          const response = await signERC2612Permit(
+            request.signer,
+            request.token,
+            request.owner,
+            request.spender,
+            request.value,
+            request.deadline,
+            request.nonce,
+          );
+
+          transactions[i].onChangeStatus?.(StatusType.success);
+          transactions[i].onComplete?.(response);
+
+          updateReceipt(i, {
+            status: TransactionReceiptStatus.success,
+            request,
+            response,
           });
 
           handleUpdates();

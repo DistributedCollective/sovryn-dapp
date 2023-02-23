@@ -5,9 +5,9 @@ import { SupportedTokens } from '@sovryn/contracts';
 import { useAssetBalance } from '../../../../hooks/useAssetBalance';
 
 export const useGetDefaultSourceToken = () => {
-  const dllrBalance = useAssetBalance(SupportedTokens.dllr).value;
-  const zusdBalance = useAssetBalance(SupportedTokens.zusd).value;
-  const docBalance = useAssetBalance(SupportedTokens.doc).value;
+  const dllrBalance = useAssetBalance(SupportedTokens.dllr).weiBalance;
+  const zusdBalance = useAssetBalance(SupportedTokens.zusd).weiBalance;
+  const docBalance = useAssetBalance(SupportedTokens.doc).weiBalance;
 
   const hasDllr = useMemo(() => dllrBalance !== '0', [dllrBalance]);
   const hasZusd = useMemo(() => zusdBalance !== '0', [zusdBalance]);

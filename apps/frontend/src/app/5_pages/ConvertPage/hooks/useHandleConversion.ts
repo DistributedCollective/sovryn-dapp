@@ -1,6 +1,6 @@
 import { useCallback, useMemo } from 'react';
 
-import { ethers, BigNumber } from 'ethers';
+import { ethers } from 'ethers';
 import { t } from 'i18next';
 
 import {
@@ -20,6 +20,7 @@ import { useAccount } from '../../../../hooks/useAccount';
 import { translations } from '../../../../locales/i18n';
 import { GAS_LIMIT_CONVERT } from '../../../../utils/constants';
 import { toWei } from '../../../../utils/math';
+import { prepareApproveTransaction } from '../../../../utils/transactions';
 
 export const useHandleConversion = (
   sourceToken: SupportedTokens,
@@ -97,25 +98,17 @@ export const useHandleConversion = (
 
     const bassetToken = new ethers.Contract(bassetAddress, bassetAbi, signer);
 
-    const allowance = await bassetToken.allowance(
-      account,
-      massetManager.address,
-    );
-
     const transactions: Transaction[] = [];
 
-    if (BigNumber.from(allowance).lt(weiAmount)) {
-      transactions.push({
-        title: t(translations.convertPage.txDialog.approve, {
-          asset: sourceToken.toUpperCase(),
-        }),
-        request: {
-          type: TransactionType.signTransaction,
-          contract: bassetToken,
-          fnName: 'approve',
-          args: [massetManager.address, weiAmount],
-        },
-      });
+    const approveTx = await prepareApproveTransaction({
+      token: sourceToken,
+      contract: bassetToken,
+      spender: massetManager.address,
+      amount: weiAmount,
+    });
+
+    if (approveTx) {
+      transactions.push(approveTx);
     }
 
     transactions.push({

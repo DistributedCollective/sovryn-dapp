@@ -241,7 +241,7 @@ export const TransactionStep: FC<TransactionStepProps> = ({
                   value={
                     <TxIdWithNotification
                       href={`${chain?.blockExplorerUrl}/tx/${receipt.response}`}
-                      value={receipt.response}
+                      value={receipt.response as string}
                     />
                   }
                 />

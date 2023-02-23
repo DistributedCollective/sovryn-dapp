@@ -39,7 +39,13 @@
         "amount": "Amount",
         "deposit": "Deposit",
         "withdraw": "Withdraw",
-        "txId": "TX ID"
+        "txId": "TX ID",
+        "tx": {
+          "signPermitTitle": "Permit {{symbol}}",
+          "signPermitSubtitle": "Sign a permit to allow the contract to spend your {{symbol}}",
+          "signApproveTitle": "Approve {{symbol}}",
+          "signApproveSubtitle": "Approve {{symbol}} to be spent by the contract"
+        }
     },
     "connectWalletButton": {
         "connect": "Get started",
@@ -96,7 +102,7 @@
         "gasPrice": "Gas price",
         "resetValues": "Reset values"
     },
-
+    
     "zeroPage": {
         "dashboardWelcomeBanner": {
             "fundWallet": "Fund your wallet",
@@ -152,7 +158,8 @@
         },
         "tx": {
             "adjustTrove": "Adjust",
-            "closeTrove": "Close",
+            "closeTrove": "Close using ZUSD",
+            "closeTroveDLLR": "Close using DLLR",
             "openTrove": "Open",
             "adjustTitle": "Adjust line of credit",
             "closeTitle": "Close line of credit",
@@ -195,9 +202,11 @@
         "max": "Max {{value}} {{symbol}}",
         "fields": {
             "debt": {
+                "amount": "Amount",
                 "tooltip": "Amount of debt to add or remove"
             },
             "collateral": {
+                "amount": "Amount",
                 "tooltip": "Amount of collateral to add or remove"
             }
         },

@@ -50,7 +50,6 @@ export const ZeroPage: FC = () => {
   const [openStartedPopup, toggleStartedPopup] = useReducer(v => !v, false);
   const [openClosePopup, toggleClosePopup] = useReducer(v => !v, false);
   const [trove, setTrove] = useState<UserTrove>();
-  const [zusdBalance, setZusdBalance] = React.useState('');
   const [collateralSurplusBalance, setCollateralSurplusBalance] =
     useState<Decimal>();
 
@@ -93,31 +92,32 @@ export const ZeroPage: FC = () => {
         .then(setCollateralSurplusBalance);
     }
   }, [account, liquity]);
-  const getZUSDBalance = useCallback(async () => {
-    const balance = (await liquity.getZUSDBalance(account)).toString();
-    setZusdBalance(balance);
-  }, [account, liquity]);
 
   const claimCollateralSurplus = useClaimCollateralSurplus(
     getCollateralSurplusBalance,
   );
-  const { handleTroveSubmit, handleTroveClose } = useHandleTrove(hasLoc, () => {
-    toggle();
-    getTroves();
-    getOpenTroves();
-    getZUSDBalance();
+  const { handleTroveSubmit, handleTroveClose } = useHandleTrove(hasLoc, {
+    onTroveOpened: () => {
+      toggle();
+      getTroves();
+      getOpenTroves();
+    },
+    onTroveAdjusted: () => {
+      toggle();
+      getTroves();
+      getOpenTroves();
+    },
+    onTroveClosed: () => {
+      toggleClosePopup();
+      getTroves();
+      getOpenTroves();
+    },
   });
 
   useEffect(() => {
     getTroves();
     getCollateralSurplusBalance();
   }, [account, liquity, getTroves, getCollateralSurplusBalance]);
-
-  useEffect(() => {
-    if (account && liquity) {
-      getZUSDBalance();
-    }
-  }, [account, liquity, getZUSDBalance]);
 
   const getRatio = useCallback(
     (price: string) => {
@@ -255,7 +255,6 @@ export const ZeroPage: FC = () => {
                     onSubmit={handleTroveClose}
                     creditValue={String(debt - LIQUIDATION_RESERVE_AMOUNT)}
                     collateralValue={String(collateral)}
-                    availableBalance={zusdBalance}
                   />
                 </DialogBody>
               </Dialog>

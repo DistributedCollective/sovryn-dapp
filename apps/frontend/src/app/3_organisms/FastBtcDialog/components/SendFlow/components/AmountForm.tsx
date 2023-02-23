@@ -38,9 +38,9 @@ export const AmountForm: React.FC = () => {
   const { checkMaintenance, States } = useMaintenance();
   const fastBtcLocked = checkMaintenance(States.FASTBTC);
 
-  const { value: maxAmountWei } = useMaxAssetBalance(SupportedTokens.rbtc);
+  const { weiBalance: maxAmountWei } = useMaxAssetBalance(SupportedTokens.rbtc);
 
-  const { value: rbtcWeiBalance } = useAssetBalance(
+  const { weiBalance: rbtcWeiBalance } = useAssetBalance(
     SupportedTokens.rbtc,
     defaultChainId,
   );

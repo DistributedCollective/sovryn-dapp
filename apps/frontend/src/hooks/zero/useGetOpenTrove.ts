@@ -1,6 +1,6 @@
 import { ApolloClient, InMemoryCache } from '@apollo/client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo } from 'react';
 
 import { graphZeroUrl } from '../../utils/constants';
 import {
@@ -18,24 +18,15 @@ const zeroClient = new ApolloClient({
 
 export const useGetOpenTrove = () => {
   const { account } = useWalletConnect();
-  const [isTroveOpenExists, setIsTroveOpenExists] = useState(false);
-  const troveConfig = useMemo(
-    () => ({
-      user: account,
-    }),
-    [account],
-  );
-
   const { loading, data } = useGetUserOpenTroveQuery({
-    variables: troveConfig,
+    variables: { user: account },
     client: zeroClient,
   });
 
-  useEffect(() => {
-    if (data?.trove?.status === TroveStatus.Open && !loading) {
-      setIsTroveOpenExists(!!data.trove);
-    }
-  }, [loading, data]);
+  const isTroveOpenExists = useMemo(
+    () => !loading && data?.trove?.status === TroveStatus.Open,
+    [loading, data],
+  );
 
   return isTroveOpenExists;
 };

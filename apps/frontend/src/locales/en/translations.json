@@ -27,7 +27,7 @@
             "columnTitles": {
                 "timestamp": "Timestamp",
                 "transactionType": "Transaction Type",
-                "transactionID": "Transaction ID"
+                "transactionID": "TXID"
             },
             "actions": {
                 "noDataToExport": "No data to export"
@@ -39,12 +39,12 @@
         "amount": "Amount",
         "deposit": "Deposit",
         "withdraw": "Withdraw",
-        "txId": "TX ID",
+        "txId": "TXID",
         "tx": {
-          "signPermitTitle": "Permit {{symbol}}",
-          "signPermitSubtitle": "Sign a permit to allow the contract to spend your {{symbol}}",
-          "signApproveTitle": "Approve {{symbol}}",
-          "signApproveSubtitle": "Approve {{symbol}} to be spent by the contract"
+            "signPermitTitle": "Permit {{symbol}}",
+            "signPermitSubtitle": "Sign a permit to allow the contract to spend your {{symbol}}",
+            "signApproveTitle": "Approve {{symbol}}",
+            "signApproveSubtitle": "Approve {{symbol}} to be spent by the contract"
         }
     },
     "connectWalletButton": {
@@ -102,7 +102,7 @@
         "gasPrice": "Gas price",
         "resetValues": "Reset values"
     },
-    
+
     "zeroPage": {
         "dashboardWelcomeBanner": {
             "fundWallet": "Fund your wallet",
@@ -451,8 +451,7 @@
     "conversionsHistory": {
         "table": {
             "sent": "Sent",
-            "received": "Received",
-            "txId": "TXID"
+            "received": "Received"
         },
         "type": "Convert"
     },
@@ -478,6 +477,23 @@
             "depositTokens": "Deposit",
             "withdrawTokens": "Withdraw",
             "withdrawCollateralGain": "Withdraw collateral gain"
+        }
+    },
+    "fundingHistory": {
+        "table": {
+            "sent": "Sent",
+            "received": "Received",
+            "serviceFee": "Service fee"
+        },
+        "transactionType": {
+            "deposit": {
+                "part1": "FastBTC deposit (Part 1)",
+                "part2": "FastBTC deposit (Part 2)"
+            },
+            "withdraw": {
+                "part1": "FastBTC withdrawal (Part 1)",
+                "part2": "FastBTC withdrawal (Part 2)"
+            }
         }
     },
     "rewardHistory": {

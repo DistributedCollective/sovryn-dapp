@@ -66,7 +66,7 @@ export const columnsConfig = [
   },
   {
     id: 'transactionId',
-    title: t(translations.conversionsHistory.table.txId),
+    title: t(translations.common.tables.columnTitles.transactionID),
     cellRenderer: (item: Conversion) => <TransactionIdRenderer item={item} />,
   },
 ];

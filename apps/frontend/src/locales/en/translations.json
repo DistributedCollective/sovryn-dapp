@@ -27,7 +27,7 @@
             "columnTitles": {
                 "timestamp": "Timestamp",
                 "transactionType": "Transaction Type",
-                "transactionID": "Transaction ID"
+                "transactionID": "TXID"
             },
             "actions": {
                 "noDataToExport": "No data to export"
@@ -39,7 +39,7 @@
         "amount": "Amount",
         "deposit": "Deposit",
         "withdraw": "Withdraw",
-        "txId": "TX ID",
+        "txId": "TXID",
         "tx": {
           "signPermitTitle": "Permit {{symbol}}",
           "signPermitSubtitle": "Sign a permit to allow the contract to spend your {{symbol}}",
@@ -102,7 +102,7 @@
         "gasPrice": "Gas price",
         "resetValues": "Reset values"
     },
-    
+
     "zeroPage": {
         "dashboardWelcomeBanner": {
             "fundWallet": "Fund your wallet",

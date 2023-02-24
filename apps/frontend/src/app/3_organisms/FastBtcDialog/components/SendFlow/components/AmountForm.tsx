@@ -38,9 +38,9 @@ export const AmountForm: React.FC = () => {
   const { checkMaintenance, States } = useMaintenance();
   const fastBtcLocked = checkMaintenance(States.FASTBTC);
 
-  const { value: maxAmountWei } = useMaxAssetBalance(SupportedTokens.rbtc);
+  const { weiBalance: maxAmountWei } = useMaxAssetBalance(SupportedTokens.rbtc);
 
-  const { value: rbtcWeiBalance } = useAssetBalance(
+  const { weiBalance: rbtcWeiBalance } = useAssetBalance(
     SupportedTokens.rbtc,
     defaultChainId,
   );
@@ -100,7 +100,7 @@ export const AmountForm: React.FC = () => {
           <button
             onClick={onMaximumAmountClick}
             className="text-xs font-medium underline whitespace-nowrap"
-            {...applyDataAttr('convert-to-max')}
+            {...applyDataAttr('funding-send-amount-max')}
           >
             ({t(translations.common.max)}{' '}
             <AmountRenderer
@@ -131,6 +131,7 @@ export const AmountForm: React.FC = () => {
           disabled={invalid || fastBtcLocked}
           style={ButtonStyle.secondary}
           className="mt-10 w-full"
+          dataAttribute="funding-send-amount-confirm"
         />
 
         {fastBtcLocked && (

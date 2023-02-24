@@ -14,8 +14,6 @@ import {
   Table,
   Tooltip,
   TooltipTrigger,
-  TransactionId,
-  applyDataAttr,
   ErrorBadge,
   ErrorLevel,
 } from '@sovryn/ui';
@@ -23,6 +21,7 @@ import {
 import { chains, defaultChainId } from '../../../config/chains';
 
 import { ExportCSV } from '../../2_molecules/ExportCSV/ExportCSV';
+import { TxIdWithNotification } from '../../2_molecules/TxIdWithNotification/TransactionIdWithNotification';
 import { useNotificationContext } from '../../../contexts/NotificationContext';
 import { useAccount } from '../../../hooks/useAccount';
 import { useBlockNumber } from '../../../hooks/useBlockNumber';
@@ -47,7 +46,6 @@ const pageSize = DEFAULT_HISTORY_FRAME_PAGE_SIZE;
 export const RedemptionsHistoryFrame: FC = () => {
   const { account } = useAccount();
   const { addNotification } = useNotificationContext();
-
   const { value: block } = useBlockNumber();
 
   const [page, setPage] = useState(0);
@@ -97,7 +95,7 @@ export const RedemptionsHistoryFrame: FC = () => {
             trigger={TooltipTrigger.click}
             className="cursor-pointer uppercase"
             tooltipClassName="uppercase"
-            {...applyDataAttr('redemption-history-zusd-redeemed')}
+            dataAttribute="redemption-history-zusd-redeemed"
           >
             <span>
               {formatValue(Number(redemption.tokensActuallyRedeemed), 2)}{' '}
@@ -125,7 +123,7 @@ export const RedemptionsHistoryFrame: FC = () => {
             trigger={TooltipTrigger.click}
             className="cursor-pointer uppercase"
             tooltipClassName="uppercase"
-            {...applyDataAttr('redemption-history-rbtc-received')}
+            dataAttribute="redemption-history-rbtc-received"
           >
             <span>
               {formatValue(Number(redemption.collateralRedeemed), 6)} {Bitcoin}
@@ -152,7 +150,7 @@ export const RedemptionsHistoryFrame: FC = () => {
             trigger={TooltipTrigger.click}
             className="cursor-pointer uppercase"
             tooltipClassName="uppercase"
-            {...applyDataAttr('redemption-history-fee')}
+            dataAttribute="redemption-history-fee"
           >
             <span>
               {formatValue(Number(redemption.fee), 6)} {Bitcoin}
@@ -170,7 +168,7 @@ export const RedemptionsHistoryFrame: FC = () => {
     () => [
       {
         id: 'sequenceNumber',
-        title: t(translations.redemptionsHistory.table.timestamp),
+        title: t(translations.common.tables.columnTitles.timestamp),
         cellRenderer: (item: Redemption) =>
           dateFormat(item.transaction.timestamp),
         sortable: true,
@@ -192,12 +190,12 @@ export const RedemptionsHistoryFrame: FC = () => {
       },
       {
         id: 'transactionID',
-        title: t(translations.redemptionsHistory.table.transactionID),
+        title: t(translations.common.tables.columnTitles.transactionID),
         cellRenderer: (item: Redemption) => (
-          <TransactionId
+          <TxIdWithNotification
             href={`${chain?.blockExplorerUrl}/tx/${item.transaction.id}`}
             value={item.transaction.id}
-            {...applyDataAttr('redemption-history-address-id')}
+            dataAttribute="redemption-history-address-id"
           />
         ),
       },
@@ -236,7 +234,7 @@ export const RedemptionsHistoryFrame: FC = () => {
     if (!redemptions || !redemptions.length) {
       addNotification({
         type: NotificationType.warning,
-        title: t(translations.redemptionsHistory.actions.noDataToExport),
+        title: t(translations.common.tables.actions.noDataToExport),
         content: '',
         dismissible: true,
         id: nanoid(),
@@ -284,7 +282,7 @@ export const RedemptionsHistoryFrame: FC = () => {
           isLoading={loading}
           className="bg-gray-80 text-gray-10 lg:px-6 lg:py-4"
           noData={t(translations.common.tables.noData)}
-          {...applyDataAttr('redemption-history-table')}
+          dataAttribute="redemption-history-table"
         />
         <Pagination
           page={page}
@@ -292,7 +290,7 @@ export const RedemptionsHistoryFrame: FC = () => {
           onChange={onPageChange}
           itemsPerPage={pageSize}
           isNextButtonDisabled={isNextButtonDisabled}
-          {...applyDataAttr('redemption-history-pagination')}
+          dataAttribute="redemption-history-pagination"
         />
       </div>
     </>

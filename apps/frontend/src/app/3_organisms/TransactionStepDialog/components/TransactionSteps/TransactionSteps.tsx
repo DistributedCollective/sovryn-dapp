@@ -1,5 +1,6 @@
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 
+import { signERC2612Permit } from 'eth-permit';
 import { ethers } from 'ethers';
 import { parseUnits } from 'ethers/lib/utils';
 import { t } from 'i18next';
@@ -18,6 +19,7 @@ import {
 } from '../../TransactionStepDialog.types';
 import {
   isMessageSignatureRequest,
+  isPermitRequest,
   isTransactionRequest,
   isTypedDataRequest,
 } from '../../helpers';
@@ -205,6 +207,27 @@ export const TransactionSteps: FC<TransactionStepsProps> = ({
           });
 
           handleUpdates();
+        } else if (isPermitRequest(request)) {
+          const response = await signERC2612Permit(
+            request.signer,
+            request.token,
+            request.owner,
+            request.spender,
+            request.value,
+            request.deadline,
+            request.nonce,
+          );
+
+          transactions[i].onChangeStatus?.(StatusType.success);
+          transactions[i].onComplete?.(response);
+
+          updateReceipt(i, {
+            status: TransactionReceiptStatus.success,
+            request,
+            response,
+          });
+
+          handleUpdates();
         } else {
           // unknown type
           transactions[i].onChangeStatus?.(StatusType.error);
@@ -289,15 +312,17 @@ export const TransactionSteps: FC<TransactionStepsProps> = ({
       {!isLoading && transactions.length > step && (
         <Button
           className="w-full mt-7"
-          text={error ? 'Retry' : 'Confirm'}
+          text={t(translations.common.buttons[error ? 'retry' : 'confirm'])}
           onClick={submit}
+          dataAttribute={`tx-dialog-${error ? 'retry' : 'confirm'}`}
         />
       )}
       {onClose && transactions.length === step && (
         <Button
-          text={t(translations.common.done)}
+          text={t(translations.common.buttons.done)}
           onClick={onClose}
           className="w-full mt-7"
+          dataAttribute="tx-dialog-done"
         ></Button>
       )}
     </div>

@@ -3,13 +3,7 @@ import React, { FC, useCallback, useState } from 'react';
 import i18next from 'i18next';
 import { reactLocalStorage } from 'reactjs-localstorage';
 
-import {
-  Menu,
-  MenuItem,
-  Dropdown,
-  DropdownSize,
-  applyDataAttr,
-} from '@sovryn/ui';
+import { Menu, MenuItem, Dropdown, DropdownSize } from '@sovryn/ui';
 
 import { languages, languageLocalStorageKey } from '../../../locales/i18n';
 import styles from './LanguageSelector.module.css';
@@ -40,7 +34,7 @@ export const LanguageSelector: FC<LanguageSelectorProps> = ({
     <Dropdown
       text={currentLang.toUpperCase()}
       className={className}
-      {...applyDataAttr(dataAttribute)}
+      dataAttribute={dataAttribute}
       size={DropdownSize.small}
       closeOnClick
     >

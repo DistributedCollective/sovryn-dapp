@@ -1,4 +1,4 @@
-import { ChartDataStructure } from './types';
+import { TroveData } from './types';
 
 export const chartConfig = {
   defaultFont: 'Roboto',
@@ -24,19 +24,21 @@ export const chartConfig = {
 
 export const calculateCollateralRatio = (
   collateral: number,
-  debt: string,
+  debt: number,
   price: string,
-) => ((collateral * Number(price)) / Number(debt)) * 100;
+) => ((collateral * Number(price)) / debt) * 100;
 
-export const sortData = (data: ChartDataStructure) =>
+export const sortData = (data: TroveData[]) =>
   data.sort((a, b) => a.collateralRatio - b.collateralRatio);
 
 export const calculateRedemptionBuffer = (
   debt: number,
   collateral: number,
   collateralRatio: number,
+  price: string,
 ) => {
   const collateralRatioValue = (collateralRatio + 0.01) / 100; //user’s CR + 0.01%
-  const minimumLOCRedemption = debt - collateral / collateralRatioValue;
+  const minimumLOCRedemption =
+    debt - (collateral * Number(price)) / collateralRatioValue;
   return minimumLOCRedemption;
 };

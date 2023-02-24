@@ -5,7 +5,6 @@ import { nanoid } from 'nanoid';
 
 import { SupportedTokens } from '@sovryn/contracts';
 import {
-  applyDataAttr,
   ErrorBadge,
   ErrorLevel,
   NotificationType,
@@ -15,7 +14,6 @@ import {
   Paragraph,
   ParagraphSize,
   Table,
-  TransactionId,
 } from '@sovryn/ui';
 
 import { chains, defaultChainId } from '../../../config/chains';
@@ -23,6 +21,7 @@ import { chains, defaultChainId } from '../../../config/chains';
 import { AmountRenderer } from '../../2_molecules/AmountRenderer/AmountRenderer';
 import { ExportCSV } from '../../2_molecules/ExportCSV/ExportCSV';
 import { TransactionTypeRenderer } from '../../2_molecules/TransactionTypeRenderer/TransactionTypeRenderer';
+import { TxIdWithNotification } from '../../2_molecules/TxIdWithNotification/TransactionIdWithNotification';
 import { useNotificationContext } from '../../../contexts/NotificationContext';
 import { useAccount } from '../../../hooks/useAccount';
 import { useMaintenance } from '../../../hooks/useMaintenance';
@@ -87,21 +86,21 @@ export const RewardHistory: FC = () => {
     () => [
       {
         id: 'sequenceNumber',
-        title: t(translations.rewardHistoryTable.table.timestamp),
+        title: t(translations.common.tables.columnTitles.timestamp),
         cellRenderer: (tx: StabilityDepositChange) =>
           dateFormat(tx.transaction.timestamp),
         sortable: true,
       },
       {
         id: 'stabilityDepositOperation',
-        title: t(translations.rewardHistoryTable.table.transactionType),
+        title: t(translations.common.tables.columnTitles.transactionType),
         cellRenderer: (tx: StabilityDepositChange) => (
           <TransactionTypeRenderer type={tx.stabilityDepositOperation} />
         ),
       },
       {
         id: 'collateralGain',
-        title: t(translations.rewardHistoryTable.table.rewardChange),
+        title: t(translations.rewardHistory.table.rewardChange),
         cellRenderer: tx => (
           <AmountRenderer
             value={tx.collateralGain || 0}
@@ -113,9 +112,9 @@ export const RewardHistory: FC = () => {
       },
       {
         id: 'transactionID',
-        title: t(translations.rewardHistoryTable.table.transactionID),
+        title: t(translations.common.tables.columnTitles.transactionID),
         cellRenderer: (tx: StabilityDepositChange) => (
-          <TransactionId
+          <TxIdWithNotification
             href={`${chain?.blockExplorerUrl}/tx/${tx.transaction.id}`}
             value={tx.transaction.id}
             dataAttribute="history-reward-address-id"
@@ -160,7 +159,7 @@ export const RewardHistory: FC = () => {
     if (!list || !list.length) {
       addNotification({
         type: NotificationType.warning,
-        title: t(translations.rewardHistoryTable.actions.noDataToExport),
+        title: t(translations.common.tables.actions.noDataToExport),
         content: '',
         dismissible: true,
         id: nanoid(),
@@ -207,7 +206,7 @@ export const RewardHistory: FC = () => {
           isLoading={loading}
           className="bg-gray-80 text-gray-10 lg:px-6 lg:py-4"
           noData={t(translations.common.tables.noData)}
-          {...applyDataAttr('reward-history-table')}
+          dataAttribute="reward-history-table"
         />
         <Pagination
           page={page}
@@ -215,7 +214,7 @@ export const RewardHistory: FC = () => {
           onChange={onPageChange}
           itemsPerPage={pageSize}
           isNextButtonDisabled={isNextButtonDisabled}
-          {...applyDataAttr('reward-history-pagination')}
+          dataAttribute="reward-history-pagination"
         />
       </div>
     </>

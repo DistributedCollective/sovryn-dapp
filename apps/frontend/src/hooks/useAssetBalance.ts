@@ -8,15 +8,23 @@ import { ChainId, getProvider } from '@sovryn/ethers-provider';
 
 import {
   CacheCallOptions,
-  CacheCallResponse,
   idHash,
   observeCall,
   startCall,
 } from '../store/rxjs/provider-cache';
 import { getRskChainId } from '../utils/chain';
+import { fromWei } from '../utils/math';
 import { useBlockNumber } from './useBlockNumber';
 import { useIsMounted } from './useIsMounted';
 import { useWalletConnect } from './useWalletConnect';
+
+export type AssetBalanceResponse = {
+  balance: string;
+  weiBalance: string;
+  decimalPrecision?: number;
+  loading: boolean;
+  error: Error | null;
+};
 
 export const useAssetBalance = (
   asset: SupportedTokens,
@@ -24,7 +32,7 @@ export const useAssetBalance = (
   address: string | null = null,
   walletIndex: number = 0,
   options?: Partial<CacheCallOptions>,
-): CacheCallResponse<string> => {
+): AssetBalanceResponse => {
   const { value: block } = useBlockNumber(chainId);
   const { wallets } = useWalletConnect();
   const isMounted = useIsMounted();
@@ -34,8 +42,9 @@ export const useAssetBalance = (
     [address, walletIndex, wallets],
   );
 
-  const [state, setState] = useState<CacheCallResponse<string>>({
-    value: '0',
+  const [state, setState] = useState<AssetBalanceResponse>({
+    balance: '0',
+    weiBalance: '0',
     loading: false,
     error: null,
   });
@@ -58,7 +67,17 @@ export const useAssetBalance = (
         account,
       ]);
 
-      sub = observeCall(hashedArgs).subscribe(e => setState(e.result));
+      sub = observeCall(hashedArgs).subscribe(e =>
+        setState({
+          ...e.result,
+          weiBalance: e.result.value,
+          balance: fromWei(
+            e.result.value === null ? 0 : e.result.value,
+            tokenDetails.decimalPrecision,
+          ),
+          decimalPrecision: tokenDetails.decimalPrecision,
+        }),
+      );
 
       const callback =
         tokenDetails.address === constants.AddressZero
@@ -81,7 +100,15 @@ export const useAssetBalance = (
       });
     };
 
-    runAsync().catch(e => setState({ value: '0', loading: false, error: e }));
+    runAsync().catch(e =>
+      setState(prev => ({
+        ...prev,
+        weiBalance: '0',
+        balance: '0',
+        loading: false,
+        error: e,
+      })),
+    );
 
     return () => {
       if (sub) {
@@ -91,7 +118,10 @@ export const useAssetBalance = (
   }, [account, asset, chainId, isMounted, options, block]);
 
   return useMemo(
-    () => ({ ...state, value: state.value === null ? '0' : state.value }),
+    () => ({
+      ...state,
+      weiBalance: state.weiBalance === null ? '0' : state.weiBalance,
+    }),
     [state],
   );
 };

@@ -50,7 +50,9 @@ export const OpenCreditLine: FC<OpenCreditLineProps> = ({
     [collateralAmount],
   );
 
-  const { value: maxRbtcWeiBalance } = useMaxAssetBalance(SupportedTokens.rbtc);
+  const { weiBalance: maxRbtcWeiBalance } = useMaxAssetBalance(
+    SupportedTokens.rbtc,
+  );
 
   const originationFee = useMemo(
     () => getOriginationFeeAmount(debtSize),
@@ -179,24 +181,18 @@ export const OpenCreditLine: FC<OpenCreditLineProps> = ({
     }
 
     if (toWei(collateralSize).lt(toWei(minCollateralAmount))) {
-      return (
-        '222' +
-        t(translations.zeroPage.loc.errors.collateralTooLow, {
-          value: `${formatValue(minCollateralAmount, 4)} ${Bitcoin}`,
-        })
-      );
+      return t(translations.zeroPage.loc.errors.collateralTooLow, {
+        value: `${formatValue(minCollateralAmount, 4)} ${Bitcoin}`,
+      });
     }
 
     if (toWei(collateralAmount).gt(maxRbtcWeiBalance)) {
       const diff = Number(
         fromWei(toWei(collateralAmount || 0).sub(maxRbtcWeiBalance)),
       );
-      return (
-        'ddd' +
-        t(translations.zeroPage.loc.errors.balanceTooLow, {
-          value: `${formatValue(diff, 4)} ${Bitcoin}`,
-        })
-      );
+      return t(translations.zeroPage.loc.errors.balanceTooLow, {
+        value: `${formatValue(diff, 4)} ${Bitcoin}`,
+      });
     }
 
     return undefined;

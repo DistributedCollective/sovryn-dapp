@@ -14,8 +14,6 @@ import {
   Table,
   Tooltip,
   TooltipTrigger,
-  TransactionId,
-  applyDataAttr,
   ErrorBadge,
   ErrorLevel,
 } from '@sovryn/ui';
@@ -26,6 +24,7 @@ import { ExportCSV } from '../../2_molecules/ExportCSV/ExportCSV';
 import { TableFilter } from '../../2_molecules/TableFilter/TableFilter';
 import { Filter } from '../../2_molecules/TableFilter/TableFilter.types';
 import { TransactionTypeRenderer } from '../../2_molecules/TransactionTypeRenderer/TransactionTypeRenderer';
+import { TxIdWithNotification } from '../../2_molecules/TxIdWithNotification/TransactionIdWithNotification';
 import { useNotificationContext } from '../../../contexts/NotificationContext';
 import { useAccount } from '../../../hooks/useAccount';
 import { useBlockNumber } from '../../../hooks/useBlockNumber';
@@ -53,7 +52,6 @@ export const StabilityPoolHistoryFrame: FC = () => {
   const { account } = useAccount();
   const { addNotification } = useNotificationContext();
   const [filters, setFilters] = useState<StabilityDepositChange_Filter>({});
-
   const { value: block } = useBlockNumber();
 
   const [page, setPage] = useState(0);
@@ -136,7 +134,7 @@ export const StabilityPoolHistoryFrame: FC = () => {
             trigger={TooltipTrigger.click}
             className="cursor-pointer uppercase"
             tooltipClassName="uppercase"
-            {...applyDataAttr('stability-pool-history-balance-change')}
+            dataAttribute="stability-pool-history-balance-change"
           >
             <span>
               {formatValue(Number(balance), 2)} {SupportedTokens.zusd}
@@ -163,7 +161,7 @@ export const StabilityPoolHistoryFrame: FC = () => {
             trigger={TooltipTrigger.click}
             className="cursor-pointer uppercase"
             tooltipClassName="uppercase"
-            {...applyDataAttr('stability-pool-history-new-balance')}
+            dataAttribute="stability-pool-history-new-balance"
           >
             <span>
               {formatValue(Number(stabilityDeposit.depositedAmountAfter), 2)}{' '}
@@ -200,14 +198,14 @@ export const StabilityPoolHistoryFrame: FC = () => {
     () => [
       {
         id: 'sequenceNumber',
-        title: t(translations.stabilityPoolHistory.table.timestamp),
+        title: t(translations.common.tables.columnTitles.timestamp),
         cellRenderer: (row: StabilityDepositChange) =>
           dateFormat(row.transaction.timestamp),
         sortable: true,
       },
       {
         id: 'transactionType',
-        title: t(translations.stabilityPoolHistory.table.transactionType),
+        title: t(translations.common.tables.columnTitles.transactionType),
         cellRenderer: (row: StabilityDepositChange) => (
           <TransactionTypeRenderer type={row.stabilityDepositOperation} />
         ),
@@ -231,12 +229,12 @@ export const StabilityPoolHistoryFrame: FC = () => {
       },
       {
         id: 'transactionID',
-        title: t(translations.stabilityPoolHistory.table.transactionID),
+        title: t(translations.common.tables.columnTitles.transactionID),
         cellRenderer: (row: StabilityDepositChange) => (
-          <TransactionId
+          <TxIdWithNotification
             href={`${chain?.blockExplorerUrl}/tx/${row.transaction.id}`}
             value={row.transaction.id}
-            {...applyDataAttr('stability-pool-history-address-id')}
+            dataAttribute="stability-pool-history-address-id"
           />
         ),
       },
@@ -282,7 +280,7 @@ export const StabilityPoolHistoryFrame: FC = () => {
     if (!list || !list.length) {
       addNotification({
         type: NotificationType.warning,
-        title: t(translations.stabilityPoolHistory.actions.noDataToExport),
+        title: t(translations.common.tables.actions.noDataToExport),
         content: '',
         dismissible: true,
         id: nanoid(),
@@ -332,7 +330,7 @@ export const StabilityPoolHistoryFrame: FC = () => {
           isLoading={loading}
           className="bg-gray-80 text-gray-10 lg:px-6 lg:py-4"
           noData={noDataLabel}
-          {...applyDataAttr('redemption-history-table')}
+          dataAttribute="redemption-history-table"
         />
         <Pagination
           page={page}
@@ -340,7 +338,7 @@ export const StabilityPoolHistoryFrame: FC = () => {
           onChange={onPageChange}
           itemsPerPage={pageSize}
           isNextButtonDisabled={isNextButtonDisabled}
-          {...applyDataAttr('redemption-history-pagination')}
+          dataAttribute="redemption-history-pagination"
         />
       </div>
     </>

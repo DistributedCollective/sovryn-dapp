@@ -134,13 +134,13 @@ export const parseData = (item: BitcoinTransfer) => {
 export const columnsConfig = [
   {
     id: 'createdAtTimestamp',
-    title: t(translations.fundingHistory.table.timestamp),
+    title: t(translations.common.tables.columnTitles.timestamp),
     cellRenderer: (item: FundingHistoryType) => dateFormat(item.timestamp),
     sortable: true,
   },
   {
     id: 'transactionType',
-    title: t(translations.fundingHistory.table.transactionType),
+    title: t(translations.common.tables.columnTitles.transactionType),
     cellRenderer: transactionTypeRenderer,
   },
   {
@@ -160,7 +160,7 @@ export const columnsConfig = [
   },
   {
     id: 'txId',
-    title: t(translations.fundingHistory.table.txId),
+    title: t(translations.common.tables.columnTitles.transactionID),
     cellRenderer: renderTXID,
   },
 ];

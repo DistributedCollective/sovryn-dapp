@@ -3462,16 +3462,6 @@ export type GetCollSurplusChangesQuery = {
   }>;
 };
 
-export type GetLowestTrovesQueryVariables = Exact<{
-  first: Scalars['Int'];
-  userCollateralRatioKey?: InputMaybe<Scalars['BigDecimal']>;
-}>;
-
-export type GetLowestTrovesQuery = {
-  __typename?: 'Query';
-  troves: Array<{ __typename?: 'Trove'; collateral: string; debt: string }>;
-};
-
 export type GetRedemptionsQueryVariables = Exact<{
   skip: Scalars['Int'];
   pageSize: Scalars['Int'];
@@ -3543,6 +3533,17 @@ export type GetStabilityPoolQuery = {
   }>;
 };
 
+export type GetGlobalsEntityQueryVariables = Exact<{ [key: string]: never }>;
+
+export type GetGlobalsEntityQuery = {
+  __typename?: 'Query';
+  globals: Array<{
+    __typename?: 'Global';
+    rawTotalRedistributedDebt: string;
+    rawTotalRedistributedCollateral: string;
+  }>;
+};
+
 export type GetTroveQueryVariables = Exact<{
   user: Scalars['ID'];
   skip: Scalars['Int'];
@@ -3556,7 +3557,11 @@ export type GetTroveQuery = {
   __typename?: 'Query';
   trove?: {
     __typename?: 'Trove';
+    debt: string;
     id: string;
+    collateralRatioSortKey?: string | null;
+    collateral: string;
+    status: TroveStatus;
     changes: Array<{
       __typename?: 'TroveChange';
       collateralBefore: string;
@@ -3585,84 +3590,17 @@ export type GetTrovesQuery = {
   __typename?: 'Query';
   troves: Array<{
     __typename?: 'Trove';
-    changes: Array<{
-      __typename?: 'TroveChange';
-      id: string;
-      sequenceNumber: number;
-      transaction: {
-        __typename?: 'Transaction';
-        id: string;
-        sequenceNumber: number;
-      };
-      trove: {
-        __typename?: 'Trove';
-        id: string;
-        collateralRatioSortKey?: string | null;
-        collateral: string;
-        debt: string;
-        status: TroveStatus;
-      };
-    }>;
-  }>;
-};
-
-export type GetTrovesAboveQueryVariables = Exact<{
-  first: Scalars['Int'];
-  userCollateralRatioKey?: InputMaybe<Scalars['BigDecimal']>;
-}>;
-
-export type GetTrovesAboveQuery = {
-  __typename?: 'Query';
-  troves: Array<{
-    __typename?: 'Trove';
-    changes: Array<{
-      __typename?: 'TroveChange';
-      id: string;
-      sequenceNumber: number;
-      transaction: {
-        __typename?: 'Transaction';
-        id: string;
-        sequenceNumber: number;
-      };
-      trove: {
-        __typename?: 'Trove';
-        id: string;
-        collateralRatioSortKey?: string | null;
-        collateral: string;
-        debt: string;
-        status: TroveStatus;
-      };
-    }>;
-  }>;
-};
-
-export type GetTrovesBelowQueryVariables = Exact<{
-  first: Scalars['Int'];
-  userCollateralRatioKey?: InputMaybe<Scalars['BigDecimal']>;
-}>;
-
-export type GetTrovesBelowQuery = {
-  __typename?: 'Query';
-  troves: Array<{
-    __typename?: 'Trove';
-    changes: Array<{
-      __typename?: 'TroveChange';
-      id: string;
-      sequenceNumber: number;
-      transaction: {
-        __typename?: 'Transaction';
-        id: string;
-        sequenceNumber: number;
-      };
-      trove: {
-        __typename?: 'Trove';
-        id: string;
-        collateralRatioSortKey?: string | null;
-        collateral: string;
-        debt: string;
-        status: TroveStatus;
-      };
-    }>;
+    id: string;
+    collateral: string;
+    debt: string;
+    status: TroveStatus;
+    collateralRatioSortKey?: string | null;
+    collateralRatioSortKey_legacy?: string | null;
+    rawCollateral: string;
+    rawDebt: string;
+    rawSnapshotOfTotalRedistributedCollateral: string;
+    rawSnapshotOfTotalRedistributedDebt: string;
+    rawStake: string;
   }>;
 };
 
@@ -3674,6 +3612,17 @@ export type GetUserOpenTroveQuery = {
   __typename?: 'Query';
   trove?: {
     __typename?: 'Trove';
+    id: string;
+    collateral: string;
+    debt: string;
+    status: TroveStatus;
+    collateralRatioSortKey?: string | null;
+    collateralRatioSortKey_legacy?: string | null;
+    rawCollateral: string;
+    rawDebt: string;
+    rawSnapshotOfTotalRedistributedCollateral: string;
+    rawSnapshotOfTotalRedistributedDebt: string;
+    rawStake: string;
     changes: Array<{
       __typename?: 'TroveChange';
       id: string;
@@ -3777,71 +3726,6 @@ export type GetCollSurplusChangesLazyQueryHookResult = ReturnType<
 export type GetCollSurplusChangesQueryResult = Apollo.QueryResult<
   GetCollSurplusChangesQuery,
   GetCollSurplusChangesQueryVariables
->;
-export const GetLowestTrovesDocument = gql`
-  query getLowestTroves($first: Int!, $userCollateralRatioKey: BigDecimal) {
-    troves(
-      orderDirection: desc
-      orderBy: collateralRatioSortKey
-      first: $first
-      where: { collateralRatioSortKey_lt: $userCollateralRatioKey }
-    ) {
-      collateral
-      debt
-    }
-  }
-`;
-
-/**
- * __useGetLowestTrovesQuery__
- *
- * To run a query within a React component, call `useGetLowestTrovesQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetLowestTrovesQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGetLowestTrovesQuery({
- *   variables: {
- *      first: // value for 'first'
- *      userCollateralRatioKey: // value for 'userCollateralRatioKey'
- *   },
- * });
- */
-export function useGetLowestTrovesQuery(
-  baseOptions: Apollo.QueryHookOptions<
-    GetLowestTrovesQuery,
-    GetLowestTrovesQueryVariables
-  >,
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<GetLowestTrovesQuery, GetLowestTrovesQueryVariables>(
-    GetLowestTrovesDocument,
-    options,
-  );
-}
-export function useGetLowestTrovesLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    GetLowestTrovesQuery,
-    GetLowestTrovesQueryVariables
-  >,
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<
-    GetLowestTrovesQuery,
-    GetLowestTrovesQueryVariables
-  >(GetLowestTrovesDocument, options);
-}
-export type GetLowestTrovesQueryHookResult = ReturnType<
-  typeof useGetLowestTrovesQuery
->;
-export type GetLowestTrovesLazyQueryHookResult = ReturnType<
-  typeof useGetLowestTrovesLazyQuery
->;
-export type GetLowestTrovesQueryResult = Apollo.QueryResult<
-  GetLowestTrovesQuery,
-  GetLowestTrovesQueryVariables
 >;
 export const GetRedemptionsDocument = gql`
   query getRedemptions(
@@ -4093,6 +3977,64 @@ export type GetStabilityPoolQueryResult = Apollo.QueryResult<
   GetStabilityPoolQuery,
   GetStabilityPoolQueryVariables
 >;
+export const GetGlobalsEntityDocument = gql`
+  query getGlobalsEntity {
+    globals {
+      rawTotalRedistributedDebt
+      rawTotalRedistributedCollateral
+    }
+  }
+`;
+
+/**
+ * __useGetGlobalsEntityQuery__
+ *
+ * To run a query within a React component, call `useGetGlobalsEntityQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetGlobalsEntityQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetGlobalsEntityQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetGlobalsEntityQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    GetGlobalsEntityQuery,
+    GetGlobalsEntityQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<GetGlobalsEntityQuery, GetGlobalsEntityQueryVariables>(
+    GetGlobalsEntityDocument,
+    options,
+  );
+}
+export function useGetGlobalsEntityLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    GetGlobalsEntityQuery,
+    GetGlobalsEntityQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    GetGlobalsEntityQuery,
+    GetGlobalsEntityQueryVariables
+  >(GetGlobalsEntityDocument, options);
+}
+export type GetGlobalsEntityQueryHookResult = ReturnType<
+  typeof useGetGlobalsEntityQuery
+>;
+export type GetGlobalsEntityLazyQueryHookResult = ReturnType<
+  typeof useGetGlobalsEntityLazyQuery
+>;
+export type GetGlobalsEntityQueryResult = Apollo.QueryResult<
+  GetGlobalsEntityQuery,
+  GetGlobalsEntityQueryVariables
+>;
 export const GetTroveDocument = gql`
   query getTrove(
     $user: ID!
@@ -4103,7 +4045,11 @@ export const GetTroveDocument = gql`
     $filters: TroveChange_filter
   ) {
     trove(id: $user) {
+      debt
       id
+      collateralRatioSortKey
+      collateral
+      status
       changes(
         first: $pageSize
         skip: $skip
@@ -4184,30 +4130,22 @@ export type GetTroveQueryResult = Apollo.QueryResult<
 export const GetTrovesDocument = gql`
   query getTroves($first: Int!) {
     troves(
-      orderDirection: desc
-      orderBy: collateralRatioSortKey
       first: $first
       where: { status: open }
+      orderBy: collateralRatioSortKey_legacy
+      orderDirection: desc
     ) {
-      changes(
-        where: { troveOperation: openTrove }
-        orderBy: sequenceNumber
-        orderDirection: desc
-      ) {
-        id
-        sequenceNumber
-        transaction {
-          id
-          sequenceNumber
-        }
-        trove {
-          id
-          collateralRatioSortKey
-          collateral
-          debt
-          status
-        }
-      }
+      id
+      collateral
+      debt
+      status
+      collateralRatioSortKey
+      collateralRatioSortKey_legacy
+      rawCollateral
+      rawDebt
+      rawSnapshotOfTotalRedistributedCollateral
+      rawSnapshotOfTotalRedistributedDebt
+      rawStake
     }
   }
 `;
@@ -4257,179 +4195,20 @@ export type GetTrovesQueryResult = Apollo.QueryResult<
   GetTrovesQuery,
   GetTrovesQueryVariables
 >;
-export const GetTrovesAboveDocument = gql`
-  query getTrovesAbove($first: Int!, $userCollateralRatioKey: BigDecimal) {
-    troves(
-      orderDirection: desc
-      orderBy: collateralRatioSortKey
-      first: $first
-      where: {
-        status: open
-        collateralRatioSortKey_gt: $userCollateralRatioKey
-      }
-    ) {
-      changes(
-        where: { troveOperation: openTrove }
-        orderBy: sequenceNumber
-        orderDirection: desc
-      ) {
-        id
-        sequenceNumber
-        transaction {
-          id
-          sequenceNumber
-        }
-        trove {
-          id
-          collateralRatioSortKey
-          collateral
-          debt
-          status
-        }
-      }
-    }
-  }
-`;
-
-/**
- * __useGetTrovesAboveQuery__
- *
- * To run a query within a React component, call `useGetTrovesAboveQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetTrovesAboveQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGetTrovesAboveQuery({
- *   variables: {
- *      first: // value for 'first'
- *      userCollateralRatioKey: // value for 'userCollateralRatioKey'
- *   },
- * });
- */
-export function useGetTrovesAboveQuery(
-  baseOptions: Apollo.QueryHookOptions<
-    GetTrovesAboveQuery,
-    GetTrovesAboveQueryVariables
-  >,
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<GetTrovesAboveQuery, GetTrovesAboveQueryVariables>(
-    GetTrovesAboveDocument,
-    options,
-  );
-}
-export function useGetTrovesAboveLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    GetTrovesAboveQuery,
-    GetTrovesAboveQueryVariables
-  >,
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<GetTrovesAboveQuery, GetTrovesAboveQueryVariables>(
-    GetTrovesAboveDocument,
-    options,
-  );
-}
-export type GetTrovesAboveQueryHookResult = ReturnType<
-  typeof useGetTrovesAboveQuery
->;
-export type GetTrovesAboveLazyQueryHookResult = ReturnType<
-  typeof useGetTrovesAboveLazyQuery
->;
-export type GetTrovesAboveQueryResult = Apollo.QueryResult<
-  GetTrovesAboveQuery,
-  GetTrovesAboveQueryVariables
->;
-export const GetTrovesBelowDocument = gql`
-  query getTrovesBelow($first: Int!, $userCollateralRatioKey: BigDecimal) {
-    troves(
-      orderDirection: desc
-      orderBy: collateralRatioSortKey
-      first: $first
-      where: {
-        status: open
-        collateralRatioSortKey_lt: $userCollateralRatioKey
-      }
-    ) {
-      changes(
-        where: { troveOperation: openTrove }
-        orderBy: sequenceNumber
-        orderDirection: desc
-      ) {
-        id
-        sequenceNumber
-        transaction {
-          id
-          sequenceNumber
-        }
-        trove {
-          id
-          collateralRatioSortKey
-          collateral
-          debt
-          status
-        }
-      }
-    }
-  }
-`;
-
-/**
- * __useGetTrovesBelowQuery__
- *
- * To run a query within a React component, call `useGetTrovesBelowQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetTrovesBelowQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGetTrovesBelowQuery({
- *   variables: {
- *      first: // value for 'first'
- *      userCollateralRatioKey: // value for 'userCollateralRatioKey'
- *   },
- * });
- */
-export function useGetTrovesBelowQuery(
-  baseOptions: Apollo.QueryHookOptions<
-    GetTrovesBelowQuery,
-    GetTrovesBelowQueryVariables
-  >,
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<GetTrovesBelowQuery, GetTrovesBelowQueryVariables>(
-    GetTrovesBelowDocument,
-    options,
-  );
-}
-export function useGetTrovesBelowLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    GetTrovesBelowQuery,
-    GetTrovesBelowQueryVariables
-  >,
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<GetTrovesBelowQuery, GetTrovesBelowQueryVariables>(
-    GetTrovesBelowDocument,
-    options,
-  );
-}
-export type GetTrovesBelowQueryHookResult = ReturnType<
-  typeof useGetTrovesBelowQuery
->;
-export type GetTrovesBelowLazyQueryHookResult = ReturnType<
-  typeof useGetTrovesBelowLazyQuery
->;
-export type GetTrovesBelowQueryResult = Apollo.QueryResult<
-  GetTrovesBelowQuery,
-  GetTrovesBelowQueryVariables
->;
 export const GetUserOpenTroveDocument = gql`
   query getUserOpenTrove($user: ID!) {
     trove(id: $user) {
+      id
+      collateral
+      debt
+      status
+      collateralRatioSortKey
+      collateralRatioSortKey_legacy
+      rawCollateral
+      rawDebt
+      rawSnapshotOfTotalRedistributedCollateral
+      rawSnapshotOfTotalRedistributedDebt
+      rawStake
       changes(
         where: { troveOperation: openTrove }
         orderBy: sequenceNumber

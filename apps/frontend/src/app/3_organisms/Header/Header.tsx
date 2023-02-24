@@ -31,9 +31,9 @@ export const Header: FC = () => {
 
   const { pathname } = useLocation();
 
-  const { value } = useAssetBalance(SupportedTokens.rbtc);
+  const { balance } = useAssetBalance(SupportedTokens.rbtc);
 
-  const hasRbtcBalance = useMemo(() => Number(value) !== 0, [value]);
+  const hasRbtcBalance = useMemo(() => Number(balance) !== 0, [balance]);
 
   const enableFastBtc = useMemo(
     () => isMainnet() || (!isMainnet() && isTestnetFastBtcEnabled()),

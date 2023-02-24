@@ -19,6 +19,7 @@ export type TransactionIdProps = {
   hideTooltip?: boolean;
   dataAttribute?: string;
   href: string;
+  onCopyAddress?: () => void;
 };
 
 export const TransactionId: React.FC<TransactionIdProps> = ({
@@ -29,6 +30,7 @@ export const TransactionId: React.FC<TransactionIdProps> = ({
   dataAttribute,
   value,
   href,
+  onCopyAddress,
 }) => {
   const formattedValue = useMemo(() => {
     if (value?.length && startLength && endLength && !hideTooltip) {
@@ -39,9 +41,11 @@ export const TransactionId: React.FC<TransactionIdProps> = ({
 
   const copyAddress = useCallback(async () => {
     await navigator.clipboard.writeText(value);
-    alert('Address was copied to clipboard.');
-  }, [value]);
-
+    onCopyAddress?.();
+    if (!onCopyAddress) {
+      alert('Address was copied to clipboard.');
+    }
+  }, [onCopyAddress, value]);
   return hideTooltip ? (
     <Link
       className={classNames(styles.link, className)}

@@ -16,7 +16,6 @@ import {
   Table,
   Tooltip,
   TooltipTrigger,
-  TransactionId,
 } from '@sovryn/ui';
 
 import { chains, defaultChainId } from '../../../config/chains';
@@ -24,6 +23,7 @@ import { chains, defaultChainId } from '../../../config/chains';
 import { ExportCSV } from '../../2_molecules/ExportCSV/ExportCSV';
 import { TableFilter } from '../../2_molecules/TableFilter/TableFilter';
 import { Filter } from '../../2_molecules/TableFilter/TableFilter.types';
+import { TxIdWithNotification } from '../../2_molecules/TxIdWithNotification/TransactionIdWithNotification';
 import { useNotificationContext } from '../../../contexts/NotificationContext';
 import { useAccount } from '../../../hooks/useAccount';
 import { useBlockNumber } from '../../../hooks/useBlockNumber';
@@ -443,14 +443,14 @@ export const TransactionHistoryFrame: FC = () => {
     () => [
       {
         id: 'sequenceNumber',
-        title: t(translations.transactionHistory.table.timestamp),
+        title: t(translations.common.tables.columnTitles.timestamp),
         cellRenderer: (item: TroveChange) =>
           dateFormat(item.transaction.timestamp),
         sortable: true,
       },
       {
         id: 'transactionType',
-        title: t(translations.transactionHistory.table.transactionType),
+        title: t(translations.common.tables.columnTitles.transactionType),
         cellRenderer: (item: TroveChange) => getTroveType(item.troveOperation),
         filter: (
           <TableFilter
@@ -505,9 +505,9 @@ export const TransactionHistoryFrame: FC = () => {
       },
       {
         id: 'transactionID',
-        title: t(translations.transactionHistory.table.transactionID),
+        title: t(translations.common.tables.columnTitles.transactionID),
         cellRenderer: (item: TroveChange) => (
-          <TransactionId
+          <TxIdWithNotification
             href={`${chain?.blockExplorerUrl}/tx/${item.transaction.id}`}
             value={item.transaction.id}
             dataAttribute="history-address-id"
@@ -563,7 +563,7 @@ export const TransactionHistoryFrame: FC = () => {
     if (!troves || !troves.length || troves.length === 0) {
       addNotification({
         type: NotificationType.warning,
-        title: t(translations.transactionHistory.actions.noDataToExport),
+        title: t(translations.common.tables.actions.noDataToExport),
         content: '',
         dismissible: true,
         id: nanoid(),

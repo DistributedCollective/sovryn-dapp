@@ -112,7 +112,7 @@ export const FundingHistoryFrame: FC = () => {
     if (!funding || !funding.length) {
       addNotification({
         type: NotificationType.warning,
-        title: t(translations.fundingHistory.actions.noDataToExport),
+        title: t(translations.common.tables.actions.noDataToExport),
         content: '',
         dismissible: true,
         id: nanoid(),

@@ -2,9 +2,7 @@ import React from 'react';
 
 import { t } from 'i18next';
 
-import { Paragraph, ParagraphSize, TransactionId } from '@sovryn/ui';
-
-import { chains, defaultChainId } from '../../../config/chains';
+import { Paragraph, ParagraphSize } from '@sovryn/ui';
 
 import { masset } from '../../5_pages/ConvertPage/ConvertPage.types';
 import { translations } from '../../../locales/i18n';
@@ -14,6 +12,7 @@ import {
 } from '../../../utils/graphql/mynt/generated';
 import { dateFormat } from '../../../utils/helpers';
 import { AssetAmountCell } from './components/AssetAmountCell/AssetAmountCell';
+import { TransactionIdRenderer } from './components/TransactionIdRenderer/TransactionIdRenderer';
 
 const sentAmountRenderer = (item: Conversion) => {
   const isIncomingTransaction = item.type === ConversionType.Incoming; // bAsset -> mAsset
@@ -41,22 +40,10 @@ const receivedAmountRenderer = (item: Conversion) => {
   return <AssetAmountCell amount={amount} asset={asset!} />;
 };
 
-const transactionIdRenderer = (item: Conversion) => {
-  const chain = chains.find(chain => chain.id === defaultChainId);
-
-  return (
-    <TransactionId
-      href={`${chain?.blockExplorerUrl}/tx/${item.transaction.id}`}
-      value={item.transaction.id}
-      dataAttribute="conversion-history-address-id"
-    />
-  );
-};
-
 export const columnsConfig = [
   {
     id: 'timestamp',
-    title: t(translations.conversionsHistory.table.timestamp),
+    title: t(translations.common.tables.columnTitles.timestamp),
     cellRenderer: (item: Conversion) => (
       <>{dateFormat(item.transaction.timestamp)}</>
     ),
@@ -64,7 +51,7 @@ export const columnsConfig = [
   },
   {
     id: 'transactionType',
-    title: t(translations.conversionsHistory.table.transactionType),
+    title: t(translations.common.tables.columnTitles.transactionType),
     cellRenderer: () => <>{t(translations.conversionsHistory.type)}</>,
   },
   {
@@ -79,8 +66,8 @@ export const columnsConfig = [
   },
   {
     id: 'transactionId',
-    title: t(translations.conversionsHistory.table.txId),
-    cellRenderer: transactionIdRenderer,
+    title: t(translations.common.tables.columnTitles.transactionID),
+    cellRenderer: (item: Conversion) => <TransactionIdRenderer item={item} />,
   },
 ];
 

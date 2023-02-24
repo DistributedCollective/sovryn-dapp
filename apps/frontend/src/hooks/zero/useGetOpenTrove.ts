@@ -1,9 +1,12 @@
-import { ApolloClient, InMemoryCache, useQuery } from '@apollo/client';
+import { ApolloClient, InMemoryCache } from '@apollo/client';
 
 import { useEffect, useMemo, useState } from 'react';
 
 import { graphZeroUrl } from '../../utils/constants';
-import { GetUserOpenTroveDocument } from '../../utils/graphql/zero/generated';
+import {
+  TroveStatus,
+  useGetUserOpenTroveQuery,
+} from '../../utils/graphql/zero/generated';
 import { useWalletConnect } from '../useWalletConnect';
 
 const zeroClient = new ApolloClient({
@@ -23,13 +26,13 @@ export const useGetOpenTrove = () => {
     [account],
   );
 
-  const { loading, data } = useQuery(GetUserOpenTroveDocument, {
+  const { loading, data } = useGetUserOpenTroveQuery({
     variables: troveConfig,
     client: zeroClient,
   });
 
   useEffect(() => {
-    if (data && data.trove && !loading) {
+    if (data?.trove?.status === TroveStatus.Open && !loading) {
       setIsTroveOpenExists(!!data.trove);
     }
   }, [loading, data]);

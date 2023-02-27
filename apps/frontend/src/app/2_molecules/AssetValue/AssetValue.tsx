@@ -5,6 +5,7 @@ import classNames from 'classnames';
 
 import { Tooltip, TooltipTrigger } from '@sovryn/ui';
 
+import { fromWei } from '../../../utils/math';
 import { AssetRenderer } from '../AssetRenderer/AssetRenderer';
 import styles from './AssetValue.module.css';
 import { AssetDecimals, AssetValueMode, AssetValueProps } from './types';

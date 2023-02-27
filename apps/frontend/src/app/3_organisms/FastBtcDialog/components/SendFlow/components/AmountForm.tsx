@@ -1,6 +1,6 @@
 import React, { useCallback, useContext, useMemo, useState } from 'react';
 
-import { formatUnits } from 'ethers/lib/utils';
+import { parseUnits } from 'ethers/lib/utils';
 import { t } from 'i18next';
 
 import { SupportedTokens } from '@sovryn/contracts';
@@ -45,8 +45,6 @@ export const AmountForm: React.FC = () => {
     defaultChainId,
   );
 
-  const maxRbtcBalance = useMemo(() => fromWei(maxAmountWei), [maxAmountWei]);
-
   const [value, setValue] = useState(amount || '0');
 
   const invalid = useMemo(() => {
@@ -81,8 +79,9 @@ export const AmountForm: React.FC = () => {
   );
 
   const maxAmount = useMemo(() => {
-    return Math.min(Number(formatUnits(limits.max, 8)), Number(maxRbtcBalance));
-  }, [limits.max, maxRbtcBalance]);
+    const limit = parseUnits(limits.max.toString(), 10);
+    return fromWei(limit.gt(maxAmountWei) ? maxAmountWei : limit.toString());
+  }, [limits.max, maxAmountWei]);
 
   const maxExceed = useMemo(() => {
     if (value === '0') {

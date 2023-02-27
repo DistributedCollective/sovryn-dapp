@@ -43,6 +43,11 @@ export const router = createBrowserRouter([
         loader: zeroPageLoader,
       },
       {
+        path: '/borrow',
+        element: <Zero />,
+        loader: zeroPageLoader,
+      },
+      {
         path: '/earn',
         element: <EarnPage />,
         loader: earnPageLoader,

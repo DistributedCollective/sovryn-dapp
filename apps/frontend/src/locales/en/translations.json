@@ -104,6 +104,7 @@
     },
 
     "zeroPage": {
+        "title": "Borrow - Sovryn",
         "dashboardWelcomeBanner": {
             "fundWallet": "Fund your wallet",
             "OpenCredit": "Open line of credit"
@@ -265,6 +266,9 @@
     },
 
     "earnPage": {
+        "meta": {
+            "title": "Earn - Sovryn"
+        },
         "title": "Stability pool",
         "subtitle": "Earn BTC by providing liquidity for liquidations",
         "form": {
@@ -283,6 +287,9 @@
     },
 
     "convertPage": {
+        "meta": {
+            "title": "Convert - Sovryn"
+        },
         "title": "Convert",
         "subtitle": "Convert between assets",
         "form": {
@@ -378,6 +385,9 @@
     },
 
     "rewardPage": {
+        "meta": {
+            "title": "Rewards - Sovryn"
+        },
         "title": "Rewards",
         "subtitle": "Collect rewards earned",
         "stabilityPoolRewards": "Stability pool rewards",
@@ -395,6 +405,9 @@
     },
 
     "historyPage": {
+        "meta": {
+            "title": "History - Sovryn"
+        },
         "title": "My transaction history",
         "table": {
             "tabs": {

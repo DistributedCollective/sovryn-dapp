@@ -10,6 +10,7 @@ import React, {
 } from 'react';
 
 import { t } from 'i18next';
+import { Helmet } from 'react-helmet-async';
 import { Await, useLoaderData } from 'react-router-dom';
 
 import {
@@ -127,143 +128,151 @@ export const ZeroPage: FC = () => {
   );
 
   return (
-    <div className="px-0 container max-w-[100rem] md:mb-2 mt-4 mb-7">
-      <React.Suspense fallback={<p>Loading...</p>}>
-        <Await resolve={deferedData} errorElement={<p>Error loading stuff!</p>}>
-          {([price, fees]: [string, Fees]) => (
-            <>
-              {!showWelcomeBanner && !isLoading && (
-                <LOCStatus
-                  className="mb-6"
-                  collateral={collateral}
-                  debt={debt}
-                  cRatio={getRatio(price)}
-                  debtSymbol={DEBT_TOKEN.toUpperCase()}
-                  onAdjust={toggle}
-                  onClose={toggleClosePopup}
-                  withdrawalSurplus={Number(
-                    collateralSurplusBalance?.toString(),
-                  )}
-                  onWithdraw={claimCollateralSurplus}
-                />
-              )}
+    <>
+      <Helmet>
+        <title>{t(translations.zeroPage.title)}</title>
+      </Helmet>
+      <div className="px-0 container max-w-[100rem] md:mb-2 mt-4 mb-7">
+        <React.Suspense fallback={<p>Loading...</p>}>
+          <Await
+            resolve={deferedData}
+            errorElement={<p>Error loading stuff!</p>}
+          >
+            {([price, fees]: [string, Fees]) => (
+              <>
+                {!showWelcomeBanner && !isLoading && (
+                  <LOCStatus
+                    className="mb-6"
+                    collateral={collateral}
+                    debt={debt}
+                    cRatio={getRatio(price)}
+                    debtSymbol={DEBT_TOKEN.toUpperCase()}
+                    onAdjust={toggle}
+                    onClose={toggleClosePopup}
+                    withdrawalSurplus={Number(
+                      collateralSurplusBalance?.toString(),
+                    )}
+                    onWithdraw={claimCollateralSurplus}
+                  />
+                )}
 
-              {showWelcomeBanner && !isLoading && (
-                <DashboardWelcomeBanner
-                  openLOC={toggleStartedPopup}
-                  connectWallet={connectWallet}
-                  className="mb-10 md:mb-4"
-                />
-              )}
+                {showWelcomeBanner && !isLoading && (
+                  <DashboardWelcomeBanner
+                    openLOC={toggleStartedPopup}
+                    connectWallet={connectWallet}
+                    className="mb-10 md:mb-4"
+                  />
+                )}
 
-              <div className="flex-col-reverse lg:flex-row flex items-stretch md:p-4 md:bg-gray-90 rounded gap-9 md:gap-20">
-                <div className="md:min-w-[23rem] min-w-auto">
-                  <SystemStats />
-                </div>
-                <div className="md:hidden flex items-center w-full gap-3 mb-6">
-                  {collateralSurplusBalance?.gt(0) && (
-                    <Button
-                      text={t(translations.LOCStatus.withdraw)}
-                      style={ButtonStyle.primary}
-                      size={ButtonSize.large}
-                      onClick={claimCollateralSurplus}
-                      className="flex-1"
-                      dataAttribute="zero-loc-withdraw-surplus"
-                    />
-                  )}
-                  {hasLoc && (
-                    <>
+                <div className="flex-col-reverse lg:flex-row flex items-stretch md:p-4 md:bg-gray-90 rounded gap-9 md:gap-20">
+                  <div className="md:min-w-[23rem] min-w-auto">
+                    <SystemStats />
+                  </div>
+                  <div className="md:hidden flex items-center w-full gap-3 mb-6">
+                    {collateralSurplusBalance?.gt(0) && (
                       <Button
-                        text={t(translations.LOCStatus.adjust)}
+                        text={t(translations.LOCStatus.withdraw)}
                         style={ButtonStyle.primary}
                         size={ButtonSize.large}
-                        onClick={toggle}
+                        onClick={claimCollateralSurplus}
                         className="flex-1"
-                        dataAttribute="zero-adjust"
+                        dataAttribute="zero-loc-withdraw-surplus"
                       />
-                      <Button
-                        text={t(translations.LOCStatus.close)}
-                        style={ButtonStyle.secondary}
-                        size={ButtonSize.large}
-                        onClick={toggleClosePopup}
-                        className="flex-1"
-                        dataAttribute="zero-close"
-                      />
-                    </>
-                  )}
-                </div>
-                <div className="flex-1 flex flex-col">
-                  <Paragraph
-                    size={ParagraphSize.base}
-                    style={ParagraphStyle.normal}
-                    className="mb-3 md:mb-6"
-                  >
-                    {t(translations.chart.systemLinesCredit)}
-                  </Paragraph>
+                    )}
+                    {hasLoc && (
+                      <>
+                        <Button
+                          text={t(translations.LOCStatus.adjust)}
+                          style={ButtonStyle.primary}
+                          size={ButtonSize.large}
+                          onClick={toggle}
+                          className="flex-1"
+                          dataAttribute="zero-adjust"
+                        />
+                        <Button
+                          text={t(translations.LOCStatus.close)}
+                          style={ButtonStyle.secondary}
+                          size={ButtonSize.large}
+                          onClick={toggleClosePopup}
+                          className="flex-1"
+                          dataAttribute="zero-close"
+                        />
+                      </>
+                    )}
+                  </div>
+                  <div className="flex-1 flex flex-col">
+                    <Paragraph
+                      size={ParagraphSize.base}
+                      style={ParagraphStyle.normal}
+                      className="mb-3 md:mb-6"
+                    >
+                      {t(translations.chart.systemLinesCredit)}
+                    </Paragraph>
 
-                  <div className="h-80 md:flex-1 bg-gray-80 rounded pt-2 pr-2 flex items-center">
-                    <LOCChart
-                      isDefaultView={!showWelcomeBanner && !isLoading}
-                    />
+                    <div className="h-80 md:flex-1 bg-gray-80 rounded pt-2 pr-2 flex items-center">
+                      <LOCChart
+                        isDefaultView={!showWelcomeBanner && !isLoading}
+                      />
+                    </div>
                   </div>
                 </div>
-              </div>
 
-              <Dialog width={DialogSize.sm} isOpen={open} disableFocusTrap>
-                <DialogHeader
-                  title={
-                    !hasLoc
-                      ? t(translations.zeroPage.loc.open)
-                      : t(translations.zeroPage.loc.adjust)
-                  }
-                  onClose={toggle}
-                />
-                <DialogBody>
-                  {open && !hasLoc && (
-                    <OpenCreditLine
-                      onSubmit={handleTroveSubmit}
-                      rbtcPrice={Number(price)}
-                      borrowingRate={Number(fees?.borrowingRate() ?? 0)}
-                    />
-                  )}
-                  {open && hasLoc && (
-                    <AdjustCreditLine
-                      existingCollateral={String(collateral)}
-                      existingDebt={String(debt)}
-                      rbtcPrice={Number(price)}
-                      borrowingRate={Number(fees?.borrowingRate() ?? 0)}
-                      onSubmit={handleTroveSubmit}
-                    />
-                  )}
-                </DialogBody>
-              </Dialog>
-
-              <GettingStartedPopup
-                isOpen={openStartedPopup}
-                onConfirm={handleLOCPopup}
-              />
-
-              <Dialog
-                width={DialogSize.sm}
-                isOpen={openClosePopup}
-                disableFocusTrap
-              >
-                <DialogHeader
-                  title={t(translations.zeroPage.loc.close)}
-                  onClose={toggleClosePopup}
-                />
-                <DialogBody>
-                  <CloseCreditLine
-                    onSubmit={handleTroveClose}
-                    creditValue={String(debt - LIQUIDATION_RESERVE_AMOUNT)}
-                    collateralValue={String(collateral)}
+                <Dialog width={DialogSize.sm} isOpen={open} disableFocusTrap>
+                  <DialogHeader
+                    title={
+                      !hasLoc
+                        ? t(translations.zeroPage.loc.open)
+                        : t(translations.zeroPage.loc.adjust)
+                    }
+                    onClose={toggle}
                   />
-                </DialogBody>
-              </Dialog>
-            </>
-          )}
-        </Await>
-      </React.Suspense>
-    </div>
+                  <DialogBody>
+                    {open && !hasLoc && (
+                      <OpenCreditLine
+                        onSubmit={handleTroveSubmit}
+                        rbtcPrice={Number(price)}
+                        borrowingRate={Number(fees?.borrowingRate() ?? 0)}
+                      />
+                    )}
+                    {open && hasLoc && (
+                      <AdjustCreditLine
+                        existingCollateral={String(collateral)}
+                        existingDebt={String(debt)}
+                        rbtcPrice={Number(price)}
+                        borrowingRate={Number(fees?.borrowingRate() ?? 0)}
+                        onSubmit={handleTroveSubmit}
+                      />
+                    )}
+                  </DialogBody>
+                </Dialog>
+
+                <GettingStartedPopup
+                  isOpen={openStartedPopup}
+                  onConfirm={handleLOCPopup}
+                />
+
+                <Dialog
+                  width={DialogSize.sm}
+                  isOpen={openClosePopup}
+                  disableFocusTrap
+                >
+                  <DialogHeader
+                    title={t(translations.zeroPage.loc.close)}
+                    onClose={toggleClosePopup}
+                  />
+                  <DialogBody>
+                    <CloseCreditLine
+                      onSubmit={handleTroveClose}
+                      creditValue={String(debt - LIQUIDATION_RESERVE_AMOUNT)}
+                      collateralValue={String(collateral)}
+                    />
+                  </DialogBody>
+                </Dialog>
+              </>
+            )}
+          </Await>
+        </React.Suspense>
+      </div>
+    </>
   );
 };

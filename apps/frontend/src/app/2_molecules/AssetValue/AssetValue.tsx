@@ -43,7 +43,7 @@ export const AssetValue: React.FC<AssetValueProps> = ({
     }
 
     const numberValue =
-      typeof value === 'string' ? Number(fromWei(amount, unitName)) : value;
+      typeof value === 'string' ? Number(fromWei(value, 18)) : value;
 
     return [
       formatNumber(

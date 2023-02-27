@@ -102,6 +102,7 @@
         "gasPrice": "Gas price",
         "resetValues": "Reset values"
     },
+
     "zeroPage": {
         "meta": {
             "title": "Borrow - Sovryn"

@@ -130,7 +130,7 @@ export const ZeroPage: FC = () => {
   return (
     <>
       <Helmet>
-        <title>{t(translations.zeroPage.title)}</title>
+        <title>{t(translations.zeroPage.meta.title)}</title>
       </Helmet>
       <div className="px-0 container max-w-[100rem] md:mb-2 mt-4 mb-7">
         <React.Suspense fallback={<p>Loading...</p>}>

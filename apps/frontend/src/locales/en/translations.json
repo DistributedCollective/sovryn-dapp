@@ -102,9 +102,10 @@
         "gasPrice": "Gas price",
         "resetValues": "Reset values"
     },
-
     "zeroPage": {
-        "title": "Borrow - Sovryn",
+        "meta": {
+            "title": "Borrow - Sovryn"
+        },
         "dashboardWelcomeBanner": {
             "fundWallet": "Fund your wallet",
             "OpenCredit": "Open line of credit"

@@ -170,7 +170,7 @@ export const LOCChart: FC<LOCChartProps> = ({ isDefaultView = false }) => {
 
       setData(updatedTroves);
 
-      if (isDefaultView) {
+      if (!isDefaultView) {
         setDataToShow(updatedTroves.slice(0, trovesCountToShow - 1));
       }
     }

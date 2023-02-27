@@ -73,11 +73,6 @@ export const fromWeiFixed = (
   unitName: BigNumberish = DEFAULT_UNIT,
 ): string => Number(fromWei(value, unitName)).toFixed(decimals);
 
-export const numberFromWei = (
-  amount: any,
-  unitName: BigNumberish = DEFAULT_UNIT,
-) => Number(fromWei(amount, unitName));
-
 export const formatValue = (value: number, precision: number = 0) =>
   value.toLocaleString(navigator.language, {
     maximumFractionDigits: precision,

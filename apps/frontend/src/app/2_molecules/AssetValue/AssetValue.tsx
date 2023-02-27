@@ -5,7 +5,6 @@ import classNames from 'classnames';
 
 import { Tooltip, TooltipTrigger } from '@sovryn/ui';
 
-import { numberFromWei } from '../../../utils/math';
 import { AssetRenderer } from '../AssetRenderer/AssetRenderer';
 import styles from './AssetValue.module.css';
 import { AssetDecimals, AssetValueMode, AssetValueProps } from './types';
@@ -43,7 +42,7 @@ export const AssetValue: React.FC<AssetValueProps> = ({
     }
 
     const numberValue =
-      typeof value === 'string' ? numberFromWei(value) : value;
+      typeof value === 'string' ? Number(fromWei(amount, unitName)) : value;
 
     return [
       formatNumber(

@@ -203,13 +203,15 @@ export const LOCChart: FC<LOCChartProps> = ({ isDefaultView = false }) => {
       }
 
       if (index < centerIndex) {
-        //don't cutting an array, if the user trove is in the first 10 elements
+        // if the user trove is in the first N elements, show all N
         setDataToShow(data.slice(0, trovesCountToShow));
         setStartAxisXCount(0);
       } else {
-        //setting the start point for the chart axis X
+        // setting the start point for the chart axis X to first bar
         setStartAxisXCount(shiftTroves);
-        //cutting an array up to 21 elements, 10 from the left and 10 from the right, starting from user trove index
+
+        // slice the full trove array to get N bars, where N = trovesCountToShow
+        // (N-1)/2 to the left and (N-1)/2 to the right of the bar of user's trove
         const slicedData = data.slice(
           shiftTroves,
           shiftTroves + trovesCountToShow,

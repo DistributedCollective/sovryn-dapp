@@ -443,14 +443,14 @@ export const TransactionHistoryFrame: FC = () => {
     () => [
       {
         id: 'sequenceNumber',
-        title: t(translations.transactionHistory.table.timestamp),
+        title: t(translations.common.tables.columnTitles.timestamp),
         cellRenderer: (item: TroveChange) =>
           dateFormat(item.transaction.timestamp),
         sortable: true,
       },
       {
         id: 'transactionType',
-        title: t(translations.transactionHistory.table.transactionType),
+        title: t(translations.common.tables.columnTitles.transactionType),
         cellRenderer: (item: TroveChange) => getTroveType(item.troveOperation),
         filter: (
           <TableFilter
@@ -505,7 +505,7 @@ export const TransactionHistoryFrame: FC = () => {
       },
       {
         id: 'transactionID',
-        title: t(translations.transactionHistory.table.transactionID),
+        title: t(translations.common.tables.columnTitles.transactionID),
         cellRenderer: (item: TroveChange) => (
           <TxIdWithNotification
             href={`${chain?.blockExplorerUrl}/tx/${item.transaction.id}`}
@@ -563,7 +563,7 @@ export const TransactionHistoryFrame: FC = () => {
     if (!troves || !troves.length || troves.length === 0) {
       addNotification({
         type: NotificationType.warning,
-        title: t(translations.transactionHistory.actions.noDataToExport),
+        title: t(translations.common.tables.actions.noDataToExport),
         content: '',
         dismissible: true,
         id: nanoid(),

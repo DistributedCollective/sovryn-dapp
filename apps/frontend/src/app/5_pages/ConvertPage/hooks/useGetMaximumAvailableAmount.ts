@@ -45,14 +45,14 @@ export const useGetMaximumAvailableAmount = (
     });
   }, [isMounted]);
 
-  const { value: destinationTokenAggregatorWeiBalance } = useAssetBalance(
+  const { weiBalance: destinationTokenAggregatorWeiBalance } = useAssetBalance(
     destinationToken,
     defaultChainId,
     massetManagerAddress,
   );
 
   const destinationTokenAggregatorBalance = useMemo(
-    () => String(Number(fromWei(destinationTokenAggregatorWeiBalance))),
+    () => fromWei(destinationTokenAggregatorWeiBalance).toString(),
     [destinationTokenAggregatorWeiBalance],
   );
 

@@ -31,7 +31,6 @@ export const ExampleBalanceCall = () => {
           <Select value={token} options={options} onChange={setToken} />
         </FormGroup>
       </div>
-
       <div className="flex text-sm">
         Balance:{' '}
         <AssetValue

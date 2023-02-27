@@ -2,6 +2,7 @@ import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 
 import classNames from 'classnames';
 import { formatUnits, parseUnits } from 'ethers/lib/utils';
+import { t } from 'i18next';
 
 import {
   getTokenDetailsByAddress,
@@ -28,7 +29,8 @@ import {
 import { chains, defaultChainId } from '../../../../../config/chains';
 
 import { TxIdWithNotification } from '../../../../2_molecules/TxIdWithNotification/TransactionIdWithNotification';
-import { APPROVAL_FUNCTION } from '../../../../../utils/constants';
+import { translations } from '../../../../../locales/i18n';
+import { APPROVAL_FUNCTION, Bitcoin } from '../../../../../utils/constants';
 import { fromWei, toWei } from '../../../../../utils/math';
 import {
   Transaction,
@@ -120,14 +122,14 @@ export const TransactionStep: FC<TransactionStepProps> = ({
   const amountOptions = useMemo(
     () => [
       {
-        label: 'Custom amount',
+        label: t(translations.transactionStep.customAmount),
         name: 'settings-' + step,
         value: 'custom_amount',
         contentToShow: (
           <AmountInput
             className="mb-3 ml-8 w-64"
             disabled={!!config.unlimitedAmount}
-            label="Amount"
+            label={t(translations.common.amount)}
             min={minAmount}
             decimalPrecision={18}
             value={parsedAmount}
@@ -142,15 +144,13 @@ export const TransactionStep: FC<TransactionStepProps> = ({
             }
           />
         ),
-        helper:
-          'Limiting the amount of approved tokens as an additional security measure may result higher fees',
+        helper: t(translations.transactionStep.customAmountTooltip),
       },
       {
-        label: 'Unlimited amount',
+        label: t(translations.transactionStep.unlimitedAmount),
         name: 'settings-' + step,
         value: 'unlimited_amount',
-        helper:
-          'Limiting the amount of approved tokens as an additional security measure may result higher fees',
+        helper: t(translations.transactionStep.unlimitedAmountTooltip),
       },
     ],
     [
@@ -194,8 +194,8 @@ export const TransactionStep: FC<TransactionStepProps> = ({
       <div className="ml-10">
         {status === StatusType.error && (
           <Paragraph className="text-error-light">
-            Your transaction has failed. <br />
-            Please close or retry your transaction
+            <div>{t(translations.transactionStep.transactionFailedTitle)}</div>
+            {t(translations.transactionStep.transactionFailedSubtitle)}
           </Paragraph>
         )}
         {subtitle && status !== StatusType.error && (
@@ -207,7 +207,7 @@ export const TransactionStep: FC<TransactionStepProps> = ({
             <SimpleTable className="max-w-72 mt-3">
               {config.amount !== undefined && (
                 <SimpleTableRow
-                  label="Amount"
+                  label={t(translations.common.amount)}
                   value={`${
                     config.unlimitedAmount ? '∞' : parsedAmount
                   } ${token?.symbol?.toUpperCase()}`}
@@ -222,14 +222,14 @@ export const TransactionStep: FC<TransactionStepProps> = ({
               <SimpleTableRow
                 label={
                   <span className="flex items-center">
-                    Estimated gas fee
+                    {t(translations.transactionStep.estimatedGasFee)}
                     <HelperButton
                       className="ml-1.5"
-                      content="Estimated gas fee"
+                      content={t(translations.transactionStep.estimatedGasFee)}
                     />
                   </span>
                 }
-                value={estimatedGasFee + ' BTC'}
+                value={`${estimatedGasFee} ${Bitcoin}`}
                 valueClassName={classNames(
                   isLoading ? 'text-gray-30' : 'text-primary-10',
                   'whitespace-nowrap overflow-auto',
@@ -237,11 +237,11 @@ export const TransactionStep: FC<TransactionStepProps> = ({
               />
               {receipt.response && (
                 <SimpleTableRow
-                  label="TX ID"
+                  label={t(translations.common.txId)}
                   value={
                     <TxIdWithNotification
                       href={`${chain?.blockExplorerUrl}/tx/${receipt.response}`}
-                      value={receipt.response}
+                      value={receipt.response as string}
                     />
                   }
                 />
@@ -249,7 +249,7 @@ export const TransactionStep: FC<TransactionStepProps> = ({
             </SimpleTable>
             <Accordion
               className="mt-4 mb-3 text-xs"
-              label="Advanced Settings"
+              label={t(translations.transactionStep.advancedSettings)}
               open={advanced && !disabledSettings}
               onClick={() => setAdvanced(!advanced)}
               disabled={disabledSettings}
@@ -264,13 +264,13 @@ export const TransactionStep: FC<TransactionStepProps> = ({
                     defaultChecked={config.unlimitedAmount ? 1 : 0}
                   />
                   <Heading type={HeadingType.h3} className="mb-3">
-                    Gas Settings
+                    {t(translations.transactionStep.gasSettings)}
                   </Heading>
                 </>
               )}
               <div className="mt-2 mb-4 max-w-72">
                 <AmountInput
-                  label="Gas limit"
+                  label={t(translations.transactionStep.gasLimit)}
                   className="mb-4"
                   min={0}
                   value={config.gasLimit?.toString()}
@@ -283,7 +283,7 @@ export const TransactionStep: FC<TransactionStepProps> = ({
                   step="any"
                 />
                 <AmountInput
-                  label="Gas price"
+                  label={t(translations.transactionStep.gasPrice)}
                   unit="Gwei"
                   min={0}
                   value={config.gasPrice?.toString()}
@@ -299,7 +299,7 @@ export const TransactionStep: FC<TransactionStepProps> = ({
               <Button
                 style={ButtonStyle.ghost}
                 type={ButtonType.reset}
-                text="Reset values"
+                text={t(translations.transactionStep.resetValues)}
                 onClick={resetConfig}
                 dataAttribute="tx-dialog-settings-reset"
               />

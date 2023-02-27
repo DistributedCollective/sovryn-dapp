@@ -8,6 +8,7 @@ import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 
 import classNames from 'classnames';
 import { t } from 'i18next';
+import { Helmet } from 'react-helmet-async';
 import { useLoaderData } from 'react-router-dom';
 
 import { SupportedTokens } from '@sovryn/contracts';
@@ -113,7 +114,7 @@ const EarnPage: FC = () => {
   );
   const dllrLocked = checkMaintenance(States.ZERO_DLLR);
 
-  const { value: weiBalance } = useAssetBalance(token);
+  const { weiBalance } = useAssetBalance(token);
 
   const balance = useMemo(() => fromWei(weiBalance), [weiBalance]);
 
@@ -125,8 +126,8 @@ const EarnPage: FC = () => {
     [setAmount],
   );
 
-  const { value: zusdWeiBalance } = useAssetBalance(SupportedTokens.zusd);
-  const { value: dllrWeiBalance } = useAssetBalance(SupportedTokens.dllr);
+  const { weiBalance: zusdWeiBalance } = useAssetBalance(SupportedTokens.zusd);
+  const { weiBalance: dllrWeiBalance } = useAssetBalance(SupportedTokens.dllr);
 
   useEffect(() => {
     if (
@@ -162,7 +163,8 @@ const EarnPage: FC = () => {
   const onTransactionSuccess = useCallback(() => {
     getStabilityDeposit();
     getZUSDInStabilityPool();
-  }, [getStabilityDeposit, getZUSDInStabilityPool]);
+    setAmount('0');
+  }, [getStabilityDeposit, getZUSDInStabilityPool, setAmount]);
 
   const handleSubmit = useHandleStabilityDeposit(
     token,
@@ -265,116 +267,121 @@ const EarnPage: FC = () => {
   );
 
   return (
-    <div className="w-full flex flex-col items-center text-gray-10 mt-9 sm:mt-24">
-      <Heading className="text-base sm:text-2xl">
-        {t(pageTranslations.title)}
-      </Heading>
-      <Paragraph
-        size={ParagraphSize.base}
-        className="mt-2.5 sm:mt-4 sm:text-base"
-      >
-        {t(pageTranslations.subtitle)}
-      </Paragraph>
+    <>
+      <Helmet>
+        <title>{t(translations.earnPage.meta.title)}</title>
+      </Helmet>
+      <div className="w-full flex flex-col items-center text-gray-10 mt-9 sm:mt-24">
+        <Heading className="text-base sm:text-2xl">
+          {t(pageTranslations.title)}
+        </Heading>
+        <Paragraph
+          size={ParagraphSize.base}
+          className="mt-2.5 sm:mt-4 sm:text-base"
+        >
+          {t(pageTranslations.subtitle)}
+        </Paragraph>
 
-      <div className="mt-12 w-full p-0 sm:border sm:border-gray-50 sm:rounded sm:w-[28rem] sm:p-6 sm:bg-gray-90">
-        <div className="w-full flex flex-row justify-between items-center mb-4">
-          <Tabs
-            size={TabSize.small}
-            type={TabType.secondary}
-            items={actions}
-            onChange={setIndex}
-            index={index}
-            className={classNames({
-              invisible: BigNumber.from(toWei(poolBalance)).isZero(),
-            })}
-          />
-
-          <button
-            onClick={onMaximumAmountClick}
-            className="text-xs font-medium underline whitespace-nowrap"
-            {...applyDataAttr('earn-max-button')}
-          >
-            ({t(commonTranslations.max)}
-            <AmountRenderer
-              value={maximumAmount}
-              precision={4}
-              suffix={token.toUpperCase()}
+        <div className="mt-12 w-full p-0 sm:border sm:border-gray-50 sm:rounded sm:w-[28rem] sm:p-6 sm:bg-gray-90">
+          <div className="w-full flex flex-row justify-between items-center mb-4">
+            <Tabs
+              size={TabSize.small}
+              type={TabType.secondary}
+              items={actions}
+              onChange={setIndex}
+              index={index}
+              className={classNames({
+                invisible: BigNumber.from(toWei(poolBalance)).isZero(),
+              })}
             />
-            )
-          </button>
-        </div>
 
-        <div className="w-full flex flex-row justify-between items-center gap-3 mt-3.5">
-          <AmountInput
-            value={amountInput}
-            onChangeText={setAmount}
-            label={t(translations.common.amount)}
-            min={0}
-            max={maximumAmount}
-            disabled={!account}
-            invalid={!isValidAmount}
-            className="w-full flex-grow-0 flex-shrink"
-            dataAttribute="earn-amount-input"
-            placeholder="0"
-          />
+            <button
+              onClick={onMaximumAmountClick}
+              className="text-xs font-medium underline whitespace-nowrap"
+              {...applyDataAttr('earn-max-button')}
+            >
+              ({t(commonTranslations.max)}
+              <AmountRenderer
+                value={maximumAmount}
+                precision={4}
+                suffix={token.toUpperCase()}
+              />
+              )
+            </button>
+          </div>
 
-          <Select
-            value={token}
-            onChange={onTokenChange}
-            options={tokenOptions}
-            labelRenderer={() => getAssetRenderer(token)}
-            className="min-w-[6.7rem]"
-            dataAttribute="earn-token-select"
+          <div className="w-full flex flex-row justify-between items-center gap-3 mt-3.5">
+            <AmountInput
+              value={amountInput}
+              onChangeText={setAmount}
+              label={t(translations.common.amount)}
+              min={0}
+              max={maximumAmount}
+              disabled={!account}
+              invalid={!isValidAmount}
+              className="w-full flex-grow-0 flex-shrink"
+              dataAttribute="earn-amount-input"
+              placeholder="0"
+            />
+
+            <Select
+              value={token}
+              onChange={onTokenChange}
+              options={tokenOptions}
+              labelRenderer={() => getAssetRenderer(token)}
+              className="min-w-[6.7rem]"
+              dataAttribute="earn-token-select"
+            />
+          </div>
+          {!isValidAmount && (
+            <Paragraph className="text-error-light font-medium mt-2">
+              {t(pageTranslations.form.invalidAmountError)}
+            </Paragraph>
+          )}
+          <SimpleTable className="mt-3">
+            <SimpleTableRow
+              label={t(pageTranslations.currentPoolBalance)}
+              value={`${poolBalance} ${SupportedTokens.zusd.toUpperCase()}`}
+            />
+            <SimpleTableRow
+              label={t(pageTranslations.currentPoolShare)}
+              value={`${poolShare} %`}
+            />
+          </SimpleTable>
+          <SimpleTable className="mt-3">
+            <SimpleTableRow
+              label={t(pageTranslations.newPoolBalance)}
+              valueClassName={classNames('transition-colors', {
+                'text-primary-10': !isAmountZero,
+              })}
+              value={newPoolBalanceLabel}
+            />
+            <SimpleTableRow
+              label={t(pageTranslations.newPoolShare)}
+              valueClassName={classNames('transition-colors', {
+                'text-primary-10': !isAmountZero,
+              })}
+              value={newPoolShare}
+            />
+          </SimpleTable>
+          <Button
+            type={ButtonType.reset}
+            style={ButtonStyle.primary}
+            text={t(commonTranslations.buttons.confirm)}
+            className="w-full mt-8"
+            onClick={handleSubmit}
+            disabled={isSubmitDisabled}
+            dataAttribute="earn-submit"
           />
+          {isInMaintenance && (
+            <ErrorBadge
+              level={ErrorLevel.Warning}
+              message={t(translations.maintenanceMode.featureDisabled)}
+            />
+          )}
         </div>
-        {!isValidAmount && (
-          <Paragraph className="text-error-light font-medium mt-2">
-            {t(pageTranslations.form.invalidAmountError)}
-          </Paragraph>
-        )}
-        <SimpleTable className="mt-3">
-          <SimpleTableRow
-            label={t(pageTranslations.currentPoolBalance)}
-            value={`${poolBalance} ${SupportedTokens.zusd.toUpperCase()}`}
-          />
-          <SimpleTableRow
-            label={t(pageTranslations.currentPoolShare)}
-            value={`${poolShare} %`}
-          />
-        </SimpleTable>
-        <SimpleTable className="mt-3">
-          <SimpleTableRow
-            label={t(pageTranslations.newPoolBalance)}
-            valueClassName={classNames('transition-colors', {
-              'text-primary-10': !isAmountZero,
-            })}
-            value={newPoolBalanceLabel}
-          />
-          <SimpleTableRow
-            label={t(pageTranslations.newPoolShare)}
-            valueClassName={classNames('transition-colors', {
-              'text-primary-10': !isAmountZero,
-            })}
-            value={newPoolShare}
-          />
-        </SimpleTable>
-        <Button
-          type={ButtonType.reset}
-          style={ButtonStyle.primary}
-          text={t(commonTranslations.buttons.confirm)}
-          className="w-full mt-8"
-          onClick={handleSubmit}
-          disabled={isSubmitDisabled}
-          dataAttribute="earn-submit"
-        />
-        {isInMaintenance && (
-          <ErrorBadge
-            level={ErrorLevel.Warning}
-            message={t(translations.maintenanceMode.featureDisabled)}
-          />
-        )}
       </div>
-    </div>
+    </>
   );
 };
 

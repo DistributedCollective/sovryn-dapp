@@ -15,7 +15,7 @@ export const useGetConversionsHistory = (
 ) => {
   const config = useMemo(
     () => ({
-      user: account,
+      user: account?.toLowerCase(),
       skip: page * pageSize,
       pageSize,
       orderBy: orderOptions.orderBy as Conversion_OrderBy,

@@ -29,13 +29,14 @@ export type BitcoinTransfer = {
   __typename?: 'BitcoinTransfer';
   amountBTC: Scalars['BigDecimal'];
   bitcoinTxHash: Scalars['Bytes'];
-  btcAddress: Scalars['String'];
+  btcAddress?: Maybe<Scalars['String']>;
   createdAtBlockNumber: Scalars['Int'];
   createdAtTimestamp: Scalars['Int'];
   createdAtTx: Transaction;
+  direction: BitcoinTransferDirection;
   feeBTC: Scalars['BigDecimal'];
   id: Scalars['ID'];
-  nonce: Scalars['Int'];
+  nonce?: Maybe<Scalars['Int']>;
   status: BitcoinTransferStatus;
   totalAmountBTC: Scalars['BigDecimal'];
   updatedAtBlockNumber: Scalars['Int'];
@@ -114,6 +115,11 @@ export enum BitcoinTransferBatchSending_OrderBy {
   Timestamp = 'timestamp',
   Transaction = 'transaction',
   TransferBatchSize = 'transferBatchSize',
+}
+
+export enum BitcoinTransferDirection {
+  Incoming = 'INCOMING',
+  Outgoing = 'OUTGOING',
 }
 
 export enum BitcoinTransferStatus {
@@ -208,6 +214,10 @@ export type BitcoinTransfer_Filter = {
   createdAtTx_not_in?: InputMaybe<Array<Scalars['String']>>;
   createdAtTx_not_starts_with?: InputMaybe<Scalars['String']>;
   createdAtTx_starts_with?: InputMaybe<Scalars['String']>;
+  direction?: InputMaybe<BitcoinTransferDirection>;
+  direction_in?: InputMaybe<Array<BitcoinTransferDirection>>;
+  direction_not?: InputMaybe<BitcoinTransferDirection>;
+  direction_not_in?: InputMaybe<Array<BitcoinTransferDirection>>;
   feeBTC?: InputMaybe<Scalars['BigDecimal']>;
   feeBTC_gt?: InputMaybe<Scalars['BigDecimal']>;
   feeBTC_gte?: InputMaybe<Scalars['BigDecimal']>;
@@ -297,6 +307,7 @@ export enum BitcoinTransfer_OrderBy {
   CreatedAtBlockNumber = 'createdAtBlockNumber',
   CreatedAtTimestamp = 'createdAtTimestamp',
   CreatedAtTx = 'createdAtTx',
+  Direction = 'direction',
   FeeBtc = 'feeBTC',
   Id = 'id',
   Nonce = 'nonce',
@@ -4727,6 +4738,134 @@ export enum Network {
   Testnet = 'Testnet',
 }
 
+export type NewBitcoinTransferIncoming = {
+  __typename?: 'NewBitcoinTransferIncoming';
+  amountWei: Scalars['BigInt'];
+  blockNumber: Scalars['BigInt'];
+  blockTimestamp: Scalars['BigInt'];
+  btcTxHash: Scalars['Bytes'];
+  btcTxVout: Scalars['BigInt'];
+  emittedBy: Scalars['Bytes'];
+  feeWei: Scalars['BigInt'];
+  id: Scalars['ID'];
+  rskAddress: Scalars['Bytes'];
+  timestamp: Scalars['BigInt'];
+  transaction: Transaction;
+  transactionHash: Scalars['Bytes'];
+};
+
+export type NewBitcoinTransferIncoming_Filter = {
+  amountWei?: InputMaybe<Scalars['BigInt']>;
+  amountWei_gt?: InputMaybe<Scalars['BigInt']>;
+  amountWei_gte?: InputMaybe<Scalars['BigInt']>;
+  amountWei_in?: InputMaybe<Array<Scalars['BigInt']>>;
+  amountWei_lt?: InputMaybe<Scalars['BigInt']>;
+  amountWei_lte?: InputMaybe<Scalars['BigInt']>;
+  amountWei_not?: InputMaybe<Scalars['BigInt']>;
+  amountWei_not_in?: InputMaybe<Array<Scalars['BigInt']>>;
+  blockNumber?: InputMaybe<Scalars['BigInt']>;
+  blockNumber_gt?: InputMaybe<Scalars['BigInt']>;
+  blockNumber_gte?: InputMaybe<Scalars['BigInt']>;
+  blockNumber_in?: InputMaybe<Array<Scalars['BigInt']>>;
+  blockNumber_lt?: InputMaybe<Scalars['BigInt']>;
+  blockNumber_lte?: InputMaybe<Scalars['BigInt']>;
+  blockNumber_not?: InputMaybe<Scalars['BigInt']>;
+  blockNumber_not_in?: InputMaybe<Array<Scalars['BigInt']>>;
+  blockTimestamp?: InputMaybe<Scalars['BigInt']>;
+  blockTimestamp_gt?: InputMaybe<Scalars['BigInt']>;
+  blockTimestamp_gte?: InputMaybe<Scalars['BigInt']>;
+  blockTimestamp_in?: InputMaybe<Array<Scalars['BigInt']>>;
+  blockTimestamp_lt?: InputMaybe<Scalars['BigInt']>;
+  blockTimestamp_lte?: InputMaybe<Scalars['BigInt']>;
+  blockTimestamp_not?: InputMaybe<Scalars['BigInt']>;
+  blockTimestamp_not_in?: InputMaybe<Array<Scalars['BigInt']>>;
+  btcTxHash?: InputMaybe<Scalars['Bytes']>;
+  btcTxHash_contains?: InputMaybe<Scalars['Bytes']>;
+  btcTxHash_in?: InputMaybe<Array<Scalars['Bytes']>>;
+  btcTxHash_not?: InputMaybe<Scalars['Bytes']>;
+  btcTxHash_not_contains?: InputMaybe<Scalars['Bytes']>;
+  btcTxHash_not_in?: InputMaybe<Array<Scalars['Bytes']>>;
+  btcTxVout?: InputMaybe<Scalars['BigInt']>;
+  btcTxVout_gt?: InputMaybe<Scalars['BigInt']>;
+  btcTxVout_gte?: InputMaybe<Scalars['BigInt']>;
+  btcTxVout_in?: InputMaybe<Array<Scalars['BigInt']>>;
+  btcTxVout_lt?: InputMaybe<Scalars['BigInt']>;
+  btcTxVout_lte?: InputMaybe<Scalars['BigInt']>;
+  btcTxVout_not?: InputMaybe<Scalars['BigInt']>;
+  btcTxVout_not_in?: InputMaybe<Array<Scalars['BigInt']>>;
+  emittedBy?: InputMaybe<Scalars['Bytes']>;
+  emittedBy_contains?: InputMaybe<Scalars['Bytes']>;
+  emittedBy_in?: InputMaybe<Array<Scalars['Bytes']>>;
+  emittedBy_not?: InputMaybe<Scalars['Bytes']>;
+  emittedBy_not_contains?: InputMaybe<Scalars['Bytes']>;
+  emittedBy_not_in?: InputMaybe<Array<Scalars['Bytes']>>;
+  feeWei?: InputMaybe<Scalars['BigInt']>;
+  feeWei_gt?: InputMaybe<Scalars['BigInt']>;
+  feeWei_gte?: InputMaybe<Scalars['BigInt']>;
+  feeWei_in?: InputMaybe<Array<Scalars['BigInt']>>;
+  feeWei_lt?: InputMaybe<Scalars['BigInt']>;
+  feeWei_lte?: InputMaybe<Scalars['BigInt']>;
+  feeWei_not?: InputMaybe<Scalars['BigInt']>;
+  feeWei_not_in?: InputMaybe<Array<Scalars['BigInt']>>;
+  id?: InputMaybe<Scalars['ID']>;
+  id_gt?: InputMaybe<Scalars['ID']>;
+  id_gte?: InputMaybe<Scalars['ID']>;
+  id_in?: InputMaybe<Array<Scalars['ID']>>;
+  id_lt?: InputMaybe<Scalars['ID']>;
+  id_lte?: InputMaybe<Scalars['ID']>;
+  id_not?: InputMaybe<Scalars['ID']>;
+  id_not_in?: InputMaybe<Array<Scalars['ID']>>;
+  rskAddress?: InputMaybe<Scalars['Bytes']>;
+  rskAddress_contains?: InputMaybe<Scalars['Bytes']>;
+  rskAddress_in?: InputMaybe<Array<Scalars['Bytes']>>;
+  rskAddress_not?: InputMaybe<Scalars['Bytes']>;
+  rskAddress_not_contains?: InputMaybe<Scalars['Bytes']>;
+  rskAddress_not_in?: InputMaybe<Array<Scalars['Bytes']>>;
+  timestamp?: InputMaybe<Scalars['BigInt']>;
+  timestamp_gt?: InputMaybe<Scalars['BigInt']>;
+  timestamp_gte?: InputMaybe<Scalars['BigInt']>;
+  timestamp_in?: InputMaybe<Array<Scalars['BigInt']>>;
+  timestamp_lt?: InputMaybe<Scalars['BigInt']>;
+  timestamp_lte?: InputMaybe<Scalars['BigInt']>;
+  timestamp_not?: InputMaybe<Scalars['BigInt']>;
+  timestamp_not_in?: InputMaybe<Array<Scalars['BigInt']>>;
+  transaction?: InputMaybe<Scalars['String']>;
+  transactionHash?: InputMaybe<Scalars['Bytes']>;
+  transactionHash_contains?: InputMaybe<Scalars['Bytes']>;
+  transactionHash_in?: InputMaybe<Array<Scalars['Bytes']>>;
+  transactionHash_not?: InputMaybe<Scalars['Bytes']>;
+  transactionHash_not_contains?: InputMaybe<Scalars['Bytes']>;
+  transactionHash_not_in?: InputMaybe<Array<Scalars['Bytes']>>;
+  transaction_contains?: InputMaybe<Scalars['String']>;
+  transaction_ends_with?: InputMaybe<Scalars['String']>;
+  transaction_gt?: InputMaybe<Scalars['String']>;
+  transaction_gte?: InputMaybe<Scalars['String']>;
+  transaction_in?: InputMaybe<Array<Scalars['String']>>;
+  transaction_lt?: InputMaybe<Scalars['String']>;
+  transaction_lte?: InputMaybe<Scalars['String']>;
+  transaction_not?: InputMaybe<Scalars['String']>;
+  transaction_not_contains?: InputMaybe<Scalars['String']>;
+  transaction_not_ends_with?: InputMaybe<Scalars['String']>;
+  transaction_not_in?: InputMaybe<Array<Scalars['String']>>;
+  transaction_not_starts_with?: InputMaybe<Scalars['String']>;
+  transaction_starts_with?: InputMaybe<Scalars['String']>;
+};
+
+export enum NewBitcoinTransferIncoming_OrderBy {
+  AmountWei = 'amountWei',
+  BlockNumber = 'blockNumber',
+  BlockTimestamp = 'blockTimestamp',
+  BtcTxHash = 'btcTxHash',
+  BtcTxVout = 'btcTxVout',
+  EmittedBy = 'emittedBy',
+  FeeWei = 'feeWei',
+  Id = 'id',
+  RskAddress = 'rskAddress',
+  Timestamp = 'timestamp',
+  Transaction = 'transaction',
+  TransactionHash = 'transactionHash',
+}
+
 export type OrderCanceled = {
   __typename?: 'OrderCanceled';
   emittedBy: Scalars['Bytes'];
@@ -6474,6 +6613,8 @@ export type Query = {
   marginOrderCanceleds: Array<MarginOrderCanceled>;
   marginOrderFilled?: Maybe<MarginOrderFilled>;
   marginOrderFilleds: Array<MarginOrderFilled>;
+  newBitcoinTransferIncoming?: Maybe<NewBitcoinTransferIncoming>;
+  newBitcoinTransferIncomings: Array<NewBitcoinTransferIncoming>;
   orderCanceled?: Maybe<OrderCanceled>;
   orderCanceleds: Array<OrderCanceled>;
   orderCreated?: Maybe<OrderCreated>;
@@ -7041,6 +7182,22 @@ export type QueryMarginOrderFilledsArgs = {
   skip?: InputMaybe<Scalars['Int']>;
   subgraphError?: _SubgraphErrorPolicy_;
   where?: InputMaybe<MarginOrderFilled_Filter>;
+};
+
+export type QueryNewBitcoinTransferIncomingArgs = {
+  block?: InputMaybe<Block_Height>;
+  id: Scalars['ID'];
+  subgraphError?: _SubgraphErrorPolicy_;
+};
+
+export type QueryNewBitcoinTransferIncomingsArgs = {
+  block?: InputMaybe<Block_Height>;
+  first?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<NewBitcoinTransferIncoming_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+  skip?: InputMaybe<Scalars['Int']>;
+  subgraphError?: _SubgraphErrorPolicy_;
+  where?: InputMaybe<NewBitcoinTransferIncoming_Filter>;
 };
 
 export type QueryOrderCanceledArgs = {
@@ -8468,6 +8625,8 @@ export type Subscription = {
   marginOrderCanceleds: Array<MarginOrderCanceled>;
   marginOrderFilled?: Maybe<MarginOrderFilled>;
   marginOrderFilleds: Array<MarginOrderFilled>;
+  newBitcoinTransferIncoming?: Maybe<NewBitcoinTransferIncoming>;
+  newBitcoinTransferIncomings: Array<NewBitcoinTransferIncoming>;
   orderCanceled?: Maybe<OrderCanceled>;
   orderCanceleds: Array<OrderCanceled>;
   orderCreated?: Maybe<OrderCreated>;
@@ -9035,6 +9194,22 @@ export type SubscriptionMarginOrderFilledsArgs = {
   skip?: InputMaybe<Scalars['Int']>;
   subgraphError?: _SubgraphErrorPolicy_;
   where?: InputMaybe<MarginOrderFilled_Filter>;
+};
+
+export type SubscriptionNewBitcoinTransferIncomingArgs = {
+  block?: InputMaybe<Block_Height>;
+  id: Scalars['ID'];
+  subgraphError?: _SubgraphErrorPolicy_;
+};
+
+export type SubscriptionNewBitcoinTransferIncomingsArgs = {
+  block?: InputMaybe<Block_Height>;
+  first?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<NewBitcoinTransferIncoming_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+  skip?: InputMaybe<Scalars['Int']>;
+  subgraphError?: _SubgraphErrorPolicy_;
+  where?: InputMaybe<NewBitcoinTransferIncoming_Filter>;
 };
 
 export type SubscriptionOrderCanceledArgs = {
@@ -12225,6 +12400,29 @@ export enum _SubgraphErrorPolicy_ {
   Deny = 'deny',
 }
 
+export type GetFundingQueryVariables = Exact<{
+  user?: InputMaybe<Scalars['String']>;
+  skip: Scalars['Int'];
+  pageSize: Scalars['Int'];
+  orderBy?: InputMaybe<BitcoinTransfer_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+}>;
+
+export type GetFundingQuery = {
+  __typename?: 'Query';
+  bitcoinTransfers: Array<{
+    __typename?: 'BitcoinTransfer';
+    createdAtTimestamp: number;
+    bitcoinTxHash: string;
+    direction: BitcoinTransferDirection;
+    amountBTC: string;
+    feeBTC: string;
+    totalAmountBTC: string;
+    user: { __typename?: 'User'; id: string };
+    createdAtTx: { __typename?: 'Transaction'; id: string };
+  }>;
+};
+
 export type GetSmartTokensQueryVariables = Exact<{
   skip: Scalars['Int'];
   pageSize: Scalars['Int'];
@@ -12277,6 +12475,89 @@ export type GetTransactionsQuery = {
   }>;
 };
 
+export const GetFundingDocument = gql`
+  query getFunding(
+    $user: String
+    $skip: Int!
+    $pageSize: Int!
+    $orderBy: BitcoinTransfer_orderBy
+    $orderDirection: OrderDirection
+  ) {
+    bitcoinTransfers(
+      where: { user: $user }
+      first: $pageSize
+      skip: $skip
+      orderBy: $orderBy
+      orderDirection: $orderDirection
+    ) {
+      user {
+        id
+      }
+      createdAtTx {
+        id
+      }
+      createdAtTimestamp
+      bitcoinTxHash
+      direction
+      amountBTC
+      feeBTC
+      totalAmountBTC
+    }
+  }
+`;
+
+/**
+ * __useGetFundingQuery__
+ *
+ * To run a query within a React component, call `useGetFundingQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetFundingQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetFundingQuery({
+ *   variables: {
+ *      user: // value for 'user'
+ *      skip: // value for 'skip'
+ *      pageSize: // value for 'pageSize'
+ *      orderBy: // value for 'orderBy'
+ *      orderDirection: // value for 'orderDirection'
+ *   },
+ * });
+ */
+export function useGetFundingQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    GetFundingQuery,
+    GetFundingQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<GetFundingQuery, GetFundingQueryVariables>(
+    GetFundingDocument,
+    options,
+  );
+}
+export function useGetFundingLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    GetFundingQuery,
+    GetFundingQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<GetFundingQuery, GetFundingQueryVariables>(
+    GetFundingDocument,
+    options,
+  );
+}
+export type GetFundingQueryHookResult = ReturnType<typeof useGetFundingQuery>;
+export type GetFundingLazyQueryHookResult = ReturnType<
+  typeof useGetFundingLazyQuery
+>;
+export type GetFundingQueryResult = Apollo.QueryResult<
+  GetFundingQuery,
+  GetFundingQueryVariables
+>;
 export const GetSmartTokensDocument = gql`
   query getSmartTokens(
     $skip: Int!

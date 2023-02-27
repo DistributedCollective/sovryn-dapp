@@ -168,7 +168,7 @@ export const RedemptionsHistoryFrame: FC = () => {
     () => [
       {
         id: 'sequenceNumber',
-        title: t(translations.redemptionsHistory.table.timestamp),
+        title: t(translations.common.tables.columnTitles.timestamp),
         cellRenderer: (item: Redemption) =>
           dateFormat(item.transaction.timestamp),
         sortable: true,
@@ -190,7 +190,7 @@ export const RedemptionsHistoryFrame: FC = () => {
       },
       {
         id: 'transactionID',
-        title: t(translations.redemptionsHistory.table.transactionID),
+        title: t(translations.common.tables.columnTitles.transactionID),
         cellRenderer: (item: Redemption) => (
           <TxIdWithNotification
             href={`${chain?.blockExplorerUrl}/tx/${item.transaction.id}`}
@@ -234,7 +234,7 @@ export const RedemptionsHistoryFrame: FC = () => {
     if (!redemptions || !redemptions.length) {
       addNotification({
         type: NotificationType.warning,
-        title: t(translations.redemptionsHistory.actions.noDataToExport),
+        title: t(translations.common.tables.actions.noDataToExport),
         content: '',
         dismissible: true,
         id: nanoid(),

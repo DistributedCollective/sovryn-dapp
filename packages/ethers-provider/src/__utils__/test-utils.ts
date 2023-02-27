@@ -12,7 +12,7 @@ export const chains: Chain[] = [
     id: ChainIds.RSK_MAINNET,
     label: 'RSK Mainnet',
     token: 'RBTC',
-    rpcUrl: ['https://public-node.rsk.co', 'https://mainnet.sovryn.app/rpc'],
+    rpcUrl: ['https://public-node.rsk.co', 'https://rsk-live.sovryn.app/rpc'],
   },
   {
     id: ChainIds.RSK_TESTNET,

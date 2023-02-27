@@ -18,7 +18,7 @@ export const useGetTroves = (
 ) => {
   const troveConfig = useMemo(
     () => ({
-      user: account,
+      user: account?.toLowerCase(),
       skip: page * pageSize,
       pageSize,
       orderBy: (orderOptions.orderBy as TroveChange_OrderBy) || undefined,

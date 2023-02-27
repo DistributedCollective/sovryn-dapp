@@ -2053,7 +2053,6 @@ enum StabilityDepositOperation {
   withdrawCollateralGain
   withdrawGainToLineOfCredit
   withdrawTokens
-  withdrawGainToLineOfCredit
 }
 
 input StabilityDeposit_filter {
@@ -3265,11 +3264,12 @@ type Trove {
     where: TroveChange_filter
   ): [TroveChange!]!
   collateral: BigDecimal!
+  collateralRatioSortKey: BigDecimal
 
   """
   Ordering by this field will result in the same ordering as collateral ratio (except reversed)
   """
-  collateralRatioSortKey: BigInt
+  collateralRatioSortKey_legacy: BigInt
   debt: BigDecimal!
 
   """
@@ -3585,14 +3585,22 @@ input Trove_filter {
   _change_block: BlockChangedFilter
   changes_: TroveChange_filter
   collateral: BigDecimal
-  collateralRatioSortKey: BigInt
-  collateralRatioSortKey_gt: BigInt
-  collateralRatioSortKey_gte: BigInt
-  collateralRatioSortKey_in: [BigInt!]
-  collateralRatioSortKey_lt: BigInt
-  collateralRatioSortKey_lte: BigInt
-  collateralRatioSortKey_not: BigInt
-  collateralRatioSortKey_not_in: [BigInt!]
+  collateralRatioSortKey: BigDecimal
+  collateralRatioSortKey_gt: BigDecimal
+  collateralRatioSortKey_gte: BigDecimal
+  collateralRatioSortKey_in: [BigDecimal!]
+  collateralRatioSortKey_legacy: BigInt
+  collateralRatioSortKey_legacy_gt: BigInt
+  collateralRatioSortKey_legacy_gte: BigInt
+  collateralRatioSortKey_legacy_in: [BigInt!]
+  collateralRatioSortKey_legacy_lt: BigInt
+  collateralRatioSortKey_legacy_lte: BigInt
+  collateralRatioSortKey_legacy_not: BigInt
+  collateralRatioSortKey_legacy_not_in: [BigInt!]
+  collateralRatioSortKey_lt: BigDecimal
+  collateralRatioSortKey_lte: BigDecimal
+  collateralRatioSortKey_not: BigDecimal
+  collateralRatioSortKey_not_in: [BigDecimal!]
   collateral_gt: BigDecimal
   collateral_gte: BigDecimal
   collateral_in: [BigDecimal!]
@@ -3687,6 +3695,7 @@ enum Trove_orderBy {
   changes
   collateral
   collateralRatioSortKey
+  collateralRatioSortKey_legacy
   debt
   id
   owner

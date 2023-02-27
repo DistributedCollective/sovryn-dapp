@@ -10777,6 +10777,13 @@ eth-crypto@2.3.0:
     ethers "5.6.4"
     secp256k1 "4.0.3"
 
+eth-permit@^0.2.3:
+  version "0.2.3"
+  resolved "https://registry.yarnpkg.com/eth-permit/-/eth-permit-0.2.3.tgz#7d8b051e329d2166fef32553ed397970d369cafe"
+  integrity sha512-d4tbiRQgbpdeJbdC9hdyT0SUJcJx28FIy3o2RxEAoeYI+zyYbNC0ZpdE6kxBK+7iY2payjHRE7rs7tr5EcOVLg==
+  dependencies:
+    utf8 "^3.0.0"
+
 ethereum-blockies@0.1.1:
   version "0.1.1"
   resolved "https://registry.yarnpkg.com/ethereum-blockies/-/ethereum-blockies-0.1.1.tgz#879fe959deef492a7a92b43dc34ae8dc2ee591fc"
@@ -20307,6 +20314,11 @@ use@^3.1.0:
   version "3.1.1"
   resolved "https://registry.yarnpkg.com/use/-/use-3.1.1.tgz#d50c8cac79a19fbc20f2911f56eb973f4e10070f"
   integrity sha512-cwESVXlO3url9YWlFW/TA9cshCEhtu7IKJ/p5soJ/gGpj7vbvFrAY/eIioQ6Dw23KjZhYgiIo8HOs1nQ2vr/oQ==
+
+utf8@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/utf8/-/utf8-3.0.0.tgz#f052eed1364d696e769ef058b183df88c87f69d1"
+  integrity sha512-E8VjFIQ/TyQgp+TZfS6l8yp/xWppSAHzidGiRrqe4bK4XP9pTRyKFgGJpO3SN7zdX4DeomTrwaseCHovfpFcqQ==
 
 util-deprecate@^1.0.1, util-deprecate@^1.0.2, util-deprecate@~1.0.1:
   version "1.0.2"

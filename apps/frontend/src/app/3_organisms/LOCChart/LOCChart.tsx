@@ -133,6 +133,8 @@ export const LOCChart: FC<LOCChartProps> = ({ isDefaultView = false }) => {
 
   useEffect(() => {
     if (troves && !loadingTroves && globalsEntity) {
+      // load and parse data and then show it immediately if wallet not connected
+      // logic for connected wallets is in another useEffect
       const updatedTroves = troves.troves.map((trove: TroveData) => {
         const totalDebt = globalsEntity?.globals[0].rawTotalRedistributedDebt;
         const snapshotOfTotalDebt = trove.rawSnapshotOfTotalRedistributedDebt;
@@ -185,6 +187,8 @@ export const LOCChart: FC<LOCChartProps> = ({ isDefaultView = false }) => {
 
   useEffect(() => {
     if (!loadingUserOpenTrove && hasUserOpenTrove && data && troves) {
+      // parses data and shows bars around users trove
+      // initial data parsing and displaying data for unconnected state in another useEffect
       const isUserTrove = (trove: TroveData) => trove.id === account;
       const index = data.findIndex(isUserTrove);
       if (index === -1) {

@@ -132,7 +132,7 @@ export const LOCChart: FC<LOCChartProps> = ({ isDefaultView = false }) => {
   } = useGetTroves();
 
   useEffect(() => {
-    if (troves && !loadingTroves && globalsEntity && !isDefaultView) {
+    if (troves && !loadingTroves && globalsEntity) {
       const updatedTroves = troves.troves.map((trove: TroveData) => {
         const totalDebt = globalsEntity?.globals[0].rawTotalRedistributedDebt;
         const snapshotOfTotalDebt = trove.rawSnapshotOfTotalRedistributedDebt;
@@ -168,7 +168,9 @@ export const LOCChart: FC<LOCChartProps> = ({ isDefaultView = false }) => {
 
       setData(updatedTroves);
 
-      setDataToShow(updatedTroves.slice(0, trovesCountToShow - 1));
+      if (isDefaultView) {
+        setDataToShow(updatedTroves.slice(0, trovesCountToShow - 1));
+      }
     }
   }, [
     troves,

@@ -515,7 +515,6 @@
             "rewardChange": "Reward change"
         }
     },
-
     "emailNotificationsDialog": {
         "dialogTitle": "Notifications",
         "title": "Sign up to receive important notifications about the state of your line of credit and the Zero protocol",
@@ -530,5 +529,15 @@
         "successMessage": "Your preferences have been saved.",
         "errorMessage": "Something went wrong, please try again.",
         "authErrorMessage": "Authentication failed, please try again."
+    },
+    "termsOfUsePage": {
+        "meta": {
+            "title": "Terms of Use - Sovryn"
+        }
+    },
+    "privacyPolicyPage": {
+        "meta": {
+            "title": "Privacy Policy - Sovryn"
+        }
     }
 }

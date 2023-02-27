@@ -18,7 +18,7 @@ export const useGetStabilityPoolHistory = (
 ) => {
   const stabilityPoolConfig = useMemo(
     () => ({
-      user: account,
+      user: account?.toLowerCase(),
       skip: page * pageSize,
       pageSize,
       orderBy:

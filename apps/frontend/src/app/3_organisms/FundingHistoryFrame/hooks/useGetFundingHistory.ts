@@ -2,12 +2,13 @@ import { useMemo } from 'react';
 
 import { OrderOptions } from '@sovryn/ui';
 
+import { rskClient } from '../../../../utils/clients';
 import {
-  Conversion_OrderBy,
-  useGetUserConversionsQuery,
-} from '../../../../utils/graphql/mynt/generated';
+  BitcoinTransfer_OrderBy,
+  useGetFundingQuery,
+} from '../../../../utils/graphql/rsk/generated';
 
-export const useGetConversionsHistory = (
+export const useGetFundingHistory = (
   account: string,
   pageSize: number,
   page: number,
@@ -18,7 +19,7 @@ export const useGetConversionsHistory = (
       user: account?.toLowerCase(),
       skip: page * pageSize,
       pageSize,
-      orderBy: orderOptions.orderBy as Conversion_OrderBy,
+      orderBy: orderOptions.orderBy as BitcoinTransfer_OrderBy,
       orderDirection: orderOptions.orderDirection,
     }),
     [
@@ -30,5 +31,5 @@ export const useGetConversionsHistory = (
     ],
   );
 
-  return useGetUserConversionsQuery({ variables: config });
+  return useGetFundingQuery({ variables: config, client: rskClient });
 };

@@ -3,6 +3,7 @@ import { ApolloProvider } from '@apollo/client';
 import React, { FC, useMemo, useState } from 'react';
 
 import { t } from 'i18next';
+import { Helmet } from 'react-helmet-async';
 
 import { Heading, Select, SelectOption, Tabs } from '@sovryn/ui';
 
@@ -12,6 +13,7 @@ import {
 } from '../../3_organisms';
 import { CollateralSurplusHistoryFrame } from '../../3_organisms/CollateralSurplusWithdrawals/CollateralSurplusWithdrawals';
 import { ConversionsHistoryFrame } from '../../3_organisms/ConversionsHistoryFrame/ConversionsHistoryFrame';
+import { FundingHistoryFrame } from '../../3_organisms/FundingHistoryFrame/FundingHistoryFrame';
 import { RewardHistory } from '../../3_organisms/RewardHistory/RewardHistory';
 import { StabilityPoolHistoryFrame } from '../../3_organisms/StabilityPoolHistoryFrame';
 import { translations } from '../../../locales/i18n';
@@ -59,20 +61,14 @@ const conversionsHistory = (
   </div>
 );
 
+const fundingHistory = (
+  <div className="px-0 py-4 lg:p-4">
+    <FundingHistoryFrame />
+  </div>
+);
+
 const HistoryPage: FC = () => {
   const [index, setIndex] = useState(0);
-
-  const comingSoon = useMemo(
-    () => (
-      <div className="px-4 py-12 rounded my-4 lg:rounded-none lg:my-0 flex flex-row justify-center bg-gray-80">
-        <Heading className="inline">
-          {t(translations.historyPage.table.comingSoon)}
-        </Heading>
-      </div>
-    ),
-    [],
-  );
-
   const items = useMemo(
     () => [
       {
@@ -101,7 +97,7 @@ const HistoryPage: FC = () => {
       },
       {
         label: t(translations.historyPage.table.tabs.funding),
-        content: comingSoon,
+        content: fundingHistory,
         activeClassName: ACTIVE_CLASSNAME,
         dataAttribute: 'funding',
       },
@@ -120,7 +116,7 @@ const HistoryPage: FC = () => {
         dataAttribute: 'rewards',
       },
     ],
-    [comingSoon],
+    [],
   );
 
   const options: SelectOption[] = useMemo(
@@ -130,30 +126,35 @@ const HistoryPage: FC = () => {
   );
 
   return (
-    <div className="lg:container w-full text-gray-10 mt-9 lg:mt-10">
-      <Heading className="text-center lg:mb-10 lg:text-2xl">
-        {t(translations.historyPage.title)}
-      </Heading>
-      <div className="w-full">
-        <div className={styles.mobileSelect}>
-          <Select
-            className="min-w-[12rem]"
-            options={options}
-            value={String(index)}
-            onChange={value => setIndex(Number(value))}
-          />
+    <>
+      <Helmet>
+        <title>{t(translations.historyPage.meta.title)}</title>
+      </Helmet>
+      <div className="lg:container w-full text-gray-10 mt-9 lg:mt-10">
+        <Heading className="text-center lg:mb-10 lg:text-2xl">
+          {t(translations.historyPage.title)}
+        </Heading>
+        <div className="w-full">
+          <div className={styles.mobileSelect}>
+            <Select
+              className="min-w-[12rem]"
+              options={options}
+              value={String(index)}
+              onChange={value => setIndex(Number(value))}
+            />
+          </div>
+          <div className={styles.desktop}>
+            <Tabs
+              items={items}
+              onChange={setIndex}
+              index={index}
+              className="w-full"
+            />
+          </div>
+          <div className={styles.mobile}>{items[index].content}</div>
         </div>
-        <div className={styles.desktop}>
-          <Tabs
-            items={items}
-            onChange={setIndex}
-            index={index}
-            className="w-full"
-          />
-        </div>
-        <div className={styles.mobile}>{items[index].content}</div>
       </div>
-    </div>
+    </>
   );
 };
 

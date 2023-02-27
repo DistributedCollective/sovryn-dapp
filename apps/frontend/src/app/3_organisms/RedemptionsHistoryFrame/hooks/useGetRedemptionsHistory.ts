@@ -22,7 +22,7 @@ export const useGetRedemptionsHistory = (
       orderBy: (orderOptions.orderBy as Redemption_OrderBy) || undefined,
       orderDirection: orderOptions.orderDirection || undefined,
       filters: {
-        redeemer: account,
+        redeemer: account?.toLowerCase(),
       } as Redemption_Filter,
     }),
     [page, orderOptions, pageSize, account],

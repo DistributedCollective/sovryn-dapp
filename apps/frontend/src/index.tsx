@@ -5,6 +5,7 @@ import './wdyr';
 import React from 'react';
 
 import ReactDOM from 'react-dom/client';
+import { HelmetProvider } from 'react-helmet-async';
 import { RouterProvider } from 'react-router-dom';
 
 import { OnboardProvider } from '@sovryn/onboard-react';
@@ -34,12 +35,14 @@ root.render(
       <TransactionProvider>
         <NotificationProvider>
           <ApolloProvider client={rskClient}>
-            <MaintenanceModeContextProvider>
-              <SharedStateProvider>
-                <RouterProvider router={router} />
-                <OnboardProvider dataAttribute="dapp-onboard" />
-              </SharedStateProvider>
-            </MaintenanceModeContextProvider>
+            <HelmetProvider>
+              <MaintenanceModeContextProvider>
+                <SharedStateProvider>
+                  <RouterProvider router={router} />
+                  <OnboardProvider dataAttribute="dapp-onboard" />
+                </SharedStateProvider>
+              </MaintenanceModeContextProvider>
+            </HelmetProvider>
           </ApolloProvider>
           <TransactionStepDialog disableFocusTrap />
         </NotificationProvider>

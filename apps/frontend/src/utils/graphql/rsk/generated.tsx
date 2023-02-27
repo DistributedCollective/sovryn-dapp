@@ -12400,6 +12400,29 @@ export enum _SubgraphErrorPolicy_ {
   Deny = 'deny',
 }
 
+export type GetFundingQueryVariables = Exact<{
+  user?: InputMaybe<Scalars['String']>;
+  skip: Scalars['Int'];
+  pageSize: Scalars['Int'];
+  orderBy?: InputMaybe<BitcoinTransfer_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+}>;
+
+export type GetFundingQuery = {
+  __typename?: 'Query';
+  bitcoinTransfers: Array<{
+    __typename?: 'BitcoinTransfer';
+    createdAtTimestamp: number;
+    bitcoinTxHash: string;
+    direction: BitcoinTransferDirection;
+    amountBTC: string;
+    feeBTC: string;
+    totalAmountBTC: string;
+    user: { __typename?: 'User'; id: string };
+    createdAtTx: { __typename?: 'Transaction'; id: string };
+  }>;
+};
+
 export type GetSmartTokensQueryVariables = Exact<{
   skip: Scalars['Int'];
   pageSize: Scalars['Int'];
@@ -12452,6 +12475,89 @@ export type GetTransactionsQuery = {
   }>;
 };
 
+export const GetFundingDocument = gql`
+  query getFunding(
+    $user: String
+    $skip: Int!
+    $pageSize: Int!
+    $orderBy: BitcoinTransfer_orderBy
+    $orderDirection: OrderDirection
+  ) {
+    bitcoinTransfers(
+      where: { user: $user }
+      first: $pageSize
+      skip: $skip
+      orderBy: $orderBy
+      orderDirection: $orderDirection
+    ) {
+      user {
+        id
+      }
+      createdAtTx {
+        id
+      }
+      createdAtTimestamp
+      bitcoinTxHash
+      direction
+      amountBTC
+      feeBTC
+      totalAmountBTC
+    }
+  }
+`;
+
+/**
+ * __useGetFundingQuery__
+ *
+ * To run a query within a React component, call `useGetFundingQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetFundingQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetFundingQuery({
+ *   variables: {
+ *      user: // value for 'user'
+ *      skip: // value for 'skip'
+ *      pageSize: // value for 'pageSize'
+ *      orderBy: // value for 'orderBy'
+ *      orderDirection: // value for 'orderDirection'
+ *   },
+ * });
+ */
+export function useGetFundingQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    GetFundingQuery,
+    GetFundingQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<GetFundingQuery, GetFundingQueryVariables>(
+    GetFundingDocument,
+    options,
+  );
+}
+export function useGetFundingLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    GetFundingQuery,
+    GetFundingQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<GetFundingQuery, GetFundingQueryVariables>(
+    GetFundingDocument,
+    options,
+  );
+}
+export type GetFundingQueryHookResult = ReturnType<typeof useGetFundingQuery>;
+export type GetFundingLazyQueryHookResult = ReturnType<
+  typeof useGetFundingLazyQuery
+>;
+export type GetFundingQueryResult = Apollo.QueryResult<
+  GetFundingQuery,
+  GetFundingQueryVariables
+>;
 export const GetSmartTokensDocument = gql`
   query getSmartTokens(
     $skip: Int!

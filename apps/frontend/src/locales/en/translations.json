@@ -41,10 +41,10 @@
         "withdraw": "Withdraw",
         "txId": "TXID",
         "tx": {
-          "signPermitTitle": "Permit {{symbol}}",
-          "signPermitSubtitle": "Sign a permit to allow the contract to spend your {{symbol}}",
-          "signApproveTitle": "Approve {{symbol}}",
-          "signApproveSubtitle": "Approve {{symbol}} to be spent by the contract"
+            "signPermitTitle": "Permit {{symbol}}",
+            "signPermitSubtitle": "Sign a permit to allow the contract to spend your {{symbol}}",
+            "signApproveTitle": "Approve {{symbol}}",
+            "signApproveSubtitle": "Approve {{symbol}} to be spent by the contract"
         }
     },
     "connectWalletButton": {
@@ -104,6 +104,9 @@
     },
 
     "zeroPage": {
+        "meta": {
+            "title": "Borrow - Sovryn"
+        },
         "dashboardWelcomeBanner": {
             "fundWallet": "Fund your wallet",
             "OpenCredit": "Open line of credit"
@@ -265,6 +268,9 @@
     },
 
     "earnPage": {
+        "meta": {
+            "title": "Earn - Sovryn"
+        },
         "title": "Stability pool",
         "subtitle": "Earn BTC by providing liquidity for liquidations",
         "form": {
@@ -283,6 +289,9 @@
     },
 
     "convertPage": {
+        "meta": {
+            "title": "Convert - Sovryn"
+        },
         "title": "Convert",
         "subtitle": "Convert between assets",
         "form": {
@@ -378,6 +387,9 @@
     },
 
     "rewardPage": {
+        "meta": {
+            "title": "Rewards - Sovryn"
+        },
         "title": "Rewards",
         "subtitle": "Collect rewards earned",
         "stabilityPoolRewards": "Stability pool rewards",
@@ -395,6 +407,9 @@
     },
 
     "historyPage": {
+        "meta": {
+            "title": "History - Sovryn"
+        },
         "title": "My transaction history",
         "table": {
             "tabs": {
@@ -451,8 +466,7 @@
     "conversionsHistory": {
         "table": {
             "sent": "Sent",
-            "received": "Received",
-            "txId": "TXID"
+            "received": "Received"
         },
         "type": "Convert"
     },
@@ -480,12 +494,28 @@
             "withdrawCollateralGain": "Withdraw collateral gain"
         }
     },
+    "fundingHistory": {
+        "table": {
+            "sent": "Sent",
+            "received": "Received",
+            "serviceFee": "Service fee"
+        },
+        "transactionType": {
+            "deposit": {
+                "part1": "FastBTC deposit (Part 1)",
+                "part2": "FastBTC deposit (Part 2)"
+            },
+            "withdraw": {
+                "part1": "FastBTC withdrawal (Part 1)",
+                "part2": "FastBTC withdrawal (Part 2)"
+            }
+        }
+    },
     "rewardHistory": {
         "table": {
             "rewardChange": "Reward change"
         }
     },
-
     "emailNotificationsDialog": {
         "dialogTitle": "Notifications",
         "title": "Sign up to receive important notifications about the state of your line of credit and the Zero protocol",
@@ -500,5 +530,15 @@
         "successMessage": "Your preferences have been saved.",
         "errorMessage": "Something went wrong, please try again.",
         "authErrorMessage": "Authentication failed, please try again."
+    },
+    "termsOfUsePage": {
+        "meta": {
+            "title": "Terms of service - Sovryn"
+        }
+    },
+    "privacyPolicyPage": {
+        "meta": {
+            "title": "Privacy policy - Sovryn"
+        }
     }
 }

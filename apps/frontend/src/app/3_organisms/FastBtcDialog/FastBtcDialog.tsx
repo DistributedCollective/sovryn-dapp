@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { t } from 'i18next';
 
@@ -78,6 +78,11 @@ export const FastBtcDialog: React.FC<FastBtcDialogProps> = ({
     () => (isMobile ? DialogSize.md : DialogSize.xl2),
     [isMobile],
   );
+
+  // Reset the selected index to 0 in case the connected account changes because the new account may have the Send tab hidden and it would crash the app if we tried to access that index
+  useEffect(() => {
+    setIndex(0);
+  }, [account]);
 
   return (
     <Dialog

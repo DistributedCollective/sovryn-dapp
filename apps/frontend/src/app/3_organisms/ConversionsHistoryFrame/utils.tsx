@@ -12,7 +12,7 @@ import {
   ConversionType,
 } from '../../../utils/graphql/mynt/generated';
 import { dateFormat } from '../../../utils/helpers';
-import { BTC_RENDER_PRECISION } from '../ZeroLocForm/constants';
+import { TOKEN_RENDER_PRECISION } from '../ZeroLocForm/constants';
 import { TransactionIdRenderer } from './components/TransactionIdRenderer/TransactionIdRenderer';
 
 const sentAmountRenderer = (item: Conversion) => {
@@ -25,13 +25,7 @@ const sentAmountRenderer = (item: Conversion) => {
     ? item.bAsset.symbol
     : masset.toUpperCase();
 
-  return (
-    <AmountRenderer
-      value={amount}
-      suffix={asset!}
-      precision={BTC_RENDER_PRECISION}
-    />
-  );
+  return <AmountRenderer value={amount} suffix={asset!} />;
 };
 
 const receivedAmountRenderer = (item: Conversion) => {
@@ -48,7 +42,7 @@ const receivedAmountRenderer = (item: Conversion) => {
     <AmountRenderer
       value={amount}
       suffix={asset!}
-      precision={BTC_RENDER_PRECISION}
+      precision={TOKEN_RENDER_PRECISION}
     />
   );
 };

@@ -2,10 +2,13 @@ import React, { useCallback, useMemo } from 'react';
 
 import { ethers } from 'ethers';
 
+import { SupportedTokens } from '@sovryn/contracts';
 import { getProvider } from '@sovryn/ethers-provider';
 import { Button, FormGroup, Input, InputSize, Select } from '@sovryn/ui';
 
 import { chains, defaultChainId } from '../../config/chains';
+
+import { AssetValue } from './AssetValue/AssetValue';
 
 // just an usage example, to be removed
 export const ExampleProviderCall = () => {
@@ -29,7 +32,10 @@ export const ExampleProviderCall = () => {
   );
 
   const getSymbol = useCallback(
-    () => setSymbol(chains.find(item => item.id === chainId)?.token || 'RBTC'),
+    () =>
+      setSymbol(
+        chains.find(item => item.id === chainId)?.token || SupportedTokens.rbtc,
+      ),
     [chainId],
   );
 
@@ -74,8 +80,14 @@ export const ExampleProviderCall = () => {
           disabled={loading}
           loading={loading}
         />
-        <div>
-          Balance: {balance} {symbol}
+        <div className="text-sm flex items-center">
+          Balance:{' '}
+          <AssetValue
+            value={Number(balance)}
+            asset={symbol as SupportedTokens}
+            useTooltip
+            className="ml-1"
+          />
         </div>
       </div>
       {error && <div className="text-red-500">{error}</div>}

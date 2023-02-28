@@ -24,6 +24,7 @@ import { useAccount } from '../../../hooks/useAccount';
 import { useBlockNumber } from '../../../hooks/useBlockNumber';
 import { useMaintenance } from '../../../hooks/useMaintenance';
 import { translations } from '../../../locales/i18n';
+import { zeroClient } from '../../../utils/clients';
 import {
   Bitcoin,
   DEFAULT_HISTORY_FRAME_PAGE_SIZE,
@@ -64,7 +65,9 @@ export const CollateralSurplusHistoryFrame: FC = () => {
     refetch();
   }, [refetch, block]);
 
-  const [getCollSurplusChanges] = useGetCollSurplusChangesLazyQuery();
+  const [getCollSurplusChanges] = useGetCollSurplusChangesLazyQuery({
+    client: zeroClient,
+  });
 
   const renderCollateralChange = useCallback((collSurplusChange: string) => {
     return `${formatValue(Math.abs(Number(collSurplusChange)), 8)} ${Bitcoin}`;

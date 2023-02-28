@@ -10,7 +10,7 @@ import { useAmountInput } from '../../../../hooks/useAmountInput';
 import { useMaxAssetBalance } from '../../../../hooks/useMaxAssetBalance';
 import { translations } from '../../../../locales/i18n';
 import { Bitcoin } from '../../../../utils/constants';
-import { formatValue, fromWei, toWei } from '../../../../utils/math';
+import { formatValue, fromWei, numeric, toWei } from '../../../../utils/math';
 import {
   CRITICAL_COLLATERAL_RATIO,
   MINIMUM_COLLATERAL_RATIO,
@@ -55,8 +55,8 @@ export const OpenCreditLine: FC<OpenCreditLineProps> = ({
   );
 
   const originationFee = useMemo(
-    () => getOriginationFeeAmount(debtSize),
-    [debtSize],
+    () => getOriginationFeeAmount(debtSize, borrowingRate),
+    [borrowingRate, debtSize],
   );
 
   const debtWithFees = useMemo(
@@ -109,17 +109,21 @@ export const OpenCreditLine: FC<OpenCreditLineProps> = ({
     if ([collateralAmount, debtAmount, rbtcPrice].some(v => !v)) {
       return 0;
     }
-    return (
-      ((Number(collateralAmount) * Number(rbtcPrice)) / debtWithFees) * 100 || 0
+    return numeric(
+      ((Number(collateralAmount) * Number(rbtcPrice)) / debtWithFees) * 100,
     );
   }, [collateralAmount, debtAmount, debtWithFees, rbtcPrice]);
 
   const liquidationPrice = useMemo(
-    () => MINIMUM_COLLATERAL_RATIO * (debtSize / Number(collateralAmount)),
+    () =>
+      numeric(MINIMUM_COLLATERAL_RATIO * (debtSize / Number(collateralAmount))),
     [debtSize, collateralAmount],
   );
   const liquidationPriceInRecoveryMode = useMemo(
-    () => CRITICAL_COLLATERAL_RATIO * (debtSize / Number(collateralAmount)),
+    () =>
+      numeric(
+        CRITICAL_COLLATERAL_RATIO * (debtSize / Number(collateralAmount)),
+      ),
     [collateralAmount, debtSize],
   );
 
@@ -222,7 +226,7 @@ export const OpenCreditLine: FC<OpenCreditLineProps> = ({
       rbtcPrice={rbtcPrice}
       liquidationReserve={debtWithFees > 0 ? liquidationReserve : 0}
       borrowingRate={borrowingRate}
-      originationFee={originationFee}
+      originationFee={debtWithFees > 0 ? originationFee : 0}
       debtAmount={debtAmountInput}
       maxDebtAmount={maxDebtAmount}
       onDebtAmountChange={setDebtAmount}

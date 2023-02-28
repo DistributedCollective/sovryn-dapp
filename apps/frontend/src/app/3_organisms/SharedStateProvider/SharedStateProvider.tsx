@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 
+import { useAccount } from '../../../hooks/useAccount';
 import {
   sharedState,
   FastBtcDialogState,
@@ -9,6 +10,8 @@ import { FastBtcDialog } from '../FastBtcDialog/FastBtcDialog';
 export const SharedStateProvider: React.FC<React.PropsWithChildren> = ({
   children,
 }) => {
+  const { account } = useAccount();
+
   const [fastBtcDialog, setFastBtcDialog] = useState<FastBtcDialogState>(
     sharedState.get().fastBtcDialog,
   );
@@ -27,6 +30,13 @@ export const SharedStateProvider: React.FC<React.PropsWithChildren> = ({
     () => sharedState.actions.closeFastBtcDialog(),
     [],
   );
+
+  // Close the dialog if there is no wallet connected
+  useEffect(() => {
+    if (fastBtcDialog.isOpen && !account) {
+      handleFastBtcDialogClose();
+    }
+  }, [account, fastBtcDialog.isOpen, handleFastBtcDialogClose]);
 
   return (
     <>

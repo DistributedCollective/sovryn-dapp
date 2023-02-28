@@ -23,6 +23,7 @@ import './locales/i18n';
 import { router } from './router';
 import './styles/tailwindcss/index.css';
 import { rskClient } from './utils/clients';
+import { ServiceWorkerProvider } from './app/2_molecules/ServiceWorkerProvider/ServiceWorkerProvider';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement,
@@ -33,6 +34,7 @@ root.render(
     <NetworkProvider>
       <TransactionProvider>
         <NotificationProvider>
+          <ServiceWorkerProvider />
           <ApolloProvider client={rskClient}>
             <MaintenanceModeContextProvider>
               <SharedStateProvider>

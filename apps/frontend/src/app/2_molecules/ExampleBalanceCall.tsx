@@ -34,7 +34,7 @@ export const ExampleBalanceCall = () => {
       <div className="flex text-sm">
         Balance:{' '}
         <AssetValue
-          value={result.value}
+          value={result.weiBalance}
           asset={SupportedTokens.zusd}
           useTooltip
           className="ml-1"

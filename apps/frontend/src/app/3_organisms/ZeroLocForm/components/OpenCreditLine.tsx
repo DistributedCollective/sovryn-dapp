@@ -153,14 +153,6 @@ export const OpenCreditLine: FC<OpenCreditLineProps> = ({
       return undefined;
     }
 
-    if (debtSize < MIN_DEBT_SIZE - liquidationReserve) {
-      return t(translations.zeroPage.loc.errors.debtTooLow, {
-        value: `${formatValue(
-          MIN_DEBT_SIZE - liquidationReserve,
-        )} ${debtToken.toUpperCase()}`,
-      });
-    }
-
     if (toWei(debtAmount).gt(toWei(maxDebtAmount))) {
       const diff = Number(fromWei(toWei(debtAmount).sub(toWei(maxDebtAmount))));
       return t(translations.zeroPage.loc.errors.creditBalanceTooLow, {
@@ -170,14 +162,7 @@ export const OpenCreditLine: FC<OpenCreditLineProps> = ({
     }
 
     return undefined;
-  }, [
-    debtAmount,
-    debtSize,
-    debtToken,
-    fieldsTouched,
-    liquidationReserve,
-    maxDebtAmount,
-  ]);
+  }, [debtAmount, debtToken, fieldsTouched, maxDebtAmount]);
 
   const collateralError = useMemo(() => {
     if (!fieldsTouched) {

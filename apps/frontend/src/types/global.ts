@@ -7,3 +7,10 @@ export enum Services {
   Maintenance = 'maintenance',
   Notification = 'notification',
 }
+
+export type ReleaseFileContent = {
+  version: string;
+  forcedCount: number;
+  commit: string;
+  comment?: string;
+};

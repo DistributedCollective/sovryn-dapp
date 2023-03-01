@@ -1,6 +1,6 @@
 import { ChainIds } from '@sovryn/ethers-provider';
 
-import { Environments, Services } from '../types/global';
+import { Environments, ReleaseFileContent, Services } from '../types/global';
 
 export const sovrynLinks = {
   discord: 'https://discord.gg/kBTNx4zjRf',
@@ -91,3 +91,7 @@ export const btcInSatoshis = 100000000;
 export const Bitcoin = 'BTC';
 
 export const rskFaucet = 'https://faucet.rsk.co';
+
+export const currentRelease: ReleaseFileContent = JSON.parse(
+  process.env.REACT_APP_RELEASE_DATA || '{}',
+);

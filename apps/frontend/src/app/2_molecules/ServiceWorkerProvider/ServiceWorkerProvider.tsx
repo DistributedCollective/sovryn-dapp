@@ -1,78 +1,43 @@
-/**
- *
- * ServiceWorkerToaster
- *
- */
-import React, { useEffect, useState, useCallback } from 'react';
-import { Trans, useTranslation } from 'react-i18next';
+import React, {
+  useEffect,
+  useState,
+  useCallback,
+  useRef,
+  FC,
+  PropsWithChildren,
+} from 'react';
+
+import { t } from 'i18next';
+import { Trans } from 'react-i18next';
+
+import { Button, Overlay, Paragraph } from '@sovryn/ui';
+
 import { useNotificationContext } from '../../../contexts/NotificationContext';
+import { translations } from '../../../locales/i18n';
 import { register, unregister } from '../../../serviceWorkerRegistration';
+import { ReleaseFileContent } from '../../../types/global';
+import { currentRelease } from '../../../utils/constants';
 
 const publicUrl = process.env.PUBLIC_URL ?? window.location.origin;
 const enableWorker = process.env.REACT_APP_ENABLE_SERVICE_WORKER === 'true';
 
-//interval time to check sw
+//interval time to check for new release
 const CHECK_TIME = 30e3; // 30 seconds
-const REOPEN_TIME = 120e3; // 120 seconds
-const versionUrl = `${publicUrl}/release.json`;
+const releaseUrl = `${publicUrl}/release.json`;
 
-const currentCommit = process.env.REACT_APP_GIT_COMMIT_ID || '';
+const repository =
+  'https://github.com/DistributedCollective/sovryn-dapp/releases/tag/';
 
-type VersionFileContent = {
-  version: string;
-  forcedCount: number;
-  commit: string;
-  comment?: string;
-};
-
-export const ServiceWorkerProvider = () => {
+export const ServiceWorkerProvider: FC<PropsWithChildren> = ({ children }) => {
   const { addNotification } = useNotificationContext();
-  const [state, setState] = useState<VersionFileContent>({
-    version: '0.0',
-    forcedCount: 0,
-    commit: '',
-  });
+  const shownForCommit = useRef<string>(
+    `${currentRelease.commit}:${currentRelease.version}:${currentRelease.forcedCount}`,
+  );
+  const [isForced, setIsForced] = useState(false);
   const [swRegistration, setSwRegistration] =
     useState<ServiceWorkerRegistration>();
 
-  const fetchVersion = useCallback(async () => {
-    return fetch(versionUrl, {
-      headers: {
-        'Service-Worker': 'script',
-        'Cache-Control': 'no-cache',
-        Pragma: 'no-cache',
-        Expires: '0',
-      },
-    })
-      .then(async response => {
-        const data = await response.json();
-        if (!data) return;
-        setState(data);
-      })
-      .catch(() => {});
-  }, [setState]);
-
-  useEffect(() => {
-    if (
-      enableWorker &&
-      currentCommit &&
-      state.commit &&
-      currentCommit !== state.commit
-    ) {
-      if (swRegistration && swRegistration.update) {
-        // Don't setShow(true) yet. Calling update triggers onUpdate below.
-        swRegistration.update();
-      } else {
-        addNotification({
-          id: 'update',
-          title: 'page updated',
-          content: 'wtf',
-        });
-      }
-    }
-  }, [swRegistration, state.commit, addNotification]);
-
-  const updateSW = () => {
+  const updateHandler = useCallback(() => {
     if (swRegistration) {
       const waitingWorker = swRegistration && swRegistration.waiting;
       waitingWorker && waitingWorker.postMessage({ type: 'SKIP_WAITING' });
@@ -82,37 +47,107 @@ export const ServiceWorkerProvider = () => {
     fetch(`/clear-site-data`).finally(() =>
       window.location.replace(window.location.href),
     );
-  };
+  }, [swRegistration]);
+
+  const showDialog = useCallback(
+    (state: ReleaseFileContent) => {
+      const isForced = state.forcedCount > currentRelease.forcedCount;
+      addNotification(
+        {
+          id: 'app-update',
+          title: t(translations.appUpdateDialog.title),
+          content: (
+            <>
+              <Paragraph className="mb-3">
+                <Trans
+                  i18nKey={translations.appUpdateDialog.changelog}
+                  components={[
+                    <a
+                      href={repository + encodeURI(`frontend@${state.version}`)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      -
+                    </a>,
+                  ]}
+                />
+              </Paragraph>
+              <Paragraph className="mb-3">
+                {t(translations.appUpdateDialog.description)}
+              </Paragraph>
+              <Button
+                onClick={updateHandler}
+                text={t(translations.appUpdateDialog.updateButton)}
+              />
+            </>
+          ),
+          dismissible: !isForced,
+        },
+        isForced ? 604800000 : 30000,
+      );
+    },
+    [addNotification, updateHandler],
+  );
+
+  const fetchVersion = useCallback(
+    () =>
+      fetch(releaseUrl, {
+        headers: {
+          'Service-Worker': 'script',
+          'Cache-Control': 'no-cache',
+          Pragma: 'no-cache',
+          Expires: '0',
+        },
+      })
+        .then(response => response.json() as Promise<ReleaseFileContent>)
+        .then(data => {
+          const commitKey = `${data.commit}:${data.version}:${data.forcedCount}`;
+          if (
+            (data.commit !== currentRelease.commit ||
+              data.version !== currentRelease.version ||
+              data.forcedCount > currentRelease.forcedCount) &&
+            shownForCommit.current !== commitKey
+          ) {
+            if (swRegistration && swRegistration.update) {
+              swRegistration.update();
+            } else {
+              shownForCommit.current = commitKey;
+              showDialog(data);
+              setIsForced(data.forcedCount > currentRelease.forcedCount);
+            }
+          }
+          return data;
+        })
+        .catch(() => {}),
+    [showDialog, swRegistration],
+  );
 
   useEffect(() => {
-    fetchVersion();
-    register({
-      onUpdate: async registration => {
-        setSwRegistration(registration);
-        if (state.commit === currentCommit) {
+    if (enableWorker && process.env.NODE_ENV === 'production') {
+      fetchVersion();
+      register({
+        onUpdate: async registration => {
+          setSwRegistration(registration);
           await fetchVersion();
-        }
-        addNotification({
-          id: 'update',
-          title: 'page updated',
-          content: 'wtf',
-        });
-      },
-      onSuccess: registration => {
-        setSwRegistration(registration);
-      },
-    });
+        },
+        onSuccess: async registration => {
+          setSwRegistration(registration);
+          await fetchVersion();
+        },
+      });
 
-    // eslint-disable-next-line
-  }, []);
-
-  useEffect(() => {
-    if (enableWorker) {
       const intId = setInterval(() => fetchVersion(), CHECK_TIME);
       return () => clearInterval(intId);
     }
     // eslint-disable-next-line
   }, []);
 
-  return <></>;
+  return (
+    <>
+      {children}
+      {isForced && (
+        <Overlay portalTarget="body" isOpen={true} children={<></>} />
+      )}
+    </>
+  );
 };

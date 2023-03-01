@@ -12,6 +12,7 @@ import { OnboardProvider } from '@sovryn/onboard-react';
 // chain config must be imported before other internal files
 import './config/chains';
 
+import { ServiceWorkerProvider } from './app/2_molecules/ServiceWorkerProvider/ServiceWorkerProvider';
 import { TransactionStepDialog } from './app/3_organisms';
 import { NetworkProvider } from './app/3_organisms/NetworkProvider/NetworkProvider';
 import { SharedStateProvider } from './app/3_organisms/SharedStateProvider/SharedStateProvider';
@@ -23,7 +24,6 @@ import './locales/i18n';
 import { router } from './router';
 import './styles/tailwindcss/index.css';
 import { rskClient } from './utils/clients';
-import { ServiceWorkerProvider } from './app/2_molecules/ServiceWorkerProvider/ServiceWorkerProvider';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement,
@@ -34,16 +34,17 @@ root.render(
     <NetworkProvider>
       <TransactionProvider>
         <NotificationProvider>
-          <ServiceWorkerProvider />
-          <ApolloProvider client={rskClient}>
-            <MaintenanceModeContextProvider>
-              <SharedStateProvider>
-                <RouterProvider router={router} />
-                <OnboardProvider dataAttribute="dapp-onboard" />
-              </SharedStateProvider>
-            </MaintenanceModeContextProvider>
-          </ApolloProvider>
-          <TransactionStepDialog disableFocusTrap />
+          <ServiceWorkerProvider>
+            <ApolloProvider client={rskClient}>
+              <MaintenanceModeContextProvider>
+                <SharedStateProvider>
+                  <RouterProvider router={router} />
+                  <OnboardProvider dataAttribute="dapp-onboard" />
+                </SharedStateProvider>
+              </MaintenanceModeContextProvider>
+            </ApolloProvider>
+            <TransactionStepDialog disableFocusTrap />
+          </ServiceWorkerProvider>
         </NotificationProvider>
       </TransactionProvider>
     </NetworkProvider>

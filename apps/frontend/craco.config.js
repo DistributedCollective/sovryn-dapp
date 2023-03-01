@@ -5,7 +5,10 @@ const fs = require('fs');
 const { GitRevisionPlugin } = require('git-revision-webpack-plugin');
 const GenerateFilePlugin = require('generate-file-webpack-plugin');
 
-process.env.REACT_APP_GIT_COMMIT_ID = new GitRevisionPlugin().commithash();
+const appMode = process.env.APP_MODE;
+if (appMode) {
+  dotenvCra.config({ env: appMode });
+}
 
 const currentReleaseContent = JSON.parse(
   fs.readFileSync('./public/release.json'),
@@ -15,10 +18,14 @@ const packageJsonVersion = JSON.parse(
   fs.readFileSync('./package.json'),
 ).version;
 
-const appMode = process.env.APP_MODE;
-if (appMode) {
-  dotenvCra.config({ env: appMode });
-}
+const releaseFileContents = JSON.stringify({
+  ...currentReleaseContent,
+  version: packageJsonVersion,
+  commit: new GitRevisionPlugin().commithash(),
+});
+
+process.env.REACT_APP_RELEASE_DATA = releaseFileContents;
+
 module.exports = {
   style: {
     postcss: {
@@ -53,11 +60,7 @@ module.exports = {
         }),
         GenerateFilePlugin({
           file: 'release.json',
-          content: JSON.stringify({
-            ...currentReleaseContent,
-            version: packageJsonVersion,
-            commit: process.env.REACT_APP_GIT_COMMIT_ID,
-          }),
+          content: process.env.REACT_APP_RELEASE_DATA,
         }),
       ]);
       return config;

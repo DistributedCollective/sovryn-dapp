@@ -529,7 +529,8 @@
         },
         "successMessage": "Your preferences have been saved.",
         "errorMessage": "Something went wrong, please try again.",
-        "authErrorMessage": "Authentication failed, please try again."
+        "authErrorMessage": "Authentication failed, please try again.",
+        "unconfirmedEmailWarning": "Unconfirmed - check inbox for confirmation email"
     },
     "termsOfUsePage": {
         "meta": {

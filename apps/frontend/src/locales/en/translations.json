@@ -160,19 +160,22 @@
             }
         },
         "tx": {
-            "adjustTrove": "Adjust",
-            "closeTrove": "Close using ZUSD",
-            "closeTroveDLLR": "Close using DLLR",
-            "openTrove": "Open",
             "adjustTitle": "Adjust line of credit",
-            "closeTitle": "Close line of credit",
             "openTitle": "Open line of credit",
+            "closeTitle": "Close line of credit",
             "claimSurplusTitle": "Claim surplus BTC collateral",
+            "repayTitle": "Repay loan",
+            "borrowTitle": "Borrow from line of credit",
+            "addCollateralTitle": "Add collateral to line of credit",
+            "withdrawCollateralTitle": "Withdraw collateral from line of credit",
+            "adjust": "Adjust",
+            "open": "Open",
+            "close": "Close",
             "claimSurplus": "Claim surplus",
-            "addCollateral": "Add Collateral",
-            "withdrawCollateral": "Withdraw Collateral",
             "repay": "Repay {{asset}}",
-            "borrow": "Borrow {{asset}}"
+            "borrow": "Borrow {{asset}}",
+            "addCollateral": "Add Collateral",
+            "withdrawCollateral": "Withdraw Collateral"
         }
     },
     "stats": {

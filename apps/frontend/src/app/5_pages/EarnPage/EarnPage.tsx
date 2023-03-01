@@ -33,6 +33,7 @@ import {
 
 import { AmountRenderer } from '../../2_molecules/AmountRenderer/AmountRenderer';
 import { AssetRenderer } from '../../2_molecules/AssetRenderer/AssetRenderer';
+import { TOKEN_RENDER_PRECISION } from '../../3_organisms/ZeroLocForm/constants';
 import { useAccount } from '../../../hooks/useAccount';
 import { useAmountInput } from '../../../hooks/useAmountInput';
 import { useAssetBalance } from '../../../hooks/useAssetBalance';
@@ -207,7 +208,14 @@ const EarnPage: FC = () => {
     if (isAmountZero) {
       return t(commonTranslations.na);
     }
-    return `${newPoolBalance} ${SupportedTokens.zusd.toUpperCase()}`;
+
+    return (
+      <AmountRenderer
+        value={newPoolBalance}
+        suffix={SupportedTokens.zusd}
+        precision={TOKEN_RENDER_PRECISION}
+      />
+    );
   }, [isAmountZero, newPoolBalance]);
 
   const newPoolShare = useMemo(() => {
@@ -300,7 +308,7 @@ const EarnPage: FC = () => {
               className="text-xs font-medium underline whitespace-nowrap"
               {...applyDataAttr('earn-max-button')}
             >
-              ({t(commonTranslations.max)}
+              ({t(commonTranslations.max)}{' '}
               <AmountRenderer
                 value={maximumAmount}
                 precision={4}
@@ -341,7 +349,13 @@ const EarnPage: FC = () => {
           <SimpleTable className="mt-3">
             <SimpleTableRow
               label={t(pageTranslations.currentPoolBalance)}
-              value={`${poolBalance} ${SupportedTokens.zusd.toUpperCase()}`}
+              value={
+                <AmountRenderer
+                  value={poolBalance}
+                  suffix={SupportedTokens.zusd}
+                  precision={TOKEN_RENDER_PRECISION}
+                />
+              }
             />
             <SimpleTableRow
               label={t(pageTranslations.currentPoolShare)}

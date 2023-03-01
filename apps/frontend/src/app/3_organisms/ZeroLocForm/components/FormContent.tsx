@@ -20,15 +20,17 @@ import {
   SimpleTable,
 } from '@sovryn/ui';
 
+import { AmountRenderer } from '../../../2_molecules/AmountRenderer/AmountRenderer';
 import { AssetRenderer } from '../../../2_molecules/AssetRenderer/AssetRenderer';
 import { BORROW_ASSETS } from '../../../5_pages/ZeroPage/constants';
 import { useMaintenance } from '../../../../hooks/useMaintenance';
 import { translations } from '../../../../locales/i18n';
-import { Bitcoin, CR_THRESHOLDS } from '../../../../utils/constants';
+import { Bitcoin, CR_THRESHOLDS, USD } from '../../../../utils/constants';
 import { formatValue } from '../../../../utils/math';
 import { CurrentTroveData } from '../CurrentTroveData';
 import { Label } from '../Label';
 import { Row } from '../Row';
+import { TOKEN_RENDER_PRECISION, BTC_RENDER_PRECISION } from '../constants';
 import { AmountType } from '../types';
 
 export type OpenTroveProps = {
@@ -202,9 +204,11 @@ export const FormContent: FC<FormContentProps> = props => {
       value === 0 ? (
         t(translations.common.na)
       ) : (
-        <>
-          {formatValue(value, 3)} {SupportedTokens.zusd.toUpperCase()}
-        </>
+        <AmountRenderer
+          value={value}
+          suffix={SupportedTokens.zusd}
+          precision={TOKEN_RENDER_PRECISION}
+        />
       ),
     [],
   );
@@ -214,9 +218,11 @@ export const FormContent: FC<FormContentProps> = props => {
       value === 0 ? (
         t(translations.common.na)
       ) : (
-        <>
-          {formatValue(value, 3)} {Bitcoin}
-        </>
+        <AmountRenderer
+          value={value}
+          suffix={Bitcoin}
+          precision={BTC_RENDER_PRECISION}
+        />
       ),
     [],
   );
@@ -227,8 +233,12 @@ export const FormContent: FC<FormContentProps> = props => {
         t(translations.common.na)
       ) : (
         <>
-          {formatValue(value, 3)} {SupportedTokens.zusd.toUpperCase()} (
-          {formatValue(props.borrowingRate * 100, 2)}%)
+          <AmountRenderer
+            value={value}
+            suffix={SupportedTokens.zusd}
+            precision={TOKEN_RENDER_PRECISION}
+          />{' '}
+          ({formatValue(props.borrowingRate * 100, 2)}%)
         </>
       ),
     [props.borrowingRate],
@@ -239,7 +249,25 @@ export const FormContent: FC<FormContentProps> = props => {
       value === 0 ? (
         t(translations.common.na)
       ) : (
-        <>{formatValue(value, 3)} USD</>
+        <AmountRenderer
+          value={value}
+          suffix={USD}
+          precision={TOKEN_RENDER_PRECISION}
+        />
+      ),
+    [],
+  );
+
+  const renderRBTCPrice = useCallback(
+    (value: number) =>
+      value === 0 ? (
+        t(translations.common.na)
+      ) : (
+        <AmountRenderer
+          value={value}
+          suffix={USD}
+          precision={TOKEN_RENDER_PRECISION}
+        />
       ),
     [],
   );
@@ -487,7 +515,13 @@ export const FormContent: FC<FormContentProps> = props => {
           <Row
             label={t(translations.adjustCreditLine.labels.rbtcPrice)}
             tooltip={t(translations.adjustCreditLine.labels.rbtcPriceTooltip)}
-            value={<>{formatValue(props.rbtcPrice, 3)} USD</>}
+            value={
+              <DynamicValue
+                initialValue={0}
+                value={props.rbtcPrice}
+                renderer={renderRBTCPrice}
+              />
+            }
           />
         </SimpleTable>
       </div>

@@ -21,10 +21,15 @@ import {
   Tooltip,
 } from '@sovryn/ui';
 
+import {
+  TOKEN_RENDER_PRECISION,
+  BTC_RENDER_PRECISION,
+} from '../../../3_organisms/ZeroLocForm/constants';
 import { useBlockNumber } from '../../../../hooks/useBlockNumber';
 import { translations } from '../../../../locales/i18n';
 import { Bitcoin } from '../../../../utils/constants';
-import { formatCompactValue, formatValue } from '../../../../utils/math';
+import { formatCompactValue } from '../../../../utils/math';
+import { AmountRenderer } from '../../AmountRenderer/AmountRenderer';
 import { SystemModeType } from '../types';
 import { calculateCollateralRatio } from '../utils';
 
@@ -52,37 +57,52 @@ export const ZeroStats: FC<ZeroStatsProps> = ({ className, dataAttribute }) => {
 
   const renderRBTCInLoc = useMemo(
     () =>
-      rbtcInLoc && zeroPrice
-        ? `${formatValue(
-            Number(rbtcInLoc),
-            0,
-          )} ${Bitcoin} ($${formatCompactValue(
-            Number(rbtcInLoc) * Number(zeroPrice),
-            2,
-          )})`
-        : 0,
+      rbtcInLoc && zeroPrice ? (
+        <>
+          <AmountRenderer
+            value={rbtcInLoc}
+            suffix={Bitcoin}
+            precision={BTC_RENDER_PRECISION}
+            dataAttribute="zero-statistics-rbtc-in-loc"
+          />{' '}
+          (${formatCompactValue(Number(rbtcInLoc) * Number(zeroPrice), 2)})
+        </>
+      ) : (
+        0
+      ),
     [zeroPrice, rbtcInLoc],
   );
 
   const renderZusdSupply = useMemo(
     () =>
-      zusdSupply
-        ? `${formatValue(
-            Number(zusdSupply),
-            2,
-          )} ${SupportedTokens.zusd.toUpperCase()}`
-        : 0,
+      zusdSupply ? (
+        <AmountRenderer
+          value={zusdSupply.toString()}
+          suffix={SupportedTokens.zusd}
+          precision={TOKEN_RENDER_PRECISION}
+          dataAttribute="zero-statistics-zusd-supply"
+        />
+      ) : (
+        0
+      ),
     [zusdSupply],
   );
 
   const renderZusdStabilityPool = useMemo(
     () =>
-      zusdInStabilityPool
-        ? `${formatValue(
-            Number(zusdInStabilityPool),
-            2,
-          )} ${SupportedTokens.zusd.toUpperCase()} (${zeroInStabilityPoolPercent})`
-        : 0,
+      zusdInStabilityPool ? (
+        <>
+          <AmountRenderer
+            value={zusdInStabilityPool.toString()}
+            suffix={SupportedTokens.zusd}
+            precision={TOKEN_RENDER_PRECISION}
+            dataAttribute="zero-statistics-zusd-in-stability-pool"
+          />{' '}
+          (${zeroInStabilityPoolPercent})
+        </>
+      ) : (
+        0
+      ),
     [zusdInStabilityPool, zeroInStabilityPoolPercent],
   );
 
@@ -133,7 +153,7 @@ export const ZeroStats: FC<ZeroStatsProps> = ({ className, dataAttribute }) => {
         {t(translations.stats.zero.title)}
       </Paragraph>
       <SimpleTable
-        dataAttribute="system-statistics"
+        dataAttribute="zero-statistics-table"
         className="lg:max-w-[23.125rem]"
       >
         <SimpleTableRow
@@ -144,7 +164,7 @@ export const ZeroStats: FC<ZeroStatsProps> = ({ className, dataAttribute }) => {
               <Tooltip
                 className="ml-2"
                 content={t(translations.stats.zero.rbtcInLoc)}
-                dataAttribute="system-statistics-tooltip-rbtc-in-loc"
+                dataAttribute="zero-statistics-tooltip-rbtc-in-loc"
               >
                 <div>
                   <Icon size={12} icon="info" />

@@ -6,6 +6,10 @@ import CountUp from 'react-countup';
 
 import { Button, ButtonSize, ButtonStyle, HelperButton } from '@sovryn/ui';
 
+import {
+  TOKEN_RENDER_PRECISION,
+  BTC_RENDER_PRECISION,
+} from '../../3_organisms/ZeroLocForm/constants';
 import { Bitcoin } from '../../../utils/constants';
 import { AmountRenderer } from '../AmountRenderer/AmountRenderer';
 import { CRatioIndicator } from './components/CRatioIndicator/CRatioIndicator';
@@ -58,19 +62,21 @@ export const LOCStatus: FC<LOCStatusProps> = ({
                 <AmountRenderer
                   value={collateral}
                   suffix={Bitcoin}
-                  precision={8}
-                  dataAttribute="LOC-collateral"
+                  precision={BTC_RENDER_PRECISION}
+                  dataAttribute="loc-status-collateral"
+                  isAnimated
                 />
               }
             />
             <LOCStat
               label={t('LOCStatus.currentDebt')}
               value={
-                <CountUp
-                  duration={0.7}
-                  separator=","
-                  suffix={` ${debtSymbol}`}
-                  end={debt}
+                <AmountRenderer
+                  value={debt}
+                  suffix={debtSymbol}
+                  precision={TOKEN_RENDER_PRECISION}
+                  dataAttribute="loc-status-debt"
+                  isAnimated
                 />
               }
             />

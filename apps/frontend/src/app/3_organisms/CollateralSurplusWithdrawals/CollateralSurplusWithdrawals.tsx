@@ -17,6 +17,7 @@ import {
 
 import { chains, defaultChainId } from '../../../config/chains';
 
+import { AmountRenderer } from '../../2_molecules/AmountRenderer/AmountRenderer';
 import { ExportCSV } from '../../2_molecules/ExportCSV/ExportCSV';
 import { TxIdWithNotification } from '../../2_molecules/TxIdWithNotification/TransactionIdWithNotification';
 import { useNotificationContext } from '../../../contexts/NotificationContext';
@@ -36,6 +37,7 @@ import {
 } from '../../../utils/graphql/zero/generated';
 import { dateFormat } from '../../../utils/helpers';
 import { formatValue } from '../../../utils/math';
+import { BTC_RENDER_PRECISION } from '../ZeroLocForm/constants';
 import { useGetCollateralSurplusWithdrawals } from './hooks/useGetCollateralSurplusWithdrawals';
 
 const pageSize = DEFAULT_HISTORY_FRAME_PAGE_SIZE;
@@ -69,9 +71,17 @@ export const CollateralSurplusHistoryFrame: FC = () => {
     client: zeroClient,
   });
 
-  const renderCollateralChange = useCallback((collSurplusChange: string) => {
-    return `${formatValue(Math.abs(Number(collSurplusChange)), 8)} ${Bitcoin}`;
-  }, []);
+  const renderCollateralChange = useCallback(
+    (collSurplusChange: string) => (
+      <AmountRenderer
+        value={collSurplusChange}
+        suffix={Bitcoin}
+        precision={BTC_RENDER_PRECISION}
+        dataAttribute="surplus-withdrawals-collateral"
+      />
+    ),
+    [],
+  );
 
   const generateRowTitle = useCallback((row: any) => {
     return (
@@ -155,13 +165,16 @@ export const CollateralSurplusHistoryFrame: FC = () => {
 
     return list.map(tx => ({
       timestamp: dateFormat(tx.transaction.timestamp),
-      collateralChange: renderCollateralChange(tx.collSurplusChange),
+      collateralChange: `${formatValue(
+        Math.abs(Number(tx.collSurplusChange)),
+        BTC_RENDER_PRECISION,
+      )} ${Bitcoin}`,
       transactionType: t(
         translations.collateralSurplusHistory.table.withdrawSurplus,
       ),
       transactionID: tx.transaction.id,
     }));
-  }, [account, addNotification, getCollSurplusChanges, renderCollateralChange]);
+  }, [account, addNotification, getCollSurplusChanges]);
 
   useEffect(() => {
     setPage(0);
@@ -172,7 +185,7 @@ export const CollateralSurplusHistoryFrame: FC = () => {
 
   return (
     <>
-      <div className="flex flex-row items-center gap-4 mb-7 hidden lg:inline-flex">
+      <div className="flex-row items-center gap-4 mb-7 hidden lg:inline-flex">
         <ExportCSV
           getData={exportData}
           filename="collateral surplus withdrawals"

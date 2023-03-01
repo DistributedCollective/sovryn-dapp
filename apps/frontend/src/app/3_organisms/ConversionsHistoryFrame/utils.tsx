@@ -4,6 +4,7 @@ import { t } from 'i18next';
 
 import { Paragraph, ParagraphSize } from '@sovryn/ui';
 
+import { AmountRenderer } from '../../2_molecules/AmountRenderer/AmountRenderer';
 import { masset } from '../../5_pages/ConvertPage/ConvertPage.types';
 import { translations } from '../../../locales/i18n';
 import {
@@ -11,7 +12,7 @@ import {
   ConversionType,
 } from '../../../utils/graphql/mynt/generated';
 import { dateFormat } from '../../../utils/helpers';
-import { AssetAmountCell } from './components/AssetAmountCell/AssetAmountCell';
+import { TOKEN_RENDER_PRECISION } from '../ZeroLocForm/constants';
 import { TransactionIdRenderer } from './components/TransactionIdRenderer/TransactionIdRenderer';
 
 const sentAmountRenderer = (item: Conversion) => {
@@ -24,7 +25,7 @@ const sentAmountRenderer = (item: Conversion) => {
     ? item.bAsset.symbol
     : masset.toUpperCase();
 
-  return <AssetAmountCell amount={amount} asset={asset!} />;
+  return <AmountRenderer value={amount} suffix={asset!} />;
 };
 
 const receivedAmountRenderer = (item: Conversion) => {
@@ -37,7 +38,13 @@ const receivedAmountRenderer = (item: Conversion) => {
     ? masset.toUpperCase()
     : item.bAsset.symbol;
 
-  return <AssetAmountCell amount={amount} asset={asset!} />;
+  return (
+    <AmountRenderer
+      value={amount}
+      suffix={asset!}
+      precision={TOKEN_RENDER_PRECISION}
+    />
+  );
 };
 
 export const columnsConfig = [

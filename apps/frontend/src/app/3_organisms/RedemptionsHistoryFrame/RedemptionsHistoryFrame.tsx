@@ -5,6 +5,8 @@ import { nanoid } from 'nanoid';
 
 import { SupportedTokens } from '@sovryn/contracts';
 import {
+  ErrorBadge,
+  ErrorLevel,
   NotificationType,
   OrderDirection,
   OrderOptions,
@@ -12,14 +14,11 @@ import {
   Paragraph,
   ParagraphSize,
   Table,
-  Tooltip,
-  TooltipTrigger,
-  ErrorBadge,
-  ErrorLevel,
 } from '@sovryn/ui';
 
 import { chains, defaultChainId } from '../../../config/chains';
 
+import { AmountRenderer } from '../../2_molecules/AmountRenderer/AmountRenderer';
 import { ExportCSV } from '../../2_molecules/ExportCSV/ExportCSV';
 import { TxIdWithNotification } from '../../2_molecules/TxIdWithNotification/TransactionIdWithNotification';
 import { useNotificationContext } from '../../../contexts/NotificationContext';
@@ -38,7 +37,10 @@ import {
   useGetRedemptionsLazyQuery,
 } from '../../../utils/graphql/zero/generated';
 import { dateFormat } from '../../../utils/helpers';
-import { formatValue } from '../../../utils/math';
+import {
+  TOKEN_RENDER_PRECISION,
+  BTC_RENDER_PRECISION,
+} from '../ZeroLocForm/constants';
 import { useGetRedemptionsHistory } from './hooks/useGetRedemptionsHistory';
 
 const pageSize = DEFAULT_HISTORY_FRAME_PAGE_SIZE;
@@ -85,23 +87,12 @@ export const RedemptionsHistoryFrame: FC = () => {
     (redemption: Redemption) => (
       <>
         {redemption.tokensActuallyRedeemed.length ? (
-          <Tooltip
-            content={
-              <>
-                {redemption.tokensActuallyRedeemed}{' '}
-                {SupportedTokens.zusd.toUpperCase()}
-              </>
-            }
-            trigger={TooltipTrigger.click}
-            className="cursor-pointer uppercase"
-            tooltipClassName="uppercase"
+          <AmountRenderer
+            value={redemption.tokensActuallyRedeemed}
+            suffix={SupportedTokens.zusd}
+            precision={TOKEN_RENDER_PRECISION}
             dataAttribute="redemption-history-zusd-redeemed"
-          >
-            <span>
-              {formatValue(Number(redemption.tokensActuallyRedeemed), 2)}{' '}
-              {SupportedTokens.zusd.toUpperCase()}
-            </span>
-          </Tooltip>
+          />
         ) : (
           '-'
         )}
@@ -114,21 +105,12 @@ export const RedemptionsHistoryFrame: FC = () => {
     (redemption: Redemption) => (
       <>
         {redemption.collateralRedeemed.length ? (
-          <Tooltip
-            content={
-              <>
-                {redemption.collateralRedeemed} {Bitcoin}
-              </>
-            }
-            trigger={TooltipTrigger.click}
-            className="cursor-pointer uppercase"
-            tooltipClassName="uppercase"
+          <AmountRenderer
+            value={redemption.collateralRedeemed}
+            suffix={Bitcoin}
+            precision={BTC_RENDER_PRECISION}
             dataAttribute="redemption-history-rbtc-received"
-          >
-            <span>
-              {formatValue(Number(redemption.collateralRedeemed), 6)} {Bitcoin}
-            </span>
-          </Tooltip>
+          />
         ) : (
           '-'
         )}
@@ -141,21 +123,12 @@ export const RedemptionsHistoryFrame: FC = () => {
     (redemption: Redemption) => (
       <>
         {redemption.fee.length ? (
-          <Tooltip
-            content={
-              <>
-                {redemption.fee} {Bitcoin}
-              </>
-            }
-            trigger={TooltipTrigger.click}
-            className="cursor-pointer uppercase"
-            tooltipClassName="uppercase"
+          <AmountRenderer
+            value={redemption.fee}
+            suffix={Bitcoin}
+            precision={BTC_RENDER_PRECISION}
             dataAttribute="redemption-history-fee"
-          >
-            <span>
-              {formatValue(Number(redemption.fee), 6)} {Bitcoin}
-            </span>
-          </Tooltip>
+          />
         ) : (
           '-'
         )}
@@ -259,7 +232,7 @@ export const RedemptionsHistoryFrame: FC = () => {
 
   return (
     <>
-      <div className="flex flex-row items-center gap-4 mb-7 hidden lg:inline-flex">
+      <div className="flex-row items-center gap-4 mb-7 hidden lg:inline-flex">
         <ExportCSV
           getData={exportData}
           filename="redemptions"

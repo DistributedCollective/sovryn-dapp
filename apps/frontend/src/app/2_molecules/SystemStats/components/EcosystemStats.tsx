@@ -21,13 +21,18 @@ import {
   Tooltip,
 } from '@sovryn/ui';
 
+import {
+  TOKEN_RENDER_PRECISION,
+  BTC_RENDER_PRECISION,
+} from '../../../3_organisms/ZeroLocForm/constants';
 import { translations } from '../../../../locales/i18n';
 import { Bitcoin } from '../../../../utils/constants';
 import {
   formatCompactValue,
-  formatValue,
+  fromWei,
   fromWeiFixed,
 } from '../../../../utils/math';
+import { AmountRenderer } from '../../AmountRenderer/AmountRenderer';
 import { useGetAssetBalance } from '../hooks/useGetAssetBalance';
 import { useGetTotalSupply } from '../hooks/useGetTotalSupply';
 import { TokenType } from '../types';
@@ -54,15 +59,24 @@ export const EcosystemStats: FC<EcosystemStatsProps> = ({
 
   const renderBabelFishZUSDBalance = useMemo(
     () =>
-      babelFishZUSDBalance && zeroPrice
-        ? `${formatValue(
-            Number(fromWeiFixed(babelFishZUSDBalance)),
-            0,
-          )} ${Bitcoin} ($${formatCompactValue(
+      babelFishZUSDBalance && zeroPrice ? (
+        <>
+          <AmountRenderer
+            value={fromWeiFixed(babelFishZUSDBalance)}
+            suffix={Bitcoin}
+            precision={BTC_RENDER_PRECISION}
+            dataAttribute="ecosystem-statistics-babel-fish-zusd-balance"
+          />{' '}
+          ($
+          {formatCompactValue(
             Number(fromWeiFixed(babelFishZUSDBalance)) * Number(zeroPrice),
             2,
-          )})`
-        : 0,
+          )}
+          )
+        </>
+      ) : (
+        0
+      ),
     [zeroPrice, babelFishZUSDBalance],
   );
 
@@ -73,12 +87,16 @@ export const EcosystemStats: FC<EcosystemStatsProps> = ({
 
   const renderBabelFishDLLRBalance = useMemo(
     () =>
-      babelFishDLLRBalance
-        ? `${formatValue(
-            Number(fromWeiFixed(babelFishDLLRBalance)),
-            2,
-          )} ${SupportedTokens.dllr.toUpperCase()}`
-        : 0,
+      babelFishDLLRBalance ? (
+        <AmountRenderer
+          value={fromWei(babelFishDLLRBalance)}
+          suffix={SupportedTokens.dllr}
+          precision={TOKEN_RENDER_PRECISION}
+          dataAttribute="ecosystem-statistics-babel-fish-dllr-balance"
+        />
+      ) : (
+        0
+      ),
     [babelFishDLLRBalance],
   );
 
@@ -89,12 +107,16 @@ export const EcosystemStats: FC<EcosystemStatsProps> = ({
 
   const renderMyntZUSDBalance = useMemo(
     () =>
-      myntZUSDBalance
-        ? `${formatValue(
-            Number(fromWeiFixed(myntZUSDBalance)),
-            2,
-          )} ${SupportedTokens.zusd.toUpperCase()}`
-        : 0,
+      myntZUSDBalance ? (
+        <AmountRenderer
+          value={fromWei(myntZUSDBalance)}
+          suffix={SupportedTokens.zusd}
+          precision={TOKEN_RENDER_PRECISION}
+          dataAttribute="ecosystem-statistics-mynt-zusd-balance"
+        />
+      ) : (
+        0
+      ),
     [myntZUSDBalance],
   );
 
@@ -105,12 +127,16 @@ export const EcosystemStats: FC<EcosystemStatsProps> = ({
 
   const renderMyntDOCBalance = useMemo(
     () =>
-      myntDOCBalance
-        ? `${formatValue(
-            Number(fromWeiFixed(myntDOCBalance)),
-            2,
-          )} ${SupportedTokens.doc.toUpperCase()}`
-        : 0,
+      myntDOCBalance ? (
+        <AmountRenderer
+          value={fromWei(myntDOCBalance)}
+          suffix={SupportedTokens.doc}
+          precision={TOKEN_RENDER_PRECISION}
+          dataAttribute="ecosystem-statistics-mynt-doc-balance"
+        />
+      ) : (
+        0
+      ),
     [myntDOCBalance],
   );
 
@@ -118,12 +144,16 @@ export const EcosystemStats: FC<EcosystemStatsProps> = ({
 
   const renderTotalDLLRSupply = useMemo(
     () =>
-      totalDLLRSupply
-        ? `${formatValue(
-            Number(fromWeiFixed(totalDLLRSupply)),
-            2,
-          )} ${SupportedTokens.dllr.toUpperCase()}`
-        : 0,
+      totalDLLRSupply ? (
+        <AmountRenderer
+          value={fromWei(totalDLLRSupply)}
+          suffix={SupportedTokens.dllr}
+          precision={TOKEN_RENDER_PRECISION}
+          dataAttribute="ecosystem-statistics-total-dllr-supply"
+        />
+      ) : (
+        0
+      ),
     [totalDLLRSupply],
   );
 
@@ -141,7 +171,7 @@ export const EcosystemStats: FC<EcosystemStatsProps> = ({
         {t(translations.stats.ecosystem.title)}
       </Paragraph>
       <SimpleTable
-        dataAttribute="system-statistics"
+        dataAttribute="ecosystem-statistics-table"
         className="lg:max-w-[23.125rem]"
       >
         <SimpleTableRow
@@ -152,7 +182,7 @@ export const EcosystemStats: FC<EcosystemStatsProps> = ({
               <Tooltip
                 className="ml-2"
                 content={t(translations.stats.ecosystem.babelFishZUSDBalance)}
-                dataAttribute="system-statistics-tooltip-rbtc-in-loc"
+                dataAttribute="ecosystem-statistics-tooltip-rbtc-in-loc"
               >
                 <div>
                   <Icon size={12} icon="info" />

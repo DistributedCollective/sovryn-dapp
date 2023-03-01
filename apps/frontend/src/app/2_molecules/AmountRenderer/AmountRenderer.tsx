@@ -3,6 +3,7 @@ import React, { FC, useCallback, useMemo } from 'react';
 import classNames from 'classnames';
 import { t } from 'i18next';
 import { nanoid } from 'nanoid';
+import CountUp from 'react-countup';
 
 import {
   Icon,
@@ -14,7 +15,13 @@ import {
 
 import { useNotificationContext } from '../../../contexts/NotificationContext';
 import { translations } from '../../../locales/i18n';
-import { formatValue } from '../../../utils/math';
+import {
+  formatValue,
+  getDecimalPartLength,
+  getLocaleSeparators,
+} from '../../../utils/math';
+
+const { decimal, thousand } = getLocaleSeparators();
 
 type AmountRendererProps = {
   value: string | number;
@@ -23,6 +30,7 @@ type AmountRendererProps = {
   suffix?: string;
   prefix?: string;
   dataAttribute?: string;
+  isAnimated?: boolean;
 };
 
 export const AmountRenderer: FC<AmountRendererProps> = ({
@@ -32,10 +40,13 @@ export const AmountRenderer: FC<AmountRendererProps> = ({
   suffix = '',
   prefix = '',
   dataAttribute,
+  isAnimated = false,
 }) => {
   const { addNotification } = useNotificationContext();
+
   const copyAddress = useCallback(async () => {
     await navigator.clipboard.writeText(String(value));
+
     addNotification({
       type: NotificationType.success,
       title: t(translations.copyAmount),
@@ -44,21 +55,37 @@ export const AmountRenderer: FC<AmountRendererProps> = ({
       id: nanoid(),
     });
   }, [addNotification, value]);
-  const formattedValue = useMemo(
-    () => formatValue(Number(value), precision),
-    [precision, value],
+
+  const formattedValue = useMemo(() => {
+    const numberValue = Number(value);
+    const decimals = getDecimalPartLength(numberValue);
+
+    if (decimals > precision) {
+      return Number(numberValue.toString().slice(0, -(decimals - precision))); // trimming the difference between the number of decimals we have and the precision we want, cannot use toFixed() as we need to round down
+    }
+    return numberValue;
+  }, [precision, value]);
+
+  const localeFormattedValue = useMemo(
+    () => formatValue(formattedValue, precision), // we need to format formattedValue to make sure we round down (formatValue function rounds up)
+    [formattedValue, precision],
+  );
+
+  const formattedValueDecimals = useMemo(
+    () => getDecimalPartLength(formattedValue),
+    [formattedValue],
   );
 
   const tooltipDisabled = useMemo(
-    () => Number(formattedValue.split(',').join('')) === Number(value),
-    [formattedValue, value],
+    () => getDecimalPartLength(value) <= precision,
+    [precision, value],
   );
 
   return (
     <Tooltip
       content={
         <span className="flex items-center">
-          {`${prefix} ${value} ${suffix}`}
+          {`${prefix} ${value} ${suffix.toUpperCase()}`}
           <span
             className="ml-1 cursor-pointer hover:bg-gray-20 p-1 rounded text-gray-50"
             onClick={copyAddress}
@@ -74,9 +101,26 @@ export const AmountRenderer: FC<AmountRendererProps> = ({
       trigger={TooltipTrigger.click}
       dataAttribute={dataAttribute}
     >
-      <span className={className}>
-        {`${prefix} ${!tooltipDisabled ? '~' : ''}${formattedValue} ${suffix}`}
-      </span>
+      {isAnimated ? (
+        <div>
+          <CountUp
+            start={0}
+            end={formattedValue}
+            duration={0.7}
+            separator={thousand}
+            decimals={formattedValueDecimals}
+            decimal={decimal}
+            prefix={!tooltipDisabled ? '~ ' : ''}
+            suffix={` ${suffix.toUpperCase()}`}
+          />
+        </div>
+      ) : (
+        <span className={className}>
+          {`${
+            !tooltipDisabled ? '~ ' : ''
+          }${prefix}${localeFormattedValue} ${suffix.toUpperCase()}`}
+        </span>
+      )}
     </Tooltip>
   );
 };

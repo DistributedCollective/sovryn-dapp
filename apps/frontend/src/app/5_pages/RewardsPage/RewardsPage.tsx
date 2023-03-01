@@ -23,11 +23,14 @@ import {
   ParagraphStyle,
 } from '@sovryn/ui';
 
+import { AmountRenderer } from '../../2_molecules/AmountRenderer/AmountRenderer';
+import { BTC_RENDER_PRECISION } from '../../3_organisms/ZeroLocForm/constants';
 import { useAccount } from '../../../hooks/useAccount';
 import { useBlockNumber } from '../../../hooks/useBlockNumber';
 import { useMaintenance } from '../../../hooks/useMaintenance';
 import { useGetOpenTrove } from '../../../hooks/zero/useGetOpenTrove';
 import { translations } from '../../../locales/i18n';
+import { Bitcoin } from '../../../utils/constants';
 import { useHandleRewards } from './hooks/useHandleRewards';
 import { RewardsAction } from './types';
 
@@ -92,7 +95,12 @@ const RewardsPage: FC = () => {
               {t(translations.rewardPage.stabilityPoolRewards)}
             </Paragraph>
             <div className="text-2xl leading-7 uppercase">
-              {amount?.prettify(4)} {t(translations.rewardPage.btc)}
+              <AmountRenderer
+                value={amount.toString()}
+                suffix={Bitcoin}
+                precision={BTC_RENDER_PRECISION}
+                dataAttribute="rewards-amount"
+              />
             </div>
           </div>
 

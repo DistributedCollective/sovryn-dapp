@@ -50,7 +50,7 @@ const receivedAmountRenderer = (item: Conversion) => {
 export const columnsConfig = [
   {
     id: 'timestamp',
-    title: t(translations.conversionsHistory.table.timestamp),
+    title: t(translations.common.tables.columnTitles.timestamp),
     cellRenderer: (item: Conversion) => (
       <>{dateFormat(item.transaction.timestamp)}</>
     ),
@@ -58,7 +58,7 @@ export const columnsConfig = [
   },
   {
     id: 'transactionType',
-    title: t(translations.conversionsHistory.table.transactionType),
+    title: t(translations.common.tables.columnTitles.transactionType),
     cellRenderer: () => <>{t(translations.conversionsHistory.type)}</>,
   },
   {
@@ -73,7 +73,7 @@ export const columnsConfig = [
   },
   {
     id: 'transactionId',
-    title: t(translations.conversionsHistory.table.txId),
+    title: t(translations.common.tables.columnTitles.transactionID),
     cellRenderer: (item: Conversion) => <TransactionIdRenderer item={item} />,
   },
 ];

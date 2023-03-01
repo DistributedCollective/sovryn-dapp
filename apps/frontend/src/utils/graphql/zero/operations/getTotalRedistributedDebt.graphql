@@ -1,0 +1,6 @@
+query getGlobalsEntity {
+  globals {
+    rawTotalRedistributedDebt
+    rawTotalRedistributedCollateral
+  }
+}

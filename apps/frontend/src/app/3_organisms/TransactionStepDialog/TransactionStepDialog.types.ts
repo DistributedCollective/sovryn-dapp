@@ -22,7 +22,7 @@ export type Transaction = {
   subtitle?: string;
   request: TransactionRequest;
   onStart?: (hash: string) => void;
-  onComplete?: (hash: string) => void;
+  onComplete?: (result: string | PermitResponse) => void;
   onChangeStatus?: (status: StatusType) => void;
   updateHandler?: (
     request: TransactionRequest,
@@ -34,6 +34,7 @@ export enum TransactionType {
   signMessage = 'sign',
   signTypedData = 'signTypedData',
   signTransaction = 'signTransaction',
+  signPermit = 'signPermit',
 }
 
 export type SignMessageRequest = {
@@ -50,6 +51,17 @@ export type SignTypedDataRequest = {
   value: Record<string, any>;
 };
 
+export type SignPermitRequest = {
+  type: TransactionType.signPermit;
+  signer: JsonRpcSigner;
+  token: string;
+  owner: string;
+  spender: string;
+  value?: string | number;
+  deadline?: number;
+  nonce?: number;
+};
+
 export type SignTransactionRequest = {
   type: TransactionType.signTransaction;
   contract: ethers.Contract;
@@ -63,6 +75,7 @@ export type SignTransactionRequest = {
 export type TransactionRequest =
   | SignMessageRequest
   | SignTypedDataRequest
+  | SignPermitRequest
   | SignTransactionRequest;
 
 export enum TransactionReceiptStatus {
@@ -71,8 +84,19 @@ export enum TransactionReceiptStatus {
   error = 'error',
 }
 
+export type PermitResponse = {
+  owner: string;
+  spender: string;
+  value: number | string;
+  nonce: number | string;
+  deadline: number | string;
+  r: string;
+  s: string;
+  v: number;
+};
+
 export type TransactionReceipt = {
   status: TransactionReceiptStatus;
   request: TransactionRequest;
-  response?: string;
+  response?: string | PermitResponse;
 };

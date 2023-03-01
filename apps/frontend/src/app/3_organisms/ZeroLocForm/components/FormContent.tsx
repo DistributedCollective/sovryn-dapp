@@ -325,7 +325,7 @@ export const FormContent: FC<FormContentProps> = props => {
             value={props.debtAmount}
             onChangeText={handleDebtAmountChange}
             maxAmount={props.maxDebtAmount}
-            label={t(translations.adjustCreditLine.fields.debt.amount)}
+            label={t(translations.common.amount)}
             tooltip={t(translations.adjustCreditLine.fields.debt.tooltip)}
             className="w-full flex-grow-0 flex-shrink"
             invalid={!!props.debtError}
@@ -367,7 +367,7 @@ export const FormContent: FC<FormContentProps> = props => {
           value={props.collateralAmount}
           onChangeText={handleCollateralAmountChange}
           maxAmount={props.maxCollateralAmount}
-          label={t(translations.adjustCreditLine.fields.collateral.amount)}
+          label={t(translations.common.amount)}
           tooltip={t(translations.adjustCreditLine.fields.collateral.tooltip)}
           className="max-w-none"
           unit={Bitcoin}

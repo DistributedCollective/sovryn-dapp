@@ -1,5 +1,16 @@
 query getUserOpenTrove($user: ID!) {
   trove(id: $user) {
+    id
+    collateral
+    debt
+    status
+    collateralRatioSortKey
+    collateralRatioSortKey_legacy
+    rawCollateral
+    rawDebt
+    rawSnapshotOfTotalRedistributedCollateral
+    rawSnapshotOfTotalRedistributedDebt
+    rawStake
     changes(
       where: { troveOperation: openTrove }
       orderBy: sequenceNumber

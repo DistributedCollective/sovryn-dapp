@@ -1,0 +1,28 @@
+query getFunding(
+  $user: String
+  $skip: Int!
+  $pageSize: Int!
+  $orderBy: BitcoinTransfer_orderBy
+  $orderDirection: OrderDirection
+) {
+  bitcoinTransfers(
+    where: { user: $user }
+    first: $pageSize
+    skip: $skip
+    orderBy: $orderBy
+    orderDirection: $orderDirection
+  ) {
+    user {
+      id
+    }
+    createdAtTx {
+      id
+    }
+    createdAtTimestamp
+    bitcoinTxHash
+    direction
+    amountBTC
+    feeBTC
+    totalAmountBTC
+  }
+}

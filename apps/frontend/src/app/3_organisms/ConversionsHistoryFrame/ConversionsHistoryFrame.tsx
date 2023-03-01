@@ -95,7 +95,7 @@ export const ConversionsHistoryFrame: React.FC = () => {
     if (!conversions || !conversions?.length) {
       addNotification({
         type: NotificationType.warning,
-        title: t(translations.conversionsHistory.actions.noDataToExport),
+        title: t(translations.common.tables.actions.noDataToExport),
         dismissible: true,
         id: nanoid(),
       });

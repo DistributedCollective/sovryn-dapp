@@ -7,7 +7,11 @@ query getTrove(
   $filters: TroveChange_filter
 ) {
   trove(id: $user) {
+    debt
     id
+    collateralRatioSortKey
+    collateral
+    status
     changes(
       first: $pageSize
       skip: $skip

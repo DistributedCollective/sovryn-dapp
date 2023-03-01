@@ -16,9 +16,9 @@ export type ConnectedUserBannerProps = {
 export const ConnectedUserBanner: FC<ConnectedUserBannerProps> = ({
   openLOC,
 }) => {
-  const { value, loading } = useAssetBalance(SupportedTokens.rbtc);
+  const { balance, loading } = useAssetBalance(SupportedTokens.rbtc);
 
-  const hasRbtcBalance = useMemo(() => Number(value) !== 0, [value]);
+  const hasRbtcBalance = useMemo(() => Number(balance) !== 0, [balance]);
 
   const onClickHandler = useMemo(
     () =>
@@ -36,8 +36,8 @@ export const ConnectedUserBanner: FC<ConnectedUserBannerProps> = ({
   const buttonText = useMemo(
     () =>
       hasRbtcBalance
-        ? t(translations.dashboardWelcomeBanner.OpenCredit)
-        : t(translations.dashboardWelcomeBanner.fundWallet),
+        ? t(translations.zeroPage.dashboardWelcomeBanner.OpenCredit)
+        : t(translations.zeroPage.dashboardWelcomeBanner.fundWallet),
     [hasRbtcBalance],
   );
 

@@ -9,14 +9,12 @@ import {
 } from '@sovryn/contracts';
 import { ChainId } from '@sovryn/ethers-provider';
 
-import {
-  CacheCallOptions,
-  CacheCallResponse,
-} from '../store/rxjs/provider-cache';
+import { CacheCallOptions } from '../store/rxjs/provider-cache';
 import { getRskChainId } from '../utils/chain';
 import { MAX_GAS_LIMIT } from '../utils/constants';
 import { composeGas } from '../utils/helpers';
-import { useAssetBalance } from './useAssetBalance';
+import { fromWei } from '../utils/math';
+import { AssetBalanceResponse, useAssetBalance } from './useAssetBalance';
 import { useAsync } from './useAsync';
 import { useGasPrice } from './useGasPrice';
 
@@ -25,24 +23,35 @@ export const useMaxAssetBalance = (
   chainId: ChainId = getRskChainId(),
   gasLimit: BigNumberish = MAX_GAS_LIMIT,
   options?: Partial<CacheCallOptions>,
-): CacheCallResponse<string> => {
+): AssetBalanceResponse => {
   const gasPrice = useGasPrice(chainId);
-  const balance = useAssetBalance(asset, chainId, null, 0, options);
+  const result = useAssetBalance(asset, chainId, null, 0, options);
 
   const contract = useAsync<ContractConfigData>(() =>
     getTokenContract(asset, chainId),
   );
 
   return useMemo(() => {
-    const value = BigNumber.from(balance.value).sub(
+    const value = BigNumber.from(result.weiBalance).sub(
       contract?.address === constants.AddressZero
         ? composeGas(gasPrice || '0', gasLimit)
         : 0,
     );
     return {
-      value: value.gt(0) ? value.toString() : '0',
+      weiBalance: value.gt(0) ? value.toString() : '0',
+      balance: fromWei(
+        value.gt(0) ? value.toString() : '0',
+        result.decimalPrecision,
+      ),
+      decimalPrecision: result.decimalPrecision,
       loading: false,
       error: null,
     };
-  }, [balance.value, contract?.address, gasPrice, gasLimit]);
+  }, [
+    result.weiBalance,
+    result.decimalPrecision,
+    contract?.address,
+    gasPrice,
+    gasLimit,
+  ]);
 };

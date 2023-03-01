@@ -116,3 +116,10 @@ export const getLocaleSeparators = () => {
 
 export const getDecimalPartLength = (value: string | number) =>
   value.toString().split('.')?.[1]?.length || 0;
+
+export const numeric = (value: number) => {
+  if (isNaN(value) || !isFinite(value) || !value) {
+    return 0;
+  }
+  return value;
+};

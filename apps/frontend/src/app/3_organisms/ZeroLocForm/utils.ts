@@ -23,7 +23,7 @@ export const normalizeAmountByType = (
 export const getOriginationFeeAmount = (
   borrowAmount: number,
   originationFeeRate: number,
-) => (borrowAmount / (1 + originationFeeRate)) * originationFeeRate;
+) => borrowAmount * originationFeeRate;
 
 export const getTotalBorrowingFees = (
   borrowAmount: number,

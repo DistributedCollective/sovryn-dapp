@@ -342,9 +342,11 @@ const EarnPage: FC = () => {
             />
           </div>
           {!isValidAmount && (
-            <Paragraph className="text-error-light font-medium mt-2">
-              {t(pageTranslations.form.invalidAmountError)}
-            </Paragraph>
+            <ErrorBadge
+              level={ErrorLevel.Critical}
+              message={t(pageTranslations.form.invalidAmountError)}
+              dataAttribute="earn-amount-input-error"
+            />
           )}
           <SimpleTable className="mt-3">
             <SimpleTableRow

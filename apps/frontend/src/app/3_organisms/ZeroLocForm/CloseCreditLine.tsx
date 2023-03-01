@@ -8,7 +8,6 @@ import {
   ErrorBadge,
   ErrorLevel,
   FormGroup,
-  Icon,
   Input,
   InputSize,
   Paragraph,
@@ -148,18 +147,12 @@ export const CloseCreditLine: FC<CloseCreditLineProps> = ({
       </SimpleTable>
 
       {hasError && (
-        <Paragraph
-          children={
-            <span className="flex justify-center items-center mt-4 p-2 rounded bolder-error bg-error bg-opacity-20">
-              <Icon icon="failed-tx" size={20} className="mr-3 w-5 min-w-5" />
-              {t(translations.closeCreditLine.error, {
-                amount: insufficientBalance,
-                token: creditToken.toUpperCase(),
-              })}
-            </span>
-          }
-          className="text-error-light mt-4 font-medium"
-          size={ParagraphSize.small}
+        <ErrorBadge
+          level={ErrorLevel.Critical}
+          message={t(translations.closeCreditLine.error, {
+            amount: insufficientBalance,
+            token: creditToken.toUpperCase(),
+          })}
           dataAttribute="close-credit-line-error"
         />
       )}

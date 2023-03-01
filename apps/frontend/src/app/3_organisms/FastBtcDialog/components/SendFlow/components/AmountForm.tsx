@@ -120,7 +120,6 @@ export const AmountForm: React.FC = () => {
           <AmountInput
             label={t(translations.common.amount)}
             onChangeText={setValue}
-            decimalPrecision={8}
             unit={Bitcoin}
             value={value}
             className="max-w-none"

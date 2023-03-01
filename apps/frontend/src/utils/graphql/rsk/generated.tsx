@@ -12400,6 +12400,18 @@ export enum _SubgraphErrorPolicy_ {
   Deny = 'deny',
 }
 
+export type GetBitcoinTxIdQueryVariables = Exact<{
+  createdAtTx?: InputMaybe<Scalars['String']>;
+}>;
+
+export type GetBitcoinTxIdQuery = {
+  __typename?: 'Query';
+  bitcoinTransfers: Array<{
+    __typename?: 'BitcoinTransfer';
+    bitcoinTxHash: string;
+  }>;
+};
+
 export type GetFundingQueryVariables = Exact<{
   user?: InputMaybe<Scalars['String']>;
   skip: Scalars['Int'];
@@ -12475,6 +12487,64 @@ export type GetTransactionsQuery = {
   }>;
 };
 
+export const GetBitcoinTxIdDocument = gql`
+  query getBitcoinTxId($createdAtTx: String) {
+    bitcoinTransfers(where: { createdAtTx: $createdAtTx }, first: 1) {
+      bitcoinTxHash
+    }
+  }
+`;
+
+/**
+ * __useGetBitcoinTxIdQuery__
+ *
+ * To run a query within a React component, call `useGetBitcoinTxIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetBitcoinTxIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetBitcoinTxIdQuery({
+ *   variables: {
+ *      createdAtTx: // value for 'createdAtTx'
+ *   },
+ * });
+ */
+export function useGetBitcoinTxIdQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    GetBitcoinTxIdQuery,
+    GetBitcoinTxIdQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<GetBitcoinTxIdQuery, GetBitcoinTxIdQueryVariables>(
+    GetBitcoinTxIdDocument,
+    options,
+  );
+}
+export function useGetBitcoinTxIdLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    GetBitcoinTxIdQuery,
+    GetBitcoinTxIdQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<GetBitcoinTxIdQuery, GetBitcoinTxIdQueryVariables>(
+    GetBitcoinTxIdDocument,
+    options,
+  );
+}
+export type GetBitcoinTxIdQueryHookResult = ReturnType<
+  typeof useGetBitcoinTxIdQuery
+>;
+export type GetBitcoinTxIdLazyQueryHookResult = ReturnType<
+  typeof useGetBitcoinTxIdLazyQuery
+>;
+export type GetBitcoinTxIdQueryResult = Apollo.QueryResult<
+  GetBitcoinTxIdQuery,
+  GetBitcoinTxIdQueryVariables
+>;
 export const GetFundingDocument = gql`
   query getFunding(
     $user: String

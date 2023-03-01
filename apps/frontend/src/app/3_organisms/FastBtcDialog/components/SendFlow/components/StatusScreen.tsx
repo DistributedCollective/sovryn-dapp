@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo } from 'react';
 
 import classNames from 'classnames';
 import { t } from 'i18next';
@@ -16,6 +16,7 @@ import { StatusIcon } from '../../../../../2_molecules/StatusIcon/StatusIcon';
 import { TxIdWithNotification } from '../../../../../2_molecules/TxIdWithNotification/TransactionIdWithNotification';
 import { translations } from '../../../../../../locales/i18n';
 import { Bitcoin } from '../../../../../../utils/constants';
+import { useGetBitcoinTxIdQuery } from '../../../../../../utils/graphql/rsk/generated';
 import {
   getBtcExplorerUrl,
   getRskExplorerUrl,
@@ -70,6 +71,19 @@ export const StatusScreen: React.FC<StatusScreenProps> = ({
     () => txStatus === StatusType.pending,
     [txStatus],
   );
+
+  const { data, refetch } = useGetBitcoinTxIdQuery({
+    variables: { createdAtTx: txHash || '' },
+  });
+
+  const bitcoinTxHash = useMemo(
+    () => data?.bitcoinTransfers?.[0]?.bitcoinTxHash,
+    [data],
+  );
+
+  useEffect(() => {
+    refetch();
+  }, [refetch, txHash]);
 
   const items = useMemo(
     () => [
@@ -126,8 +140,19 @@ export const StatusScreen: React.FC<StatusScreenProps> = ({
           <Icon icon={IconNames.PENDING} />
         ),
       },
+      {
+        label: t(translation.bitcoinTxId),
+        value: bitcoinTxHash ? (
+          <TxIdWithNotification
+            value={bitcoinTxHash}
+            href={`${btcExplorerUrl}/tx/${bitcoinTxHash}`}
+          />
+        ) : (
+          <Icon icon={IconNames.PENDING} />
+        ),
+      },
     ],
-    [amount, feesPaid, from, receiveAmount, to, txHash],
+    [amount, bitcoinTxHash, feesPaid, from, receiveAmount, to, txHash],
   );
 
   return (

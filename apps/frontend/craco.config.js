@@ -47,7 +47,10 @@ module.exports = {
           configFile: 'tsconfig.json',
         },
       });
-      config.ignoreWarnings = [/Failed to parse source map/];
+      config.ignoreWarnings = [
+        /Failed to parse source map/,
+        /Configure maximumFileSizeToCacheInBytes to change this limit/,
+      ];
       config.resolve.fallback = {
         stream: require.resolve('stream-browserify'),
         buffer: require.resolve('buffer'),

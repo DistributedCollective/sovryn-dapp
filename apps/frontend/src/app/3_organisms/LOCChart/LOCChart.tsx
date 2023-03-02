@@ -270,6 +270,7 @@ export const LOCChart: FC<LOCChartProps> = ({ isDefaultView = false }) => {
   return (
     <>
       {activeBar ? 'active' : 'not active'}
+      {hasUserOpenTrove ? 'has trove' : 'no trove'}
       <br />
       <Bar className="max-w-full" options={options} data={datasets} />
     </>

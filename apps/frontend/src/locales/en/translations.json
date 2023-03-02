@@ -95,6 +95,7 @@
         "unlimitedAmountTooltip": "Limiting the amount of approved tokens as an additional security measure may result higher fees",
         "transactionFailedTitle": "Your transaction has failed.",
         "transactionFailedSubtitle": "Please close or retry your transaction",
+        "transactionSuccessTitle": "Transaction confirmed successfully.",
         "estimatedGasFee": "Estimated gas fee",
         "advancedSettings": "Advanced Settings",
         "gasSettings": "Gas Settings",

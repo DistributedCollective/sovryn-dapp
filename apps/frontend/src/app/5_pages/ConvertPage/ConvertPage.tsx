@@ -240,7 +240,7 @@ const ConvertPage: FC = () => {
             >
               <Icon
                 icon={IconNames.PENDING}
-                className="text-gray-50 rotate-90 -scale-x-100"
+                className="text-gray-50 rotate-90"
                 size={24}
               />
             </button>

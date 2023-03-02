@@ -58,11 +58,7 @@ ChartJS.register(
  * @returns Chart component with data
  */
 
-type LOCChartProps = {
-  isDefaultView?: boolean;
-};
-
-export const LOCChart: FC<LOCChartProps> = ({ isDefaultView = false }) => {
+export const LOCChart: FC = () => {
   const { account } = useAccount();
   const { isMobile } = useIsMobile();
   const [data, setData] = useState<TroveData[]>([]);
@@ -80,11 +76,8 @@ export const LOCChart: FC<LOCChartProps> = ({ isDefaultView = false }) => {
     [isMobile],
   );
 
-  const {
-    data: userOpenTrove,
-    loading: loadingUserOpenTrove,
-    refetch: refetchOpenTrove,
-  } = useGetUserOpenTrove();
+  const { data: userOpenTrove, loading: loadingUserOpenTrove } =
+    useGetUserOpenTrove();
 
   const { data: globalsEntity } = useGetGlobalsEntity();
 
@@ -170,7 +163,7 @@ export const LOCChart: FC<LOCChartProps> = ({ isDefaultView = false }) => {
 
       setData(updatedTroves);
 
-      if (!isDefaultView) {
+      if (!hasUserOpenTrove) {
         setDataToShow(updatedTroves.slice(0, trovesCountToShow - 1));
       }
     }
@@ -182,7 +175,7 @@ export const LOCChart: FC<LOCChartProps> = ({ isDefaultView = false }) => {
     account,
     loadingUserOpenTrove,
     trovesCountToShow,
-    isDefaultView,
+    hasUserOpenTrove,
   ]);
 
   useEffect(() => {
@@ -254,18 +247,17 @@ export const LOCChart: FC<LOCChartProps> = ({ isDefaultView = false }) => {
 
   useEffect(() => {
     //reset values when the user is not in the troves list or not connected
-    if (!hasUserOpenTrove || !account || isDefaultView) {
+    if (!hasUserOpenTrove || !account) {
       setRedemptionBuffer(0);
       setStartAxisXCount(0);
       setLowestTroves([]);
       setActiveBar(false);
     }
-  }, [hasUserOpenTrove, account, isDefaultView]);
+  }, [hasUserOpenTrove, account]);
 
   useEffect(() => {
-    refetchOpenTrove();
     refetchTroves();
-  }, [refetchTroves, block, refetchOpenTrove]);
+  }, [refetchTroves, block, account]);
 
   return <Bar className="max-w-full" options={options} data={datasets} />;
 };

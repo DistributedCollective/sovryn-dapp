@@ -31,7 +31,6 @@ import { LOCStatus } from '../../2_molecules/LOCStatus/LOCStatus';
 import { SystemStats } from '../../2_molecules/SystemStats/SystemStats';
 import { GettingStartedPopup } from '../../3_organisms/GettingStartedPopup/GettingStartedPopup';
 import { LOCChart } from '../../3_organisms/LOCChart/LOCChart';
-import { useGetUserOpenTrove } from '../../3_organisms/LOCChart/hooks/useGetUserOpenTrove';
 import { CloseCreditLine } from '../../3_organisms/ZeroLocForm/CloseCreditLine';
 import { AdjustCreditLine } from '../../3_organisms/ZeroLocForm/components/AdjustCreditLine';
 import { OpenCreditLine } from '../../3_organisms/ZeroLocForm/components/OpenCreditLine';
@@ -63,7 +62,6 @@ export const ZeroPage: FC = () => {
   );
   const debt = useMemo(() => Number(trove?.debt ?? 0), [trove?.debt]);
   const hasLoc = useMemo(() => !!trove?.debt?.gt(0), [trove?.debt]);
-  const { refetch: getOpenTroves } = useGetUserOpenTrove();
 
   const handleLOCPopup = useCallback(() => {
     toggle();
@@ -101,17 +99,14 @@ export const ZeroPage: FC = () => {
     onTroveOpened: () => {
       toggle();
       getTroves();
-      getOpenTroves();
     },
     onTroveAdjusted: () => {
       toggle();
       getTroves();
-      getOpenTroves();
     },
     onTroveClosed: () => {
       toggleClosePopup();
       getTroves();
-      getOpenTroves();
     },
   });
 
@@ -210,9 +205,7 @@ export const ZeroPage: FC = () => {
                     </Paragraph>
 
                     <div className="h-80 md:flex-1 bg-gray-80 rounded pt-2 pr-2 flex items-center">
-                      <LOCChart
-                        isDefaultView={!showWelcomeBanner && !isLoading}
-                      />
+                      <LOCChart />
                     </div>
                   </div>
                 </div>

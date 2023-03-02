@@ -210,9 +210,7 @@ export const ZeroPage: FC = () => {
                     </Paragraph>
 
                     <div className="h-80 md:flex-1 bg-gray-80 rounded pt-2 pr-2 flex items-center">
-                      <LOCChart
-                        isDefaultView={!showWelcomeBanner && !isLoading}
-                      />
+                      <LOCChart isDefaultView={showWelcomeBanner} />
                     </div>
                   </div>
                 </div>

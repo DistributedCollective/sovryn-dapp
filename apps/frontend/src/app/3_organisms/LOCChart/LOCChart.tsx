@@ -170,7 +170,7 @@ export const LOCChart: FC<LOCChartProps> = ({ isDefaultView = false }) => {
 
       setData(updatedTroves);
 
-      if (!isDefaultView) {
+      if (isDefaultView) {
         setDataToShow(updatedTroves.slice(0, trovesCountToShow - 1));
       }
     }
@@ -186,7 +186,7 @@ export const LOCChart: FC<LOCChartProps> = ({ isDefaultView = false }) => {
   ]);
 
   useEffect(() => {
-    if (!loadingUserOpenTrove && hasUserOpenTrove && data && troves) {
+    if (!isDefaultView) {
       // parses data and shows bars around users trove
       // initial data parsing and displaying data for unconnected state in another useEffect
       const isUserTrove = (trove: TroveData) => trove.id === account;
@@ -231,6 +231,7 @@ export const LOCChart: FC<LOCChartProps> = ({ isDefaultView = false }) => {
     lowestTroves,
     userCollateralRatio,
     activeBar,
+    isDefaultView,
     trovesCountToShow,
   ]);
 

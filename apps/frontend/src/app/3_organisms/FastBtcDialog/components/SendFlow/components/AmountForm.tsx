@@ -122,6 +122,7 @@ export const AmountForm: React.FC = () => {
             onChangeText={setValue}
             unit={Bitcoin}
             value={value}
+            decimalPrecision={8}
             className="max-w-none"
             invalid={maxExceed}
           />

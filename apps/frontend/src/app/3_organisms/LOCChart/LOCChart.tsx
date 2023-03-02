@@ -267,5 +267,11 @@ export const LOCChart: FC<LOCChartProps> = ({ isDefaultView = false }) => {
     refetchTroves();
   }, [refetchTroves, block, refetchOpenTrove]);
 
-  return <Bar className="max-w-full" options={options} data={datasets} />;
+  return (
+    <>
+      {activeBar ? 'active' : 'not active'}
+      <br />
+      <Bar className="max-w-full" options={options} data={datasets} />
+    </>
+  );
 };

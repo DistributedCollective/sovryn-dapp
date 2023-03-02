@@ -28,7 +28,7 @@ import {
 import { useBlockNumber } from '../../../../hooks/useBlockNumber';
 import { translations } from '../../../../locales/i18n';
 import { Bitcoin } from '../../../../utils/constants';
-import { formatCompactValue } from '../../../../utils/math';
+import { formatCompactValue, formatValue } from '../../../../utils/math';
 import { AmountRenderer } from '../../AmountRenderer/AmountRenderer';
 import { SystemModeType } from '../types';
 import { calculateCollateralRatio } from '../utils';
@@ -192,7 +192,7 @@ export const ZeroStats: FC<ZeroStatsProps> = ({ className, dataAttribute }) => {
         <SimpleTableRow
           className="mb-5"
           label={t(translations.stats.zero.totalCollateralRatio)}
-          value={`${collateralRatio}%`}
+          value={`${formatValue(Number(collateralRatio), 2)}%`}
         />
         <SimpleTableRow
           label={t(translations.stats.zero.protocolStatus)}

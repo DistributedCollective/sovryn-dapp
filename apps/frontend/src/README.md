@@ -1,4 +1,4 @@
-# New Sovryn monorepo
+# Sovryn dapp frontend
 
 To run the project, run
 

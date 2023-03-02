@@ -1,4 +1,4 @@
-import React, { useEffect, FC, useState, useMemo } from 'react';
+import React, { useEffect, FC, useState, useMemo, useCallback } from 'react';
 
 import {
   Chart as ChartJS,
@@ -82,6 +82,8 @@ export const LOCChart: FC<LOCChartProps> = ({ isDefaultView = false }) => {
     [isMobile],
   );
 
+  const [status, setStatus] = useState('');
+
   const {
     data: userOpenTrove,
     loading: loadingUserOpenTrove,
@@ -90,14 +92,22 @@ export const LOCChart: FC<LOCChartProps> = ({ isDefaultView = false }) => {
 
   const { liquity } = useLoaderData() as ZeroPageLoaderData;
 
+  const getTroves = useCallback(() => {
+    if (account && liquity) {
+      liquity.getTrove(account).then(trove => setStatus(trove.status));
+    }
+  }, [account, liquity]);
+
+  getTroves();
+
   const { data: globalsEntity } = useGetGlobalsEntity();
 
   const hasUserOpenTrove = useMemo(() => {
-    if (account && liquity) {
+    if (account) {
       return userOpenTrove?.trove?.status === TroveStatus.Open;
     }
     return false;
-  }, [userOpenTrove, account, liquity]);
+  }, [userOpenTrove, account]);
 
   const options = useGetChartOptions(
     activeBar,
@@ -190,7 +200,7 @@ export const LOCChart: FC<LOCChartProps> = ({ isDefaultView = false }) => {
   ]);
 
   useEffect(() => {
-    if (!loadingUserOpenTrove && hasUserOpenTrove) {
+    if (!loadingUserOpenTrove && hasUserOpenTrove && data && troves) {
       // parses data and shows bars around users trove
       // initial data parsing and displaying data for unconnected state in another useEffect
       const isUserTrove = (trove: TroveData) => trove.id === account;
@@ -274,7 +284,7 @@ export const LOCChart: FC<LOCChartProps> = ({ isDefaultView = false }) => {
   return (
     <>
       {activeBar ? 'active' : 'not active'}{' '}
-      {hasUserOpenTrove ? 'has trove' : 'no trove'}
+      {hasUserOpenTrove ? 'has trove' : 'no trove'} {status ? 'open' : 'closed'}
       <br />
       <Bar className="max-w-full" options={options} data={datasets} />
     </>

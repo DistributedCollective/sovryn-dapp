@@ -11,7 +11,9 @@ import {
   Legend,
 } from 'chart.js';
 import { Bar } from 'react-chartjs-2';
+import { useLoaderData } from 'react-router-dom';
 
+import { ZeroPageLoaderData } from '../../5_pages/ZeroPage/loader';
 import { useAccount } from '../../../hooks/useAccount';
 import { useBlockNumber } from '../../../hooks/useBlockNumber';
 import { useIsMobile } from '../../../hooks/useIsMobile';
@@ -86,14 +88,16 @@ export const LOCChart: FC<LOCChartProps> = ({ isDefaultView = false }) => {
     refetch: refetchOpenTrove,
   } = useGetUserOpenTrove();
 
+  const { liquity } = useLoaderData() as ZeroPageLoaderData;
+
   const { data: globalsEntity } = useGetGlobalsEntity();
 
   const hasUserOpenTrove = useMemo(() => {
-    if (account) {
+    if (account && liquity) {
       return userOpenTrove?.trove?.status === TroveStatus.Open;
     }
     return false;
-  }, [userOpenTrove, account]);
+  }, [userOpenTrove, account, liquity]);
 
   const options = useGetChartOptions(
     activeBar,

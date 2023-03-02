@@ -191,9 +191,9 @@ export const LOCChart: FC<LOCChartProps> = ({ isDefaultView = false }) => {
       // initial data parsing and displaying data for unconnected state in another useEffect
       const isUserTrove = (trove: TroveData) => trove.id === account;
       const index = data.findIndex(isUserTrove);
-      if (index === -1) {
-        return;
-      }
+      // if (index === -1) {
+      //   return;
+      // }
 
       const centerIndex = (trovesCountToShow - 1) / 2;
       const shiftTroves = index >= centerIndex ? index - centerIndex : index;
@@ -270,6 +270,9 @@ export const LOCChart: FC<LOCChartProps> = ({ isDefaultView = false }) => {
 
   return (
     <>
+      {'globalsEntity ' +
+        globalsEntity?.globals[0].rawTotalRedistributedCollateral}{' '}
+      {'userOpenTrove ' + userOpenTrove?.trove?.status}{' '}
       {isDefaultView ? 'true' : 'false'}
       <Bar className="max-w-full" options={options} data={datasets} />
     </>

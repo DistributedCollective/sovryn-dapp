@@ -6,7 +6,7 @@ export const useGetUserOpenTrove = () => {
   const { account } = useAccount();
 
   const { data, loading } = useGetUserOpenTroveQuery({
-    variables: { user: account.toLocaleLowerCase() },
+    variables: { user: account.toLowerCase() },
     client: zeroClient,
   });
 

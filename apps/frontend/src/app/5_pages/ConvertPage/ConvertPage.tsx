@@ -22,12 +22,12 @@ import {
   Select,
 } from '@sovryn/ui';
 
+import { AmountRenderer } from '../../2_molecules/AmountRenderer/AmountRenderer';
 import { AssetRenderer } from '../../2_molecules/AssetRenderer/AssetRenderer';
 import { useAccount } from '../../../hooks/useAccount';
 import { useAmountInput } from '../../../hooks/useAmountInput';
 import { useMaintenance } from '../../../hooks/useMaintenance';
 import { translations } from '../../../locales/i18n';
-import { formatValue } from '../../../utils/math';
 import { allowedTokens, bassets } from './ConvertPage.types';
 import { useGetDefaultSourceToken } from './hooks/useGetDefaultSourceToken';
 import { useGetMaximumAvailableAmount } from './hooks/useGetMaximumAvailableAmount';
@@ -42,6 +42,7 @@ const ConvertPage: FC = () => {
   const defaultSourceToken = useGetDefaultSourceToken();
 
   const [amountInput, setAmount, amount] = useAmountInput('');
+
   const [sourceToken, setSourceToken] =
     useState<SupportedTokens>(defaultSourceToken);
 
@@ -197,8 +198,11 @@ const ConvertPage: FC = () => {
                 {...applyDataAttr('convert-from-max')}
               >
                 ({t(commonTranslations.max)}{' '}
-                {formatValue(Number(maximumAmountToConvert), 4)}{' '}
-                {sourceToken.toUpperCase()})
+                <AmountRenderer
+                  value={maximumAmountToConvert}
+                  precision={4}
+                  suffix={sourceToken.toUpperCase()}
+                />
               </button>
             </div>
 

@@ -40,6 +40,7 @@ import { useWalletConnect } from '../../../hooks';
 import { useAccount } from '../../../hooks/useAccount';
 import { translations } from '../../../locales/i18n';
 import { LIQUIDATION_RESERVE_AMOUNT } from '../../../utils/constants';
+import { TroveStatus } from '../../../utils/graphql/zero/generated';
 import { useClaimCollateralSurplus } from './hooks/useClaimCollateralSurplus';
 import { useHandleTrove } from './hooks/useHandleTrove';
 import { ZeroPageLoaderData } from './loader';
@@ -51,6 +52,7 @@ export const ZeroPage: FC = () => {
   const [openStartedPopup, toggleStartedPopup] = useReducer(v => !v, false);
   const [openClosePopup, toggleClosePopup] = useReducer(v => !v, false);
   const [trove, setTrove] = useState<UserTrove>();
+  const [hasUserOpenTrove, setHasUserOpenTrove] = useState(false);
   const [collateralSurplusBalance, setCollateralSurplusBalance] =
     useState<Decimal>();
 
@@ -83,7 +85,10 @@ export const ZeroPage: FC = () => {
 
   const getTroves = useCallback(() => {
     if (account && liquity) {
-      liquity.getTrove(account).then(setTrove);
+      liquity.getTrove(account).then(trove => {
+        setTrove(trove);
+        setHasUserOpenTrove(trove.status === TroveStatus.Open);
+      });
     }
   }, [account, liquity]);
   const getCollateralSurplusBalance = useCallback(() => {
@@ -216,6 +221,7 @@ export const ZeroPage: FC = () => {
                         </div>
                         <LOCChart
                           isDefaultView={!showWelcomeBanner && !isLoading}
+                          hasUserOpenTrove={hasUserOpenTrove}
                         />
                       </>
                     </div>

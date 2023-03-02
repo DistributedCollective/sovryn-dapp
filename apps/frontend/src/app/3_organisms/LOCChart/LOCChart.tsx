@@ -13,7 +13,6 @@ import {
 import { Bar } from 'react-chartjs-2';
 
 import { useAccount } from '../../../hooks/useAccount';
-import { useBlockNumber } from '../../../hooks/useBlockNumber';
 import { useIsMobile } from '../../../hooks/useIsMobile';
 import { TroveStatus } from '../../../utils/graphql/zero/generated';
 import { fromWei } from '../../../utils/math';
@@ -69,7 +68,6 @@ export const LOCChart: FC = () => {
   const [redemptionBuffer, setRedemptionBuffer] = useState(0);
   const [startAxisXCount, setStartAxisXCount] = useState(0);
   const [lowestTroves, setLowestTroves] = useState<TroveData[]>([]);
-  const { value: block } = useBlockNumber();
 
   const trovesCountToShow = useMemo(
     () => (isMobile ? chartConfig.minValue : chartConfig.maxValue),
@@ -81,12 +79,10 @@ export const LOCChart: FC = () => {
 
   const { data: globalsEntity } = useGetGlobalsEntity();
 
-  const hasUserOpenTrove = useMemo(() => {
-    if (account) {
-      return userOpenTrove?.trove?.status === TroveStatus.Open;
-    }
-    return false;
-  }, [userOpenTrove, account]);
+  const hasUserOpenTrove = useMemo(
+    () => userOpenTrove?.trove?.status === TroveStatus.Open,
+    [userOpenTrove],
+  );
 
   const options = useGetChartOptions(
     activeBar,
@@ -106,7 +102,7 @@ export const LOCChart: FC = () => {
           backgroundColor: bar => {
             if (bar.raw) {
               const { id } = bar.raw as TroveData;
-              return id === account
+              return id.toLowerCase() === account.toLowerCase()
                 ? chartConfig.activeColor
                 : chartConfig.defaultColor;
             } else {
@@ -118,17 +114,13 @@ export const LOCChart: FC = () => {
     };
   }, [dataToShow, account]);
 
-  const {
-    data: troves,
-    loading: loadingTroves,
-    refetch: refetchTroves,
-  } = useGetTroves();
+  const { data: troves, loading: loadingTroves } = useGetTroves();
 
   useEffect(() => {
     if (troves && !loadingTroves && globalsEntity) {
       // load and parse data and then show it immediately if wallet not connected
       // logic for connected wallets is in another useEffect
-      const updatedTroves = troves.troves.map((trove: TroveData) => {
+      const updatedTroves = troves.troves.map(trove => {
         const totalDebt = globalsEntity?.globals[0].rawTotalRedistributedDebt;
         const snapshotOfTotalDebt = trove.rawSnapshotOfTotalRedistributedDebt;
         const totalCollateral =
@@ -158,7 +150,7 @@ export const LOCChart: FC = () => {
             debtAmount,
             price,
           ),
-        };
+        } as TroveData;
       });
 
       setData(updatedTroves);
@@ -182,7 +174,8 @@ export const LOCChart: FC = () => {
     if (!loadingUserOpenTrove && hasUserOpenTrove && data && troves) {
       // parses data and shows bars around users trove
       // initial data parsing and displaying data for unconnected state in another useEffect
-      const isUserTrove = (trove: TroveData) => trove.id === account;
+      const isUserTrove = (trove: TroveData) =>
+        trove.id.toLowerCase() === account.toLowerCase();
       const index = data.findIndex(isUserTrove);
       if (index === -1) {
         return;
@@ -254,10 +247,6 @@ export const LOCChart: FC = () => {
       setActiveBar(false);
     }
   }, [hasUserOpenTrove, account]);
-
-  useEffect(() => {
-    refetchTroves();
-  }, [refetchTroves, block, account]);
 
   return <Bar className="max-w-full" options={options} data={datasets} />;
 };

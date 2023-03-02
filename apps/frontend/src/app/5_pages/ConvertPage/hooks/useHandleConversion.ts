@@ -28,7 +28,6 @@ export const useHandleConversion = (
   amount: string,
 ) => {
   const { account, signer } = useAccount();
-  console.log(amount);
   const weiAmount = useMemo(() => toWei(amount), [amount]);
 
   const { setTransactions, setIsOpen, setTitle } = useTransactionContext();

@@ -12,18 +12,16 @@ import {
 } from 'chart.js';
 import { Bar } from 'react-chartjs-2';
 
-// import { useLoaderData } from 'react-router-dom';
-// import { ZeroPageLoaderData } from '../../5_pages/ZeroPage/loader';
 import { useAccount } from '../../../hooks/useAccount';
 import { useBlockNumber } from '../../../hooks/useBlockNumber';
 import { useIsMobile } from '../../../hooks/useIsMobile';
-// import { TroveStatus } from '../../../utils/graphql/zero/generated';
+import { TroveStatus } from '../../../utils/graphql/zero/generated';
 import { fromWei } from '../../../utils/math';
 import { useGetChartOptions } from './hooks/useGetChartOptions';
 import { useGetGlobalsEntity } from './hooks/useGetGlobalsEntity';
 import { useGetRBTCPrice } from './hooks/useGetRBTCPrice';
 import { useGetTroves } from './hooks/useGetTroves';
-// import { useGetUserOpenTrove } from './hooks/useGetUserOpenTrove';
+import { useGetUserOpenTrove } from './hooks/useGetUserOpenTrove';
 import { ChartSortingType, TroveData } from './types';
 import {
   calculateCollateralRatio,
@@ -62,13 +60,9 @@ ChartJS.register(
 
 type LOCChartProps = {
   isDefaultView?: boolean;
-  hasUserOpenTrove?: boolean;
 };
 
-export const LOCChart: FC<LOCChartProps> = ({
-  isDefaultView = false,
-  hasUserOpenTrove = false,
-}) => {
+export const LOCChart: FC<LOCChartProps> = ({ isDefaultView = false }) => {
   const { account } = useAccount();
   const { isMobile } = useIsMobile();
   const [data, setData] = useState<TroveData[]>([]);
@@ -86,7 +80,20 @@ export const LOCChart: FC<LOCChartProps> = ({
     [isMobile],
   );
 
+  const {
+    data: userOpenTrove,
+    loading: loadingUserOpenTrove,
+    refetch: refetchOpenTrove,
+  } = useGetUserOpenTrove();
+
   const { data: globalsEntity } = useGetGlobalsEntity();
+
+  const hasUserOpenTrove = useMemo(() => {
+    if (account) {
+      return userOpenTrove?.trove?.status === TroveStatus.Open;
+    }
+    return false;
+  }, [userOpenTrove, account]);
 
   const options = useGetChartOptions(
     activeBar,
@@ -173,12 +180,13 @@ export const LOCChart: FC<LOCChartProps> = ({
     globalsEntity,
     price,
     account,
+    loadingUserOpenTrove,
     trovesCountToShow,
     isDefaultView,
   ]);
 
   useEffect(() => {
-    if (hasUserOpenTrove) {
+    if (!loadingUserOpenTrove && hasUserOpenTrove && data && troves) {
       // parses data and shows bars around users trove
       // initial data parsing and displaying data for unconnected state in another useEffect
       const isUserTrove = (trove: TroveData) => trove.id === account;
@@ -216,6 +224,7 @@ export const LOCChart: FC<LOCChartProps> = ({
     }
   }, [
     hasUserOpenTrove,
+    loadingUserOpenTrove,
     data,
     troves,
     account,
@@ -254,14 +263,13 @@ export const LOCChart: FC<LOCChartProps> = ({
   }, [hasUserOpenTrove, account, isDefaultView]);
 
   useEffect(() => {
+    refetchOpenTrove();
     refetchTroves();
-  }, [refetchTroves, block]);
+  }, [refetchTroves, block, refetchOpenTrove]);
 
   return (
     <>
-      {activeBar ? 'active' : 'not active'}{' '}
-      {hasUserOpenTrove ? 'has trove' : 'no trove'}
-      <br />
+      {isDefaultView ? 'true' : 'false'}
       <Bar className="max-w-full" options={options} data={datasets} />
     </>
   );

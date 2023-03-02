@@ -108,7 +108,7 @@ export const CollateralSurplusHistoryFrame: FC = () => {
       {
         id: 'collSurplusChange',
         title: t(translations.collateralSurplusHistory.table.collateralChange),
-        cellRenderer: tx => renderCollateralChange(tx.collateralChange),
+        cellRenderer: tx => renderCollateralChange(tx.collSurplusChange),
       },
       {
         id: 'transactionID',

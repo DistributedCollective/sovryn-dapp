@@ -234,11 +234,9 @@ const EarnPage: FC = () => {
       return '0 %';
     }
     return `${formatValue(
-      Number(
-        fromWei(
-          BigNumber.from(toWei(newPoolBalance, 24)).div(newZUSDInStabilityPool),
-          4,
-        ),
+      fromWei(
+        BigNumber.from(toWei(newPoolBalance, 24)).div(newZUSDInStabilityPool),
+        4,
       ),
       4,
     )} %`;
@@ -364,7 +362,7 @@ const EarnPage: FC = () => {
             />
             <SimpleTableRow
               label={t(pageTranslations.currentPoolShare)}
-              value={`${formatValue(Number(poolShare), 4)} %`}
+              value={`${formatValue(poolShare, 4)} %`}
             />
           </SimpleTable>
           <SimpleTable className="mt-3">

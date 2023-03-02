@@ -192,7 +192,7 @@ export const ZeroStats: FC<ZeroStatsProps> = ({ className, dataAttribute }) => {
         <SimpleTableRow
           className="mb-5"
           label={t(translations.stats.zero.totalCollateralRatio)}
-          value={`${formatValue(Number(collateralRatio), 2)}%`}
+          value={`${formatValue(collateralRatio, 2)}%`}
         />
         <SimpleTableRow
           label={t(translations.stats.zero.protocolStatus)}

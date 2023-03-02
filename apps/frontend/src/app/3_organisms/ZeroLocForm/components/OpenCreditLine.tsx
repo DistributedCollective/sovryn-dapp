@@ -116,15 +116,17 @@ export const OpenCreditLine: FC<OpenCreditLineProps> = ({
 
   const liquidationPrice = useMemo(
     () =>
-      numeric(MINIMUM_COLLATERAL_RATIO * (debtSize / Number(collateralAmount))),
-    [debtSize, collateralAmount],
+      numeric(
+        MINIMUM_COLLATERAL_RATIO * (debtWithFees / Number(collateralAmount)),
+      ),
+    [debtWithFees, collateralAmount],
   );
   const liquidationPriceInRecoveryMode = useMemo(
     () =>
       numeric(
-        CRITICAL_COLLATERAL_RATIO * (debtSize / Number(collateralAmount)),
+        CRITICAL_COLLATERAL_RATIO * (debtWithFees / Number(collateralAmount)),
       ),
-    [collateralAmount, debtSize],
+    [collateralAmount, debtWithFees],
   );
 
   const errors = useMemo(() => {

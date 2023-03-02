@@ -10,7 +10,7 @@ import React, {
 import { t } from 'i18next';
 import { Trans } from 'react-i18next';
 
-import { Button, Overlay, Paragraph } from '@sovryn/ui';
+import { Button, NotificationType, Overlay, Paragraph } from '@sovryn/ui';
 
 import { useNotificationContext } from '../../../contexts/NotificationContext';
 import { translations } from '../../../locales/i18n';
@@ -82,6 +82,7 @@ export const ServiceWorkerProvider: FC<PropsWithChildren> = ({ children }) => {
             </>
           ),
           dismissible: !isForced,
+          type: isForced ? NotificationType.success : NotificationType.warning,
         },
         isForced ? 604800000 : 30000,
       );

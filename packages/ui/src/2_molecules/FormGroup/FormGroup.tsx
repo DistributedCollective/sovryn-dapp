@@ -73,7 +73,7 @@ export const FormGroup: React.FC<PropsWithChildren<FormGroupProps>> = ({
         <ErrorBadge
           level={ErrorLevel.Critical}
           message={errorLabel}
-          dataAttribute={`${dataAttribute}__error-message`}
+          dataAttribute={`${dataAttribute}-error-message`}
         />
       )}
     </div>

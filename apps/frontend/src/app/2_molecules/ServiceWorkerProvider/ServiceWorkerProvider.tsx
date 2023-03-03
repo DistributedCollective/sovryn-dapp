@@ -25,8 +25,7 @@ const enableWorker = process.env.REACT_APP_ENABLE_SERVICE_WORKER === 'true';
 const CHECK_TIME = 30e3; // 30 seconds
 const releaseUrl = `${publicUrl}/release.json`;
 
-const repository =
-  'https://github.com/DistributedCollective/sovryn-dapp/releases/tag/';
+const repository = 'https://github.com/DistributedCollective/sovryn-dapp/blob/';
 
 export const ServiceWorkerProvider: FC<PropsWithChildren> = ({ children }) => {
   const { addNotification } = useNotificationContext();
@@ -63,7 +62,12 @@ export const ServiceWorkerProvider: FC<PropsWithChildren> = ({ children }) => {
                   i18nKey={translations.appUpdateDialog.changelog}
                   components={[
                     <a
-                      href={repository + encodeURI(`frontend@${state.version}`)}
+                      href={
+                        repository +
+                        encodeURI(
+                          `${currentRelease.commit}/apps/frontend/CHANGELOG.md`,
+                        )
+                      }
                       target="_blank"
                       rel="noopener noreferrer"
                     >

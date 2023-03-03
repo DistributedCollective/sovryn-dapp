@@ -173,7 +173,7 @@ export const OpenCreditLine: FC<OpenCreditLineProps> = ({
 
     if (toWei(collateralSize).lt(toWei(minCollateralAmount))) {
       return t(translations.zeroPage.loc.errors.collateralTooLow, {
-        value: `${formatValue(minCollateralAmount, 4)} ${Bitcoin}`,
+        value: `${formatValue(minCollateralAmount, 4, true)} ${Bitcoin}`,
       });
     }
 

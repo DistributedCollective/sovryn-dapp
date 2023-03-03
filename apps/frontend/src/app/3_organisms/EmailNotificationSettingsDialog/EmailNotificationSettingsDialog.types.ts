@@ -6,6 +6,7 @@ export type NotificationUser = {
   email?: string;
   emailNotificationLastSent?: string;
   role: string;
+  isEmailConfirmed?: boolean;
 };
 
 export enum NotificationMessageType {

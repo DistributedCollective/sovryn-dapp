@@ -74,6 +74,15 @@ const EmailNotificationSettingsDialogComponent: React.FC<
 
   const emailIsValid = useMemo(() => !email || validateEmail(email), [email]);
 
+  const hasUnconfirmedEmail = useMemo(
+    () =>
+      notificationUser &&
+      email &&
+      email === notificationUser.email &&
+      !notificationUser.isEmailConfirmed,
+    [email, notificationUser],
+  );
+
   const resetNotification = useCallback(() => {
     setNotificationToken(null);
     setNotificationUser(null);
@@ -292,6 +301,14 @@ const EmailNotificationSettingsDialogComponent: React.FC<
           <FormGroup
             className="mt-6 mb-4"
             label={t(translations.emailNotificationsDialog.emailInputLabel)}
+            errorLabel={
+              hasUnconfirmedEmail
+                ? t(
+                    translations.emailNotificationsDialog
+                      .unconfirmedEmailWarning,
+                  )
+                : undefined
+            }
           >
             <Input
               value={email}

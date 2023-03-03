@@ -119,3 +119,6 @@ export const sleep = (ms: number) =>
   new Promise(resolve => setTimeout(resolve, ms));
 
 export const isStaging = () => process.env.REACT_APP_STAGING === 'true';
+
+export const areAddressesEqual = (address1: string, address2: string) =>
+  address1.toLowerCase() === address2.toLowerCase();

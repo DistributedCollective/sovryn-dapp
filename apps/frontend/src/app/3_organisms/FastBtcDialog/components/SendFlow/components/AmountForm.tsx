@@ -24,7 +24,7 @@ import { useMaintenance } from '../../../../../../hooks/useMaintenance';
 import { useMaxAssetBalance } from '../../../../../../hooks/useMaxAssetBalance';
 import { translations } from '../../../../../../locales/i18n';
 import { Bitcoin, btcInSatoshis } from '../../../../../../utils/constants';
-import { formatValue, fromWei, toWei } from '../../../../../../utils/math';
+import { fromWei, toWei } from '../../../../../../utils/math';
 import { GAS_LIMIT_FAST_BTC_WITHDRAW } from '../../../constants';
 import {
   WithdrawContext,
@@ -72,7 +72,7 @@ export const AmountForm: React.FC = () => {
     () =>
       set(prevState => ({
         ...prevState,
-        amount: formatValue(Number(value), 8),
+        amount: Number(value).toFixed(8),
         step: WithdrawStep.ADDRESS,
       })),
     [set, value],

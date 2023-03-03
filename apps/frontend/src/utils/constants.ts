@@ -73,6 +73,7 @@ export const GAS_LIMIT_CONVERT = 150_000;
 export const GAS_LIMIT_STABILITY_POOL = 250_000;
 export const GAS_LIMIT_STABILITY_POOL_DLLR = 400_000;
 export const GAS_LIMIT_REWARDS = 240_000;
+export const GAS_LIMIT_TRANSFER_LOC = 900_000;
 
 // TODO: Refactor it into a similar config we have in dapp v1 (blockExplorers constant)
 export const rskExplorer = {

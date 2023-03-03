@@ -13,7 +13,10 @@ import { useTransactionContext } from '../../../../contexts/TransactionContext';
 import { useAccount } from '../../../../hooks/useAccount';
 import { translations } from '../../../../locales/i18n';
 import { getRskChainId } from '../../../../utils/chain';
-import { GAS_LIMIT_REWARDS } from '../../../../utils/constants';
+import {
+  GAS_LIMIT_REWARDS,
+  GAS_LIMIT_TRANSFER_LOC,
+} from '../../../../utils/constants';
 import { toWei } from '../../../../utils/math';
 import { RewardsAction } from './../types';
 
@@ -63,7 +66,9 @@ export const useHandleRewards = (action: RewardsAction, amount: string) => {
         contract: stabilityPool,
         fnName: action,
         args: isWithdrawTransaction ? [toWei(amount)] : [account, account],
-        gasLimit: GAS_LIMIT_REWARDS,
+        gasLimit: isWithdrawTransaction
+          ? GAS_LIMIT_REWARDS
+          : GAS_LIMIT_TRANSFER_LOC,
       },
     });
 

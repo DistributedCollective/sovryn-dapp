@@ -543,5 +543,11 @@
         "meta": {
             "title": "Privacy policy - Sovryn"
         }
+    },
+    "appUpdateDialog": {
+        "title": "New app version is available",
+        "changelog": "See changelog <0>here</0>",
+        "description": "Click below to update and accept the new version.",
+        "updateButton": "Update"
     }
 }

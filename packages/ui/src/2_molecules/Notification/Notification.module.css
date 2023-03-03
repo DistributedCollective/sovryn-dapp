@@ -25,6 +25,14 @@
     }
   }
 
+  &.info {
+    @apply border-l-info;
+
+    & svg {
+      @apply text-info;
+    }
+  }
+
   & .title {
     @apply flex items-center text-center pr-3;
     & svg {

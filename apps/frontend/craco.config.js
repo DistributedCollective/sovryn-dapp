@@ -1,10 +1,31 @@
 const dotenvCra = require('dotenv-cra');
 const webpack = require('webpack');
+const fs = require('fs');
+
+const { GitRevisionPlugin } = require('git-revision-webpack-plugin');
+const GenerateFilePlugin = require('generate-file-webpack-plugin');
 
 const appMode = process.env.APP_MODE;
 if (appMode) {
   dotenvCra.config({ env: appMode });
 }
+
+const currentReleaseContent = JSON.parse(
+  fs.readFileSync('./public/release.json'),
+);
+
+const packageJsonVersion = JSON.parse(
+  fs.readFileSync('./package.json'),
+).version;
+
+const releaseFileContents = JSON.stringify({
+  ...currentReleaseContent,
+  version: packageJsonVersion,
+  commit: new GitRevisionPlugin().commithash(),
+});
+
+process.env.REACT_APP_RELEASE_DATA = releaseFileContents;
+
 module.exports = {
   style: {
     postcss: {
@@ -26,7 +47,10 @@ module.exports = {
           configFile: 'tsconfig.json',
         },
       });
-      config.ignoreWarnings = [/Failed to parse source map/];
+      config.ignoreWarnings = [
+        /Failed to parse source map/,
+        /Configure maximumFileSizeToCacheInBytes to change this limit/,
+      ];
       config.resolve.fallback = {
         stream: require.resolve('stream-browserify'),
         buffer: require.resolve('buffer'),
@@ -36,6 +60,10 @@ module.exports = {
       config.plugins = (config.plugins || []).concat([
         new webpack.ProvidePlugin({
           Buffer: ['buffer', 'Buffer'],
+        }),
+        GenerateFilePlugin({
+          file: 'release.json',
+          content: process.env.REACT_APP_RELEASE_DATA,
         }),
       ]);
       return config;

@@ -108,5 +108,26 @@
       To create a production bundle, use `npm run build` or `yarn build`.
     -->
     <div id="overlay"></div>
+    <% if (process.env.NODE_ENV === "production") { %>
+    <script>
+      window.addEventListener('error', async err => {
+        console.error('Error: ', err);
+
+        if (!navigator.serviceWorker) {
+          return;
+        }
+
+        const registration = await navigator.serviceWorker.ready;
+        if (registration.installing || registration.waiting) {
+          navigator.serviceWorker.ready.then(async registration => {
+            await registration.unregister();
+            // Once the service worker is unregistered, we can reload
+            // the page to let the browser download a fresh copy of our app
+            window.location.reload();
+          });
+        }
+      });
+    </script>
+    <% } %>
   </body>
 </html>

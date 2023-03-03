@@ -31,6 +31,7 @@ import { LOCStatus } from '../../2_molecules/LOCStatus/LOCStatus';
 import { SystemStats } from '../../2_molecules/SystemStats/SystemStats';
 import { GettingStartedPopup } from '../../3_organisms/GettingStartedPopup/GettingStartedPopup';
 import { LOCChart } from '../../3_organisms/LOCChart/LOCChart';
+import { useGetUserOpenTrove } from '../../3_organisms/LOCChart/hooks/useGetUserOpenTrove';
 import { CloseCreditLine } from '../../3_organisms/ZeroLocForm/CloseCreditLine';
 import { AdjustCreditLine } from '../../3_organisms/ZeroLocForm/components/AdjustCreditLine';
 import { OpenCreditLine } from '../../3_organisms/ZeroLocForm/components/OpenCreditLine';
@@ -55,6 +56,7 @@ export const ZeroPage: FC = () => {
 
   const { connectWallet } = useWalletConnect();
   const { account } = useAccount();
+  const { refetch: getOpenTroves } = useGetUserOpenTrove(account);
 
   const collateral = useMemo(
     () => Number(trove?.collateral ?? 0),
@@ -99,14 +101,17 @@ export const ZeroPage: FC = () => {
     onTroveOpened: () => {
       toggle();
       getTroves();
+      getOpenTroves();
     },
     onTroveAdjusted: () => {
       toggle();
       getTroves();
+      getOpenTroves();
     },
     onTroveClosed: () => {
       toggleClosePopup();
       getTroves();
+      getOpenTroves();
     },
   });
 

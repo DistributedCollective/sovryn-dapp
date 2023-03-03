@@ -13,6 +13,7 @@ import {
 import { Bar } from 'react-chartjs-2';
 
 import { useAccount } from '../../../hooks/useAccount';
+import { useBlockNumber } from '../../../hooks/useBlockNumber';
 import { useIsMobile } from '../../../hooks/useIsMobile';
 import { TroveStatus } from '../../../utils/graphql/zero/generated';
 import { fromWei } from '../../../utils/math';
@@ -68,14 +69,18 @@ export const LOCChart: FC = () => {
   const [redemptionBuffer, setRedemptionBuffer] = useState(0);
   const [startAxisXCount, setStartAxisXCount] = useState(0);
   const [lowestTroves, setLowestTroves] = useState<TroveData[]>([]);
+  const { value: block } = useBlockNumber();
 
   const trovesCountToShow = useMemo(
     () => (isMobile ? chartConfig.minValue : chartConfig.maxValue),
     [isMobile],
   );
 
-  const { data: userOpenTrove, loading: loadingUserOpenTrove } =
-    useGetUserOpenTrove();
+  const {
+    data: userOpenTrove,
+    loading: loadingUserOpenTrove,
+    refetch: refetchUserTrove,
+  } = useGetUserOpenTrove(account);
 
   const { data: globalsEntity } = useGetGlobalsEntity();
 
@@ -114,13 +119,22 @@ export const LOCChart: FC = () => {
     };
   }, [dataToShow, account]);
 
-  const { data: troves, loading: loadingTroves } = useGetTroves();
+  const {
+    data: troves,
+    loading: loadingTroves,
+    refetch: refetchTroves,
+  } = useGetTroves();
+
+  useEffect(() => {
+    refetchTroves();
+    refetchUserTrove();
+  }, [refetchTroves, refetchUserTrove, block]);
 
   useEffect(() => {
     if (troves && !loadingTroves && globalsEntity) {
       // load and parse data and then show it immediately if wallet not connected
       // logic for connected wallets is in another useEffect
-      const updatedTroves = troves.troves.map(trove => {
+      const updatedTroves = troves.troves?.map(trove => {
         const totalDebt = globalsEntity?.globals[0].rawTotalRedistributedDebt;
         const snapshotOfTotalDebt = trove.rawSnapshotOfTotalRedistributedDebt;
         const totalCollateral =
@@ -144,13 +158,14 @@ export const LOCChart: FC = () => {
           id: trove.id,
           collateral: collateralAmount,
           debt: debtAmount,
-          collateralRatioSortKey_legacy: trove.collateralRatioSortKey_legacy,
+          collateralRatioSortKey_legacy:
+            trove.collateralRatioSortKey_legacy ?? '',
           collateralRatio: calculateCollateralRatio(
             collateralAmount,
             debtAmount,
             price,
           ),
-        } as TroveData;
+        };
       });
 
       setData(updatedTroves);

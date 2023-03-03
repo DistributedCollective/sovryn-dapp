@@ -156,7 +156,8 @@
                 "repayBalanceTooLow": "The {{currency}} amount you're trying to repay exceeds your balance by {{value}}",
                 "creditBalanceTooLow": "The {{currency}} amount you're trying to borrow exceeds your maximum by {{value}}",
                 "totalDebtTooLow": "The total debt must be at least {{value}} {{currency}}",
-                "newTotalDebtTooLow": "The new total debt must be at least {{value}} {{currency}}"
+                "newTotalDebtTooLow": "The new total debt must be at least {{value}} {{currency}}",
+                "maxExceed": "Exceeds maximum amount"
             }
         },
         "tx": {
@@ -356,7 +357,8 @@
             },
             "addressForm": {
                 "title": "Enter recipient's bitcoin address",
-                "addressLabel": "Address"
+                "addressLabel": "Address",
+                "maxExceed": "Exceeds maximum amount"
             },
             "confirmationScreens": {
                 "reviewTitle": "Transfer details",

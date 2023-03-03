@@ -156,15 +156,11 @@ export const OpenCreditLine: FC<OpenCreditLineProps> = ({
     }
 
     if (toWei(debtAmount).gt(toWei(maxDebtAmount))) {
-      const diff = Number(fromWei(toWei(debtAmount).sub(toWei(maxDebtAmount))));
-      return t(translations.zeroPage.loc.errors.creditBalanceTooLow, {
-        value: formatValue(diff, 4),
-        currency: debtToken.toUpperCase(),
-      });
+      return t(translations.zeroPage.loc.errors.maxExceed);
     }
 
     return undefined;
-  }, [debtAmount, debtToken, fieldsTouched, maxDebtAmount]);
+  }, [debtAmount, fieldsTouched, maxDebtAmount]);
 
   const collateralError = useMemo(() => {
     if (!fieldsTouched) {
@@ -178,12 +174,7 @@ export const OpenCreditLine: FC<OpenCreditLineProps> = ({
     }
 
     if (toWei(collateralAmount).gt(maxRbtcWeiBalance)) {
-      const diff = Number(
-        fromWei(toWei(collateralAmount || 0).sub(maxRbtcWeiBalance)),
-      );
-      return t(translations.zeroPage.loc.errors.balanceTooLow, {
-        value: `${formatValue(diff, 4)} ${Bitcoin}`,
-      });
+      return t(translations.zeroPage.loc.errors.maxExceed);
     }
 
     return undefined;

@@ -11,7 +11,6 @@ import { useAmountInput } from '../../../../hooks/useAmountInput';
 import { useAssetBalance } from '../../../../hooks/useAssetBalance';
 import { useMaxAssetBalance } from '../../../../hooks/useMaxAssetBalance';
 import { translations } from '../../../../locales/i18n';
-import { Bitcoin } from '../../../../utils/constants';
 import { formatValue, fromWei, toWei } from '../../../../utils/math';
 import {
   CRITICAL_COLLATERAL_RATIO,
@@ -232,26 +231,17 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
     }
 
     if (toWei(debtAmount).gt(_debtTokenWeiBalance) && !isIncreasingDebt) {
-      const diff = Number(fromWei(toWei(debtAmount).sub(_debtTokenWeiBalance)));
-      return t(translations.zeroPage.loc.errors.repayBalanceTooLow, {
-        value: formatValue(diff, 4),
-        currency: debtToken.toUpperCase(),
-      });
+      return t(translations.zeroPage.loc.errors.maxExceed);
     }
 
     if (toWei(debtAmount).gt(toWei(maxDebtAmount)) && isIncreasingDebt) {
-      const diff = Number(fromWei(toWei(debtAmount).sub(toWei(maxDebtAmount))));
-      return t(translations.zeroPage.loc.errors.creditBalanceTooLow, {
-        value: formatValue(diff, 4),
-        currency: debtToken.toUpperCase(),
-      });
+      return t(translations.zeroPage.loc.errors.maxExceed);
     }
 
     return undefined;
   }, [
     _debtTokenWeiBalance,
     debtAmount,
-    debtToken,
     fieldsTouched,
     isIncreasingDebt,
     maxDebtAmount,
@@ -266,20 +256,14 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
       collateralSize > maxCollateralToDepositAmount &&
       isIncreasingCollateral
     ) {
-      const diff = collateralSize - maxCollateralToDepositAmount;
-      return t(translations.zeroPage.loc.errors.balanceTooLow, {
-        value: `${formatValue(diff, 4)} ${Bitcoin}`,
-      });
+      return t(translations.zeroPage.loc.errors.maxExceed);
     }
 
     if (
       collateralSize > maxCollateralToWithdrawAmount &&
       !isIncreasingCollateral
     ) {
-      const diff = collateralSize - maxCollateralToWithdrawAmount;
-      return t(translations.zeroPage.loc.errors.withdrawBalanceTooLow, {
-        value: `${formatValue(diff, 4)} ${Bitcoin}`,
-      });
+      return t(translations.zeroPage.loc.errors.maxExceed);
     }
 
     return undefined;

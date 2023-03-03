@@ -1,4 +1,4 @@
-import React, { useEffect, FC, useState, useMemo } from 'react';
+import React, { useEffect, FC, useState, useMemo, useCallback } from 'react';
 
 import {
   Chart as ChartJS,
@@ -16,6 +16,7 @@ import { useAccount } from '../../../hooks/useAccount';
 import { useBlockNumber } from '../../../hooks/useBlockNumber';
 import { useIsMobile } from '../../../hooks/useIsMobile';
 import { TroveStatus } from '../../../utils/graphql/zero/generated';
+import { areAddressesEqual } from '../../../utils/helpers';
 import { fromWei } from '../../../utils/math';
 import { useGetChartOptions } from './hooks/useGetChartOptions';
 import { useGetGlobalsEntity } from './hooks/useGetGlobalsEntity';
@@ -58,11 +59,7 @@ ChartJS.register(
  * @returns Chart component with data
  */
 
-type LOCChartProps = {
-  isDefaultView?: boolean;
-};
-
-export const LOCChart: FC<LOCChartProps> = ({ isDefaultView = false }) => {
+export const LOCChart: FC = () => {
   const { account } = useAccount();
   const { isMobile } = useIsMobile();
   const [data, setData] = useState<TroveData[]>([]);
@@ -83,22 +80,25 @@ export const LOCChart: FC<LOCChartProps> = ({ isDefaultView = false }) => {
   const {
     data: userOpenTrove,
     loading: loadingUserOpenTrove,
-    refetch: refetchOpenTrove,
-  } = useGetUserOpenTrove();
+    refetch: refetchUserTrove,
+  } = useGetUserOpenTrove(account);
 
   const { data: globalsEntity } = useGetGlobalsEntity();
 
-  const hasUserOpenTrove = useMemo(() => {
-    if (account) {
-      return userOpenTrove?.trove?.status === TroveStatus.Open;
-    }
-    return false;
-  }, [userOpenTrove, account]);
+  const hasUserOpenTrove = useMemo(
+    () => userOpenTrove?.trove?.status === TroveStatus.Open,
+    [userOpenTrove],
+  );
 
   const options = useGetChartOptions(
     activeBar,
     redemptionBuffer,
     startAxisXCount,
+  );
+
+  const isUserTrove = useCallback(
+    (trove: TroveData) => areAddressesEqual(trove.id, account),
+    [account],
   );
 
   const datasets: ChartData<'bar', TroveData[]> = useMemo(() => {
@@ -113,7 +113,7 @@ export const LOCChart: FC<LOCChartProps> = ({ isDefaultView = false }) => {
           backgroundColor: bar => {
             if (bar.raw) {
               const { id } = bar.raw as TroveData;
-              return id === account
+              return areAddressesEqual(id, account)
                 ? chartConfig.activeColor
                 : chartConfig.defaultColor;
             } else {
@@ -132,10 +132,15 @@ export const LOCChart: FC<LOCChartProps> = ({ isDefaultView = false }) => {
   } = useGetTroves();
 
   useEffect(() => {
+    refetchTroves();
+    refetchUserTrove();
+  }, [refetchTroves, refetchUserTrove, block]);
+
+  useEffect(() => {
     if (troves && !loadingTroves && globalsEntity) {
       // load and parse data and then show it immediately if wallet not connected
       // logic for connected wallets is in another useEffect
-      const updatedTroves = troves.troves.map((trove: TroveData) => {
+      const updatedTroves = troves.troves?.map(trove => {
         const totalDebt = globalsEntity?.globals[0].rawTotalRedistributedDebt;
         const snapshotOfTotalDebt = trove.rawSnapshotOfTotalRedistributedDebt;
         const totalCollateral =
@@ -159,7 +164,8 @@ export const LOCChart: FC<LOCChartProps> = ({ isDefaultView = false }) => {
           id: trove.id,
           collateral: collateralAmount,
           debt: debtAmount,
-          collateralRatioSortKey_legacy: trove.collateralRatioSortKey_legacy,
+          collateralRatioSortKey_legacy:
+            trove.collateralRatioSortKey_legacy ?? '',
           collateralRatio: calculateCollateralRatio(
             collateralAmount,
             debtAmount,
@@ -170,7 +176,7 @@ export const LOCChart: FC<LOCChartProps> = ({ isDefaultView = false }) => {
 
       setData(updatedTroves);
 
-      if (!isDefaultView) {
+      if (!hasUserOpenTrove) {
         setDataToShow(updatedTroves.slice(0, trovesCountToShow - 1));
       }
     }
@@ -182,14 +188,13 @@ export const LOCChart: FC<LOCChartProps> = ({ isDefaultView = false }) => {
     account,
     loadingUserOpenTrove,
     trovesCountToShow,
-    isDefaultView,
+    hasUserOpenTrove,
   ]);
 
   useEffect(() => {
     if (!loadingUserOpenTrove && hasUserOpenTrove && data && troves) {
       // parses data and shows bars around users trove
       // initial data parsing and displaying data for unconnected state in another useEffect
-      const isUserTrove = (trove: TroveData) => trove.id === account;
       const index = data.findIndex(isUserTrove);
       if (index === -1) {
         return;
@@ -232,6 +237,7 @@ export const LOCChart: FC<LOCChartProps> = ({ isDefaultView = false }) => {
     userCollateralRatio,
     activeBar,
     trovesCountToShow,
+    isUserTrove,
   ]);
 
   useEffect(() => {
@@ -254,18 +260,13 @@ export const LOCChart: FC<LOCChartProps> = ({ isDefaultView = false }) => {
 
   useEffect(() => {
     //reset values when the user is not in the troves list or not connected
-    if (!hasUserOpenTrove || !account || isDefaultView) {
+    if (!hasUserOpenTrove || !account) {
       setRedemptionBuffer(0);
       setStartAxisXCount(0);
       setLowestTroves([]);
       setActiveBar(false);
     }
-  }, [hasUserOpenTrove, account, isDefaultView]);
-
-  useEffect(() => {
-    refetchOpenTrove();
-    refetchTroves();
-  }, [refetchTroves, block, refetchOpenTrove]);
+  }, [hasUserOpenTrove, account]);
 
   return <Bar className="max-w-full" options={options} data={datasets} />;
 };

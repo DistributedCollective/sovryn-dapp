@@ -1,13 +1,9 @@
 export type TroveData = {
   id: string;
-  debt: string;
-  rawStake: string;
+  debt: number;
   collateral: number;
   collateralRatio: number;
-  collateralRatioSortKey: string;
   collateralRatioSortKey_legacy: string;
-  rawSnapshotOfTotalRedistributedDebt: string;
-  rawSnapshotOfTotalRedistributedCollateral: string;
 };
 
 export enum ChartSortingType {

@@ -56,6 +56,7 @@ export const ZeroPage: FC = () => {
 
   const { connectWallet } = useWalletConnect();
   const { account } = useAccount();
+  const { refetch: getOpenTroves } = useGetUserOpenTrove(account);
 
   const collateral = useMemo(
     () => Number(trove?.collateral ?? 0),
@@ -63,7 +64,6 @@ export const ZeroPage: FC = () => {
   );
   const debt = useMemo(() => Number(trove?.debt ?? 0), [trove?.debt]);
   const hasLoc = useMemo(() => !!trove?.debt?.gt(0), [trove?.debt]);
-  const { refetch: getOpenTroves } = useGetUserOpenTrove();
 
   const handleLOCPopup = useCallback(() => {
     toggle();
@@ -210,9 +210,7 @@ export const ZeroPage: FC = () => {
                     </Paragraph>
 
                     <div className="h-80 md:flex-1 bg-gray-80 rounded pt-2 pr-2 flex items-center">
-                      <LOCChart
-                        isDefaultView={!showWelcomeBanner && !isLoading}
-                      />
+                      <LOCChart />
                     </div>
                   </div>
                 </div>

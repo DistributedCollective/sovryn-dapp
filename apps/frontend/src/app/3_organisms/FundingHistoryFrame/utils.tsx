@@ -102,6 +102,15 @@ const renderTXID = (item: FundingHistoryType) => {
   );
 };
 
+const normaliseBtcTxid = (txId: string) => {
+  // condition required here for backwards compatibility with BE issue from SOV-1851
+  if (txId?.indexOf('0x') === 0) {
+    return txId.substring(2);
+  }
+
+  return txId;
+};
+
 //split each row returned from the graph into 2 rows (part 1 and part 2)
 export const parseData = (item: BitcoinTransfer) => {
   const isOutgoing = item.direction === BitcoinTransferDirection.Outgoing;
@@ -114,7 +123,7 @@ export const parseData = (item: BitcoinTransfer) => {
       received: item.amountBTC,
       serviceFee: item.feeBTC,
       txHash: isOutgoing
-        ? item.bitcoinTxHash?.substring(2) //TODO: remove after issue fixed on Graph
+        ? normaliseBtcTxid(item.bitcoinTxHash)
         : item.createdAtTx.id,
     },
     {
@@ -126,7 +135,7 @@ export const parseData = (item: BitcoinTransfer) => {
       serviceFee: '-',
       txHash: isOutgoing
         ? item.createdAtTx.id
-        : item.bitcoinTxHash?.substring(2), //TODO: remove after issue fixed on Graph
+        : normaliseBtcTxid(item.bitcoinTxHash),
     },
   ] as FundingHistoryType[];
 };

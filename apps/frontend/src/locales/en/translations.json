@@ -104,6 +104,9 @@
     },
 
     "zeroPage": {
+        "meta": {
+            "title": "Borrow - Sovryn"
+        },
         "dashboardWelcomeBanner": {
             "fundWallet": "Fund your wallet",
             "OpenCredit": "Open line of credit"
@@ -158,19 +161,22 @@
             }
         },
         "tx": {
-            "adjustTrove": "Adjust",
-            "closeTrove": "Close using ZUSD",
-            "closeTroveDLLR": "Close using DLLR",
-            "openTrove": "Open",
             "adjustTitle": "Adjust line of credit",
-            "closeTitle": "Close line of credit",
             "openTitle": "Open line of credit",
+            "closeTitle": "Close line of credit",
             "claimSurplusTitle": "Claim surplus BTC collateral",
+            "repayTitle": "Repay loan",
+            "borrowTitle": "Borrow from line of credit",
+            "addCollateralTitle": "Add collateral to line of credit",
+            "withdrawCollateralTitle": "Withdraw collateral from line of credit",
+            "adjust": "Adjust",
+            "open": "Open",
+            "close": "Close",
             "claimSurplus": "Claim surplus",
-            "addCollateral": "Add Collateral",
-            "withdrawCollateral": "Withdraw Collateral",
             "repay": "Repay {{asset}}",
-            "borrow": "Borrow {{asset}}"
+            "borrow": "Borrow {{asset}}",
+            "addCollateral": "Add Collateral",
+            "withdrawCollateral": "Withdraw Collateral"
         }
     },
     "stats": {
@@ -220,13 +226,13 @@
             "collateralRatioTooltip": "Collateral ratio after the transaction",
             "liquidationPrice": "Liquidation price",
             "liquidationPriceTooltip": "Liquidation price after the transaction",
-            "recoveryLiquidationPrice": "Liquidation price (Recovery Mode)",
+            "recoveryLiquidationPrice": "Liquidation price (recovery mode)",
             "recoveryLiquidationPriceTooltip": "Liquidation price after the transaction",
             "rbtcPrice": "BTC price",
             "rbtcPriceTooltip": "BTC price in USD",
             "originationFee": "Origination fee",
             "originationFeeTooltip": "Origination fee in percentage",
-            "liquidationReserve": "Liquidation Reserve",
+            "liquidationReserve": "Liquidation reserve",
             "liquidationReserveTooltip": "Liquidation Reserve in ZUSD",
             "totalDebt": "Total debt",
             "totalDebtTooltip": "Total debt amount"
@@ -266,6 +272,9 @@
     },
 
     "earnPage": {
+        "meta": {
+            "title": "Earn - Sovryn"
+        },
         "title": "Stability pool",
         "subtitle": "Earn BTC by providing liquidity for liquidations",
         "form": {
@@ -284,6 +293,9 @@
     },
 
     "convertPage": {
+        "meta": {
+            "title": "Convert - Sovryn"
+        },
         "title": "Convert",
         "subtitle": "Convert between assets",
         "form": {
@@ -380,6 +392,9 @@
     },
 
     "rewardPage": {
+        "meta": {
+            "title": "Rewards - Sovryn"
+        },
         "title": "Rewards",
         "subtitle": "Collect rewards earned",
         "stabilityPoolRewards": "Stability pool rewards",
@@ -397,6 +412,9 @@
     },
 
     "historyPage": {
+        "meta": {
+            "title": "History - Sovryn"
+        },
         "title": "My transaction history",
         "table": {
             "tabs": {
@@ -503,7 +521,6 @@
             "rewardChange": "Reward change"
         }
     },
-
     "emailNotificationsDialog": {
         "dialogTitle": "Notifications",
         "title": "Sign up to receive important notifications about the state of your line of credit and the Zero protocol",
@@ -518,5 +535,21 @@
         "successMessage": "Your preferences have been saved.",
         "errorMessage": "Something went wrong, please try again.",
         "authErrorMessage": "Authentication failed, please try again."
+    },
+    "termsOfUsePage": {
+        "meta": {
+            "title": "Terms of service - Sovryn"
+        }
+    },
+    "privacyPolicyPage": {
+        "meta": {
+            "title": "Privacy policy - Sovryn"
+        }
+    },
+    "appUpdateDialog": {
+        "title": "New app version is available",
+        "changelog": "See changelog <0>here</0>",
+        "description": "Click below to update and accept the new version.",
+        "updateButton": "Update"
     }
 }

@@ -27,7 +27,7 @@ export const MaxButton: FC<MaxButtonProps> = ({
     className="text-xs font-medium underline whitespace-nowrap"
     {...applyDataAttr(dataAttribute)}
   >
-    ({t(translations.common.max)}
+    {`(${t(translations.common.max)} `}
     <AmountRenderer
       value={value}
       precision={precision}

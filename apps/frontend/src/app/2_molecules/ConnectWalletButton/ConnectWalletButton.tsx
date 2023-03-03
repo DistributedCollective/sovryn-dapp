@@ -1,4 +1,4 @@
-import React, { FC, PropsWithChildren, useCallback, useReducer } from 'react';
+import React, { FC, PropsWithChildren, useCallback, useState } from 'react';
 
 import { t } from 'i18next';
 import { nanoid } from 'nanoid';
@@ -35,7 +35,7 @@ export const ConnectWalletButton: FC<
   className,
   dataAttribute,
 }) => {
-  const [isOpen, toggle] = useReducer(state => !state, false);
+  const [open, setOpen] = useState(false);
   const { addNotification } = useNotificationContext();
 
   const onCopyAddress = useCallback(() => {
@@ -84,7 +84,7 @@ export const ConnectWalletButton: FC<
               </Link>
               <MenuItem
                 text={t(translations.connectWalletButton.settings)}
-                onClick={toggle}
+                onClick={() => setOpen(true)}
                 dataAttribute={`${dataAttribute}-menu-settings`}
               />
             </Menu>
@@ -94,7 +94,10 @@ export const ConnectWalletButton: FC<
             disconnect: t(translations.connectWalletButton.disconnect),
           }}
         />
-        <EmailNotificationSettingsDialog isOpen={isOpen} onClose={toggle} />
+        <EmailNotificationSettingsDialog
+          isOpen={open}
+          onClose={() => setOpen(false)}
+        />
       </>
     );
   }

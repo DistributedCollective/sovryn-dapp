@@ -132,7 +132,9 @@ export const LOCChart: FC<LOCChartProps> = ({ isDefaultView = false }) => {
   } = useGetTroves();
 
   useEffect(() => {
-    if (troves && !loadingTroves && globalsEntity && !isDefaultView) {
+    if (troves && !loadingTroves && globalsEntity) {
+      // load and parse data and then show it immediately if wallet not connected
+      // logic for connected wallets is in another useEffect
       const updatedTroves = troves.troves.map((trove: TroveData) => {
         const totalDebt = globalsEntity?.globals[0].rawTotalRedistributedDebt;
         const snapshotOfTotalDebt = trove.rawSnapshotOfTotalRedistributedDebt;
@@ -168,7 +170,9 @@ export const LOCChart: FC<LOCChartProps> = ({ isDefaultView = false }) => {
 
       setData(updatedTroves);
 
-      setDataToShow(updatedTroves.slice(0, trovesCountToShow - 1));
+      if (!isDefaultView) {
+        setDataToShow(updatedTroves.slice(0, trovesCountToShow - 1));
+      }
     }
   }, [
     troves,
@@ -183,6 +187,8 @@ export const LOCChart: FC<LOCChartProps> = ({ isDefaultView = false }) => {
 
   useEffect(() => {
     if (!loadingUserOpenTrove && hasUserOpenTrove && data && troves) {
+      // parses data and shows bars around users trove
+      // initial data parsing and displaying data for unconnected state in another useEffect
       const isUserTrove = (trove: TroveData) => trove.id === account;
       const index = data.findIndex(isUserTrove);
       if (index === -1) {
@@ -197,13 +203,15 @@ export const LOCChart: FC<LOCChartProps> = ({ isDefaultView = false }) => {
       }
 
       if (index < centerIndex) {
-        //don't cutting an array, if the user trove is in the first 10 elements
+        // if the user trove is in the first N elements, show all N
         setDataToShow(data.slice(0, trovesCountToShow));
         setStartAxisXCount(0);
       } else {
-        //setting the start point for the chart axis X
+        // setting the start point for the chart axis X to first bar
         setStartAxisXCount(shiftTroves);
-        //cutting an array up to 21 elements, 10 from the left and 10 from the right, starting from user trove index
+
+        // slice the full trove array to get N bars, where N = trovesCountToShow
+        // (N-1)/2 to the left and (N-1)/2 to the right of the bar of user's trove
         const slicedData = data.slice(
           shiftTroves,
           shiftTroves + trovesCountToShow,

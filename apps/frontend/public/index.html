@@ -4,9 +4,14 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta
-      name="description"
-      content="Web site created using create-react-app"
+      property="og:image"
+      content="%PUBLIC_URL%/assets/636103ef1f7e59d03648f98f_Borrow_hero_gradient.jpg"
     />
+    <meta
+      property="twitter:image"
+      content="%PUBLIC_URL%/assets/636103ef1f7e59d03648f98f_Borrow_hero_gradient.jpg"
+    />
+    <meta name="description" content="Sovryn" />
     <% if (process.env.NODE_ENV === "production") { %>
     <script src="https://cmp.osano.com/16BSnVTBY9ksVax/3abc690b-3747-4ba3-b1fb-fcaefd6ab8c1/osano.js"></script>
     <% } %> <% if (process.env.REACT_APP_GOOGLE_ANALYTICS) { %>
@@ -48,34 +53,34 @@
     />
     <title>Sovryn Zero</title>
     <% if (process.env.REACT_APP_TILEDESK_ID) { %>
-      <!-- Tiledesk Code -->
-      <script type="application/javascript">
-        window.tiledeskSettings = {
-          projectid: '%REACT_APP_TILEDESK_ID%',
+    <!-- Tiledesk Code -->
+    <script type="application/javascript">
+      window.tiledeskSettings = {
+        projectid: '%REACT_APP_TILEDESK_ID%',
+      };
+      (function (d, s, id) {
+        var w = window;
+        var d = document;
+        var i = function () {
+          i.c(arguments);
         };
-        (function (d, s, id) {
-          var w = window;
-          var d = document;
-          var i = function () {
-            i.c(arguments);
-          };
-          i.q = [];
-          i.c = function (args) {
-            i.q.push(args);
-          };
-          w.Tiledesk = i;
-          var js,
-            fjs = d.getElementsByTagName(s)[0];
-          if (d.getElementById(id)) return;
-          js = d.createElement(s);
-          js.id = id;
-          js.async = true;
-          js.src = 'https://widget.tiledesk.com/v5/launch.js';
-          fjs.parentNode.insertBefore(js, fjs);
-        })(document, 'script', 'tiledesk-jssdk');
-      </script>
-      <!-- End Tiledesk Code -->
-      <% } %>
+        i.q = [];
+        i.c = function (args) {
+          i.q.push(args);
+        };
+        w.Tiledesk = i;
+        var js,
+          fjs = d.getElementsByTagName(s)[0];
+        if (d.getElementById(id)) return;
+        js = d.createElement(s);
+        js.id = id;
+        js.async = true;
+        js.src = 'https://widget.tiledesk.com/v5/launch.js';
+        fjs.parentNode.insertBefore(js, fjs);
+      })(document, 'script', 'tiledesk-jssdk');
+    </script>
+    <!-- End Tiledesk Code -->
+    <% } %>
   </head>
   <body>
     <% if (process.env.REACT_APP_GOOGLE_ANALYTICS) { %>
@@ -103,5 +108,26 @@
       To create a production bundle, use `npm run build` or `yarn build`.
     -->
     <div id="overlay"></div>
+    <% if (process.env.NODE_ENV === "production") { %>
+    <script>
+      window.addEventListener('error', async err => {
+        console.error('Error: ', err);
+
+        if (!navigator.serviceWorker) {
+          return;
+        }
+
+        const registration = await navigator.serviceWorker.ready;
+        if (registration.installing || registration.waiting) {
+          navigator.serviceWorker.ready.then(async registration => {
+            await registration.unregister();
+            // Once the service worker is unregistered, we can reload
+            // the page to let the browser download a fresh copy of our app
+            window.location.reload();
+          });
+        }
+      });
+    </script>
+    <% } %>
   </body>
 </html>

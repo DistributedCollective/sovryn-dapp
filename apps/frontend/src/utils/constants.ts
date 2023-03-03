@@ -1,6 +1,6 @@
 import { ChainIds } from '@sovryn/ethers-provider';
 
-import { Environments, Services } from '../types/global';
+import { Environments, ReleaseFileContent, Services } from '../types/global';
 
 export const sovrynLinks = {
   discord: 'https://discord.gg/kBTNx4zjRf',
@@ -66,7 +66,7 @@ export const DEFAULT_TIMEOUT_SECONDS = 5000;
 export const LIQUIDATION_RESERVE_AMOUNT = 20;
 export const MAX_GAS_LIMIT = 6_800_000;
 export const GAS_LIMIT_OPEN_TROVE = 950_000;
-export const GAS_LIMIT_ADJUST_TROVE = 700_000;
+export const GAS_LIMIT_ADJUST_TROVE = 950_000;
 export const GAS_LIMIT_CLOSE_TROVE = 280_000;
 export const GAS_LIMIT_CLOSE_DLLR_TROVE = 500_000;
 export const GAS_LIMIT_CONVERT = 150_000;
@@ -89,5 +89,10 @@ export const btcInSatoshis = 100000000;
 
 //TODO: refactor into Bitcoin asset definition later
 export const Bitcoin = 'BTC';
+export const USD = 'USD';
 
 export const rskFaucet = 'https://faucet.rsk.co';
+
+export const currentRelease: ReleaseFileContent = JSON.parse(
+  process.env.REACT_APP_RELEASE_DATA || '{}',
+);

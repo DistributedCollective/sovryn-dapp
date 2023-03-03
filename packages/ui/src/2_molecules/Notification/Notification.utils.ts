@@ -7,6 +7,8 @@ export const getIcon = (type: NotificationType) => {
       return IconNames.SUCCESS_ICON;
     case NotificationType.warning:
       return IconNames.WARNING;
+    case NotificationType.info:
+      return IconNames.INFO;
     case NotificationType.error:
       return IconNames.FAILED_TX;
   }

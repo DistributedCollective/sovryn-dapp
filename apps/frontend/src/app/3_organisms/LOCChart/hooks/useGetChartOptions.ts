@@ -6,6 +6,10 @@ import { prettyTx } from '@sovryn/ui';
 import { translations } from '../../../../locales/i18n';
 import { Bitcoin } from '../../../../utils/constants';
 import { formatValue } from '../../../../utils/math';
+import {
+  BTC_RENDER_PRECISION,
+  TOKEN_RENDER_PRECISION,
+} from '../../ZeroLocForm/constants';
 import { chartConfig } from '../utils';
 import { useAccount } from './../../../../hooks/useAccount';
 
@@ -41,11 +45,11 @@ export const useGetChartOptions = (
               prettyTx(id),
               `${t(translations.chart.collateralAmount)}: ${formatValue(
                 Number(collateral),
-                6,
+                BTC_RENDER_PRECISION,
               )} ${Bitcoin}`,
               `${t(translations.chart.debtAmount)}: ${formatValue(
                 Number(debt),
-                2,
+                TOKEN_RENDER_PRECISION,
               )} ${SupportedTokens.zusd.toUpperCase()}`,
               `${t(translations.chart.collateralRatio)}: ${formatValue(
                 Number(collateralRatio),
@@ -57,7 +61,7 @@ export const useGetChartOptions = (
               tooltipContent.push(
                 `${t(translations.chart.redemptionBuffer)}: ${formatValue(
                   redemptionBuffer,
-                  2,
+                  TOKEN_RENDER_PRECISION,
                 )} ${SupportedTokens.zusd.toUpperCase()}`,
               );
             }

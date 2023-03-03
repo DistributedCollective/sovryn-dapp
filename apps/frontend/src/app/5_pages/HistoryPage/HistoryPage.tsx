@@ -3,6 +3,7 @@ import { ApolloProvider } from '@apollo/client';
 import React, { FC, useMemo, useState } from 'react';
 
 import { t } from 'i18next';
+import { Helmet } from 'react-helmet-async';
 
 import { Heading, Select, SelectOption, Tabs } from '@sovryn/ui';
 
@@ -125,30 +126,35 @@ const HistoryPage: FC = () => {
   );
 
   return (
-    <div className="lg:container w-full text-gray-10 mt-9 lg:mt-10">
-      <Heading className="text-center lg:mb-10 lg:text-2xl">
-        {t(translations.historyPage.title)}
-      </Heading>
-      <div className="w-full">
-        <div className={styles.mobileSelect}>
-          <Select
-            className="min-w-[12rem]"
-            options={options}
-            value={String(index)}
-            onChange={value => setIndex(Number(value))}
-          />
+    <>
+      <Helmet>
+        <title>{t(translations.historyPage.meta.title)}</title>
+      </Helmet>
+      <div className="lg:container w-full text-gray-10 mt-9 lg:mt-10">
+        <Heading className="text-center lg:mb-10 lg:text-2xl">
+          {t(translations.historyPage.title)}
+        </Heading>
+        <div className="w-full">
+          <div className={styles.mobileSelect}>
+            <Select
+              className="min-w-[12rem]"
+              options={options}
+              value={String(index)}
+              onChange={value => setIndex(Number(value))}
+            />
+          </div>
+          <div className={styles.desktop}>
+            <Tabs
+              items={items}
+              onChange={setIndex}
+              index={index}
+              className="w-full"
+            />
+          </div>
+          <div className={styles.mobile}>{items[index].content}</div>
         </div>
-        <div className={styles.desktop}>
-          <Tabs
-            items={items}
-            onChange={setIndex}
-            index={index}
-            className="w-full"
-          />
-        </div>
-        <div className={styles.mobile}>{items[index].content}</div>
       </div>
-    </div>
+    </>
   );
 };
 

@@ -33,6 +33,57 @@ import {
 } from '../../../../utils/transactions';
 import { adjustTrove, openTrove } from '../utils/trove-manager';
 
+const baseTranslationPath = translations.zeroPage.tx;
+
+const getAdjustTroveTexts = (
+  value: CreditLineSubmitValue,
+): { dialogTitle: string; transactionTitle: string } => {
+  const isAdjustingDebt =
+    (value.borrow && value.borrow !== '0') ||
+    (value.repay && value.repay !== '0');
+
+  const isAdjustingCollateral =
+    (value.depositCollateral && value.depositCollateral !== '0') ||
+    (value.withdrawCollateral && value.withdrawCollateral !== '0');
+
+  if (value.repay && !isAdjustingCollateral) {
+    return {
+      dialogTitle: t(baseTranslationPath.repayTitle),
+      transactionTitle: t(baseTranslationPath.repay, {
+        asset: value.token.toUpperCase(),
+      }),
+    };
+  }
+
+  if (value.borrow && !isAdjustingCollateral) {
+    return {
+      dialogTitle: t(baseTranslationPath.borrowTitle),
+      transactionTitle: t(baseTranslationPath.borrow, {
+        asset: value.token.toUpperCase(),
+      }),
+    };
+  }
+
+  if (value.depositCollateral && !isAdjustingDebt) {
+    return {
+      dialogTitle: t(baseTranslationPath.addCollateralTitle),
+      transactionTitle: t(baseTranslationPath.addCollateral),
+    };
+  }
+
+  if (value.withdrawCollateral && !isAdjustingDebt) {
+    return {
+      dialogTitle: t(baseTranslationPath.withdrawCollateralTitle),
+      transactionTitle: t(baseTranslationPath.withdrawCollateral),
+    };
+  }
+
+  return {
+    dialogTitle: t(baseTranslationPath.adjustTitle),
+    transactionTitle: t(baseTranslationPath.adjust),
+  };
+};
+
 type HandleTroveCallbacks = {
   onTroveOpened: () => void;
   onTroveAdjusted: () => void;
@@ -58,6 +109,8 @@ export const useHandleTrove = (
         const contract = new Contract(address, abi, signer);
 
         if (hasLoc) {
+          const { dialogTitle, transactionTitle } = getAdjustTroveTexts(value);
+
           const params: Partial<TroveAdjustmentParams<Decimalish>> = {};
 
           if (value.borrow) {
@@ -93,7 +146,7 @@ export const useHandleTrove = (
           const adjustedTrove = await adjustTrove(value.token, account, params);
 
           transactions.push({
-            title: t(translations.zeroPage.tx.adjustTrove),
+            title: transactionTitle,
             request: {
               type: TransactionType.signTransaction,
               contract,
@@ -115,7 +168,7 @@ export const useHandleTrove = (
 
           setTransactions(transactions);
           setIsOpen(true);
-          setTitle(t(translations.zeroPage.tx.adjustTitle));
+          setTitle(dialogTitle);
         } else {
           const openedTrove = await openTrove(value.token, {
             borrowZUSD: value.borrow || '0',
@@ -123,7 +176,7 @@ export const useHandleTrove = (
           });
           setTransactions([
             {
-              title: t(translations.zeroPage.tx.openTrove),
+              title: t(baseTranslationPath.open),
               request: {
                 type: TransactionType.signTransaction,
                 contract,
@@ -136,7 +189,7 @@ export const useHandleTrove = (
             },
           ]);
           setIsOpen(true);
-          setTitle(t(translations.zeroPage.tx.openTitle));
+          setTitle(t(baseTranslationPath.openTitle));
         }
       }
     },
@@ -177,7 +230,7 @@ export const useHandleTrove = (
               value,
             }),
             {
-              title: t(translations.zeroPage.tx.closeTroveDLLR),
+              title: t(baseTranslationPath.close),
               request: {
                 type: TransactionType.signTransaction,
                 contract,
@@ -197,7 +250,7 @@ export const useHandleTrove = (
         } else if (token === SupportedTokens.zusd) {
           setTransactions([
             {
-              title: t(translations.zeroPage.tx.closeTrove),
+              title: t(baseTranslationPath.close),
               request: {
                 type: TransactionType.signTransaction,
                 contract,
@@ -213,7 +266,7 @@ export const useHandleTrove = (
         }
 
         setIsOpen(true);
-        setTitle(t(translations.zeroPage.tx.closeTitle));
+        setTitle(t(baseTranslationPath.closeTitle));
       }
     },
     [

@@ -1,4 +1,4 @@
-import React, { useEffect, FC, useState, useMemo } from 'react';
+import React, { useEffect, FC, useState, useMemo, useCallback } from 'react';
 
 import {
   Chart as ChartJS,
@@ -16,6 +16,7 @@ import { useAccount } from '../../../hooks/useAccount';
 import { useBlockNumber } from '../../../hooks/useBlockNumber';
 import { useIsMobile } from '../../../hooks/useIsMobile';
 import { TroveStatus } from '../../../utils/graphql/zero/generated';
+import { areAddressesEqual } from '../../../utils/helpers';
 import { fromWei } from '../../../utils/math';
 import { useGetChartOptions } from './hooks/useGetChartOptions';
 import { useGetGlobalsEntity } from './hooks/useGetGlobalsEntity';
@@ -95,6 +96,11 @@ export const LOCChart: FC = () => {
     startAxisXCount,
   );
 
+  const isUserTrove = useCallback(
+    (trove: TroveData) => areAddressesEqual(trove.id, account),
+    [account],
+  );
+
   const datasets: ChartData<'bar', TroveData[]> = useMemo(() => {
     return {
       datasets: [
@@ -107,7 +113,7 @@ export const LOCChart: FC = () => {
           backgroundColor: bar => {
             if (bar.raw) {
               const { id } = bar.raw as TroveData;
-              return id.toLowerCase() === account.toLowerCase()
+              return areAddressesEqual(id, account)
                 ? chartConfig.activeColor
                 : chartConfig.defaultColor;
             } else {
@@ -189,8 +195,6 @@ export const LOCChart: FC = () => {
     if (!loadingUserOpenTrove && hasUserOpenTrove && data && troves) {
       // parses data and shows bars around users trove
       // initial data parsing and displaying data for unconnected state in another useEffect
-      const isUserTrove = (trove: TroveData) =>
-        trove.id.toLowerCase() === account.toLowerCase();
       const index = data.findIndex(isUserTrove);
       if (index === -1) {
         return;
@@ -233,6 +237,7 @@ export const LOCChart: FC = () => {
     userCollateralRatio,
     activeBar,
     trovesCountToShow,
+    isUserTrove,
   ]);
 
   useEffect(() => {

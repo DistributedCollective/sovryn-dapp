@@ -63,6 +63,7 @@ module.exports = {
       error: '#FF0000',
       'error-light': '#FF5353',
 
+      info: '#267DFF',
       success: '#19A619',
       warning: '#DFA000',
       // New color palette

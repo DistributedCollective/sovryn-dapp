@@ -75,7 +75,7 @@ export const router = createBrowserRouter([
     element: <PageContainer contentClassName="container" />,
     children: [
       {
-        path: '/policies/terms-of-use',
+        path: '/policies/terms-of-service',
         element: <TermsOfUse />,
       },
       {

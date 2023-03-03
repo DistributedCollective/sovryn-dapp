@@ -14,6 +14,7 @@ import {
 
 import { StatusIcon } from '../../../../../2_molecules/StatusIcon/StatusIcon';
 import { TxIdWithNotification } from '../../../../../2_molecules/TxIdWithNotification/TransactionIdWithNotification';
+import { useBlockNumber } from '../../../../../../hooks/useBlockNumber';
 import { translations } from '../../../../../../locales/i18n';
 import { Bitcoin } from '../../../../../../utils/constants';
 import { useGetBitcoinTxIdQuery } from '../../../../../../utils/graphql/rsk/generated';
@@ -62,15 +63,7 @@ export const StatusScreen: React.FC<StatusScreenProps> = ({
   onClose,
   onRetry,
 }) => {
-  const hasTransactionFailed = useMemo(
-    () => txStatus === StatusType.error,
-    [txStatus],
-  );
-
-  const isDoneButtonDisabled = useMemo(
-    () => txStatus === StatusType.pending,
-    [txStatus],
-  );
+  const { value: block } = useBlockNumber();
 
   const { data, refetch } = useGetBitcoinTxIdQuery({
     variables: { createdAtTx: txHash || '' },
@@ -83,7 +76,7 @@ export const StatusScreen: React.FC<StatusScreenProps> = ({
 
   useEffect(() => {
     refetch();
-  }, [refetch, txHash]);
+  }, [refetch, txHash, block]);
 
   const items = useMemo(
     () => [
@@ -155,14 +148,36 @@ export const StatusScreen: React.FC<StatusScreenProps> = ({
     [amount, bitcoinTxHash, feesPaid, from, receiveAmount, to, txHash],
   );
 
+  const status = useMemo(() => {
+    if (txStatus !== StatusType.success) {
+      return txStatus;
+    }
+
+    if (!bitcoinTxHash) {
+      return StatusType.pending;
+    }
+
+    return StatusType.success;
+  }, [bitcoinTxHash, txStatus]);
+
+  const hasTransactionFailed = useMemo(
+    () => status === StatusType.error,
+    [status],
+  );
+
+  const isDoneButtonDisabled = useMemo(
+    () => status === StatusType.pending,
+    [status],
+  );
+
   return (
     <div className="text-center">
       <Heading type={HeadingType.h2} className="font-medium mb-6">
-        {getTitle(txStatus)}
+        {getTitle(status)}
       </Heading>
 
       <div className="mb-6">
-        <StatusIcon status={txStatus} dataAttribute="funding-send-status" />
+        <StatusIcon status={status} dataAttribute="funding-send-status" />
       </div>
 
       <div className="bg-gray-80 border rounded border-gray-50 p-3 text-xs text-gray-30">

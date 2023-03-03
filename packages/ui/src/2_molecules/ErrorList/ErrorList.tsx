@@ -23,7 +23,7 @@ export const ErrorList: FC<ErrorListProps> = ({
           ...item,
           weight: item.weight ?? 0,
         }))
-        .sort((a, b) => a.weight - b.weight),
+        .sort((a, b) => b.weight - a.weight),
     [errors],
   );
 

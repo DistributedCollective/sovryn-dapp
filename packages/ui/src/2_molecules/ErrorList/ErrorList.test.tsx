@@ -10,13 +10,13 @@ const errors = [
     level: ErrorLevel.Critical,
     message: 'Critical',
     dataAttribute: 'w-1',
-    weight: 3,
+    weight: 1,
   },
   {
     level: ErrorLevel.Warning,
     message: 'Warning',
     dataAttribute: 'w-3',
-    weight: 1,
+    weight: 3,
   },
   {
     level: ErrorLevel.Warning,

@@ -6,6 +6,9 @@ import { formatUnits, parseUnits } from 'ethers/lib/utils';
 const DEFAULT_UNIT = 18;
 const DEFAULT_DECIMALS = 6;
 
+const DEFAULT_DECIMALS_SEPARATOR = '.';
+const DEFAULT_THOUSANDS_SEPARATOR = ',';
+
 const unitNames = ['wei', 'kwei', 'mwei', 'gwei', 'szabo', 'finney', 'ether'];
 
 // helper function to convert any type of ethers value to wei.
@@ -73,8 +76,8 @@ export const fromWeiFixed = (
   unitName: BigNumberish = DEFAULT_UNIT,
 ): string => Number(fromWei(value, unitName)).toFixed(decimals);
 
-export const formatValue = (value: number, precision: number = 0) =>
-  value.toLocaleString(navigator.language, {
+export const formatValue = (value: number | string, precision: number = 0) =>
+  Number(value).toLocaleString(navigator.language, {
     maximumFractionDigits: precision,
   });
 
@@ -92,4 +95,31 @@ export const parseUnitValue = (unitName: BigNumberish): number => {
     }
   }
   return Number(unitName);
+};
+
+export const getLocaleSeparators = () => {
+  const number = 1200.4;
+
+  const formattedValue = new Intl.NumberFormat(
+    navigator.language,
+  ).formatToParts(number);
+
+  return {
+    decimal:
+      formattedValue.find(part => part.type === 'decimal')?.value ||
+      DEFAULT_DECIMALS_SEPARATOR,
+    thousand:
+      formattedValue.find(part => part.type === 'group')?.value ||
+      DEFAULT_THOUSANDS_SEPARATOR,
+  };
+};
+
+export const getDecimalPartLength = (value: string | number) =>
+  value?.toString().split('.')?.[1]?.length || 0;
+
+export const numeric = (value: number) => {
+  if (isNaN(value) || !isFinite(value) || !value) {
+    return 0;
+  }
+  return value;
 };

@@ -8,7 +8,11 @@ import { AmountRenderer } from '../../2_molecules/AmountRenderer/AmountRenderer'
 import { CRatioIndicator } from '../../2_molecules/LOCStatus/components/CRatioIndicator/CRatioIndicator';
 import { Bitcoin } from '../../../utils/constants';
 import { formatValue } from '../../../utils/math';
-import { DEBT_TOKEN } from './constants';
+import {
+  TOKEN_RENDER_PRECISION,
+  BTC_RENDER_PRECISION,
+  DEBT_TOKEN,
+} from './constants';
 
 type CurrentTroveDataProps = {
   debt: string;
@@ -33,12 +37,22 @@ export const CurrentTroveData: FC<CurrentTroveDataProps> = ({
       <div className="w-full flex flex-row justify-between items-center mb-12 gap-4">
         <Column
           label={t('LOCStatus.currentDebt')}
-          value={`${formatValue(Number(debt), 2)} ${DEBT_TOKEN.toUpperCase()}`}
+          value={
+            <AmountRenderer
+              value={debt}
+              suffix={DEBT_TOKEN}
+              precision={TOKEN_RENDER_PRECISION}
+            />
+          }
         />
         <Column
           label={t('LOCStatus.currentCollateral')}
           value={
-            <AmountRenderer value={collateral} suffix={Bitcoin} precision={4} />
+            <AmountRenderer
+              value={collateral}
+              suffix={Bitcoin}
+              precision={BTC_RENDER_PRECISION}
+            />
           }
         />
         <Column

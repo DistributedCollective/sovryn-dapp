@@ -177,12 +177,6 @@ module.exports = {
       borderWidth: {
         6: '6px',
       },
-      keyframes: {
-        spin: {
-          '0%': { transform: 'rotate(0deg)' },
-          '100%': { transform: 'rotate(-360deg)' },
-        },
-      },
       animation: {
         'spin-fast': 'spin .5s linear infinite',
       },

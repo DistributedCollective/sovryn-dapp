@@ -43,6 +43,11 @@ export const router = createBrowserRouter([
         loader: zeroPageLoader,
       },
       {
+        path: '/borrow',
+        element: <Zero />,
+        loader: zeroPageLoader,
+      },
+      {
         path: '/earn',
         element: <EarnPage />,
         loader: earnPageLoader,
@@ -70,7 +75,7 @@ export const router = createBrowserRouter([
     element: <PageContainer contentClassName="container" />,
     children: [
       {
-        path: '/policies/terms-of-use',
+        path: '/policies/terms-of-service',
         element: <TermsOfUse />,
       },
       {

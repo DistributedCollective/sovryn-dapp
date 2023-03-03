@@ -2,6 +2,7 @@ import React, { FC, useCallback, useMemo, useState } from 'react';
 import { useEffect } from 'react';
 
 import { t } from 'i18next';
+import { Helmet } from 'react-helmet-async';
 
 import { SupportedTokens } from '@sovryn/contracts';
 import { SupportedTokenList } from '@sovryn/contracts';
@@ -21,12 +22,12 @@ import {
   Select,
 } from '@sovryn/ui';
 
+import { AmountRenderer } from '../../2_molecules/AmountRenderer/AmountRenderer';
 import { AssetRenderer } from '../../2_molecules/AssetRenderer/AssetRenderer';
 import { useAccount } from '../../../hooks/useAccount';
 import { useAmountInput } from '../../../hooks/useAmountInput';
 import { useMaintenance } from '../../../hooks/useMaintenance';
 import { translations } from '../../../locales/i18n';
-import { formatValue } from '../../../utils/math';
 import { allowedTokens, bassets } from './ConvertPage.types';
 import { useGetDefaultSourceToken } from './hooks/useGetDefaultSourceToken';
 import { useGetMaximumAvailableAmount } from './hooks/useGetMaximumAvailableAmount';
@@ -41,6 +42,7 @@ const ConvertPage: FC = () => {
   const defaultSourceToken = useGetDefaultSourceToken();
 
   const [amountInput, setAmount, amount] = useAmountInput('');
+
   const [sourceToken, setSourceToken] =
     useState<SupportedTokens>(defaultSourceToken);
 
@@ -168,122 +170,130 @@ const ConvertPage: FC = () => {
   );
 
   return (
-    <div className="w-full flex flex-col items-center text-gray-10 mt-9 sm:mt-24">
-      <Heading className="text-base sm:text-2xl font-medium">
-        {t(pageTranslations.title)}
-      </Heading>
-      <Paragraph
-        size={ParagraphSize.base}
-        className="mt-2.5 sm:mt-4 sm:text-base font-medium"
-      >
-        {t(pageTranslations.subtitle)}
-      </Paragraph>
+    <>
+      <Helmet>
+        <title>{t(translations.convertPage.meta.title)}</title>
+      </Helmet>
+      <div className="w-full flex flex-col items-center text-gray-10 mt-9 sm:mt-24">
+        <Heading className="text-base sm:text-2xl font-medium">
+          {t(pageTranslations.title)}
+        </Heading>
+        <Paragraph
+          size={ParagraphSize.base}
+          className="mt-2.5 sm:mt-4 sm:text-base font-medium"
+        >
+          {t(pageTranslations.subtitle)}
+        </Paragraph>
 
-      <div className="mt-12 w-full p-0 sm:border sm:border-gray-50 sm:rounded sm:w-[28rem] sm:p-6 sm:bg-gray-90">
-        <div className="bg-gray-80 rounded p-6">
-          <div className="w-full flex flex-row justify-between items-center">
-            <Paragraph size={ParagraphSize.base} className="font-medium">
-              {t(pageTranslations.form.convertFrom)}
-            </Paragraph>
+        <div className="mt-12 w-full p-0 sm:border sm:border-gray-50 sm:rounded sm:w-[28rem] sm:p-6 sm:bg-gray-90">
+          <div className="bg-gray-80 rounded p-6">
+            <div className="w-full flex flex-row justify-between items-center">
+              <Paragraph size={ParagraphSize.base} className="font-medium">
+                {t(pageTranslations.form.convertFrom)}
+              </Paragraph>
 
+              <button
+                onClick={onMaximumAmountClick}
+                className="text-xs font-medium underline whitespace-nowrap"
+                {...applyDataAttr('convert-from-max')}
+              >
+                ({t(commonTranslations.max)}{' '}
+                <AmountRenderer
+                  value={maximumAmountToConvert}
+                  precision={4}
+                  suffix={sourceToken.toUpperCase()}
+                />
+              </button>
+            </div>
+
+            <div className="w-full flex flex-row justify-between items-center gap-3 mt-3.5">
+              <AmountInput
+                value={amountInput}
+                onChangeText={setAmount}
+                label={t(commonTranslations.amount)}
+                min={0}
+                invalid={!isValidAmount}
+                disabled={!account}
+                className="w-full flex-grow-0 flex-shrink"
+                dataAttribute="convert-from-amount"
+                placeholder="0"
+              />
+
+              <Select
+                value={sourceToken}
+                onChange={onSourceTokenChange}
+                options={tokenOptions}
+                labelRenderer={() => getAssetRenderer(sourceToken)}
+                className="min-w-[6.7rem]"
+                dataAttribute="convert-from-asset"
+              />
+            </div>
+
+            {!isValidAmount && (
+              <Paragraph className="text-error-light font-medium mt-2">
+                {t(pageTranslations.form.invalidAmountError)}
+              </Paragraph>
+            )}
+          </div>
+
+          <div className="flex justify-center rounded-full -mt-3.5">
             <button
-              onClick={onMaximumAmountClick}
-              className="text-xs font-medium underline whitespace-nowrap"
-              {...applyDataAttr('convert-from-max')}
+              className="w-11 h-11 rounded-full bg-gray-90 flex justify-center items-center"
+              onClick={onSwitchClick}
+              {...applyDataAttr('convert-swap-asset')}
             >
-              ({t(commonTranslations.max)}{' '}
-              {formatValue(Number(maximumAmountToConvert), 4)}{' '}
-              {sourceToken.toUpperCase()})
+              <Icon
+                icon={IconNames.PENDING}
+                className="text-gray-50 rotate-90"
+                size={24}
+              />
             </button>
           </div>
 
-          <div className="w-full flex flex-row justify-between items-center gap-3 mt-3.5">
-            <AmountInput
-              value={amountInput}
-              onChangeText={setAmount}
-              label={t(commonTranslations.amount)}
-              min={0}
-              invalid={!isValidAmount}
-              disabled={!account}
-              className="w-full flex-grow-0 flex-shrink"
-              dataAttribute="convert-from-amount"
-              placeholder="0"
-            />
+          <div className="bg-gray-80 rounded p-6 -mt-3.5">
+            <Paragraph size={ParagraphSize.base} className="font-medium">
+              {t(pageTranslations.form.convertTo)}
+            </Paragraph>
 
-            <Select
-              value={sourceToken}
-              onChange={onSourceTokenChange}
-              options={tokenOptions}
-              labelRenderer={() => getAssetRenderer(sourceToken)}
-              className="min-w-[6.7rem]"
-              dataAttribute="convert-from-asset"
-            />
+            <div className="w-full flex flex-row justify-between items-center gap-3 mt-3.5">
+              <AmountInput
+                value={amount}
+                label={t(commonTranslations.amount)}
+                readOnly
+                placeholder="0"
+                className="w-full flex-grow-0 flex-shrink"
+                dataAttribute="convert-to-amount"
+              />
+              <Select
+                value={destinationToken}
+                onChange={setDestinationToken}
+                options={destinationTokenOptions}
+                labelRenderer={() => getAssetRenderer(destinationToken)}
+                className="min-w-[6.7rem]"
+                dataAttribute="convert-to-asset"
+              />
+            </div>
           </div>
 
-          {!isValidAmount && (
-            <Paragraph className="text-error-light font-medium mt-2">
-              {t(pageTranslations.form.invalidAmountError)}
-            </Paragraph>
+          <Button
+            type={ButtonType.reset}
+            style={ButtonStyle.primary}
+            text={t(commonTranslations.buttons.confirm)}
+            className="w-full mt-8"
+            disabled={isSubmitDisabled}
+            onClick={handleSubmit}
+            dataAttribute="convert-confirm"
+          />
+
+          {isInMaintenance && (
+            <ErrorBadge
+              level={ErrorLevel.Warning}
+              message={t(translations.maintenanceMode.featureDisabled)}
+            />
           )}
         </div>
-
-        <div className="flex justify-center rounded-full -mt-3.5">
-          <button
-            className="w-11 h-11 rounded-full bg-gray-90 flex justify-center items-center"
-            onClick={onSwitchClick}
-            {...applyDataAttr('convert-swap-asset')}
-          >
-            <Icon
-              icon={IconNames.PENDING}
-              className="text-gray-50 rotate-90 -scale-x-100"
-              size={24}
-            />
-          </button>
-        </div>
-
-        <div className="bg-gray-80 rounded p-6 -mt-3.5">
-          <Paragraph size={ParagraphSize.base} className="font-medium">
-            {t(pageTranslations.form.convertTo)}
-          </Paragraph>
-
-          <div className="w-full flex flex-row justify-between items-center gap-3 mt-3.5">
-            <AmountInput
-              value={amount}
-              label={t(commonTranslations.amount)}
-              readOnly
-              placeholder="0"
-              className="w-full flex-grow-0 flex-shrink"
-              dataAttribute="convert-to-amount"
-            />
-            <Select
-              value={destinationToken}
-              onChange={setDestinationToken}
-              options={destinationTokenOptions}
-              labelRenderer={() => getAssetRenderer(destinationToken)}
-              className="min-w-[6.7rem]"
-              dataAttribute="convert-to-asset"
-            />
-          </div>
-        </div>
-
-        <Button
-          type={ButtonType.reset}
-          style={ButtonStyle.primary}
-          text={t(commonTranslations.buttons.confirm)}
-          className="w-full mt-8"
-          disabled={isSubmitDisabled}
-          onClick={handleSubmit}
-          dataAttribute="convert-confirm"
-        />
-
-        {isInMaintenance && (
-          <ErrorBadge
-            level={ErrorLevel.Warning}
-            message={t(translations.maintenanceMode.featureDisabled)}
-          />
-        )}
       </div>
-    </div>
+    </>
   );
 };
 

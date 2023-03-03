@@ -46,7 +46,7 @@ const footerLinks = [
   },
   {
     id: 'terms',
-    href: '/policies/terms-of-use',
+    href: '/policies/terms-of-service',
     name: t(translations.footer.terms),
   },
   {

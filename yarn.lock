@@ -4263,10 +4263,10 @@
   resolved "https://registry.yarnpkg.com/@socket.io/component-emitter/-/component-emitter-3.1.0.tgz#96116f2a912e0c02817345b3c10751069920d553"
   integrity sha512-+9jVqKhRSpsc591z5vX+X5Yyw+he/HCB4iQ/RYxw35CEPaY1gnsNE43nf9n9AaYjAQrTiI/mOwKUKdUs9vf7Xg==
 
-"@sovryn-zero/lib-base@1.0.0-early.access.3":
-  version "1.0.0-early.access.3"
-  resolved "https://registry.yarnpkg.com/@sovryn-zero/lib-base/-/lib-base-1.0.0-early.access.3.tgz#6a2dace7705143543bc2e0adc2d3917b8665876f"
-  integrity sha512-hmOoI/pLPOiEqUhMqW6Y36viIMvWo8gZ8fshXGgCto4RI9C/vxp6acHcsT5GGtCCv98hYRWydRfBEHvcMPnMFA==
+"@sovryn-zero/lib-base@1.0.0-early.access.4":
+  version "1.0.0-early.access.4"
+  resolved "https://registry.yarnpkg.com/@sovryn-zero/lib-base/-/lib-base-1.0.0-early.access.4.tgz#737513e3466822de4a540aefdad3d085364e0de1"
+  integrity sha512-vZrwy6l6scUcKjrtQy/tABATltijlGckBWQDHFAVOjeS7xvoWjkbLd7TAZx44WwUkbESeTEZ35r8vwcX1PNTnQ==
   dependencies:
     "@ethersproject/bignumber" "5.0.15"
 
@@ -4274,6 +4274,11 @@
   version "1.0.0-early.access.7"
   resolved "https://registry.yarnpkg.com/@sovryn-zero/lib-ethers/-/lib-ethers-1.0.0-early.access.7.tgz#1753daae6655d7f6ebf49da88c2e82ad81a53ee0"
   integrity sha512-9gFtEe1vS8KWjkKkOfR72AonHAqySUy90abYjq+mT9sa8L6WkF3fhZOQB1Pqf9KfO7xUbdlaoVj2N2zeZRcQ/w==
+
+"@sovryn-zero/lib-ethers@1.0.0-early.access.8":
+  version "1.0.0-early.access.8"
+  resolved "https://registry.yarnpkg.com/@sovryn-zero/lib-ethers/-/lib-ethers-1.0.0-early.access.8.tgz#a40bb6a06b60e6744af8a3cafd34c069ce93770b"
+  integrity sha512-njOgokPbAxkJP1HsTuIEd8Gn6FaXVtPYHYXypgsXrBa1pRXFfDOzcm2TmevTFI2HGr3yAUA5y/DzxWQJi7tPiw==
 
 "@sovryn/onboard-common@0.0.3":
   version "0.0.3"
@@ -17521,6 +17526,22 @@ react-error-overlay@^6.0.11:
   resolved "https://registry.yarnpkg.com/react-error-overlay/-/react-error-overlay-6.0.11.tgz#92835de5841c5cf08ba00ddd2d677b6d17ff9adb"
   integrity sha512-/6UZ2qgEyH2aqzYZgQPxEnz33NJ2gNsnHA2o5+o4wW9bLM/JYQitNP9xPhsXwC08hMMovfGe/8retsdDsczPRg==
 
+react-fast-compare@^3.2.0:
+  version "3.2.0"
+  resolved "https://registry.yarnpkg.com/react-fast-compare/-/react-fast-compare-3.2.0.tgz#641a9da81b6a6320f270e89724fb45a0b39e43bb"
+  integrity sha512-rtGImPZ0YyLrscKI9xTpV8psd6I8VAtjKCzQDlzyDvqJA8XOW78TXYQwNRNd8g8JZnDu8q9Fu/1v4HPAVwVdHA==
+
+react-helmet-async@1.3.0:
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/react-helmet-async/-/react-helmet-async-1.3.0.tgz#7bd5bf8c5c69ea9f02f6083f14ce33ef545c222e"
+  integrity sha512-9jZ57/dAn9t3q6hneQS0wukqC2ENOBgMNVEhb/ZG9ZSxUetzVIw4iAmEU38IaVg3QGYauQPhSeUTuIUtFglWpg==
+  dependencies:
+    "@babel/runtime" "^7.12.5"
+    invariant "^2.2.4"
+    prop-types "^15.7.2"
+    react-fast-compare "^3.2.0"
+    shallowequal "^1.1.0"
+
 react-i18next@12.0.0:
   version "12.0.0"
   resolved "https://registry.yarnpkg.com/react-i18next/-/react-i18next-12.0.0.tgz#634015a2c035779c5736ae4c2e5c34c1659753b1"
@@ -18566,6 +18587,11 @@ shallow-clone@^3.0.0:
   integrity sha512-/6KqX+GVUdqPuPPd2LxDDxzX6CAbjJehAAOKlNpqqUpAqPM6HeL8f+o3a+JsyGjn2lv0WY8UsTgUJjU9Ok55NA==
   dependencies:
     kind-of "^6.0.2"
+
+shallowequal@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/shallowequal/-/shallowequal-1.1.0.tgz#188d521de95b9087404fd4dcb68b13df0ae4e7f8"
+  integrity sha512-y0m1JoUZSlPAjXVtPPW70aZWfIL/dSP7AFkRnniLCrK/8MDKog3TySTBmckD+RObVxH0v4Tox67+F14PdED2oQ==
 
 shebang-command@^1.2.0:
   version "1.2.0"

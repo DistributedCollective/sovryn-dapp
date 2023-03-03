@@ -88,6 +88,10 @@ export const TransactionHistoryFrame: FC = () => {
         );
       case TroveOperation.AccrueRewards:
         return t(translations.transactionHistory.troveTypes.accrueRewards);
+      case TroveOperation.TransferGainToLineOfCredit:
+        return t(
+          translations.transactionHistory.troveTypes.withdrawGainToLineOfCredit,
+        );
       default:
         return '';
     }

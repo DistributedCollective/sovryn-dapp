@@ -446,12 +446,8 @@
             "liquidation": "Liquidation",
             "liquidationRecovery": "Liquidation (Recovery mode)",
             "redemption": "Redemption",
-            "accrueRewards": "Accrue Rewards"
-        },
-        "stabilityDeposit": {
-            "transfer": "Transfer gain to Line of Credit",
-            "withdraw": "Withdraw Tokens",
-            "deposit": "Deposit Tokens"
+            "accrueRewards": "Accrue Rewards",
+            "withdrawGainToLineOfCredit": "Withdraw gain to line of credit"
         },
         "filters": {
             "increasedCollateral": "Increased Collateral",

@@ -82,7 +82,7 @@ export const ServiceWorkerProvider: FC<PropsWithChildren> = ({ children }) => {
             </>
           ),
           dismissible: !isForced,
-          type: isForced ? NotificationType.success : NotificationType.warning,
+          type: isForced ? NotificationType.warning : NotificationType.info,
         },
         isForced ? 604800000 : 30000,
       );

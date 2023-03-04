@@ -38,7 +38,8 @@ export const LOCStatus: FC<LOCStatusProps> = ({
   className,
   debtSymbol = '',
 }) => {
-  const showOpenLOC = withdrawalSurplus === 0 && collateral > 0;
+  const hasWithdrawalSurplus = withdrawalSurplus > 0;
+  const showOpenLOC = !hasWithdrawalSurplus && collateral > 0;
 
   return (
     <div
@@ -48,7 +49,7 @@ export const LOCStatus: FC<LOCStatusProps> = ({
       )}
     >
       <div className="flex items-center flex-wrap gap-6">
-        {withdrawalSurplus > 0 && (
+        {hasWithdrawalSurplus && (
           <LOCStat
             label={t('LOCStatus.withdrawalSurplus')}
             value={`${withdrawalSurplus} ${Bitcoin}`}
@@ -98,13 +99,14 @@ export const LOCStatus: FC<LOCStatusProps> = ({
         )}
       </div>
 
-      <div className="hidden md:flex flex-wrap gap-6">
-        {withdrawalSurplus > 0 && (
+      <div className="flex flex-wrap gap-6 justify-center w-full md:w-auto">
+        {hasWithdrawalSurplus && (
           <Button
             text={t('LOCStatus.withdraw')}
             style={ButtonStyle.primary}
             size={ButtonSize.large}
             onClick={onWithdraw}
+            className="px-12 xl:px-6"
             dataAttribute="zero-loc-surplus-withdraw"
           />
         )}
@@ -115,6 +117,7 @@ export const LOCStatus: FC<LOCStatusProps> = ({
               style={ButtonStyle.primary}
               size={ButtonSize.large}
               onClick={onAdjust}
+              className="px-12 xl:px-6"
               dataAttribute="zero-loc-adjust"
             />
             <Button
@@ -122,6 +125,7 @@ export const LOCStatus: FC<LOCStatusProps> = ({
               style={ButtonStyle.secondary}
               size={ButtonSize.large}
               onClick={onClose}
+              className="px-12 xl:px-6"
               dataAttribute="zero-loc-close"
             />
           </>

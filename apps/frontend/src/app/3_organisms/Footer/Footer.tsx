@@ -13,8 +13,9 @@ import {
   sovrynLinks,
   sovrynAlphaLinks,
   sovrynWikiLinks,
+  currentRelease,
 } from '../../../utils/constants';
-import { isMainnet } from '../../../utils/helpers';
+import { getChangelogUrl, isMainnet } from '../../../utils/helpers';
 
 const footerLinks = [
   {
@@ -68,12 +69,24 @@ export const Footer: FC = () => (
       />
     }
     links={
-      <div className="flex flex-row justify-center flex-wrap gap-x-7 gap-y-5">
+      <div className="flex flex-row justify-center flex-wrap gap-x-6 gap-y-5">
         {footerLinks.map(link => (
           <Link key={link.id} href={link.href} text={link.name} />
         ))}
       </div>
     }
-    rightContent={<SocialLinks dataAttribute="footer-social" />}
+    rightContent={
+      <div className="flex gap-x-2">
+        <div className="flex items-center text-xs justify-center">
+          <Link
+            href={getChangelogUrl(currentRelease.commit)}
+            text={`${t(
+              translations.footer.buildID,
+            )} ${currentRelease.commit?.substring(0, 7)}`}
+          />
+        </div>
+        <SocialLinks dataAttribute="footer-social" />
+      </div>
+    }
   />
 );

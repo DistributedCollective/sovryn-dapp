@@ -106,7 +106,7 @@ export const LOCStatus: FC<LOCStatusProps> = ({
             style={ButtonStyle.primary}
             size={ButtonSize.large}
             onClick={onWithdraw}
-            className="px-12 xl:px-6"
+            className="flex-1"
             dataAttribute="zero-loc-surplus-withdraw"
           />
         )}
@@ -117,7 +117,7 @@ export const LOCStatus: FC<LOCStatusProps> = ({
               style={ButtonStyle.primary}
               size={ButtonSize.large}
               onClick={onAdjust}
-              className="px-12 xl:px-6"
+              className="flex-1"
               dataAttribute="zero-loc-adjust"
             />
             <Button
@@ -125,7 +125,7 @@ export const LOCStatus: FC<LOCStatusProps> = ({
               style={ButtonStyle.secondary}
               size={ButtonSize.large}
               onClick={onClose}
-              className="px-12 xl:px-6"
+              className="flex-1"
               dataAttribute="zero-loc-close"
             />
           </>

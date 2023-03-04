@@ -130,6 +130,10 @@ export const ZeroPage: FC = () => {
     <>
       <Helmet>
         <title>{t(translations.zeroPage.meta.title)}</title>
+        <meta
+          name="description"
+          content={t(translations.zeroPage.meta.description)}
+        ></meta>
       </Helmet>
       <div className="px-0 container max-w-[100rem] md:mb-2 mt-4 mb-7">
         <React.Suspense

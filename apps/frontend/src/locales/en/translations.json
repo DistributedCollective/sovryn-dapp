@@ -109,7 +109,8 @@
 
     "zeroPage": {
         "meta": {
-            "title": "Borrow - Sovryn"
+            "title": "Borrow - Sovryn",
+            "description": "Unlock your earning potential with 0% interest loans from Sovryn's Zero protocol. Borrow ZUSD or DLLR against your Bitcoin with a fully decentralized system."
         },
         "dashboardWelcomeBanner": {
             "fundWallet": "Fund your wallet",
@@ -277,7 +278,8 @@
 
     "earnPage": {
         "meta": {
-            "title": "Earn - Sovryn"
+            "title": "Earn - Sovryn",
+            "description": "Zero's Stability Pool ensures full ZUSD collateralization and system solvency by providing liquidity for liquidated Lines of Credit. Earn BTC by supplying ZUSD."
         },
         "title": "Stability pool",
         "subtitle": "Earn BTC by providing liquidity for liquidations",
@@ -298,7 +300,8 @@
 
     "convertPage": {
         "meta": {
-            "title": "Convert - Sovryn"
+            "title": "Convert - Sovryn",
+            "description": "Convert between Zero's ZUSD, DOC, and Sovryn DLLR stablecoins, using the Zero and Mynt protocols."
         },
         "title": "Convert",
         "subtitle": "Convert between assets",
@@ -398,7 +401,8 @@
 
     "rewardPage": {
         "meta": {
-            "title": "Rewards - Sovryn"
+            "title": "Rewards - Sovryn",
+            "description": "Claim Zero Stability Pool BTC rewards and withdraw them to your wallet, or transfer them to an active Line of Credit in Sovryn's Zero protocol."
         },
         "title": "Rewards",
         "subtitle": "Collect rewards earned",
@@ -418,7 +422,8 @@
 
     "historyPage": {
         "meta": {
-            "title": "History - Sovryn"
+            "title": "History - Sovryn",
+            "description": "View Sovryn's Zero protocol history related to Line of Credit, Redemptions, BTC Funding, Stability Pool, Conversions, and Rewards. Export your data to CSV file."
         },
         "title": "My transaction history",
         "table": {
@@ -544,12 +549,14 @@
     },
     "termsOfUsePage": {
         "meta": {
-            "title": "Terms of service - Sovryn"
+            "title": "Terms of service - Sovryn",
+            "description": "Sovryn's Terms of service govern your access and use of the dapp. Read our terms of service before using our non-custodial and decentralized services."
         }
     },
     "privacyPolicyPage": {
         "meta": {
-            "title": "Privacy policy - Sovryn"
+            "title": "Privacy policy - Sovryn",
+            "description": "Sovryn's Privacy Policy outlines how we collect, use, and safeguard your personal information. Rest assured that your privacy is always respected and protected with us."
         }
     },
     "appUpdateDialog": {

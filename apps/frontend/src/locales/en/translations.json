@@ -535,7 +535,11 @@
         "successMessage": "Your preferences have been saved.",
         "errorMessage": "Something went wrong, please try again.",
         "authErrorMessage": "Authentication failed, please try again.",
-        "unconfirmedEmailWarning": "Unconfirmed - check inbox for confirmation email"
+        "unconfirmedEmailWarning": "Unconfirmed - check inbox for confirmation email",
+        "hasUnconfirmedEmail": {
+            "title": "Check your email!",
+            "description": "We received your email address, now click the verification link we just emailed you to finish signing up for notifications."
+        }
     },
     "termsOfUsePage": {
         "meta": {

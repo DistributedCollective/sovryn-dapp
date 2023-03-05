@@ -12,9 +12,12 @@ import {
   DialogHeader,
   DialogSize,
   FormGroup,
+  Icon,
+  IconNames,
   Input,
   NotificationType,
   Paragraph,
+  ParagraphSize,
   ParagraphStyle,
 } from '@sovryn/ui';
 
@@ -46,11 +49,12 @@ const userEndpoint = `${notificationServiceUrl}user/`;
 type EmailNotificationSettingsDialogProps = {
   isOpen: boolean;
   onClose: () => void;
+  isOnboarding?: boolean;
 };
 
 const EmailNotificationSettingsDialogComponent: React.FC<
   EmailNotificationSettingsDialogProps
-> = ({ isOpen, onClose }) => {
+> = ({ isOpen, onClose, isOnboarding = false }) => {
   const { account, eip1193Provider: provider } = useAccount();
   const { addNotification } = useNotificationContext();
 
@@ -274,11 +278,17 @@ const EmailNotificationSettingsDialogComponent: React.FC<
     );
 
     handleUserDataResponse(promise, true);
+
+    if (isOnboarding) {
+      onClose();
+    }
   }, [
     account,
     email,
     handleUserDataResponse,
+    isOnboarding,
     notificationToken,
+    onClose,
     subscriptions,
   ]);
 
@@ -294,52 +304,83 @@ const EmailNotificationSettingsDialogComponent: React.FC<
         title={t(translations.emailNotificationsDialog.dialogTitle)}
       />
       <DialogBody className="p-6">
-        <div className="p-6 bg-gray-90">
-          <Paragraph style={ParagraphStyle.tall}>
-            {t(translations.emailNotificationsDialog.title)}
-          </Paragraph>
-          <FormGroup
-            className="mt-6 mb-4"
-            label={t(translations.emailNotificationsDialog.emailInputLabel)}
-            errorLabel={
-              hasUnconfirmedEmail
-                ? t(
-                    translations.emailNotificationsDialog
-                      .unconfirmedEmailWarning,
-                  )
-                : undefined
-            }
-          >
-            <Input
-              value={email}
-              onChangeText={setEmail}
-              placeholder={t(
-                translations.emailNotificationsDialog.emailInputPlaceholder,
-              )}
-              disabled={loading || !notificationToken}
-              dataAttribute="alert-signup-email"
+        {hasUnconfirmedEmail ? (
+          <>
+            <div className="p-6 bg-gray-90">
+              <Icon
+                icon={IconNames.SUCCESS_ICON}
+                className="mx-auto text-success"
+                size={100}
+              />
+              <Paragraph className="text-center my-4" size={ParagraphSize.base}>
+                {t(
+                  translations.emailNotificationsDialog.hasUnconfirmedEmail
+                    .title,
+                )}
+              </Paragraph>
+              <Paragraph
+                className="text-center mx-auto mb-4 max-w-[14rem]"
+                size={ParagraphSize.base}
+              >
+                {t(
+                  translations.emailNotificationsDialog.hasUnconfirmedEmail
+                    .description,
+                )}
+              </Paragraph>
+            </div>
+            <Button
+              onClick={getUser}
+              text={t(translations.common.buttons.continue)}
+              className="w-full mt-4"
+              dataAttribute="alert-signup-save"
             />
-          </FormGroup>
+          </>
+        ) : (
+          <>
+            <div className="p-6 bg-gray-90">
+              <Paragraph style={ParagraphStyle.tall}>
+                {t(translations.emailNotificationsDialog.title)}
+              </Paragraph>
+              <FormGroup
+                className="mt-6 mb-4"
+                label={t(translations.emailNotificationsDialog.emailInputLabel)}
+              >
+                <Input
+                  value={email}
+                  onChangeText={setEmail}
+                  placeholder={t(
+                    translations.emailNotificationsDialog.emailInputPlaceholder,
+                  )}
+                  disabled={loading || !notificationToken}
+                  dataAttribute="alert-signup-email"
+                />
+              </FormGroup>
 
-          <Subscriptions dataAttribute="alert-signup-sub" />
-        </div>
+              <Subscriptions dataAttribute="alert-signup-sub" />
+            </div>
 
-        <div className="mt-4 flex justify-between">
-          <Button
-            onClick={onCloseHandler}
-            text={t(translations.common.buttons.skip)}
-            style={ButtonStyle.secondary}
-            className="mr-4 w-[49%]"
-            dataAttribute="alert-signup-cancel"
-          />
-          <Button
-            onClick={updateUser}
-            text={t(translations.common.buttons.save)}
-            disabled={isSubmitDisabled}
-            className="w-[49%]"
-            dataAttribute="alert-signup-save"
-          />
-        </div>
+            <div className="mt-4 flex justify-between">
+              <Button
+                onClick={onCloseHandler}
+                text={t(translations.common.buttons.skip)}
+                style={ButtonStyle.secondary}
+                className="mr-4 w-[49%]"
+                dataAttribute="alert-signup-cancel"
+              />
+              <Button
+                onClick={updateUser}
+                text={
+                  isOnboarding
+                    ? t(translations.common.buttons.continue)
+                    : t(translations.common.buttons.save)
+                }
+                disabled={isSubmitDisabled}
+                className="w-[49%]"
+                dataAttribute="alert-signup-save"
+              />
+            </div>
+          </>
+        )}
       </DialogBody>
     </Dialog>
   );
@@ -347,11 +388,12 @@ const EmailNotificationSettingsDialogComponent: React.FC<
 
 export const EmailNotificationSettingsDialog: React.FC<
   EmailNotificationSettingsDialogProps
-> = ({ isOpen, onClose }) => (
+> = ({ isOpen, onClose, isOnboarding }) => (
   <EmailNotificationSettingsContextProvider>
     <EmailNotificationSettingsDialogComponent
       isOpen={isOpen}
       onClose={onClose}
+      isOnboarding={isOnboarding}
     />
   </EmailNotificationSettingsContextProvider>
 );

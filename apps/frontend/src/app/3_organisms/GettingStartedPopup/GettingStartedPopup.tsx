@@ -60,24 +60,24 @@ export const GettingStartedPopup: FC<GettingStartedPopupProps> = ({
         ],
         icon: IconNames.EARN_3,
       },
-      {
-        name: t(translationBasePath.lend.title),
-        description: t(translationBasePath.lend.description),
-        href: sovrynWikiLinks.lend,
-        icon: IconNames.LEND,
-      },
+      // {
+      //   name: t(translationBasePath.lend.title),
+      //   description: t(translationBasePath.lend.description),
+      //   href: sovrynWikiLinks.lend,
+      //   icon: IconNames.LEND,
+      // },
       {
         name: t(translationBasePath.trade.title),
         description: t(translationBasePath.trade.description),
         href: sovrynWikiLinks.trade,
         icon: IconNames.TRADING,
       },
-      {
-        name: t(translationBasePath.bridge.title),
-        description: t(translationBasePath.bridge.description),
-        href: sovrynWikiLinks.bridge,
-        icon: IconNames.SWAP,
-      },
+      // {
+      //   name: t(translationBasePath.bridge.title),
+      //   description: t(translationBasePath.bridge.description),
+      //   href: sovrynWikiLinks.bridge,
+      //   icon: IconNames.SWAP,
+      // },
     ],
     [],
   );

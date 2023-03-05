@@ -29,6 +29,7 @@ import {
 import { DashboardWelcomeBanner } from '../../2_molecules/DashboardWelcomeBanner/DashboardWelcomeBanner';
 import { LOCStatus } from '../../2_molecules/LOCStatus/LOCStatus';
 import { SystemStats } from '../../2_molecules/SystemStats/SystemStats';
+import { EmailNotificationSettingsDialog } from '../../3_organisms/EmailNotificationSettingsDialog/EmailNotificationSettingsDialog';
 import { GettingStartedPopup } from '../../3_organisms/GettingStartedPopup/GettingStartedPopup';
 import { LOCChart } from '../../3_organisms/LOCChart/LOCChart';
 import { useGetUserOpenTrove } from '../../3_organisms/LOCChart/hooks/useGetUserOpenTrove';
@@ -36,6 +37,7 @@ import { CloseCreditLine } from '../../3_organisms/ZeroLocForm/CloseCreditLine';
 import { AdjustCreditLine } from '../../3_organisms/ZeroLocForm/components/AdjustCreditLine';
 import { OpenCreditLine } from '../../3_organisms/ZeroLocForm/components/OpenCreditLine';
 import { DEBT_TOKEN } from '../../3_organisms/ZeroLocForm/constants';
+import { useTransactionContext } from '../../../contexts/TransactionContext';
 import { useWalletConnect } from '../../../hooks';
 import { useAccount } from '../../../hooks/useAccount';
 import { translations } from '../../../locales/i18n';
@@ -47,6 +49,8 @@ import { ZeroPageLoaderData } from './loader';
 export const ZeroPage: FC = () => {
   const { liquity, deferedData } = useLoaderData() as ZeroPageLoaderData;
 
+  const { setIsOpen: setTxDialogOpen } = useTransactionContext();
+  const [openEmailDialog, setOpenEmailDialog] = useState(false);
   const [open, toggle] = useReducer(v => !v, false);
   const [openStartedPopup, toggleStartedPopup] = useReducer(v => !v, false);
   const [openClosePopup, toggleClosePopup] = useReducer(v => !v, false);
@@ -64,11 +68,6 @@ export const ZeroPage: FC = () => {
   );
   const debt = useMemo(() => Number(trove?.debt ?? 0), [trove?.debt]);
   const hasLoc = useMemo(() => !!trove?.debt?.gt(0), [trove?.debt]);
-
-  const handleLOCPopup = useCallback(() => {
-    toggle();
-    toggleStartedPopup();
-  }, []);
 
   const isLoading = useMemo(
     () =>
@@ -100,6 +99,8 @@ export const ZeroPage: FC = () => {
   const { handleTroveSubmit, handleTroveClose } = useHandleTrove(hasLoc, {
     onTroveOpened: () => {
       toggle();
+      setOpenEmailDialog(true);
+      setTxDialogOpen(false);
       getTroves();
       getOpenTroves();
     },
@@ -158,7 +159,7 @@ export const ZeroPage: FC = () => {
 
                 {showWelcomeBanner && !isLoading && (
                   <DashboardWelcomeBanner
-                    openLOC={toggleStartedPopup}
+                    openLOC={toggle}
                     connectWallet={connectWallet}
                     className="mb-10 md:mb-4"
                   />
@@ -215,6 +216,15 @@ export const ZeroPage: FC = () => {
                   </div>
                 </div>
 
+                <EmailNotificationSettingsDialog
+                  isOpen={openEmailDialog}
+                  onClose={() => {
+                    setOpenEmailDialog(false);
+                    toggleStartedPopup();
+                  }}
+                  isOnboarding
+                />
+
                 <Dialog width={DialogSize.md} isOpen={open} disableFocusTrap>
                   <DialogHeader
                     title={
@@ -246,7 +256,7 @@ export const ZeroPage: FC = () => {
 
                 <GettingStartedPopup
                   isOpen={openStartedPopup}
-                  onConfirm={handleLOCPopup}
+                  onConfirm={toggleStartedPopup}
                 />
 
                 <Dialog

@@ -3,7 +3,6 @@ import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import classNames from 'classnames';
 import { formatUnits, parseUnits } from 'ethers/lib/utils';
 import { t } from 'i18next';
-import { nanoid } from 'nanoid';
 
 import {
   getTokenDetailsByAddress,
@@ -25,14 +24,11 @@ import {
   StatusItem,
   StatusType,
   HelperButton,
-  NotificationType,
-  NotificationItem,
 } from '@sovryn/ui';
 
 import { chains, defaultChainId } from '../../../../../config/chains';
 
 import { TxIdWithNotification } from '../../../../2_molecules/TxIdWithNotification/TransactionIdWithNotification';
-import { useNotificationContext } from '../../../../../contexts/NotificationContext';
 import { translations } from '../../../../../locales/i18n';
 import { APPROVAL_FUNCTION, Bitcoin } from '../../../../../utils/constants';
 import { fromWei, toWei } from '../../../../../utils/math';
@@ -68,8 +64,6 @@ export const TransactionStep: FC<TransactionStepProps> = ({
 }) => {
   const { request, title, subtitle } = transaction;
   const [token, setToken] = useState<TokenDetailsData | undefined>();
-  const [notification, setNotification] = useState<NotificationItem>();
-  const { addNotification } = useNotificationContext();
 
   useEffect(() => {
     if (isTransactionRequest(request)) {
@@ -81,45 +75,6 @@ export const TransactionStep: FC<TransactionStepProps> = ({
       });
     }
   }, [request]);
-
-  const handleNotification = useCallback(
-    (type: NotificationType, title: string, content?: string) => ({
-      type,
-      id: nanoid(),
-      title: t(title),
-      content: content ? t(content) : '',
-      dismissible: true,
-    }),
-    [],
-  );
-
-  useEffect(() => {
-    if (status === StatusType.success) {
-      setNotification(
-        handleNotification(
-          NotificationType.success,
-          translations.transactionStep.transactionSuccessTitle,
-        ),
-      );
-    }
-
-    if (status === StatusType.error) {
-      setNotification(
-        handleNotification(
-          NotificationType.error,
-          translations.transactionStep.transactionFailedTitle,
-          translations.transactionStep.transactionFailedSubtitle,
-        ),
-      );
-    }
-  }, [status, handleNotification]);
-
-  useEffect(() => {
-    if (notification) {
-      addNotification(notification);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [notification]);
 
   const resetConfig = useCallback(async () => {
     if (isTransactionRequest(request)) {

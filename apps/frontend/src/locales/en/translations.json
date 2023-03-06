@@ -370,7 +370,8 @@
                 "sending": "Sending",
                 "serviceFee": "Service fee",
                 "receiving": "Receiving",
-                "hash": "Rootstock TXID"
+                "hash": "Rootstock TXID",
+                "bitcoinTxId": "Bitcoin TXID"
             },
             "txDialog": {
                 "title": "Send BTC to the bitcoin network",

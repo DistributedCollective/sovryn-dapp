@@ -1,0 +1,5 @@
+query getBitcoinTxId($createdAtTx: String) {
+  bitcoinTransfers(where: { createdAtTx: $createdAtTx }, first: 1) {
+    bitcoinTxHash
+  }
+}

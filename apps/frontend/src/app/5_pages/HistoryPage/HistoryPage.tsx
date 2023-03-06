@@ -130,10 +130,14 @@ const HistoryPage: FC = () => {
       <Helmet>
         <title>{t(translations.historyPage.meta.title)}</title>
         <meta
+          property="og:title"
+          content={t(translations.historyPage.meta.title)}
+        />
+        <meta
           name="description"
           property="og:description"
           content={t(translations.historyPage.meta.description)}
-        ></meta>
+        />
       </Helmet>
       <div className="lg:container w-full text-gray-10 mt-9 lg:mt-10">
         <Heading className="text-center lg:mb-10 lg:text-2xl">

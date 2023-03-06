@@ -174,10 +174,14 @@ const ConvertPage: FC = () => {
       <Helmet>
         <title>{t(translations.convertPage.meta.title)}</title>
         <meta
+          property="og:title"
+          content={t(translations.convertPage.meta.title)}
+        />
+        <meta
           name="description"
           property="og:description"
           content={t(translations.convertPage.meta.description)}
-        ></meta>
+        />
       </Helmet>
       <div className="w-full flex flex-col items-center text-gray-10 mt-9 sm:mt-24">
         <Heading className="text-base sm:text-2xl font-medium">

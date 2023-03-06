@@ -11,10 +11,14 @@ const PrivacyPolicy: FC = () => (
     <Helmet>
       <title>{t(translations.privacyPolicyPage.meta.title)}</title>
       <meta
+        property="og:title"
+        content={t(translations.privacyPolicyPage.meta.title)}
+      />
+      <meta
         name="description"
         property="og:description"
         content={t(translations.privacyPolicyPage.meta.description)}
-      ></meta>
+      />
     </Helmet>
     <div className={styles.wrapper}>
       <h1 className="text-center text-2xl">Sovryn&ndash; Privacy Policy</h1>

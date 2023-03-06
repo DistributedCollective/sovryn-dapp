@@ -11,10 +11,14 @@ const TermsOfUse: FC = () => (
     <Helmet>
       <title>{t(translations.termsOfUsePage.meta.title)}</title>
       <meta
+        property="og:title"
+        content={t(translations.termsOfUsePage.meta.title)}
+      />
+      <meta
         name="description"
         property="og:description"
         content={t(translations.termsOfUsePage.meta.description)}
-      ></meta>
+      />
     </Helmet>
     <div className={styles.wrapper}>
       <h1 className="text-center text-2xl">SOVRYN &ndash; TERMS OF SERVICE</h1>

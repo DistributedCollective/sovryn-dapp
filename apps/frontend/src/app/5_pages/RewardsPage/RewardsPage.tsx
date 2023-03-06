@@ -74,10 +74,14 @@ const RewardsPage: FC = () => {
       <Helmet>
         <title>{t(translations.rewardPage.meta.title)}</title>
         <meta
+          property="og:title"
+          content={t(translations.rewardPage.meta.title)}
+        />
+        <meta
           name="description"
           property="og:description"
           content={t(translations.rewardPage.meta.description)}
-        ></meta>
+        />
       </Helmet>
       <div className="flex flex-col items-center mt-6 sm:mt-28">
         <Heading className="font-medium mb-4" type={HeadingType.h1}>

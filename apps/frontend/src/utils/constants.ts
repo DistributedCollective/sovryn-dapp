@@ -17,7 +17,6 @@ export const sovrynAlphaLinks = {
   [Environments.Mainnet]: 'https://alpha.sovryn.app/',
   [Environments.Testnet]: 'https://alpha-test.sovryn.app',
 };
-
 export const sovrynStagingLink = 'https://staging.sovryn.app';
 export const sovrynAlphaStagingLink = 'https://alpha-staging.sovryn.app';
 

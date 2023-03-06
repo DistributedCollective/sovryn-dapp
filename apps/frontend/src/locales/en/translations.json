@@ -74,7 +74,8 @@
         "security": "Security",
         "fees": "Fees",
         "terms": "Terms of service",
-        "policy": "Privacy policy"
+        "policy": "Privacy policy",
+        "buildID": "Build ID:"
     },
     "wrongNetworkSwitcher": {
         "title": "Wrong network",

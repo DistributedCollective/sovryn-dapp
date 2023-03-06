@@ -28,7 +28,7 @@ export const PageEmailContainer: FC<PageEmailContainerProps> = ({
         logo={<SovrynLogo dataAttribute="header-logo" link="/" />}
         menuIcon={<SovrynLogo dataAttribute="header-logo" link="/" />}
       />
-      <div className={classNames('flex-grow min-h-[34rem]', contentClassName)}>
+      <div className={classNames('flex-grow', contentClassName)}>
         <Outlet />
       </div>
     </>

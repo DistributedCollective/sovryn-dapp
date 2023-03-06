@@ -110,7 +110,8 @@
 
     "zeroPage": {
         "meta": {
-            "title": "Borrow - Sovryn"
+            "title": "Borrow - Sovryn",
+            "description": "0% interest loans with Sovryn's Zero protocol. Borrow ZUSD or DLLR against your Bitcoin in a fully decentralized system. Increase your earning potential today."
         },
         "dashboardWelcomeBanner": {
             "fundWallet": "Fund your wallet",
@@ -278,7 +279,8 @@
 
     "earnPage": {
         "meta": {
-            "title": "Earn - Sovryn"
+            "title": "Earn - Sovryn",
+            "description": "Earn BTC by supplying ZUSD and ensure full collateralization of Zero with the Stability Pool. Join Sovryn's decentralized Zero protocol and start earning now."
         },
         "title": "Stability pool",
         "subtitle": "Earn BTC by providing liquidity for liquidations",
@@ -299,7 +301,8 @@
 
     "convertPage": {
         "meta": {
-            "title": "Convert - Sovryn"
+            "title": "Convert - Sovryn",
+            "description": "Convert between stablecoins on Zero - ZUSD, DOC, and Sovryn DLLR - using the Zero and Mynt protocols. Exchange with ease and convenience."
         },
         "title": "Convert",
         "subtitle": "Convert between assets",
@@ -399,7 +402,8 @@
 
     "rewardPage": {
         "meta": {
-            "title": "Rewards - Sovryn"
+            "title": "Rewards - Sovryn",
+            "description": "Claim BTC rewards from Zero's Stability Pool and transfer them to your wallet or active Line of Credit in Sovryn's Zero protocol. Start earning rewards today."
         },
         "title": "Rewards",
         "subtitle": "Collect rewards earned",
@@ -419,7 +423,8 @@
 
     "historyPage": {
         "meta": {
-            "title": "History - Sovryn"
+            "title": "History - Sovryn",
+            "description": "Access your history for Line of Credit, Stability Pool, Rewards, and more with Sovryn's Zero protocol. Export your data to a CSV file for easy management."
         },
         "title": "My transaction history",
         "table": {
@@ -545,12 +550,14 @@
     },
     "termsOfUsePage": {
         "meta": {
-            "title": "Terms of service - Sovryn"
+            "title": "Terms of service - Sovryn",
+            "description": "Read Sovryn's Terms of Service before using our non-custodial and decentralized services. Get informed about our policies and enjoy safe and secure usage."
         }
     },
     "privacyPolicyPage": {
         "meta": {
-            "title": "Privacy policy - Sovryn"
+            "title": "Privacy policy - Sovryn",
+            "description": "Protect your personal information with Sovryn's Privacy Policy. Discover how we collect, use, and safeguard your data. Enjoy peace of mind with us."
         }
     },
     "appUpdateDialog": {

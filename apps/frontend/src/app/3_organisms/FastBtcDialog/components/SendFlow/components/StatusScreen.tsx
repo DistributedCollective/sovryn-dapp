@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo } from 'react';
 
 import classNames from 'classnames';
 import { t } from 'i18next';
@@ -14,8 +14,10 @@ import {
 
 import { StatusIcon } from '../../../../../2_molecules/StatusIcon/StatusIcon';
 import { TxIdWithNotification } from '../../../../../2_molecules/TxIdWithNotification/TransactionIdWithNotification';
+import { useBlockNumber } from '../../../../../../hooks/useBlockNumber';
 import { translations } from '../../../../../../locales/i18n';
 import { Bitcoin } from '../../../../../../utils/constants';
+import { useGetBitcoinTxIdQuery } from '../../../../../../utils/graphql/rsk/generated';
 import {
   getBtcExplorerUrl,
   getRskExplorerUrl,
@@ -61,15 +63,20 @@ export const StatusScreen: React.FC<StatusScreenProps> = ({
   onClose,
   onRetry,
 }) => {
-  const hasTransactionFailed = useMemo(
-    () => txStatus === StatusType.error,
-    [txStatus],
+  const { value: block } = useBlockNumber();
+
+  const { data, refetch } = useGetBitcoinTxIdQuery({
+    variables: { createdAtTx: txHash || '' },
+  });
+
+  const bitcoinTxHash = useMemo(
+    () => data?.bitcoinTransfers?.[0]?.bitcoinTxHash,
+    [data],
   );
 
-  const isDoneButtonDisabled = useMemo(
-    () => txStatus === StatusType.pending,
-    [txStatus],
-  );
+  useEffect(() => {
+    refetch();
+  }, [refetch, txHash, block]);
 
   const items = useMemo(
     () => [
@@ -126,18 +133,51 @@ export const StatusScreen: React.FC<StatusScreenProps> = ({
           <Icon icon={IconNames.PENDING} />
         ),
       },
+      {
+        label: t(translation.bitcoinTxId),
+        value: bitcoinTxHash ? (
+          <TxIdWithNotification
+            value={bitcoinTxHash}
+            href={`${btcExplorerUrl}/tx/${bitcoinTxHash}`}
+          />
+        ) : (
+          <Icon icon={IconNames.PENDING} />
+        ),
+      },
     ],
-    [amount, feesPaid, from, receiveAmount, to, txHash],
+    [amount, bitcoinTxHash, feesPaid, from, receiveAmount, to, txHash],
+  );
+
+  const status = useMemo(() => {
+    if (txStatus !== StatusType.success) {
+      return txStatus;
+    }
+
+    if (!bitcoinTxHash) {
+      return StatusType.pending;
+    }
+
+    return StatusType.success;
+  }, [bitcoinTxHash, txStatus]);
+
+  const hasTransactionFailed = useMemo(
+    () => status === StatusType.error,
+    [status],
+  );
+
+  const isDoneButtonDisabled = useMemo(
+    () => status === StatusType.pending,
+    [status],
   );
 
   return (
     <div className="text-center">
       <Heading type={HeadingType.h2} className="font-medium mb-6">
-        {getTitle(txStatus)}
+        {getTitle(status)}
       </Heading>
 
       <div className="mb-6">
-        <StatusIcon status={txStatus} dataAttribute="funding-send-status" />
+        <StatusIcon status={status} dataAttribute="funding-send-status" />
       </div>
 
       <div className="bg-gray-80 border rounded border-gray-50 p-3 text-xs text-gray-30">

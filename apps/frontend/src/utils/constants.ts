@@ -7,6 +7,7 @@ export const sovrynLinks = {
   telegram: 'https://t.me/SovrynBitcoin',
   twitter: ' https://twitter.com/SovrynBTC',
   github: 'https://github.com/DistributedCollective',
+  github_dapp: 'https://github.com/DistributedCollective/sovryn-dapp',
   blog: 'https://sovryn.com/all-things-sovryn',
   security: 'https://wiki.sovryn.app/en/technical-documents#security',
   fees: 'https://wiki.sovryn.app/en/sovryn-dapp/fees#zero-borrowing',

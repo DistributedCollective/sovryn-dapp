@@ -11,12 +11,14 @@ import { translations } from '../../../locales/i18n';
 import { Environments } from '../../../types/global';
 import {
   sovrynLinks,
+  currentRelease,
   sovrynAlphaLinks,
   sovrynWikiLinks,
   sovrynStagingLink,
   sovrynAlphaStagingLink,
 } from '../../../utils/constants';
 import { isMainnet, isStaging } from '../../../utils/helpers';
+import { getChangelogUrl, isMainnet } from '../../../utils/helpers';
 
 type FooterProps = {
   isEmailPage?: boolean;
@@ -74,25 +76,36 @@ export const Footer: FC<FooterProps> = ({ isEmailPage }) => {
     [isEmailPage],
   );
 
-  return (
-    <UIFooter
-      leftContent={
-        <SovrynLogo
-          image={Logo}
-          dataAttribute="footer-logo"
-          className="max-h-4 max-w-fit mr-2"
-          text="Powered by bitcoin"
-          link="/"
-        />
-      }
-      links={
-        <div className="flex flex-col md:flex-row justify-center flex-wrap gap-x-7 gap-y-4 md:mt-0 mt-4">
-          {footerLinks.map(link => (
-            <Link key={link.id} href={link.href} text={link.name} />
-          ))}
+export const Footer: FC = () => (
+  <UIFooter
+    leftContent={
+      <SovrynLogo
+        image={Logo}
+        dataAttribute="footer-logo"
+        className="max-h-4 max-w-fit mr-2"
+        text="Powered by bitcoin"
+        link="/"
+      />
+    }
+    links={
+      <div className="flex flex-row justify-center flex-wrap gap-x-6 gap-y-5">
+        {footerLinks.map(link => (
+          <Link key={link.id} href={link.href} text={link.name} />
+        ))}
+      </div>
+    }
+    rightContent={
+      <div className="flex gap-x-2">
+        <div className="flex items-center text-xs justify-center">
+          <Link
+            href={getChangelogUrl(currentRelease.commit)}
+            text={`${t(
+              translations.footer.buildID,
+            )} ${currentRelease.commit?.substring(0, 7)}`}
+          />
         </div>
-      }
-      rightContent={<SocialLinks dataAttribute="footer-social" />}
-    />
-  );
-};
+        <SocialLinks dataAttribute="footer-social" />
+      </div>
+    }
+  />
+);

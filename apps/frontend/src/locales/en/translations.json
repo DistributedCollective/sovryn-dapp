@@ -45,6 +45,10 @@
             "signPermitSubtitle": "Sign a permit to allow the contract to spend your {{symbol}}",
             "signApproveTitle": "Approve {{symbol}}",
             "signApproveSubtitle": "Approve {{symbol}} to be spent by the contract"
+        },
+        "loader": {
+            "loading": "Loading Zero data",
+            "error": "Error loading Zero data, please try again"
         }
     },
     "connectWalletButton": {
@@ -71,7 +75,8 @@
         "security": "Security",
         "fees": "Fees",
         "terms": "Terms of service",
-        "policy": "Privacy policy"
+        "policy": "Privacy policy",
+        "buildID": "Build ID:"
     },
     "wrongNetworkSwitcher": {
         "title": "Wrong network",
@@ -371,7 +376,8 @@
                 "sending": "Sending",
                 "serviceFee": "Service fee",
                 "receiving": "Receiving",
-                "hash": "Rootstock TXID"
+                "hash": "Rootstock TXID",
+                "bitcoinTxId": "Bitcoin TXID"
             },
             "txDialog": {
                 "title": "Send BTC to the bitcoin network",

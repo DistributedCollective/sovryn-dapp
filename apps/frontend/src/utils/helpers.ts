@@ -11,7 +11,12 @@ import { EIP1193Provider } from '@sovryn/onboard-common';
 import tailwindConfig from '@sovryn/tailwindcss-config';
 
 import { Environments } from '../types/global';
-import { btcExplorer, rskExplorer, servicesConfig } from './constants';
+import {
+  btcExplorer,
+  rskExplorer,
+  servicesConfig,
+  sovrynLinks,
+} from './constants';
 
 export const prettyTx = (
   text: string,
@@ -122,3 +127,8 @@ export const isStaging = () => process.env.REACT_APP_STAGING === 'true';
 
 export const areAddressesEqual = (address1: string, address2: string) =>
   address1.toLowerCase() === address2.toLowerCase();
+
+export const getChangelogUrl = (commit: string) =>
+  `${sovrynLinks.github_dapp}/blob/${encodeURI(
+    commit,
+  )}/apps/frontend/CHANGELOG.md`;

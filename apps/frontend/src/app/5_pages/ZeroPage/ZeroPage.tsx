@@ -14,9 +14,6 @@ import { Helmet } from 'react-helmet-async';
 import { Await, useLoaderData } from 'react-router-dom';
 
 import {
-  Button,
-  ButtonSize,
-  ButtonStyle,
   Dialog,
   DialogBody,
   DialogHeader,
@@ -167,38 +164,6 @@ export const ZeroPage: FC = () => {
                 <div className="flex-col-reverse lg:flex-row flex items-stretch md:p-4 md:bg-gray-90 rounded gap-9 md:gap-20">
                   <div className="md:min-w-[23rem] min-w-auto">
                     <SystemStats />
-                  </div>
-                  <div className="md:hidden flex items-center w-full gap-3 mb-6">
-                    {collateralSurplusBalance?.gt(0) && (
-                      <Button
-                        text={t(translations.LOCStatus.withdraw)}
-                        style={ButtonStyle.primary}
-                        size={ButtonSize.large}
-                        onClick={claimCollateralSurplus}
-                        className="flex-1"
-                        dataAttribute="zero-loc-withdraw-surplus"
-                      />
-                    )}
-                    {hasLoc && (
-                      <>
-                        <Button
-                          text={t(translations.LOCStatus.adjust)}
-                          style={ButtonStyle.primary}
-                          size={ButtonSize.large}
-                          onClick={toggle}
-                          className="flex-1"
-                          dataAttribute="zero-adjust"
-                        />
-                        <Button
-                          text={t(translations.LOCStatus.close)}
-                          style={ButtonStyle.secondary}
-                          size={ButtonSize.large}
-                          onClick={toggleClosePopup}
-                          className="flex-1"
-                          dataAttribute="zero-close"
-                        />
-                      </>
-                    )}
                   </div>
                   <div className="flex-1 flex flex-col">
                     <Paragraph

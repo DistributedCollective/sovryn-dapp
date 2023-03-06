@@ -562,9 +562,9 @@
             "title": "Something went wrong!",
             "subtitle": "Please try the action again. If it continues to not work, please contact a support agent at <0>link</0>"
         },
-        "verifyPage": {
+        "verifiedPage": {
             "meta": {
-                "title": "Verify email - Sovryn"
+                "title": "Verified - Sovryn"
             },
             "title": "Email address verified!",
             "subtitle": "You are now signed up for Sovryn email notifications. If you ever want to unsubscribe, you can do so using the unsubscribe link in any notification email or by visiting the email notification settings section of the Sovryn app."

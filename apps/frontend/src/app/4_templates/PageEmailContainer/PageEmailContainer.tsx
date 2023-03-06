@@ -6,7 +6,7 @@ import { Outlet } from 'react-router-dom';
 import { applyDataAttr, Header } from '@sovryn/ui';
 
 import { SovrynLogo } from '../../2_molecules';
-import { PageEmailContainerFooter } from './components/PageEmailContainerFooter/PageEmailContainerFooter';
+import { Footer } from '../../3_organisms';
 
 type PageEmailContainerProps = {
   className?: string;
@@ -33,7 +33,7 @@ export const PageEmailContainer: FC<PageEmailContainerProps> = ({
       </div>
     </>
     <div className="shrink">
-      <PageEmailContainerFooter />
+      <Footer isEmailPage />
     </div>
   </div>
 );

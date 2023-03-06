@@ -45,6 +45,10 @@
             "signPermitSubtitle": "Sign a permit to allow the contract to spend your {{symbol}}",
             "signApproveTitle": "Approve {{symbol}}",
             "signApproveSubtitle": "Approve {{symbol}} to be spent by the contract"
+        },
+        "loader": {
+            "loading": "Loading Zero data",
+            "error": "Error loading Zero data, please try again"
         }
     },
     "connectWalletButton": {

@@ -18,6 +18,8 @@ import {
   DialogBody,
   DialogHeader,
   DialogSize,
+  Heading,
+  HeadingType,
   Paragraph,
   ParagraphSize,
   ParagraphStyle,
@@ -130,10 +132,20 @@ export const ZeroPage: FC = () => {
         <title>{t(translations.zeroPage.meta.title)}</title>
       </Helmet>
       <div className="px-0 container max-w-[100rem] md:mb-2 mt-4 mb-7">
-        <React.Suspense fallback={<p>Loading...</p>}>
+        <React.Suspense
+          fallback={
+            <Heading type={HeadingType.h2}>
+              {t(translations.common.loader.loading)}
+            </Heading>
+          }
+        >
           <Await
             resolve={deferedData}
-            errorElement={<p>Error loading stuff!</p>}
+            errorElement={
+              <Heading type={HeadingType.h2}>
+                {t(translations.common.loader.error)}
+              </Heading>
+            }
           >
             {([price, fees]: [string, Fees]) => (
               <>

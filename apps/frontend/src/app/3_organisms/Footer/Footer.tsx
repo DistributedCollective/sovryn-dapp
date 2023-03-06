@@ -18,7 +18,7 @@ import {
   sovrynAlphaStagingLink,
 } from '../../../utils/constants';
 import { isMainnet, isStaging } from '../../../utils/helpers';
-import { getChangelogUrl, isMainnet } from '../../../utils/helpers';
+import { getChangelogUrl } from '../../../utils/helpers';
 
 type FooterProps = {
   isEmailPage?: boolean;
@@ -76,36 +76,37 @@ export const Footer: FC<FooterProps> = ({ isEmailPage }) => {
     [isEmailPage],
   );
 
-export const Footer: FC = () => (
-  <UIFooter
-    leftContent={
-      <SovrynLogo
-        image={Logo}
-        dataAttribute="footer-logo"
-        className="max-h-4 max-w-fit mr-2"
-        text="Powered by bitcoin"
-        link="/"
-      />
-    }
-    links={
-      <div className="flex flex-row justify-center flex-wrap gap-x-6 gap-y-5">
-        {footerLinks.map(link => (
-          <Link key={link.id} href={link.href} text={link.name} />
-        ))}
-      </div>
-    }
-    rightContent={
-      <div className="flex gap-x-2">
-        <div className="flex items-center text-xs justify-center">
-          <Link
-            href={getChangelogUrl(currentRelease.commit)}
-            text={`${t(
-              translations.footer.buildID,
-            )} ${currentRelease.commit?.substring(0, 7)}`}
-          />
+  return (
+    <UIFooter
+      leftContent={
+        <SovrynLogo
+          image={Logo}
+          dataAttribute="footer-logo"
+          className="max-h-4 max-w-fit mr-2"
+          text="Powered by bitcoin"
+          link="/"
+        />
+      }
+      links={
+        <div className="flex flex-row justify-center flex-wrap gap-x-6 gap-y-5">
+          {footerLinks.map(link => (
+            <Link key={link.id} href={link.href} text={link.name} />
+          ))}
         </div>
-        <SocialLinks dataAttribute="footer-social" />
-      </div>
-    }
-  />
-);
+      }
+      rightContent={
+        <div className="flex gap-x-2">
+          <div className="flex items-center text-xs justify-center">
+            <Link
+              href={getChangelogUrl(currentRelease.commit)}
+              text={`${t(
+                translations.footer.buildID,
+              )} ${currentRelease.commit?.substring(0, 7)}`}
+            />
+          </div>
+          <SocialLinks dataAttribute="footer-social" />
+        </div>
+      }
+    />
+  );
+};

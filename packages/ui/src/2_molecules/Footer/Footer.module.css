@@ -1,15 +1,15 @@
 .footer {
-  @apply justify-between items-start bg-gray-90 min-h-8 w-full flex px-4 lg:px-6 mt-auto border-t border-gray-50;
+  @apply flex-col justify-center items-center bg-gray-90 min-h-8 w-full flex px-4 lg:px-6 mt-auto;
 
   & > div {
-    @apply my-4;
+    @apply my-3;
   }
 }
 
 .leftContent,
 .rightContent,
 .links {
-  @apply flex;
+  @apply flex items-center;
 }
 
 .leftContent {
@@ -17,12 +17,12 @@
 }
 
 .links {
-  @apply mt-3 flex-col flex-wrap justify-center;
+  @apply mt-3 flex-wrap justify-center;
 }
 
 @screen lg {
   .footer {
-    @apply justify-between flex-row items-center;
+    @apply justify-between flex-row;
 
     & > div {
       @apply my-0;
@@ -34,6 +34,6 @@
   }
 
   .links {
-    @apply mt-0 flex-nowrap justify-start items-center;
+    @apply mt-0 flex-nowrap justify-start;
   }
 }

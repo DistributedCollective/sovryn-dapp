@@ -192,8 +192,6 @@ export const TransactionSteps: FC<TransactionStepsProps> = ({
             response: signature,
           });
 
-          onTxStatusChange?.(StatusType.success);
-
           handleUpdates();
         } else if (isTypedDataRequest(request)) {
           const signature = await request.signer._signTypedData(
@@ -210,8 +208,6 @@ export const TransactionSteps: FC<TransactionStepsProps> = ({
             request,
             response: signature,
           });
-
-          onTxStatusChange?.(StatusType.success);
 
           handleUpdates();
         } else if (isPermitRequest(request)) {
@@ -234,13 +230,10 @@ export const TransactionSteps: FC<TransactionStepsProps> = ({
             response,
           });
 
-          onTxStatusChange?.(StatusType.success);
-
           handleUpdates();
         } else {
           // unknown type
           transactions[i].onChangeStatus?.(StatusType.error);
-          onTxStatusChange?.(StatusType.error);
         }
 
         if (i < transactions.length - 1) {

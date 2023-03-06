@@ -283,6 +283,7 @@ const EarnPage: FC = () => {
         <title>{t(translations.earnPage.meta.title)}</title>
         <meta
           name="description"
+          property="og:description"
           content={t(translations.earnPage.meta.description)}
         ></meta>
       </Helmet>

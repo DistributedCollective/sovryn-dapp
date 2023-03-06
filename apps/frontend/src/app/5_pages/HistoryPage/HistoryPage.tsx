@@ -131,6 +131,7 @@ const HistoryPage: FC = () => {
         <title>{t(translations.historyPage.meta.title)}</title>
         <meta
           name="description"
+          property="og:description"
           content={t(translations.historyPage.meta.description)}
         ></meta>
       </Helmet>

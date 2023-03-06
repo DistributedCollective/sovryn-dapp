@@ -175,6 +175,7 @@ const ConvertPage: FC = () => {
         <title>{t(translations.convertPage.meta.title)}</title>
         <meta
           name="description"
+          property="og:description"
           content={t(translations.convertPage.meta.description)}
         ></meta>
       </Helmet>

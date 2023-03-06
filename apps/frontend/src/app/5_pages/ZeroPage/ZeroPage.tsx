@@ -132,6 +132,7 @@ export const ZeroPage: FC = () => {
         <title>{t(translations.zeroPage.meta.title)}</title>
         <meta
           name="description"
+          property="og:description"
           content={t(translations.zeroPage.meta.description)}
         ></meta>
       </Helmet>

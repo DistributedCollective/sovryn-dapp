@@ -12,6 +12,7 @@ const TermsOfUse: FC = () => (
       <title>{t(translations.termsOfUsePage.meta.title)}</title>
       <meta
         name="description"
+        property="og:description"
         content={t(translations.termsOfUsePage.meta.description)}
       ></meta>
     </Helmet>

@@ -12,6 +12,7 @@ const PrivacyPolicy: FC = () => (
       <title>{t(translations.privacyPolicyPage.meta.title)}</title>
       <meta
         name="description"
+        property="og:description"
         content={t(translations.privacyPolicyPage.meta.description)}
       ></meta>
     </Helmet>

@@ -75,6 +75,7 @@ const RewardsPage: FC = () => {
         <title>{t(translations.rewardPage.meta.title)}</title>
         <meta
           name="description"
+          property="og:description"
           content={t(translations.rewardPage.meta.description)}
         ></meta>
       </Helmet>

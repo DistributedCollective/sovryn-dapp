@@ -281,15 +281,6 @@ const EarnPage: FC = () => {
     <>
       <Helmet>
         <title>{t(translations.earnPage.meta.title)}</title>
-        <meta
-          property="og:title"
-          content={t(translations.earnPage.meta.title)}
-        />
-        <meta
-          name="description"
-          property="og:description"
-          content={t(translations.earnPage.meta.description)}
-        />
       </Helmet>
       <div className="w-full flex flex-col items-center text-gray-10 mt-9 sm:mt-24">
         <Heading className="text-base sm:text-2xl">

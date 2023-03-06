@@ -7,7 +7,7 @@ export const sovrynLinks = {
   telegram: 'https://t.me/SovrynBitcoin',
   twitter: ' https://twitter.com/SovrynBTC',
   github: 'https://github.com/DistributedCollective',
-  blog: 'https://www.sovryn.app/blog',
+  blog: 'https://sovryn.app/all-things-sovryn',
   security: 'https://wiki.sovryn.app/en/technical-documents#security',
   fees: 'https://wiki.sovryn.app/en/sovryn-dapp/fees#zero-borrowing',
 };
@@ -16,6 +16,9 @@ export const sovrynAlphaLinks = {
   [Environments.Mainnet]: 'https://alpha.sovryn.app/',
   [Environments.Testnet]: 'https://alpha-test.sovryn.app',
 };
+
+export const sovrynStagingLink = 'https://staging.sovryn.app';
+export const sovrynAlfaStagingLink = 'https://alfa-staging.sovryn.app';
 
 export const sovrynWikiLinks = {
   root: 'https://wiki.sovryn.app/en',

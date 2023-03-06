@@ -2,31 +2,33 @@ import React, { FC } from 'react';
 
 import { t } from 'i18next';
 
-import { Link, Footer as UIFooter } from '@sovryn/ui';
+import { Footer, Link } from '@sovryn/ui';
 
-import { SocialLinks } from '../../2_molecules';
-import { SovrynLogo } from '../../2_molecules/SovrynLogo/SovrynLogo';
-import Logo from '../../../assets/images/Bitcoin-logo-small.svg';
-import { translations } from '../../../locales/i18n';
-import { Environments } from '../../../types/global';
+import { SocialLinks, SovrynLogo } from '../../../../2_molecules';
+import Logo from '../../../../../assets/images/Bitcoin-logo-small.svg';
+import { translations } from '../../../../../locales/i18n';
+import { Environments } from '../../../../../types/global';
 import {
-  sovrynLinks,
+  sovrynAlfaStagingLink,
   sovrynAlphaLinks,
-  sovrynWikiLinks,
-} from '../../../utils/constants';
-import { isMainnet } from '../../../utils/helpers';
+  sovrynLinks,
+  sovrynStagingLink,
+} from '../../../../../utils/constants';
+import { isMainnet, isStaging } from '../../../../../utils/helpers';
 
 const footerLinks = [
   {
-    id: 'start',
-    href: `${sovrynWikiLinks.root}/getting-started`,
-    name: t(translations.footer.start),
+    id: 'Dashboard',
+    href: isStaging() ? sovrynStagingLink : `/`,
+    name: t(translations.footer.dashboard),
   },
   {
     id: 'dapp-alpha',
-    href: sovrynAlphaLinks[
-      isMainnet() ? Environments.Mainnet : Environments.Testnet
-    ],
+    href: isStaging()
+      ? sovrynAlfaStagingLink
+      : sovrynAlphaLinks[
+          isMainnet() ? Environments.Mainnet : Environments.Testnet
+        ],
     name: t(translations.footer.alpha),
   },
   {
@@ -46,7 +48,7 @@ const footerLinks = [
   },
   {
     id: 'terms',
-    href: '/policies/terms-of-service',
+    href: '/policies/terms-of-use',
     name: t(translations.footer.terms),
   },
   {
@@ -56,8 +58,8 @@ const footerLinks = [
   },
 ];
 
-export const Footer: FC = () => (
-  <UIFooter
+export const PageEmailContainerFooter: FC = () => (
+  <Footer
     leftContent={
       <SovrynLogo
         image={Logo}
@@ -68,7 +70,7 @@ export const Footer: FC = () => (
       />
     }
     links={
-      <div className="flex flex-col md:flex-row justify-center flex-wrap gap-x-7 gap-y-4 md:mt-0 mt-4">
+      <div className="flex flex-col md:flex-row justify-center flex-wrap gap-x-7 gap-y-4 md:my-0 my-4">
         {footerLinks.map(link => (
           <Link key={link.id} href={link.href} text={link.name} />
         ))}

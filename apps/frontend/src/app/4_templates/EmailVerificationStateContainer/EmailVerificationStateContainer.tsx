@@ -8,17 +8,15 @@ import { applyDataAttr, Header } from '@sovryn/ui';
 import { SovrynLogo } from '../../2_molecules';
 import { Footer } from '../../3_organisms';
 
-type PageEmailContainerProps = {
+type EmailVerificationStateContainerProps = {
   className?: string;
   contentClassName?: string;
   dataAttribute?: string;
 };
 
-export const PageEmailContainer: FC<PageEmailContainerProps> = ({
-  className,
-  contentClassName,
-  dataAttribute,
-}) => (
+export const EmailVerificationStateContainer: FC<
+  EmailVerificationStateContainerProps
+> = ({ className, contentClassName, dataAttribute }) => (
   <div
     className={classNames('flex flex-col flex-grow', className)}
     {...applyDataAttr(dataAttribute)}
@@ -33,7 +31,7 @@ export const PageEmailContainer: FC<PageEmailContainerProps> = ({
       </div>
     </>
     <div className="shrink">
-      <Footer isEmailPage />
+      <Footer isEmailVerificationStatePage />
     </div>
   </div>
 );

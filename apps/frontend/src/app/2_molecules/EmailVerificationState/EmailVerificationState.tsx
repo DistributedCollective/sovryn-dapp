@@ -4,13 +4,13 @@ import { Helmet } from 'react-helmet-async';
 
 import { Heading, Paragraph } from '@sovryn/ui';
 
-type EmailContentRendererProps = {
+type EmailVerificationStateProps = {
   metaTitle: string;
   title: string;
   subtitle: React.ReactNode;
 };
 
-export const EmailContentRenderer: React.FC<EmailContentRendererProps> = ({
+export const EmailVerificationState: React.FC<EmailVerificationStateProps> = ({
   metaTitle,
   title,
   subtitle,

@@ -21,15 +21,15 @@ import { isMainnet, isStaging } from '../../../utils/helpers';
 import { getChangelogUrl } from '../../../utils/helpers';
 
 type FooterProps = {
-  isEmailPage?: boolean;
+  isEmailVerificationStatePage?: boolean;
 };
 
-export const Footer: FC<FooterProps> = ({ isEmailPage }) => {
+export const Footer: FC<FooterProps> = ({ isEmailVerificationStatePage }) => {
   const footerLinks = useMemo(
     () => [
-      isEmailPage
+      isEmailVerificationStatePage
         ? {
-            id: 'Dashboard',
+            id: 'dashboard',
             href: isStaging() ? sovrynStagingLink : `/`,
             name: t(translations.footer.dashboard),
           }
@@ -73,7 +73,7 @@ export const Footer: FC<FooterProps> = ({ isEmailPage }) => {
         name: t(translations.footer.policy),
       },
     ],
-    [isEmailPage],
+    [isEmailVerificationStatePage],
   );
 
   return (

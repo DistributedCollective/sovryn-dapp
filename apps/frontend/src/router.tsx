@@ -5,7 +5,7 @@ import React from 'react';
 import { createBrowserRouter } from 'react-router-dom';
 
 import { PageContainer } from './app/4_templates';
-import { PageEmailContainer } from './app/4_templates/PageEmailContainer/PageEmailContainer';
+import { EmailVerificationStateContainer } from './app/4_templates/EmailVerificationStateContainer/EmailVerificationStateContainer';
 import { earnPageLoader } from './app/5_pages/EarnPage/loader';
 import { EmailDuplicateVerifiedPage } from './app/5_pages/EmailDuplicateVerifiedPage/EmailDuplicateVerifiedPage';
 import { EmailErrorPage } from './app/5_pages/EmailErrorPage/EmailErrorPage';
@@ -91,7 +91,7 @@ export const router = createBrowserRouter([
     ],
   },
   {
-    element: <PageEmailContainer contentClassName="container" />,
+    element: <EmailVerificationStateContainer contentClassName="container" />,
     children: [
       {
         path: '/notifications/error',

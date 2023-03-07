@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 
-import { ethers } from 'ethers';
+import { BigNumberish, ethers } from 'ethers';
 import { t } from 'i18next';
 
 import { SupportedTokens } from '@sovryn/contracts';
@@ -18,6 +18,8 @@ import { getRskChainId } from '../../../../utils/chain';
 import {
   GAS_LIMIT_STABILITY_POOL,
   GAS_LIMIT_STABILITY_POOL_DLLR,
+  GAS_LIMIT_STABILITY_POOL_DLLR_INC_WITHDRAW,
+  GAS_LIMIT_STABILITY_POOL_INC_WITHDRAW,
 } from '../../../../utils/constants';
 import { toWei } from '../../../../utils/math';
 import {
@@ -29,6 +31,7 @@ import {
 export const useHandleStabilityDeposit = (
   token: SupportedTokens,
   amount: string,
+  hasRewardsToClaim: boolean,
   isDeposit: boolean,
   onComplete: () => void,
 ) => {
@@ -52,7 +55,16 @@ export const useHandleStabilityDeposit = (
       return;
     }
     const stabilityPool = await getStabilityPoolContract();
-
+    let gasLimitToUse: BigNumberish;
+    if (isDllrToken) {
+      gasLimitToUse = hasRewardsToClaim
+        ? GAS_LIMIT_STABILITY_POOL_DLLR_INC_WITHDRAW
+        : GAS_LIMIT_STABILITY_POOL_DLLR;
+    } else {
+      gasLimitToUse = hasRewardsToClaim
+        ? GAS_LIMIT_STABILITY_POOL_INC_WITHDRAW
+        : GAS_LIMIT_STABILITY_POOL;
+    }
     setTransactions([
       {
         title: t(translations.earnPage.txDialog.withdraw, {
@@ -65,9 +77,7 @@ export const useHandleStabilityDeposit = (
             ? 'withdrawFromSpAndConvertToDLLR'
             : 'withdrawFromSP',
           args: [toWei(amount)],
-          gasLimit: isDllrToken
-            ? GAS_LIMIT_STABILITY_POOL_DLLR
-            : GAS_LIMIT_STABILITY_POOL,
+          gasLimit: gasLimitToUse,
         },
         onComplete,
       },
@@ -87,6 +97,7 @@ export const useHandleStabilityDeposit = (
     onComplete,
     setTitle,
     token,
+    hasRewardsToClaim,
     setIsOpen,
   ]);
 

@@ -68,6 +68,7 @@
         }
     },
     "footer": {
+        "dashboard": "Dashboard",
         "start": "Getting started",
         "alpha": "Sovryn Alpha",
         "blog": "Blog",
@@ -565,5 +566,42 @@
         "changelog": "See changelog <0>here</0>",
         "description": "Click below to update and accept the new version.",
         "updateButton": "Update"
+    },
+    "emailNotifications": {
+        "errorPage": {
+            "meta": {
+                "title": "Error - Sovryn"
+            },
+            "title": "Something went wrong!",
+            "subtitle": "Please try the action again. If it continues to not work, please contact a support agent at <0>link</0>"
+        },
+        "verifiedPage": {
+            "meta": {
+                "title": "Verified - Sovryn"
+            },
+            "title": "Email address verified!",
+            "subtitle": "You are now signed up for Sovryn email notifications. If you ever want to unsubscribe, you can do so using the unsubscribe link in any notification email or by visiting the email notification settings section of the Sovryn app."
+        },
+        "duplicateVerifiedPage": {
+            "meta": {
+                "title": "Already verified - Sovryn"
+            },
+            "title": "Your email address has already been verified.",
+            "subtitle": "If you ever want to unsubscribe, you can do so using the unsubscribe link in any notification email or by visiting the email notification settings section of the Sovryn app."
+        },
+        "unsubscribedPage": {
+            "meta": {
+                "title": "Unsubscribed - Sovryn"
+            },
+            "title": "Unsubscribed",
+            "subtitle": "Your email address has been unsubscribed from Sovryn email notifications regarding the specific Rootstock address associated with your unsubscribe request. You can sign up again at any time by visiting the email notification settings section of the Sovryn app."
+        },
+        "unsubscribedAllPage": {
+            "meta": {
+                "title": "Unsubscribed and removed - Sovryn"
+            },
+            "title": "Unsubscribed",
+            "subtitle": "Your email address has been unsubscribed from all Sovryn email notifications and removed from the notification system. You can sign up again at any time by visiting the email notification settings section of the Sovryn app."
+        }
     }
 }

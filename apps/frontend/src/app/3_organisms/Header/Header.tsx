@@ -21,6 +21,7 @@ import { useWalletConnect, useWrongNetworkCheck } from '../../../hooks';
 import { useAssetBalance } from '../../../hooks/useAssetBalance';
 import { translations } from '../../../locales/i18n';
 import { sharedState } from '../../../store/rxjs/shared-state';
+import { rskFaucet } from '../../../utils/constants';
 import { isMainnet, isTestnetFastBtcEnabled } from '../../../utils/helpers';
 
 export const Header: FC = () => {
@@ -68,7 +69,6 @@ export const Header: FC = () => {
             text={
               <Icon
                 icon={isOpen ? IconNames.X_MARK : IconNames.HAMBURGER_MENU}
-                size={16}
               />
             }
             style={ButtonStyle.ghost}
@@ -123,7 +123,7 @@ export const Header: FC = () => {
               style={ButtonStyle.secondary}
               dataAttribute="dapp-header-funding"
               onClick={enableFastBtc ? handleFastBtcClick : noop}
-              href={enableFastBtc ? '' : 'https://faucet.rsk.co'}
+              href={enableFastBtc ? '' : rskFaucet}
               hrefExternal={true}
               className="text-gray-10"
             />

@@ -143,7 +143,7 @@ export const OpenCreditLine: FC<OpenCreditLineProps> = ({
           value: formatValue(MIN_DEBT_SIZE, 4),
           currency: debtToken.toUpperCase(),
         }),
-        weight: 5,
+        weight: 3,
       });
     }
 

@@ -218,7 +218,7 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
             currency: debtToken.toUpperCase(),
           },
         ),
-        weight: 5,
+        weight: 3,
       });
     }
 

@@ -17,7 +17,13 @@ export const ErrorList: FC<ErrorListProps> = ({
   dataAttribute,
 }) => {
   const items = useMemo(
-    () => errors.sort((a, b) => (b.weight || 1) - (a.weight || 1)),
+    () =>
+      errors
+        .map(item => ({
+          ...item,
+          weight: item.weight ?? 0,
+        }))
+        .sort((a, b) => b.weight - a.weight),
     [errors],
   );
 

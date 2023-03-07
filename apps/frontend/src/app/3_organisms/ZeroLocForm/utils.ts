@@ -62,7 +62,7 @@ export const checkForSystemErrors = (ratio: number, tcr: number) => {
         message: t(translations.zeroPage.loc.errors.ratioWarningInRecovery, {
           value: tcrPlus10Percent,
         }),
-        weight: 4,
+        weight: 1,
       });
     }
 
@@ -91,7 +91,7 @@ export const checkForSystemErrors = (ratio: number, tcr: number) => {
         message: t(translations.zeroPage.loc.errors.ratioWarning, {
           value: ccrPercent,
         }),
-        weight: 3,
+        weight: 1,
       });
     }
 
@@ -103,7 +103,7 @@ export const checkForSystemErrors = (ratio: number, tcr: number) => {
         message: t(translations.zeroPage.loc.errors.ratioError, {
           value: mcrPercent,
         }),
-        weight: 1,
+        weight: 2,
       });
     }
   }

@@ -7,7 +7,14 @@ import React, {
 
 import classNames from 'classnames';
 
-import { Heading, HeadingType, Paragraph, ParagraphSize } from '../../1_atoms';
+import {
+  ErrorBadge,
+  ErrorLevel,
+  Heading,
+  HeadingType,
+  Paragraph,
+  ParagraphSize,
+} from '../../1_atoms';
 import { applyDataAttr } from '../../utils';
 import styles from './FormGroup.module.css';
 
@@ -63,12 +70,11 @@ export const FormGroup: React.FC<PropsWithChildren<FormGroupProps>> = ({
       {maybeRenderLabel}
       {children}
       {errorLabel && (
-        <span
-          {...applyDataAttr(`${dataAttribute}__error-message`)}
-          className={styles.errorLabel}
-        >
-          {errorLabel}
-        </span>
+        <ErrorBadge
+          level={ErrorLevel.Critical}
+          message={errorLabel}
+          dataAttribute={`${dataAttribute}-error-message`}
+        />
       )}
     </div>
   );

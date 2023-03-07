@@ -31,6 +31,6 @@ describe('FormGroup', () => {
       />,
     );
 
-    expect(getByTestId('group-2__error-message')).toHaveTextContent('wrong');
+    expect(getByTestId('group-2-error-message')).toHaveTextContent('wrong');
   });
 });

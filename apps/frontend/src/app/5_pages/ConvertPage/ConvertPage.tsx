@@ -224,9 +224,11 @@ const ConvertPage: FC = () => {
             </div>
 
             {!isValidAmount && (
-              <Paragraph className="text-error-light font-medium mt-2">
-                {t(pageTranslations.form.invalidAmountError)}
-              </Paragraph>
+              <ErrorBadge
+                level={ErrorLevel.Critical}
+                message={t(pageTranslations.form.invalidAmountError)}
+                dataAttribute="convert-from-amount-error"
+              />
             )}
           </div>
 

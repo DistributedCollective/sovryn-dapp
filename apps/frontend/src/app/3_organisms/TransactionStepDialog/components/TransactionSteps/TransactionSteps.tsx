@@ -30,6 +30,7 @@ export type TransactionStepsProps = {
   onSuccess?: () => void;
   onClose?: () => void;
   gasPrice: string;
+  onTxStatusChange?: (status: StatusType) => void;
 };
 
 export const TransactionSteps: FC<TransactionStepsProps> = ({
@@ -37,9 +38,9 @@ export const TransactionSteps: FC<TransactionStepsProps> = ({
   onSuccess,
   onClose,
   gasPrice,
+  onTxStatusChange,
 }) => {
   const [stepData, setStepData] = useState<TransactionStepData[]>([]);
-
   const [step, setStep] = useState(-1);
   const [error, setError] = useState(false);
 
@@ -176,6 +177,8 @@ export const TransactionSteps: FC<TransactionStepsProps> = ({
             response: tx.hash,
           });
 
+          onTxStatusChange?.(StatusType.success);
+
           handleUpdates();
         } else if (isMessageSignatureRequest(request)) {
           const signature = await request.signer.signMessage(request.message);
@@ -241,6 +244,7 @@ export const TransactionSteps: FC<TransactionStepsProps> = ({
 
       setStep(transactions.length);
     } catch (error) {
+      onTxStatusChange?.(StatusType.error);
       console.log('error:', error);
 
       transactions[0].onChangeStatus?.(StatusType.error);
@@ -249,7 +253,15 @@ export const TransactionSteps: FC<TransactionStepsProps> = ({
 
       setError(true);
     }
-  }, [error, transactions, step, stepData, updateReceipt, handleUpdates]);
+  }, [
+    error,
+    transactions,
+    step,
+    stepData,
+    updateReceipt,
+    handleUpdates,
+    onTxStatusChange,
+  ]);
 
   const getStatus = useCallback(
     (i: number) => {

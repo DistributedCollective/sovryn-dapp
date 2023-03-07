@@ -64,6 +64,7 @@ export const TransactionStep: FC<TransactionStepProps> = ({
 }) => {
   const { request, title, subtitle } = transaction;
   const [token, setToken] = useState<TokenDetailsData | undefined>();
+
   useEffect(() => {
     if (isTransactionRequest(request)) {
       const { contract } = request;
@@ -194,8 +195,12 @@ export const TransactionStep: FC<TransactionStepProps> = ({
       <div className="ml-10">
         {status === StatusType.error && (
           <Paragraph className="text-error-light">
-            <div>{t(translations.transactionStep.transactionFailedTitle)}</div>
-            {t(translations.transactionStep.transactionFailedSubtitle)}
+            <span className="block">
+              {t(translations.transactionStep.transactionFailedTitle)}
+            </span>
+            <span>
+              {t(translations.transactionStep.transactionFailedSubtitle)}
+            </span>
           </Paragraph>
         )}
         {subtitle && status !== StatusType.error && (

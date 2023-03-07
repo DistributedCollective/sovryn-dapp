@@ -16,7 +16,8 @@ export const toWei = (
   value: BigNumberish,
   unitName: BigNumberish = DEFAULT_UNIT,
 ): BigNumber => {
-  if (isBigNumberish(value) || String(value).indexOf('e-') >= 0) {
+  // handle BigNumber or Numbers in scientific notation
+  if (isBigNumberish(value) || String(value).search(/e[-+]/) >= 0) {
     if (typeof unitName === 'string') {
       const index = unitNames.indexOf(unitName);
       if (index !== -1) {

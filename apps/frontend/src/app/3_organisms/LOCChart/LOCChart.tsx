@@ -69,7 +69,6 @@ export const LOCChart: FC = () => {
   const [userCollateralRatio, setUserCollateralRatio] = useState(0);
   const [redemptionBuffer, setRedemptionBuffer] = useState(0);
   const [startAxisXCount, setStartAxisXCount] = useState(0);
-  const [lowestTroves, setLowestTroves] = useState<TroveData[]>([]);
   const { value: block } = useBlockNumber();
 
   const trovesCountToShow = useMemo(
@@ -203,8 +202,21 @@ export const LOCChart: FC = () => {
       const centerIndex = (trovesCountToShow - 1) / 2;
       const shiftTroves = index >= centerIndex ? index - centerIndex : index;
 
-      if (lowestTroves.length === 0) {
-        setLowestTroves(data.slice(0, index));
+      if (userCollateralRatio > 0) {
+        const redemptionBuffer = data
+          .slice(0, index)
+          ?.reduce(
+            (acc, curr) =>
+              acc +
+              calculateRedemptionBuffer(
+                Number(curr.debt),
+                Number(curr.collateral),
+                Number(userCollateralRatio),
+                price,
+              ),
+            0,
+          );
+        setRedemptionBuffer(redemptionBuffer || 0);
       }
 
       if (index < centerIndex) {
@@ -233,37 +245,18 @@ export const LOCChart: FC = () => {
     data,
     troves,
     account,
-    lowestTroves,
     userCollateralRatio,
     activeBar,
     trovesCountToShow,
     isUserTrove,
+    price,
   ]);
-
-  useEffect(() => {
-    //calculating the redemption buffer for the user trove
-    if (lowestTroves.length !== 0 && userCollateralRatio > 0) {
-      const redemptionBuffer = lowestTroves.reduce((acc, curr) => {
-        return (
-          acc +
-          calculateRedemptionBuffer(
-            Number(curr.debt),
-            Number(curr.collateral),
-            Number(userCollateralRatio),
-            price,
-          )
-        );
-      }, 0);
-      setRedemptionBuffer(redemptionBuffer);
-    }
-  }, [lowestTroves, userCollateralRatio, price]);
 
   useEffect(() => {
     //reset values when the user is not in the troves list or not connected
     if (!hasUserOpenTrove || !account) {
       setRedemptionBuffer(0);
       setStartAxisXCount(0);
-      setLowestTroves([]);
       setActiveBar(false);
     }
   }, [hasUserOpenTrove, account]);

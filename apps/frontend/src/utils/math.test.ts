@@ -48,6 +48,10 @@ describe('utils/math.ts', () => {
       expect(toWei('0.0000000000000004').toString()).toEqual('400');
     });
 
+    it('correctly converts a really small number in scientific notation', () => {
+      expect(toWei(8.75e-16).toString()).toEqual('875');
+    });
+
     it('fails for unexpected value', () => {
       expect(() => toWei('error')).toThrowError(
         'Invalid BigNumberish value: error',

@@ -1,4 +1,5 @@
 import { BigNumber } from '@ethersproject/bignumber';
+import { Decimal } from '@sovryn-zero/lib-base';
 import {
   EthersLiquity,
   ReadableEthersLiquityWithStore,
@@ -37,6 +38,7 @@ import { TOKEN_RENDER_PRECISION } from '../../3_organisms/ZeroLocForm/constants'
 import { useAccount } from '../../../hooks/useAccount';
 import { useAmountInput } from '../../../hooks/useAmountInput';
 import { useAssetBalance } from '../../../hooks/useAssetBalance';
+import { useBlockNumber } from '../../../hooks/useBlockNumber';
 import { useMaintenance } from '../../../hooks/useMaintenance';
 import { translations } from '../../../locales/i18n';
 import { formatValue, fromWei, toWei } from '../../../utils/math';
@@ -51,10 +53,12 @@ const EarnPage: FC = () => {
   const [amountInput, setAmount, amount] = useAmountInput('');
   const [poolBalance, setPoolBalance] = useState('0');
   const [ZUSDInStabilityPool, setZUSDInStabilityPool] = useState('0');
+  const [rewardsAmount, setRewardsAmount] = useState<Decimal>(Decimal.from(0));
   const [token, setToken] = useState<SupportedTokens>(SupportedTokens.dllr);
   const [isLoading, setIsLoading] = useState(false);
 
   const { account } = useAccount();
+  const { value: block } = useBlockNumber();
 
   const { liquity } = useLoaderData() as {
     liquity: EthersLiquity;
@@ -84,6 +88,17 @@ const EarnPage: FC = () => {
   useEffect(() => {
     getZUSDInStabilityPool();
   }, [getZUSDInStabilityPool]);
+
+  useEffect(() => {
+    liquity
+      .getStabilityDeposit(account)
+      .then(result => setRewardsAmount(result.collateralGain));
+  }, [liquity, account, block]);
+
+  const hasRewardsToClaim = useMemo(
+    () => Number(rewardsAmount) > 0,
+    [rewardsAmount],
+  );
 
   const actions = useMemo(() => {
     const tabs = [
@@ -170,6 +185,7 @@ const EarnPage: FC = () => {
   const handleSubmit = useHandleStabilityDeposit(
     token,
     amount,
+    hasRewardsToClaim,
     isDeposit,
     onTransactionSuccess,
   );

@@ -21,6 +21,7 @@ export const sovrynAlphaStagingLink = 'https://alpha-staging.sovryn.app';
 
 export const sovrynStagingLink = 'https://staging.sovryn.app';
 
+export const sovrynWikiLinks = {
   root: 'https://wiki.sovryn.app/en',
   stabilityPool:
     'https://wiki.sovryn.app/en/sovryn-dapp/subprotocols/zero-zusd#stability-pool',

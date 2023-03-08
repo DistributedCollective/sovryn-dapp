@@ -8,13 +8,15 @@ import { translations } from '../../../locales/i18n';
 export const handleNotification = (
   type: NotificationType,
   title: string,
-  content?: string,
+  content = '',
+  className = 'text-xs',
 ) => ({
   type,
   id: nanoid(),
   title: t(title),
-  content: content ? t(content) : '',
+  content: t(content),
   dismissible: true,
+  className,
 });
 
 export const renderNotification = (txStatus: StatusType) => {

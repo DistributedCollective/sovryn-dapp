@@ -31,6 +31,7 @@ type AmountRendererProps = {
   prefix?: string;
   dataAttribute?: string;
   isAnimated?: boolean;
+  useTooltip?: boolean;
 };
 
 export const AmountRenderer: FC<AmountRendererProps> = ({
@@ -41,6 +42,7 @@ export const AmountRenderer: FC<AmountRendererProps> = ({
   prefix = '',
   dataAttribute,
   isAnimated = false,
+  useTooltip = true,
 }) => {
   const { addNotification } = useNotificationContext();
 
@@ -77,8 +79,8 @@ export const AmountRenderer: FC<AmountRendererProps> = ({
   );
 
   const tooltipDisabled = useMemo(
-    () => getDecimalPartLength(value) <= precision,
-    [precision, value],
+    () => getDecimalPartLength(value) <= precision || !useTooltip,
+    [precision, value, useTooltip],
   );
 
   return (

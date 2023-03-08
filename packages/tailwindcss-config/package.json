@@ -1,6 +1,6 @@
 {
   "name": "@sovryn/tailwindcss-config",
-  "version": "0.0.2",
+  "version": "1.0.0",
   "main": "index.js",
   "files": [
     "index.js",

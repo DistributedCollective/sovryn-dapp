@@ -26,6 +26,7 @@ export const useHandleConversion = (
   sourceToken: SupportedTokens,
   destinationToken: SupportedTokens,
   amount: string,
+  onComplete: () => void,
 ) => {
   const { account, signer } = useAccount();
   const weiAmount = useMemo(() => toWei(amount), [amount]);
@@ -59,9 +60,17 @@ export const useHandleConversion = (
           args: [bassetAddress, weiAmount, account],
           gasLimit: GAS_LIMIT_CONVERT,
         },
+        onComplete,
       },
     ] as Transaction[];
-  }, [account, destinationToken, getMassetManager, sourceToken, weiAmount]);
+  }, [
+    account,
+    destinationToken,
+    getMassetManager,
+    sourceToken,
+    weiAmount,
+    onComplete,
+  ]);
 
   const withdrawTokens = useCallback(async () => {
     if (!signer || sourceToken !== SupportedTokens.dllr) {

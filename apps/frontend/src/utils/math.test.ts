@@ -125,8 +125,12 @@ describe('utils/math.ts', () => {
   });
 
   describe('isScientificNumber()', () => {
-    it('detects scientific number', () => {
+    it('detects tiny scientific number', () => {
       expect(isScientificNumber(8.75e-16)).toEqual(true);
+    });
+
+    it('detects huge scientific number', () => {
+      expect(isScientificNumber(8.75e22)).toEqual(true);
     });
 
     it('detects normal number', () => {

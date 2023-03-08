@@ -140,4 +140,4 @@ export const numeric = (value: number) => {
 };
 
 export const isScientificNumber = (value: number) =>
-  String(value).search(/e[-+]/) >= 0;
+  String(value).search(/e[-+]?/) > 0;

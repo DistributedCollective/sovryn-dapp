@@ -1,5 +1,39 @@
 # @sovryn/ui
 
+## 1.0.0
+
+### Major Changes
+
+- 18d45bc: SOV-1864: initial public release
+
+### Patch Changes
+
+- 1c48461: SOV-1702: fix pending icon spin direction
+- 5ea9255: SOV-1521: expose amount input props type
+- 0695fe9: SOV-1915: fix error ordering
+- 409d5a1: SOV-1497: Update external link icon color
+- 2f2480a: SOV-1517: fix numbers for input field
+- e775c28: SOV-1488: Refactor error badge component
+- 726c396: fix: dialog component z-index
+- f16301e: SOV-1360: Integrate new maintenance states
+- 2b94683: SOV-1501: Fix broken border on Tooltip when shown in modals
+- 31c03a1: SOV-1432: Fix input zoom for iOS devices
+- ac995c7: Sov 1096 notification stack component
+- 7533d8a: SOV-1446: Update Convert page copy
+- 89a60a2: SOV-1824: Use ErrorBadge component for all input errors
+- 2153669: SOV-1666: update data attributes
+- c096ac8: SOV-1625: add animation to notifications
+- 3a153e4: SOV-1464: default amount input is empty string instead of 0
+- b636730: SOV-1661: Copy TX ID -> standard browser confirmation is shown
+- 541e7ff: feat: custom form group label element
+- d02e9a7: Sov 1287 zero stability pool page implementation
+- 51a4ab6: SOV-1121: History page implementation
+- 577e88e: SOV-1610: Use BTC instead RBTC everywhere
+- 475f911: chore: added email landing pages
+- 762eeae: SOV-1367: close Wallet Menu when menu item selected
+- c51421d: SOV-1476: fix Select component always taking shortest item width
+- db49613: SOV-1473: Add asset icon to dropdowns
+
 ## 0.0.17
 
 ### Patch Changes

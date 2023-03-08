@@ -1,5 +1,15 @@
 # @sovryn/tailwindcss-config
 
+## 1.0.0
+
+### Major Changes
+
+- 18d45bc: SOV-1864: initial public release
+
+### Patch Changes
+
+- 1c48461: SOV-1702: fix pending icon spin direction
+
 ## 0.0.2
 
 ### Patch Changes

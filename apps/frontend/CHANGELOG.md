@@ -1,5 +1,161 @@
 # frontend
 
+## 0.1.13
+
+### Patch Changes
+
+- 1c48461: SOV-1702: fix pending icon spin direction
+- 24faa56: SOV-1377: Zero: Chart - implement redemption buffer display
+- 6594de0: SOV-1355: bump sovryn-onboard package versions
+- d30b00b: SOV-1701: Update footer logo
+- f0273bc: SOV-1334: collateral surplus withdrawal history table
+- 8c627ca: SOV-1920: fix infinite loop in LOCChart useEffect
+- c6170e9: SOV-1664: Zero Dashboard Chart Fix
+- 4c4fc0a: SOV-1578: single tx dllr
+- d6f297a: SOV-1579: message and typed data signing
+- 3e6ab79: SOV-1291: Convert page implementation
+- f6a4c8c: SOV-1118: Zero: SP transactions history frame
+- d0143b1: SOV-1622: Add staging environment detection
+- ababf4b: SOV-1803: add page titles
+- 52285ef: SOV-1408: Clear errors when switching tabs
+- 6ee5f16: SOV-1498: Fix input width on transaction flow
+- 174618e: SOV-1779: Refetch history data on every block
+- dd88b96: SOV-1551: refresh dapp info when block changes
+- aca21ba: SOV-1617: Close LoC modal after completion
+- 76152ab: SOV-1681: Update rewards on every block
+- e775c28: SOV-1488: Refactor error badge component
+- 5aad864: SOV-1694: Fix min collateral error value in LoC
+- c19dac0: SOV-969: Tiledesk integration
+- 949563b: SOV-1847: fix crashing amount input
+- c294ee4: SOV-1755: Hide funding button on testnet
+- 3cfdfc4: SOV-1452: Define gas limits
+- 413a9f5: SOV-1796: Align amount field with the guideline
+- 763b0af: fix: reserve amount should be included for origination fee calculation
+- 59b82e7: SOV-1911: LoC Chart fails to load when refreshing page with connected wallet
+- b8a26bb: SOV-1788: convert amount loses decimal precision
+- 12abdff: SOV-1407: reset WC flow state after connect
+- f16301e: SOV-1360: Integrate new maintenance states
+- 65025a5: SOV-1674: Unconfirmed email address warning
+- 1f68f58: SOV-1492: Update Email Notification dialog copy
+- bf3bf79: SOV-1136: Zero: Funding history frame
+- b76872c: SOV-1486: Create AssetValue component
+- 80f64de: SOV-1805: update LOC button position
+- 3aa1d9e: SOV-1784: fix number format
+- 11f966b: SOV-1499: update copy for transactions
+- ac995c7: Sov 1096 notification stack component
+- ac00fce: SOV-1712: Rewards 'Transfer to LOC' button fix
+- 7533d8a: SOV-1446: Update Convert page copy
+- 5e43122: SOV-1646: Add BTC TXID to Fast BTC send flow
+- 89a60a2: SOV-1824: Use ErrorBadge component for all input errors
+- 6310ea1: SOV-1923: Update Zero SDK package versions
+- 8cbb2e3: SOV-1117: add stats component
+- 20c1b69: SOV-1417: add notifications to email alert dialog
+- 726d073: SOV-1451: fix: toWei crashing for values with large amount of decimals
+- 2153669: SOV-1666: update data attributes
+- a84a806: SOV-1884: fix notification dialog close bug
+- 16ebc17: SOV-1650: restrict max rbtc amount allowed in max buttons
+  SOV-1651: disable Done button when FastBTC tx in progress
+  SOV-1652: fix Continue button on FastBTC send flow
+  SOV-1655: prevent FastBTC dialog being preemptively closed
+- c88ae8b: SOV-1484: Update styling
+- 128c86c: SOV-1826: localise loading text
+- b83300f: SOV-1418: amount input max validation cleanup
+- 4c80d3f: SOV-1703: show build id
+- 3d903ed: SOV-1481: Add Notification after transactions confirm/fail
+- e289220: SOV-1333: reward history table
+- 59ed27a: SOV-1818: Remove minimum borrow amount error
+- 1016a32: SOV-1120: Redemptions history frame
+- fdf6746: SOV-1603: Add Collateral surplus withdrawal table to History page
+- 3a153e4: SOV-1464: default amount input is empty string instead of 0
+- 1663f01: SOV-1803: fix terms of service url
+- b636730: SOV-1661: Copy TX ID -> standard browser confirmation is shown
+- 202e52f: SOV-998: Zero Dashboard LoC Integration
+- 3abac74: Feat/sov 1289 zero simplified rewards page
+- d553c9c: SOV-1626: Replace useTranslation() hook usage with direct "t" import
+- 45832f3: SOV-1780: reset amount inputs on Convert page after tx
+- 8c6ae41: SOV-1797: Adjust borrow layout so all content visible
+- bc21b46: SOV-1802: Fix liquidation price in open LOC
+- d22fca6: SOV-1277: track current block number
+- 0df76c5: Feat/sov 1115 zero dashboard loc chart
+- b881d3f: SOV-1660: loc chart crashing app when user has no trove
+- a365510: SOV-1515: opening and repaying trove using DLLR
+- dc2fa10: SOV-1768: toWei method for really small numbers
+- 5dc5bda: SOV-1845: Fix how origination fee is calculated
+- 01de1a2: SOV-1266: FastBTC bridge flow implementation
+- 1e1942e: SOV-1787: Fix tx text typos
+- a93ea95: SOV-1561: autoconnect to previous wallet
+- 92cafa0: SOV-913: service worker + dapp update dialog
+- 5ea9255: SOV-1521: max collateral amounts with deducted fees
+- d4bd3c7: SOV-1701: Update footer links
+- 32e4cb9: SOV-1611: "TX ID" should be called "TXID"
+- 7ab6b72: SOV-1913: add description meta tags
+- 3bdec6e: SOV-1597: Zero LoC chart only showing 8 LoCs
+  SOV-1604: Wallet Address not showing in chart tooltip
+- c6d90ff: SOV-1590: Remove hardcoded value in statistics
+- 2ac2ab8: SOV-1949: show label for Transfer Gains tx type on Transaction History table
+- 7207cc3: SOV-1471: add data attributes to Convert page and Connect Wallet button
+- d02e9a7: Sov 1287 zero stability pool page implementation
+- 51a4ab6: SOV-1121: History page implementation
+- fcea7e9: SOV-1586: trigger funding flow from anywhere within dapp
+- 577e88e: SOV-1610: Use BTC instead RBTC everywhere
+- 726c396: feat: add zero loans
+- 8ee299a: SOV-1767: dynamic collateral amount
+- 0fb23e2: SOV-1673: Fix "close line of credit" modal
+  SOV-1678: LOC -> Close -> DLLR option disappears from the drop down of tokens
+- 4171c93: SOV-1792: Fix collateral surplus history table
+- 6c3ec0c: SOV-1458: updated LOC Chart
+- 5a9078e: SOV-1310: Zero welcome dashboard banner implementation
+- 9a3adbe: SOV-1648: User's LOC is not highlighted in the chart
+- c318e48: SOV-1629: Stats panels should be full width on mobile
+- 072ff76: SOV-1440: Integrate Getting Started popup
+- 475f911: chore: added email landing pages
+- 3a7d41f: SOV-1506: Update Footer links
+- efaa18c: SOV-1636: update readme, browser compatibility
+- 1634d14: SOV-1502: Localisation file cleanup
+- af2b3e9: SOV-1614: Update default gas limits
+- 7f7dfd7: SOV-1870: update dapp metadata
+- a50624d: SOV-1815: Fix app crashing after disconnecting a wallet on Fast BTC
+- db49613: SOV-1473: Add asset icon to dropdowns
+- 30fb4fc: SOV-1472: add missing data attributes
+- 3c9cf1b: SOV-1122: Conversions history frame
+- Updated dependencies [1c48461]
+- Updated dependencies [5ea9255]
+- Updated dependencies [1e0a47f]
+- Updated dependencies [0695fe9]
+- Updated dependencies [18d45bc]
+- Updated dependencies [3e6ab79]
+- Updated dependencies [409d5a1]
+- Updated dependencies [2f2480a]
+- Updated dependencies [e775c28]
+- Updated dependencies [726c396]
+- Updated dependencies [f16301e]
+- Updated dependencies [2b94683]
+- Updated dependencies [31c03a1]
+- Updated dependencies [11f966b]
+- Updated dependencies [ac995c7]
+- Updated dependencies [7533d8a]
+- Updated dependencies [89a60a2]
+- Updated dependencies [99e26b4]
+- Updated dependencies [2295c60]
+- Updated dependencies [2153669]
+- Updated dependencies [c096ac8]
+- Updated dependencies [3a153e4]
+- Updated dependencies [b636730]
+- Updated dependencies [3abac74]
+- Updated dependencies [541e7ff]
+- Updated dependencies [01de1a2]
+- Updated dependencies [d02e9a7]
+- Updated dependencies [51a4ab6]
+- Updated dependencies [577e88e]
+- Updated dependencies [475f911]
+- Updated dependencies [762eeae]
+- Updated dependencies [c51421d]
+- Updated dependencies [db49613]
+  - @sovryn/tailwindcss-config@1.0.0
+  - @sovryn/ui@1.0.0
+  - @sovryn/contracts@1.0.0
+  - @sovryn/ethers-provider@1.0.0
+
 ## 0.1.12
 
 ### Patch Changes

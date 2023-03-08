@@ -1,5 +1,11 @@
 # @sovryn/tsconfig
 
+## 1.0.0
+
+### Major Changes
+
+- 18d45bc: SOV-1864: initial public release
+
 ## 0.0.2
 
 ### Patch Changes

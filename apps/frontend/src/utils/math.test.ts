@@ -1,7 +1,7 @@
 import { BigNumber } from 'ethers';
 import { commify, formatUnits, parseUnits } from 'ethers/lib/utils';
 
-import { fromWei, fromWeiFixed, toWei } from './math';
+import { fromWei, fromWeiFixed, isScientificNumber, toWei } from './math';
 
 const gasPrice = 0.065164;
 const gasLimit = 47254;
@@ -121,6 +121,16 @@ describe('utils/math.ts', () => {
       expect(() => fromWeiFixed('error')).toThrowError(
         'Invalid BigNumberish value: error',
       );
+    });
+  });
+
+  describe('isScientificNumber()', () => {
+    it('detects scientific number', () => {
+      expect(isScientificNumber(8.75e-16)).toEqual(true);
+    });
+
+    it('detects normal number', () => {
+      expect(isScientificNumber(12345)).toEqual(false);
     });
   });
 });

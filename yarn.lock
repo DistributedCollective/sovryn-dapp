@@ -4280,20 +4280,20 @@
   resolved "https://registry.yarnpkg.com/@sovryn-zero/lib-ethers/-/lib-ethers-1.0.0-early.access.8.tgz#a40bb6a06b60e6744af8a3cafd34c069ce93770b"
   integrity sha512-njOgokPbAxkJP1HsTuIEd8Gn6FaXVtPYHYXypgsXrBa1pRXFfDOzcm2TmevTFI2HGr3yAUA5y/DzxWQJi7tPiw==
 
-"@sovryn/onboard-common@0.0.3":
-  version "0.0.3"
-  resolved "https://registry.yarnpkg.com/@sovryn/onboard-common/-/onboard-common-0.0.3.tgz#245fe53c3c3a6099bf0a4e30a7eba389098a9fe4"
-  integrity sha512-o0/huNNYnuPzjEKb2zE8BusYn5REPGnyeVBlZpp0dFvaKIGFOuBmZrfsDKAq6pnYh2Lv0i8pbnm6u1N1Vp3WiQ==
+"@sovryn/onboard-common@1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@sovryn/onboard-common/-/onboard-common-1.0.0.tgz#464255bb1009ea109993522c1804ff37f41f9fce"
+  integrity sha512-UlZIpYe3ybgLFgsrAQFKy91x71S8uoKY/VuR3CdsOVMwnyh21it7XHGDzDXINNEpuVL/xWhNcCvyZod/WA90xQ==
   dependencies:
     ethers "^5.7.0"
     joi "^17.6.0"
 
-"@sovryn/onboard-core@0.0.5":
-  version "0.0.5"
-  resolved "https://registry.yarnpkg.com/@sovryn/onboard-core/-/onboard-core-0.0.5.tgz#46133ebcf2a0414e550a2afc68cc10df64e35d01"
-  integrity sha512-sLI7hNjvNFluGJeHO8IKK+kcEUTBqlZTiFfXQxcTKumRbA8teKE88qV/oHIdvkaZYrIgm86ro6ROC0RMDanpHA==
+"@sovryn/onboard-core@1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@sovryn/onboard-core/-/onboard-core-1.0.0.tgz#8745860e0b105c98d8ca7d1c2bd29d682a2e0297"
+  integrity sha512-iv5/yJYfqY0x4R0uZMEz6KmfiMRBVebrSNd7+ESEmGQLP/0hAVXYenGQK6w09xgLcQ+jTOAs6mS+w8ILamN55Q==
   dependencies:
-    "@sovryn/onboard-common" "0.0.3"
+    "@sovryn/onboard-common" "1.0.0"
     bowser "^2.11.0"
     ethers "^5.7.0"
     eventemitter3 "^4.0.7"
@@ -4301,24 +4301,24 @@
     lodash.partition "^4.6.0"
     rxjs "^7.5.6"
 
-"@sovryn/onboard-hw-common@0.0.4":
-  version "0.0.4"
-  resolved "https://registry.yarnpkg.com/@sovryn/onboard-hw-common/-/onboard-hw-common-0.0.4.tgz#877a993ca46efc80141aacdcea22e278aec0dfd0"
-  integrity sha512-zvNoRCwMC2rxo5pmfaqKtgB7QXbExY5UfTvCUumOOP1WHLm4cMB81luy+9ws3yZGbUZKWKrqeC6Kjt6lgKCH7g==
+"@sovryn/onboard-hw-common@1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@sovryn/onboard-hw-common/-/onboard-hw-common-1.0.0.tgz#116ea6fda0c6609ea4ed74684ee5f68da02a62e6"
+  integrity sha512-8EIV4EaxDT33dDF/KRTS8kyk1iC4VY/CiF53poQ2b46Lj5NeQNAV7txxt+1HduJ+LELG2cBGYEnCz82YTpWKdA==
   dependencies:
     "@ethereumjs/common" "^2.6.5"
-    "@sovryn/onboard-common" "0.0.3"
-    "@sovryn/onboard-core" "0.0.5"
+    "@sovryn/onboard-common" "1.0.0"
+    "@sovryn/onboard-core" "1.0.0"
     ethers "^5.7.0"
     joi "^17.6.0"
     rxjs "7.5.6"
 
-"@sovryn/onboard-injected@0.0.4":
-  version "0.0.4"
-  resolved "https://registry.yarnpkg.com/@sovryn/onboard-injected/-/onboard-injected-0.0.4.tgz#db34ec5d541f5ae98398cf7bba640cbbcd34f40a"
-  integrity sha512-7SmEtQlUzrroZlrT8G+UTSGhgbOiCkuPvgImGUV6676/H6Wtxv2vqFzNe/rBd3fuRfqIF+CwvfpTVzeaatlM5g==
+"@sovryn/onboard-injected@1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@sovryn/onboard-injected/-/onboard-injected-1.0.0.tgz#a7f1acacafe85e791126f2ada58d18b332708e97"
+  integrity sha512-q5DaqrB8IuXcu3kx8D3FBtOSs+kbDRqpjZbroYX/3iX4MrCqHuKSC+JtUwM+6k97PY4GhnqtUWgCvB+xvT4UDw==
   dependencies:
-    "@sovryn/onboard-common" "0.0.3"
+    "@sovryn/onboard-common" "1.0.0"
     ethers "^5.7.0"
     eventemitter3 "^4.0.7"
     joi "^17.6.0"
@@ -4326,10 +4326,10 @@
     lodash.uniqby "^4.7.0"
     rxjs "^7.5.6"
 
-"@sovryn/onboard-ledger@0.0.5":
-  version "0.0.5"
-  resolved "https://registry.yarnpkg.com/@sovryn/onboard-ledger/-/onboard-ledger-0.0.5.tgz#bd70a87677be53c0fd9f2bc7b57410a499d76e8d"
-  integrity sha512-U9fj4j1FTxj/rflXsFTNpUsuqKrwOrtCxNAcfWi3WR/oYAejS1Ee60NoPAMqewIxomIGBscbBuBd6/8sK8zV8w==
+"@sovryn/onboard-ledger@1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@sovryn/onboard-ledger/-/onboard-ledger-1.0.0.tgz#f3cc159113d004ee7d5a5717f4523b014154b168"
+  integrity sha512-2PvDkNsdP3VtZe8IBUFr5jBntL48AL4ZhrPxzvzGghQp+ex0Cj+wkRjo8cqQDswHHkiEDqUXiWuseRsesCgTrQ==
   dependencies:
     "@ethereumjs/tx" "^3.5.2"
     "@ledgerhq/hw-app-eth" "^6.29.4"
@@ -4337,45 +4337,45 @@
     "@ledgerhq/hw-transport-u2f" "^5.36.0-deprecated"
     "@ledgerhq/hw-transport-webusb" "^6.27.2"
     "@metamask/eth-sig-util" "^4.0.1"
-    "@sovryn/onboard-common" "0.0.3"
-    "@sovryn/onboard-hw-common" "0.0.4"
+    "@sovryn/onboard-common" "1.0.0"
+    "@sovryn/onboard-hw-common" "1.0.0"
     ethers "^5.7.0"
     eventemitter3 "^4.0.7"
     joi "^17.6.0"
     lodash.partition "^4.6.0"
     rxjs "7.5.6"
 
-"@sovryn/onboard-react@0.0.12":
-  version "0.0.12"
-  resolved "https://registry.yarnpkg.com/@sovryn/onboard-react/-/onboard-react-0.0.12.tgz#21c888f46d5726a77a5bdaa031e8542c8d3d0591"
-  integrity sha512-6e1AOzPcdJD+tNUCc2VUxGPgs79hVUa2B6IGIQzKZZhqiRPp/CjeaZH3U4JAPVgTDdIk4G1sMPbaHiu3j/OK9Q==
+"@sovryn/onboard-react@1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@sovryn/onboard-react/-/onboard-react-1.0.0.tgz#deb637f0d953bbe1fd3876b77b7713d88b68084c"
+  integrity sha512-WWBinTNqoxEEeKfwYZ+MkyD2MNgPkaZ0VA3PrcNhmpq2zaH2ZItZdP928/IexRobQnzqeVuziypi7/lUtY1Y3w==
   dependencies:
-    "@sovryn/onboard-common" "0.0.3"
-    "@sovryn/onboard-core" "0.0.5"
-    "@sovryn/onboard-hw-common" "0.0.4"
+    "@sovryn/onboard-common" "1.0.0"
+    "@sovryn/onboard-core" "1.0.0"
+    "@sovryn/onboard-hw-common" "1.0.0"
 
-"@sovryn/onboard-trezor@0.0.5":
-  version "0.0.5"
-  resolved "https://registry.yarnpkg.com/@sovryn/onboard-trezor/-/onboard-trezor-0.0.5.tgz#a89ad5f2edde4d135be82ca7018e2cfef12b566b"
-  integrity sha512-rRWPadINyyz8C1Bz4vzeSvieHp4IheWbqYfB5I9Xnp/pMJ53pDNEBCEKHQLnqh7GPC1qKPGVO6Qa7er4Zs+Iaw==
+"@sovryn/onboard-trezor@1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@sovryn/onboard-trezor/-/onboard-trezor-1.0.0.tgz#f7e2aa59b52b19800afae057f10b8507c1b92844"
+  integrity sha512-aUL1qX9yVCawgMvPPwbv8qbQEWmPap19uKkQymB+8ZKUvbnOqQ2t1AOdykhKrSIjc9k1RDmJXRF5LTpVfADm4g==
   dependencies:
     "@ethereumjs/tx" "3.5.2"
     "@metamask/eth-sig-util" "4.0.1"
-    "@sovryn/onboard-common" "0.0.3"
-    "@sovryn/onboard-hw-common" "0.0.4"
+    "@sovryn/onboard-common" "1.0.0"
+    "@sovryn/onboard-hw-common" "1.0.0"
     eth-crypto "2.3.0"
     ethers "5.7.0"
     hdkey "2.0.1"
     trezor-connect "8.2.11"
 
-"@sovryn/onboard-walletconnect@0.0.4":
-  version "0.0.4"
-  resolved "https://registry.yarnpkg.com/@sovryn/onboard-walletconnect/-/onboard-walletconnect-0.0.4.tgz#8e29b7307ed4226dea6605400d9edc327c0d8306"
-  integrity sha512-LQ1bcejQuHClJ6FPfUHwxM4anMNEN4tTfirq+Iz14eUWTp6/eVnX2t3VwQcRgoBtwV9Ix5gpybHUFQ56qYhE/w==
+"@sovryn/onboard-walletconnect@1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@sovryn/onboard-walletconnect/-/onboard-walletconnect-1.0.0.tgz#00b293cbcdab885cb4b736e672c063b5162a82ef"
+  integrity sha512-M79KlHivOexUy48chN0qODrbYiDWwVLoXs5G7hcM/hDxXkZ2OGHNwxlv7O12EgWoYI976RlH6iFAqclKO/o9bg==
   dependencies:
     "@ethersproject/providers" "5.7.1"
-    "@sovryn/onboard-common" "0.0.3"
-    "@sovryn/onboard-hw-common" "0.0.4"
+    "@sovryn/onboard-common" "1.0.0"
+    "@sovryn/onboard-hw-common" "1.0.0"
     "@walletconnect/client" "1.8.0"
     "@walletconnect/qrcode-modal" "1.8.0"
     rxjs "7.5.6"

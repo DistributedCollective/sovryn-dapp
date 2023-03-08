@@ -20,16 +20,13 @@ export const handleNotification = (
 });
 
 export const renderNotification = (txStatus: StatusType) => {
-  const {
-    transactionSuccessTitle: titleSuccess,
-    transactionFailedTitle: titleError,
-    transactionFailedSubtitle: subtitleError,
-  } = translations.transactionStep;
-
   const [title, subtitle] =
     txStatus === StatusType.success
-      ? [titleSuccess]
-      : [titleError, subtitleError];
+      ? [translations.transactionStep.transactionSuccessTitle]
+      : [
+          translations.common.tx.failedTitle,
+          translations.common.tx.failedSubtitle,
+        ];
 
   const type =
     txStatus === StatusType.success

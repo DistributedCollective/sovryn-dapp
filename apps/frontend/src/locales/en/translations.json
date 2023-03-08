@@ -44,7 +44,9 @@
             "signPermitTitle": "Permit {{symbol}}",
             "signPermitSubtitle": "Sign a permit to allow the contract to spend your {{symbol}}",
             "signApproveTitle": "Approve {{symbol}}",
-            "signApproveSubtitle": "Approve {{symbol}} to be spent by the contract"
+            "signApproveSubtitle": "Approve {{symbol}} to be spent by the contract",
+            "failedTitle": "Your transaction has failed.",
+            "failedSubtitle": "Please retry your transaction"
         },
         "loader": {
             "loading": "Loading Zero data",
@@ -100,7 +102,7 @@
         "unlimitedAmount": "Unlimited amount",
         "unlimitedAmountTooltip": "Limiting the amount of approved tokens as an additional security measure may result higher fees",
         "transactionFailedTitle": "Your transaction has failed.",
-        "transactionFailedSubtitle": "Please retry your transaction",
+        "transactionFailedSubtitle": "Please close or retry your transaction",
         "transactionSuccessTitle": "Transaction confirmed successfully.",
         "estimatedGasFee": "Estimated gas fee",
         "advancedSettings": "Advanced Settings",

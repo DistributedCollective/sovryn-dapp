@@ -1,7 +1,7 @@
+import { defer } from 'react-router-dom';
+
 import { Fees } from '@sovryn-zero/lib-base';
 import { EthersLiquity, ReadableEthersLiquity } from '@sovryn-zero/lib-ethers';
-
-import { defer } from 'react-router-dom';
 
 import { getZeroProvider } from './utils/zero-provider';
 

@@ -1,6 +1,6 @@
-import { addresses } from '@sovryn-zero/lib-ethers/dist/deployments/default/rsksovrynmainnet.json';
-
 import { constants } from 'ethers';
+
+import { addresses } from '@sovryn-zero/lib-ethers/dist/deployments/default/rsksovrynmainnet.json';
 
 export const rsk: Record<string, string> = {
   rbtc: constants.AddressZero,

@@ -1,6 +1,6 @@
-import { _getContracts } from '@sovryn-zero/lib-ethers/dist/src/EthersLiquityConnection';
-
 import { useEffect, useMemo } from 'react';
+
+import { _getContracts } from '@sovryn-zero/lib-ethers/dist/src/EthersLiquityConnection';
 
 import { getZeroProvider } from '../../../5_pages/ZeroPage/utils/zero-provider';
 import { useCall } from '../../../../hooks/useCall';

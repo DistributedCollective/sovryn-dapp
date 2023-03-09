@@ -1,14 +1,13 @@
-import { Decimal, Percent } from '@sovryn-zero/lib-base';
-import {
-  EthersLiquity,
-  ReadableEthersLiquityWithStore,
-} from '@sovryn-zero/lib-ethers';
-
 import React, { FC, useEffect, useMemo, useState } from 'react';
 
 import { t } from 'i18next';
 import { useLoaderData } from 'react-router-dom';
 
+import { Decimal, Percent } from '@sovryn-zero/lib-base';
+import {
+  EthersLiquity,
+  ReadableEthersLiquityWithStore,
+} from '@sovryn-zero/lib-ethers';
 import { SupportedTokens } from '@sovryn/contracts';
 import {
   applyDataAttr,

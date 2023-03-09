@@ -1,9 +1,4 @@
 import { BigNumber } from '@ethersproject/bignumber';
-import { Decimal } from '@sovryn-zero/lib-base';
-import {
-  EthersLiquity,
-  ReadableEthersLiquityWithStore,
-} from '@sovryn-zero/lib-ethers';
 
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 
@@ -12,6 +7,11 @@ import { t } from 'i18next';
 import { Helmet } from 'react-helmet-async';
 import { useLoaderData } from 'react-router-dom';
 
+import { Decimal } from '@sovryn-zero/lib-base';
+import {
+  EthersLiquity,
+  ReadableEthersLiquityWithStore,
+} from '@sovryn-zero/lib-ethers';
 import { SupportedTokens } from '@sovryn/contracts';
 import {
   AmountInput,

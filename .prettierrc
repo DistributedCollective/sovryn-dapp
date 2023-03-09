@@ -11,7 +11,7 @@
     "./wdyr",
     "^react$",
     "^(?!.*app/)\\w",
-    "^(@sovryn)(/.*|$)",
+    "^(@sovryn-?.*)(/.*|$)",
     "./config/chains",
     "^app/",
     "^[./|~/]"

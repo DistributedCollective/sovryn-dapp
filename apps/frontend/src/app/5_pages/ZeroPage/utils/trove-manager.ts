@@ -7,7 +7,6 @@ import {
   _normalizeTroveAdjustment,
   _normalizeTroveCreation,
 } from '@sovryn-zero/lib-base';
-
 import { SupportedTokens } from '@sovryn/contracts';
 
 import { getZeroProvider } from './zero-provider';

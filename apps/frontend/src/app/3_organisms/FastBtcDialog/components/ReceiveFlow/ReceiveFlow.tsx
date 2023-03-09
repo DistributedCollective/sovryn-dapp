@@ -23,6 +23,7 @@ type ReceiveFlowProps = {
 export const ReceiveFlow: React.FC<ReceiveFlowProps> = ({ onClose }) => {
   const [state, setState] = useState<DepositContextStateType>(defaultValue);
   const { step } = state;
+  const [signers, setSigners] = useState<string[]>([]);
 
   const [requiredSigners, setRequiredSigners] = useState<number | undefined>();
 
@@ -78,7 +79,8 @@ export const ReceiveFlow: React.FC<ReceiveFlowProps> = ({ onClose }) => {
         .then(response => {
           if (
             requiredSigners !== undefined &&
-            response.signatures.length >= requiredSigners
+            (response.signatures.length >= requiredSigners ||
+              (signers && signers?.length >= requiredSigners))
           ) {
             setState(prevState => ({
               ...prevState,
@@ -88,7 +90,14 @@ export const ReceiveFlow: React.FC<ReceiveFlowProps> = ({ onClose }) => {
               signatures: response.signatures as Signature[],
             }));
           } else {
-            handleAddressRequest(address);
+            if (response.signatures.length > 0) {
+              const signers = response.signatures.map(
+                item => (item as Signature).signer,
+              );
+
+              setSigners(prevState => [...prevState, ...signers]);
+            }
+            setTimeout(() => handleAddressRequest(address), 10000); // 10 second pause before re-fetching
           }
         })
         .catch(error => {
@@ -101,7 +110,7 @@ export const ReceiveFlow: React.FC<ReceiveFlowProps> = ({ onClose }) => {
           }));
         });
     },
-    [getDepositAddress, requiredSigners],
+    [getDepositAddress, requiredSigners, signers],
   );
 
   const value = useMemo(

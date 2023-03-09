@@ -19,7 +19,6 @@ const Zero = loadable(() => import('./app/5_pages/ZeroPage/ZeroPage'), {
   resolveComponent: components => components.ZeroPage,
 });
 
-const Debug = loadable(() => import('./app/5_pages/App/App'));
 const EarnPage = loadable(() => import('./app/5_pages/EarnPage/EarnPage'));
 const ConvertPage = loadable(
   () => import('./app/5_pages/ConvertPage/ConvertPage'),
@@ -65,10 +64,6 @@ export const router = createBrowserRouter([
       {
         path: '/history',
         element: <HistoryPage />,
-      },
-      {
-        path: '/debug-content',
-        element: <Debug />,
       },
       {
         path: '/rewards',

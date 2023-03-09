@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 
 import { t } from 'i18next';
 
-import { Heading, HealthBar, HeadingType, HelperButton } from '@sovryn/ui';
+import { Heading, HealthBar, HeadingType } from '@sovryn/ui';
 
 import { translations } from '../../../locales/i18n';
 
@@ -19,10 +19,6 @@ export const CollateralRatio: FC<CollateralRatioProps> = ({ value }) => {
           type={HeadingType.h3}
         >
           {t(translations.collateralRatio.title)}
-          <HelperButton
-            className="ml-1.5"
-            content={t(translations.collateralRatio.tooltip)}
-          />
         </Heading>
         <Heading
           className="text-gray-30 flex items-center"

@@ -23,7 +23,6 @@ import {
   SimpleTableRow,
   StatusItem,
   StatusType,
-  HelperButton,
 } from '@sovryn/ui';
 
 import { chains, defaultChainId } from '../../../../../config/chains';
@@ -225,15 +224,7 @@ export const TransactionStep: FC<TransactionStepProps> = ({
                 />
               )}
               <SimpleTableRow
-                label={
-                  <span className="flex items-center">
-                    {t(translations.transactionStep.estimatedGasFee)}
-                    <HelperButton
-                      className="ml-1.5"
-                      content={t(translations.transactionStep.estimatedGasFee)}
-                    />
-                  </span>
-                }
+                label={t(translations.transactionStep.estimatedGasFee)}
                 value={`${estimatedGasFee} ${Bitcoin}`}
                 valueClassName={classNames(
                   isLoading ? 'text-gray-30' : 'text-primary-10',

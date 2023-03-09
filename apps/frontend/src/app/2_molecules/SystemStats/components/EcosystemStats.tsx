@@ -12,13 +12,11 @@ import { useLoaderData } from 'react-router-dom';
 import { SupportedTokens } from '@sovryn/contracts';
 import {
   applyDataAttr,
-  Icon,
   Paragraph,
   ParagraphSize,
   ParagraphStyle,
   SimpleTable,
   SimpleTableRow,
-  Tooltip,
 } from '@sovryn/ui';
 
 import {
@@ -65,6 +63,7 @@ export const EcosystemStats: FC<EcosystemStatsProps> = ({
             value={fromWeiFixed(babelFishZUSDBalance)}
             suffix={Bitcoin}
             precision={BTC_RENDER_PRECISION}
+            showRoundingPrefix={false}
             dataAttribute="ecosystem-statistics-babel-fish-zusd-balance"
           />{' '}
           ($
@@ -92,6 +91,7 @@ export const EcosystemStats: FC<EcosystemStatsProps> = ({
           value={fromWei(babelFishDLLRBalance)}
           suffix={SupportedTokens.dllr}
           precision={TOKEN_RENDER_PRECISION}
+          showRoundingPrefix={false}
           dataAttribute="ecosystem-statistics-babel-fish-dllr-balance"
         />
       ) : (
@@ -112,6 +112,7 @@ export const EcosystemStats: FC<EcosystemStatsProps> = ({
           value={fromWei(myntZUSDBalance)}
           suffix={SupportedTokens.zusd}
           precision={TOKEN_RENDER_PRECISION}
+          showRoundingPrefix={false}
           dataAttribute="ecosystem-statistics-mynt-zusd-balance"
         />
       ) : (
@@ -132,6 +133,7 @@ export const EcosystemStats: FC<EcosystemStatsProps> = ({
           value={fromWei(myntDOCBalance)}
           suffix={SupportedTokens.doc}
           precision={TOKEN_RENDER_PRECISION}
+          showRoundingPrefix={false}
           dataAttribute="ecosystem-statistics-mynt-doc-balance"
         />
       ) : (
@@ -149,6 +151,7 @@ export const EcosystemStats: FC<EcosystemStatsProps> = ({
           value={fromWei(totalDLLRSupply)}
           suffix={SupportedTokens.dllr}
           precision={TOKEN_RENDER_PRECISION}
+          showRoundingPrefix={false}
           dataAttribute="ecosystem-statistics-total-dllr-supply"
         />
       ) : (
@@ -176,20 +179,7 @@ export const EcosystemStats: FC<EcosystemStatsProps> = ({
       >
         <SimpleTableRow
           className="mb-8"
-          label={
-            <div className="flex items-center">
-              {t(translations.stats.ecosystem.babelFishZUSDBalance)}
-              <Tooltip
-                className="ml-2"
-                content={t(translations.stats.ecosystem.babelFishZUSDBalance)}
-                dataAttribute="ecosystem-statistics-tooltip-rbtc-in-loc"
-              >
-                <div>
-                  <Icon size={12} icon="info" />
-                </div>
-              </Tooltip>
-            </div>
-          }
+          label={t(translations.stats.ecosystem.babelFishZUSDBalance)}
           value={renderBabelFishZUSDBalance}
         />
         <SimpleTableRow

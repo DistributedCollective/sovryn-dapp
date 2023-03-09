@@ -4,7 +4,7 @@ import classNames from 'classnames';
 import { t } from 'i18next';
 import CountUp from 'react-countup';
 
-import { Button, ButtonSize, ButtonStyle, HelperButton } from '@sovryn/ui';
+import { Button, ButtonSize, ButtonStyle } from '@sovryn/ui';
 
 import {
   TOKEN_RENDER_PRECISION,
@@ -82,12 +82,7 @@ export const LOCStatus: FC<LOCStatusProps> = ({
               }
             />
             <LOCStat
-              label={
-                <div className="flex items-center">
-                  {t('LOCStatus.collateralRatio')}
-                  <HelperButton className="ml-1.5" content="Collateral Ratio" />
-                </div>
-              }
+              label={t('LOCStatus.collateralRatio')}
               value={
                 <div className="flex items-center">
                   <CRatioIndicator className="mr-3" value={cRatio} />

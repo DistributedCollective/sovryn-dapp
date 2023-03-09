@@ -15,7 +15,6 @@ import {
   ErrorList,
   FormGroup,
   HealthBar,
-  HelperButton,
   Select,
   SimpleTable,
 } from '@sovryn/ui';
@@ -252,7 +251,8 @@ export const FormContent: FC<FormContentProps> = props => {
         <AmountRenderer
           value={value}
           suffix={USD}
-          precision={TOKEN_RENDER_PRECISION}
+          precision={0}
+          showRoundingPrefix={false}
         />
       ),
     [],
@@ -263,11 +263,7 @@ export const FormContent: FC<FormContentProps> = props => {
       value === 0 ? (
         t(translations.common.na)
       ) : (
-        <AmountRenderer
-          value={value}
-          suffix={USD}
-          precision={TOKEN_RENDER_PRECISION}
-        />
+        <AmountRenderer value={value} suffix={USD} precision={0} />
       ),
     [],
   );
@@ -326,7 +322,6 @@ export const FormContent: FC<FormContentProps> = props => {
             onChangeText={handleDebtAmountChange}
             maxAmount={props.maxDebtAmount}
             label={t(translations.common.amount)}
-            tooltip={t(translations.adjustCreditLine.fields.debt.tooltip)}
             className="w-full flex-grow-0 flex-shrink"
             invalid={!!props.debtError}
             placeholder="0"
@@ -368,7 +363,6 @@ export const FormContent: FC<FormContentProps> = props => {
           onChangeText={handleCollateralAmountChange}
           maxAmount={props.maxCollateralAmount}
           label={t(translations.common.amount)}
-          tooltip={t(translations.adjustCreditLine.fields.collateral.tooltip)}
           className="max-w-none"
           unit={Bitcoin}
           invalid={!!props.collateralError}
@@ -379,9 +373,6 @@ export const FormContent: FC<FormContentProps> = props => {
         <SimpleTable>
           <Row
             label={t(translations.adjustCreditLine.labels.originationFee)}
-            tooltip={t(
-              translations.adjustCreditLine.labels.originationFeeTooltip,
-            )}
             value={
               <DynamicValue
                 initialValue={0}
@@ -394,7 +385,6 @@ export const FormContent: FC<FormContentProps> = props => {
             <>
               <Row
                 label={t(translations.adjustCreditLine.labels.newDebt)}
-                tooltip={t(translations.adjustCreditLine.labels.newDebtTooltip)}
                 value={
                   <DynamicValue
                     initialValue={Number(props.existingDebt)}
@@ -405,9 +395,6 @@ export const FormContent: FC<FormContentProps> = props => {
               />
               <Row
                 label={t(translations.adjustCreditLine.labels.newCollateral)}
-                tooltip={t(
-                  translations.adjustCreditLine.labels.newCollateralTooltip,
-                )}
                 value={
                   <DynamicValue
                     initialValue={Number(props.existingCollateral)}
@@ -423,10 +410,6 @@ export const FormContent: FC<FormContentProps> = props => {
                 label={t(
                   translations.adjustCreditLine.labels.liquidationReserve,
                 )}
-                tooltip={t(
-                  translations.adjustCreditLine.labels
-                    .liquidationReserveTooltip,
-                )}
                 value={
                   <DynamicValue
                     initialValue={0}
@@ -437,9 +420,6 @@ export const FormContent: FC<FormContentProps> = props => {
               />
               <Row
                 label={t(translations.adjustCreditLine.labels.totalDebt)}
-                tooltip={t(
-                  translations.adjustCreditLine.labels.totalDebtTooltip,
-                )}
                 value={
                   <DynamicValue
                     initialValue={0}
@@ -456,11 +436,6 @@ export const FormContent: FC<FormContentProps> = props => {
       <div className="flex flex-row justify-between items-center mt-6 mb-3">
         <div className="flex flex-row justify-start items-center gap-2">
           <span>{t(translations.adjustCreditLine.labels.collateralRatio)}</span>
-          <HelperButton
-            content={t(
-              translations.adjustCreditLine.labels.collateralRatioTooltip,
-            )}
-          />
         </div>
         <div className="text-primary-10">
           <DynamicValue
@@ -484,9 +459,6 @@ export const FormContent: FC<FormContentProps> = props => {
         <SimpleTable>
           <Row
             label={t(translations.adjustCreditLine.labels.liquidationPrice)}
-            tooltip={t(
-              translations.adjustCreditLine.labels.liquidationPriceTooltip,
-            )}
             value={
               <DynamicValue
                 initialValue={props.initialLiquidationPrice}
@@ -499,10 +471,6 @@ export const FormContent: FC<FormContentProps> = props => {
             label={t(
               translations.adjustCreditLine.labels.recoveryLiquidationPrice,
             )}
-            tooltip={t(
-              translations.adjustCreditLine.labels
-                .recoveryLiquidationPriceTooltip,
-            )}
             value={
               <DynamicValue
                 initialValue={props.initialLiquidationPriceInRecoveryMode}
@@ -514,7 +482,6 @@ export const FormContent: FC<FormContentProps> = props => {
           />
           <Row
             label={t(translations.adjustCreditLine.labels.rbtcPrice)}
-            tooltip={t(translations.adjustCreditLine.labels.rbtcPriceTooltip)}
             value={
               <DynamicValue
                 initialValue={0}

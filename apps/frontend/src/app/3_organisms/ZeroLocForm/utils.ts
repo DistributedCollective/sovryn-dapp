@@ -47,7 +47,6 @@ export const checkForSystemErrors = (ratio: number, tcr: number) => {
   const userRatio = ratio / 100;
   const tcrPlus10 = tcr * 1.1;
 
-  const tcrPercent = formatValue(tcr * 100, 2);
   const tcrPlus10Percent = formatValue(tcrPlus10 * 100, 2);
   const ccrPercent = formatValue(CRITICAL_COLLATERAL_RATIO * 100, 2);
   const mcrPercent = formatValue(MINIMUM_COLLATERAL_RATIO * 100, 2);
@@ -68,11 +67,11 @@ export const checkForSystemErrors = (ratio: number, tcr: number) => {
 
     // Critical: If the system is in recovery mode and the values the user is typing
     //  are causing the collateral ratio to be below the TCR.
-    if (userRatio < tcr) {
+    if (userRatio < CRITICAL_COLLATERAL_RATIO) {
       list.push({
         level: ErrorLevel.Critical,
         message: t(translations.zeroPage.loc.errors.ratioErrorInRecovery, {
-          value: tcrPercent,
+          value: ccrPercent,
         }),
         weight: 2,
       });

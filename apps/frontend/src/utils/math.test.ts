@@ -1,7 +1,7 @@
 import { BigNumber } from 'ethers';
 import { commify, formatUnits, parseUnits } from 'ethers/lib/utils';
 
-import { fromWei, fromWeiFixed, toWei } from './math';
+import { fromWei, fromWeiFixed, isScientificNumber, toWei } from './math';
 
 const gasPrice = 0.065164;
 const gasLimit = 47254;
@@ -46,6 +46,10 @@ describe('utils/math.ts', () => {
 
     it('correctly converts a really small number', () => {
       expect(toWei('0.0000000000000004').toString()).toEqual('400');
+    });
+
+    it('correctly converts a really small number in scientific notation', () => {
+      expect(toWei(8.75e-16).toString()).toEqual('875');
     });
 
     it('fails for unexpected value', () => {
@@ -117,6 +121,20 @@ describe('utils/math.ts', () => {
       expect(() => fromWeiFixed('error')).toThrowError(
         'Invalid BigNumberish value: error',
       );
+    });
+  });
+
+  describe('isScientificNumber()', () => {
+    it('detects tiny scientific number', () => {
+      expect(isScientificNumber(8.75e-16)).toEqual(true);
+    });
+
+    it('detects huge scientific number', () => {
+      expect(isScientificNumber(8.75e22)).toEqual(true);
+    });
+
+    it('detects normal number', () => {
+      expect(isScientificNumber(12345)).toEqual(false);
     });
   });
 });

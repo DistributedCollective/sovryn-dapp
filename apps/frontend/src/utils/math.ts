@@ -16,7 +16,7 @@ export const toWei = (
   value: BigNumberish,
   unitName: BigNumberish = DEFAULT_UNIT,
 ): BigNumber => {
-  if (isBigNumberish(value)) {
+  if (isBigNumberish(value) || isScientificNumber(value)) {
     if (typeof unitName === 'string') {
       const index = unitNames.indexOf(unitName);
       if (index !== -1) {
@@ -24,7 +24,15 @@ export const toWei = (
       }
     }
 
-    return BigNumber.from(value).mul(BigNumber.from(10).pow(unitName));
+    if (isBigNumberish(value)) {
+      return BigNumber.from(value).mul(BigNumber.from(10).pow(unitName));
+    } else {
+      //can't just reuse same logic above, as values in scientific notation are unrecognised by BigNumber
+      //so need to convert to weis before passing
+      return BigNumber.from(
+        Number(value) * 10 ** BigNumber.from(unitName).toNumber(),
+      );
+    }
   }
 
   const numberIsANumber =
@@ -130,3 +138,6 @@ export const numeric = (value: number) => {
   }
   return value;
 };
+
+export const isScientificNumber = (value: number) =>
+  String(value).search(/e[-+]?/) > 0;

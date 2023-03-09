@@ -32,6 +32,7 @@ export const MaxButton: FC<MaxButtonProps> = ({
       value={value}
       precision={precision}
       suffix={token.toUpperCase()}
+      useTooltip={false}
     />
     )
   </button>

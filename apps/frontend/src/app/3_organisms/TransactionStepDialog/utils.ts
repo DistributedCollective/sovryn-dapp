@@ -8,26 +8,25 @@ import { translations } from '../../../locales/i18n';
 export const handleNotification = (
   type: NotificationType,
   title: string,
-  content?: string,
+  content = '',
+  className = 'text-xs',
 ) => ({
   type,
   id: nanoid(),
   title: t(title),
-  content: content ? t(content) : '',
+  content: t(content),
   dismissible: true,
+  className,
 });
 
 export const renderNotification = (txStatus: StatusType) => {
-  const {
-    transactionSuccessTitle: titleSuccess,
-    transactionFailedTitle: titleError,
-    transactionFailedSubtitle: subtitleError,
-  } = translations.transactionStep;
-
   const [title, subtitle] =
     txStatus === StatusType.success
-      ? [titleSuccess]
-      : [titleError, subtitleError];
+      ? [translations.transactionStep.transactionSuccessTitle]
+      : [
+          translations.common.tx.failedTitle,
+          translations.common.tx.failedSubtitle,
+        ];
 
   const type =
     txStatus === StatusType.success

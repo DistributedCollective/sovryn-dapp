@@ -32,6 +32,7 @@ type AmountRendererProps = {
   dataAttribute?: string;
   isAnimated?: boolean;
   useTooltip?: boolean;
+  showRoundingPrefix?: boolean;
 };
 
 export const AmountRenderer: FC<AmountRendererProps> = ({
@@ -43,6 +44,7 @@ export const AmountRenderer: FC<AmountRendererProps> = ({
   dataAttribute,
   isAnimated = false,
   useTooltip = true,
+  showRoundingPrefix = true,
 }) => {
   const { addNotification } = useNotificationContext();
 
@@ -78,9 +80,19 @@ export const AmountRenderer: FC<AmountRendererProps> = ({
     [formattedValue],
   );
 
-  const tooltipDisabled = useMemo(
-    () => getDecimalPartLength(value) <= precision || !useTooltip,
-    [precision, value, useTooltip],
+  const valueIsRounded = useMemo(
+    () => getDecimalPartLength(value) > precision,
+    [precision, value],
+  );
+
+  const shouldShowRoundingPrefix = useMemo(
+    () => valueIsRounded && showRoundingPrefix,
+    [valueIsRounded, showRoundingPrefix],
+  );
+
+  const shouldShowTooltip = useMemo(
+    () => useTooltip && valueIsRounded,
+    [useTooltip, valueIsRounded],
   );
 
   return (
@@ -97,9 +109,9 @@ export const AmountRenderer: FC<AmountRendererProps> = ({
         </span>
       }
       className={classNames({
-        'cursor-pointer': !tooltipDisabled,
+        'cursor-pointer': shouldShowTooltip,
       })}
-      disabled={tooltipDisabled}
+      disabled={!shouldShowTooltip}
       trigger={TooltipTrigger.click}
       dataAttribute={dataAttribute}
     >
@@ -112,14 +124,14 @@ export const AmountRenderer: FC<AmountRendererProps> = ({
             separator={thousand}
             decimals={formattedValueDecimals}
             decimal={decimal}
-            prefix={!tooltipDisabled ? '~ ' : ''}
+            prefix={shouldShowRoundingPrefix ? '~ ' : ''}
             suffix={` ${suffix.toUpperCase()}`}
           />
         </div>
       ) : (
         <span className={className}>
           {`${
-            !tooltipDisabled ? '~ ' : ''
+            shouldShowRoundingPrefix ? '~ ' : ''
           }${prefix}${localeFormattedValue} ${suffix.toUpperCase()}`}
         </span>
       )}

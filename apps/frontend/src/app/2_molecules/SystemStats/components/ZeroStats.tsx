@@ -1,24 +1,21 @@
-import { Decimal, Percent } from '@sovryn-zero/lib-base';
-import {
-  EthersLiquity,
-  ReadableEthersLiquityWithStore,
-} from '@sovryn-zero/lib-ethers';
-
 import React, { FC, useEffect, useMemo, useState } from 'react';
 
 import { t } from 'i18next';
 import { useLoaderData } from 'react-router-dom';
 
+import { Decimal, Percent } from '@sovryn-zero/lib-base';
+import {
+  EthersLiquity,
+  ReadableEthersLiquityWithStore,
+} from '@sovryn-zero/lib-ethers';
 import { SupportedTokens } from '@sovryn/contracts';
 import {
   applyDataAttr,
-  Icon,
   Paragraph,
   ParagraphSize,
   ParagraphStyle,
   SimpleTable,
   SimpleTableRow,
-  Tooltip,
 } from '@sovryn/ui';
 
 import {
@@ -63,6 +60,7 @@ export const ZeroStats: FC<ZeroStatsProps> = ({ className, dataAttribute }) => {
             value={rbtcInLoc}
             suffix={Bitcoin}
             precision={BTC_RENDER_PRECISION}
+            showRoundingPrefix={false}
             dataAttribute="zero-statistics-rbtc-in-loc"
           />{' '}
           (${formatCompactValue(Number(rbtcInLoc) * Number(zeroPrice), 2)})
@@ -80,6 +78,7 @@ export const ZeroStats: FC<ZeroStatsProps> = ({ className, dataAttribute }) => {
           value={zusdSupply.toString()}
           suffix={SupportedTokens.zusd}
           precision={TOKEN_RENDER_PRECISION}
+          showRoundingPrefix={false}
           dataAttribute="zero-statistics-zusd-supply"
         />
       ) : (
@@ -96,6 +95,7 @@ export const ZeroStats: FC<ZeroStatsProps> = ({ className, dataAttribute }) => {
             value={zusdInStabilityPool.toString()}
             suffix={SupportedTokens.zusd}
             precision={TOKEN_RENDER_PRECISION}
+            showRoundingPrefix={false}
             dataAttribute="zero-statistics-zusd-in-stability-pool"
           />{' '}
           (${zeroInStabilityPoolPercent})
@@ -158,20 +158,7 @@ export const ZeroStats: FC<ZeroStatsProps> = ({ className, dataAttribute }) => {
       >
         <SimpleTableRow
           className="mb-5"
-          label={
-            <div className="flex items-center">
-              {t(translations.stats.zero.rbtcInLoc)}
-              <Tooltip
-                className="ml-2"
-                content={t(translations.stats.zero.rbtcInLoc)}
-                dataAttribute="zero-statistics-tooltip-rbtc-in-loc"
-              >
-                <div>
-                  <Icon size={12} icon="info" />
-                </div>
-              </Tooltip>
-            </div>
-          }
+          label={t(translations.stats.zero.rbtcInLoc)}
           value={renderRBTCInLoc}
         />
         <SimpleTableRow

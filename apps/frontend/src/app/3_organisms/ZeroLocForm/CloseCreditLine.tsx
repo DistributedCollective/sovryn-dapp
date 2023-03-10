@@ -141,7 +141,6 @@ export const CloseCreditLine: FC<CloseCreditLineProps> = ({
       >
         <Row
           label={t(translations.closeCreditLine.fields.collateral.label)}
-          tooltip={t(translations.closeCreditLine.fields.collateral.tooltip)}
           value={collateralValueRenderer(Number(collateralValue))}
         />
       </SimpleTable>

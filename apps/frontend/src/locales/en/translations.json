@@ -195,9 +195,9 @@
             "rbtcInLoc": "BTC in Lines of Credit",
             "loc": "Lines of credit",
             "zusdSupply": "ZUSD supply",
-            "zusdInStabilityPool": "ZUSD in Stability Pool",
-            "totalCollateralRatio": "Total Collateral Ratio",
-            "protocolStatus": "Protocol Status (Normal/Recovery Mode)"
+            "zusdInStabilityPool": "ZUSD in stability pool",
+            "totalCollateralRatio": "Total collateral ratio",
+            "protocolStatus": "Protocol Status (normal/recovery mode)"
         },
         "ecosystem": {
             "title": "Ecosystem statistics",
@@ -243,7 +243,7 @@
             "originationFee": "Origination fee",
             "originationFeeTooltip": "Origination fee in percentage",
             "liquidationReserve": "Liquidation reserve",
-            "liquidationReserveTooltip": "Liquidation Reserve in ZUSD",
+            "liquidationReserveTooltip": "Liquidation reserve in ZUSD",
             "totalDebt": "Total debt",
             "totalDebtTooltip": "Total debt amount"
         }
@@ -265,9 +265,9 @@
     "chart": {
         "collateralRatio": "Collateral ratio",
         "myCollateralRatio": "My Collateral ratio",
-        "collateralAmount": "Collateral Amount",
-        "debtAmount": "Debt Amount",
-        "redemptionBuffer": "Redemption Buffer",
+        "collateralAmount": "Collateral amount",
+        "debtAmount": "Debt amount",
+        "redemptionBuffer": "Redemption buffer",
         "noData": "No data",
         "systemLinesCredit": "System lines of credit"
     },

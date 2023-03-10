@@ -4,7 +4,6 @@ import {
   ReadableEthersLiquity,
   ReadableEthersLiquityWithStore,
 } from '@sovryn-zero/lib-ethers';
-
 import { getProvider } from '@sovryn/ethers-provider';
 
 import { getRskChainId } from './chain';

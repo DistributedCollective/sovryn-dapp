@@ -2,8 +2,6 @@ import React, { FC, ReactNode, useMemo } from 'react';
 
 import { t } from 'i18next';
 
-import { HelperButton } from '@sovryn/ui';
-
 import { AmountRenderer } from '../../2_molecules/AmountRenderer/AmountRenderer';
 import { CRatioIndicator } from '../../2_molecules/LOCStatus/components/CRatioIndicator/CRatioIndicator';
 import { Bitcoin } from '../../../utils/constants';
@@ -56,12 +54,7 @@ export const CurrentTroveData: FC<CurrentTroveDataProps> = ({
           }
         />
         <Column
-          label={
-            <div className="flex items-center">
-              {t('LOCStatus.collateralRatio')}
-              <HelperButton className="ml-1.5" content="Collateral Ratio" />
-            </div>
-          }
+          label={t('LOCStatus.collateralRatio')}
           value={
             <div className="flex flex-row justify-start items-center">
               <CRatioIndicator className="mr-2" value={collateralRatio} />

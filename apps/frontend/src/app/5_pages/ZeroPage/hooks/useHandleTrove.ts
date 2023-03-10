@@ -1,10 +1,9 @@
-import { Decimalish, TroveAdjustmentParams } from '@sovryn-zero/lib-base';
-
 import { useCallback } from 'react';
 
 import { Contract } from 'ethers';
 import { t } from 'i18next';
 
+import { Decimalish, TroveAdjustmentParams } from '@sovryn-zero/lib-base';
 import { getContract } from '@sovryn/contracts';
 import { SupportedTokens } from '@sovryn/contracts';
 

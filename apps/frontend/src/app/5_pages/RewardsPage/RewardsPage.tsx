@@ -1,15 +1,14 @@
-import { Decimal } from '@sovryn-zero/lib-base';
-import {
-  EthersLiquity,
-  ReadableEthersLiquityWithStore,
-} from '@sovryn-zero/lib-ethers';
-
 import React, { FC, useEffect, useMemo, useState } from 'react';
 
 import { t } from 'i18next';
 import { Helmet } from 'react-helmet-async';
 import { useLoaderData } from 'react-router-dom';
 
+import { Decimal } from '@sovryn-zero/lib-base';
+import {
+  EthersLiquity,
+  ReadableEthersLiquityWithStore,
+} from '@sovryn-zero/lib-ethers';
 import {
   ErrorBadge,
   ErrorLevel,

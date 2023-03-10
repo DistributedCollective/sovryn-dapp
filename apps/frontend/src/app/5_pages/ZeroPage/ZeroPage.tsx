@@ -1,5 +1,3 @@
-import { Decimal, Fees, UserTrove } from '@sovryn-zero/lib-base';
-
 import React, {
   FC,
   useCallback,
@@ -13,6 +11,7 @@ import { t } from 'i18next';
 import { Helmet } from 'react-helmet-async';
 import { Await, useLoaderData } from 'react-router-dom';
 
+import { Decimal, Fees, UserTrove } from '@sovryn-zero/lib-base';
 import {
   Dialog,
   DialogBody,

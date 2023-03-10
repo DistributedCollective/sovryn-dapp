@@ -72,6 +72,10 @@ If "module not found" errors are encountered when running `yarn test` or from hu
   <img src="https://contrib.rocks/image?repo=DistributedCollective/sovryn-dapp" />
 </a>
 
+### Guidelines
+
+Find out all about our working practices on our wiki [here](https://github.com/DistributedCollective/sovryn-dapp/wiki).
+
 ### Support Questions
 
 Sovryn's GitHub issue trackers are not intended to provide help or support. Use one of the following channels instead:
@@ -103,7 +107,7 @@ Ask in the `#technical-discussion` channel of the Sovryn Discord server when uns
 
 ### Working With Sovryn UI LIbrary
 
-All UI components for general use are located in `@sovryn/ui` package. Each component must include a Storybook example and Jest tests that verify functionality is working as intended. Components should not include implementation specific details (e.g. contract addresses, complex state, hardcoded text), and instead expose these via component props. Figma designs for all components, and general design guidelines that we followed when constructing this library, can be found [here](https://www.figma.com/file/Ig2ZfR16Svs8In7yibukrO/Sovryn-UI-Library).
+All UI components for general use are located in `@sovryn/ui` package. Each component must include a Storybook example and Jest tests that verify functionality is working as intended. Components should not include implementation specific details (e.g. contract addresses, complex state, hardcoded text), and instead expose these via component props. Figma designs for all components, and general design guidelines that we followed when constructing this library, can be found in the links [here](https://github.com/DistributedCollective/sovryn-dapp/wiki/Design).
 
 ### Storybook
 

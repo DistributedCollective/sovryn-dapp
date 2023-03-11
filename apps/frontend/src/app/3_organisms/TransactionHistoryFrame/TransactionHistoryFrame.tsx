@@ -44,7 +44,6 @@ import {
   useGetTroveLazyQuery,
 } from '../../../utils/graphql/zero/generated';
 import { dateFormat } from '../../../utils/helpers';
-import { formatValue } from '../../../utils/math';
 import {
   TOKEN_RENDER_PRECISION,
   BTC_RENDER_PRECISION,
@@ -351,28 +350,27 @@ export const TransactionHistoryFrame: FC = () => {
   );
 
   const renderOriginationFee = useCallback(
-    (trove: TroveChange) => (
-      <>
-        {trove.borrowingFee ? (
-          <>
-            <AmountRenderer
-              value={trove.borrowingFee}
-              suffix={SupportedTokens.zusd}
-              precision={TOKEN_RENDER_PRECISION}
-              dataAttribute="transaction-history-borrowing-fee"
-            />{' '}
-            (
-            {formatValue(
-              (Number(trove.borrowingFee) / Number(trove.debtAfter)) * 100,
-              2,
-            )}
-            %)
-          </>
-        ) : (
-          '-'
-        )}
-      </>
-    ),
+    ({ borrowingFee, debtChange }: TroveChange) => {
+      if (!borrowingFee || Number(borrowingFee) === 0) {
+        return '-';
+      }
+
+      //getting percent with 2 digits after dot with rounding
+      const renderPercent =
+        Math.trunc((Number(borrowingFee) / Number(debtChange)) * 1e4) / 100;
+
+      return (
+        <>
+          <AmountRenderer
+            value={borrowingFee}
+            suffix={SupportedTokens.zusd}
+            precision={TOKEN_RENDER_PRECISION}
+            dataAttribute="transaction-history-borrowing-fee"
+          />{' '}
+          ({renderPercent}%)
+        </>
+      );
+    },
     [],
   );
 

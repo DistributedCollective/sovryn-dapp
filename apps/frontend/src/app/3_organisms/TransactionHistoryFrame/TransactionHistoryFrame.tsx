@@ -366,7 +366,7 @@ export const TransactionHistoryFrame: FC = () => {
             precision={TOKEN_RENDER_PRECISION}
             dataAttribute="transaction-history-borrowing-fee"
           />{' '}
-          ({renderPercent}%)
+          ({originationFeePercentage}%)
         </>
       );
     },

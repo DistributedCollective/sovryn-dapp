@@ -355,8 +355,7 @@ export const TransactionHistoryFrame: FC = () => {
         return '-';
       }
 
-      //getting percent with 2 digits after dot with rounding
-      const renderPercent =
+      const originationFeePercentage =
         Math.trunc((Number(borrowingFee) / Number(debtChange)) * 1e4) / 100;
 
       return (

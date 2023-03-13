@@ -19,6 +19,7 @@ import {
   formatValue,
   getDecimalPartLength,
   getLocaleSeparators,
+  isScientificNumber,
 } from '../../../utils/math';
 
 const { decimal, thousand } = getLocaleSeparators();
@@ -60,24 +61,29 @@ export const AmountRenderer: FC<AmountRendererProps> = ({
     });
   }, [addNotification, value]);
 
-  const formattedValue = useMemo(() => {
-    const numberValue = Number(value);
-    const decimals = getDecimalPartLength(numberValue);
+  const countUpValues = useMemo(() => {
+    let endValue = String(value);
 
-    if (decimals > precision) {
-      return Number(numberValue.toString().slice(0, -(decimals - precision))); // trimming the difference between the number of decimals we have and the precision we want, cannot use toFixed() as we need to round down
+    if (typeof value === 'number' && isScientificNumber(value)) {
+      endValue = value.toFixed(18);
     }
-    return numberValue;
+
+    const [whole = '', decimals = ''] = endValue.split('.');
+    const end = parseFloat(
+      (whole ?? 0) + '.' + (decimals ?? 0).slice(0, precision),
+    );
+
+    return {
+      end,
+      decimals: getDecimalPartLength(end),
+      thousandSeparator: thousand,
+      decimalSeparator: decimal,
+    };
   }, [precision, value]);
 
   const localeFormattedValue = useMemo(
-    () => formatValue(formattedValue, precision), // we need to format formattedValue to make sure we round down (formatValue function rounds up)
-    [formattedValue, precision],
-  );
-
-  const formattedValueDecimals = useMemo(
-    () => getDecimalPartLength(formattedValue),
-    [formattedValue],
+    () => formatValue(value, precision), // we need to format formattedValue to make sure we round down (formatValue function rounds up)
+    [value, precision],
   );
 
   const valueIsRounded = useMemo(
@@ -116,18 +122,16 @@ export const AmountRenderer: FC<AmountRendererProps> = ({
       dataAttribute={dataAttribute}
     >
       {isAnimated ? (
-        <div>
-          <CountUp
-            start={0}
-            end={formattedValue}
-            duration={0.7}
-            separator={thousand}
-            decimals={formattedValueDecimals}
-            decimal={decimal}
-            prefix={shouldShowRoundingPrefix ? '~ ' : ''}
-            suffix={` ${suffix.toUpperCase()}`}
-          />
-        </div>
+        <CountUp
+          start={0}
+          end={countUpValues.end}
+          decimals={countUpValues.decimals}
+          duration={0.7}
+          separator={countUpValues.thousandSeparator}
+          decimal={countUpValues.decimalSeparator}
+          prefix={shouldShowRoundingPrefix ? '~ ' : ''}
+          suffix={` ${suffix.toUpperCase()}`}
+        />
       ) : (
         <span className={className}>
           {`${

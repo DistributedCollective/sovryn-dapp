@@ -6,6 +6,7 @@ import React, {
   useState,
 } from 'react';
 
+import classNames from 'classnames';
 import { t } from 'i18next';
 import { reactLocalStorage } from 'reactjs-localstorage';
 
@@ -14,6 +15,7 @@ import {
   ButtonType,
   Checkbox,
   Dialog,
+  DialogHeader,
   Heading,
   HeadingType,
   Icon,
@@ -61,22 +63,10 @@ export const GettingStartedPopup: FC<GettingStartedPopupProps> = ({
         icon: IconNames.EARN_3,
       },
       {
-        name: t(translationBasePath.lend.title),
-        description: t(translationBasePath.lend.description),
-        href: sovrynWikiLinks.lend,
-        icon: IconNames.LEND,
-      },
-      {
         name: t(translationBasePath.trade.title),
         description: t(translationBasePath.trade.description),
         href: sovrynWikiLinks.trade,
         icon: IconNames.TRADING,
-      },
-      {
-        name: t(translationBasePath.bridge.title),
-        description: t(translationBasePath.bridge.description),
-        href: sovrynWikiLinks.bridge,
-        icon: IconNames.SWAP,
       },
     ],
     [],
@@ -103,6 +93,36 @@ export const GettingStartedPopup: FC<GettingStartedPopupProps> = ({
 
   return (
     <Dialog isOpen={isOpen}>
+      <DialogHeader
+        title={t(translations.zeroPage.gettingStartedPopup.dialogTitle)}
+      />
+      <div className={styles.dialog}>
+        <Heading className={styles.title} type={HeadingType.h1}>
+          {t(translations.zeroPage.gettingStartedPopup.title)}
+        </Heading>
+        <div className={classNames(styles.content, 'mb-0')}>
+          <div className={styles.itemWrapper}>
+            <div className={styles.image}>
+              <Icon size={50} icon={IconNames.MAIL} />
+            </div>
+            <div className={styles.texts}>
+              <Heading className={styles.name} type={HeadingType.h2}>
+                {t(translationBasePath.notification.title)}
+              </Heading>
+              <Heading className={styles.itemDescription} type={HeadingType.h3}>
+                {t(translationBasePath.notification.description)}
+              </Heading>
+              <Link
+                text={t(
+                  translations.zeroPage.gettingStartedPopup.buttons.learnMore,
+                )}
+                href={sovrynWikiLinks.notification}
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div className={styles.dialog}>
         <Heading className={styles.title} type={HeadingType.h1}>
           {t(translations.zeroPage.gettingStartedPopup.title)}

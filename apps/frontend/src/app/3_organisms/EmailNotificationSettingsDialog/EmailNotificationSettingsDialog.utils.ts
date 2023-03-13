@@ -9,7 +9,7 @@ export const isSubscribedToGroup = (
   subscriptions: Notification[],
 ) => {
   if (subscriptions.length === 0) {
-    return false;
+    return true;
   }
 
   const groupNotifications = subscriptions

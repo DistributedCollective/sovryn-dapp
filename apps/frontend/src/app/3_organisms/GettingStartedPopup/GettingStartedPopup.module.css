@@ -55,7 +55,7 @@
 }
 
 .image {
-  @apply bg-gray-70 min-w-[4.375rem] h-[4.375rem] rounded mr-4 text-sovryn-blue;
+  @apply bg-gray-70 min-w-[4.375rem] h-[4.375rem] rounded mr-4 text-sovryn-blue flex items-center justify-center;
 
   @screen md {
     @apply mr-[1.375rem];

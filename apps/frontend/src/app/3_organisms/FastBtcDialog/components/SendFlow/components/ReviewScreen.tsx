@@ -44,7 +44,7 @@ export const ReviewScreen: React.FC<ReviewScreenProps> = ({
   to,
 }) => {
   const { checkMaintenance, States } = useMaintenance();
-  const fastBtcLocked = checkMaintenance(States.FASTBTC);
+  const fastBtcLocked = checkMaintenance(States.FASTBTC_SEND);
 
   const items = useMemo(
     () => [

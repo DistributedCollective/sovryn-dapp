@@ -36,7 +36,7 @@ export const AmountForm: React.FC = () => {
   const { amount, limits, set } = useContext(WithdrawContext);
 
   const { checkMaintenance, States } = useMaintenance();
-  const fastBtcLocked = checkMaintenance(States.FASTBTC);
+  const fastBtcLocked = checkMaintenance(States.FASTBTC_SEND);
 
   const { weiBalance: maxAmountWei } = useMaxAssetBalance(SupportedTokens.rbtc);
 

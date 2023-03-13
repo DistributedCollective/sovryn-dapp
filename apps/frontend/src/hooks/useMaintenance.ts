@@ -21,7 +21,7 @@ enum States {
   STOP_BORROW = 'stopBorrow',
   ADD_LIQUIDITY = 'addLiquidity',
   REMOVE_LIQUIDITY = 'removeLiquidity',
-  TRANSACK = 'transack',
+  TRANSAK = 'transak',
 
   BRIDGE = 'bridge',
   ETH_BRIDGE = 'ethBridge',
@@ -60,7 +60,8 @@ enum States {
 
   // D2 states
   FULLD2 = 'fullD2',
-  FASTBTC = 'fastBTC', // shared between D1 and D2
+  FASTBTC_SEND = 'fastBTCSend', // shared between D1 and D2
+  FASTBTC_RECEIVE = 'fastBTCReceive', // shared between D1 and D2
   ZERO_CONVERT = 'zeroConvert',
   ZERO_OPEN_LOC = 'zeroOpenLOC',
   ZERO_ADJUST_LOC = 'zeroAdjustLOC',

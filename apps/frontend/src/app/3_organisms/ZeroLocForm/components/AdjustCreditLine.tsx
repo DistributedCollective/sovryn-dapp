@@ -126,8 +126,9 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
 
   const maxBorrowAmount = useMemo(() => {
     const collateral =
-      (collateralSize === 0 ? maxCollateralToDepositAmount : collateralSize) +
-      Number(existingCollateral);
+      collateralSize === 0
+        ? Number(existingCollateral)
+        : Number(existingCollateral) + collateralSize;
 
     const amount =
       (collateral * rbtcPrice) /
@@ -135,14 +136,13 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
 
     const originationFee = getOriginationFeeAmount(amount, borrowingRate);
 
-    return Math.max(amount - originationFee - Number(existingDebt), 0);
+    return Math.max(amount - Number(existingDebt) - originationFee, 0);
   }, [
     borrowingRate,
     collateralSize,
     existingCollateral,
     existingDebt,
     isRecoveryMode,
-    maxCollateralToDepositAmount,
     rbtcPrice,
   ]);
 

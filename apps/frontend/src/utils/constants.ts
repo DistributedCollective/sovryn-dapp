@@ -30,6 +30,8 @@ export const sovrynWikiLinks = {
   trade: 'https://wiki.sovryn.app/en/technical-documents/amm/sovryn-damm',
   bridge:
     'https://babelfish.gitbook.io/the-babelfish-gitbook/tutorials-and-guides/bridges',
+  notification:
+    'https://wiki.sovryn.com/en/playground-private/using-zero#set-notifications',
 };
 
 export const helpdeskLink = 'https://help.sovryn.app/';

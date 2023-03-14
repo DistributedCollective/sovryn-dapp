@@ -6,7 +6,6 @@ import { nanoid } from 'nanoid';
 
 import {
   Button,
-  ButtonStyle,
   Dialog,
   DialogBody,
   DialogHeader,
@@ -326,17 +325,10 @@ const EmailNotificationSettingsDialogComponent: React.FC<
 
         <div className="mt-4 flex justify-between">
           <Button
-            onClick={onCloseHandler}
-            text={t(translations.common.buttons.skip)}
-            style={ButtonStyle.secondary}
-            className="mr-4 w-[49%]"
-            dataAttribute="alert-signup-cancel"
-          />
-          <Button
             onClick={updateUser}
             text={t(translations.common.buttons.save)}
             disabled={isSubmitDisabled}
-            className="w-[49%]"
+            className="w-full"
             dataAttribute="alert-signup-save"
           />
         </div>

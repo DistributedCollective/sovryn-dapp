@@ -122,7 +122,9 @@
             "OpenCredit": "Open line of credit"
         },
         "gettingStartedPopup": {
+            "dialogTitle": "Next steps",
             "title": "Put your loan to work",
+            "notificationTitle": "Sign up for important alerts",
             "description": "Here are a few ideas for what you can do with your loan:",
             "content": {
                 "pool": {
@@ -140,6 +142,10 @@
                 "bridge": {
                     "title": "Bridge",
                     "description": "Convert your loan into popular stablecoins on BSC and Ethereum."
+                },
+                "notification": {
+                    "title": "Email notifications",
+                    "description": "Receive important alerts about the state of your line of credit and the Zero protocol"
                 }
             },
             "buttons": {
@@ -533,7 +539,7 @@
         }
     },
     "emailNotificationsDialog": {
-        "dialogTitle": "Notifications",
+        "dialogTitle": "Settings",
         "title": "Sign up to receive important notifications about the state of your line of credit and the Zero protocol",
         "emailInputLabel": "Email address",
         "emailInputPlaceholder": "Enter Email",

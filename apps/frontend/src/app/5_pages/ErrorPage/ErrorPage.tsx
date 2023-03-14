@@ -8,11 +8,13 @@ import { Footer, Header } from '../../3_organisms';
 import { translations } from '../../../locales/i18n';
 import { NotFoundPage } from '../NotFoundPage/NotFoundPage';
 
+type ErrorRouteProps = Error & {
+  statusText?: string;
+  status?: number;
+};
+
 export const ErrorPage: FC = () => {
-  const error = useRouteError() as Error & {
-    statusText?: string;
-    status?: number;
-  };
+  const error = useRouteError() as ErrorRouteProps;
 
   return error?.status === 404 ? (
     <NotFoundPage />

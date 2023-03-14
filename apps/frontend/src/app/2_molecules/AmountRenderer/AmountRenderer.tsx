@@ -103,7 +103,7 @@ export const AmountRenderer: FC<AmountRendererProps> = ({
     <Tooltip
       content={
         <span className="flex items-center">
-          {`${prefix} ${formatValue(value, 18)} ${suffix.toUpperCase()}`}
+          {`${prefix} ${value} ${suffix.toUpperCase()}`}
           <span
             className="ml-1 cursor-pointer hover:bg-gray-20 p-1 rounded text-gray-50"
             onClick={copyAddress}

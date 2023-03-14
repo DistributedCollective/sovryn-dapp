@@ -93,7 +93,7 @@ export const formatValue = (
     maximumFractionDigits: precision,
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     //@ts-ignore
-    roundingMode: roundUp ? 'ceil' : 'halfExpand', // This is an experimental feature with the default value of 'halfExpand', see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/NumberFormat/NumberFormat for more information
+    roundingMode: roundUp ? 'ceil' : 'trunc', // This is an experimental feature with the default value of 'trunc', see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/NumberFormat/NumberFormat for more information
   });
 
 export const formatCompactValue = (value: number, precision: number = 0) =>

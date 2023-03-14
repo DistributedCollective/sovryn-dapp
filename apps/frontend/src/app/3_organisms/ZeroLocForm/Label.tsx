@@ -38,13 +38,15 @@ export const Label: FC<CustomLabelProps> = ({
 
   return (
     <div className="w-full flex flex-row justify-between gap-4 items-center">
-      {hasTrove && (
+      {hasTrove ? (
         <Tabs
           items={tabs}
           index={index}
           onChange={onChangeIndex}
           type={TabType.secondary}
         />
+      ) : (
+        <>{tabs[0].label}</>
       )}
 
       <MaxButton

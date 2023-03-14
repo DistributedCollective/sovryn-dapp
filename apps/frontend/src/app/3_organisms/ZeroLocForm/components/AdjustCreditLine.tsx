@@ -11,7 +11,12 @@ import { useAmountInput } from '../../../../hooks/useAmountInput';
 import { useAssetBalance } from '../../../../hooks/useAssetBalance';
 import { useMaxAssetBalance } from '../../../../hooks/useMaxAssetBalance';
 import { translations } from '../../../../locales/i18n';
-import { formatValue, fromWei, toWei } from '../../../../utils/math';
+import {
+  formatValue,
+  fromWei,
+  isScientificNumber,
+  toWei,
+} from '../../../../utils/math';
 import {
   CRITICAL_COLLATERAL_RATIO,
   MINIMUM_COLLATERAL_RATIO,
@@ -155,10 +160,17 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
     [_debtTokenWeiBalance, existingDebt],
   );
 
-  const maxDebtAmount = useMemo(
-    () => (isIncreasingDebt ? maxBorrowAmount : maxRepayAmount),
-    [isIncreasingDebt, maxBorrowAmount, maxRepayAmount],
-  );
+  const maxDebtAmount = useMemo(() => {
+    const amount = isIncreasingDebt ? maxBorrowAmount : maxRepayAmount;
+
+    // temporary fix for small scientific numbers
+    // TODO: fix it properly on SOV-1988
+    if (isScientificNumber(amount)) {
+      return 0;
+    }
+
+    return amount;
+  }, [isIncreasingDebt, maxBorrowAmount, maxRepayAmount]);
 
   const originationFee = useMemo(() => {
     if (isIncreasingDebt) {

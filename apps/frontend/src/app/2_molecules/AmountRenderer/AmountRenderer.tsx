@@ -76,13 +76,11 @@ export const AmountRenderer: FC<AmountRendererProps> = ({
     return {
       end,
       decimals: getDecimalPartLength(end),
-      thousandSeparator: thousand,
-      decimalSeparator: decimal,
     };
   }, [precision, value]);
 
   const localeFormattedValue = useMemo(
-    () => formatValue(value, precision), // we need to format formattedValue to make sure we round down (formatValue function rounds up)
+    () => formatValue(value, precision),
     [value, precision],
   );
 
@@ -121,24 +119,26 @@ export const AmountRenderer: FC<AmountRendererProps> = ({
       trigger={TooltipTrigger.click}
       dataAttribute={dataAttribute}
     >
-      {isAnimated ? (
-        <CountUp
-          start={0}
-          end={countUpValues.end}
-          decimals={countUpValues.decimals}
-          duration={0.7}
-          separator={countUpValues.thousandSeparator}
-          decimal={countUpValues.decimalSeparator}
-          prefix={shouldShowRoundingPrefix ? '~ ' : ''}
-          suffix={` ${suffix.toUpperCase()}`}
-        />
-      ) : (
-        <span className={className}>
-          {`${
-            shouldShowRoundingPrefix ? '~ ' : ''
-          }${prefix}${localeFormattedValue} ${suffix.toUpperCase()}`}
-        </span>
-      )}
+      <span className={className}>
+        {isAnimated ? (
+          <CountUp
+            start={0}
+            end={countUpValues.end}
+            decimals={countUpValues.decimals}
+            duration={0.7}
+            separator={thousand}
+            decimal={decimal}
+            prefix={shouldShowRoundingPrefix ? '~ ' : ''}
+            suffix={` ${suffix.toUpperCase()}`}
+          />
+        ) : (
+          <>
+            {shouldShowRoundingPrefix ? '~ ' : ''}
+            {prefix}
+            {localeFormattedValue} {suffix.toUpperCase()}
+          </>
+        )}
+      </span>
     </Tooltip>
   );
 };

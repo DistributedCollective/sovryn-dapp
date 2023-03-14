@@ -26,7 +26,7 @@
         "tables": {
             "columnTitles": {
                 "timestamp": "Timestamp",
-                "transactionType": "Transaction Type",
+                "transactionType": "Transaction type",
                 "transactionID": "TXID"
             },
             "actions": {
@@ -115,8 +115,8 @@
         "transactionFailedSubtitle": "Please close or retry your transaction.",
         "transactionSuccessTitle": "Transaction confirmed successfully",
         "estimatedGasFee": "Estimated gas fee",
-        "advancedSettings": "Advanced Settings",
-        "gasSettings": "Gas Settings",
+        "advancedSettings": "Advanced settings",
+        "gasSettings": "Gas settings",
         "gasLimit": "Gas limit",
         "gasPrice": "Gas price",
         "resetValues": "Reset values"
@@ -139,7 +139,7 @@
             "content": {
                 "pool": {
                     "title": "Pool",
-                    "description": "Earn BTC by depositing into the Zero Stability Pool or Sovryn DLLR/RBTC Pool."
+                    "description": "Earn BTC by depositing into the Zero stability pool or Sovryn DLLR/RBTC Pool."
                 },
                 "lend": {
                     "title": "Lend",
@@ -162,8 +162,8 @@
                 "finish": "Finish",
                 "doNotShowAgain": "Don't show again",
                 "learnMore": "Learn more",
-                "learnMoreStabilityPool": "Learn more - Stability Pool",
-                "learnMoreAMMPool": "Learn more - AMM Pool"
+                "learnMoreStabilityPool": "Learn more - stability pool",
+                "learnMoreAMMPool": "Learn more - AMM pool"
             }
         },
         "loc": {
@@ -201,19 +201,19 @@
             "claimSurplus": "Claim surplus",
             "repay": "Repay {{asset}}",
             "borrow": "Borrow {{asset}}",
-            "addCollateral": "Add Collateral",
-            "withdrawCollateral": "Withdraw Collateral"
+            "addCollateral": "Add collateral",
+            "withdrawCollateral": "Withdraw collateral"
         }
     },
     "stats": {
         "zero": {
             "title": "Zero statistics",
-            "rbtcInLoc": "BTC in Lines of Credit",
+            "rbtcInLoc": "BTC in lines of credit",
             "loc": "Lines of credit",
             "zusdSupply": "ZUSD supply",
             "zusdInStabilityPool": "ZUSD in stability pool",
             "totalCollateralRatio": "Total collateral ratio",
-            "protocolStatus": "Protocol Status (normal/recovery mode)"
+            "protocolStatus": "Protocol status (normal/recovery mode)"
         },
         "ecosystem": {
             "title": "Ecosystem statistics",
@@ -280,7 +280,7 @@
     },
     "chart": {
         "collateralRatio": "Collateral ratio",
-        "myCollateralRatio": "My Collateral ratio",
+        "myCollateralRatio": "My collateral ratio",
         "collateralAmount": "Collateral amount",
         "debtAmount": "Debt amount",
         "redemptionBuffer": "Redemption buffer",
@@ -449,7 +449,7 @@
         "title": "My transaction history",
         "table": {
             "tabs": {
-                "lineOfCredit": "Line of Credit",
+                "lineOfCredit": "Line of credit",
                 "redemptions": "Redemptions",
                 "stability": "Stability pool",
                 "convert": "Conversion",
@@ -462,37 +462,37 @@
     },
     "transactionHistory": {
         "table": {
-            "collateralChange": "Collateral Change",
-            "newCollateralBalance": "New Collateral Balance",
-            "debtChange": "Debt Change",
-            "liquidationReserve": "Liquidation Reserve",
-            "newDebt": "New Debt",
-            "originationFee": "Origination Fee (ZUSD)"
+            "collateralChange": "Collateral change",
+            "newCollateralBalance": "New collateral balance",
+            "debtChange": "Debt change",
+            "liquidationReserve": "Liquidation reserve",
+            "newDebt": "New debt",
+            "originationFee": "Origination fee (ZUSD)"
         },
         "troveTypes": {
-            "open": "Open Line of Credit",
-            "adjust": "Adjust Line of Credit",
-            "close": "Close Line of Credit",
+            "open": "Open line of credit",
+            "adjust": "Adjust line of credit",
+            "close": "Close line of credit",
             "withdraw": "Withdraw surplus",
             "liquidation": "Liquidation",
-            "liquidationRecovery": "Liquidation (Recovery mode)",
+            "liquidationRecovery": "Liquidation (recovery mode)",
             "redemption": "Redemption",
-            "accrueRewards": "Accrue Rewards",
+            "accrueRewards": "Accrue rewards",
             "withdrawGainToLineOfCredit": "Withdraw gain to line of credit"
         },
         "filters": {
-            "increasedCollateral": "Increased Collateral",
-            "decreasedCollateral": "Decreased Collateral",
-            "increasedDebt": "Increased Debt",
-            "decreasedDebt": "Decreased Debt"
+            "increasedCollateral": "Increased collateral",
+            "decreasedCollateral": "Decreased collateral",
+            "increasedDebt": "Increased debt",
+            "decreasedDebt": "Decreased debt"
         }
     },
     "redemptionsHistory": {
         "table": {
-            "zusdRedeemed": "ZUSD Redeemed",
-            "rbtcReceived": "BTC Received",
-            "redemptionFee": "Redemption Fee (BTC)",
-            "networkFee": "Network Fee"
+            "zusdRedeemed": "ZUSD redeemed",
+            "rbtcReceived": "BTC received",
+            "redemptionFee": "Redemption fee (BTC)",
+            "networkFee": "Network fee"
         }
     },
     "conversionsHistory": {
@@ -504,15 +504,15 @@
     },
     "collateralSurplusHistory": {
         "table": {
-            "collateralChange": "Collateral Change",
+            "collateralChange": "Collateral change",
             "withdrawSurplus": "Withdraw surplus",
             "depositSurplus": "Deposit surplus"
         }
     },
     "stabilityPoolHistory": {
         "table": {
-            "balanceChange": "Balance Change",
-            "newBalance": "New Balance"
+            "balanceChange": "Balance change",
+            "newBalance": "New blance"
         },
         "stabilityPoolOperation": {
             "deposit": "Deposit",
@@ -534,12 +534,12 @@
         },
         "transactionType": {
             "deposit": {
-                "part1": "FastBTC deposit (Part 1)",
-                "part2": "FastBTC deposit (Part 2)"
+                "part1": "FastBTC deposit (part 1)",
+                "part2": "FastBTC deposit (part 2)"
             },
             "withdraw": {
-                "part1": "FastBTC withdrawal (Part 1)",
-                "part2": "FastBTC withdrawal (Part 2)"
+                "part1": "FastBTC withdrawal (part 1)",
+                "part2": "FastBTC withdrawal (part 2)"
             }
         }
     },
@@ -552,7 +552,7 @@
         "dialogTitle": "Settings",
         "title": "Sign up to receive important notifications about the state of your line of credit and the Zero protocol",
         "emailInputLabel": "Email address",
-        "emailInputPlaceholder": "Enter Email",
+        "emailInputPlaceholder": "Enter email",
         "alertGroups": {
             "marginCallsToggle": "Margin call alerts",
             "liquidationsToggle": "Liquidation alerts",

@@ -81,6 +81,8 @@ export type FormContentProps = {
   errors?: ErrorBadgeProps[];
 } & (OpenTroveProps | AdjustTroveProps);
 
+const ACTIVE_CLASSNAME = 'bg-gray-70 text-primary-20';
+
 // using props instead of destructuring to make use of the type
 export const FormContent: FC<FormContentProps> = props => {
   const { checkMaintenance, States } = useMaintenance();
@@ -91,12 +93,14 @@ export const FormContent: FC<FormContentProps> = props => {
   const debtTabs = useMemo(
     () => [
       {
-        value: AmountType.Add,
+        amountType: AmountType.Add,
         label: t(translations.adjustCreditLine.actions.borrow),
+        activeClassName: ACTIVE_CLASSNAME,
       },
       {
-        value: AmountType.Remove,
+        amountType: AmountType.Remove,
         label: t(translations.adjustCreditLine.actions.repay),
+        activeClassName: ACTIVE_CLASSNAME,
       },
     ],
     [],
@@ -105,16 +109,18 @@ export const FormContent: FC<FormContentProps> = props => {
   const collateralTabs = useMemo(
     () => [
       {
-        value: AmountType.Add,
+        amountType: AmountType.Add,
         label: t(
           props.hasTrove
             ? translations.adjustCreditLine.actions.addCollateral
             : translations.adjustCreditLine.actions.collateral,
         ),
+        activeClassName: 'bg-gray-70 text-primary-20',
       },
       {
-        value: AmountType.Remove,
+        amountType: AmountType.Remove,
         label: t(translations.adjustCreditLine.actions.withdrawCollateral),
+        activeClassName: 'bg-gray-70 text-primary-20',
       },
     ],
     [props.hasTrove],
@@ -305,7 +311,6 @@ export const FormContent: FC<FormContentProps> = props => {
             symbol={props.debtToken}
             maxAmount={props.maxDebtAmount}
             tabs={debtTabs}
-            activeTab={props.hasTrove ? props.debtType : AmountType.Add}
             onTabChange={handleDebtTypeChange}
             onMaxAmountClicked={handleMaxDebtAmountClick}
             hasTrove={props.hasTrove}
@@ -347,7 +352,6 @@ export const FormContent: FC<FormContentProps> = props => {
             symbol={Bitcoin}
             maxAmount={props.maxCollateralAmount}
             tabs={collateralTabs}
-            activeTab={props.hasTrove ? props.collateralType : AmountType.Add}
             onTabChange={handleCollateralTypeChange}
             onMaxAmountClicked={handleMaxCollateralAmountClick}
             hasTrove={props.hasTrove}

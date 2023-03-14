@@ -222,8 +222,29 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
       });
     }
 
+    if (isRecoveryMode) {
+      if (ratio < initialRatio) {
+        errors.push({
+          level: ErrorLevel.Critical,
+          message: t(translations.zeroPage.loc.errors.ratioDecreased, {
+            value: formatValue(initialRatio, 3),
+          }),
+          weight: 4,
+        });
+      }
+    }
+
     return errors;
-  }, [fieldsTouched, ratio, tcr, newDebt, isIncreasingDebt, debtToken]);
+  }, [
+    fieldsTouched,
+    ratio,
+    tcr,
+    newDebt,
+    isRecoveryMode,
+    isIncreasingDebt,
+    debtToken,
+    initialRatio,
+  ]);
 
   const debtError = useMemo(() => {
     if (!fieldsTouched) {

@@ -9,6 +9,7 @@ export const isSubscribedToGroup = (
   subscriptions: Notification[],
 ) => {
   if (subscriptions.length === 0) {
+    // default value for notification settings
     return true;
   }
 

@@ -38,6 +38,28 @@ type GettingStartedPopupProps = {
   onConfirm: () => void;
 };
 
+const data = [
+  {
+    name: t(translationBasePath.pool.title),
+    description: t(translationBasePath.pool.description),
+    href: [sovrynWikiLinks.stabilityPool, sovrynWikiLinks.ammPool],
+    learnMore: [
+      t(
+        translations.zeroPage.gettingStartedPopup.buttons
+          .learnMoreStabilityPool,
+      ),
+      t(translations.zeroPage.gettingStartedPopup.buttons.learnMoreAMMPool),
+    ],
+    icon: IconNames.EARN_3,
+  },
+  {
+    name: t(translationBasePath.trade.title),
+    description: t(translationBasePath.trade.description),
+    href: sovrynWikiLinks.trade,
+    icon: IconNames.TRADING,
+  },
+];
+
 export const GettingStartedPopup: FC<GettingStartedPopupProps> = ({
   isOpen,
   onConfirm,
@@ -47,34 +69,9 @@ export const GettingStartedPopup: FC<GettingStartedPopupProps> = ({
   const [checked, setChecked] = useState(false);
   const pageOffset = useMemo(() => page + PAGE_SIZE, [page]);
 
-  const data = useMemo(
-    () => [
-      {
-        name: t(translationBasePath.pool.title),
-        description: t(translationBasePath.pool.description),
-        href: [sovrynWikiLinks.stabilityPool, sovrynWikiLinks.ammPool],
-        learnMore: [
-          t(
-            translations.zeroPage.gettingStartedPopup.buttons
-              .learnMoreStabilityPool,
-          ),
-          t(translations.zeroPage.gettingStartedPopup.buttons.learnMoreAMMPool),
-        ],
-        icon: IconNames.EARN_3,
-      },
-      {
-        name: t(translationBasePath.trade.title),
-        description: t(translationBasePath.trade.description),
-        href: sovrynWikiLinks.trade,
-        icon: IconNames.TRADING,
-      },
-    ],
-    [],
-  );
-
   const items = useMemo(
     () => (isMobile ? data.slice(page, pageOffset) : data),
-    [isMobile, data, page, pageOffset],
+    [isMobile, page, pageOffset],
   );
 
   const onClick = useCallback(() => {
@@ -98,7 +95,7 @@ export const GettingStartedPopup: FC<GettingStartedPopupProps> = ({
       />
       <div className={styles.dialog}>
         <Heading className={styles.title} type={HeadingType.h1}>
-          {t(translations.zeroPage.gettingStartedPopup.title)}
+          {t(translations.zeroPage.gettingStartedPopup.notificationTitle)}
         </Heading>
         <div className={classNames(styles.content, 'mb-0')}>
           <div className={styles.itemWrapper}>

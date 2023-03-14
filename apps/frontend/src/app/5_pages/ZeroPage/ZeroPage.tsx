@@ -219,7 +219,7 @@ export const ZeroPage: FC = () => {
                 </Dialog>
 
                 <GettingStartedPopup
-                  isOpen={openStartedPopup && !isTxOpen}
+                  isOpen={!openStartedPopup && !isTxOpen}
                   onConfirm={toggleStartedPopup}
                 />
 

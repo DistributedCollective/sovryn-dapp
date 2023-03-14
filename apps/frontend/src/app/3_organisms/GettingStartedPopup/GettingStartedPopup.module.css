@@ -18,7 +18,7 @@
   @apply flex-col py-5 px-3 rounded bg-gray-80 mb-5;
 
   @screen md {
-    @apply mb-[4.5rem] py-7 px-5;
+    @apply mb-8 py-7 px-5;
   }
 }
 
@@ -63,7 +63,7 @@
 }
 
 .pagination {
-  @apply mb-10;
+  @apply mb-10 hidden;
 }
 
 .actions {

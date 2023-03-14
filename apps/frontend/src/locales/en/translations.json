@@ -124,6 +124,7 @@
         "gettingStartedPopup": {
             "dialogTitle": "Next steps",
             "title": "Put your loan to work",
+            "notificationTitle": "Sign up for important alerts",
             "description": "Here are a few ideas for what you can do with your loan:",
             "content": {
                 "pool": {

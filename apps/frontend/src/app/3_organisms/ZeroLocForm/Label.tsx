@@ -31,7 +31,7 @@ export const Label: FC<CustomLabelProps> = ({
   const onChangeIndex = useCallback(
     (index: number) => {
       setIndex(index);
-      onTabChange(tabs[index].amountType);
+      onTabChange(tabs[index]?.amountType);
     },
     [onTabChange, tabs],
   );

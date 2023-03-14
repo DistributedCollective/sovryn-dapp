@@ -115,12 +115,12 @@ export const FormContent: FC<FormContentProps> = props => {
             ? translations.adjustCreditLine.actions.addCollateral
             : translations.adjustCreditLine.actions.collateral,
         ),
-        activeClassName: 'bg-gray-70 text-primary-20',
+        activeClassName: ACTIVE_CLASSNAME,
       },
       {
         amountType: AmountType.Remove,
         label: t(translations.adjustCreditLine.actions.withdrawCollateral),
-        activeClassName: 'bg-gray-70 text-primary-20',
+        activeClassName: ACTIVE_CLASSNAME,
       },
     ],
     [props.hasTrove],

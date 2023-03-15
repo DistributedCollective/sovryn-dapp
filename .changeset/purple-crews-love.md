@@ -2,4 +2,4 @@
 "frontend": patch
 ---
 
-SOV-2032: remove Accrue Rewards event
+SOV-2032: rename Accrue Rewards event

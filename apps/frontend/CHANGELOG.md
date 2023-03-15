@@ -1,5 +1,27 @@
 # frontend
 
+## 0.1.14
+
+### Patch Changes
+
+- 40abda0: SOV-1910: code cleanup
+- e1a18c8: SOV-1910: use release SDK package version, fix typos & general cleanup
+- 4609424: SOV-1807: Update how "max borrow amount" on Adjust modal is calculated
+- e45538c: SOV-1763: Origination fee calculation/display in history table
+- 81b8bf7: SOV-1820: fix toWei crashing when values in scientific notation passed
+- 731634d: SOV-1581: LOC Dialog is using custom Secondary Tabs implementation
+- 9489a88: SOV-1987 handle scientific numbers on AmountRenderer
+- aed6538: SOV-1481: notification-tx-update
+- 9ea732f: SOV-2011: add 404 page
+- 018fd13: SOV-1762: update getting started dialog
+- b38ec97: SOV-1985: added useTooltip prop in AmountRenderer comp
+- 6742ea5: SOV-1915: fix error message for LOC
+- 70a16a4: SOV-1996: Ensure tooltips display full value
+- Updated dependencies [e1a18c8]
+- Updated dependencies [018fd13]
+  - @sovryn/contracts@1.0.1
+  - @sovryn/ui@1.0.1
+
 ## 0.1.13
 
 ### Patch Changes

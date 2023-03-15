@@ -1,5 +1,11 @@
 # @sovryn/contracts
 
+## 1.0.1
+
+### Patch Changes
+
+- e1a18c8: SOV-1910: use release SDK package version, fix typos & general cleanup
+
 ## 1.0.0
 
 ### Major Changes

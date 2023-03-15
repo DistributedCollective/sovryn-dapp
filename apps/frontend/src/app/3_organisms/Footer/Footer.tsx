@@ -48,6 +48,11 @@ export const Footer: FC<FooterProps> = ({ showDashboardLink }) => {
         name: t(translations.footer.alpha),
       },
       {
+        id: 'website',
+        href: sovrynLinks.website,
+        name: t(translations.footer.website),
+      },
+      {
         id: 'blog',
         href: sovrynLinks.blog,
         name: t(translations.footer.blog),

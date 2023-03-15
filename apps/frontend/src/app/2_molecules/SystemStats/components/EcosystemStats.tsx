@@ -78,27 +78,6 @@ export const EcosystemStats: FC<EcosystemStatsProps> = ({
     [zeroPrice, babelFishZUSDBalance],
   );
 
-  const { value: babelFishDLLRBalance } = useGetAssetBalance(
-    SupportedTokens.dllr,
-    TokenType.babelfish,
-  );
-
-  const renderBabelFishDLLRBalance = useMemo(
-    () =>
-      babelFishDLLRBalance ? (
-        <AmountRenderer
-          value={fromWei(babelFishDLLRBalance)}
-          suffix={SupportedTokens.dllr}
-          precision={TOKEN_RENDER_PRECISION}
-          showRoundingPrefix={false}
-          dataAttribute="ecosystem-statistics-babel-fish-dllr-balance"
-        />
-      ) : (
-        0
-      ),
-    [babelFishDLLRBalance],
-  );
-
   const { value: myntZUSDBalance } = useGetAssetBalance(
     SupportedTokens.zusd,
     TokenType.mynt,
@@ -180,11 +159,6 @@ export const EcosystemStats: FC<EcosystemStatsProps> = ({
           className="mb-8"
           label={t(translations.stats.ecosystem.babelFishZUSDBalance)}
           value={renderBabelFishZUSDBalance}
-        />
-        <SimpleTableRow
-          className="mb-8"
-          label={t(translations.stats.ecosystem.babelFishDLLRBalance)}
-          value={renderBabelFishDLLRBalance}
         />
         <SimpleTableRow
           className="mb-8"

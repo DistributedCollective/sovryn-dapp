@@ -86,10 +86,10 @@ export const TransactionHistoryFrame: FC = () => {
           translations.transactionHistory.troveTypes.liquidationRecovery,
         );
       case TroveOperation.AccrueRewards:
-        return t(translations.transactionHistory.troveTypes.accrueRewards);
+        return t(translations.transactionHistory.troveTypes.redistribution);
       case TroveOperation.TransferGainToLineOfCredit:
         return t(
-          translations.transactionHistory.troveTypes.withdrawGainToLineOfCredit,
+          translations.transactionHistory.troveTypes.transferGainToLineOfCredit,
         );
       default:
         return '';
@@ -440,14 +440,14 @@ export const TransactionHistoryFrame: FC = () => {
         ),
       },
       {
-        id: 'newDebt',
-        title: t(translations.transactionHistory.table.newDebt),
-        cellRenderer: (item: TroveChange) => renderNewDebt(item),
-      },
-      {
         id: 'originationFee',
         title: t(translations.transactionHistory.table.originationFee),
         cellRenderer: (item: TroveChange) => renderOriginationFee(item),
+      },
+      {
+        id: 'newDebt',
+        title: t(translations.transactionHistory.table.newDebt),
+        cellRenderer: (item: TroveChange) => renderNewDebt(item),
       },
       {
         id: 'transactionID',

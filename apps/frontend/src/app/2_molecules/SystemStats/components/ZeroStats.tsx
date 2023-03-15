@@ -98,7 +98,7 @@ export const ZeroStats: FC<ZeroStatsProps> = ({ className, dataAttribute }) => {
             showRoundingPrefix={false}
             dataAttribute="zero-statistics-zusd-in-stability-pool"
           />{' '}
-          (${zeroInStabilityPoolPercent})
+          ({zeroInStabilityPoolPercent})
         </>
       ) : (
         0
@@ -158,13 +158,13 @@ export const ZeroStats: FC<ZeroStatsProps> = ({ className, dataAttribute }) => {
       >
         <SimpleTableRow
           className="mb-5"
-          label={t(translations.stats.zero.rbtcInLoc)}
-          value={renderRBTCInLoc}
+          label={t(translations.stats.zero.loc)}
+          value={lineOfCredit}
         />
         <SimpleTableRow
           className="mb-5"
-          label={t(translations.stats.zero.loc)}
-          value={lineOfCredit}
+          label={t(translations.stats.zero.rbtcInLoc)}
+          value={renderRBTCInLoc}
         />
         <SimpleTableRow
           className="mb-5"

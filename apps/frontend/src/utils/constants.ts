@@ -9,8 +9,8 @@ export const sovrynLinks = {
   github: 'https://github.com/DistributedCollective',
   github_dapp: 'https://github.com/DistributedCollective/sovryn-dapp',
   blog: 'https://sovryn.com/all-things-sovryn',
-  security: 'https://wiki.sovryn.app/en/technical-documents#security',
-  fees: 'https://wiki.sovryn.app/en/sovryn-dapp/fees#zero-borrowing',
+  security: 'https://wiki.sovryn.com/technical-documents#security',
+  fees: 'https://wiki.sovryn.com/sovryn-dapp/fees#zero-borrowing',
 };
 
 export const sovrynAlphaLinks = {
@@ -19,19 +19,19 @@ export const sovrynAlphaLinks = {
 };
 export const sovrynAlphaStagingLink = 'https://alpha-staging.sovryn.app';
 
-export const sovrynStagingLink = 'https://staging.sovryn.app';
+export const sovrynStagingLink = 'https://staging.sovryn.com';
 
 export const sovrynWikiLinks = {
-  root: 'https://wiki.sovryn.app/en',
+  root: 'https://wiki.sovryn.com',
   stabilityPool:
-    'https://wiki.sovryn.app/en/sovryn-dapp/subprotocols/zero-zusd#stability-pool',
-  ammPool: 'https://wiki.sovryn.app/en/sovryn-dapp/market-making',
-  lend: 'https://wiki.sovryn.app/en/sovryn-dapp/lending',
-  trade: 'https://wiki.sovryn.app/en/technical-documents/amm/sovryn-damm',
+    'https://wiki.sovryn.com/sovryn-dapp/using-zero#earn-in-the-stability-pool',
+  ammPool: 'https://wiki.sovryn.com/sovryn-dapp/market-making',
+  lend: 'https://wiki.sovryn.com/sovryn-dapp/lending',
+  trade: 'https://wiki.sovryn.com/sovryn-dapp/trading',
   bridge:
     'https://babelfish.gitbook.io/the-babelfish-gitbook/tutorials-and-guides/bridges',
   notification:
-    'https://wiki.sovryn.com/en/playground-private/using-zero#set-notifications',
+    'https://wiki.sovryn.com/sovryn-dapp/using-zero#set-notifications',
 };
 
 export const helpdeskLink = 'https://help.sovryn.app/';

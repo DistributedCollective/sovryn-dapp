@@ -8,6 +8,7 @@ export const sovrynLinks = {
   twitter: ' https://twitter.com/SovrynBTC',
   github: 'https://github.com/DistributedCollective',
   github_dapp: 'https://github.com/DistributedCollective/sovryn-dapp',
+  website: 'https://sovryn.com',
   blog: 'https://sovryn.com/all-things-sovryn',
   security: 'https://wiki.sovryn.com/technical-documents#security',
   fees: 'https://wiki.sovryn.com/sovryn-dapp/fees#zero-borrowing',

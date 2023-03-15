@@ -518,8 +518,7 @@
         "stabilityPoolOperation": {
             "deposit": "Deposit",
             "withdrawal": "Withdrawal",
-            "withdrawCollateralGain": "Withdraw collateral gain",
-            "withdrawGainToLineOfCredit": "Withdraw gain to line of credit"
+            "settlement": "Settlement"
         },
         "filters": {
             "depositTokens": "Deposit",
@@ -547,6 +546,10 @@
     "rewardHistory": {
         "table": {
             "rewardChange": "Reward change"
+        },
+        "stabilityPoolOperation": {
+            "claimCollateralGain": "Claim gain",
+            "transferGainToLineOfCredit": "Transfer gain to line of credit"
         }
     },
     "emailNotificationsDialog": {

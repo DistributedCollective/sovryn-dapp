@@ -57,7 +57,9 @@ export const TransactionHistoryFrame: FC = () => {
   const { addNotification } = useNotificationContext();
   const [page, setPage] = useState(0);
   const chain = chains.find(chain => chain.id === defaultChainId);
-  const [filters, setFilters] = useState<InputMaybe<TroveChange_Filter>>({});
+  const [filters, setFilters] = useState<InputMaybe<TroveChange_Filter>>({
+    troveOperation_not: TroveOperation.AccrueRewards,
+  });
 
   const { value: block } = useBlockNumber();
 
@@ -85,11 +87,9 @@ export const TransactionHistoryFrame: FC = () => {
         return t(
           translations.transactionHistory.troveTypes.liquidationRecovery,
         );
-      case TroveOperation.AccrueRewards:
-        return t(translations.transactionHistory.troveTypes.accrueRewards);
       case TroveOperation.TransferGainToLineOfCredit:
         return t(
-          translations.transactionHistory.troveTypes.withdrawGainToLineOfCredit,
+          translations.transactionHistory.troveTypes.transferGainToLineOfCredit,
         );
       default:
         return '';
@@ -97,15 +97,17 @@ export const TransactionHistoryFrame: FC = () => {
   }, []);
 
   const transactionTypeFilters = useMemo(() => {
-    return Object.keys(TroveOperation).map(key => ({
-      label: getTroveType(TroveOperation[key]),
-      filter: 'troveOperation_in',
-      value: TroveOperation[key],
-      checked:
-        filters && filters['troveOperation_in']?.includes(TroveOperation[key])
-          ? true
-          : false,
-    }));
+    return Object.keys(TroveOperation)
+      .filter(key => TroveOperation[key] !== TroveOperation.AccrueRewards)
+      .map(key => ({
+        label: getTroveType(TroveOperation[key]),
+        filter: 'troveOperation_in',
+        value: TroveOperation[key],
+        checked:
+          filters && filters['troveOperation_in']?.includes(TroveOperation[key])
+            ? true
+            : false,
+      }));
   }, [filters, getTroveType]);
 
   const collateralChangeFilters = useMemo(
@@ -543,7 +545,7 @@ export const TransactionHistoryFrame: FC = () => {
 
   return (
     <>
-      <div className="flex flex-row items-center gap-4 mb-7 hidden lg:inline-flex">
+      <div className="flex-row items-center gap-4 mb-7 hidden lg:inline-flex">
         <ExportCSV
           getData={exportData}
           filename="transactions"

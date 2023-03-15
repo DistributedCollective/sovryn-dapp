@@ -477,8 +477,7 @@
             "liquidation": "Liquidation",
             "liquidationRecovery": "Liquidation (Recovery mode)",
             "redemption": "Redemption",
-            "accrueRewards": "Accrue Rewards",
-            "withdrawGainToLineOfCredit": "Withdraw gain to line of credit"
+            "transferGainToLineOfCredit": "Transfer gain to line of credit"
         },
         "filters": {
             "increasedCollateral": "Increased Collateral",

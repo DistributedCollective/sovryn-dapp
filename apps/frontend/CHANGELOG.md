@@ -1,5 +1,11 @@
 # frontend
 
+## 1.0.2
+
+### Patch Changes
+
+- 5ce5f53: fix: incorrect balance retrieval method
+
 ## 1.0.1
 
 ### Patch Changes

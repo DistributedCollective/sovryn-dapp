@@ -1,6 +1,5 @@
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 
-import { signERC2612Permit } from 'eth-permit';
 import { ethers } from 'ethers';
 import { parseUnits } from 'ethers/lib/utils';
 import { t } from 'i18next';
@@ -10,6 +9,7 @@ import { Button, Icon, IconNames, StatusType } from '@sovryn/ui';
 import { translations } from '../../../../../locales/i18n';
 import { APPROVAL_FUNCTION } from '../../../../../utils/constants';
 import { sleep } from '../../../../../utils/helpers';
+import { signERC2612Permit } from '../../../../../utils/permit/permit';
 import {
   Transaction,
   TransactionReceiptStatus,

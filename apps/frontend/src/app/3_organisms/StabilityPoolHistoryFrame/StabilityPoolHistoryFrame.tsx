@@ -41,6 +41,7 @@ import {
   useGetStabilityPoolLazyQuery,
 } from '../../../utils/graphql/zero/generated';
 import { dateFormat } from '../../../utils/helpers';
+import { renderSign } from '../TransactionHistoryFrame/utils';
 import { TOKEN_RENDER_PRECISION } from '../ZeroLocForm/constants';
 import { useGetStabilityPoolHistory } from './hooks/useGetStabilityPoolHistory';
 
@@ -152,6 +153,7 @@ export const StabilityPoolHistoryFrame: FC = () => {
             suffix={SupportedTokens.zusd}
             precision={TOKEN_RENDER_PRECISION}
             dataAttribute="stability-pool-history-balance-change"
+            prefix={renderSign(balance)}
           />
         ) : (
           '-'

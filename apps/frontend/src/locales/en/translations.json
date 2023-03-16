@@ -513,7 +513,7 @@
     "stabilityPoolHistory": {
         "table": {
             "balanceChange": "Balance change",
-            "newBalance": "New blance"
+            "newBalance": "New balance"
         },
         "stabilityPoolOperation": {
             "deposit": "Deposit",

@@ -49,6 +49,7 @@ import {
   BTC_RENDER_PRECISION,
 } from '../ZeroLocForm/constants';
 import { useGetTroves } from './hooks/useGetTroves';
+import { renderSign } from './utils';
 
 const pageSize = DEFAULT_HISTORY_FRAME_PAGE_SIZE;
 
@@ -247,19 +248,6 @@ export const TransactionHistoryFrame: FC = () => {
     [filters],
   );
 
-  const renderSign = useCallback(
-    (troveOperation: TroveOperation, value: number) => {
-      const operations = [TroveOperation.OpenTrove, TroveOperation.AdjustTrove];
-
-      if (operations.some(item => item.includes(troveOperation))) {
-        return value > 0 ? '+' : '';
-      }
-
-      return null;
-    },
-    [],
-  );
-
   const renderDebtChange = useCallback(
     (trove: TroveChange) => (
       <>
@@ -269,16 +257,14 @@ export const TransactionHistoryFrame: FC = () => {
             suffix={SupportedTokens.zusd}
             precision={TOKEN_RENDER_PRECISION}
             dataAttribute="transaction-history-debt-change"
-            prefix={
-              renderSign(trove.troveOperation, Number(trove.debtChange)) ?? ''
-            }
+            prefix={renderSign(trove.debtChange)}
           />
         ) : (
           '-'
         )}
       </>
     ),
-    [renderSign],
+    [],
   );
 
   const renderNewDebt = useCallback(
@@ -308,19 +294,14 @@ export const TransactionHistoryFrame: FC = () => {
             suffix={Bitcoin}
             precision={BTC_RENDER_PRECISION}
             dataAttribute="transaction-history-collateral-change"
-            prefix={
-              renderSign(
-                trove.troveOperation,
-                Number(trove.collateralChange),
-              ) ?? ''
-            }
+            prefix={renderSign(trove.collateralChange)}
           />
         ) : (
           '-'
         )}
       </>
     ),
-    [renderSign],
+    [],
   );
 
   const renderCollateralBalance = useCallback(
@@ -332,21 +313,13 @@ export const TransactionHistoryFrame: FC = () => {
             suffix={Bitcoin}
             precision={BTC_RENDER_PRECISION}
             dataAttribute="transaction-history-collateral-balance"
-            prefix={
-              trove.troveOperation === TroveOperation.OpenTrove
-                ? renderSign(
-                    trove.troveOperation,
-                    Number(trove.collateralAfter),
-                  ) || ''
-                : ''
-            }
           />
         ) : (
           '-'
         )}
       </>
     ),
-    [renderSign],
+    [],
   );
 
   const renderOriginationFee = useCallback(

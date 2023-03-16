@@ -31,6 +31,7 @@ import {
   TabType,
 } from '@sovryn/ui';
 
+import { LedgerPermitLocked } from '../../1_atoms/LedgerPermitLocked/LedgerPermitLocked';
 import { AmountRenderer } from '../../2_molecules/AmountRenderer/AmountRenderer';
 import { AssetRenderer } from '../../2_molecules/AssetRenderer/AssetRenderer';
 import { MaxButton } from '../../2_molecules/MaxButton/MaxButton';
@@ -57,7 +58,7 @@ const EarnPage: FC = () => {
   const [token, setToken] = useState<SupportedTokens>(SupportedTokens.dllr);
   const [isLoading, setIsLoading] = useState(false);
 
-  const { account } = useAccount();
+  const { account, type } = useAccount();
   const { value: block } = useBlockNumber();
 
   const { liquity } = useLoaderData() as {
@@ -293,6 +294,11 @@ const EarnPage: FC = () => {
     [],
   );
 
+  const ledgerAndDllr = useMemo(
+    () => type === 'Ledger' && token === SupportedTokens.dllr && isDeposit,
+    [isDeposit, token, type],
+  );
+
   return (
     <>
       <Helmet>
@@ -360,6 +366,9 @@ const EarnPage: FC = () => {
               dataAttribute="earn-amount-input-error"
             />
           )}
+
+          {ledgerAndDllr && <LedgerPermitLocked />}
+
           <SimpleTable className="mt-3">
             <SimpleTableRow
               label={t(pageTranslations.currentPoolBalance)}
@@ -398,7 +407,7 @@ const EarnPage: FC = () => {
             text={t(commonTranslations.buttons.confirm)}
             className="w-full mt-8"
             onClick={handleSubmit}
-            disabled={isSubmitDisabled}
+            disabled={isSubmitDisabled || ledgerAndDllr}
             dataAttribute="earn-submit"
           />
           {isInMaintenance && (

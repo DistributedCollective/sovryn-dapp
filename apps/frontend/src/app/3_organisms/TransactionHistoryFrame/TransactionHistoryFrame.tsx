@@ -520,7 +520,7 @@ export const TransactionHistoryFrame: FC = () => {
         <ExportCSV
           getData={exportData}
           filename="transactions"
-          disabled={!troves || exportLocked}
+          disabled={!troves || troves?.length < 1 || exportLocked}
         />
         {exportLocked && (
           <ErrorBadge

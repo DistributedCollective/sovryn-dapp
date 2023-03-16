@@ -1,5 +1,11 @@
 # @sovryn/contracts
 
+## 1.0.2
+
+### Patch Changes
+
+- 1f52a56: Fix masset manager mainnet address
+
 ## 1.0.1
 
 ### Patch Changes

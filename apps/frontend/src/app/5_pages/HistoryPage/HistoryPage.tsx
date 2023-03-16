@@ -7,10 +7,7 @@ import { Helmet } from 'react-helmet-async';
 
 import { Heading, Select, SelectOption, Tabs } from '@sovryn/ui';
 
-import {
-  TransactionHistoryFrame,
-  RedemptionsHistoryFrame,
-} from '../../3_organisms';
+import { TransactionHistoryFrame } from '../../3_organisms';
 import { CollateralSurplusHistoryFrame } from '../../3_organisms/CollateralSurplusWithdrawals/CollateralSurplusWithdrawals';
 import { ConversionsHistoryFrame } from '../../3_organisms/ConversionsHistoryFrame/ConversionsHistoryFrame';
 import { FundingHistoryFrame } from '../../3_organisms/FundingHistoryFrame/FundingHistoryFrame';
@@ -26,12 +23,6 @@ const locHistory = (
     <ApolloProvider client={zeroClient}>
       <TransactionHistoryFrame />
     </ApolloProvider>
-  </div>
-);
-
-const redemptions = (
-  <div className="px-0 py-4 lg:p-4">
-    <RedemptionsHistoryFrame />
   </div>
 );
 
@@ -76,12 +67,6 @@ const HistoryPage: FC = () => {
         content: locHistory,
         activeClassName: ACTIVE_CLASSNAME,
         dataAttribute: 'loc',
-      },
-      {
-        label: t(translations.historyPage.table.tabs.redemptions),
-        content: redemptions,
-        activeClassName: ACTIVE_CLASSNAME,
-        dataAttribute: 'redemptions',
       },
       {
         label: t(translations.historyPage.table.tabs.stability),

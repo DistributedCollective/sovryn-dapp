@@ -17,6 +17,7 @@ import {
   servicesConfig,
   sovrynLinks,
 } from './constants';
+import { toWei } from './math';
 
 export const prettyTx = (
   text: string,
@@ -109,7 +110,7 @@ export const valueIsDefined = <T>(
 export const composeGas = (
   priceInGwei: BigNumberish,
   limitInWei: BigNumberish,
-) => Number(priceInGwei) * 1e9 * Number(limitInWei);
+) => toWei(priceInGwei, 9).mul(limitInWei);
 
 export const isMobileDevice = () => {
   const config = resolveConfig(tailwindConfig);

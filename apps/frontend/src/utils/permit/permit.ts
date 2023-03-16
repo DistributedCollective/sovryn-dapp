@@ -4,14 +4,6 @@ import { getChainId, call, signData, RSV } from './rpc';
 const MAX_INT =
   '0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff';
 
-interface DaiPermitMessage {
-  holder: string;
-  spender: string;
-  nonce: number;
-  expiry: number | string;
-  allowed?: boolean;
-}
-
 interface ERC2612PermitMessage {
   owner: string;
   spender: string;
@@ -33,26 +25,6 @@ const EIP712Domain = [
   { name: 'chainId', type: 'uint256' },
   { name: 'verifyingContract', type: 'address' },
 ];
-
-const createTypedDaiData = (message: DaiPermitMessage, domain: Domain) => {
-  const typedData = {
-    types: {
-      EIP712Domain,
-      Permit: [
-        { name: 'holder', type: 'address' },
-        { name: 'spender', type: 'address' },
-        { name: 'nonce', type: 'uint256' },
-        { name: 'expiry', type: 'uint256' },
-        { name: 'allowed', type: 'bool' },
-      ],
-    },
-    primaryType: 'Permit',
-    domain,
-    message,
-  };
-
-  return typedData;
-};
 
 const createTypedERC2612Data = (
   message: ERC2612PermitMessage,
@@ -109,38 +81,6 @@ const getDomain = async (
   return domain;
 };
 
-export const signDaiPermit = async (
-  provider: any,
-  token: string | Domain,
-  holder: string,
-  spender: string,
-  expiry?: number,
-  nonce?: number,
-): Promise<DaiPermitMessage & RSV> => {
-  const tokenAddress = (token as Domain).verifyingContract || (token as string);
-
-  const message: DaiPermitMessage = {
-    holder,
-    spender,
-    nonce:
-      nonce === undefined
-        ? await call(
-            provider,
-            tokenAddress,
-            `${NONCES_FN}${zeros(24)}${holder.substr(2)}`,
-          )
-        : nonce,
-    expiry: expiry || MAX_INT,
-    allowed: true,
-  };
-
-  const domain = await getDomain(provider, token);
-  const typedData = createTypedDaiData(message, domain);
-  const sig = await signData(provider, holder, typedData);
-
-  return { ...sig, ...message };
-};
-
 export const signERC2612Permit = async (
   provider: any,
   token: string | Domain,
@@ -170,6 +110,5 @@ export const signERC2612Permit = async (
   const domain = await getDomain(provider, token);
   const typedData = createTypedERC2612Data(message, domain);
   const sig = await signData(provider, owner, typedData);
-
   return { ...sig, ...message };
 };

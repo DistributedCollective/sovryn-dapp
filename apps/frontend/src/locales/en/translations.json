@@ -523,7 +523,8 @@
         "filters": {
             "depositTokens": "Deposit",
             "withdrawTokens": "Withdraw",
-            "withdrawCollateralGain": "Withdraw collateral gain"
+            "withdrawCollateralGain": "Withdraw collateral gain",
+            "withdrawGainToLineOfCredit": "Settlement"
         }
     },
     "fundingHistory": {

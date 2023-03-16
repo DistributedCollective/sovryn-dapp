@@ -42,6 +42,7 @@ import { useAssetBalance } from '../../../hooks/useAssetBalance';
 import { useBlockNumber } from '../../../hooks/useBlockNumber';
 import { useMaintenance } from '../../../hooks/useMaintenance';
 import { translations } from '../../../locales/i18n';
+import { LEDGER } from '../../../utils/constants';
 import { formatValue, fromWei, toWei } from '../../../utils/math';
 import { tokenList } from './EarnPage.types';
 import { useHandleStabilityDeposit } from './hooks/useHandleStabilityDeposit';
@@ -295,7 +296,7 @@ const EarnPage: FC = () => {
   );
 
   const ledgerAndDllr = useMemo(
-    () => type === 'Ledger' && token === SupportedTokens.dllr && isDeposit,
+    () => type === LEDGER && token === SupportedTokens.dllr && isDeposit,
     [isDeposit, token, type],
   );
 

@@ -26,7 +26,12 @@ import { BORROW_ASSETS } from '../../../5_pages/ZeroPage/constants';
 import { useAccount } from '../../../../hooks/useAccount';
 import { useMaintenance } from '../../../../hooks/useMaintenance';
 import { translations } from '../../../../locales/i18n';
-import { Bitcoin, CR_THRESHOLDS, USD } from '../../../../utils/constants';
+import {
+  Bitcoin,
+  CR_THRESHOLDS,
+  LEDGER,
+  USD,
+} from '../../../../utils/constants';
 import { formatValue } from '../../../../utils/math';
 import { CurrentTroveData } from '../CurrentTroveData';
 import { Label } from '../Label';
@@ -302,7 +307,7 @@ export const FormContent: FC<FormContentProps> = props => {
 
   const ledgerAndDllr = useMemo(
     () =>
-      type === 'Ledger' &&
+      type === LEDGER &&
       props.debtToken === SupportedTokens.dllr &&
       debtType === AmountType.Remove,
     [debtType, props.debtToken, type],

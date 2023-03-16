@@ -24,7 +24,7 @@ import { useAccount } from '../../../hooks/useAccount';
 import { useAssetBalance } from '../../../hooks/useAssetBalance';
 import { useMaintenance } from '../../../hooks/useMaintenance';
 import { translations } from '../../../locales/i18n';
-import { Bitcoin } from '../../../utils/constants';
+import { Bitcoin, LEDGER } from '../../../utils/constants';
 import { Row } from './Row';
 import { BTC_RENDER_PRECISION } from './constants';
 
@@ -102,7 +102,7 @@ export const CloseCreditLine: FC<CloseCreditLineProps> = ({
   const { type } = useAccount();
 
   const ledgerAndDllr = useMemo(
-    () => type === 'Ledger' && creditToken === SupportedTokens.dllr,
+    () => type === LEDGER && creditToken === SupportedTokens.dllr,
     [creditToken, type],
   );
 

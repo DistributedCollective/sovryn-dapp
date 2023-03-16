@@ -1,5 +1,12 @@
 # frontend
 
+## 0.1.15
+
+### Patch Changes
+
+- f56c018: SOV-2045: Fix history frame signs
+- 5c45c1b: SOV-1910: update banner
+
 ## 0.1.14
 
 ### Patch Changes

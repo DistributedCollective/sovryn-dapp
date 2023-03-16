@@ -10,7 +10,7 @@ export const rsk: Record<string, AsyncContractConfigData> = {
     getAbi: async () => (await import('../../abis/swapNetwork.json')).default,
   },
   massetManager: {
-    address: '0xac2d05A148aB512EDEDc7280c00292ED33d31f1A', // TODO: This is testnet address, change it to mainnet
+    address: '0x5F777270259E32F79589fe82269DB6209F7b7582',
     getAbi: async () => (await import('../../abis/massetManager.json')).default,
   },
   fastBtcBridge: {

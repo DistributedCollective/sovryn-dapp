@@ -10,7 +10,6 @@ import { useAssetBalance } from '../../../../hooks/useAssetBalance';
 import { useIsMounted } from '../../../../hooks/useIsMounted';
 import { fromWei } from '../../../../utils/math';
 import { bassets, masset } from '../ConvertPage.types';
-import { useGetSourceTokenBalance } from './useGetSourceTokenBalance';
 
 export const useGetMaximumAvailableAmount = (
   sourceToken: SupportedTokens,
@@ -25,7 +24,7 @@ export const useGetMaximumAvailableAmount = (
   );
 
   const { weiBalance: sourceTokenWeiBalance, balance: sourceTokenBalance } =
-    useGetSourceTokenBalance(sourceToken);
+    useAssetBalance(sourceToken);
 
   const [massetManagerAddress, setMassetManagerAddress] = useState('');
 

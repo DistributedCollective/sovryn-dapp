@@ -26,7 +26,7 @@ const EIP712Domain = [
   { name: 'verifyingContract', type: 'address' },
 ];
 
-const createTypedERC2612Data = (
+export const createTypedERC2612Data = (
   message: ERC2612PermitMessage,
   domain: Domain,
 ) => {

@@ -1,7 +1,7 @@
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 
 import { ethers } from 'ethers';
-import { parseUnits } from 'ethers/lib/utils';
+import { parseUnits, verifyTypedData } from 'ethers/lib/utils';
 import { t } from 'i18next';
 
 import { Button, Icon, IconNames, StatusType } from '@sovryn/ui';
@@ -9,13 +9,17 @@ import { Button, Icon, IconNames, StatusType } from '@sovryn/ui';
 import { translations } from '../../../../../locales/i18n';
 import { APPROVAL_FUNCTION } from '../../../../../utils/constants';
 import { sleep } from '../../../../../utils/helpers';
-import { signERC2612Permit } from '../../../../../utils/permit/permit';
+import {
+  createTypedERC2612Data,
+  signERC2612Permit,
+} from '../../../../../utils/permit/permit';
 import {
   Transaction,
   TransactionReceiptStatus,
   TransactionStepData,
   TransactionConfig,
   TransactionReceipt,
+  PermitResponse,
 } from '../../TransactionStepDialog.types';
 import {
   isMessageSignatureRequest,
@@ -24,6 +28,8 @@ import {
   isTypedDataRequest,
 } from '../../helpers';
 import { TransactionStep } from '../TransactionStep/TransactionStep';
+import { getProvider } from '@sovryn/ethers-provider';
+import { getRskChainId } from '../../../../../utils/chain';
 
 export type TransactionStepsProps = {
   transactions: Transaction[];
@@ -211,15 +217,66 @@ export const TransactionSteps: FC<TransactionStepsProps> = ({
 
           handleUpdates();
         } else if (isPermitRequest(request)) {
-          const response = await signERC2612Permit(
-            request.signer,
-            request.token,
-            request.owner,
-            request.spender,
-            request.value,
-            request.deadline,
-            request.nonce,
+          const chainId = await request.signer.getChainId();
+
+          console.log('cjain', chainId);
+          const nonce = await getProvider().call({
+            to: request.token,
+            data: `0x7ecebe00${''.padEnd(24, '0')}${request.owner.slice(2)}`,
+          });
+
+          console.log('nonce', nonce);
+
+          const domain = {
+            name: request.token,
+            version: '1',
+            chainId,
+            verifyingContract: request.token,
+          };
+
+          const types: any = {
+            Permit: [
+              { name: 'owner', type: 'address' },
+              { name: 'spender', type: 'address' },
+              { name: 'value', type: 'uint256' },
+              { name: 'nonce', type: 'uint256' },
+              { name: 'deadline', type: 'uint256' },
+            ],
+          };
+
+          const message = {
+            owner: request.owner,
+            spender: request.spender,
+            value: request.value,
+            nonce: request.nonce === undefined ? nonce : request.nonce,
+            deadline:
+              request.deadline ??
+              '0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff',
+          };
+
+          const signature = await request.signer._signTypedData(
+            domain,
+            types,
+            message,
           );
+
+          console.log('signature:', signature);
+
+          const verified = verifyTypedData(domain, types, message, signature);
+          console.log('verified: ', verified);
+
+          const r = signature.slice(0, 66);
+          const s = `0x${signature.slice(66, 130)}`;
+          const v = parseInt(signature.slice(130, 132), 16);
+
+          const response: PermitResponse = {
+            r,
+            s,
+            v,
+            ...message,
+          } as PermitResponse;
+
+          console.log(response);
 
           transactions[i].onChangeStatus?.(StatusType.success);
           transactions[i].onComplete?.(response);

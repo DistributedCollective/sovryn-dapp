@@ -19,13 +19,13 @@ import {
   formatValue,
   getDecimalPartLength,
   getLocaleSeparators,
-  isScientificNumber,
 } from '../../../utils/math';
+import { BigNumber } from 'ethers';
 
 const { decimal, thousand } = getLocaleSeparators();
 
 type AmountRendererProps = {
-  value: string | number;
+  value: BigNumber;
   precision?: number;
   className?: string;
   suffix?: string;
@@ -62,30 +62,34 @@ export const AmountRenderer: FC<AmountRendererProps> = ({
   }, [addNotification, value]);
 
   const countUpValues = useMemo(() => {
-    let endValue = String(value);
-
-    if (typeof value === 'number' && isScientificNumber(value)) {
-      endValue = value.toFixed(18);
-    }
-
-    const [whole = '', decimals = ''] = endValue.split('.');
-    const end = parseFloat(
-      (whole ?? 0) + '.' + (decimals ?? 0).slice(0, precision),
-    );
-
     return {
-      end,
-      decimals: getDecimalPartLength(end),
+      end: 0,
+      decimals: 0,
     };
+    // let endValue = String(value);
+
+    // if (typeof value === 'number' && isScientificNumber(value)) {
+    //   endValue = value.toFixed(18);
+    // }
+
+    // const [whole = '', decimals = ''] = endValue.split('.');
+    // const end = parseFloat(
+    //   (whole ?? 0) + '.' + (decimals ?? 0).slice(0, precision),
+    // );
+
+    // return {
+    //   end,
+    //   decimals: getDecimalPartLength(end),
+    // };
   }, [precision, value]);
 
   const localeFormattedValue = useMemo(
-    () => formatValue(value, precision),
+    () => formatValue(0, precision),
     [value, precision],
   );
 
   const valueIsRounded = useMemo(
-    () => getDecimalPartLength(value) > precision,
+    () => getDecimalPartLength(0) > precision,
     [precision, value],
   );
 

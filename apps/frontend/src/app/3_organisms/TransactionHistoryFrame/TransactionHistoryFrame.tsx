@@ -49,6 +49,7 @@ import {
   BTC_RENDER_PRECISION,
 } from '../ZeroLocForm/constants';
 import { useGetTroves } from './hooks/useGetTroves';
+import { toWei } from '../../../utils/math';
 
 const pageSize = DEFAULT_HISTORY_FRAME_PAGE_SIZE;
 
@@ -265,7 +266,7 @@ export const TransactionHistoryFrame: FC = () => {
       <>
         {trove.debtChange.length ? (
           <AmountRenderer
-            value={trove.debtChange}
+            value={toWei(trove.debtChange)}
             suffix={SupportedTokens.zusd}
             precision={TOKEN_RENDER_PRECISION}
             dataAttribute="transaction-history-debt-change"
@@ -286,7 +287,7 @@ export const TransactionHistoryFrame: FC = () => {
       <>
         {trove.debtAfter.length ? (
           <AmountRenderer
-            value={trove.debtAfter}
+            value={toWei(trove.debtAfter)}
             suffix={SupportedTokens.zusd}
             precision={TOKEN_RENDER_PRECISION}
             dataAttribute="transaction-history-new-debt"
@@ -304,7 +305,7 @@ export const TransactionHistoryFrame: FC = () => {
       <>
         {trove.collateralChange.length ? (
           <AmountRenderer
-            value={trove.collateralChange}
+            value={toWei(trove.collateralChange)}
             suffix={Bitcoin}
             precision={BTC_RENDER_PRECISION}
             dataAttribute="transaction-history-collateral-change"
@@ -328,7 +329,7 @@ export const TransactionHistoryFrame: FC = () => {
       <>
         {trove.collateralAfter.length ? (
           <AmountRenderer
-            value={trove.collateralAfter}
+            value={toWei(trove.collateralAfter)}
             suffix={Bitcoin}
             precision={BTC_RENDER_PRECISION}
             dataAttribute="transaction-history-collateral-balance"
@@ -361,7 +362,7 @@ export const TransactionHistoryFrame: FC = () => {
       return (
         <>
           <AmountRenderer
-            value={borrowingFee}
+            value={toWei(borrowingFee)}
             suffix={SupportedTokens.zusd}
             precision={TOKEN_RENDER_PRECISION}
             dataAttribute="transaction-history-borrowing-fee"

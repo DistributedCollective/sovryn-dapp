@@ -25,10 +25,11 @@ import { translations } from '../../../locales/i18n';
 import { Bitcoin } from '../../../utils/constants';
 import { Row } from './Row';
 import { BTC_RENDER_PRECISION } from './constants';
+import { BigNumber } from 'ethers';
 
 type CloseCreditLineProps = {
-  collateralValue: string;
-  creditValue: string;
+  collateralValue: BigNumber;
+  creditValue: BigNumber;
   onSubmit: (token: SupportedTokens) => void;
 };
 
@@ -48,7 +49,7 @@ export const CloseCreditLine: FC<CloseCreditLineProps> = ({
   const { balance: availableBalance } = useAssetBalance(creditToken);
 
   const collateralValueRenderer = useCallback(
-    (value: number) => (
+    (value: BigNumber) => (
       <AmountRenderer
         value={value}
         suffix={Bitcoin}
@@ -111,7 +112,7 @@ export const CloseCreditLine: FC<CloseCreditLineProps> = ({
         <div className="w-full flex flex-row justify-between items-center gap-3">
           <Input
             size={InputSize.large}
-            value={creditValue}
+            value={creditValue.toString()}
             className="w-full flex-grow-0 flex-shrink"
             dataAttribute="close-credit-line-credit-amount"
             readOnly
@@ -141,7 +142,7 @@ export const CloseCreditLine: FC<CloseCreditLineProps> = ({
       >
         <Row
           label={t(translations.closeCreditLine.fields.collateral.label)}
-          value={collateralValueRenderer(Number(collateralValue))}
+          value={collateralValueRenderer(collateralValue)}
         />
       </SimpleTable>
 

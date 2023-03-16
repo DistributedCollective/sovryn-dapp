@@ -4,6 +4,7 @@ import classNames from 'classnames';
 
 import { MaxButton } from '../../2_molecules/MaxButton/MaxButton';
 import { AmountType } from './types';
+import { bn } from '../../../utils/math';
 
 type Tab = {
   value: AmountType;
@@ -12,7 +13,7 @@ type Tab = {
 };
 
 type CustomLabelProps = {
-  maxAmount: number;
+  maxAmount: string;
   symbol: string;
   tabs: Tab[];
   activeTab: AmountType;
@@ -64,7 +65,7 @@ export const Label: FC<CustomLabelProps> = ({
 
       <MaxButton
         onClick={onMaxAmountClicked}
-        value={maxAmount}
+        value={bn(maxAmount)}
         token={symbol}
         dataAttribute="convert-from-max"
       />

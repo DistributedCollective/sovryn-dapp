@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, useMemo } from 'react';
 
 import classNames from 'classnames';
 import { t } from 'i18next';
@@ -14,32 +14,36 @@ import { Bitcoin } from '../../../utils/constants';
 import { AmountRenderer } from '../AmountRenderer/AmountRenderer';
 import { CRatioIndicator } from './components/CRatioIndicator/CRatioIndicator';
 import { LOCStat } from './components/LOCStat/LOCStat';
+import { BigNumber } from 'ethers';
+import { ZERO } from '../../../utils/math';
 
 export type LOCStatusProps = {
   className?: string;
-  withdrawalSurplus?: number;
-  collateral?: number;
-  debt?: number;
+  withdrawalSurplus?: BigNumber;
+  collateral?: BigNumber;
+  debt?: BigNumber;
   debtSymbol?: string;
-  cRatio?: number;
+  cRatio?: BigNumber;
   onAdjust?: () => void;
   onClose?: () => void;
   onWithdraw?: () => void;
 };
 
 export const LOCStatus: FC<LOCStatusProps> = ({
-  withdrawalSurplus = 0,
-  collateral = 0,
-  debt = 0,
-  cRatio = 0,
+  withdrawalSurplus = ZERO,
+  collateral = ZERO,
+  debt = ZERO,
+  cRatio = ZERO,
   onAdjust,
   onClose,
   onWithdraw,
   className,
   debtSymbol = '',
 }) => {
-  const hasWithdrawalSurplus = withdrawalSurplus > 0;
-  const showOpenLOC = !hasWithdrawalSurplus && collateral > 0;
+  const hasWithdrawalSurplus = withdrawalSurplus.gt(0);
+  const showOpenLOC = !hasWithdrawalSurplus && collateral.gt(0);
+
+  const ratio = useMemo(() => Number(cRatio), [cRatio]);
 
   return (
     <div
@@ -85,8 +89,8 @@ export const LOCStatus: FC<LOCStatusProps> = ({
               label={t('LOCStatus.collateralRatio')}
               value={
                 <div className="flex items-center">
-                  <CRatioIndicator className="mr-3" value={cRatio} />
-                  <CountUp duration={0.7} suffix="%" end={cRatio} />
+                  <CRatioIndicator className="mr-3" value={ratio} />
+                  <CountUp duration={0.7} suffix="%" end={ratio} />
                 </div>
               }
             />

@@ -25,12 +25,13 @@ import { BORROW_ASSETS } from '../../../5_pages/ZeroPage/constants';
 import { useMaintenance } from '../../../../hooks/useMaintenance';
 import { translations } from '../../../../locales/i18n';
 import { Bitcoin, CR_THRESHOLDS, USD } from '../../../../utils/constants';
-import { formatValue } from '../../../../utils/math';
+import { formatValue, ZERO } from '../../../../utils/math';
 import { CurrentTroveData } from '../CurrentTroveData';
 import { Label } from '../Label';
 import { Row } from '../Row';
 import { TOKEN_RENDER_PRECISION, BTC_RENDER_PRECISION } from '../constants';
 import { AmountType } from '../types';
+import { BigNumber } from 'ethers';
 
 export type OpenTroveProps = {
   hasTrove: false;
@@ -48,29 +49,29 @@ export type AdjustTroveProps = {
 };
 
 export type FormContentProps = {
-  rbtcPrice: number;
-  borrowingRate: number;
-  originationFee: number;
+  rbtcPrice: BigNumber;
+  borrowingRate: BigNumber;
+  originationFee: BigNumber;
   debtAmount: string;
-  maxDebtAmount: number;
+  maxDebtAmount: string;
   onDebtAmountChange: (value: string) => void;
   debtToken: SupportedTokens;
   onDebtTokenChange: (value: SupportedTokens) => void;
   collateralAmount: string;
-  maxCollateralAmount: number;
+  maxCollateralAmount: string;
   onCollateralAmountChange: (value: string) => void;
 
-  initialRatio: number;
-  currentRatio: number;
+  initialRatio: BigNumber;
+  currentRatio: BigNumber;
 
-  initialLiquidationPrice: number;
-  liquidationPrice: number;
+  initialLiquidationPrice: BigNumber;
+  liquidationPrice: BigNumber;
 
-  initialLiquidationPriceInRecoveryMode: number;
-  liquidationPriceInRecoveryMode: number;
+  initialLiquidationPriceInRecoveryMode: BigNumber;
+  liquidationPriceInRecoveryMode: BigNumber;
 
-  totalDebt: number;
-  totalCollateral: number;
+  totalDebt: BigNumber;
+  totalCollateral: BigNumber;
 
   onFormSubmit: () => void;
   onFormEdit?: () => void;
@@ -199,8 +200,8 @@ export const FormContent: FC<FormContentProps> = props => {
   const handleFormSubmit = useCallback(() => props.onFormSubmit(), [props]);
 
   const renderTotalDebt = useCallback(
-    (value: number) =>
-      value === 0 ? (
+    (value: BigNumber) =>
+      value.isZero() ? (
         t(translations.common.na)
       ) : (
         <AmountRenderer
@@ -213,8 +214,8 @@ export const FormContent: FC<FormContentProps> = props => {
   );
 
   const renderTotalCollateral = useCallback(
-    (value: number) =>
-      value === 0 ? (
+    (value: BigNumber) =>
+      value.isZero() ? (
         t(translations.common.na)
       ) : (
         <AmountRenderer
@@ -227,8 +228,8 @@ export const FormContent: FC<FormContentProps> = props => {
   );
 
   const renderOriginationFee = useCallback(
-    (value: number) =>
-      value === 0 ? (
+    (value: BigNumber) =>
+      value.isZero() ? (
         t(translations.common.na)
       ) : (
         <>
@@ -237,15 +238,15 @@ export const FormContent: FC<FormContentProps> = props => {
             suffix={SupportedTokens.zusd}
             precision={TOKEN_RENDER_PRECISION}
           />{' '}
-          ({formatValue(props.borrowingRate * 100, 2)}%)
+          ({formatValue(props.borrowingRate.mul(100), 2)}%)
         </>
       ),
     [props.borrowingRate],
   );
 
   const renderLiquidationPrice = useCallback(
-    (value: number) =>
-      value === 0 ? (
+    (value: BigNumber) =>
+      value.isZero() ? (
         t(translations.common.na)
       ) : (
         <AmountRenderer
@@ -259,8 +260,8 @@ export const FormContent: FC<FormContentProps> = props => {
   );
 
   const renderRBTCPrice = useCallback(
-    (value: number) =>
-      value === 0 ? (
+    (value: BigNumber) =>
+      value.isZero() ? (
         t(translations.common.na)
       ) : (
         <AmountRenderer value={value} suffix={USD} precision={0} />
@@ -269,8 +270,12 @@ export const FormContent: FC<FormContentProps> = props => {
   );
 
   const renderCollateralRatio = useCallback(
-    (value: number) =>
-      value === 0 ? t(translations.common.na) : <>{formatValue(value, 3)}%</>,
+    (value: BigNumber) =>
+      value.isZero() ? (
+        t(translations.common.na)
+      ) : (
+        <>{formatValue(value, 3)}%</>
+      ),
     [],
   );
 
@@ -295,7 +300,7 @@ export const FormContent: FC<FormContentProps> = props => {
         <CurrentTroveData
           debt={props.existingDebt}
           collateral={props.existingCollateral}
-          rbtcPrice={props.rbtcPrice || 0}
+          rbtcPrice={props.rbtcPrice || ZERO}
         />
       )}
 
@@ -375,7 +380,7 @@ export const FormContent: FC<FormContentProps> = props => {
             label={t(translations.adjustCreditLine.labels.originationFee)}
             value={
               <DynamicValue
-                initialValue={0}
+                initialValue={ZERO}
                 value={props.originationFee}
                 renderer={renderOriginationFee}
               />

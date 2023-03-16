@@ -11,7 +11,7 @@ import { useAmountInput } from '../../../../hooks/useAmountInput';
 import { useAssetBalance } from '../../../../hooks/useAssetBalance';
 import { useMaxAssetBalance } from '../../../../hooks/useMaxAssetBalance';
 import { translations } from '../../../../locales/i18n';
-import { formatValue, fromWei, toWei } from '../../../../utils/math';
+import { bn, formatValue, fromWei, toWei, ZERO } from '../../../../utils/math';
 import {
   CRITICAL_COLLATERAL_RATIO,
   MINIMUM_COLLATERAL_RATIO,
@@ -27,11 +27,11 @@ import {
 import { FormContent } from './FormContent';
 
 type AdjustCreditLineProps = {
-  existingCollateral: string;
-  existingDebt: string;
+  existingCollateral: BigNumber;
+  existingDebt: BigNumber;
   onSubmit: (value: CreditLineSubmitValue) => void;
-  rbtcPrice: number;
-  borrowingRate: number;
+  rbtcPrice: BigNumber;
+  borrowingRate: BigNumber;
 };
 
 export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
@@ -52,9 +52,9 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
   const [debtAmountInput, setDebtAmount, debtAmount] = useAmountInput('');
   const [debtToken, setDebtToken] = useState<SupportedTokens>(BORROW_ASSETS[0]);
 
-  const debtSize = useMemo(() => Number(debtAmount || 0), [debtAmount]);
+  const debtSize = useMemo(() => toWei(debtAmount), [debtAmount]);
   const collateralSize = useMemo(
-    () => Number(collateralAmount || 0),
+    () => toWei(collateralAmount),
     [collateralAmount],
   );
 
@@ -73,44 +73,39 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
     [collateralType],
   );
 
-  const newDebt = useMemo(
-    () =>
-      Math.max(
-        Number(existingDebt) +
-          normalizeAmountByType(Number(debtAmount), debtType),
-        0,
-      ),
-    [debtAmount, existingDebt, debtType],
-  );
+  const newDebt = useMemo(() => {
+    const amount = existingDebt.add(
+      normalizeAmountByType(toWei(debtAmount), debtType),
+    );
+    return amount.gt(0) ? amount : ZERO;
+  }, [debtAmount, existingDebt, debtType]);
 
-  const newCollateral = useMemo(
-    () =>
-      Math.max(
-        Number(existingCollateral) +
-          normalizeAmountByType(Number(collateralAmount), collateralType),
-        0,
-      ),
-    [collateralAmount, collateralType, existingCollateral],
-  );
+  const newCollateral = useMemo(() => {
+    const amount = existingCollateral.add(
+      normalizeAmountByType(toWei(collateralAmount), collateralType),
+    );
+    return amount.gt(0) ? amount : ZERO;
+  }, [collateralAmount, collateralType, existingCollateral]);
 
   const maxCollateralToDepositAmount = useMemo(
-    () => Number(fromWei(BigNumber.from(_maxRbtcWeiBalance))),
+    () => bn(_maxRbtcWeiBalance),
     [_maxRbtcWeiBalance],
   );
 
-  const maxCollateralToWithdrawAmount = useMemo(
-    () =>
-      Math.max(
-        Number(existingCollateral) -
-          (newDebt *
-            (isRecoveryMode
+  const maxCollateralToWithdrawAmount = useMemo(() => {
+    const amount = existingCollateral.sub(
+      newDebt
+        .mul(
+          toWei(
+            isRecoveryMode
               ? CRITICAL_COLLATERAL_RATIO
-              : MINIMUM_COLLATERAL_RATIO)) /
-            rbtcPrice,
-        0,
-      ),
-    [existingCollateral, isRecoveryMode, newDebt, rbtcPrice],
-  );
+              : MINIMUM_COLLATERAL_RATIO,
+          ),
+        )
+        .div(rbtcPrice),
+    );
+    return amount.gt(0) ? amount : ZERO;
+  }, [existingCollateral, isRecoveryMode, newDebt, rbtcPrice]);
 
   const maxCollateralAmount = useMemo(
     () =>

@@ -5,17 +5,18 @@ import { t } from 'i18next';
 import { AmountRenderer } from '../../2_molecules/AmountRenderer/AmountRenderer';
 import { CRatioIndicator } from '../../2_molecules/LOCStatus/components/CRatioIndicator/CRatioIndicator';
 import { Bitcoin } from '../../../utils/constants';
-import { formatValue } from '../../../utils/math';
+import { formatValue, fromWei } from '../../../utils/math';
 import {
   TOKEN_RENDER_PRECISION,
   BTC_RENDER_PRECISION,
   DEBT_TOKEN,
 } from './constants';
+import { BigNumber } from 'ethers';
 
 type CurrentTroveDataProps = {
-  debt: string;
-  collateral: string;
-  rbtcPrice: number;
+  debt: BigNumber;
+  collateral: BigNumber;
+  rbtcPrice: BigNumber;
   className?: string;
 };
 
@@ -25,8 +26,13 @@ export const CurrentTroveData: FC<CurrentTroveDataProps> = ({
   rbtcPrice,
   collateral,
 }) => {
+  // const collateralRatio = useMemo(
+  //   () => ((parseFloat(collateral) * rbtcPrice) / parseFloat(debt)) * 100,
+  //   [collateral, debt, rbtcPrice],
+  // );
+
   const collateralRatio = useMemo(
-    () => ((parseFloat(collateral) * rbtcPrice) / parseFloat(debt)) * 100,
+    () => collateral.mul(rbtcPrice).div(debt).mul(100),
     [collateral, debt, rbtcPrice],
   );
 
@@ -57,7 +63,10 @@ export const CurrentTroveData: FC<CurrentTroveDataProps> = ({
           label={t('LOCStatus.collateralRatio')}
           value={
             <div className="flex flex-row justify-start items-center">
-              <CRatioIndicator className="mr-2" value={collateralRatio} />
+              <CRatioIndicator
+                className="mr-2"
+                value={Number(fromWei(collateralRatio))}
+              />
               {formatValue(collateralRatio)}%
             </div>
           }

@@ -1,7 +1,8 @@
 import { isBigNumberish } from '@ethersproject/bignumber/lib/bignumber';
+import { Decimal } from '@sovryn-zero/lib-base';
 
 import { BigNumberish, BigNumber } from 'ethers';
-import { formatUnits, parseUnits } from 'ethers/lib/utils';
+import { commify, formatUnits, parseUnits } from 'ethers/lib/utils';
 
 const DEFAULT_UNIT = 18;
 const DEFAULT_DECIMALS = 6;
@@ -84,8 +85,9 @@ export const fromWeiFixed = (
   unitName: BigNumberish = DEFAULT_UNIT,
 ): string => Number(fromWei(value, unitName)).toFixed(decimals);
 
+// todo: refactor to make sure it handles really big bignumber
 export const formatValue = (
-  value: number | string,
+  value: BigNumberish,
   precision: number = 0,
   roundUp: boolean = false,
 ) =>
@@ -141,3 +143,7 @@ export const numeric = (value: number) => {
 
 export const isScientificNumber = (value: number) =>
   String(value).search(/e[-+]?/) > 0;
+
+export const ZERO = BigNumber.from(0);
+export const bn = (value?: any) => BigNumber.from(value ?? 0);
+export const decimalToBn = (value?: Decimal) => bn(value?.bigNumber ?? 0);

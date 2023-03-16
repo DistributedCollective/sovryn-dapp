@@ -9,15 +9,16 @@ import {
   MINIMUM_COLLATERAL_RATIO,
 } from './constants';
 import { AmountType } from './types';
+import { BigNumber } from 'ethers';
 
 export const normalizeAmountByType = (
-  amount: number,
+  amount: BigNumber,
   amountType: AmountType,
 ) => {
   if (amountType === AmountType.Add) {
-    return Math.abs(amount);
+    return amount.abs();
   }
-  return Math.abs(amount) * -1;
+  return amount.abs().mul(-1);
 };
 
 export const getOriginationFeeAmount = (

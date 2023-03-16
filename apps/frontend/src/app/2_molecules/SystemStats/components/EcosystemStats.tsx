@@ -24,11 +24,7 @@ import {
 } from '../../../3_organisms/ZeroLocForm/constants';
 import { translations } from '../../../../locales/i18n';
 import { Bitcoin } from '../../../../utils/constants';
-import {
-  formatCompactValue,
-  fromWei,
-  fromWeiFixed,
-} from '../../../../utils/math';
+import { bn, formatCompactValue, fromWeiFixed } from '../../../../utils/math';
 import { AmountRenderer } from '../../AmountRenderer/AmountRenderer';
 import { useGetAssetBalance } from '../hooks/useGetAssetBalance';
 import { useGetTotalSupply } from '../hooks/useGetTotalSupply';
@@ -59,7 +55,7 @@ export const EcosystemStats: FC<EcosystemStatsProps> = ({
       babelFishZUSDBalance && zeroPrice ? (
         <>
           <AmountRenderer
-            value={fromWeiFixed(babelFishZUSDBalance)}
+            value={bn(babelFishZUSDBalance)}
             suffix={Bitcoin}
             precision={BTC_RENDER_PRECISION}
             showRoundingPrefix={false}
@@ -87,7 +83,7 @@ export const EcosystemStats: FC<EcosystemStatsProps> = ({
     () =>
       babelFishDLLRBalance ? (
         <AmountRenderer
-          value={fromWei(babelFishDLLRBalance)}
+          value={bn(babelFishDLLRBalance)}
           suffix={SupportedTokens.dllr}
           precision={TOKEN_RENDER_PRECISION}
           showRoundingPrefix={false}
@@ -108,7 +104,7 @@ export const EcosystemStats: FC<EcosystemStatsProps> = ({
     () =>
       myntZUSDBalance ? (
         <AmountRenderer
-          value={fromWei(myntZUSDBalance)}
+          value={bn(myntZUSDBalance)}
           suffix={SupportedTokens.zusd}
           precision={TOKEN_RENDER_PRECISION}
           showRoundingPrefix={false}
@@ -129,7 +125,7 @@ export const EcosystemStats: FC<EcosystemStatsProps> = ({
     () =>
       myntDOCBalance ? (
         <AmountRenderer
-          value={fromWei(myntDOCBalance)}
+          value={bn(myntDOCBalance)}
           suffix={SupportedTokens.doc}
           precision={TOKEN_RENDER_PRECISION}
           showRoundingPrefix={false}
@@ -147,7 +143,7 @@ export const EcosystemStats: FC<EcosystemStatsProps> = ({
     () =>
       totalDLLRSupply ? (
         <AmountRenderer
-          value={fromWei(totalDLLRSupply)}
+          value={bn(totalDLLRSupply)}
           suffix={SupportedTokens.dllr}
           precision={TOKEN_RENDER_PRECISION}
           showRoundingPrefix={false}

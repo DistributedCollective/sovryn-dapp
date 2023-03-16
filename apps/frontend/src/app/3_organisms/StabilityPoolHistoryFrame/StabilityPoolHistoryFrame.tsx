@@ -44,6 +44,7 @@ import {
 import { dateFormat } from '../../../utils/helpers';
 import { TOKEN_RENDER_PRECISION } from '../ZeroLocForm/constants';
 import { useGetStabilityPoolHistory } from './hooks/useGetStabilityPoolHistory';
+import { toWei } from '../../../utils/math';
 
 const pageSize = DEFAULT_HISTORY_FRAME_PAGE_SIZE;
 
@@ -129,7 +130,7 @@ export const StabilityPoolHistoryFrame: FC = () => {
       <>
         {balance.length ? (
           <AmountRenderer
-            value={balance}
+            value={toWei(balance)}
             suffix={SupportedTokens.zusd}
             precision={TOKEN_RENDER_PRECISION}
             dataAttribute="stability-pool-history-balance-change"
@@ -147,7 +148,7 @@ export const StabilityPoolHistoryFrame: FC = () => {
       <>
         {stabilityDeposit ? (
           <AmountRenderer
-            value={stabilityDeposit.depositedAmountAfter}
+            value={toWei(stabilityDeposit.depositedAmountAfter)}
             suffix={SupportedTokens.zusd}
             precision={TOKEN_RENDER_PRECISION}
             dataAttribute="stability-pool-history-new-balance"

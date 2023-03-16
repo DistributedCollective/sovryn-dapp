@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 
-import { constants, Contract } from 'ethers';
+import { BigNumber, constants, Contract } from 'ethers';
 import { Subscription } from 'zen-observable-ts';
 
 import { getTokenDetails, SupportedTokens } from '@sovryn/contracts';
@@ -13,7 +13,7 @@ import {
   startCall,
 } from '../store/rxjs/provider-cache';
 import { getRskChainId } from '../utils/chain';
-import { fromWei } from '../utils/math';
+import { bn, fromWei, ZERO } from '../utils/math';
 import { useBlockNumber } from './useBlockNumber';
 import { useIsMounted } from './useIsMounted';
 import { useWalletConnect } from './useWalletConnect';
@@ -21,6 +21,7 @@ import { useWalletConnect } from './useWalletConnect';
 export type AssetBalanceResponse = {
   balance: string;
   weiBalance: string;
+  bigNumberBalance: BigNumber;
   decimalPrecision?: number;
   loading: boolean;
   error: Error | null;
@@ -45,6 +46,7 @@ export const useAssetBalance = (
   const [state, setState] = useState<AssetBalanceResponse>({
     balance: '0',
     weiBalance: '0',
+    bigNumberBalance: ZERO,
     loading: false,
     error: null,
   });
@@ -71,6 +73,7 @@ export const useAssetBalance = (
         setState({
           ...e.result,
           weiBalance: e.result.value,
+          bigNumberBalance: bn(e.result.value),
           balance: fromWei(
             e.result.value === null ? 0 : e.result.value,
             tokenDetails.decimalPrecision,
@@ -105,6 +108,7 @@ export const useAssetBalance = (
         ...prev,
         weiBalance: '0',
         balance: '0',
+        bigNumberBalance: ZERO,
         loading: false,
         error: e,
       })),
@@ -121,6 +125,8 @@ export const useAssetBalance = (
     () => ({
       ...state,
       weiBalance: state.weiBalance === null ? '0' : state.weiBalance,
+      bigNumberBalance:
+        state.weiBalance === null ? ZERO : state.bigNumberBalance,
     }),
     [state],
   );

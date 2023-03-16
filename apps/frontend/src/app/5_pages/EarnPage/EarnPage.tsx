@@ -41,7 +41,13 @@ import { useAssetBalance } from '../../../hooks/useAssetBalance';
 import { useBlockNumber } from '../../../hooks/useBlockNumber';
 import { useMaintenance } from '../../../hooks/useMaintenance';
 import { translations } from '../../../locales/i18n';
-import { formatValue, fromWei, toWei } from '../../../utils/math';
+import {
+  decimalToBn,
+  formatValue,
+  fromWei,
+  toWei,
+  ZERO,
+} from '../../../utils/math';
 import { tokenList } from './EarnPage.types';
 import { useHandleStabilityDeposit } from './hooks/useHandleStabilityDeposit';
 
@@ -51,7 +57,7 @@ const pageTranslations = translations.earnPage;
 const EarnPage: FC = () => {
   const [index, setIndex] = useState(0);
   const [amountInput, setAmount, amount] = useAmountInput('');
-  const [poolBalance, setPoolBalance] = useState('0');
+  const [poolBalance, setPoolBalance] = useState(ZERO);
   const [ZUSDInStabilityPool, setZUSDInStabilityPool] = useState('0');
   const [rewardsAmount, setRewardsAmount] = useState<Decimal>(Decimal.from(0));
   const [token, setToken] = useState<SupportedTokens>(SupportedTokens.dllr);
@@ -70,7 +76,7 @@ const EarnPage: FC = () => {
       setIsLoading(true);
       liquity
         .getStabilityDeposit(account)
-        .then(result => setPoolBalance(result.currentZUSD.toString()))
+        .then(result => setPoolBalance(decimalToBn(result.currentZUSD)))
         .finally(() => setIsLoading(false));
     }
   }, [account, liquity]);
@@ -109,7 +115,7 @@ const EarnPage: FC = () => {
       },
     ];
 
-    if (!BigNumber.from(toWei(poolBalance)).isZero()) {
+    if (!poolBalance.isZero()) {
       tabs.push({
         label: t(commonTranslations.withdraw),
         activeClassName: 'text-primary-20',
@@ -194,10 +200,7 @@ const EarnPage: FC = () => {
     if (BigNumber.from(toWei(ZUSDInStabilityPool)).isZero()) {
       return '0';
     }
-    return fromWei(
-      BigNumber.from(toWei(poolBalance, 24)).div(toWei(ZUSDInStabilityPool)),
-      4,
-    ).toString();
+    return fromWei(poolBalance.div(toWei(ZUSDInStabilityPool)), 4).toString();
   }, [ZUSDInStabilityPool, poolBalance]);
 
   const isAmountZero = useMemo(() => {

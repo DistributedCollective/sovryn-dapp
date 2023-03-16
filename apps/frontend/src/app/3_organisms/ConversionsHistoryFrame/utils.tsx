@@ -14,6 +14,7 @@ import {
 import { dateFormat } from '../../../utils/helpers';
 import { TOKEN_RENDER_PRECISION } from '../ZeroLocForm/constants';
 import { TransactionIdRenderer } from './components/TransactionIdRenderer/TransactionIdRenderer';
+import { toWei } from '../../../utils/math';
 
 const sentAmountRenderer = (item: Conversion) => {
   const isIncomingTransaction = item.type === ConversionType.Incoming; // bAsset -> mAsset
@@ -25,7 +26,7 @@ const sentAmountRenderer = (item: Conversion) => {
     ? item.bAsset.symbol
     : masset.toUpperCase();
 
-  return <AmountRenderer value={amount} suffix={asset!} />;
+  return <AmountRenderer value={toWei(amount)} suffix={asset!} />;
 };
 
 const receivedAmountRenderer = (item: Conversion) => {
@@ -40,7 +41,7 @@ const receivedAmountRenderer = (item: Conversion) => {
 
   return (
     <AmountRenderer
-      value={amount}
+      value={toWei(amount)}
       suffix={asset!}
       precision={TOKEN_RENDER_PRECISION}
     />

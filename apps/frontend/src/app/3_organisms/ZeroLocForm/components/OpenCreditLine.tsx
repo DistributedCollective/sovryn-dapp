@@ -10,7 +10,7 @@ import { useAmountInput } from '../../../../hooks/useAmountInput';
 import { useMaxAssetBalance } from '../../../../hooks/useMaxAssetBalance';
 import { translations } from '../../../../locales/i18n';
 import { Bitcoin } from '../../../../utils/constants';
-import { formatValue, fromWei, numeric, toWei } from '../../../../utils/math';
+import { formatValue, fromWei, numeric, toWei, ZERO } from '../../../../utils/math';
 import {
   CRITICAL_COLLATERAL_RATIO,
   MINIMUM_COLLATERAL_RATIO,
@@ -24,11 +24,12 @@ import {
   getTotalDebtAmount,
 } from '../utils';
 import { FormContent } from './FormContent';
+import { BigNumber } from 'ethers';
 
 export type OpenCreditLineProps = {
   onSubmit: (value: CreditLineSubmitValue) => void;
-  rbtcPrice: number;
-  borrowingRate: number;
+  rbtcPrice: BigNumber;
+  borrowingRate: BigNumber;
 };
 
 export const OpenCreditLine: FC<OpenCreditLineProps> = ({
@@ -213,7 +214,7 @@ export const OpenCreditLine: FC<OpenCreditLineProps> = ({
       collateralAmount={collateralAmountInput}
       maxCollateralAmount={maxCollateralAmount}
       onCollateralAmountChange={setCollateralAmount}
-      initialRatio={0}
+      initialRatio={ZERO}
       currentRatio={ratio}
       initialLiquidationPrice={0}
       liquidationPrice={liquidationPrice}

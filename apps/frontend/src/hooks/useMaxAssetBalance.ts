@@ -13,7 +13,7 @@ import { CacheCallOptions } from '../store/rxjs/provider-cache';
 import { getRskChainId } from '../utils/chain';
 import { MAX_GAS_LIMIT } from '../utils/constants';
 import { composeGas } from '../utils/helpers';
-import { fromWei } from '../utils/math';
+import { fromWei, ZERO } from '../utils/math';
 import { AssetBalanceResponse, useAssetBalance } from './useAssetBalance';
 import { useAsync } from './useAsync';
 import { useGasPrice } from './useGasPrice';
@@ -43,6 +43,7 @@ export const useMaxAssetBalance = (
         value.gt(0) ? value.toString() : '0',
         result.decimalPrecision,
       ),
+      bigNumberBalance: value.gt(0) ? value : ZERO,
       decimalPrecision: result.decimalPrecision,
       loading: false,
       error: null,

@@ -6,9 +6,10 @@ import { applyDataAttr } from '@sovryn/ui';
 
 import { translations } from '../../../locales/i18n';
 import { AmountRenderer } from '../AmountRenderer/AmountRenderer';
+import { BigNumber } from 'ethers';
 
 type MaxButtonProps = {
-  value: string | number;
+  value: BigNumber;
   onClick?: () => void;
   precision?: number;
   token: string;
@@ -34,6 +35,6 @@ export const MaxButton: FC<MaxButtonProps> = ({
       suffix={token.toUpperCase()}
       useTooltip={false}
     />
-    )
+    {`)`}
   </button>
 );

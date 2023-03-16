@@ -4,41 +4,37 @@ import { _getContracts } from '@sovryn-zero/lib-ethers/dist/src/EthersLiquityCon
 
 import { getZeroProvider } from '../../../5_pages/ZeroPage/utils/zero-provider';
 import { useCall } from '../../../../hooks/useCall';
-import { fromWei, toWei } from '../../../../utils/math';
+import { toWei, ZERO } from '../../../../utils/math';
 import { CRITICAL_COLLATERAL_RATIO } from '../constants';
+import { BigNumber } from 'ethers';
 
 type ZeroData = {
-  tcr: number;
-  liquidationReserve: number;
+  tcr: BigNumber;
+  liquidationReserve: BigNumber;
 };
 
 type ZeroDataResponse = ZeroData & {
   isRecoveryMode: boolean;
 };
 
-export const useZeroData = (rbtcPrice?: number): ZeroDataResponse => {
+export const useZeroData = (rbtcPrice?: BigNumber): ZeroDataResponse => {
   const [response, getTcr] = useCall<ZeroData>(
     async () => {
       const { ethers } = await getZeroProvider();
-      const price = toWei(
-        rbtcPrice
-          ? rbtcPrice.toString()
-          : await ethers.getPrice().then(value => value.toString()),
-      );
+      const price = rbtcPrice
+        ? rbtcPrice
+        : await ethers.getPrice().then(value => value.bigNumber);
 
       const contract = _getContracts(ethers.connection).troveManager;
-      const liquidationReserve = await contract
-        .ZUSD_GAS_COMPENSATION()
-        .then(fromWei)
-        .then(Number);
-      const tcr = await contract.getTCR(price).then(fromWei).then(Number);
+      const liquidationReserve = await contract.ZUSD_GAS_COMPENSATION();
+      const tcr = await contract.getTCR(price);
       return {
         tcr,
         liquidationReserve,
       };
     },
     [rbtcPrice],
-    { tcr: 0, liquidationReserve: 0 },
+    { tcr: ZERO, liquidationReserve: ZERO },
   );
 
   useEffect(() => {
@@ -48,7 +44,7 @@ export const useZeroData = (rbtcPrice?: number): ZeroDataResponse => {
   return useMemo(
     () => ({
       ...response,
-      isRecoveryMode: response.tcr <= CRITICAL_COLLATERAL_RATIO,
+      isRecoveryMode: response.tcr.lte(toWei(CRITICAL_COLLATERAL_RATIO)),
     }),
     [response],
   );

@@ -25,10 +25,16 @@ import {
 import { useBlockNumber } from '../../../../hooks/useBlockNumber';
 import { translations } from '../../../../locales/i18n';
 import { Bitcoin } from '../../../../utils/constants';
-import { formatCompactValue, formatValue } from '../../../../utils/math';
+import {
+  decimalToBn,
+  formatCompactValue,
+  formatValue,
+  ZERO,
+} from '../../../../utils/math';
 import { AmountRenderer } from '../../AmountRenderer/AmountRenderer';
 import { SystemModeType } from '../types';
 import { calculateCollateralRatio } from '../utils';
+import { BigNumber } from 'ethers';
 
 type ZeroStatsProps = {
   className?: string;
@@ -38,9 +44,9 @@ type ZeroStatsProps = {
 export const ZeroStats: FC<ZeroStatsProps> = ({ className, dataAttribute }) => {
   const { value: blockNumber } = useBlockNumber();
   const [lineOfCredit, setLineOfCredit] = useState('0');
-  const [zusdInStabilityPool, setZusdInStabilityPool] = useState<Decimal>();
-  const [zusdSupply, setZusdSupply] = useState<Decimal>();
-  const [rbtcInLoc, setRbtcInLoc] = useState('0');
+  const [zusdInStabilityPool, setZusdInStabilityPool] = useState<BigNumber>();
+  const [zusdSupply, setZusdSupply] = useState<BigNumber>();
+  const [rbtcInLoc, setRbtcInLoc] = useState<BigNumber>(ZERO);
   const [zeroPrice, setZeroPrice] = useState<Decimal>();
   const [collateralRatio, setCollateralRatio] = useState('0');
   const [zeroInStabilityPoolPercent, setZeroInStabilityPoolPercent] =
@@ -75,7 +81,7 @@ export const ZeroStats: FC<ZeroStatsProps> = ({ className, dataAttribute }) => {
     () =>
       zusdSupply ? (
         <AmountRenderer
-          value={zusdSupply.toString()}
+          value={zusdSupply}
           suffix={SupportedTokens.zusd}
           precision={TOKEN_RENDER_PRECISION}
           showRoundingPrefix={false}
@@ -92,7 +98,7 @@ export const ZeroStats: FC<ZeroStatsProps> = ({ className, dataAttribute }) => {
       zusdInStabilityPool ? (
         <>
           <AmountRenderer
-            value={zusdInStabilityPool.toString()}
+            value={zusdInStabilityPool}
             suffix={SupportedTokens.zusd}
             precision={TOKEN_RENDER_PRECISION}
             showRoundingPrefix={false}
@@ -114,7 +120,7 @@ export const ZeroStats: FC<ZeroStatsProps> = ({ className, dataAttribute }) => {
   useEffect(() => {
     liquity
       .getZUSDInStabilityPool()
-      .then(result => setZusdInStabilityPool(result));
+      .then(result => setZusdInStabilityPool(decimalToBn(result)));
     liquity.getPrice().then(result => setZeroPrice(result));
     liquity
       .getNumberOfTroves()
@@ -123,8 +129,8 @@ export const ZeroStats: FC<ZeroStatsProps> = ({ className, dataAttribute }) => {
 
   useEffect(() => {
     liquity.getTotal().then(result => {
-      setZusdSupply(result.debt);
-      setRbtcInLoc(result.collateral.toString());
+      setZusdSupply(decimalToBn(result.debt));
+      setRbtcInLoc(decimalToBn(result.collateral));
       if (zeroPrice) {
         const recoveryMode = result.collateralRatioIsBelowCritical(zeroPrice);
         setIsRecoveryMode(recoveryMode);
@@ -137,7 +143,9 @@ export const ZeroStats: FC<ZeroStatsProps> = ({ className, dataAttribute }) => {
         );
       }
       if (zusdInStabilityPool) {
-        const percent = new Percent(zusdInStabilityPool.div(result.debt));
+        const percent = new Percent(
+          zusdInStabilityPool.div(decimalToBn(result.debt)),
+        );
         setZeroInStabilityPoolPercent(percent?.toString(2));
       }
     });

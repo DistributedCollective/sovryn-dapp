@@ -36,7 +36,7 @@ import {
   useGetCollSurplusChangesLazyQuery,
 } from '../../../utils/graphql/zero/generated';
 import { dateFormat } from '../../../utils/helpers';
-import { formatValue } from '../../../utils/math';
+import { formatValue, toWei } from '../../../utils/math';
 import { BTC_RENDER_PRECISION } from '../ZeroLocForm/constants';
 import { useGetCollateralSurplusWithdrawals } from './hooks/useGetCollateralSurplusWithdrawals';
 
@@ -74,7 +74,7 @@ export const CollateralSurplusHistoryFrame: FC = () => {
   const renderCollateralChange = useCallback(
     (collSurplusChange: string) => (
       <AmountRenderer
-        value={collSurplusChange}
+        value={toWei(collSurplusChange)}
         suffix={Bitcoin}
         precision={BTC_RENDER_PRECISION}
         dataAttribute="surplus-withdrawals-collateral"

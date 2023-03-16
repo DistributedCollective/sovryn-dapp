@@ -41,6 +41,7 @@ import { LIQUIDATION_RESERVE_AMOUNT } from '../../../utils/constants';
 import { useClaimCollateralSurplus } from './hooks/useClaimCollateralSurplus';
 import { useHandleTrove } from './hooks/useHandleTrove';
 import { ZeroPageLoaderData } from './loader';
+import { decimalToBn, toWei } from '../../../utils/math';
 
 export const ZeroPage: FC = () => {
   const { liquity, deferedData } = useLoaderData() as ZeroPageLoaderData;
@@ -57,10 +58,10 @@ export const ZeroPage: FC = () => {
   const { refetch: getOpenTroves } = useGetUserOpenTrove(account);
 
   const collateral = useMemo(
-    () => Number(trove?.collateral ?? 0),
+    () => decimalToBn(trove?.collateral),
     [trove?.collateral],
   );
-  const debt = useMemo(() => Number(trove?.debt ?? 0), [trove?.debt]);
+  const debt = useMemo(() => decimalToBn(trove?.debt), [trove?.debt]);
   const hasLoc = useMemo(() => !!trove?.debt?.gt(0), [trove?.debt]);
 
   const handleLOCPopup = useCallback(() => {
@@ -119,9 +120,7 @@ export const ZeroPage: FC = () => {
   }, [account, liquity, getTroves, getCollateralSurplusBalance]);
 
   const getRatio = useCallback(
-    (price: string) => {
-      return ((collateral * Number(price)) / debt) * 100;
-    },
+    (price: string) => collateral.mul(toWei(price)).div(debt).mul(100),
     [collateral, debt],
   );
 
@@ -157,9 +156,7 @@ export const ZeroPage: FC = () => {
                     debtSymbol={DEBT_TOKEN.toUpperCase()}
                     onAdjust={toggle}
                     onClose={toggleClosePopup}
-                    withdrawalSurplus={Number(
-                      collateralSurplusBalance?.toString(),
-                    )}
+                    withdrawalSurplus={decimalToBn(collateralSurplusBalance)}
                     onWithdraw={claimCollateralSurplus}
                   />
                 )}
@@ -237,8 +234,8 @@ export const ZeroPage: FC = () => {
                   <DialogBody>
                     <CloseCreditLine
                       onSubmit={handleTroveClose}
-                      creditValue={String(debt - LIQUIDATION_RESERVE_AMOUNT)}
-                      collateralValue={String(collateral)}
+                      creditValue={debt.sub(toWei(LIQUIDATION_RESERVE_AMOUNT))}
+                      collateralValue={collateral}
                     />
                   </DialogBody>
                 </Dialog>

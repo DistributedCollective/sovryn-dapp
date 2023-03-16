@@ -32,6 +32,7 @@ import { translations } from '../../../locales/i18n';
 import { Bitcoin } from '../../../utils/constants';
 import { useHandleRewards } from './hooks/useHandleRewards';
 import { RewardsAction } from './types';
+import { decimalToBn } from '../../../utils/math';
 
 const RewardsPage: FC = () => {
   const { account, signer } = useAccount();
@@ -95,7 +96,7 @@ const RewardsPage: FC = () => {
             </Paragraph>
             <div className="text-2xl leading-7 uppercase">
               <AmountRenderer
-                value={amount.toString()}
+                value={decimalToBn(amount)}
                 suffix={Bitcoin}
                 precision={BTC_RENDER_PRECISION}
                 dataAttribute="rewards-amount"

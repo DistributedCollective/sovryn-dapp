@@ -12,6 +12,7 @@ import {
   SimpleTableRow,
 } from '@sovryn/ui';
 
+import { useGetProtocolContract } from '../../../../hooks/useGetContract';
 import { translations } from '../../../../locales/i18n';
 import { fromWei, fromWeiFixed } from '../../../../utils/math';
 import { AmountRenderer } from '../../AmountRenderer/AmountRenderer';
@@ -53,9 +54,11 @@ export const EcosystemStats: FC<EcosystemStatsProps> = ({
     [babelFishZUSDBalance],
   );
 
+  const myntMassetManager = useGetProtocolContract('massetManager');
+
   const { value: myntZUSDBalance } = useGetAssetBalance(
     SupportedTokens.zusd,
-    TokenType.mynt,
+    myntMassetManager?.address || '',
   );
 
   const renderMyntZUSDBalance = useMemo(

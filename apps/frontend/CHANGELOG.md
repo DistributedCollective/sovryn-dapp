@@ -1,5 +1,18 @@
 # frontend
 
+## 1.0.0
+
+### Major Changes
+
+- 9364d73: SOV-1841: D2 public mainnet release
+
+### Patch Changes
+
+- a69996d: fix: SOV-2049 ledger permit on for DLLR
+- 1f52a56: Fix masset manager mainnet address
+- Updated dependencies [1f52a56]
+  - @sovryn/contracts@1.0.2
+
 ## 0.1.15
 
 ### Patch Changes

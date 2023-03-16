@@ -17,6 +17,7 @@ import { translations } from '../../../../locales/i18n';
 import { fromWei, fromWeiFixed } from '../../../../utils/math';
 import { AmountRenderer } from '../../AmountRenderer/AmountRenderer';
 import { useGetAssetBalance } from '../hooks/useGetAssetBalance';
+import { useGetAssetBalanceByAddress } from '../hooks/useGetAssetBalanceByAddress';
 import { useGetTotalSupply } from '../hooks/useGetTotalSupply';
 import { TokenType } from '../types';
 
@@ -56,9 +57,9 @@ export const EcosystemStats: FC<EcosystemStatsProps> = ({
 
   const myntMassetManager = useGetProtocolContract('massetManager');
 
-  const { value: myntZUSDBalance } = useGetAssetBalance(
+  const { value: myntZUSDBalance } = useGetAssetBalanceByAddress(
     SupportedTokens.zusd,
-    myntMassetManager?.address || '',
+    myntMassetManager?.address.toLowerCase() || '',
   );
 
   const renderMyntZUSDBalance = useMemo(
@@ -77,9 +78,9 @@ export const EcosystemStats: FC<EcosystemStatsProps> = ({
     [myntZUSDBalance],
   );
 
-  const { value: myntDOCBalance } = useGetAssetBalance(
+  const { value: myntDOCBalance } = useGetAssetBalanceByAddress(
     SupportedTokens.doc,
-    TokenType.mynt,
+    myntMassetManager?.address.toLowerCase() || '',
   );
 
   const renderMyntDOCBalance = useMemo(

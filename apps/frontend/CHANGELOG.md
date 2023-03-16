@@ -1,5 +1,11 @@
 # frontend
 
+## 1.0.1
+
+### Patch Changes
+
+- 680e77d: fix: mynt zusd balance stat
+
 ## 1.0.0
 
 ### Major Changes

@@ -3,7 +3,6 @@ import React, { FC, useEffect, useMemo, useState } from 'react';
 import { t } from 'i18next';
 import { useLoaderData } from 'react-router-dom';
 
-import { Percent } from '@sovryn-zero/lib-base';
 import {
   EthersLiquity,
   ReadableEthersLiquityWithStore,
@@ -17,7 +16,7 @@ import {
   SimpleTable,
   SimpleTableRow,
 } from '@sovryn/ui';
-import { Decimal } from '@sovryn/utils';
+import { Decimal, Percent } from '@sovryn/utils';
 
 import { useBlockNumber } from '../../../../hooks/useBlockNumber';
 import { translations } from '../../../../locales/i18n';

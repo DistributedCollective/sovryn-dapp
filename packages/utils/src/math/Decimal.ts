@@ -293,32 +293,32 @@ export class Decimal {
     return this;
   }
 
-  get zero(): this | false {
+  get zero(): this | undefined {
     if (this.isZero()) {
       return this;
     }
-    return false;
+    return undefined;
   }
 
-  get nonZero(): this | false {
+  get nonZero(): this | undefined {
     if (!this.isZero()) {
       return this;
     }
-    return false;
+    return undefined;
   }
 
-  get infinite(): this | false {
+  get infinite(): this | undefined {
     if (this.eq(Decimal.INFINITY)) {
       return this;
     }
-    return false;
+    return undefined;
   }
 
-  get finite(): this | false {
+  get finite(): this | undefined {
     if (!this.eq(Decimal.INFINITY)) {
       return this;
     }
-    return false;
+    return undefined;
   }
 
   /** @internal */

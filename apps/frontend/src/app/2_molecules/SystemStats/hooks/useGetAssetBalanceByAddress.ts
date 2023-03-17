@@ -56,9 +56,12 @@ export const useGetAssetBalanceByAddress = (
         fallbackToPreviousResult: true,
       });
     };
-    getBalance().catch(e =>
-      setState({ value: Decimal.ZERO, loading: false, error: e }),
-    );
+
+    if (contractAddress) {
+      getBalance().catch(e =>
+        setState({ value: Decimal.ZERO, loading: false, error: e }),
+      );
+    }
 
     return () => {
       if (sub) {

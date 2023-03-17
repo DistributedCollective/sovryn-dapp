@@ -201,7 +201,7 @@ const EarnPage: FC = () => {
     if (ZUSDInStabilityPool.isZero()) {
       return Decimal.ZERO;
     }
-    return poolBalance.div(ZUSDInStabilityPool);
+    return poolBalance.div(ZUSDInStabilityPool).mul(100);
   }, [ZUSDInStabilityPool, poolBalance]);
 
   const isAmountZero = useMemo(() => {
@@ -250,7 +250,10 @@ const EarnPage: FC = () => {
     if (newZUSDInStabilityPool.isZero()) {
       return '0 %';
     }
-    return `${formatValue(newPoolBalance.div(newZUSDInStabilityPool), 4)} %`;
+    return `${formatValue(
+      newPoolBalance.div(newZUSDInStabilityPool).mul(100),
+      4,
+    )} %`;
   }, [ZUSDInStabilityPool, amount, isAmountZero, isDeposit, newPoolBalance]);
 
   const isValidAmount = useMemo(

@@ -1,6 +1,7 @@
 import { t } from 'i18next';
 
 import { ErrorBadgeProps, ErrorLevel } from '@sovryn/ui';
+import { Decimal } from '@sovryn/utils';
 
 import { translations } from '../../../locales/i18n';
 import { formatValue } from '../../../utils/math';
@@ -9,10 +10,11 @@ import {
   MINIMUM_COLLATERAL_RATIO,
 } from './constants';
 import { AmountType } from './types';
-import { BigNumber } from 'ethers';
+
+export const DEFAULT_RESERVE_FEE = Decimal.from(20);
 
 export const normalizeAmountByType = (
-  amount: BigNumber,
+  amount: Decimal,
   amountType: AmountType,
 ) => {
   if (amountType === AmountType.Add) {
@@ -22,38 +24,40 @@ export const normalizeAmountByType = (
 };
 
 export const getOriginationFeeAmount = (
-  borrowAmount: number,
-  originationFeeRate: number,
-) => borrowAmount * originationFeeRate;
+  borrowAmount: Decimal,
+  originationFeeRate: Decimal,
+) => borrowAmount.mul(originationFeeRate);
 
 export const getTotalBorrowingFees = (
-  borrowAmount: number,
-  originationFeeRate: number,
-  liquidationReserve: number = 20,
+  borrowAmount: Decimal,
+  originationFeeRate: Decimal,
+  liquidationReserve: Decimal = DEFAULT_RESERVE_FEE,
 ) =>
-  getOriginationFeeAmount(borrowAmount, originationFeeRate) +
-  liquidationReserve;
+  getOriginationFeeAmount(borrowAmount, originationFeeRate).add(
+    liquidationReserve,
+  );
 
 export const getTotalDebtAmount = (
-  borrowAmount: number,
-  originationFeeRate: number,
-  liquidationReserve: number = 20,
+  borrowAmount: Decimal,
+  originationFeeRate: Decimal,
+  liquidationReserve: Decimal = DEFAULT_RESERVE_FEE,
 ) =>
-  borrowAmount +
-  getTotalBorrowingFees(borrowAmount, originationFeeRate, liquidationReserve);
+  borrowAmount.add(
+    getTotalBorrowingFees(borrowAmount, originationFeeRate, liquidationReserve),
+  );
 
-export const checkForSystemErrors = (ratio: number, tcr: number) => {
+export const checkForSystemErrors = (ratio: Decimal, tcr: Decimal) => {
   const list: ErrorBadgeProps[] = [];
 
-  const userRatio = ratio / 100;
-  const tcrPlus10 = tcr * 1.1;
+  const userRatio = ratio.div(100);
+  const tcrPlus10 = tcr.mul(1.1);
 
-  const tcrPlus10Percent = formatValue(tcrPlus10 * 100, 2);
-  const ccrPercent = formatValue(CRITICAL_COLLATERAL_RATIO * 100, 2);
-  const mcrPercent = formatValue(MINIMUM_COLLATERAL_RATIO * 100, 2);
+  const tcrPlus10Percent = formatValue(tcrPlus10.mul(100).toNumber(), 2);
+  const ccrPercent = formatValue(CRITICAL_COLLATERAL_RATIO.mul(100), 2);
+  const mcrPercent = formatValue(MINIMUM_COLLATERAL_RATIO.mul(100), 2);
 
   // System is in recovery mode:
-  if (tcr && tcr <= CRITICAL_COLLATERAL_RATIO) {
+  if (tcr && tcr.lte(CRITICAL_COLLATERAL_RATIO)) {
     // Warning: If the system is in recovery mode and the values the user is typing
     //  are causing the collateral ratio to be less than 10% above the TCR.
     if (userRatio < tcrPlus10) {
@@ -68,7 +72,7 @@ export const checkForSystemErrors = (ratio: number, tcr: number) => {
 
     // Critical: If the system is in recovery mode and the values the user is typing
     //  are causing the collateral ratio to be below the TCR.
-    if (userRatio < CRITICAL_COLLATERAL_RATIO) {
+    if (userRatio.lt(CRITICAL_COLLATERAL_RATIO)) {
       list.push({
         level: ErrorLevel.Critical,
         message: t(translations.zeroPage.loc.errors.ratioErrorInRecovery, {
@@ -83,8 +87,8 @@ export const checkForSystemErrors = (ratio: number, tcr: number) => {
     // Warning: If the system is in normal mode and the values the user is typing
     //  are causing the collateral ratio to be above the MCR and below the CCR (i.e., between 110% and 150%)
     if (
-      userRatio > MINIMUM_COLLATERAL_RATIO &&
-      userRatio < CRITICAL_COLLATERAL_RATIO
+      userRatio.gt(MINIMUM_COLLATERAL_RATIO) &&
+      userRatio.lt(CRITICAL_COLLATERAL_RATIO)
     ) {
       list.push({
         level: ErrorLevel.Warning,
@@ -97,7 +101,7 @@ export const checkForSystemErrors = (ratio: number, tcr: number) => {
 
     // Critical: If the system is in normal mode and the values the user is typing are causing the
     //  collateral ratio to be below the MCR (i.e., below 110%)
-    if (userRatio < MINIMUM_COLLATERAL_RATIO) {
+    if (userRatio.lt(MINIMUM_COLLATERAL_RATIO)) {
       list.push({
         level: ErrorLevel.Critical,
         message: t(translations.zeroPage.loc.errors.ratioError, {

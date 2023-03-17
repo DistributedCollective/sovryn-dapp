@@ -12,6 +12,8 @@ import {
   Tooltip,
   TooltipTrigger,
 } from '@sovryn/ui';
+import { Decimalish } from '@sovryn/utils';
+import { Decimal } from '@sovryn/utils';
 
 import { useNotificationContext } from '../../../contexts/NotificationContext';
 import { translations } from '../../../locales/i18n';
@@ -19,14 +21,12 @@ import {
   formatValue,
   getDecimalPartLength,
   getLocaleSeparators,
-  isScientificNumber,
 } from '../../../utils/math';
-import { BigNumber } from 'ethers';
 
 const { decimal, thousand } = getLocaleSeparators();
 
 type AmountRendererProps = {
-  value: BigNumber;
+  value: Decimalish;
   precision?: number;
   className?: string;
   suffix?: string;
@@ -63,34 +63,26 @@ export const AmountRenderer: FC<AmountRendererProps> = ({
   }, [addNotification, value]);
 
   const countUpValues = useMemo(() => {
+    const endValue = Decimal.from(value).toString();
+
+    const [whole = '', decimals = ''] = endValue.split('.');
+    const end = parseFloat(
+      (whole ?? 0) + '.' + (decimals ?? 0).slice(0, precision),
+    );
+
     return {
-      end: 0,
-      decimals: 0,
+      end,
+      decimals: getDecimalPartLength(end),
     };
-    // let endValue = String(value);
-
-    // if (typeof value === 'number' && isScientificNumber(value)) {
-    //   endValue = value.toFixed(18);
-    // }
-
-    // const [whole = '', decimals = ''] = endValue.split('.');
-    // const end = parseFloat(
-    //   (whole ?? 0) + '.' + (decimals ?? 0).slice(0, precision),
-    // );
-
-    // return {
-    //   end,
-    //   decimals: getDecimalPartLength(end),
-    // };
   }, [precision, value]);
 
   const localeFormattedValue = useMemo(
-    () => formatValue(0, precision),
+    () => formatValue(value, precision),
     [value, precision],
   );
 
   const valueIsRounded = useMemo(
-    () => getDecimalPartLength(0) > precision,
+    () => getDecimalPartLength(value) > precision,
     [precision, value],
   );
 

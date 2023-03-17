@@ -5,6 +5,7 @@ import { Subscription } from 'zen-observable-ts';
 
 import { getTokenDetails, SupportedTokens } from '@sovryn/contracts';
 import { ChainId, getProvider } from '@sovryn/ethers-provider';
+import { Decimal } from '@sovryn/utils';
 
 import {
   CacheCallOptions,
@@ -13,13 +14,13 @@ import {
   startCall,
 } from '../store/rxjs/provider-cache';
 import { getRskChainId } from '../utils/chain';
-import { bn, fromWei, ZERO } from '../utils/math';
+import { fromWei } from '../utils/math';
 import { useBlockNumber } from './useBlockNumber';
 import { useIsMounted } from './useIsMounted';
 import { useWalletConnect } from './useWalletConnect';
 
 export type AssetBalanceResponse = {
-  balance: string;
+  balance: Decimal;
   weiBalance: string;
   bigNumberBalance: BigNumber;
   decimalPrecision?: number;
@@ -44,9 +45,9 @@ export const useAssetBalance = (
   );
 
   const [state, setState] = useState<AssetBalanceResponse>({
-    balance: '0',
+    balance: Decimal.ZERO,
     weiBalance: '0',
-    bigNumberBalance: ZERO,
+    bigNumberBalance: BigNumber.from(0),
     loading: false,
     error: null,
   });
@@ -69,18 +70,22 @@ export const useAssetBalance = (
         account,
       ]);
 
-      sub = observeCall(hashedArgs).subscribe(e =>
-        setState({
-          ...e.result,
-          weiBalance: e.result.value,
-          bigNumberBalance: bn(e.result.value),
-          balance: fromWei(
+      sub = observeCall(hashedArgs).subscribe(e => {
+        const decimal = Decimal.from(
+          fromWei(
             e.result.value === null ? 0 : e.result.value,
             tokenDetails.decimalPrecision,
           ),
+        );
+        const bn = decimal.toBigNumber();
+        setState({
+          ...e.result,
+          weiBalance: bn.toString(),
+          bigNumberBalance: bn,
+          balance: decimal,
           decimalPrecision: tokenDetails.decimalPrecision,
-        }),
-      );
+        });
+      });
 
       const callback =
         tokenDetails.address === constants.AddressZero
@@ -107,8 +112,8 @@ export const useAssetBalance = (
       setState(prev => ({
         ...prev,
         weiBalance: '0',
-        balance: '0',
-        bigNumberBalance: ZERO,
+        balance: Decimal.ZERO,
+        bigNumberBalance: BigNumber.from(0),
         loading: false,
         error: e,
       })),
@@ -126,7 +131,7 @@ export const useAssetBalance = (
       ...state,
       weiBalance: state.weiBalance === null ? '0' : state.weiBalance,
       bigNumberBalance:
-        state.weiBalance === null ? ZERO : state.bigNumberBalance,
+        state.weiBalance === null ? BigNumber.from(0) : state.bigNumberBalance,
     }),
     [state],
   );

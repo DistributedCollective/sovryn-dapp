@@ -1,22 +1,17 @@
 import React, { useCallback, useMemo, useState, FC } from 'react';
 
-import { BigNumber } from 'ethers';
 import { t } from 'i18next';
 
 import { SupportedTokens } from '@sovryn/contracts';
 import { ErrorLevel } from '@sovryn/ui';
+import { Decimal } from '@sovryn/utils';
 
 import { BORROW_ASSETS } from '../../../5_pages/ZeroPage/constants';
 import { useAmountInput } from '../../../../hooks/useAmountInput';
 import { useAssetBalance } from '../../../../hooks/useAssetBalance';
 import { useMaxAssetBalance } from '../../../../hooks/useMaxAssetBalance';
 import { translations } from '../../../../locales/i18n';
-import {
-  bn, formatValue,
-  fromWei,
-  isScientificNumber,
-  toWei, ZERO,
-} from '../../../../utils/math';
+import { formatValue, isScientificNumber } from '../../../../utils/math';
 import {
   CRITICAL_COLLATERAL_RATIO,
   MINIMUM_COLLATERAL_RATIO,
@@ -32,11 +27,11 @@ import {
 import { FormContent } from './FormContent';
 
 type AdjustCreditLineProps = {
-  existingCollateral: BigNumber;
-  existingDebt: BigNumber;
+  existingCollateral: Decimal;
+  existingDebt: Decimal;
   onSubmit: (value: CreditLineSubmitValue) => void;
-  rbtcPrice: BigNumber;
-  borrowingRate: BigNumber;
+  rbtcPrice: Decimal;
+  borrowingRate: Decimal;
 };
 
 export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
@@ -57,16 +52,16 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
   const [debtAmountInput, setDebtAmount, debtAmount] = useAmountInput('');
   const [debtToken, setDebtToken] = useState<SupportedTokens>(BORROW_ASSETS[0]);
 
-  const debtSize = useMemo(() => toWei(debtAmount), [debtAmount]);
+  const debtSize = useMemo(() => Decimal.from(debtAmount), [debtAmount]);
   const collateralSize = useMemo(
-    () => toWei(collateralAmount),
+    () => Decimal.from(collateralAmount),
     [collateralAmount],
   );
 
-  const { weiBalance: _maxRbtcWeiBalance } = useMaxAssetBalance(
+  const { balance: maxCollateralToDepositAmount } = useMaxAssetBalance(
     SupportedTokens.rbtc,
   );
-  const { weiBalance: _debtTokenWeiBalance } = useAssetBalance(debtToken);
+  const { balance: debtTokenBalance } = useAssetBalance(debtToken);
 
   const isIncreasingDebt = useMemo(
     () => debtType === AmountType.Add,
@@ -80,36 +75,27 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
 
   const newDebt = useMemo(() => {
     const amount = existingDebt.add(
-      normalizeAmountByType(toWei(debtAmount), debtType),
+      normalizeAmountByType(Decimal.from(debtAmount), debtType),
     );
-    return amount.gt(0) ? amount : ZERO;
+    return amount.gt(0) ? amount : Decimal.ZERO;
   }, [debtAmount, existingDebt, debtType]);
 
   const newCollateral = useMemo(() => {
     const amount = existingCollateral.add(
-      normalizeAmountByType(toWei(collateralAmount), collateralType),
+      normalizeAmountByType(Decimal.from(collateralAmount), collateralType),
     );
-    return amount.gt(0) ? amount : ZERO;
+    return amount.gt(0) ? amount : Decimal.ZERO;
   }, [collateralAmount, collateralType, existingCollateral]);
-
-  const maxCollateralToDepositAmount = useMemo(
-    () => bn(_maxRbtcWeiBalance),
-    [_maxRbtcWeiBalance],
-  );
 
   const maxCollateralToWithdrawAmount = useMemo(() => {
     const amount = existingCollateral.sub(
       newDebt
         .mul(
-          toWei(
-            isRecoveryMode
-              ? CRITICAL_COLLATERAL_RATIO
-              : MINIMUM_COLLATERAL_RATIO,
-          ),
+          isRecoveryMode ? CRITICAL_COLLATERAL_RATIO : MINIMUM_COLLATERAL_RATIO,
         )
         .div(rbtcPrice),
     );
-    return amount.gt(0) ? amount : ZERO;
+    return amount.gt(0) ? amount : Decimal.ZERO;
   }, [existingCollateral, isRecoveryMode, newDebt, rbtcPrice]);
 
   const maxCollateralAmount = useMemo(
@@ -125,18 +111,19 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
   );
 
   const maxBorrowAmount = useMemo(() => {
-    const collateral =
-      collateralSize === 0
-        ? Number(existingCollateral)
-        : Number(existingCollateral) + collateralSize;
+    const collateral = collateralSize.isZero()
+      ? existingCollateral
+      : existingCollateral.add(collateralSize);
 
-    const amount =
-      (collateral * rbtcPrice) /
-      (isRecoveryMode ? CRITICAL_COLLATERAL_RATIO : MINIMUM_COLLATERAL_RATIO);
+    const amount = collateral
+      .mul(rbtcPrice)
+      .div(
+        isRecoveryMode ? CRITICAL_COLLATERAL_RATIO : MINIMUM_COLLATERAL_RATIO,
+      );
 
     const originationFee = getOriginationFeeAmount(amount, borrowingRate);
 
-    return Math.max(amount - Number(existingDebt) - originationFee, 0);
+    return Decimal.max(amount.sub(existingDebt).sub(originationFee), 0);
   }, [
     borrowingRate,
     collateralSize,
@@ -147,12 +134,8 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
   ]);
 
   const maxRepayAmount = useMemo(
-    () =>
-      Math.min(
-        Number(fromWei(_debtTokenWeiBalance)),
-        Number(existingDebt) - MIN_DEBT_SIZE,
-      ),
-    [_debtTokenWeiBalance, existingDebt],
+    () => Decimal.min(debtTokenBalance, existingDebt.sub(MIN_DEBT_SIZE)),
+    [debtTokenBalance, existingDebt],
   );
 
   const maxDebtAmount = useMemo(() => {
@@ -160,8 +143,8 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
 
     // temporary fix for small scientific numbers
     // TODO: fix it properly on SOV-1988
-    if (isScientificNumber(amount)) {
-      return 0;
+    if (isScientificNumber(amount.toNumber())) {
+      return Decimal.ZERO;
     }
 
     return amount;
@@ -171,38 +154,34 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
     if (isIncreasingDebt) {
       return getOriginationFeeAmount(debtSize, borrowingRate);
     }
-    return 0;
+    return Decimal.ZERO;
   }, [borrowingRate, debtSize, isIncreasingDebt]);
 
   const initialRatio = useMemo(
-    () =>
-      ((Number(existingCollateral) * rbtcPrice) / Number(existingDebt)) * 100,
+    () => existingCollateral.mul(rbtcPrice).div(existingDebt).mul(100),
     [existingCollateral, existingDebt, rbtcPrice],
   );
 
   const ratio = useMemo(() => {
-    return ((newCollateral * rbtcPrice) / newDebt) * 100 || 0;
+    return newCollateral.mul(rbtcPrice).div(newDebt).mul(100);
   }, [newCollateral, newDebt, rbtcPrice]);
 
   const initialLiquidationPrice = useMemo(
-    () =>
-      MINIMUM_COLLATERAL_RATIO *
-      (Number(existingDebt) / Number(existingCollateral)),
+    () => MINIMUM_COLLATERAL_RATIO.mul(existingDebt).div(existingCollateral),
     [existingDebt, existingCollateral],
   );
+
   const initialLiquidationPriceInRecoveryMode = useMemo(
-    () =>
-      CRITICAL_COLLATERAL_RATIO *
-      (Number(existingDebt) / Number(existingCollateral)),
+    () => CRITICAL_COLLATERAL_RATIO.mul(existingDebt).div(existingCollateral),
     [existingCollateral, existingDebt],
   );
 
   const liquidationPrice = useMemo(
-    () => MINIMUM_COLLATERAL_RATIO * (newDebt / newCollateral) || 0,
+    () => MINIMUM_COLLATERAL_RATIO.mul(newDebt).div(newCollateral),
     [newDebt, newCollateral],
   );
   const liquidationPriceInRecoveryMode = useMemo(
-    () => CRITICAL_COLLATERAL_RATIO * (newDebt / newCollateral) || 0,
+    () => CRITICAL_COLLATERAL_RATIO.mul(newDebt).div(newCollateral),
     [newDebt, newCollateral],
   );
 
@@ -237,18 +216,18 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
       return undefined;
     }
 
-    if (toWei(debtAmount).gt(_debtTokenWeiBalance) && !isIncreasingDebt) {
+    if (debtSize.gt(debtTokenBalance) && !isIncreasingDebt) {
       return t(translations.zeroPage.loc.errors.maxExceed);
     }
 
-    if (toWei(debtAmount).gt(toWei(maxDebtAmount)) && isIncreasingDebt) {
+    if (debtSize.gt(maxDebtAmount) && isIncreasingDebt) {
       return t(translations.zeroPage.loc.errors.maxExceed);
     }
 
     return undefined;
   }, [
-    _debtTokenWeiBalance,
-    debtAmount,
+    debtSize,
+    debtTokenBalance,
     fieldsTouched,
     isIncreasingDebt,
     maxDebtAmount,
@@ -260,7 +239,7 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
     }
 
     if (
-      collateralSize > maxCollateralToDepositAmount &&
+      collateralSize.gt(maxCollateralToDepositAmount) &&
       isIncreasingCollateral
     ) {
       return t(translations.zeroPage.loc.errors.maxExceed);

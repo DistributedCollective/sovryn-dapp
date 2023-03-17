@@ -17,7 +17,6 @@ import {
   getRskExplorerUrl,
 } from '../../../utils/helpers';
 import { FundingHistoryType } from './types';
-import { toWei } from '../../../utils/math';
 
 export const generateRowTitle = (item: FundingHistoryType) => (
   <Paragraph size={ParagraphSize.small}>
@@ -46,7 +45,7 @@ const renderSentAmount = (item: FundingHistoryType) => {
 
   return (
     <AmountRenderer
-      value={toWei(item.sent)}
+      value={item.sent}
       suffix={Bitcoin}
       precision={8}
       dataAttribute="funding-history-sent"
@@ -60,7 +59,7 @@ const renderReceivedAmount = (item: FundingHistoryType) => {
 
   return (
     <AmountRenderer
-      value={toWei(item.received)}
+      value={item.received}
       suffix={Bitcoin}
       precision={8}
       dataAttribute="funding-history-received"
@@ -75,7 +74,7 @@ const renderServiceFee = (item: FundingHistoryType) => {
 
   return (
     <AmountRenderer
-      value={toWei(item.serviceFee)}
+      value={item.serviceFee}
       suffix={Bitcoin}
       precision={8}
       dataAttribute="funding-history-service-fee"

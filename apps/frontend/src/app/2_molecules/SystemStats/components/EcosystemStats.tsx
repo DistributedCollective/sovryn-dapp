@@ -14,8 +14,6 @@ import {
 
 import { useGetProtocolContract } from '../../../../hooks/useGetContract';
 import { translations } from '../../../../locales/i18n';
-import { Bitcoin } from '../../../../utils/constants';
-import { bn, formatCompactValue, fromWeiFixed } from '../../../../utils/math';
 import { AmountRenderer } from '../../AmountRenderer/AmountRenderer';
 import { useGetAssetBalance } from '../hooks/useGetAssetBalance';
 import { useGetAssetBalanceByAddress } from '../hooks/useGetAssetBalanceByAddress';
@@ -43,7 +41,7 @@ export const EcosystemStats: FC<EcosystemStatsProps> = ({
       babelFishZUSDBalance ? (
         <>
           <AmountRenderer
-            value={bn(babelFishZUSDBalance)}
+            value={babelFishZUSDBalance}
             suffix={SupportedTokens.zusd}
             precision={USD_DISPLAY_PRECISION}
             showRoundingPrefix={false}
@@ -67,7 +65,7 @@ export const EcosystemStats: FC<EcosystemStatsProps> = ({
     () =>
       myntZUSDBalance ? (
         <AmountRenderer
-          value={bn(myntZUSDBalance)}
+          value={myntZUSDBalance}
           suffix={SupportedTokens.zusd}
           precision={USD_DISPLAY_PRECISION}
           showRoundingPrefix={false}
@@ -88,7 +86,7 @@ export const EcosystemStats: FC<EcosystemStatsProps> = ({
     () =>
       myntDOCBalance ? (
         <AmountRenderer
-          value={bn(myntDOCBalance)}
+          value={myntDOCBalance}
           suffix={SupportedTokens.doc}
           precision={USD_DISPLAY_PRECISION}
           showRoundingPrefix={false}
@@ -106,7 +104,7 @@ export const EcosystemStats: FC<EcosystemStatsProps> = ({
     () =>
       totalDLLRSupply ? (
         <AmountRenderer
-          value={bn(totalDLLRSupply)}
+          value={totalDLLRSupply}
           suffix={SupportedTokens.dllr}
           precision={USD_DISPLAY_PRECISION}
           showRoundingPrefix={false}

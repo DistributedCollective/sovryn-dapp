@@ -38,7 +38,7 @@ import {
   useGetStabilityDepositChangesLazyQuery,
 } from '../../../utils/graphql/zero/generated';
 import { dateFormat } from '../../../utils/helpers';
-import { formatValue, toWei } from '../../../utils/math';
+import { formatValue } from '../../../utils/math';
 import { useGetRewardHistory } from './hooks/useGetRewardHistory';
 
 const pageSize = DEFAULT_HISTORY_FRAME_PAGE_SIZE;
@@ -119,7 +119,7 @@ export const RewardHistory: FC = () => {
         title: t(translations.rewardHistory.table.rewardChange),
         cellRenderer: tx => (
           <AmountRenderer
-            value={toWei(tx.collateralGain || 0)}
+            value={tx.collateralGain || 0}
             suffix={Bitcoin}
             precision={8}
             dataAttribute="reward-history-collateral-gain"

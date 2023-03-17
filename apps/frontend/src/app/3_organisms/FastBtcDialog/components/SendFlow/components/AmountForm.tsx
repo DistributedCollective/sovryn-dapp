@@ -15,6 +15,7 @@ import {
   Paragraph,
   ParagraphSize,
 } from '@sovryn/ui';
+import { Decimal } from '@sovryn/utils';
 
 import { defaultChainId } from '../../../../../../config/chains';
 
@@ -111,7 +112,7 @@ export const AmountForm: React.FC = () => {
 
           <MaxButton
             onClick={onMaximumAmountClick}
-            value={maxAmount}
+            value={Decimal.fromBigNumberString(maxAmount.toString())}
             token={Bitcoin}
             precision={8}
             dataAttribute="funding-send-amount-max"

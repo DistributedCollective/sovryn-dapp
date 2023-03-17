@@ -53,7 +53,7 @@ export const TransactionStepDialog: FC<TransactionStepDialogProps> = ({
           transactions={transactions}
           onClose={onClose}
           onSuccess={onSuccess}
-          gasPrice={gasPrice}
+          gasPrice={gasPrice.toHexString()}
           onTxStatusChange={setTxStatus}
         />
       </DialogBody>

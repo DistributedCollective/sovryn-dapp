@@ -3,7 +3,7 @@ import React, { FC, useEffect, useMemo, useState } from 'react';
 import { t } from 'i18next';
 import { useLoaderData } from 'react-router-dom';
 
-import { Decimal, Percent } from '@sovryn-zero/lib-base';
+import { Percent } from '@sovryn-zero/lib-base';
 import {
   EthersLiquity,
   ReadableEthersLiquityWithStore,
@@ -17,20 +17,15 @@ import {
   SimpleTable,
   SimpleTableRow,
 } from '@sovryn/ui';
+import { Decimal } from '@sovryn/utils';
 
 import { useBlockNumber } from '../../../../hooks/useBlockNumber';
 import { translations } from '../../../../locales/i18n';
 import { Bitcoin } from '../../../../utils/constants';
-import {
-  decimalToBn,
-  formatCompactValue,
-  formatValue,
-  ZERO,
-} from '../../../../utils/math';
+import { formatCompactValue, formatValue } from '../../../../utils/math';
 import { AmountRenderer } from '../../AmountRenderer/AmountRenderer';
 import { SystemModeType } from '../types';
 import { calculateCollateralRatio } from '../utils';
-import { BigNumber } from 'ethers';
 
 type ZeroStatsProps = {
   className?: string;
@@ -42,9 +37,9 @@ const USD_DISPLAY_PRECISION = 2;
 export const ZeroStats: FC<ZeroStatsProps> = ({ className, dataAttribute }) => {
   const { value: blockNumber } = useBlockNumber();
   const [lineOfCredit, setLineOfCredit] = useState('0');
-  const [zusdInStabilityPool, setZusdInStabilityPool] = useState<BigNumber>();
-  const [zusdSupply, setZusdSupply] = useState<BigNumber>();
-  const [rbtcInLoc, setRbtcInLoc] = useState<BigNumber>(ZERO);
+  const [zusdInStabilityPool, setZusdInStabilityPool] = useState<Decimal>();
+  const [zusdSupply, setZusdSupply] = useState<Decimal>();
+  const [rbtcInLoc, setRbtcInLoc] = useState<Decimal>(Decimal.ZERO);
   const [zeroPrice, setZeroPrice] = useState<Decimal>();
   const [collateralRatio, setCollateralRatio] = useState('0');
   const [zeroInStabilityPoolPercent, setZeroInStabilityPoolPercent] =
@@ -118,8 +113,10 @@ export const ZeroStats: FC<ZeroStatsProps> = ({ className, dataAttribute }) => {
   useEffect(() => {
     liquity
       .getZUSDInStabilityPool()
-      .then(result => setZusdInStabilityPool(decimalToBn(result)));
-    liquity.getPrice().then(result => setZeroPrice(result));
+      .then(result => setZusdInStabilityPool(Decimal.from(result.toString())));
+    liquity
+      .getPrice()
+      .then(result => setZeroPrice(Decimal.from(result.toString())));
     liquity
       .getNumberOfTroves()
       .then(result => setLineOfCredit(result.toString()));
@@ -127,10 +124,12 @@ export const ZeroStats: FC<ZeroStatsProps> = ({ className, dataAttribute }) => {
 
   useEffect(() => {
     liquity.getTotal().then(result => {
-      setZusdSupply(decimalToBn(result.debt));
-      setRbtcInLoc(decimalToBn(result.collateral));
+      setZusdSupply(Decimal.from(result.debt.toString()));
+      setRbtcInLoc(Decimal.from(result.collateral.toString()));
       if (zeroPrice) {
-        const recoveryMode = result.collateralRatioIsBelowCritical(zeroPrice);
+        const recoveryMode = result.collateralRatioIsBelowCritical(
+          zeroPrice.toString(),
+        );
         setIsRecoveryMode(recoveryMode);
         setCollateralRatio(
           calculateCollateralRatio(
@@ -142,7 +141,7 @@ export const ZeroStats: FC<ZeroStatsProps> = ({ className, dataAttribute }) => {
       }
       if (zusdInStabilityPool) {
         const percent = new Percent(
-          zusdInStabilityPool.div(decimalToBn(result.debt)),
+          zusdInStabilityPool.div(result.debt.toString()),
         );
         setZeroInStabilityPoolPercent(percent?.toString(2));
       }

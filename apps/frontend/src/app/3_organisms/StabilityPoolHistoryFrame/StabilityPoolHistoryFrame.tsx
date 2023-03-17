@@ -44,7 +44,6 @@ import { dateFormat } from '../../../utils/helpers';
 import { renderSign } from '../TransactionHistoryFrame/utils';
 import { TOKEN_RENDER_PRECISION } from '../ZeroLocForm/constants';
 import { useGetStabilityPoolHistory } from './hooks/useGetStabilityPoolHistory';
-import { toWei } from '../../../utils/math';
 
 const pageSize = DEFAULT_HISTORY_FRAME_PAGE_SIZE;
 
@@ -150,7 +149,7 @@ export const StabilityPoolHistoryFrame: FC = () => {
       <>
         {balance.length ? (
           <AmountRenderer
-            value={toWei(balance)}
+            value={balance}
             suffix={SupportedTokens.zusd}
             precision={TOKEN_RENDER_PRECISION}
             dataAttribute="stability-pool-history-balance-change"
@@ -169,7 +168,7 @@ export const StabilityPoolHistoryFrame: FC = () => {
       <>
         {stabilityDeposit ? (
           <AmountRenderer
-            value={toWei(stabilityDeposit.depositedAmountAfter)}
+            value={stabilityDeposit.depositedAmountAfter}
             suffix={SupportedTokens.zusd}
             precision={TOKEN_RENDER_PRECISION}
             dataAttribute="stability-pool-history-new-balance"

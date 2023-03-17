@@ -2,21 +2,22 @@ import React, { FC, ReactNode, useMemo } from 'react';
 
 import { t } from 'i18next';
 
+import { Decimal } from '@sovryn/utils';
+
 import { AmountRenderer } from '../../2_molecules/AmountRenderer/AmountRenderer';
 import { CRatioIndicator } from '../../2_molecules/LOCStatus/components/CRatioIndicator/CRatioIndicator';
 import { Bitcoin } from '../../../utils/constants';
-import { formatValue, fromWei } from '../../../utils/math';
+import { formatValue } from '../../../utils/math';
 import {
   TOKEN_RENDER_PRECISION,
   BTC_RENDER_PRECISION,
   DEBT_TOKEN,
 } from './constants';
-import { BigNumber } from 'ethers';
 
 type CurrentTroveDataProps = {
-  debt: BigNumber;
-  collateral: BigNumber;
-  rbtcPrice: BigNumber;
+  debt: Decimal;
+  collateral: Decimal;
+  rbtcPrice: Decimal;
   className?: string;
 };
 
@@ -26,16 +27,10 @@ export const CurrentTroveData: FC<CurrentTroveDataProps> = ({
   rbtcPrice,
   collateral,
 }) => {
-  // const collateralRatio = useMemo(
-  //   () => ((parseFloat(collateral) * rbtcPrice) / parseFloat(debt)) * 100,
-  //   [collateral, debt, rbtcPrice],
-  // );
-
   const collateralRatio = useMemo(
     () => collateral.mul(rbtcPrice).div(debt).mul(100),
     [collateral, debt, rbtcPrice],
   );
-
   return (
     <div className={className}>
       <div className="w-full flex flex-row justify-between items-center mb-12 gap-4">
@@ -65,7 +60,7 @@ export const CurrentTroveData: FC<CurrentTroveDataProps> = ({
             <div className="flex flex-row justify-start items-center">
               <CRatioIndicator
                 className="mr-2"
-                value={Number(fromWei(collateralRatio))}
+                value={collateralRatio.toNumber()}
               />
               {formatValue(collateralRatio)}%
             </div>

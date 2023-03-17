@@ -5,6 +5,7 @@ import { t } from 'i18next';
 import CountUp from 'react-countup';
 
 import { Button, ButtonSize, ButtonStyle } from '@sovryn/ui';
+import { Decimal } from '@sovryn/utils';
 
 import {
   TOKEN_RENDER_PRECISION,
@@ -14,26 +15,24 @@ import { Bitcoin } from '../../../utils/constants';
 import { AmountRenderer } from '../AmountRenderer/AmountRenderer';
 import { CRatioIndicator } from './components/CRatioIndicator/CRatioIndicator';
 import { LOCStat } from './components/LOCStat/LOCStat';
-import { BigNumber } from 'ethers';
-import { ZERO } from '../../../utils/math';
 
 export type LOCStatusProps = {
   className?: string;
-  withdrawalSurplus?: BigNumber;
-  collateral?: BigNumber;
-  debt?: BigNumber;
+  withdrawalSurplus?: Decimal;
+  collateral?: Decimal;
+  debt?: Decimal;
   debtSymbol?: string;
-  cRatio?: BigNumber;
+  cRatio?: Decimal;
   onAdjust?: () => void;
   onClose?: () => void;
   onWithdraw?: () => void;
 };
 
 export const LOCStatus: FC<LOCStatusProps> = ({
-  withdrawalSurplus = ZERO,
-  collateral = ZERO,
-  debt = ZERO,
-  cRatio = ZERO,
+  withdrawalSurplus = Decimal.ZERO,
+  collateral = Decimal.ZERO,
+  debt = Decimal.ZERO,
+  cRatio = Decimal.ZERO,
   onAdjust,
   onClose,
   onWithdraw,
@@ -43,7 +42,7 @@ export const LOCStatus: FC<LOCStatusProps> = ({
   const hasWithdrawalSurplus = withdrawalSurplus.gt(0);
   const showOpenLOC = !hasWithdrawalSurplus && collateral.gt(0);
 
-  const ratio = useMemo(() => Number(cRatio), [cRatio]);
+  const ratio = useMemo(() => cRatio.toNumber(), [cRatio]);
 
   return (
     <div

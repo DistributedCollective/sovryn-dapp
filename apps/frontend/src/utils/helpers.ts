@@ -1,14 +1,10 @@
 import dayjs from 'dayjs';
-import {
-  BigNumberish,
-  providers,
-  TypedDataDomain,
-  TypedDataField,
-} from 'ethers';
+import { providers, TypedDataDomain, TypedDataField } from 'ethers';
 import resolveConfig from 'tailwindcss/resolveConfig';
 
 import { EIP1193Provider } from '@sovryn/onboard-common';
 import tailwindConfig from '@sovryn/tailwindcss-config';
+import { Decimal, Decimalish } from '@sovryn/utils';
 
 import { Environments } from '../types/global';
 import {
@@ -17,7 +13,6 @@ import {
   servicesConfig,
   sovrynLinks,
 } from './constants';
-import { toWei } from './math';
 
 export const prettyTx = (
   text: string,
@@ -107,10 +102,8 @@ export const valueIsDefined = <T>(
   entry: [string, T | undefined],
 ): entry is [string, T] => entry[1] !== undefined;
 
-export const composeGas = (
-  priceInGwei: BigNumberish,
-  limitInWei: BigNumberish,
-) => toWei(priceInGwei, 9).mul(limitInWei);
+export const composeGas = (priceInGwei: Decimalish, limitInWei: Decimalish) =>
+  Decimal.from(priceInGwei).pow(9).mul(limitInWei);
 
 export const isMobileDevice = () => {
   const config = resolveConfig(tailwindConfig);

@@ -99,7 +99,7 @@ const ConvertPage: FC = () => {
   );
 
   const onMaximumAmountClick = useCallback(
-    () => setAmount(maximumAmountToConvert),
+    () => setAmount(maximumAmountToConvert.toString()),
     [maximumAmountToConvert, setAmount],
   );
 

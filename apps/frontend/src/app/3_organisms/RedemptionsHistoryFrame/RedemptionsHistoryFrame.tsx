@@ -42,7 +42,6 @@ import {
   BTC_RENDER_PRECISION,
 } from '../ZeroLocForm/constants';
 import { useGetRedemptionsHistory } from './hooks/useGetRedemptionsHistory';
-import { toWei } from '../../../utils/math';
 
 const pageSize = DEFAULT_HISTORY_FRAME_PAGE_SIZE;
 
@@ -89,7 +88,7 @@ export const RedemptionsHistoryFrame: FC = () => {
       <>
         {redemption.tokensActuallyRedeemed.length ? (
           <AmountRenderer
-            value={toWei(redemption.tokensActuallyRedeemed)}
+            value={redemption.tokensActuallyRedeemed}
             suffix={SupportedTokens.zusd}
             precision={TOKEN_RENDER_PRECISION}
             dataAttribute="redemption-history-zusd-redeemed"
@@ -107,7 +106,7 @@ export const RedemptionsHistoryFrame: FC = () => {
       <>
         {redemption.collateralRedeemed.length ? (
           <AmountRenderer
-            value={toWei(redemption.collateralRedeemed)}
+            value={redemption.collateralRedeemed}
             suffix={Bitcoin}
             precision={BTC_RENDER_PRECISION}
             dataAttribute="redemption-history-rbtc-received"
@@ -125,7 +124,7 @@ export const RedemptionsHistoryFrame: FC = () => {
       <>
         {redemption.fee.length ? (
           <AmountRenderer
-            value={toWei(redemption.fee)}
+            value={redemption.fee}
             suffix={Bitcoin}
             precision={BTC_RENDER_PRECISION}
             dataAttribute="redemption-history-fee"

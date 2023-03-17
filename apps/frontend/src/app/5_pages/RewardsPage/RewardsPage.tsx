@@ -4,7 +4,6 @@ import { t } from 'i18next';
 import { Helmet } from 'react-helmet-async';
 import { useLoaderData } from 'react-router-dom';
 
-import { Decimal } from '@sovryn-zero/lib-base';
 import {
   EthersLiquity,
   ReadableEthersLiquityWithStore,
@@ -21,6 +20,7 @@ import {
   ParagraphSize,
   ParagraphStyle,
 } from '@sovryn/ui';
+import { Decimal } from '@sovryn/utils';
 
 import { AmountRenderer } from '../../2_molecules/AmountRenderer/AmountRenderer';
 import { BTC_RENDER_PRECISION } from '../../3_organisms/ZeroLocForm/constants';
@@ -32,11 +32,10 @@ import { translations } from '../../../locales/i18n';
 import { Bitcoin } from '../../../utils/constants';
 import { useHandleRewards } from './hooks/useHandleRewards';
 import { RewardsAction } from './types';
-import { decimalToBn } from '../../../utils/math';
 
 const RewardsPage: FC = () => {
   const { account, signer } = useAccount();
-  const [amount, setAmount] = useState<Decimal>(Decimal.from(0));
+  const [amount, setAmount] = useState<Decimal>(Decimal.ZERO);
   const isOpenTroveExists = useGetOpenTrove();
   const { value: block } = useBlockNumber();
 
@@ -61,7 +60,9 @@ const RewardsPage: FC = () => {
   useEffect(() => {
     liquity
       .getStabilityDeposit(account)
-      .then(result => setAmount(result.collateralGain));
+      .then(result =>
+        setAmount(Decimal.from(result.collateralGain.toString())),
+      );
   }, [liquity, account, block]);
 
   const claimDisabled = useMemo(
@@ -96,7 +97,7 @@ const RewardsPage: FC = () => {
             </Paragraph>
             <div className="text-2xl leading-7 uppercase">
               <AmountRenderer
-                value={decimalToBn(amount)}
+                value={amount}
                 suffix={Bitcoin}
                 precision={BTC_RENDER_PRECISION}
                 dataAttribute="rewards-amount"

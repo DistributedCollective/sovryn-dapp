@@ -16,6 +16,7 @@ import {
   Select,
   SimpleTable,
 } from '@sovryn/ui';
+import { Decimal } from '@sovryn/utils';
 
 import { LedgerPermitLocked } from '../../1_atoms/LedgerPermitLocked/LedgerPermitLocked';
 import { AmountRenderer } from '../../2_molecules/AmountRenderer/AmountRenderer';
@@ -27,11 +28,10 @@ import { translations } from '../../../locales/i18n';
 import { Bitcoin, LEDGER } from '../../../utils/constants';
 import { Row } from './Row';
 import { BTC_RENDER_PRECISION } from './constants';
-import { BigNumber } from 'ethers';
 
 type CloseCreditLineProps = {
-  collateralValue: BigNumber;
-  creditValue: BigNumber;
+  collateralValue: Decimal;
+  creditValue: Decimal;
   onSubmit: (token: SupportedTokens) => void;
 };
 
@@ -51,7 +51,7 @@ export const CloseCreditLine: FC<CloseCreditLineProps> = ({
   const { balance: availableBalance } = useAssetBalance(creditToken);
 
   const collateralValueRenderer = useCallback(
-    (value: BigNumber) => (
+    (value: Decimal) => (
       <AmountRenderer
         value={value}
         suffix={Bitcoin}

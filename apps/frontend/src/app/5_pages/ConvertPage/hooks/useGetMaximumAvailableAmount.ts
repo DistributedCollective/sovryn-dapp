@@ -3,12 +3,12 @@ import { useEffect, useMemo, useState } from 'react';
 import { BigNumber } from 'ethers';
 
 import { getProtocolContract, SupportedTokens } from '@sovryn/contracts';
+import { Decimal } from '@sovryn/utils';
 
 import { defaultChainId } from '../../../../config/chains';
 
 import { useAssetBalance } from '../../../../hooks/useAssetBalance';
 import { useIsMounted } from '../../../../hooks/useIsMounted';
-import { fromWei } from '../../../../utils/math';
 import { bassets, masset } from '../ConvertPage.types';
 
 export const useGetMaximumAvailableAmount = (
@@ -51,7 +51,7 @@ export const useGetMaximumAvailableAmount = (
   );
 
   const destinationTokenAggregatorBalance = useMemo(
-    () => fromWei(destinationTokenAggregatorWeiBalance).toString(),
+    () => Decimal.fromBigNumberString(destinationTokenAggregatorWeiBalance),
     [destinationTokenAggregatorWeiBalance],
   );
 

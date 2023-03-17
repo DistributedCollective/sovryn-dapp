@@ -49,6 +49,7 @@ import {
   BTC_RENDER_PRECISION,
 } from '../ZeroLocForm/constants';
 import { useGetTroves } from './hooks/useGetTroves';
+import { renderSign } from './utils';
 import { toWei } from '../../../utils/math';
 
 const pageSize = DEFAULT_HISTORY_FRAME_PAGE_SIZE;
@@ -87,10 +88,10 @@ export const TransactionHistoryFrame: FC = () => {
           translations.transactionHistory.troveTypes.liquidationRecovery,
         );
       case TroveOperation.AccrueRewards:
-        return t(translations.transactionHistory.troveTypes.accrueRewards);
+        return t(translations.transactionHistory.troveTypes.redistribution);
       case TroveOperation.TransferGainToLineOfCredit:
         return t(
-          translations.transactionHistory.troveTypes.withdrawGainToLineOfCredit,
+          translations.transactionHistory.troveTypes.transferGainToLineOfCredit,
         );
       default:
         return '';
@@ -248,19 +249,6 @@ export const TransactionHistoryFrame: FC = () => {
     [filters],
   );
 
-  const renderSign = useCallback(
-    (troveOperation: TroveOperation, value: number) => {
-      const operations = [TroveOperation.OpenTrove, TroveOperation.AdjustTrove];
-
-      if (operations.some(item => item.includes(troveOperation))) {
-        return value > 0 ? '+' : '';
-      }
-
-      return null;
-    },
-    [],
-  );
-
   const renderDebtChange = useCallback(
     (trove: TroveChange) => (
       <>
@@ -270,16 +258,14 @@ export const TransactionHistoryFrame: FC = () => {
             suffix={SupportedTokens.zusd}
             precision={TOKEN_RENDER_PRECISION}
             dataAttribute="transaction-history-debt-change"
-            prefix={
-              renderSign(trove.troveOperation, Number(trove.debtChange)) ?? ''
-            }
+            prefix={renderSign(trove.debtChange)}
           />
         ) : (
           '-'
         )}
       </>
     ),
-    [renderSign],
+    [],
   );
 
   const renderNewDebt = useCallback(
@@ -309,19 +295,14 @@ export const TransactionHistoryFrame: FC = () => {
             suffix={Bitcoin}
             precision={BTC_RENDER_PRECISION}
             dataAttribute="transaction-history-collateral-change"
-            prefix={
-              renderSign(
-                trove.troveOperation,
-                Number(trove.collateralChange),
-              ) ?? ''
-            }
+            prefix={renderSign(trove.collateralChange)}
           />
         ) : (
           '-'
         )}
       </>
     ),
-    [renderSign],
+    [],
   );
 
   const renderCollateralBalance = useCallback(
@@ -333,21 +314,13 @@ export const TransactionHistoryFrame: FC = () => {
             suffix={Bitcoin}
             precision={BTC_RENDER_PRECISION}
             dataAttribute="transaction-history-collateral-balance"
-            prefix={
-              trove.troveOperation === TroveOperation.OpenTrove
-                ? renderSign(
-                    trove.troveOperation,
-                    Number(trove.collateralAfter),
-                  ) || ''
-                : ''
-            }
           />
         ) : (
           '-'
         )}
       </>
     ),
-    [renderSign],
+    [],
   );
 
   const renderOriginationFee = useCallback(
@@ -441,14 +414,14 @@ export const TransactionHistoryFrame: FC = () => {
         ),
       },
       {
-        id: 'newDebt',
-        title: t(translations.transactionHistory.table.newDebt),
-        cellRenderer: (item: TroveChange) => renderNewDebt(item),
-      },
-      {
         id: 'originationFee',
         title: t(translations.transactionHistory.table.originationFee),
         cellRenderer: (item: TroveChange) => renderOriginationFee(item),
+      },
+      {
+        id: 'newDebt',
+        title: t(translations.transactionHistory.table.newDebt),
+        cellRenderer: (item: TroveChange) => renderNewDebt(item),
       },
       {
         id: 'transactionID',
@@ -548,7 +521,7 @@ export const TransactionHistoryFrame: FC = () => {
         <ExportCSV
           getData={exportData}
           filename="transactions"
-          disabled={!troves || exportLocked}
+          disabled={!troves || troves?.length < 1 || exportLocked}
         />
         {exportLocked && (
           <ErrorBadge

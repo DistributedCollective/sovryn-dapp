@@ -34,6 +34,7 @@ import { CloseCreditLine } from '../../3_organisms/ZeroLocForm/CloseCreditLine';
 import { AdjustCreditLine } from '../../3_organisms/ZeroLocForm/components/AdjustCreditLine';
 import { OpenCreditLine } from '../../3_organisms/ZeroLocForm/components/OpenCreditLine';
 import { DEBT_TOKEN } from '../../3_organisms/ZeroLocForm/constants';
+import { useTransactionContext } from '../../../contexts/TransactionContext';
 import { useWalletConnect } from '../../../hooks';
 import { useAccount } from '../../../hooks/useAccount';
 import { translations } from '../../../locales/i18n';
@@ -46,6 +47,7 @@ import { decimalToBn, toWei } from '../../../utils/math';
 export const ZeroPage: FC = () => {
   const { liquity, deferedData } = useLoaderData() as ZeroPageLoaderData;
 
+  const { isOpen: isTxOpen } = useTransactionContext();
   const [open, toggle] = useReducer(v => !v, false);
   const [openStartedPopup, toggleStartedPopup] = useReducer(v => !v, false);
   const [openClosePopup, toggleClosePopup] = useReducer(v => !v, false);
@@ -63,11 +65,6 @@ export const ZeroPage: FC = () => {
   );
   const debt = useMemo(() => decimalToBn(trove?.debt), [trove?.debt]);
   const hasLoc = useMemo(() => !!trove?.debt?.gt(0), [trove?.debt]);
-
-  const handleLOCPopup = useCallback(() => {
-    toggle();
-    toggleStartedPopup();
-  }, []);
 
   const isLoading = useMemo(
     () =>
@@ -99,6 +96,7 @@ export const ZeroPage: FC = () => {
   const { handleTroveSubmit, handleTroveClose } = useHandleTrove(hasLoc, {
     onTroveOpened: () => {
       toggle();
+      toggleStartedPopup();
       getTroves();
       getOpenTroves();
     },
@@ -163,7 +161,7 @@ export const ZeroPage: FC = () => {
 
                 {showWelcomeBanner && !isLoading && (
                   <DashboardWelcomeBanner
-                    openLOC={toggleStartedPopup}
+                    openLOC={toggle}
                     connectWallet={connectWallet}
                     className="mb-10 md:mb-4"
                   />
@@ -218,8 +216,8 @@ export const ZeroPage: FC = () => {
                 </Dialog>
 
                 <GettingStartedPopup
-                  isOpen={openStartedPopup}
-                  onConfirm={handleLOCPopup}
+                  isOpen={openStartedPopup && !isTxOpen}
+                  onConfirm={toggleStartedPopup}
                 />
 
                 <Dialog

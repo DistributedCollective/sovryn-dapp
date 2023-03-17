@@ -1,5 +1,11 @@
 # @sovryn/ui
 
+## 1.0.1
+
+### Patch Changes
+
+- 018fd13: SOV-1762: update getting started dialog
+
 ## 1.0.0
 
 ### Major Changes

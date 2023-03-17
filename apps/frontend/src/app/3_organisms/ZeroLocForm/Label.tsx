@@ -1,22 +1,19 @@
-import React, { FC, useCallback } from 'react';
+import React, { FC, useCallback, useState } from 'react';
 
-import classNames from 'classnames';
+import { ITabItem, Tabs, TabType } from '@sovryn/ui';
 
 import { MaxButton } from '../../2_molecules/MaxButton/MaxButton';
 import { AmountType } from './types';
 import { bn } from '../../../utils/math';
 
-type Tab = {
-  value: AmountType;
-  label: string;
-  disabled?: boolean;
-};
+interface ITabItemExtended extends ITabItem {
+  amountType: AmountType;
+}
 
 type CustomLabelProps = {
   maxAmount: string;
   symbol: string;
-  tabs: Tab[];
-  activeTab: AmountType;
+  tabs: ITabItemExtended[];
   onTabChange: (value: AmountType) => void;
   onMaxAmountClicked: () => void;
   hasTrove?: boolean;
@@ -26,39 +23,29 @@ export const Label: FC<CustomLabelProps> = ({
   maxAmount,
   symbol,
   tabs,
-  activeTab,
   onTabChange,
   onMaxAmountClicked,
   hasTrove = false,
 }) => {
-  const handleTabChange = useCallback(
-    (value: AmountType) => () => onTabChange(value),
-    [onTabChange],
+  const [index, setIndex] = useState(0);
+
+  const onChangeIndex = useCallback(
+    (index: number) => {
+      setIndex(index);
+      onTabChange(tabs[index]?.amountType);
+    },
+    [onTabChange, tabs],
   );
 
   return (
     <div className="w-full flex flex-row justify-between gap-4 items-center">
       {hasTrove ? (
-        <div className="flex flex-row items-center justify-start gap-2">
-          {tabs.map(tab => (
-            <button
-              key={tab.value}
-              className={classNames(
-                'font-roboto font-semibold text-[11px] px-3 py-1 rounded bg-gray-80 whitespace-nowrap',
-                {
-                  'text-gray-30 text-opacity-75':
-                    !tab.disabled && tab.value !== activeTab,
-                  'text-gray-40 cursor-not-allowed': tab.disabled,
-                  'bg-gray-70 text-primary-20': tab.value === activeTab,
-                },
-              )}
-              onClick={handleTabChange(tab.value)}
-              disabled={tab.disabled}
-            >
-              {tab.label}
-            </button>
-          ))}
-        </div>
+        <Tabs
+          items={tabs}
+          index={index}
+          onChange={onChangeIndex}
+          type={TabType.secondary}
+        />
       ) : (
         <>{tabs[0].label}</>
       )}

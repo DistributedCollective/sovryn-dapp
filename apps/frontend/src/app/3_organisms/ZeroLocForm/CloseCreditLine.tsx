@@ -17,12 +17,14 @@ import {
   SimpleTable,
 } from '@sovryn/ui';
 
+import { LedgerPermitLocked } from '../../1_atoms/LedgerPermitLocked/LedgerPermitLocked';
 import { AmountRenderer } from '../../2_molecules/AmountRenderer/AmountRenderer';
 import { AssetRenderer } from '../../2_molecules/AssetRenderer/AssetRenderer';
+import { useAccount } from '../../../hooks/useAccount';
 import { useAssetBalance } from '../../../hooks/useAssetBalance';
 import { useMaintenance } from '../../../hooks/useMaintenance';
 import { translations } from '../../../locales/i18n';
-import { Bitcoin } from '../../../utils/constants';
+import { Bitcoin, LEDGER } from '../../../utils/constants';
 import { Row } from './Row';
 import { BTC_RENDER_PRECISION } from './constants';
 import { BigNumber } from 'ethers';
@@ -98,6 +100,13 @@ export const CloseCreditLine: FC<CloseCreditLineProps> = ({
     [],
   );
 
+  const { type } = useAccount();
+
+  const ledgerAndDllr = useMemo(
+    () => type === LEDGER && creditToken === SupportedTokens.dllr,
+    [creditToken, type],
+  );
+
   return (
     <>
       <Paragraph
@@ -157,11 +166,13 @@ export const CloseCreditLine: FC<CloseCreditLineProps> = ({
         />
       )}
 
+      {ledgerAndDllr && !hasError && <LedgerPermitLocked />}
+
       <div className="mt-24 flex flex-row items-center justify-between gap-8">
         <Button
           text={t(translations.common.buttons.confirm)}
           className="w-full"
-          disabled={submitButtonDisabled}
+          disabled={submitButtonDisabled || ledgerAndDllr}
           onClick={handleSubmit}
           dataAttribute="close-credit-line-confirm"
         />

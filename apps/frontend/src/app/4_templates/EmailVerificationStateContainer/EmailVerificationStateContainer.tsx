@@ -31,7 +31,7 @@ export const EmailVerificationStateContainer: FC<
       </div>
     </>
     <div className="shrink">
-      <Footer isEmailVerificationStatePage />
+      <Footer showDashboardLink />
     </div>
   </div>
 );

@@ -22,7 +22,6 @@ import { AmountRenderer } from '../../2_molecules/AmountRenderer/AmountRenderer'
 import { ExportCSV } from '../../2_molecules/ExportCSV/ExportCSV';
 import { TableFilter } from '../../2_molecules/TableFilter/TableFilter';
 import { Filter } from '../../2_molecules/TableFilter/TableFilter.types';
-import { TransactionTypeRenderer } from '../../2_molecules/TransactionTypeRenderer/TransactionTypeRenderer';
 import { TxIdWithNotification } from '../../2_molecules/TxIdWithNotification/TransactionIdWithNotification';
 import { useNotificationContext } from '../../../contexts/NotificationContext';
 import { useAccount } from '../../../hooks/useAccount';
@@ -42,11 +41,32 @@ import {
   useGetStabilityPoolLazyQuery,
 } from '../../../utils/graphql/zero/generated';
 import { dateFormat } from '../../../utils/helpers';
+import { renderSign } from '../TransactionHistoryFrame/utils';
 import { TOKEN_RENDER_PRECISION } from '../ZeroLocForm/constants';
 import { useGetStabilityPoolHistory } from './hooks/useGetStabilityPoolHistory';
 import { toWei } from '../../../utils/math';
 
 const pageSize = DEFAULT_HISTORY_FRAME_PAGE_SIZE;
+
+const getTransactionType = (operation: StabilityDepositOperation) => {
+  switch (operation) {
+    case StabilityDepositOperation.DepositTokens:
+      return t(
+        translations.stabilityPoolHistory.stabilityPoolOperation.deposit,
+      );
+    case StabilityDepositOperation.WithdrawTokens:
+      return t(
+        translations.stabilityPoolHistory.stabilityPoolOperation.withdrawal,
+      );
+    case StabilityDepositOperation.WithdrawCollateralGain:
+    case StabilityDepositOperation.WithdrawGainToLineOfCredit:
+      return t(
+        translations.stabilityPoolHistory.stabilityPoolOperation.settlement,
+      );
+    default:
+      return operation;
+  }
+};
 
 export const StabilityPoolHistoryFrame: FC = () => {
   const { account } = useAccount();
@@ -134,6 +154,7 @@ export const StabilityPoolHistoryFrame: FC = () => {
             suffix={SupportedTokens.zusd}
             precision={TOKEN_RENDER_PRECISION}
             dataAttribute="stability-pool-history-balance-change"
+            prefix={renderSign(balance)}
           />
         ) : (
           '-'
@@ -168,9 +189,7 @@ export const StabilityPoolHistoryFrame: FC = () => {
           size={ParagraphSize.small}
           className="text-ellipsis overflow-hidden whitespace-nowrap"
         >
-          <TransactionTypeRenderer
-            type={stabilityDeposit.stabilityDepositOperation}
-          />
+          <>{getTransactionType(stabilityDeposit.stabilityDepositOperation)}</>
           {' - '}
           {dateFormat(stabilityDeposit.transaction.timestamp)}
         </Paragraph>
@@ -192,7 +211,7 @@ export const StabilityPoolHistoryFrame: FC = () => {
         id: 'transactionType',
         title: t(translations.common.tables.columnTitles.transactionType),
         cellRenderer: (row: StabilityDepositChange) => (
-          <TransactionTypeRenderer type={row.stabilityDepositOperation} />
+          <>{getTransactionType(row.stabilityDepositOperation)}</>
         ),
         filter: (
           <TableFilter
@@ -274,7 +293,7 @@ export const StabilityPoolHistoryFrame: FC = () => {
 
     return list.map(tx => ({
       timestamp: dateFormat(tx.transaction.timestamp),
-      transactionType: tx.stabilityDepositOperation,
+      transactionType: getTransactionType(tx.stabilityDepositOperation),
       balanceChange: tx.depositedAmountChange,
       newBalance: tx.depositedAmountAfter,
       transactionID: tx.transaction.id,

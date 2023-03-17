@@ -20,7 +20,6 @@ import { chains, defaultChainId } from '../../../config/chains';
 
 import { AmountRenderer } from '../../2_molecules/AmountRenderer/AmountRenderer';
 import { ExportCSV } from '../../2_molecules/ExportCSV/ExportCSV';
-import { TransactionTypeRenderer } from '../../2_molecules/TransactionTypeRenderer/TransactionTypeRenderer';
 import { TxIdWithNotification } from '../../2_molecules/TxIdWithNotification/TransactionIdWithNotification';
 import { useNotificationContext } from '../../../contexts/NotificationContext';
 import { useAccount } from '../../../hooks/useAccount';
@@ -35,6 +34,7 @@ import {
 import {
   StabilityDepositChange,
   StabilityDepositChange_Filter,
+  StabilityDepositOperation,
   useGetStabilityDepositChangesLazyQuery,
 } from '../../../utils/graphql/zero/generated';
 import { dateFormat } from '../../../utils/helpers';
@@ -42,6 +42,32 @@ import { formatValue, toWei } from '../../../utils/math';
 import { useGetRewardHistory } from './hooks/useGetRewardHistory';
 
 const pageSize = DEFAULT_HISTORY_FRAME_PAGE_SIZE;
+
+const getTransactionType = (operation: StabilityDepositOperation) => {
+  switch (operation) {
+    case StabilityDepositOperation.WithdrawCollateralGain:
+      return t(
+        translations.rewardHistory.stabilityPoolOperation.claimCollateralGain,
+      );
+    case StabilityDepositOperation.WithdrawGainToLineOfCredit:
+      return t(
+        translations.rewardHistory.stabilityPoolOperation
+          .transferGainToLineOfCredit,
+      );
+    default:
+      return operation;
+  }
+};
+
+const generateRowTitle = (row: StabilityDepositChange) => {
+  return (
+    <Paragraph size={ParagraphSize.small}>
+      <>{getTransactionType(row.stabilityDepositOperation)}</>
+      {' - '}
+      {dateFormat(row.transaction.timestamp)}
+    </Paragraph>
+  );
+};
 
 export const RewardHistory: FC = () => {
   const { account } = useAccount();
@@ -72,16 +98,6 @@ export const RewardHistory: FC = () => {
     )} ${SupportedTokens.rbtc.toUpperCase()}`;
   }, []);
 
-  const generateRowTitle = useCallback((row: StabilityDepositChange) => {
-    return (
-      <Paragraph size={ParagraphSize.small}>
-        <TransactionTypeRenderer type={row.stabilityDepositOperation} />
-        {' - '}
-        {dateFormat(row.transaction.timestamp)}
-      </Paragraph>
-    );
-  }, []);
-
   const columns = useMemo(
     () => [
       {
@@ -95,7 +111,7 @@ export const RewardHistory: FC = () => {
         id: 'stabilityDepositOperation',
         title: t(translations.common.tables.columnTitles.transactionType),
         cellRenderer: (tx: StabilityDepositChange) => (
-          <TransactionTypeRenderer type={tx.stabilityDepositOperation} />
+          <>{getTransactionType(tx.stabilityDepositOperation)}</>
         ),
       },
       {
@@ -169,7 +185,9 @@ export const RewardHistory: FC = () => {
     return list.map(tx => ({
       timestamp: dateFormat(tx.transaction.timestamp),
       collateralGain: renderCollateralChange(tx.collateralGain || ''),
-      stabilityDepositOperation: tx.stabilityDepositOperation,
+      stabilityDepositOperation: getTransactionType(
+        tx.stabilityDepositOperation,
+      ),
       transactionID: tx.transaction.id,
     }));
   }, [account, addNotification, getStabilityDeposit, renderCollateralChange]);

@@ -12,6 +12,7 @@ export const useAccount = () => {
 
   return {
     account: wallets[0]?.accounts[0]?.address || '',
+    type: wallets[0]?.label,
     eip1193Provider: wallets[0]?.provider,
     provider: web3provider,
     signer,

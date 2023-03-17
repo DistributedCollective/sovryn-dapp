@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, FC } from 'react';
+import React, { useCallback, useMemo, FC, useState } from 'react';
 
 import { t } from 'i18next';
 
@@ -19,12 +19,19 @@ import {
   SimpleTable,
 } from '@sovryn/ui';
 
+import { LedgerPermitLocked } from '../../../1_atoms/LedgerPermitLocked/LedgerPermitLocked';
 import { AmountRenderer } from '../../../2_molecules/AmountRenderer/AmountRenderer';
 import { AssetRenderer } from '../../../2_molecules/AssetRenderer/AssetRenderer';
 import { BORROW_ASSETS } from '../../../5_pages/ZeroPage/constants';
+import { useAccount } from '../../../../hooks/useAccount';
 import { useMaintenance } from '../../../../hooks/useMaintenance';
 import { translations } from '../../../../locales/i18n';
-import { Bitcoin, CR_THRESHOLDS, USD } from '../../../../utils/constants';
+import {
+  Bitcoin,
+  CR_THRESHOLDS,
+  LEDGER,
+  USD,
+} from '../../../../utils/constants';
 import { formatValue, ZERO } from '../../../../utils/math';
 import { CurrentTroveData } from '../CurrentTroveData';
 import { Label } from '../Label';
@@ -82,8 +89,12 @@ export type FormContentProps = {
   errors?: ErrorBadgeProps[];
 } & (OpenTroveProps | AdjustTroveProps);
 
+const ACTIVE_CLASSNAME = 'bg-gray-70 text-primary-20';
+
 // using props instead of destructuring to make use of the type
 export const FormContent: FC<FormContentProps> = props => {
+  const { type } = useAccount();
+  const [debtType, setDebtType] = useState<AmountType>(AmountType.Add);
   const { checkMaintenance, States } = useMaintenance();
   const actionLocked = checkMaintenance(
     props.hasTrove ? States.ZERO_ADJUST_LOC : States.ZERO_OPEN_LOC,
@@ -92,12 +103,14 @@ export const FormContent: FC<FormContentProps> = props => {
   const debtTabs = useMemo(
     () => [
       {
-        value: AmountType.Add,
+        amountType: AmountType.Add,
         label: t(translations.adjustCreditLine.actions.borrow),
+        activeClassName: ACTIVE_CLASSNAME,
       },
       {
-        value: AmountType.Remove,
+        amountType: AmountType.Remove,
         label: t(translations.adjustCreditLine.actions.repay),
+        activeClassName: ACTIVE_CLASSNAME,
       },
     ],
     [],
@@ -106,16 +119,18 @@ export const FormContent: FC<FormContentProps> = props => {
   const collateralTabs = useMemo(
     () => [
       {
-        value: AmountType.Add,
+        amountType: AmountType.Add,
         label: t(
           props.hasTrove
             ? translations.adjustCreditLine.actions.addCollateral
             : translations.adjustCreditLine.actions.collateral,
         ),
+        activeClassName: ACTIVE_CLASSNAME,
       },
       {
-        value: AmountType.Remove,
+        amountType: AmountType.Remove,
         label: t(translations.adjustCreditLine.actions.withdrawCollateral),
+        activeClassName: ACTIVE_CLASSNAME,
       },
     ],
     [props.hasTrove],
@@ -159,6 +174,7 @@ export const FormContent: FC<FormContentProps> = props => {
       if (props.hasTrove) {
         props.onDebtTypeChange(value);
         props.onFormEdit?.();
+        setDebtType(value);
       }
     },
     [props],
@@ -294,6 +310,14 @@ export const FormContent: FC<FormContentProps> = props => {
     [],
   );
 
+  const ledgerAndDllr = useMemo(
+    () =>
+      type === LEDGER &&
+      props.debtToken === SupportedTokens.dllr &&
+      debtType === AmountType.Remove,
+    [debtType, props.debtToken, type],
+  );
+
   return (
     <div className="w-full">
       {props.hasTrove && (
@@ -310,7 +334,6 @@ export const FormContent: FC<FormContentProps> = props => {
             symbol={props.debtToken}
             maxAmount={props.maxDebtAmount}
             tabs={debtTabs}
-            activeTab={props.hasTrove ? props.debtType : AmountType.Add}
             onTabChange={handleDebtTypeChange}
             onMaxAmountClicked={handleMaxDebtAmountClick}
             hasTrove={props.hasTrove}
@@ -345,6 +368,7 @@ export const FormContent: FC<FormContentProps> = props => {
             )}
           />
         </div>
+        {ledgerAndDllr && <LedgerPermitLocked />}
       </FormGroup>
       <FormGroup
         label={
@@ -352,7 +376,6 @@ export const FormContent: FC<FormContentProps> = props => {
             symbol={Bitcoin}
             maxAmount={props.maxCollateralAmount}
             tabs={collateralTabs}
-            activeTab={props.hasTrove ? props.collateralType : AmountType.Add}
             onTabChange={handleCollateralTypeChange}
             onMaxAmountClicked={handleMaxCollateralAmountClick}
             hasTrove={props.hasTrove}
@@ -505,7 +528,7 @@ export const FormContent: FC<FormContentProps> = props => {
           className="w-full"
           onClick={handleFormSubmit}
           dataAttribute="adjust-credit-line-confirm-button"
-          disabled={submitButtonDisabled}
+          disabled={submitButtonDisabled || ledgerAndDllr}
         />
       </div>
       {isInMaintenance && (

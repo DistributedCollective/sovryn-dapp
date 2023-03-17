@@ -18,10 +18,6 @@ import {
   SimpleTableRow,
 } from '@sovryn/ui';
 
-import {
-  TOKEN_RENDER_PRECISION,
-  BTC_RENDER_PRECISION,
-} from '../../../3_organisms/ZeroLocForm/constants';
 import { useBlockNumber } from '../../../../hooks/useBlockNumber';
 import { translations } from '../../../../locales/i18n';
 import { Bitcoin } from '../../../../utils/constants';
@@ -40,6 +36,8 @@ type ZeroStatsProps = {
   className?: string;
   dataAttribute?: string;
 };
+
+const USD_DISPLAY_PRECISION = 2;
 
 export const ZeroStats: FC<ZeroStatsProps> = ({ className, dataAttribute }) => {
   const { value: blockNumber } = useBlockNumber();
@@ -65,7 +63,7 @@ export const ZeroStats: FC<ZeroStatsProps> = ({ className, dataAttribute }) => {
           <AmountRenderer
             value={rbtcInLoc}
             suffix={Bitcoin}
-            precision={BTC_RENDER_PRECISION}
+            precision={2}
             showRoundingPrefix={false}
             dataAttribute="zero-statistics-rbtc-in-loc"
           />{' '}
@@ -83,7 +81,7 @@ export const ZeroStats: FC<ZeroStatsProps> = ({ className, dataAttribute }) => {
         <AmountRenderer
           value={zusdSupply}
           suffix={SupportedTokens.zusd}
-          precision={TOKEN_RENDER_PRECISION}
+          precision={USD_DISPLAY_PRECISION}
           showRoundingPrefix={false}
           dataAttribute="zero-statistics-zusd-supply"
         />
@@ -100,11 +98,11 @@ export const ZeroStats: FC<ZeroStatsProps> = ({ className, dataAttribute }) => {
           <AmountRenderer
             value={zusdInStabilityPool}
             suffix={SupportedTokens.zusd}
-            precision={TOKEN_RENDER_PRECISION}
+            precision={USD_DISPLAY_PRECISION}
             showRoundingPrefix={false}
             dataAttribute="zero-statistics-zusd-in-stability-pool"
           />{' '}
-          (${zeroInStabilityPoolPercent})
+          ({zeroInStabilityPoolPercent})
         </>
       ) : (
         0
@@ -166,13 +164,13 @@ export const ZeroStats: FC<ZeroStatsProps> = ({ className, dataAttribute }) => {
       >
         <SimpleTableRow
           className="mb-5"
-          label={t(translations.stats.zero.rbtcInLoc)}
-          value={renderRBTCInLoc}
+          label={t(translations.stats.zero.loc)}
+          value={lineOfCredit}
         />
         <SimpleTableRow
           className="mb-5"
-          label={t(translations.stats.zero.loc)}
-          value={lineOfCredit}
+          label={t(translations.stats.zero.rbtcInLoc)}
+          value={renderRBTCInLoc}
         />
         <SimpleTableRow
           className="mb-5"

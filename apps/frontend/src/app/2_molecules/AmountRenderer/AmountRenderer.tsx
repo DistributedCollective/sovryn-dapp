@@ -19,6 +19,7 @@ import {
   formatValue,
   getDecimalPartLength,
   getLocaleSeparators,
+  isScientificNumber,
 } from '../../../utils/math';
 import { BigNumber } from 'ethers';
 

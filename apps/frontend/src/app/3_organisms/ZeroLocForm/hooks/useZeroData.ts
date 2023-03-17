@@ -46,9 +46,6 @@ export const useZeroData = (rbtcPrice?: Decimal): ZeroDataResponse => {
     getTcr().catch(console.error);
   }, [getTcr]);
 
-  console.log('TCR', response.tcr.toString());
-  console.log('CCR', CRITICAL_COLLATERAL_RATIO.toString());
-
   return useMemo(
     () => ({
       ...response,

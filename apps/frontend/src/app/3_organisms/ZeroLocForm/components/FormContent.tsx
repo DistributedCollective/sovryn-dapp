@@ -147,11 +147,13 @@ export const FormContent: FC<FormContentProps> = props => {
       (props.errors || []).some(error => error.level === ErrorLevel.Critical) ||
       !!props.debtError ||
       !!props.collateralError;
-    const debtSize = Decimal.from(props.debtAmount);
-    const collateralSize = Decimal.from(props.collateralAmount);
+    const debtSize = Decimal.from(props.debtAmount || 0);
+    const collateralSize = Decimal.from(props.collateralAmount || 0);
+
     const isFormValid = props.hasTrove
       ? !debtSize.isZero() || !collateralSize.isZero()
-      : collateralSize.gt(0) && debtSize.lt(0);
+      : collateralSize.gt(0) && debtSize.gt(0);
+
     return (
       props.formIsDisabled ||
       hasCriticalError ||
@@ -216,8 +218,8 @@ export const FormContent: FC<FormContentProps> = props => {
   const handleFormSubmit = useCallback(() => props.onFormSubmit(), [props]);
 
   const renderTotalDebt = useCallback(
-    (value: Decimal) =>
-      value.isZero() ? (
+    (value: string) =>
+      Decimal.from(value).isZero() ? (
         t(translations.common.na)
       ) : (
         <AmountRenderer
@@ -230,8 +232,8 @@ export const FormContent: FC<FormContentProps> = props => {
   );
 
   const renderTotalCollateral = useCallback(
-    (value: Decimal) =>
-      value.isZero() ? (
+    (value: string) =>
+      Decimal.from(value).isZero() ? (
         t(translations.common.na)
       ) : (
         <AmountRenderer
@@ -244,8 +246,8 @@ export const FormContent: FC<FormContentProps> = props => {
   );
 
   const renderOriginationFee = useCallback(
-    (value: Decimal) =>
-      value.isZero() ? (
+    (value: string) =>
+      Decimal.from(value).isZero() ? (
         t(translations.common.na)
       ) : (
         <>
@@ -261,8 +263,8 @@ export const FormContent: FC<FormContentProps> = props => {
   );
 
   const renderLiquidationPrice = useCallback(
-    (value: Decimal) =>
-      value.isZero() ? (
+    (value: string) =>
+      Decimal.from(value).isZero() ? (
         t(translations.common.na)
       ) : (
         <AmountRenderer
@@ -276,8 +278,8 @@ export const FormContent: FC<FormContentProps> = props => {
   );
 
   const renderRBTCPrice = useCallback(
-    (value: Decimal) =>
-      value.isZero() ? (
+    (value: string) =>
+      Decimal.from(value).isZero() ? (
         t(translations.common.na)
       ) : (
         <AmountRenderer value={value} suffix={USD} precision={0} />
@@ -286,8 +288,8 @@ export const FormContent: FC<FormContentProps> = props => {
   );
 
   const renderCollateralRatio = useCallback(
-    (value: Decimal) =>
-      value.isZero() ? (
+    (value: string) =>
+      Decimal.from(value).isZero() ? (
         t(translations.common.na)
       ) : (
         <>{formatValue(value, 3)}%</>
@@ -403,8 +405,8 @@ export const FormContent: FC<FormContentProps> = props => {
             label={t(translations.adjustCreditLine.labels.originationFee)}
             value={
               <DynamicValue
-                initialValue={Decimal.ZERO}
-                value={props.originationFee}
+                initialValue="0"
+                value={props.originationFee.toString()}
                 renderer={renderOriginationFee}
               />
             }
@@ -415,8 +417,8 @@ export const FormContent: FC<FormContentProps> = props => {
                 label={t(translations.adjustCreditLine.labels.newDebt)}
                 value={
                   <DynamicValue
-                    initialValue={props.existingDebt}
-                    value={props.totalDebt}
+                    initialValue={props.existingDebt.toString()}
+                    value={props.totalDebt.toString()}
                     renderer={renderTotalDebt}
                   />
                 }
@@ -425,8 +427,8 @@ export const FormContent: FC<FormContentProps> = props => {
                 label={t(translations.adjustCreditLine.labels.newCollateral)}
                 value={
                   <DynamicValue
-                    initialValue={props.existingCollateral}
-                    value={props.totalCollateral}
+                    initialValue={props.existingCollateral.toString()}
+                    value={props.totalCollateral.toString()}
                     renderer={renderTotalCollateral}
                   />
                 }
@@ -440,8 +442,8 @@ export const FormContent: FC<FormContentProps> = props => {
                 )}
                 value={
                   <DynamicValue
-                    initialValue={Decimal.ZERO}
-                    value={props.liquidationReserve}
+                    initialValue="0"
+                    value={props.liquidationReserve.toString()}
                     renderer={renderTotalDebt}
                   />
                 }
@@ -450,8 +452,8 @@ export const FormContent: FC<FormContentProps> = props => {
                 label={t(translations.adjustCreditLine.labels.totalDebt)}
                 value={
                   <DynamicValue
-                    initialValue={Decimal.ZERO}
-                    value={props.totalDebt}
+                    initialValue="0"
+                    value={props.totalDebt.toString()}
                     renderer={renderTotalDebt}
                   />
                 }
@@ -467,8 +469,8 @@ export const FormContent: FC<FormContentProps> = props => {
         </div>
         <div className="text-primary-10">
           <DynamicValue
-            initialValue={props.initialRatio}
-            value={props.currentRatio}
+            initialValue={props.initialRatio.toString()}
+            value={props.currentRatio.toString()}
             renderer={renderCollateralRatio}
           />
         </div>
@@ -489,8 +491,8 @@ export const FormContent: FC<FormContentProps> = props => {
             label={t(translations.adjustCreditLine.labels.liquidationPrice)}
             value={
               <DynamicValue
-                initialValue={props.initialLiquidationPrice}
-                value={props.liquidationPrice}
+                initialValue={props.initialLiquidationPrice.toString()}
+                value={props.liquidationPrice.toString()}
                 renderer={renderLiquidationPrice}
               />
             }
@@ -501,8 +503,8 @@ export const FormContent: FC<FormContentProps> = props => {
             )}
             value={
               <DynamicValue
-                initialValue={props.initialLiquidationPriceInRecoveryMode}
-                value={props.liquidationPriceInRecoveryMode}
+                initialValue={props.initialLiquidationPriceInRecoveryMode.toString()}
+                value={props.liquidationPriceInRecoveryMode.toString()}
                 renderer={renderLiquidationPrice}
               />
             }
@@ -512,8 +514,8 @@ export const FormContent: FC<FormContentProps> = props => {
             label={t(translations.adjustCreditLine.labels.rbtcPrice)}
             value={
               <DynamicValue
-                initialValue={Decimal.ZERO}
-                value={props.rbtcPrice}
+                initialValue="0"
+                value={props.rbtcPrice.toString()}
                 renderer={renderRBTCPrice}
               />
             }

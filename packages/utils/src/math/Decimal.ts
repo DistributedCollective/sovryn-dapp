@@ -158,7 +158,7 @@ export class Decimal {
 
   toString(precision?: number): string {
     if (this.infinite) {
-      return '∞';
+      return '0';
     } else if (precision !== undefined) {
       return this._toStringWithPrecision(precision);
     } else {

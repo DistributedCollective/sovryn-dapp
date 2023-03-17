@@ -114,7 +114,7 @@ export const OpenCreditLine: FC<OpenCreditLineProps> = ({
   ]);
 
   const ratio = useMemo(() => {
-    if ([collateralSize, debtSize, rbtcPrice].some(v => !v.isZero())) {
+    if ([collateralSize, debtSize, rbtcPrice].some(v => v.isZero())) {
       return Decimal.ZERO;
     }
     return numeric(collateralSize.mul(rbtcPrice).div(debtWithFees).mul(100));
@@ -125,8 +125,7 @@ export const OpenCreditLine: FC<OpenCreditLineProps> = ({
       numeric(
         Decimal.from(MINIMUM_COLLATERAL_RATIO)
           .mul(debtWithFees)
-          .div(collateralSize)
-          .toNumber(),
+          .div(collateralSize),
       ),
     [debtWithFees, collateralSize],
   );
@@ -135,8 +134,7 @@ export const OpenCreditLine: FC<OpenCreditLineProps> = ({
       numeric(
         Decimal.from(CRITICAL_COLLATERAL_RATIO)
           .mul(debtWithFees)
-          .div(collateralSize)
-          .toNumber(),
+          .div(collateralSize),
       ),
     [collateralSize, debtWithFees],
   );

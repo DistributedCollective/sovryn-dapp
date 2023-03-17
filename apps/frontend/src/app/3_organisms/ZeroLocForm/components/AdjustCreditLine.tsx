@@ -11,7 +11,7 @@ import { useAmountInput } from '../../../../hooks/useAmountInput';
 import { useAssetBalance } from '../../../../hooks/useAssetBalance';
 import { useMaxAssetBalance } from '../../../../hooks/useMaxAssetBalance';
 import { translations } from '../../../../locales/i18n';
-import { formatValue, isScientificNumber } from '../../../../utils/math';
+import { formatValue } from '../../../../utils/math';
 import {
   CRITICAL_COLLATERAL_RATIO,
   MINIMUM_COLLATERAL_RATIO,
@@ -73,30 +73,46 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
     [collateralType],
   );
 
-  const newDebt = useMemo(() => {
-    const amount = existingDebt.add(
-      normalizeAmountByType(Decimal.from(debtAmount), debtType),
-    );
-    return amount.gt(0) ? amount : Decimal.ZERO;
-  }, [debtAmount, existingDebt, debtType]);
+  const newDebt = useMemo(
+    () =>
+      Decimal.max(
+        existingDebt.add(
+          normalizeAmountByType(Decimal.from(debtAmount), debtType),
+        ),
+        Decimal.ZERO,
+      ),
+    [debtAmount, existingDebt, debtType],
+  );
 
-  const newCollateral = useMemo(() => {
-    const amount = existingCollateral.add(
-      normalizeAmountByType(Decimal.from(collateralAmount), collateralType),
-    );
-    return amount.gt(0) ? amount : Decimal.ZERO;
-  }, [collateralAmount, collateralType, existingCollateral]);
+  const newCollateral = useMemo(
+    () =>
+      Decimal.max(
+        existingCollateral.add(
+          normalizeAmountByType(Decimal.from(collateralAmount), collateralType),
+        ),
+        Decimal.ZERO,
+      ),
+    [collateralAmount, collateralType, existingCollateral],
+  );
 
-  const maxCollateralToWithdrawAmount = useMemo(() => {
-    const amount = existingCollateral.sub(
-      newDebt
-        .mul(
-          isRecoveryMode ? CRITICAL_COLLATERAL_RATIO : MINIMUM_COLLATERAL_RATIO,
-        )
-        .div(rbtcPrice),
-    );
-    return amount.gt(0) ? amount : Decimal.ZERO;
-  }, [existingCollateral, isRecoveryMode, newDebt, rbtcPrice]);
+  const maxCollateralToWithdrawAmount = useMemo(
+    () =>
+      Decimal.max(
+        existingCollateral
+          .sub(
+            newDebt
+              .mul(
+                isRecoveryMode
+                  ? CRITICAL_COLLATERAL_RATIO
+                  : MINIMUM_COLLATERAL_RATIO,
+              )
+              .div(rbtcPrice),
+          )
+          .sub(Decimal.fromBigNumberString('1')),
+        Decimal.ZERO,
+      ),
+    [existingCollateral, isRecoveryMode, newDebt, rbtcPrice],
+  );
 
   const maxCollateralAmount = useMemo(
     () =>
@@ -138,17 +154,10 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
     [debtTokenBalance, existingDebt],
   );
 
-  const maxDebtAmount = useMemo(() => {
-    const amount = isIncreasingDebt ? maxBorrowAmount : maxRepayAmount;
-
-    // temporary fix for small scientific numbers
-    // TODO: fix it properly on SOV-1988
-    if (isScientificNumber(amount.toNumber())) {
-      return Decimal.ZERO;
-    }
-
-    return amount;
-  }, [isIncreasingDebt, maxBorrowAmount, maxRepayAmount]);
+  const maxDebtAmount = useMemo(
+    () => (isIncreasingDebt ? maxBorrowAmount : maxRepayAmount),
+    [isIncreasingDebt, maxBorrowAmount, maxRepayAmount],
+  );
 
   const originationFee = useMemo(() => {
     if (isIncreasingDebt) {
@@ -162,9 +171,10 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
     [existingCollateral, existingDebt, rbtcPrice],
   );
 
-  const ratio = useMemo(() => {
-    return newCollateral.mul(rbtcPrice).div(newDebt).mul(100);
-  }, [newCollateral, newDebt, rbtcPrice]);
+  const ratio = useMemo(
+    () => newCollateral.mul(rbtcPrice).div(newDebt).mul(100),
+    [newCollateral, newDebt, rbtcPrice],
+  );
 
   const initialLiquidationPrice = useMemo(
     () => MINIMUM_COLLATERAL_RATIO.mul(existingDebt).div(existingCollateral),
@@ -192,7 +202,7 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
 
     const errors = checkForSystemErrors(ratio, tcr);
 
-    if (newDebt < MIN_DEBT_SIZE) {
+    if (newDebt.lt(MIN_DEBT_SIZE)) {
       errors.push({
         level: ErrorLevel.Critical,
         message: t(
@@ -246,7 +256,7 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
     }
 
     if (
-      collateralSize > maxCollateralToWithdrawAmount &&
+      collateralSize.gt(maxCollateralToWithdrawAmount) &&
       !isIncreasingCollateral
     ) {
       return t(translations.zeroPage.loc.errors.maxExceed);

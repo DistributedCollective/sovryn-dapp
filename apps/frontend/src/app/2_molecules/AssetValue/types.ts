@@ -63,6 +63,7 @@ export const AssetDecimals: { [key in SupportedTokens]: number } = {
   dllr: 4,
   sov: 4,
   doc: 4,
+  mynt: 4,
 };
 
 export enum AssetValueMode {

@@ -32,6 +32,7 @@ export enum SupportedTokens {
   dllr = 'dllr',
   sov = 'sov',
   doc = 'doc',
+  mynt = 'mynt',
 }
 
 export type TokenBaseInfo = {

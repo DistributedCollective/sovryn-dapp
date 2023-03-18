@@ -31,4 +31,9 @@ export const SupportedTokenList: TokenBaseInfo[] = [
     decimalPrecision: 18,
     getIcon: async () => (await import('../tokenDetails/logos/doc')).default,
   },
+  {
+    symbol: SupportedTokens.mynt,
+    decimalPrecision: 18,
+    getIcon: async () => (await import('../tokenDetails/logos/mynt')).default,
+  },
 ];

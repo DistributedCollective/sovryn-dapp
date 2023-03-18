@@ -4,14 +4,13 @@ import { ErrorBadgeProps, ErrorLevel } from '@sovryn/ui';
 import { Decimal } from '@sovryn/utils';
 
 import { translations } from '../../../locales/i18n';
+import { LIQUIDATION_RESERVE_AMOUNT } from '../../../utils/constants';
 import { formatValue } from '../../../utils/math';
 import {
   CRITICAL_COLLATERAL_RATIO,
   MINIMUM_COLLATERAL_RATIO,
 } from './constants';
 import { AmountType } from './types';
-
-export const DEFAULT_RESERVE_FEE = Decimal.from(20);
 
 export const normalizeAmountByType = (
   amount: Decimal,
@@ -31,7 +30,7 @@ export const getOriginationFeeAmount = (
 export const getTotalBorrowingFees = (
   borrowAmount: Decimal,
   originationFeeRate: Decimal,
-  liquidationReserve: Decimal = DEFAULT_RESERVE_FEE,
+  liquidationReserve: Decimal = Decimal.from(LIQUIDATION_RESERVE_AMOUNT),
 ) =>
   getOriginationFeeAmount(borrowAmount, originationFeeRate).add(
     liquidationReserve,
@@ -40,7 +39,7 @@ export const getTotalBorrowingFees = (
 export const getTotalDebtAmount = (
   borrowAmount: Decimal,
   originationFeeRate: Decimal,
-  liquidationReserve: Decimal = DEFAULT_RESERVE_FEE,
+  liquidationReserve: Decimal = Decimal.from(LIQUIDATION_RESERVE_AMOUNT),
 ) =>
   borrowAmount.add(
     getTotalBorrowingFees(borrowAmount, originationFeeRate, liquidationReserve),

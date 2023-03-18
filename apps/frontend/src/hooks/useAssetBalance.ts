@@ -40,7 +40,8 @@ export const useAssetBalance = (
   const isMounted = useIsMounted();
 
   const account = useMemo(
-    () => address || wallets[walletIndex]?.accounts[0]?.address,
+    () =>
+      address === null ? wallets[walletIndex]?.accounts[0]?.address : address,
     [address, walletIndex, wallets],
   );
 

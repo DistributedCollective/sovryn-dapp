@@ -191,7 +191,7 @@ const EarnPage: FC = () => {
 
   const handleSubmit = useHandleStabilityDeposit(
     token,
-    amount,
+    Decimal.from(amount),
     hasRewardsToClaim,
     isDeposit,
     onTransactionSuccess,

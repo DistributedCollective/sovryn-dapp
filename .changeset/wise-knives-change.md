@@ -3,4 +3,4 @@
 '@sovryn/utils': patch
 ---
 
-chore: swap numbers with Decimal
+SOV-1988: swap numbers with Decimal

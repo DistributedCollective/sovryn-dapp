@@ -20,7 +20,6 @@ const roundedMul = (x: BigNumber, y: BigNumber) =>
 
 export type Decimalish = Decimal | number | string;
 
-// todo: make sure negative numbers are working for everything
 export class Decimal {
   static readonly INFINITY = Decimal.fromBigNumberString(MAX_UINT_256);
   static readonly ZERO = Decimal.from(0);

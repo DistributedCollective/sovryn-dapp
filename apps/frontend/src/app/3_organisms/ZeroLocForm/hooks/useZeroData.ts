@@ -49,7 +49,7 @@ export const useZeroData = (rbtcPrice?: Decimal): ZeroDataResponse => {
   return useMemo(
     () => ({
       ...response,
-      isRecoveryMode: response.tcr.lte(CRITICAL_COLLATERAL_RATIO), // todo: check if it's correct
+      isRecoveryMode: response.tcr.lte(CRITICAL_COLLATERAL_RATIO),
     }),
     [response],
   );

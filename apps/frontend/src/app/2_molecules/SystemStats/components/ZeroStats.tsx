@@ -38,7 +38,7 @@ export const ZeroStats: FC<ZeroStatsProps> = ({ className, dataAttribute }) => {
   const [lineOfCredit, setLineOfCredit] = useState('0');
   const [zusdInStabilityPool, setZusdInStabilityPool] = useState<Decimal>();
   const [zusdSupply, setZusdSupply] = useState<Decimal>();
-  const [rbtcInLoc, setRbtcInLoc] = useState<Decimal>(Decimal.ZERO);
+  const [rbtcInLoc, setRbtcInLoc] = useState(Decimal.ZERO);
   const [zeroPrice, setZeroPrice] = useState<Decimal>();
   const [collateralRatio, setCollateralRatio] = useState('0');
   const [zeroInStabilityPoolPercent, setZeroInStabilityPoolPercent] =

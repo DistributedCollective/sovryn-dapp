@@ -9,7 +9,7 @@ import { Decimal } from '@sovryn/utils';
 import { defaultChainId } from '../config/chains';
 
 export const useGasPrice = (chainId: ChainId = defaultChainId) => {
-  const [gasPrice, setGasPrice] = useState<Decimal>(Decimal.ZERO);
+  const [gasPrice, setGasPrice] = useState(Decimal.ZERO);
 
   useEffect(() => {
     const getGasPrice = async () => {

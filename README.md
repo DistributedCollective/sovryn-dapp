@@ -20,7 +20,7 @@ This is a turborepo for the Sovryn dapp and it's associated packages.
 - `@sovryn/ui`: Sovryn UI Library. Suite of React Typescript UI components that can be used in any dapp that wants to adhere to Sovryn UX
 - `@sovryn/contracts`: smart contract definition including ABIs, token details, contract addresses for all chain environments, and utility functions for interacting with Sovryn smart contracts. Further details on contracts used here can be found in the various [DistributedCollective repositories](https://github.com/DistributedCollective).
 - `@sovryn/ethers-provider`: helper functions for accessing ethers static provider
-- `@sovryn/utils`: helper utilities to use anywhere
+- `@sovryn/utils`: general helper utilities used across our packages
 - `@sovryn/eslint-config-custom`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
 - `@sovryn/tailwindcss-config`: `tailwindcss` configuration
 - `@sovryn/tsconfig`: `tsconfig.json`s used throughout the monorepo

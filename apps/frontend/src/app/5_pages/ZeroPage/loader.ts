@@ -2,8 +2,8 @@ import { defer } from 'react-router-dom';
 
 import { Fees } from '@sovryn-zero/lib-base';
 import { EthersLiquity, ReadableEthersLiquity } from '@sovryn-zero/lib-ethers';
-import { Decimal } from '@sovryn/utils';
 
+import { numeric } from '../../../utils/math';
 import { getZeroProvider } from './utils/zero-provider';
 
 export type ZeroPageLoaderData = {
@@ -19,7 +19,7 @@ export const zeroPageLoader = async () => {
     liquity: ethers,
     provider,
     deferedData: Promise.all([
-      ethers.getPrice().then(result => Decimal.from(result.toString())),
+      ethers.getPrice().then(result => numeric(result.toString())),
       ethers.getFees(),
     ]),
   });

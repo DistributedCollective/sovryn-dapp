@@ -92,7 +92,7 @@ export const formatValue = (
   precision: number = 0,
   roundUp: boolean = false,
 ) =>
-  Decimal.from(value)
+  numeric(value)
     .toNumber()
     .toLocaleString(navigator.language, {
       maximumFractionDigits: precision,
@@ -135,7 +135,7 @@ export const getLocaleSeparators = () => {
 };
 
 export const getDecimalPartLength = (value: Decimalish) =>
-  Decimal.from(value).toString().split('.')?.[1]?.length || 0;
+  numeric(value).toString().split('.')?.[1]?.length || 0;
 
 export const numeric = (value: Decimalish | undefined | null) => {
   value = Decimal.from(value ?? 0);

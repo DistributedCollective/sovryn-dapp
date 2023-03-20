@@ -4,7 +4,7 @@ import resolveConfig from 'tailwindcss/resolveConfig';
 
 import { EIP1193Provider } from '@sovryn/onboard-common';
 import tailwindConfig from '@sovryn/tailwindcss-config';
-import { Decimal, Decimalish } from '@sovryn/utils';
+import { Decimalish } from '@sovryn/utils';
 
 import { Environments } from '../types/global';
 import {
@@ -13,6 +13,7 @@ import {
   servicesConfig,
   sovrynLinks,
 } from './constants';
+import { numeric } from './math';
 
 export const prettyTx = (
   text: string,
@@ -103,7 +104,7 @@ export const valueIsDefined = <T>(
 ): entry is [string, T] => entry[1] !== undefined;
 
 export const composeGas = (priceInGwei: Decimalish, limitInWei: Decimalish) =>
-  Decimal.from(priceInGwei)
+  numeric(priceInGwei)
     .mul(10 ** 9)
     .mul(limitInWei)
     .div(10 ** 18);

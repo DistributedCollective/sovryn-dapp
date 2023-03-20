@@ -21,7 +21,11 @@ import { Decimal, Percent } from '@sovryn/utils';
 import { useBlockNumber } from '../../../../hooks/useBlockNumber';
 import { translations } from '../../../../locales/i18n';
 import { Bitcoin } from '../../../../utils/constants';
-import { formatCompactValue, formatValue } from '../../../../utils/math';
+import {
+  formatCompactValue,
+  formatValue,
+  numeric,
+} from '../../../../utils/math';
 import { AmountRenderer } from '../../AmountRenderer/AmountRenderer';
 import { SystemModeType } from '../types';
 import { calculateCollateralRatio } from '../utils';
@@ -112,10 +116,8 @@ export const ZeroStats: FC<ZeroStatsProps> = ({ className, dataAttribute }) => {
   useEffect(() => {
     liquity
       .getZUSDInStabilityPool()
-      .then(result => setZusdInStabilityPool(Decimal.from(result.toString())));
-    liquity
-      .getPrice()
-      .then(result => setZeroPrice(Decimal.from(result.toString())));
+      .then(result => setZusdInStabilityPool(numeric(result.toString())));
+    liquity.getPrice().then(result => setZeroPrice(numeric(result.toString())));
     liquity
       .getNumberOfTroves()
       .then(result => setLineOfCredit(result.toString()));
@@ -123,8 +125,8 @@ export const ZeroStats: FC<ZeroStatsProps> = ({ className, dataAttribute }) => {
 
   useEffect(() => {
     liquity.getTotal().then(result => {
-      setZusdSupply(Decimal.from(result.debt.toString()));
-      setRbtcInLoc(Decimal.from(result.collateral.toString()));
+      setZusdSupply(numeric(result.debt.toString()));
+      setRbtcInLoc(numeric(result.collateral.toString()));
       if (zeroPrice) {
         const recoveryMode = result.collateralRatioIsBelowCritical(
           zeroPrice.toString(),

@@ -1,10 +1,11 @@
 import { SupportedTokens } from '@sovryn/contracts';
-import { Decimal } from '@sovryn/utils';
 
-export const CRITICAL_COLLATERAL_RATIO = Decimal.from(1.5); // 150%
-export const MINIMUM_COLLATERAL_RATIO = Decimal.from(1.1); // 110%
+import { numeric } from '../../../utils/math';
 
-export const MIN_DEBT_SIZE = Decimal.from(200); // 200 ZUSD
+export const CRITICAL_COLLATERAL_RATIO = numeric(1.5); // 150%
+export const MINIMUM_COLLATERAL_RATIO = numeric(1.1); // 110%
+
+export const MIN_DEBT_SIZE = numeric(200); // 200 ZUSD
 
 export const DEBT_TOKEN = SupportedTokens.zusd;
 export const COLLATERAL_TOKEN = SupportedTokens.rbtc;

@@ -45,9 +45,9 @@ export const OpenCreditLine: FC<OpenCreditLineProps> = ({
   const [debtAmountInput, setDebtAmount, debtAmount] = useAmountInput('');
   const [debtToken, setDebtToken] = useState<SupportedTokens>(BORROW_ASSETS[0]);
 
-  const debtSize = useMemo(() => Decimal.from(debtAmount || 0), [debtAmount]);
+  const debtSize = useMemo(() => numeric(debtAmount || 0), [debtAmount]);
   const collateralSize = useMemo(
-    () => Decimal.from(collateralAmount || 0),
+    () => numeric(collateralAmount || 0),
     [collateralAmount],
   );
 
@@ -119,20 +119,12 @@ export const OpenCreditLine: FC<OpenCreditLineProps> = ({
 
   const liquidationPrice = useMemo(
     () =>
-      numeric(
-        Decimal.from(MINIMUM_COLLATERAL_RATIO)
-          .mul(debtWithFees)
-          .div(collateralSize),
-      ),
+      numeric(MINIMUM_COLLATERAL_RATIO.mul(debtWithFees).div(collateralSize)),
     [debtWithFees, collateralSize],
   );
   const liquidationPriceInRecoveryMode = useMemo(
     () =>
-      numeric(
-        Decimal.from(CRITICAL_COLLATERAL_RATIO)
-          .mul(debtWithFees)
-          .div(collateralSize),
-      ),
+      numeric(CRITICAL_COLLATERAL_RATIO.mul(debtWithFees).div(collateralSize)),
     [collateralSize, debtWithFees],
   );
 
@@ -140,7 +132,7 @@ export const OpenCreditLine: FC<OpenCreditLineProps> = ({
     if (!fieldsTouched) {
       return [];
     }
-    const errors = checkForSystemErrors(Decimal.from(ratio), tcr);
+    const errors = checkForSystemErrors(ratio, tcr);
 
     // Adjusting trove
     if (debtWithFees.lt(MIN_DEBT_SIZE)) {

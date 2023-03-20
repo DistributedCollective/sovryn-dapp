@@ -54,7 +54,7 @@
         }
     },
     "errors": {
-      "ledgerPermitLocked": "DLLR permit transaction is currently disabled for direct Ledger connection"
+        "ledgerPermitLocked": "DLLR permit transaction is currently disabled for direct Ledger connection"
     },
     "connectWalletButton": {
         "connect": "Get started",
@@ -176,7 +176,6 @@
             "close": "Close",
             "errors": {
                 "ratioWarningInRecovery": "Keeping your collateral ratio above {{value}}% can reduce the risk of liquidation in cases of market volatility",
-                "ratioErrorInRecovery": "Collateral ratio must be ≥ {{value}}% in recovery mode",
                 "ratioWarning": "Keeping your collateral ratio above {{value}}% can help avoid liquidation under recovery mode",
                 "ratioError": "Collateral ratio must be at least {{value}}%",
                 "debtTooLow": "Debt must be at least {{value}}",

@@ -70,7 +70,7 @@ export const checkForSystemErrors = (ratio: number, tcr: number) => {
     if (userRatio < CRITICAL_COLLATERAL_RATIO) {
       list.push({
         level: ErrorLevel.Critical,
-        message: t(translations.zeroPage.loc.errors.ratioErrorInRecovery, {
+        message: t(translations.zeroPage.loc.errors.ratioError, {
           value: ccrPercent,
         }),
         weight: 2,

@@ -20,7 +20,7 @@ import {
   formatValue,
   getDecimalPartLength,
   getLocaleSeparators,
-  numeric,
+  decimalic,
 } from '../../../utils/math';
 
 const { decimal, thousand } = getLocaleSeparators();
@@ -63,7 +63,7 @@ export const AmountRenderer: FC<AmountRendererProps> = ({
   }, [addNotification, value]);
 
   const countUpValues = useMemo(() => {
-    const endValue = numeric(value).toString();
+    const endValue = decimalic(value).toString();
 
     const [whole = '', decimals = ''] = endValue.split('.');
     const end = parseFloat(

@@ -33,7 +33,7 @@ import {
   LEDGER,
   USD,
 } from '../../../../utils/constants';
-import { formatValue, numeric } from '../../../../utils/math';
+import { formatValue, decimalic } from '../../../../utils/math';
 import { CurrentTroveData } from '../CurrentTroveData';
 import { Label } from '../Label';
 import { Row } from '../Row';
@@ -147,8 +147,8 @@ export const FormContent: FC<FormContentProps> = props => {
       (props.errors || []).some(error => error.level === ErrorLevel.Critical) ||
       !!props.debtError ||
       !!props.collateralError;
-    const debtSize = numeric(props.debtAmount);
-    const collateralSize = numeric(props.collateralAmount);
+    const debtSize = decimalic(props.debtAmount);
+    const collateralSize = decimalic(props.collateralAmount);
 
     const isFormValid = props.hasTrove
       ? !debtSize.isZero() || !collateralSize.isZero()
@@ -219,7 +219,7 @@ export const FormContent: FC<FormContentProps> = props => {
 
   const renderTotalDebt = useCallback(
     (value: string) =>
-      numeric(value).isZero() ? (
+      decimalic(value).isZero() ? (
         t(translations.common.na)
       ) : (
         <AmountRenderer
@@ -233,7 +233,7 @@ export const FormContent: FC<FormContentProps> = props => {
 
   const renderTotalCollateral = useCallback(
     (value: string) =>
-      numeric(value).isZero() ? (
+      decimalic(value).isZero() ? (
         t(translations.common.na)
       ) : (
         <AmountRenderer
@@ -247,7 +247,7 @@ export const FormContent: FC<FormContentProps> = props => {
 
   const renderOriginationFee = useCallback(
     (value: string) =>
-      numeric(value).isZero() ? (
+      decimalic(value).isZero() ? (
         t(translations.common.na)
       ) : (
         <>
@@ -264,7 +264,7 @@ export const FormContent: FC<FormContentProps> = props => {
 
   const renderLiquidationPrice = useCallback(
     (value: string) =>
-      numeric(value).isZero() ? (
+      decimalic(value).isZero() ? (
         t(translations.common.na)
       ) : (
         <AmountRenderer
@@ -279,7 +279,7 @@ export const FormContent: FC<FormContentProps> = props => {
 
   const renderRBTCPrice = useCallback(
     (value: string) =>
-      numeric(value).isZero() ? (
+      decimalic(value).isZero() ? (
         t(translations.common.na)
       ) : (
         <AmountRenderer value={value} suffix={USD} precision={0} />
@@ -289,7 +289,7 @@ export const FormContent: FC<FormContentProps> = props => {
 
   const renderCollateralRatio = useCallback(
     (value: string) =>
-      numeric(value).isZero() ? (
+      decimalic(value).isZero() ? (
         t(translations.common.na)
       ) : (
         <>{formatValue(value, 3)}%</>

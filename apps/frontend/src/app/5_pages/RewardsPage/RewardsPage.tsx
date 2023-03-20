@@ -30,7 +30,7 @@ import { useMaintenance } from '../../../hooks/useMaintenance';
 import { useGetOpenTrove } from '../../../hooks/zero/useGetOpenTrove';
 import { translations } from '../../../locales/i18n';
 import { Bitcoin } from '../../../utils/constants';
-import { numeric } from '../../../utils/math';
+import { decimalic } from '../../../utils/math';
 import { useHandleRewards } from './hooks/useHandleRewards';
 import { RewardsAction } from './types';
 
@@ -61,7 +61,7 @@ const RewardsPage: FC = () => {
   useEffect(() => {
     liquity
       .getStabilityDeposit(account)
-      .then(result => setAmount(numeric(result.collateralGain.toString())));
+      .then(result => setAmount(decimalic(result.collateralGain.toString())));
   }, [liquity, account, block]);
 
   const claimDisabled = useMemo(

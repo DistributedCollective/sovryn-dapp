@@ -41,7 +41,7 @@ import { useBlockNumber } from '../../../hooks/useBlockNumber';
 import { useMaintenance } from '../../../hooks/useMaintenance';
 import { translations } from '../../../locales/i18n';
 import { LEDGER } from '../../../utils/constants';
-import { formatValue, numeric } from '../../../utils/math';
+import { formatValue, decimalic } from '../../../utils/math';
 import { tokenList } from './EarnPage.types';
 import { useHandleStabilityDeposit } from './hooks/useHandleStabilityDeposit';
 
@@ -70,7 +70,9 @@ const EarnPage: FC = () => {
       setIsLoading(true);
       liquity
         .getStabilityDeposit(account)
-        .then(result => setPoolBalance(numeric(result.currentZUSD.toString())))
+        .then(result =>
+          setPoolBalance(decimalic(result.currentZUSD.toString())),
+        )
         .finally(() => setIsLoading(false));
     }
   }, [account, liquity]);
@@ -82,7 +84,7 @@ const EarnPage: FC = () => {
   const getZUSDInStabilityPool = useCallback(() => {
     liquity
       .getZUSDInStabilityPool()
-      .then(result => setZUSDInStabilityPool(numeric(result.toString())));
+      .then(result => setZUSDInStabilityPool(decimalic(result.toString())));
   }, [liquity]);
 
   useEffect(() => {
@@ -93,7 +95,7 @@ const EarnPage: FC = () => {
     liquity
       .getStabilityDeposit(account)
       .then(result =>
-        setRewardsAmount(numeric(result.collateralGain.toString())),
+        setRewardsAmount(decimalic(result.collateralGain.toString())),
       );
   }, [liquity, account, block]);
 
@@ -189,7 +191,7 @@ const EarnPage: FC = () => {
 
   const handleSubmit = useHandleStabilityDeposit(
     token,
-    numeric(amount),
+    decimalic(amount),
     hasRewardsToClaim,
     isDeposit,
     onTransactionSuccess,

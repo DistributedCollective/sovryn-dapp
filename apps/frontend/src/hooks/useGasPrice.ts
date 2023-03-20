@@ -8,7 +8,7 @@ import { Decimal } from '@sovryn/utils';
 
 import { defaultChainId } from '../config/chains';
 
-import { numeric } from '../utils/math';
+import { decimalic } from '../utils/math';
 
 export const useGasPrice = (chainId: ChainId = defaultChainId) => {
   const [gasPrice, setGasPrice] = useState(Decimal.ZERO);
@@ -21,7 +21,7 @@ export const useGasPrice = (chainId: ChainId = defaultChainId) => {
           'gwei',
         );
 
-        setGasPrice(numeric(gas));
+        setGasPrice(decimalic(gas));
       } catch (error) {}
     };
     getGasPrice();

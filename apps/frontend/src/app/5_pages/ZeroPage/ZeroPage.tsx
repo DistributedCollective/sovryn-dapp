@@ -40,7 +40,7 @@ import { useWalletConnect } from '../../../hooks';
 import { useAccount } from '../../../hooks/useAccount';
 import { translations } from '../../../locales/i18n';
 import { LIQUIDATION_RESERVE_AMOUNT } from '../../../utils/constants';
-import { numeric } from '../../../utils/math';
+import { decimalic } from '../../../utils/math';
 import { useClaimCollateralSurplus } from './hooks/useClaimCollateralSurplus';
 import { useHandleTrove } from './hooks/useHandleTrove';
 import { ZeroPageLoaderData } from './loader';
@@ -61,10 +61,10 @@ export const ZeroPage: FC = () => {
   const { refetch: getOpenTroves } = useGetUserOpenTrove(account);
 
   const collateral = useMemo(
-    () => numeric(trove?.collateral?.toString()),
+    () => decimalic(trove?.collateral?.toString()),
     [trove?.collateral],
   );
-  const debt = useMemo(() => numeric(trove?.debt?.toString()), [trove?.debt]);
+  const debt = useMemo(() => decimalic(trove?.debt?.toString()), [trove?.debt]);
   const hasLoc = useMemo(() => !!trove?.debt?.gt(0), [trove?.debt]);
 
   const isLoading = useMemo(
@@ -203,7 +203,7 @@ export const ZeroPage: FC = () => {
                       <OpenCreditLine
                         onSubmit={handleTroveSubmit}
                         rbtcPrice={price}
-                        borrowingRate={numeric(
+                        borrowingRate={decimalic(
                           fees?.borrowingRate()?.toString(),
                         )}
                       />
@@ -213,7 +213,7 @@ export const ZeroPage: FC = () => {
                         existingCollateral={collateral}
                         existingDebt={debt}
                         rbtcPrice={price}
-                        borrowingRate={numeric(
+                        borrowingRate={decimalic(
                           fees?.borrowingRate()?.toString(),
                         )}
                         onSubmit={handleTroveSubmit}

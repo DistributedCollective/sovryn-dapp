@@ -14,7 +14,7 @@ import {
   startCall,
 } from '../store/rxjs/provider-cache';
 import { getRskChainId } from '../utils/chain';
-import { fromWei, numeric } from '../utils/math';
+import { fromWei, decimalic } from '../utils/math';
 import { useBlockNumber } from './useBlockNumber';
 import { useIsMounted } from './useIsMounted';
 import { useWalletConnect } from './useWalletConnect';
@@ -72,7 +72,7 @@ export const useAssetBalance = (
       ]);
 
       sub = observeCall(hashedArgs).subscribe(e => {
-        const decimal = numeric(
+        const decimal = decimalic(
           fromWei(
             e.result.value === null ? 0 : e.result.value,
             tokenDetails.decimalPrecision,

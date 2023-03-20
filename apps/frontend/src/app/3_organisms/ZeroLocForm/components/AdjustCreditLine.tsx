@@ -11,7 +11,7 @@ import { useAmountInput } from '../../../../hooks/useAmountInput';
 import { useAssetBalance } from '../../../../hooks/useAssetBalance';
 import { useMaxAssetBalance } from '../../../../hooks/useMaxAssetBalance';
 import { translations } from '../../../../locales/i18n';
-import { formatValue, numeric } from '../../../../utils/math';
+import { formatValue, decimalic } from '../../../../utils/math';
 import {
   CRITICAL_COLLATERAL_RATIO,
   MINIMUM_COLLATERAL_RATIO,
@@ -52,9 +52,9 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
   const [debtAmountInput, setDebtAmount, debtAmount] = useAmountInput('');
   const [debtToken, setDebtToken] = useState<SupportedTokens>(BORROW_ASSETS[0]);
 
-  const debtSize = useMemo(() => numeric(debtAmount), [debtAmount]);
+  const debtSize = useMemo(() => decimalic(debtAmount), [debtAmount]);
   const collateralSize = useMemo(
-    () => numeric(collateralAmount),
+    () => decimalic(collateralAmount),
     [collateralAmount],
   );
 
@@ -76,7 +76,9 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
   const newDebt = useMemo(
     () =>
       Decimal.max(
-        existingDebt.add(normalizeAmountByType(numeric(debtAmount), debtType)),
+        existingDebt.add(
+          normalizeAmountByType(decimalic(debtAmount), debtType),
+        ),
         Decimal.ZERO,
       ),
     [debtAmount, existingDebt, debtType],
@@ -86,7 +88,7 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
     () =>
       Decimal.max(
         existingCollateral.add(
-          normalizeAmountByType(numeric(collateralAmount), collateralType),
+          normalizeAmountByType(decimalic(collateralAmount), collateralType),
         ),
         Decimal.ZERO,
       ),

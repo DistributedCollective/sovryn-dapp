@@ -13,7 +13,7 @@ import {
   servicesConfig,
   sovrynLinks,
 } from './constants';
-import { numeric } from './math';
+import { decimalic } from './math';
 
 export const prettyTx = (
   text: string,
@@ -104,7 +104,7 @@ export const valueIsDefined = <T>(
 ): entry is [string, T] => entry[1] !== undefined;
 
 export const composeGas = (priceInGwei: Decimalish, limitInWei: Decimalish) =>
-  numeric(priceInGwei)
+  decimalic(priceInGwei)
     .mul(10 ** 9)
     .mul(limitInWei)
     .div(10 ** 18);

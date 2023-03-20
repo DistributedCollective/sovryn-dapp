@@ -11,7 +11,7 @@ import { useAmountInput } from '../../../../hooks/useAmountInput';
 import { useMaxAssetBalance } from '../../../../hooks/useMaxAssetBalance';
 import { translations } from '../../../../locales/i18n';
 import { Bitcoin } from '../../../../utils/constants';
-import { formatValue, numeric } from '../../../../utils/math';
+import { formatValue, decimalic } from '../../../../utils/math';
 import {
   CRITICAL_COLLATERAL_RATIO,
   MINIMUM_COLLATERAL_RATIO,
@@ -45,9 +45,9 @@ export const OpenCreditLine: FC<OpenCreditLineProps> = ({
   const [debtAmountInput, setDebtAmount, debtAmount] = useAmountInput('');
   const [debtToken, setDebtToken] = useState<SupportedTokens>(BORROW_ASSETS[0]);
 
-  const debtSize = useMemo(() => numeric(debtAmount || 0), [debtAmount]);
+  const debtSize = useMemo(() => decimalic(debtAmount || 0), [debtAmount]);
   const collateralSize = useMemo(
-    () => numeric(collateralAmount || 0),
+    () => decimalic(collateralAmount || 0),
     [collateralAmount],
   );
 
@@ -114,17 +114,19 @@ export const OpenCreditLine: FC<OpenCreditLineProps> = ({
     if ([collateralSize, debtSize, rbtcPrice].some(v => v.isZero())) {
       return Decimal.ZERO;
     }
-    return numeric(collateralSize.mul(rbtcPrice).div(debtWithFees).mul(100));
+    return decimalic(collateralSize.mul(rbtcPrice).div(debtWithFees).mul(100));
   }, [collateralSize, debtSize, debtWithFees, rbtcPrice]);
 
   const liquidationPrice = useMemo(
     () =>
-      numeric(MINIMUM_COLLATERAL_RATIO.mul(debtWithFees).div(collateralSize)),
+      decimalic(MINIMUM_COLLATERAL_RATIO.mul(debtWithFees).div(collateralSize)),
     [debtWithFees, collateralSize],
   );
   const liquidationPriceInRecoveryMode = useMemo(
     () =>
-      numeric(CRITICAL_COLLATERAL_RATIO.mul(debtWithFees).div(collateralSize)),
+      decimalic(
+        CRITICAL_COLLATERAL_RATIO.mul(debtWithFees).div(collateralSize),
+      ),
     [collateralSize, debtWithFees],
   );
 

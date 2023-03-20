@@ -24,7 +24,7 @@ import { Bitcoin } from '../../../../utils/constants';
 import {
   formatCompactValue,
   formatValue,
-  numeric,
+  decimalic,
 } from '../../../../utils/math';
 import { AmountRenderer } from '../../AmountRenderer/AmountRenderer';
 import { SystemModeType } from '../types';
@@ -116,8 +116,10 @@ export const ZeroStats: FC<ZeroStatsProps> = ({ className, dataAttribute }) => {
   useEffect(() => {
     liquity
       .getZUSDInStabilityPool()
-      .then(result => setZusdInStabilityPool(numeric(result.toString())));
-    liquity.getPrice().then(result => setZeroPrice(numeric(result.toString())));
+      .then(result => setZusdInStabilityPool(decimalic(result.toString())));
+    liquity
+      .getPrice()
+      .then(result => setZeroPrice(decimalic(result.toString())));
     liquity
       .getNumberOfTroves()
       .then(result => setLineOfCredit(result.toString()));
@@ -125,8 +127,8 @@ export const ZeroStats: FC<ZeroStatsProps> = ({ className, dataAttribute }) => {
 
   useEffect(() => {
     liquity.getTotal().then(result => {
-      setZusdSupply(numeric(result.debt.toString()));
-      setRbtcInLoc(numeric(result.collateral.toString()));
+      setZusdSupply(decimalic(result.debt.toString()));
+      setRbtcInLoc(decimalic(result.collateral.toString()));
       if (zeroPrice) {
         const recoveryMode = result.collateralRatioIsBelowCritical(
           zeroPrice.toString(),

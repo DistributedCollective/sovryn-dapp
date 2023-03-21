@@ -286,6 +286,14 @@ const EmailNotificationSettingsDialogComponent: React.FC<
     onClose();
   }, [notificationUser?.email, onClose]);
 
+  const errorLabel = useMemo(() => {
+    if (hasUnconfirmedEmail) {
+      return t(translations.emailNotificationsDialog.unconfirmedEmailWarning);
+    }
+    if (email && !emailIsValid) {
+      return t(translations.emailNotificationsDialog.invalidEmail);
+    }
+  }, [email, emailIsValid, hasUnconfirmedEmail]);
   return (
     <Dialog isOpen={isOpen} width={DialogSize.sm}>
       <DialogHeader
@@ -300,14 +308,7 @@ const EmailNotificationSettingsDialogComponent: React.FC<
           <FormGroup
             className="mt-6 mb-4"
             label={t(translations.emailNotificationsDialog.emailInputLabel)}
-            errorLabel={
-              hasUnconfirmedEmail
-                ? t(
-                    translations.emailNotificationsDialog
-                      .unconfirmedEmailWarning,
-                  )
-                : undefined
-            }
+            errorLabel={errorLabel}
           >
             <Input
               value={email}
@@ -323,7 +324,13 @@ const EmailNotificationSettingsDialogComponent: React.FC<
           <Subscriptions dataAttribute="alert-signup-sub" />
         </div>
 
-        <div className="mt-4 flex justify-between">
+        <div className="mt-4 flex flex-col items-center">
+          {(email !== notificationUser?.email ||
+            haveSubscriptionsBeenUpdated) && (
+            <Paragraph className="text-error mb-2">
+              {t(translations.emailNotificationsDialog.unsavedChange)}
+            </Paragraph>
+          )}
           <Button
             onClick={updateUser}
             text={t(translations.common.buttons.save)}

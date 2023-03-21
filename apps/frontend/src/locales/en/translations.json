@@ -168,7 +168,8 @@
                 "creditBalanceTooLow": "The {{currency}} amount you're trying to borrow exceeds your maximum by {{value}}",
                 "totalDebtTooLow": "The total debt must be at least {{value}} {{currency}}",
                 "newTotalDebtTooLow": "The new total debt must be at least {{value}} {{currency}}",
-                "maxExceed": "Exceeds maximum amount"
+                "maxExceed": "Exceeds maximum amount",
+                "newCollateralTooLow": "Add collateral amount must be at least {{value}} {{currency}}"
             }
         },
         "tx": {

@@ -47,9 +47,9 @@ export const checkForSystemErrors = (ratio: number, tcr: number) => {
   const userRatio = ratio / 100;
   const tcrPlus10 = tcr * 1.1;
 
-  const tcrPlus10Percent = formatValue(tcrPlus10 * 100, 2);
-  const ccrPercent = formatValue(CRITICAL_COLLATERAL_RATIO * 100, 2);
-  const mcrPercent = formatValue(MINIMUM_COLLATERAL_RATIO * 100, 2);
+  const tcrPlus10Percent = formatValue(tcrPlus10 * 100, 3);
+  const ccrPercent = formatValue(CRITICAL_COLLATERAL_RATIO * 100, 3);
+  const mcrPercent = formatValue(MINIMUM_COLLATERAL_RATIO * 100, 3);
 
   // System is in recovery mode:
   if (tcr && tcr <= CRITICAL_COLLATERAL_RATIO) {

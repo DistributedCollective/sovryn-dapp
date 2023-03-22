@@ -11,6 +11,7 @@ import { useAmountInput } from '../../../../hooks/useAmountInput';
 import { useAssetBalance } from '../../../../hooks/useAssetBalance';
 import { useMaxAssetBalance } from '../../../../hooks/useMaxAssetBalance';
 import { translations } from '../../../../locales/i18n';
+import { Bitcoin } from '../../../../utils/constants';
 import {
   formatValue,
   fromWei,
@@ -234,8 +235,30 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
       });
     }
 
+    if (isRecoveryMode) {
+      const ratioRequired = Math.max(initialRatio, CRITICAL_COLLATERAL_RATIO);
+      if (ratio < ratioRequired) {
+        errors.push({
+          level: ErrorLevel.Critical,
+          message: t(translations.zeroPage.loc.errors.ratioDecreased, {
+            value: formatValue(ratioRequired, 3),
+          }),
+          weight: 4,
+        });
+      }
+    }
+
     return errors;
-  }, [fieldsTouched, ratio, tcr, newDebt, isIncreasingDebt, debtToken]);
+  }, [
+    fieldsTouched,
+    ratio,
+    tcr,
+    newDebt,
+    isRecoveryMode,
+    isIncreasingDebt,
+    debtToken,
+    initialRatio,
+  ]);
 
   const debtError = useMemo(() => {
     if (!fieldsTouched) {
@@ -272,6 +295,23 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
     }
 
     if (
+      isRecoveryMode &&
+      ((isIncreasingDebt && Number(debtAmount) > 0) ||
+        (!isIncreasingCollateral && Number(collateralAmount) > 0))
+    ) {
+      const minCollateralAmount =
+        (newDebt / rbtcPrice) *
+        Math.max(CRITICAL_COLLATERAL_RATIO, initialRatio / 100);
+
+      if (newCollateral < minCollateralAmount) {
+        return t(translations.zeroPage.loc.errors.newCollateralTooLow, {
+          value: `${formatValue(minCollateralAmount - newCollateral, 4, true)}`,
+          currency: Bitcoin,
+        });
+      }
+    }
+
+    if (
       collateralSize > maxCollateralToWithdrawAmount &&
       !isIncreasingCollateral
     ) {
@@ -284,7 +324,15 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
     collateralSize,
     maxCollateralToDepositAmount,
     isIncreasingCollateral,
+    isRecoveryMode,
+    isIncreasingDebt,
+    debtAmount,
+    collateralAmount,
     maxCollateralToWithdrawAmount,
+    newDebt,
+    rbtcPrice,
+    initialRatio,
+    newCollateral,
   ]);
 
   const handleFormEdit = useCallback(() => setFieldsTouched(true), []);

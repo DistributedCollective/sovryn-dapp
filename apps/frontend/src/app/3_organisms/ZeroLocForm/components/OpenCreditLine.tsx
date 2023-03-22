@@ -4,13 +4,14 @@ import { t } from 'i18next';
 
 import { SupportedTokens } from '@sovryn/contracts';
 import { ErrorLevel } from '@sovryn/ui';
+import { Decimal } from '@sovryn/utils';
 
 import { BORROW_ASSETS } from '../../../5_pages/ZeroPage/constants';
 import { useAmountInput } from '../../../../hooks/useAmountInput';
 import { useMaxAssetBalance } from '../../../../hooks/useMaxAssetBalance';
 import { translations } from '../../../../locales/i18n';
 import { Bitcoin } from '../../../../utils/constants';
-import { formatValue, fromWei, numeric, toWei } from '../../../../utils/math';
+import { formatValue, decimalic } from '../../../../utils/math';
 import {
   CRITICAL_COLLATERAL_RATIO,
   MINIMUM_COLLATERAL_RATIO,
@@ -27,8 +28,8 @@ import { FormContent } from './FormContent';
 
 export type OpenCreditLineProps = {
   onSubmit: (value: CreditLineSubmitValue) => void;
-  rbtcPrice: number;
-  borrowingRate: number;
+  rbtcPrice: Decimal;
+  borrowingRate: Decimal;
 };
 
 export const OpenCreditLine: FC<OpenCreditLineProps> = ({
@@ -44,9 +45,9 @@ export const OpenCreditLine: FC<OpenCreditLineProps> = ({
   const [debtAmountInput, setDebtAmount, debtAmount] = useAmountInput('');
   const [debtToken, setDebtToken] = useState<SupportedTokens>(BORROW_ASSETS[0]);
 
-  const debtSize = useMemo(() => Number(debtAmount || 0), [debtAmount]);
+  const debtSize = useMemo(() => decimalic(debtAmount || 0), [debtAmount]);
   const collateralSize = useMemo(
-    () => Number(collateralAmount || 0),
+    () => decimalic(collateralAmount || 0),
     [collateralAmount],
   );
 
@@ -61,72 +62,72 @@ export const OpenCreditLine: FC<OpenCreditLineProps> = ({
 
   const debtWithFees = useMemo(
     () =>
-      debtSize > 0
+      debtSize.gt(0)
         ? getTotalDebtAmount(debtSize, borrowingRate, liquidationReserve)
-        : 0,
+        : Decimal.ZERO,
     [debtSize, borrowingRate, liquidationReserve],
   );
 
   const minCollateralAmount = useMemo(
     () =>
-      (Math.max(MIN_DEBT_SIZE, debtWithFees) / rbtcPrice) *
-      (isRecoveryMode ? CRITICAL_COLLATERAL_RATIO : MINIMUM_COLLATERAL_RATIO),
+      Decimal.max(MIN_DEBT_SIZE, debtWithFees)
+        .div(rbtcPrice)
+        .mul(
+          isRecoveryMode ? CRITICAL_COLLATERAL_RATIO : MINIMUM_COLLATERAL_RATIO,
+        ),
     [debtWithFees, isRecoveryMode, rbtcPrice],
   );
 
   const maxCollateralAmount = useMemo(
-    () => Number(fromWei(maxRbtcWeiBalance)),
+    () => Decimal.fromBigNumberString(maxRbtcWeiBalance),
     [maxRbtcWeiBalance],
   );
 
   const maxDebtAmount = useMemo(() => {
-    const rbtcBalance = Number(fromWei(maxRbtcWeiBalance));
-    const collateral = Number(collateralAmount);
+    let amount = maxCollateralAmount
+      .mul(rbtcPrice)
+      .div(
+        isRecoveryMode ? CRITICAL_COLLATERAL_RATIO : MINIMUM_COLLATERAL_RATIO,
+      );
 
-    let amount =
-      (rbtcBalance * rbtcPrice) /
-      (isRecoveryMode ? CRITICAL_COLLATERAL_RATIO : MINIMUM_COLLATERAL_RATIO);
-
-    if (collateral > 0) {
-      amount =
-        (collateral * rbtcPrice) /
-        (isRecoveryMode ? CRITICAL_COLLATERAL_RATIO : MINIMUM_COLLATERAL_RATIO);
+    if (collateralSize.gt(0)) {
+      amount = collateralSize
+        .mul(rbtcPrice)
+        .div(
+          isRecoveryMode ? CRITICAL_COLLATERAL_RATIO : MINIMUM_COLLATERAL_RATIO,
+        );
     }
 
     const originationFee = getOriginationFeeAmount(amount, borrowingRate);
 
-    return Math.max(amount - originationFee - liquidationReserve, 0);
+    return Decimal.max(amount.sub(originationFee).sub(liquidationReserve), 0);
   }, [
     borrowingRate,
-    collateralAmount,
+    collateralSize,
     isRecoveryMode,
     liquidationReserve,
-    maxRbtcWeiBalance,
+    maxCollateralAmount,
     rbtcPrice,
   ]);
 
   const ratio = useMemo(() => {
-    if ([collateralAmount, debtAmount, rbtcPrice].some(v => !v)) {
-      return 0;
+    if ([collateralSize, debtSize, rbtcPrice].some(v => v.isZero())) {
+      return Decimal.ZERO;
     }
-    return numeric(
-      ((Number(collateralAmount) * Number(rbtcPrice)) / debtWithFees) * 100,
-    );
-  }, [collateralAmount, debtAmount, debtWithFees, rbtcPrice]);
+    return decimalic(collateralSize.mul(rbtcPrice).div(debtWithFees).mul(100));
+  }, [collateralSize, debtSize, debtWithFees, rbtcPrice]);
 
   const liquidationPrice = useMemo(
     () =>
-      numeric(
-        MINIMUM_COLLATERAL_RATIO * (debtWithFees / Number(collateralAmount)),
-      ),
-    [debtWithFees, collateralAmount],
+      decimalic(MINIMUM_COLLATERAL_RATIO.mul(debtWithFees).div(collateralSize)),
+    [debtWithFees, collateralSize],
   );
   const liquidationPriceInRecoveryMode = useMemo(
     () =>
-      numeric(
-        CRITICAL_COLLATERAL_RATIO * (debtWithFees / Number(collateralAmount)),
+      decimalic(
+        CRITICAL_COLLATERAL_RATIO.mul(debtWithFees).div(collateralSize),
       ),
-    [collateralAmount, debtWithFees],
+    [collateralSize, debtWithFees],
   );
 
   const errors = useMemo(() => {
@@ -136,7 +137,7 @@ export const OpenCreditLine: FC<OpenCreditLineProps> = ({
     const errors = checkForSystemErrors(ratio, tcr);
 
     // Adjusting trove
-    if (debtWithFees < MIN_DEBT_SIZE) {
+    if (debtWithFees.lt(MIN_DEBT_SIZE)) {
       errors.push({
         level: ErrorLevel.Critical,
         message: t(translations.zeroPage.loc.errors.newTotalDebtTooLow, {
@@ -155,36 +156,34 @@ export const OpenCreditLine: FC<OpenCreditLineProps> = ({
       return undefined;
     }
 
-    if (toWei(debtAmount).gt(toWei(maxDebtAmount))) {
+    if (debtSize.gt(maxDebtAmount)) {
       return t(translations.zeroPage.loc.errors.maxExceed);
     }
 
     return undefined;
-  }, [debtAmount, fieldsTouched, maxDebtAmount]);
+  }, [debtSize, fieldsTouched, maxDebtAmount]);
 
   const collateralError = useMemo(() => {
     if (!fieldsTouched) {
       return undefined;
     }
 
-    if (toWei(collateralSize).lt(toWei(minCollateralAmount))) {
+    if (collateralSize.lt(minCollateralAmount)) {
       return t(translations.zeroPage.loc.errors.collateralTooLow, {
-        value: `${formatValue(minCollateralAmount, 4, true)} ${Bitcoin}`,
+        value: `${formatValue(
+          minCollateralAmount.toNumber(),
+          4,
+          true,
+        )} ${Bitcoin}`,
       });
     }
 
-    if (toWei(collateralAmount).gt(maxRbtcWeiBalance)) {
+    if (collateralSize.gt(maxCollateralAmount)) {
       return t(translations.zeroPage.loc.errors.maxExceed);
     }
 
     return undefined;
-  }, [
-    collateralAmount,
-    collateralSize,
-    fieldsTouched,
-    maxRbtcWeiBalance,
-    minCollateralAmount,
-  ]);
+  }, [collateralSize, fieldsTouched, maxCollateralAmount, minCollateralAmount]);
 
   const handleFormEdit = useCallback(() => setFieldsTouched(true), []);
 
@@ -202,9 +201,11 @@ export const OpenCreditLine: FC<OpenCreditLineProps> = ({
     <FormContent
       hasTrove={false}
       rbtcPrice={rbtcPrice}
-      liquidationReserve={debtWithFees > 0 ? liquidationReserve : 0}
+      liquidationReserve={
+        debtWithFees.gt(0) ? liquidationReserve : Decimal.ZERO
+      }
       borrowingRate={borrowingRate}
-      originationFee={debtWithFees > 0 ? originationFee : 0}
+      originationFee={debtWithFees.gt(0) ? originationFee : Decimal.ZERO}
       debtAmount={debtAmountInput}
       maxDebtAmount={maxDebtAmount}
       onDebtAmountChange={setDebtAmount}
@@ -213,11 +214,11 @@ export const OpenCreditLine: FC<OpenCreditLineProps> = ({
       collateralAmount={collateralAmountInput}
       maxCollateralAmount={maxCollateralAmount}
       onCollateralAmountChange={setCollateralAmount}
-      initialRatio={0}
+      initialRatio={Decimal.ZERO}
       currentRatio={ratio}
-      initialLiquidationPrice={0}
+      initialLiquidationPrice={Decimal.ZERO}
       liquidationPrice={liquidationPrice}
-      initialLiquidationPriceInRecoveryMode={0}
+      initialLiquidationPriceInRecoveryMode={Decimal.ZERO}
       liquidationPriceInRecoveryMode={liquidationPriceInRecoveryMode}
       totalDebt={debtWithFees}
       totalCollateral={collateralSize}

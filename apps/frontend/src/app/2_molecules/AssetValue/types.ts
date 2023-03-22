@@ -1,10 +1,11 @@
 import { SupportedTokens } from '@sovryn/contracts';
+import { Decimal } from '@sovryn/utils';
 
 export type AssetValueProps = {
   /**
    * a number or string that represents the value of the asset.
    */
-  value: number | string;
+  value: Decimal;
   /**
    * an enum value that represents the supported token for the asset. The enum values are defined elsewhere in the codebase.
    */
@@ -62,6 +63,7 @@ export const AssetDecimals: { [key in SupportedTokens]: number } = {
   dllr: 4,
   sov: 4,
   doc: 4,
+  mynt: 4,
 };
 
 export enum AssetValueMode {

@@ -11,7 +11,7 @@ export type DynamicValueProps<T> = {
   renderer?: (value: T) => React.ReactNode;
 };
 
-export const DynamicValue = <T extends number>({
+export const DynamicValue = <T extends unknown>({
   initialValue,
   value,
   loading,

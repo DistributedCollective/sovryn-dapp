@@ -6,6 +6,7 @@ import { Subscription } from 'zen-observable-ts';
 import { getTokenDetails } from '@sovryn/contracts';
 import { SupportedTokens } from '@sovryn/contracts';
 import { getProvider } from '@sovryn/ethers-provider';
+import { Decimal } from '@sovryn/utils';
 
 import {
   idHash,
@@ -19,9 +20,9 @@ import { EcosystemDataType } from '../types';
 export const useGetTotalSupply = (
   asset: SupportedTokens,
   chainId = getRskChainId(),
-): CacheCallResponse<string> => {
-  const [state, setState] = useState<CacheCallResponse<string>>({
-    value: '0',
+): CacheCallResponse<Decimal> => {
+  const [state, setState] = useState<CacheCallResponse<Decimal>>({
+    value: Decimal.ZERO,
     loading: false,
     error: null,
   });
@@ -42,7 +43,9 @@ export const useGetTotalSupply = (
           tokenDetails.address,
           tokenDetails.abi,
           getProvider(chainId),
-        ).totalSupply();
+        )
+          .totalSupply()
+          .then(Decimal.fromBigNumberString);
       };
       startCall(hashedArgs, callback, {
         ttl: 1000 * 30,
@@ -50,7 +53,7 @@ export const useGetTotalSupply = (
       });
     };
     getTotalSupply().catch(e =>
-      setState({ value: '0', loading: false, error: e }),
+      setState({ value: Decimal.ZERO, loading: false, error: e }),
     );
 
     return () => {
@@ -60,5 +63,5 @@ export const useGetTotalSupply = (
     };
   }, [asset, chainId]);
 
-  return { ...state, value: state.value === null ? '0' : state.value };
+  return { ...state, value: state.value === null ? Decimal.ZERO : state.value };
 };

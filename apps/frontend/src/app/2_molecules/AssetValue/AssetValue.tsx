@@ -4,8 +4,8 @@ import { useMemo } from 'react';
 import classNames from 'classnames';
 
 import { Tooltip, TooltipTrigger } from '@sovryn/ui';
+import { Decimal } from '@sovryn/utils';
 
-import { fromWei } from '../../../utils/math';
 import { AssetRenderer } from '../AssetRenderer/AssetRenderer';
 import styles from './AssetValue.module.css';
 import { AssetDecimals, AssetValueMode, AssetValueProps } from './types';
@@ -42,12 +42,9 @@ export const AssetValue: React.FC<AssetValueProps> = ({
       max = Math.max(min, max);
     }
 
-    const numberValue =
-      typeof value === 'string' ? Number(fromWei(value, 18)) : value;
-
     return [
       formatNumber(
-        numberValue,
+        value,
         {
           minimumFractionDigits: min,
           maximumFractionDigits: max,
@@ -57,7 +54,7 @@ export const AssetValue: React.FC<AssetValueProps> = ({
         showNegativeSign,
       ),
       formatNumber(
-        numberValue,
+        value,
         {
           minimumFractionDigits: 0,
           maximumFractionDigits: 18,
@@ -126,14 +123,16 @@ export const AssetValue: React.FC<AssetValueProps> = ({
 };
 
 const formatNumber = (
-  value: number,
+  value: Decimal,
   options: Intl.NumberFormatOptions,
   isApproximation: boolean,
   showPositiveSign: boolean,
   showNegativeSign: boolean,
 ) => {
-  let numberString = value.toLocaleString(navigator.language, options);
-  if (value > 0) {
+  let numberString = value
+    .toNumber()
+    .toLocaleString(navigator.language, options);
+  if (value.gt(0)) {
     if (showPositiveSign) {
       numberString = `+${numberString}`;
     } else if (showNegativeSign) {

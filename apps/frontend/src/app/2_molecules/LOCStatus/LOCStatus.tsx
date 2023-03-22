@@ -1,10 +1,11 @@
-import React, { FC } from 'react';
+import React, { FC, useMemo } from 'react';
 
 import classNames from 'classnames';
 import { t } from 'i18next';
 import CountUp from 'react-countup';
 
 import { Button, ButtonSize, ButtonStyle } from '@sovryn/ui';
+import { Decimal } from '@sovryn/utils';
 
 import {
   TOKEN_RENDER_PRECISION,
@@ -17,29 +18,31 @@ import { LOCStat } from './components/LOCStat/LOCStat';
 
 export type LOCStatusProps = {
   className?: string;
-  withdrawalSurplus?: number;
-  collateral?: number;
-  debt?: number;
+  withdrawalSurplus?: Decimal;
+  collateral?: Decimal;
+  debt?: Decimal;
   debtSymbol?: string;
-  cRatio?: number;
+  cRatio?: Decimal;
   onAdjust?: () => void;
   onClose?: () => void;
   onWithdraw?: () => void;
 };
 
 export const LOCStatus: FC<LOCStatusProps> = ({
-  withdrawalSurplus = 0,
-  collateral = 0,
-  debt = 0,
-  cRatio = 0,
+  withdrawalSurplus = Decimal.ZERO,
+  collateral = Decimal.ZERO,
+  debt = Decimal.ZERO,
+  cRatio = Decimal.ZERO,
   onAdjust,
   onClose,
   onWithdraw,
   className,
   debtSymbol = '',
 }) => {
-  const hasWithdrawalSurplus = withdrawalSurplus > 0;
-  const showOpenLOC = !hasWithdrawalSurplus && collateral > 0;
+  const hasWithdrawalSurplus = withdrawalSurplus.gt(0);
+  const showOpenLOC = !hasWithdrawalSurplus && collateral.gt(0);
+
+  const ratio = useMemo(() => cRatio.toNumber(), [cRatio]);
 
   return (
     <div
@@ -85,8 +88,8 @@ export const LOCStatus: FC<LOCStatusProps> = ({
               label={t('LOCStatus.collateralRatio')}
               value={
                 <div className="flex items-center">
-                  <CRatioIndicator className="mr-3" value={cRatio} />
-                  <CountUp duration={0.7} suffix="%" end={cRatio} />
+                  <CRatioIndicator className="mr-3" value={ratio} />
+                  <CountUp duration={0.7} suffix="%" end={ratio} />
                 </div>
               }
             />

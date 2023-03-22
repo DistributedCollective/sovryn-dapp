@@ -2,6 +2,8 @@ import React, { FC, ReactNode, useMemo } from 'react';
 
 import { t } from 'i18next';
 
+import { Decimal } from '@sovryn/utils';
+
 import { AmountRenderer } from '../../2_molecules/AmountRenderer/AmountRenderer';
 import { CRatioIndicator } from '../../2_molecules/LOCStatus/components/CRatioIndicator/CRatioIndicator';
 import { Bitcoin } from '../../../utils/constants';
@@ -13,9 +15,9 @@ import {
 } from './constants';
 
 type CurrentTroveDataProps = {
-  debt: string;
-  collateral: string;
-  rbtcPrice: number;
+  debt: Decimal;
+  collateral: Decimal;
+  rbtcPrice: Decimal;
   className?: string;
 };
 
@@ -26,10 +28,9 @@ export const CurrentTroveData: FC<CurrentTroveDataProps> = ({
   collateral,
 }) => {
   const collateralRatio = useMemo(
-    () => ((parseFloat(collateral) * rbtcPrice) / parseFloat(debt)) * 100,
+    () => collateral.mul(rbtcPrice).div(debt).mul(100),
     [collateral, debt, rbtcPrice],
   );
-
   return (
     <div className={className}>
       <div className="w-full flex flex-row justify-between items-center mb-12 gap-4">
@@ -57,7 +58,10 @@ export const CurrentTroveData: FC<CurrentTroveDataProps> = ({
           label={t('LOCStatus.collateralRatio')}
           value={
             <div className="flex flex-row justify-start items-center">
-              <CRatioIndicator className="mr-2" value={collateralRatio} />
+              <CRatioIndicator
+                className="mr-2"
+                value={collateralRatio.toNumber()}
+              />
               {formatValue(collateralRatio)}%
             </div>
           }

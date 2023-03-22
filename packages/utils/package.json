@@ -1,0 +1,34 @@
+{
+  "name": "@sovryn/utils",
+  "version": "0.0.0",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "license": "MIT",
+  "author": {
+    "name": "Victor Creed",
+    "email": "victor@sovryn.app"
+  },
+  "scripts": {
+    "dev": "tsup --watch",
+    "build": "tsup",
+    "test": "jest --passWithNoTests",
+    "test:staged": "jest --passWithNoTests --bail --onlyChanged",
+    "coverage": "jest --coverage",
+    "lint": "eslint ./src/**/*.ts"
+  },
+  "devDependencies": {
+    "@babel/preset-typescript": "7.18.6",
+    "jest": "29.0.3",
+    "tsup": "6.2.3",
+    "typescript": "4.8.3"
+  },
+  "files": [
+    "dist"
+  ],
+  "dependencies": {
+    "@ethersproject/bignumber": "*"
+  },
+  "peerDependencies": {
+    "@ethersproject/bignumber": "*"
+  }
+}

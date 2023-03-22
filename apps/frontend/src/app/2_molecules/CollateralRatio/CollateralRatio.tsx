@@ -3,11 +3,12 @@ import React, { FC } from 'react';
 import { t } from 'i18next';
 
 import { Heading, HealthBar, HeadingType } from '@sovryn/ui';
+import { Decimal } from '@sovryn/utils';
 
 import { translations } from '../../../locales/i18n';
 
 export type CollateralRatioProps = {
-  value?: number;
+  value?: Decimal;
 };
 
 export const CollateralRatio: FC<CollateralRatioProps> = ({ value }) => {
@@ -32,7 +33,7 @@ export const CollateralRatio: FC<CollateralRatioProps> = ({ value }) => {
         middleStart={110}
         middleEnd={150}
         end={250}
-        value={value}
+        value={value?.toNumber()}
       />
     </div>
   );

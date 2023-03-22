@@ -69,7 +69,11 @@ export const TransactionStep: FC<TransactionStepProps> = ({
       const { contract } = request;
       findContract(contract.address).then(result => {
         if (result.group === 'tokens') {
-          getTokenDetailsByAddress(contract.address).then(setToken);
+          getTokenDetailsByAddress(contract.address)
+            .then(setToken)
+            .catch(e => {
+              console.error('token not found?', result, e);
+            });
         }
       });
     }
@@ -273,10 +277,10 @@ export const TransactionStep: FC<TransactionStepProps> = ({
                   onChange={e =>
                     updateConfig({
                       ...config,
-                      gasLimit: e.target.value,
+                      gasLimit: e.target.value.replace(/[^0-9]/g, ''),
                     })
                   }
-                  step="any"
+                  step="0"
                 />
                 <AmountInput
                   label={t(translations.transactionStep.gasPrice)}

@@ -11,7 +11,7 @@ import { t } from 'i18next';
 import { Helmet } from 'react-helmet-async';
 import { Await, useLoaderData } from 'react-router-dom';
 
-import { Decimal, Fees, UserTrove } from '@sovryn-zero/lib-base';
+import { Fees, UserTrove } from '@sovryn-zero/lib-base';
 import {
   Dialog,
   DialogBody,
@@ -23,6 +23,7 @@ import {
   ParagraphSize,
   ParagraphStyle,
 } from '@sovryn/ui';
+import { Decimal } from '@sovryn/utils';
 
 import { DashboardWelcomeBanner } from '../../2_molecules/DashboardWelcomeBanner/DashboardWelcomeBanner';
 import { LOCStatus } from '../../2_molecules/LOCStatus/LOCStatus';
@@ -39,6 +40,7 @@ import { useWalletConnect } from '../../../hooks';
 import { useAccount } from '../../../hooks/useAccount';
 import { translations } from '../../../locales/i18n';
 import { LIQUIDATION_RESERVE_AMOUNT } from '../../../utils/constants';
+import { decimalic } from '../../../utils/math';
 import { useClaimCollateralSurplus } from './hooks/useClaimCollateralSurplus';
 import { useHandleTrove } from './hooks/useHandleTrove';
 import { ZeroPageLoaderData } from './loader';
@@ -59,10 +61,10 @@ export const ZeroPage: FC = () => {
   const { refetch: getOpenTroves } = useGetUserOpenTrove(account);
 
   const collateral = useMemo(
-    () => Number(trove?.collateral ?? 0),
+    () => decimalic(trove?.collateral?.toString()),
     [trove?.collateral],
   );
-  const debt = useMemo(() => Number(trove?.debt ?? 0), [trove?.debt]);
+  const debt = useMemo(() => decimalic(trove?.debt?.toString()), [trove?.debt]);
   const hasLoc = useMemo(() => !!trove?.debt?.gt(0), [trove?.debt]);
 
   const isLoading = useMemo(
@@ -85,6 +87,8 @@ export const ZeroPage: FC = () => {
     if (account && liquity) {
       liquity
         .getCollateralSurplusBalance(account)
+        .then(String)
+        .then(Decimal.from)
         .then(setCollateralSurplusBalance);
     }
   }, [account, liquity]);
@@ -117,9 +121,7 @@ export const ZeroPage: FC = () => {
   }, [account, liquity, getTroves, getCollateralSurplusBalance]);
 
   const getRatio = useCallback(
-    (price: string) => {
-      return ((collateral * Number(price)) / debt) * 100;
-    },
+    (price: Decimal) => collateral.mul(price).div(debt).mul(100),
     [collateral, debt],
   );
 
@@ -144,7 +146,7 @@ export const ZeroPage: FC = () => {
               </Heading>
             }
           >
-            {([price, fees]: [string, Fees]) => (
+            {([price, fees]: [Decimal, Fees]) => (
               <>
                 {!showWelcomeBanner && !isLoading && (
                   <LOCStatus
@@ -155,9 +157,7 @@ export const ZeroPage: FC = () => {
                     debtSymbol={DEBT_TOKEN.toUpperCase()}
                     onAdjust={toggle}
                     onClose={toggleClosePopup}
-                    withdrawalSurplus={Number(
-                      collateralSurplusBalance?.toString(),
-                    )}
+                    withdrawalSurplus={collateralSurplusBalance}
                     onWithdraw={claimCollateralSurplus}
                   />
                 )}
@@ -202,16 +202,20 @@ export const ZeroPage: FC = () => {
                     {open && !hasLoc && (
                       <OpenCreditLine
                         onSubmit={handleTroveSubmit}
-                        rbtcPrice={Number(price)}
-                        borrowingRate={Number(fees?.borrowingRate() ?? 0)}
+                        rbtcPrice={price}
+                        borrowingRate={decimalic(
+                          fees?.borrowingRate()?.toString(),
+                        )}
                       />
                     )}
                     {open && hasLoc && (
                       <AdjustCreditLine
-                        existingCollateral={String(collateral)}
-                        existingDebt={String(debt)}
-                        rbtcPrice={Number(price)}
-                        borrowingRate={Number(fees?.borrowingRate() ?? 0)}
+                        existingCollateral={collateral}
+                        existingDebt={debt}
+                        rbtcPrice={price}
+                        borrowingRate={decimalic(
+                          fees?.borrowingRate()?.toString(),
+                        )}
                         onSubmit={handleTroveSubmit}
                       />
                     )}
@@ -235,8 +239,8 @@ export const ZeroPage: FC = () => {
                   <DialogBody>
                     <CloseCreditLine
                       onSubmit={handleTroveClose}
-                      creditValue={String(debt - LIQUIDATION_RESERVE_AMOUNT)}
-                      collateralValue={String(collateral)}
+                      creditValue={debt.sub(LIQUIDATION_RESERVE_AMOUNT)}
+                      collateralValue={collateral}
                     />
                   </DialogBody>
                 </Dialog>

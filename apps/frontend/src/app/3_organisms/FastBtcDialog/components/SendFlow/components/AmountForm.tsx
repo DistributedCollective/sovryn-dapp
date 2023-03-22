@@ -15,6 +15,7 @@ import {
   Paragraph,
   ParagraphSize,
 } from '@sovryn/ui';
+import { Decimal } from '@sovryn/utils';
 
 import { defaultChainId } from '../../../../../../config/chains';
 
@@ -24,7 +25,7 @@ import { useMaintenance } from '../../../../../../hooks/useMaintenance';
 import { useMaxAssetBalance } from '../../../../../../hooks/useMaxAssetBalance';
 import { translations } from '../../../../../../locales/i18n';
 import { Bitcoin, btcInSatoshis } from '../../../../../../utils/constants';
-import { fromWei, toWei } from '../../../../../../utils/math';
+import { toWei } from '../../../../../../utils/math';
 import { GAS_LIMIT_FAST_BTC_WITHDRAW } from '../../../constants';
 import {
   WithdrawContext,
@@ -38,9 +39,11 @@ export const AmountForm: React.FC = () => {
   const { checkMaintenance, States } = useMaintenance();
   const fastBtcLocked = checkMaintenance(States.FASTBTC);
 
-  const { weiBalance: maxAmountWei } = useMaxAssetBalance(SupportedTokens.rbtc);
+  const { bigNumberBalance: maxAmountWei } = useMaxAssetBalance(
+    SupportedTokens.rbtc,
+  );
 
-  const { weiBalance: rbtcWeiBalance } = useAssetBalance(
+  const { bigNumberBalance: rbtcWeiBalance } = useAssetBalance(
     SupportedTokens.rbtc,
     defaultChainId,
   );
@@ -80,18 +83,18 @@ export const AmountForm: React.FC = () => {
 
   const maxAmount = useMemo(() => {
     const limit = parseUnits(limits.max.toString(), 10);
-    return fromWei(limit.gt(maxAmountWei) ? maxAmountWei : limit.toString());
+    return limit.gt(maxAmountWei) ? maxAmountWei : limit;
   }, [limits.max, maxAmountWei]);
 
   const maxExceed = useMemo(() => {
     if (value === '0') {
       return false;
     }
-    return toWei(value).gt(toWei(maxAmount));
+    return toWei(value).gt(maxAmount);
   }, [maxAmount, value]);
 
   const onMaximumAmountClick = useCallback(
-    () => setValue(String(maxAmount)),
+    () => setValue(maxAmount.toString()),
     [maxAmount],
   );
 
@@ -109,7 +112,7 @@ export const AmountForm: React.FC = () => {
 
           <MaxButton
             onClick={onMaximumAmountClick}
-            value={maxAmount}
+            value={Decimal.fromBigNumberString(maxAmount.toString())}
             token={Bitcoin}
             precision={8}
             dataAttribute="funding-send-amount-max"

@@ -3,6 +3,8 @@ import { isBigNumberish } from '@ethersproject/bignumber/lib/bignumber';
 import { BigNumberish, BigNumber } from 'ethers';
 import { formatUnits, parseUnits } from 'ethers/lib/utils';
 
+import { Decimal, Decimalish } from '@sovryn/utils';
+
 const DEFAULT_UNIT = 18;
 const DEFAULT_DECIMALS = 6;
 
@@ -84,17 +86,20 @@ export const fromWeiFixed = (
   unitName: BigNumberish = DEFAULT_UNIT,
 ): string => Number(fromWei(value, unitName)).toFixed(decimals);
 
+// todo: refactor to make sure it handles really big bignumber
 export const formatValue = (
-  value: number | string,
+  value: Decimalish,
   precision: number = 0,
   roundUp: boolean = false,
 ) =>
-  Number(value).toLocaleString(navigator.language, {
-    maximumFractionDigits: precision,
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    //@ts-ignore
-    roundingMode: roundUp ? 'ceil' : 'trunc', // This is an experimental feature with the default value of 'trunc', see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/NumberFormat/NumberFormat for more information
-  });
+  decimalic(value)
+    .toNumber()
+    .toLocaleString(navigator.language, {
+      maximumFractionDigits: precision,
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      //@ts-ignore
+      roundingMode: roundUp ? 'ceil' : 'trunc', // This is an experimental feature with the default value of 'trunc', see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/NumberFormat/NumberFormat for more information
+    });
 
 export const formatCompactValue = (value: number, precision: number = 0) =>
   value.toLocaleString(navigator.language, {
@@ -129,12 +134,13 @@ export const getLocaleSeparators = () => {
   };
 };
 
-export const getDecimalPartLength = (value: string | number) =>
-  value?.toString().split('.')?.[1]?.length || 0;
+export const getDecimalPartLength = (value: Decimalish) =>
+  decimalic(value).toString().split('.')?.[1]?.length || 0;
 
-export const numeric = (value: number) => {
-  if (isNaN(value) || !isFinite(value) || !value) {
-    return 0;
+export const decimalic = (value: Decimalish | undefined | null) => {
+  value = Decimal.from(value || 0);
+  if (value.infinite || !value) {
+    return Decimal.ZERO;
   }
   return value;
 };

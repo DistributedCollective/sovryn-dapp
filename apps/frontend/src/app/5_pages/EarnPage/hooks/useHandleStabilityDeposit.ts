@@ -5,6 +5,7 @@ import { t } from 'i18next';
 
 import { SupportedTokens } from '@sovryn/contracts';
 import { getContract } from '@sovryn/contracts';
+import { Decimal } from '@sovryn/utils';
 
 import {
   Transaction,
@@ -21,7 +22,6 @@ import {
   GAS_LIMIT_STABILITY_POOL_DLLR_INC_WITHDRAW,
   GAS_LIMIT_STABILITY_POOL_INC_WITHDRAW,
 } from '../../../../utils/constants';
-import { toWei } from '../../../../utils/math';
 import {
   UNSIGNED_PERMIT,
   permitHandler,
@@ -30,7 +30,7 @@ import {
 
 export const useHandleStabilityDeposit = (
   token: SupportedTokens,
-  amount: string,
+  amount: Decimal,
   hasRewardsToClaim: boolean,
   isDeposit: boolean,
   onComplete: () => void,
@@ -76,7 +76,7 @@ export const useHandleStabilityDeposit = (
           fnName: isDllrToken
             ? 'withdrawFromSpAndConvertToDLLR'
             : 'withdrawFromSP',
-          args: [toWei(amount)],
+          args: [amount.toBigNumber().toString()],
           gasLimit: gasLimitToUse,
         },
         onComplete,
@@ -106,7 +106,7 @@ export const useHandleStabilityDeposit = (
       return;
     }
     const stabilityPool = await getStabilityPoolContract();
-    const weiAmount = toWei(amount).toString();
+    const weiAmount = amount.toBigNumber().toString();
     const transactions: Transaction[] = [];
     if (isDllrToken) {
       transactions.push(

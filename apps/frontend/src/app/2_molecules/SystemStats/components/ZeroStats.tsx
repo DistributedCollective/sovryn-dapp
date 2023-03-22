@@ -3,7 +3,6 @@ import React, { FC, useEffect, useMemo, useState } from 'react';
 import { t } from 'i18next';
 import { useLoaderData } from 'react-router-dom';
 
-import { Decimal, Percent } from '@sovryn-zero/lib-base';
 import {
   EthersLiquity,
   ReadableEthersLiquityWithStore,
@@ -17,11 +16,16 @@ import {
   SimpleTable,
   SimpleTableRow,
 } from '@sovryn/ui';
+import { Decimal, Percent } from '@sovryn/utils';
 
 import { useBlockNumber } from '../../../../hooks/useBlockNumber';
 import { translations } from '../../../../locales/i18n';
 import { Bitcoin } from '../../../../utils/constants';
-import { formatCompactValue, formatValue } from '../../../../utils/math';
+import {
+  formatCompactValue,
+  formatValue,
+  decimalic,
+} from '../../../../utils/math';
 import { AmountRenderer } from '../../AmountRenderer/AmountRenderer';
 import { SystemModeType } from '../types';
 import { calculateCollateralRatio } from '../utils';
@@ -38,7 +42,7 @@ export const ZeroStats: FC<ZeroStatsProps> = ({ className, dataAttribute }) => {
   const [lineOfCredit, setLineOfCredit] = useState('0');
   const [zusdInStabilityPool, setZusdInStabilityPool] = useState<Decimal>();
   const [zusdSupply, setZusdSupply] = useState<Decimal>();
-  const [rbtcInLoc, setRbtcInLoc] = useState('0');
+  const [rbtcInLoc, setRbtcInLoc] = useState(Decimal.ZERO);
   const [zeroPrice, setZeroPrice] = useState<Decimal>();
   const [collateralRatio, setCollateralRatio] = useState('0');
   const [zeroInStabilityPoolPercent, setZeroInStabilityPoolPercent] =
@@ -73,7 +77,7 @@ export const ZeroStats: FC<ZeroStatsProps> = ({ className, dataAttribute }) => {
     () =>
       zusdSupply ? (
         <AmountRenderer
-          value={zusdSupply.toString()}
+          value={zusdSupply}
           suffix={SupportedTokens.zusd}
           precision={USD_DISPLAY_PRECISION}
           showRoundingPrefix={false}
@@ -90,7 +94,7 @@ export const ZeroStats: FC<ZeroStatsProps> = ({ className, dataAttribute }) => {
       zusdInStabilityPool ? (
         <>
           <AmountRenderer
-            value={zusdInStabilityPool.toString()}
+            value={zusdInStabilityPool}
             suffix={SupportedTokens.zusd}
             precision={USD_DISPLAY_PRECISION}
             showRoundingPrefix={false}
@@ -112,8 +116,10 @@ export const ZeroStats: FC<ZeroStatsProps> = ({ className, dataAttribute }) => {
   useEffect(() => {
     liquity
       .getZUSDInStabilityPool()
-      .then(result => setZusdInStabilityPool(result));
-    liquity.getPrice().then(result => setZeroPrice(result));
+      .then(result => setZusdInStabilityPool(decimalic(result.toString())));
+    liquity
+      .getPrice()
+      .then(result => setZeroPrice(decimalic(result.toString())));
     liquity
       .getNumberOfTroves()
       .then(result => setLineOfCredit(result.toString()));
@@ -121,10 +127,12 @@ export const ZeroStats: FC<ZeroStatsProps> = ({ className, dataAttribute }) => {
 
   useEffect(() => {
     liquity.getTotal().then(result => {
-      setZusdSupply(result.debt);
-      setRbtcInLoc(result.collateral.toString());
+      setZusdSupply(decimalic(result.debt.toString()));
+      setRbtcInLoc(decimalic(result.collateral.toString()));
       if (zeroPrice) {
-        const recoveryMode = result.collateralRatioIsBelowCritical(zeroPrice);
+        const recoveryMode = result.collateralRatioIsBelowCritical(
+          zeroPrice.toString(),
+        );
         setIsRecoveryMode(recoveryMode);
         setCollateralRatio(
           calculateCollateralRatio(
@@ -135,7 +143,9 @@ export const ZeroStats: FC<ZeroStatsProps> = ({ className, dataAttribute }) => {
         );
       }
       if (zusdInStabilityPool) {
-        const percent = new Percent(zusdInStabilityPool.div(result.debt));
+        const percent = new Percent(
+          zusdInStabilityPool.div(result.debt.toString()),
+        );
         setZeroInStabilityPoolPercent(percent?.toString(2));
       }
     });

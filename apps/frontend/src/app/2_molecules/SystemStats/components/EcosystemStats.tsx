@@ -12,14 +12,12 @@ import {
   SimpleTableRow,
 } from '@sovryn/ui';
 
-import { useGetProtocolContract } from '../../../../hooks/useGetContract';
+import { useAssetBalance } from '../../../../hooks/useAssetBalance';
+import { useLoadContract } from '../../../../hooks/useLoadContract';
 import { translations } from '../../../../locales/i18n';
-import { fromWei, fromWeiFixed } from '../../../../utils/math';
+import { getRskChainId } from '../../../../utils/chain';
 import { AmountRenderer } from '../../AmountRenderer/AmountRenderer';
-import { useGetAssetBalance } from '../hooks/useGetAssetBalance';
-import { useGetAssetBalanceByAddress } from '../hooks/useGetAssetBalanceByAddress';
 import { useGetTotalSupply } from '../hooks/useGetTotalSupply';
-import { TokenType } from '../types';
 
 type EcosystemStatsProps = {
   className?: string;
@@ -32,9 +30,13 @@ export const EcosystemStats: FC<EcosystemStatsProps> = ({
   className,
   dataAttribute,
 }) => {
-  const { value: babelFishZUSDBalance } = useGetAssetBalance(
+  const zusdToken = useLoadContract('zusd', 'tokens');
+  const myntMassetManager = useLoadContract('massetManager', 'protocol');
+
+  const { balance: babelFishZUSDBalance } = useAssetBalance(
     SupportedTokens.zusd,
-    TokenType.babelfish,
+    getRskChainId(),
+    zusdToken?.address.toLowerCase() || '',
   );
 
   const renderBabelFishZUSDBalance = useMemo(
@@ -42,7 +44,7 @@ export const EcosystemStats: FC<EcosystemStatsProps> = ({
       babelFishZUSDBalance ? (
         <>
           <AmountRenderer
-            value={fromWeiFixed(babelFishZUSDBalance)}
+            value={babelFishZUSDBalance}
             suffix={SupportedTokens.zusd}
             precision={USD_DISPLAY_PRECISION}
             showRoundingPrefix={false}
@@ -55,10 +57,9 @@ export const EcosystemStats: FC<EcosystemStatsProps> = ({
     [babelFishZUSDBalance],
   );
 
-  const myntMassetManager = useGetProtocolContract('massetManager');
-
-  const { value: myntZUSDBalance } = useGetAssetBalanceByAddress(
+  const { balance: myntZUSDBalance } = useAssetBalance(
     SupportedTokens.zusd,
+    getRskChainId(),
     myntMassetManager?.address.toLowerCase() || '',
   );
 
@@ -66,7 +67,7 @@ export const EcosystemStats: FC<EcosystemStatsProps> = ({
     () =>
       myntZUSDBalance ? (
         <AmountRenderer
-          value={fromWei(myntZUSDBalance)}
+          value={myntZUSDBalance}
           suffix={SupportedTokens.zusd}
           precision={USD_DISPLAY_PRECISION}
           showRoundingPrefix={false}
@@ -78,8 +79,9 @@ export const EcosystemStats: FC<EcosystemStatsProps> = ({
     [myntZUSDBalance],
   );
 
-  const { value: myntDOCBalance } = useGetAssetBalanceByAddress(
+  const { balance: myntDOCBalance } = useAssetBalance(
     SupportedTokens.doc,
+    getRskChainId(),
     myntMassetManager?.address.toLowerCase() || '',
   );
 
@@ -87,7 +89,7 @@ export const EcosystemStats: FC<EcosystemStatsProps> = ({
     () =>
       myntDOCBalance ? (
         <AmountRenderer
-          value={fromWei(myntDOCBalance)}
+          value={myntDOCBalance}
           suffix={SupportedTokens.doc}
           precision={USD_DISPLAY_PRECISION}
           showRoundingPrefix={false}
@@ -105,7 +107,7 @@ export const EcosystemStats: FC<EcosystemStatsProps> = ({
     () =>
       totalDLLRSupply ? (
         <AmountRenderer
-          value={fromWei(totalDLLRSupply)}
+          value={totalDLLRSupply}
           suffix={SupportedTokens.dllr}
           precision={USD_DISPLAY_PRECISION}
           showRoundingPrefix={false}

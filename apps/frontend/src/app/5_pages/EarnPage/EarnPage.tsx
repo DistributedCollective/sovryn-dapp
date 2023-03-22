@@ -1,5 +1,3 @@
-import { BigNumber } from '@ethersproject/bignumber';
-
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 
 import classNames from 'classnames';
@@ -7,7 +5,6 @@ import { t } from 'i18next';
 import { Helmet } from 'react-helmet-async';
 import { useLoaderData } from 'react-router-dom';
 
-import { Decimal } from '@sovryn-zero/lib-base';
 import {
   EthersLiquity,
   ReadableEthersLiquityWithStore,
@@ -30,6 +27,7 @@ import {
   TabSize,
   TabType,
 } from '@sovryn/ui';
+import { Decimal } from '@sovryn/utils';
 
 import { LedgerPermitLocked } from '../../1_atoms/LedgerPermitLocked/LedgerPermitLocked';
 import { AmountRenderer } from '../../2_molecules/AmountRenderer/AmountRenderer';
@@ -43,7 +41,7 @@ import { useBlockNumber } from '../../../hooks/useBlockNumber';
 import { useMaintenance } from '../../../hooks/useMaintenance';
 import { translations } from '../../../locales/i18n';
 import { LEDGER } from '../../../utils/constants';
-import { formatValue, fromWei, toWei } from '../../../utils/math';
+import { formatValue, decimalic } from '../../../utils/math';
 import { tokenList } from './EarnPage.types';
 import { useHandleStabilityDeposit } from './hooks/useHandleStabilityDeposit';
 
@@ -53,9 +51,9 @@ const pageTranslations = translations.earnPage;
 const EarnPage: FC = () => {
   const [index, setIndex] = useState(0);
   const [amountInput, setAmount, amount] = useAmountInput('');
-  const [poolBalance, setPoolBalance] = useState('0');
-  const [ZUSDInStabilityPool, setZUSDInStabilityPool] = useState('0');
-  const [rewardsAmount, setRewardsAmount] = useState<Decimal>(Decimal.from(0));
+  const [poolBalance, setPoolBalance] = useState(Decimal.ZERO);
+  const [ZUSDInStabilityPool, setZUSDInStabilityPool] = useState(Decimal.ZERO);
+  const [rewardsAmount, setRewardsAmount] = useState(Decimal.ZERO);
   const [token, setToken] = useState<SupportedTokens>(SupportedTokens.dllr);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -72,7 +70,9 @@ const EarnPage: FC = () => {
       setIsLoading(true);
       liquity
         .getStabilityDeposit(account)
-        .then(result => setPoolBalance(result.currentZUSD.toString()))
+        .then(result =>
+          setPoolBalance(decimalic(result.currentZUSD.toString())),
+        )
         .finally(() => setIsLoading(false));
     }
   }, [account, liquity]);
@@ -84,7 +84,7 @@ const EarnPage: FC = () => {
   const getZUSDInStabilityPool = useCallback(() => {
     liquity
       .getZUSDInStabilityPool()
-      .then(result => setZUSDInStabilityPool(result.toString()));
+      .then(result => setZUSDInStabilityPool(decimalic(result.toString())));
   }, [liquity]);
 
   useEffect(() => {
@@ -94,7 +94,9 @@ const EarnPage: FC = () => {
   useEffect(() => {
     liquity
       .getStabilityDeposit(account)
-      .then(result => setRewardsAmount(result.collateralGain));
+      .then(result =>
+        setRewardsAmount(decimalic(result.collateralGain.toString())),
+      );
   }, [liquity, account, block]);
 
   const hasRewardsToClaim = useMemo(
@@ -111,7 +113,7 @@ const EarnPage: FC = () => {
       },
     ];
 
-    if (!BigNumber.from(toWei(poolBalance)).isZero()) {
+    if (!poolBalance.isZero()) {
       tabs.push({
         label: t(commonTranslations.withdraw),
         activeClassName: 'text-primary-20',
@@ -134,7 +136,10 @@ const EarnPage: FC = () => {
 
   const { weiBalance } = useAssetBalance(token);
 
-  const balance = useMemo(() => fromWei(weiBalance), [weiBalance]);
+  const balance = useMemo(
+    () => Decimal.fromBigNumberString(weiBalance),
+    [weiBalance],
+  );
 
   const onTokenChange = useCallback(
     (value: SupportedTokens) => {
@@ -174,7 +179,7 @@ const EarnPage: FC = () => {
   );
 
   const onMaximumAmountClick = useCallback(
-    () => setAmount(maximumAmount),
+    () => setAmount(maximumAmount.toString()),
     [maximumAmount, setAmount],
   );
 
@@ -186,20 +191,17 @@ const EarnPage: FC = () => {
 
   const handleSubmit = useHandleStabilityDeposit(
     token,
-    amount,
+    decimalic(amount),
     hasRewardsToClaim,
     isDeposit,
     onTransactionSuccess,
   );
 
   const poolShare = useMemo(() => {
-    if (BigNumber.from(toWei(ZUSDInStabilityPool)).isZero()) {
-      return '0';
+    if (ZUSDInStabilityPool.isZero()) {
+      return Decimal.ZERO;
     }
-    return fromWei(
-      BigNumber.from(toWei(poolBalance, 24)).div(toWei(ZUSDInStabilityPool)),
-      4,
-    ).toString();
+    return poolBalance.div(ZUSDInStabilityPool).mul(100);
   }, [ZUSDInStabilityPool, poolBalance]);
 
   const isAmountZero = useMemo(() => {
@@ -207,20 +209,17 @@ const EarnPage: FC = () => {
   }, [amount]);
 
   const newPoolBalance = useMemo(() => {
-    if (isAmountZero) {
-      return t(commonTranslations.na);
-    }
-    let newBalance = BigNumber.from(toWei(poolBalance));
+    let newBalance = poolBalance;
     if (isDeposit) {
-      newBalance = newBalance.add(toWei(amount));
+      newBalance = newBalance.add(amount);
     } else {
-      newBalance = newBalance.sub(toWei(amount));
+      newBalance = newBalance.sub(amount);
     }
     if (newBalance.lt(0)) {
-      return '0';
+      return Decimal.ZERO;
     }
-    return fromWei(newBalance);
-  }, [isAmountZero, poolBalance, isDeposit, amount]);
+    return newBalance;
+  }, [poolBalance, isDeposit, amount]);
 
   const newPoolBalanceLabel = useMemo(() => {
     if (isAmountZero) {
@@ -241,21 +240,18 @@ const EarnPage: FC = () => {
       return t(commonTranslations.na);
     }
 
-    let newZUSDInStabilityPool = toWei(ZUSDInStabilityPool);
+    let newZUSDInStabilityPool = ZUSDInStabilityPool;
     if (isDeposit) {
-      newZUSDInStabilityPool = newZUSDInStabilityPool.add(toWei(amount));
+      newZUSDInStabilityPool = newZUSDInStabilityPool.add(amount);
     } else {
-      newZUSDInStabilityPool = newZUSDInStabilityPool.sub(toWei(amount));
+      newZUSDInStabilityPool = newZUSDInStabilityPool.sub(amount);
     }
 
     if (newZUSDInStabilityPool.isZero()) {
       return '0 %';
     }
     return `${formatValue(
-      fromWei(
-        BigNumber.from(toWei(newPoolBalance, 24)).div(newZUSDInStabilityPool),
-        4,
-      ),
+      newPoolBalance.div(newZUSDInStabilityPool).mul(100),
       4,
     )} %`;
   }, [ZUSDInStabilityPool, amount, isAmountZero, isDeposit, newPoolBalance]);
@@ -325,7 +321,7 @@ const EarnPage: FC = () => {
               onChange={setIndex}
               index={index}
               className={classNames({
-                invisible: BigNumber.from(toWei(poolBalance)).isZero(),
+                invisible: poolBalance.isZero(),
               })}
             />
 
@@ -343,7 +339,7 @@ const EarnPage: FC = () => {
               onChangeText={setAmount}
               label={t(translations.common.amount)}
               min={0}
-              max={maximumAmount}
+              max={maximumAmount.toString()}
               disabled={!account}
               invalid={!isValidAmount}
               className="w-full flex-grow-0 flex-shrink"

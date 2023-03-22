@@ -3,12 +3,13 @@ import React, { FC } from 'react';
 import { t } from 'i18next';
 
 import { applyDataAttr } from '@sovryn/ui';
+import { Decimalish } from '@sovryn/utils';
 
 import { translations } from '../../../locales/i18n';
 import { AmountRenderer } from '../AmountRenderer/AmountRenderer';
 
 type MaxButtonProps = {
-  value: string | number;
+  value: Decimalish;
   onClick?: () => void;
   precision?: number;
   token: string;
@@ -34,6 +35,6 @@ export const MaxButton: FC<MaxButtonProps> = ({
       suffix={token.toUpperCase()}
       useTooltip={false}
     />
-    )
+    {`)`}
   </button>
 );

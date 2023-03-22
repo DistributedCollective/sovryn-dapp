@@ -1,10 +1,11 @@
 import { useEffect, useMemo, useState } from 'react';
 
-import { constants, Contract } from 'ethers';
+import { BigNumber, constants, Contract } from 'ethers';
 import { Subscription } from 'zen-observable-ts';
 
 import { getTokenDetails, SupportedTokens } from '@sovryn/contracts';
 import { ChainId, getProvider } from '@sovryn/ethers-provider';
+import { Decimal } from '@sovryn/utils';
 
 import {
   CacheCallOptions,
@@ -13,14 +14,15 @@ import {
   startCall,
 } from '../store/rxjs/provider-cache';
 import { getRskChainId } from '../utils/chain';
-import { fromWei } from '../utils/math';
+import { fromWei, decimalic } from '../utils/math';
 import { useBlockNumber } from './useBlockNumber';
 import { useIsMounted } from './useIsMounted';
 import { useWalletConnect } from './useWalletConnect';
 
 export type AssetBalanceResponse = {
-  balance: string;
+  balance: Decimal;
   weiBalance: string;
+  bigNumberBalance: BigNumber;
   decimalPrecision?: number;
   loading: boolean;
   error: Error | null;
@@ -38,13 +40,15 @@ export const useAssetBalance = (
   const isMounted = useIsMounted();
 
   const account = useMemo(
-    () => address || wallets[walletIndex]?.accounts[0]?.address,
+    () =>
+      address === null ? wallets[walletIndex]?.accounts[0]?.address : address,
     [address, walletIndex, wallets],
   );
 
   const [state, setState] = useState<AssetBalanceResponse>({
-    balance: '0',
+    balance: Decimal.ZERO,
     weiBalance: '0',
+    bigNumberBalance: BigNumber.from(0),
     loading: false,
     error: null,
   });
@@ -67,17 +71,22 @@ export const useAssetBalance = (
         account,
       ]);
 
-      sub = observeCall(hashedArgs).subscribe(e =>
-        setState({
-          ...e.result,
-          weiBalance: e.result.value,
-          balance: fromWei(
+      sub = observeCall(hashedArgs).subscribe(e => {
+        const decimal = decimalic(
+          fromWei(
             e.result.value === null ? 0 : e.result.value,
             tokenDetails.decimalPrecision,
           ),
+        );
+        const bn = decimal.toBigNumber();
+        setState({
+          ...e.result,
+          weiBalance: bn.toString(),
+          bigNumberBalance: bn,
+          balance: decimal,
           decimalPrecision: tokenDetails.decimalPrecision,
-        }),
-      );
+        });
+      });
 
       const callback =
         tokenDetails.address === constants.AddressZero
@@ -104,7 +113,8 @@ export const useAssetBalance = (
       setState(prev => ({
         ...prev,
         weiBalance: '0',
-        balance: '0',
+        balance: Decimal.ZERO,
+        bigNumberBalance: BigNumber.from(0),
         loading: false,
         error: e,
       })),
@@ -121,6 +131,8 @@ export const useAssetBalance = (
     () => ({
       ...state,
       weiBalance: state.weiBalance === null ? '0' : state.weiBalance,
+      bigNumberBalance:
+        state.weiBalance === null ? BigNumber.from(0) : state.bigNumberBalance,
     }),
     [state],
   );

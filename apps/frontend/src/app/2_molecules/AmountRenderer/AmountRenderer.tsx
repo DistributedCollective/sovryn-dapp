@@ -12,6 +12,7 @@ import {
   Tooltip,
   TooltipTrigger,
 } from '@sovryn/ui';
+import { Decimalish } from '@sovryn/utils';
 
 import { useNotificationContext } from '../../../contexts/NotificationContext';
 import { translations } from '../../../locales/i18n';
@@ -19,13 +20,13 @@ import {
   formatValue,
   getDecimalPartLength,
   getLocaleSeparators,
-  isScientificNumber,
+  decimalic,
 } from '../../../utils/math';
 
 const { decimal, thousand } = getLocaleSeparators();
 
 type AmountRendererProps = {
-  value: string | number;
+  value: Decimalish;
   precision?: number;
   className?: string;
   suffix?: string;
@@ -62,11 +63,7 @@ export const AmountRenderer: FC<AmountRendererProps> = ({
   }, [addNotification, value]);
 
   const countUpValues = useMemo(() => {
-    let endValue = String(value);
-
-    if (typeof value === 'number' && isScientificNumber(value)) {
-      endValue = value.toFixed(18);
-    }
+    const endValue = decimalic(value).toString();
 
     const [whole = '', decimals = ''] = endValue.split('.');
     const end = parseFloat(

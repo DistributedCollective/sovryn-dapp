@@ -4,11 +4,14 @@ import { formatUnits } from 'ethers/lib/utils';
 
 import { getProvider } from '@sovryn/ethers-provider';
 import { ChainId } from '@sovryn/ethers-provider';
+import { Decimal } from '@sovryn/utils';
 
 import { defaultChainId } from '../config/chains';
 
+import { decimalic } from '../utils/math';
+
 export const useGasPrice = (chainId: ChainId = defaultChainId) => {
-  const [gasPrice, setGasPrice] = useState('');
+  const [gasPrice, setGasPrice] = useState(Decimal.ZERO);
 
   useEffect(() => {
     const getGasPrice = async () => {
@@ -18,7 +21,7 @@ export const useGasPrice = (chainId: ChainId = defaultChainId) => {
           'gwei',
         );
 
-        setGasPrice(gas.toString());
+        setGasPrice(decimalic(gas));
       } catch (error) {}
     };
     getGasPrice();

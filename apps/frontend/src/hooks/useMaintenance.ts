@@ -2,6 +2,7 @@ import { useCallback, useMemo } from 'react';
 
 import { useMaintenanceModeContext } from '../contexts/MaintenanceModeContext';
 import { MaintenanceStates } from '../types/maintenanceState';
+import { isStaging } from '../utils/helpers';
 
 enum States {
   // D1 states left here for reference
@@ -82,7 +83,7 @@ export function useMaintenance() {
 
   const checkMaintenance = useCallback(
     (...names: States[]): boolean => {
-      if (!!process.env.REACT_APP_BYPASS_MAINTENANCE) {
+      if (!!process.env.REACT_APP_BYPASS_MAINTENANCE || isStaging()) {
         return false;
       }
       return names.every(name => maintenanceStates[name]?.isInMaintenance);

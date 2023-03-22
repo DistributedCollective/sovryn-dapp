@@ -12,7 +12,12 @@ import { useAssetBalance } from '../../../../hooks/useAssetBalance';
 import { useMaxAssetBalance } from '../../../../hooks/useMaxAssetBalance';
 import { translations } from '../../../../locales/i18n';
 import { Bitcoin } from '../../../../utils/constants';
-import { formatValue, fromWei, toWei } from '../../../../utils/math';
+import {
+  formatValue,
+  fromWei,
+  isScientificNumber,
+  toWei,
+} from '../../../../utils/math';
 import {
   CRITICAL_COLLATERAL_RATIO,
   MINIMUM_COLLATERAL_RATIO,
@@ -127,8 +132,9 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
 
   const maxBorrowAmount = useMemo(() => {
     const collateral =
-      (collateralSize === 0 ? maxCollateralToDepositAmount : collateralSize) +
-      Number(existingCollateral);
+      collateralSize === 0
+        ? Number(existingCollateral)
+        : Number(existingCollateral) + collateralSize;
 
     const amount =
       (collateral * rbtcPrice) /
@@ -136,14 +142,13 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
 
     const originationFee = getOriginationFeeAmount(amount, borrowingRate);
 
-    return Math.max(amount - originationFee - Number(existingDebt), 0);
+    return Math.max(amount - Number(existingDebt) - originationFee, 0);
   }, [
     borrowingRate,
     collateralSize,
     existingCollateral,
     existingDebt,
     isRecoveryMode,
-    maxCollateralToDepositAmount,
     rbtcPrice,
   ]);
 
@@ -156,10 +161,17 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
     [_debtTokenWeiBalance, existingDebt],
   );
 
-  const maxDebtAmount = useMemo(
-    () => (isIncreasingDebt ? maxBorrowAmount : maxRepayAmount),
-    [isIncreasingDebt, maxBorrowAmount, maxRepayAmount],
-  );
+  const maxDebtAmount = useMemo(() => {
+    const amount = isIncreasingDebt ? maxBorrowAmount : maxRepayAmount;
+
+    // temporary fix for small scientific numbers
+    // TODO: fix it properly on SOV-1988
+    if (isScientificNumber(amount)) {
+      return 0;
+    }
+
+    return amount;
+  }, [isIncreasingDebt, maxBorrowAmount, maxRepayAmount]);
 
   const originationFee = useMemo(() => {
     if (isIncreasingDebt) {

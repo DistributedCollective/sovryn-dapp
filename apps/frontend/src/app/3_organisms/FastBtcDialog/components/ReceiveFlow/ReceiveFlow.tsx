@@ -1,6 +1,10 @@
 import React, { useCallback, useEffect, useState, useMemo } from 'react';
 
+import { useAccount } from '../../../../../hooks/useAccount';
+import { useBlockNumber } from '../../../../../hooks/useBlockNumber';
 import { useGetProtocolContract } from '../../../../../hooks/useGetContract';
+import { rskClient } from '../../../../../utils/clients';
+import { useGetFastBtcDepositRskTransactionLazyQuery } from '../../../../../utils/graphql/rsk/generated';
 import {
   defaultValue,
   DepositContext,
@@ -21,8 +25,11 @@ type ReceiveFlowProps = {
 };
 
 export const ReceiveFlow: React.FC<ReceiveFlowProps> = ({ onClose }) => {
+  const { account } = useAccount();
+  const { value: block } = useBlockNumber();
+
   const [state, setState] = useState<DepositContextStateType>(defaultValue);
-  const { step } = state;
+  const { step, depositTx } = state;
 
   const [requiredSigners, setRequiredSigners] = useState<number | undefined>();
 
@@ -59,7 +66,6 @@ export const ReceiveFlow: React.FC<ReceiveFlowProps> = ({ onClose }) => {
         setState(prevState => ({
           ...prevState,
           transferTx: value,
-          step: DepositStep.COMPLETED,
         }));
         break;
     }
@@ -140,6 +146,38 @@ export const ReceiveFlow: React.FC<ReceiveFlowProps> = ({ onClose }) => {
   const onBackClick = useCallback(() => {
     setState(prevState => ({ ...prevState, step: DepositStep.MAIN }));
   }, []);
+
+  const [getDepositRskTransaction] =
+    useGetFastBtcDepositRskTransactionLazyQuery();
+
+  const getDepositRskTransactionHash = useCallback(async () => {
+    const { data } = await getDepositRskTransaction({
+      variables: {
+        bitcoinTxHash: depositTx?.txHash,
+        user: account.toLowerCase(),
+      },
+      client: rskClient,
+      fetchPolicy: 'network-only',
+    });
+
+    return data?.bitcoinTransfers[0]?.updatedAtTx?.id;
+  }, [account, depositTx?.txHash, getDepositRskTransaction]);
+
+  useEffect(() => {
+    if (step === DepositStep.PROCESSING && depositTx?.txHash) {
+      getDepositRskTransactionHash()
+        .then(result => {
+          if (result) {
+            setState(prevState => ({
+              ...prevState,
+              depositRskTransactionHash: result,
+              step: DepositStep.COMPLETED,
+            }));
+          }
+        })
+        .catch(console.error);
+    }
+  }, [depositTx?.txHash, getDepositRskTransactionHash, step, block]);
 
   return (
     <DepositContext.Provider value={value}>

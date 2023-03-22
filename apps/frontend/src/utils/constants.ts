@@ -8,9 +8,10 @@ export const sovrynLinks = {
   twitter: ' https://twitter.com/SovrynBTC',
   github: 'https://github.com/DistributedCollective',
   github_dapp: 'https://github.com/DistributedCollective/sovryn-dapp',
+  website: 'https://sovryn.com',
   blog: 'https://sovryn.com/all-things-sovryn',
-  security: 'https://wiki.sovryn.app/en/technical-documents#security',
-  fees: 'https://wiki.sovryn.app/en/sovryn-dapp/fees#zero-borrowing',
+  security: 'https://wiki.sovryn.com/technical-documents#security',
+  fees: 'https://wiki.sovryn.com/sovryn-dapp/fees#zero-borrowing',
 };
 
 export const sovrynAlphaLinks = {
@@ -19,17 +20,19 @@ export const sovrynAlphaLinks = {
 };
 export const sovrynAlphaStagingLink = 'https://alpha-staging.sovryn.app';
 
-export const sovrynStagingLink = 'https://staging.sovryn.app';
+export const sovrynStagingLink = 'https://staging.sovryn.com';
 
 export const sovrynWikiLinks = {
-  root: 'https://wiki.sovryn.app/en',
+  root: 'https://wiki.sovryn.com',
   stabilityPool:
-    'https://wiki.sovryn.app/en/sovryn-dapp/subprotocols/zero-zusd#stability-pool',
-  ammPool: 'https://wiki.sovryn.app/en/sovryn-dapp/market-making',
-  lend: 'https://wiki.sovryn.app/en/sovryn-dapp/lending',
-  trade: 'https://wiki.sovryn.app/en/technical-documents/amm/sovryn-damm',
+    'https://wiki.sovryn.com/sovryn-dapp/using-zero#earn-in-the-stability-pool',
+  ammPool: 'https://wiki.sovryn.com/sovryn-dapp/market-making',
+  lend: 'https://wiki.sovryn.com/sovryn-dapp/lending',
+  trade: 'https://wiki.sovryn.com/sovryn-dapp/trading',
   bridge:
     'https://babelfish.gitbook.io/the-babelfish-gitbook/tutorials-and-guides/bridges',
+  notification:
+    'https://wiki.sovryn.com/sovryn-dapp/using-zero#set-notifications',
 };
 
 export const helpdeskLink = 'https://help.sovryn.app/';
@@ -71,10 +74,10 @@ export const LIQUIDATION_RESERVE_AMOUNT = 20;
 
 export const MAX_GAS_LIMIT = 6_800_000;
 export const GAS_LIMIT_OPEN_TROVE = 1_100_000;
-export const GAS_LIMIT_ADJUST_TROVE = 800_000;
-export const GAS_LIMIT_CLOSE_TROVE = 280_000;
+export const GAS_LIMIT_ADJUST_TROVE = 1_200_000;
+export const GAS_LIMIT_CLOSE_TROVE = 350_000;
 export const GAS_LIMIT_CLOSE_DLLR_TROVE = 500_000;
-export const GAS_LIMIT_CONVERT = 150_000;
+export const GAS_LIMIT_CONVERT = 200_000;
 export const GAS_LIMIT_STABILITY_POOL = 250_000;
 export const GAS_LIMIT_STABILITY_POOL_INC_WITHDRAW = 490_000;
 export const GAS_LIMIT_STABILITY_POOL_DLLR = 500_000;
@@ -104,3 +107,6 @@ export const rskFaucet = 'https://faucet.rsk.co';
 export const currentRelease: ReleaseFileContent = JSON.parse(
   process.env.REACT_APP_RELEASE_DATA || '{}',
 );
+
+// temporary constant until permits are implemented
+export const LEDGER = 'Ledger';

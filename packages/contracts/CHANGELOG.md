@@ -1,5 +1,17 @@
 # @sovryn/contracts
 
+## 1.0.2
+
+### Patch Changes
+
+- 1f52a56: Fix masset manager mainnet address
+
+## 1.0.1
+
+### Patch Changes
+
+- e1a18c8: SOV-1910: use release SDK package version, fix typos & general cleanup
+
 ## 1.0.0
 
 ### Major Changes

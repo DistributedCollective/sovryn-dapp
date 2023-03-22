@@ -18,7 +18,7 @@
   @apply flex-col py-5 px-3 rounded bg-gray-80 mb-5;
 
   @screen md {
-    @apply mb-[4.5rem] py-7 px-5;
+    @apply mb-8 py-7 px-5;
   }
 }
 
@@ -55,7 +55,7 @@
 }
 
 .image {
-  @apply bg-gray-70 min-w-[4.375rem] h-[4.375rem] rounded mr-4 text-sovryn-blue;
+  @apply bg-gray-70 min-w-[4.375rem] h-[4.375rem] rounded mr-4 text-sovryn-blue flex items-center justify-center;
 
   @screen md {
     @apply mr-[1.375rem];
@@ -63,7 +63,7 @@
 }
 
 .pagination {
-  @apply mb-10;
+  @apply mb-10 hidden;
 }
 
 .actions {

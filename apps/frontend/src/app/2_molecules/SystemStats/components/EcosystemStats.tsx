@@ -1,13 +1,7 @@
-import React, { FC, useEffect, useMemo, useState } from 'react';
+import React, { FC, useMemo } from 'react';
 
 import { t } from 'i18next';
-import { useLoaderData } from 'react-router-dom';
 
-import { Decimal } from '@sovryn-zero/lib-base';
-import {
-  EthersLiquity,
-  ReadableEthersLiquityWithStore,
-} from '@sovryn-zero/lib-ethers';
 import { SupportedTokens } from '@sovryn/contracts';
 import {
   applyDataAttr,
@@ -18,19 +12,12 @@ import {
   SimpleTableRow,
 } from '@sovryn/ui';
 
-import {
-  TOKEN_RENDER_PRECISION,
-  BTC_RENDER_PRECISION,
-} from '../../../3_organisms/ZeroLocForm/constants';
+import { useGetProtocolContract } from '../../../../hooks/useGetContract';
 import { translations } from '../../../../locales/i18n';
-import { Bitcoin } from '../../../../utils/constants';
-import {
-  formatCompactValue,
-  fromWei,
-  fromWeiFixed,
-} from '../../../../utils/math';
+import { fromWei, fromWeiFixed } from '../../../../utils/math';
 import { AmountRenderer } from '../../AmountRenderer/AmountRenderer';
 import { useGetAssetBalance } from '../hooks/useGetAssetBalance';
+import { useGetAssetBalanceByAddress } from '../hooks/useGetAssetBalanceByAddress';
 import { useGetTotalSupply } from '../hooks/useGetTotalSupply';
 import { TokenType } from '../types';
 
@@ -39,16 +26,12 @@ type EcosystemStatsProps = {
   dataAttribute?: string;
 };
 
+const USD_DISPLAY_PRECISION = 2;
+
 export const EcosystemStats: FC<EcosystemStatsProps> = ({
   className,
   dataAttribute,
 }) => {
-  const [zeroPrice, setZeroPrice] = useState<Decimal>();
-  const { liquity } = useLoaderData() as {
-    liquity: EthersLiquity;
-    provider: ReadableEthersLiquityWithStore;
-  };
-
   const { value: babelFishZUSDBalance } = useGetAssetBalance(
     SupportedTokens.zusd,
     TokenType.babelfish,
@@ -56,52 +39,27 @@ export const EcosystemStats: FC<EcosystemStatsProps> = ({
 
   const renderBabelFishZUSDBalance = useMemo(
     () =>
-      babelFishZUSDBalance && zeroPrice ? (
+      babelFishZUSDBalance ? (
         <>
           <AmountRenderer
             value={fromWeiFixed(babelFishZUSDBalance)}
-            suffix={Bitcoin}
-            precision={BTC_RENDER_PRECISION}
+            suffix={SupportedTokens.zusd}
+            precision={USD_DISPLAY_PRECISION}
             showRoundingPrefix={false}
             dataAttribute="ecosystem-statistics-babel-fish-zusd-balance"
-          />{' '}
-          ($
-          {formatCompactValue(
-            Number(fromWeiFixed(babelFishZUSDBalance)) * Number(zeroPrice),
-            2,
-          )}
-          )
+          />
         </>
       ) : (
         0
       ),
-    [zeroPrice, babelFishZUSDBalance],
+    [babelFishZUSDBalance],
   );
 
-  const { value: babelFishDLLRBalance } = useGetAssetBalance(
-    SupportedTokens.dllr,
-    TokenType.babelfish,
-  );
+  const myntMassetManager = useGetProtocolContract('massetManager');
 
-  const renderBabelFishDLLRBalance = useMemo(
-    () =>
-      babelFishDLLRBalance ? (
-        <AmountRenderer
-          value={fromWei(babelFishDLLRBalance)}
-          suffix={SupportedTokens.dllr}
-          precision={TOKEN_RENDER_PRECISION}
-          showRoundingPrefix={false}
-          dataAttribute="ecosystem-statistics-babel-fish-dllr-balance"
-        />
-      ) : (
-        0
-      ),
-    [babelFishDLLRBalance],
-  );
-
-  const { value: myntZUSDBalance } = useGetAssetBalance(
+  const { value: myntZUSDBalance } = useGetAssetBalanceByAddress(
     SupportedTokens.zusd,
-    TokenType.mynt,
+    myntMassetManager?.address.toLowerCase() || '',
   );
 
   const renderMyntZUSDBalance = useMemo(
@@ -110,7 +68,7 @@ export const EcosystemStats: FC<EcosystemStatsProps> = ({
         <AmountRenderer
           value={fromWei(myntZUSDBalance)}
           suffix={SupportedTokens.zusd}
-          precision={TOKEN_RENDER_PRECISION}
+          precision={USD_DISPLAY_PRECISION}
           showRoundingPrefix={false}
           dataAttribute="ecosystem-statistics-mynt-zusd-balance"
         />
@@ -120,9 +78,9 @@ export const EcosystemStats: FC<EcosystemStatsProps> = ({
     [myntZUSDBalance],
   );
 
-  const { value: myntDOCBalance } = useGetAssetBalance(
+  const { value: myntDOCBalance } = useGetAssetBalanceByAddress(
     SupportedTokens.doc,
-    TokenType.mynt,
+    myntMassetManager?.address.toLowerCase() || '',
   );
 
   const renderMyntDOCBalance = useMemo(
@@ -131,7 +89,7 @@ export const EcosystemStats: FC<EcosystemStatsProps> = ({
         <AmountRenderer
           value={fromWei(myntDOCBalance)}
           suffix={SupportedTokens.doc}
-          precision={TOKEN_RENDER_PRECISION}
+          precision={USD_DISPLAY_PRECISION}
           showRoundingPrefix={false}
           dataAttribute="ecosystem-statistics-mynt-doc-balance"
         />
@@ -149,7 +107,7 @@ export const EcosystemStats: FC<EcosystemStatsProps> = ({
         <AmountRenderer
           value={fromWei(totalDLLRSupply)}
           suffix={SupportedTokens.dllr}
-          precision={TOKEN_RENDER_PRECISION}
+          precision={USD_DISPLAY_PRECISION}
           showRoundingPrefix={false}
           dataAttribute="ecosystem-statistics-total-dllr-supply"
         />
@@ -158,10 +116,6 @@ export const EcosystemStats: FC<EcosystemStatsProps> = ({
       ),
     [totalDLLRSupply],
   );
-
-  useEffect(() => {
-    liquity.getPrice().then(result => setZeroPrice(result));
-  }, [liquity]);
 
   return (
     <div className={className} {...applyDataAttr(dataAttribute)}>
@@ -180,11 +134,6 @@ export const EcosystemStats: FC<EcosystemStatsProps> = ({
           className="mb-8"
           label={t(translations.stats.ecosystem.babelFishZUSDBalance)}
           value={renderBabelFishZUSDBalance}
-        />
-        <SimpleTableRow
-          className="mb-8"
-          label={t(translations.stats.ecosystem.babelFishDLLRBalance)}
-          value={renderBabelFishDLLRBalance}
         />
         <SimpleTableRow
           className="mb-8"

@@ -123,7 +123,7 @@ export const parseData = (item: BitcoinTransfer) => {
       received: item.amountBTC,
       serviceFee: item.feeBTC,
       txHash: isOutgoing
-        ? normaliseBtcTxid(item.bitcoinTxHash)
+        ? normaliseBtcTxid(item?.bitcoinTxHash || '')
         : item.createdAtTx.id,
     },
     {
@@ -135,7 +135,7 @@ export const parseData = (item: BitcoinTransfer) => {
       serviceFee: '-',
       txHash: isOutgoing
         ? item.createdAtTx.id
-        : normaliseBtcTxid(item.bitcoinTxHash),
+        : normaliseBtcTxid(item?.bitcoinTxHash || ''),
     },
   ] as FundingHistoryType[];
 };

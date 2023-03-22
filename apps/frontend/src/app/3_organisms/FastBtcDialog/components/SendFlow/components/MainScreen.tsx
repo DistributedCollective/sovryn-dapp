@@ -18,7 +18,7 @@ export const MainScreen: React.FC = () => {
   const { set } = useContext(WithdrawContext);
 
   const { checkMaintenance, States } = useMaintenance();
-  const fastBtcLocked = checkMaintenance(States.FASTBTC);
+  const fastBtcLocked = checkMaintenance(States.FASTBTC_SEND);
 
   const onContinueClick = useCallback(
     () => set(prevState => ({ ...prevState, step: WithdrawStep.AMOUNT })),

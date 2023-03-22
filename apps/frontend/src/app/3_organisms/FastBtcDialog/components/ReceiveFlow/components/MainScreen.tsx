@@ -16,7 +16,7 @@ export const MainScreen: React.FC = () => {
     useContext(DepositContext);
 
   const { checkMaintenance, States } = useMaintenance();
-  const fastBtcLocked = checkMaintenance(States.FASTBTC);
+  const fastBtcLocked = checkMaintenance(States.FASTBTC_RECEIVE);
 
   const onContinueClick = useCallback(
     () => requestDepositAddress(account),

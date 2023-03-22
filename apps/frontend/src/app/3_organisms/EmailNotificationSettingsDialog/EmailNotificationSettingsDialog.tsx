@@ -71,7 +71,7 @@ const EmailNotificationSettingsDialogComponent: React.FC<
   const { resetSubscriptions, parseSubscriptionsResponse } =
     useHandleSubscriptions();
 
-  const emailIsValid = useMemo(() => !email || validateEmail(email), [email]);
+  const isValidEmail = useMemo(() => !!email && validateEmail(email), [email]);
 
   const hasUnconfirmedEmail = useMemo(
     () =>
@@ -94,12 +94,12 @@ const EmailNotificationSettingsDialogComponent: React.FC<
     () =>
       loading ||
       !notificationToken ||
-      !emailIsValid ||
+      !isValidEmail ||
       !email ||
       (email === notificationUser?.email && !haveSubscriptionsBeenUpdated),
     [
       email,
-      emailIsValid,
+      isValidEmail,
       loading,
       notificationToken,
       notificationUser?.email,
@@ -290,10 +290,19 @@ const EmailNotificationSettingsDialogComponent: React.FC<
     if (hasUnconfirmedEmail) {
       return t(translations.emailNotificationsDialog.unconfirmedEmailWarning);
     }
-    if (email && !emailIsValid) {
+    if (!isValidEmail) {
       return t(translations.emailNotificationsDialog.invalidEmail);
     }
-  }, [email, emailIsValid, hasUnconfirmedEmail]);
+  }, [isValidEmail, hasUnconfirmedEmail]);
+
+  const hasUnsavedChanges = useMemo(
+    () =>
+      notificationUser &&
+      ((isValidEmail && email !== notificationUser.email) ||
+        haveSubscriptionsBeenUpdated),
+    [email, haveSubscriptionsBeenUpdated, isValidEmail, notificationUser],
+  );
+
   return (
     <Dialog isOpen={isOpen} width={DialogSize.sm}>
       <DialogHeader
@@ -325,8 +334,7 @@ const EmailNotificationSettingsDialogComponent: React.FC<
         </div>
 
         <div className="mt-4 flex flex-col items-center">
-          {(email !== notificationUser?.email ||
-            haveSubscriptionsBeenUpdated) && (
+          {hasUnsavedChanges && (
             <Paragraph className="text-error mb-2">
               {t(translations.emailNotificationsDialog.unsavedChange)}
             </Paragraph>

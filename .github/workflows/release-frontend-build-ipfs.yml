@@ -11,7 +11,8 @@ jobs:
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v2
-
+      - id: commit
+        uses: pr-mpt/actions-commit-hash@v2
       - name: Setup Node.js 16.x
         uses: actions/setup-node@v2
         with:
@@ -22,6 +23,7 @@ jobs:
       - name: Build
         run: yarn build 
       - name: Upload Frontend Build to IPFS via Pinata
+        id: upload_frontend_build
         uses: aquiladev/ipfs-action@master
         with:
           path: apps/frontend/build
@@ -31,4 +33,19 @@ jobs:
           pinName: Sovryn DAPP Frontend ${{ steps.commit.outputs.short }}
           pinataKey: ${{ secrets.PINATA_KEY }}
           pinataSecret: ${{ secrets.PINATA_SECRET }}
-    
+      - name: Create GitHub Release
+        id: create_release
+        uses: actions/create-release@v1.1.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.commit.outputs.short }}
+          release_name: Sovryn DAPP Frontend Release ${{ steps.commit.outputs.short }}
+          body: |
+            **Sovryn DAPP Mainnet gateways**:
+            - CIDv0: ${{ steps.upload_frontend_build.outputs.hash }}
+            - ${{ vars.IPFS_GATEWAY_URL }}/ipfs/${{ steps.upload_frontend_build.outputs.hash }}            
+            - https://gateway.pinata.cloud/ipfs/${{ steps.upload_frontend_build.outputs.hash }}
+            - https://cloudflare-ipfs.com/ipfs/${{ steps.upload_frontend_build.outputs.hash }}
+            - https://ipfs.io/ipfs/${{ steps.upload_frontend_build.outputs.hash }}
+            - [ipfs://${{ steps.upload_frontend_build.outputs.hash }}/](ipfs://${{ steps.upload_frontend_build_to_ipfs.outputs.hash }}/)

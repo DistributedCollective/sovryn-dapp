@@ -1,0 +1,35 @@
+name: Release Frontend build to IPFS
+
+on:
+  push:
+    branches: [ "develop", "workflow-release-frontend-build-ipfs" ]
+
+concurrency: ${{ github.workflow }}-${{ github.ref }}
+
+jobs:
+  release_frontend_build_ipfs:
+    name: Release Frontend Build To IPFS 
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v2
+
+      - name: Setup Node.js 16.x
+        uses: actions/setup-node@v2
+        with:
+          node-version: 16.x
+
+      - name: Install Dependencies
+        run: yarn install
+      - name: Build
+        run: yarn build 
+      - name: Upload Frontend Build to IPFS via Pinata
+        uses: aquiladev/ipfs-action@master
+        with:
+          path: apps/frontend/build
+          service: pinata
+          verbose: true
+          key: sovryn-dapp-frontend-build
+          pinataKey: ${{ secrets.PINATA_KEY }}
+          pinataSecret: ${{ secrets.PINATA_SECRET }}
+    

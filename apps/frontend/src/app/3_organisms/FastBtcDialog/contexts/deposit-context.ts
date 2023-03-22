@@ -19,6 +19,7 @@ export type DepositContextStateType = {
   addressError: string | null;
   depositTx: TxData | null;
   transferTx: TxData | null;
+  depositRskTransactionHash: string | null;
   limits: DepositLimits;
   signatures: Signature[];
 };
@@ -60,6 +61,7 @@ export const defaultValue: DepositContextType = {
   addressError: null,
   depositTx: null,
   transferTx: null,
+  depositRskTransactionHash: null,
   limits: {
     min: 0,
     max: 0,

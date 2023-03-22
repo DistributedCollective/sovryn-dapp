@@ -51,9 +51,9 @@ export const checkForSystemErrors = (ratio: Decimal, tcr: Decimal) => {
   const userRatio = ratio.div(100);
   const tcrPlus10 = tcr.mul(1.1);
 
-  const tcrPlus10Percent = formatValue(tcrPlus10.mul(100).toNumber(), 2);
-  const ccrPercent = formatValue(CRITICAL_COLLATERAL_RATIO.mul(100), 2);
-  const mcrPercent = formatValue(MINIMUM_COLLATERAL_RATIO.mul(100), 2);
+  const tcrPlus10Percent = formatValue(tcrPlus10.mul(100).toNumber(), 3);
+  const ccrPercent = formatValue(CRITICAL_COLLATERAL_RATIO.mul(100), 3);
+  const mcrPercent = formatValue(MINIMUM_COLLATERAL_RATIO.mul(100), 3);
 
   // System is in recovery mode:
   if (tcr && tcr.lte(CRITICAL_COLLATERAL_RATIO)) {

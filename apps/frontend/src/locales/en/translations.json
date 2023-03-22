@@ -179,6 +179,7 @@
                 "ratioErrorInRecovery": "Collateral ratio must be ≥ {{value}}% in recovery mode",
                 "ratioWarning": "Keeping your collateral ratio above {{value}}% can help avoid liquidation under recovery mode",
                 "ratioError": "Collateral ratio must be at least {{value}}%",
+                "ratioDecreased": "New collateral ratio must be greater than {{value}}%",
                 "debtTooLow": "Debt must be at least {{value}}",
                 "balanceTooLow": "The collateral amount you're trying to deposit exceeds your balance by {{value}}",
                 "collateralTooLow": "Collateral balance must be at least {{value}}",
@@ -187,7 +188,8 @@
                 "creditBalanceTooLow": "The {{currency}} amount you're trying to borrow exceeds your maximum by {{value}}",
                 "totalDebtTooLow": "The total debt must be at least {{value}} {{currency}}",
                 "newTotalDebtTooLow": "The new total debt must be at least {{value}} {{currency}}",
-                "maxExceed": "Exceeds maximum amount"
+                "maxExceed": "Exceeds maximum amount",
+                "newCollateralTooLow": "Add collateral amount must be at least {{value}} {{currency}}"
             }
         },
         "tx": {

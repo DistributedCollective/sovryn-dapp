@@ -1,5 +1,11 @@
 # frontend
 
+## 1.0.3
+
+### Patch Changes
+
+- 71262bf: SOV-2053: Bump gas limit for conversions
+
 ## 1.0.2
 
 ### Patch Changes

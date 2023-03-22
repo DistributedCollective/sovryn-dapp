@@ -36,7 +36,8 @@ type StatusScreenProps = {
 
 export const StatusScreen: React.FC<StatusScreenProps> = ({ onClose }) => {
   const { account } = useAccount();
-  const { step, depositTx, transferTx } = useContext(DepositContext);
+  const { step, depositTx, transferTx, depositRskTransactionHash } =
+    useContext(DepositContext);
 
   const isProcessing = useMemo(() => step === DepositStep.PROCESSING, [step]);
 
@@ -109,11 +110,11 @@ export const StatusScreen: React.FC<StatusScreenProps> = ({ onClose }) => {
       },
       {
         label: t(translation.rootstockTxId),
-        value: transferTx ? (
+        value: depositRskTransactionHash ? (
           <>
             <TxIdWithNotification
-              value={transferTx.txHash}
-              href={`${rskExplorerUrl}/tx/${transferTx.txHash}`}
+              value={depositRskTransactionHash}
+              href={`${rskExplorerUrl}/tx/${depositRskTransactionHash}`}
             />
           </>
         ) : (
@@ -121,7 +122,14 @@ export const StatusScreen: React.FC<StatusScreenProps> = ({ onClose }) => {
         ),
       },
     ],
-    [account, amount, depositTx, feeAmount, receiveAmount, transferTx],
+    [
+      account,
+      amount,
+      depositRskTransactionHash,
+      depositTx,
+      feeAmount,
+      receiveAmount,
+    ],
   );
 
   return (

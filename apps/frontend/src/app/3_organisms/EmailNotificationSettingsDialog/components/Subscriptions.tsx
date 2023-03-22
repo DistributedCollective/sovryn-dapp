@@ -9,10 +9,14 @@ import { useEmailNotificationSettingsContext } from '../contexts/EmailNotificati
 import { useHandleSubscriptions } from '../hooks/useHandleSubscriptions';
 
 type SubscriptionsProps = {
+  isDisabled?: boolean;
   dataAttribute?: string;
 };
 
-export const Subscriptions: FC<SubscriptionsProps> = ({ dataAttribute }) => {
+export const Subscriptions: FC<SubscriptionsProps> = ({
+  isDisabled,
+  dataAttribute,
+}) => {
   const {
     marginCallsToggle,
     liquidationsToggle,
@@ -38,6 +42,7 @@ export const Subscriptions: FC<SubscriptionsProps> = ({ dataAttribute }) => {
         className="mb-7"
         alignment={ToggleAlignment.LEFT}
         dataAttribute={`${dataAttribute}-margincalls`}
+        disabled={isDisabled}
       />
 
       <Toggle
@@ -49,6 +54,7 @@ export const Subscriptions: FC<SubscriptionsProps> = ({ dataAttribute }) => {
         className="mb-7"
         alignment={ToggleAlignment.LEFT}
         dataAttribute={`${dataAttribute}-liquidations`}
+        disabled={isDisabled}
       />
 
       <Toggle
@@ -60,6 +66,7 @@ export const Subscriptions: FC<SubscriptionsProps> = ({ dataAttribute }) => {
         className="mb-7"
         alignment={ToggleAlignment.LEFT}
         dataAttribute={`${dataAttribute}-stability`}
+        disabled={isDisabled}
       />
 
       <Toggle
@@ -70,6 +77,7 @@ export const Subscriptions: FC<SubscriptionsProps> = ({ dataAttribute }) => {
         )}
         alignment={ToggleAlignment.LEFT}
         dataAttribute={`${dataAttribute}-system`}
+        disabled={isDisabled}
       />
     </div>
   );

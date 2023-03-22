@@ -64,6 +64,9 @@ const EmailNotificationSettingsDialogComponent: React.FC<
 
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState('');
+  const [areChangesSaved, setAreChangesSaved] = useState(false);
+  const [authError, setAuthError] = useState(false);
+  const [isUnsubscribed, setIsUnsubscribed] = useState(false);
 
   const { subscriptions, haveSubscriptionsBeenUpdated } =
     useEmailNotificationSettingsContext();
@@ -71,7 +74,16 @@ const EmailNotificationSettingsDialogComponent: React.FC<
   const { resetSubscriptions, parseSubscriptionsResponse } =
     useHandleSubscriptions();
 
-  const isValidEmail = useMemo(() => !!email && validateEmail(email), [email]);
+  const isValidEmail = useMemo(() => !email || validateEmail(email), [email]);
+
+  const isEmailInputDisabled = useMemo(
+    () =>
+      (!notificationToken && !isUnsubscribed) ||
+      !account ||
+      loading ||
+      authError,
+    [notificationToken, account, loading, authError, isUnsubscribed],
+  );
 
   const hasUnconfirmedEmail = useMemo(
     () =>
@@ -90,19 +102,33 @@ const EmailNotificationSettingsDialogComponent: React.FC<
     resetSubscriptions();
   }, [resetSubscriptions]);
 
+  const areSubscriptionsDisabled = useMemo(
+    () =>
+      !notificationToken ||
+      loading ||
+      !isValidEmail ||
+      email?.length === 0 ||
+      !notificationUser?.isEmailConfirmed,
+    [email, isValidEmail, loading, notificationToken, notificationUser],
+  );
+
   const isSubmitDisabled = useMemo(
     () =>
       loading ||
+      isUnsubscribed ||
+      authError ||
       !notificationToken ||
       !isValidEmail ||
-      !email ||
+      (!email && !notificationUser?.isEmailConfirmed) ||
       (email === notificationUser?.email && !haveSubscriptionsBeenUpdated),
     [
       email,
       isValidEmail,
       loading,
+      authError,
+      isUnsubscribed,
       notificationToken,
-      notificationUser?.email,
+      notificationUser,
       haveSubscriptionsBeenUpdated,
     ],
   );
@@ -124,6 +150,43 @@ const EmailNotificationSettingsDialogComponent: React.FC<
     [account, notificationToken, notificationWallet],
   );
 
+  const hasUnsavedChanges = useMemo(() => {
+    const { email: emailNotification, isEmailConfirmed } =
+      notificationUser || {};
+
+    return (
+      isEmailConfirmed &&
+      !isUnsubscribed &&
+      ((isValidEmail && email !== emailNotification) ||
+        (haveSubscriptionsBeenUpdated && isValidEmail))
+    );
+  }, [
+    isValidEmail,
+    haveSubscriptionsBeenUpdated,
+    notificationUser,
+    email,
+    isUnsubscribed,
+  ]);
+
+  useEffect(() => {
+    if (
+      wasAccountDisconnected ||
+      shouldFetchToken ||
+      shouldFetchUser ||
+      hasUnsavedChanges ||
+      !isValidEmail
+    ) {
+      setAreChangesSaved(false);
+      setAuthError(false);
+    }
+  }, [
+    wasAccountDisconnected,
+    shouldFetchToken,
+    shouldFetchUser,
+    hasUnsavedChanges,
+    isValidEmail,
+  ]);
+
   useEffect(() => {
     if (wasAccountDisconnected) {
       resetNotification();
@@ -140,6 +203,7 @@ const EmailNotificationSettingsDialogComponent: React.FC<
   useEffect(() => {
     if (shouldFetchUser) {
       getUser();
+      setIsUnsubscribed(false);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [shouldFetchUser]);
@@ -171,6 +235,7 @@ const EmailNotificationSettingsDialogComponent: React.FC<
             if (res.data && res.data.token) {
               setNotificationToken(res.data.token);
               setNotificationWallet(account);
+              setAuthError(false);
             }
           }),
       )
@@ -187,13 +252,21 @@ const EmailNotificationSettingsDialogComponent: React.FC<
   }, [account, onClose, provider, addNotification]);
 
   const handleUserDataResponse = useCallback(
-    (response: Promise<any>, showNotifications: boolean = false) => {
+    (
+      response: Promise<any>,
+      isUserUpdated: boolean = false,
+      showNotifications: boolean = false,
+    ) => {
       response
         .then(result => {
           if (result.data) {
-            setNotificationUser(result.data);
-            setEmail(result.data?.email);
-            parseSubscriptionsResponse(result.data?.subscriptions);
+            const { data } = result;
+
+            setNotificationUser(data);
+            setEmail(data?.email);
+            parseSubscriptionsResponse(data?.subscriptions);
+
+            setAreChangesSaved(data?.isEmailConfirmed && isUserUpdated);
 
             if (showNotifications) {
               addNotification({
@@ -206,7 +279,6 @@ const EmailNotificationSettingsDialogComponent: React.FC<
           }
         })
         .catch(error => {
-          console.log(error);
           if (showNotifications) {
             addNotification({
               type: NotificationType.error,
@@ -216,6 +288,7 @@ const EmailNotificationSettingsDialogComponent: React.FC<
             });
           }
           if (error?.response?.status === 401) {
+            setAuthError(true);
             getToken();
           }
         })
@@ -223,6 +296,34 @@ const EmailNotificationSettingsDialogComponent: React.FC<
     },
     [getToken, addNotification, parseSubscriptionsResponse],
   );
+
+  const handleEmailDelete = useCallback(() => {
+    setIsUnsubscribed(true);
+    setEmail('');
+    resetSubscriptions();
+    setNotificationUser(null);
+  }, [resetSubscriptions]);
+
+  const handleUserDelete = useCallback(
+    (response: Promise<any>) => {
+      response
+        .then(() => handleEmailDelete())
+        .catch(error => {
+          if (error?.response?.status === 401) {
+            setAuthError(true);
+            getToken();
+          }
+        })
+        .finally(() => setLoading(false));
+    },
+    [getToken, handleEmailDelete],
+  );
+
+  useEffect(() => {
+    if (!isValidEmail && !notificationUser) {
+      setIsUnsubscribed(false);
+    }
+  }, [isValidEmail, notificationUser]);
 
   const getUser = useCallback(() => {
     if (!account || !notificationToken) {
@@ -258,25 +359,36 @@ const EmailNotificationSettingsDialogComponent: React.FC<
 
     setLoading(true);
 
-    const promise = axios.put(
-      `${userEndpoint}${account}`,
-      {
-        walletAddress: account,
-        email: email || undefined,
-        subscriptions: subscriptions,
-      },
-      {
+    if (email?.length === 0) {
+      const promise = axios.delete(`${userEndpoint}${userId}`, {
         headers: {
           Authorization: 'bearer ' + notificationToken,
         },
-      },
-    );
+      });
 
-    handleUserDataResponse(promise, true);
+      handleUserDelete(promise);
+    } else {
+      const promise = axios.put(
+        `${userEndpoint}${userId}`,
+        {
+          walletAddress: account,
+          email: email || undefined,
+          subscriptions: subscriptions || defaultSubscriptionsArray,
+        },
+        {
+          headers: {
+            Authorization: 'bearer ' + notificationToken,
+          },
+        },
+      );
+
+      handleUserDataResponse(promise, true, true);
+    }
   }, [
     account,
     email,
     handleUserDataResponse,
+    handleUserDelete,
     notificationToken,
     subscriptions,
   ]);
@@ -290,18 +402,10 @@ const EmailNotificationSettingsDialogComponent: React.FC<
     if (hasUnconfirmedEmail) {
       return t(translations.emailNotificationsDialog.unconfirmedEmailWarning);
     }
-    if (!isValidEmail) {
+    if (!!notificationUser && !isValidEmail) {
       return t(translations.emailNotificationsDialog.invalidEmail);
     }
-  }, [isValidEmail, hasUnconfirmedEmail]);
-
-  const hasUnsavedChanges = useMemo(
-    () =>
-      notificationUser &&
-      ((isValidEmail && email !== notificationUser.email) ||
-        haveSubscriptionsBeenUpdated),
-    [email, haveSubscriptionsBeenUpdated, isValidEmail, notificationUser],
-  );
+  }, [hasUnconfirmedEmail, notificationUser, isValidEmail]);
 
   return (
     <Dialog isOpen={isOpen} width={DialogSize.sm}>
@@ -325,20 +429,36 @@ const EmailNotificationSettingsDialogComponent: React.FC<
               placeholder={t(
                 translations.emailNotificationsDialog.emailInputPlaceholder,
               )}
-              disabled={loading || !notificationToken}
+              disabled={isEmailInputDisabled}
               dataAttribute="alert-signup-email"
             />
+
+            {isUnsubscribed && (
+              <Paragraph className="text-success mb-2">
+                {t(translations.emailNotificationsDialog.unsubscribed)}
+              </Paragraph>
+            )}
           </FormGroup>
 
-          <Subscriptions dataAttribute="alert-signup-sub" />
+          <Subscriptions
+            isDisabled={areSubscriptionsDisabled}
+            dataAttribute="alert-signup-sub"
+          />
         </div>
 
         <div className="mt-4 flex flex-col items-center">
           {hasUnsavedChanges && (
             <Paragraph className="text-error mb-2">
-              {t(translations.emailNotificationsDialog.unsavedChange)}
+              {t(translations.emailNotificationsDialog.unsavedChanges)}
             </Paragraph>
           )}
+
+          {areChangesSaved && !hasUnconfirmedEmail && (
+            <Paragraph className="text-success mb-2">
+              {t(translations.emailNotificationsDialog.savedChanges)}
+            </Paragraph>
+          )}
+
           <Button
             onClick={updateUser}
             text={t(translations.common.buttons.save)}

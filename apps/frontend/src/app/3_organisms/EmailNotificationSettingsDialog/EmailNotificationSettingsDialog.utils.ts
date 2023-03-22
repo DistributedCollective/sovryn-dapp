@@ -10,7 +10,7 @@ export const isSubscribedToGroup = (
 ) => {
   if (subscriptions.length === 0) {
     // default value for notification settings - see SOV-1762 for more details
-    return true;
+    return false;
   }
 
   const groupNotifications = subscriptions

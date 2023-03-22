@@ -1,6 +1,6 @@
 name: Release Frontend build to IPFS
 
-on:
+on: workflow_dispatch
 
 concurrency: ${{ github.workflow }}-${{ github.ref }}
 

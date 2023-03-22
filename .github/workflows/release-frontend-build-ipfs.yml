@@ -1,8 +1,6 @@
 name: Release Frontend build to IPFS
 
 on:
-  push:
-    branches: [ "develop", "workflow-release-frontend-build-ipfs" ]
 
 concurrency: ${{ github.workflow }}-${{ github.ref }}
 

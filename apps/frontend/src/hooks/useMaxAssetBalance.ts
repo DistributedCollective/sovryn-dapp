@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 
-import { BigNumber, constants } from 'ethers';
+import { constants } from 'ethers';
 
 import {
   ContractConfigData,
@@ -8,7 +8,7 @@ import {
   SupportedTokens,
 } from '@sovryn/contracts';
 import { ChainId } from '@sovryn/ethers-provider';
-import { Decimalish } from '@sovryn/utils';
+import { Decimalish, Decimal } from '@sovryn/utils';
 
 import { CacheCallOptions } from '../store/rxjs/provider-cache';
 import { getRskChainId } from '../utils/chain';
@@ -32,16 +32,19 @@ export const useMaxAssetBalance = (
   );
 
   return useMemo(() => {
-    const value = result.balance.sub(
-      contract?.address === constants.AddressZero
-        ? composeGas(gasPrice || '0', gasLimit)
-        : 0,
+    const value = Decimal.max(
+      result.balance.sub(
+        contract?.address === constants.AddressZero
+          ? composeGas(gasPrice || '0', gasLimit)
+          : 0,
+      ),
+      0,
     );
 
     return {
-      weiBalance: value.gt(0) ? value.toBigNumber().toString() : '0',
+      weiBalance: value.toBigNumber().toString(),
       balance: value,
-      bigNumberBalance: value.gt(0) ? value.toBigNumber() : BigNumber.from(0),
+      bigNumberBalance: value.toBigNumber(),
       decimalPrecision: result.decimalPrecision,
       loading: false,
       error: null,

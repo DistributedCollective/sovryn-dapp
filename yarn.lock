@@ -4263,17 +4263,17 @@
   resolved "https://registry.yarnpkg.com/@socket.io/component-emitter/-/component-emitter-3.1.0.tgz#96116f2a912e0c02817345b3c10751069920d553"
   integrity sha512-+9jVqKhRSpsc591z5vX+X5Yyw+he/HCB4iQ/RYxw35CEPaY1gnsNE43nf9n9AaYjAQrTiI/mOwKUKdUs9vf7Xg==
 
-"@sovryn-zero/lib-base@0.1.0":
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/@sovryn-zero/lib-base/-/lib-base-0.1.0.tgz#f461b8d76502200a1b0e32740af988a39bcb087c"
-  integrity sha512-dPPce/HI5NBB5YsBMt10J3KnixuiJ/vFP8o1n7gVKMeXknV/EApu9Tf3G/VAeiIV+ASH5SDaGb2XQlhFUB4nyA==
+"@sovryn-zero/lib-base@0.2.0":
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/@sovryn-zero/lib-base/-/lib-base-0.2.0.tgz#4651cbfcb85f0a6bbcc4f6ed6d141ab36a86840d"
+  integrity sha512-Ng/Cv24BWTMAY+KxssxnQQf8GltbSY6x8nbbISAk/DmJCIuMdXRCghgVKmb+646mngwTN/ZzHEriJutShRR5CA==
   dependencies:
     "@ethersproject/bignumber" "5.0.15"
 
-"@sovryn-zero/lib-ethers@0.1.0":
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/@sovryn-zero/lib-ethers/-/lib-ethers-0.1.0.tgz#f608798dbc9af85f73466432d2215b8e2f035ff0"
-  integrity sha512-cy2mJalaa15w9Wf5cZowjz8jVmo0H+MvxUI8yQfB4OT1kkexPZr9rR+m7qaEFuM9ZCHBrfZAcMPwIHvUe3RVuA==
+"@sovryn-zero/lib-ethers@0.2.0":
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/@sovryn-zero/lib-ethers/-/lib-ethers-0.2.0.tgz#c81db4ad59f0149a081c4aabfa5ab3c5bac27630"
+  integrity sha512-WVJPt0e5PtXTyMf3Rbvnt/c0ZsYO8Ub2rcBV6ytJwbUgJk+VPR0qNG1BZHglC+8eoKY0wd4YmDtGfb54g6JOIQ==
 
 "@sovryn/onboard-common@1.0.0":
   version "1.0.0"

@@ -1,6 +1,6 @@
 {
   "name": "frontend",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "private": true,
   "dependencies": {
     "@apollo/client": "3.7.1",
@@ -20,7 +20,7 @@
     "@sovryn/onboard-walletconnect": "1.0.0",
     "@sovryn/tailwindcss-config": "*",
     "@sovryn/ui": "*",
-    "@sovryn/utils": "0.0.0",
+    "@sovryn/utils": "0.0.1",
     "bitcoin-address-validation": "2.2.1",
     "chart.js": "4.1.1",
     "classnames": "2.3.2",

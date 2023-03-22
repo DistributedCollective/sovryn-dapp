@@ -28,6 +28,7 @@ jobs:
           service: pinata
           verbose: true
           key: sovryn-dapp-frontend-build
+          pinName: Sovryn DAPP Frontend ${{ steps.commit.outputs.short }}
           pinataKey: ${{ secrets.PINATA_KEY }}
           pinataSecret: ${{ secrets.PINATA_SECRET }}
     

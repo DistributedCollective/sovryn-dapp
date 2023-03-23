@@ -198,6 +198,23 @@ const EmailNotificationSettingsDialogComponent: React.FC<
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [shouldFetchUser]);
 
+  const handleAuthenticationError = useCallback(
+    error => {
+      if (error?.response?.status === 401) {
+        setAuthError(true);
+      } else {
+        addNotification({
+          type: NotificationType.error,
+          title: t(translations.emailNotificationsDialog.authErrorMessage),
+          dismissible: true,
+          id: nanoid(),
+        });
+        onClose();
+      }
+    },
+    [addNotification, onClose],
+  );
+
   const getToken = useCallback(async () => {
     if (!account) {
       return;
@@ -229,33 +246,11 @@ const EmailNotificationSettingsDialogComponent: React.FC<
             }
           }),
       )
-      .catch(() => {
-        addNotification({
-          type: NotificationType.error,
-          title: t(translations.emailNotificationsDialog.authErrorMessage),
-          dismissible: true,
-          id: nanoid(),
-        });
-        onClose();
-      });
-  }, [account, onClose, provider, addNotification]);
-
-  const handleAuthenticationError = useCallback(
-    error => {
-      if (error?.response?.status === 401) {
-        setAuthError(true);
-        getToken();
-      }
-    },
-    [getToken],
-  );
+      .catch(handleAuthenticationError);
+  }, [account, provider, handleAuthenticationError]);
 
   const handleUserDataResponse = useCallback(
-    (
-      response: Promise<any>,
-      isUserUpdated: boolean = false,
-      showNotifications: boolean = false,
-    ) => {
+    (response: Promise<any>, showNotifications: boolean = false) => {
       response
         .then(result => {
           if (result.data) {
@@ -300,7 +295,7 @@ const EmailNotificationSettingsDialogComponent: React.FC<
     addNotification({
       type: NotificationType.success,
       title: t(translations.emailNotificationsDialog.unsubscribed),
-      dismissible: false,
+      dismissible: true,
       id: nanoid(),
     });
   }, [addNotification, onClose, resetSubscriptions]);
@@ -372,7 +367,7 @@ const EmailNotificationSettingsDialogComponent: React.FC<
         },
       );
 
-      handleUserDataResponse(promise, true, true);
+      handleUserDataResponse(promise, true);
     }
   }, [
     account,

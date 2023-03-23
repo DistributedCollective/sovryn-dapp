@@ -1,5 +1,13 @@
 # @sovryn/contracts
 
+## 1.0.3
+
+### Patch Changes
+
+- 735bd72: SOV-2089: Zero Fee Update - update Zero SDK package versions
+- b90fcb9: SOV-1988: add missing mynt token metadata
+- b90fcb9: SOV-1988: swap numbers with Decimal
+
 ## 1.0.2
 
 ### Patch Changes

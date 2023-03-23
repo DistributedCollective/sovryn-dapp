@@ -369,7 +369,7 @@ const EmailNotificationSettingsDialogComponent: React.FC<
       handleUserDelete(promise);
     } else {
       const promise = axios.put(
-        `${userEndpoint}${userId}`,
+        `${userEndpoint}${account}`,
         {
           walletAddress: account,
           email: email || undefined,

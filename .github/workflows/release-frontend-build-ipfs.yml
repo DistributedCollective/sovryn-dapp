@@ -49,8 +49,10 @@ jobs:
           body: |
             **Sovryn DAPP Mainnet gateways**:
             - CIDv0: ${{ steps.upload_frontend_build.outputs.hash }}
-            - ${{ vars.IPFS_GATEWAY_URL }}/ipfs/${{ steps.upload_frontend_build.outputs.hash }}            
-            - https://gateway.pinata.cloud/ipfs/${{ steps.upload_frontend_build.outputs.hash }}
-            - https://cloudflare-ipfs.com/ipfs/${{ steps.upload_frontend_build.outputs.hash }}
-            - https://ipfs.io/ipfs/${{ steps.upload_frontend_build.outputs.hash }}
-            - [ipfs://${{ steps.upload_frontend_build.outputs.hash }}/](ipfs://${{ steps.upload_frontend_build_to_ipfs.outputs.hash }}/)
+            - CIDv1: ${{ steps.cidv0_to_cidv1.outputs.cidv1 }}
+            - ${{ vars.IPFS_GATEWAY_URL }}/ipfs/${{ steps.cidv0_to_cidv1.outputs.cidv1 }}            
+            - https://gateway.pinata.cloud/ipfs/${{ steps.cidv0_to_cidv1.outputs.cidv1 }}
+            - https://cloudflare-ipfs.com/ipfs/${{ steps.cidv0_to_cidv1.outputs.cidv1 }}
+            - https://ipfs.io/ipfs/${{ steps.cidv0_to_cidv1.outputs.cidv1 }}
+            - https://${{ steps.cidv0_to_cidv1.outputs.cidv1 }}.ipfs.dweb.link/
+            - [ipfs://${{ steps.cidv0_to_cidv1.outputs.cidv1 }}/](ipfs://${{ steps.cidv0_to_cidv1.outputs.cidv1 }}/)

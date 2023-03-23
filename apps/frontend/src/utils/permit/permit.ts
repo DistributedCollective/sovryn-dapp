@@ -1,18 +1,10 @@
-import { getTokenDetailsByAddress } from '@sovryn/contracts';
-import { ethers, providers } from 'ethers';
-import { getRskChainId } from '../chain';
 import utf8 from 'utf8';
-import { verifyTypedData } from 'ethers/lib/utils';
+import { providers } from 'ethers';
+import { splitSignature, verifyTypedData } from 'ethers/lib/utils';
+import { getRskChainId } from '../chain';
 
 const MAX_INT =
   '0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff';
-
-const EIP712Domain = [
-  { name: 'name', type: 'string' },
-  { name: 'version', type: 'string' },
-  { name: 'chainId', type: 'uint256' },
-  { name: 'verifyingContract', type: 'address' },
-];
 
 const NONCES_FN = '0x7ecebe00';
 const NAME_FN = '0x06fdde03';
@@ -40,13 +32,6 @@ export const hexToUtf8 = (hex: string) => {
   return utf8.decode(str);
 };
 
-const splitSignatureToRSV = (signature: string) => {
-  const r = '0x' + signature.substring(2).substring(0, 64);
-  const s = '0x' + signature.substring(2).substring(64, 128);
-  const v = parseInt(signature.substring(2).substring(128, 130), 16);
-  return { r, s, v };
-};
-
 export const signERC2612Permit = async (
   signer: providers.JsonRpcSigner,
   tokenAddress: string,
@@ -56,52 +41,69 @@ export const signERC2612Permit = async (
   deadline?: number,
   nonce?: number,
 ) => {
-  const name =
-    (await getTokenDetailsByAddress(tokenAddress)
-      .then(token => token.symbol.toUpperCase())
-      .catch()) ??
-    (await signer
-      .call({ to: tokenAddress, data: NAME_FN })
-      .then((res: string) => res.substr(130))
-      .then(hexToUtf8));
+  const name = await signer
+    .call({ to: tokenAddress, data: NAME_FN })
+    .then((res: string) => res.substr(130))
+    .then(hexToUtf8);
 
-  const domain = {
-    name,
-    version: '1',
-    chainId: Number(getRskChainId()),
-    verifyingContract: tokenAddress,
+  const typedData = {
+    types: {
+      EIP712Domain: [
+        { name: 'name', type: 'string' },
+        { name: 'version', type: 'string' },
+        { name: 'chainId', type: 'uint256' },
+        { name: 'verifyingContract', type: 'address' },
+      ],
+      Permit: [
+        { name: 'owner', type: 'address' },
+        { name: 'spender', type: 'address' },
+        { name: 'value', type: 'uint256' },
+        { name: 'nonce', type: 'uint256' },
+        { name: 'deadline', type: 'uint256' },
+      ],
+    },
+    primaryType: 'Permit',
+    domain: {
+      name,
+      version: '1',
+      chainId: Number(getRskChainId()),
+      verifyingContract: tokenAddress,
+    },
+    message: {
+      owner,
+      spender,
+      value,
+      nonce:
+        nonce === undefined
+          ? await signer.call({
+              to: tokenAddress,
+              data: `${NONCES_FN}${zeros(24)}${owner.substr(2)}`,
+            })
+          : nonce,
+      deadline: deadline || MAX_INT,
+    },
   };
 
-  const types = {
-    Permit: [
-      { name: 'owner', type: 'address' },
-      { name: 'spender', type: 'address' },
-      { name: 'value', type: 'uint256' },
-      { name: 'nonce', type: 'uint256' },
-      { name: 'deadline', type: 'uint256' },
-    ],
-  };
+  const { EIP712Domain, ...types } = typedData.types;
 
-  const message = {
-    owner,
-    spender,
-    value,
-    nonce:
-      nonce === undefined
-        ? await signer.call({
-            to: tokenAddress,
-            data: `${NONCES_FN}${zeros(24)}${owner.substr(2)}`,
-          })
-        : nonce,
-    deadline: deadline || MAX_INT,
-  };
+  const signature = await signer._signTypedData(
+    typedData.domain,
+    types,
+    typedData.message,
+  );
 
-  const signature = await signer._signTypedData(domain, types, message);
+  const { r, s, v } = splitSignature(signature);
 
-  const verified = verifyTypedData(domain, types, message, signature);
+  const verified = verifyTypedData(
+    typedData.domain,
+    types,
+    typedData.message,
+    signature,
+  );
 
-  console.log('verified', verified, verified === owner);
+  if (verified !== owner) {
+    throw new Error('Signature verification failed');
+  }
 
-  const { r, s, v } = splitSignatureToRSV(signature);
-  return { r, s, v, ...message };
+  return { r, s, v, ...typedData.message };
 };

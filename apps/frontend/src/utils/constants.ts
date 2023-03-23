@@ -107,6 +107,3 @@ export const rskFaucet = 'https://faucet.rsk.co';
 export const currentRelease: ReleaseFileContent = JSON.parse(
   process.env.REACT_APP_RELEASE_DATA || '{}',
 );
-
-// temporary constant until permits are implemented
-export const LEDGER = 'Ledger';

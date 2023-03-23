@@ -221,6 +221,8 @@ export const TransactionSteps: FC<TransactionStepsProps> = ({
             request.nonce,
           );
 
+          console.log(response);
+
           transactions[i].onChangeStatus?.(StatusType.success);
           transactions[i].onComplete?.(response);
 

@@ -1,23 +1,11 @@
-import { hexToUtf8 } from './lib';
-import { getChainId, call, signData, RSV } from './rpc';
+import { getTokenDetailsByAddress } from '@sovryn/contracts';
+import { ethers, providers } from 'ethers';
+import { getRskChainId } from '../chain';
+import utf8 from 'utf8';
+import { verifyTypedData } from 'ethers/lib/utils';
 
 const MAX_INT =
   '0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff';
-
-interface ERC2612PermitMessage {
-  owner: string;
-  spender: string;
-  value: number | string;
-  nonce: number | string;
-  deadline: number | string;
-}
-
-interface Domain {
-  name: string;
-  version: string;
-  chainId: number;
-  verifyingContract: string;
-}
 
 const EIP712Domain = [
   { name: 'name', type: 'string' },
@@ -26,89 +14,94 @@ const EIP712Domain = [
   { name: 'verifyingContract', type: 'address' },
 ];
 
-const createTypedERC2612Data = (
-  message: ERC2612PermitMessage,
-  domain: Domain,
-) => {
-  const typedData = {
-    types: {
-      EIP712Domain,
-      Permit: [
-        { name: 'owner', type: 'address' },
-        { name: 'spender', type: 'address' },
-        { name: 'value', type: 'uint256' },
-        { name: 'nonce', type: 'uint256' },
-        { name: 'deadline', type: 'uint256' },
-      ],
-    },
-    primaryType: 'Permit',
-    domain,
-    message,
-  };
-
-  return typedData;
-};
-
 const NONCES_FN = '0x7ecebe00';
 const NAME_FN = '0x06fdde03';
 
 const zeros = (numZeros: number) => ''.padEnd(numZeros, '0');
 
-const getTokenName = async (provider: any, address: string) =>
-  hexToUtf8((await call(provider, address, NAME_FN)).substr(130));
+export const hexToUtf8 = (hex: string) => {
+  let str = '';
+  let code = 0;
+  hex = hex.replace(/^0x/i, '');
 
-const getDomain = async (
-  provider: any,
-  token: string | Domain,
-): Promise<Domain> => {
-  if (typeof token !== 'string') {
-    return token as Domain;
+  // remove 00 padding from either side
+  hex = hex.replace(/^(?:00)*/, '');
+  hex = hex.split('').reverse().join('');
+  hex = hex.replace(/^(?:00)*/, '');
+  hex = hex.split('').reverse().join('');
+
+  let l = hex.length;
+
+  for (let i = 0; i < l; i += 2) {
+    code = parseInt(hex.substr(i, 2), 16);
+    str += String.fromCharCode(code);
   }
 
-  const tokenAddress = token as string;
+  return utf8.decode(str);
+};
 
-  const [name, chainId] = await Promise.all([
-    getTokenName(provider, tokenAddress),
-    getChainId(provider),
-  ]);
-
-  const domain: Domain = {
-    name,
-    version: '1',
-    chainId,
-    verifyingContract: tokenAddress,
-  };
-  return domain;
+const splitSignatureToRSV = (signature: string) => {
+  const r = '0x' + signature.substring(2).substring(0, 64);
+  const s = '0x' + signature.substring(2).substring(64, 128);
+  const v = parseInt(signature.substring(2).substring(128, 130), 16);
+  return { r, s, v };
 };
 
 export const signERC2612Permit = async (
-  provider: any,
-  token: string | Domain,
+  signer: providers.JsonRpcSigner,
+  tokenAddress: string,
   owner: string,
   spender: string,
   value: string | number = MAX_INT,
   deadline?: number,
   nonce?: number,
-): Promise<ERC2612PermitMessage & RSV> => {
-  const tokenAddress = (token as Domain).verifyingContract || (token as string);
+) => {
+  const name =
+    (await getTokenDetailsByAddress(tokenAddress)
+      .then(token => token.symbol.toUpperCase())
+      .catch()) ??
+    (await signer
+      .call({ to: tokenAddress, data: NAME_FN })
+      .then((res: string) => res.substr(130))
+      .then(hexToUtf8));
 
-  const message: ERC2612PermitMessage = {
+  const domain = {
+    name,
+    version: '1',
+    chainId: Number(getRskChainId()),
+    verifyingContract: tokenAddress,
+  };
+
+  const types = {
+    Permit: [
+      { name: 'owner', type: 'address' },
+      { name: 'spender', type: 'address' },
+      { name: 'value', type: 'uint256' },
+      { name: 'nonce', type: 'uint256' },
+      { name: 'deadline', type: 'uint256' },
+    ],
+  };
+
+  const message = {
     owner,
     spender,
     value,
     nonce:
       nonce === undefined
-        ? await call(
-            provider,
-            tokenAddress,
-            `${NONCES_FN}${zeros(24)}${owner.substr(2)}`,
-          )
+        ? await signer.call({
+            to: tokenAddress,
+            data: `${NONCES_FN}${zeros(24)}${owner.substr(2)}`,
+          })
         : nonce,
     deadline: deadline || MAX_INT,
   };
 
-  const domain = await getDomain(provider, token);
-  const typedData = createTypedERC2612Data(message, domain);
-  const sig = await signData(provider, owner, typedData);
-  return { ...sig, ...message };
+  const signature = await signer._signTypedData(domain, types, message);
+
+  const verified = verifyTypedData(domain, types, message, signature);
+
+  console.log('verified', verified, verified === owner);
+
+  const { r, s, v } = splitSignatureToRSV(signature);
+  return { r, s, v, ...message };
 };

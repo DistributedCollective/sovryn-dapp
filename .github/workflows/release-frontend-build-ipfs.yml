@@ -33,6 +33,11 @@ jobs:
           pinName: Sovryn DAPP Frontend ${{ steps.commit.outputs.short }}
           pinataKey: ${{ secrets.PINATA_KEY }}
           pinataSecret: ${{ secrets.PINATA_SECRET }}
+      - name: CIDv0 to CIDv1
+        id: cidv0_to_cidv1
+        uses: Uniswap/convert-cidv0-cidv1@v1.0.0
+        with:
+          cidv0: ${{ steps.upload.outputs.hash }}
       - name: Create GitHub Release
         id: create_release
         uses: actions/create-release@v1.1.0

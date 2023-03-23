@@ -27,7 +27,7 @@
     "dayjs": "1.11.7",
     "env-cmd": "10.1.0",
     "ethers": "5.7.1",
-    "ethers-eip712": "^0.2.0",
+    "ethers-eip712": "0.2.0",
     "graphql": "16.6.0",
     "i18next": "22.0.4",
     "i18next-browser-languagedetector": "7.0.0",

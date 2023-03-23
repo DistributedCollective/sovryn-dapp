@@ -37,7 +37,7 @@ jobs:
         id: cidv0_to_cidv1
         uses: Uniswap/convert-cidv0-cidv1@v1.0.0
         with:
-          cidv0: ${{ steps.upload.outputs.hash }}
+          cidv0: ${{ steps.upload_frontend_build.outputs.hash }}
       - name: Create GitHub Release
         id: create_release
         uses: actions/create-release@v1.1.0

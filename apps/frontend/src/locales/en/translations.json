@@ -573,12 +573,11 @@
         "errorMessage": "Something went wrong, please try again.",
         "authErrorMessage": "Authentication failed, please try again.",
         "unconfirmedEmailWarning": "Unconfirmed - check inbox for confirmation email",
-        "signatureError": "The signature does not match the user’s connected Rootstock address",
-        "expiredError": "The authentication message signed is not the most recent authentication message that the server provided to the user",
         "invalidEmail": "Invalid email address",
         "unsavedChanges": "Your changes have not been saved yet",
         "savedChanges": "Changes saved",
-        "unsubscribed": "You were successfully unsubscribed"
+        "unsubscribed": "You were successfully unsubscribed",
+        "authenticationFailed": "Authentication failed"
     },
     "termsOfUsePage": {
         "meta": {

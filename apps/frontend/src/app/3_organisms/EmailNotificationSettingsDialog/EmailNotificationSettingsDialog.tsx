@@ -209,6 +209,7 @@ const EmailNotificationSettingsDialogComponent: React.FC<
           dismissible: true,
           id: nanoid(),
         });
+        setAuthError(false);
         onClose();
       }
     },
@@ -379,13 +380,14 @@ const EmailNotificationSettingsDialogComponent: React.FC<
   ]);
 
   const errorLabel = useMemo(() => {
-    if (hasUnconfirmedEmail) {
+    if (authError) {
+      t(translations.emailNotificationsDialog.authenticationFailed);
+    } else if (hasUnconfirmedEmail) {
       return t(translations.emailNotificationsDialog.unconfirmedEmailWarning);
-    }
-    if (!!notificationUser && !isValidEmail) {
+    } else if (!!notificationUser && !isValidEmail) {
       return t(translations.emailNotificationsDialog.invalidEmail);
     }
-  }, [hasUnconfirmedEmail, notificationUser, isValidEmail]);
+  }, [authError, hasUnconfirmedEmail, notificationUser, isValidEmail]);
 
   return (
     <Dialog isOpen={isOpen} width={DialogSize.sm}>

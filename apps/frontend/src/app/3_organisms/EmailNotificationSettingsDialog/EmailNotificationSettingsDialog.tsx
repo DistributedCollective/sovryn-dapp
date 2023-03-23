@@ -64,7 +64,6 @@ const EmailNotificationSettingsDialogComponent: React.FC<
 
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState('');
-  const [areChangesSaved, setAreChangesSaved] = useState(false);
   const [authError, setAuthError] = useState(false);
 
   const { subscriptions, haveSubscriptionsBeenUpdated } =
@@ -144,15 +143,22 @@ const EmailNotificationSettingsDialogComponent: React.FC<
   );
 
   const hasUnsavedChanges = useMemo(() => {
-    const { email: emailNotification, isEmailConfirmed } =
-      notificationUser || {};
+    const { email: serverEmail } = notificationUser || {};
 
     return (
-      isEmailConfirmed &&
-      ((isValidEmail && email !== emailNotification) ||
-        (haveSubscriptionsBeenUpdated && isValidEmail))
+      !!notificationToken &&
+      isValidEmail &&
+      (email !== '' || subscriptions.length > 0) &&
+      (email !== serverEmail || haveSubscriptionsBeenUpdated)
     );
-  }, [isValidEmail, haveSubscriptionsBeenUpdated, notificationUser, email]);
+  }, [
+    notificationUser,
+    notificationToken,
+    isValidEmail,
+    email,
+    subscriptions.length,
+    haveSubscriptionsBeenUpdated,
+  ]);
 
   useEffect(() => {
     if (
@@ -162,7 +168,6 @@ const EmailNotificationSettingsDialogComponent: React.FC<
       hasUnsavedChanges ||
       !isValidEmail
     ) {
-      setAreChangesSaved(false);
       setAuthError(false);
     }
   }, [
@@ -259,8 +264,6 @@ const EmailNotificationSettingsDialogComponent: React.FC<
             setNotificationUser(data);
             setEmail(data?.email);
             parseSubscriptionsResponse(data?.subscriptions);
-
-            setAreChangesSaved(data?.isEmailConfirmed && isUserUpdated);
 
             if (showNotifications) {
               addNotification({
@@ -426,12 +429,6 @@ const EmailNotificationSettingsDialogComponent: React.FC<
           {hasUnsavedChanges && (
             <Paragraph className="text-error mb-2">
               {t(translations.emailNotificationsDialog.unsavedChanges)}
-            </Paragraph>
-          )}
-
-          {areChangesSaved && !hasUnconfirmedEmail && (
-            <Paragraph className="text-success mb-2">
-              {t(translations.emailNotificationsDialog.savedChanges)}
             </Paragraph>
           )}
 

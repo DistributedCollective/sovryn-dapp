@@ -33,7 +33,7 @@ export const MaintenanceModeContextProvider: React.FC<PropsWithChildren> = ({
         .get(servicesConfig.maintenance)
         .then(result => setMaintenanceStates(parseStates(result)));
 
-    const intervalId = setInterval(fetchCall, 60000);
+    const intervalId = setInterval(fetchCall, 25e3);
 
     return () => {
       clearInterval(intervalId);

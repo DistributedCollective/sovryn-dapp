@@ -84,7 +84,7 @@ export function useMaintenance() {
 
   const checkMaintenance = useCallback(
     (...names: States[]): boolean => {
-      if (!!process.env.REACT_APP_BYPASS_MAINTENANCE || isStaging()) {
+      if (process.env.REACT_APP_BYPASS_MAINTENANCE === 'true' || isStaging()) {
         return false;
       }
       return names.every(name => maintenanceStates[name]?.isInMaintenance);

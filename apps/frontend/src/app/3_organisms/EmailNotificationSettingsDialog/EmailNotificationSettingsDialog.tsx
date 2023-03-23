@@ -66,7 +66,6 @@ const EmailNotificationSettingsDialogComponent: React.FC<
   const [email, setEmail] = useState('');
   const [areChangesSaved, setAreChangesSaved] = useState(false);
   const [authError, setAuthError] = useState(false);
-  const [isUnsubscribed, setIsUnsubscribed] = useState(false);
 
   const { subscriptions, haveSubscriptionsBeenUpdated } =
     useEmailNotificationSettingsContext();
@@ -74,15 +73,16 @@ const EmailNotificationSettingsDialogComponent: React.FC<
   const { resetSubscriptions, parseSubscriptionsResponse } =
     useHandleSubscriptions();
 
+  const onCloseHandler = useCallback(() => {
+    setEmail(notificationUser?.email || '');
+    onClose();
+  }, [notificationUser?.email, onClose]);
+
   const isValidEmail = useMemo(() => !email || validateEmail(email), [email]);
 
   const isEmailInputDisabled = useMemo(
-    () =>
-      (!notificationToken && !isUnsubscribed) ||
-      !account ||
-      loading ||
-      authError,
-    [notificationToken, account, loading, authError, isUnsubscribed],
+    () => !notificationToken || !account || loading || authError,
+    [notificationToken, account, loading, authError],
   );
 
   const hasUnconfirmedEmail = useMemo(
@@ -115,7 +115,6 @@ const EmailNotificationSettingsDialogComponent: React.FC<
   const isSubmitDisabled = useMemo(
     () =>
       loading ||
-      isUnsubscribed ||
       authError ||
       !notificationToken ||
       !isValidEmail ||
@@ -126,7 +125,6 @@ const EmailNotificationSettingsDialogComponent: React.FC<
       isValidEmail,
       loading,
       authError,
-      isUnsubscribed,
       notificationToken,
       notificationUser,
       haveSubscriptionsBeenUpdated,
@@ -156,17 +154,10 @@ const EmailNotificationSettingsDialogComponent: React.FC<
 
     return (
       isEmailConfirmed &&
-      !isUnsubscribed &&
       ((isValidEmail && email !== emailNotification) ||
         (haveSubscriptionsBeenUpdated && isValidEmail))
     );
-  }, [
-    isValidEmail,
-    haveSubscriptionsBeenUpdated,
-    notificationUser,
-    email,
-    isUnsubscribed,
-  ]);
+  }, [isValidEmail, haveSubscriptionsBeenUpdated, notificationUser, email]);
 
   useEffect(() => {
     if (
@@ -203,7 +194,6 @@ const EmailNotificationSettingsDialogComponent: React.FC<
   useEffect(() => {
     if (shouldFetchUser) {
       getUser();
-      setIsUnsubscribed(false);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [shouldFetchUser]);
@@ -239,8 +229,7 @@ const EmailNotificationSettingsDialogComponent: React.FC<
             }
           }),
       )
-      .catch(error => {
-        console.error(error);
+      .catch(() => {
         addNotification({
           type: NotificationType.error,
           title: t(translations.emailNotificationsDialog.authErrorMessage),
@@ -250,6 +239,16 @@ const EmailNotificationSettingsDialogComponent: React.FC<
         onClose();
       });
   }, [account, onClose, provider, addNotification]);
+
+  const handleAuthenticationError = useCallback(
+    error => {
+      if (error?.response?.status === 401) {
+        setAuthError(true);
+        getToken();
+      }
+    },
+    [getToken],
+  );
 
   const handleUserDataResponse = useCallback(
     (
@@ -287,43 +286,36 @@ const EmailNotificationSettingsDialogComponent: React.FC<
               id: nanoid(),
             });
           }
-          if (error?.response?.status === 401) {
-            setAuthError(true);
-            getToken();
-          }
+          handleAuthenticationError(error);
         })
         .finally(() => setLoading(false));
     },
-    [getToken, addNotification, parseSubscriptionsResponse],
+    [parseSubscriptionsResponse, addNotification, handleAuthenticationError],
   );
 
   const handleEmailDelete = useCallback(() => {
-    setIsUnsubscribed(true);
     setEmail('');
     resetSubscriptions();
     setNotificationUser(null);
-  }, [resetSubscriptions]);
+    onClose();
+
+    addNotification({
+      type: NotificationType.success,
+      title: t(translations.emailNotificationsDialog.unsubscribed),
+      dismissible: false,
+      id: nanoid(),
+    });
+  }, [addNotification, onClose, resetSubscriptions]);
 
   const handleUserDelete = useCallback(
     (response: Promise<any>) => {
       response
-        .then(() => handleEmailDelete())
-        .catch(error => {
-          if (error?.response?.status === 401) {
-            setAuthError(true);
-            getToken();
-          }
-        })
+        .then(handleEmailDelete)
+        .catch(handleAuthenticationError)
         .finally(() => setLoading(false));
     },
-    [getToken, handleEmailDelete],
+    [handleAuthenticationError, handleEmailDelete],
   );
-
-  useEffect(() => {
-    if (!isValidEmail && !notificationUser) {
-      setIsUnsubscribed(false);
-    }
-  }, [isValidEmail, notificationUser]);
 
   const getUser = useCallback(() => {
     if (!account || !notificationToken) {
@@ -393,11 +385,6 @@ const EmailNotificationSettingsDialogComponent: React.FC<
     subscriptions,
   ]);
 
-  const onCloseHandler = useCallback(() => {
-    setEmail(notificationUser?.email || '');
-    onClose();
-  }, [notificationUser?.email, onClose]);
-
   const errorLabel = useMemo(() => {
     if (hasUnconfirmedEmail) {
       return t(translations.emailNotificationsDialog.unconfirmedEmailWarning);
@@ -432,12 +419,6 @@ const EmailNotificationSettingsDialogComponent: React.FC<
               disabled={isEmailInputDisabled}
               dataAttribute="alert-signup-email"
             />
-
-            {isUnsubscribed && (
-              <Paragraph className="text-success mb-2">
-                {t(translations.emailNotificationsDialog.unsubscribed)}
-              </Paragraph>
-            )}
           </FormGroup>
 
           <Subscriptions

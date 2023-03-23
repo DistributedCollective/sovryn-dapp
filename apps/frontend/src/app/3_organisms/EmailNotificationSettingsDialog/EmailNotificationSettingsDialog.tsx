@@ -103,13 +103,8 @@ const EmailNotificationSettingsDialogComponent: React.FC<
   }, [resetSubscriptions]);
 
   const areSubscriptionsDisabled = useMemo(
-    () =>
-      !notificationToken ||
-      loading ||
-      !isValidEmail ||
-      email?.length === 0 ||
-      !notificationUser?.isEmailConfirmed,
-    [email, isValidEmail, loading, notificationToken, notificationUser],
+    () => !notificationToken || loading,
+    [loading, notificationToken],
   );
 
   const isSubmitDisabled = useMemo(

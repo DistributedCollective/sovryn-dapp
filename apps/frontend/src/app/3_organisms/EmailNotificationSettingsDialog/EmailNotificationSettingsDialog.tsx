@@ -222,7 +222,7 @@ const EmailNotificationSettingsDialogComponent: React.FC<
             const { data } = result;
 
             setNotificationUser(data);
-            setEmail(data?.email);
+            setEmail(data?.email || '');
             parseSubscriptionsResponse(data?.subscriptions);
 
             if (showNotifications) {

@@ -145,22 +145,15 @@ const EmailNotificationSettingsDialogComponent: React.FC<
   );
 
   const hasUnsavedChanges = useMemo(() => {
-    const { email: serverEmail } = notificationUser || {};
+    const { email: serverEmail, isEmailConfirmed } = notificationUser || {};
 
     return (
-      !!notificationToken &&
-      isValidEmail &&
-      (email !== '' || subscriptions.length > 0) &&
-      (email !== serverEmail || haveSubscriptionsBeenUpdated)
+      haveSubscriptionsBeenUpdated ||
+      (isValidEmail &&
+        email !== serverEmail &&
+        (email !== '' || isEmailConfirmed))
     );
-  }, [
-    notificationUser,
-    notificationToken,
-    isValidEmail,
-    email,
-    subscriptions.length,
-    haveSubscriptionsBeenUpdated,
-  ]);
+  }, [notificationUser, isValidEmail, email, haveSubscriptionsBeenUpdated]);
 
   useEffect(() => {
     if (
@@ -294,10 +287,8 @@ const EmailNotificationSettingsDialogComponent: React.FC<
   );
 
   const handleEmailDelete = useCallback(() => {
-    setEmail('');
-    resetSubscriptions();
-    setNotificationUser(null);
     onClose();
+    resetNotification();
 
     addNotification({
       type: NotificationType.success,
@@ -305,7 +296,7 @@ const EmailNotificationSettingsDialogComponent: React.FC<
       dismissible: true,
       id: nanoid(),
     });
-  }, [addNotification, onClose, resetSubscriptions]);
+  }, [addNotification, onClose, resetNotification]);
 
   const handleUserDelete = useCallback(
     (response: Promise<any>) => {

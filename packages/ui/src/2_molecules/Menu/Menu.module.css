@@ -1,3 +1,3 @@
 .menu {
-  @apply overflow-x-auto rounded bg-gray-80 transition-colors whitespace-nowrap p-1 font-roboto text-gray-30 text-xs font-semibold;
+  @apply overflow-x-auto rounded bg-gray-80 transition-colors whitespace-nowrap p-1 font-body text-gray-30 text-xs font-semibold;
 }

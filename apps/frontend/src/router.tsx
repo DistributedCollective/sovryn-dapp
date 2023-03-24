@@ -1,5 +1,3 @@
-import loadable from '@loadable/component';
-
 import React from 'react';
 
 import { createBrowserRouter } from 'react-router-dom';
@@ -14,10 +12,9 @@ import { EmailUnsubscribedPage } from './app/5_pages/EmailUnsubscribedPage/Email
 import { EmailVerifiedPage } from './app/5_pages/EmailVerifiedPage/EmailVerifiedPage';
 import { ErrorPage } from './app/5_pages/ErrorPage/ErrorPage';
 import { zeroPageLoader } from './app/5_pages/ZeroPage/loader';
+import { loadable } from './utils/loadable';
 
-const Zero = loadable(() => import('./app/5_pages/ZeroPage/ZeroPage'), {
-  resolveComponent: components => components.ZeroPage,
-});
+const Zero = loadable(() => import('./app/5_pages/ZeroPage/ZeroPage'));
 
 const EarnPage = loadable(() => import('./app/5_pages/EarnPage/EarnPage'));
 const ConvertPage = loadable(

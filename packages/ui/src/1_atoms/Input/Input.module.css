@@ -1,5 +1,5 @@
 .wrapper {
-  @apply w-full max-w-xs flex flex-row justify-between items-center font-roboto;
+  @apply w-full max-w-xs flex flex-row justify-between items-center font-body;
 }
 
 .container {

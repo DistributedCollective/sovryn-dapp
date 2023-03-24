@@ -1,0 +1,32 @@
+import React, { FC } from 'react';
+
+import { t } from 'i18next';
+
+import { translations } from '../../../locales/i18n';
+
+type LoaderWithLogoProps = {
+  text?: React.ReactNode;
+};
+
+export const LoaderWithLogo: FC<LoaderWithLogoProps> = ({ text }) => {
+  return (
+    <div className="flex flex-col justify-center items-center flex-grow">
+      <svg
+        className="sv-logo"
+        viewBox="0 0 16 16"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          fillRule="evenodd"
+          clipRule="evenodd"
+          d="M0.495749 0.486218H0.242432L8.05824 15.2859L15.8718 0.484863H15.6196L8.0596 11.3576L0.495749 0.486218ZM6.09141 7.04696L8.05722 9.8786L12.3042 3.77234L6.79108 3.76738L5.81394 2.36375L13.2834 2.36691L14.5922 0.484863H1.52222L5.11268 5.64107H8.89032L7.91972 7.04696H6.09141Z"
+          fill="#E6E6E8"
+        />
+      </svg>
+      <div className="sv-loading-text">
+        {text ? text : t(translations.loader.loading)}
+      </div>
+    </div>
+  );
+};

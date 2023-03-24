@@ -16,6 +16,46 @@
       property="og:description"
       content="0% interest loans with Sovryn's Zero protocol. Borrow ZUSD or DLLR against your Bitcoin in a fully decentralized system. Increase your earning potential today."
     />
+    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+    <style>
+      body {
+        font-size: 16px;
+        background: #0D0D0F;
+        color: #ffffff;
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      .sv-container {
+        height: 100%;
+        height: 100vh;
+        width: 100%;
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-box-orient: vertical;
+        -webkit-box-direction: normal;
+        -ms-flex-direction: column;
+        flex-direction: column;
+        -webkit-box-pack: center;
+        -ms-flex-pack: center;
+        justify-content: center;
+        -webkit-box-align: center;
+        -ms-flex-align: center;
+        align-items: center;
+        font-family: 'Roboto', sans-serif;
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      .sv-logo {
+        width: 190px;
+        height: 190px;
+      }
+      .sv-loading-text {
+        margin-top: 10px;
+      }
+    </style>
     <% if (process.env.NODE_ENV === "production") { %>
     <script src="https://cmp.osano.com/16BSnVTBY9ksVax/3abc690b-3747-4ba3-b1fb-fcaefd6ab8c1/osano.js"></script>
     <% } %> <% if (process.env.REACT_APP_GOOGLE_ANALYTICS) { %>
@@ -85,6 +125,7 @@
     </script>
     <!-- End Tiledesk Code -->
     <% } %>
+
   </head>
   <body>
     <% if (process.env.REACT_APP_GOOGLE_ANALYTICS) { %>
@@ -100,17 +141,24 @@
     <!-- End Google Tag Manager (noscript) -->
     <% } %>
     <noscript>You need to enable JavaScript to run this app.</noscript>
-    <div id="root"></div>
-    <!--
-      This HTML file is a template.
-      If you open it directly in the browser, you will see an empty page.
-
-      You can add webfonts, meta tags, or analytics to this file.
-      The build step will place the bundled scripts into the <body> tag.
-
-      To begin the development, run `npm start` or `yarn start`.
-      To create a production bundle, use `npm run build` or `yarn build`.
-    -->
+    <div id="root">
+      <div class="sv-container">
+        <svg
+          class="sv-logo"
+          viewBox="0 0 16 16"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            fill-rule="evenodd"
+            clip-rule="evenodd"
+            d="M0.495749 0.486218H0.242432L8.05824 15.2859L15.8718 0.484863H15.6196L8.0596 11.3576L0.495749 0.486218ZM6.09141 7.04696L8.05722 9.8786L12.3042 3.77234L6.79108 3.76738L5.81394 2.36375L13.2834 2.36691L14.5922 0.484863H1.52222L5.11268 5.64107H8.89032L7.91972 7.04696H6.09141Z"
+            fill="#E6E6E8"
+          />
+        </svg>
+        <div class="sv-loading-text">is loading...</div>
+      </div>
+    </div>
     <div id="overlay"></div>
     <% if (process.env.NODE_ENV === "production") { %>
     <script>

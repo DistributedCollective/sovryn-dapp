@@ -4,6 +4,7 @@ import { t } from 'i18next';
 import { Helmet } from 'react-helmet-async';
 import { useRouteError } from 'react-router-dom';
 
+import { ErrorRenderer } from '../../1_atoms/ErrorRenderer/ErrorRenderer';
 import { Footer, Header } from '../../3_organisms';
 import { translations } from '../../../locales/i18n';
 import { NotFoundPage } from '../NotFoundPage/NotFoundPage';
@@ -24,16 +25,18 @@ export const ErrorPage: FC = () => {
         <title>{t(translations.errorPage.meta.title)}</title>
       </Helmet>
       <Header />
-      <div className="container flex flex-col flex-grow items-center justify-center">
-        <h1>{t(translations.errorPage.title)}</h1>
-        <p>{t(translations.errorPage.description)}</p>
-        <p>
-          <i>{error.statusText || error.message}</i>
-        </p>
-        {process.env.NODE_ENV === 'development' && (
-          <pre>{JSON.stringify(error, undefined, 2)}</pre>
-        )}
-      </div>
+      <ErrorRenderer
+        error={
+          <>
+            <p className="w-full p-3">
+              <i>{error.statusText || error.message}</i>
+            </p>
+            {process.env.NODE_ENV === 'development' && (
+              <pre>{JSON.stringify(error, undefined, 2)}</pre>
+            )}
+          </>
+        }
+      />
       <Footer />
     </>
   );

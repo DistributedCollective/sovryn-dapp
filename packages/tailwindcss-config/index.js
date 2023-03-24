@@ -18,9 +18,9 @@ module.exports = {
       '3xl': '1854px',
     },
     fontFamily: {
-      body: ['Montserrat', 'sans-serif'],
+      body: ['Roboto', 'sans-serif'],
+      montserrat: ['Montserrat', 'sans-serif'],
       orbitron: ['Orbitron', 'sans-serif'],
-      roboto: ['Roboto', 'sans-serif'],
     },
     fontSize: {
       tiny: '.625rem', //  10px

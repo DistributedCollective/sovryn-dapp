@@ -235,7 +235,7 @@ const EmailNotificationSettingsDialogComponent: React.FC<
             }
           }
         })
-        .catch(error => {
+        .catch(() => {
           if (showNotifications) {
             addNotification({
               type: NotificationType.error,

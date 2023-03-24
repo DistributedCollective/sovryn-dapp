@@ -37,6 +37,8 @@ import {
 } from './contexts/EmailNotificationSettingsContext';
 import { useHandleSubscriptions } from './hooks/useHandleSubscriptions';
 
+const NOTIFICATION_SERVICE_ERROR_CODES = [400, 403]; // 400 - signing with incorrect wallet, 403 - signing a different message
+
 const servicesConfig = getServicesConfig();
 
 const notificationServiceUrl = servicesConfig.notification;
@@ -200,7 +202,11 @@ const EmailNotificationSettingsDialogComponent: React.FC<
 
   const handleAuthenticationError = useCallback(
     error => {
-      if (error?.response?.status === 401) {
+      if (
+        NOTIFICATION_SERVICE_ERROR_CODES.includes(
+          error?.response?.data?.error?.statusCode,
+        )
+      ) {
         setAuthError(true);
       } else {
         addNotification({
@@ -381,7 +387,7 @@ const EmailNotificationSettingsDialogComponent: React.FC<
 
   const errorLabel = useMemo(() => {
     if (authError) {
-      t(translations.emailNotificationsDialog.authenticationFailed);
+      return t(translations.emailNotificationsDialog.authenticationFailed);
     } else if (hasUnconfirmedEmail) {
       return t(translations.emailNotificationsDialog.unconfirmedEmailWarning);
     } else if (!!notificationUser && !isValidEmail) {

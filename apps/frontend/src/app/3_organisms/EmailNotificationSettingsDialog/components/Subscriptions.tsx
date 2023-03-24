@@ -87,6 +87,7 @@ export const Subscriptions: FC<SubscriptionsProps> = ({
     <div className="bg-gray-80 rounded p-4">
       {items.map(item => (
         <Toggle
+          key={item.dataAttributeSuffix}
           checked={item.checked}
           onChange={item.onChange}
           label={item.label}

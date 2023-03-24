@@ -37,8 +37,6 @@ import {
 } from './contexts/EmailNotificationSettingsContext';
 import { useHandleSubscriptions } from './hooks/useHandleSubscriptions';
 
-const NOTIFICATION_SERVICE_ERROR_CODES = [400, 403]; // 400 - signing with incorrect wallet, 403 - signing a different message
-
 const servicesConfig = getServicesConfig();
 
 const notificationServiceUrl = servicesConfig.notification;
@@ -66,7 +64,6 @@ const EmailNotificationSettingsDialogComponent: React.FC<
 
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState('');
-  const [authError, setAuthError] = useState(false);
 
   const { subscriptions, haveSubscriptionsBeenUpdated } =
     useEmailNotificationSettingsContext();
@@ -82,8 +79,8 @@ const EmailNotificationSettingsDialogComponent: React.FC<
   const isValidEmail = useMemo(() => !email || validateEmail(email), [email]);
 
   const isEmailInputDisabled = useMemo(
-    () => !notificationToken || !account || loading || authError,
-    [notificationToken, account, loading, authError],
+    () => !notificationToken || !account || loading,
+    [notificationToken, account, loading],
   );
 
   const hasUnconfirmedEmail = useMemo(
@@ -111,7 +108,6 @@ const EmailNotificationSettingsDialogComponent: React.FC<
   const isSubmitDisabled = useMemo(
     () =>
       loading ||
-      authError ||
       !notificationToken ||
       !isValidEmail ||
       (!email && !notificationUser?.isEmailConfirmed) ||
@@ -120,7 +116,6 @@ const EmailNotificationSettingsDialogComponent: React.FC<
       email,
       isValidEmail,
       loading,
-      authError,
       notificationToken,
       notificationUser,
       haveSubscriptionsBeenUpdated,
@@ -156,24 +151,6 @@ const EmailNotificationSettingsDialogComponent: React.FC<
   }, [notificationUser, isValidEmail, email, haveSubscriptionsBeenUpdated]);
 
   useEffect(() => {
-    if (
-      wasAccountDisconnected ||
-      shouldFetchToken ||
-      shouldFetchUser ||
-      hasUnsavedChanges ||
-      !isValidEmail
-    ) {
-      setAuthError(false);
-    }
-  }, [
-    wasAccountDisconnected,
-    shouldFetchToken,
-    shouldFetchUser,
-    hasUnsavedChanges,
-    isValidEmail,
-  ]);
-
-  useEffect(() => {
     if (wasAccountDisconnected) {
       resetNotification();
     }
@@ -193,27 +170,16 @@ const EmailNotificationSettingsDialogComponent: React.FC<
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [shouldFetchUser]);
 
-  const handleAuthenticationError = useCallback(
-    error => {
-      if (
-        NOTIFICATION_SERVICE_ERROR_CODES.includes(
-          error?.response?.data?.error?.statusCode,
-        )
-      ) {
-        setAuthError(true);
-      } else {
-        addNotification({
-          type: NotificationType.error,
-          title: t(translations.emailNotificationsDialog.authErrorMessage),
-          dismissible: true,
-          id: nanoid(),
-        });
-        setAuthError(false);
-        onClose();
-      }
-    },
-    [addNotification, onClose],
-  );
+  const handleAuthenticationError = useCallback(() => {
+    addNotification({
+      type: NotificationType.error,
+      title: t(translations.emailNotificationsDialog.authErrorMessage),
+      dismissible: true,
+      id: nanoid(),
+    });
+
+    onClose();
+  }, [addNotification, onClose]);
 
   const getToken = useCallback(async () => {
     if (!account) {
@@ -242,7 +208,6 @@ const EmailNotificationSettingsDialogComponent: React.FC<
             if (res.data && res.data.token) {
               setNotificationToken(res.data.token);
               setNotificationWallet(account);
-              setAuthError(false);
             }
           }),
       )
@@ -279,7 +244,7 @@ const EmailNotificationSettingsDialogComponent: React.FC<
               id: nanoid(),
             });
           }
-          handleAuthenticationError(error);
+          handleAuthenticationError();
         })
         .finally(() => setLoading(false));
     },
@@ -377,14 +342,12 @@ const EmailNotificationSettingsDialogComponent: React.FC<
   ]);
 
   const errorLabel = useMemo(() => {
-    if (authError) {
-      return t(translations.emailNotificationsDialog.authenticationFailed);
-    } else if (hasUnconfirmedEmail) {
+    if (hasUnconfirmedEmail) {
       return t(translations.emailNotificationsDialog.unconfirmedEmailWarning);
     } else if (!!notificationUser && !isValidEmail) {
       return t(translations.emailNotificationsDialog.invalidEmail);
     }
-  }, [authError, hasUnconfirmedEmail, notificationUser, isValidEmail]);
+  }, [hasUnconfirmedEmail, notificationUser, isValidEmail]);
 
   return (
     <Dialog isOpen={isOpen} width={DialogSize.sm}>

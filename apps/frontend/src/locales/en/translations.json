@@ -576,8 +576,7 @@
         "invalidEmail": "Invalid email address",
         "unsavedChanges": "Your changes have not been saved yet",
         "savedChanges": "Changes saved",
-        "unsubscribed": "You were successfully unsubscribed",
-        "authenticationFailed": "Authentication failed"
+        "unsubscribed": "You were successfully unsubscribed"
     },
     "termsOfUsePage": {
         "meta": {

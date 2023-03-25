@@ -74,7 +74,7 @@ export const LIQUIDATION_RESERVE_AMOUNT = 20;
 
 export const MAX_GAS_LIMIT = 6_800_000;
 export const GAS_LIMIT_OPEN_TROVE = 1_100_000;
-export const GAS_LIMIT_ADJUST_TROVE = 6_000_000; //temp high limit to triage gas limit issue
+export const GAS_LIMIT_ADJUST_TROVE = 4_000_000;
 export const GAS_LIMIT_CLOSE_TROVE = 350_000;
 export const GAS_LIMIT_CLOSE_DLLR_TROVE = 500_000;
 export const GAS_LIMIT_CONVERT = 200_000;

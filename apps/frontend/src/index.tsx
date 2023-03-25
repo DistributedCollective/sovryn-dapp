@@ -13,6 +13,7 @@ import { OnboardProvider } from '@sovryn/onboard-react';
 // chain config must be imported before other internal files
 import './config/chains';
 
+import { LoaderProvider } from './app/0_meta/LoaderProvider/LoaderProvider';
 import { ServiceWorkerProvider } from './app/2_molecules/ServiceWorkerProvider/ServiceWorkerProvider';
 import { TransactionStepDialog } from './app/3_organisms';
 import { NetworkProvider } from './app/3_organisms/NetworkProvider/NetworkProvider';
@@ -38,12 +39,14 @@ root.render(
           <ServiceWorkerProvider>
             <ApolloProvider client={rskClient}>
               <HelmetProvider>
-                <MaintenanceModeContextProvider>
-                  <SharedStateProvider>
-                    <RouterProvider router={router} />
-                    <OnboardProvider dataAttribute="dapp-onboard" />
-                  </SharedStateProvider>
-                </MaintenanceModeContextProvider>
+                <LoaderProvider>
+                  <MaintenanceModeContextProvider>
+                    <SharedStateProvider>
+                      <RouterProvider router={router} />
+                      <OnboardProvider dataAttribute="dapp-onboard" />
+                    </SharedStateProvider>
+                  </MaintenanceModeContextProvider>
+                </LoaderProvider>
               </HelmetProvider>
             </ApolloProvider>
             <TransactionStepDialog disableFocusTrap />

@@ -4,6 +4,8 @@ import { t } from 'i18next';
 import { Helmet } from 'react-helmet-async';
 import { useRouteError } from 'react-router-dom';
 
+import { Paragraph } from '@sovryn/ui';
+
 import { ErrorRenderer } from '../../1_atoms/ErrorRenderer/ErrorRenderer';
 import { Footer, Header } from '../../3_organisms';
 import { translations } from '../../../locales/i18n';
@@ -28,9 +30,9 @@ export const ErrorPage: FC = () => {
       <ErrorRenderer
         error={
           <>
-            <p className="w-full p-3">
+            <Paragraph className="w-full p-3">
               <i>{error.statusText || error.message}</i>
-            </p>
+            </Paragraph>
             {process.env.NODE_ENV === 'development' && (
               <pre>{JSON.stringify(error, undefined, 2)}</pre>
             )}

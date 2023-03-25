@@ -23,7 +23,7 @@ import {
 } from '@sovryn/ui';
 import { Decimal } from '@sovryn/utils';
 
-import { withDeferedLoaderData } from '../../0_meta/DeferedDataLoader/withDeferedRouterData';
+import { withDeferredLoaderData } from '../../0_meta/DeferredDataLoader/withDeferredRouterData';
 import { DashboardWelcomeBanner } from '../../2_molecules/DashboardWelcomeBanner/DashboardWelcomeBanner';
 import { LOCStatus } from '../../2_molecules/LOCStatus/LOCStatus';
 import { SystemStats } from '../../2_molecules/SystemStats/SystemStats';
@@ -45,10 +45,10 @@ import { useHandleTrove } from './hooks/useHandleTrove';
 import { ZeroPageLoaderData } from './loader';
 
 type ZeroPageProps = {
-  defered: [Decimal, Fees];
+  deferred: [Decimal, Fees];
 };
 
-const ZeroPage: FC<ZeroPageProps> = ({ defered: [price, fees] }) => {
+const ZeroPage: FC<ZeroPageProps> = ({ deferred: [price, fees] }) => {
   const { liquity } = useLoaderData() as ZeroPageLoaderData;
 
   const { isOpen: isTxOpen } = useTransactionContext();
@@ -232,4 +232,4 @@ const ZeroPage: FC<ZeroPageProps> = ({ defered: [price, fees] }) => {
   );
 };
 
-export default withDeferedLoaderData(ZeroPage, 'deferedData');
+export default withDeferredLoaderData(ZeroPage, 'deferredData');

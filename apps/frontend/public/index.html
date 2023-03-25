@@ -53,7 +53,18 @@
         height: 190px;
       }
       .sv-loading-text {
-        margin-top: 10px;
+        margin-top: 18px;
+      }
+      #bootstrap {
+        opacity: 1;
+        transition: opacity 0.5s ease-in-out;
+        z-index: 1000;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        
       }
     </style>
     <% if (process.env.NODE_ENV === "production") { %>
@@ -141,25 +152,24 @@
     <!-- End Google Tag Manager (noscript) -->
     <% } %>
     <noscript>You need to enable JavaScript to run this app.</noscript>
-    <div id="root">
-      <div class="sv-container">
-        <svg
-          class="sv-logo"
-          viewBox="0 0 16 16"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            fill-rule="evenodd"
-            clip-rule="evenodd"
-            d="M0.495749 0.486218H0.242432L8.05824 15.2859L15.8718 0.484863H15.6196L8.0596 11.3576L0.495749 0.486218ZM6.09141 7.04696L8.05722 9.8786L12.3042 3.77234L6.79108 3.76738L5.81394 2.36375L13.2834 2.36691L14.5922 0.484863H1.52222L5.11268 5.64107H8.89032L7.91972 7.04696H6.09141Z"
-            fill="#E6E6E8"
-          />
-        </svg>
-        <div class="sv-loading-text">is loading...</div>
-      </div>
-    </div>
+    <div id="root"></div>
     <div id="overlay"></div>
+    <div class="sv-container pointer-events-none select-none" id="bootstrap">
+      <svg
+        class="sv-logo"
+        viewBox="0 0 16 16"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          fill-rule="evenodd"
+          clip-rule="evenodd"
+          d="M0.495749 0.486218H0.242432L8.05824 15.2859L15.8718 0.484863H15.6196L8.0596 11.3576L0.495749 0.486218ZM6.09141 7.04696L8.05722 9.8786L12.3042 3.77234L6.79108 3.76738L5.81394 2.36375L13.2834 2.36691L14.5922 0.484863H1.52222L5.11268 5.64107H8.89032L7.91972 7.04696H6.09141Z"
+          fill="#E6E6E8"
+        />
+      </svg>
+      <div class="sv-loading-text">is loading...</div>
+    </div>
     <% if (process.env.NODE_ENV === "production") { %>
     <script>
       window.addEventListener('error', async err => {

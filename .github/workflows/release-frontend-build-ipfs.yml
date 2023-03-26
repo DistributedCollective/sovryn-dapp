@@ -5,8 +5,8 @@ on: workflow_dispatch
 concurrency: ${{ github.workflow }}-${{ github.ref }}
 
 jobs:
-  release_frontend_build_ipfs:
-    name: Release Frontend Build To IPFS 
+  upload_build:
+    name: Upload Frontend Build To IPFS 
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repo

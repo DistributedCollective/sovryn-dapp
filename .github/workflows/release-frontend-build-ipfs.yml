@@ -54,7 +54,7 @@ jobs:
           method: 'POST'
           bearerToken: ${{ secrets.PINATA_JWT }}
           customHeaders: '{"Content-Type": "application/json"}'
-          data: '{"hashToPin": "${{ needs.upload_build.outputs.cidv1 }}" }'
+          data: '{"hashToPin": "${{ needs.upload_build.outputs.cidv1 }}", "pinataMetadata": { "name": "Sovryn DAPP Frontend ${{ needs.upload_build.outputs.commit_short_hash }}"}}'
   create_github_release:
     name: Create Github Release
     needs: upload_build

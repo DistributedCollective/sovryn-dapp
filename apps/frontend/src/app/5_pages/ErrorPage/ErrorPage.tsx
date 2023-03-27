@@ -9,6 +9,7 @@ import { Paragraph } from '@sovryn/ui';
 import { ErrorRenderer } from '../../1_atoms/ErrorRenderer/ErrorRenderer';
 import { Footer, Header } from '../../3_organisms';
 import { translations } from '../../../locales/i18n';
+import { isDevEnvironment } from '../../../utils/helpers';
 import { NotFoundPage } from '../NotFoundPage/NotFoundPage';
 
 type ErrorRouteProps = Error & {
@@ -33,7 +34,7 @@ export const ErrorPage: FC = () => {
             <Paragraph className="w-full p-3">
               <i>{error.statusText || error.message}</i>
             </Paragraph>
-            {process.env.NODE_ENV === 'development' && (
+            {isDevEnvironment() && (
               <pre>{JSON.stringify(error, undefined, 2)}</pre>
             )}
           </>

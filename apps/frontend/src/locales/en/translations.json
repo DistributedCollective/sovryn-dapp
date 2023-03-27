@@ -54,7 +54,7 @@
         }
     },
     "errors": {
-      "ledgerPermitLocked": "DLLR permit transaction is currently disabled for direct Ledger connection"
+        "ledgerPermitLocked": "DLLR permit transaction is currently disabled for direct Ledger connection"
     },
     "connectWalletButton": {
         "connect": "Get started",
@@ -571,8 +571,12 @@
         },
         "successMessage": "Your preferences have been saved.",
         "errorMessage": "Something went wrong, please try again.",
-        "authErrorMessage": "Authentication failed, please try again.",
-        "unconfirmedEmailWarning": "Unconfirmed - check inbox for confirmation email"
+        "authErrorMessage": "Authentication failed",
+        "unconfirmedEmailWarning": "Unconfirmed - check inbox for confirmation email",
+        "invalidEmail": "Invalid email address",
+        "unsavedChanges": "Your changes have not been saved yet",
+        "savedChanges": "Changes saved",
+        "unsubscribed": "Unsubscribed"
     },
     "termsOfUsePage": {
         "meta": {

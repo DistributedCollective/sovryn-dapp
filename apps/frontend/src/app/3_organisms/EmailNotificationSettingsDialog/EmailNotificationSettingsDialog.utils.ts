@@ -9,8 +9,7 @@ export const isSubscribedToGroup = (
   subscriptions: Notification[],
 ) => {
   if (subscriptions.length === 0) {
-    // default value for notification settings - see SOV-1762 for more details
-    return true;
+    return false;
   }
 
   const groupNotifications = subscriptions
@@ -20,6 +19,10 @@ export const isSubscribedToGroup = (
         : null,
     )
     .filter(item => item !== null);
+
+  if (groupNotifications.length === 0) {
+    return false;
+  }
 
   return groupNotifications.every(item => item?.isSubscribed);
 };

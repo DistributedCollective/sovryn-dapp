@@ -9,13 +9,11 @@ type LoaderWithLogoProps = {
   text?: React.ReactNode;
 };
 
-export const LoaderWithLogo: FC<LoaderWithLogoProps> = ({ text }) => {
-  return (
-    <div className="flex flex-col justify-center items-center flex-grow">
-      <LogoSVG className="sv-logo" />
-      <div className="sv-loading-text">
-        {text ? text : t(translations.loader.loading)}
-      </div>
+export const LoaderWithLogo: FC<LoaderWithLogoProps> = ({ text }) => (
+  <div className="flex flex-col justify-center items-center flex-grow">
+    <LogoSVG className="sv-logo" />
+    <div className="sv-loading-text">
+      {text ? text : t(translations.loader.loading)}
     </div>
-  );
-};
+  </div>
+);

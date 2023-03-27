@@ -112,6 +112,7 @@ export const Tooltip: FC<TooltipProps> = ({
       onClick: trigger === TooltipTrigger.click ? handleShow : noop,
       onFocus: trigger === TooltipTrigger.focus ? handleShow : noop,
       onBlur: trigger === TooltipTrigger.focus ? handleHide : noop,
+      ontouchstart: trigger === TooltipTrigger.hover ? handleShow : noop,
     };
     return { ...attributes, ...events };
   }, [

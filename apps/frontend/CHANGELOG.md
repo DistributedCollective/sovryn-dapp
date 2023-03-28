@@ -1,5 +1,26 @@
 # frontend
 
+## 1.0.5
+
+### Patch Changes
+
+- 5026e40: fix: Babelfish ZUSD balance stat
+
+## 1.0.4
+
+### Patch Changes
+
+- 20e094b: SOV-1804: split FastBTC "send" and "receive" maintenance modes
+- 37f110f: SOV-2012: Add correct hash to Fast BTC receive flow
+- f724372: SOV-1943: new collateral ratio must be increased in recovery mode
+- 735bd72: SOV-2089: Zero Fee Update - update Zero SDK package versions
+- b90fcb9: SOV-1988: swap numbers with Decimal
+- Updated dependencies [735bd72]
+- Updated dependencies [b90fcb9]
+- Updated dependencies [b90fcb9]
+  - @sovryn/contracts@1.0.3
+  - @sovryn/utils@0.0.1
+
 ## 1.0.3
 
 ### Patch Changes

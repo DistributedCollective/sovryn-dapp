@@ -30,13 +30,13 @@ export const EcosystemStats: FC<EcosystemStatsProps> = ({
   className,
   dataAttribute,
 }) => {
-  const zusdToken = useLoadContract('zusd', 'tokens');
+  const babelFishMassetManager = useLoadContract('babelfish', 'tokens');
   const myntMassetManager = useLoadContract('massetManager', 'protocol');
 
   const { balance: babelFishZUSDBalance } = useAssetBalance(
     SupportedTokens.zusd,
     getRskChainId(),
-    zusdToken?.address.toLowerCase() || '',
+    babelFishMassetManager?.address.toLowerCase() || '',
   );
 
   const renderBabelFishZUSDBalance = useMemo(

@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, useMemo } from 'react';
 
 import { t } from 'i18next';
 
@@ -8,11 +8,25 @@ import { translations } from '../../../../locales/i18n';
 import { useEmailNotificationSettingsContext } from '../contexts/EmailNotificationSettingsContext';
 import { useHandleSubscriptions } from '../hooks/useHandleSubscriptions';
 
+const baseTranslationPath = translations.emailNotificationsDialog.alertGroups;
+
+type ToggleItem = {
+  checked: boolean;
+  onChange: () => void;
+  label: string;
+  dataAttributeSuffix: string;
+  className?: string;
+};
+
 type SubscriptionsProps = {
+  isDisabled?: boolean;
   dataAttribute?: string;
 };
 
-export const Subscriptions: FC<SubscriptionsProps> = ({ dataAttribute }) => {
+export const Subscriptions: FC<SubscriptionsProps> = ({
+  isDisabled,
+  dataAttribute,
+}) => {
   const {
     marginCallsToggle,
     liquidationsToggle,
@@ -27,50 +41,62 @@ export const Subscriptions: FC<SubscriptionsProps> = ({ dataAttribute }) => {
     systemToggleHandler,
   } = useHandleSubscriptions();
 
+  const items: ToggleItem[] = useMemo(
+    () => [
+      {
+        checked: marginCallsToggle,
+        onChange: marginCallsToggleHandler,
+        label: t(baseTranslationPath.marginCallsToggle),
+        dataAttributeSuffix: 'margincalls',
+        className: 'mb-7',
+      },
+      {
+        checked: liquidationsToggle,
+        onChange: liquidationsToggleHandler,
+        label: t(baseTranslationPath.liquidationsToggle),
+        dataAttributeSuffix: 'liquidations',
+        className: 'mb-7',
+      },
+      {
+        checked: stabilityPoolToggle,
+        onChange: stabilityPoolToggleHandler,
+        label: t(baseTranslationPath.stabilityPoolToggle),
+        dataAttributeSuffix: 'stability',
+        className: 'mb-7',
+      },
+      {
+        checked: systemToggle,
+        onChange: systemToggleHandler,
+        label: t(baseTranslationPath.systemToggle),
+        dataAttributeSuffix: 'system',
+      },
+    ],
+    [
+      liquidationsToggle,
+      liquidationsToggleHandler,
+      marginCallsToggle,
+      marginCallsToggleHandler,
+      stabilityPoolToggle,
+      stabilityPoolToggleHandler,
+      systemToggle,
+      systemToggleHandler,
+    ],
+  );
+
   return (
     <div className="bg-gray-80 rounded p-4">
-      <Toggle
-        checked={marginCallsToggle}
-        onChange={marginCallsToggleHandler}
-        label={t(
-          translations.emailNotificationsDialog.alertGroups.marginCallsToggle,
-        )}
-        className="mb-7"
-        alignment={ToggleAlignment.LEFT}
-        dataAttribute={`${dataAttribute}-margincalls`}
-      />
-
-      <Toggle
-        checked={liquidationsToggle}
-        onChange={liquidationsToggleHandler}
-        label={t(
-          translations.emailNotificationsDialog.alertGroups.liquidationsToggle,
-        )}
-        className="mb-7"
-        alignment={ToggleAlignment.LEFT}
-        dataAttribute={`${dataAttribute}-liquidations`}
-      />
-
-      <Toggle
-        checked={stabilityPoolToggle}
-        onChange={stabilityPoolToggleHandler}
-        label={t(
-          translations.emailNotificationsDialog.alertGroups.stabilityPoolToggle,
-        )}
-        className="mb-7"
-        alignment={ToggleAlignment.LEFT}
-        dataAttribute={`${dataAttribute}-stability`}
-      />
-
-      <Toggle
-        checked={systemToggle}
-        onChange={systemToggleHandler}
-        label={t(
-          translations.emailNotificationsDialog.alertGroups.systemToggle,
-        )}
-        alignment={ToggleAlignment.LEFT}
-        dataAttribute={`${dataAttribute}-system`}
-      />
+      {items.map(item => (
+        <Toggle
+          key={item.dataAttributeSuffix}
+          checked={item.checked}
+          onChange={item.onChange}
+          label={item.label}
+          className={item.className}
+          alignment={ToggleAlignment.LEFT}
+          dataAttribute={`${dataAttribute}-${item.dataAttributeSuffix}`}
+          disabled={isDisabled}
+        />
+      ))}
     </div>
   );
 };

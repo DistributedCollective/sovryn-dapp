@@ -2,7 +2,7 @@ import { useRef, useEffect, useCallback, useState } from 'react';
 
 import { Socket, io } from 'socket.io-client';
 
-import { currentNetwork } from '../../../../utils/helpers';
+import { currentNetwork, isDevEnvironment } from '../../../../utils/helpers';
 import { endpoints } from '../config/endpoints';
 import { DEPOSIT_FEE_SATS, DEPOSIT_FEE_DYNAMIC } from '../constants';
 import { ReceiveEvents } from '../types';
@@ -38,7 +38,7 @@ export function useDepositSocket(eventHandler?: EventHandler) {
 
     socket.current = io(`${origin}/`, {
       reconnectionDelayMax: 10000,
-      reconnectionAttempts: process.env.NODE_ENV === 'development' ? 1 : 5,
+      reconnectionAttempts: isDevEnvironment() ? 1 : 5,
       path: pathname && pathname !== '/' ? pathname : '',
     });
 

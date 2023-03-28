@@ -1,5 +1,13 @@
 # frontend
 
+## 1.0.6
+
+### Patch Changes
+
+- 6336057: Bump gas limit for conversion
+- 6da5e36: SOV-2057: fix typed data permit
+- 47e9cc8: SOV-1758: Implement new notification signup user flow
+
 ## 1.0.5
 
 ### Patch Changes

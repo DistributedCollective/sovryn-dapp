@@ -29,7 +29,6 @@ import {
 } from '@sovryn/ui';
 import { Decimal } from '@sovryn/utils';
 
-import { LedgerPermitLocked } from '../../1_atoms/LedgerPermitLocked/LedgerPermitLocked';
 import { AmountRenderer } from '../../2_molecules/AmountRenderer/AmountRenderer';
 import { AssetRenderer } from '../../2_molecules/AssetRenderer/AssetRenderer';
 import { MaxButton } from '../../2_molecules/MaxButton/MaxButton';
@@ -40,7 +39,6 @@ import { useAssetBalance } from '../../../hooks/useAssetBalance';
 import { useBlockNumber } from '../../../hooks/useBlockNumber';
 import { useMaintenance } from '../../../hooks/useMaintenance';
 import { translations } from '../../../locales/i18n';
-import { LEDGER } from '../../../utils/constants';
 import { formatValue, decimalic } from '../../../utils/math';
 import { tokenList } from './EarnPage.types';
 import { useHandleStabilityDeposit } from './hooks/useHandleStabilityDeposit';
@@ -57,7 +55,7 @@ const EarnPage: FC = () => {
   const [token, setToken] = useState<SupportedTokens>(SupportedTokens.dllr);
   const [isLoading, setIsLoading] = useState(false);
 
-  const { account, type } = useAccount();
+  const { account } = useAccount();
   const { value: block } = useBlockNumber();
 
   const { liquity } = useLoaderData() as {
@@ -291,11 +289,6 @@ const EarnPage: FC = () => {
     [],
   );
 
-  const ledgerAndDllr = useMemo(
-    () => type === LEDGER && token === SupportedTokens.dllr && isDeposit,
-    [isDeposit, token, type],
-  );
-
   return (
     <>
       <Helmet>
@@ -364,8 +357,6 @@ const EarnPage: FC = () => {
             />
           )}
 
-          {ledgerAndDllr && <LedgerPermitLocked />}
-
           <SimpleTable className="mt-3">
             <SimpleTableRow
               label={t(pageTranslations.currentPoolBalance)}
@@ -404,7 +395,7 @@ const EarnPage: FC = () => {
             text={t(commonTranslations.buttons.confirm)}
             className="w-full mt-8"
             onClick={handleSubmit}
-            disabled={isSubmitDisabled || ledgerAndDllr}
+            disabled={isSubmitDisabled}
             dataAttribute="earn-submit"
           />
           {isInMaintenance && (

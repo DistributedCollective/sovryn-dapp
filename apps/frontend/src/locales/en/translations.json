@@ -53,9 +53,6 @@
             "error": "Error loading Zero data, please try again"
         }
     },
-    "errors": {
-        "ledgerPermitLocked": "DLLR permit transaction is currently disabled for direct Ledger connection"
-    },
     "connectWalletButton": {
         "connect": "Get started",
         "rewards": "Rewards",

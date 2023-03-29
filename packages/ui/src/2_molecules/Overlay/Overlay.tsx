@@ -96,19 +96,20 @@ export const Overlay: React.FC<OverlayProps> = ({
     ],
   );
 
+  const handleRemoveScrollClass = useCallback(() => {
+    document.body.classList.remove(styles.disableScroll);
+  }, []);
+
   useEffect(() => {
     if (fixed && isOpen) {
-      document.body.className += ` ${styles.disableScroll}`;
+      document.body.classList.add(styles.disableScroll);
       return () => {
-        document.body.className = document.body.className.replace(
-          ` ${styles.disableScroll}`,
-          '',
-        );
+        handleRemoveScrollClass();
       };
     } else {
-      document.body.className = '';
+      handleRemoveScrollClass();
     }
-  }, [fixed, isOpen]);
+  }, [fixed, isOpen, handleRemoveScrollClass]);
 
   useEffect(() => {
     // focus to element when open

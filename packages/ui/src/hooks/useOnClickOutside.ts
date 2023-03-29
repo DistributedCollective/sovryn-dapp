@@ -24,11 +24,11 @@ export function useOnClickOutside(
       }
     };
     document.addEventListener('mousedown', handleClick);
-    document.addEventListener('touchstart', handleClick);
+    document.addEventListener('touchend', handleClick);
 
     return () => {
       document.removeEventListener('mousedown', handleClick);
-      document.removeEventListener('touchstart', handleClick);
+      document.removeEventListener('touchend', handleClick);
     };
   }, [ignoreClicksInsideRefs, callback]);
 }

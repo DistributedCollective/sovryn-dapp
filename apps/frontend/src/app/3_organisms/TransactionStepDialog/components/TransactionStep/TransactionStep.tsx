@@ -27,10 +27,12 @@ import {
 
 import { chains, defaultChainId } from '../../../../../config/chains';
 
+import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { TxIdWithNotification } from '../../../../2_molecules/TxIdWithNotification/TransactionIdWithNotification';
 import { translations } from '../../../../../locales/i18n';
 import { APPROVAL_FUNCTION, Bitcoin } from '../../../../../utils/constants';
 import { fromWei, toWei } from '../../../../../utils/math';
+import { BTC_RENDER_PRECISION } from '../../../ZeroLocForm/constants';
 import {
   Transaction,
   TransactionConfig,
@@ -216,9 +218,16 @@ export const TransactionStep: FC<TransactionStepProps> = ({
               {config.amount !== undefined && (
                 <SimpleTableRow
                   label={t(translations.common.amount)}
-                  value={`${
-                    config.unlimitedAmount ? '∞' : parsedAmount
-                  } ${token?.symbol?.toUpperCase()}`}
+                  value={
+                    config.unlimitedAmount ? (
+                      '∞'
+                    ) : (
+                      <AmountRenderer
+                        value={parsedAmount}
+                        suffix={token?.symbol}
+                      />
+                    )
+                  }
                   valueClassName={classNames(
                     isLoading || status === StatusType.success
                       ? 'text-gray-30'
@@ -229,7 +238,13 @@ export const TransactionStep: FC<TransactionStepProps> = ({
               )}
               <SimpleTableRow
                 label={t(translations.transactionStep.estimatedGasFee)}
-                value={`${estimatedGasFee} ${Bitcoin}`}
+                value={
+                  <AmountRenderer
+                    value={estimatedGasFee}
+                    suffix={Bitcoin}
+                    precision={BTC_RENDER_PRECISION}
+                  />
+                }
                 valueClassName={classNames(
                   isLoading ? 'text-gray-30' : 'text-primary-10',
                   'whitespace-nowrap overflow-auto',

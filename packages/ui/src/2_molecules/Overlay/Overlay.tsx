@@ -97,9 +97,6 @@ export const Overlay: React.FC<OverlayProps> = ({
   );
 
   useEffect(() => {
-    console.log('fixed', fixed);
-    console.log('isOpen', isOpen);
-
     if (fixed && isOpen) {
       document.body.className += ` ${styles.disableScroll}`;
       return () => {

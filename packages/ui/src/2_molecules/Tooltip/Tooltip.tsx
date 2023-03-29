@@ -81,6 +81,7 @@ export const Tooltip: FC<TooltipProps> = ({
   }, [elements, placement]);
 
   const handleShow = useCallback(() => {
+    setIsVisible(prevValue => !prevValue);
     if (!isVisible) {
       setIsVisible(true);
     } else {

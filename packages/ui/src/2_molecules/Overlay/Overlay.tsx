@@ -108,11 +108,9 @@ export const Overlay: React.FC<OverlayProps> = ({
           '',
         );
       };
-    }
-
-    return () => {
+    } else {
       document.body.className = '';
-    };
+    }
   }, [fixed, isOpen]);
 
   useEffect(() => {

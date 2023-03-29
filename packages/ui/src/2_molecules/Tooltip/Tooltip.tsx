@@ -81,11 +81,13 @@ export const Tooltip: FC<TooltipProps> = ({
   }, [elements, placement]);
 
   const handleShow = useCallback(() => {
-    setIsVisible(prevValue => !prevValue);
     if (isVisible) {
       setShouldHide(true);
+    } else {
+      setIsVisible(true);
+      onShow?.();
     }
-  }, [setIsVisible, setShouldHide, isVisible]);
+  }, [setIsVisible, setShouldHide, isVisible, onShow]);
 
   const handleHide = useCallback(() => setShouldHide(true), [setShouldHide]);
 
@@ -112,9 +114,6 @@ export const Tooltip: FC<TooltipProps> = ({
       onClick: trigger === TooltipTrigger.click ? handleShow : noop,
       onFocus: trigger === TooltipTrigger.focus ? handleShow : noop,
       onBlur: trigger === TooltipTrigger.focus ? handleHide : noop,
-      ontouchstart: trigger === TooltipTrigger.hover ? handleHide : noop,
-      ontouchmove: trigger === TooltipTrigger.hover ? handleHide : noop,
-      ontouchend: trigger === TooltipTrigger.hover ? handleShow : noop,
     };
     return { ...attributes, ...events };
   }, [
@@ -128,7 +127,11 @@ export const Tooltip: FC<TooltipProps> = ({
     handleHide,
   ]);
 
-  useOnClickOutside([targetRef, tooltipRef], handleHide);
+  useOnClickOutside([targetRef, tooltipRef], () => {
+    if (isVisible) {
+      setShouldHide(true);
+    }
+  });
 
   useEffect(() => {
     if (shouldHide && !isHovered) {

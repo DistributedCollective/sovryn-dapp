@@ -39,14 +39,14 @@ root.render(
           <ServiceWorkerProvider>
             <ApolloProvider client={rskClient}>
               <HelmetProvider>
-                <LoaderProvider>
-                  <MaintenanceModeContextProvider>
+                <MaintenanceModeContextProvider>
+                  <LoaderProvider>
                     <SharedStateProvider>
                       <RouterProvider router={router} />
                       <OnboardProvider dataAttribute="dapp-onboard" />
                     </SharedStateProvider>
-                  </MaintenanceModeContextProvider>
-                </LoaderProvider>
+                  </LoaderProvider>
+                </MaintenanceModeContextProvider>
               </HelmetProvider>
             </ApolloProvider>
             <TransactionStepDialog disableFocusTrap />

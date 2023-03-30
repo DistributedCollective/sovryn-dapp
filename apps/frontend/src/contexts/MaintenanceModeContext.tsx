@@ -1,8 +1,10 @@
 import React, {
   createContext,
   PropsWithChildren,
+  useCallback,
   useContext,
   useEffect,
+  useRef,
   useState,
 } from 'react';
 
@@ -24,21 +26,32 @@ const servicesConfig = getServicesConfig();
 export const MaintenanceModeContextProvider: React.FC<PropsWithChildren> = ({
   children,
 }) => {
+  const timeoutId = useRef<NodeJS.Timeout>();
   const [maintenanceStates, setMaintenanceStates] =
     useState<MaintenanceStates>(initialContextValue);
 
-  useEffect(() => {
-    const fetchCall = () =>
+  const fetchMaintenanceStates = useCallback(
+    () =>
       axios
         .get(servicesConfig.maintenance)
-        .then(result => setMaintenanceStates(parseStates(result)));
+        .then(result => setMaintenanceStates(parseStates(result)))
+        .finally(() => {
+          if (timeoutId.current) {
+            clearTimeout(timeoutId.current);
+          }
+          timeoutId.current = setTimeout(fetchMaintenanceStates, 25e3);
+        }),
+    [],
+  );
 
-    const intervalId = setInterval(fetchCall, 25e3);
-
+  useEffect(() => {
+    fetchMaintenanceStates();
     return () => {
-      clearInterval(intervalId);
+      if (timeoutId.current) {
+        clearTimeout(timeoutId.current);
+      }
     };
-  }, [maintenanceStates]);
+  }, [fetchMaintenanceStates]);
 
   return (
     <MaintenanceModeContext.Provider value={maintenanceStates}>
@@ -50,6 +63,5 @@ export const MaintenanceModeContextProvider: React.FC<PropsWithChildren> = ({
 const parseStates = fetchResult => {
   const result = {};
   fetchResult?.data.forEach(item => (result[item.name] = item));
-
   return result;
 };

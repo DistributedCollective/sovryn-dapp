@@ -129,6 +129,15 @@
             // the page to let the browser download a fresh copy of our app
             window.location.reload();
           });
+        } else {
+          // Unable to find incoming service worker, but it's clear that error
+          // is caused by an old service worker cache, so we can reload the page
+          if (err.message.includes("Unexpected token '<'")) {
+              navigator.serviceWorker.ready.then(async registration => {
+              await registration.unregister();
+              window.location.reload();
+            });
+          }
         }
       });
     </script>

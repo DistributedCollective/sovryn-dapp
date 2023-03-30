@@ -14,12 +14,12 @@ export const DappLocked: FC = () => (
         className="w-8 mx-auto mb-5"
         dataAttribute="header-logo"
       />
-      <p className="max-w-xs mx-auto text-center text-sm leading-4 mb-1">
+      <div className="max-w-xs mx-auto text-center text-sm leading-4 mb-1">
         <div className="mb-6">
           {t(translations.maintenanceMode.fullD2.title)}
         </div>
         {t(translations.maintenanceMode.fullD2.description)}
-      </p>
+      </div>
     </div>
   </div>
 );

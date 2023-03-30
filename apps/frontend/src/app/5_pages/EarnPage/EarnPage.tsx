@@ -90,12 +90,16 @@ const EarnPage: FC = () => {
   }, [getZUSDInStabilityPool]);
 
   useEffect(() => {
+    if (!account) {
+      return;
+    }
+
     liquity
       .getStabilityDeposit(account)
       .then(result =>
         setRewardsAmount(decimalic(result.collateralGain.toString())),
       );
-  }, [liquity, account, block]);
+  }, [liquity, account, block, setAmount]);
 
   const hasRewardsToClaim = useMemo(
     () => Number(rewardsAmount) > 0,

@@ -59,6 +59,10 @@ const RewardsPage: FC = () => {
   );
 
   useEffect(() => {
+    if (!account) {
+      return;
+    }
+
     liquity
       .getStabilityDeposit(account)
       .then(result => setAmount(decimalic(result.collateralGain.toString())));

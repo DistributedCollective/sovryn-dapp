@@ -83,13 +83,16 @@ export const CollateralSurplusHistoryFrame: FC = () => {
     [],
   );
 
-  const generateRowTitle = useCallback((row: any) => {
-    return (
-      <Paragraph size={ParagraphSize.small}>
+  const generateRowTitle = useCallback(
+    (row: any) => (
+      <Paragraph size={ParagraphSize.small} className="text-left">
+        {t(translations.collateralSurplusHistory.table.withdrawSurplus)}
+        {' - '}
         {dateFormat(row.timestamp)}
       </Paragraph>
-    );
-  }, []);
+    ),
+    [],
+  );
 
   const columns = useMemo(
     () => [

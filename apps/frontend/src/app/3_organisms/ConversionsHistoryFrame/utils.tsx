@@ -79,7 +79,7 @@ export const columnsConfig = [
 ];
 
 export const generateRowTitle = (item: Conversion) => (
-  <Paragraph size={ParagraphSize.small}>
+  <Paragraph size={ParagraphSize.small} className="text-left">
     {`${t(translations.conversionsHistory.type)} - ${dateFormat(
       item.transaction.timestamp,
     )}`}

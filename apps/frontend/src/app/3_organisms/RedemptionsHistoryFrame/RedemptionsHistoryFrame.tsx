@@ -75,13 +75,14 @@ export const RedemptionsHistoryFrame: FC = () => {
     return (data?.redemptions as Redemption[]) || [];
   }, [data]);
 
-  const generateRowTitle = useCallback((redemption: Redemption) => {
-    return (
-      <Paragraph size={ParagraphSize.small}>
+  const generateRowTitle = useCallback(
+    (redemption: Redemption) => (
+      <Paragraph size={ParagraphSize.small} className="text-left">
         {dateFormat(redemption.transaction.timestamp)}
       </Paragraph>
-    );
-  }, []);
+    ),
+    [],
+  );
 
   const renderZUSDRedeemed = useCallback(
     (redemption: Redemption) => (

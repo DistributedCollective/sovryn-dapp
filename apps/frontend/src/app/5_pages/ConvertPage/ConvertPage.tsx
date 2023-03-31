@@ -84,9 +84,7 @@ const ConvertPage: FC = () => {
     destinationTokenOptions[0].value,
   );
 
-  const onTransactionSuccess = useCallback(() => {
-    setAmount('');
-  }, [setAmount]);
+  const onTransactionSuccess = useCallback(() => setAmount(''), [setAmount]);
 
   const maximumAmountToConvert = useGetMaximumAvailableAmount(
     sourceToken,

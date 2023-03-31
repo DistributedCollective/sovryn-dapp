@@ -131,10 +131,11 @@ export const useHandleConversion = (
         args: [bassetAddress, weiAmount, account],
         gasLimit: GAS_LIMIT_CONVERT,
       },
+      onComplete,
     });
 
     return transactions;
-  }, [account, getMassetManager, signer, sourceToken, weiAmount]);
+  }, [account, getMassetManager, signer, sourceToken, weiAmount, onComplete]);
 
   const depositTokens = useCallback(async () => {
     if (!signer || destinationToken !== SupportedTokens.dllr) {

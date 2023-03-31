@@ -99,7 +99,7 @@ const EarnPage: FC = () => {
       .then(result =>
         setRewardsAmount(decimalic(result.collateralGain.toString())),
       );
-  }, [liquity, account, block, setAmount]);
+  }, [liquity, account, block]);
 
   const hasRewardsToClaim = useMemo(
     () => Number(rewardsAmount) > 0,

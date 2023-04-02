@@ -8,6 +8,7 @@ import { SupportedTokens } from '@sovryn/contracts';
 import { getProvider } from '@sovryn/ethers-provider';
 import { Decimal } from '@sovryn/utils';
 
+import { useBlockNumber } from '../../../../hooks/useBlockNumber';
 import {
   idHash,
   CacheCallResponse,
@@ -21,6 +22,7 @@ export const useGetTotalSupply = (
   asset: SupportedTokens,
   chainId = getRskChainId(),
 ): CacheCallResponse<Decimal> => {
+  const { value: block } = useBlockNumber(chainId);
   const [state, setState] = useState<CacheCallResponse<Decimal>>({
     value: Decimal.ZERO,
     loading: false,
@@ -50,6 +52,7 @@ export const useGetTotalSupply = (
       startCall(hashedArgs, callback, {
         ttl: 1000 * 30,
         fallbackToPreviousResult: true,
+        blockNumber: block,
       });
     };
     getTotalSupply().catch(e =>
@@ -61,7 +64,7 @@ export const useGetTotalSupply = (
         sub.unsubscribe();
       }
     };
-  }, [asset, chainId]);
+  }, [asset, chainId, block]);
 
   return { ...state, value: state.value === null ? Decimal.ZERO : state.value };
 };

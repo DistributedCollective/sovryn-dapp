@@ -59,15 +59,13 @@ const getTransactionType = (operation: StabilityDepositOperation) => {
   }
 };
 
-const generateRowTitle = (row: StabilityDepositChange) => {
-  return (
-    <Paragraph size={ParagraphSize.small}>
-      <>{getTransactionType(row.stabilityDepositOperation)}</>
-      {' - '}
-      {dateFormat(row.transaction.timestamp)}
-    </Paragraph>
-  );
-};
+const generateRowTitle = (row: StabilityDepositChange) => (
+  <Paragraph size={ParagraphSize.small} className="text-left">
+    {getTransactionType(row.stabilityDepositOperation)}
+    {' - '}
+    {dateFormat(row.transaction.timestamp)}
+  </Paragraph>
+);
 
 export const RewardHistory: FC = () => {
   const { account } = useAccount();

@@ -19,7 +19,7 @@ import {
 import { FundingHistoryType } from './types';
 
 export const generateRowTitle = (item: FundingHistoryType) => (
-  <Paragraph size={ParagraphSize.small}>
+  <Paragraph size={ParagraphSize.small} className="text-left">
     {transactionTypeRenderer(item)}
     {' - '}
     {dateFormat(item.timestamp)}

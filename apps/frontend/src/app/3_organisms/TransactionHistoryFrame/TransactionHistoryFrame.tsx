@@ -347,14 +347,13 @@ export const TransactionHistoryFrame: FC = () => {
   );
 
   const generateRowTitle = useCallback(
-    (trove: TroveChange) => {
-      return (
-        <Paragraph size={ParagraphSize.small}>
-          {getTroveType(trove.troveOperation)} -{' '}
-          {dateFormat(trove.transaction.timestamp)}
-        </Paragraph>
-      );
-    },
+    (trove: TroveChange) => (
+      <Paragraph size={ParagraphSize.small} className="text-left">
+        {getTroveType(trove.troveOperation)}
+        {' - '}
+        {dateFormat(trove.transaction.timestamp)}
+      </Paragraph>
+    ),
     [getTroveType],
   );
 

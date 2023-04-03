@@ -183,16 +183,11 @@ export const StabilityPoolHistoryFrame: FC = () => {
 
   const generateRowTitle = useCallback(
     (stabilityDeposit: StabilityDepositChange) => (
-      <>
-        <Paragraph
-          size={ParagraphSize.small}
-          className="text-ellipsis overflow-hidden whitespace-nowrap"
-        >
-          <>{getTransactionType(stabilityDeposit.stabilityDepositOperation)}</>
-          {' - '}
-          {dateFormat(stabilityDeposit.transaction.timestamp)}
-        </Paragraph>
-      </>
+      <Paragraph size={ParagraphSize.small} className="text-left">
+        {getTransactionType(stabilityDeposit.stabilityDepositOperation)}
+        {' - '}
+        {dateFormat(stabilityDeposit.transaction.timestamp)}
+      </Paragraph>
     ),
     [],
   );

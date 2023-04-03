@@ -87,7 +87,10 @@ export function useMaintenance() {
       if (process.env.REACT_APP_BYPASS_MAINTENANCE === 'true' || isStaging()) {
         return false;
       }
-      return names.every(name => maintenanceStates[name]?.isInMaintenance);
+      return names.every(
+        // assume we are in maintenance if states aren't retrieved (e.g. maintenance service unavailable)
+        name => maintenanceStates[name]?.isInMaintenance ?? true,
+      );
     },
     [maintenanceStates],
   );

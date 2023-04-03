@@ -7,7 +7,7 @@ import { ErrorLevel } from '@sovryn/ui';
 import { Decimal } from '@sovryn/utils';
 
 import { BORROW_ASSETS } from '../../../5_pages/ZeroPage/constants';
-import { Bitcoin } from '../../../../constants/currencies';
+import { BITCOIN } from '../../../../constants/currencies';
 import { useAmountInput } from '../../../../hooks/useAmountInput';
 import { useAssetBalance } from '../../../../hooks/useAssetBalance';
 import { useMaxAssetBalance } from '../../../../hooks/useMaxAssetBalance';
@@ -298,7 +298,7 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
             4,
             true,
           )}`,
-          currency: Bitcoin,
+          currency: BITCOIN,
         });
       }
     }

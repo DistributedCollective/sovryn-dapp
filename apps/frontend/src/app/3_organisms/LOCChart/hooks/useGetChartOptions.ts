@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { SupportedTokens } from '@sovryn/contracts';
 import { prettyTx } from '@sovryn/ui';
 
-import { Bitcoin } from '../../../../constants/currencies';
+import { BITCOIN } from '../../../../constants/currencies';
 import { translations } from '../../../../locales/i18n';
 import { formatValue } from '../../../../utils/math';
 import {
@@ -46,7 +46,7 @@ export const useGetChartOptions = (
               `${t(translations.chart.collateralAmount)}: ${formatValue(
                 Number(collateral),
                 BTC_RENDER_PRECISION,
-              )} ${Bitcoin}`,
+              )} ${BITCOIN}`,
               `${t(translations.chart.debtAmount)}: ${formatValue(
                 Number(debt),
                 TOKEN_RENDER_PRECISION,

@@ -1,2 +1,2 @@
-export const Bitcoin = 'BTC';
+export const BITCOIN = 'BTC';
 export const USD = 'USD';

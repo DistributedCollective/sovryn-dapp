@@ -23,7 +23,7 @@ import { ExportCSV } from '../../2_molecules/ExportCSV/ExportCSV';
 import { TableFilter } from '../../2_molecules/TableFilter/TableFilter';
 import { Filter } from '../../2_molecules/TableFilter/TableFilter.types';
 import { TxIdWithNotification } from '../../2_molecules/TxIdWithNotification/TransactionIdWithNotification';
-import { Bitcoin } from '../../../constants/currencies';
+import { BITCOIN } from '../../../constants/currencies';
 import {
   LIQUIDATION_RESERVE_AMOUNT,
   DEFAULT_HISTORY_FRAME_PAGE_SIZE,
@@ -291,7 +291,7 @@ export const TransactionHistoryFrame: FC = () => {
         {trove.collateralChange.length ? (
           <AmountRenderer
             value={trove.collateralChange}
-            suffix={Bitcoin}
+            suffix={BITCOIN}
             precision={BTC_RENDER_PRECISION}
             dataAttribute="transaction-history-collateral-change"
             prefix={renderSign(trove.collateralChange)}
@@ -310,7 +310,7 @@ export const TransactionHistoryFrame: FC = () => {
         {trove.collateralAfter.length ? (
           <AmountRenderer
             value={trove.collateralAfter}
-            suffix={Bitcoin}
+            suffix={BITCOIN}
             precision={BTC_RENDER_PRECISION}
             dataAttribute="transaction-history-collateral-balance"
           />

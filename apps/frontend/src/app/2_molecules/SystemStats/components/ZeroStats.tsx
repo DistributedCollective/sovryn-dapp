@@ -18,7 +18,7 @@ import {
 } from '@sovryn/ui';
 import { Decimal, Percent } from '@sovryn/utils';
 
-import { Bitcoin } from '../../../../constants/currencies';
+import { BITCOIN } from '../../../../constants/currencies';
 import { useBlockNumber } from '../../../../hooks/useBlockNumber';
 import { translations } from '../../../../locales/i18n';
 import {
@@ -60,7 +60,7 @@ export const ZeroStats: FC<ZeroStatsProps> = ({ className, dataAttribute }) => {
         <>
           <AmountRenderer
             value={rbtcInLoc}
-            suffix={Bitcoin}
+            suffix={BITCOIN}
             precision={2}
             showRoundingPrefix={false}
             dataAttribute="zero-statistics-rbtc-in-loc"

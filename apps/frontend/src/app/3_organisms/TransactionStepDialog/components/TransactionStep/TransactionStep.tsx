@@ -29,7 +29,7 @@ import { chains, defaultChainId } from '../../../../../config/chains';
 
 import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { TxIdWithNotification } from '../../../../2_molecules/TxIdWithNotification/TransactionIdWithNotification';
-import { Bitcoin } from '../../../../../constants/currencies';
+import { BITCOIN } from '../../../../../constants/currencies';
 import { APPROVAL_FUNCTION } from '../../../../../constants/general';
 import { translations } from '../../../../../locales/i18n';
 import { fromWei, toWei } from '../../../../../utils/math';
@@ -242,7 +242,7 @@ export const TransactionStep: FC<TransactionStepProps> = ({
                 value={
                   <AmountRenderer
                     value={estimatedGasFee}
-                    suffix={Bitcoin}
+                    suffix={BITCOIN}
                     precision={BTC_RENDER_PRECISION}
                   />
                 }

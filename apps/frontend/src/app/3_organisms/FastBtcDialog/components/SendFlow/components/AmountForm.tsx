@@ -20,7 +20,7 @@ import { Decimal } from '@sovryn/utils';
 import { defaultChainId } from '../../../../../../config/chains';
 
 import { MaxButton } from '../../../../../2_molecules/MaxButton/MaxButton';
-import { Bitcoin } from '../../../../../../constants/currencies';
+import { BITCOIN } from '../../../../../../constants/currencies';
 import { BTC_IN_SATOSHIS } from '../../../../../../constants/general';
 import { useAssetBalance } from '../../../../../../hooks/useAssetBalance';
 import { useMaintenance } from '../../../../../../hooks/useMaintenance';
@@ -114,7 +114,7 @@ export const AmountForm: React.FC = () => {
           <MaxButton
             onClick={onMaximumAmountClick}
             value={Decimal.fromBigNumberString(maxAmount.toString())}
-            token={Bitcoin}
+            token={BITCOIN}
             precision={8}
             dataAttribute="funding-send-amount-max"
           />
@@ -124,7 +124,7 @@ export const AmountForm: React.FC = () => {
           <AmountInput
             label={t(translations.common.amount)}
             onChangeText={setValue}
-            unit={Bitcoin}
+            unit={BITCOIN}
             value={value}
             decimalPrecision={8}
             className="max-w-none"

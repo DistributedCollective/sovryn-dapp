@@ -24,7 +24,7 @@ import { Decimal } from '@sovryn/utils';
 
 import { AmountRenderer } from '../../2_molecules/AmountRenderer/AmountRenderer';
 import { BTC_RENDER_PRECISION } from '../../3_organisms/ZeroLocForm/constants';
-import { Bitcoin } from '../../../constants/currencies';
+import { BITCOIN } from '../../../constants/currencies';
 import { useAccount } from '../../../hooks/useAccount';
 import { useBlockNumber } from '../../../hooks/useBlockNumber';
 import { useMaintenance } from '../../../hooks/useMaintenance';
@@ -97,7 +97,7 @@ const RewardsPage: FC = () => {
             <div className="text-2xl leading-7 uppercase">
               <AmountRenderer
                 value={amount}
-                suffix={Bitcoin}
+                suffix={BITCOIN}
                 precision={BTC_RENDER_PRECISION}
                 dataAttribute="rewards-amount"
               />

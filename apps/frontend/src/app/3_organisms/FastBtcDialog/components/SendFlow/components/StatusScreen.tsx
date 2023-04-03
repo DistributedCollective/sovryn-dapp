@@ -14,7 +14,7 @@ import {
 
 import { StatusIcon } from '../../../../../2_molecules/StatusIcon/StatusIcon';
 import { TxIdWithNotification } from '../../../../../2_molecules/TxIdWithNotification/TransactionIdWithNotification';
-import { Bitcoin } from '../../../../../../constants/currencies';
+import { BITCOIN } from '../../../../../../constants/currencies';
 import { useBlockNumber } from '../../../../../../hooks/useBlockNumber';
 import { translations } from '../../../../../../locales/i18n';
 import { useGetBitcoinTxIdQuery } from '../../../../../../utils/graphql/rsk/generated';
@@ -102,7 +102,7 @@ export const StatusScreen: React.FC<StatusScreenProps> = ({
         label: t(translation.sending),
         value: (
           <>
-            {formatValue(Number(amount), 8)} {Bitcoin}
+            {formatValue(Number(amount), 8)} {BITCOIN}
           </>
         ),
       },
@@ -110,7 +110,7 @@ export const StatusScreen: React.FC<StatusScreenProps> = ({
         label: t(translation.serviceFee),
         value: (
           <>
-            {formatValue(feesPaid, 8)} {Bitcoin}
+            {formatValue(feesPaid, 8)} {BITCOIN}
           </>
         ),
       },
@@ -118,7 +118,7 @@ export const StatusScreen: React.FC<StatusScreenProps> = ({
         label: t(translation.receiving),
         value: (
           <>
-            {formatValue(receiveAmount, 8)} {Bitcoin}
+            {formatValue(receiveAmount, 8)} {BITCOIN}
           </>
         ),
       },

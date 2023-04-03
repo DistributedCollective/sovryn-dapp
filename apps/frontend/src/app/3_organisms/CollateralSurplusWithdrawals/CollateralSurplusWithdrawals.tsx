@@ -20,7 +20,7 @@ import { chains, defaultChainId } from '../../../config/chains';
 import { AmountRenderer } from '../../2_molecules/AmountRenderer/AmountRenderer';
 import { ExportCSV } from '../../2_molecules/ExportCSV/ExportCSV';
 import { TxIdWithNotification } from '../../2_molecules/TxIdWithNotification/TransactionIdWithNotification';
-import { Bitcoin } from '../../../constants/currencies';
+import { BITCOIN } from '../../../constants/currencies';
 import {
   DEFAULT_HISTORY_FRAME_PAGE_SIZE,
   EXPORT_RECORD_LIMIT,
@@ -75,7 +75,7 @@ export const CollateralSurplusHistoryFrame: FC = () => {
     (collSurplusChange: string) => (
       <AmountRenderer
         value={collSurplusChange}
-        suffix={Bitcoin}
+        suffix={BITCOIN}
         precision={BTC_RENDER_PRECISION}
         dataAttribute="surplus-withdrawals-collateral"
       />
@@ -171,7 +171,7 @@ export const CollateralSurplusHistoryFrame: FC = () => {
       collateralChange: `${formatValue(
         Math.abs(Number(tx.collSurplusChange)),
         BTC_RENDER_PRECISION,
-      )} ${Bitcoin}`,
+      )} ${BITCOIN}`,
       transactionType: t(
         translations.collateralSurplusHistory.table.withdrawSurplus,
       ),

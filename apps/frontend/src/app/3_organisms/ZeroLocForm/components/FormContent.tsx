@@ -23,7 +23,7 @@ import { Decimal } from '@sovryn/utils';
 import { AmountRenderer } from '../../../2_molecules/AmountRenderer/AmountRenderer';
 import { AssetRenderer } from '../../../2_molecules/AssetRenderer/AssetRenderer';
 import { BORROW_ASSETS } from '../../../5_pages/ZeroPage/constants';
-import { Bitcoin, USD } from '../../../../constants/currencies';
+import { BITCOIN, USD } from '../../../../constants/currencies';
 import { COLLATERAL_RATIO_THRESHOLDS } from '../../../../constants/general';
 import { useMaintenance } from '../../../../hooks/useMaintenance';
 import { translations } from '../../../../locales/i18n';
@@ -229,7 +229,7 @@ export const FormContent: FC<FormContentProps> = props => {
       ) : (
         <AmountRenderer
           value={value}
-          suffix={Bitcoin}
+          suffix={BITCOIN}
           precision={BTC_RENDER_PRECISION}
         />
       ),
@@ -357,7 +357,7 @@ export const FormContent: FC<FormContentProps> = props => {
       <FormGroup
         label={
           <Label
-            symbol={Bitcoin}
+            symbol={BITCOIN}
             maxAmount={props.maxCollateralAmount}
             tabs={collateralTabs}
             onTabChange={handleCollateralTypeChange}
@@ -376,7 +376,7 @@ export const FormContent: FC<FormContentProps> = props => {
           maxAmount={props.maxCollateralAmount.toNumber()}
           label={t(translations.common.amount)}
           className="max-w-none"
-          unit={Bitcoin}
+          unit={BITCOIN}
           invalid={!!props.collateralError}
           placeholder="0"
         />

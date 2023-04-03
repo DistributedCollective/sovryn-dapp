@@ -18,9 +18,9 @@ import {
 } from '@sovryn/ui';
 import { Decimal, Percent } from '@sovryn/utils';
 
+import { Bitcoin } from '../../../../constants/currencies';
 import { useBlockNumber } from '../../../../hooks/useBlockNumber';
 import { translations } from '../../../../locales/i18n';
-import { Bitcoin } from '../../../../utils/constants';
 import {
   formatCompactValue,
   formatValue,

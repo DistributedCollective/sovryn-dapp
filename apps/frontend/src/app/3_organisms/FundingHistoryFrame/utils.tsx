@@ -5,8 +5,8 @@ import { t } from 'i18next';
 import { Paragraph, ParagraphSize, TransactionId } from '@sovryn/ui';
 
 import { AmountRenderer } from '../../2_molecules/AmountRenderer/AmountRenderer';
+import { Bitcoin } from '../../../constants/currencies';
 import { translations } from '../../../locales/i18n';
-import { Bitcoin } from '../../../utils/constants';
 import {
   BitcoinTransfer,
   BitcoinTransferDirection,

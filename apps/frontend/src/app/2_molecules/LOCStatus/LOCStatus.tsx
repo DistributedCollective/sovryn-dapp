@@ -11,7 +11,7 @@ import {
   TOKEN_RENDER_PRECISION,
   BTC_RENDER_PRECISION,
 } from '../../3_organisms/ZeroLocForm/constants';
-import { Bitcoin } from '../../../utils/constants';
+import { Bitcoin } from '../../../constants/currencies';
 import { AmountRenderer } from '../AmountRenderer/AmountRenderer';
 import { CRatioIndicator } from './components/CRatioIndicator/CRatioIndicator';
 import { LOCStat } from './components/LOCStat/LOCStat';

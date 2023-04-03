@@ -14,9 +14,9 @@ import {
 
 import { StatusIcon } from '../../../../../2_molecules/StatusIcon/StatusIcon';
 import { TxIdWithNotification } from '../../../../../2_molecules/TxIdWithNotification/TransactionIdWithNotification';
+import { Bitcoin } from '../../../../../../constants/currencies';
 import { useBlockNumber } from '../../../../../../hooks/useBlockNumber';
 import { translations } from '../../../../../../locales/i18n';
-import { Bitcoin } from '../../../../../../utils/constants';
 import { useGetBitcoinTxIdQuery } from '../../../../../../utils/graphql/rsk/generated';
 import {
   getBtcExplorerUrl,

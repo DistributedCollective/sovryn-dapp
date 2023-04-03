@@ -20,10 +20,10 @@ import { Decimal } from '@sovryn/utils';
 
 import { AmountRenderer } from '../../2_molecules/AmountRenderer/AmountRenderer';
 import { AssetRenderer } from '../../2_molecules/AssetRenderer/AssetRenderer';
+import { Bitcoin } from '../../../constants/currencies';
 import { useAssetBalance } from '../../../hooks/useAssetBalance';
 import { useMaintenance } from '../../../hooks/useMaintenance';
 import { translations } from '../../../locales/i18n';
-import { Bitcoin } from '../../../utils/constants';
 import { Row } from './Row';
 import { BTC_RENDER_PRECISION } from './constants';
 

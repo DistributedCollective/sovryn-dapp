@@ -7,11 +7,11 @@ import { ErrorLevel } from '@sovryn/ui';
 import { Decimal } from '@sovryn/utils';
 
 import { BORROW_ASSETS } from '../../../5_pages/ZeroPage/constants';
+import { Bitcoin } from '../../../../constants/currencies';
 import { useAmountInput } from '../../../../hooks/useAmountInput';
 import { useAssetBalance } from '../../../../hooks/useAssetBalance';
 import { useMaxAssetBalance } from '../../../../hooks/useMaxAssetBalance';
 import { translations } from '../../../../locales/i18n';
-import { Bitcoin } from '../../../../utils/constants';
 import { formatValue, decimalic } from '../../../../utils/math';
 import {
   CRITICAL_COLLATERAL_RATIO,

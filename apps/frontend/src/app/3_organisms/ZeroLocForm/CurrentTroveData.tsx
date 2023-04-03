@@ -6,7 +6,7 @@ import { Decimal } from '@sovryn/utils';
 
 import { AmountRenderer } from '../../2_molecules/AmountRenderer/AmountRenderer';
 import { CRatioIndicator } from '../../2_molecules/LOCStatus/components/CRatioIndicator/CRatioIndicator';
-import { Bitcoin } from '../../../utils/constants';
+import { Bitcoin } from '../../../constants/currencies';
 import { formatValue } from '../../../utils/math';
 import {
   TOKEN_RENDER_PRECISION,

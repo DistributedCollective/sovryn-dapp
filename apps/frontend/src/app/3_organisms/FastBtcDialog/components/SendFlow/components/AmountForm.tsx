@@ -20,11 +20,12 @@ import { Decimal } from '@sovryn/utils';
 import { defaultChainId } from '../../../../../../config/chains';
 
 import { MaxButton } from '../../../../../2_molecules/MaxButton/MaxButton';
+import { Bitcoin } from '../../../../../../constants/currencies';
 import { useAssetBalance } from '../../../../../../hooks/useAssetBalance';
 import { useMaintenance } from '../../../../../../hooks/useMaintenance';
 import { useMaxAssetBalance } from '../../../../../../hooks/useMaxAssetBalance';
 import { translations } from '../../../../../../locales/i18n';
-import { Bitcoin, btcInSatoshis } from '../../../../../../utils/constants';
+import { btcInSatoshis } from '../../../../../../utils/constants';
 import { toWei } from '../../../../../../utils/math';
 import { GAS_LIMIT_FAST_BTC_WITHDRAW } from '../../../constants';
 import {

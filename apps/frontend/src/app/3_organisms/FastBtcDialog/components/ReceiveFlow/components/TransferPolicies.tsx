@@ -1,6 +1,7 @@
 import React, { useContext, useMemo } from 'react';
 
-import { Bitcoin, btcInSatoshis } from '../../../../../../utils/constants';
+import { Bitcoin } from '../../../../../../constants/currencies';
+import { btcInSatoshis } from '../../../../../../utils/constants';
 import { formatValue } from '../../../../../../utils/math';
 import { DYNAMIC_FEE_DIVISOR } from '../../../constants';
 import { DepositContext } from '../../../contexts/deposit-context';

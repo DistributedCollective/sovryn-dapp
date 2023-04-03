@@ -98,10 +98,6 @@ export const btcExplorer = {
 
 export const btcInSatoshis = 100000000;
 
-//TODO: refactor into Bitcoin asset definition later
-export const Bitcoin = 'BTC';
-export const USD = 'USD';
-
 export const rskFaucet = 'https://faucet.rsk.co';
 
 export const currentRelease: ReleaseFileContent = JSON.parse(

@@ -12,9 +12,9 @@ import {
 } from '@sovryn/ui';
 
 import { TxIdWithNotification } from '../../../../../2_molecules/TxIdWithNotification/TransactionIdWithNotification';
+import { Bitcoin } from '../../../../../../constants/currencies';
 import { useMaintenance } from '../../../../../../hooks/useMaintenance';
 import { translations } from '../../../../../../locales/i18n';
-import { Bitcoin } from '../../../../../../utils/constants';
 import {
   getBtcExplorerUrl,
   getRskExplorerUrl,

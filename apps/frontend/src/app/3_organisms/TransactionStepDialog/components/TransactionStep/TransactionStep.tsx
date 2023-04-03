@@ -29,8 +29,9 @@ import { chains, defaultChainId } from '../../../../../config/chains';
 
 import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { TxIdWithNotification } from '../../../../2_molecules/TxIdWithNotification/TransactionIdWithNotification';
+import { Bitcoin } from '../../../../../constants/currencies';
 import { translations } from '../../../../../locales/i18n';
-import { APPROVAL_FUNCTION, Bitcoin } from '../../../../../utils/constants';
+import { APPROVAL_FUNCTION } from '../../../../../utils/constants';
 import { fromWei, toWei } from '../../../../../utils/math';
 import { BTC_RENDER_PRECISION } from '../../../ZeroLocForm/constants';
 import {

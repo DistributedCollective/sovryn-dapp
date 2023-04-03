@@ -14,9 +14,10 @@ import {
 
 import { StatusIcon } from '../../../../../2_molecules/StatusIcon/StatusIcon';
 import { TxIdWithNotification } from '../../../../../2_molecules/TxIdWithNotification/TransactionIdWithNotification';
+import { Bitcoin } from '../../../../../../constants/currencies';
 import { useAccount } from '../../../../../../hooks/useAccount';
 import { translations } from '../../../../../../locales/i18n';
-import { Bitcoin, btcInSatoshis } from '../../../../../../utils/constants';
+import { btcInSatoshis } from '../../../../../../utils/constants';
 import {
   getBtcExplorerUrl,
   getRskExplorerUrl,

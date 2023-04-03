@@ -24,12 +24,12 @@ import { Decimal } from '@sovryn/utils';
 
 import { AmountRenderer } from '../../2_molecules/AmountRenderer/AmountRenderer';
 import { BTC_RENDER_PRECISION } from '../../3_organisms/ZeroLocForm/constants';
+import { Bitcoin } from '../../../constants/currencies';
 import { useAccount } from '../../../hooks/useAccount';
 import { useBlockNumber } from '../../../hooks/useBlockNumber';
 import { useMaintenance } from '../../../hooks/useMaintenance';
 import { useGetOpenTrove } from '../../../hooks/zero/useGetOpenTrove';
 import { translations } from '../../../locales/i18n';
-import { Bitcoin } from '../../../utils/constants';
 import { decimalic } from '../../../utils/math';
 import { useHandleRewards } from './hooks/useHandleRewards';
 import { RewardsAction } from './types';

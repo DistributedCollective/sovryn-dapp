@@ -3,8 +3,8 @@ import { useTranslation } from 'react-i18next';
 import { SupportedTokens } from '@sovryn/contracts';
 import { prettyTx } from '@sovryn/ui';
 
+import { Bitcoin } from '../../../../constants/currencies';
 import { translations } from '../../../../locales/i18n';
-import { Bitcoin } from '../../../../utils/constants';
 import { formatValue } from '../../../../utils/math';
 import {
   BTC_RENDER_PRECISION,

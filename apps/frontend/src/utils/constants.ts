@@ -72,19 +72,6 @@ export const DEFAULT_HISTORY_FRAME_PAGE_SIZE = 10;
 export const DEFAULT_TIMEOUT_SECONDS = 5000;
 export const LIQUIDATION_RESERVE_AMOUNT = 20;
 
-export const MAX_GAS_LIMIT = 6_800_000;
-export const GAS_LIMIT_OPEN_TROVE = 1_100_000;
-export const GAS_LIMIT_ADJUST_TROVE = 4_000_000;
-export const GAS_LIMIT_CLOSE_TROVE = 350_000;
-export const GAS_LIMIT_CLOSE_DLLR_TROVE = 500_000;
-export const GAS_LIMIT_CONVERT = 200_000;
-export const GAS_LIMIT_STABILITY_POOL = 250_000;
-export const GAS_LIMIT_STABILITY_POOL_INC_WITHDRAW = 490_000;
-export const GAS_LIMIT_STABILITY_POOL_DLLR = 500_000;
-export const GAS_LIMIT_STABILITY_POOL_DLLR_INC_WITHDRAW = 690_000;
-export const GAS_LIMIT_REWARDS = 240_000;
-export const GAS_LIMIT_TRANSFER_LOC = 900_000;
-
 // TODO: Refactor it into a similar config we have in dapp v1 (blockExplorers constant)
 export const rskExplorer = {
   [Environments.Mainnet]: 'https://explorer.rsk.co',

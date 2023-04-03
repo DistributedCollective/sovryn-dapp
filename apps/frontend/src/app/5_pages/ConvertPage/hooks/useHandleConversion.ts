@@ -15,10 +15,10 @@ import {
   Transaction,
   TransactionType,
 } from '../../../3_organisms/TransactionStepDialog/TransactionStepDialog.types';
+import { GAS_LIMIT } from '../../../../constants/gasLimits';
 import { useTransactionContext } from '../../../../contexts/TransactionContext';
 import { useAccount } from '../../../../hooks/useAccount';
 import { translations } from '../../../../locales/i18n';
-import { GAS_LIMIT_CONVERT } from '../../../../utils/constants';
 import { toWei } from '../../../../utils/math';
 import { prepareApproveTransaction } from '../../../../utils/transactions';
 
@@ -58,7 +58,7 @@ export const useHandleConversion = (
           contract: massetManager,
           fnName: 'redeemTo',
           args: [bassetAddress, weiAmount, account],
-          gasLimit: GAS_LIMIT_CONVERT,
+          gasLimit: GAS_LIMIT.CONVERT,
         },
         onComplete,
       },
@@ -129,7 +129,7 @@ export const useHandleConversion = (
         contract: massetManager,
         fnName: 'mintTo',
         args: [bassetAddress, weiAmount, account],
-        gasLimit: GAS_LIMIT_CONVERT,
+        gasLimit: GAS_LIMIT.CONVERT,
       },
       onComplete,
     });

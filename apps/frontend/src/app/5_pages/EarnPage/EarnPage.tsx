@@ -113,6 +113,10 @@ const EarnPage: FC = () => {
   }, [getZUSDInStabilityPool]);
 
   useEffect(() => {
+    if (!account) {
+      return;
+    }
+
     liquity
       .getStabilityDeposit(account)
       .then(result =>

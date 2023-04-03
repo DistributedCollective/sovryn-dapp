@@ -22,15 +22,15 @@ import { AmountRenderer } from '../../2_molecules/AmountRenderer/AmountRenderer'
 import { ExportCSV } from '../../2_molecules/ExportCSV/ExportCSV';
 import { TxIdWithNotification } from '../../2_molecules/TxIdWithNotification/TransactionIdWithNotification';
 import { Bitcoin } from '../../../constants/currencies';
+import {
+  DEFAULT_HISTORY_FRAME_PAGE_SIZE,
+  EXPORT_RECORD_LIMIT,
+} from '../../../constants/general';
 import { useNotificationContext } from '../../../contexts/NotificationContext';
 import { useAccount } from '../../../hooks/useAccount';
 import { useBlockNumber } from '../../../hooks/useBlockNumber';
 import { useMaintenance } from '../../../hooks/useMaintenance';
 import { translations } from '../../../locales/i18n';
-import {
-  DEFAULT_HISTORY_FRAME_PAGE_SIZE,
-  EXPORT_RECORD_LIMIT,
-} from '../../../utils/constants';
 import {
   Redemption,
   Redemption_Filter,

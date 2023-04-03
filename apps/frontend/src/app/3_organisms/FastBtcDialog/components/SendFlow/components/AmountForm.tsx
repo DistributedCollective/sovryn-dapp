@@ -21,11 +21,11 @@ import { defaultChainId } from '../../../../../../config/chains';
 
 import { MaxButton } from '../../../../../2_molecules/MaxButton/MaxButton';
 import { Bitcoin } from '../../../../../../constants/currencies';
+import { BTC_IN_SATOSHIS } from '../../../../../../constants/general';
 import { useAssetBalance } from '../../../../../../hooks/useAssetBalance';
 import { useMaintenance } from '../../../../../../hooks/useMaintenance';
 import { useMaxAssetBalance } from '../../../../../../hooks/useMaxAssetBalance';
 import { translations } from '../../../../../../locales/i18n';
-import { btcInSatoshis } from '../../../../../../utils/constants';
 import { toWei } from '../../../../../../utils/math';
 import { GAS_LIMIT_FAST_BTC_WITHDRAW } from '../../../constants';
 import {
@@ -57,7 +57,7 @@ export const AmountForm: React.FC = () => {
     }
 
     const amount = value;
-    const satoshiAmount = Number(amount) * btcInSatoshis;
+    const satoshiAmount = Number(amount) * BTC_IN_SATOSHIS;
 
     if (
       satoshiAmount < 0 ||

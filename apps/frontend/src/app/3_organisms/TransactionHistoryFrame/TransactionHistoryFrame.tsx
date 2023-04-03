@@ -24,17 +24,17 @@ import { TableFilter } from '../../2_molecules/TableFilter/TableFilter';
 import { Filter } from '../../2_molecules/TableFilter/TableFilter.types';
 import { TxIdWithNotification } from '../../2_molecules/TxIdWithNotification/TransactionIdWithNotification';
 import { Bitcoin } from '../../../constants/currencies';
+import {
+  LIQUIDATION_RESERVE_AMOUNT,
+  DEFAULT_HISTORY_FRAME_PAGE_SIZE,
+  EXPORT_RECORD_LIMIT,
+} from '../../../constants/general';
 import { useNotificationContext } from '../../../contexts/NotificationContext';
 import { useAccount } from '../../../hooks/useAccount';
 import { useBlockNumber } from '../../../hooks/useBlockNumber';
 import { useMaintenance } from '../../../hooks/useMaintenance';
 import { translations } from '../../../locales/i18n';
 import { zeroClient } from '../../../utils/clients';
-import {
-  LIQUIDATION_RESERVE_AMOUNT,
-  DEFAULT_HISTORY_FRAME_PAGE_SIZE,
-  EXPORT_RECORD_LIMIT,
-} from '../../../utils/constants';
 import {
   InputMaybe,
   TroveChange,

@@ -15,9 +15,9 @@ import {
 import { StatusIcon } from '../../../../../2_molecules/StatusIcon/StatusIcon';
 import { TxIdWithNotification } from '../../../../../2_molecules/TxIdWithNotification/TransactionIdWithNotification';
 import { Bitcoin } from '../../../../../../constants/currencies';
+import { BTC_IN_SATOSHIS } from '../../../../../../constants/general';
 import { useAccount } from '../../../../../../hooks/useAccount';
 import { translations } from '../../../../../../locales/i18n';
-import { btcInSatoshis } from '../../../../../../utils/constants';
 import {
   getBtcExplorerUrl,
   getRskExplorerUrl,
@@ -42,7 +42,10 @@ export const StatusScreen: React.FC<StatusScreenProps> = ({ onClose }) => {
 
   const isProcessing = useMemo(() => step === DepositStep.PROCESSING, [step]);
 
-  const feeAmount = useMemo(() => toWei(DEPOSIT_FEE_SATS / btcInSatoshis), []);
+  const feeAmount = useMemo(
+    () => toWei(DEPOSIT_FEE_SATS / BTC_IN_SATOSHIS),
+    [],
+  );
 
   const amount = useMemo(() => {
     if (depositTx) {

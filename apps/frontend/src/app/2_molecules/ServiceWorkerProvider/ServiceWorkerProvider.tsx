@@ -12,11 +12,11 @@ import { Trans } from 'react-i18next';
 
 import { Button, NotificationType, Overlay, Paragraph } from '@sovryn/ui';
 
+import { CURRENT_RELEASE } from '../../../constants/general';
 import { useNotificationContext } from '../../../contexts/NotificationContext';
 import { translations } from '../../../locales/i18n';
 import { register, unregister } from '../../../serviceWorkerRegistration';
 import { ReleaseFileContent } from '../../../types/global';
-import { currentRelease } from '../../../utils/constants';
 import { getChangelogUrl } from '../../../utils/helpers';
 
 const publicUrl = process.env.PUBLIC_URL ?? window.location.origin;
@@ -29,7 +29,7 @@ const releaseUrl = `${publicUrl}/release.json`;
 export const ServiceWorkerProvider: FC<PropsWithChildren> = ({ children }) => {
   const { addNotification } = useNotificationContext();
   const shownForCommit = useRef<string>(
-    `${currentRelease.commit}:${currentRelease.version}:${currentRelease.forcedCount}`,
+    `${CURRENT_RELEASE.commit}:${CURRENT_RELEASE.version}:${CURRENT_RELEASE.forcedCount}`,
   );
   const [isForced, setIsForced] = useState(false);
   const [swRegistration, setSwRegistration] =
@@ -49,7 +49,7 @@ export const ServiceWorkerProvider: FC<PropsWithChildren> = ({ children }) => {
 
   const showDialog = useCallback(
     (state: ReleaseFileContent) => {
-      const isForced = state.forcedCount > currentRelease.forcedCount;
+      const isForced = state.forcedCount > CURRENT_RELEASE.forcedCount;
       addNotification(
         {
           id: 'app-update',
@@ -61,7 +61,7 @@ export const ServiceWorkerProvider: FC<PropsWithChildren> = ({ children }) => {
                   i18nKey={translations.appUpdateDialog.changelog}
                   components={[
                     <a
-                      href={getChangelogUrl(currentRelease.commit)}
+                      href={getChangelogUrl(CURRENT_RELEASE.commit)}
                       target="_blank"
                       rel="noopener noreferrer"
                     >
@@ -102,9 +102,9 @@ export const ServiceWorkerProvider: FC<PropsWithChildren> = ({ children }) => {
         .then(data => {
           const commitKey = `${data.commit}:${data.version}:${data.forcedCount}`;
           if (
-            (data.commit !== currentRelease.commit ||
-              data.version !== currentRelease.version ||
-              data.forcedCount > currentRelease.forcedCount) &&
+            (data.commit !== CURRENT_RELEASE.commit ||
+              data.version !== CURRENT_RELEASE.version ||
+              data.forcedCount > CURRENT_RELEASE.forcedCount) &&
             shownForCommit.current !== commitKey
           ) {
             if (swRegistration && swRegistration.update) {
@@ -112,7 +112,7 @@ export const ServiceWorkerProvider: FC<PropsWithChildren> = ({ children }) => {
             } else {
               shownForCommit.current = commitKey;
               showDialog(data);
-              setIsForced(data.forcedCount > currentRelease.forcedCount);
+              setIsForced(data.forcedCount > CURRENT_RELEASE.forcedCount);
             }
           }
           return data;

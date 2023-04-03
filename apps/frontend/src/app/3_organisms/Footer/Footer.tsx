@@ -7,6 +7,7 @@ import { Link, Footer as UIFooter } from '@sovryn/ui';
 import { SocialLinks } from '../../2_molecules';
 import { SovrynLogo } from '../../2_molecules/SovrynLogo/SovrynLogo';
 import Logo from '../../../assets/images/Bitcoin-logo-small.svg';
+import { CURRENT_RELEASE } from '../../../constants/general';
 import {
   ALPHA_LINKS,
   WIKI_LINKS,
@@ -15,7 +16,6 @@ import {
 } from '../../../constants/links';
 import { translations } from '../../../locales/i18n';
 import { Environments } from '../../../types/global';
-import { currentRelease } from '../../../utils/constants';
 import { isMainnet, isStaging } from '../../../utils/helpers';
 import { getChangelogUrl } from '../../../utils/helpers';
 
@@ -102,10 +102,10 @@ export const Footer: FC<FooterProps> = ({ showDashboardLink }) => {
         <div className="flex gap-x-2">
           <div className="flex items-center text-xs justify-center">
             <Link
-              href={getChangelogUrl(currentRelease.commit)}
+              href={getChangelogUrl(CURRENT_RELEASE.commit)}
               text={`${t(
                 translations.footer.buildID,
-              )} ${currentRelease.commit?.substring(0, 7)}`}
+              )} ${CURRENT_RELEASE.commit?.substring(0, 7)}`}
             />
           </div>
           <SocialLinks dataAttribute="footer-social" />

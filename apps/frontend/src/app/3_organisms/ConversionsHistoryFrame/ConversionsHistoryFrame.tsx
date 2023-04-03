@@ -15,15 +15,15 @@ import {
 
 import { ExportCSV } from '../../2_molecules/ExportCSV/ExportCSV';
 import { masset } from '../../5_pages/ConvertPage/ConvertPage.types';
+import {
+  DEFAULT_HISTORY_FRAME_PAGE_SIZE,
+  EXPORT_RECORD_LIMIT,
+} from '../../../constants/general';
 import { useNotificationContext } from '../../../contexts/NotificationContext';
 import { useAccount } from '../../../hooks/useAccount';
 import { useBlockNumber } from '../../../hooks/useBlockNumber';
 import { useMaintenance } from '../../../hooks/useMaintenance';
 import { translations } from '../../../locales/i18n';
-import {
-  DEFAULT_HISTORY_FRAME_PAGE_SIZE,
-  EXPORT_RECORD_LIMIT,
-} from '../../../utils/constants';
 import {
   Conversion,
   ConversionType,

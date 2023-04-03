@@ -24,9 +24,9 @@ import { AmountRenderer } from '../../../2_molecules/AmountRenderer/AmountRender
 import { AssetRenderer } from '../../../2_molecules/AssetRenderer/AssetRenderer';
 import { BORROW_ASSETS } from '../../../5_pages/ZeroPage/constants';
 import { Bitcoin, USD } from '../../../../constants/currencies';
+import { COLLATERAL_RATIO_THRESHOLDS } from '../../../../constants/general';
 import { useMaintenance } from '../../../../hooks/useMaintenance';
 import { translations } from '../../../../locales/i18n';
-import { CR_THRESHOLDS } from '../../../../utils/constants';
 import { formatValue, decimalic } from '../../../../utils/math';
 import { CurrentTroveData } from '../CurrentTroveData';
 import { Label } from '../Label';
@@ -458,10 +458,10 @@ export const FormContent: FC<FormContentProps> = props => {
         </div>
       </div>
       <HealthBar
-        start={CR_THRESHOLDS.start}
-        middleStart={CR_THRESHOLDS.middleStart}
-        middleEnd={CR_THRESHOLDS.middleEnd}
-        end={CR_THRESHOLDS.end}
+        start={COLLATERAL_RATIO_THRESHOLDS.START}
+        middleStart={COLLATERAL_RATIO_THRESHOLDS.MIDDLE_START}
+        middleEnd={COLLATERAL_RATIO_THRESHOLDS.MIDDLE_END}
+        end={COLLATERAL_RATIO_THRESHOLDS.END}
         value={props.currentRatio.toNumber()}
       />
 

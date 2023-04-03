@@ -6,9 +6,13 @@ import { EIP1193Provider } from '@sovryn/onboard-common';
 import tailwindConfig from '@sovryn/tailwindcss-config';
 import { Decimalish } from '@sovryn/utils';
 
+import {
+  BTC_EXPLORER,
+  RSK_EXPLORER,
+  SERVICES_CONFIG,
+} from '../constants/infrastructure';
 import { GITHUB_LINKS } from '../constants/links';
 import { Environments } from '../types/global';
-import { btcExplorer, rskExplorer, servicesConfig } from './constants';
 import { decimalic } from './math';
 
 export const prettyTx = (
@@ -50,13 +54,13 @@ export const isTestnetFastBtcEnabled = () =>
   process.env.REACT_APP_ENABLE_TESTNET_FAST_BTC === 'true';
 
 export const getServicesConfig = () =>
-  servicesConfig[isMainnet() ? Environments.Mainnet : Environments.Testnet];
+  SERVICES_CONFIG[isMainnet() ? Environments.Mainnet : Environments.Testnet];
 
 export const getRskExplorerUrl = () =>
-  rskExplorer[isMainnet() ? 'mainnet' : 'testnet'];
+  RSK_EXPLORER[isMainnet() ? 'mainnet' : 'testnet'];
 
 export const getBtcExplorerUrl = () =>
-  btcExplorer[isMainnet() ? 'mainnet' : 'testnet'];
+  BTC_EXPLORER[isMainnet() ? 'mainnet' : 'testnet'];
 
 export const dateFormat = (timestamp: number) => {
   const stamp = dayjs.tz(Number(timestamp) * 1e3, 'UTC');

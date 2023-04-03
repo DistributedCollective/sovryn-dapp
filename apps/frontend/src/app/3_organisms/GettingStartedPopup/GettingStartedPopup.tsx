@@ -24,9 +24,9 @@ import {
   Pagination,
 } from '@sovryn/ui';
 
+import { WIKI_LINKS } from '../../../constants/links';
 import { useIsMobile } from '../../../hooks/useIsMobile';
 import { translations } from '../../../locales/i18n';
-import { sovrynWikiLinks } from '../../../utils/constants';
 import styles from './GettingStartedPopup.module.css';
 
 const PAGE_SIZE = 2;
@@ -42,7 +42,7 @@ const data = [
   {
     name: t(translationBasePath.pool.title),
     description: t(translationBasePath.pool.description),
-    href: [sovrynWikiLinks.stabilityPool, sovrynWikiLinks.ammPool],
+    href: [WIKI_LINKS.STABILITY_POOL, WIKI_LINKS.AMM_POOL],
     learnMore: [
       t(
         translations.zeroPage.gettingStartedPopup.buttons
@@ -55,7 +55,7 @@ const data = [
   {
     name: t(translationBasePath.trade.title),
     description: t(translationBasePath.trade.description),
-    href: sovrynWikiLinks.trade,
+    href: WIKI_LINKS.TRADE,
     icon: IconNames.TRADING,
   },
 ];
@@ -113,7 +113,7 @@ export const GettingStartedPopup: FC<GettingStartedPopupProps> = ({
                 text={t(
                   translations.zeroPage.gettingStartedPopup.buttons.learnMore,
                 )}
-                href={sovrynWikiLinks.notification}
+                href={WIKI_LINKS.NOTIFICATIONS}
               />
             </div>
           </div>

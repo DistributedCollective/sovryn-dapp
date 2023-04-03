@@ -7,16 +7,15 @@ import { Link, Footer as UIFooter } from '@sovryn/ui';
 import { SocialLinks } from '../../2_molecules';
 import { SovrynLogo } from '../../2_molecules/SovrynLogo/SovrynLogo';
 import Logo from '../../../assets/images/Bitcoin-logo-small.svg';
+import {
+  ALPHA_LINKS,
+  WIKI_LINKS,
+  STAGING_LINK,
+  WEBSITE_LINKS,
+} from '../../../constants/links';
 import { translations } from '../../../locales/i18n';
 import { Environments } from '../../../types/global';
-import {
-  sovrynLinks,
-  currentRelease,
-  sovrynAlphaLinks,
-  sovrynWikiLinks,
-  sovrynStagingLink,
-  sovrynAlphaStagingLink,
-} from '../../../utils/constants';
+import { currentRelease } from '../../../utils/constants';
 import { isMainnet, isStaging } from '../../../utils/helpers';
 import { getChangelogUrl } from '../../../utils/helpers';
 
@@ -30,41 +29,41 @@ export const Footer: FC<FooterProps> = ({ showDashboardLink }) => {
       showDashboardLink
         ? {
             id: 'dashboard',
-            href: isStaging() ? sovrynStagingLink : `/`,
+            href: isStaging() ? STAGING_LINK : `/`,
             name: t(translations.footer.dashboard),
           }
         : {
             id: 'start',
-            href: `${sovrynWikiLinks.root}/getting-started`,
+            href: `${WIKI_LINKS.ROOT}/getting-started`,
             name: t(translations.footer.start),
           },
       {
         id: 'dapp-alpha',
         href: isStaging()
-          ? sovrynAlphaStagingLink
-          : sovrynAlphaLinks[
+          ? ALPHA_LINKS.STAGING
+          : ALPHA_LINKS[
               isMainnet() ? Environments.Mainnet : Environments.Testnet
             ],
         name: t(translations.footer.alpha),
       },
       {
         id: 'website',
-        href: sovrynLinks.website,
+        href: WEBSITE_LINKS.ROOT,
         name: t(translations.footer.website),
       },
       {
         id: 'blog',
-        href: sovrynLinks.blog,
+        href: WEBSITE_LINKS.BLOG,
         name: t(translations.footer.blog),
       },
       {
         id: 'security',
-        href: sovrynLinks.security,
+        href: WIKI_LINKS.SECURITY,
         name: t(translations.footer.security),
       },
       {
         id: 'fees',
-        href: sovrynLinks.fees,
+        href: WIKI_LINKS.FEES,
         name: t(translations.footer.fees),
       },
       {

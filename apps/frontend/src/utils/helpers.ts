@@ -6,13 +6,9 @@ import { EIP1193Provider } from '@sovryn/onboard-common';
 import tailwindConfig from '@sovryn/tailwindcss-config';
 import { Decimalish } from '@sovryn/utils';
 
+import { GITHUB_LINKS } from '../constants/links';
 import { Environments } from '../types/global';
-import {
-  btcExplorer,
-  rskExplorer,
-  servicesConfig,
-  sovrynLinks,
-} from './constants';
+import { btcExplorer, rskExplorer, servicesConfig } from './constants';
 import { decimalic } from './math';
 
 export const prettyTx = (
@@ -127,6 +123,4 @@ export const areAddressesEqual = (address1: string, address2: string) =>
   address1.toLowerCase() === address2.toLowerCase();
 
 export const getChangelogUrl = (commit: string) =>
-  `${sovrynLinks.github_dapp}/blob/${encodeURI(
-    commit,
-  )}/apps/frontend/CHANGELOG.md`;
+  `${GITHUB_LINKS.DAPP}/blob/${encodeURI(commit)}/apps/frontend/CHANGELOG.md`;

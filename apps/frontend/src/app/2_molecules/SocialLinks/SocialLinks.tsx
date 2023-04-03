@@ -5,8 +5,8 @@ import { t } from 'i18next';
 
 import { applyDataAttr, Icon, LinkBase } from '@sovryn/ui';
 
+import { GITHUB_LINKS, SOCIAL_LINKS } from '../../../constants/links';
 import { translations } from '../../../locales/i18n';
-import { sovrynLinks } from '../../../utils/constants';
 import styles from './SocialLinks.module.css';
 
 export type SocialLinksProps = {
@@ -19,22 +19,22 @@ const socials = [
   {
     id: 'discord',
     icon: 'discord-logo',
-    url: sovrynLinks.discord,
+    url: SOCIAL_LINKS.DISCORD,
   },
   {
     id: 'telegram',
     icon: 'telegram-logo',
-    url: sovrynLinks.telegram,
+    url: SOCIAL_LINKS.TELEGRAM,
   },
   {
     id: 'twitter',
     icon: 'twitter-logo',
-    url: sovrynLinks.twitter,
+    url: SOCIAL_LINKS.TWITTER,
   },
   {
     id: 'github',
     icon: 'github-logo',
-    url: sovrynLinks.github,
+    url: GITHUB_LINKS.ORGANIZATION,
   },
 ];
 

@@ -2,41 +2,6 @@ import { ChainIds } from '@sovryn/ethers-provider';
 
 import { Environments, ReleaseFileContent, Services } from '../types/global';
 
-export const sovrynLinks = {
-  discord: 'https://discord.gg/kBTNx4zjRf',
-  telegram: 'https://t.me/SovrynBitcoin',
-  twitter: ' https://twitter.com/SovrynBTC',
-  github: 'https://github.com/DistributedCollective',
-  github_dapp: 'https://github.com/DistributedCollective/sovryn-dapp',
-  website: 'https://sovryn.com',
-  blog: 'https://sovryn.com/all-things-sovryn',
-  security: 'https://wiki.sovryn.com/technical-documents#security',
-  fees: 'https://wiki.sovryn.com/sovryn-dapp/fees#zero-borrowing',
-};
-
-export const sovrynAlphaLinks = {
-  [Environments.Mainnet]: 'https://alpha.sovryn.app/',
-  [Environments.Testnet]: 'https://alpha-test.sovryn.app',
-};
-export const sovrynAlphaStagingLink = 'https://alpha-staging.sovryn.app';
-
-export const sovrynStagingLink = 'https://staging.sovryn.com';
-
-export const sovrynWikiLinks = {
-  root: 'https://wiki.sovryn.com',
-  stabilityPool:
-    'https://wiki.sovryn.com/sovryn-dapp/using-zero#earn-in-the-stability-pool',
-  ammPool: 'https://wiki.sovryn.com/sovryn-dapp/market-making',
-  lend: 'https://wiki.sovryn.com/sovryn-dapp/lending',
-  trade: 'https://wiki.sovryn.com/sovryn-dapp/trading',
-  bridge:
-    'https://babelfish.gitbook.io/the-babelfish-gitbook/tutorials-and-guides/bridges',
-  notification:
-    'https://wiki.sovryn.com/sovryn-dapp/using-zero#set-notifications',
-};
-
-export const helpdeskLink = 'https://help.sovryn.app/';
-
 export const requiredChain = ChainIds.RSK_TESTNET;
 
 export const APPROVAL_FUNCTION = 'approve';

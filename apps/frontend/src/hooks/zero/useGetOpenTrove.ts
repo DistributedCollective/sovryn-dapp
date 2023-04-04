@@ -1,20 +1,11 @@
-import { ApolloClient, InMemoryCache } from '@apollo/client';
-
 import { useMemo } from 'react';
 
-import { graphZeroUrl } from '../../utils/constants';
+import { zeroClient } from '../../utils/clients';
 import {
   TroveStatus,
   useGetUserOpenTroveQuery,
 } from '../../utils/graphql/zero/generated';
 import { useWalletConnect } from '../useWalletConnect';
-
-const zeroClient = new ApolloClient({
-  uri: graphZeroUrl,
-  cache: new InMemoryCache({
-    resultCaching: false,
-  }),
-});
 
 export const useGetOpenTrove = () => {
   const { account } = useWalletConnect();

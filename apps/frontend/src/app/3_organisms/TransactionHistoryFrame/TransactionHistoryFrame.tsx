@@ -23,18 +23,22 @@ import { ExportCSV } from '../../2_molecules/ExportCSV/ExportCSV';
 import { TableFilter } from '../../2_molecules/TableFilter/TableFilter';
 import { Filter } from '../../2_molecules/TableFilter/TableFilter.types';
 import { TxIdWithNotification } from '../../2_molecules/TxIdWithNotification/TransactionIdWithNotification';
+import {
+  BITCOIN,
+  BTC_RENDER_PRECISION,
+  TOKEN_RENDER_PRECISION,
+} from '../../../constants/currencies';
+import {
+  LIQUIDATION_RESERVE_AMOUNT,
+  DEFAULT_HISTORY_FRAME_PAGE_SIZE,
+  EXPORT_RECORD_LIMIT,
+} from '../../../constants/general';
 import { useNotificationContext } from '../../../contexts/NotificationContext';
 import { useAccount } from '../../../hooks/useAccount';
 import { useBlockNumber } from '../../../hooks/useBlockNumber';
 import { useMaintenance } from '../../../hooks/useMaintenance';
 import { translations } from '../../../locales/i18n';
 import { zeroClient } from '../../../utils/clients';
-import {
-  Bitcoin,
-  LIQUIDATION_RESERVE_AMOUNT,
-  DEFAULT_HISTORY_FRAME_PAGE_SIZE,
-  EXPORT_RECORD_LIMIT,
-} from '../../../utils/constants';
 import {
   InputMaybe,
   TroveChange,
@@ -44,10 +48,6 @@ import {
   useGetTroveLazyQuery,
 } from '../../../utils/graphql/zero/generated';
 import { dateFormat } from '../../../utils/helpers';
-import {
-  TOKEN_RENDER_PRECISION,
-  BTC_RENDER_PRECISION,
-} from '../ZeroLocForm/constants';
 import { useGetTroves } from './hooks/useGetTroves';
 import { renderSign } from './utils';
 
@@ -291,7 +291,7 @@ export const TransactionHistoryFrame: FC = () => {
         {trove.collateralChange.length ? (
           <AmountRenderer
             value={trove.collateralChange}
-            suffix={Bitcoin}
+            suffix={BITCOIN}
             precision={BTC_RENDER_PRECISION}
             dataAttribute="transaction-history-collateral-change"
             prefix={renderSign(trove.collateralChange)}
@@ -310,7 +310,7 @@ export const TransactionHistoryFrame: FC = () => {
         {trove.collateralAfter.length ? (
           <AmountRenderer
             value={trove.collateralAfter}
-            suffix={Bitcoin}
+            suffix={BITCOIN}
             precision={BTC_RENDER_PRECISION}
             dataAttribute="transaction-history-collateral-balance"
           />

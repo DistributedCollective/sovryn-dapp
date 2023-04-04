@@ -5,8 +5,8 @@ import { t } from 'i18next';
 import { Paragraph, ParagraphSize, TransactionId } from '@sovryn/ui';
 
 import { AmountRenderer } from '../../2_molecules/AmountRenderer/AmountRenderer';
+import { BITCOIN } from '../../../constants/currencies';
 import { translations } from '../../../locales/i18n';
-import { Bitcoin } from '../../../utils/constants';
 import {
   BitcoinTransfer,
   BitcoinTransferDirection,
@@ -46,7 +46,7 @@ const renderSentAmount = (item: FundingHistoryType) => {
   return (
     <AmountRenderer
       value={item.sent}
-      suffix={Bitcoin}
+      suffix={BITCOIN}
       precision={8}
       dataAttribute="funding-history-sent"
     />
@@ -60,7 +60,7 @@ const renderReceivedAmount = (item: FundingHistoryType) => {
   return (
     <AmountRenderer
       value={item.received}
-      suffix={Bitcoin}
+      suffix={BITCOIN}
       precision={8}
       dataAttribute="funding-history-received"
     />
@@ -75,7 +75,7 @@ const renderServiceFee = (item: FundingHistoryType) => {
   return (
     <AmountRenderer
       value={item.serviceFee}
-      suffix={Bitcoin}
+      suffix={BITCOIN}
       precision={8}
       dataAttribute="funding-history-service-fee"
     />

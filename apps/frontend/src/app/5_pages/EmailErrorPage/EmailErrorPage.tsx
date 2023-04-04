@@ -6,10 +6,10 @@ import { Trans } from 'react-i18next';
 import { Link } from '@sovryn/ui';
 
 import { EmailVerificationState } from '../../2_molecules/EmailVerificationState/EmailVerificationState';
+import { HELPDESK_LINK } from '../../../constants/links';
 import { translations } from '../../../locales/i18n';
-import { helpdeskLink } from '../../../utils/constants';
 
-const address = new URL(helpdeskLink).hostname;
+const address = new URL(HELPDESK_LINK).hostname;
 
 export const EmailErrorPage = () => (
   <EmailVerificationState
@@ -22,7 +22,7 @@ export const EmailErrorPage = () => (
           <Link
             className="leading-[1.125rem] font-normal text-sm lg:text-base text-center"
             text={address}
-            href={helpdeskLink}
+            href={HELPDESK_LINK}
           />,
         ]}
       />

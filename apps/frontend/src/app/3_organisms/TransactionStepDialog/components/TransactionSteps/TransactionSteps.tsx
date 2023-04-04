@@ -6,8 +6,8 @@ import { t } from 'i18next';
 
 import { Button, Icon, IconNames, StatusType } from '@sovryn/ui';
 
+import { APPROVAL_FUNCTION } from '../../../../../constants/general';
 import { translations } from '../../../../../locales/i18n';
-import { APPROVAL_FUNCTION } from '../../../../../utils/constants';
 import { sleep } from '../../../../../utils/helpers';
 import { signERC2612Permit } from '../../../../../utils/permit/permit';
 import {

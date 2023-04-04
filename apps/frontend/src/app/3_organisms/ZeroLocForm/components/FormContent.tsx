@@ -23,14 +23,19 @@ import { Decimal } from '@sovryn/utils';
 import { AmountRenderer } from '../../../2_molecules/AmountRenderer/AmountRenderer';
 import { AssetRenderer } from '../../../2_molecules/AssetRenderer/AssetRenderer';
 import { BORROW_ASSETS } from '../../../5_pages/ZeroPage/constants';
+import {
+  BITCOIN,
+  BTC_RENDER_PRECISION,
+  TOKEN_RENDER_PRECISION,
+  USD,
+} from '../../../../constants/currencies';
+import { COLLATERAL_RATIO_THRESHOLDS } from '../../../../constants/general';
 import { useMaintenance } from '../../../../hooks/useMaintenance';
 import { translations } from '../../../../locales/i18n';
-import { Bitcoin, CR_THRESHOLDS, USD } from '../../../../utils/constants';
 import { formatValue, decimalic } from '../../../../utils/math';
 import { CurrentTroveData } from '../CurrentTroveData';
 import { Label } from '../Label';
 import { Row } from '../Row';
-import { TOKEN_RENDER_PRECISION, BTC_RENDER_PRECISION } from '../constants';
 import { AmountType } from '../types';
 
 export type OpenTroveProps = {
@@ -228,7 +233,7 @@ export const FormContent: FC<FormContentProps> = props => {
       ) : (
         <AmountRenderer
           value={value}
-          suffix={Bitcoin}
+          suffix={BITCOIN}
           precision={BTC_RENDER_PRECISION}
         />
       ),
@@ -356,7 +361,7 @@ export const FormContent: FC<FormContentProps> = props => {
       <FormGroup
         label={
           <Label
-            symbol={Bitcoin}
+            symbol={BITCOIN}
             maxAmount={props.maxCollateralAmount}
             tabs={collateralTabs}
             onTabChange={handleCollateralTypeChange}
@@ -375,7 +380,7 @@ export const FormContent: FC<FormContentProps> = props => {
           maxAmount={props.maxCollateralAmount.toNumber()}
           label={t(translations.common.amount)}
           className="max-w-none"
-          unit={Bitcoin}
+          unit={BITCOIN}
           invalid={!!props.collateralError}
           placeholder="0"
         />
@@ -457,10 +462,10 @@ export const FormContent: FC<FormContentProps> = props => {
         </div>
       </div>
       <HealthBar
-        start={CR_THRESHOLDS.start}
-        middleStart={CR_THRESHOLDS.middleStart}
-        middleEnd={CR_THRESHOLDS.middleEnd}
-        end={CR_THRESHOLDS.end}
+        start={COLLATERAL_RATIO_THRESHOLDS.START}
+        middleStart={COLLATERAL_RATIO_THRESHOLDS.MIDDLE_START}
+        middleEnd={COLLATERAL_RATIO_THRESHOLDS.MIDDLE_END}
+        end={COLLATERAL_RATIO_THRESHOLDS.END}
         value={props.currentRatio.toNumber()}
       />
 

@@ -21,26 +21,26 @@ import { chains, defaultChainId } from '../../../config/chains';
 import { AmountRenderer } from '../../2_molecules/AmountRenderer/AmountRenderer';
 import { ExportCSV } from '../../2_molecules/ExportCSV/ExportCSV';
 import { TxIdWithNotification } from '../../2_molecules/TxIdWithNotification/TransactionIdWithNotification';
+import {
+  BITCOIN,
+  BTC_RENDER_PRECISION,
+  TOKEN_RENDER_PRECISION,
+} from '../../../constants/currencies';
+import {
+  DEFAULT_HISTORY_FRAME_PAGE_SIZE,
+  EXPORT_RECORD_LIMIT,
+} from '../../../constants/general';
 import { useNotificationContext } from '../../../contexts/NotificationContext';
 import { useAccount } from '../../../hooks/useAccount';
 import { useBlockNumber } from '../../../hooks/useBlockNumber';
 import { useMaintenance } from '../../../hooks/useMaintenance';
 import { translations } from '../../../locales/i18n';
 import {
-  Bitcoin,
-  DEFAULT_HISTORY_FRAME_PAGE_SIZE,
-  EXPORT_RECORD_LIMIT,
-} from '../../../utils/constants';
-import {
   Redemption,
   Redemption_Filter,
   useGetRedemptionsLazyQuery,
 } from '../../../utils/graphql/zero/generated';
 import { dateFormat } from '../../../utils/helpers';
-import {
-  TOKEN_RENDER_PRECISION,
-  BTC_RENDER_PRECISION,
-} from '../ZeroLocForm/constants';
 import { useGetRedemptionsHistory } from './hooks/useGetRedemptionsHistory';
 
 const pageSize = DEFAULT_HISTORY_FRAME_PAGE_SIZE;
@@ -108,7 +108,7 @@ export const RedemptionsHistoryFrame: FC = () => {
         {redemption.collateralRedeemed.length ? (
           <AmountRenderer
             value={redemption.collateralRedeemed}
-            suffix={Bitcoin}
+            suffix={BITCOIN}
             precision={BTC_RENDER_PRECISION}
             dataAttribute="redemption-history-rbtc-received"
           />
@@ -126,7 +126,7 @@ export const RedemptionsHistoryFrame: FC = () => {
         {redemption.fee.length ? (
           <AmountRenderer
             value={redemption.fee}
-            suffix={Bitcoin}
+            suffix={BITCOIN}
             precision={BTC_RENDER_PRECISION}
             dataAttribute="redemption-history-fee"
           />

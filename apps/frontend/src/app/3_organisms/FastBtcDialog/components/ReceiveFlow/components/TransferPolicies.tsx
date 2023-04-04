@@ -1,6 +1,7 @@
 import React, { useContext, useMemo } from 'react';
 
-import { Bitcoin, btcInSatoshis } from '../../../../../../utils/constants';
+import { BITCOIN } from '../../../../../../constants/currencies';
+import { BTC_IN_SATOSHIS } from '../../../../../../constants/general';
 import { formatValue } from '../../../../../../utils/math';
 import { DYNAMIC_FEE_DIVISOR } from '../../../constants';
 import { DepositContext } from '../../../contexts/deposit-context';
@@ -10,21 +11,21 @@ export const TransferPolicies: React.FC = () => {
   const { limits } = useContext(DepositContext);
 
   const minimumAmount = useMemo(
-    () => `${formatValue(limits.min, 5)} ${Bitcoin}`,
+    () => `${formatValue(limits.min, 5)} ${BITCOIN}`,
     [limits.min],
   );
 
   const maximumAmount = useMemo(
-    () => `${formatValue(limits.max, 5)} ${Bitcoin}`,
+    () => `${formatValue(limits.max, 5)} ${BITCOIN}`,
     [limits.max],
   );
 
   const serviceFee = useMemo(
     () =>
       `${formatValue(
-        limits.baseFee / btcInSatoshis,
+        limits.baseFee / BTC_IN_SATOSHIS,
         8,
-      )} ${Bitcoin} + ${formatValue(
+      )} ${BITCOIN} + ${formatValue(
         (limits.dynamicFee / DYNAMIC_FEE_DIVISOR) * 100,
         2,
       )} %`,

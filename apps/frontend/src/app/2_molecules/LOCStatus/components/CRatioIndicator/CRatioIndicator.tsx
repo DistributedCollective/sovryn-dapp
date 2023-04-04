@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 
 import classNames from 'classnames';
 
-import { CR_THRESHOLDS } from '../../../../../utils/constants';
+import { COLLATERAL_RATIO_THRESHOLDS } from '../../../../../constants/general';
 
 export type CRatioIndicatorProps = {
   className?: string;
@@ -18,10 +18,11 @@ export const CRatioIndicator: FC<CRatioIndicatorProps> = ({
       'w-2.5 h-2.5 rounded-full transition-colors',
       className,
       {
-        'bg-success': value >= CR_THRESHOLDS.middleEnd,
+        'bg-success': value >= COLLATERAL_RATIO_THRESHOLDS.MIDDLE_END,
         'bg-primary-75':
-          CR_THRESHOLDS.middleStart <= value && value < CR_THRESHOLDS.middleEnd,
-        'bg-negative': value < CR_THRESHOLDS.middleStart,
+          COLLATERAL_RATIO_THRESHOLDS.MIDDLE_START <= value &&
+          value < COLLATERAL_RATIO_THRESHOLDS.MIDDLE_END,
+        'bg-negative': value < COLLATERAL_RATIO_THRESHOLDS.MIDDLE_START,
       },
     )}
   />

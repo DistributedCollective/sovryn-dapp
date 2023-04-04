@@ -15,9 +15,9 @@ import {
   TransactionRequest,
   TransactionType,
 } from '../app/3_organisms/TransactionStepDialog/TransactionStepDialog.types';
+import { APPROVAL_FUNCTION } from '../constants/general';
 import { translations } from '../locales/i18n';
 import { getRskChainId } from './chain';
-import { APPROVAL_FUNCTION } from './constants';
 
 export const UNSIGNED_PERMIT = {
   deadline: 0,

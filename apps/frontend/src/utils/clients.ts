@@ -1,23 +1,23 @@
 import { ApolloClient, InMemoryCache } from '@apollo/client';
 
-import { graphMyntUrl, graphRskUrl, graphZeroUrl } from './constants';
+import { SUBGRAPH } from '../constants/general';
 
 export const rskClient = new ApolloClient({
-  uri: graphRskUrl,
+  uri: SUBGRAPH.RSK,
   cache: new InMemoryCache({
     resultCaching: false,
   }),
 });
 
 export const zeroClient = new ApolloClient({
-  uri: graphZeroUrl,
+  uri: SUBGRAPH.ZERO,
   cache: new InMemoryCache({
     resultCaching: false,
   }),
 });
 
 export const myntClient = new ApolloClient({
-  uri: graphMyntUrl,
+  uri: SUBGRAPH.MYNT,
   cache: new InMemoryCache({
     resultCaching: false,
   }),

@@ -3,8 +3,8 @@ import { t } from 'i18next';
 import { ErrorBadgeProps, ErrorLevel } from '@sovryn/ui';
 import { Decimal } from '@sovryn/utils';
 
+import { LIQUIDATION_RESERVE_AMOUNT } from '../../../constants/general';
 import { translations } from '../../../locales/i18n';
-import { LIQUIDATION_RESERVE_AMOUNT } from '../../../utils/constants';
 import { formatValue, decimalic } from '../../../utils/math';
 import {
   CRITICAL_COLLATERAL_RATIO,

@@ -5,8 +5,8 @@ import { Trans } from 'react-i18next';
 
 import { Heading, HeadingType, Link } from '@sovryn/ui';
 
+import { HELPDESK_LINK } from '../../../../constants/links';
 import { translations } from '../../../../locales/i18n';
-import { helpdeskLink } from '../../../../utils/constants';
 
 type InstructionsProps = {
   isReceive?: boolean;
@@ -37,7 +37,7 @@ export const Instructions: React.FC<InstructionsProps> = ({ isReceive }) => {
             i18nKey={translation.line5}
             tOptions={{ hours: 1.5 }}
             components={[
-              <Link text={t(translation.line5cta)} href={helpdeskLink} />,
+              <Link text={t(translation.line5cta)} href={HELPDESK_LINK} />,
             ]}
           />
         </li>

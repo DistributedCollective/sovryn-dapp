@@ -9,7 +9,7 @@ import React, {
 
 import { NotificationItem, NotificationStack } from '@sovryn/ui';
 
-import { DEFAULT_TIMEOUT_SECONDS } from '../utils/constants';
+import { DEFAULT_TIMEOUT_SECONDS } from '../constants/general';
 
 interface Notification extends NotificationItem {
   timeout?: number;

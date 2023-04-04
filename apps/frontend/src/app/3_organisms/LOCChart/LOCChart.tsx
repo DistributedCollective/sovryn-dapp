@@ -15,6 +15,7 @@ import { Bar } from 'react-chartjs-2';
 import { useAccount } from '../../../hooks/useAccount';
 import { useBlockNumber } from '../../../hooks/useBlockNumber';
 import { useIsMobile } from '../../../hooks/useIsMobile';
+import { useGetRBTCPrice } from '../../../hooks/zero/useGetRBTCPrice';
 import { useGetTroves } from '../../../hooks/zero/useGetTroves';
 import { TroveStatus } from '../../../utils/graphql/zero/generated';
 import {
@@ -24,7 +25,6 @@ import {
 import { fromWei } from '../../../utils/math';
 import { useGetChartOptions } from './hooks/useGetChartOptions';
 import { useGetGlobalsEntity } from './hooks/useGetGlobalsEntity';
-import { useGetRBTCPrice } from './hooks/useGetRBTCPrice';
 import { useGetUserOpenTrove } from './hooks/useGetUserOpenTrove';
 import { ChartSortingType, TroveData } from './types';
 import { calculateRedemptionBuffer, chartConfig } from './utils';

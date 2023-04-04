@@ -1,5 +1,5 @@
-import { zeroClient } from '../../../../utils/clients';
-import { useGetTrovesQuery } from '../../../../utils/graphql/zero/generated';
+import { zeroClient } from '../../utils/clients';
+import { useGetTrovesQuery } from '../../utils/graphql/zero/generated';
 
 export const useGetTroves = () => {
   const trovesCount = 1000;

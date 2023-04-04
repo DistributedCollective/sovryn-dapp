@@ -130,3 +130,9 @@ export const getChangelogUrl = (commit: string) =>
   `${sovrynLinks.github_dapp}/blob/${encodeURI(
     commit,
   )}/apps/frontend/CHANGELOG.md`;
+
+export const calculateCollateralRatio = (
+  collateral: number,
+  debt: number,
+  price: number,
+) => ((collateral * price) / debt) * 100;

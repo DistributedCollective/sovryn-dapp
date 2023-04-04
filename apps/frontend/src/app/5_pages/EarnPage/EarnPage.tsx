@@ -342,10 +342,10 @@ const EarnPage: FC = () => {
   );
 
   useEffect(() => {
-    if (index || amount || token) {
+    if (index) {
       setShowUnderCollateralizedError(false);
     }
-  }, [amount, token, index]);
+  }, [index]);
 
   useEffect(() => {
     if (index !== 1 || isInMaintenance) {

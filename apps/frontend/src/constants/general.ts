@@ -25,7 +25,7 @@ export const DEFAULT_HISTORY_FRAME_PAGE_SIZE = 10;
 export const DEFAULT_TIMEOUT_SECONDS = 5000;
 export const LIQUIDATION_RESERVE_AMOUNT = 20;
 
-export const BTC_IN_SATOSHIS = 100000000;
+export const BTC_IN_SATOSHIS = 100_000_000;
 
 export const RSK_FAUCET = 'https://faucet.rsk.co';
 

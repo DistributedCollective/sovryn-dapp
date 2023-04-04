@@ -8,10 +8,10 @@ import { Button, ButtonSize, ButtonStyle } from '@sovryn/ui';
 import { Decimal } from '@sovryn/utils';
 
 import {
-  TOKEN_RENDER_PRECISION,
+  BITCOIN,
   BTC_RENDER_PRECISION,
-} from '../../3_organisms/ZeroLocForm/constants';
-import { BITCOIN } from '../../../constants/currencies';
+  TOKEN_RENDER_PRECISION,
+} from '../../../constants/currencies';
 import { AmountRenderer } from '../AmountRenderer/AmountRenderer';
 import { CRatioIndicator } from './components/CRatioIndicator/CRatioIndicator';
 import { LOCStat } from './components/LOCStat/LOCStat';

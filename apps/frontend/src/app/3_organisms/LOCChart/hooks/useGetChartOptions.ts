@@ -3,13 +3,13 @@ import { useTranslation } from 'react-i18next';
 import { SupportedTokens } from '@sovryn/contracts';
 import { prettyTx } from '@sovryn/ui';
 
-import { BITCOIN } from '../../../../constants/currencies';
-import { translations } from '../../../../locales/i18n';
-import { formatValue } from '../../../../utils/math';
 import {
+  BITCOIN,
   BTC_RENDER_PRECISION,
   TOKEN_RENDER_PRECISION,
-} from '../../ZeroLocForm/constants';
+} from '../../../../constants/currencies';
+import { translations } from '../../../../locales/i18n';
+import { formatValue } from '../../../../utils/math';
 import { chartConfig } from '../utils';
 import { useAccount } from './../../../../hooks/useAccount';
 

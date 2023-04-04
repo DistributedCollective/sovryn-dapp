@@ -23,7 +23,11 @@ import { ExportCSV } from '../../2_molecules/ExportCSV/ExportCSV';
 import { TableFilter } from '../../2_molecules/TableFilter/TableFilter';
 import { Filter } from '../../2_molecules/TableFilter/TableFilter.types';
 import { TxIdWithNotification } from '../../2_molecules/TxIdWithNotification/TransactionIdWithNotification';
-import { BITCOIN } from '../../../constants/currencies';
+import {
+  BITCOIN,
+  BTC_RENDER_PRECISION,
+  TOKEN_RENDER_PRECISION,
+} from '../../../constants/currencies';
 import {
   LIQUIDATION_RESERVE_AMOUNT,
   DEFAULT_HISTORY_FRAME_PAGE_SIZE,
@@ -44,10 +48,6 @@ import {
   useGetTroveLazyQuery,
 } from '../../../utils/graphql/zero/generated';
 import { dateFormat } from '../../../utils/helpers';
-import {
-  TOKEN_RENDER_PRECISION,
-  BTC_RENDER_PRECISION,
-} from '../ZeroLocForm/constants';
 import { useGetTroves } from './hooks/useGetTroves';
 import { renderSign } from './utils';
 

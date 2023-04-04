@@ -23,8 +23,7 @@ import {
 import { Decimal } from '@sovryn/utils';
 
 import { AmountRenderer } from '../../2_molecules/AmountRenderer/AmountRenderer';
-import { BTC_RENDER_PRECISION } from '../../3_organisms/ZeroLocForm/constants';
-import { BITCOIN } from '../../../constants/currencies';
+import { BITCOIN, BTC_RENDER_PRECISION } from '../../../constants/currencies';
 import { useAccount } from '../../../hooks/useAccount';
 import { useBlockNumber } from '../../../hooks/useBlockNumber';
 import { useMaintenance } from '../../../hooks/useMaintenance';

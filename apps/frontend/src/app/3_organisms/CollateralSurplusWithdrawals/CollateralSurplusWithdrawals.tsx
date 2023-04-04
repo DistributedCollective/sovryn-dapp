@@ -20,7 +20,7 @@ import { chains, defaultChainId } from '../../../config/chains';
 import { AmountRenderer } from '../../2_molecules/AmountRenderer/AmountRenderer';
 import { ExportCSV } from '../../2_molecules/ExportCSV/ExportCSV';
 import { TxIdWithNotification } from '../../2_molecules/TxIdWithNotification/TransactionIdWithNotification';
-import { BITCOIN } from '../../../constants/currencies';
+import { BITCOIN, BTC_RENDER_PRECISION } from '../../../constants/currencies';
 import {
   DEFAULT_HISTORY_FRAME_PAGE_SIZE,
   EXPORT_RECORD_LIMIT,
@@ -37,7 +37,6 @@ import {
 } from '../../../utils/graphql/zero/generated';
 import { dateFormat } from '../../../utils/helpers';
 import { formatValue } from '../../../utils/math';
-import { BTC_RENDER_PRECISION } from '../ZeroLocForm/constants';
 import { useGetCollateralSurplusWithdrawals } from './hooks/useGetCollateralSurplusWithdrawals';
 
 const pageSize = DEFAULT_HISTORY_FRAME_PAGE_SIZE;

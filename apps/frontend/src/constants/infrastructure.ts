@@ -23,6 +23,7 @@ export const RSK_RPC = {
   ],
 };
 
+//TODO: refactor this into separate dictionary file once we add more chains
 export const RSK_EXPLORER = {
   [Environments.Mainnet]: 'https://explorer.rsk.co',
   [Environments.Testnet]: 'https://explorer.testnet.rsk.co',

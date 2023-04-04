@@ -23,7 +23,12 @@ import { Decimal } from '@sovryn/utils';
 import { AmountRenderer } from '../../../2_molecules/AmountRenderer/AmountRenderer';
 import { AssetRenderer } from '../../../2_molecules/AssetRenderer/AssetRenderer';
 import { BORROW_ASSETS } from '../../../5_pages/ZeroPage/constants';
-import { BITCOIN, USD } from '../../../../constants/currencies';
+import {
+  BITCOIN,
+  BTC_RENDER_PRECISION,
+  TOKEN_RENDER_PRECISION,
+  USD,
+} from '../../../../constants/currencies';
 import { COLLATERAL_RATIO_THRESHOLDS } from '../../../../constants/general';
 import { useMaintenance } from '../../../../hooks/useMaintenance';
 import { translations } from '../../../../locales/i18n';
@@ -31,7 +36,6 @@ import { formatValue, decimalic } from '../../../../utils/math';
 import { CurrentTroveData } from '../CurrentTroveData';
 import { Label } from '../Label';
 import { Row } from '../Row';
-import { TOKEN_RENDER_PRECISION, BTC_RENDER_PRECISION } from '../constants';
 import { AmountType } from '../types';
 
 export type OpenTroveProps = {

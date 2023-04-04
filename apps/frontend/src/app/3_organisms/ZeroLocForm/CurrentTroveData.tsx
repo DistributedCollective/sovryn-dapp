@@ -6,13 +6,13 @@ import { Decimal } from '@sovryn/utils';
 
 import { AmountRenderer } from '../../2_molecules/AmountRenderer/AmountRenderer';
 import { CRatioIndicator } from '../../2_molecules/LOCStatus/components/CRatioIndicator/CRatioIndicator';
-import { BITCOIN } from '../../../constants/currencies';
-import { formatValue } from '../../../utils/math';
 import {
-  TOKEN_RENDER_PRECISION,
+  BITCOIN,
   BTC_RENDER_PRECISION,
-  DEBT_TOKEN,
-} from './constants';
+  TOKEN_RENDER_PRECISION,
+} from '../../../constants/currencies';
+import { formatValue } from '../../../utils/math';
+import { DEBT_TOKEN } from './constants';
 
 type CurrentTroveDataProps = {
   debt: Decimal;

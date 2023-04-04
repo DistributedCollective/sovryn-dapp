@@ -419,7 +419,7 @@ const EarnPage: FC = () => {
               label={t(translations.common.amount)}
               min={0}
               max={maximumAmount.toString()}
-              disabled={!account}
+              disabled={!account || isUnderCollateralized}
               invalid={!isValidAmount}
               className="w-full flex-grow-0 flex-shrink"
               dataAttribute="earn-amount-input"

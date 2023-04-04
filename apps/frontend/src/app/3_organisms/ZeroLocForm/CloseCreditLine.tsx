@@ -149,7 +149,7 @@ export const CloseCreditLine: FC<CloseCreditLineProps> = ({
         />
       </SimpleTable>
 
-      {hasError && (
+      {hasError && !isRecoveryMode && (
         <ErrorBadge
           level={ErrorLevel.Critical}
           message={t(translations.closeCreditLine.error, {

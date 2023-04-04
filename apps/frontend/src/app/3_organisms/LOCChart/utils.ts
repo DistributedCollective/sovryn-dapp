@@ -22,12 +22,6 @@ export const chartConfig = {
   maxValue: 21,
 };
 
-export const calculateCollateralRatio = (
-  collateral: number,
-  debt: number,
-  price: string,
-) => ((collateral * Number(price)) / debt) * 100;
-
 export const sortData = (data: TroveData[]) =>
   data.sort((a, b) => a.collateralRatio - b.collateralRatio);
 

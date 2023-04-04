@@ -15,20 +15,19 @@ import { Bar } from 'react-chartjs-2';
 import { useAccount } from '../../../hooks/useAccount';
 import { useBlockNumber } from '../../../hooks/useBlockNumber';
 import { useIsMobile } from '../../../hooks/useIsMobile';
+import { useGetRBTCPrice } from '../../../hooks/zero/useGetRBTCPrice';
+import { useGetTroves } from '../../../hooks/zero/useGetTroves';
 import { TroveStatus } from '../../../utils/graphql/zero/generated';
-import { areAddressesEqual } from '../../../utils/helpers';
+import {
+  areAddressesEqual,
+  calculateCollateralRatio,
+} from '../../../utils/helpers';
 import { fromWei } from '../../../utils/math';
 import { useGetChartOptions } from './hooks/useGetChartOptions';
 import { useGetGlobalsEntity } from './hooks/useGetGlobalsEntity';
-import { useGetRBTCPrice } from './hooks/useGetRBTCPrice';
-import { useGetTroves } from './hooks/useGetTroves';
 import { useGetUserOpenTrove } from './hooks/useGetUserOpenTrove';
 import { ChartSortingType, TroveData } from './types';
-import {
-  calculateCollateralRatio,
-  calculateRedemptionBuffer,
-  chartConfig,
-} from './utils';
+import { calculateRedemptionBuffer, chartConfig } from './utils';
 
 ChartJS.register(
   CategoryScale,
@@ -166,9 +165,9 @@ export const LOCChart: FC = () => {
           collateralRatioSortKey_legacy:
             trove.collateralRatioSortKey_legacy ?? '',
           collateralRatio: calculateCollateralRatio(
-            collateralAmount,
-            debtAmount,
-            price,
+            Number(collateralAmount),
+            Number(debtAmount),
+            Number(price),
           ),
         };
       });

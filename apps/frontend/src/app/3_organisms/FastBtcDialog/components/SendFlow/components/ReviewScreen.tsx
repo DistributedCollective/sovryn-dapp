@@ -12,9 +12,9 @@ import {
 } from '@sovryn/ui';
 
 import { TxIdWithNotification } from '../../../../../2_molecules/TxIdWithNotification/TransactionIdWithNotification';
+import { BITCOIN } from '../../../../../../constants/currencies';
 import { useMaintenance } from '../../../../../../hooks/useMaintenance';
 import { translations } from '../../../../../../locales/i18n';
-import { Bitcoin } from '../../../../../../utils/constants';
 import {
   getBtcExplorerUrl,
   getRskExplorerUrl,
@@ -70,7 +70,7 @@ export const ReviewScreen: React.FC<ReviewScreenProps> = ({
         label: t(translation.sending),
         value: (
           <>
-            {formatValue(Number(amount), 8)} {Bitcoin}
+            {formatValue(Number(amount), 8)} {BITCOIN}
           </>
         ),
       },
@@ -78,7 +78,7 @@ export const ReviewScreen: React.FC<ReviewScreenProps> = ({
         label: t(translation.serviceFee),
         value: (
           <>
-            {formatValue(feesPaid, 8)} {Bitcoin}
+            {formatValue(feesPaid, 8)} {BITCOIN}
           </>
         ),
       },
@@ -86,7 +86,7 @@ export const ReviewScreen: React.FC<ReviewScreenProps> = ({
         label: t(translation.receiving),
         value: (
           <>
-            {formatValue(receiveAmount, 8)} {Bitcoin}
+            {formatValue(receiveAmount, 8)} {BITCOIN}
           </>
         ),
       },

@@ -29,10 +29,13 @@ import { chains, defaultChainId } from '../../../../../config/chains';
 
 import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { TxIdWithNotification } from '../../../../2_molecules/TxIdWithNotification/TransactionIdWithNotification';
+import {
+  BITCOIN,
+  BTC_RENDER_PRECISION,
+} from '../../../../../constants/currencies';
+import { APPROVAL_FUNCTION } from '../../../../../constants/general';
 import { translations } from '../../../../../locales/i18n';
-import { APPROVAL_FUNCTION, Bitcoin } from '../../../../../utils/constants';
 import { fromWei, toWei } from '../../../../../utils/math';
-import { BTC_RENDER_PRECISION } from '../../../ZeroLocForm/constants';
 import {
   Transaction,
   TransactionConfig,
@@ -241,7 +244,7 @@ export const TransactionStep: FC<TransactionStepProps> = ({
                 value={
                   <AmountRenderer
                     value={estimatedGasFee}
-                    suffix={Bitcoin}
+                    suffix={BITCOIN}
                     precision={BTC_RENDER_PRECISION}
                   />
                 }

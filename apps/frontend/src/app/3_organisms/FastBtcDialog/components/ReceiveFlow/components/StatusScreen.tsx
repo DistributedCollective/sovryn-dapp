@@ -14,9 +14,10 @@ import {
 
 import { StatusIcon } from '../../../../../2_molecules/StatusIcon/StatusIcon';
 import { TxIdWithNotification } from '../../../../../2_molecules/TxIdWithNotification/TransactionIdWithNotification';
+import { BITCOIN } from '../../../../../../constants/currencies';
+import { BTC_IN_SATOSHIS } from '../../../../../../constants/general';
 import { useAccount } from '../../../../../../hooks/useAccount';
 import { translations } from '../../../../../../locales/i18n';
-import { Bitcoin, btcInSatoshis } from '../../../../../../utils/constants';
 import {
   getBtcExplorerUrl,
   getRskExplorerUrl,
@@ -41,7 +42,10 @@ export const StatusScreen: React.FC<StatusScreenProps> = ({ onClose }) => {
 
   const isProcessing = useMemo(() => step === DepositStep.PROCESSING, [step]);
 
-  const feeAmount = useMemo(() => toWei(DEPOSIT_FEE_SATS / btcInSatoshis), []);
+  const feeAmount = useMemo(
+    () => toWei(DEPOSIT_FEE_SATS / BTC_IN_SATOSHIS),
+    [],
+  );
 
   const amount = useMemo(() => {
     if (depositTx) {
@@ -75,7 +79,7 @@ export const StatusScreen: React.FC<StatusScreenProps> = ({ onClose }) => {
         label: t(translation.sending),
         value: (
           <>
-            {formatValue(Number(amount), 8)} {Bitcoin}
+            {formatValue(Number(amount), 8)} {BITCOIN}
           </>
         ),
       },
@@ -83,7 +87,7 @@ export const StatusScreen: React.FC<StatusScreenProps> = ({ onClose }) => {
         label: t(translation.serviceFee),
         value: (
           <>
-            {formatValue(Number(fromWei(feeAmount)), 8)} {Bitcoin}
+            {formatValue(Number(fromWei(feeAmount)), 8)} {BITCOIN}
           </>
         ),
       },
@@ -91,7 +95,7 @@ export const StatusScreen: React.FC<StatusScreenProps> = ({ onClose }) => {
         label: t(translation.receiving),
         value: (
           <>
-            {formatValue(Number(receiveAmount), 8)} {Bitcoin}
+            {formatValue(Number(receiveAmount), 8)} {BITCOIN}
           </>
         ),
       },

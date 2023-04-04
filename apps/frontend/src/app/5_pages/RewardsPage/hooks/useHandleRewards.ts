@@ -9,14 +9,11 @@ import {
   Transaction,
   TransactionType,
 } from '../../../3_organisms/TransactionStepDialog/TransactionStepDialog.types';
+import { GAS_LIMIT } from '../../../../constants/gasLimits';
 import { useTransactionContext } from '../../../../contexts/TransactionContext';
 import { useAccount } from '../../../../hooks/useAccount';
 import { translations } from '../../../../locales/i18n';
 import { getRskChainId } from '../../../../utils/chain';
-import {
-  GAS_LIMIT_REWARDS,
-  GAS_LIMIT_TRANSFER_LOC,
-} from '../../../../utils/constants';
 import { toWei } from '../../../../utils/math';
 import { RewardsAction } from './../types';
 
@@ -67,8 +64,8 @@ export const useHandleRewards = (action: RewardsAction, amount: string) => {
         fnName: action,
         args: isWithdrawTransaction ? [toWei(amount)] : [account, account],
         gasLimit: isWithdrawTransaction
-          ? GAS_LIMIT_REWARDS
-          : GAS_LIMIT_TRANSFER_LOC,
+          ? GAS_LIMIT.REWARDS
+          : GAS_LIMIT.TRANSFER_LOC,
       },
     });
 

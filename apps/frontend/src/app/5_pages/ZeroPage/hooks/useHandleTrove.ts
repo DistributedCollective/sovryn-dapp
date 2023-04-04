@@ -13,16 +13,11 @@ import {
 } from '../../../3_organisms/TransactionStepDialog/TransactionStepDialog.types';
 import { isTransactionRequest } from '../../../3_organisms/TransactionStepDialog/helpers';
 import { CreditLineSubmitValue } from '../../../3_organisms/ZeroLocForm/types';
+import { GAS_LIMIT } from '../../../../constants/gasLimits';
 import { useTransactionContext } from '../../../../contexts/TransactionContext';
 import { useAccount } from '../../../../hooks/useAccount';
 import { translations } from '../../../../locales/i18n';
 import { getRskChainId } from '../../../../utils/chain';
-import {
-  GAS_LIMIT_ADJUST_TROVE,
-  GAS_LIMIT_CLOSE_DLLR_TROVE,
-  GAS_LIMIT_CLOSE_TROVE,
-  GAS_LIMIT_OPEN_TROVE,
-} from '../../../../utils/constants';
 import { loadLiquity } from '../../../../utils/liquity';
 import { toWei } from '../../../../utils/math';
 import {
@@ -154,7 +149,7 @@ export const useHandleTrove = (
                 ? [...adjustedTrove.args, UNSIGNED_PERMIT]
                 : adjustedTrove.args,
               value: adjustedTrove.value,
-              gasLimit: GAS_LIMIT_ADJUST_TROVE,
+              gasLimit: GAS_LIMIT.ADJUST_TROVE,
             },
             onComplete: callbacks?.onTroveAdjusted,
             updateHandler: permitHandler((req, res) => {
@@ -182,7 +177,7 @@ export const useHandleTrove = (
                 fnName: openedTrove.fn,
                 args: openedTrove.args,
                 value: openedTrove.value,
-                gasLimit: GAS_LIMIT_OPEN_TROVE,
+                gasLimit: GAS_LIMIT.OPEN_TROVE,
               },
               onComplete: callbacks?.onTroveOpened,
             },
@@ -235,7 +230,7 @@ export const useHandleTrove = (
                 contract,
                 fnName: 'closeNueTrove',
                 args: [],
-                gasLimit: GAS_LIMIT_CLOSE_DLLR_TROVE,
+                gasLimit: GAS_LIMIT.CLOSE_DLLR_TROVE,
               },
               onComplete: callbacks?.onTroveClosed,
               updateHandler: permitHandler((req, res) => {
@@ -255,7 +250,7 @@ export const useHandleTrove = (
                 contract,
                 fnName: 'closeTrove',
                 args: [],
-                gasLimit: GAS_LIMIT_CLOSE_TROVE,
+                gasLimit: GAS_LIMIT.CLOSE_TROVE,
               },
               onComplete: callbacks?.onTroveClosed,
             },

@@ -12,15 +12,15 @@ import {
 } from '@sovryn/ui';
 
 import { ExportCSV } from '../../2_molecules/ExportCSV/ExportCSV';
+import {
+  DEFAULT_HISTORY_FRAME_PAGE_SIZE,
+  EXPORT_RECORD_LIMIT,
+} from '../../../constants/general';
 import { useNotificationContext } from '../../../contexts/NotificationContext';
 import { useAccount } from '../../../hooks/useAccount';
 import { useBlockNumber } from '../../../hooks/useBlockNumber';
 import { translations } from '../../../locales/i18n';
 import { rskClient } from '../../../utils/clients';
-import {
-  DEFAULT_HISTORY_FRAME_PAGE_SIZE,
-  EXPORT_RECORD_LIMIT,
-} from '../../../utils/constants';
 import {
   BitcoinTransfer,
   BitcoinTransfer_OrderBy,

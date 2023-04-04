@@ -17,11 +17,11 @@ import {
 import { ConnectWalletButton } from '../../2_molecules';
 import { NavLink } from '../../2_molecules/NavLink/NavLink';
 import { SovrynLogo } from '../../2_molecules/SovrynLogo/SovrynLogo';
+import { RSK_FAUCET } from '../../../constants/general';
 import { useWalletConnect, useWrongNetworkCheck } from '../../../hooks';
 import { useAssetBalance } from '../../../hooks/useAssetBalance';
 import { translations } from '../../../locales/i18n';
 import { sharedState } from '../../../store/rxjs/shared-state';
-import { rskFaucet } from '../../../utils/constants';
 import { isMainnet, isTestnetFastBtcEnabled } from '../../../utils/helpers';
 
 export const Header: FC = () => {
@@ -123,7 +123,7 @@ export const Header: FC = () => {
               style={ButtonStyle.secondary}
               dataAttribute="dapp-header-funding"
               onClick={enableFastBtc ? handleFastBtcClick : noop}
-              href={enableFastBtc ? '' : rskFaucet}
+              href={enableFastBtc ? '' : RSK_FAUCET}
               hrefExternal={true}
               className="text-gray-10"
             />

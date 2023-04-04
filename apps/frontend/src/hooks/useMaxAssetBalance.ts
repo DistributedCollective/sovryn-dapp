@@ -10,9 +10,9 @@ import {
 import { ChainId } from '@sovryn/ethers-provider';
 import { Decimalish, Decimal } from '@sovryn/utils';
 
+import { GAS_LIMIT } from '../constants/gasLimits';
 import { CacheCallOptions } from '../store/rxjs/provider-cache';
 import { getRskChainId } from '../utils/chain';
-import { MAX_GAS_LIMIT } from '../utils/constants';
 import { composeGas } from '../utils/helpers';
 import { AssetBalanceResponse, useAssetBalance } from './useAssetBalance';
 import { useAsync } from './useAsync';
@@ -21,7 +21,7 @@ import { useGasPrice } from './useGasPrice';
 export const useMaxAssetBalance = (
   asset: SupportedTokens,
   chainId: ChainId = getRskChainId(),
-  gasLimit: Decimalish = MAX_GAS_LIMIT,
+  gasLimit: Decimalish = GAS_LIMIT.MAX,
   options?: Partial<CacheCallOptions>,
 ): AssetBalanceResponse => {
   const gasPrice = useGasPrice(chainId);

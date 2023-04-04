@@ -3,13 +3,13 @@ import { useTranslation } from 'react-i18next';
 import { SupportedTokens } from '@sovryn/contracts';
 import { prettyTx } from '@sovryn/ui';
 
-import { translations } from '../../../../locales/i18n';
-import { Bitcoin } from '../../../../utils/constants';
-import { formatValue } from '../../../../utils/math';
 import {
+  BITCOIN,
   BTC_RENDER_PRECISION,
   TOKEN_RENDER_PRECISION,
-} from '../../ZeroLocForm/constants';
+} from '../../../../constants/currencies';
+import { translations } from '../../../../locales/i18n';
+import { formatValue } from '../../../../utils/math';
 import { chartConfig } from '../utils';
 import { useAccount } from './../../../../hooks/useAccount';
 
@@ -46,7 +46,7 @@ export const useGetChartOptions = (
               `${t(translations.chart.collateralAmount)}: ${formatValue(
                 Number(collateral),
                 BTC_RENDER_PRECISION,
-              )} ${Bitcoin}`,
+              )} ${BITCOIN}`,
               `${t(translations.chart.debtAmount)}: ${formatValue(
                 Number(debt),
                 TOKEN_RENDER_PRECISION,

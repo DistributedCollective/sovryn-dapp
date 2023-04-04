@@ -12,16 +12,11 @@ import {
   TransactionType,
 } from '../../../3_organisms/TransactionStepDialog/TransactionStepDialog.types';
 import { isTransactionRequest } from '../../../3_organisms/TransactionStepDialog/helpers';
+import { GAS_LIMIT } from '../../../../constants/gasLimits';
 import { useTransactionContext } from '../../../../contexts/TransactionContext';
 import { useAccount } from '../../../../hooks/useAccount';
 import { translations } from '../../../../locales/i18n';
 import { getRskChainId } from '../../../../utils/chain';
-import {
-  GAS_LIMIT_STABILITY_POOL,
-  GAS_LIMIT_STABILITY_POOL_DLLR,
-  GAS_LIMIT_STABILITY_POOL_DLLR_INC_WITHDRAW,
-  GAS_LIMIT_STABILITY_POOL_INC_WITHDRAW,
-} from '../../../../utils/constants';
 import {
   UNSIGNED_PERMIT,
   permitHandler,
@@ -58,12 +53,12 @@ export const useHandleStabilityDeposit = (
     let gasLimitToUse: BigNumberish;
     if (isDllrToken) {
       gasLimitToUse = hasRewardsToClaim
-        ? GAS_LIMIT_STABILITY_POOL_DLLR_INC_WITHDRAW
-        : GAS_LIMIT_STABILITY_POOL_DLLR;
+        ? GAS_LIMIT.STABILITY_POOL_DLLR_INC_WITHDRAW
+        : GAS_LIMIT.STABILITY_POOL_DLLR;
     } else {
       gasLimitToUse = hasRewardsToClaim
-        ? GAS_LIMIT_STABILITY_POOL_INC_WITHDRAW
-        : GAS_LIMIT_STABILITY_POOL;
+        ? GAS_LIMIT.STABILITY_POOL_INC_WITHDRAW
+        : GAS_LIMIT.STABILITY_POOL;
     }
     setTransactions([
       {
@@ -131,8 +126,8 @@ export const useHandleStabilityDeposit = (
           ? [weiAmount, UNSIGNED_PERMIT]
           : [weiAmount, ethers.constants.AddressZero],
         gasLimit: isDllrToken
-          ? GAS_LIMIT_STABILITY_POOL_DLLR
-          : GAS_LIMIT_STABILITY_POOL,
+          ? GAS_LIMIT.STABILITY_POOL_DLLR
+          : GAS_LIMIT.STABILITY_POOL,
       },
       onComplete,
       updateHandler: permitHandler((req, res) => {

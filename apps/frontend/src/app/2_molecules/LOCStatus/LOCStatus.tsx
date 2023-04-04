@@ -8,10 +8,10 @@ import { Button, ButtonSize, ButtonStyle } from '@sovryn/ui';
 import { Decimal } from '@sovryn/utils';
 
 import {
-  TOKEN_RENDER_PRECISION,
+  BITCOIN,
   BTC_RENDER_PRECISION,
-} from '../../3_organisms/ZeroLocForm/constants';
-import { Bitcoin } from '../../../utils/constants';
+  TOKEN_RENDER_PRECISION,
+} from '../../../constants/currencies';
 import { AmountRenderer } from '../AmountRenderer/AmountRenderer';
 import { CRatioIndicator } from './components/CRatioIndicator/CRatioIndicator';
 import { LOCStat } from './components/LOCStat/LOCStat';
@@ -55,7 +55,7 @@ export const LOCStatus: FC<LOCStatusProps> = ({
         {hasWithdrawalSurplus && (
           <LOCStat
             label={t('LOCStatus.withdrawalSurplus')}
-            value={`${withdrawalSurplus} ${Bitcoin}`}
+            value={`${withdrawalSurplus} ${BITCOIN}`}
           />
         )}
         {showOpenLOC && (
@@ -65,7 +65,7 @@ export const LOCStatus: FC<LOCStatusProps> = ({
               value={
                 <AmountRenderer
                   value={collateral}
-                  suffix={Bitcoin}
+                  suffix={BITCOIN}
                   precision={BTC_RENDER_PRECISION}
                   dataAttribute="loc-status-collateral"
                   isAnimated

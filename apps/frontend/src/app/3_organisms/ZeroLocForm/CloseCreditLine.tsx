@@ -25,18 +25,22 @@ import { useAssetBalance } from '../../../hooks/useAssetBalance';
 import { useMaintenance } from '../../../hooks/useMaintenance';
 import { translations } from '../../../locales/i18n';
 import { Row } from './Row';
+import { useZeroData } from './hooks/useZeroData';
 
 type CloseCreditLineProps = {
   collateralValue: Decimal;
   creditValue: Decimal;
   onSubmit: (token: SupportedTokens) => void;
+  rbtcPrice: Decimal;
 };
 
 export const CloseCreditLine: FC<CloseCreditLineProps> = ({
   collateralValue,
   creditValue,
   onSubmit,
+  rbtcPrice,
 }) => {
+  const { isRecoveryMode } = useZeroData(rbtcPrice);
   const [creditToken, setCreditToken] = useState<SupportedTokens>(
     SupportedTokens.dllr,
   );
@@ -78,8 +82,8 @@ export const CloseCreditLine: FC<CloseCreditLineProps> = ({
   );
 
   const submitButtonDisabled = useMemo(
-    () => hasError || isInMaintenance,
-    [isInMaintenance, hasError],
+    () => hasError || isInMaintenance || isRecoveryMode,
+    [isInMaintenance, hasError, isRecoveryMode],
   );
 
   const tokenOptions = useMemo(
@@ -153,6 +157,14 @@ export const CloseCreditLine: FC<CloseCreditLineProps> = ({
             token: creditToken.toUpperCase(),
           })}
           dataAttribute="close-credit-line-error"
+        />
+      )}
+
+      {isRecoveryMode && (
+        <ErrorBadge
+          level={ErrorLevel.Critical}
+          message={t(translations.closeCreditLine.isRecoveryModeError)}
+          dataAttribute="close-credit-line-recovery-error"
         />
       )}
 

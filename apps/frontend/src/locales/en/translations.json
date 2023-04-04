@@ -276,7 +276,8 @@
                 "tooltip": "Amount of collateral to receive"
             }
         },
-        "error": "You need an additional {{amount}} {{token}} in order to close your line of credit."
+        "error": "You need an additional {{amount}} {{token}} in order to close your line of credit.",
+        "isRecoveryModeError": "Cannot close during recovery mode."
     },
     "collateralRatio": {
         "title": "Collateral Ratio",

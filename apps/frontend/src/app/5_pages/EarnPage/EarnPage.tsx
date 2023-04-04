@@ -35,8 +35,8 @@ import { MaxButton } from '../../2_molecules/MaxButton/MaxButton';
 import {
   CRITICAL_COLLATERAL_RATIO,
   MINIMUM_COLLATERAL_RATIO,
-  TOKEN_RENDER_PRECISION,
 } from '../../3_organisms/ZeroLocForm/constants';
+import { TOKEN_RENDER_PRECISION } from '../../../constants/currencies';
 import { useAccount } from '../../../hooks/useAccount';
 import { useAmountInput } from '../../../hooks/useAmountInput';
 import { useAssetBalance } from '../../../hooks/useAssetBalance';

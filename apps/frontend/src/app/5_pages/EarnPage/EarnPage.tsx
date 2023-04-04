@@ -32,13 +32,20 @@ import { Decimal } from '@sovryn/utils';
 import { AmountRenderer } from '../../2_molecules/AmountRenderer/AmountRenderer';
 import { AssetRenderer } from '../../2_molecules/AssetRenderer/AssetRenderer';
 import { MaxButton } from '../../2_molecules/MaxButton/MaxButton';
-import { TOKEN_RENDER_PRECISION } from '../../3_organisms/ZeroLocForm/constants';
+import {
+  CRITICAL_COLLATERAL_RATIO,
+  MINIMUM_COLLATERAL_RATIO,
+  TOKEN_RENDER_PRECISION,
+} from '../../3_organisms/ZeroLocForm/constants';
 import { useAccount } from '../../../hooks/useAccount';
 import { useAmountInput } from '../../../hooks/useAmountInput';
 import { useAssetBalance } from '../../../hooks/useAssetBalance';
 import { useBlockNumber } from '../../../hooks/useBlockNumber';
 import { useMaintenance } from '../../../hooks/useMaintenance';
+import { useGetRBTCPrice } from '../../../hooks/zero/useGetRBTCPrice';
+import { useGetTroves } from '../../../hooks/zero/useGetTroves';
 import { translations } from '../../../locales/i18n';
+import { calculateCollateralRatio } from '../../../utils/helpers';
 import { formatValue, decimalic } from '../../../utils/math';
 import { tokenList } from './EarnPage.types';
 import { useHandleStabilityDeposit } from './hooks/useHandleStabilityDeposit';
@@ -57,11 +64,26 @@ const EarnPage: FC = () => {
 
   const { account } = useAccount();
   const { value: block } = useBlockNumber();
+  const { price } = useGetRBTCPrice();
+  const [isRecoveryMode, setIsRecoveryMode] = useState(false);
+  const [isUnderCollateralized, setIsUnderCollateralized] = useState(false);
+  const [showUnderCollateralizedError, setShowUnderCollateralizedError] =
+    useState(false);
+
+  const {
+    data: troves,
+    loading: loadingTroves,
+    refetch: refetchTroves,
+  } = useGetTroves();
 
   const { liquity } = useLoaderData() as {
     liquity: EthersLiquity;
     provider: ReadableEthersLiquityWithStore;
   };
+
+  useEffect(() => {
+    refetchTroves();
+  }, [refetchTroves, block]);
 
   const getStabilityDeposit = useCallback(() => {
     if (account) {
@@ -94,12 +116,19 @@ const EarnPage: FC = () => {
       return;
     }
 
+    liquity.getTotal().then(result => {
+      if (price) {
+        const recoveryMode = result.collateralRatioIsBelowCritical(price);
+        setIsRecoveryMode(recoveryMode);
+      }
+    });
+
     liquity
       .getStabilityDeposit(account)
       .then(result =>
         setRewardsAmount(decimalic(result.collateralGain.toString())),
       );
-  }, [liquity, account, block]);
+  }, [liquity, account, price, block]);
 
   const hasRewardsToClaim = useMemo(
     () => Number(rewardsAmount) > 0,
@@ -191,7 +220,7 @@ const EarnPage: FC = () => {
     setAmount('0');
   }, [getStabilityDeposit, getZUSDInStabilityPool, setAmount]);
 
-  const handleSubmit = useHandleStabilityDeposit(
+  const handleSubmitStabilityDeposit = useHandleStabilityDeposit(
     token,
     decimalic(amount),
     hasRewardsToClaim,
@@ -272,11 +301,30 @@ const EarnPage: FC = () => {
     () =>
       !account ||
       !amount ||
+      loadingTroves ||
       Number(amount) <= 0 ||
       !isValidAmount ||
+      isInMaintenance ||
+      isUnderCollateralized,
+    [
+      account,
+      amount,
+      isValidAmount,
       isInMaintenance,
-    [account, amount, isValidAmount, isInMaintenance],
+      loadingTroves,
+      isUnderCollateralized,
+    ],
   );
+
+  const handleSubmit = useCallback(() => {
+    if (isUnderCollateralized) {
+      setShowUnderCollateralizedError(true);
+      return;
+    }
+    if (!isSubmitDisabled) {
+      handleSubmitStabilityDeposit();
+    }
+  }, [isSubmitDisabled, handleSubmitStabilityDeposit, isUnderCollateralized]);
 
   const tokenOptions = useMemo(
     () =>
@@ -292,6 +340,40 @@ const EarnPage: FC = () => {
       })),
     [],
   );
+
+  useEffect(() => {
+    if (index || amount || token) {
+      setShowUnderCollateralizedError(false);
+    }
+  }, [amount, token, index]);
+
+  useEffect(() => {
+    if (index !== 1 || isInMaintenance) {
+      setIsUnderCollateralized(false);
+      return;
+    }
+
+    if (troves?.troves) {
+      const isLowTroveExists = troves.troves.reduce(
+        (acc, { collateral, debt }) => {
+          const collateralRatio = calculateCollateralRatio(
+            Number(collateral),
+            Number(debt),
+            Number(price),
+          );
+
+          const isRatioBelowThreshold = isRecoveryMode
+            ? Decimal.from(collateralRatio).lt(CRITICAL_COLLATERAL_RATIO)
+            : Decimal.from(collateralRatio).lt(MINIMUM_COLLATERAL_RATIO);
+
+          return acc || isRatioBelowThreshold;
+        },
+        false,
+      );
+
+      setIsUnderCollateralized(isLowTroveExists);
+    }
+  }, [troves, index, price, isRecoveryMode, isInMaintenance]);
 
   return (
     <>
@@ -397,15 +479,22 @@ const EarnPage: FC = () => {
             type={ButtonType.reset}
             style={ButtonStyle.primary}
             text={t(commonTranslations.buttons.confirm)}
-            className="w-full mt-8"
+            className={classNames('w-full mt-8', {
+              'opacity-30 cursor-not-allowed bg-primary': isSubmitDisabled,
+            })}
             onClick={handleSubmit}
-            disabled={isSubmitDisabled}
             dataAttribute="earn-submit"
           />
           {isInMaintenance && (
             <ErrorBadge
               level={ErrorLevel.Warning}
               message={t(translations.maintenanceMode.featureDisabled)}
+            />
+          )}
+          {showUnderCollateralizedError && (
+            <ErrorBadge
+              level={ErrorLevel.Critical}
+              message={t(translations.earnPage.form.undercollateralized)}
             />
           )}
         </div>

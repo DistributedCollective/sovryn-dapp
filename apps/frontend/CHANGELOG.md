@@ -1,5 +1,25 @@
 # frontend
 
+## 1.0.7
+
+### Patch Changes
+
+- 9a722d9: SOV-2060: Long decimal precision on Transaction Dialog amounts
+- 5ea180a: SOV-1769: Make sure all transaction headers are left aligned
+- 4b77135: SOV-2056: Convert page amount inputs not always resetting after tx
+- 818e7d4: SOV-2025: loading screens
+- 04604d1: SOV-1875: Disable Stability Pool withdrawals when Troves with ICR < MCR
+- deaad83: SOV-1876: disable closing LoC when in Recovery mode
+- 8829064: SOV-2064: maintenance mode optimizations
+- 63aabb2: SOV-2061: D2 DLLR stats not staying in sync
+- 9c71057: SOV-1814: Exception in console when disconnecting wallet on the Rewards page
+- 70531d7: SOV-1906: Constants refactoring
+- Updated dependencies [a89d4eb]
+- Updated dependencies [818e7d4]
+- Updated dependencies [c1963c8]
+  - @sovryn/ui@1.0.2
+  - @sovryn/tailwindcss-config@1.0.1
+
 ## 1.0.6
 
 ### Patch Changes

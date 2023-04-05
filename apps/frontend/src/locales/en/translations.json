@@ -50,7 +50,8 @@
         },
         "loader": {
             "loading": "Loading Zero data",
-            "error": "Error loading Zero data, please try again"
+            "error": "Error loading Zero data, please try again",
+            "pageLoading": "is loading..."
         }
     },
     "connectWalletButton": {
@@ -629,5 +630,9 @@
             "title": "Unsubscribed",
             "subtitle": "Your email address has been unsubscribed from all Sovryn email notifications and removed from the notification system. You can sign up again at any time by visiting the email notification settings section of the Sovryn app."
         }
+    },
+    "loader": {
+      "loading": "is loading...",
+      "error": "Error loading data, please try again."
     }
 }

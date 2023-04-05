@@ -15,7 +15,7 @@
   }
 
   * {
-    @apply font-roboto scrollbars-wide;
+    @apply font-body scrollbars-wide;
   }
 
   *:focus {

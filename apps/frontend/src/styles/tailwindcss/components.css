@@ -10,7 +10,7 @@
 
     .header-link,
     .header-link:visited {
-      @apply font-body normal-case no-underline text-sov-white text-base transition;
+      @apply font-montserrat normal-case no-underline text-sov-white text-base transition;
     }
 
     .header-link:hover,
@@ -27,7 +27,7 @@
       height: 3rem;
       letter-spacing: 0.1rem;
       @apply flex flex-row items-center justify-center;
-      @apply text-primary uppercase text-xl font-black leading-none font-body;
+      @apply text-primary uppercase text-xl font-black leading-none font-montserrat;
       @apply px-6 py-2;
       @apply border lg:rounded;
       @apply transition;

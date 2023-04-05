@@ -1,5 +1,5 @@
 .link {
-  @apply underline text-xs font-medium font-roboto;
+  @apply underline text-xs font-medium font-body;
   line-height: 14px;
 
   &.primary {

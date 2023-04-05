@@ -9,7 +9,7 @@ import { getZeroProvider } from './utils/zero-provider';
 export type ZeroPageLoaderData = {
   liquity: EthersLiquity;
   provider: ReadableEthersLiquity;
-  deferedData: Promise<[string, Fees]>;
+  deferredData: Promise<[string, Fees]>;
 };
 
 export const zeroPageLoader = async () => {
@@ -18,7 +18,7 @@ export const zeroPageLoader = async () => {
   return defer({
     liquity: ethers,
     provider,
-    deferedData: Promise.all([
+    deferredData: Promise.all([
       ethers.getPrice().then(result => decimalic(result.toString())),
       ethers.getFees(),
     ]),

@@ -4,4 +4,5 @@ export const animationMap = {
   progressDots: import('./animations/progress-dots-blue.json').then(
     m => m.default,
   ),
+  bugHunting: import('./animations/bug-hunting.json').then(m => m.default),
 } as const;

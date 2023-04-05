@@ -33,7 +33,9 @@ export const PageContainer: FC<PageContainerProps> = ({
       ) : (
         <>
           <Header />
-          <div className={classNames('my-2 px-4 flex-grow', contentClassName)}>
+          <div
+            className={classNames('my-2 px-4 flex flex-grow', contentClassName)}
+          >
             <Outlet />
           </div>
         </>

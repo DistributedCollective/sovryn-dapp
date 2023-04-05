@@ -21,6 +21,7 @@ import { Decimal, Percent } from '@sovryn/utils';
 import { BITCOIN } from '../../../../constants/currencies';
 import { useBlockNumber } from '../../../../hooks/useBlockNumber';
 import { translations } from '../../../../locales/i18n';
+import { calculateCollateralRatio } from '../../../../utils/helpers';
 import {
   formatCompactValue,
   formatValue,
@@ -28,7 +29,6 @@ import {
 } from '../../../../utils/math';
 import { AmountRenderer } from '../../AmountRenderer/AmountRenderer';
 import { SystemModeType } from '../types';
-import { calculateCollateralRatio } from '../utils';
 
 type ZeroStatsProps = {
   className?: string;
@@ -136,9 +136,9 @@ export const ZeroStats: FC<ZeroStatsProps> = ({ className, dataAttribute }) => {
         setIsRecoveryMode(recoveryMode);
         setCollateralRatio(
           calculateCollateralRatio(
-            result.collateral.toString(),
-            result.debt.toString(),
-            zeroPrice.toString(),
+            decimalic(result.collateral.toString()),
+            decimalic(result.debt.toString()),
+            decimalic(zeroPrice.toString()),
           ).toString(),
         );
       }

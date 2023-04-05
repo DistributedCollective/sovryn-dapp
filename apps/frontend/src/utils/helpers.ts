@@ -130,3 +130,9 @@ export const areAddressesEqual = (address1: string, address2: string) =>
 
 export const getChangelogUrl = (commit: string) =>
   `${GITHUB_LINKS.DAPP}/blob/${encodeURI(commit)}/apps/frontend/CHANGELOG.md`;
+
+export const calculateCollateralRatio = (
+  collateral: Decimalish,
+  debt: Decimalish,
+  price: Decimalish,
+) => decimalic(collateral).mul(price).div(debt).mul(100);

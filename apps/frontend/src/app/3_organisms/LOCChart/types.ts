@@ -1,8 +1,10 @@
+import { Decimalish } from '@sovryn/utils';
+
 export type TroveData = {
   id: string;
-  debt: number;
-  collateral: number;
-  collateralRatio: number;
+  debt: Decimalish;
+  collateral: Decimalish;
+  collateralRatio: Decimalish;
   collateralRatioSortKey_legacy: string;
 };
 

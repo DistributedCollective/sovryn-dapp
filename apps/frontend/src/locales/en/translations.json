@@ -310,7 +310,8 @@
         "title": "Stability pool",
         "subtitle": "Earn BTC by providing liquidity for liquidations",
         "form": {
-            "invalidAmountError": "Exceeds maximum amount"
+            "invalidAmountError": "Exceeds maximum amount",
+            "undercollateralized": "Withdrawals disabled – one or more LOCs are undercollateralized"
         },
         "currentPoolShare": "Current pool share",
         "currentPoolBalance": "Current pool balance",

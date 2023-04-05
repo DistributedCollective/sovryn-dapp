@@ -1,5 +1,13 @@
 # @sovryn/ui
 
+## 1.0.2
+
+### Patch Changes
+
+- a89d4eb: SOV-2024: fix tooltip on mobile
+- 818e7d4: SOV-2025: loading screens
+- c1963c8: SOV-1919: Page/chart is cut after the page refresh
+
 ## 1.0.1
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # @sovryn/tailwindcss-config
 
+## 1.0.1
+
+### Patch Changes
+
+- 818e7d4: SOV-2025: loading screens
+
 ## 1.0.0
 
 ### Major Changes

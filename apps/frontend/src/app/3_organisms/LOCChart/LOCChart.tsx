@@ -22,7 +22,7 @@ import {
   areAddressesEqual,
   calculateCollateralRatio,
 } from '../../../utils/helpers';
-import { fromWei } from '../../../utils/math';
+import { decimalic, fromWei } from '../../../utils/math';
 import { useGetChartOptions } from './hooks/useGetChartOptions';
 import { useGetGlobalsEntity } from './hooks/useGetGlobalsEntity';
 import { useGetUserOpenTrove } from './hooks/useGetUserOpenTrove';
@@ -165,9 +165,9 @@ export const LOCChart: FC = () => {
           collateralRatioSortKey_legacy:
             trove.collateralRatioSortKey_legacy ?? '',
           collateralRatio: calculateCollateralRatio(
-            Number(collateralAmount),
-            Number(debtAmount),
-            Number(price),
+            decimalic(collateralAmount.toString()),
+            decimalic(debtAmount.toString()),
+            decimalic(price),
           ),
         };
       });
@@ -235,7 +235,7 @@ export const LOCChart: FC = () => {
         setDataToShow(slicedData);
       }
 
-      setUserCollateralRatio(data[index].collateralRatio);
+      setUserCollateralRatio(decimalic(data[index].collateralRatio).toNumber());
       setActiveBar(true);
     }
   }, [

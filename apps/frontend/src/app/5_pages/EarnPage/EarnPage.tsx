@@ -342,13 +342,8 @@ const EarnPage: FC = () => {
   );
 
   useEffect(() => {
-    if (index) {
-      setShowUnderCollateralizedError(false);
-    }
-  }, [index]);
-
-  useEffect(() => {
     if (index !== 1 || isInMaintenance) {
+      setShowUnderCollateralizedError(false);
       setIsUnderCollateralized(false);
       return;
     }
@@ -357,14 +352,14 @@ const EarnPage: FC = () => {
       const isLowTroveExists = troves.troves.reduce(
         (acc, { collateral, debt }) => {
           const collateralRatio = calculateCollateralRatio(
-            Number(collateral),
-            Number(debt),
-            Number(price),
+            decimalic(collateral),
+            decimalic(debt),
+            decimalic(price),
           );
 
           const isRatioBelowThreshold = isRecoveryMode
-            ? Decimal.from(collateralRatio).lt(CRITICAL_COLLATERAL_RATIO)
-            : Decimal.from(collateralRatio).lt(MINIMUM_COLLATERAL_RATIO);
+            ? collateralRatio.lt(CRITICAL_COLLATERAL_RATIO)
+            : collateralRatio.lt(MINIMUM_COLLATERAL_RATIO);
 
           return acc || isRatioBelowThreshold;
         },

@@ -1,3 +1,4 @@
+import { decimalic } from '../../../utils/math';
 import { TroveData } from './types';
 
 export const chartConfig = {
@@ -23,7 +24,9 @@ export const chartConfig = {
 };
 
 export const sortData = (data: TroveData[]) =>
-  data.sort((a, b) => a.collateralRatio - b.collateralRatio);
+  data.sort((a, b) =>
+    decimalic(a.collateralRatio).sub(b.collateralRatio).toNumber(),
+  );
 
 export const calculateRedemptionBuffer = (
   debt: number,

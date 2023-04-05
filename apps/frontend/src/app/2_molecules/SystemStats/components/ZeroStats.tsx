@@ -136,9 +136,9 @@ export const ZeroStats: FC<ZeroStatsProps> = ({ className, dataAttribute }) => {
         setIsRecoveryMode(recoveryMode);
         setCollateralRatio(
           calculateCollateralRatio(
-            Number(result.collateral),
-            Number(result.debt),
-            Number(zeroPrice),
+            decimalic(result.collateral.toString()),
+            decimalic(result.debt.toString()),
+            decimalic(zeroPrice.toString()),
           ).toString(),
         );
       }

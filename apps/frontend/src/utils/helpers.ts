@@ -130,7 +130,7 @@ export const getChangelogUrl = (commit: string) =>
   `${GITHUB_LINKS.DAPP}/blob/${encodeURI(commit)}/apps/frontend/CHANGELOG.md`;
 
 export const calculateCollateralRatio = (
-  collateral: number,
-  debt: number,
-  price: number,
-) => ((collateral * price) / debt) * 100;
+  collateral: Decimalish,
+  debt: Decimalish,
+  price: Decimalish,
+) => decimalic(collateral).mul(price).div(debt).mul(100);

@@ -358,8 +358,8 @@ const EarnPage: FC = () => {
           );
 
           const isRatioBelowThreshold = isRecoveryMode
-            ? collateralRatio.lt(CRITICAL_COLLATERAL_RATIO)
-            : collateralRatio.lt(MINIMUM_COLLATERAL_RATIO);
+            ? collateralRatio.lt(CRITICAL_COLLATERAL_RATIO.mul(100))
+            : collateralRatio.lt(MINIMUM_COLLATERAL_RATIO.mul(100));
 
           return acc || isRatioBelowThreshold;
         },

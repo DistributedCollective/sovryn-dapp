@@ -224,6 +224,7 @@ const ZeroPage: FC<ZeroPageProps> = ({ deferred: [price, fees] }) => {
               onSubmit={handleTroveClose}
               creditValue={debt.sub(LIQUIDATION_RESERVE_AMOUNT)}
               collateralValue={collateral}
+              rbtcPrice={price}
             />
           </DialogBody>
         </Dialog>

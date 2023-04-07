@@ -77,7 +77,7 @@ const RewardsPage: FC = () => {
       <Helmet>
         <title>{t(translations.rewardPage.meta.title)}</title>
       </Helmet>
-      <div className="flex flex-col items-center mt-6 sm:mt-28">
+      <div className="flex flex-col items-center mt-6 sm:mt-28 w-full">
         <Heading className="font-medium mb-4" type={HeadingType.h1}>
           {t(translations.rewardPage.title)}
         </Heading>

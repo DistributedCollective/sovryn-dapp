@@ -22,7 +22,7 @@
   }
 
   &:focus {
-    @apply outline outline-1 outline-gray-50 bg-gray-60;
+    @apply border border-gray-50 bg-gray-60;
   }
 
   &:disabled {
@@ -34,7 +34,7 @@
   }
 
   &:read-only:not(:disabled) {
-    @apply bg-gray-70/50 outline outline-1 outline-gray-50 text-gray-30;
+    @apply bg-gray-70/50 border border-gray-50 text-gray-30;
   }
 
   &[type='number'] {
@@ -49,5 +49,5 @@
 }
 
 .invalid {
-  @apply outline outline-1 outline-error-light bg-gray-60;
+  @apply border border-error-light bg-gray-60;
 }

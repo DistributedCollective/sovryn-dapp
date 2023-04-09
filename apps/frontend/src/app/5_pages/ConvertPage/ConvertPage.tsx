@@ -203,7 +203,7 @@ const ConvertPage: FC = () => {
               />
             </div>
 
-            <div className="w-full flex flex-row justify-between items-center gap-3 mt-3.5">
+            <div className="w-full flex flex-row justify-between items-center gap-3 mt-3.5 rounded">
               <AmountInput
                 value={amountInput}
                 onChangeText={setAmount}
@@ -254,7 +254,7 @@ const ConvertPage: FC = () => {
               {t(pageTranslations.form.convertTo)}
             </Paragraph>
 
-            <div className="w-full flex flex-row justify-between items-center gap-3 mt-3.5">
+            <div className="w-full flex flex-row justify-between items-center gap-3 mt-3.5 rounded">
               <AmountInput
                 value={amount}
                 label={t(commonTranslations.amount)}

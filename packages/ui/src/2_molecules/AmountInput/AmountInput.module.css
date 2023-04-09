@@ -3,10 +3,10 @@
 }
 
 .container {
-  @apply text-xs relative flex text-gray-20 flex-grow rounded [transform:translateZ(0)] bg-gray-60 items-center px-2 outline outline-1 outline-gray-50;
+  @apply text-xs relative flex text-gray-20 flex-grow rounded bg-gray-60 items-center px-2 border border-gray-50;
 
   &:hover {
-    @apply outline-gray-40;
+    @apply border-gray-40;
   }
 }
 
@@ -43,27 +43,27 @@
 }
 
 .invalid {
-  @apply outline outline-1 outline-error-light bg-gray-60;
+  @apply border border-error-light bg-gray-60;
 
   &:hover {
-    @apply outline-error-light;
+    @apply border-error-light;
   }
 }
 
 .focus {
-  @apply outline outline-1 outline-primary-20 bg-gray-70;
+  @apply border border-primary-20 bg-gray-70;
 
   &:hover {
-    @apply outline-primary-20;
+    @apply border-primary-20;
   }
 }
 
 .readOnly {
-  @apply bg-gray-70/50 outline outline-1 outline-gray-50 text-gray-20 pointer-events-none;
+  @apply bg-gray-70/50 border border-gray-50 text-gray-20 pointer-events-none;
 }
 
 .disabled {
-  @apply cursor-not-allowed bg-gray-70-ol text-gray-20/50 pointer-events-none outline-none;
+  @apply cursor-not-allowed bg-gray-70-ol text-gray-20/50 pointer-events-none outline-none border-0;
 }
 
 .disabledInput {

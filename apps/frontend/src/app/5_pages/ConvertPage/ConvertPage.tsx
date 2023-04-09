@@ -211,7 +211,7 @@ const ConvertPage: FC = () => {
                 min={0}
                 invalid={!isValidAmount}
                 disabled={!account}
-                className="w-full flex-grow-0 flex-shrink"
+                className="w-full flex-grow-0 flex-shrink rounded"
                 dataAttribute="convert-from-amount"
                 placeholder="0"
               />

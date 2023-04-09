@@ -3,7 +3,7 @@
 }
 
 .container {
-  @apply text-xs relative flex text-gray-20 flex-grow rounded bg-gray-60 items-center px-2 outline outline-1 outline-gray-50;
+  @apply text-xs relative flex text-gray-20 flex-grow rounded [transform:translateZ(0)] bg-gray-60 items-center px-2 outline outline-1 outline-gray-50;
 
   &:hover {
     @apply outline-gray-40;
@@ -59,11 +59,11 @@
 }
 
 .readOnly {
-  @apply bg-gray-70/50 outline outline-1 outline-gray-50 text-gray-20 pointer-events-none rounded;
+  @apply bg-gray-70/50 outline outline-1 outline-gray-50 text-gray-20 pointer-events-none;
 }
 
 .disabled {
-  @apply cursor-not-allowed bg-gray-70-ol text-gray-20/50 pointer-events-none outline-none rounded;
+  @apply cursor-not-allowed bg-gray-70-ol text-gray-20/50 pointer-events-none outline-none;
 }
 
 .disabledInput {

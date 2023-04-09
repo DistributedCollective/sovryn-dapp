@@ -203,7 +203,7 @@ const ConvertPage: FC = () => {
               />
             </div>
 
-            <div className="w-full flex flex-row justify-between items-center gap-3 mt-3.5 rounded">
+            <div className="w-full flex flex-row justify-between items-center gap-3 mt-3.5">
               <AmountInput
                 value={amountInput}
                 onChangeText={setAmount}
@@ -211,7 +211,7 @@ const ConvertPage: FC = () => {
                 min={0}
                 invalid={!isValidAmount}
                 disabled={!account}
-                className="w-full flex-grow-0 flex-shrink rounded"
+                className="w-full flex-grow-0 flex-shrink"
                 dataAttribute="convert-from-amount"
                 placeholder="0"
               />
@@ -254,7 +254,7 @@ const ConvertPage: FC = () => {
               {t(pageTranslations.form.convertTo)}
             </Paragraph>
 
-            <div className="w-full flex flex-row justify-between items-center gap-3 mt-3.5 rounded">
+            <div className="w-full flex flex-row justify-between items-center gap-3 mt-3.5">
               <AmountInput
                 value={amount}
                 label={t(commonTranslations.amount)}

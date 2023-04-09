@@ -22,11 +22,11 @@
   }
 
   &:focus {
-    @apply outline outline-1 outline-gray-50 bg-gray-60 rounded;
+    @apply outline outline-1 outline-gray-50 bg-gray-60;
   }
 
   &:disabled {
-    @apply cursor-not-allowed bg-gray-70-ol text-gray-10/50 rounded;
+    @apply cursor-not-allowed bg-gray-70-ol text-gray-10/50;
 
     &::placeholder {
       @apply text-gray-30/50;
@@ -34,7 +34,7 @@
   }
 
   &:read-only:not(:disabled) {
-    @apply bg-gray-70/50 outline outline-1 outline-gray-50 text-gray-30 rounded;
+    @apply bg-gray-70/50 outline outline-1 outline-gray-50 text-gray-30;
   }
 
   &[type='number'] {

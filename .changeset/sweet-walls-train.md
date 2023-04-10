@@ -2,4 +2,4 @@
 "@sovryn/ui": patch
 ---
 
-chore: test fix for borders
+SOV-1584: AmountInput -> iOS -> Unexpected border appears

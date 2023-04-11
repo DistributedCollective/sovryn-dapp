@@ -58,13 +58,7 @@ export const useGetChartOptions = (
               )}%`,
             ];
 
-            if (
-              areAddressesEqual(
-                context[0].raw.id.toLowerCase(),
-                account.toLowerCase(),
-              ) &&
-              activeBar
-            ) {
+            if (areAddressesEqual(context[0].raw.id, account) && activeBar) {
               tooltipContent.push(
                 `${t(translations.chart.redemptionBuffer)}: ${formatValue(
                   redemptionBuffer,

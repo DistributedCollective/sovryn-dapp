@@ -36,7 +36,12 @@ const RewardsPage = loadable(
 export const router = createBrowserRouter([
   {
     path: '/',
-    element: <PageContainer className="flex flex-col" />,
+    element: (
+      <PageContainer
+        className="flex flex-col"
+        contentClassName="justify-center"
+      />
+    ),
     errorElement: <ErrorPage />,
     children: [
       {

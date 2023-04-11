@@ -21,4 +21,10 @@ export const rsk: Record<string, AsyncContractConfigData> = {
       (await import('@sovryn-zero/lib-ethers/dist/abi/StabilityPool.json'))
         .default,
   },
+  liquityBaseParams: {
+    address: addresses.liquityBaseParams,
+    getAbi: async () =>
+      (await import('@sovryn-zero/lib-ethers/dist/abi/LiquityBaseParams.json'))
+        .default,
+  },
 };

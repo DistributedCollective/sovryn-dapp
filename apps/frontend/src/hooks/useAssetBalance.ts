@@ -26,6 +26,7 @@ export type AssetBalanceResponse = {
   decimalPrecision?: number;
   loading: boolean;
   error: Error | null;
+  hashedArgs?: string;
 };
 
 export const useAssetBalance = (
@@ -51,6 +52,7 @@ export const useAssetBalance = (
     bigNumberBalance: BigNumber.from(0),
     loading: false,
     error: null,
+    hashedArgs: '',
   });
 
   useEffect(() => {
@@ -71,12 +73,13 @@ export const useAssetBalance = (
         account,
       ]);
 
-      if (state.loading) {
+      if (hashedArgs === state.hashedArgs || state.loading) {
         return;
       }
 
       setState(prevState => ({
         ...prevState,
+        hashedArgs,
         loading: true,
       }));
 
@@ -127,6 +130,7 @@ export const useAssetBalance = (
         bigNumberBalance: BigNumber.from(0),
         loading: false,
         error: e,
+        hashedArgs: '',
       })),
     );
 
@@ -135,7 +139,16 @@ export const useAssetBalance = (
         sub.unsubscribe();
       }
     };
-  }, [account, asset, chainId, isMounted, options, block, state.loading]);
+  }, [
+    account,
+    asset,
+    chainId,
+    isMounted,
+    options,
+    block,
+    state.hashedArgs,
+    state.loading,
+  ]);
 
   return useMemo(
     () => ({

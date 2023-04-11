@@ -71,6 +71,15 @@ export const useAssetBalance = (
         account,
       ]);
 
+      if (state.loading) {
+        return;
+      }
+
+      setState(prevState => ({
+        ...prevState,
+        loading: true,
+      }));
+
       sub = observeCall(hashedArgs).subscribe(e => {
         const decimal = decimalic(
           fromWei(
@@ -85,6 +94,7 @@ export const useAssetBalance = (
           bigNumberBalance: bn,
           balance: decimal,
           decimalPrecision: tokenDetails.decimalPrecision,
+          loading: false,
         });
       });
 
@@ -125,7 +135,7 @@ export const useAssetBalance = (
         sub.unsubscribe();
       }
     };
-  }, [account, asset, chainId, isMounted, options, block]);
+  }, [account, asset, chainId, isMounted, options, block, state.loading]);
 
   return useMemo(
     () => ({

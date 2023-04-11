@@ -2,4 +2,4 @@
 '@sovryn/contracts': patch
 ---
 
-chore: add new contract
+SOV-2129: add liquity base contract

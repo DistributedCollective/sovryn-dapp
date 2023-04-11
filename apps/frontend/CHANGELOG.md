@@ -14,6 +14,7 @@
 - 63aabb2: SOV-2061: D2 DLLR stats not staying in sync
 - 9c71057: SOV-1814: Exception in console when disconnecting wallet on the Rewards page
 - 70531d7: SOV-1906: Constants refactoring
+- e54b8f3: SOV-2208: Rewards page layout is broken
 - Updated dependencies [a89d4eb]
 - Updated dependencies [818e7d4]
 - Updated dependencies [c1963c8]

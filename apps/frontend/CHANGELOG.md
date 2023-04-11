@@ -1,5 +1,11 @@
 # frontend
 
+## 1.0.8
+
+### Patch Changes
+
+- e54b8f3: SOV-2208: Staging -> Rewards page layout is broken
+
 ## 1.0.7
 
 ### Patch Changes

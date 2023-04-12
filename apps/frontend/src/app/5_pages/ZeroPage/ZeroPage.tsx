@@ -42,6 +42,7 @@ import { translations } from '../../../locales/i18n';
 import { decimalic } from '../../../utils/math';
 import { useClaimCollateralSurplus } from './hooks/useClaimCollateralSurplus';
 import { useHandleTrove } from './hooks/useHandleTrove';
+import { useLiquityBaseParams } from './hooks/useLiquityBaseParams';
 import { ZeroPageLoaderData } from './loader';
 
 type ZeroPageProps = {
@@ -80,6 +81,8 @@ const ZeroPage: FC<ZeroPageProps> = ({ deferred: [price, fees] }) => {
     () => !account || (!hasLoc && collateralSurplusBalance?.eq(0)),
     [account, collateralSurplusBalance, hasLoc],
   );
+
+  const { minBorrowingFeeRate } = useLiquityBaseParams();
 
   const getTroves = useCallback(() => {
     if (account && liquity) {
@@ -129,8 +132,8 @@ const ZeroPage: FC<ZeroPageProps> = ({ deferred: [price, fees] }) => {
   );
 
   const borrowingRate = useMemo(
-    () => decimalic(fees?.borrowingRate()?.toString()),
-    [fees],
+    () => decimalic(minBorrowingFeeRate.toString()),
+    [minBorrowingFeeRate],
   );
 
   return (

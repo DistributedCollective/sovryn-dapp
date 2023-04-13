@@ -77,12 +77,16 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
   const newDebt = useMemo(
     () =>
       Decimal.max(
-        existingDebt.add(
-          normalizeAmountByType(decimalic(debtAmount), debtType),
-        ),
+        existingDebt
+          .add(normalizeAmountByType(debtSize, debtType))
+          .add(
+            debtType === AmountType.Add
+              ? getOriginationFeeAmount(debtSize, borrowingRate)
+              : Decimal.ZERO,
+          ),
         Decimal.ZERO,
       ),
-    [debtAmount, existingDebt, debtType],
+    [existingDebt, debtType, debtSize, borrowingRate],
   );
 
   const newCollateral = useMemo(
@@ -229,7 +233,8 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
         initialRatio,
         CRITICAL_COLLATERAL_RATIO,
       );
-      if (ratio < ratioRequired) {
+
+      if (ratio.lt(ratioRequired)) {
         errors.push({
           level: ErrorLevel.Critical,
           message: t(translations.zeroPage.loc.errors.ratioDecreased, {

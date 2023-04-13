@@ -61,11 +61,10 @@ export const openTrove = async (
   const normalized = _normalizeTroveCreation(params);
   const { depositCollateral, borrowZUSD } = normalized;
 
-  const { minBorrowingFeeRate, maxBorrowingFeeRate } =
-    await getLiquityBaseParams();
-
   const { ethers } = await getZeroProvider();
-  const newTrove = Trove.create(normalized, minBorrowingFeeRate);
+  const fees = borrowZUSD && (await getLiquityBaseParams());
+
+  const newTrove = Trove.create(normalized, fees?.minBorrowingFeeRate);
 
   const value = depositCollateral ?? Decimal.ZERO;
 
@@ -74,7 +73,7 @@ export const openTrove = async (
   return {
     value: value.hex,
     fn: token === SupportedTokens.dllr ? 'openNueTrove' : 'openTrove',
-    args: [maxBorrowingFeeRate, borrowZUSD.hex, ...hints],
+    args: [fees?.maxBorrowingFeeRate, borrowZUSD.hex, ...hints],
   };
 };
 
@@ -89,15 +88,12 @@ export const adjustTrove = async (
 
   const { ethers } = await getZeroProvider();
 
-  const [trove] = await Promise.all([
+  const [trove, fees] = await Promise.all([
     ethers.getTrove(address),
-    borrowZUSD && ethers.getFees(),
+    borrowZUSD && getLiquityBaseParams(),
   ]);
 
-  const { minBorrowingFeeRate, maxBorrowingFeeRate } =
-    await getLiquityBaseParams();
-
-  const finalTrove = trove.adjust(normalized, minBorrowingFeeRate);
+  const finalTrove = trove.adjust(normalized, fees?.minBorrowingFeeRate);
 
   const value = depositCollateral ?? Decimal.ZERO;
 
@@ -107,7 +103,7 @@ export const adjustTrove = async (
     value: value.hex,
     fn: token === SupportedTokens.dllr ? 'adjustNueTrove' : 'adjustTrove',
     args: [
-      maxBorrowingFeeRate,
+      fees?.maxBorrowingFeeRate,
       (withdrawCollateral ?? Decimal.ZERO).hex,
       (borrowZUSD ?? repayZUSD ?? Decimal.ZERO).hex,
       !!borrowZUSD,

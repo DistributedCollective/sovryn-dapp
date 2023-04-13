@@ -1,9 +1,8 @@
 import { useEffect, useState } from 'react';
 
-import { _getContracts } from '@sovryn-zero/lib-ethers/dist/src/EthersLiquityConnection';
-import { Decimal } from '@sovryn/utils';
+import { Decimal } from '@sovryn-zero/lib-base';
 
-import { getZeroProvider } from '../utils/zero-provider';
+import { getLiquityBaseParams } from '../utils/trove-manager';
 
 export const useLiquityBaseParams = () => {
   const [liquityBaseParams, setLiquityBaseParams] = useState({
@@ -14,18 +13,8 @@ export const useLiquityBaseParams = () => {
   useEffect(() => {
     const getBorrowingFee = async () => {
       try {
-        const { ethers } = await getZeroProvider();
-        const contract = _getContracts(ethers.connection).liquityBaseParams;
-        const [getMinBorrowingFee, getMaxBorrowingFee] = await Promise.all([
-          contract.BORROWING_FEE_FLOOR(),
-          contract.MAX_BORROWING_FEE(),
-        ]);
-        const minBorrowingFeeRate = Decimal.fromBigNumberString(
-          String(getMinBorrowingFee),
-        );
-        const maxBorrowingFeeRate = Decimal.fromBigNumberString(
-          String(getMaxBorrowingFee),
-        );
+        const { minBorrowingFeeRate, maxBorrowingFeeRate } =
+          await getLiquityBaseParams();
         setLiquityBaseParams({
           minBorrowingFeeRate,
           maxBorrowingFeeRate,

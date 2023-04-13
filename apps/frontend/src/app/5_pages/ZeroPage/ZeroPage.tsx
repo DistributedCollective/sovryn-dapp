@@ -42,8 +42,8 @@ import { translations } from '../../../locales/i18n';
 import { decimalic } from '../../../utils/math';
 import { useClaimCollateralSurplus } from './hooks/useClaimCollateralSurplus';
 import { useHandleTrove } from './hooks/useHandleTrove';
+import { useLiquityBaseParams } from './hooks/useLiquityBaseParams';
 import { ZeroPageLoaderData } from './loader';
-import { getLiquityBaseParams } from './utils/trove-manager';
 
 type ZeroPageProps = {
   deferred: [Decimal, Fees];
@@ -59,7 +59,6 @@ const ZeroPage: FC<ZeroPageProps> = ({ deferred: [price, fees] }) => {
   const [trove, setTrove] = useState<UserTrove>();
   const [collateralSurplusBalance, setCollateralSurplusBalance] =
     useState<Decimal>();
-  const [borrowingRate, setBorrowingRate] = useState(Decimal.ZERO);
 
   const { connectWallet } = useWalletConnect();
   const { account } = useAccount();
@@ -130,13 +129,11 @@ const ZeroPage: FC<ZeroPageProps> = ({ deferred: [price, fees] }) => {
     [collateral, debt],
   );
 
-  useEffect(() => {
-    const fetchBorrowingRate = async () => {
-      const params = await getLiquityBaseParams();
-      setBorrowingRate(decimalic(params.minBorrowingFeeRate.toString()));
-    };
-    fetchBorrowingRate();
-  }, []);
+  const { minBorrowingFeeRate } = useLiquityBaseParams();
+  const borrowingRate = useMemo(
+    () => decimalic(minBorrowingFeeRate.toString()),
+    [minBorrowingFeeRate],
+  );
 
   return (
     <>

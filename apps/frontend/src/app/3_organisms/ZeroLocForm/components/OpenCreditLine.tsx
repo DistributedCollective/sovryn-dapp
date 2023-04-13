@@ -18,7 +18,7 @@ import {
   MIN_DEBT_SIZE,
 } from '../constants';
 import { useZeroData } from '../hooks/useZeroData';
-import { AmountType, CreditLineSubmitValue } from '../types';
+import { CreditLineSubmitValue } from '../types';
 import {
   checkForSystemErrors,
   getOriginationFeeAmount,
@@ -227,7 +227,6 @@ export const OpenCreditLine: FC<OpenCreditLineProps> = ({
       debtError={debtError}
       collateralError={collateralError}
       errors={errors}
-      debtType={AmountType.Add}
     />
   );
 };

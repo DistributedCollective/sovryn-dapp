@@ -41,7 +41,6 @@ import { AmountType } from '../types';
 export type OpenTroveProps = {
   hasTrove: false;
   liquidationReserve: Decimal;
-  debtType: AmountType;
 };
 
 export type AdjustTroveProps = {
@@ -137,7 +136,7 @@ export const FormContent: FC<FormContentProps> = props => {
 
   const isBorrowDisabled = useMemo(
     () => borrowLocked && props.hasTrove && props.debtType === AmountType.Add,
-    [borrowLocked, props.debtType, props.hasTrove],
+    [borrowLocked, props],
   );
 
   const isInMaintenance = useMemo(

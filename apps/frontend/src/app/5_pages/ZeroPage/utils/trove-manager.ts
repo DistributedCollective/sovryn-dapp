@@ -67,7 +67,7 @@ export const openTrove = async (
 
   const newTrove = Trove.create(
     normalized,
-    fees?.minBorrowingFeeRate.toHexString(),
+    fees?.minBorrowingFeeRate.toString(),
   );
 
   const value = depositCollateral ?? Decimal.ZERO;
@@ -77,7 +77,7 @@ export const openTrove = async (
   return {
     value: value.hex,
     fn: token === SupportedTokens.dllr ? 'openNueTrove' : 'openTrove',
-    args: [fees?.maxBorrowingFeeRate, borrowZUSD.hex, ...hints],
+    args: [fees?.maxBorrowingFeeRate.toHexString(), borrowZUSD.hex, ...hints],
   };
 };
 
@@ -99,7 +99,7 @@ export const adjustTrove = async (
 
   const finalTrove = trove.adjust(
     normalized,
-    fees?.minBorrowingFeeRate.toHexString(),
+    fees?.minBorrowingFeeRate.toString(),
   );
 
   const value = depositCollateral ?? Decimal.ZERO;
@@ -110,7 +110,7 @@ export const adjustTrove = async (
     value: value.hex,
     fn: token === SupportedTokens.dllr ? 'adjustNueTrove' : 'adjustTrove',
     args: [
-      fees?.maxBorrowingFeeRate,
+      fees?.maxBorrowingFeeRate.toHexString(),
       (withdrawCollateral ?? Decimal.ZERO).hex,
       (borrowZUSD ?? repayZUSD ?? Decimal.ZERO).hex,
       !!borrowZUSD,

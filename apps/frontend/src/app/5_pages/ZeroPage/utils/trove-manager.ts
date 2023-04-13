@@ -9,12 +9,13 @@ import {
 } from '@sovryn-zero/lib-base';
 import { _getContracts } from '@sovryn-zero/lib-ethers/dist/src/EthersLiquityConnection';
 import { SupportedTokens } from '@sovryn/contracts';
+import { Decimal as UtilsDecimal } from '@sovryn/utils';
 
 import { getZeroProvider } from './zero-provider';
 
 interface ILiquityBaseParams {
-  minBorrowingFeeRate: Decimal;
-  maxBorrowingFeeRate: Decimal;
+  minBorrowingFeeRate: UtilsDecimal;
+  maxBorrowingFeeRate: UtilsDecimal;
 }
 
 let cachedParams: ILiquityBaseParams | undefined;
@@ -33,10 +34,10 @@ export const getLiquityBaseParams = async (): Promise<ILiquityBaseParams> => {
       contract.MAX_BORROWING_FEE(),
     ]);
 
-    const minBorrowingFeeRate = Decimal.fromBigNumberString(
+    const minBorrowingFeeRate = UtilsDecimal.fromBigNumberString(
       minBorrowingFee.toString(),
     );
-    const maxBorrowingFeeRate = Decimal.fromBigNumberString(
+    const maxBorrowingFeeRate = UtilsDecimal.fromBigNumberString(
       maxBorrowingFee.toString(),
     );
 
@@ -64,7 +65,10 @@ export const openTrove = async (
   const { ethers } = await getZeroProvider();
   const fees = borrowZUSD && (await getLiquityBaseParams());
 
-  const newTrove = Trove.create(normalized, fees?.minBorrowingFeeRate);
+  const newTrove = Trove.create(
+    normalized,
+    fees?.minBorrowingFeeRate.toHexString(),
+  );
 
   const value = depositCollateral ?? Decimal.ZERO;
 
@@ -93,7 +97,10 @@ export const adjustTrove = async (
     borrowZUSD && getLiquityBaseParams(),
   ]);
 
-  const finalTrove = trove.adjust(normalized, fees?.minBorrowingFeeRate);
+  const finalTrove = trove.adjust(
+    normalized,
+    fees?.minBorrowingFeeRate.toHexString(),
+  );
 
   const value = depositCollateral ?? Decimal.ZERO;
 

@@ -90,6 +90,7 @@ export const useHandleTrove = (
 ) => {
   const { signer, account } = useAccount();
   const { setTransactions, setIsOpen, setTitle } = useTransactionContext();
+
   const handleTroveSubmit = useCallback(
     async (value: CreditLineSubmitValue) => {
       if (signer) {

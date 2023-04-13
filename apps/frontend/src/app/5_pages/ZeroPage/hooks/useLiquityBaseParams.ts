@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import { Decimal } from '@sovryn-zero/lib-base';
+import { Decimal } from '@sovryn/utils';
 
 import { getLiquityBaseParams } from '../utils/trove-manager';
 

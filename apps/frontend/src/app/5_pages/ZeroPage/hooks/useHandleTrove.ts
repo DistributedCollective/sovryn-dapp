@@ -26,7 +26,6 @@ import {
   UNSIGNED_PERMIT,
 } from '../../../../utils/transactions';
 import { adjustTrove, openTrove } from '../utils/trove-manager';
-import { useLiquityBaseParams } from './useLiquityBaseParams';
 
 const baseTranslationPath = translations.zeroPage.tx;
 
@@ -91,7 +90,6 @@ export const useHandleTrove = (
 ) => {
   const { signer, account } = useAccount();
   const { setTransactions, setIsOpen, setTitle } = useTransactionContext();
-  const { minBorrowingFeeRate, maxBorrowingFeeRate } = useLiquityBaseParams();
   const handleTroveSubmit = useCallback(
     async (value: CreditLineSubmitValue) => {
       if (signer) {
@@ -138,13 +136,7 @@ export const useHandleTrove = (
             );
           }
 
-          const adjustedTrove = await adjustTrove(
-            value.token,
-            account,
-            params,
-            minBorrowingFeeRate,
-            maxBorrowingFeeRate,
-          );
+          const adjustedTrove = await adjustTrove(value.token, account, params);
 
           transactions.push({
             title: transactionTitle,
@@ -171,15 +163,10 @@ export const useHandleTrove = (
           setIsOpen(true);
           setTitle(dialogTitle);
         } else {
-          const openedTrove = await openTrove(
-            value.token,
-            {
-              borrowZUSD: value.borrow || '0',
-              depositCollateral: value.depositCollateral || '0',
-            },
-            minBorrowingFeeRate,
-            maxBorrowingFeeRate,
-          );
+          const openedTrove = await openTrove(value.token, {
+            borrowZUSD: value.borrow || '0',
+            depositCollateral: value.depositCollateral || '0',
+          });
           setTransactions([
             {
               title: t(baseTranslationPath.open),
@@ -208,8 +195,6 @@ export const useHandleTrove = (
       setTitle,
       setTransactions,
       signer,
-      minBorrowingFeeRate,
-      maxBorrowingFeeRate,
     ],
   );
 

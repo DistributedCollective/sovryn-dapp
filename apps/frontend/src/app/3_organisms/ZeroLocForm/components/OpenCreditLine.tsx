@@ -84,23 +84,20 @@ export const OpenCreditLine: FC<OpenCreditLineProps> = ({
   );
 
   const maxDebtAmount = useMemo(() => {
-    let amount = maxCollateralAmount
-      .mul(rbtcPrice)
-      .div(
-        isRecoveryMode ? CRITICAL_COLLATERAL_RATIO : MINIMUM_COLLATERAL_RATIO,
-      );
+    const ratio = isRecoveryMode
+      ? CRITICAL_COLLATERAL_RATIO
+      : MINIMUM_COLLATERAL_RATIO;
 
+    let collateral = maxCollateralAmount.mul(rbtcPrice);
     if (collateralSize.gt(0)) {
-      amount = collateralSize
-        .mul(rbtcPrice)
-        .div(
-          isRecoveryMode ? CRITICAL_COLLATERAL_RATIO : MINIMUM_COLLATERAL_RATIO,
-        );
+      collateral = collateralSize.mul(rbtcPrice);
     }
+    const reserve = liquidationReserve.mul(ratio).mul(-1);
 
-    const originationFee = getOriginationFeeAmount(amount, borrowingRate);
-
-    return Decimal.max(amount.sub(originationFee).sub(liquidationReserve), 0);
+    return Decimal.max(
+      reserve.add(collateral).div(ratio).div(borrowingRate.add(1)),
+      0,
+    );
   }, [
     borrowingRate,
     collateralSize,

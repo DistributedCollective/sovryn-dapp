@@ -11,7 +11,7 @@ import { t } from 'i18next';
 import { Helmet } from 'react-helmet-async';
 import { useLoaderData } from 'react-router-dom';
 
-import { Fees, UserTrove } from '@sovryn-zero/lib-base';
+import { UserTrove } from '@sovryn-zero/lib-base';
 import {
   Dialog,
   DialogBody,
@@ -46,10 +46,10 @@ import { useLiquityBaseParams } from './hooks/useLiquityBaseParams';
 import { ZeroPageLoaderData } from './loader';
 
 type ZeroPageProps = {
-  deferred: [Decimal, Fees];
+  deferred: [Decimal];
 };
 
-const ZeroPage: FC<ZeroPageProps> = ({ deferred: [price, fees] }) => {
+const ZeroPage: FC<ZeroPageProps> = ({ deferred: [price] }) => {
   const { liquity } = useLoaderData() as ZeroPageLoaderData;
 
   const { isOpen: isTxOpen } = useTransactionContext();

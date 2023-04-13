@@ -15,6 +15,7 @@ export const useLiquityBaseParams = () => {
       try {
         const { minBorrowingFeeRate, maxBorrowingFeeRate } =
           await getLiquityBaseParams();
+
         setLiquityBaseParams({
           minBorrowingFeeRate,
           maxBorrowingFeeRate,

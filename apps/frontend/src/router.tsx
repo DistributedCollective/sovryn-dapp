@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { createBrowserRouter } from 'react-router-dom';
+import { createHashRouter } from 'react-router-dom';
 
 import { PageContainer } from './app/4_templates';
 import { EmailVerificationStateContainer } from './app/4_templates/EmailVerificationStateContainer/EmailVerificationStateContainer';
@@ -33,7 +33,7 @@ const RewardsPage = loadable(
   () => import('./app/5_pages/RewardsPage/RewardsPage'),
 );
 
-export const router = createBrowserRouter([
+export const router = createHashRouter([
   {
     path: '/',
     element: (

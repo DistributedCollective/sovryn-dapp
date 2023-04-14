@@ -110,7 +110,7 @@ export const adjustTrove = async (
     value: value.hex,
     fn: token === SupportedTokens.dllr ? 'adjustNueTrove' : 'adjustTrove',
     args: [
-      fees?.maxBorrowingFeeRate.toHexString(),
+      fees?.maxBorrowingFeeRate.toHexString() ?? Decimal.ZERO.hex,
       (withdrawCollateral ?? Decimal.ZERO).hex,
       (borrowZUSD ?? repayZUSD ?? Decimal.ZERO).hex,
       !!borrowZUSD,

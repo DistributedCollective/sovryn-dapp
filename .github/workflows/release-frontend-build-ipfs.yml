@@ -73,7 +73,6 @@ jobs:
             - CIDv0: ${{ needs.upload_build.outputs.cidv0 }}
             - CIDv1: ${{ needs.upload_build.outputs.cidv1 }}
             - ${{ vars.IPFS_GATEWAY_URL }}/ipfs/${{ needs.upload_build.outputs.cidv1 }}            
-            - https://gateway.pinata.cloud/ipfs/${{ needs.upload_build.outputs.cidv1 }}
             - https://cloudflare-ipfs.com/ipfs/${{ needs.upload_build.outputs.cidv1 }}
             - https://ipfs.io/ipfs/${{ needs.upload_build.outputs.cidv1 }}
             - https://${{ needs.upload_build.outputs.cidv1 }}.ipfs.dweb.link/

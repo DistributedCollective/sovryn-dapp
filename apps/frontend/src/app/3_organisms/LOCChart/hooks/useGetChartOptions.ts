@@ -9,6 +9,7 @@ import {
   TOKEN_RENDER_PRECISION,
 } from '../../../../constants/currencies';
 import { translations } from '../../../../locales/i18n';
+import { areAddressesEqual } from '../../../../utils/helpers';
 import { formatValue } from '../../../../utils/math';
 import { chartConfig } from '../utils';
 import { useAccount } from './../../../../hooks/useAccount';
@@ -57,7 +58,7 @@ export const useGetChartOptions = (
               )}%`,
             ];
 
-            if (context[0].raw.id === account && activeBar) {
+            if (areAddressesEqual(context[0].raw.id, account) && activeBar) {
               tooltipContent.push(
                 `${t(translations.chart.redemptionBuffer)}: ${formatValue(
                   redemptionBuffer,

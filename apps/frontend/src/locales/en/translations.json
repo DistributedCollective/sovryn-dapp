@@ -212,11 +212,13 @@
     "stats": {
         "zero": {
             "title": "Zero statistics",
+            "btcPrice": "BTC price",
             "rbtcInLoc": "BTC in lines of credit",
             "loc": "Lines of credit",
             "zusdSupply": "ZUSD supply",
             "zusdInStabilityPool": "ZUSD in stability pool",
             "totalCollateralRatio": "Total collateral ratio",
+            "originationFeeRate": "Origination fee rate",
             "protocolStatus": "Protocol status (normal/recovery mode)"
         },
         "ecosystem": {
@@ -634,7 +636,7 @@
         }
     },
     "loader": {
-      "loading": "is loading...",
-      "error": "Error loading data, please try again."
+        "loading": "is loading...",
+        "error": "Error loading data, please try again."
     }
 }

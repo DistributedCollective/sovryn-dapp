@@ -18,8 +18,10 @@ import {
 } from '@sovryn/ui';
 import { Decimal, Percent } from '@sovryn/utils';
 
-import { BITCOIN } from '../../../../constants/currencies';
+import { useLiquityBaseParams } from '../../../5_pages/ZeroPage/hooks/useLiquityBaseParams';
+import { BITCOIN, USD } from '../../../../constants/currencies';
 import { useBlockNumber } from '../../../../hooks/useBlockNumber';
+import { useGetRBTCPrice } from '../../../../hooks/zero/useGetRBTCPrice';
 import { translations } from '../../../../locales/i18n';
 import { calculateCollateralRatio } from '../../../../utils/helpers';
 import {
@@ -48,6 +50,8 @@ export const ZeroStats: FC<ZeroStatsProps> = ({ className, dataAttribute }) => {
   const [zeroInStabilityPoolPercent, setZeroInStabilityPoolPercent] =
     useState('0');
   const [isRecoveryMode, setIsRecoveryMode] = useState(false);
+  const { price: btcPrice } = useGetRBTCPrice();
+  const { minBorrowingFeeRate } = useLiquityBaseParams();
 
   const { liquity } = useLoaderData() as {
     liquity: EthersLiquity;
@@ -108,9 +112,30 @@ export const ZeroStats: FC<ZeroStatsProps> = ({ className, dataAttribute }) => {
     [zusdInStabilityPool, zeroInStabilityPoolPercent],
   );
 
+  const renderBTCPrice = useMemo(
+    () =>
+      btcPrice ? (
+        <AmountRenderer
+          value={btcPrice}
+          suffix={USD}
+          precision={USD_DISPLAY_PRECISION}
+          showRoundingPrefix={false}
+          dataAttribute="zero-statistics-zusd-btc-price"
+        />
+      ) : (
+        0
+      ),
+    [btcPrice],
+  );
+
   const renderProtocolMode = useMemo(
     () => (isRecoveryMode ? SystemModeType.RECOVERY : SystemModeType.NORMAL),
     [isRecoveryMode],
+  );
+
+  const originationFeeRate = useMemo(
+    () => formatValue(minBorrowingFeeRate.mul(100), 2),
+    [minBorrowingFeeRate],
   );
 
   useEffect(() => {
@@ -166,6 +191,11 @@ export const ZeroStats: FC<ZeroStatsProps> = ({ className, dataAttribute }) => {
       >
         <SimpleTableRow
           className="mb-5"
+          label={t(translations.stats.zero.btcPrice)}
+          value={renderBTCPrice}
+        />
+        <SimpleTableRow
+          className="mb-5"
           label={t(translations.stats.zero.loc)}
           value={lineOfCredit}
         />
@@ -188,6 +218,11 @@ export const ZeroStats: FC<ZeroStatsProps> = ({ className, dataAttribute }) => {
           className="mb-5"
           label={t(translations.stats.zero.totalCollateralRatio)}
           value={`${formatValue(collateralRatio, 2)}%`}
+        />
+        <SimpleTableRow
+          className="mb-5"
+          label={t(translations.stats.zero.originationFeeRate)}
+          value={`${originationFeeRate}%`}
         />
         <SimpleTableRow
           label={t(translations.stats.zero.protocolStatus)}

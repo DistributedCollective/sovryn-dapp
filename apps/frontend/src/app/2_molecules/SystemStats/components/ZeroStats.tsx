@@ -134,7 +134,7 @@ export const ZeroStats: FC<ZeroStatsProps> = ({ className, dataAttribute }) => {
   );
 
   const originationFeeRate = useMemo(
-    () => formatValue(decimalic(minBorrowingFeeRate).mul(100), 2),
+    () => formatValue(minBorrowingFeeRate.mul(100), 2),
     [minBorrowingFeeRate],
   );
 

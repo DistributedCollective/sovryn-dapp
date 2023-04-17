@@ -74,19 +74,25 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
     [collateralType],
   );
 
+  const requiredRatio = useMemo(
+    () =>
+      isRecoveryMode ? CRITICAL_COLLATERAL_RATIO : MINIMUM_COLLATERAL_RATIO,
+    [isRecoveryMode],
+  );
+
   const newDebt = useMemo(
     () =>
       Decimal.max(
         existingDebt
           .add(normalizeAmountByType(debtSize, debtType))
           .add(
-            debtType === AmountType.Add
+            isIncreasingDebt
               ? getOriginationFeeAmount(debtSize, borrowingRate)
               : Decimal.ZERO,
           ),
         Decimal.ZERO,
       ),
-    [existingDebt, debtType, debtSize, borrowingRate],
+    [existingDebt, debtSize, debtType, isIncreasingDebt, borrowingRate],
   );
 
   const newCollateral = useMemo(
@@ -104,19 +110,11 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
     () =>
       Decimal.max(
         existingCollateral
-          .sub(
-            newDebt
-              .mul(
-                isRecoveryMode
-                  ? CRITICAL_COLLATERAL_RATIO
-                  : MINIMUM_COLLATERAL_RATIO,
-              )
-              .div(rbtcPrice),
-          )
+          .sub(newDebt.mul(requiredRatio).div(rbtcPrice))
           .sub(Decimal.fromBigNumberString('1')),
         Decimal.ZERO,
       ),
-    [existingCollateral, isRecoveryMode, newDebt, rbtcPrice],
+    [existingCollateral, newDebt, rbtcPrice, requiredRatio],
   );
 
   const maxCollateralAmount = useMemo(
@@ -132,12 +130,9 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
   );
 
   const maxBorrowAmount = useMemo(() => {
-    const ratio = isRecoveryMode
-      ? CRITICAL_COLLATERAL_RATIO
-      : MINIMUM_COLLATERAL_RATIO;
     let collateral = existingCollateral;
     if (collateral.gt(0)) {
-      if (collateralType === AmountType.Add) {
+      if (isIncreasingCollateral) {
         collateral = collateral.add(collateralSize);
       } else {
         collateral = collateral.sub(collateralSize);
@@ -145,18 +140,18 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
     }
 
     const collateralInUsd = collateral.mul(rbtcPrice);
-    const debt = existingDebt.mul(-1).mul(ratio);
+    const debt = existingDebt.mul(-1).mul(requiredRatio);
     const amount = debt.add(collateralInUsd);
 
-    return Decimal.max(amount.div(ratio).div(borrowingRate.add(1)), 0);
+    return Decimal.max(amount.div(requiredRatio).div(borrowingRate.add(1)), 0);
   }, [
     borrowingRate,
     collateralSize,
-    collateralType,
     existingCollateral,
     existingDebt,
-    isRecoveryMode,
+    isIncreasingCollateral,
     rbtcPrice,
+    requiredRatio,
   ]);
 
   const maxRepayAmount = useMemo(

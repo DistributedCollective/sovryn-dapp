@@ -68,14 +68,18 @@ export const OpenCreditLine: FC<OpenCreditLineProps> = ({
     [debtSize, borrowingRate, liquidationReserve],
   );
 
+  const requiredRatio = useMemo(
+    () =>
+      isRecoveryMode ? CRITICAL_COLLATERAL_RATIO : MINIMUM_COLLATERAL_RATIO,
+    [isRecoveryMode],
+  );
+
   const minCollateralAmount = useMemo(
     () =>
       Decimal.max(MIN_DEBT_SIZE, debtWithFees)
         .div(rbtcPrice)
-        .mul(
-          isRecoveryMode ? CRITICAL_COLLATERAL_RATIO : MINIMUM_COLLATERAL_RATIO,
-        ),
-    [debtWithFees, isRecoveryMode, rbtcPrice],
+        .mul(requiredRatio),
+    [debtWithFees, rbtcPrice, requiredRatio],
   );
 
   const maxCollateralAmount = useMemo(
@@ -84,27 +88,23 @@ export const OpenCreditLine: FC<OpenCreditLineProps> = ({
   );
 
   const maxDebtAmount = useMemo(() => {
-    const ratio = isRecoveryMode
-      ? CRITICAL_COLLATERAL_RATIO
-      : MINIMUM_COLLATERAL_RATIO;
-
     let collateral = maxCollateralAmount.mul(rbtcPrice);
     if (collateralSize.gt(0)) {
       collateral = collateralSize.mul(rbtcPrice);
     }
-    const reserve = liquidationReserve.mul(ratio).mul(-1);
+    const reserve = liquidationReserve.mul(requiredRatio).mul(-1);
 
     return Decimal.max(
-      reserve.add(collateral).div(ratio).div(borrowingRate.add(1)),
+      reserve.add(collateral).div(requiredRatio).div(borrowingRate.add(1)),
       0,
     );
   }, [
     borrowingRate,
     collateralSize,
-    isRecoveryMode,
     liquidationReserve,
     maxCollateralAmount,
     rbtcPrice,
+    requiredRatio,
   ]);
 
   const ratio = useMemo(() => {

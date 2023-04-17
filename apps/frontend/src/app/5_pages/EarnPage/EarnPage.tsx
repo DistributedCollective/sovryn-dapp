@@ -70,8 +70,6 @@ const EarnPage: FC = () => {
   const { price } = useGetRBTCPrice();
   const [isRecoveryMode, setIsRecoveryMode] = useState(false);
   const [isUnderCollateralized, setIsUnderCollateralized] = useState(false);
-  const [showUnderCollateralizedError, setShowUnderCollateralizedError] =
-    useState(false);
 
   const {
     data: troves,
@@ -320,14 +318,10 @@ const EarnPage: FC = () => {
   );
 
   const handleSubmit = useCallback(() => {
-    if (isUnderCollateralized) {
-      setShowUnderCollateralizedError(true);
-      return;
-    }
     if (!isSubmitDisabled) {
       handleSubmitStabilityDeposit();
     }
-  }, [isSubmitDisabled, handleSubmitStabilityDeposit, isUnderCollateralized]);
+  }, [isSubmitDisabled, handleSubmitStabilityDeposit]);
 
   const tokenOptions = useMemo(
     () =>
@@ -346,7 +340,6 @@ const EarnPage: FC = () => {
 
   useEffect(() => {
     if (index !== 1 || isInMaintenance) {
-      setShowUnderCollateralizedError(false);
       setIsUnderCollateralized(false);
       return;
     }
@@ -506,7 +499,7 @@ const EarnPage: FC = () => {
               message={t(translations.maintenanceMode.featureDisabled)}
             />
           )}
-          {showUnderCollateralizedError && (
+          {isUnderCollateralized && (
             <ErrorBadge
               level={ErrorLevel.Critical}
               message={t(translations.earnPage.form.undercollateralized)}

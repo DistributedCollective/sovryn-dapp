@@ -14,11 +14,11 @@ export const SERVICES_CONFIG = {
 
 export const RSK_RPC = {
   [Environments.Mainnet]: [
-    'https://rsk-live.sovryn.app/rpc',
+    'https://rsk-proxy1.sovryn.app/rpc',
     'https://public-node.rsk.co',
   ],
   [Environments.Testnet]: [
-    'https://rsk-proxy1.sovryn.app/rpc',
+    'https://testnet.sovryn.app/rpc',
     'https://public-node.testnet.rsk.co',
   ],
 };

@@ -2,4 +2,4 @@
 "frontend": patch
 ---
 
-SOV-2130: infinite cRatio on adjust collateral
+SOV-2219: infinite cRatio on adjust collateral

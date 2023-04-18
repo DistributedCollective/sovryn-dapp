@@ -18,7 +18,7 @@ export const RSK_RPC = {
     'https://public-node.rsk.co',
   ],
   [Environments.Testnet]: [
-    'https://testnet.sovryn.app/rpc',
+    'https://rsk-proxy1.sovryn.app/rpc',
     'https://public-node.testnet.rsk.co',
   ],
 };

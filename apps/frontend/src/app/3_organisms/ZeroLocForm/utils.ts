@@ -59,7 +59,7 @@ export const checkForSystemErrors = (ratio: Decimal, tcr: Decimal) => {
   if (tcr && tcr.lte(CRITICAL_COLLATERAL_RATIO)) {
     // Warning: If the system is in recovery mode and the values the user is typing
     //  are causing the collateral ratio to be less than 10% above the TCR.
-    if (userRatio < tcrPlus10) {
+    if (userRatio.lt(tcrPlus10)) {
       list.push({
         level: ErrorLevel.Warning,
         message: t(translations.zeroPage.loc.errors.ratioWarningInRecovery, {

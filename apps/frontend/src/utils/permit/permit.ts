@@ -1,6 +1,7 @@
-import utf8 from 'utf8';
 import { providers } from 'ethers';
 import { splitSignature, verifyTypedData } from 'ethers/lib/utils';
+import utf8 from 'utf8';
+
 import { getRskChainId } from '../chain';
 
 const MAX_INT =

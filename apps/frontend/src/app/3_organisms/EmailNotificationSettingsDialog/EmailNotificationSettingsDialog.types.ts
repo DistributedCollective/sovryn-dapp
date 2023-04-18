@@ -19,6 +19,8 @@ export enum NotificationMessageType {
   ZeroLiquidationSurplus = 'ZeroLiquidationSurplus',
   ZeroLowTcr = 'ZeroLowTcr',
   ZeroRecovery = 'ZeroRecovery',
+  ZeroRedemptionFull = 'ZeroRedemptionFull',
+  ZeroRedemptionPartial = 'ZeroRedemptionPartial',
 }
 
 export enum AlertGroup {
@@ -41,6 +43,8 @@ export const AlertGroupToNotificationsMapping: Record<
   Liquidations: [
     NotificationMessageType.ZeroLiquidation,
     NotificationMessageType.ZeroLiquidationSurplus,
+    NotificationMessageType.ZeroRedemptionFull,
+    NotificationMessageType.ZeroRedemptionPartial,
   ],
   StabilityPool: [NotificationMessageType.ZeroGain],
   System: [
@@ -89,6 +93,14 @@ export const defaultSubscriptionsArray: Notification[] = [
   },
   {
     notification: NotificationMessageType.ZeroRecovery,
+    isSubscribed: false,
+  },
+  {
+    notification: NotificationMessageType.ZeroRedemptionFull,
+    isSubscribed: false,
+  },
+  {
+    notification: NotificationMessageType.ZeroRedemptionPartial,
     isSubscribed: false,
   },
 ];

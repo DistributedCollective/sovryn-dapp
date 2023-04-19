@@ -95,7 +95,9 @@ export const FormContent: FC<FormContentProps> = props => {
   const actionLocked = checkMaintenance(
     props.hasTrove ? States.ZERO_ADJUST_LOC : States.ZERO_OPEN_LOC,
   );
+  const borrowLocked = checkMaintenance(States.ZERO_ADJUST_LOC_BORROW);
   const dllrLocked = checkMaintenance(States.ZERO_DLLR);
+
   const debtTabs = useMemo(
     () => [
       {
@@ -132,6 +134,11 @@ export const FormContent: FC<FormContentProps> = props => {
     [props.hasTrove],
   );
 
+  const isBorrowDisabled = useMemo(
+    () => borrowLocked && props.hasTrove && props.debtType === AmountType.Add,
+    [borrowLocked, props],
+  );
+
   const isInMaintenance = useMemo(
     () =>
       actionLocked || (dllrLocked && props.debtToken === SupportedTokens.dllr),
@@ -154,17 +161,19 @@ export const FormContent: FC<FormContentProps> = props => {
       props.formIsDisabled ||
       hasCriticalError ||
       !isFormValid ||
-      isInMaintenance
+      isInMaintenance ||
+      (isBorrowDisabled && Number(props.debtAmount) > 0)
     );
   }, [
-    props.collateralAmount,
+    props.errors,
+    props.debtError,
     props.collateralError,
     props.debtAmount,
-    props.debtError,
-    props.errors,
-    props.formIsDisabled,
+    props.collateralAmount,
     props.hasTrove,
+    props.formIsDisabled,
     isInMaintenance,
+    isBorrowDisabled,
   ]);
 
   const handleDebtTypeChange = useCallback(
@@ -336,6 +345,7 @@ export const FormContent: FC<FormContentProps> = props => {
         <div className="w-full flex flex-row justify-between items-center gap-3">
           <AmountInput
             value={props.debtAmount}
+            disabled={isBorrowDisabled}
             onChangeText={handleDebtAmountChange}
             maxAmount={props.maxDebtAmount.toNumber()}
             label={t(translations.common.amount)}
@@ -357,6 +367,12 @@ export const FormContent: FC<FormContentProps> = props => {
             )}
           />
         </div>
+        {isBorrowDisabled && (
+          <ErrorBadge
+            level={ErrorLevel.Warning}
+            message={t(translations.maintenanceMode.featureDisabled)}
+          />
+        )}
       </FormGroup>
       <FormGroup
         label={

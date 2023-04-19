@@ -18,6 +18,7 @@ import {
   ErrorBadge,
   ErrorLevel,
   Heading,
+  HelperButton,
   Paragraph,
   ParagraphSize,
   Select,
@@ -48,6 +49,7 @@ import { translations } from '../../../locales/i18n';
 import { calculateCollateralRatio } from '../../../utils/helpers';
 import { formatValue, decimalic } from '../../../utils/math';
 import { tokenList } from './EarnPage.types';
+import { useGetSubsidiesAPR } from './hooks/useGetSubsidiesAPR';
 import { useHandleStabilityDeposit } from './hooks/useHandleStabilityDeposit';
 
 const commonTranslations = translations.common;
@@ -61,6 +63,7 @@ const EarnPage: FC = () => {
   const [rewardsAmount, setRewardsAmount] = useState(Decimal.ZERO);
   const [token, setToken] = useState<SupportedTokens>(SupportedTokens.dllr);
   const [isLoading, setIsLoading] = useState(false);
+  const { apy } = useGetSubsidiesAPR();
 
   const { account } = useAccount();
   const { value: block } = useBlockNumber();
@@ -437,6 +440,24 @@ const EarnPage: FC = () => {
               dataAttribute="earn-amount-input-error"
             />
           )}
+
+          <SimpleTable className="mt-3">
+            <SimpleTableRow
+              label={
+                <span className="relative">
+                  {t(pageTranslations.subsidiesRewardRate)}
+                  <HelperButton
+                    className="absolute -right-1 top-0 translate-x-full"
+                    content={t(pageTranslations.subsidiesRewardRateInfo)}
+                  />
+                </span>
+              }
+              valueClassName={classNames('transition-colors', {
+                'text-primary-10': !isAmountZero,
+              })}
+              value={`${formatValue(apy, 5)}% APY`}
+            />
+          </SimpleTable>
 
           <SimpleTable className="mt-3">
             <SimpleTableRow

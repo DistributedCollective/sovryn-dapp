@@ -17,7 +17,11 @@ import { getRskChainId } from '../../../../utils/chain';
 import { toWei } from '../../../../utils/math';
 import { RewardsAction } from './../types';
 
-export const useHandleRewards = (action: RewardsAction, amount: string) => {
+export const useHandleRewards = (
+  action: RewardsAction,
+  amount: string,
+  onComplete?: () => void,
+) => {
   const { signer, account } = useAccount();
   const { setTransactions, setIsOpen, setTitle } = useTransactionContext();
 
@@ -67,6 +71,7 @@ export const useHandleRewards = (action: RewardsAction, amount: string) => {
           ? GAS_LIMIT.REWARDS
           : GAS_LIMIT.TRANSFER_LOC,
       },
+      onComplete,
     });
 
     setTransactions(transactions);
@@ -83,6 +88,7 @@ export const useHandleRewards = (action: RewardsAction, amount: string) => {
     setTitle,
     transactionTitle,
     setIsOpen,
+    onComplete,
   ]);
 
   return handleAction;

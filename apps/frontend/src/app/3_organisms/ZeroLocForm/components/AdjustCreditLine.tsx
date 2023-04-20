@@ -52,6 +52,7 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
     useAmountInput('');
   const [debtAmountInput, setDebtAmount, debtAmount] = useAmountInput('');
   const [debtToken, setDebtToken] = useState<SupportedTokens>(BORROW_ASSETS[0]);
+  const [maxOriginationFeeRate, setMaxOriginationFeeRate] = useState('0');
 
   const debtSize = useMemo(() => decimalic(debtAmount), [debtAmount]);
   const collateralSize = useMemo(
@@ -340,6 +341,7 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
   const handleFormSubmit = useCallback(() => {
     let value: Partial<CreditLineSubmitValue> = {
       token: debtToken,
+      maxOriginationFeeRate,
     };
 
     value[isIncreasingCollateral ? 'depositCollateral' : 'withdrawCollateral'] =
@@ -351,6 +353,7 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
     collateralAmount,
     debtAmount,
     debtToken,
+    maxOriginationFeeRate,
     isIncreasingCollateral,
     isIncreasingDebt,
     onSubmit,
@@ -362,6 +365,8 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
       rbtcPrice={rbtcPrice}
       borrowingRate={borrowingRate}
       originationFee={originationFee}
+      maxOriginationFeeRate={maxOriginationFeeRate}
+      onMaxOriginationFeeRateChange={setMaxOriginationFeeRate}
       existingCollateral={existingCollateral}
       existingDebt={existingDebt}
       debtAmount={debtAmountInput}

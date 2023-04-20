@@ -137,7 +137,12 @@ export const useHandleTrove = (
             );
           }
 
-          const adjustedTrove = await adjustTrove(value.token, account, params);
+          const adjustedTrove = await adjustTrove(
+            value.token,
+            account,
+            params,
+            value.maxOriginationFeeRate,
+          );
 
           transactions.push({
             title: transactionTitle,

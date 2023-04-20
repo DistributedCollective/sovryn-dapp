@@ -44,6 +44,7 @@ export const OpenCreditLine: FC<OpenCreditLineProps> = ({
     useAmountInput('');
   const [debtAmountInput, setDebtAmount, debtAmount] = useAmountInput('');
   const [debtToken, setDebtToken] = useState<SupportedTokens>(BORROW_ASSETS[0]);
+  const [maxOriginationFeeRate, setMaxOriginationFeeRate] = useState('0');
 
   const debtSize = useMemo(() => decimalic(debtAmount || 0), [debtAmount]);
   const collateralSize = useMemo(
@@ -190,8 +191,9 @@ export const OpenCreditLine: FC<OpenCreditLineProps> = ({
         token: debtToken,
         borrow: debtAmount,
         depositCollateral: collateralAmount,
+        maxOriginationFeeRate,
       } as CreditLineSubmitValue),
-    [collateralAmount, debtAmount, debtToken, onSubmit],
+    [collateralAmount, debtAmount, debtToken, maxOriginationFeeRate, onSubmit],
   );
 
   return (
@@ -203,6 +205,8 @@ export const OpenCreditLine: FC<OpenCreditLineProps> = ({
       }
       borrowingRate={borrowingRate}
       originationFee={debtWithFees.gt(0) ? originationFee : Decimal.ZERO}
+      maxOriginationFeeRate={maxOriginationFeeRate}
+      onMaxOriginationFeeRateChange={setMaxOriginationFeeRate}
       debtAmount={debtAmountInput}
       maxDebtAmount={maxDebtAmount}
       onDebtAmountChange={setDebtAmount}

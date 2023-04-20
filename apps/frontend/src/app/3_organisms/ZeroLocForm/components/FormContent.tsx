@@ -20,9 +20,11 @@ import {
 } from '@sovryn/ui';
 import { Decimal } from '@sovryn/utils';
 
+import { AdvancedSettings } from '../../../2_molecules/AdvancedSettings/AdvancedSettings';
 import { AmountRenderer } from '../../../2_molecules/AmountRenderer/AmountRenderer';
 import { AssetRenderer } from '../../../2_molecules/AssetRenderer/AssetRenderer';
 import { BORROW_ASSETS } from '../../../5_pages/ZeroPage/constants';
+import { useLiquityBaseParams } from '../../../5_pages/ZeroPage/hooks/useLiquityBaseParams';
 import {
   BITCOIN,
   BTC_RENDER_PRECISION,
@@ -57,6 +59,8 @@ export type FormContentProps = {
   rbtcPrice: Decimal;
   borrowingRate: Decimal;
   originationFee: Decimal;
+  maxOriginationFeeRate: string;
+  onMaxOriginationFeeRateChange: (value: string) => void;
   debtAmount: string;
   maxDebtAmount: Decimal;
   onDebtAmountChange: (value: string) => void;
@@ -139,6 +143,25 @@ export const FormContent: FC<FormContentProps> = props => {
     [borrowLocked, props],
   );
 
+  const { minBorrowingFeeRate, maxBorrowingFeeRate } = useLiquityBaseParams();
+
+  const minOriginationFeeRate = useMemo(
+    () => minBorrowingFeeRate.mul(100),
+    [minBorrowingFeeRate],
+  );
+  const maxOriginationFeeRate = useMemo(
+    () => maxBorrowingFeeRate.mul(100),
+    [maxBorrowingFeeRate],
+  );
+
+  const isOriginationFeeRateOutOfRange = useMemo(
+    () =>
+      (decimalic(props.maxOriginationFeeRate).lt(minOriginationFeeRate) ||
+        decimalic(props.maxOriginationFeeRate).gt(maxOriginationFeeRate)) &&
+      !decimalic(props.maxOriginationFeeRate).isZero(),
+    [props.maxOriginationFeeRate, minOriginationFeeRate, maxOriginationFeeRate],
+  );
+
   const isInMaintenance = useMemo(
     () =>
       actionLocked || (dllrLocked && props.debtToken === SupportedTokens.dllr),
@@ -159,10 +182,11 @@ export const FormContent: FC<FormContentProps> = props => {
 
     return (
       props.formIsDisabled ||
-      hasCriticalError ||
-      !isFormValid ||
-      isInMaintenance ||
-      (isBorrowDisabled && Number(props.debtAmount) > 0)
+        hasCriticalError ||
+        !isFormValid ||
+        isInMaintenance ||
+        (isBorrowDisabled && Number(props.debtAmount) > 0),
+      isOriginationFeeRateOutOfRange
     );
   }, [
     props.errors,
@@ -174,6 +198,7 @@ export const FormContent: FC<FormContentProps> = props => {
     props.formIsDisabled,
     isInMaintenance,
     isBorrowDisabled,
+    isOriginationFeeRateOutOfRange,
   ]);
 
   const handleDebtTypeChange = useCallback(
@@ -202,6 +227,15 @@ export const FormContent: FC<FormContentProps> = props => {
     },
     [props],
   );
+
+  const handleMaxOriginationFeeRateChange = useCallback(
+    (value: string) => {
+      props.onMaxOriginationFeeRateChange(value);
+      props.onFormEdit?.();
+    },
+    [props],
+  );
+
   const handleCollateralAmountChange = useCallback(
     (value: string) => {
       props.onCollateralAmountChange(value);
@@ -401,6 +435,18 @@ export const FormContent: FC<FormContentProps> = props => {
           placeholder="0"
         />
       </FormGroup>
+
+      <AdvancedSettings
+        amount={props.maxOriginationFeeRate}
+        onChange={handleMaxOriginationFeeRateChange}
+        className="mt-6"
+        invalid={isOriginationFeeRateOutOfRange}
+        errorMessage={t(translations.advancedSettings.errorMessage, {
+          min: minOriginationFeeRate,
+          max: maxOriginationFeeRate,
+        })}
+      />
+
       <div className="mt-6">
         <SimpleTable>
           <Row

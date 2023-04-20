@@ -11,6 +11,7 @@ import { _getContracts } from '@sovryn-zero/lib-ethers/dist/src/EthersLiquityCon
 import { SupportedTokens } from '@sovryn/contracts';
 import { Decimal as UtilsDecimal } from '@sovryn/utils';
 
+import { decimalic } from '../../../../utils/math';
 import { getZeroProvider } from './zero-provider';
 
 interface ILiquityBaseParams {
@@ -58,6 +59,7 @@ export const getLiquityBaseParams = async (): Promise<ILiquityBaseParams> => {
 export const openTrove = async (
   token: SupportedTokens,
   params: Partial<TroveCreationParams<Decimalish>>,
+  maxBorrowingRate?: string,
 ) => {
   const normalized = _normalizeTroveCreation(params);
   const { depositCollateral, borrowZUSD } = normalized;
@@ -74,10 +76,14 @@ export const openTrove = async (
 
   const hints = await ethers.populate.findHints(newTrove);
 
+  const borrowingRate = maxBorrowingRate
+    ? decimalic(maxBorrowingRate).div(100).toHexString()
+    : fees?.maxBorrowingFeeRate.toHexString();
+
   return {
     value: value.hex,
     fn: token === SupportedTokens.dllr ? 'openNueTrove' : 'openTrove',
-    args: [fees?.maxBorrowingFeeRate.toHexString(), borrowZUSD.hex, ...hints],
+    args: [borrowingRate, borrowZUSD.hex, ...hints],
   };
 };
 
@@ -85,6 +91,7 @@ export const adjustTrove = async (
   token: SupportedTokens,
   address: string,
   params: Partial<TroveAdjustmentParams<Decimalish>>,
+  maxBorrowingRate?: string,
 ) => {
   const normalized = _normalizeTroveAdjustment(params);
   const { depositCollateral, withdrawCollateral, borrowZUSD, repayZUSD } =
@@ -106,11 +113,15 @@ export const adjustTrove = async (
 
   const hints = await ethers.populate.findHints(finalTrove);
 
+  const borrowingRate = maxBorrowingRate
+    ? decimalic(maxBorrowingRate).div(100).toHexString()
+    : fees?.maxBorrowingFeeRate?.toHexString() ?? Decimal.ZERO.hex;
+
   return {
     value: value.hex,
     fn: token === SupportedTokens.dllr ? 'adjustNueTrove' : 'adjustTrove',
     args: [
-      fees?.maxBorrowingFeeRate.toHexString() ?? Decimal.ZERO.hex,
+      borrowingRate,
       (withdrawCollateral ?? Decimal.ZERO).hex,
       (borrowZUSD ?? repayZUSD ?? Decimal.ZERO).hex,
       !!borrowZUSD,

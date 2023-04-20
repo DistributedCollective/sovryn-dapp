@@ -303,6 +303,11 @@
         "adjust": "Adjust",
         "close": "Close"
     },
+    "advancedSettings": {
+        "label": "Advanced settings",
+        "inputLabel": "Maximum origination fee rate",
+        "errorMessage": "Value entered must be between {{min}} and {{max}}"
+    },
 
     "earnPage": {
         "meta": {

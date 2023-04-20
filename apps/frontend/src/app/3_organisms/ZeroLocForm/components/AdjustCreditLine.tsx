@@ -177,7 +177,10 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
   );
 
   const ratio = useMemo(
-    () => newCollateral.mul(rbtcPrice).div(newDebt).mul(100),
+    () =>
+      newDebt.isZero()
+        ? Decimal.from(0)
+        : newCollateral.mul(rbtcPrice).div(newDebt).mul(100),
     [newCollateral, newDebt, rbtcPrice],
   );
 

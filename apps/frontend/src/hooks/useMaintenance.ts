@@ -66,6 +66,7 @@ enum States {
   ZERO_CONVERT = 'zeroConvert',
   ZERO_OPEN_LOC = 'zeroOpenLOC',
   ZERO_ADJUST_LOC = 'zeroAdjustLOC',
+  ZERO_ADJUST_LOC_BORROW = 'zeroAdjustLOCBorrow',
   ZERO_CLOSE_LOC = 'zeroCloseLOC',
   ZERO_STABILITY_ADD = 'zeroStabilityAdd',
   ZERO_STABILITY_REMOVE = 'zeroStabilityRemove',

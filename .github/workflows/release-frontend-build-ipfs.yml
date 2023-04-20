@@ -61,7 +61,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Create GitHub Release with custom IPFS gateway
-        id: create_release
+        id: create_release_1
         if: ${{ vars.IPFS_GATEWAY_URL }}
         uses: actions/create-release@v1.1.0
         env:
@@ -74,6 +74,23 @@ jobs:
             - CIDv0: ${{ needs.upload_build.outputs.cidv0 }}
             - CIDv1: ${{ needs.upload_build.outputs.cidv1 }}
             - ${{ vars.IPFS_GATEWAY_URL }}/ipfs/${{ needs.upload_build.outputs.cidv1 }}            
+            - https://cloudflare-ipfs.com/ipfs/${{ needs.upload_build.outputs.cidv1 }}
+            - https://ipfs.io/ipfs/${{ needs.upload_build.outputs.cidv1 }}
+            - https://${{ needs.upload_build.outputs.cidv1 }}.ipfs.dweb.link/
+            - [ipfs://${{ needs.upload_build.outputs.cidv1 }}/](ipfs://${{ needs.upload_build.outputs.cidv1 }}/)
+      - name: Create GitHub Release without custom IPFS gateway
+        id: create_release_2
+        if: ${{ !vars.IPFS_GATEWAY_URL }}
+        uses: actions/create-release@v1.1.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ needs.upload_build.outputs.commit_short_hash }}
+          release_name: Sovryn DAPP Frontend Release ${{ needs.upload_build.outputs.commit_short_hash }}
+          body: |
+            **Sovryn DAPP Mainnet gateways**:
+            - CIDv0: ${{ needs.upload_build.outputs.cidv0 }}
+            - CIDv1: ${{ needs.upload_build.outputs.cidv1 }}
             - https://cloudflare-ipfs.com/ipfs/${{ needs.upload_build.outputs.cidv1 }}
             - https://ipfs.io/ipfs/${{ needs.upload_build.outputs.cidv1 }}
             - https://${{ needs.upload_build.outputs.cidv1 }}.ipfs.dweb.link/

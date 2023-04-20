@@ -60,8 +60,9 @@ jobs:
     needs: upload_build
     runs-on: ubuntu-latest
     steps:
-      - name: Create GitHub Release
+      - name: Create GitHub Release with custom IPFS gateway
         id: create_release
+        if: ${{ vars.IPFS_GATEWAY_URL }}
         uses: actions/create-release@v1.1.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

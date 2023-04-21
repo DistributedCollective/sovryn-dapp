@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState, FC } from 'react';
+import React, { useCallback, useMemo, useState, FC, useEffect } from 'react';
 
 import { t } from 'i18next';
 
@@ -33,6 +33,7 @@ type AdjustCreditLineProps = {
   onSubmit: (value: CreditLineSubmitValue) => void;
   rbtcPrice: Decimal;
   borrowingRate: Decimal;
+  maxBorrowingFeeRate: Decimal;
 };
 
 export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
@@ -41,6 +42,7 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
   onSubmit,
   rbtcPrice,
   borrowingRate,
+  maxBorrowingFeeRate,
 }) => {
   const { tcr, isRecoveryMode } = useZeroData(rbtcPrice);
 
@@ -358,6 +360,12 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
     isIncreasingDebt,
     onSubmit,
   ]);
+
+  useEffect(() => {
+    if (maxBorrowingFeeRate) {
+      setMaxOriginationFeeRate(maxBorrowingFeeRate.mul(100).toString());
+    }
+  }, [maxBorrowingFeeRate]);
 
   return (
     <FormContent

@@ -154,11 +154,10 @@ export const FormContent: FC<FormContentProps> = props => {
     [maxBorrowingFeeRate],
   );
 
-  const isOriginationFeeRateOutOfRange = useMemo(
+  const isInvalidOriginationFee = useMemo(
     () =>
-      (decimalic(props.maxOriginationFeeRate).lt(minOriginationFeeRate) ||
-        decimalic(props.maxOriginationFeeRate).gt(maxOriginationFeeRate)) &&
-      !decimalic(props.maxOriginationFeeRate).isZero(),
+      decimalic(props.maxOriginationFeeRate).lt(minOriginationFeeRate) ||
+      decimalic(props.maxOriginationFeeRate).gt(maxOriginationFeeRate),
     [props.maxOriginationFeeRate, minOriginationFeeRate, maxOriginationFeeRate],
   );
 
@@ -182,11 +181,11 @@ export const FormContent: FC<FormContentProps> = props => {
 
     return (
       props.formIsDisabled ||
-        hasCriticalError ||
-        !isFormValid ||
-        isInMaintenance ||
-        (isBorrowDisabled && Number(props.debtAmount) > 0),
-      isOriginationFeeRateOutOfRange
+      hasCriticalError ||
+      !isFormValid ||
+      isInMaintenance ||
+      (isBorrowDisabled && Number(props.debtAmount) > 0) ||
+      isInvalidOriginationFee
     );
   }, [
     props.errors,
@@ -198,7 +197,7 @@ export const FormContent: FC<FormContentProps> = props => {
     props.formIsDisabled,
     isInMaintenance,
     isBorrowDisabled,
-    isOriginationFeeRateOutOfRange,
+    isInvalidOriginationFee,
   ]);
 
   const handleDebtTypeChange = useCallback(
@@ -440,7 +439,7 @@ export const FormContent: FC<FormContentProps> = props => {
         amount={props.maxOriginationFeeRate}
         onChange={handleMaxOriginationFeeRateChange}
         className="mt-6"
-        invalid={isOriginationFeeRateOutOfRange}
+        invalid={isInvalidOriginationFee}
         errorMessage={t(translations.advancedSettings.errorMessage, {
           min: minOriginationFeeRate,
           max: maxOriginationFeeRate,

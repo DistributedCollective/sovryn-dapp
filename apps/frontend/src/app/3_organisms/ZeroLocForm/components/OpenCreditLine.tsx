@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState, FC } from 'react';
+import React, { useCallback, useMemo, useState, FC, useEffect } from 'react';
 
 import { t } from 'i18next';
 
@@ -30,12 +30,14 @@ export type OpenCreditLineProps = {
   onSubmit: (value: CreditLineSubmitValue) => void;
   rbtcPrice: Decimal;
   borrowingRate: Decimal;
+  maxBorrowingFeeRate: Decimal;
 };
 
 export const OpenCreditLine: FC<OpenCreditLineProps> = ({
   onSubmit,
   rbtcPrice,
   borrowingRate,
+  maxBorrowingFeeRate,
 }) => {
   const { tcr, liquidationReserve, isRecoveryMode } = useZeroData(rbtcPrice);
 
@@ -195,6 +197,12 @@ export const OpenCreditLine: FC<OpenCreditLineProps> = ({
       } as CreditLineSubmitValue),
     [collateralAmount, debtAmount, debtToken, maxOriginationFeeRate, onSubmit],
   );
+
+  useEffect(() => {
+    if (maxBorrowingFeeRate) {
+      setMaxOriginationFeeRate(maxBorrowingFeeRate.mul(100).toString());
+    }
+  }, [maxBorrowingFeeRate]);
 
   return (
     <FormContent

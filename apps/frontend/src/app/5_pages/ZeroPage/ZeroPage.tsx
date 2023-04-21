@@ -63,7 +63,7 @@ const ZeroPage: FC<ZeroPageProps> = ({ deferred: [price] }) => {
   const { connectWallet } = useWalletConnect();
   const { account } = useAccount();
   const { refetch: getOpenTroves } = useGetUserOpenTrove(account);
-  const { minBorrowingFeeRate } = useLiquityBaseParams();
+  const { minBorrowingFeeRate, maxBorrowingFeeRate } = useLiquityBaseParams();
 
   const collateral = useMemo(
     () => decimalic(trove?.collateral?.toString()),
@@ -192,6 +192,7 @@ const ZeroPage: FC<ZeroPageProps> = ({ deferred: [price] }) => {
                 onSubmit={handleTroveSubmit}
                 rbtcPrice={price}
                 borrowingRate={minBorrowingFeeRate}
+                maxBorrowingFeeRate={maxBorrowingFeeRate}
               />
             )}
             {open && hasLoc && (
@@ -200,6 +201,7 @@ const ZeroPage: FC<ZeroPageProps> = ({ deferred: [price] }) => {
                 existingDebt={debt}
                 rbtcPrice={price}
                 borrowingRate={minBorrowingFeeRate}
+                maxBorrowingFeeRate={maxBorrowingFeeRate}
                 onSubmit={handleTroveSubmit}
               />
             )}

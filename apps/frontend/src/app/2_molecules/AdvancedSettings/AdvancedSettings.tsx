@@ -11,7 +11,7 @@ type AdvancedSettingsProps = {
   onChange: (value: string) => void;
   invalid?: boolean;
   className?: string;
-  errorMessage?: string;
+  errorMessage: string;
 };
 
 export const AdvancedSettings: FC<AdvancedSettingsProps> = ({
@@ -24,7 +24,7 @@ export const AdvancedSettings: FC<AdvancedSettingsProps> = ({
   const [open, toggle] = useReducer(v => !v, false);
 
   const errorBadge = useMemo(() => {
-    if (!invalid || !errorMessage) {
+    if (!invalid) {
       return null;
     }
 

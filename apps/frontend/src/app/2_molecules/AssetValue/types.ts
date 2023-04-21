@@ -64,6 +64,13 @@ export const AssetDecimals: { [key in SupportedTokens]: number } = {
   sov: 4,
   doc: 4,
   mynt: 4,
+  bnbs: 4,
+  eths: 4,
+  fish: 4,
+  moc: 4,
+  rif: 4,
+  bpro: 8,
+  rusdt: 4,
 };
 
 export enum AssetValueMode {

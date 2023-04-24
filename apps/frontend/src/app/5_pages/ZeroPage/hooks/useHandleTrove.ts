@@ -169,10 +169,14 @@ export const useHandleTrove = (
           setIsOpen(true);
           setTitle(dialogTitle);
         } else {
-          const openedTrove = await openTrove(value.token, {
-            borrowZUSD: value.borrow || '0',
-            depositCollateral: value.depositCollateral || '0',
-          });
+          const openedTrove = await openTrove(
+            value.token,
+            {
+              borrowZUSD: value.borrow || '0',
+              depositCollateral: value.depositCollateral || '0',
+            },
+            value.maxOriginationFeeRate,
+          );
           setTransactions([
             {
               title: t(baseTranslationPath.open),

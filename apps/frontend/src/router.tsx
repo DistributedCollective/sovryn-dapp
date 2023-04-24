@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { createHashRouter } from 'react-router-dom';
+import { createBrowserRouter, createHashRouter } from 'react-router-dom';
 
 import { PageContainer } from './app/4_templates';
 import { EmailVerificationStateContainer } from './app/4_templates/EmailVerificationStateContainer/EmailVerificationStateContainer';
@@ -12,6 +12,7 @@ import { EmailUnsubscribedPage } from './app/5_pages/EmailUnsubscribedPage/Email
 import { EmailVerifiedPage } from './app/5_pages/EmailVerifiedPage/EmailVerifiedPage';
 import { ErrorPage } from './app/5_pages/ErrorPage/ErrorPage';
 import { zeroPageLoader } from './app/5_pages/ZeroPage/loader';
+import { isIPFSBuild } from './utils/helpers';
 import { loadable } from './utils/loadable';
 
 const Zero = loadable(() => import('./app/5_pages/ZeroPage/ZeroPage'));
@@ -33,7 +34,7 @@ const RewardsPage = loadable(
   () => import('./app/5_pages/RewardsPage/RewardsPage'),
 );
 
-export const router = createHashRouter([
+const routes = [
   {
     path: '/',
     element: (
@@ -112,4 +113,8 @@ export const router = createHashRouter([
       },
     ],
   },
-]);
+];
+
+const createRouter = isIPFSBuild() ? createHashRouter : createBrowserRouter;
+
+export const router = createRouter(routes);

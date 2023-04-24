@@ -24,8 +24,8 @@ jobs:
 
       - name: Install Dependencies
         run: yarn install
-      - name: Build Frontend
-        run: cd apps/frontend && yarn build 
+      - name: Build
+        run: yarn build 
       - name: Upload Frontend Build to IPFS via Pinata
         id: upload_frontend_build
         uses: aquiladev/ipfs-action@master

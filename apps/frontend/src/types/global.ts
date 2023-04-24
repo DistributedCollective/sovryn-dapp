@@ -14,3 +14,5 @@ export type ReleaseFileContent = {
   commit: string;
   comment?: string;
 };
+
+export type Nullable<T = any> = T | null;

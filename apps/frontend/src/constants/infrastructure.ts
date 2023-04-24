@@ -33,3 +33,5 @@ export const BTC_EXPLORER = {
   [Environments.Mainnet]: 'https://live.blockcypher.com/btc',
   [Environments.Testnet]: 'https://live.blockcypher.com/btc-testnet',
 };
+
+export const ESTIMATOR_URI = process.env.REACT_APP_ESTIMATOR_URI;

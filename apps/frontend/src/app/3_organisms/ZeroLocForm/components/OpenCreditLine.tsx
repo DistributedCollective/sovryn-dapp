@@ -16,6 +16,7 @@ import {
   CRITICAL_COLLATERAL_RATIO,
   MINIMUM_COLLATERAL_RATIO,
   MIN_DEBT_SIZE,
+  SMALL_AMOUNT,
 } from '../constants';
 import { useZeroData } from '../hooks/useZeroData';
 import { CreditLineSubmitValue } from '../types';
@@ -95,7 +96,11 @@ export const OpenCreditLine: FC<OpenCreditLineProps> = ({
     const reserve = liquidationReserve.mul(requiredRatio).mul(-1);
 
     return Decimal.max(
-      reserve.add(collateral).div(requiredRatio).div(borrowingRate.add(1)),
+      reserve
+        .add(collateral)
+        .div(requiredRatio)
+        .div(borrowingRate.add(1))
+        .sub(SMALL_AMOUNT),
       0,
     );
   }, [

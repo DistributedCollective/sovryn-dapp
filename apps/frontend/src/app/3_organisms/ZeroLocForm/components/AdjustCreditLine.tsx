@@ -7,6 +7,7 @@ import { ErrorLevel } from '@sovryn/ui';
 import { Decimal } from '@sovryn/utils';
 
 import { BORROW_ASSETS } from '../../../5_pages/ZeroPage/constants';
+import { useLiquityBaseParams } from '../../../5_pages/ZeroPage/hooks/useLiquityBaseParams';
 import { BITCOIN } from '../../../../constants/currencies';
 import { useAmountInput } from '../../../../hooks/useAmountInput';
 import { useAssetBalance } from '../../../../hooks/useAssetBalance';
@@ -33,7 +34,6 @@ type AdjustCreditLineProps = {
   onSubmit: (value: CreditLineSubmitValue) => void;
   rbtcPrice: Decimal;
   borrowingRate: Decimal;
-  maxBorrowingFeeRate: Decimal;
 };
 
 export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
@@ -42,9 +42,9 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
   onSubmit,
   rbtcPrice,
   borrowingRate,
-  maxBorrowingFeeRate,
 }) => {
   const { tcr, isRecoveryMode } = useZeroData(rbtcPrice);
+  const { maxBorrowingFeeRate } = useLiquityBaseParams();
 
   const [debtType, setDebtType] = useState(AmountType.Add);
   const [collateralType, setCollateralType] = useState(AmountType.Add);

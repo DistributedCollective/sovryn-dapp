@@ -1,5 +1,11 @@
 # @sovryn/ui
 
+## 1.0.3
+
+### Patch Changes
+
+- 18d7b0c: SOV-1584: AmountInput -> iOS -> Unexpected border appears
+
 ## 1.0.2
 
 ### Patch Changes

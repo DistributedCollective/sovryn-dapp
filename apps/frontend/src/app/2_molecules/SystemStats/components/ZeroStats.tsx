@@ -18,7 +18,6 @@ import {
 } from '@sovryn/ui';
 import { Decimal, Percent } from '@sovryn/utils';
 
-import { useLiquityBaseParams } from '../../../5_pages/ZeroPage/hooks/useLiquityBaseParams';
 import { BITCOIN, USD } from '../../../../constants/currencies';
 import { useBlockNumber } from '../../../../hooks/useBlockNumber';
 import { useGetRBTCPrice } from '../../../../hooks/zero/useGetRBTCPrice';
@@ -51,7 +50,7 @@ export const ZeroStats: FC<ZeroStatsProps> = ({ className, dataAttribute }) => {
     useState('0');
   const [isRecoveryMode, setIsRecoveryMode] = useState(false);
   const { price: btcPrice } = useGetRBTCPrice();
-  const { minBorrowingFeeRate } = useLiquityBaseParams();
+  const [originationFee, setOriginationFee] = useState<Decimal>();
 
   const { liquity } = useLoaderData() as {
     liquity: EthersLiquity;
@@ -133,11 +132,6 @@ export const ZeroStats: FC<ZeroStatsProps> = ({ className, dataAttribute }) => {
     [isRecoveryMode],
   );
 
-  const originationFeeRate = useMemo(
-    () => formatValue(minBorrowingFeeRate.mul(100), 2),
-    [minBorrowingFeeRate],
-  );
-
   useEffect(() => {
     liquity
       .getZUSDInStabilityPool()
@@ -148,6 +142,13 @@ export const ZeroStats: FC<ZeroStatsProps> = ({ className, dataAttribute }) => {
     liquity
       .getNumberOfTroves()
       .then(result => setLineOfCredit(result.toString()));
+    liquity
+      .getFees()
+      .then(result =>
+        setOriginationFee(
+          decimalic(result.borrowingRate().toString()).mul(100),
+        ),
+      );
   }, [liquity, blockNumber]);
 
   useEffect(() => {
@@ -219,11 +220,13 @@ export const ZeroStats: FC<ZeroStatsProps> = ({ className, dataAttribute }) => {
           label={t(translations.stats.zero.totalCollateralRatio)}
           value={`${formatValue(collateralRatio, 2)}%`}
         />
-        <SimpleTableRow
-          className="mb-5"
-          label={t(translations.stats.zero.originationFeeRate)}
-          value={`${originationFeeRate}%`}
-        />
+        {originationFee && (
+          <SimpleTableRow
+            className="mb-5"
+            label={t(translations.stats.zero.originationFeeRate)}
+            value={`${formatValue(originationFee, 2)}%`}
+          />
+        )}
         <SimpleTableRow
           label={t(translations.stats.zero.protocolStatus)}
           value={renderProtocolMode}

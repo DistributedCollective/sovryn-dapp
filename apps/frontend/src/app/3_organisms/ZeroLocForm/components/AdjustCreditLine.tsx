@@ -17,6 +17,7 @@ import {
   CRITICAL_COLLATERAL_RATIO,
   MINIMUM_COLLATERAL_RATIO,
   MIN_DEBT_SIZE,
+  SMALL_AMOUNT,
 } from '../constants';
 import { useZeroData } from '../hooks/useZeroData';
 import { AmountType, CreditLineSubmitValue } from '../types';
@@ -143,7 +144,10 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
     const debt = existingDebt.mul(-1).mul(requiredRatio);
     const amount = debt.add(collateralInUsd);
 
-    return Decimal.max(amount.div(requiredRatio).div(borrowingRate.add(1)), 0);
+    return Decimal.max(
+      amount.div(requiredRatio).div(borrowingRate.add(1)).sub(SMALL_AMOUNT),
+      0,
+    );
   }, [
     borrowingRate,
     collateralSize,
@@ -177,7 +181,10 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
   );
 
   const ratio = useMemo(
-    () => newCollateral.mul(rbtcPrice).div(newDebt).mul(100),
+    () =>
+      newDebt.isZero()
+        ? Decimal.from(0)
+        : newCollateral.mul(rbtcPrice).div(newDebt).mul(100),
     [newCollateral, newDebt, rbtcPrice],
   );
 

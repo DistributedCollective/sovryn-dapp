@@ -12,6 +12,7 @@ import { SupportedTokens } from '@sovryn/contracts';
 import { Decimal as UtilsDecimal } from '@sovryn/utils';
 
 import { getZeroProvider } from './zero-provider';
+import { decimalic } from '../../../../utils/math';
 
 interface ILiquityBaseParams {
   minBorrowingFeeRate: UtilsDecimal;
@@ -27,11 +28,24 @@ export const getLiquityBaseParams = async (): Promise<ILiquityBaseParams> => {
 
   try {
     const { ethers } = await getZeroProvider();
-    const contract = _getContracts(ethers.connection).liquityBaseParams;
+    const { liquityBaseParams, troveManager } = _getContracts(
+      ethers.connection,
+    );
 
-    const [minBorrowingFee, maxBorrowingFee] = await Promise.all([
-      contract.BORROWING_FEE_FLOOR(),
-      contract.MAX_BORROWING_FEE(),
+    const [
+      minBorrowingFee,
+      maxBorrowingFee,
+      lastFeeOperationTime,
+      baseRateWithoutDecay,
+      minuteDecayFactor,
+      beta,
+    ] = await Promise.all([
+      liquityBaseParams.BORROWING_FEE_FLOOR(),
+      liquityBaseParams.MAX_BORROWING_FEE(),
+      troveManager.lastFeeOperationTime(),
+      troveManager.baseRate().then(decimalic),
+      troveManager.MINUTE_DECAY_FACTOR().then(decimalic),
+      troveManager.BETA().then(decimalic),
     ]);
 
     const minBorrowingFeeRate = UtilsDecimal.fromBigNumberString(

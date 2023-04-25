@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState, FC } from 'react';
+import React, { useCallback, useMemo, useState, FC, useEffect } from 'react';
 
 import { t } from 'i18next';
 
@@ -27,6 +27,7 @@ import {
   checkForSystemErrors,
 } from '../utils';
 import { FormContent } from './FormContent';
+import { getZeroProvider } from '../../../5_pages/ZeroPage/utils/zero-provider';
 
 type AdjustCreditLineProps = {
   existingCollateral: Decimal;
@@ -187,6 +188,36 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
         : newCollateral.mul(rbtcPrice).div(newDebt).mul(100),
     [newCollateral, newDebt, rbtcPrice],
   );
+
+  useEffect(() => {
+    console.log({
+      ratio: ratio.toHexString(),
+      ratio_: ratio.toString(),
+      initialRatio: initialRatio.toHexString(),
+      initialRatio_: initialRatio.toString(),
+      requiredRatio: requiredRatio.toHexString(),
+      requiredRatio_: requiredRatio.toString(),
+    });
+  }, [initialRatio, ratio, requiredRatio]);
+
+  useEffect(() => {
+    getZeroProvider().then(({ ethers }) => {
+      ethers.getFees().then(fees => {
+        console.log({
+          fees,
+          borrowingRate: fees.borrowingRate(),
+          str: fees.toString(),
+        });
+      });
+    });
+  }, []);
+
+  useEffect(() => {
+    console.log({
+      borrowingRate: borrowingRate.toHexString(),
+      borrowingRate_: borrowingRate.toString(),
+    });
+  }, [borrowingRate]);
 
   const initialLiquidationPrice = useMemo(
     () => MINIMUM_COLLATERAL_RATIO.mul(existingDebt).div(existingCollateral),

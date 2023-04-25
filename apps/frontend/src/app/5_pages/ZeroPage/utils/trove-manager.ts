@@ -7,53 +7,11 @@ import {
   _normalizeTroveAdjustment,
   _normalizeTroveCreation,
 } from '@sovryn-zero/lib-base';
-import { _getContracts } from '@sovryn-zero/lib-ethers/dist/src/EthersLiquityConnection';
 import { SupportedTokens } from '@sovryn/contracts';
-import { Decimal as UtilsDecimal } from '@sovryn/utils';
 
 import { getZeroProvider } from './zero-provider';
 
-interface ILiquityBaseParams {
-  minBorrowingFeeRate: UtilsDecimal;
-  maxBorrowingFeeRate: UtilsDecimal;
-}
-
-let cachedParams: ILiquityBaseParams | undefined;
-
-export const getLiquityBaseParams = async (): Promise<ILiquityBaseParams> => {
-  if (cachedParams) {
-    return cachedParams;
-  }
-
-  try {
-    const { ethers } = await getZeroProvider();
-    const contract = _getContracts(ethers.connection).liquityBaseParams;
-
-    const [minBorrowingFee, maxBorrowingFee] = await Promise.all([
-      contract.BORROWING_FEE_FLOOR(),
-      contract.MAX_BORROWING_FEE(),
-    ]);
-
-    const minBorrowingFeeRate = UtilsDecimal.fromBigNumberString(
-      minBorrowingFee.toString(),
-    );
-    const maxBorrowingFeeRate = UtilsDecimal.fromBigNumberString(
-      maxBorrowingFee.toString(),
-    );
-
-    const params = {
-      minBorrowingFeeRate,
-      maxBorrowingFeeRate,
-    };
-
-    cachedParams = params;
-
-    return params;
-  } catch (error) {
-    console.error(error);
-    throw error;
-  }
-};
+const defaultBorrowingRateSlippageTolerance = 0.005; // 0.5%
 
 export const openTrove = async (
   token: SupportedTokens,
@@ -63,11 +21,13 @@ export const openTrove = async (
   const { depositCollateral, borrowZUSD } = normalized;
 
   const { ethers } = await getZeroProvider();
-  const fees = borrowZUSD && (await getLiquityBaseParams());
 
-  const newTrove = Trove.create(
-    normalized,
-    fees?.minBorrowingFeeRate.toString(),
+  const fees = await ethers.getFees();
+  const borrowingRate = fees.borrowingRate();
+  const newTrove = Trove.create(normalized, borrowingRate);
+
+  const maxBorrowingRate = borrowingRate.add(
+    defaultBorrowingRateSlippageTolerance,
   );
 
   const value = depositCollateral ?? Decimal.ZERO;
@@ -77,7 +37,7 @@ export const openTrove = async (
   return {
     value: value.hex,
     fn: token === SupportedTokens.dllr ? 'openNueTrove' : 'openTrove',
-    args: [fees?.maxBorrowingFeeRate.toHexString(), borrowZUSD.hex, ...hints],
+    args: [maxBorrowingRate.hex, borrowZUSD.hex, ...hints],
   };
 };
 
@@ -94,13 +54,14 @@ export const adjustTrove = async (
 
   const [trove, fees] = await Promise.all([
     ethers.getTrove(address),
-    borrowZUSD && getLiquityBaseParams(),
+    borrowZUSD && ethers.getFees(),
   ]);
 
-  const finalTrove = trove.adjust(
-    normalized,
-    fees?.minBorrowingFeeRate.toString(),
-  );
+  const borrowingRate = fees?.borrowingRate();
+  const finalTrove = trove.adjust(normalized, borrowingRate);
+
+  const maxBorrowingRate =
+    borrowingRate?.add(defaultBorrowingRateSlippageTolerance) ?? Decimal.ZERO;
 
   const value = depositCollateral ?? Decimal.ZERO;
 
@@ -110,7 +71,7 @@ export const adjustTrove = async (
     value: value.hex,
     fn: token === SupportedTokens.dllr ? 'adjustNueTrove' : 'adjustTrove',
     args: [
-      fees?.maxBorrowingFeeRate.toHexString() ?? Decimal.ZERO.hex,
+      maxBorrowingRate.hex,
       (withdrawCollateral ?? Decimal.ZERO).hex,
       (borrowZUSD ?? repayZUSD ?? Decimal.ZERO).hex,
       !!borrowZUSD,

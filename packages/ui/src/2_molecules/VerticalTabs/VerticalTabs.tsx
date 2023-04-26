@@ -1,4 +1,11 @@
-import React, { FC, useCallback, useEffect, useMemo, useRef } from 'react';
+import React, {
+  FC,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 
 import classNames from 'classnames';
 
@@ -12,8 +19,8 @@ export const VerticalTabs: FC<VerticalTabsProps> = ({
   selectedIndex = 0,
   ...props
 }) => {
-  const sidebarRef = useRef<HTMLElement>(null);
-  const contentRef = useRef<HTMLDivElement>(null);
+  const tabsRef = useRef<HTMLDivElement>(null);
+  const [top, setTop] = useState(0);
 
   const maybeRenderHeader = useMemo(() => {
     if (props.header) {
@@ -50,25 +57,15 @@ export const VerticalTabs: FC<VerticalTabsProps> = ({
   );
 
   const moveIndicator = useCallback(() => {
-    if (sidebarRef.current) {
-      const sidebarRect = sidebarRef.current.getBoundingClientRect();
-      const tabRect = sidebarRef.current
+    if (tabsRef.current) {
+      const sidebarRect = tabsRef.current.getBoundingClientRect();
+      const tabRect = tabsRef.current
         ?.querySelector('[data-active=true]')
         ?.getBoundingClientRect();
       if (tabRect) {
         const top =
-          tabRect.top -
-          INDICATOR_SIZE / 2 +
-          tabRect.height / 4 -
-          sidebarRect.top;
-        const middle = top + INDICATOR_SIZE;
-        const bottom = middle + INDICATOR_SIZE;
-        const left = sidebarRect.width - INDICATOR_SIZE;
-
-        sidebarRef.current.style.setProperty(
-          'clip-path',
-          `polygon(0 0, 100% 0, 100% ${top}px, ${left}px ${middle}px, 100% ${bottom}px, 100% 100%, 0 100%)`,
-        );
+          tabRect.top - sidebarRect.top + tabRect.height / 2 - INDICATOR_SIZE;
+        setTop(top);
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -80,12 +77,15 @@ export const VerticalTabs: FC<VerticalTabsProps> = ({
 
   return (
     <section className={classNames(styles.container, props.className)}>
-      <aside
-        className={classNames(styles.aside, props.tabsClassName)}
-        ref={sidebarRef}
-      >
+      <aside className={classNames(styles.aside, props.tabsClassName)}>
         {maybeRenderHeader}
-        <div className={styles.tabs}>
+        <div ref={tabsRef} className={styles.tabs}>
+          <div
+            className={styles.indicator}
+            style={{
+              transform: `translateY(${top}px)`,
+            }}
+          />
           {props.items.map((item, index) => (
             <VerticalTabItem
               key={index}
@@ -97,10 +97,7 @@ export const VerticalTabs: FC<VerticalTabsProps> = ({
         </div>
         {maybeRenderFooter}
       </aside>
-      <div
-        className={classNames(styles.content, props.contentClassName)}
-        ref={contentRef}
-      >
+      <div className={classNames(styles.content, props.contentClassName)}>
         {renderContent}
       </div>
     </section>

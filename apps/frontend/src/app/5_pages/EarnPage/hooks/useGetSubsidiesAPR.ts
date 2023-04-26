@@ -1,16 +1,11 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { useLoadContract } from '../../../../hooks/useLoadContract';
-import { getRskChainId } from '../../../../utils/chain';
 
 export const useGetSubsidiesAPR = () => {
   const [apr, setAPR] = useState(0);
 
-  const communityIssuance = useLoadContract(
-    'communityIssuance',
-    'zero',
-    getRskChainId(),
-  );
+  const communityIssuance = useLoadContract('communityIssuance', 'zero');
 
   const updateAPR = useCallback(async () => {
     const APR = await communityIssuance?.APR();

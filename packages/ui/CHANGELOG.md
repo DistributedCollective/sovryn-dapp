@@ -1,5 +1,11 @@
 # @sovryn/ui
 
+## 1.0.4
+
+### Patch Changes
+
+- 7625902: SOV-2224: store selected row in table state
+
 ## 1.0.3
 
 ### Patch Changes

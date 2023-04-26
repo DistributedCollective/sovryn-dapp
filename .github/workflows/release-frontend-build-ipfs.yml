@@ -14,7 +14,7 @@ jobs:
       cidv1: ${{ steps.cidv0_to_cidv1.outputs.cidv1 }}    
     steps:
       - name: Checkout Repo
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - id: commit
         uses: pr-mpt/actions-commit-hash@v2
       - name: Setup Node.js 16.x

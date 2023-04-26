@@ -28,7 +28,7 @@ export const rskTestnet: Record<string, AsyncContractConfigData> = {
         .default,
   },
   communityIssuance: {
-    address: '0xD017396d2284699e0Ce34b236CcE5321Ee3078e5',
+    address: addresses.communityIssuance,
     getAbi: async () =>
       (await import('@sovryn-zero/lib-ethers/dist/abi/CommunityIssuance.json'))
         .default,

@@ -267,7 +267,9 @@
             "liquidationReserve": "Liquidation reserve",
             "liquidationReserveTooltip": "Liquidation reserve in ZUSD",
             "totalDebt": "Total debt",
-            "totalDebtTooltip": "Total debt amount"
+            "totalDebtTooltip": "Total debt amount",
+            "disclaimer": "I understand my collateral may be liquidated or redeemed if applicable - <0>Learn more</0>",
+            "disclaimerCTA": "Learn more"
         }
     },
     "closeCreditLine": {

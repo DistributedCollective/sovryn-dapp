@@ -37,6 +37,7 @@ export const WIKI_LINKS = {
     'https://wiki.sovryn.com/sovryn-dapp/using-zero#set-notifications',
   SECURITY: 'https://wiki.sovryn.com/technical-documents#security',
   FEES: 'https://wiki.sovryn.com/sovryn-dapp/fees#zero-borrowing',
+  RISKS: 'https://wiki.sovryn.com/en/sovryn-dapp/subprotocols/zero-zusd#risks',
 };
 
 export const HELPDESK_LINK = 'https://help.sovryn.app/';

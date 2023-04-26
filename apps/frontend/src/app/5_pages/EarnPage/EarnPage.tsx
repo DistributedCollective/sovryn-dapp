@@ -444,10 +444,9 @@ const EarnPage: FC = () => {
           <SimpleTable className="mt-3">
             <SimpleTableRow
               label={
-                <span className="relative">
+                <span className="flex items-center gap-1">
                   {t(pageTranslations.subsidiesRewardRate)}
                   <HelperButton
-                    className="absolute -right-1 top-0 translate-x-full"
                     content={t(pageTranslations.subsidiesRewardRateInfo)}
                   />
                 </span>
@@ -455,7 +454,7 @@ const EarnPage: FC = () => {
               valueClassName={classNames('transition-colors', {
                 'text-primary-10': !isAmountZero,
               })}
-              value={`${formatValue(apy, 5)}% APY`}
+              value={`${formatValue(apy, 2)}% APY`}
             />
           </SimpleTable>
 

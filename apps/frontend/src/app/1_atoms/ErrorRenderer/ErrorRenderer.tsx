@@ -2,7 +2,13 @@ import React, { FC } from 'react';
 
 import { t } from 'i18next';
 
-import { Heading, HeadingType, LottieAnimation, Paragraph } from '@sovryn/ui';
+import {
+  Heading,
+  HeadingType,
+  Lottie,
+  LottieAnimation,
+  Paragraph,
+} from '@sovryn/ui';
 
 import { translations } from '../../../locales/i18n';
 
@@ -20,6 +26,12 @@ export const ErrorRenderer: FC<ErrorRendererProps> = ({
 }) => (
   <div className="container flex flex-col justify-center items-center flex-grow py-12">
     <div className="text-center whitespace-normal px-4">
+      <div className="w-full flex items-center justify-center">
+        <div className="w-64 h-64">
+          <Lottie animation="error404" />
+        </div>
+      </div>
+
       <Heading
         type={HeadingType.h1}
         className="font-medium text-2xl mb-10 lg:mb-12 text-center"

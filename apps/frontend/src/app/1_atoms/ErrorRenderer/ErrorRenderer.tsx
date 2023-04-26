@@ -27,8 +27,8 @@ export const ErrorRenderer: FC<ErrorRendererProps> = ({
   <div className="container flex flex-col justify-center items-center flex-grow py-12">
     <div className="text-center whitespace-normal px-4">
       <div className="w-full flex items-center justify-center">
-        <div className="w-64 h-64">
-          <Lottie animation="error404" />
+        <div className="w-64">
+          <Lottie animation="loading" />
         </div>
       </div>
 

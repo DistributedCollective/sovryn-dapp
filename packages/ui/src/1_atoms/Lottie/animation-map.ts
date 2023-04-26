@@ -6,4 +6,5 @@ export const animationMap = {
   ),
   bugHunting: import('./animations/bug-hunting.json').then(m => m.default),
   error: import('./animations/error.json').then(m => m.default),
+  loading: import('./animations/loading.json').then(m => m.default),
 } as const;

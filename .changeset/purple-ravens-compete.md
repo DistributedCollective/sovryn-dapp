@@ -1,5 +1,5 @@
 ---
-'frontend': major
+'frontend': patch
 ---
 
 Github workflow to release frontend build to IPFS network

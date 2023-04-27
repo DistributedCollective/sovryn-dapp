@@ -212,11 +212,13 @@
     "stats": {
         "zero": {
             "title": "Zero statistics",
+            "btcPrice": "BTC price",
             "rbtcInLoc": "BTC in lines of credit",
             "loc": "Lines of credit",
             "zusdSupply": "ZUSD supply",
             "zusdInStabilityPool": "ZUSD in stability pool",
             "totalCollateralRatio": "Total collateral ratio",
+            "originationFeeRate": "Origination fee rate",
             "protocolStatus": "Protocol status (normal/recovery mode)"
         },
         "ecosystem": {
@@ -265,7 +267,9 @@
             "liquidationReserve": "Liquidation reserve",
             "liquidationReserveTooltip": "Liquidation reserve in ZUSD",
             "totalDebt": "Total debt",
-            "totalDebtTooltip": "Total debt amount"
+            "totalDebtTooltip": "Total debt amount",
+            "disclaimer": "I understand my collateral may be liquidated or redeemed if applicable - <0>Learn more</0>",
+            "disclaimerCTA": "Learn more"
         }
     },
     "closeCreditLine": {
@@ -565,7 +569,7 @@
         "emailInputPlaceholder": "Enter email",
         "alertGroups": {
             "marginCallsToggle": "Margin call alerts",
-            "liquidationsToggle": "Liquidation alerts",
+            "liquidationsToggle": "Liquidation and redemption alerts",
             "stabilityPoolToggle": "Stability pool alerts",
             "systemToggle": "System alerts"
         },
@@ -634,7 +638,7 @@
         }
     },
     "loader": {
-      "loading": "is loading...",
-      "error": "Error loading data, please try again."
+        "loading": "is loading...",
+        "error": "Error loading data, please try again."
     }
 }

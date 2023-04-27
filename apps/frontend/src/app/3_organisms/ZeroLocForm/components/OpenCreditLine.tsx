@@ -16,6 +16,7 @@ import {
   CRITICAL_COLLATERAL_RATIO,
   MINIMUM_COLLATERAL_RATIO,
   MIN_DEBT_SIZE,
+  SMALL_AMOUNT,
 } from '../constants';
 import { useZeroData } from '../hooks/useZeroData';
 import { CreditLineSubmitValue } from '../types';
@@ -68,14 +69,18 @@ export const OpenCreditLine: FC<OpenCreditLineProps> = ({
     [debtSize, borrowingRate, liquidationReserve],
   );
 
+  const requiredRatio = useMemo(
+    () =>
+      isRecoveryMode ? CRITICAL_COLLATERAL_RATIO : MINIMUM_COLLATERAL_RATIO,
+    [isRecoveryMode],
+  );
+
   const minCollateralAmount = useMemo(
     () =>
       Decimal.max(MIN_DEBT_SIZE, debtWithFees)
         .div(rbtcPrice)
-        .mul(
-          isRecoveryMode ? CRITICAL_COLLATERAL_RATIO : MINIMUM_COLLATERAL_RATIO,
-        ),
-    [debtWithFees, isRecoveryMode, rbtcPrice],
+        .mul(requiredRatio),
+    [debtWithFees, rbtcPrice, requiredRatio],
   );
 
   const maxCollateralAmount = useMemo(
@@ -84,30 +89,27 @@ export const OpenCreditLine: FC<OpenCreditLineProps> = ({
   );
 
   const maxDebtAmount = useMemo(() => {
-    let amount = maxCollateralAmount
-      .mul(rbtcPrice)
-      .div(
-        isRecoveryMode ? CRITICAL_COLLATERAL_RATIO : MINIMUM_COLLATERAL_RATIO,
-      );
-
+    let collateral = maxCollateralAmount.mul(rbtcPrice);
     if (collateralSize.gt(0)) {
-      amount = collateralSize
-        .mul(rbtcPrice)
-        .div(
-          isRecoveryMode ? CRITICAL_COLLATERAL_RATIO : MINIMUM_COLLATERAL_RATIO,
-        );
+      collateral = collateralSize.mul(rbtcPrice);
     }
+    const reserve = liquidationReserve.mul(requiredRatio).mul(-1);
 
-    const originationFee = getOriginationFeeAmount(amount, borrowingRate);
-
-    return Decimal.max(amount.sub(originationFee).sub(liquidationReserve), 0);
+    return Decimal.max(
+      reserve
+        .add(collateral)
+        .div(requiredRatio)
+        .div(borrowingRate.add(1))
+        .sub(SMALL_AMOUNT),
+      0,
+    );
   }, [
     borrowingRate,
     collateralSize,
-    isRecoveryMode,
     liquidationReserve,
     maxCollateralAmount,
     rbtcPrice,
+    requiredRatio,
   ]);
 
   const ratio = useMemo(() => {

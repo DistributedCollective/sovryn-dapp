@@ -1,5 +1,11 @@
 # @sovryn/contracts
 
+## 1.0.4
+
+### Patch Changes
+
+- f880454: SOV-2129: add liquity base contract
+
 ## 1.0.3
 
 ### Patch Changes

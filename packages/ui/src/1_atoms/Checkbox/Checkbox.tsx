@@ -18,7 +18,7 @@ import styles from './Checkbox.module.css';
 
 export type CheckboxProps = Omit<
   HTMLProps<HTMLInputElement>,
-  'ref' | 'size'
+  'ref' | 'size' | 'label'
 > & {
   indeterminate?: boolean;
   dataAttribute?: string;

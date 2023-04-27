@@ -17,6 +17,7 @@ import {
   CRITICAL_COLLATERAL_RATIO,
   MINIMUM_COLLATERAL_RATIO,
   MIN_DEBT_SIZE,
+  SMALL_AMOUNT,
 } from '../constants';
 import { useZeroData } from '../hooks/useZeroData';
 import { AmountType, CreditLineSubmitValue } from '../types';
@@ -74,15 +75,25 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
     [collateralType],
   );
 
+  const requiredRatio = useMemo(
+    () =>
+      isRecoveryMode ? CRITICAL_COLLATERAL_RATIO : MINIMUM_COLLATERAL_RATIO,
+    [isRecoveryMode],
+  );
+
   const newDebt = useMemo(
     () =>
       Decimal.max(
-        existingDebt.add(
-          normalizeAmountByType(decimalic(debtAmount), debtType),
-        ),
+        existingDebt
+          .add(normalizeAmountByType(debtSize, debtType))
+          .add(
+            isIncreasingDebt
+              ? getOriginationFeeAmount(debtSize, borrowingRate)
+              : Decimal.ZERO,
+          ),
         Decimal.ZERO,
       ),
-    [debtAmount, existingDebt, debtType],
+    [existingDebt, debtSize, debtType, isIncreasingDebt, borrowingRate],
   );
 
   const newCollateral = useMemo(
@@ -100,19 +111,11 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
     () =>
       Decimal.max(
         existingCollateral
-          .sub(
-            newDebt
-              .mul(
-                isRecoveryMode
-                  ? CRITICAL_COLLATERAL_RATIO
-                  : MINIMUM_COLLATERAL_RATIO,
-              )
-              .div(rbtcPrice),
-          )
+          .sub(newDebt.mul(requiredRatio).div(rbtcPrice))
           .sub(Decimal.fromBigNumberString('1')),
         Decimal.ZERO,
       ),
-    [existingCollateral, isRecoveryMode, newDebt, rbtcPrice],
+    [existingCollateral, newDebt, rbtcPrice, requiredRatio],
   );
 
   const maxCollateralAmount = useMemo(
@@ -128,26 +131,31 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
   );
 
   const maxBorrowAmount = useMemo(() => {
-    const collateral = collateralSize.isZero()
-      ? existingCollateral
-      : existingCollateral.add(collateralSize);
+    let collateral = existingCollateral;
+    if (collateral.gt(0)) {
+      if (isIncreasingCollateral) {
+        collateral = collateral.add(collateralSize);
+      } else {
+        collateral = collateral.sub(collateralSize);
+      }
+    }
 
-    const amount = collateral
-      .mul(rbtcPrice)
-      .div(
-        isRecoveryMode ? CRITICAL_COLLATERAL_RATIO : MINIMUM_COLLATERAL_RATIO,
-      );
+    const collateralInUsd = collateral.mul(rbtcPrice);
+    const debt = existingDebt.mul(-1).mul(requiredRatio);
+    const amount = debt.add(collateralInUsd);
 
-    const originationFee = getOriginationFeeAmount(amount, borrowingRate);
-
-    return Decimal.max(amount.sub(existingDebt).sub(originationFee), 0);
+    return Decimal.max(
+      amount.div(requiredRatio).div(borrowingRate.add(1)).sub(SMALL_AMOUNT),
+      0,
+    );
   }, [
     borrowingRate,
     collateralSize,
     existingCollateral,
     existingDebt,
-    isRecoveryMode,
+    isIncreasingCollateral,
     rbtcPrice,
+    requiredRatio,
   ]);
 
   const maxRepayAmount = useMemo(
@@ -173,7 +181,10 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
   );
 
   const ratio = useMemo(
-    () => newCollateral.mul(rbtcPrice).div(newDebt).mul(100),
+    () =>
+      newDebt.isZero()
+        ? Decimal.from(0)
+        : newCollateral.mul(rbtcPrice).div(newDebt).mul(100),
     [newCollateral, newDebt, rbtcPrice],
   );
 
@@ -224,7 +235,8 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
         initialRatio,
         CRITICAL_COLLATERAL_RATIO,
       );
-      if (ratio < ratioRequired) {
+
+      if (ratio.lt(ratioRequired)) {
         errors.push({
           level: ErrorLevel.Critical,
           message: t(translations.zeroPage.loc.errors.ratioDecreased, {

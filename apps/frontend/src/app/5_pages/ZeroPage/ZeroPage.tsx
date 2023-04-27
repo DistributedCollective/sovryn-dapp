@@ -63,6 +63,8 @@ const ZeroPage: FC<ZeroPageProps> = ({ deferred: [price, fees] }) => {
   const { account } = useAccount();
   const { refetch: getOpenTroves } = useGetUserOpenTrove(account);
 
+  const [hasUserClosedTrove, setHasUserClosedTrove] = useState(false);
+
   const collateral = useMemo(
     () => decimalic(trove?.collateral?.toString()),
     [trove?.collateral],
@@ -103,6 +105,7 @@ const ZeroPage: FC<ZeroPageProps> = ({ deferred: [price, fees] }) => {
     onTroveOpened: () => {
       toggle();
       toggleStartedPopup();
+      setHasUserClosedTrove(false);
       getTroves();
       getOpenTroves();
     },
@@ -112,6 +115,7 @@ const ZeroPage: FC<ZeroPageProps> = ({ deferred: [price, fees] }) => {
       getOpenTroves();
     },
     onTroveClosed: () => {
+      setHasUserClosedTrove(true);
       toggleClosePopup();
       getTroves();
       getOpenTroves();
@@ -175,7 +179,7 @@ const ZeroPage: FC<ZeroPageProps> = ({ deferred: [price, fees] }) => {
             </Paragraph>
 
             <div className="h-80 md:flex-1 bg-gray-80 rounded pt-2 pr-2 flex items-center">
-              <LOCChart />
+              <LOCChart hasUserClosedTrove={hasUserClosedTrove} />
             </div>
           </div>
         </div>

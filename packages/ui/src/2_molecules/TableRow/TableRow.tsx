@@ -1,4 +1,4 @@
-import React, { Fragment, useCallback, useState } from 'react';
+import React, { Fragment, useCallback } from 'react';
 
 import classNames from 'classnames';
 
@@ -11,6 +11,7 @@ type TableRowProps<RowType extends RowObject> = {
   columns: ColumnOptions<RowType>[];
   row: RowType;
   index: number;
+  isSelected?: boolean;
   onRowClick?: (row: RowType) => void;
   dataAttribute?: string;
   isClickable?: boolean;
@@ -23,14 +24,13 @@ export const TableRow = <RowType extends RowObject>({
   row,
   index,
   onRowClick = noop,
+  isSelected,
   dataAttribute,
   isClickable,
   className,
   size = TableRowSize.small,
 }: TableRowProps<RowType>) => {
-  const [isSelected, setIsSelected] = useState(false);
   const onClick = useCallback(() => {
-    setIsSelected(prevValue => !prevValue);
     onRowClick?.(row);
   }, [onRowClick, row]);
 

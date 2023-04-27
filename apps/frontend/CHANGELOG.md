@@ -1,5 +1,22 @@
 # frontend
 
+## 1.0.8
+
+### Patch Changes
+
+- 312b113: SOV-2065: Add redemptions alerts to D2 FE
+- 31f7826: SOV-2281: fixes failing LOC transactions
+  chore: implements transaction simulations using tenderly
+- f87f24a: SOV-2280: Fix chart when LOC is closed
+- 184f4a7: SOV-2131: fix max buttons
+- 13ee989: SOV-2145: add Adjust - Borrow LOC maintenance states
+- 43ee3dc: SOV-2219: infinite cRatio on adjust collateral
+- 21f49cd: SOV-1986: fix asset balance refreshing
+- Updated dependencies [f880454]
+- Updated dependencies [18d7b0c]
+  - @sovryn/contracts@1.0.4
+  - @sovryn/ui@1.0.3
+
 ## 1.0.7
 
 ### Patch Changes

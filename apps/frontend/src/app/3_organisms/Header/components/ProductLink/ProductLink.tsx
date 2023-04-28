@@ -25,7 +25,7 @@ export const ProductLink: FC<ProductLinkProps> = ({
       rel="noopener noreferrer"
       className={classNames(styles.link, 'flex flex-col')}
     >
-      <Paragraph className="lg:font-bold lg:mb-1">{label}</Paragraph>
+      <Paragraph className="lg:font-bold lg:mb-1 text-sm">{label}</Paragraph>
       <div className="w-full justify-between items-top gap-x-2 hidden lg:flex">
         <Paragraph size={ParagraphSize.small}>{description}</Paragraph>
         <ExitApp className="w-4 h-4 flex-grow-0 flex-shrink-0 bg-sovryn-black" />

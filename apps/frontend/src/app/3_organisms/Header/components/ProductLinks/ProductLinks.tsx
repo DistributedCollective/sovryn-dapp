@@ -6,23 +6,13 @@ import { t } from 'i18next';
 import { useOnClickOutside } from '@sovryn/ui';
 
 import { ReactComponent as AppsIcon } from '../../../../../assets/images/apps-icon.svg';
-import { ALPHA_LINKS } from '../../../../../constants/links';
 import { translations } from '../../../../../locales/i18n';
-import { Environments } from '../../../../../types/global';
-import { isMainnet, isStaging } from '../../../../../utils/helpers';
+import { getBitocracyUrl, getD1Url } from '../../../../../utils/helpers';
 import { ProductLink } from '../ProductLink/ProductLink';
 import styles from './ProductLinks.module.css';
 
-const linkToAlpha = (path?: string) =>
-  `${
-    isStaging()
-      ? ALPHA_LINKS.STAGING
-      : ALPHA_LINKS[isMainnet() ? Environments.Mainnet : Environments.Testnet]
-  }${path}`;
-
-const linkToBitocracy = isMainnet()
-  ? 'https://bitocracy.sovryn.app'
-  : 'https://bitocracy.test.sovryn.app';
+const URI = getD1Url();
+const linkToAlpha = (path: string) => `${URI}${path}`;
 
 export const ProductLinks: FC = () => {
   const [isOpen, setOpen] = useState(false);
@@ -88,7 +78,7 @@ export const ProductLinks: FC = () => {
             description={t(translations.productLinks.stake.description)}
           />
           <ProductLink
-            href={linkToBitocracy}
+            href={getBitocracyUrl()}
             label={t(translations.productLinks.vote.title)}
             description={t(translations.productLinks.vote.description)}
           />

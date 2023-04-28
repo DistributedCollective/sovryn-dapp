@@ -305,11 +305,7 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
 
       if (newCollateral.lt(minCollateralAmount)) {
         return t(translations.zeroPage.loc.errors.newCollateralTooLow, {
-          value: `${formatValue(
-            minCollateralAmount.sub(newCollateral),
-            4,
-            true,
-          )}`,
+          value: `${formatValue(minCollateralAmount.sub(newCollateral), 4)}`,
           currency: BITCOIN,
         });
       }

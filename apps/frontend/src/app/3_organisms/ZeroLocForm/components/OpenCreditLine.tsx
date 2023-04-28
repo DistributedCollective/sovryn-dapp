@@ -172,11 +172,7 @@ export const OpenCreditLine: FC<OpenCreditLineProps> = ({
 
     if (collateralSize.lt(minCollateralAmount)) {
       return t(translations.zeroPage.loc.errors.collateralTooLow, {
-        value: `${formatValue(
-          minCollateralAmount.toNumber(),
-          4,
-          true,
-        )} ${BITCOIN}`,
+        value: `${formatValue(minCollateralAmount.toNumber(), 4)} ${BITCOIN}`,
       });
     }
 

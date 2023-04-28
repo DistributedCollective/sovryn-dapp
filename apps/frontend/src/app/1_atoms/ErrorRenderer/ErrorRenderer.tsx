@@ -28,7 +28,7 @@ export const ErrorRenderer: FC<ErrorRendererProps> = ({
     <div className="text-center whitespace-normal px-4">
       <div className="w-full flex items-center justify-center">
         <div className="w-64">
-          <Lottie animation="loading" />
+          <Lottie animation="error" />
         </div>
       </div>
 

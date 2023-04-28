@@ -8,6 +8,7 @@ import {
   Lottie,
   LottieAnimation,
   Paragraph,
+  ParagraphStyle,
 } from '@sovryn/ui';
 
 import { translations } from '../../../locales/i18n';
@@ -40,7 +41,10 @@ export const ErrorRenderer: FC<ErrorRendererProps> = ({
         {title ?? t(translations.errorPage.title)}
       </Heading>
 
-      <Paragraph className="max-w-xl font-normal text-sm lg:text-base text-center lg:px-4">
+      <Paragraph
+        className="max-w-xl font-normal text-sm lg:text-base text-center lg:px-4"
+        style={ParagraphStyle.tall}
+      >
         {description ? description : t(translations.errorPage.description)}
       </Paragraph>
       {error}

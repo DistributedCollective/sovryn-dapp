@@ -91,7 +91,7 @@
             "title": "Error - Sovryn"
         },
         "title": "Error",
-        "description": "Error: Something went wrong but don’t worry – your funds are safe. Please try again."
+        "description": "Something went wrong but don’t worry – your funds are safe. Please try again."
     },
     "notFoundPage": {
         "meta": {

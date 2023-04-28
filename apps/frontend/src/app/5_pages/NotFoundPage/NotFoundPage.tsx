@@ -23,7 +23,7 @@ export const NotFoundPage: FC = () => (
 
     <ErrorRenderer
       animation="error404"
-      title={t(translations.notFoundPage.title)}
+      title=""
       description={
         <Trans
           i18nKey={translations.notFoundPage.description}

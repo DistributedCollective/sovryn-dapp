@@ -28,7 +28,11 @@ const Template: Story<ComponentProps<typeof VerticalTabs>> = args => {
     [updateArgs],
   );
 
-  return <VerticalTabs {...args} onChange={handleOnChange} />;
+  return (
+    <div className="bg-sovryn-black">
+      <VerticalTabs {...args} onChange={handleOnChange} />
+    </div>
+  );
 };
 
 const DialogTemplate: Story<ComponentProps<typeof VerticalTabs>> = args => {

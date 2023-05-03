@@ -5,7 +5,6 @@
 .aside {
   @apply h-full min-h-full bg-gray-80 p-[1.25rem] flex-shrink-0 flex-grow-0 w-[19.25rem] relative
     flex flex-col justify-between items-start;
-  transition: clip-path 0.3s ease-in-out;
 }
 
 .header {
@@ -17,9 +16,14 @@
 }
 
 .tabs {
-  @apply w-full flex flex-col justify-center items-center gap-y-10;
+  @apply w-full flex flex-col justify-center items-center gap-y-10 relative;
 }
 
 .content {
   @apply w-full h-full p-[3.25rem] relative overflow-y-auto;
+}
+
+.indicator {
+  @apply border-solid border-r-sovryn-black border-r-[1rem] border-y-transparent border-y-[1rem]  border-l-0 absolute right-[-1.25rem] top-0;
+  transition: all 0.4s ease-out;
 }

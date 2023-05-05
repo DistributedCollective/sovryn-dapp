@@ -73,6 +73,12 @@ export const openTrove = async (
   const value = depositCollateral ?? Decimal.ZERO;
 
   const hints = await ethers.populate.findHints(newTrove);
+  console.log(
+    'min',
+    fees?.minBorrowingFeeRate.toString(),
+    'max',
+    fees?.maxBorrowingFeeRate.toString(),
+  );
 
   return {
     value: value.hex,

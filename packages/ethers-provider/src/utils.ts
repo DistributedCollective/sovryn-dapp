@@ -15,3 +15,8 @@ export const getChainIdByNetwork = (network: Network): ChainId => {
   }
   return chainId;
 };
+
+export const numberToChainId = (chainId: number): ChainId =>
+  `0x${chainId.toString(16)}` as ChainId;
+export const chainIdToNumber = (chainId: ChainId): number =>
+  parseInt(chainId, 16);

@@ -29,6 +29,7 @@ export const ErrorPage: FC = () => {
       </Helmet>
       <Header />
       <ErrorRenderer
+        title=""
         error={
           <>
             <Paragraph className="w-full p-3">

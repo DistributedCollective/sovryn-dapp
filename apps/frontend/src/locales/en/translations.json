@@ -90,13 +90,12 @@
             "title": "Error - Sovryn"
         },
         "title": "Error",
-        "description": "Something went wrong. Please try again later."
+        "description": "Something went wrong but don’t worry – your funds are safe. Please try again."
     },
     "notFoundPage": {
         "meta": {
             "title": "404 - Sovryn"
         },
-        "title": "404",
         "description": "There is no content on this page. It has either moved, or never existed. Try checking the URL for typos, and if that doesn't solve the problem, you can go to <0>link</0> to continue."
     },
     "maintenanceMode": {

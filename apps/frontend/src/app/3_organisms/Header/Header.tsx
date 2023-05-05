@@ -23,6 +23,7 @@ import { useAssetBalance } from '../../../hooks/useAssetBalance';
 import { translations } from '../../../locales/i18n';
 import { sharedState } from '../../../store/rxjs/shared-state';
 import { isMainnet, isTestnetFastBtcEnabled } from '../../../utils/helpers';
+import { ProductLinks } from './components/ProductLinks/ProductLinks';
 
 export const Header: FC = () => {
   const [isOpen, toggle] = useReducer(v => !v, false);
@@ -100,6 +101,7 @@ export const Header: FC = () => {
             >
               {t(translations.header.nav.convert)}
             </NavLink>
+            <ProductLinks />
           </ol>
         }
         secondaryContent={

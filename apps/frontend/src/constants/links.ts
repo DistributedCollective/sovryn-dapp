@@ -22,6 +22,11 @@ export const ALPHA_LINKS = {
   STAGING: 'https://alpha-staging.sovryn.app',
 };
 
+export const BITOCRACY_LINKS = {
+  [Environments.Mainnet]: 'https://bitocracy.sovryn.app',
+  [Environments.Testnet]: 'https://bitocracy.test.sovryn.app',
+};
+
 export const STAGING_LINK = 'https://staging.sovryn.com';
 
 export const WIKI_LINKS = {

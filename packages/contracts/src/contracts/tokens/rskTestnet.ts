@@ -4,6 +4,7 @@ import { addresses } from '@sovryn-zero/lib-ethers/dist/deployments/default/rskt
 
 export const rskTestnet: Record<string, string> = {
   rbtc: constants.AddressZero,
+  wrbtc: '0x7481aCBeb11C1D2866B0F11DE359E52dbe63EC5B',
   sov: '0x6a9A07972D07e58F0daf5122d11E069288A375fb',
   xusd: '0xa9262cc3fb54ea55b1b0af00efca9416b8d59570',
   dllr: '0x007b3AA69A846cB1f76b60b3088230A52D2A83AC',

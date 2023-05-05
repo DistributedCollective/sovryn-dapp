@@ -1,0 +1,30 @@
+.dropdownOrList {
+  @apply block;
+}
+
+@screen lg {
+  .dropdownOrList {
+    @apply absolute top-14 -left-36 w-[27rem] p-8 bg-gray-90 border-b border-l border-r border-gray-50;
+  }
+
+  .list {
+    @apply mt-8 grid grid-cols-2 gap-x-14 gap-y-4 m-0;
+  }
+
+  .list a {
+    @apply p-0;
+  }
+}
+
+.button {
+  @apply relative text-gray-10 text-opacity-75 inline-flex text-sm leading-4 px-2 py-3
+   rounded transition-colors cursor-pointer hidden lg:block;
+
+  &.active {
+    @apply bg-gray-70 text-gray-10;
+  }
+
+  &:hover {
+    @apply text-gray-10 no-underline;
+  }
+}

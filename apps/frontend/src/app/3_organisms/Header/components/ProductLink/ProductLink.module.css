@@ -1,0 +1,15 @@
+.link {
+  @apply relative text-gray-10 text-opacity-75 inline-flex text-sm leading-4 px-2 py-3 rounded transition-colors cursor-pointer;
+
+  &.active {
+    @apply bg-gray-70 text-gray-10;
+  }
+
+  &:hover {
+    @apply text-gray-10 no-underline;
+  }
+
+  &:visited {
+    @apply text-gray-10;
+  }
+}

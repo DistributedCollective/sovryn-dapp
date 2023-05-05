@@ -11,7 +11,7 @@ import {
   RSK_EXPLORER,
   SERVICES_CONFIG,
 } from '../constants/infrastructure';
-import { GITHUB_LINKS } from '../constants/links';
+import { ALPHA_LINKS, BITOCRACY_LINKS, GITHUB_LINKS } from '../constants/links';
 import { Environments } from '../types/global';
 import { decimalic } from './math';
 
@@ -63,6 +63,14 @@ export const getRskExplorerUrl = () =>
 
 export const getBtcExplorerUrl = () =>
   BTC_EXPLORER[isMainnet() ? 'mainnet' : 'testnet'];
+
+export const getD1Url = () =>
+  isStaging()
+    ? ALPHA_LINKS.STAGING
+    : ALPHA_LINKS[isMainnet() ? Environments.Mainnet : Environments.Testnet];
+
+export const getBitocracyUrl = () =>
+  BITOCRACY_LINKS[isMainnet() ? Environments.Mainnet : Environments.Testnet];
 
 export const dateFormat = (timestamp: number) => {
   const stamp = dayjs.tz(Number(timestamp) * 1e3, 'UTC');

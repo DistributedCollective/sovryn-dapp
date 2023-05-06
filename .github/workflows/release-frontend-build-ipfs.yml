@@ -1,6 +1,11 @@
 name: Release Frontend build to IPFS
 
-on: workflow_dispatch
+on: 
+  workflow_dispatch:
+    inputs: 
+      require_unpin_previous_builds:
+        type: boolean
+        description: "Unpin previous builds"
 
 concurrency: ${{ github.workflow }}-${{ github.ref }}
 
@@ -10,6 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs: 
       commit_short_hash: ${{ steps.commit.outputs.short }}
+      build_timestamp: ${{ steps.get_build_timestamp.outputs.build_timestamp }}
       cidv0: ${{ steps.upload_frontend_build.outputs.hash }}
       cidv1: ${{ steps.cidv0_to_cidv1.outputs.cidv1 }}    
     steps:
@@ -21,9 +27,11 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: 16.x
-
       - name: Install Dependencies
         run: yarn install
+      - name: Set BUILD_TIMESTAMP
+        id: get_build_timestamp
+        run: echo "build_timestamp=$(date +%s)" >> "$GITHUB_OUTPUT"
       - name: Build
         run: REACT_APP_IPFS_BUILD=true yarn build 
       - name: Upload Frontend Build to IPFS via Pinata
@@ -42,6 +50,23 @@ jobs:
         uses: Uniswap/convert-cidv0-cidv1@v1.0.0
         with:
           cidv0: ${{ steps.upload_frontend_build.outputs.hash }}
+  unpin_previous_builds:
+    name: Unpin Previous Builds
+    needs: upload_build
+    if: ${{ inputs.require_unpin_previous_builds }}
+    runs-on: ubuntu-latest
+    steps: 
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Install Dependencies
+        run: yarn install
+      - name: Call Pinata API to unpin previous builds
+        uses: ./.github/workflows/pinata_unpin_content
+        with:
+          pinataKey:  ${{ secrets.PINATA_KEY }}
+          pinataSecret: ${{ secrets.PINATA_SECRET }}
+          pinName: Sovryn DAPP Frontend
+          pinEndTimestamp: ${{ needs.upload_build.outputs.build_timestamp }}
   pin_build_cidv1:
     name: Pin Frontend Build CIDv1
     needs: upload_build

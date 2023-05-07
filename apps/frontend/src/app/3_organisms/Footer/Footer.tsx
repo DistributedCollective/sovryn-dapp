@@ -9,14 +9,12 @@ import { SovrynLogo } from '../../2_molecules/SovrynLogo/SovrynLogo';
 import Logo from '../../../assets/images/Bitcoin-logo-small.svg';
 import { CURRENT_RELEASE } from '../../../constants/general';
 import {
-  ALPHA_LINKS,
   WIKI_LINKS,
   STAGING_LINK,
   WEBSITE_LINKS,
 } from '../../../constants/links';
 import { translations } from '../../../locales/i18n';
-import { Environments } from '../../../types/global';
-import { isMainnet, isStaging } from '../../../utils/helpers';
+import { isStaging } from '../../../utils/helpers';
 import { getChangelogUrl } from '../../../utils/helpers';
 
 type FooterProps = {
@@ -37,15 +35,6 @@ export const Footer: FC<FooterProps> = ({ showDashboardLink }) => {
             href: `${WIKI_LINKS.ROOT}/getting-started`,
             name: t(translations.footer.start),
           },
-      {
-        id: 'dapp-alpha',
-        href: isStaging()
-          ? ALPHA_LINKS.STAGING
-          : ALPHA_LINKS[
-              isMainnet() ? Environments.Mainnet : Environments.Testnet
-            ],
-        name: t(translations.footer.alpha),
-      },
       {
         id: 'website',
         href: WEBSITE_LINKS.ROOT,

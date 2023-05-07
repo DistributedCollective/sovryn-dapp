@@ -73,7 +73,6 @@
     "footer": {
         "dashboard": "Dashboard",
         "start": "Getting started",
-        "alpha": "Sovryn Alpha",
         "website": "Sovryn.com",
         "blog": "Blog",
         "security": "Security",
@@ -91,13 +90,12 @@
             "title": "Error - Sovryn"
         },
         "title": "Error",
-        "description": "Something went wrong. Please try again later."
+        "description": "Something went wrong but don’t worry – your funds are safe. Please try again."
     },
     "notFoundPage": {
         "meta": {
             "title": "404 - Sovryn"
         },
-        "title": "404",
         "description": "There is no content on this page. It has either moved, or never existed. Try checking the URL for typos, and if that doesn't solve the problem, you can go to <0>link</0> to continue."
     },
     "maintenanceMode": {
@@ -312,7 +310,9 @@
             "description": "Earn BTC by supplying ZUSD and ensure full collateralization of Zero with the Stability Pool. Join Sovryn's decentralized Zero protocol and start earning now."
         },
         "title": "Stability pool",
-        "subtitle": "Earn BTC by providing liquidity for liquidations",
+        "subtitle": "Earn BTC and SOV by providing liquidity for liquidations",
+        "subsidiesRewardRate": "Subsidies reward rate",
+        "subsidiesRewardRateInfo": "Calculated using the current subsidies APR, assuming subsidies are compounded daily by the user (gas expenses not included)",
         "form": {
             "invalidAmountError": "Exceeds maximum amount",
             "undercollateralized": "Withdrawals disabled – one or more LOCs are undercollateralized"
@@ -438,6 +438,7 @@
         "title": "Rewards",
         "subtitle": "Collect rewards earned",
         "stabilityPoolRewards": "Stability pool rewards",
+        "stabilityPoolSubsidies": "Stability pool subsidies",
         "btc": "BTC",
         "actions": {
             "transferToLOC": "Transfer to LOC",
@@ -640,5 +641,40 @@
     "loader": {
         "loading": "is loading...",
         "error": "Error loading data, please try again."
+    },
+    "productLinks": {
+      "title": "Sovryn Alpha",
+      "swap": {
+        "title": "Swap",
+        "description": "Swap between assets"
+      },
+      "spot": {
+        "title": "Spot",
+        "description": "Trade with spot market and limit orders"
+      },
+      "trade": {
+        "title": "Margin",
+        "description": "Trade with up to 5x leverage"
+      },
+      "yield": {
+        "title": "Pool",
+        "description": "Earn yield in the AMM"
+      },
+      "lend": {
+        "title": "Lend",
+        "description": "Earn by lending assets"
+      },
+      "borrow": {
+        "title": "Borrow",
+        "description": "Take out a fixed-interest loan"
+      },
+      "stake": {
+        "title": "Stake",
+        "description": "Earn rewards by staking SOV"
+      },
+      "vote": {
+        "title": "Vote",
+        "description": "Participate in Sovryn governance"
+      }
     }
 }

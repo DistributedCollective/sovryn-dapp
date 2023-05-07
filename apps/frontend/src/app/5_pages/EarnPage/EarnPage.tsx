@@ -18,6 +18,7 @@ import {
   ErrorBadge,
   ErrorLevel,
   Heading,
+  HelperButton,
   Paragraph,
   ParagraphSize,
   Select,
@@ -48,6 +49,7 @@ import { translations } from '../../../locales/i18n';
 import { calculateCollateralRatio } from '../../../utils/helpers';
 import { formatValue, decimalic } from '../../../utils/math';
 import { tokenList } from './EarnPage.types';
+import { useGetSubsidiesAPR } from './hooks/useGetSubsidiesAPR';
 import { useHandleStabilityDeposit } from './hooks/useHandleStabilityDeposit';
 
 const commonTranslations = translations.common;
@@ -61,14 +63,13 @@ const EarnPage: FC = () => {
   const [rewardsAmount, setRewardsAmount] = useState(Decimal.ZERO);
   const [token, setToken] = useState<SupportedTokens>(SupportedTokens.dllr);
   const [isLoading, setIsLoading] = useState(false);
+  const { apy } = useGetSubsidiesAPR();
 
   const { account } = useAccount();
   const { value: block } = useBlockNumber();
   const { price } = useGetRBTCPrice();
   const [isRecoveryMode, setIsRecoveryMode] = useState(false);
   const [isUnderCollateralized, setIsUnderCollateralized] = useState(false);
-  const [showUnderCollateralizedError, setShowUnderCollateralizedError] =
-    useState(false);
 
   const {
     data: troves,
@@ -317,14 +318,10 @@ const EarnPage: FC = () => {
   );
 
   const handleSubmit = useCallback(() => {
-    if (isUnderCollateralized) {
-      setShowUnderCollateralizedError(true);
-      return;
-    }
     if (!isSubmitDisabled) {
       handleSubmitStabilityDeposit();
     }
-  }, [isSubmitDisabled, handleSubmitStabilityDeposit, isUnderCollateralized]);
+  }, [isSubmitDisabled, handleSubmitStabilityDeposit]);
 
   const tokenOptions = useMemo(
     () =>
@@ -343,7 +340,6 @@ const EarnPage: FC = () => {
 
   useEffect(() => {
     if (index !== 1 || isInMaintenance) {
-      setShowUnderCollateralizedError(false);
       setIsUnderCollateralized(false);
       return;
     }
@@ -440,6 +436,23 @@ const EarnPage: FC = () => {
 
           <SimpleTable className="mt-3">
             <SimpleTableRow
+              label={
+                <span className="flex items-center gap-1">
+                  {t(pageTranslations.subsidiesRewardRate)}
+                  <HelperButton
+                    content={t(pageTranslations.subsidiesRewardRateInfo)}
+                  />
+                </span>
+              }
+              valueClassName={classNames('transition-colors', {
+                'text-primary-10': !isAmountZero,
+              })}
+              value={`${formatValue(apy, 2)}% APY`}
+            />
+          </SimpleTable>
+
+          <SimpleTable className="mt-3">
+            <SimpleTableRow
               label={t(pageTranslations.currentPoolBalance)}
               value={
                 <AmountRenderer
@@ -486,7 +499,7 @@ const EarnPage: FC = () => {
               message={t(translations.maintenanceMode.featureDisabled)}
             />
           )}
-          {showUnderCollateralizedError && (
+          {isUnderCollateralized && (
             <ErrorBadge
               level={ErrorLevel.Critical}
               message={t(translations.earnPage.form.undercollateralized)}

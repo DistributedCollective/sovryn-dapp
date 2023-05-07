@@ -3,4 +3,4 @@
 "@sovryn/ui": patch
 ---
 
-SOV-2293: Add risk opt-in checkbox
+SOV-2216: New loader animations

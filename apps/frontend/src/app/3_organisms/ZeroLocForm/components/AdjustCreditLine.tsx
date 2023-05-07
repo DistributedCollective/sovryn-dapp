@@ -7,7 +7,10 @@ import { ErrorLevel } from '@sovryn/ui';
 import { Decimal } from '@sovryn/utils';
 
 import { BORROW_ASSETS } from '../../../5_pages/ZeroPage/constants';
-import { BITCOIN } from '../../../../constants/currencies';
+import {
+  BITCOIN,
+  BTC_RENDER_PRECISION,
+} from '../../../../constants/currencies';
 import { useAmountInput } from '../../../../hooks/useAmountInput';
 import { useAssetBalance } from '../../../../hooks/useAssetBalance';
 import { useMaxAssetBalance } from '../../../../hooks/useMaxAssetBalance';
@@ -307,7 +310,7 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
         return t(translations.zeroPage.loc.errors.newCollateralTooLow, {
           value: `${formatValue(
             minCollateralAmount.sub(newCollateral),
-            4,
+            BTC_RENDER_PRECISION,
             true,
           )}`,
           currency: BITCOIN,

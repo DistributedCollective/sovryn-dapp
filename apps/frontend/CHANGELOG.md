@@ -1,5 +1,18 @@
 # frontend
 
+## 1.0.9
+
+### Patch Changes
+
+- 5fc86dd: SOV-2293: Add risk opt-in checkbox
+- ddd93fd: SOV-2207: Fix undercollateralized error show on Earn page
+- 345c9fe: SOV-2117: Add stability pool subsidies details to the Earn and Rewards pages
+- Updated dependencies [5fc86dd]
+- Updated dependencies [9fa9041]
+- Updated dependencies [345c9fe]
+  - @sovryn/ui@1.0.5
+  - @sovryn/contracts@1.0.5
+
 ## 1.0.8
 
 ### Patch Changes

@@ -23,13 +23,18 @@ import {
 import { Decimal } from '@sovryn/utils';
 
 import { AmountRenderer } from '../../2_molecules/AmountRenderer/AmountRenderer';
-import { BITCOIN, BTC_RENDER_PRECISION } from '../../../constants/currencies';
+import {
+  BITCOIN,
+  BTC_RENDER_PRECISION,
+  SOV,
+} from '../../../constants/currencies';
 import { useAccount } from '../../../hooks/useAccount';
 import { useBlockNumber } from '../../../hooks/useBlockNumber';
 import { useMaintenance } from '../../../hooks/useMaintenance';
 import { useGetOpenTrove } from '../../../hooks/zero/useGetOpenTrove';
 import { translations } from '../../../locales/i18n';
 import { decimalic } from '../../../utils/math';
+import { useGetSovGain } from './hooks/useGetSovGain';
 import { useHandleRewards } from './hooks/useHandleRewards';
 import { RewardsAction } from './types';
 
@@ -41,6 +46,7 @@ const RewardsPage: FC = () => {
 
   const { checkMaintenance, States } = useMaintenance();
   const claimLocked = checkMaintenance(States.ZERO_STABILITY_CLAIM);
+  const { sovGain, updateSOVGain } = useGetSovGain();
 
   const { liquity } = useLoaderData() as {
     liquity: EthersLiquity;
@@ -50,11 +56,13 @@ const RewardsPage: FC = () => {
   const handleWithdraw = useHandleRewards(
     RewardsAction.withdrawFromSP,
     amount.toString(),
+    updateSOVGain,
   );
 
   const handleTransferToLOC = useHandleRewards(
     RewardsAction.withdrawETHGainToTrove,
     amount.toString(),
+    updateSOVGain,
   );
 
   useEffect(() => {
@@ -68,8 +76,11 @@ const RewardsPage: FC = () => {
   }, [liquity, account, block]);
 
   const claimDisabled = useMemo(
-    () => amount.isZero() || !signer || claimLocked,
-    [amount, claimLocked, signer],
+    () =>
+      (amount.isZero() && Decimal.from(sovGain).isZero()) ||
+      !signer ||
+      claimLocked,
+    [amount, claimLocked, signer, sovGain],
   );
 
   return (
@@ -104,6 +115,23 @@ const RewardsPage: FC = () => {
                 precision={BTC_RENDER_PRECISION}
                 dataAttribute="rewards-amount"
               />
+            </div>
+
+            <div className="text-center mt-4">
+              <Paragraph
+                className="font-medium mb-2 text-gray-10"
+                size={ParagraphSize.small}
+              >
+                {t(translations.rewardPage.stabilityPoolSubsidies)}
+              </Paragraph>
+              <div className="text-2xl leading-7 uppercase">
+                <AmountRenderer
+                  value={sovGain}
+                  suffix={SOV}
+                  precision={BTC_RENDER_PRECISION}
+                  dataAttribute="rewards-amount"
+                />
+              </div>
             </div>
           </div>
 

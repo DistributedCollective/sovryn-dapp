@@ -4270,10 +4270,10 @@
   dependencies:
     "@ethersproject/bignumber" "5.0.15"
 
-"@sovryn-zero/lib-ethers@0.2.3":
-  version "0.2.3"
-  resolved "https://registry.yarnpkg.com/@sovryn-zero/lib-ethers/-/lib-ethers-0.2.3.tgz#a6ca585852c89da9a165724b1289502f79875916"
-  integrity sha512-Tf+xe0Qlo1RFxhbpsqE5X/oP7mQrTUki+RlH/O+z5UdOGYSKypOMHBBUVO+dK/Oa+Q7jeqAG86XjUtzphNkdcQ==
+"@sovryn-zero/lib-ethers@0.2.4":
+  version "0.2.4"
+  resolved "https://registry.yarnpkg.com/@sovryn-zero/lib-ethers/-/lib-ethers-0.2.4.tgz#b92426087e0f6c39f764084d5e92dfd1bb94cc45"
+  integrity sha512-OJR/BZD3lSV2P+Ao1SMQEDBTmdfBlOmz4AU7BSLmQKcrG6tYT3pnurGo4PcwHmWiFyF8qraHGAEHGxjgJH2JHQ==
 
 "@sovryn/onboard-common@1.0.0":
   version "1.0.0"

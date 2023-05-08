@@ -1,5 +1,11 @@
 # @sovryn/contracts
 
+## 1.0.6
+
+### Patch Changes
+
+- 7856201: SOV-2229: update token lists
+
 ## 1.0.5
 
 ### Patch Changes

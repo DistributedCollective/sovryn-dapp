@@ -41,7 +41,12 @@ export const OpenCreditLine: FC<OpenCreditLineProps> = ({
   rbtcPrice,
   borrowingRate,
 }) => {
-  const { tcr, liquidationReserve, isRecoveryMode } = useZeroData(rbtcPrice);
+  const {
+    tcr,
+    liquidationReserve,
+    isRecoveryMode,
+    isLoading: zeroDataLoading,
+  } = useZeroData(rbtcPrice);
 
   const [fieldsTouched, setFieldsTouched] = useState(false);
   const [collateralAmountInput, setCollateralAmount, collateralAmount] =
@@ -55,9 +60,8 @@ export const OpenCreditLine: FC<OpenCreditLineProps> = ({
     [collateralAmount],
   );
 
-  const { weiBalance: maxRbtcWeiBalance } = useMaxAssetBalance(
-    SupportedTokens.rbtc,
-  );
+  const { weiBalance: maxRbtcWeiBalance, loading: maxRbtcBalanceLoading } =
+    useMaxAssetBalance(SupportedTokens.rbtc);
 
   const originationFee = useMemo(
     () => getOriginationFeeAmount(debtSize, borrowingRate),
@@ -87,11 +91,17 @@ export const OpenCreditLine: FC<OpenCreditLineProps> = ({
   );
 
   const maxCollateralAmount = useMemo(
-    () => Decimal.fromBigNumberString(maxRbtcWeiBalance),
-    [maxRbtcWeiBalance],
+    () =>
+      maxRbtcBalanceLoading
+        ? Decimal.from(0)
+        : Decimal.fromBigNumberString(maxRbtcWeiBalance),
+    [maxRbtcWeiBalance, maxRbtcBalanceLoading],
   );
 
   const maxDebtAmount = useMemo(() => {
+    if (zeroDataLoading) {
+      return Decimal.from(0);
+    }
     let collateral = maxCollateralAmount.mul(rbtcPrice);
     if (collateralSize.gt(0)) {
       collateral = collateralSize.mul(rbtcPrice);
@@ -113,6 +123,7 @@ export const OpenCreditLine: FC<OpenCreditLineProps> = ({
     maxCollateralAmount,
     rbtcPrice,
     requiredRatio,
+    zeroDataLoading,
   ]);
 
   const ratio = useMemo(() => {

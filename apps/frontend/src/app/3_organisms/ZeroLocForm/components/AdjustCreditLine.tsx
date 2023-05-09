@@ -46,7 +46,11 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
   rbtcPrice,
   borrowingRate,
 }) => {
-  const { tcr, isRecoveryMode } = useZeroData(rbtcPrice);
+  const {
+    tcr,
+    isRecoveryMode,
+    isLoading: zeroDataLoading,
+  } = useZeroData(rbtcPrice);
 
   const [debtType, setDebtType] = useState(AmountType.Add);
   const [collateralType, setCollateralType] = useState(AmountType.Add);
@@ -63,9 +67,10 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
     [collateralAmount],
   );
 
-  const { balance: maxCollateralToDepositAmount } = useMaxAssetBalance(
-    SupportedTokens.rbtc,
-  );
+  const {
+    balance: maxCollateralToDepositAmount,
+    loading: maxRbtcBalanceLoading,
+  } = useMaxAssetBalance(SupportedTokens.rbtc);
   const { balance: debtTokenBalance } = useAssetBalance(debtToken);
 
   const isIncreasingDebt = useMemo(
@@ -121,19 +126,25 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
     [existingCollateral, newDebt, rbtcPrice, requiredRatio],
   );
 
-  const maxCollateralAmount = useMemo(
-    () =>
-      isIncreasingCollateral
-        ? maxCollateralToDepositAmount
-        : maxCollateralToWithdrawAmount,
-    [
-      isIncreasingCollateral,
-      maxCollateralToDepositAmount,
-      maxCollateralToWithdrawAmount,
-    ],
-  );
+  const maxCollateralAmount = useMemo(() => {
+    if (maxRbtcBalanceLoading) {
+      return Decimal.from(0);
+    }
+    return isIncreasingCollateral
+      ? maxCollateralToDepositAmount
+      : maxCollateralToWithdrawAmount;
+  }, [
+    isIncreasingCollateral,
+    maxCollateralToDepositAmount,
+    maxCollateralToWithdrawAmount,
+    maxRbtcBalanceLoading,
+  ]);
 
   const maxBorrowAmount = useMemo(() => {
+    if (zeroDataLoading) {
+      return Decimal.from(0);
+    }
+
     let collateral = existingCollateral;
     if (collateral.gt(0)) {
       if (isIncreasingCollateral) {
@@ -159,6 +170,7 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
     isIncreasingCollateral,
     rbtcPrice,
     requiredRatio,
+    zeroDataLoading,
   ]);
 
   const maxRepayAmount = useMemo(

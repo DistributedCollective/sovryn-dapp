@@ -9,7 +9,9 @@ export const useGetSubsidiesAPR = () => {
 
   const updateAPR = useCallback(async () => {
     const APR = await communityIssuance?.APR();
-    setAPR(Number(APR.toString()) / 100);
+    if (APR) {
+      setAPR(Number(APR.toString()) / 100);
+    }
   }, [communityIssuance]);
 
   const apy = useMemo(

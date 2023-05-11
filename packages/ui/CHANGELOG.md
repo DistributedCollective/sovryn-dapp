@@ -1,5 +1,11 @@
 # @sovryn/ui
 
+## 1.0.6
+
+### Patch Changes
+
+- 8e5ca77: SOV-2216: New loader animations
+
 ## 1.0.5
 
 ### Patch Changes

@@ -12,7 +12,9 @@ export const useGetSovGain = () => {
 
   const updateSOVGain = useCallback(async () => {
     const gain = await stabilityPool?.getDepositorSOVGain(account);
-    setSOVGain(fromWei(gain.toString()));
+    if (gain) {
+      setSOVGain(fromWei(gain.toString()));
+    }
   }, [account, stabilityPool]);
 
   useEffect(() => {

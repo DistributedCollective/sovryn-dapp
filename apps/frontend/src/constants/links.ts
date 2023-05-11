@@ -17,7 +17,7 @@ export const WEBSITE_LINKS = {
 };
 
 export const ALPHA_LINKS = {
-  [Environments.Mainnet]: 'https://alpha.sovryn.app/',
+  [Environments.Mainnet]: 'https://alpha.sovryn.app',
   [Environments.Testnet]: 'https://alpha-test.sovryn.app',
   STAGING: 'https://alpha-staging.sovryn.app',
 };

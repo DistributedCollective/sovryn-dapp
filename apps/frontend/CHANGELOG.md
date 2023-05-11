@@ -1,5 +1,21 @@
 # frontend
 
+## 1.0.10
+
+### Patch Changes
+
+- 5ab3892: SOV-2083: add links to alpha
+- af72d59: SOV-2042: wallet flashing on re-connect
+- cd77951: SOV-2258: Fix Min collateral validation
+- 8e5ca77: SOV-2216: New loader animations
+- 7856201: SOV-2229: update token lists
+- eafe33a: SOV-2184: update banner image on mobile
+- ee52569: SOV-2150: fix animated balance
+- Updated dependencies [8e5ca77]
+- Updated dependencies [7856201]
+  - @sovryn/ui@1.0.6
+  - @sovryn/contracts@1.0.6
+
 ## 1.0.9
 
 ### Patch Changes

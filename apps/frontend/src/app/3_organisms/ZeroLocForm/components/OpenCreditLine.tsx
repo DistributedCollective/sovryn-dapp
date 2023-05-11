@@ -93,14 +93,14 @@ export const OpenCreditLine: FC<OpenCreditLineProps> = ({
   const maxCollateralAmount = useMemo(
     () =>
       maxRbtcBalanceLoading
-        ? Decimal.from(0)
+        ? Decimal.ZERO
         : Decimal.fromBigNumberString(maxRbtcWeiBalance),
     [maxRbtcWeiBalance, maxRbtcBalanceLoading],
   );
 
   const maxDebtAmount = useMemo(() => {
     if (zeroDataLoading) {
-      return Decimal.from(0);
+      return Decimal.ZERO;
     }
     let collateral = maxCollateralAmount.mul(rbtcPrice);
     if (collateralSize.gt(0)) {

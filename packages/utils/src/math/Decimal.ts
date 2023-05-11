@@ -22,7 +22,7 @@ export type Decimalish = Decimal | number | string;
 
 export class Decimal {
   static readonly INFINITY = Decimal.fromBigNumberString(MAX_UINT_256);
-  static readonly ZERO = Decimal.from(0);
+  static readonly ZERO = Decimal.ZERO;
   static readonly HALF = Decimal.from(0.5);
   static readonly ONE = Decimal.from(1);
 

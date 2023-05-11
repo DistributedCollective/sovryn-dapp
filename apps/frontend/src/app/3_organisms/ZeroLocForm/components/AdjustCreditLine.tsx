@@ -128,7 +128,7 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
 
   const maxCollateralAmount = useMemo(() => {
     if (maxRbtcBalanceLoading) {
-      return Decimal.from(0);
+      return Decimal.ZERO;
     }
     return isIncreasingCollateral
       ? maxCollateralToDepositAmount
@@ -142,7 +142,7 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
 
   const maxBorrowAmount = useMemo(() => {
     if (zeroDataLoading) {
-      return Decimal.from(0);
+      return Decimal.ZERO;
     }
 
     let collateral = existingCollateral;
@@ -198,7 +198,7 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
   const ratio = useMemo(
     () =>
       newDebt.isZero()
-        ? Decimal.from(0)
+        ? Decimal.ZERO
         : newCollateral.mul(rbtcPrice).div(newDebt).mul(100),
     [newCollateral, newDebt, rbtcPrice],
   );

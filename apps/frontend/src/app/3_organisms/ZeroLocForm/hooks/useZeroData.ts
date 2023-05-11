@@ -22,7 +22,9 @@ export const useZeroData = (rbtcPrice?: Decimal): ZeroDataResponse => {
   const [response, getTcr] = useCall<ZeroData>(
     async () => {
       setIsLoading(true);
+
       const { ethers } = await getZeroProvider();
+
       const price = rbtcPrice
         ? rbtcPrice
         : await ethers.getPrice().then(String).then(Decimal.from);
@@ -36,7 +38,9 @@ export const useZeroData = (rbtcPrice?: Decimal): ZeroDataResponse => {
         .getTCR(price.toBigNumber())
         .then(String)
         .then(Decimal.fromBigNumberString);
+
       setIsLoading(false);
+
       return {
         tcr,
         liquidationReserve,

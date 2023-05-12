@@ -1,12 +1,12 @@
 import { _getContracts } from '@sovryn-zero/lib-ethers/dist/src/EthersLiquityConnection';
 import { Decimal } from '@sovryn/utils';
 
-import { ILiquityBaseParams } from '../types';
+import { LiquityBaseParams } from '../types';
 import { getZeroProvider } from './zero-provider';
 
-let cachedParams: ILiquityBaseParams | undefined;
+let cachedParams: LiquityBaseParams | undefined;
 
-export const getLiquityBaseParams = async (): Promise<ILiquityBaseParams> => {
+export const getLiquityBaseParams = async (): Promise<LiquityBaseParams> => {
   if (cachedParams) {
     return cachedParams;
   }
@@ -33,7 +33,6 @@ export const getLiquityBaseParams = async (): Promise<ILiquityBaseParams> => {
     };
     return cachedParams;
   } catch (error) {
-    console.error(error);
     throw error;
   }
 };

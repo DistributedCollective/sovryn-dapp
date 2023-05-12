@@ -2,15 +2,16 @@ import { useEffect, useState } from 'react';
 
 import { Decimal } from '@sovryn/utils';
 
-import { ILiquityBaseParams } from '../types';
+import { LiquityBaseParams } from '../types';
 import { getLiquityBaseParams } from '../utils';
 
 export const useLiquityBaseParams = () => {
-  const [liquityBaseParams, setLiquityBaseParams] =
-    useState<ILiquityBaseParams>({
+  const [liquityBaseParams, setLiquityBaseParams] = useState<LiquityBaseParams>(
+    {
       minBorrowingFeeRate: Decimal.ZERO,
       maxBorrowingFeeRate: Decimal.ZERO,
-    });
+    },
+  );
 
   useEffect(() => {
     const getBorrowingFee = async () => {

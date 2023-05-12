@@ -1,6 +1,6 @@
 import { Decimal } from '@sovryn/utils';
 
-export interface ILiquityBaseParams {
+export type LiquityBaseParams = {
   minBorrowingFeeRate: Decimal;
   maxBorrowingFeeRate: Decimal;
-}
+};

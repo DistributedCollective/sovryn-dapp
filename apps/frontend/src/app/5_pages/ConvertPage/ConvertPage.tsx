@@ -7,6 +7,7 @@ import { Helmet } from 'react-helmet-async';
 import { SupportedTokens } from '@sovryn/contracts';
 import { SupportedTokenList } from '@sovryn/contracts';
 import {
+  Accordion,
   AmountInput,
   applyDataAttr,
   Button,
@@ -20,10 +21,14 @@ import {
   Paragraph,
   ParagraphSize,
   Select,
+  SimpleTable,
+  SimpleTableRow,
 } from '@sovryn/ui';
 
+import { AmountRenderer } from '../../2_molecules/AmountRenderer/AmountRenderer';
 import { AssetRenderer } from '../../2_molecules/AssetRenderer/AssetRenderer';
 import { MaxButton } from '../../2_molecules/MaxButton/MaxButton';
+import { TOKEN_RENDER_PRECISION } from '../../../constants/currencies';
 import { useAccount } from '../../../hooks/useAccount';
 import { useAmountInput } from '../../../hooks/useAmountInput';
 import { useMaintenance } from '../../../hooks/useMaintenance';
@@ -35,6 +40,7 @@ import { useHandleConversion } from './hooks/useHandleConversion';
 
 const commonTranslations = translations.common;
 const pageTranslations = translations.convertPage;
+const defaultSlippageTolerance = 0.5;
 
 const ConvertPage: FC = () => {
   const { account } = useAccount();
@@ -49,6 +55,7 @@ const ConvertPage: FC = () => {
   const { checkMaintenance, States } = useMaintenance();
   const convertLocked = checkMaintenance(States.ZERO_CONVERT);
   const dllrLocked = checkMaintenance(States.ZERO_DLLR);
+  const [advanced, setAdvanced] = useState(false);
 
   const tokenOptions = useMemo(
     () =>
@@ -80,15 +87,15 @@ const ConvertPage: FC = () => {
     setDestinationTokenOptions(tokenOptionsWithoutSourceToken);
   }, [tokenOptionsWithoutSourceToken]);
 
-  const [destinationToken, setDestinationToken] = useState<SupportedTokens>(
-    destinationTokenOptions[0].value,
-  );
+  const [destinationToken, setDestinationToken] = useState<
+    SupportedTokens | ''
+  >('');
 
   const onTransactionSuccess = useCallback(() => setAmount(''), [setAmount]);
 
   const maximumAmountToConvert = useGetMaximumAvailableAmount(
     sourceToken,
-    destinationToken,
+    destinationToken as SupportedTokens,
   );
 
   const isValidAmount = useMemo(
@@ -102,9 +109,11 @@ const ConvertPage: FC = () => {
   );
 
   const onSwitchClick = useCallback(() => {
-    setDestinationToken(sourceToken);
-    setSourceToken(destinationToken);
-    setAmount('');
+    if (destinationToken) {
+      setDestinationToken(sourceToken);
+      setSourceToken(destinationToken as SupportedTokens);
+      setAmount('');
+    }
   }, [destinationToken, setAmount, sourceToken]);
 
   const onSourceTokenChange = useCallback(
@@ -113,6 +122,50 @@ const ConvertPage: FC = () => {
       setAmount('');
     },
     [setAmount],
+  );
+
+  const getAssetRenderer = useCallback(
+    (token: SupportedTokens) => (
+      <AssetRenderer showAssetLogo asset={token} assetClassName="font-medium" />
+    ),
+    [],
+  );
+
+  const { handleSubmit } = useHandleConversion(
+    sourceToken,
+    destinationToken as SupportedTokens,
+    amount,
+    onTransactionSuccess,
+  );
+
+  const isInMaintenance = useMemo(
+    () =>
+      convertLocked ||
+      (dllrLocked &&
+        [sourceToken, destinationToken].includes(SupportedTokens.dllr)),
+    [convertLocked, destinationToken, dllrLocked, sourceToken],
+  );
+
+  const isSubmitDisabled = useMemo(
+    () =>
+      isInMaintenance ||
+      !account ||
+      !amount ||
+      Number(amount) <= 0 ||
+      Number(amount) > Number(maximumAmountToConvert) ||
+      !destinationToken,
+    [
+      account,
+      amount,
+      maximumAmountToConvert,
+      isInMaintenance,
+      destinationToken,
+    ],
+  );
+
+  const renderDestinationAmount = useMemo(
+    () => (destinationToken ? amount : t(translations.common.na)),
+    [amount, destinationToken],
   );
 
   useEffect(() => {
@@ -134,43 +187,13 @@ const ConvertPage: FC = () => {
   }, [defaultSourceToken]);
 
   useEffect(() => {
-    if (bassets.includes(sourceToken)) {
+    if (bassets.includes(sourceToken) && destinationToken) {
       setDestinationToken(SupportedTokens.dllr);
       setDestinationTokenOptions(
         tokenOptions.filter(item => item.value === SupportedTokens.dllr),
       );
     }
-  }, [sourceToken, tokenOptions]);
-
-  const getAssetRenderer = useCallback(
-    (token: SupportedTokens) => (
-      <AssetRenderer showAssetLogo asset={token} assetClassName="font-medium" />
-    ),
-    [],
-  );
-
-  const { handleSubmit } = useHandleConversion(
-    sourceToken,
-    destinationToken,
-    amount,
-    onTransactionSuccess,
-  );
-  const isInMaintenance = useMemo(
-    () =>
-      convertLocked ||
-      (dllrLocked &&
-        [sourceToken, destinationToken].includes(SupportedTokens.dllr)),
-    [convertLocked, destinationToken, dllrLocked, sourceToken],
-  );
-  const isSubmitDisabled = useMemo(
-    () =>
-      isInMaintenance ||
-      !account ||
-      !amount ||
-      Number(amount) <= 0 ||
-      Number(amount) > Number(maximumAmountToConvert),
-    [account, amount, maximumAmountToConvert, isInMaintenance],
-  );
+  }, [sourceToken, tokenOptions, destinationToken]);
 
   return (
     <>
@@ -256,10 +279,10 @@ const ConvertPage: FC = () => {
 
             <div className="w-full flex flex-row justify-between items-center gap-3 mt-3.5">
               <AmountInput
-                value={amount}
+                value={renderDestinationAmount}
                 label={t(commonTranslations.amount)}
                 readOnly
-                placeholder="0"
+                placeholder={t(commonTranslations.na)}
                 className="w-full flex-grow-0 flex-shrink"
                 dataAttribute="convert-to-amount"
               />
@@ -267,12 +290,69 @@ const ConvertPage: FC = () => {
                 value={destinationToken}
                 onChange={setDestinationToken}
                 options={destinationTokenOptions}
-                labelRenderer={() => getAssetRenderer(destinationToken)}
                 className="min-w-[6.7rem]"
                 dataAttribute="convert-to-asset"
               />
             </div>
           </div>
+
+          <Accordion
+            className="mt-4 mb-3 text-xs"
+            label={t(translations.common.advancedSettings)}
+            open={advanced}
+            onClick={() => setAdvanced(!advanced)}
+            dataAttribute="convert-settings"
+          >
+            <div className="mt-2 mb-4">
+              <AmountInput
+                value={defaultSlippageTolerance}
+                label={t(translations.convertPage.slippageTolerance)}
+                className="max-w-none w-full"
+                unit="%"
+                placeholder="0"
+                readOnly
+              />
+            </div>
+          </Accordion>
+
+          <SimpleTable className="mt-3">
+            <SimpleTableRow
+              label={t(translations.convertPage.price)}
+              valueClassName="text-primary-10"
+              value={
+                <AmountRenderer
+                  value={1}
+                  suffix={sourceToken}
+                  precision={TOKEN_RENDER_PRECISION}
+                />
+              }
+            />
+          </SimpleTable>
+
+          <SimpleTable className="mt-3">
+            <SimpleTableRow
+              label={t(translations.convertPage.minimumReceived)}
+              valueClassName="text-primary-10"
+              value={
+                <AmountRenderer
+                  value={200}
+                  suffix={destinationToken}
+                  precision={TOKEN_RENDER_PRECISION}
+                />
+              }
+            />
+            <SimpleTableRow
+              label={t(translations.convertPage.maximumPrice)}
+              valueClassName="text-primary-10"
+              value={
+                <AmountRenderer
+                  value={30000}
+                  suffix={sourceToken}
+                  precision={TOKEN_RENDER_PRECISION}
+                />
+              }
+            />
+          </SimpleTable>
 
           <Button
             type={ButtonType.reset}

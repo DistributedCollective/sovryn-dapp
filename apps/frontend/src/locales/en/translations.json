@@ -52,7 +52,8 @@
             "loading": "Loading Zero data",
             "error": "Error loading Zero data, please try again",
             "pageLoading": "is loading..."
-        }
+        },
+        "advancedSettings": "Advanced settings"
     },
     "connectWalletButton": {
         "connect": "Get started",
@@ -115,7 +116,6 @@
         "transactionFailedSubtitle": "Please close or retry your transaction.",
         "transactionSuccessTitle": "Transaction confirmed successfully",
         "estimatedGasFee": "Estimated gas fee",
-        "advancedSettings": "Advanced settings",
         "gasSettings": "Gas settings",
         "gasLimit": "Gas limit",
         "gasPrice": "Gas price",
@@ -346,7 +346,11 @@
             "approveTitle": "Approve transferring {{asset}}",
             "convert": "Convert {{asset}}",
             "approve": "Approve {{asset}}"
-        }
+        },
+        "slippageTolerance": "Slippage tolerance",
+        "price": "Price",
+        "minimumReceived": "Minimum received",
+        "maximumPrice": "Maximum price"
     },
 
     "fastBtc": {
@@ -643,38 +647,38 @@
         "error": "Error loading data, please try again."
     },
     "productLinks": {
-      "title": "Sovryn Alpha",
-      "swap": {
-        "title": "Swap",
-        "description": "Swap between assets"
-      },
-      "spot": {
-        "title": "Spot",
-        "description": "Trade with spot market and limit orders"
-      },
-      "trade": {
-        "title": "Margin",
-        "description": "Trade with up to 5x leverage"
-      },
-      "yield": {
-        "title": "Pool",
-        "description": "Earn yield in the AMM"
-      },
-      "lend": {
-        "title": "Lend",
-        "description": "Earn by lending assets"
-      },
-      "borrow": {
-        "title": "Borrow",
-        "description": "Take out a fixed-interest loan"
-      },
-      "stake": {
-        "title": "Stake",
-        "description": "Earn rewards by staking SOV"
-      },
-      "vote": {
-        "title": "Vote",
-        "description": "Participate in Sovryn governance"
-      }
+        "title": "Sovryn Alpha",
+        "swap": {
+            "title": "Swap",
+            "description": "Swap between assets"
+        },
+        "spot": {
+            "title": "Spot",
+            "description": "Trade with spot market and limit orders"
+        },
+        "trade": {
+            "title": "Margin",
+            "description": "Trade with up to 5x leverage"
+        },
+        "yield": {
+            "title": "Pool",
+            "description": "Earn yield in the AMM"
+        },
+        "lend": {
+            "title": "Lend",
+            "description": "Earn by lending assets"
+        },
+        "borrow": {
+            "title": "Borrow",
+            "description": "Take out a fixed-interest loan"
+        },
+        "stake": {
+            "title": "Stake",
+            "description": "Earn rewards by staking SOV"
+        },
+        "vote": {
+            "title": "Vote",
+            "description": "Participate in Sovryn governance"
+        }
     }
 }

@@ -17,5 +17,8 @@ export const zeroSwapRoute: SwapRouteFunction = (
     swap(entry, destination, amount, slippage, overrides) {
       throw makeError('Not implemented', SovrynErrorCode.NOT_IMPLEMENTED);
     },
+    approve: async () => {
+      throw makeError('Not implemented', SovrynErrorCode.NOT_IMPLEMENTED);
+    },
   };
 };

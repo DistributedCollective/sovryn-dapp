@@ -1,7 +1,8 @@
-import { BigNumberish, Contract, providers } from 'ethers';
+import { Contract, constants, providers } from 'ethers';
 
 import {
   SupportedTokenList,
+  SupportedTokens,
   getProtocolContract,
   getTokenContract,
 } from '@sovryn/contracts';
@@ -9,13 +10,18 @@ import { ChainId, numberToChainId } from '@sovryn/ethers-provider';
 
 import { SovrynErrorCode, makeError } from '../../../errors/errors';
 import { SwapPairs, SwapRouteFunction } from '../types';
+import { getMinReturn, makeApproveRequest } from '../../../internal/utils';
 
 export const ammSwapRoute: SwapRouteFunction = (
   provider: providers.Provider,
 ) => {
   let pairCache: SwapPairs;
   let chainId: ChainId;
-  let contract: Contract;
+  let wrbtcAddress: string;
+
+  let swapConverter: Contract;
+  let rbtcConverter: Contract;
+  let protocolContract: Contract;
 
   const getChainId = async () => {
     if (!chainId) {
@@ -24,13 +30,57 @@ export const ammSwapRoute: SwapRouteFunction = (
     return chainId;
   };
 
-  const getContract = async () => {
-    if (!contract) {
+  const getSwapNetworkContract = async () => {
+    if (!swapConverter) {
+      const chainId = await getChainId();
+      const { address, abi } = await getProtocolContract(
+        'swapNetwork',
+        chainId,
+      );
+      swapConverter = new Contract(address, abi, provider);
+    }
+    return swapConverter;
+  };
+
+  const getConverterContract = async (entry: string, destination: string) => {
+    if (isNativeToken(entry) || isNativeToken(destination)) {
+      if (!rbtcConverter) {
+        const chainId = await getChainId();
+        const { address, abi } = await getProtocolContract(
+          'btcWrapperProxy',
+          chainId,
+        );
+        rbtcConverter = new Contract(address, abi, provider);
+      }
+      return rbtcConverter;
+    }
+
+    return getSwapNetworkContract();
+  };
+
+  const getSwapQuoteContract = async () => {
+    if (!protocolContract) {
       const chainId = await getChainId();
       const { address, abi } = await getProtocolContract('protocol', chainId);
-      contract = new Contract(address, abi, provider);
+      protocolContract = new Contract(address, abi, provider);
     }
-    return contract;
+    return protocolContract;
+  };
+
+  const isNativeToken = (token: string) => token === constants.AddressZero;
+
+  const validatedTokenAddress = async (token: string) => {
+    if (isNativeToken(token)) {
+      if (wrbtcAddress) {
+        return wrbtcAddress;
+      }
+      const chainId = await getChainId();
+      wrbtcAddress = (await getTokenContract(SupportedTokens.wrbtc, chainId))
+        .address;
+      return wrbtcAddress;
+    }
+
+    return token;
   };
 
   return {
@@ -59,21 +109,70 @@ export const ammSwapRoute: SwapRouteFunction = (
 
       return pairs;
     },
-    quote: async (
-      base: string,
-      quote: string,
-      amount: BigNumberish,
-      slippage?: BigNumberish,
-      overrides?: Partial<providers.TransactionRequest>,
-    ) => {
-      return (await getContract())
-        .getSwapExpectedReturn(base, quote, amount)
+    quote: async (entry, destination, amount, slippage?, overrides?) => {
+      const baseToken = await validatedTokenAddress(entry);
+      const quoteToken = await validatedTokenAddress(destination);
+      return (await getSwapQuoteContract())
+        .getSwapExpectedReturn(baseToken, quoteToken, amount)
         .catch(e => {
           throw makeError(e.message, SovrynErrorCode.ETHERS_CALL_EXCEPTION);
         });
     },
-    swap: () => {
-      throw makeError('Not implemented', SovrynErrorCode.NOT_IMPLEMENTED);
+    approve: async (entry, destination, amount, overrides) => {
+      // native token is always approved
+      if (isNativeToken(entry)) {
+        return Promise.resolve(undefined);
+      }
+
+      const converter = await getConverterContract(entry, destination);
+
+      return {
+        ...makeApproveRequest(
+          entry,
+          converter.address,
+          amount ?? constants.MaxUint256,
+        ),
+        ...overrides,
+      };
+    },
+    async swap(entry, destination, amount, slippage, overrides) {
+      const baseToken = await validatedTokenAddress(entry);
+      const quoteToken = await validatedTokenAddress(destination);
+
+      const path = await (
+        await getSwapNetworkContract()
+      ).conversionPath(baseToken, quoteToken);
+
+      const converter = await getConverterContract(entry, destination);
+
+      const expectedReturn = await this.quote(
+        entry,
+        destination,
+        amount,
+        slippage,
+      );
+
+      const minReturn = getMinReturn(expectedReturn, slippage);
+
+      let args = [path, amount, minReturn];
+
+      if (!isNativeToken(entry) && !isNativeToken(destination)) {
+        args = [
+          path,
+          amount,
+          minReturn,
+          constants.AddressZero,
+          constants.AddressZero,
+          '0',
+        ];
+      }
+
+      return {
+        to: converter.address,
+        data: converter.interface.encodeFunctionData('convertByPath', args),
+        value: isNativeToken(entry) ? amount.toString() : '0',
+        ...overrides,
+      };
     },
   };
 };

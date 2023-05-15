@@ -7,6 +7,11 @@ export const SupportedTokenList: TokenBaseInfo[] = [
     getIcon: async () => (await import('../tokenDetails/logos/rbtc')).default,
   },
   {
+    symbol: SupportedTokens.wrbtc,
+    decimalPrecision: 18,
+    getIcon: async () => (await import('../tokenDetails/logos/rbtc')).default,
+  },
+  {
     symbol: SupportedTokens.zusd,
     decimalPrecision: 18,
     getIcon: async () => (await import('../tokenDetails/logos/zusd')).default,

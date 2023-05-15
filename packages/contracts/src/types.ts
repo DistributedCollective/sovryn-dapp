@@ -27,6 +27,7 @@ export type ContractData = {
 
 export enum SupportedTokens {
   rbtc = 'rbtc',
+  wrbtc = 'wrbtc',
   zusd = 'zusd',
   xusd = 'xusd',
   dllr = 'dllr',

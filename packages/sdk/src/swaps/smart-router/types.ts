@@ -30,12 +30,13 @@ export type SwapRoute = {
   ) => Promise<TransactionRequest>;
 
   // Build approval tx data.
-  // If not provided, it means that the token is not required to be approved.
-  approve?: (
+  // If undefined is returned, token doesn't need to be approved.
+  approve: (
     entry: string,
     destination: string,
+    amount?: BigNumberish,
     overrides?: Partial<TransactionRequest>,
-  ) => Promise<TransactionRequest>;
+  ) => Promise<TransactionRequest | undefined>;
 
   // todo: add functions overriding some values (like changing zero address with wrbtc)
   onPrepareTransaction?: (

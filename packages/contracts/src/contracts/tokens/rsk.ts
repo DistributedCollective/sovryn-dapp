@@ -4,7 +4,7 @@ import { addresses } from '@sovryn-zero/lib-ethers/dist/deployments/default/rsks
 
 export const rsk: Record<string, string> = {
   rbtc: constants.AddressZero,
-  wrbtc: '0x2BEe6167f91D10db23252e03de039Da6b9047D49',
+  wrbtc: '0x542fDA317318eBF1d3DEAf76E0b632741A7e677d',
   sov: '0xEFc78fc7d48b64958315949279Ba181c2114ABBd',
   xusd: '0xb5999795BE0EbB5bAb23144AA5FD6A02D080299F',
   dllr: '0xc1411567d2670e24d9C4DaAa7CdA95686e1250AA',

@@ -9,6 +9,11 @@ export const rskTestnet: Record<string, AsyncContractConfigData> = {
     address: '0x98aCE08D2b759a265ae326F010496bcD63C15afc', // TODO: This is mainnet address, change it to testnet
     getAbi: async () => (await import('../../abis/swapNetwork.json')).default,
   },
+  btcWrapperProxy: {
+    address: '0x7481aCBeb11C1D2866B0F11DE359E52dbe63EC5B',
+    getAbi: async () =>
+      (await import('../../abis/btcWrapperProxy.json')).default,
+  },
   massetManager: {
     address: '0xac2d05A148aB512EDEDc7280c00292ED33d31f1A',
     getAbi: async () => (await import('../../abis/massetManager.json')).default,

@@ -1,4 +1,4 @@
-[GitHub](https://github.com/DistributedCollective) | [Wiki](https://wiki.sovryn.com/en/home) | [Forum](https://forum.sovryn.app/) | [Blog](https://sovryn.com/all-things-sovryn/) | [LinkedIn](https://www.linkedin.com/company/sovryn/about/) | [Twitter](https://twitter.com/SovrynBTC) | [Discord](https://discord.gg/kBTNx4zjRf)
+[GitHub](https://github.com/DistributedCollective) | [Wiki](https://wiki.sovryn.com/en/home) | [Forum](https://forum.sovryn.app/) | [Blog](https://sovryn.com/all-things-sovryn/) | [LinkedIn](https://www.linkedin.com/company/sovryn/about/) | [Twitter](https://twitter.com/SovrynBTC) | [Discord](https://discord.gg/sovryn)
 
 # Sovryn Dapp
 
@@ -81,7 +81,7 @@ Find out all about our working practices on our wiki [here](https://github.com/D
 
 Sovryn's GitHub issue trackers are not intended to provide help or support. Use one of the following channels instead:
 
-- [Discord](https://discord.gg/kBTNx4zjRf)
+- [Discord](https://discord.gg/sovryn)
 - [Wiki Pages](https://wiki.sovryn.app)
 - [Sovryn Forum](https://forum.sovryn.app)
 - [Sovryn Blog](https://sovryn.com/all-things-sovryn)

@@ -1,7 +1,6 @@
 import { Contract, constants, providers } from 'ethers';
 
 import {
-  SupportedTokenList,
   SupportedTokens,
   getProtocolContract,
   getTokenContract,
@@ -9,12 +8,12 @@ import {
 import { ChainId, numberToChainId } from '@sovryn/ethers-provider';
 
 import { SovrynErrorCode, makeError } from '../../../errors/errors';
-import { SwapPairs, SwapRouteFunction } from '../types';
 import {
   canSwapPair,
   getMinReturn,
   makeApproveRequest,
 } from '../../../internal/utils';
+import { SwapPairs, SwapRouteFunction } from '../types';
 
 export const ammSwapRoute: SwapRouteFunction = (
   provider: providers.Provider,
@@ -97,10 +96,24 @@ export const ammSwapRoute: SwapRouteFunction = (
 
       const chainId = await getChainId();
 
+      const swapTokens = [
+        SupportedTokens.sov,
+        SupportedTokens.dllr,
+        SupportedTokens.mynt,
+        SupportedTokens.rbtc,
+        SupportedTokens.xusd,
+        SupportedTokens.doc,
+        // SupportedTokens.fish,
+        // SupportedTokens.rif,
+        // SupportedTokens.bpro,
+        // SupportedTokens.rusdt,
+        // SupportedTokens.eths,
+        // SupportedTokens.bnbs,
+        // SupportedTokens.moc,
+      ];
+
       const contracts = await Promise.all(
-        SupportedTokenList.map(token =>
-          getTokenContract(token.symbol, chainId),
-        ),
+        swapTokens.map(token => getTokenContract(token, chainId)),
       );
 
       const addresses = contracts.map(contract =>

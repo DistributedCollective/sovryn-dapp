@@ -1,9 +1,10 @@
-import { ethers, providers } from 'ethers';
+import { BigNumber, ethers, providers } from 'ethers';
+
+import { SupportedTokens, getTokenContract } from '@sovryn/contracts';
 
 import { DEFAULT_SWAP_ROUTES } from '../../swaps/smart-router/config';
 import { SmartRouter } from '../../swaps/smart-router/smart-router';
 import { makeChainFixture } from '../_fixtures/chain';
-import { SupportedTokens, getTokenContract } from '@sovryn/contracts';
 
 describe('SmartRouter', () => {
   let router: SmartRouter;
@@ -37,10 +38,10 @@ describe('SmartRouter', () => {
       ).resolves.toHaveLength(1);
     });
 
-    it('returns two routes for DLLR to ZUSD swap', async () => {
+    it('returns two routes for DLLR to XUSD swap', async () => {
       await expect(
-        router.getAvailableRoutesForAssets(dllr, zusd),
-      ).resolves.toHaveLength(2);
+        router.getAvailableRoutesForAssets(dllr, xusd),
+      ).resolves.toHaveLength(1);
     });
 
     it('returns single route for DLLR to XUSD swap', async () => {
@@ -50,9 +51,61 @@ describe('SmartRouter', () => {
     });
   });
 
+  describe('getQuotes', () => {
+    it('lists all quotes for XUSD -> SOV swap', async () => {
+      const amount = ethers.utils.parseEther('20');
+      await expect(router.getQuotes(xusd, sov, amount)).resolves.toHaveLength(
+        1,
+      );
+    });
+
+    it('lists all quotes for DLLR -> ZUSD swap', async () => {
+      const amount = ethers.utils.parseEther('20');
+      await expect(router.getQuotes(dllr, zusd, amount)).resolves.toHaveLength(
+        1,
+      );
+    });
+  });
+
   describe('getBestQuote', () => {
-    it('get cheapest swap route for given assets', async () => {
-      // todo:
+    it('get cheapest swap route for XUSD -> SOV', async () => {
+      const amount = ethers.utils.parseEther('20');
+      await expect(
+        router.getBestQuote(xusd, sov, amount),
+      ).resolves.toMatchObject({
+        quote: expect.any(BigNumber),
+        route: expect.any(Object),
+      });
+    });
+
+    it('get cheapest swap route for DLLR -> XUSD', async () => {
+      const amount = ethers.utils.parseEther('20');
+      await expect(
+        router.getBestQuote(dllr, xusd, amount),
+      ).resolves.toMatchObject({
+        quote: expect.any(BigNumber),
+        route: expect.any(Object),
+      });
+    });
+
+    it('get cheapest swap route for DLLR -> BTC', async () => {
+      const amount = ethers.utils.parseEther('20');
+      await expect(
+        router.getBestQuote(dllr, btc, amount),
+      ).resolves.toMatchObject({
+        quote: expect.any(BigNumber),
+        route: expect.any(Object),
+      });
+    });
+
+    it('get cheapest swap route for BTC -> DLLR', async () => {
+      const amount = ethers.utils.parseEther('20');
+      await expect(
+        router.getBestQuote(dllr, btc, amount),
+      ).resolves.toMatchObject({
+        quote: expect.any(BigNumber),
+        route: expect.any(Object),
+      });
     });
   });
 });

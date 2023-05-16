@@ -167,7 +167,7 @@ const ConvertPage: FC = () => {
   );
 
   const renderDestinationAmount = useMemo(
-    () => (destinationToken ? amount : t(translations.common.na)),
+    () => (destinationToken ? amount : t(commonTranslations.na)),
     [amount, destinationToken],
   );
 
@@ -181,7 +181,7 @@ const ConvertPage: FC = () => {
         />
       );
     }
-    return t(translations.common.na);
+    return t(commonTranslations.na);
   }, [amount, destinationToken, sourceToken]);
 
   useEffect(() => {
@@ -214,7 +214,7 @@ const ConvertPage: FC = () => {
   return (
     <>
       <Helmet>
-        <title>{t(translations.convertPage.meta.title)}</title>
+        <title>{t(pageTranslations.meta.title)}</title>
       </Helmet>
       <div className="w-full flex flex-col items-center text-gray-10 mt-9 sm:mt-24">
         <Heading className="text-base sm:text-2xl font-medium">
@@ -324,7 +324,7 @@ const ConvertPage: FC = () => {
                 <div className="mt-2 mb-4">
                   <AmountInput
                     value={defaultSlippageTolerance}
-                    label={t(translations.convertPage.slippageTolerance)}
+                    label={t(pageTranslations.slippageTolerance)}
                     className="max-w-none w-full"
                     unit="%"
                     placeholder="0"
@@ -335,7 +335,7 @@ const ConvertPage: FC = () => {
 
               <SimpleTable className="mt-3">
                 <SimpleTableRow
-                  label={t(translations.convertPage.minimumReceived)}
+                  label={t(pageTranslations.minimumReceived)}
                   valueClassName="text-primary-10"
                   value={
                     <AmountRenderer
@@ -346,7 +346,7 @@ const ConvertPage: FC = () => {
                   }
                 />
                 <SimpleTableRow
-                  label={t(translations.convertPage.maximumPrice)}
+                  label={t(pageTranslations.maximumPrice)}
                   valueClassName="text-primary-10"
                   value={
                     <AmountRenderer
@@ -361,7 +361,7 @@ const ConvertPage: FC = () => {
           ) : (
             <SimpleTable className="mt-3">
               <SimpleTableRow
-                label={t(translations.convertPage.price)}
+                label={t(pageTranslations.price)}
                 valueClassName="text-primary-10"
                 value={renderPriceAmount}
               />

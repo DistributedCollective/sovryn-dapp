@@ -33,7 +33,9 @@ export const myntBassetRoute: SwapRouteFunction = (
   const getDllrToken = async () => {
     if (!ddlr) {
       const chainId = await getChainId();
-      ddlr = (await getTokenContract(SupportedTokens.dllr, chainId)).address;
+      ddlr = (
+        await getTokenContract(SupportedTokens.dllr, chainId)
+      ).address.toLowerCase();
     }
     return ddlr;
   };
@@ -59,10 +61,12 @@ export const myntBassetRoute: SwapRouteFunction = (
 
       const chainId = await getChainId();
       const dllr = await getDllrToken();
-      const zusd = (await getTokenContract(SupportedTokens.zusd, chainId))
-        .address;
-      const doc = (await getTokenContract(SupportedTokens.doc, chainId))
-        .address;
+      const zusd = (
+        await getTokenContract(SupportedTokens.zusd, chainId)
+      ).address.toLowerCase();
+      const doc = (
+        await getTokenContract(SupportedTokens.doc, chainId)
+      ).address.toLowerCase();
 
       pairCache = new Map<string, string[]>([
         [dllr, [zusd, doc]],
@@ -85,7 +89,7 @@ export const myntBassetRoute: SwapRouteFunction = (
     },
     async swap(entry, destination, amount, from, options, overrides) {
       const pairs = await this.pairs();
-      if (canSwapPair(entry, destination, pairs)) {
+      if (!canSwapPair(entry, destination, pairs)) {
         throw makeError(
           `Cannot swap ${entry} to ${destination}`,
           SovrynErrorCode.SWAP_PAIR_NOT_AVAILABLE,

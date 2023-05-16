@@ -45,7 +45,7 @@ export const canSwapPair = (
   destination: string,
   pairs: SwapPairs,
 ) => {
-  const quoteTokens = pairs.get(entry.toLowerCase());
+  const quoteTokens = pairs.get(entry.toLowerCase())?.map(t => t.toLowerCase());
   if (quoteTokens?.includes(destination.toLowerCase())) {
     return true;
   }

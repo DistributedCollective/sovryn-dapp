@@ -1,9 +1,8 @@
-import { BigNumber, constants } from 'ethers';
+import { constants } from 'ethers';
 
 import { SupportedTokens } from '@sovryn/contracts';
 import { ChainIds } from '@sovryn/ethers-provider';
 
-import { ammSwapRoute } from '../../../swaps/smart-router/routes/amm-swap-route';
 import { SwapRoute } from '../../../swaps/smart-router/types';
 import { makeChainFixture } from '../../_fixtures/chain';
 import { makeTokenAddress } from '../../_fixtures/tokens';
@@ -79,38 +78,32 @@ describe('Mynt bAsset Route', () => {
   });
 
   describe('swap', () => {
-    it('build swap tx data for XUSD -> SOV', async () => {
-      const amount = parseUnits('20');
+    it('builds swap tx data for DLLR -> ZUSD', async () => {
       await expect(
-        route.swap(dllr, zusd, amount, constants.AddressZero),
+        route.swap(dllr, zusd, parseUnits('20'), constants.AddressZero),
       ).resolves.toMatchObject({
         to: expect.any(String),
         data: expect.any(String),
-        value: amount,
+        value: '0',
       });
     });
 
-    it('build swap tx data for SOV -> XUSD', async () => {
-      const amount = parseUnits('20');
+    it('builds swap tx data for ZUSD -> DLLR', async () => {
       await expect(
-        route.swap(zusd, dllr, amount, constants.AddressZero),
+        route.swap(zusd, dllr, parseUnits('20'), constants.AddressZero),
       ).resolves.toMatchObject({
         to: expect.any(String),
         data: expect.any(String),
-        value: amount.toString(),
+        value: '0',
       });
     });
 
-    it('build swap tx data for RBTC -> SOV', async () => {
+    it('fails build swap tx data for RBTC -> DLLR', async () => {
       const amount = parseUnits('0.01');
 
       await expect(
         route.swap(rbtc, dllr, amount, constants.AddressZero),
-      ).resolves.toMatchObject({
-        to: expect.any(String),
-        data: expect.any(String),
-        value: amount.toString(),
-      });
+      ).rejects.toThrowError(/Cannot swap /);
     });
   });
 });

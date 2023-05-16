@@ -27,4 +27,9 @@ export const rskTestnet: Record<string, AsyncContractConfigData> = {
     getAbi: async () =>
       (await import('../../abis/fastBtcMultisig.json')).default,
   },
+  mocIntegrationProxy: {
+    address: '0xdC3e5232db60088D67aA7AF10595979D7eB5290f',
+    getAbi: async () =>
+      (await import('../../abis/mocIntegration.json')).default,
+  },
 };

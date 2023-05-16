@@ -9,7 +9,7 @@ import { makeChainFixture } from '../../_fixtures/chain';
 import { makeTokenAddress } from '../../_fixtures/tokens';
 import { parseUnits } from 'ethers/lib/utils';
 
-describe('AMM Route', () => {
+describe('Mynt bAsset Route', () => {
   let route: SwapRoute;
   let sov: string;
   let rbtc: string;

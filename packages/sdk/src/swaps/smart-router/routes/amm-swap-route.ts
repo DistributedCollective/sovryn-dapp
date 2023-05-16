@@ -146,7 +146,7 @@ export const ammSwapRoute: SwapRouteFunction = (
       Promise.resolve(undefined),
     async swap(entry, destination, amount, from, options, overrides) {
       const pairs = await this.pairs();
-      if (canSwapPair(entry, destination, pairs)) {
+      if (!canSwapPair(entry, destination, pairs)) {
         throw makeError(
           `Cannot swap ${entry} to ${destination}`,
           SovrynErrorCode.SWAP_PAIR_NOT_AVAILABLE,

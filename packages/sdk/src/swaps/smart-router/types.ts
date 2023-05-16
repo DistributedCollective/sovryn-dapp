@@ -4,6 +4,14 @@ import type { BigNumber, BigNumberish, providers } from 'ethers';
 
 export type SwapPairs = Map<string, string[]>;
 
+export type Options = {
+  slippage: BigNumberish;
+};
+
+export type SwapOptions = {
+  permit: string;
+} & Options;
+
 export type SwapRoute = {
   name: string;
 
@@ -16,7 +24,7 @@ export type SwapRoute = {
     entry: string,
     destination: string,
     amount: BigNumberish,
-    slippage?: BigNumberish,
+    options?: Partial<Options>,
     overrides?: Partial<TransactionRequest>,
   ) => Promise<BigNumber>;
 
@@ -25,7 +33,7 @@ export type SwapRoute = {
     entry: string,
     destination: string,
     amount: BigNumberish,
-    slippage?: BigNumberish,
+    options?: Partial<SwapOptions>,
     overrides?: Partial<TransactionRequest>,
   ) => Promise<TransactionRequest>;
 
@@ -38,6 +46,13 @@ export type SwapRoute = {
     overrides?: Partial<TransactionRequest>,
   ) => Promise<TransactionRequest | undefined>;
 
+  permit: (
+    entry: string,
+    destination: string,
+    amount?: BigNumberish,
+    overrides?: Partial<PermitTransactionRequest>,
+  ) => Promise<PermitTransactionRequest | undefined>;
+
   // todo: add functions overriding some values (like changing zero address with wrbtc)
   onPrepareTransaction?: (
     tx: TransactionRequest,
@@ -45,3 +60,12 @@ export type SwapRoute = {
 };
 
 export type SwapRouteFunction = (provider: providers.Provider) => SwapRoute;
+
+export type PermitTransactionRequest = {
+  token: string;
+  spender: string;
+  owner?: string;
+  value?: BigNumberish;
+  deadline?: number;
+  nonce?: number;
+};

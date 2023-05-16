@@ -109,7 +109,7 @@ export const ammSwapRoute: SwapRouteFunction = (
 
       return pairs;
     },
-    quote: async (entry, destination, amount, slippage?, overrides?) => {
+    quote: async (entry, destination, amount, options?, overrides?) => {
       const baseToken = await validatedTokenAddress(entry);
       const quoteToken = await validatedTokenAddress(destination);
       return (await getSwapQuoteContract())
@@ -135,7 +135,9 @@ export const ammSwapRoute: SwapRouteFunction = (
         ...overrides,
       };
     },
-    async swap(entry, destination, amount, slippage, overrides) {
+    permit: async (entry, destination, amount, overrides) =>
+      Promise.resolve(undefined),
+    async swap(entry, destination, amount, options, overrides) {
       const baseToken = await validatedTokenAddress(entry);
       const quoteToken = await validatedTokenAddress(destination);
 
@@ -149,10 +151,10 @@ export const ammSwapRoute: SwapRouteFunction = (
         entry,
         destination,
         amount,
-        slippage,
+        options,
       );
 
-      const minReturn = getMinReturn(expectedReturn, slippage);
+      const minReturn = getMinReturn(expectedReturn, options?.slippage);
 
       let args = [path, amount, minReturn];
 

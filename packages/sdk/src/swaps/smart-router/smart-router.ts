@@ -1,6 +1,5 @@
-import { BigNumber, providers } from 'ethers';
+import { BigNumber, BigNumberish, providers } from 'ethers';
 
-import { SovrynErrorCode, makeError } from '../../errors/errors';
 import { DEFAULT_SWAP_ROUTES } from './config';
 import { SwapRoute, SwapRouteFunction } from './types';
 
@@ -42,12 +41,35 @@ export class SmartRouter {
     return routes.filter(route => route !== undefined) as SwapRoute[];
   }
 
+  public async getQuotes(
+    entry: string,
+    destination: string,
+    amount: BigNumberish,
+  ): Promise<BestRouteQuote[]> {
+    const routes = await this.getAvailableRoutesForAssets(entry, destination);
+
+    const quotes = await Promise.all(
+      routes.map(async route => {
+        const quote = await route.quote(entry, destination, amount);
+        return { route, quote };
+      }),
+    );
+
+    return quotes;
+  }
+
   // return best quote and route for given assets and amount
-  public getBestQuote(
+  public async getBestQuote(
     base: string,
     quote: string,
-    amount: string,
+    amount: BigNumberish,
   ): Promise<BestRouteQuote> {
-    throw makeError('Not implemented', SovrynErrorCode.NOT_IMPLEMENTED);
+    const routes = await this.getQuotes(base, quote, amount);
+
+    if (routes.length === 0) {
+      throw new Error('No routes available');
+    }
+
+    return routes.sort((a, b) => a.quote.sub(b.quote).toNumber())[0];
   }
 }

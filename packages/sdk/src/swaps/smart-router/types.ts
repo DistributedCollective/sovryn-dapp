@@ -33,6 +33,7 @@ export type SwapRoute = {
     entry: string,
     destination: string,
     amount: BigNumberish,
+    from: string,
     options?: Partial<SwapOptions>,
     overrides?: Partial<TransactionRequest>,
   ) => Promise<TransactionRequest>;
@@ -42,14 +43,16 @@ export type SwapRoute = {
   approve: (
     entry: string,
     destination: string,
-    amount?: BigNumberish,
+    amount: BigNumberish,
+    from: string,
     overrides?: Partial<TransactionRequest>,
   ) => Promise<TransactionRequest | undefined>;
 
   permit: (
     entry: string,
     destination: string,
-    amount?: BigNumberish,
+    amount: BigNumberish,
+    from: string,
     overrides?: Partial<PermitTransactionRequest>,
   ) => Promise<PermitTransactionRequest | undefined>;
 
@@ -64,7 +67,7 @@ export type SwapRouteFunction = (provider: providers.Provider) => SwapRoute;
 export type PermitTransactionRequest = {
   token: string;
   spender: string;
-  owner?: string;
+  owner: string;
   value?: BigNumberish;
   deadline?: number;
   nonce?: number;

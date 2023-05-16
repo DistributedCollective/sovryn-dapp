@@ -7,6 +7,9 @@ export enum SovrynErrorCode {
 
   // Ethers errors
   ETHERS_CALL_EXCEPTION = 'ETHERS_CALL_EXCEPTION',
+
+  // Swap errors
+  SWAP_PAIR_NOT_AVAILABLE = 'SWAP_PAIR_NOT_AVAILABLE',
 }
 
 export interface SovrynError<T extends SovrynErrorCode = SovrynErrorCode>
@@ -31,12 +34,19 @@ export interface CallExeptionError
   reason: string;
 }
 
+export interface SwapPairNotAvailable
+  extends SovrynError<SovrynErrorCode.SWAP_PAIR_NOT_AVAILABLE> {
+  reason: string;
+}
+
 export type CodedSovrynError<T> = T extends SovrynErrorCode.UNKNOWN_ERROR
   ? UnknownError
   : T extends SovrynErrorCode.NOT_IMPLEMENTED
   ? NotImplemented
   : T extends SovrynErrorCode.ETHERS_CALL_EXCEPTION
   ? CallExeptionError
+  : T extends SovrynErrorCode.SWAP_PAIR_NOT_AVAILABLE
+  ? SwapPairNotAvailable
   : never;
 
 export const isSovrynError = <

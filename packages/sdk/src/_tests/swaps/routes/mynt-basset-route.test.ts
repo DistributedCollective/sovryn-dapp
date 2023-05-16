@@ -8,127 +8,108 @@ import { SwapRoute } from '../../../swaps/smart-router/types';
 import { makeChainFixture } from '../../_fixtures/chain';
 import { makeTokenAddress } from '../../_fixtures/tokens';
 import { parseUnits } from 'ethers/lib/utils';
+import { myntBassetRoute } from '../../../swaps/smart-router/routes/mynt-basset-route';
 
 describe('Mynt bAsset Route', () => {
   let route: SwapRoute;
-  let sov: string;
   let rbtc: string;
-  let xusd: string;
-
-  const AddressOne = '0x0000000000000000000000000000000000000001';
+  let dllr: string;
+  let zusd: string;
 
   beforeAll(async () => {
     const fixture = await makeChainFixture();
-    route = ammSwapRoute(fixture.provider);
-    sov = await makeTokenAddress(SupportedTokens.sov, ChainIds.RSK_MAINNET);
-    xusd = await makeTokenAddress(SupportedTokens.xusd, ChainIds.RSK_MAINNET);
+    route = myntBassetRoute(fixture.provider);
     rbtc = await makeTokenAddress(SupportedTokens.rbtc, ChainIds.RSK_MAINNET);
+    dllr = await makeTokenAddress(SupportedTokens.dllr, ChainIds.RSK_MAINNET);
+    zusd = await makeTokenAddress(SupportedTokens.zusd, ChainIds.RSK_MAINNET);
   });
 
   it('has correct name', () => {
-    expect(route.name).toEqual('AMM');
+    expect(route.name).toEqual('MyntBasset');
   });
 
   it('has pairs', async () => {
     const pairs = await route.pairs();
-    expect(pairs.size).toBeGreaterThan(0);
+    expect(pairs.size).toBe(3);
   });
 
   describe('quote', () => {
-    it('returns BigNumber for XUSD -> SOV quote', async () => {
+    it('returns BigNumber for DDLR -> ZUSD quote', async () => {
       await expect(
-        route.quote(xusd, sov, constants.WeiPerEther),
-      ).resolves.toBeInstanceOf(BigNumber);
+        route.quote(dllr, zusd, constants.WeiPerEther),
+      ).resolves.toBe(constants.WeiPerEther);
     });
 
-    it('returns BigNumber for SOV -> XUSD quote', async () => {
+    it('returns BigNumber for ZUSD -> DLLR quote', async () => {
       await expect(
-        route.quote(sov, xusd, constants.WeiPerEther),
-      ).resolves.toBeInstanceOf(BigNumber);
+        route.quote(zusd, dllr, constants.WeiPerEther),
+      ).resolves.toBe(constants.WeiPerEther);
     });
 
-    it('returns BigNumber for RBTC -> SOV quote', async () => {
+    it('throws an Cannot swap error for unsupported pair', async () => {
       await expect(
-        route.quote(rbtc, sov, constants.WeiPerEther),
-      ).resolves.toBeInstanceOf(BigNumber);
-    });
-
-    it('returns BigNumber for SOV -> RBTC quote', async () => {
-      await expect(
-        route.quote(sov, rbtc, constants.WeiPerEther),
-      ).resolves.toBeInstanceOf(BigNumber);
-    });
-
-    it('throws an ERR_INVALID_PATH error for unsupported pair', async () => {
-      await expect(
-        route.quote(AddressOne, xusd, constants.WeiPerEther),
-      ).rejects.toThrowError(/ERR_INVALID_PATH/);
-    });
-
-    it('throws an ERR_INVALID_PATH for swap to itself', async () => {
-      await expect(
-        route.quote(xusd, xusd, constants.WeiPerEther),
-      ).rejects.toThrowError(/ERR_INVALID_PATH/);
+        route.quote(rbtc, dllr, constants.WeiPerEther),
+      ).rejects.toThrowError(/Cannot swap /);
     });
   });
 
   describe('approve', () => {
     it('returns transaction request data for approval for ERC-20 tokens', async () => {
-      await expect(route.approve(xusd, sov)).resolves.toMatchObject({
+      await expect(
+        route.approve(zusd, dllr, constants.WeiPerEther, constants.AddressZero),
+      ).resolves.toMatchObject({
         to: expect.any(String),
         data: expect.any(String),
       });
     });
 
-    it('returns undefined for approval tx request if entry token is RBTC', async () => {
-      await expect(route.approve(rbtc, sov)).resolves.toBe(undefined);
+    it('returns undefined for approval tx request if entry token is DLLR', async () => {
+      await expect(
+        route.approve(dllr, zusd, constants.WeiPerEther, constants.AddressZero),
+      ).resolves.toBe(undefined);
     });
   });
 
   describe('permit', () => {
     it('returns undefined for permit function', async () => {
-      await expect(route.permit(xusd, sov)).resolves.toBe(undefined);
+      await expect(
+        route.permit(dllr, zusd, constants.WeiPerEther, constants.AddressZero),
+      ).resolves.toBe(undefined);
     });
   });
 
   describe('swap', () => {
     it('build swap tx data for XUSD -> SOV', async () => {
+      const amount = parseUnits('20');
       await expect(
-        route.swap(xusd, sov, parseUnits('20')),
+        route.swap(dllr, zusd, amount, constants.AddressZero),
       ).resolves.toMatchObject({
         to: expect.any(String),
         data: expect.any(String),
-        value: '0',
+        value: amount,
       });
     });
 
     it('build swap tx data for SOV -> XUSD', async () => {
+      const amount = parseUnits('20');
       await expect(
-        route.swap(sov, xusd, parseUnits('20')),
+        route.swap(zusd, dllr, amount, constants.AddressZero),
       ).resolves.toMatchObject({
-        to: expect.any(String),
-        data: expect.any(String),
-        value: '0',
-      });
-    });
-
-    it('build swap tx data for RBTC -> SOV', async () => {
-      const amount = parseUnits('0.01');
-
-      await expect(route.swap(rbtc, sov, amount)).resolves.toMatchObject({
         to: expect.any(String),
         data: expect.any(String),
         value: amount.toString(),
       });
     });
 
-    it('build swap tx data for SOV -> RBTC', async () => {
+    it('build swap tx data for RBTC -> SOV', async () => {
+      const amount = parseUnits('0.01');
+
       await expect(
-        route.swap(sov, rbtc, parseUnits('250')),
+        route.swap(rbtc, dllr, amount, constants.AddressZero),
       ).resolves.toMatchObject({
         to: expect.any(String),
         data: expect.any(String),
-        value: '0',
+        value: amount.toString(),
       });
     });
   });

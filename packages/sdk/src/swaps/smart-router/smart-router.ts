@@ -1,4 +1,4 @@
-import { providers } from 'ethers';
+import { BigNumber, providers } from 'ethers';
 
 import { SovrynErrorCode, makeError } from '../../errors/errors';
 import { DEFAULT_SWAP_ROUTES } from './config';
@@ -6,7 +6,7 @@ import { SwapRoute, SwapRouteFunction } from './types';
 
 export type BestRouteQuote = {
   route: SwapRoute;
-  quote: string;
+  quote: BigNumber;
 };
 
 export class SmartRouter {
@@ -24,8 +24,22 @@ export class SmartRouter {
   }
 
   // return available routes for given assets
-  public getAvailableRoutesForAssets(base: string, quote: string): SwapRoute[] {
-    throw makeError('Not implemented', SovrynErrorCode.NOT_IMPLEMENTED);
+  public async getAvailableRoutesForAssets(
+    base: string,
+    quote: string,
+  ): Promise<SwapRoute[]> {
+    const routes = await Promise.all(
+      this.routes.map(async route => {
+        const pairs = await route.pairs();
+        if (pairs.has(base)) {
+          const quoteTokens = pairs.get(base);
+          if (quoteTokens?.includes(quote)) {
+            return route;
+          }
+        }
+      }),
+    );
+    return routes.filter(route => route !== undefined) as SwapRoute[];
   }
 
   // return best quote and route for given assets and amount

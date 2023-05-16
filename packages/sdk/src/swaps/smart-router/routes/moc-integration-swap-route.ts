@@ -26,13 +26,13 @@ export const mocIntegrationSwapRoute: SwapRouteFunction = (
     async quote(entry, destination, amount, options?, overrides?) {
       throw makeError('Not implemented', SovrynErrorCode.NOT_IMPLEMENTED);
     },
-    async swap(entry, destination, amount, options, overrides) {
+    async swap(entry, destination, amount, from, options, overrides) {
       throw makeError('Not implemented', SovrynErrorCode.NOT_IMPLEMENTED);
     },
-    async approve(entry, destination, amount, overrides) {
+    async approve(entry, destination, amount, from, overrides) {
       throw makeError('Not implemented', SovrynErrorCode.NOT_IMPLEMENTED);
     },
-    async permit(entry, destination, amount, overrides) {
+    async permit(entry, destination, amount, from, overrides) {
       throw makeError('Not implemented', SovrynErrorCode.NOT_IMPLEMENTED);
     },
   };

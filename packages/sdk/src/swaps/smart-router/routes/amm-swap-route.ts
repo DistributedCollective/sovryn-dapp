@@ -10,7 +10,11 @@ import { ChainId, numberToChainId } from '@sovryn/ethers-provider';
 
 import { SovrynErrorCode, makeError } from '../../../errors/errors';
 import { SwapPairs, SwapRouteFunction } from '../types';
-import { getMinReturn, makeApproveRequest } from '../../../internal/utils';
+import {
+  canSwapPair,
+  getMinReturn,
+  makeApproveRequest,
+} from '../../../internal/utils';
 
 export const ammSwapRoute: SwapRouteFunction = (
   provider: providers.Provider,
@@ -70,6 +74,7 @@ export const ammSwapRoute: SwapRouteFunction = (
   const isNativeToken = (token: string) => token === constants.AddressZero;
 
   const validatedTokenAddress = async (token: string) => {
+    token = token.toLowerCase();
     if (isNativeToken(token)) {
       if (wrbtcAddress) {
         return wrbtcAddress;
@@ -98,7 +103,9 @@ export const ammSwapRoute: SwapRouteFunction = (
         ),
       );
 
-      const addresses = contracts.map(contract => contract.address);
+      const addresses = contracts.map(contract =>
+        contract.address.toLowerCase(),
+      );
 
       const pairs = new Map<string, string[]>();
 
@@ -118,7 +125,7 @@ export const ammSwapRoute: SwapRouteFunction = (
           throw makeError(e.message, SovrynErrorCode.ETHERS_CALL_EXCEPTION);
         });
     },
-    approve: async (entry, destination, amount, overrides) => {
+    approve: async (entry, destination, amount, from, overrides) => {
       // native token is always approved
       if (isNativeToken(entry)) {
         return Promise.resolve(undefined);
@@ -135,9 +142,17 @@ export const ammSwapRoute: SwapRouteFunction = (
         ...overrides,
       };
     },
-    permit: async (entry, destination, amount, overrides) =>
+    permit: async (entry, destination, amount, from, overrides) =>
       Promise.resolve(undefined),
-    async swap(entry, destination, amount, options, overrides) {
+    async swap(entry, destination, amount, from, options, overrides) {
+      const pairs = await this.pairs();
+      if (canSwapPair(entry, destination, pairs)) {
+        throw makeError(
+          `Cannot swap ${entry} to ${destination}`,
+          SovrynErrorCode.SWAP_PAIR_NOT_AVAILABLE,
+        );
+      }
+
       const baseToken = await validatedTokenAddress(entry);
       const quoteToken = await validatedTokenAddress(destination);
 

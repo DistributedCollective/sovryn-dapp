@@ -1,5 +1,6 @@
 import { BigNumber, BigNumberish, ethers } from 'ethers';
 import { DEFAULT_SWAP_SLIPPAGE } from '../constants';
+import { SwapPairs } from '../swaps/smart-router/types';
 
 export function defineProperties<T>(
   target: T,
@@ -38,3 +39,18 @@ export const makeApproveRequest = (
     data: Erc20IFace.encodeFunctionData('approve', [spender, amount]),
   };
 };
+
+export const canSwapPair = (
+  entry: string,
+  destination: string,
+  pairs: SwapPairs,
+) => {
+  const quoteTokens = pairs.get(entry.toLowerCase());
+  if (quoteTokens?.includes(destination.toLowerCase())) {
+    return true;
+  }
+  return false;
+};
+
+export const areAddressesEqual = (a: string, b: string) =>
+  a.toLowerCase() === b.toLowerCase();

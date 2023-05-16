@@ -41,6 +41,9 @@ import { useHandleConversion } from './hooks/useHandleConversion';
 const commonTranslations = translations.common;
 const pageTranslations = translations.convertPage;
 const defaultSlippageTolerance = 0.5;
+const pricePlaceholder = 1;
+const minimumReceivedPlaceholder = 200;
+const maximumPricePlaceholder = 30000;
 
 const ConvertPage: FC = () => {
   const { account } = useAccount();
@@ -55,7 +58,7 @@ const ConvertPage: FC = () => {
   const { checkMaintenance, States } = useMaintenance();
   const convertLocked = checkMaintenance(States.ZERO_CONVERT);
   const dllrLocked = checkMaintenance(States.ZERO_DLLR);
-  const [advanced, setAdvanced] = useState(false);
+  const [showAdvancedSettings, setShowAdvancedSettings] = useState(false);
 
   const tokenOptions = useMemo(
     () =>
@@ -167,6 +170,19 @@ const ConvertPage: FC = () => {
     () => (destinationToken ? amount : t(translations.common.na)),
     [amount, destinationToken],
   );
+
+  const renderPriceAmount = useMemo(() => {
+    if (destinationToken && amount) {
+      return (
+        <AmountRenderer
+          value={pricePlaceholder}
+          suffix={sourceToken}
+          precision={TOKEN_RENDER_PRECISION}
+        />
+      );
+    }
+    return t(translations.common.na);
+  }, [amount, destinationToken, sourceToken]);
 
   useEffect(() => {
     if (sourceToken === destinationToken) {
@@ -296,63 +312,61 @@ const ConvertPage: FC = () => {
             </div>
           </div>
 
-          <Accordion
-            className="mt-4 mb-3 text-xs"
-            label={t(translations.common.advancedSettings)}
-            open={advanced}
-            onClick={() => setAdvanced(!advanced)}
-            dataAttribute="convert-settings"
-          >
-            <div className="mt-2 mb-4">
-              <AmountInput
-                value={defaultSlippageTolerance}
-                label={t(translations.convertPage.slippageTolerance)}
-                className="max-w-none w-full"
-                unit="%"
-                placeholder="0"
-                readOnly
+          {sourceToken && destinationToken ? (
+            <>
+              <Accordion
+                className="mt-4 mb-3 text-xs"
+                label={t(translations.common.advancedSettings)}
+                open={showAdvancedSettings}
+                onClick={() => setShowAdvancedSettings(!showAdvancedSettings)}
+                dataAttribute="convert-settings"
+              >
+                <div className="mt-2 mb-4">
+                  <AmountInput
+                    value={defaultSlippageTolerance}
+                    label={t(translations.convertPage.slippageTolerance)}
+                    className="max-w-none w-full"
+                    unit="%"
+                    placeholder="0"
+                    readOnly
+                  />
+                </div>
+              </Accordion>
+
+              <SimpleTable className="mt-3">
+                <SimpleTableRow
+                  label={t(translations.convertPage.minimumReceived)}
+                  valueClassName="text-primary-10"
+                  value={
+                    <AmountRenderer
+                      value={minimumReceivedPlaceholder}
+                      suffix={destinationToken}
+                      precision={TOKEN_RENDER_PRECISION}
+                    />
+                  }
+                />
+                <SimpleTableRow
+                  label={t(translations.convertPage.maximumPrice)}
+                  valueClassName="text-primary-10"
+                  value={
+                    <AmountRenderer
+                      value={maximumPricePlaceholder}
+                      suffix={sourceToken}
+                      precision={TOKEN_RENDER_PRECISION}
+                    />
+                  }
+                />
+              </SimpleTable>
+            </>
+          ) : (
+            <SimpleTable className="mt-3">
+              <SimpleTableRow
+                label={t(translations.convertPage.price)}
+                valueClassName="text-primary-10"
+                value={renderPriceAmount}
               />
-            </div>
-          </Accordion>
-
-          <SimpleTable className="mt-3">
-            <SimpleTableRow
-              label={t(translations.convertPage.price)}
-              valueClassName="text-primary-10"
-              value={
-                <AmountRenderer
-                  value={1}
-                  suffix={sourceToken}
-                  precision={TOKEN_RENDER_PRECISION}
-                />
-              }
-            />
-          </SimpleTable>
-
-          <SimpleTable className="mt-3">
-            <SimpleTableRow
-              label={t(translations.convertPage.minimumReceived)}
-              valueClassName="text-primary-10"
-              value={
-                <AmountRenderer
-                  value={200}
-                  suffix={destinationToken}
-                  precision={TOKEN_RENDER_PRECISION}
-                />
-              }
-            />
-            <SimpleTableRow
-              label={t(translations.convertPage.maximumPrice)}
-              valueClassName="text-primary-10"
-              value={
-                <AmountRenderer
-                  value={30000}
-                  suffix={sourceToken}
-                  precision={TOKEN_RENDER_PRECISION}
-                />
-              }
-            />
-          </SimpleTable>
+            </SimpleTable>
+          )}
 
           <Button
             type={ButtonType.reset}

@@ -93,6 +93,13 @@ export const zeroRedemptionSwapRoute: SwapRouteFunction = (
           (await getTokenContract(SupportedTokens.dllr, chainId)).address,
         )
       ) {
+        if (!options?.permit) {
+          throw makeError(
+            `Permit is required for swap.`,
+            SovrynErrorCode.UNKNOWN_ERROR,
+          );
+        }
+
         // todo: https://github.com/DistributedCollective/zero/blob/main/packages/contracts/contracts/TroveManager.sol#L1175
       }
 

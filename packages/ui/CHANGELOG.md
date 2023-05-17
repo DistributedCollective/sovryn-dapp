@@ -1,5 +1,18 @@
 # @sovryn/ui
 
+## 1.0.6
+
+### Patch Changes
+
+- 8e5ca77: SOV-2216: New loader animations
+
+## 1.0.5
+
+### Patch Changes
+
+- 5fc86dd: SOV-2293: Add risk opt-in checkbox
+- 9fa9041: SOV-2232: vertical tab shows broken border
+
 ## 1.0.4
 
 ### Patch Changes

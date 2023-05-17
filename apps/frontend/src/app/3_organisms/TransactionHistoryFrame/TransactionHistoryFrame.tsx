@@ -23,6 +23,7 @@ import { ExportCSV } from '../../2_molecules/ExportCSV/ExportCSV';
 import { TableFilter } from '../../2_molecules/TableFilter/TableFilter';
 import { Filter } from '../../2_molecules/TableFilter/TableFilter.types';
 import { TxIdWithNotification } from '../../2_molecules/TxIdWithNotification/TransactionIdWithNotification';
+import { useLiquityBaseParams } from '../../5_pages/ZeroPage/hooks/useLiquityBaseParams';
 import {
   BITCOIN,
   BTC_RENDER_PRECISION,
@@ -64,6 +65,7 @@ export const TransactionHistoryFrame: FC = () => {
 
   const { checkMaintenance, States } = useMaintenance();
   const exportLocked = checkMaintenance(States.ZERO_EXPORT_CSV);
+  const { minBorrowingFeeRate } = useLiquityBaseParams();
 
   const [orderOptions, setOrderOptions] = useState<OrderOptions>({
     orderBy: 'sequenceNumber',
@@ -328,9 +330,6 @@ export const TransactionHistoryFrame: FC = () => {
         return '-';
       }
 
-      const originationFeePercentage =
-        Math.trunc((Number(borrowingFee) / Number(debtChange)) * 1e4) / 100;
-
       return (
         <>
           <AmountRenderer
@@ -339,11 +338,11 @@ export const TransactionHistoryFrame: FC = () => {
             precision={TOKEN_RENDER_PRECISION}
             dataAttribute="transaction-history-borrowing-fee"
           />{' '}
-          ({originationFeePercentage}%)
+          ({minBorrowingFeeRate.mul(100).toString()}%)
         </>
       );
     },
-    [],
+    [minBorrowingFeeRate],
   );
 
   const generateRowTitle = useCallback(
@@ -515,7 +514,7 @@ export const TransactionHistoryFrame: FC = () => {
 
   return (
     <>
-      <div className="flex flex-row items-center gap-4 mb-7 hidden lg:inline-flex">
+      <div className="flex-row items-center gap-4 mb-7 hidden lg:inline-flex">
         <ExportCSV
           getData={exportData}
           filename="transactions"

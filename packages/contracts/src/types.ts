@@ -34,7 +34,6 @@ export enum SupportedTokens {
   sov = 'sov',
   doc = 'doc',
   rdoc = 'rdoc',
-  mynt = 'mynt',
   fish = 'babelfish',
   rif = 'rif',
   bpro = 'bpro',
@@ -42,6 +41,7 @@ export enum SupportedTokens {
   eths = 'eths',
   bnbs = 'bnbs',
   moc = 'moc',
+  mynt = 'mynt',
 }
 
 export type TokenBaseInfo = {

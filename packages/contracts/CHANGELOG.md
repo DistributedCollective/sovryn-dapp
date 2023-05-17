@@ -1,5 +1,17 @@
 # @sovryn/contracts
 
+## 1.0.6
+
+### Patch Changes
+
+- 7856201: SOV-2229: update token lists
+
+## 1.0.5
+
+### Patch Changes
+
+- 345c9fe: SOV-2117: Add stability pool subsidies details to the Earn and Rewards pages
+
 ## 1.0.4
 
 ### Patch Changes

@@ -9,7 +9,7 @@ export type Options = {
 };
 
 export type SwapOptions = {
-  permit: PermitTransactionResponse;
+  permit?: PermitTransactionResponse;
 } & Options;
 
 export type SwapRoute = {

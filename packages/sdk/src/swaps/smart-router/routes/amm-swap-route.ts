@@ -90,44 +90,44 @@ export const ammSwapRoute: SwapRouteFunction = (
   return {
     name: 'AMM',
     pairs: async () => {
-      if (pairCache) {
-        return pairCache;
+      if (!pairCache) {
+        const chainId = await getChainId();
+
+        const swapTokens = [
+          SupportedTokens.sov,
+          SupportedTokens.dllr,
+          SupportedTokens.mynt,
+          SupportedTokens.rbtc,
+          SupportedTokens.xusd,
+          SupportedTokens.doc,
+          SupportedTokens.fish,
+          SupportedTokens.rif,
+          SupportedTokens.bpro,
+          SupportedTokens.rusdt,
+          SupportedTokens.eths,
+          SupportedTokens.bnbs,
+          SupportedTokens.moc,
+        ];
+
+        const contracts = await Promise.all(
+          swapTokens.map(token => getTokenContract(token, chainId)),
+        );
+
+        const addresses = contracts.map(contract =>
+          contract.address.toLowerCase(),
+        );
+
+        const pairs = new Map<string, string[]>();
+
+        for (const address of addresses) {
+          const pair = addresses.filter(a => a !== address);
+          pairs.set(address, pair);
+        }
+
+        pairCache = pairs;
       }
 
-      const chainId = await getChainId();
-
-      const swapTokens = [
-        SupportedTokens.sov,
-        SupportedTokens.dllr,
-        SupportedTokens.mynt,
-        SupportedTokens.rbtc,
-        SupportedTokens.xusd,
-        SupportedTokens.doc,
-        SupportedTokens.fish,
-        SupportedTokens.rif,
-        SupportedTokens.bpro,
-        SupportedTokens.rusdt,
-        SupportedTokens.eths,
-        SupportedTokens.bnbs,
-        SupportedTokens.moc,
-      ];
-
-      const contracts = await Promise.all(
-        swapTokens.map(token => getTokenContract(token, chainId)),
-      );
-
-      const addresses = contracts.map(contract =>
-        contract.address.toLowerCase(),
-      );
-
-      const pairs = new Map<string, string[]>();
-
-      for (const address of addresses) {
-        const pair = addresses.filter(a => a !== address);
-        pairs.set(address, pair);
-      }
-
-      return pairs;
+      return pairCache;
     },
     quote: async (entry, destination, amount, options?, overrides?) => {
       const baseToken = await validatedTokenAddress(entry);

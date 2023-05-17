@@ -2,11 +2,11 @@ import { AsyncContractConfigData } from '../../types';
 
 export const rskTestnet: Record<string, AsyncContractConfigData> = {
   protocol: {
-    address: '0x5A0D867e0D70Fcc6Ade25C3F1B89d618b5B4Eaa7', // TODO: This is mainnet address, change it to testnet
+    address: '0x25380305f223B32FDB844152abD2E82BC5Ad99c3',
     getAbi: async () => (await import('../../abis/protocol.json')).default,
   },
   swapNetwork: {
-    address: '0x98aCE08D2b759a265ae326F010496bcD63C15afc', // TODO: This is mainnet address, change it to testnet
+    address: '0x61172B53423E205a399640e5283e51FE60EC2256',
     getAbi: async () => (await import('../../abis/swapNetwork.json')).default,
   },
   btcWrapperProxy: {

@@ -2,13 +2,16 @@ import { useEffect, useState } from 'react';
 
 import { Decimal } from '@sovryn/utils';
 
-import { getLiquityBaseParams } from '../utils/trove-manager';
+import { LiquityBaseParams } from '../types';
+import { getLiquityBaseParams } from '../utils';
 
 export const useLiquityBaseParams = () => {
-  const [liquityBaseParams, setLiquityBaseParams] = useState({
-    minBorrowingFeeRate: Decimal.ZERO,
-    maxBorrowingFeeRate: Decimal.ZERO,
-  });
+  const [liquityBaseParams, setLiquityBaseParams] = useState<LiquityBaseParams>(
+    {
+      minBorrowingFeeRate: Decimal.ZERO,
+      maxBorrowingFeeRate: Decimal.ZERO,
+    },
+  );
 
   useEffect(() => {
     const getBorrowingFee = async () => {

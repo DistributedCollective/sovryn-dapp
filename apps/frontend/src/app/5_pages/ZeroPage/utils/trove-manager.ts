@@ -7,54 +7,11 @@ import {
   _normalizeTroveAdjustment,
   _normalizeTroveCreation,
 } from '@sovryn-zero/lib-base';
-import { _getContracts } from '@sovryn-zero/lib-ethers/dist/src/EthersLiquityConnection';
 import { SupportedTokens } from '@sovryn/contracts';
-import { Decimal as UtilsDecimal } from '@sovryn/utils';
 
 import { decimalic } from '../../../../utils/math';
+import { getLiquityBaseParams } from './';
 import { getZeroProvider } from './zero-provider';
-
-interface ILiquityBaseParams {
-  minBorrowingFeeRate: UtilsDecimal;
-  maxBorrowingFeeRate: UtilsDecimal;
-}
-
-let cachedParams: ILiquityBaseParams | undefined;
-
-export const getLiquityBaseParams = async (): Promise<ILiquityBaseParams> => {
-  if (cachedParams) {
-    return cachedParams;
-  }
-
-  try {
-    const { ethers } = await getZeroProvider();
-    const contract = _getContracts(ethers.connection).liquityBaseParams;
-
-    const [minBorrowingFee, maxBorrowingFee] = await Promise.all([
-      contract.BORROWING_FEE_FLOOR(),
-      contract.MAX_BORROWING_FEE(),
-    ]);
-
-    const minBorrowingFeeRate = UtilsDecimal.fromBigNumberString(
-      minBorrowingFee.toString(),
-    );
-    const maxBorrowingFeeRate = UtilsDecimal.fromBigNumberString(
-      maxBorrowingFee.toString(),
-    );
-
-    const params = {
-      minBorrowingFeeRate,
-      maxBorrowingFeeRate,
-    };
-
-    cachedParams = params;
-
-    return params;
-  } catch (error) {
-    console.error(error);
-    throw error;
-  }
-};
 
 export const openTrove = async (
   token: SupportedTokens,

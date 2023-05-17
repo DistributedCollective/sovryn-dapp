@@ -1,5 +1,30 @@
 # @sovryn/ui
 
+## 1.0.6
+
+### Patch Changes
+
+- 8e5ca77: SOV-2216: New loader animations
+
+## 1.0.5
+
+### Patch Changes
+
+- 5fc86dd: SOV-2293: Add risk opt-in checkbox
+- 9fa9041: SOV-2232: vertical tab shows broken border
+
+## 1.0.4
+
+### Patch Changes
+
+- 7625902: SOV-2224: store selected row in table state
+
+## 1.0.3
+
+### Patch Changes
+
+- 18d7b0c: SOV-1584: AmountInput -> iOS -> Unexpected border appears
+
 ## 1.0.2
 
 ### Patch Changes

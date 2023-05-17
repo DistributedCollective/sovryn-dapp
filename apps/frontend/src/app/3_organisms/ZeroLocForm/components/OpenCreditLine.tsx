@@ -8,7 +8,10 @@ import { Decimal } from '@sovryn/utils';
 
 import { BORROW_ASSETS } from '../../../5_pages/ZeroPage/constants';
 import { useLiquityBaseParams } from '../../../5_pages/ZeroPage/hooks/useLiquityBaseParams';
-import { BITCOIN } from '../../../../constants/currencies';
+import {
+  BITCOIN,
+  BTC_RENDER_PRECISION,
+} from '../../../../constants/currencies';
 import { useAmountInput } from '../../../../hooks/useAmountInput';
 import { useMaxAssetBalance } from '../../../../hooks/useMaxAssetBalance';
 import { translations } from '../../../../locales/i18n';
@@ -17,6 +20,7 @@ import {
   CRITICAL_COLLATERAL_RATIO,
   MINIMUM_COLLATERAL_RATIO,
   MIN_DEBT_SIZE,
+  SMALL_AMOUNT,
 } from '../constants';
 import { useZeroData } from '../hooks/useZeroData';
 import { CreditLineSubmitValue } from '../types';
@@ -38,8 +42,13 @@ export const OpenCreditLine: FC<OpenCreditLineProps> = ({
   rbtcPrice,
   borrowingRate,
 }) => {
-  const { tcr, liquidationReserve, isRecoveryMode } = useZeroData(rbtcPrice);
   const { maxBorrowingFeeRate } = useLiquityBaseParams();
+  const {
+    tcr,
+    liquidationReserve,
+    isRecoveryMode,
+    isLoading: zeroDataLoading,
+  } = useZeroData(rbtcPrice);
 
   const [fieldsTouched, setFieldsTouched] = useState(false);
   const [collateralAmountInput, setCollateralAmount, collateralAmount] =
@@ -54,9 +63,8 @@ export const OpenCreditLine: FC<OpenCreditLineProps> = ({
     [collateralAmount],
   );
 
-  const { weiBalance: maxRbtcWeiBalance } = useMaxAssetBalance(
-    SupportedTokens.rbtc,
-  );
+  const { weiBalance: maxRbtcWeiBalance, loading: maxRbtcBalanceLoading } =
+    useMaxAssetBalance(SupportedTokens.rbtc);
 
   const originationFee = useMemo(
     () => getOriginationFeeAmount(debtSize, borrowingRate),
@@ -86,11 +94,17 @@ export const OpenCreditLine: FC<OpenCreditLineProps> = ({
   );
 
   const maxCollateralAmount = useMemo(
-    () => Decimal.fromBigNumberString(maxRbtcWeiBalance),
-    [maxRbtcWeiBalance],
+    () =>
+      maxRbtcBalanceLoading
+        ? Decimal.ZERO
+        : Decimal.fromBigNumberString(maxRbtcWeiBalance),
+    [maxRbtcWeiBalance, maxRbtcBalanceLoading],
   );
 
   const maxDebtAmount = useMemo(() => {
+    if (zeroDataLoading) {
+      return Decimal.ZERO;
+    }
     let collateral = maxCollateralAmount.mul(rbtcPrice);
     if (collateralSize.gt(0)) {
       collateral = collateralSize.mul(rbtcPrice);
@@ -98,7 +112,11 @@ export const OpenCreditLine: FC<OpenCreditLineProps> = ({
     const reserve = liquidationReserve.mul(requiredRatio).mul(-1);
 
     return Decimal.max(
-      reserve.add(collateral).div(requiredRatio).div(borrowingRate.add(1)),
+      reserve
+        .add(collateral)
+        .div(requiredRatio)
+        .div(borrowingRate.add(1))
+        .sub(SMALL_AMOUNT),
       0,
     );
   }, [
@@ -108,6 +126,7 @@ export const OpenCreditLine: FC<OpenCreditLineProps> = ({
     maxCollateralAmount,
     rbtcPrice,
     requiredRatio,
+    zeroDataLoading,
   ]);
 
   const ratio = useMemo(() => {
@@ -172,7 +191,7 @@ export const OpenCreditLine: FC<OpenCreditLineProps> = ({
       return t(translations.zeroPage.loc.errors.collateralTooLow, {
         value: `${formatValue(
           minCollateralAmount.toNumber(),
-          4,
+          BTC_RENDER_PRECISION,
           true,
         )} ${BITCOIN}`,
       });

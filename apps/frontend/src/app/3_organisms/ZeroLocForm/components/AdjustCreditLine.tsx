@@ -8,7 +8,10 @@ import { Decimal } from '@sovryn/utils';
 
 import { BORROW_ASSETS } from '../../../5_pages/ZeroPage/constants';
 import { useLiquityBaseParams } from '../../../5_pages/ZeroPage/hooks/useLiquityBaseParams';
-import { BITCOIN } from '../../../../constants/currencies';
+import {
+  BITCOIN,
+  BTC_RENDER_PRECISION,
+} from '../../../../constants/currencies';
 import { useAmountInput } from '../../../../hooks/useAmountInput';
 import { useAssetBalance } from '../../../../hooks/useAssetBalance';
 import { useMaxAssetBalance } from '../../../../hooks/useMaxAssetBalance';
@@ -18,6 +21,7 @@ import {
   CRITICAL_COLLATERAL_RATIO,
   MINIMUM_COLLATERAL_RATIO,
   MIN_DEBT_SIZE,
+  SMALL_AMOUNT,
 } from '../constants';
 import { useZeroData } from '../hooks/useZeroData';
 import { AmountType, CreditLineSubmitValue } from '../types';
@@ -43,8 +47,12 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
   rbtcPrice,
   borrowingRate,
 }) => {
-  const { tcr, isRecoveryMode } = useZeroData(rbtcPrice);
   const { maxBorrowingFeeRate } = useLiquityBaseParams();
+  const {
+    tcr,
+    isRecoveryMode,
+    isLoading: zeroDataLoading,
+  } = useZeroData(rbtcPrice);
 
   const [debtType, setDebtType] = useState(AmountType.Add);
   const [collateralType, setCollateralType] = useState(AmountType.Add);
@@ -62,9 +70,10 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
     [collateralAmount],
   );
 
-  const { balance: maxCollateralToDepositAmount } = useMaxAssetBalance(
-    SupportedTokens.rbtc,
-  );
+  const {
+    balance: maxCollateralToDepositAmount,
+    loading: maxRbtcBalanceLoading,
+  } = useMaxAssetBalance(SupportedTokens.rbtc);
   const { balance: debtTokenBalance } = useAssetBalance(debtToken);
 
   const isIncreasingDebt = useMemo(
@@ -120,19 +129,25 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
     [existingCollateral, newDebt, rbtcPrice, requiredRatio],
   );
 
-  const maxCollateralAmount = useMemo(
-    () =>
-      isIncreasingCollateral
-        ? maxCollateralToDepositAmount
-        : maxCollateralToWithdrawAmount,
-    [
-      isIncreasingCollateral,
-      maxCollateralToDepositAmount,
-      maxCollateralToWithdrawAmount,
-    ],
-  );
+  const maxCollateralAmount = useMemo(() => {
+    if (maxRbtcBalanceLoading) {
+      return Decimal.ZERO;
+    }
+    return isIncreasingCollateral
+      ? maxCollateralToDepositAmount
+      : maxCollateralToWithdrawAmount;
+  }, [
+    isIncreasingCollateral,
+    maxCollateralToDepositAmount,
+    maxCollateralToWithdrawAmount,
+    maxRbtcBalanceLoading,
+  ]);
 
   const maxBorrowAmount = useMemo(() => {
+    if (zeroDataLoading) {
+      return Decimal.ZERO;
+    }
+
     let collateral = existingCollateral;
     if (collateral.gt(0)) {
       if (isIncreasingCollateral) {
@@ -146,7 +161,10 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
     const debt = existingDebt.mul(-1).mul(requiredRatio);
     const amount = debt.add(collateralInUsd);
 
-    return Decimal.max(amount.div(requiredRatio).div(borrowingRate.add(1)), 0);
+    return Decimal.max(
+      amount.div(requiredRatio).div(borrowingRate.add(1)).sub(SMALL_AMOUNT),
+      0,
+    );
   }, [
     borrowingRate,
     collateralSize,
@@ -155,6 +173,7 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
     isIncreasingCollateral,
     rbtcPrice,
     requiredRatio,
+    zeroDataLoading,
   ]);
 
   const maxRepayAmount = useMemo(
@@ -182,7 +201,7 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
   const ratio = useMemo(
     () =>
       newDebt.isZero()
-        ? Decimal.from(0)
+        ? Decimal.ZERO
         : newCollateral.mul(rbtcPrice).div(newDebt).mul(100),
     [newCollateral, newDebt, rbtcPrice],
   );
@@ -306,7 +325,7 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
         return t(translations.zeroPage.loc.errors.newCollateralTooLow, {
           value: `${formatValue(
             minCollateralAmount.sub(newCollateral),
-            4,
+            BTC_RENDER_PRECISION,
             true,
           )}`,
           currency: BITCOIN,

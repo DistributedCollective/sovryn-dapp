@@ -58,7 +58,11 @@ ChartJS.register(
  * @returns Chart component with data
  */
 
-export const LOCChart: FC = () => {
+type LOCChartProps = {
+  hasUserClosedTrove?: boolean;
+};
+
+export const LOCChart: FC<LOCChartProps> = ({ hasUserClosedTrove = false }) => {
   const { account } = useAccount();
   const { isMobile } = useIsMobile();
   const [data, setData] = useState<TroveData[]>([]);
@@ -133,6 +137,13 @@ export const LOCChart: FC = () => {
     refetchTroves();
     refetchUserTrove();
   }, [refetchTroves, refetchUserTrove, block]);
+
+  useEffect(() => {
+    if (hasUserClosedTrove) {
+      refetchUserTrove();
+      refetchTroves();
+    }
+  }, [refetchTroves, refetchUserTrove, hasUserClosedTrove]);
 
   useEffect(() => {
     if (troves && !loadingTroves && globalsEntity) {

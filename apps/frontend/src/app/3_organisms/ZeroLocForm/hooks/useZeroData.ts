@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 import { _getContracts } from '@sovryn-zero/lib-ethers/dist/src/EthersLiquityConnection';
 import { Decimal } from '@sovryn/utils';
@@ -14,12 +14,17 @@ type ZeroData = {
 
 type ZeroDataResponse = ZeroData & {
   isRecoveryMode: boolean;
+  isLoading: boolean;
 };
 
 export const useZeroData = (rbtcPrice?: Decimal): ZeroDataResponse => {
+  const [isLoading, setIsLoading] = useState(true);
   const [response, getTcr] = useCall<ZeroData>(
     async () => {
+      setIsLoading(true);
+
       const { ethers } = await getZeroProvider();
+
       const price = rbtcPrice
         ? rbtcPrice
         : await ethers.getPrice().then(String).then(Decimal.from);
@@ -33,6 +38,9 @@ export const useZeroData = (rbtcPrice?: Decimal): ZeroDataResponse => {
         .getTCR(price.toBigNumber())
         .then(String)
         .then(Decimal.fromBigNumberString);
+
+      setIsLoading(false);
+
       return {
         tcr,
         liquidationReserve,
@@ -50,7 +58,8 @@ export const useZeroData = (rbtcPrice?: Decimal): ZeroDataResponse => {
     () => ({
       ...response,
       isRecoveryMode: response.tcr.lte(CRITICAL_COLLATERAL_RATIO),
+      isLoading,
     }),
-    [response],
+    [isLoading, response],
   );
 };

@@ -1,5 +1,51 @@
 # frontend
 
+## 1.0.10
+
+### Patch Changes
+
+- 5ab3892: SOV-2083: add links to alpha
+- af72d59: SOV-2042: wallet flashing on re-connect
+- cd77951: SOV-2258: Fix Min collateral validation
+- 8e5ca77: SOV-2216: New loader animations
+- 7856201: SOV-2229: update token lists
+- eafe33a: SOV-2184: update banner image on mobile
+- ee52569: SOV-2150: fix animated balance
+- Updated dependencies [8e5ca77]
+- Updated dependencies [7856201]
+  - @sovryn/ui@1.0.6
+  - @sovryn/contracts@1.0.6
+
+## 1.0.9
+
+### Patch Changes
+
+- 5fc86dd: SOV-2293: Add risk opt-in checkbox
+- ddd93fd: SOV-2207: Fix undercollateralized error show on Earn page
+- 345c9fe: SOV-2117: Add stability pool subsidies details to the Earn and Rewards pages
+- Updated dependencies [5fc86dd]
+- Updated dependencies [9fa9041]
+- Updated dependencies [345c9fe]
+  - @sovryn/ui@1.0.5
+  - @sovryn/contracts@1.0.5
+
+## 1.0.8
+
+### Patch Changes
+
+- 312b113: SOV-2065: Add redemptions alerts to D2 FE
+- 31f7826: SOV-2281: fixes failing LOC transactions
+  chore: implements transaction simulations using tenderly
+- f87f24a: SOV-2280: Fix chart when LOC is closed
+- 184f4a7: SOV-2131: fix max buttons
+- 13ee989: SOV-2145: add Adjust - Borrow LOC maintenance states
+- 43ee3dc: SOV-2219: infinite cRatio on adjust collateral
+- 21f49cd: SOV-1986: fix asset balance refreshing
+- Updated dependencies [f880454]
+- Updated dependencies [18d7b0c]
+  - @sovryn/contracts@1.0.4
+  - @sovryn/ui@1.0.3
+
 ## 1.0.7
 
 ### Patch Changes

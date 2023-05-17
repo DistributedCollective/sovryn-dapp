@@ -1,7 +1,6 @@
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 
 import { ethers } from 'ethers';
-import { parseUnits } from 'ethers/lib/utils';
 import { t } from 'i18next';
 
 import { Button, Icon, IconNames, StatusType } from '@sovryn/ui';
@@ -23,6 +22,7 @@ import {
   isTransactionRequest,
   isTypedDataRequest,
 } from '../../helpers';
+import { sendOrSimulateTx } from '../../utils';
 import { TransactionStep } from '../TransactionStep/TransactionStep';
 
 export type TransactionStepsProps = {
@@ -149,13 +149,7 @@ export const TransactionSteps: FC<TransactionStepsProps> = ({
               ? ethers.constants.MaxUint256
               : config.amount;
           }
-          const tx = await request.contract[request.fnName](...args, {
-            value: request.value,
-            gasPrice: config.gasPrice
-              ? parseUnits(config.gasPrice?.toString() || '0', 9)
-              : undefined,
-            gasLimit: config.gasLimit ? config.gasLimit?.toString() : undefined,
-          });
+          const tx = await sendOrSimulateTx(request, args, config);
 
           updateReceipt(i, {
             status: TransactionReceiptStatus.pending,

@@ -1,7 +1,7 @@
 import { Environments } from '../types/global';
 
 export const SOCIAL_LINKS = {
-  DISCORD: 'https://discord.gg/kBTNx4zjRf',
+  DISCORD: 'https://discord.gg/sovryn',
   TELEGRAM: 'https://t.me/SovrynBitcoin',
   TWITTER: ' https://twitter.com/SovrynBTC',
 };
@@ -17,9 +17,14 @@ export const WEBSITE_LINKS = {
 };
 
 export const ALPHA_LINKS = {
-  [Environments.Mainnet]: 'https://alpha.sovryn.app/',
+  [Environments.Mainnet]: 'https://alpha.sovryn.app',
   [Environments.Testnet]: 'https://alpha-test.sovryn.app',
   STAGING: 'https://alpha-staging.sovryn.app',
+};
+
+export const BITOCRACY_LINKS = {
+  [Environments.Mainnet]: 'https://bitocracy.sovryn.app',
+  [Environments.Testnet]: 'https://bitocracy.test.sovryn.app',
 };
 
 export const STAGING_LINK = 'https://staging.sovryn.com';
@@ -37,6 +42,7 @@ export const WIKI_LINKS = {
     'https://wiki.sovryn.com/sovryn-dapp/using-zero#set-notifications',
   SECURITY: 'https://wiki.sovryn.com/technical-documents#security',
   FEES: 'https://wiki.sovryn.com/sovryn-dapp/fees#zero-borrowing',
+  RISKS: 'https://wiki.sovryn.com/en/sovryn-dapp/subprotocols/zero-zusd#risks',
 };
 
 export const HELPDESK_LINK = 'https://help.sovryn.app/';

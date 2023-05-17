@@ -1,6 +1,7 @@
-import React, { useCallback, useMemo, FC } from 'react';
+import React, { useCallback, useMemo, FC, useState } from 'react';
 
 import { t } from 'i18next';
+import { Trans } from 'react-i18next';
 
 import { SupportedTokens } from '@sovryn/contracts';
 import {
@@ -8,6 +9,7 @@ import {
   Button,
   ButtonStyle,
   ButtonType,
+  Checkbox,
   DynamicValue,
   ErrorBadge,
   ErrorBadgeProps,
@@ -15,6 +17,7 @@ import {
   ErrorList,
   FormGroup,
   HealthBar,
+  Link,
   Select,
   SimpleTable,
 } from '@sovryn/ui';
@@ -32,6 +35,7 @@ import {
   USD,
 } from '../../../../constants/currencies';
 import { COLLATERAL_RATIO_THRESHOLDS } from '../../../../constants/general';
+import { WIKI_LINKS } from '../../../../constants/links';
 import { useMaintenance } from '../../../../hooks/useMaintenance';
 import { translations } from '../../../../locales/i18n';
 import { formatValue, decimalic } from '../../../../utils/math';
@@ -101,6 +105,9 @@ export const FormContent: FC<FormContentProps> = props => {
   );
   const borrowLocked = checkMaintenance(States.ZERO_ADJUST_LOC_BORROW);
   const dllrLocked = checkMaintenance(States.ZERO_DLLR);
+
+  const [hasDisclaimerBeenChecked, setHasDisclaimerBeenChecked] =
+    useState(false);
 
   const debtTabs = useMemo(
     () => [
@@ -185,7 +192,8 @@ export const FormContent: FC<FormContentProps> = props => {
       !isFormValid ||
       isInMaintenance ||
       (isBorrowDisabled && Number(props.debtAmount) > 0) ||
-      isInvalidOriginationFee
+      isInvalidOriginationFee ||
+      (!props.hasTrove && !hasDisclaimerBeenChecked)
     );
   }, [
     props.errors,
@@ -198,6 +206,7 @@ export const FormContent: FC<FormContentProps> = props => {
     isInMaintenance,
     isBorrowDisabled,
     isInvalidOriginationFee,
+    hasDisclaimerBeenChecked,
   ]);
 
   const handleDebtTypeChange = useCallback(
@@ -569,6 +578,26 @@ export const FormContent: FC<FormContentProps> = props => {
           />
         </SimpleTable>
       </div>
+      {!props.hasTrove && (
+        <div className="mt-4">
+          <Checkbox
+            checked={hasDisclaimerBeenChecked}
+            onChangeValue={setHasDisclaimerBeenChecked}
+            label={
+              <Trans
+                i18nKey={translations.adjustCreditLine.labels.disclaimer}
+                components={[
+                  <Link
+                    text={t(translations.adjustCreditLine.labels.disclaimerCTA)}
+                    href={WIKI_LINKS.RISKS}
+                  />,
+                ]}
+              />
+            }
+          />
+        </div>
+      )}
+
       <div className="mt-8 flex flex-row items-center justify-between gap-8">
         <Button
           type={ButtonType.submit}

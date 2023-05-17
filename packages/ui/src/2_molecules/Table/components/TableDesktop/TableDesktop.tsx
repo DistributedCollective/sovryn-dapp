@@ -1,4 +1,10 @@
-import React, { Fragment, isValidElement, useCallback } from 'react';
+import React, {
+  Fragment,
+  isValidElement,
+  useCallback,
+  useEffect,
+  useState,
+} from 'react';
 
 import classNames from 'classnames';
 
@@ -25,6 +31,12 @@ export const TableDesktop = <RowType extends RowObject>({
   setOrderOptions,
   isLoading,
 }: TableProps<RowType>) => {
+  const [selectedIndex, setSelectedIndex] = useState<number>();
+  useEffect(() => {
+    // Reset selected index when rows change
+    setSelectedIndex(undefined);
+  }, [rows]);
+
   const onHeaderClick = useCallback(
     (column: ColumnOptions<RowType>) => {
       if (!column.sortable) {
@@ -46,6 +58,14 @@ export const TableDesktop = <RowType extends RowObject>({
       });
     },
     [orderOptions?.orderBy, orderOptions?.orderDirection, setOrderOptions],
+  );
+
+  const handleRowClick = useCallback(
+    (row: RowType) => {
+      onRowClick?.(row);
+      setSelectedIndex(rows?.indexOf(row));
+    },
+    [onRowClick, rows],
   );
 
   return (
@@ -99,7 +119,8 @@ export const TableDesktop = <RowType extends RowObject>({
               columns={columns}
               row={row}
               index={index}
-              onRowClick={onRowClick}
+              onRowClick={handleRowClick}
+              isSelected={index === selectedIndex}
               dataAttribute={dataAttribute}
               isClickable={isClickable}
               className={styles.row}

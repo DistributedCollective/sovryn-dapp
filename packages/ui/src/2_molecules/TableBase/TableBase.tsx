@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react';
+import React, { ReactNode, useCallback, useEffect, useState } from 'react';
 
 import classNames from 'classnames';
 
@@ -30,6 +30,23 @@ export const TableBase = <RowType extends RowObject>({
   dataAttribute,
   isClickable,
 }: TableBaseProps<RowType>) => {
+  const [selectedIndex, setSelectedIndex] = useState<number>();
+  useEffect(() => {
+    // Reset selected index when rows change
+    setSelectedIndex(undefined);
+  }, [rows]);
+
+  const handleRowClick = useCallback(
+    (row: RowType) => {
+      onRowClick?.(row);
+
+      console.log('index', rows?.indexOf(row));
+
+      setSelectedIndex(rows?.indexOf(row));
+    },
+    [onRowClick, rows],
+  );
+
   return (
     <table
       className={classNames(styles.table, className)}
@@ -59,7 +76,8 @@ export const TableBase = <RowType extends RowObject>({
               columns={columns}
               row={row}
               index={index}
-              onRowClick={onRowClick}
+              onRowClick={handleRowClick}
+              isSelected={selectedIndex === index}
               dataAttribute={dataAttribute}
               isClickable={isClickable}
               className={styles.row}

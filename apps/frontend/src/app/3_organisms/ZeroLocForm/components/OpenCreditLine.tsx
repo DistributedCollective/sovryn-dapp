@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState, FC } from 'react';
+import React, { useCallback, useMemo, useState, FC, useEffect } from 'react';
 
 import { t } from 'i18next';
 
@@ -7,6 +7,7 @@ import { ErrorLevel } from '@sovryn/ui';
 import { Decimal } from '@sovryn/utils';
 
 import { BORROW_ASSETS } from '../../../5_pages/ZeroPage/constants';
+import { useLiquityBaseParams } from '../../../5_pages/ZeroPage/hooks/useLiquityBaseParams';
 import {
   BITCOIN,
   BTC_RENDER_PRECISION,
@@ -41,6 +42,7 @@ export const OpenCreditLine: FC<OpenCreditLineProps> = ({
   rbtcPrice,
   borrowingRate,
 }) => {
+  const { maxBorrowingFeeRate } = useLiquityBaseParams();
   const {
     tcr,
     liquidationReserve,
@@ -53,6 +55,7 @@ export const OpenCreditLine: FC<OpenCreditLineProps> = ({
     useAmountInput('');
   const [debtAmountInput, setDebtAmount, debtAmount] = useAmountInput('');
   const [debtToken, setDebtToken] = useState<SupportedTokens>(BORROW_ASSETS[0]);
+  const [maxOriginationFeeRate, setMaxOriginationFeeRate] = useState('0');
 
   const debtSize = useMemo(() => decimalic(debtAmount || 0), [debtAmount]);
   const collateralSize = useMemo(
@@ -209,9 +212,16 @@ export const OpenCreditLine: FC<OpenCreditLineProps> = ({
         token: debtToken,
         borrow: debtAmount,
         depositCollateral: collateralAmount,
+        maxOriginationFeeRate,
       } as CreditLineSubmitValue),
-    [collateralAmount, debtAmount, debtToken, onSubmit],
+    [collateralAmount, debtAmount, debtToken, maxOriginationFeeRate, onSubmit],
   );
+
+  useEffect(() => {
+    if (maxBorrowingFeeRate) {
+      setMaxOriginationFeeRate(maxBorrowingFeeRate.mul(100).toString());
+    }
+  }, [maxBorrowingFeeRate]);
 
   return (
     <FormContent
@@ -222,6 +232,8 @@ export const OpenCreditLine: FC<OpenCreditLineProps> = ({
       }
       borrowingRate={borrowingRate}
       originationFee={debtWithFees.gt(0) ? originationFee : Decimal.ZERO}
+      maxOriginationFeeRate={maxOriginationFeeRate}
+      onMaxOriginationFeeRateChange={setMaxOriginationFeeRate}
       debtAmount={debtAmountInput}
       maxDebtAmount={maxDebtAmount}
       onDebtAmountChange={setDebtAmount}

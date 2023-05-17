@@ -16,6 +16,7 @@ export type CreditLineSubmitValue = {
   repay: string;
   depositCollateral: string;
   withdrawCollateral: string;
+  maxOriginationFeeRate: string;
 };
 
 export enum TroveErrorLevel {

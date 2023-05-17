@@ -57,19 +57,22 @@ export type AssetValueProps = {
 };
 
 export const AssetDecimals: { [key in SupportedTokens]: number } = {
-  rbtc: 8,
-  zusd: 4,
-  xusd: 4,
-  dllr: 4,
-  sov: 4,
-  doc: 4,
-  bnbs: 4,
-  eths: 4,
-  fish: 4,
-  moc: 4,
-  rif: 4,
-  bpro: 8,
-  rusdt: 4,
+  [SupportedTokens.rbtc]: 8,
+  [SupportedTokens.zusd]: 4,
+  [SupportedTokens.xusd]: 4,
+  [SupportedTokens.dllr]: 4,
+  [SupportedTokens.sov]: 4,
+  [SupportedTokens.doc]: 4,
+  [SupportedTokens.mynt]: 4,
+  [SupportedTokens.wrbtc]: 8,
+  [SupportedTokens.rdoc]: 4,
+  [SupportedTokens.fish]: 6,
+  [SupportedTokens.rif]: 6,
+  [SupportedTokens.bpro]: 8,
+  [SupportedTokens.rusdt]: 4,
+  [SupportedTokens.eths]: 6,
+  [SupportedTokens.bnbs]: 6,
+  [SupportedTokens.moc]: 6,
 };
 
 export enum AssetValueMode {

@@ -33,12 +33,14 @@ export enum SupportedTokens {
   dllr = 'dllr',
   sov = 'sov',
   doc = 'doc',
+  rdoc = 'rdoc',
   bnbs = 'bnbs',
   eths = 'eths',
-  fish = 'fish',
+  fish = 'babelfish',
   moc = 'moc',
   rif = 'rif',
   bpro = 'bpro',
+  rusdt = 'rusdt',
   rusdt = 'rusdt',
 }
 

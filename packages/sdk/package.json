@@ -32,6 +32,7 @@
     "ethers": "*",
     "@ethersproject/providers": "*",
     "@ethersproject/abstract-provider": "*",
-    "@sovryn/contracts": "*"
+    "@sovryn/contracts": "*",
+    "@sovryn/ethers-provider": "*"
   }
 }

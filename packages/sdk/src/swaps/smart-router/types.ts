@@ -9,7 +9,7 @@ export type Options = {
 };
 
 export type SwapOptions = {
-  permit: string;
+  permit: PermitTransactionResponse;
 } & Options;
 
 export type SwapRoute = {
@@ -71,4 +71,15 @@ export type PermitTransactionRequest = {
   value?: BigNumberish;
   deadline?: number;
   nonce?: number;
+};
+
+export type PermitTransactionResponse = {
+  r: string;
+  s: string;
+  v: number;
+  owner: string;
+  spender: string;
+  value: string | number;
+  nonce: string | number;
+  deadline: string | number;
 };

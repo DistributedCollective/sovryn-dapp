@@ -108,7 +108,9 @@ describe('Zero Redemption Route', () => {
   describe('swap', () => {
     // it('builds swap tx data for DLLR -> RBTC', async () => {
     //   await expect(
-    //     route.swap(dllr, rbtc, parseUnits('20'), constants.AddressZero),
+    //     route.swap(dllr, rbtc, parseUnits('20'), constants.AddressZero, {
+    //       permit: FAKE_PERMIT,
+    //     }),
     //   ).resolves.toMatchObject({
     //     to: expect.any(String),
     //     data: expect.any(String),
@@ -125,6 +127,12 @@ describe('Zero Redemption Route', () => {
     //     value: '0',
     //   });
     // });
+
+    it('fails build swap tx data if permit is not provided for DLL -> RBTC', async () => {
+      await expect(
+        route.swap(dllr, rbtc, parseUnits('20'), constants.AddressZero),
+      ).rejects.toThrowError(/Permit is required for swap/);
+    });
 
     it('fails build swap tx data for RBTC -> DLLR', async () => {
       const amount = parseUnits('0.01');

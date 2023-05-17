@@ -37,8 +37,55 @@ export const SupportedTokenList: TokenBaseInfo[] = [
     getIcon: async () => (await import('../tokenDetails/logos/doc')).default,
   },
   {
+    symbol: SupportedTokens.rbtc,
+    decimalPrecision: 18,
+    getIcon: async () => (await import('../tokenDetails/logos/doc')).default,
+  },
+  {
     symbol: SupportedTokens.mynt,
     decimalPrecision: 18,
     getIcon: async () => (await import('../tokenDetails/logos/mynt')).default,
+  },
+  {
+    symbol: SupportedTokens.fish,
+    decimalPrecision: 18,
+    getIcon: async () =>
+      (await import('../tokenDetails/logos/unknown')).default,
+  },
+  {
+    symbol: SupportedTokens.rif,
+    decimalPrecision: 18,
+    getIcon: async () =>
+      (await import('../tokenDetails/logos/unknown')).default,
+  },
+  {
+    symbol: SupportedTokens.bpro,
+    decimalPrecision: 18,
+    getIcon: async () =>
+      (await import('../tokenDetails/logos/unknown')).default,
+  },
+  {
+    symbol: SupportedTokens.rusdt,
+    decimalPrecision: 18,
+    getIcon: async () =>
+      (await import('../tokenDetails/logos/unknown')).default,
+  },
+  {
+    symbol: SupportedTokens.eths,
+    decimalPrecision: 18,
+    getIcon: async () =>
+      (await import('../tokenDetails/logos/unknown')).default,
+  },
+  {
+    symbol: SupportedTokens.bnbs,
+    decimalPrecision: 18,
+    getIcon: async () =>
+      (await import('../tokenDetails/logos/unknown')).default,
+  },
+  {
+    symbol: SupportedTokens.moc,
+    decimalPrecision: 18,
+    getIcon: async () =>
+      (await import('../tokenDetails/logos/unknown')).default,
   },
 ];

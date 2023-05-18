@@ -27,6 +27,7 @@ export const MaintenanceModeContextProvider: React.FC<PropsWithChildren> = ({
   children,
 }) => {
   const timeoutId = useRef<NodeJS.Timeout>();
+  const [fetched, setFetched] = useState(false);
   const [maintenanceStates, setMaintenanceStates] =
     useState<MaintenanceStates>(initialContextValue);
 
@@ -36,6 +37,7 @@ export const MaintenanceModeContextProvider: React.FC<PropsWithChildren> = ({
         .get(servicesConfig.maintenance)
         .then(result => setMaintenanceStates(parseStates(result)))
         .finally(() => {
+          setFetched(true);
           if (timeoutId.current) {
             clearTimeout(timeoutId.current);
           }
@@ -55,7 +57,7 @@ export const MaintenanceModeContextProvider: React.FC<PropsWithChildren> = ({
 
   return (
     <MaintenanceModeContext.Provider value={maintenanceStates}>
-      {children}
+      {fetched ? children : <></>}
     </MaintenanceModeContext.Provider>
   );
 };

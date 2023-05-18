@@ -2,7 +2,6 @@ import { constants } from 'ethers';
 import { parseUnits } from 'ethers/lib/utils';
 
 import { SupportedTokens } from '@sovryn/contracts';
-import { ChainIds } from '@sovryn/ethers-provider';
 
 import { zeroRedemptionSwapRoute } from '../../../swaps/smart-router/routes/zero-redemption-route';
 import { SwapRoute } from '../../../swaps/smart-router/types';
@@ -18,8 +17,8 @@ describe('Zero Redemption Route', () => {
   beforeAll(async () => {
     const fixture = await makeChainFixture();
     route = zeroRedemptionSwapRoute(fixture.provider);
-    dllr = await makeTokenAddress(SupportedTokens.dllr, ChainIds.RSK_MAINNET);
-    zusd = await makeTokenAddress(SupportedTokens.zusd, ChainIds.RSK_MAINNET);
+    dllr = await makeTokenAddress(SupportedTokens.dllr);
+    zusd = await makeTokenAddress(SupportedTokens.zusd);
   });
 
   it('has correct name', () => {

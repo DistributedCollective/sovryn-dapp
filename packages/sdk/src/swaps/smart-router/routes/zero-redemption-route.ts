@@ -51,7 +51,7 @@ export const zeroRedemptionSwapRoute: SwapRouteFunction = (
 
       const chainId = await getChainId();
 
-      const ddlr = (
+      const dllr = (
         await getTokenContract(SupportedTokens.dllr, chainId)
       ).address.toLowerCase();
       const zusd = (
@@ -60,7 +60,7 @@ export const zeroRedemptionSwapRoute: SwapRouteFunction = (
       const rbtc = constants.AddressZero;
 
       pairCache = new Map<string, string[]>([
-        [ddlr, [rbtc]],
+        [dllr, [rbtc]],
         [zusd, [rbtc]],
       ]);
 

@@ -96,6 +96,7 @@ export const mocIntegrationSwapRoute: SwapRouteFunction = (
             [amount, options?.permit],
           ),
           value: '0',
+          ...overrides,
         };
       }
 
@@ -104,7 +105,7 @@ export const mocIntegrationSwapRoute: SwapRouteFunction = (
         SovrynErrorCode.SWAP_PAIR_NOT_AVAILABLE,
       );
     },
-    async approve(entry, destination, amount, from, overrides) {
+    async approve() {
       return undefined;
     },
     async permit(entry, destination, amount, from, overrides) {

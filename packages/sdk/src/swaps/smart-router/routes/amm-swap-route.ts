@@ -129,7 +129,7 @@ export const ammSwapRoute: SwapRouteFunction = (
 
       return pairCache;
     },
-    quote: async (entry, destination, amount, options?, overrides?) => {
+    quote: async (entry, destination, amount) => {
       const baseToken = await validatedTokenAddress(entry);
       const quoteToken = await validatedTokenAddress(destination);
       return (await getSwapQuoteContract())
@@ -155,8 +155,7 @@ export const ammSwapRoute: SwapRouteFunction = (
         ...overrides,
       };
     },
-    permit: async (entry, destination, amount, from, overrides) =>
-      Promise.resolve(undefined),
+    permit: async () => Promise.resolve(undefined),
     async swap(entry, destination, amount, from, options, overrides) {
       const pairs = await this.pairs();
       if (!canSwapPair(entry, destination, pairs)) {

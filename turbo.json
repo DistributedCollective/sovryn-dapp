@@ -14,15 +14,15 @@
       "cache": false
     },
     "test": {
-      "dependsOn": ["^build"],
-      "outputs": ["dist/**"]
+      "dependsOn": ["build"],
+      "outputs": ["dist/**", "build/**"]
     },
     "test:staged": {
       "cache": false
     },
     "coverage": {
-      "dependsOn": ["^build"],
-      "outputs": ["dist/**", "coverage/**"]
+      "dependsOn": ["build"],
+      "outputs": ["dist/**", "build/**", "coverage/**"]
     },
     "storybook": {
       "outputs": []

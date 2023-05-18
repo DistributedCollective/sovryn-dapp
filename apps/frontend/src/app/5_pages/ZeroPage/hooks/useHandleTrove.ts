@@ -137,7 +137,12 @@ export const useHandleTrove = (
             );
           }
 
-          const adjustedTrove = await adjustTrove(value.token, account, params);
+          const adjustedTrove = await adjustTrove(
+            value.token,
+            account,
+            params,
+            value.maxOriginationFeeRate,
+          );
 
           transactions.push({
             title: transactionTitle,
@@ -164,10 +169,14 @@ export const useHandleTrove = (
           setIsOpen(true);
           setTitle(dialogTitle);
         } else {
-          const openedTrove = await openTrove(value.token, {
-            borrowZUSD: value.borrow || '0',
-            depositCollateral: value.depositCollateral || '0',
-          });
+          const openedTrove = await openTrove(
+            value.token,
+            {
+              borrowZUSD: value.borrow || '0',
+              depositCollateral: value.depositCollateral || '0',
+            },
+            value.maxOriginationFeeRate,
+          );
           setTransactions([
             {
               title: t(baseTranslationPath.open),

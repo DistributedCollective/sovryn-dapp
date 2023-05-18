@@ -2,7 +2,6 @@ import { constants } from 'ethers';
 import { parseUnits } from 'ethers/lib/utils';
 
 import { SupportedTokens } from '@sovryn/contracts';
-import { ChainIds } from '@sovryn/ethers-provider';
 
 import { mocIntegrationSwapRoute } from '../../../swaps/smart-router/routes/moc-integration-swap-route';
 import { SwapRoute } from '../../../swaps/smart-router/types';
@@ -19,8 +18,8 @@ describe('Moc Integration Route', () => {
   beforeAll(async () => {
     const fixture = await makeChainFixture();
     route = mocIntegrationSwapRoute(fixture.provider);
-    dllr = await makeTokenAddress(SupportedTokens.dllr, ChainIds.RSK_MAINNET);
-    moc = await makeTokenAddress(SupportedTokens.moc, ChainIds.RSK_MAINNET);
+    dllr = await makeTokenAddress(SupportedTokens.dllr);
+    moc = await makeTokenAddress(SupportedTokens.moc);
   });
 
   it('has correct name', () => {

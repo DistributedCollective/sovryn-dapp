@@ -29,7 +29,7 @@ export interface NotImplemented
   operation: string;
 }
 
-export interface CallExeptionError
+export interface CallExceptionError
   extends SovrynError<SovrynErrorCode.ETHERS_CALL_EXCEPTION> {
   reason: string;
 }
@@ -44,7 +44,7 @@ export type CodedSovrynError<T> = T extends SovrynErrorCode.UNKNOWN_ERROR
   : T extends SovrynErrorCode.NOT_IMPLEMENTED
   ? NotImplemented
   : T extends SovrynErrorCode.ETHERS_CALL_EXCEPTION
-  ? CallExeptionError
+  ? CallExceptionError
   : T extends SovrynErrorCode.SWAP_PAIR_NOT_AVAILABLE
   ? SwapPairNotAvailable
   : never;

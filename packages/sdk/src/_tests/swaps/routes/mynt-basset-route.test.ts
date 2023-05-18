@@ -1,13 +1,12 @@
 import { constants } from 'ethers';
+import { parseUnits } from 'ethers/lib/utils';
 
 import { SupportedTokens } from '@sovryn/contracts';
-import { ChainIds } from '@sovryn/ethers-provider';
 
+import { myntBassetRoute } from '../../../swaps/smart-router/routes/mynt-basset-route';
 import { SwapRoute } from '../../../swaps/smart-router/types';
 import { makeChainFixture } from '../../_fixtures/chain';
 import { makeTokenAddress } from '../../_fixtures/tokens';
-import { parseUnits } from 'ethers/lib/utils';
-import { myntBassetRoute } from '../../../swaps/smart-router/routes/mynt-basset-route';
 
 describe('Mynt bAsset Route', () => {
   let route: SwapRoute;
@@ -18,9 +17,9 @@ describe('Mynt bAsset Route', () => {
   beforeAll(async () => {
     const fixture = await makeChainFixture();
     route = myntBassetRoute(fixture.provider);
-    rbtc = await makeTokenAddress(SupportedTokens.rbtc, ChainIds.RSK_MAINNET);
-    dllr = await makeTokenAddress(SupportedTokens.dllr, ChainIds.RSK_MAINNET);
-    zusd = await makeTokenAddress(SupportedTokens.zusd, ChainIds.RSK_MAINNET);
+    rbtc = await makeTokenAddress(SupportedTokens.rbtc);
+    dllr = await makeTokenAddress(SupportedTokens.dllr);
+    zusd = await makeTokenAddress(SupportedTokens.zusd);
   });
 
   it('has correct name', () => {

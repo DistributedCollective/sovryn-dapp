@@ -1,24 +1,25 @@
 import { BigNumber, Contract, constants, providers } from 'ethers';
 
-import { SovrynErrorCode, makeError } from '../../../errors/errors';
-import { SwapPairs, SwapRouteFunction } from '../types';
-import { ChainId, numberToChainId } from '@sovryn/ethers-provider';
 import {
   SupportedTokens,
   getProtocolContract,
   getTokenContract,
 } from '@sovryn/contracts';
+import { ChainId, numberToChainId } from '@sovryn/ethers-provider';
+
+import { SovrynErrorCode, makeError } from '../../../errors/errors';
 import {
   areAddressesEqual,
   canSwapPair,
   makeApproveRequest,
 } from '../../../internal/utils';
+import { SwapPairs, SwapRouteFunction } from '../types';
 
 export const myntBassetRoute: SwapRouteFunction = (
   provider: providers.Provider,
 ) => {
   let pairCache: SwapPairs;
-  let ddlr: string;
+  let dllr: string;
   let chainId: ChainId;
 
   let massetManager: Contract;
@@ -31,13 +32,13 @@ export const myntBassetRoute: SwapRouteFunction = (
   };
 
   const getDllrToken = async () => {
-    if (!ddlr) {
+    if (!dllr) {
       const chainId = await getChainId();
-      ddlr = (
+      dllr = (
         await getTokenContract(SupportedTokens.dllr, chainId)
       ).address.toLowerCase();
     }
-    return ddlr;
+    return dllr;
   };
 
   const getMassetManagerContract = async () => {
@@ -76,7 +77,7 @@ export const myntBassetRoute: SwapRouteFunction = (
 
       return pairCache;
     },
-    async quote(entry, destination, amount, options?, overrides?) {
+    async quote(entry, destination, amount) {
       // Mynt bAsset only converts stablecoins 1:1, so we can just return the amount if pairs are supported.
       const pairs = await this.pairs();
       if (canSwapPair(entry, destination, pairs)) {
@@ -124,7 +125,7 @@ export const myntBassetRoute: SwapRouteFunction = (
         ...overrides,
       };
     },
-    async permit(entry, destination, amount, from, overrides) {
+    async permit() {
       return undefined;
     },
   };

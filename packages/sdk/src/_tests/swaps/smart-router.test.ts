@@ -10,10 +10,7 @@ describe('SmartRouter', () => {
   let router: SmartRouter;
   let provider: providers.Provider;
   let btc = ethers.constants.AddressZero;
-  let xusd;
-  let sov;
-  let dllr;
-  let zusd;
+  let xusd, sov, dllr, zusd;
 
   beforeAll(async () => {
     provider = (await makeChainFixture()).provider;

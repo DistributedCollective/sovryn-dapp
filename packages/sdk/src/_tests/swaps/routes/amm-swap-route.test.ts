@@ -1,8 +1,7 @@
 import { BigNumber, constants } from 'ethers';
+import { parseUnits } from 'ethers/lib/utils';
 
 import { SupportedTokens } from '@sovryn/contracts';
-import { parseUnits } from 'ethers/lib/utils';
-import { ChainIds } from '@sovryn/ethers-provider';
 
 import { ammSwapRoute } from '../../../swaps/smart-router/routes/amm-swap-route';
 import { SwapRoute } from '../../../swaps/smart-router/types';
@@ -20,9 +19,9 @@ describe('AMM Route', () => {
   beforeAll(async () => {
     const fixture = await makeChainFixture();
     route = ammSwapRoute(fixture.provider);
-    sov = await makeTokenAddress(SupportedTokens.sov, ChainIds.RSK_MAINNET);
-    xusd = await makeTokenAddress(SupportedTokens.xusd, ChainIds.RSK_MAINNET);
-    rbtc = await makeTokenAddress(SupportedTokens.rbtc, ChainIds.RSK_MAINNET);
+    sov = await makeTokenAddress(SupportedTokens.sov);
+    xusd = await makeTokenAddress(SupportedTokens.xusd);
+    rbtc = await makeTokenAddress(SupportedTokens.rbtc);
   });
 
   it('has correct name', () => {

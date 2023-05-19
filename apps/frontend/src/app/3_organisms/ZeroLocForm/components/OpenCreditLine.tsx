@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState, FC } from 'react';
+import React, { useCallback, useMemo, useState, FC, useEffect } from 'react';
 
 import { t } from 'i18next';
 
@@ -7,6 +7,7 @@ import { ErrorLevel } from '@sovryn/ui';
 import { Decimal } from '@sovryn/utils';
 
 import { BORROW_ASSETS } from '../../../5_pages/ZeroPage/constants';
+import { useLiquityBaseParams } from '../../../5_pages/ZeroPage/hooks/useLiquityBaseParams';
 import {
   BITCOIN,
   BTC_RENDER_PRECISION,
@@ -41,13 +42,20 @@ export const OpenCreditLine: FC<OpenCreditLineProps> = ({
   rbtcPrice,
   borrowingRate,
 }) => {
-  const { tcr, liquidationReserve, isRecoveryMode } = useZeroData(rbtcPrice);
+  const { maxBorrowingFeeRate } = useLiquityBaseParams();
+  const {
+    tcr,
+    liquidationReserve,
+    isRecoveryMode,
+    isLoading: zeroDataLoading,
+  } = useZeroData(rbtcPrice);
 
   const [fieldsTouched, setFieldsTouched] = useState(false);
   const [collateralAmountInput, setCollateralAmount, collateralAmount] =
     useAmountInput('');
   const [debtAmountInput, setDebtAmount, debtAmount] = useAmountInput('');
   const [debtToken, setDebtToken] = useState<SupportedTokens>(BORROW_ASSETS[0]);
+  const [maxOriginationFeeRate, setMaxOriginationFeeRate] = useState('0');
 
   const debtSize = useMemo(() => decimalic(debtAmount || 0), [debtAmount]);
   const collateralSize = useMemo(
@@ -55,9 +63,8 @@ export const OpenCreditLine: FC<OpenCreditLineProps> = ({
     [collateralAmount],
   );
 
-  const { weiBalance: maxRbtcWeiBalance } = useMaxAssetBalance(
-    SupportedTokens.rbtc,
-  );
+  const { weiBalance: maxRbtcWeiBalance, loading: maxRbtcBalanceLoading } =
+    useMaxAssetBalance(SupportedTokens.rbtc);
 
   const originationFee = useMemo(
     () => getOriginationFeeAmount(debtSize, borrowingRate),
@@ -87,11 +94,17 @@ export const OpenCreditLine: FC<OpenCreditLineProps> = ({
   );
 
   const maxCollateralAmount = useMemo(
-    () => Decimal.fromBigNumberString(maxRbtcWeiBalance),
-    [maxRbtcWeiBalance],
+    () =>
+      maxRbtcBalanceLoading
+        ? Decimal.ZERO
+        : Decimal.fromBigNumberString(maxRbtcWeiBalance),
+    [maxRbtcWeiBalance, maxRbtcBalanceLoading],
   );
 
   const maxDebtAmount = useMemo(() => {
+    if (zeroDataLoading) {
+      return Decimal.ZERO;
+    }
     let collateral = maxCollateralAmount.mul(rbtcPrice);
     if (collateralSize.gt(0)) {
       collateral = collateralSize.mul(rbtcPrice);
@@ -113,6 +126,7 @@ export const OpenCreditLine: FC<OpenCreditLineProps> = ({
     maxCollateralAmount,
     rbtcPrice,
     requiredRatio,
+    zeroDataLoading,
   ]);
 
   const ratio = useMemo(() => {
@@ -198,9 +212,16 @@ export const OpenCreditLine: FC<OpenCreditLineProps> = ({
         token: debtToken,
         borrow: debtAmount,
         depositCollateral: collateralAmount,
+        maxOriginationFeeRate,
       } as CreditLineSubmitValue),
-    [collateralAmount, debtAmount, debtToken, onSubmit],
+    [collateralAmount, debtAmount, debtToken, maxOriginationFeeRate, onSubmit],
   );
+
+  useEffect(() => {
+    if (maxBorrowingFeeRate) {
+      setMaxOriginationFeeRate(maxBorrowingFeeRate.mul(100).toString());
+    }
+  }, [maxBorrowingFeeRate]);
 
   return (
     <FormContent
@@ -211,6 +232,8 @@ export const OpenCreditLine: FC<OpenCreditLineProps> = ({
       }
       borrowingRate={borrowingRate}
       originationFee={debtWithFees.gt(0) ? originationFee : Decimal.ZERO}
+      maxOriginationFeeRate={maxOriginationFeeRate}
+      onMaxOriginationFeeRateChange={setMaxOriginationFeeRate}
       debtAmount={debtAmountInput}
       maxDebtAmount={maxDebtAmount}
       onDebtAmountChange={setDebtAmount}

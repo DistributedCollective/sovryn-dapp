@@ -1,5 +1,23 @@
 # frontend
 
+## 1.0.12
+
+### Patch Changes
+
+- 210ddfb: SOV-2083: add links to alpha
+- 210ddfb: SOV-2042: wallet flashing on re-connect
+- 210ddfb: SOV-2258: Fix Min collateral validation
+- 210ddfb: SOV-2216: New loader animations
+- 210ddfb: SOV-2229: update token lists
+- 210ddfb: Github workflow to release frontend build to IPFS network
+  add "REACT_APP_IPFS_BUILD" env variable to use hash router
+- 210ddfb: SOV-2184: update banner image on mobile
+- 210ddfb: SOV-2150: fix animated balance
+- Updated dependencies [210ddfb]
+- Updated dependencies [210ddfb]
+  - @sovryn/ui@1.0.7
+  - @sovryn/contracts@1.0.7
+
 ## 1.0.11
 
 ### Patch Changes

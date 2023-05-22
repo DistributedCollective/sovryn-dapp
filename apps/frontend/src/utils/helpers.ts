@@ -55,6 +55,8 @@ export const isDevEnvironment = () => process.env.NODE_ENV === 'development';
 export const isTestnetFastBtcEnabled = () =>
   process.env.REACT_APP_ENABLE_TESTNET_FAST_BTC === 'true';
 
+export const isIPFSBuild = () => process.env.REACT_APP_IPFS_BUILD === 'true';
+
 export const getServicesConfig = () =>
   SERVICES_CONFIG[isMainnet() ? Environments.Mainnet : Environments.Testnet];
 

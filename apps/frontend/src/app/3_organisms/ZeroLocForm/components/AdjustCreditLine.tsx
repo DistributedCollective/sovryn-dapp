@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState, FC } from 'react';
+import React, { useCallback, useMemo, useState, FC, useEffect } from 'react';
 
 import { t } from 'i18next';
 
@@ -7,6 +7,7 @@ import { ErrorLevel } from '@sovryn/ui';
 import { Decimal } from '@sovryn/utils';
 
 import { BORROW_ASSETS } from '../../../5_pages/ZeroPage/constants';
+import { useLiquityBaseParams } from '../../../5_pages/ZeroPage/hooks/useLiquityBaseParams';
 import {
   BITCOIN,
   BTC_RENDER_PRECISION,
@@ -46,6 +47,7 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
   rbtcPrice,
   borrowingRate,
 }) => {
+  const { maxBorrowingFeeRate } = useLiquityBaseParams();
   const {
     tcr,
     isRecoveryMode,
@@ -377,6 +379,12 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
     isIncreasingDebt,
     onSubmit,
   ]);
+
+  useEffect(() => {
+    if (maxBorrowingFeeRate) {
+      setMaxOriginationFeeRate(maxBorrowingFeeRate.mul(100).toString());
+    }
+  }, [maxBorrowingFeeRate]);
 
   return (
     <FormContent

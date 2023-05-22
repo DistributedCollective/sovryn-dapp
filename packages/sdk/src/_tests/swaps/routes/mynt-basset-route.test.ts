@@ -32,7 +32,7 @@ describe('Mynt bAsset Route', () => {
   });
 
   describe('quote', () => {
-    it('returns BigNumber for DDLR -> ZUSD quote', async () => {
+    it('returns BigNumber for DLLR -> ZUSD quote', async () => {
       await expect(
         route.quote(dllr, zusd, constants.WeiPerEther),
       ).resolves.toBe(constants.WeiPerEther);

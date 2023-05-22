@@ -31,7 +31,7 @@ describe('Zero Redemption Route', () => {
   });
 
   describe('quote', () => {
-    // it('returns BigNumber for DDLR -> RBTC quote', async () => {
+    // it('returns BigNumber for DLLR -> RBTC quote', async () => {
     //   await expect(
     //     route.quote(dllr, rbtc, constants.WeiPerEther),
     //   ).resolves.toBe(constants.WeiPerEther);

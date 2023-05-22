@@ -8,7 +8,7 @@ yarn add @sovryn/sdk @sovryn/contracts @sovryn/ethers-provider ethers @etherspro
 
 ## Smart Router
 
-Smart router is a wrapper around the smart contracts that allows you to interact with the smart contracts for swaping tokens in a more convenient way.
+Smart router is a wrapper around the smart contracts that allows you to interact with the smart contracts for swapping tokens in a more convenient way.
 
 ### Usage
 

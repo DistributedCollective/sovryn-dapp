@@ -22,6 +22,8 @@
     "generate:graphql:fetch:mainnet": "turbo run generate:graphql:fetch:mainnet"
   },
   "devDependencies": {
+    "@actions/core": "^1.10.0",
+    "@pinata/sdk": "^2.1.0",
     "@sovryn/eslint-config-custom": "*",
     "@trivago/prettier-plugin-sort-imports": "3.3.0",
     "husky": "8.0.1",
@@ -38,7 +40,7 @@
   },
   "lint-staged": {
     "*.{js,ts,tsx}": [
-      "eslint --fix --max-warnings=0 --ignore-pattern !packages/ui/.storybook --ignore-pattern !.babelrc.js",
+      "eslint --fix --max-warnings=0 --ignore-pattern !packages/ui/.storybook --ignore-pattern !.babelrc.js --ignore-pattern !.github",
       "prettier --write"
     ]
   },

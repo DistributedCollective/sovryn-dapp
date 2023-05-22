@@ -59,12 +59,12 @@ export const mocIntegrationSwapRoute: SwapRouteFunction = (
 
       const chainId = await getChainId();
 
-      const ddlr = (
+      const dllr = (
         await getTokenContract(SupportedTokens.dllr, chainId)
       ).address.toLowerCase();
       const rbtc = constants.AddressZero;
 
-      pairCache = new Map<string, string[]>([[ddlr, [rbtc]]]);
+      pairCache = new Map<string, string[]>([[dllr, [rbtc]]]);
 
       return pairCache;
     },

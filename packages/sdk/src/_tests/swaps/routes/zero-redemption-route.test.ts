@@ -127,7 +127,7 @@ describe('Zero Redemption Route', () => {
     //   });
     // });
 
-    it('fails build swap tx data if permit is not provided for DLL -> RBTC', async () => {
+    it('fails build swap tx data if permit is not provided for DLLR -> RBTC', async () => {
       await expect(
         route.swap(dllr, rbtc, parseUnits('20'), constants.AddressZero),
       ).rejects.toThrowError(/Permit is required for swap/);

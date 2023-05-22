@@ -7,6 +7,11 @@ export const SupportedTokenList: TokenBaseInfo[] = [
     getIcon: async () => (await import('../tokenDetails/logos/rbtc')).default,
   },
   {
+    symbol: SupportedTokens.wrbtc,
+    decimalPrecision: 18,
+    getIcon: async () => (await import('../tokenDetails/logos/rbtc')).default,
+  },
+  {
     symbol: SupportedTokens.zusd,
     decimalPrecision: 18,
     getIcon: async () => (await import('../tokenDetails/logos/zusd')).default,
@@ -28,6 +33,11 @@ export const SupportedTokenList: TokenBaseInfo[] = [
   },
   {
     symbol: SupportedTokens.doc,
+    decimalPrecision: 18,
+    getIcon: async () => (await import('../tokenDetails/logos/doc')).default,
+  },
+  {
+    symbol: SupportedTokens.rdoc,
     decimalPrecision: 18,
     getIcon: async () => (await import('../tokenDetails/logos/doc')).default,
   },
@@ -65,5 +75,10 @@ export const SupportedTokenList: TokenBaseInfo[] = [
     symbol: SupportedTokens.rusdt,
     decimalPrecision: 18,
     getIcon: async () => (await import('../tokenDetails/logos/rusdt')).default,
+  },
+  {
+    symbol: SupportedTokens.mynt,
+    decimalPrecision: 18,
+    getIcon: async () => (await import('../tokenDetails/logos/mynt')).default,
   },
 ];

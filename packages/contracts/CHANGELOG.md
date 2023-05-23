@@ -1,5 +1,13 @@
 # @sovryn/contracts
 
+## 1.0.7
+
+### Patch Changes
+
+- bced029: SOV-2315: add supported tokens
+- Updated dependencies [bced029]
+  - @sovryn/ethers-provider@1.0.1
+
 ## 1.0.6
 
 ### Patch Changes

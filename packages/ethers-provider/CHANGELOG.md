@@ -1,5 +1,11 @@
 # @sovryn/ethers-provider
 
+## 1.0.1
+
+### Patch Changes
+
+- bced029: SOV-2315: add helper function to retrieve chain ids
+
 ## 1.0.0
 
 ### Major Changes

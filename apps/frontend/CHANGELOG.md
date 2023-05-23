@@ -1,5 +1,16 @@
 # frontend
 
+## 1.0.12
+
+### Patch Changes
+
+- d551fa4: SOV-2439: increase suggested gas limit for opening and closing trove
+- bced029: SOV-2315: add supported tokens
+- Updated dependencies [bced029]
+- Updated dependencies [bced029]
+  - @sovryn/contracts@1.0.7
+  - @sovryn/ethers-provider@1.0.1
+
 ## 1.0.11
 
 ### Patch Changes

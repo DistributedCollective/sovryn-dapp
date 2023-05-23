@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState, FC } from 'react';
+import React, { useCallback, useMemo, useState, FC, useEffect } from 'react';
 
 import { t } from 'i18next';
 
@@ -7,6 +7,7 @@ import { ErrorLevel } from '@sovryn/ui';
 import { Decimal } from '@sovryn/utils';
 
 import { BORROW_ASSETS } from '../../../5_pages/ZeroPage/constants';
+import { useLiquityBaseParams } from '../../../5_pages/ZeroPage/hooks/useLiquityBaseParams';
 import {
   BITCOIN,
   BTC_RENDER_PRECISION,
@@ -46,7 +47,12 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
   rbtcPrice,
   borrowingRate,
 }) => {
-  const { tcr, isRecoveryMode } = useZeroData(rbtcPrice);
+  const { maxBorrowingFeeRate } = useLiquityBaseParams();
+  const {
+    tcr,
+    isRecoveryMode,
+    isLoading: zeroDataLoading,
+  } = useZeroData(rbtcPrice);
 
   const [debtType, setDebtType] = useState(AmountType.Add);
   const [collateralType, setCollateralType] = useState(AmountType.Add);
@@ -56,6 +62,7 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
     useAmountInput('');
   const [debtAmountInput, setDebtAmount, debtAmount] = useAmountInput('');
   const [debtToken, setDebtToken] = useState<SupportedTokens>(BORROW_ASSETS[0]);
+  const [maxOriginationFeeRate, setMaxOriginationFeeRate] = useState('0');
 
   const debtSize = useMemo(() => decimalic(debtAmount), [debtAmount]);
   const collateralSize = useMemo(
@@ -63,9 +70,10 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
     [collateralAmount],
   );
 
-  const { balance: maxCollateralToDepositAmount } = useMaxAssetBalance(
-    SupportedTokens.rbtc,
-  );
+  const {
+    balance: maxCollateralToDepositAmount,
+    loading: maxRbtcBalanceLoading,
+  } = useMaxAssetBalance(SupportedTokens.rbtc);
   const { balance: debtTokenBalance } = useAssetBalance(debtToken);
 
   const isIncreasingDebt = useMemo(
@@ -121,19 +129,25 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
     [existingCollateral, newDebt, rbtcPrice, requiredRatio],
   );
 
-  const maxCollateralAmount = useMemo(
-    () =>
-      isIncreasingCollateral
-        ? maxCollateralToDepositAmount
-        : maxCollateralToWithdrawAmount,
-    [
-      isIncreasingCollateral,
-      maxCollateralToDepositAmount,
-      maxCollateralToWithdrawAmount,
-    ],
-  );
+  const maxCollateralAmount = useMemo(() => {
+    if (maxRbtcBalanceLoading) {
+      return Decimal.ZERO;
+    }
+    return isIncreasingCollateral
+      ? maxCollateralToDepositAmount
+      : maxCollateralToWithdrawAmount;
+  }, [
+    isIncreasingCollateral,
+    maxCollateralToDepositAmount,
+    maxCollateralToWithdrawAmount,
+    maxRbtcBalanceLoading,
+  ]);
 
   const maxBorrowAmount = useMemo(() => {
+    if (zeroDataLoading) {
+      return Decimal.ZERO;
+    }
+
     let collateral = existingCollateral;
     if (collateral.gt(0)) {
       if (isIncreasingCollateral) {
@@ -159,6 +173,7 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
     isIncreasingCollateral,
     rbtcPrice,
     requiredRatio,
+    zeroDataLoading,
   ]);
 
   const maxRepayAmount = useMemo(
@@ -186,7 +201,7 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
   const ratio = useMemo(
     () =>
       newDebt.isZero()
-        ? Decimal.from(0)
+        ? Decimal.ZERO
         : newCollateral.mul(rbtcPrice).div(newDebt).mul(100),
     [newCollateral, newDebt, rbtcPrice],
   );
@@ -347,6 +362,7 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
   const handleFormSubmit = useCallback(() => {
     let value: Partial<CreditLineSubmitValue> = {
       token: debtToken,
+      maxOriginationFeeRate,
     };
 
     value[isIncreasingCollateral ? 'depositCollateral' : 'withdrawCollateral'] =
@@ -358,10 +374,17 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
     collateralAmount,
     debtAmount,
     debtToken,
+    maxOriginationFeeRate,
     isIncreasingCollateral,
     isIncreasingDebt,
     onSubmit,
   ]);
+
+  useEffect(() => {
+    if (maxBorrowingFeeRate) {
+      setMaxOriginationFeeRate(maxBorrowingFeeRate.mul(100).toString());
+    }
+  }, [maxBorrowingFeeRate]);
 
   return (
     <FormContent
@@ -369,6 +392,8 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
       rbtcPrice={rbtcPrice}
       borrowingRate={borrowingRate}
       originationFee={originationFee}
+      maxOriginationFeeRate={maxOriginationFeeRate}
+      onMaxOriginationFeeRateChange={setMaxOriginationFeeRate}
       existingCollateral={existingCollateral}
       existingDebt={existingDebt}
       debtAmount={debtAmountInput}

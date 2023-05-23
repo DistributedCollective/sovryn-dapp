@@ -11,7 +11,7 @@ import { t } from 'i18next';
 import { Helmet } from 'react-helmet-async';
 import { useLoaderData } from 'react-router-dom';
 
-import { Fees, UserTrove } from '@sovryn-zero/lib-base';
+import { UserTrove } from '@sovryn-zero/lib-base';
 import {
   Dialog,
   DialogBody,
@@ -42,13 +42,14 @@ import { translations } from '../../../locales/i18n';
 import { decimalic } from '../../../utils/math';
 import { useClaimCollateralSurplus } from './hooks/useClaimCollateralSurplus';
 import { useHandleTrove } from './hooks/useHandleTrove';
+import { useLiquityBaseParams } from './hooks/useLiquityBaseParams';
 import { ZeroPageLoaderData } from './loader';
 
 type ZeroPageProps = {
-  deferred: [Decimal, Fees];
+  deferred: [Decimal];
 };
 
-const ZeroPage: FC<ZeroPageProps> = ({ deferred: [price, fees] }) => {
+const ZeroPage: FC<ZeroPageProps> = ({ deferred: [price] }) => {
   const { liquity } = useLoaderData() as ZeroPageLoaderData;
 
   const { isOpen: isTxOpen } = useTransactionContext();
@@ -62,6 +63,7 @@ const ZeroPage: FC<ZeroPageProps> = ({ deferred: [price, fees] }) => {
   const { connectWallet } = useWalletConnect();
   const { account } = useAccount();
   const { refetch: getOpenTroves } = useGetUserOpenTrove(account);
+  const { minBorrowingFeeRate } = useLiquityBaseParams();
 
   const [hasUserClosedTrove, setHasUserClosedTrove] = useState(false);
 
@@ -132,11 +134,6 @@ const ZeroPage: FC<ZeroPageProps> = ({ deferred: [price, fees] }) => {
     [collateral, debt],
   );
 
-  const borrowingRate = useMemo(
-    () => decimalic(fees?.borrowingRate()?.toString()),
-    [fees],
-  );
-
   return (
     <>
       <Helmet>
@@ -198,7 +195,7 @@ const ZeroPage: FC<ZeroPageProps> = ({ deferred: [price, fees] }) => {
               <OpenCreditLine
                 onSubmit={handleTroveSubmit}
                 rbtcPrice={price}
-                borrowingRate={borrowingRate}
+                borrowingRate={minBorrowingFeeRate}
               />
             )}
             {open && hasLoc && (
@@ -206,7 +203,7 @@ const ZeroPage: FC<ZeroPageProps> = ({ deferred: [price, fees] }) => {
                 existingCollateral={collateral}
                 existingDebt={debt}
                 rbtcPrice={price}
-                borrowingRate={borrowingRate}
+                borrowingRate={minBorrowingFeeRate}
                 onSubmit={handleTroveSubmit}
               />
             )}

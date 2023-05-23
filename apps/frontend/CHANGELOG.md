@@ -1,5 +1,14 @@
 # frontend
 
+## 1.0.11
+
+### Patch Changes
+
+- 32fb568: SOV-2129: Pull Zero fee rates directly from contracts
+- 263c96a: SOV-2429: Fix invalid Discord link
+- 0b678b2: SOV-2234: LOC max debt and collateral loading
+- 52b781b: SOV-1314: Add maximum origination fee rate setting
+
 ## 1.0.10
 
 ### Patch Changes

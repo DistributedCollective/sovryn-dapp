@@ -41,7 +41,7 @@ export enum SupportedTokens {
   rif = 'rif',
   bpro = 'bpro',
   rusdt = 'rusdt',
-  rusdt = 'rusdt',
+  mynt = 'mynt',
 }
 
 export type TokenBaseInfo = {

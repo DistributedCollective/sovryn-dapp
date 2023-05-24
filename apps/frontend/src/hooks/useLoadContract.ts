@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { ContractInterface, ethers } from 'ethers';
 
 import { ContractGroup, getContract } from '@sovryn/contracts';
-import { ChainId } from '@sovryn/ethers-provider';
+import { ChainId, getProvider } from '@sovryn/ethers-provider';
 
 import { defaultChainId } from '../config/chains';
 
@@ -18,6 +18,7 @@ export const useLoadContract = (
 ) => {
   const isMounted = useIsMounted();
   const { signer: userSigner } = useAccount();
+  const provider = getProvider(chain);
 
   const [address, setAddress] = useState<string | undefined>(undefined);
   const [abi, setAbi] = useState<ContractInterface | undefined>(undefined);
@@ -33,9 +34,9 @@ export const useLoadContract = (
 
   return useMemo(() => {
     if (address && abi) {
-      const signer = customSigner || userSigner;
+      const signer = customSigner || userSigner || provider;
 
       return new ethers.Contract(address, abi, signer);
     }
-  }, [address, abi, customSigner, userSigner]);
+  }, [address, abi, customSigner, userSigner, provider]);
 };

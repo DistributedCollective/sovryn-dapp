@@ -9,6 +9,11 @@ export const rsk: Record<string, AsyncContractConfigData> = {
     address: '0x98aCE08D2b759a265ae326F010496bcD63C15afc',
     getAbi: async () => (await import('../../abis/swapNetwork.json')).default,
   },
+  btcWrapperProxy: {
+    address: '0x2BEe6167f91D10db23252e03de039Da6b9047D49',
+    getAbi: async () =>
+      (await import('../../abis/btcWrapperProxy.json')).default,
+  },
   massetManager: {
     address: '0x5F777270259E32F79589fe82269DB6209F7b7582',
     getAbi: async () => (await import('../../abis/massetManager.json')).default,
@@ -21,5 +26,10 @@ export const rsk: Record<string, AsyncContractConfigData> = {
     address: '0x0f279e810B95E0d425622b9b40D7bCD0B5C4B19d',
     getAbi: async () =>
       (await import('../../abis/fastBtcMultisig.json')).default,
+  },
+  mocIntegrationProxy: {
+    address: '0x9363323D9c653a2b89C758f62f5043f0B2c67C71',
+    getAbi: async () =>
+      (await import('../../abis/mocIntegration.json')).default,
   },
 };

@@ -1,6 +1,11 @@
 import { SupportedTokens } from '@sovryn/contracts';
 import { Decimal } from '@sovryn/utils';
 
+import {
+  BTC_RENDER_PRECISION,
+  TOKEN_RENDER_PRECISION,
+} from '../../../constants/currencies';
+
 export type AssetValueProps = {
   /**
    * a number or string that represents the value of the asset.
@@ -57,19 +62,22 @@ export type AssetValueProps = {
 };
 
 export const AssetDecimals: { [key in SupportedTokens]: number } = {
-  rbtc: 8,
-  zusd: 4,
-  xusd: 4,
-  dllr: 4,
-  sov: 4,
-  doc: 4,
-  bnbs: 4,
-  eths: 4,
-  fish: 4,
-  moc: 4,
-  rif: 4,
-  bpro: 8,
-  rusdt: 4,
+  [SupportedTokens.rbtc]: BTC_RENDER_PRECISION,
+  [SupportedTokens.zusd]: TOKEN_RENDER_PRECISION,
+  [SupportedTokens.xusd]: TOKEN_RENDER_PRECISION,
+  [SupportedTokens.dllr]: TOKEN_RENDER_PRECISION,
+  [SupportedTokens.sov]: TOKEN_RENDER_PRECISION,
+  [SupportedTokens.doc]: TOKEN_RENDER_PRECISION,
+  [SupportedTokens.mynt]: TOKEN_RENDER_PRECISION,
+  [SupportedTokens.wrbtc]: BTC_RENDER_PRECISION,
+  [SupportedTokens.rdoc]: TOKEN_RENDER_PRECISION,
+  [SupportedTokens.fish]: TOKEN_RENDER_PRECISION,
+  [SupportedTokens.rif]: TOKEN_RENDER_PRECISION,
+  [SupportedTokens.bpro]: BTC_RENDER_PRECISION,
+  [SupportedTokens.rusdt]: TOKEN_RENDER_PRECISION,
+  [SupportedTokens.eths]: TOKEN_RENDER_PRECISION,
+  [SupportedTokens.bnbs]: TOKEN_RENDER_PRECISION,
+  [SupportedTokens.moc]: TOKEN_RENDER_PRECISION,
 };
 
 export enum AssetValueMode {

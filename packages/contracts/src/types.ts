@@ -27,18 +27,21 @@ export type ContractData = {
 
 export enum SupportedTokens {
   rbtc = 'rbtc',
+  wrbtc = 'wrbtc',
   zusd = 'zusd',
   xusd = 'xusd',
   dllr = 'dllr',
   sov = 'sov',
   doc = 'doc',
+  rdoc = 'rdoc',
   bnbs = 'bnbs',
   eths = 'eths',
-  fish = 'fish',
+  fish = 'babelfish',
   moc = 'moc',
   rif = 'rif',
   bpro = 'bpro',
   rusdt = 'rusdt',
+  mynt = 'mynt',
 }
 
 export type TokenBaseInfo = {

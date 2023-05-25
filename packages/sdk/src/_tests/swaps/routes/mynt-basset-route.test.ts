@@ -7,8 +7,11 @@ import { myntBassetRoute } from '../../../swaps/smart-router/routes/mynt-basset-
 import { SwapRoute } from '../../../swaps/smart-router/types';
 import { makeChainFixture } from '../../_fixtures/chain';
 import { makeTokenAddress } from '../../_fixtures/tokens';
+import { TEST_TIMEOUT } from '../../config';
 
 describe('Mynt bAsset Route', () => {
+  jest.setTimeout(TEST_TIMEOUT);
+
   let route: SwapRoute;
   let rbtc: string;
   let dllr: string;

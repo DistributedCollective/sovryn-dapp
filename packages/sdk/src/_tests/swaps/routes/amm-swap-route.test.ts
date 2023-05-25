@@ -7,8 +7,11 @@ import { ammSwapRoute } from '../../../swaps/smart-router/routes/amm-swap-route'
 import { SwapRoute } from '../../../swaps/smart-router/types';
 import { makeChainFixture } from '../../_fixtures/chain';
 import { makeTokenAddress } from '../../_fixtures/tokens';
+import { TEST_TIMEOUT } from '../../config';
 
 describe('AMM Route', () => {
+  jest.setTimeout(TEST_TIMEOUT);
+
   let route: SwapRoute;
   let sov: string;
   let rbtc: string;

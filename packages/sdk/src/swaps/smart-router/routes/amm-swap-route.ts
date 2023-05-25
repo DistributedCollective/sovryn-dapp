@@ -12,6 +12,7 @@ import {
   canSwapPair,
   getMinReturn,
   makeApproveRequest,
+  testAllowance,
 } from '../../../internal/utils';
 import { SwapPairs, SwapRouteFunction } from '../types';
 
@@ -141,10 +142,22 @@ export const ammSwapRoute: SwapRouteFunction = (
     approve: async (entry, destination, amount, from, overrides) => {
       // native token is always approved
       if (isNativeToken(entry)) {
-        return Promise.resolve(undefined);
+        return undefined;
       }
 
       const converter = await getConverterContract(entry, destination);
+
+      if (
+        await testAllowance(
+          provider,
+          entry,
+          converter.address,
+          from,
+          amount ?? constants.MaxUint256,
+        )
+      ) {
+        return undefined;
+      }
 
       return {
         ...makeApproveRequest(

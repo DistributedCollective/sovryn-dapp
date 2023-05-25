@@ -31,7 +31,7 @@ const Erc20IFace = new ethers.utils.Interface([
   'function allowance(address owner, address spender) public view returns (uint256)',
 ]);
 
-export const testAllowance = async (
+export const hasEnoughAllowance = async (
   provider: providers.Provider,
   tokenAddress: string,
   owner: string,

@@ -12,7 +12,7 @@ import {
   canSwapPair,
   getMinReturn,
   makeApproveRequest,
-  testAllowance,
+  hasEnoughAllowance,
 } from '../../../internal/utils';
 import { SwapPairs, SwapRouteFunction } from '../types';
 
@@ -148,7 +148,7 @@ export const ammSwapRoute: SwapRouteFunction = (
       const converter = await getConverterContract(entry, destination);
 
       if (
-        await testAllowance(
+        await hasEnoughAllowance(
           provider,
           entry,
           converter.address,

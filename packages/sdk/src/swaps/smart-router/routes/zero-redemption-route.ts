@@ -12,7 +12,7 @@ import {
   areAddressesEqual,
   canSwapPair,
   makeApproveRequest,
-  testAllowance,
+  hasEnoughAllowance,
 } from '../../../internal/utils';
 import { SwapPairs, SwapRouteFunction } from '../types';
 
@@ -127,7 +127,7 @@ export const zeroRedemptionSwapRoute: SwapRouteFunction = (
         const spender = (await getTroveManagerContract()).address;
 
         if (
-          await testAllowance(
+          await hasEnoughAllowance(
             provider,
             entry,
             spender,

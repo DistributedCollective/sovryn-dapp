@@ -12,7 +12,7 @@ import {
   areAddressesEqual,
   canSwapPair,
   makeApproveRequest,
-  testAllowance,
+  hasEnoughAllowance,
 } from '../../../internal/utils';
 import { SwapPairs, SwapRouteFunction } from '../types';
 
@@ -120,7 +120,7 @@ export const myntBassetRoute: SwapRouteFunction = (
       const spender = (await getMassetManagerContract()).address;
 
       if (
-        await testAllowance(
+        await hasEnoughAllowance(
           provider,
           entry,
           spender,

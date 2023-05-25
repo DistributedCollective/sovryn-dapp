@@ -5935,104 +5935,6 @@ export enum OrderFilled_OrderBy {
   Transaction = 'transaction',
 }
 
-export type OwnerUpdate = {
-  __typename?: 'OwnerUpdate';
-  emittedBy: Scalars['String'];
-  id: Scalars['ID'];
-  newOwner: Scalars['String'];
-  prevOwner: Scalars['String'];
-  timestamp: Scalars['BigInt'];
-};
-
-export type OwnerUpdate_Filter = {
-  /** Filter for the block changed event. */
-  _change_block?: InputMaybe<BlockChangedFilter>;
-  emittedBy?: InputMaybe<Scalars['String']>;
-  emittedBy_contains?: InputMaybe<Scalars['String']>;
-  emittedBy_contains_nocase?: InputMaybe<Scalars['String']>;
-  emittedBy_ends_with?: InputMaybe<Scalars['String']>;
-  emittedBy_ends_with_nocase?: InputMaybe<Scalars['String']>;
-  emittedBy_gt?: InputMaybe<Scalars['String']>;
-  emittedBy_gte?: InputMaybe<Scalars['String']>;
-  emittedBy_in?: InputMaybe<Array<Scalars['String']>>;
-  emittedBy_lt?: InputMaybe<Scalars['String']>;
-  emittedBy_lte?: InputMaybe<Scalars['String']>;
-  emittedBy_not?: InputMaybe<Scalars['String']>;
-  emittedBy_not_contains?: InputMaybe<Scalars['String']>;
-  emittedBy_not_contains_nocase?: InputMaybe<Scalars['String']>;
-  emittedBy_not_ends_with?: InputMaybe<Scalars['String']>;
-  emittedBy_not_ends_with_nocase?: InputMaybe<Scalars['String']>;
-  emittedBy_not_in?: InputMaybe<Array<Scalars['String']>>;
-  emittedBy_not_starts_with?: InputMaybe<Scalars['String']>;
-  emittedBy_not_starts_with_nocase?: InputMaybe<Scalars['String']>;
-  emittedBy_starts_with?: InputMaybe<Scalars['String']>;
-  emittedBy_starts_with_nocase?: InputMaybe<Scalars['String']>;
-  id?: InputMaybe<Scalars['ID']>;
-  id_gt?: InputMaybe<Scalars['ID']>;
-  id_gte?: InputMaybe<Scalars['ID']>;
-  id_in?: InputMaybe<Array<Scalars['ID']>>;
-  id_lt?: InputMaybe<Scalars['ID']>;
-  id_lte?: InputMaybe<Scalars['ID']>;
-  id_not?: InputMaybe<Scalars['ID']>;
-  id_not_in?: InputMaybe<Array<Scalars['ID']>>;
-  newOwner?: InputMaybe<Scalars['String']>;
-  newOwner_contains?: InputMaybe<Scalars['String']>;
-  newOwner_contains_nocase?: InputMaybe<Scalars['String']>;
-  newOwner_ends_with?: InputMaybe<Scalars['String']>;
-  newOwner_ends_with_nocase?: InputMaybe<Scalars['String']>;
-  newOwner_gt?: InputMaybe<Scalars['String']>;
-  newOwner_gte?: InputMaybe<Scalars['String']>;
-  newOwner_in?: InputMaybe<Array<Scalars['String']>>;
-  newOwner_lt?: InputMaybe<Scalars['String']>;
-  newOwner_lte?: InputMaybe<Scalars['String']>;
-  newOwner_not?: InputMaybe<Scalars['String']>;
-  newOwner_not_contains?: InputMaybe<Scalars['String']>;
-  newOwner_not_contains_nocase?: InputMaybe<Scalars['String']>;
-  newOwner_not_ends_with?: InputMaybe<Scalars['String']>;
-  newOwner_not_ends_with_nocase?: InputMaybe<Scalars['String']>;
-  newOwner_not_in?: InputMaybe<Array<Scalars['String']>>;
-  newOwner_not_starts_with?: InputMaybe<Scalars['String']>;
-  newOwner_not_starts_with_nocase?: InputMaybe<Scalars['String']>;
-  newOwner_starts_with?: InputMaybe<Scalars['String']>;
-  newOwner_starts_with_nocase?: InputMaybe<Scalars['String']>;
-  prevOwner?: InputMaybe<Scalars['String']>;
-  prevOwner_contains?: InputMaybe<Scalars['String']>;
-  prevOwner_contains_nocase?: InputMaybe<Scalars['String']>;
-  prevOwner_ends_with?: InputMaybe<Scalars['String']>;
-  prevOwner_ends_with_nocase?: InputMaybe<Scalars['String']>;
-  prevOwner_gt?: InputMaybe<Scalars['String']>;
-  prevOwner_gte?: InputMaybe<Scalars['String']>;
-  prevOwner_in?: InputMaybe<Array<Scalars['String']>>;
-  prevOwner_lt?: InputMaybe<Scalars['String']>;
-  prevOwner_lte?: InputMaybe<Scalars['String']>;
-  prevOwner_not?: InputMaybe<Scalars['String']>;
-  prevOwner_not_contains?: InputMaybe<Scalars['String']>;
-  prevOwner_not_contains_nocase?: InputMaybe<Scalars['String']>;
-  prevOwner_not_ends_with?: InputMaybe<Scalars['String']>;
-  prevOwner_not_ends_with_nocase?: InputMaybe<Scalars['String']>;
-  prevOwner_not_in?: InputMaybe<Array<Scalars['String']>>;
-  prevOwner_not_starts_with?: InputMaybe<Scalars['String']>;
-  prevOwner_not_starts_with_nocase?: InputMaybe<Scalars['String']>;
-  prevOwner_starts_with?: InputMaybe<Scalars['String']>;
-  prevOwner_starts_with_nocase?: InputMaybe<Scalars['String']>;
-  timestamp?: InputMaybe<Scalars['BigInt']>;
-  timestamp_gt?: InputMaybe<Scalars['BigInt']>;
-  timestamp_gte?: InputMaybe<Scalars['BigInt']>;
-  timestamp_in?: InputMaybe<Array<Scalars['BigInt']>>;
-  timestamp_lt?: InputMaybe<Scalars['BigInt']>;
-  timestamp_lte?: InputMaybe<Scalars['BigInt']>;
-  timestamp_not?: InputMaybe<Scalars['BigInt']>;
-  timestamp_not_in?: InputMaybe<Array<Scalars['BigInt']>>;
-};
-
-export enum OwnerUpdate_OrderBy {
-  EmittedBy = 'emittedBy',
-  Id = 'id',
-  NewOwner = 'newOwner',
-  PrevOwner = 'prevOwner',
-  Timestamp = 'timestamp',
-}
-
 /**
  * Granular event data for the Loan entity. Emitted when a user Borrows and when a loan is rolled over
  *
@@ -7515,8 +7417,6 @@ export type Query = {
   orderCreateds: Array<OrderCreated>;
   orderFilled?: Maybe<OrderFilled>;
   orderFilleds: Array<OrderFilled>;
-  ownerUpdate?: Maybe<OwnerUpdate>;
-  ownerUpdates: Array<OwnerUpdate>;
   payBorrowingFee?: Maybe<PayBorrowingFee>;
   payBorrowingFees: Array<PayBorrowingFee>;
   payInterestTransfer?: Maybe<PayInterestTransfer>;
@@ -8140,22 +8040,6 @@ export type QueryOrderFilledsArgs = {
   skip?: InputMaybe<Scalars['Int']>;
   subgraphError?: _SubgraphErrorPolicy_;
   where?: InputMaybe<OrderFilled_Filter>;
-};
-
-export type QueryOwnerUpdateArgs = {
-  block?: InputMaybe<Block_Height>;
-  id: Scalars['ID'];
-  subgraphError?: _SubgraphErrorPolicy_;
-};
-
-export type QueryOwnerUpdatesArgs = {
-  block?: InputMaybe<Block_Height>;
-  first?: InputMaybe<Scalars['Int']>;
-  orderBy?: InputMaybe<OwnerUpdate_OrderBy>;
-  orderDirection?: InputMaybe<OrderDirection>;
-  skip?: InputMaybe<Scalars['Int']>;
-  subgraphError?: _SubgraphErrorPolicy_;
-  where?: InputMaybe<OwnerUpdate_Filter>;
 };
 
 export type QueryPayBorrowingFeeArgs = {
@@ -9669,8 +9553,6 @@ export type Subscription = {
   orderCreateds: Array<OrderCreated>;
   orderFilled?: Maybe<OrderFilled>;
   orderFilleds: Array<OrderFilled>;
-  ownerUpdate?: Maybe<OwnerUpdate>;
-  ownerUpdates: Array<OwnerUpdate>;
   payBorrowingFee?: Maybe<PayBorrowingFee>;
   payBorrowingFees: Array<PayBorrowingFee>;
   payInterestTransfer?: Maybe<PayInterestTransfer>;
@@ -10294,22 +10176,6 @@ export type SubscriptionOrderFilledsArgs = {
   skip?: InputMaybe<Scalars['Int']>;
   subgraphError?: _SubgraphErrorPolicy_;
   where?: InputMaybe<OrderFilled_Filter>;
-};
-
-export type SubscriptionOwnerUpdateArgs = {
-  block?: InputMaybe<Block_Height>;
-  id: Scalars['ID'];
-  subgraphError?: _SubgraphErrorPolicy_;
-};
-
-export type SubscriptionOwnerUpdatesArgs = {
-  block?: InputMaybe<Block_Height>;
-  first?: InputMaybe<Scalars['Int']>;
-  orderBy?: InputMaybe<OwnerUpdate_OrderBy>;
-  orderDirection?: InputMaybe<OrderDirection>;
-  skip?: InputMaybe<Scalars['Int']>;
-  subgraphError?: _SubgraphErrorPolicy_;
-  where?: InputMaybe<OwnerUpdate_Filter>;
 };
 
 export type SubscriptionPayBorrowingFeeArgs = {

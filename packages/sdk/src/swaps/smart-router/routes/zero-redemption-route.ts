@@ -12,6 +12,7 @@ import {
   areAddressesEqual,
   canSwapPair,
   makeApproveRequest,
+  hasEnoughAllowance,
 } from '../../../internal/utils';
 import { SwapPairs, SwapRouteFunction } from '../types';
 
@@ -123,12 +124,22 @@ export const zeroRedemptionSwapRoute: SwapRouteFunction = (
         ) &&
         areAddressesEqual(destination, constants.AddressZero)
       ) {
-        return {
-          ...makeApproveRequest(
+        const spender = (await getTroveManagerContract()).address;
+
+        if (
+          await hasEnoughAllowance(
+            provider,
             entry,
-            (await getTroveManagerContract()).address,
-            amount,
-          ),
+            spender,
+            from,
+            amount ?? constants.MaxUint256,
+          )
+        ) {
+          return undefined;
+        }
+
+        return {
+          ...makeApproveRequest(entry, spender, amount),
           ...overrides,
         };
       }

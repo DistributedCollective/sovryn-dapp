@@ -8,8 +8,11 @@ import { SwapRoute } from '../../../swaps/smart-router/types';
 import { makeChainFixture } from '../../_fixtures/chain';
 import { FAKE_PERMIT } from '../../_fixtures/permit';
 import { makeTokenAddress } from '../../_fixtures/tokens';
+import { TEST_TIMEOUT } from '../../config';
 
 describe('Moc Integration Route', () => {
+  jest.setTimeout(TEST_TIMEOUT);
+
   let route: SwapRoute;
   const rbtc = constants.AddressZero;
   let dllr: string;

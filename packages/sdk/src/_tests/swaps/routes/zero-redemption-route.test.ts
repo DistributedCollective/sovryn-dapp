@@ -7,8 +7,11 @@ import { zeroRedemptionSwapRoute } from '../../../swaps/smart-router/routes/zero
 import { SwapRoute } from '../../../swaps/smart-router/types';
 import { makeChainFixture } from '../../_fixtures/chain';
 import { makeTokenAddress } from '../../_fixtures/tokens';
+import { TEST_TIMEOUT } from '../../config';
 
 describe('Zero Redemption Route', () => {
+  jest.setTimeout(TEST_TIMEOUT);
+
   let route: SwapRoute;
   const rbtc = constants.AddressZero;
   let dllr: string;

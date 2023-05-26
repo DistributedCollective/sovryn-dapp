@@ -5,8 +5,11 @@ import { SupportedTokens, getTokenContract } from '@sovryn/contracts';
 import { DEFAULT_SWAP_ROUTES } from '../../swaps/smart-router/config';
 import { SmartRouter } from '../../swaps/smart-router/smart-router';
 import { makeChainFixture } from '../_fixtures/chain';
+import { TEST_TIMEOUT } from '../config';
 
 describe('SmartRouter', () => {
+  jest.setTimeout(TEST_TIMEOUT);
+
   let router: SmartRouter;
   let provider: providers.Provider;
   let btc = ethers.constants.AddressZero;

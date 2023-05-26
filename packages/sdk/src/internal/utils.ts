@@ -1,4 +1,5 @@
-import { BigNumber, BigNumberish, ethers } from 'ethers';
+import { BigNumber, BigNumberish, ethers, providers } from 'ethers';
+
 import { DEFAULT_SWAP_SLIPPAGE } from '../constants';
 import { SwapPairs } from '../swaps/smart-router/types';
 
@@ -27,7 +28,20 @@ export const getMinReturn = (
 const Erc20IFace = new ethers.utils.Interface([
   'function transfer(address to, uint256 amount) public',
   'function approve(address spender, uint256 amount) public',
+  'function allowance(address owner, address spender) public view returns (uint256)',
 ]);
+
+export const hasEnoughAllowance = async (
+  provider: providers.Provider,
+  tokenAddress: string,
+  owner: string,
+  spender: string,
+  amount: BigNumberish,
+) => {
+  const tokenContract = new ethers.Contract(tokenAddress, Erc20IFace, provider);
+  const allowance = await tokenContract.allowance(owner, spender);
+  return allowance.gte(amount);
+};
 
 export const makeApproveRequest = (
   tokenAddress: string,

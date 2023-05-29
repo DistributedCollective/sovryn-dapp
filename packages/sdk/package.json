@@ -26,13 +26,14 @@
     "dist"
   ],
   "dependencies": {
+    "@sovryn-zero/lib-ethers": "^0.2.4",
     "rxjs": "7.5.6"
   },
   "peerDependencies": {
-    "ethers": "*",
-    "@ethersproject/providers": "*",
     "@ethersproject/abstract-provider": "*",
+    "@ethersproject/providers": "*",
     "@sovryn/contracts": "*",
-    "@sovryn/ethers-provider": "*"
+    "@sovryn/ethers-provider": "*",
+    "ethers": "*"
   }
 }

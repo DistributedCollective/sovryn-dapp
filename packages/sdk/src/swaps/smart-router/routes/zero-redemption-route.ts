@@ -1,5 +1,11 @@
 import { BigNumber, Contract, constants, providers } from 'ethers';
 
+import { Decimal } from '@sovryn-zero/lib-base';
+import {
+  ReadableEthersLiquity,
+  EthersLiquity,
+  PopulatableEthersLiquity,
+} from '@sovryn-zero/lib-ethers';
 import {
   SupportedTokens,
   getProtocolContract,
@@ -88,11 +94,6 @@ export const zeroRedemptionSwapRoute: SwapRouteFunction = (
         );
       }
 
-      const { Decimal } = await import('@sovryn-zero/lib-base');
-      const { ReadableEthersLiquity, EthersLiquity } = await import(
-        '@sovryn-zero/lib-ethers'
-      );
-
       const readable = await ReadableEthersLiquity.connect(provider, {
         useStore: 'blockPolled',
       });
@@ -124,11 +125,6 @@ export const zeroRedemptionSwapRoute: SwapRouteFunction = (
       return quote;
     },
     async swap(entry, destination, amount, from, options, overrides) {
-      const { Decimal } = await import('@sovryn-zero/lib-base');
-      const { ReadableEthersLiquity, PopulatableEthersLiquity } = await import(
-        '@sovryn-zero/lib-ethers'
-      );
-
       const readable = await ReadableEthersLiquity.connect(provider, {
         useStore: 'blockPolled',
       });

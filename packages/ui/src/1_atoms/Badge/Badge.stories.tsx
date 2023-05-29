@@ -17,3 +17,30 @@ Primary.args = {
   content: '99',
   style: BadgeStyle.gray,
 };
+Primary.argTypes = {
+  content: {
+    control: 'text',
+    description: 'The content displayed inside the badge',
+  },
+  style: {
+    control: {
+      type: 'select',
+      options: Object.values(BadgeStyle),
+    },
+    description: 'The style variant for the badge',
+  },
+  className: {
+    control: 'text',
+    description: 'The className to apply to the badge',
+  },
+  size: {
+    control: {
+      type: 'select',
+    },
+    options: ['sm', 'md'],
+  },
+  dataAttribute: {
+    control: 'text',
+    description: 'The data attribute to apply to the badge',
+  },
+};

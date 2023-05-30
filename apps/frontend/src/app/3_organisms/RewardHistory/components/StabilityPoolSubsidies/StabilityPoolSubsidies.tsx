@@ -12,31 +12,37 @@ import {
   Pagination,
   Paragraph,
   ParagraphSize,
+  Select,
   Table,
 } from '@sovryn/ui';
 
-import { chains, defaultChainId } from '../../../config/chains';
+import { chains, defaultChainId } from '../../../../../config/chains';
 
-import { AmountRenderer } from '../../2_molecules/AmountRenderer/AmountRenderer';
-import { ExportCSV } from '../../2_molecules/ExportCSV/ExportCSV';
-import { TxIdWithNotification } from '../../2_molecules/TxIdWithNotification/TransactionIdWithNotification';
-import { SOV, TOKEN_RENDER_PRECISION } from '../../../constants/currencies';
+import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRenderer';
+import { ExportCSV } from '../../../../2_molecules/ExportCSV/ExportCSV';
+import { TxIdWithNotification } from '../../../../2_molecules/TxIdWithNotification/TransactionIdWithNotification';
+import {
+  SOV,
+  TOKEN_RENDER_PRECISION,
+} from '../../../../../constants/currencies';
 import {
   DEFAULT_HISTORY_FRAME_PAGE_SIZE,
   EXPORT_RECORD_LIMIT,
-} from '../../../constants/general';
-import { useNotificationContext } from '../../../contexts/NotificationContext';
-import { useAccount } from '../../../hooks/useAccount';
-import { useMaintenance } from '../../../hooks/useMaintenance';
-import { translations } from '../../../locales/i18n';
-import { zeroClient } from '../../../utils/clients';
+} from '../../../../../constants/general';
+import { useNotificationContext } from '../../../../../contexts/NotificationContext';
+import { useAccount } from '../../../../../hooks/useAccount';
+import { useMaintenance } from '../../../../../hooks/useMaintenance';
+import { translations } from '../../../../../locales/i18n';
+import { zeroClient } from '../../../../../utils/clients';
 import {
   SovDistribution,
   useGetSubsidyLazyQuery,
-} from '../../../utils/graphql/zero/generated';
-import { dateFormat } from '../../../utils/helpers';
-import { fromWei } from '../../../utils/math';
-import { useGetSubsidyHistory } from './hooks/useGetSubsidyHistory';
+} from '../../../../../utils/graphql/zero/generated';
+import { dateFormat } from '../../../../../utils/helpers';
+import { fromWei } from '../../../../../utils/math';
+import { RewardHistoryProps } from '../../types';
+import { rewardHistoryOptions } from '../../utils';
+import { useGetStabilityPoolSubsidies } from './hooks/useGetStabilityPoolSubsidies';
 
 const pageSize = DEFAULT_HISTORY_FRAME_PAGE_SIZE;
 
@@ -45,12 +51,16 @@ const generateRowTitle = (tx: SovDistribution) => (
     {t(
       translations.subsidyHistory.stabilityPoolOperation
         .claimStabilityPoolSubsidy,
-    )}{' '}
-    - {dateFormat(tx.timestamp)}
+    )}
+    {' - '}
+    {dateFormat(tx.timestamp)}
   </Paragraph>
 );
 
-export const SubsidyHistory: FC = () => {
+export const StabilityPoolSubsidies: FC<RewardHistoryProps> = ({
+  selectedHistoryType,
+  onChangeRewardHistory,
+}) => {
   const { account } = useAccount();
   const { addNotification } = useNotificationContext();
   const { checkMaintenance, States } = useMaintenance();
@@ -63,7 +73,7 @@ export const SubsidyHistory: FC = () => {
     orderDirection: OrderDirection.Desc,
   });
 
-  const { data, loading } = useGetSubsidyHistory(
+  const { data, loading } = useGetStabilityPoolSubsidies(
     account,
     pageSize,
     page,
@@ -82,7 +92,7 @@ export const SubsidyHistory: FC = () => {
             value={fromWei(tx.amount).toString()}
             suffix={SOV}
             precision={TOKEN_RENDER_PRECISION}
-            dataAttribute="subsidy-reward-amount"
+            dataAttribute="subsidy-history-reward-amount"
           />
         ) : (
           '-'
@@ -121,7 +131,7 @@ export const SubsidyHistory: FC = () => {
           <TxIdWithNotification
             href={`${chain?.blockExplorerUrl}/tx/${tx.id.split('/')[0]}`}
             value={tx.id.split('/')[0]}
-            dataAttribute="subsidy-reward-address-id"
+            dataAttribute="subsidy-history-reward-address-id"
           />
         ),
       },
@@ -152,7 +162,7 @@ export const SubsidyHistory: FC = () => {
         pageSize: EXPORT_RECORD_LIMIT,
       },
     });
-    const list = data?.sovdistributions || [];
+    let list = data?.sovdistributions || [];
 
     if (!list.length) {
       addNotification({
@@ -170,7 +180,7 @@ export const SubsidyHistory: FC = () => {
         translations.subsidyHistory.stabilityPoolOperation
           .claimStabilityPoolSubsidy,
       ),
-      amount: fromWei(tx.amount || '').toString(),
+      amount: fromWei(tx.amount || ''),
       transactionID: tx.id,
     }));
   }, [account, addNotification, getSovdistribution]);
@@ -183,18 +193,26 @@ export const SubsidyHistory: FC = () => {
 
   return (
     <>
-      <div className="flex-row items-center gap-4 mb-7 hidden lg:inline-flex">
-        <ExportCSV
-          getData={exportData}
-          filename="subsidy-rewards"
-          disabled={!data || data.length === 0 || exportLocked}
+      <div className="flex-row items-center gap-4 mb-7 flex justify-center lg:justify-start">
+        <Select
+          dataAttribute={`reward-history-${selectedHistoryType}`}
+          value={selectedHistoryType}
+          onChange={onChangeRewardHistory}
+          options={rewardHistoryOptions}
         />
-        {exportLocked && (
-          <ErrorBadge
-            level={ErrorLevel.Warning}
-            message={t(translations.maintenanceMode.featureDisabled)}
+        <div className="flex-row items-center ml-2 gap-4 hidden lg:inline-flex">
+          <ExportCSV
+            getData={exportData}
+            filename="stability-pool-subsidies"
+            disabled={!data || data.length === 0 || exportLocked}
           />
-        )}
+          {exportLocked && (
+            <ErrorBadge
+              level={ErrorLevel.Warning}
+              message={t(translations.maintenanceMode.featureDisabled)}
+            />
+          )}
+        </div>
       </div>
       <div className="bg-gray-80 py-4 px-4 rounded">
         <Table
@@ -206,7 +224,7 @@ export const SubsidyHistory: FC = () => {
           isLoading={loading}
           className="bg-gray-80 text-gray-10 lg:px-6 lg:py-4"
           noData={t(translations.common.tables.noData)}
-          dataAttribute="subsidy-reward-history-table"
+          dataAttribute="subsidy-history-reward-table"
         />
         <Pagination
           page={page}
@@ -214,7 +232,7 @@ export const SubsidyHistory: FC = () => {
           onChange={onPageChange}
           itemsPerPage={pageSize}
           isNextButtonDisabled={isNextButtonDisabled}
-          dataAttribute="subsidy-reward-history-pagination"
+          dataAttribute="subsidy-history-reward-pagination"
         />
       </div>
     </>

@@ -2,14 +2,14 @@ import { useMemo } from 'react';
 
 import { OrderOptions } from '@sovryn/ui';
 
-import { zeroClient } from '../../../../utils/clients';
+import { zeroClient } from '../../../../../../utils/clients';
 import {
   SovDistribution,
   SovDistribution_OrderBy,
   useGetSubsidyQuery,
-} from './../../../../utils/graphql/zero/generated';
+} from '../../../../../../utils/graphql/zero/generated';
 
-export const useGetSubsidyHistory = (
+export const useGetStabilityPoolSubsidies = (
   account: string,
   pageSize: number,
   page: number,

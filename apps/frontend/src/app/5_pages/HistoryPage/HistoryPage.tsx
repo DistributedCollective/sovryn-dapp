@@ -13,7 +13,6 @@ import { ConversionsHistoryFrame } from '../../3_organisms/ConversionsHistoryFra
 import { FundingHistoryFrame } from '../../3_organisms/FundingHistoryFrame/FundingHistoryFrame';
 import { RewardHistory } from '../../3_organisms/RewardHistory/RewardHistory';
 import { StabilityPoolHistoryFrame } from '../../3_organisms/StabilityPoolHistoryFrame';
-import { SubsidyHistory } from '../../3_organisms/SubsidyHistory/SubsidyHistory';
 import { translations } from '../../../locales/i18n';
 import { myntClient, zeroClient } from '../../../utils/clients';
 import styles from './HistoryPage.module.css';
@@ -42,12 +41,6 @@ const collateralSurplusHistory = (
 const rewardHistory = (
   <div className="px-0 py-4 lg:p-4">
     <RewardHistory />
-  </div>
-);
-
-const subsidyHistory = (
-  <div className="px-0 py-4 lg:p-4">
-    <SubsidyHistory />
   </div>
 );
 
@@ -106,12 +99,6 @@ const HistoryPage: FC = () => {
         content: rewardHistory,
         activeClassName: ACTIVE_CLASSNAME,
         dataAttribute: 'rewards',
-      },
-      {
-        label: t(translations.historyPage.table.tabs.subsidy),
-        content: subsidyHistory,
-        activeClassName: ACTIVE_CLASSNAME,
-        dataAttribute: 'subsidy-rewards',
       },
     ],
     [],

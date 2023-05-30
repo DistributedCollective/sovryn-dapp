@@ -471,8 +471,7 @@
                 "convert": "Conversion",
                 "funding": "Funding",
                 "collateralSurplusWithdrawals": "Collateral surplus",
-                "reward": "Reward",
-                "subsidy": "Subsidy Rewards"
+                "reward": "Reward"
             },
             "comingSoon": "Coming soon..."
         }
@@ -567,6 +566,10 @@
         "stabilityPoolOperation": {
             "claimCollateralGain": "Claim gain",
             "transferGainToLineOfCredit": "Transfer gain to line of credit"
+        },
+        "types": {
+            "stabilityPoolRewards": "Stability pool rewards",
+            "stabilityPoolSubsidies": "Stability pool subsidies"
         }
     },
     "subsidyHistory": {

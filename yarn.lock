@@ -4288,6 +4288,11 @@
   resolved "https://registry.yarnpkg.com/@socket.io/component-emitter/-/component-emitter-3.1.0.tgz#96116f2a912e0c02817345b3c10751069920d553"
   integrity sha512-+9jVqKhRSpsc591z5vX+X5Yyw+he/HCB4iQ/RYxw35CEPaY1gnsNE43nf9n9AaYjAQrTiI/mOwKUKdUs9vf7Xg==
 
+"@sovryn-zero/contracts@^0.1.0":
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/@sovryn-zero/contracts/-/contracts-0.1.0.tgz#e5a9c6047d4afd3f057b616f999b202f03b1ed38"
+  integrity sha512-gkl5qZBW/nn8YC4xYVJK1dicu/4ptnS/JjaGRQ6zrtA++8BfCPHRsGAm/XCWMnBKAD7IuiBVv1ZnkNetjGt06w==
+
 "@sovryn-zero/lib-base@0.2.1":
   version "0.2.1"
   resolved "https://registry.yarnpkg.com/@sovryn-zero/lib-base/-/lib-base-0.2.1.tgz#0ba024e5552721bdc1a105cb8c4d27b672a97482"

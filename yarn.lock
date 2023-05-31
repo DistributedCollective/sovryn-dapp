@@ -4288,10 +4288,10 @@
   resolved "https://registry.yarnpkg.com/@socket.io/component-emitter/-/component-emitter-3.1.0.tgz#96116f2a912e0c02817345b3c10751069920d553"
   integrity sha512-+9jVqKhRSpsc591z5vX+X5Yyw+he/HCB4iQ/RYxw35CEPaY1gnsNE43nf9n9AaYjAQrTiI/mOwKUKdUs9vf7Xg==
 
-"@sovryn-zero/contracts@^0.1.0":
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/@sovryn-zero/contracts/-/contracts-0.1.0.tgz#e5a9c6047d4afd3f057b616f999b202f03b1ed38"
-  integrity sha512-gkl5qZBW/nn8YC4xYVJK1dicu/4ptnS/JjaGRQ6zrtA++8BfCPHRsGAm/XCWMnBKAD7IuiBVv1ZnkNetjGt06w==
+"@sovryn-zero/contracts@^0.2.0":
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/@sovryn-zero/contracts/-/contracts-0.2.0.tgz#5f8dddadb3e281c0e35592fe6f69414f22c32216"
+  integrity sha512-V/Iwh/FPk32n5qefEraaKIVOh+XsF2er0YcZykQE1ToHjijaOGkFHzDJNRc5Axta3hzOkz10j5mLr9iLCf3lcQ==
 
 "@sovryn-zero/lib-base@0.2.1":
   version "0.2.1"
@@ -4370,10 +4370,10 @@
     lodash.partition "^4.6.0"
     rxjs "7.5.6"
 
-"@sovryn/onboard-react@1.0.2":
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/@sovryn/onboard-react/-/onboard-react-1.0.2.tgz#2bc410a8a1cc06f760837c24c06448fcabb8c2fa"
-  integrity sha512-CGfbI6RZDpvo0Halq1hgN510LsY/Ml9Kg2r1cfazsAGZFsSUpoTW0af4LkmKTK7QUhstm3WJQYm1giX8MexxCw==
+"@sovryn/onboard-react@1.0.5":
+  version "1.0.5"
+  resolved "https://registry.yarnpkg.com/@sovryn/onboard-react/-/onboard-react-1.0.5.tgz#cc98e9eaf56fc6123530634960fd0bc5794b9406"
+  integrity sha512-qGFprY5JvhYg0wY5ShJce4EYV0zDMERjTMDxW2TrdIFZjHTSC57+Iq+zpQW75mrPlTzuC56Bo456YDVZRVU2Fg==
   dependencies:
     "@sovryn/onboard-common" "1.0.0"
     "@sovryn/onboard-core" "1.0.1"

@@ -1,7 +1,5 @@
 import { constants } from 'ethers';
 
-import { addresses } from '@sovryn-zero/lib-ethers/dist/deployments/default/rsksovrynmainnet.json';
-
 export const rsk: Record<string, string> = {
   rbtc: constants.AddressZero,
   wrbtc: '0x542fDA317318eBF1d3DEAf76E0b632741A7e677d',
@@ -11,7 +9,7 @@ export const rsk: Record<string, string> = {
   doc: '0xe700691da7b9851f2f35f8b8182c69c53ccad9db',
   babelfish: '0x1440d19436bEeaF8517896bffB957a88EC95a00F',
   rdoc: '0x2d919f19D4892381d58EdEbEcA66D5642ceF1A1F',
-  zusd: addresses.zusdToken,
+  zusd: '0xdB107FA69E33f05180a4C2cE9c2E7CB481645C2d',
   bnbs: '0x6D9659bdF5b1A1dA217f7BbAf7dBAF8190E2e71B',
   eths: '0x1D931Bf8656d795E50eF6D639562C5bD8Ac2B78f',
   fish: '0x055A902303746382FBB7D18f6aE0df56eFDc5213',

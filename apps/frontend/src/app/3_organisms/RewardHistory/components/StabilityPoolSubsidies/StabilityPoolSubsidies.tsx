@@ -80,7 +80,7 @@ export const StabilityPoolSubsidies: FC<RewardHistoryProps> = ({
     orderOptions,
   );
 
-  const [getSovdistribution] = useGetSubsidyLazyQuery({
+  const [getSovDistribution] = useGetSubsidyLazyQuery({
     client: zeroClient,
   });
 
@@ -155,7 +155,7 @@ export const StabilityPoolSubsidies: FC<RewardHistoryProps> = ({
   );
 
   const exportData = useCallback(async () => {
-    const { data } = await getSovdistribution({
+    const { data } = await getSovDistribution({
       variables: {
         user: account,
         skip: 0,
@@ -183,7 +183,7 @@ export const StabilityPoolSubsidies: FC<RewardHistoryProps> = ({
       amount: fromWei(tx.amount || ''),
       transactionID: tx.id,
     }));
-  }, [account, addNotification, getSovdistribution]);
+  }, [account, addNotification, getSovDistribution]);
 
   useEffect(() => {
     setPage(0);

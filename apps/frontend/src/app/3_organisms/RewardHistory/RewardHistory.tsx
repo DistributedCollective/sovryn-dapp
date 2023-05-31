@@ -5,8 +5,9 @@ import { StabilityPoolSubsidies } from './components/StabilityPoolSubsidies/Stab
 import { RewardHistoryType } from './types';
 
 export const RewardHistory: FC = () => {
-  const [selectedHistoryType, setSelectedHistoryType] =
-    useState<RewardHistoryType>(RewardHistoryType.stabilityPoolRewards);
+  const [selectedHistoryType, setSelectedHistoryType] = useState(
+    RewardHistoryType.stabilityPoolRewards,
+  );
 
   const onChangeRewardHistory = useCallback((value: RewardHistoryType) => {
     setSelectedHistoryType(value);

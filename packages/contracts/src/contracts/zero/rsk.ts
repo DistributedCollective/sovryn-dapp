@@ -1,4 +1,4 @@
-import { AsyncContractConfigData } from '../../types';
+import type { AsyncContractConfigData } from '../../types';
 
 export const rsk: Record<string, AsyncContractConfigData> = {
   borrowerOperations: {
@@ -6,7 +6,7 @@ export const rsk: Record<string, AsyncContractConfigData> = {
     getAbi: async () =>
       (
         await import(
-          '@sovryn-zero/contracts/deployment/deployments/rskSovrynMainet/BorrowerOperations.json'
+          '@sovryn-zero/contracts/deployment/rskSovrynMainnet/BorrowerOperations.json'
         )
       ).default.abi,
   },
@@ -15,7 +15,7 @@ export const rsk: Record<string, AsyncContractConfigData> = {
     getAbi: async () =>
       (
         await import(
-          '@sovryn-zero/contracts/deployment/deployments/rskSovrynMainet/TroveManager.json'
+          '@sovryn-zero/contracts/deployment/rskSovrynMainnet/TroveManager.json'
         )
       ).default.abi,
   },
@@ -24,7 +24,7 @@ export const rsk: Record<string, AsyncContractConfigData> = {
     getAbi: async () =>
       (
         await import(
-          '@sovryn-zero/contracts/deployment/deployments/rskSovrynMainet/StabilityPool.json'
+          '@sovryn-zero/contracts/deployment/rskSovrynMainnet/StabilityPool.json'
         )
       ).default.abi,
   },
@@ -33,7 +33,7 @@ export const rsk: Record<string, AsyncContractConfigData> = {
     getAbi: async () =>
       (
         await import(
-          '@sovryn-zero/contracts/deployment/deployments/rskSovrynMainet/LiquityBaseParams.json'
+          '@sovryn-zero/contracts/deployment/rskSovrynMainnet/LiquityBaseParams.json'
         )
       ).default.abi,
   },
@@ -42,7 +42,7 @@ export const rsk: Record<string, AsyncContractConfigData> = {
     getAbi: async () =>
       (
         await import(
-          '@sovryn-zero/contracts/deployment/deployments/rskSovrynMainet/CommunityIssuance.json'
+          '@sovryn-zero/contracts/deployment/rskSovrynMainnet/CommunityIssuance.json'
         )
       ).default.abi,
   },
@@ -51,7 +51,7 @@ export const rsk: Record<string, AsyncContractConfigData> = {
     getAbi: async () =>
       (
         await import(
-          '@sovryn-zero/contracts/deployment/deployments/rskSovrynMainet/HintHelpers.json'
+          '@sovryn-zero/contracts/deployment/rskSovrynMainnet/HintHelpers.json'
         )
       ).default.abi,
   },

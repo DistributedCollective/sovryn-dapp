@@ -1,6 +1,6 @@
 import { Network } from '@sovryn/ethers-provider';
 
-import { AsyncContractConfigData } from '../../types';
+import type { AsyncContractConfigData } from '../../types';
 import { rsk } from './rsk';
 import { rskTestnet } from './rskTestnet';
 

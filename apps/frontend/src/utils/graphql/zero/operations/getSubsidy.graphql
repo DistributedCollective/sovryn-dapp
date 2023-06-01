@@ -1,0 +1,19 @@
+query getSubsidy(
+  $user: Bytes!
+  $skip: Int!
+  $pageSize: Int!
+  $orderBy: SOVDistribution_orderBy
+  $orderDirection: OrderDirection
+) {
+  sovdistributions(
+    first: $pageSize
+    skip: $skip
+    orderBy: $orderBy
+    orderDirection: $orderDirection
+    where: { user: $user }
+  ) {
+    id
+    amount
+    timestamp
+  }
+}

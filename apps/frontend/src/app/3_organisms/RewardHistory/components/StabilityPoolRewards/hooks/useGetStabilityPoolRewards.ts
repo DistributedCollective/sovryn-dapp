@@ -2,15 +2,15 @@ import { useMemo } from 'react';
 
 import { OrderOptions } from '@sovryn/ui';
 
-import { zeroClient } from '../../../../utils/clients';
+import { zeroClient } from '../../../../../../utils/clients';
 import {
   StabilityDepositChange,
   StabilityDepositChange_Filter,
   StabilityDepositChange_OrderBy,
   useGetStabilityDepositChangesQuery,
-} from '../../../../utils/graphql/zero/generated';
+} from '../../../../../../utils/graphql/zero/generated';
 
-export const useGetRewardHistory = (
+export const useGetStabilityPoolRewards = (
   account: string,
   pageSize: number,
   page: number,
@@ -20,9 +20,8 @@ export const useGetRewardHistory = (
     () => ({
       skip: page * pageSize,
       pageSize,
-      orderBy:
-        (orderOptions.orderBy as StabilityDepositChange_OrderBy) || undefined,
-      orderDirection: orderOptions.orderDirection || undefined,
+      orderBy: orderOptions.orderBy as StabilityDepositChange_OrderBy,
+      orderDirection: orderOptions.orderDirection,
       filters: {
         stabilityDepositOperation_in: [
           'withdrawGainToLineOfCredit',

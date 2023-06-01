@@ -5536,105 +5536,6 @@ enum OrderFilled_orderBy {
   transaction
 }
 
-type OwnerUpdate {
-  emittedBy: String!
-  id: ID!
-  newOwner: String!
-  prevOwner: String!
-  timestamp: BigInt!
-}
-
-input OwnerUpdate_filter {
-  """
-  Filter for the block changed event.
-  """
-  _change_block: BlockChangedFilter
-  emittedBy: String
-  emittedBy_contains: String
-  emittedBy_contains_nocase: String
-  emittedBy_ends_with: String
-  emittedBy_ends_with_nocase: String
-  emittedBy_gt: String
-  emittedBy_gte: String
-  emittedBy_in: [String!]
-  emittedBy_lt: String
-  emittedBy_lte: String
-  emittedBy_not: String
-  emittedBy_not_contains: String
-  emittedBy_not_contains_nocase: String
-  emittedBy_not_ends_with: String
-  emittedBy_not_ends_with_nocase: String
-  emittedBy_not_in: [String!]
-  emittedBy_not_starts_with: String
-  emittedBy_not_starts_with_nocase: String
-  emittedBy_starts_with: String
-  emittedBy_starts_with_nocase: String
-  id: ID
-  id_gt: ID
-  id_gte: ID
-  id_in: [ID!]
-  id_lt: ID
-  id_lte: ID
-  id_not: ID
-  id_not_in: [ID!]
-  newOwner: String
-  newOwner_contains: String
-  newOwner_contains_nocase: String
-  newOwner_ends_with: String
-  newOwner_ends_with_nocase: String
-  newOwner_gt: String
-  newOwner_gte: String
-  newOwner_in: [String!]
-  newOwner_lt: String
-  newOwner_lte: String
-  newOwner_not: String
-  newOwner_not_contains: String
-  newOwner_not_contains_nocase: String
-  newOwner_not_ends_with: String
-  newOwner_not_ends_with_nocase: String
-  newOwner_not_in: [String!]
-  newOwner_not_starts_with: String
-  newOwner_not_starts_with_nocase: String
-  newOwner_starts_with: String
-  newOwner_starts_with_nocase: String
-  prevOwner: String
-  prevOwner_contains: String
-  prevOwner_contains_nocase: String
-  prevOwner_ends_with: String
-  prevOwner_ends_with_nocase: String
-  prevOwner_gt: String
-  prevOwner_gte: String
-  prevOwner_in: [String!]
-  prevOwner_lt: String
-  prevOwner_lte: String
-  prevOwner_not: String
-  prevOwner_not_contains: String
-  prevOwner_not_contains_nocase: String
-  prevOwner_not_ends_with: String
-  prevOwner_not_ends_with_nocase: String
-  prevOwner_not_in: [String!]
-  prevOwner_not_starts_with: String
-  prevOwner_not_starts_with_nocase: String
-  prevOwner_starts_with: String
-  prevOwner_starts_with_nocase: String
-  timestamp: BigInt
-  timestamp_gt: BigInt
-  timestamp_gte: BigInt
-  timestamp_in: [BigInt!]
-  timestamp_lt: BigInt
-  timestamp_lte: BigInt
-  timestamp_not: BigInt
-  timestamp_not_in: [BigInt!]
-}
-
-enum OwnerUpdate_orderBy {
-  emittedBy
-  id
-  newOwner
-  prevOwner
-  timestamp
-}
-
 "Granular event data for the Loan entity. Emitted when a user Borrows and when a loan is rolled over\n"
 type PayBorrowingFee {
   amount: BigDecimal!
@@ -7904,34 +7805,6 @@ type Query {
     subgraphError: _SubgraphErrorPolicy_! = deny
     where: OrderFilled_filter
   ): [OrderFilled!]!
-  ownerUpdate(
-    """
-    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
-    """
-    block: Block_height
-    id: ID!
-
-    """
-    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
-    """
-    subgraphError: _SubgraphErrorPolicy_! = deny
-  ): OwnerUpdate
-  ownerUpdates(
-    """
-    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
-    """
-    block: Block_height
-    first: Int = 100
-    orderBy: OwnerUpdate_orderBy
-    orderDirection: OrderDirection
-    skip: Int = 0
-
-    """
-    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
-    """
-    subgraphError: _SubgraphErrorPolicy_! = deny
-    where: OwnerUpdate_filter
-  ): [OwnerUpdate!]!
   payBorrowingFee(
     """
     The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
@@ -10628,34 +10501,6 @@ type Subscription {
     subgraphError: _SubgraphErrorPolicy_! = deny
     where: OrderFilled_filter
   ): [OrderFilled!]!
-  ownerUpdate(
-    """
-    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
-    """
-    block: Block_height
-    id: ID!
-
-    """
-    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
-    """
-    subgraphError: _SubgraphErrorPolicy_! = deny
-  ): OwnerUpdate
-  ownerUpdates(
-    """
-    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
-    """
-    block: Block_height
-    first: Int = 100
-    orderBy: OwnerUpdate_orderBy
-    orderDirection: OrderDirection
-    skip: Int = 0
-
-    """
-    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
-    """
-    subgraphError: _SubgraphErrorPolicy_! = deny
-    where: OwnerUpdate_filter
-  ): [OwnerUpdate!]!
   payBorrowingFee(
     """
     The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.

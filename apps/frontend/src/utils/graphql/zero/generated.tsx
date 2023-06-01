@@ -863,6 +863,8 @@ export type Query = {
   revenueDaily?: Maybe<RevenueDaily>;
   revenueWeeklies: Array<RevenueWeekly>;
   revenueWeekly?: Maybe<RevenueWeekly>;
+  sovdistribution?: Maybe<SovDistribution>;
+  sovdistributions: Array<SovDistribution>;
   stabilityDeposit?: Maybe<StabilityDeposit>;
   stabilityDepositChange?: Maybe<StabilityDepositChange>;
   stabilityDepositChanges: Array<StabilityDepositChange>;
@@ -1033,6 +1035,22 @@ export type QueryRevenueWeeklyArgs = {
   block?: InputMaybe<Block_Height>;
   id: Scalars['ID'];
   subgraphError?: _SubgraphErrorPolicy_;
+};
+
+export type QuerySovdistributionArgs = {
+  block?: InputMaybe<Block_Height>;
+  id: Scalars['ID'];
+  subgraphError?: _SubgraphErrorPolicy_;
+};
+
+export type QuerySovdistributionsArgs = {
+  block?: InputMaybe<Block_Height>;
+  first?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<SovDistribution_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+  skip?: InputMaybe<Scalars['Int']>;
+  subgraphError?: _SubgraphErrorPolicy_;
+  where?: InputMaybe<SovDistribution_Filter>;
 };
 
 export type QueryStabilityDepositArgs = {
@@ -1640,6 +1658,57 @@ export enum RevenueWeekly_OrderBy {
   StabilityPoolProfit = 'stabilityPoolProfit',
 }
 
+export type SovDistribution = {
+  __typename?: 'SOVDistribution';
+  amount?: Maybe<Scalars['BigInt']>;
+  /** ID is transaction hash */
+  id: Scalars['ID'];
+  timestamp: Scalars['Int'];
+  user: Scalars['Bytes'];
+};
+
+export type SovDistribution_Filter = {
+  /** Filter for the block changed event. */
+  _change_block?: InputMaybe<BlockChangedFilter>;
+  amount?: InputMaybe<Scalars['BigInt']>;
+  amount_gt?: InputMaybe<Scalars['BigInt']>;
+  amount_gte?: InputMaybe<Scalars['BigInt']>;
+  amount_in?: InputMaybe<Array<Scalars['BigInt']>>;
+  amount_lt?: InputMaybe<Scalars['BigInt']>;
+  amount_lte?: InputMaybe<Scalars['BigInt']>;
+  amount_not?: InputMaybe<Scalars['BigInt']>;
+  amount_not_in?: InputMaybe<Array<Scalars['BigInt']>>;
+  id?: InputMaybe<Scalars['ID']>;
+  id_gt?: InputMaybe<Scalars['ID']>;
+  id_gte?: InputMaybe<Scalars['ID']>;
+  id_in?: InputMaybe<Array<Scalars['ID']>>;
+  id_lt?: InputMaybe<Scalars['ID']>;
+  id_lte?: InputMaybe<Scalars['ID']>;
+  id_not?: InputMaybe<Scalars['ID']>;
+  id_not_in?: InputMaybe<Array<Scalars['ID']>>;
+  timestamp?: InputMaybe<Scalars['Int']>;
+  timestamp_gt?: InputMaybe<Scalars['Int']>;
+  timestamp_gte?: InputMaybe<Scalars['Int']>;
+  timestamp_in?: InputMaybe<Array<Scalars['Int']>>;
+  timestamp_lt?: InputMaybe<Scalars['Int']>;
+  timestamp_lte?: InputMaybe<Scalars['Int']>;
+  timestamp_not?: InputMaybe<Scalars['Int']>;
+  timestamp_not_in?: InputMaybe<Array<Scalars['Int']>>;
+  user?: InputMaybe<Scalars['Bytes']>;
+  user_contains?: InputMaybe<Scalars['Bytes']>;
+  user_in?: InputMaybe<Array<Scalars['Bytes']>>;
+  user_not?: InputMaybe<Scalars['Bytes']>;
+  user_not_contains?: InputMaybe<Scalars['Bytes']>;
+  user_not_in?: InputMaybe<Array<Scalars['Bytes']>>;
+};
+
+export enum SovDistribution_OrderBy {
+  Amount = 'amount',
+  Id = 'id',
+  Timestamp = 'timestamp',
+  User = 'user',
+}
+
 export type StabilityDeposit = {
   __typename?: 'StabilityDeposit';
   changes: Array<StabilityDepositChange>;
@@ -1659,6 +1728,11 @@ export type StabilityDepositChangesArgs = {
 
 export type StabilityDepositChange = Change & {
   __typename?: 'StabilityDepositChange';
+  /**
+   * Block number is needed internally to calculate gains per user
+   *
+   */
+  blockNumber: Scalars['Int'];
   collateralGain?: Maybe<Scalars['BigDecimal']>;
   depositedAmountAfter: Scalars['BigDecimal'];
   depositedAmountBefore: Scalars['BigDecimal'];
@@ -1675,6 +1749,14 @@ export type StabilityDepositChange = Change & {
 export type StabilityDepositChange_Filter = {
   /** Filter for the block changed event. */
   _change_block?: InputMaybe<BlockChangedFilter>;
+  blockNumber?: InputMaybe<Scalars['Int']>;
+  blockNumber_gt?: InputMaybe<Scalars['Int']>;
+  blockNumber_gte?: InputMaybe<Scalars['Int']>;
+  blockNumber_in?: InputMaybe<Array<Scalars['Int']>>;
+  blockNumber_lt?: InputMaybe<Scalars['Int']>;
+  blockNumber_lte?: InputMaybe<Scalars['Int']>;
+  blockNumber_not?: InputMaybe<Scalars['Int']>;
+  blockNumber_not_in?: InputMaybe<Array<Scalars['Int']>>;
   collateralGain?: InputMaybe<Scalars['BigDecimal']>;
   collateralGain_gt?: InputMaybe<Scalars['BigDecimal']>;
   collateralGain_gte?: InputMaybe<Scalars['BigDecimal']>;
@@ -1816,6 +1898,7 @@ export type StabilityDepositChange_Filter = {
 };
 
 export enum StabilityDepositChange_OrderBy {
+  BlockNumber = 'blockNumber',
   CollateralGain = 'collateralGain',
   DepositedAmountAfter = 'depositedAmountAfter',
   DepositedAmountBefore = 'depositedAmountBefore',
@@ -1908,6 +1991,8 @@ export type Subscription = {
   revenueDaily?: Maybe<RevenueDaily>;
   revenueWeeklies: Array<RevenueWeekly>;
   revenueWeekly?: Maybe<RevenueWeekly>;
+  sovdistribution?: Maybe<SovDistribution>;
+  sovdistributions: Array<SovDistribution>;
   stabilityDeposit?: Maybe<StabilityDeposit>;
   stabilityDepositChange?: Maybe<StabilityDepositChange>;
   stabilityDepositChanges: Array<StabilityDepositChange>;
@@ -2078,6 +2163,22 @@ export type SubscriptionRevenueWeeklyArgs = {
   block?: InputMaybe<Block_Height>;
   id: Scalars['ID'];
   subgraphError?: _SubgraphErrorPolicy_;
+};
+
+export type SubscriptionSovdistributionArgs = {
+  block?: InputMaybe<Block_Height>;
+  id: Scalars['ID'];
+  subgraphError?: _SubgraphErrorPolicy_;
+};
+
+export type SubscriptionSovdistributionsArgs = {
+  block?: InputMaybe<Block_Height>;
+  first?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<SovDistribution_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+  skip?: InputMaybe<Scalars['Int']>;
+  subgraphError?: _SubgraphErrorPolicy_;
+  where?: InputMaybe<SovDistribution_Filter>;
 };
 
 export type SubscriptionStabilityDepositArgs = {
@@ -3533,6 +3634,24 @@ export type GetStabilityPoolQuery = {
   }>;
 };
 
+export type GetSubsidyQueryVariables = Exact<{
+  user: Scalars['Bytes'];
+  skip: Scalars['Int'];
+  pageSize: Scalars['Int'];
+  orderBy?: InputMaybe<SovDistribution_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+}>;
+
+export type GetSubsidyQuery = {
+  __typename?: 'Query';
+  sovdistributions: Array<{
+    __typename?: 'SOVDistribution';
+    id: string;
+    amount?: string | null;
+    timestamp: number;
+  }>;
+};
+
 export type GetGlobalsEntityQueryVariables = Exact<{ [key: string]: never }>;
 
 export type GetGlobalsEntityQuery = {
@@ -3976,6 +4095,80 @@ export type GetStabilityPoolLazyQueryHookResult = ReturnType<
 export type GetStabilityPoolQueryResult = Apollo.QueryResult<
   GetStabilityPoolQuery,
   GetStabilityPoolQueryVariables
+>;
+export const GetSubsidyDocument = gql`
+  query getSubsidy(
+    $user: Bytes!
+    $skip: Int!
+    $pageSize: Int!
+    $orderBy: SOVDistribution_orderBy
+    $orderDirection: OrderDirection
+  ) {
+    sovdistributions(
+      first: $pageSize
+      skip: $skip
+      orderBy: $orderBy
+      orderDirection: $orderDirection
+      where: { user: $user }
+    ) {
+      id
+      amount
+      timestamp
+    }
+  }
+`;
+
+/**
+ * __useGetSubsidyQuery__
+ *
+ * To run a query within a React component, call `useGetSubsidyQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetSubsidyQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetSubsidyQuery({
+ *   variables: {
+ *      user: // value for 'user'
+ *      skip: // value for 'skip'
+ *      pageSize: // value for 'pageSize'
+ *      orderBy: // value for 'orderBy'
+ *      orderDirection: // value for 'orderDirection'
+ *   },
+ * });
+ */
+export function useGetSubsidyQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    GetSubsidyQuery,
+    GetSubsidyQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<GetSubsidyQuery, GetSubsidyQueryVariables>(
+    GetSubsidyDocument,
+    options,
+  );
+}
+export function useGetSubsidyLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    GetSubsidyQuery,
+    GetSubsidyQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<GetSubsidyQuery, GetSubsidyQueryVariables>(
+    GetSubsidyDocument,
+    options,
+  );
+}
+export type GetSubsidyQueryHookResult = ReturnType<typeof useGetSubsidyQuery>;
+export type GetSubsidyLazyQueryHookResult = ReturnType<
+  typeof useGetSubsidyLazyQuery
+>;
+export type GetSubsidyQueryResult = Apollo.QueryResult<
+  GetSubsidyQuery,
+  GetSubsidyQueryVariables
 >;
 export const GetGlobalsEntityDocument = gql`
   query getGlobalsEntity {

@@ -1,5 +1,5 @@
 .dropdownOrList {
-  @apply block;
+  @apply block z-[999999];
 }
 
 @screen lg {

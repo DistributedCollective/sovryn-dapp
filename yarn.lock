@@ -4365,10 +4365,10 @@
     lodash.partition "^4.6.0"
     rxjs "7.5.6"
 
-"@sovryn/onboard-react@1.0.2":
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/@sovryn/onboard-react/-/onboard-react-1.0.2.tgz#2bc410a8a1cc06f760837c24c06448fcabb8c2fa"
-  integrity sha512-CGfbI6RZDpvo0Halq1hgN510LsY/Ml9Kg2r1cfazsAGZFsSUpoTW0af4LkmKTK7QUhstm3WJQYm1giX8MexxCw==
+"@sovryn/onboard-react@1.0.5":
+  version "1.0.5"
+  resolved "https://registry.yarnpkg.com/@sovryn/onboard-react/-/onboard-react-1.0.5.tgz#cc98e9eaf56fc6123530634960fd0bc5794b9406"
+  integrity sha512-qGFprY5JvhYg0wY5ShJce4EYV0zDMERjTMDxW2TrdIFZjHTSC57+Iq+zpQW75mrPlTzuC56Bo456YDVZRVU2Fg==
   dependencies:
     "@sovryn/onboard-common" "1.0.0"
     "@sovryn/onboard-core" "1.0.1"

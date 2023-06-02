@@ -13,3 +13,4 @@ export * from './Checkbox';
 export * from './DynamicValue';
 export * from './Lottie';
 export * from './ErrorBadge';
+export * from './Toggle';

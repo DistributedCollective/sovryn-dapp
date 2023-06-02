@@ -54,6 +54,80 @@ Single.args = {
   autoPlay: true,
 };
 
+Single.argTypes = {
+  animation: {
+    control: 'select',
+    options: Object.keys(animationMap),
+    defaultValue: 'spaceScene',
+    description: 'Choose the animation to display',
+  },
+  loop: {
+    control: 'select',
+    options: [true, 1, 2, 3, 4, 5],
+    defaultValue: true,
+    description: 'Set the number of times to loop the animation',
+  },
+  name: {
+    control: 'text',
+    description: 'Specify the name of the animation',
+  },
+  autoplay: {
+    control: {
+      type: 'boolean',
+      value: true,
+    },
+    description: 'Toggle autoplay for the animation',
+  },
+  initialSegment: {
+    description: 'Define the initial segment of the animation',
+  },
+  assetsPath: {
+    description: 'Provide the path to the assets',
+  },
+  rendererSettings: {
+    description: 'Specify the renderer settings',
+  },
+  audioFactory: {
+    description: 'Configure the audio factory',
+  },
+  lottieRef: {
+    description: 'Refer to the lottie element',
+  },
+  onComplete: {
+    description: 'Handle the onComplete callback',
+  },
+  onLoopComplete: {
+    description: 'Handle the onLoopComplete callback',
+  },
+  onEnterFrame: {
+    description: 'Handle the onEnterFrame callback',
+  },
+  onSegmentStart: {
+    description: 'Handle the onSegmentStart callback',
+  },
+  onConfigReady: {
+    description: 'Handle the onConfigReady callback',
+  },
+  onDataReady: {
+    description: 'Handle the onDataReady callback',
+  },
+  onDataFailed: {
+    description: 'Handle the onDataFailed callback',
+  },
+  onLoadedImages: {
+    description: 'Handle the onLoadedImages callback',
+  },
+  onDOMLoaded: {
+    description: 'Handle the onDOMLoaded callback',
+  },
+  onDestroy: {
+    description: 'Handle the onDestroy callback',
+  },
+  interactivity: {
+    description: 'Configure interactivity settings',
+  },
+};
+
 const AllVariantsTemplate: ComponentStory<typeof Lottie> = ({
   animation,
   ...args
@@ -79,4 +153,5 @@ AllVariants.argTypes = {
       disable: true,
     },
   },
+  ...Single.argTypes,
 };

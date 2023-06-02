@@ -25,5 +25,4 @@ export * from './TableBase';
 export * from './Notification';
 export * from './NotificationStack';
 export * from './Table';
-export * from './Toggle';
 export * from './ErrorList';

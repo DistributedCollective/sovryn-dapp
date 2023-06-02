@@ -81,6 +81,34 @@ const Template: Story<ComponentProps<typeof Paragraph>> = () => (
 
 export const Default = Template.bind({});
 
+Default.argTypes = {
+  children: {
+    control: 'text',
+    description:
+      'The content of the paragraph. Can be text, other components, or HTML elements',
+  },
+  size: {
+    control: 'select',
+    options: Object.values(ParagraphSize),
+    defaultValue: ParagraphSize.small,
+    description: 'The size to apply to the paragraph',
+  },
+  style: {
+    control: 'select',
+    options: Object.values(ParagraphStyle),
+    defaultValue: ParagraphStyle.normal,
+    description: 'The style to apply to the paragraph',
+  },
+  className: {
+    control: 'text',
+    description: 'The className to apply to the paragraph',
+  },
+  dataAttribute: {
+    control: 'text',
+    description: 'The data attributes to apply to the paragraph',
+  },
+};
+
 const InteractiveTemplate: Story<ComponentProps<typeof Paragraph>> = args => {
   return <Paragraph {...args} />;
 };
@@ -90,4 +118,8 @@ Interactive.args = {
   children: 'You can change this text',
   size: ParagraphSize.base,
   style: ParagraphStyle.normal,
+};
+
+Interactive.argTypes = {
+  ...Default.argTypes,
 };

@@ -79,16 +79,88 @@ Basic.args = {
   size: 24,
 };
 
+Basic.argTypes = {
+  icon: {
+    control: 'select',
+    options: Object.values(IconNames),
+    description:
+      'The name of the icon to display. It can be the name of a Sovryn UI icon, a custom SVG element, or an imported Fontawesome icon.',
+  },
+  size: {
+    control: 'number',
+    description:
+      'Size of the icon, in pixels or in scale (1x, 2x, 3x ...) for the Fontawesome icons.',
+  },
+  inline: {
+    control: 'boolean',
+    description: 'Whether to display the icon inline or block.',
+  },
+  className: {
+    control: 'text',
+    description: 'The class name to apply to the icon.',
+  },
+  dataAttribute: {
+    control: 'string',
+    description: 'The data attributes to apply to the icon.',
+  },
+  viewBox: {
+    control: 'string',
+    description: 'The viewBox to apply to the icon.',
+  },
+};
+
 export const FontAwesomeIcon = FontAwesomeIconTemplate.bind({});
-FontAwesomeIcon.args = {
-  icon: faBacterium,
-  size: '3x',
-  className: 'text-success mr-2',
+
+FontAwesomeIcon.argTypes = {
+  ...Basic.argTypes,
+  icon: {
+    control: 'string',
+    defaultValue: faBacterium,
+    description:
+      'The name of the icon to display. It can be the name of a Sovryn UI icon, a custom SVG element, or an imported Fontawesome icon.',
+  },
+  size: {
+    control: 'select',
+    options: [
+      'xs',
+      'lg',
+      '2x',
+      '3x',
+      '4x',
+      '5x',
+      '6x',
+      '7x',
+      '8x',
+      '9x',
+      '10x',
+    ],
+    defaultValue: '3x',
+  },
+  className: {
+    control: 'text',
+    defaultValue: 'text-success mr-2',
+  },
 };
 
 export const CustomIcon = CustomIconTemplate.bind({});
-CustomIcon.args = {
-  size: 24,
-  className: 'text-yellow-1 mr-2',
+
+CustomIcon.argTypes = {
+  ...Basic.argTypes,
+  icon: {
+    control: 'string',
+    defaultValue: '',
+    description:
+      'The name of the icon to display. It can be the name of a Sovryn UI icon, a custom SVG element, or an imported Fontawesome icon.',
+  },
+  size: {
+    control: 'number',
+    defaultValue: 24,
+  },
+  className: {
+    defaultValue: 'text-yellow-1 mr-2',
+  },
 };
+
 export const AllIcons = AllIconsTemplate.bind({});
+
+AllIcons.argTypes = Basic.argTypes;

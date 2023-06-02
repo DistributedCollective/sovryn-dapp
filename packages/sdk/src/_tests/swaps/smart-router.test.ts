@@ -108,4 +108,28 @@ describe('SmartRouter', () => {
       });
     });
   });
+
+  describe('helpers', () => {
+    it('returns all available pairs on enabled routes', async () => {
+      await expect(router.getPairs()).resolves.toBeInstanceOf(Map);
+    });
+
+    it('returns all available entries', async () => {
+      await expect(router.getEntries()).resolves.toHaveLength(14);
+    });
+
+    it('returns all available destinations for entry token', async () => {
+      await expect(router.getDestination(sov)).resolves.toHaveLength(12);
+    });
+
+    it('returns data about token', async () => {
+      await expect(router.getTokenDetails(btc)).resolves.toMatchObject({
+        address: btc,
+        symbol: 'rbtc',
+        decimalPrecision: 18,
+        icon: expect.any(String),
+        abi: expect.any(Array),
+      });
+    });
+  });
 });

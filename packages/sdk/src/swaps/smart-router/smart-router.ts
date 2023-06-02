@@ -1,5 +1,7 @@
 import { BigNumber, BigNumberish, providers } from 'ethers';
 
+import { TokenDetailsData, getTokenDetailsByAddress } from '@sovryn/contracts';
+
 import { DEFAULT_SWAP_ROUTES } from './config';
 import { SwapRoute, SwapRouteFunction } from './types';
 
@@ -71,5 +73,45 @@ export class SmartRouter {
     }
 
     return routes.sort((a, b) => a.quote.sub(b.quote).toNumber())[0];
+  }
+
+  // return all available pairs on enabled routes
+  public async getPairs(): Promise<Map<string, string[]>> {
+    const pairs = new Map<string, string[]>();
+    await Promise.all(
+      this.routes.map(async route => {
+        const routePairs = await route.pairs();
+        routePairs.forEach((quoteTokens, baseToken) => {
+          const existingQuoteTokens = pairs.get(baseToken);
+          if (existingQuoteTokens) {
+            pairs.set(
+              baseToken,
+              existingQuoteTokens.concat(
+                quoteTokens.filter(
+                  item => existingQuoteTokens.indexOf(item) < 0,
+                ),
+              ),
+            );
+          } else {
+            pairs.set(baseToken, quoteTokens);
+          }
+        });
+      }),
+    );
+    return pairs;
+  }
+
+  // return all available entries
+  public async getEntries(): Promise<string[]> {
+    return Array.from((await this.getPairs()).keys());
+  }
+
+  // return all available destinations for entry token
+  public async getDestination(entry: string): Promise<string[]> {
+    return (await this.getPairs()).get(entry) ?? [];
+  }
+
+  public async getTokenDetails(token: string): Promise<TokenDetailsData> {
+    return getTokenDetailsByAddress(token);
   }
 }

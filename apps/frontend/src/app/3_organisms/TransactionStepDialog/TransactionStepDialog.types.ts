@@ -8,6 +8,7 @@ import {
   ethers,
 } from 'ethers';
 
+import { PermitTransactionResponse } from '@sovryn/sdk';
 import { StatusType } from '@sovryn/ui';
 
 export interface TransactionConfig {
@@ -28,7 +29,7 @@ export type Transaction = {
   subtitle?: string;
   request: TransactionRequest;
   onStart?: (hash: string) => void;
-  onComplete?: (result: string | PermitResponse) => void;
+  onComplete?: (result: string | PermitTransactionResponse) => void;
   onChangeStatus?: (status: StatusType) => void;
   updateHandler?: (
     request: TransactionRequest,
@@ -102,19 +103,8 @@ export enum TransactionReceiptStatus {
   error = 'error',
 }
 
-export type PermitResponse = {
-  owner: string;
-  spender: string;
-  value: number | string;
-  nonce: number | string;
-  deadline: number | string;
-  r: string;
-  s: string;
-  v: number;
-};
-
 export type TransactionReceipt = {
   status: TransactionReceiptStatus;
   request: TransactionRequest;
-  response?: string | PermitResponse;
+  response?: string | PermitTransactionResponse;
 };

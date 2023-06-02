@@ -6,9 +6,9 @@ import { t } from 'i18next';
 
 import { getTokenContract, SupportedTokens } from '@sovryn/contracts';
 import { ChainId } from '@sovryn/ethers-provider';
+import { PermitTransactionResponse } from '@sovryn/sdk';
 
 import {
-  PermitResponse,
   Transaction,
   TransactionReceipt,
   TransactionReceiptStatus,
@@ -124,7 +124,7 @@ export const permitHandler =
   (
     override: (
       req: TransactionRequest,
-      res: string | PermitResponse | undefined,
+      res: string | PermitTransactionResponse | undefined,
     ) => TransactionRequest,
     permitIndex: number = 0,
   ) =>

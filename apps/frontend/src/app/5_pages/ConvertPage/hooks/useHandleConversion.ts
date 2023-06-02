@@ -8,7 +8,7 @@ import {
   getProtocolContract,
   getTokenDetails,
 } from '@sovryn/contracts';
-import { SwapRoute } from '@sovryn/sdk';
+import { PermitTransactionResponse, SwapRoute } from '@sovryn/sdk';
 
 import { defaultChainId } from '../../../../config/chains';
 
@@ -194,17 +194,20 @@ export const useHandleConversion = (
         onComplete,
         updateHandler: permitHandler((req, res) => {
           if (isTransactionDataRequest(req) && !!permitTxData) {
-            // const {data,to } = await route.swap(
-            //   sourceTokenDetails.address,
-            //   destinationTokenDetails.address,
-            //   weiAmount,
-            //   account,
-            //   {
-            //     permit: res,
-            //   }
-            // );
-            // req.data = data;
-            // req.to = to;
+            route
+              .swap(
+                sourceTokenDetails.address,
+                destinationTokenDetails.address,
+                weiAmount,
+                account,
+                {
+                  permit: res as PermitTransactionResponse,
+                },
+              )
+              .then(({ data, to }) => {
+                req.data = data!;
+                req.to = to!;
+              });
           }
           return req;
         }),

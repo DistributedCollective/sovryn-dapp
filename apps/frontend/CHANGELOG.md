@@ -1,5 +1,26 @@
 # frontend
 
+## 1.0.12
+
+### Patch Changes
+
+- 7055594: SOV-2311: Show SP SOV Subsidy Withdrawals in History tables
+- 58a4bb8: SOV-2315: add supported tokens
+- 79bfceb: SOV-2229: update token lists
+- 1817dd4: SOV-2368: Shows SP Subsidies rate by default
+- 79bfceb: Github workflow to release frontend build to IPFS network
+  add "REACT_APP_IPFS_BUILD" env variable to use hash router
+- 1817dd4: SOV-1314: Add maximum origination fee rate setting
+- 883f4c9: SOV-2360: show loading screen while maintenance states are loading
+- 0a410ca: chore: bump onboard-react version
+- 5bec0b3: SOV-2451: cross app menu overlap fix
+- Updated dependencies [58a4bb8]
+- Updated dependencies [79bfceb]
+- Updated dependencies [58a4bb8]
+- Updated dependencies [e42d5bd]
+  - @sovryn/contracts@1.0.7
+  - @sovryn/ethers-provider@1.0.1
+
 ## 1.0.11
 
 ### Patch Changes

@@ -249,13 +249,15 @@ const ConvertPage: FC = () => {
       !amount ||
       Number(amount) <= 0 ||
       Number(amount) > Number(maximumAmountToConvert) ||
-      !destinationToken,
+      !destinationToken ||
+      !route,
     [
+      isInMaintenance,
       account,
       amount,
       maximumAmountToConvert,
-      isInMaintenance,
       destinationToken,
+      route,
     ],
   );
 
@@ -281,6 +283,10 @@ const ConvertPage: FC = () => {
     setSourceToken(defaultSourceToken);
   }, [defaultSourceToken]);
 
+  const togglePriceQuote = useCallback(
+    () => setPriceQuote(value => !value),
+    [],
+  );
   return (
     <>
       <Helmet>
@@ -425,7 +431,7 @@ const ConvertPage: FC = () => {
                     label={t(pageTranslations.maximumPrice)}
                     valueClassName="text-primary-10"
                     className="cursor-pointer"
-                    onClick={() => setPriceQuote(value => !value)}
+                    onClick={togglePriceQuote}
                     value={renderPriceAmount}
                   />
                 </SimpleTable>

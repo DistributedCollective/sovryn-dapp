@@ -23,7 +23,7 @@ export const isTransactionRequest = (
 ): request is SignTransactionRequest =>
   request.type === TransactionType.signTransaction;
 
-export const isTransactionDataRequest = (
+export const isSignTransactionDataRequest = (
   request: TransactionRequest,
 ): request is SignTransactionDataRequest =>
   request.type === TransactionType.signTransactionData;

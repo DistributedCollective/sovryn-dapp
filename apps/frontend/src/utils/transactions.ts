@@ -24,7 +24,7 @@ export const UNSIGNED_PERMIT = {
   v: 0,
   r: ethers.constants.HashZero,
   s: ethers.constants.HashZero,
-};
+} as PermitTransactionResponse;
 
 type PreparePermitTransactionOptions = {
   token: SupportedTokens;

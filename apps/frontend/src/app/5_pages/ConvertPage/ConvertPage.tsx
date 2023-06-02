@@ -25,6 +25,7 @@ import {
   SimpleTable,
   SimpleTableRow,
 } from '@sovryn/ui';
+import { Decimal } from '@sovryn/utils';
 
 import { defaultChainId } from '../../../config/chains';
 
@@ -33,9 +34,9 @@ import { AssetRenderer } from '../../2_molecules/AssetRenderer/AssetRenderer';
 import { MaxButton } from '../../2_molecules/MaxButton/MaxButton';
 import { TOKEN_RENDER_PRECISION } from '../../../constants/currencies';
 import { useAccount } from '../../../hooks/useAccount';
-import { useAmountInput } from '../../../hooks/useAmountInput';
+import { useWeiAmountInput } from '../../../hooks/useWeiAmountInput';
 import { translations } from '../../../locales/i18n';
-import { fromWei, toWei } from '../../../utils/math';
+import { decimalic, fromWei } from '../../../utils/math';
 import { smartRouter, stableCoins } from './ConvertPage.types';
 import { useConversionMaintenance } from './hooks/useConversionMaintenance';
 import { useGetDefaultSourceToken } from './hooks/useGetDefaultSourceToken';
@@ -73,7 +74,9 @@ const ConvertPage: FC = () => {
   const defaultSourceToken = useGetDefaultSourceToken();
 
   const [priceInQuote, setPriceQuote] = useState(false);
-  const [amountInput, setAmount, amount] = useAmountInput('');
+
+  const [amount, setAmount, weiAmount] = useWeiAmountInput('');
+
   const [quote, setQuote] = useState('');
   const [route, setRoute] = useState<SwapRoute | undefined>();
 
@@ -112,7 +115,6 @@ const ConvertPage: FC = () => {
   const [destinationToken, setDestinationToken] = useState<
     SupportedTokens | ''
   >('');
-  const weiAmount = useMemo(() => toWei(amount), [amount]);
 
   const onTransactionSuccess = useCallback(() => setAmount(''), [setAmount]);
 
@@ -131,16 +133,10 @@ const ConvertPage: FC = () => {
       return '';
     }
 
-    const tolerance = Math.min(
-      Number(parseFloat(slippageTolerance).toFixed(3)),
-      100,
-    );
-
-    return fromWei(
-      toWei(quote)
-        .mul((100 - Number(tolerance)) * 1000)
-        .div(100 * 1000),
-    );
+    return Decimal.from(quote)
+      .mul(100 - Number(slippageTolerance))
+      .div(100)
+      .toString();
   }, [quote, slippageTolerance]);
 
   const priceToken = useMemo<SupportedTokens>(() => {
@@ -157,16 +153,16 @@ const ConvertPage: FC = () => {
     if (
       !quote ||
       !minimumReceived ||
-      toWei(quote).isZero() ||
-      toWei(amount).isZero()
+      decimalic(quote).isZero() ||
+      decimalic(amount).isZero()
     ) {
       return '';
     }
 
     if (priceToken === destinationToken) {
-      return fromWei(toWei(minimumReceived, 36).div(toWei(amount)));
+      return decimalic(minimumReceived).div(amount).toString();
     } else {
-      return fromWei(toWei(amount, 36).div(toWei(minimumReceived)));
+      return decimalic(amount).div(minimumReceived).toString();
     }
   }, [amount, destinationToken, minimumReceived, priceToken, quote]);
 
@@ -315,7 +311,7 @@ const ConvertPage: FC = () => {
 
             <div className="w-full flex flex-row justify-between items-center gap-3 mt-3.5">
               <AmountInput
-                value={amountInput}
+                value={amount}
                 onChangeText={setAmount}
                 label={t(commonTranslations.amount)}
                 min={0}

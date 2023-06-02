@@ -19,7 +19,7 @@ import {
 import {
   isMessageSignatureRequest,
   isPermitRequest,
-  isTransactionDataRequest,
+  isSignTransactionDataRequest,
   isTransactionRequest,
   isTypedDataRequest,
 } from '../../helpers';
@@ -77,7 +77,7 @@ export const TransactionSteps: FC<TransactionStepsProps> = ({
           item.config.unlimitedAmount =
             fnName === APPROVAL_FUNCTION ? false : undefined;
           item.config.gasPrice = request.gasPrice ?? gasPrice;
-        } else if (isTransactionDataRequest(request)) {
+        } else if (isSignTransactionDataRequest(request)) {
           const { signer, data, to, gasLimit } = request;
 
           item.config.gasLimit =
@@ -137,7 +137,6 @@ export const TransactionSteps: FC<TransactionStepsProps> = ({
     await Promise.all(
       items.map(async (item, i) => {
         if (item.transaction.updateHandler) {
-          console.log(i);
           item.transaction.request = await item.transaction.updateHandler(
             item.transaction.request,
             items.map(i => i.receipt),
@@ -244,7 +243,7 @@ export const TransactionSteps: FC<TransactionStepsProps> = ({
           });
 
           await handleUpdates();
-        } else if (isTransactionDataRequest(request)) {
+        } else if (isSignTransactionDataRequest(request)) {
           const tx = await request.signer.sendTransaction({
             data: request.data,
             to: request.to,

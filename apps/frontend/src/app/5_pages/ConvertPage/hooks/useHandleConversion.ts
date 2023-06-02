@@ -16,7 +16,7 @@ import {
   Transaction,
   TransactionType,
 } from '../../../3_organisms/TransactionStepDialog/TransactionStepDialog.types';
-import { isTransactionDataRequest } from '../../../3_organisms/TransactionStepDialog/helpers';
+import { isSignTransactionDataRequest } from '../../../3_organisms/TransactionStepDialog/helpers';
 import { GAS_LIMIT } from '../../../../constants/gasLimits';
 import { useTransactionContext } from '../../../../contexts/TransactionContext';
 import { useAccount } from '../../../../hooks/useAccount';
@@ -25,6 +25,7 @@ import {
   permitHandler,
   prepareApproveTransaction,
   preparePermitTransaction,
+  UNSIGNED_PERMIT,
 } from '../../../../utils/transactions';
 
 export const useHandleConversion = (
@@ -177,6 +178,7 @@ export const useHandleConversion = (
       destinationTokenDetails.address,
       weiAmount,
       account,
+      { permit: permitTxData ? UNSIGNED_PERMIT : undefined },
     );
 
     if (txData && txData.to && txData.data) {
@@ -193,8 +195,8 @@ export const useHandleConversion = (
         },
         onComplete,
         updateHandler: permitHandler(async (req, res) => {
-          if (isTransactionDataRequest(req) && !!permitTxData) {
-            const { data, to } = await route.swap(
+          if (isSignTransactionDataRequest(req) && !!permitTxData) {
+            const { data } = await route.swap(
               sourceTokenDetails.address,
               destinationTokenDetails.address,
               weiAmount,
@@ -204,7 +206,6 @@ export const useHandleConversion = (
               },
             );
             req.data = data!;
-            req.to = to!;
           }
           return req;
         }),

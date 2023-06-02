@@ -41,7 +41,10 @@ import {
   TransactionConfig,
   TransactionReceipt,
 } from '../../TransactionStepDialog.types';
-import { isTransactionDataRequest, isTransactionRequest } from '../../helpers';
+import {
+  isSignTransactionDataRequest,
+  isTransactionRequest,
+} from '../../helpers';
 
 export type TransactionStepProps = {
   transaction: Transaction;
@@ -85,7 +88,7 @@ export const TransactionStep: FC<TransactionStepProps> = ({
     if (isTransactionRequest(request)) {
       const { contract } = request;
       updateToken(contract.address);
-    } else if (isTransactionDataRequest(request)) {
+    } else if (isSignTransactionDataRequest(request)) {
       const { to } = request;
       updateToken(to);
     }
@@ -116,7 +119,7 @@ export const TransactionStep: FC<TransactionStepProps> = ({
       } catch (error) {
         console.log('error', error);
       }
-    } else if (isTransactionDataRequest(request)) {
+    } else if (isSignTransactionDataRequest(request)) {
       try {
         const {
           signer,
@@ -249,7 +252,7 @@ export const TransactionStep: FC<TransactionStepProps> = ({
         )}
 
         {(isTransactionRequest(request) ||
-          isTransactionDataRequest(request)) && (
+          isSignTransactionDataRequest(request)) && (
           <>
             <SimpleTable className="max-w-72 mt-3">
               {config.amount !== undefined && (

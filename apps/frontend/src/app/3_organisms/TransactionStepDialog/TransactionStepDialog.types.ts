@@ -34,7 +34,7 @@ export type Transaction = {
   updateHandler?: (
     request: TransactionRequest,
     receipts: TransactionReceipt[],
-  ) => TransactionRequest;
+  ) => TransactionRequest | Promise<TransactionRequest>;
 };
 
 export enum TransactionType {

@@ -131,11 +131,14 @@ export const TransactionSteps: FC<TransactionStepsProps> = ({
     [setStepData],
   );
 
-  const handleUpdates = useCallback(() => {
-    setStepData(items =>
-      items.map(item => {
+  const handleUpdates = useCallback(async () => {
+    const items = [...stepData];
+
+    await Promise.all(
+      items.map(async (item, i) => {
         if (item.transaction.updateHandler) {
-          item.transaction.request = item.transaction.updateHandler(
+          console.log(i);
+          item.transaction.request = await item.transaction.updateHandler(
             item.transaction.request,
             items.map(i => i.receipt),
           );
@@ -143,7 +146,9 @@ export const TransactionSteps: FC<TransactionStepsProps> = ({
         return item;
       }),
     );
-  }, []);
+
+    setStepData(items);
+  }, [stepData]);
 
   const submit = useCallback(async () => {
     try {
@@ -187,7 +192,7 @@ export const TransactionSteps: FC<TransactionStepsProps> = ({
 
           onTxStatusChange?.(StatusType.success);
 
-          handleUpdates();
+          await handleUpdates();
         } else if (isMessageSignatureRequest(request)) {
           const signature = await request.signer.signMessage(request.message);
 
@@ -200,7 +205,7 @@ export const TransactionSteps: FC<TransactionStepsProps> = ({
             response: signature,
           });
 
-          handleUpdates();
+          await handleUpdates();
         } else if (isTypedDataRequest(request)) {
           const signature = await request.signer._signTypedData(
             request.domain,
@@ -217,7 +222,7 @@ export const TransactionSteps: FC<TransactionStepsProps> = ({
             response: signature,
           });
 
-          handleUpdates();
+          await handleUpdates();
         } else if (isPermitRequest(request)) {
           const response = await signERC2612Permit(
             request.signer,
@@ -238,7 +243,7 @@ export const TransactionSteps: FC<TransactionStepsProps> = ({
             response,
           });
 
-          handleUpdates();
+          await handleUpdates();
         } else if (isTransactionDataRequest(request)) {
           const tx = await request.signer.sendTransaction({
             data: request.data,
@@ -268,7 +273,7 @@ export const TransactionSteps: FC<TransactionStepsProps> = ({
 
           onTxStatusChange?.(StatusType.success);
 
-          handleUpdates();
+          await handleUpdates();
         } else {
           // unknown type
           transactions[i].onChangeStatus?.(StatusType.error);

@@ -192,22 +192,19 @@ export const useHandleConversion = (
           gasLimit: GAS_LIMIT.CONVERT,
         },
         onComplete,
-        updateHandler: permitHandler((req, res) => {
+        updateHandler: permitHandler(async (req, res) => {
           if (isTransactionDataRequest(req) && !!permitTxData) {
-            route
-              .swap(
-                sourceTokenDetails.address,
-                destinationTokenDetails.address,
-                weiAmount,
-                account,
-                {
-                  permit: res as PermitTransactionResponse,
-                },
-              )
-              .then(({ data, to }) => {
-                req.data = data!;
-                req.to = to!;
-              });
+            const { data, to } = await route.swap(
+              sourceTokenDetails.address,
+              destinationTokenDetails.address,
+              weiAmount,
+              account,
+              {
+                permit: res as PermitTransactionResponse,
+              },
+            );
+            req.data = data!;
+            req.to = to!;
           }
           return req;
         }),

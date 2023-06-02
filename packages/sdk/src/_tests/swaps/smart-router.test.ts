@@ -2,12 +2,10 @@ import { BigNumber, ethers, providers } from 'ethers';
 
 import { SupportedTokens, getTokenContract } from '@sovryn/contracts';
 
-import { ammSwapRoute } from '../../swaps/smart-router/routes/amm-swap-route';
-import { myntBassetRoute } from '../../swaps/smart-router/routes/mynt-basset-route';
-import { zeroRedemptionSwapRoute } from '../../swaps/smart-router/routes/zero-redemption-route';
 import { SmartRouter } from '../../swaps/smart-router/smart-router';
 import { makeChainFixture } from '../_fixtures/chain';
 import { TEST_TIMEOUT } from '../config';
+import { smartRoutes } from '../../swaps/smart-router';
 
 describe('SmartRouter', () => {
   jest.setTimeout(TEST_TIMEOUT);
@@ -19,11 +17,7 @@ describe('SmartRouter', () => {
 
   beforeAll(async () => {
     provider = (await makeChainFixture()).provider;
-    router = new SmartRouter(provider, [
-      ammSwapRoute,
-      myntBassetRoute,
-      zeroRedemptionSwapRoute,
-    ]);
+    router = new SmartRouter(provider, Object.values(smartRoutes));
 
     xusd = (await getTokenContract(SupportedTokens.xusd)).address;
     sov = (await getTokenContract(SupportedTokens.sov)).address;

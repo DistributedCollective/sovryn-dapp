@@ -125,7 +125,7 @@ export const permitHandler =
     override: (
       req: TransactionRequest,
       res: string | PermitTransactionResponse | undefined,
-    ) => TransactionRequest,
+    ) => TransactionRequest | Promise<TransactionRequest>,
     permitIndex: number = 0,
   ) =>
   (request: TransactionRequest, receipts: TransactionReceipt[]) => {

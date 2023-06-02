@@ -34,10 +34,10 @@ import { MaxButton } from '../../2_molecules/MaxButton/MaxButton';
 import { TOKEN_RENDER_PRECISION } from '../../../constants/currencies';
 import { useAccount } from '../../../hooks/useAccount';
 import { useAmountInput } from '../../../hooks/useAmountInput';
-import { useMaintenance } from '../../../hooks/useMaintenance';
 import { translations } from '../../../locales/i18n';
 import { fromWei, toWei } from '../../../utils/math';
 import { smartRouter, stableCoins } from './ConvertPage.types';
+import { useConversionMaintenance } from './hooks/useConversionMaintenance';
 import { useGetDefaultSourceToken } from './hooks/useGetDefaultSourceToken';
 import { useGetMaximumAvailableAmount } from './hooks/useGetMaximumAvailableAmount';
 import { useHandleConversion } from './hooks/useHandleConversion';
@@ -80,9 +80,6 @@ const ConvertPage: FC = () => {
   const [sourceToken, setSourceToken] =
     useState<SupportedTokens>(defaultSourceToken);
 
-  const { checkMaintenance, States } = useMaintenance();
-  const convertLocked = checkMaintenance(States.ZERO_CONVERT);
-  const dllrLocked = checkMaintenance(States.ZERO_DLLR);
   const [showAdvancedSettings, setShowAdvancedSettings] = useState(false);
 
   const [tokenOptions, setTokenOptions] = useState<
@@ -234,12 +231,10 @@ const ConvertPage: FC = () => {
     onTransactionSuccess,
   );
 
-  const isInMaintenance = useMemo(
-    () =>
-      convertLocked ||
-      (dllrLocked &&
-        [sourceToken, destinationToken].includes(SupportedTokens.dllr)),
-    [convertLocked, destinationToken, dllrLocked, sourceToken],
+  const isInMaintenance = useConversionMaintenance(
+    sourceToken,
+    destinationToken as SupportedTokens,
+    route,
   );
 
   const isSubmitDisabled = useMemo(

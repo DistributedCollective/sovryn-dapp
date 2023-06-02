@@ -120,7 +120,7 @@ const ConvertPage: FC = () => {
 
   const maximumAmountToConvert = useGetMaximumAvailableAmount(
     sourceToken,
-    destinationToken as SupportedTokens,
+    destinationToken as SupportedTokens as SupportedTokens,
   );
 
   const isValidAmount = useMemo(
@@ -197,6 +197,11 @@ const ConvertPage: FC = () => {
   );
 
   const onSwitchClick = useCallback(() => {
+    if (destinationToken) {
+      setDestinationToken(sourceToken);
+      setSourceToken(destinationToken as SupportedTokens);
+      setAmount('');
+    }
     if (destinationToken) {
       setDestinationToken(sourceToken);
       setSourceToken(destinationToken as SupportedTokens);
@@ -281,6 +286,7 @@ const ConvertPage: FC = () => {
   return (
     <>
       <Helmet>
+        <title>{t(pageTranslations.meta.title)}</title>
         <title>{t(pageTranslations.meta.title)}</title>
       </Helmet>
       <div className="w-full flex flex-col items-center text-gray-10 mt-9 sm:mt-24">

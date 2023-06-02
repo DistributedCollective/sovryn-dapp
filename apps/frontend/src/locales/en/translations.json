@@ -52,7 +52,8 @@
             "loading": "Loading Zero data",
             "error": "Error loading Zero data, please try again",
             "pageLoading": "is loading..."
-        }
+        },
+        "advancedSettings": "Advanced settings"
     },
     "connectWalletButton": {
         "connect": "Get started",
@@ -115,7 +116,6 @@
         "transactionFailedSubtitle": "Please close or retry your transaction.",
         "transactionSuccessTitle": "Transaction confirmed successfully",
         "estimatedGasFee": "Estimated gas fee",
-        "advancedSettings": "Advanced settings",
         "gasSettings": "Gas settings",
         "gasLimit": "Gas limit",
         "gasPrice": "Gas price",
@@ -351,7 +351,11 @@
             "approveTitle": "Approve transferring {{asset}}",
             "convert": "Convert {{asset}}",
             "approve": "Approve {{asset}}"
-        }
+        },
+        "slippageTolerance": "Slippage tolerance",
+        "price": "Price",
+        "minimumReceived": "Minimum received",
+        "maximumPrice": "Maximum price"
     },
 
     "fastBtc": {

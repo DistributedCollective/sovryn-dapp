@@ -4,8 +4,8 @@ import { useEffect } from 'react';
 import { t } from 'i18next';
 import { Helmet } from 'react-helmet-async';
 
-import { SupportedTokens } from '@sovryn/contracts';
-import { SupportedTokenList } from '@sovryn/contracts';
+import { getTokenDetails, SupportedTokens } from '@sovryn/contracts';
+import { SwapRoute } from '@sovryn/sdk';
 import {
   Accordion,
   AmountInput,
@@ -21,9 +21,12 @@ import {
   Paragraph,
   ParagraphSize,
   Select,
+  SelectOption,
   SimpleTable,
   SimpleTableRow,
 } from '@sovryn/ui';
+
+import { defaultChainId } from '../../../config/chains';
 
 import { AmountRenderer } from '../../2_molecules/AmountRenderer/AmountRenderer';
 import { AssetRenderer } from '../../2_molecules/AssetRenderer/AssetRenderer';
@@ -33,38 +36,24 @@ import { useAccount } from '../../../hooks/useAccount';
 import { useAmountInput } from '../../../hooks/useAmountInput';
 import { useMaintenance } from '../../../hooks/useMaintenance';
 import { translations } from '../../../locales/i18n';
-import { allowedTokens, bassets } from './ConvertPage.types';
+import { fromWei, toWei } from '../../../utils/math';
+import { smartRouter, stableCoins } from './ConvertPage.types';
 import { useGetDefaultSourceToken } from './hooks/useGetDefaultSourceToken';
 import { useGetMaximumAvailableAmount } from './hooks/useGetMaximumAvailableAmount';
 import { useHandleConversion } from './hooks/useHandleConversion';
 
 const commonTranslations = translations.common;
 const pageTranslations = translations.convertPage;
-const defaultSlippageTolerance = 0.5;
-const pricePlaceholder = 1;
-const minimumReceivedPlaceholder = 200;
-const maximumPricePlaceholder = 30000;
 
-const ConvertPage: FC = () => {
-  const { account } = useAccount();
-
-  const defaultSourceToken = useGetDefaultSourceToken();
-
-  const [amountInput, setAmount, amount] = useAmountInput('');
-
-  const [sourceToken, setSourceToken] =
-    useState<SupportedTokens>(defaultSourceToken);
-
-  const { checkMaintenance, States } = useMaintenance();
-  const convertLocked = checkMaintenance(States.ZERO_CONVERT);
-  const dllrLocked = checkMaintenance(States.ZERO_DLLR);
-  const [showAdvancedSettings, setShowAdvancedSettings] = useState(false);
-
-  const tokenOptions = useMemo(
-    () =>
-      SupportedTokenList.filter(item =>
-        allowedTokens.includes(item.symbol),
-      ).map(token => ({
+const tokensToOptions = (
+  addresses: string[],
+  callback: (options: SelectOption<SupportedTokens>[]) => void,
+) =>
+  Promise.all(
+    addresses.map(address => smartRouter.getTokenDetails(address)),
+  ).then(tokens =>
+    callback(
+      tokens.map(token => ({
         value: token.symbol,
         label: (
           <AssetRenderer
@@ -74,25 +63,59 @@ const ConvertPage: FC = () => {
           />
         ),
       })),
-    [],
+    ),
   );
 
-  const tokenOptionsWithoutSourceToken = useMemo(
-    () => tokenOptions.filter(item => item.value !== sourceToken),
-    [sourceToken, tokenOptions],
-  );
+const ConvertPage: FC = () => {
+  const { account } = useAccount();
+  const [slippageTolerance, setSlippageTolerance] = useState('0.5');
 
-  const [destinationTokenOptions, setDestinationTokenOptions] = useState(
-    tokenOptionsWithoutSourceToken,
-  );
+  const defaultSourceToken = useGetDefaultSourceToken();
+
+  const [priceInQuote, setPriceQuote] = useState(false);
+  const [amountInput, setAmount, amount] = useAmountInput('');
+  const [quote, setQuote] = useState('');
+  const [route, setRoute] = useState<SwapRoute | undefined>();
+
+  const [sourceToken, setSourceToken] =
+    useState<SupportedTokens>(defaultSourceToken);
+
+  const { checkMaintenance, States } = useMaintenance();
+  const convertLocked = checkMaintenance(States.ZERO_CONVERT);
+  const dllrLocked = checkMaintenance(States.ZERO_DLLR);
+  const [showAdvancedSettings, setShowAdvancedSettings] = useState(false);
+
+  const [tokenOptions, setTokenOptions] = useState<
+    SelectOption<SupportedTokens>[]
+  >([]);
+
+  const [destinationTokenOptions, setDestinationTokenOptions] = useState<
+    SelectOption<SupportedTokens>[]
+  >([]);
 
   useEffect(() => {
-    setDestinationTokenOptions(tokenOptionsWithoutSourceToken);
-  }, [tokenOptionsWithoutSourceToken]);
+    smartRouter
+      .getEntries()
+      .then(tokens => tokensToOptions(tokens, setTokenOptions));
+  }, []);
+
+  useEffect(() => {
+    (async () => {
+      const sourceTokenDetails = await getTokenDetails(
+        sourceToken,
+        defaultChainId,
+      );
+
+      smartRouter
+        .getDestination(sourceTokenDetails.address)
+        .then(tokens => tokensToOptions(tokens, setDestinationTokenOptions));
+    })();
+  }, [sourceToken]);
 
   const [destinationToken, setDestinationToken] = useState<
     SupportedTokens | ''
   >('');
+  const weiAmount = useMemo(() => toWei(amount), [amount]);
 
   const onTransactionSuccess = useCallback(() => setAmount(''), [setAmount]);
 
@@ -105,6 +128,72 @@ const ConvertPage: FC = () => {
     () => Number(amount) <= Number(maximumAmountToConvert),
     [amount, maximumAmountToConvert],
   );
+
+  const minimumReceived = useMemo(() => {
+    if (!quote || !slippageTolerance) {
+      return '';
+    }
+
+    const tolerance = parseFloat(slippageTolerance).toFixed(3);
+
+    return fromWei(
+      toWei(quote)
+        .mul((100 - Number(tolerance)) * 1000)
+        .div(100 * 1000),
+    );
+  }, [quote, slippageTolerance]);
+
+  const priceToken = useMemo<SupportedTokens>(() => {
+    if (!destinationToken) {
+      return sourceToken;
+    }
+    if (priceInQuote || stableCoins.find(token => token === destinationToken)) {
+      return destinationToken;
+    }
+    return sourceToken;
+  }, [destinationToken, sourceToken, priceInQuote]);
+
+  const price = useMemo(() => {
+    if (
+      !quote ||
+      !minimumReceived ||
+      toWei(quote).isZero() ||
+      toWei(amount).isZero()
+    ) {
+      return '';
+    }
+
+    if (priceToken === destinationToken) {
+      return fromWei(toWei(minimumReceived, 36).div(toWei(amount)));
+    } else {
+      return fromWei(toWei(amount, 36).div(toWei(minimumReceived)));
+    }
+  }, [amount, destinationToken, minimumReceived, priceToken, quote]);
+
+  useEffect(() => {
+    (async () => {
+      setQuote('');
+      setRoute(undefined);
+
+      if (!sourceToken || !destinationToken || weiAmount.lte(0)) {
+        return;
+      }
+
+      const [sourceTokenDetails, destinationTokenDetails] = await Promise.all([
+        getTokenDetails(sourceToken, defaultChainId),
+        getTokenDetails(destinationToken, defaultChainId),
+      ]);
+
+      const result = await smartRouter.getBestQuote(
+        sourceTokenDetails.address,
+        destinationTokenDetails.address,
+        weiAmount,
+      );
+
+      setRoute(result.route);
+      setQuote(fromWei(result.quote.toString()));
+    })();
+  }, [sourceToken, destinationToken, weiAmount]);
 
   const onMaximumAmountClick = useCallback(
     () => setAmount(maximumAmountToConvert.toString()),
@@ -137,7 +226,8 @@ const ConvertPage: FC = () => {
   const { handleSubmit } = useHandleConversion(
     sourceToken,
     destinationToken as SupportedTokens,
-    amount,
+    weiAmount,
+    route,
     onTransactionSuccess,
   );
 
@@ -167,49 +257,26 @@ const ConvertPage: FC = () => {
   );
 
   const renderDestinationAmount = useMemo(
-    () => (destinationToken ? amount : t(commonTranslations.na)),
-    [amount, destinationToken],
+    () => quote || t(commonTranslations.na),
+    [quote],
   );
 
   const renderPriceAmount = useMemo(() => {
-    if (destinationToken && amount) {
+    if (price) {
       return (
         <AmountRenderer
-          value={pricePlaceholder}
-          suffix={sourceToken}
+          value={price}
+          suffix={priceToken}
           precision={TOKEN_RENDER_PRECISION}
         />
       );
     }
     return t(commonTranslations.na);
-  }, [amount, destinationToken, sourceToken]);
-
-  useEffect(() => {
-    if (sourceToken === destinationToken) {
-      if (destinationTokenOptions.length === 1) {
-        setDestinationTokenOptions(tokenOptionsWithoutSourceToken);
-      }
-      setDestinationToken(tokenOptionsWithoutSourceToken[0].value);
-    }
-  }, [
-    destinationToken,
-    destinationTokenOptions,
-    sourceToken,
-    tokenOptionsWithoutSourceToken,
-  ]);
+  }, [price, priceToken]);
 
   useEffect(() => {
     setSourceToken(defaultSourceToken);
   }, [defaultSourceToken]);
-
-  useEffect(() => {
-    if (bassets.includes(sourceToken) && destinationToken) {
-      setDestinationToken(SupportedTokens.dllr);
-      setDestinationTokenOptions(
-        tokenOptions.filter(item => item.value === SupportedTokens.dllr),
-      );
-    }
-  }, [sourceToken, tokenOptions, destinationToken]);
 
   return (
     <>
@@ -261,6 +328,7 @@ const ConvertPage: FC = () => {
                 options={tokenOptions}
                 labelRenderer={() => getAssetRenderer(sourceToken)}
                 className="min-w-[6.7rem]"
+                menuClassName="max-h-[20rem]"
                 dataAttribute="convert-from-asset"
               />
             </div>
@@ -307,12 +375,13 @@ const ConvertPage: FC = () => {
                 onChange={setDestinationToken}
                 options={destinationTokenOptions}
                 className="min-w-[6.7rem]"
+                menuClassName="max-h-[20rem]"
                 dataAttribute="convert-to-asset"
               />
             </div>
           </div>
 
-          {sourceToken && destinationToken ? (
+          {sourceToken && destinationToken && quote ? (
             <>
               <Accordion
                 className="mt-4 mb-3 text-xs"
@@ -323,12 +392,15 @@ const ConvertPage: FC = () => {
               >
                 <div className="mt-2 mb-4">
                   <AmountInput
-                    value={defaultSlippageTolerance}
+                    value={slippageTolerance}
+                    onChange={e => setSlippageTolerance(e.target.value)}
                     label={t(pageTranslations.slippageTolerance)}
                     className="max-w-none w-full"
                     unit="%"
+                    step="0.001"
+                    decimalPrecision={3}
                     placeholder="0"
-                    readOnly
+                    max={100}
                   />
                 </div>
               </Accordion>
@@ -339,7 +411,7 @@ const ConvertPage: FC = () => {
                   valueClassName="text-primary-10"
                   value={
                     <AmountRenderer
-                      value={minimumReceivedPlaceholder}
+                      value={minimumReceived}
                       suffix={destinationToken}
                       precision={TOKEN_RENDER_PRECISION}
                     />
@@ -348,13 +420,9 @@ const ConvertPage: FC = () => {
                 <SimpleTableRow
                   label={t(pageTranslations.maximumPrice)}
                   valueClassName="text-primary-10"
-                  value={
-                    <AmountRenderer
-                      value={maximumPricePlaceholder}
-                      suffix={sourceToken}
-                      precision={TOKEN_RENDER_PRECISION}
-                    />
-                  }
+                  className="cursor-pointer"
+                  onClick={() => setPriceQuote(value => !value)}
+                  value={renderPriceAmount}
                 />
               </SimpleTable>
             </>
@@ -363,7 +431,9 @@ const ConvertPage: FC = () => {
               <SimpleTableRow
                 label={t(pageTranslations.price)}
                 valueClassName="text-primary-10"
+                className="cursor-pointer"
                 value={renderPriceAmount}
+                onClick={() => setPriceQuote(value => !value)}
               />
             </SimpleTable>
           )}

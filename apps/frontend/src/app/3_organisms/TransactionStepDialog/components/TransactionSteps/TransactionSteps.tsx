@@ -19,6 +19,7 @@ import {
 import {
   isMessageSignatureRequest,
   isPermitRequest,
+  isTransactionDataRequest,
   isTransactionRequest,
   isTypedDataRequest,
 } from '../../helpers';
@@ -75,6 +76,19 @@ export const TransactionSteps: FC<TransactionStepsProps> = ({
             fnName === APPROVAL_FUNCTION ? requestArgs[1] : undefined;
           item.config.unlimitedAmount =
             fnName === APPROVAL_FUNCTION ? false : undefined;
+          item.config.gasPrice = request.gasPrice ?? gasPrice;
+        } else if (isTransactionDataRequest(request)) {
+          const { signer, data, to, gasLimit } = request;
+
+          item.config.gasLimit =
+            gasLimit ??
+            (
+              await signer.estimateGas({
+                to,
+                data,
+              })
+            ).toString();
+
           item.config.gasPrice = request.gasPrice ?? gasPrice;
         }
 
@@ -223,6 +237,36 @@ export const TransactionSteps: FC<TransactionStepsProps> = ({
             request,
             response,
           });
+
+          handleUpdates();
+        } else if (isTransactionDataRequest(request)) {
+          const tx = await request.signer.sendTransaction({
+            data: request.data,
+            to: request.to,
+            value: request.value,
+          });
+
+          updateReceipt(i, {
+            status: TransactionReceiptStatus.pending,
+            request,
+            response: tx.hash,
+          });
+
+          transactions[i].onStart?.(tx.hash);
+          transactions[i].onChangeStatus?.(StatusType.pending);
+
+          await tx.wait();
+
+          transactions[i].onChangeStatus?.(StatusType.success);
+          transactions[i].onComplete?.(tx.hash);
+
+          updateReceipt(i, {
+            status: TransactionReceiptStatus.success,
+            request,
+            response: tx.hash,
+          });
+
+          onTxStatusChange?.(StatusType.success);
 
           handleUpdates();
         } else {

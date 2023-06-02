@@ -1,6 +1,12 @@
 import { JsonRpcSigner } from '@ethersproject/providers';
 
-import { BigNumberish, TypedDataDomain, TypedDataField, ethers } from 'ethers';
+import {
+  BigNumberish,
+  BytesLike,
+  TypedDataDomain,
+  TypedDataField,
+  ethers,
+} from 'ethers';
 
 import { StatusType } from '@sovryn/ui';
 
@@ -34,6 +40,7 @@ export enum TransactionType {
   signMessage = 'sign',
   signTypedData = 'signTypedData',
   signTransaction = 'signTransaction',
+  signTransactionData = 'signTransactionData',
   signPermit = 'signPermit',
 }
 
@@ -72,11 +79,22 @@ export type SignTransactionRequest = {
   gasPrice?: string;
 };
 
+export type SignTransactionDataRequest = {
+  type: TransactionType.signTransactionData;
+  signer: JsonRpcSigner;
+  data: BytesLike;
+  to: string;
+  value?: BigNumberish;
+  gasLimit?: BigNumberish;
+  gasPrice?: string;
+};
+
 export type TransactionRequest =
   | SignMessageRequest
   | SignTypedDataRequest
   | SignPermitRequest
-  | SignTransactionRequest;
+  | SignTransactionRequest
+  | SignTransactionDataRequest;
 
 export enum TransactionReceiptStatus {
   pending = 'pending',

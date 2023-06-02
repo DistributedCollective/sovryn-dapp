@@ -1,36 +1,58 @@
-import { addresses } from '@sovryn-zero/lib-ethers/dist/deployments/default/rsktestnet.json';
-
-import { AsyncContractConfigData } from '../../types';
+import type { AsyncContractConfigData } from '../../types';
 
 export const rskTestnet: Record<string, AsyncContractConfigData> = {
   borrowerOperations: {
-    address: addresses.borrowerOperations,
+    address: '0xba8d7B80bcb3A01A5e713c356fD18EeD299B70D0',
     getAbi: async () =>
-      (await import('@sovryn-zero/lib-ethers/dist/abi/BorrowerOperations.json'))
-        .default,
+      (
+        await import(
+          '@sovryn-zero/contracts/deployment/rskSovrynTestnet/BorrowerOperations.json'
+        )
+      ).default.abi,
   },
   troveManager: {
-    address: addresses.troveManager,
+    address: '0xd8aB7EC3bd20A0Ce3084e124bFBC9Aa96a6D7FdD',
     getAbi: async () =>
-      (await import('@sovryn-zero/lib-ethers/dist/abi/TroveManager.json'))
-        .default,
+      (
+        await import(
+          '@sovryn-zero/contracts/deployment/rskSovrynTestnet/TroveManager.json'
+        )
+      ).default.abi,
   },
   stabilityPool: {
-    address: addresses.stabilityPool,
+    address: '0x176D218CaB70002CEF08e15271476187c37ed25f',
     getAbi: async () =>
-      (await import('@sovryn-zero/lib-ethers/dist/abi/StabilityPool.json'))
-        .default,
+      (
+        await import(
+          '@sovryn-zero/contracts/deployment/rskSovrynTestnet/StabilityPool.json'
+        )
+      ).default.abi,
   },
   liquityBaseParams: {
-    address: addresses.liquityBaseParams,
+    address: '0x8B1cB2Ffc9aFe4344503824898098d2E4c883873',
     getAbi: async () =>
-      (await import('@sovryn-zero/lib-ethers/dist/abi/LiquityBaseParams.json'))
-        .default,
+      (
+        await import(
+          '@sovryn-zero/contracts/deployment/rskSovrynTestnet/LiquityBaseParams.json'
+        )
+      ).default.abi,
   },
   communityIssuance: {
-    address: addresses.communityIssuance,
+    address: '0xD017396d2284699e0Ce34b236CcE5321Ee3078e5',
     getAbi: async () =>
-      (await import('@sovryn-zero/lib-ethers/dist/abi/CommunityIssuance.json'))
-        .default,
+      (
+        await import(
+          '@sovryn-zero/contracts/deployment/rskSovrynTestnet/CommunityIssuance.json'
+        )
+      ).default.abi,
+  },
+  hintHelpers: {
+    address: '0xc7Bf159d6259ce5a4Fbdd0e3d060875F76605Dba',
+    getAbi: async () =>
+      (
+        await import(
+          '@sovryn-zero/contracts/deployment/rskSovrynTestnet/HintHelpers.json'
+        )
+      ).default.abi,
   },
 };

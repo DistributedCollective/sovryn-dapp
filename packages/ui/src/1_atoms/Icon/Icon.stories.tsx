@@ -97,7 +97,7 @@ Basic.argTypes = {
   },
   className: {
     control: 'text',
-    description: 'The class name to apply to the icon.',
+    description: 'The className to apply to the icon.',
   },
   dataAttribute: {
     control: 'string',

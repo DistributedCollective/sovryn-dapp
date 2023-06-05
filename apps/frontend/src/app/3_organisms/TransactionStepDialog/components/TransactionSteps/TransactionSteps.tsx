@@ -1,5 +1,6 @@
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 
+import classNames from 'classnames';
 import { ethers } from 'ethers';
 import { t } from 'i18next';
 
@@ -344,19 +345,19 @@ export const TransactionSteps: FC<TransactionStepsProps> = ({
           gasPrice={gasPrice}
         />
       ))}
-      {!isLoading && transactions.length > step && (
-        <Button
-          className="w-full mt-7"
-          text={t(translations.common.buttons[error ? 'retry' : 'confirm'])}
-          onClick={submit}
-          dataAttribute={`tx-dialog-${error ? 'retry' : 'confirm'}`}
-          disabled={!hasEnoughBalance}
-        />
-      )}
       {!hasEnoughBalance && (
         <ErrorBadge
           level={ErrorLevel.Critical}
           message={t(translations.transactionStep.notEnoughBalance)}
+        />
+      )}
+      {!isLoading && transactions.length > step && (
+        <Button
+          className={classNames('w-full', hasEnoughBalance && 'mt-7')}
+          text={t(translations.common.buttons[error ? 'retry' : 'confirm'])}
+          onClick={submit}
+          dataAttribute={`tx-dialog-${error ? 'retry' : 'confirm'}`}
+          disabled={!hasEnoughBalance}
         />
       )}
       {onClose && transactions.length === step && (

@@ -1,5 +1,15 @@
 # @sovryn/contracts
 
+## 1.0.7
+
+### Patch Changes
+
+- 58a4bb8: SOV-2315: add supported tokens
+- 79bfceb: SOV-2229: update token lists
+- e42d5bd: SOV-2305: Pull Zero contract details from @sovryn-zero/contracts package
+- Updated dependencies [58a4bb8]
+  - @sovryn/ethers-provider@1.0.1
+
 ## 1.0.6
 
 ### Patch Changes

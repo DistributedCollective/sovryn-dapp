@@ -47,7 +47,8 @@ Basic.argTypes = {
   },
   dataAttribute: {
     control: 'text',
-    description: 'The data attributes to apply to the toggle',
+    description:
+      'The data id to apply as HTML attribute to this component instance. This should be unique per component instance on the page',
   },
   inline: {
     control: 'boolean',

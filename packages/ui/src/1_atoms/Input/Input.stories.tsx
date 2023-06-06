@@ -74,7 +74,8 @@ TextInput.argTypes = {
   },
   onChangeText: {
     control: 'function',
-    description: 'The onChange handler for the input',
+    description:
+      "The onChange handler for the input, triggered whenever the input's value changes",
   },
   classNameInput: {
     control: 'text',
@@ -82,7 +83,8 @@ TextInput.argTypes = {
   },
   invalid: {
     control: 'boolean',
-    description: 'Whether the input is invalid',
+    description:
+      'Whether the input is invalid. When set to true the error state styling and behaviour will be triggered on the input',
   },
 };
 
@@ -112,7 +114,7 @@ DebouncedInput.argTypes = {
   ...TextInput.argTypes,
   debounce: {
     control: 'number',
-    description: 'The debounce time in ms',
+    description: 'The debounce time in milliseconds',
   },
 };
 

@@ -1,3 +1,4 @@
+import { SizeProp } from '@fortawesome/fontawesome-svg-core';
 import { faBacterium } from '@fortawesome/free-solid-svg-icons';
 import { Story } from '@storybook/react';
 
@@ -101,7 +102,8 @@ Basic.argTypes = {
   },
   dataAttribute: {
     control: 'string',
-    description: 'The data attributes to apply to the icon.',
+    description:
+      'The data id to apply as HTML attribute to this component instance. This should be unique per component instance on the page',
   },
   viewBox: {
     control: 'string',
@@ -110,6 +112,25 @@ Basic.argTypes = {
 };
 
 export const FontAwesomeIcon = FontAwesomeIconTemplate.bind({});
+
+export const availableSizes: SizeProp[] = [
+  '2xs',
+  'xs',
+  'sm',
+  'lg',
+  'xl',
+  '2xl',
+  '1x',
+  '2x',
+  '3x',
+  '4x',
+  '5x',
+  '6x',
+  '7x',
+  '8x',
+  '9x',
+  '10x',
+];
 
 FontAwesomeIcon.argTypes = {
   ...Basic.argTypes,
@@ -121,19 +142,7 @@ FontAwesomeIcon.argTypes = {
   },
   size: {
     control: 'select',
-    options: [
-      'xs',
-      'lg',
-      '2x',
-      '3x',
-      '4x',
-      '5x',
-      '6x',
-      '7x',
-      '8x',
-      '9x',
-      '10x',
-    ],
+    options: availableSizes,
     defaultValue: '3x',
   },
   className: {

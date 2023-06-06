@@ -65,7 +65,8 @@ Single.argTypes = {
     control: 'select',
     options: [true, 1, 2, 3, 4, 5],
     defaultValue: true,
-    description: 'Set the number of times to loop the animation',
+    description:
+      'Set the number of times to loop the animation. Loops indefinitely when set to "true"',
   },
   name: {
     control: 'text',

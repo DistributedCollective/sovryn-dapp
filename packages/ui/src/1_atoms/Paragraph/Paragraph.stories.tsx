@@ -85,7 +85,7 @@ Default.argTypes = {
   children: {
     control: 'text',
     description:
-      'The content of the paragraph. Can be text, other components, or HTML elements',
+      'The content of the paragraph. Can be text, other components, or HTML elements. Underlying DOM element is a Paragraph tag so children should be compliant with this',
   },
   size: {
     control: 'select',
@@ -105,7 +105,8 @@ Default.argTypes = {
   },
   dataAttribute: {
     control: 'text',
-    description: 'The data attributes to apply to the paragraph',
+    description:
+      'The data id to apply as HTML attribute to this component instance. This should be unique per component instance on the page',
   },
 };
 

@@ -23,7 +23,7 @@ export const prepareValueToRender = (
   canEndWithDot: boolean = true,
 ): string => {
   if (typeof value === 'undefined') {
-    value = '';
+    return undefined as unknown as string;
   }
 
   if (type === 'number') {

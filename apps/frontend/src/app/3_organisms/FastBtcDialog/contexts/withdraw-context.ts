@@ -2,6 +2,9 @@ import { createContext, Dispatch, SetStateAction } from 'react';
 
 export enum WithdrawStep {
   MAIN,
+  NETWORK,
+  SENDER_ASSET,
+  RECIPIENT_ASSET,
   AMOUNT,
   ADDRESS,
   REVIEW,

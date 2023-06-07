@@ -46,6 +46,9 @@ export enum IconNames {
   LINK = 'link',
   HAMBURGER_MENU = 'hamburger-menu',
   MAIL = 'mail',
+  BITCOIN = 'bitcoin',
+  ETHEREUM = 'ethereum',
+  BINANCE = 'binance',
 }
 
 export type IconName = typeof IconNames[keyof typeof IconNames];

@@ -52,6 +52,11 @@
             "loading": "Loading Zero data",
             "error": "Error loading Zero data, please try again",
             "pageLoading": "is loading..."
+        },
+        "networks": {
+            "bitcoin": "Bitcoin",
+            "bnb": "BNB Smart Chain",
+            "ethereum": "Ethereum"
         }
     },
     "connectWalletButton": {
@@ -419,6 +424,25 @@
             "txDialog": {
                 "title": "Send BTC to the bitcoin network",
                 "sendBTC": "Send BTC"
+            },
+            "networkScreen": {
+                "title": "Select network you are transferring assets to"
+            },
+            "senderScreen": {
+                "title": "Select the assets to send from Rootstock",
+                "table": {
+                    "asset": "Asset",
+                    "address": "Address",
+                    "balance": "Balance"
+                }
+            },
+            "recipientScreen": {
+                "title": "Select the assets the recipient will receive on BNB Smart Chain",
+                "table": {
+                    "asset": "Asset",
+                    "address": "Address",
+                    "availableLiquidity": "Available liquidity",
+                }
             }
         },
         "receive": {

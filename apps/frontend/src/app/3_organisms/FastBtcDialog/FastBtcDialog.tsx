@@ -88,7 +88,7 @@ export const FastBtcDialog: React.FC<FastBtcDialogProps> = ({
     <Dialog
       isOpen={isOpen}
       width={dialogSize}
-      className="p-4 flex items-center sm:p-0"
+      className="p-4 flex items-stretch sm:p-0"
       disableFocusTrap
       closeOnEscape={false}
     >

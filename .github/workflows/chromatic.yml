@@ -17,3 +17,5 @@ jobs:
         run: yarn
       - name: Publish to Chromatic
         run: yarn chromatic
+        env:
+          CHROMATIC_PROJECT_TOKEN:  ${{ secrets.CHROMATIC_PROJECT_TOKEN }}

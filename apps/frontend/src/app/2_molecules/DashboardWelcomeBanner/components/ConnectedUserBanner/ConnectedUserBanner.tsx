@@ -8,7 +8,6 @@ import { Button } from '@sovryn/ui';
 import { useAssetBalance } from '../../../../../hooks/useAssetBalance';
 import { translations } from '../../../../../locales/i18n';
 import { sharedState } from '../../../../../store/rxjs/shared-state';
-import { isMainnet } from '../../../../../utils/helpers';
 
 export type ConnectedUserBannerProps = {
   openLOC: () => void;
@@ -23,9 +22,7 @@ export const ConnectedUserBanner: FC<ConnectedUserBannerProps> = ({
 
   const onClickHandler = useMemo(
     () =>
-      hasRbtcBalance
-        ? openLOC
-        : () => sharedState.actions.openFastBtcDialog(!isMainnet()),
+      hasRbtcBalance ? openLOC : () => sharedState.actions.openFastBtcDialog(),
     [hasRbtcBalance, openLOC],
   );
 

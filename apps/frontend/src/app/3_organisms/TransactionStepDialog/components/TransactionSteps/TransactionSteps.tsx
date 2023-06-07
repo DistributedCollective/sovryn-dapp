@@ -123,10 +123,21 @@ export const TransactionSteps: FC<TransactionStepsProps> = ({
     (index: number, config: TransactionConfig) => {
       setStepData(items => {
         if (items[index]) {
-          const copy = [...items];
-          copy[index].config = config;
-          return copy;
+          const updatedItems = [...items];
+          updatedItems[index] = { ...updatedItems[index], config };
+
+          if (config.gasLimit && config.gasPrice) {
+            const gasFee = fromWei(
+              toWei(config.gasPrice)
+                .mul(config.gasLimit)
+                .div(10 ** 9),
+            );
+            setEstimatedGasFee(Number(gasFee));
+          }
+
+          return updatedItems;
         }
+
         return items;
       });
     },

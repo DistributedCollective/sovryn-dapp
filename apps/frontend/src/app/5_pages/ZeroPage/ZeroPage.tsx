@@ -7,12 +7,15 @@ import React, {
   useState,
 } from 'react';
 
+import { ethers } from 'ethers';
 import { t } from 'i18next';
 import { Helmet } from 'react-helmet-async';
 import { useLoaderData } from 'react-router-dom';
 
 import { UserTrove } from '@sovryn-zero/lib-base';
+import { getZeroContract } from '@sovryn/contracts';
 import {
+  Button,
   Dialog,
   DialogBody,
   DialogHeader,
@@ -23,6 +26,8 @@ import {
 } from '@sovryn/ui';
 import { Decimal } from '@sovryn/utils';
 
+import { defaultChainId } from '../../../config/chains';
+
 import { withDeferredLoaderData } from '../../0_meta/DeferredDataLoader/withDeferredRouterData';
 import { DashboardWelcomeBanner } from '../../2_molecules/DashboardWelcomeBanner/DashboardWelcomeBanner';
 import { LOCStatus } from '../../2_molecules/LOCStatus/LOCStatus';
@@ -30,6 +35,7 @@ import { SystemStats } from '../../2_molecules/SystemStats/SystemStats';
 import { GettingStartedPopup } from '../../3_organisms/GettingStartedPopup/GettingStartedPopup';
 import { LOCChart } from '../../3_organisms/LOCChart/LOCChart';
 import { useGetUserOpenTrove } from '../../3_organisms/LOCChart/hooks/useGetUserOpenTrove';
+import { TransactionType } from '../../3_organisms/TransactionStepDialog/TransactionStepDialog.types';
 import { CloseCreditLine } from '../../3_organisms/ZeroLocForm/CloseCreditLine';
 import { AdjustCreditLine } from '../../3_organisms/ZeroLocForm/components/AdjustCreditLine';
 import { OpenCreditLine } from '../../3_organisms/ZeroLocForm/components/OpenCreditLine';
@@ -52,7 +58,12 @@ type ZeroPageProps = {
 const ZeroPage: FC<ZeroPageProps> = ({ deferred: [price] }) => {
   const { liquity } = useLoaderData() as ZeroPageLoaderData;
 
-  const { isOpen: isTxOpen } = useTransactionContext();
+  const {
+    isOpen: isTxOpen,
+    setIsOpen,
+    setTitle,
+    setTransactions,
+  } = useTransactionContext();
   const [open, toggle] = useReducer(v => !v, false);
   const [openStartedPopup, toggleStartedPopup] = useReducer(v => !v, false);
   const [openClosePopup, toggleClosePopup] = useReducer(v => !v, false);
@@ -61,10 +72,9 @@ const ZeroPage: FC<ZeroPageProps> = ({ deferred: [price] }) => {
     useState<Decimal>();
 
   const { connectWallet } = useWalletConnect();
-  const { account } = useAccount();
+  const { account, signer } = useAccount();
   const { refetch: getOpenTroves } = useGetUserOpenTrove(account);
   const { minBorrowingFeeRate } = useLiquityBaseParams();
-
   const [hasUserClosedTrove, setHasUserClosedTrove] = useState(false);
 
   const collateral = useMemo(
@@ -134,6 +144,38 @@ const ZeroPage: FC<ZeroPageProps> = ({ deferred: [price] }) => {
     [collateral, debt],
   );
 
+  const showDebug = true;
+  const NUM_LOCS_TO_LIQ = 10;
+  const liquidateLowestLocs = useCallback(async () => {
+    if (!signer) {
+      return;
+    }
+
+    const { address: troveManagerAddress, abi: troveManagerAbi } =
+      await getZeroContract('troveManager', defaultChainId);
+
+    const troveManager = new ethers.Contract(
+      troveManagerAddress,
+      troveManagerAbi,
+      signer,
+    );
+
+    setTransactions([
+      {
+        title: `Liquidating lowest ${NUM_LOCS_TO_LIQ} lines of credit`,
+        subtitle: `Attempting to liquidate lowest ${NUM_LOCS_TO_LIQ} LoCs`,
+        request: {
+          type: TransactionType.signTransaction,
+          contract: troveManager,
+          fnName: 'liquidateTroves',
+          args: [NUM_LOCS_TO_LIQ],
+        },
+      },
+    ]);
+    setTitle('Liquidating');
+    setIsOpen(true);
+  }, [setIsOpen, setTitle, setTransactions, signer]);
+
   return (
     <>
       <Helmet>
@@ -160,6 +202,15 @@ const ZeroPage: FC<ZeroPageProps> = ({ deferred: [price] }) => {
             connectWallet={connectWallet}
             className="mb-10 md:mb-4"
           />
+        )}
+        {account && showDebug && (
+          <div className="mb-4">
+            <Button
+              text={`Liquidate lowest ${NUM_LOCS_TO_LIQ} LoCs`}
+              className="mx-4"
+              onClick={liquidateLowestLocs}
+            />
+          </div>
         )}
 
         <div className="flex-col-reverse lg:flex-row flex items-stretch md:p-4 md:bg-gray-90 rounded gap-9 md:gap-20">

@@ -7,10 +7,27 @@ import styles from './Paragraph.module.css';
 import { ParagraphSize, ParagraphStyle } from './Paragraph.types';
 
 export type ParagraphProps = {
+  /**
+   * The content to render inside the paragraph.
+   */
   children: ReactNode;
+  /**
+   * The size of the paragraph.
+   * @default ParagraphSize.small
+   */
   size?: ParagraphSize;
+  /**
+   * The style of the paragraph.
+   * @default ParagraphStyle.normal
+   */
   style?: ParagraphStyle;
+  /**
+   * The class name to apply to the paragraph.
+   */
   className?: string;
+  /**
+   * The data attribute to apply to the paragraph.
+   */
   dataAttribute?: string;
 };
 

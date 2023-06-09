@@ -50,16 +50,72 @@ TextInput.args = {
   type: 'text',
 };
 
+TextInput.argTypes = {
+  size: {
+    control: 'select',
+    options: Object.values(InputSize),
+    description: 'The size of the input',
+  },
+  value: {
+    control: 'text',
+    description: 'The value of the input',
+  },
+  type: {
+    control: 'text',
+    description: 'The type of the input (`text`, `number`, etc.)',
+  },
+  dataAttribute: {
+    control: 'text',
+    description: 'The data attributes to apply to the input',
+  },
+  debounce: {
+    control: 'number',
+    description: 'The debounce time in ms',
+  },
+  onChangeText: {
+    control: 'function',
+    description:
+      "The onChange handler for the input, triggered whenever the input's value changes",
+  },
+  classNameInput: {
+    control: 'text',
+    description: 'The className to apply to the input',
+  },
+  invalid: {
+    control: 'boolean',
+    description:
+      'Whether the input is invalid. When set to true the error state styling and behaviour will be triggered on the input',
+  },
+};
+
 export const NumberInput = Template.bind({});
 NumberInput.args = {
   value: 13.37,
   step: 1,
   type: 'number',
 };
+NumberInput.argTypes = {
+  ...TextInput.argTypes,
+  step: {
+    control: 'number',
+    description: 'The step value for the input',
+  },
+  value: {
+    control: 'number',
+    description: 'The value of the input',
+  },
+};
 
 export const DebouncedInput = AdvancedTemplate.bind({});
 DebouncedInput.args = {
   debounce: 300,
+};
+DebouncedInput.argTypes = {
+  ...TextInput.argTypes,
+  debounce: {
+    control: 'number',
+    description: 'The debounce time in milliseconds',
+  },
 };
 
 const renderInput = (label: string, props: InputProps) => (
@@ -69,52 +125,39 @@ const renderInput = (label: string, props: InputProps) => (
   </div>
 );
 
-export const AllVariations: React.FC<InputProps> = props => (
+export const AllVariations: typeof DebouncedInput = props => (
   <div className="flex flex-col justify-evenly items-center mb-4 space-y-4 w-full">
-    {renderInput('Empty text', {
-      ...props,
-      placeholder: 'Enter wallet address',
-    })}
-    {renderInput('With text value', {
-      ...props,
-      value: 'Hello World',
-    })}
-    {renderInput('Disabled text', {
-      ...props,
-      value: 'Hello World',
-      disabled: true,
-    })}
-    {renderInput('Read-only text', {
-      ...props,
-      value: 'Hello World',
-      readOnly: true,
-    })}
-    {renderInput('Invalid text', {
-      ...props,
-      value: 'Hello World',
-      invalid: true,
-    })}
-    {renderInput('Numeric empty', {
-      ...props,
-      type: 'number',
-      placeholder: 'Enter amount',
-    })}
-    {renderInput('Numeric with value', {
-      ...props,
-      value: '100.5',
-      type: 'number',
-    })}
-    {renderInput('Numeric read-only', {
-      ...props,
-      value: '100.5',
-      type: 'number',
-      readOnly: true,
-    })}
-    {renderInput('Numeric invalid', {
-      ...props,
-      value: '100.5',
-      type: 'number',
-      invalid: true,
-    })}
+    {[
+      { label: 'Empty text', placeholder: 'Enter wallet address' },
+      { label: 'With text value', value: 'Hello World' },
+      { label: 'Disabled text', value: 'Hello World', disabled: true },
+      { label: 'Read-only text', value: 'Hello World', readOnly: true },
+      { label: 'Invalid text', value: 'Hello World', invalid: true },
+      {
+        label: 'Numeric empty',
+        placeholder: 'Enter amount',
+        value: '',
+        type: 'number',
+      },
+      { label: 'Numeric with value', value: '100.5', type: 'number' },
+      {
+        label: 'Numeric read-only',
+        value: '100.5',
+        type: 'number',
+        readOnly: true,
+      },
+      {
+        label: 'Numeric invalid',
+        value: '100.5',
+        type: 'number',
+        invalid: true,
+      },
+    ].map(input => renderInput(input.label, { ...props, ...input }))}
   </div>
 );
+AllVariations.args = {
+  debounce: 0,
+};
+AllVariations.argTypes = {
+  ...DebouncedInput.argTypes,
+};

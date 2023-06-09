@@ -20,10 +20,44 @@ Primary.args = {
   style: LinkStyle.primary,
 };
 
+Primary.argTypes = {
+  text: {
+    control: 'text',
+    description: 'The text to display in the link',
+  },
+  href: {
+    control: 'text',
+    description: 'The href to apply to the link',
+  },
+  openNewTab: {
+    control: 'boolean',
+    description: 'Whether to open the link in a new tab',
+  },
+  style: {
+    control: 'select',
+    options: Object.values(LinkStyle),
+    defaultValue: LinkStyle.primary,
+    description: 'The style to apply to the link',
+  },
+  className: {
+    control: 'text',
+    description: 'The className to apply to the link',
+  },
+  dataAttribute: {
+    control: 'text',
+    description:
+      'The data id to apply as HTML attribute to this component instance. This should be unique per component instance on the page',
+  },
+};
+
 export const Secondary = Template.bind({});
 Secondary.args = {
   text: 'test',
   href: 'https://live.sovryn.app/',
   openNewTab: true,
   style: LinkStyle.secondary,
+};
+
+Secondary.argTypes = {
+  ...Primary.argTypes,
 };

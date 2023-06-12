@@ -7,6 +7,7 @@ import { getProvider } from '@sovryn/ethers-provider';
 
 import { chains } from '../../../config/chains';
 
+import { NetworkContextProvider } from '../../../contexts/NetworkContext';
 import { onboard } from '../../../lib/connector';
 import {
   CacheCallOptions,
@@ -59,5 +60,5 @@ export const NetworkProvider: React.FC<React.PropsWithChildren> = ({
     };
   }, []);
 
-  return <>{children}</>;
+  return <NetworkContextProvider>{children}</NetworkContextProvider>;
 };

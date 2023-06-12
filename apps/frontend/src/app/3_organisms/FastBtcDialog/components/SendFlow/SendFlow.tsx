@@ -8,13 +8,8 @@ import { AddressForm } from './components/AddressForm';
 import { AmountForm } from './components/AmountForm';
 import { ConfirmationScreens } from './components/ConfirmationScreens';
 import { MainScreen } from './components/MainScreen';
-import { NetworkScreen } from './components/NetworkScreen';
-import { SenderAssetScreen } from './components/SenderAssetScreen';
 
 const allowedStepsToGoBackFrom = [
-  WithdrawStep.NETWORK,
-  WithdrawStep.SENDER_ASSET,
-  WithdrawStep.RECIPIENT_ASSET,
   WithdrawStep.AMOUNT,
   WithdrawStep.ADDRESS,
   WithdrawStep.REVIEW,
@@ -22,45 +17,39 @@ const allowedStepsToGoBackFrom = [
 
 const getBackStep = (step: WithdrawStep) => {
   switch (step) {
-    case WithdrawStep.NETWORK:
-      return WithdrawStep.MAIN;
-    case WithdrawStep.SENDER_ASSET:
-      return WithdrawStep.NETWORK;
-    case WithdrawStep.RECIPIENT_ASSET:
-      return WithdrawStep.SENDER_ASSET;
     case WithdrawStep.AMOUNT:
-      return WithdrawStep.NETWORK;
+      return WithdrawStep.MAIN;
     case WithdrawStep.ADDRESS:
       return WithdrawStep.AMOUNT;
     case WithdrawStep.REVIEW:
       return WithdrawStep.ADDRESS;
     default:
-      return WithdrawStep.NETWORK;
+      return WithdrawStep.MAIN;
   }
 };
 
 type SendFlowProps = {
   onClose: () => void;
+  onBack?: () => void;
 };
 
-export const SendFlow: React.FC<SendFlowProps> = ({ onClose }) => {
+export const SendFlow: React.FC<SendFlowProps> = ({ onClose, onBack }) => {
   const value = useWithdrawBridgeConfig();
   const { step, set } = value;
 
   const onBackClick = useCallback(() => {
     set(prevState => ({ ...prevState, step: getBackStep(step) }));
-  }, [set, step]);
+    onBack?.();
+  }, [set, step, onBack]);
 
   return (
     <WithdrawContext.Provider value={value}>
-      {allowedStepsToGoBackFrom.includes(step) && (
+      {(allowedStepsToGoBackFrom.includes(step) || onBack) && (
         <GoBackButton onClick={onBackClick} />
       )}
 
       <div className="mt-0 md:mt-12">
         {step === WithdrawStep.MAIN && <MainScreen />}
-        {step === WithdrawStep.NETWORK && <NetworkScreen />}
-        {step === WithdrawStep.SENDER_ASSET && <SenderAssetScreen />}
         {step === WithdrawStep.AMOUNT && <AmountForm />}
         {step === WithdrawStep.ADDRESS && <AddressForm />}
         {[

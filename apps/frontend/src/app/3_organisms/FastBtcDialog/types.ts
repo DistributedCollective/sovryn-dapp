@@ -10,3 +10,9 @@ export enum ReceiveEvents {
   getDepositAddress = 'getDepositAddress',
   getDepositHistory = 'getDepositHistory',
 }
+
+export enum OriginNetwork {
+  BITCOIN = 'Bitcoin',
+  ETHEREUM = 'Ethereum',
+  BINANCE_SMART_CHAIN = 'BNB Smart Chain',
+}

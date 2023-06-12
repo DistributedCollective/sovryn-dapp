@@ -16,6 +16,8 @@ import {
 import { useAccount } from '../../../hooks/useAccount';
 import { useIsMobile } from '../../../hooks/useIsMobile';
 import { translations } from '../../../locales/i18n';
+import { isMainnet } from '../../../utils/helpers';
+import { BridgeSendFlow } from './components/BridgeSendFlow';
 import { ReceiveFlow } from './components/ReceiveFlow/ReceiveFlow';
 import { SendFlow } from './components/SendFlow/SendFlow';
 
@@ -43,6 +45,21 @@ export const FastBtcDialog: React.FC<FastBtcDialogProps> = ({
     index !== null ? setIndex(index) : setIndex(0);
   }, []);
 
+  const sendFlow = useMemo(
+    () => ({
+      label: t(translation.tabs.sendLabel),
+      infoText: t(translation.tabs.sendInfoText),
+      content: isMainnet() ? (
+        <SendFlow onClose={onClose} />
+      ) : (
+        <BridgeSendFlow onClose={onClose} />
+      ),
+      activeClassName: ACTIVE_CLASSNAME,
+      dataAttribute: 'funding-send',
+    }),
+    [onClose],
+  );
+
   const items = useMemo(() => {
     if (shouldHideSend) {
       return [
@@ -64,15 +81,9 @@ export const FastBtcDialog: React.FC<FastBtcDialogProps> = ({
         activeClassName: ACTIVE_CLASSNAME,
         dataAttribute: 'funding-receive',
       },
-      {
-        label: t(translation.tabs.sendLabel),
-        infoText: t(translation.tabs.sendInfoText),
-        content: <SendFlow onClose={onClose} />,
-        activeClassName: ACTIVE_CLASSNAME,
-        dataAttribute: 'funding-send',
-      },
+      sendFlow,
     ];
-  }, [onClose, shouldHideSend]);
+  }, [onClose, shouldHideSend, sendFlow]);
 
   const dialogSize = useMemo(
     () => (isMobile ? DialogSize.md : DialogSize.xl2),

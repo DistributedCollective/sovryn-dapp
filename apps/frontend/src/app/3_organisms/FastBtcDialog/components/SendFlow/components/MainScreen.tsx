@@ -21,7 +21,7 @@ export const MainScreen: React.FC = () => {
   const fastBtcLocked = checkMaintenance(States.FASTBTC_SEND);
 
   const onContinueClick = useCallback(
-    () => set(prevState => ({ ...prevState, step: WithdrawStep.NETWORK })),
+    () => set(prevState => ({ ...prevState, step: WithdrawStep.AMOUNT })),
     [set],
   );
 

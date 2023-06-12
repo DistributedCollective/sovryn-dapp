@@ -39,7 +39,7 @@ export const NetworkScreen: React.FC = () => {
         step:
           network === OriginNetwork.BITCOIN
             ? SendStep.BITCOIN_FLOW
-            : SendStep.SENDER_ASSET,
+            : SendStep.ADDRESS,
         originNetwork: network,
       }));
 

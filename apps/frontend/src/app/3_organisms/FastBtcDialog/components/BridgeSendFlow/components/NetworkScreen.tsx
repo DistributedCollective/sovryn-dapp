@@ -1,13 +1,8 @@
-import React, {
-  useCallback,
-  useContext,
-  useEffect,
-  useReducer,
-  useState,
-} from 'react';
+import React, { useCallback, useContext, useReducer } from 'react';
 
 import { t } from 'i18next';
 
+import { ChainIds } from '@sovryn/ethers-provider';
 import {
   Accordion,
   Heading,
@@ -20,30 +15,41 @@ import {
   WalletContainer,
 } from '@sovryn/ui';
 
+import { defaultChainId } from '../../../../../../config/chains';
+
+import { useNetworkContext } from '../../../../../../contexts/NetworkContext';
 import { translations } from '../../../../../../locales/i18n';
-import {
-  WithdrawContext,
-  WithdrawStep,
-} from '../../../contexts/withdraw-context';
+import { SendContext, SendStep } from '../../../contexts/send-context';
+import { OriginNetwork } from '../../../types';
+import { getNetwork } from '../../../utils/networks';
 
 const translation = translations.fastBtc.send.networkScreen;
 
 export const NetworkScreen: React.FC = () => {
   const [openBtcNetwork, toggleBtcNetwork] = useReducer(v => !v, false);
   const [openEthNetwork, toggleEthNetwork] = useReducer(v => !v, false);
-  const [selectedNetwork, setSelectedNetwork] = useState('');
 
-  const { set } = useContext(WithdrawContext);
-  const onContinueClick = useCallback(
-    () =>
+  const { set } = useContext(SendContext);
+  const { requireChain } = useNetworkContext();
+
+  const handleNetworkClick = useCallback(
+    (network: OriginNetwork) => () => {
       set(prevState => ({
         ...prevState,
         step:
-          selectedNetwork === 'BTC'
-            ? WithdrawStep.AMOUNT
-            : WithdrawStep.SENDER_ASSET,
-      })),
-    [set, selectedNetwork],
+          network === OriginNetwork.BITCOIN
+            ? SendStep.BITCOIN_FLOW
+            : SendStep.SENDER_ASSET,
+        originNetwork: network,
+      }));
+
+      requireChain(
+        (network === OriginNetwork.BITCOIN
+          ? defaultChainId
+          : getNetwork(network).chainId) as ChainIds,
+      );
+    },
+    [requireChain, set],
   );
 
   //@TODO: Replace with real data
@@ -80,12 +86,6 @@ export const NetworkScreen: React.FC = () => {
     },
   ];
 
-  useEffect(() => {
-    if (selectedNetwork) {
-      onContinueClick();
-    }
-  }, [selectedNetwork, onContinueClick]);
-
   return (
     <div className="text-center">
       <Heading type={HeadingType.h2} className="font-medium mb-8">
@@ -95,13 +95,13 @@ export const NetworkScreen: React.FC = () => {
       <WalletContainer
         name={t(translations.common.networks.bitcoin)}
         icon={<Icon icon={IconNames.BITCOIN} size={24} />}
-        onClick={() => setSelectedNetwork('BTC')}
+        onClick={handleNetworkClick(OriginNetwork.BITCOIN)}
         className="mb-4"
       />
       <WalletContainer
         name={t(translations.common.networks.bnb)}
         icon={<Icon icon={IconNames.BINANCE} size={24} />}
-        onClick={() => setSelectedNetwork('BNB')}
+        onClick={handleNetworkClick(OriginNetwork.BINANCE_SMART_CHAIN)}
         className="mb-4"
       />
 
@@ -136,7 +136,7 @@ export const NetworkScreen: React.FC = () => {
       <WalletContainer
         name={t(translations.common.networks.ethereum)}
         icon={<Icon icon={IconNames.ETHEREUM} size={24} />}
-        onClick={() => setSelectedNetwork('ETH')}
+        onClick={handleNetworkClick(OriginNetwork.ETHEREUM)}
         className="mb-4"
       />
       <Accordion

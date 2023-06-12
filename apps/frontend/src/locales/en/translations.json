@@ -366,7 +366,7 @@
                 "receiveLabel": "Receive",
                 "receiveInfoText": "Transfer BTC from the bitcoin network to your Rootstock address",
                 "sendLabel": "Send",
-                "sendInfoText": "Transfer BTC from the Rootstock network to a specified bitcoin address"
+                "sendInfoText": "Transfer asset from the Rootstock network to a specified address on another supported network"
             }
         },
         "receiveInstructions": {
@@ -401,12 +401,34 @@
         "send": {
             "amountForm": {
                 "title": "Enter amount of Rootstock BTC to send",
-                "amountLabel": "Send"
+                "titleBridgeFlow": "Enter amount of Rootstock {{senderAsset}} to transfer to {{network}}",
+                "amountLabel": "Send",
+                "description": "Your {{senderAsset}} will automatically be converted to {{recipientAsset}} on {{network}}",
+                "amount": {
+                    "title": "Transfer",
+                    "label": "Amount"
+                },
+                "slippage": {
+                    "title": "Advanced settings",
+                    "label": "Slippage tolerance"
+                },
+                "policies": {
+                    "title": "Transfer policies",
+                    "minimum": "Transfer minimum",
+                    "conversion": "Conversion reward",
+                    "fee": "Bridge fee"
+                },
+                "summary": {
+                    "title": "Summary",
+                    "expectedToReceive": "Expected to receive",
+                    "minimumReceived": "Minimum received"
+                }
             },
             "addressForm": {
                 "title": "Enter recipient's bitcoin address",
                 "addressLabel": "Address",
-                "maxExceed": "Exceeds maximum amount"
+                "maxExceed": "Exceeds maximum amount",
+                "confirmationLabel": "I confirm the funds will be accessible at the specified address"
             },
             "confirmationScreens": {
                 "reviewTitle": "Transfer details",
@@ -437,12 +459,23 @@
                 }
             },
             "recipientScreen": {
-                "title": "Select the assets the recipient will receive on BNB Smart Chain",
+                "title": "Select the assets the recipient will receive on {{network}}",
                 "table": {
                     "asset": "Asset",
                     "address": "Address",
-                    "availableLiquidity": "Available liquidity",
+                    "availableLiquidity": "Available liquidity"
                 }
+            },
+            "detailsScreen": {
+                "title": "Transfer details",
+                "from": "From",
+                "to": "To",
+                "sending": "Sending",
+                "conversionFee": "Conversion fee",
+                "expectedToReceive": "Expected to receive",
+                "minimumReceived": "Minimum received",
+                "rootstockTxId": "Rootstock TXID",
+                "networkTxId": "{{network}} TXID"
             }
         },
         "receive": {

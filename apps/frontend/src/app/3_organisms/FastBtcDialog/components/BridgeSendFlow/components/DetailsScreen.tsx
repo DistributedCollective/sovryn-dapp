@@ -6,7 +6,6 @@ import { t } from 'i18next';
 import { Button, Heading, HeadingType } from '@sovryn/ui';
 
 import { TxIdWithNotification } from '../../../../../2_molecules/TxIdWithNotification/TransactionIdWithNotification';
-import { BITCOIN } from '../../../../../../constants/currencies';
 import { translations } from '../../../../../../locales/i18n';
 import {
   getBtcExplorerUrl,
@@ -61,7 +60,7 @@ export const DetailsScreen: React.FC<DetailsScreenProps> = ({ onConfirm }) => {
         label: t(translation.conversionFee),
         value: (
           <>
-            {formatValue(0, 4)} {senderAsset!.toUpperCase()}
+            {formatValue(0, 4)} {recipientAsset!.toUpperCase()}
           </>
         ),
       },
@@ -77,7 +76,7 @@ export const DetailsScreen: React.FC<DetailsScreenProps> = ({ onConfirm }) => {
         label: t(translation.minimumReceived),
         value: (
           <>
-            {formatValue(0, 8)} {BITCOIN}
+            {formatValue(0, 4)} {recipientAsset!.toUpperCase()}
           </>
         ),
       },
@@ -130,7 +129,7 @@ export const DetailsScreen: React.FC<DetailsScreenProps> = ({ onConfirm }) => {
           text={t(translations.common.buttons.confirm)}
           className="w-full"
           onClick={onConfirm}
-          dataAttribute="funding-receiver-confirm"
+          dataAttribute="funding-send-details-confirm"
         />
       </div>
     </div>

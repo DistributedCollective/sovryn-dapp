@@ -427,8 +427,10 @@
             "addressForm": {
                 "title": "Enter recipient's bitcoin address",
                 "addressLabel": "Address",
+                "addressPlaceholder": "Enter address",
                 "maxExceed": "Exceeds maximum amount",
-                "confirmationLabel": "I confirm the funds will be accessible at the specified address"
+                "confirmationLabel": "I confirm the funds will be accessible at the specified address - <0>Learn more</0>",
+                "confirmationLabelCTA": "Learn more"
             },
             "confirmationScreens": {
                 "reviewTitle": "Transfer details",

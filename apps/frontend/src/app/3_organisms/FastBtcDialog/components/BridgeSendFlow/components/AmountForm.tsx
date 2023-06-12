@@ -69,8 +69,9 @@ export const AmountForm = () => {
       set(prevState => ({
         ...prevState,
         step: SendStep.DETAILS,
+        amount,
       })),
-    [set],
+    [set, amount],
   );
 
   return (

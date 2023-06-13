@@ -17,6 +17,7 @@ import { useAccount } from '../../../hooks/useAccount';
 import { useIsMobile } from '../../../hooks/useIsMobile';
 import { translations } from '../../../locales/i18n';
 import { isMainnet } from '../../../utils/helpers';
+import { BridgeReceiveFlow } from './components/BridgeReceiveFlow';
 import { BridgeSendFlow } from './components/BridgeSendFlow';
 import { ReceiveFlow } from './components/ReceiveFlow/ReceiveFlow';
 import { SendFlow } from './components/SendFlow/SendFlow';
@@ -45,6 +46,21 @@ export const FastBtcDialog: React.FC<FastBtcDialogProps> = ({
     index !== null ? setIndex(index) : setIndex(0);
   }, []);
 
+  const receiveFlow = useMemo(
+    () => ({
+      label: t(translation.tabs.receiveLabel),
+      infoText: t(translation.tabs.receiveInfoText),
+      content: isMainnet() ? (
+        <ReceiveFlow onClose={onClose} />
+      ) : (
+        <BridgeReceiveFlow onClose={onClose} />
+      ),
+      activeClassName: ACTIVE_CLASSNAME,
+      dataAttribute: 'funding-receive',
+    }),
+    [onClose],
+  );
+
   const sendFlow = useMemo(
     () => ({
       label: t(translation.tabs.sendLabel),
@@ -62,28 +78,11 @@ export const FastBtcDialog: React.FC<FastBtcDialogProps> = ({
 
   const items = useMemo(() => {
     if (shouldHideSend) {
-      return [
-        {
-          label: t(translation.tabs.receiveLabel),
-          infoText: t(translation.tabs.receiveInfoText),
-          content: <ReceiveFlow onClose={onClose} />,
-          activeClassName: ACTIVE_CLASSNAME,
-          dataAttribute: 'funding-receive',
-        },
-      ];
+      return [receiveFlow];
     }
 
-    return [
-      {
-        label: t(translation.tabs.receiveLabel),
-        infoText: t(translation.tabs.receiveInfoText),
-        content: <ReceiveFlow onClose={onClose} />,
-        activeClassName: ACTIVE_CLASSNAME,
-        dataAttribute: 'funding-receive',
-      },
-      sendFlow,
-    ];
-  }, [onClose, shouldHideSend, sendFlow]);
+    return [receiveFlow, sendFlow];
+  }, [receiveFlow, shouldHideSend, sendFlow]);
 
   const dialogSize = useMemo(
     () => (isMobile ? DialogSize.md : DialogSize.xl2),

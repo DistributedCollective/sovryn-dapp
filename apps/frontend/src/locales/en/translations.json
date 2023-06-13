@@ -399,6 +399,7 @@
             "copyAddressSuccess": "Address was copied to clipboard.",
             "invalidSignatures": "We had an error while trying to verify a deposit address"
         },
+
         "send": {
             "amountForm": {
                 "title": "Enter amount of Rootstock BTC to send",

@@ -31,6 +31,11 @@ export const ETH_RPC = {
   [Environments.Testnet]: ['https://rpc2.sepolia.org'],
 };
 
+export const BSC_RPC = {
+  [Environments.Mainnet]: ['https://bsc.publicnode.com'],
+  [Environments.Testnet]: ['https://bsc-testnet.publicnode.com'],
+};
+
 //TODO: refactor this into separate dictionary file once we add more chains
 export const RSK_EXPLORER = {
   [Environments.Mainnet]: 'https://explorer.rsk.co',
@@ -42,14 +47,14 @@ export const ETH_EXPLORER = {
   [Environments.Testnet]: 'https://sepolia.etherscan.io',
 };
 
+export const BSC_EXPLORER = {
+  [Environments.Mainnet]: 'https://bscscan.com',
+  [Environments.Testnet]: 'https://testnet.bscscan.com',
+};
+
 export const BTC_EXPLORER = {
   [Environments.Mainnet]: 'https://live.blockcypher.com/btc',
   [Environments.Testnet]: 'https://live.blockcypher.com/btc-testnet',
-};
-
-export const ETH_EXPLORER = {
-  [Environments.Mainnet]: 'https://etherscan.io',
-  [Environments.Testnet]: 'https://sepolia.etherscan.io',
 };
 
 export const ESTIMATOR_URI = process.env.REACT_APP_ESTIMATOR_URI;

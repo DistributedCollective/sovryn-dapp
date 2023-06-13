@@ -1,6 +1,8 @@
 import setup, { Chain, ChainIds } from '@sovryn/ethers-provider';
 
 import {
+  BSC_EXPLORER,
+  BSC_RPC,
   ETH_EXPLORER,
   ETH_RPC,
   RSK_EXPLORER,
@@ -51,6 +53,21 @@ export const chains: Chain[] = [
         token: 'tETH',
         rpcUrl: ETH_RPC[Environments.Testnet],
         blockExplorerUrl: ETH_EXPLORER[Environments.Testnet],
+      },
+  isMainnet()
+    ? {
+        id: ChainIds.BSC_MAINNET,
+        label: 'BNB Smart Chain',
+        token: 'BNB',
+        rpcUrl: BSC_RPC[Environments.Mainnet],
+        blockExplorerUrl: BSC_EXPLORER[Environments.Mainnet],
+      }
+    : {
+        id: ChainIds.BSC_TESTNET,
+        label: 'BNB Smart Chain testnet',
+        token: 'tBNB',
+        rpcUrl: BSC_RPC[Environments.Testnet],
+        blockExplorerUrl: BSC_EXPLORER[Environments.Testnet],
       },
 ];
 

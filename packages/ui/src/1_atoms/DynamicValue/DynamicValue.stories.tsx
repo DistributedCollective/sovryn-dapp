@@ -25,3 +25,21 @@ BaseExample.args = {
   value: 100,
   loading: false,
 };
+BaseExample.argTypes = {
+  value: {
+    control: 'string',
+    description: 'The value to be rendered. Can be text or number',
+  },
+  initialValue: {
+    control: 'string',
+    description: 'The initial value. Can be text or number',
+  },
+  loading: {
+    control: 'boolean',
+    description: 'Value loading state',
+  },
+  renderer: {
+    control: 'function',
+    description: 'The custom function to render the value',
+  },
+};

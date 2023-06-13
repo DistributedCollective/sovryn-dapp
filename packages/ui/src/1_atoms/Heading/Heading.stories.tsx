@@ -19,6 +19,27 @@ export const Default = Template.bind({});
 Default.args = {
   type: HeadingType.h1,
 };
+Default.argTypes = {
+  className: {
+    control: 'text',
+    description: 'The className to apply to the heading',
+  },
+  dataAttribute: {
+    control: 'text',
+    description:
+      'The data id to apply as HTML attribute to this component instance. This should be unique per component instance on the page',
+  },
+  children: {
+    control: 'text',
+    description:
+      'The content of the heading. Can be text, other components, or HTML elements.',
+  },
+  type: {
+    control: 'select',
+    options: Object.values(HeadingType),
+    description: 'The type of the element',
+  },
+};
 
 export const All = () => (
   <>

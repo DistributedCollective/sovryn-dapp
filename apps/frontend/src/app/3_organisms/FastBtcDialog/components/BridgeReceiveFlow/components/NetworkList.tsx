@@ -1,5 +1,7 @@
 import React, { useCallback, useContext } from 'react';
 
+import { t } from 'i18next';
+
 import {
   Heading,
   HeadingType,
@@ -8,11 +10,15 @@ import {
   WalletContainer,
 } from '@sovryn/ui';
 
+import { translations } from '../../../../../../locales/i18n';
 import {
   OriginNetwork,
   ReceiveContext,
   ReceiveStep,
 } from '../../../contexts/receive-context';
+import { getNetwork } from '../utils/networks';
+
+const translation = translations.fastBtc.receive.networkScreen;
 
 export const NetworkList = () => {
   const { set } = useContext(ReceiveContext);
@@ -34,22 +40,22 @@ export const NetworkList = () => {
   return (
     <div className="text-center">
       <Heading type={HeadingType.h2} className="font-medium mb-8">
-        Select the network you are transferring assets from
+        {t(translation.title)}
       </Heading>
       <WalletContainer
-        name={'bitcoin'}
+        name="Bitcoin"
         icon={<Icon icon={IconNames.BITCOIN} size={24} />}
         onClick={handleNetworkClick(OriginNetwork.BITCOIN)}
         className="mb-4"
       />
       <WalletContainer
-        name={'bnb smart chain'}
+        name={getNetwork(OriginNetwork.BINANCE_SMART_CHAIN).label}
         icon={<Icon icon={IconNames.BINANCE} size={24} />}
         onClick={handleNetworkClick(OriginNetwork.BINANCE_SMART_CHAIN)}
         className="mb-4"
       />
       <WalletContainer
-        name={'ethereum'}
+        name={getNetwork(OriginNetwork.ETHEREUM).label}
         icon={<Icon icon={IconNames.ETHEREUM} size={24} />}
         onClick={handleNetworkClick(OriginNetwork.ETHEREUM)}
         className="mb-4"

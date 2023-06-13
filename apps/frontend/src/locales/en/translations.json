@@ -492,7 +492,51 @@
                 "receiving": "Receiving",
                 "bitcoinTxId": "Bitcoin TXID",
                 "rootstockTxId": "Rootstock TXID"
-            }
+            },
+          "networkScreen": {
+            "title": "Select the network you are transferring assets from"
+          },
+          "assetScreen": {
+              "title": "Select the asset to transfer from {{network}}",
+              "table": {
+                  "asset": "Asset",
+                  "address": "Address",
+                  "balance": "Balance"
+              }
+          },
+          "amountFormScreen": {
+              "title": "Enter amount of {{network}} {{asset}} to transfer to Rootstock",
+              "description__dllr": "Your {{asset}} will automatically be converted to DLLR, a stablecoin exclusively backed by BTC",
+              "amount": {
+                "title": "Transfer",
+                "label": "Amount"
+              },
+              "slippage": {
+                "title": "Advanced settings",
+                "label": "Slippage tolerance"
+              },
+              "policies": {
+                "title": "Transfer policies",
+                "minimum": "Transfer minimum",
+                "conversion": "Conversion reward",
+                "fee": "Bridge fee"
+              },
+              "summary": {
+                "title": "Summary",
+                "expectedToReceive": "Expected to receive",
+                "minimumReceived": "Minimum received"
+              }
+          },
+          "detailsScreen": {
+            "title": "Transfer details",
+            "from": "From",
+            "to": "To",
+            "sending": "Sending",
+            "serviceFee": "Service fee",
+            "expectedToReceive": "Expected to receive",
+            "minimumReceived": "Minimum received",
+            "networkTxId": "{{network}} TXID"
+          }
         }
     },
 

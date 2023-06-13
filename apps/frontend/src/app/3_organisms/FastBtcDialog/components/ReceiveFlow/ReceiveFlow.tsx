@@ -22,9 +22,13 @@ import { StatusScreen } from './components/StatusScreen';
 
 type ReceiveFlowProps = {
   onClose: () => void;
+  onBack?: () => void;
 };
 
-export const ReceiveFlow: React.FC<ReceiveFlowProps> = ({ onClose }) => {
+export const ReceiveFlow: React.FC<ReceiveFlowProps> = ({
+  onClose,
+  onBack,
+}) => {
   const { account } = useAccount();
   const { value: block } = useBlockNumber();
 
@@ -145,7 +149,8 @@ export const ReceiveFlow: React.FC<ReceiveFlowProps> = ({ onClose }) => {
 
   const onBackClick = useCallback(() => {
     setState(prevState => ({ ...prevState, step: DepositStep.MAIN }));
-  }, []);
+    onBack?.();
+  }, [onBack]);
 
   const [getDepositRskTransaction] =
     useGetFastBtcDepositRskTransactionLazyQuery();
@@ -181,7 +186,9 @@ export const ReceiveFlow: React.FC<ReceiveFlowProps> = ({ onClose }) => {
 
   return (
     <DepositContext.Provider value={value}>
-      {step === DepositStep.ADDRESS && <GoBackButton onClick={onBackClick} />}
+      {(step === DepositStep.ADDRESS || onBack) && (
+        <GoBackButton onClick={onBackClick} />
+      )}
 
       <div className="mt-0 md:mt-12">
         {step === DepositStep.MAIN && <MainScreen />}

@@ -17,16 +17,18 @@ import { translations } from '../../../../../../locales/i18n';
 import { ReceiveContext, ReceiveStep } from '../../../contexts/receive-context';
 import { getNetwork } from '../utils/networks';
 
+const translation = translations.fastBtc.receive.assetScreen;
+
 const columns = [
   {
     id: 'asset',
-    title: 'Asset',
+    title: t(translation.table.asset),
     align: Align.left,
     cellRenderer: row => `${row.asset.toUpperCase()}`,
   },
   {
     id: 'address',
-    title: 'Address',
+    title: t(translation.table.address),
     align: Align.center,
     cellRenderer: row => (
       <TransactionId
@@ -38,7 +40,7 @@ const columns = [
   },
   {
     id: 'balance',
-    title: 'Balance',
+    title: t(translation.table.balance),
     align: Align.right,
     cellRenderer: row => `${row.balance} ${row.asset.toUpperCase()}`,
   },
@@ -98,7 +100,7 @@ export const AssetList = () => {
   return (
     <div className="text-center">
       <Heading type={HeadingType.h2} className="font-medium mb-8">
-        Select the asset to transfer from {networkName}
+        {t(translation.title, { network: networkName })}
       </Heading>
 
       <TableBase

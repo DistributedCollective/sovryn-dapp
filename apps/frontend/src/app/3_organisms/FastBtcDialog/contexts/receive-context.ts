@@ -21,7 +21,8 @@ export enum OriginNetwork {
 export type ReceiveContextStateType = {
   step: ReceiveStep;
   originNetwork: Nullable<OriginNetwork>;
-  asset: Nullable<SupportedTokens>;
+  asset: SupportedTokens;
+  amount: string;
 };
 
 export type ReceiveContextFunctionsType = {
@@ -34,7 +35,8 @@ export type ReceiveContextType = ReceiveContextStateType &
 export const defaultValue: ReceiveContextType = {
   step: ReceiveStep.MAIN,
   originNetwork: null,
-  asset: null,
+  asset: SupportedTokens.dllr,
+  amount: '0',
   set: () => {
     throw new Error('set() has not been defined.');
   },

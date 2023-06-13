@@ -38,6 +38,7 @@ Primary.argTypes = {
       type: 'select',
     },
     options: ['sm', 'md'],
+    description: 'The size of the badge',
   },
   dataAttribute: {
     control: 'text',

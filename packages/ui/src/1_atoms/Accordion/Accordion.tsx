@@ -13,6 +13,9 @@ import { AccordionStyle } from './Accordion.types';
 export interface IAccordionProps {
   label: ReactNode;
   labelClassName?: string;
+  /**
+   * Content to be displayed when the accordion is open
+   **/
   children: ReactNode;
   className?: string;
   disabled?: boolean;

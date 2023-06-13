@@ -47,4 +47,9 @@ export const BTC_EXPLORER = {
   [Environments.Testnet]: 'https://live.blockcypher.com/btc-testnet',
 };
 
+export const ETH_EXPLORER = {
+  [Environments.Mainnet]: 'https://etherscan.io',
+  [Environments.Testnet]: 'https://sepolia.etherscan.io',
+};
+
 export const ESTIMATOR_URI = process.env.REACT_APP_ESTIMATOR_URI;

@@ -1,5 +1,10 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 
+import { ChainIds } from '@sovryn/ethers-provider';
+
+import { defaultChainId } from '../../../../../config/chains';
+
+import { useNetworkContext } from '../../../../../contexts/NetworkContext';
 import {
   ReceiveContext,
   ReceiveContextStateType,
@@ -38,6 +43,7 @@ const getBackStep = (step: ReceiveStep) => {
 };
 
 export const BridgeReceiveFlow: React.FC<ReceiveFlowProps> = ({ onClose }) => {
+  const { requireChain } = useNetworkContext();
   const [state, setState] = useState<ReceiveContextStateType>(defaultValue);
   const { step } = state;
 
@@ -54,6 +60,12 @@ export const BridgeReceiveFlow: React.FC<ReceiveFlowProps> = ({ onClose }) => {
   }, [value]);
 
   const handleConfirm = useCallback(() => {}, []);
+
+  useEffect(() => {
+    return () => {
+      requireChain(defaultChainId as ChainIds);
+    };
+  }, [requireChain]);
 
   return (
     <ReceiveContext.Provider value={value}>

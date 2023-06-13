@@ -2,6 +2,7 @@ import React, { useCallback, useContext } from 'react';
 
 import { t } from 'i18next';
 
+import { ChainIds } from '@sovryn/ethers-provider';
 import {
   Heading,
   HeadingType,
@@ -10,6 +11,9 @@ import {
   WalletContainer,
 } from '@sovryn/ui';
 
+import { defaultChainId } from '../../../../../../config/chains';
+
+import { useNetworkContext } from '../../../../../../contexts/NetworkContext';
 import { translations } from '../../../../../../locales/i18n';
 import {
   OriginNetwork,
@@ -22,6 +26,7 @@ const translation = translations.fastBtc.receive.networkScreen;
 
 export const NetworkList = () => {
   const { set } = useContext(ReceiveContext);
+  const { requireChain } = useNetworkContext();
 
   const handleNetworkClick = useCallback(
     (network: OriginNetwork) => () => {
@@ -33,8 +38,14 @@ export const NetworkList = () => {
             : ReceiveStep.SELECT_ASSET,
         originNetwork: network,
       }));
+
+      requireChain(
+        (network === OriginNetwork.BITCOIN
+          ? defaultChainId
+          : getNetwork(network).chainId) as ChainIds,
+      );
     },
-    [set],
+    [requireChain, set],
   );
 
   return (

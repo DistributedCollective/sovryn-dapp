@@ -25,7 +25,7 @@ export const ConnectedUserBanner: FC<ConnectedUserBannerProps> = ({
     () =>
       hasRbtcBalance
         ? openLOC
-        : () => sharedState.actions.openFastBtcDialog(!isMainnet),
+        : () => sharedState.actions.openFastBtcDialog(!isMainnet()),
     [hasRbtcBalance, openLOC],
   );
 

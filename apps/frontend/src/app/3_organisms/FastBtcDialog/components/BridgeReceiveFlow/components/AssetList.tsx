@@ -15,7 +15,7 @@ import {
 
 import { translations } from '../../../../../../locales/i18n';
 import { ReceiveContext, ReceiveStep } from '../../../contexts/receive-context';
-import { getNetwork } from '../utils/networks';
+import { getNetwork } from '../../../utils/networks';
 
 const translation = translations.fastBtc.receive.assetScreen;
 
@@ -34,7 +34,7 @@ const columns = [
       <TransactionId
         href="#"
         value={row.address}
-        dataAttribute={`funding-send-transaction-id`}
+        dataAttribute={`funding-receive-transaction-id`}
       />
     ),
   },

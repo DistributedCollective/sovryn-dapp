@@ -15,12 +15,9 @@ import { defaultChainId } from '../../../../../../config/chains';
 
 import { useNetworkContext } from '../../../../../../contexts/NetworkContext';
 import { translations } from '../../../../../../locales/i18n';
-import {
-  OriginNetwork,
-  ReceiveContext,
-  ReceiveStep,
-} from '../../../contexts/receive-context';
-import { getNetwork } from '../utils/networks';
+import { ReceiveContext, ReceiveStep } from '../../../contexts/receive-context';
+import { OriginNetwork } from '../../../types';
+import { getNetwork } from '../../../utils/networks';
 
 const translation = translations.fastBtc.receive.networkScreen;
 

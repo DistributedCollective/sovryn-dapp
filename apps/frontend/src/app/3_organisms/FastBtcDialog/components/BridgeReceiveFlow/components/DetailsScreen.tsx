@@ -1,9 +1,14 @@
 import React, { useContext, useMemo } from 'react';
 
-import classNames from 'classnames';
 import { t } from 'i18next';
 
-import { Button, Heading, HeadingType } from '@sovryn/ui';
+import {
+  Button,
+  Heading,
+  HeadingType,
+  SimpleTable,
+  SimpleTableRow,
+} from '@sovryn/ui';
 
 import { TxIdWithNotification } from '../../../../../2_molecules/TxIdWithNotification/TransactionIdWithNotification';
 import { BITCOIN } from '../../../../../../constants/currencies';
@@ -14,7 +19,7 @@ import {
 } from '../../../../../../utils/helpers';
 import { formatValue } from '../../../../../../utils/math';
 import { ReceiveContext } from '../../../contexts/receive-context';
-import { getNetwork } from '../utils/networks';
+import { getNetwork } from '../../../utils/networks';
 
 const translation = translations.fastBtc.receive.detailsScreen;
 
@@ -99,24 +104,16 @@ export const DetailsScreen: React.FC<DetailsScreenProps> = ({ onConfirm }) => {
   );
 
   return (
-    <div className="text-center">
-      <Heading type={HeadingType.h2} className="font-medium mb-8">
+    <>
+      <Heading type={HeadingType.h2} className="font-medium mb-8 text-center">
         {t(translation.title)}
       </Heading>
 
-      <div className="bg-gray-80 border rounded border-gray-50 p-3 text-xs text-gray-30">
-        {items.map(({ label, value }, index) => (
-          <div
-            className={classNames('flex justify-between', {
-              'mb-3': index !== items.length - 1,
-            })}
-            key={label}
-          >
-            <span>{label} </span>
-            <span>{value}</span>
-          </div>
+      <SimpleTable border>
+        {items.map(({ label, value }) => (
+          <SimpleTableRow key={label} label={label} value={value} />
         ))}
-      </div>
+      </SimpleTable>
 
       <div className="mt-8">
         <Button
@@ -126,6 +123,6 @@ export const DetailsScreen: React.FC<DetailsScreenProps> = ({ onConfirm }) => {
           dataAttribute="funding-receiver-confirm"
         />
       </div>
-    </div>
+    </>
   );
 };

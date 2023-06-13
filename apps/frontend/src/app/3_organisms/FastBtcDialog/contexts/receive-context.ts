@@ -3,6 +3,7 @@ import { createContext, Dispatch, SetStateAction } from 'react';
 import { SupportedTokens } from '@sovryn/contracts';
 
 import { Nullable } from '../../../../types/global';
+import { OriginNetwork } from '../types';
 
 export enum ReceiveStep {
   MAIN,
@@ -10,12 +11,6 @@ export enum ReceiveStep {
   BITCOIN_FLOW,
   AMOUNT,
   DETAILS,
-}
-
-export enum OriginNetwork {
-  BITCOIN,
-  ETHEREUM,
-  BINANCE_SMART_CHAIN,
 }
 
 export type ReceiveContextStateType = {

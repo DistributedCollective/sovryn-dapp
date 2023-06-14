@@ -143,6 +143,10 @@ BaseCheckbox.argTypes = {
     description:
       'The onChangeValue handler for the input, triggered whenever the checkbox value changes',
   },
+  checked: {
+    control: 'boolean',
+    description: 'Checkbox checked state',
+  },
 };
 
 export const WithLabel = Template.bind({});

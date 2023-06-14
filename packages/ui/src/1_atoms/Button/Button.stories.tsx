@@ -70,6 +70,16 @@ Default.argTypes = {
     description:
       'The content of the button. Can be text, other components, or HTML elements.',
   },
+  href: {
+    control: 'text',
+    description:
+      'The URL that the anchor tag should point to. If provided, an anchor tag will be rendered',
+  },
+  hrefExternal: {
+    control: 'boolean',
+    description:
+      'If set to `true`, the anchor tag will open the link in a new tab or window',
+  },
 };
 
 export const LinkInternal = Template.bind({});
@@ -84,11 +94,6 @@ LinkInternal.args = {
 };
 LinkInternal.argTypes = {
   ...Default.argTypes,
-  href: {
-    control: 'text',
-    description:
-      'The URL that the anchor tag should point to. If provided, an anchor tag will be rendered',
-  },
 };
 
 export const LinkExternal = Template.bind({});
@@ -103,12 +108,7 @@ LinkExternal.args = {
   disabled: false,
 };
 LinkExternal.argTypes = {
-  ...LinkInternal.argTypes,
-  hrefExternal: {
-    control: 'boolean',
-    description:
-      'If set to `true`, the anchor tag will open the link in a new tab or window',
-  },
+  ...Default.argTypes,
 };
 
 const renderButton = (style: ButtonStyle, size: ButtonSize, props) => (

@@ -41,10 +41,13 @@ Default.argTypes = {
   },
 };
 
-export const All = () => (
+const _All: ComponentStory<typeof Heading> = () => (
   <>
     <Heading type={HeadingType.h1} children="Heading H1" className="mb-1" />
     <Heading type={HeadingType.h2} children="Heading H2" className="mb-1" />
     <Heading type={HeadingType.h3} children="Heading H3" />
   </>
 );
+
+export const All = _All.bind({});
+All.argTypes = { ...Default.argTypes };

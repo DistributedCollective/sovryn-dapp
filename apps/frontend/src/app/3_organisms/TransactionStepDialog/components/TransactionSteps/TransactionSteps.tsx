@@ -1,13 +1,24 @@
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 
+import classNames from 'classnames';
 import { ethers } from 'ethers';
 import { t } from 'i18next';
 
-import { Button, Icon, IconNames, StatusType } from '@sovryn/ui';
+import { SupportedTokens } from '@sovryn/contracts';
+import {
+  Button,
+  ErrorBadge,
+  ErrorLevel,
+  Icon,
+  IconNames,
+  StatusType,
+} from '@sovryn/ui';
 
 import { APPROVAL_FUNCTION } from '../../../../../constants/general';
+import { useAssetBalance } from '../../../../../hooks/useAssetBalance';
 import { translations } from '../../../../../locales/i18n';
 import { sleep } from '../../../../../utils/helpers';
+import { fromWei, toWei } from '../../../../../utils/math';
 import { signERC2612Permit } from '../../../../../utils/permit/permit';
 import {
   Transaction,
@@ -43,6 +54,15 @@ export const TransactionSteps: FC<TransactionStepsProps> = ({
   const [stepData, setStepData] = useState<TransactionStepData[]>([]);
   const [step, setStep] = useState(-1);
   const [error, setError] = useState(false);
+  const [estimatedGasFee, setEstimatedGasFee] = useState(0);
+  const { balance: rbtcBalance, loading } = useAssetBalance(
+    SupportedTokens.rbtc,
+  );
+
+  const hasEnoughBalance = useMemo(
+    () => rbtcBalance.sub(estimatedGasFee).gt(0),
+    [rbtcBalance, estimatedGasFee],
+  );
 
   useEffect(() => {
     const initialize = async () => {
@@ -71,6 +91,16 @@ export const TransactionSteps: FC<TransactionStepsProps> = ({
               gas.toString(),
             ));
 
+          item.config.gasLimit &&
+            setEstimatedGasFee(
+              Number(
+                fromWei(
+                  toWei(gasPrice)
+                    .mul(item.config.gasLimit)
+                    .div(10 ** 9),
+                ),
+              ),
+            );
           item.config.amount =
             fnName === APPROVAL_FUNCTION ? requestArgs[1] : undefined;
           item.config.unlimitedAmount =
@@ -93,10 +123,21 @@ export const TransactionSteps: FC<TransactionStepsProps> = ({
     (index: number, config: TransactionConfig) => {
       setStepData(items => {
         if (items[index]) {
-          const copy = [...items];
-          copy[index].config = config;
-          return copy;
+          const updatedItems = [...items];
+          updatedItems[index] = { ...updatedItems[index], config };
+
+          if (config.gasLimit && config.gasPrice) {
+            const gasFee = fromWei(
+              toWei(config.gasPrice)
+                .mul(config.gasLimit)
+                .div(10 ** 9),
+            );
+            setEstimatedGasFee(Number(gasFee));
+          }
+
+          return updatedItems;
         }
+
         return items;
       });
     },
@@ -274,8 +315,8 @@ export const TransactionSteps: FC<TransactionStepsProps> = ({
   );
 
   const isLoading = useMemo(
-    () => step > -1 && step < transactions.length && !error,
-    [error, step, transactions.length],
+    () => step > -1 && step < transactions.length && !error && !loading,
+    [error, step, transactions.length, loading],
   );
 
   useEffect(() => {
@@ -315,12 +356,19 @@ export const TransactionSteps: FC<TransactionStepsProps> = ({
           gasPrice={gasPrice}
         />
       ))}
+      {!hasEnoughBalance && (
+        <ErrorBadge
+          level={ErrorLevel.Critical}
+          message={t(translations.transactionStep.notEnoughBalance)}
+        />
+      )}
       {!isLoading && transactions.length > step && (
         <Button
-          className="w-full mt-7"
+          className={classNames('w-full', hasEnoughBalance && 'mt-7')}
           text={t(translations.common.buttons[error ? 'retry' : 'confirm'])}
           onClick={submit}
           dataAttribute={`tx-dialog-${error ? 'retry' : 'confirm'}`}
+          disabled={!hasEnoughBalance}
         />
       )}
       {onClose && transactions.length === step && (

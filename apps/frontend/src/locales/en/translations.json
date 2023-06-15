@@ -119,7 +119,8 @@
         "gasSettings": "Gas settings",
         "gasLimit": "Gas limit",
         "gasPrice": "Gas price",
-        "resetValues": "Reset values"
+        "resetValues": "Reset values",
+        "notEnoughBalance": "Estimated gas fee exceeds BTC balance"
     },
 
     "zeroPage": {

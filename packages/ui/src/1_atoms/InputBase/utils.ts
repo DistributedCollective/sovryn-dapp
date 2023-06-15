@@ -22,6 +22,10 @@ export const prepareValueToRender = (
   locale: string,
   canEndWithDot: boolean = true,
 ): string => {
+  if (typeof value === 'undefined') {
+    return undefined as unknown as string;
+  }
+
   if (type === 'number') {
     const nonNumeric = (value.match(/[^0-9.,]/g) || []).length;
     value = value.replace(/[^0-9.,]/g, '');

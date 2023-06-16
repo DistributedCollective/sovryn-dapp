@@ -25,6 +25,7 @@
         "na": "N/A",
         "tables": {
             "columnTitles": {
+                "amount": "Amount",
                 "timestamp": "Timestamp",
                 "transactionType": "Transaction type",
                 "transactionID": "TXID"
@@ -471,10 +472,15 @@
                 "stability": "Stability pool",
                 "convert": "Conversion",
                 "funding": "Funding",
-                "collateralSurplusWithdrawals": "Collateral surplus",
                 "reward": "Reward"
             },
             "comingSoon": "Coming soon..."
+        }
+    },
+    "locHistory": {
+        "types": {
+            "lineOfCredit": "Line of credit",
+            "collateralSurplus": "Collateral surplus"
         }
     },
     "transactionHistory": {
@@ -521,7 +527,7 @@
     },
     "collateralSurplusHistory": {
         "table": {
-            "collateralChange": "Collateral change",
+            "amount": "amount",
             "withdrawSurplus": "Withdraw surplus",
             "depositSurplus": "Deposit surplus"
         }
@@ -561,9 +567,6 @@
         }
     },
     "rewardHistory": {
-        "table": {
-            "rewardChange": "Reward change"
-        },
         "stabilityPoolOperation": {
             "claimCollateralGain": "Claim gain",
             "transferGainToLineOfCredit": "Transfer gain to line of credit"
@@ -574,9 +577,6 @@
         }
     },
     "subsidyHistory": {
-        "table": {
-            "subsidyChange": "Subsidy change"
-        },
         "stabilityPoolOperation": {
             "claimStabilityPoolSubsidy": "Claim stability pool subsidy"
         }

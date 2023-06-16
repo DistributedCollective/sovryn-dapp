@@ -2,12 +2,12 @@ import { useMemo } from 'react';
 
 import { OrderOptions } from '@sovryn/ui';
 
-import { zeroClient } from '../../../../utils/clients';
+import { zeroClient } from '../../../../../../utils/clients';
 import {
   CollSurplusChange_Filter,
   CollSurplusChange_OrderBy,
   useGetCollSurplusChangesQuery,
-} from './../../../../utils/graphql/zero/generated';
+} from '../../../../../../utils/graphql/zero/generated';
 
 export const useGetCollateralSurplusWithdrawals = (
   account: string,

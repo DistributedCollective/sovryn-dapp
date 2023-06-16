@@ -1,5 +1,5 @@
 export * from './Header/Header';
 export * from './TransactionStepDialog';
-export * from './TransactionHistoryFrame';
+export * from './LOCHistory/LOCHistory';
 export * from './RedemptionsHistoryFrame';
 export * from './Footer/Footer';

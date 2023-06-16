@@ -13,33 +13,34 @@ import {
   Pagination,
   Paragraph,
   ParagraphSize,
+  Select,
   Table,
 } from '@sovryn/ui';
 
-import { chains, defaultChainId } from '../../../config/chains';
+import { chains, defaultChainId } from '../../../../../config/chains';
 
-import { AmountRenderer } from '../../2_molecules/AmountRenderer/AmountRenderer';
-import { ExportCSV } from '../../2_molecules/ExportCSV/ExportCSV';
-import { TableFilter } from '../../2_molecules/TableFilter/TableFilter';
-import { Filter } from '../../2_molecules/TableFilter/TableFilter.types';
-import { TxIdWithNotification } from '../../2_molecules/TxIdWithNotification/TransactionIdWithNotification';
-import { useLiquityBaseParams } from '../../5_pages/ZeroPage/hooks/useLiquityBaseParams';
+import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRenderer';
+import { ExportCSV } from '../../../../2_molecules/ExportCSV/ExportCSV';
+import { TableFilter } from '../../../../2_molecules/TableFilter/TableFilter';
+import { Filter } from '../../../../2_molecules/TableFilter/TableFilter.types';
+import { TxIdWithNotification } from '../../../../2_molecules/TxIdWithNotification/TransactionIdWithNotification';
+import { useLiquityBaseParams } from '../../../../5_pages/ZeroPage/hooks/useLiquityBaseParams';
 import {
   BITCOIN,
   BTC_RENDER_PRECISION,
   TOKEN_RENDER_PRECISION,
-} from '../../../constants/currencies';
+} from '../../../../../constants/currencies';
 import {
   LIQUIDATION_RESERVE_AMOUNT,
   DEFAULT_HISTORY_FRAME_PAGE_SIZE,
   EXPORT_RECORD_LIMIT,
-} from '../../../constants/general';
-import { useNotificationContext } from '../../../contexts/NotificationContext';
-import { useAccount } from '../../../hooks/useAccount';
-import { useBlockNumber } from '../../../hooks/useBlockNumber';
-import { useMaintenance } from '../../../hooks/useMaintenance';
-import { translations } from '../../../locales/i18n';
-import { zeroClient } from '../../../utils/clients';
+} from '../../../../../constants/general';
+import { useNotificationContext } from '../../../../../contexts/NotificationContext';
+import { useAccount } from '../../../../../hooks/useAccount';
+import { useBlockNumber } from '../../../../../hooks/useBlockNumber';
+import { useMaintenance } from '../../../../../hooks/useMaintenance';
+import { translations } from '../../../../../locales/i18n';
+import { zeroClient } from '../../../../../utils/clients';
 import {
   InputMaybe,
   TroveChange,
@@ -47,14 +48,19 @@ import {
   TroveChange_OrderBy,
   TroveOperation,
   useGetTroveLazyQuery,
-} from '../../../utils/graphql/zero/generated';
-import { dateFormat } from '../../../utils/helpers';
+} from '../../../../../utils/graphql/zero/generated';
+import { dateFormat } from '../../../../../utils/helpers';
+import { LOCHistoryProps } from '../../types';
+import { locHistoryOptions } from '../../utils';
 import { useGetTroves } from './hooks/useGetTroves';
 import { renderSign } from './utils';
 
 const pageSize = DEFAULT_HISTORY_FRAME_PAGE_SIZE;
 
-export const TransactionHistoryFrame: FC = () => {
+export const TransactionHistoryFrame: FC<LOCHistoryProps> = ({
+  selectedHistoryType,
+  onChangeLOCHistory,
+}) => {
   const { account } = useAccount();
   const { addNotification } = useNotificationContext();
   const [page, setPage] = useState(0);
@@ -514,18 +520,26 @@ export const TransactionHistoryFrame: FC = () => {
 
   return (
     <>
-      <div className="flex-row items-center gap-4 mb-7 hidden lg:inline-flex">
-        <ExportCSV
-          getData={exportData}
-          filename="transactions"
-          disabled={!troves || troves?.length < 1 || exportLocked}
+      <div className="flex-row items-center gap-4 mb-7 flex justify-center lg:justify-start">
+        <Select
+          dataAttribute={`loc-history-${selectedHistoryType}`}
+          value={selectedHistoryType}
+          onChange={onChangeLOCHistory}
+          options={locHistoryOptions}
         />
-        {exportLocked && (
-          <ErrorBadge
-            level={ErrorLevel.Warning}
-            message={t(translations.maintenanceMode.featureDisabled)}
+        <div className="flex-row items-center ml-2 gap-4 hidden lg:inline-flex">
+          <ExportCSV
+            getData={exportData}
+            filename="transactions"
+            disabled={!troves || troves?.length < 1 || exportLocked}
           />
-        )}
+          {exportLocked && (
+            <ErrorBadge
+              level={ErrorLevel.Warning}
+              message={t(translations.maintenanceMode.featureDisabled)}
+            />
+          )}
+        </div>
       </div>
 
       <div className="bg-gray-80 py-4 px-4 rounded">

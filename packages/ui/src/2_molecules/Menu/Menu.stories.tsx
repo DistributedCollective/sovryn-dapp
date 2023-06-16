@@ -3,6 +3,7 @@ import { Story } from '@storybook/react';
 
 import React, { ComponentProps } from 'react';
 
+import { IconNames } from '../../1_atoms';
 import { Menu } from './Menu';
 import { MenuItem } from './components/MenuItem/MenuItem';
 import { MenuSeparator } from './components/MenuSeparator/MenuSeparator';
@@ -50,6 +51,17 @@ _Menu.args = {
     />,
   ],
 };
+_Menu.argTypes = {
+  children: {
+    control: 'text',
+    description:
+      'The menu content. Can be text, other components, or HTML elements.',
+  },
+  className: {
+    control: 'text',
+    description: 'The className to apply to the menu',
+  },
+};
 
 const MenuSeparatorTemplate: Story<
   ComponentProps<typeof MenuSeparator>
@@ -58,6 +70,13 @@ const MenuSeparatorTemplate: Story<
 export const _MenuSeparator = MenuSeparatorTemplate.bind({});
 _MenuSeparator.args = {
   text: '',
+};
+_MenuSeparator.argTypes = {
+  text: {
+    control: 'text',
+    description:
+      'The menu seprator content. Can be text, other components, or HTML elements.',
+  },
 };
 
 const MenuItemTemplate: Story<ComponentProps<typeof MenuItem>> = args => (
@@ -69,4 +88,21 @@ _MenuItem.args = {
   text: 'Text',
   label: 'label',
   icon: faArchway,
+};
+_MenuItem.argTypes = {
+  text: {
+    control: 'text',
+    description:
+      'The content of the menu item. Can be text, other components, or HTML elements.',
+  },
+  label: {
+    control: 'text',
+    description:
+      'The content of the menu label. Can be text, other components, or HTML elements.',
+  },
+  icon: {
+    control: 'select',
+    options: Object.values(IconNames),
+    description: 'The menu item icon',
+  },
 };

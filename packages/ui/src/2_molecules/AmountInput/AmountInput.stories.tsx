@@ -37,6 +37,57 @@ Basic.args = {
   variant: AmountInputVariant.small,
 };
 
+Basic.argTypes = {
+  label: {
+    control: 'text',
+    description: 'The label of the input.',
+  },
+  variant: {
+    control: 'select',
+    options: Object.values(AmountInputVariant),
+    defaultValue: AmountInputVariant.large,
+    description: 'The amount input variant',
+  },
+  value: {
+    control: 'text',
+    description: 'The value of the input',
+  },
+  dataAttribute: {
+    control: 'text',
+    description: 'The data attributes to apply to the input',
+  },
+  tooltip: {
+    control: 'string',
+    description: 'The optional tooltip to shown on the helper icon',
+  },
+  maxAmount: {
+    control: 'number',
+    description: 'The maximum amount applied on the input',
+  },
+  decimalPrecision: {
+    control: 'number',
+    description: 'The number of decimal precision for the value',
+  },
+  unit: {
+    control: 'string',
+    description: 'The optional unit to shown after the value',
+  },
+  readOnly: {
+    control: 'boolean',
+    description: 'The option to make the input read only',
+  },
+  onChangeText: {
+    control: 'function',
+    description:
+      "The onChange handler for the input, triggered whenever the input's value changes",
+  },
+  invalid: {
+    control: 'boolean',
+    description:
+      'Whether the input is invalid. When set to true the error state styling and behaviour will be triggered on the input',
+  },
+};
+
 export const WithoutLabel = Template.bind({});
 WithoutLabel.args = {
   unit: 'BTC',
@@ -44,6 +95,9 @@ WithoutLabel.args = {
   disabled: false,
   readOnly: false,
   dataAttribute: 'amountInput',
+};
+WithoutLabel.argTypes = {
+  ...Basic.argTypes,
 };
 
 export const WithoutLabelAndUnit = Template.bind({});
@@ -53,6 +107,9 @@ WithoutLabelAndUnit.args = {
   readOnly: false,
   dataAttribute: 'amountInput',
 };
+WithoutLabelAndUnit.argTypes = {
+  ...Basic.argTypes,
+};
 
 export const LargeDecimal = Template.bind({});
 LargeDecimal.args = {
@@ -61,4 +118,7 @@ LargeDecimal.args = {
   value: 0.12345678,
   decimalPrecision: 3,
   dataAttribute: 'amountInput',
+};
+LargeDecimal.argTypes = {
+  ...Basic.argTypes,
 };

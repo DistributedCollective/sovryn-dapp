@@ -57,3 +57,37 @@ Basic.args = {
     </>
   ),
 };
+Basic.argTypes = {
+  dataAttribute: {
+    control: 'text',
+    description:
+      'The data id to apply as HTML attribute to this component instance. This should be unique per component instance on the page',
+  },
+  logo: {
+    control: 'text',
+    description: 'The content of the header logo section. Should be an image',
+  },
+  menuItems: {
+    control: 'text',
+    description:
+      'The content of the header menu section. Can be any components, or HTML elements.',
+  },
+  secondaryContent: {
+    control: 'text',
+    description:
+      'The right content of the header. Can be text, other components, or HTML elements.',
+  },
+  isOpen: {
+    control: 'boolean',
+    description: 'The open state of the header. Used mainly for mobile screens',
+  },
+  menuIcon: {
+    control: 'text',
+    description: 'The menu icon element',
+  },
+  extraContent: {
+    control: 'text',
+    description:
+      'The extra content of the header. Can be text, other components, or HTML elements.',
+  },
+};

@@ -11,6 +11,9 @@ const MAX_COUNT_DEFAULT = 99;
 type NavMenuItemProps = {
   count?: number;
   onClick?: () => void;
+  /**
+   * The content of the menu item.
+   * */
   children: ReactNode;
   isActive?: boolean;
   className?: string;

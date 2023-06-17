@@ -28,6 +28,9 @@ import { getDropdownPositionStyles } from './Dropdown.utils';
 
 export type DropdownProps = {
   text: ReactNode;
+  /**
+   * The content of the dropdown.
+   * */
   children: ReactNode;
   mode?: DropdownMode;
   size?: DropdownSize;

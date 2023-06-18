@@ -27,18 +27,6 @@ const InteractiveTemplate: Story<ComponentProps<typeof Overlay>> = args => {
     </div>
   );
 };
-// className?: string;
-// portalTarget?: string;
-// zIndex?: number;
-// fixed?: boolean;
-// isOpen?: boolean;
-// align?: Align;
-// alignVertical?: AlignVertical;
-// background?: OverlayBackground;
-// onBlur?: MouseEventHandler;
-// children: ReactNode;
-// portalClassName?: string;
-// dataAttribute?: string;
 
 export const Basic = Template.bind({});
 Basic.args = {

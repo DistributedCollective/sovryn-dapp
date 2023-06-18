@@ -75,7 +75,11 @@ _MenuSeparator.argTypes = {
   text: {
     control: 'text',
     description:
-      'The menu seprator content. Can be text, other components, or HTML elements.',
+      'The menu separator content. Can be text, other components, or HTML elements.',
+  },
+  className: {
+    control: 'text',
+    description: 'The className to apply to the menu separator',
   },
 };
 
@@ -104,5 +108,9 @@ _MenuItem.argTypes = {
     control: 'select',
     options: Object.values(IconNames),
     description: 'The menu item icon',
+  },
+  className: {
+    control: 'text',
+    description: 'The className to apply to the menu item',
   },
 };

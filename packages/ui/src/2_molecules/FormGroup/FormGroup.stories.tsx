@@ -44,6 +44,11 @@ Basic.argTypes = {
     description:
       'The content of the form label subtext. Can be text, other components, or HTML elements.',
   },
+  helper: {
+    control: 'text',
+    description:
+      'The form group help information. Can be text, other components, or HTML elements.',
+  },
   dataAttribute: {
     control: 'text',
     description:

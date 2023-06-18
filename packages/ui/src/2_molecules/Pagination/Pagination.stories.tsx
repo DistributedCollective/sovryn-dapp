@@ -21,7 +21,6 @@ Basic.args = {
   itemsPerPage: 6,
   totalItems: 22,
 };
-
 Basic.argTypes = {
   dataAttribute: {
     control: 'text',
@@ -68,11 +67,11 @@ const _WithNoTotalItems: Story<ComponentProps<typeof Pagination>> = args => {
 };
 
 export const WithNoTotalItems = _WithNoTotalItems.bind({});
-_WithNoTotalItems.args = {
+WithNoTotalItems.args = {
   className: '',
   dataAttribute: '',
   itemsPerPage: 6,
 };
-_WithNoTotalItems.argTypes = {
+WithNoTotalItems.argTypes = {
   ...Basic.argTypes,
 };

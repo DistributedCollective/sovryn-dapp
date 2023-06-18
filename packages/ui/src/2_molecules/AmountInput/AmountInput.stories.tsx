@@ -48,6 +48,20 @@ Basic.argTypes = {
     defaultValue: AmountInputVariant.large,
     description: 'The amount input variant',
   },
+  debounce: {
+    control: 'number',
+    description: 'The debounce time in ms',
+  },
+  disabled: {
+    control: 'boolean',
+    description: 'Input disable state',
+  },
+  useAmountButtons: {
+    control: 'boolean',
+    description:
+      'Does not allow to enter more than max amount value when is set to true',
+    defaultValue: false,
+  },
   value: {
     control: 'text',
     description: 'The value of the input',

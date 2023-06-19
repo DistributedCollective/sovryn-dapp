@@ -516,13 +516,6 @@ export const TransactionHistoryFrame: FC<LOCHistoryProps> = ({ children }) => {
   return (
     <>
       <div className="flex-row items-center gap-4 mb-7 flex justify-center lg:justify-start">
-        {/* <Select
-          dataAttribute={`loc-history-${selectedHistoryType}`}
-          value={selectedHistoryType}
-          onChange={onChangeLOCHistory}
-          options={locHistoryOptions}
-          className="min-w-36"
-        /> */}
         {children}
         <div className="flex-row items-center ml-2 gap-4 hidden lg:inline-flex">
           <ExportCSV

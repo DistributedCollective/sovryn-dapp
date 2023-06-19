@@ -4,6 +4,5 @@ export enum LOCHistoryType {
 }
 
 export type LOCHistoryProps = {
-  selectedHistoryType: LOCHistoryType;
-  onChangeLOCHistory: (value: LOCHistoryType) => void;
+  children: React.ReactNode;
 };

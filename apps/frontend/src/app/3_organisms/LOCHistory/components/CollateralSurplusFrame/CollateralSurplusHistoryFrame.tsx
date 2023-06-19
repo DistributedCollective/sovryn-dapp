@@ -12,7 +12,6 @@ import {
   Pagination,
   Paragraph,
   ParagraphSize,
-  Select,
   Table,
 } from '@sovryn/ui';
 
@@ -41,15 +40,13 @@ import {
 } from '../../../../../utils/graphql/zero/generated';
 import { dateFormat } from '../../../../../utils/helpers';
 import { formatValue } from '../../../../../utils/math';
-import { LOCHistoryProps } from '../../types';
-import { locHistoryOptions } from '../../utils';
+import { LOCHistoryProps } from '../../LOCHistory.types';
 import { useGetCollateralSurplusWithdrawals } from './hooks/useGetCollateralSurplusWithdrawals';
 
 const pageSize = DEFAULT_HISTORY_FRAME_PAGE_SIZE;
 
 export const CollateralSurplusHistoryFrame: FC<LOCHistoryProps> = ({
-  selectedHistoryType,
-  onChangeLOCHistory,
+  children,
 }) => {
   const { account } = useAccount();
   const { addNotification } = useNotificationContext();
@@ -197,12 +194,7 @@ export const CollateralSurplusHistoryFrame: FC<LOCHistoryProps> = ({
   return (
     <>
       <div className="flex-row items-center gap-4 mb-7 flex justify-center lg:justify-start">
-        <Select
-          dataAttribute={`loc-history-${selectedHistoryType}`}
-          value={selectedHistoryType}
-          onChange={onChangeLOCHistory}
-          options={locHistoryOptions}
-        />
+        {children}
         <div className="flex-row items-center ml-2 gap-4 hidden lg:inline-flex">
           <ExportCSV
             getData={exportData}

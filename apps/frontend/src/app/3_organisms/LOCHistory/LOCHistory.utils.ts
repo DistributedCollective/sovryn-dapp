@@ -1,7 +1,7 @@
 import { t } from 'i18next';
 
 import { translations } from '../../../locales/i18n';
-import { LOCHistoryType } from './types';
+import { LOCHistoryType } from './LOCHistory.types';
 
 export const locHistoryOptions = [
   {

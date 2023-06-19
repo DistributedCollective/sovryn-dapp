@@ -13,7 +13,6 @@ import {
   Pagination,
   Paragraph,
   ParagraphSize,
-  Select,
   Table,
 } from '@sovryn/ui';
 
@@ -50,17 +49,13 @@ import {
   useGetTroveLazyQuery,
 } from '../../../../../utils/graphql/zero/generated';
 import { dateFormat } from '../../../../../utils/helpers';
-import { LOCHistoryProps } from '../../types';
-import { locHistoryOptions } from '../../utils';
+import { LOCHistoryProps } from '../../LOCHistory.types';
 import { useGetTroves } from './hooks/useGetTroves';
 import { renderSign } from './utils';
 
 const pageSize = DEFAULT_HISTORY_FRAME_PAGE_SIZE;
 
-export const TransactionHistoryFrame: FC<LOCHistoryProps> = ({
-  selectedHistoryType,
-  onChangeLOCHistory,
-}) => {
+export const TransactionHistoryFrame: FC<LOCHistoryProps> = ({ children }) => {
   const { account } = useAccount();
   const { addNotification } = useNotificationContext();
   const [page, setPage] = useState(0);
@@ -521,12 +516,14 @@ export const TransactionHistoryFrame: FC<LOCHistoryProps> = ({
   return (
     <>
       <div className="flex-row items-center gap-4 mb-7 flex justify-center lg:justify-start">
-        <Select
+        {/* <Select
           dataAttribute={`loc-history-${selectedHistoryType}`}
           value={selectedHistoryType}
           onChange={onChangeLOCHistory}
           options={locHistoryOptions}
-        />
+          className="min-w-36"
+        /> */}
+        {children}
         <div className="flex-row items-center ml-2 gap-4 hidden lg:inline-flex">
           <ExportCSV
             getData={exportData}

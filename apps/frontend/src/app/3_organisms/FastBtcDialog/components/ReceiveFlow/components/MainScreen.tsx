@@ -2,7 +2,14 @@ import React, { useCallback, useContext } from 'react';
 
 import { t } from 'i18next';
 
-import { Button, ButtonStyle, ErrorBadge, ErrorLevel } from '@sovryn/ui';
+import {
+  Button,
+  ButtonStyle,
+  ErrorBadge,
+  ErrorLevel,
+  Paragraph,
+  ParagraphSize,
+} from '@sovryn/ui';
 
 import { useAccount } from '../../../../../../hooks/useAccount';
 import { useMaintenance } from '../../../../../../hooks/useMaintenance';
@@ -35,14 +42,21 @@ export const MainScreen: React.FC = () => {
           message={t(translations.maintenanceMode.fastBtc)}
         />
       ) : (
-        <Button
-          disabled={!account || !ready || addressLoading}
-          onClick={onContinueClick}
-          className="w-full"
-          style={ButtonStyle.secondary}
-          text={t(translations.common.buttons.continue)}
-          dataAttribute="funding-receive-instructions-confirm"
-        />
+        <>
+          <Button
+            disabled={!account || !ready || addressLoading}
+            onClick={onContinueClick}
+            className="w-full"
+            style={ButtonStyle.secondary}
+            text={t(translations.common.buttons.continue)}
+            dataAttribute="funding-receive-instructions-confirm"
+          />
+          {addressLoading && (
+            <Paragraph size={ParagraphSize.small} className="mt-1 text-center">
+              {t(translations.fastBtc.receive.loading)}
+            </Paragraph>
+          )}
+        </>
       )}
     </div>
   );

@@ -1,5 +1,11 @@
 # @sovryn/ui
 
+## 1.0.8
+
+### Patch Changes
+
+- cad0a8b: chore: custom dialog zIndex
+
 ## 1.0.7
 
 ### Patch Changes

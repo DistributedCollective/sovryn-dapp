@@ -33,6 +33,7 @@ type DialogProps = {
   initialFocusRef?: React.RefObject<HTMLElement>;
   disableFocusTrap?: boolean;
   buttonCloseText?: string;
+  initialZIndex?: number;
 };
 
 export const Dialog: IDialogFunctionComponent<DialogProps> = ({
@@ -47,6 +48,7 @@ export const Dialog: IDialogFunctionComponent<DialogProps> = ({
   initialFocusRef,
   disableFocusTrap,
   buttonCloseText,
+  initialZIndex = 100,
 }) => {
   const ref = useRef<HTMLDivElement>(null);
 
@@ -61,9 +63,9 @@ export const Dialog: IDialogFunctionComponent<DialogProps> = ({
     // make sure that multiple dialogs opened showing up in correct order.
     if (isOpen) {
       Dialog.index++;
-      setZIndex(100 + Dialog.index);
+      setZIndex(initialZIndex + Dialog.index);
     }
-  }, [isOpen]);
+  }, [isOpen, initialZIndex]);
 
   useEffect(() => {
     const handleEscape = (event: KeyboardEvent) => {

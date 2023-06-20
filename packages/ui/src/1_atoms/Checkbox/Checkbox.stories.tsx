@@ -108,6 +108,46 @@ BaseCheckbox.args = {
   disabled: false,
   dataAttribute: '',
 };
+BaseCheckbox.argTypes = {
+  containerClassName: {
+    control: 'text',
+    description: 'The className to apply to the checkbox wrapper',
+  },
+  label: {
+    control: 'text',
+    description:
+      'The content of the checkbox. Can be text, other components, or HTML elements.',
+  },
+  dataAttribute: {
+    control: 'text',
+    description:
+      'The data id to apply as HTML attribute to this component instance. This should be unique per component instance on the page',
+  },
+  indeterminate: {
+    control: 'boolean',
+    description:
+      'Used to indicate that some, but not all, child checkboxes within a group are selected',
+  },
+  disabled: {
+    control: 'boolean',
+    description: 'Checkbox disabled state',
+  },
+  onChangeValue: {
+    control: 'function',
+    description:
+      'The onChangeValue handler for the input, triggered whenever the checkbox value changes',
+  },
+  onChange: {
+    control: 'function',
+    note: '@deprecated Use onChangeValue if possible',
+    description:
+      'The onChangeValue handler for the input, triggered whenever the checkbox value changes',
+  },
+  checked: {
+    control: 'boolean',
+    description: 'Checkbox checked state',
+  },
+};
 
 export const WithLabel = Template.bind({});
 WithLabel.args = {
@@ -116,6 +156,9 @@ WithLabel.args = {
   indeterminate: false,
   disabled: false,
   dataAttribute: '',
+};
+WithLabel.argTypes = {
+  ...BaseCheckbox.argTypes,
 };
 
 export const TableWithCheckboxes = TableTemplate.bind({});
@@ -131,4 +174,7 @@ TableWithCheckboxes.parameters = {
       'containerClassName',
     ],
   },
+};
+TableWithCheckboxes.argTypes = {
+  ...BaseCheckbox.argTypes,
 };

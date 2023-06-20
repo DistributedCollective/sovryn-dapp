@@ -24,6 +24,64 @@ Default.args = {
   disabled: false,
 };
 
+Default.argTypes = {
+  className: {
+    control: 'text',
+    description: 'The className to apply to the button',
+  },
+  dataAttribute: {
+    control: 'text',
+    description:
+      'The data id to apply as HTML attribute to this component instance. This should be unique per component instance on the page',
+  },
+  loading: {
+    control: 'boolean',
+    description: 'Button loading state',
+  },
+  disabled: {
+    control: 'boolean',
+    description: 'Button disabled state',
+  },
+  style: {
+    control: 'select',
+    options: Object.values(ButtonStyle),
+    defaultValue: ButtonStyle.primary,
+    description: 'The style to apply to the button',
+  },
+  size: {
+    control: 'select',
+    options: Object.values(ButtonSize),
+    defaultValue: ButtonSize.small,
+    description: 'The size to apply to the button',
+  },
+  type: {
+    control: 'select',
+    options: Object.values(ButtonType),
+    defaultValue: ButtonType.button,
+    description: 'The type to apply to the button',
+  },
+  onClick: {
+    control: 'function',
+    description:
+      'The onClick handler for the button, triggered whenever the button is clicked',
+  },
+  text: {
+    control: 'text',
+    description:
+      'The content of the button. Can be text, other components, or HTML elements.',
+  },
+  href: {
+    control: 'text',
+    description:
+      'The URL that the anchor tag should point to. If provided, an anchor tag will be rendered',
+  },
+  hrefExternal: {
+    control: 'boolean',
+    description:
+      'If set to `true`, the anchor tag will open the link in a new tab or window',
+  },
+};
+
 export const LinkInternal = Template.bind({});
 LinkInternal.args = {
   text: "Internal Link (Doesn't work in Storybook)",
@@ -33,6 +91,9 @@ LinkInternal.args = {
   size: ButtonSize.small,
   loading: false,
   disabled: false,
+};
+LinkInternal.argTypes = {
+  ...Default.argTypes,
 };
 
 export const LinkExternal = Template.bind({});
@@ -45,6 +106,9 @@ LinkExternal.args = {
   type: ButtonType.button,
   loading: false,
   disabled: false,
+};
+LinkExternal.argTypes = {
+  ...Default.argTypes,
 };
 
 const renderButton = (style: ButtonStyle, size: ButtonSize, props) => (

@@ -12,6 +12,7 @@ import {
 } from '../../2_molecules';
 import { Paragraph } from '../Paragraph/Paragraph';
 import { Accordion } from './Accordion';
+import { AccordionStyle } from './Accordion.types';
 
 export default {
   title: 'Atoms/Accordion',
@@ -36,6 +37,50 @@ Default.args = {
   dataAttribute: 'accordion-simple',
 };
 
+Default.argTypes = {
+  className: {
+    control: 'text',
+    description: 'The className to apply to the wrapper element',
+  },
+  label: {
+    control: 'text',
+    description: 'The label shown on the accordion toggle button',
+  },
+  labelClassName: {
+    control: 'text',
+    description: 'The className to apply to the accordion toggle button',
+  },
+  children: {
+    control: 'text',
+    description:
+      'The content of the accordion. Can be text, other components, or HTML elements.',
+  },
+  disabled: {
+    control: 'boolean',
+    description: 'Accordion disabled state',
+  },
+  open: {
+    control: 'boolean',
+    description: 'Accordion open state',
+  },
+  onClick: {
+    control: 'function',
+    description:
+      'The onClick handler for the accordion, triggered whenever the accordion is clicked to open or close',
+  },
+  dataAttribute: {
+    control: 'text',
+    description:
+      'The data id to apply as HTML attribute to this component instance. This should be unique per component instance on the page',
+  },
+  style: {
+    control: 'select',
+    options: Object.values(AccordionStyle),
+    defaultValue: AccordionStyle.primary,
+    description: 'The style to apply to the accordion',
+  },
+};
+
 export const RichContent = Template.bind({});
 RichContent.args = {
   label: 'Test (click to toggle)',
@@ -57,6 +102,9 @@ RichContent.args = {
   ),
   disabled: false,
   dataAttribute: 'accordion-richcontent',
+};
+RichContent.argTypes = {
+  ...Default.argTypes,
 };
 
 export const OpenAndDisabled = Template.bind({});
@@ -81,4 +129,8 @@ OpenAndDisabled.args = {
   disabled: true,
   open: true,
   dataAttribute: 'accordion-opendisabled',
+};
+
+OpenAndDisabled.argTypes = {
+  ...Default.argTypes,
 };

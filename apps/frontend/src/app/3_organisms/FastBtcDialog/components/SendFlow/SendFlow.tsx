@@ -24,25 +24,27 @@ const getBackStep = (step: WithdrawStep) => {
     case WithdrawStep.REVIEW:
       return WithdrawStep.ADDRESS;
     default:
-      return WithdrawStep.AMOUNT;
+      return WithdrawStep.MAIN;
   }
 };
 
 type SendFlowProps = {
   onClose: () => void;
+  onBack?: () => void;
 };
 
-export const SendFlow: React.FC<SendFlowProps> = ({ onClose }) => {
+export const SendFlow: React.FC<SendFlowProps> = ({ onClose, onBack }) => {
   const value = useWithdrawBridgeConfig();
   const { step, set } = value;
 
   const onBackClick = useCallback(() => {
     set(prevState => ({ ...prevState, step: getBackStep(step) }));
-  }, [set, step]);
+    onBack?.();
+  }, [set, step, onBack]);
 
   return (
     <WithdrawContext.Provider value={value}>
-      {allowedStepsToGoBackFrom.includes(step) && (
+      {(allowedStepsToGoBackFrom.includes(step) || onBack) && (
         <GoBackButton onClick={onBackClick} />
       )}
 

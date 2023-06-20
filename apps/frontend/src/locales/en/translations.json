@@ -52,6 +52,11 @@
             "loading": "Loading Zero data",
             "error": "Error loading Zero data, please try again",
             "pageLoading": "is loading..."
+        },
+        "networks": {
+            "bitcoin": "Bitcoin",
+            "bnb": "BNB Smart Chain",
+            "ethereum": "Ethereum"
         }
     },
     "connectWalletButton": {
@@ -360,9 +365,9 @@
             "title": "Funding",
             "tabs": {
                 "receiveLabel": "Receive",
-                "receiveInfoText": "Transfer BTC from the bitcoin network to your Rootstock address",
+                "receiveInfoText": "Transfer assets from supported networks to your Rootstock address",
                 "sendLabel": "Send",
-                "sendInfoText": "Transfer BTC from the Rootstock network to a specified bitcoin address"
+                "sendInfoText": "Transfer asset from the Rootstock network to a specified address on another supported network"
             }
         },
         "receiveInstructions": {
@@ -394,15 +399,40 @@
             "copyAddressSuccess": "Address was copied to clipboard.",
             "invalidSignatures": "We had an error while trying to verify a deposit address"
         },
+
         "send": {
             "amountForm": {
                 "title": "Enter amount of Rootstock BTC to send",
-                "amountLabel": "Send"
+                "titleBridgeFlow": "Enter amount of Rootstock {{senderAsset}} to transfer to {{network}}",
+                "amountLabel": "Send",
+                "description": "Your {{senderAsset}} will automatically be converted to {{recipientAsset}} on {{network}}",
+                "amount": {
+                    "title": "Transfer",
+                    "label": "Amount"
+                },
+                "slippage": {
+                    "title": "Advanced settings",
+                    "label": "Slippage tolerance"
+                },
+                "policies": {
+                    "title": "Transfer policies",
+                    "minimum": "Transfer minimum",
+                    "conversion": "Conversion reward",
+                    "fee": "Bridge fee"
+                },
+                "summary": {
+                    "title": "Summary",
+                    "expectedToReceive": "Expected to receive",
+                    "minimumReceived": "Minimum received"
+                }
             },
             "addressForm": {
                 "title": "Enter recipient's bitcoin address",
                 "addressLabel": "Address",
-                "maxExceed": "Exceeds maximum amount"
+                "addressPlaceholder": "Enter address",
+                "maxExceed": "Exceeds maximum amount",
+                "confirmationLabel": "I confirm the funds will be accessible at the specified address - <0>Learn more</0>",
+                "confirmationLabelCTA": "Learn more"
             },
             "confirmationScreens": {
                 "reviewTitle": "Transfer details",
@@ -420,6 +450,36 @@
             "txDialog": {
                 "title": "Send BTC to the bitcoin network",
                 "sendBTC": "Send BTC"
+            },
+            "networkScreen": {
+                "title": "Select network you are transferring assets to"
+            },
+            "senderScreen": {
+                "title": "Select the assets to send from Rootstock",
+                "table": {
+                    "asset": "Asset",
+                    "address": "Address",
+                    "balance": "Balance"
+                }
+            },
+            "recipientScreen": {
+                "title": "Select the assets the recipient will receive on {{network}}",
+                "table": {
+                    "asset": "Asset",
+                    "address": "Address",
+                    "availableLiquidity": "Available liquidity"
+                }
+            },
+            "detailsScreen": {
+                "title": "Transfer details",
+                "from": "From",
+                "to": "To",
+                "sending": "Sending",
+                "conversionFee": "Conversion fee",
+                "expectedToReceive": "Expected to receive",
+                "minimumReceived": "Minimum received",
+                "rootstockTxId": "Rootstock TXID",
+                "networkTxId": "{{network}} TXID"
             }
         },
         "receive": {
@@ -432,7 +492,51 @@
                 "receiving": "Receiving",
                 "bitcoinTxId": "Bitcoin TXID",
                 "rootstockTxId": "Rootstock TXID"
-            }
+            },
+          "networkScreen": {
+            "title": "Select the network you are transferring assets from"
+          },
+          "assetScreen": {
+              "title": "Select the asset to transfer from {{network}}",
+              "table": {
+                  "asset": "Asset",
+                  "address": "Address",
+                  "balance": "Balance"
+              }
+          },
+          "amountFormScreen": {
+              "title": "Enter amount of {{network}} {{asset}} to transfer to Rootstock",
+              "description__dllr": "Your {{asset}} will automatically be converted to DLLR, a stablecoin exclusively backed by BTC",
+              "amount": {
+                "title": "Transfer",
+                "label": "Amount"
+              },
+              "slippage": {
+                "title": "Advanced settings",
+                "label": "Slippage tolerance"
+              },
+              "policies": {
+                "title": "Transfer policies",
+                "minimum": "Transfer minimum",
+                "conversion": "Conversion reward",
+                "fee": "Bridge fee"
+              },
+              "summary": {
+                "title": "Summary",
+                "expectedToReceive": "Expected to receive",
+                "minimumReceived": "Minimum received"
+              }
+          },
+          "detailsScreen": {
+            "title": "Transfer details",
+            "from": "From",
+            "to": "To",
+            "sending": "Sending",
+            "serviceFee": "Service fee",
+            "expectedToReceive": "Expected to receive",
+            "minimumReceived": "Minimum received",
+            "networkTxId": "{{network}} TXID"
+          }
         }
     },
 

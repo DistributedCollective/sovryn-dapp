@@ -31,6 +31,9 @@ export type OverlayProps = {
   alignVertical?: AlignVertical;
   background?: OverlayBackground;
   onBlur?: MouseEventHandler;
+  /**
+   * The content of the overlay.
+   * */
   children: ReactNode;
   portalClassName?: string;
   dataAttribute?: string;

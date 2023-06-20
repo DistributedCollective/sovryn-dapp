@@ -47,3 +47,23 @@ Basic.args = {
     },
   ],
 };
+Basic.argTypes = {
+  dataAttribute: {
+    control: 'text',
+    description:
+      'The data id to apply as HTML attribute to this component instance. This should be unique per component instance on the page',
+  },
+  className: {
+    control: 'text',
+    description: 'The className to apply to the notification stack',
+  },
+  onClose: {
+    control: 'function',
+    description:
+      'The onClose handler for the notification. Triggered when user closes the notification',
+  },
+  items: {
+    control: 'NotificationItem[]',
+    description: 'The list of notification items to render on the stack',
+  },
+};

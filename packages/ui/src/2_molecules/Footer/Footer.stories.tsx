@@ -100,6 +100,28 @@ const Template: Story<ComponentProps<typeof Footer>> = args => (
 
 export const Basic = Template.bind({});
 Basic.args = footerArgs;
+Basic.argTypes = {
+  leftContent: {
+    control: 'text',
+    description:
+      'The left content of the footer. Can be text, other components, or HTML elements.',
+  },
+  links: {
+    control: 'text',
+    description:
+      'The links section of the footer, rendered next to the left content. Can be text, other components, or HTML elements.',
+  },
+  rightContent: {
+    control: 'text',
+    description:
+      'The right content of the footer. Can be text, other components, or HTML elements.',
+  },
+  dataAttribute: {
+    control: 'text',
+    description:
+      'The data id to apply as HTML attribute to this component instance. This should be unique per component instance on the page',
+  },
+};
 
 const MidHeight: Story<ComponentProps<typeof Footer>> = args => (
   <div className="min-h-96 bg-gray-70 flex flex-col">
@@ -117,6 +139,9 @@ const MidHeight: Story<ComponentProps<typeof Footer>> = args => (
 
 export const MidContentHeight = MidHeight.bind({});
 MidContentHeight.args = footerArgs;
+MidContentHeight.argTypes = {
+  ...Basic.argTypes,
+};
 
 const HightHeight: Story<ComponentProps<typeof Footer>> = args => (
   <div className="min-h-[100rem] bg-gray-70 flex flex-col">
@@ -135,3 +160,6 @@ const HightHeight: Story<ComponentProps<typeof Footer>> = args => (
 
 export const TallContentHeight = HightHeight.bind({});
 TallContentHeight.args = footerArgs;
+TallContentHeight.argTypes = {
+  ...Basic.argTypes,
+};

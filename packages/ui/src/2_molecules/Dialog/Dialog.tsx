@@ -20,6 +20,9 @@ import {
 
 type DialogProps = {
   isOpen: boolean;
+  /**
+   * The content of the dialog.
+   * */
   children: React.ReactNode;
   className?: string;
   width?: DialogSize;

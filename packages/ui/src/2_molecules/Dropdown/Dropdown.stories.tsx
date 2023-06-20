@@ -31,6 +31,62 @@ Basic.args = {
   size: DropdownSize.large,
   mode: DropdownMode.sameWidth,
 };
+Basic.argTypes = {
+  text: {
+    control: 'text',
+    description:
+      'The content of the dropdown button. Can be text, other components, or HTML elements.',
+  },
+  children: {
+    control: 'text',
+    description:
+      'The content of the dropdown. Can be text, other components, or HTML elements.',
+  },
+  mode: {
+    control: 'select',
+    options: Object.values(DropdownMode),
+    defaultValue: DropdownMode.sameWidth,
+    description: 'The dropdown mode',
+  },
+  size: {
+    control: 'select',
+    options: Object.values(DropdownSize),
+    defaultValue: DropdownSize.large,
+    description: 'The dropdown size',
+  },
+  onOpen: {
+    control: 'function',
+    description:
+      'The onOpen handler for the dropdown, triggered when dropdown is opened',
+  },
+  onClose: {
+    control: 'function',
+    description:
+      'The onClose handler for the dropdown, triggered when dropdown is closed',
+  },
+  className: {
+    control: 'text',
+    description: 'The className to apply to the dropdown trigger button',
+  },
+  dataAttribute: {
+    control: 'text',
+    description:
+      'The data id to apply as HTML attribute to this component instance. This should be unique per component instance on the page',
+  },
+  dropdownClassName: {
+    control: 'text',
+    description: 'The className to apply to the dropdown content',
+  },
+  closeOnClick: {
+    control: 'boolean',
+    description: 'The setting to close dropdown when clicked on the content',
+  },
+  usePortal: {
+    control: 'boolean',
+    description: 'The setting to use portal for the dropdown or not',
+    defaultValue: true,
+  },
+};
 
 const AdvancedTemplate: Story<ComponentProps<typeof Dropdown>> = args => {
   return <Dropdown {...args} />;
@@ -49,4 +105,7 @@ Interactive.args = {
       <MenuItem text="Dropdown Menu Item 3" />
     </Menu>
   ),
+};
+Interactive.argTypes = {
+  ...Basic.argTypes,
 };

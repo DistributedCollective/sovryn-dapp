@@ -24,6 +24,38 @@ Basic.args = {
   maxCount: 99,
   dataAttribute: '',
 };
+Basic.argTypes = {
+  children: {
+    control: 'text',
+    description:
+      'The content of the nav menu item. Can be text, other components, or HTML elements.',
+  },
+  dataAttribute: {
+    control: 'text',
+    description:
+      'The data id to apply as HTML attribute to this component instance. This should be unique per component instance on the page',
+  },
+  className: {
+    control: 'text',
+    description: 'The className to apply to the nav menu item',
+  },
+  count: {
+    control: 'number',
+    description: 'Count state for the badge',
+  },
+  maxCount: {
+    control: 'number',
+    description: 'Maximum count to render on the badge',
+  },
+  isActive: {
+    control: 'boolean',
+    description: 'Nav menu item active state',
+  },
+  onClick: {
+    control: 'text',
+    description: 'The onClick handler for the nav menu item',
+  },
+};
 
 const InteractiveTemplate: Story<ComponentProps<typeof NavMenuItem>> = args => {
   const [active, handleToggle] = useReducer(state => !state, false);
@@ -38,4 +70,7 @@ Interactive.args = {
   isActive: false,
   maxCount: 99,
   dataAttribute: '',
+};
+Interactive.argTypes = {
+  ...Basic.argTypes,
 };

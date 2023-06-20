@@ -33,3 +33,19 @@ Basic.args = {
     </div>
   ),
 };
+Basic.argTypes = {
+  content: {
+    control: 'text',
+    description:
+      'The content of the helper button tooltip. Can be text, other components, or HTML elements.',
+  },
+  className: {
+    control: 'text',
+    description: 'The className to apply to the helper button',
+  },
+  dataAttribute: {
+    control: 'text',
+    description:
+      'The data id to apply as HTML attribute to this component instance. This should be unique per component instance on the page',
+  },
+};

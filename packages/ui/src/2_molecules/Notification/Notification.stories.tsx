@@ -23,6 +23,37 @@ Basic.args = {
   dataAttribute: '',
   className: '',
 };
+Basic.argTypes = {
+  content: {
+    control: 'text',
+    description:
+      'The content of the notification. Can be text, other components, or HTML elements.',
+  },
+  dataAttribute: {
+    control: 'text',
+    description:
+      'The data id to apply as HTML attribute to this component instance. This should be unique per component instance on the page',
+  },
+  className: {
+    control: 'text',
+    description: 'The className to apply to the notification',
+  },
+  title: {
+    control: 'text',
+    description: 'The notification title',
+  },
+  type: {
+    control: 'select',
+    options: Object.values(NotificationType),
+    description: 'The notification type',
+    defaultValue: NotificationType.success,
+  },
+  onClose: {
+    control: 'function',
+    description:
+      'The onClose handler for the notification. Triggered when user closes the notification',
+  },
+};
 
 const AdvancedTemplate: Story<ComponentProps<typeof Notification>> = args => {
   const [open, setOpen] = useState(false);
@@ -69,4 +100,7 @@ Advanced.args = {
   title: 'Contract is paused',
   dataAttribute: '',
   className: 'mt-4',
+};
+Advanced.argTypes = {
+  ...Basic.argTypes,
 };

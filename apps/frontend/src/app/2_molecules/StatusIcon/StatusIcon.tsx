@@ -2,20 +2,27 @@ import React from 'react';
 
 import classNames from 'classnames';
 
-import { applyDataAttr, StatusType } from '@sovryn/ui';
-
-import confirmIcon from '../../../assets/images/confirm-tx.svg';
-import failedIcon from '../../../assets/images/failed-tx.svg';
-import pendingIcon from '../../../assets/images/pending-tx.svg';
+import { applyDataAttr, Icon, IconNames, StatusType } from '@sovryn/ui';
 
 const getStatusImage = (status: StatusType) => {
   switch (status) {
     case StatusType.error:
-      return failedIcon;
+      return IconNames.FAILED_TX;
     case StatusType.success:
-      return confirmIcon;
+      return IconNames.SUCCESS_ICON;
     default:
-      return pendingIcon;
+      return IconNames.PENDING;
+  }
+};
+
+export const getStatusClass = (status: StatusType) => {
+  switch (status) {
+    case StatusType.success:
+      return 'text-success';
+    case StatusType.error:
+      return 'text-error-light';
+    case StatusType.pending:
+      return 'text-sov-white animate-spin';
   }
 };
 
@@ -42,13 +49,13 @@ export const StatusIcon: React.FC<StatusIconProps> = ({
   dataAttribute,
 }) => (
   <div className="flex justify-center">
-    <img
-      src={getStatusImage(status)}
-      className={classNames(isInline ? 'h-auto flex-initial' : 'h-20 w-20', {
-        'animate-spin': status === StatusType.pending,
-      })}
+    <Icon
+      icon={getStatusImage(status)}
+      className={classNames(
+        getStatusClass(status),
+        isInline ? 'h-auto flex-initial' : 'h-20 w-20',
+      )}
       {...applyDataAttr(`${dataAttribute}-${getDataAttributeSuffix(status)}`)}
-      alt="Status"
     />
   </div>
 );

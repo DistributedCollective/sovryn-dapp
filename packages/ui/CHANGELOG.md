@@ -1,5 +1,14 @@
 # @sovryn/ui
 
+## 1.0.7
+
+### Patch Changes
+
+- 93b428e: SOV-2447: create documentation for Molecules (part 1)
+- 08cfaca: SOV-2445: Create documentation for Atoms in Gitbook (part 1)
+- be8b221: SOV-2478: Documentation for Atoms in Gitbook (part 2)
+- bc6cb3f: fix: input crashing on tests
+
 ## 1.0.6
 
 ### Patch Changes

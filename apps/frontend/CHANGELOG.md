@@ -1,5 +1,17 @@
 # frontend
 
+## 1.0.13
+
+### Patch Changes
+
+- f1f114d: SOV-2365: resolve unexpected wallet connection error
+- 2c61825: SOV-2051: Warn user when out of RBTC to pay for gas
+- Updated dependencies [93b428e]
+- Updated dependencies [08cfaca]
+- Updated dependencies [be8b221]
+- Updated dependencies [bc6cb3f]
+  - @sovryn/ui@1.0.7
+
 ## 1.0.12
 
 ### Patch Changes

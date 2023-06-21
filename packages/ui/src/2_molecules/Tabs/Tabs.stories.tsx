@@ -50,6 +50,42 @@ Primary.args = {
   size: TabSize.normal,
   type: TabType.primary,
 };
+Primary.argTypes = {
+  className: {
+    control: 'text',
+    description: 'The className to apply to the wrapper',
+  },
+  contentClassName: {
+    control: 'text',
+    description: 'The className appied to the content',
+  },
+  index: {
+    control: 'number',
+    description: 'Active tab index',
+  },
+  items: {
+    control: 'ITabItem[]',
+    description: 'List of tab items',
+  },
+  onChange: {
+    control: 'function',
+    description: 'onChange handler for tabs. Fired when active tab is changed',
+  },
+  type: {
+    control: {
+      type: 'select',
+      options: Object.values(TabType),
+    },
+    description: 'The tab type',
+  },
+  size: {
+    control: {
+      type: 'select',
+      options: Object.values(TabSize),
+    },
+    description: 'The tab size',
+  },
+};
 
 export const Secondary = Template.bind({});
 Secondary.args = {
@@ -85,4 +121,7 @@ Secondary.args = {
   className: '',
   size: TabSize.normal,
   type: TabType.secondary,
+};
+Secondary.argTypes = {
+  ...Primary.argTypes,
 };

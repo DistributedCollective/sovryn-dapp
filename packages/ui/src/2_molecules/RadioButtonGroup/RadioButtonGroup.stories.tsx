@@ -75,3 +75,29 @@ Basic.args = {
   label: 'Advanced settings',
   options: options,
 };
+Basic.argTypes = {
+  label: {
+    control: 'text',
+    description: 'The label of the radio group',
+  },
+  options: {
+    control: 'RadioButtonOption[]',
+    description: 'List of radio button options',
+  },
+  onChange: {
+    control: 'function',
+    description: 'onChange handler for radio button group',
+  },
+  className: {
+    control: 'text',
+    description: 'The className to apply to the wrapper',
+  },
+  dataAttribute: {
+    control: 'text',
+    description: 'The data attributes to apply to the wrapper',
+  },
+  defaultChecked: {
+    control: 'number',
+    description: 'Default checked radio button index',
+  },
+};

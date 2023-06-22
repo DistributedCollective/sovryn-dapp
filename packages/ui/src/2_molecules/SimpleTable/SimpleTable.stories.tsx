@@ -30,7 +30,7 @@ Primary.args = {
 Primary.argTypes = {
   className: {
     control: 'text',
-    description: 'The className to apply to the table',
+    description: 'The class to apply to the table',
   },
   dataAttribute: {
     control: 'text',

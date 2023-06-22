@@ -66,9 +66,39 @@ Basic.args = {
   value: options[0].value,
   options,
 };
+Basic.argTypes = {
+  labelRenderer: {
+    control: 'function',
+    description: 'Render funciton for label',
+  },
+  className: {
+    control: 'text',
+    description: 'The class to apply to the select',
+  },
+  dataAttribute: {
+    control: 'text',
+    description:
+      'The data id to apply as HTML attribute to this component instance. This should be unique per component instance on the page',
+  },
+  options: {
+    control: 'SelectOption[]',
+    description: 'List of options for the select',
+  },
+  onChange: {
+    control: 'function',
+    description: 'onChange handler for select',
+  },
+  value: {
+    control: 'any',
+    description: 'Selected option value state',
+  },
+};
 
 export const AdvancedSelect = Template.bind({});
 AdvancedSelect.args = {
   value: advancedOptions[0].value,
   options: advancedOptions,
+};
+AdvancedSelect.argTypes = {
+  ...Basic.argTypes,
 };

@@ -48,7 +48,7 @@ Default.argTypes = {
   },
   className: {
     control: 'text',
-    description: 'The className to apply to the bar',
+    description: 'The class to apply to the bar',
   },
   dataAttribute: {
     control: 'text',

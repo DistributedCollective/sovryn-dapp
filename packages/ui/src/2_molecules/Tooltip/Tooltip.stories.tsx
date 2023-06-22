@@ -41,6 +41,63 @@ Basic.args = {
   disabled: false,
   trigger: TooltipTrigger.hover,
 };
+Basic.argTypes = {
+  content: {
+    control: 'text',
+    description:
+      'The opened tooltip content. Can be text, other components, or HTML elements.',
+  },
+  children: {
+    control: 'text',
+    description:
+      'The element to show a tooltip on top of. Can be text, other components, or HTML elements.',
+  },
+  className: {
+    control: 'text',
+    description: 'The class to apply to target element',
+  },
+  tooltipClassName: {
+    control: 'text',
+    description: 'The class to apply to the tooltip',
+  },
+  activeClassName: {
+    control: 'text',
+    description: 'The class to apply to the tooltip when opened',
+  },
+  dataAttribute: {
+    control: 'text',
+    description:
+      'The data id to apply as HTML attribute to this component instance. This should be unique per component instance on the page',
+  },
+  onHide: {
+    control: 'function',
+    description: 'Handler for the tooltip, gets fired when tooltip is closed',
+  },
+  onShow: {
+    control: 'function',
+    description: 'Handler for the tooltip, gets fired when tooltip is opened',
+  },
+  disabled: {
+    control: 'boolean',
+    description: 'Tooltip disabled state',
+  },
+  placement: {
+    control: {
+      type: 'select',
+      options: Object.values(TooltipPlacement),
+    },
+    description: 'The tooltip placement',
+    defaultValue: TooltipPlacement.top,
+  },
+  trigger: {
+    control: {
+      type: 'select',
+      options: Object.values(TooltipTrigger),
+    },
+    description: 'The tooltip trigger behavior',
+    defaultValue: TooltipTrigger.hover,
+  },
+};
 
 const InteractiveTemplate: Story<ComponentProps<typeof Tooltip>> = args => (
   <div className="flex justify-center mt-32">
@@ -76,3 +133,4 @@ Interactive.args = {
   disabled: false,
   trigger: TooltipTrigger.hover,
 };
+Interactive.argTypes = { ...Basic.argTypes };

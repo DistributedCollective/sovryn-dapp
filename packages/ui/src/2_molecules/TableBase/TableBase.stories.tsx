@@ -68,6 +68,29 @@ Basic.args = {
   dataAttribute: 'addressTable',
   rowKey: row => `my-custom-key-${row.index}`,
 };
+Basic.argTypes = {
+  className: {
+    control: 'text',
+    description: 'The class to apply to the table',
+  },
+  columns: {
+    control: 'ColumnOptions[]',
+    description: 'List of column configurations',
+  },
+  rows: {
+    control: 'RowType[]',
+    description: 'List of table rows',
+  },
+  rowKey: {
+    control: 'function',
+    description: 'Function to generate unique key for each row',
+  },
+  dataAttribute: {
+    control: 'text',
+    description:
+      'The data id to apply as HTML attribute to table component instance. This should be unique per component instance on the page',
+  },
+};
 
 export const WithRowClickHandler = Template.bind({});
 WithRowClickHandler.args = {

@@ -41,7 +41,7 @@ Primary.argTypes = {
   },
   className: {
     control: 'text',
-    description: 'The className to apply to the link',
+    description: 'The class to apply to the link',
   },
   dataAttribute: {
     control: 'text',

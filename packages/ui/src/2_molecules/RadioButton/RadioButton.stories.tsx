@@ -38,7 +38,7 @@ Basic.argTypes = {
   },
   className: {
     control: 'text',
-    description: 'The className to apply to the radio button',
+    description: 'The class to apply to the radio button',
   },
   dataAttribute: {
     control: 'text',

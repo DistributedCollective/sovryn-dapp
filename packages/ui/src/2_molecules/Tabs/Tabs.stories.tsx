@@ -53,11 +53,11 @@ Primary.args = {
 Primary.argTypes = {
   className: {
     control: 'text',
-    description: 'The className to apply to the wrapper',
+    description: 'The class to apply to the wrapper',
   },
   contentClassName: {
     control: 'text',
-    description: 'The className appied to the content',
+    description: 'The class appied to the content',
   },
   index: {
     control: 'number',

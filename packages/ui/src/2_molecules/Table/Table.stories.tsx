@@ -88,8 +88,56 @@ Basic.args = {
   dataAttribute: 'balanceTable',
   rowTitle: row => row.address,
 };
+Basic.argTypes = {
+  isClickable: {
+    control: 'boolean',
+    description: 'The table rows clickable option',
+  },
+  isLoading: {
+    control: 'boolean',
+    description: 'The table data loading state',
+  },
+  className: {
+    control: 'text',
+    description: 'The class to apply to the table',
+  },
+  columns: {
+    control: 'ColumnOptions[]',
+    description: 'List of column configurations',
+  },
+  rows: {
+    control: 'RowType[]',
+    description: 'List of table rows',
+  },
+  rowTitle: {
+    control: 'function',
+    description: 'Function to generate title for each row on mobile',
+  },
+  rowKey: {
+    control: 'function',
+    description: 'Function to generate unique key for each row',
+  },
+  onRowClick: {
+    control: 'function',
+    description: 'Fired when user clicks on each row',
+  },
+  noData: {
+    control: 'text',
+    description:
+      'The content to be shown when no data is available. Can be text, other components, or HTML elements.',
+  },
+  dataAttribute: {
+    control: 'text',
+    description:
+      'The data id to apply as HTML attribute to this component instance. This should be unique per component instance on the page',
+  },
+};
 
 export const NoData = Template.bind({});
 NoData.args = {
   columns,
+};
+
+Basic.argTypes = {
+  ...NoData.argTypes,
 };

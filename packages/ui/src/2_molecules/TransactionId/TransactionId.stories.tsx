@@ -21,14 +21,6 @@ _TransactionId.args = {
   dataAttribute: 'address-id',
   href: 'https://explorer.rsk.co/address/0xEDb8897aB6E907bc63CB256f74437D36298507E2',
 };
-// value: string;
-// startLength?: number;
-// endLength?: number;
-// className?: string;
-// hideTooltip?: boolean;
-// dataAttribute?: string;
-// href: string;
-// onCopyAddress?: () => void;
 _TransactionId.argTypes = {
   value: {
     control: 'text',

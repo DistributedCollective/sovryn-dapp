@@ -28,6 +28,29 @@ Basic.args = {
   dataAttribute: '',
   className: '',
 };
+Basic.argTypes = {
+  name: {
+    control: 'text',
+    description: 'Wallet name',
+  },
+  icon: {
+    control: 'text',
+    description: 'Optional icon for the wallet',
+  },
+  className: {
+    control: 'text',
+    description: 'The class to apply to the wrapper',
+  },
+  tooltip: {
+    control: 'text',
+    description: 'Extra information about shown as helper icon',
+  },
+  dataAttribute: {
+    control: 'text',
+    description:
+      'The data id to apply as HTML attribute to this component instance. This should be unique per component instance on the page',
+  },
+};
 
 const Advanced: Story<ComponentProps<typeof WalletContainer>> = args => (
   <div style={{ width: '200px' }}>
@@ -58,4 +81,7 @@ export const WithIcon = Advanced.bind({});
 WithIcon.args = {
   dataAttribute: '',
   className: '',
+};
+WithIcon.argTypes = {
+  ...Basic.argTypes,
 };

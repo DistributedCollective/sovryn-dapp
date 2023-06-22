@@ -24,7 +24,7 @@ export const Basic = Template.bind({});
 Basic.args = {
   name: 'Ledger',
   icon: '',
-  tooltip: '',
+  helper: '',
   dataAttribute: '',
   className: '',
 };
@@ -41,7 +41,7 @@ Basic.argTypes = {
     control: 'text',
     description: 'The class to apply to the wrapper',
   },
-  tooltip: {
+  helper: {
     control: 'text',
     description: 'Extra information about shown as helper icon',
   },
@@ -64,7 +64,7 @@ const Advanced: Story<ComponentProps<typeof WalletContainer>> = args => (
     <WalletContainer
       {...args}
       name="Trezor"
-      tooltip="tooltip"
+      helper="tooltip"
       icon={
         <Icon
           icon={IconNames.NOTIFICATIONS}

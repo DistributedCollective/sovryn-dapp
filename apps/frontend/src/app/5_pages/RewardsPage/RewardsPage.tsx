@@ -83,6 +83,16 @@ const RewardsPage: FC = () => {
     [amount, claimLocked, signer, sovGain],
   );
 
+  const renderBtcGain = useMemo(
+    () => (account ? amount : Decimal.ZERO),
+    [account, amount],
+  );
+
+  const renderSovGain = useMemo(
+    () => (account ? sovGain : Decimal.ZERO),
+    [account, sovGain],
+  );
+
   return (
     <>
       <Helmet>
@@ -110,7 +120,7 @@ const RewardsPage: FC = () => {
             </Paragraph>
             <div className="text-2xl leading-7 uppercase">
               <AmountRenderer
-                value={amount}
+                value={renderBtcGain}
                 suffix={BITCOIN}
                 precision={BTC_RENDER_PRECISION}
                 dataAttribute="rewards-amount"
@@ -126,7 +136,7 @@ const RewardsPage: FC = () => {
               </Paragraph>
               <div className="text-2xl leading-7 uppercase">
                 <AmountRenderer
-                  value={sovGain}
+                  value={renderSovGain}
                   suffix={SOV}
                   precision={BTC_RENDER_PRECISION}
                   dataAttribute="rewards-amount"

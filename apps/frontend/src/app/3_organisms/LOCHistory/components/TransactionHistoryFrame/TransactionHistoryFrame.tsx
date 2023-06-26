@@ -260,7 +260,7 @@ export const TransactionHistoryFrame: FC<LOCHistoryProps> = ({ children }) => {
             suffix={SupportedTokens.zusd}
             precision={TOKEN_RENDER_PRECISION}
             dataAttribute="transaction-history-debt-change"
-            prefix={renderSign(trove.debtChange)}
+            prefix={renderSign(trove.debtChange, trove.troveOperation)}
           />
         ) : (
           '-'
@@ -297,7 +297,7 @@ export const TransactionHistoryFrame: FC<LOCHistoryProps> = ({ children }) => {
             suffix={BITCOIN}
             precision={BTC_RENDER_PRECISION}
             dataAttribute="transaction-history-collateral-change"
-            prefix={renderSign(trove.collateralChange)}
+            prefix={renderSign(trove.collateralChange, trove.troveOperation)}
           />
         ) : (
           '-'

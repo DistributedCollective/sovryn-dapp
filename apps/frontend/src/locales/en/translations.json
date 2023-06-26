@@ -527,7 +527,7 @@
     },
     "collateralSurplusHistory": {
         "table": {
-            "amount": "amount",
+            "amount": "Amount",
             "withdrawSurplus": "Withdraw surplus",
             "depositSurplus": "Deposit surplus"
         }

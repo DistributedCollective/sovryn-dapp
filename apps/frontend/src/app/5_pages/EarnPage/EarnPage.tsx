@@ -435,7 +435,7 @@ const EarnPage: FC = () => {
               dataAttribute="earn-token-select"
             />
           </div>
-          {!isValidAmount && (
+          {!isValidAmount && account && (
             <ErrorBadge
               level={ErrorLevel.Critical}
               message={t(pageTranslations.form.invalidAmountError)}

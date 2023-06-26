@@ -28,6 +28,9 @@ import { CLOSE_DELAY, getTooltipPosition } from './Tooltip.utils';
 
 type TooltipProps = {
   content: ReactNode;
+  /**
+   * The element to attach the tooltip to.
+   */
   children: ReactNode;
   className?: string;
   activeClassName?: string;

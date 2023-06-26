@@ -52,6 +52,10 @@ Basic.argTypes = {
     control: 'boolean',
     description: 'Radio button disable state',
   },
+  content: {
+    control: 'text',
+    description: 'The content to show after the radio button',
+  },
   contentToShow: {
     control: 'text',
     description:

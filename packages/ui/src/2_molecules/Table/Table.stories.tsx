@@ -131,6 +131,16 @@ Basic.argTypes = {
     description:
       'The data id to apply as HTML attribute to this component instance. This should be unique per component instance on the page',
   },
+  orderOptions: {
+    control: 'OrderOptions',
+    description:
+      'The table order configuration. Contains order column id and order direction.',
+  },
+  setOrderOptions: {
+    control: 'function',
+    description:
+      'Callback which gets fired when order options need to be updated.',
+  },
 };
 
 export const NoData = Template.bind({});
@@ -138,6 +148,6 @@ NoData.args = {
   columns,
 };
 
-Basic.argTypes = {
-  ...NoData.argTypes,
+NoData.argTypes = {
+  ...Basic.argTypes,
 };

@@ -57,7 +57,7 @@ Primary.argTypes = {
   },
   contentClassName: {
     control: 'text',
-    description: 'The class appied to the content',
+    description: 'The class applied to the content',
   },
   index: {
     control: 'number',

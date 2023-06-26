@@ -43,7 +43,7 @@ Basic.argTypes = {
   },
   helper: {
     control: 'text',
-    description: 'Extra information about shown as helper icon',
+    description: 'Extra information shown as helper icon',
   },
   dataAttribute: {
     control: 'text',

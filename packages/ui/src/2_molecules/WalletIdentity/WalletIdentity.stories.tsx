@@ -60,6 +60,7 @@ _WalletIdentity.argTypes = {
   hideSubmenu: {
     control: 'boolean',
     description: 'A prop to hide the sub-menu',
+    defaultValue: false,
   },
   content: {
     control: 'text',
@@ -75,10 +76,16 @@ _WalletIdentity.argTypes = {
     control: 'number',
     description:
       'Number of character to show from beginning of the wallet address',
+    defaultValue: 4,
   },
   endLength: {
     control: 'number',
     description: 'Number of character to show from end of the wallet address',
+    defaultValue: 4,
+  },
+  submenuLabels: {
+    control: 'MenuLabels',
+    description: 'Submenu action texts',
   },
 };
 

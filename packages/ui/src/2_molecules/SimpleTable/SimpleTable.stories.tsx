@@ -40,4 +40,9 @@ Primary.argTypes = {
     control: 'boolean',
     description: 'Simple table border state',
   },
+  children: {
+    control: 'text',
+    description:
+      'The simple table content. Can be text, other components, or HTML elements.',
+  },
 };

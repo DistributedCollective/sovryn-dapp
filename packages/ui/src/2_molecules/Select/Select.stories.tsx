@@ -69,7 +69,7 @@ Basic.args = {
 Basic.argTypes = {
   labelRenderer: {
     control: 'function',
-    description: 'Render funciton for label',
+    description: 'Render function for label',
   },
   className: {
     control: 'text',

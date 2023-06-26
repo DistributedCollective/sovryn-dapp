@@ -90,6 +90,19 @@ Basic.argTypes = {
     description:
       'The data id to apply as HTML attribute to table component instance. This should be unique per component instance on the page',
   },
+  isClickable: {
+    control: 'boolean',
+    description: 'The table rows clickable option',
+  },
+  onRowClick: {
+    control: 'function',
+    description: 'Fired when user clicks on each row',
+  },
+  noData: {
+    control: 'text',
+    description:
+      'The content to be shown when no data is available. Can be text, other components, or HTML elements.',
+  },
 };
 
 export const WithRowClickHandler = Template.bind({});
@@ -103,8 +116,14 @@ WithRowClickHandler.args = {
   dataAttribute: 'addressTable',
   isClickable: true,
 };
+WithRowClickHandler.argTypes = {
+  ...Basic.argTypes,
+};
 
 export const NoData = Template.bind({});
 NoData.args = {
   columns,
+};
+NoData.argTypes = {
+  ...Basic.argTypes,
 };

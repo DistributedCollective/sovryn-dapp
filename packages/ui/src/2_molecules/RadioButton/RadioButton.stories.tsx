@@ -52,4 +52,14 @@ Basic.argTypes = {
     control: 'boolean',
     description: 'Radio button disable state',
   },
+  contentToShow: {
+    control: 'text',
+    description:
+      'The content to show after the radio button. Can be text, other components, or HTML elements.',
+  },
+  helper: {
+    control: 'text',
+    description:
+      'Extra information shown as helper icon. Can be text, other components, or HTML elements.',
+  },
 };

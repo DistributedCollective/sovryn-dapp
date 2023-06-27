@@ -24,7 +24,10 @@ const trezor = trezorModule({
   basePaths,
   assets,
 });
-const walletConnect = walletConnectModule();
+const walletConnect = walletConnectModule({
+  version: 2,
+  projectId: 'd3483196fbaa8259ab4191347c67f973',
+});
 
 export const onboard = Onboard({
   wallets: [injected, walletConnect, ledger, trezor],

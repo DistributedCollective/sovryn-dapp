@@ -4,16 +4,16 @@ import { t } from 'i18next';
 
 import { Paragraph, ParagraphSize } from '@sovryn/ui';
 
-import { AmountRenderer } from '../../2_molecules/AmountRenderer/AmountRenderer';
-import { masset } from '../../5_pages/ConvertPage/ConvertPage.types';
-import { TOKEN_RENDER_PRECISION } from '../../../constants/currencies';
-import { translations } from '../../../locales/i18n';
+import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRenderer';
+import { masset } from '../../../../5_pages/ConvertPage/ConvertPage.types';
+import { TOKEN_RENDER_PRECISION } from '../../../../../constants/currencies';
+import { translations } from '../../../../../locales/i18n';
 import {
   Conversion,
   ConversionType,
-} from '../../../utils/graphql/mynt/generated';
-import { dateFormat } from '../../../utils/helpers';
-import { TransactionIdRenderer } from './components/TransactionIdRenderer/TransactionIdRenderer';
+} from '../../../../../utils/graphql/mynt/generated';
+import { dateFormat } from '../../../../../utils/helpers';
+import { TransactionIdRenderer } from '../TransactionIdRenderer/TransactionIdRenderer';
 
 const sentAmountRenderer = (item: Conversion) => {
   const isIncomingTransaction = item.type === ConversionType.Incoming; // bAsset -> mAsset
@@ -59,7 +59,13 @@ export const columnsConfig = [
   {
     id: 'transactionType',
     title: t(translations.common.tables.columnTitles.transactionType),
-    cellRenderer: () => <>{t(translations.conversionsHistory.type)}</>,
+    cellRenderer: (item: Conversion) => (
+      <>
+        {item.type === ConversionType.Incoming
+          ? t(translations.conversionsHistory.mint)
+          : t(translations.conversionsHistory.burn)}
+      </>
+    ),
   },
   {
     id: 'sent',
@@ -74,7 +80,9 @@ export const columnsConfig = [
   {
     id: 'transactionId',
     title: t(translations.common.tables.columnTitles.transactionID),
-    cellRenderer: (item: Conversion) => <TransactionIdRenderer item={item} />,
+    cellRenderer: (item: Conversion) => (
+      <TransactionIdRenderer hash={item.transaction.id} />
+    ),
   },
 ];
 

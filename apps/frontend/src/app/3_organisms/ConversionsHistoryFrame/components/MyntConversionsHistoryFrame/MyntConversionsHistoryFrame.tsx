@@ -1,4 +1,10 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, {
+  PropsWithChildren,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 
 import { t } from 'i18next';
 import { nanoid } from 'nanoid';
@@ -13,29 +19,34 @@ import {
   ErrorLevel,
 } from '@sovryn/ui';
 
-import { ExportCSV } from '../../2_molecules/ExportCSV/ExportCSV';
-import { masset } from '../../5_pages/ConvertPage/ConvertPage.types';
+import { ExportCSV } from '../../../../2_molecules/ExportCSV/ExportCSV';
+import { masset } from '../../../../5_pages/ConvertPage/ConvertPage.types';
 import {
   DEFAULT_HISTORY_FRAME_PAGE_SIZE,
   EXPORT_RECORD_LIMIT,
-} from '../../../constants/general';
-import { useNotificationContext } from '../../../contexts/NotificationContext';
-import { useAccount } from '../../../hooks/useAccount';
-import { useBlockNumber } from '../../../hooks/useBlockNumber';
-import { useMaintenance } from '../../../hooks/useMaintenance';
-import { translations } from '../../../locales/i18n';
+} from '../../../../../constants/general';
+import { useNotificationContext } from '../../../../../contexts/NotificationContext';
+import { useAccount } from '../../../../../hooks/useAccount';
+import { useBlockNumber } from '../../../../../hooks/useBlockNumber';
+import { useMaintenance } from '../../../../../hooks/useMaintenance';
+import { translations } from '../../../../../locales/i18n';
 import {
   Conversion,
   ConversionType,
   useGetUserConversionsLazyQuery,
-} from '../../../utils/graphql/mynt/generated';
-import { dateFormat } from '../../../utils/helpers';
-import { useGetConversionsHistory } from './hooks/useGetConversionsHistory';
-import { columnsConfig, generateRowTitle } from './utils';
+} from '../../../../../utils/graphql/mynt/generated';
+import { dateFormat } from '../../../../../utils/helpers';
+import {
+  columnsConfig,
+  generateRowTitle,
+} from './MyntConversionsHistoryFrame.utils';
+import { useGetMyntConversionsHistory } from './hooks/useGetMyntConversionsHistory';
 
 const pageSize = DEFAULT_HISTORY_FRAME_PAGE_SIZE;
 
-export const ConversionsHistoryFrame: React.FC = () => {
+export const MyntConversionsHistoryFrame: React.FC<PropsWithChildren> = ({
+  children,
+}) => {
   const { account } = useAccount();
   const [page, setPage] = useState(0);
 
@@ -48,7 +59,7 @@ export const ConversionsHistoryFrame: React.FC = () => {
     orderDirection: OrderDirection.Desc,
   });
 
-  const { data, loading, refetch } = useGetConversionsHistory(
+  const { data, loading, refetch } = useGetMyntConversionsHistory(
     account,
     pageSize,
     page,
@@ -84,7 +95,7 @@ export const ConversionsHistoryFrame: React.FC = () => {
   const exportData = useCallback(async () => {
     const { data } = await getConversions({
       variables: {
-        user: account,
+        user: account.toLowerCase(),
         skip: 0,
         pageSize: EXPORT_RECORD_LIMIT,
       },
@@ -121,18 +132,21 @@ export const ConversionsHistoryFrame: React.FC = () => {
 
   return (
     <>
-      <div className="flex-row items-center gap-4 mb-7 hidden lg:inline-flex">
-        <ExportCSV
-          getData={exportData}
-          filename="conversions"
-          disabled={!conversions || exportLocked}
-        />
-        {exportLocked && (
-          <ErrorBadge
-            level={ErrorLevel.Warning}
-            message={t(translations.maintenanceMode.featureDisabled)}
+      <div className="flex-row items-center gap-4 mb-7 flex justify-center lg:justify-start">
+        {children}
+        <div className="flex-row items-center ml-2 gap-4 hidden lg:inline-flex">
+          <ExportCSV
+            getData={exportData}
+            filename="conversions"
+            disabled={!conversions || exportLocked}
           />
-        )}
+          {exportLocked && (
+            <ErrorBadge
+              level={ErrorLevel.Warning}
+              message={t(translations.maintenanceMode.featureDisabled)}
+            />
+          )}
+        </div>
       </div>
       <div className="bg-gray-80 py-4 px-4 rounded">
         <Table
@@ -144,7 +158,7 @@ export const ConversionsHistoryFrame: React.FC = () => {
           isLoading={loading}
           className="bg-gray-80 text-gray-10 lg:px-6 lg:py-4"
           noData={t(translations.common.tables.noData)}
-          dataAttribute="conversions-history-table"
+          dataAttribute="mynt-conversions-history-table"
         />
         <Pagination
           page={page}
@@ -152,7 +166,7 @@ export const ConversionsHistoryFrame: React.FC = () => {
           onChange={onPageChange}
           itemsPerPage={pageSize}
           isNextButtonDisabled={isNextButtonDisabled}
-          dataAttribute="conversions-history-pagination"
+          dataAttribute="mynt-conversions-history-pagination"
         />
       </div>
     </>

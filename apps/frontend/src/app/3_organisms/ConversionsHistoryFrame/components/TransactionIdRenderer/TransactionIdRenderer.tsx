@@ -3,21 +3,20 @@ import React from 'react';
 import { chains, defaultChainId } from '../../../../../config/chains';
 
 import { TxIdWithNotification } from '../../../../2_molecules/TxIdWithNotification/TransactionIdWithNotification';
-import { Conversion } from '../../../../../utils/graphql/mynt/generated';
 
 type TransactionIdRendererProps = {
-  item: Conversion;
+  hash: string;
 };
 
 export const TransactionIdRenderer: React.FC<TransactionIdRendererProps> = ({
-  item,
+  hash,
 }) => {
   const chain = chains.find(chain => chain.id === defaultChainId);
 
   return (
     <TxIdWithNotification
-      href={`${chain?.blockExplorerUrl}/tx/${item.transaction.id}`}
-      value={item.transaction.id}
+      href={`${chain?.blockExplorerUrl}/tx/${hash}`}
+      value={hash}
       dataAttribute="conversion-history-address-id"
     />
   );

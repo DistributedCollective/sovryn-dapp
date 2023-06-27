@@ -9,7 +9,7 @@ import { Heading, Select, SelectOption, Tabs } from '@sovryn/ui';
 
 import { TransactionHistoryFrame } from '../../3_organisms';
 import { CollateralSurplusHistoryFrame } from '../../3_organisms/CollateralSurplusWithdrawals/CollateralSurplusWithdrawals';
-import { ConversionsHistoryFrame } from '../../3_organisms/ConversionsHistoryFrame/ConversionsHistoryFrame';
+import { ConvertHistory } from '../../3_organisms/ConversionsHistoryFrame/ConvertHistory';
 import { FundingHistoryFrame } from '../../3_organisms/FundingHistoryFrame/FundingHistoryFrame';
 import { RewardHistory } from '../../3_organisms/RewardHistory/RewardHistory';
 import { StabilityPoolHistoryFrame } from '../../3_organisms/StabilityPoolHistoryFrame';
@@ -47,7 +47,7 @@ const rewardHistory = (
 const conversionsHistory = (
   <div className="px-0 py-4 lg:p-4">
     <ApolloProvider client={myntClient}>
-      <ConversionsHistoryFrame />
+      <ConvertHistory />
     </ApolloProvider>
   </div>
 );

@@ -1,5 +1,11 @@
 # frontend
 
+## 1.0.14
+
+### Patch Changes
+
+- 5b10076: SOV-2679: bump sovryn/onboard-injected version to 1.0.1
+
 ## 1.0.13
 
 ### Patch Changes

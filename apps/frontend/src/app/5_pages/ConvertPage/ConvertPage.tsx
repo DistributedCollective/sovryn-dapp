@@ -378,7 +378,7 @@ const ConvertPage: FC = () => {
                 onChange={setDestinationToken}
                 options={destinationTokenOptions}
                 className="min-w-[6.7rem]"
-                menuClassName="max-h-[20rem]"
+                menuClassName="max-h-[10rem] sm:max-h-[20rem]"
                 dataAttribute="convert-to-asset"
               />
             </div>

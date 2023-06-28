@@ -24,6 +24,7 @@ import {
   SelectOption,
   SimpleTable,
   SimpleTableRow,
+  TooltipTrigger,
 } from '@sovryn/ui';
 import { Decimal } from '@sovryn/utils';
 
@@ -268,6 +269,7 @@ const ConvertPage: FC = () => {
           value={price}
           suffix={getTokenDisplayName(priceToken)}
           precision={TOKEN_RENDER_PRECISION}
+          trigger={TooltipTrigger.hover}
         />
       );
     }
@@ -329,7 +331,7 @@ const ConvertPage: FC = () => {
                 options={tokenOptions}
                 labelRenderer={() => getAssetRenderer(sourceToken)}
                 className="min-w-[6.7rem]"
-                menuClassName="max-h-[20rem]"
+                menuClassName="max-h-[10rem] sm:max-h-[20rem]"
                 dataAttribute="convert-from-asset"
               />
             </div>

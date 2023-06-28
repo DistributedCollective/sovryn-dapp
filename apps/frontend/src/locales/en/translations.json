@@ -458,7 +458,8 @@
             "withdrawGains": "Withdraw rewards",
             "transferToLOC": "Transfer rewards",
             "transfer": "Transfer rewards to line of credit"
-        }
+        },
+        "undercollateralized": "Withdrawals disabled – one or more LOCs are undercollateralized"
     },
 
     "historyPage": {

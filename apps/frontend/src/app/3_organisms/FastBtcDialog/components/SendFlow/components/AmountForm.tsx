@@ -116,7 +116,7 @@ export const AmountForm: React.FC = () => {
           <MaxButton
             onClick={onMaximumAmountClick}
             value={fromWei(maxAmount)}
-            token={BITCOIN}
+            token={SupportedTokens.rbtc}
             precision={BTC_RENDER_PRECISION}
             dataAttribute="funding-send-amount-max"
           />

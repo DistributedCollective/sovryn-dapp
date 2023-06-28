@@ -35,6 +35,7 @@ import { AdjustCreditLine } from '../../3_organisms/ZeroLocForm/components/Adjus
 import { OpenCreditLine } from '../../3_organisms/ZeroLocForm/components/OpenCreditLine';
 import { DEBT_TOKEN } from '../../3_organisms/ZeroLocForm/constants';
 import { LIQUIDATION_RESERVE_AMOUNT } from '../../../constants/general';
+import { getTokenDisplayName } from '../../../constants/tokens';
 import { useTransactionContext } from '../../../contexts/TransactionContext';
 import { useWalletConnect } from '../../../hooks';
 import { useAccount } from '../../../hooks/useAccount';
@@ -146,7 +147,7 @@ const ZeroPage: FC<ZeroPageProps> = ({ deferred: [price] }) => {
             collateral={collateral}
             debt={debt}
             cRatio={getRatio(price)}
-            debtSymbol={DEBT_TOKEN.toUpperCase()}
+            debtSymbol={getTokenDisplayName(DEBT_TOKEN)}
             onAdjust={toggle}
             onClose={toggleClosePopup}
             withdrawalSurplus={collateralSurplusBalance}

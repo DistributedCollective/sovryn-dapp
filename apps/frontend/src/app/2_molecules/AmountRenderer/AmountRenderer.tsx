@@ -35,6 +35,7 @@ type AmountRendererProps = {
   isAnimated?: boolean;
   useTooltip?: boolean;
   showRoundingPrefix?: boolean;
+  trigger?: TooltipTrigger;
 };
 
 export const AmountRenderer: FC<AmountRendererProps> = ({
@@ -47,6 +48,7 @@ export const AmountRenderer: FC<AmountRendererProps> = ({
   isAnimated = false,
   useTooltip = true,
   showRoundingPrefix = true,
+  trigger = TooltipTrigger.click,
 }) => {
   const { addNotification } = useNotificationContext();
 
@@ -113,7 +115,7 @@ export const AmountRenderer: FC<AmountRendererProps> = ({
         'cursor-pointer': shouldShowTooltip,
       })}
       disabled={!shouldShowTooltip}
-      trigger={TooltipTrigger.click}
+      trigger={trigger}
       dataAttribute={dataAttribute}
     >
       <span className={className}>

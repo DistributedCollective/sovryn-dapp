@@ -105,7 +105,7 @@ export const myntBassetRoute: SwapRouteFunction = (
         to: address,
         data: iface.encodeFunctionData(
           areAddressesEqual(entry, dllr) ? 'redeemTo' : 'mintTo',
-          [destination, amount, from],
+          [areAddressesEqual(entry, dllr) ? destination : entry, amount, from],
         ),
         value: '0',
         ...overrides,

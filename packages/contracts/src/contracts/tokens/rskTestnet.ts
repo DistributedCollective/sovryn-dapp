@@ -7,7 +7,7 @@ export const rskTestnet: Record<string, string> = {
   xusd: '0xa9262cc3fb54ea55b1b0af00efca9416b8d59570',
   dllr: '0x007b3AA69A846cB1f76b60b3088230A52D2A83AC',
   doc: '0xcb46c0ddc60d18efeb0e586c17af6ea36452dae0',
-  babelfish: '0x1572D7E4a78A8AD14AE722E6fE5f5600a2c7A149',
+  babelfish: '0xaa7038D80521351F243168FefE0352194e3f83C3',
   rdoc: '0xc3de9f38581f83e281f260d0ddbaac0e102ff9f8',
   zusd: '0xe67cbA98C183A1693fC647d63AeeEC4053656dBB',
   bnbs: '0x801F223Def9A4e3a543eAcCEFB79dCE981Fa2Fb5',

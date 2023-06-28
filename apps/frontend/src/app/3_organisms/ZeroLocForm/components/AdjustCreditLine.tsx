@@ -12,6 +12,7 @@ import {
   BITCOIN,
   BTC_RENDER_PRECISION,
 } from '../../../../constants/currencies';
+import { getTokenDisplayName } from '../../../../constants/tokens';
 import { useAmountInput } from '../../../../hooks/useAmountInput';
 import { useAssetBalance } from '../../../../hooks/useAssetBalance';
 import { useMaxAssetBalance } from '../../../../hooks/useMaxAssetBalance';
@@ -241,7 +242,7 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
             : translations.zeroPage.loc.errors.totalDebtTooLow,
           {
             value: formatValue(MIN_DEBT_SIZE, 4),
-            currency: debtToken.toUpperCase(),
+            currency: getTokenDisplayName(debtToken),
           },
         ),
         weight: 3,

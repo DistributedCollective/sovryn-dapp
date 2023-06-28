@@ -515,7 +515,8 @@
     "conversionsHistory": {
         "table": {
             "sent": "Sent",
-            "received": "Received"
+            "received": "Received",
+            "conversionFee": "Conversion fee"
         },
         "type": "Convert",
         "swap": "Swap",

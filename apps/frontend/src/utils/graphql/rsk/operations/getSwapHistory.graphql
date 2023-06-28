@@ -26,5 +26,7 @@ query getSwapHistory(
     }
     fromAmount
     toAmount
+    conversionFee
+    protocolFee
   }
 }

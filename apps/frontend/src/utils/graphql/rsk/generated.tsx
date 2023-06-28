@@ -10659,6 +10659,7 @@ export type SubscriptionWithdrawalsArgs = {
  */
 export type Swap = {
   __typename?: 'Swap';
+  conversionFee?: Maybe<Scalars['BigDecimal']>;
   fromAmount: Scalars['BigDecimal'];
   /**
    * Token the user converted
@@ -10680,6 +10681,7 @@ export type Swap = {
    *
    */
   numConversions: Scalars['Int'];
+  protocolFee?: Maybe<Scalars['BigDecimal']>;
   /**
    * Rate is calculated as toAmount / fromAmount
    *
@@ -10711,6 +10713,14 @@ export enum SwapType {
 export type Swap_Filter = {
   /** Filter for the block changed event. */
   _change_block?: InputMaybe<BlockChangedFilter>;
+  conversionFee?: InputMaybe<Scalars['BigDecimal']>;
+  conversionFee_gt?: InputMaybe<Scalars['BigDecimal']>;
+  conversionFee_gte?: InputMaybe<Scalars['BigDecimal']>;
+  conversionFee_in?: InputMaybe<Array<Scalars['BigDecimal']>>;
+  conversionFee_lt?: InputMaybe<Scalars['BigDecimal']>;
+  conversionFee_lte?: InputMaybe<Scalars['BigDecimal']>;
+  conversionFee_not?: InputMaybe<Scalars['BigDecimal']>;
+  conversionFee_not_in?: InputMaybe<Array<Scalars['BigDecimal']>>;
   fromAmount?: InputMaybe<Scalars['BigDecimal']>;
   fromAmount_gt?: InputMaybe<Scalars['BigDecimal']>;
   fromAmount_gte?: InputMaybe<Scalars['BigDecimal']>;
@@ -10760,6 +10770,14 @@ export type Swap_Filter = {
   numConversions_lte?: InputMaybe<Scalars['Int']>;
   numConversions_not?: InputMaybe<Scalars['Int']>;
   numConversions_not_in?: InputMaybe<Array<Scalars['Int']>>;
+  protocolFee?: InputMaybe<Scalars['BigDecimal']>;
+  protocolFee_gt?: InputMaybe<Scalars['BigDecimal']>;
+  protocolFee_gte?: InputMaybe<Scalars['BigDecimal']>;
+  protocolFee_in?: InputMaybe<Array<Scalars['BigDecimal']>>;
+  protocolFee_lt?: InputMaybe<Scalars['BigDecimal']>;
+  protocolFee_lte?: InputMaybe<Scalars['BigDecimal']>;
+  protocolFee_not?: InputMaybe<Scalars['BigDecimal']>;
+  protocolFee_not_in?: InputMaybe<Array<Scalars['BigDecimal']>>;
   rate?: InputMaybe<Scalars['BigDecimal']>;
   rate_gt?: InputMaybe<Scalars['BigDecimal']>;
   rate_gte?: InputMaybe<Scalars['BigDecimal']>;
@@ -10854,11 +10872,13 @@ export type Swap_Filter = {
 };
 
 export enum Swap_OrderBy {
+  ConversionFee = 'conversionFee',
   FromAmount = 'fromAmount',
   FromToken = 'fromToken',
   Id = 'id',
   IsLimit = 'isLimit',
   NumConversions = 'numConversions',
+  ProtocolFee = 'protocolFee',
   Rate = 'rate',
   SwapType = 'swapType',
   Timestamp = 'timestamp',
@@ -13672,6 +13692,8 @@ export type GetSwapHistoryQuery = {
     __typename?: 'Swap';
     fromAmount: string;
     toAmount: string;
+    conversionFee?: string | null;
+    protocolFee?: string | null;
     fromToken: { __typename?: 'Token'; id: string; symbol?: string | null };
     toToken: { __typename?: 'Token'; id: string; symbol?: string | null };
     transaction: { __typename?: 'Transaction'; id: string; timestamp: number };
@@ -14019,6 +14041,8 @@ export const GetSwapHistoryDocument = gql`
       }
       fromAmount
       toAmount
+      conversionFee
+      protocolFee
     }
   }
 `;

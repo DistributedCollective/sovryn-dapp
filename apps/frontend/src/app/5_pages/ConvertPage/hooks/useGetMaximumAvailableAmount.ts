@@ -9,7 +9,7 @@ import { defaultChainId } from '../../../../config/chains';
 
 import { useAssetBalance } from '../../../../hooks/useAssetBalance';
 import { useIsMounted } from '../../../../hooks/useIsMounted';
-import { bassets, masset } from '../ConvertPage.types';
+import { allowedTokens, bassets, masset } from '../ConvertPage.types';
 
 export const useGetMaximumAvailableAmount = (
   sourceToken: SupportedTokens,
@@ -20,6 +20,13 @@ export const useGetMaximumAvailableAmount = (
   //  bAsset => DLLR conversion
   const isMint = useMemo(
     () => bassets.includes(sourceToken) && destinationToken === masset,
+    [destinationToken, sourceToken],
+  );
+
+  const isZero = useMemo(
+    () =>
+      allowedTokens.includes(sourceToken) &&
+      allowedTokens.includes(destinationToken),
     [destinationToken, sourceToken],
   );
 
@@ -55,7 +62,7 @@ export const useGetMaximumAvailableAmount = (
     [destinationTokenAggregatorWeiBalance],
   );
 
-  if (isMint) {
+  if (isMint || !isZero) {
     return sourceTokenBalance;
   }
 

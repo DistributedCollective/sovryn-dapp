@@ -11,6 +11,7 @@ type SimpleTableRowProps = {
   dataAttribute?: string;
   label: ReactNode;
   value: ReactNode;
+  onClick?: () => void;
 };
 
 export const SimpleTableRow: FC<SimpleTableRowProps> = ({
@@ -19,9 +20,11 @@ export const SimpleTableRow: FC<SimpleTableRowProps> = ({
   dataAttribute,
   label,
   value,
+  onClick,
 }) => (
   <div
     className={classNames(styles.row, className)}
+    onClick={onClick}
     {...applyDataAttr(dataAttribute)}
   >
     <span>{label}</span>

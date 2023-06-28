@@ -6,6 +6,7 @@ import classNames from 'classnames';
 import { getTokenDetails, SupportedTokens } from '@sovryn/contracts';
 import { applyDataAttr } from '@sovryn/ui';
 
+import { tokensDisplayName } from '../../../constants/tokens';
 import styles from './AssetRenderer.module.css';
 
 type AssetRendererProps = {
@@ -61,7 +62,9 @@ export const AssetRenderer: FC<AssetRendererProps> = ({
           dangerouslySetInnerHTML={{ __html: logo }}
         />
       )}
-      <span className={classNames(styles.asset, assetClassName)}>{asset}</span>
+      <span className={classNames(styles.asset, assetClassName)}>
+        {tokensDisplayName[asset] || asset}
+      </span>
     </div>
   );
 };

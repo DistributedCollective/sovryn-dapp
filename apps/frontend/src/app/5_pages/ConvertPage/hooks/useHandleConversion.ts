@@ -1,6 +1,6 @@
-import { useCallback, useMemo } from 'react';
+import { useCallback } from 'react';
 
-import { ethers } from 'ethers';
+import { BigNumber, ethers } from 'ethers';
 import { t } from 'i18next';
 
 import {
@@ -8,6 +8,7 @@ import {
   getProtocolContract,
   getTokenDetails,
 } from '@sovryn/contracts';
+import { PermitTransactionResponse, SwapRoute } from '@sovryn/sdk';
 
 import { defaultChainId } from '../../../../config/chains';
 
@@ -15,21 +16,26 @@ import {
   Transaction,
   TransactionType,
 } from '../../../3_organisms/TransactionStepDialog/TransactionStepDialog.types';
+import { isSignTransactionDataRequest } from '../../../3_organisms/TransactionStepDialog/helpers';
 import { GAS_LIMIT } from '../../../../constants/gasLimits';
 import { useTransactionContext } from '../../../../contexts/TransactionContext';
 import { useAccount } from '../../../../hooks/useAccount';
 import { translations } from '../../../../locales/i18n';
-import { toWei } from '../../../../utils/math';
-import { prepareApproveTransaction } from '../../../../utils/transactions';
+import {
+  permitHandler,
+  prepareApproveTransaction,
+  preparePermitTransaction,
+  UNSIGNED_PERMIT,
+} from '../../../../utils/transactions';
 
 export const useHandleConversion = (
   sourceToken: SupportedTokens,
   destinationToken: SupportedTokens,
-  amount: string,
+  weiAmount: BigNumber,
+  route: SwapRoute | undefined,
   onComplete: () => void,
 ) => {
   const { account, signer } = useAccount();
-  const weiAmount = useMemo(() => toWei(amount), [amount]);
 
   const { setTransactions, setIsOpen, setTitle } = useTransactionContext();
 
@@ -72,31 +78,6 @@ export const useHandleConversion = (
     onComplete,
   ]);
 
-  const withdrawTokens = useCallback(async () => {
-    if (!signer || sourceToken !== SupportedTokens.dllr) {
-      return;
-    }
-
-    const transactions = await getWithdrawTokensTransactions();
-    setTransactions(transactions);
-
-    setTitle(
-      t(translations.convertPage.txDialog.convertTitle, {
-        to: destinationToken.toUpperCase(),
-        from: SupportedTokens.dllr.toUpperCase(),
-      }),
-    );
-    setIsOpen(true);
-  }, [
-    signer,
-    sourceToken,
-    getWithdrawTokensTransactions,
-    setTransactions,
-    setTitle,
-    destinationToken,
-    setIsOpen,
-  ]);
-
   const getDepositTokenTransactions = useCallback(async () => {
     const massetManager = await getMassetManager();
 
@@ -137,33 +118,120 @@ export const useHandleConversion = (
     return transactions;
   }, [account, getMassetManager, signer, sourceToken, weiAmount, onComplete]);
 
-  const depositTokens = useCallback(async () => {
-    if (!signer || destinationToken !== SupportedTokens.dllr) {
+  const handleSubmit = useCallback(async () => {
+    if (!route || !signer) {
       return;
     }
-    const transactions = await getDepositTokenTransactions();
+
+    const [sourceTokenDetails, destinationTokenDetails] = await Promise.all([
+      getTokenDetails(sourceToken, defaultChainId),
+      getTokenDetails(destinationToken, defaultChainId),
+    ]);
+
+    const approveTxData = await route.approve(
+      sourceTokenDetails.address,
+      destinationTokenDetails.address,
+      weiAmount,
+      account,
+    );
+
+    const transactions: Transaction[] = [];
+
+    if (approveTxData && approveTxData.to && approveTxData.data) {
+      transactions.push({
+        title: t(translations.convertPage.txDialog.approve, {
+          asset: sourceToken.toUpperCase(),
+        }),
+        request: {
+          type: TransactionType.signTransactionData,
+          signer: signer,
+          to: approveTxData.to,
+          data: approveTxData.data,
+          gasLimit: GAS_LIMIT.CONVERT,
+        },
+        onComplete,
+      });
+    }
+
+    const permitTxData = await route.permit(
+      sourceTokenDetails.address,
+      destinationTokenDetails.address,
+      weiAmount,
+      account,
+    );
+
+    if (permitTxData) {
+      transactions.push(
+        await preparePermitTransaction({
+          token: sourceTokenDetails.symbol,
+          signer,
+          spender: permitTxData.spender,
+          value: permitTxData.value?.toString(),
+          deadline: permitTxData.deadline,
+          nonce: permitTxData.nonce,
+        }),
+      );
+    }
+
+    const txData = await route.swap(
+      sourceTokenDetails.address,
+      destinationTokenDetails.address,
+      weiAmount,
+      account,
+      { permit: permitTxData ? UNSIGNED_PERMIT : undefined },
+    );
+
+    if (txData && txData.to && txData.data) {
+      transactions.push({
+        title: t(translations.convertPage.txDialog.convert, {
+          asset: sourceToken.toUpperCase(),
+        }),
+        request: {
+          type: TransactionType.signTransactionData,
+          signer: signer,
+          to: txData.to,
+          data: txData.data,
+          gasLimit: GAS_LIMIT.CONVERT,
+        },
+        onComplete,
+        updateHandler: permitHandler(async (req, res) => {
+          if (isSignTransactionDataRequest(req) && !!permitTxData) {
+            const { data } = await route.swap(
+              sourceTokenDetails.address,
+              destinationTokenDetails.address,
+              weiAmount,
+              account,
+              {
+                permit: res as PermitTransactionResponse,
+              },
+            );
+            req.data = data!;
+          }
+          return req;
+        }),
+      });
+    }
 
     setTransactions(transactions);
     setTitle(
       t(translations.convertPage.txDialog.convertTitle, {
         from: sourceToken.toUpperCase(),
-        to: SupportedTokens.dllr.toUpperCase(),
+        to: destinationToken.toUpperCase(),
       }),
     );
     setIsOpen(true);
   }, [
-    signer,
+    account,
     destinationToken,
-    getDepositTokenTransactions,
-    setTransactions,
-    setTitle,
-    sourceToken,
+    onComplete,
+    route,
     setIsOpen,
+    setTitle,
+    setTransactions,
+    signer,
+    sourceToken,
+    weiAmount,
   ]);
-
-  const handleSubmit = useCallback(() => {
-    sourceToken === SupportedTokens.dllr ? withdrawTokens() : depositTokens();
-  }, [depositTokens, withdrawTokens, sourceToken]);
 
   return {
     handleSubmit,

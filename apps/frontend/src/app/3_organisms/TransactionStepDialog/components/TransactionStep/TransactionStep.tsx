@@ -41,7 +41,10 @@ import {
   TransactionConfig,
   TransactionReceipt,
 } from '../../TransactionStepDialog.types';
-import { isTransactionRequest } from '../../helpers';
+import {
+  isSignTransactionDataRequest,
+  isTransactionRequest,
+} from '../../helpers';
 
 export type TransactionStepProps = {
   transaction: Transaction;
@@ -70,17 +73,24 @@ export const TransactionStep: FC<TransactionStepProps> = ({
   const [token, setToken] = useState<TokenDetailsData | undefined>();
 
   useEffect(() => {
-    if (isTransactionRequest(request)) {
-      const { contract } = request;
-      findContract(contract.address).then(result => {
+    const updateToken = (address: string) => {
+      findContract(address).then(result => {
         if (result.group === 'tokens') {
-          getTokenDetailsByAddress(contract.address)
+          getTokenDetailsByAddress(address)
             .then(setToken)
             .catch(e => {
               console.error('token not found?', result, e);
             });
         }
       });
+    };
+
+    if (isTransactionRequest(request)) {
+      const { contract } = request;
+      updateToken(contract.address);
+    } else if (isSignTransactionDataRequest(request)) {
+      const { to } = request;
+      updateToken(to);
     }
   }, [request]);
 
@@ -103,6 +113,32 @@ export const TransactionStep: FC<TransactionStepProps> = ({
         updateConfig({
           unlimitedAmount: false,
           amount: fnName === APPROVAL_FUNCTION ? args[1] : undefined,
+          gasPrice: requestGasPrice ?? gasPrice,
+          gasLimit,
+        });
+      } catch (error) {
+        console.log('error', error);
+      }
+    } else if (isSignTransactionDataRequest(request)) {
+      try {
+        const {
+          signer,
+          data,
+          to,
+          gasLimit: requestGasLimit,
+          gasPrice: requestGasPrice,
+        } = request;
+
+        const gasLimit =
+          requestGasLimit ??
+          (
+            await signer.estimateGas({
+              to,
+              data,
+            })
+          ).toString();
+
+        updateConfig({
           gasPrice: requestGasPrice ?? gasPrice,
           gasLimit,
         });
@@ -215,7 +251,8 @@ export const TransactionStep: FC<TransactionStepProps> = ({
           <Paragraph className="text-gray-30">{subtitle}</Paragraph>
         )}
 
-        {isTransactionRequest(request) && (
+        {(isTransactionRequest(request) ||
+          isSignTransactionDataRequest(request)) && (
           <>
             <SimpleTable className="max-w-72 mt-3">
               {config.amount !== undefined && (

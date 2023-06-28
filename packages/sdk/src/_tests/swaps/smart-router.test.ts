@@ -2,10 +2,10 @@ import { BigNumber, ethers, providers } from 'ethers';
 
 import { SupportedTokens, getTokenContract } from '@sovryn/contracts';
 
-import { DEFAULT_SWAP_ROUTES } from '../../swaps/smart-router/config';
 import { SmartRouter } from '../../swaps/smart-router/smart-router';
 import { makeChainFixture } from '../_fixtures/chain';
 import { TEST_TIMEOUT } from '../config';
+import { smartRoutes } from '../../swaps/smart-router';
 
 describe('SmartRouter', () => {
   jest.setTimeout(TEST_TIMEOUT);
@@ -17,7 +17,7 @@ describe('SmartRouter', () => {
 
   beforeAll(async () => {
     provider = (await makeChainFixture()).provider;
-    router = new SmartRouter(provider, DEFAULT_SWAP_ROUTES);
+    router = new SmartRouter(provider, Object.values(smartRoutes));
 
     xusd = (await getTokenContract(SupportedTokens.xusd)).address;
     sov = (await getTokenContract(SupportedTokens.sov)).address;
@@ -27,7 +27,7 @@ describe('SmartRouter', () => {
 
   describe('getAvailableRoutes', () => {
     it('return all available routes', async () => {
-      expect(router.getAvailableRoutes()).toHaveLength(2);
+      expect(router.getAvailableRoutes()).toHaveLength(3);
     });
   });
 
@@ -105,6 +105,30 @@ describe('SmartRouter', () => {
       ).resolves.toMatchObject({
         quote: expect.any(BigNumber),
         route: expect.any(Object),
+      });
+    });
+  });
+
+  describe('helpers', () => {
+    it('returns all available pairs on enabled routes', async () => {
+      await expect(router.getPairs()).resolves.toBeInstanceOf(Map);
+    });
+
+    it('returns all available entries', async () => {
+      await expect(router.getEntries()).resolves.toHaveLength(14);
+    });
+
+    it('returns all available destinations for entry token', async () => {
+      await expect(router.getDestination(sov)).resolves.toHaveLength(12);
+    });
+
+    it('returns data about token', async () => {
+      await expect(router.getTokenDetails(btc)).resolves.toMatchObject({
+        address: btc,
+        symbol: 'rbtc',
+        decimalPrecision: 18,
+        icon: expect.any(String),
+        abi: expect.any(Array),
       });
     });
   });

@@ -30,6 +30,7 @@ import {
 import {
   isMessageSignatureRequest,
   isPermitRequest,
+  isSignTransactionDataRequest,
   isTransactionRequest,
   isTypedDataRequest,
 } from '../../helpers';
@@ -106,6 +107,19 @@ export const TransactionSteps: FC<TransactionStepsProps> = ({
           item.config.unlimitedAmount =
             fnName === APPROVAL_FUNCTION ? false : undefined;
           item.config.gasPrice = request.gasPrice ?? gasPrice;
+        } else if (isSignTransactionDataRequest(request)) {
+          const { signer, data, to, gasLimit } = request;
+
+          item.config.gasLimit =
+            gasLimit ??
+            (
+              await signer.estimateGas({
+                to,
+                data,
+              })
+            ).toString();
+
+          item.config.gasPrice = request.gasPrice ?? gasPrice;
         }
 
         steps.push(item);
@@ -158,11 +172,13 @@ export const TransactionSteps: FC<TransactionStepsProps> = ({
     [setStepData],
   );
 
-  const handleUpdates = useCallback(() => {
-    setStepData(items =>
-      items.map(item => {
+  const handleUpdates = useCallback(async () => {
+    const items = [...stepData];
+
+    await Promise.all(
+      items.map(async (item, i) => {
         if (item.transaction.updateHandler) {
-          item.transaction.request = item.transaction.updateHandler(
+          item.transaction.request = await item.transaction.updateHandler(
             item.transaction.request,
             items.map(i => i.receipt),
           );
@@ -170,7 +186,9 @@ export const TransactionSteps: FC<TransactionStepsProps> = ({
         return item;
       }),
     );
-  }, []);
+
+    setStepData(items);
+  }, [stepData]);
 
   const submit = useCallback(async () => {
     try {
@@ -214,7 +232,7 @@ export const TransactionSteps: FC<TransactionStepsProps> = ({
 
           onTxStatusChange?.(StatusType.success);
 
-          handleUpdates();
+          await handleUpdates();
         } else if (isMessageSignatureRequest(request)) {
           const signature = await request.signer.signMessage(request.message);
 
@@ -227,7 +245,7 @@ export const TransactionSteps: FC<TransactionStepsProps> = ({
             response: signature,
           });
 
-          handleUpdates();
+          await handleUpdates();
         } else if (isTypedDataRequest(request)) {
           const signature = await request.signer._signTypedData(
             request.domain,
@@ -244,7 +262,7 @@ export const TransactionSteps: FC<TransactionStepsProps> = ({
             response: signature,
           });
 
-          handleUpdates();
+          await handleUpdates();
         } else if (isPermitRequest(request)) {
           const response = await signERC2612Permit(
             request.signer,
@@ -265,7 +283,37 @@ export const TransactionSteps: FC<TransactionStepsProps> = ({
             response,
           });
 
-          handleUpdates();
+          await handleUpdates();
+        } else if (isSignTransactionDataRequest(request)) {
+          const tx = await request.signer.sendTransaction({
+            data: request.data,
+            to: request.to,
+            value: request.value,
+          });
+
+          updateReceipt(i, {
+            status: TransactionReceiptStatus.pending,
+            request,
+            response: tx.hash,
+          });
+
+          transactions[i].onStart?.(tx.hash);
+          transactions[i].onChangeStatus?.(StatusType.pending);
+
+          await tx.wait();
+
+          transactions[i].onChangeStatus?.(StatusType.success);
+          transactions[i].onComplete?.(tx.hash);
+
+          updateReceipt(i, {
+            status: TransactionReceiptStatus.success,
+            request,
+            response: tx.hash,
+          });
+
+          onTxStatusChange?.(StatusType.success);
+
+          await handleUpdates();
         } else {
           // unknown type
           transactions[i].onChangeStatus?.(StatusType.error);

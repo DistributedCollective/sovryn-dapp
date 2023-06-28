@@ -6,9 +6,9 @@ import { t } from 'i18next';
 
 import { getTokenContract, SupportedTokens } from '@sovryn/contracts';
 import { ChainId } from '@sovryn/ethers-provider';
+import { PermitTransactionResponse } from '@sovryn/sdk';
 
 import {
-  PermitResponse,
   Transaction,
   TransactionReceipt,
   TransactionReceiptStatus,
@@ -24,7 +24,7 @@ export const UNSIGNED_PERMIT = {
   v: 0,
   r: ethers.constants.HashZero,
   s: ethers.constants.HashZero,
-};
+} as PermitTransactionResponse;
 
 type PreparePermitTransactionOptions = {
   token: SupportedTokens;
@@ -124,8 +124,8 @@ export const permitHandler =
   (
     override: (
       req: TransactionRequest,
-      res: string | PermitResponse | undefined,
-    ) => TransactionRequest,
+      res: string | PermitTransactionResponse | undefined,
+    ) => TransactionRequest | Promise<TransactionRequest>,
     permitIndex: number = 0,
   ) =>
   (request: TransactionRequest, receipts: TransactionReceipt[]) => {

@@ -93,32 +93,39 @@ export const ammSwapRoute: SwapRouteFunction = (
     return token;
   };
 
-  const getTokenAddress = async (token: SupportedTokens) =>
-    (await getTokenContract(token, await getChainId())).address.toLowerCase();
-
   return {
     name: 'AMM',
     pairs: async () => {
       if (!pairCache) {
-        const bnbs = await getTokenAddress(SupportedTokens.bnbs);
-        const rbtc = await getTokenAddress(SupportedTokens.rbtc);
-        const dllr = await getTokenAddress(SupportedTokens.dllr);
-        const eths = await getTokenAddress(SupportedTokens.eths);
-        const fish = await getTokenAddress(SupportedTokens.fish);
-        const moc = await getTokenAddress(SupportedTokens.moc);
-        const rif = await getTokenAddress(SupportedTokens.rif);
-        const sov = await getTokenAddress(SupportedTokens.sov);
+        const chainId = await getChainId();
 
-        pairCache = new Map<string, string[]>([
-          [rbtc, [bnbs, dllr, eths, fish, moc, rif, sov]],
-          [bnbs, [rbtc]],
-          [dllr, [rbtc]],
-          [eths, [rbtc]],
-          [fish, [rbtc]],
-          [moc, [rbtc]],
-          [rif, [rbtc]],
-          [sov, [rbtc]],
-        ]);
+        const swapTokens = [
+          SupportedTokens.rbtc,
+          SupportedTokens.bnbs,
+          SupportedTokens.dllr,
+          SupportedTokens.eths,
+          SupportedTokens.fish,
+          SupportedTokens.moc,
+          SupportedTokens.rif,
+          SupportedTokens.sov,
+        ];
+
+        const contracts = await Promise.all(
+          swapTokens.map(token => getTokenContract(token, chainId)),
+        );
+
+        const addresses = contracts.map(contract =>
+          contract.address.toLowerCase(),
+        );
+
+        const pairs = new Map<string, string[]>();
+
+        for (const address of addresses) {
+          const pair = addresses.filter(a => a !== address);
+          pairs.set(address, pair);
+        }
+
+        pairCache = pairs;
       }
 
       return pairCache;

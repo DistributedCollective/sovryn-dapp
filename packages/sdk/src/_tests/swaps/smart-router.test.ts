@@ -38,23 +38,25 @@ describe('SmartRouter', () => {
       ).resolves.toHaveLength(1);
     });
 
-    it('returns no routes for RBTC to XUSD swap', async () => {
+    it('returns two routes for DLLR to RBTC swap', async () => {
+      await expect(
+        router.getAvailableRoutesForAssets(dllr, btc),
+      ).resolves.toHaveLength(2);
+    });
+
+    it('returns no routes for DLLR to XUSD swap', async () => {
       await expect(
         router.getAvailableRoutesForAssets(dllr, xusd),
       ).resolves.toHaveLength(0);
     });
-
-    it('returns single route for RBTC to SOV swap', async () => {
-      await expect(
-        router.getAvailableRoutesForAssets(btc, sov),
-      ).resolves.toHaveLength(1);
-    });
   });
 
   describe('getQuotes', () => {
-    it('lists all quotes for RBTC -> SOV swap', async () => {
-      const amount = ethers.utils.parseEther('1');
-      await expect(router.getQuotes(btc, sov, amount)).resolves.toHaveLength(1);
+    it('lists all quotes for DLLR -> SOV swap', async () => {
+      const amount = ethers.utils.parseEther('20');
+      await expect(router.getQuotes(dllr, sov, amount)).resolves.toHaveLength(
+        1,
+      );
     });
 
     it('lists all quotes for DLLR -> ZUSD swap', async () => {
@@ -66,20 +68,20 @@ describe('SmartRouter', () => {
   });
 
   describe('getBestQuote', () => {
-    it('get cheapest swap route for BTC -> SOV', async () => {
-      const amount = ethers.utils.parseEther('1');
+    it('get cheapest swap route for DLLR -> SOV', async () => {
+      const amount = ethers.utils.parseEther('20');
       await expect(
-        router.getBestQuote(btc, sov, amount),
+        router.getBestQuote(dllr, sov, amount),
       ).resolves.toMatchObject({
         quote: expect.any(BigNumber),
         route: expect.any(Object),
       });
     });
 
-    it('get cheapest swap route for DLLR -> BTC', async () => {
+    it('get cheapest swap route for DLLR -> ZUSD', async () => {
       const amount = ethers.utils.parseEther('20');
       await expect(
-        router.getBestQuote(dllr, btc, amount),
+        router.getBestQuote(dllr, zusd, amount),
       ).resolves.toMatchObject({
         quote: expect.any(BigNumber),
         route: expect.any(Object),
@@ -117,7 +119,7 @@ describe('SmartRouter', () => {
     });
 
     it('returns all available destinations for entry token', async () => {
-      await expect(router.getDestination(sov)).resolves.toHaveLength(1);
+      await expect(router.getDestination(sov)).resolves.toHaveLength(7);
     });
 
     it('returns data about token', async () => {

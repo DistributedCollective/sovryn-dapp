@@ -15,11 +15,8 @@ import {
   OrderOptions,
   OrderDirection,
   NotificationType,
-  ErrorBadge,
-  ErrorLevel,
 } from '@sovryn/ui';
 
-import { ExportCSV } from '../../../../2_molecules/ExportCSV/ExportCSV';
 import {
   DEFAULT_HISTORY_FRAME_PAGE_SIZE,
   EXPORT_RECORD_LIMIT,
@@ -27,7 +24,6 @@ import {
 import { useNotificationContext } from '../../../../../contexts/NotificationContext';
 import { useAccount } from '../../../../../hooks/useAccount';
 import { useBlockNumber } from '../../../../../hooks/useBlockNumber';
-import { useMaintenance } from '../../../../../hooks/useMaintenance';
 import { translations } from '../../../../../locales/i18n';
 import { rskClient } from '../../../../../utils/clients';
 import {
@@ -35,10 +31,9 @@ import {
   useGetSwapHistoryLazyQuery,
 } from '../../../../../utils/graphql/rsk/generated';
 import { dateFormat } from '../../../../../utils/helpers';
-import {
-  columnsConfig,
-  generateRowTitle,
-} from './AmmConversionsHistoryFrame.utils';
+import { BaseConversionsHistoryFrame } from '../BaseConversionsHistoryFrame/BaseConversionsHistoryFrame';
+import { COLUMNS_CONFIG } from './AmmConversionsHistoryFrame.constants';
+import { generateRowTitle } from './AmmConversionsHistoryFrame.utils';
 import { useGetAMMConversionsHistory } from './hooks/useGetAMMConversionsHistory';
 
 const pageSize = DEFAULT_HISTORY_FRAME_PAGE_SIZE;
@@ -122,32 +117,15 @@ export const AmmConversionsHistoryFrame: React.FC<PropsWithChildren> = ({
     }));
   }, [account, addNotification, getConversions]);
 
-  const { checkMaintenance, States } = useMaintenance();
-  const exportLocked = checkMaintenance(States.ZERO_EXPORT_CSV);
-
   return (
-    <>
-      <div className="flex-row items-center gap-4 mb-7 flex justify-center lg:justify-start">
-        {children}
-        <div className="flex-row items-center ml-2 gap-4 hidden lg:inline-flex">
-          <ExportCSV
-            getData={exportData}
-            filename="conversions"
-            disabled={!conversions || exportLocked}
-          />
-          {exportLocked && (
-            <ErrorBadge
-              level={ErrorLevel.Warning}
-              message={t(translations.maintenanceMode.featureDisabled)}
-            />
-          )}
-        </div>
-      </div>
-      <div className="bg-gray-80 py-4 px-4 rounded">
+    <BaseConversionsHistoryFrame
+      exportData={exportData}
+      name="AMM-conversions"
+      table={
         <Table
           setOrderOptions={setOrderOptions}
           orderOptions={orderOptions}
-          columns={columnsConfig}
+          columns={COLUMNS_CONFIG}
           rows={conversions}
           rowTitle={generateRowTitle}
           isLoading={loading}
@@ -155,6 +133,8 @@ export const AmmConversionsHistoryFrame: React.FC<PropsWithChildren> = ({
           noData={t(translations.common.tables.noData)}
           dataAttribute="amm-conversions-history-table"
         />
+      }
+      pagination={
         <Pagination
           page={page}
           className="lg:pb-6 mt-3 lg:mt-6 justify-center lg:justify-start"
@@ -163,7 +143,9 @@ export const AmmConversionsHistoryFrame: React.FC<PropsWithChildren> = ({
           isNextButtonDisabled={isNextButtonDisabled}
           dataAttribute="amm-conversions-history-pagination"
         />
-      </div>
-    </>
+      }
+    >
+      {children}
+    </BaseConversionsHistoryFrame>
   );
 };

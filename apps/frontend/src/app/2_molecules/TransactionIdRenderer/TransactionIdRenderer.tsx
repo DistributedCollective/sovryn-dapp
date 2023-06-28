@@ -1,8 +1,8 @@
 import React from 'react';
 
-import { chains, defaultChainId } from '../../../../../config/chains';
+import { chains, defaultChainId } from '../../../config/chains';
 
-import { TxIdWithNotification } from '../../../../2_molecules/TxIdWithNotification/TransactionIdWithNotification';
+import { TxIdWithNotification } from '../TxIdWithNotification/TransactionIdWithNotification';
 
 type TransactionIdRendererProps = {
   hash: string;

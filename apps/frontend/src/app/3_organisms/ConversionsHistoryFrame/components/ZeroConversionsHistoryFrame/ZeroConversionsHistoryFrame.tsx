@@ -16,11 +16,8 @@ import {
   OrderOptions,
   OrderDirection,
   NotificationType,
-  ErrorBadge,
-  ErrorLevel,
 } from '@sovryn/ui';
 
-import { ExportCSV } from '../../../../2_molecules/ExportCSV/ExportCSV';
 import { BITCOIN } from '../../../../../constants/currencies';
 import {
   DEFAULT_HISTORY_FRAME_PAGE_SIZE,
@@ -29,7 +26,6 @@ import {
 import { useNotificationContext } from '../../../../../contexts/NotificationContext';
 import { useAccount } from '../../../../../hooks/useAccount';
 import { useBlockNumber } from '../../../../../hooks/useBlockNumber';
-import { useMaintenance } from '../../../../../hooks/useMaintenance';
 import { translations } from '../../../../../locales/i18n';
 import { zeroClient } from '../../../../../utils/clients';
 import {
@@ -38,10 +34,9 @@ import {
   useGetRedemptionsLazyQuery,
 } from '../../../../../utils/graphql/zero/generated';
 import { dateFormat } from '../../../../../utils/helpers';
-import {
-  columnsConfig,
-  generateRowTitle,
-} from './ZeroConversionsHistoryFrame.utils';
+import { BaseConversionsHistoryFrame } from '../BaseConversionsHistoryFrame/BaseConversionsHistoryFrame';
+import { COLUMNS_CONFIG } from './ZeroConversionsHistoryFrame.constants';
+import { generateRowTitle } from './ZeroConversionsHistoryFrame.utils';
 import { useGetZeroConversionsHistory } from './hooks/useGetZeroConversionsHistory';
 
 const pageSize = DEFAULT_HISTORY_FRAME_PAGE_SIZE;
@@ -131,48 +126,35 @@ export const ZeroConversionsHistoryFrame: React.FC<PropsWithChildren> = ({
     }));
   }, [account, addNotification, getConversions]);
 
-  const { checkMaintenance, States } = useMaintenance();
-  const exportLocked = checkMaintenance(States.ZERO_EXPORT_CSV);
-
   return (
-    <>
-      <div className="flex-row items-center gap-4 mb-7 flex justify-center lg:justify-start">
-        {children}
-        <div className="flex-row items-center ml-2 gap-4 hidden lg:inline-flex">
-          <ExportCSV
-            getData={exportData}
-            filename="conversions"
-            disabled={!conversions || exportLocked}
-          />
-          {exportLocked && (
-            <ErrorBadge
-              level={ErrorLevel.Warning}
-              message={t(translations.maintenanceMode.featureDisabled)}
-            />
-          )}
-        </div>
-      </div>
-      <div className="bg-gray-80 py-4 px-4 rounded">
+    <BaseConversionsHistoryFrame
+      exportData={exportData}
+      name="Zero-conversions"
+      table={
         <Table
           setOrderOptions={setOrderOptions}
           orderOptions={orderOptions}
-          columns={columnsConfig}
+          columns={COLUMNS_CONFIG}
           rows={conversions}
           rowTitle={generateRowTitle}
           isLoading={loading}
           className="bg-gray-80 text-gray-10 lg:px-6 lg:py-4"
           noData={t(translations.common.tables.noData)}
-          dataAttribute="conversions-history-table"
+          dataAttribute="amm-conversions-history-table"
         />
+      }
+      pagination={
         <Pagination
           page={page}
           className="lg:pb-6 mt-3 lg:mt-6 justify-center lg:justify-start"
           onChange={onPageChange}
           itemsPerPage={pageSize}
           isNextButtonDisabled={isNextButtonDisabled}
-          dataAttribute="conversions-history-pagination"
+          dataAttribute="amm-conversions-history-pagination"
         />
-      </div>
-    </>
+      }
+    >
+      {children}
+    </BaseConversionsHistoryFrame>
   );
 };

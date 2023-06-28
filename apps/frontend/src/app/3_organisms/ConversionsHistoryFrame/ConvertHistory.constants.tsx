@@ -3,7 +3,7 @@ import { t } from 'i18next';
 import { translations } from '../../../locales/i18n';
 import { ConvertHistoryType } from './ConvertHistory.types';
 
-export const convertHistoryOptions = [
+export const CONVERT_HISTORY_OPTIONS = [
   {
     value: ConvertHistoryType.AMM,
     label: t(translations.conversionsHistory.types.AMM),

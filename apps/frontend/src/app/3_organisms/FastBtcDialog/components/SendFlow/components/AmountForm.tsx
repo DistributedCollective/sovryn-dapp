@@ -15,18 +15,20 @@ import {
   Paragraph,
   ParagraphSize,
 } from '@sovryn/ui';
-import { Decimal } from '@sovryn/utils';
 
 import { defaultChainId } from '../../../../../../config/chains';
 
 import { MaxButton } from '../../../../../2_molecules/MaxButton/MaxButton';
-import { BITCOIN } from '../../../../../../constants/currencies';
+import {
+  BITCOIN,
+  BTC_RENDER_PRECISION,
+} from '../../../../../../constants/currencies';
 import { BTC_IN_SATOSHIS } from '../../../../../../constants/general';
 import { useAssetBalance } from '../../../../../../hooks/useAssetBalance';
 import { useMaintenance } from '../../../../../../hooks/useMaintenance';
 import { useMaxAssetBalance } from '../../../../../../hooks/useMaxAssetBalance';
 import { translations } from '../../../../../../locales/i18n';
-import { toWei } from '../../../../../../utils/math';
+import { fromWei, toWei } from '../../../../../../utils/math';
 import { GAS_LIMIT_FAST_BTC_WITHDRAW } from '../../../constants';
 import {
   WithdrawContext,
@@ -95,7 +97,7 @@ export const AmountForm: React.FC = () => {
   }, [maxAmount, value]);
 
   const onMaximumAmountClick = useCallback(
-    () => setValue(maxAmount.toString()),
+    () => setValue(fromWei(maxAmount)),
     [maxAmount],
   );
 
@@ -113,9 +115,9 @@ export const AmountForm: React.FC = () => {
 
           <MaxButton
             onClick={onMaximumAmountClick}
-            value={Decimal.fromBigNumberString(maxAmount.toString())}
+            value={fromWei(maxAmount)}
             token={SupportedTokens.rbtc}
-            precision={8}
+            precision={BTC_RENDER_PRECISION}
             dataAttribute="funding-send-amount-max"
           />
         </div>
@@ -126,9 +128,10 @@ export const AmountForm: React.FC = () => {
             onChangeText={setValue}
             unit={BITCOIN}
             value={value}
-            decimalPrecision={8}
+            decimalPrecision={BTC_RENDER_PRECISION}
             className="max-w-none"
             invalid={maxExceed}
+            dataAttribute="funding-send-amount-input"
           />
 
           {maxExceed && (
@@ -153,6 +156,7 @@ export const AmountForm: React.FC = () => {
           <ErrorBadge
             level={ErrorLevel.Warning}
             message={t(translations.maintenanceMode.fastBtc)}
+            dataAttribute="funding-send-amount-confirm-error"
           />
         )}
       </div>

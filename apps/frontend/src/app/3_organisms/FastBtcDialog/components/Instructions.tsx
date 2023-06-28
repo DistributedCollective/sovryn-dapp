@@ -29,6 +29,11 @@ export const Instructions: React.FC<InstructionsProps> = ({ isReceive }) => {
 
       <ul className="list-disc list-inside text-xs leading-5 font-medium text-gray-30 mt-4 mb-12">
         <li className="mb-4">{t(translation.line1)}</li>
+        {!isReceive && (
+          <li className="mb-4">
+            {t(translations.fastBtc.sendInstructions.supportedFormats)}
+          </li>
+        )}
         <li className="mb-4">{t(translation.line2)}</li>
         <li className="mb-4">{t(translation.line3)}</li>
         <li className="mb-4">{t(translation.line4, { hours: 1.5 })}</li>

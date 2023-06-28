@@ -40,7 +40,7 @@ Default.args = {
 Default.argTypes = {
   className: {
     control: 'text',
-    description: 'The className to apply to the wrapper element',
+    description: 'The class to apply to the wrapper element',
   },
   label: {
     control: 'text',
@@ -48,7 +48,7 @@ Default.argTypes = {
   },
   labelClassName: {
     control: 'text',
-    description: 'The className to apply to the accordion toggle button',
+    description: 'The class to apply to the accordion toggle button',
   },
   children: {
     control: 'text',

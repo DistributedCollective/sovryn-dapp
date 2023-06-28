@@ -32,7 +32,7 @@ Basic.args = {
 Basic.argTypes = {
   className: {
     control: 'text',
-    description: 'The className to apply to the form-group wrapper',
+    description: 'The class to apply to the form-group wrapper',
   },
   label: {
     control: 'text',

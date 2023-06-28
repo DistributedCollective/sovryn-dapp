@@ -22,7 +22,7 @@ Default.args = {
 Default.argTypes = {
   className: {
     control: 'text',
-    description: 'The className to apply to the heading',
+    description: 'The class to apply to the heading',
   },
   dataAttribute: {
     control: 'text',

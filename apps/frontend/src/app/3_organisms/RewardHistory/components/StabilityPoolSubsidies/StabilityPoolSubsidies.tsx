@@ -36,6 +36,7 @@ import { translations } from '../../../../../locales/i18n';
 import { zeroClient } from '../../../../../utils/clients';
 import {
   SovDistribution,
+  SovDistribution_OrderBy,
   useGetSubsidyLazyQuery,
 } from '../../../../../utils/graphql/zero/generated';
 import { dateFormat } from '../../../../../utils/helpers';
@@ -121,7 +122,7 @@ export const StabilityPoolSubsidies: FC<RewardHistoryProps> = ({
       },
       {
         id: 'amount',
-        title: t(translations.subsidyHistory.table.subsidyChange),
+        title: t(translations.common.tables.columnTitles.amount),
         cellRenderer: renderAmount,
       },
       {
@@ -160,6 +161,8 @@ export const StabilityPoolSubsidies: FC<RewardHistoryProps> = ({
         user: account,
         skip: 0,
         pageSize: EXPORT_RECORD_LIMIT,
+        orderBy: SovDistribution_OrderBy.Timestamp,
+        orderDirection: OrderDirection.Desc,
       },
     });
     let list = data?.sovdistributions || [];

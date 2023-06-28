@@ -25,6 +25,7 @@
         "na": "N/A",
         "tables": {
             "columnTitles": {
+                "amount": "Amount",
                 "timestamp": "Timestamp",
                 "transactionType": "Transaction type",
                 "transactionID": "TXID"
@@ -385,7 +386,8 @@
             "line3": "Do not send more than the maximum amount",
             "line4": "Allow up to {{hours}} hrs to process",
             "line5": "If your transaction takes longer than {{hours}} hrs please <0>create a support ticket</0>",
-            "line5cta": "create a support ticket"
+            "line5cta": "create a support ticket",
+            "supportedFormats": "Supported address formats: P2PKH, P2SH, P2WPKH, P2WSH"
         },
         "limits": {
             "title": "Transfer policies",
@@ -406,7 +408,8 @@
             "addressForm": {
                 "title": "Enter recipient's bitcoin address",
                 "addressLabel": "Address",
-                "maxExceed": "Exceeds maximum amount"
+                "maxExceed": "Exceeds maximum amount",
+                "invalidAddress": "Invalid address"
             },
             "confirmationScreens": {
                 "reviewTitle": "Transfer details",
@@ -427,16 +430,17 @@
             }
         },
         "receive": {
-            "statusScreen": {
-                "statusTitleProcessing": "Transfer processing...",
-                "statusTitleComplete": "Transfer complete",
-                "to": "To",
-                "sending": "Sending",
-                "serviceFee": "Service fee",
-                "receiving": "Receiving",
-                "bitcoinTxId": "Bitcoin TXID",
-                "rootstockTxId": "Rootstock TXID"
-            }
+          "loading": "Loading... this may take up to 30 seconds",
+          "statusScreen": {
+              "statusTitleProcessing": "Transfer processing...",
+              "statusTitleComplete": "Transfer complete",
+              "to": "To",
+              "sending": "Sending",
+              "serviceFee": "Service fee",
+              "receiving": "Receiving",
+              "bitcoinTxId": "Bitcoin TXID",
+              "rootstockTxId": "Rootstock TXID"
+          }
         }
     },
 
@@ -459,7 +463,8 @@
             "withdrawGains": "Withdraw rewards",
             "transferToLOC": "Transfer rewards",
             "transfer": "Transfer rewards to line of credit"
-        }
+        },
+        "undercollateralized": "Withdrawals disabled – one or more LOCs are undercollateralized"
     },
 
     "historyPage": {
@@ -475,10 +480,15 @@
                 "stability": "Stability pool",
                 "convert": "Conversion",
                 "funding": "Funding",
-                "collateralSurplusWithdrawals": "Collateral surplus",
                 "reward": "Reward"
             },
             "comingSoon": "Coming soon..."
+        }
+    },
+    "locHistory": {
+        "types": {
+            "lineOfCredit": "Line of credit",
+            "collateralSurplus": "Collateral surplus"
         }
     },
     "transactionHistory": {
@@ -525,7 +535,7 @@
     },
     "collateralSurplusHistory": {
         "table": {
-            "collateralChange": "Collateral change",
+            "amount": "Amount",
             "withdrawSurplus": "Withdraw surplus",
             "depositSurplus": "Deposit surplus"
         }
@@ -565,9 +575,6 @@
         }
     },
     "rewardHistory": {
-        "table": {
-            "rewardChange": "Reward change"
-        },
         "stabilityPoolOperation": {
             "claimCollateralGain": "Claim gain",
             "transferGainToLineOfCredit": "Transfer gain to line of credit"
@@ -578,9 +585,6 @@
         }
     },
     "subsidyHistory": {
-        "table": {
-            "subsidyChange": "Subsidy change"
-        },
         "stabilityPoolOperation": {
             "claimStabilityPoolSubsidy": "Claim stability pool subsidy"
         }

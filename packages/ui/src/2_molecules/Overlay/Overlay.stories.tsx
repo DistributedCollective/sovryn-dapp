@@ -42,11 +42,11 @@ Basic.argTypes = {
   },
   className: {
     control: 'text',
-    description: 'The className to apply to the overlay',
+    description: 'The class to apply to the overlay',
   },
   portalClassName: {
     control: 'text',
-    description: 'The className to apply to the overlay portal',
+    description: 'The class to apply to the overlay portal',
   },
   children: {
     control: 'text',

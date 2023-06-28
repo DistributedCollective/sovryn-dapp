@@ -37,6 +37,7 @@ import { zeroClient } from '../../../../../utils/clients';
 import {
   StabilityDepositChange,
   StabilityDepositChange_Filter,
+  StabilityDepositChange_OrderBy,
   useGetStabilityDepositChangesLazyQuery,
 } from '../../../../../utils/graphql/zero/generated';
 import { dateFormat } from '../../../../../utils/helpers';
@@ -98,7 +99,7 @@ export const StabilityPoolRewards: FC<RewardHistoryProps> = ({
       },
       {
         id: 'collateralGain',
-        title: t(translations.rewardHistory.table.rewardChange),
+        title: t(translations.common.tables.columnTitles.amount),
         cellRenderer: tx => (
           <AmountRenderer
             value={tx.collateralGain || 0}
@@ -150,6 +151,8 @@ export const StabilityPoolRewards: FC<RewardHistoryProps> = ({
           stabilityDeposit: account,
         } as StabilityDepositChange_Filter,
         pageSize: EXPORT_RECORD_LIMIT,
+        orderBy: StabilityDepositChange_OrderBy.BlockNumber,
+        orderDirection: OrderDirection.Desc,
       },
     });
     let list = data?.stabilityDepositChanges || [];

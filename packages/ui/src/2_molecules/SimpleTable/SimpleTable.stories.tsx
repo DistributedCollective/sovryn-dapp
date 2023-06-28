@@ -27,3 +27,22 @@ Primary.args = {
   ),
   border: true,
 };
+Primary.argTypes = {
+  className: {
+    control: 'text',
+    description: 'The class to apply to the table',
+  },
+  dataAttribute: {
+    control: 'text',
+    description: 'The data attributes to apply to the table',
+  },
+  border: {
+    control: 'boolean',
+    description: 'Simple table border state',
+  },
+  children: {
+    control: 'text',
+    description:
+      'The simple table content. Can be text, other components, or HTML elements.',
+  },
+};

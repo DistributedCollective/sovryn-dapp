@@ -19,7 +19,10 @@ export const useGetSovGain = () => {
 
   useEffect(() => {
     updateSOVGain();
-  }, [updateSOVGain]);
+    if (!account) {
+      setSOVGain('0');
+    }
+  }, [account, updateSOVGain]);
 
   return {
     sovGain,

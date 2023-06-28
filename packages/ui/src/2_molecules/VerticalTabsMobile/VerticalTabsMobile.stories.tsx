@@ -149,9 +149,40 @@ Basic.args = {
   tabsClassName: '',
   contentClassName: '',
 };
+Basic.argTypes = {
+  items: {
+    control: 'VerticalTabsItem[]',
+    description: 'List of vertical tab items',
+  },
+  selectedIndex: {
+    control: 'number',
+    description: 'Active tab index',
+  },
+  className: {
+    control: 'text',
+    description: 'The class to apply to the wrapper',
+  },
+  tabsClassName: {
+    control: 'text',
+    description: 'The class to apply to the tabs',
+  },
+  contentClassName: {
+    control: 'text',
+    description: 'The class to apply to the content',
+  },
+  onChange: {
+    control: 'function',
+    description: 'onChange handler for active tab',
+  },
+  header: {
+    control: 'function',
+    description: 'Render function for tabs header',
+  },
+};
 
 export const InDialog = DialogTemplate.bind({});
 
 InDialog.parameters = {
   layout: 'centered',
 };
+InDialog.argTypes = { ...Basic.argTypes };

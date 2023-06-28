@@ -36,8 +36,7 @@ This is a turborepo for the Sovryn dapp and it's associated packages.
   - To reset the older Node.JS installation so that you can upgrade to version 12:
 
     - `sudo dnf module reset nodejs`
-
-    NOTE: Alternatively, You can use the NVM tool that is easy to use and allows you to switch between the installed node versions. For more information, see the [NVM](https://github.com/nvm-sh/nvm) guide.
+      NOTE: Alternatively, You can use the NVM tool that is easy to use and allows you to switch between the installed node versions. For more information, see the [NVM](https://github.com/nvm-sh/nvm) guide.
 
 - When running the `frontend` app locally, environment variables are loaded from `apps/frontend/.env.local`. If this file does not exist then it should be created with the format outlined in `apps/frontend/.env.example`, or the UI may fail to load.
 

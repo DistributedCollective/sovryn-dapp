@@ -1,4 +1,11 @@
-import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
+import React, {
+  FC,
+  PropsWithChildren,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 
 import { t } from 'i18next';
 import { nanoid } from 'nanoid';
@@ -15,33 +22,38 @@ import {
   Table,
 } from '@sovryn/ui';
 
-import { chains, defaultChainId } from '../../../config/chains';
+import { chains, defaultChainId } from '../../../../../config/chains';
 
-import { AmountRenderer } from '../../2_molecules/AmountRenderer/AmountRenderer';
-import { ExportCSV } from '../../2_molecules/ExportCSV/ExportCSV';
-import { TxIdWithNotification } from '../../2_molecules/TxIdWithNotification/TransactionIdWithNotification';
-import { BITCOIN, BTC_RENDER_PRECISION } from '../../../constants/currencies';
+import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRenderer';
+import { ExportCSV } from '../../../../2_molecules/ExportCSV/ExportCSV';
+import { TxIdWithNotification } from '../../../../2_molecules/TxIdWithNotification/TransactionIdWithNotification';
+import {
+  BITCOIN,
+  BTC_RENDER_PRECISION,
+} from '../../../../../constants/currencies';
 import {
   DEFAULT_HISTORY_FRAME_PAGE_SIZE,
   EXPORT_RECORD_LIMIT,
-} from '../../../constants/general';
-import { useNotificationContext } from '../../../contexts/NotificationContext';
-import { useAccount } from '../../../hooks/useAccount';
-import { useBlockNumber } from '../../../hooks/useBlockNumber';
-import { useMaintenance } from '../../../hooks/useMaintenance';
-import { translations } from '../../../locales/i18n';
-import { zeroClient } from '../../../utils/clients';
+} from '../../../../../constants/general';
+import { useNotificationContext } from '../../../../../contexts/NotificationContext';
+import { useAccount } from '../../../../../hooks/useAccount';
+import { useBlockNumber } from '../../../../../hooks/useBlockNumber';
+import { useMaintenance } from '../../../../../hooks/useMaintenance';
+import { translations } from '../../../../../locales/i18n';
+import { zeroClient } from '../../../../../utils/clients';
 import {
   CollSurplusChange_Filter,
   useGetCollSurplusChangesLazyQuery,
-} from '../../../utils/graphql/zero/generated';
-import { dateFormat } from '../../../utils/helpers';
-import { formatValue } from '../../../utils/math';
+} from '../../../../../utils/graphql/zero/generated';
+import { dateFormat } from '../../../../../utils/helpers';
+import { formatValue } from '../../../../../utils/math';
 import { useGetCollateralSurplusWithdrawals } from './hooks/useGetCollateralSurplusWithdrawals';
 
 const pageSize = DEFAULT_HISTORY_FRAME_PAGE_SIZE;
 
-export const CollateralSurplusHistoryFrame: FC = () => {
+export const CollateralSurplusHistoryFrame: FC<PropsWithChildren> = ({
+  children,
+}) => {
   const { account } = useAccount();
   const { addNotification } = useNotificationContext();
 
@@ -109,7 +121,7 @@ export const CollateralSurplusHistoryFrame: FC = () => {
       },
       {
         id: 'collSurplusChange',
-        title: t(translations.collateralSurplusHistory.table.collateralChange),
+        title: t(translations.collateralSurplusHistory.table.amount),
         cellRenderer: tx => renderCollateralChange(tx.collSurplusChange),
       },
       {
@@ -187,18 +199,21 @@ export const CollateralSurplusHistoryFrame: FC = () => {
 
   return (
     <>
-      <div className="flex-row items-center gap-4 mb-7 hidden lg:inline-flex">
-        <ExportCSV
-          getData={exportData}
-          filename="collateral surplus withdrawals"
-          disabled={!data || data.length === 0 || exportLocked}
-        />
-        {exportLocked && (
-          <ErrorBadge
-            level={ErrorLevel.Warning}
-            message={t(translations.maintenanceMode.featureDisabled)}
+      <div className="flex-row items-center gap-4 mb-7 flex justify-center lg:justify-start">
+        {children}
+        <div className="flex-row items-center ml-2 gap-4 hidden lg:inline-flex">
+          <ExportCSV
+            getData={exportData}
+            filename="collateral surplus withdrawals"
+            disabled={!data || data.length === 0 || exportLocked}
           />
-        )}
+          {exportLocked && (
+            <ErrorBadge
+              level={ErrorLevel.Warning}
+              message={t(translations.maintenanceMode.featureDisabled)}
+            />
+          )}
+        </div>
       </div>
       <div className="bg-gray-80 py-4 px-4 rounded">
         <Table

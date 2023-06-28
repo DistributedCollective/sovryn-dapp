@@ -99,7 +99,7 @@ export const StabilityPoolRewards: FC<RewardHistoryProps> = ({
       },
       {
         id: 'collateralGain',
-        title: t(translations.rewardHistory.table.rewardChange),
+        title: t(translations.common.tables.columnTitles.amount),
         cellRenderer: tx => (
           <AmountRenderer
             value={tx.collateralGain || 0}

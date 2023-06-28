@@ -122,7 +122,7 @@ export const StabilityPoolSubsidies: FC<RewardHistoryProps> = ({
       },
       {
         id: 'amount',
-        title: t(translations.subsidyHistory.table.subsidyChange),
+        title: t(translations.common.tables.columnTitles.amount),
         cellRenderer: renderAmount,
       },
       {

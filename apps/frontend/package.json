@@ -19,6 +19,7 @@
     "@sovryn/onboard-react": "1.0.7",
     "@sovryn/onboard-trezor": "1.0.2",
     "@sovryn/onboard-walletconnect": "1.0.3",
+    "@sovryn/sdk": "*",
     "@sovryn/tailwindcss-config": "*",
     "@sovryn/ui": "*",
     "@sovryn/utils": "0.0.1",

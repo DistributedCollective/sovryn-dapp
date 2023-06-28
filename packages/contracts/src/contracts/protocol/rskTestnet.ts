@@ -14,7 +14,7 @@ export const rskTestnet: Record<string, AsyncContractConfigData> = {
     getAbi: async () => (await import('../../abis/swapNetwork.json')).default,
   },
   btcWrapperProxy: {
-    address: '0x7481aCBeb11C1D2866B0F11DE359E52dbe63EC5B',
+    address: '0xA3a46b149360a0B1e005CA8cB7522938A2da7532',
     getAbi: async () =>
       (await import('../../abis/btcWrapperProxy.json')).default,
   },

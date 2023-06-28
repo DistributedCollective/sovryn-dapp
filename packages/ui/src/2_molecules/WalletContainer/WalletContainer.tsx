@@ -2,14 +2,14 @@ import React, { ReactNode, forwardRef, LegacyRef } from 'react';
 
 import classNames from 'classnames';
 
-import { Icon } from '../../1_atoms/Icon/Icon';
 import { applyDataAttr } from '../../utils';
+import { HelperButton } from '../HelperButton';
 import styles from './WalletContainer.module.css';
 
 type WalletContainerProps = {
   name: string;
   icon?: ReactNode;
-  tooltip?: string;
+  helper?: string;
   className?: string;
   dataAttribute?: string;
 } & React.ButtonHTMLAttributes<HTMLButtonElement>;
@@ -17,7 +17,7 @@ type WalletContainerProps = {
 export const WalletContainer = forwardRef<
   HTMLButtonElement,
   WalletContainerProps
->(({ name, icon, tooltip, className, dataAttribute, ...buttonProps }, ref) => {
+>(({ name, icon, helper, className, dataAttribute, ...buttonProps }, ref) => {
   return (
     <button
       ref={ref as LegacyRef<HTMLButtonElement>}
@@ -27,7 +27,7 @@ export const WalletContainer = forwardRef<
     >
       <div className={styles.label}>
         {name}
-        {tooltip && <Icon icon="info" size={10} />}
+        {helper && <HelperButton className="ml-1" content={helper} />}
       </div>{' '}
       {icon && <div className={styles.icon}>{icon}</div>}
     </button>

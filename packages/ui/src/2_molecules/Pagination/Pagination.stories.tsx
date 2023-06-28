@@ -29,7 +29,7 @@ Basic.argTypes = {
   },
   className: {
     control: 'text',
-    description: 'The className to apply to the pagination',
+    description: 'The class to apply to the pagination',
   },
   itemsPerPage: {
     control: 'number',

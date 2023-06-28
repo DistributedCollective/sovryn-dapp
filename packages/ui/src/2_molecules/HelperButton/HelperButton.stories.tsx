@@ -41,7 +41,7 @@ Basic.argTypes = {
   },
   className: {
     control: 'text',
-    description: 'The className to apply to the helper button',
+    description: 'The class to apply to the helper button',
   },
   dataAttribute: {
     control: 'text',

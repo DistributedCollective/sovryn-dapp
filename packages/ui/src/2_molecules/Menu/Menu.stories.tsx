@@ -59,7 +59,7 @@ _Menu.argTypes = {
   },
   className: {
     control: 'text',
-    description: 'The className to apply to the menu',
+    description: 'The class to apply to the menu',
   },
 };
 
@@ -79,7 +79,7 @@ _MenuSeparator.argTypes = {
   },
   className: {
     control: 'text',
-    description: 'The className to apply to the menu separator',
+    description: 'The class to apply to the menu separator',
   },
 };
 
@@ -111,6 +111,6 @@ _MenuItem.argTypes = {
   },
   className: {
     control: 'text',
-    description: 'The className to apply to the menu item',
+    description: 'The class to apply to the menu item',
   },
 };

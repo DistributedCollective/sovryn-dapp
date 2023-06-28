@@ -22,6 +22,31 @@ Default.args = {
   dataAttribute: '',
   className: '',
 };
+Default.argTypes = {
+  className: {
+    control: 'text',
+    description: 'The class to apply to the status item',
+  },
+  dataAttribute: {
+    control: 'text',
+    description: 'The data attributes to apply to the status item',
+  },
+  label: {
+    control: 'text',
+    description: 'The label of the status item',
+  },
+  content: {
+    control: 'text',
+    description: 'The content displayed inside the badge',
+  },
+  status: {
+    control: {
+      type: 'select',
+      options: Object.values(StatusType),
+    },
+    description: 'The status for the badge',
+  },
+};
 
 const AllTemplate: ComponentStory<typeof StatusItem> = args => (
   <>
@@ -37,4 +62,7 @@ All.args = {
   label: 'Lorem Ipsum',
   dataAttribute: '',
   className: 'my-4',
+};
+All.argTypes = {
+  ...Default.argTypes,
 };

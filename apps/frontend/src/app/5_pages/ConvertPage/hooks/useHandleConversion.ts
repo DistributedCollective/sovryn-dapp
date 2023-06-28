@@ -192,6 +192,7 @@ export const useHandleConversion = (
           signer: signer,
           to: txData.to,
           data: txData.data,
+          value: txData.value,
           gasLimit: GAS_LIMIT.CONVERT,
         },
         onComplete,

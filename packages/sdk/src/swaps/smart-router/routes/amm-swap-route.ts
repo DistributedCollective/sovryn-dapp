@@ -47,7 +47,7 @@ export const ammSwapRoute: SwapRouteFunction = (
   };
 
   const getConverterContract = async (entry: string, destination: string) => {
-    if (isNativeToken(entry) || isNativeToken(destination)) {
+    if ((await isNativeToken(entry)) || (await isNativeToken(destination))) {
       if (!rbtcConverter) {
         const chainId = await getChainId();
         const { address, abi } = await getProtocolContract(
@@ -71,11 +71,16 @@ export const ammSwapRoute: SwapRouteFunction = (
     return protocolContract;
   };
 
-  const isNativeToken = (token: string) => token === constants.AddressZero;
+  const isNativeToken = async (token: string) =>
+    token === constants.AddressZero ||
+    token ===
+      (
+        await getTokenContract(SupportedTokens.wrbtc, await getChainId())
+      ).address.toLowerCase();
 
   const validatedTokenAddress = async (token: string) => {
     token = token.toLowerCase();
-    if (isNativeToken(token)) {
+    if (await isNativeToken(token)) {
       if (wrbtcAddress) {
         return wrbtcAddress;
       }
@@ -141,7 +146,7 @@ export const ammSwapRoute: SwapRouteFunction = (
     },
     approve: async (entry, destination, amount, from, overrides) => {
       // native token is always approved
-      if (isNativeToken(entry)) {
+      if (await isNativeToken(entry)) {
         return undefined;
       }
 
@@ -181,6 +186,9 @@ export const ammSwapRoute: SwapRouteFunction = (
       const baseToken = await validatedTokenAddress(entry);
       const quoteToken = await validatedTokenAddress(destination);
 
+      const entryIsNative = await isNativeToken(entry);
+      const destinationIsNative = await isNativeToken(destination);
+
       const path = await (
         await getSwapNetworkContract()
       ).conversionPath(baseToken, quoteToken);
@@ -198,7 +206,7 @@ export const ammSwapRoute: SwapRouteFunction = (
 
       let args = [path, amount, minReturn];
 
-      if (!isNativeToken(entry) && !isNativeToken(destination)) {
+      if (!entryIsNative && !destinationIsNative) {
         args = [
           path,
           amount,
@@ -212,7 +220,7 @@ export const ammSwapRoute: SwapRouteFunction = (
       return {
         to: converter.address,
         data: converter.interface.encodeFunctionData('convertByPath', args),
-        value: isNativeToken(entry) ? amount.toString() : '0',
+        value: entryIsNative ? amount.toString() : '0',
         ...overrides,
       };
     },

@@ -2,9 +2,11 @@ import React, { FC } from 'react';
 
 import { t } from 'i18next';
 
+import { SupportedTokens } from '@sovryn/contracts';
 import { applyDataAttr } from '@sovryn/ui';
 import { Decimalish } from '@sovryn/utils';
 
+import { getTokenDisplayName } from '../../../constants/tokens';
 import { translations } from '../../../locales/i18n';
 import { AmountRenderer } from '../AmountRenderer/AmountRenderer';
 
@@ -12,7 +14,7 @@ type MaxButtonProps = {
   value: Decimalish;
   onClick?: () => void;
   precision?: number;
-  token: string;
+  token: SupportedTokens;
   dataAttribute?: string;
 };
 
@@ -32,7 +34,7 @@ export const MaxButton: FC<MaxButtonProps> = ({
     <AmountRenderer
       value={value}
       precision={precision}
-      suffix={token.toUpperCase()}
+      suffix={getTokenDisplayName(token)}
       useTooltip={false}
     />
     {`)`}

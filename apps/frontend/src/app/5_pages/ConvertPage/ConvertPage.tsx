@@ -33,13 +33,13 @@ import { AmountRenderer } from '../../2_molecules/AmountRenderer/AmountRenderer'
 import { AssetRenderer } from '../../2_molecules/AssetRenderer/AssetRenderer';
 import { MaxButton } from '../../2_molecules/MaxButton/MaxButton';
 import { TOKEN_RENDER_PRECISION } from '../../../constants/currencies';
+import { getTokenDisplayName } from '../../../constants/tokens';
 import { useAccount } from '../../../hooks/useAccount';
 import { useWeiAmountInput } from '../../../hooks/useWeiAmountInput';
 import { translations } from '../../../locales/i18n';
 import { decimalic, fromWei } from '../../../utils/math';
 import { smartRouter, stableCoins } from './ConvertPage.types';
 import { useConversionMaintenance } from './hooks/useConversionMaintenance';
-import { useGetDefaultSourceToken } from './hooks/useGetDefaultSourceToken';
 import { useGetMaximumAvailableAmount } from './hooks/useGetMaximumAvailableAmount';
 import { useHandleConversion } from './hooks/useHandleConversion';
 
@@ -71,8 +71,6 @@ const ConvertPage: FC = () => {
   const { account } = useAccount();
   const [slippageTolerance, setSlippageTolerance] = useState('0.5');
 
-  const defaultSourceToken = useGetDefaultSourceToken();
-
   const [priceInQuote, setPriceQuote] = useState(false);
 
   const [amount, setAmount, weiAmount] = useWeiAmountInput('');
@@ -80,8 +78,9 @@ const ConvertPage: FC = () => {
   const [quote, setQuote] = useState('');
   const [route, setRoute] = useState<SwapRoute | undefined>();
 
-  const [sourceToken, setSourceToken] =
-    useState<SupportedTokens>(defaultSourceToken);
+  const [sourceToken, setSourceToken] = useState<SupportedTokens>(
+    SupportedTokens.dllr,
+  );
 
   const [showAdvancedSettings, setShowAdvancedSettings] = useState(false);
 
@@ -267,17 +266,13 @@ const ConvertPage: FC = () => {
       return (
         <AmountRenderer
           value={price}
-          suffix={priceToken}
+          suffix={getTokenDisplayName(priceToken)}
           precision={TOKEN_RENDER_PRECISION}
         />
       );
     }
     return t(commonTranslations.na);
   }, [price, priceToken]);
-
-  useEffect(() => {
-    setSourceToken(defaultSourceToken);
-  }, [defaultSourceToken]);
 
   const togglePriceQuote = useCallback(
     () => setPriceQuote(value => !value),
@@ -419,7 +414,7 @@ const ConvertPage: FC = () => {
                     value={
                       <AmountRenderer
                         value={minimumReceived}
-                        suffix={destinationToken}
+                        suffix={getTokenDisplayName(destinationToken)}
                         precision={TOKEN_RENDER_PRECISION}
                       />
                     }

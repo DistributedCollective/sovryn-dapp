@@ -12,6 +12,7 @@ import {
   BITCOIN,
   BTC_RENDER_PRECISION,
 } from '../../../../constants/currencies';
+import { getTokenDisplayName } from '../../../../constants/tokens';
 import { useAmountInput } from '../../../../hooks/useAmountInput';
 import { useMaxAssetBalance } from '../../../../hooks/useMaxAssetBalance';
 import { translations } from '../../../../locales/i18n';
@@ -161,7 +162,7 @@ export const OpenCreditLine: FC<OpenCreditLineProps> = ({
         level: ErrorLevel.Critical,
         message: t(translations.zeroPage.loc.errors.newTotalDebtTooLow, {
           value: formatValue(MIN_DEBT_SIZE, 4),
-          currency: debtToken.toUpperCase(),
+          currency: getTokenDisplayName(debtToken),
         }),
         weight: 3,
       });

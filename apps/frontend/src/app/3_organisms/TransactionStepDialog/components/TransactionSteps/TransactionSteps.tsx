@@ -2,6 +2,7 @@ import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 
 import classNames from 'classnames';
 import { ethers } from 'ethers';
+import { parseUnits } from 'ethers/lib/utils';
 import { t } from 'i18next';
 
 import { SupportedTokens } from '@sovryn/contracts';
@@ -285,10 +286,19 @@ export const TransactionSteps: FC<TransactionStepsProps> = ({
 
           await handleUpdates();
         } else if (isSignTransactionDataRequest(request)) {
+          const gasLimit = config.gasLimit
+            ? config.gasLimit?.toString()
+            : undefined;
+          const gasPrice = config.gasPrice
+            ? parseUnits(config.gasPrice?.toString() || '0', 9)
+            : undefined;
+
           const tx = await request.signer.sendTransaction({
             data: request.data,
             to: request.to,
             value: request.value,
+            gasLimit,
+            gasPrice,
           });
 
           updateReceipt(i, {

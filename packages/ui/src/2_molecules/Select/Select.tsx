@@ -57,9 +57,5 @@ const DefaultLabelRenderer = <T extends string>({
   value,
   options,
 }: SelectProps<T>) => {
-  return (
-    <>
-      {options.find(item => item.value === value)?.label || 'Select an option'}
-    </>
-  );
+  return <>{options.find(item => item.value === value)?.label || 'Select'}</>;
 };

@@ -6,3 +6,6 @@ export const tokensDisplayName = {
   [SupportedTokens.eths]: 'ETH',
   [SupportedTokens.fish]: 'FISH',
 };
+
+export const getTokenDisplayName = (token: SupportedTokens): string =>
+  tokensDisplayName[token] || token.toUpperCase();

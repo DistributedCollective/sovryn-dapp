@@ -16,6 +16,7 @@ import {
   TransactionType,
 } from '../app/3_organisms/TransactionStepDialog/TransactionStepDialog.types';
 import { APPROVAL_FUNCTION } from '../constants/general';
+import { getTokenDisplayName } from '../constants/tokens';
 import { translations } from '../locales/i18n';
 import { getRskChainId } from './chain';
 
@@ -48,10 +49,10 @@ export const preparePermitTransaction = async ({
   const { address: tokenAddress } = await getTokenContract(token, chain);
   return {
     title: t(translations.common.tx.signPermitTitle, {
-      symbol: token.toUpperCase(),
+      symbol: getTokenDisplayName(token),
     }),
     subtitle: t(translations.common.tx.signPermitSubtitle, {
-      symbol: token.toUpperCase(),
+      symbol: getTokenDisplayName(token),
     }),
     request: {
       type: TransactionType.signPermit,
@@ -105,10 +106,10 @@ export const prepareApproveTransaction = async ({
   if (BigNumber.from(allowance).lt(amount)) {
     return {
       title: t(translations.common.tx.signApproveTitle, {
-        symbol: token.toUpperCase(),
+        symbol: getTokenDisplayName(token),
       }),
       subtitle: t(translations.common.tx.signApproveSubtitle, {
-        symbol: token.toUpperCase(),
+        symbol: getTokenDisplayName(token),
       }),
       request: {
         type: TransactionType.signTransaction,

@@ -14,6 +14,7 @@ import {
 import { isTransactionRequest } from '../../../3_organisms/TransactionStepDialog/helpers';
 import { CreditLineSubmitValue } from '../../../3_organisms/ZeroLocForm/types';
 import { GAS_LIMIT } from '../../../../constants/gasLimits';
+import { getTokenDisplayName } from '../../../../constants/tokens';
 import { useTransactionContext } from '../../../../contexts/TransactionContext';
 import { useAccount } from '../../../../hooks/useAccount';
 import { translations } from '../../../../locales/i18n';
@@ -44,7 +45,7 @@ const getAdjustTroveTexts = (
     return {
       dialogTitle: t(baseTranslationPath.repayTitle),
       transactionTitle: t(baseTranslationPath.repay, {
-        asset: value.token.toUpperCase(),
+        asset: getTokenDisplayName(value.token),
       }),
     };
   }
@@ -53,7 +54,7 @@ const getAdjustTroveTexts = (
     return {
       dialogTitle: t(baseTranslationPath.borrowTitle),
       transactionTitle: t(baseTranslationPath.borrow, {
-        asset: value.token.toUpperCase(),
+        asset: getTokenDisplayName(value.token),
       }),
     };
   }

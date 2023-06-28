@@ -3,6 +3,7 @@ import { t } from 'i18next';
 import { SupportedTokens } from '@sovryn/contracts';
 
 import { BTC_RENDER_PRECISION } from '../../../../../constants/currencies';
+import { getTokenDisplayName } from '../../../../../constants/tokens';
 import { translations } from '../../../../../locales/i18n';
 import { StabilityDepositOperation } from '../../../../../utils/graphql/zero/generated';
 import { formatValue } from '../../../../../utils/math';
@@ -27,4 +28,4 @@ export const renderCollateralChange = (collateralGain: string) =>
   `${formatValue(
     Math.abs(Number(collateralGain)),
     BTC_RENDER_PRECISION,
-  )} ${SupportedTokens.rbtc.toUpperCase()}`;
+  )} ${getTokenDisplayName(SupportedTokens.rbtc)}`;

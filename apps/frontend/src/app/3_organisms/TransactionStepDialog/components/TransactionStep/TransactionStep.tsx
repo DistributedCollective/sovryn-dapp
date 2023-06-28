@@ -34,6 +34,7 @@ import {
   BTC_RENDER_PRECISION,
 } from '../../../../../constants/currencies';
 import { APPROVAL_FUNCTION } from '../../../../../constants/general';
+import { tokensDisplayName } from '../../../../../constants/tokens';
 import { translations } from '../../../../../locales/i18n';
 import { fromWei, toWei } from '../../../../../utils/math';
 import {
@@ -264,7 +265,10 @@ export const TransactionStep: FC<TransactionStepProps> = ({
                     ) : (
                       <AmountRenderer
                         value={parsedAmount}
-                        suffix={token?.symbol}
+                        suffix={
+                          tokensDisplayName[token?.symbol || ''] ||
+                          token?.symbol
+                        }
                       />
                     )
                   }

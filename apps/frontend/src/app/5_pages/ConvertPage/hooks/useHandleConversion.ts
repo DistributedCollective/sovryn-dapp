@@ -18,6 +18,7 @@ import {
 } from '../../../3_organisms/TransactionStepDialog/TransactionStepDialog.types';
 import { isSignTransactionDataRequest } from '../../../3_organisms/TransactionStepDialog/helpers';
 import { GAS_LIMIT } from '../../../../constants/gasLimits';
+import { getTokenDisplayName } from '../../../../constants/tokens';
 import { useTransactionContext } from '../../../../contexts/TransactionContext';
 import { useAccount } from '../../../../hooks/useAccount';
 import { translations } from '../../../../locales/i18n';
@@ -57,7 +58,7 @@ export const useHandleConversion = (
     return [
       {
         title: t(translations.convertPage.txDialog.convert, {
-          asset: sourceToken.toUpperCase(),
+          asset: getTokenDisplayName(sourceToken),
         }),
         request: {
           type: TransactionType.signTransaction,
@@ -103,7 +104,7 @@ export const useHandleConversion = (
 
     transactions.push({
       title: t(translations.convertPage.txDialog.convert, {
-        asset: sourceToken.toUpperCase(),
+        asset: getTokenDisplayName(sourceToken),
       }),
       request: {
         type: TransactionType.signTransaction,
@@ -140,7 +141,7 @@ export const useHandleConversion = (
     if (approveTxData && approveTxData.to && approveTxData.data) {
       transactions.push({
         title: t(translations.convertPage.txDialog.approve, {
-          asset: sourceToken.toUpperCase(),
+          asset: getTokenDisplayName(sourceToken),
         }),
         request: {
           type: TransactionType.signTransactionData,
@@ -184,7 +185,7 @@ export const useHandleConversion = (
     if (txData && txData.to && txData.data) {
       transactions.push({
         title: t(translations.convertPage.txDialog.convert, {
-          asset: sourceToken.toUpperCase(),
+          asset: getTokenDisplayName(sourceToken),
         }),
         request: {
           type: TransactionType.signTransactionData,
@@ -215,8 +216,8 @@ export const useHandleConversion = (
     setTransactions(transactions);
     setTitle(
       t(translations.convertPage.txDialog.convertTitle, {
-        from: sourceToken.toUpperCase(),
-        to: destinationToken.toUpperCase(),
+        from: getTokenDisplayName(sourceToken),
+        to: getTokenDisplayName(destinationToken),
       }),
     );
     setIsOpen(true);

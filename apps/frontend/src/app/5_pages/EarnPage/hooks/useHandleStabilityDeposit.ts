@@ -13,6 +13,7 @@ import {
 } from '../../../3_organisms/TransactionStepDialog/TransactionStepDialog.types';
 import { isTransactionRequest } from '../../../3_organisms/TransactionStepDialog/helpers';
 import { GAS_LIMIT } from '../../../../constants/gasLimits';
+import { getTokenDisplayName } from '../../../../constants/tokens';
 import { useTransactionContext } from '../../../../contexts/TransactionContext';
 import { useAccount } from '../../../../hooks/useAccount';
 import { translations } from '../../../../locales/i18n';
@@ -63,7 +64,7 @@ export const useHandleStabilityDeposit = (
     setTransactions([
       {
         title: t(translations.earnPage.txDialog.withdraw, {
-          asset: token.toUpperCase(),
+          asset: getTokenDisplayName(token),
         }),
         request: {
           type: TransactionType.signTransaction,
@@ -79,7 +80,7 @@ export const useHandleStabilityDeposit = (
     ]);
     setTitle(
       t(translations.earnPage.txDialog.withdrawTitle, {
-        asset: token.toUpperCase(),
+        asset: getTokenDisplayName(token),
       }),
     );
     setIsOpen(true);
@@ -116,7 +117,7 @@ export const useHandleStabilityDeposit = (
 
     transactions.push({
       title: t(translations.earnPage.txDialog.deposit, {
-        asset: token.toUpperCase(),
+        asset: getTokenDisplayName(token),
       }),
       request: {
         type: TransactionType.signTransaction,
@@ -141,7 +142,7 @@ export const useHandleStabilityDeposit = (
     setTransactions(transactions);
     setTitle(
       t(translations.earnPage.txDialog.depositTitle, {
-        asset: token.toUpperCase(),
+        asset: getTokenDisplayName(token),
       }),
     );
     setIsOpen(true);

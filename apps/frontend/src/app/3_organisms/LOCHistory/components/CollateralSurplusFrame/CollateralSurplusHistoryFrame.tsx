@@ -1,4 +1,11 @@
-import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
+import React, {
+  FC,
+  PropsWithChildren,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 
 import { t } from 'i18next';
 import { nanoid } from 'nanoid';
@@ -40,12 +47,11 @@ import {
 } from '../../../../../utils/graphql/zero/generated';
 import { dateFormat } from '../../../../../utils/helpers';
 import { formatValue } from '../../../../../utils/math';
-import { LOCHistoryProps } from '../../LOCHistory.types';
 import { useGetCollateralSurplusWithdrawals } from './hooks/useGetCollateralSurplusWithdrawals';
 
 const pageSize = DEFAULT_HISTORY_FRAME_PAGE_SIZE;
 
-export const CollateralSurplusHistoryFrame: FC<LOCHistoryProps> = ({
+export const CollateralSurplusHistoryFrame: FC<PropsWithChildren> = ({
   children,
 }) => {
   const { account } = useAccount();

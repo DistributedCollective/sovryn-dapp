@@ -1,4 +1,11 @@
-import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
+import React, {
+  FC,
+  PropsWithChildren,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 
 import { t } from 'i18next';
 import { nanoid } from 'nanoid';
@@ -49,13 +56,14 @@ import {
   useGetTroveLazyQuery,
 } from '../../../../../utils/graphql/zero/generated';
 import { dateFormat } from '../../../../../utils/helpers';
-import { LOCHistoryProps } from '../../LOCHistory.types';
 import { useGetTroves } from './hooks/useGetTroves';
 import { renderSign } from './utils';
 
 const pageSize = DEFAULT_HISTORY_FRAME_PAGE_SIZE;
 
-export const TransactionHistoryFrame: FC<LOCHistoryProps> = ({ children }) => {
+export const TransactionHistoryFrame: FC<PropsWithChildren> = ({
+  children,
+}) => {
   const { account } = useAccount();
   const { addNotification } = useNotificationContext();
   const [page, setPage] = useState(0);
@@ -118,13 +126,13 @@ export const TransactionHistoryFrame: FC<LOCHistoryProps> = ({ children }) => {
         label: t(translations.transactionHistory.filters.increasedCollateral),
         filter: 'collateralChange_gte',
         value: 0,
-        checked: Object.hasOwn(filters || {}, 'collateralChange_gte'),
+        checked: (filters || {}).hasOwnProperty('collateralChange_gte'),
       },
       {
         label: t(translations.transactionHistory.filters.decreasedCollateral),
         filter: 'collateralChange_lte',
         value: 0,
-        checked: Object.hasOwn(filters || {}, 'collateralChange_lte'),
+        checked: (filters || {}).hasOwnProperty('collateralChange_lte'),
       },
     ],
     [filters],
@@ -136,13 +144,13 @@ export const TransactionHistoryFrame: FC<LOCHistoryProps> = ({ children }) => {
         label: t(translations.transactionHistory.filters.increasedDebt),
         filter: 'debtChange_gte',
         value: 0,
-        checked: Object.hasOwn(filters || {}, 'debtChange_gte'),
+        checked: (filters || {}).hasOwnProperty('debtChange_gte'),
       },
       {
         label: t(translations.transactionHistory.filters.decreasedDebt),
         filter: 'debtChange_lte',
         value: 0,
-        checked: Object.hasOwn(filters || {}, 'debtChange_lte'),
+        checked: (filters || {}).hasOwnProperty('debtChange_lte'),
       },
     ],
     [filters],

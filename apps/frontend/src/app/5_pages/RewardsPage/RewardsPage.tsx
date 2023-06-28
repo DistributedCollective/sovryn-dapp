@@ -83,6 +83,11 @@ const RewardsPage: FC = () => {
     [amount, claimLocked, signer, sovGain],
   );
 
+  useEffect(() => {
+    if (!account) {
+      setAmount(Decimal.ZERO);
+    }
+  }, [account]);
   return (
     <>
       <Helmet>

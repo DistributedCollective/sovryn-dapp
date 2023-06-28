@@ -93,44 +93,32 @@ export const ammSwapRoute: SwapRouteFunction = (
     return token;
   };
 
+  const getTokenAddress = async (token: SupportedTokens) =>
+    (await getTokenContract(token, await getChainId())).address.toLowerCase();
+
   return {
     name: 'AMM',
     pairs: async () => {
       if (!pairCache) {
-        const chainId = await getChainId();
+        const bnbs = await getTokenAddress(SupportedTokens.bnbs);
+        const rbtc = await getTokenAddress(SupportedTokens.rbtc);
+        const dllr = await getTokenAddress(SupportedTokens.dllr);
+        const eths = await getTokenAddress(SupportedTokens.eths);
+        const fish = await getTokenAddress(SupportedTokens.fish);
+        const moc = await getTokenAddress(SupportedTokens.moc);
+        const rif = await getTokenAddress(SupportedTokens.rif);
+        const sov = await getTokenAddress(SupportedTokens.sov);
 
-        const swapTokens = [
-          SupportedTokens.sov,
-          SupportedTokens.dllr,
-          SupportedTokens.mynt,
-          SupportedTokens.rbtc,
-          SupportedTokens.xusd,
-          SupportedTokens.doc,
-          SupportedTokens.fish,
-          SupportedTokens.rif,
-          SupportedTokens.bpro,
-          SupportedTokens.rusdt,
-          SupportedTokens.eths,
-          SupportedTokens.bnbs,
-          SupportedTokens.moc,
-        ];
-
-        const contracts = await Promise.all(
-          swapTokens.map(token => getTokenContract(token, chainId)),
-        );
-
-        const addresses = contracts.map(contract =>
-          contract.address.toLowerCase(),
-        );
-
-        const pairs = new Map<string, string[]>();
-
-        for (const address of addresses) {
-          const pair = addresses.filter(a => a !== address);
-          pairs.set(address, pair);
-        }
-
-        pairCache = pairs;
+        pairCache = new Map<string, string[]>([
+          [rbtc, [bnbs, dllr, eths, fish, moc, rif, sov]],
+          [bnbs, [rbtc]],
+          [dllr, [rbtc]],
+          [eths, [rbtc]],
+          [fish, [rbtc]],
+          [moc, [rbtc]],
+          [rif, [rbtc]],
+          [sov, [rbtc]],
+        ]);
       }
 
       return pairCache;

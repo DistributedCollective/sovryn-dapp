@@ -100,19 +100,19 @@ describe('AMM Route', () => {
   });
 
   describe('swap', () => {
-    it('build swap tx data for XUSD -> SOV', async () => {
+    it('build swap tx data for BTC -> SOV', async () => {
       await expect(
-        route.swap(xusd, sov, parseUnits('20'), constants.AddressZero),
+        route.swap(rbtc, sov, parseUnits('1'), constants.AddressZero),
       ).resolves.toMatchObject({
         to: expect.any(String),
         data: expect.any(String),
-        value: '0',
+        value: parseUnits('1').toString(),
       });
     });
 
-    it('build swap tx data for SOV -> XUSD', async () => {
+    it('build swap tx data for SOV -> BTC', async () => {
       await expect(
-        route.swap(sov, xusd, parseUnits('20'), constants.AddressZero),
+        route.swap(sov, rbtc, parseUnits('20'), constants.AddressZero),
       ).resolves.toMatchObject({
         to: expect.any(String),
         data: expect.any(String),

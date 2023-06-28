@@ -205,10 +205,12 @@ const EarnPage: FC = () => {
 
   useEffect(() => setAmount(''), [isDeposit, setAmount]);
 
-  const maximumAmount = useMemo(
-    () => (isDeposit ? balance : poolBalance),
-    [balance, isDeposit, poolBalance],
-  );
+  const maximumAmount = useMemo(() => {
+    if (!account) {
+      return '';
+    }
+    return isDeposit ? balance : poolBalance;
+  }, [balance, isDeposit, poolBalance, account]);
 
   const onMaximumAmountClick = useCallback(
     () => setAmount(maximumAmount.toString()),
@@ -366,6 +368,13 @@ const EarnPage: FC = () => {
     }
   }, [troves, index, price, isRecoveryMode, isInMaintenance]);
 
+  useEffect(() => {
+    if (!account) {
+      setAmount('');
+      setPoolBalance(Decimal.ZERO);
+    }
+  }, [account, setAmount, setPoolBalance]);
+
   return (
     <>
       <Helmet>
@@ -426,7 +435,7 @@ const EarnPage: FC = () => {
               dataAttribute="earn-token-select"
             />
           </div>
-          {!isValidAmount && (
+          {!isValidAmount && account && (
             <ErrorBadge
               level={ErrorLevel.Critical}
               message={t(pageTranslations.form.invalidAmountError)}

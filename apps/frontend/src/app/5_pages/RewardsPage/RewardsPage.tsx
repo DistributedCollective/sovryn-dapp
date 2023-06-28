@@ -116,6 +116,12 @@ const RewardsPage: FC = () => {
   );
 
   useEffect(() => {
+    if (!account) {
+      setAmount(Decimal.ZERO);
+    }
+  }, [account]);
+
+  useEffect(() => {
     refetchTroves();
   }, [refetchTroves, block]);
 

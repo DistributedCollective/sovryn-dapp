@@ -229,6 +229,7 @@ const ConvertPage: FC = () => {
     destinationToken as SupportedTokens,
     weiAmount,
     route,
+    slippageTolerance,
     onTransactionSuccess,
   );
 
@@ -401,8 +402,8 @@ const ConvertPage: FC = () => {
                       label={t(pageTranslations.slippageTolerance)}
                       className="max-w-none w-full"
                       unit="%"
-                      step="0.001"
-                      decimalPrecision={3}
+                      step="0.01"
+                      decimalPrecision={2}
                       placeholder="0"
                       max="100"
                     />

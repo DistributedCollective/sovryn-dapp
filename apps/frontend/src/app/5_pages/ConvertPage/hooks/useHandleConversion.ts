@@ -34,6 +34,7 @@ export const useHandleConversion = (
   destinationToken: SupportedTokens,
   weiAmount: BigNumber,
   route: SwapRoute | undefined,
+  slippageTolerance: string,
   onComplete: () => void,
 ) => {
   const { account, signer } = useAccount();
@@ -179,7 +180,10 @@ export const useHandleConversion = (
       destinationTokenDetails.address,
       weiAmount,
       account,
-      { permit: permitTxData ? UNSIGNED_PERMIT : undefined },
+      {
+        permit: permitTxData ? UNSIGNED_PERMIT : undefined,
+        slippage: Number(slippageTolerance) * 100,
+      },
     );
 
     if (txData && txData.to && txData.data) {
@@ -205,6 +209,7 @@ export const useHandleConversion = (
               account,
               {
                 permit: res as PermitTransactionResponse,
+                slippage: Number(slippageTolerance) * 100,
               },
             );
             req.data = data!;
@@ -231,6 +236,7 @@ export const useHandleConversion = (
     setTitle,
     setTransactions,
     signer,
+    slippageTolerance,
     sourceToken,
     weiAmount,
   ]);

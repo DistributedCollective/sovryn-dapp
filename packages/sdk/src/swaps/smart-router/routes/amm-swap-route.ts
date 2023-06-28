@@ -101,13 +101,14 @@ export const ammSwapRoute: SwapRouteFunction = (
 
         const swapTokens = [
           SupportedTokens.rbtc,
-          SupportedTokens.bnbs,
           SupportedTokens.dllr,
-          SupportedTokens.eths,
           SupportedTokens.fish,
           SupportedTokens.moc,
           SupportedTokens.rif,
           SupportedTokens.sov,
+          // Temporarily disabled in https://sovryn.atlassian.net/browse/SOV-2595
+          // SupportedTokens.eths,
+          // SupportedTokens.bnbs,
         ];
 
         const contracts = await Promise.all(

@@ -267,7 +267,7 @@ export const TransactionStep: FC<TransactionStepProps> = ({
             </SimpleTable>
             <Accordion
               className="mt-4 mb-3 text-xs"
-              label={t(translations.transactionStep.advancedSettings)}
+              label={t(translations.common.advancedSettings)}
               open={advanced && !disabledSettings}
               onClick={() => setAdvanced(!advanced)}
               disabled={disabledSettings}

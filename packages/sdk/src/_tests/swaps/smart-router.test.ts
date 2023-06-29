@@ -27,7 +27,7 @@ describe('SmartRouter', () => {
 
   describe('getAvailableRoutes', () => {
     it('return all available routes', async () => {
-      expect(router.getAvailableRoutes()).toHaveLength(3);
+      expect(router.getAvailableRoutes()).toHaveLength(4);
     });
   });
 
@@ -41,7 +41,7 @@ describe('SmartRouter', () => {
     it('returns two routes for DLLR to RBTC swap', async () => {
       await expect(
         router.getAvailableRoutesForAssets(dllr, btc),
-      ).resolves.toHaveLength(2);
+      ).resolves.toHaveLength(3);
     });
 
     it('returns no routes for DLLR to XUSD swap', async () => {

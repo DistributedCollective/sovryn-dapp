@@ -12,6 +12,7 @@ import {
 import { translations } from '../../../../../locales/i18n';
 import { Swap } from '../../../../../utils/graphql/rsk/generated';
 import { dateFormat } from '../../../../../utils/helpers';
+import { decimalic } from '../../../../../utils/math';
 
 export const generateRowTitle = (item: Swap) => (
   <Paragraph size={ParagraphSize.small} className="text-left">
@@ -23,7 +24,7 @@ export const generateRowTitle = (item: Swap) => (
 
 export const renderConversionFee = (swap: Swap) => (
   <AmountRenderer
-    value={swap.conversionFee || '0'}
+    value={decimalic(swap.conversionFee).add(swap.protocolFee || '0')}
     suffix={BITCOIN}
     precision={BTC_RENDER_PRECISION}
     dataAttribute="amm-history-fee"

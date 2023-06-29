@@ -140,7 +140,7 @@ export const ZeroConversionsHistoryFrame: React.FC<PropsWithChildren> = ({
           isLoading={loading}
           className="bg-gray-80 text-gray-10 lg:px-6 lg:py-4"
           noData={t(translations.common.tables.noData)}
-          dataAttribute="amm-conversions-history-table"
+          dataAttribute="zero-conversions-history-table"
         />
       }
       pagination={
@@ -150,7 +150,7 @@ export const ZeroConversionsHistoryFrame: React.FC<PropsWithChildren> = ({
           onChange={onPageChange}
           itemsPerPage={pageSize}
           isNextButtonDisabled={isNextButtonDisabled}
-          dataAttribute="amm-conversions-history-pagination"
+          dataAttribute="zero-conversions-history-pagination"
         />
       }
     >

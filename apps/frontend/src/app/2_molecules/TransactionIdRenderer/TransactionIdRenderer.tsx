@@ -17,7 +17,7 @@ export const TransactionIdRenderer: React.FC<TransactionIdRendererProps> = ({
     <TxIdWithNotification
       href={`${chain?.blockExplorerUrl}/tx/${hash}`}
       value={hash}
-      dataAttribute="conversion-history-address-id"
+      dataAttribute="conversion-history-tx-hash"
     />
   );
 };

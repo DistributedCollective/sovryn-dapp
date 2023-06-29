@@ -4,22 +4,10 @@ import { t } from 'i18next';
 
 import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { TransactionIdRenderer } from '../../../../2_molecules/TransactionIdRenderer/TransactionIdRenderer';
-import {
-  BITCOIN,
-  BTC_RENDER_PRECISION,
-} from '../../../../../constants/currencies';
 import { translations } from '../../../../../locales/i18n';
 import { Swap } from '../../../../../utils/graphql/rsk/generated';
 import { dateFormat } from '../../../../../utils/helpers';
-
-const renderConversionFee = (swap: Swap) => (
-  <AmountRenderer
-    value={swap.conversionFee || '0'}
-    suffix={BITCOIN}
-    precision={BTC_RENDER_PRECISION}
-    dataAttribute="amm-history-fee"
-  />
-);
+import { renderConversionFee } from './AmmConversionsHistoryFrame.utils';
 
 export const COLUMNS_CONFIG = [
   {

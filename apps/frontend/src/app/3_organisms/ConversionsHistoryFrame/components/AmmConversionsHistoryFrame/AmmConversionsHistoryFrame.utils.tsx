@@ -4,6 +4,11 @@ import { t } from 'i18next';
 
 import { Paragraph, ParagraphSize } from '@sovryn/ui';
 
+import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRenderer';
+import {
+  BITCOIN,
+  BTC_RENDER_PRECISION,
+} from '../../../../../constants/currencies';
 import { translations } from '../../../../../locales/i18n';
 import { Swap } from '../../../../../utils/graphql/rsk/generated';
 import { dateFormat } from '../../../../../utils/helpers';
@@ -14,4 +19,13 @@ export const generateRowTitle = (item: Swap) => (
       item.transaction.timestamp,
     )}`}
   </Paragraph>
+);
+
+export const renderConversionFee = (swap: Swap) => (
+  <AmountRenderer
+    value={swap.conversionFee || '0'}
+    suffix={BITCOIN}
+    precision={BTC_RENDER_PRECISION}
+    dataAttribute="amm-history-fee"
+  />
 );

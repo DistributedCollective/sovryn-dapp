@@ -14,21 +14,7 @@ import {
 import { translations } from '../../../../../locales/i18n';
 import { Redemption } from '../../../../../utils/graphql/zero/generated';
 import { dateFormat } from '../../../../../utils/helpers';
-
-const renderRedemptionFee = (redemption: Redemption) => (
-  <>
-    {redemption.fee.length ? (
-      <AmountRenderer
-        value={redemption.fee}
-        suffix={BITCOIN}
-        precision={BTC_RENDER_PRECISION}
-        dataAttribute="redemption-history-fee"
-      />
-    ) : (
-      '-'
-    )}
-  </>
-);
+import { renderRedemptionFee } from './ZeroConversionsHistoryFrame.utils';
 
 export const COLUMNS_CONFIG = [
   {

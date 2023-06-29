@@ -1,11 +1,17 @@
-import React, { PropsWithChildren, ReactNode } from 'react';
+import React, {
+  PropsWithChildren,
+  ReactNode,
+  useCallback,
+  useMemo,
+} from 'react';
 
 import { t } from 'i18next';
 
-import { ErrorBadge, ErrorLevel } from '@sovryn/ui';
+import { ErrorBadge, ErrorLevel, Pagination } from '@sovryn/ui';
 
 import { ExportCSV } from '../../../../2_molecules/ExportCSV/ExportCSV';
 import { Data } from '../../../../2_molecules/ExportCSV/ExportCSV.types';
+import { DEFAULT_HISTORY_FRAME_PAGE_SIZE } from '../../../../../constants/general';
 import { useMaintenance } from '../../../../../hooks/useMaintenance';
 import { translations } from '../../../../../locales/i18n';
 
@@ -13,14 +19,41 @@ type BaseConversionsHistoryFrameProps = {
   name: string;
   exportData?: () => Promise<Data[]>;
   table?: ReactNode;
-  pagination?: ReactNode;
+  page: number;
+  setPage: (value: number) => void;
+  totalItems: number;
+  isLoading?: boolean;
 };
 
 export const BaseConversionsHistoryFrame: React.FC<
   PropsWithChildren<BaseConversionsHistoryFrameProps>
-> = ({ exportData, table, pagination, name, children }) => {
+> = ({
+  exportData,
+  table,
+  name,
+  children,
+  page,
+  setPage,
+  totalItems,
+  isLoading,
+}) => {
   const { checkMaintenance, States } = useMaintenance();
   const exportLocked = checkMaintenance(States.ZERO_EXPORT_CSV);
+
+  const onPageChange = useCallback(
+    (value: number) => {
+      if (totalItems < DEFAULT_HISTORY_FRAME_PAGE_SIZE && value > page) {
+        return;
+      }
+      setPage(value);
+    },
+    [page, setPage, totalItems],
+  );
+
+  const isNextButtonDisabled = useMemo(
+    () => !isLoading && totalItems < DEFAULT_HISTORY_FRAME_PAGE_SIZE,
+    [totalItems, isLoading],
+  );
 
   return (
     <>
@@ -44,7 +77,14 @@ export const BaseConversionsHistoryFrame: React.FC<
       </div>
       <div className="bg-gray-80 py-4 px-4 rounded">
         {table}
-        {pagination}
+        <Pagination
+          page={page}
+          className="lg:pb-6 mt-3 lg:mt-6 justify-center lg:justify-start"
+          onChange={onPageChange}
+          itemsPerPage={DEFAULT_HISTORY_FRAME_PAGE_SIZE}
+          isNextButtonDisabled={isNextButtonDisabled}
+          dataAttribute={`${name}-history-pagination`}
+        />
       </div>
     </>
   );

@@ -11,7 +11,6 @@ import { nanoid } from 'nanoid';
 
 import {
   Table,
-  Pagination,
   OrderOptions,
   OrderDirection,
   NotificationType,
@@ -36,8 +35,6 @@ import { COLUMNS_CONFIG } from './AmmConversionsHistoryFrame.constants';
 import { generateRowTitle } from './AmmConversionsHistoryFrame.utils';
 import { useGetAMMConversionsHistory } from './hooks/useGetAMMConversionsHistory';
 
-const pageSize = DEFAULT_HISTORY_FRAME_PAGE_SIZE;
-
 export const AmmConversionsHistoryFrame: React.FC<PropsWithChildren> = ({
   children,
 }) => {
@@ -55,7 +52,7 @@ export const AmmConversionsHistoryFrame: React.FC<PropsWithChildren> = ({
 
   const { data, loading, refetch } = useGetAMMConversionsHistory(
     account,
-    pageSize,
+    DEFAULT_HISTORY_FRAME_PAGE_SIZE,
     page,
     orderOptions,
   );
@@ -67,21 +64,6 @@ export const AmmConversionsHistoryFrame: React.FC<PropsWithChildren> = ({
   const conversions = useMemo(
     () => (data?.swaps as Swap[]) || [],
     [data?.swaps],
-  );
-
-  const onPageChange = useCallback(
-    (value: number) => {
-      if (conversions?.length < pageSize && value > page) {
-        return;
-      }
-      setPage(value);
-    },
-    [conversions?.length, page],
-  );
-
-  const isNextButtonDisabled = useMemo(
-    () => !loading && conversions?.length < pageSize,
-    [conversions?.length, loading],
   );
 
   const [getConversions] = useGetSwapHistoryLazyQuery({
@@ -120,7 +102,7 @@ export const AmmConversionsHistoryFrame: React.FC<PropsWithChildren> = ({
   return (
     <BaseConversionsHistoryFrame
       exportData={exportData}
-      name="AMM-conversions"
+      name="amm-conversions"
       table={
         <Table
           setOrderOptions={setOrderOptions}
@@ -134,16 +116,10 @@ export const AmmConversionsHistoryFrame: React.FC<PropsWithChildren> = ({
           dataAttribute="amm-conversions-history-table"
         />
       }
-      pagination={
-        <Pagination
-          page={page}
-          className="lg:pb-6 mt-3 lg:mt-6 justify-center lg:justify-start"
-          onChange={onPageChange}
-          itemsPerPage={pageSize}
-          isNextButtonDisabled={isNextButtonDisabled}
-          dataAttribute="amm-conversions-history-pagination"
-        />
-      }
+      setPage={setPage}
+      page={page}
+      totalItems={conversions.length}
+      isLoading={loading}
     >
       {children}
     </BaseConversionsHistoryFrame>

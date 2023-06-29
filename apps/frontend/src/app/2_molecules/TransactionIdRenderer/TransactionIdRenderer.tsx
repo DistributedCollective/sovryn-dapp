@@ -8,16 +8,14 @@ type TransactionIdRendererProps = {
   hash: string;
 };
 
+const chain = chains.find(chain => chain.id === defaultChainId);
+
 export const TransactionIdRenderer: React.FC<TransactionIdRendererProps> = ({
   hash,
-}) => {
-  const chain = chains.find(chain => chain.id === defaultChainId);
-
-  return (
-    <TxIdWithNotification
-      href={`${chain?.blockExplorerUrl}/tx/${hash}`}
-      value={hash}
-      dataAttribute="conversion-history-tx-hash"
-    />
-  );
-};
+}) => (
+  <TxIdWithNotification
+    href={`${chain?.blockExplorerUrl}/tx/${hash}`}
+    value={hash}
+    dataAttribute="conversion-history-tx-hash"
+  />
+);

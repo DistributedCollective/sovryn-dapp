@@ -11,7 +11,6 @@ import { nanoid } from 'nanoid';
 
 import {
   Table,
-  Pagination,
   OrderOptions,
   OrderDirection,
   NotificationType,
@@ -37,8 +36,6 @@ import { COLUMNS_CONFIG } from './MyntConversionsHistoryFrame.constants';
 import { generateRowTitle } from './MyntConversionsHistoryFrame.utils';
 import { useGetMyntConversionsHistory } from './hooks/useGetMyntConversionsHistory';
 
-const pageSize = DEFAULT_HISTORY_FRAME_PAGE_SIZE;
-
 export const MyntConversionsHistoryFrame: React.FC<PropsWithChildren> = ({
   children,
 }) => {
@@ -56,7 +53,7 @@ export const MyntConversionsHistoryFrame: React.FC<PropsWithChildren> = ({
 
   const { data, loading, refetch } = useGetMyntConversionsHistory(
     account,
-    pageSize,
+    DEFAULT_HISTORY_FRAME_PAGE_SIZE,
     page,
     orderOptions,
   );
@@ -68,21 +65,6 @@ export const MyntConversionsHistoryFrame: React.FC<PropsWithChildren> = ({
   const conversions = useMemo(
     () => (data?.conversions as Conversion[]) || [],
     [data?.conversions],
-  );
-
-  const onPageChange = useCallback(
-    (value: number) => {
-      if (conversions?.length < pageSize && value > page) {
-        return;
-      }
-      setPage(value);
-    },
-    [conversions?.length, page],
-  );
-
-  const isNextButtonDisabled = useMemo(
-    () => !loading && conversions?.length < pageSize,
-    [conversions?.length, loading],
   );
 
   const [getConversions] = useGetUserConversionsLazyQuery();
@@ -125,7 +107,7 @@ export const MyntConversionsHistoryFrame: React.FC<PropsWithChildren> = ({
   return (
     <BaseConversionsHistoryFrame
       exportData={exportData}
-      name="Mynt-conversions"
+      name="mynt-conversions"
       table={
         <Table
           setOrderOptions={setOrderOptions}
@@ -139,16 +121,10 @@ export const MyntConversionsHistoryFrame: React.FC<PropsWithChildren> = ({
           dataAttribute="mynt-conversions-history-table"
         />
       }
-      pagination={
-        <Pagination
-          page={page}
-          className="lg:pb-6 mt-3 lg:mt-6 justify-center lg:justify-start"
-          onChange={onPageChange}
-          itemsPerPage={pageSize}
-          isNextButtonDisabled={isNextButtonDisabled}
-          dataAttribute="mynt-conversions-history-pagination"
-        />
-      }
+      setPage={setPage}
+      page={page}
+      totalItems={conversions.length}
+      isLoading={loading}
     >
       {children}
     </BaseConversionsHistoryFrame>

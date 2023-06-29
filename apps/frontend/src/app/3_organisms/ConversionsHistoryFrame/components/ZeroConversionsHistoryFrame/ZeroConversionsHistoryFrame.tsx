@@ -12,7 +12,6 @@ import { nanoid } from 'nanoid';
 import { SupportedTokens } from '@sovryn/contracts';
 import {
   Table,
-  Pagination,
   OrderOptions,
   OrderDirection,
   NotificationType,
@@ -39,8 +38,6 @@ import { COLUMNS_CONFIG } from './ZeroConversionsHistoryFrame.constants';
 import { generateRowTitle } from './ZeroConversionsHistoryFrame.utils';
 import { useGetZeroConversionsHistory } from './hooks/useGetZeroConversionsHistory';
 
-const pageSize = DEFAULT_HISTORY_FRAME_PAGE_SIZE;
-
 export const ZeroConversionsHistoryFrame: React.FC<PropsWithChildren> = ({
   children,
 }) => {
@@ -58,7 +55,7 @@ export const ZeroConversionsHistoryFrame: React.FC<PropsWithChildren> = ({
 
   const { data, loading, refetch } = useGetZeroConversionsHistory(
     account,
-    pageSize,
+    DEFAULT_HISTORY_FRAME_PAGE_SIZE,
     page,
     orderOptions,
   );
@@ -70,21 +67,6 @@ export const ZeroConversionsHistoryFrame: React.FC<PropsWithChildren> = ({
   const conversions = useMemo(
     () => (data?.redemptions as Redemption[]) || [],
     [data?.redemptions],
-  );
-
-  const onPageChange = useCallback(
-    (value: number) => {
-      if (conversions?.length < pageSize && value > page) {
-        return;
-      }
-      setPage(value);
-    },
-    [conversions?.length, page],
-  );
-
-  const isNextButtonDisabled = useMemo(
-    () => !loading && conversions?.length < pageSize,
-    [conversions?.length, loading],
   );
 
   const [getConversions] = useGetRedemptionsLazyQuery({
@@ -129,7 +111,7 @@ export const ZeroConversionsHistoryFrame: React.FC<PropsWithChildren> = ({
   return (
     <BaseConversionsHistoryFrame
       exportData={exportData}
-      name="Zero-conversions"
+      name="zero-conversions"
       table={
         <Table
           setOrderOptions={setOrderOptions}
@@ -143,16 +125,10 @@ export const ZeroConversionsHistoryFrame: React.FC<PropsWithChildren> = ({
           dataAttribute="zero-conversions-history-table"
         />
       }
-      pagination={
-        <Pagination
-          page={page}
-          className="lg:pb-6 mt-3 lg:mt-6 justify-center lg:justify-start"
-          onChange={onPageChange}
-          itemsPerPage={pageSize}
-          isNextButtonDisabled={isNextButtonDisabled}
-          dataAttribute="zero-conversions-history-pagination"
-        />
-      }
+      setPage={setPage}
+      page={page}
+      totalItems={conversions.length}
+      isLoading={loading}
     >
       {children}
     </BaseConversionsHistoryFrame>

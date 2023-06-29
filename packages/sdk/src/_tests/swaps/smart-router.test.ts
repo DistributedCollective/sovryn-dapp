@@ -2,7 +2,7 @@ import { BigNumber, ethers, providers } from 'ethers';
 
 import { SupportedTokens, getTokenContract } from '@sovryn/contracts';
 
-import { DEFAULT_SWAP_ROUTES } from '../../swaps/smart-router/config';
+import { smartRoutes } from '../../swaps/smart-router';
 import { SmartRouter } from '../../swaps/smart-router/smart-router';
 import { makeChainFixture } from '../_fixtures/chain';
 import { TEST_TIMEOUT } from '../config';
@@ -17,7 +17,7 @@ describe('SmartRouter', () => {
 
   beforeAll(async () => {
     provider = (await makeChainFixture()).provider;
-    router = new SmartRouter(provider, DEFAULT_SWAP_ROUTES);
+    router = new SmartRouter(provider, Object.values(smartRoutes));
 
     xusd = (await getTokenContract(SupportedTokens.xusd)).address;
     sov = (await getTokenContract(SupportedTokens.sov)).address;
@@ -27,7 +27,7 @@ describe('SmartRouter', () => {
 
   describe('getAvailableRoutes', () => {
     it('return all available routes', async () => {
-      expect(router.getAvailableRoutes()).toHaveLength(2);
+      expect(router.getAvailableRoutes()).toHaveLength(3);
     });
   });
 
@@ -38,23 +38,23 @@ describe('SmartRouter', () => {
       ).resolves.toHaveLength(1);
     });
 
-    it('returns two routes for DLLR to XUSD swap', async () => {
+    it('returns two routes for DLLR to RBTC swap', async () => {
       await expect(
-        router.getAvailableRoutesForAssets(dllr, xusd),
-      ).resolves.toHaveLength(1);
+        router.getAvailableRoutesForAssets(dllr, btc),
+      ).resolves.toHaveLength(2);
     });
 
-    it('returns single route for DLLR to XUSD swap', async () => {
+    it('returns no routes for DLLR to XUSD swap', async () => {
       await expect(
         router.getAvailableRoutesForAssets(dllr, xusd),
-      ).resolves.toHaveLength(1);
+      ).resolves.toHaveLength(0);
     });
   });
 
   describe('getQuotes', () => {
-    it('lists all quotes for XUSD -> SOV swap', async () => {
+    it('lists all quotes for DLLR -> SOV swap', async () => {
       const amount = ethers.utils.parseEther('20');
-      await expect(router.getQuotes(xusd, sov, amount)).resolves.toHaveLength(
+      await expect(router.getQuotes(dllr, sov, amount)).resolves.toHaveLength(
         1,
       );
     });
@@ -68,20 +68,20 @@ describe('SmartRouter', () => {
   });
 
   describe('getBestQuote', () => {
-    it('get cheapest swap route for XUSD -> SOV', async () => {
+    it('get cheapest swap route for DLLR -> SOV', async () => {
       const amount = ethers.utils.parseEther('20');
       await expect(
-        router.getBestQuote(xusd, sov, amount),
+        router.getBestQuote(dllr, sov, amount),
       ).resolves.toMatchObject({
         quote: expect.any(BigNumber),
         route: expect.any(Object),
       });
     });
 
-    it('get cheapest swap route for DLLR -> XUSD', async () => {
+    it('get cheapest swap route for DLLR -> ZUSD', async () => {
       const amount = ethers.utils.parseEther('20');
       await expect(
-        router.getBestQuote(dllr, xusd, amount),
+        router.getBestQuote(dllr, zusd, amount),
       ).resolves.toMatchObject({
         quote: expect.any(BigNumber),
         route: expect.any(Object),
@@ -105,6 +105,30 @@ describe('SmartRouter', () => {
       ).resolves.toMatchObject({
         quote: expect.any(BigNumber),
         route: expect.any(Object),
+      });
+    });
+  });
+
+  describe('helpers', () => {
+    it('returns all available pairs on enabled routes', async () => {
+      await expect(router.getPairs()).resolves.toBeInstanceOf(Map);
+    });
+
+    it('returns all available entries', async () => {
+      await expect(router.getEntries()).resolves.toHaveLength(8);
+    });
+
+    it('returns all available destinations for entry token', async () => {
+      await expect(router.getDestination(sov)).resolves.toHaveLength(5);
+    });
+
+    it('returns data about token', async () => {
+      await expect(router.getTokenDetails(btc)).resolves.toMatchObject({
+        address: btc,
+        symbol: 'rbtc',
+        decimalPrecision: 18,
+        icon: expect.any(String),
+        abi: expect.any(Array),
       });
     });
   });

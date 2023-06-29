@@ -1,4 +1,4 @@
-import { constants } from 'ethers';
+import { BigNumber, constants } from 'ethers';
 import { parseUnits } from 'ethers/lib/utils';
 
 import { SupportedTokens } from '@sovryn/contracts';
@@ -6,6 +6,7 @@ import { SupportedTokens } from '@sovryn/contracts';
 import { zeroRedemptionSwapRoute } from '../../../swaps/smart-router/routes/zero-redemption-route';
 import { SwapRoute } from '../../../swaps/smart-router/types';
 import { makeChainFixture } from '../../_fixtures/chain';
+import { FAKE_PERMIT } from '../../_fixtures/permit';
 import { makeTokenAddress } from '../../_fixtures/tokens';
 import { TEST_TIMEOUT } from '../../config';
 
@@ -34,17 +35,17 @@ describe('Zero Redemption Route', () => {
   });
 
   describe('quote', () => {
-    // it('returns BigNumber for DDLR -> RBTC quote', async () => {
-    //   await expect(
-    //     route.quote(dllr, rbtc, constants.WeiPerEther),
-    //   ).resolves.toBe(constants.WeiPerEther);
-    // });
+    it('returns BigNumber for DDLR -> RBTC quote', async () => {
+      await expect(
+        route.quote(dllr, rbtc, constants.WeiPerEther),
+      ).resolves.toBeInstanceOf(BigNumber);
+    });
 
-    // it('returns BigNumber for ZUSD -> RBTC quote', async () => {
-    //   await expect(
-    //     route.quote(zusd, rbtc, constants.WeiPerEther),
-    //   ).resolves.toBe(constants.WeiPerEther);
-    // });
+    it('returns BigNumber for ZUSD -> RBTC quote', async () => {
+      await expect(
+        route.quote(zusd, rbtc, constants.WeiPerEther),
+      ).resolves.toBeInstanceOf(BigNumber);
+    });
 
     it('throws an Cannot swap error for RBTC -> DLLR', async () => {
       await expect(
@@ -108,27 +109,27 @@ describe('Zero Redemption Route', () => {
   });
 
   describe('swap', () => {
-    // it('builds swap tx data for DLLR -> RBTC', async () => {
-    //   await expect(
-    //     route.swap(dllr, rbtc, parseUnits('20'), constants.AddressZero, {
-    //       permit: FAKE_PERMIT,
-    //     }),
-    //   ).resolves.toMatchObject({
-    //     to: expect.any(String),
-    //     data: expect.any(String),
-    //     value: '0',
-    //   });
-    // });
+    it('builds swap tx data for DLLR -> RBTC', async () => {
+      await expect(
+        route.swap(dllr, rbtc, parseUnits('20'), constants.AddressZero, {
+          permit: FAKE_PERMIT,
+        }),
+      ).resolves.toMatchObject({
+        to: expect.any(String),
+        data: expect.any(String),
+        value: '0',
+      });
+    });
 
-    // it('builds swap tx data for ZUSD -> RBTC', async () => {
-    //   await expect(
-    //     route.swap(zusd, rbtc, parseUnits('20'), constants.AddressZero),
-    //   ).resolves.toMatchObject({
-    //     to: expect.any(String),
-    //     data: expect.any(String),
-    //     value: '0',
-    //   });
-    // });
+    it('builds swap tx data for ZUSD -> RBTC', async () => {
+      await expect(
+        route.swap(zusd, rbtc, parseUnits('20'), constants.AddressZero),
+      ).resolves.toMatchObject({
+        to: expect.any(String),
+        data: expect.any(String),
+        value: '0',
+      });
+    });
 
     it('fails build swap tx data if permit is not provided for DLLR -> RBTC', async () => {
       await expect(

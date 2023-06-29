@@ -12,7 +12,7 @@ export const useWeiAmountInput = <T = string>(
 ): WeiAmountInput<T> => {
   const [value, setValue] = useState(initialValue);
   const amount = useMemo(
-    () => toWei((value || 0) as BigNumberish, unitName),
+    () => toWei(Number(value || 0) as BigNumberish, unitName),
     [unitName, value],
   );
 

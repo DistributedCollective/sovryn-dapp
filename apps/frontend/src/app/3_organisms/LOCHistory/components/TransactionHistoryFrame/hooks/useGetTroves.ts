@@ -7,7 +7,7 @@ import {
   TroveChange_Filter,
   TroveChange_OrderBy,
   useGetTroveQuery,
-} from '../../../../utils/graphql/zero/generated';
+} from '../../../../../../utils/graphql/zero/generated';
 
 export const useGetTroves = (
   account: string,

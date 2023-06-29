@@ -6,9 +6,9 @@ import { t } from 'i18next';
 
 import { getTokenContract, SupportedTokens } from '@sovryn/contracts';
 import { ChainId } from '@sovryn/ethers-provider';
+import { PermitTransactionResponse } from '@sovryn/sdk';
 
 import {
-  PermitResponse,
   Transaction,
   TransactionReceipt,
   TransactionReceiptStatus,
@@ -16,6 +16,7 @@ import {
   TransactionType,
 } from '../app/3_organisms/TransactionStepDialog/TransactionStepDialog.types';
 import { APPROVAL_FUNCTION } from '../constants/general';
+import { getTokenDisplayName } from '../constants/tokens';
 import { translations } from '../locales/i18n';
 import { getRskChainId } from './chain';
 
@@ -24,7 +25,7 @@ export const UNSIGNED_PERMIT = {
   v: 0,
   r: ethers.constants.HashZero,
   s: ethers.constants.HashZero,
-};
+} as PermitTransactionResponse;
 
 type PreparePermitTransactionOptions = {
   token: SupportedTokens;
@@ -48,10 +49,10 @@ export const preparePermitTransaction = async ({
   const { address: tokenAddress } = await getTokenContract(token, chain);
   return {
     title: t(translations.common.tx.signPermitTitle, {
-      symbol: token.toUpperCase(),
+      symbol: getTokenDisplayName(token),
     }),
     subtitle: t(translations.common.tx.signPermitSubtitle, {
-      symbol: token.toUpperCase(),
+      symbol: getTokenDisplayName(token),
     }),
     request: {
       type: TransactionType.signPermit,
@@ -105,10 +106,10 @@ export const prepareApproveTransaction = async ({
   if (BigNumber.from(allowance).lt(amount)) {
     return {
       title: t(translations.common.tx.signApproveTitle, {
-        symbol: token.toUpperCase(),
+        symbol: getTokenDisplayName(token),
       }),
       subtitle: t(translations.common.tx.signApproveSubtitle, {
-        symbol: token.toUpperCase(),
+        symbol: getTokenDisplayName(token),
       }),
       request: {
         type: TransactionType.signTransaction,
@@ -124,8 +125,8 @@ export const permitHandler =
   (
     override: (
       req: TransactionRequest,
-      res: string | PermitResponse | undefined,
-    ) => TransactionRequest,
+      res: string | PermitTransactionResponse | undefined,
+    ) => TransactionRequest | Promise<TransactionRequest>,
     permitIndex: number = 0,
   ) =>
   (request: TransactionRequest, receipts: TransactionReceipt[]) => {

@@ -111,7 +111,7 @@ BaseCheckbox.args = {
 BaseCheckbox.argTypes = {
   containerClassName: {
     control: 'text',
-    description: 'The className to apply to the checkbox wrapper',
+    description: 'The class to apply to the checkbox wrapper',
   },
   label: {
     control: 'text',

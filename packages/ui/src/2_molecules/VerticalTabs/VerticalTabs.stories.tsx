@@ -88,6 +88,49 @@ Basic.args = {
   contentClassName: '',
 };
 
+Basic.argTypes = {
+  items: {
+    control: 'VerticalTabsItem[]',
+    description: 'List of vertical tab items',
+  },
+  selectedIndex: {
+    control: 'number',
+    description: 'Active tab index',
+  },
+  className: {
+    control: 'text',
+    description: 'The class to apply to the wrapper',
+  },
+  tabsClassName: {
+    control: 'text',
+    description: 'The class to apply to the tabs',
+  },
+  contentClassName: {
+    control: 'text',
+    description: 'The class to apply to the content',
+  },
+  headerClassName: {
+    control: 'text',
+    description: 'The class to apply to the header',
+  },
+  footerClassName: {
+    control: 'text',
+    description: 'The class to apply to the footer',
+  },
+  onChange: {
+    control: 'function',
+    description: 'onChange handler for active tab',
+  },
+  header: {
+    control: 'function',
+    description: 'Render function for tabs header',
+  },
+  footer: {
+    control: 'function',
+    description: 'Render function for tabs footer',
+  },
+};
+
 export const InDialog = DialogTemplate.bind({});
 InDialog.args = {
   items: [
@@ -110,6 +153,9 @@ InDialog.args = {
   header: () => <Heading>Connect Wallet</Heading>,
   tabsClassName: 'rounded-l-lg',
   className: 'rounded-lg',
+};
+InDialog.argTypes = {
+  ...Basic.argTypes,
 };
 
 InDialog.parameters = {

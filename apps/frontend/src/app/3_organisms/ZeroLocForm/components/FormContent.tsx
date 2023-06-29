@@ -371,7 +371,7 @@ export const FormContent: FC<FormContentProps> = props => {
       <FormGroup
         label={
           <Label
-            symbol={props.debtToken}
+            token={props.debtToken}
             maxAmount={props.maxDebtAmount}
             tabs={debtTabs}
             onTabChange={handleDebtTypeChange}
@@ -419,7 +419,7 @@ export const FormContent: FC<FormContentProps> = props => {
       <FormGroup
         label={
           <Label
-            symbol={BITCOIN}
+            token={SupportedTokens.rbtc}
             maxAmount={props.maxCollateralAmount}
             tabs={collateralTabs}
             onTabChange={handleCollateralTypeChange}

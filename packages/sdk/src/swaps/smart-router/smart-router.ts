@@ -1,5 +1,7 @@
 import { BigNumber, BigNumberish, providers } from 'ethers';
 
+import { TokenDetailsData, getTokenDetailsByAddress } from '@sovryn/contracts';
+
 import { DEFAULT_SWAP_ROUTES } from './config';
 import { SwapRoute, SwapRouteFunction } from './types';
 
@@ -41,6 +43,7 @@ export class SmartRouter {
     return routes.filter(route => route !== undefined) as SwapRoute[];
   }
 
+  // get list of quotes for available routes sorted by best quote
   public async getQuotes(
     entry: string,
     destination: string,
@@ -55,7 +58,11 @@ export class SmartRouter {
       }),
     );
 
-    return quotes;
+    const sortedQuotes = quotes.sort((a, b) =>
+      b.quote.toBigInt() > a.quote.toBigInt() ? 0 : -1,
+    );
+
+    return sortedQuotes;
   }
 
   // return best quote and route for given assets and amount
@@ -70,6 +77,46 @@ export class SmartRouter {
       throw new Error('No routes available');
     }
 
-    return routes.sort((a, b) => a.quote.sub(b.quote).toNumber())[0];
+    return routes[0];
+  }
+
+  // return all available pairs on enabled routes
+  public async getPairs(): Promise<Map<string, string[]>> {
+    const pairs = new Map<string, string[]>();
+    await Promise.all(
+      this.routes.map(async route => {
+        const routePairs = await route.pairs();
+        routePairs.forEach((quoteTokens, baseToken) => {
+          const existingQuoteTokens = pairs.get(baseToken);
+          if (existingQuoteTokens) {
+            pairs.set(
+              baseToken,
+              existingQuoteTokens.concat(
+                quoteTokens.filter(
+                  item => existingQuoteTokens.indexOf(item) < 0,
+                ),
+              ),
+            );
+          } else {
+            pairs.set(baseToken, quoteTokens);
+          }
+        });
+      }),
+    );
+    return pairs;
+  }
+
+  // return all available entries
+  public async getEntries(): Promise<string[]> {
+    return Array.from((await this.getPairs()).keys());
+  }
+
+  // return all available destinations for entry token
+  public async getDestination(entry: string): Promise<string[]> {
+    return (await this.getPairs()).get(entry) ?? [];
+  }
+
+  public async getTokenDetails(token: string): Promise<TokenDetailsData> {
+    return getTokenDetailsByAddress(token);
   }
 }

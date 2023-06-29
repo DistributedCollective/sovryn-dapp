@@ -66,7 +66,7 @@ Basic.argTypes = {
   },
   className: {
     control: 'text',
-    description: 'The className to apply to the dropdown trigger button',
+    description: 'The class to apply to the dropdown trigger button',
   },
   dataAttribute: {
     control: 'text',
@@ -75,7 +75,7 @@ Basic.argTypes = {
   },
   dropdownClassName: {
     control: 'text',
-    description: 'The className to apply to the dropdown content',
+    description: 'The class to apply to the dropdown content',
   },
   closeOnClick: {
     control: 'boolean',

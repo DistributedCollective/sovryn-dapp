@@ -64,6 +64,16 @@ enum States {
   FASTBTC_SEND = 'fastBTCSend', // shared between D1 and D2
   FASTBTC_RECEIVE = 'fastBTCReceive', // shared between D1 and D2
   ZERO_CONVERT = 'zeroConvert',
+  ZERO_CONVERT_SRC_MOC = 'zeroConvertSrcMOC',
+  ZERO_CONVERT_SRC_MYNT = 'zeroConvertSrcMYNT',
+  ZERO_CONVERT_SRC_SOV = 'zeroConvertSrcSOV',
+  ZERO_CONVERT_SRC_BNBSRBTC = 'zeroConvertSrcSOV_BNBSRBTC',
+  ZERO_CONVERT_SRC_DLLRRBTC = 'zeroConvertSrcSOV_DLLRRBTC',
+  ZERO_CONVERT_SRC_ETHSRBTC = 'zeroConvertSrcSOV_ETHSRBTC',
+  ZERO_CONVERT_SRC_FISHRBTC = 'zeroConvertSrcSOV_FISHRBTC',
+  ZERO_CONVERT_SRC_MOCRBTC = 'zeroConvertSrcSOV_MOCRBTC',
+  ZERO_CONVERT_SRC_RIFRBTC = 'zeroConvertSrcSOV_RIFRBTC',
+  ZERO_CONVERT_SRC_SOVRBTC = 'zeroConvertSrcSOV_SOVRBTC',
   ZERO_OPEN_LOC = 'zeroOpenLOC',
   ZERO_ADJUST_LOC = 'zeroAdjustLOC',
   ZERO_ADJUST_LOC_BORROW = 'zeroAdjustLOCBorrow',

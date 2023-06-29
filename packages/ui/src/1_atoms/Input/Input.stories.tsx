@@ -79,7 +79,7 @@ TextInput.argTypes = {
   },
   classNameInput: {
     control: 'text',
-    description: 'The className to apply to the input',
+    description: 'The class to apply to the input',
   },
   invalid: {
     control: 'boolean',

@@ -5,12 +5,16 @@ export const rskTestnet: Record<string, AsyncContractConfigData> = {
     address: '0x25380305f223B32FDB844152abD2E82BC5Ad99c3',
     getAbi: async () => (await import('../../abis/protocol.json')).default,
   },
+  priceFeed: {
+    address: '0x7f38c422b99075f63C9c919ECD200DF8d2Cf5BD4',
+    getAbi: async () => (await import('../../abis/priceFeed.json')).default,
+  },
   swapNetwork: {
     address: '0x61172B53423E205a399640e5283e51FE60EC2256',
     getAbi: async () => (await import('../../abis/swapNetwork.json')).default,
   },
   btcWrapperProxy: {
-    address: '0x7481aCBeb11C1D2866B0F11DE359E52dbe63EC5B',
+    address: '0xA3a46b149360a0B1e005CA8cB7522938A2da7532',
     getAbi: async () =>
       (await import('../../abis/btcWrapperProxy.json')).default,
   },

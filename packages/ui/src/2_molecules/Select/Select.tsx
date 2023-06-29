@@ -15,10 +15,12 @@ export type SelectProps<T = string> = {
   >;
   labelRenderer?: (props: SelectProps<T>) => ReactNode;
   className?: string;
+  menuClassName?: string;
 };
 
 export const Select = <T extends string>({
   labelRenderer = DefaultLabelRenderer,
+  menuClassName,
   ...props
 }: SelectProps<T>) => {
   const { options, onChange, dropdownProps, dataAttribute, className } = props;
@@ -36,7 +38,7 @@ export const Select = <T extends string>({
       className={className}
       {...dropdownProps}
     >
-      <Menu>
+      <Menu className={menuClassName}>
         {options.map(option => (
           <MenuItem
             key={option.value.toString()}
@@ -55,9 +57,5 @@ const DefaultLabelRenderer = <T extends string>({
   value,
   options,
 }: SelectProps<T>) => {
-  return (
-    <>
-      {options.find(item => item.value === value)?.label || 'Select an option'}
-    </>
-  );
+  return <>{options.find(item => item.value === value)?.label || 'Select'}</>;
 };

@@ -1,7 +1,14 @@
-import { Contract, constants, providers } from 'ethers';
+import { BigNumber, Contract, constants, providers } from 'ethers';
 
+import { Decimal } from '@sovryn-zero/lib-base';
+import {
+  ReadableEthersLiquity,
+  EthersLiquity,
+  PopulatableEthersLiquity,
+} from '@sovryn-zero/lib-ethers';
 import {
   SupportedTokens,
+  getProtocolContract,
   getTokenContract,
   getZeroContract,
 } from '@sovryn/contracts';
@@ -16,13 +23,13 @@ import {
 } from '../../../internal/utils';
 import { SwapPairs, SwapRouteFunction } from '../types';
 
-// Supports converting ZUSD to RBTC via Zero redemption function, and DLLR to RBTC via redeemCollateralViaDllr function on the TroveManager contract.
 export const zeroRedemptionSwapRoute: SwapRouteFunction = (
   provider: providers.Provider,
 ) => {
   let pairCache: SwapPairs;
   let chainId: ChainId;
   let contract: Contract;
+  let priceFeedContract: Contract;
 
   const getChainId = async () => {
     if (!chainId) {
@@ -41,6 +48,17 @@ export const zeroRedemptionSwapRoute: SwapRouteFunction = (
       return contract;
     }
     return contract;
+  };
+
+  const getPriceFeedContract = async () => {
+    if (!priceFeedContract) {
+      const { address, abi } = await getProtocolContract(
+        'priceFeed',
+        await getChainId(),
+      );
+      priceFeedContract = new Contract(address, abi, provider);
+    }
+    return priceFeedContract;
   };
 
   return {
@@ -76,17 +94,41 @@ export const zeroRedemptionSwapRoute: SwapRouteFunction = (
         );
       }
 
-      // todo: figure out where to get the price from
-      throw makeError('Not implemented', SovrynErrorCode.NOT_IMPLEMENTED);
+      const readable = await ReadableEthersLiquity.connect(provider, {
+        useStore: 'blockPolled',
+      });
+      const ethers = new EthersLiquity(readable);
+
+      const [fees, total, feed, wrbtc, rusdt] = await Promise.all([
+        ethers.getFees(),
+        ethers.getTotal(),
+        getPriceFeedContract(),
+        getTokenContract(SupportedTokens.wrbtc, chainId),
+        getTokenContract(SupportedTokens.rusdt, chainId),
+      ]);
+
+      const maxRedemptionRate = fees
+        .redemptionRate(
+          Decimal.fromBigNumberString(amount.toString()).div(total.debt),
+        )
+        .add(Decimal.from(0.001));
+
+      const price = await feed.queryRate(wrbtc.address, rusdt.address);
+
+      const btcUsd = BigNumber.from(amount)
+        .mul(price.precision)
+        .div(price.rate);
+
+      const fee = Decimal.from(1).sub(maxRedemptionRate);
+      const quote = btcUsd.mul(fee.bigNumber).div(constants.WeiPerEther);
+
+      return quote;
     },
     async swap(entry, destination, amount, from, options, overrides) {
-      const pairs = await this.pairs();
-      if (!canSwapPair(entry, destination, pairs)) {
-        throw makeError(
-          `Cannot swap ${entry} to ${destination}`,
-          SovrynErrorCode.SWAP_PAIR_NOT_AVAILABLE,
-        );
-      }
+      const readable = await ReadableEthersLiquity.connect(provider, {
+        useStore: 'blockPolled',
+      });
+      const populatable = new PopulatableEthersLiquity(readable);
 
       if (
         areAddressesEqual(
@@ -101,7 +143,19 @@ export const zeroRedemptionSwapRoute: SwapRouteFunction = (
           );
         }
 
-        // todo: https://github.com/DistributedCollective/zero/blob/main/packages/contracts/contracts/TroveManager.sol#L1175
+        const { rawPopulatedTransaction } =
+          await populatable.redeemCollateralViaDLLR(
+            Decimal.fromBigNumberString(amount.toString()),
+            options.permit,
+          );
+
+        return {
+          to: rawPopulatedTransaction.to,
+          data: rawPopulatedTransaction.data,
+          value: '0',
+          gasLimit: rawPopulatedTransaction.gasLimit,
+          ...overrides,
+        };
       }
 
       if (
@@ -110,10 +164,23 @@ export const zeroRedemptionSwapRoute: SwapRouteFunction = (
           (await getTokenContract(SupportedTokens.zusd, chainId)).address,
         )
       ) {
-        // todo: https://github.com/DistributedCollective/zero/blob/main/packages/contracts/contracts/TroveManager.sol#L1159
+        const { rawPopulatedTransaction } = await populatable.redeemZUSD(
+          Decimal.fromBigNumberString(amount.toString()),
+        );
+
+        return {
+          to: rawPopulatedTransaction.to,
+          data: rawPopulatedTransaction.data,
+          value: '0',
+          gasLimit: rawPopulatedTransaction.gasLimit,
+          ...overrides,
+        };
       }
 
-      throw makeError('Not implemented', SovrynErrorCode.NOT_IMPLEMENTED);
+      throw makeError(
+        `Cannot swap ${entry} to ${destination}`,
+        SovrynErrorCode.SWAP_PAIR_NOT_AVAILABLE,
+      );
     },
     async approve(entry, destination, amount, from, overrides) {
       // ZUSD needs to be approved for the Zero contract

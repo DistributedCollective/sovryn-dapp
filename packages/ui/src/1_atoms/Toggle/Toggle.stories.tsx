@@ -43,7 +43,7 @@ Basic.argTypes = {
   },
   className: {
     control: 'text',
-    description: 'The className to apply to the toggle',
+    description: 'The class to apply to the toggle',
   },
   dataAttribute: {
     control: 'text',

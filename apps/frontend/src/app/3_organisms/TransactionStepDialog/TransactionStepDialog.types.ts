@@ -1,7 +1,14 @@
 import { JsonRpcSigner } from '@ethersproject/providers';
 
-import { BigNumberish, TypedDataDomain, TypedDataField, ethers } from 'ethers';
+import {
+  BigNumberish,
+  BytesLike,
+  TypedDataDomain,
+  TypedDataField,
+  ethers,
+} from 'ethers';
 
+import { PermitTransactionResponse } from '@sovryn/sdk';
 import { StatusType } from '@sovryn/ui';
 
 export interface TransactionConfig {
@@ -22,18 +29,19 @@ export type Transaction = {
   subtitle?: string;
   request: TransactionRequest;
   onStart?: (hash: string) => void;
-  onComplete?: (result: string | PermitResponse) => void;
+  onComplete?: (result: string | PermitTransactionResponse) => void;
   onChangeStatus?: (status: StatusType) => void;
   updateHandler?: (
     request: TransactionRequest,
     receipts: TransactionReceipt[],
-  ) => TransactionRequest;
+  ) => TransactionRequest | Promise<TransactionRequest>;
 };
 
 export enum TransactionType {
   signMessage = 'sign',
   signTypedData = 'signTypedData',
   signTransaction = 'signTransaction',
+  signTransactionData = 'signTransactionData',
   signPermit = 'signPermit',
 }
 
@@ -72,11 +80,22 @@ export type SignTransactionRequest = {
   gasPrice?: string;
 };
 
+export type SignTransactionDataRequest = {
+  type: TransactionType.signTransactionData;
+  signer: JsonRpcSigner;
+  data: BytesLike;
+  to: string;
+  value?: BigNumberish;
+  gasLimit?: BigNumberish;
+  gasPrice?: string;
+};
+
 export type TransactionRequest =
   | SignMessageRequest
   | SignTypedDataRequest
   | SignPermitRequest
-  | SignTransactionRequest;
+  | SignTransactionRequest
+  | SignTransactionDataRequest;
 
 export enum TransactionReceiptStatus {
   pending = 'pending',
@@ -84,19 +103,8 @@ export enum TransactionReceiptStatus {
   error = 'error',
 }
 
-export type PermitResponse = {
-  owner: string;
-  spender: string;
-  value: number | string;
-  nonce: number | string;
-  deadline: number | string;
-  r: string;
-  s: string;
-  v: number;
-};
-
 export type TransactionReceipt = {
   status: TransactionReceiptStatus;
   request: TransactionRequest;
-  response?: string | PermitResponse;
+  response?: string | PermitTransactionResponse;
 };

@@ -1,6 +1,6 @@
 {
   "name": "frontend",
-  "version": "1.0.13",
+  "version": "1.0.14",
   "homepage": ".",
   "private": true,
   "dependencies": {
@@ -14,11 +14,12 @@
     "@sovryn/onboard-common": "1.0.0",
     "@sovryn/onboard-core": "1.0.2",
     "@sovryn/onboard-hw-common": "1.0.2",
-    "@sovryn/onboard-injected": "1.0.0",
+    "@sovryn/onboard-injected": "1.0.1",
     "@sovryn/onboard-ledger": "1.0.2",
-    "@sovryn/onboard-react": "1.0.6",
+    "@sovryn/onboard-react": "1.0.7",
     "@sovryn/onboard-trezor": "1.0.2",
-    "@sovryn/onboard-walletconnect": "1.0.2",
+    "@sovryn/onboard-walletconnect": "1.0.3",
+    "@sovryn/sdk": "*",
     "@sovryn/tailwindcss-config": "*",
     "@sovryn/ui": "*",
     "@sovryn/utils": "0.0.1",

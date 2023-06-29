@@ -21,6 +21,7 @@ import { Decimal } from '@sovryn/utils';
 import { AmountRenderer } from '../../2_molecules/AmountRenderer/AmountRenderer';
 import { AssetRenderer } from '../../2_molecules/AssetRenderer/AssetRenderer';
 import { BITCOIN, BTC_RENDER_PRECISION } from '../../../constants/currencies';
+import { getTokenDisplayName } from '../../../constants/tokens';
 import { useAssetBalance } from '../../../hooks/useAssetBalance';
 import { useMaintenance } from '../../../hooks/useMaintenance';
 import { translations } from '../../../locales/i18n';
@@ -154,7 +155,7 @@ export const CloseCreditLine: FC<CloseCreditLineProps> = ({
           level={ErrorLevel.Critical}
           message={t(translations.closeCreditLine.error, {
             amount: insufficientBalance,
-            token: creditToken.toUpperCase(),
+            token: getTokenDisplayName(creditToken),
           })}
           dataAttribute="close-credit-line-error"
         />

@@ -1,5 +1,6 @@
 import React, { FC, useCallback, useState } from 'react';
 
+import { SupportedTokens } from '@sovryn/contracts';
 import { ITabItem, Tabs, TabType } from '@sovryn/ui';
 import { Decimal } from '@sovryn/utils';
 
@@ -12,7 +13,7 @@ interface ITabItemExtended extends ITabItem {
 
 type CustomLabelProps = {
   maxAmount: Decimal;
-  symbol: string;
+  token: SupportedTokens;
   tabs: ITabItemExtended[];
   onTabChange: (value: AmountType) => void;
   onMaxAmountClicked: () => void;
@@ -21,7 +22,7 @@ type CustomLabelProps = {
 
 export const Label: FC<CustomLabelProps> = ({
   maxAmount,
-  symbol,
+  token,
   tabs,
   onTabChange,
   onMaxAmountClicked,
@@ -53,7 +54,7 @@ export const Label: FC<CustomLabelProps> = ({
       <MaxButton
         onClick={onMaxAmountClicked}
         value={maxAmount}
-        token={symbol}
+        token={token}
         dataAttribute="convert-from-max"
       />
     </div>

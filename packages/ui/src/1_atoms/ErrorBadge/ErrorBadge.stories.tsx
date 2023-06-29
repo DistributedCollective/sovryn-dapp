@@ -24,7 +24,7 @@ Default.args = {
 Default.argTypes = {
   className: {
     control: 'text',
-    description: 'The className to apply to the badge',
+    description: 'The class to apply to the badge',
   },
   dataAttribute: {
     control: 'text',

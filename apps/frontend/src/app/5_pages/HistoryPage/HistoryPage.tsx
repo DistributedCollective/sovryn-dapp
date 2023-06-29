@@ -7,10 +7,9 @@ import { Helmet } from 'react-helmet-async';
 
 import { Heading, Select, SelectOption, Tabs } from '@sovryn/ui';
 
-import { TransactionHistoryFrame } from '../../3_organisms';
-import { CollateralSurplusHistoryFrame } from '../../3_organisms/CollateralSurplusWithdrawals/CollateralSurplusWithdrawals';
 import { ConvertHistory } from '../../3_organisms/ConversionsHistoryFrame/ConvertHistory';
 import { FundingHistoryFrame } from '../../3_organisms/FundingHistoryFrame/FundingHistoryFrame';
+import { LOCHistory } from '../../3_organisms/LOCHistory/LOCHistory';
 import { RewardHistory } from '../../3_organisms/RewardHistory/RewardHistory';
 import { StabilityPoolHistoryFrame } from '../../3_organisms/StabilityPoolHistoryFrame';
 import { translations } from '../../../locales/i18n';
@@ -21,7 +20,7 @@ const ACTIVE_CLASSNAME = 'border-t-primary-30';
 const locHistory = (
   <div className="px-0 py-4 lg:p-4">
     <ApolloProvider client={zeroClient}>
-      <TransactionHistoryFrame />
+      <LOCHistory />
     </ApolloProvider>
   </div>
 );
@@ -29,12 +28,6 @@ const locHistory = (
 const stability = (
   <div className="px-0 py-4 lg:p-4">
     <StabilityPoolHistoryFrame />
-  </div>
-);
-
-const collateralSurplusHistory = (
-  <div className="px-0 py-4 lg:p-4">
-    <CollateralSurplusHistoryFrame />
   </div>
 );
 
@@ -85,14 +78,6 @@ const HistoryPage: FC = () => {
         content: fundingHistory,
         activeClassName: ACTIVE_CLASSNAME,
         dataAttribute: 'funding',
-      },
-      {
-        label: t(
-          translations.historyPage.table.tabs.collateralSurplusWithdrawals,
-        ),
-        content: collateralSurplusHistory,
-        activeClassName: ACTIVE_CLASSNAME,
-        dataAttribute: 'collateral-surplus-withdrawals',
       },
       {
         label: t(translations.historyPage.table.tabs.reward),

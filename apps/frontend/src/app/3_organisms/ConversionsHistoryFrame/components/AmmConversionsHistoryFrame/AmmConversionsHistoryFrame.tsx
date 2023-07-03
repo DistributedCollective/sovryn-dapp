@@ -16,6 +16,7 @@ import {
   NotificationType,
 } from '@sovryn/ui';
 
+import { BITCOIN } from '../../../../../constants/currencies';
 import {
   DEFAULT_HISTORY_FRAME_PAGE_SIZE,
   EXPORT_RECORD_LIMIT,
@@ -31,6 +32,7 @@ import {
   useGetSwapHistoryLazyQuery,
 } from '../../../../../utils/graphql/rsk/generated';
 import { dateFormat } from '../../../../../utils/helpers';
+import { decimalic } from '../../../../../utils/math';
 import { BaseConversionsHistoryFrame } from '../BaseConversionsHistoryFrame/BaseConversionsHistoryFrame';
 import { COLUMNS_CONFIG } from './AmmConversionsHistoryFrame.constants';
 import { generateRowTitle } from './AmmConversionsHistoryFrame.utils';
@@ -95,12 +97,13 @@ export const AmmConversionsHistoryFrame: React.FC<PropsWithChildren> = ({
 
     return conversions.map(tx => ({
       timestamp: dateFormat(tx.transaction.timestamp),
-      transactionType: t(
-        translations.common.tables.columnTitles.transactionType,
-      ),
+      transactionType: t(translations.conversionsHistory.swap),
       sent: `${tx.fromAmount} ${tx.fromToken.symbol}`,
       received: `${tx.toAmount} ${tx.toToken.symbol}`,
       TXID: tx.transaction.id,
+      conversionFee: `${decimalic(tx.conversionFee).add(
+        tx.protocolFee || '0',
+      )} ${BITCOIN}`,
     }));
   }, [account, addNotification, getConversions]);
 

@@ -15,7 +15,7 @@ import { dateFormat } from '../../../../../utils/helpers';
 
 export const generateRowTitle = (item: Redemption) => (
   <Paragraph size={ParagraphSize.small} className="text-left">
-    {`${t(translations.conversionsHistory.type)} - ${dateFormat(
+    {`${t(translations.conversionsHistory.redeem)} - ${dateFormat(
       item.transaction.timestamp,
     )}`}
   </Paragraph>

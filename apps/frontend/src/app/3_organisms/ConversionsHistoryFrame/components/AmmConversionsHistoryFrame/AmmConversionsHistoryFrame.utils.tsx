@@ -16,7 +16,7 @@ import { decimalic } from '../../../../../utils/math';
 
 export const generateRowTitle = (item: Swap) => (
   <Paragraph size={ParagraphSize.small} className="text-left">
-    {`${t(translations.conversionsHistory.type)} - ${dateFormat(
+    {`${t(translations.conversionsHistory.swap)} - ${dateFormat(
       item.transaction.timestamp,
     )}`}
   </Paragraph>

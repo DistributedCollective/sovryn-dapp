@@ -46,3 +46,6 @@ export const WIKI_LINKS = {
 };
 
 export const HELPDESK_LINK = 'https://help.sovryn.app/';
+
+export const MAX_STAKING_APR_LINK =
+  'https://redash.sovryn.app/public/dashboards/VqJnymylogSI6jMHZPJIyog9RUJjUUS81cxYfNUM';

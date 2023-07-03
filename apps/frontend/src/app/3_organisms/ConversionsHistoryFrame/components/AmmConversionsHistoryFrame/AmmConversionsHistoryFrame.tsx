@@ -92,7 +92,9 @@ export const AmmConversionsHistoryFrame: React.FC<PropsWithChildren> = ({
 
     return conversions.map(tx => ({
       timestamp: dateFormat(tx.transaction.timestamp),
-      transactionType: t(translations.conversionsHistory.type),
+      transactionType: t(
+        translations.common.tables.columnTitles.transactionType,
+      ),
       sent: `${tx.fromAmount} ${tx.fromToken.symbol}`,
       received: `${tx.toAmount} ${tx.toToken.symbol}`,
       TXID: tx.transaction.id,

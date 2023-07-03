@@ -91,7 +91,10 @@ export const MyntConversionsHistoryFrame: React.FC<PropsWithChildren> = ({
 
     return conversions.map(tx => ({
       timestamp: dateFormat(tx.transaction.timestamp),
-      transactionType: t(translations.conversionsHistory.type),
+      transactionType:
+        tx.type === ConversionType.Incoming
+          ? t(translations.conversionsHistory.mint)
+          : t(translations.conversionsHistory.burn),
       sent:
         tx.type === ConversionType.Incoming
           ? `${tx.bassetQuantity} ${tx.bAsset.symbol}`

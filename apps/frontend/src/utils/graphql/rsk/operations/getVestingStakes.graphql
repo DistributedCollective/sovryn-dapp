@@ -1,0 +1,23 @@
+query getVestingStakes(
+  $user: String
+  $skip: Int!
+  $pageSize: Int!
+  $orderBy: VestingContract_orderBy
+  $orderDirection: OrderDirection
+) {
+  vestingContracts(
+    where: { user: $user }
+    first: $pageSize
+    skip: $skip
+    orderBy: $orderBy
+    orderDirection: $orderDirection
+  ) {
+    id
+    cliff
+    createdAtTimestamp
+    currentBalance
+    duration
+    startingBalance
+    type
+  }
+}

@@ -6,11 +6,11 @@ import { Helmet } from 'react-helmet-async';
 import { SelectOption, Select, Tabs, Heading, HeadingType } from '@sovryn/ui';
 
 import { translations } from '../../../locales/i18n';
-import { StabilityPool } from './ components/StabilityPool';
-import { Staking } from './ components/Staking';
-import { TotalRewardsEarned } from './ components/TotalRewardsEarned';
-import { Vesting } from './ components/Vesting';
 import styles from './RewardsPage.module.css';
+import { StabilityPool } from './components/StabilityPool';
+import { Staking } from './components/Staking';
+import { TotalRewardsEarned } from './components/TotalRewardsEarned';
+import { Vesting } from './components/Vesting';
 
 const ACTIVE_CLASSNAME = 'border-t-primary-30';
 

@@ -27,6 +27,7 @@ import { translations } from '../../../../../locales/i18n';
 import { rskClient } from '../../../../../utils/clients';
 import {
   Swap,
+  Swap_OrderBy,
   useGetSwapHistoryLazyQuery,
 } from '../../../../../utils/graphql/rsk/generated';
 import { dateFormat } from '../../../../../utils/helpers';
@@ -76,6 +77,8 @@ export const AmmConversionsHistoryFrame: React.FC<PropsWithChildren> = ({
         user: account.toLocaleLowerCase(),
         skip: 0,
         pageSize: EXPORT_RECORD_LIMIT,
+        orderBy: Swap_OrderBy.Timestamp,
+        orderDirection: OrderDirection.Desc,
       },
     });
 

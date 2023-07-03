@@ -28,6 +28,7 @@ import { translations } from '../../../../../locales/i18n';
 import {
   Conversion,
   ConversionType,
+  Conversion_OrderBy,
   useGetUserConversionsLazyQuery,
 } from '../../../../../utils/graphql/mynt/generated';
 import { dateFormat } from '../../../../../utils/helpers';
@@ -75,6 +76,8 @@ export const MyntConversionsHistoryFrame: React.FC<PropsWithChildren> = ({
         user: account.toLowerCase(),
         skip: 0,
         pageSize: EXPORT_RECORD_LIMIT,
+        orderBy: Conversion_OrderBy.Timestamp,
+        orderDirection: OrderDirection.Desc,
       },
     });
 

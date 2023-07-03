@@ -30,6 +30,7 @@ import { zeroClient } from '../../../../../utils/clients';
 import {
   Redemption,
   Redemption_Filter,
+  Redemption_OrderBy,
   useGetRedemptionsLazyQuery,
 } from '../../../../../utils/graphql/zero/generated';
 import { dateFormat } from '../../../../../utils/helpers';
@@ -81,6 +82,8 @@ export const ZeroConversionsHistoryFrame: React.FC<PropsWithChildren> = ({
         } as Redemption_Filter,
         skip: 0,
         pageSize: EXPORT_RECORD_LIMIT,
+        orderBy: Redemption_OrderBy.SequenceNumber,
+        orderDirection: OrderDirection.Desc,
       },
     });
 

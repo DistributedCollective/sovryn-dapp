@@ -21,28 +21,28 @@ import {
 } from '@sovryn/ui';
 import { Decimal } from '@sovryn/utils';
 
-import { AmountRenderer } from '../../../2_molecules/AmountRenderer/AmountRenderer';
+import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRenderer';
 import {
   CRITICAL_COLLATERAL_RATIO,
   MINIMUM_COLLATERAL_RATIO,
-} from '../../../3_organisms/ZeroLocForm/constants';
+} from '../../../../3_organisms/ZeroLocForm/constants';
 import {
   BITCOIN,
   BTC_RENDER_PRECISION,
   SOV,
-} from '../../../../constants/currencies';
-import { useAccount } from '../../../../hooks/useAccount';
-import { useBlockNumber } from '../../../../hooks/useBlockNumber';
-import { useMaintenance } from '../../../../hooks/useMaintenance';
-import { useGetOpenTrove } from '../../../../hooks/zero/useGetOpenTrove';
-import { useGetRBTCPrice } from '../../../../hooks/zero/useGetRBTCPrice';
-import { useGetTroves } from '../../../../hooks/zero/useGetTroves';
-import { translations } from '../../../../locales/i18n';
-import { calculateCollateralRatio } from '../../../../utils/helpers';
-import { decimalic } from '../../../../utils/math';
-import { useGetSovGain } from '../hooks/useGetSovGain';
-import { useHandleRewards } from '../hooks/useHandleRewards';
-import { RewardsAction } from '../types';
+} from '../../../../../constants/currencies';
+import { useAccount } from '../../../../../hooks/useAccount';
+import { useBlockNumber } from '../../../../../hooks/useBlockNumber';
+import { useMaintenance } from '../../../../../hooks/useMaintenance';
+import { useGetOpenTrove } from '../../../../../hooks/zero/useGetOpenTrove';
+import { useGetRBTCPrice } from '../../../../../hooks/zero/useGetRBTCPrice';
+import { useGetTroves } from '../../../../../hooks/zero/useGetTroves';
+import { translations } from '../../../../../locales/i18n';
+import { calculateCollateralRatio } from '../../../../../utils/helpers';
+import { decimalic } from '../../../../../utils/math';
+import { useGetSovGain } from '../../hooks/useGetSovGain';
+import { useHandleRewards } from '../../hooks/useHandleRewards';
+import { RewardsAction } from '../../types';
 
 export const StabilityPool: FC = () => {
   const { account, signer } = useAccount();

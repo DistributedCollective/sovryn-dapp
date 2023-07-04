@@ -4,12 +4,12 @@ import { t } from 'i18next';
 
 import { Heading, HeadingType } from '@sovryn/ui';
 
-import { AmountRenderer } from '../../../2_molecules/AmountRenderer/AmountRenderer';
+import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRenderer';
 import {
   BITCOIN,
   BTC_RENDER_PRECISION,
-} from '../../../../constants/currencies';
-import { translations } from '../../../../locales/i18n';
+} from '../../../../../constants/currencies';
+import { translations } from '../../../../../locales/i18n';
 
 export const TotalRewardsEarned: FC = () => (
   <div className="bg-gray-80 md:bg-gray-90 py-7 px-6 rounded mb-12">

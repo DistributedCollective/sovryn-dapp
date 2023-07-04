@@ -7,10 +7,10 @@ import { SelectOption, Select, Tabs, Heading, HeadingType } from '@sovryn/ui';
 
 import { translations } from '../../../locales/i18n';
 import styles from './RewardsPage.module.css';
-import { StabilityPool } from './components/StabilityPool';
-import { Staking } from './components/Staking';
-import { TotalRewardsEarned } from './components/TotalRewardsEarned';
-import { Vesting } from './components/Vesting';
+import { StabilityPool } from './components/StabilityPool/StabilityPool';
+import { Staking } from './components/Staking/Staking';
+import { TotalRewardsEarned } from './components/TotalRewardsEarned/TotalRewardsEarned';
+import { Vesting } from './components/Vesting/Vesting';
 
 const ACTIVE_CLASSNAME = 'border-t-primary-30';
 
@@ -61,7 +61,7 @@ const RewardsPage: FC = () => {
         <title>{t(translations.rewardPage.meta.title)}</title>
       </Helmet>
 
-      <div className="lg:w-3/5 text-gray-10 mt-9 lg:mt-10">
+      <div className="lg:w-4/6 text-gray-10 mt-9 lg:mt-10">
         <TotalRewardsEarned />
 
         <div className="bg-gray-80 md:bg-gray-90 py-7 px-6 rounded mb-12">

@@ -1,0 +1,10 @@
+query getVestingContracts($user: String) {
+  vestingContracts(where: { user: $user }) {
+    id
+    cliff
+    duration
+    currentBalance
+    type
+    createdAtTimestamp
+  }
+}

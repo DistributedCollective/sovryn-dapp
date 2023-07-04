@@ -21,6 +21,7 @@ import {
   DEFAULT_HISTORY_FRAME_PAGE_SIZE,
   EXPORT_RECORD_LIMIT,
 } from '../../../../../constants/general';
+import { getTokenDisplayName } from '../../../../../constants/tokens';
 import { useNotificationContext } from '../../../../../contexts/NotificationContext';
 import { useAccount } from '../../../../../hooks/useAccount';
 import { useBlockNumber } from '../../../../../hooks/useBlockNumber';
@@ -98,8 +99,8 @@ export const AmmConversionsHistoryFrame: React.FC<PropsWithChildren> = ({
     return conversions.map(tx => ({
       timestamp: dateFormat(tx.transaction.timestamp),
       transactionType: t(translations.conversionsHistory.swap),
-      sent: `${tx.fromAmount} ${tx.fromToken.symbol}`,
-      received: `${tx.toAmount} ${tx.toToken.symbol}`,
+      sent: `${tx.fromAmount} ${getTokenDisplayName(tx.fromToken.symbol!)}`,
+      received: `${tx.toAmount} ${getTokenDisplayName(tx.toToken.symbol!)}`,
       TXID: tx.transaction.id,
       conversionFee: `${decimalic(tx.conversionFee).add(
         tx.protocolFee || '0',

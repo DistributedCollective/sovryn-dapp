@@ -4,6 +4,7 @@ import { t } from 'i18next';
 
 import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { TransactionIdRenderer } from '../../../../2_molecules/TransactionIdRenderer/TransactionIdRenderer';
+import { getTokenDisplayName } from '../../../../../constants/tokens';
 import { translations } from '../../../../../locales/i18n';
 import { Swap } from '../../../../../utils/graphql/rsk/generated';
 import { dateFormat } from '../../../../../utils/helpers';
@@ -25,14 +26,20 @@ export const COLUMNS_CONFIG = [
     id: 'sent',
     title: t(translations.conversionsHistory.table.sent),
     cellRenderer: (item: Swap) => (
-      <AmountRenderer value={item.fromAmount} suffix={item.fromToken.symbol!} />
+      <AmountRenderer
+        value={item.fromAmount}
+        suffix={getTokenDisplayName(item.fromToken.symbol!)}
+      />
     ),
   },
   {
     id: 'received',
     title: t(translations.conversionsHistory.table.received),
     cellRenderer: (item: Swap) => (
-      <AmountRenderer value={item.toAmount} suffix={item.toToken.symbol!} />
+      <AmountRenderer
+        value={item.toAmount}
+        suffix={getTokenDisplayName(item.toToken.symbol!)}
+      />
     ),
   },
   {

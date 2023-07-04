@@ -5,4 +5,5 @@ export type VestingContractTableRecord = {
   currentBalance: string;
   availableBalance?: string;
   address: string;
+  cliff: number;
 };

@@ -1,5 +1,9 @@
 import { VestingContractTableRecord } from './Vesting.types';
-import { renderBalance, renderContractAddress } from './Vestings.utils';
+import {
+  UnlockedBalance,
+  renderBalance,
+  renderContractAddress,
+} from './Vestings.utils';
 
 export const columnsConfig = [
   {
@@ -15,8 +19,7 @@ export const columnsConfig = [
   {
     id: 'availableBalance',
     title: 'Available balance',
-    cellRenderer: (item: VestingContractTableRecord) =>
-      renderBalance(item.availableBalance),
+    cellRenderer: UnlockedBalance,
   },
   {
     id: 'address',

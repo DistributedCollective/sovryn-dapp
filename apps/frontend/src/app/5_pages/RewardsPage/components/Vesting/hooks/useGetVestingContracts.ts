@@ -17,5 +17,6 @@ export const useGetVestingContracts = ():
     type: item.type,
     currentBalance: item.currentBalance,
     address: item.id,
+    cliff: item.cliff || 0,
   }));
 };

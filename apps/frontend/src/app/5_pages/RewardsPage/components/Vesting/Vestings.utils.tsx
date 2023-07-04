@@ -9,6 +9,7 @@ import {
 } from '../../../../../constants/currencies';
 import { getRskExplorerUrl } from '../../../../../utils/helpers';
 import { VestingContractTableRecord } from './Vesting.types';
+import { useGetUnlockedVesting } from './hooks/useGetUnlockedBalance';
 
 const rskExplorerUrl = getRskExplorerUrl();
 
@@ -23,6 +24,27 @@ export const renderBalance = (balance: string | undefined) => {
       suffix={SOV}
       precision={TOKEN_RENDER_PRECISION}
       dataAttribute="vesting-rewards-current-balance"
+    />
+  );
+};
+
+export const UnlockedBalance = (item: VestingContractTableRecord) => {
+  const { value, loading } = useGetUnlockedVesting(
+    item.cliff,
+    item.address,
+    item.type,
+  );
+
+  if (!value && !loading) {
+    return <>0</>;
+  }
+
+  return (
+    <AmountRenderer
+      value={value}
+      suffix={SOV}
+      precision={TOKEN_RENDER_PRECISION}
+      dataAttribute="vesting-rewards-unlocked-balance"
     />
   );
 };

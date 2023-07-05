@@ -49,7 +49,8 @@ export const COLUMNS_CONFIG = [
           size={ButtonSize.small}
           text={t(translations.stakePage.table.adjustButton)}
           onClick={() => {}}
-          dataAttribute="stakes-adjust-button"
+          dataAttribute="vesting-stakes-adjust-button"
+          className="md:w-auto w-full"
         />
       </div>
     ),

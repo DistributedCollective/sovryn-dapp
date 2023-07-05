@@ -29,7 +29,7 @@ export const VestingStakesFrame: FC = () => {
 
   const [orderOptions, setOrderOptions] = useState<OrderOptions>({
     orderBy: 'createdAtTimestamp',
-    orderDirection: OrderDirection.Asc,
+    orderDirection: OrderDirection.Desc,
   });
 
   const { data, loading, refetch } = useGetVestingStakes(
@@ -81,7 +81,7 @@ export const VestingStakesFrame: FC = () => {
           rows={vestings}
           rowTitle={generateRowTitle}
           isLoading={loading}
-          className=" text-gray-10 lg:px-6 lg:py-4"
+          className="text-gray-10 lg:px-6 lg:py-4 text-xs"
           noData={
             account
               ? t(translations.stakePage.table.noVestingStakes)

@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, useMemo } from 'react';
 
 import { t } from 'i18next';
 import { Helmet } from 'react-helmet-async';
@@ -7,6 +7,7 @@ import { useAccount } from '../../../hooks/useAccount';
 import { translations } from '../../../locales/i18n';
 import { NewStakeRenderer } from './components/NewStakeRenderer/NewStakeRenderer';
 import { PersonalStakingStatistics } from './components/PersonalStakingStatistics/PersonalStakingStatistics';
+import { useGetPersonalStakingStatistics } from './components/PersonalStakingStatistics/hooks/useGetPersonalStakingStatistics';
 import { StakesFrame } from './components/StakesFrame/StakesFrame';
 import { StakingRewards } from './components/StakingRewards/StakingRewards';
 import { StakingStatistics } from './components/StakingStatistics/StakingStatistics';
@@ -14,6 +15,9 @@ import { VestingStakesFrame } from './components/VestingStakesFrame/VestingStake
 
 const StakePage: FC = () => {
   const { account } = useAccount();
+  const { stakedSov } = useGetPersonalStakingStatistics();
+  const hasStakedSov = useMemo(() => stakedSov > 0, [stakedSov]);
+
   return (
     <>
       <Helmet>
@@ -34,7 +38,7 @@ const StakePage: FC = () => {
         </div>
 
         <div className="md:hidden block w-full">
-          <NewStakeRenderer />
+          <NewStakeRenderer hasStakedSov={hasStakedSov} />
         </div>
       </div>
     </>

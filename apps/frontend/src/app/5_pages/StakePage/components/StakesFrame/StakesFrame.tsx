@@ -15,6 +15,7 @@ import { useAccount } from '../../../../../hooks/useAccount';
 import { useBlockNumber } from '../../../../../hooks/useBlockNumber';
 import { translations } from '../../../../../locales/i18n';
 import { NewStakeRenderer } from '../NewStakeRenderer/NewStakeRenderer';
+import { useGetPersonalStakingStatistics } from '../PersonalStakingStatistics/hooks/useGetPersonalStakingStatistics';
 import { COLUMNS_CONFIG } from './StakesFrame.constants';
 import { StakingType } from './StakesFrame.types';
 import { generateRowTitle } from './StakesFrame.utils';
@@ -25,12 +26,14 @@ const pageSize = DEFAULT_STAKES_SIZE;
 export const StakesFrame: FC = () => {
   const { account } = useAccount();
   const { value: block } = useBlockNumber();
+  const { stakedSov } = useGetPersonalStakingStatistics();
+  const hasStakedSov = useMemo(() => stakedSov > 0, [stakedSov]);
 
   const [page, setPage] = useState(0);
 
   const [orderOptions, setOrderOptions] = useState<OrderOptions>({
     orderBy: 'lockedUntil',
-    orderDirection: OrderDirection.Asc,
+    orderDirection: OrderDirection.Desc,
   });
 
   const { data, loading, refetch } = useGetStakes(
@@ -72,11 +75,11 @@ export const StakesFrame: FC = () => {
           {t(translations.stakePage.table.stakes)}
         </Paragraph>
         <div className="md:inline-block hidden">
-          <NewStakeRenderer />
+          <NewStakeRenderer hasStakedSov={hasStakedSov} />
         </div>
       </div>
 
-      <div className="md:bg-gray-80 md:py-4 md:px-4 rounded">
+      <div className="bg-gray-80 py-4 px-4 rounded">
         <Table
           setOrderOptions={setOrderOptions}
           orderOptions={orderOptions}
@@ -84,7 +87,7 @@ export const StakesFrame: FC = () => {
           rows={stakes}
           rowTitle={generateRowTitle}
           isLoading={loading}
-          className="text-gray-10 lg:px-6 lg:py-4"
+          className="text-gray-10 lg:px-6 lg:py-4 text-xs"
           noData={
             account
               ? t(translations.stakePage.table.noStakes)

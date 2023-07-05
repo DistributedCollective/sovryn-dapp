@@ -387,7 +387,9 @@
         "table": {
             "stakes": "Stakes",
             "vestingStakes": "Vesting stakes",
-            "stakeButton": "Add new stake",
+            "stakeButton": "Stake SOV",
+            "addNewStakeButton": "Add new stake",
+            "rewardsButton": "Rewards",
             "adjustButton": "Adjust",
             "stakeAmount": "Stake amount",
             "votingPower": "Voting power",

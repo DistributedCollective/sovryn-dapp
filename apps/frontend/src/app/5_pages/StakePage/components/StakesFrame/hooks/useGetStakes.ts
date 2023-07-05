@@ -16,7 +16,7 @@ export const useGetStakes = (
 ) => {
   const config = useMemo(
     () => ({
-      user: account?.toLowerCase(),
+      user: account.toLowerCase(),
       skip: page * pageSize,
       pageSize,
       orderBy: orderOptions.orderBy as Stake_OrderBy,

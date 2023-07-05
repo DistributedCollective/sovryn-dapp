@@ -33,3 +33,5 @@ export const RSK_FAUCET = 'https://faucet.rsk.co';
 export const CURRENT_RELEASE: ReleaseFileContent = JSON.parse(
   process.env.REACT_APP_RELEASE_DATA || '{}',
 );
+
+export const WEIGHT_FACTOR = 10;

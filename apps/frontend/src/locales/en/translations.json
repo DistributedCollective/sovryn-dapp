@@ -370,7 +370,7 @@
             "totalStakedSov": "Total staked SOV",
             "totalVotingPower": "Total voting power",
             "maxStakingApr": "Max staking APR",
-            "maxStakingAprInfo": "This is calculated assuming the initial SOV purchase is made using BTC and all revenues earned are immediately converted to BTC. <0>source</0>",
+            "maxStakingAprInfo": "This is calculated assuming the initial SOV purchase is made using BTC and all revenues earned are immediately converted to BTC.<br /><0>source</0>",
             "maxStakingAprInfoCta": "Source"
         },
         "personalStatistics": {
@@ -387,7 +387,7 @@
         "table": {
             "stakes": "Stakes",
             "vestingStakes": "Vesting stakes",
-            "stakeButton": "New stake",
+            "stakeButton": "Add new stake",
             "adjustButton": "Adjust",
             "stakeAmount": "Stake amount",
             "votingPower": "Voting power",
@@ -396,6 +396,12 @@
             "noStakes": "You don't have any stakes yet",
             "noVestingStakes": "You don't have any vesting stakes yet",
             "notConnected": "Connect wallet to see available data"
+        },
+        "stakingRewards": {
+            "title": "Staking rewards",
+            "description": "Earn rewards and participate in governance by staking SOV",
+            "buySov": "Buy SOV",
+            "learnMore": "Learn more about benefits"
         }
     },
     "fastBtc": {

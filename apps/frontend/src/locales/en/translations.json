@@ -551,9 +551,20 @@
     "conversionsHistory": {
         "table": {
             "sent": "Sent",
-            "received": "Received"
+            "received": "Received",
+            "conversionFee": "Conversion fee"
         },
-        "type": "Convert"
+        "type": "Convert",
+        "swap": "Swap",
+        "mint": "Mint",
+        "burn": "Burn",
+        "redeem": "Redeem",
+        "types": {
+            "AMM": "AMM",
+            "MOC": "Money On Chain",
+            "Mynt": "Mynt",
+            "Zero": "Zero"
+        }
     },
     "collateralSurplusHistory": {
         "table": {

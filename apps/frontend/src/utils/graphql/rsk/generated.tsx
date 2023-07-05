@@ -10659,6 +10659,7 @@ export type SubscriptionWithdrawalsArgs = {
  */
 export type Swap = {
   __typename?: 'Swap';
+  conversionFee?: Maybe<Scalars['BigDecimal']>;
   fromAmount: Scalars['BigDecimal'];
   /**
    * Token the user converted
@@ -10680,6 +10681,7 @@ export type Swap = {
    *
    */
   numConversions: Scalars['Int'];
+  protocolFee?: Maybe<Scalars['BigDecimal']>;
   /**
    * Rate is calculated as toAmount / fromAmount
    *
@@ -10711,6 +10713,14 @@ export enum SwapType {
 export type Swap_Filter = {
   /** Filter for the block changed event. */
   _change_block?: InputMaybe<BlockChangedFilter>;
+  conversionFee?: InputMaybe<Scalars['BigDecimal']>;
+  conversionFee_gt?: InputMaybe<Scalars['BigDecimal']>;
+  conversionFee_gte?: InputMaybe<Scalars['BigDecimal']>;
+  conversionFee_in?: InputMaybe<Array<Scalars['BigDecimal']>>;
+  conversionFee_lt?: InputMaybe<Scalars['BigDecimal']>;
+  conversionFee_lte?: InputMaybe<Scalars['BigDecimal']>;
+  conversionFee_not?: InputMaybe<Scalars['BigDecimal']>;
+  conversionFee_not_in?: InputMaybe<Array<Scalars['BigDecimal']>>;
   fromAmount?: InputMaybe<Scalars['BigDecimal']>;
   fromAmount_gt?: InputMaybe<Scalars['BigDecimal']>;
   fromAmount_gte?: InputMaybe<Scalars['BigDecimal']>;
@@ -10760,6 +10770,14 @@ export type Swap_Filter = {
   numConversions_lte?: InputMaybe<Scalars['Int']>;
   numConversions_not?: InputMaybe<Scalars['Int']>;
   numConversions_not_in?: InputMaybe<Array<Scalars['Int']>>;
+  protocolFee?: InputMaybe<Scalars['BigDecimal']>;
+  protocolFee_gt?: InputMaybe<Scalars['BigDecimal']>;
+  protocolFee_gte?: InputMaybe<Scalars['BigDecimal']>;
+  protocolFee_in?: InputMaybe<Array<Scalars['BigDecimal']>>;
+  protocolFee_lt?: InputMaybe<Scalars['BigDecimal']>;
+  protocolFee_lte?: InputMaybe<Scalars['BigDecimal']>;
+  protocolFee_not?: InputMaybe<Scalars['BigDecimal']>;
+  protocolFee_not_in?: InputMaybe<Array<Scalars['BigDecimal']>>;
   rate?: InputMaybe<Scalars['BigDecimal']>;
   rate_gt?: InputMaybe<Scalars['BigDecimal']>;
   rate_gte?: InputMaybe<Scalars['BigDecimal']>;
@@ -10854,11 +10872,13 @@ export type Swap_Filter = {
 };
 
 export enum Swap_OrderBy {
+  ConversionFee = 'conversionFee',
   FromAmount = 'fromAmount',
   FromToken = 'fromToken',
   Id = 'id',
   IsLimit = 'isLimit',
   NumConversions = 'numConversions',
+  ProtocolFee = 'protocolFee',
   Rate = 'rate',
   SwapType = 'swapType',
   Timestamp = 'timestamp',
@@ -13658,6 +13678,28 @@ export type GetSmartTokensQuery = {
   }>;
 };
 
+export type GetSwapHistoryQueryVariables = Exact<{
+  user?: InputMaybe<Scalars['String']>;
+  skip: Scalars['Int'];
+  pageSize: Scalars['Int'];
+  orderBy?: InputMaybe<Swap_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+}>;
+
+export type GetSwapHistoryQuery = {
+  __typename?: 'Query';
+  swaps: Array<{
+    __typename?: 'Swap';
+    fromAmount: string;
+    toAmount: string;
+    conversionFee?: string | null;
+    protocolFee?: string | null;
+    fromToken: { __typename?: 'Token'; id: string; symbol?: string | null };
+    toToken: { __typename?: 'Token'; id: string; symbol?: string | null };
+    transaction: { __typename?: 'Transaction'; id: string; timestamp: number };
+  }>;
+};
+
 export type GetTokenRatesQueryVariables = Exact<{ [key: string]: never }>;
 
 export type GetTokenRatesQuery = {
@@ -13981,6 +14023,95 @@ export type GetSmartTokensLazyQueryHookResult = ReturnType<
 export type GetSmartTokensQueryResult = Apollo.QueryResult<
   GetSmartTokensQuery,
   GetSmartTokensQueryVariables
+>;
+export const GetSwapHistoryDocument = gql`
+  query getSwapHistory(
+    $user: String
+    $skip: Int!
+    $pageSize: Int!
+    $orderBy: Swap_orderBy
+    $orderDirection: OrderDirection
+  ) {
+    swaps(
+      where: { user: $user }
+      first: $pageSize
+      skip: $skip
+      orderBy: $orderBy
+      orderDirection: $orderDirection
+    ) {
+      fromToken {
+        id
+        symbol
+      }
+      toToken {
+        id
+        symbol
+      }
+      transaction {
+        id
+        timestamp
+      }
+      fromAmount
+      toAmount
+      conversionFee
+      protocolFee
+    }
+  }
+`;
+
+/**
+ * __useGetSwapHistoryQuery__
+ *
+ * To run a query within a React component, call `useGetSwapHistoryQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetSwapHistoryQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetSwapHistoryQuery({
+ *   variables: {
+ *      user: // value for 'user'
+ *      skip: // value for 'skip'
+ *      pageSize: // value for 'pageSize'
+ *      orderBy: // value for 'orderBy'
+ *      orderDirection: // value for 'orderDirection'
+ *   },
+ * });
+ */
+export function useGetSwapHistoryQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    GetSwapHistoryQuery,
+    GetSwapHistoryQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<GetSwapHistoryQuery, GetSwapHistoryQueryVariables>(
+    GetSwapHistoryDocument,
+    options,
+  );
+}
+export function useGetSwapHistoryLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    GetSwapHistoryQuery,
+    GetSwapHistoryQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<GetSwapHistoryQuery, GetSwapHistoryQueryVariables>(
+    GetSwapHistoryDocument,
+    options,
+  );
+}
+export type GetSwapHistoryQueryHookResult = ReturnType<
+  typeof useGetSwapHistoryQuery
+>;
+export type GetSwapHistoryLazyQueryHookResult = ReturnType<
+  typeof useGetSwapHistoryLazyQuery
+>;
+export type GetSwapHistoryQueryResult = Apollo.QueryResult<
+  GetSwapHistoryQuery,
+  GetSwapHistoryQueryVariables
 >;
 export const GetTokenRatesDocument = gql`
   query getTokenRates {

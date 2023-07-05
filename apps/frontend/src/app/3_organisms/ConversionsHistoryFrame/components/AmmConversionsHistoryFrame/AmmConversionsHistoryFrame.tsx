@@ -16,7 +16,6 @@ import {
   NotificationType,
 } from '@sovryn/ui';
 
-import { BITCOIN } from '../../../../../constants/currencies';
 import {
   DEFAULT_HISTORY_FRAME_PAGE_SIZE,
   EXPORT_RECORD_LIMIT,
@@ -103,7 +102,7 @@ export const AmmConversionsHistoryFrame: React.FC<PropsWithChildren> = ({
       received: `${tx.toAmount} ${getTokenDisplayName(tx.toToken.symbol!)}`,
       conversionFee: `${decimalic(tx.conversionFee).add(
         tx.protocolFee || '0',
-      )} ${BITCOIN}`,
+      )} ${getTokenDisplayName(tx.toToken.symbol!)}`,
       TXID: tx.transaction.id,
     }));
   }, [account, addNotification, getConversions]);

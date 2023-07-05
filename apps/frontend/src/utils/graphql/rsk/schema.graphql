@@ -11333,6 +11333,7 @@ type Subscription {
 
 "The Swap entity is an aggregated entity of the individual Conversion events in a transaction.\nFor example, if a User swaps XUSD to SOV, there will be 2 Conversion events through 2 AMMs (XUSD-BTC and BTC-SOV) in one transaction. These two Conversions are aggregated here.\n"
 type Swap {
+  conversionFee: BigDecimal
   fromAmount: BigDecimal!
 
   "Token the user converted\n"
@@ -11346,6 +11347,7 @@ type Swap {
 
   "The number of AMM Conversions involved in this swap (this is primarily for debugging purposes)\n"
   numConversions: Int!
+  protocolFee: BigDecimal
 
   "Rate is calculated as toAmount / fromAmount\n"
   rate: BigDecimal!
@@ -11372,6 +11374,14 @@ input Swap_filter {
   Filter for the block changed event.
   """
   _change_block: BlockChangedFilter
+  conversionFee: BigDecimal
+  conversionFee_gt: BigDecimal
+  conversionFee_gte: BigDecimal
+  conversionFee_in: [BigDecimal!]
+  conversionFee_lt: BigDecimal
+  conversionFee_lte: BigDecimal
+  conversionFee_not: BigDecimal
+  conversionFee_not_in: [BigDecimal!]
   fromAmount: BigDecimal
   fromAmount_gt: BigDecimal
   fromAmount_gte: BigDecimal
@@ -11421,6 +11431,14 @@ input Swap_filter {
   numConversions_lte: Int
   numConversions_not: Int
   numConversions_not_in: [Int!]
+  protocolFee: BigDecimal
+  protocolFee_gt: BigDecimal
+  protocolFee_gte: BigDecimal
+  protocolFee_in: [BigDecimal!]
+  protocolFee_lt: BigDecimal
+  protocolFee_lte: BigDecimal
+  protocolFee_not: BigDecimal
+  protocolFee_not_in: [BigDecimal!]
   rate: BigDecimal
   rate_gt: BigDecimal
   rate_gte: BigDecimal
@@ -11515,11 +11533,13 @@ input Swap_filter {
 }
 
 enum Swap_orderBy {
+  conversionFee
   fromAmount
   fromToken
   id
   isLimit
   numConversions
+  protocolFee
   rate
   swapType
   timestamp

@@ -9,4 +9,4 @@ export const tokensDisplayName = {
 };
 
 export const getTokenDisplayName = (token: SupportedTokens | string): string =>
-  tokensDisplayName[token] || token?.toUpperCase();
+  tokensDisplayName[token?.toLowerCase()] || token?.toUpperCase();

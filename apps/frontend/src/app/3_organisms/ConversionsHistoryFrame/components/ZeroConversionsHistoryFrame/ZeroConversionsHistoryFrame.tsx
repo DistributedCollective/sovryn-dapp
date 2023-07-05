@@ -107,6 +107,7 @@ export const ZeroConversionsHistoryFrame: React.FC<PropsWithChildren> = ({
       received: redemption.collateralRedeemed.length
         ? `${redemption.collateralRedeemed} ${BITCOIN}`
         : '-',
+      redemptionFee: `${redemption.fee} ${BITCOIN}`,
       TXID: redemption.transaction.id,
     }));
   }, [account, addNotification, getConversions]);

@@ -101,10 +101,10 @@ export const AmmConversionsHistoryFrame: React.FC<PropsWithChildren> = ({
       transactionType: t(translations.conversionsHistory.swap),
       sent: `${tx.fromAmount} ${getTokenDisplayName(tx.fromToken.symbol!)}`,
       received: `${tx.toAmount} ${getTokenDisplayName(tx.toToken.symbol!)}`,
-      TXID: tx.transaction.id,
       conversionFee: `${decimalic(tx.conversionFee).add(
         tx.protocolFee || '0',
       )} ${BITCOIN}`,
+      TXID: tx.transaction.id,
     }));
   }, [account, addNotification, getConversions]);
 

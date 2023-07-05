@@ -28,7 +28,7 @@ export const renderRedemptionFee = (redemption: Redemption) => (
         value={redemption.fee}
         suffix={BITCOIN}
         precision={BTC_RENDER_PRECISION}
-        dataAttribute="redemption-history-fee"
+        dataAttribute="redemption-fee"
       />
     ) : (
       '-'

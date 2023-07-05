@@ -10,6 +10,7 @@ import { TOKEN_RENDER_PRECISION } from '../../../../../constants/currencies';
 import { translations } from '../../../../../locales/i18n';
 import { dateFormat } from '../../../../../utils/helpers';
 import { StakingType } from './StakesFrame.types';
+import { VotingPowerCellRenderer } from './components/VotingPowerCellRenderer';
 
 export const COLUMNS_CONFIG = [
   {
@@ -28,7 +29,7 @@ export const COLUMNS_CONFIG = [
   {
     id: 'votingPower',
     title: t(translations.stakePage.table.votingPower),
-    cellRenderer: () => '-',
+    cellRenderer: (item: StakingType) => VotingPowerCellRenderer(item),
   },
   {
     id: 'delegate',
@@ -44,13 +45,15 @@ export const COLUMNS_CONFIG = [
     id: 'actions',
     title: ' ',
     cellRenderer: () => (
-      <Button
-        style={ButtonStyle.secondary}
-        size={ButtonSize.small}
-        text={t(translations.stakePage.table.adjustButton)}
-        onClick={() => {}}
-        dataAttribute="stakes-adjust-button"
-      />
+      <div className="flex justify-end">
+        <Button
+          style={ButtonStyle.secondary}
+          size={ButtonSize.small}
+          text={t(translations.stakePage.table.adjustButton)}
+          onClick={() => {}}
+          dataAttribute="stakes-adjust-button"
+        />
+      </div>
     ),
   },
 ];

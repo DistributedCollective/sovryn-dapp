@@ -4,7 +4,13 @@ import { t } from 'i18next';
 import { Trans } from 'react-i18next';
 
 import { SupportedTokens } from '@sovryn/contracts';
-import { Heading, HelperButton, Link } from '@sovryn/ui';
+import {
+  HelperButton,
+  Link,
+  Paragraph,
+  ParagraphSize,
+  ParagraphStyle,
+} from '@sovryn/ui';
 
 import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRenderer';
 import {
@@ -14,22 +20,26 @@ import {
 } from '../../../../../constants/currencies';
 import { MAX_STAKING_APR_LINK } from '../../../../../constants/links';
 import { translations } from '../../../../../locales/i18n';
-import { formatValue, fromWei } from '../../../../../utils/math';
-import { StakingStatRender } from '../../StakePage.utils';
+import { fromWei } from '../../../../../utils/math';
+import { GlobalStatRender } from '../../StakePage.utils';
 import { useGetStakingStatistics } from './hooks/useGetStakingStatistics';
 
 export const StakingStatistics = () => {
-  const { totalStakedSov, totalVotingPower } = useGetStakingStatistics();
+  const { totalStakedSov, totalVotingPower, maxStakingApr } =
+    useGetStakingStatistics();
 
   return (
-    <div className="w-full bg-gray-80 md:bg-gray-90 py-7 px-6 rounded mb-6">
-      <Heading
-        children={t(translations.stakePage.statistics.title)}
-        className="text-base sm:text-2xl font-medium mb-6"
-      />
+    <div className="w-full md:py-7 md:px-6">
+      <Paragraph
+        style={ParagraphStyle.normal}
+        size={ParagraphSize.base}
+        className="font-medium md:mb-6 mb-4"
+      >
+        {t(translations.stakePage.statistics.title)}
+      </Paragraph>
 
-      <div className="flex justify-between flex-wrap gap-6 items-center">
-        <StakingStatRender
+      <div className="flex md:flex-row flex-col md:justify-between flex-wrap md:gap-6 gap-1 md:items-center">
+        <GlobalStatRender
           label={t(translations.stakePage.statistics.totalStakedSov)}
           value={
             <AmountRenderer
@@ -39,7 +49,7 @@ export const StakingStatistics = () => {
             />
           }
         />
-        <StakingStatRender
+        <GlobalStatRender
           label={t(translations.stakePage.statistics.totalVotingPower)}
           value={
             <AmountRenderer
@@ -49,11 +59,12 @@ export const StakingStatistics = () => {
             />
           }
         />
-        <StakingStatRender
+        <GlobalStatRender
           label={
             <span className="flex items-center gap-1">
               {t(translations.stakePage.statistics.maxStakingApr)}{' '}
               <HelperButton
+                tooltipClassName="max-w-56 md:max-72"
                 content={
                   <Trans
                     i18nKey={t(
@@ -66,6 +77,7 @@ export const StakingStatistics = () => {
                             .maxStakingAprInfoCta,
                         )}
                         href={MAX_STAKING_APR_LINK}
+                        className="mt-4 inline-block"
                         openNewTab
                       />,
                     ]}
@@ -74,7 +86,13 @@ export const StakingStatistics = () => {
               />
             </span>
           }
-          value={`${formatValue(0, 2)}% ${APR}`}
+          value={
+            <AmountRenderer
+              value={maxStakingApr}
+              suffix={` % ${APR}`}
+              precision={1}
+            />
+          }
         />
       </div>
     </div>

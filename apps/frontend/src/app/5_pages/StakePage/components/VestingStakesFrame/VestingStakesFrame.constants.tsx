@@ -3,12 +3,12 @@ import React from 'react';
 import { t } from 'i18next';
 
 import { SupportedTokens } from '@sovryn/contracts';
+import { Button, ButtonSize, ButtonStyle } from '@sovryn/ui';
 
 import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { TOKEN_RENDER_PRECISION } from '../../../../../constants/currencies';
 import { translations } from '../../../../../locales/i18n';
 import { VestingContract } from '../../../../../utils/graphql/rsk/generated';
-import { dateFormat } from '../../../../../utils/helpers';
 
 export const COLUMNS_CONFIG = [
   {
@@ -37,8 +37,21 @@ export const COLUMNS_CONFIG = [
   {
     id: 'createdAtTimestamp',
     title: t(translations.stakePage.table.endDate),
-    cellRenderer: (item: VestingContract) => (
-      <>{dateFormat(item.createdAtTimestamp)}</>
+    cellRenderer: () => '-',
+  },
+  {
+    id: 'actions',
+    title: ' ',
+    cellRenderer: () => (
+      <div className="flex justify-end">
+        <Button
+          style={ButtonStyle.secondary}
+          size={ButtonSize.small}
+          text={t(translations.stakePage.table.adjustButton)}
+          onClick={() => {}}
+          dataAttribute="stakes-adjust-button"
+        />
+      </div>
     ),
   },
 ];

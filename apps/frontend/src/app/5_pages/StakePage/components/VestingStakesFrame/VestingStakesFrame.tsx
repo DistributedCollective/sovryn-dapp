@@ -7,8 +7,6 @@ import {
   OrderOptions,
   Pagination,
   Paragraph,
-  ParagraphSize,
-  ParagraphStyle,
   Table,
 } from '@sovryn/ui';
 
@@ -50,8 +48,6 @@ export const VestingStakesFrame: FC = () => {
     [data],
   );
 
-  console.log('vestings', vestings);
-
   const onPageChange = useCallback(
     (value: number) => {
       if (vestings.length < pageSize && value > page) {
@@ -72,12 +68,8 @@ export const VestingStakesFrame: FC = () => {
   }, [orderOptions]);
 
   return (
-    <div className="flex flex-col mb-6">
-      <Paragraph
-        size={ParagraphSize.base}
-        style={ParagraphStyle.normal}
-        className="mb-3 md:mb-6"
-      >
+    <div className="flex flex-col">
+      <Paragraph className="text-base font-medium mb-3 md:mb-6">
         {t(translations.stakePage.table.vestingStakes)}
       </Paragraph>
 
@@ -89,10 +81,10 @@ export const VestingStakesFrame: FC = () => {
           rows={vestings}
           rowTitle={generateRowTitle}
           isLoading={loading}
-          className="bg-gray-80 text-gray-10 lg:px-6 lg:py-4"
+          className=" text-gray-10 lg:px-6 lg:py-4"
           noData={
             account
-              ? t(translations.stakePage.table.noStakes)
+              ? t(translations.stakePage.table.noVestingStakes)
               : t(translations.stakePage.table.notConnected)
           }
           dataAttribute="vesting-stakes-table"

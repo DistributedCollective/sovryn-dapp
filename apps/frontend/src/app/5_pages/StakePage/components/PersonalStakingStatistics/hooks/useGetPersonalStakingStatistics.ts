@@ -25,11 +25,18 @@ export const useGetPersonalStakingStatistics = () => {
   }, [stakingContract, account]);
 
   useEffect(() => {
-    if (account) {
+    if (account && stakingContract) {
       getStakedSov();
       getVotingPower();
     }
-  }, [getStakedSov, getVotingPower, account]);
+  }, [
+    getStakedSov,
+    getVotingPower,
+    account,
+    stakingContract,
+    stakedSov,
+    votingPower,
+  ]);
 
   return { stakedSov, votingPower };
 };

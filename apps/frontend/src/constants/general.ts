@@ -37,3 +37,4 @@ export const CURRENT_RELEASE: ReleaseFileContent = JSON.parse(
 export const MAX_PROCESSABLE_CHECKPOINTS_ZUSD = 300;
 export const MAX_PROCESSABLE_CHECKPOINTS_SOV = 200;
 export const MAX_PROCESSABLE_CHECKPOINTS_TOKENS = 150;
+export const WEIGHT_FACTOR = 10;

@@ -3,15 +3,10 @@ import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { t } from 'i18next';
 
 import {
-  Button,
-  ButtonSize,
-  ButtonStyle,
   OrderDirection,
   OrderOptions,
   Pagination,
   Paragraph,
-  ParagraphSize,
-  ParagraphStyle,
   Table,
 } from '@sovryn/ui';
 
@@ -19,6 +14,7 @@ import { DEFAULT_STAKES_SIZE } from '../../../../../constants/general';
 import { useAccount } from '../../../../../hooks/useAccount';
 import { useBlockNumber } from '../../../../../hooks/useBlockNumber';
 import { translations } from '../../../../../locales/i18n';
+import { NewStakeRenderer } from '../NewStakeRenderer/NewStakeRenderer';
 import { COLUMNS_CONFIG } from './StakesFrame.constants';
 import { StakingType } from './StakesFrame.types';
 import { generateRowTitle } from './StakesFrame.utils';
@@ -70,23 +66,17 @@ export const StakesFrame: FC = () => {
   }, [orderOptions]);
 
   return (
-    <div className="flex flex-col mb-6">
+    <div className="flex flex-col mb-10">
       <div className="flex justify-between items-center mb-3 md:mb-6">
-        <Paragraph size={ParagraphSize.base} style={ParagraphStyle.normal}>
+        <Paragraph className="text-base font-medium">
           {t(translations.stakePage.table.stakes)}
         </Paragraph>
-        {account && (
-          <Button
-            style={ButtonStyle.primary}
-            size={ButtonSize.small}
-            text={t(translations.stakePage.table.stakeButton)}
-            onClick={() => {}}
-            dataAttribute="stakes-stake-button"
-          />
-        )}
+        <div className="md:inline-block hidden">
+          <NewStakeRenderer />
+        </div>
       </div>
 
-      <div className="bg-gray-80 py-4 px-4 rounded">
+      <div className="md:bg-gray-80 md:py-4 md:px-4 rounded">
         <Table
           setOrderOptions={setOrderOptions}
           orderOptions={orderOptions}
@@ -94,7 +84,7 @@ export const StakesFrame: FC = () => {
           rows={stakes}
           rowTitle={generateRowTitle}
           isLoading={loading}
-          className="bg-gray-80 text-gray-10 lg:px-6 lg:py-4"
+          className="text-gray-10 lg:px-6 lg:py-4"
           noData={
             account
               ? t(translations.stakePage.table.noStakes)

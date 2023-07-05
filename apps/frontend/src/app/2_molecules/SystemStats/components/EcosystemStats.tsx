@@ -30,7 +30,10 @@ export const EcosystemStats: FC<EcosystemStatsProps> = ({
   className,
   dataAttribute,
 }) => {
-  const babelFishMassetManager = useLoadContract('babelfish', 'tokens');
+  const babelFishMassetManager = useLoadContract(
+    'babelfishAggregator',
+    'protocol',
+  );
   const myntMassetManager = useLoadContract('massetManager', 'protocol');
 
   const { balance: babelFishZUSDBalance } = useAssetBalance(

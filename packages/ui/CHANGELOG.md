@@ -1,5 +1,12 @@
 # @sovryn/ui
 
+## 1.0.9
+
+### Patch Changes
+
+- c59f619: SOV-2192: convert page v1 update
+- ed5e4f9: SOV-2448: create documentation for Molecules (part 2)
+
 ## 1.0.8
 
 ### Patch Changes

@@ -25,6 +25,7 @@ export const COLUMNS_CONFIG = [
     ),
   },
   {
+    //TODO: add voting power calculation once it's available from the subgraph
     id: 'votingPower',
     title: t(translations.stakePage.table.votingPower),
     cellRenderer: () => '-',
@@ -35,7 +36,8 @@ export const COLUMNS_CONFIG = [
     cellRenderer: () => t(translations.common.na),
   },
   {
-    id: 'createdAtTimestamp',
+    //TODO: add locked until date once it's available from the subgraph
+    id: 'lockedUntil',
     title: t(translations.stakePage.table.endDate),
     cellRenderer: () => '-',
   },

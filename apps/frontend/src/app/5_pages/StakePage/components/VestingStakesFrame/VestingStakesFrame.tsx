@@ -28,7 +28,7 @@ export const VestingStakesFrame: FC = () => {
   const [page, setPage] = useState(0);
 
   const [orderOptions, setOrderOptions] = useState<OrderOptions>({
-    orderBy: 'createdAtTimestamp',
+    orderBy: 'lockedUntil',
     orderDirection: OrderDirection.Desc,
   });
 

@@ -41,7 +41,7 @@ export const useGetStakingStatistics = () => {
         }));
       }
     }
-
+    //TODO - CORS issue with API, need to fix, waiting for Soulbit's response
     // try {
     //   const response = await fetch(MAX_STAKING_APR_API_LINK);
     //   const data = await response.json();
@@ -53,7 +53,7 @@ export const useGetStakingStatistics = () => {
     //     }));
     //   }
     // } catch (error) {
-    //   // Handle fetch error
+    //     Handle fetch error
     //   console.error('Error fetching max staking APR:', error);
     // }
   }, [

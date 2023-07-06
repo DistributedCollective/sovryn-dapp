@@ -1,5 +1,34 @@
 # frontend
 
+## 1.0.15
+
+### Patch Changes
+
+- fc0614e: SOV-2484: add loading state for fastbtc deposit address request
+- d782fe1: SOV-2525: History table v1.2 updates
+- 3761f15: feat: asset convert history
+- c59f619: SOV-2192: convert page v1 update
+- c59f619: Convert update v1
+- 23c8554: SOV-2606: bump dependencies to support WalletConnect v2
+- ce71003: SOV-2480: csv rewards order
+- dd998b5: SOV-2437: Reward Page - Wallet Disconnect Data Reset
+- 3328bf9: SOV-2490: fastBTC address validation
+- d76bcf3: SOV-2436: Stability Pool Page - Wallet Disconnect Data Reset
+- 49add84: SOV-2483: Fix Max button on FastBTC "send" amount
+- 8ce7c9a: SOV-2392: wrong pending icon
+- b25f563: SOV-2444: prevent withdraw while there are troves with ICR < MCR
+- Updated dependencies [c59f619]
+- Updated dependencies [c59f619]
+- Updated dependencies [c59f619]
+- Updated dependencies [c59f619]
+- Updated dependencies [c59f619]
+- Updated dependencies [c59f619]
+- Updated dependencies [e59acaa]
+- Updated dependencies [ed5e4f9]
+  - @sovryn/contracts@1.0.8
+  - @sovryn/sdk@0.0.2
+  - @sovryn/ui@1.0.9
+
 ## 1.0.14
 
 ### Patch Changes

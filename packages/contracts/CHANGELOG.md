@@ -1,5 +1,13 @@
 # @sovryn/contracts
 
+## 1.0.8
+
+### Patch Changes
+
+- c59f619: SOV-2192: convert page v1 update
+- c59f619: SOV-2430: add price feed contract
+- e59acaa: SOV-2710: change swap network address
+
 ## 1.0.7
 
 ### Patch Changes

@@ -13689,6 +13689,18 @@ export type GetTransactionsQuery = {
   }>;
 };
 
+export type GetUserRewardsEarnedHistoryQueryVariables = Exact<{
+  user: Scalars['ID'];
+}>;
+
+export type GetUserRewardsEarnedHistoryQuery = {
+  __typename?: 'Query';
+  userRewardsEarnedHistory?: {
+    __typename?: 'UserRewardsEarnedHistory';
+    totalStakingRewards: string;
+  } | null;
+};
+
 export const GetBitcoinTxIdDocument = gql`
   query getBitcoinTxId($createdAtTx: String) {
     bitcoinTransfers(where: { createdAtTx: $createdAtTx }, first: 1) {
@@ -14095,4 +14107,62 @@ export type GetTransactionsLazyQueryHookResult = ReturnType<
 export type GetTransactionsQueryResult = Apollo.QueryResult<
   GetTransactionsQuery,
   GetTransactionsQueryVariables
+>;
+export const GetUserRewardsEarnedHistoryDocument = gql`
+  query getUserRewardsEarnedHistory($user: ID!) {
+    userRewardsEarnedHistory(id: $user) {
+      totalStakingRewards
+    }
+  }
+`;
+
+/**
+ * __useGetUserRewardsEarnedHistoryQuery__
+ *
+ * To run a query within a React component, call `useGetUserRewardsEarnedHistoryQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetUserRewardsEarnedHistoryQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetUserRewardsEarnedHistoryQuery({
+ *   variables: {
+ *      user: // value for 'user'
+ *   },
+ * });
+ */
+export function useGetUserRewardsEarnedHistoryQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    GetUserRewardsEarnedHistoryQuery,
+    GetUserRewardsEarnedHistoryQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    GetUserRewardsEarnedHistoryQuery,
+    GetUserRewardsEarnedHistoryQueryVariables
+  >(GetUserRewardsEarnedHistoryDocument, options);
+}
+export function useGetUserRewardsEarnedHistoryLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    GetUserRewardsEarnedHistoryQuery,
+    GetUserRewardsEarnedHistoryQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    GetUserRewardsEarnedHistoryQuery,
+    GetUserRewardsEarnedHistoryQueryVariables
+  >(GetUserRewardsEarnedHistoryDocument, options);
+}
+export type GetUserRewardsEarnedHistoryQueryHookResult = ReturnType<
+  typeof useGetUserRewardsEarnedHistoryQuery
+>;
+export type GetUserRewardsEarnedHistoryLazyQueryHookResult = ReturnType<
+  typeof useGetUserRewardsEarnedHistoryLazyQuery
+>;
+export type GetUserRewardsEarnedHistoryQueryResult = Apollo.QueryResult<
+  GetUserRewardsEarnedHistoryQuery,
+  GetUserRewardsEarnedHistoryQueryVariables
 >;

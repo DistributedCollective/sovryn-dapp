@@ -61,10 +61,12 @@ const RewardsPage: FC = () => {
         <title>{t(translations.rewardPage.meta.title)}</title>
       </Helmet>
 
-      <div className="lg:w-4/6 text-gray-10 mt-9 lg:mt-10">
-        <TotalRewardsEarned />
+      <div className="flex flex-col lg:flex-row gap-6 lg:gap-20 w-full lg:w-5/6 text-gray-10 mt-6 lg:mt-12">
+        <div className="w-full lg:w-80">
+          <TotalRewardsEarned />
+        </div>
 
-        <div className="bg-gray-80 md:bg-gray-90 py-7 px-6 rounded mb-12">
+        <div className="flex-1 bg-gray-80 md:bg-gray-90 py-7 px-6 rounded mb-12">
           <Heading className="font-normal mb-8" type={HeadingType.h1}>
             {t(translations.rewardPage.tabs.title)}
           </Heading>

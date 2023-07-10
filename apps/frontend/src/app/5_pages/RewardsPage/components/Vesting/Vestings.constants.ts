@@ -1,29 +1,39 @@
+import { t } from 'i18next';
+
+import { translations } from '../../../../../locales/i18n';
 import { VestingContractTableRecord } from './Vesting.types';
 import {
   UnlockedBalance,
+  Withdraw,
   renderBalance,
   renderContractAddress,
 } from './Vestings.utils';
 
 export const columnsConfig = [
   {
-    id: 'type',
-    title: 'Type',
+    id: 'vestingType',
+    title: t(translations.rewardPage.vesting.table.titles.vestingType),
+    cellRenderer: (item: VestingContractTableRecord) => item.type,
   },
   {
-    id: 'currentBalance',
-    title: 'Current balance',
+    id: 'balance',
+    title: t(translations.rewardPage.vesting.table.titles.balance),
     cellRenderer: (item: VestingContractTableRecord) =>
       renderBalance(item.currentBalance),
   },
   {
-    id: 'availableBalance',
-    title: 'Available balance',
+    id: 'available',
+    title: t(translations.rewardPage.vesting.table.titles.available),
     cellRenderer: UnlockedBalance,
   },
   {
     id: 'address',
-    title: 'Address',
+    title: t(translations.rewardPage.vesting.table.titles.address),
     cellRenderer: renderContractAddress,
+  },
+  {
+    id: '',
+    title: '',
+    cellRenderer: Withdraw,
   },
 ];

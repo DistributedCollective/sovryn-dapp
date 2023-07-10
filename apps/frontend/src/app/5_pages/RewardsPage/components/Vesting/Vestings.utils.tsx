@@ -1,15 +1,26 @@
 import React from 'react';
 
-import { Paragraph, ParagraphSize, TransactionId } from '@sovryn/ui';
+import { t } from 'i18next';
+
+import {
+  Button,
+  ButtonStyle,
+  ButtonType,
+  Paragraph,
+  ParagraphSize,
+  TransactionId,
+} from '@sovryn/ui';
 
 import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRenderer';
 import {
   SOV,
   TOKEN_RENDER_PRECISION,
 } from '../../../../../constants/currencies';
+import { translations } from '../../../../../locales/i18n';
 import { getRskExplorerUrl } from '../../../../../utils/helpers';
 import { VestingContractTableRecord } from './Vesting.types';
 import { useGetUnlockedVesting } from './hooks/useGetUnlockedBalance';
+import { useHandleWithdraw } from './hooks/useHandleWithdraw';
 
 const rskExplorerUrl = getRskExplorerUrl();
 
@@ -49,6 +60,19 @@ export const UnlockedBalance = (item: VestingContractTableRecord) => {
       suffix={SOV}
       precision={TOKEN_RENDER_PRECISION}
       dataAttribute="vesting-rewards-unlocked-balance"
+    />
+  );
+};
+
+export const Withdraw = (item: VestingContractTableRecord) => {
+  const handleWithdraw = useHandleWithdraw(item);
+
+  return (
+    <Button
+      onClick={handleWithdraw}
+      text={t(translations.common.buttons.withdraw)}
+      type={ButtonType.button}
+      style={ButtonStyle.secondary}
     />
   );
 };

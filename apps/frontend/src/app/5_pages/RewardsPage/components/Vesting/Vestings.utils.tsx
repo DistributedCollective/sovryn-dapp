@@ -39,9 +39,13 @@ export const UnlockedBalance = (item: VestingContractTableRecord) => {
     return <>0</>;
   }
 
+  if (loading) {
+    return <span>Calculating...</span>;
+  }
+
   return (
     <AmountRenderer
-      value={value}
+      value={value || '0'}
       suffix={SOV}
       precision={TOKEN_RENDER_PRECISION}
       dataAttribute="vesting-rewards-unlocked-balance"

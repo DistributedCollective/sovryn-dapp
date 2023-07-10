@@ -1,3 +1,5 @@
+import { useMemo } from 'react';
+
 import { useAccount } from '../../../../../../hooks/useAccount';
 import { rskClient } from '../../../../../../utils/clients';
 import { useGetVestingContractsQuery } from '../../../../../../utils/graphql/rsk/generated';
@@ -13,10 +15,16 @@ export const useGetVestingContracts = ():
     client: rskClient,
   });
 
-  return vestings?.data?.vestingContracts.map(item => ({
-    type: item.type,
-    currentBalance: item.currentBalance,
-    address: item.id,
-    cliff: item.cliff || 0,
-  }));
+  const result = useMemo(
+    () =>
+      vestings?.data?.vestingContracts.map(item => ({
+        type: item.type,
+        currentBalance: item.currentBalance,
+        address: item.id,
+        cliff: item.cliff || 0,
+      })),
+    [vestings?.data?.vestingContracts],
+  );
+
+  return result;
 };

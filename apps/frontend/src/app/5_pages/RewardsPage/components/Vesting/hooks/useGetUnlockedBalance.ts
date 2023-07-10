@@ -8,8 +8,10 @@ import { Decimal } from '@sovryn/utils';
 
 import { defaultChainId } from '../../../../../../config/chains';
 
+import { TOKEN_RENDER_PRECISION } from '../../../../../../constants/currencies';
 import { useAccount } from '../../../../../../hooks/useAccount';
 import { VestingContractType } from '../../../../../../utils/graphql/rsk/generated';
+import { fromWeiFixed } from '../../../../../../utils/math';
 import FourYearVestingAbi from '../FourYearVesting.json';
 import VestingAbi from '../Vesting.json';
 
@@ -23,7 +25,7 @@ export const useGetUnlockedVesting = (
 ) => {
   const { signer } = useAccount();
   const [loading, setLoading] = useState(false);
-  const [amount, setAmount] = useState('0');
+  const [amount, setAmount] = useState<string | undefined>(undefined);
 
   const isFourYearVesting = useMemo(
     () => type === VestingContractType.FourYearVesting,
@@ -36,7 +38,7 @@ export const useGetUnlockedVesting = (
         return '0';
       }
 
-      let value = Decimal.ZERO;
+      let value: Decimal = Decimal.ZERO;
       let end;
 
       try {
@@ -44,17 +46,17 @@ export const useGetUnlockedVesting = (
           await getProtocolContract('staking');
 
         const vestingContract = new Contract(
-          contractAddress,
+          contractAddress.toLowerCase(),
           VestingAbi,
           signer,
         );
         const fourYearVestingContract = new Contract(
-          contractAddress,
+          contractAddress.toLowerCase(),
           FourYearVestingAbi,
           signer,
         );
         const stakingContract = new Contract(
-          stakingContractAddress,
+          stakingContractAddress.toLowerCase(),
           stakingAbi,
           signer,
         );
@@ -77,12 +79,12 @@ export const useGetUnlockedVesting = (
 
         for (let i = Number(startDate) + cliff; i <= end; i += TWO_WEEKS) {
           const stake = await stakingContract.getPriorUserStakeByDate(
-            contractAddress,
+            contractAddress.toLowerCase(),
             i,
             blockNumber - 1,
           );
 
-          value = value.add(Decimal.from(stake));
+          value = value.add(Decimal.from(Number(stake)));
         }
 
         if (isFourYearVesting) {
@@ -97,15 +99,14 @@ export const useGetUnlockedVesting = (
           }
         }
       } catch (error) {
-        console.log(`error: ${error}`);
         setAmount('0');
         setLoading(false);
       }
 
-      return value.toString();
+      return fromWeiFixed(value.toString(), TOKEN_RENDER_PRECISION);
     };
 
-    if (contractAddress && contractAddress !== ethGenesisAddress) {
+    if (contractAddress && contractAddress !== ethGenesisAddress && !amount) {
       setLoading(true);
       calculate()
         .then(setAmount)
@@ -115,7 +116,7 @@ export const useGetUnlockedVesting = (
         })
         .finally(() => setLoading(false));
     }
-  }, [cliff, contractAddress, isFourYearVesting, signer]);
+  }, [amount, cliff, contractAddress, isFourYearVesting, signer]);
 
   return { value: amount, loading };
 };

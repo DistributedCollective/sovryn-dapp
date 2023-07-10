@@ -8,16 +8,12 @@ import {
   ReadableEthersLiquityWithStore,
 } from '@sovryn-zero/lib-ethers';
 import {
-  Heading,
-  HeadingType,
-  Paragraph,
-  ParagraphStyle,
-  ParagraphSize,
-  ErrorBadge,
-  ErrorLevel,
   Button,
   ButtonType,
   ButtonStyle,
+  Table,
+  ErrorBadge,
+  ErrorLevel,
 } from '@sovryn/ui';
 import { Decimal } from '@sovryn/utils';
 
@@ -43,6 +39,7 @@ import { decimalic } from '../../../../../utils/math';
 import { useGetSovGain } from '../../hooks/useGetSovGain';
 import { useHandleRewards } from '../../hooks/useHandleRewards';
 import { RewardsAction } from '../../types';
+import { columns } from './constants';
 
 export const StabilityPool: FC = () => {
   const { account, signer } = useAccount();
@@ -114,6 +111,76 @@ export const StabilityPool: FC = () => {
     ],
   );
 
+  const rows = useMemo(() => {
+    return [
+      {
+        type: t(translations.rewardPage.stabilityPool.stabilityPoolRewards),
+        amount: (
+          <AmountRenderer
+            value={amount}
+            suffix={BITCOIN}
+            precision={BTC_RENDER_PRECISION}
+            dataAttribute="rewards-amount"
+          />
+        ),
+        action: (
+          <div className="flex flex-row gap-3">
+            <Button
+              type={ButtonType.button}
+              style={ButtonStyle.secondary}
+              text={t(translations.rewardPage.stabilityPool.actions.withdraw)}
+              onClick={handleWithdraw}
+              disabled={claimDisabled}
+              dataAttribute="rewards-withdraw"
+            />
+            {isOpenTroveExists && Number(amount) > 0 && signer && (
+              <Button
+                type={ButtonType.button}
+                style={ButtonStyle.secondary}
+                text={t(
+                  translations.rewardPage.stabilityPool.actions.transferToLOC,
+                )}
+                onClick={handleTransferToLOC}
+                disabled={claimLocked}
+                dataAttribute="rewards-transfer-to-loc"
+              />
+            )}
+          </div>
+        ),
+      },
+      {
+        type: t(translations.rewardPage.stabilityPool.stabilityPoolSubsidies),
+        amount: (
+          <AmountRenderer
+            value={sovGain}
+            suffix={SOV}
+            precision={BTC_RENDER_PRECISION}
+            dataAttribute="rewards-amount"
+          />
+        ),
+        action: (
+          <Button
+            type={ButtonType.button}
+            style={ButtonStyle.secondary}
+            text={t(translations.rewardPage.stabilityPool.actions.withdraw)}
+            onClick={handleWithdraw}
+            disabled={claimDisabled}
+            dataAttribute="rewards-withdraw"
+          />
+        ),
+      },
+    ];
+  }, [
+    amount,
+    claimDisabled,
+    claimLocked,
+    handleTransferToLOC,
+    handleWithdraw,
+    isOpenTroveExists,
+    signer,
+    sovGain,
+  ]);
+
   useEffect(() => {
     if (!account) {
       setAmount(Decimal.ZERO);
@@ -153,99 +220,26 @@ export const StabilityPool: FC = () => {
   }, [troves, claimLocked, price, isRecoveryMode]);
 
   return (
-    <>
-      <div className="flex flex-col items-center w-full">
-        <Heading className="font-medium mb-4" type={HeadingType.h1}>
-          {t(translations.rewardPage.stabilityPool.title)}
-        </Heading>
-        <Paragraph
-          style={ParagraphStyle.tall}
-          className="font-medium mb-[3.25rem]"
-          size={ParagraphSize.base}
-        >
-          {t(translations.rewardPage.stabilityPool.subtitle)}
-        </Paragraph>
+    <div className="flex flex-col items-center w-full">
+      <div className="bg-gray-80 py-4 px-4 rounded w-full">
+        <Table columns={columns} rows={rows} rowKey={row => row.type} />
+        {claimLocked && (
+          <ErrorBadge
+            level={ErrorLevel.Warning}
+            message={t(translations.maintenanceMode.featureDisabled)}
+          />
+        )}
 
-        <div className="border border-gray-50 rounded w-full sm:w-[25rem] p-3 bg-gray-90">
-          <div className="bg-gray-70 rounded p-6 text-center mb-6">
-            <Paragraph
-              className="font-medium mb-2 text-gray-10"
-              size={ParagraphSize.small}
-            >
-              {t(translations.rewardPage.stabilityPool.stabilityPoolRewards)}
-            </Paragraph>
-            <div className="text-2xl leading-7 uppercase">
-              <AmountRenderer
-                value={amount}
-                suffix={BITCOIN}
-                precision={BTC_RENDER_PRECISION}
-                dataAttribute="rewards-amount"
-              />
-            </div>
-
-            <div className="text-center mt-4">
-              <Paragraph
-                className="font-medium mb-2 text-gray-10"
-                size={ParagraphSize.small}
-              >
-                {t(
-                  translations.rewardPage.stabilityPool.stabilityPoolSubsidies,
-                )}
-              </Paragraph>
-              <div className="text-2xl leading-7 uppercase">
-                <AmountRenderer
-                  value={sovGain}
-                  suffix={SOV}
-                  precision={BTC_RENDER_PRECISION}
-                  dataAttribute="rewards-amount"
-                />
-              </div>
-            </div>
-          </div>
-
-          {isUnderCollateralized && (
-            <ErrorBadge
-              level={ErrorLevel.Critical}
-              message={t(
-                translations.rewardPage.stabilityPool.undercollateralized,
-              )}
-              className="mb-6"
-            />
-          )}
-
-          <div className="flex flex-row justify-center gap-3">
-            <Button
-              type={ButtonType.button}
-              style={ButtonStyle.secondary}
-              text={t(translations.rewardPage.stabilityPool.actions.withdraw)}
-              className="w-full max-w-48"
-              onClick={handleWithdraw}
-              disabled={claimDisabled}
-              dataAttribute="rewards-withdraw"
-            />
-            {isOpenTroveExists && Number(amount) > 0 && signer && (
-              <Button
-                type={ButtonType.button}
-                style={ButtonStyle.secondary}
-                text={t(
-                  translations.rewardPage.stabilityPool.actions.transferToLOC,
-                )}
-                className="w-full"
-                onClick={handleTransferToLOC}
-                disabled={claimLocked}
-                dataAttribute="rewards-transfer-to-loc"
-              />
+        {isUnderCollateralized && (
+          <ErrorBadge
+            level={ErrorLevel.Critical}
+            message={t(
+              translations.rewardPage.stabilityPool.undercollateralized,
             )}
-          </div>
-
-          {claimLocked && (
-            <ErrorBadge
-              level={ErrorLevel.Warning}
-              message={t(translations.maintenanceMode.featureDisabled)}
-            />
-          )}
-        </div>
+            className="mb-0"
+          />
+        )}
       </div>
-    </>
+    </div>
   );
 };

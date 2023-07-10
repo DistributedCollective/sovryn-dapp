@@ -466,6 +466,7 @@
             "subtitle": "Collect rewards earned",
             "stabilityPoolRewards": "Stability pool rewards",
             "stabilityPoolSubsidies": "Stability pool subsidies",
+            "rewardType": "Reward type",
             "actions": {
                 "transferToLOC": "Transfer to LOC",
                 "withdraw": "Withdraw"

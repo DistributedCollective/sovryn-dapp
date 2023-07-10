@@ -112,6 +112,10 @@ export const StabilityPool: FC = () => {
   );
 
   const rows = useMemo(() => {
+    if (amount.isZero() && decimalic(sovGain).isZero()) {
+      return [];
+    }
+
     return [
       {
         type: t(translations.rewardPage.stabilityPool.stabilityPoolRewards),
@@ -192,7 +196,7 @@ export const StabilityPool: FC = () => {
   }, [refetchTroves, block]);
 
   useEffect(() => {
-    if (claimLocked) {
+    if (claimLocked || Number(price) === 0) {
       setIsUnderCollateralized(false);
       return;
     }
@@ -222,7 +226,13 @@ export const StabilityPool: FC = () => {
   return (
     <div className="flex flex-col items-center w-full">
       <div className="bg-gray-80 py-4 px-4 rounded w-full">
-        <Table columns={columns} rows={rows} rowKey={row => row.type} />
+        <Table
+          columns={columns}
+          rows={rows}
+          isLoading={loadingTroves}
+          rowKey={row => row.type}
+          noData={t(translations.rewardPage.stabilityPool.noRewards)}
+        />
         {claimLocked && (
           <ErrorBadge
             level={ErrorLevel.Warning}

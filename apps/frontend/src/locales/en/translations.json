@@ -467,6 +467,7 @@
             "stabilityPoolRewards": "Stability pool rewards",
             "stabilityPoolSubsidies": "Stability pool subsidies",
             "rewardType": "Reward type",
+            "noRewards": "No rewards available",
             "actions": {
                 "transferToLOC": "Transfer to LOC",
                 "withdraw": "Withdraw"

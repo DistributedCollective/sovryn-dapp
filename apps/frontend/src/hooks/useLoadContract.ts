@@ -22,15 +22,16 @@ export const useLoadContract = (
 
   const [address, setAddress] = useState<string | undefined>(undefined);
   const [abi, setAbi] = useState<ContractInterface | undefined>(undefined);
+  const mounted = isMounted();
 
   useEffect(() => {
     getContract(contractName, group, chain).then(result => {
-      if (isMounted()) {
+      if (mounted) {
         setAddress(result.address);
         setAbi(result.abi);
       }
     });
-  }, [chain, contractName, group, isMounted]);
+  }, [chain, contractName, group, isMounted, mounted]);
 
   return useMemo(() => {
     if (address && abi) {

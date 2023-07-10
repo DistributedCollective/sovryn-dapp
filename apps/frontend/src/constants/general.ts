@@ -32,3 +32,8 @@ export const RSK_FAUCET = 'https://faucet.rsk.co';
 export const CURRENT_RELEASE: ReleaseFileContent = JSON.parse(
   process.env.REACT_APP_RELEASE_DATA || '{}',
 );
+
+export const MAX_PROCESSABLE_CHECKPOINTS_RBTC = 33;
+export const MAX_PROCESSABLE_CHECKPOINTS_ZUSD = 300;
+export const MAX_PROCESSABLE_CHECKPOINTS_SOV = 200;
+export const MAX_PROCESSABLE_CHECKPOINTS_TOKENS = 150;

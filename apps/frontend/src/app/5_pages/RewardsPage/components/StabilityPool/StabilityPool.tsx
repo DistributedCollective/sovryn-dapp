@@ -232,6 +232,7 @@ export const StabilityPool: FC = () => {
           isLoading={loadingTroves}
           rowKey={row => row.type}
           noData={t(translations.rewardPage.stabilityPool.noRewards)}
+          rowTitle={rows => rows.type}
         />
         {claimLocked && (
           <ErrorBadge

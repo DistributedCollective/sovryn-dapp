@@ -466,8 +466,10 @@
             "subtitle": "Collect rewards earned",
             "stabilityPoolRewards": "Stability pool rewards",
             "stabilityPoolSubsidies": "Stability pool subsidies",
+            "stabilitySubsidies": "Stability subsidies",
             "rewardType": "Reward type",
             "noRewards": "No rewards available",
+            "stakingRevenue": "Staking revenue",
             "actions": {
                 "transferToLOC": "Transfer to LOC",
                 "withdraw": "Withdraw"

@@ -57,4 +57,17 @@ export const rsk: Record<string, AsyncContractConfigData> = {
     address: '0x1440d19436bEeaF8517896bffB957a88EC95a00F',
     getAbi: async () => (await import('../../abis/erc20.json')).default,
   },
+  feeSharing: {
+    address: '0x115cAF168c51eD15ec535727F64684D33B7b08D1',
+    getAbi: async () => (await import('../../abis/feeSharing.json')).default,
+  },
+  staking: {
+    address: '0x5684a06CaB22Db16d901fEe2A5C081b4C91eA40e',
+    getAbi: async () => (await import('../../abis/staking.json')).default,
+  },
+  stakingRewards: {
+    address: '0x8304FB3614c728B712e94F9D4DF6719fede6517F',
+    getAbi: async () =>
+      (await import('../../abis/stakingRewards.json')).default,
+  },
 };

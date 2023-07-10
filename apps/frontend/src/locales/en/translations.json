@@ -471,6 +471,7 @@
             "rewardType": "Reward type",
             "noRewards": "No rewards available",
             "notConnected": "Connect wallet to check for rewards",
+            "stakingRevenue": "Staking revenue",
             "actions": {
                 "transferToLOC": "Transfer to LOC",
                 "withdraw": "Withdraw"

@@ -1,7 +1,10 @@
-export type StakingType = {
-  id: string;
-  vestingAmount: string;
-  amount: string;
-  delegatedAmount: string;
-  lockedUntil: number;
+export type StakeItem = {
+  stakedAmount: string;
+  unlockDate: number;
+  delegate: string;
+};
+
+export type StakingData = {
+  dates: string[];
+  stakes: string[];
 };

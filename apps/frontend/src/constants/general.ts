@@ -35,3 +35,4 @@ export const CURRENT_RELEASE: ReleaseFileContent = JSON.parse(
 );
 
 export const WEIGHT_FACTOR = 10;
+export const MS = 1e3;

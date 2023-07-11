@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useMemo } from 'react';
 
 import { t } from 'i18next';
 
@@ -10,29 +10,31 @@ import {
   TOKEN_RENDER_PRECISION,
   VP,
 } from '../../../../../constants/currencies';
+import { useAccount } from '../../../../../hooks/useAccount';
 import { translations } from '../../../../../locales/i18n';
 import { decimalic, fromWei } from '../../../../../utils/math';
 import { PersonalStatRender } from '../../StakePage.utils';
+import { useGetStakingBalanceOf } from '../../hooks/useGetStakingBalanceOf';
 import { useGetStakingStatistics } from '../StakingStatistics/hooks/useGetStakingStatistics';
 import { useGetPersonalStakingStatistics } from './hooks/useGetPersonalStakingStatistics';
 
 export const PersonalStakingStatistics = () => {
-  const { stakedSov, votingPower } = useGetPersonalStakingStatistics();
+  const { account } = useAccount();
+  const { votingPower } = useGetPersonalStakingStatistics();
+  const { balance: stakedValue } = useGetStakingBalanceOf(account);
   const { totalVotingPower } = useGetStakingStatistics();
-  const [votingPowerShare, setVotingPowerShare] = useState(0);
 
-  const updateVotingPowerShare = useCallback(() => {
-    const vp = decimalic(votingPower.toString());
-    const totalVp = decimalic(totalVotingPower.toString());
-    const share = vp.div(totalVp).mul(100);
-    setVotingPowerShare(share.toNumber());
-  }, [votingPower, totalVotingPower]);
-
-  useEffect(() => {
-    if (votingPower && totalVotingPower) {
-      updateVotingPowerShare();
+  const votingPowerShare = useMemo(() => {
+    if (!votingPower || !totalVotingPower) {
+      return 0;
     }
-  }, [updateVotingPowerShare, votingPower, totalVotingPower]);
+    const votingPowerDecimal = decimalic(votingPower.toString());
+    const totalVotingPowerDecimal = decimalic(totalVotingPower.toString());
+    const getVotingPowerShare = votingPowerDecimal
+      .div(totalVotingPowerDecimal)
+      .mul(100);
+    return getVotingPowerShare.toNumber();
+  }, [votingPower, totalVotingPower]);
 
   return (
     <div className="w-full bg-gray-90 md:bg-gray-90 md:py-6 p-4 md:px-6 rounded mb-6">
@@ -47,7 +49,7 @@ export const PersonalStakingStatistics = () => {
             label={t(translations.stakePage.personalStatistics.stakedSov)}
             value={
               <AmountRenderer
-                value={fromWei(stakedSov)}
+                value={fromWei(stakedValue)}
                 suffix={SupportedTokens.sov}
                 precision={TOKEN_RENDER_PRECISION}
               />

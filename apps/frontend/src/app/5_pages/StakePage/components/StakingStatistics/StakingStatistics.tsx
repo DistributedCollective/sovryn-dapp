@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 
 import { t } from 'i18next';
 import { Trans } from 'react-i18next';
@@ -27,6 +27,20 @@ import { useGetStakingStatistics } from './hooks/useGetStakingStatistics';
 export const StakingStatistics = () => {
   const { totalStakedSov, totalVotingPower, maxStakingApr } =
     useGetStakingStatistics();
+
+  const renderMaxStakingApr = useMemo(
+    () =>
+      maxStakingApr ? (
+        <AmountRenderer
+          value={maxStakingApr}
+          suffix={` % ${APR}`}
+          precision={1}
+        />
+      ) : (
+        '-'
+      ),
+    [maxStakingApr],
+  );
 
   return (
     <div className="w-full md:py-7 md:px-6">
@@ -86,13 +100,7 @@ export const StakingStatistics = () => {
               />
             </span>
           }
-          value={
-            <AmountRenderer
-              value={maxStakingApr}
-              suffix={` % ${APR}`}
-              precision={1}
-            />
-          }
+          value={renderMaxStakingApr}
         />
       </div>
     </div>

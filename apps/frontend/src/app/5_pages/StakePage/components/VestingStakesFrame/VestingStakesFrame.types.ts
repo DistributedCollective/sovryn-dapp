@@ -1,11 +1,21 @@
-import { VestingContractType } from '../../../../../utils/graphql/rsk/generated';
+export type VestingData = {
+  vestingAddress: string;
+  vestingCreationType: string;
+  vestingType: string;
+};
 
-export type VestingType = {
-  id: string;
-  cliff: number;
-  createdAtTimestamp: number;
-  currentBalance: string;
-  duration: number;
-  startingBalance: string;
-  type: VestingContractType;
+export type VestingGroup =
+  | 'genesis'
+  | 'origin'
+  | 'team'
+  | 'reward'
+  | 'fouryear'
+  | 'fish'
+  | 'fishAirdrop';
+
+export type Vesting = {
+  staking: string;
+  type: VestingGroup;
+  typeCreation: string;
+  vestingContract: string;
 };

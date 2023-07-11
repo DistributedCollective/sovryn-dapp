@@ -12,55 +12,38 @@ import {
 
 import { DEFAULT_STAKES_SIZE } from '../../../../../constants/general';
 import { useAccount } from '../../../../../hooks/useAccount';
-import { useBlockNumber } from '../../../../../hooks/useBlockNumber';
 import { translations } from '../../../../../locales/i18n';
-import { VestingContract } from '../../../../../utils/graphql/rsk/generated';
 import { COLUMNS_CONFIG } from './VestingStakesFrame.constants';
-import { generateRowTitle } from './VestingStakesFrame.utils';
+import { StakedAmountCellRenderer } from './components/StakedAmountCellRenderer';
 import { useGetVestingStakes } from './hooks/useGetVestingStakes';
 
 const pageSize = DEFAULT_STAKES_SIZE;
 
 export const VestingStakesFrame: FC = () => {
   const { account } = useAccount();
-  const { value: block } = useBlockNumber();
 
   const [page, setPage] = useState(0);
 
   const [orderOptions, setOrderOptions] = useState<OrderOptions>({
-    orderBy: 'lockedUntil',
+    orderBy: 'unlockDate',
     orderDirection: OrderDirection.Desc,
   });
 
-  const { data, loading, refetch } = useGetVestingStakes(
-    account,
-    pageSize,
-    page,
-    orderOptions,
-  );
-
-  useEffect(() => {
-    refetch();
-  }, [refetch, block]);
-
-  const vestings = useMemo(
-    () => (data?.vestingContracts as VestingContract[]) || [],
-    [data],
-  );
+  const { vestingStakes, loading } = useGetVestingStakes();
 
   const onPageChange = useCallback(
     (value: number) => {
-      if (vestings.length < pageSize && value > page) {
+      if (vestingStakes.length < pageSize && value > page) {
         return;
       }
       setPage(value);
     },
-    [page, vestings.length],
+    [page, vestingStakes.length],
   );
 
   const isNextButtonDisabled = useMemo(
-    () => !loading && vestings?.length < pageSize,
-    [loading, vestings],
+    () => !loading && vestingStakes.length < pageSize,
+    [loading, vestingStakes],
   );
 
   useEffect(() => {
@@ -78,8 +61,8 @@ export const VestingStakesFrame: FC = () => {
           setOrderOptions={setOrderOptions}
           orderOptions={orderOptions}
           columns={COLUMNS_CONFIG}
-          rows={vestings}
-          rowTitle={generateRowTitle}
+          rows={vestingStakes}
+          rowTitle={StakedAmountCellRenderer}
           isLoading={loading}
           className="text-gray-10 lg:px-6 lg:py-4 text-xs"
           noData={

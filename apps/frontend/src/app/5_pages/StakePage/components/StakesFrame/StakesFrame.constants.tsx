@@ -3,22 +3,25 @@ import React from 'react';
 import { t } from 'i18next';
 
 import { SupportedTokens } from '@sovryn/contracts';
-import { Button, ButtonSize, ButtonStyle } from '@sovryn/ui';
 
 import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRenderer';
+import { TxIdWithNotification } from '../../../../2_molecules/TxIdWithNotification/TransactionIdWithNotification';
 import { TOKEN_RENDER_PRECISION } from '../../../../../constants/currencies';
 import { translations } from '../../../../../locales/i18n';
-import { dateFormat } from '../../../../../utils/helpers';
-import { StakingType } from './StakesFrame.types';
+import { dateFormat, getRskExplorerUrl } from '../../../../../utils/helpers';
+import { AdjustStakeRenderer } from '../AdjustStakeRenderer/AdjustStakeRenderer';
+import { StakeItem } from './StakesFrame.types';
 import { VotingPowerCellRenderer } from './components/VotingPowerCellRenderer';
+
+const rskExplorerUrl = getRskExplorerUrl();
 
 export const COLUMNS_CONFIG = [
   {
     id: 'stakeAmount',
     title: t(translations.stakePage.table.stakeAmount),
-    cellRenderer: (item: StakingType) => (
+    cellRenderer: (item: StakeItem) => (
       <AmountRenderer
-        value={item.amount}
+        value={item.stakedAmount}
         suffix={SupportedTokens.sov}
         precision={TOKEN_RENDER_PRECISION}
         showRoundingPrefix
@@ -29,32 +32,29 @@ export const COLUMNS_CONFIG = [
   {
     id: 'votingPower',
     title: t(translations.stakePage.table.votingPower),
-    cellRenderer: (item: StakingType) => VotingPowerCellRenderer(item),
+    cellRenderer: (item: StakeItem) => VotingPowerCellRenderer(item),
   },
   {
     id: 'delegate',
     title: t(translations.stakePage.table.delegate),
-    cellRenderer: () => t(translations.common.na),
+    cellRenderer: (item: StakeItem) =>
+      item.delegate.length ? (
+        <TxIdWithNotification
+          value={item.delegate}
+          href={`${rskExplorerUrl}/address/${item.delegate}`}
+        />
+      ) : (
+        t(translations.common.na)
+      ),
   },
   {
-    id: 'lockedUntil',
+    id: 'unlockDate',
     title: t(translations.stakePage.table.endDate),
-    cellRenderer: (item: StakingType) => <>{dateFormat(item.lockedUntil)}</>,
+    cellRenderer: (item: StakeItem) => <>{dateFormat(item.unlockDate)}</>,
   },
   {
     id: 'actions',
     title: ' ',
-    cellRenderer: () => (
-      <div className="flex justify-end">
-        <Button
-          style={ButtonStyle.secondary}
-          size={ButtonSize.small}
-          text={t(translations.stakePage.table.adjustButton)}
-          onClick={() => {}}
-          dataAttribute="stakes-adjust-button"
-          className="md:w-auto w-full"
-        />
-      </div>
-    ),
+    cellRenderer: (item: StakeItem) => AdjustStakeRenderer({ stake: item }),
   },
 ];

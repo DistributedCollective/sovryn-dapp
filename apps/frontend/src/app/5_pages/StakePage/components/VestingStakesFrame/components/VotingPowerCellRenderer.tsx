@@ -8,14 +8,16 @@ import {
   VP,
 } from '../../../../../../constants/currencies';
 import { translations } from '../../../../../../locales/i18n';
+import { fromWei } from '../../../../../../utils/math';
+import { useGetStakingBalanceOf } from '../../../hooks/useGetStakingBalanceOf';
 import { useGetVotingPower } from '../../../hooks/useGetVotingPower';
-import { StakeItem } from '../StakesFrame.types';
+import { Vesting } from '../VestingStakesFrame.types';
+import { useGetVestingStakeStartEndDates } from '../hooks/useGetVestingStakeStartEndDates';
 
-export const VotingPowerCellRenderer: FC<StakeItem> = ({
-  stakedAmount,
-  unlockDate,
-}) => {
-  const votingPower = useGetVotingPower(stakedAmount, unlockDate);
+export const VotingPowerCellRenderer: FC<Vesting> = ({ vestingContract }) => {
+  const { balance } = useGetStakingBalanceOf(vestingContract);
+  const { endDate } = useGetVestingStakeStartEndDates(vestingContract);
+  const votingPower = useGetVotingPower(fromWei(balance), Number(endDate));
 
   const renderVotingPower = useMemo(() => {
     if (!votingPower) {
@@ -28,7 +30,7 @@ export const VotingPowerCellRenderer: FC<StakeItem> = ({
         suffix={VP}
         precision={TOKEN_RENDER_PRECISION}
         showRoundingPrefix
-        dataAttribute="stake-voting-power-amount"
+        dataAttribute="vesting-stake-voting-power-amount"
       />
     );
   }, [votingPower]);

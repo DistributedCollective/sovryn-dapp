@@ -1,9 +1,13 @@
 import { useCallback, useEffect, useState } from 'react';
 
+import { MS } from '../../../../../../constants/general';
+import { MAX_STAKING_APR_API_LINK } from '../../../../../../constants/links';
 // import { MAX_STAKING_APR_API_LINK } from '../../../../../../constants/links';
 import { useBlockNumber } from '../../../../../../hooks/useBlockNumber';
 import { useGetProtocolContract } from '../../../../../../hooks/useGetContract';
 import { getRskChainId } from '../../../../../../utils/chain';
+
+const REDASH_API_KEY = process.env.REACT_APP_REDASH_API_KEY;
 
 export const useGetStakingStatistics = () => {
   const stakingContract = useGetProtocolContract('staking', getRskChainId());
@@ -18,10 +22,9 @@ export const useGetStakingStatistics = () => {
     if (
       block > 0 &&
       stakingContract &&
-      stakingStats.totalStakedSov === 0 &&
-      stakingStats.totalVotingPower === 0
+      (stakingStats.totalStakedSov === 0 || stakingStats.totalVotingPower === 0)
     ) {
-      const timestamp = Math.ceil(Date.now() / 1e3);
+      const timestamp = Math.ceil(Date.now() / MS);
       const [stakingStatistics, votingPowerAmount] = await Promise.all([
         stakingContract.getPriorTotalStakesForDate(timestamp, block - 1),
         stakingContract.getPriorTotalVotingPower(block - 1, timestamp),
@@ -41,21 +44,33 @@ export const useGetStakingStatistics = () => {
         }));
       }
     }
-    //TODO - CORS issue with API, need to fix, waiting for Soulbit's response
-    // try {
-    //   const response = await fetch(MAX_STAKING_APR_API_LINK);
-    //   const data = await response.json();
-    //   if (data && data.query_result && data.query_result.rows && data.query_result.rows.length > 0) {
-    //     const maxStakingApr = data.query_result.rows[0].apr_max_btc;
-    //     setStakingStats((prevStats) => ({
-    //       ...prevStats,
-    //       maxStakingApr,
-    //     }));
-    //   }
-    // } catch (error) {
-    //     Handle fetch error
-    //   console.error('Error fetching max staking APR:', error);
-    // }
+
+    if (REDASH_API_KEY) {
+      try {
+        const response = await fetch(
+          `${MAX_STAKING_APR_API_LINK}?api_key=${REDASH_API_KEY}`,
+        );
+        if (response.ok) {
+          const data = await response.json();
+          if (
+            data &&
+            data.query_result &&
+            data.query_result.rows &&
+            data.query_result.rows.length > 0
+          ) {
+            const maxStakingApr = data.query_result.rows[0].apr_max_btc;
+            setStakingStats(prevStats => ({
+              ...prevStats,
+              maxStakingApr,
+            }));
+          }
+        } else {
+          throw new Error('Failed to fetch data from the API');
+        }
+      } catch (error) {
+        console.error('Error fetching max staking APR:', error);
+      }
+    }
   }, [
     stakingContract,
     block,

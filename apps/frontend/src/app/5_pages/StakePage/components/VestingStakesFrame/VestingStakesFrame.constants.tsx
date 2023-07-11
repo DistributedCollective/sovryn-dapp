@@ -2,44 +2,35 @@ import React from 'react';
 
 import { t } from 'i18next';
 
-import { SupportedTokens } from '@sovryn/contracts';
 import { Button, ButtonSize, ButtonStyle } from '@sovryn/ui';
 
-import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRenderer';
-import { TOKEN_RENDER_PRECISION } from '../../../../../constants/currencies';
 import { translations } from '../../../../../locales/i18n';
-import { VestingContract } from '../../../../../utils/graphql/rsk/generated';
+import { Vesting } from './VestingStakesFrame.types';
+import { DelegateAddressCellRenderer } from './components/DelegateAddressCellRenderer';
+import { StakedAmountCellRenderer } from './components/StakedAmountCellRenderer';
+import { UnlockDateCellRenderer } from './components/UnlockDateCellRenderer';
+import { VotingPowerCellRenderer } from './components/VotingPowerCellRenderer';
 
 export const COLUMNS_CONFIG = [
   {
     id: 'stakeAmount',
     title: t(translations.stakePage.table.stakeAmount),
-    cellRenderer: (item: VestingContract) => (
-      <AmountRenderer
-        value={item.currentBalance}
-        suffix={SupportedTokens.sov}
-        precision={TOKEN_RENDER_PRECISION}
-        showRoundingPrefix
-        dataAttribute="vesting-stakes-amount"
-      />
-    ),
+    cellRenderer: (item: Vesting) => StakedAmountCellRenderer(item),
   },
   {
-    //TODO: add voting power calculation once it's available from the subgraph
     id: 'votingPower',
     title: t(translations.stakePage.table.votingPower),
-    cellRenderer: () => '-',
+    cellRenderer: (item: Vesting) => VotingPowerCellRenderer(item),
   },
   {
     id: 'delegate',
     title: t(translations.stakePage.table.delegate),
-    cellRenderer: () => t(translations.common.na),
+    cellRenderer: (item: Vesting) => DelegateAddressCellRenderer(item),
   },
   {
-    //TODO: add locked until date once it's available from the subgraph
-    id: 'lockedUntil',
+    id: 'unlockDate',
     title: t(translations.stakePage.table.endDate),
-    cellRenderer: () => '-',
+    cellRenderer: (item: Vesting) => UnlockDateCellRenderer(item),
   },
   {
     id: 'actions',

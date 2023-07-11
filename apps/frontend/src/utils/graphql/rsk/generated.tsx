@@ -13761,6 +13761,24 @@ export type GetVestingContractsQuery = {
 >>>>>>> 7e5e150 (Display vesting contracts data)
 };
 
+export type GetVestingHistoryQueryVariables = Exact<{
+  vestingAddress?: InputMaybe<Scalars['ID']>;
+}>;
+
+export type GetVestingHistoryQuery = {
+  __typename?: 'Query';
+  vestingContracts: Array<{
+    __typename?: 'VestingContract';
+    id: string;
+    stakeHistory?: Array<{
+      __typename?: 'VestingHistoryItem';
+      id: string;
+      amount: string;
+      lockedUntil?: number | null;
+    }> | null;
+  }>;
+};
+
 export const GetBitcoinTxIdDocument = gql`
   query getBitcoinTxId($createdAtTx: String) {
     bitcoinTransfers(where: { createdAtTx: $createdAtTx }, first: 1) {
@@ -14371,4 +14389,72 @@ export type GetVestingContractsQueryResult = Apollo.QueryResult<
   GetVestingContractsQuery,
   GetVestingContractsQueryVariables
 >>>>>>> 7e5e150 (Display vesting contracts data)
+>;
+export const GetVestingHistoryDocument = gql`
+  query getVestingHistory($vestingAddress: ID) {
+    vestingContracts(where: { id: $vestingAddress }) {
+      id
+      stakeHistory(
+        where: { action: TokensStaked }
+        orderBy: lockedUntil
+        orderDirection: desc
+        first: 250
+      ) {
+        id
+        amount
+        lockedUntil
+      }
+    }
+  }
+`;
+
+/**
+ * __useGetVestingHistoryQuery__
+ *
+ * To run a query within a React component, call `useGetVestingHistoryQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetVestingHistoryQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetVestingHistoryQuery({
+ *   variables: {
+ *      vestingAddress: // value for 'vestingAddress'
+ *   },
+ * });
+ */
+export function useGetVestingHistoryQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    GetVestingHistoryQuery,
+    GetVestingHistoryQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    GetVestingHistoryQuery,
+    GetVestingHistoryQueryVariables
+  >(GetVestingHistoryDocument, options);
+}
+export function useGetVestingHistoryLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    GetVestingHistoryQuery,
+    GetVestingHistoryQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    GetVestingHistoryQuery,
+    GetVestingHistoryQueryVariables
+  >(GetVestingHistoryDocument, options);
+}
+export type GetVestingHistoryQueryHookResult = ReturnType<
+  typeof useGetVestingHistoryQuery
+>;
+export type GetVestingHistoryLazyQueryHookResult = ReturnType<
+  typeof useGetVestingHistoryLazyQuery
+>;
+export type GetVestingHistoryQueryResult = Apollo.QueryResult<
+  GetVestingHistoryQuery,
+  GetVestingHistoryQueryVariables
 >;

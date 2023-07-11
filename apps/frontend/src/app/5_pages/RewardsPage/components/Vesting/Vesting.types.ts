@@ -7,3 +7,9 @@ export type VestingContractTableRecord = {
   address: string;
   cliff: number;
 };
+
+export type VestingHistoryItem = {
+  amount: string;
+  lockedUntil?: number | null;
+  isUnlocked: boolean;
+};

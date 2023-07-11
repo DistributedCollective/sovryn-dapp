@@ -3,6 +3,7 @@ import { t } from 'i18next';
 import { translations } from '../../../../../locales/i18n';
 import { VestingContractTableRecord } from './Vesting.types';
 import {
+  UnlockSchedule,
   UnlockedBalance,
   Withdraw,
   renderBalance,
@@ -13,7 +14,7 @@ export const columnsConfig = [
   {
     id: 'vestingType',
     title: t(translations.rewardPage.vesting.table.titles.vestingType),
-    cellRenderer: (item: VestingContractTableRecord) => item.type,
+    cellRenderer: UnlockSchedule,
   },
   {
     id: 'balance',

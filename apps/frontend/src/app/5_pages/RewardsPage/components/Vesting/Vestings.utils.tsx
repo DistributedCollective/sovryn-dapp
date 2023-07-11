@@ -1,24 +1,38 @@
-import React from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 
+import classNames from 'classnames';
+import dayjs from 'dayjs';
 import { t } from 'i18next';
 
+import { SupportedTokens } from '@sovryn/contracts';
 import {
   Button,
   ButtonStyle,
   ButtonType,
+  Dialog,
+  DialogBody,
+  DialogHeader,
+  Pagination,
   Paragraph,
   ParagraphSize,
   TransactionId,
 } from '@sovryn/ui';
+import { Decimal } from '@sovryn/utils';
 
 import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRenderer';
+import { AssetValue } from '../../../../2_molecules/AssetValue/AssetValue';
 import {
   SOV,
   TOKEN_RENDER_PRECISION,
 } from '../../../../../constants/currencies';
+import { DEFAULT_HISTORY_FRAME_PAGE_SIZE } from '../../../../../constants/general';
 import { translations } from '../../../../../locales/i18n';
 import { getRskExplorerUrl } from '../../../../../utils/helpers';
-import { VestingContractTableRecord } from './Vesting.types';
+import {
+  VestingContractTableRecord,
+  VestingHistoryItem,
+} from './Vesting.types';
+import { useGetUnlockSchedule } from './hooks/useGetUnlockSchedule';
 import { useGetUnlockedVesting } from './hooks/useGetUnlockedBalance';
 import { useHandleWithdraw } from './hooks/useHandleWithdraw';
 
@@ -74,6 +88,127 @@ export const Withdraw = (item: VestingContractTableRecord) => {
       type={ButtonType.button}
       style={ButtonStyle.secondary}
     />
+  );
+};
+
+export const UnlockSchedule = (item: VestingContractTableRecord) => {
+  const unlockSchedule = useGetUnlockSchedule(item);
+  const [showDialog, setShowDialog] = useState(false);
+
+  return (
+    <>
+      <Button
+        text={item.type}
+        style={ButtonStyle.ghost}
+        type={ButtonType.button}
+        onClick={() => setShowDialog(prevValue => !prevValue)}
+      />
+      <UnlockScheduleDialog
+        unlockSchedule={unlockSchedule}
+        isOpen={showDialog}
+        onClose={() => setShowDialog(false)}
+      />
+    </>
+  );
+};
+
+type UnlockScheduleDialogProps = {
+  unlockSchedule?: VestingHistoryItem[];
+  isOpen: boolean;
+  onClose: () => void;
+};
+
+const pageSize = DEFAULT_HISTORY_FRAME_PAGE_SIZE;
+
+const UnlockScheduleDialog: React.FC<UnlockScheduleDialogProps> = ({
+  unlockSchedule,
+  isOpen,
+  onClose,
+}) => {
+  const [page, setPage] = useState(0);
+
+  const onPageChange = useCallback(
+    (value: number) => {
+      if (
+        !unlockSchedule ||
+        (unlockSchedule?.length < pageSize && value > page)
+      ) {
+        return;
+      }
+      setPage(value);
+    },
+    [page, unlockSchedule],
+  );
+
+  const formattedSchedule = useMemo(() => {
+    if (!unlockSchedule) {
+      return null;
+    }
+
+    return unlockSchedule?.map(item => ({
+      date: dayjs.unix(item.lockedUntil!).format('YYYY-MM-DD'),
+      amount: item.amount,
+      isUnlocked: item.isUnlocked,
+    }));
+  }, [unlockSchedule]);
+
+  const isDialogOpen = useMemo(
+    () => isOpen && !!unlockSchedule,
+    [isOpen, unlockSchedule],
+  );
+
+  const paginatedItems = useMemo(
+    () => formattedSchedule?.slice(page * pageSize, (page + 1) * pageSize),
+    [formattedSchedule, page],
+  );
+
+  const isNextButtonDisabled = useMemo(
+    () => paginatedItems && paginatedItems?.length < pageSize,
+    [paginatedItems],
+  );
+
+  return (
+    <Dialog isOpen={isDialogOpen}>
+      <DialogHeader title={'Vesting schedule'} onClose={onClose} />
+
+      <DialogBody>
+        <div>
+          <div className="flex justify-between px-2">
+            <div>Date</div>
+            <div>Amount</div>
+          </div>
+          <div className="bg-gray-70 px-4 py-3 rounded">
+            {paginatedItems?.map(item => (
+              <div
+                className={classNames('flex justify-between py-1', {
+                  'text-gray-30': item.isUnlocked,
+                })}
+              >
+                <div>{item.date}</div>
+                <div>
+                  <AssetValue
+                    value={Decimal.from(item.amount)}
+                    asset={SupportedTokens.sov}
+                    assetClassName="font-normal"
+                    containerClassName="flex"
+                  />
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <Pagination
+            page={page}
+            className="lg:pb-6 mt-3 lg:mt-6 justify-center"
+            onChange={onPageChange}
+            itemsPerPage={pageSize}
+            totalItems={formattedSchedule?.length}
+            isNextButtonDisabled={isNextButtonDisabled}
+            dataAttribute="conversions-history-pagination"
+          />
+        </div>
+      </DialogBody>
+    </Dialog>
   );
 };
 

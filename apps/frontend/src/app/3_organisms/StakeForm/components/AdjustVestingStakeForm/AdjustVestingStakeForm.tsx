@@ -72,26 +72,25 @@ export const AdjustVestingStakeForm: FC<AdjustVestingStakeFormProps> = ({
           className="mt-3 max-w-full"
         />
 
-        <Paragraph size={ParagraphSize.base} className="font-medium mt-6">
-          <div className="flex items-center gap-1">
+        <div className="flex items-center gap-1 mt-6">
+          <Paragraph size={ParagraphSize.base} className="font-medium">
             {t(translations.stakePage.stakeForm.newDelegateAddress)}{' '}
-            <HelperButton
-              tooltipClassName="max-w-56 md:max-72"
-              content={
-                <Trans
-                  i18nKey={t(translations.stakePage.stakeForm.delegateInfo)}
-                  components={[
-                    <Link
-                      text={t(translations.stakePage.stakeForm.delegateInfoCta)}
-                      href={DELEGATION_LEARN_MORE_LINK}
-                      openNewTab
-                    />,
-                  ]}
-                />
-              }
-            />
-          </div>
-        </Paragraph>
+          </Paragraph>
+          <HelperButton
+            content={
+              <Trans
+                i18nKey={t(translations.stakePage.stakeForm.delegateInfo)}
+                components={[
+                  <Link
+                    text={t(translations.stakePage.stakeForm.delegateInfoCta)}
+                    href={DELEGATION_LEARN_MORE_LINK}
+                    openNewTab
+                  />,
+                ]}
+              />
+            }
+          />
+        </div>
         <Input
           value={delegateToAddress}
           onChangeText={setDelegateToAddress}

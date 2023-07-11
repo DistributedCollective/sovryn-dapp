@@ -428,7 +428,9 @@
             "increase": "Increase",
             "decrease": "Decrease",
             "extend": "Extend",
-            "delegate": "Delegate"
+            "delegate": "Delegate",
+            "delegateInfo": "Discover Bitocracy delegates <0>here</0>",
+            "delegateInfoCta": "here"
         },
         "stakingRewards": {
             "title": "Staking rewards",

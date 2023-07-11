@@ -55,3 +55,6 @@ export const MAX_STAKING_APR_API_LINK =
 
 export const STAKING_REWARDS_LEARN_MORE_LINK =
   'https://sovryn.com/all-things-sovryn/5-amazing-benefits-of-staking-sov';
+
+export const DELEGATION_LEARN_MORE_LINK =
+  'https://forum.sovryn.com/c/bitocracy/delegates/24';

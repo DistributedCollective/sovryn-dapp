@@ -2,20 +2,21 @@ import { useCallback, useEffect, useState } from 'react';
 
 import { useGetProtocolContract } from '../../../../hooks/useGetContract';
 import { getRskChainId } from '../../../../utils/chain';
+import { fromWei, toWei } from '../../../../utils/math';
 
 export const useGetPenaltyAmount = (amount: string, unlockDate: number) => {
   const stakingContract = useGetProtocolContract('staking', getRskChainId());
-  const [penaltyAmount, setPenaltyAmount] = useState(0);
+  const [penaltyAmount, setPenaltyAmount] = useState('0');
 
   const getPenaltyAmount = useCallback(async () => {
     try {
-      if (amount && unlockDate && stakingContract) {
+      if (Number(amount) > 0 && unlockDate && stakingContract) {
         const receivedAmount = await stakingContract.getWithdrawAmounts(
-          Number(amount),
+          toWei(amount),
           unlockDate,
         );
         if (receivedAmount) {
-          setPenaltyAmount(Number(receivedAmount[1].toString()));
+          setPenaltyAmount(fromWei(receivedAmount[1]).toString());
         }
       }
     } catch (error) {

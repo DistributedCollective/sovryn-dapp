@@ -20,12 +20,11 @@ import {
 
 import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { MaxButton } from '../../../../2_molecules/MaxButton/MaxButton';
+import { AdjustStakeAction } from '../../../../5_pages/StakePage/StakePage.types';
 import { useGetWeight } from '../../../../5_pages/StakePage/components/StakesFrame/hooks/useGetWeight';
 import { useGetVotingPower } from '../../../../5_pages/StakePage/hooks/useGetVotingPower';
-import {
-  TOKEN_RENDER_PRECISION,
-  VP,
-} from '../../../../../constants/currencies';
+import { useHandleAdjustStake } from '../../../../5_pages/StakePage/hooks/useHandleAdjustStake';
+import { TOKEN_RENDER_PRECISION } from '../../../../../constants/currencies';
 import { MS, WEIGHT_FACTOR } from '../../../../../constants/general';
 import { useAccount } from '../../../../../hooks/useAccount';
 import { useAssetBalance } from '../../../../../hooks/useAssetBalance';
@@ -39,6 +38,8 @@ import {
   renderNewStakedAmount,
   renderVotingPowerChanged,
   renderNewVotingPower,
+  isAddress,
+  renderVotingPower,
 } from './AdjustStakeForm.utils';
 
 export const AdjustStakeForm: FC<AdjustStakeFormProps> = ({ stake }) => {
@@ -58,13 +59,16 @@ export const AdjustStakeForm: FC<AdjustStakeFormProps> = ({ stake }) => {
   const { weight } = useGetWeight(!isExtendTab ? stake.unlockDate : unlockDate);
   const votingPower = useGetVotingPower(stake.stakedAmount, stake.unlockDate);
 
-  const isPenaltyAmountValid = useMemo(
-    () => Number(amount) > 0 && Number(amount) <= Number(stake.stakedAmount),
-    [amount, stake.stakedAmount],
+  const penaltyAmountValidated = useMemo(
+    () =>
+      isDecreaseTab && Number(amount) <= Number(stake.stakedAmount)
+        ? amount
+        : '0',
+    [amount, stake.stakedAmount, isDecreaseTab],
   );
 
   const penaltyAmount = useGetPenaltyAmount(
-    !isPenaltyAmountValid ? '' : amount,
+    penaltyAmountValidated,
     stake.unlockDate,
   );
 
@@ -86,19 +90,37 @@ export const AdjustStakeForm: FC<AdjustStakeFormProps> = ({ stake }) => {
     [amount, balance, stake.stakedAmount, isDecreaseTab],
   );
 
-  const isSubmitDisabled = useMemo(
-    () =>
-      !isExtendTab
-        ? !amount || Number(amount) <= 0 || Number(amount) > Number(balance)
-        : unlockDate === 0,
-    [amount, balance, isExtendTab, unlockDate],
+  const isValidAddress = useMemo(
+    () => isAddress(delegateToAddress) || delegateToAddress.length === 0,
+    [delegateToAddress],
   );
 
-  const invalidAddress = useMemo(() => false, []);
+  const isSubmitDisabled = useMemo(
+    () =>
+      (isExtendTab && unlockDate === 0) ||
+      (isDecreaseTab && Number(amount) > Number(stake.stakedAmount)) ||
+      (isIncreaseTab && Number(amount) > Number(balance)) ||
+      ((isDecreaseTab || isIncreaseTab) && Number(amount) <= 0) ||
+      (isDelegateTab && (!isValidAddress || delegateToAddress.length === 0)),
 
-  const getPenaltyAmount = useCallback(() => {
-    return renderPenaltyAmount(amount, penaltyAmount, isValidAmount);
-  }, [amount, penaltyAmount, isValidAmount]);
+    [
+      amount,
+      balance,
+      stake.stakedAmount,
+      isDecreaseTab,
+      isExtendTab,
+      isIncreaseTab,
+      isDelegateTab,
+      isValidAddress,
+      unlockDate,
+      delegateToAddress,
+    ],
+  );
+
+  const getPenaltyAmount = useCallback(
+    () => renderPenaltyAmount(amount, penaltyAmount, isValidAmount),
+    [amount, penaltyAmount, isValidAmount],
+  );
 
   const getNewStakedAmount = useCallback(
     () =>
@@ -143,6 +165,38 @@ export const AdjustStakeForm: FC<AdjustStakeFormProps> = ({ stake }) => {
       unlockDate,
     ],
   );
+
+  const onTransactionSuccess = useCallback(() => {
+    setAmount('');
+    setUnlockDate(0);
+    setVotingPowerChanged(0);
+    setDelegateToAddress('');
+  }, []);
+
+  const action = useMemo(() => {
+    return isDecreaseTab
+      ? AdjustStakeAction.Decrease
+      : isExtendTab
+      ? AdjustStakeAction.Extend
+      : isDelegateTab
+      ? AdjustStakeAction.Delegate
+      : AdjustStakeAction.Increase;
+  }, [isDecreaseTab, isExtendTab, isDelegateTab]);
+
+  const handleAdjustStake = useHandleAdjustStake(
+    amount,
+    stake.unlockDate,
+    onTransactionSuccess,
+    unlockDate,
+    delegateToAddress,
+    action,
+  );
+
+  const handleSubmit = useCallback(() => {
+    if (!isSubmitDisabled) {
+      handleAdjustStake();
+    }
+  }, [isSubmitDisabled, handleAdjustStake]);
 
   useEffect(() => {
     if (!isValidAmount) {
@@ -195,13 +249,7 @@ export const AdjustStakeForm: FC<AdjustStakeFormProps> = ({ stake }) => {
             {t(translations.stakePage.stakeForm.votingPower)}
           </Paragraph>
           <div className="text-sm font-semibold">
-            <AmountRenderer
-              value={votingPower}
-              suffix={VP}
-              precision={TOKEN_RENDER_PRECISION}
-              dataAttribute="adjust-stake-voting-power"
-              className="font-semibold"
-            />
+            {renderVotingPower(votingPower)}
           </div>
         </div>
 
@@ -277,32 +325,34 @@ export const AdjustStakeForm: FC<AdjustStakeFormProps> = ({ stake }) => {
         <>
           {hasDelegatedAddress && (
             <>
-              <Paragraph
-                size={ParagraphSize.base}
-                className="font-medium w-full mt-6"
-              >
+              <Paragraph size={ParagraphSize.base} className="font-medium mt-6">
                 {t(translations.stakePage.stakeForm.currentDelegateAddress)}
               </Paragraph>
               <Input
                 readOnly
                 value={stake.delegate.toLowerCase()}
-                className="mt-3 w-full"
+                className="mt-3 max-w-full"
               />
             </>
           )}
 
-          <Paragraph
-            size={ParagraphSize.base}
-            className="font-medium w-full mt-6"
-          >
+          <Paragraph size={ParagraphSize.base} className="font-medium mt-6">
             {t(translations.stakePage.stakeForm.newDelegateAddress)}
           </Paragraph>
           <Input
             value={delegateToAddress}
             onChangeText={setDelegateToAddress}
-            className="mt-3 w-full"
-            invalid={invalidAddress}
+            className="mt-3 max-w-full"
+            invalid={!isValidAddress}
+            dataAttribute="adjust-stake-delegate-address"
           />
+          {!isValidAddress && (
+            <ErrorBadge
+              level={ErrorLevel.Critical}
+              message={t(translations.stakePage.stakeForm.invalidAddressError)}
+              dataAttribute="adjust-stake-delegate-address-error"
+            />
+          )}
         </>
       )}
 
@@ -339,7 +389,7 @@ export const AdjustStakeForm: FC<AdjustStakeFormProps> = ({ stake }) => {
       )}
       <Button
         text={t(translations.common.buttons.confirm)}
-        // onClick={onContinueClick}
+        onClick={handleSubmit}
         disabled={isSubmitDisabled}
         className="mt-10 w-full"
         dataAttribute="adjust-stake-confirm"

@@ -14,20 +14,25 @@ import { decimalic } from '../../../../../utils/math';
 
 export const renderPenaltyAmount = (
   amount: string,
-  penaltyAmount: number,
+  penaltyAmount: string,
   isValidAmount: boolean,
 ) => {
-  if (!amount || !isValidAmount || penaltyAmount === 0) {
+  if (
+    !isValidAmount ||
+    decimalic(amount).isZero() ||
+    amount === '' ||
+    decimalic(penaltyAmount).isZero()
+  ) {
     return t(translations.common.na);
   }
 
   const penaltyAmountPercentage = Math.ceil(
-    (penaltyAmount / Number(amount)) * 100,
+    (Number(penaltyAmount) / Number(amount)) * 100,
   );
 
   return (
     <AmountRenderer
-      value={penaltyAmount}
+      value={Number(penaltyAmount)}
       suffix={`${SupportedTokens.sov} (${penaltyAmountPercentage}%)`}
       precision={TOKEN_RENDER_PRECISION}
     />
@@ -91,3 +96,19 @@ export const renderNewVotingPower = (
       precision={TOKEN_RENDER_PRECISION}
     />
   );
+
+export const renderVotingPower = (votingPower: number) =>
+  votingPower !== 0 ? (
+    <AmountRenderer
+      value={votingPower}
+      suffix={VP}
+      precision={TOKEN_RENDER_PRECISION}
+      dataAttribute="adjust-stake-voting-power"
+      className="font-semibold"
+    />
+  ) : (
+    t(translations.common.na)
+  );
+
+export const isAddress = (address: string) =>
+  address.match(/^0x[a-fA-F0-9]{40}$/);

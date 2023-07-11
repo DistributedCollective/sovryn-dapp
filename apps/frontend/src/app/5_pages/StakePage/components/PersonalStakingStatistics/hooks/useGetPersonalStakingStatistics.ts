@@ -12,7 +12,7 @@ export const useGetPersonalStakingStatistics = () => {
   const [votingPower, setVotingPower] = useState(0);
   const [isDataFetched, setIsDataFetched] = useState(false);
 
-  const balance = useGetStakingBalanceOf(account);
+  const { balance } = useGetStakingBalanceOf(account);
 
   const updateVotingPower = useCallback(async () => {
     if (!stakingContract || isDataFetched) return;

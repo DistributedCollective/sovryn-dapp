@@ -15,7 +15,7 @@ import { VestingStakesFrame } from './components/VestingStakesFrame/VestingStake
 
 const StakePage: FC = () => {
   const { account } = useAccount();
-  const balance = useGetPersonalStakingStatistics();
+  const { balance } = useGetPersonalStakingStatistics();
   const hasStakedValue = useMemo(() => Number(balance) > 0, [balance]);
 
   return (

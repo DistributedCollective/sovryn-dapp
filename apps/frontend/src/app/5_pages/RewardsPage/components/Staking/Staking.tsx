@@ -8,6 +8,7 @@ import { Table } from '@sovryn/ui';
 
 import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { BTC_RENDER_PRECISION } from '../../../../../constants/currencies';
+import { getTokenDisplayName } from '../../../../../constants/tokens';
 import { translations } from '../../../../../locales/i18n';
 import { useGetFeesEarned } from '../../hooks/useGetFeesEarned';
 import { useGetLiquidSovClaimAmount } from '../../hooks/useGetLiquidSovClaimAmount';
@@ -31,7 +32,7 @@ export const Staking: FC = () => {
         amount: (
           <AmountRenderer
             value={formatUnits(earnedFee.value, 18)}
-            suffix={earnedFee.token}
+            suffix={getTokenDisplayName(earnedFee.token)}
             precision={BTC_RENDER_PRECISION}
             dataAttribute={`${earnedFee.token}-rewards-amount`}
           />
@@ -44,7 +45,7 @@ export const Staking: FC = () => {
         amount: (
           <AmountRenderer
             value={formatUnits(liquidSovClaimAmount, 18)}
-            suffix={SupportedTokens.sov}
+            suffix={getTokenDisplayName(SupportedTokens.sov)}
             precision={BTC_RENDER_PRECISION}
             dataAttribute={`${SupportedTokens.sov}-liquid-amount`}
           />

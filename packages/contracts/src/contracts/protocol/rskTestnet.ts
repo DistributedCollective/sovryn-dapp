@@ -62,4 +62,22 @@ export const rskTestnet: Record<string, AsyncContractConfigData> = {
     getAbi: async () =>
       (await import('../../abis/stakingRewards.json')).default,
   },
+  stakingFish: {
+    address: '0xc1fc98FEFA2130fC1CE352ec85f7aa61021eFE97',
+    getAbi: async () => (await import('../../abis/staking.json')).default,
+  },
+  vesting: {
+    address: '0x80ec7ADd6CC1003BBEa89527ce93722e1DaD5c2a',
+    getAbi: async () => (await import('../../abis/vesting.json')).default,
+  },
+  vestingRegistry: {
+    address: '0x09e8659B6d204C6b1bED2BFF8E3F43F834A5Bbc4',
+    getAbi: async () =>
+      (await import('../../abis/vestingRegistry.json')).default,
+  },
+  vestingRegistryFish: {
+    address: '0xFd8ea2e5e8591fA791d44731499cDF2e81CD6a41',
+    getAbi: async () =>
+      (await import('../../abis/vestingRegistry.json')).default,
+  },
 };

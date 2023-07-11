@@ -12,12 +12,10 @@ import {
 
 import { DEFAULT_STAKES_SIZE } from '../../../../../constants/general';
 import { useAccount } from '../../../../../hooks/useAccount';
-import { useBlockNumber } from '../../../../../hooks/useBlockNumber';
 import { translations } from '../../../../../locales/i18n';
-import { NewStakeRenderer } from '../NewStakeRenderer/NewStakeRenderer';
-import { useGetPersonalStakingStatistics } from '../PersonalStakingStatistics/hooks/useGetPersonalStakingStatistics';
+import { useGetStakingBalanceOf } from '../../hooks/useGetStakingBalanceOf';
+import { AddStakeRenderer } from '../AddStakeRenderer/AddStakeRenderer';
 import { COLUMNS_CONFIG } from './StakesFrame.constants';
-import { StakingType } from './StakesFrame.types';
 import { generateRowTitle } from './StakesFrame.utils';
 import { useGetStakes } from './hooks/useGetStakes';
 
@@ -25,29 +23,16 @@ const pageSize = DEFAULT_STAKES_SIZE;
 
 export const StakesFrame: FC = () => {
   const { account } = useAccount();
-  const { value: block } = useBlockNumber();
-  const { stakedSov } = useGetPersonalStakingStatistics();
-  const hasStakedSov = useMemo(() => stakedSov > 0, [stakedSov]);
+  const { stakes, loading } = useGetStakes();
+  const balance = useGetStakingBalanceOf(account);
+  const hasStakedValue = useMemo(() => Number(balance) > 0, [balance]);
 
   const [page, setPage] = useState(0);
 
   const [orderOptions, setOrderOptions] = useState<OrderOptions>({
-    orderBy: 'lockedUntil',
+    orderBy: 'unlockDate',
     orderDirection: OrderDirection.Desc,
   });
-
-  const { data, loading, refetch } = useGetStakes(
-    account,
-    pageSize,
-    page,
-    orderOptions,
-  );
-
-  useEffect(() => {
-    refetch();
-  }, [refetch, block]);
-
-  const stakes = useMemo(() => (data?.stakes as StakingType[]) || [], [data]);
 
   const onPageChange = useCallback(
     (value: number) => {
@@ -75,7 +60,7 @@ export const StakesFrame: FC = () => {
           {t(translations.stakePage.table.stakes)}
         </Paragraph>
         <div className="md:inline-block hidden">
-          <NewStakeRenderer hasStakedSov={hasStakedSov} />
+          <AddStakeRenderer hasStakedValue={hasStakedValue} />
         </div>
       </div>
 

@@ -5,7 +5,7 @@ import { Helmet } from 'react-helmet-async';
 
 import { useAccount } from '../../../hooks/useAccount';
 import { translations } from '../../../locales/i18n';
-import { NewStakeRenderer } from './components/NewStakeRenderer/NewStakeRenderer';
+import { AddStakeRenderer } from './components/AddStakeRenderer/AddStakeRenderer';
 import { PersonalStakingStatistics } from './components/PersonalStakingStatistics/PersonalStakingStatistics';
 import { useGetPersonalStakingStatistics } from './components/PersonalStakingStatistics/hooks/useGetPersonalStakingStatistics';
 import { StakesFrame } from './components/StakesFrame/StakesFrame';
@@ -15,8 +15,8 @@ import { VestingStakesFrame } from './components/VestingStakesFrame/VestingStake
 
 const StakePage: FC = () => {
   const { account } = useAccount();
-  const { stakedSov } = useGetPersonalStakingStatistics();
-  const hasStakedSov = useMemo(() => stakedSov > 0, [stakedSov]);
+  const balance = useGetPersonalStakingStatistics();
+  const hasStakedValue = useMemo(() => Number(balance) > 0, [balance]);
 
   return (
     <>
@@ -38,7 +38,7 @@ const StakePage: FC = () => {
         </div>
 
         <div className="md:hidden block w-full">
-          <NewStakeRenderer hasStakedSov={hasStakedSov} />
+          <AddStakeRenderer hasStakedValue={hasStakedValue} />
         </div>
       </div>
     </>

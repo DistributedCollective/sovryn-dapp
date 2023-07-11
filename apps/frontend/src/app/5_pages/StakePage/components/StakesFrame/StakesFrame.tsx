@@ -24,7 +24,8 @@ const pageSize = DEFAULT_STAKES_SIZE;
 export const StakesFrame: FC = () => {
   const { account } = useAccount();
   const { stakes, loading } = useGetStakes();
-  const balance = useGetStakingBalanceOf(account);
+  const { balance } = useGetStakingBalanceOf(account);
+
   const hasStakedValue = useMemo(() => Number(balance) > 0, [balance]);
 
   const [page, setPage] = useState(0);

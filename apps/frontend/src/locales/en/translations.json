@@ -417,6 +417,7 @@
             "stakedSov": "Staked SOV",
             "votingPower": "Voting power",
             "invalidAmountError": "Exceeds maximum amount",
+            "invalidAddressError": "Invalid address",
             "currentDelegateAddress": "Current delegate address",
             "newDelegateAddress": "New delegate address",
             "year": "Year",
@@ -434,6 +435,18 @@
             "description": "Earn rewards and participate in governance by staking SOV",
             "buySov": "Buy SOV",
             "learnMore": "Learn more about benefits"
+        },
+        "txDialog": {
+            "addNewStake": "Add new stake details",
+            "addNewStakeTitle": "Add new stake",
+            "decreaseStake": "Decrease stake details",
+            "decreaseStakeTitle": "Decrease stake",
+            "increaseStake": "Increase stake details",
+            "increaseStakeTitle": "Increase stake",
+            "extendStake": "Extend stake details",
+            "extendStakeTitle": "Extend stake",
+            "delegateStake": "Delegate voting power details",
+            "delegateStakeTitle": "Delegate voting power"
         }
     },
     "fastBtc": {

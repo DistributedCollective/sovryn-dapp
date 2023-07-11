@@ -19,6 +19,7 @@ import { MaxButton } from '../../../../2_molecules/MaxButton/MaxButton';
 import { useGetPersonalStakingStatistics } from '../../../../5_pages/StakePage/components/PersonalStakingStatistics/hooks/useGetPersonalStakingStatistics';
 import { useGetWeight } from '../../../../5_pages/StakePage/components/StakesFrame/hooks/useGetWeight';
 import { useGetStakingBalanceOf } from '../../../../5_pages/StakePage/hooks/useGetStakingBalanceOf';
+import { useHandleStake } from '../../../../5_pages/StakePage/hooks/useHandleStake';
 import {
   TOKEN_RENDER_PRECISION,
   VP,
@@ -104,6 +105,23 @@ export const AddStakeForm: FC<StakeFormProps> = ({ hasStakedValue }) => {
       ),
     [amount, votingPowerReceived, votingPower, isValidAmount],
   );
+
+  const onTransactionSuccess = useCallback(() => {
+    setAmount('');
+    setUnlockDate(0);
+  }, []);
+
+  const handleSubmitStake = useHandleStake(
+    amount,
+    unlockDate,
+    onTransactionSuccess,
+  );
+
+  const handleSubmit = useCallback(() => {
+    if (!isSubmitDisabled) {
+      handleSubmitStake();
+    }
+  }, [isSubmitDisabled, handleSubmitStake]);
 
   useEffect(() => {
     if (unlockDate === 0 || !isValidAmount) {
@@ -212,7 +230,7 @@ export const AddStakeForm: FC<StakeFormProps> = ({ hasStakedValue }) => {
       </SimpleTable>
       <Button
         text={t(translations.common.buttons.confirm)}
-        // onClick={onContinueClick}
+        onClick={handleSubmit}
         disabled={isSubmitDisabled}
         className="mt-10 w-full"
         dataAttribute="create-stake-confirm"

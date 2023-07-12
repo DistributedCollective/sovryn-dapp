@@ -5,6 +5,7 @@ import { Contract } from 'ethers';
 import { getProtocolContract } from '@sovryn/contracts';
 import { getProvider } from '@sovryn/ethers-provider';
 
+import { asyncCall } from '../../../../../../store/rxjs/provider-cache';
 import { getRskChainId } from '../../../../../../utils/chain';
 
 export const useGetVestingStakeStartEndDates = (
@@ -16,13 +17,25 @@ export const useGetVestingStakeStartEndDates = (
   useEffect(() => {
     const fetchDates = async () => {
       try {
-        const { abi } = await getProtocolContract('vesting', getRskChainId());
-        const provider = getProvider(getRskChainId());
-        const contract = new Contract(vestingContractAddress, abi, provider);
-        const [start, end] = await Promise.all([
-          contract.startDate(),
-          contract.endDate(),
-        ]);
+        const [start, end] = await asyncCall(
+          `vesting/dates/${vestingContractAddress}`,
+          async () => {
+            const { abi } = await getProtocolContract(
+              'vesting',
+              getRskChainId(),
+            );
+            const provider = getProvider(getRskChainId());
+            const contract = new Contract(
+              vestingContractAddress,
+              abi,
+              provider,
+            );
+            return await Promise.all([
+              contract.startDate(),
+              contract.endDate(),
+            ]);
+          },
+        );
         setStartDate(start.toString());
         setEndDate(end.toString());
       } catch (error) {

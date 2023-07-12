@@ -18,7 +18,7 @@ export const useGetPersonalStakingStatistics = () => {
     if (!stakingContract || isDataFetched) return;
 
     try {
-      const result = await asyncCall('votingPower', () =>
+      const result = await asyncCall(`${account}/votingPower`, () =>
         stakingContract.getCurrentVotes(account),
       );
       if (result) {

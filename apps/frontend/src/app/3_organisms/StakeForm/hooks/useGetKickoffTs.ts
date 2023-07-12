@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 
 import { useGetProtocolContract } from '../../../../hooks/useGetContract';
+import { asyncCall } from '../../../../store/rxjs/provider-cache';
 import { getRskChainId } from '../../../../utils/chain';
 
 export const useGetKickoffTs = () => {
@@ -8,9 +9,13 @@ export const useGetKickoffTs = () => {
   const [kickoffTs, setKickoffTs] = useState(0);
 
   const getKickoffTs = useCallback(async () => {
-    const getKickoffTs = await stakingContract?.kickoffTS();
-    if (getKickoffTs) {
-      setKickoffTs(Number(getKickoffTs));
+    const result = await asyncCall(
+      'staking/kickoffTS',
+      () => stakingContract?.kickoffTS(),
+      { ttl: 1800_000 },
+    );
+    if (result) {
+      setKickoffTs(Number(result));
     }
   }, [stakingContract]);
 

@@ -44,6 +44,7 @@ export const Staking: FC = () => {
           />
         ),
         action: <WithdrawFee {...earnedFee} refetch={refetch} />,
+        token: earnedFee.token,
         key: `${earnedFee.token}-fee`,
       })),
       {
@@ -63,6 +64,7 @@ export const Staking: FC = () => {
             refetch={refetchLiquidSovClaim}
           />
         ),
+        token: SupportedTokens.sov,
         key: `${SupportedTokens.sov}-liquid-fee`,
       },
     ];
@@ -78,7 +80,7 @@ export const Staking: FC = () => {
 
   return (
     <div className="flex flex-col items-center w-full">
-      <div className="bg-gray-80 py-4 px-4 rounded w-full">
+      <div className="bg-gray-80 lg:py-4 lg:px-4 rounded w-full">
         <Table
           columns={columns}
           rows={rows}
@@ -89,7 +91,7 @@ export const Staking: FC = () => {
               ? t(translations.rewardPage.stabilityPool.noRewards)
               : t(translations.rewardPage.stabilityPool.notConnected)
           }
-          rowTitle={row => row.type}
+          rowTitle={row => `${row.type}-${getTokenDisplayName(row.token)}`}
         />
       </div>
     </div>

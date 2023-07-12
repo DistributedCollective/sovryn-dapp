@@ -227,7 +227,7 @@ export const StabilityPool: FC = () => {
 
   return (
     <div className="flex flex-col items-center w-full">
-      <div className="bg-gray-80 py-4 px-4 rounded w-full">
+      <div className="bg-gray-80 lg:py-4 lg:px-4 rounded w-full">
         <Table
           columns={columns}
           rows={rows}

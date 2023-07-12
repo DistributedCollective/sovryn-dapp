@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 
 import { useGetProtocolContract } from '../../../../../../hooks/useGetContract';
+import { asyncCall } from '../../../../../../store/rxjs/provider-cache';
 import { getRskChainId } from '../../../../../../utils/chain';
 
 export const useGetVestingDelegateAddress = (
@@ -13,9 +14,9 @@ export const useGetVestingDelegateAddress = (
   useEffect(() => {
     const getDelegatedAddress = async () => {
       if (unlockDate !== 0 && stakingContract) {
-        const address = await stakingContract.delegates(
-          vestingContractAddress,
-          unlockDate,
+        const address = await asyncCall(
+          `staking/delegates/${vestingContractAddress}/${unlockDate}`,
+          () => stakingContract.delegates(vestingContractAddress, unlockDate),
         );
         if (address) {
           setDelegatedAddress(address);

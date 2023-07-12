@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { MS } from '../../../../../../constants/general';
 import { useGetProtocolContract } from '../../../../../../hooks/useGetContract';
+import { asyncCall } from '../../../../../../store/rxjs/provider-cache';
 import { getRskChainId } from '../../../../../../utils/chain';
 import { useGetLockDate } from './useGetLockDate';
 
@@ -17,9 +18,9 @@ export const useGetWeight = (unlockDate: number) => {
       return;
     }
 
-    const weight = await stakingContract?.computeWeightByDate(
-      unlockDate,
-      lockDate,
+    const weight = await asyncCall(
+      `staking/weights/${unlockDate}/${lockDate}`,
+      () => stakingContract?.computeWeightByDate(unlockDate, lockDate),
     );
     setWeight(Number(weight));
   }, [unlockDate, lockDate, stakingContract]);

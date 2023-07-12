@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 
 import { useAccount } from '../../../../../../hooks/useAccount';
 import { useGetProtocolContract } from '../../../../../../hooks/useGetContract';
+import { asyncCall } from '../../../../../../store/rxjs/provider-cache';
 import { getRskChainId } from '../../../../../../utils/chain';
 import { areAddressesEqual } from '../../../../../../utils/helpers';
 import { fromWei } from '../../../../../../utils/math';
@@ -21,7 +22,9 @@ export const useGetStakes = () => {
 
     setLoading(true);
     try {
-      const result = await stakingContract.getStakes(account);
+      const result = await asyncCall(`staking/stakes/${account}`, () =>
+        stakingContract.getStakes(account),
+      );
       if (result) {
         const { stakes, dates } = result;
 

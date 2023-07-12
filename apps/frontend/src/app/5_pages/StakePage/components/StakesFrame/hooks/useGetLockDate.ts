@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 
 import { useGetProtocolContract } from '../../../../../../hooks/useGetContract';
+import { asyncCall } from '../../../../../../store/rxjs/provider-cache';
 import { getRskChainId } from '../../../../../../utils/chain';
 
 export const useGetLockDate = (timestamp: number) => {
@@ -10,7 +11,10 @@ export const useGetLockDate = (timestamp: number) => {
   useEffect(() => {
     const getLockDate = async () => {
       if (timestamp !== 0 && stakingContract) {
-        const date = await stakingContract.timestampToLockDate(timestamp);
+        const date = await asyncCall(
+          `staking/timestampToLockData/${timestamp}`,
+          () => stakingContract.timestampToLockDate(timestamp),
+        );
         setLockDate(Number(date));
       }
     };

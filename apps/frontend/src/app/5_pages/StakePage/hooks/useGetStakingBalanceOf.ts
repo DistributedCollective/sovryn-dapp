@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 
 import { useGetProtocolContract } from '../../../../hooks/useGetContract';
+import { asyncCall } from '../../../../store/rxjs/provider-cache';
 import { getRskChainId } from '../../../../utils/chain';
 
 export const useGetStakingBalanceOf = (address: string) => {
@@ -10,7 +11,9 @@ export const useGetStakingBalanceOf = (address: string) => {
   useEffect(() => {
     const getBalance = async () => {
       if (address && stakingContract) {
-        const balance = await stakingContract.balanceOf(address);
+        const balance = await asyncCall(`staking/balance/${address}`, () =>
+          stakingContract.balanceOf(address),
+        );
         setBalance(balance.toString());
       }
     };

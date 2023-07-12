@@ -112,7 +112,8 @@ export const useGetFeesEarned = () => {
       !sovMaxWithdrawCheckpoint ||
       !zusdMaxWithdrawCheckpoint ||
       !myntMaxWithdrawCheckpoint ||
-      isLoadingContracts
+      isLoadingContracts ||
+      !account
     ) {
       return;
     }
@@ -145,7 +146,7 @@ export const useGetFeesEarned = () => {
       value: result[i].toString() || '',
     }));
 
-    setEarnedFees(fees);
+    setEarnedFees([...fees]);
     setLoading(false);
   }, [
     account,

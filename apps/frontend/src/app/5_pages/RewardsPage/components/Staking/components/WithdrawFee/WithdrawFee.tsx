@@ -35,6 +35,7 @@ export const WithdrawFee: FC<WithdrawFeeProps> = ({
 
   const { checkMaintenance, States } = useMaintenance();
   const claimFeesEarnedLocked = checkMaintenance(States.CLAIM_FEES_EARNED);
+  const rewardsLocked = checkMaintenance(States.REWARDS_FULL);
 
   const isRBTC = useMemo(() => token === SupportedTokens.rbtc, [token]);
 
@@ -48,8 +49,9 @@ export const WithdrawFee: FC<WithdrawFeeProps> = ({
     () =>
       !userCheckpoint?.hasFees ||
       claimFeesEarnedLocked ||
+      rewardsLocked ||
       decimalic(value).lte(0),
-    [userCheckpoint?.hasFees, claimFeesEarnedLocked, value],
+    [userCheckpoint?.hasFees, claimFeesEarnedLocked, rewardsLocked, value],
   );
 
   const maxWithdrawCheckpoint = useMemo(

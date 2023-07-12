@@ -30,6 +30,8 @@ export const WithdrawLiquidFee: FC<WithdrawLiquidFeeProps> = ({
 
   const { checkMaintenance, States } = useMaintenance();
   const claimLiquidSovLocked = checkMaintenance(States.CLAIM_LIQUID_SOV);
+  const rewardsLocked = checkMaintenance(States.REWARDS_FULL);
+
   const stakingRewards = useGetProtocolContract('stakingRewards');
   const sovToken = useGetTokenContract('sov');
 
@@ -47,6 +49,11 @@ export const WithdrawLiquidFee: FC<WithdrawLiquidFeeProps> = ({
   const hasTokenBalance = useMemo(() => {
     return decimalic(tokenBalance).gte(amountToClaim);
   }, [amountToClaim, tokenBalance]);
+
+  const isClaimDisabled = useMemo(
+    () => claimLiquidSovLocked || !hasTokenBalance || rewardsLocked,
+    [claimLiquidSovLocked, hasTokenBalance, rewardsLocked],
+  );
 
   const onComplete = useCallback(() => {
     refetch();
@@ -89,7 +96,7 @@ export const WithdrawLiquidFee: FC<WithdrawLiquidFeeProps> = ({
       style={ButtonStyle.secondary}
       text={t(translations.rewardPage.stabilityPool.actions.withdraw)}
       onClick={onSubmit}
-      disabled={claimLiquidSovLocked || !hasTokenBalance}
+      disabled={isClaimDisabled}
       dataAttribute="liquid-button"
     />
   );

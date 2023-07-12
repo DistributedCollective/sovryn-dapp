@@ -57,7 +57,9 @@ export const StabilityPool: FC = () => {
   } = useGetTroves();
 
   const { checkMaintenance, States } = useMaintenance();
-  const claimLocked = checkMaintenance(States.ZERO_STABILITY_CLAIM);
+  const rewardsLocked = checkMaintenance(States.REWARDS_FULL);
+  const stabilityClaimLocked = checkMaintenance(States.ZERO_STABILITY_CLAIM);
+  const claimLocked = stabilityClaimLocked || rewardsLocked;
   const { sovGain, updateSOVGain } = useGetSovGain();
 
   const { liquity } = useLoaderData() as {
@@ -229,9 +231,13 @@ export const StabilityPool: FC = () => {
         <Table
           columns={columns}
           rows={rows}
-          isLoading={loadingTroves}
+          isLoading={!!account ? loadingTroves : false}
           rowKey={row => row.type}
-          noData={t(translations.rewardPage.stabilityPool.noRewards)}
+          noData={
+            !!account
+              ? t(translations.rewardPage.stabilityPool.noRewards)
+              : t(translations.rewardPage.stabilityPool.notConnected)
+          }
           rowTitle={rows => rows.type}
         />
         {claimLocked && (

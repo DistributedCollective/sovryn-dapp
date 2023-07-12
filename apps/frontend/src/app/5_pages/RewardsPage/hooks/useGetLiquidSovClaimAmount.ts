@@ -20,6 +20,7 @@ export const useGetLiquidSovClaimAmount = () => {
       return {
         lastWithdrawalInterval: 0,
         amount: '0',
+        loading: false,
       };
     }
 

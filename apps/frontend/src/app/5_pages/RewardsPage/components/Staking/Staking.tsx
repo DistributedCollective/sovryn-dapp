@@ -9,6 +9,7 @@ import { Table } from '@sovryn/ui';
 import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { BTC_RENDER_PRECISION } from '../../../../../constants/currencies';
 import { getTokenDisplayName } from '../../../../../constants/tokens';
+import { useAccount } from '../../../../../hooks/useAccount';
 import { translations } from '../../../../../locales/i18n';
 import { useGetFeesEarned } from '../../hooks/useGetFeesEarned';
 import { useGetLiquidSovClaimAmount } from '../../hooks/useGetLiquidSovClaimAmount';
@@ -17,6 +18,7 @@ import { WithdrawLiquidFee } from './components/WithdrawLiquidFee/WithdrawLiquid
 import { columns } from './constants';
 
 export const Staking: FC = () => {
+  const { account } = useAccount();
   const { loading, earnedFees, refetch } = useGetFeesEarned();
 
   const {
@@ -26,6 +28,10 @@ export const Staking: FC = () => {
   } = useGetLiquidSovClaimAmount();
 
   const rows = useMemo(() => {
+    if (!account || loading) {
+      return [];
+    }
+
     return [
       ...earnedFees.map(earnedFee => ({
         type: t(translations.rewardPage.stabilityPool.stakingRevenue),
@@ -61,9 +67,11 @@ export const Staking: FC = () => {
       },
     ];
   }, [
+    account,
     earnedFees,
     lastWithdrawalInterval,
     liquidSovClaimAmount,
+    loading,
     refetch,
     refetchLiquidSovClaim,
   ]);
@@ -74,9 +82,13 @@ export const Staking: FC = () => {
         <Table
           columns={columns}
           rows={rows}
-          isLoading={loading}
+          isLoading={!!account ? loading : false}
           rowKey={row => row.key}
-          noData={t(translations.rewardPage.stabilityPool.noRewards)}
+          noData={
+            !!account
+              ? t(translations.rewardPage.stabilityPool.noRewards)
+              : t(translations.rewardPage.stabilityPool.notConnected)
+          }
           rowTitle={row => row.type}
         />
       </div>

@@ -4560,10 +4560,10 @@
     lodash.partition "^4.6.0"
     rxjs "^7.5.6"
 
-"@sovryn/onboard-hw-common@1.0.2":
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/@sovryn/onboard-hw-common/-/onboard-hw-common-1.0.2.tgz#b2da3079e5d3a4404eee6f5a8aae2dd2ad3108f2"
-  integrity sha512-3rktfTlqN9hpKxE9SJxMqcPdJeZw84jQZrZAz+NBRVWipCe69NaRZ4osPsAvYFTFocp66X27p5rX+0ygjs3ovQ==
+"@sovryn/onboard-hw-common@1.0.3":
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/@sovryn/onboard-hw-common/-/onboard-hw-common-1.0.3.tgz#f791ea25a3b7b9f9d070b4cf76493f3a2d7e50d3"
+  integrity sha512-r0XOufLUWdBouxJu4ajAcqoxaQ82L6ubWUKPdoGx00qOphvYiXQ/fRdKMec161HdmE6u6Bjy6i2x02kUTkgpeg==
   dependencies:
     "@ethereumjs/common" "^2.6.5"
     "@sovryn/onboard-common" "1.0.0"
@@ -4585,10 +4585,10 @@
     lodash.uniqby "^4.7.0"
     rxjs "^7.5.6"
 
-"@sovryn/onboard-ledger@1.0.2":
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/@sovryn/onboard-ledger/-/onboard-ledger-1.0.2.tgz#2b4bd23a888fdb9b697db6ece4ea8d8ca96107a2"
-  integrity sha512-qSWqe8V1CdWZ1ygflXJnY3rgGJUxwDTgMhXsanFWIt1HTUizd2kTpSNd8rOL/bjHe7QGCidJpCbU2oI1J4GYgw==
+"@sovryn/onboard-ledger@1.0.3":
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/@sovryn/onboard-ledger/-/onboard-ledger-1.0.3.tgz#8135cfa6190511fd574b001840d10f5e90e5d366"
+  integrity sha512-QzGFQnWQwTTw0YJM4OzRWjRvih3xPR6ECq2nR2MDEjw8VOFyhtFDtcmgx5hiAXOJdcVQGQnCihWkPLHybH763g==
   dependencies:
     "@ethereumjs/tx" "^3.5.2"
     "@ledgerhq/hw-app-eth" "^6.29.4"
@@ -4597,44 +4597,44 @@
     "@ledgerhq/hw-transport-webusb" "^6.27.2"
     "@metamask/eth-sig-util" "^4.0.1"
     "@sovryn/onboard-common" "1.0.0"
-    "@sovryn/onboard-hw-common" "1.0.2"
+    "@sovryn/onboard-hw-common" "1.0.3"
     ethers "^5.7.0"
     eventemitter3 "^4.0.7"
     joi "^17.6.0"
     lodash.partition "^4.6.0"
     rxjs "7.5.6"
 
-"@sovryn/onboard-react@1.0.7":
-  version "1.0.7"
-  resolved "https://registry.yarnpkg.com/@sovryn/onboard-react/-/onboard-react-1.0.7.tgz#ba0b560f492af46011352773ea8929117405ac83"
-  integrity sha512-PeWpOiP+IqUhByI/TFAfEGnUatqE8Ll+1lp5zRDSOhn1EmQBFrsLMxKk6aDKfS2A5+W0TwXEh6ezeDZLT28YaQ==
+"@sovryn/onboard-react@1.0.8":
+  version "1.0.8"
+  resolved "https://registry.yarnpkg.com/@sovryn/onboard-react/-/onboard-react-1.0.8.tgz#638b19c9ec9e6f77b329bb97b9a25ed55dfd4abe"
+  integrity sha512-DxNs8bxaE+cgWx0JLmLsccGLinJYnFJJtUvEuaAWQrgmxZVUXIw5ybQuMkHQIX0+QiwMcfg4A7KaTjsEzFi34A==
   dependencies:
     "@sovryn/onboard-common" "1.0.0"
     "@sovryn/onboard-core" "1.0.2"
-    "@sovryn/onboard-hw-common" "1.0.2"
+    "@sovryn/onboard-hw-common" "1.0.3"
 
-"@sovryn/onboard-trezor@1.0.2":
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/@sovryn/onboard-trezor/-/onboard-trezor-1.0.2.tgz#445c5b093ef898a8d0fee3ed85a5654ab28ec08a"
-  integrity sha512-nsUtszkCCieQaYIF6v5zyYBqBWo1mbFx9jqb4dgkEpGu5HHNyZLKE5JyhsCK2R9547I37JRvOTiBXoRbOnWKNg==
+"@sovryn/onboard-trezor@1.0.3":
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/@sovryn/onboard-trezor/-/onboard-trezor-1.0.3.tgz#433ef7340cb7bf50971e4258965f9ca0ea70b6d4"
+  integrity sha512-UVsS3sHNKD9B8ZmxWXeCAgyaIYkukBBi+TAQ1O+sYYdROnFYAAJ9X/8J/7HvT38ryiIWjF2mS+1Ua73bgkBr2w==
   dependencies:
     "@ethereumjs/tx" "3.5.2"
     "@metamask/eth-sig-util" "4.0.1"
     "@sovryn/onboard-common" "1.0.0"
-    "@sovryn/onboard-hw-common" "1.0.2"
+    "@sovryn/onboard-hw-common" "1.0.3"
     eth-crypto "2.3.0"
     ethers "5.7.0"
     hdkey "2.0.1"
     trezor-connect "8.2.11"
 
-"@sovryn/onboard-walletconnect@1.0.3":
-  version "1.0.3"
-  resolved "https://registry.yarnpkg.com/@sovryn/onboard-walletconnect/-/onboard-walletconnect-1.0.3.tgz#a16e17ce35406d04abb7c45b00659059020ccb92"
-  integrity sha512-NWYfYegC8QceqBm3yIBMnis0UuzKBO4rYOMQPJz07TyGSxlbdAeSwjke8VRyjrOm8tLsr8VPDU1DQnVs79dRRw==
+"@sovryn/onboard-walletconnect@1.0.4":
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/@sovryn/onboard-walletconnect/-/onboard-walletconnect-1.0.4.tgz#aefad3fffb9948ada70c7a23487fdd2c0fc16702"
+  integrity sha512-GBkTMorULYE3etExZZrMBSZB790kXsNSnJuIAa8I4EKt8AZ/+H+LlThcrTbIGcJaI422AejgNiie4l3TLOKCwg==
   dependencies:
     "@ethersproject/providers" "5.7.1"
     "@sovryn/onboard-common" "1.0.0"
-    "@sovryn/onboard-hw-common" "1.0.2"
+    "@sovryn/onboard-hw-common" "1.0.3"
     "@walletconnect/client" "1.8.0"
     "@walletconnect/ethereum-provider" "2.8.1"
     "@walletconnect/modal" "2.4.7"

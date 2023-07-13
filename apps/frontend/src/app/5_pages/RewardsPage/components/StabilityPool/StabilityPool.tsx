@@ -39,7 +39,7 @@ import { decimalic } from '../../../../../utils/math';
 import { useGetSovGain } from '../../hooks/useGetSovGain';
 import { useHandleRewards } from '../../hooks/useHandleRewards';
 import { RewardsAction } from '../../types';
-import { columns } from './constants';
+import { columns } from './StabilityPool.constants';
 
 export const StabilityPool: FC = () => {
   const { account, signer } = useAccount();
@@ -57,9 +57,13 @@ export const StabilityPool: FC = () => {
   } = useGetTroves();
 
   const { checkMaintenance, States } = useMaintenance();
-  const rewardsLocked = checkMaintenance(States.REWARDS_FULL);
-  const stabilityClaimLocked = checkMaintenance(States.ZERO_STABILITY_CLAIM);
-  const claimLocked = stabilityClaimLocked || rewardsLocked;
+  const claimLocked = useMemo(
+    () =>
+      checkMaintenance(States.REWARDS_FULL) ||
+      checkMaintenance(States.ZERO_STABILITY_CLAIM),
+    [States.REWARDS_FULL, States.ZERO_STABILITY_CLAIM, checkMaintenance],
+  );
+
   const { sovGain, updateSOVGain } = useGetSovGain();
 
   const { liquity } = useLoaderData() as {
@@ -126,7 +130,7 @@ export const StabilityPool: FC = () => {
             value={amount}
             suffix={BITCOIN}
             precision={BTC_RENDER_PRECISION}
-            dataAttribute="rewards-amount"
+            dataAttribute="stability-rewards-amount"
           />
         ),
         action: (
@@ -137,9 +141,9 @@ export const StabilityPool: FC = () => {
               text={t(translations.rewardPage.stabilityPool.actions.withdraw)}
               onClick={handleWithdraw}
               disabled={claimDisabled}
-              dataAttribute="rewards-withdraw"
+              dataAttribute="stability-rewards-withdraw"
             />
-            {isOpenTroveExists && Number(amount) > 0 && signer && (
+            {isOpenTroveExists && !amount.isZero() && signer && (
               <Button
                 type={ButtonType.button}
                 style={ButtonStyle.secondary}
@@ -148,7 +152,7 @@ export const StabilityPool: FC = () => {
                 )}
                 onClick={handleTransferToLOC}
                 disabled={claimLocked}
-                dataAttribute="rewards-transfer-to-loc"
+                dataAttribute="stability-rewards-transfer-to-loc"
               />
             )}
           </div>
@@ -161,7 +165,7 @@ export const StabilityPool: FC = () => {
             value={sovGain}
             suffix={SOV}
             precision={BTC_RENDER_PRECISION}
-            dataAttribute="rewards-amount"
+            dataAttribute="stability-subsidies-amount"
           />
         ),
         action: (
@@ -171,7 +175,7 @@ export const StabilityPool: FC = () => {
             text={t(translations.rewardPage.stabilityPool.actions.withdraw)}
             onClick={handleWithdraw}
             disabled={claimDisabled}
-            dataAttribute="rewards-withdraw"
+            dataAttribute="stability-subsidies-withdraw"
           />
         ),
       },

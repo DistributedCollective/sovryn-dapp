@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 
-import { getContract, SupportedTokens } from '@sovryn/contracts';
+import { getTokenContract, SupportedTokens } from '@sovryn/contracts';
 
 import { useAccount } from '../../../../hooks/useAccount';
 import { useGetProtocolContract } from '../../../../hooks/useGetContract';
@@ -26,7 +26,7 @@ export const useGetNextPositiveCheckpoint = (
     if (!feeSharing) {
       return;
     }
-    const tokenContract = await getContract(token, 'tokens', getRskChainId());
+    const tokenContract = await getTokenContract(token, getRskChainId());
 
     const processedCheckpoints = await feeSharing.processedCheckpoints(
       account,

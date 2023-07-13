@@ -46,9 +46,10 @@ export const WithdrawLiquidFee: FC<WithdrawLiquidFeeProps> = ({
     })();
   }, [sovToken, stakingRewards]);
 
-  const hasTokenBalance = useMemo(() => {
-    return decimalic(tokenBalance).gte(amountToClaim);
-  }, [amountToClaim, tokenBalance]);
+  const hasTokenBalance = useMemo(
+    () => decimalic(tokenBalance).gte(amountToClaim),
+    [amountToClaim, tokenBalance],
+  );
 
   const isClaimDisabled = useMemo(
     () => claimLiquidSovLocked || !hasTokenBalance || rewardsLocked,

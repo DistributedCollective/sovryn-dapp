@@ -13,9 +13,9 @@ import { useAccount } from '../../../../../hooks/useAccount';
 import { translations } from '../../../../../locales/i18n';
 import { useGetFeesEarned } from '../../hooks/useGetFeesEarned';
 import { useGetLiquidSovClaimAmount } from '../../hooks/useGetLiquidSovClaimAmount';
+import { columns } from './Staking.constants';
 import { WithdrawFee } from './components/WithdrawFee/WithdrawFee';
 import { WithdrawLiquidFee } from './components/WithdrawLiquidFee/WithdrawLiquidFee';
-import { columns } from './constants';
 
 export const Staking: FC = () => {
   const { account } = useAccount();
@@ -34,7 +34,7 @@ export const Staking: FC = () => {
 
     return [
       ...earnedFees.map(earnedFee => ({
-        type: t(translations.rewardPage.stabilityPool.stakingRevenue),
+        type: t(translations.rewardPage.staking.stakingRevenue),
         amount: (
           <AmountRenderer
             value={formatUnits(earnedFee.value, 18)}
@@ -48,7 +48,7 @@ export const Staking: FC = () => {
         key: `${earnedFee.token}-fee`,
       })),
       {
-        type: t(translations.rewardPage.stabilityPool.stabilitySubsidies),
+        type: t(translations.rewardPage.staking.stakingSubsidies),
         amount: (
           <AmountRenderer
             value={formatUnits(liquidSovClaimAmount, 18)}

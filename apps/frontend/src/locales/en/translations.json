@@ -470,7 +470,6 @@
             "stabilitySubsidies": "Stability subsidies",
             "rewardType": "Reward type",
             "noRewards": "No rewards available",
-            "stakingRevenue": "Staking revenue",
             "notConnected": "Connect wallet to check for rewards",
             "actions": {
                 "transferToLOC": "Transfer to LOC",
@@ -483,6 +482,10 @@
                 "transfer": "Transfer rewards to line of credit"
             },
             "undercollateralized": "Withdrawals disabled – one or more LOCs are undercollateralized"
+        },
+        "staking": {
+            "stakingSubsidies": "Staking subsidies",
+            "stakingRevenue": "Staking revenue"
         }
     },
 

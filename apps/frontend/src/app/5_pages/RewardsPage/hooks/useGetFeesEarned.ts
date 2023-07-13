@@ -10,11 +10,13 @@ import {
 import { EarnedFee } from '../types';
 import { useGetTokenCheckpoints } from './useGetTokenCheckpoints';
 
+const DEFAULT_RBTC_DUMMY_ADDRESS = '0xeabd29be3c3187500df86a2613c6470e12f2d77d';
+
 export const useGetFeesEarned = () => {
   const { account } = useAccount();
   const [loading, setLoading] = useState(true);
   const [RBTCDummyAddress, setRBTCDummyAddress] = useState(
-    '0xeabd29be3c3187500df86a2613c6470e12f2d77d',
+    DEFAULT_RBTC_DUMMY_ADDRESS,
   );
 
   const feeSharing = useGetProtocolContract('feeSharing');

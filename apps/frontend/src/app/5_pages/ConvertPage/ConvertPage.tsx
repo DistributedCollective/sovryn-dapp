@@ -83,16 +83,16 @@ const ConvertPage: FC = () => {
 
   const [quote, setQuote] = useState('');
   const [route, setRoute] = useState<SwapRoute | undefined>();
+
   const defaultSourceToken = useMemo(() => {
-    if (
-      fromToken &&
-      fromToken in SupportedTokens &&
-      fromToken !== SupportedTokens.fish
-    ) {
-      return fromToken as SupportedTokens;
-    }
-    if (fromToken === SupportedTokens.fish) {
-      return SupportedTokens.fish;
+    if (fromToken) {
+      const key = Object.keys(SupportedTokens).find(
+        key => SupportedTokens[key] === fromToken,
+      );
+
+      if (key) {
+        return SupportedTokens[key];
+      }
     }
     return SupportedTokens.dllr;
   }, [fromToken]);

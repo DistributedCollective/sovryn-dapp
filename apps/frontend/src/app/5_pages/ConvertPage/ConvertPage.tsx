@@ -3,6 +3,7 @@ import { useEffect } from 'react';
 
 import { t } from 'i18next';
 import { Helmet } from 'react-helmet-async';
+import { useSearchParams } from 'react-router-dom';
 
 import { getTokenDetails, SupportedTokens } from '@sovryn/contracts';
 import { SwapRoute } from '@sovryn/sdk';
@@ -70,6 +71,10 @@ const tokensToOptions = (
 
 const ConvertPage: FC = () => {
   const { account } = useAccount();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const fromToken = searchParams.get('from');
+  const toToken = searchParams.get('to');
+
   const [slippageTolerance, setSlippageTolerance] = useState('0.5');
 
   const [priceInQuote, setPriceQuote] = useState(false);
@@ -80,7 +85,9 @@ const ConvertPage: FC = () => {
   const [route, setRoute] = useState<SwapRoute | undefined>();
 
   const [sourceToken, setSourceToken] = useState<SupportedTokens>(
-    SupportedTokens.dllr,
+    fromToken && SupportedTokens[fromToken]
+      ? SupportedTokens[fromToken]
+      : SupportedTokens.dllr,
   );
 
   const [showAdvancedSettings, setShowAdvancedSettings] = useState(false);
@@ -281,6 +288,28 @@ const ConvertPage: FC = () => {
     () => setPriceQuote(value => !value),
     [],
   );
+
+  useEffect(() => {
+    if (fromToken) {
+      setSourceToken(fromToken as SupportedTokens);
+    }
+    if (toToken) {
+      setDestinationToken(toToken as SupportedTokens);
+    }
+  }, [fromToken, toToken]);
+
+  useEffect(() => {
+    const urlParams = new URLSearchParams();
+    if (sourceToken) {
+      urlParams.set('from', sourceToken);
+    }
+    if (destinationToken) {
+      urlParams.set('to', destinationToken);
+    }
+
+    setSearchParams(new URLSearchParams(urlParams));
+  }, [sourceToken, destinationToken, setSearchParams]);
+
   return (
     <>
       <Helmet>

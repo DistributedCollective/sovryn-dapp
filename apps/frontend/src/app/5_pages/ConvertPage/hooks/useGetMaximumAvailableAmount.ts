@@ -7,6 +7,7 @@ import { Decimal } from '@sovryn/utils';
 
 import { defaultChainId } from '../../../../config/chains';
 
+import { useAccount } from '../../../../hooks/useAccount';
 import { useAssetBalance } from '../../../../hooks/useAssetBalance';
 import { useIsMounted } from '../../../../hooks/useIsMounted';
 import { allowedTokens, bassets, masset } from '../ConvertPage.types';
@@ -16,6 +17,7 @@ export const useGetMaximumAvailableAmount = (
   destinationToken: SupportedTokens,
 ) => {
   const isMounted = useIsMounted();
+  const { account } = useAccount();
 
   //  bAsset => DLLR conversion
   const isMint = useMemo(
@@ -61,6 +63,10 @@ export const useGetMaximumAvailableAmount = (
     () => Decimal.fromBigNumberString(destinationTokenAggregatorWeiBalance),
     [destinationTokenAggregatorWeiBalance],
   );
+
+  if (!account) {
+    return Decimal.ZERO;
+  }
 
   if (isMint || !isZero) {
     return sourceTokenBalance;

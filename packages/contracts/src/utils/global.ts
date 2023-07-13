@@ -117,8 +117,9 @@ export const getContractGroupAbi = async (
 ): Promise<ContractInterface> => {
   switch (group) {
     case 'tokens':
-    case 'loanTokens':
       return (await import('../abis/erc20.json')).default;
+    case 'loanTokens':
+      return (await import('../abis/loanToken.json')).default;
     default:
       throw new Error(`getContractGroupAbi: Unknown group: ${group}`);
   }

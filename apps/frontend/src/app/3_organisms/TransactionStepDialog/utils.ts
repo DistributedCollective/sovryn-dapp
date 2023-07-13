@@ -88,8 +88,16 @@ export const sendOrSimulateTx = async (
     }
   }
 
+  console.log(
+    'REQUEST:',
+    request,
+    args,
+    request.contract,
+    request.contract[request.fnName],
+  );
+
   return request.contract[request.fnName](...args, {
-    value: request.value,
+    value: request.value ?? '0',
     gasPrice,
     gasLimit,
   });

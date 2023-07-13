@@ -1,6 +1,7 @@
 import { ChainIds } from '@sovryn/ethers-provider';
 
 import erc20 from '../abis/erc20.json';
+import loanToken from '../abis/loanToken.json';
 import { contracts } from '../contracts';
 import { findContract, getContract, getContractGroupAbi } from './global';
 
@@ -73,7 +74,7 @@ describe('utils/contracts/global.ts', () => {
 
     it('loads loan token contract abi', async () => {
       const abi = await getContractGroupAbi('loanTokens');
-      expect(abi).toBe(erc20);
+      expect(abi).toBe(loanToken);
     });
 
     it('fails to load unkown contract group', async () => {

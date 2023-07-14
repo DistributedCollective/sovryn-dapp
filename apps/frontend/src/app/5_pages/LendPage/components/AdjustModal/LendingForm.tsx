@@ -1,5 +1,6 @@
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 
+import { BigNumber } from 'ethers';
 import { t } from 'i18next';
 
 import {
@@ -79,14 +80,46 @@ export const LendingForm: FC<DepositProps> = ({ state, onConfirm }) => {
     }
   }, [amount, balance, isDeposit, state.balance]);
 
-  const [newApy, setNewApy] = useState<Decimal>(state.apy);
+  const [totalSupply, setTotalSupply] = useState<BigNumber>(BigNumber.from(0));
+  const [lendApy, setLendApy] = useState<Decimal>(state.apy);
+  const [withdrawApy, setWithdrawApy] = useState<Decimal>(state.apy);
 
   useEffect(() => {
     asyncCall(
-      `lending/${state.poolTokenContract.address}/nextSupplyInterestRate/${amount}`,
-      () => state.poolTokenContract.nextSupplyInterestRate(amount),
-    ).then(res => setNewApy(Decimal.fromBigNumberString(res.toString())));
-  }, [state.poolTokenContract, amount]);
+      `lending/${state.poolTokenContract.address}/totalAssetSupply`,
+      () => state.poolTokenContract.totalAssetSupply(),
+    ).then(setTotalSupply);
+  }, [state.poolTokenContract]);
+
+  useEffect(() => {
+    if (isDeposit) {
+      asyncCall(
+        `lending/${state.poolTokenContract.address}/nextSupplyInterestRate/${amount}`,
+        () => state.poolTokenContract.nextSupplyInterestRate(amount),
+      ).then(res => setLendApy(Decimal.fromBigNumberString(res.toString())));
+    }
+  }, [state.poolTokenContract, amount, type, isDeposit]);
+
+  useEffect(() => {
+    if (!isDeposit) {
+      asyncCall(
+        `lending/${
+          state.poolTokenContract.address
+        }/totalSupplyInterestRate/${totalSupply.toHexString()}/${amount}`,
+        () =>
+          state.poolTokenContract.totalSupplyInterestRate(
+            totalSupply.add(amount),
+          ),
+      ).then(res =>
+        setWithdrawApy(Decimal.fromBigNumberString(res.toString())),
+      );
+    }
+  }, [amount, isDeposit, state.poolTokenContract, totalSupply]);
+
+  const newApy = useMemo(
+    () => (isDeposit ? lendApy : withdrawApy),
+    [isDeposit, lendApy, withdrawApy],
+  );
 
   // reset value when tab changed
   useEffect(() => setValue(''), [setValue, type]);
@@ -120,12 +153,10 @@ export const LendingForm: FC<DepositProps> = ({ state, onConfirm }) => {
       </FormGroup>
 
       <SimpleTable className="mt-8">
-        {type === FormType.Deposit && (
-          <SimpleTableRow
-            label={t(translations.lendingAdjust.newApy)}
-            value={<AmountRenderer value={newApy} suffix="% APY" />}
-          />
-        )}
+        <SimpleTableRow
+          label={t(translations.lendingAdjust.newApy)}
+          value={<AmountRenderer value={newApy} suffix="% APY" />}
+        />
         <SimpleTableRow
           label={t(translations.lendingAdjust.newBalance)}
           value={

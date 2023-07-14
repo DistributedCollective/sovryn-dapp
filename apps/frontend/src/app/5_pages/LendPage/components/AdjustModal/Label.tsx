@@ -1,8 +1,9 @@
-import React, { FC, useCallback } from 'react';
+import React, { FC, useCallback, useMemo, useState } from 'react';
 
 import { t } from 'i18next';
 
 import { SupportedTokens } from '@sovryn/contracts';
+import { TabType, Tabs } from '@sovryn/ui';
 import { Decimal } from '@sovryn/utils';
 
 import { MaxButton } from '../../../../2_molecules/MaxButton/MaxButton';
@@ -17,6 +18,8 @@ export type LabelProps = {
   onMaxClicked: () => void;
 };
 
+const ACTIVE_CLASSNAME = 'bg-gray-70 text-primary-20';
+
 export const Label: FC<LabelProps> = ({
   balance,
   token,
@@ -24,21 +27,40 @@ export const Label: FC<LabelProps> = ({
   tab,
   onTabChanged,
 }) => {
+  const [index, setIndex] = useState(0);
+
+  const tabs = useMemo(
+    () => [
+      {
+        type: FormType.Deposit,
+        label: t(translations.lendingAdjust.deposit),
+        activeClassName: ACTIVE_CLASSNAME,
+      },
+      {
+        amountType: FormType.Withdraw,
+        label: t(translations.lendingAdjust.withdraw),
+        activeClassName: ACTIVE_CLASSNAME,
+      },
+    ],
+    [],
+  );
+
   const handleTabChange = useCallback(
-    (type: FormType) => () => onTabChanged(type),
-    [onTabChanged],
+    (tab: number) => {
+      setIndex(tab);
+      onTabChanged(tabs[tab]?.type!);
+    },
+    [onTabChanged, tabs],
   );
 
   return (
     <div className="w-full flex justify-between">
-      <div>
-        <button onClick={handleTabChange(FormType.Deposit)}>
-          {t(translations.lendingAdjust.deposit)}
-        </button>
-        <button onClick={handleTabChange(FormType.Withdraw)}>
-          {t(translations.lendingAdjust.withdraw)}
-        </button>
-      </div>
+      <Tabs
+        items={tabs}
+        index={index}
+        onChange={handleTabChange}
+        type={TabType.secondary}
+      />
       <MaxButton value={balance} token={token} onClick={onMaxClicked} />
     </div>
   );

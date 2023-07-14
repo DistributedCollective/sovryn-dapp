@@ -15,31 +15,44 @@ import { defaultChainId } from '../../../../../config/chains';
 
 import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { AssetRenderer } from '../../../../2_molecules/AssetRenderer/AssetRenderer';
-import { MaxButton } from '../../../../2_molecules/MaxButton/MaxButton';
 import { GAS_LIMIT } from '../../../../../constants/gasLimits';
 import { useMaxAssetBalance } from '../../../../../hooks/useMaxAssetBalance';
 import { useWeiAmountInput } from '../../../../../hooks/useWeiAmountInput';
 import { translations } from '../../../../../locales/i18n';
 import { asyncCall } from '../../../../../store/rxjs/provider-cache';
 import { FullAdjustModalState } from './AdjustLendingModalContainer';
+import { Label } from './Label';
+
+export enum FormType {
+  Deposit = 'deposit',
+  Withdraw = 'withdraw',
+}
 
 export type DepositProps = {
   state: FullAdjustModalState;
-  onConfirm: (amount: Decimal) => void;
+  onConfirm: (type: FormType, amount: Decimal) => void;
 };
 
-export const Deposit: FC<DepositProps> = ({ state, onConfirm }) => {
-  const { balance } = useMaxAssetBalance(
+export const LendingForm: FC<DepositProps> = ({ state, onConfirm }) => {
+  const [type, setType] = useState<FormType>(FormType.Deposit);
+  const [value, setValue, amount] = useWeiAmountInput('');
+
+  const isDeposit = useMemo(() => type === FormType.Deposit, [type]);
+
+  const { balance: userBalance } = useMaxAssetBalance(
     state.token,
     defaultChainId,
     GAS_LIMIT.LENDING_MINT,
   );
 
-  const [value, setValue, amount] = useWeiAmountInput('');
+  const balance = useMemo(
+    () => (isDeposit ? userBalance : state.balance),
+    [isDeposit, state.balance, userBalance],
+  );
 
   const handleSubmit = useCallback(
-    () => onConfirm(Decimal.fromBigNumberString(amount.toString())),
-    [amount, onConfirm],
+    () => onConfirm(type, Decimal.fromBigNumberString(amount.toString())),
+    [type, amount, onConfirm],
   );
 
   const handleMaxClick = useCallback(
@@ -47,15 +60,24 @@ export const Deposit: FC<DepositProps> = ({ state, onConfirm }) => {
     [balance, setValue],
   );
 
-  const newBalance = useMemo(
-    () => state.balance.add(Decimal.fromBigNumberString(amount.toString())),
-    [amount, state.balance],
-  );
+  const newBalance = useMemo(() => {
+    if (isDeposit) {
+      return state.balance.add(Decimal.fromBigNumberString(amount.toString()));
+    } else {
+      const bal = state.balance.sub(
+        Decimal.fromBigNumberString(amount.toString()),
+      );
+      return bal.lt(0) ? Decimal.ZERO : bal;
+    }
+  }, [amount, isDeposit, state.balance]);
 
-  const canSubmit = useMemo(
-    () => amount.gt(0) && amount.lte(balance.toBigNumber()),
-    [amount, balance],
-  );
+  const canSubmit = useMemo(() => {
+    if (isDeposit) {
+      return amount.gt(0) && amount.lte(balance.toBigNumber());
+    } else {
+      return amount.gt(0) && amount.lte(state.balance.toBigNumber());
+    }
+  }, [amount, balance, isDeposit, state.balance]);
 
   const [newApy, setNewApy] = useState<Decimal>(state.apy);
 
@@ -66,17 +88,20 @@ export const Deposit: FC<DepositProps> = ({ state, onConfirm }) => {
     ).then(res => setNewApy(Decimal.fromBigNumberString(res.toString())));
   }, [state.poolTokenContract, amount]);
 
+  // reset value when tab changed
+  useEffect(() => setValue(''), [setValue, type]);
+
   return (
     <>
       <FormGroup
         label={
-          <div className="w-full flex justify-end">
-            <MaxButton
-              value={balance}
-              token={state.token}
-              onClick={handleMaxClick}
-            />
-          </div>
+          <Label
+            tab={type}
+            onTabChanged={setType}
+            token={state.token}
+            balance={balance}
+            onMaxClicked={handleMaxClick}
+          />
         }
         labelElement="div"
         className="max-w-none mt-8"
@@ -95,23 +120,12 @@ export const Deposit: FC<DepositProps> = ({ state, onConfirm }) => {
       </FormGroup>
 
       <SimpleTable className="mt-8">
-        <SimpleTableRow
-          label={t(translations.lendingAdjust.apy)}
-          value={<AmountRenderer value={state.apy} suffix="% APY" />}
-        />
-        <SimpleTableRow
-          label={t(translations.lendingAdjust.newApy)}
-          value={<AmountRenderer value={newApy} suffix="% APY" />}
-        />
-        <SimpleTableRow
-          label={t(translations.lendingAdjust.currentBalance)}
-          value={
-            <AmountRenderer
-              value={state.balance}
-              suffix={state.tokenDetails.symbol}
-            />
-          }
-        />
+        {type === FormType.Deposit && (
+          <SimpleTableRow
+            label={t(translations.lendingAdjust.newApy)}
+            value={<AmountRenderer value={newApy} suffix="% APY" />}
+          />
+        )}
         <SimpleTableRow
           label={t(translations.lendingAdjust.newBalance)}
           value={

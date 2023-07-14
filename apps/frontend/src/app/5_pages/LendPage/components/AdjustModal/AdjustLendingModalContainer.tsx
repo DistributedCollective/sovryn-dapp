@@ -9,7 +9,7 @@ import {
   getLoanTokenContract,
   getTokenDetails,
 } from '@sovryn/contracts';
-import { Dialog, DialogBody, DialogHeader, Tabs } from '@sovryn/ui';
+import { Dialog, DialogBody, DialogHeader } from '@sovryn/ui';
 import { Decimal } from '@sovryn/utils';
 
 import { defaultChainId } from '../../../../../config/chains';
@@ -20,8 +20,8 @@ import { eventDriven } from '../../../../../store/rxjs/event-driven';
 import { Nullable } from '../../../../../types/global';
 import { LendModalAction } from '../../LendPage.types';
 import { getLoanTokenName } from '../../token-map';
-import { Deposit } from './Deposit';
-import { Withdraw } from './Withdraw';
+import { CurrentStats } from './CurrentStats';
+import { FormType, LendingForm } from './LendingForm';
 
 export type AdjustModalProps = {
   onDeposit: (amount: Decimal, token: TokenDetailsData, pool: Contract) => void;
@@ -47,11 +47,6 @@ export type FullAdjustModalState = AdjustModalState & {
   tokenDetails: TokenDetailsData;
 };
 
-export enum Tab {
-  Deposit,
-  Withdraw,
-}
-
 export const AdjustLendingModalContainer: FC<AdjustModalProps> = ({
   onDeposit,
   onWithdraw,
@@ -63,13 +58,10 @@ export const AdjustLendingModalContainer: FC<AdjustModalProps> = ({
 
   const { signer, account } = useAccount();
 
-  const [tab, setTab] = useState<Tab>(Tab.Deposit);
   const [state, setState] = useState<Nullable<FullAdjustModalState>>(null);
 
   useEffect(() => {
     const sub = subscribe(async value => {
-      setTab(Tab.Deposit);
-
       if (value == null || signer == null || account == null) {
         setState(null);
         return;
@@ -109,29 +101,18 @@ export const AdjustLendingModalContainer: FC<AdjustModalProps> = ({
 
   const handleCloseModal = useCallback(() => push(null), [push]);
 
-  const handleDeposit = useCallback(
-    (amount: Decimal) =>
-      onDeposit(amount, state?.tokenDetails!, state?.poolTokenContract!),
-    [onDeposit, state?.poolTokenContract, state?.tokenDetails],
-  );
-  const handleWithdraw = useCallback(
-    (amount: Decimal) =>
-      onWithdraw(amount, state?.tokenDetails!, state?.poolTokenContract!),
-    [onWithdraw, state?.poolTokenContract, state?.tokenDetails],
-  );
-
-  const items = useMemo(
-    () => [
-      {
-        label: t(translations.lendingAdjust.deposit),
-        content: <Deposit state={state!} onConfirm={handleDeposit} />,
-      },
-      {
-        label: t(translations.lendingAdjust.withdraw),
-        content: <Withdraw state={state!} onConfirm={handleWithdraw} />,
-      },
-    ],
-    [handleDeposit, handleWithdraw, state],
+  const handleConfirm = useCallback(
+    (type: FormType, amount: Decimal) => {
+      if (state == null) {
+        return;
+      }
+      if (type === FormType.Deposit) {
+        onDeposit(amount, state.tokenDetails, state.poolTokenContract);
+      } else {
+        onWithdraw(amount, state.tokenDetails, state.poolTokenContract);
+      }
+    },
+    [onDeposit, onWithdraw, state],
   );
 
   return (
@@ -141,13 +122,16 @@ export const AdjustLendingModalContainer: FC<AdjustModalProps> = ({
         onClose={handleCloseModal}
       />
       <DialogBody>
-        <Tabs
-          index={tab}
-          onChange={setTab}
-          items={items}
-          className="w-full"
-          contentClassName="px-4 py-4"
-        />
+        {state != null && (
+          <>
+            <CurrentStats
+              symbol={state.token}
+              apy={state.apy}
+              balance={state.balance}
+            />
+            <LendingForm state={state} onConfirm={handleConfirm} />
+          </>
+        )}
       </DialogBody>
     </Dialog>
   );

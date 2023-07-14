@@ -1,7 +1,7 @@
-import { constants } from 'ethers';
+import { BigNumber, constants } from 'ethers';
 import { parseUnits } from 'ethers/lib/utils';
 
-import { SupportedTokens } from '@sovryn/contracts';
+import { SupportedTokens, getProtocolContract } from '@sovryn/contracts';
 
 import { mocIntegrationSwapRoute } from '../../../swaps/smart-router/routes/moc-integration-swap-route';
 import { SwapRoute } from '../../../swaps/smart-router/types';
@@ -17,12 +17,14 @@ describe('Moc Integration Route', () => {
   const rbtc = constants.AddressZero;
   let dllr: string;
   let moc: string;
+  let mocIntegration: string;
 
   beforeAll(async () => {
     const fixture = await makeChainFixture();
     route = mocIntegrationSwapRoute(fixture.provider);
     dllr = await makeTokenAddress(SupportedTokens.dllr);
     moc = await makeTokenAddress(SupportedTokens.moc);
+    mocIntegration = (await getProtocolContract('mocIntegrationProxy')).address;
   });
 
   it('has correct name', () => {
@@ -35,11 +37,11 @@ describe('Moc Integration Route', () => {
   });
 
   describe('quote', () => {
-    // it('returns BigNumber for DDLR -> RBTC quote', async () => {
-    //   await expect(
-    //     route.quote(dllr, rbtc, constants.WeiPerEther),
-    //   ).resolves.toBe(constants.WeiPerEther);
-    // });
+    it('returns BigNumber for DDLR -> RBTC quote', async () => {
+      await expect(
+        route.quote(dllr, rbtc, constants.WeiPerEther),
+      ).resolves.toBeInstanceOf(BigNumber);
+    });
 
     it('throws a Cannot swap error for RBTC -> DLLR', async () => {
       await expect(
@@ -68,7 +70,7 @@ describe('Moc Integration Route', () => {
         route.permit(dllr, rbtc, constants.WeiPerEther, constants.AddressZero),
       ).resolves.toMatchObject({
         token: dllr,
-        spender: moc,
+        spender: mocIntegration,
         owner: constants.AddressZero,
         value: constants.WeiPerEther,
       });

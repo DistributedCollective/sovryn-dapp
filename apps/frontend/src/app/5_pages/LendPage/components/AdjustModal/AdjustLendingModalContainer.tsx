@@ -123,11 +123,11 @@ export const AdjustLendingModalContainer: FC<AdjustModalProps> = ({
   const items = useMemo(
     () => [
       {
-        label: t(translations.lendingAdjust.deposit.title),
+        label: t(translations.lendingAdjust.deposit),
         content: <Deposit state={state!} onConfirm={handleDeposit} />,
       },
       {
-        label: t(translations.lendingAdjust.withdraw.title),
+        label: t(translations.lendingAdjust.withdraw),
         content: <Withdraw state={state!} onConfirm={handleWithdraw} />,
       },
     ],
@@ -136,7 +136,10 @@ export const AdjustLendingModalContainer: FC<AdjustModalProps> = ({
 
   return (
     <Dialog isOpen={state != null}>
-      <DialogHeader title="Adjust" onClose={handleCloseModal} />
+      <DialogHeader
+        title={t(translations.lendingAdjust.title)}
+        onClose={handleCloseModal}
+      />
       <DialogBody>
         <Tabs
           index={tab}

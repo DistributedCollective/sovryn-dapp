@@ -715,15 +715,13 @@
         }
     },
     "lendingAdjust": {
-      "deposit": {
-        "title": "Deposit",
-        "apy": "Interest rate",
-        "currentBalance": "Current lending balance",
-        "newBalance": "New lending balance"
-      },
-      "withdraw": {
-        "title": "Withdraw"
-      }
+      "title": "Adjust lending balance",
+      "deposit": "Deposit",
+      "withdraw": "Withdraw",
+      "apy": "Current lend rate",
+      "newApy": "New lend rate",
+      "currentBalance": "Current lending balance",
+      "newBalance": "New lending balance"
     },
     "lendingTx": {
       "deposit": "Deposit {{symbol}}",

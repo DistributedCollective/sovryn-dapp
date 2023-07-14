@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useMemo } from 'react';
+import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 
 import { t } from 'i18next';
 
@@ -20,6 +20,7 @@ import { GAS_LIMIT } from '../../../../../constants/gasLimits';
 import { useMaxAssetBalance } from '../../../../../hooks/useMaxAssetBalance';
 import { useWeiAmountInput } from '../../../../../hooks/useWeiAmountInput';
 import { translations } from '../../../../../locales/i18n';
+import { asyncCall } from '../../../../../store/rxjs/provider-cache';
 import { FullAdjustModalState } from './AdjustLendingModalContainer';
 
 export type DepositProps = {
@@ -56,6 +57,15 @@ export const Deposit: FC<DepositProps> = ({ state, onConfirm }) => {
     [amount, balance],
   );
 
+  const [newApy, setNewApy] = useState<Decimal>(state.apy);
+
+  useEffect(() => {
+    asyncCall(
+      `lending/${state.poolTokenContract.address}/nextSupplyInterestRate/${amount}`,
+      () => state.poolTokenContract.nextSupplyInterestRate(amount),
+    ).then(res => setNewApy(Decimal.fromBigNumberString(res.toString())));
+  }, [state.poolTokenContract, amount]);
+
   return (
     <>
       <FormGroup
@@ -86,11 +96,15 @@ export const Deposit: FC<DepositProps> = ({ state, onConfirm }) => {
 
       <SimpleTable className="mt-8">
         <SimpleTableRow
-          label={t(translations.lendingAdjust.deposit.apy)}
+          label={t(translations.lendingAdjust.apy)}
           value={<AmountRenderer value={state.apy} suffix="% APY" />}
         />
         <SimpleTableRow
-          label={t(translations.lendingAdjust.deposit.currentBalance)}
+          label={t(translations.lendingAdjust.newApy)}
+          value={<AmountRenderer value={newApy} suffix="% APY" />}
+        />
+        <SimpleTableRow
+          label={t(translations.lendingAdjust.currentBalance)}
           value={
             <AmountRenderer
               value={state.balance}
@@ -99,7 +113,7 @@ export const Deposit: FC<DepositProps> = ({ state, onConfirm }) => {
           }
         />
         <SimpleTableRow
-          label={t(translations.lendingAdjust.deposit.newBalance)}
+          label={t(translations.lendingAdjust.newBalance)}
           value={
             <AmountRenderer
               value={newBalance}

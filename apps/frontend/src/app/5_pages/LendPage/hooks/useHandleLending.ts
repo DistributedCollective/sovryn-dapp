@@ -109,8 +109,57 @@ export const useHandleLending = (
       amount: Decimal,
       tokenDetails: TokenDetailsData,
       poolTokenContract: Contract,
-    ) => {},
-    [],
+    ) => {
+      if (!account || !signer || !tokenDetails || !poolTokenContract) {
+        return;
+      }
+
+      // todo: value should be retrieved from whenever pool settings will be located.
+      const poolUsesLM = true;
+
+      // make sure contract has signer.
+      const contract = poolTokenContract.connect(signer);
+
+      const transactions: Transaction[] = [];
+
+      // todo: we may need to approve iToken spending if poolUsesLM is false.
+
+      const native = tokenDetails.symbol === SupportedTokens.rbtc;
+
+      transactions.push({
+        title: t(translations.lendingTx.deposit, {
+          symbol: getTokenDisplayName(tokenDetails.symbol),
+        }),
+        request: {
+          type: TransactionType.signTransaction,
+          contract: contract,
+          fnName: native
+            ? 'burnToBTC(address,bool)'
+            : 'burn(address,uint256,bool)',
+          args: [account, amount.toBigNumber().toString(), poolUsesLM],
+          gasLimit: GAS_LIMIT.LENDING_BURN,
+        },
+        onComplete,
+      });
+
+      setTransactions(transactions);
+      setTitle(
+        t(translations.lendingTx.withdraw, {
+          symbol: getTokenDisplayName(tokenDetails.symbol),
+        }),
+      );
+      setIsOpen(true);
+      onBegin();
+    },
+    [
+      account,
+      onBegin,
+      onComplete,
+      setIsOpen,
+      setTitle,
+      setTransactions,
+      signer,
+    ],
   );
 
   return {

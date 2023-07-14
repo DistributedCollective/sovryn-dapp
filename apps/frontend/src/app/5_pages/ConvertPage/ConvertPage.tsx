@@ -281,6 +281,13 @@ const ConvertPage: FC = () => {
     () => setPriceQuote(value => !value),
     [],
   );
+
+  useEffect(() => {
+    if (!account) {
+      setAmount('');
+    }
+  }, [account, setAmount]);
+
   return (
     <>
       <Helmet>

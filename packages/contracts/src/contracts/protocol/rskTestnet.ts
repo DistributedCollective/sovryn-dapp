@@ -23,7 +23,7 @@ export const rskTestnet: Record<string, AsyncContractConfigData> = {
     getAbi: async () => (await import('../../abis/massetManager.json')).default,
   },
   fastBtcBridge: {
-    address: '0x10C848e9495a32acA95F6c23C92eCA2b2bE9903A',
+    address: '0xb3E92Db36eeac0627385Fa4F39F615a85eA5E911',
     getAbi: async () => (await import('../../abis/fastBtcBridge.json')).default,
   },
   fastBtcMultisig: {
@@ -39,5 +39,9 @@ export const rskTestnet: Record<string, AsyncContractConfigData> = {
   mocExchangeProxy: {
     address: '0xc03Ac60eBbc01A1f4e9b5bb989F359e5D8348919',
     getAbi: async () => (await import('../../abis/mocExchange.json')).default,
+  },
+  babelfishAggregator: {
+    address: '0x1572D7E4a78A8AD14AE722E6fE5f5600a2c7A149',
+    getAbi: async () => (await import('../../abis/erc20.json')).default,
   },
 };

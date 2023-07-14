@@ -7,7 +7,7 @@ import { Helmet } from 'react-helmet-async';
 
 import { Heading, Select, SelectOption, Tabs } from '@sovryn/ui';
 
-import { ConversionsHistoryFrame } from '../../3_organisms/ConversionsHistoryFrame/ConversionsHistoryFrame';
+import { ConvertHistory } from '../../3_organisms/ConversionsHistoryFrame/ConvertHistory';
 import { FundingHistoryFrame } from '../../3_organisms/FundingHistoryFrame/FundingHistoryFrame';
 import { LOCHistory } from '../../3_organisms/LOCHistory/LOCHistory';
 import { RewardHistory } from '../../3_organisms/RewardHistory/RewardHistory';
@@ -40,7 +40,7 @@ const rewardHistory = (
 const conversionsHistory = (
   <div className="px-0 py-4 lg:p-4">
     <ApolloProvider client={myntClient}>
-      <ConversionsHistoryFrame />
+      <ConvertHistory />
     </ApolloProvider>
   </div>
 );

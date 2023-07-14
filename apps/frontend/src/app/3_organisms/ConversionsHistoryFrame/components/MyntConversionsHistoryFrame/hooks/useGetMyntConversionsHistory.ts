@@ -5,9 +5,9 @@ import { OrderOptions } from '@sovryn/ui';
 import {
   Conversion_OrderBy,
   useGetUserConversionsQuery,
-} from '../../../../utils/graphql/mynt/generated';
+} from '../../../../../../utils/graphql/mynt/generated';
 
-export const useGetConversionsHistory = (
+export const useGetMyntConversionsHistory = (
   account: string,
   pageSize: number,
   page: number,

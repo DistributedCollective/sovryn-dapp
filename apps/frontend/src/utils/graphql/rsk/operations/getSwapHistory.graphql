@@ -1,0 +1,32 @@
+query getSwapHistory(
+  $user: String
+  $skip: Int!
+  $pageSize: Int!
+  $orderBy: Swap_orderBy
+  $orderDirection: OrderDirection
+) {
+  swaps(
+    where: { user: $user }
+    first: $pageSize
+    skip: $skip
+    orderBy: $orderBy
+    orderDirection: $orderDirection
+  ) {
+    fromToken {
+      id
+      symbol
+    }
+    toToken {
+      id
+      symbol
+    }
+    transaction {
+      id
+      timestamp
+    }
+    fromAmount
+    toAmount
+    conversionFee
+    protocolFee
+  }
+}

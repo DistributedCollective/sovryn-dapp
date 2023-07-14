@@ -70,6 +70,10 @@ export const rsk: Record<string, AsyncContractConfigData> = {
     getAbi: async () =>
       (await import('../../abis/stakingRewards.json')).default,
   },
+  mocExchangeProxy: {
+    address: '0x6acb83bb0281fb847b43cf7dd5e2766bfdf49038',
+    getAbi: async () => (await import('../../abis/mocExchange.json')).default,
+  },
   babelfishAggregator: {
     address: '0x1440d19436bEeaF8517896bffB957a88EC95a00F',
     getAbi: async () => (await import('../../abis/erc20.json')).default,

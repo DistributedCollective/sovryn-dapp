@@ -1,4 +1,5 @@
 import { ammSwapRoute } from './routes/amm-swap-route';
+import { mocIntegrationSwapRoute } from './routes/moc-integration-swap-route';
 import { myntBassetRoute } from './routes/mynt-basset-route';
 import { zeroRedemptionSwapRoute } from './routes/zero-redemption-route';
 
@@ -11,4 +12,5 @@ export const smartRoutes = {
   ammSwapRoute,
   myntBassetRoute,
   zeroRedemptionSwapRoute,
+  mocIntegrationSwapRoute,
 };

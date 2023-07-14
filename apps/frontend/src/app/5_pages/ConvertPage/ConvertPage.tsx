@@ -320,6 +320,12 @@ const ConvertPage: FC = () => {
     setSearchParams(new URLSearchParams(urlParams));
   }, [sourceToken, destinationToken, setSearchParams]);
 
+  useEffect(() => {
+    if (!account) {
+      setAmount('');
+    }
+  }, [account, setAmount]);
+
   return (
     <>
       <Helmet>

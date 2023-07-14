@@ -1,5 +1,15 @@
 # @sovryn/sdk
 
+## 0.0.3
+
+### Patch Changes
+
+- 253f8d3: SOV-2431: add moc integration swap route
+- Updated dependencies [253f8d3]
+- Updated dependencies [c1b42ea]
+- Updated dependencies [5ad11c0]
+  - @sovryn/contracts@1.0.9
+
 ## 0.0.2
 
 ### Patch Changes

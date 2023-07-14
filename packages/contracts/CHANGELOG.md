@@ -1,5 +1,13 @@
 # @sovryn/contracts
 
+## 1.0.9
+
+### Patch Changes
+
+- 253f8d3: SOV-2431: add moc integration swap route
+- c1b42ea: chore: change fastbtc testnet contract address
+- 5ad11c0: SOV-2711: Update RIF logo
+
 ## 1.0.8
 
 ### Patch Changes

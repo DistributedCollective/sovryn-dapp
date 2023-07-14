@@ -1,5 +1,21 @@
 # frontend
 
+## 1.0.16
+
+### Patch Changes
+
+- ba7f845: SOV-2708: Update Convert page to enable linking to specific pairs
+- 253f8d3: SOV-2431: add moc integration swap route
+- 44213c2: SOV-2686: Add Defiant
+- 0445241: SOV-2677: Convert page - reset data on disconnect
+- 2783ec1: SOV-2669: change login signature message
+- 32c2e95: SOV-2670: HW wallets integration adjustments
+- Updated dependencies [253f8d3]
+- Updated dependencies [c1b42ea]
+- Updated dependencies [5ad11c0]
+  - @sovryn/contracts@1.0.9
+  - @sovryn/sdk@0.0.3
+
 ## 1.0.15
 
 ### Patch Changes

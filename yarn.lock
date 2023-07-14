@@ -4572,10 +4572,10 @@
     joi "^17.6.0"
     rxjs "7.5.6"
 
-"@sovryn/onboard-injected@1.0.1":
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/@sovryn/onboard-injected/-/onboard-injected-1.0.1.tgz#3e7f977155033e28ab3de9c3bd75078640692f62"
-  integrity sha512-8armhAYpc0pA9TzKOnW+4ywuSNTxuZGdLrdiNZ4w/xRYFO1oIAHKEOh0HYRDNuErYXZlSzOC1a+hXkGaJ1P50w==
+"@sovryn/onboard-injected@1.0.2":
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/@sovryn/onboard-injected/-/onboard-injected-1.0.2.tgz#f227b2af5be131525943eeb3e47150036fdffa67"
+  integrity sha512-69lPf8sQ4BIQbH4uu14YLXPWQze5wEMpKUQeFNf0QHkg+PmJwVJ2gYueEPoO+DIqoe0c91w+f9o1Vpo5zSrAfg==
   dependencies:
     "@sovryn/onboard-common" "1.0.0"
     ethers "^5.7.0"

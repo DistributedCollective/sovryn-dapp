@@ -1,5 +1,11 @@
 # @sovryn/sdk
 
+## 0.0.4
+
+### Patch Changes
+
+- f5317d5: fix: moc swap route should check available balance
+
 ## 0.0.3
 
 ### Patch Changes

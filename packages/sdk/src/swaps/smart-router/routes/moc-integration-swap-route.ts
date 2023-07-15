@@ -21,6 +21,8 @@ export const mocIntegrationSwapRoute: SwapRouteFunction = (
   let mocExchangeContract: Contract;
   let docBagAddress: string;
   let mocAddress: string;
+  let massetManagerAddress: string;
+  let docContract: Contract;
 
   const getChainId = async () => {
     if (!chainId) {
@@ -94,6 +96,26 @@ export const mocIntegrationSwapRoute: SwapRouteFunction = (
     return mocAddress;
   };
 
+  const getMassetManagerAddress = async () => {
+    if (!massetManagerAddress) {
+      const chainId = await getChainId();
+      const { address } = await getProtocolContract('massetManager', chainId);
+      massetManagerAddress = address;
+    }
+    return massetManagerAddress;
+  };
+
+  const getDocContract = async () => {
+    if (!docContract) {
+      const { address, abi } = await getTokenContract(
+        SupportedTokens.doc,
+        await getChainId(),
+      );
+      docContract = new Contract(address, abi, provider);
+    }
+    return docContract;
+  };
+
   return {
     name: 'MocIntegration',
     async pairs() {
@@ -117,6 +139,17 @@ export const mocIntegrationSwapRoute: SwapRouteFunction = (
         const bag = await getDocBagAddress();
         const exchange = await getMocExchangeContract();
         const moc = await getMocAddress();
+        const doc = await getDocContract();
+        const masset = await getMassetManagerAddress();
+
+        const maxDoc = await doc.balanceOf(masset);
+
+        if (maxDoc.lt(amount)) {
+          throw makeError(
+            `Not enough DOC in the system. Max: ${maxDoc.toString()} wei`,
+            SovrynErrorCode.SWAP_LOW_BALANCE,
+          );
+        }
 
         // @see https://github.com/money-on-chain/main-RBTC-contract/blob/c6410b867de8e5de5df763bf8416a10ab8ae3d36/contracts/MoCExchange.sol#L371
         // result[0] is the amount of RBTC

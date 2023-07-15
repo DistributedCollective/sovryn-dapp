@@ -1,7 +1,11 @@
-import { BigNumber, constants } from 'ethers';
+import { BigNumber, constants, Contract } from 'ethers';
 import { parseUnits } from 'ethers/lib/utils';
 
-import { SupportedTokens, getProtocolContract } from '@sovryn/contracts';
+import {
+  SupportedTokens,
+  getProtocolContract,
+  getTokenContract,
+} from '@sovryn/contracts';
 
 import { mocIntegrationSwapRoute } from '../../../swaps/smart-router/routes/moc-integration-swap-route';
 import { SwapRoute } from '../../../swaps/smart-router/types';
@@ -18,6 +22,9 @@ describe('Moc Integration Route', () => {
   let dllr: string;
   let moc: string;
   let mocIntegration: string;
+  let masset: string;
+  let doc: Contract;
+  let balance: BigNumber = constants.WeiPerEther;
 
   beforeAll(async () => {
     const fixture = await makeChainFixture();
@@ -25,6 +32,11 @@ describe('Moc Integration Route', () => {
     dllr = await makeTokenAddress(SupportedTokens.dllr);
     moc = await makeTokenAddress(SupportedTokens.moc);
     mocIntegration = (await getProtocolContract('mocIntegrationProxy')).address;
+    masset = (await getProtocolContract('massetManager')).address;
+    const { address, abi } = await getTokenContract(SupportedTokens.doc);
+    doc = new Contract(address, abi, fixture.provider);
+
+    balance = await doc.balanceOf(masset);
   });
 
   it('has correct name', () => {
@@ -38,9 +50,15 @@ describe('Moc Integration Route', () => {
 
   describe('quote', () => {
     it('returns BigNumber for DDLR -> RBTC quote', async () => {
+      await expect(route.quote(dllr, rbtc, balance)).resolves.toBeInstanceOf(
+        BigNumber,
+      );
+    });
+
+    it('throws when masset balance is too low for DDLR -> RBTC swap', async () => {
       await expect(
-        route.quote(dllr, rbtc, constants.WeiPerEther),
-      ).resolves.toBeInstanceOf(BigNumber);
+        route.quote(dllr, rbtc, balance.add(1)),
+      ).rejects.toThrowError(/Not enough DOC in the system./);
     });
 
     it('throws a Cannot swap error for RBTC -> DLLR', async () => {

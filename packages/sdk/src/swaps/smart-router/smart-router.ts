@@ -53,7 +53,12 @@ export class SmartRouter {
 
     const quotes = await Promise.all(
       routes.map(async route => {
-        const quote = await route.quote(entry, destination, amount);
+        const quote = await route
+          .quote(entry, destination, amount)
+          .catch(() => {});
+        if (!quote) {
+          return { route, quote: BigNumber.from(0) };
+        }
         return { route, quote };
       }),
     );
@@ -62,7 +67,7 @@ export class SmartRouter {
       b.quote.toBigInt() > a.quote.toBigInt() ? 0 : -1,
     );
 
-    return sortedQuotes;
+    return sortedQuotes.filter(quote => quote.quote.gt(0));
   }
 
   // return best quote and route for given assets and amount

@@ -2,9 +2,9 @@ import React, { FC } from 'react';
 
 import classNames from 'classnames';
 
-import { StakingStatRenderProps } from './StakePage.types';
+import { StakingStatisticsProps } from './StakePage.types';
 
-export const PersonalStatRender: FC<StakingStatRenderProps> = ({
+export const PersonalStatistics: FC<StakingStatisticsProps> = ({
   value,
   label,
   className,
@@ -22,7 +22,7 @@ export const PersonalStatRender: FC<StakingStatRenderProps> = ({
   </div>
 );
 
-export const GlobalStatRender: FC<StakingStatRenderProps> = ({
+export const GlobalStatistics: FC<StakingStatisticsProps> = ({
   value,
   label,
 }) => (

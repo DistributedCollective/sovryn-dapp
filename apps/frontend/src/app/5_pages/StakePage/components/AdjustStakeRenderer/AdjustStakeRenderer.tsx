@@ -48,7 +48,7 @@ export const AdjustStakeRenderer: FC<AdjustStakeRendererProps> = ({
           onClose={toggleAdjustStakeDialog}
         />
         <DialogBody>
-          <AdjustStakeForm stake={stake} />
+          <AdjustStakeForm stake={stake} onSuccess={toggleAdjustStakeDialog} />
         </DialogBody>
       </Dialog>
     </div>

@@ -3,14 +3,13 @@ import { useCallback, useEffect, useState } from 'react';
 import { useAccount } from '../../../../../../hooks/useAccount';
 import { useGetProtocolContract } from '../../../../../../hooks/useGetContract';
 import { asyncCall } from '../../../../../../store/rxjs/provider-cache';
-import { getRskChainId } from '../../../../../../utils/chain';
 import { areAddressesEqual } from '../../../../../../utils/helpers';
 import { fromWei } from '../../../../../../utils/math';
 import { StakeItem } from '../StakesFrame.types';
 
 export const useGetStakes = () => {
   const { account } = useAccount();
-  const stakingContract = useGetProtocolContract('staking', getRskChainId());
+  const stakingContract = useGetProtocolContract('staking');
   const [stakes, setStakes] = useState<StakeItem[]>([]);
   const [loading, setLoading] = useState(false);
   const [isDataFetched, setIsDataFetched] = useState(false);

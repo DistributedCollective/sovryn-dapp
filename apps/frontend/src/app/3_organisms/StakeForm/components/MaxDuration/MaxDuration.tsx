@@ -20,6 +20,6 @@ export const MaxDuration: FC<MaxDurationProps> = ({
     className="text-xs font-medium underline whitespace-nowrap absolute -top-8 right-0"
     {...applyDataAttr(dataAttribute)}
   >
-    {`(${t(translations.stakePage.stakeForm.maxDuration)})`}
+    {t(translations.stakePage.stakeForm.maxDuration)}
   </button>
 );

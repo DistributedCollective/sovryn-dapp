@@ -14,8 +14,8 @@ import {
   ParagraphStyle,
 } from '@sovryn/ui';
 
-import { STAKING_REWARDS_LEARN_MORE_LINK } from '../../../../../constants/links';
 import { translations } from '../../../../../locales/i18n';
+import { STAKING_REWARDS_LEARN_MORE_LINK } from '../../StakePage.constants';
 
 const LOCAL_STORAGE_KEY = 'stakingRewards';
 

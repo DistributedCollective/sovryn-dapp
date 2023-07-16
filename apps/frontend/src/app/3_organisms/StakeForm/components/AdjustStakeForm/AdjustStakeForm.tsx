@@ -20,15 +20,16 @@ import {
 
 import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { MaxButton } from '../../../../2_molecules/MaxButton/MaxButton';
-import { AdjustStakeAction } from '../../../../5_pages/StakePage/StakePage.types';
+import { WEIGHT_FACTOR } from '../../../../5_pages/StakePage/StakePage.constants';
 import { useGetWeight } from '../../../../5_pages/StakePage/components/StakesFrame/hooks/useGetWeight';
 import { useGetVotingPower } from '../../../../5_pages/StakePage/hooks/useGetVotingPower';
 import { useHandleAdjustStake } from '../../../../5_pages/StakePage/hooks/useHandleAdjustStake';
 import { TOKEN_RENDER_PRECISION } from '../../../../../constants/currencies';
-import { MS, WEIGHT_FACTOR } from '../../../../../constants/general';
+import { MS } from '../../../../../constants/general';
 import { useAccount } from '../../../../../hooks/useAccount';
 import { useAssetBalance } from '../../../../../hooks/useAssetBalance';
 import { translations } from '../../../../../locales/i18n';
+import { areAddressesEqual } from '../../../../../utils/helpers';
 import { AdjustStakeFormProps } from '../../StakeForm.types';
 import { useGetPenaltyAmount } from '../../hooks/useGetPenaltyAmount';
 import { StakeDatePicker } from '../StakeDatePicker/StakeDatePicker';
@@ -40,9 +41,13 @@ import {
   renderNewVotingPower,
   isAddress,
   renderVotingPower,
+  getAdjustStakeAction,
 } from './AdjustStakeForm.utils';
 
-export const AdjustStakeForm: FC<AdjustStakeFormProps> = ({ stake }) => {
+export const AdjustStakeForm: FC<AdjustStakeFormProps> = ({
+  stake,
+  onSuccess,
+}) => {
   const { account } = useAccount();
   const [amount, setAmount] = useState('');
   const [index, setIndex] = useState(0);
@@ -90,10 +95,25 @@ export const AdjustStakeForm: FC<AdjustStakeFormProps> = ({ stake }) => {
     [amount, balance, stake.stakedAmount, isDecreaseTab],
   );
 
-  const isValidAddress = useMemo(
-    () => isAddress(delegateToAddress) || delegateToAddress.length === 0,
-    [delegateToAddress],
-  );
+  const isValidAddress = useMemo(() => {
+    if (areAddressesEqual(delegateToAddress, account)) {
+      return false;
+    }
+
+    return isAddress(delegateToAddress) || delegateToAddress.length === 0;
+  }, [delegateToAddress, account]);
+
+  const errorMessage = useMemo(() => {
+    if (!isValidAddress) {
+      if (!isAddress(delegateToAddress)) {
+        return t(translations.stakePage.stakeForm.invalidAddressError);
+      }
+      if (areAddressesEqual(delegateToAddress, account)) {
+        return t(translations.stakePage.stakeForm.invalidDelegateError);
+      }
+    }
+    return '';
+  }, [isValidAddress, delegateToAddress, account]);
 
   const isSubmitDisabled = useMemo(
     () =>
@@ -171,17 +191,10 @@ export const AdjustStakeForm: FC<AdjustStakeFormProps> = ({ stake }) => {
     setUnlockDate(0);
     setVotingPowerChanged(0);
     setDelegateToAddress('');
-  }, []);
+    onSuccess();
+  }, [onSuccess]);
 
-  const action = useMemo(() => {
-    return isDecreaseTab
-      ? AdjustStakeAction.Decrease
-      : isExtendTab
-      ? AdjustStakeAction.Extend
-      : isDelegateTab
-      ? AdjustStakeAction.Delegate
-      : AdjustStakeAction.Increase;
-  }, [isDecreaseTab, isExtendTab, isDelegateTab]);
+  const action = useMemo(() => getAdjustStakeAction(index), [index]);
 
   const handleAdjustStake = useHandleAdjustStake(
     amount,
@@ -349,7 +362,7 @@ export const AdjustStakeForm: FC<AdjustStakeFormProps> = ({ stake }) => {
           {!isValidAddress && (
             <ErrorBadge
               level={ErrorLevel.Critical}
-              message={t(translations.stakePage.stakeForm.invalidAddressError)}
+              message={errorMessage}
               dataAttribute="adjust-stake-delegate-address-error"
             />
           )}

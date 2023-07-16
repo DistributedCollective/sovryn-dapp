@@ -10,7 +10,7 @@ import {
   Table,
 } from '@sovryn/ui';
 
-import { DEFAULT_STAKES_SIZE } from '../../../../../constants/general';
+import { DEFAULT_PAGE_SIZE } from '../../../../../constants/general';
 import { useAccount } from '../../../../../hooks/useAccount';
 import { translations } from '../../../../../locales/i18n';
 import { useGetStakingBalanceOf } from '../../hooks/useGetStakingBalanceOf';
@@ -18,8 +18,6 @@ import { AddStakeRenderer } from '../AddStakeRenderer/AddStakeRenderer';
 import { COLUMNS_CONFIG } from './StakesFrame.constants';
 import { generateRowTitle } from './StakesFrame.utils';
 import { useGetStakes } from './hooks/useGetStakes';
-
-const pageSize = DEFAULT_STAKES_SIZE;
 
 export const StakesFrame: FC = () => {
   const { account } = useAccount();
@@ -37,7 +35,7 @@ export const StakesFrame: FC = () => {
 
   const onPageChange = useCallback(
     (value: number) => {
-      if (stakes.length < pageSize && value > page) {
+      if (stakes.length < DEFAULT_PAGE_SIZE && value > page) {
         return;
       }
       setPage(value);
@@ -46,7 +44,7 @@ export const StakesFrame: FC = () => {
   );
 
   const isNextButtonDisabled = useMemo(
-    () => !loading && stakes?.length < pageSize,
+    () => !loading && stakes?.length < DEFAULT_PAGE_SIZE,
     [loading, stakes],
   );
 
@@ -86,7 +84,7 @@ export const StakesFrame: FC = () => {
             page={page}
             className="lg:pb-6 mt-3 lg:mt-6 justify-center lg:justify-start"
             onChange={onPageChange}
-            itemsPerPage={pageSize}
+            itemsPerPage={DEFAULT_PAGE_SIZE}
             isNextButtonDisabled={isNextButtonDisabled}
             dataAttribute="stakes-pagination"
           />

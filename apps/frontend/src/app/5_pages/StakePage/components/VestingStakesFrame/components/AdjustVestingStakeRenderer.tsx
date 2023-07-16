@@ -19,7 +19,7 @@ import { Vesting } from '../VestingStakesFrame.types';
 export const AdjustVestingStakeRenderer: FC<Vesting> = ({
   vestingContract,
 }) => {
-  const [openCreateStakeDialog, toggleAdjustStakeDialog] = useReducer(
+  const [openVestingStakeDialog, toggleVestingStakeDialog] = useReducer(
     v => !v,
     false,
   );
@@ -30,21 +30,24 @@ export const AdjustVestingStakeRenderer: FC<Vesting> = ({
         style={ButtonStyle.secondary}
         size={ButtonSize.small}
         text={t(translations.stakePage.table.adjustButton)}
-        onClick={toggleAdjustStakeDialog}
+        onClick={toggleVestingStakeDialog}
         dataAttribute="stakes-adjust-button"
         className="md:w-auto w-full"
       />
       <Dialog
         width={DialogSize.sm}
-        isOpen={openCreateStakeDialog}
+        isOpen={openVestingStakeDialog}
         disableFocusTrap
       >
         <DialogHeader
           title={t(translations.stakePage.stakeForm.adjustVestingStake)}
-          onClose={toggleAdjustStakeDialog}
+          onClose={toggleVestingStakeDialog}
         />
         <DialogBody>
-          <AdjustVestingStakeForm vestingContract={vestingContract} />
+          <AdjustVestingStakeForm
+            vestingContract={vestingContract}
+            onSuccess={toggleVestingStakeDialog}
+          />
         </DialogBody>
       </Dialog>
     </div>

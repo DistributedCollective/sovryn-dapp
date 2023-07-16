@@ -3,12 +3,11 @@ import { useCallback, useEffect, useState } from 'react';
 import { useAccount } from '../../../../../../hooks/useAccount';
 import { useGetProtocolContract } from '../../../../../../hooks/useGetContract';
 import { asyncCall } from '../../../../../../store/rxjs/provider-cache';
-import { getRskChainId } from '../../../../../../utils/chain';
 import { useGetStakingBalanceOf } from '../../../hooks/useGetStakingBalanceOf';
 
 export const useGetPersonalStakingStatistics = () => {
   const { account } = useAccount();
-  const stakingContract = useGetProtocolContract('staking', getRskChainId());
+  const stakingContract = useGetProtocolContract('staking');
   const [votingPower, setVotingPower] = useState(0);
   const [isDataFetched, setIsDataFetched] = useState(false);
 

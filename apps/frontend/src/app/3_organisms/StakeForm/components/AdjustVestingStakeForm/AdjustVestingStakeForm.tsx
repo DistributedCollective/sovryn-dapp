@@ -14,20 +14,25 @@ import {
   ParagraphSize,
 } from '@sovryn/ui';
 
+import { STAKING_DELEGATION_LEARN_MORE_LINK } from '../../../../5_pages/StakePage/StakePage.constants';
 import { useGetVestingDelegateAddress } from '../../../../5_pages/StakePage/components/VestingStakesFrame/hooks/useGetVestingDelegateAddress';
 import { useGetVestingStakeStartEndDates } from '../../../../5_pages/StakePage/components/VestingStakesFrame/hooks/useGetVestingStakeStartEndDates';
 import { useHandleAdjustVestingStake } from '../../../../5_pages/StakePage/hooks/useHandleAdjustVestingStake';
-import { DELEGATION_LEARN_MORE_LINK } from '../../../../../constants/links';
+import { useAccount } from '../../../../../hooks/useAccount';
 import { translations } from '../../../../../locales/i18n';
+import { areAddressesEqual } from '../../../../../utils/helpers';
 import { isAddress } from '../AdjustStakeForm/AdjustStakeForm.utils';
 
 type AdjustVestingStakeFormProps = {
   vestingContract: string;
+  onSuccess: () => void;
 };
 
 export const AdjustVestingStakeForm: FC<AdjustVestingStakeFormProps> = ({
   vestingContract,
+  onSuccess,
 }) => {
+  const { account } = useAccount();
   const { endDate } = useGetVestingStakeStartEndDates(vestingContract);
   const delegatedAddress = useGetVestingDelegateAddress(
     vestingContract,
@@ -35,10 +40,25 @@ export const AdjustVestingStakeForm: FC<AdjustVestingStakeFormProps> = ({
   );
   const [delegateToAddress, setDelegateToAddress] = useState('');
 
-  const isValidAddress = useMemo(
-    () => isAddress(delegateToAddress) || delegateToAddress.length === 0,
-    [delegateToAddress],
-  );
+  const isValidAddress = useMemo(() => {
+    if (areAddressesEqual(delegateToAddress, account)) {
+      return false;
+    }
+
+    return isAddress(delegateToAddress) || delegateToAddress.length === 0;
+  }, [delegateToAddress, account]);
+
+  const errorMessage = useMemo(() => {
+    if (!isValidAddress) {
+      if (!isAddress(delegateToAddress)) {
+        return t(translations.stakePage.stakeForm.invalidAddressError);
+      }
+      if (areAddressesEqual(delegateToAddress, account)) {
+        return t(translations.stakePage.stakeForm.invalidDelegateError);
+      }
+    }
+    return '';
+  }, [isValidAddress, delegateToAddress, account]);
 
   const isSubmitDisabled = useMemo(
     () => !isValidAddress || delegateToAddress.length === 0,
@@ -47,7 +67,8 @@ export const AdjustVestingStakeForm: FC<AdjustVestingStakeFormProps> = ({
 
   const onTransactionSuccess = useCallback(() => {
     setDelegateToAddress('');
-  }, []);
+    onSuccess();
+  }, [onSuccess]);
 
   const handleAdjustStake = useHandleAdjustVestingStake(
     delegateToAddress,
@@ -83,7 +104,7 @@ export const AdjustVestingStakeForm: FC<AdjustVestingStakeFormProps> = ({
                 components={[
                   <Link
                     text={t(translations.stakePage.stakeForm.delegateInfoCta)}
-                    href={DELEGATION_LEARN_MORE_LINK}
+                    href={STAKING_DELEGATION_LEARN_MORE_LINK}
                     openNewTab
                   />,
                 ]}
@@ -102,7 +123,7 @@ export const AdjustVestingStakeForm: FC<AdjustVestingStakeFormProps> = ({
         {!isValidAddress && (
           <ErrorBadge
             level={ErrorLevel.Critical}
-            message={t(translations.stakePage.stakeForm.invalidAddressError)}
+            message={errorMessage}
             dataAttribute="adjust-vesting-stake-delegate-address-error"
           />
         )}

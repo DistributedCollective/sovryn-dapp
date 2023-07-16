@@ -418,6 +418,7 @@
             "votingPower": "Voting power",
             "invalidAmountError": "Exceeds maximum amount",
             "invalidAddressError": "Invalid address",
+            "invalidDelegateError": "Cannot delegate to the existing delegatee",
             "currentDelegateAddress": "Current delegate address",
             "newDelegateAddress": "New delegate address",
             "year": "Year",

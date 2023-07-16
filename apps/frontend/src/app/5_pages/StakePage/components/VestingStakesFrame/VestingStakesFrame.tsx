@@ -10,14 +10,12 @@ import {
   Table,
 } from '@sovryn/ui';
 
-import { DEFAULT_STAKES_SIZE } from '../../../../../constants/general';
+import { DEFAULT_PAGE_SIZE } from '../../../../../constants/general';
 import { useAccount } from '../../../../../hooks/useAccount';
 import { translations } from '../../../../../locales/i18n';
 import { COLUMNS_CONFIG } from './VestingStakesFrame.constants';
 import { StakedAmountCellRenderer } from './components/StakedAmountCellRenderer';
 import { useGetVestingStakes } from './hooks/useGetVestingStakes';
-
-const pageSize = DEFAULT_STAKES_SIZE;
 
 export const VestingStakesFrame: FC = () => {
   const { account } = useAccount();
@@ -33,7 +31,7 @@ export const VestingStakesFrame: FC = () => {
 
   const onPageChange = useCallback(
     (value: number) => {
-      if (vestingStakes.length < pageSize && value > page) {
+      if (vestingStakes.length < DEFAULT_PAGE_SIZE && value > page) {
         return;
       }
       setPage(value);
@@ -42,7 +40,7 @@ export const VestingStakesFrame: FC = () => {
   );
 
   const isNextButtonDisabled = useMemo(
-    () => !loading && vestingStakes.length < pageSize,
+    () => !loading && vestingStakes.length < DEFAULT_PAGE_SIZE,
     [loading, vestingStakes],
   );
 
@@ -77,7 +75,7 @@ export const VestingStakesFrame: FC = () => {
             page={page}
             className="lg:pb-6 mt-3 lg:mt-6 justify-center lg:justify-start"
             onChange={onPageChange}
-            itemsPerPage={pageSize}
+            itemsPerPage={DEFAULT_PAGE_SIZE}
             isNextButtonDisabled={isNextButtonDisabled}
             dataAttribute="vesting-stakes-pagination"
           />

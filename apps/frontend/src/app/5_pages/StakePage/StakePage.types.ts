@@ -1,6 +1,6 @@
 import { ReactNode } from 'react';
 
-export type StakingStatRenderProps = {
+export type StakingStatisticsProps = {
   label: ReactNode;
   value: ReactNode;
   className?: string;

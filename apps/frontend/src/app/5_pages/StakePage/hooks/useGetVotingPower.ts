@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import { WEIGHT_FACTOR } from '../../../../constants/general';
+import { WEIGHT_FACTOR } from '../StakePage.constants';
 import { useGetWeight } from '../components/StakesFrame/hooks/useGetWeight';
 
 export const useGetVotingPower = (stakedAmount: string, unlockDate: number) => {

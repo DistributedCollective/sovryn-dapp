@@ -2,10 +2,9 @@ import { useEffect, useState } from 'react';
 
 import { useGetProtocolContract } from '../../../../hooks/useGetContract';
 import { asyncCall } from '../../../../store/rxjs/provider-cache';
-import { getRskChainId } from '../../../../utils/chain';
 
 export const useGetStakingBalanceOf = (address: string) => {
-  const stakingContract = useGetProtocolContract('staking', getRskChainId());
+  const stakingContract = useGetProtocolContract('staking');
   const [balance, setBalance] = useState('0');
 
   useEffect(() => {

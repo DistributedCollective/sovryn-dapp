@@ -16,15 +16,15 @@ import {
 
 import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { MaxButton } from '../../../../2_molecules/MaxButton/MaxButton';
+import {
+  VP,
+  WEIGHT_FACTOR,
+} from '../../../../5_pages/StakePage/StakePage.constants';
 import { useGetPersonalStakingStatistics } from '../../../../5_pages/StakePage/components/PersonalStakingStatistics/hooks/useGetPersonalStakingStatistics';
 import { useGetWeight } from '../../../../5_pages/StakePage/components/StakesFrame/hooks/useGetWeight';
 import { useGetStakingBalanceOf } from '../../../../5_pages/StakePage/hooks/useGetStakingBalanceOf';
 import { useHandleStake } from '../../../../5_pages/StakePage/hooks/useHandleStake';
-import {
-  TOKEN_RENDER_PRECISION,
-  VP,
-} from '../../../../../constants/currencies';
-import { WEIGHT_FACTOR } from '../../../../../constants/general';
+import { TOKEN_RENDER_PRECISION } from '../../../../../constants/currencies';
 import { useAccount } from '../../../../../hooks/useAccount';
 import { useAssetBalance } from '../../../../../hooks/useAssetBalance';
 import { translations } from '../../../../../locales/i18n';
@@ -32,7 +32,10 @@ import { decimalic, fromWei } from '../../../../../utils/math';
 import { StakeFormProps } from '../../StakeForm.types';
 import { StakeDatePicker } from '../StakeDatePicker/StakeDatePicker';
 
-export const AddStakeForm: FC<StakeFormProps> = ({ hasStakedValue }) => {
+export const AddStakeForm: FC<StakeFormProps> = ({
+  hasStakedValue,
+  onSuccess,
+}) => {
   const { account } = useAccount();
   const [amount, setAmount] = useState('');
   const [unlockDate, setUnlockDate] = useState(0);
@@ -109,7 +112,8 @@ export const AddStakeForm: FC<StakeFormProps> = ({ hasStakedValue }) => {
   const onTransactionSuccess = useCallback(() => {
     setAmount('');
     setUnlockDate(0);
-  }, []);
+    onSuccess();
+  }, [onSuccess]);
 
   const handleSubmitStake = useHandleStake(
     amount,

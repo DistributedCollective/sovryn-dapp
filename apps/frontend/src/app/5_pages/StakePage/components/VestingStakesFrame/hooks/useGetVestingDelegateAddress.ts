@@ -2,13 +2,12 @@ import { useEffect, useState } from 'react';
 
 import { useGetProtocolContract } from '../../../../../../hooks/useGetContract';
 import { asyncCall } from '../../../../../../store/rxjs/provider-cache';
-import { getRskChainId } from '../../../../../../utils/chain';
 
 export const useGetVestingDelegateAddress = (
   vestingContractAddress: string,
   unlockDate: number,
 ) => {
-  const stakingContract = useGetProtocolContract('staking', getRskChainId());
+  const stakingContract = useGetProtocolContract('staking');
   const [delegatedAddress, setDelegatedAddress] = useState('');
 
   useEffect(() => {

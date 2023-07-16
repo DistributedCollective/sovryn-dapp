@@ -13,15 +13,11 @@ import {
 } from '@sovryn/ui';
 
 import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRenderer';
-import {
-  APR,
-  TOKEN_RENDER_PRECISION,
-  VP,
-} from '../../../../../constants/currencies';
-import { MAX_STAKING_APR_LINK } from '../../../../../constants/links';
+import { TOKEN_RENDER_PRECISION } from '../../../../../constants/currencies';
 import { translations } from '../../../../../locales/i18n';
 import { fromWei } from '../../../../../utils/math';
-import { GlobalStatRender } from '../../StakePage.utils';
+import { APR, MAX_STAKING_APR_LINK, VP } from '../../StakePage.constants';
+import { GlobalStatistics } from '../../StakePage.utils';
 import { useGetStakingStatistics } from './hooks/useGetStakingStatistics';
 
 export const StakingStatistics = () => {
@@ -53,7 +49,7 @@ export const StakingStatistics = () => {
       </Paragraph>
 
       <div className="flex md:flex-row flex-col md:justify-between flex-wrap md:gap-6 gap-1 md:items-center">
-        <GlobalStatRender
+        <GlobalStatistics
           label={t(translations.stakePage.statistics.totalStakedSov)}
           value={
             <AmountRenderer
@@ -63,7 +59,7 @@ export const StakingStatistics = () => {
             />
           }
         />
-        <GlobalStatRender
+        <GlobalStatistics
           label={t(translations.stakePage.statistics.totalVotingPower)}
           value={
             <AmountRenderer
@@ -73,7 +69,7 @@ export const StakingStatistics = () => {
             />
           }
         />
-        <GlobalStatRender
+        <GlobalStatistics
           label={
             <span className="flex items-center gap-1">
               {t(translations.stakePage.statistics.maxStakingApr)}{' '}

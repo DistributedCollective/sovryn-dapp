@@ -8,7 +8,6 @@ import { useTransactionContext } from '../../../../contexts/TransactionContext';
 import { useAccount } from '../../../../hooks/useAccount';
 import { useGetProtocolContract } from '../../../../hooks/useGetContract';
 import { translations } from '../../../../locales/i18n';
-import { getRskChainId } from '../../../../utils/chain';
 
 export const useHandleAdjustVestingStake = (
   delegateAddress: string,
@@ -16,7 +15,7 @@ export const useHandleAdjustVestingStake = (
 ) => {
   const { signer } = useAccount();
   const { setTransactions, setIsOpen, setTitle } = useTransactionContext();
-  const vestingContract = useGetProtocolContract('vesting', getRskChainId());
+  const vestingContract = useGetProtocolContract('vesting');
 
   const handleSubmit = useCallback(async () => {
     if (!signer || !vestingContract) {

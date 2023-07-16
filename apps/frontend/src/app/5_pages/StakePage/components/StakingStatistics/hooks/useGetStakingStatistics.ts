@@ -1,11 +1,10 @@
 import { useCallback, useEffect, useState } from 'react';
 
 import { MS } from '../../../../../../constants/general';
-import { MAX_STAKING_APR_API_LINK } from '../../../../../../constants/links';
-// import { MAX_STAKING_APR_API_LINK } from '../../../../../../constants/links';
 import { useBlockNumber } from '../../../../../../hooks/useBlockNumber';
 import { useGetProtocolContract } from '../../../../../../hooks/useGetContract';
 import { getRskChainId } from '../../../../../../utils/chain';
+import { MAX_STAKING_APR_API_LINK } from '../../../StakePage.constants';
 
 const REDASH_API_KEY = process.env.REACT_APP_REDASH_API_KEY;
 

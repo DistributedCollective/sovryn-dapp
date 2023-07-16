@@ -70,7 +70,10 @@ export const AddStakeRenderer: FC<AddStakeRendererProps> = ({
               onClose={toggleCreateStakeDialog}
             />
             <DialogBody>
-              <AddStakeForm hasStakedValue={hasStakedValue} />
+              <AddStakeForm
+                hasStakedValue={hasStakedValue}
+                onSuccess={toggleCreateStakeDialog}
+              />
             </DialogBody>
           </Dialog>
         </div>

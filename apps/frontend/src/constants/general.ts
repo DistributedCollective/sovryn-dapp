@@ -21,7 +21,7 @@ export const SUBGRAPH = {
 
 export const EXPORT_RECORD_LIMIT = 500;
 export const DEFAULT_HISTORY_FRAME_PAGE_SIZE = 10;
-export const DEFAULT_STAKES_SIZE = 10;
+export const DEFAULT_PAGE_SIZE = 10;
 
 export const DEFAULT_TIMEOUT_SECONDS = 5000;
 export const LIQUIDATION_RESERVE_AMOUNT = 20;

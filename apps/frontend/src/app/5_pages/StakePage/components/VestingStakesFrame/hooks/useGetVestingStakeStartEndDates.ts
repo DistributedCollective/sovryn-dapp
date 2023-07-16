@@ -20,10 +20,7 @@ export const useGetVestingStakeStartEndDates = (
         const [start, end] = await asyncCall(
           `vesting/dates/${vestingContractAddress}`,
           async () => {
-            const { abi } = await getProtocolContract(
-              'vesting',
-              getRskChainId(),
-            );
+            const { abi } = await getProtocolContract('vesting');
             const provider = getProvider(getRskChainId());
             const contract = new Contract(
               vestingContractAddress,

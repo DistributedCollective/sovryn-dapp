@@ -5,10 +5,9 @@ import { t } from 'i18next';
 import { SupportedTokens } from '@sovryn/contracts';
 
 import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRenderer';
-import {
-  TOKEN_RENDER_PRECISION,
-  VP,
-} from '../../../../../constants/currencies';
+import { VP } from '../../../../5_pages/StakePage/StakePage.constants';
+import { AdjustStakeAction } from '../../../../5_pages/StakePage/StakePage.types';
+import { TOKEN_RENDER_PRECISION } from '../../../../../constants/currencies';
 import { translations } from '../../../../../locales/i18n';
 import { decimalic } from '../../../../../utils/math';
 
@@ -112,3 +111,18 @@ export const renderVotingPower = (votingPower: number) =>
 
 export const isAddress = (address: string) =>
   address.match(/^0x[a-fA-F0-9]{40}$/);
+
+export const getAdjustStakeAction = (index: number) => {
+  switch (index) {
+    case 0:
+      return AdjustStakeAction.Increase;
+    case 1:
+      return AdjustStakeAction.Decrease;
+    case 2:
+      return AdjustStakeAction.Extend;
+    case 3:
+      return AdjustStakeAction.Delegate;
+    default:
+      return AdjustStakeAction.Increase;
+  }
+};

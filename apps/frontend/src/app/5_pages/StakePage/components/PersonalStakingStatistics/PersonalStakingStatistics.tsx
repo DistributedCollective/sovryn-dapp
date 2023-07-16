@@ -6,14 +6,12 @@ import { SupportedTokens } from '@sovryn/contracts';
 import { Heading, HelperButton } from '@sovryn/ui';
 
 import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRenderer';
-import {
-  TOKEN_RENDER_PRECISION,
-  VP,
-} from '../../../../../constants/currencies';
+import { TOKEN_RENDER_PRECISION } from '../../../../../constants/currencies';
 import { useAccount } from '../../../../../hooks/useAccount';
 import { translations } from '../../../../../locales/i18n';
 import { decimalic, fromWei } from '../../../../../utils/math';
-import { PersonalStatRender } from '../../StakePage.utils';
+import { VP } from '../../StakePage.constants';
+import { PersonalStatistics } from '../../StakePage.utils';
 import { useGetStakingBalanceOf } from '../../hooks/useGetStakingBalanceOf';
 import { useGetStakingStatistics } from '../StakingStatistics/hooks/useGetStakingStatistics';
 import { useGetPersonalStakingStatistics } from './hooks/useGetPersonalStakingStatistics';
@@ -45,7 +43,7 @@ export const PersonalStakingStatistics = () => {
 
       <div className="flex flex-wrap lg:gap-16 gap-6 items-center">
         <div className="w-full md:w-auto">
-          <PersonalStatRender
+          <PersonalStatistics
             label={t(translations.stakePage.personalStatistics.stakedSov)}
             value={
               <AmountRenderer
@@ -57,7 +55,7 @@ export const PersonalStakingStatistics = () => {
             className="text-[2rem]"
           />
         </div>
-        <PersonalStatRender
+        <PersonalStatistics
           label={
             <span className="flex items-center gap-1">
               {t(translations.stakePage.personalStatistics.votingPower)}{' '}
@@ -108,10 +106,10 @@ export const PersonalStakingStatistics = () => {
             />
           }
         />
-        <PersonalStatRender
+        <PersonalStatistics
           label={t(translations.stakePage.personalStatistics.votingPowerShare)}
           value={
-            <AmountRenderer value={votingPowerShare} suffix="%" precision={2} />
+            <AmountRenderer value={votingPowerShare} suffix="%" precision={5} />
           }
         />
       </div>

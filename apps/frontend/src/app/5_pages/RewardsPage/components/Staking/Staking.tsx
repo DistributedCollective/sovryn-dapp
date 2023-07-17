@@ -80,7 +80,7 @@ export const Staking: FC = () => {
 
   return (
     <div className="flex flex-col items-center w-full">
-      <div className="bg-gray-80 lg:py-4 lg:px-4 rounded w-full">
+      <div className="lg:bg-gray-80 lg:py-4 lg:px-4 rounded w-full">
         <Table
           columns={columns}
           rows={rows}

@@ -66,8 +66,11 @@ const RewardsPage: FC = () => {
           <TotalRewardsEarned />
         </div>
 
-        <div className="flex-1 bg-gray-80 md:bg-gray-90 py-7 px-6 rounded mb-12">
-          <Heading className="font-normal mb-8" type={HeadingType.h1}>
+        <div className="flex-1 lg:bg-gray-90 py-7 lg:px-6 rounded mb-12">
+          <Heading
+            className="font-normal mb-4 lg:mb-8 text-base lg:text-2xl"
+            type={HeadingType.h1}
+          >
             {t(translations.rewardPage.tabs.title)}
           </Heading>
 

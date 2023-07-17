@@ -14,6 +14,7 @@ import { translations } from '../../../../../locales/i18n';
 import { useGetFeesEarned } from '../../hooks/useGetFeesEarned';
 import { useGetLiquidSovClaimAmount } from '../../hooks/useGetLiquidSovClaimAmount';
 import { columns } from './Staking.constants';
+import { getStakingRevenueType } from './Staking.utils';
 import { WithdrawFee } from './components/WithdrawFee/WithdrawFee';
 import { WithdrawLiquidFee } from './components/WithdrawLiquidFee/WithdrawLiquidFee';
 
@@ -34,7 +35,7 @@ export const Staking: FC = () => {
 
     return [
       ...earnedFees.map(earnedFee => ({
-        type: t(translations.rewardPage.staking.stakingRevenue),
+        type: getStakingRevenueType(earnedFee.token),
         amount: (
           <AmountRenderer
             value={formatUnits(earnedFee.value, 18)}

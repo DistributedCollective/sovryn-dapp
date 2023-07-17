@@ -486,7 +486,8 @@
         },
         "staking": {
             "stakingSubsidies": "Staking subsidies",
-            "stakingRevenue": "Staking revenue"
+            "stakingRevenue": "Staking revenue",
+            "stakingRevenueLegacy": "Staking revenue (legacy)"
         }
     },
 

@@ -159,6 +159,7 @@ export const WithdrawFee: FC<WithdrawFeeProps> = ({
       text={t(translations.rewardPage.stabilityPool.actions.withdraw)}
       onClick={onSubmit}
       disabled={isClaimDisabled}
+      className="w-full lg:w-auto"
       dataAttribute="rewards-withdraw"
     />
   );

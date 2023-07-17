@@ -14,6 +14,7 @@ import {
   Table,
   ErrorBadge,
   ErrorLevel,
+  Paragraph,
 } from '@sovryn/ui';
 import { Decimal } from '@sovryn/utils';
 
@@ -134,13 +135,14 @@ export const StabilityPool: FC = () => {
           />
         ),
         action: (
-          <div className="flex flex-row gap-3">
+          <div className="flex flex-row gap-3 w-full">
             <Button
               type={ButtonType.button}
               style={ButtonStyle.secondary}
               text={t(translations.rewardPage.stabilityPool.actions.withdraw)}
               onClick={handleWithdraw}
-              disabled={claimDisabled}
+              disabled={claimDisabled || amount.isZero()}
+              className="flex-1 lg:flex-initial"
               dataAttribute="stability-rewards-withdraw"
             />
             {isOpenTroveExists && !amount.isZero() && signer && (
@@ -152,6 +154,7 @@ export const StabilityPool: FC = () => {
                 )}
                 onClick={handleTransferToLOC}
                 disabled={claimLocked}
+                className="flex-1 lg:flex-initial"
                 dataAttribute="stability-rewards-transfer-to-loc"
               />
             )}
@@ -174,7 +177,8 @@ export const StabilityPool: FC = () => {
             style={ButtonStyle.secondary}
             text={t(translations.rewardPage.stabilityPool.actions.withdraw)}
             onClick={handleWithdraw}
-            disabled={claimDisabled}
+            disabled={claimDisabled || decimalic(sovGain).isZero()}
+            className="w-full lg:w-auto"
             dataAttribute="stability-subsidies-withdraw"
           />
         ),
@@ -242,7 +246,15 @@ export const StabilityPool: FC = () => {
               ? t(translations.rewardPage.stabilityPool.noRewards)
               : t(translations.rewardPage.stabilityPool.notConnected)
           }
-          rowTitle={rows => rows.type}
+          rowTitle={row => (
+            <div className="flex flex-col items-start gap-1">
+              <Paragraph className="text-gray-40">{row.type}</Paragraph>
+              {row.amount}
+            </div>
+          )}
+          mobileRenderer={row => (
+            <div className="flex flex-col items-start gap-3">{row.action}</div>
+          )}
         />
         {claimLocked && (
           <ErrorBadge

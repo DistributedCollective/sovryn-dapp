@@ -4,7 +4,7 @@ import { formatUnits } from 'ethers/lib/utils';
 import { t } from 'i18next';
 
 import { SupportedTokens } from '@sovryn/contracts';
-import { Table } from '@sovryn/ui';
+import { Paragraph, Table } from '@sovryn/ui';
 
 import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { BTC_RENDER_PRECISION } from '../../../../../constants/currencies';
@@ -91,7 +91,15 @@ export const Staking: FC = () => {
               ? t(translations.rewardPage.stabilityPool.noRewards)
               : t(translations.rewardPage.stabilityPool.notConnected)
           }
-          rowTitle={row => `${row.type}-${getTokenDisplayName(row.token)}`}
+          rowTitle={row => (
+            <div className="flex flex-col items-start gap-1">
+              <Paragraph className="text-gray-40">
+                {`${row.type}-${getTokenDisplayName(row.token)}`}
+              </Paragraph>
+              {row.amount}
+            </div>
+          )}
+          mobileRenderer={row => row.action}
         />
       </div>
     </div>

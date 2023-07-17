@@ -29,6 +29,7 @@ export type TableProps<RowType extends RowObject> = {
   orderOptions?: OrderOptions;
   setOrderOptions?: (sort: OrderOptions) => void;
   isLoading?: boolean;
+  mobileRenderer?: (row: RowType) => ReactNode;
 };
 
 export enum OrderDirection {

@@ -12,6 +12,7 @@ type TableMobileRowProps<RowType extends RowObject> = {
   onRowClick?: (row: RowType) => void;
   dataAttribute?: string;
   title: ReactNode;
+  renderer?: (row: RowType) => ReactNode;
 };
 
 export const TableMobileRow = <RowType extends RowObject>({
@@ -20,6 +21,7 @@ export const TableMobileRow = <RowType extends RowObject>({
   onRowClick = noop,
   dataAttribute,
   title,
+  renderer,
 }: TableMobileRowProps<RowType>) => {
   const [open, setOpen] = useState(false);
 
@@ -37,17 +39,19 @@ export const TableMobileRow = <RowType extends RowObject>({
       style={AccordionStyle.secondary}
     >
       <div onClick={onClick} className={styles.row}>
-        {columns.map(column => (
-          <SimpleTableRow
-            key={column.id.toString()}
-            label={column.title}
-            value={
-              column.cellRenderer
-                ? column.cellRenderer(row, column.id)
-                : row[column.id]
-            }
-          />
-        ))}
+        {renderer
+          ? renderer(row)
+          : columns.map(column => (
+              <SimpleTableRow
+                key={column.id.toString()}
+                label={column.title}
+                value={
+                  column.cellRenderer
+                    ? column.cellRenderer(row, column.id)
+                    : row[column.id]
+                }
+              />
+            ))}
       </div>
     </Accordion>
   );

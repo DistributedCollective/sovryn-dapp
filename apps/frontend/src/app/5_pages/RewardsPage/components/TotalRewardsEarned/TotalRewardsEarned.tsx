@@ -6,8 +6,8 @@ import {
   Heading,
   HeadingType,
   HelperButton,
-  TooltipPlacement,
   TooltipTrigger,
+  TooltipPlacement,
 } from '@sovryn/ui';
 
 import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRenderer';

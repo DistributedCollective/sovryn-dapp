@@ -13657,6 +13657,22 @@ export type GetFundingQuery = {
   }>;
 };
 
+export type GetLastVestingWithdrawQueryVariables = Exact<{
+  vestingAddress?: InputMaybe<Scalars['ID']>;
+}>;
+
+export type GetLastVestingWithdrawQuery = {
+  __typename?: 'Query';
+  vestingContracts: Array<{
+    __typename?: 'VestingContract';
+    id: string;
+    stakeHistory?: Array<{
+      __typename?: 'VestingHistoryItem';
+      timestamp: number;
+    }> | null;
+  }>;
+};
+
 export type GetSmartTokensQueryVariables = Exact<{
   skip: Scalars['Int'];
   pageSize: Scalars['Int'];
@@ -13772,6 +13788,26 @@ export type GetVestingHistoryQuery = {
     stakeHistory?: Array<{
       __typename?: 'VestingHistoryItem';
       id: string;
+      amount: string;
+      lockedUntil?: number | null;
+    }> | null;
+  }>;
+};
+
+export type GetVestingUnlockBalanceQueryVariables = Exact<{
+  vestingAddress?: InputMaybe<Scalars['ID']>;
+  timestamp?: InputMaybe<Scalars['Int']>;
+  currentTimestamp?: InputMaybe<Scalars['Int']>;
+}>;
+
+export type GetVestingUnlockBalanceQuery = {
+  __typename?: 'Query';
+  vestingContracts: Array<{
+    __typename?: 'VestingContract';
+    id: string;
+    stakeHistory?: Array<{
+      __typename?: 'VestingHistoryItem';
+      timestamp: number;
       amount: string;
       lockedUntil?: number | null;
     }> | null;
@@ -13979,6 +14015,72 @@ export type GetFundingLazyQueryHookResult = ReturnType<
 export type GetFundingQueryResult = Apollo.QueryResult<
   GetFundingQuery,
   GetFundingQueryVariables
+>;
+export const GetLastVestingWithdrawDocument = gql`
+  query getLastVestingWithdraw($vestingAddress: ID) {
+    vestingContracts(where: { id: $vestingAddress }) {
+      id
+      stakeHistory(
+        where: { action: TokensWithdrawn }
+        orderBy: timestamp
+        orderDirection: desc
+        first: 1
+      ) {
+        timestamp
+      }
+    }
+  }
+`;
+
+/**
+ * __useGetLastVestingWithdrawQuery__
+ *
+ * To run a query within a React component, call `useGetLastVestingWithdrawQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetLastVestingWithdrawQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetLastVestingWithdrawQuery({
+ *   variables: {
+ *      vestingAddress: // value for 'vestingAddress'
+ *   },
+ * });
+ */
+export function useGetLastVestingWithdrawQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    GetLastVestingWithdrawQuery,
+    GetLastVestingWithdrawQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    GetLastVestingWithdrawQuery,
+    GetLastVestingWithdrawQueryVariables
+  >(GetLastVestingWithdrawDocument, options);
+}
+export function useGetLastVestingWithdrawLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    GetLastVestingWithdrawQuery,
+    GetLastVestingWithdrawQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    GetLastVestingWithdrawQuery,
+    GetLastVestingWithdrawQueryVariables
+  >(GetLastVestingWithdrawDocument, options);
+}
+export type GetLastVestingWithdrawQueryHookResult = ReturnType<
+  typeof useGetLastVestingWithdrawQuery
+>;
+export type GetLastVestingWithdrawLazyQueryHookResult = ReturnType<
+  typeof useGetLastVestingWithdrawLazyQuery
+>;
+export type GetLastVestingWithdrawQueryResult = Apollo.QueryResult<
+  GetLastVestingWithdrawQuery,
+  GetLastVestingWithdrawQueryVariables
 >;
 export const GetSmartTokensDocument = gql`
   query getSmartTokens(
@@ -14462,4 +14564,82 @@ export type GetVestingHistoryLazyQueryHookResult = ReturnType<
 export type GetVestingHistoryQueryResult = Apollo.QueryResult<
   GetVestingHistoryQuery,
   GetVestingHistoryQueryVariables
+>;
+export const GetVestingUnlockBalanceDocument = gql`
+  query getVestingUnlockBalance(
+    $vestingAddress: ID
+    $timestamp: Int
+    $currentTimestamp: Int
+  ) {
+    vestingContracts(where: { id: $vestingAddress }) {
+      id
+      stakeHistory(
+        where: {
+          action: TokensStaked
+          lockedUntil_gt: $timestamp
+          lockedUntil_lte: $currentTimestamp
+        }
+        orderBy: lockedUntil
+        orderDirection: asc
+        first: 250
+      ) {
+        timestamp
+        amount
+        lockedUntil
+      }
+    }
+  }
+`;
+
+/**
+ * __useGetVestingUnlockBalanceQuery__
+ *
+ * To run a query within a React component, call `useGetVestingUnlockBalanceQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetVestingUnlockBalanceQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetVestingUnlockBalanceQuery({
+ *   variables: {
+ *      vestingAddress: // value for 'vestingAddress'
+ *      timestamp: // value for 'timestamp'
+ *      currentTimestamp: // value for 'currentTimestamp'
+ *   },
+ * });
+ */
+export function useGetVestingUnlockBalanceQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    GetVestingUnlockBalanceQuery,
+    GetVestingUnlockBalanceQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    GetVestingUnlockBalanceQuery,
+    GetVestingUnlockBalanceQueryVariables
+  >(GetVestingUnlockBalanceDocument, options);
+}
+export function useGetVestingUnlockBalanceLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    GetVestingUnlockBalanceQuery,
+    GetVestingUnlockBalanceQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    GetVestingUnlockBalanceQuery,
+    GetVestingUnlockBalanceQueryVariables
+  >(GetVestingUnlockBalanceDocument, options);
+}
+export type GetVestingUnlockBalanceQueryHookResult = ReturnType<
+  typeof useGetVestingUnlockBalanceQuery
+>;
+export type GetVestingUnlockBalanceLazyQueryHookResult = ReturnType<
+  typeof useGetVestingUnlockBalanceLazyQuery
+>;
+export type GetVestingUnlockBalanceQueryResult = Apollo.QueryResult<
+  GetVestingUnlockBalanceQuery,
+  GetVestingUnlockBalanceQueryVariables
 >;

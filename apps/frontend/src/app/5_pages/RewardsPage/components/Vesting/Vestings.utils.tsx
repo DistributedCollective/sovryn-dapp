@@ -33,7 +33,7 @@ import {
   VestingHistoryItem,
 } from './Vesting.types';
 import { useGetUnlockSchedule } from './hooks/useGetUnlockSchedule';
-import { useGetUnlockedVesting } from './hooks/useGetUnlockedBalance';
+import { useGetUnlockedBalance } from './hooks/useGetUnlockedBalance';
 import { useHandleWithdraw } from './hooks/useHandleWithdraw';
 
 const rskExplorerUrl = getRskExplorerUrl();
@@ -54,14 +54,10 @@ export const renderBalance = (balance: string | undefined) => {
 };
 
 export const UnlockedBalance = (item: VestingContractTableRecord) => {
-  const { value, loading } = useGetUnlockedVesting(
-    item.cliff,
-    item.address,
-    item.type,
-  );
+  const { loading, result } = useGetUnlockedBalance(item);
 
-  if (!value && !loading) {
-    return <>0</>;
+  if (!result && !loading) {
+    return <>N/A</>;
   }
 
   if (loading) {
@@ -70,7 +66,7 @@ export const UnlockedBalance = (item: VestingContractTableRecord) => {
 
   return (
     <AmountRenderer
-      value={value || '0'}
+      value={result || '0'}
       suffix={SOV}
       precision={TOKEN_RENDER_PRECISION}
       dataAttribute="vesting-rewards-unlocked-balance"

@@ -248,7 +248,9 @@ export const StabilityPool: FC = () => {
           }
           rowTitle={row => (
             <div className="flex flex-col items-start gap-1">
-              <Paragraph className="text-gray-40">{row.type}</Paragraph>
+              <Paragraph className="text-gray-40 font-medium">
+                {row.type}
+              </Paragraph>
               {row.amount}
             </div>
           )}

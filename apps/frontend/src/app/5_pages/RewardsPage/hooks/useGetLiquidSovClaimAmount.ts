@@ -36,6 +36,7 @@ export const useGetLiquidSovClaimAmount = () => {
     // call getStakerCurrentReward(True, lastWithdrawalInterval)
     // Stop when: a) Both lastWithdrawalInterval > 0 and amount > 0 OR b) lastWithdrawalInterval(returned) > currentTimeStamp
     // as additional brake, run at maximum 30 checks
+
     while (
       !(
         (lastWithdrawalInterval > 0 && amount > 0) ||
@@ -68,8 +69,7 @@ export const useGetLiquidSovClaimAmount = () => {
       lastWithdrawalInterval: restartTime,
       amount: decimalic(amount).toString(),
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [account, staking?.address, stakingRewards?.address]);
+  }, [account, staking, stakingRewards]);
 
   useEffect(() => {
     getRewards().then(({ lastWithdrawalInterval, amount }) =>

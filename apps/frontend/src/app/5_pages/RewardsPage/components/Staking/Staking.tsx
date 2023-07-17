@@ -44,7 +44,6 @@ export const Staking: FC = () => {
           />
         ),
         action: <WithdrawFee {...earnedFee} refetch={refetch} />,
-        token: earnedFee.token,
         key: `${earnedFee.token}-fee`,
       })),
       {
@@ -64,7 +63,6 @@ export const Staking: FC = () => {
             refetch={refetchLiquidSovClaim}
           />
         ),
-        token: SupportedTokens.sov,
         key: `${SupportedTokens.sov}-liquid-fee`,
       },
     ];
@@ -92,10 +90,8 @@ export const Staking: FC = () => {
               : t(translations.rewardPage.stabilityPool.notConnected)
           }
           rowTitle={row => (
-            <div className="flex flex-col items-start gap-1">
-              <Paragraph className="text-gray-40">
-                {`${row.type}-${getTokenDisplayName(row.token)}`}
-              </Paragraph>
+            <div className="flex flex-col items-start gap-1 font-medium">
+              <Paragraph className="text-gray-40">{row.type}</Paragraph>
               {row.amount}
             </div>
           )}

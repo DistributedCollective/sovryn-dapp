@@ -33,7 +33,6 @@ import { areAddressesEqual } from '../../../../../utils/helpers';
 import { AdjustStakeFormProps } from '../../StakeForm.types';
 import { useGetPenaltyAmount } from '../../hooks/useGetPenaltyAmount';
 import { StakeDatePicker } from '../StakeDatePicker/StakeDatePicker';
-import { adjustStakeTabs } from './AdjustStakeForm.constants';
 import {
   renderPenaltyAmount,
   renderNewStakedAmount,
@@ -42,6 +41,7 @@ import {
   isAddress,
   renderVotingPower,
   getAdjustStakeAction,
+  adjustStakeTabs,
 } from './AdjustStakeForm.utils';
 
 export const AdjustStakeForm: FC<AdjustStakeFormProps> = ({
@@ -50,11 +50,16 @@ export const AdjustStakeForm: FC<AdjustStakeFormProps> = ({
 }) => {
   const { account } = useAccount();
   const [amount, setAmount] = useState('');
-  const [index, setIndex] = useState(0);
   const { balance } = useAssetBalance(SupportedTokens.sov);
   const [delegateToAddress, setDelegateToAddress] = useState('');
   const [votingPowerChanged, setVotingPowerChanged] = useState(0);
   const [unlockDate, setUnlockDate] = useState(0);
+  const currentDate = useMemo(() => Math.ceil(new Date().getTime() / MS), []);
+  const isTabLocked = useMemo(
+    () => stake.unlockDate < currentDate,
+    [stake, currentDate],
+  );
+  const [index, setIndex] = useState(!isTabLocked ? 0 : 1);
 
   const isIncreaseTab = useMemo(() => index === 0, [index]);
   const isDecreaseTab = useMemo(() => index === 1, [index]);
@@ -74,7 +79,7 @@ export const AdjustStakeForm: FC<AdjustStakeFormProps> = ({
 
   const penaltyAmount = useGetPenaltyAmount(
     penaltyAmountValidated,
-    stake.unlockDate,
+    stake.unlockDate > currentDate ? stake.unlockDate : 0,
   );
 
   const hasDelegatedAddress = useMemo(
@@ -159,9 +164,17 @@ export const AdjustStakeForm: FC<AdjustStakeFormProps> = ({
         isExtendTab ? stake.stakedAmount : amount,
         votingPowerChanged,
         isValidAmount,
-        isExtendTab ? unlockDate : stake.unlockDate,
+        isExtendTab ? unlockDate : isTabLocked ? 0 : stake.unlockDate,
       ),
-    [amount, votingPowerChanged, isValidAmount, isExtendTab, stake, unlockDate],
+    [
+      amount,
+      votingPowerChanged,
+      isValidAmount,
+      isExtendTab,
+      stake,
+      unlockDate,
+      isTabLocked,
+    ],
   );
 
   const getNewVotingPower = useCallback(
@@ -172,7 +185,7 @@ export const AdjustStakeForm: FC<AdjustStakeFormProps> = ({
         votingPower,
         votingPowerChanged,
         isDecreaseTab,
-        isExtendTab ? unlockDate : stake.unlockDate,
+        isExtendTab ? unlockDate : isTabLocked ? 0 : stake.unlockDate,
       ),
     [
       amount,
@@ -183,6 +196,7 @@ export const AdjustStakeForm: FC<AdjustStakeFormProps> = ({
       isExtendTab,
       stake,
       unlockDate,
+      isTabLocked,
     ],
   );
 
@@ -281,7 +295,7 @@ export const AdjustStakeForm: FC<AdjustStakeFormProps> = ({
 
       <Tabs
         type={TabType.secondary}
-        items={adjustStakeTabs}
+        items={adjustStakeTabs(isTabLocked)}
         onChange={setIndex}
         index={index}
         className="mb-6"

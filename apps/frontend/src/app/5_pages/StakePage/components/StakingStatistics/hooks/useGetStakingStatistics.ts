@@ -1,15 +1,15 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { MS } from '../../../../../../constants/general';
 import { useBlockNumber } from '../../../../../../hooks/useBlockNumber';
 import { useGetProtocolContract } from '../../../../../../hooks/useGetContract';
-import { getRskChainId } from '../../../../../../utils/chain';
 import { MAX_STAKING_APR_API_LINK } from '../../../StakePage.constants';
 
 const REDASH_API_KEY = process.env.REACT_APP_REDASH_API_KEY;
 
 export const useGetStakingStatistics = () => {
-  const stakingContract = useGetProtocolContract('staking', getRskChainId());
+  const currentDate = useMemo(() => new Date(), []);
+  const stakingContract = useGetProtocolContract('staking');
   const [stakingStats, setStakingStats] = useState({
     totalStakedSov: 0,
     totalVotingPower: 0,
@@ -18,12 +18,11 @@ export const useGetStakingStatistics = () => {
   const { value: block } = useBlockNumber();
 
   const fetchStakingStatistics = useCallback(async () => {
-    if (
-      block > 0 &&
-      stakingContract &&
-      (stakingStats.totalStakedSov === 0 || stakingStats.totalVotingPower === 0)
-    ) {
-      const timestamp = Math.ceil(Date.now() / MS);
+    if (!stakingContract) {
+      return;
+    }
+    const fetchData = async () => {
+      const timestamp = Math.ceil(currentDate.getTime() / MS);
       const [stakingStatistics, votingPowerAmount] = await Promise.all([
         stakingContract.getPriorTotalStakesForDate(timestamp, block - 1),
         stakingContract.getPriorTotalVotingPower(block - 1, timestamp),
@@ -42,13 +41,21 @@ export const useGetStakingStatistics = () => {
           totalVotingPower: votingPowerAmount,
         }));
       }
-    }
+    };
 
-    if (REDASH_API_KEY) {
+    const fetchMaxStakingApr = async () => {
+      console.log('REDASH_API_KEY', REDASH_API_KEY);
+
+      if (!REDASH_API_KEY) {
+        return;
+      }
+
       try {
         const response = await fetch(
           `${MAX_STAKING_APR_API_LINK}?api_key=${REDASH_API_KEY}`,
         );
+        console.log('response', response);
+
         if (response.ok) {
           const data = await response.json();
           if (
@@ -69,12 +76,24 @@ export const useGetStakingStatistics = () => {
       } catch (error) {
         console.error('Error fetching max staking APR:', error);
       }
+    };
+
+    if (block > 0 && stakingContract) {
+      if (
+        stakingStats.totalStakedSov === 0 ||
+        stakingStats.totalVotingPower === 0
+      ) {
+        await fetchData();
+      }
+
+      await fetchMaxStakingApr();
     }
   }, [
     stakingContract,
     block,
     stakingStats.totalStakedSov,
     stakingStats.totalVotingPower,
+    currentDate,
   ]);
 
   useEffect(() => {

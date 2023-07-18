@@ -1,16 +1,27 @@
 import { useCallback } from 'react';
 
-import { constants } from 'ethers';
+import { constants, ethers } from 'ethers';
 import { t } from 'i18next';
 
-import { TransactionType } from '../../../3_organisms/TransactionStepDialog/TransactionStepDialog.types';
+import {
+  SupportedTokens,
+  getProtocolContract,
+  getTokenDetails,
+} from '@sovryn/contracts';
+
+import { defaultChainId } from '../../../../config/chains';
+
+import {
+  Transaction,
+  TransactionType,
+} from '../../../3_organisms/TransactionStepDialog/TransactionStepDialog.types';
 import { GAS_LIMIT } from '../../../../constants/gasLimits';
 import { useTransactionContext } from '../../../../contexts/TransactionContext';
 import { useAccount } from '../../../../hooks/useAccount';
 import { useGetProtocolContract } from '../../../../hooks/useGetContract';
 import { translations } from '../../../../locales/i18n';
-import { getRskChainId } from '../../../../utils/chain';
 import { toWei } from '../../../../utils/math';
+import { prepareApproveTransaction } from '../../../../utils/transactions';
 import { AdjustStakeAction } from '../StakePage.types';
 
 export const useHandleAdjustStake = (
@@ -23,7 +34,15 @@ export const useHandleAdjustStake = (
 ) => {
   const { signer, account } = useAccount();
   const { setTransactions, setIsOpen, setTitle } = useTransactionContext();
-  const stakingContract = useGetProtocolContract('staking', getRskChainId());
+
+  const getMassetManager = useCallback(async () => {
+    const { address: massetManagerAddress, abi: massetManagerAbi } =
+      await getProtocolContract('massetManager', defaultChainId);
+
+    return new ethers.Contract(massetManagerAddress, massetManagerAbi, signer);
+  }, [signer]);
+
+  const stakingContract = useGetProtocolContract('staking');
 
   const handleSubmit = useCallback(async () => {
     if (!signer || !stakingContract) {
@@ -31,20 +50,48 @@ export const useHandleAdjustStake = (
     }
 
     const handleIncrease = async () => {
-      setTransactions([
-        {
-          title: t(translations.stakePage.txDialog.increaseStake),
-          request: {
-            type: TransactionType.signTransaction,
-            contract: stakingContract,
-            fnName: 'stake',
-            args: [toWei(amount), timestamp, account, constants.AddressZero],
-            gasLimit: GAS_LIMIT.STAKING_INCREASE_STAKE,
-          },
-          onComplete,
+      if (!signer || !stakingContract) {
+        return;
+      }
+      const massetManager = await getMassetManager();
+
+      const { address: bassetAddress, abi: bassetAbi } = await getTokenDetails(
+        SupportedTokens.sov,
+        defaultChainId,
+      );
+
+      const bassetToken = new ethers.Contract(bassetAddress, bassetAbi, signer);
+      const weiAmount = toWei(amount).toString();
+
+      const transactions: Transaction[] = [];
+
+      const approveTx = await prepareApproveTransaction({
+        token: SupportedTokens.sov,
+        contract: bassetToken,
+        spender: massetManager.address,
+        amount: weiAmount,
+      });
+
+      if (approveTx) {
+        transactions.push(approveTx);
+      }
+
+      transactions.push({
+        title: t(translations.stakePage.txDialog.increaseStake),
+        request: {
+          type: TransactionType.signTransaction,
+          contract: stakingContract,
+          fnName: 'stake',
+          args: [weiAmount, timestamp, account, constants.AddressZero],
+          gasLimit: GAS_LIMIT.STAKING_INCREASE_STAKE,
         },
-      ]);
+        onComplete,
+      });
+
+      setTransactions(transactions);
+
       setTitle(t(translations.stakePage.txDialog.increaseStakeTitle));
+      setIsOpen(true);
     };
 
     const handleDecrease = async () => {
@@ -132,6 +179,7 @@ export const useHandleAdjustStake = (
     action,
     updatedTimestamp,
     delegateAddress,
+    getMassetManager,
   ]);
 
   return handleSubmit;

@@ -1,6 +1,7 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { useAccount } from '../../../../../../hooks/useAccount';
+import { useBlockNumber } from '../../../../../../hooks/useBlockNumber';
 import { useGetProtocolContract } from '../../../../../../hooks/useGetContract';
 import { asyncCall } from '../../../../../../store/rxjs/provider-cache';
 import { areAddressesEqual } from '../../../../../../utils/helpers';
@@ -12,21 +13,21 @@ export const useGetStakes = () => {
   const stakingContract = useGetProtocolContract('staking');
   const [stakes, setStakes] = useState<StakeItem[]>([]);
   const [loading, setLoading] = useState(false);
-  const [isDataFetched, setIsDataFetched] = useState(false);
+  const { value: block } = useBlockNumber();
+  const prevBlockRef = useRef<number | undefined>(block);
 
   const updateStakes = useCallback(async () => {
-    if (!stakingContract || isDataFetched) {
+    if (!stakingContract) {
       return;
     }
 
-    setLoading(true);
     try {
+      setLoading(true);
       const result = await asyncCall(`staking/stakes/${account}`, () =>
         stakingContract.getStakes(account),
       );
       if (result) {
         const { stakes, dates } = result;
-
         const stakesArray = await Promise.all(
           dates.map(async (unlockDate: number, index: number) => {
             const delegate = await stakingContract.delegates(
@@ -43,23 +44,26 @@ export const useGetStakes = () => {
         );
 
         setStakes(stakesArray);
-        setIsDataFetched(true);
       }
     } catch (error) {
       console.error('Error fetching stakes:', error);
     } finally {
       setLoading(false);
     }
-  }, [stakingContract, account, isDataFetched]);
+  }, [stakingContract, account]);
 
   useEffect(() => {
-    if (account) {
-      updateStakes();
-    } else {
+    if (!account) {
       setStakes([]);
-      setIsDataFetched(false);
+      return;
     }
-  }, [updateStakes, account]);
+
+    if (prevBlockRef.current !== block) {
+      updateStakes();
+    }
+
+    prevBlockRef.current = block;
+  }, [block, account, updateStakes]);
 
   return { stakes, loading };
 };

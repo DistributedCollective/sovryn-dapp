@@ -38,7 +38,7 @@ const StakePage: FC = () => {
         </div>
 
         <div className="md:hidden block w-full">
-          <AddStakeRenderer hasStakedValue={hasStakedValue} />
+          {account && <AddStakeRenderer hasStakedValue={hasStakedValue} />}
         </div>
       </div>
     </>

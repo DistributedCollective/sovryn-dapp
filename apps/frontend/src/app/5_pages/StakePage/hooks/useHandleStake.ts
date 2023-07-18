@@ -20,7 +20,6 @@ import { useTransactionContext } from '../../../../contexts/TransactionContext';
 import { useAccount } from '../../../../hooks/useAccount';
 import { useGetProtocolContract } from '../../../../hooks/useGetContract';
 import { translations } from '../../../../locales/i18n';
-import { getRskChainId } from '../../../../utils/chain';
 import { toWei } from '../../../../utils/math';
 import { prepareApproveTransaction } from '../../../../utils/transactions';
 
@@ -39,7 +38,7 @@ export const useHandleStake = (
     return new ethers.Contract(massetManagerAddress, massetManagerAbi, signer);
   }, [signer]);
 
-  const stakingContract = useGetProtocolContract('staking', getRskChainId());
+  const stakingContract = useGetProtocolContract('staking');
 
   const stake = useCallback(async () => {
     if (!signer || !stakingContract) {
@@ -73,7 +72,7 @@ export const useHandleStake = (
         type: TransactionType.signTransaction,
         contract: stakingContract,
         fnName: 'stake',
-        args: [toWei(amount), timestamp + 3600, account, constants.AddressZero],
+        args: [weiAmount, timestamp, account, constants.AddressZero],
         gasLimit: GAS_LIMIT.STAKING_STAKE,
       },
       onComplete,

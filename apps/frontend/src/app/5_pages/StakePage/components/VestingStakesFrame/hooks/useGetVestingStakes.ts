@@ -4,19 +4,12 @@ import { constants } from 'ethers';
 
 import { useAccount } from '../../../../../../hooks/useAccount';
 import { useGetProtocolContract } from '../../../../../../hooks/useGetContract';
-import { getRskChainId } from '../../../../../../utils/chain';
 import { Vesting, VestingData } from '../VestingStakesFrame.types';
 
 export const useGetVestingStakes = () => {
   const { account } = useAccount();
-  const vestingContract = useGetProtocolContract(
-    'vestingRegistry',
-    getRskChainId(),
-  );
-  const vestingFishContract = useGetProtocolContract(
-    'vestingRegistryFish',
-    getRskChainId(),
-  );
+  const vestingContract = useGetProtocolContract('vestingRegistry');
+  const vestingFishContract = useGetProtocolContract('vestingRegistryFish');
   const [vestingContracts, setVestingContracts] = useState<VestingData[]>([]);
   const [vestingFishStakes, setVestingFishStakes] = useState<VestingData[]>([]);
   const [vestingTeamStakes, setVestingTeamStakes] = useState<VestingData[]>([]);
@@ -25,7 +18,7 @@ export const useGetVestingStakes = () => {
   const [vestingStakes, setVestingStakes] = useState<Vesting[]>([]);
 
   const updateVestingContracts = useCallback(async () => {
-    if (!vestingContract || isDataFetched) {
+    if (!vestingContract || isDataFetched || !account) {
       return;
     }
 
@@ -45,7 +38,7 @@ export const useGetVestingStakes = () => {
   }, [vestingContract, account, isDataFetched]);
 
   const updateVestingFishStakes = useCallback(async () => {
-    if (!vestingFishContract || isDataFetched) {
+    if (!vestingFishContract || isDataFetched || !account) {
       return;
     }
 
@@ -66,7 +59,7 @@ export const useGetVestingStakes = () => {
   }, [vestingFishContract, account, isDataFetched]);
 
   const updateVestingTeamStakes = useCallback(async () => {
-    if (!vestingFishContract || isDataFetched) {
+    if (!vestingFishContract || isDataFetched || !account) {
       return;
     }
 
@@ -170,11 +163,16 @@ export const useGetVestingStakes = () => {
   }, [vestingContracts, vestingFishStakes, vestingTeamStakes]);
 
   useEffect(() => {
-    if (account) {
-      updateVestingContracts();
-      updateVestingFishStakes();
-      updateVestingTeamStakes();
+    if (!account) {
+      setVestingContracts([]);
+      setVestingFishStakes([]);
+      setVestingTeamStakes([]);
+      setVestingStakes([]);
+      setIsDataFetched(false);
     }
+    updateVestingContracts();
+    updateVestingFishStakes();
+    updateVestingTeamStakes();
   }, [
     account,
     updateVestingContracts,

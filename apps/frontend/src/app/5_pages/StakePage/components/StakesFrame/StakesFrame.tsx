@@ -59,7 +59,7 @@ export const StakesFrame: FC = () => {
           {t(translations.stakePage.table.stakes)}
         </Paragraph>
         <div className="md:inline-block hidden">
-          <AddStakeRenderer hasStakedValue={hasStakedValue} />
+          {account && <AddStakeRenderer hasStakedValue={hasStakedValue} />}
         </div>
       </div>
 

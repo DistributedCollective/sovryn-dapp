@@ -126,3 +126,28 @@ export const getAdjustStakeAction = (index: number) => {
       return AdjustStakeAction.Increase;
   }
 };
+
+export const adjustStakeTabs = (isTabLocked: boolean) => [
+  {
+    label: t(translations.stakePage.stakeForm.increase),
+    activeClassName: 'text-primary-20',
+    dataAttribute: 'stake-increase',
+    disabled: isTabLocked,
+  },
+  {
+    label: t(translations.stakePage.stakeForm.decrease),
+    activeClassName: 'text-primary-20',
+    dataAttribute: 'stake-decrease',
+  },
+  {
+    label: t(translations.stakePage.stakeForm.extend),
+    activeClassName: 'text-primary-20',
+    dataAttribute: 'stake-extend',
+  },
+  {
+    label: t(translations.stakePage.stakeForm.delegate),
+    activeClassName: 'text-primary-20',
+    dataAttribute: 'stake-delegate',
+    disabled: isTabLocked,
+  },
+];

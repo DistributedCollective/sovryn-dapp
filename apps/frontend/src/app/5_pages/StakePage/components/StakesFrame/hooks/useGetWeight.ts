@@ -13,7 +13,7 @@ export const useGetWeight = (unlockDate: number) => {
   const { lockDate } = useGetLockDate(currentDate);
 
   const getWeight = useCallback(async () => {
-    if (!stakingContract) {
+    if (!stakingContract || unlockDate < lockDate) {
       return;
     }
 

@@ -12,37 +12,46 @@ import {
 export const useGetUnlockSchedule = (
   item: VestingContractTableRecord,
 ): VestingHistoryItem[] | undefined => {
-  const vestingHistory = useGetVestingHistoryQuery({
+  const { data } = useGetVestingHistoryQuery({
     variables: { vestingAddress: item.address },
     client: rskClient,
   });
 
-  const result = useMemo(
-    () =>
-      vestingHistory?.data?.vestingContracts[0]?.stakeHistory?.map(item => ({
+  const result = useMemo(() => {
+    const stakeHistoryItems = data?.vestingContracts[0]?.stakeHistory?.map(
+      item => ({
         amount: item.amount,
         lockedUntil: item.lockedUntil,
-      })),
-    [vestingHistory?.data?.vestingContracts],
-  );
+      }),
+    );
 
-  const finalResult = useMemo(() => {
-    if (!result) {
+    if (!stakeHistoryItems) {
       return undefined;
     }
 
-    const newMap = result.reduce((map, obj) => {
+    const normalizedStakeHistoryItems = stakeHistoryItems.reduce((map, obj) => {
       const { lockedUntil, amount } = obj;
       map.set(lockedUntil, (map.get(lockedUntil) || 0) + Number(amount));
       return map;
     }, new Map());
 
-    return Array.from(newMap, ([lockedUntil, amount]) => ({
-      lockedUntil,
-      amount,
-      isUnlocked: lockedUntil <= dayjs().unix(),
-    })).sort((a, b) => a.lockedUntil - b.lockedUntil);
-  }, [result]);
+    const unlockDates = Array.from(
+      normalizedStakeHistoryItems,
+      ([lockedUntil, amount]) => ({
+        lockedUntil,
+        amount,
+        isUnlocked: lockedUntil <= dayjs().unix(),
+      }),
+    ).sort((a, b) => a.lockedUntil - b.lockedUntil);
 
-  return finalResult;
+    const pastDatesLength = unlockDates?.filter(item => item.isUnlocked).length;
+
+    if (!pastDatesLength || pastDatesLength < 2) {
+      return unlockDates;
+    }
+
+    return unlockDates.slice(pastDatesLength - 2);
+  }, [data?.vestingContracts]);
+
+  return result;
 };

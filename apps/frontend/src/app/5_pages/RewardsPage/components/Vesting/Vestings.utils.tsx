@@ -53,6 +53,14 @@ export const renderBalance = (balance: string | undefined) => {
   );
 };
 
+export const renderContractAddress = (item: VestingContractTableRecord) => (
+  <TransactionId
+    href={`${rskExplorerUrl}/address/${item.address}`}
+    value={item.address}
+    dataAttribute="vesting-rewards-address"
+  />
+);
+
 export const UnlockedBalance = (item: VestingContractTableRecord) => {
   const { loading, result } = useGetUnlockedBalance(item);
 
@@ -97,6 +105,7 @@ export const UnlockSchedule = (item: VestingContractTableRecord) => {
         onClick={() => setShowDialog(prevValue => !prevValue)}
       />
       <UnlockScheduleDialog
+        vestingContract={item}
         unlockSchedule={unlockSchedule}
         isOpen={showDialog}
         onClose={() => setShowDialog(false)}
@@ -106,6 +115,7 @@ export const UnlockSchedule = (item: VestingContractTableRecord) => {
 };
 
 type UnlockScheduleDialogProps = {
+  vestingContract: VestingContractTableRecord;
   unlockSchedule?: VestingHistoryItem[];
   isOpen: boolean;
   onClose: () => void;
@@ -114,6 +124,7 @@ type UnlockScheduleDialogProps = {
 const pageSize = DEFAULT_HISTORY_FRAME_PAGE_SIZE;
 
 const UnlockScheduleDialog: React.FC<UnlockScheduleDialogProps> = ({
+  vestingContract,
   unlockSchedule,
   isOpen,
   onClose,
@@ -161,58 +172,75 @@ const UnlockScheduleDialog: React.FC<UnlockScheduleDialogProps> = ({
   );
 
   return (
-    <Dialog isOpen={isDialogOpen}>
+    <Dialog isOpen={isDialogOpen} disableFocusTrap>
       <DialogHeader title={'Vesting schedule'} onClose={onClose} />
 
       <DialogBody>
-        <div>
-          <div className="flex justify-between px-2">
-            <div>Date</div>
-            <div>Amount</div>
+        <>
+          <div className="bg-gray-70 px-4 py-2 rounded flex justify-between">
+            <div className="text-gray-30">Contract address:</div>
+            {renderContractAddress(vestingContract)}
           </div>
-          <div className="bg-gray-70 px-4 py-3 rounded">
-            {paginatedItems?.map(item => (
-              <div
-                className={classNames('flex justify-between py-1', {
-                  'text-gray-30': item.isUnlocked,
-                })}
-                key={item.date}
-              >
-                <div>{item.date}</div>
-                <div>
-                  <AssetValue
-                    value={Decimal.from(item.amount)}
-                    asset={SupportedTokens.sov}
-                    assetClassName="font-normal"
-                    containerClassName="flex"
-                  />
-                </div>
-              </div>
-            ))}
+
+          <div>
+            <div className="flex justify-between px-4 mt-8 mb-2">
+              <div className="font-medium">Date</div>
+              <div className="font-medium">Amount</div>
+            </div>
+            <div className="bg-gray-70 pl-4 py-2 pr-2 rounded">
+              {paginatedItems?.map((item, index) => {
+                const isTheClosestUnlockDate =
+                  page === 0 &&
+                  ((index === 0 && !item.isUnlocked) ||
+                    (index > 0 &&
+                      paginatedItems[index - 1].isUnlocked &&
+                      !item.isUnlocked));
+
+                return (
+                  <div
+                    className={classNames('flex justify-between py-1', {
+                      'text-gray-40': item.isUnlocked,
+                      'font-bold': isTheClosestUnlockDate,
+                    })}
+                    key={item.date}
+                  >
+                    <div>{item.date}</div>
+                    <div>
+                      <AssetValue
+                        value={Decimal.from(item.amount)}
+                        asset={SupportedTokens.sov}
+                        assetClassName={classNames({
+                          'font-bold': isTheClosestUnlockDate,
+                          'font-normal': !isTheClosestUnlockDate,
+                        })}
+                        containerClassName="flex"
+                      />
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          <div className="bg-gray-70 px-4 py-2 rounded flex justify-between mt-6">
+            <div className="text-gray-30">Total:</div>
+            {renderBalance(vestingContract.currentBalance)}
           </div>
 
           <Pagination
             page={page}
-            className="lg:pb-6 mt-3 lg:mt-6 justify-center"
+            className="lg:pb-6 mt-8 justify-center"
             onChange={onPageChange}
             itemsPerPage={pageSize}
             totalItems={formattedSchedule?.length}
             isNextButtonDisabled={isNextButtonDisabled}
             dataAttribute="conversions-history-pagination"
           />
-        </div>
+        </>
       </DialogBody>
     </Dialog>
   );
 };
-
-export const renderContractAddress = (item: VestingContractTableRecord) => (
-  <TransactionId
-    href={`${rskExplorerUrl}/address/${item.address}`}
-    value={item.address}
-    dataAttribute="vesting-rewards-address"
-  />
-);
 
 export const generateRowTitle = (item: VestingContractTableRecord) => (
   <Paragraph size={ParagraphSize.small} className="text-left">

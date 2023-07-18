@@ -9,12 +9,13 @@ export const useGetPersonalStakingStatistics = () => {
   const { account } = useAccount();
   const stakingContract = useGetProtocolContract('staking');
   const [votingPower, setVotingPower] = useState(0);
-  const [isDataFetched, setIsDataFetched] = useState(false);
 
   const { balance } = useGetStakingBalanceOf(account);
 
   const updateVotingPower = useCallback(async () => {
-    if (!stakingContract || isDataFetched) return;
+    if (!stakingContract) {
+      return;
+    }
 
     try {
       const result = await asyncCall(`${account}/votingPower`, () =>
@@ -22,12 +23,11 @@ export const useGetPersonalStakingStatistics = () => {
       );
       if (result) {
         setVotingPower(result);
-        setIsDataFetched(true);
       }
     } catch (error) {
       console.error('Error fetching voting power:', error);
     }
-  }, [stakingContract, account, isDataFetched]);
+  }, [stakingContract, account]);
 
   useEffect(() => {
     if (account) {

@@ -44,8 +44,6 @@ export const useGetStakingStatistics = () => {
     };
 
     const fetchMaxStakingApr = async () => {
-      console.log('REDASH_API_KEY', REDASH_API_KEY);
-
       if (!REDASH_API_KEY) {
         return;
       }
@@ -54,17 +52,16 @@ export const useGetStakingStatistics = () => {
         const response = await fetch(
           `${MAX_STAKING_APR_API_LINK}?api_key=${REDASH_API_KEY}`,
         );
-        console.log('response', response);
 
         if (response.ok) {
           const data = await response.json();
           if (
             data &&
             data.query_result &&
-            data.query_result.rows &&
-            data.query_result.rows.length > 0
+            data.query_result.data.rows &&
+            data.query_result.data.rows.length > 0
           ) {
-            const maxStakingApr = data.query_result.rows[0].apr_max_btc;
+            const maxStakingApr = data.query_result.data.rows[0].apr_max_btc;
             setStakingStats(prevStats => ({
               ...prevStats,
               maxStakingApr,

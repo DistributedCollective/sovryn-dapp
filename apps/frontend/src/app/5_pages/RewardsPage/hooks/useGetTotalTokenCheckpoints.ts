@@ -1,27 +1,23 @@
 import { useCallback, useEffect, useState } from 'react';
 
-import { getContract, SupportedTokens } from '@sovryn/contracts';
-
 import { useAccount } from '../../../../hooks/useAccount';
 import { useGetProtocolContract } from '../../../../hooks/useGetContract';
-import { getRskChainId } from '../../../../utils/chain';
 
-export const useGetTotalTokenCheckpoints = (token: SupportedTokens) => {
+export const useGetTotalTokenCheckpoints = (contractAddress: string) => {
   const { account } = useAccount();
   const [maxCheckpoints, setMaxCheckpoints] = useState('');
   const feeSharing = useGetProtocolContract('feeSharing');
 
   const updateTotalTokenCheckpoints = useCallback(async () => {
-    if (!feeSharing) {
+    if (!feeSharing || !contractAddress) {
       return;
     }
-    const tokenContract = await getContract(token, 'tokens', getRskChainId());
     const checkpoints = await feeSharing.totalTokenCheckpoints(
-      account ? tokenContract.address : null,
+      account ? contractAddress : null,
     );
 
     setMaxCheckpoints(checkpoints.toString());
-  }, [account, feeSharing, token]);
+  }, [account, feeSharing, contractAddress]);
 
   useEffect(() => {
     updateTotalTokenCheckpoints();

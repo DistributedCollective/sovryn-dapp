@@ -1,17 +1,17 @@
-import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
+import React, { FC, useCallback, useMemo } from 'react';
 
 import { t } from 'i18next';
 
+import { SupportedTokens } from '@sovryn/contracts';
 import { Button, ButtonType, ButtonStyle } from '@sovryn/ui';
 
 import { TransactionType } from '../../../../../../3_organisms/TransactionStepDialog/TransactionStepDialog.types';
 import { useTransactionContext } from '../../../../../../../contexts/TransactionContext';
-import {
-  useGetProtocolContract,
-  useGetTokenContract,
-} from '../../../../../../../hooks/useGetContract';
+import { useAssetBalance } from '../../../../../../../hooks/useAssetBalance';
+import { useGetProtocolContract } from '../../../../../../../hooks/useGetContract';
 import { useMaintenance } from '../../../../../../../hooks/useMaintenance';
 import { translations } from '../../../../../../../locales/i18n';
+import { getRskChainId } from '../../../../../../../utils/chain';
 import { decimalic } from '../../../../../../../utils/math';
 
 type WithdrawLiquidFeeProps = {
@@ -25,7 +25,6 @@ export const WithdrawLiquidFee: FC<WithdrawLiquidFeeProps> = ({
   lastWithdrawalInterval,
   refetch,
 }) => {
-  const [tokenBalance, setTokenBalance] = useState('');
   const { setTransactions, setIsOpen, setTitle } = useTransactionContext();
 
   const { checkMaintenance, States } = useMaintenance();
@@ -33,21 +32,14 @@ export const WithdrawLiquidFee: FC<WithdrawLiquidFeeProps> = ({
   const rewardsLocked = checkMaintenance(States.REWARDS_FULL);
 
   const stakingRewards = useGetProtocolContract('stakingRewards');
-  const sovToken = useGetTokenContract('sov');
-
-  useEffect(() => {
-    if (!sovToken || !stakingRewards) {
-      return;
-    }
-
-    (async () => {
-      const balance = await sovToken.balanceOf(stakingRewards?.address);
-      setTokenBalance(balance.toString());
-    })();
-  }, [sovToken, stakingRewards]);
+  const tokenBalance = useAssetBalance(
+    SupportedTokens.sov,
+    getRskChainId(),
+    stakingRewards?.address,
+  );
 
   const hasTokenBalance = useMemo(
-    () => decimalic(tokenBalance).gte(amountToClaim),
+    () => tokenBalance.bigNumberBalance.gte(amountToClaim),
     [amountToClaim, tokenBalance],
   );
 

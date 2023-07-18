@@ -2,15 +2,19 @@ import { useMemo } from 'react';
 
 import { SupportedTokens } from '@sovryn/contracts';
 
+import { useGetTokenContract } from '../../../../hooks/useGetContract';
 import { getMaxProcessableCheckpoints } from '../../../../utils/helpers';
 import { useGetNextPositiveCheckpoint } from './useGetNextPositiveCheckpoint';
 import { useGetTotalTokenCheckpoints } from './useGetTotalTokenCheckpoints';
 
 export const useGetTokenCheckpoints = (token: SupportedTokens) => {
-  const { maxCheckpoints } = useGetTotalTokenCheckpoints(token);
+  const tokenContract = useGetTokenContract(token);
+  const { maxCheckpoints } = useGetTotalTokenCheckpoints(
+    tokenContract?.address!,
+  );
 
   const { userCheckpoint } = useGetNextPositiveCheckpoint(
-    token,
+    tokenContract?.address!,
     Number(maxCheckpoints),
   );
 

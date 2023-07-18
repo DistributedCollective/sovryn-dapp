@@ -1,10 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 
-import { getTokenContract, SupportedTokens } from '@sovryn/contracts';
-
 import { useAccount } from '../../../../hooks/useAccount';
 import { useGetProtocolContract } from '../../../../hooks/useGetContract';
-import { getRskChainId } from '../../../../utils/chain';
 
 const MAX_NEXT_POSITIVE_CHECKPOINT = 75;
 
@@ -15,7 +12,7 @@ type UserCheckpoint = {
 };
 
 export const useGetNextPositiveCheckpoint = (
-  token: SupportedTokens,
+  contractAddress: string,
   totalTokenCheckpoints: number,
 ) => {
   const { account } = useAccount();
@@ -23,14 +20,13 @@ export const useGetNextPositiveCheckpoint = (
   const feeSharing = useGetProtocolContract('feeSharing');
 
   const updateNextPositiveCheckpoint = useCallback(async () => {
-    if (!feeSharing) {
+    if (!feeSharing || !contractAddress) {
       return;
     }
-    const tokenContract = await getTokenContract(token, getRskChainId());
 
     const processedCheckpoints = await feeSharing.processedCheckpoints(
       account,
-      account ? tokenContract.address : null,
+      account ? contractAddress : null,
     );
     let userNextUnprocessedCheckpoint = Number(processedCheckpoints.toString());
 
@@ -38,7 +34,7 @@ export const useGetNextPositiveCheckpoint = (
       const { hasFees, checkpointNum, hasSkippedCheckpoints } =
         await feeSharing.getNextPositiveUserCheckpoint(
           account,
-          account ? tokenContract.address : null,
+          account ? contractAddress : null,
           userNextUnprocessedCheckpoint,
           MAX_NEXT_POSITIVE_CHECKPOINT,
         );
@@ -59,7 +55,7 @@ export const useGetNextPositiveCheckpoint = (
       hasFees: false,
       hasSkippedCheckpoints: false,
     });
-  }, [account, feeSharing, token, totalTokenCheckpoints]);
+  }, [account, feeSharing, contractAddress, totalTokenCheckpoints]);
 
   useEffect(() => {
     if (totalTokenCheckpoints >= 0) {

@@ -41,9 +41,9 @@ export const WithdrawFee: FC<WithdrawFeeProps> = ({
 
   const feeSharing = useGetProtocolContract('feeSharing');
 
-  const { maxCheckpoints } = useGetTotalTokenCheckpoints(token);
+  const { maxCheckpoints } = useGetTotalTokenCheckpoints(contractAddress);
   const { userCheckpoint, updateNextPositiveCheckpoint } =
-    useGetNextPositiveCheckpoint(token, Number(maxCheckpoints));
+    useGetNextPositiveCheckpoint(contractAddress, Number(maxCheckpoints));
 
   const isClaimDisabled = useMemo(
     () =>

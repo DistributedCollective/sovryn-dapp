@@ -84,6 +84,8 @@ enum States {
   ZERO_REDEMPTIONS = 'zeroRedemptions',
   ZERO_DLLR = 'zeroDLLR',
   ZERO_EXPORT_CSV = 'zeroExportCSV',
+  REWARDS_FULL = 'rewardsFull',
+  REWARDS_STAKING = 'rewardsStaking',
 }
 
 type MaintenanceResult = {

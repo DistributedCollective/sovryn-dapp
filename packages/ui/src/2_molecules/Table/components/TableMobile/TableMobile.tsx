@@ -16,6 +16,7 @@ export const TableMobile = <RowType extends RowObject>({
   noData,
   isLoading,
   className,
+  mobileRenderer,
 }: TableProps<RowType>) => (
   <div className={classNames(styles.wrapper, className)}>
     {rows &&
@@ -28,6 +29,7 @@ export const TableMobile = <RowType extends RowObject>({
           row={row}
           onRowClick={onRowClick}
           dataAttribute={dataAttribute}
+          renderer={mobileRenderer}
         />
       ))}
 

@@ -11,6 +11,7 @@ import { BTC_RENDER_PRECISION } from '../../../../../constants/currencies';
 import { getTokenDisplayName } from '../../../../../constants/tokens';
 import { useAccount } from '../../../../../hooks/useAccount';
 import { translations } from '../../../../../locales/i18n';
+import { decimalic } from '../../../../../utils/math';
 import { useGetFeesEarned } from '../../hooks/useGetFeesEarned';
 import { useGetLiquidSovClaimAmount } from '../../hooks/useGetLiquidSovClaimAmount';
 import { columns } from './Staking.constants';
@@ -29,7 +30,11 @@ export const Staking: FC = () => {
   } = useGetLiquidSovClaimAmount();
 
   const rows = useMemo(() => {
-    if (!account || loading) {
+    const noRewards =
+      !earnedFees.some(earnedFee => decimalic(earnedFee.value).gt(0)) &&
+      !decimalic(liquidSovClaimAmount).gt(0);
+
+    if (!account || loading || noRewards) {
       return [];
     }
 

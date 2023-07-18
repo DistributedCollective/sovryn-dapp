@@ -27,6 +27,7 @@ import { useHandleStake } from '../../../../5_pages/StakePage/hooks/useHandleSta
 import { TOKEN_RENDER_PRECISION } from '../../../../../constants/currencies';
 import { useAccount } from '../../../../../hooks/useAccount';
 import { useAssetBalance } from '../../../../../hooks/useAssetBalance';
+import { useMaintenance } from '../../../../../hooks/useMaintenance';
 import { translations } from '../../../../../locales/i18n';
 import { decimalic, fromWei } from '../../../../../utils/math';
 import { StakeFormProps } from '../../StakeForm.types';
@@ -48,6 +49,14 @@ export const AddStakeForm: FC<StakeFormProps> = ({
 
   const { weight } = useGetWeight(unlockDate);
 
+  const { checkMaintenance, States } = useMaintenance();
+  const stakingLocked = useMemo(
+    () =>
+      checkMaintenance(States.STAKING_FULL) ||
+      checkMaintenance(States.STAKING_NEW),
+    [States.STAKING_FULL, States.STAKING_NEW, checkMaintenance],
+  );
+
   const onMaximumAmountClick = useCallback(
     () => setAmount(balance.toString()),
     [balance, setAmount],
@@ -60,11 +69,12 @@ export const AddStakeForm: FC<StakeFormProps> = ({
 
   const isSubmitDisabled = useMemo(
     () =>
+      stakingLocked ||
       !amount ||
       Number(amount) <= 0 ||
       Number(amount) > Number(balance) ||
       unlockDate === 0,
-    [amount, balance, unlockDate],
+    [amount, balance, unlockDate, stakingLocked],
   );
 
   const renderNewStakedAmount = useCallback(
@@ -239,6 +249,12 @@ export const AddStakeForm: FC<StakeFormProps> = ({
         className="mt-10 w-full"
         dataAttribute="create-stake-confirm"
       />
+      {stakingLocked && (
+        <ErrorBadge
+          level={ErrorLevel.Warning}
+          message={t(translations.maintenanceMode.featureDisabled)}
+        />
+      )}
     </div>
   );
 };

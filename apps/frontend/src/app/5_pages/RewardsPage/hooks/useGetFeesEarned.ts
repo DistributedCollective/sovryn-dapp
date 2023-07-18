@@ -7,6 +7,7 @@ import {
   useGetProtocolContract,
   useGetTokenContract,
 } from '../../../../hooks/useGetContract';
+import { useMulticall } from '../../../../hooks/useMulticall';
 import { EarnedFee } from '../RewardsPage.types';
 import { useGetTokenCheckpoints } from './useGetTokenCheckpoints';
 
@@ -109,43 +110,52 @@ export const useGetFeesEarned = () => {
 
   const [earnedFees, setEarnedFees] = useState(generateDefaultEarnedFees());
 
+  const multicall = useMulticall();
+
   const getAvailableFees = useCallback(async () => {
     if (
       !sovMaxWithdrawCheckpoint ||
       !zusdMaxWithdrawCheckpoint ||
       !myntMaxWithdrawCheckpoint ||
       isLoadingContracts ||
-      !account
+      !account ||
+      !feeSharing
     ) {
       return;
     }
 
     const earnedFees = generateDefaultEarnedFees();
 
-    const feePromises = earnedFees.map(async fee => {
+    const callData = earnedFees.map(fee => {
       const isRBTC = fee.token === SupportedTokens.rbtc;
-
-      if (isRBTC) {
-        return await feeSharing?.getAccumulatedRBTCFeeBalances(account);
-      } else {
-        const startFrom = Math.max(getStartFrom(fee.token) - 1, 0);
-
-        return await feeSharing?.getAccumulatedFeesForCheckpointsRange(
-          account,
-          fee.contractAddress,
-          startFrom,
-          getMaxCheckpoints(fee.token),
-        );
-      }
+      const fnName = isRBTC
+        ? 'getAccumulatedRBTCFeeBalances'
+        : 'getAccumulatedFeesForCheckpointsRange';
+      const startFrom = Math.max(getStartFrom(fee.token) - 1, 0);
+      const args = isRBTC
+        ? [account]
+        : [
+            account,
+            fee.contractAddress,
+            startFrom,
+            getMaxCheckpoints(fee.token),
+          ];
+      return {
+        contract: feeSharing,
+        fnName,
+        args,
+        key: fee.token,
+        parser: value => value[0].toString(),
+      };
     });
+
+    const result = await multicall(callData);
 
     setLoading(true);
 
-    const result = await Promise.all(feePromises);
-
     const fees = earnedFees.map((fee, i) => ({
       ...fee,
-      value: result[i].toString() || '',
+      value: result[i],
     }));
 
     setEarnedFees([...fees]);
@@ -157,6 +167,7 @@ export const useGetFeesEarned = () => {
     getMaxCheckpoints,
     getStartFrom,
     isLoadingContracts,
+    multicall,
     myntMaxWithdrawCheckpoint,
     sovMaxWithdrawCheckpoint,
     zusdMaxWithdrawCheckpoint,

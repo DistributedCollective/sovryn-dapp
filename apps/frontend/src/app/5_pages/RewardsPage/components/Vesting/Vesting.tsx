@@ -13,15 +13,14 @@ export const Vesting: FC = () => {
   const vestings = useGetVestingContracts();
 
   return (
-    <>
+    <div className="lg:bg-gray-80 lg:py-4 lg:px-4 rounded w-full">
       <Table
         columns={columnsConfig}
         rows={vestings}
-        className="bg-gray-80 text-gray-10 lg:px-6 lg:py-4"
         noData={t(translations.common.tables.noData)}
         dataAttribute="funding-history-table"
         rowTitle={generateRowTitle}
       />
-    </>
+    </div>
   );
 };

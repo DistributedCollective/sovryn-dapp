@@ -56,17 +56,13 @@ export const renderBalance = (balance: string | undefined) => {
 export const UnlockedBalance = (item: VestingContractTableRecord) => {
   const { loading, result } = useGetUnlockedBalance(item);
 
-  if (!result && !loading) {
-    return <>N/A</>;
-  }
-
   if (loading) {
     return <span>Calculating...</span>;
   }
 
   return (
     <AmountRenderer
-      value={result || '0'}
+      value={result}
       suffix={SOV}
       precision={TOKEN_RENDER_PRECISION}
       dataAttribute="vesting-rewards-unlocked-balance"
@@ -97,6 +93,7 @@ export const UnlockSchedule = (item: VestingContractTableRecord) => {
         text={item.type}
         style={ButtonStyle.ghost}
         type={ButtonType.button}
+        className="underline"
         onClick={() => setShowDialog(prevValue => !prevValue)}
       />
       <UnlockScheduleDialog
@@ -179,6 +176,7 @@ const UnlockScheduleDialog: React.FC<UnlockScheduleDialogProps> = ({
                 className={classNames('flex justify-between py-1', {
                   'text-gray-30': item.isUnlocked,
                 })}
+                key={item.date}
               >
                 <div>{item.date}</div>
                 <div>

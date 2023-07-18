@@ -23,7 +23,8 @@ export const useGetUnlockedBalance = (item: VestingContractTableRecord) => {
   );
 
   const result = useMemo(
-    () => stakeHistory?.reduce((acc, item) => acc + Number(item.amount), 0),
+    () =>
+      stakeHistory?.reduce((acc, item) => acc + Number(item.amount), 0) || 0,
     [stakeHistory],
   );
 

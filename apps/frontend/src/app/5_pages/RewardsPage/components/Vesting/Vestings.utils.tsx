@@ -27,6 +27,7 @@ import {
 } from '../../../../../constants/currencies';
 import { DEFAULT_HISTORY_FRAME_PAGE_SIZE } from '../../../../../constants/general';
 import { translations } from '../../../../../locales/i18n';
+import { VestingContractType } from '../../../../../utils/graphql/rsk/generated';
 import { getRskExplorerUrl } from '../../../../../utils/helpers';
 import {
   VestingContractTableRecord,
@@ -91,14 +92,28 @@ export const Withdraw = (item: VestingContractTableRecord) => {
   );
 };
 
+const vestingTypeMapping = (item: VestingContractType) => {
+  switch (item) {
+    case VestingContractType.Team:
+      return 'Team';
+    case VestingContractType.Rewards:
+      return 'Liquidity mining';
+    case VestingContractType.FourYearVesting:
+      return 'Investor';
+    default:
+      return item;
+  }
+};
+
 export const UnlockSchedule = (item: VestingContractTableRecord) => {
   const unlockSchedule = useGetUnlockSchedule(item);
   const [showDialog, setShowDialog] = useState(false);
+  const title = useMemo(() => vestingTypeMapping(item.type), [item.type]);
 
   return (
     <>
       <Button
-        text={item.type}
+        text={title}
         style={ButtonStyle.ghost}
         type={ButtonType.button}
         className="underline"

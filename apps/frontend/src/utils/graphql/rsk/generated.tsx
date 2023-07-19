@@ -13761,6 +13761,8 @@ export type GetUserRewardsEarnedHistoryQuery = {
 
 export type GetVestingContractsQueryVariables = Exact<{
   user?: InputMaybe<Scalars['String']>;
+  skip: Scalars['Int'];
+  pageSize: Scalars['Int'];
 }>;
 
 export type GetVestingContractsQuery = {
@@ -14435,8 +14437,14 @@ export type GetUserRewardsEarnedHistoryQueryResult = Apollo.QueryResult<
   GetUserRewardsEarnedHistoryQueryVariables
 >;
 export const GetVestingContractsDocument = gql`
-  query getVestingContracts($user: String) {
-    vestingContracts(where: { user: $user }) {
+  query getVestingContracts($user: String, $skip: Int!, $pageSize: Int!) {
+    vestingContracts(
+      where: { user: $user }
+      first: $pageSize
+      skip: $skip
+      orderBy: currentBalance
+      orderDirection: desc
+    ) {
       id
       cliff
       duration
@@ -14460,11 +14468,13 @@ export const GetVestingContractsDocument = gql`
  * const { data, loading, error } = useGetVestingContractsQuery({
  *   variables: {
  *      user: // value for 'user'
+ *      skip: // value for 'skip'
+ *      pageSize: // value for 'pageSize'
  *   },
  * });
  */
 export function useGetVestingContractsQuery(
-  baseOptions?: Apollo.QueryHookOptions<
+  baseOptions: Apollo.QueryHookOptions<
     GetVestingContractsQuery,
     GetVestingContractsQueryVariables
   >,

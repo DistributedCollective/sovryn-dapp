@@ -28,6 +28,7 @@ import { TOKEN_RENDER_PRECISION } from '../../../../../constants/currencies';
 import { MS } from '../../../../../constants/general';
 import { useAccount } from '../../../../../hooks/useAccount';
 import { useAssetBalance } from '../../../../../hooks/useAssetBalance';
+import { useMaintenance } from '../../../../../hooks/useMaintenance';
 import { translations } from '../../../../../locales/i18n';
 import { areAddressesEqual } from '../../../../../utils/helpers';
 import { AdjustStakeFormProps } from '../../StakeForm.types';
@@ -41,7 +42,6 @@ import {
   isAddress,
   renderVotingPower,
   getAdjustStakeAction,
-  adjustStakeTabs,
 } from './AdjustStakeForm.utils';
 
 export const AdjustStakeForm: FC<AdjustStakeFormProps> = ({
@@ -65,6 +65,13 @@ export const AdjustStakeForm: FC<AdjustStakeFormProps> = ({
   const isDecreaseTab = useMemo(() => index === 1, [index]);
   const isExtendTab = useMemo(() => index === 2, [index]);
   const isDelegateTab = useMemo(() => index === 3, [index]);
+
+  const { checkMaintenance, States } = useMaintenance();
+  const fullLocked = checkMaintenance(States.STAKING_FULL);
+  const increaseLocked = checkMaintenance(States.STAKING_INCREASE);
+  const decreaseLocked = checkMaintenance(States.STAKING_DECREASE);
+  const extendLocked = checkMaintenance(States.STAKING_EXTEND);
+  const delegateLocked = checkMaintenance(States.STAKING_DELEGATE);
 
   const { weight } = useGetWeight(!isExtendTab ? stake.unlockDate : unlockDate);
   const votingPower = useGetVotingPower(stake.stakedAmount, stake.unlockDate);
@@ -122,25 +129,68 @@ export const AdjustStakeForm: FC<AdjustStakeFormProps> = ({
 
   const isSubmitDisabled = useMemo(
     () =>
-      (isExtendTab && unlockDate === 0) ||
-      (isDecreaseTab && Number(amount) > Number(stake.stakedAmount)) ||
-      (isIncreaseTab && Number(amount) > Number(balance)) ||
-      ((isDecreaseTab || isIncreaseTab) && Number(amount) <= 0) ||
-      (isDelegateTab && (!isValidAddress || delegateToAddress.length === 0)),
+      fullLocked ||
+      (isExtendTab && (unlockDate === 0 || extendLocked)) ||
+      (isDecreaseTab &&
+        (Number(amount) > Number(stake.stakedAmount) || decreaseLocked)) ||
+      (isIncreaseTab && (Number(amount) > Number(balance) || increaseLocked)) ||
+      (isDelegateTab &&
+        (!isValidAddress || delegateToAddress.length === 0 || delegateLocked)),
 
     [
-      amount,
-      balance,
-      stake.stakedAmount,
-      isDecreaseTab,
+      fullLocked,
       isExtendTab,
+      unlockDate,
+      extendLocked,
+      isDecreaseTab,
+      amount,
+      stake.stakedAmount,
+      decreaseLocked,
       isIncreaseTab,
+      balance,
+      increaseLocked,
       isDelegateTab,
       isValidAddress,
-      unlockDate,
-      delegateToAddress,
+      delegateToAddress.length,
+      delegateLocked,
     ],
   );
+
+  const adjustStakeTabs = useMemo(
+    () => [
+      {
+        label: t(translations.stakePage.stakeForm.increase),
+        activeClassName: 'text-primary-20',
+        dataAttribute: 'stake-increase',
+        disabled: increaseLocked || isTabLocked,
+      },
+      {
+        label: t(translations.stakePage.stakeForm.decrease),
+        activeClassName: 'text-primary-20',
+        dataAttribute: 'stake-decrease',
+        disabled: decreaseLocked,
+      },
+      {
+        label: t(translations.stakePage.stakeForm.extend),
+        activeClassName: 'text-primary-20',
+        dataAttribute: 'stake-extend',
+        disabled: extendLocked,
+      },
+      {
+        label: t(translations.stakePage.stakeForm.delegate),
+        activeClassName: 'text-primary-20',
+        dataAttribute: 'stake-delegate',
+        disabled: delegateLocked || isTabLocked,
+      },
+    ],
+    [decreaseLocked, delegateLocked, extendLocked, increaseLocked, isTabLocked],
+  );
+
+  useEffect(() => {
+    if (adjustStakeTabs[index].disabled) {
+      setIndex(adjustStakeTabs.findIndex(tab => !tab.disabled));
+    }
+  }, [adjustStakeTabs, index]);
 
   const getPenaltyAmount = useCallback(
     () => renderPenaltyAmount(amount, penaltyAmount, isValidAmount),
@@ -295,7 +345,7 @@ export const AdjustStakeForm: FC<AdjustStakeFormProps> = ({
 
       <Tabs
         type={TabType.secondary}
-        items={adjustStakeTabs(isTabLocked)}
+        items={adjustStakeTabs}
         onChange={setIndex}
         index={index}
         className="mb-6"
@@ -421,6 +471,12 @@ export const AdjustStakeForm: FC<AdjustStakeFormProps> = ({
         className="mt-10 w-full"
         dataAttribute="adjust-stake-confirm"
       />
+      {fullLocked && (
+        <ErrorBadge
+          level={ErrorLevel.Warning}
+          message={t(translations.maintenanceMode.featureDisabled)}
+        />
+      )}
     </>
   );
 };

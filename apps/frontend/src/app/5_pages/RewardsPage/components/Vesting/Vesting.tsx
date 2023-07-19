@@ -4,17 +4,19 @@ import { t } from 'i18next';
 
 import { Pagination, Table } from '@sovryn/ui';
 
-import { DEFAULT_HISTORY_FRAME_PAGE_SIZE } from '../../../../../constants/general';
+import { DEFAULT_PAGE_SIZE } from '../../../../../constants/general';
+import { useAccount } from '../../../../../hooks/useAccount';
 import { translations } from '../../../../../locales/i18n';
 import { columnsConfig } from './Vestings.constants';
 import { generateRowTitle } from './Vestings.utils';
 import { useGetVestingContracts } from './hooks/useGetVestingContracts';
 
-const pageSize = DEFAULT_HISTORY_FRAME_PAGE_SIZE;
+const pageSize = DEFAULT_PAGE_SIZE;
 
 export const Vesting: FC = () => {
   const [page, setPage] = useState(0);
   const { data: vestings, loading } = useGetVestingContracts(page, pageSize);
+  const { account } = useAccount();
 
   const onPageChange = useCallback(
     (value: number) => {
@@ -36,7 +38,11 @@ export const Vesting: FC = () => {
       <Table
         columns={columnsConfig}
         rows={vestings}
-        noData={t(translations.common.tables.noData)}
+        noData={
+          account
+            ? t(translations.rewardPage.vesting.table.noRewards)
+            : t(translations.rewardPage.vesting.table.notConnected)
+        }
         dataAttribute="funding-history-table"
         rowTitle={generateRowTitle}
       />

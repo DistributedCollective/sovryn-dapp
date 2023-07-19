@@ -9,6 +9,8 @@ import {
   VestingHistoryItem,
 } from '../Vesting.types';
 
+const MAXIMUM_UNLOCKED_DATES = 2;
+
 export const useGetUnlockSchedule = (
   item: VestingContractTableRecord,
 ): VestingHistoryItem[] | undefined => {
@@ -46,11 +48,11 @@ export const useGetUnlockSchedule = (
 
     const pastDatesLength = unlockDates?.filter(item => item.isUnlocked).length;
 
-    if (!pastDatesLength || pastDatesLength < 2) {
+    if (!pastDatesLength || pastDatesLength < MAXIMUM_UNLOCKED_DATES) {
       return unlockDates;
     }
 
-    return unlockDates.slice(pastDatesLength - 2);
+    return unlockDates.slice(pastDatesLength - MAXIMUM_UNLOCKED_DATES);
   }, [data?.vestingContracts]);
 
   return result;

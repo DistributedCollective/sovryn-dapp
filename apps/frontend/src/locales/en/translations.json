@@ -585,12 +585,27 @@
                 "title": "Withdraw rewards"
             },
             "table": {
+                "noRewards": "No rewards available",
+                "notConnected": "Connect wallet to check for rewards",
+                "calculating": "Calculating...",
                 "titles": {
                     "vestingType": "Vesting type",
                     "balance": "Balance",
                     "available": "Available",
                     "address": "Address"
                 }
+            },
+            "unlockScheduleDialog": {
+                "title": "Vesting schedule",
+                "contractAddress": "Contract address:",
+                "date": "Date",
+                "amount": "Amount",
+                "total": "Total:"
+            },
+            "vestingTypeTitles": {
+                "team": "Team",
+                "liquidityMining": "Liquidity mining",
+                "investor": "Investor"
             }
         }
     },

@@ -2,13 +2,10 @@ import { t } from 'i18next';
 
 import { translations } from '../../../../../locales/i18n';
 import { VestingContractTableRecord } from './Vesting.types';
-import {
-  UnlockSchedule,
-  UnlockedBalance,
-  Withdraw,
-  renderBalance,
-  renderContractAddress,
-} from './Vestings.utils';
+import { renderBalance, renderContractAddress } from './Vestings.utils';
+import { UnlockSchedule } from './components/UnlockSchedule/UnlockSchedule';
+import { UnlockedBalance } from './components/UnlockedBalance/UnlockedBalance';
+import { WithdrawButton } from './components/WithdrawButton/WithdrawButton';
 
 export const columnsConfig = [
   {
@@ -35,6 +32,6 @@ export const columnsConfig = [
   {
     id: '',
     title: '',
-    cellRenderer: Withdraw,
+    cellRenderer: WithdrawButton,
   },
 ];

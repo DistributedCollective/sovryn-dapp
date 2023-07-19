@@ -73,11 +73,6 @@ export const ProductLinks: FC = () => {
             description={t(translations.productLinks.borrow.description)}
           />
           <ProductLink
-            href={linkToAlpha('/stake')}
-            label={t(translations.productLinks.stake.title)}
-            description={t(translations.productLinks.stake.description)}
-          />
-          <ProductLink
             href={getBitocracyUrl()}
             label={t(translations.productLinks.vote.title)}
             description={t(translations.productLinks.vote.description)}

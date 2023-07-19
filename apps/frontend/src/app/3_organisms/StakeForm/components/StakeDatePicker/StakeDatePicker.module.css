@@ -1,0 +1,6 @@
+.select {
+  @apply w-full;
+}
+.disabled {
+  @apply pointer-events-none opacity-50 cursor-not-allowed;
+};

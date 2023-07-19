@@ -101,6 +101,13 @@ export const Header: FC = () => {
             >
               {t(translations.header.nav.convert)}
             </NavLink>
+            <NavLink
+              to="/stake"
+              onClick={handleNavClick}
+              {...applyDataAttr('dapp-menu-stake')}
+            >
+              {t(translations.header.nav.stake)}
+            </NavLink>
             <ProductLinks />
           </ol>
         }

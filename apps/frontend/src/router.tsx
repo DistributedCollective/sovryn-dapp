@@ -33,6 +33,7 @@ const TermsOfUse = loadable(
 const RewardsPage = loadable(
   () => import('./app/5_pages/RewardsPage/RewardsPage'),
 );
+const StakePage = loadable(() => import('./app/5_pages/StakePage/StakePage'));
 
 const routes = [
   {
@@ -72,6 +73,10 @@ const routes = [
         path: '/rewards',
         element: <RewardsPage />,
         loader: zeroPageLoader,
+      },
+      {
+        path: '/stake',
+        element: <StakePage />,
       },
     ],
   },

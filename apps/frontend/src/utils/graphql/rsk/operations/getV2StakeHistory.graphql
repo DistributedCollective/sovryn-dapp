@@ -1,0 +1,23 @@
+query getV2StakeHistory(
+  $user: String
+  $skip: Int!
+  $pageSize: Int!
+  $orderBy: V2Stake_orderBy
+  $orderDirection: OrderDirection
+) {
+  v2Stakes(
+    where: { user: $user }
+    first: $pageSize
+    skip: $skip
+    orderBy: $orderBy
+    orderDirection: $orderDirection
+  ) {
+    id
+    delegate {
+      id
+    }
+    amount
+    timestamp
+    lockedUntil
+  }
+}

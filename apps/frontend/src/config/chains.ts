@@ -1,6 +1,10 @@
 import setup, { Chain, ChainIds } from '@sovryn/ethers-provider';
 
-import { RSK_EXPLORER, RSK_RPC } from '../constants/infrastructure';
+import {
+  PUBLIC_RSK_RPC,
+  RSK_EXPLORER,
+  RSK_RPC,
+} from '../constants/infrastructure';
 import { Environments } from '../types/global';
 import { isMainnet } from '../utils/helpers';
 
@@ -21,6 +25,7 @@ export const chains: Chain[] = [
         id: ChainIds.RSK_MAINNET,
         label: 'Rootstock',
         token: 'RBTC',
+        publicRpcUrl: PUBLIC_RSK_RPC[Environments.Mainnet],
         rpcUrl: RSK_RPC[Environments.Mainnet],
         blockExplorerUrl: RSK_EXPLORER[Environments.Mainnet],
       }
@@ -28,6 +33,7 @@ export const chains: Chain[] = [
         id: ChainIds.RSK_TESTNET,
         label: 'Rootstock testnet',
         token: 'tRBTC',
+        publicRpcUrl: PUBLIC_RSK_RPC[Environments.Testnet],
         rpcUrl: RSK_RPC[Environments.Testnet],
         blockExplorerUrl: RSK_EXPLORER[Environments.Testnet],
       },

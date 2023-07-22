@@ -20,7 +20,8 @@
             "done": "Done",
             "close": "Close",
             "retry": "Retry",
-            "skip": "Skip"
+            "skip": "Skip",
+            "update": "Update"
         },
         "na": "N/A",
         "tables": {

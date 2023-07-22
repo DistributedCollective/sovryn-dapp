@@ -1,9 +1,7 @@
 import React, { FC, useCallback, useMemo, useState } from 'react';
 import { useEffect } from 'react';
 
-import { BigNumber } from 'ethers';
 import { t } from 'i18next';
-import { nanoid } from 'nanoid';
 import { Helmet } from 'react-helmet-async';
 import { useSearchParams } from 'react-router-dom';
 
@@ -21,7 +19,6 @@ import {
   Heading,
   Icon,
   IconNames,
-  NotificationType,
   Paragraph,
   ParagraphSize,
   Select,
@@ -39,10 +36,7 @@ import { AssetRenderer } from '../../2_molecules/AssetRenderer/AssetRenderer';
 import { MaxButton } from '../../2_molecules/MaxButton/MaxButton';
 import { TOKEN_RENDER_PRECISION } from '../../../constants/currencies';
 import { getTokenDisplayName } from '../../../constants/tokens';
-import { useNotificationContext } from '../../../contexts/NotificationContext';
-import { useTransactionContext } from '../../../contexts/TransactionContext';
 import { useAccount } from '../../../hooks/useAccount';
-import { useBlockNumber } from '../../../hooks/useBlockNumber';
 import { useGetProtocolContract } from '../../../hooks/useGetContract';
 import { useWeiAmountInput } from '../../../hooks/useWeiAmountInput';
 import { translations } from '../../../locales/i18n';
@@ -51,6 +45,7 @@ import { smartRouter, stableCoins } from './ConvertPage.types';
 import { useConversionMaintenance } from './hooks/useConversionMaintenance';
 import { useGetMaximumAvailableAmount } from './hooks/useGetMaximumAvailableAmount';
 import { useHandleConversion } from './hooks/useHandleConversion';
+import { useHandleZeroRedemptionRoutePriceChanges } from './hooks/useHandleZeroRedemptionRoutePriceChanges';
 
 const commonTranslations = translations.common;
 const pageTranslations = translations.convertPage;
@@ -91,12 +86,17 @@ const ConvertPage: FC = () => {
   const [quote, setQuote] = useState('');
   const [route, setRoute] = useState<SwapRoute | undefined>();
 
-  const [zeroPriceFeedValue, setZeroPriceFeedValue] = useState<
+  const [zeroPriceFeedRbtcValue, setZeroPriceFeedRbtcValue] = useState<
     string | undefined
   >();
-  const [warningNotificationId, setWarningNotificationId] = useState<
-    string | undefined
-  >();
+
+  const zeroPriceFeed = useGetProtocolContract('zeroPriceFeed');
+
+  const getZeroPriceFeedRbtcValue = useCallback(async () => {
+    if (zeroPriceFeed) {
+      return zeroPriceFeed.getPrice();
+    }
+  }, [zeroPriceFeed]);
 
   const defaultSourceToken = useMemo(() => {
     if (fromToken) {
@@ -110,18 +110,6 @@ const ConvertPage: FC = () => {
     }
     return SupportedTokens.dllr;
   }, [fromToken]);
-
-  const zeroPriceFeed = useGetProtocolContract('zeroPriceFeed');
-
-  const { value: blockNumber } = useBlockNumber();
-
-  const getZeroPriceFeedValue = useCallback(async () => {
-    if (zeroPriceFeed) {
-      return zeroPriceFeed.getPrice();
-    }
-  }, [zeroPriceFeed]);
-
-  const { addNotification, removeNotification } = useNotificationContext();
 
   const [sourceToken, setSourceToken] =
     useState<SupportedTokens>(defaultSourceToken);
@@ -161,7 +149,7 @@ const ConvertPage: FC = () => {
 
   const onTransactionSuccess = useCallback(() => {
     setAmount('');
-    setZeroPriceFeedValue(undefined);
+    setZeroPriceFeedRbtcValue(undefined);
   }, [setAmount]);
 
   const maximumAmountToConvert = useGetMaximumAvailableAmount(
@@ -355,8 +343,6 @@ const ConvertPage: FC = () => {
     }
   }, [account, setAmount]);
 
-  const { setIsOpen } = useTransactionContext();
-
   const isZeroRedemptionRoute = useMemo(
     () => route && route.name === 'ZeroRedemption',
     [route],
@@ -364,73 +350,17 @@ const ConvertPage: FC = () => {
 
   const onSubmit = useCallback(() => {
     if (isZeroRedemptionRoute) {
-      getZeroPriceFeedValue().then(setZeroPriceFeedValue);
+      getZeroPriceFeedRbtcValue().then(setZeroPriceFeedRbtcValue);
     }
 
     handleSubmit();
-  }, [getZeroPriceFeedValue, handleSubmit, isZeroRedemptionRoute]);
+  }, [getZeroPriceFeedRbtcValue, handleSubmit, isZeroRedemptionRoute]);
 
-  const onUpdateClick = useCallback(() => {
-    setIsOpen(false);
-    setZeroPriceFeedValue(undefined);
-  }, [setIsOpen]);
-
-  useEffect(() => {
-    if (zeroPriceFeedValue && zeroPriceFeed) {
-      getZeroPriceFeedValue().then(result => {
-        if (!result) {
-          return;
-        }
-
-        const arePricesEqual = BigNumber.from(result)
-          .sub(zeroPriceFeedValue)
-          .isZero();
-
-        if (!arePricesEqual && !warningNotificationId) {
-          const notificationId = nanoid();
-          setWarningNotificationId(notificationId);
-
-          addNotification(
-            {
-              type: NotificationType.warning,
-              title: t(translations.convertPage.zeroRedemptionWarning.title),
-              content: (
-                <>
-                  <Paragraph>
-                    {t(translations.convertPage.zeroRedemptionWarning.content)}
-                  </Paragraph>
-
-                  <Button
-                    text={'Update'}
-                    onClick={() => {
-                      onUpdateClick();
-                      removeNotification(notificationId);
-                      setWarningNotificationId(undefined);
-                    }}
-                    style={ButtonStyle.secondary}
-                    className="mt-3"
-                  />
-                </>
-              ),
-              dismissible: true,
-              id: notificationId,
-            },
-            0,
-          );
-        }
-      });
-    }
-  }, [
-    zeroPriceFeed,
-    zeroPriceFeedValue,
-    blockNumber,
-    getZeroPriceFeedValue,
-    addNotification,
-    onSubmit,
-    onUpdateClick,
-    warningNotificationId,
-    removeNotification,
-  ]);
+  useHandleZeroRedemptionRoutePriceChanges(
+    setZeroPriceFeedRbtcValue,
+    getZeroPriceFeedRbtcValue,
+    zeroPriceFeedRbtcValue,
+  );
 
   return (
     <>

@@ -357,7 +357,11 @@
         "slippageTolerance": "Slippage tolerance",
         "price": "Price",
         "minimumReceived": "Minimum received",
-        "maximumPrice": "Maximum price"
+        "maximumPrice": "Maximum price",
+        "zeroRedemptionWarning": {
+            "title": "The price for route has changed",
+            "content": "The price for this route has changed and your transaction may fail. If you have a pending transaction in your wallet, reject it and then click 'Update' below to ensure your transaction succeeds."
+        }
     },
 
     "fastBtc": {
@@ -430,17 +434,17 @@
             }
         },
         "receive": {
-          "loading": "Loading... this may take up to 30 seconds",
-          "statusScreen": {
-              "statusTitleProcessing": "Transfer processing...",
-              "statusTitleComplete": "Transfer complete",
-              "to": "To",
-              "sending": "Sending",
-              "serviceFee": "Service fee",
-              "receiving": "Receiving",
-              "bitcoinTxId": "Bitcoin TXID",
-              "rootstockTxId": "Rootstock TXID"
-          }
+            "loading": "Loading... this may take up to 30 seconds",
+            "statusScreen": {
+                "statusTitleProcessing": "Transfer processing...",
+                "statusTitleComplete": "Transfer complete",
+                "to": "To",
+                "sending": "Sending",
+                "serviceFee": "Service fee",
+                "receiving": "Receiving",
+                "bitcoinTxId": "Bitcoin TXID",
+                "rootstockTxId": "Rootstock TXID"
+            }
         }
     },
 

@@ -1,10 +1,10 @@
-import { ammSwapRoute } from './routes/amm-swap-route';
-import { mocIntegrationSwapRoute } from './routes/moc-integration-swap-route';
-import { myntBassetRoute } from './routes/mynt-basset-route';
+import { zeroRedemptionSwapRoute } from './routes/zero-redemption-route';
 import { SwapRouteFunction } from './types';
 
+// TODO: Enable all the routes after testing
 export const DEFAULT_SWAP_ROUTES: SwapRouteFunction[] = [
-  ammSwapRoute,
-  myntBassetRoute,
-  mocIntegrationSwapRoute,
+  // ammSwapRoute,
+  // myntBassetRoute,
+  // mocIntegrationSwapRoute,
+  zeroRedemptionSwapRoute,
 ];

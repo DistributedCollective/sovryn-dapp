@@ -44,4 +44,8 @@ export const rskTestnet: Record<string, AsyncContractConfigData> = {
     address: '0x1572D7E4a78A8AD14AE722E6fE5f5600a2c7A149',
     getAbi: async () => (await import('../../abis/erc20.json')).default,
   },
+  zeroPriceFeed: {
+    address: '0x89627aa178C7d587f07Df7B863032a47f53540BD',
+    getAbi: async () => (await import('../../abis/zeroPriceFeed.json')).default,
+  },
 };

@@ -99,12 +99,12 @@ export const zeroRedemptionSwapRoute: SwapRouteFunction = (
       });
       const ethers = new EthersLiquity(readable);
 
-      const [fees, total, feed, wrbtc, rusdt] = await Promise.all([
+      const [fees, total, feed, wrbtc, xusd] = await Promise.all([
         ethers.getFees(),
         ethers.getTotal(),
         getPriceFeedContract(),
         getTokenContract(SupportedTokens.wrbtc, chainId),
-        getTokenContract(SupportedTokens.rusdt, chainId),
+        getTokenContract(SupportedTokens.xusd, chainId),
       ]);
 
       const maxRedemptionRate = fees
@@ -113,7 +113,7 @@ export const zeroRedemptionSwapRoute: SwapRouteFunction = (
         )
         .add(Decimal.from(0.001));
 
-      const price = await feed.queryRate(wrbtc.address, rusdt.address);
+      const price = await feed.queryRate(wrbtc.address, xusd.address);
 
       const btcUsd = BigNumber.from(amount)
         .mul(price.precision)

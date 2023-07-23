@@ -430,17 +430,17 @@
             }
         },
         "receive": {
-          "loading": "Loading... this may take up to 30 seconds",
-          "statusScreen": {
-              "statusTitleProcessing": "Transfer processing...",
-              "statusTitleComplete": "Transfer complete",
-              "to": "To",
-              "sending": "Sending",
-              "serviceFee": "Service fee",
-              "receiving": "Receiving",
-              "bitcoinTxId": "Bitcoin TXID",
-              "rootstockTxId": "Rootstock TXID"
-          }
+            "loading": "Loading... this may take up to 30 seconds",
+            "statusScreen": {
+                "statusTitleProcessing": "Transfer processing...",
+                "statusTitleComplete": "Transfer complete",
+                "to": "To",
+                "sending": "Sending",
+                "serviceFee": "Service fee",
+                "receiving": "Receiving",
+                "bitcoinTxId": "Bitcoin TXID",
+                "rootstockTxId": "Rootstock TXID"
+            }
         }
     },
 
@@ -715,16 +715,24 @@
         }
     },
     "lendingAdjust": {
-      "title": "Adjust lending balance",
-      "deposit": "Deposit",
-      "withdraw": "Withdraw",
-      "apy": "Current lend rate",
-      "newApy": "New lend rate",
-      "currentBalance": "Current lending balance",
-      "newBalance": "New lending balance"
+        "title": "Adjust lending balance",
+        "deposit": "Deposit",
+        "withdraw": "Withdraw",
+        "apy": "Current lend rate",
+        "newApy": "New lend rate",
+        "currentBalance": "Current lending balance",
+        "newBalance": "New lending balance"
+    },
+    "lending": {
+        "title": "Lend",
+        "disclaimer": "I understand that the APY is variable and that there must be available liquidity in the pool for me to be able to withdraw my lending balance. <0>Learn more</0>",
+        "learnMore": "Learn more",
+        "apy": "Lend APY",
+        "acceptedCollateral": "Accepted collateral",
+        "newApy": "New lend APY"
     },
     "lendingTx": {
-      "deposit": "Deposit {{symbol}}",
-      "withdraw": "Withdraw {{symbol}}"
+        "deposit": "Deposit {{symbol}}",
+        "withdraw": "Withdraw {{symbol}}"
     }
 }

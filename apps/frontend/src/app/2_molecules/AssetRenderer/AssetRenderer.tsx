@@ -28,6 +28,10 @@ type AssetRendererProps = {
    * */
   className?: string;
   /**
+   * Applied classNames to the asset logo element.
+   * */
+  logoClassName?: string;
+  /**
    * Applied data attribute to the outer element.
    * */
   dataAttribute?: string;
@@ -39,6 +43,7 @@ export const AssetRenderer: FC<AssetRendererProps> = ({
   assetClassName,
   className,
   dataAttribute,
+  logoClassName,
 }) => {
   const [logo, setLogo] = useState<string | undefined>(undefined);
 
@@ -58,7 +63,7 @@ export const AssetRenderer: FC<AssetRendererProps> = ({
     >
       {showAssetLogo && logo && (
         <div
-          className={styles.assetLogo}
+          className={classNames(styles.assetLogo, logoClassName)}
           dangerouslySetInnerHTML={{ __html: logo }}
         />
       )}

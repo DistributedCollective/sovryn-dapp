@@ -12,6 +12,10 @@ import {
   AdjustLendingModalContainer,
   AdjustModalState,
 } from './components/AdjustModal/AdjustLendingModalContainer';
+import {
+  LendingModalContainer,
+  LendingModalState,
+} from './components/LendModal/LendingModalContainer';
 import { useHandleLending } from './hooks/useHandleLending';
 
 const LendPage: FC = () => {
@@ -19,6 +23,10 @@ const LendPage: FC = () => {
 
   const { push: adjust } = useMemo(
     () => eventDriven<Nullable<AdjustModalState>>(LendModalAction.Adjust),
+    [],
+  );
+  const { push: lend } = useMemo(
+    () => eventDriven<Nullable<LendingModalState>>(LendModalAction.Lend),
     [],
   );
 
@@ -30,7 +38,18 @@ const LendPage: FC = () => {
     });
   }, [adjust]);
 
-  const handleCloseModal = useCallback(() => adjust(null), [adjust]);
+  const handleLendClick = useCallback(async () => {
+    lend({
+      token: SupportedTokens.xusd,
+      apy: decimalic('0.1'),
+    });
+  }, [lend]);
+
+  const handleCloseModal = useCallback(() => {
+    adjust(null);
+    lend(null);
+  }, [adjust, lend]);
+
   const handleComplete = useCallback(() => {}, []);
 
   const { handleDeposit, handleWithdraw } = useHandleLending(
@@ -42,13 +61,16 @@ const LendPage: FC = () => {
     <>
       {account ? (
         <>
-          <div className="w-full flex flex-col items-center text-gray-10 mt-9 sm:mt-24">
+          <div className="w-full flex flex-col gap-4 items-center text-gray-10 mt-9 sm:mt-24">
+            <Button text="Lend XUSD" onClick={handleLendClick} />
+
             <Button text="Adjust XUSD" onClick={handleAdjustClick} />
           </div>
           <AdjustLendingModalContainer
             onDeposit={handleDeposit}
             onWithdraw={handleWithdraw}
           />
+          <LendingModalContainer onDeposit={handleDeposit} />
         </>
       ) : (
         <>connect wallet first</>

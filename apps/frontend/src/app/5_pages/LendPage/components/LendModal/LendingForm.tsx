@@ -11,6 +11,8 @@ import {
   SimpleTable,
   SimpleTableRow,
   Link,
+  ErrorBadge,
+  ErrorLevel,
 } from '@sovryn/ui';
 import { Decimal } from '@sovryn/utils';
 
@@ -20,6 +22,7 @@ import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRen
 import { AssetRenderer } from '../../../../2_molecules/AssetRenderer/AssetRenderer';
 import { MaxButton } from '../../../../2_molecules/MaxButton/MaxButton';
 import { GAS_LIMIT } from '../../../../../constants/gasLimits';
+import { useMaintenance } from '../../../../../hooks/useMaintenance';
 import { useMaxAssetBalance } from '../../../../../hooks/useMaxAssetBalance';
 import { useWeiAmountInput } from '../../../../../hooks/useWeiAmountInput';
 import { translations } from '../../../../../locales/i18n';
@@ -33,6 +36,9 @@ export type DepositProps = {
 
 export const LendingForm: FC<DepositProps> = ({ state, onConfirm }) => {
   const [value, setValue, amount] = useWeiAmountInput('');
+
+  const { checkMaintenance, States } = useMaintenance();
+  const depositLocked = checkMaintenance(States.DEPOSIT_LEND);
 
   const { balance } = useMaxAssetBalance(
     state.token,
@@ -57,8 +63,9 @@ export const LendingForm: FC<DepositProps> = ({ state, onConfirm }) => {
     () =>
       amount.lte(0) ||
       amount.gt(balance.toBigNumber()) ||
-      !hasDisclaimerBeenChecked,
-    [amount, balance, hasDisclaimerBeenChecked],
+      !hasDisclaimerBeenChecked ||
+      depositLocked,
+    [amount, balance, hasDisclaimerBeenChecked, depositLocked],
   );
 
   const [lendApy, setLendApy] = useState<Decimal>(state.apy);
@@ -127,6 +134,12 @@ export const LendingForm: FC<DepositProps> = ({ state, onConfirm }) => {
         onClick={handleSubmit}
         className="mt-6 w-full"
       />
+      {depositLocked && (
+        <ErrorBadge
+          level={ErrorLevel.Warning}
+          message={t(translations.maintenanceMode.featureDisabled)}
+        />
+      )}
     </>
   );
 };

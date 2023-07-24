@@ -25,13 +25,17 @@ export const useHandleZeroRedemptionRoutePriceChanges = (
     string | undefined
   >();
 
+  const [processedBlockNumber, setProcessedBlockNumber] = useState<
+    number | undefined
+  >();
+
   const onUpdateClick = useCallback(() => {
     setIsOpen(false);
     setSubmitPrice(undefined);
   }, [setIsOpen, setSubmitPrice]);
 
   useEffect(() => {
-    if (submitPrice) {
+    if (submitPrice && processedBlockNumber !== blockNumber) {
       getCurrentPrice().then(result => {
         if (!result) {
           return;
@@ -71,15 +75,18 @@ export const useHandleZeroRedemptionRoutePriceChanges = (
             0,
           );
         }
+
+        setProcessedBlockNumber(blockNumber);
       });
     }
   }, [
     blockNumber,
-    addNotification,
-    onUpdateClick,
-    warningNotificationId,
-    removeNotification,
     submitPrice,
     getCurrentPrice,
+    warningNotificationId,
+    processedBlockNumber,
+    addNotification,
+    onUpdateClick,
+    removeNotification,
   ]);
 };

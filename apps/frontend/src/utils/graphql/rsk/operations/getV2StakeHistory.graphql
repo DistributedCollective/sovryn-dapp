@@ -17,5 +17,8 @@ query getV2StakeHistory(
     totalStaked
     timestamp
     lockedUntil
+    user {
+      id
+    }
   }
 }

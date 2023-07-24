@@ -18,6 +18,9 @@ query getV2StakingWithdrawns(
     receiver {
       id
     }
+    user {
+      id
+    }
     timestamp
     until
   }

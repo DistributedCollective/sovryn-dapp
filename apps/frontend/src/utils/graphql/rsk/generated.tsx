@@ -14466,6 +14466,7 @@ export type GetV2DelegateChangesQuery = {
     lockedUntil: number;
     delegate?: { __typename?: 'User'; id: string } | null;
     previousDelegate?: { __typename?: 'User'; id: string } | null;
+    user: { __typename?: 'User'; id: string };
   }>;
 };
 
@@ -14486,6 +14487,7 @@ export type GetV2ExtendedStakingDurationsQuery = {
     newDate: number;
     previousDate: number;
     timestamp: number;
+    user: { __typename?: 'User'; id: string };
   }>;
 };
 
@@ -14506,6 +14508,7 @@ export type GetV2StakeHistoryQuery = {
     totalStaked: string;
     timestamp: number;
     lockedUntil: number;
+    user: { __typename?: 'User'; id: string };
   }>;
 };
 
@@ -14527,6 +14530,7 @@ export type GetV2StakingWithdrawnsQuery = {
     timestamp: number;
     until: number;
     receiver?: { __typename?: 'User'; id: string } | null;
+    user: { __typename?: 'User'; id: string };
   }>;
 };
 
@@ -15049,6 +15053,9 @@ export const GetV2DelegateChangesDocument = gql`
       previousDelegate {
         id
       }
+      user {
+        id
+      }
       lockedUntil
     }
   }
@@ -15128,6 +15135,9 @@ export const GetV2ExtendedStakingDurationsDocument = gql`
       newDate
       previousDate
       timestamp
+      user {
+        id
+      }
     }
   }
 `;
@@ -15206,6 +15216,9 @@ export const GetV2StakeHistoryDocument = gql`
       totalStaked
       timestamp
       lockedUntil
+      user {
+        id
+      }
     }
   }
 `;
@@ -15283,6 +15296,9 @@ export const GetV2StakingWithdrawnsDocument = gql`
       amount
       isGovernance
       receiver {
+        id
+      }
+      user {
         id
       }
       timestamp

@@ -17,5 +17,8 @@ query getV2ExtendedStakingDurations(
     newDate
     previousDate
     timestamp
+    user {
+      id
+    }
   }
 }

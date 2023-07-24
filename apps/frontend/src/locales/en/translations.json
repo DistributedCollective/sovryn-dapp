@@ -596,6 +596,15 @@
             "stabilityPoolSubsidies": "Stability pool subsidies"
         }
     },
+    "stakingHistory": {
+        "lockedUntil": "Locked Until",
+        "totalStaked": "Total Staked",
+        "amount": "Amount",
+        "increase": "Increase stake",
+        "unstake": "Unstake",
+        "extend": "Extend staking duration",
+        "delegate": "Change delegate"
+    },
     "subsidyHistory": {
         "stabilityPoolOperation": {
             "claimStabilityPoolSubsidy": "Claim stability pool subsidy"

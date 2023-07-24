@@ -20,6 +20,9 @@ query getV2DelegateChanges(
     previousDelegate {
       id
     }
+    user {
+      id
+    }
     lockedUntil
   }
 }

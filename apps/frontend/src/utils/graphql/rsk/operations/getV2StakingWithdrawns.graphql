@@ -1,11 +1,11 @@
-query getV2StakeHistory(
+query getV2StakingWithdrawns(
   $user: String
   $skip: Int!
   $pageSize: Int!
-  $orderBy: V2TokensStaked_orderBy
+  $orderBy: V2StakingWithdrawn_orderBy
   $orderDirection: OrderDirection
 ) {
-  v2TokensStakeds(
+  v2StakingWithdrawns(
     where: { user: $user }
     first: $pageSize
     skip: $skip
@@ -14,8 +14,11 @@ query getV2StakeHistory(
   ) {
     id
     amount
-    totalStaked
+    isGovernance
+    receiver {
+      id
+    }
     timestamp
-    lockedUntil
+    until
   }
 }

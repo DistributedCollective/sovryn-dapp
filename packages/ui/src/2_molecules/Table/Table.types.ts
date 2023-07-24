@@ -29,6 +29,8 @@ export type TableProps<RowType extends RowObject> = {
   orderOptions?: OrderOptions;
   setOrderOptions?: (sort: OrderOptions) => void;
   isLoading?: boolean;
+  expandedContent?: (row: RowType) => ReactNode;
+  preventExpandOnClickClass?: string;
 };
 
 export enum OrderDirection {

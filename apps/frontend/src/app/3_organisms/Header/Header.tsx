@@ -1,5 +1,6 @@
 import React, { FC, useCallback, useMemo, useReducer } from 'react';
 
+import classNames from 'classnames';
 import { t } from 'i18next';
 import { useLocation } from 'react-router-dom';
 
@@ -12,6 +13,9 @@ import {
   IconNames,
   applyDataAttr,
   noop,
+  Menu,
+  MenuItem,
+  Dropdown,
 } from '@sovryn/ui';
 
 import { ConnectWalletButton } from '../../2_molecules';
@@ -20,9 +24,11 @@ import { SovrynLogo } from '../../2_molecules/SovrynLogo/SovrynLogo';
 import { RSK_FAUCET } from '../../../constants/general';
 import { useWalletConnect, useWrongNetworkCheck } from '../../../hooks';
 import { useAssetBalance } from '../../../hooks/useAssetBalance';
+import { useIsMobile } from '../../../hooks/useIsMobile';
 import { translations } from '../../../locales/i18n';
 import { sharedState } from '../../../store/rxjs/shared-state';
 import { isMainnet, isTestnetFastBtcEnabled } from '../../../utils/helpers';
+import { menuItemsMapping } from './Header.constants';
 import { ProductLinks } from './components/ProductLinks/ProductLinks';
 
 export const Header: FC = () => {
@@ -30,6 +36,8 @@ export const Header: FC = () => {
   const { connectWallet, disconnectWallet, account, pending } =
     useWalletConnect();
   useWrongNetworkCheck();
+
+  const { isMobile } = useIsMobile();
 
   const { pathname } = useLocation();
 
@@ -51,6 +59,11 @@ export const Header: FC = () => {
   const handleFastBtcClick = useCallback(
     () => sharedState.actions.openFastBtcDialog(),
     [],
+  );
+
+  const isPathActive = useCallback(
+    (path: string) => pathname.startsWith(path),
+    [pathname],
   );
 
   return (
@@ -78,29 +91,47 @@ export const Header: FC = () => {
           />
         }
         menuItems={
-          <ol className="flex flex-col gap-4 lg:flex-row">
-            <NavLink
-              to="/"
-              end
-              onClick={handleNavClick}
-              {...applyDataAttr('dapp-menu-borrow')}
-            >
-              {t(translations.header.nav.borrow)}
-            </NavLink>
-            <NavLink
-              to="/earn"
-              onClick={handleNavClick}
-              {...applyDataAttr('dapp-menu-earn')}
-            >
-              {t(translations.header.nav.earn)}
-            </NavLink>
-            <NavLink
-              to="/convert"
-              onClick={handleNavClick}
-              {...applyDataAttr('dapp-menu-convert')}
-            >
-              {t(translations.header.nav.convert)}
-            </NavLink>
+          <ol className="flex flex-col gap-4 lg:flex-row w-full md:w-auto">
+            {menuItemsMapping.map(item =>
+              item.submenu ? (
+                <Dropdown
+                  key={item.text}
+                  text={item.text}
+                  className={classNames(
+                    'text-gray-30 font-normal text-sm hover:bg-gray-70 hover:text-gray-10 min-w-auto w-full md:w-auto',
+                    {
+                      'bg-transparent border-none': !isPathActive(item.url),
+                    },
+                  )}
+                >
+                  <Menu>
+                    {item.submenu.map(({ text, label, url }) => (
+                      <MenuItem
+                        key={text}
+                        text={text}
+                        label={!isMobile && label}
+                        href={url}
+                        dataAttribute={`dapp-menu-${text
+                          .toLowerCase()
+                          .replace(' ', '-')}`}
+                        isActive={isPathActive(url)}
+                        className="no-underline"
+                      />
+                    ))}
+                  </Menu>
+                </Dropdown>
+              ) : (
+                <NavLink
+                  key={item.text}
+                  to={item.url}
+                  end
+                  onClick={handleNavClick}
+                  {...applyDataAttr(`dapp-menu-${item.text.toLowerCase()}`)}
+                >
+                  {item.text}
+                </NavLink>
+              ),
+            )}
             <ProductLinks />
           </ol>
         }

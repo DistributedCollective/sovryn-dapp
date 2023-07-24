@@ -40,6 +40,7 @@ import { useAccount } from '../../../hooks/useAccount';
 import { useGetProtocolContract } from '../../../hooks/useGetContract';
 import { useWeiAmountInput } from '../../../hooks/useWeiAmountInput';
 import { translations } from '../../../locales/i18n';
+import { isMainnet } from '../../../utils/helpers';
 import { decimalic, fromWei } from '../../../utils/math';
 import { smartRouter, stableCoins } from './ConvertPage.types';
 import { useConversionMaintenance } from './hooks/useConversionMaintenance';
@@ -71,6 +72,8 @@ const tokensToOptions = (
     ),
   );
 
+const zeroFeedPriceFunction = isMainnet() ? 'lastGoodPrice' : 'getPrice';
+
 const ConvertPage: FC = () => {
   const { account } = useAccount();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -94,7 +97,7 @@ const ConvertPage: FC = () => {
 
   const getZeroPriceFeedRbtcValue = useCallback(async () => {
     if (zeroPriceFeed) {
-      return zeroPriceFeed.getPrice();
+      return zeroPriceFeed[zeroFeedPriceFunction]();
     }
   }, [zeroPriceFeed]);
 

@@ -603,7 +603,9 @@
         "increase": "Increase stake",
         "unstake": "Unstake",
         "extend": "Extend staking duration",
-        "delegate": "Change delegate"
+        "delegate": "Change delegate",
+        "newDate": "New date",
+        "previousDate": "Previous date"
     },
     "subsidyHistory": {
         "stabilityPoolOperation": {

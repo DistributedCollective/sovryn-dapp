@@ -1,0 +1,55 @@
+import React from 'react';
+
+import { t } from 'i18next';
+
+import { Paragraph, ParagraphSize } from '@sovryn/ui';
+
+import { AmountRenderer } from '../../../2_molecules/AmountRenderer/AmountRenderer';
+import { TransactionIdRenderer } from '../../../2_molecules/TransactionIdRenderer/TransactionIdRenderer';
+import { translations } from '../../../../locales/i18n';
+import { dateFormat } from '../../../../utils/helpers';
+import { V2StakingExtendedDurationItem } from './StakingExtendedDuration.types';
+
+export const generateRowTitle = (item: V2StakingExtendedDurationItem) => (
+  <Paragraph size={ParagraphSize.small} className="text-left">
+    {dateFormat(item.timestamp)}
+  </Paragraph>
+);
+
+export const columnsConfig = [
+  {
+    id: 'timestamp',
+    title: t(translations.common.tables.columnTitles.timestamp),
+    cellRenderer: (tx: V2StakingExtendedDurationItem) =>
+      dateFormat(tx.timestamp),
+    sortable: true,
+  },
+  {
+    id: 'newDate',
+    title: t(translations.stakingHistory.newDate),
+    cellRenderer: (tx: V2StakingExtendedDurationItem) => dateFormat(tx.newDate),
+    sortable: true,
+  },
+  {
+    id: 'previousDate',
+    title: t(translations.stakingHistory.previousDate),
+    cellRenderer: (tx: V2StakingExtendedDurationItem) =>
+      dateFormat(tx.previousDate),
+    sortable: true,
+  },
+  {
+    id: 'amountStaked',
+    title: t(translations.stakingHistory.amount),
+    cellRenderer: (tx: V2StakingExtendedDurationItem) => (
+      <AmountRenderer value={tx.amountStaked || 0} />
+    ),
+    sortable: true,
+  },
+  {
+    id: 'txId',
+    title: t(translations.common.tables.columnTitles.transactionID),
+    cellRenderer: (item: V2StakingExtendedDurationItem) => (
+      <TransactionIdRenderer hash={item.id.split('-')[0]} />
+    ),
+  },
+];

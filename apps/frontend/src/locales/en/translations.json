@@ -605,7 +605,8 @@
         "extend": "Extend staking duration",
         "delegate": "Change delegate",
         "newDate": "New date",
-        "previousDate": "Previous date"
+        "previousDate": "Previous date",
+        "previousDelegate": "Previous delegate"
     },
     "subsidyHistory": {
         "stabilityPoolOperation": {

@@ -25,18 +25,21 @@ import { useMaintenance } from '../../../../hooks/useMaintenance';
 import { translations } from '../../../../locales/i18n';
 import { rskClient } from '../../../../utils/clients';
 import {
-  useGetV2StakeHistoryLazyQuery,
-  V2TokensStaked_OrderBy,
+  useGetV2DelegateChangesLazyQuery,
+  V2DelegateChanged_OrderBy,
 } from '../../../../utils/graphql/rsk/generated';
 import { dateFormat } from '../../../../utils/helpers';
 import { stakingHistoryOptions } from '../StakingHistoryFrame.constants';
 import { StakingHistoryProps } from '../StakingHistoryFrame.type';
-import { columnsConfig, generateRowTitle } from './StakingHistory.utils';
-import { useGetStakingHistory } from './hooks/useGetStakingHistory';
+import {
+  columnsConfig,
+  generateRowTitle,
+} from './StakingDelegateChanges.utils';
+import { useGetStakingDelegateChanges } from './hooks/useGetStakingDelegateChanges';
 
 const pageSize = DEFAULT_HISTORY_FRAME_PAGE_SIZE;
 
-export const StakingHistory: FC<StakingHistoryProps> = ({
+export const StakingDelegateChanges: FC<StakingHistoryProps> = ({
   onChangeHistoryType,
   selectedHistoryType,
 }) => {
@@ -54,14 +57,14 @@ export const StakingHistory: FC<StakingHistoryProps> = ({
     orderDirection: OrderDirection.Desc,
   });
 
-  const { data, loading } = useGetStakingHistory(
+  const { data, loading } = useGetStakingDelegateChanges(
     account,
     pageSize,
     page,
     orderOptions,
   );
 
-  const [getStakes] = useGetV2StakeHistoryLazyQuery({
+  const [getStakes] = useGetV2DelegateChangesLazyQuery({
     client: rskClient,
   });
 
@@ -86,12 +89,12 @@ export const StakingHistory: FC<StakingHistoryProps> = ({
         user: account,
         skip: 0,
         pageSize: EXPORT_RECORD_LIMIT,
-        orderBy: orderOptions.orderBy as V2TokensStaked_OrderBy,
+        orderBy: orderOptions.orderBy as V2DelegateChanged_OrderBy,
         orderDirection: orderOptions.orderDirection,
       },
     });
 
-    let list = data?.v2TokensStakeds || [];
+    let list = data?.v2DelegateChangeds || [];
 
     if (!list || !list.length) {
       addNotification({
@@ -106,7 +109,8 @@ export const StakingHistory: FC<StakingHistoryProps> = ({
     return list.map(item => ({
       timestamp: dateFormat(item.timestamp),
       lockedUntil: dateFormat(item.lockedUntil),
-      amount: item.amount,
+      delegate: item.delegate?.id,
+      previousDelegate: item.previousDelegate?.id,
       TXID: item.id.split('-')[0],
     }));
   }, [
@@ -134,7 +138,7 @@ export const StakingHistory: FC<StakingHistoryProps> = ({
         <div className="flex-row items-center ml-2 gap-4 hidden lg:inline-flex">
           <ExportCSV
             getData={exportData}
-            filename="staking-history"
+            filename="staking-delegate-change"
             disabled={!data || data.length === 0 || exportLocked}
           />
           {exportLocked && (
@@ -155,7 +159,7 @@ export const StakingHistory: FC<StakingHistoryProps> = ({
           isLoading={loading}
           className="bg-gray-80 text-gray-10 lg:px-6 lg:py-4"
           noData={t(translations.common.tables.noData)}
-          dataAttribute="staking-history-table"
+          dataAttribute="staking-delegate-change-history-table"
         />
         <Pagination
           page={page}
@@ -163,7 +167,7 @@ export const StakingHistory: FC<StakingHistoryProps> = ({
           onChange={onPageChange}
           itemsPerPage={pageSize}
           isNextButtonDisabled={isNextButtonDisabled}
-          dataAttribute="staking-history-pagination"
+          dataAttribute="staking-delegate-change-history-pagination"
         />
       </div>
     </>

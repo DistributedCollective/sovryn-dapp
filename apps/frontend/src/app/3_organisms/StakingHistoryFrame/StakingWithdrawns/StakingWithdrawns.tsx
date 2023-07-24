@@ -127,7 +127,7 @@ export const StakingWithdrawns: FC<StakingHistoryProps> = ({
     <>
       <div className="flex-row items-center gap-4 mb-7 flex justify-center lg:justify-start">
         <Select
-          dataAttribute={`reward-history-${selectedHistoryType}`}
+          dataAttribute={`staking-history-${selectedHistoryType}`}
           value={selectedHistoryType}
           onChange={onChangeHistoryType}
           options={stakingHistoryOptions}
@@ -135,9 +135,8 @@ export const StakingWithdrawns: FC<StakingHistoryProps> = ({
         <div className="flex-row items-center ml-2 gap-4 hidden lg:inline-flex">
           <ExportCSV
             getData={exportData}
-            filename="transactions"
-            className="mb-7 hidden lg:inline-flex"
-            disabled={!data || data.length === 0}
+            filename="staking-withdrawns"
+            disabled={!data || data.length === 0 || exportLocked}
           />
           {exportLocked && (
             <ErrorBadge
@@ -157,7 +156,7 @@ export const StakingWithdrawns: FC<StakingHistoryProps> = ({
           isLoading={loading}
           className="bg-gray-80 text-gray-10 lg:px-6 lg:py-4"
           noData={t(translations.common.tables.noData)}
-          dataAttribute="funding-history-table"
+          dataAttribute="staking-withdrawns-history-table"
         />
         <Pagination
           page={page}
@@ -165,7 +164,7 @@ export const StakingWithdrawns: FC<StakingHistoryProps> = ({
           onChange={onPageChange}
           itemsPerPage={pageSize}
           isNextButtonDisabled={isNextButtonDisabled}
-          dataAttribute="funding-history-pagination"
+          dataAttribute="staking-withdrawns-history-pagination"
         />
       </div>
     </>

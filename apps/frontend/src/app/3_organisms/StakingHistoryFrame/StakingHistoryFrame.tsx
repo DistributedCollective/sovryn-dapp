@@ -1,5 +1,6 @@
 import React, { FC, useCallback, useState } from 'react';
 
+import { StakingDelegateChanges } from './StakingDelegateChanges';
 import { StakingExtendedDuration } from './StakingExtendedDuration';
 import { StakingHistory } from './StakingHistory/StakingHistory';
 import { StakingistoryType } from './StakingHistoryFrame.type';
@@ -29,6 +30,12 @@ export const StakingHistoryFrame: FC = () => {
       )}
       {selectedHistoryType === StakingistoryType.extend && (
         <StakingExtendedDuration
+          selectedHistoryType={selectedHistoryType}
+          onChangeHistoryType={onChangeHistoryType}
+        />
+      )}
+      {selectedHistoryType === StakingistoryType.delegate && (
+        <StakingDelegateChanges
           selectedHistoryType={selectedHistoryType}
           onChangeHistoryType={onChangeHistoryType}
         />

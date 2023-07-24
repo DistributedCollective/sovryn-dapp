@@ -2,10 +2,12 @@ import React from 'react';
 
 import { t } from 'i18next';
 
+import { SupportedTokens } from '@sovryn/contracts';
 import { Paragraph, ParagraphSize } from '@sovryn/ui';
 
 import { AmountRenderer } from '../../../2_molecules/AmountRenderer/AmountRenderer';
 import { TransactionIdRenderer } from '../../../2_molecules/TransactionIdRenderer/TransactionIdRenderer';
+import { getTokenDisplayName } from '../../../../constants/tokens';
 import { translations } from '../../../../locales/i18n';
 import { dateFormat } from '../../../../utils/helpers';
 import { V2StakingExtendedDurationItem } from './StakingExtendedDuration.types';
@@ -41,7 +43,10 @@ export const columnsConfig = [
     id: 'amountStaked',
     title: t(translations.stakingHistory.amount),
     cellRenderer: (tx: V2StakingExtendedDurationItem) => (
-      <AmountRenderer value={tx.amountStaked || 0} />
+      <AmountRenderer
+        value={tx.amountStaked || 0}
+        suffix={getTokenDisplayName(SupportedTokens.sov)}
+      />
     ),
     sortable: true,
   },

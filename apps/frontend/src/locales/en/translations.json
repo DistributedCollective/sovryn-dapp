@@ -588,7 +588,7 @@
     },
     "rewardHistory": {
         "stabilityPoolOperation": {
-            "claimCollateralGain": "Claim gain",
+            "claimCollateralGain": "Withdraw liquidation gain",
             "transferGainToLineOfCredit": "Transfer gain to line of credit"
         },
         "types": {
@@ -610,7 +610,7 @@
     },
     "subsidyHistory": {
         "stabilityPoolOperation": {
-            "claimStabilityPoolSubsidy": "Claim stability pool subsidy"
+            "withdrawStabilityPoolSubsidy": "Withdraw stability pool subsidy"
         }
     },
     "emailNotificationsDialog": {

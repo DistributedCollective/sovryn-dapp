@@ -51,7 +51,7 @@ const generateRowTitle = (tx: SovDistribution) => (
   <Paragraph size={ParagraphSize.small} className="text-left">
     {t(
       translations.subsidyHistory.stabilityPoolOperation
-        .claimStabilityPoolSubsidy,
+        .withdrawStabilityPoolSubsidy,
     )}
     {' - '}
     {dateFormat(tx.timestamp)}
@@ -117,7 +117,7 @@ export const StabilityPoolSubsidies: FC<RewardHistoryProps> = ({
         cellRenderer: () =>
           t(
             translations.subsidyHistory.stabilityPoolOperation
-              .claimStabilityPoolSubsidy,
+              .withdrawStabilityPoolSubsidy,
           ),
       },
       {
@@ -181,7 +181,7 @@ export const StabilityPoolSubsidies: FC<RewardHistoryProps> = ({
       timestamp: dateFormat(tx.timestamp),
       stabilityPoolOperation: t(
         translations.subsidyHistory.stabilityPoolOperation
-          .claimStabilityPoolSubsidy,
+          .withdrawStabilityPoolSubsidy,
       ),
       amount: fromWei(tx.amount || ''),
       transactionID: tx.id,

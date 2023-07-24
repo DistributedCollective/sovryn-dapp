@@ -54,7 +54,9 @@
             "error": "Error loading Zero data, please try again",
             "pageLoading": "is loading..."
         },
-        "advancedSettings": "Advanced settings"
+        "advancedSettings": "Advanced settings",
+        "and": "and",
+        "more": "more"
     },
     "connectWalletButton": {
         "connect": "Get started",

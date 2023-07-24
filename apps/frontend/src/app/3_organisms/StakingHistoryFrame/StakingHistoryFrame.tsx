@@ -2,6 +2,7 @@ import React, { FC, useCallback, useState } from 'react';
 
 import { StakingHistory } from './StakingHistory/StakingHistory';
 import { StakingistoryType } from './StakingHistoryFrame.type';
+import { StakingWithdrawns } from './StakingWithdrawns';
 
 export const StakingHistoryFrame: FC = () => {
   const [selectedHistoryType, setSelectedHistoryType] = useState(
@@ -15,6 +16,12 @@ export const StakingHistoryFrame: FC = () => {
     <div>
       {selectedHistoryType === StakingistoryType.increase && (
         <StakingHistory
+          selectedHistoryType={selectedHistoryType}
+          onChangeHistoryType={onChangeHistoryType}
+        />
+      )}
+      {selectedHistoryType === StakingistoryType.unstake && (
+        <StakingWithdrawns
           selectedHistoryType={selectedHistoryType}
           onChangeHistoryType={onChangeHistoryType}
         />

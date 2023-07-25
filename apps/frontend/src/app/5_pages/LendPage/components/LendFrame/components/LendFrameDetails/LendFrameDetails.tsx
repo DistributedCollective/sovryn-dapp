@@ -20,7 +20,7 @@ export const LendFrameDetails: FC<LendFrameProps> = ({ pool }) => {
     <div className="flex-col-reverse lg:flex-row flex items-stretch m-0 md:p-4 gap-9 rounded-b md:gap-20 outline outline-1 outline-gray-70">
       <div>
         <ExpandedContent
-          label={t(translations.lendPage.table.avaliable)}
+          label={t(translations.lendPage.table.available)}
           value={
             <AmountRenderer
               value={availableAmount}

@@ -28,6 +28,9 @@ export const LendFrameChart: FC<LendFrameProps> = ({ pool }) => {
   );
 
   useEffect(() => {
+    if (chartRef.current) {
+      chartRef.current.destroy();
+    }
     const lendApyGradient = chartRef.current?.ctx?.createLinearGradient(
       0,
       0,
@@ -47,10 +50,6 @@ export const LendFrameChart: FC<LendFrameProps> = ({ pool }) => {
     borrowedLiquidityGradient?.addColorStop(0, 'rgba(245, 140, 49, 1)');
     borrowedLiquidityGradient?.addColorStop(1, 'rgba(245, 140, 49, 0.09)');
 
-    if (chartRef.current) {
-      chartRef.current.destroy();
-    }
-
     chartRef.current = new Chart(asset, {
       type: 'line',
       data: getChartData(
@@ -62,6 +61,12 @@ export const LendFrameChart: FC<LendFrameProps> = ({ pool }) => {
       options: chartOptions,
       plugins: [customCanvasBackgroundColor],
     });
+
+    return () => {
+      if (chartRef.current) {
+        chartRef.current.destroy();
+      }
+    };
   }, [mockData, chartOptions, asset]);
 
   return (

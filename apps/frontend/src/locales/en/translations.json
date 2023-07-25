@@ -513,7 +513,7 @@
             "interestEarnedInfo": "Interest earned is auto-compounded i.e. it is automatically added to your lending pool balance",
             "more": "and more",
             "collateralRatio": "collateral ratio",
-            "avaliable": "Avaliable",
+            "available": "Available",
             "borrowed": "Borrowed"
         },
         "actions": {

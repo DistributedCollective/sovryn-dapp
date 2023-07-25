@@ -102,7 +102,7 @@ export const getChartData = (
         pointRadius: 0,
       },
       {
-        label: t(translations.lendPage.table.avaliable),
+        label: t(translations.lendPage.table.available),
         data: mockData.availableLiquidity,
         backgroundColor: availableLiquidityGradient,
         borderColor: '#82868F',

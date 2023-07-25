@@ -54,7 +54,7 @@ export const AcceptedCollateral: FC<AcceptedCollateralProps> = ({ pool }) => {
           {firstThreePools.map((item, index) => (
             <div key={index}>
               <span>{item.toUpperCase()}</span>
-              {index !== COLLATERAL_ITEMS_TO_SHOW - 1 && <span>, </span>}
+              {index !== COLLATERAL_ITEMS_TO_SHOW && <span>, </span>}
             </div>
           ))}
           <div> {t(translations.lendPage.table.more)}</div>

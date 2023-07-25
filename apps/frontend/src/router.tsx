@@ -62,6 +62,10 @@ const routes = [
         loader: earnPageLoader,
       },
       {
+        path: '/earn/lend',
+        element: <LendPage />,
+      },
+      {
         path: '/convert',
         element: <ConvertPage />,
       },
@@ -73,10 +77,6 @@ const routes = [
         path: '/rewards',
         element: <RewardsPage />,
         loader: zeroPageLoader,
-      },
-      {
-        path: '/earn/lend',
-        element: <LendPage />,
       },
     ],
   },

@@ -6,16 +6,18 @@ import { TxIdWithNotification } from '../TxIdWithNotification/TransactionIdWithN
 
 type TransactionIdRendererProps = {
   hash: string;
+  dataAttribute?: string;
 };
 
 const chain = chains.find(chain => chain.id === defaultChainId);
 
 export const TransactionIdRenderer: React.FC<TransactionIdRendererProps> = ({
   hash,
+  dataAttribute,
 }) => (
   <TxIdWithNotification
     href={`${chain?.blockExplorerUrl}/tx/${hash}`}
     value={hash}
-    dataAttribute="conversion-history-tx-hash"
+    dataAttribute={dataAttribute}
   />
 );

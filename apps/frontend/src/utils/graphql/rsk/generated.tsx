@@ -14375,6 +14375,28 @@ export type GetFundingQuery = {
   }>;
 };
 
+export type GetRewardsEarnedHistoryQueryVariables = Exact<{
+  user?: InputMaybe<Scalars['String']>;
+  skip: Scalars['Int'];
+  pageSize: Scalars['Int'];
+  orderBy?: InputMaybe<RewardsEarnedHistoryItem_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+  actions?: InputMaybe<Array<RewardsEarnedAction> | RewardsEarnedAction>;
+}>;
+
+export type GetRewardsEarnedHistoryQuery = {
+  __typename?: 'Query';
+  rewardsEarnedHistoryItems: Array<{
+    __typename?: 'RewardsEarnedHistoryItem';
+    id: string;
+    action: RewardsEarnedAction;
+    amount: string;
+    token?: string | null;
+    timestamp: number;
+    transaction: { __typename?: 'Transaction'; id: string };
+  }>;
+};
+
 export type GetSmartTokensQueryVariables = Exact<{
   skip: Scalars['Int'];
   pageSize: Scalars['Int'];
@@ -14735,6 +14757,89 @@ export type GetFundingLazyQueryHookResult = ReturnType<
 export type GetFundingQueryResult = Apollo.QueryResult<
   GetFundingQuery,
   GetFundingQueryVariables
+>;
+export const GetRewardsEarnedHistoryDocument = gql`
+  query getRewardsEarnedHistory(
+    $user: String
+    $skip: Int!
+    $pageSize: Int!
+    $orderBy: RewardsEarnedHistoryItem_orderBy
+    $orderDirection: OrderDirection
+    $actions: [RewardsEarnedAction!]
+  ) {
+    rewardsEarnedHistoryItems(
+      where: { user: $user, amount_gt: 0, action_in: $actions }
+      first: $pageSize
+      skip: $skip
+      orderBy: $orderBy
+      orderDirection: $orderDirection
+    ) {
+      id
+      action
+      amount
+      token
+      timestamp
+      transaction {
+        id
+      }
+    }
+  }
+`;
+
+/**
+ * __useGetRewardsEarnedHistoryQuery__
+ *
+ * To run a query within a React component, call `useGetRewardsEarnedHistoryQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetRewardsEarnedHistoryQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetRewardsEarnedHistoryQuery({
+ *   variables: {
+ *      user: // value for 'user'
+ *      skip: // value for 'skip'
+ *      pageSize: // value for 'pageSize'
+ *      orderBy: // value for 'orderBy'
+ *      orderDirection: // value for 'orderDirection'
+ *      actions: // value for 'actions'
+ *   },
+ * });
+ */
+export function useGetRewardsEarnedHistoryQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    GetRewardsEarnedHistoryQuery,
+    GetRewardsEarnedHistoryQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    GetRewardsEarnedHistoryQuery,
+    GetRewardsEarnedHistoryQueryVariables
+  >(GetRewardsEarnedHistoryDocument, options);
+}
+export function useGetRewardsEarnedHistoryLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    GetRewardsEarnedHistoryQuery,
+    GetRewardsEarnedHistoryQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    GetRewardsEarnedHistoryQuery,
+    GetRewardsEarnedHistoryQueryVariables
+  >(GetRewardsEarnedHistoryDocument, options);
+}
+export type GetRewardsEarnedHistoryQueryHookResult = ReturnType<
+  typeof useGetRewardsEarnedHistoryQuery
+>;
+export type GetRewardsEarnedHistoryLazyQueryHookResult = ReturnType<
+  typeof useGetRewardsEarnedHistoryLazyQuery
+>;
+export type GetRewardsEarnedHistoryQueryResult = Apollo.QueryResult<
+  GetRewardsEarnedHistoryQuery,
+  GetRewardsEarnedHistoryQueryVariables
 >;
 export const GetSmartTokensDocument = gql`
   query getSmartTokens(

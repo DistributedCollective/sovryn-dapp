@@ -1,7 +1,7 @@
 import { t } from 'i18next';
 
 import { translations } from '../../../locales/i18n';
-import { RewardHistoryType } from './types';
+import { RewardHistoryType } from './RewardHistory.types';
 
 export const rewardHistoryOptions = [
   {
@@ -11,5 +11,13 @@ export const rewardHistoryOptions = [
   {
     value: RewardHistoryType.stabilityPoolSubsidies,
     label: t(translations.rewardHistory.types.stabilityPoolSubsidies),
+  },
+  {
+    value: RewardHistoryType.stakingRevenue,
+    label: t(translations.rewardHistory.types.stakingRevenue),
+  },
+  {
+    value: RewardHistoryType.stakingSubsidies,
+    label: t(translations.rewardHistory.types.stakingSubsidies),
   },
 ];

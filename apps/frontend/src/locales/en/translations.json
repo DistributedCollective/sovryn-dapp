@@ -591,9 +591,15 @@
             "claimCollateralGain": "Withdraw liquidation gain",
             "transferGainToLineOfCredit": "Transfer gain to line of credit"
         },
+        "stakingOperation": {
+            "stakingRevenue": "Withdraw staking revenue",
+            "stakingSubsidies": "Withdraw staking subsidy"
+        },
         "types": {
             "stabilityPoolRewards": "Stability pool rewards",
-            "stabilityPoolSubsidies": "Stability pool subsidies"
+            "stabilityPoolSubsidies": "Stability pool subsidies",
+            "stakingRevenue": "Staking Revenue",
+            "stakingSubsidies": "Staking Subsidies"
         }
     },
     "stakingHistory": {

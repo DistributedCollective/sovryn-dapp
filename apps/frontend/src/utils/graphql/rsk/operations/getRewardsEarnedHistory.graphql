@@ -1,0 +1,25 @@
+query getRewardsEarnedHistory(
+  $user: String
+  $skip: Int!
+  $pageSize: Int!
+  $orderBy: RewardsEarnedHistoryItem_orderBy
+  $orderDirection: OrderDirection
+  $actions: [RewardsEarnedAction!]
+) {
+  rewardsEarnedHistoryItems(
+    where: { user: $user, amount_gt: 0, action_in: $actions }
+    first: $pageSize
+    skip: $skip
+    orderBy: $orderBy
+    orderDirection: $orderDirection
+  ) {
+    id
+    action
+    amount
+    token
+    timestamp
+    transaction {
+      id
+    }
+  }
+}

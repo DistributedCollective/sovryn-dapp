@@ -46,7 +46,10 @@ export const columnsConfig = [
     id: 'txId',
     title: t(translations.common.tables.columnTitles.transactionID),
     cellRenderer: (item: V2StakingWithdrawnItem) => (
-      <TransactionIdRenderer hash={item.id.split('-')[0]} />
+      <TransactionIdRenderer
+        hash={item.id.split('-')[0]}
+        dataAttribute="staking-withdraw-tx-hash"
+      />
     ),
   },
 ];

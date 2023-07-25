@@ -8,26 +8,20 @@ import { translations } from '../../../../../locales/i18n';
 import { LendingHistoryType } from '../../../../../utils/graphql/rsk/generated';
 import { dateFormat } from '../../../../../utils/helpers';
 import { decimalic } from '../../../../../utils/math';
-import { LendingEvent } from './LendingHistoryFrame';
+import { LendingEvent } from './LendingHistoryFrame.types';
+import { getTransactionType } from './LendingHistoryFrame.utils';
 
 export const COLUMNS_CONFIG = [
   {
     id: 'timestamp',
     title: t(translations.common.tables.columnTitles.timestamp),
     cellRenderer: (item: LendingEvent) => <>{dateFormat(item.timestamp)}</>,
+    sortable: true,
   },
   {
     id: 'transactionType',
     title: t(translations.common.tables.columnTitles.transactionType),
-    cellRenderer: (item: LendingEvent) => (
-      <>
-        {t(
-          translations.common.transactionTypes[
-            item.type === LendingHistoryType.Lend ? 'deposit' : 'withdrawal'
-          ],
-        )}
-      </>
-    ),
+    cellRenderer: (item: LendingEvent) => <>{getTransactionType(item.type)}</>,
   },
   {
     id: 'balanceChange',

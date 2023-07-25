@@ -6,9 +6,14 @@ import { AmountRenderer } from '../../../../../2_molecules/AmountRenderer/Amount
 import { TOKEN_RENDER_PRECISION } from '../../../../../../constants/currencies';
 import { fromWei } from '../../../../../../utils/math';
 import { useGetStakingBalanceOf } from '../../../hooks/useGetStakingBalanceOf';
-import { Vesting } from '../VestingStakesFrame.types';
 
-export const StakedAmountCellRenderer: FC<Vesting> = ({ vestingContract }) => {
+type StakedAmountCellRendererProps = {
+  vestingContract: string;
+};
+
+export const StakedAmountCellRenderer: FC<StakedAmountCellRendererProps> = ({
+  vestingContract,
+}) => {
   const { balance } = useGetStakingBalanceOf(vestingContract);
 
   return (

@@ -54,7 +54,11 @@
             "error": "Error loading Zero data, please try again",
             "pageLoading": "is loading..."
         },
-        "advancedSettings": "Advanced settings"
+        "advancedSettings": "Advanced settings",
+        "transactionTypes": {
+            "deposit": "Deposit",
+            "withdrawal": "Withdrawal"
+        }
     },
     "connectWalletButton": {
         "connect": "Get started",
@@ -430,17 +434,17 @@
             }
         },
         "receive": {
-          "loading": "Loading... this may take up to 30 seconds",
-          "statusScreen": {
-              "statusTitleProcessing": "Transfer processing...",
-              "statusTitleComplete": "Transfer complete",
-              "to": "To",
-              "sending": "Sending",
-              "serviceFee": "Service fee",
-              "receiving": "Receiving",
-              "bitcoinTxId": "Bitcoin TXID",
-              "rootstockTxId": "Rootstock TXID"
-          }
+            "loading": "Loading... this may take up to 30 seconds",
+            "statusScreen": {
+                "statusTitleProcessing": "Transfer processing...",
+                "statusTitleComplete": "Transfer complete",
+                "to": "To",
+                "sending": "Sending",
+                "serviceFee": "Service fee",
+                "receiving": "Receiving",
+                "bitcoinTxId": "Bitcoin TXID",
+                "rootstockTxId": "Rootstock TXID"
+            }
         }
     },
 
@@ -477,7 +481,7 @@
             "tabs": {
                 "lineOfCredit": "Line of credit",
                 "redemptions": "Redemptions",
-                "stability": "Stability pool",
+                "earn": "Earn",
                 "convert": "Conversion",
                 "funding": "Funding",
                 "reward": "Reward"
@@ -549,6 +553,17 @@
             "amount": "Amount",
             "withdrawSurplus": "Withdraw surplus",
             "depositSurplus": "Deposit surplus"
+        }
+    },
+    "earnHistory": {
+        "types": {
+            "stabilityPool": "Stability pool",
+            "lending": "Lending"
+        },
+        "lendingHistory": {
+            "columns": {
+                "balanceChange": "Balance change"
+            }
         }
     },
     "stabilityPoolHistory": {

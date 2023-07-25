@@ -1,5 +1,11 @@
 # frontend
 
+## 1.0.17
+
+### Patch Changes
+
+- 913c1fa: SOV-2766: Fix conversions failing using "max" button
+
 ## 1.0.16
 
 ### Patch Changes

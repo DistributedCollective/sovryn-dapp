@@ -606,6 +606,7 @@
         "lockedUntil": "Locked Until",
         "totalStaked": "Total Staked",
         "amount": "Amount",
+        "stakeChange": "Stake change",
         "increase": "Increase stake",
         "unstake": "Unstake",
         "extend": "Extend staking duration",

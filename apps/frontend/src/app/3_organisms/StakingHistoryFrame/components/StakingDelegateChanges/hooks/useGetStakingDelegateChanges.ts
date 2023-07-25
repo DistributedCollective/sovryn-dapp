@@ -2,14 +2,14 @@ import { useMemo } from 'react';
 
 import { OrderOptions } from '@sovryn/ui';
 
-import { rskClient } from '../../../../../utils/clients';
+import { rskClient } from '../../../../../../utils/clients';
 import {
-  useGetV2StakingWithdrawnsQuery,
-  V2StakingWithdrawn_OrderBy,
-} from '../../../../../utils/graphql/rsk/generated';
-import { V2StakingWithdrawnItem } from '../StakingWithdrawns.types';
+  useGetV2DelegateChangesQuery,
+  V2DelegateChanged_OrderBy,
+} from '../../../../../../utils/graphql/rsk/generated';
+import { V2StakingDelegateChangeItem } from '../StakingDelegateChanges.types';
 
-export const useGetStakingWithdrawns = (
+export const useGetStakingDelegateChanges = (
   account: string,
   pageSize: number,
   page: number,
@@ -20,7 +20,7 @@ export const useGetStakingWithdrawns = (
       user: account.toLowerCase(),
       skip: page * pageSize,
       pageSize,
-      orderBy: orderOptions.orderBy as V2StakingWithdrawn_OrderBy,
+      orderBy: orderOptions.orderBy as V2DelegateChanged_OrderBy,
       orderDirection: orderOptions.orderDirection,
     }),
     [
@@ -32,7 +32,7 @@ export const useGetStakingWithdrawns = (
     ],
   );
 
-  const { loading, data } = useGetV2StakingWithdrawnsQuery({
+  const { loading, data } = useGetV2DelegateChangesQuery({
     variables: config,
     client: rskClient,
   });
@@ -42,8 +42,8 @@ export const useGetStakingWithdrawns = (
       return [];
     }
 
-    return data.v2StakingWithdrawns;
+    return data.v2DelegateChangeds;
   }, [data]);
 
-  return { loading, data: list as V2StakingWithdrawnItem[] };
+  return { loading, data: list as V2StakingDelegateChangeItem[] };
 };

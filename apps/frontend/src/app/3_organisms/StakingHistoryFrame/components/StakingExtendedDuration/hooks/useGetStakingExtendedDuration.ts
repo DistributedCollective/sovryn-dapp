@@ -2,11 +2,11 @@ import { useMemo } from 'react';
 
 import { OrderOptions } from '@sovryn/ui';
 
-import { rskClient } from '../../../../../utils/clients';
+import { rskClient } from '../../../../../../utils/clients';
 import {
   useGetV2ExtendedStakingDurationsQuery,
   V2ExtendedStakingDuration_OrderBy,
-} from '../../../../../utils/graphql/rsk/generated';
+} from '../../../../../../utils/graphql/rsk/generated';
 import { V2StakingExtendedDurationItem } from '../StakingExtendedDuration.types';
 
 export const useGetStakingExtendedDuration = (

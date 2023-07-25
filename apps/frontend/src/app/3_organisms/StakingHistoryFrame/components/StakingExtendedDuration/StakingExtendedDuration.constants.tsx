@@ -3,28 +3,26 @@ import React from 'react';
 import { t } from 'i18next';
 
 import { SupportedTokens } from '@sovryn/contracts';
-import { Paragraph, ParagraphSize } from '@sovryn/ui';
 
-import { AmountRenderer } from '../../../2_molecules/AmountRenderer/AmountRenderer';
-import { TransactionIdRenderer } from '../../../2_molecules/TransactionIdRenderer/TransactionIdRenderer';
-import { getTokenDisplayName } from '../../../../constants/tokens';
-import { translations } from '../../../../locales/i18n';
-import { dateFormat } from '../../../../utils/helpers';
+import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRenderer';
+import { TransactionIdRenderer } from '../../../../2_molecules/TransactionIdRenderer/TransactionIdRenderer';
+import { getTokenDisplayName } from '../../../../../constants/tokens';
+import { translations } from '../../../../../locales/i18n';
+import { dateFormat } from '../../../../../utils/helpers';
 import { V2StakingExtendedDurationItem } from './StakingExtendedDuration.types';
 
-export const generateRowTitle = (item: V2StakingExtendedDurationItem) => (
-  <Paragraph size={ParagraphSize.small} className="text-left">
-    {dateFormat(item.timestamp)}
-  </Paragraph>
-);
-
-export const columnsConfig = [
+export const COLUMNS_CONFIG = [
   {
     id: 'timestamp',
     title: t(translations.common.tables.columnTitles.timestamp),
     cellRenderer: (tx: V2StakingExtendedDurationItem) =>
       dateFormat(tx.timestamp),
     sortable: true,
+  },
+  {
+    id: 'transactionType',
+    title: t(translations.common.tables.columnTitles.transactionType),
+    cellRenderer: () => t(translations.stakingHistory.extend),
   },
   {
     id: 'newDate',

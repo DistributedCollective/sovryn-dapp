@@ -14,29 +14,30 @@ import {
   Table,
 } from '@sovryn/ui';
 
-import { ExportCSV } from '../../../2_molecules/ExportCSV/ExportCSV';
+import { ExportCSV } from '../../../../2_molecules/ExportCSV/ExportCSV';
 import {
   DEFAULT_HISTORY_FRAME_PAGE_SIZE,
   EXPORT_RECORD_LIMIT,
-} from '../../../../constants/general';
-import { useNotificationContext } from '../../../../contexts/NotificationContext';
-import { useAccount } from '../../../../hooks/useAccount';
-import { useMaintenance } from '../../../../hooks/useMaintenance';
-import { translations } from '../../../../locales/i18n';
-import { rskClient } from '../../../../utils/clients';
+} from '../../../../../constants/general';
+import { useNotificationContext } from '../../../../../contexts/NotificationContext';
+import { useAccount } from '../../../../../hooks/useAccount';
+import { useMaintenance } from '../../../../../hooks/useMaintenance';
+import { translations } from '../../../../../locales/i18n';
+import { rskClient } from '../../../../../utils/clients';
 import {
-  useGetV2StakingWithdrawnsLazyQuery,
-  V2StakingWithdrawn_OrderBy,
-} from '../../../../utils/graphql/rsk/generated';
-import { dateFormat } from '../../../../utils/helpers';
-import { stakingHistoryOptions } from '../StakingHistoryFrame.constants';
-import { StakingHistoryProps } from '../StakingHistoryFrame.type';
-import { columnsConfig, generateRowTitle } from './StakingWithdrawns.utils';
-import { useGetStakingWithdrawns } from './hooks/useGetStakingWithdrawns';
+  useGetV2DelegateChangesLazyQuery,
+  V2DelegateChanged_OrderBy,
+} from '../../../../../utils/graphql/rsk/generated';
+import { dateFormat } from '../../../../../utils/helpers';
+import { stakingHistoryOptions } from '../../StakingHistoryFrame.constants';
+import { StakingHistoryProps } from '../../StakingHistoryFrame.type';
+import { COLUMNS_CONFIG } from './StakingDelegateChanges.constants';
+import { generateRowTitle } from './StakingDelegateChanges.utils';
+import { useGetStakingDelegateChanges } from './hooks/useGetStakingDelegateChanges';
 
 const pageSize = DEFAULT_HISTORY_FRAME_PAGE_SIZE;
 
-export const StakingWithdrawns: FC<StakingHistoryProps> = ({
+export const StakingDelegateChanges: FC<StakingHistoryProps> = ({
   onChangeHistoryType,
   selectedHistoryType,
 }) => {
@@ -54,14 +55,14 @@ export const StakingWithdrawns: FC<StakingHistoryProps> = ({
     orderDirection: OrderDirection.Desc,
   });
 
-  const { data, loading } = useGetStakingWithdrawns(
+  const { data, loading } = useGetStakingDelegateChanges(
     account,
     pageSize,
     page,
     orderOptions,
   );
 
-  const [getStakes] = useGetV2StakingWithdrawnsLazyQuery({
+  const [getStakes] = useGetV2DelegateChangesLazyQuery({
     client: rskClient,
   });
 
@@ -86,12 +87,12 @@ export const StakingWithdrawns: FC<StakingHistoryProps> = ({
         user: account,
         skip: 0,
         pageSize: EXPORT_RECORD_LIMIT,
-        orderBy: orderOptions.orderBy as V2StakingWithdrawn_OrderBy,
+        orderBy: orderOptions.orderBy as V2DelegateChanged_OrderBy,
         orderDirection: orderOptions.orderDirection,
       },
     });
 
-    let list = data?.v2StakingWithdrawns || [];
+    let list = data?.v2DelegateChangeds || [];
 
     if (!list || !list.length) {
       addNotification({
@@ -105,9 +106,9 @@ export const StakingWithdrawns: FC<StakingHistoryProps> = ({
 
     return list.map(item => ({
       timestamp: dateFormat(item.timestamp),
-      lockedUntil: dateFormat(item.until),
-      receiver: item.receiver?.id,
-      amount: item.amount,
+      lockedUntil: dateFormat(item.lockedUntil),
+      delegate: item.delegate?.id,
+      previousDelegate: item.previousDelegate?.id,
       TXID: item.id.split('-')[0],
     }));
   }, [
@@ -135,7 +136,7 @@ export const StakingWithdrawns: FC<StakingHistoryProps> = ({
         <div className="flex-row items-center ml-2 gap-4 hidden lg:inline-flex">
           <ExportCSV
             getData={exportData}
-            filename="staking-withdrawns"
+            filename="staking-delegate-change"
             disabled={!data || data.length === 0 || exportLocked}
           />
           {exportLocked && (
@@ -150,13 +151,13 @@ export const StakingWithdrawns: FC<StakingHistoryProps> = ({
         <Table
           setOrderOptions={setOrderOptions}
           orderOptions={orderOptions}
-          columns={columnsConfig}
+          columns={COLUMNS_CONFIG}
           rows={data}
           rowTitle={generateRowTitle}
           isLoading={loading}
           className="bg-gray-80 text-gray-10 lg:px-6 lg:py-4"
           noData={t(translations.common.tables.noData)}
-          dataAttribute="staking-withdrawns-history-table"
+          dataAttribute="staking-delegate-change-history-table"
         />
         <Pagination
           page={page}
@@ -164,7 +165,7 @@ export const StakingWithdrawns: FC<StakingHistoryProps> = ({
           onChange={onPageChange}
           itemsPerPage={pageSize}
           isNextButtonDisabled={isNextButtonDisabled}
-          dataAttribute="staking-withdrawns-history-pagination"
+          dataAttribute="staking-delegate-change-history-pagination"
         />
       </div>
     </>

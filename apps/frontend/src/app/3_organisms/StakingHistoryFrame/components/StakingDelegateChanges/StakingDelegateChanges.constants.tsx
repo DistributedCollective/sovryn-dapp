@@ -2,21 +2,13 @@ import React from 'react';
 
 import { t } from 'i18next';
 
-import { Paragraph, ParagraphSize } from '@sovryn/ui';
-
-import { TransactionIdRenderer } from '../../../2_molecules/TransactionIdRenderer/TransactionIdRenderer';
-import { TxIdWithNotification } from '../../../2_molecules/TxIdWithNotification/TransactionIdWithNotification';
-import { translations } from '../../../../locales/i18n';
-import { dateFormat } from '../../../../utils/helpers';
+import { TransactionIdRenderer } from '../../../../2_molecules/TransactionIdRenderer/TransactionIdRenderer';
+import { TxIdWithNotification } from '../../../../2_molecules/TxIdWithNotification/TransactionIdWithNotification';
+import { translations } from '../../../../../locales/i18n';
+import { dateFormat } from '../../../../../utils/helpers';
 import { V2StakingDelegateChangeItem } from './StakingDelegateChanges.types';
 
-export const generateRowTitle = (item: V2StakingDelegateChangeItem) => (
-  <Paragraph size={ParagraphSize.small} className="text-left">
-    {dateFormat(item.timestamp)}
-  </Paragraph>
-);
-
-export const columnsConfig = [
+export const COLUMNS_CONFIG = [
   {
     id: 'timestamp',
     title: t(translations.common.tables.columnTitles.timestamp),
@@ -24,11 +16,9 @@ export const columnsConfig = [
     sortable: true,
   },
   {
-    id: 'lockedUntil',
-    title: t(translations.stakingHistory.lockedUntil),
-    cellRenderer: (tx: V2StakingDelegateChangeItem) =>
-      dateFormat(tx.lockedUntil),
-    sortable: true,
+    id: 'transactionType',
+    title: t(translations.common.tables.columnTitles.transactionType),
+    cellRenderer: () => t(translations.stakingHistory.delegate),
   },
   {
     id: 'delegate',

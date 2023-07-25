@@ -14,32 +14,30 @@ import {
   Table,
 } from '@sovryn/ui';
 
-import { ExportCSV } from '../../../2_molecules/ExportCSV/ExportCSV';
+import { ExportCSV } from '../../../../2_molecules/ExportCSV/ExportCSV';
 import {
   DEFAULT_HISTORY_FRAME_PAGE_SIZE,
   EXPORT_RECORD_LIMIT,
-} from '../../../../constants/general';
-import { useNotificationContext } from '../../../../contexts/NotificationContext';
-import { useAccount } from '../../../../hooks/useAccount';
-import { useMaintenance } from '../../../../hooks/useMaintenance';
-import { translations } from '../../../../locales/i18n';
-import { rskClient } from '../../../../utils/clients';
+} from '../../../../../constants/general';
+import { useNotificationContext } from '../../../../../contexts/NotificationContext';
+import { useAccount } from '../../../../../hooks/useAccount';
+import { useMaintenance } from '../../../../../hooks/useMaintenance';
+import { translations } from '../../../../../locales/i18n';
+import { rskClient } from '../../../../../utils/clients';
 import {
-  useGetV2ExtendedStakingDurationsLazyQuery,
-  V2ExtendedStakingDuration_OrderBy,
-} from '../../../../utils/graphql/rsk/generated';
-import { dateFormat } from '../../../../utils/helpers';
-import { stakingHistoryOptions } from '../StakingHistoryFrame.constants';
-import { StakingHistoryProps } from '../StakingHistoryFrame.type';
-import {
-  columnsConfig,
-  generateRowTitle,
-} from './StakingExtendedDuration.utils';
-import { useGetStakingExtendedDuration } from './hooks/useGetStakingExtendedDuration';
+  useGetV2StakingWithdrawnsLazyQuery,
+  V2StakingWithdrawn_OrderBy,
+} from '../../../../../utils/graphql/rsk/generated';
+import { dateFormat } from '../../../../../utils/helpers';
+import { stakingHistoryOptions } from '../../StakingHistoryFrame.constants';
+import { StakingHistoryProps } from '../../StakingHistoryFrame.type';
+import { COLUMNS_CONFIG } from './StakingWithdrawns.constants';
+import { generateRowTitle } from './StakingWithdrawns.utils';
+import { useGetStakingWithdrawns } from './hooks/useGetStakingWithdrawns';
 
 const pageSize = DEFAULT_HISTORY_FRAME_PAGE_SIZE;
 
-export const StakingExtendedDuration: FC<StakingHistoryProps> = ({
+export const StakingWithdrawns: FC<StakingHistoryProps> = ({
   onChangeHistoryType,
   selectedHistoryType,
 }) => {
@@ -57,14 +55,14 @@ export const StakingExtendedDuration: FC<StakingHistoryProps> = ({
     orderDirection: OrderDirection.Desc,
   });
 
-  const { data, loading } = useGetStakingExtendedDuration(
+  const { data, loading } = useGetStakingWithdrawns(
     account,
     pageSize,
     page,
     orderOptions,
   );
 
-  const [getStakes] = useGetV2ExtendedStakingDurationsLazyQuery({
+  const [getStakes] = useGetV2StakingWithdrawnsLazyQuery({
     client: rskClient,
   });
 
@@ -89,12 +87,12 @@ export const StakingExtendedDuration: FC<StakingHistoryProps> = ({
         user: account,
         skip: 0,
         pageSize: EXPORT_RECORD_LIMIT,
-        orderBy: orderOptions.orderBy as V2ExtendedStakingDuration_OrderBy,
+        orderBy: orderOptions.orderBy as V2StakingWithdrawn_OrderBy,
         orderDirection: orderOptions.orderDirection,
       },
     });
 
-    let list = data?.v2ExtendedStakingDurations || [];
+    let list = data?.v2StakingWithdrawns || [];
 
     if (!list || !list.length) {
       addNotification({
@@ -108,9 +106,9 @@ export const StakingExtendedDuration: FC<StakingHistoryProps> = ({
 
     return list.map(item => ({
       timestamp: dateFormat(item.timestamp),
-      previousDate: dateFormat(item.previousDate),
-      newDate: dateFormat(item.newDate),
-      amount: item.amountStaked,
+      lockedUntil: dateFormat(item.until),
+      receiver: item.receiver?.id,
+      amount: item.amount,
       TXID: item.id.split('-')[0],
     }));
   }, [
@@ -138,7 +136,7 @@ export const StakingExtendedDuration: FC<StakingHistoryProps> = ({
         <div className="flex-row items-center ml-2 gap-4 hidden lg:inline-flex">
           <ExportCSV
             getData={exportData}
-            filename="staking-extended-duration"
+            filename="staking-withdrawns"
             disabled={!data || data.length === 0 || exportLocked}
           />
           {exportLocked && (
@@ -153,13 +151,13 @@ export const StakingExtendedDuration: FC<StakingHistoryProps> = ({
         <Table
           setOrderOptions={setOrderOptions}
           orderOptions={orderOptions}
-          columns={columnsConfig}
+          columns={COLUMNS_CONFIG}
           rows={data}
           rowTitle={generateRowTitle}
           isLoading={loading}
           className="bg-gray-80 text-gray-10 lg:px-6 lg:py-4"
           noData={t(translations.common.tables.noData)}
-          dataAttribute="staking-extended-duration-history-table"
+          dataAttribute="staking-withdrawns-history-table"
         />
         <Pagination
           page={page}
@@ -167,7 +165,7 @@ export const StakingExtendedDuration: FC<StakingHistoryProps> = ({
           onChange={onPageChange}
           itemsPerPage={pageSize}
           isNextButtonDisabled={isNextButtonDisabled}
-          dataAttribute="staking-extended-duration-history-pagination"
+          dataAttribute="staking-withdrawns-history-pagination"
         />
       </div>
     </>

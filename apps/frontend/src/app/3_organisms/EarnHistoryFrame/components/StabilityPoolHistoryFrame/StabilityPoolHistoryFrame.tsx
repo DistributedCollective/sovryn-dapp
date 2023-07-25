@@ -1,4 +1,11 @@
-import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
+import React, {
+  FC,
+  PropsWithChildren,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 
 import { t } from 'i18next';
 import { nanoid } from 'nanoid';
@@ -67,7 +74,9 @@ const getTransactionType = (operation: StabilityDepositOperation) => {
   }
 };
 
-export const StabilityPoolHistoryFrame: FC = () => {
+export const StabilityPoolHistoryFrame: FC<PropsWithChildren> = ({
+  children,
+}) => {
   const { account } = useAccount();
   const { addNotification } = useNotificationContext();
   const [filters, setFilters] = useState<StabilityDepositChange_Filter>({});
@@ -303,20 +312,25 @@ export const StabilityPoolHistoryFrame: FC = () => {
 
   return (
     <>
-      <div className="flex-row items-center gap-4 mb-7 hidden lg:inline-flex">
-        <ExportCSV
-          getData={exportData}
-          filename="stability pool transactions"
-          disabled={
-            !stabilityDeposits || stabilityDeposits.length === 0 || exportLocked
-          }
-        />
-        {exportLocked && (
-          <ErrorBadge
-            level={ErrorLevel.Warning}
-            message={t(translations.maintenanceMode.featureDisabled)}
+      <div className="flex-row items-center gap-4 mb-7 flex justify-center lg:justify-start">
+        {children}
+        <div className="flex-row items-center ml-2 gap-4 hidden lg:inline-flex">
+          <ExportCSV
+            getData={exportData}
+            filename="stability pool transactions"
+            disabled={
+              !stabilityDeposits ||
+              stabilityDeposits.length === 0 ||
+              exportLocked
+            }
           />
-        )}
+          {exportLocked && (
+            <ErrorBadge
+              level={ErrorLevel.Warning}
+              message={t(translations.maintenanceMode.featureDisabled)}
+            />
+          )}
+        </div>
       </div>
       <div className="bg-gray-80 py-4 px-4 rounded">
         <Table

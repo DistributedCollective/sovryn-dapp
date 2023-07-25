@@ -30,8 +30,9 @@ export const EarnHistory: FC = () => {
       case EarnHistoryType.stabilityPool:
         return (
           <>
-            {SelectComponent}
-            <StabilityPoolHistoryFrame />
+            <StabilityPoolHistoryFrame>
+              {SelectComponent}
+            </StabilityPoolHistoryFrame>
           </>
         );
       case EarnHistoryType.lending:

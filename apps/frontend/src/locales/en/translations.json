@@ -54,7 +54,11 @@
             "error": "Error loading Zero data, please try again",
             "pageLoading": "is loading..."
         },
-        "advancedSettings": "Advanced settings"
+        "advancedSettings": "Advanced settings",
+        "transactionTypes": {
+            "deposit": "Deposit",
+            "withdrawal": "Withdrawal"
+        }
     },
     "connectWalletButton": {
         "connect": "Get started",
@@ -487,7 +491,7 @@
             "tabs": {
                 "lineOfCredit": "Line of credit",
                 "redemptions": "Redemptions",
-                "stability": "Stability pool",
+                "earn": "Earn",
                 "convert": "Conversion",
                 "funding": "Funding",
                 "reward": "Reward"
@@ -585,6 +589,17 @@
             "amount": "Amount",
             "withdrawSurplus": "Withdraw surplus",
             "depositSurplus": "Deposit surplus"
+        }
+    },
+    "earnHistory": {
+        "types": {
+            "stabilityPool": "Stability pool",
+            "lending": "Lending"
+        },
+        "lendingHistory": {
+            "columns": {
+                "balanceChange": "Balance change"
+            }
         }
     },
     "stabilityPoolHistory": {

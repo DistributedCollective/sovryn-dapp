@@ -3,7 +3,7 @@ import React, { FC, useMemo } from 'react';
 import { t } from 'i18next';
 
 import { SupportedTokens } from '@sovryn/contracts';
-import { Tooltip } from '@sovryn/ui';
+import { Tooltip, TooltipTrigger } from '@sovryn/ui';
 import { Decimal } from '@sovryn/utils';
 
 import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRenderer';
@@ -49,7 +49,11 @@ export const CurrentStats: FC<CurrentStatsProps> = ({ apy, token }) => {
           <div className="text-gray-30">
             {t(translations.lending.acceptedCollateral)}
           </div>
-          <Tooltip content={acceptedList} className={styles.assets}>
+          <Tooltip
+            trigger={TooltipTrigger.click}
+            content={acceptedList}
+            className={styles.assets}
+          >
             <span>{acceptedList}</span>
           </Tooltip>
         </div>

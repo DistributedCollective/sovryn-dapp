@@ -62,27 +62,6 @@ export const useHandleLending = (
       const contract = poolTokenContract.connect(signer);
       const native = tokenDetails.symbol === SupportedTokens.rbtc;
 
-      console.log('native', native);
-      console.log('contract', contract);
-
-      console.log({
-        title: t(translations.lendingTx.deposit, {
-          symbol: getTokenDisplayName(tokenDetails.symbol),
-        }),
-        request: {
-          type: TransactionType.signTransaction,
-          contract: contract,
-          fnName: native
-            ? 'mintWithBTC(address,bool)'
-            : 'mint(address,uint256,bool)',
-          args: native
-            ? [account, poolUsesLM]
-            : [account, amount.toBigNumber().toString(), poolUsesLM],
-          value: native ? amount.toBigNumber().toString() : undefined,
-          gasLimit: GAS_LIMIT.LENDING_MINT,
-        },
-      });
-
       transactions.push({
         title: t(translations.lendingTx.deposit, {
           symbol: getTokenDisplayName(tokenDetails.symbol),

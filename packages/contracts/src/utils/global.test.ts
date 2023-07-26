@@ -59,9 +59,9 @@ describe('utils/contracts/global.ts', () => {
     it('throws error if contract is unknown', async () => {
       expect.assertions(1);
       try {
-        await getContract('xusd', 'loanTokens', ChainIds.RSK_MAINNET);
+        await getContract('xusdtest', 'loanTokens', ChainIds.RSK_MAINNET);
       } catch (e) {
-        expect(e.message).toBe('getContract: Unknown contract: xusd');
+        expect(e.message).toBe('getContract: Unknown contract: xusdtest');
       }
     });
   });

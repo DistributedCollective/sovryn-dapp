@@ -12,6 +12,7 @@ type TableMobileRowProps<RowType extends RowObject> = {
   onRowClick?: (row: RowType) => void;
   dataAttribute?: string;
   title: ReactNode;
+  expandedContent?: (row: RowType) => ReactNode;
 };
 
 export const TableMobileRow = <RowType extends RowObject>({
@@ -20,6 +21,7 @@ export const TableMobileRow = <RowType extends RowObject>({
   onRowClick = noop,
   dataAttribute,
   title,
+  expandedContent,
 }: TableMobileRowProps<RowType>) => {
   const [open, setOpen] = useState(false);
 
@@ -48,6 +50,7 @@ export const TableMobileRow = <RowType extends RowObject>({
             }
           />
         ))}
+        {expandedContent && <div>{expandedContent(row)}</div>}
       </div>
     </Accordion>
   );

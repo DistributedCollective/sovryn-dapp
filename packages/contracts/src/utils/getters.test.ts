@@ -25,14 +25,16 @@ describe('utils/contracts/getters.ts', () => {
 
   describe('getLoanTokenContract', () => {
     it('load lowercased xusd loan token contract address', async () => {
-      const token = await getLoanTokenContract('ixusd');
-      expect(token.address).toBe(contracts.loanTokens.rsk?.ixusd.toLowerCase());
+      const token = await getLoanTokenContract('xusd');
+      expect(token.address).toBe(
+        contracts.loanTokens.rsk?.xusd.address.toLowerCase(),
+      );
     });
 
     it('loads lowercased xusd loan token contract from non default chain', async () => {
-      const token = await getLoanTokenContract('ixusd', ChainIds.RSK_TESTNET);
+      const token = await getLoanTokenContract('xusd', ChainIds.RSK_TESTNET);
       expect(token.address).toBe(
-        contracts.loanTokens.rskTestnet?.ixusd.toLowerCase(),
+        contracts.loanTokens.rskTestnet?.xusd.address.toLowerCase(),
       );
     });
   });

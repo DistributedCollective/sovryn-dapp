@@ -70,7 +70,17 @@
         "funding": "Funding",
         "nav": {
             "borrow": "Borrow",
-            "earn": "Earn",
+            "earn": {
+                "title": "Earn",
+                "subMenu": {
+                    "lend": "Lend",
+                    "lendDescription": "Earn interest in the lending pool",
+                    "stabilityPool": "Stability pool",
+                    "stabilityPoolDescription": "Earn BTC from Zero liquidations",
+                    "staking": "Staking",
+                    "stakingDescription": "Gain voting power and earn fees"
+                }
+            },
             "convert": "Convert"
         }
     },
@@ -485,6 +495,32 @@
                 "reward": "Reward"
             },
             "comingSoon": "Coming soon..."
+        }
+    },
+    "lendPage": {
+        "meta": {
+            "title": "Lend - Sovryn"
+        },
+        "title": "Lend",
+        "subtitle": "Earn interest by providing liquidity to borrowers",
+        "table": {
+            "lend": "Lend",
+            "asset": "Asset",
+            "lendApy": "Lend APY",
+            "lendApyMobile": "APY",
+            "lendApyInfo": "Interest rate is variable based on the current utilization rate and loans outstanding",
+            "acceptedCollateral": "Accepted collateral",
+            "balance": "Balance",
+            "interestEarned": "Interest earned",
+            "interestEarnedInfo": "Interest earned is auto-compounded i.e. it is automatically added to your lending pool balance",
+            "more": "and more",
+            "collateralRatio": "collateral ratio",
+            "available": "Available",
+            "borrowed": "Borrowed"
+        },
+        "actions": {
+            "lend": "Lend",
+            "adjust": "Adjust"
         }
     },
     "locHistory": {

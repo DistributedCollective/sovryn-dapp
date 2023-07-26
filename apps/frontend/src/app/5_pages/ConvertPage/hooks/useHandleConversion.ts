@@ -149,7 +149,7 @@ export const useHandleConversion = (
           signer: signer,
           to: approveTxData.to,
           data: approveTxData.data,
-          gasLimit: GAS_LIMIT.CONVERT,
+          gasLimit: approveTxData.gasLimit ?? GAS_LIMIT.APPROVE,
         },
         onComplete,
       });
@@ -197,7 +197,8 @@ export const useHandleConversion = (
           to: txData.to,
           data: txData.data,
           value: txData.value,
-          gasLimit: GAS_LIMIT.CONVERT,
+          gasLimit: txData?.gasLimit ?? GAS_LIMIT.CONVERT,
+          gasPrice: txData?.gasPrice?.toString(),
         },
         onComplete,
         updateHandler: permitHandler(async (req, res) => {

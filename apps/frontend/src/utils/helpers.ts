@@ -8,6 +8,7 @@ import { Decimalish } from '@sovryn/utils';
 
 import {
   BTC_EXPLORER,
+  GRAPH_WRAPPER,
   RSK_EXPLORER,
   SERVICES_CONFIG,
 } from '../constants/infrastructure';
@@ -73,6 +74,9 @@ export const getD1Url = () =>
 
 export const getBitocracyUrl = () =>
   BITOCRACY_LINKS[isMainnet() ? Environments.Mainnet : Environments.Testnet];
+
+export const getGraphWrapperUrl = () =>
+  GRAPH_WRAPPER[isMainnet() ? Environments.Mainnet : Environments.Testnet];
 
 export const dateFormat = (timestamp: number) => {
   const stamp = dayjs.tz(Number(timestamp) * 1e3, 'UTC');

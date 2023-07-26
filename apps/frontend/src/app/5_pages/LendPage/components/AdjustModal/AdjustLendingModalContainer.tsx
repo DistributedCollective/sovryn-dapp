@@ -19,7 +19,6 @@ import { translations } from '../../../../../locales/i18n';
 import { eventDriven } from '../../../../../store/rxjs/event-driven';
 import { Nullable } from '../../../../../types/global';
 import { LendModalAction } from '../../LendPage.types';
-import { getLoanTokenName } from '../../token-map';
 import { CurrentStats } from './CurrentStats';
 import { FormType, LendingForm } from './LendingForm';
 
@@ -67,13 +66,13 @@ export const AdjustLendingModalContainer: FC<AdjustModalProps> = ({
         return;
       }
 
-      const iToken = getLoanTokenName(value.token);
-      if (iToken == null) {
+      const poolToken = await getLoanTokenContract(value.token, defaultChainId);
+
+      if (!poolToken) {
         setState(null);
         return;
       }
 
-      const poolToken = await getLoanTokenContract(iToken, defaultChainId);
       const tokenDetails = await getTokenDetails(value.token, defaultChainId);
 
       const poolTokenContract = new Contract(

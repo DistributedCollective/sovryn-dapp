@@ -1,82 +1,36 @@
-import React, { FC, useCallback, useMemo } from 'react';
+import React, { FC } from 'react';
 
-import { SupportedTokens } from '@sovryn/contracts';
-import { Button } from '@sovryn/ui';
+import { t } from 'i18next';
+import { Helmet } from 'react-helmet-async';
 
-import { useAccount } from '../../../hooks/useAccount';
-import { eventDriven } from '../../../store/rxjs/event-driven';
-import { Nullable } from '../../../types/global';
-import { decimalic } from '../../../utils/math';
-import { LendModalAction } from './LendPage.types';
-import {
-  AdjustLendingModalContainer,
-  AdjustModalState,
-} from './components/AdjustModal/AdjustLendingModalContainer';
-import {
-  LendingModalContainer,
-  LendingModalState,
-} from './components/LendModal/LendingModalContainer';
-import { useHandleLending } from './hooks/useHandleLending';
+import { Heading, Paragraph, ParagraphSize } from '@sovryn/ui';
 
-const LendPage: FC = () => {
-  const { account } = useAccount();
+import { translations } from '../../../locales/i18n';
+import { LendFrame } from './components/LendFrame/LendFrame';
 
-  const { push: adjust } = useMemo(
-    () => eventDriven<Nullable<AdjustModalState>>(LendModalAction.Adjust),
-    [],
-  );
-  const { push: lend } = useMemo(
-    () => eventDriven<Nullable<LendingModalState>>(LendModalAction.Lend),
-    [],
-  );
+const LendPage: FC = () => (
+  <>
+    <Helmet>
+      <title>{t(translations.lendPage.meta.title)}</title>
+    </Helmet>
 
-  const handleAdjustClick = useCallback(async () => {
-    adjust({
-      token: SupportedTokens.xusd,
-      apy: decimalic('0.1'),
-      balance: decimalic('1000'),
-    });
-  }, [adjust]);
+    <div className="px-0 container md:mx-9 mx-0 md:mb-2 mt-4 mb-7">
+      <Heading className="text-center mb-3 lg:text-2xl">
+        {t(translations.lendPage.title)}
+      </Heading>
 
-  const handleLendClick = useCallback(async () => {
-    lend({
-      token: SupportedTokens.xusd,
-      apy: decimalic('0.1'),
-    });
-  }, [lend]);
+      <Paragraph
+        className="text-center mb-6 lg:mb-10"
+        size={ParagraphSize.base}
+      >
+        {t(translations.lendPage.subtitle)}
+      </Paragraph>
 
-  const handleCloseModal = useCallback(() => {
-    adjust(null);
-    lend(null);
-  }, [adjust, lend]);
-
-  const handleComplete = useCallback(() => {}, []);
-
-  const { handleDeposit, handleWithdraw } = useHandleLending(
-    handleCloseModal,
-    handleComplete,
-  );
-
-  return (
-    <>
-      {account ? (
-        <>
-          <div className="w-full flex flex-col gap-4 items-center text-gray-10 mt-9 sm:mt-24">
-            <Button text="Lend XUSD" onClick={handleLendClick} />
-
-            <Button text="Adjust XUSD" onClick={handleAdjustClick} />
-          </div>
-          <AdjustLendingModalContainer
-            onDeposit={handleDeposit}
-            onWithdraw={handleWithdraw}
-          />
-          <LendingModalContainer onDeposit={handleDeposit} />
-        </>
-      ) : (
-        <>connect wallet first</>
-      )}
-    </>
-  );
-};
+      <div className="w-full md:bg-gray-90 md:py-7 md:px-6 rounded mb-6">
+        <LendFrame />
+      </div>
+    </div>
+  </>
+);
 
 export default LendPage;

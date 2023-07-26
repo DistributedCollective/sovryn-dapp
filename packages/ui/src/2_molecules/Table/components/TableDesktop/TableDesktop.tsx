@@ -30,6 +30,8 @@ export const TableDesktop = <RowType extends RowObject>({
   orderOptions,
   setOrderOptions,
   isLoading,
+  expandedContent,
+  preventExpandOnClickClass,
 }: TableProps<RowType>) => {
   const [selectedIndex, setSelectedIndex] = useState<number>();
   useEffect(() => {
@@ -125,6 +127,8 @@ export const TableDesktop = <RowType extends RowObject>({
               isClickable={isClickable}
               className={styles.row}
               size={TableRowSize.large}
+              expandedContent={expandedContent}
+              preventExpandOnClickClass={preventExpandOnClickClass}
             />
           ))}
         {(!rows || rows.length === 0) && (

@@ -10,6 +10,7 @@ export enum SovrynErrorCode {
 
   // Swap errors
   SWAP_PAIR_NOT_AVAILABLE = 'SWAP_PAIR_NOT_AVAILABLE',
+  SWAP_LOW_BALANCE = 'SWAP_LOW_BALANCE',
 }
 
 export interface SovrynError<T extends SovrynErrorCode = SovrynErrorCode>

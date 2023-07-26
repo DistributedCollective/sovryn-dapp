@@ -23,6 +23,8 @@ import {
 } from '../../../internal/utils';
 import { SwapPairs, SwapRouteFunction } from '../types';
 
+const MINIMUM_REDEMPTION_AMOUNT = 180; // See https://sovryn.atlassian.net/browse/SOV-2759 for more details
+
 export const zeroRedemptionSwapRoute: SwapRouteFunction = (
   provider: providers.Provider,
 ) => {
@@ -92,6 +94,15 @@ export const zeroRedemptionSwapRoute: SwapRouteFunction = (
           `Cannot swap ${entry} to ${destination}`,
           SovrynErrorCode.SWAP_PAIR_NOT_AVAILABLE,
         );
+      }
+
+      // Do not offer this route if users try to convert less than the minimum redemption amount
+      if (
+        Decimal.fromBigNumberString(amount.toString()).lte(
+          MINIMUM_REDEMPTION_AMOUNT,
+        )
+      ) {
+        return BigNumber.from(0);
       }
 
       const readable = await ReadableEthersLiquity.connect(provider, {

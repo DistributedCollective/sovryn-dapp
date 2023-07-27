@@ -8,10 +8,10 @@ import { Helmet } from 'react-helmet-async';
 import { Heading, Select, SelectOption, Tabs } from '@sovryn/ui';
 
 import { ConvertHistory } from '../../3_organisms/ConversionsHistoryFrame/ConvertHistory';
+import { EarnHistory } from '../../3_organisms/EarnHistoryFrame/EarnHistory';
 import { FundingHistoryFrame } from '../../3_organisms/FundingHistoryFrame/FundingHistoryFrame';
 import { LOCHistory } from '../../3_organisms/LOCHistory/LOCHistory';
 import { RewardHistory } from '../../3_organisms/RewardHistory/RewardHistory';
-import { StabilityPoolHistoryFrame } from '../../3_organisms/StabilityPoolHistoryFrame';
 import { translations } from '../../../locales/i18n';
 import { myntClient, zeroClient } from '../../../utils/clients';
 import styles from './HistoryPage.module.css';
@@ -25,9 +25,9 @@ const locHistory = (
   </div>
 );
 
-const stability = (
+const earn = (
   <div className="px-0 py-4 lg:p-4">
-    <StabilityPoolHistoryFrame />
+    <EarnHistory />
   </div>
 );
 
@@ -62,10 +62,10 @@ const HistoryPage: FC = () => {
         dataAttribute: 'loc',
       },
       {
-        label: t(translations.historyPage.table.tabs.stability),
-        content: stability,
+        label: t(translations.historyPage.table.tabs.earn),
+        content: earn,
         activeClassName: ACTIVE_CLASSNAME,
-        dataAttribute: 'stability',
+        dataAttribute: 'earn',
       },
       {
         label: t(translations.historyPage.table.tabs.convert),

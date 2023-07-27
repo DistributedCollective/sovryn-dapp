@@ -1,0 +1,13 @@
+query getLastVestingWithdraw($vestingAddress: ID) {
+  vestingContracts(where: { id: $vestingAddress }) {
+    id
+    stakeHistory(
+      where: { action: TokensWithdrawn }
+      orderBy: timestamp
+      orderDirection: desc
+      first: 1
+    ) {
+      timestamp
+    }
+  }
+}

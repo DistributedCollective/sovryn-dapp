@@ -24,12 +24,6 @@ export const COLUMNS_CONFIG = [
     cellRenderer: () => t(translations.stakingHistory.increase),
   },
   {
-    id: 'lockedUntil',
-    title: t(translations.stakingHistory.lockedUntil),
-    cellRenderer: (tx: V2StakingHistoryItem) => dateFormat(tx.lockedUntil),
-    sortable: true,
-  },
-  {
     id: 'amount',
     title: t(translations.stakingHistory.stakeChange),
     cellRenderer: (tx: V2StakingHistoryItem) => (
@@ -41,6 +35,13 @@ export const COLUMNS_CONFIG = [
     ),
     sortable: true,
   },
+  {
+    id: 'lockedUntil',
+    title: t(translations.stakingHistory.lockedUntil),
+    cellRenderer: (tx: V2StakingHistoryItem) => dateFormat(tx.lockedUntil),
+    sortable: true,
+  },
+
   {
     id: 'txId',
     title: t(translations.common.tables.columnTitles.transactionID),

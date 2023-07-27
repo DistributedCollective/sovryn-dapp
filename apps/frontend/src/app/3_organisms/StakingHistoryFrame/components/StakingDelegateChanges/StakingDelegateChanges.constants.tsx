@@ -21,17 +21,18 @@ export const COLUMNS_CONFIG = [
     cellRenderer: () => t(translations.stakingHistory.delegate),
   },
   {
-    id: 'delegate',
-    title: t(translations.stakingHistory.delegate),
-    cellRenderer: (tx: V2StakingDelegateChangeItem) => (
-      <TxIdWithNotification href="" value={tx.delegate?.id} />
-    ),
-  },
-  {
     id: 'previousDelegate',
     title: t(translations.stakingHistory.previousDelegate),
     cellRenderer: (tx: V2StakingDelegateChangeItem) => (
       <TxIdWithNotification href="" value={tx.previousDelegate?.id} />
+    ),
+  },
+
+  {
+    id: 'delegate',
+    title: t(translations.stakingHistory.newDelegate),
+    cellRenderer: (tx: V2StakingDelegateChangeItem) => (
+      <TxIdWithNotification href="" value={tx.delegate?.id} />
     ),
   },
 

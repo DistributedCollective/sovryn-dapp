@@ -24,12 +24,6 @@ export const COLUMNS_CONFIG = [
     cellRenderer: () => t(translations.stakingHistory.unstake),
   },
   {
-    id: 'until',
-    title: t(translations.stakingHistory.lockedUntil),
-    cellRenderer: (tx: V2StakingWithdrawnItem) => dateFormat(tx.until),
-    sortable: true,
-  },
-  {
     id: 'amount',
     title: t(translations.stakingHistory.stakeChange),
     cellRenderer: (tx: V2StakingWithdrawnItem) => (
@@ -39,6 +33,12 @@ export const COLUMNS_CONFIG = [
         suffix={getTokenDisplayName(SupportedTokens.sov)}
       />
     ),
+    sortable: true,
+  },
+  {
+    id: 'until',
+    title: t(translations.stakingHistory.lockedUntil),
+    cellRenderer: (tx: V2StakingWithdrawnItem) => dateFormat(tx.until),
     sortable: true,
   },
   {

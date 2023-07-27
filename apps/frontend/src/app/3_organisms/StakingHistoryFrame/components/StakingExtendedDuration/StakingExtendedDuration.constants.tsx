@@ -25,19 +25,6 @@ export const COLUMNS_CONFIG = [
     cellRenderer: () => t(translations.stakingHistory.extend),
   },
   {
-    id: 'newDate',
-    title: t(translations.stakingHistory.newDate),
-    cellRenderer: (tx: V2StakingExtendedDurationItem) => dateFormat(tx.newDate),
-    sortable: true,
-  },
-  {
-    id: 'previousDate',
-    title: t(translations.stakingHistory.previousDate),
-    cellRenderer: (tx: V2StakingExtendedDurationItem) =>
-      dateFormat(tx.previousDate),
-    sortable: true,
-  },
-  {
     id: 'amountStaked',
     title: t(translations.stakingHistory.amount),
     cellRenderer: (tx: V2StakingExtendedDurationItem) => (
@@ -48,6 +35,20 @@ export const COLUMNS_CONFIG = [
     ),
     sortable: true,
   },
+  {
+    id: 'previousDate',
+    title: t(translations.stakingHistory.previousDate),
+    cellRenderer: (tx: V2StakingExtendedDurationItem) =>
+      dateFormat(tx.previousDate),
+    sortable: true,
+  },
+  {
+    id: 'newDate',
+    title: t(translations.stakingHistory.newDate),
+    cellRenderer: (tx: V2StakingExtendedDurationItem) => dateFormat(tx.newDate),
+    sortable: true,
+  },
+
   {
     id: 'txId',
     title: t(translations.common.tables.columnTitles.transactionID),

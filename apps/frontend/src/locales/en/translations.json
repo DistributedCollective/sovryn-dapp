@@ -611,6 +611,7 @@
         "unstake": "Unstake",
         "extend": "Extend staking duration",
         "delegate": "Change delegate",
+        "newDelegate": "New delegate",
         "newDate": "New date",
         "previousDate": "Previous date",
         "previousDelegate": "Previous delegate"

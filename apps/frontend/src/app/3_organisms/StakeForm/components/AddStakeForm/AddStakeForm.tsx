@@ -24,7 +24,10 @@ import { useGetPersonalStakingStatistics } from '../../../../5_pages/StakePage/c
 import { useGetWeight } from '../../../../5_pages/StakePage/components/StakesFrame/hooks/useGetWeight';
 import { useGetStakingBalanceOf } from '../../../../5_pages/StakePage/hooks/useGetStakingBalanceOf';
 import { useHandleStake } from '../../../../5_pages/StakePage/hooks/useHandleStake';
-import { TOKEN_RENDER_PRECISION } from '../../../../../constants/currencies';
+import {
+  SOV,
+  TOKEN_RENDER_PRECISION,
+} from '../../../../../constants/currencies';
 import { useAccount } from '../../../../../hooks/useAccount';
 import { useAssetBalance } from '../../../../../hooks/useAssetBalance';
 import { useMaintenance } from '../../../../../hooks/useMaintenance';
@@ -200,6 +203,7 @@ export const AddStakeForm: FC<StakeFormProps> = ({
         onChangeText={setAmount}
         label={t(translations.common.amount)}
         min={0}
+        unit={SOV}
         invalid={!isValidAmount}
         disabled={!account}
         className="w-full mt-4 max-w-full"
@@ -232,7 +236,7 @@ export const AddStakeForm: FC<StakeFormProps> = ({
           />
         )}
         <SimpleTableRow
-          label={t(translations.stakePage.stakeForm.votingPowerReceived)}
+          label={t(translations.stakePage.stakeForm.votingPowerIncrease)}
           value={renderVotingPowerReceived()}
         />
         {hasStakedValue && (
@@ -246,7 +250,7 @@ export const AddStakeForm: FC<StakeFormProps> = ({
         text={t(translations.common.buttons.confirm)}
         onClick={handleSubmit}
         disabled={isSubmitDisabled}
-        className="mt-10 w-full"
+        className="mt-6 w-full"
         dataAttribute="create-stake-confirm"
       />
       {stakingLocked && (

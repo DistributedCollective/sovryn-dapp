@@ -1,4 +1,4 @@
-export type V2StakingExtendedDurationItem = {
+export type StakingExtendedDurationItem = {
   id: string;
   amountStaked: string;
   timestamp: number;

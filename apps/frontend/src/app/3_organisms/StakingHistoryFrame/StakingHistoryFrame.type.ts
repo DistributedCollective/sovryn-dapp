@@ -1,4 +1,4 @@
-export enum StakingistoryType {
+export enum StakingHistoryType {
   increase = 'increase',
   unstake = 'unstake',
   extend = 'extend',
@@ -6,6 +6,6 @@ export enum StakingistoryType {
 }
 
 export type StakingHistoryProps = {
-  selectedHistoryType: StakingistoryType;
-  onChangeHistoryType: (value: StakingistoryType) => void;
+  selectedHistoryType: StakingHistoryType;
+  onChangeHistoryType: (value: StakingHistoryType) => void;
 };

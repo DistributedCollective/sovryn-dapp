@@ -23,7 +23,7 @@ import { useNotificationContext } from '../../../../../contexts/NotificationCont
 import { useAccount } from '../../../../../hooks/useAccount';
 import { useMaintenance } from '../../../../../hooks/useMaintenance';
 import { translations } from '../../../../../locales/i18n';
-import { zeroClient } from '../../../../../utils/clients';
+import { rskClient } from '../../../../../utils/clients';
 import {
   RewardsEarnedAction,
   RewardsEarnedHistoryItem_OrderBy,
@@ -74,7 +74,7 @@ export const RewardsEarnedHistory: FC<RewardHistoryProps> = ({
   );
 
   const [getRewards] = useGetRewardsEarnedHistoryLazyQuery({
-    client: zeroClient,
+    client: rskClient,
   });
 
   const onPageChange = useCallback(

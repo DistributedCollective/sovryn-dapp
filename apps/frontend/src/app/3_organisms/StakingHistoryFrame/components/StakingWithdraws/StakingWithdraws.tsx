@@ -25,19 +25,19 @@ import { useMaintenance } from '../../../../../hooks/useMaintenance';
 import { translations } from '../../../../../locales/i18n';
 import { rskClient } from '../../../../../utils/clients';
 import {
-  useGetV2StakingWithdrawnsLazyQuery,
+  useGetStakingWithdrawnsLazyQuery,
   V2StakingWithdrawn_OrderBy,
 } from '../../../../../utils/graphql/rsk/generated';
 import { dateFormat } from '../../../../../utils/helpers';
 import { stakingHistoryOptions } from '../../StakingHistoryFrame.constants';
 import { StakingHistoryProps } from '../../StakingHistoryFrame.type';
-import { COLUMNS_CONFIG } from './StakingWithdrawns.constants';
-import { generateRowTitle } from './StakingWithdrawns.utils';
-import { useGetStakingWithdrawns } from './hooks/useGetStakingWithdrawns';
+import { COLUMNS_CONFIG } from './StakingWithdraws.constants';
+import { generateRowTitle } from './StakingWithdraws.utils';
+import { useGetStakingWithdraws } from './hooks/useGetStakingWithdraws';
 
 const pageSize = DEFAULT_HISTORY_FRAME_PAGE_SIZE;
 
-export const StakingWithdrawns: FC<StakingHistoryProps> = ({
+export const StakingWithdraws: FC<StakingHistoryProps> = ({
   onChangeHistoryType,
   selectedHistoryType,
 }) => {
@@ -55,14 +55,14 @@ export const StakingWithdrawns: FC<StakingHistoryProps> = ({
     orderDirection: OrderDirection.Desc,
   });
 
-  const { data, loading } = useGetStakingWithdrawns(
+  const { data, loading } = useGetStakingWithdraws(
     account,
     pageSize,
     page,
     orderOptions,
   );
 
-  const [getStakes] = useGetV2StakingWithdrawnsLazyQuery({
+  const [getStakes] = useGetStakingWithdrawnsLazyQuery({
     client: rskClient,
   });
 
@@ -106,9 +106,9 @@ export const StakingWithdrawns: FC<StakingHistoryProps> = ({
 
     return list.map(item => ({
       timestamp: dateFormat(item.timestamp),
-      lockedUntil: dateFormat(item.until),
-      receiver: item.receiver?.id,
+      transactionType: t(translations.stakingHistory.unstake),
       amount: item.amount,
+      lockedUntil: dateFormat(item.until),
       TXID: item.id.split('-')[0],
     }));
   }, [

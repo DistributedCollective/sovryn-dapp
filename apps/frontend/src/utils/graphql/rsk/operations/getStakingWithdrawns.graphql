@@ -1,4 +1,4 @@
-query getV2StakingWithdrawns(
+query getStakingWithdrawns(
   $user: String
   $skip: Int!
   $pageSize: Int!

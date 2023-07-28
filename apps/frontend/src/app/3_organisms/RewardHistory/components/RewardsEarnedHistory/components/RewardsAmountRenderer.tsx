@@ -14,7 +14,7 @@ export const RewardsAmountRenderer: FC<RewardsEarnedHistoryItem> = tx => {
       value={decimalic(tx.amount).toString()}
       suffix={getTokenDisplayName(token?.symbol || '')}
       precision={TOKEN_RENDER_PRECISION}
-      dataAttribute="subsidy-history-reward-amount"
+      dataAttribute="reward-earned-history-amount"
     />
   );
 };

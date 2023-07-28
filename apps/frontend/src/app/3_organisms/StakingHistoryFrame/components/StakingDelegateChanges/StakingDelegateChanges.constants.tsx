@@ -6,13 +6,13 @@ import { TransactionIdRenderer } from '../../../../2_molecules/TransactionIdRend
 import { TxIdWithNotification } from '../../../../2_molecules/TxIdWithNotification/TransactionIdWithNotification';
 import { translations } from '../../../../../locales/i18n';
 import { dateFormat } from '../../../../../utils/helpers';
-import { V2StakingDelegateChangeItem } from './StakingDelegateChanges.types';
+import { StakingDelegateChangeItem } from './StakingDelegateChanges.types';
 
 export const COLUMNS_CONFIG = [
   {
     id: 'timestamp',
     title: t(translations.common.tables.columnTitles.timestamp),
-    cellRenderer: (tx: V2StakingDelegateChangeItem) => dateFormat(tx.timestamp),
+    cellRenderer: (tx: StakingDelegateChangeItem) => dateFormat(tx.timestamp),
     sortable: true,
   },
   {
@@ -23,7 +23,7 @@ export const COLUMNS_CONFIG = [
   {
     id: 'previousDelegate',
     title: t(translations.stakingHistory.previousDelegate),
-    cellRenderer: (tx: V2StakingDelegateChangeItem) => (
+    cellRenderer: (tx: StakingDelegateChangeItem) => (
       <TxIdWithNotification href="" value={tx.previousDelegate?.id} />
     ),
   },
@@ -31,7 +31,7 @@ export const COLUMNS_CONFIG = [
   {
     id: 'delegate',
     title: t(translations.stakingHistory.newDelegate),
-    cellRenderer: (tx: V2StakingDelegateChangeItem) => (
+    cellRenderer: (tx: StakingDelegateChangeItem) => (
       <TxIdWithNotification href="" value={tx.delegate?.id} />
     ),
   },
@@ -39,7 +39,7 @@ export const COLUMNS_CONFIG = [
   {
     id: 'txId',
     title: t(translations.common.tables.columnTitles.transactionID),
-    cellRenderer: (item: V2StakingDelegateChangeItem) => (
+    cellRenderer: (item: StakingDelegateChangeItem) => (
       <TransactionIdRenderer
         hash={item.id.split('-')[0]}
         dataAttribute="staking-delegate-history-tx-hash"

@@ -6,7 +6,7 @@ export const useTokenDetailsByAddress = (address?: string) => {
   const [token, setToken] = useState<TokenDetailsData | undefined>();
 
   useEffect(() => {
-    const updateToken = () => {
+    const getTokenDetails = () => {
       getTokenDetailsByAddress(address!)
         .then(setToken)
         .catch(e => {
@@ -15,7 +15,7 @@ export const useTokenDetailsByAddress = (address?: string) => {
     };
 
     if (address) {
-      updateToken();
+      getTokenDetails();
     }
   }, [address]);
 

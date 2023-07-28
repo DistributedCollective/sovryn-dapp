@@ -1,11 +1,11 @@
-query getV2StakeHistory(
+query getExtendedStakingDurations(
   $user: String
   $skip: Int!
   $pageSize: Int!
-  $orderBy: V2TokensStaked_orderBy
+  $orderBy: V2ExtendedStakingDuration_orderBy
   $orderDirection: OrderDirection
 ) {
-  v2TokensStakeds(
+  v2ExtendedStakingDurations(
     where: { user: $user }
     first: $pageSize
     skip: $skip
@@ -13,10 +13,10 @@ query getV2StakeHistory(
     orderDirection: $orderDirection
   ) {
     id
-    amount
-    totalStaked
+    amountStaked
+    newDate
+    previousDate
     timestamp
-    lockedUntil
     user {
       id
     }

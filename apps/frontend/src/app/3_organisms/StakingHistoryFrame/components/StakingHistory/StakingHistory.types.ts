@@ -1,4 +1,4 @@
-export type V2StakingHistoryItem = {
+export type StakingHistoryItem = {
   id: string;
   amount: string;
   totalStaked: string;

@@ -1,4 +1,4 @@
-export type V2StakingWithdrawnItem = {
+export type StakingWithdrawnItem = {
   id: string;
   amount: string;
   timestamp: number;

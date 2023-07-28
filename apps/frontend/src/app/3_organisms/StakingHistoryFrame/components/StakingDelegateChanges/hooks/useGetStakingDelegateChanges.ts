@@ -4,10 +4,10 @@ import { OrderOptions } from '@sovryn/ui';
 
 import { rskClient } from '../../../../../../utils/clients';
 import {
-  useGetV2DelegateChangesQuery,
+  useGetDelegateChangesQuery,
   V2DelegateChanged_OrderBy,
 } from '../../../../../../utils/graphql/rsk/generated';
-import { V2StakingDelegateChangeItem } from '../StakingDelegateChanges.types';
+import { StakingDelegateChangeItem } from '../StakingDelegateChanges.types';
 
 export const useGetStakingDelegateChanges = (
   account: string,
@@ -32,7 +32,7 @@ export const useGetStakingDelegateChanges = (
     ],
   );
 
-  const { loading, data } = useGetV2DelegateChangesQuery({
+  const { loading, data } = useGetDelegateChangesQuery({
     variables: config,
     client: rskClient,
   });
@@ -45,5 +45,5 @@ export const useGetStakingDelegateChanges = (
     return data.v2DelegateChangeds;
   }, [data]);
 
-  return { loading, data: list as V2StakingDelegateChangeItem[] };
+  return { loading, data: list as StakingDelegateChangeItem[] };
 };

@@ -1,23 +1,23 @@
 import { t } from 'i18next';
 
 import { translations } from '../../../locales/i18n';
-import { StakingistoryType } from './StakingHistoryFrame.type';
+import { StakingHistoryType } from './StakingHistoryFrame.type';
 
 export const stakingHistoryOptions = [
   {
-    value: StakingistoryType.increase,
+    value: StakingHistoryType.increase,
     label: t(translations.stakingHistory.increase),
   },
   {
-    value: StakingistoryType.unstake,
+    value: StakingHistoryType.unstake,
     label: t(translations.stakingHistory.unstake),
   },
   {
-    value: StakingistoryType.extend,
+    value: StakingHistoryType.extend,
     label: t(translations.stakingHistory.extend),
   },
   {
-    value: StakingistoryType.delegate,
+    value: StakingHistoryType.delegate,
     label: t(translations.stakingHistory.delegate),
   },
 ];

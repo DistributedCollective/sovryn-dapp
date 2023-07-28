@@ -1,11 +1,11 @@
-query getV2ExtendedStakingDurations(
+query getDelegateChanges(
   $user: String
   $skip: Int!
   $pageSize: Int!
-  $orderBy: V2ExtendedStakingDuration_orderBy
+  $orderBy: V2DelegateChanged_orderBy
   $orderDirection: OrderDirection
 ) {
-  v2ExtendedStakingDurations(
+  v2DelegateChangeds(
     where: { user: $user }
     first: $pageSize
     skip: $skip
@@ -13,12 +13,16 @@ query getV2ExtendedStakingDurations(
     orderDirection: $orderDirection
   ) {
     id
-    amountStaked
-    newDate
-    previousDate
+    delegate {
+      id
+    }
     timestamp
+    previousDelegate {
+      id
+    }
     user {
       id
     }
+    lockedUntil
   }
 }

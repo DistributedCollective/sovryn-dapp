@@ -9,13 +9,13 @@ import { TransactionIdRenderer } from '../../../../2_molecules/TransactionIdRend
 import { getTokenDisplayName } from '../../../../../constants/tokens';
 import { translations } from '../../../../../locales/i18n';
 import { dateFormat } from '../../../../../utils/helpers';
-import { V2StakingHistoryItem } from './StakingHistory.types';
+import { StakingHistoryItem } from './StakingHistory.types';
 
 export const COLUMNS_CONFIG = [
   {
     id: 'timestamp',
     title: t(translations.common.tables.columnTitles.timestamp),
-    cellRenderer: (tx: V2StakingHistoryItem) => dateFormat(tx.timestamp),
+    cellRenderer: (tx: StakingHistoryItem) => dateFormat(tx.timestamp),
     sortable: true,
   },
   {
@@ -26,7 +26,7 @@ export const COLUMNS_CONFIG = [
   {
     id: 'amount',
     title: t(translations.stakingHistory.stakeChange),
-    cellRenderer: (tx: V2StakingHistoryItem) => (
+    cellRenderer: (tx: StakingHistoryItem) => (
       <AmountRenderer
         value={tx.amount || 0}
         prefix="+"
@@ -38,14 +38,14 @@ export const COLUMNS_CONFIG = [
   {
     id: 'lockedUntil',
     title: t(translations.stakingHistory.lockedUntil),
-    cellRenderer: (tx: V2StakingHistoryItem) => dateFormat(tx.lockedUntil),
+    cellRenderer: (tx: StakingHistoryItem) => dateFormat(tx.lockedUntil),
     sortable: true,
   },
 
   {
     id: 'txId',
     title: t(translations.common.tables.columnTitles.transactionID),
-    cellRenderer: (item: V2StakingHistoryItem) => (
+    cellRenderer: (item: StakingHistoryItem) => (
       <TransactionIdRenderer
         hash={item.id.split('-')[0]}
         dataAttribute="staking-history-tx-hash"

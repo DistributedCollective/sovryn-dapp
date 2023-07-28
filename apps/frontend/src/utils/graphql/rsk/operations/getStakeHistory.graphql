@@ -1,11 +1,11 @@
-query getV2DelegateChanges(
+query getStakeHistory(
   $user: String
   $skip: Int!
   $pageSize: Int!
-  $orderBy: V2DelegateChanged_orderBy
+  $orderBy: V2TokensStaked_orderBy
   $orderDirection: OrderDirection
 ) {
-  v2DelegateChangeds(
+  v2TokensStakeds(
     where: { user: $user }
     first: $pageSize
     skip: $skip
@@ -13,16 +13,12 @@ query getV2DelegateChanges(
     orderDirection: $orderDirection
   ) {
     id
-    delegate {
-      id
-    }
+    amount
+    totalStaked
     timestamp
-    previousDelegate {
-      id
-    }
+    lockedUntil
     user {
       id
     }
-    lockedUntil
   }
 }

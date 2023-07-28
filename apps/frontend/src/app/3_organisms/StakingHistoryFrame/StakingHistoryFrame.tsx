@@ -1,40 +1,40 @@
 import React, { FC, useCallback, useState } from 'react';
 
-import { StakingistoryType } from './StakingHistoryFrame.type';
-import { StakingDelegateChanges } from './components/StakingDelegateChanges';
-import { StakingExtendedDuration } from './components/StakingExtendedDuration';
+import { StakingHistoryType } from './StakingHistoryFrame.type';
+import { StakingDelegateChanges } from './components/StakingDelegateChanges/StakingDelegateChanges';
+import { StakingExtendedDuration } from './components/StakingExtendedDuration/StakingExtendedDuration';
 import { StakingHistory } from './components/StakingHistory/StakingHistory';
-import { StakingWithdrawns } from './components/StakingWithdrawns';
+import { StakingWithdraws } from './components/StakingWithdraws/StakingWithdraws';
 
 export const StakingHistoryFrame: FC = () => {
   const [selectedHistoryType, setSelectedHistoryType] = useState(
-    StakingistoryType.increase,
+    StakingHistoryType.increase,
   );
 
-  const onChangeHistoryType = useCallback((value: StakingistoryType) => {
+  const onChangeHistoryType = useCallback((value: StakingHistoryType) => {
     setSelectedHistoryType(value);
   }, []);
   return (
     <div>
-      {selectedHistoryType === StakingistoryType.increase && (
+      {selectedHistoryType === StakingHistoryType.increase && (
         <StakingHistory
           selectedHistoryType={selectedHistoryType}
           onChangeHistoryType={onChangeHistoryType}
         />
       )}
-      {selectedHistoryType === StakingistoryType.unstake && (
-        <StakingWithdrawns
+      {selectedHistoryType === StakingHistoryType.unstake && (
+        <StakingWithdraws
           selectedHistoryType={selectedHistoryType}
           onChangeHistoryType={onChangeHistoryType}
         />
       )}
-      {selectedHistoryType === StakingistoryType.extend && (
+      {selectedHistoryType === StakingHistoryType.extend && (
         <StakingExtendedDuration
           selectedHistoryType={selectedHistoryType}
           onChangeHistoryType={onChangeHistoryType}
         />
       )}
-      {selectedHistoryType === StakingistoryType.delegate && (
+      {selectedHistoryType === StakingHistoryType.delegate && (
         <StakingDelegateChanges
           selectedHistoryType={selectedHistoryType}
           onChangeHistoryType={onChangeHistoryType}

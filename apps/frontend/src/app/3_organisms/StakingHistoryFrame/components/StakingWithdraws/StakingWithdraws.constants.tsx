@@ -9,13 +9,13 @@ import { TransactionIdRenderer } from '../../../../2_molecules/TransactionIdRend
 import { getTokenDisplayName } from '../../../../../constants/tokens';
 import { translations } from '../../../../../locales/i18n';
 import { dateFormat } from '../../../../../utils/helpers';
-import { V2StakingWithdrawnItem } from './StakingWithdrawns.types';
+import { StakingWithdrawnItem } from './StakingWithdraws.types';
 
 export const COLUMNS_CONFIG = [
   {
     id: 'timestamp',
     title: t(translations.common.tables.columnTitles.timestamp),
-    cellRenderer: (tx: V2StakingWithdrawnItem) => dateFormat(tx.timestamp),
+    cellRenderer: (tx: StakingWithdrawnItem) => dateFormat(tx.timestamp),
     sortable: true,
   },
   {
@@ -26,7 +26,7 @@ export const COLUMNS_CONFIG = [
   {
     id: 'amount',
     title: t(translations.stakingHistory.stakeChange),
-    cellRenderer: (tx: V2StakingWithdrawnItem) => (
+    cellRenderer: (tx: StakingWithdrawnItem) => (
       <AmountRenderer
         prefix="-"
         value={tx.amount || 0}
@@ -38,13 +38,13 @@ export const COLUMNS_CONFIG = [
   {
     id: 'until',
     title: t(translations.stakingHistory.lockedUntil),
-    cellRenderer: (tx: V2StakingWithdrawnItem) => dateFormat(tx.until),
+    cellRenderer: (tx: StakingWithdrawnItem) => dateFormat(tx.until),
     sortable: true,
   },
   {
     id: 'txId',
     title: t(translations.common.tables.columnTitles.transactionID),
-    cellRenderer: (item: V2StakingWithdrawnItem) => (
+    cellRenderer: (item: StakingWithdrawnItem) => (
       <TransactionIdRenderer
         hash={item.id.split('-')[0]}
         dataAttribute="staking-withdraw-tx-hash"

@@ -4,10 +4,10 @@ import { OrderOptions } from '@sovryn/ui';
 
 import { rskClient } from '../../../../../../utils/clients';
 import {
-  useGetV2StakeHistoryQuery,
+  useGetStakeHistoryQuery,
   V2TokensStaked_OrderBy,
 } from '../../../../../../utils/graphql/rsk/generated';
-import { V2StakingHistoryItem } from '../StakingHistory.types';
+import { StakingHistoryItem } from '../StakingHistory.types';
 
 export const useGetStakingHistory = (
   account: string,
@@ -32,7 +32,7 @@ export const useGetStakingHistory = (
     ],
   );
 
-  const { loading, data } = useGetV2StakeHistoryQuery({
+  const { loading, data } = useGetStakeHistoryQuery({
     variables: config,
     client: rskClient,
   });
@@ -45,5 +45,5 @@ export const useGetStakingHistory = (
     return data.v2TokensStakeds;
   }, [data]);
 
-  return { loading, data: stakes as V2StakingHistoryItem[] };
+  return { loading, data: stakes as StakingHistoryItem[] };
 };

@@ -4,12 +4,12 @@ import { OrderOptions } from '@sovryn/ui';
 
 import { rskClient } from '../../../../../../utils/clients';
 import {
-  useGetV2StakingWithdrawnsQuery,
+  useGetStakingWithdrawnsQuery,
   V2StakingWithdrawn_OrderBy,
 } from '../../../../../../utils/graphql/rsk/generated';
-import { V2StakingWithdrawnItem } from '../StakingWithdrawns.types';
+import { StakingWithdrawnItem } from '../StakingWithdraws.types';
 
-export const useGetStakingWithdrawns = (
+export const useGetStakingWithdraws = (
   account: string,
   pageSize: number,
   page: number,
@@ -32,7 +32,7 @@ export const useGetStakingWithdrawns = (
     ],
   );
 
-  const { loading, data } = useGetV2StakingWithdrawnsQuery({
+  const { loading, data } = useGetStakingWithdrawnsQuery({
     variables: config,
     client: rskClient,
   });
@@ -45,5 +45,5 @@ export const useGetStakingWithdrawns = (
     return data.v2StakingWithdrawns;
   }, [data]);
 
-  return { loading, data: list as V2StakingWithdrawnItem[] };
+  return { loading, data: list as StakingWithdrawnItem[] };
 };

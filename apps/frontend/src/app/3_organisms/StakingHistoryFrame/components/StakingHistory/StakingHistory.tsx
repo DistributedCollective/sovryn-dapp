@@ -25,7 +25,7 @@ import { useMaintenance } from '../../../../../hooks/useMaintenance';
 import { translations } from '../../../../../locales/i18n';
 import { rskClient } from '../../../../../utils/clients';
 import {
-  useGetV2StakeHistoryLazyQuery,
+  useGetStakeHistoryLazyQuery,
   V2TokensStaked_OrderBy,
 } from '../../../../../utils/graphql/rsk/generated';
 import { dateFormat } from '../../../../../utils/helpers';
@@ -62,7 +62,7 @@ export const StakingHistory: FC<StakingHistoryProps> = ({
     orderOptions,
   );
 
-  const [getStakes] = useGetV2StakeHistoryLazyQuery({
+  const [getStakes] = useGetStakeHistoryLazyQuery({
     client: rskClient,
   });
 
@@ -106,8 +106,9 @@ export const StakingHistory: FC<StakingHistoryProps> = ({
 
     return list.map(item => ({
       timestamp: dateFormat(item.timestamp),
+      transactionType: t(translations.stakingHistory.increase),
+      stakeChange: item.amount,
       lockedUntil: dateFormat(item.lockedUntil),
-      amount: item.amount,
       TXID: item.id.split('-')[0],
     }));
   }, [

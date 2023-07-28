@@ -4,10 +4,10 @@ import { OrderOptions } from '@sovryn/ui';
 
 import { rskClient } from '../../../../../../utils/clients';
 import {
-  useGetV2ExtendedStakingDurationsQuery,
+  useGetExtendedStakingDurationsQuery,
   V2ExtendedStakingDuration_OrderBy,
 } from '../../../../../../utils/graphql/rsk/generated';
-import { V2StakingExtendedDurationItem } from '../StakingExtendedDuration.types';
+import { StakingExtendedDurationItem } from '../StakingExtendedDuration.types';
 
 export const useGetStakingExtendedDuration = (
   account: string,
@@ -32,7 +32,7 @@ export const useGetStakingExtendedDuration = (
     ],
   );
 
-  const { loading, data } = useGetV2ExtendedStakingDurationsQuery({
+  const { loading, data } = useGetExtendedStakingDurationsQuery({
     variables: config,
     client: rskClient,
   });
@@ -45,5 +45,5 @@ export const useGetStakingExtendedDuration = (
     return data.v2ExtendedStakingDurations;
   }, [data]);
 
-  return { loading, data: list as V2StakingExtendedDurationItem[] };
+  return { loading, data: list as StakingExtendedDurationItem[] };
 };

@@ -1,4 +1,4 @@
-export type V2StakingDelegateChangeItem = {
+export type StakingDelegateChangeItem = {
   id: string;
   timestamp: number;
   lockedUntil: number;

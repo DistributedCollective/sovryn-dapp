@@ -9,14 +9,13 @@ import { TransactionIdRenderer } from '../../../../2_molecules/TransactionIdRend
 import { getTokenDisplayName } from '../../../../../constants/tokens';
 import { translations } from '../../../../../locales/i18n';
 import { dateFormat } from '../../../../../utils/helpers';
-import { V2StakingExtendedDurationItem } from './StakingExtendedDuration.types';
+import { StakingExtendedDurationItem } from './StakingExtendedDuration.types';
 
 export const COLUMNS_CONFIG = [
   {
     id: 'timestamp',
     title: t(translations.common.tables.columnTitles.timestamp),
-    cellRenderer: (tx: V2StakingExtendedDurationItem) =>
-      dateFormat(tx.timestamp),
+    cellRenderer: (tx: StakingExtendedDurationItem) => dateFormat(tx.timestamp),
     sortable: true,
   },
   {
@@ -27,7 +26,7 @@ export const COLUMNS_CONFIG = [
   {
     id: 'amountStaked',
     title: t(translations.stakingHistory.amount),
-    cellRenderer: (tx: V2StakingExtendedDurationItem) => (
+    cellRenderer: (tx: StakingExtendedDurationItem) => (
       <AmountRenderer
         value={tx.amountStaked || 0}
         suffix={getTokenDisplayName(SupportedTokens.sov)}
@@ -38,21 +37,21 @@ export const COLUMNS_CONFIG = [
   {
     id: 'previousDate',
     title: t(translations.stakingHistory.previousDate),
-    cellRenderer: (tx: V2StakingExtendedDurationItem) =>
+    cellRenderer: (tx: StakingExtendedDurationItem) =>
       dateFormat(tx.previousDate),
     sortable: true,
   },
   {
     id: 'newDate',
     title: t(translations.stakingHistory.newDate),
-    cellRenderer: (tx: V2StakingExtendedDurationItem) => dateFormat(tx.newDate),
+    cellRenderer: (tx: StakingExtendedDurationItem) => dateFormat(tx.newDate),
     sortable: true,
   },
 
   {
     id: 'txId',
     title: t(translations.common.tables.columnTitles.transactionID),
-    cellRenderer: (item: V2StakingExtendedDurationItem) => (
+    cellRenderer: (item: StakingExtendedDurationItem) => (
       <TransactionIdRenderer
         hash={item.id.split('-')[0]}
         dataAttribute="staking-extend-history-tx-hash"

@@ -553,6 +553,21 @@
                 "vesting": "Vesting"
             }
         },
+        "stabilityPoolBanner": {
+            "title": "Stability Pool",
+            "description": "Earn from Zero loans by providing DLLR, 5%-110% APY",
+            "action": "Deposit DLLR"
+        },
+        "stakingBanner": {
+            "title": "Staking",
+            "description": "Participate in Sovryn's governance and revenue, earn up to 26.8% APY paid in bitcoin",
+            "action": "Stake SOV"
+        },
+        "yieldFarmingBanner": {
+            "title": "Yield farming",
+            "description": "Deposit in the AMM pools, earn from trades in Sovryn and get rewards",
+            "action": "Deposit in AMM"
+        },
         "stabilityPool": {
             "title": "Rewards",
             "subtitle": "Collect rewards earned",

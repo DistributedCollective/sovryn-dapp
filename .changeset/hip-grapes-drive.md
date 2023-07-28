@@ -2,4 +2,4 @@
 "frontend": patch
 ---
 
-SOV-2829: Initial configuration
+SOV-2829: Borrow page initial config

@@ -5,8 +5,10 @@ import { t } from 'i18next';
 import { TransactionIdRenderer } from '../../../../2_molecules/TransactionIdRenderer/TransactionIdRenderer';
 import { TxIdWithNotification } from '../../../../2_molecules/TxIdWithNotification/TransactionIdWithNotification';
 import { translations } from '../../../../../locales/i18n';
-import { dateFormat } from '../../../../../utils/helpers';
+import { dateFormat, getRskExplorerUrl } from '../../../../../utils/helpers';
 import { StakingDelegateChangeItem } from './StakingDelegateChanges.types';
+
+const rskExplorerUrl = getRskExplorerUrl();
 
 export const COLUMNS_CONFIG = [
   {
@@ -24,7 +26,10 @@ export const COLUMNS_CONFIG = [
     id: 'previousDelegate',
     title: t(translations.stakingHistory.previousDelegate),
     cellRenderer: (tx: StakingDelegateChangeItem) => (
-      <TxIdWithNotification href="" value={tx.previousDelegate?.id} />
+      <TxIdWithNotification
+        href={`${rskExplorerUrl}/address/${tx.previousDelegate?.id}`}
+        value={tx.previousDelegate?.id}
+      />
     ),
   },
 
@@ -32,7 +37,10 @@ export const COLUMNS_CONFIG = [
     id: 'delegate',
     title: t(translations.stakingHistory.newDelegate),
     cellRenderer: (tx: StakingDelegateChangeItem) => (
-      <TxIdWithNotification href="" value={tx.delegate?.id} />
+      <TxIdWithNotification
+        href={`${rskExplorerUrl}/address/${tx.delegate?.id}`}
+        value={tx.delegate?.id}
+      />
     ),
   },
 

@@ -7,7 +7,7 @@ import {
   useGetStakingWithdrawnsQuery,
   V2StakingWithdrawn_OrderBy,
 } from '../../../../../../utils/graphql/rsk/generated';
-import { StakingWithdrawnItem } from '../StakingWithdraws.types';
+import { StakingWithdrawItem } from '../StakingWithdraws.types';
 
 export const useGetStakingWithdraws = (
   account: string,
@@ -45,5 +45,5 @@ export const useGetStakingWithdraws = (
     return data.v2StakingWithdrawns;
   }, [data]);
 
-  return { loading, data: list as StakingWithdrawnItem[] };
+  return { loading, data: list as StakingWithdrawItem[] };
 };

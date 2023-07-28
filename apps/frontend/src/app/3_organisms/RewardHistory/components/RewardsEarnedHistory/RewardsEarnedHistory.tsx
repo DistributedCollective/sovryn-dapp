@@ -37,7 +37,10 @@ import {
 } from '../../RewardHistory.types';
 import { rewardHistoryOptions } from '../../RewardHistory.utils';
 import { COLUMNS_CONFIG } from './RewardsEarnedHistory.constants';
-import { generateRowTitle } from './RewardsEarnedHistory.utils';
+import {
+  generateRowTitle,
+  getTransactionType,
+} from './RewardsEarnedHistory.utils';
 import { useGetRewardsEarned } from './hooks/useGetRewardsEarned';
 
 const pageSize = DEFAULT_HISTORY_FRAME_PAGE_SIZE;
@@ -95,11 +98,12 @@ export const RewardsEarnedHistory: FC<RewardHistoryProps> = ({
   const exportData = useCallback(async () => {
     const { data } = await getRewards({
       variables: {
-        user: account,
+        user: account.toLowerCase(),
         skip: 0,
         pageSize: EXPORT_RECORD_LIMIT,
         orderBy: RewardsEarnedHistoryItem_OrderBy.Timestamp,
         orderDirection: OrderDirection.Desc,
+        actions: historyAction,
       },
     });
     let list = data?.rewardsEarnedHistoryItems || [];
@@ -116,14 +120,11 @@ export const RewardsEarnedHistory: FC<RewardHistoryProps> = ({
 
     return list.map(tx => ({
       timestamp: dateFormat(tx.timestamp),
-      stabilityPoolOperation: t(
-        translations.subsidyHistory.stabilityPoolOperation
-          .withdrawStabilityPoolSubsidy,
-      ),
+      transactionType: getTransactionType(tx.action),
       amount: decimalic(tx.amount || '').toString(),
       transactionID: tx.id,
     }));
-  }, [account, addNotification, getRewards]);
+  }, [account, addNotification, getRewards, historyAction]);
 
   useEffect(() => {
     setPage(0);

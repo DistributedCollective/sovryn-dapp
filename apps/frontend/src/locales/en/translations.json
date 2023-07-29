@@ -67,9 +67,10 @@
     "header": {
         "funding": "Funding",
         "nav": {
-            "borrow": "Borrow",
+            "zero": "Zero",
             "earn": "Earn",
-            "convert": "Convert"
+            "convert": "Convert",
+            "fixedInterestLoans": "Fixed-interest loans"
         }
     },
     "footer": {
@@ -360,6 +361,13 @@
         "maximumPrice": "Maximum price"
     },
 
+    "fixedInterestPage": {
+        "meta": {
+            "title": "Fixed-interest loans - Sovryn",
+            "description": "TBD"
+        }
+    },
+
     "fastBtc": {
         "mainScreen": {
             "title": "Funding",
@@ -430,17 +438,17 @@
             }
         },
         "receive": {
-          "loading": "Loading... this may take up to 30 seconds",
-          "statusScreen": {
-              "statusTitleProcessing": "Transfer processing...",
-              "statusTitleComplete": "Transfer complete",
-              "to": "To",
-              "sending": "Sending",
-              "serviceFee": "Service fee",
-              "receiving": "Receiving",
-              "bitcoinTxId": "Bitcoin TXID",
-              "rootstockTxId": "Rootstock TXID"
-          }
+            "loading": "Loading... this may take up to 30 seconds",
+            "statusScreen": {
+                "statusTitleProcessing": "Transfer processing...",
+                "statusTitleComplete": "Transfer complete",
+                "to": "To",
+                "sending": "Sending",
+                "serviceFee": "Service fee",
+                "receiving": "Receiving",
+                "bitcoinTxId": "Bitcoin TXID",
+                "rootstockTxId": "Rootstock TXID"
+            }
         }
     },
 

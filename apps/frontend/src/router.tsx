@@ -33,6 +33,9 @@ const TermsOfUse = loadable(
 const RewardsPage = loadable(
   () => import('./app/5_pages/RewardsPage/RewardsPage'),
 );
+const BorrowPage = loadable(
+  () => import('./app/5_pages/BorrowPage/BorrowPage'),
+);
 
 const routes = [
   {
@@ -51,7 +54,7 @@ const routes = [
         loader: zeroPageLoader,
       },
       {
-        path: '/borrow',
+        path: '/zero',
         element: <Zero />,
         loader: zeroPageLoader,
       },
@@ -72,6 +75,10 @@ const routes = [
         path: '/rewards',
         element: <RewardsPage />,
         loader: zeroPageLoader,
+      },
+      {
+        path: '/fixed-interest',
+        element: <BorrowPage />,
       },
     ],
   },

@@ -5,8 +5,8 @@ import { t } from 'i18next';
 import { AssetRenderer } from '../../../../2_molecules/AssetRenderer/AssetRenderer';
 import { translations } from '../../../../../locales/i18n';
 import { LendingPool } from '../../../../../utils/LendingPool';
-import { AcceptedCollateral } from '../AcceptedCollateral/AcceptedCollateral';
-import { NewLoanButton } from '../NewLoanButton/NewLoanButton';
+import { AcceptedCollateral } from './components/AcceptedCollateral/AcceptedCollateral';
+import { NewLoanButton } from './components/NewLoanButton/NewLoanButton';
 
 const translation = translations.fixedInterestPage.borrowAssetsTable.columns;
 

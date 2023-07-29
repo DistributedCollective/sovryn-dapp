@@ -4,7 +4,7 @@ import { t } from 'i18next';
 
 import { Dialog, DialogBody, DialogHeader } from '@sovryn/ui';
 
-import { translations } from '../../../../../locales/i18n';
+import { translations } from '../../../../../../../locales/i18n';
 
 type NewLoanDialogProps = {
   isOpen: boolean;

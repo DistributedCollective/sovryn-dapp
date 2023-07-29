@@ -4,8 +4,8 @@ import { t } from 'i18next';
 
 import { Button, ButtonStyle } from '@sovryn/ui';
 
-import { useAccount } from '../../../../../hooks/useAccount';
-import { translations } from '../../../../../locales/i18n';
+import { useAccount } from '../../../../../../../hooks/useAccount';
+import { translations } from '../../../../../../../locales/i18n';
 import { NewLoanDialog } from '../NewLoanDialog/NewLoanDialog';
 
 export const NewLoanButton: FC = () => {

@@ -27,7 +27,7 @@ const BorrowPage: FC = () => {
           {t(translations.fixedInterestPage.subtitle)}
         </Paragraph>
 
-        <div className="w-full md:bg-gray-90 md:py-7 md:px-6 rounded mb-6">
+        <div className="w-full">
           <BorrowAssetsTable />
         </div>
       </div>

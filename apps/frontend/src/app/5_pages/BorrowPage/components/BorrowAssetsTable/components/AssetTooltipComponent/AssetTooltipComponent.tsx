@@ -5,12 +5,12 @@ import { t } from 'i18next';
 import { SupportedTokens, getTokenDetailsData } from '@sovryn/contracts';
 import { Link, LinkStyle } from '@sovryn/ui';
 
-import { defaultChainId } from '../../../../../config/chains';
+import { defaultChainId } from '../../../../../../../config/chains';
 
-import { MINIMUM_COLLATERAL_RATIO } from '../../../../3_organisms/ZeroLocForm/constants';
-import { translations } from '../../../../../locales/i18n';
-import { getRskExplorerUrl } from '../../../../../utils/helpers';
-import { decimalic } from '../../../../../utils/math';
+import { MINIMUM_COLLATERAL_RATIO } from '../../../../../../3_organisms/ZeroLocForm/constants';
+import { translations } from '../../../../../../../locales/i18n';
+import { getRskExplorerUrl } from '../../../../../../../utils/helpers';
+import { decimalic } from '../../../../../../../utils/math';
 
 const collateralRatio = decimalic(MINIMUM_COLLATERAL_RATIO.mul(100)).toString();
 

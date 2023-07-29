@@ -4,8 +4,8 @@ import { t } from 'i18next';
 
 import { Tooltip, TooltipTrigger } from '@sovryn/ui';
 
-import { translations } from '../../../../../locales/i18n';
-import { LendingPool } from '../../../../../utils/LendingPool';
+import { translations } from '../../../../../../../locales/i18n';
+import { LendingPool } from '../../../../../../../utils/LendingPool';
 import { AssetTooltipContent } from '../AssetTooltipComponent/AssetTooltipComponent';
 
 const assetsToShow = 3;

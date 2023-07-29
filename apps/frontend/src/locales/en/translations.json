@@ -380,6 +380,27 @@
             },
             "action": "New loan"
         },
+        "openLoansTable": {
+            "title": "Loans",
+            "columns": {
+                "debt": "Debt",
+                "collateral": "Collateral",
+                "collateralRatio": "Collateral ratio",
+                "liquidationPrice": "Liquidation price",
+                "apr": "APR",
+                "rolloverDate": "Rollover date"
+            },
+            "actions": {
+                "adjust": "Adjust",
+                "extend": "Extend"
+            }
+        },
+        "adjustLoanDialog": {
+            "title": "Adjust a loan"
+        },
+        "extendLoanDialog": {
+            "title": "Extend a loan"
+        },
         "newLoanDialog": {
             "title": "New loan"
         },

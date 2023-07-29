@@ -7,6 +7,7 @@ import { Heading, Paragraph, ParagraphSize } from '@sovryn/ui';
 
 import { translations } from '../../../locales/i18n';
 import { BorrowAssetsTable } from './components/BorrowAssetsTable/BorrowAssetsTable';
+import { OpenLoansTable } from './components/OpenLoansTable/OpenLoansTable';
 
 const BorrowPage: FC = () => {
   return (
@@ -28,6 +29,7 @@ const BorrowPage: FC = () => {
         </Paragraph>
 
         <div className="w-full">
+          <OpenLoansTable />
           <BorrowAssetsTable />
         </div>
       </div>

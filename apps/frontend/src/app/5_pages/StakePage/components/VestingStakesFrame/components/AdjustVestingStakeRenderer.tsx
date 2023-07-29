@@ -1,4 +1,4 @@
-import React, { FC, useReducer } from 'react';
+import React, { FC, useMemo, useReducer } from 'react';
 
 import { t } from 'i18next';
 
@@ -13,8 +13,10 @@ import {
 } from '@sovryn/ui';
 
 import { AdjustVestingStakeForm } from '../../../../../3_organisms/StakeForm/components/AdjustVestingStakeForm/AdjustVestingStakeForm';
+import { MS } from '../../../../../../constants/general';
 import { translations } from '../../../../../../locales/i18n';
 import { Vesting } from '../VestingStakesFrame.types';
+import { useGetVestingStakeStartEndDates } from '../hooks/useGetVestingStakeStartEndDates';
 
 export const AdjustVestingStakeRenderer: FC<Vesting> = ({
   vestingContract,
@@ -22,6 +24,15 @@ export const AdjustVestingStakeRenderer: FC<Vesting> = ({
   const [openVestingStakeDialog, toggleVestingStakeDialog] = useReducer(
     v => !v,
     false,
+  );
+
+  const { endDate } = useGetVestingStakeStartEndDates(vestingContract);
+
+  const currentDate = useMemo(() => new Date(), []);
+
+  const isDisabled = useMemo(
+    () => currentDate.getTime() / MS > Number(endDate),
+    [endDate, currentDate],
   );
 
   return (
@@ -33,6 +44,7 @@ export const AdjustVestingStakeRenderer: FC<Vesting> = ({
         onClick={toggleVestingStakeDialog}
         dataAttribute="stakes-adjust-button"
         className="md:w-auto w-full"
+        disabled={isDisabled}
       />
       <Dialog
         width={DialogSize.sm}

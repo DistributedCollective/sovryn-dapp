@@ -41,6 +41,7 @@
         "deposit": "Deposit",
         "withdraw": "Withdraw",
         "txId": "TXID",
+        "more": "more",
         "tx": {
             "signPermitTitle": "Permit {{symbol}}",
             "signPermitSubtitle": "Sign a permit to allow the contract to spend your {{symbol}}",
@@ -365,7 +366,24 @@
         "meta": {
             "title": "Fixed-interest loans - Sovryn",
             "description": "TBD"
-        }
+        },
+        "title": "Fixed-interest loans",
+        "subtitle": "Borrow without rate hikes",
+        "borrowAssetsTable": {
+            "title": "Assets to borrow",
+            "columns": {
+                "asset": "Asset",
+                "borrowApr": "Borrow APR",
+                "availableSupply": "Available supply",
+                "acceptedCollateral": "Accepted collateral",
+                "minCollateralRatio": "Min collateral ratio"
+            },
+            "action": "New loan"
+        },
+        "newLoanDialog": {
+            "title": "New loan"
+        },
+        "collateralRatio": "collateral ratio"
     },
 
     "fastBtc": {

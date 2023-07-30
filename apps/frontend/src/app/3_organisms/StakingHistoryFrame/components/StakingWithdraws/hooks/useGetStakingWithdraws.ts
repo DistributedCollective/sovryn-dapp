@@ -4,7 +4,7 @@ import { OrderOptions } from '@sovryn/ui';
 
 import { rskClient } from '../../../../../../utils/clients';
 import {
-  useGetStakingWithdrawnsQuery,
+  useGetStakingWithdrawsQuery,
   V2StakingWithdrawn_OrderBy,
 } from '../../../../../../utils/graphql/rsk/generated';
 import { StakingWithdrawItem } from '../StakingWithdraws.types';
@@ -32,7 +32,7 @@ export const useGetStakingWithdraws = (
     ],
   );
 
-  const { loading, data } = useGetStakingWithdrawnsQuery({
+  const { loading, data } = useGetStakingWithdrawsQuery({
     variables: config,
     client: rskClient,
   });

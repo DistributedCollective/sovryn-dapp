@@ -25,7 +25,7 @@ import { useMaintenance } from '../../../../../hooks/useMaintenance';
 import { translations } from '../../../../../locales/i18n';
 import { rskClient } from '../../../../../utils/clients';
 import {
-  useGetStakingWithdrawnsLazyQuery,
+  useGetStakingWithdrawsLazyQuery,
   V2StakingWithdrawn_OrderBy,
 } from '../../../../../utils/graphql/rsk/generated';
 import { dateFormat } from '../../../../../utils/helpers';
@@ -62,7 +62,7 @@ export const StakingWithdraws: FC<StakingHistoryProps> = ({
     orderOptions,
   );
 
-  const [getStakes] = useGetStakingWithdrawnsLazyQuery({
+  const [getStakes] = useGetStakingWithdrawsLazyQuery({
     client: rskClient,
   });
 

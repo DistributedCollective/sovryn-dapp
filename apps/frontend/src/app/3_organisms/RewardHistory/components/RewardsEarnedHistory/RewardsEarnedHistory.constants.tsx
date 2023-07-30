@@ -34,7 +34,7 @@ export const COLUMNS_CONFIG = [
     title: t(translations.common.tables.columnTitles.transactionID),
     cellRenderer: (tx: RewardsEarnedHistoryItem) => (
       <TransactionIdRenderer
-        hash={tx.id.split('/')[0]}
+        hash={tx.id.split('-')[0]}
         dataAttribute="reward-earned-history-tx-hash"
       />
     ),

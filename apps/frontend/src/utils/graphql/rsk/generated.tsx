@@ -14497,7 +14497,7 @@ export type GetStakeHistoryQuery = {
   }>;
 };
 
-export type GetStakingWithdrawnsQueryVariables = Exact<{
+export type GetStakingWithdrawsQueryVariables = Exact<{
   user?: InputMaybe<Scalars['String']>;
   skip: Scalars['Int'];
   pageSize: Scalars['Int'];
@@ -14505,7 +14505,7 @@ export type GetStakingWithdrawnsQueryVariables = Exact<{
   orderDirection?: InputMaybe<OrderDirection>;
 }>;
 
-export type GetStakingWithdrawnsQuery = {
+export type GetStakingWithdrawsQuery = {
   __typename?: 'Query';
   v2StakingWithdrawns: Array<{
     __typename?: 'V2StakingWithdrawn';
@@ -15318,8 +15318,8 @@ export type GetStakeHistoryQueryResult = Apollo.QueryResult<
   GetStakeHistoryQuery,
   GetStakeHistoryQueryVariables
 >;
-export const GetStakingWithdrawnsDocument = gql`
-  query getStakingWithdrawns(
+export const GetStakingWithdrawsDocument = gql`
+  query getStakingWithdraws(
     $user: String
     $skip: Int!
     $pageSize: Int!
@@ -15349,16 +15349,16 @@ export const GetStakingWithdrawnsDocument = gql`
 `;
 
 /**
- * __useGetStakingWithdrawnsQuery__
+ * __useGetStakingWithdrawsQuery__
  *
- * To run a query within a React component, call `useGetStakingWithdrawnsQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetStakingWithdrawnsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useGetStakingWithdrawsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetStakingWithdrawsQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useGetStakingWithdrawnsQuery({
+ * const { data, loading, error } = useGetStakingWithdrawsQuery({
  *   variables: {
  *      user: // value for 'user'
  *      skip: // value for 'skip'
@@ -15368,39 +15368,39 @@ export const GetStakingWithdrawnsDocument = gql`
  *   },
  * });
  */
-export function useGetStakingWithdrawnsQuery(
+export function useGetStakingWithdrawsQuery(
   baseOptions: Apollo.QueryHookOptions<
-    GetStakingWithdrawnsQuery,
-    GetStakingWithdrawnsQueryVariables
+    GetStakingWithdrawsQuery,
+    GetStakingWithdrawsQueryVariables
   >,
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useQuery<
-    GetStakingWithdrawnsQuery,
-    GetStakingWithdrawnsQueryVariables
-  >(GetStakingWithdrawnsDocument, options);
+    GetStakingWithdrawsQuery,
+    GetStakingWithdrawsQueryVariables
+  >(GetStakingWithdrawsDocument, options);
 }
-export function useGetStakingWithdrawnsLazyQuery(
+export function useGetStakingWithdrawsLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
-    GetStakingWithdrawnsQuery,
-    GetStakingWithdrawnsQueryVariables
+    GetStakingWithdrawsQuery,
+    GetStakingWithdrawsQueryVariables
   >,
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useLazyQuery<
-    GetStakingWithdrawnsQuery,
-    GetStakingWithdrawnsQueryVariables
-  >(GetStakingWithdrawnsDocument, options);
+    GetStakingWithdrawsQuery,
+    GetStakingWithdrawsQueryVariables
+  >(GetStakingWithdrawsDocument, options);
 }
-export type GetStakingWithdrawnsQueryHookResult = ReturnType<
-  typeof useGetStakingWithdrawnsQuery
+export type GetStakingWithdrawsQueryHookResult = ReturnType<
+  typeof useGetStakingWithdrawsQuery
 >;
-export type GetStakingWithdrawnsLazyQueryHookResult = ReturnType<
-  typeof useGetStakingWithdrawnsLazyQuery
+export type GetStakingWithdrawsLazyQueryHookResult = ReturnType<
+  typeof useGetStakingWithdrawsLazyQuery
 >;
-export type GetStakingWithdrawnsQueryResult = Apollo.QueryResult<
-  GetStakingWithdrawnsQuery,
-  GetStakingWithdrawnsQueryVariables
+export type GetStakingWithdrawsQueryResult = Apollo.QueryResult<
+  GetStakingWithdrawsQuery,
+  GetStakingWithdrawsQueryVariables
 >;
 export const GetSwapHistoryDocument = gql`
   query getSwapHistory(

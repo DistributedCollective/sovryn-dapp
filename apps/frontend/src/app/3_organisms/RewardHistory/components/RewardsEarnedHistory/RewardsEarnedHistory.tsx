@@ -144,7 +144,7 @@ export const RewardsEarnedHistory: FC<RewardHistoryProps> = ({
         <div className="flex-row items-center ml-2 gap-4 hidden lg:inline-flex">
           <ExportCSV
             getData={exportData}
-            filename="stability-pool-subsidies"
+            filename="staking-revenue-rewards"
             disabled={!data || data.length === 0 || exportLocked}
           />
           {exportLocked && (

@@ -1,5 +1,6 @@
 import React, { FC, useMemo, useReducer } from 'react';
 
+import dayjs from 'dayjs';
 import { t } from 'i18next';
 
 import {
@@ -13,7 +14,6 @@ import {
 } from '@sovryn/ui';
 
 import { AdjustVestingStakeForm } from '../../../../../3_organisms/StakeForm/components/AdjustVestingStakeForm/AdjustVestingStakeForm';
-import { MS } from '../../../../../../constants/general';
 import { translations } from '../../../../../../locales/i18n';
 import { Vesting } from '../VestingStakesFrame.types';
 import { useGetVestingStakeStartEndDates } from '../hooks/useGetVestingStakeStartEndDates';
@@ -28,10 +28,9 @@ export const AdjustVestingStakeRenderer: FC<Vesting> = ({
 
   const { endDate } = useGetVestingStakeStartEndDates(vestingContract);
 
-  const currentDate = useMemo(() => new Date(), []);
-
+  const currentDate = useMemo(() => dayjs().unix(), []);
   const isDisabled = useMemo(
-    () => currentDate.getTime() / MS > Number(endDate),
+    () => currentDate > Number(endDate),
     [endDate, currentDate],
   );
 

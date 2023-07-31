@@ -35,8 +35,6 @@ export const useHandleStake = (
     const weiAmount = toWei(amount).toString();
     const transactions: Transaction[] = [];
 
-    console.log('stakingContract', stakingContract.address);
-
     const approveTx = await prepareApproveTransaction({
       token: SupportedTokens.sov,
       spender: stakingContract.address,

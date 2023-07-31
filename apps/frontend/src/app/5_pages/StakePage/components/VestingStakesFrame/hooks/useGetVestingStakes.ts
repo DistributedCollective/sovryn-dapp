@@ -110,6 +110,8 @@ export const useGetVestingStakes = () => {
   useEffect(() => {
     if (account && !loadingVestings && !loadingVestingsFish) {
       getVestings();
+    } else if (!account) {
+      setVestingStakes([]);
     }
   }, [account, loadingVestings, loadingVestingsFish, getVestings]);
 

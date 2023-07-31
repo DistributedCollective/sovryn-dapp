@@ -11,6 +11,9 @@ export const useGetVestings = () => {
   const [loadingVestings, setLoadingVestings] = useState(true); // Set initial state to true
 
   const getVestings = useCallback(async () => {
+    if (!account) {
+      setLoadingVestings(false);
+    }
     if (!account || !vestingContract) {
       return;
     }

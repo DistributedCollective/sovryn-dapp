@@ -378,6 +378,7 @@
         "minimumReceived": "Minimum received",
         "maximumPrice": "Maximum price"
     },
+
     "stakePage": {
         "meta": {
             "title": "Stake - Sovryn"
@@ -469,6 +470,52 @@
             "delegateStakeTitle": "Delegate voting power"
         }
     },
+
+    "fixedInterestPage": {
+        "meta": {
+            "title": "Fixed-interest loans - Sovryn",
+            "description": "TBD"
+        },
+        "title": "Fixed-interest loans",
+        "subtitle": "Borrow without rate hikes",
+        "borrowAssetsTable": {
+            "title": "Assets to borrow",
+            "columns": {
+                "asset": "Asset",
+                "borrowApr": "Borrow APR",
+                "availableSupply": "Available supply",
+                "acceptedCollateral": "Accepted collateral",
+                "minCollateralRatio": "Min collateral ratio"
+            },
+            "action": "New loan"
+        },
+        "openLoansTable": {
+            "title": "Loans",
+            "columns": {
+                "debt": "Debt",
+                "collateral": "Collateral",
+                "collateralRatio": "Collateral ratio",
+                "liquidationPrice": "Liquidation price",
+                "apr": "APR",
+                "rolloverDate": "Rollover date"
+            },
+            "actions": {
+                "adjust": "Adjust",
+                "extend": "Extend"
+            }
+        },
+        "adjustLoanDialog": {
+            "title": "Adjust a loan"
+        },
+        "extendLoanDialog": {
+            "title": "Extend a loan"
+        },
+        "newLoanDialog": {
+            "title": "New loan"
+        },
+        "collateralRatio": "collateral ratio"
+    },
+
     "fastBtc": {
         "mainScreen": {
             "title": "Funding",

@@ -39,6 +39,9 @@ const RewardsPage = loadable(
 );
 const LendPage = loadable(() => import('./app/5_pages/LendPage/LendPage'));
 const StakePage = loadable(() => import('./app/5_pages/StakePage/StakePage'));
+const BorrowPage = loadable(
+  () => import('./app/5_pages/BorrowPage/BorrowPage'),
+);
 
 const routes = [
   {
@@ -57,7 +60,7 @@ const routes = [
         loader: zeroPageLoader,
       },
       {
-        path: '/borrow',
+        path: '/zero',
         element: <Zero />,
         loader: zeroPageLoader,
       },
@@ -90,6 +93,10 @@ const routes = [
       {
         path: '/earn/staking',
         element: <StakePage />,
+      },
+      {
+        path: '/fixed-interest',
+        element: <BorrowPage />,
       },
     ],
   },

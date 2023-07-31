@@ -83,9 +83,9 @@ export const Header: FC = () => {
               to="/"
               end
               onClick={handleNavClick}
-              {...applyDataAttr('dapp-menu-borrow')}
+              {...applyDataAttr('dapp-menu-zero')}
             >
-              {t(translations.header.nav.borrow)}
+              {t(translations.header.nav.zero)}
             </NavLink>
             <NavLink
               to="/earn"
@@ -100,6 +100,13 @@ export const Header: FC = () => {
               {...applyDataAttr('dapp-menu-convert')}
             >
               {t(translations.header.nav.convert)}
+            </NavLink>
+            <NavLink
+              to="/fixed-interest"
+              onClick={handleNavClick}
+              {...applyDataAttr('dapp-menu-fixed-interest')}
+            >
+              {t(translations.header.nav.fixedInterestLoans)}
             </NavLink>
             <ProductLinks />
           </ol>

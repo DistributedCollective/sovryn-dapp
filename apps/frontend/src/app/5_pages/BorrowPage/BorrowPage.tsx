@@ -9,8 +9,7 @@ import { translations } from '../../../locales/i18n';
 import { BorrowAssetsTable } from './components/BorrowAssetsTable/BorrowAssetsTable';
 import { OpenLoansTable } from './components/OpenLoansTable/OpenLoansTable';
 
-const BorrowPage: FC = () => {
-  return (
+const BorrowPage: FC = () => (
     <>
       <Helmet>
         <title>{t(translations.fixedInterestPage.meta.title)}</title>
@@ -35,6 +34,5 @@ const BorrowPage: FC = () => {
       </div>
     </>
   );
-};
 
 export default BorrowPage;

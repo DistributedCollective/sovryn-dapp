@@ -9,22 +9,14 @@ import {
   areAddressesEqual,
   getRskExplorerUrl,
 } from '../../../../../../utils/helpers';
-import { Vesting } from '../VestingStakesFrame.types';
-import { useGetVestingDelegateAddress } from '../hooks/useGetVestingDelegateAddress';
-import { useGetVestingStakeStartEndDates } from '../hooks/useGetVestingStakeStartEndDates';
+import { VestingContractTableRecord } from '../VestingStakesFrame.types';
 
 const rskExplorerUrl = getRskExplorerUrl();
 
-export const DelegateAddressCellRenderer: FC<Vesting> = ({
-  vestingContract,
+export const DelegateAddressCellRenderer: FC<VestingContractTableRecord> = ({
+  delegatedAddress,
 }) => {
   const { account } = useAccount();
-  const { endDate } = useGetVestingStakeStartEndDates(vestingContract);
-  const delegatedAddress = useGetVestingDelegateAddress(
-    vestingContract,
-    Number(endDate),
-  );
-
   const renderAddress = useMemo(() => {
     if (!delegatedAddress || areAddressesEqual(delegatedAddress, account)) {
       return t(translations.common.na);

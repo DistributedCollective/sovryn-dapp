@@ -2,58 +2,43 @@ import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 
 import { t } from 'i18next';
 
-import {
-  OrderDirection,
-  OrderOptions,
-  Pagination,
-  Paragraph,
-  Table,
-} from '@sovryn/ui';
+import { Pagination, Paragraph, Table } from '@sovryn/ui';
 
 import { DEFAULT_PAGE_SIZE } from '../../../../../constants/general';
 import { useAccount } from '../../../../../hooks/useAccount';
 import { translations } from '../../../../../locales/i18n';
+import { generateRowTitle } from './VestingStakeFrame.utils';
 import { COLUMNS_CONFIG } from './VestingStakesFrame.constants';
-import { Vesting } from './VestingStakesFrame.types';
-import { StakedAmountCellRenderer } from './components/StakedAmountCellRenderer';
-import { useGetVestingStakes } from './hooks/useGetVestingStakes';
+import { useGetVestingContracts } from './hooks/useGetVestingContracts';
+
+const pageSize = DEFAULT_PAGE_SIZE;
 
 export const VestingStakesFrame: FC = () => {
   const { account } = useAccount();
 
   const [page, setPage] = useState(0);
 
-  const [orderOptions, setOrderOptions] = useState<OrderOptions>({
-    orderBy: 'unlockDate',
-    orderDirection: OrderDirection.Desc,
-  });
-
-  const { vestingStakes, loadingVestings, loadingVestingsFish } =
-    useGetVestingStakes();
-
-  const loading = useMemo(
-    () => loadingVestings || loadingVestingsFish,
-    [loadingVestings, loadingVestingsFish],
-  );
+  const { data: vestings, loading } = useGetVestingContracts(page, pageSize);
+  console.log('vestings', vestings);
 
   const onPageChange = useCallback(
     (value: number) => {
-      if (vestingStakes.length < DEFAULT_PAGE_SIZE && value > page) {
+      if (!vestings || (vestings?.length < pageSize && value > page)) {
         return;
       }
       setPage(value);
     },
-    [page, vestingStakes.length],
+    [page, vestings],
   );
 
   const isNextButtonDisabled = useMemo(
-    () => !loading && vestingStakes.length < DEFAULT_PAGE_SIZE,
-    [loading, vestingStakes],
+    () => !loading && (!vestings || vestings.length < pageSize),
+    [loading, vestings],
   );
 
   useEffect(() => {
     setPage(0);
-  }, [orderOptions]);
+  }, []);
 
   return (
     <div className="flex flex-col">
@@ -63,13 +48,9 @@ export const VestingStakesFrame: FC = () => {
 
       <div className="bg-gray-80 py-4 px-4 rounded">
         <Table
-          setOrderOptions={setOrderOptions}
-          orderOptions={orderOptions}
           columns={COLUMNS_CONFIG}
-          rows={vestingStakes}
-          rowTitle={({ vestingContract }: Vesting) => (
-            <StakedAmountCellRenderer vestingContract={vestingContract} />
-          )}
+          rows={vestings}
+          rowTitle={generateRowTitle}
           isLoading={loading}
           className="text-gray-10 lg:px-6 lg:py-4 text-xs"
           noData={

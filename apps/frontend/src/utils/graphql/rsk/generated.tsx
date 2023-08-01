@@ -14600,6 +14600,7 @@ export type GetVestingContractsQuery = {
     currentBalance: string;
     type: VestingContractType;
     createdAtTimestamp: number;
+    delegate?: { __typename?: 'User'; id: string } | null;
   }>;
 };
 
@@ -15690,6 +15691,9 @@ export const GetVestingContractsDocument = gql`
       currentBalance
       type
       createdAtTimestamp
+      delegate {
+        id
+      }
     }
   }
 `;

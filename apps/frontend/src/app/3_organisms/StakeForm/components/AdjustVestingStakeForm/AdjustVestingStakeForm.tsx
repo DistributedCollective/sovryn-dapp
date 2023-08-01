@@ -15,8 +15,6 @@ import {
 } from '@sovryn/ui';
 
 import { STAKING_DELEGATION_LEARN_MORE_LINK } from '../../../../5_pages/StakePage/StakePage.constants';
-import { useGetVestingDelegateAddress } from '../../../../5_pages/StakePage/components/VestingStakesFrame/hooks/useGetVestingDelegateAddress';
-import { useGetVestingStakeStartEndDates } from '../../../../5_pages/StakePage/components/VestingStakesFrame/hooks/useGetVestingStakeStartEndDates';
 import { useHandleAdjustVestingStake } from '../../../../5_pages/StakePage/hooks/useHandleAdjustVestingStake';
 import { useAccount } from '../../../../../hooks/useAccount';
 import { useMaintenance } from '../../../../../hooks/useMaintenance';
@@ -27,18 +25,15 @@ import { isAddress } from '../AdjustStakeForm/AdjustStakeForm.utils';
 type AdjustVestingStakeFormProps = {
   vestingContract: string;
   onSuccess: () => void;
+  delegatedAddress: string;
 };
 
 export const AdjustVestingStakeForm: FC<AdjustVestingStakeFormProps> = ({
   vestingContract,
   onSuccess,
+  delegatedAddress,
 }) => {
   const { account } = useAccount();
-  const { endDate } = useGetVestingStakeStartEndDates(vestingContract);
-  const delegatedAddress = useGetVestingDelegateAddress(
-    vestingContract,
-    Number(endDate),
-  );
   const [delegateToAddress, setDelegateToAddress] = useState('');
 
   const { checkMaintenance, States } = useMaintenance();
@@ -97,11 +92,7 @@ export const AdjustVestingStakeForm: FC<AdjustVestingStakeFormProps> = ({
         <Paragraph size={ParagraphSize.base} className="font-medium">
           {t(translations.stakePage.stakeForm.currentDelegateAddress)}
         </Paragraph>
-        <Input
-          readOnly
-          value={delegatedAddress.toLowerCase()}
-          className="mt-3 max-w-full"
-        />
+        <Input readOnly value={delegatedAddress} className="mt-3 max-w-full" />
 
         <div className="flex items-center gap-1 mt-6">
           <Paragraph size={ParagraphSize.base} className="font-medium">

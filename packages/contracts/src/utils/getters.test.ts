@@ -2,6 +2,7 @@ import { ChainIds } from '@sovryn/ethers-provider';
 
 import { contracts } from '../contracts';
 import {
+  getLendTokenContract,
   getLoanTokenContract,
   getProtocolContract,
   getTokenContract,
@@ -33,6 +34,22 @@ describe('utils/contracts/getters.ts', () => {
       const token = await getLoanTokenContract('ixusd', ChainIds.RSK_TESTNET);
       expect(token.address).toBe(
         contracts.loanTokens.rskTestnet?.ixusd.toLowerCase(),
+      );
+    });
+  });
+
+  describe('getLendTokenContract', () => {
+    it('load lowercased dllr lend token contract address', async () => {
+      const token = await getLendTokenContract('dllr');
+      expect(token.address).toBe(
+        contracts.lendTokens.rsk?.dllr.address.toLowerCase(),
+      );
+    });
+
+    it('loads lowercased dllr lend token contract from non default chain', async () => {
+      const token = await getLendTokenContract('dllr', ChainIds.RSK_TESTNET);
+      expect(token.address).toBe(
+        contracts.lendTokens.rskTestnet?.dllr.address.toLowerCase(),
       );
     });
   });

@@ -17,6 +17,7 @@ import { defaultChainId } from '../../../../../config/chains';
 import { useAccount } from '../../../../../hooks/useAccount';
 import { translations } from '../../../../../locales/i18n';
 import { eventDriven } from '../../../../../store/rxjs/event-driven';
+import { asyncCall } from '../../../../../store/rxjs/provider-cache';
 import { Nullable } from '../../../../../types/global';
 import { LendModalAction } from '../../LendPage.types';
 import { CurrentStats } from './CurrentStats';
@@ -31,16 +32,11 @@ export type AdjustModalProps = {
   ) => void;
 };
 
-export type AdjustModalState = {
-  // deposit token
+export type FullAdjustModalState = {
   token: SupportedTokens;
-  // lending pool APY
   apy: Decimal;
-  // current user balance in the pool
   balance: Decimal;
-};
-
-export type FullAdjustModalState = AdjustModalState & {
+  liquidity: Decimal;
   poolTokenContract: Contract;
   tokenContract: Contract;
   tokenDetails: TokenDetailsData;
@@ -51,7 +47,7 @@ export const AdjustLendingModalContainer: FC<AdjustModalProps> = ({
   onWithdraw,
 }) => {
   const { subscribe, push } = useMemo(
-    () => eventDriven<Nullable<AdjustModalState>>(LendModalAction.Adjust),
+    () => eventDriven<Nullable<SupportedTokens>>(LendModalAction.Adjust),
     [],
   );
 
@@ -66,14 +62,14 @@ export const AdjustLendingModalContainer: FC<AdjustModalProps> = ({
         return;
       }
 
-      const poolToken = await getLoanTokenContract(value.token, defaultChainId);
+      const poolToken = await getLoanTokenContract(value, defaultChainId);
 
       if (!poolToken) {
         setState(null);
         return;
       }
 
-      const tokenDetails = await getTokenDetails(value.token, defaultChainId);
+      const tokenDetails = await getTokenDetails(value, defaultChainId);
 
       const poolTokenContract = new Contract(
         poolToken.address,
@@ -87,8 +83,26 @@ export const AdjustLendingModalContainer: FC<AdjustModalProps> = ({
         signer,
       );
 
+      const balance = await asyncCall(
+        `poolToken/${poolToken.address}/assetBalanceOf/${account}`,
+        () => poolTokenContract?.assetBalanceOf(account),
+      ).then(Decimal.fromBigNumberString);
+
+      const liquidity = await asyncCall(
+        `poolToken/${poolToken.address}/marketLiquidity`,
+        () => poolTokenContract?.marketLiquidity(),
+      ).then(Decimal.fromBigNumberString);
+
+      const apy = await asyncCall(
+        `poolToken/${poolToken.address}/nextSupplyInterestRate`,
+        () => poolTokenContract?.nextSupplyInterestRate('0'),
+      ).then(Decimal.fromBigNumberString);
+
       setState({
-        ...value,
+        token: value,
+        balance,
+        liquidity,
+        apy,
         poolTokenContract,
         tokenContract,
         tokenDetails,

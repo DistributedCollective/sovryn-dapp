@@ -15,7 +15,10 @@ import { getTokenDisplayName } from '../../../../constants/tokens';
 import { useTransactionContext } from '../../../../contexts/TransactionContext';
 import { useAccount } from '../../../../hooks/useAccount';
 import { translations } from '../../../../locales/i18n';
+import { asyncCall } from '../../../../store/rxjs/provider-cache';
 import { prepareApproveTransaction } from '../../../../utils/transactions';
+import { LendingPoolDictionary } from '../utils/LendingPoolDictionary';
+import { lendingBalanceOf } from '../utils/contract-calls';
 
 export type Args = Partial<{
   tokenDetails: TokenDetailsData;
@@ -41,8 +44,8 @@ export const useHandleLending = (
         return;
       }
 
-      // todo: value should be retrieved from whenever pool settings will be located.
-      const poolUsesLM = true;
+      const pool = LendingPoolDictionary.pools.get(tokenDetails.symbol);
+      const poolUsesLM = pool?.useLM || false;
 
       const transactions: Transaction[] = [];
       if (tokenDetails.symbol !== SupportedTokens.rbtc) {
@@ -111,8 +114,8 @@ export const useHandleLending = (
         return;
       }
 
-      // todo: value should be retrieved from whenever pool settings will be located.
-      const poolUsesLM = true;
+      const pool = LendingPoolDictionary.pools.get(tokenDetails.symbol);
+      const poolUsesLM = pool?.useLM || false;
 
       // make sure contract has signer.
       const contract = poolTokenContract.connect(signer);
@@ -120,20 +123,32 @@ export const useHandleLending = (
       const transactions: Transaction[] = [];
 
       // todo: we may need to approve iToken spending if poolUsesLM is false.
-
       const native = tokenDetails.symbol === SupportedTokens.rbtc;
 
+      const assetBalance = await asyncCall(
+        `poolToken/${poolTokenContract.address}/assetBalanceOf/${account}`,
+        () => poolTokenContract.assetBalanceOf(account),
+      ).then(Decimal.fromBigNumberString);
+
+      const balance = await lendingBalanceOf(tokenDetails.symbol, account);
+
+      if (amount.gte(assetBalance.sub('0.0000001'))) {
+        amount = assetBalance;
+      }
+
+      const withdrawAmount = amount.mul(balance.div(assetBalance));
+
       transactions.push({
-        title: t(translations.lendingTx.deposit, {
+        title: t(translations.lendingTx.withdraw, {
           symbol: getTokenDisplayName(tokenDetails.symbol),
         }),
         request: {
           type: TransactionType.signTransaction,
           contract: contract,
           fnName: native
-            ? 'burnToBTC(address,bool)'
+            ? 'burnToBTC(address,uint256,bool)'
             : 'burn(address,uint256,bool)',
-          args: [account, amount.toBigNumber().toString(), poolUsesLM],
+          args: [account, withdrawAmount.toBigNumber().toString(), poolUsesLM],
           gasLimit: GAS_LIMIT.LENDING_BURN,
         },
         onComplete,

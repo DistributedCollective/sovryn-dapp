@@ -47,8 +47,9 @@ export const LendingForm: FC<DepositProps> = ({ state, onConfirm }) => {
   );
 
   const balance = useMemo(
-    () => (isDeposit ? userBalance : state.balance),
-    [isDeposit, state.balance, userBalance],
+    () =>
+      isDeposit ? userBalance : Decimal.min(state.balance, state.liquidity),
+    [isDeposit, state.balance, state.liquidity, userBalance],
   );
 
   const handleSubmit = useCallback(
@@ -76,7 +77,7 @@ export const LendingForm: FC<DepositProps> = ({ state, onConfirm }) => {
     if (isDeposit) {
       return amount.gt(0) && amount.lte(balance.toBigNumber());
     } else {
-      return amount.gt(0) && amount.lte(state.balance.toBigNumber());
+      return amount.gt(0) && state.balance.toBigNumber().gte(amount);
     }
   }, [amount, balance, isDeposit, state.balance]);
 

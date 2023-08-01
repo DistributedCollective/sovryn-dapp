@@ -4,7 +4,7 @@ import { SupportedTokens } from '@sovryn/contracts';
 
 import { useAccount } from '../../../../hooks/useAccount';
 import { useLoadContract } from '../../../../hooks/useLoadContract';
-import { fromWei } from '../../../../utils/math';
+import { lendingBalanceOf } from '../utils/contract-calls';
 
 export const useGetBalanceOf = (asset: SupportedTokens) => {
   const { account } = useAccount();
@@ -14,11 +14,11 @@ export const useGetBalanceOf = (asset: SupportedTokens) => {
   const lendContract = useLoadContract(asset, 'loanTokens');
 
   const getBalance = useCallback(async () => {
-    const balance = await lendContract?.balanceOf(account);
+    const balance = await lendingBalanceOf(asset, account);
     if (balance) {
-      setBalanceTotal(fromWei(balance));
+      setBalanceTotal(balance.toString());
     }
-  }, [lendContract, account]);
+  }, [asset, account]);
 
   useEffect(() => {
     if (account && lendContract) {

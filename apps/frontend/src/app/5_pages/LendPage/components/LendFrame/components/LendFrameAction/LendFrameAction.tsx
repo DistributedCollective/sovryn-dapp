@@ -9,17 +9,10 @@ import { useAccount } from '../../../../../../../hooks/useAccount';
 import { translations } from '../../../../../../../locales/i18n';
 import { eventDriven } from '../../../../../../../store/rxjs/event-driven';
 import { Nullable } from '../../../../../../../types/global';
-import { decimalic } from '../../../../../../../utils/math';
 import { LendModalAction } from '../../../../LendPage.types';
 import { useHandleLending } from '../../../../hooks/useHandleLending';
-import {
-  AdjustLendingModalContainer,
-  AdjustModalState,
-} from '../../../AdjustModal/AdjustLendingModalContainer';
-import {
-  LendingModalContainer,
-  LendingModalState,
-} from '../../../LendModal/LendingModalContainer';
+import { AdjustLendingModalContainer } from '../../../AdjustModal/AdjustLendingModalContainer';
+import { LendingModalContainer } from '../../../LendModal/LendingModalContainer';
 import { LendFrameProps } from '../../LendFrame.types';
 import { useGetAssetBalanceOf } from '../LendFrameBalance/hooks/useGetAssetBalanceOf';
 
@@ -29,28 +22,21 @@ export const LendFrameAction: FC<LendFrameProps> = ({ pool }) => {
   const { assetBalance } = useGetAssetBalanceOf(asset);
 
   const { push: adjust } = useMemo(
-    () => eventDriven<Nullable<AdjustModalState>>(LendModalAction.Adjust),
+    () => eventDriven<Nullable<SupportedTokens>>(LendModalAction.Adjust),
     [],
   );
   const { push: lend } = useMemo(
-    () => eventDriven<Nullable<LendingModalState>>(LendModalAction.Lend),
+    () => eventDriven<Nullable<SupportedTokens>>(LendModalAction.Lend),
     [],
   );
 
   const handleAdjustClick = useCallback(async () => {
-    adjust({
-      token: SupportedTokens.xusd,
-      apy: decimalic('0.1'),
-      balance: decimalic('1000'),
-    });
-  }, [adjust]);
+    adjust(pool.getAsset());
+  }, [adjust, pool]);
 
   const handleLendClick = useCallback(async () => {
-    lend({
-      token: SupportedTokens.xusd,
-      apy: decimalic('0.1'),
-    });
-  }, [lend]);
+    lend(pool.getAsset());
+  }, [lend, pool]);
 
   const handleCloseModal = useCallback(() => {
     adjust(null);

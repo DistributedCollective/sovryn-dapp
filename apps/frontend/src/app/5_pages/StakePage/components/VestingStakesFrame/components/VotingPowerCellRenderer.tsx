@@ -5,17 +5,20 @@ import { t } from 'i18next';
 import { AmountRenderer } from '../../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { TOKEN_RENDER_PRECISION } from '../../../../../../constants/currencies';
 import { translations } from '../../../../../../locales/i18n';
-import { fromWei } from '../../../../../../utils/math';
 import { VP } from '../../../StakePage.constants';
-import { useGetStakingBalanceOf } from '../../../hooks/useGetStakingBalanceOf';
 import { useGetVotingPower } from '../../../hooks/useGetVotingPower';
-import { Vesting } from '../VestingStakesFrame.types';
-import { useGetVestingStakeStartEndDates } from '../hooks/useGetVestingStakeStartEndDates';
+import { VestingContractTableRecord } from '../VestingStakesFrame.types';
 
-export const VotingPowerCellRenderer: FC<Vesting> = ({ vestingContract }) => {
-  const { balance } = useGetStakingBalanceOf(vestingContract);
-  const { endDate } = useGetVestingStakeStartEndDates(vestingContract);
-  const votingPower = useGetVotingPower(fromWei(balance), Number(endDate));
+export const VotingPowerCellRenderer: FC<VestingContractTableRecord> = ({
+  currentBalance,
+  createdAtTimestamp,
+  duration,
+}) => {
+  const endDate = useMemo(
+    () => createdAtTimestamp + (duration || 0),
+    [createdAtTimestamp, duration],
+  );
+  const votingPower = useGetVotingPower(currentBalance, endDate);
 
   const renderVotingPower = useMemo(() => {
     if (!votingPower) {

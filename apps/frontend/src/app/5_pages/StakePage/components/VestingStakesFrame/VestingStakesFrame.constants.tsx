@@ -1,7 +1,7 @@
 import { t } from 'i18next';
 
 import { translations } from '../../../../../locales/i18n';
-import { Vesting } from './VestingStakesFrame.types';
+import { VestingContractTableRecord } from './VestingStakesFrame.types';
 import { AdjustVestingStakeRenderer } from './components/AdjustVestingStakeRenderer';
 import { DelegateAddressCellRenderer } from './components/DelegateAddressCellRenderer';
 import { StakedAmountCellRenderer } from './components/StakedAmountCellRenderer';
@@ -10,28 +10,33 @@ import { VotingPowerCellRenderer } from './components/VotingPowerCellRenderer';
 
 export const COLUMNS_CONFIG = [
   {
-    id: 'stakeAmount',
+    id: 'currentBalance',
     title: t(translations.stakePage.table.stakeAmount),
-    cellRenderer: (item: Vesting) => StakedAmountCellRenderer(item),
+    cellRenderer: (item: VestingContractTableRecord) =>
+      StakedAmountCellRenderer(item),
   },
   {
     id: 'votingPower',
     title: t(translations.stakePage.table.votingPower),
-    cellRenderer: (item: Vesting) => VotingPowerCellRenderer(item),
+    cellRenderer: (item: VestingContractTableRecord) =>
+      VotingPowerCellRenderer(item),
   },
   {
     id: 'delegate',
     title: t(translations.stakePage.table.delegate),
-    cellRenderer: (item: Vesting) => DelegateAddressCellRenderer(item),
+    cellRenderer: (item: VestingContractTableRecord) =>
+      DelegateAddressCellRenderer(item),
   },
   {
-    id: 'unlockDate',
+    id: 'createdAtTimestamp',
     title: t(translations.stakePage.table.endDate),
-    cellRenderer: (item: Vesting) => UnlockDateCellRenderer(item),
+    cellRenderer: (item: VestingContractTableRecord) =>
+      UnlockDateCellRenderer(item),
   },
   {
     id: '',
     title: '',
-    cellRenderer: (item: Vesting) => AdjustVestingStakeRenderer(item),
+    cellRenderer: (item: VestingContractTableRecord) =>
+      AdjustVestingStakeRenderer(item),
   },
 ];

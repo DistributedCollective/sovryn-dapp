@@ -15,22 +15,29 @@ import {
 
 import { AdjustVestingStakeForm } from '../../../../../3_organisms/StakeForm/components/AdjustVestingStakeForm/AdjustVestingStakeForm';
 import { translations } from '../../../../../../locales/i18n';
-import { Vesting } from '../VestingStakesFrame.types';
-import { useGetVestingStakeStartEndDates } from '../hooks/useGetVestingStakeStartEndDates';
+import { VestingContractTableRecord } from '../VestingStakesFrame.types';
 
-export const AdjustVestingStakeRenderer: FC<Vesting> = ({
-  vestingContract,
+export const AdjustVestingStakeRenderer: FC<VestingContractTableRecord> = ({
+  address,
+  createdAtTimestamp,
+  duration,
+  delegatedAddress,
 }) => {
   const [openVestingStakeDialog, toggleVestingStakeDialog] = useReducer(
     v => !v,
     false,
   );
 
-  const { endDate } = useGetVestingStakeStartEndDates(vestingContract);
+  const endDate = useMemo(() => {
+    if (typeof duration === 'number') {
+      return createdAtTimestamp + duration;
+    }
+    return null;
+  }, [duration, createdAtTimestamp]);
 
   const currentDate = useMemo(() => dayjs().unix(), []);
   const isDisabled = useMemo(
-    () => currentDate > Number(endDate),
+    () => currentDate > endDate!,
     [endDate, currentDate],
   );
 
@@ -56,8 +63,9 @@ export const AdjustVestingStakeRenderer: FC<Vesting> = ({
         />
         <DialogBody>
           <AdjustVestingStakeForm
-            vestingContract={vestingContract}
+            vestingContract={address}
             onSuccess={toggleVestingStakeDialog}
+            delegatedAddress={delegatedAddress || ''}
           />
         </DialogBody>
       </Dialog>

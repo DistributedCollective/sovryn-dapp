@@ -1,3 +1,5 @@
+import { VestingContractType } from '../../../../../utils/graphql/rsk/generated';
+
 export type VestingData = {
   vestingAddress: string;
   vestingCreationType: string;
@@ -18,4 +20,15 @@ export type Vesting = {
   type: VestingGroup;
   typeCreation: string;
   vestingContract: string;
+};
+
+export type VestingContractTableRecord = {
+  type: VestingContractType;
+  currentBalance: string;
+  availableBalance?: string;
+  address: string;
+  cliff: number;
+  createdAtTimestamp: number;
+  duration?: number | null;
+  delegatedAddress?: string | null;
 };

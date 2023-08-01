@@ -12,5 +12,8 @@ query getVestingContracts($user: String, $skip: Int!, $pageSize: Int!) {
     currentBalance
     type
     createdAtTimestamp
+    delegate {
+      id
+    }
   }
 }

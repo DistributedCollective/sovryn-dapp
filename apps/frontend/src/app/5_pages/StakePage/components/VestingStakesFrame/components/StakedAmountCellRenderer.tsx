@@ -4,21 +4,14 @@ import { SupportedTokens } from '@sovryn/contracts';
 
 import { AmountRenderer } from '../../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { TOKEN_RENDER_PRECISION } from '../../../../../../constants/currencies';
-import { fromWei } from '../../../../../../utils/math';
-import { useGetStakingBalanceOf } from '../../../hooks/useGetStakingBalanceOf';
+import { VestingContractTableRecord } from '../VestingStakesFrame.types';
 
-type StakedAmountCellRendererProps = {
-  vestingContract: string;
-};
-
-export const StakedAmountCellRenderer: FC<StakedAmountCellRendererProps> = ({
-  vestingContract,
+export const StakedAmountCellRenderer: FC<VestingContractTableRecord> = ({
+  currentBalance,
 }) => {
-  const { balance } = useGetStakingBalanceOf(vestingContract);
-
   return (
     <AmountRenderer
-      value={fromWei(balance)}
+      value={currentBalance}
       suffix={SupportedTokens.sov}
       precision={TOKEN_RENDER_PRECISION}
       showRoundingPrefix

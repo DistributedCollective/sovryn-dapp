@@ -56,7 +56,11 @@
         },
         "advancedSettings": "Advanced settings",
         "and": "and",
-        "more": "more"
+        "more": "more",
+        "transactionTypes": {
+            "deposit": "Deposit",
+            "withdrawal": "Withdrawal"
+        }
     },
     "connectWalletButton": {
         "connect": "Get started",
@@ -489,7 +493,7 @@
             "tabs": {
                 "lineOfCredit": "Line of credit",
                 "redemptions": "Redemptions",
-                "stability": "Stability pool",
+                "earn": "Earn",
                 "convert": "Conversion",
                 "funding": "Funding",
                 "reward": "Reward"
@@ -587,6 +591,17 @@
             "amount": "Amount",
             "withdrawSurplus": "Withdraw surplus",
             "depositSurplus": "Deposit surplus"
+        }
+    },
+    "earnHistory": {
+        "types": {
+            "stabilityPool": "Stability pool",
+            "lending": "Lending"
+        },
+        "lendingHistory": {
+            "columns": {
+                "balanceChange": "Balance change"
+            }
         }
     },
     "stabilityPoolHistory": {

@@ -17,7 +17,8 @@ export const COLUMNS_CONFIG = [
   {
     id: 'votingPower',
     title: t(translations.stakePage.table.votingPower),
-    cellRenderer: () => t(translations.common.na),
+    cellRenderer: (item: VestingContractTableRecord) =>
+      VotingPowerCellRenderer(item),
   },
   {
     id: 'delegate',

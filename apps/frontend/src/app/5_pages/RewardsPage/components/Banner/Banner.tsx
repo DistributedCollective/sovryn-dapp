@@ -82,7 +82,7 @@ export const Banner: FC<BannerProps> = ({
             {action}
             {learnMore && (
               <Button
-                text={t(translations.stakePage.stakingRewards.learnMore)}
+                text={t(translations.stakePage.stakingRewards.learnMoreLink)}
                 href={learnMore}
                 style={ButtonStyle.ghost}
                 hrefExternal

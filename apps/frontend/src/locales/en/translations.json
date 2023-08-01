@@ -409,7 +409,6 @@
             "newEndDate": "New end date",
             "newStakeAmount": "New stake amount",
             "newStakedSov": "New staked SOV",
-            "votingPowerReceived": "Voting power received",
             "votingPowerIncrease": "Voting power increase",
             "votingPowerDecrease": "Voting power decrease",
             "penalty": "Early unstaking penalty",
@@ -437,6 +436,7 @@
             "title": "Staking rewards",
             "description": "Earn rewards and participate in governance by staking SOV",
             "buySov": "Buy SOV",
+            "learnMoreLink": "Learn more",
             "learnMore": "Learn more about benefits"
         },
         "txDialog": {

@@ -16,6 +16,7 @@ import {
   ButtonSize,
 } from '@sovryn/ui';
 
+import { WIKI_LINKS } from '../../../constants/links';
 import { useMaintenance } from '../../../hooks/useMaintenance';
 import { translations } from '../../../locales/i18n';
 import styles from './RewardsPage.module.css';
@@ -104,6 +105,7 @@ const RewardsPage: FC = () => {
             description={t(
               translations.rewardPage.stabilityPoolBanner.description,
             )}
+            learnMore={WIKI_LINKS.STABILITY_POOL_REWARDS}
             action={
               <Button
                 text={t(translations.rewardPage.stabilityPoolBanner.action)}
@@ -136,6 +138,7 @@ const RewardsPage: FC = () => {
             description={t(
               translations.rewardPage.yieldFarmingBanner.description,
             )}
+            learnMore={WIKI_LINKS.YIELD_FARMING}
             action={
               <Button
                 text={t(translations.rewardPage.yieldFarmingBanner.action)}

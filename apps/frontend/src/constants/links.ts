@@ -43,6 +43,10 @@ export const WIKI_LINKS = {
   SECURITY: 'https://wiki.sovryn.com/technical-documents#security',
   FEES: 'https://wiki.sovryn.com/sovryn-dapp/fees#zero-borrowing',
   RISKS: 'https://wiki.sovryn.com/en/sovryn-dapp/subprotocols/zero-zusd#risks',
+  STABILITY_POOL_REWARDS:
+    'https://wiki.sovryn.com/en/sovryn-dapp/subprotocols/zero-zusd#stability-pool-rewards',
+  YIELD_FARMING:
+    'https://wiki.sovryn.com/en/sovryn-dapp/market-making#yield-farming',
 };
 
 export const HELPDESK_LINK = 'https://help.sovryn.app/';

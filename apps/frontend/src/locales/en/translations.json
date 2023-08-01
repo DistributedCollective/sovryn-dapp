@@ -385,6 +385,7 @@
             "votingPowerShare": "Voting power share"
         },
         "table": {
+            "vestingType": "Vesting type",
             "stakes": "Stakes",
             "vestingStakes": "Vesting stakes",
             "stakeButton": "Stake SOV",

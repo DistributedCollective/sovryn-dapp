@@ -1,0 +1,25 @@
+query getActiveLoans($user:string) {
+  user(id: $user) {
+    loans(where: {type: LoanType.Borrow, isOpen: true}){
+      id
+      loanToken {
+        id
+        lastPriceBtc
+        lastPriceUsd
+        symbol
+      }
+      collateralToken {
+        id
+        lastPriceBtc
+        lastPriceUsd
+        symbol
+      }
+      borrowedAmount
+      positionSize
+      nextRollover
+      borrow (first: 1, orderBy: timestamp, orderDirection: desc) {
+        interestRate
+      }
+    }
+  }
+}

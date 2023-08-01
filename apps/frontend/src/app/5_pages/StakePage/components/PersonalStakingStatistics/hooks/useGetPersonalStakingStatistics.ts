@@ -1,6 +1,7 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { useAccount } from '../../../../../../hooks/useAccount';
+import { useBlockNumber } from '../../../../../../hooks/useBlockNumber';
 import { useGetProtocolContract } from '../../../../../../hooks/useGetContract';
 import { asyncCall } from '../../../../../../store/rxjs/provider-cache';
 import { useGetStakingBalanceOf } from '../../../hooks/useGetStakingBalanceOf';
@@ -11,6 +12,8 @@ export const useGetPersonalStakingStatistics = () => {
   const [votingPower, setVotingPower] = useState(0);
 
   const { balance } = useGetStakingBalanceOf(account);
+  const { value: block } = useBlockNumber();
+  const prevBlockRef = useRef<number | undefined>(block);
 
   const updateVotingPower = useCallback(async () => {
     if (!stakingContract) {
@@ -30,10 +33,12 @@ export const useGetPersonalStakingStatistics = () => {
   }, [stakingContract, account]);
 
   useEffect(() => {
-    if (account) {
+    if (prevBlockRef.current !== block) {
       updateVotingPower();
     }
-  }, [account, updateVotingPower]);
+
+    prevBlockRef.current = block;
+  }, [account, block, updateVotingPower]);
 
   return { balance, votingPower };
 };

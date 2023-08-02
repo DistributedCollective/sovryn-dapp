@@ -1,6 +1,5 @@
 import React, { FC, useMemo } from 'react';
 
-import dayjs from 'dayjs';
 import { t } from 'i18next';
 
 import { translations } from '../../../../../../locales/i18n';
@@ -9,15 +8,15 @@ import { VestingContractTableRecord } from '../VestingStakesFrame.types';
 
 export const UnlockDateCellRenderer: FC<VestingContractTableRecord> = ({
   duration,
+  createdAtTimestamp,
 }) => {
-  const currentDate = useMemo(() => dayjs().unix(), []);
   const renderEndDate = useMemo(() => {
     if (typeof duration === 'number') {
-      const endDate = currentDate + duration;
+      const endDate = createdAtTimestamp + duration;
       return dateFormat(Number(endDate));
     }
     return t(translations.common.na);
-  }, [duration, currentDate]);
+  }, [duration, createdAtTimestamp]);
 
   return <>{renderEndDate}</>;
 };

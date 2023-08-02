@@ -14339,6 +14339,48 @@ export type GetBitcoinTxIdQuery = {
   }>;
 };
 
+export type GetDelegateChangesQueryVariables = Exact<{
+  user?: InputMaybe<Scalars['String']>;
+  skip: Scalars['Int'];
+  pageSize: Scalars['Int'];
+  orderBy?: InputMaybe<V2DelegateChanged_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+}>;
+
+export type GetDelegateChangesQuery = {
+  __typename?: 'Query';
+  v2DelegateChangeds: Array<{
+    __typename?: 'V2DelegateChanged';
+    id: string;
+    timestamp: number;
+    lockedUntil: number;
+    delegate?: { __typename?: 'User'; id: string } | null;
+    previousDelegate?: { __typename?: 'User'; id: string } | null;
+    user: { __typename?: 'User'; id: string };
+  }>;
+};
+
+export type GetExtendedStakingDurationsQueryVariables = Exact<{
+  user?: InputMaybe<Scalars['String']>;
+  skip: Scalars['Int'];
+  pageSize: Scalars['Int'];
+  orderBy?: InputMaybe<V2ExtendedStakingDuration_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+}>;
+
+export type GetExtendedStakingDurationsQuery = {
+  __typename?: 'Query';
+  v2ExtendedStakingDurations: Array<{
+    __typename?: 'V2ExtendedStakingDuration';
+    id: string;
+    amountStaked: string;
+    newDate: number;
+    previousDate: number;
+    timestamp: number;
+    user: { __typename?: 'User'; id: string };
+  }>;
+};
+
 export type GetFastBtcDepositRskTransactionQueryVariables = Exact<{
   bitcoinTxHash?: InputMaybe<Scalars['String']>;
   user?: InputMaybe<Scalars['String']>;
@@ -14391,6 +14433,28 @@ export type GetLastVestingWithdrawQuery = {
   }>;
 };
 
+export type GetRewardsEarnedHistoryQueryVariables = Exact<{
+  user?: InputMaybe<Scalars['String']>;
+  skip: Scalars['Int'];
+  pageSize: Scalars['Int'];
+  orderBy?: InputMaybe<RewardsEarnedHistoryItem_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+  actions?: InputMaybe<Array<RewardsEarnedAction> | RewardsEarnedAction>;
+}>;
+
+export type GetRewardsEarnedHistoryQuery = {
+  __typename?: 'Query';
+  rewardsEarnedHistoryItems: Array<{
+    __typename?: 'RewardsEarnedHistoryItem';
+    id: string;
+    action: RewardsEarnedAction;
+    amount: string;
+    token?: string | null;
+    timestamp: number;
+    transaction: { __typename?: 'Transaction'; id: string };
+  }>;
+};
+
 export type GetSmartTokensQueryVariables = Exact<{
   skip: Scalars['Int'];
   pageSize: Scalars['Int'];
@@ -14409,6 +14473,49 @@ export type GetSmartTokensQuery = {
     symbol?: string | null;
     owner: string;
     addedToRegistryBlockNumber?: number | null;
+  }>;
+};
+
+export type GetStakeHistoryQueryVariables = Exact<{
+  user?: InputMaybe<Scalars['String']>;
+  skip: Scalars['Int'];
+  pageSize: Scalars['Int'];
+  orderBy?: InputMaybe<V2TokensStaked_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+}>;
+
+export type GetStakeHistoryQuery = {
+  __typename?: 'Query';
+  v2TokensStakeds: Array<{
+    __typename?: 'V2TokensStaked';
+    id: string;
+    amount: string;
+    totalStaked: string;
+    timestamp: number;
+    lockedUntil: number;
+    user: { __typename?: 'User'; id: string };
+  }>;
+};
+
+export type GetStakingWithdrawsQueryVariables = Exact<{
+  user?: InputMaybe<Scalars['String']>;
+  skip: Scalars['Int'];
+  pageSize: Scalars['Int'];
+  orderBy?: InputMaybe<V2StakingWithdrawn_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+}>;
+
+export type GetStakingWithdrawsQuery = {
+  __typename?: 'Query';
+  v2StakingWithdrawns: Array<{
+    __typename?: 'V2StakingWithdrawn';
+    id: string;
+    amount: string;
+    isGovernance: boolean;
+    timestamp: number;
+    until: number;
+    receiver?: { __typename?: 'User'; id: string } | null;
+    user: { __typename?: 'User'; id: string };
   }>;
 };
 
@@ -14592,6 +14699,172 @@ export type GetBitcoinTxIdLazyQueryHookResult = ReturnType<
 export type GetBitcoinTxIdQueryResult = Apollo.QueryResult<
   GetBitcoinTxIdQuery,
   GetBitcoinTxIdQueryVariables
+>;
+export const GetDelegateChangesDocument = gql`
+  query getDelegateChanges(
+    $user: String
+    $skip: Int!
+    $pageSize: Int!
+    $orderBy: V2DelegateChanged_orderBy
+    $orderDirection: OrderDirection
+  ) {
+    v2DelegateChangeds(
+      where: { user: $user }
+      first: $pageSize
+      skip: $skip
+      orderBy: $orderBy
+      orderDirection: $orderDirection
+    ) {
+      id
+      delegate {
+        id
+      }
+      timestamp
+      previousDelegate {
+        id
+      }
+      user {
+        id
+      }
+      lockedUntil
+    }
+  }
+`;
+
+/**
+ * __useGetDelegateChangesQuery__
+ *
+ * To run a query within a React component, call `useGetDelegateChangesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetDelegateChangesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetDelegateChangesQuery({
+ *   variables: {
+ *      user: // value for 'user'
+ *      skip: // value for 'skip'
+ *      pageSize: // value for 'pageSize'
+ *      orderBy: // value for 'orderBy'
+ *      orderDirection: // value for 'orderDirection'
+ *   },
+ * });
+ */
+export function useGetDelegateChangesQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    GetDelegateChangesQuery,
+    GetDelegateChangesQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    GetDelegateChangesQuery,
+    GetDelegateChangesQueryVariables
+  >(GetDelegateChangesDocument, options);
+}
+export function useGetDelegateChangesLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    GetDelegateChangesQuery,
+    GetDelegateChangesQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    GetDelegateChangesQuery,
+    GetDelegateChangesQueryVariables
+  >(GetDelegateChangesDocument, options);
+}
+export type GetDelegateChangesQueryHookResult = ReturnType<
+  typeof useGetDelegateChangesQuery
+>;
+export type GetDelegateChangesLazyQueryHookResult = ReturnType<
+  typeof useGetDelegateChangesLazyQuery
+>;
+export type GetDelegateChangesQueryResult = Apollo.QueryResult<
+  GetDelegateChangesQuery,
+  GetDelegateChangesQueryVariables
+>;
+export const GetExtendedStakingDurationsDocument = gql`
+  query getExtendedStakingDurations(
+    $user: String
+    $skip: Int!
+    $pageSize: Int!
+    $orderBy: V2ExtendedStakingDuration_orderBy
+    $orderDirection: OrderDirection
+  ) {
+    v2ExtendedStakingDurations(
+      where: { user: $user }
+      first: $pageSize
+      skip: $skip
+      orderBy: $orderBy
+      orderDirection: $orderDirection
+    ) {
+      id
+      amountStaked
+      newDate
+      previousDate
+      timestamp
+      user {
+        id
+      }
+    }
+  }
+`;
+
+/**
+ * __useGetExtendedStakingDurationsQuery__
+ *
+ * To run a query within a React component, call `useGetExtendedStakingDurationsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetExtendedStakingDurationsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetExtendedStakingDurationsQuery({
+ *   variables: {
+ *      user: // value for 'user'
+ *      skip: // value for 'skip'
+ *      pageSize: // value for 'pageSize'
+ *      orderBy: // value for 'orderBy'
+ *      orderDirection: // value for 'orderDirection'
+ *   },
+ * });
+ */
+export function useGetExtendedStakingDurationsQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    GetExtendedStakingDurationsQuery,
+    GetExtendedStakingDurationsQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    GetExtendedStakingDurationsQuery,
+    GetExtendedStakingDurationsQueryVariables
+  >(GetExtendedStakingDurationsDocument, options);
+}
+export function useGetExtendedStakingDurationsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    GetExtendedStakingDurationsQuery,
+    GetExtendedStakingDurationsQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    GetExtendedStakingDurationsQuery,
+    GetExtendedStakingDurationsQueryVariables
+  >(GetExtendedStakingDurationsDocument, options);
+}
+export type GetExtendedStakingDurationsQueryHookResult = ReturnType<
+  typeof useGetExtendedStakingDurationsQuery
+>;
+export type GetExtendedStakingDurationsLazyQueryHookResult = ReturnType<
+  typeof useGetExtendedStakingDurationsLazyQuery
+>;
+export type GetExtendedStakingDurationsQueryResult = Apollo.QueryResult<
+  GetExtendedStakingDurationsQuery,
+  GetExtendedStakingDurationsQueryVariables
 >;
 export const GetFastBtcDepositRskTransactionDocument = gql`
   query getFastBtcDepositRskTransaction($bitcoinTxHash: String, $user: String) {
@@ -14803,6 +15076,89 @@ export type GetLastVestingWithdrawQueryResult = Apollo.QueryResult<
   GetLastVestingWithdrawQuery,
   GetLastVestingWithdrawQueryVariables
 >;
+export const GetRewardsEarnedHistoryDocument = gql`
+  query getRewardsEarnedHistory(
+    $user: String
+    $skip: Int!
+    $pageSize: Int!
+    $orderBy: RewardsEarnedHistoryItem_orderBy
+    $orderDirection: OrderDirection
+    $actions: [RewardsEarnedAction!]
+  ) {
+    rewardsEarnedHistoryItems(
+      where: { user: $user, amount_gt: 0, action_in: $actions }
+      first: $pageSize
+      skip: $skip
+      orderBy: $orderBy
+      orderDirection: $orderDirection
+    ) {
+      id
+      action
+      amount
+      token
+      timestamp
+      transaction {
+        id
+      }
+    }
+  }
+`;
+
+/**
+ * __useGetRewardsEarnedHistoryQuery__
+ *
+ * To run a query within a React component, call `useGetRewardsEarnedHistoryQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetRewardsEarnedHistoryQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetRewardsEarnedHistoryQuery({
+ *   variables: {
+ *      user: // value for 'user'
+ *      skip: // value for 'skip'
+ *      pageSize: // value for 'pageSize'
+ *      orderBy: // value for 'orderBy'
+ *      orderDirection: // value for 'orderDirection'
+ *      actions: // value for 'actions'
+ *   },
+ * });
+ */
+export function useGetRewardsEarnedHistoryQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    GetRewardsEarnedHistoryQuery,
+    GetRewardsEarnedHistoryQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    GetRewardsEarnedHistoryQuery,
+    GetRewardsEarnedHistoryQueryVariables
+  >(GetRewardsEarnedHistoryDocument, options);
+}
+export function useGetRewardsEarnedHistoryLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    GetRewardsEarnedHistoryQuery,
+    GetRewardsEarnedHistoryQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    GetRewardsEarnedHistoryQuery,
+    GetRewardsEarnedHistoryQueryVariables
+  >(GetRewardsEarnedHistoryDocument, options);
+}
+export type GetRewardsEarnedHistoryQueryHookResult = ReturnType<
+  typeof useGetRewardsEarnedHistoryQuery
+>;
+export type GetRewardsEarnedHistoryLazyQueryHookResult = ReturnType<
+  typeof useGetRewardsEarnedHistoryLazyQuery
+>;
+export type GetRewardsEarnedHistoryQueryResult = Apollo.QueryResult<
+  GetRewardsEarnedHistoryQuery,
+  GetRewardsEarnedHistoryQueryVariables
+>;
 export const GetSmartTokensDocument = gql`
   query getSmartTokens(
     $skip: Int!
@@ -14881,6 +15237,171 @@ export type GetSmartTokensLazyQueryHookResult = ReturnType<
 export type GetSmartTokensQueryResult = Apollo.QueryResult<
   GetSmartTokensQuery,
   GetSmartTokensQueryVariables
+>;
+export const GetStakeHistoryDocument = gql`
+  query getStakeHistory(
+    $user: String
+    $skip: Int!
+    $pageSize: Int!
+    $orderBy: V2TokensStaked_orderBy
+    $orderDirection: OrderDirection
+  ) {
+    v2TokensStakeds(
+      where: { user: $user }
+      first: $pageSize
+      skip: $skip
+      orderBy: $orderBy
+      orderDirection: $orderDirection
+    ) {
+      id
+      amount
+      totalStaked
+      timestamp
+      lockedUntil
+      user {
+        id
+      }
+    }
+  }
+`;
+
+/**
+ * __useGetStakeHistoryQuery__
+ *
+ * To run a query within a React component, call `useGetStakeHistoryQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetStakeHistoryQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetStakeHistoryQuery({
+ *   variables: {
+ *      user: // value for 'user'
+ *      skip: // value for 'skip'
+ *      pageSize: // value for 'pageSize'
+ *      orderBy: // value for 'orderBy'
+ *      orderDirection: // value for 'orderDirection'
+ *   },
+ * });
+ */
+export function useGetStakeHistoryQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    GetStakeHistoryQuery,
+    GetStakeHistoryQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<GetStakeHistoryQuery, GetStakeHistoryQueryVariables>(
+    GetStakeHistoryDocument,
+    options,
+  );
+}
+export function useGetStakeHistoryLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    GetStakeHistoryQuery,
+    GetStakeHistoryQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    GetStakeHistoryQuery,
+    GetStakeHistoryQueryVariables
+  >(GetStakeHistoryDocument, options);
+}
+export type GetStakeHistoryQueryHookResult = ReturnType<
+  typeof useGetStakeHistoryQuery
+>;
+export type GetStakeHistoryLazyQueryHookResult = ReturnType<
+  typeof useGetStakeHistoryLazyQuery
+>;
+export type GetStakeHistoryQueryResult = Apollo.QueryResult<
+  GetStakeHistoryQuery,
+  GetStakeHistoryQueryVariables
+>;
+export const GetStakingWithdrawsDocument = gql`
+  query getStakingWithdraws(
+    $user: String
+    $skip: Int!
+    $pageSize: Int!
+    $orderBy: V2StakingWithdrawn_orderBy
+    $orderDirection: OrderDirection
+  ) {
+    v2StakingWithdrawns(
+      where: { user: $user }
+      first: $pageSize
+      skip: $skip
+      orderBy: $orderBy
+      orderDirection: $orderDirection
+    ) {
+      id
+      amount
+      isGovernance
+      receiver {
+        id
+      }
+      user {
+        id
+      }
+      timestamp
+      until
+    }
+  }
+`;
+
+/**
+ * __useGetStakingWithdrawsQuery__
+ *
+ * To run a query within a React component, call `useGetStakingWithdrawsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetStakingWithdrawsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetStakingWithdrawsQuery({
+ *   variables: {
+ *      user: // value for 'user'
+ *      skip: // value for 'skip'
+ *      pageSize: // value for 'pageSize'
+ *      orderBy: // value for 'orderBy'
+ *      orderDirection: // value for 'orderDirection'
+ *   },
+ * });
+ */
+export function useGetStakingWithdrawsQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    GetStakingWithdrawsQuery,
+    GetStakingWithdrawsQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    GetStakingWithdrawsQuery,
+    GetStakingWithdrawsQueryVariables
+  >(GetStakingWithdrawsDocument, options);
+}
+export function useGetStakingWithdrawsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    GetStakingWithdrawsQuery,
+    GetStakingWithdrawsQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    GetStakingWithdrawsQuery,
+    GetStakingWithdrawsQueryVariables
+  >(GetStakingWithdrawsDocument, options);
+}
+export type GetStakingWithdrawsQueryHookResult = ReturnType<
+  typeof useGetStakingWithdrawsQuery
+>;
+export type GetStakingWithdrawsLazyQueryHookResult = ReturnType<
+  typeof useGetStakingWithdrawsLazyQuery
+>;
+export type GetStakingWithdrawsQueryResult = Apollo.QueryResult<
+  GetStakingWithdrawsQuery,
+  GetStakingWithdrawsQueryVariables
 >;
 export const GetSwapHistoryDocument = gql`
   query getSwapHistory(

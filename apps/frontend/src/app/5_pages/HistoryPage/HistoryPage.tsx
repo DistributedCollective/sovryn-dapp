@@ -12,6 +12,7 @@ import { FundingHistoryFrame } from '../../3_organisms/FundingHistoryFrame/Fundi
 import { LOCHistory } from '../../3_organisms/LOCHistory/LOCHistory';
 import { RewardHistory } from '../../3_organisms/RewardHistory/RewardHistory';
 import { StabilityPoolHistoryFrame } from '../../3_organisms/StabilityPoolHistoryFrame';
+import { StakingHistoryFrame } from '../../3_organisms/StakingHistoryFrame';
 import { translations } from '../../../locales/i18n';
 import { myntClient, zeroClient } from '../../../utils/clients';
 import styles from './HistoryPage.module.css';
@@ -28,6 +29,12 @@ const locHistory = (
 const stability = (
   <div className="px-0 py-4 lg:p-4">
     <StabilityPoolHistoryFrame />
+  </div>
+);
+
+const stakingHistory = (
+  <div className="px-0 py-4 lg:p-4">
+    <StakingHistoryFrame />
   </div>
 );
 
@@ -80,7 +87,13 @@ const HistoryPage: FC = () => {
         dataAttribute: 'funding',
       },
       {
-        label: t(translations.historyPage.table.tabs.reward),
+        label: t(translations.historyPage.table.tabs.staking),
+        content: stakingHistory,
+        activeClassName: ACTIVE_CLASSNAME,
+        dataAttribute: 'staking',
+      },
+      {
+        label: t(translations.historyPage.table.tabs.rewards),
         content: rewardHistory,
         activeClassName: ACTIVE_CLASSNAME,
         dataAttribute: 'rewards',

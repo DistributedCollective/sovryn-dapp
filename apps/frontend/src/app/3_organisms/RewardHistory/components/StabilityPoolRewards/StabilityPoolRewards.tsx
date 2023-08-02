@@ -41,8 +41,8 @@ import {
   useGetStabilityDepositChangesLazyQuery,
 } from '../../../../../utils/graphql/zero/generated';
 import { dateFormat } from '../../../../../utils/helpers';
-import { RewardHistoryProps } from '../../types';
-import { rewardHistoryOptions } from '../../utils';
+import { RewardHistoryProps } from '../../RewardHistory.types';
+import { rewardHistoryOptions } from '../../RewardHistory.utils';
 import { useGetStabilityPoolRewards } from './hooks/useGetStabilityPoolRewards';
 import { getTransactionType, renderCollateralChange } from './utils';
 

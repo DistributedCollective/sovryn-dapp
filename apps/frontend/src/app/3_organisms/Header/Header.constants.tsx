@@ -21,11 +21,11 @@ export const menuItemsMapping = [
         label: t(translations.header.nav.earn.subMenu.stabilityPoolDescription),
         url: '/earn/stability-pool',
       },
-      {
-        text: t(translations.header.nav.earn.subMenu.staking),
-        label: t(translations.header.nav.earn.subMenu.stakingDescription),
-        url: '/earn/staking',
-      },
+      // {
+      //   text: t(translations.header.nav.earn.subMenu.staking),
+      //   label: t(translations.header.nav.earn.subMenu.stakingDescription),
+      //   url: '/earn/staking',
+      // },
     ],
   },
   {

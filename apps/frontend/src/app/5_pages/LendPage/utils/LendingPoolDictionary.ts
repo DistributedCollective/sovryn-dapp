@@ -33,7 +33,7 @@ export class LendingPoolDictionary {
         false,
       ),
     ],
-    [
+    /*[
       SupportedTokens.xusd,
       new LendingPool(
         'XUSD',
@@ -43,7 +43,7 @@ export class LendingPoolDictionary {
         false,
       ),
     ],
-    /*[
+    [
       SupportedTokens.doc,
       new LendingPool(
         'DoC',

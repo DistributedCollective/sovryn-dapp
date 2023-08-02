@@ -48,6 +48,7 @@ export const TableMobileRow = <RowType extends RowObject>({
                 ? column.cellRenderer(row, column.id)
                 : row[column.id]
             }
+            className={column.className}
           />
         ))}
         {expandedContent && <div>{expandedContent(row)}</div>}

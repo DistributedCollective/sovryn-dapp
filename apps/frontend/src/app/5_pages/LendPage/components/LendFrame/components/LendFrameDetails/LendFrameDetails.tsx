@@ -6,6 +6,7 @@ import { AmountRenderer } from '../../../../../../2_molecules/AmountRenderer/Amo
 import { TOKEN_RENDER_PRECISION } from '../../../../../../../constants/currencies';
 import { translations } from '../../../../../../../locales/i18n';
 import { LendFrameProps } from '../../LendFrame.types';
+import { LendFrameAction } from '../LendFrameAction/LendFrameAction';
 import { LendFrameChart } from '../LendFrameChart/LendFrameChart';
 import { ExpandedContent } from './components/ExpandedContent/ExpandedContent';
 import { useGetMarketLiquidity } from './hooks/useGetMarketLiquidity';
@@ -44,6 +45,9 @@ export const LendFrameDetails: FC<LendFrameProps> = ({ pool }) => {
       </div>
       <div className="flex-1 flex flex-col">
         {pool && <LendFrameChart pool={pool} />}
+      </div>
+      <div className="lg:hidden">
+        <LendFrameAction pool={pool} />
       </div>
     </div>
   );

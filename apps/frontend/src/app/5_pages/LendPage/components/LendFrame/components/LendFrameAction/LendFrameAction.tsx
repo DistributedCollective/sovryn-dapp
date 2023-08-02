@@ -51,14 +51,14 @@ export const LendFrameAction: FC<LendFrameProps> = ({ pool }) => {
   );
 
   return (
-    <div className="flex items-center justify-end">
+    <div className="flex items-center justify-center lg:justify-end">
       {!account || Number(assetBalance) === 0 ? (
         <Button
           style={ButtonStyle.primary}
           size={ButtonSize.small}
           text={t(translations.lendPage.actions.lend)}
           dataAttribute="lend-frame-lend-button"
-          className="w-full md:w-auto prevent-row-click"
+          className="w-full lg:w-auto prevent-row-click"
           disabled={!account}
           onClick={handleLendClick}
         />
@@ -68,7 +68,7 @@ export const LendFrameAction: FC<LendFrameProps> = ({ pool }) => {
           size={ButtonSize.small}
           text={t(translations.lendPage.actions.adjust)}
           dataAttribute="lend-frame-adjust-button"
-          className="w-full md:w-auto prevent-row-click"
+          className="w-full lg:w-auto prevent-row-click"
           disabled={!account}
           onClick={handleAdjustClick}
         />

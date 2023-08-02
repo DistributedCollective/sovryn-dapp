@@ -78,10 +78,6 @@ const routes = [
         element: <RewardsPage />,
         loader: zeroPageLoader,
       },
-      {
-        path: '/lend',
-        element: <LendPage />,
-      },
     ],
   },
   {

@@ -66,5 +66,6 @@ export const COLUMNS_CONFIG = [
     id: '',
     title: '',
     cellRenderer: (pool: LendingPool) => <LendFrameAction pool={pool} />,
+    className: 'hidden lg:table-cell',
   },
 ];

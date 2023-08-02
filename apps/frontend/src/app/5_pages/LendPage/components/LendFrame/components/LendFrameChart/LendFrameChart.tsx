@@ -31,6 +31,9 @@ export const LendFrameChart: FC<LendFrameProps> = ({ pool }) => {
     if (chartRef.current) {
       chartRef.current.destroy();
     }
+
+    console.log(chartOptions);
+
     const lendApyGradient = chartRef.current?.ctx?.createLinearGradient(
       0,
       0,

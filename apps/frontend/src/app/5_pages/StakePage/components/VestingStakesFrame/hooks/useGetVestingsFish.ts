@@ -10,6 +10,9 @@ export const useGetVestingsFish = () => {
   const [vestingFishContract, setVestingFishContract] = useState('');
 
   const getVestingsFish = useCallback(async () => {
+    if (!account) {
+      setLoadingVestingsFish(false);
+    }
     if (!account || !vestingContract) {
       return;
     }

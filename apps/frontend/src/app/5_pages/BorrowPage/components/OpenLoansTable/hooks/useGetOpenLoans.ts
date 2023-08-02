@@ -1,6 +1,9 @@
+import { useEffect, useState } from 'react';
+
 import dayjs from 'dayjs';
 
 import { useAccount } from '../../../../../../hooks/useAccount';
+import { useBlockNumber } from '../../../../../../hooks/useBlockNumber';
 import { useGetActiveLoansQuery } from '../../../../../../utils/graphql/rsk/generated';
 import {
   calculateCollateralRatio,
@@ -11,9 +14,18 @@ import { LoanItem } from '../OpenLoansTable.types';
 
 export const useGetOpenLoans = () => {
   const { account } = useAccount();
-  const { data, loading } = useGetActiveLoansQuery({
+  const { value: blockNumber } = useBlockNumber();
+  const [processedBlock, setProcessedBlock] = useState<number | undefined>();
+  const { data, loading, refetch } = useGetActiveLoansQuery({
     variables: { user: account },
   });
+
+  useEffect(() => {
+    if (blockNumber !== processedBlock) {
+      refetch();
+      setProcessedBlock(blockNumber);
+    }
+  }, [blockNumber, processedBlock, refetch]);
 
   if (!data?.loans) {
     return { data: [], loading };

@@ -13,7 +13,7 @@ export const ExtendLoanButton: FC = () => {
   return (
     <>
       <Button
-        text={t(translations.fixedInterestPage.borrowAssetsTable.action)}
+        text={t(translations.fixedInterestPage.openLoansTable.actions.extend)}
         style={ButtonStyle.secondary}
         onClick={() => setIsOpen(true)}
       />

@@ -69,7 +69,10 @@ export const COLUMNS_CONFIG = [
     id: 'transactionId',
     title: t(translations.common.tables.columnTitles.transactionID),
     cellRenderer: (item: Redemption) => (
-      <TransactionIdRenderer hash={item.transaction.id} />
+      <TransactionIdRenderer
+        hash={item.transaction.id}
+        dataAttribute="zero-conversion-history-tx-hash"
+      />
     ),
   },
 ];

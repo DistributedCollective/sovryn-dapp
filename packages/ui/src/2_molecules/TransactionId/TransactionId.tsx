@@ -66,13 +66,15 @@ export const TransactionId: React.FC<TransactionIdProps> = ({
           >
             <Icon icon={IconNames.COPY} />
           </span>
-          <Link
-            className={styles.icon}
-            href={href}
-            text={<Icon icon={IconNames.NEW_TAB} />}
-            dataAttribute="transaction-link"
-            style={LinkStyle.custom}
-          />
+          {href && (
+            <Link
+              className={styles.icon}
+              href={href}
+              text={<Icon icon={IconNames.NEW_TAB} />}
+              dataAttribute="transaction-link"
+              style={LinkStyle.custom}
+            />
+          )}
         </span>
       }
       trigger={TooltipTrigger.click}

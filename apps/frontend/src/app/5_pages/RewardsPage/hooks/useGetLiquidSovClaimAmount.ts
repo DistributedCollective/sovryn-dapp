@@ -71,11 +71,17 @@ export const useGetLiquidSovClaimAmount = () => {
     };
   }, [account, staking, stakingRewards]);
 
-  useEffect(() => {
-    getRewards().then(({ lastWithdrawalInterval, amount }) =>
-      setValue({ lastWithdrawalInterval, amount, loading: false }),
-    );
-  }, [getRewards]);
+  const updateRewards = useCallback(
+    () =>
+      getRewards().then(({ lastWithdrawalInterval, amount }) =>
+        setValue({ lastWithdrawalInterval, amount, loading: false }),
+      ),
+    [getRewards],
+  );
 
-  return { ...value, refetch: () => getRewards() };
+  useEffect(() => {
+    updateRewards();
+  }, [updateRewards]);
+
+  return { ...value, refetch: updateRewards };
 };

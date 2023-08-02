@@ -9,11 +9,6 @@ import { UnlockDateCellRenderer } from './components/UnlockDateCellRenderer';
 
 export const COLUMNS_CONFIG = [
   {
-    id: 'vestingType',
-    title: t(translations.stakePage.table.vestingType),
-    cellRenderer: (item: VestingContractTableRecord) => item.type,
-  },
-  {
     id: 'currentBalance',
     title: t(translations.stakePage.table.stakeAmount),
     cellRenderer: (item: VestingContractTableRecord) =>
@@ -22,8 +17,7 @@ export const COLUMNS_CONFIG = [
   {
     id: 'votingPower',
     title: t(translations.stakePage.table.votingPower),
-    cellRenderer: (item: VestingContractTableRecord) =>
-      VotingPowerCellRenderer(item),
+    cellRenderer: () => t(translations.common.na),
   },
   {
     id: 'delegate',

@@ -1,10 +1,10 @@
 export type LoanItem = {
-  debt: string;
+  debt: number;
   debtAsset: string;
-  collateral: string;
+  collateral: number;
   collateralAsset: string;
   collateralRatio: number;
-  liquidationPrice: string;
+  liquidationPrice: number;
   apr: string;
-  rolloverDate: string;
+  rolloverDate: number;
 };

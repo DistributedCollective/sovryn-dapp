@@ -1,15 +1,9 @@
 import { useCallback } from 'react';
 
-import { constants, ethers } from 'ethers';
+import { constants } from 'ethers';
 import { t } from 'i18next';
 
-import {
-  SupportedTokens,
-  getProtocolContract,
-  getTokenDetails,
-} from '@sovryn/contracts';
-
-import { defaultChainId } from '../../../../config/chains';
+import { SupportedTokens } from '@sovryn/contracts';
 
 import {
   Transaction,
@@ -35,13 +29,6 @@ export const useHandleAdjustStake = (
   const { signer, account } = useAccount();
   const { setTransactions, setIsOpen, setTitle } = useTransactionContext();
 
-  const getMassetManager = useCallback(async () => {
-    const { address: massetManagerAddress, abi: massetManagerAbi } =
-      await getProtocolContract('massetManager', defaultChainId);
-
-    return new ethers.Contract(massetManagerAddress, massetManagerAbi, signer);
-  }, [signer]);
-
   const stakingContract = useGetProtocolContract('staking');
 
   const handleSubmit = useCallback(async () => {
@@ -53,23 +40,16 @@ export const useHandleAdjustStake = (
       if (!signer || !stakingContract) {
         return;
       }
-      const massetManager = await getMassetManager();
 
-      const { address: bassetAddress, abi: bassetAbi } = await getTokenDetails(
-        SupportedTokens.sov,
-        defaultChainId,
-      );
-
-      const bassetToken = new ethers.Contract(bassetAddress, bassetAbi, signer);
       const weiAmount = toWei(amount).toString();
 
       const transactions: Transaction[] = [];
 
       const approveTx = await prepareApproveTransaction({
         token: SupportedTokens.sov,
-        contract: bassetToken,
-        spender: massetManager.address,
+        spender: stakingContract.address,
         amount: weiAmount,
+        signer,
       });
 
       if (approveTx) {
@@ -179,7 +159,6 @@ export const useHandleAdjustStake = (
     action,
     updatedTimestamp,
     delegateAddress,
-    getMassetManager,
   ]);
 
   return handleSubmit;

@@ -14327,6 +14327,36 @@ export enum _SubgraphErrorPolicy_ {
   Deny = 'deny',
 }
 
+export type GetActiveLoansQueryVariables = Exact<{
+  user?: InputMaybe<Scalars['String']>;
+}>;
+
+export type GetActiveLoansQuery = {
+  __typename?: 'Query';
+  loans: Array<{
+    __typename?: 'Loan';
+    id: string;
+    borrowedAmount: string;
+    positionSize: string;
+    nextRollover?: number | null;
+    loanToken: {
+      __typename?: 'Token';
+      id: string;
+      lastPriceBtc: string;
+      lastPriceUsd: string;
+      symbol?: string | null;
+    };
+    collateralToken: {
+      __typename?: 'Token';
+      id: string;
+      lastPriceBtc: string;
+      lastPriceUsd: string;
+      symbol?: string | null;
+    };
+    borrow?: Array<{ __typename?: 'Borrow'; interestRate: string }> | null;
+  }>;
+};
+
 export type GetBitcoinTxIdQueryVariables = Exact<{
   createdAtTx?: InputMaybe<Scalars['String']>;
 }>;

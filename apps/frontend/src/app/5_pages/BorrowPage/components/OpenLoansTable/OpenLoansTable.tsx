@@ -5,11 +5,12 @@ import { t } from 'i18next';
 import { Paragraph, Table } from '@sovryn/ui';
 
 import { translations } from '../../../../../locales/i18n';
+import { generateRowTitle } from './OpenLoans.utils';
 import { COLUMNS_CONFIG } from './OpenLoansTable.constants';
 import { useGetOpenLoans } from './hooks/useGetOpenLoans';
 
 export const OpenLoansTable: FC = () => {
-  const loans = useGetOpenLoans();
+  const { data: loans, loading } = useGetOpenLoans();
 
   return (
     <div className="flex flex-col mb-10 border border-solid rounded border-gray-50 px-6 py-12">
@@ -23,9 +24,10 @@ export const OpenLoansTable: FC = () => {
         <Table
           columns={COLUMNS_CONFIG}
           rows={loans}
-          //rowTitle={generateRowTitle}
+          rowTitle={generateRowTitle}
           className="text-gray-10 lg:px-6 lg:py-4 text-xs"
           noData={t(translations.common.tables.noData)}
+          isLoading={loading}
           dataAttribute="borrow-assets-table"
         />
       </div>

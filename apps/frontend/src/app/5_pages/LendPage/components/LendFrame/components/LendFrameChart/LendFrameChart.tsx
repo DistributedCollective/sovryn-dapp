@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useRef, useMemo } from 'react';
+import React, { FC, useEffect, useRef, useMemo, memo } from 'react';
 
 import Chart from 'chart.js/auto';
 
@@ -11,7 +11,7 @@ import {
 } from './LendFrameChart.utils';
 import { useGetLendHistory } from './hooks/useGetLendHistory';
 
-export const LendFrameChart: FC<LendFrameProps> = ({ pool }) => {
+export const LendFrameChart: FC<LendFrameProps> = memo(({ pool }) => {
   const asset = useMemo(() => pool.getAsset(), [pool]);
   const chartRef = useRef<Chart | null>(null);
   const { lendHistory } = useGetLendHistory(asset);
@@ -31,8 +31,6 @@ export const LendFrameChart: FC<LendFrameProps> = ({ pool }) => {
     if (chartRef.current) {
       chartRef.current.destroy();
     }
-
-    console.log(chartOptions);
 
     const lendApyGradient = chartRef.current?.ctx?.createLinearGradient(
       0,
@@ -77,4 +75,4 @@ export const LendFrameChart: FC<LendFrameProps> = ({ pool }) => {
       <canvas id={asset}></canvas>
     </div>
   );
-};
+});

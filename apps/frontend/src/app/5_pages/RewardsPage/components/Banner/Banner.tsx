@@ -20,6 +20,7 @@ import {
   ParagraphStyle,
 } from '@sovryn/ui';
 
+import { useIsMobile } from '../../../../../hooks/useIsMobile';
 import { translations } from '../../../../../locales/i18n';
 
 type BannerProps = {
@@ -39,6 +40,8 @@ export const Banner: FC<BannerProps> = ({
   action,
   className,
 }) => {
+  const { isMobile } = useIsMobile();
+
   const [isOpen, setIsOpen] = useState(!reactLocalStorage.get(localStorageKey));
 
   const handleToggle = useCallback(() => {
@@ -54,7 +57,7 @@ export const Banner: FC<BannerProps> = ({
 
   return (
     <>
-      {isOpen && (
+      {(isOpen || !isMobile) && (
         <div
           className={classNames(
             'relative w-full rounded border border-gray-70 p-6',

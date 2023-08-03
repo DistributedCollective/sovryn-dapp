@@ -42,7 +42,7 @@ import {
   useGetStabilityPoolLazyQuery,
 } from '../../../utils/graphql/zero/generated';
 import { dateFormat } from '../../../utils/helpers';
-import { renderSign } from '../LOCHistory/components/TransactionHistoryFrame/utils';
+import { renderSign } from '../BorrowHistory/components/TransactionHistoryFrame/utils';
 import { useGetStabilityPoolHistory } from './hooks/useGetStabilityPoolHistory';
 
 const pageSize = DEFAULT_HISTORY_FRAME_PAGE_SIZE;

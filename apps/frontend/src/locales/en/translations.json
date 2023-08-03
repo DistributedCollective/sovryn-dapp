@@ -522,7 +522,7 @@
         "title": "My transaction history",
         "table": {
             "tabs": {
-                "lineOfCredit": "Line of credit",
+                "borrow": "Borrow",
                 "redemptions": "Redemptions",
                 "stability": "Stability pool",
                 "convert": "Conversion",
@@ -532,9 +532,10 @@
             "comingSoon": "Coming soon..."
         }
     },
-    "locHistory": {
+    "borrowHistory": {
         "types": {
             "lineOfCredit": "Line of credit",
+            "fixedInterestLoan": "Fixed-interest loan",
             "collateralSurplus": "Collateral surplus"
         }
     },
@@ -596,6 +597,18 @@
             "amount": "Amount",
             "withdrawSurplus": "Withdraw surplus",
             "depositSurplus": "Deposit surplus"
+        }
+    },
+    "loanHistory": {
+        "table": {
+            "collateralChange": "Collateral change",
+            "newCollateral": "New collateral balance",
+            "debtChange": "Debt change",
+            "originationFee": "Origination fee",
+            "interest": "Interest payment/refund",
+            "newDebt": "New debt balance",
+            "loanID": "Loan ID",
+            "TXID": "TXID"
         }
     },
     "stabilityPoolHistory": {

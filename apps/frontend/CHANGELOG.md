@@ -1,5 +1,22 @@
 # frontend
 
+## 1.0.18
+
+### Patch Changes
+
+- 5e4d946: SOV-2728: Split suggested wallet RPC URLs
+- 4835797: SOV-2730: Update Convert -> AMM Swap gas limit
+- Updated dependencies [7dc2757]
+- Updated dependencies [5e4d946]
+  - @sovryn/contracts@1.0.10
+  - @sovryn/ethers-provider@1.0.2
+
+## 1.0.17
+
+### Patch Changes
+
+- 913c1fa: SOV-2766: Fix conversions failing using "max" button
+
 ## 1.0.16
 
 ### Patch Changes

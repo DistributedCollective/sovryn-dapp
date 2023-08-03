@@ -310,6 +310,7 @@ const ConvertPage: FC = () => {
 
   useEffect(() => {
     const urlParams = new URLSearchParams();
+
     if (sourceToken) {
       urlParams.set('from', sourceToken);
     }

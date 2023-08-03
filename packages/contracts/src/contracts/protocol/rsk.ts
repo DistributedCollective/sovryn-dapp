@@ -23,7 +23,7 @@ export const rsk: Record<string, AsyncContractConfigData> = {
     getAbi: async () => (await import('../../abis/massetManager.json')).default,
   },
   fastBtcBridge: {
-    address: '0x0D5006330289336ebdF9d0AC9E0674f91b4851eA',
+    address: '0x1A8E78B41bc5Ab9Ebb6996136622B9b41A601b5C',
     getAbi: async () => (await import('../../abis/fastBtcBridge.json')).default,
   },
   fastBtcMultisig: {

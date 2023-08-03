@@ -14,11 +14,7 @@ export const useWeiAmountInput = <T = Decimalish>(
 ): WeiAmountInput<T> => {
   const [value, setValue] = useState(initialValue);
   const amount = useMemo(
-    () =>
-      toWei(
-        Decimal.from(String(value || '0')).toString() as BigNumberish,
-        unitName,
-      ),
+    () => toWei(String(value || 0), unitName),
     [unitName, value],
   );
 

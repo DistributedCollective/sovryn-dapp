@@ -7,6 +7,7 @@ export type ChainId = ChainIds | string;
 
 export interface Chain {
   id: ChainId;
+  publicRpcUrl: string;
   rpcUrl: string | string[];
   label: string;
   token: string;

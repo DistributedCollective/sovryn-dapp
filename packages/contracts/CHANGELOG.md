@@ -1,5 +1,13 @@
 # @sovryn/contracts
 
+## 1.0.10
+
+### Patch Changes
+
+- 7dc2757: SOV-2812: new FastBTC bridge contract address
+- Updated dependencies [5e4d946]
+  - @sovryn/ethers-provider@1.0.2
+
 ## 1.0.9
 
 ### Patch Changes

@@ -25,6 +25,7 @@ import {
 import { chains, defaultChainId } from '../../../../../config/chains';
 
 import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRenderer';
+import { AssetRenderer } from '../../../../2_molecules/AssetRenderer/AssetRenderer';
 import { ExportCSV } from '../../../../2_molecules/ExportCSV/ExportCSV';
 import { TxIdWithNotification } from '../../../../2_molecules/TxIdWithNotification/TransactionIdWithNotification';
 import {
@@ -103,27 +104,33 @@ export const LoanHistoryFrame: FC<PropsWithChildren> = ({ children }) => {
         id: 'newCollateral',
         title: t(translations.loanHistory.table.newCollateral),
         cellRenderer: tx => (
-          <AmountRenderer
-            value={tx.newCollateral}
-            precision={BTC_RENDER_PRECISION}
-            dataAttribute="borrow-new-collateral"
-          />
+          <div className="inline-flex gap-1 items-center">
+            <AmountRenderer
+              value={tx.newCollateral}
+              precision={BTC_RENDER_PRECISION}
+              dataAttribute="borrow-new-collateral"
+            />
+            <AssetRenderer address={tx.collateralToken} />
+          </div>
         ),
       },
       {
         id: 'interestRate',
         title: t(translations.loanHistory.table.newDebt),
         cellRenderer: tx => (
-          <AmountRenderer
-            value={tx.newPrincipal}
-            precision={BTC_RENDER_PRECISION}
-            dataAttribute="borrow-new-debt"
-          />
+          <div className="inline-flex gap-1 items-center">
+            <AmountRenderer
+              value={tx.newPrincipal}
+              precision={BTC_RENDER_PRECISION}
+              dataAttribute="borrow-new-debt"
+            />
+            <AssetRenderer address={tx.loanToken} />
+          </div>
         ),
       },
       {
         id: 'interestRate',
-        title: 'interestRate',
+        title: 'Interest Rate',
         cellRenderer: tx => (
           <AmountRenderer value={tx.interestRate} precision={2} suffix="%" />
         ),

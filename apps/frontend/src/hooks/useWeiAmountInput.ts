@@ -2,7 +2,7 @@ import { Dispatch, SetStateAction, useMemo, useState } from 'react';
 
 import { BigNumber, BigNumberish } from 'ethers';
 
-import { Decimal, Decimalish } from '@sovryn/utils';
+import { Decimalish } from '@sovryn/utils';
 
 import { toWei } from '../utils/math';
 

@@ -1,0 +1,30 @@
+query getBorrowHistory(
+  $user: String
+  $skip: Int!
+  $pageSize: Int!
+  $orderBy: Borrow_orderBy
+  $orderDirection: OrderDirection
+) {
+  borrows(
+    where: { user: $user }
+    first: $pageSize
+    skip: $skip
+    orderBy: $orderBy
+    orderDirection: $orderDirection
+  ) {
+    loanId {
+      id
+    }
+    loanToken
+    collateralToken
+    newPrincipal
+    newCollateral
+    interestRate
+    interestDuration
+    collateralToLoanRate
+    timestamp
+    transaction {
+      id
+    }
+  }
+}

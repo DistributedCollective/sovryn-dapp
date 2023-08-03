@@ -2,26 +2,27 @@ import React, { FC, useCallback, useState, useMemo } from 'react';
 
 import { Select } from '@sovryn/ui';
 
-import { LOCHistoryType } from './LOCHistory.types';
-import { locHistoryOptions } from './LOCHistory.utils';
+import { BorrowHistoryType } from './BorrowHistory.types';
+import { borrowHistoryOptions } from './BorrowHistory.utils';
 import { CollateralSurplusHistoryFrame } from './components/CollateralSurplusFrame/CollateralSurplusHistoryFrame';
+import { LoanHistoryFrame } from './components/LoanFrame/LoanHistoryFrame';
 import { TransactionHistoryFrame } from './components/TransactionHistoryFrame';
 
-export const LOCHistory: FC = () => {
+export const BorrowHistory: FC = () => {
   const [selectedHistoryType, setSelectedHistoryType] =
-    useState<LOCHistoryType>(LOCHistoryType.lineOfCredit);
+    useState<BorrowHistoryType>(BorrowHistoryType.lineOfCredit);
 
-  const onChangeRewardHistory = useCallback((value: LOCHistoryType) => {
+  const onChangeRewardHistory = useCallback((value: BorrowHistoryType) => {
     setSelectedHistoryType(value);
   }, []);
 
   const selectComponent = useMemo(
     () => (
       <Select
-        dataAttribute={`loc-history-${selectedHistoryType}`}
+        dataAttribute={`borrow-history-${selectedHistoryType}`}
         value={selectedHistoryType}
         onChange={onChangeRewardHistory}
-        options={locHistoryOptions}
+        options={borrowHistoryOptions}
         className="min-w-36"
       />
     ),
@@ -30,11 +31,13 @@ export const LOCHistory: FC = () => {
 
   const renderHistoryFrame = useMemo(() => {
     switch (selectedHistoryType) {
-      case LOCHistoryType.lineOfCredit:
+      case BorrowHistoryType.lineOfCredit:
         return (
           <TransactionHistoryFrame>{selectComponent}</TransactionHistoryFrame>
         );
-      case LOCHistoryType.collateralSurplus:
+      case BorrowHistoryType.fixedInterestLoan:
+        return <LoanHistoryFrame>{selectComponent}</LoanHistoryFrame>;
+      case BorrowHistoryType.collateralSurplus:
         return (
           <CollateralSurplusHistoryFrame>
             {selectComponent}

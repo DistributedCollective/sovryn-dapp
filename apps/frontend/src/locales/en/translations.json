@@ -66,6 +66,7 @@
     },
     "header": {
         "funding": "Funding",
+        "fundWallet": "Fund your Wallet",
         "nav": {
             "borrow": "Borrow",
             "earn": "Earn",

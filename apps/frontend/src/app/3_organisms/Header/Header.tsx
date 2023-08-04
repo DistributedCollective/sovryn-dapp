@@ -49,8 +49,8 @@ export const Header: FC = () => {
   }, [isOpen]);
 
   const handleFastBtcClick = useCallback(
-    () => sharedState.actions.openFastBtcDialog(),
-    [],
+    () => sharedState.actions.openFastBtcDialog(!hasRbtcBalance),
+    [hasRbtcBalance],
   );
 
   return (
@@ -118,18 +118,27 @@ export const Header: FC = () => {
           )
         }
         extraContent={
-          account &&
-          hasRbtcBalance && (
-            <Button
-              text={t(translations.header.funding)}
-              style={ButtonStyle.secondary}
-              dataAttribute="dapp-header-funding"
-              onClick={enableFastBtc ? handleFastBtcClick : noop}
-              href={enableFastBtc ? '' : RSK_FAUCET}
-              hrefExternal={true}
-              className="text-gray-10"
-            />
-          )
+          <>
+            {account && (
+              <>
+                <Button
+                  text={t(
+                    hasRbtcBalance
+                      ? translations.header.funding
+                      : translations.header.fundWallet,
+                  )}
+                  style={
+                    hasRbtcBalance ? ButtonStyle.secondary : ButtonStyle.primary
+                  }
+                  dataAttribute="dapp-header-funding"
+                  onClick={enableFastBtc ? handleFastBtcClick : noop}
+                  href={enableFastBtc ? '' : RSK_FAUCET}
+                  hrefExternal={true}
+                  className={hasRbtcBalance ? 'text-gray-10' : ''}
+                />
+              </>
+            )}
+          </>
         }
       />
     </>

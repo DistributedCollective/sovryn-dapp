@@ -7,8 +7,6 @@ import { Button } from '@sovryn/ui';
 
 import { useAssetBalance } from '../../../../../hooks/useAssetBalance';
 import { translations } from '../../../../../locales/i18n';
-import { sharedState } from '../../../../../store/rxjs/shared-state';
-import { isMainnet } from '../../../../../utils/helpers';
 
 export type ConnectedUserBannerProps = {
   openLOC: () => void;
@@ -21,26 +19,9 @@ export const ConnectedUserBanner: FC<ConnectedUserBannerProps> = ({
 
   const hasRbtcBalance = useMemo(() => Number(balance) !== 0, [balance]);
 
-  const onClickHandler = useMemo(
-    () =>
-      hasRbtcBalance
-        ? openLOC
-        : () => sharedState.actions.openFastBtcDialog(!isMainnet()),
-    [hasRbtcBalance, openLOC],
-  );
-
-  const dataAttribute = useMemo(
-    () => (hasRbtcBalance ? 'zero-loc-open' : 'zero-fund'),
-    [hasRbtcBalance],
-  );
-
-  const buttonText = useMemo(
-    () =>
-      hasRbtcBalance
-        ? t(translations.zeroPage.dashboardWelcomeBanner.OpenCredit)
-        : t(translations.zeroPage.dashboardWelcomeBanner.fundWallet),
-    [hasRbtcBalance],
-  );
+  if (!hasRbtcBalance) {
+    return null;
+  }
 
   if (loading) {
     return <div className="mb-9 h-8" />;
@@ -50,9 +31,9 @@ export const ConnectedUserBanner: FC<ConnectedUserBannerProps> = ({
     <div className="flex justify-center md:justify-end mb-9">
       <Button
         className="flex-1 md:flex-initial max-w-[20.5rem] md:max-w-none "
-        onClick={onClickHandler}
-        text={buttonText}
-        dataAttribute={dataAttribute}
+        onClick={openLOC}
+        text={t(translations.zeroPage.dashboardWelcomeBanner.OpenCredit)}
+        dataAttribute="zero-loc-open"
       />
     </div>
   );

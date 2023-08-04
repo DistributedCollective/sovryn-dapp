@@ -50,10 +50,12 @@ export const useCacheCall = <T>(
       }
     });
 
-    startCall(`call:${key}`, callback, {
-      ...options,
-      blockNumber: options?.blockNumber || block,
-    });
+    try {
+      startCall(`call:${key}`, callback, {
+        ...options,
+        blockNumber: options?.blockNumber || block,
+      });
+    } catch (e) {}
 
     return () => {
       if (sub) {

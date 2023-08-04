@@ -11,7 +11,8 @@ export const useGetAssetBalanceOf = (asset: SupportedTokens) => {
 
   const { value: assetBalance } = useCacheCall(
     `loanTokens/${lendContract?.address}/assetBalanceOf/${account}`,
-    () => (account ? lendContract?.assetBalanceOf(account).then(fromWei) : '0'),
+    async () =>
+      account ? lendContract?.assetBalanceOf(account).then(fromWei) : '0',
     [account],
     '0',
   );

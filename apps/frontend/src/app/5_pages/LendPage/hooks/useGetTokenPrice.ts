@@ -9,7 +9,7 @@ export const useGetTokenPrice = (asset: SupportedTokens) => {
 
   const { value: tokenPrice } = useCacheCall(
     `poolToken/${lendContract?.address}/tokenPrice`,
-    () => lendContract?.tokenPrice().then(fromWei),
+    async () => lendContract?.tokenPrice().then(fromWei),
     [],
     '0',
   );

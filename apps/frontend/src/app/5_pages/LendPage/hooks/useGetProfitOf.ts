@@ -11,12 +11,7 @@ export const useGetProfitOf = (asset: SupportedTokens) => {
 
   const { value: profit } = useCacheCall(
     `poolToken/${lendContract?.address}/profitOf/${account}`,
-    () => {
-      if (!account) {
-        return '0';
-      }
-      return lendContract?.profitOf(account).then(fromWei);
-    },
+    async () => (account ? lendContract?.profitOf(account).then(fromWei) : '0'),
     [account],
     '0',
   );

@@ -11,12 +11,8 @@ export const useGetCheckpointPrice = (asset: SupportedTokens) => {
 
   const { value: checkpointPrice } = useCacheCall(
     `poolToken/${lendContract?.address}/checkpointPrice/${account}`,
-    () => {
-      if (!account) {
-        return '0';
-      }
-      return lendContract?.checkpointPrice(account).then(fromWei);
-    },
+    async () =>
+      account ? lendContract?.checkpointPrice(account).then(fromWei) : '0',
     [account],
     '0',
   );

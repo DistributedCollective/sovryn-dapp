@@ -9,7 +9,7 @@ export const useGetNextSupplyInterestRate = (asset: SupportedTokens) => {
 
   const { value: interestRate } = useCacheCall(
     `poolToken/${lendContract?.address}/nextSupplyInterestRate`,
-    () => lendContract?.nextSupplyInterestRate('0').then(fromWei),
+    async () => lendContract?.nextSupplyInterestRate('0').then(fromWei),
     [],
     '0',
   );

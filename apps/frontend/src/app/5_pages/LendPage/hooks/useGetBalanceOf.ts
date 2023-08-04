@@ -23,7 +23,7 @@ export const useGetBalanceOf = (asset: SupportedTokens) => {
     `loanTokens/${lendContract?.address}/balanceOf/${account}`,
     async () => {
       if (!account) {
-        return '0';
+        return Promise.resolve('0');
       }
       let directBalance = BigNumber.from(0);
       let balanceInLM = BigNumber.from(0);

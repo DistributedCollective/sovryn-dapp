@@ -12,6 +12,7 @@ import {
 import { useGetLendHistory } from './hooks/useGetLendHistory';
 
 export const LendFrameChart: FC<LendFrameProps> = memo(({ pool }) => {
+  const canvas = useRef<HTMLCanvasElement>(null);
   const asset = useMemo(() => pool.getAsset(), [pool]);
   const chartRef = useRef<Chart | null>(null);
   const { lendHistory } = useGetLendHistory(asset);
@@ -30,6 +31,10 @@ export const LendFrameChart: FC<LendFrameProps> = memo(({ pool }) => {
   useEffect(() => {
     if (chartRef.current) {
       chartRef.current.destroy();
+    }
+
+    if (!canvas.current) {
+      return;
     }
 
     const lendApyGradient = chartRef.current?.ctx?.createLinearGradient(
@@ -51,7 +56,7 @@ export const LendFrameChart: FC<LendFrameProps> = memo(({ pool }) => {
     borrowedLiquidityGradient?.addColorStop(0, 'rgba(245, 140, 49, 1)');
     borrowedLiquidityGradient?.addColorStop(1, 'rgba(245, 140, 49, 0.09)');
 
-    chartRef.current = new Chart(asset, {
+    chartRef.current = new Chart(canvas.current, {
       type: 'line',
       data: getChartData(
         mockData,
@@ -72,7 +77,7 @@ export const LendFrameChart: FC<LendFrameProps> = memo(({ pool }) => {
 
   return (
     <div className="lg:h-[37rem] h-64 rounded">
-      <canvas id={asset}></canvas>
+      <canvas ref={canvas}></canvas>
     </div>
   );
 });

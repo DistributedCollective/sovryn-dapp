@@ -1,0 +1,3 @@
+.selected, .selected:hover, .selected:focus, .selected:hover:not([disabled]) {
+  @apply bg-primary text-white rounded-none;
+}

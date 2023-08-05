@@ -511,7 +511,24 @@
             "title": "Extend a loan"
         },
         "newLoanDialog": {
-            "title": "New loan"
+            "title": "New loan",
+            "borrow": "Borrow",
+            "collateral": "Collateral",
+            "invalidAmountError": "Exceeds maximum amount",
+            "labels": {
+                "borrowApr": "Borrow APR",
+                "firstRolloverDate": "First rollover date",
+                "maxDuration": "max duration",
+                "preparedInterest": "Prepaid interest",
+                "originationFee": "Origination fee",
+                "totalDebt": "Total debt",
+                "collateralRatio": "Collateral ratio",
+                "collateralRatioError": "Collateral ratio must be at least {{min}}%",
+                "liquidationPrice": "Liquidation price",
+                "collateralPrice": "{{token}} price",
+                "disclaimer": "I understand that my collateral may be liquidated or used to pay rollover fees if applicable. <0>Learn more</0>",
+                "disclaimerCTA": "Learn more"
+            }
         },
         "collateralRatio": "collateral ratio"
     },

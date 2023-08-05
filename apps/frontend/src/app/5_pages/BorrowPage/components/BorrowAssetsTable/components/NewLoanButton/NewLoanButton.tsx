@@ -1,27 +1,58 @@
-import React, { FC, useState } from 'react';
+import React, { FC, useCallback, useReducer } from 'react';
 
 import { t } from 'i18next';
 
-import { Button, ButtonStyle } from '@sovryn/ui';
+import {
+  Button,
+  ButtonStyle,
+  Dialog,
+  DialogBody,
+  DialogHeader,
+  DialogSize,
+} from '@sovryn/ui';
 
+import { NewLoanForm } from '../../../../../../3_organisms/BorrowLoanForm/components/NewLoanForm/NewLoanForm';
 import { useAccount } from '../../../../../../../hooks/useAccount';
 import { translations } from '../../../../../../../locales/i18n';
-import { NewLoanDialog } from '../NewLoanDialog/NewLoanDialog';
+import { LendingPool } from '../../../../../../../utils/LendingPool';
 
-export const NewLoanButton: FC = () => {
+type NewLoanButtonProps = {
+  pool: LendingPool;
+};
+
+export const NewLoanButton: FC<NewLoanButtonProps> = ({ pool }) => {
   const { account } = useAccount();
-  const [isOpen, setIsOpen] = useState(false);
+  const [openNewLoanDialog, toggleNewLoanDialog] = useReducer(v => !v, false);
+
+  const onSuccess = useCallback(
+    () => toggleNewLoanDialog(),
+    [toggleNewLoanDialog],
+  );
 
   return (
     <>
       <Button
         text={t(translations.fixedInterestPage.borrowAssetsTable.action)}
         style={ButtonStyle.primary}
-        onClick={() => setIsOpen(true)}
+        onClick={toggleNewLoanDialog}
         disabled={!account}
+        dataAttribute="new-loan-button"
       />
 
-      <NewLoanDialog isOpen={isOpen} onClose={() => setIsOpen(false)} />
+      <Dialog
+        isOpen={openNewLoanDialog}
+        dataAttribute="new-loan-dialog"
+        width={DialogSize.sm}
+        disableFocusTrap
+      >
+        <DialogHeader
+          title={t(translations.fixedInterestPage.newLoanDialog.title)}
+          onClose={toggleNewLoanDialog}
+        />
+        <DialogBody
+          children={<NewLoanForm pool={pool} onSuccess={onSuccess} />}
+        />
+      </Dialog>
     </>
   );
 };

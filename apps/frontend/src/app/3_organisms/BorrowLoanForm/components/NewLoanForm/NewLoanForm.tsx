@@ -273,11 +273,13 @@ export const NewLoanForm: FC<NewLoanFormProps> = ({ pool }) => {
 
   useEffect(() => {
     if (collateralToken === SupportedTokens.rbtc) {
-      setCollateralAssetPrice(rbtcPrice);
+      const price = decimalic(rbtcPrice).div(borrowPriceUsd);
+      setCollateralAssetPrice(price.toString());
     } else {
-      setCollateralAssetPrice(collateralPriceUsd);
+      const price = decimalic(collateralPriceUsd).div(rbtcPrice);
+      setCollateralAssetPrice(price.toString());
     }
-  }, [collateralPriceUsd, collateralToken, rbtcPrice]);
+  }, [collateralToken, borrowPriceUsd, rbtcPrice, collateralPriceUsd]);
 
   return (
     <>
@@ -483,7 +485,7 @@ export const NewLoanForm: FC<NewLoanFormProps> = ({ pool }) => {
               <DynamicValue
                 initialValue="0"
                 value={collateralAssetPrice}
-                renderer={value => renderValue(value, collateralToken)}
+                renderer={value => renderValue(value, borrowToken)}
               />
             }
           />

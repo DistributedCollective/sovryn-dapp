@@ -146,3 +146,6 @@ export const calculateCollateralRatio = (
   debt: Decimalish,
   price: Decimalish,
 ) => decimalic(collateral).mul(price).div(debt).mul(100);
+
+export const removeTrailingZerosFromString = (value: string) =>
+  value.includes('.') ? value.replace(/\.?0+$/, '') : value;

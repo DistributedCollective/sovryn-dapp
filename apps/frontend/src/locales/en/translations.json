@@ -515,7 +515,27 @@
             }
         },
         "adjustLoanDialog": {
-            "title": "Adjust a loan"
+            "title": "Adjust a loan",
+            "currentDebt": "Current debt",
+            "currentCollateral": "Current collateral",
+            "collateralRatio": "Collateral ratio",
+            "actions": {
+                "borrow": "Borrow",
+                "repay": "Repay",
+                "close": "Close",
+                "add": "Add",
+                "withdraw": "Withdraw"
+            },
+            "labels": {
+                "borrowApr": "Borrow APR",
+                "originationFee": "Origination fee",
+                "interestRefund": "Interest refund",
+                "newCollateralBalance": "New collateral balance",
+                "newTotalDebt": "New total debt",
+                "liquidationPrice": "Liquidation price",
+                "collateralPrice": "{{token}} price",
+                "collateralRatioError": "Collateral ratio must be at least {{min}}%"
+            }
         },
         "extendLoanDialog": {
             "title": "Extend a loan"

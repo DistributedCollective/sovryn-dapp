@@ -46,10 +46,14 @@ export const LendFrameChart: FC<LendFrameProps> = memo(({ pool }) => {
     lendApyGradient?.addColorStop(0, 'rgba(114, 234, 222, 1)');
     lendApyGradient?.addColorStop(1, 'rgba(114, 234, 222, 0.09');
 
-    const availableLiquidityGradient =
-      chartRef.current?.ctx?.createLinearGradient(0, 0, 0, 400);
-    availableLiquidityGradient?.addColorStop(0, 'rgba(130, 134, 143, 1)');
-    availableLiquidityGradient?.addColorStop(1, 'rgba(130, 134, 143, 0.09)');
+    const totalLiquidityGradient = chartRef.current?.ctx?.createLinearGradient(
+      0,
+      0,
+      0,
+      400,
+    );
+    totalLiquidityGradient?.addColorStop(0, 'rgba(130, 134, 143, 1)');
+    totalLiquidityGradient?.addColorStop(1, 'rgba(130, 134, 143, 0.09)');
 
     const borrowedLiquidityGradient =
       chartRef.current?.ctx?.createLinearGradient(0, 0, 0, 400);
@@ -58,12 +62,7 @@ export const LendFrameChart: FC<LendFrameProps> = memo(({ pool }) => {
 
     chartRef.current = new Chart(canvas.current, {
       type: 'line',
-      data: getChartData(
-        mockData,
-        lendApyGradient,
-        availableLiquidityGradient,
-        borrowedLiquidityGradient,
-      ),
+      data: getChartData(mockData, lendApyGradient, totalLiquidityGradient),
       options: chartOptions,
       plugins: [customCanvasBackgroundColor],
     });

@@ -58,16 +58,12 @@ export const convertPoolHistoryToMockData = (
     dayjs(entry.timestamp).format('YYYY-MM-DD'),
   );
   const lendAPY = poolHistory.map(entry => parseFloat(entry.supply_apr));
-  const availableLiquidity = poolHistory.map(entry => parseFloat(entry.supply));
-  const borrowedLiquidity = poolHistory.map(entry =>
-    parseFloat(entry.borrow_apr),
-  );
+  const totalLiquidity = poolHistory.map(entry => parseFloat(entry.supply));
 
   return {
     dates,
     lendAPY,
-    availableLiquidity,
-    borrowedLiquidity,
+    totalLiquidity,
   };
 };
 
@@ -86,8 +82,7 @@ export const customCanvasBackgroundColor = {
 export const getChartData = (
   mockData: MockData,
   lendApyGradient: CanvasGradient | undefined,
-  availableLiquidityGradient: CanvasGradient | undefined,
-  borrowedLiquidityGradient: CanvasGradient | undefined,
+  totalLiquidityGradient: CanvasGradient | undefined,
 ) => {
   return {
     labels: mockData.dates,
@@ -102,19 +97,10 @@ export const getChartData = (
         pointRadius: 0,
       },
       {
-        label: t(translations.lendPage.table.available),
-        data: mockData.availableLiquidity,
-        backgroundColor: availableLiquidityGradient,
+        label: t(translations.lendPage.table.totalLiquidity),
+        data: mockData.totalLiquidity,
+        backgroundColor: totalLiquidityGradient,
         borderColor: '#82868F',
-        fill: true,
-        yAxisID: 'y',
-        pointRadius: 0,
-      },
-      {
-        label: t(translations.lendPage.table.borrowed),
-        data: mockData.borrowedLiquidity,
-        backgroundColor: borrowedLiquidityGradient,
-        borderColor: '#F58C31',
         fill: true,
         yAxisID: 'y',
         pointRadius: 0,
@@ -144,7 +130,7 @@ export const getChartOptions = (
     display: true,
     title: {
       display: true,
-      text: 'Lend APY',
+      text: t(translations.lendPage.table.lendApy),
       color: textColor,
     },
     ticks: {
@@ -176,7 +162,9 @@ export const getChartOptions = (
     position: 'right' as const,
     title: {
       display: true,
-      text: `Borrowed/Available ${pool.getAsset().toUpperCase()}`,
+      text: `${t(translations.lendPage.table.totalLiquidity)} ${pool
+        .getAsset()
+        .toUpperCase()}`,
       color: textColor,
     },
     grid: {

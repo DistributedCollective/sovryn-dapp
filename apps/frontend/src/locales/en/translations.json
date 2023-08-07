@@ -520,6 +520,7 @@
             "more": "and more",
             "collateralRatio": "collateral ratio",
             "available": "Available",
+            "totalLiquidity": "Total Liquidity",
             "borrowed": "Borrowed"
         },
         "actions": {

@@ -19,6 +19,5 @@ export type PoolHistoryData = {
 export type MockData = {
   dates: string[];
   lendAPY: number[];
-  availableLiquidity: number[];
-  borrowedLiquidity: number[];
+  totalLiquidity: number[];
 };

@@ -106,7 +106,7 @@ export const LendingForm: FC<DepositProps> = ({ state, onConfirm }) => {
           placeholder="0"
         />
       </FormGroup>
-      {!isValidAmount && (
+      {!isValidAmount && !amount.eq(0) && (
         <ErrorBadge
           level={ErrorLevel.Critical}
           message={t(translations.lending.form.invalidAmountError)}

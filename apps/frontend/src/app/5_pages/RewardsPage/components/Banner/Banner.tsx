@@ -26,7 +26,7 @@ import { translations } from '../../../../../locales/i18n';
 type BannerProps = {
   localStorageKey: string;
   title: string;
-  description: string;
+  description: ReactNode;
   learnMore?: string;
   action: ReactNode;
   className?: string;

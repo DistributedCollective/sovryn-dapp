@@ -2,6 +2,7 @@ import React, { FC, useEffect, useMemo, useState } from 'react';
 
 import { t } from 'i18next';
 import { Helmet } from 'react-helmet-async';
+import { Trans } from 'react-i18next';
 
 import {
   SelectOption,
@@ -21,6 +22,7 @@ import { useMaintenance } from '../../../hooks/useMaintenance';
 import { translations } from '../../../locales/i18n';
 import styles from './RewardsPage.module.css';
 import { Banner } from './components/Banner/Banner';
+import { MaxStakingAPR } from './components/MaxStakingAPR/MaxStakingAPR';
 import { StabilityPool } from './components/StabilityPool/StabilityPool';
 import { Staking } from './components/Staking/Staking';
 import { TotalRewardsEarned } from './components/TotalRewardsEarned/TotalRewardsEarned';
@@ -94,8 +96,8 @@ const RewardsPage: FC = () => {
         <title>{t(translations.rewardPage.meta.title)}</title>
       </Helmet>
 
-      <div className="flex flex-col lg:flex-row gap-2 lg:gap-16 w-full lg:w-5/6 text-gray-10 mt-6 lg:mt-12">
-        <div className="flex flex-col gap-4 w-full lg:w-96">
+      <div className="flex flex-col lg:flex-row gap-2 lg:gap-28 w-full lg:w-5/6 text-gray-10 mt-6 lg:mt-12">
+        <div className="flex flex-col gap-4 w-full lg:w-[26.25rem]">
           <TotalRewardsEarned />
 
           <Banner
@@ -120,7 +122,12 @@ const RewardsPage: FC = () => {
           <Banner
             localStorageKey="stakingBanner"
             title={t(translations.rewardPage.stakingBanner.title)}
-            description={t(translations.rewardPage.stakingBanner.description)}
+            description={
+              <Trans
+                i18nKey={t(translations.rewardPage.stakingBanner.description)}
+                components={[<MaxStakingAPR />]}
+              />
+            }
             action={
               <Button
                 text={t(translations.rewardPage.stakingBanner.action)}

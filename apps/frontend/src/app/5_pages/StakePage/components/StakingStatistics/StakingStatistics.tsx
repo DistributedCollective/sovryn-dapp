@@ -24,6 +24,9 @@ export const StakingStatistics = () => {
   const { totalStakedSov, totalVotingPower, maxStakingApr } =
     useGetStakingStatistics();
 
+  console.log({
+    maxStakingApr,
+  });
   const renderMaxStakingApr = useMemo(
     () =>
       maxStakingApr ? (

@@ -560,7 +560,7 @@
         },
         "stakingBanner": {
             "title": "Staking",
-            "description": "Participate in Sovryn's governance and revenue, earn up to 26.8% APY paid in bitcoin",
+            "description": "Participate in Sovryn's governance and revenue, earn up to <0>source</0> paid in bitcoin",
             "action": "Stake SOV"
         },
         "yieldFarmingBanner": {

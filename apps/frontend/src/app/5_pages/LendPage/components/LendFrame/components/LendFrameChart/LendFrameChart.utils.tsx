@@ -134,7 +134,7 @@ export const getChartOptions = (
       color: textColor,
     },
     ticks: {
-      callback: value => Number(value).toFixed(2) + '%',
+      callback: value => Number(value).toFixed(3) + '%',
       stepSize: lendAPYTickStep,
       min: Math.min(...mockData.lendAPY) - 3 * lendAPYTickStep,
       max: Math.max(...mockData.lendAPY) + 3 * lendAPYTickStep,
@@ -199,6 +199,7 @@ export const getChartOptions = (
         fontWeight,
       },
       padding: 15,
+      maxTicksLimit: 7,
     },
   };
 

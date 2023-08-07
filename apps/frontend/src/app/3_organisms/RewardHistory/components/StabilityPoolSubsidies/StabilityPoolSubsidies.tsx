@@ -41,8 +41,8 @@ import {
 } from '../../../../../utils/graphql/zero/generated';
 import { dateFormat } from '../../../../../utils/helpers';
 import { fromWei } from '../../../../../utils/math';
-import { RewardHistoryProps } from '../../types';
-import { rewardHistoryOptions } from '../../utils';
+import { RewardHistoryProps } from '../../RewardHistory.types';
+import { rewardHistoryOptions } from '../../RewardHistory.utils';
 import { useGetStabilityPoolSubsidies } from './hooks/useGetStabilityPoolSubsidies';
 
 const pageSize = DEFAULT_HISTORY_FRAME_PAGE_SIZE;
@@ -51,7 +51,7 @@ const generateRowTitle = (tx: SovDistribution) => (
   <Paragraph size={ParagraphSize.small} className="text-left">
     {t(
       translations.subsidyHistory.stabilityPoolOperation
-        .claimStabilityPoolSubsidy,
+        .withdrawStabilityPoolSubsidy,
     )}
     {' - '}
     {dateFormat(tx.timestamp)}
@@ -117,7 +117,7 @@ export const StabilityPoolSubsidies: FC<RewardHistoryProps> = ({
         cellRenderer: () =>
           t(
             translations.subsidyHistory.stabilityPoolOperation
-              .claimStabilityPoolSubsidy,
+              .withdrawStabilityPoolSubsidy,
           ),
       },
       {
@@ -181,7 +181,7 @@ export const StabilityPoolSubsidies: FC<RewardHistoryProps> = ({
       timestamp: dateFormat(tx.timestamp),
       stabilityPoolOperation: t(
         translations.subsidyHistory.stabilityPoolOperation
-          .claimStabilityPoolSubsidy,
+          .withdrawStabilityPoolSubsidy,
       ),
       amount: fromWei(tx.amount || ''),
       transactionID: tx.id,

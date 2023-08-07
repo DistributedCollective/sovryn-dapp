@@ -242,9 +242,11 @@ export const StabilityPool: FC = () => {
           isLoading={!!account ? loadingTroves : false}
           rowKey={row => row.type}
           noData={
-            !!account
-              ? t(translations.rewardPage.stabilityPool.noRewards)
-              : t(translations.rewardPage.stabilityPool.notConnected)
+            <span className="italic">
+              {!!account
+                ? t(translations.rewardPage.stabilityPool.noRewards)
+                : t(translations.rewardPage.stabilityPool.notConnected)}
+            </span>
           }
           rowTitle={row => (
             <div className="flex flex-col items-start gap-1">

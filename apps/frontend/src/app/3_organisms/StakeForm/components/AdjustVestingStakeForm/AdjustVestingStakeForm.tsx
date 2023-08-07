@@ -50,24 +50,24 @@ export const AdjustVestingStakeForm: FC<AdjustVestingStakeFormProps> = ({
   );
 
   const isValidAddress = useMemo(() => {
-    if (areAddressesEqual(delegateToAddress, account)) {
+    if (areAddressesEqual(delegateToAddress, delegatedAddress || account)) {
       return false;
     }
 
     return isAddress(delegateToAddress) || delegateToAddress.length === 0;
-  }, [delegateToAddress, account]);
+  }, [delegateToAddress, delegatedAddress, account]);
 
   const errorMessage = useMemo(() => {
     if (!isValidAddress) {
       if (!isAddress(delegateToAddress)) {
         return t(translations.stakePage.stakeForm.invalidAddressError);
       }
-      if (areAddressesEqual(delegateToAddress, account)) {
+      if (areAddressesEqual(delegateToAddress, delegatedAddress || account)) {
         return t(translations.stakePage.stakeForm.invalidDelegateError);
       }
     }
     return '';
-  }, [isValidAddress, delegateToAddress, account]);
+  }, [isValidAddress, delegateToAddress, delegatedAddress, account]);
 
   const isSubmitDisabled = useMemo(
     () => stakingLocked || !isValidAddress || delegateToAddress.length === 0,

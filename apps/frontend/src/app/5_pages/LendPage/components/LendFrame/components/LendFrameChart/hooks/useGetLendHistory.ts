@@ -20,8 +20,10 @@ export const useGetLendHistory = (asset: SupportedTokens) => {
     );
     if (response.ok) {
       const history = await response.json();
+
+      //last 7 days of data in 4hr chunks
       const historySorted = history
-        .slice(-6)
+        .slice(-42)
         .sort((data1, data2) =>
           new Date(data1.timestamp) > new Date(data2.timestamp) ? 1 : -1,
         );

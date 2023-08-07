@@ -783,7 +783,10 @@
         "learnMore": "Learn more",
         "apy": "Lend APY",
         "acceptedCollateral": "Accepted collateral",
-        "newApy": "New lend APY"
+        "newApy": "New lend APY",
+        "form": {
+            "invalidAmountError": "Exceeds maximum amount"
+        }
     },
     "lendingTx": {
         "deposit": "Deposit {{symbol}}",

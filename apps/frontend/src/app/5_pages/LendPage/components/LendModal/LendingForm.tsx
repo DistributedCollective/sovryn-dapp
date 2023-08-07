@@ -59,13 +59,14 @@ export const LendingForm: FC<DepositProps> = ({ state, onConfirm }) => {
     [balance, setValue],
   );
 
+  const isValidAmount = useMemo(
+    () => amount.gt(0) && amount.lte(balance.toBigNumber()),
+    [amount, balance],
+  );
+
   const isSubmitDisabled = useMemo(
-    () =>
-      amount.lte(0) ||
-      amount.gt(balance.toBigNumber()) ||
-      !hasDisclaimerBeenChecked ||
-      depositLocked,
-    [amount, balance, hasDisclaimerBeenChecked, depositLocked],
+    () => !isValidAmount || !hasDisclaimerBeenChecked || depositLocked,
+    [isValidAmount, hasDisclaimerBeenChecked, depositLocked],
   );
 
   const [lendApy, setLendApy] = useState<Decimal>(state.apy);
@@ -105,7 +106,13 @@ export const LendingForm: FC<DepositProps> = ({ state, onConfirm }) => {
           placeholder="0"
         />
       </FormGroup>
-
+      {!isValidAmount && (
+        <ErrorBadge
+          level={ErrorLevel.Critical}
+          message={t(translations.lending.form.invalidAmountError)}
+          dataAttribute="adjust-lending-deposit-amount-error"
+        />
+      )}
       <SimpleTable className="mt-6">
         <SimpleTableRow
           label={t(translations.lending.newApy)}

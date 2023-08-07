@@ -323,7 +323,6 @@ const ConvertPage: FC = () => {
     if (destinationToken) {
       urlParams.set('to', destinationToken);
     } else {
-      console.log('delete to');
       urlParams.delete('to');
     }
 

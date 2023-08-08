@@ -1,6 +1,7 @@
 import dayjs from 'dayjs';
 import { t } from 'i18next';
 
+import { getTokenDisplayName } from '../../../../../../../constants/tokens';
 import { translations } from '../../../../../../../locales/i18n';
 import { LendingPool } from '../../../../utils/LendingPool';
 import { MockData, PoolHistoryData } from './LendFrameChart.types';
@@ -162,9 +163,9 @@ export const getChartOptions = (
     position: 'right' as const,
     title: {
       display: true,
-      text: `${t(translations.lendPage.table.totalLiquidity)} ${pool
-        .getAsset()
-        .toUpperCase()}`,
+      text: `${t(
+        translations.lendPage.table.totalLiquidity,
+      )} ${getTokenDisplayName(pool.getAsset())}`,
       color: textColor,
     },
     grid: {

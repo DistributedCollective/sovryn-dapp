@@ -24,7 +24,6 @@ export const Label: FC<LabelProps> = ({
   balance,
   token,
   onMaxClicked,
-  tab,
   onTabChanged,
 }) => {
   const [index, setIndex] = useState(0);

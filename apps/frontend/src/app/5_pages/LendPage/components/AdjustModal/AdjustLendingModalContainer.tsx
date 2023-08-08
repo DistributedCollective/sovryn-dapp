@@ -129,7 +129,7 @@ export const AdjustLendingModalContainer: FC<AdjustModalProps> = ({
   );
 
   return (
-    <Dialog isOpen={state != null}>
+    <Dialog disableFocusTrap isOpen={state != null}>
       <DialogHeader
         title={t(translations.lendingAdjust.title)}
         onClose={handleCloseModal}

@@ -6,6 +6,7 @@ import { SupportedTokens } from '@sovryn/contracts';
 import { Decimal } from '@sovryn/utils';
 
 import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRenderer';
+import { getTokenDisplayName } from '../../../../../constants/tokens';
 import { translations } from '../../../../../locales/i18n';
 
 export type CurrentStatsProps = {
@@ -29,7 +30,7 @@ export const CurrentStats: FC<CurrentStatsProps> = ({
     <div>
       <div>{t(translations.lendingAdjust.currentBalance)}</div>
       <div>
-        <AmountRenderer value={balance} suffix={symbol.toUpperCase()} />
+        <AmountRenderer value={balance} suffix={getTokenDisplayName(symbol)} />
       </div>
     </div>
   </div>

@@ -8,6 +8,7 @@ import { Link, LinkStyle } from '@sovryn/ui';
 import { defaultChainId } from '../../../../../../config/chains';
 
 import { MINIMUM_COLLATERAL_RATIO } from '../../../../../3_organisms/ZeroLocForm/constants';
+import { getTokenDisplayName } from '../../../../../../constants/tokens';
 import { translations } from '../../../../../../locales/i18n';
 import { getRskExplorerUrl } from '../../../../../../utils/helpers';
 import { decimalic } from '../../../../../../utils/math';
@@ -49,7 +50,7 @@ export const AssetTooltipContent: FC<AssetTooltipContentProps> = ({
             return (
               <div className="flex items-center prevent-row-click" key={token}>
                 <Link
-                  text={token.toUpperCase()}
+                  text={getTokenDisplayName(token)}
                   href={`${rskExplorerUrl}/address/${address}`}
                   openNewTab
                   dataAttribute="lend-asset-tooltip"

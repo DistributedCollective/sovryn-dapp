@@ -4,6 +4,7 @@ import { t } from 'i18next';
 
 import { AmountRenderer } from '../../../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { TOKEN_RENDER_PRECISION } from '../../../../../../../constants/currencies';
+import { getTokenDisplayName } from '../../../../../../../constants/tokens';
 import { useAccount } from '../../../../../../../hooks/useAccount';
 import { translations } from '../../../../../../../locales/i18n';
 import { decimalic } from '../../../../../../../utils/math';
@@ -47,7 +48,7 @@ export const LendFrameInterestEarned: FC<LendFrameProps> = ({ pool }) => {
         dataAttribute="lend-frame-interest-earned"
         className="prevent-row-click"
         value={poolProfit}
-        suffix={asset}
+        suffix={getTokenDisplayName(asset)}
         precision={TOKEN_RENDER_PRECISION}
       />
     </div>

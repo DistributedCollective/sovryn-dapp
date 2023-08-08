@@ -32,9 +32,13 @@ export type AssetValueProps = {
    */
   maxDecimals?: number;
   /**
-   * a string that represents the CSS class to apply to the component.
+   * a string that represents the CSS class to apply to the Tooltip component.
    */
   className?: string;
+  /**
+   * a string that represents the CSS class to apply to the component.
+   */
+  containerClassName?: string;
   /**
    * a string that represents the CSS class to apply to the asset element.
    */

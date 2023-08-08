@@ -1,0 +1,23 @@
+query getVestingUnlockBalance(
+  $vestingAddress: ID
+  $timestamp: Int
+  $currentTimestamp: Int
+) {
+  vestingContracts(where: { id: $vestingAddress }) {
+    id
+    stakeHistory(
+      where: {
+        action: TokensStaked
+        lockedUntil_gt: $timestamp
+        lockedUntil_lte: $currentTimestamp
+      }
+      orderBy: lockedUntil
+      orderDirection: asc
+      first: 250
+    ) {
+      timestamp
+      amount
+      lockedUntil
+    }
+  }
+}

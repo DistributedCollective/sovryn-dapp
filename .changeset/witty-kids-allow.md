@@ -2,4 +2,4 @@
 "frontend": patch
 ---
 
-Fix AmountInput exceptions
+SOV-2963: Fix AmountInput exceptions

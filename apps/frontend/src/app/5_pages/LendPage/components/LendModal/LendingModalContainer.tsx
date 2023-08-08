@@ -102,7 +102,7 @@ export const LendingModalContainer: FC<LendingModalProps> = ({ onDeposit }) => {
   );
 
   return (
-    <Dialog width={DialogSize.sm} isOpen={state != null}>
+    <Dialog disableFocusTrap width={DialogSize.sm} isOpen={state != null}>
       <DialogHeader
         title={t(translations.lending.title)}
         onClose={handleCloseModal}

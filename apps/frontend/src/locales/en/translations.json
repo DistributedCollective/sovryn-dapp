@@ -70,7 +70,8 @@
         "nav": {
             "borrow": "Borrow",
             "earn": "Earn",
-            "convert": "Convert"
+            "convert": "Convert",
+            "stake": "Stake"
         }
     },
     "footer": {
@@ -360,7 +361,97 @@
         "minimumReceived": "Minimum received",
         "maximumPrice": "Maximum price"
     },
-
+    "stakePage": {
+        "meta": {
+            "title": "Stake - Sovryn"
+        },
+        "statistics": {
+            "title": "Global staking statistics",
+            "totalStakedSov": "Total staked SOV",
+            "totalVotingPower": "Total voting power",
+            "maxStakingApr": "Max staking APR",
+            "maxStakingAprInfo": "This is calculated assuming the initial SOV purchase is made using BTC and all revenues earned are immediately converted to BTC.<br /><0>source</0>",
+            "maxStakingAprInfoCta": "Source"
+        },
+        "personalStatistics": {
+            "title": "Personal staking statistics",
+            "stakedSov": "Staked SOV",
+            "votingPower": "Voting power",
+            "votingPowerInfo": {
+                "line1": "Own voting power",
+                "line2": "Delegated voting power",
+                "line3": "Total personal voting power"
+            },
+            "votingPowerShare": "Voting power share"
+        },
+        "table": {
+            "stakes": "Stakes",
+            "vestingStakes": "Vesting stakes",
+            "stakeButton": "Stake SOV",
+            "addNewStakeButton": "Add new stake",
+            "rewardsButton": "Rewards",
+            "adjustButton": "Adjust",
+            "stakeAmount": "Stake amount",
+            "votingPower": "Voting power",
+            "delegate": "Delegate",
+            "endDate": "End date",
+            "noStakes": "You don't have any stakes yet",
+            "noVestingStakes": "You don't have any vesting stakes yet",
+            "notConnected": "Connect wallet to see available data"
+        },
+        "stakeForm": {
+            "createNewStake": "Create new stake",
+            "adjustStake": "Adjust stake",
+            "adjustVestingStake": "Adjust vesting stake",
+            "stakeDetails": "Stake details",
+            "stakeSov": "Stake SOV",
+            "endDate": "End date",
+            "newEndDate": "New end date",
+            "newStakeAmount": "New stake amount",
+            "newStakedSov": "New staked SOV",
+            "votingPowerReceived": "Voting power received",
+            "votingPowerIncrease": "Voting power increase",
+            "votingPowerDecrease": "Voting power decrease",
+            "penalty": "Early unstaking penalty",
+            "newVotingPower": "New voting power",
+            "stakedSov": "Staked SOV",
+            "votingPower": "Voting power",
+            "invalidAmountError": "Exceeds maximum amount",
+            "invalidAddressError": "Invalid address",
+            "invalidDelegateError": "Cannot delegate to the existing delegatee",
+            "currentDelegateAddress": "Current delegate address",
+            "newDelegateAddress": "New delegate address",
+            "year": "Year",
+            "month": "Month",
+            "day": "Day",
+            "noAvailableDates": "No available dates",
+            "maxDuration": "max duration",
+            "increase": "Increase",
+            "decrease": "Decrease",
+            "extend": "Extend",
+            "delegate": "Delegate",
+            "delegateInfo": "Discover Bitocracy delegates <0>here</0>",
+            "delegateInfoCta": "here"
+        },
+        "stakingRewards": {
+            "title": "Staking rewards",
+            "description": "Earn rewards and participate in governance by staking SOV",
+            "buySov": "Buy SOV",
+            "learnMore": "Learn more about benefits"
+        },
+        "txDialog": {
+            "addNewStake": "Add new stake details",
+            "addNewStakeTitle": "Add new stake",
+            "decreaseStake": "Decrease stake details",
+            "decreaseStakeTitle": "Decrease stake",
+            "increaseStake": "Increase stake details",
+            "increaseStakeTitle": "Increase stake",
+            "extendStake": "Extend stake details",
+            "extendStakeTitle": "Extend stake",
+            "delegateStake": "Delegate voting power details",
+            "delegateStakeTitle": "Delegate voting power"
+        }
+    },
     "fastBtc": {
         "mainScreen": {
             "title": "Funding",
@@ -728,10 +819,6 @@
         "borrow": {
             "title": "Borrow",
             "description": "Take out a fixed-interest loan"
-        },
-        "stake": {
-            "title": "Stake",
-            "description": "Earn rewards by staking SOV"
         },
         "vote": {
             "title": "Vote",

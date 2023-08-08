@@ -54,7 +54,13 @@
             "error": "Error loading Zero data, please try again",
             "pageLoading": "is loading..."
         },
-        "advancedSettings": "Advanced settings"
+        "advancedSettings": "Advanced settings",
+        "and": "and",
+        "more": "more",
+        "transactionTypes": {
+            "deposit": "Deposit",
+            "withdrawal": "Withdrawal"
+        }
     },
     "connectWalletButton": {
         "connect": "Get started",
@@ -68,7 +74,17 @@
         "funding": "Funding",
         "nav": {
             "borrow": "Borrow",
-            "earn": "Earn",
+            "earn": {
+                "title": "Earn",
+                "subMenu": {
+                    "lend": "Lend",
+                    "lendDescription": "Earn interest in the lending pool",
+                    "stabilityPool": "Stability pool",
+                    "stabilityPoolDescription": "Earn BTC from Zero liquidations",
+                    "staking": "Staking",
+                    "stakingDescription": "Gain voting power and earn fees"
+                }
+            },
             "convert": "Convert"
         }
     },
@@ -430,17 +446,17 @@
             }
         },
         "receive": {
-          "loading": "Loading... this may take up to 30 seconds",
-          "statusScreen": {
-              "statusTitleProcessing": "Transfer processing...",
-              "statusTitleComplete": "Transfer complete",
-              "to": "To",
-              "sending": "Sending",
-              "serviceFee": "Service fee",
-              "receiving": "Receiving",
-              "bitcoinTxId": "Bitcoin TXID",
-              "rootstockTxId": "Rootstock TXID"
-          }
+            "loading": "Loading... this may take up to 30 seconds",
+            "statusScreen": {
+                "statusTitleProcessing": "Transfer processing...",
+                "statusTitleComplete": "Transfer complete",
+                "to": "To",
+                "sending": "Sending",
+                "serviceFee": "Service fee",
+                "receiving": "Receiving",
+                "bitcoinTxId": "Bitcoin TXID",
+                "rootstockTxId": "Rootstock TXID"
+            }
         }
     },
 
@@ -477,12 +493,39 @@
             "tabs": {
                 "lineOfCredit": "Line of credit",
                 "redemptions": "Redemptions",
-                "stability": "Stability pool",
+                "earn": "Earn",
                 "convert": "Conversion",
                 "funding": "Funding",
                 "reward": "Reward"
             },
             "comingSoon": "Coming soon..."
+        }
+    },
+    "lendPage": {
+        "meta": {
+            "title": "Lend - Sovryn"
+        },
+        "title": "Lend",
+        "subtitle": "Earn interest by providing liquidity to borrowers",
+        "table": {
+            "lend": "Lend",
+            "asset": "Asset",
+            "lendApy": "Lend APY",
+            "lendApyMobile": "APY",
+            "lendApyInfo": "Interest rate is variable based on the current utilization rate and loans outstanding",
+            "acceptedCollateral": "Accepted collateral",
+            "balance": "Balance",
+            "interestEarned": "Interest earned",
+            "interestEarnedInfo": "Interest earned is auto-compounded i.e. it is automatically added to your lending pool balance",
+            "more": "and more",
+            "collateralRatio": "collateral ratio",
+            "available": "Available",
+            "totalLiquidity": "Total Liquidity",
+            "borrowed": "Borrowed"
+        },
+        "actions": {
+            "lend": "Lend",
+            "adjust": "Adjust"
         }
     },
     "locHistory": {
@@ -549,6 +592,17 @@
             "amount": "Amount",
             "withdrawSurplus": "Withdraw surplus",
             "depositSurplus": "Deposit surplus"
+        }
+    },
+    "earnHistory": {
+        "types": {
+            "stabilityPool": "Stability pool",
+            "lending": "Lending"
+        },
+        "lendingHistory": {
+            "columns": {
+                "balanceChange": "Balance change"
+            }
         }
     },
     "stabilityPoolHistory": {
@@ -713,5 +767,29 @@
             "title": "Vote",
             "description": "Participate in Sovryn governance"
         }
+    },
+    "lendingAdjust": {
+        "title": "Adjust lending balance",
+        "deposit": "Deposit",
+        "withdraw": "Withdraw",
+        "apy": "Current lend rate",
+        "newApy": "New lend rate",
+        "currentBalance": "Current lending balance",
+        "newBalance": "New lending balance"
+    },
+    "lending": {
+        "title": "Lend",
+        "disclaimer": "I understand that the APY is variable and that there must be available liquidity in the pool for me to be able to withdraw my lending balance. <0>Learn more</0>",
+        "learnMore": "Learn more",
+        "apy": "Lend APY",
+        "acceptedCollateral": "Accepted collateral",
+        "newApy": "New lend APY",
+        "form": {
+            "invalidAmountError": "Exceeds maximum amount"
+        }
+    },
+    "lendingTx": {
+        "deposit": "Deposit {{symbol}}",
+        "withdraw": "Withdraw {{symbol}}"
     }
 }

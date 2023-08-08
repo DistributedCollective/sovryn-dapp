@@ -33,6 +33,7 @@ const TermsOfUse = loadable(
 const RewardsPage = loadable(
   () => import('./app/5_pages/RewardsPage/RewardsPage'),
 );
+const LendPage = loadable(() => import('./app/5_pages/LendPage/LendPage'));
 
 const routes = [
   {
@@ -56,9 +57,13 @@ const routes = [
         loader: zeroPageLoader,
       },
       {
-        path: '/earn',
+        path: '/earn/stability-pool',
         element: <EarnPage />,
         loader: earnPageLoader,
+      },
+      {
+        path: '/earn/lend',
+        element: <LendPage />,
       },
       {
         path: '/convert',

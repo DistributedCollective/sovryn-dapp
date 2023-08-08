@@ -1,4 +1,11 @@
-import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
+import React, {
+  FC,
+  PropsWithChildren,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 
 import { t } from 'i18next';
 import { nanoid } from 'nanoid';
@@ -16,33 +23,33 @@ import {
   Table,
 } from '@sovryn/ui';
 
-import { chains, defaultChainId } from '../../../config/chains';
+import { chains, defaultChainId } from '../../../../../config/chains';
 
-import { AmountRenderer } from '../../2_molecules/AmountRenderer/AmountRenderer';
-import { ExportCSV } from '../../2_molecules/ExportCSV/ExportCSV';
-import { TableFilter } from '../../2_molecules/TableFilter/TableFilter';
-import { Filter } from '../../2_molecules/TableFilter/TableFilter.types';
-import { TxIdWithNotification } from '../../2_molecules/TxIdWithNotification/TransactionIdWithNotification';
-import { TOKEN_RENDER_PRECISION } from '../../../constants/currencies';
+import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRenderer';
+import { ExportCSV } from '../../../../2_molecules/ExportCSV/ExportCSV';
+import { TableFilter } from '../../../../2_molecules/TableFilter/TableFilter';
+import { Filter } from '../../../../2_molecules/TableFilter/TableFilter.types';
+import { TxIdWithNotification } from '../../../../2_molecules/TxIdWithNotification/TransactionIdWithNotification';
+import { TOKEN_RENDER_PRECISION } from '../../../../../constants/currencies';
 import {
   DEFAULT_HISTORY_FRAME_PAGE_SIZE,
   EXPORT_RECORD_LIMIT,
-} from '../../../constants/general';
-import { useNotificationContext } from '../../../contexts/NotificationContext';
-import { useAccount } from '../../../hooks/useAccount';
-import { useBlockNumber } from '../../../hooks/useBlockNumber';
-import { useMaintenance } from '../../../hooks/useMaintenance';
-import { translations } from '../../../locales/i18n';
-import { zeroClient } from '../../../utils/clients';
+} from '../../../../../constants/general';
+import { useNotificationContext } from '../../../../../contexts/NotificationContext';
+import { useAccount } from '../../../../../hooks/useAccount';
+import { useBlockNumber } from '../../../../../hooks/useBlockNumber';
+import { useMaintenance } from '../../../../../hooks/useMaintenance';
+import { translations } from '../../../../../locales/i18n';
+import { zeroClient } from '../../../../../utils/clients';
 import {
   StabilityDepositChange,
   StabilityDepositChange_Filter,
   StabilityDepositChange_OrderBy,
   StabilityDepositOperation,
   useGetStabilityPoolLazyQuery,
-} from '../../../utils/graphql/zero/generated';
-import { dateFormat } from '../../../utils/helpers';
-import { renderSign } from '../LOCHistory/components/TransactionHistoryFrame/utils';
+} from '../../../../../utils/graphql/zero/generated';
+import { dateFormat } from '../../../../../utils/helpers';
+import { renderSign } from '../../../LOCHistory/components/TransactionHistoryFrame/utils';
 import { useGetStabilityPoolHistory } from './hooks/useGetStabilityPoolHistory';
 
 const pageSize = DEFAULT_HISTORY_FRAME_PAGE_SIZE;
@@ -67,7 +74,9 @@ const getTransactionType = (operation: StabilityDepositOperation) => {
   }
 };
 
-export const StabilityPoolHistoryFrame: FC = () => {
+export const StabilityPoolHistoryFrame: FC<PropsWithChildren> = ({
+  children,
+}) => {
   const { account } = useAccount();
   const { addNotification } = useNotificationContext();
   const [filters, setFilters] = useState<StabilityDepositChange_Filter>({});
@@ -303,20 +312,25 @@ export const StabilityPoolHistoryFrame: FC = () => {
 
   return (
     <>
-      <div className="flex-row items-center gap-4 mb-7 hidden lg:inline-flex">
-        <ExportCSV
-          getData={exportData}
-          filename="stability pool transactions"
-          disabled={
-            !stabilityDeposits || stabilityDeposits.length === 0 || exportLocked
-          }
-        />
-        {exportLocked && (
-          <ErrorBadge
-            level={ErrorLevel.Warning}
-            message={t(translations.maintenanceMode.featureDisabled)}
+      <div className="flex-row items-center gap-4 mb-7 flex justify-center lg:justify-start">
+        {children}
+        <div className="flex-row items-center ml-2 gap-4 hidden lg:inline-flex">
+          <ExportCSV
+            getData={exportData}
+            filename="stability pool transactions"
+            disabled={
+              !stabilityDeposits ||
+              stabilityDeposits.length === 0 ||
+              exportLocked
+            }
           />
-        )}
+          {exportLocked && (
+            <ErrorBadge
+              level={ErrorLevel.Warning}
+              message={t(translations.maintenanceMode.featureDisabled)}
+            />
+          )}
+        </div>
       </div>
       <div className="bg-gray-80 py-4 px-4 rounded">
         <Table

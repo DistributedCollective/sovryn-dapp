@@ -1,0 +1,21 @@
+query getLendHistory($user: ID!) {
+  user(id: $user) {
+    lendingHistory {
+      lendingHistory(orderBy: timestamp) {
+        type
+        timestamp
+        asset {
+          id
+          symbol
+        }
+        amount
+        loanTokenAmount
+        emittedBy
+        transaction {
+          id
+          timestamp
+        }
+      }
+    }
+  }
+}

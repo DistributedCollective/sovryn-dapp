@@ -1,0 +1,7 @@
+.assetLogo svg {
+  @apply w-8 h-8 mr-2.5;
+}
+
+.assets {
+  @apply text-primary-20 underline text-xs font-medium font-body;
+}

@@ -89,7 +89,7 @@ export const sendOrSimulateTx = async (
   }
 
   return request.contract[request.fnName](...args, {
-    value: request.value,
+    value: request.value ?? '0',
     gasPrice,
     gasLimit,
   });

@@ -41,4 +41,9 @@ export const BTC_EXPLORER = {
   [Environments.Testnet]: 'https://live.blockcypher.com/btc-testnet',
 };
 
+export const GRAPH_WRAPPER = {
+  [Environments.Mainnet]: 'https://graph-wrapper.sovryn.app',
+  [Environments.Testnet]: 'https://graph-wrapper.test.sovryn.app',
+};
+
 export const ESTIMATOR_URI = process.env.REACT_APP_ESTIMATOR_URI;

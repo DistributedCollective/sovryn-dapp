@@ -1,6 +1,7 @@
 import { ChainIds } from '@sovryn/ethers-provider';
 
 import erc20 from '../abis/erc20.json';
+import loanToken from '../abis/loanToken.json';
 import { contracts } from '../contracts';
 import { findContract, getContract, getContractGroupAbi } from './global';
 
@@ -58,9 +59,9 @@ describe('utils/contracts/global.ts', () => {
     it('throws error if contract is unknown', async () => {
       expect.assertions(1);
       try {
-        await getContract('xusd', 'loanTokens', ChainIds.RSK_MAINNET);
+        await getContract('xusdtest', 'loanTokens', ChainIds.RSK_MAINNET);
       } catch (e) {
-        expect(e.message).toBe('getContract: Unknown contract: xusd');
+        expect(e.message).toBe('getContract: Unknown contract: xusdtest');
       }
     });
   });
@@ -73,7 +74,7 @@ describe('utils/contracts/global.ts', () => {
 
     it('loads loan token contract abi', async () => {
       const abi = await getContractGroupAbi('loanTokens');
-      expect(abi).toBe(erc20);
+      expect(abi).toBe(loanToken);
     });
 
     it('fails to load unkown contract group', async () => {

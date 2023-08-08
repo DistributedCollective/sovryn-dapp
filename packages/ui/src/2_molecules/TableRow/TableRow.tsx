@@ -1,4 +1,4 @@
-import React, { Fragment, useCallback } from 'react';
+import React, { Fragment, ReactNode, useCallback, useReducer } from 'react';
 
 import classNames from 'classnames';
 
@@ -17,6 +17,8 @@ type TableRowProps<RowType extends RowObject> = {
   isClickable?: boolean;
   className?: string;
   size?: TableRowSize;
+  expandedContent?: (row: RowType) => ReactNode;
+  preventExpandOnClickClass?: string;
 };
 
 export const TableRow = <RowType extends RowObject>({
@@ -29,10 +31,27 @@ export const TableRow = <RowType extends RowObject>({
   isClickable,
   className,
   size = TableRowSize.small,
+  expandedContent,
+  preventExpandOnClickClass,
 }: TableRowProps<RowType>) => {
-  const onClick = useCallback(() => {
-    onRowClick?.(row);
-  }, [onRowClick, row]);
+  const [expandedRow, toggleExpandedRow] = useReducer(v => !v, false);
+  const onClick = useCallback(
+    (event: React.MouseEvent<HTMLTableRowElement>) => {
+      if (preventExpandOnClickClass) {
+        let currentElement: HTMLElement | null = event.target as HTMLElement;
+
+        while (currentElement !== null) {
+          if (currentElement.classList.contains(preventExpandOnClickClass)) {
+            return;
+          }
+          currentElement = currentElement.parentElement;
+        }
+      }
+      onRowClick?.(row);
+      toggleExpandedRow();
+    },
+    [onRowClick, row, preventExpandOnClickClass],
+  );
 
   return (
     <Fragment key={index}>
@@ -58,6 +77,11 @@ export const TableRow = <RowType extends RowObject>({
           </td>
         ))}
       </tr>
+      {expandedRow && expandedContent && (
+        <tr key={JSON.stringify(row)}>
+          <td colSpan={columns.length}>{expandedContent(row)}</td>
+        </tr>
+      )}
       <tr className={classNames(styles.spacer, styles[size])}></tr>
     </Fragment>
   );

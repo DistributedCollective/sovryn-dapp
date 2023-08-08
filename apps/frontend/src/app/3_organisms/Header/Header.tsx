@@ -134,7 +134,6 @@ export const Header: FC = () => {
                   onClick={enableFastBtc ? handleFastBtcClick : noop}
                   href={enableFastBtc ? '' : RSK_FAUCET}
                   hrefExternal={true}
-                  className={hasRbtcBalance ? 'text-gray-10' : ''}
                 />
               </>
             )}

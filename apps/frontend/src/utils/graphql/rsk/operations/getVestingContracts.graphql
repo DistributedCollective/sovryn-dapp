@@ -1,0 +1,16 @@
+query getVestingContracts($user: String, $skip: Int!, $pageSize: Int!) {
+  vestingContracts(
+    where: { user: $user }
+    first: $pageSize
+    skip: $skip
+    orderBy: currentBalance
+    orderDirection: desc
+  ) {
+    id
+    cliff
+    duration
+    currentBalance
+    type
+    createdAtTimestamp
+  }
+}

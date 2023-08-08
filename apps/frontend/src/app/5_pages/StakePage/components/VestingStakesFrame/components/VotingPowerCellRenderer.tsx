@@ -8,10 +8,12 @@ import { translations } from '../../../../../../locales/i18n';
 import { fromWei } from '../../../../../../utils/math';
 import { VP } from '../../../StakePage.constants';
 import { useGetVestingStakeVotingPower } from '../../StakesFrame/hooks/useGetVestingStakeVotingPower';
-import { Vesting } from '../VestingStakesFrame.types';
+import { VestingContractTableRecord } from '../VestingStakesFrame.types';
 
-export const VotingPowerCellRenderer: FC<Vesting> = ({ vestingContract }) => {
-  const votingPower = useGetVestingStakeVotingPower(vestingContract);
+export const VotingPowerCellRenderer: FC<VestingContractTableRecord> = ({
+  address,
+}) => {
+  const votingPower = useGetVestingStakeVotingPower(address);
 
   const renderVotingPower = useMemo(() => {
     if (!votingPower) {

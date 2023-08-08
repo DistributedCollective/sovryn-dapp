@@ -21,7 +21,7 @@ export const AdjustVestingStakeRenderer: FC<VestingContractTableRecord> = ({
   address,
   createdAtTimestamp,
   duration,
-  delegatedAddress,
+  delegate,
 }) => {
   const [openVestingStakeDialog, toggleVestingStakeDialog] = useReducer(
     v => !v,
@@ -65,7 +65,7 @@ export const AdjustVestingStakeRenderer: FC<VestingContractTableRecord> = ({
           <AdjustVestingStakeForm
             vestingContract={address}
             onSuccess={toggleVestingStakeDialog}
-            delegatedAddress={delegatedAddress || ''}
+            delegatedAddress={delegate || ''}
           />
         </DialogBody>
       </Dialog>

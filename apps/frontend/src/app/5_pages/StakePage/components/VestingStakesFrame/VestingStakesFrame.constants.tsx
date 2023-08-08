@@ -6,6 +6,7 @@ import { AdjustVestingStakeRenderer } from './components/AdjustVestingStakeRende
 import { DelegateAddressCellRenderer } from './components/DelegateAddressCellRenderer';
 import { StakedAmountCellRenderer } from './components/StakedAmountCellRenderer';
 import { UnlockDateCellRenderer } from './components/UnlockDateCellRenderer';
+import { VotingPowerCellRenderer } from './components/VotingPowerCellRenderer';
 
 export const COLUMNS_CONFIG = [
   {
@@ -17,7 +18,8 @@ export const COLUMNS_CONFIG = [
   {
     id: 'votingPower',
     title: t(translations.stakePage.table.votingPower),
-    cellRenderer: () => t(translations.common.na),
+    cellRenderer: (item: VestingContractTableRecord) =>
+      VotingPowerCellRenderer(item),
   },
   {
     id: 'delegate',

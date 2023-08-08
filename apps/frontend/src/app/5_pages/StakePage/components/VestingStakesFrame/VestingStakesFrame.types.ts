@@ -30,5 +30,5 @@ export type VestingContractTableRecord = {
   cliff: number;
   createdAtTimestamp: number;
   duration?: number | null;
-  delegatedAddress?: string | null;
+  delegate?: string | null;
 };

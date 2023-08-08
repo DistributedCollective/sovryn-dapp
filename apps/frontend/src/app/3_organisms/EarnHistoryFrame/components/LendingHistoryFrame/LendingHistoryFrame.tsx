@@ -23,6 +23,7 @@ import { useNotificationContext } from '../../../../../contexts/NotificationCont
 import { useAccount } from '../../../../../hooks/useAccount';
 import { useBlockNumber } from '../../../../../hooks/useBlockNumber';
 import { translations } from '../../../../../locales/i18n';
+import { LendingHistoryType } from '../../../../../utils/graphql/rsk/generated';
 import { dateFormat } from '../../../../../utils/helpers';
 import { BaseConversionsHistoryFrame } from '../../../ConversionsHistoryFrame/components/BaseConversionsHistoryFrame/BaseConversionsHistoryFrame';
 import { COLUMNS_CONFIG } from './LendingHistoryFrame.constants';
@@ -60,7 +61,9 @@ export const LendingHistoryFrame: FC<PropsWithChildren> = ({ children }) => {
         .map(
           val =>
             val?.lendingHistory?.map(item => ({
-              amount: item.amount,
+              amount: `${item.type === LendingHistoryType.Lend ? '' : '-'}${
+                item.amount
+              }`,
               asset: item.asset?.id || '',
               transactionHash: item.transaction?.id,
               timestamp: item.timestamp,

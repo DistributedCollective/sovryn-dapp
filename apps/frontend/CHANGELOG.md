@@ -1,5 +1,25 @@
 # frontend
 
+## 1.0.19
+
+### Patch Changes
+
+- 9f54f8a0: SOV-2741: Lending history (Lend base branch)
+- 9f54f8a0: SOV-2739: Develop D2 Lend page - Lend modal
+- 9f54f8a0: SOV-2964: Fix new lend APY calculation
+- 9f54f8a0: SOV-2804: fix lending modals
+- 9f54f8a0: SOV-2965: Fix Lend CSV export
+- 9f54f8a0: SOV-2740: lending adjust modal
+- 9f54f8a0: SOV-2738: Develop D2 Lend page
+- 9f54f8a0: SOV-2963: Fix AmountInput exceptions
+- Updated dependencies [9f54f8a0]
+- Updated dependencies [9f54f8a0]
+- Updated dependencies [9f54f8a0]
+- Updated dependencies [9f54f8a0]
+- Updated dependencies [9f54f8a0]
+  - @sovryn/ui@1.0.10
+  - @sovryn/contracts@1.0.11
+
 ## 1.0.18
 
 ### Patch Changes

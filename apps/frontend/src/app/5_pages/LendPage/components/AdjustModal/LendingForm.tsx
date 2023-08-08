@@ -109,7 +109,7 @@ export const LendingForm: FC<DepositProps> = ({ state, onConfirm }) => {
         }/totalSupplyInterestRate/${totalSupply.toHexString()}/${amount}`,
         () =>
           state.poolTokenContract.totalSupplyInterestRate(
-            totalSupply.add(amount),
+            totalSupply.sub(amount),
           ),
       ).then(res =>
         setWithdrawApy(Decimal.fromBigNumberString(res.toString())),

@@ -21,6 +21,7 @@ export const SUBGRAPH = {
 
 export const EXPORT_RECORD_LIMIT = 500;
 export const DEFAULT_HISTORY_FRAME_PAGE_SIZE = 10;
+export const DEFAULT_PAGE_SIZE = 10;
 
 export const DEFAULT_TIMEOUT_SECONDS = 5000;
 export const LIQUIDATION_RESERVE_AMOUNT = 20;
@@ -36,3 +37,5 @@ export const CURRENT_RELEASE: ReleaseFileContent = JSON.parse(
 export const MAX_PROCESSABLE_CHECKPOINTS_ZUSD = 300;
 export const MAX_PROCESSABLE_CHECKPOINTS_SOV = 200;
 export const MAX_PROCESSABLE_CHECKPOINTS_TOKENS = 150;
+export const WEIGHT_FACTOR = 10;
+export const MS = 1e3;

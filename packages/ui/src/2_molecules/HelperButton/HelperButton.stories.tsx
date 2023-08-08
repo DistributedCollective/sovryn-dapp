@@ -48,4 +48,8 @@ Basic.argTypes = {
     description:
       'The data id to apply as HTML attribute to this component instance. This should be unique per component instance on the page',
   },
+  tooltipClassName: {
+    control: 'text',
+    description: 'The class to apply to the tooltip',
+  },
 };

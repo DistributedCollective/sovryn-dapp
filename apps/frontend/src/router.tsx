@@ -38,6 +38,7 @@ const RewardsPage = loadable(
   () => import('./app/5_pages/RewardsPage/RewardsPage'),
 );
 const LendPage = loadable(() => import('./app/5_pages/LendPage/LendPage'));
+const StakePage = loadable(() => import('./app/5_pages/StakePage/StakePage'));
 
 const routes = [
   {
@@ -85,6 +86,10 @@ const routes = [
         path: '/rewards',
         element: <RewardsPage />,
         loader: zeroPageLoader,
+      },
+      {
+        path: '/stake',
+        element: <StakePage />,
       },
     ],
   },

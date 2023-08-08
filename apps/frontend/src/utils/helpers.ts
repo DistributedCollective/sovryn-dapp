@@ -7,6 +7,7 @@ import { EIP1193Provider } from '@sovryn/onboard-common';
 import tailwindConfig from '@sovryn/tailwindcss-config';
 import { Decimalish } from '@sovryn/utils';
 
+import { MS } from '../constants/general';
 import {
   MAX_PROCESSABLE_CHECKPOINTS_SOV,
   MAX_PROCESSABLE_CHECKPOINTS_TOKENS,
@@ -85,7 +86,7 @@ export const getGraphWrapperUrl = () =>
   GRAPH_WRAPPER[isMainnet() ? Environments.Mainnet : Environments.Testnet];
 
 export const dateFormat = (timestamp: number) => {
-  const stamp = dayjs.tz(Number(timestamp) * 1e3, 'UTC');
+  const stamp = dayjs.tz(Number(timestamp) * MS, 'UTC');
   return stamp.format(`YYYY-MM-DD HH:MM:ss +UTC`);
 };
 

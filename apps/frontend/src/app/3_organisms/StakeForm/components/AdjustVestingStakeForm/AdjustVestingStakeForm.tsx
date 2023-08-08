@@ -80,6 +80,7 @@ export const AdjustVestingStakeForm: FC<AdjustVestingStakeFormProps> = ({
   }, [onSuccess]);
 
   const handleAdjustStake = useHandleAdjustVestingStake(
+    vestingContract,
     delegateToAddress,
     onTransactionSuccess,
   );

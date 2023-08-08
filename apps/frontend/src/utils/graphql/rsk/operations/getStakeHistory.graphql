@@ -1,0 +1,24 @@
+query getStakeHistory(
+  $user: String
+  $skip: Int!
+  $pageSize: Int!
+  $orderBy: V2TokensStaked_orderBy
+  $orderDirection: OrderDirection
+) {
+  v2TokensStakeds(
+    where: { user: $user }
+    first: $pageSize
+    skip: $skip
+    orderBy: $orderBy
+    orderDirection: $orderDirection
+  ) {
+    id
+    amount
+    totalStaked
+    timestamp
+    lockedUntil
+    user {
+      id
+    }
+  }
+}

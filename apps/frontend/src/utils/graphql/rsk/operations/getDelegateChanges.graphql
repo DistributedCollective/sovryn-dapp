@@ -1,0 +1,28 @@
+query getDelegateChanges(
+  $user: String
+  $skip: Int!
+  $pageSize: Int!
+  $orderBy: V2DelegateChanged_orderBy
+  $orderDirection: OrderDirection
+) {
+  v2DelegateChangeds(
+    where: { user: $user }
+    first: $pageSize
+    skip: $skip
+    orderBy: $orderBy
+    orderDirection: $orderDirection
+  ) {
+    id
+    delegate {
+      id
+    }
+    timestamp
+    previousDelegate {
+      id
+    }
+    user {
+      id
+    }
+    lockedUntil
+  }
+}

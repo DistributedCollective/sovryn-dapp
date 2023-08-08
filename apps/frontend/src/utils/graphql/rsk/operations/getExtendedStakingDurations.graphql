@@ -1,0 +1,24 @@
+query getExtendedStakingDurations(
+  $user: String
+  $skip: Int!
+  $pageSize: Int!
+  $orderBy: V2ExtendedStakingDuration_orderBy
+  $orderDirection: OrderDirection
+) {
+  v2ExtendedStakingDurations(
+    where: { user: $user }
+    first: $pageSize
+    skip: $skip
+    orderBy: $orderBy
+    orderDirection: $orderDirection
+  ) {
+    id
+    amountStaked
+    newDate
+    previousDate
+    timestamp
+    user {
+      id
+    }
+  }
+}

@@ -1,0 +1,27 @@
+query getStakingWithdraws(
+  $user: String
+  $skip: Int!
+  $pageSize: Int!
+  $orderBy: V2StakingWithdrawn_orderBy
+  $orderDirection: OrderDirection
+) {
+  v2StakingWithdrawns(
+    where: { user: $user }
+    first: $pageSize
+    skip: $skip
+    orderBy: $orderBy
+    orderDirection: $orderDirection
+  ) {
+    id
+    amount
+    isGovernance
+    receiver {
+      id
+    }
+    user {
+      id
+    }
+    timestamp
+    until
+  }
+}

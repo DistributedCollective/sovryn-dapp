@@ -41,6 +41,7 @@
         "deposit": "Deposit",
         "withdraw": "Withdraw",
         "txId": "TXID",
+        "btc": "BTC",
         "tx": {
             "signPermitTitle": "Permit {{symbol}}",
             "signPermitSubtitle": "Sign a permit to allow the contract to spend your {{symbol}}",
@@ -430,17 +431,17 @@
             }
         },
         "receive": {
-          "loading": "Loading... this may take up to 30 seconds",
-          "statusScreen": {
-              "statusTitleProcessing": "Transfer processing...",
-              "statusTitleComplete": "Transfer complete",
-              "to": "To",
-              "sending": "Sending",
-              "serviceFee": "Service fee",
-              "receiving": "Receiving",
-              "bitcoinTxId": "Bitcoin TXID",
-              "rootstockTxId": "Rootstock TXID"
-          }
+            "loading": "Loading... this may take up to 30 seconds",
+            "statusScreen": {
+                "statusTitleProcessing": "Transfer processing...",
+                "statusTitleComplete": "Transfer complete",
+                "to": "To",
+                "sending": "Sending",
+                "serviceFee": "Service fee",
+                "receiving": "Receiving",
+                "bitcoinTxId": "Bitcoin TXID",
+                "rootstockTxId": "Rootstock TXID"
+            }
         }
     },
 
@@ -449,22 +450,34 @@
             "title": "Rewards - Sovryn",
             "description": "Claim BTC rewards from Zero's Stability Pool and transfer them to your wallet or active Line of Credit in Sovryn's Zero protocol. Start earning rewards today."
         },
-        "title": "Rewards",
-        "subtitle": "Collect rewards earned",
-        "stabilityPoolRewards": "Stability pool rewards",
-        "stabilityPoolSubsidies": "Stability pool subsidies",
-        "btc": "BTC",
-        "actions": {
-            "transferToLOC": "Transfer to LOC",
-            "withdraw": "Withdraw"
+        "totalRewardsEarned": {
+            "title": "Total rewards earned"
         },
-        "tx": {
-            "withdraw": "Withdraw rewards to your address",
-            "withdrawGains": "Withdraw rewards",
-            "transferToLOC": "Transfer rewards",
-            "transfer": "Transfer rewards to line of credit"
+        "tabs": {
+            "title": "Available rewards",
+            "titles": {
+                "stabilityPool": "Stability pool",
+                "staking": "Staking",
+                "vesting": "Vesting"
+            }
         },
-        "undercollateralized": "Withdrawals disabled – one or more LOCs are undercollateralized"
+        "stabilityPool": {
+            "title": "Rewards",
+            "subtitle": "Collect rewards earned",
+            "stabilityPoolRewards": "Stability pool rewards",
+            "stabilityPoolSubsidies": "Stability pool subsidies",
+            "actions": {
+                "transferToLOC": "Transfer to LOC",
+                "withdraw": "Withdraw"
+            },
+            "tx": {
+                "withdraw": "Withdraw rewards to your address",
+                "withdrawGains": "Withdraw rewards",
+                "transferToLOC": "Transfer rewards",
+                "transfer": "Transfer rewards to line of credit"
+            },
+            "undercollateralized": "Withdrawals disabled – one or more LOCs are undercollateralized"
+        }
     },
 
     "historyPage": {

@@ -1,5 +1,11 @@
 # @sovryn/ui
 
+## 1.0.10
+
+### Patch Changes
+
+- 9f54f8a0: fix: add missing className prop for mobile tables
+
 ## 1.0.9
 
 ### Patch Changes

@@ -1,5 +1,14 @@
 # @sovryn/contracts
 
+## 1.0.11
+
+### Patch Changes
+
+- 9f54f8a0: fix: use correct DLLR loan token contract address
+- 9f54f8a0: SOV-2739: Develop D2 Lend page - Lend modal
+- 9f54f8a0: SOV-2804: fix lending modals
+- 9f54f8a0: chore: add LoanToken abi
+
 ## 1.0.10
 
 ### Patch Changes

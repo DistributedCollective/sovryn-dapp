@@ -1,14 +1,8 @@
-import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
+import React, { FC, useCallback, useMemo, useState } from 'react';
 
 import { t } from 'i18next';
 
-import {
-  OrderDirection,
-  OrderOptions,
-  Pagination,
-  Paragraph,
-  Table,
-} from '@sovryn/ui';
+import { Pagination, Paragraph, Table } from '@sovryn/ui';
 
 import { DEFAULT_PAGE_SIZE } from '../../../../../constants/general';
 import { useAccount } from '../../../../../hooks/useAccount';
@@ -19,6 +13,8 @@ import { COLUMNS_CONFIG } from './StakesFrame.constants';
 import { generateRowTitle } from './StakesFrame.utils';
 import { useGetStakes } from './hooks/useGetStakes';
 
+const pageSize = DEFAULT_PAGE_SIZE;
+
 export const StakesFrame: FC = () => {
   const { account } = useAccount();
   const { stakes, loading } = useGetStakes();
@@ -28,14 +24,9 @@ export const StakesFrame: FC = () => {
 
   const [page, setPage] = useState(0);
 
-  const [orderOptions, setOrderOptions] = useState<OrderOptions>({
-    orderBy: 'unlockDate',
-    orderDirection: OrderDirection.Desc,
-  });
-
   const onPageChange = useCallback(
     (value: number) => {
-      if (stakes.length < DEFAULT_PAGE_SIZE && value > page) {
+      if (stakes.length < pageSize && value > page) {
         return;
       }
       setPage(value);
@@ -43,14 +34,19 @@ export const StakesFrame: FC = () => {
     [page, stakes.length],
   );
 
-  const isNextButtonDisabled = useMemo(
-    () => !loading && stakes?.length < DEFAULT_PAGE_SIZE,
-    [loading, stakes],
-  );
+  const paginatedStakes = useMemo(() => {
+    if (stakes) {
+      return stakes.slice(page * pageSize, (page + 1) * pageSize);
+    }
+    return [];
+  }, [page, stakes]);
 
-  useEffect(() => {
-    setPage(0);
-  }, [orderOptions]);
+  const isNextButtonDisabled = useMemo(
+    () =>
+      !loading &&
+      (stakes?.length <= pageSize || paginatedStakes?.length < pageSize),
+    [loading, paginatedStakes?.length, stakes?.length],
+  );
 
   return (
     <div className="flex flex-col mb-10">
@@ -65,10 +61,8 @@ export const StakesFrame: FC = () => {
 
       <div className="bg-gray-80 py-4 px-4 rounded">
         <Table
-          setOrderOptions={setOrderOptions}
-          orderOptions={orderOptions}
           columns={COLUMNS_CONFIG}
-          rows={stakes}
+          rows={paginatedStakes}
           rowTitle={generateRowTitle}
           isLoading={loading}
           className="text-gray-10 lg:px-6 lg:py-4 text-xs"
@@ -86,8 +80,9 @@ export const StakesFrame: FC = () => {
             page={page}
             className="lg:pb-6 mt-3 lg:mt-6 justify-center lg:justify-start"
             onChange={onPageChange}
-            itemsPerPage={DEFAULT_PAGE_SIZE}
+            itemsPerPage={pageSize}
             isNextButtonDisabled={isNextButtonDisabled}
+            totalItems={stakes?.length || 0}
             dataAttribute="stakes-pagination"
           />
         )}

@@ -4,6 +4,7 @@ import { t } from 'i18next';
 
 import { Tooltip, TooltipTrigger } from '@sovryn/ui';
 
+import { getTokenDisplayName } from '../../../../../constants/tokens';
 import { translations } from '../../../../../locales/i18n';
 import { LendingPool } from '../../utils/LendingPool';
 import { AssetTooltipContent } from './components/AssetTooltipContent';
@@ -33,7 +34,7 @@ export const AcceptedCollateral: FC<AcceptedCollateralProps> = ({ pool }) => {
           trigger={TooltipTrigger.click}
         >
           <div>
-            <span>{item.toUpperCase()}</span>
+            <span>{getTokenDisplayName(item)}</span>
             {index !== availableAssets.length - 1 && <span>, </span>}
           </div>
         </Tooltip>

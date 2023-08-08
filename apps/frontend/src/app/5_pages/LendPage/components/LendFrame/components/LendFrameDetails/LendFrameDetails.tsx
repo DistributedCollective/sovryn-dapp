@@ -4,6 +4,7 @@ import { t } from 'i18next';
 
 import { AmountRenderer } from '../../../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { TOKEN_RENDER_PRECISION } from '../../../../../../../constants/currencies';
+import { getTokenDisplayName } from '../../../../../../../constants/tokens';
 import { translations } from '../../../../../../../locales/i18n';
 import { LendFrameProps } from '../../LendFrame.types';
 import { LendFrameAction } from '../LendFrameAction/LendFrameAction';
@@ -25,7 +26,7 @@ export const LendFrameDetails: FC<LendFrameProps> = ({ pool }) => {
           value={
             <AmountRenderer
               value={availableAmount}
-              suffix={asset}
+              suffix={getTokenDisplayName(asset)}
               precision={TOKEN_RENDER_PRECISION}
               dataAttribute="lend-details-available-amount"
             />
@@ -36,7 +37,7 @@ export const LendFrameDetails: FC<LendFrameProps> = ({ pool }) => {
           value={
             <AmountRenderer
               value={borrowedAmount}
-              suffix={asset}
+              suffix={getTokenDisplayName(asset)}
               precision={TOKEN_RENDER_PRECISION}
               dataAttribute="lend-details-borrowed-amount"
             />

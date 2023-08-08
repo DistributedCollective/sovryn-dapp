@@ -17,6 +17,7 @@ import { defaultChainId } from '../../../../../config/chains';
 import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { AssetRenderer } from '../../../../2_molecules/AssetRenderer/AssetRenderer';
 import { GAS_LIMIT } from '../../../../../constants/gasLimits';
+import { getTokenDisplayName } from '../../../../../constants/tokens';
 import { useMaxAssetBalance } from '../../../../../hooks/useMaxAssetBalance';
 import { useWeiAmountInput } from '../../../../../hooks/useWeiAmountInput';
 import { translations } from '../../../../../locales/i18n';
@@ -163,7 +164,7 @@ export const LendingForm: FC<DepositProps> = ({ state, onConfirm }) => {
           value={
             <AmountRenderer
               value={newBalance}
-              suffix={state.tokenDetails.symbol}
+              suffix={getTokenDisplayName(state.tokenDetails.symbol)}
             />
           }
         />

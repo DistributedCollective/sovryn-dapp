@@ -39,9 +39,11 @@ export const Vesting: FC = () => {
         columns={columnsConfig}
         rows={vestings}
         noData={
-          account
-            ? t(translations.rewardPage.vesting.table.noRewards)
-            : t(translations.rewardPage.vesting.table.notConnected)
+          <span className="italic">
+            {account
+              ? t(translations.rewardPage.vesting.table.noRewards)
+              : t(translations.rewardPage.vesting.table.notConnected)}
+          </span>
         }
         dataAttribute="funding-history-table"
         rowTitle={generateRowTitle}

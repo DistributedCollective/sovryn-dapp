@@ -13,6 +13,7 @@ type TableMobileRowProps<RowType extends RowObject> = {
   dataAttribute?: string;
   title: ReactNode;
   expandedContent?: (row: RowType) => ReactNode;
+  renderer?: (row: RowType) => ReactNode;
 };
 
 export const TableMobileRow = <RowType extends RowObject>({
@@ -22,6 +23,7 @@ export const TableMobileRow = <RowType extends RowObject>({
   dataAttribute,
   title,
   expandedContent,
+  renderer,
 }: TableMobileRowProps<RowType>) => {
   const [open, setOpen] = useState(false);
 
@@ -52,6 +54,19 @@ export const TableMobileRow = <RowType extends RowObject>({
           />
         ))}
         {expandedContent && <div>{expandedContent(row)}</div>}
+        {renderer
+          ? renderer(row)
+          : columns.map(column => (
+              <SimpleTableRow
+                key={column.id.toString()}
+                label={column.title}
+                value={
+                  column.cellRenderer
+                    ? column.cellRenderer(row, column.id)
+                    : row[column.id]
+                }
+              />
+            ))}
       </div>
     </Accordion>
   );

@@ -1,3 +1,5 @@
+import { useMemo } from 'react';
+
 import { ethers } from 'ethers';
 
 import { useWalletConnect } from './useWalletConnect';
@@ -5,10 +7,14 @@ import { useWalletConnect } from './useWalletConnect';
 export const useAccount = () => {
   const { wallets } = useWalletConnect();
 
-  const web3provider = wallets[0]?.provider
-    ? new ethers.providers.Web3Provider(wallets[0]?.provider)
-    : undefined;
-  const signer = web3provider?.getSigner();
+  const web3provider = useMemo(
+    () =>
+      wallets[0]?.provider
+        ? new ethers.providers.Web3Provider(wallets[0]?.provider)
+        : undefined,
+    [wallets],
+  );
+  const signer = useMemo(() => web3provider?.getSigner(), [web3provider]);
 
   return {
     account: wallets[0]?.accounts[0]?.address || '',

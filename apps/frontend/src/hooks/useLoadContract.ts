@@ -18,10 +18,11 @@ export const useLoadContract = (
 ) => {
   const isMounted = useIsMounted();
   const { signer: userSigner } = useAccount();
-  const provider = getProvider(chain);
 
   const [address, setAddress] = useState<string | undefined>(undefined);
   const [abi, setAbi] = useState<ContractInterface | undefined>(undefined);
+
+  const provider = useMemo(() => getProvider(chain), [chain]);
 
   useEffect(() => {
     getContract(contractName, group, chain).then(result => {

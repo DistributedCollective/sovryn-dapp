@@ -2,7 +2,7 @@ import { AsyncContractConfigData } from '../../types';
 
 export const rsk: Record<string, AsyncContractConfigData> = {
   dllr: {
-    address: '0x1440d19436bEeaF8517896bffB957a88EC95a00F',
+    address: '0x077FCB01cAb070a30bC14b44559C96F529eE017F',
     getAbi: async () =>
       (await import('../../abis/loanTokenLogicStandard.json')).default,
   },

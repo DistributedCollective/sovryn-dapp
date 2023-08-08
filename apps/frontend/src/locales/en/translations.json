@@ -640,7 +640,8 @@
                 "earn": "Earn",
                 "convert": "Conversion",
                 "funding": "Funding",
-                "reward": "Reward"
+                "rewards": "Rewards",
+                "staking": "Staking"
             },
             "comingSoon": "Coming soon..."
         }
@@ -785,17 +786,37 @@
     },
     "rewardHistory": {
         "stabilityPoolOperation": {
-            "claimCollateralGain": "Claim gain",
+            "claimCollateralGain": "Withdraw liquidation gain",
             "transferGainToLineOfCredit": "Transfer gain to line of credit"
+        },
+        "stakingOperation": {
+            "stakingRevenue": "Withdraw staking revenue",
+            "stakingSubsidies": "Withdraw staking subsidy"
         },
         "types": {
             "stabilityPoolRewards": "Stability pool rewards",
-            "stabilityPoolSubsidies": "Stability pool subsidies"
+            "stabilityPoolSubsidies": "Stability pool subsidies",
+            "stakingRevenue": "Staking Revenue",
+            "stakingSubsidies": "Staking Subsidies"
         }
+    },
+    "stakingHistory": {
+        "lockedUntil": "Locked Until",
+        "totalStaked": "Total Staked",
+        "amount": "Amount",
+        "stakeChange": "Stake change",
+        "increase": "Increase stake",
+        "unstake": "Unstake",
+        "extend": "Extend staking duration",
+        "delegate": "Change delegate",
+        "newDelegate": "New delegate",
+        "newDate": "New date",
+        "previousDate": "Previous date",
+        "previousDelegate": "Previous delegate"
     },
     "subsidyHistory": {
         "stabilityPoolOperation": {
-            "claimStabilityPoolSubsidy": "Claim stability pool subsidy"
+            "withdrawStabilityPoolSubsidy": "Withdraw stability pool subsidy"
         }
     },
     "emailNotificationsDialog": {

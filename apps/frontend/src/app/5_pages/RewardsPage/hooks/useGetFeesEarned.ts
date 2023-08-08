@@ -203,6 +203,6 @@ export const useGetFeesEarned = () => {
   return {
     loading,
     earnedFees,
-    refetch: () => getAvailableFees(),
+    refetch: getAvailableFees,
   };
 };

@@ -10,21 +10,11 @@ import {
   OrderDirection,
   OrderOptions,
   Pagination,
-  Paragraph,
-  ParagraphSize,
   Select,
   Table,
 } from '@sovryn/ui';
 
-import { chains, defaultChainId } from '../../../../../config/chains';
-
-import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { ExportCSV } from '../../../../2_molecules/ExportCSV/ExportCSV';
-import { TxIdWithNotification } from '../../../../2_molecules/TxIdWithNotification/TransactionIdWithNotification';
-import {
-  SOV,
-  TOKEN_RENDER_PRECISION,
-} from '../../../../../constants/currencies';
 import {
   DEFAULT_HISTORY_FRAME_PAGE_SIZE,
   EXPORT_RECORD_LIMIT,
@@ -33,32 +23,29 @@ import { useNotificationContext } from '../../../../../contexts/NotificationCont
 import { useAccount } from '../../../../../hooks/useAccount';
 import { useMaintenance } from '../../../../../hooks/useMaintenance';
 import { translations } from '../../../../../locales/i18n';
-import { zeroClient } from '../../../../../utils/clients';
+import { rskClient } from '../../../../../utils/clients';
 import {
-  SovDistribution,
-  SovDistribution_OrderBy,
-  useGetSubsidyLazyQuery,
-} from '../../../../../utils/graphql/zero/generated';
+  RewardsEarnedAction,
+  RewardsEarnedHistoryItem_OrderBy,
+  useGetRewardsEarnedHistoryLazyQuery,
+} from '../../../../../utils/graphql/rsk/generated';
 import { dateFormat } from '../../../../../utils/helpers';
-import { fromWei } from '../../../../../utils/math';
-import { RewardHistoryProps } from '../../RewardHistory.types';
+import { decimalic } from '../../../../../utils/math';
+import {
+  RewardHistoryProps,
+  RewardHistoryType,
+} from '../../RewardHistory.types';
 import { rewardHistoryOptions } from '../../RewardHistory.utils';
-import { useGetStabilityPoolSubsidies } from './hooks/useGetStabilityPoolSubsidies';
+import { COLUMNS_CONFIG } from './RewardsEarnedHistory.constants';
+import {
+  generateRowTitle,
+  getTransactionType,
+} from './RewardsEarnedHistory.utils';
+import { useGetRewardsEarned } from './hooks/useGetRewardsEarned';
 
 const pageSize = DEFAULT_HISTORY_FRAME_PAGE_SIZE;
 
-const generateRowTitle = (tx: SovDistribution) => (
-  <Paragraph size={ParagraphSize.small} className="text-left">
-    {t(
-      translations.subsidyHistory.stabilityPoolOperation
-        .withdrawStabilityPoolSubsidy,
-    )}
-    {' - '}
-    {dateFormat(tx.timestamp)}
-  </Paragraph>
-);
-
-export const StabilityPoolSubsidies: FC<RewardHistoryProps> = ({
+export const RewardsEarnedHistory: FC<RewardHistoryProps> = ({
   selectedHistoryType,
   onChangeRewardHistory,
 }) => {
@@ -67,78 +54,31 @@ export const StabilityPoolSubsidies: FC<RewardHistoryProps> = ({
   const { checkMaintenance, States } = useMaintenance();
 
   const [page, setPage] = useState(0);
-  const chain = chains.find(chain => chain.id === defaultChainId);
 
   const [orderOptions, setOrderOptions] = useState<OrderOptions>({
     orderBy: 'timestamp',
     orderDirection: OrderDirection.Desc,
   });
 
-  const { data, loading } = useGetStabilityPoolSubsidies(
+  const historyAction = useMemo(
+    () =>
+      selectedHistoryType === RewardHistoryType.stakingRevenue
+        ? [RewardsEarnedAction.UserFeeWithdrawn]
+        : [RewardsEarnedAction.StakingRewardWithdrawn],
+    [selectedHistoryType],
+  );
+
+  const { data, loading } = useGetRewardsEarned(
     account,
     pageSize,
     page,
     orderOptions,
+    historyAction,
   );
 
-  const [getSovDistribution] = useGetSubsidyLazyQuery({
-    client: zeroClient,
+  const [getRewards] = useGetRewardsEarnedHistoryLazyQuery({
+    client: rskClient,
   });
-
-  const renderAmount = useCallback(
-    (tx: SovDistribution) => (
-      <>
-        {tx.amount ? (
-          <AmountRenderer
-            value={fromWei(tx.amount).toString()}
-            suffix={SOV}
-            precision={TOKEN_RENDER_PRECISION}
-            dataAttribute="subsidy-history-reward-amount"
-          />
-        ) : (
-          '-'
-        )}
-      </>
-    ),
-    [],
-  );
-
-  const columns = useMemo(
-    () => [
-      {
-        id: 'timestamp',
-        title: t(translations.common.tables.columnTitles.timestamp),
-        cellRenderer: (tx: SovDistribution) => dateFormat(tx.timestamp),
-        sortable: true,
-      },
-      {
-        id: 'stabilityPoolOperation',
-        title: t(translations.common.tables.columnTitles.transactionType),
-        cellRenderer: () =>
-          t(
-            translations.subsidyHistory.stabilityPoolOperation
-              .withdrawStabilityPoolSubsidy,
-          ),
-      },
-      {
-        id: 'amount',
-        title: t(translations.common.tables.columnTitles.amount),
-        cellRenderer: renderAmount,
-      },
-      {
-        id: 'transactionID',
-        title: t(translations.common.tables.columnTitles.transactionID),
-        cellRenderer: (tx: SovDistribution) => (
-          <TxIdWithNotification
-            href={`${chain?.blockExplorerUrl}/tx/${tx.id.split('/')[0]}`}
-            value={tx.id.split('/')[0]}
-            dataAttribute="subsidy-history-reward-address-id"
-          />
-        ),
-      },
-    ],
-    [chain?.blockExplorerUrl, renderAmount],
-  );
 
   const onPageChange = useCallback(
     (value: number) => {
@@ -156,16 +96,17 @@ export const StabilityPoolSubsidies: FC<RewardHistoryProps> = ({
   );
 
   const exportData = useCallback(async () => {
-    const { data } = await getSovDistribution({
+    const { data } = await getRewards({
       variables: {
-        user: account,
+        user: account.toLowerCase(),
         skip: 0,
         pageSize: EXPORT_RECORD_LIMIT,
-        orderBy: SovDistribution_OrderBy.Timestamp,
+        orderBy: RewardsEarnedHistoryItem_OrderBy.Timestamp,
         orderDirection: OrderDirection.Desc,
+        actions: historyAction,
       },
     });
-    let list = data?.sovdistributions || [];
+    let list = data?.rewardsEarnedHistoryItems || [];
 
     if (!list.length) {
       addNotification({
@@ -179,15 +120,11 @@ export const StabilityPoolSubsidies: FC<RewardHistoryProps> = ({
 
     return list.map(tx => ({
       timestamp: dateFormat(tx.timestamp),
-      stabilityPoolOperation: t(
-        translations.subsidyHistory.stabilityPoolOperation
-          .withdrawStabilityPoolSubsidy,
-      ),
-      amount: fromWei(tx.amount || ''),
-      token: SOV,
+      transactionType: getTransactionType(tx.action),
+      amount: decimalic(tx.amount || '').toString(),
       transactionID: tx.id,
     }));
-  }, [account, addNotification, getSovDistribution]);
+  }, [account, addNotification, getRewards, historyAction]);
 
   useEffect(() => {
     setPage(0);
@@ -207,7 +144,7 @@ export const StabilityPoolSubsidies: FC<RewardHistoryProps> = ({
         <div className="flex-row items-center ml-2 gap-4 hidden lg:inline-flex">
           <ExportCSV
             getData={exportData}
-            filename="stability-pool-subsidies"
+            filename="staking-revenue-rewards"
             disabled={!data || data.length === 0 || exportLocked}
           />
           {exportLocked && (
@@ -222,7 +159,7 @@ export const StabilityPoolSubsidies: FC<RewardHistoryProps> = ({
         <Table
           setOrderOptions={setOrderOptions}
           orderOptions={orderOptions}
-          columns={columns}
+          columns={COLUMNS_CONFIG}
           rows={data}
           rowTitle={generateRowTitle}
           isLoading={loading}

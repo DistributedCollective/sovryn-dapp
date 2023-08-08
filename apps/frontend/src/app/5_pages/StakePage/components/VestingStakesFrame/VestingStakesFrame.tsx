@@ -73,9 +73,11 @@ export const VestingStakesFrame: FC = () => {
           isLoading={loading}
           className="text-gray-10 lg:px-6 lg:py-4 text-xs"
           noData={
-            account
-              ? t(translations.stakePage.table.noVestingStakes)
-              : t(translations.stakePage.table.notConnected)
+            <span className="italic">
+              {account
+                ? t(translations.stakePage.table.noVestingStakes)
+                : t(translations.stakePage.table.notConnected)}
+            </span>
           }
           dataAttribute="vesting-stakes-table"
         />

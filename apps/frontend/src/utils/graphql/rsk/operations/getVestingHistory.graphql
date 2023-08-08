@@ -1,0 +1,15 @@
+query getVestingHistory($vestingAddress: ID) {
+  vestingContracts(where: { id: $vestingAddress }) {
+    id
+    stakeHistory(
+      where: { action: TokensStaked }
+      orderBy: lockedUntil
+      orderDirection: desc
+      first: 250
+    ) {
+      id
+      amount
+      lockedUntil
+    }
+  }
+}

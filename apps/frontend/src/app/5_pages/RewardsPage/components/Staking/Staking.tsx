@@ -91,9 +91,11 @@ export const Staking: FC = () => {
           isLoading={!!account ? loading : false}
           rowKey={row => row.key}
           noData={
-            !!account
-              ? t(translations.rewardPage.stabilityPool.noRewards)
-              : t(translations.rewardPage.stabilityPool.notConnected)
+            <span className="italic">
+              {!!account
+                ? t(translations.rewardPage.stabilityPool.noRewards)
+                : t(translations.rewardPage.stabilityPool.notConnected)}
+            </span>
           }
           rowTitle={row => (
             <div className="flex flex-col items-start gap-1 font-medium">

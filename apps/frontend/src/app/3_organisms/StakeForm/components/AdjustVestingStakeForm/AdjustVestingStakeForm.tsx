@@ -19,6 +19,7 @@ import { useGetVestingDelegateAddress } from '../../../../5_pages/StakePage/comp
 import { useGetVestingStakeStartEndDates } from '../../../../5_pages/StakePage/components/VestingStakesFrame/hooks/useGetVestingStakeStartEndDates';
 import { useHandleAdjustVestingStake } from '../../../../5_pages/StakePage/hooks/useHandleAdjustVestingStake';
 import { useAccount } from '../../../../../hooks/useAccount';
+import { useMaintenance } from '../../../../../hooks/useMaintenance';
 import { translations } from '../../../../../locales/i18n';
 import { areAddressesEqual } from '../../../../../utils/helpers';
 import { isAddress } from '../AdjustStakeForm/AdjustStakeForm.utils';
@@ -39,6 +40,14 @@ export const AdjustVestingStakeForm: FC<AdjustVestingStakeFormProps> = ({
     Number(endDate),
   );
   const [delegateToAddress, setDelegateToAddress] = useState('');
+
+  const { checkMaintenance, States } = useMaintenance();
+  const stakingLocked = useMemo(
+    () =>
+      checkMaintenance(States.STAKING_FULL) ||
+      checkMaintenance(States.STAKING_DELEGATE),
+    [States.STAKING_DELEGATE, States.STAKING_FULL, checkMaintenance],
+  );
 
   const isValidAddress = useMemo(() => {
     if (areAddressesEqual(delegateToAddress, account)) {
@@ -61,8 +70,8 @@ export const AdjustVestingStakeForm: FC<AdjustVestingStakeFormProps> = ({
   }, [isValidAddress, delegateToAddress, account]);
 
   const isSubmitDisabled = useMemo(
-    () => !isValidAddress || delegateToAddress.length === 0,
-    [isValidAddress, delegateToAddress],
+    () => stakingLocked || !isValidAddress || delegateToAddress.length === 0,
+    [stakingLocked, isValidAddress, delegateToAddress.length],
   );
 
   const onTransactionSuccess = useCallback(() => {
@@ -136,6 +145,12 @@ export const AdjustVestingStakeForm: FC<AdjustVestingStakeFormProps> = ({
         className="mt-10 w-full"
         dataAttribute="adjust-vesting-stake-confirm"
       />
+      {stakingLocked && (
+        <ErrorBadge
+          level={ErrorLevel.Warning}
+          message={t(translations.maintenanceMode.featureDisabled)}
+        />
+      )}
     </>
   );
 };

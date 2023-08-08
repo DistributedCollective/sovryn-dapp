@@ -24,7 +24,7 @@
 
   /* STYLES ================================================================== */
   &.primary {
-    @apply bg-primary border-primary-30;
+    @apply bg-primary border-primary-30 text-gray-10;
 
     &:not(.disabled):not(:disabled):not(.loading):hover,
     &:not(.disabled):not(:disabled):not(.loading):focus,
@@ -34,7 +34,7 @@
   }
 
   &.secondary {
-    @apply bg-gray-80 border-gray-50;
+    @apply bg-gray-80 border-gray-50 text-gray-10;
 
     &:not(.disabled):not(:disabled):not(.loading):hover,
     &:not(.disabled):not(:disabled):not(.loading):focus,

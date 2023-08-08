@@ -6,8 +6,8 @@ import {
   Heading,
   HeadingType,
   HelperButton,
-  TooltipPlacement,
   TooltipTrigger,
+  TooltipPlacement,
 } from '@sovryn/ui';
 
 import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRenderer';
@@ -39,7 +39,7 @@ export const TotalRewardsEarned: FC = () => {
   }, [account, totalStakingRewards]);
 
   return (
-    <div className="bg-gray-80 md:bg-gray-90 py-7 px-6 rounded">
+    <div className="bg-gray-90 py-6 lg:py-7 px-2.5 lg:px-6 rounded">
       <Heading
         className="flex text-gray-30 items-center text-xs font-normal mb-1 gap-1"
         type={HeadingType.h1}
@@ -52,7 +52,7 @@ export const TotalRewardsEarned: FC = () => {
         />
       </Heading>
 
-      <div className="w-full bg-gray-80 md:py-4 md:px-3.5 rounded text-gray-10">
+      <div className="w-full lg:bg-gray-80 md:py-4 md:px-3.5 rounded text-gray-10">
         <span className="text-3xl">{renderTotalStakingRewards}</span>
       </div>
     </div>

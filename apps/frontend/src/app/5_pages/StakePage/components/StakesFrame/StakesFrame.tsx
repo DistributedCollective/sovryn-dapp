@@ -73,9 +73,11 @@ export const StakesFrame: FC = () => {
           isLoading={loading}
           className="text-gray-10 lg:px-6 lg:py-4 text-xs"
           noData={
-            account
-              ? t(translations.stakePage.table.noStakes)
-              : t(translations.stakePage.table.notConnected)
+            <span className="italic">
+              {account
+                ? t(translations.stakePage.table.noStakes)
+                : t(translations.stakePage.table.notConnected)}
+            </span>
           }
           dataAttribute="stakes-table"
         />

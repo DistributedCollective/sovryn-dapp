@@ -14,6 +14,7 @@ import { DEFAULT_PAGE_SIZE } from '../../../../../constants/general';
 import { useAccount } from '../../../../../hooks/useAccount';
 import { translations } from '../../../../../locales/i18n';
 import { COLUMNS_CONFIG } from './VestingStakesFrame.constants';
+import { Vesting } from './VestingStakesFrame.types';
 import { StakedAmountCellRenderer } from './components/StakedAmountCellRenderer';
 import { useGetVestingStakes } from './hooks/useGetVestingStakes';
 
@@ -27,7 +28,13 @@ export const VestingStakesFrame: FC = () => {
     orderDirection: OrderDirection.Desc,
   });
 
-  const { vestingStakes, loading } = useGetVestingStakes();
+  const { vestingStakes, loadingVestings, loadingVestingsFish } =
+    useGetVestingStakes();
+
+  const loading = useMemo(
+    () => loadingVestings || loadingVestingsFish,
+    [loadingVestings, loadingVestingsFish],
+  );
 
   const onPageChange = useCallback(
     (value: number) => {
@@ -60,7 +67,9 @@ export const VestingStakesFrame: FC = () => {
           orderOptions={orderOptions}
           columns={COLUMNS_CONFIG}
           rows={vestingStakes}
-          rowTitle={StakedAmountCellRenderer}
+          rowTitle={({ vestingContract }: Vesting) => (
+            <StakedAmountCellRenderer vestingContract={vestingContract} />
+          )}
           isLoading={loading}
           className="text-gray-10 lg:px-6 lg:py-4 text-xs"
           noData={

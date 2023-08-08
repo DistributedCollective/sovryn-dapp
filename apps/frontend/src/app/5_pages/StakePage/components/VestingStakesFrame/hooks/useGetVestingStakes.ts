@@ -3,182 +3,115 @@ import { useCallback, useEffect, useState } from 'react';
 import { constants } from 'ethers';
 
 import { useAccount } from '../../../../../../hooks/useAccount';
-import { useGetProtocolContract } from '../../../../../../hooks/useGetContract';
-import { Vesting, VestingData } from '../VestingStakesFrame.types';
+import {
+  Vesting,
+  VestingData,
+  VestingGroup,
+} from '../VestingStakesFrame.types';
+import { useGetVestings } from './useGetVestings';
+import { useGetVestingsFish } from './useGetVestingsFish';
+
+const getLabel = (type: string, typeCreation: string): VestingGroup => {
+  return {
+    '0 1': 'team',
+    '0 5': 'teamFouryear',
+    '1 1': 'genesis',
+    '1 2': 'origin',
+    '1 3': 'reward',
+    '1 4': 'fouryear',
+    'fish vestingRegistryFish': 'fish',
+    'fishAirdrop vestingRegistryFish': 'fishAirdrop',
+  }[`${type} ${typeCreation}`];
+};
 
 export const useGetVestingStakes = () => {
   const { account } = useAccount();
-  const vestingContract = useGetProtocolContract('vestingRegistry');
-  const vestingFishContract = useGetProtocolContract('vestingRegistryFish');
-  const [vestingContracts, setVestingContracts] = useState<VestingData[]>([]);
-  const [vestingFishStakes, setVestingFishStakes] = useState<VestingData[]>([]);
-  const [vestingTeamStakes, setVestingTeamStakes] = useState<VestingData[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [isDataFetched, setIsDataFetched] = useState(false);
+  const { vestingContracts, loadingVestings } = useGetVestings();
+  const { vestingFishContract, loadingVestingsFish } = useGetVestingsFish();
   const [vestingStakes, setVestingStakes] = useState<Vesting[]>([]);
 
-  const updateVestingContracts = useCallback(async () => {
-    if (!vestingContract || isDataFetched || !account) {
-      return;
-    }
+  const prepareVestingData = useCallback(
+    (vestingContracts: VestingData[], vestingFishContract: string) => {
+      const addresses: string[] = [];
+      const types: string[] = [];
+      const typeCreations: string[] = [];
 
-    setLoading(true);
-    try {
-      const getVestingContracts = await vestingContract.getVestingsOf(account);
-
-      if (getVestingContracts) {
-        setVestingContracts(getVestingContracts);
-      }
-    } catch (error) {
-      console.error('Error fetching vesting contracts:', error);
-    } finally {
-      setLoading(false);
-      setIsDataFetched(true);
-    }
-  }, [vestingContract, account, isDataFetched]);
-
-  const updateVestingFishStakes = useCallback(async () => {
-    if (!vestingFishContract || isDataFetched || !account) {
-      return;
-    }
-
-    setLoading(true);
-    try {
-      const getVestingFishStakes = await vestingFishContract.getVesting(
-        account,
-      );
-      if (getVestingFishStakes) {
-        setVestingFishStakes(getVestingFishStakes);
-      }
-    } catch (error) {
-      console.error('Error fetching fish vesting stakes:', error);
-    } finally {
-      setLoading(false);
-      setIsDataFetched(true);
-    }
-  }, [vestingFishContract, account, isDataFetched]);
-
-  const updateVestingTeamStakes = useCallback(async () => {
-    if (!vestingFishContract || isDataFetched || !account) {
-      return;
-    }
-
-    setLoading(true);
-    try {
-      const getVestingTeamStakes = await vestingFishContract.getTeamVesting(
-        account,
+      vestingContracts.forEach(
+        ({ vestingAddress, vestingType, vestingCreationType }) => {
+          addresses.push(vestingAddress);
+          types.push(vestingType);
+          typeCreations.push(vestingCreationType.toString());
+        },
       );
 
-      if (getVestingTeamStakes) {
-        setVestingTeamStakes(getVestingTeamStakes);
+      if (
+        vestingFishContract.length &&
+        constants.AddressZero !== vestingFishContract
+      ) {
+        addresses.push(vestingFishContract);
+        types.push('fish');
+        typeCreations.push('vestingRegistryFish');
       }
+
+      return { addresses, types, typeCreations };
+    },
+    [],
+  );
+
+  const fetchVestingData = useCallback(
+    async (
+      address: string,
+      index: number,
+      types: string[],
+      typeCreations: string[],
+    ) => {
+      const type = types[index];
+      const typeCreation = typeCreations[index];
+
+      const label = getLabel(type, typeCreation);
+
+      const registryType =
+        typeCreation === 'vestingRegistryFish' ? 'stakingFish' : 'staking';
+
+      return {
+        staking: registryType,
+        type: label,
+        typeCreation,
+        vestingContract: address,
+      };
+    },
+    [],
+  );
+
+  const getVestings = useCallback(async () => {
+    try {
+      const { addresses, types, typeCreations } = prepareVestingData(
+        vestingContracts,
+        vestingFishContract,
+      );
+
+      const vestingStakes = await Promise.all(
+        addresses.map((address, index) =>
+          fetchVestingData(address, index, types, typeCreations),
+        ),
+      );
+
+      setVestingStakes(vestingStakes);
     } catch (error) {
-      console.error('Error fetching vesting team stakes:', error);
-    } finally {
-      setLoading(false);
-      setIsDataFetched(true);
+      console.error('Error fetching vesting stakes:', error);
     }
-  }, [vestingFishContract, account, isDataFetched]);
-
-  useEffect(() => {
-    const getVestings = async () => {
-      try {
-        setLoading(true);
-        const addresses: string[] = [];
-        const types: string[] = [];
-        const typeCreations: string[] = [];
-
-        const vestingContractAddresses = vestingContracts.map(
-          ({ vestingAddress }) => vestingAddress,
-        );
-        const vestingContractTypes = vestingContracts.map(
-          ({ vestingType }) => vestingType,
-        );
-        const vestingContractTypeCreations = vestingContracts.map(
-          ({ vestingCreationType }) => vestingCreationType,
-        );
-
-        addresses.push(...vestingContractAddresses);
-        types.push(...vestingContractTypes);
-        typeCreations.push(...vestingContractTypeCreations);
-
-        if (
-          vestingFishStakes.length &&
-          constants.AddressZero !== vestingFishStakes[0].vestingAddress &&
-          vestingFishStakes[0].vestingAddress
-        ) {
-          addresses.push(vestingFishStakes[0].vestingAddress);
-          types.push('fish');
-          typeCreations.push('vestingRegistryFish');
-        }
-
-        if (
-          vestingTeamStakes.length &&
-          constants.AddressZero !== vestingTeamStakes[0].vestingAddress &&
-          vestingTeamStakes[0].vestingAddress
-        ) {
-          addresses.push(vestingTeamStakes[0].vestingAddress);
-          types.push('fishAirdrop');
-          typeCreations.push('vestingRegistryFish');
-        }
-
-        const vestingStakes = await Promise.all(
-          addresses.map(async (address, index): Promise<Vesting> => {
-            const type = types[index];
-            const typeCreation = typeCreations[index].toString();
-
-            const label = {
-              '0 1': 'team',
-              '1 1': 'genesis',
-              '1 2': 'origin',
-              '1 3': 'reward',
-              '1 4': 'fourYear',
-              'fish vestingRegistryFish': 'fish',
-              'fishAirdrop vestingRegistryFish': 'fishAirdrop',
-            }[`${type} ${typeCreation}`];
-
-            const registryType =
-              typeCreation === 'vestingRegistryFish'
-                ? 'stakingFish'
-                : 'staking';
-
-            return {
-              staking: registryType,
-              type: label,
-              typeCreation,
-              vestingContract: address,
-            };
-          }),
-        );
-
-        setVestingStakes(vestingStakes);
-      } catch (error) {
-        console.error('Error fetching vesting stakes:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    getVestings();
-  }, [vestingContracts, vestingFishStakes, vestingTeamStakes]);
-
-  useEffect(() => {
-    if (!account) {
-      setVestingContracts([]);
-      setVestingFishStakes([]);
-      setVestingTeamStakes([]);
-      setVestingStakes([]);
-      setIsDataFetched(false);
-    }
-    updateVestingContracts();
-    updateVestingFishStakes();
-    updateVestingTeamStakes();
   }, [
-    account,
-    updateVestingContracts,
-    updateVestingFishStakes,
-    updateVestingTeamStakes,
+    prepareVestingData,
+    fetchVestingData,
+    vestingContracts,
+    vestingFishContract,
   ]);
 
-  return { vestingStakes, loading };
+  useEffect(() => {
+    if (account && !loadingVestings && !loadingVestingsFish) {
+      getVestings();
+    }
+  }, [account, loadingVestings, loadingVestingsFish, getVestings]);
+
+  return { vestingStakes, loadingVestings, loadingVestingsFish };
 };

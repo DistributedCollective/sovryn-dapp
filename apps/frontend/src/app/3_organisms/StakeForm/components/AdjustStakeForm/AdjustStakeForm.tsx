@@ -108,32 +108,37 @@ export const AdjustStakeForm: FC<AdjustStakeFormProps> = ({
   );
 
   const isValidAddress = useMemo(() => {
-    if (areAddressesEqual(delegateToAddress, account)) {
+    if (areAddressesEqual(delegateToAddress, stake.delegate || account)) {
       return false;
     }
 
     return isAddress(delegateToAddress) || delegateToAddress.length === 0;
-  }, [delegateToAddress, account]);
+  }, [delegateToAddress, stake.delegate, account]);
 
   const errorMessage = useMemo(() => {
     if (!isValidAddress) {
       if (!isAddress(delegateToAddress)) {
         return t(translations.stakePage.stakeForm.invalidAddressError);
       }
-      if (areAddressesEqual(delegateToAddress, account)) {
+      if (areAddressesEqual(delegateToAddress, stake.delegate || account)) {
         return t(translations.stakePage.stakeForm.invalidDelegateError);
       }
     }
     return '';
-  }, [isValidAddress, delegateToAddress, account]);
+  }, [isValidAddress, delegateToAddress, stake.delegate, account]);
 
   const isSubmitDisabled = useMemo(
     () =>
       fullLocked ||
       (isExtendTab && (unlockDate === 0 || extendLocked)) ||
       (isDecreaseTab &&
-        (Number(amount) > Number(stake.stakedAmount) || decreaseLocked)) ||
-      (isIncreaseTab && (Number(amount) > Number(balance) || increaseLocked)) ||
+        (Number(amount) === 0 ||
+          Number(amount) > Number(stake.stakedAmount) ||
+          decreaseLocked)) ||
+      (isIncreaseTab &&
+        (Number(amount) === 0 ||
+          Number(amount) > Number(balance) ||
+          increaseLocked)) ||
       (isDelegateTab &&
         (!isValidAddress || delegateToAddress.length === 0 || delegateLocked)),
 

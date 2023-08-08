@@ -467,7 +467,8 @@
             "description": "Claim BTC rewards from Zero's Stability Pool and transfer them to your wallet or active Line of Credit in Sovryn's Zero protocol. Start earning rewards today."
         },
         "totalRewardsEarned": {
-            "title": "Total rewards earned"
+            "title": "Total rewards earned",
+            "helper": "This is calculated by recording the rewards earned per block since the first rewards earned, noting the value of the reward in BTC at the time it is earned, then summing the results."
         },
         "tabs": {
             "title": "Available rewards",

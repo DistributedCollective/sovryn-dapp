@@ -15,7 +15,7 @@ import { useAccount } from '../../../../hooks/useAccount';
 import { translations } from '../../../../locales/i18n';
 import { getRskChainId } from '../../../../utils/chain';
 import { toWei } from '../../../../utils/math';
-import { RewardsAction } from './../types';
+import { RewardsAction } from './../RewardsPage.types';
 
 export const useHandleRewards = (
   action: RewardsAction,

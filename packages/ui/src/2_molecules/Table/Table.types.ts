@@ -32,6 +32,7 @@ export type TableProps<RowType extends RowObject> = {
   expandedContent?: (row: RowType) => ReactNode;
   expandedClassNames?: string;
   preventExpandOnClickClass?: string;
+  mobileRenderer?: (row: RowType) => ReactNode;
 };
 
 export enum OrderDirection {

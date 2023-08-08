@@ -2,10 +2,16 @@ import dayjs from 'dayjs';
 import { providers, TypedDataDomain, TypedDataField } from 'ethers';
 import resolveConfig from 'tailwindcss/resolveConfig';
 
+import { SupportedTokens } from '@sovryn/contracts';
 import { EIP1193Provider } from '@sovryn/onboard-common';
 import tailwindConfig from '@sovryn/tailwindcss-config';
 import { Decimalish } from '@sovryn/utils';
 
+import {
+  MAX_PROCESSABLE_CHECKPOINTS_SOV,
+  MAX_PROCESSABLE_CHECKPOINTS_TOKENS,
+  MAX_PROCESSABLE_CHECKPOINTS_ZUSD,
+} from '../constants/general';
 import {
   BTC_EXPLORER,
   GRAPH_WRAPPER,
@@ -153,3 +159,14 @@ export const calculateCollateralRatio = (
 
 export const removeTrailingZerosFromString = (value: string) =>
   value.includes('.') ? value.replace(/\.?0+$/, '') : value;
+
+export const getMaxProcessableCheckpoints = (asset: SupportedTokens) => {
+  switch (asset) {
+    case SupportedTokens.zusd:
+      return MAX_PROCESSABLE_CHECKPOINTS_ZUSD;
+    case SupportedTokens.sov:
+      return MAX_PROCESSABLE_CHECKPOINTS_SOV;
+    default:
+      return MAX_PROCESSABLE_CHECKPOINTS_TOKENS;
+  }
+};

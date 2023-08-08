@@ -11,3 +11,9 @@ export const useGetProtocolContract = (
   chain: ChainId = defaultChainId,
   customSigner?: ethers.providers.JsonRpcSigner,
 ) => useLoadContract(contractName, 'protocol', chain, customSigner);
+
+export const useGetTokenContract = (
+  contractName: string,
+  chain: ChainId = defaultChainId,
+  customSigner?: ethers.providers.JsonRpcSigner,
+) => useLoadContract(contractName, 'tokens', chain, customSigner);

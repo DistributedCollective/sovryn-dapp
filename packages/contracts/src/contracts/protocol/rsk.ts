@@ -49,4 +49,22 @@ export const rsk: Record<string, AsyncContractConfigData> = {
     getAbi: async () =>
       (await import('../../abis/liquidityMining.json')).default,
   },
+  feeSharing: {
+    address: '0x115cAF168c51eD15ec535727F64684D33B7b08D1',
+    getAbi: async () => (await import('../../abis/feeSharing.json')).default,
+  },
+  feeSharing_old: {
+    // retained for use with legacy staking fees
+    address: '0x12B1B0C67d9A771EB5Db7726d23fdc6848fd93ef',
+    getAbi: async () => (await import('../../abis/feeSharing.json')).default,
+  },
+  staking: {
+    address: '0x5684a06CaB22Db16d901fEe2A5C081b4C91eA40e',
+    getAbi: async () => (await import('../../abis/staking.json')).default,
+  },
+  stakingRewards: {
+    address: '0x8304FB3614c728B712e94F9D4DF6719fede6517F',
+    getAbi: async () =>
+      (await import('../../abis/stakingRewards.json')).default,
+  },
 };

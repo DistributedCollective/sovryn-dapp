@@ -6,6 +6,8 @@ import { t } from 'i18next';
 import {
   AmountInput,
   Button,
+  ErrorBadge,
+  ErrorLevel,
   FormGroup,
   SimpleTable,
   SimpleTableRow,
@@ -74,7 +76,7 @@ export const LendingForm: FC<DepositProps> = ({ state, onConfirm }) => {
     }
   }, [amount, isDeposit, state.balance]);
 
-  const canSubmit = useMemo(() => {
+  const amountIsValid = useMemo(() => {
     if (isDeposit) {
       return amount.gt(0) && amount.lte(balance.toBigNumber());
     } else {
@@ -153,7 +155,13 @@ export const LendingForm: FC<DepositProps> = ({ state, onConfirm }) => {
           placeholder="0"
         />
       </FormGroup>
-
+      {!amountIsValid && amount.gt(0) && (
+        <ErrorBadge
+          level={ErrorLevel.Critical}
+          message={t(translations.lending.form.invalidAmountError)}
+          dataAttribute="adjust-lending-amount-error"
+        />
+      )}
       <SimpleTable className="mt-8">
         <SimpleTableRow
           label={t(translations.lendingAdjust.newApy)}
@@ -172,7 +180,7 @@ export const LendingForm: FC<DepositProps> = ({ state, onConfirm }) => {
 
       <Button
         text={t(translations.common.buttons.confirm)}
-        disabled={!canSubmit}
+        disabled={!amountIsValid}
         onClick={handleSubmit}
         className="mt-8 w-full"
       />

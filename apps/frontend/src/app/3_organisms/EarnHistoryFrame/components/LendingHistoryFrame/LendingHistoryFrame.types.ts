@@ -6,4 +6,5 @@ export type LendingEvent = {
   transactionHash: string;
   timestamp: number;
   type: LendingHistoryType;
+  resolvedAsset: string;
 };

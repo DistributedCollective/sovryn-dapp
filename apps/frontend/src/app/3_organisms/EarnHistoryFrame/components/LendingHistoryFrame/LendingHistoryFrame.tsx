@@ -18,10 +18,12 @@ import {
 } from '@sovryn/ui';
 
 import { DEFAULT_HISTORY_FRAME_PAGE_SIZE } from '../../../../../constants/general';
+import { getTokenDisplayName } from '../../../../../constants/tokens';
 import { useNotificationContext } from '../../../../../contexts/NotificationContext';
 import { useAccount } from '../../../../../hooks/useAccount';
 import { useBlockNumber } from '../../../../../hooks/useBlockNumber';
 import { translations } from '../../../../../locales/i18n';
+import { dateFormat } from '../../../../../utils/helpers';
 import { BaseConversionsHistoryFrame } from '../../../ConversionsHistoryFrame/components/BaseConversionsHistoryFrame/BaseConversionsHistoryFrame';
 import { COLUMNS_CONFIG } from './LendingHistoryFrame.constants';
 import { LendingEvent } from './LendingHistoryFrame.types';
@@ -63,6 +65,7 @@ export const LendingHistoryFrame: FC<PropsWithChildren> = ({ children }) => {
               transactionHash: item.transaction?.id,
               timestamp: item.timestamp,
               type: item.type,
+              resolvedAsset: getTokenDisplayName(item.asset?.symbol || ''),
             })) || [],
         )
         .flat()
@@ -90,11 +93,19 @@ export const LendingHistoryFrame: FC<PropsWithChildren> = ({ children }) => {
       });
     }
 
-    return normalizedLendingEvents.map(item => ({
-      ...item,
-      type: getTransactionType(item.type),
-    }));
-  }, [addNotification, normalizedLendingEvents]);
+    return normalizedLendingEvents
+      .sort((a, b) =>
+        orderOptions.orderDirection === OrderDirection.Asc
+          ? a.timestamp - b.timestamp
+          : b.timestamp - a.timestamp,
+      )
+      .map(item => ({
+        timestamp: dateFormat(item.timestamp),
+        transactionType: getTransactionType(item.type),
+        balanceChange: `${item.amount} ${item.resolvedAsset}`,
+        txId: item.transactionHash,
+      }));
+  }, [addNotification, normalizedLendingEvents, orderOptions.orderDirection]);
 
   const paginatedLendingEvents = useMemo(
     () =>

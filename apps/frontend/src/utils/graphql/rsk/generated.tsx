@@ -13674,7 +13674,11 @@ export type GetLendHistoryQuery = {
         amount: string;
         loanTokenAmount: string;
         emittedBy: string;
-        asset?: { __typename?: 'Token'; id: string } | null;
+        asset?: {
+          __typename?: 'Token';
+          id: string;
+          symbol?: string | null;
+        } | null;
         transaction: {
           __typename?: 'Transaction';
           id: string;
@@ -13970,6 +13974,7 @@ export const GetLendHistoryDocument = gql`
           timestamp
           asset {
             id
+            symbol
           }
           amount
           loanTokenAmount

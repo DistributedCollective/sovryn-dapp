@@ -6,6 +6,7 @@ query getLendHistory($user: ID!) {
         timestamp
         asset {
           id
+          symbol
         }
         amount
         loanTokenAmount

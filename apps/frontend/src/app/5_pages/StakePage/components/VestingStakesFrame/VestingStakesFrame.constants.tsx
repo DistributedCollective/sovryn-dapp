@@ -30,8 +30,8 @@ export const COLUMNS_CONFIG = [
     cellRenderer: (item: Vesting) => UnlockDateCellRenderer(item),
   },
   {
-    id: 'actions',
-    title: ' ',
+    id: '',
+    title: '',
     cellRenderer: (item: Vesting) => AdjustVestingStakeRenderer(item),
   },
 ];

@@ -7,13 +7,13 @@ import { TOKEN_RENDER_PRECISION } from '../../../../../../../constants/currencie
 import { getTokenDisplayName } from '../../../../../../../constants/tokens';
 import { useAccount } from '../../../../../../../hooks/useAccount';
 import { translations } from '../../../../../../../locales/i18n';
+import { LendingPool } from '../../../../../../../utils/LendingPool';
+import { LendingPoolDictionary } from '../../../../../../../utils/LendingPoolDictionary';
 import { decimalic } from '../../../../../../../utils/math';
 import { useGetBalanceOf } from '../../../../hooks/useGetBalanceOf';
 import { useGetCheckpointPrice } from '../../../../hooks/useGetCheckpointPrice';
 import { useGetProfitOf } from '../../../../hooks/useGetProfitOf';
 import { useGetTokenPrice } from '../../../../hooks/useGetTokenPrice';
-import { LendingPool } from '../../../../utils/LendingPool';
-import { LendingPoolDictionary } from '../../../../utils/LendingPoolDictionary';
 import { useGetAssetBalanceOf } from './hooks/useGetAssetBalanceOf';
 
 type LendFrameBalanceProps = {

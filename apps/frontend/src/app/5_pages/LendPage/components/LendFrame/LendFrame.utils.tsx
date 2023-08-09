@@ -4,7 +4,7 @@ import { t } from 'i18next';
 
 import { AssetRenderer } from '../../../../2_molecules/AssetRenderer/AssetRenderer';
 import { translations } from '../../../../../locales/i18n';
-import { LendingPool } from '../../utils/LendingPool';
+import { LendingPool } from '../../../../../utils/LendingPool';
 import { NextSupplyInterestRate } from '../NextSupplyInterestRate/NextSupplyInterestRate';
 
 export const generateRowTitle = (pool: LendingPool) => (

@@ -6,7 +6,7 @@ import { Tooltip, TooltipTrigger } from '@sovryn/ui';
 
 import { getTokenDisplayName } from '../../../../../constants/tokens';
 import { translations } from '../../../../../locales/i18n';
-import { LendingPool } from '../../utils/LendingPool';
+import { LendingPool } from '../../../../../utils/LendingPool';
 import { AssetTooltipContent } from './components/AssetTooltipContent';
 
 const COLLATERAL_ITEMS_TO_SHOW = 3;

@@ -5,8 +5,8 @@ import { t } from 'i18next';
 import { AssetRenderer } from '../../../../2_molecules/AssetRenderer/AssetRenderer';
 import { translations } from '../../../../../locales/i18n';
 import { LendingPool } from '../../../../../utils/LendingPool';
+import { AcceptedCollateral } from '../../../LendPage/components/AcceptedCollateral/AcceptedCollateral';
 import { NextSupplyInterestRate } from '../../../LendPage/components/NextSupplyInterestRate/NextSupplyInterestRate';
-import { AcceptedCollateral } from './components/AcceptedCollateral/AcceptedCollateral';
 import { AvailableSupply } from './components/AvailableSupply/AvailableSupply';
 import { NewLoanButton } from './components/NewLoanButton/NewLoanButton';
 

@@ -5,10 +5,6 @@ import { decimalic } from '../../../utils/math';
 export const CRITICAL_COLLATERAL_RATIO = decimalic(1.5); // 150%
 export const MINIMUM_COLLATERAL_RATIO = decimalic(1.1); // 110%
 
-// TODO: This will be read from the subgraph/smart contracts in the future
-export const MINIMUM_COLLATERAL_RATIO_LENDING_POOLS = decimalic(1.5); // 150%
-export const MINIMUM_COLLATERAL_RATIO_LENDING_POOLS_SOV = decimalic(3); // 300%
-
 export const MIN_DEBT_SIZE = decimalic(200); // 200 ZUSD
 export const SMALL_AMOUNT = decimalic(0.001);
 

@@ -5,7 +5,7 @@ import { t } from 'i18next';
 import { HelperButton } from '@sovryn/ui';
 
 import { AssetRenderer } from '../../../../2_molecules/AssetRenderer/AssetRenderer';
-import { MINIMUM_COLLATERAL_RATIO_LENDING_POOLS } from '../../../../3_organisms/ZeroLocForm/constants';
+import { MINIMUM_COLLATERAL_RATIO_LENDING_POOLS } from '../../../../../constants/lending';
 import { translations } from '../../../../../locales/i18n';
 import { LendingPool } from '../../../../../utils/LendingPool';
 import { AcceptedCollateral } from '../../../LendPage/components/AcceptedCollateral/AcceptedCollateral';

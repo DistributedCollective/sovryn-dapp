@@ -493,7 +493,8 @@
                 "borrowApr": "Borrow APR",
                 "availableSupply": "Available supply",
                 "acceptedCollateral": "Accepted collateral",
-                "minCollateralRatio": "Min collateral ratio"
+                "minCollateralRatio": "Min collateral ratio",
+                "minCollateralRatioTooltip": "The minimum collateral ratio required to maintain the loan after it is opened. This may differ from the minimum initial collateral ratio, which changes depending on the collateral asset used."
             },
             "action": "New loan"
         },

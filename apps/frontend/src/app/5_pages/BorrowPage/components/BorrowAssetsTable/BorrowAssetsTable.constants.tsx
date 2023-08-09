@@ -2,7 +2,10 @@ import React from 'react';
 
 import { t } from 'i18next';
 
+import { HelperButton } from '@sovryn/ui';
+
 import { AssetRenderer } from '../../../../2_molecules/AssetRenderer/AssetRenderer';
+import { MINIMUM_COLLATERAL_RATIO_LENDING_POOLS } from '../../../../3_organisms/ZeroLocForm/constants';
 import { translations } from '../../../../../locales/i18n';
 import { LendingPool } from '../../../../../utils/LendingPool';
 import { AcceptedCollateral } from '../../../LendPage/components/AcceptedCollateral/AcceptedCollateral';
@@ -44,8 +47,23 @@ export const COLUMNS_CONFIG = [
   },
   {
     id: 'minCollateralRatio',
-    title: t(translation.minCollateralRatio),
-    cellRenderer: (pool: LendingPool) => <div>110%</div>,
+    title: (
+      <span className="flex items-center gap-1">
+        {t(
+          translations.fixedInterestPage.borrowAssetsTable.columns
+            .minCollateralRatio,
+        )}
+        <HelperButton
+          content={t(
+            translations.fixedInterestPage.borrowAssetsTable.columns
+              .minCollateralRatioTooltip,
+          )}
+        />
+      </span>
+    ),
+    cellRenderer: () => (
+      <div>{MINIMUM_COLLATERAL_RATIO_LENDING_POOLS.mul(100).toString()}%</div>
+    ),
   },
   {
     id: '',

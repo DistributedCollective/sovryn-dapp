@@ -1,6 +1,10 @@
 import React from 'react';
 
-import { createBrowserRouter, createHashRouter } from 'react-router-dom';
+import {
+  createBrowserRouter,
+  createHashRouter,
+  redirect,
+} from 'react-router-dom';
 
 import { PageContainer } from './app/4_templates';
 import { EmailVerificationStateContainer } from './app/4_templates/EmailVerificationStateContainer/EmailVerificationStateContainer';
@@ -64,6 +68,10 @@ const routes = [
       {
         path: '/earn/lend',
         element: <LendPage />,
+      },
+      {
+        path: '/earn',
+        loader: () => redirect('/earn/lend'),
       },
       {
         path: '/convert',

@@ -1,5 +1,12 @@
 # frontend
 
+## 1.0.20
+
+### Patch Changes
+
+- 60909e24: SOV-2976: Fix min collateral ratio for lending pools
+- f282992a: SOV-2820: fix earn page redirect
+
 ## 1.0.19
 
 ### Patch Changes

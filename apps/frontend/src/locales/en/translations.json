@@ -75,7 +75,15 @@
         "funding": "Funding",
         "fundWallet": "Fund your Wallet",
         "nav": {
-            "borrow": "Borrow",
+            "borrow": {
+                "title": "Borrow",
+                "subMenu": {
+                    "fixedInterest": "Fixed-interest loans",
+                    "fixedInterestDescription": "Borrow without rate hikes",
+                    "lineOfCredit": "Zero line of credit",
+                    "lineOfCreditDescription": "Borrow without interest"
+                }
+            },
             "earn": {
                 "title": "Earn",
                 "subMenu": {

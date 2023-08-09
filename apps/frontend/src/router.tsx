@@ -60,7 +60,7 @@ const routes = [
         loader: zeroPageLoader,
       },
       {
-        path: '/zero',
+        path: '/borrow/line-of-credit',
         element: <Zero />,
         loader: zeroPageLoader,
       },

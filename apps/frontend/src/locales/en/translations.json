@@ -779,7 +779,7 @@
     },
     "lending": {
         "title": "Lend",
-        "disclaimer": "I understand that the APY is variable and that there must be available liquidity in the pool for me to be able to withdraw my lending balance. <0>Learn more</0>",
+        "disclaimer": "I understand that the APY is variable and that there must be available liquidity in the pool for me to be able to withdraw my lending balance.",
         "learnMore": "Learn more",
         "apy": "Lend APY",
         "acceptedCollateral": "Accepted collateral",

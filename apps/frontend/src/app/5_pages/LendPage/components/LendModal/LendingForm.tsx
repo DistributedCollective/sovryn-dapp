@@ -1,7 +1,6 @@
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 
 import { t } from 'i18next';
-import { Trans } from 'react-i18next';
 
 import {
   AmountInput,
@@ -10,7 +9,6 @@ import {
   FormGroup,
   SimpleTable,
   SimpleTableRow,
-  Link,
   ErrorBadge,
   ErrorLevel,
 } from '@sovryn/ui';
@@ -124,14 +122,7 @@ export const LendingForm: FC<DepositProps> = ({ state, onConfirm }) => {
         <Checkbox
           checked={hasDisclaimerBeenChecked}
           onChangeValue={setHasDisclaimerBeenChecked}
-          label={
-            <Trans
-              i18nKey={translations.lending.disclaimer}
-              components={[
-                <Link text={t(translations.lending.learnMore)} href={''} />,
-              ]}
-            />
-          }
+          label={t(translations.lending.disclaimer)}
         />
       </div>
 

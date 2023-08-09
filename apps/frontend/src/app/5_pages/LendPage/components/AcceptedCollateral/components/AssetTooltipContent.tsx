@@ -7,7 +7,10 @@ import { Link, LinkStyle } from '@sovryn/ui';
 
 import { defaultChainId } from '../../../../../../config/chains';
 
-import { MINIMUM_COLLATERAL_RATIO } from '../../../../../3_organisms/ZeroLocForm/constants';
+import {
+  MINIMUM_COLLATERAL_RATIO_LENDING_POOLS,
+  MINIMUM_COLLATERAL_RATIO_LENDING_POOLS_SOV,
+} from '../../../../../../constants/lending';
 import { getTokenDisplayName } from '../../../../../../constants/tokens';
 import { translations } from '../../../../../../locales/i18n';
 import { getRskExplorerUrl } from '../../../../../../utils/helpers';
@@ -47,6 +50,12 @@ export const AssetTooltipContent: FC<AssetTooltipContentProps> = ({
               token,
               defaultChainId,
             );
+
+            const minimumCollateralRatio =
+              token === SupportedTokens.sov
+                ? MINIMUM_COLLATERAL_RATIO_LENDING_POOLS_SOV
+                : MINIMUM_COLLATERAL_RATIO_LENDING_POOLS;
+
             return (
               <div className="flex items-center prevent-row-click" key={token}>
                 <Link
@@ -57,7 +66,7 @@ export const AssetTooltipContent: FC<AssetTooltipContentProps> = ({
                   style={LinkStyle.secondary}
                 />
                 <div className="font-medium ml-1">
-                  – {decimalic(MINIMUM_COLLATERAL_RATIO.mul(100)).toString()}%{' '}
+                  – {decimalic(minimumCollateralRatio.mul(100)).toString()}%{' '}
                   {t(translations.lendPage.table.collateralRatio)}
                 </div>
               </div>

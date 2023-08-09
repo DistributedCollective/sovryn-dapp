@@ -5,7 +5,9 @@ import { t } from 'i18next';
 import { AssetRenderer } from '../../../../2_molecules/AssetRenderer/AssetRenderer';
 import { translations } from '../../../../../locales/i18n';
 import { LendingPool } from '../../../../../utils/LendingPool';
+import { NextSupplyInterestRate } from '../../../LendPage/components/NextSupplyInterestRate/NextSupplyInterestRate';
 import { AcceptedCollateral } from './components/AcceptedCollateral/AcceptedCollateral';
+import { AvailableSupply } from './components/AvailableSupply/AvailableSupply';
 import { NewLoanButton } from './components/NewLoanButton/NewLoanButton';
 
 const translation = translations.fixedInterestPage.borrowAssetsTable.columns;
@@ -26,12 +28,14 @@ export const COLUMNS_CONFIG = [
   {
     id: 'borrowApr',
     title: t(translation.borrowApr),
-    cellRenderer: (pool: LendingPool) => <div>2%</div>,
+    cellRenderer: (pool: LendingPool) => (
+      <NextSupplyInterestRate asset={pool.getAsset()} />
+    ),
   },
   {
     id: 'availableSupply',
     title: t(translation.availableSupply),
-    cellRenderer: (pool: LendingPool) => <div>100</div>,
+    cellRenderer: (pool: LendingPool) => <AvailableSupply pool={pool} />,
   },
   {
     id: 'acceptedCollateral',

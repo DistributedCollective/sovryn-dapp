@@ -57,11 +57,6 @@ const routes = [
         loader: zeroPageLoader,
       },
       {
-        path: '/earn',
-        element: <EarnPage />,
-        loader: earnPageLoader,
-      },
-      {
         path: '/convert',
         element: <ConvertPage />,
       },
@@ -75,7 +70,12 @@ const routes = [
         loader: zeroPageLoader,
       },
       {
-        path: '/stake',
+        path: '/earn/stability-pool',
+        element: <EarnPage />,
+        loader: earnPageLoader,
+      },
+      {
+        path: '/earn/staking',
         element: <StakePage />,
       },
     ],

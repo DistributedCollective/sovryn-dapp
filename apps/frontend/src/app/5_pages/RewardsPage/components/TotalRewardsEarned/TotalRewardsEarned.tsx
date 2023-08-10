@@ -30,7 +30,7 @@ export const TotalRewardsEarned: FC = () => {
           value={totalStakingRewards}
           suffix={BITCOIN}
           precision={BTC_RENDER_PRECISION}
-          dataAttribute="total-available-rewards"
+          dataAttribute="total-earned-rewards"
           isAnimated
         />
       );

@@ -88,7 +88,7 @@ const routes = [
         loader: zeroPageLoader,
       },
       {
-        path: '/stake',
+        path: '/earn/staking',
         element: <StakePage />,
       },
     ],

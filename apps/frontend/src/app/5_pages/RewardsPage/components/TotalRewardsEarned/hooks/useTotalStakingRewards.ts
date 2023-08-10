@@ -12,7 +12,7 @@ export const useTotalStakingRewards = () => {
   });
 
   const totalStakingRewards = useMemo(
-    () => data?.userRewardsEarnedHistory?.totalStakingRewards || '0',
+    () => data?.userRewardsEarnedHistory?.totalFeeWithdrawn || '0',
     [data],
   );
 

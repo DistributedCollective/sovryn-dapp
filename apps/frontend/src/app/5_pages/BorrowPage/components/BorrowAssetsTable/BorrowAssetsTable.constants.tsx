@@ -5,7 +5,7 @@ import { t } from 'i18next';
 import { HelperButton } from '@sovryn/ui';
 
 import { AssetRenderer } from '../../../../2_molecules/AssetRenderer/AssetRenderer';
-import { MINIMUM_COLLATERAL_RATIO_LENDING_POOLS } from '../../../../../constants/lending';
+import { MINIMUM_COLLATERAL_RATIO_BORROWING } from '../../../../../constants/lending';
 import { translations } from '../../../../../locales/i18n';
 import { LendingPool } from '../../../../../utils/LendingPool';
 import { AcceptedCollateral } from '../../../LendPage/components/AcceptedCollateral/AcceptedCollateral';
@@ -62,7 +62,7 @@ export const COLUMNS_CONFIG = [
       </span>
     ),
     cellRenderer: () => (
-      <div>{MINIMUM_COLLATERAL_RATIO_LENDING_POOLS.mul(100).toString()}%</div>
+      <div>{MINIMUM_COLLATERAL_RATIO_BORROWING.mul(100).toString()}%</div>
     ),
   },
   {

@@ -66,20 +66,20 @@
         "disconnect": "Disconnect"
     },
     "header": {
-      "funding": "Funding",
-      "nav": {
-        "borrow": "Borrow",
-        "earn": {
-          "title": "Earn",
-          "subMenu": {
-            "stabilityPool": "Stability pool",
-            "stabilityPoolDescription": "Earn BTC from Zero liquidations",
-            "staking": "Staking",
-            "stakingDescription": "Gain voting power and earn fees"
-          }
-        },
-        "convert": "Convert"
-      }
+        "funding": "Funding",
+        "nav": {
+            "borrow": "Borrow",
+            "earn": {
+                "title": "Earn",
+                "subMenu": {
+                    "stabilityPool": "Stability pool",
+                    "stabilityPoolDescription": "Earn BTC from Zero liquidations",
+                    "staking": "Staking",
+                    "stakingDescription": "Gain voting power and earn fees"
+                }
+            },
+            "convert": "Convert"
+        }
     },
     "footer": {
         "dashboard": "Dashboard",
@@ -438,7 +438,8 @@
             "extend": "Extend",
             "delegate": "Delegate",
             "delegateInfo": "Discover Bitocracy delegates <0>here</0>",
-            "delegateInfoCta": "here"
+            "delegateInfoCta": "here",
+            "discoverDelegates": "Discover Bitocracy delegates here"
         },
         "stakingRewards": {
             "title": "Staking rewards",

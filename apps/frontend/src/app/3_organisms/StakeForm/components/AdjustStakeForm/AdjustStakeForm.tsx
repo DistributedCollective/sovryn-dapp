@@ -16,6 +16,7 @@ import {
   SimpleTableRow,
   TabType,
   Tabs,
+  HelperButton,
 } from '@sovryn/ui';
 
 import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRenderer';
@@ -418,8 +419,14 @@ export const AdjustStakeForm: FC<AdjustStakeFormProps> = ({
             </>
           )}
 
-          <Paragraph size={ParagraphSize.base} className="font-medium mt-6">
+          <Paragraph
+            size={ParagraphSize.base}
+            className="font-medium mt-6 flex items-center gap-1"
+          >
             {t(translations.stakePage.stakeForm.newDelegateAddress)}
+            <HelperButton
+              content={t(translations.stakePage.stakeForm.discoverDelegates)}
+            />
           </Paragraph>
           <Input
             value={delegateToAddress}

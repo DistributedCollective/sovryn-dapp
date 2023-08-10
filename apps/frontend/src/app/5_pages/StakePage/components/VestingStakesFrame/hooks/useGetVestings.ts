@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 
 import { useAccount } from '../../../../../../hooks/useAccount';
 import { useGetProtocolContract } from '../../../../../../hooks/useGetContract';
+import { asyncCall } from '../../../../../../store/rxjs/provider-cache';
 import { VestingData } from '../VestingStakesFrame.types';
 
 export const useGetVestings = () => {
@@ -19,7 +20,9 @@ export const useGetVestings = () => {
     }
     try {
       setLoadingVestings(true);
-      const contracts = await vestingContract.getVestingsOf(account);
+      const contracts = await asyncCall(`vesting/stakes/${account}`, () =>
+        vestingContract.getVestingsOf(account),
+      );
       if (contracts) {
         setVestingContracts(contracts);
       }

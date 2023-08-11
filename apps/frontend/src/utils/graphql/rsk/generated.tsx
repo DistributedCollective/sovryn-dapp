@@ -14580,7 +14580,7 @@ export type GetUserRewardsEarnedHistoryQuery = {
   __typename?: 'Query';
   userRewardsEarnedHistory?: {
     __typename?: 'UserRewardsEarnedHistory';
-    totalStakingRewards: string;
+    totalFeeWithdrawn: string;
   } | null;
 };
 
@@ -15620,7 +15620,7 @@ export type GetTransactionsQueryResult = Apollo.QueryResult<
 export const GetUserRewardsEarnedHistoryDocument = gql`
   query getUserRewardsEarnedHistory($user: ID!) {
     userRewardsEarnedHistory(id: $user) {
-      totalStakingRewards
+      totalFeeWithdrawn
     }
   }
 `;

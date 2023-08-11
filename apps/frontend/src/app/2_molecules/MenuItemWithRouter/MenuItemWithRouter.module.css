@@ -1,0 +1,62 @@
+.host {
+  @apply list-none;
+
+  & .button {
+    @apply flex text-left items-center w-full px-2.5 py-1 cursor-pointer rounded transition-colors my-1;
+
+    &.disabled {
+      @apply opacity-50 cursor-not-allowed;
+    }
+
+    &.active {
+      @apply opacity-100;
+    }
+
+    &.active,
+    &:not(.disabled):hover {
+      @apply bg-gray-70 text-gray-10;
+    }
+
+    & .text {
+      @apply font-semibold flex items-center;
+      line-height: 25px;
+    }
+
+    & .text,
+    & .icon {
+      @apply text-gray-10 pointer-events-none;
+    }
+
+    & .icon {
+      @apply text-gray-10 mr-2;
+    }
+
+    & .label {
+      @apply text-gray-30 font-normal text-tiny inline-block leading-none pointer-events-none;
+    }
+  }
+
+  &:last-child {
+    & .button {
+      @apply mb-0;
+    }
+  }
+
+  &:first-child {
+    & .button {
+      @apply mt-0;
+    }
+  }
+}
+
+.hostBlock {
+  @apply block leading-none pointer-events-none;
+}
+
+.hostFlex {
+  @apply flex items-center pointer-events-none;
+}
+
+.icon {
+  @apply mr-2 pointer-events-none;
+}

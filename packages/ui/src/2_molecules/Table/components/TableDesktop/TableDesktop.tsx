@@ -31,6 +31,7 @@ export const TableDesktop = <RowType extends RowObject>({
   setOrderOptions,
   isLoading,
   expandedContent,
+  expandedClassNames = '',
   preventExpandOnClickClass,
 }: TableProps<RowType>) => {
   const [selectedIndex, setSelectedIndex] = useState<number>();
@@ -128,6 +129,7 @@ export const TableDesktop = <RowType extends RowObject>({
               className={styles.row}
               size={TableRowSize.large}
               expandedContent={expandedContent}
+              expandedClassNames={expandedClassNames}
               preventExpandOnClickClass={preventExpandOnClickClass}
             />
           ))}

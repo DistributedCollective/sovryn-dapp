@@ -32,6 +32,10 @@
   @apply outline-gray-50 bg-gray-70;
 }
 
+.expanded {
+  @apply rounded-none rounded-t;
+}
+
 .text {
   &Left {
     @apply text-left;

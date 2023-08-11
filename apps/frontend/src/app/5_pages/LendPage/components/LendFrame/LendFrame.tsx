@@ -30,6 +30,7 @@ export const LendFrame: FC = () => {
           noData={t(translations.common.tables.noData)}
           dataAttribute="lend-frame-table"
           expandedContent={pool => <LendFrameDetails pool={pool} />}
+          expandedClassNames="border border-gray-70 border-t-0"
           preventExpandOnClickClass="prevent-row-click"
         />
       </div>

@@ -30,6 +30,7 @@ export type TableProps<RowType extends RowObject> = {
   setOrderOptions?: (sort: OrderOptions) => void;
   isLoading?: boolean;
   expandedContent?: (row: RowType) => ReactNode;
+  expandedClassNames?: string;
   preventExpandOnClickClass?: string;
 };
 

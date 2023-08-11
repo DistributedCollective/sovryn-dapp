@@ -62,8 +62,8 @@ export const TransactionSteps: FC<TransactionStepsProps> = ({
   );
 
   const hasEnoughBalance = useMemo(
-    () => rbtcBalance.sub(estimatedGasFee).gt(0),
-    [rbtcBalance, estimatedGasFee],
+    () => !loading && rbtcBalance.sub(estimatedGasFee).gt(0),
+    [loading, rbtcBalance, estimatedGasFee],
   );
 
   useEffect(() => {

@@ -3,6 +3,7 @@ import React, { FC } from 'react';
 import { t } from 'i18next';
 
 import { SupportedTokens } from '@sovryn/contracts';
+import { Paragraph } from '@sovryn/ui';
 import { Decimal } from '@sovryn/utils';
 
 import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRenderer';
@@ -28,17 +29,17 @@ export const CurrentStats: FC<CurrentStatsProps> = ({ apy, token }) => {
         asset={token}
       />
       <div className="flex gap-8">
-        <div className="mt-6 flex flex-col gap-1 text-sm">
-          <div className="text-gray-30">{t(translations.lending.apy)}</div>
+        <div className="mt-6 flex flex-col gap-2">
+          <Paragraph className="font-medium text-gray-30">
+            {t(translations.lending.apy)}
+          </Paragraph>
           <AmountRenderer value={apy} suffix="%" />
         </div>
-        <div className="mt-6 flex flex-col gap-2 text-sm">
-          <div className="text-gray-30">
+        <div className="mt-6 flex flex-col gap-2">
+          <Paragraph className="font-medium text-gray-30">
             {t(translations.lending.acceptedCollateral)}
-          </div>
-          <div>
-            <AcceptedCollateral pool={pool} />
-          </div>
+          </Paragraph>
+          <AcceptedCollateral pool={pool} />
         </div>
       </div>
     </div>

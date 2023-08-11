@@ -14,11 +14,11 @@ import {
   applyDataAttr,
   noop,
   Menu,
-  MenuItem,
   Dropdown,
 } from '@sovryn/ui';
 
 import { ConnectWalletButton } from '../../2_molecules';
+import { MenuItemWithRouter } from '../../2_molecules/MenuItemWithRouter/MenuItemWithRouter';
 import { NavLink } from '../../2_molecules/NavLink/NavLink';
 import { SovrynLogo } from '../../2_molecules/SovrynLogo/SovrynLogo';
 import { RSK_FAUCET } from '../../../constants/general';
@@ -106,11 +106,11 @@ export const Header: FC = () => {
                 >
                   <Menu>
                     {item.submenu.map(({ text, label, url }) => (
-                      <MenuItem
+                      <MenuItemWithRouter
                         key={text}
                         text={text}
                         label={!isMobile && label}
-                        href={url}
+                        link={url}
                         dataAttribute={`dapp-menu-${text
                           .toLowerCase()
                           .replace(' ', '-')}`}

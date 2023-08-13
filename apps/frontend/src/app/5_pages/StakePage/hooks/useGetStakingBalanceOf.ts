@@ -1,24 +1,16 @@
-import { useEffect, useState } from 'react';
-
+import { useCacheCall } from '../../../../hooks';
 import { useGetProtocolContract } from '../../../../hooks/useGetContract';
-import { asyncCall } from '../../../../store/rxjs/provider-cache';
 
 export const useGetStakingBalanceOf = (address: string) => {
   const stakingContract = useGetProtocolContract('staking');
-  const [balance, setBalance] = useState('0');
 
-  useEffect(() => {
-    const getBalance = async () => {
-      if (address && stakingContract) {
-        const balance = await asyncCall(`staking/balance/${address}`, () =>
-          stakingContract.balanceOf(address),
-        );
-        setBalance(balance.toString());
-      }
-    };
-
-    getBalance();
-  }, [balance, stakingContract, address]);
+  const { value: balance } = useCacheCall(
+    `staking/${stakingContract?.address}/${address}/balanceOf`,
+    async () =>
+      address && stakingContract ? stakingContract.balanceOf(address) : '0',
+    [address],
+    '0',
+  );
 
   return { balance };
 };

@@ -27,9 +27,9 @@ export const useGetFeesEarned = () => {
 
   const contractAddresses = useMemo(
     () => ({
+      [SupportedTokens.rbtc]: RBTCDummyAddress,
       [SupportedTokens.sov]: sovContract?.address!,
       [SupportedTokens.zusd]: zusdContract?.address!,
-      [SupportedTokens.rbtc]: RBTCDummyAddress,
       [SupportedTokens.mynt]: myntContract?.address!,
     }),
     [

@@ -2,6 +2,7 @@ import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 
 import dayjs from 'dayjs';
 import { t } from 'i18next';
+import { Trans } from 'react-i18next';
 
 import { SupportedTokens } from '@sovryn/contracts';
 import {
@@ -16,11 +17,16 @@ import {
   SimpleTableRow,
   TabType,
   Tabs,
+  HelperButton,
+  Link,
 } from '@sovryn/ui';
 
 import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { MaxButton } from '../../../../2_molecules/MaxButton/MaxButton';
-import { WEIGHT_FACTOR } from '../../../../5_pages/StakePage/StakePage.constants';
+import {
+  STAKING_DELEGATION_LEARN_MORE_LINK,
+  WEIGHT_FACTOR,
+} from '../../../../5_pages/StakePage/StakePage.constants';
 import { useGetWeight } from '../../../../5_pages/StakePage/components/StakesFrame/hooks/useGetWeight';
 import { useGetVotingPower } from '../../../../5_pages/StakePage/hooks/useGetVotingPower';
 import { useHandleAdjustStake } from '../../../../5_pages/StakePage/hooks/useHandleAdjustStake';
@@ -418,9 +424,25 @@ export const AdjustStakeForm: FC<AdjustStakeFormProps> = ({
             </>
           )}
 
-          <Paragraph size={ParagraphSize.base} className="font-medium mt-6">
-            {t(translations.stakePage.stakeForm.newDelegateAddress)}
-          </Paragraph>
+          <div className="flex items-center gap-1 mt-6">
+            <Paragraph size={ParagraphSize.base} className="font-medium">
+              {t(translations.stakePage.stakeForm.newDelegateAddress)}{' '}
+            </Paragraph>
+            <HelperButton
+              content={
+                <Trans
+                  i18nKey={t(translations.stakePage.stakeForm.delegateInfo)}
+                  components={[
+                    <Link
+                      text={t(translations.stakePage.stakeForm.delegateInfoCta)}
+                      href={STAKING_DELEGATION_LEARN_MORE_LINK}
+                      openNewTab
+                    />,
+                  ]}
+                />
+              }
+            />
+          </div>
           <Input
             value={delegateToAddress}
             onChangeText={setDelegateToAddress}

@@ -137,11 +137,13 @@ export const AdjustLendingModalContainer: FC<AdjustModalProps> = ({
       <DialogBody>
         {state != null && (
           <>
-            <CurrentStats
-              symbol={state.token}
-              apy={state.apy}
-              balance={state.balance}
-            />
+            <div className="bg-gray-90 p-4 rounded">
+              <CurrentStats
+                symbol={state.token}
+                apy={state.apy}
+                balance={state.balance}
+              />
+            </div>
             <LendingForm state={state} onConfirm={handleConfirm} />
           </>
         )}

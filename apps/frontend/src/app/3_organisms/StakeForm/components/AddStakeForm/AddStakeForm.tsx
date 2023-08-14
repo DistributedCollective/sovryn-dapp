@@ -13,6 +13,7 @@ import {
   SimpleTable,
   SimpleTableRow,
 } from '@sovryn/ui';
+import { Decimal } from '@sovryn/utils';
 
 import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { MaxButton } from '../../../../2_molecules/MaxButton/MaxButton';
@@ -23,6 +24,7 @@ import {
 import { useGetPersonalStakingStatistics } from '../../../../5_pages/StakePage/components/PersonalStakingStatistics/hooks/useGetPersonalStakingStatistics';
 import { useGetWeight } from '../../../../5_pages/StakePage/components/StakesFrame/hooks/useGetWeight';
 import { useGetStakingBalanceOf } from '../../../../5_pages/StakePage/hooks/useGetStakingBalanceOf';
+import { useGetTotalVestingsBalance } from '../../../../5_pages/StakePage/hooks/useGetTotalVestingsBalance';
 import { useHandleStake } from '../../../../5_pages/StakePage/hooks/useHandleStake';
 import { TOKEN_RENDER_PRECISION } from '../../../../../constants/currencies';
 import { useAccount } from '../../../../../hooks/useAccount';
@@ -43,6 +45,12 @@ export const AddStakeForm: FC<StakeFormProps> = ({
 
   const { balance } = useAssetBalance(SupportedTokens.sov);
   const { balance: stakedValue } = useGetStakingBalanceOf(account);
+  const totalVestingsBalance = useGetTotalVestingsBalance();
+
+  const totalStakedValue = useMemo(
+    () => Decimal.fromBigNumberString(stakedValue).add(totalVestingsBalance),
+    [stakedValue, totalVestingsBalance],
+  );
 
   const { votingPower } = useGetPersonalStakingStatistics();
   const [votingPowerReceived, setVotingPowerReceived] = useState(0);
@@ -83,12 +91,12 @@ export const AddStakeForm: FC<StakeFormProps> = ({
         t(translations.common.na)
       ) : (
         <AmountRenderer
-          value={decimalic(fromWei(stakedValue)).add(amount)}
+          value={totalStakedValue.add(amount)}
           suffix={SupportedTokens.sov}
           precision={TOKEN_RENDER_PRECISION}
         />
       ),
-    [amount, stakedValue, isValidAmount],
+    [amount, isValidAmount, totalStakedValue],
   );
 
   const renderVotingPowerReceived = useCallback(
@@ -159,7 +167,7 @@ export const AddStakeForm: FC<StakeFormProps> = ({
             </Paragraph>
             <div className="text-sm font-semibold">
               <AmountRenderer
-                value={fromWei(stakedValue)}
+                value={totalStakedValue}
                 suffix={SupportedTokens.sov}
                 precision={TOKEN_RENDER_PRECISION}
                 dataAttribute="create-stake-staked-sov-amount"

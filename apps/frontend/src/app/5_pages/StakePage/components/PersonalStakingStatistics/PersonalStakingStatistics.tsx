@@ -4,6 +4,7 @@ import { t } from 'i18next';
 
 import { SupportedTokens } from '@sovryn/contracts';
 import { Heading, HelperButton } from '@sovryn/ui';
+import { Decimal } from '@sovryn/utils';
 
 import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { TOKEN_RENDER_PRECISION } from '../../../../../constants/currencies';
@@ -13,6 +14,7 @@ import { decimalic, fromWei } from '../../../../../utils/math';
 import { VP } from '../../StakePage.constants';
 import { PersonalStatistics } from '../../StakePage.utils';
 import { useGetStakingBalanceOf } from '../../hooks/useGetStakingBalanceOf';
+import { useGetTotalVestingsBalance } from '../../hooks/useGetTotalVestingsBalance';
 import { useGetStakingStatistics } from '../StakingStatistics/hooks/useGetStakingStatistics';
 import { useGetPersonalStakingStatistics } from './hooks/useGetPersonalStakingStatistics';
 
@@ -34,6 +36,13 @@ export const PersonalStakingStatistics = () => {
     return getVotingPowerShare.toNumber();
   }, [votingPower, totalVotingPower]);
 
+  const totalVestingsBalance = useGetTotalVestingsBalance();
+
+  const totalStakedValue = useMemo(
+    () => Decimal.fromBigNumberString(stakedValue).add(totalVestingsBalance),
+    [stakedValue, totalVestingsBalance],
+  );
+
   return (
     <div className="w-full bg-gray-90 md:bg-gray-90 md:py-6 p-4 md:px-6 rounded mb-6">
       <Heading
@@ -47,7 +56,7 @@ export const PersonalStakingStatistics = () => {
             label={t(translations.stakePage.personalStatistics.stakedSov)}
             value={
               <AmountRenderer
-                value={fromWei(stakedValue)}
+                value={totalStakedValue}
                 suffix={SupportedTokens.sov}
                 precision={TOKEN_RENDER_PRECISION}
               />

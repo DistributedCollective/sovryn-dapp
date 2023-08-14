@@ -1,7 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
 
-import { constants } from 'ethers';
-
 import { useAccount } from '../../../../../../hooks/useAccount';
 import {
   Vesting,
@@ -9,7 +7,6 @@ import {
   VestingGroup,
 } from '../VestingStakesFrame.types';
 import { useGetVestings } from './useGetVestings';
-import { useGetVestingsFish } from './useGetVestingsFish';
 
 const getLabel = (type: string, typeCreation: string): VestingGroup => {
   return {
@@ -19,19 +16,19 @@ const getLabel = (type: string, typeCreation: string): VestingGroup => {
     '1 2': 'origin',
     '1 3': 'reward',
     '1 4': 'fouryear',
-    'fish vestingRegistryFish': 'fish',
-    'fishAirdrop vestingRegistryFish': 'fishAirdrop',
+    // 'fish vestingRegistryFish': 'fish',
+    // 'fishAirdrop vestingRegistryFish': 'fishAirdrop',
   }[`${type} ${typeCreation}`];
 };
 
 export const useGetVestingStakes = () => {
   const { account } = useAccount();
   const { vestingContracts, loadingVestings } = useGetVestings();
-  const { vestingFishContract, loadingVestingsFish } = useGetVestingsFish();
+  // const { vestingFishContract, loadingVestingsFish } = useGetVestingsFish(); TODO: Fish vesting contracts will be supported in a later release
   const [vestingStakes, setVestingStakes] = useState<Vesting[]>([]);
 
   const prepareVestingData = useCallback(
-    (vestingContracts: VestingData[], vestingFishContract: string) => {
+    (vestingContracts: VestingData[], vestingFishContract?: string) => {
       const addresses: string[] = [];
       const types: string[] = [];
       const typeCreations: string[] = [];
@@ -44,14 +41,14 @@ export const useGetVestingStakes = () => {
         },
       );
 
-      if (
-        vestingFishContract.length &&
-        constants.AddressZero !== vestingFishContract
-      ) {
-        addresses.push(vestingFishContract);
-        types.push('fish');
-        typeCreations.push('vestingRegistryFish');
-      }
+      // if (
+      //   vestingFishContract.length &&
+      //   constants.AddressZero !== vestingFishContract
+      // ) {
+      //   addresses.push(vestingFishContract);
+      //   types.push('fish');
+      //   typeCreations.push('vestingRegistryFish');
+      // }
 
       return { addresses, types, typeCreations };
     },
@@ -87,7 +84,7 @@ export const useGetVestingStakes = () => {
     try {
       const { addresses, types, typeCreations } = prepareVestingData(
         vestingContracts,
-        vestingFishContract,
+        //vestingFishContract,
       );
 
       const vestingStakes = await Promise.all(
@@ -100,20 +97,15 @@ export const useGetVestingStakes = () => {
     } catch (error) {
       console.error('Error fetching vesting stakes:', error);
     }
-  }, [
-    prepareVestingData,
-    fetchVestingData,
-    vestingContracts,
-    vestingFishContract,
-  ]);
+  }, [prepareVestingData, fetchVestingData, vestingContracts]);
 
   useEffect(() => {
-    if (account && !loadingVestings && !loadingVestingsFish) {
+    if (account && !loadingVestings) {
       getVestings();
     } else if (!account) {
       setVestingStakes([]);
     }
-  }, [account, loadingVestings, loadingVestingsFish, getVestings]);
+  }, [account, loadingVestings, getVestings]);
 
-  return { vestingStakes, loadingVestings, loadingVestingsFish };
+  return { vestingStakes, loadingVestings };
 };

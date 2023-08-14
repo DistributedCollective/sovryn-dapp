@@ -28,13 +28,7 @@ export const VestingStakesFrame: FC = () => {
     orderDirection: OrderDirection.Desc,
   });
 
-  const { vestingStakes, loadingVestings, loadingVestingsFish } =
-    useGetVestingStakes();
-
-  const loading = useMemo(
-    () => loadingVestings || loadingVestingsFish,
-    [loadingVestings, loadingVestingsFish],
-  );
+  const { vestingStakes, loadingVestings } = useGetVestingStakes();
 
   const onPageChange = useCallback(
     (value: number) => {
@@ -47,8 +41,8 @@ export const VestingStakesFrame: FC = () => {
   );
 
   const isNextButtonDisabled = useMemo(
-    () => !loading && vestingStakes.length < DEFAULT_PAGE_SIZE,
-    [loading, vestingStakes],
+    () => !loadingVestings && vestingStakes.length < DEFAULT_PAGE_SIZE,
+    [loadingVestings, vestingStakes],
   );
 
   useEffect(() => {
@@ -70,7 +64,7 @@ export const VestingStakesFrame: FC = () => {
           rowTitle={({ vestingContract }: Vesting) => (
             <StakedAmountCellRenderer vestingContract={vestingContract} />
           )}
-          isLoading={loading}
+          isLoading={loadingVestings}
           className="text-gray-10 lg:px-6 lg:py-4 text-xs"
           noData={
             <span className="italic">

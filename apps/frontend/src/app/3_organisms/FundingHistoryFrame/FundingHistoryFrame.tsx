@@ -12,6 +12,7 @@ import {
 } from '@sovryn/ui';
 
 import { ExportCSV } from '../../2_molecules/ExportCSV/ExportCSV';
+import { BITCOIN } from '../../../constants/currencies';
 import {
   DEFAULT_HISTORY_FRAME_PAGE_SIZE,
   EXPORT_RECORD_LIMIT,
@@ -119,29 +120,26 @@ export const FundingHistoryFrame: FC = () => {
       });
     }
 
-    const fundingData: FundingHistoryType[] = funding.reduce(
-      (acc: FundingHistoryType[], item) => {
-        const rows = parseData(item as BitcoinTransfer);
+    const fundingData = funding.reduce((acc: FundingHistoryType[], item) => {
+      const rows = parseData(item as BitcoinTransfer);
 
-        // make sure rows has at least 2 elements before using spread operator
-        if (rows.length >= 2) {
-          acc.push(
-            {
-              ...rows[0],
-              type: transactionTypeRenderer(rows[0]),
-            },
-            {
-              ...rows[1],
-              type: transactionTypeRenderer(rows[1]),
-            },
-          );
-        }
-        return acc;
-      },
-      [],
-    );
+      // make sure rows has at least 2 elements before using spread operator
+      if (rows.length >= 2) {
+        acc.push(
+          {
+            ...rows[0],
+            type: transactionTypeRenderer(rows[0]),
+          },
+          {
+            ...rows[1],
+            type: transactionTypeRenderer(rows[1]),
+          },
+        );
+      }
+      return acc;
+    }, []);
 
-    return fundingData;
+    return fundingData.map(item => ({ ...item, token: BITCOIN }));
   }, [t, account, addNotification, getFundingHistory, orderOptions]);
 
   useEffect(() => {
@@ -152,7 +150,7 @@ export const FundingHistoryFrame: FC = () => {
     <>
       <ExportCSV
         getData={exportData}
-        filename="transactions"
+        filename="funding"
         className="mb-7 hidden lg:inline-flex"
         disabled={!funding || funding.length === 0}
       />

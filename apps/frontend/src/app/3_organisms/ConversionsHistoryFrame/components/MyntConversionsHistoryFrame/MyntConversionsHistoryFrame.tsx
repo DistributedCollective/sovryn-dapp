@@ -21,6 +21,7 @@ import {
   DEFAULT_HISTORY_FRAME_PAGE_SIZE,
   EXPORT_RECORD_LIMIT,
 } from '../../../../../constants/general';
+import { getTokenDisplayName } from '../../../../../constants/tokens';
 import { useNotificationContext } from '../../../../../contexts/NotificationContext';
 import { useAccount } from '../../../../../hooks/useAccount';
 import { useBlockNumber } from '../../../../../hooks/useBlockNumber';
@@ -100,12 +101,20 @@ export const MyntConversionsHistoryFrame: React.FC<PropsWithChildren> = ({
           : t(translations.conversionsHistory.burn),
       sent:
         tx.type === ConversionType.Incoming
-          ? `${tx.bassetQuantity} ${tx.bAsset.symbol}`
-          : `${tx.massetQuantity} ${masset.toUpperCase()}`,
+          ? tx.bassetQuantity
+          : tx.massetQuantity,
+      sentToken:
+        tx.type === ConversionType.Incoming
+          ? getTokenDisplayName(tx.bAsset.symbol || '')
+          : masset.toUpperCase(),
       received:
         tx.type === ConversionType.Incoming
-          ? `${tx.massetQuantity} ${masset.toUpperCase()}`
-          : `${tx.bassetQuantity} ${tx.bAsset.symbol}`,
+          ? tx.massetQuantity
+          : tx.bassetQuantity,
+      receivedToken:
+        tx.type === ConversionType.Incoming
+          ? masset.toUpperCase()
+          : getTokenDisplayName(tx.bAsset.symbol || ''),
       TXID: tx.transaction.id,
     }));
   }, [account, addNotification, getConversions]);

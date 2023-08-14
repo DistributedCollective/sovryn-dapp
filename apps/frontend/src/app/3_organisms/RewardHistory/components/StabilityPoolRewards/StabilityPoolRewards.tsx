@@ -44,7 +44,7 @@ import { dateFormat } from '../../../../../utils/helpers';
 import { RewardHistoryProps } from '../../types';
 import { rewardHistoryOptions } from '../../utils';
 import { useGetStabilityPoolRewards } from './hooks/useGetStabilityPoolRewards';
-import { getTransactionType, renderCollateralChange } from './utils';
+import { getTransactionType } from './utils';
 
 const pageSize = DEFAULT_HISTORY_FRAME_PAGE_SIZE;
 
@@ -169,10 +169,9 @@ export const StabilityPoolRewards: FC<RewardHistoryProps> = ({
 
     return list.map(tx => ({
       timestamp: dateFormat(tx.transaction.timestamp),
-      collateralGain: renderCollateralChange(tx.collateralGain || ''),
-      stabilityDepositOperation: getTransactionType(
-        tx.stabilityDepositOperation,
-      ),
+      transactionType: getTransactionType(tx.stabilityDepositOperation),
+      amount: tx.collateralGain,
+      token: BITCOIN,
       transactionID: tx.transaction.id,
     }));
   }, [account, addNotification, getStabilityDeposit]);

@@ -98,11 +98,14 @@ export const AmmConversionsHistoryFrame: React.FC<PropsWithChildren> = ({
     return conversions.map(tx => ({
       timestamp: dateFormat(tx.transaction.timestamp),
       transactionType: t(translations.conversionsHistory.swap),
-      sent: `${tx.fromAmount} ${getTokenDisplayName(tx.fromToken.symbol!)}`,
-      received: `${tx.toAmount} ${getTokenDisplayName(tx.toToken.symbol!)}`,
+      sent: tx.fromAmount,
+      sentToken: getTokenDisplayName(tx.fromToken.symbol!),
+      received: tx.toAmount,
+      receivedToken: getTokenDisplayName(tx.toToken.symbol!),
       conversionFee: `${decimalic(tx.conversionFee).add(
         tx.protocolFee || '0',
-      )} ${getTokenDisplayName(tx.toToken.symbol!)}`,
+      )}`,
+      conversionFeeToken: getTokenDisplayName(tx.toToken.symbol!),
       TXID: tx.transaction.id,
     }));
   }, [account, addNotification, getConversions]);

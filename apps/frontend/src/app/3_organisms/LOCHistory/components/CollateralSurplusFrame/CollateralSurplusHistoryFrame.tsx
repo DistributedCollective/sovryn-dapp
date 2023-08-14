@@ -179,10 +179,11 @@ export const CollateralSurplusHistoryFrame: FC<PropsWithChildren> = ({
 
     return list.map(tx => ({
       timestamp: dateFormat(tx.transaction.timestamp),
-      collateralChange: `${formatValue(
+      collateralChange: formatValue(
         Math.abs(Number(tx.collSurplusChange)),
         BTC_RENDER_PRECISION,
-      )} ${BITCOIN}`,
+      ),
+      collateralChangeToken: BITCOIN,
       transactionType: t(
         translations.collateralSurplusHistory.table.withdrawSurplus,
       ),

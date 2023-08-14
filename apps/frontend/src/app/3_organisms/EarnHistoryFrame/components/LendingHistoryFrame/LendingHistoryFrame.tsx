@@ -105,7 +105,8 @@ export const LendingHistoryFrame: FC<PropsWithChildren> = ({ children }) => {
       .map(item => ({
         timestamp: dateFormat(item.timestamp),
         transactionType: getTransactionType(item.type),
-        balanceChange: `${item.amount} ${item.resolvedAsset}`,
+        balanceChange: item.amount,
+        token: item.resolvedAsset,
         txId: item.transactionHash,
       }));
   }, [addNotification, normalizedLendingEvents, orderOptions.orderDirection]);

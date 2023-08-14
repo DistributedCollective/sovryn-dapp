@@ -22,6 +22,7 @@ import {
   DEFAULT_HISTORY_FRAME_PAGE_SIZE,
   EXPORT_RECORD_LIMIT,
 } from '../../../../../constants/general';
+import { getTokenDisplayName } from '../../../../../constants/tokens';
 import { useNotificationContext } from '../../../../../contexts/NotificationContext';
 import { useAccount } from '../../../../../hooks/useAccount';
 import { useBlockNumber } from '../../../../../hooks/useBlockNumber';
@@ -102,12 +103,15 @@ export const ZeroConversionsHistoryFrame: React.FC<PropsWithChildren> = ({
       timestamp: dateFormat(redemption.transaction.timestamp),
       transactionType: t(translations.conversionsHistory.redeem),
       sent: redemption.tokensActuallyRedeemed.length
-        ? `${redemption.tokensActuallyRedeemed} ${SupportedTokens.zusd}`
+        ? redemption.tokensActuallyRedeemed
         : '-',
+      sentToken: getTokenDisplayName(SupportedTokens.zusd),
       received: redemption.collateralRedeemed.length
-        ? `${redemption.collateralRedeemed} ${BITCOIN}`
+        ? redemption.collateralRedeemed
         : '-',
-      redemptionFee: `${redemption.fee} ${BITCOIN}`,
+      receivedToken: BITCOIN,
+      redemptionFee: redemption.fee,
+      redemptionFeeToken: BITCOIN,
       TXID: redemption.transaction.id,
     }));
   }, [account, addNotification, getConversions]);

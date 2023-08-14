@@ -41,6 +41,7 @@ import {
   DEFAULT_HISTORY_FRAME_PAGE_SIZE,
   EXPORT_RECORD_LIMIT,
 } from '../../../../../constants/general';
+import { getTokenDisplayName } from '../../../../../constants/tokens';
 import { useNotificationContext } from '../../../../../contexts/NotificationContext';
 import { useAccount } from '../../../../../hooks/useAccount';
 import { useBlockNumber } from '../../../../../hooks/useBlockNumber';
@@ -211,7 +212,7 @@ export const TransactionHistoryFrame: FC<PropsWithChildren> = ({
     [data?.trove?.changes],
   );
 
-  const renderLiquidationReserve = useCallback(trove => {
+  const renderLiquidationReserve = useCallback((trove, isCsvExport?) => {
     const { troveOperation, redemption } = trove;
     const operations = [
       TroveOperation.LiquidateInNormalMode,
@@ -220,7 +221,9 @@ export const TransactionHistoryFrame: FC<PropsWithChildren> = ({
     ];
 
     if (troveOperation === TroveOperation.OpenTrove) {
-      return `+${LIQUIDATION_RESERVE_AMOUNT} ${SupportedTokens.zusd}`;
+      return `+${LIQUIDATION_RESERVE_AMOUNT} ${
+        isCsvExport ? '' : SupportedTokens.zusd
+      }`;
     }
 
     if (
@@ -228,7 +231,9 @@ export const TransactionHistoryFrame: FC<PropsWithChildren> = ({
       (troveOperation === TroveOperation.RedeemCollateral &&
         redemption?.partial === true)
     ) {
-      return `-${LIQUIDATION_RESERVE_AMOUNT} ${SupportedTokens.zusd}`;
+      return `-${LIQUIDATION_RESERVE_AMOUNT} ${
+        isCsvExport ? '' : SupportedTokens.zusd
+      }`;
     }
 
     return '-';
@@ -500,11 +505,17 @@ export const TransactionHistoryFrame: FC<PropsWithChildren> = ({
       timestamp: dateFormat(tx.transaction.timestamp),
       transactionType: getTroveType(tx.troveOperation),
       collateralChange: tx.collateralChange,
+      collateralChangeToken: BITCOIN,
       newCollateralBalance: tx.collateralAfter,
+      newCollateralBalanceToken: BITCOIN,
       debtChange: tx.debtChange,
-      liquidationReserveAmount: renderLiquidationReserve(tx),
+      debtChangeToken: getTokenDisplayName(SupportedTokens.zusd),
+      liquidationReserveAmount: renderLiquidationReserve(tx, true),
+      liquidationReserveAmountToken: getTokenDisplayName(SupportedTokens.zusd),
       newDebtBalance: tx.debtAfter,
+      newDebtBalanceToken: getTokenDisplayName(SupportedTokens.zusd),
       originationFee: tx.borrowingFee || '-',
+      originationFeeToken: getTokenDisplayName(SupportedTokens.zusd),
       transactionID: tx.transaction.id,
     }));
   }, [

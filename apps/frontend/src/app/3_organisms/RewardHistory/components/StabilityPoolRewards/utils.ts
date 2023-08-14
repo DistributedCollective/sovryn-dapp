@@ -24,8 +24,10 @@ export const getTransactionType = (operation: StabilityDepositOperation) => {
   }
 };
 
-export const renderCollateralChange = (collateralGain: string) =>
-  `${formatValue(
-    Math.abs(Number(collateralGain)),
-    BTC_RENDER_PRECISION,
-  )} ${getTokenDisplayName(SupportedTokens.rbtc)}`;
+export const renderCollateralChange = (
+  collateralGain: string,
+  isCsvExport?: boolean,
+) =>
+  `${formatValue(Math.abs(Number(collateralGain)), BTC_RENDER_PRECISION)} ${
+    isCsvExport ? '' : getTokenDisplayName(SupportedTokens.rbtc)
+  }`;

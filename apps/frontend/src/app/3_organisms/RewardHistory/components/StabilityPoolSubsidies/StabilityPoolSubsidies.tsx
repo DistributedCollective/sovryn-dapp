@@ -184,6 +184,7 @@ export const StabilityPoolSubsidies: FC<RewardHistoryProps> = ({
           .claimStabilityPoolSubsidy,
       ),
       amount: fromWei(tx.amount || ''),
+      token: SOV,
       transactionID: tx.id,
     }));
   }, [account, addNotification, getSovDistribution]);

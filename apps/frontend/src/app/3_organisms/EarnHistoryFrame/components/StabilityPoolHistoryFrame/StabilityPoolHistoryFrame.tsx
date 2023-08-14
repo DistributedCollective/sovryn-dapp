@@ -35,6 +35,7 @@ import {
   DEFAULT_HISTORY_FRAME_PAGE_SIZE,
   EXPORT_RECORD_LIMIT,
 } from '../../../../../constants/general';
+import { getTokenDisplayName } from '../../../../../constants/tokens';
 import { useNotificationContext } from '../../../../../contexts/NotificationContext';
 import { useAccount } from '../../../../../hooks/useAccount';
 import { useBlockNumber } from '../../../../../hooks/useBlockNumber';
@@ -299,6 +300,7 @@ export const StabilityPoolHistoryFrame: FC<PropsWithChildren> = ({
       transactionType: getTransactionType(tx.stabilityDepositOperation),
       balanceChange: tx.depositedAmountChange,
       newBalance: tx.depositedAmountAfter,
+      token: getTokenDisplayName(SupportedTokens.zusd),
       transactionID: tx.transaction.id,
     }));
   }, [account, getStabilityPool, orderOptions, filters, addNotification]);

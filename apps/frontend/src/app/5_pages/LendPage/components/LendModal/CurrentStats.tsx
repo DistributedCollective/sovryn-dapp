@@ -39,7 +39,9 @@ export const CurrentStats: FC<CurrentStatsProps> = ({ apy, token }) => {
           <Paragraph className="font-medium text-gray-30">
             {t(translations.lending.acceptedCollateral)}
           </Paragraph>
-          <AcceptedCollateral pool={pool} />
+          <div className="flex">
+            <AcceptedCollateral pool={pool} />
+          </div>
         </div>
       </div>
     </div>

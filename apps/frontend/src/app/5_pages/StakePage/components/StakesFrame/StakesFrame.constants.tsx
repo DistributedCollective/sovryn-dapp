@@ -56,5 +56,8 @@ export const COLUMNS_CONFIG = [
     id: 'actions',
     title: ' ',
     cellRenderer: (item: StakeItem) => AdjustStakeRenderer({ stake: item }),
+    labelClassName: 'hidden lg:table-cell',
+    valueClassName: 'w-full lg:w-auto',
+    className: 'flex',
   },
 ];

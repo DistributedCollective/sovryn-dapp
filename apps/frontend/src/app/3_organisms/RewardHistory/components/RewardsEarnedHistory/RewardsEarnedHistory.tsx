@@ -122,6 +122,7 @@ export const RewardsEarnedHistory: FC<RewardHistoryProps> = ({
       timestamp: dateFormat(tx.timestamp),
       transactionType: getTransactionType(tx.action),
       amount: decimalic(tx.amount || '').toString(),
+      token: tx.token,
       transactionID: tx.id,
     }));
   }, [account, addNotification, getRewards, historyAction]);

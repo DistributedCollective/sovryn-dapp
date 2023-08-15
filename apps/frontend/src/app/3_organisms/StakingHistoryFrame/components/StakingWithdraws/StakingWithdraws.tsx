@@ -15,6 +15,7 @@ import {
 } from '@sovryn/ui';
 
 import { ExportCSV } from '../../../../2_molecules/ExportCSV/ExportCSV';
+import { SOV } from '../../../../../constants/currencies';
 import {
   DEFAULT_HISTORY_FRAME_PAGE_SIZE,
   EXPORT_RECORD_LIMIT,
@@ -108,6 +109,7 @@ export const StakingWithdraws: FC<StakingHistoryProps> = ({
       timestamp: dateFormat(item.timestamp),
       transactionType: t(translations.stakingHistory.unstake),
       amount: `-${item.amount}`,
+      token: SOV,
       lockedUntil: dateFormat(item.until),
       TXID: item.id.split('-')[0],
     }));
@@ -136,7 +138,7 @@ export const StakingWithdraws: FC<StakingHistoryProps> = ({
         <div className="flex-row items-center ml-2 gap-4 hidden lg:inline-flex">
           <ExportCSV
             getData={exportData}
-            filename="staking-withdrawns"
+            filename="unstake"
             disabled={!data || data.length === 0 || exportLocked}
           />
           {exportLocked && (

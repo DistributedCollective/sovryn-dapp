@@ -7,6 +7,7 @@ import { SupportedTokens } from '@sovryn/contracts';
 import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { TxIdWithNotification } from '../../../../2_molecules/TxIdWithNotification/TransactionIdWithNotification';
 import { TOKEN_RENDER_PRECISION } from '../../../../../constants/currencies';
+import { ZERO_ADDRESS } from '../../../../../constants/general';
 import { translations } from '../../../../../locales/i18n';
 import { dateFormat, getRskExplorerUrl } from '../../../../../utils/helpers';
 import { AdjustStakeRenderer } from '../AdjustStakeRenderer/AdjustStakeRenderer';
@@ -38,7 +39,7 @@ export const COLUMNS_CONFIG = [
     id: 'delegate',
     title: t(translations.stakePage.table.delegate),
     cellRenderer: (item: StakeItem) =>
-      item.delegate.length ? (
+      item.delegate.length && item.delegate !== ZERO_ADDRESS ? (
         <TxIdWithNotification
           value={item.delegate}
           href={`${rskExplorerUrl}/address/${item.delegate}`}

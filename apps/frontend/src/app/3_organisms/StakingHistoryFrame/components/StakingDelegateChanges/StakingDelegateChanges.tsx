@@ -136,7 +136,7 @@ export const StakingDelegateChanges: FC<StakingHistoryProps> = ({
         <div className="flex-row items-center ml-2 gap-4 hidden lg:inline-flex">
           <ExportCSV
             getData={exportData}
-            filename="staking-delegate-change"
+            filename="change-delegate"
             disabled={!data || data.length === 0 || exportLocked}
           />
           {exportLocked && (

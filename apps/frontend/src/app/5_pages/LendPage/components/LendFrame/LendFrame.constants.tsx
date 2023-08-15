@@ -16,34 +16,26 @@ import { LendFrameInterestEarned } from './components/LendFrameInterestEarned/Le
 export const COLUMNS_CONFIG = [
   {
     id: 'asset',
-    title: (
-      <div className="hidden lg:block">
-        {t(translations.lendPage.table.asset)}
-      </div>
-    ),
+    title: t(translations.lendPage.table.asset),
     cellRenderer: (pool: LendingPool) => (
-      <div className="hidden lg:block">
-        <AssetRenderer
-          dataAttribute="lend-frame-asset"
-          showAssetLogo
-          asset={pool.getAsset()}
-          className="lg:justify-start justify-end"
-        />
-      </div>
+      <AssetRenderer
+        dataAttribute="lend-frame-asset"
+        showAssetLogo
+        asset={pool.getAsset()}
+        className="lg:justify-start justify-end"
+      />
     ),
   },
   {
     id: 'lendApy',
     title: (
-      <span className="hidden lg:flex items-center gap-1">
+      <span className="flex items-center gap-1">
         {t(translations.lendPage.table.lendApy)}{' '}
         <HelperButton content={t(translations.lendPage.table.lendApyInfo)} />
       </span>
     ),
     cellRenderer: (pool: LendingPool) => (
-      <div className="hidden lg:block">
-        <NextSupplyInterestRate asset={pool.getAsset()} />
-      </div>
+      <NextSupplyInterestRate asset={pool.getAsset()} />
     ),
   },
   {

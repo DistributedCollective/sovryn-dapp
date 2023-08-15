@@ -108,7 +108,7 @@ export const StakingWithdraws: FC<StakingHistoryProps> = ({
     return list.map(item => ({
       timestamp: dateFormat(item.timestamp),
       transactionType: t(translations.stakingHistory.unstake),
-      amount: item.amount,
+      amount: `-${item.amount}`,
       token: SOV,
       lockedUntil: dateFormat(item.until),
       TXID: item.id.split('-')[0],

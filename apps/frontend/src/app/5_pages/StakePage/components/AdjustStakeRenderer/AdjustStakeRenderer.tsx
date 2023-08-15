@@ -29,14 +29,14 @@ export const AdjustStakeRenderer: FC<AdjustStakeRendererProps> = ({
   );
 
   return (
-    <div className="flex justify-end">
+    <div className="flex lg:justify-end">
       <Button
         style={ButtonStyle.secondary}
         size={ButtonSize.small}
         text={t(translations.stakePage.table.adjustButton)}
         onClick={toggleAdjustStakeDialog}
         dataAttribute="stakes-adjust-button"
-        className="md:w-auto w-full"
+        className="lg:w-auto w-full"
       />
       <Dialog
         width={DialogSize.sm}

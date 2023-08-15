@@ -12,9 +12,9 @@ import { VestingContractTableRecord } from '../../Vesting.types';
 import { useGetUnlockedBalance } from '../../hooks/useGetUnlockedBalance';
 
 export const UnlockedBalance = (item: VestingContractTableRecord) => {
-  const { loading, result } = useGetUnlockedBalance(item);
+  const { isLoading, result } = useGetUnlockedBalance(item);
 
-  if (loading) {
+  if (isLoading) {
     return <span>{t(translations.rewardPage.vesting.table.calculating)}</span>;
   }
 

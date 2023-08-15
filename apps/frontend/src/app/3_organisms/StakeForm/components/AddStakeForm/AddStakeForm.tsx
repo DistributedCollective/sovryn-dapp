@@ -240,7 +240,7 @@ export const AddStakeForm: FC<StakeFormProps> = ({
           />
         )}
         <SimpleTableRow
-          label={t(translations.stakePage.stakeForm.votingPowerReceived)}
+          label={t(translations.stakePage.stakeForm.votingPowerIncrease)}
           value={renderVotingPowerReceived()}
         />
         {hasStakedValue && (
@@ -254,7 +254,7 @@ export const AddStakeForm: FC<StakeFormProps> = ({
         text={t(translations.common.buttons.confirm)}
         onClick={handleSubmit}
         disabled={isSubmitDisabled}
-        className="mt-10 w-full"
+        className="mt-6 w-full"
         dataAttribute="create-stake-confirm"
       />
       {stakingLocked && (

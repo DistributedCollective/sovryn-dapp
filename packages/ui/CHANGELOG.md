@@ -1,5 +1,13 @@
 # @sovryn/ui
 
+## 1.0.11
+
+### Patch Changes
+
+- 47ff073f: fix: button text color overrrides
+- 7d536e25: SOV-2820 add dropdown header menu item example to storybook
+- 70123a4f: Fix expanded content in Table / TableRow components
+
 ## 1.0.10
 
 ### Patch Changes

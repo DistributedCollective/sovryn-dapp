@@ -1,5 +1,11 @@
 # @sovryn/contracts
 
+## 1.0.12
+
+### Patch Changes
+
+- 337470d8: SOV-2789: URL/Query parameters are not getting reset when changing pair
+
 ## 1.0.11
 
 ### Patch Changes

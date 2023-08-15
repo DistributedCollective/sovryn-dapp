@@ -1,6 +1,7 @@
 import React, { FC, useCallback, useLayoutEffect, useState } from 'react';
 
 import { t } from 'i18next';
+import { useNavigate } from 'react-router-dom';
 import { reactLocalStorage } from 'reactjs-localstorage';
 
 import {
@@ -22,7 +23,7 @@ const LOCAL_STORAGE_KEY = 'stakingRewards';
 
 export const StakingRewards: FC = () => {
   const { isMobile } = useIsMobile();
-
+  const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(
     !reactLocalStorage.get(LOCAL_STORAGE_KEY),
   );
@@ -64,7 +65,7 @@ export const StakingRewards: FC = () => {
           <div className="flex items-center gap-4">
             <Button
               text={t(translations.stakePage.stakingRewards.buySov)}
-              href="/convert"
+              onClick={() => navigate('/convert?&to=sov')}
               dataAttribute="staking-rewards-button"
               style={ButtonStyle.secondary}
               size={ButtonSize.large}

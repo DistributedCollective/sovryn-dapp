@@ -13,6 +13,8 @@ export type ColumnOptions<RowType extends RowObject> = {
   title?: ReactNode;
   align?: Align;
   className?: string;
+  labelClassName?: string;
+  valueClassName?: string;
   cellRenderer?: (
     row: RowType,
     columnId: ColumnOptions<RowType>['id'],

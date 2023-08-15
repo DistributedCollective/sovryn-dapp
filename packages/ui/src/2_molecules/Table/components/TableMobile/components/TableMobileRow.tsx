@@ -47,11 +47,13 @@ export const TableMobileRow = <RowType extends RowObject>({
             <SimpleTableRow
               key={column.id.toString()}
               label={column.title}
+              labelClassName={column.labelClassName}
               value={
                 column.cellRenderer
                   ? column.cellRenderer(row, column.id)
                   : row[column.id]
               }
+              valueClassName={column.valueClassName}
               className={column.className}
             />
           ))}

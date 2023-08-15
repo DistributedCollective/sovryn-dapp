@@ -110,6 +110,8 @@ const ConvertPage: FC = () => {
   const [destinationTokenOptions, setDestinationTokenOptions] = useState<
     SelectOption<SupportedTokens>[]
   >([]);
+  const [tokenOptionsSource, setTokenOptionsSource] =
+    useState<SupportedTokens>();
 
   useEffect(() => {
     smartRouter
@@ -124,9 +126,10 @@ const ConvertPage: FC = () => {
         defaultChainId,
       );
 
-      smartRouter
-        .getDestination(sourceTokenDetails.address)
-        .then(tokens => tokensToOptions(tokens, setDestinationTokenOptions));
+      smartRouter.getDestination(sourceTokenDetails.address).then(tokens => {
+        tokensToOptions(tokens, setDestinationTokenOptions);
+        setTokenOptionsSource(sourceToken);
+      });
     })();
   }, [sourceToken]);
 
@@ -317,9 +320,14 @@ const ConvertPage: FC = () => {
 
     if (sourceToken) {
       urlParams.set('from', sourceToken);
+    } else {
+      urlParams.delete('from');
     }
+
     if (destinationToken) {
       urlParams.set('to', destinationToken);
+    } else {
+      urlParams.delete('to');
     }
 
     setSearchParams(new URLSearchParams(urlParams));
@@ -330,6 +338,20 @@ const ConvertPage: FC = () => {
       setAmount('');
     }
   }, [account, setAmount]);
+
+  useEffect(() => {
+    if (
+      tokenOptionsSource === sourceToken &&
+      !destinationTokenOptions.find(token => token.value === destinationToken)
+    ) {
+      setDestinationToken('');
+    }
+  }, [
+    sourceToken,
+    destinationTokenOptions,
+    destinationToken,
+    tokenOptionsSource,
+  ]);
 
   return (
     <>

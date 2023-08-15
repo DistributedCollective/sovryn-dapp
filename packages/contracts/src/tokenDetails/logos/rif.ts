@@ -1,14 +1,14 @@
 // eslint-disable-next-line import/no-anonymous-default-export
-export default `<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+export default `<svg version="1.1" id="Layer_2" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
 viewBox="0 0 400 400" style="enable-background:new 0 0 400 400;" xml:space="preserve">
 <style type="text/css">
-.st0{fill:#4B5CF0;}
-.st1{fill:#FFFFFF;}
+.strif{fill:#4B5CF0;}
+.strif1{fill:#FFFFFF;}
 </style>
-<circle class="st0" cx="200" cy="200" r="195"/>
-<path class="st1" d="M295.3,104.1v191.2h-41.2v-99.9h-33.9c-4,0-7.8,1.5-10.7,4.1c-1.7,1.5-2.9,3.3-3.8,5.4s-1.4,4.2-1.4,6.5v23
+<circle class="strif" cx="200" cy="200" r="195"/>
+<path class="strif1" d="M295.3,104.1v191.2h-41.2v-99.9h-33.9c-4,0-7.8,1.5-10.7,4.1c-1.7,1.5-2.9,3.3-3.8,5.4s-1.4,4.2-1.4,6.5v23
 c0,6.1-5,11.3-11.3,11.3h-27.2c-6.1,0-11.3-5-11.3-11.3v-27.8c0-6.1,5-11.3,11.3-11.3h24.6c3.3,0,6.5-1.1,8.9-3.3
 c1.5-1.3,2.8-2.9,3.7-4.9c0.9-1.8,1.3-3.8,1.3-5.9v-36.1h-99.4V104L295.3,104.1L295.3,104.1z"/>
-<path class="st1" d="M154.5,270.6v0.4c0,13.8-11.1,24.9-24.9,24.9s-24.8-11.1-24.8-24.9v-0.4c0-13.8,11.1-24.9,24.9-24.9
+<path class="strif1" d="M154.5,270.6v0.4c0,13.8-11.1,24.9-24.9,24.9s-24.8-11.1-24.8-24.9v-0.4c0-13.8,11.1-24.9,24.9-24.9
 c6.9,0,13.1,2.8,17.6,7.3C151.8,257.6,154.4,263.7,154.5,270.6L154.5,270.6z"/>
 </svg>`;

@@ -1,14 +1,18 @@
+import { useMemo } from 'react';
+
 import { rskClient } from '../../../../../../utils/clients';
 import { useGetLastVestingWithdrawQuery } from '../../../../../../utils/graphql/rsk/generated';
 
 export const useGetLastTokensWithdraw = (address: string) => {
-  const lastTokensWithdraw = useGetLastVestingWithdrawQuery({
+  const { data, loading, refetch } = useGetLastVestingWithdrawQuery({
     variables: { vestingAddress: address },
     client: rskClient,
   });
 
-  return (
-    lastTokensWithdraw.data?.vestingContracts?.[0].stakeHistory?.[0]
-      ?.timestamp || undefined
+  const lastWithdrawTimestamp = useMemo(
+    () => data?.vestingContracts?.[0].stakeHistory?.[0]?.timestamp || undefined,
+    [data?.vestingContracts],
   );
+
+  return { lastWithdrawTimestamp, loading, refetch };
 };

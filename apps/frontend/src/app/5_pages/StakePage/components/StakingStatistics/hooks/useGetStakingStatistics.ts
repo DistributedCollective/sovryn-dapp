@@ -3,9 +3,13 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { MS } from '../../../../../../constants/general';
 import { useBlockNumber } from '../../../../../../hooks/useBlockNumber';
 import { useGetProtocolContract } from '../../../../../../hooks/useGetContract';
-import { MAX_STAKING_APR_API_LINK } from '../../../StakePage.constants';
+import { Environments } from '../../../../../../types/global';
+import { isMainnet } from '../../../../../../utils/helpers';
+import { REDASH_APR_URL } from '../../../StakePage.constants';
 
-const REDASH_API_KEY = process.env.REACT_APP_REDASH_API_KEY;
+const redashAprUrl = isMainnet()
+  ? REDASH_APR_URL[Environments.Mainnet]
+  : REDASH_APR_URL[Environments.Testnet];
 
 export const useGetStakingStatistics = () => {
   const currentDate = useMemo(() => new Date(), []);
@@ -44,14 +48,8 @@ export const useGetStakingStatistics = () => {
     };
 
     const fetchMaxStakingApr = async () => {
-      if (!REDASH_API_KEY) {
-        return;
-      }
-
       try {
-        const response = await fetch(
-          `${MAX_STAKING_APR_API_LINK}?api_key=${REDASH_API_KEY}`,
-        );
+        const response = await fetch(redashAprUrl);
 
         if (response.ok) {
           const data = await response.json();

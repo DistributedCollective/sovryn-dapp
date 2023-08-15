@@ -13,7 +13,7 @@ export const generateRowTitle = (item: StakeItem) => (
       value={item.stakedAmount}
       suffix={SupportedTokens.sov}
       precision={TOKEN_RENDER_PRECISION}
-      showRoundingPrefix={false}
+      showRoundingPrefix
       dataAttribute="stake-amount-mobile"
     />
   </Paragraph>

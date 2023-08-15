@@ -1,20 +1,48 @@
-import { useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 import dayjs from 'dayjs';
 
+import { defaultChainId } from '../../../../../../config/chains';
+
+import { useBlockNumber } from '../../../../../../hooks/useBlockNumber';
+import { useIsMounted } from '../../../../../../hooks/useIsMounted';
+import { rskClient } from '../../../../../../utils/clients';
 import { useGetVestingUnlockBalanceQuery } from '../../../../../../utils/graphql/rsk/generated';
 import { VestingContractTableRecord } from '../Vesting.types';
 import { useGetLastTokensWithdraw } from './useGetLastTokensWithdraw';
 
 export const useGetUnlockedBalance = (item: VestingContractTableRecord) => {
-  const lastWithdrawTimestamp = useGetLastTokensWithdraw(item.address);
+  const {
+    lastWithdrawTimestamp,
+    loading: loadingTimestamp,
+    refetch,
+  } = useGetLastTokensWithdraw(item.address);
+  const [currentTimestamp, setCurrentTimestamp] = useState(dayjs().unix());
 
-  const { loading, data } = useGetVestingUnlockBalanceQuery({
+  const { value: block } = useBlockNumber(defaultChainId);
+  const isMounted = useIsMounted();
+
+  useEffect(() => {
+    setCurrentTimestamp(dayjs().unix());
+  }, [lastWithdrawTimestamp]);
+
+  useEffect(() => {
+    if (!isMounted || !block || loadingTimestamp) {
+      return;
+    }
+
+    refetch();
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [block]);
+
+  const { loading: loadingBalance, data } = useGetVestingUnlockBalanceQuery({
     variables: {
       vestingAddress: item.address,
       timestamp: lastWithdrawTimestamp,
-      currentTimestamp: dayjs().unix(),
+      currentTimestamp,
     },
+    client: rskClient,
   });
 
   const stakeHistory = useMemo(
@@ -28,5 +56,10 @@ export const useGetUnlockedBalance = (item: VestingContractTableRecord) => {
     [stakeHistory],
   );
 
-  return { loading, result };
+  const isLoading = useMemo(
+    () => loadingTimestamp || loadingBalance,
+    [loadingTimestamp, loadingBalance],
+  );
+
+  return { isLoading, result };
 };

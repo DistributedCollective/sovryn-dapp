@@ -45,6 +45,7 @@ export const Vesting: FC = () => {
               : t(translations.rewardPage.vesting.table.notConnected)}
           </span>
         }
+        isLoading={loading}
         dataAttribute="funding-history-table"
         rowTitle={generateRowTitle}
       />

@@ -1,5 +1,22 @@
 # frontend
 
+## 1.0.21
+
+### Patch Changes
+
+- 337470d8: SOV-2789: URL/Query parameters are not getting reset when changing pair
+- eab48d8b: SOV-2975: Fix submenu items refresh
+- 70123a4f: SOV-2966 / SOV-2967: lend UI tweaks
+- 642be4e4: SOV-2771: Remove trailing zero on Convert page
+- dcb9f9de: SOV-2915: History tables - separate token name in CSV exports
+- 47ff073f: SOV-2801 move fund wallet button to the header
+- Updated dependencies [337470d8]
+- Updated dependencies [47ff073f]
+- Updated dependencies [7d536e25]
+- Updated dependencies [70123a4f]
+  - @sovryn/contracts@1.0.12
+  - @sovryn/ui@1.0.11
+
 ## 1.0.20
 
 ### Patch Changes

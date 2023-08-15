@@ -14417,6 +14417,22 @@ export type GetFundingQuery = {
   }>;
 };
 
+export type GetLastVestingWithdrawQueryVariables = Exact<{
+  vestingAddress?: InputMaybe<Scalars['ID']>;
+}>;
+
+export type GetLastVestingWithdrawQuery = {
+  __typename?: 'Query';
+  vestingContracts: Array<{
+    __typename?: 'VestingContract';
+    id: string;
+    stakeHistory?: Array<{
+      __typename?: 'VestingHistoryItem';
+      timestamp: number;
+    }> | null;
+  }>;
+};
+
 export type GetLendHistoryQueryVariables = Exact<{
   user: Scalars['ID'];
 }>;
@@ -14596,7 +14612,7 @@ export type GetUserRewardsEarnedHistoryQuery = {
   __typename?: 'Query';
   userRewardsEarnedHistory?: {
     __typename?: 'UserRewardsEarnedHistory';
-    totalStakingRewards: string;
+    totalFeeWithdrawn: string;
   } | null;
 };
 
@@ -15024,6 +15040,72 @@ export type GetFundingLazyQueryHookResult = ReturnType<
 export type GetFundingQueryResult = Apollo.QueryResult<
   GetFundingQuery,
   GetFundingQueryVariables
+>;
+export const GetLastVestingWithdrawDocument = gql`
+  query getLastVestingWithdraw($vestingAddress: ID) {
+    vestingContracts(where: { id: $vestingAddress }) {
+      id
+      stakeHistory(
+        where: { action: TokensWithdrawn }
+        orderBy: timestamp
+        orderDirection: desc
+        first: 1
+      ) {
+        timestamp
+      }
+    }
+  }
+`;
+
+/**
+ * __useGetLastVestingWithdrawQuery__
+ *
+ * To run a query within a React component, call `useGetLastVestingWithdrawQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetLastVestingWithdrawQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetLastVestingWithdrawQuery({
+ *   variables: {
+ *      vestingAddress: // value for 'vestingAddress'
+ *   },
+ * });
+ */
+export function useGetLastVestingWithdrawQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    GetLastVestingWithdrawQuery,
+    GetLastVestingWithdrawQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    GetLastVestingWithdrawQuery,
+    GetLastVestingWithdrawQueryVariables
+  >(GetLastVestingWithdrawDocument, options);
+}
+export function useGetLastVestingWithdrawLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    GetLastVestingWithdrawQuery,
+    GetLastVestingWithdrawQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    GetLastVestingWithdrawQuery,
+    GetLastVestingWithdrawQueryVariables
+  >(GetLastVestingWithdrawDocument, options);
+}
+export type GetLastVestingWithdrawQueryHookResult = ReturnType<
+  typeof useGetLastVestingWithdrawQuery
+>;
+export type GetLastVestingWithdrawLazyQueryHookResult = ReturnType<
+  typeof useGetLastVestingWithdrawLazyQuery
+>;
+export type GetLastVestingWithdrawQueryResult = Apollo.QueryResult<
+  GetLastVestingWithdrawQuery,
+  GetLastVestingWithdrawQueryVariables
 >;
 export const GetLendHistoryDocument = gql`
   query getLendHistory($user: ID!) {
@@ -15644,7 +15726,7 @@ export type GetTransactionsQueryResult = Apollo.QueryResult<
 export const GetUserRewardsEarnedHistoryDocument = gql`
   query getUserRewardsEarnedHistory($user: ID!) {
     userRewardsEarnedHistory(id: $user) {
-      totalStakingRewards
+      totalFeeWithdrawn
     }
   }
 `;

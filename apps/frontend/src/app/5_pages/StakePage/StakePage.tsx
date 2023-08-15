@@ -15,8 +15,9 @@ import { VestingStakesFrame } from './components/VestingStakesFrame/VestingStake
 
 const StakePage: FC = () => {
   const { account } = useAccount();
-  const { balance } = useGetPersonalStakingStatistics();
+  const { balance, votingPower } = useGetPersonalStakingStatistics();
   const hasStakedValue = useMemo(() => Number(balance) > 0, [balance]);
+  const hasVotingPower = useMemo(() => votingPower > 0, [votingPower]);
 
   return (
     <>
@@ -30,7 +31,9 @@ const StakePage: FC = () => {
           <StakingRewards />
         </div>
 
-        {account && <PersonalStakingStatistics />}
+        {account && (hasStakedValue || hasVotingPower) && (
+          <PersonalStakingStatistics />
+        )}
 
         <div className="w-full md:bg-gray-90 md:py-7 md:px-6 rounded mb-6">
           <StakesFrame />

@@ -19,33 +19,35 @@ export const LendFrameDetails: FC<LendFrameProps> = ({ pool }) => {
   const { availableAmount } = useGetMarketLiquidity(asset);
 
   return (
-    <div className="flex-col-reverse lg:flex-row flex items-stretch m-0 md:p-4 gap-9 rounded-b md:gap-20 outline outline-1 outline-gray-70">
-      <div>
-        <ExpandedContent
-          label={t(translations.lendPage.table.available)}
-          value={
-            <AmountRenderer
-              value={availableAmount}
-              suffix={getTokenDisplayName(asset)}
-              precision={TOKEN_RENDER_PRECISION}
-              dataAttribute="lend-details-available-amount"
-            />
-          }
-        />
-        <ExpandedContent
-          label={t(translations.lendPage.table.borrowed)}
-          value={
-            <AmountRenderer
-              value={borrowedAmount}
-              suffix={getTokenDisplayName(asset)}
-              precision={TOKEN_RENDER_PRECISION}
-              dataAttribute="lend-details-borrowed-amount"
-            />
-          }
-        />
-      </div>
+    <div className="flex-col-reverse lg:flex-row flex items-stretch m-0 md:p-4 gap-4 rounded-b md:gap-20">
       <div className="flex-1 flex flex-col">
         {pool && <LendFrameChart pool={pool} />}
+      </div>
+      <div className="lg:order-first">
+        <div className="flex flex-row lg:flex-col justify-evenly">
+          <ExpandedContent
+            label={t(translations.lendPage.table.available)}
+            value={
+              <AmountRenderer
+                value={availableAmount}
+                suffix={getTokenDisplayName(asset)}
+                precision={TOKEN_RENDER_PRECISION}
+                dataAttribute="lend-details-available-amount"
+              />
+            }
+          />
+          <ExpandedContent
+            label={t(translations.lendPage.table.borrowed)}
+            value={
+              <AmountRenderer
+                value={borrowedAmount}
+                suffix={getTokenDisplayName(asset)}
+                precision={TOKEN_RENDER_PRECISION}
+                dataAttribute="lend-details-borrowed-amount"
+              />
+            }
+          />
+        </div>
       </div>
       <div className="lg:hidden">
         <LendFrameAction pool={pool} />

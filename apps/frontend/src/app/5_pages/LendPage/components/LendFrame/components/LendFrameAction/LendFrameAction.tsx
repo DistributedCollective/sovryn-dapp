@@ -64,7 +64,7 @@ export const LendFrameAction: FC<LendFrameProps> = ({ pool }) => {
         />
       ) : (
         <Button
-          style={ButtonStyle.primary}
+          style={ButtonStyle.secondary}
           size={ButtonSize.small}
           text={t(translations.lendPage.actions.adjust)}
           dataAttribute="lend-frame-adjust-button"

@@ -18,6 +18,7 @@ type TableRowProps<RowType extends RowObject> = {
   className?: string;
   size?: TableRowSize;
   expandedContent?: (row: RowType) => ReactNode;
+  expandedClassNames?: string;
   preventExpandOnClickClass?: string;
 };
 
@@ -32,6 +33,7 @@ export const TableRow = <RowType extends RowObject>({
   className,
   size = TableRowSize.small,
   expandedContent,
+  expandedClassNames = '',
   preventExpandOnClickClass,
 }: TableRowProps<RowType>) => {
   const [expandedRow, toggleExpandedRow] = useReducer(v => !v, false);
@@ -60,6 +62,7 @@ export const TableRow = <RowType extends RowObject>({
         className={classNames(styles.row, className, styles[size], {
           [styles.clickable]: isClickable,
           [styles.active]: isClickable && isSelected,
+          [styles.expanded]: expandedRow && expandedContent,
         })}
         onClick={onClick}
         {...applyDataAttr(`${dataAttribute}-row-${index}`)}
@@ -78,7 +81,7 @@ export const TableRow = <RowType extends RowObject>({
         ))}
       </tr>
       {expandedRow && expandedContent && (
-        <tr key={JSON.stringify(row)}>
+        <tr key={JSON.stringify(row)} className={expandedClassNames}>
           <td colSpan={columns.length}>{expandedContent(row)}</td>
         </tr>
       )}

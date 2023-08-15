@@ -773,8 +773,8 @@
         "title": "Adjust lending balance",
         "deposit": "Deposit",
         "withdraw": "Withdraw",
-        "apy": "Current lend rate",
-        "newApy": "New lend rate",
+        "apy": "Current lend APY",
+        "newApy": "New lend APY",
         "currentBalance": "Current lending balance",
         "newBalance": "New lending balance"
     },

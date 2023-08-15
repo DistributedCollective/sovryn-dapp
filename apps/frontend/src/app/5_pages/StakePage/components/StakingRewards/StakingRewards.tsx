@@ -15,12 +15,14 @@ import {
   ParagraphStyle,
 } from '@sovryn/ui';
 
+import { useIsMobile } from '../../../../../hooks/useIsMobile';
 import { translations } from '../../../../../locales/i18n';
 import { STAKING_REWARDS_LEARN_MORE_LINK } from '../../StakePage.constants';
 
 const LOCAL_STORAGE_KEY = 'stakingRewards';
 
 export const StakingRewards: FC = () => {
+  const { isMobile } = useIsMobile();
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(
     !reactLocalStorage.get(LOCAL_STORAGE_KEY),
@@ -39,7 +41,7 @@ export const StakingRewards: FC = () => {
 
   return (
     <>
-      {isOpen && (
+      {(isOpen || !isMobile) && (
         <div className="relative w-full rounded border border-gray-70 my-3 md:my-0 md:px-9 p-4 md:max-w-[28.5rem]">
           <button
             className="md:hidden visible absolute top-4 right-4"

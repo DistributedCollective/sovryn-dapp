@@ -1,64 +1,72 @@
 @layer utilities {
-    .scrollbars-thin {
-      /* firefox scrollbars */
-      scrollbar-width: thin;
-      scrollbar-color: theme('colors.gray-5') transparent;
-    }
+  .scrollbars-hidden {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
 
-    .scrollbars-thin::-webkit-scrollbar-track {
-      @apply bg-transparent;
-    }
-  
-    .scrollbars-thin::-webkit-scrollbar {
-      @apply w-2.5 h-2.5 bg-transparent;
-    }
-  
-    .scrollbars-thin::-webkit-scrollbar-thumb {
-      @apply rounded-full bg-gray-6 
+  .scrollbars-hidden::-webkit-scrollbar {
+    display: none;
+  }
+
+  .scrollbars-thin {
+    /* firefox scrollbars */
+    scrollbar-width: thin;
+    scrollbar-color: theme('colors.gray-5') transparent;
+  }
+
+  .scrollbars-thin::-webkit-scrollbar-track {
+    @apply bg-transparent;
+  }
+
+  .scrollbars-thin::-webkit-scrollbar {
+    @apply w-2.5 h-2.5 bg-transparent;
+  }
+
+  .scrollbars-thin::-webkit-scrollbar-thumb {
+    @apply rounded-full bg-gray-6 
         border-solid border-transparent bg-clip-padding;
-    }
-  
-    .scrollbars-thin::-webkit-scrollbar-thumb:hover {
-      @apply bg-gray-5;
-    }
-  
-    .scrollbars-thin::-webkit-scrollbar-thumb:active {
-      @apply bg-gray-7;
-    }
-  
-    .scrollbars-thin::-webkit-scrollbar-corner {
-      @apply bg-transparent;
-    }
+  }
 
+  .scrollbars-thin::-webkit-scrollbar-thumb:hover {
+    @apply bg-gray-5;
+  }
 
-    .scrollbars-wide {
-      /* firefox scrollbars */
-      scrollbar-width: auto;
-      scrollbar-color: theme('colors.gray-5') transparent;
-    }
+  .scrollbars-thin::-webkit-scrollbar-thumb:active {
+    @apply bg-gray-7;
+  }
 
-    .scrollbars-wide::-webkit-scrollbar-track {
-      @apply bg-transparent;
-    }
-  
-    .scrollbars-wide::-webkit-scrollbar {
-      @apply w-3 h-3 bg-transparent;
-    }
-  
-    .scrollbars-wide::-webkit-scrollbar-thumb {
-      @apply rounded-full bg-gray-6 
+  .scrollbars-thin::-webkit-scrollbar-corner {
+    @apply bg-transparent;
+  }
+
+  .scrollbars-wide {
+    /* firefox scrollbars */
+    scrollbar-width: auto;
+    scrollbar-color: theme('colors.gray-5') transparent;
+  }
+
+  .scrollbars-wide::-webkit-scrollbar-track {
+    @apply bg-transparent;
+  }
+
+  .scrollbars-wide::-webkit-scrollbar {
+    @apply w-3 h-3 bg-transparent;
+  }
+
+  .scrollbars-wide::-webkit-scrollbar-thumb {
+    @apply rounded-full bg-gray-6 
         border-solid border-transparent bg-clip-padding w-3;
-    }
-  
-    .scrollbars-wide::-webkit-scrollbar-thumb:hover {
-      @apply bg-gray-5;
-    }
-  
-    .scrollbars-wide::-webkit-scrollbar-thumb:active {
-      @apply bg-gray-7;
-    }
-  
-    .scrollbars-wide::-webkit-scrollbar-corner {
-      @apply bg-transparent;
-    }
+  }
+
+  .scrollbars-wide::-webkit-scrollbar-thumb:hover {
+    @apply bg-gray-5;
+  }
+
+  .scrollbars-wide::-webkit-scrollbar-thumb:active {
+    @apply bg-gray-7;
+  }
+
+  .scrollbars-wide::-webkit-scrollbar-corner {
+    @apply bg-transparent;
+  }
 }

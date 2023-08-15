@@ -30,7 +30,10 @@ import {
 import { useGetWeight } from '../../../../5_pages/StakePage/components/StakesFrame/hooks/useGetWeight';
 import { useGetVotingPower } from '../../../../5_pages/StakePage/hooks/useGetVotingPower';
 import { useHandleAdjustStake } from '../../../../5_pages/StakePage/hooks/useHandleAdjustStake';
-import { TOKEN_RENDER_PRECISION } from '../../../../../constants/currencies';
+import {
+  SOV,
+  TOKEN_RENDER_PRECISION,
+} from '../../../../../constants/currencies';
 import { MS } from '../../../../../constants/general';
 import { useAccount } from '../../../../../hooks/useAccount';
 import { useAssetBalance } from '../../../../../hooks/useAssetBalance';
@@ -392,6 +395,7 @@ export const AdjustStakeForm: FC<AdjustStakeFormProps> = ({
             onChangeText={setAmount}
             label={t(translations.common.amount)}
             min={0}
+            unit={SOV}
             invalid={!isValidAmount}
             disabled={!account}
             className="w-full mt-4 max-w-full"
@@ -495,7 +499,7 @@ export const AdjustStakeForm: FC<AdjustStakeFormProps> = ({
         text={t(translations.common.buttons.confirm)}
         onClick={handleSubmit}
         disabled={isSubmitDisabled}
-        className="mt-10 w-full"
+        className="mt-6 w-full"
         dataAttribute="adjust-stake-confirm"
       />
       {fullLocked && (

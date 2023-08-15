@@ -426,7 +426,6 @@
             "newEndDate": "New end date",
             "newStakeAmount": "New stake amount",
             "newStakedSov": "New staked SOV",
-            "votingPowerReceived": "Voting power received",
             "votingPowerIncrease": "Voting power increase",
             "votingPowerDecrease": "Voting power decrease",
             "penalty": "Early unstaking penalty",
@@ -454,7 +453,8 @@
             "title": "Staking rewards",
             "description": "Earn rewards and participate in governance by staking SOV",
             "buySov": "Buy SOV",
-            "learnMore": "Learn more about benefits"
+            "learnMore": "Learn more about benefits",
+            "learnMoreLink": "Learn more"
         },
         "txDialog": {
             "addNewStake": "Add new stake details",
@@ -591,6 +591,21 @@
                 "transfer": "Transfer rewards to line of credit"
             },
             "undercollateralized": "Withdrawals disabled – one or more LOCs are undercollateralized"
+        },
+        "stabilityPoolBanner": {
+            "title": "Stability Pool",
+            "description": "Earn from Zero loans by providing DLLR, 5%-110% APY",
+            "action": "Deposit DLLR"
+        },
+        "stakingBanner": {
+            "title": "Staking",
+            "description": "Participate in Sovryn's governance and revenue, earn up to <0>source</0> paid in bitcoin",
+            "action": "Stake SOV"
+        },
+        "yieldFarmingBanner": {
+            "title": "Yield farming",
+            "description": "Deposit in the AMM pools, earn from trades in Sovryn and get rewards",
+            "action": "Deposit in AMM"
         },
         "staking": {
             "stakingSubsidies": "Staking subsidies",

@@ -39,6 +39,7 @@ import { getTokenDisplayName } from '../../../constants/tokens';
 import { useAccount } from '../../../hooks/useAccount';
 import { useWeiAmountInput } from '../../../hooks/useWeiAmountInput';
 import { translations } from '../../../locales/i18n';
+import { removeTrailingZerosFromString } from '../../../utils/helpers';
 import { decimalic, fromWei } from '../../../utils/math';
 import { smartRouter, stableCoins } from './ConvertPage.types';
 import { useConversionMaintenance } from './hooks/useConversionMaintenance';
@@ -204,7 +205,10 @@ const ConvertPage: FC = () => {
       );
 
       setRoute(result.route);
-      setQuote(fromWei(result.quote.toString()));
+      const quote = removeTrailingZerosFromString(
+        fromWei(result.quote.toString()),
+      );
+      setQuote(quote);
     })();
   }, [sourceToken, destinationToken, weiAmount]);
 

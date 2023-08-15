@@ -41,32 +41,22 @@ export const TableMobileRow = <RowType extends RowObject>({
       style={AccordionStyle.secondary}
     >
       <div onClick={onClick} className={styles.row}>
-        {columns.map(column => (
-          <SimpleTableRow
-            key={column.id.toString()}
-            label={column.title}
-            value={
-              column.cellRenderer
-                ? column.cellRenderer(row, column.id)
-                : row[column.id]
-            }
-            className={column.className}
-          />
-        ))}
+        {!expandedContent &&
+          !renderer &&
+          columns.map(column => (
+            <SimpleTableRow
+              key={column.id.toString()}
+              label={column.title}
+              value={
+                column.cellRenderer
+                  ? column.cellRenderer(row, column.id)
+                  : row[column.id]
+              }
+              className={column.className}
+            />
+          ))}
         {expandedContent && <div>{expandedContent(row)}</div>}
-        {renderer
-          ? renderer(row)
-          : columns.map(column => (
-              <SimpleTableRow
-                key={column.id.toString()}
-                label={column.title}
-                value={
-                  column.cellRenderer
-                    ? column.cellRenderer(row, column.id)
-                    : row[column.id]
-                }
-              />
-            ))}
+        {renderer && renderer(row)}
       </div>
     </Accordion>
   );

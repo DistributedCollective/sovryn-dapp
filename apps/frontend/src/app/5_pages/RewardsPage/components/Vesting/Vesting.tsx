@@ -7,11 +7,14 @@ import { Pagination, Table } from '@sovryn/ui';
 import { DEFAULT_PAGE_SIZE } from '../../../../../constants/general';
 import { useAccount } from '../../../../../hooks/useAccount';
 import { translations } from '../../../../../locales/i18n';
+import { VestingContractType } from '../../../../../utils/graphql/rsk/generated';
 import { columnsConfig } from './Vestings.constants';
 import { generateRowTitle } from './Vestings.utils';
 import { useGetVestingContracts } from './hooks/useGetVestingContracts';
 
 const pageSize = DEFAULT_PAGE_SIZE;
+
+const hiddenVestings = [VestingContractType.Fish, VestingContractType.FishTeam];
 
 export const Vesting: FC = () => {
   const [page, setPage] = useState(0);
@@ -33,11 +36,16 @@ export const Vesting: FC = () => {
     [loading, vestings],
   );
 
+  const filteredVestings = useMemo(
+    () => vestings?.filter(item => !hiddenVestings.includes(item.type)),
+    [vestings],
+  );
+
   return (
     <div className="lg:bg-gray-80 lg:py-4 lg:px-4 rounded w-full">
       <Table
         columns={columnsConfig}
-        rows={vestings}
+        rows={filteredVestings}
         noData={
           <span className="italic">
             {account

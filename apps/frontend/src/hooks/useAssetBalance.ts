@@ -59,11 +59,6 @@ export const useAssetBalance = (
 
   useEffect(() => {
     if (!isMounted() || !account) {
-      setState(prevState => ({
-        ...prevState,
-        hasProvidedDefaultValues: true,
-      }));
-
       return;
     }
 
@@ -98,15 +93,15 @@ export const useAssetBalance = (
           ),
         );
         const bn = decimal.toBigNumber();
-        setState({
+        setState(prevState => ({
+          ...prevState,
           ...e.result,
           weiBalance: bn.toString(),
           bigNumberBalance: bn,
           balance: decimal,
           decimalPrecision: tokenDetails.decimalPrecision,
           loading: false,
-          hasProvidedDefaultValues: false,
-        });
+        }));
       });
 
       const callback =
@@ -139,7 +134,6 @@ export const useAssetBalance = (
         loading: false,
         error: e,
         hashedArgs: '',
-        hasProvidedDefaultValues: true,
       })),
     );
 

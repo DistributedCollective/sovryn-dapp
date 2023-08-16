@@ -21,7 +21,7 @@ import {
 import { WIKI_LINKS } from '../../../constants/links';
 import { useMaintenance } from '../../../hooks/useMaintenance';
 import { translations } from '../../../locales/i18n';
-import { getD1Url } from '../../../utils/helpers';
+import { generateD1Link } from '../../../utils/helpers';
 import styles from './RewardsPage.module.css';
 import { Banner } from './components/Banner/Banner';
 import { MaxStakingAPR } from './components/MaxStakingAPR/MaxStakingAPR';
@@ -154,7 +154,7 @@ const RewardsPage: FC = () => {
               action={
                 <Button
                   text={t(translations.rewardPage.yieldFarmingBanner.action)}
-                  href={`${getD1Url()}/yield-farm`}
+                  href={generateD1Link('/yield-farm')}
                   style={ButtonStyle.secondary}
                   size={ButtonSize.large}
                   className="text-gray-10 whitespace-nowrap"

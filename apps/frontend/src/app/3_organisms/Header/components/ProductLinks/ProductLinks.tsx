@@ -7,12 +7,9 @@ import { useOnClickOutside } from '@sovryn/ui';
 
 import { ReactComponent as AppsIcon } from '../../../../../assets/images/apps-icon.svg';
 import { translations } from '../../../../../locales/i18n';
-import { getBitocracyUrl, getD1Url } from '../../../../../utils/helpers';
+import { getBitocracyUrl, generateD1Link } from '../../../../../utils/helpers';
 import { ProductLink } from '../ProductLink/ProductLink';
 import styles from './ProductLinks.module.css';
-
-const URI = getD1Url();
-const linkToAlpha = (path: string) => `${URI}${path}`;
 
 export const ProductLinks: FC = () => {
   const [isOpen, setOpen] = useState(false);
@@ -43,32 +40,32 @@ export const ProductLinks: FC = () => {
         </h3>
         <ol className={styles.list}>
           <ProductLink
-            href={linkToAlpha('/swap')}
+            href={generateD1Link('/swap')}
             label={t(translations.productLinks.swap.title)}
             description={t(translations.productLinks.swap.description)}
           />
           <ProductLink
-            href={linkToAlpha('/spot')}
+            href={generateD1Link('/spot')}
             label={t(translations.productLinks.spot.title)}
             description={t(translations.productLinks.spot.description)}
           />
           <ProductLink
-            href={linkToAlpha('/trade')}
+            href={generateD1Link('/trade')}
             label={t(translations.productLinks.trade.title)}
             description={t(translations.productLinks.trade.description)}
           />
           <ProductLink
-            href={linkToAlpha('/yield-farm')}
+            href={generateD1Link('/yield-farm')}
             label={t(translations.productLinks.yield.title)}
             description={t(translations.productLinks.yield.description)}
           />
           <ProductLink
-            href={linkToAlpha('/lend')}
+            href={generateD1Link('/lend')}
             label={t(translations.productLinks.lend.title)}
             description={t(translations.productLinks.lend.description)}
           />
           <ProductLink
-            href={linkToAlpha('/borrow')}
+            href={generateD1Link('/borrow')}
             label={t(translations.productLinks.borrow.title)}
             description={t(translations.productLinks.borrow.description)}
           />

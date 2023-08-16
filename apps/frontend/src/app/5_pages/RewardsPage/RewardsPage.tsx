@@ -3,6 +3,7 @@ import React, { FC, useEffect, useMemo, useState } from 'react';
 import { t } from 'i18next';
 import { Helmet } from 'react-helmet-async';
 import { Trans } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 
 import {
   SelectOption,
@@ -20,6 +21,7 @@ import {
 import { WIKI_LINKS } from '../../../constants/links';
 import { useMaintenance } from '../../../hooks/useMaintenance';
 import { translations } from '../../../locales/i18n';
+import { generateD1Link } from '../../../utils/helpers';
 import styles from './RewardsPage.module.css';
 import { Banner } from './components/Banner/Banner';
 import { MaxStakingAPR } from './components/MaxStakingAPR/MaxStakingAPR';
@@ -31,6 +33,7 @@ import { Vesting } from './components/Vesting/Vesting';
 const ACTIVE_CLASSNAME = 'border-t-primary-30';
 
 const RewardsPage: FC = () => {
+  const navigate = useNavigate();
   const { checkMaintenance, States } = useMaintenance();
   const rewardsLocked = checkMaintenance(States.REWARDS_FULL);
   const stabilityLocked = checkMaintenance(States.ZERO_STABILITY_CLAIM);
@@ -133,7 +136,7 @@ const RewardsPage: FC = () => {
               action={
                 <Button
                   text={t(translations.rewardPage.stakingBanner.action)}
-                  href="/stake"
+                  onClick={() => navigate('/earn/staking')}
                   style={ButtonStyle.secondary}
                   size={ButtonSize.large}
                   className="text-gray-10 whitespace-nowrap"
@@ -151,7 +154,7 @@ const RewardsPage: FC = () => {
               action={
                 <Button
                   text={t(translations.rewardPage.yieldFarmingBanner.action)}
-                  href="https://alpha-test.sovryn.app/yield-farm"
+                  href={generateD1Link('/yield-farm')}
                   style={ButtonStyle.secondary}
                   size={ButtonSize.large}
                   className="text-gray-10 whitespace-nowrap"

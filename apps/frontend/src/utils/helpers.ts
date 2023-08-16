@@ -79,6 +79,11 @@ export const getD1Url = () =>
     ? ALPHA_LINKS.STAGING
     : ALPHA_LINKS[isMainnet() ? Environments.Mainnet : Environments.Testnet];
 
+export const generateD1Link = (path: string) => {
+  const URI = getD1Url();
+  return `${URI}${path}`;
+};
+
 export const getBitocracyUrl = () =>
   BITOCRACY_LINKS[isMainnet() ? Environments.Mainnet : Environments.Testnet];
 

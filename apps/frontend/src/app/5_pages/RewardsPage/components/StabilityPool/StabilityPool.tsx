@@ -20,10 +20,6 @@ import { Decimal } from '@sovryn/utils';
 
 import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRenderer';
 import {
-  CRITICAL_COLLATERAL_RATIO,
-  MINIMUM_COLLATERAL_RATIO,
-} from '../../../../3_organisms/ZeroLocForm/constants';
-import {
   BITCOIN,
   BTC_RENDER_PRECISION,
   SOV,
@@ -34,8 +30,8 @@ import { useMaintenance } from '../../../../../hooks/useMaintenance';
 import { useGetOpenTrove } from '../../../../../hooks/zero/useGetOpenTrove';
 import { useGetRBTCPrice } from '../../../../../hooks/zero/useGetRBTCPrice';
 import { useGetTroves } from '../../../../../hooks/zero/useGetTroves';
+import { useUnderCollateralizedTrovesExist } from '../../../../../hooks/zero/useUnderCollateralizedTrovesExist';
 import { translations } from '../../../../../locales/i18n';
-import { calculateCollateralRatio } from '../../../../../utils/helpers';
 import { decimalic } from '../../../../../utils/math';
 import { RewardsAction } from '../../RewardsPage.types';
 import { useGetSovGain } from '../../hooks/useGetSovGain';
@@ -47,8 +43,7 @@ export const StabilityPool: FC = () => {
   const [amount, setAmount] = useState<Decimal>(Decimal.ZERO);
   const isOpenTroveExists = useGetOpenTrove();
   const { value: block } = useBlockNumber();
-  const [isUnderCollateralized, setIsUnderCollateralized] = useState(false);
-  const [isRecoveryMode, setIsRecoveryMode] = useState(false);
+
   const { price } = useGetRBTCPrice();
 
   const {
@@ -56,6 +51,15 @@ export const StabilityPool: FC = () => {
     loading: loadingTroves,
     refetch: refetchTroves,
   } = useGetTroves();
+
+  const [shouldCheckTroves, setShouldCheckTroves] = useState(true);
+  const underCollateralizedTrovesExist =
+    useUnderCollateralizedTrovesExist(troves);
+
+  const isUnderCollateralized = useMemo(
+    () => shouldCheckTroves && underCollateralizedTrovesExist,
+    [shouldCheckTroves, underCollateralizedTrovesExist],
+  );
 
   const { checkMaintenance, States } = useMaintenance();
   const claimLocked = useMemo(
@@ -88,13 +92,6 @@ export const StabilityPool: FC = () => {
     if (!account) {
       return;
     }
-
-    liquity.getTotal().then(result => {
-      if (price) {
-        const recoveryMode = result.collateralRatioIsBelowCritical(price);
-        setIsRecoveryMode(recoveryMode);
-      }
-    });
 
     liquity
       .getStabilityDeposit(account)
@@ -207,31 +204,10 @@ export const StabilityPool: FC = () => {
 
   useEffect(() => {
     if (claimLocked || Number(price) === 0) {
-      setIsUnderCollateralized(false);
+      setShouldCheckTroves(false);
       return;
     }
-
-    if (troves?.troves) {
-      const isLowTroveExists = troves.troves.reduce(
-        (acc, { collateral, debt }) => {
-          const collateralRatio = calculateCollateralRatio(
-            decimalic(collateral),
-            decimalic(debt),
-            decimalic(price),
-          );
-
-          const isRatioBelowThreshold = isRecoveryMode
-            ? collateralRatio.lt(CRITICAL_COLLATERAL_RATIO.mul(100))
-            : collateralRatio.lt(MINIMUM_COLLATERAL_RATIO.mul(100));
-
-          return acc || isRatioBelowThreshold;
-        },
-        false,
-      );
-
-      setIsUnderCollateralized(isLowTroveExists);
-    }
-  }, [troves, claimLocked, price, isRecoveryMode]);
+  }, [claimLocked, price]);
 
   return (
     <div className="flex flex-col items-center w-full">

@@ -33,10 +33,6 @@ import { Decimal } from '@sovryn/utils';
 import { AmountRenderer } from '../../2_molecules/AmountRenderer/AmountRenderer';
 import { AssetRenderer } from '../../2_molecules/AssetRenderer/AssetRenderer';
 import { MaxButton } from '../../2_molecules/MaxButton/MaxButton';
-import {
-  CRITICAL_COLLATERAL_RATIO,
-  MINIMUM_COLLATERAL_RATIO,
-} from '../../3_organisms/ZeroLocForm/constants';
 import { TOKEN_RENDER_PRECISION } from '../../../constants/currencies';
 import { useAccount } from '../../../hooks/useAccount';
 import { useAmountInput } from '../../../hooks/useAmountInput';
@@ -45,8 +41,8 @@ import { useBlockNumber } from '../../../hooks/useBlockNumber';
 import { useMaintenance } from '../../../hooks/useMaintenance';
 import { useGetRBTCPrice } from '../../../hooks/zero/useGetRBTCPrice';
 import { useGetTroves } from '../../../hooks/zero/useGetTroves';
+import { useUnderCollateralizedTrovesExist } from '../../../hooks/zero/useUnderCollateralizedTrovesExist';
 import { translations } from '../../../locales/i18n';
-import { calculateCollateralRatio } from '../../../utils/helpers';
 import { formatValue, decimalic } from '../../../utils/math';
 import { tokenList } from './EarnPage.types';
 import { useGetSubsidiesAPR } from './hooks/useGetSubsidiesAPR';
@@ -68,14 +64,21 @@ const EarnPage: FC = () => {
   const { account } = useAccount();
   const { value: block } = useBlockNumber();
   const { price } = useGetRBTCPrice();
-  const [isRecoveryMode, setIsRecoveryMode] = useState(false);
-  const [isUnderCollateralized, setIsUnderCollateralized] = useState(false);
 
   const {
     data: troves,
     loading: loadingTroves,
     refetch: refetchTroves,
   } = useGetTroves();
+
+  const [shouldCheckTroves, setShouldCheckTroves] = useState(true);
+  const underCollateralizedTrovesExist =
+    useUnderCollateralizedTrovesExist(troves);
+
+  const isUnderCollateralized = useMemo(
+    () => shouldCheckTroves && underCollateralizedTrovesExist,
+    [shouldCheckTroves, underCollateralizedTrovesExist],
+  );
 
   const { liquity } = useLoaderData() as {
     liquity: EthersLiquity;
@@ -116,13 +119,6 @@ const EarnPage: FC = () => {
     if (!account) {
       return;
     }
-
-    liquity.getTotal().then(result => {
-      if (price) {
-        const recoveryMode = result.collateralRatioIsBelowCritical(price);
-        setIsRecoveryMode(recoveryMode);
-      }
-    });
 
     liquity
       .getStabilityDeposit(account)
@@ -342,31 +338,9 @@ const EarnPage: FC = () => {
 
   useEffect(() => {
     if (index !== 1 || isInMaintenance) {
-      setIsUnderCollateralized(false);
-      return;
+      setShouldCheckTroves(false);
     }
-
-    if (troves?.troves) {
-      const isLowTroveExists = troves.troves.reduce(
-        (acc, { collateral, debt }) => {
-          const collateralRatio = calculateCollateralRatio(
-            decimalic(collateral),
-            decimalic(debt),
-            decimalic(price),
-          );
-
-          const isRatioBelowThreshold = isRecoveryMode
-            ? collateralRatio.lt(CRITICAL_COLLATERAL_RATIO.mul(100))
-            : collateralRatio.lt(MINIMUM_COLLATERAL_RATIO.mul(100));
-
-          return acc || isRatioBelowThreshold;
-        },
-        false,
-      );
-
-      setIsUnderCollateralized(isLowTroveExists);
-    }
-  }, [troves, index, price, isRecoveryMode, isInMaintenance]);
+  }, [index, isInMaintenance]);
 
   useEffect(() => {
     if (!account) {

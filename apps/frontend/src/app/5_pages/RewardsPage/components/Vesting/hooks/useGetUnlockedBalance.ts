@@ -17,6 +17,7 @@ export const useGetUnlockedBalance = (item: VestingContractTableRecord) => {
     loading: loadingTimestamp,
     refetch,
   } = useGetLastTokensWithdraw(item.address);
+
   const [currentTimestamp, setCurrentTimestamp] = useState(dayjs().unix());
 
   const { value: block } = useBlockNumber(defaultChainId);
@@ -36,10 +37,15 @@ export const useGetUnlockedBalance = (item: VestingContractTableRecord) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [block]);
 
+  const lastWithdraw = useMemo(
+    () => lastWithdrawTimestamp ?? dayjs().subtract(4, 'year').unix(),
+    [lastWithdrawTimestamp],
+  );
+
   const { loading: loadingBalance, data } = useGetVestingUnlockBalanceQuery({
     variables: {
       vestingAddress: item.address,
-      timestamp: lastWithdrawTimestamp,
+      timestamp: lastWithdraw,
       currentTimestamp,
     },
     client: rskClient,

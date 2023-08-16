@@ -27,6 +27,7 @@ export type AssetBalanceResponse = {
   loading: boolean;
   error: Error | null;
   hashedArgs?: string;
+  hasProvidedDefaultValues: boolean;
 };
 
 export const useAssetBalance = (
@@ -53,10 +54,16 @@ export const useAssetBalance = (
     loading: false,
     error: null,
     hashedArgs: '',
+    hasProvidedDefaultValues: false,
   });
 
   useEffect(() => {
     if (!isMounted() || !account) {
+      setState(prevState => ({
+        ...prevState,
+        hasProvidedDefaultValues: true,
+      }));
+
       return;
     }
 
@@ -98,6 +105,7 @@ export const useAssetBalance = (
           balance: decimal,
           decimalPrecision: tokenDetails.decimalPrecision,
           loading: false,
+          hasProvidedDefaultValues: false,
         });
       });
 
@@ -131,6 +139,7 @@ export const useAssetBalance = (
         loading: false,
         error: e,
         hashedArgs: '',
+        hasProvidedDefaultValues: true,
       })),
     );
 
@@ -148,6 +157,7 @@ export const useAssetBalance = (
     block,
     state.hashedArgs,
     state.loading,
+    state,
   ]);
 
   return useMemo(
@@ -156,6 +166,7 @@ export const useAssetBalance = (
       weiBalance: state.weiBalance === null ? '0' : state.weiBalance,
       bigNumberBalance:
         state.weiBalance === null ? BigNumber.from(0) : state.bigNumberBalance,
+      hasProvidedDefaultValues: state.weiBalance === null ? true : false,
     }),
     [state],
   );

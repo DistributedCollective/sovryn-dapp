@@ -48,6 +48,7 @@ export const useMaxAssetBalance = (
       decimalPrecision: result.decimalPrecision,
       loading: gasPrice.eq(0),
       error: null,
+      hasProvidedDefaultValues: false,
     };
   }, [
     result.balance,

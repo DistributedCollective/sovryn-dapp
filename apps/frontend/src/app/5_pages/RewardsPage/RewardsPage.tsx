@@ -2,241 +2,199 @@ import React, { FC, useEffect, useMemo, useState } from 'react';
 
 import { t } from 'i18next';
 import { Helmet } from 'react-helmet-async';
-import { useLoaderData } from 'react-router-dom';
+import { Trans } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 
 import {
-  EthersLiquity,
-  ReadableEthersLiquityWithStore,
-} from '@sovryn-zero/lib-ethers';
-import {
-  ErrorBadge,
-  ErrorLevel,
-  Button,
-  ButtonStyle,
-  ButtonType,
+  SelectOption,
+  Select,
+  Tabs,
   Heading,
   HeadingType,
-  Paragraph,
-  ParagraphSize,
-  ParagraphStyle,
+  ErrorBadge,
+  ErrorLevel,
+  ButtonStyle,
+  ButtonSize,
+  Button,
 } from '@sovryn/ui';
-import { Decimal } from '@sovryn/utils';
 
-import { AmountRenderer } from '../../2_molecules/AmountRenderer/AmountRenderer';
-import {
-  CRITICAL_COLLATERAL_RATIO,
-  MINIMUM_COLLATERAL_RATIO,
-} from '../../3_organisms/ZeroLocForm/constants';
-import {
-  BITCOIN,
-  BTC_RENDER_PRECISION,
-  SOV,
-} from '../../../constants/currencies';
-import { useAccount } from '../../../hooks/useAccount';
-import { useBlockNumber } from '../../../hooks/useBlockNumber';
+import { WIKI_LINKS } from '../../../constants/links';
 import { useMaintenance } from '../../../hooks/useMaintenance';
-import { useGetOpenTrove } from '../../../hooks/zero/useGetOpenTrove';
-import { useGetRBTCPrice } from '../../../hooks/zero/useGetRBTCPrice';
-import { useGetTroves } from '../../../hooks/zero/useGetTroves';
 import { translations } from '../../../locales/i18n';
-import { calculateCollateralRatio } from '../../../utils/helpers';
-import { decimalic } from '../../../utils/math';
-import { useGetSovGain } from './hooks/useGetSovGain';
-import { useHandleRewards } from './hooks/useHandleRewards';
-import { RewardsAction } from './types';
+import { generateD1Link } from '../../../utils/helpers';
+import styles from './RewardsPage.module.css';
+import { Banner } from './components/Banner/Banner';
+import { MaxStakingAPR } from './components/MaxStakingAPR/MaxStakingAPR';
+import { StabilityPool } from './components/StabilityPool/StabilityPool';
+import { Staking } from './components/Staking/Staking';
+import { TotalRewardsEarned } from './components/TotalRewardsEarned/TotalRewardsEarned';
+import { Vesting } from './components/Vesting/Vesting';
+
+const ACTIVE_CLASSNAME = 'border-t-primary-30';
 
 const RewardsPage: FC = () => {
-  const { account, signer } = useAccount();
-  const [amount, setAmount] = useState<Decimal>(Decimal.ZERO);
-  const isOpenTroveExists = useGetOpenTrove();
-  const { value: block } = useBlockNumber();
-  const [isUnderCollateralized, setIsUnderCollateralized] = useState(false);
-  const [isRecoveryMode, setIsRecoveryMode] = useState(false);
-  const { price } = useGetRBTCPrice();
-
-  const {
-    data: troves,
-    loading: loadingTroves,
-    refetch: refetchTroves,
-  } = useGetTroves();
-
+  const navigate = useNavigate();
   const { checkMaintenance, States } = useMaintenance();
-  const claimLocked = checkMaintenance(States.ZERO_STABILITY_CLAIM);
-  const { sovGain, updateSOVGain } = useGetSovGain();
+  const rewardsLocked = checkMaintenance(States.REWARDS_FULL);
+  const stabilityLocked = checkMaintenance(States.ZERO_STABILITY_CLAIM);
+  const stakingLocked = checkMaintenance(States.REWARDS_STAKING);
+  const [index, setIndex] = useState(0);
 
-  const { liquity } = useLoaderData() as {
-    liquity: EthersLiquity;
-    provider: ReadableEthersLiquityWithStore;
-  };
+  const items = useMemo(() => {
+    return [
+      {
+        label: t(translations.rewardPage.tabs.titles.stabilityPool),
+        content: (
+          <div className="px-0 py-4 lg:p-4">
+            <StabilityPool />
+          </div>
+        ),
+        activeClassName: ACTIVE_CLASSNAME,
+        dataAttribute: 'stabilityPoolRewards',
+        disabled: stabilityLocked,
+      },
+      {
+        label: t(translations.rewardPage.tabs.titles.staking),
+        content: (
+          <div className="px-0 py-4 lg:p-4">
+            <Staking />
+          </div>
+        ),
+        activeClassName: ACTIVE_CLASSNAME,
+        dataAttribute: 'stakingRewards',
+        disabled: stakingLocked,
+      },
+      {
+        label: t(translations.rewardPage.tabs.titles.vesting),
+        content: (
+          <div className="px-0 py-4 lg:p-4">
+            <Vesting />
+          </div>
+        ),
+        activeClassName: ACTIVE_CLASSNAME,
+        dataAttribute: 'vestingRewards',
+        disabled: false,
+      },
+    ];
+  }, [stabilityLocked, stakingLocked]);
 
-  const handleWithdraw = useHandleRewards(
-    RewardsAction.withdrawFromSP,
-    amount.toString(),
-    updateSOVGain,
-  );
-
-  const handleTransferToLOC = useHandleRewards(
-    RewardsAction.withdrawETHGainToTrove,
-    amount.toString(),
-    updateSOVGain,
-  );
-
-  useEffect(() => {
-    if (!account) {
-      return;
-    }
-
-    liquity.getTotal().then(result => {
-      if (price) {
-        const recoveryMode = result.collateralRatioIsBelowCritical(price);
-        setIsRecoveryMode(recoveryMode);
-      }
-    });
-
-    liquity
-      .getStabilityDeposit(account)
-      .then(result => setAmount(decimalic(result.collateralGain.toString())));
-  }, [liquity, account, block, price]);
-
-  const claimDisabled = useMemo(
+  const mobileSelectOptions: SelectOption[] = useMemo(
     () =>
-      (amount.isZero() && Decimal.from(sovGain).isZero()) ||
-      !signer ||
-      claimLocked ||
-      loadingTroves ||
-      isUnderCollateralized,
-    [
-      amount,
-      claimLocked,
-      signer,
-      sovGain,
-      isUnderCollateralized,
-      loadingTroves,
-    ],
+      items.map((item, index) => ({
+        value: String(index),
+        label: item.label,
+      })),
+    [items],
   );
 
   useEffect(() => {
-    if (!account) {
-      setAmount(Decimal.ZERO);
+    if (items[index].disabled) {
+      setIndex(items.findIndex(item => !item.disabled));
     }
-  }, [account]);
-
-  useEffect(() => {
-    refetchTroves();
-  }, [refetchTroves, block]);
-
-  useEffect(() => {
-    if (claimLocked) {
-      setIsUnderCollateralized(false);
-      return;
-    }
-
-    if (troves?.troves) {
-      const isLowTroveExists = troves.troves.reduce(
-        (acc, { collateral, debt }) => {
-          const collateralRatio = calculateCollateralRatio(
-            decimalic(collateral),
-            decimalic(debt),
-            decimalic(price),
-          );
-
-          const isRatioBelowThreshold = isRecoveryMode
-            ? collateralRatio.lt(CRITICAL_COLLATERAL_RATIO.mul(100))
-            : collateralRatio.lt(MINIMUM_COLLATERAL_RATIO.mul(100));
-
-          return acc || isRatioBelowThreshold;
-        },
-        false,
-      );
-
-      setIsUnderCollateralized(isLowTroveExists);
-    }
-  }, [troves, claimLocked, price, isRecoveryMode]);
+  }, [items, index]);
 
   return (
     <>
       <Helmet>
         <title>{t(translations.rewardPage.meta.title)}</title>
       </Helmet>
-      <div className="flex flex-col items-center mt-6 sm:mt-28 w-full">
-        <Heading className="font-medium mb-4" type={HeadingType.h1}>
-          {t(translations.rewardPage.title)}
-        </Heading>
-        <Paragraph
-          style={ParagraphStyle.tall}
-          className="font-medium mb-[3.25rem]"
-          size={ParagraphSize.base}
-        >
-          {t(translations.rewardPage.subtitle)}
-        </Paragraph>
 
-        <div className="border border-gray-50 rounded w-full sm:w-[25rem] p-3 bg-gray-90">
-          <div className="bg-gray-70 rounded p-6 text-center mb-6">
-            <Paragraph
-              className="font-medium mb-2 text-gray-10"
-              size={ParagraphSize.small}
-            >
-              {t(translations.rewardPage.stabilityPoolRewards)}
-            </Paragraph>
-            <div className="text-2xl leading-7 uppercase">
-              <AmountRenderer
-                value={amount}
-                suffix={BITCOIN}
-                precision={BTC_RENDER_PRECISION}
-                dataAttribute="rewards-amount"
-              />
-            </div>
+      <div className="flex flex-col lg:flex-row gap-2 lg:gap-28 w-full lg:w-5/6 text-gray-10 mt-6 lg:mt-12">
+        <div className="flex flex-col gap-4 w-full lg:w-[26.25rem]">
+          <TotalRewardsEarned />
 
-            <div className="text-center mt-4">
-              <Paragraph
-                className="font-medium mb-2 text-gray-10"
-                size={ParagraphSize.small}
-              >
-                {t(translations.rewardPage.stabilityPoolSubsidies)}
-              </Paragraph>
-              <div className="text-2xl leading-7 uppercase">
-                <AmountRenderer
-                  value={sovGain}
-                  suffix={SOV}
-                  precision={BTC_RENDER_PRECISION}
-                  dataAttribute="rewards-amount"
+          <div className="flex flex-row md:flex-col mt-4 gap-4 overflow-auto scrollbars-hidden">
+            <Banner
+              localStorageKey="stabilityPoolBanner"
+              title={t(translations.rewardPage.stabilityPoolBanner.title)}
+              description={t(
+                translations.rewardPage.stabilityPoolBanner.description,
+              )}
+              className="min-w-[90%]"
+              action={
+                <Button
+                  text={t(translations.rewardPage.stabilityPoolBanner.action)}
+                  onClick={() => navigate('/earn/stability-pool')}
+                  style={ButtonStyle.secondary}
+                  size={ButtonSize.large}
+                  className="text-gray-10 whitespace-nowrap"
+                />
+              }
+              learnMore={WIKI_LINKS.STABILITY_POOL_REWARDS}
+            />
+
+            <Banner
+              localStorageKey="stakingBanner"
+              title={t(translations.rewardPage.stakingBanner.title)}
+              className="min-w-[90%]"
+              description={
+                <Trans
+                  i18nKey={t(translations.rewardPage.stakingBanner.description)}
+                  components={[<MaxStakingAPR />]}
+                />
+              }
+              action={
+                <Button
+                  text={t(translations.rewardPage.stakingBanner.action)}
+                  onClick={() => navigate('/earn/staking')}
+                  style={ButtonStyle.secondary}
+                  size={ButtonSize.large}
+                  className="text-gray-10 whitespace-nowrap"
+                />
+              }
+            />
+
+            <Banner
+              localStorageKey="yieldFarmingBanner"
+              title={t(translations.rewardPage.yieldFarmingBanner.title)}
+              className="min-w-[90%]"
+              description={t(
+                translations.rewardPage.yieldFarmingBanner.description,
+              )}
+              action={
+                <Button
+                  text={t(translations.rewardPage.yieldFarmingBanner.action)}
+                  href={generateD1Link('/yield-farm')}
+                  hrefExternal
+                  style={ButtonStyle.secondary}
+                  size={ButtonSize.large}
+                  className="text-gray-10 whitespace-nowrap"
+                />
+              }
+              learnMore={WIKI_LINKS.YIELD_FARMING}
+            />
+          </div>
+        </div>
+
+        <div className="flex-1 lg:bg-gray-90 py-7 lg:px-6 rounded mb-12">
+          <Heading
+            className="font-normal mb-4 lg:mb-8 text-base lg:text-2xl"
+            type={HeadingType.h1}
+          >
+            {t(translations.rewardPage.tabs.title)}
+          </Heading>
+
+          {!rewardsLocked ? (
+            <>
+              <div className={styles.mobileSelect}>
+                <Select
+                  className="min-w-[12rem]"
+                  options={mobileSelectOptions}
+                  value={String(index)}
+                  onChange={value => setIndex(Number(value))}
                 />
               </div>
-            </div>
-          </div>
-
-          {isUnderCollateralized && (
-            <ErrorBadge
-              level={ErrorLevel.Critical}
-              message={t(translations.rewardPage.undercollateralized)}
-              className="mb-6"
-            />
-          )}
-
-          <div className="flex flex-row justify-center gap-3">
-            <Button
-              type={ButtonType.button}
-              style={ButtonStyle.secondary}
-              text={t(translations.rewardPage.actions.withdraw)}
-              className="w-full max-w-48"
-              onClick={handleWithdraw}
-              disabled={claimDisabled}
-              dataAttribute="rewards-withdraw"
-            />
-            {isOpenTroveExists && Number(amount) > 0 && signer && (
-              <Button
-                type={ButtonType.button}
-                style={ButtonStyle.secondary}
-                text={t(translations.rewardPage.actions.transferToLOC)}
-                className="w-full"
-                onClick={handleTransferToLOC}
-                disabled={claimLocked}
-                dataAttribute="rewards-transfer-to-loc"
-              />
-            )}
-          </div>
-
-          {claimLocked && (
+              <div className={styles.desktop}>
+                <Tabs
+                  items={items}
+                  onChange={setIndex}
+                  index={index}
+                  className="w-full"
+                />
+              </div>
+              <div className={styles.mobile}>{items[index].content}</div>
+            </>
+          ) : (
             <ErrorBadge
               level={ErrorLevel.Warning}
               message={t(translations.maintenanceMode.featureDisabled)}

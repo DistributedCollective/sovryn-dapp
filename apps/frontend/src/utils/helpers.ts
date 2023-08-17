@@ -2,10 +2,17 @@ import dayjs from 'dayjs';
 import { providers, TypedDataDomain, TypedDataField } from 'ethers';
 import resolveConfig from 'tailwindcss/resolveConfig';
 
+import { SupportedTokens } from '@sovryn/contracts';
 import { EIP1193Provider } from '@sovryn/onboard-common';
 import tailwindConfig from '@sovryn/tailwindcss-config';
 import { Decimalish } from '@sovryn/utils';
 
+import { MS } from '../constants/general';
+import {
+  MAX_PROCESSABLE_CHECKPOINTS_SOV,
+  MAX_PROCESSABLE_CHECKPOINTS_TOKENS,
+  MAX_PROCESSABLE_CHECKPOINTS_ZUSD,
+} from '../constants/general';
 import {
   BTC_EXPLORER,
   GRAPH_WRAPPER,
@@ -72,6 +79,11 @@ export const getD1Url = () =>
     ? ALPHA_LINKS.STAGING
     : ALPHA_LINKS[isMainnet() ? Environments.Mainnet : Environments.Testnet];
 
+export const generateD1Link = (path: string) => {
+  const URI = getD1Url();
+  return `${URI}${path}`;
+};
+
 export const getBitocracyUrl = () =>
   BITOCRACY_LINKS[isMainnet() ? Environments.Mainnet : Environments.Testnet];
 
@@ -79,7 +91,7 @@ export const getGraphWrapperUrl = () =>
   GRAPH_WRAPPER[isMainnet() ? Environments.Mainnet : Environments.Testnet];
 
 export const dateFormat = (timestamp: number) => {
-  const stamp = dayjs.tz(Number(timestamp) * 1e3, 'UTC');
+  const stamp = dayjs.tz(Number(timestamp) * MS, 'UTC');
   return stamp.format(`YYYY-MM-DD HH:MM:ss +UTC`);
 };
 
@@ -153,3 +165,14 @@ export const calculateCollateralRatio = (
 
 export const removeTrailingZerosFromString = (value: string) =>
   value.includes('.') ? value.replace(/\.?0+$/, '') : value;
+
+export const getMaxProcessableCheckpoints = (asset: SupportedTokens) => {
+  switch (asset) {
+    case SupportedTokens.zusd:
+      return MAX_PROCESSABLE_CHECKPOINTS_ZUSD;
+    case SupportedTokens.sov:
+      return MAX_PROCESSABLE_CHECKPOINTS_SOV;
+    default:
+      return MAX_PROCESSABLE_CHECKPOINTS_TOKENS;
+  }
+};

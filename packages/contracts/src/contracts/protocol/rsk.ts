@@ -49,4 +49,44 @@ export const rsk: Record<string, AsyncContractConfigData> = {
     getAbi: async () =>
       (await import('../../abis/liquidityMining.json')).default,
   },
+  feeSharing: {
+    address: '0x115cAF168c51eD15ec535727F64684D33B7b08D1',
+    getAbi: async () => (await import('../../abis/feeSharing.json')).default,
+  },
+  feeSharing_old: {
+    // retained for use with legacy staking fees
+    address: '0x12B1B0C67d9A771EB5Db7726d23fdc6848fd93ef',
+    getAbi: async () => (await import('../../abis/feeSharing.json')).default,
+  },
+  staking: {
+    address: '0x5684a06CaB22Db16d901fEe2A5C081b4C91eA40e',
+    getAbi: async () => (await import('../../abis/staking.json')).default,
+  },
+  stakingRewards: {
+    address: '0x8304FB3614c728B712e94F9D4DF6719fede6517F',
+    getAbi: async () =>
+      (await import('../../abis/stakingRewards.json')).default,
+  },
+  multiCall: {
+    address: '0x6c62bf5440de2cb157205b15c424bceb5c3368f5',
+    getAbi: async () => (await import('../../abis/multiCall2.json')).default,
+  },
+  stakingFish: {
+    address: '0xFd8ea2e5e8591fA791d44731499cDF2e81CD6a41',
+    getAbi: async () => (await import('../../abis/staking.json')).default,
+  },
+  vesting: {
+    address: '0x80B036ae59B3e38B573837c01BB1DB95515b7E6B',
+    getAbi: async () => (await import('../../abis/vesting.json')).default,
+  },
+  vestingRegistry: {
+    address: '0xe24ABdB7DcaB57F3cbe4cBDDd850D52F143eE920',
+    getAbi: async () =>
+      (await import('../../abis/vestingRegistry.json')).default,
+  },
+  vestingRegistryFish: {
+    address: '0x036ab2DB0a3d1574469a4a7E09887Ed76fB56C41',
+    getAbi: async () =>
+      (await import('../../abis/vestingRegistry.json')).default,
+  },
 };

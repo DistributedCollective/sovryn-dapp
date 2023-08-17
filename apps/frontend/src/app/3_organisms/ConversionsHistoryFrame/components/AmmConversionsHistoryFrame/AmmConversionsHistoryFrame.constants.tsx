@@ -59,7 +59,10 @@ export const COLUMNS_CONFIG = [
     id: 'transactionId',
     title: t(translations.common.tables.columnTitles.transactionID),
     cellRenderer: (item: Swap) => (
-      <TransactionIdRenderer hash={item.transaction.id} />
+      <TransactionIdRenderer
+        hash={item.transaction.id}
+        dataAttribute="amm-conversion-history-tx-hash"
+      />
     ),
   },
 ];

@@ -18,6 +18,7 @@ export const AssetValue: React.FC<AssetValueProps> = ({
   minDecimals = 0,
   maxDecimals = 8,
   className,
+  containerClassName,
   assetClassName,
   isApproximation = false,
   showPositiveSign = false,
@@ -80,7 +81,7 @@ export const AssetValue: React.FC<AssetValueProps> = ({
   }
 
   const assetValue = (
-    <span>
+    <span className={containerClassName}>
       {formattedValue}
       {asset && (
         <AssetRenderer

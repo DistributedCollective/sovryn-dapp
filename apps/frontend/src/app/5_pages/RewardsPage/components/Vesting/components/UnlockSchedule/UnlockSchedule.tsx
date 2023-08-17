@@ -1,0 +1,37 @@
+import React, { useMemo, useState } from 'react';
+
+import { Button, ButtonStyle, ButtonType } from '@sovryn/ui';
+
+import { VestingContractTableRecord } from '../../Vesting.types';
+import { vestingTypeToTitleMapping } from '../../Vestings.utils';
+import { useGetUnlockSchedule } from '../../hooks/useGetUnlockSchedule';
+import { UnlockScheduleDialog } from '../UnlockScheduleDialog/UnlockScheduleDialog';
+
+export const UnlockSchedule = (item: VestingContractTableRecord) => {
+  const unlockSchedule = useGetUnlockSchedule(item);
+
+  const [showDialog, setShowDialog] = useState(false);
+
+  const title = useMemo(
+    () => vestingTypeToTitleMapping(item.type),
+    [item.type],
+  );
+
+  return (
+    <>
+      <Button
+        text={title}
+        style={ButtonStyle.ghost}
+        type={ButtonType.button}
+        className="underline"
+        onClick={() => setShowDialog(prevValue => !prevValue)}
+      />
+      <UnlockScheduleDialog
+        vestingContract={item}
+        unlockSchedule={unlockSchedule}
+        isOpen={showDialog}
+        onClose={() => setShowDialog(false)}
+      />
+    </>
+  );
+};

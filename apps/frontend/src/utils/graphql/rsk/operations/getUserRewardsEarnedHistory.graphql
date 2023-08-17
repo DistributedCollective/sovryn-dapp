@@ -1,0 +1,5 @@
+query getUserRewardsEarnedHistory($user: ID!) {
+  userRewardsEarnedHistory(id: $user) {
+    totalFeeWithdrawn
+  }
+}

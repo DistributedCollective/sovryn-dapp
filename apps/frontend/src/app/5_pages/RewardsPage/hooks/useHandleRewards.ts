@@ -15,7 +15,7 @@ import { useAccount } from '../../../../hooks/useAccount';
 import { translations } from '../../../../locales/i18n';
 import { getRskChainId } from '../../../../utils/chain';
 import { toWei } from '../../../../utils/math';
-import { RewardsAction } from './../types';
+import { RewardsAction } from './../RewardsPage.types';
 
 export const useHandleRewards = (
   action: RewardsAction,
@@ -33,16 +33,16 @@ export const useHandleRewards = (
   const title = useMemo(
     () =>
       isWithdrawTransaction
-        ? t(translations.rewardPage.tx.withdrawGains)
-        : t(translations.rewardPage.tx.transferToLOC),
+        ? t(translations.rewardPage.stabilityPool.tx.withdrawGains)
+        : t(translations.rewardPage.stabilityPool.tx.transferToLOC),
     [isWithdrawTransaction],
   );
 
   const transactionTitle = useMemo(
     () =>
       isWithdrawTransaction
-        ? t(translations.rewardPage.tx.withdraw)
-        : t(translations.rewardPage.tx.transfer),
+        ? t(translations.rewardPage.stabilityPool.tx.withdraw)
+        : t(translations.rewardPage.stabilityPool.tx.transfer),
     [isWithdrawTransaction],
   );
 

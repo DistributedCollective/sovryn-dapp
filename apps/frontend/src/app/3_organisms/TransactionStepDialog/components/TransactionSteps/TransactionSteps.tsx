@@ -16,6 +16,7 @@ import {
 } from '@sovryn/ui';
 
 import { APPROVAL_FUNCTION } from '../../../../../constants/general';
+import { useAccount } from '../../../../../hooks/useAccount';
 import { useAssetBalance } from '../../../../../hooks/useAssetBalance';
 import { translations } from '../../../../../locales/i18n';
 import { sleep } from '../../../../../utils/helpers';
@@ -60,10 +61,11 @@ export const TransactionSteps: FC<TransactionStepsProps> = ({
   const { balance: rbtcBalance, loading } = useAssetBalance(
     SupportedTokens.rbtc,
   );
+  const { account } = useAccount();
 
   const hasEnoughBalance = useMemo(
-    () => rbtcBalance.sub(estimatedGasFee).gt(0),
-    [rbtcBalance, estimatedGasFee],
+    () => account && !loading && rbtcBalance.sub(estimatedGasFee).gt(0),
+    [account, loading, rbtcBalance, estimatedGasFee],
   );
 
   useEffect(() => {
@@ -414,20 +416,23 @@ export const TransactionSteps: FC<TransactionStepsProps> = ({
           gasPrice={gasPrice}
         />
       ))}
-      {!hasEnoughBalance && (
-        <ErrorBadge
-          level={ErrorLevel.Critical}
-          message={t(translations.transactionStep.notEnoughBalance)}
-        />
-      )}
       {!isLoading && transactions.length > step && (
-        <Button
-          className={classNames('w-full', hasEnoughBalance && 'mt-7')}
-          text={t(translations.common.buttons[error ? 'retry' : 'confirm'])}
-          onClick={submit}
-          dataAttribute={`tx-dialog-${error ? 'retry' : 'confirm'}`}
-          disabled={!hasEnoughBalance}
-        />
+        <>
+          <Button
+            className={classNames('w-full', hasEnoughBalance && 'mt-7')}
+            text={t(translations.common.buttons[error ? 'retry' : 'confirm'])}
+            onClick={submit}
+            dataAttribute={`tx-dialog-${error ? 'retry' : 'confirm'}`}
+            disabled={!hasEnoughBalance}
+          />
+
+          {!hasEnoughBalance && (
+            <ErrorBadge
+              level={ErrorLevel.Critical}
+              message={t(translations.transactionStep.notEnoughBalance)}
+            />
+          )}
+        </>
       )}
       {onClose && transactions.length === step && (
         <Button

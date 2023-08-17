@@ -1,5 +1,12 @@
 # @sovryn/ui
 
+## 1.0.12
+
+### Patch Changes
+
+- 4dce45a5: SOV-2615: New rewards page total rewards earned
+- 4dce45a5: Add missing CSS class props to Table components
+
 ## 1.0.11
 
 ### Patch Changes

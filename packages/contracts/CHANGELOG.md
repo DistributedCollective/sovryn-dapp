@@ -1,5 +1,11 @@
 # @sovryn/contracts
 
+## 1.0.13
+
+### Patch Changes
+
+- 4dce45a5: SOV-2612: New contracts for Rewards/Staking
+
 ## 1.0.12
 
 ### Patch Changes

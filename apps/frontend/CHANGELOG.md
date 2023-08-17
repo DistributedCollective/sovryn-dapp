@@ -1,5 +1,11 @@
 # frontend
 
+## 1.0.23
+
+### Patch Changes
+
+- fc8568a6: Fix Total Staked SOV stat on Staking page
+
 ## 1.0.22
 
 ### Patch Changes

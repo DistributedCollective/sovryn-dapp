@@ -39,6 +39,8 @@ import {
 import { sendOrSimulateTx } from '../../utils';
 import { TransactionStep } from '../TransactionStep/TransactionStep';
 
+const statusesToCheck = [StatusType.error, StatusType.idle];
+
 export type TransactionStepsProps = {
   transactions: Transaction[];
   onSuccess?: () => void;
@@ -416,12 +418,14 @@ export const TransactionSteps: FC<TransactionStepsProps> = ({
           gasPrice={gasPrice}
         />
       ))}
-      {!hasEnoughBalance && !isLoading && (
-        <ErrorBadge
-          level={ErrorLevel.Critical}
-          message={t(translations.transactionStep.notEnoughBalance)}
-        />
-      )}
+      {!hasEnoughBalance &&
+        !isLoading &&
+        statusesToCheck.includes(getStatus(step)) && (
+          <ErrorBadge
+            level={ErrorLevel.Critical}
+            message={t(translations.transactionStep.notEnoughBalance)}
+          />
+        )}
       {!isLoading && transactions.length > step && (
         <Button
           className={classNames('w-full', hasEnoughBalance && 'mt-7')}

@@ -1,5 +1,49 @@
 # frontend
 
+## 1.0.22
+
+### Patch Changes
+
+- 4dce45a5: SOV-2873: fix new delegate address is missing tooltip
+- 4dce45a5: SOV-2914: Fix unstake history CSV export
+- 4dce45a5: SOV-2612: New Rewards page - Stability pool and Staking rewards
+- 4dce45a5: SOV-2830: Fix vesting stakes information remains displayed with disconnected wallet
+- 4dce45a5: SOV-2875 & SOV-2876: Fix Staking pagination
+- 4dce45a5: SOV-2602: Staking maintenance mode states
+- 4dce45a5: SOV-2788: Make empty state message to be italic in staking page.
+- 4dce45a5: SOV-2820: add dropdown earn menu
+- 4dce45a5: SOV-2919: Fix Buy SOV CTA
+- 4dce45a5: SOV-2915: Fix token name in staking-related history tables
+- 4dce45a5: SOV-2613: Reward page - general layout and folder structure
+- 4dce45a5: SOV-2598: create stake page
+- 4dce45a5: SOV-2803 fix: use correct staking contract
+- 4dce45a5: SOV-2802: Fix vesting stakes voting power
+- 4dce45a5: SOV-2615: New rewards page total rewards earned
+- 4dce45a5: SOV-2858: Fix staked SOV section in personal statistics
+- 4dce45a5: SOV-2863: Update staking stats on new block
+- 4dce45a5: SOV-3016: Fix incorrect undercollateralized error
+- 4dce45a5: SOV-2886: fix vesting table available balance not showing
+- 4dce45a5: SOV-2877: fix personal staking statistics
+- 4dce45a5: SOV-2811: update delegate comp
+- 4dce45a5: SOV-3017: broken rewards banner links
+- 4dce45a5: SOV-2878: Fix "Estimated gas fee exceeds BTC balance" error false positives
+- 4dce45a5: SOV-2613: Reward page - folder structure adjustments
+- 4dce45a5: SOV-2918: Use BE endpoint for Max APR Redash call
+- 4dce45a5: SOV-2805: Staking and Rewards page UX updates
+- 4dce45a5: SOV-2878: Fix gas fee error message
+- 4dce45a5: SOV-2775: Multicall implementation for Rewards page
+- 4dce45a5: SOV-2603: Staking and staking rewards history table
+- 4dce45a5: SOV-2808: update delegate logic
+- 4dce45a5: SOV-3006: Fix vesting unlocked balance
+- 4dce45a5: SOV-2845: stake layout mobile updates
+- 4dce45a5: SOV-2982: Hide FISH vesting contracts from Vesting rewards
+- Updated dependencies [4dce45a5]
+- Updated dependencies [4dce45a5]
+- Updated dependencies [4dce45a5]
+- Updated dependencies [4dce45a5]
+  - @sovryn/contracts@1.0.13
+  - @sovryn/ui@1.0.12
+
 ## 1.0.21
 
 ### Patch Changes

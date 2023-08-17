@@ -1,5 +1,12 @@
 # @sovryn/contracts
 
+## 1.0.13
+
+### Patch Changes
+
+- 4dce45a5: SOV-2612: New Rewards page - Stability pool and Staking rewards
+- 4dce45a5: SOV-2598: create stake page
+
 ## 1.0.12
 
 ### Patch Changes

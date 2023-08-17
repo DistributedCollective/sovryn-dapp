@@ -114,7 +114,7 @@ const RewardsPage: FC = () => {
               action={
                 <Button
                   text={t(translations.rewardPage.stabilityPoolBanner.action)}
-                  href="/earn"
+                  onClick={() => navigate('/earn/stability-pool')}
                   style={ButtonStyle.secondary}
                   size={ButtonSize.large}
                   className="text-gray-10 whitespace-nowrap"
@@ -155,6 +155,7 @@ const RewardsPage: FC = () => {
                 <Button
                   text={t(translations.rewardPage.yieldFarmingBanner.action)}
                   href={generateD1Link('/yield-farm')}
+                  hrefExternal
                   style={ButtonStyle.secondary}
                   size={ButtonSize.large}
                   className="text-gray-10 whitespace-nowrap"

@@ -15,7 +15,6 @@ export const useGetStakingStatistics = () => {
   const currentDate = useMemo(() => new Date(), []);
   const stakingContract = useGetProtocolContract('staking');
   const [stakingStats, setStakingStats] = useState({
-    totalStakedSov: 0,
     totalVotingPower: 0,
     maxStakingApr: 0,
   });
@@ -27,17 +26,10 @@ export const useGetStakingStatistics = () => {
     }
     const fetchData = async () => {
       const timestamp = Math.ceil(currentDate.getTime() / MS);
-      const [stakingStatistics, votingPowerAmount] = await Promise.all([
-        stakingContract.getPriorTotalStakesForDate(timestamp, block - 1),
-        stakingContract.getPriorTotalVotingPower(block - 1, timestamp),
-      ]);
-
-      if (stakingStatistics) {
-        setStakingStats(prevStats => ({
-          ...prevStats,
-          totalStakedSov: stakingStatistics,
-        }));
-      }
+      const votingPowerAmount = await stakingContract.getPriorTotalVotingPower(
+        block - 1,
+        timestamp,
+      );
 
       if (votingPowerAmount) {
         setStakingStats(prevStats => ({
@@ -74,22 +66,13 @@ export const useGetStakingStatistics = () => {
     };
 
     if (block > 0 && stakingContract) {
-      if (
-        stakingStats.totalStakedSov === 0 ||
-        stakingStats.totalVotingPower === 0
-      ) {
+      if (stakingStats.totalVotingPower === 0) {
         await fetchData();
       }
 
       await fetchMaxStakingApr();
     }
-  }, [
-    stakingContract,
-    block,
-    stakingStats.totalStakedSov,
-    stakingStats.totalVotingPower,
-    currentDate,
-  ]);
+  }, [stakingContract, block, stakingStats.totalVotingPower, currentDate]);
 
   useEffect(() => {
     fetchStakingStatistics();

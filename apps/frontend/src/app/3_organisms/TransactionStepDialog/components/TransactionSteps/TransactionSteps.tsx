@@ -63,11 +63,6 @@ export const TransactionSteps: FC<TransactionStepsProps> = ({
   );
   const { account } = useAccount();
 
-  const hasEnoughBalance = useMemo(
-    () => account && !loading && rbtcBalance.sub(estimatedGasFee).gt(0),
-    [account, loading, rbtcBalance, estimatedGasFee],
-  );
-
   useEffect(() => {
     const initialize = async () => {
       const steps: TransactionStepData[] = [];
@@ -377,6 +372,11 @@ export const TransactionSteps: FC<TransactionStepsProps> = ({
   const isLoading = useMemo(
     () => step > -1 && step < transactions.length && !error && !loading,
     [error, step, transactions.length, loading],
+  );
+
+  const hasEnoughBalance = useMemo(
+    () => account && !isLoading && rbtcBalance.sub(estimatedGasFee).gt(0),
+    [account, isLoading, rbtcBalance, estimatedGasFee],
   );
 
   useEffect(() => {

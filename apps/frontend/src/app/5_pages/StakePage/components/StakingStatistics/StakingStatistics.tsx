@@ -14,15 +14,23 @@ import {
 
 import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { TOKEN_RENDER_PRECISION } from '../../../../../constants/currencies';
+import { useAssetBalance } from '../../../../../hooks/useAssetBalance';
+import { useLoadContract } from '../../../../../hooks/useLoadContract';
 import { translations } from '../../../../../locales/i18n';
+import { getRskChainId } from '../../../../../utils/chain';
 import { fromWei } from '../../../../../utils/math';
 import { APR, MAX_STAKING_APR_LINK, VP } from '../../StakePage.constants';
 import { GlobalStatistics } from '../../StakePage.utils';
 import { useGetStakingStatistics } from './hooks/useGetStakingStatistics';
 
 export const StakingStatistics = () => {
-  const { totalStakedSov, totalVotingPower, maxStakingApr } =
-    useGetStakingStatistics();
+  const { totalVotingPower, maxStakingApr } = useGetStakingStatistics();
+  const stakingContract = useLoadContract('staking', 'protocol');
+  const totalStakedSov = useAssetBalance(
+    SupportedTokens.sov,
+    getRskChainId(),
+    stakingContract?.address,
+  );
 
   const renderMaxStakingApr = useMemo(
     () =>
@@ -53,7 +61,7 @@ export const StakingStatistics = () => {
           label={t(translations.stakePage.statistics.totalStakedSov)}
           value={
             <AmountRenderer
-              value={fromWei(totalStakedSov)}
+              value={totalStakedSov?.balance}
               suffix={SupportedTokens.sov}
               precision={TOKEN_RENDER_PRECISION}
             />

@@ -48,6 +48,7 @@ import {
 } from './NewLoanForm.utils';
 import { useGetBorrowingAPR } from './hooks/useGetBorrowingAPR';
 import { useGetCollateralAssetPrice } from './hooks/useGetCollateralAssetPrice';
+import { useOpenNewLoan } from './hooks/useOpenNewLoan';
 
 const pageTranslations = translations.fixedInterestPage;
 
@@ -269,7 +270,23 @@ export const NewLoanForm: FC<NewLoanFormProps> = ({ pool }) => {
     isValidCollateralRatio,
   ]);
 
-  const handleFormSubmit = useCallback(() => {}, []);
+  const handleSubmit = useOpenNewLoan();
+  const handleFormSubmit = useCallback(() => {
+    handleSubmit(
+      borrowToken,
+      borrowAmount,
+      borrowDays,
+      collateralAmount,
+      collateralToken,
+    );
+  }, [
+    borrowAmount,
+    borrowDays,
+    borrowToken,
+    collateralAmount,
+    collateralToken,
+    handleSubmit,
+  ]);
 
   useEffect(() => {
     if (collateralToken === SupportedTokens.rbtc) {

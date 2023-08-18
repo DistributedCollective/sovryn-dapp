@@ -536,6 +536,9 @@
                 "collateralPrice": "{{token}} price",
                 "disclaimer": "I understand that my collateral may be liquidated or used to pay rollover fees if applicable. <0>Learn more</0>",
                 "disclaimerCTA": "Learn more"
+            },
+            "transaction": {
+                "title": "Open new loan"
             }
         },
         "collateralRatio": "collateral ratio"

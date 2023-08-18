@@ -60,7 +60,7 @@ const routes = [
         loader: zeroPageLoader,
       },
       {
-        path: '/zero',
+        path: '/borrow/line-of-credit',
         element: <Zero />,
         loader: zeroPageLoader,
       },
@@ -95,7 +95,7 @@ const routes = [
         element: <StakePage />,
       },
       {
-        path: '/fixed-interest',
+        path: '/borrow/fixed-interest',
         element: <BorrowPage />,
       },
     ],

@@ -4,8 +4,24 @@ import { translations } from '../../../locales/i18n';
 
 export const menuItemsMapping = [
   {
-    text: t(translations.header.nav.borrow),
-    url: '/',
+    text: t(translations.header.nav.borrow.title),
+    url: '/borrow',
+    submenu: [
+      {
+        text: t(translations.header.nav.borrow.subMenu.fixedInterest),
+        label: t(
+          translations.header.nav.borrow.subMenu.fixedInterestDescription,
+        ),
+        url: '/borrow/fixed-interest',
+      },
+      {
+        text: t(translations.header.nav.borrow.subMenu.lineOfCredit),
+        label: t(
+          translations.header.nav.borrow.subMenu.lineOfCreditDescription,
+        ),
+        url: '/borrow/line-of-credit',
+      },
+    ],
   },
   {
     text: t(translations.header.nav.earn.title),

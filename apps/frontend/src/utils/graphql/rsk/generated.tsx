@@ -14703,6 +14703,82 @@ export type GetVestingUnlockBalanceQuery = {
   }>;
 };
 
+export const GetActiveLoansDocument = gql`
+  query getActiveLoans($user: String) {
+    loans(where: { user: $user, type: Borrow, isOpen: true }) {
+      id
+      loanToken {
+        id
+        lastPriceBtc
+        lastPriceUsd
+        symbol
+      }
+      collateralToken {
+        id
+        lastPriceBtc
+        lastPriceUsd
+        symbol
+      }
+      borrowedAmount
+      positionSize
+      nextRollover
+      borrow(first: 1, orderBy: timestamp, orderDirection: desc) {
+        interestRate
+      }
+    }
+  }
+`;
+
+/**
+ * __useGetActiveLoansQuery__
+ *
+ * To run a query within a React component, call `useGetActiveLoansQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetActiveLoansQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetActiveLoansQuery({
+ *   variables: {
+ *      user: // value for 'user'
+ *   },
+ * });
+ */
+export function useGetActiveLoansQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    GetActiveLoansQuery,
+    GetActiveLoansQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<GetActiveLoansQuery, GetActiveLoansQueryVariables>(
+    GetActiveLoansDocument,
+    options,
+  );
+}
+export function useGetActiveLoansLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    GetActiveLoansQuery,
+    GetActiveLoansQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<GetActiveLoansQuery, GetActiveLoansQueryVariables>(
+    GetActiveLoansDocument,
+    options,
+  );
+}
+export type GetActiveLoansQueryHookResult = ReturnType<
+  typeof useGetActiveLoansQuery
+>;
+export type GetActiveLoansLazyQueryHookResult = ReturnType<
+  typeof useGetActiveLoansLazyQuery
+>;
+export type GetActiveLoansQueryResult = Apollo.QueryResult<
+  GetActiveLoansQuery,
+  GetActiveLoansQueryVariables
+>;
 export const GetBitcoinTxIdDocument = gql`
   query getBitcoinTxId($createdAtTx: String) {
     bitcoinTransfers(where: { createdAtTx: $createdAtTx }, first: 1) {

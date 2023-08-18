@@ -95,7 +95,7 @@ const routes = [
         element: <StakePage />,
       },
       {
-        path: '/fixed-interest',
+        path: '/borrow/fixed-interest',
         element: <BorrowPage />,
       },
     ],

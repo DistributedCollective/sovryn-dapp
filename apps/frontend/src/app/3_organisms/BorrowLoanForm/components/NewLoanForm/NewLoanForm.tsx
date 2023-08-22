@@ -29,8 +29,6 @@ import { MaxButton } from '../../../../2_molecules/MaxButton/MaxButton';
 import { useLiquityBaseParams } from '../../../../5_pages/ZeroPage/hooks/useLiquityBaseParams';
 import { BITCOIN } from '../../../../../constants/currencies';
 import { COLLATERAL_RATIO_THRESHOLDS } from '../../../../../constants/general';
-import { useAssetBalance } from '../../../../../hooks/useAssetBalance';
-import { useMaxAssetBalance } from '../../../../../hooks/useMaxAssetBalance';
 import { useGetRBTCPrice } from '../../../../../hooks/zero/useGetRBTCPrice';
 import { translations } from '../../../../../locales/i18n';
 import { LendingPool } from '../../../../../utils/LendingPool';
@@ -42,12 +40,14 @@ import {
   MIN_BORROWING_DAYS,
 } from './NewLoanForm.constants';
 import {
-  calculatePreparedInterest,
+  calculatePrepaidInterest,
   getOriginationFeeAmount,
   renderValue,
 } from './NewLoanForm.utils';
 import { useGetBorrowingAPR } from './hooks/useGetBorrowingAPR';
 import { useGetCollateralAssetPrice } from './hooks/useGetCollateralAssetPrice';
+import { useGetMaximumBorrowAmount } from './hooks/useGetMaximumBorrowAmount';
+import { useGetMaximumCollateralAmount } from './hooks/useGetMaximumCollateralAmount';
 import { useOpenNewLoan } from './hooks/useOpenNewLoan';
 
 const pageTranslations = translations.fixedInterestPage;
@@ -60,7 +60,13 @@ type NewLoanFormProps = {
 export const NewLoanForm: FC<NewLoanFormProps> = ({ pool }) => {
   const [borrowAmount, setBorrowAmount] = useState('');
   const [collateralAmount, setCollateralAmount] = useState('');
-  const borrowSize = useMemo(() => decimalic(borrowAmount), [borrowAmount]);
+  const borrowSize = useMemo(
+    () =>
+      borrowAmount && borrowAmount !== ''
+        ? Decimal.from(borrowAmount)
+        : Decimal.ZERO,
+    [borrowAmount],
+  );
   const collateralSize = useMemo(
     () => decimalic(collateralAmount),
     [collateralAmount],
@@ -79,7 +85,6 @@ export const NewLoanForm: FC<NewLoanFormProps> = ({ pool }) => {
     [currentDate],
   );
   const [borrowDays, setBorrowDays] = useState(dayjs(minBorrowingDays).unix());
-  const { balance: borrowTokenBalance } = useAssetBalance(borrowToken);
   const collateralAssets = useMemo(() => pool.getBorrowCollateral(), [pool]);
   const [collateralAssetPrice, setCollateralAssetPrice] = useState('0');
 
@@ -125,23 +130,19 @@ export const NewLoanForm: FC<NewLoanFormProps> = ({ pool }) => {
     collateralToken,
   );
 
+  const maximumBorrowAmount = useGetMaximumBorrowAmount(
+    borrowSize,
+    borrowToken,
+    collateralToken,
+    collateralSize,
+  );
+
   const onMaximumBorrowAmountClick = useCallback(
-    () => setBorrowAmount(borrowTokenBalance.toString()),
-    [borrowTokenBalance, setBorrowAmount],
+    () => setBorrowAmount(maximumBorrowAmount.toString()),
+    [maximumBorrowAmount, setBorrowAmount],
   );
 
-  const {
-    weiBalance: maxCollateralBalance,
-    loading: maxCollateralBalanceLoading,
-  } = useMaxAssetBalance(collateralToken);
-
-  const maxCollateralAmount = useMemo(
-    () =>
-      maxCollateralBalanceLoading
-        ? Decimal.ZERO
-        : Decimal.fromBigNumberString(maxCollateralBalance),
-    [maxCollateralBalanceLoading, maxCollateralBalance],
-  );
+  const maxCollateralAmount = useGetMaximumCollateralAmount(collateralToken);
 
   const onCollateralTokenChange = useCallback(
     (value: SupportedTokens) => {
@@ -157,8 +158,8 @@ export const NewLoanForm: FC<NewLoanFormProps> = ({ pool }) => {
   );
 
   const isValidBorrowAmount = useMemo(
-    () => Number(borrowAmount) <= Number(borrowTokenBalance),
-    [borrowAmount, borrowTokenBalance],
+    () => Number(borrowAmount) <= Number(maximumBorrowAmount),
+    [borrowAmount, maximumBorrowAmount],
   );
 
   const isValidCollateralAmount = useMemo(
@@ -166,7 +167,7 @@ export const NewLoanForm: FC<NewLoanFormProps> = ({ pool }) => {
     [collateralAmount, maxCollateralAmount],
   );
 
-  const preparedInterest = calculatePreparedInterest(
+  const preparedInterest = calculatePrepaidInterest(
     borrowApr,
     borrowSize,
     borrowDays,
@@ -307,7 +308,7 @@ export const NewLoanForm: FC<NewLoanFormProps> = ({ pool }) => {
 
         <MaxButton
           onClick={onMaximumBorrowAmountClick}
-          value={borrowTokenBalance}
+          value={maximumBorrowAmount}
           token={borrowToken}
           dataAttribute="new-loan-maximum-borrow-amount-button"
         />
@@ -316,7 +317,7 @@ export const NewLoanForm: FC<NewLoanFormProps> = ({ pool }) => {
         <AmountInput
           value={borrowAmount}
           onChangeText={setBorrowAmount}
-          maxAmount={borrowTokenBalance.toNumber()}
+          maxAmount={maximumBorrowAmount.toNumber()}
           label={t(translations.common.amount)}
           className="flex-grow-0 flex-shrink"
           invalid={!isValidBorrowAmount}

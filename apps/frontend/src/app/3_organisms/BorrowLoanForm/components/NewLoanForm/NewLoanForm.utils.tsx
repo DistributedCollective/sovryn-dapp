@@ -41,7 +41,7 @@ export const renderValue = (
     />
   );
 
-export const calculatePreparedInterest = (
+export const calculatePrepaidInterest = (
   apr: string,
   borrowSize: Decimal,
   borrowDays: number,

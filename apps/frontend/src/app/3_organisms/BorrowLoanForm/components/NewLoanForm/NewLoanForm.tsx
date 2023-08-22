@@ -28,19 +28,20 @@ import { AssetRenderer } from '../../../../2_molecules/AssetRenderer/AssetRender
 import { MaxButton } from '../../../../2_molecules/MaxButton/MaxButton';
 import { useLiquityBaseParams } from '../../../../5_pages/ZeroPage/hooks/useLiquityBaseParams';
 import { BITCOIN } from '../../../../../constants/currencies';
-import { COLLATERAL_RATIO_THRESHOLDS } from '../../../../../constants/general';
+import {
+  MINIMUM_COLLATERAL_RATIO_LENDING_POOLS_SOV,
+  MINIMUM_COLLATERAL_RATIO_LENDING_POOLS,
+} from '../../../../../constants/lending';
 import { useGetRBTCPrice } from '../../../../../hooks/zero/useGetRBTCPrice';
 import { translations } from '../../../../../locales/i18n';
 import { LendingPool } from '../../../../../utils/LendingPool';
 import { dateFormat } from '../../../../../utils/helpers';
 import { decimalic } from '../../../../../utils/math';
 import { AdvancedSettings } from '../AdvancedSettings/AdvancedSettings';
-import {
-  MINIMUM_COLLATERAL_RATIO,
-  DEFAULT_LOAN_DURATION,
-} from './NewLoanForm.constants';
+import { DEFAULT_LOAN_DURATION } from './NewLoanForm.constants';
 import {
   calculatePrepaidInterest,
+  getCollateralRatioThresholds,
   getOriginationFeeAmount,
   renderValue,
 } from './NewLoanForm.utils';
@@ -52,6 +53,8 @@ import { useGetMaximumFirstRolloverDate } from './hooks/useGetMaximumFirstRollov
 import { useOpenNewLoan } from './hooks/useOpenNewLoan';
 
 const pageTranslations = translations.fixedInterestPage;
+
+const defaultFirstRolloverDate = dayjs().add(DEFAULT_LOAN_DURATION, 'day');
 
 type NewLoanFormProps = {
   pool: LendingPool;
@@ -79,12 +82,6 @@ export const NewLoanForm: FC<NewLoanFormProps> = ({ pool }) => {
   const { borrowApr } = useGetBorrowingAPR(borrowToken, borrowSize);
   const { price: rbtcPrice } = useGetRBTCPrice();
 
-  const currentDate = useMemo(() => dayjs(), []);
-
-  const defaultFirstRolloverDate = useMemo(
-    () => currentDate.add(DEFAULT_LOAN_DURATION, 'day'),
-    [currentDate],
-  );
   const [borrowDays, setBorrowDays] = useState(
     dayjs(defaultFirstRolloverDate).unix(),
   );
@@ -134,9 +131,10 @@ export const NewLoanForm: FC<NewLoanFormProps> = ({ pool }) => {
   );
 
   const maximumBorrowAmount = useGetMaximumBorrowAmount(
-    borrowSize,
     borrowToken,
     collateralToken,
+    borrowDays,
+    borrowApr,
     collateralSize,
   );
 
@@ -161,20 +159,20 @@ export const NewLoanForm: FC<NewLoanFormProps> = ({ pool }) => {
   );
 
   const isValidBorrowAmount = useMemo(
-    () => Number(borrowAmount) <= Number(maximumBorrowAmount),
-    [borrowAmount, maximumBorrowAmount],
+    () => (borrowSize.gt(0) ? borrowSize.lte(maximumBorrowAmount) : true),
+    [borrowSize, maximumBorrowAmount],
   );
 
   const isValidCollateralAmount = useMemo(
-    () => Number(collateralAmount) <= Number(maxCollateralAmount),
-    [collateralAmount, maxCollateralAmount],
+    () =>
+      collateralSize.gt(0) ? collateralSize.lte(maxCollateralAmount) : true,
+    [collateralSize, maxCollateralAmount],
   );
 
   const preparedInterest = calculatePrepaidInterest(
     borrowApr,
     borrowSize,
     borrowDays,
-    currentDate.unix(),
   );
 
   const originationFee = useMemo(
@@ -187,12 +185,16 @@ export const NewLoanForm: FC<NewLoanFormProps> = ({ pool }) => {
     [borrowSize, preparedInterest],
   );
 
+  const minimumCollateralRatio = useMemo(
+    () =>
+      collateralToken === SupportedTokens.sov
+        ? MINIMUM_COLLATERAL_RATIO_LENDING_POOLS_SOV
+        : MINIMUM_COLLATERAL_RATIO_LENDING_POOLS,
+    [collateralToken],
+  );
+
   const collateralRatio = useMemo(() => {
-    if (
-      [collateralSize, totalBorrow].some(v => v.isZero()) ||
-      !isValidBorrowAmount ||
-      !isValidCollateralAmount
-    ) {
+    if ([collateralSize, totalBorrow, borrowSize].some(v => v.isZero())) {
       return Decimal.ZERO;
     }
     const price =
@@ -205,50 +207,41 @@ export const NewLoanForm: FC<NewLoanFormProps> = ({ pool }) => {
   }, [
     collateralSize,
     totalBorrow,
+    borrowSize,
     collateralToken,
     rbtcPrice,
     collateralPriceUsd,
-    isValidBorrowAmount,
-    isValidCollateralAmount,
     borrowToken,
     borrowPriceUsd,
   ]);
 
   const isValidCollateralRatio = useMemo(() => {
-    if (
-      collateralSize.isZero() ||
-      borrowSize.isZero() ||
-      !isValidBorrowAmount ||
-      !isValidCollateralAmount
-    ) {
+    if (collateralSize.isZero() || borrowSize.isZero()) {
       return true;
     }
-    return collateralRatio.gte(MINIMUM_COLLATERAL_RATIO.mul(100));
-  }, [
-    collateralRatio,
-    collateralSize,
-    borrowSize,
-    isValidBorrowAmount,
-    isValidCollateralAmount,
-  ]);
+    return collateralRatio.gte(minimumCollateralRatio.mul(100));
+  }, [collateralSize, borrowSize, collateralRatio, minimumCollateralRatio]);
 
   const collateralRatioError = useMemo(() => {
-    if (collateralRatio.lt(MINIMUM_COLLATERAL_RATIO.mul(100))) {
+    if (collateralRatio.lt(minimumCollateralRatio.mul(100))) {
       return t(pageTranslations.newLoanDialog.labels.collateralRatioError, {
-        min: MINIMUM_COLLATERAL_RATIO.mul(100),
+        min: minimumCollateralRatio.mul(100),
       });
     }
     return '';
-  }, [collateralRatio]);
+  }, [collateralRatio, minimumCollateralRatio]);
 
   const liquidationPrice = useMemo(() => {
     if (!isValidCollateralRatio) {
       return Decimal.ZERO;
     }
-    return decimalic(
-      MINIMUM_COLLATERAL_RATIO.mul(borrowSize).div(collateralSize),
-    );
-  }, [collateralSize, borrowSize, isValidCollateralRatio]);
+    return minimumCollateralRatio.mul(borrowSize).div(collateralSize);
+  }, [
+    isValidCollateralRatio,
+    minimumCollateralRatio,
+    borrowSize,
+    collateralSize,
+  ]);
 
   const renderFirstRolloverDate = useMemo(() => {
     if (borrowSize.lte(Decimal.ZERO) || collateralSize.lte(Decimal.ZERO)) {
@@ -307,6 +300,11 @@ export const NewLoanForm: FC<NewLoanFormProps> = ({ pool }) => {
     borrowSize,
     collateralToken,
     borrowToken,
+  );
+
+  const collateralRatioThresholds = useMemo(
+    () => getCollateralRatioThresholds(collateralToken),
+    [collateralToken],
   );
 
   return (
@@ -476,10 +474,10 @@ export const NewLoanForm: FC<NewLoanFormProps> = ({ pool }) => {
       </div>
 
       <HealthBar
-        start={COLLATERAL_RATIO_THRESHOLDS.START}
-        middleStart={COLLATERAL_RATIO_THRESHOLDS.MIDDLE_START}
-        middleEnd={COLLATERAL_RATIO_THRESHOLDS.MIDDLE_END}
-        end={COLLATERAL_RATIO_THRESHOLDS.END}
+        start={collateralRatioThresholds.START}
+        middleStart={collateralRatioThresholds.MIDDLE_START}
+        middleEnd={collateralRatioThresholds.MIDDLE_END}
+        end={collateralRatioThresholds.END}
         value={collateralRatio.toNumber()}
       />
       {!isValidCollateralRatio && (

@@ -1,7 +1,5 @@
 import { useMemo } from 'react';
 
-import dayjs from 'dayjs';
-
 import { SupportedTokens } from '@sovryn/contracts';
 import { Decimal } from '@sovryn/utils';
 
@@ -13,22 +11,19 @@ import { useMaxAssetBalance } from '../../../../../../hooks/useMaxAssetBalance';
 import { useGetRBTCPrice } from '../../../../../../hooks/zero/useGetRBTCPrice';
 import { decimalic } from '../../../../../../utils/math';
 import { calculatePrepaidInterest } from '../NewLoanForm.utils';
-import { useGetBorrowingAPR } from './useGetBorrowingAPR';
 import { useGetCollateralAssetPrice } from './useGetCollateralAssetPrice';
 import { useGetMaximumCollateralAmount } from './useGetMaximumCollateralAmount';
 
-const loanDuration = 28; // TODO: It's hardcoded for now, change it later
-
 export const useGetMaximumBorrowAmount = (
-  borrowAmount: Decimal,
-  borrowAsset: SupportedTokens,
-  collateralAsset: SupportedTokens,
-  //loanDuration?: number,
+  borrowToken: SupportedTokens,
+  collateralToken: SupportedTokens,
+  loanDuration: number,
+  borrowApr: string,
   collateralAmount?: Decimal,
 ) => {
-  const { weiBalance: borrowAssetBalance } = useMaxAssetBalance(borrowAsset);
+  const { weiBalance: borrowAssetBalance } = useMaxAssetBalance(borrowToken);
   const maximumCollateralAmount =
-    useGetMaximumCollateralAmount(collateralAsset);
+    useGetMaximumCollateralAmount(collateralToken);
 
   const collateral = useMemo(
     () =>
@@ -41,21 +36,21 @@ export const useGetMaximumBorrowAmount = (
   const { price: rbtcPrice } = useGetRBTCPrice();
 
   const { borrowPriceUsd, collateralPriceUsd } = useGetCollateralAssetPrice(
-    borrowAsset,
-    collateralAsset,
+    borrowToken,
+    collateralToken,
   );
 
   const collateralPriceInLoanAsset = useMemo(
     () =>
       decimalic(
-        collateralAsset === SupportedTokens.rbtc
+        collateralToken === SupportedTokens.rbtc
           ? rbtcPrice
           : collateralPriceUsd,
-      ).div(borrowAsset === SupportedTokens.rbtc ? rbtcPrice : borrowPriceUsd),
+      ).div(borrowToken === SupportedTokens.rbtc ? rbtcPrice : borrowPriceUsd),
     [
-      borrowAsset,
+      borrowToken,
       borrowPriceUsd,
-      collateralAsset,
+      collateralToken,
       collateralPriceUsd,
       rbtcPrice,
     ],
@@ -63,20 +58,15 @@ export const useGetMaximumBorrowAmount = (
 
   const minimumCollateralRatio = useMemo(
     () =>
-      collateralAsset === SupportedTokens.sov
+      collateralToken === SupportedTokens.sov
         ? MINIMUM_COLLATERAL_RATIO_LENDING_POOLS_SOV
         : MINIMUM_COLLATERAL_RATIO_LENDING_POOLS,
-    [collateralAsset],
+    [collateralToken],
   );
 
   const maximumLoanToCollateralRatio = useMemo(
     () => Decimal.ONE.div(minimumCollateralRatio),
     [minimumCollateralRatio],
-  );
-
-  const { borrowApr } = useGetBorrowingAPR(
-    borrowAsset,
-    !borrowAmount || borrowAmount.isZero() ? Decimal.ONE : borrowAmount,
   );
 
   const maxBorrow = useMemo(
@@ -88,14 +78,8 @@ export const useGetMaximumBorrowAmount = (
   );
 
   const prepaidInterest = useMemo(
-    () =>
-      calculatePrepaidInterest(
-        borrowApr,
-        maxBorrow,
-        dayjs().add(loanDuration, 'day').unix(),
-        dayjs().unix(),
-      ),
-    [borrowApr, maxBorrow],
+    () => calculatePrepaidInterest(borrowApr, maxBorrow, loanDuration),
+    [borrowApr, loanDuration, maxBorrow],
   );
 
   const result: Decimal = useMemo(

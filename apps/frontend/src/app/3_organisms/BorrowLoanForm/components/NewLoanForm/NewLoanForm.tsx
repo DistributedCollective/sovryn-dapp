@@ -37,7 +37,7 @@ import { decimalic } from '../../../../../utils/math';
 import { AdvancedSettings } from '../AdvancedSettings/AdvancedSettings';
 import {
   MINIMUM_COLLATERAL_RATIO,
-  MIN_BORROWING_DAYS,
+  DEFAULT_LOAN_DURATION,
 } from './NewLoanForm.constants';
 import {
   calculatePrepaidInterest,
@@ -48,6 +48,7 @@ import { useGetBorrowingAPR } from './hooks/useGetBorrowingAPR';
 import { useGetCollateralAssetPrice } from './hooks/useGetCollateralAssetPrice';
 import { useGetMaximumBorrowAmount } from './hooks/useGetMaximumBorrowAmount';
 import { useGetMaximumCollateralAmount } from './hooks/useGetMaximumCollateralAmount';
+import { useGetMaximumFirstRolloverDate } from './hooks/useGetMaximumFirstRolloverDate';
 import { useOpenNewLoan } from './hooks/useOpenNewLoan';
 
 const pageTranslations = translations.fixedInterestPage;
@@ -80,11 +81,13 @@ export const NewLoanForm: FC<NewLoanFormProps> = ({ pool }) => {
 
   const currentDate = useMemo(() => dayjs(), []);
 
-  const minBorrowingDays = useMemo(
-    () => currentDate.add(MIN_BORROWING_DAYS, 'day'),
+  const defaultFirstRolloverDate = useMemo(
+    () => currentDate.add(DEFAULT_LOAN_DURATION, 'day'),
     [currentDate],
   );
-  const [borrowDays, setBorrowDays] = useState(dayjs(minBorrowingDays).unix());
+  const [borrowDays, setBorrowDays] = useState(
+    dayjs(defaultFirstRolloverDate).unix(),
+  );
   const collateralAssets = useMemo(() => pool.getBorrowCollateral(), [pool]);
   const [collateralAssetPrice, setCollateralAssetPrice] = useState('0');
 
@@ -299,6 +302,13 @@ export const NewLoanForm: FC<NewLoanFormProps> = ({ pool }) => {
     }
   }, [collateralToken, borrowPriceUsd, rbtcPrice, collateralPriceUsd]);
 
+  const maximumFirstRolloverDate = useGetMaximumFirstRolloverDate(
+    collateralSize,
+    borrowSize,
+    collateralToken,
+    borrowToken,
+  );
+
   return (
     <>
       <div className="flex flex-row justify-between items-center">
@@ -398,7 +408,7 @@ export const NewLoanForm: FC<NewLoanFormProps> = ({ pool }) => {
       <AdvancedSettings
         date={borrowDays}
         onChange={setBorrowDays}
-        maxDate={Math.floor(minBorrowingDays.unix())}
+        maxDate={maximumFirstRolloverDate}
         className="mt-6"
         disabled={isAdvancedSettingsDisabled}
       />

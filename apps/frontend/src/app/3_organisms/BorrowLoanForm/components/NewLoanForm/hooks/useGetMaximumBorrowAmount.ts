@@ -76,7 +76,7 @@ export const useGetMaximumBorrowAmount = (
 
   const { borrowApr } = useGetBorrowingAPR(
     borrowAsset,
-    !borrowAmount || borrowAmount.eq(0) ? Decimal.ONE : borrowAmount,
+    !borrowAmount || borrowAmount.isZero() ? Decimal.ONE : borrowAmount,
   );
 
   const maxBorrow = useMemo(

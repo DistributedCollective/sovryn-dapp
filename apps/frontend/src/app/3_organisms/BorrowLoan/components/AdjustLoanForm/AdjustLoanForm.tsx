@@ -21,8 +21,8 @@ import { Decimal } from '@sovryn/utils';
 import { AssetRenderer } from '../../../../2_molecules/AssetRenderer/AssetRenderer';
 import { LoanItem } from '../../../../5_pages/BorrowPage/components/OpenLoansTable/OpenLoansTable.types';
 import { useLiquityBaseParams } from '../../../../5_pages/ZeroPage/hooks/useLiquityBaseParams';
-import { BITCOIN } from '../../../../../constants/currencies';
 import { COLLATERAL_RATIO_THRESHOLDS } from '../../../../../constants/general';
+import { getTokenDisplayName } from '../../../../../constants/tokens';
 import { useAssetBalance } from '../../../../../hooks/useAssetBalance';
 import { useMaxAssetBalance } from '../../../../../hooks/useMaxAssetBalance';
 import { useGetRBTCPrice } from '../../../../../hooks/zero/useGetRBTCPrice';
@@ -30,7 +30,11 @@ import { translations } from '../../../../../locales/i18n';
 import { decimalic } from '../../../../../utils/math';
 import { MINIMUM_COLLATERAL_RATIO } from '../../../ZeroLocForm/constants';
 import { getOriginationFeeAmount } from '../../../ZeroLocForm/utils';
-import { INTEREST_DURATION } from './AdjustLoanForm.constants';
+import {
+  COLLATERAL_TABS,
+  DEBT_TABS,
+  INTEREST_DURATION,
+} from './AdjustLoanForm.constants';
 import { AmountType } from './AdjustLoanForm.types';
 import {
   calculatePreparedInterest,
@@ -43,7 +47,6 @@ import { useGetBorrowingAPR } from './hooks/useGetBorrowingAPR';
 import { useGetCollateralAssetPrice } from './hooks/useGetCollateralAssetPrice';
 
 const pageTranslations = translations.fixedInterestPage.adjustLoanDialog;
-const ACTIVE_CLASSNAME = 'bg-gray-70 text-primary-20';
 
 type AdjustLoanFormProps = {
   loan: LoanItem;
@@ -97,48 +100,12 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
     }
   }, [isDebtCloseType, loan.collateral, loan.debt]);
 
-  const debtTabs = useMemo(
-    () => [
-      {
-        amountType: AmountType.Borrow,
-        label: t(pageTranslations.actions.borrow),
-        activeClassName: ACTIVE_CLASSNAME,
-      },
-      {
-        amountType: AmountType.Repay,
-        label: t(pageTranslations.actions.repay),
-        activeClassName: ACTIVE_CLASSNAME,
-      },
-      {
-        amountType: AmountType.Close,
-        label: t(pageTranslations.actions.close),
-        activeClassName: ACTIVE_CLASSNAME,
-      },
-    ],
-    [],
-  );
   const { balance: debtTokenBalance } = useAssetBalance(
     debtToken as SupportedTokens,
   );
   const { borrowPriceUsd, collateralPriceUsd } = useGetCollateralAssetPrice(
     debtToken,
     collateralToken,
-  );
-
-  const collateralTabs = useMemo(
-    () => [
-      {
-        amountType: AmountType.Add,
-        label: t(pageTranslations.actions.add),
-        activeClassName: ACTIVE_CLASSNAME,
-      },
-      {
-        amountType: AmountType.Withdraw,
-        label: t(pageTranslations.actions.withdraw),
-        activeClassName: ACTIVE_CLASSNAME,
-      },
-    ],
-    [],
   );
 
   const {
@@ -251,11 +218,10 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
     );
   }, [collateralSize, debtSize, newTotalDebt]);
 
-  const submitButtonDisabled = useMemo(() => {
-    const isFormValid = debtSize.isZero() || collateralSize.isZero();
-
-    return isFormValid;
-  }, [debtSize, collateralSize]);
+  const submitButtonDisabled = useMemo(
+    () => debtSize.isZero() || collateralSize.isZero(),
+    [debtSize, collateralSize],
+  );
 
   const handleFormSubmit = useCallback(() => {}, []);
 
@@ -284,7 +250,7 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
           <Label
             token={loan.debtAsset}
             maxAmount={debtTokenBalance}
-            tabs={debtTabs}
+            tabs={DEBT_TABS}
             onTabChange={setDebtType}
             onMaxAmountClicked={() =>
               setDebtAmount(debtTokenBalance.toString())
@@ -322,7 +288,7 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
           <Label
             token={collateralToken}
             maxAmount={maxCollateralAmount}
-            tabs={collateralTabs}
+            tabs={COLLATERAL_TABS}
             onTabChange={setCollateralType}
             onMaxAmountClicked={() =>
               setCollateralAmount(maxCollateralAmount.toString())
@@ -472,10 +438,7 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
             />
             <SimpleTableRow
               label={t(pageTranslations.labels.collateralPrice, {
-                token:
-                  collateralToken === SupportedTokens.rbtc
-                    ? BITCOIN
-                    : collateralToken.toUpperCase(),
+                token: getTokenDisplayName(collateralToken),
               })}
               value={
                 <DynamicValue

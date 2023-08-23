@@ -522,8 +522,8 @@
                 "borrow": "Borrow",
                 "repay": "Repay",
                 "close": "Close",
-                "add": "Add",
-                "withdraw": "Withdraw"
+                "add": "Add collateral",
+                "withdraw": "Withdraw collateral"
             },
             "labels": {
                 "borrowApr": "Borrow APR",

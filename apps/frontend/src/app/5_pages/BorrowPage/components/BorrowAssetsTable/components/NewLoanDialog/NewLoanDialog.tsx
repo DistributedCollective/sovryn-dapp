@@ -29,12 +29,10 @@ export const NewLoanDialog: FC<NewLoanDialogProps> = ({
   const { checkMaintenance } = useMaintenance();
   const states = useGetBorrowMaintenance(pool.getAsset());
 
-  const locked = useMemo(() => {
-    return (
+  const locked = useMemo(() => (
       (states.NEW_LOANS && checkMaintenance(states.NEW_LOANS)) ||
       checkMaintenance(states.FULL)
-    );
-  }, [checkMaintenance, states.FULL, states.NEW_LOANS]);
+    ), [checkMaintenance, states.FULL, states.NEW_LOANS]);
 
   return (
     <Dialog isOpen={isOpen}>

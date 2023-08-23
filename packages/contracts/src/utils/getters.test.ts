@@ -56,6 +56,22 @@ describe('utils/contracts/getters.ts', () => {
     });
   });
 
+  describe('getLendTokenContract', () => {
+    it('load lowercased dllr lend token contract address', async () => {
+      const token = await getLendTokenContract('dllr');
+      expect(token.address).toBe(
+        contracts.lendTokens.rsk?.dllr.address.toLowerCase(),
+      );
+    });
+
+    it('loads lowercased dllr lend token contract from non default chain', async () => {
+      const token = await getLendTokenContract('dllr', ChainIds.RSK_TESTNET);
+      expect(token.address).toBe(
+        contracts.lendTokens.rskTestnet?.dllr.address.toLowerCase(),
+      );
+    });
+  });
+
   describe('getProtocolContract', () => {
     it('load lowercased xusd loan token contract address', async () => {
       const token = await getProtocolContract('swapNetwork');

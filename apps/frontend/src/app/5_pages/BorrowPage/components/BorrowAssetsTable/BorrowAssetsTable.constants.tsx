@@ -70,6 +70,6 @@ export const COLUMNS_CONFIG = [
   {
     id: '',
     title: '',
-    cellRenderer: () => <NewLoanButton />,
+    cellRenderer: (pool: LendingPool) => <NewLoanButton pool={pool} />,
   },
 ];

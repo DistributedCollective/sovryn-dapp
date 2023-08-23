@@ -15,7 +15,6 @@ import {
   ErrorBadge,
   ErrorLevel,
   HealthBar,
-  Link,
   Paragraph,
   ParagraphSize,
   Select,
@@ -175,9 +174,10 @@ export const NewLoanForm: FC<NewLoanFormProps> = ({ pool }) => {
     borrowDays,
   );
 
+  // TODO: Verify with Light if we want to show it.
   const originationFee = useMemo(
-    () => getOriginationFeeAmount(borrowSize, minBorrowingFeeRate),
-    [minBorrowingFeeRate, borrowSize],
+    () => getOriginationFeeAmount(collateralSize, minBorrowingFeeRate),
+    [collateralSize, minBorrowingFeeRate],
   );
 
   const totalBorrow = useMemo(
@@ -443,7 +443,7 @@ export const NewLoanForm: FC<NewLoanFormProps> = ({ pool }) => {
               <DynamicValue
                 initialValue="0"
                 value={originationFee.toString()}
-                renderer={value => renderValue(value, borrowToken)}
+                renderer={value => renderValue(value, collateralToken)}
               />
             }
           />
@@ -525,12 +525,13 @@ export const NewLoanForm: FC<NewLoanFormProps> = ({ pool }) => {
           label={
             <Trans
               i18nKey={pageTranslations.newLoanDialog.labels.disclaimer}
-              components={[
-                <Link
-                  text={t(pageTranslations.newLoanDialog.labels.disclaimerCTA)}
-                  href="#"
-                />,
-              ]}
+              // TODO: Add the link once we have it.
+              // components={[
+              //   <Link
+              //     text={t(pageTranslations.newLoanDialog.labels.disclaimerCTA)}
+              //     href="#"
+              //   />,
+              // ]}
             />
           }
         />

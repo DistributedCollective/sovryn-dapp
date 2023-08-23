@@ -23,7 +23,7 @@ import { SECONDS_IN_YEAR } from './NewLoanForm.constants';
 export const getOriginationFeeAmount = (
   collateralAmount: Decimal,
   originationFeeRate: Decimal,
-) => collateralAmount.mul(originationFeeRate);
+) => collateralAmount.mul(originationFeeRate.div(100));
 
 export const renderValue = (
   value: string,

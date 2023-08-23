@@ -2,10 +2,15 @@ import React from 'react';
 
 import { t } from 'i18next';
 
+import { HelperButton } from '@sovryn/ui';
+
 import { AssetRenderer } from '../../../../2_molecules/AssetRenderer/AssetRenderer';
+import { MINIMUM_COLLATERAL_RATIO_BORROWING_MAINTENANCE } from '../../../../../constants/lending';
 import { translations } from '../../../../../locales/i18n';
 import { LendingPool } from '../../../../../utils/LendingPool';
-import { AcceptedCollateral } from './components/AcceptedCollateral/AcceptedCollateral';
+import { AcceptedCollateral } from '../../../LendPage/components/AcceptedCollateral/AcceptedCollateral';
+import { NextSupplyInterestRate } from '../../../LendPage/components/NextSupplyInterestRate/NextSupplyInterestRate';
+import { AvailableSupply } from './components/AvailableSupply/AvailableSupply';
 import { NewLoanButton } from './components/NewLoanButton/NewLoanButton';
 
 const translation = translations.fixedInterestPage.borrowAssetsTable.columns;
@@ -26,12 +31,14 @@ export const COLUMNS_CONFIG = [
   {
     id: 'borrowApr',
     title: t(translation.borrowApr),
-    cellRenderer: (pool: LendingPool) => <div>2%</div>,
+    cellRenderer: (pool: LendingPool) => (
+      <NextSupplyInterestRate asset={pool.getAsset()} />
+    ),
   },
   {
     id: 'availableSupply',
     title: t(translation.availableSupply),
-    cellRenderer: (pool: LendingPool) => <div>100</div>,
+    cellRenderer: (pool: LendingPool) => <AvailableSupply pool={pool} />,
   },
   {
     id: 'acceptedCollateral',
@@ -40,8 +47,25 @@ export const COLUMNS_CONFIG = [
   },
   {
     id: 'minCollateralRatio',
-    title: t(translation.minCollateralRatio),
-    cellRenderer: (pool: LendingPool) => <div>110%</div>,
+    title: (
+      <span className="flex items-center gap-1">
+        {t(
+          translations.fixedInterestPage.borrowAssetsTable.columns
+            .minCollateralRatio,
+        )}
+        <HelperButton
+          content={t(
+            translations.fixedInterestPage.borrowAssetsTable.columns
+              .minCollateralRatioTooltip,
+          )}
+        />
+      </span>
+    ),
+    cellRenderer: () => (
+      <div>
+        {MINIMUM_COLLATERAL_RATIO_BORROWING_MAINTENANCE.mul(100).toString()}%
+      </div>
+    ),
   },
   {
     id: '',

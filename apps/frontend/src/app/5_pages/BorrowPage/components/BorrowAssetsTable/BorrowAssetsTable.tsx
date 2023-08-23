@@ -6,6 +6,7 @@ import { Paragraph, Table } from '@sovryn/ui';
 
 import { translations } from '../../../../../locales/i18n';
 import { LendingPoolDictionary } from '../../../../../utils/LendingPoolDictionary';
+import { generateRowTitle } from '../../../LendPage/components/LendFrame/LendFrame.utils';
 import { COLUMNS_CONFIG } from './BorrowAssetsTable.constants';
 
 const lendPools = LendingPoolDictionary.list();
@@ -22,7 +23,7 @@ export const BorrowAssetsTable: FC = () => (
       <Table
         columns={COLUMNS_CONFIG}
         rows={lendPools}
-        //rowTitle={generateRowTitle}
+        rowTitle={generateRowTitle}
         className="text-gray-10 lg:px-6 lg:py-4 text-xs"
         noData={t(translations.common.tables.noData)}
         dataAttribute="borrow-assets-table"

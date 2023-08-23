@@ -75,7 +75,15 @@
         "funding": "Funding",
         "fundWallet": "Fund your Wallet",
         "nav": {
-            "borrow": "Borrow",
+            "borrow": {
+                "title": "Borrow",
+                "subMenu": {
+                    "fixedInterest": "Fixed-interest loans",
+                    "fixedInterestDescription": "Borrow without rate hikes",
+                    "lineOfCredit": "Zero line of credit",
+                    "lineOfCreditDescription": "Borrow without interest"
+                }
+            },
             "earn": {
                 "title": "Earn",
                 "subMenu": {
@@ -485,7 +493,8 @@
                 "borrowApr": "Borrow APR",
                 "availableSupply": "Available supply",
                 "acceptedCollateral": "Accepted collateral",
-                "minCollateralRatio": "Min collateral ratio"
+                "minCollateralRatio": "Min collateral ratio",
+                "minCollateralRatioTooltip": "The minimum collateral ratio required to maintain the loan after it is opened. This may differ from the minimum initial collateral ratio, which changes depending on the collateral asset used."
             },
             "action": "New loan"
         },

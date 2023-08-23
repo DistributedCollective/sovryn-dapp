@@ -1,4 +1,4 @@
-import { LendingPool } from '../../../../../utils/LendingPool';
+import { LendingPool } from '../../../../../../../../utils/LendingPool';
 import { MockData } from '../LendFrameChart.types';
 
 export const useGetLendFrameChartOptions = (

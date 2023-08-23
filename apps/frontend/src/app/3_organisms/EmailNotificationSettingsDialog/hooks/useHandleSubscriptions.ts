@@ -36,9 +36,22 @@ export const useHandleSubscriptions = () => {
     setSystemToggle,
   ]);
 
+  const withDefaultSubscriptions = useCallback(
+    (subscriptions: Notification[]) =>
+      defaultSubscriptionsArray.map(
+        item =>
+          subscriptions.find(
+            subscription => subscription.notification === item.notification,
+          ) ?? item,
+      ),
+    [],
+  );
+
   const parseSubscriptionsResponse = useCallback(
     (subscriptions: Notification[]) => {
-      const parsedSubscriptions: Notification[] = subscriptions
+      const parsedSubscriptions: Notification[] = withDefaultSubscriptions(
+        subscriptions,
+      )
         .filter(item =>
           Object.values(NotificationMessageType).includes(item.notification),
         )
@@ -64,19 +77,36 @@ export const useHandleSubscriptions = () => {
       );
     },
     [
+      withDefaultSubscriptions,
       setSubscriptions,
+      setServerSubscriptionsState,
       setMarginCallsToggle,
       setLiquidationsToggle,
       setStabilityPoolToggle,
       setSystemToggle,
-      setServerSubscriptionsState,
     ],
   );
 
   const updateSubscriptions = useCallback(
     (group: AlertGroup) => {
-      const oldSubscriptionsState =
-        subscriptions.length > 0 ? subscriptions : defaultSubscriptionsArray;
+      let oldSubscriptionsState =
+        subscriptions.length === 0
+          ? defaultSubscriptionsArray
+          : defaultSubscriptionsArray.map(
+              item =>
+                subscriptions.find(
+                  subscription =>
+                    subscription.notification === item.notification,
+                ) ?? item,
+            );
+
+      // fixes bug which caused group to always be disabled,
+      // when new subscription type is added to the group and it's not subscribed to
+      const checked = oldSubscriptionsState
+        .filter(item =>
+          AlertGroupToNotificationsMapping[group].includes(item.notification),
+        )
+        .some(item => !item.isSubscribed);
 
       const newSubscriptionsState = oldSubscriptionsState.map(item => {
         if (
@@ -84,10 +114,9 @@ export const useHandleSubscriptions = () => {
         ) {
           return {
             notification: item.notification,
-            isSubscribed: !item.isSubscribed,
+            isSubscribed: checked,
           };
         }
-
         return item;
       });
 

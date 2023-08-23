@@ -93,9 +93,9 @@ export const EmailNotificationSettingsContextProvider: React.FC<
       const haveSubscriptionsBeenUpdated = subscriptions.some(
         item =>
           item.isSubscribed !==
-          serverSubscriptionsState.find(
-            serverItem => serverItem.notification === item.notification,
-          )!.isSubscribed,
+            serverSubscriptionsState.find(
+              serverItem => serverItem.notification === item.notification,
+            )?.isSubscribed || false,
       );
 
       setHaveSubscriptionsBeenUpdated(haveSubscriptionsBeenUpdated);

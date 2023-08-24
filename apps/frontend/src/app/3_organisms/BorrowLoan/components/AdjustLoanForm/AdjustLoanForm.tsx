@@ -19,6 +19,7 @@ import {
 import { Decimal } from '@sovryn/utils';
 
 import { AssetRenderer } from '../../../../2_molecules/AssetRenderer/AssetRenderer';
+import { convertLoanTokenToSupportedAssets } from '../../../../5_pages/BorrowPage/components/OpenLoansTable/OpenLoans.utils';
 import { LoanItem } from '../../../../5_pages/BorrowPage/components/OpenLoansTable/OpenLoansTable.types';
 import { useLiquityBaseParams } from '../../../../5_pages/ZeroPage/hooks/useLiquityBaseParams';
 import { COLLATERAL_RATIO_THRESHOLDS } from '../../../../../constants/general';
@@ -45,6 +46,7 @@ import { CurrentLoanData } from './components/CurrentLoanData';
 import { Label } from './components/Label';
 import { useGetBorrowingAPR } from './hooks/useGetBorrowingAPR';
 import { useGetCollateralAssetPrice } from './hooks/useGetCollateralAssetPrice';
+import { useRepayLoan } from './hooks/useRepayLoan';
 
 const pageTranslations = translations.fixedInterestPage.adjustLoanDialog;
 
@@ -213,8 +215,6 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
     [debtSize, collateralSize],
   );
 
-  const handleFormSubmit = useCallback(() => {}, []);
-
   useEffect(() => {
     if (collateralToken === SupportedTokens.rbtc) {
       const price = decimalic(rbtcPrice).div(borrowPriceUsd);
@@ -225,38 +225,68 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
     }
   }, [collateralToken, borrowPriceUsd, rbtcPrice, collateralPriceUsd]);
 
-  const onDebtTabChange = useCallback((value: DebtTabAction) => {
-    switch (value) {
-      case DebtTabAction.Borrow:
-        setCollateralTab(CollateralTabAction.AddCollateral);
-        setDebtTab(value);
-        return;
-      case DebtTabAction.Repay:
-        setCollateralTab(CollateralTabAction.WithdrawCollateral);
-        setDebtTab(value);
-        return;
-      case DebtTabAction.Close:
-        setCollateralTab(CollateralTabAction.WithdrawCollateral);
-        setDebtTab(value);
-        return;
-      default:
-        return;
-    }
+  const setCloseDebtTabValues = useCallback(() => {
+    setDebtAmount(loan.debt.toString());
+    setCollateralAmount(loan.collateral.toString());
+  }, [loan.collateral, loan.debt]);
+
+  const resetCloseDebtTabValues = useCallback(() => {
+    setDebtAmount('');
+    setCollateralAmount('');
   }, []);
 
-  const onCollateralTabChange = useCallback((value: CollateralTabAction) => {
-    switch (value) {
-      case CollateralTabAction.AddCollateral:
-        setDebtTab(DebtTabAction.Borrow);
-        setCollateralTab(value);
-        return;
-      case CollateralTabAction.WithdrawCollateral:
-        setCollateralTab(value);
-        return;
-      default:
-        return;
-    }
-  }, []);
+  const handleRepay = useRepayLoan();
+
+  const handleFormSubmit = useCallback(() => {
+    handleRepay(
+      loan.debt.toString(),
+      loan.id,
+      convertLoanTokenToSupportedAssets(loan.debtAsset),
+    );
+  }, [handleRepay, loan.debt, loan.debtAsset, loan.id]);
+
+  const onDebtTabChange = useCallback(
+    (value: DebtTabAction) => {
+      switch (value) {
+        case DebtTabAction.Borrow:
+          setCollateralTab(CollateralTabAction.AddCollateral);
+          setDebtTab(value);
+          resetCloseDebtTabValues();
+          return;
+        case DebtTabAction.Repay:
+          setCollateralTab(CollateralTabAction.WithdrawCollateral);
+          setDebtTab(value);
+          resetCloseDebtTabValues();
+          return;
+        case DebtTabAction.Close:
+          setCollateralTab(CollateralTabAction.WithdrawCollateral);
+          setDebtTab(value);
+          setCloseDebtTabValues();
+          return;
+        default:
+          return;
+      }
+    },
+    [resetCloseDebtTabValues, setCloseDebtTabValues],
+  );
+
+  const onCollateralTabChange = useCallback(
+    (value: CollateralTabAction) => {
+      switch (value) {
+        case CollateralTabAction.AddCollateral:
+          setDebtTab(DebtTabAction.Borrow);
+          setCollateralTab(value);
+          resetCloseDebtTabValues();
+          return;
+        case CollateralTabAction.WithdrawCollateral:
+          setCollateralTab(value);
+          return;
+        default:
+          return;
+      }
+    },
+    [resetCloseDebtTabValues],
+  );
 
   return (
     <>

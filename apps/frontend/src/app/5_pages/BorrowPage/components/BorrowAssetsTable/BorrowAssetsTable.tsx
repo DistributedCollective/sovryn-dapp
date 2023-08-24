@@ -12,7 +12,7 @@ import { COLUMNS_CONFIG } from './BorrowAssetsTable.constants';
 const lendPools = LendingPoolDictionary.list();
 
 export const BorrowAssetsTable: FC = () => (
-  <div className="flex flex-col mb-10 border border-solid rounded border-gray-50 px-6 py-12">
+  <div className="flex flex-col mb-10 border border-solid rounded border-gray-50 px-4 md:px-6 py-12">
     <div className="flex justify-between items-center mb-3 md:mb-6">
       <Paragraph className="text-base font-medium">
         {t(translations.fixedInterestPage.borrowAssetsTable.title)}

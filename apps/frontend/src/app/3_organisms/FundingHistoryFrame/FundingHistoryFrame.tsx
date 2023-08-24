@@ -27,14 +27,14 @@ import {
   BitcoinTransfer_OrderBy,
   useGetFundingLazyQuery,
 } from '../../../utils/graphql/rsk/generated';
-import { useGetFundingHistory } from './hooks/useGetFundingHistory';
-import { FundingHistoryType } from './types';
+import { FundingHistoryType } from './FundingHistoryFrame.types';
 import {
   columnsConfig,
   generateRowTitle,
   parseData,
   transactionTypeRenderer,
-} from './utils';
+} from './FundingHistoryFrame.utils';
+import { useGetFundingHistory } from './hooks/useGetFundingHistory';
 
 const pageSize = DEFAULT_HISTORY_FRAME_PAGE_SIZE;
 
@@ -128,10 +128,13 @@ export const FundingHistoryFrame: FC = () => {
         acc.push(
           {
             ...rows[0],
+            received: `${rows[0].received} ${BITCOIN}`,
+            serviceFee: `${rows[0].serviceFee} ${BITCOIN}`,
             type: transactionTypeRenderer(rows[0]),
           },
           {
             ...rows[1],
+            sent: `${rows[1].sent} ${BITCOIN}`,
             type: transactionTypeRenderer(rows[1]),
           },
         );
@@ -139,7 +142,7 @@ export const FundingHistoryFrame: FC = () => {
       return acc;
     }, []);
 
-    return fundingData.map(item => ({ ...item, token: BITCOIN }));
+    return fundingData.map(({ order, ...item }) => item);
   }, [t, account, addNotification, getFundingHistory, orderOptions]);
 
   useEffect(() => {

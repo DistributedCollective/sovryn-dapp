@@ -136,17 +136,15 @@ export const Header: FC = () => {
           </ol>
         }
         secondaryContent={
-          (account || pathname !== '/') && (
-            <div className="relative">
-              <ConnectWalletButton
-                onConnect={connectWallet}
-                onDisconnect={disconnectWallet}
-                address={account}
-                pending={pending}
-                dataAttribute="dapp-header-connect"
-              />
-            </div>
-          )
+          <div className="relative">
+            <ConnectWalletButton
+              onConnect={connectWallet}
+              onDisconnect={disconnectWallet}
+              address={account}
+              pending={pending}
+              dataAttribute="dapp-header-connect"
+            />
+          </div>
         }
         extraContent={
           <>

@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useState } from 'react';
+import React, { useCallback } from 'react';
 
 import { SupportedTokens } from '@sovryn/contracts';
 import { ITabItem, Tabs, TabType } from '@sovryn/ui';
@@ -6,37 +6,39 @@ import { Decimal } from '@sovryn/utils';
 
 import { MaxButton } from '../../../../../2_molecules/MaxButton/MaxButton';
 import { normalizeSuffix } from '../../../../../5_pages/BorrowPage/components/OpenLoansTable/OpenLoans.utils';
-import { AmountType } from '../AdjustLoanForm.types';
+import { CollateralTabAction, DebtTabAction } from '../AdjustLoanForm.types';
 
-interface ITabItemExtended extends ITabItem {
-  amountType: AmountType;
+interface ITabItemExtended<T> extends ITabItem {
+  tabAction: T;
 }
 
-type CustomLabelProps = {
+type CustomLabelProps<T> = {
   maxAmount: Decimal;
   token: string;
-  tabs: ITabItemExtended[];
-  onTabChange: (value: AmountType) => void;
+  tabs: ITabItemExtended<T>[];
+  onTabChange: (value: T) => void;
   onMaxAmountClicked: () => void;
   isDisabled?: boolean;
+  index: number;
+  setIndex: (index: number) => void;
 };
 
-export const Label: FC<CustomLabelProps> = ({
+export const Label = <T extends DebtTabAction | CollateralTabAction>({
   maxAmount,
   token,
   tabs,
   onTabChange,
   onMaxAmountClicked,
   isDisabled,
-}) => {
-  const [index, setIndex] = useState(0);
-
+  index,
+  setIndex,
+}: CustomLabelProps<T>) => {
   const onChangeIndex = useCallback(
     (index: number) => {
       setIndex(index);
-      onTabChange(tabs[index]?.amountType);
+      onTabChange(tabs[index]?.tabAction);
     },
-    [onTabChange, tabs],
+    [onTabChange, setIndex, tabs],
   );
 
   return (

@@ -1,7 +1,10 @@
-export enum AmountType {
-  Borrow = 'Borrow',
-  Repay = 'Repay',
-  Close = 'Close',
-  Add = 'Add',
-  Withdraw = 'Withdraw',
+export enum DebtTabAction {
+  Borrow,
+  Repay,
+  Close,
+}
+
+export enum CollateralTabAction {
+  AddCollateral,
+  WithdrawCollateral,
 }

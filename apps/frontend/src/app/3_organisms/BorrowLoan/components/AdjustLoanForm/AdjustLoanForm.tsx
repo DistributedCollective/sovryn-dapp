@@ -35,9 +35,9 @@ import {
   DEBT_TABS,
   INTEREST_DURATION,
 } from './AdjustLoanForm.constants';
-import { AmountType } from './AdjustLoanForm.types';
+import { CollateralTabAction, DebtTabAction } from './AdjustLoanForm.types';
 import {
-  calculatePreparedInterest,
+  calculatePrepaidInterest,
   normalizeToken,
   renderValue,
 } from './AdjustLoanForm.utils';
@@ -61,8 +61,10 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
     () => decimalic(collateralAmount),
     [collateralAmount],
   );
-  const [debtType, setDebtType] = useState(AmountType.Borrow);
-  const [collateralType, setCollateralType] = useState(AmountType.Add);
+  const [debtTab, setDebtTab] = useState(DebtTabAction.Borrow);
+  const [collateralTab, setCollateralTab] = useState(
+    CollateralTabAction.AddCollateral,
+  );
   const { minBorrowingFeeRate } = useLiquityBaseParams();
   const [collateralAssetPrice, setCollateralAssetPrice] = useState('0');
 
@@ -79,26 +81,14 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
   const { borrowApr } = useGetBorrowingAPR(debtToken, debtSize);
 
   const isCollateralWithdrawType = useMemo(
-    () => collateralType === AmountType.Withdraw,
-    [collateralType],
+    () => collateralTab === CollateralTabAction.WithdrawCollateral,
+    [collateralTab],
   );
 
   const isDebtCloseType = useMemo(
-    () => debtType === AmountType.Close,
-    [debtType],
+    () => debtTab === DebtTabAction.Close,
+    [debtTab],
   );
-
-  useEffect(() => {
-    if (isDebtCloseType) {
-      setDebtAmount(loan.debt.toString());
-      setCollateralAmount(loan.collateral.toString());
-      setCollateralType(AmountType.Withdraw);
-    } else {
-      setDebtAmount('');
-      setCollateralAmount('');
-      setCollateralType(AmountType.Add);
-    }
-  }, [isDebtCloseType, loan.collateral, loan.debt]);
 
   const { balance: debtTokenBalance } = useAssetBalance(
     debtToken as SupportedTokens,
@@ -136,7 +126,7 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
     );
   }, [loan.collateral, collateralAmount, originationFee, collateralSize]);
 
-  const preparedInterest = calculatePreparedInterest(
+  const prepaidInterest = calculatePrepaidInterest(
     borrowApr,
     debtSize.toString(),
     INTEREST_DURATION,
@@ -149,8 +139,8 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
 
     return decimalic(loan.debt.toString())
       .add(debtSize)
-      .add(preparedInterest.toString());
-  }, [loan.debt, debtSize, preparedInterest]);
+      .add(prepaidInterest.toString());
+  }, [loan.debt, debtSize, prepaidInterest]);
 
   const isValidDebtAmount = useMemo(
     () => Number(debtAmount) <= Number(debtTokenBalance),
@@ -235,6 +225,39 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
     }
   }, [collateralToken, borrowPriceUsd, rbtcPrice, collateralPriceUsd]);
 
+  const onDebtTabChange = useCallback((value: DebtTabAction) => {
+    switch (value) {
+      case DebtTabAction.Borrow:
+        setCollateralTab(CollateralTabAction.AddCollateral);
+        setDebtTab(value);
+        return;
+      case DebtTabAction.Repay:
+        setCollateralTab(CollateralTabAction.WithdrawCollateral);
+        setDebtTab(value);
+        return;
+      case DebtTabAction.Close:
+        setCollateralTab(CollateralTabAction.WithdrawCollateral);
+        setDebtTab(value);
+        return;
+      default:
+        return;
+    }
+  }, []);
+
+  const onCollateralTabChange = useCallback((value: CollateralTabAction) => {
+    switch (value) {
+      case CollateralTabAction.AddCollateral:
+        setDebtTab(DebtTabAction.Borrow);
+        setCollateralTab(value);
+        return;
+      case CollateralTabAction.WithdrawCollateral:
+        setCollateralTab(value);
+        return;
+      default:
+        return;
+    }
+  }, []);
+
   return (
     <>
       <CurrentLoanData
@@ -251,11 +274,13 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
             token={loan.debtAsset}
             maxAmount={debtTokenBalance}
             tabs={DEBT_TABS}
-            onTabChange={setDebtType}
+            onTabChange={onDebtTabChange}
             onMaxAmountClicked={() =>
               setDebtAmount(debtTokenBalance.toString())
             }
             isDisabled={isCollateralWithdrawType}
+            index={debtTab}
+            setIndex={setDebtTab}
           />
         }
         labelElement="div"
@@ -289,10 +314,12 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
             token={collateralToken}
             maxAmount={maxCollateralAmount}
             tabs={COLLATERAL_TABS}
-            onTabChange={setCollateralType}
+            onTabChange={onCollateralTabChange}
             onMaxAmountClicked={() =>
               setCollateralAmount(maxCollateralAmount.toString())
             }
+            index={collateralTab}
+            setIndex={setCollateralTab}
           />
         }
         labelElement="div"

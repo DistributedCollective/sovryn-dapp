@@ -24,7 +24,6 @@ import {
 import { Decimal } from '@sovryn/utils';
 
 import { withDeferredLoaderData } from '../../0_meta/DeferredDataLoader/withDeferredRouterData';
-import { DashboardWelcomeBanner } from '../../2_molecules/DashboardWelcomeBanner/DashboardWelcomeBanner';
 import { LOCStatus } from '../../2_molecules/LOCStatus/LOCStatus';
 import { SystemStats } from '../../2_molecules/SystemStats/SystemStats';
 import { GettingStartedPopup } from '../../3_organisms/GettingStartedPopup/GettingStartedPopup';
@@ -37,7 +36,6 @@ import { DEBT_TOKEN } from '../../3_organisms/ZeroLocForm/constants';
 import { LIQUIDATION_RESERVE_AMOUNT } from '../../../constants/general';
 import { getTokenDisplayName } from '../../../constants/tokens';
 import { useTransactionContext } from '../../../contexts/TransactionContext';
-import { useWalletConnect } from '../../../hooks';
 import { useAccount } from '../../../hooks/useAccount';
 import { translations } from '../../../locales/i18n';
 import { decimalic } from '../../../utils/math';
@@ -61,7 +59,6 @@ const ZeroPage: FC<ZeroPageProps> = ({ deferred: [price] }) => {
   const [collateralSurplusBalance, setCollateralSurplusBalance] =
     useState<Decimal>();
 
-  const { connectWallet } = useWalletConnect();
   const { account } = useAccount();
   const { refetch: getOpenTroves } = useGetUserOpenTrove(account);
   const { minBorrowingFeeRate } = useLiquityBaseParams();
@@ -152,14 +149,6 @@ const ZeroPage: FC<ZeroPageProps> = ({ deferred: [price] }) => {
             onClose={toggleClosePopup}
             withdrawalSurplus={collateralSurplusBalance}
             onWithdraw={claimCollateralSurplus}
-          />
-        )}
-
-        {showWelcomeBanner && !isLoading && (
-          <DashboardWelcomeBanner
-            openLOC={toggle}
-            connectWallet={connectWallet}
-            className="mb-10 md:mb-4"
           />
         )}
 

@@ -1,5 +1,6 @@
 import { useCallback } from 'react';
 
+import dayjs from 'dayjs';
 import { constants, ethers } from 'ethers';
 import { t } from 'i18next';
 
@@ -21,7 +22,8 @@ import {
   Transaction,
   TransactionType,
 } from '../../../../TransactionStepDialog/TransactionStepDialog.types';
-import { SECONDS_IN_DAY } from '../NewLoanForm.constants';
+
+const currentDate = dayjs().unix();
 
 export const useOpenNewLoan = () => {
   const { account, signer } = useAccount();
@@ -31,13 +33,15 @@ export const useOpenNewLoan = () => {
     async (
       borrowToken: SupportedTokens,
       borrowAmount: string,
-      loanDuration: number,
+      firstRolloverDate: number,
       collateralAmount: string,
       collateralToken: SupportedTokens,
     ) => {
       if (!signer) {
         return;
       }
+
+      const loanDuration = Math.ceil(firstRolloverDate - currentDate);
 
       const isCollateralRbtc = collateralToken === SupportedTokens.rbtc;
 
@@ -54,8 +58,6 @@ export const useOpenNewLoan = () => {
         isCollateralRbtc ? SupportedTokens.wrbtc : collateralToken,
         defaultChainId,
       );
-
-      const initialLoanDuration = SECONDS_IN_DAY * 28; // TODO: This is just hardcoded for now, will be dynamic in the future
 
       const transactions: Transaction[] = [];
 
@@ -82,7 +84,7 @@ export const useOpenNewLoan = () => {
           args: [
             constants.HashZero,
             toWei(borrowAmount),
-            initialLoanDuration,
+            loanDuration,
             toWei(collateralAmount),
             collateralTokenAddress,
             account,

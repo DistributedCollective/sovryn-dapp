@@ -37,6 +37,7 @@ export const useGetOpenLoans = () => {
         isSupportedPool(item.loanToken.symbol, item.collateralToken.symbol),
       )
       .map(item => ({
+        id: item.id,
         debt: Number(item.borrowedAmount),
         debtAsset: item.loanToken.symbol || '',
         collateral: Number(item.positionSize),

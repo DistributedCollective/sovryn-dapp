@@ -1,4 +1,5 @@
 export type LoanItem = {
+  id: string;
   debt: number;
   debtAsset: string;
   collateral: number;

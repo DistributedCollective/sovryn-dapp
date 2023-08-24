@@ -525,6 +525,9 @@
                 "add": "Add collateral",
                 "withdraw": "Withdraw collateral"
             },
+            "dialogTitles": {
+                "close": "Close a loan"
+            },
             "labels": {
                 "borrowApr": "Borrow APR",
                 "originationFee": "Origination fee",

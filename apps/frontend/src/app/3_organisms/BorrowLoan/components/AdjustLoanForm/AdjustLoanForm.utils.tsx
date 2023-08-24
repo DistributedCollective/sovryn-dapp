@@ -44,7 +44,7 @@ export const renderValue = (
     />
   );
 
-export const calculatePreparedInterest = (
+export const calculatePrepaidInterest = (
   apr: string,
   debtSize: string,
   duration: number,

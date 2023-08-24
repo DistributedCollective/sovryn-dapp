@@ -37,6 +37,7 @@ export const NewLoanButton: FC<NewLoanButtonProps> = ({ pool }) => {
         onClick={toggleNewLoanDialog}
         disabled={!account}
         dataAttribute="new-loan-button"
+        className="w-full"
       />
 
       <Dialog

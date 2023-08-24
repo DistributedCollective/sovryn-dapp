@@ -2,7 +2,6 @@ import React, { FC, useMemo } from 'react';
 
 import { t } from 'i18next';
 
-import { SupportedTokens } from '@sovryn/contracts';
 import {
   Dialog,
   DialogBody,
@@ -13,37 +12,38 @@ import {
 
 import { useMaintenance } from '../../../../../../../hooks/useMaintenance';
 import { translations } from '../../../../../../../locales/i18n';
+import { LendingPool } from '../../../../../../../utils/LendingPool';
 import { useGetBorrowMaintenance } from '../../../../hooks/useGetBorrowMaintenance';
 
-type AdjustLoanDialogProps = {
+type NewLoanDialogProps = {
   isOpen: boolean;
   onClose: () => void;
+  pool: LendingPool;
 };
 
-export const AdjustLoanDialog: FC<AdjustLoanDialogProps> = ({
+export const NewLoanDialog: FC<NewLoanDialogProps> = ({
   isOpen,
   onClose,
+  pool,
 }) => {
   const { checkMaintenance } = useMaintenance();
-  // TODO: to be replaced with pool asset
-  const states = useGetBorrowMaintenance(SupportedTokens.rbtc);
+  const states = useGetBorrowMaintenance(pool.getAsset());
 
-  const locked = useMemo(() => {
-    return (
-      // TODO: should check based on the form state REPAY/ADD_COLLATERAL/BORROW
-      (states.REPAY && checkMaintenance(states.REPAY)) ||
-      checkMaintenance(states.FULL)
-    );
-  }, [checkMaintenance, states.FULL, states.REPAY]);
+  const locked = useMemo(
+    () =>
+      (states.NEW_LOANS && checkMaintenance(states.NEW_LOANS)) ||
+      checkMaintenance(states.FULL),
+    [checkMaintenance, states.FULL, states.NEW_LOANS],
+  );
 
   return (
     <Dialog isOpen={isOpen}>
       <DialogHeader
-        title={t(translations.fixedInterestPage.adjustLoanDialog.title)}
+        title={t(translations.fixedInterestPage.newLoanDialog.title)}
         onClose={onClose}
       ></DialogHeader>
       <DialogBody>
-        Adjust a loan
+        Open new loan
         {locked && (
           <ErrorBadge
             level={ErrorLevel.Warning}

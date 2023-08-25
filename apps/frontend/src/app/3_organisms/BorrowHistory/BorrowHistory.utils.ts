@@ -6,14 +6,14 @@ import { BorrowHistoryType } from './BorrowHistory.types';
 export const borrowHistoryOptions = [
   {
     value: BorrowHistoryType.lineOfCredit,
-    label: t(translations.borrowHistory.types.lineOfCredit),
+    label: t(translations.locHistory.types.lineOfCredit),
   },
   {
     value: BorrowHistoryType.fixedInterestLoan,
-    label: t(translations.borrowHistory.types.fixedInterestLoan),
+    label: t(translations.locHistory.types.fixedInterestLoan),
   },
   {
     value: BorrowHistoryType.collateralSurplus,
-    label: t(translations.borrowHistory.types.collateralSurplus),
+    label: t(translations.locHistory.types.collateralSurplus),
   },
 ];

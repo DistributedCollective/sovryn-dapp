@@ -137,7 +137,7 @@ const ZeroPage: FC<ZeroPageProps> = ({ deferred: [price] }) => {
       <Helmet>
         <title>{t(translations.zeroPage.meta.title)}</title>
       </Helmet>
-      <div className="px-0 container max-w-[100rem] md:mb-2 mt-4 mb-7">
+      <div className="px-0 container max-w-[100rem] mb-7 mt-6 lg:mt-12">
         {!showWelcomeBanner && !isLoading && (
           <LOCStatus
             className="mb-6"

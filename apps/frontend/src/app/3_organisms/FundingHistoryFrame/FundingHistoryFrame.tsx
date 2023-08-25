@@ -27,6 +27,7 @@ import {
   BitcoinTransfer_OrderBy,
   useGetFundingLazyQuery,
 } from '../../../utils/graphql/rsk/generated';
+import { dateFormat } from '../../../utils/helpers';
 import { FundingHistoryType } from './FundingHistoryFrame.types';
 import {
   columnsConfig,
@@ -142,7 +143,10 @@ export const FundingHistoryFrame: FC = () => {
       return acc;
     }, []);
 
-    return fundingData.map(({ order, ...item }) => item);
+    return fundingData.map(({ order, ...item }) => ({
+      ...item,
+      timestamp: dateFormat(item.timestamp),
+    }));
   }, [t, account, addNotification, getFundingHistory, orderOptions]);
 
   useEffect(() => {

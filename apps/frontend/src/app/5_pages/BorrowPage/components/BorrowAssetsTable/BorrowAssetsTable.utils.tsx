@@ -4,5 +4,5 @@ import { FixedInterestPoolRowTitle } from '../../../../2_molecules/FixedInterest
 import { LendingPool } from '../../../../../utils/LendingPool';
 
 export const generateRowTitle = (pool: LendingPool) => (
-  <FixedInterestPoolRowTitle pool={pool} isBorrow={false} />
+  <FixedInterestPoolRowTitle pool={pool} isBorrow />
 );

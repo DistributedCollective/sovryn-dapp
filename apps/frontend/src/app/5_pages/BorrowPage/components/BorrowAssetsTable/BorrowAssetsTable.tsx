@@ -6,8 +6,8 @@ import { Paragraph, Table } from '@sovryn/ui';
 
 import { translations } from '../../../../../locales/i18n';
 import { LendingPoolDictionary } from '../../../../../utils/LendingPoolDictionary';
-import { generateRowTitle } from '../../../LendPage/components/LendFrame/LendFrame.utils';
 import { COLUMNS_CONFIG } from './BorrowAssetsTable.constants';
+import { generateRowTitle } from './BorrowAssetsTable.utils';
 
 const lendPools = LendingPoolDictionary.list();
 

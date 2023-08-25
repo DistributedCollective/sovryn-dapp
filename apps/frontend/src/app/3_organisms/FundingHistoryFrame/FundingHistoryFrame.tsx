@@ -129,13 +129,13 @@ export const FundingHistoryFrame: FC = () => {
         acc.push(
           {
             ...rows[0],
-            received: `${rows[0].received} ${BITCOIN}`,
-            serviceFee: `${rows[0].serviceFee} ${BITCOIN}`,
+            received: `${rows[0].received}`,
+            serviceFee: `${rows[0].serviceFee}`,
             type: transactionTypeRenderer(rows[0]),
           },
           {
             ...rows[1],
-            sent: `${rows[1].sent} ${BITCOIN}`,
+            sent: `${rows[1].sent}`,
             type: transactionTypeRenderer(rows[1]),
           },
         );
@@ -143,9 +143,14 @@ export const FundingHistoryFrame: FC = () => {
       return acc;
     }, []);
 
-    return fundingData.map(({ order, ...item }) => ({
-      ...item,
+    return fundingData.map(({ ...item }) => ({
       timestamp: dateFormat(item.timestamp),
+      type: item.type,
+      sent: item.sent,
+      received: item.received,
+      serviceFee: item.serviceFee,
+      token: BITCOIN,
+      txHash: item.txHash,
     }));
   }, [t, account, addNotification, getFundingHistory, orderOptions]);
 

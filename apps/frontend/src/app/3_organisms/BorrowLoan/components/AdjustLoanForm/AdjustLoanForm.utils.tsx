@@ -2,8 +2,8 @@ import React from 'react';
 
 import { t } from 'i18next';
 
-import { Decimal } from '@sovryn-zero/lib-base';
 import { SupportedTokens } from '@sovryn/contracts';
+import { Decimal } from '@sovryn/utils';
 
 import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRenderer';
 import {
@@ -60,4 +60,23 @@ export const calculatePrepaidInterest = (
     .sub(debtSize);
 
   return interest;
+};
+
+export const calculateRepayCollateralWithdrawn = (
+  totalDebt: string,
+  debtRepaid: Decimal,
+  totalCollateral: string,
+) => {
+  const debtRepaidPercentage = Decimal.from(debtRepaid).div(totalDebt);
+
+  return Decimal.from(totalCollateral).mul(debtRepaidPercentage);
+};
+
+export const areValuesIdentical = (
+  firstValue: Decimal,
+  secondValue: Decimal,
+) => {
+  const epsilon = 0.000000000000001;
+
+  return Math.abs(firstValue.sub(secondValue).toNumber()) < epsilon;
 };

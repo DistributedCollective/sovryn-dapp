@@ -7,10 +7,10 @@ import { Helmet } from 'react-helmet-async';
 
 import { Heading, Select, SelectOption, Tabs } from '@sovryn/ui';
 
+import { BorrowHistory } from '../../3_organisms/BorrowHistory/BorrowHistory';
 import { ConvertHistory } from '../../3_organisms/ConversionsHistoryFrame/ConvertHistory';
 import { EarnHistory } from '../../3_organisms/EarnHistoryFrame/EarnHistory';
 import { FundingHistoryFrame } from '../../3_organisms/FundingHistoryFrame/FundingHistoryFrame';
-import { LOCHistory } from '../../3_organisms/LOCHistory/LOCHistory';
 import { RewardHistory } from '../../3_organisms/RewardHistory/RewardHistory';
 import { StakingHistoryFrame } from '../../3_organisms/StakingHistoryFrame';
 import { translations } from '../../../locales/i18n';
@@ -18,10 +18,10 @@ import { myntClient, zeroClient } from '../../../utils/clients';
 import styles from './HistoryPage.module.css';
 
 const ACTIVE_CLASSNAME = 'border-t-primary-30';
-const locHistory = (
+const borrowHistory = (
   <div className="px-0 py-4 lg:p-4">
     <ApolloProvider client={zeroClient}>
-      <LOCHistory />
+      <BorrowHistory />
     </ApolloProvider>
   </div>
 );
@@ -63,10 +63,10 @@ const HistoryPage: FC = () => {
   const items = useMemo(
     () => [
       {
-        label: t(translations.historyPage.table.tabs.lineOfCredit),
-        content: locHistory,
+        label: t(translations.historyPage.table.tabs.borrow),
+        content: borrowHistory,
         activeClassName: ACTIVE_CLASSNAME,
-        dataAttribute: 'loc',
+        dataAttribute: 'borrow',
       },
       {
         label: t(translations.historyPage.table.tabs.earn),

@@ -14369,6 +14369,31 @@ export type GetBitcoinTxIdQuery = {
   }>;
 };
 
+export type GetBorrowHistoryQueryVariables = Exact<{
+  user?: InputMaybe<Scalars['String']>;
+  skip: Scalars['Int'];
+  pageSize: Scalars['Int'];
+  orderBy?: InputMaybe<Borrow_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+}>;
+
+export type GetBorrowHistoryQuery = {
+  __typename?: 'Query';
+  borrows: Array<{
+    __typename?: 'Borrow';
+    loanToken: string;
+    collateralToken: string;
+    newPrincipal: string;
+    newCollateral: string;
+    interestRate: string;
+    interestDuration: string;
+    collateralToLoanRate: string;
+    timestamp: number;
+    loanId: { __typename?: 'Loan'; id: string };
+    transaction: { __typename?: 'Transaction'; id: string };
+  }>;
+};
+
 export type GetDelegateChangesQueryVariables = Exact<{
   user?: InputMaybe<Scalars['String']>;
   skip: Scalars['Int'];
@@ -14849,6 +14874,93 @@ export type GetBitcoinTxIdLazyQueryHookResult = ReturnType<
 export type GetBitcoinTxIdQueryResult = Apollo.QueryResult<
   GetBitcoinTxIdQuery,
   GetBitcoinTxIdQueryVariables
+>;
+export const GetBorrowHistoryDocument = gql`
+  query getBorrowHistory(
+    $user: String
+    $skip: Int!
+    $pageSize: Int!
+    $orderBy: Borrow_orderBy
+    $orderDirection: OrderDirection
+  ) {
+    borrows(
+      where: { user: $user }
+      first: $pageSize
+      skip: $skip
+      orderBy: $orderBy
+      orderDirection: $orderDirection
+    ) {
+      loanId {
+        id
+      }
+      loanToken
+      collateralToken
+      newPrincipal
+      newCollateral
+      interestRate
+      interestDuration
+      collateralToLoanRate
+      timestamp
+      transaction {
+        id
+      }
+    }
+  }
+`;
+
+/**
+ * __useGetBorrowHistoryQuery__
+ *
+ * To run a query within a React component, call `useGetBorrowHistoryQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetBorrowHistoryQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetBorrowHistoryQuery({
+ *   variables: {
+ *      user: // value for 'user'
+ *      skip: // value for 'skip'
+ *      pageSize: // value for 'pageSize'
+ *      orderBy: // value for 'orderBy'
+ *      orderDirection: // value for 'orderDirection'
+ *   },
+ * });
+ */
+export function useGetBorrowHistoryQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    GetBorrowHistoryQuery,
+    GetBorrowHistoryQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<GetBorrowHistoryQuery, GetBorrowHistoryQueryVariables>(
+    GetBorrowHistoryDocument,
+    options,
+  );
+}
+export function useGetBorrowHistoryLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    GetBorrowHistoryQuery,
+    GetBorrowHistoryQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    GetBorrowHistoryQuery,
+    GetBorrowHistoryQueryVariables
+  >(GetBorrowHistoryDocument, options);
+}
+export type GetBorrowHistoryQueryHookResult = ReturnType<
+  typeof useGetBorrowHistoryQuery
+>;
+export type GetBorrowHistoryLazyQueryHookResult = ReturnType<
+  typeof useGetBorrowHistoryLazyQuery
+>;
+export type GetBorrowHistoryQueryResult = Apollo.QueryResult<
+  GetBorrowHistoryQuery,
+  GetBorrowHistoryQueryVariables
 >;
 export const GetDelegateChangesDocument = gql`
   query getDelegateChanges(

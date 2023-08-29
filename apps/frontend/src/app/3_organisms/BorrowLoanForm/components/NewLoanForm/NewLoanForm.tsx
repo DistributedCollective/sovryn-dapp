@@ -44,12 +44,12 @@ import {
   getOriginationFeeAmount,
   renderValue,
 } from './NewLoanForm.utils';
+import { useBorrow } from './hooks/useBorrow';
 import { useGetBorrowingAPR } from './hooks/useGetBorrowingAPR';
 import { useGetCollateralAssetPrice } from './hooks/useGetCollateralAssetPrice';
 import { useGetMaximumBorrowAmount } from './hooks/useGetMaximumBorrowAmount';
 import { useGetMaximumCollateralAmount } from './hooks/useGetMaximumCollateralAmount';
 import { useGetMaximumFirstRolloverDate } from './hooks/useGetMaximumFirstRolloverDate';
-import { useOpenNewLoan } from './hooks/useOpenNewLoan';
 
 const pageTranslations = translations.fixedInterestPage;
 
@@ -142,7 +142,8 @@ export const NewLoanForm: FC<NewLoanFormProps> = ({ pool }) => {
     [maximumBorrowAmount, setBorrowAmount],
   );
 
-  const maxCollateralAmount = useGetMaximumCollateralAmount(collateralToken);
+  const { maximumCollateralAmount: maxCollateralAmount } =
+    useGetMaximumCollateralAmount(collateralToken);
 
   const onCollateralTokenChange = useCallback(
     (value: SupportedTokens) => {
@@ -267,7 +268,7 @@ export const NewLoanForm: FC<NewLoanFormProps> = ({ pool }) => {
     isValidCollateralRatio,
   ]);
 
-  const handleSubmit = useOpenNewLoan();
+  const handleSubmit = useBorrow();
   const handleFormSubmit = useCallback(() => {
     handleSubmit(
       borrowToken,

@@ -71,5 +71,8 @@ export const COLUMNS_CONFIG = [
     id: '',
     title: '',
     cellRenderer: (pool: LendingPool) => <NewLoanButton pool={pool} />,
+    labelClassName: 'hidden lg:table-cell',
+    valueClassName: 'w-full lg:w-auto',
+    className: 'flex',
   },
 ];

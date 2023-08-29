@@ -488,6 +488,7 @@
         "subtitle": "Borrow without rate hikes",
         "borrowAssetsTable": {
             "title": "Assets to borrow",
+            "borrowAprMobile": "APR",
             "columns": {
                 "asset": "Asset",
                 "borrowApr": "Borrow APR",

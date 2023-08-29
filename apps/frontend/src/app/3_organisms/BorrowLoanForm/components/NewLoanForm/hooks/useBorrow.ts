@@ -25,7 +25,7 @@ import {
 
 const currentDate = dayjs().unix();
 
-export const useOpenNewLoan = () => {
+export const useBorrow = () => {
   const { account, signer } = useAccount();
   const { setTransactions, setIsOpen, setTitle } = useTransactionContext();
 
@@ -36,6 +36,7 @@ export const useOpenNewLoan = () => {
       firstRolloverDate: number,
       collateralAmount: string,
       collateralToken: SupportedTokens,
+      loanId?: string,
     ) => {
       if (!signer) {
         return;
@@ -82,7 +83,7 @@ export const useOpenNewLoan = () => {
           contract: borrowTokenContract,
           fnName: 'borrow',
           args: [
-            constants.HashZero,
+            loanId && loanId !== '' ? loanId : constants.HashZero,
             toWei(borrowAmount),
             loanDuration,
             toWei(collateralAmount),

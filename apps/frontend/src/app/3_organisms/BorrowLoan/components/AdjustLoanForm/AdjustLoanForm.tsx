@@ -22,14 +22,14 @@ import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRen
 import { AssetRenderer } from '../../../../2_molecules/AssetRenderer/AssetRenderer';
 import { convertLoanTokenToSupportedAssets } from '../../../../5_pages/BorrowPage/components/OpenLoansTable/OpenLoans.utils';
 import { LoanItem } from '../../../../5_pages/BorrowPage/components/OpenLoansTable/OpenLoansTable.types';
-import { useLiquityBaseParams } from '../../../../5_pages/ZeroPage/hooks/useLiquityBaseParams';
 import { COLLATERAL_RATIO_THRESHOLDS } from '../../../../../constants/general';
 import { getTokenDisplayName } from '../../../../../constants/tokens';
 import { useAssetBalance } from '../../../../../hooks/useAssetBalance';
-import { useMaxAssetBalance } from '../../../../../hooks/useMaxAssetBalance';
 import { useGetRBTCPrice } from '../../../../../hooks/zero/useGetRBTCPrice';
 import { translations } from '../../../../../locales/i18n';
 import { decimalic } from '../../../../../utils/math';
+import { useBorrow } from '../../../BorrowLoanForm/components/NewLoanForm/hooks/useBorrow';
+import { useGetMaximumCollateralAmount } from '../../../BorrowLoanForm/components/NewLoanForm/hooks/useGetMaximumCollateralAmount';
 import { MINIMUM_COLLATERAL_RATIO } from '../../../ZeroLocForm/constants';
 import { getOriginationFeeAmount } from '../../../ZeroLocForm/utils';
 import {
@@ -51,6 +51,8 @@ import { useGetBorrowingAPR } from './hooks/useGetBorrowingAPR';
 import { useGetCollateralAssetPrice } from './hooks/useGetCollateralAssetPrice';
 import { useGetInterestRefund } from './hooks/useGetInterestRefund';
 import { useGetMaxRepayAmount } from './hooks/useGetMaxRepayAmount';
+import { useGetMaximumBorrowAmount } from './hooks/useGetMaximumBorrowAmount';
+import { useGetOriginationFee } from './hooks/useGetOriginationFee';
 import { useRepayLoan } from './hooks/useRepayLoan';
 
 const pageTranslations = translations.fixedInterestPage.adjustLoanDialog;
@@ -72,7 +74,8 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
   const [collateralTab, setCollateralTab] = useState(
     CollateralTabAction.AddCollateral,
   );
-  const { minBorrowingFeeRate } = useLiquityBaseParams();
+
+  const originationFeeRate = useGetOriginationFee();
   const [collateralAssetPrice, setCollateralAssetPrice] = useState('0');
 
   const debtToken = useMemo(
@@ -113,22 +116,18 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
     collateralToken,
   );
 
-  const {
-    weiBalance: maxCollateralBalance,
-    loading: maxCollateralBalanceLoading,
-  } = useMaxAssetBalance(SupportedTokens[collateralToken.toLowerCase()]);
+  const { maximumCollateralAmount, loading: isMaximumCollateralAmountLoading } =
+    useGetMaximumCollateralAmount(collateralToken);
 
   const maxCollateralAmount = useMemo(
     () =>
-      maxCollateralBalanceLoading
-        ? Decimal.ZERO
-        : Decimal.fromBigNumberString(maxCollateralBalance),
-    [maxCollateralBalanceLoading, maxCollateralBalance],
+      isMaximumCollateralAmountLoading ? Decimal.ZERO : maximumCollateralAmount,
+    [isMaximumCollateralAmountLoading, maximumCollateralAmount],
   );
 
   const originationFee = useMemo(
-    () => getOriginationFeeAmount(debtSize, minBorrowingFeeRate),
-    [minBorrowingFeeRate, debtSize],
+    () => getOriginationFeeAmount(debtSize, originationFeeRate.div(100)),
+    [originationFeeRate, debtSize],
   );
 
   const collateralWithdrawn = useMemo(
@@ -225,14 +224,24 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
       return Decimal.ZERO;
     }
 
-    return collateralSize.mul(collateralAssetPrice).div(newTotalDebt).mul(100);
+    const collateralUsdPrice =
+      collateralToken === SupportedTokens.rbtc ? rbtcPrice : collateralPriceUsd;
+    const totalDebtUsd = newTotalDebt.mul(
+      debtToken === SupportedTokens.rbtc ? rbtcPrice : borrowPriceUsd,
+    );
+
+    return collateralSize.mul(collateralUsdPrice).div(totalDebtUsd).mul(100);
   }, [
     collateralSize,
     debtSize,
     isValidDebtAmount,
     isValidCollateralAmount,
+    collateralToken,
+    rbtcPrice,
+    collateralPriceUsd,
     newTotalDebt,
-    collateralAssetPrice,
+    debtToken,
+    borrowPriceUsd,
   ]);
 
   const isValidCollateralRatio = useMemo(() => {
@@ -301,6 +310,7 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
   }, []);
 
   const handleRepay = useRepayLoan();
+  const handleBorrow = useBorrow();
 
   const handleFormSubmit = useCallback(() => {
     if (isCloseTab) {
@@ -318,14 +328,32 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
         convertLoanTokenToSupportedAssets(loan.debtAsset),
       );
     }
+
+    if (isBorrowTab) {
+      handleBorrow(
+        debtToken,
+        debtAmount,
+        loan.rolloverDate,
+        collateralAmount,
+        collateralToken,
+        loan.id,
+      );
+    }
   }, [
+    collateralAmount,
+    collateralToken,
+    debtAmount,
     debtSize,
+    debtToken,
+    handleBorrow,
     handleRepay,
+    isBorrowTab,
     isCloseTab,
     isRepayTab,
     loan.debt,
     loan.debtAsset,
     loan.id,
+    loan.rolloverDate,
   ]);
 
   const onDebtTabChange = useCallback(
@@ -371,9 +399,11 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
     [resetCloseDebtTabValues],
   );
 
+  const maximumBorrowAmount = useGetMaximumBorrowAmount(loan, collateralSize);
+
   const maxDebtAmount = useMemo(
-    () => (isBorrowTab ? debtTokenBalance : maximumAvailableRepayAmount),
-    [debtTokenBalance, isBorrowTab, maximumAvailableRepayAmount],
+    () => (isBorrowTab ? maximumBorrowAmount : maximumAvailableRepayAmount),
+    [isBorrowTab, maximumAvailableRepayAmount, maximumBorrowAmount],
   );
 
   const collateralAmountValue = useMemo(() => {

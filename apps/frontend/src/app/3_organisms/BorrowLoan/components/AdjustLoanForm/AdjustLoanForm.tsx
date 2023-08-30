@@ -99,6 +99,11 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
     [collateralTab],
   );
 
+  const isCollateralWithdrawMode = useMemo(
+    () => isCollateralWithdrawTab && debtTab === DebtTabAction.None,
+    [debtTab, isCollateralWithdrawTab],
+  );
+
   const isCloseTab = useMemo(() => debtTab === DebtTabAction.Close, [debtTab]);
 
   const isBorrowTab = useMemo(
@@ -159,6 +164,10 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
       return decimalic(loan.collateral.toString()).sub(collateralWithdrawn);
     }
 
+    if (isCollateralWithdrawTab) {
+      return decimalic(loan.collateral.toString()).sub(collateralSize);
+    }
+
     return decimalic(loan.collateral.toString()).add(
       collateralSize.sub(originationFee),
     );
@@ -167,6 +176,7 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
     isBorrowTab,
     debtAmount,
     isRepayTab,
+    isCollateralWithdrawTab,
     loan.collateral,
     collateralSize,
     originationFee,
@@ -385,18 +395,23 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
     (value: CollateralTabAction) => {
       switch (value) {
         case CollateralTabAction.AddCollateral:
-          setDebtTab(DebtTabAction.Borrow);
+          if (!isBorrowTab) {
+            setDebtTab(DebtTabAction.Borrow);
+          }
           setCollateralTab(value);
           resetCloseDebtTabValues();
           return;
         case CollateralTabAction.WithdrawCollateral:
+          if (isBorrowTab) {
+            setDebtTab(DebtTabAction.None);
+          }
           setCollateralTab(value);
           return;
         default:
           return;
       }
     },
-    [resetCloseDebtTabValues],
+    [isBorrowTab, resetCloseDebtTabValues],
   );
 
   const maximumBorrowAmount = useGetMaximumBorrowAmount(loan, collateralSize);
@@ -447,7 +462,7 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
             tabs={DEBT_TABS}
             onTabChange={onDebtTabChange}
             onMaxAmountClicked={() => setDebtAmount(maxDebtAmount.toString())}
-            isDisabled={isCloseTab}
+            isDisabled={isCloseTab || isCollateralWithdrawMode}
             index={debtTab}
             setIndex={setDebtTab}
           />
@@ -466,7 +481,7 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
             className="w-full flex-grow-0 flex-shrink"
             // invalid={debtError}
             placeholder="0"
-            disabled={isCloseTab}
+            disabled={isCloseTab || isCollateralWithdrawMode}
           />
           <AssetRenderer
             dataAttribute="adjust-loan-debt-asset"
@@ -488,7 +503,7 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
             }
             index={collateralTab}
             setIndex={setCollateralTab}
-            isDisabled={isCloseTab || isCollateralWithdrawTab}
+            isDisabled={isCloseTab || isRepayTab}
           />
         }
         labelElement="div"
@@ -505,7 +520,7 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
             className="max-w-none"
             // invalid={collateralError}
             placeholder="0"
-            disabled={isCloseTab || isCollateralWithdrawTab}
+            disabled={isCloseTab || isRepayTab}
           />
           <AssetRenderer
             dataAttribute="adjust-loan-collateral-asset"
@@ -553,7 +568,7 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
               }
             />
           )}
-          {(isBorrowTab || isRepayTab) && (
+          {(isBorrowTab || isRepayTab || isCollateralWithdrawMode) && (
             <SimpleTableRow
               label={t(pageTranslations.labels.newCollateralBalance)}
               value={
@@ -584,7 +599,7 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
         </SimpleTable>
       </div>
 
-      {isBorrowTab && (
+      {(isBorrowTab || isCollateralWithdrawMode) && (
         <>
           <div className="flex flex-row justify-between items-center mt-6 mb-3">
             <div className="flex flex-row justify-start items-center gap-2">
@@ -618,7 +633,7 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
         </>
       )}
 
-      {isBorrowTab && (
+      {(isBorrowTab || isCollateralWithdrawMode) && (
         <div className="mt-6">
           <SimpleTable>
             <SimpleTableRow

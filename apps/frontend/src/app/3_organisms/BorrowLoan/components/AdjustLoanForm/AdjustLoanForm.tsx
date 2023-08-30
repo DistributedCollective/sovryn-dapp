@@ -247,10 +247,6 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
       return Decimal.ZERO;
     }
 
-    const collateral = isCollateralWithdrawMode
-      ? newCollateralAmount
-      : collateralSize;
-
     const debt = isCollateralWithdrawMode
       ? Decimal.from(loan.debt)
       : newTotalDebt;
@@ -260,7 +256,10 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
       debtToken === SupportedTokens.rbtc ? rbtcPrice : borrowPriceUsd,
     );
 
-    return collateral.mul(collateralUsdPrice).div(totalDebtUsd).mul(100);
+    return newCollateralAmount
+      .mul(collateralUsdPrice)
+      .div(totalDebtUsd)
+      .mul(100);
   }, [
     collateralSize,
     debtSize,

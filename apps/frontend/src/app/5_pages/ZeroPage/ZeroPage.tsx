@@ -154,7 +154,9 @@ const ZeroPage: FC<ZeroPageProps> = ({ deferred: [price] }) => {
           />
         )}
         {account && showWelcomeBanner && !isLoading && (
-          <OpenLocButton openLOC={toggle} className="mt-4 mb-10 md:mb-4" />
+          <div className="mt-6 lg:mt-12">
+            <OpenLocButton openLOC={toggle} className="mb-10 md:mb-4" />
+          </div>
         )}
         <div className="flex-col-reverse lg:flex-row flex items-stretch md:p-4 md:bg-gray-90 rounded gap-9 md:gap-20">
           <div className="md:min-w-[23rem] min-w-auto">

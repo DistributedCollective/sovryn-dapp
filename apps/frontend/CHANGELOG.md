@@ -1,5 +1,11 @@
 # frontend
 
+## 1.0.25
+
+### Patch Changes
+
+- e2c28c68: Restore broken Open Zero LoC button
+
 ## 1.0.24
 
 ### Patch Changes

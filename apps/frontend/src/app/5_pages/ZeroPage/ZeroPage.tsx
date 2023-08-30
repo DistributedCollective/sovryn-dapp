@@ -39,6 +39,7 @@ import { useTransactionContext } from '../../../contexts/TransactionContext';
 import { useAccount } from '../../../hooks/useAccount';
 import { translations } from '../../../locales/i18n';
 import { decimalic } from '../../../utils/math';
+import { OpenLocButton } from './components/OpenLocButton/OpenLocButton';
 import { useClaimCollateralSurplus } from './hooks/useClaimCollateralSurplus';
 import { useHandleTrove } from './hooks/useHandleTrove';
 import { useLiquityBaseParams } from './hooks/useLiquityBaseParams';
@@ -151,7 +152,9 @@ const ZeroPage: FC<ZeroPageProps> = ({ deferred: [price] }) => {
             onWithdraw={claimCollateralSurplus}
           />
         )}
-
+        {showWelcomeBanner && !isLoading && (
+          <OpenLocButton openLOC={toggle} className="mb-10 md:mb-4" />
+        )}
         <div className="flex-col-reverse lg:flex-row flex items-stretch md:p-4 md:bg-gray-90 rounded gap-9 md:gap-20">
           <div className="md:min-w-[23rem] min-w-auto">
             <SystemStats />

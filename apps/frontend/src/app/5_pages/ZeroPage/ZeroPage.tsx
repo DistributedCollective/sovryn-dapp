@@ -138,10 +138,11 @@ const ZeroPage: FC<ZeroPageProps> = ({ deferred: [price] }) => {
       <Helmet>
         <title>{t(translations.zeroPage.meta.title)}</title>
       </Helmet>
-      <div className="px-0 container max-w-[100rem] mb-7 mt-6 lg:mt-12">
-        {!showWelcomeBanner && !isLoading && (
+      <div className="px-0 container max-w-[100rem] mb-7">
+        {!account && <div className="mt-6 lg:mt-12"></div>}
+        {account && !showWelcomeBanner && !isLoading && (
           <LOCStatus
-            className="mb-6"
+            className="mt-4 mb-6"
             collateral={collateral}
             debt={debt}
             cRatio={getRatio(price)}
@@ -152,8 +153,8 @@ const ZeroPage: FC<ZeroPageProps> = ({ deferred: [price] }) => {
             onWithdraw={claimCollateralSurplus}
           />
         )}
-        {showWelcomeBanner && !isLoading && (
-          <OpenLocButton openLOC={toggle} className="mb-10 md:mb-4" />
+        {account && showWelcomeBanner && !isLoading && (
+          <OpenLocButton openLOC={toggle} className="mt-4 mb-10 md:mb-4" />
         )}
         <div className="flex-col-reverse lg:flex-row flex items-stretch md:p-4 md:bg-gray-90 rounded gap-9 md:gap-20">
           <div className="md:min-w-[23rem] min-w-auto">

@@ -50,10 +50,12 @@ import { Label } from './components/Label';
 import { useGetBorrowingAPR } from './hooks/useGetBorrowingAPR';
 import { useGetCollateralAssetPrice } from './hooks/useGetCollateralAssetPrice';
 import { useGetInterestRefund } from './hooks/useGetInterestRefund';
+import { useGetMaxCollateralWithdrawal } from './hooks/useGetMaxCollateralWithdrawal';
 import { useGetMaxRepayAmount } from './hooks/useGetMaxRepayAmount';
 import { useGetMaximumBorrowAmount } from './hooks/useGetMaximumBorrowAmount';
 import { useGetOriginationFee } from './hooks/useGetOriginationFee';
 import { useRepayLoan } from './hooks/useRepayLoan';
+import { useWithdrawCollateral } from './hooks/useWithdrawCollateral';
 
 const pageTranslations = translations.fixedInterestPage.adjustLoanDialog;
 
@@ -124,11 +126,22 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
   const { maximumCollateralAmount, loading: isMaximumCollateralAmountLoading } =
     useGetMaximumCollateralAmount(collateralToken);
 
-  const maxCollateralAmount = useMemo(
-    () =>
-      isMaximumCollateralAmountLoading ? Decimal.ZERO : maximumCollateralAmount,
-    [isMaximumCollateralAmountLoading, maximumCollateralAmount],
-  );
+  const maximumCollateralWithdraw = useGetMaxCollateralWithdrawal(loan);
+
+  const maxCollateralAmount = useMemo(() => {
+    if (isCollateralWithdrawMode) {
+      return maximumCollateralWithdraw;
+    }
+
+    return isMaximumCollateralAmountLoading
+      ? Decimal.ZERO
+      : maximumCollateralAmount;
+  }, [
+    isCollateralWithdrawMode,
+    isMaximumCollateralAmountLoading,
+    maximumCollateralAmount,
+    maximumCollateralWithdraw,
+  ]);
 
   const originationFee = useMemo(
     () => getOriginationFeeAmount(debtSize, originationFeeRate.div(100)),
@@ -234,22 +247,32 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
       return Decimal.ZERO;
     }
 
+    const collateral = isCollateralWithdrawMode
+      ? newCollateralAmount
+      : collateralSize;
+
+    const debt = isCollateralWithdrawMode
+      ? Decimal.from(loan.debt)
+      : newTotalDebt;
     const collateralUsdPrice =
       collateralToken === SupportedTokens.rbtc ? rbtcPrice : collateralPriceUsd;
-    const totalDebtUsd = newTotalDebt.mul(
+    const totalDebtUsd = debt.mul(
       debtToken === SupportedTokens.rbtc ? rbtcPrice : borrowPriceUsd,
     );
 
-    return collateralSize.mul(collateralUsdPrice).div(totalDebtUsd).mul(100);
+    return collateral.mul(collateralUsdPrice).div(totalDebtUsd).mul(100);
   }, [
     collateralSize,
     debtSize,
     isValidDebtAmount,
     isValidCollateralAmount,
+    isCollateralWithdrawMode,
+    newCollateralAmount,
+    loan.debt,
+    newTotalDebt,
     collateralToken,
     rbtcPrice,
     collateralPriceUsd,
-    newTotalDebt,
     debtToken,
     borrowPriceUsd,
   ]);
@@ -300,14 +323,18 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
   );
 
   useEffect(() => {
-    if (collateralToken === SupportedTokens.rbtc) {
-      const price = decimalic(rbtcPrice).div(borrowPriceUsd);
-      setCollateralAssetPrice(price.toString());
-    } else {
-      const price = decimalic(collateralPriceUsd).div(rbtcPrice);
-      setCollateralAssetPrice(price.toString());
-    }
-  }, [collateralToken, borrowPriceUsd, rbtcPrice, collateralPriceUsd]);
+    const price = decimalic(
+      collateralToken === SupportedTokens.rbtc ? rbtcPrice : collateralPriceUsd,
+    ).div(debtToken === SupportedTokens.rbtc ? rbtcPrice : borrowPriceUsd);
+
+    setCollateralAssetPrice(price.toString());
+  }, [
+    collateralToken,
+    borrowPriceUsd,
+    rbtcPrice,
+    collateralPriceUsd,
+    debtToken,
+  ]);
 
   const setCloseDebtTabValues = useCallback(() => {
     setDebtAmount(Decimal.from(loan.debt).sub(interestRefund).toString());
@@ -321,6 +348,7 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
 
   const handleRepay = useRepayLoan();
   const handleBorrow = useBorrow();
+  const handleWithdrawCollateral = useWithdrawCollateral();
 
   const handleFormSubmit = useCallback(() => {
     if (isCloseTab) {
@@ -349,6 +377,10 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
         loan.id,
       );
     }
+
+    if (isCollateralWithdrawMode) {
+      handleWithdrawCollateral(collateralAmount, loan.id);
+    }
   }, [
     collateralAmount,
     collateralToken,
@@ -357,8 +389,10 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
     debtToken,
     handleBorrow,
     handleRepay,
+    handleWithdrawCollateral,
     isBorrowTab,
     isCloseTab,
+    isCollateralWithdrawMode,
     isRepayTab,
     loan.debt,
     loan.debtAsset,
@@ -404,6 +438,7 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
         case CollateralTabAction.WithdrawCollateral:
           if (isBorrowTab) {
             setDebtTab(DebtTabAction.None);
+            setDebtAmount(loan.debt.toString());
           }
           setCollateralTab(value);
           return;
@@ -411,7 +446,7 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
           return;
       }
     },
-    [isBorrowTab, resetCloseDebtTabValues],
+    [isBorrowTab, loan.debt, resetCloseDebtTabValues],
   );
 
   const maximumBorrowAmount = useGetMaximumBorrowAmount(loan, collateralSize);

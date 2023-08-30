@@ -1,3 +1,5 @@
+import { Decimal } from '@sovryn/utils';
+
 export type LoanItem = {
   id: string;
   debt: number;
@@ -8,4 +10,10 @@ export type LoanItem = {
   liquidationPrice: number;
   apr: string;
   rolloverDate: number;
+};
+
+export type LoanItemSmartContract = {
+  id: string;
+  debt: Decimal;
+  collateral: Decimal;
 };

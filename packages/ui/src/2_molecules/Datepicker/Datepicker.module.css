@@ -1,0 +1,54 @@
+.wrapper {
+  @apply w-full max-w-xs flex flex-row justify-between items-center;
+}
+
+.container {
+  @apply text-xs relative flex text-gray-20 flex-grow rounded bg-gray-60 items-center px-2;
+}
+
+.labelWrapper {
+  @apply flex;
+}
+
+.label {
+  @apply font-semibold pr-2;
+}
+
+.input {
+  @apply bg-transparent appearance-none focus:outline-none flex-1 leading-tight text-xs font-medium text-gray-20 text-right w-full;
+
+  &::placeholder {
+    @apply text-gray-30;
+  }
+
+  &:disabled {
+    &::placeholder {
+      @apply text-gray-30/50;
+    }
+  }
+
+  &::-webkit-calendar-picker-indicator {
+    @apply ml-1;
+    filter: invert(1);
+  }
+}
+
+.disabled {
+  @apply cursor-not-allowed bg-gray-70-ol text-gray-20/50 pointer-events-none outline-none border-0;
+}
+
+.disabledInput {
+  @apply text-gray-20/50;
+
+  &::-webkit-calendar-picker-indicator {
+    @apply opacity-50;
+  }
+}
+
+.large {
+  @apply h-10;
+}
+
+.small {
+  @apply h-8;
+}

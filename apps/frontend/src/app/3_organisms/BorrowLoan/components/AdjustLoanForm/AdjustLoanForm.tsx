@@ -24,7 +24,7 @@ import { convertLoanTokenToSupportedAssets } from '../../../../5_pages/BorrowPag
 import { LoanItem } from '../../../../5_pages/BorrowPage/components/OpenLoansTable/OpenLoansTable.types';
 import { COLLATERAL_RATIO_THRESHOLDS } from '../../../../../constants/general';
 import { getTokenDisplayName } from '../../../../../constants/tokens';
-import { useAssetBalance } from '../../../../../hooks/useAssetBalance';
+import { useMaxAssetBalance } from '../../../../../hooks/useMaxAssetBalance';
 import { useGetRBTCPrice } from '../../../../../hooks/zero/useGetRBTCPrice';
 import { translations } from '../../../../../locales/i18n';
 import { decimalic } from '../../../../../utils/math';
@@ -115,7 +115,7 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
 
   const isRepayTab = useMemo(() => debtTab === DebtTabAction.Repay, [debtTab]);
 
-  const { balance: debtTokenBalance } = useAssetBalance(
+  const { balance: debtTokenBalance } = useMaxAssetBalance(
     debtToken as SupportedTokens,
   );
   const { borrowPriceUsd, collateralPriceUsd } = useGetCollateralAssetPrice(
@@ -313,14 +313,6 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
     );
   }, [collateralSize, debtSize, newTotalDebt]);
 
-  const submitButtonDisabled = useMemo(
-    () =>
-      !isRepayTab
-        ? debtSize.isZero() || collateralSize.isZero()
-        : debtSize.isZero(),
-    [isRepayTab, debtSize, collateralSize],
-  );
-
   useEffect(() => {
     const price = decimalic(
       collateralToken === SupportedTokens.rbtc ? rbtcPrice : collateralPriceUsd,
@@ -478,6 +470,56 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
     }
   }, [debtSize, isRepayTab, maximumRepayAmount, resetCloseDebtTabValues]);
 
+  const isValidCloseAmount = useMemo(() => {
+    if (!isCloseTab) {
+      return true;
+    }
+    return Decimal.from(loan.debt).sub(interestRefund).lte(debtTokenBalance);
+  }, [debtTokenBalance, interestRefund, isCloseTab, loan.debt]);
+
+  const submitButtonDisabled = useMemo(
+    () =>
+      !isRepayTab
+        ? debtSize.isZero() || collateralSize.isZero() || !isValidCloseAmount
+        : debtSize.isZero(),
+    [isRepayTab, debtSize, collateralSize, isValidCloseAmount],
+  );
+
+  const errorBadge = useMemo(() => {
+    let message: string = '';
+    if (!isValidCloseAmount) {
+      message = t(
+        translations.fixedInterestPage.adjustLoanDialog
+          .closeTabInsufficientLoanTokenBalance,
+        {
+          amount: Decimal.from(loan.debt)
+            .sub(interestRefund)
+            .sub(debtTokenBalance)
+            .toString(),
+          token: debtToken,
+        },
+      );
+    }
+
+    if (!message || message === '') {
+      return null;
+    }
+
+    return (
+      <ErrorBadge
+        level={ErrorLevel.Critical}
+        message={message}
+        dataAttribute="adjust-loan-collateral-error"
+      />
+    );
+  }, [
+    debtToken,
+    debtTokenBalance,
+    interestRefund,
+    isValidCloseAmount,
+    loan.debt,
+  ]);
+
   return (
     <>
       <CurrentLoanData
@@ -513,7 +555,6 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
             maxAmount={maxDebtAmount.toNumber()}
             label={t(translations.common.amount)}
             className="w-full flex-grow-0 flex-shrink"
-            // invalid={debtError}
             placeholder="0"
             disabled={isCloseTab || isCollateralWithdrawMode}
           />
@@ -695,6 +736,8 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
           </SimpleTable>
         </div>
       )}
+
+      {errorBadge}
 
       <div className="mt-8 flex flex-row items-center justify-between gap-8">
         <Button

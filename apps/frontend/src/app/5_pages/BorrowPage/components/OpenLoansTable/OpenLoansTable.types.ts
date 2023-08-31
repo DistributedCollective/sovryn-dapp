@@ -16,4 +16,5 @@ export type LoanItemSmartContract = {
   id: string;
   debt: Decimal;
   collateral: Decimal;
+  interestOwedPerDay: Decimal;
 };

@@ -62,21 +62,25 @@ export const calculatePrepaidInterest = (
   return interest;
 };
 
+export const calculateDebtRepaidPercentage = (
+  totalDebt: string,
+  debtRepaid: Decimal,
+) => Decimal.from(debtRepaid).div(totalDebt);
+
 export const calculateRepayCollateralWithdrawn = (
   totalDebt: string,
   debtRepaid: Decimal,
   totalCollateral: string,
-) => {
-  const debtRepaidPercentage = Decimal.from(debtRepaid).div(totalDebt);
-
-  return Decimal.from(totalCollateral).mul(debtRepaidPercentage);
-};
+) =>
+  Decimal.from(totalCollateral).mul(
+    calculateDebtRepaidPercentage(totalDebt, debtRepaid),
+  );
 
 export const areValuesIdentical = (
   firstValue: Decimal,
   secondValue: Decimal,
 ) => {
-  const epsilon = 0.000000000000001;
+  const epsilon = 0.0000000000001;
 
   return Math.abs(firstValue.sub(secondValue).toNumber()) < epsilon;
 };

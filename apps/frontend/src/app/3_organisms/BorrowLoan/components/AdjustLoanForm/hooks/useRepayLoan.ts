@@ -28,6 +28,7 @@ export const useRepayLoan = () => {
       repayAmount: string,
       loanId: string,
       borrowToken: SupportedTokens,
+      isPartialRepay?: boolean,
     ) => {
       if (!contract || !account || !signer) {
         return;
@@ -53,7 +54,9 @@ export const useRepayLoan = () => {
 
       transactions.push({
         title: t(
-          translations.fixedInterestPage.adjustLoanDialog.dialogTitles.close,
+          translations.fixedInterestPage.adjustLoanDialog.dialogTitles[
+            isPartialRepay ? 'repay' : 'close'
+          ],
         ),
         request: {
           type: TransactionType.signTransaction,
@@ -67,7 +70,11 @@ export const useRepayLoan = () => {
 
       setTransactions(transactions);
       setTitle(
-        t(translations.fixedInterestPage.adjustLoanDialog.dialogTitles.close),
+        t(
+          translations.fixedInterestPage.adjustLoanDialog.dialogTitles[
+            isPartialRepay ? 'repay' : 'close'
+          ],
+        ),
       );
       setTransactions(transactions);
       setIsOpen(true);

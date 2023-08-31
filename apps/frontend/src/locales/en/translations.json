@@ -539,7 +539,8 @@
                 "liquidationPrice": "Liquidation price",
                 "collateralPrice": "{{token}} price",
                 "collateralRatioError": "Collateral ratio must be at least {{min}}%"
-            }
+            },
+            "closeTabInsufficientLoanTokenBalance": "You need an additional {{amount}} {{token}} in order to close your loan."
         },
         "extendLoanDialog": {
             "title": "Extend a loan"

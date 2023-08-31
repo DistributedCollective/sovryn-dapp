@@ -74,10 +74,16 @@ export const useBorrow = () => {
         }
       }
 
+      const transactionTitle =
+        loanId && loanId !== ''
+          ? t(
+              translations.fixedInterestPage.adjustLoanDialog.dialogTitles
+                .adjust,
+            )
+          : t(translations.fixedInterestPage.newLoanDialog.transaction.title);
+
       transactions.push({
-        title: t(
-          translations.fixedInterestPage.newLoanDialog.transaction.title,
-        ),
+        title: transactionTitle,
         request: {
           type: TransactionType.signTransaction,
           contract: borrowTokenContract,
@@ -97,9 +103,7 @@ export const useBorrow = () => {
         },
       });
 
-      setTitle(
-        t(translations.fixedInterestPage.newLoanDialog.transaction.title),
-      );
+      setTitle(transactionTitle);
       setTransactions(transactions);
       setIsOpen(true);
     },

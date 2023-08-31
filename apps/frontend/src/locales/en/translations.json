@@ -527,7 +527,9 @@
             },
             "dialogTitles": {
                 "close": "Close a loan",
-                "withdrawCollateral": "Withdraw collateral"
+                "withdrawCollateral": "Withdraw collateral",
+                "repay": "Repay a loan",
+                "adjust": "Adjust a loan"
             },
             "labels": {
                 "borrowApr": "Borrow APR",

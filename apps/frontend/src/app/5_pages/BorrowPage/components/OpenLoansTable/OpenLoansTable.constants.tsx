@@ -73,7 +73,7 @@ export const COLUMNS_CONFIG = [
     cellRenderer: (item: LoanItem) => (
       <div className="flex gap-4 justify-end">
         <AdjustLoanButton loan={item} />
-        <ExtendLoanButton />
+        <ExtendLoanButton loan={item} />
       </div>
     ),
   },

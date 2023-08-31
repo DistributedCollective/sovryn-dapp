@@ -40,6 +40,7 @@ import {
 import { CollateralTabAction, DebtTabAction } from './AdjustLoanForm.types';
 import {
   areValuesIdentical,
+  calculateDebtRepaidPercentage,
   calculatePrepaidInterest,
   calculateRepayCollateralWithdrawn,
   normalizeToken,
@@ -90,7 +91,26 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
   );
   const { price: rbtcPrice } = useGetRBTCPrice();
 
-  const interestRefund = useGetInterestRefund(loan.id);
+  const isCloseTab = useMemo(() => debtTab === DebtTabAction.Close, [debtTab]);
+
+  const fullInterestRefundValue = useGetInterestRefund(loan.id);
+  const totalDebtWithoutInterestRefund = useMemo(
+    () => Decimal.from(loan.debt).sub(fullInterestRefundValue),
+    [fullInterestRefundValue, loan.debt],
+  );
+  const interestRefundRepayValue = useMemo(() => {
+    const debtRepayPercentage = calculateDebtRepaidPercentage(
+      totalDebtWithoutInterestRefund.toString(),
+      debtSize,
+    );
+    return fullInterestRefundValue.mul(debtRepayPercentage);
+  }, [debtSize, fullInterestRefundValue, totalDebtWithoutInterestRefund]);
+
+  const interestRefund = useMemo(
+    () => (isCloseTab ? fullInterestRefundValue : interestRefundRepayValue),
+    [fullInterestRefundValue, interestRefundRepayValue, isCloseTab],
+  );
+
   const { maximumRepayAmount, maximumAvailableRepayAmount } =
     useGetMaxRepayAmount(debtToken, loan);
 
@@ -105,8 +125,6 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
     () => isCollateralWithdrawTab && debtTab === DebtTabAction.None,
     [debtTab, isCollateralWithdrawTab],
   );
-
-  const isCloseTab = useMemo(() => debtTab === DebtTabAction.Close, [debtTab]);
 
   const isBorrowTab = useMemo(
     () => debtTab === DebtTabAction.Borrow,
@@ -328,9 +346,9 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
   ]);
 
   const setCloseDebtTabValues = useCallback(() => {
-    setDebtAmount(Decimal.from(loan.debt).sub(interestRefund).toString());
+    setDebtAmount(totalDebtWithoutInterestRefund.toString());
     setCollateralAmount(loan.collateral.toString());
-  }, [interestRefund, loan.collateral, loan.debt]);
+  }, [loan.collateral, totalDebtWithoutInterestRefund]);
 
   const resetCloseDebtTabValues = useCallback(() => {
     setDebtAmount('');
@@ -467,8 +485,15 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
   useEffect(() => {
     if (isRepayTab && areValuesIdentical(debtSize, maximumRepayAmount)) {
       setDebtTab(DebtTabAction.Close);
+      setCloseDebtTabValues();
     }
-  }, [debtSize, isRepayTab, maximumRepayAmount, resetCloseDebtTabValues]);
+  }, [
+    debtSize,
+    isRepayTab,
+    maximumRepayAmount,
+    resetCloseDebtTabValues,
+    setCloseDebtTabValues,
+  ]);
 
   const isValidCloseAmount = useMemo(() => {
     if (!isCloseTab) {

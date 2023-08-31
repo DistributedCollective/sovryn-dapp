@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { SupportedTokens } from '@sovryn/contracts';
+import { Decimal } from '@sovryn/utils';
 
 import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRenderer';
 import {
@@ -57,6 +58,10 @@ export const convertLoanTokenToSupportedAssets = (loanToken: string) => {
     return SupportedTokens.rbtc;
   }
 
+  if (loanToken.toLowerCase() === 'bitpro') {
+    return SupportedTokens.bpro;
+  }
+
   return loanToken.toLowerCase() as SupportedTokens;
 };
 
@@ -67,6 +72,7 @@ export const isSupportedPool = (
   if (!loanToken || !collateralToken) {
     return false;
   }
+
   const pools = LendingPoolDictionary.assetList();
   const normalizedLoanToken = convertLoanTokenToSupportedAssets(loanToken);
 
@@ -82,3 +88,8 @@ export const isSupportedPool = (
     convertLoanTokenToSupportedAssets(collateralToken),
   );
 };
+
+export const calculateApr = (
+  interestPerDay: Decimal,
+  collateralAmount: Decimal,
+) => interestPerDay.mul(365).div(collateralAmount).mul(100).toString();

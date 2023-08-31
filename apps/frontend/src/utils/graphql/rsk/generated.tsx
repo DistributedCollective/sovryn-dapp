@@ -14743,7 +14743,7 @@ export type GetVestingUnlockBalanceQuery = {
 
 export const GetActiveLoansDocument = gql`
   query getActiveLoans($user: String) {
-    loans(where: { user: $user, type: Borrow, isOpen: true }) {
+    loans(where: { user: $user, type: Borrow }) {
       id
       loanToken {
         id

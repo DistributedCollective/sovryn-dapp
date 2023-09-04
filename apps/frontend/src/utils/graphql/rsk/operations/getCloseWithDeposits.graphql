@@ -1,0 +1,27 @@
+query getCloseWithDeposits(
+  $loanIds: [String!]
+  $skip: Int!
+  $pageSize: Int!
+  $orderBy: CloseWithDeposit_orderBy
+  $orderDirection: OrderDirection
+) {
+  closeWithDeposits(
+    where: { loanId_in: $loanIds }
+    first: $pageSize
+    skip: $skip
+    orderBy: $orderBy
+    orderDirection: $orderDirection
+  ) {
+    loanId {
+      id
+    }
+    collateralToken
+    loanToken
+    repayAmount
+    collateralWithdrawAmount
+    timestamp
+    transaction {
+      id
+    }
+  }
+}

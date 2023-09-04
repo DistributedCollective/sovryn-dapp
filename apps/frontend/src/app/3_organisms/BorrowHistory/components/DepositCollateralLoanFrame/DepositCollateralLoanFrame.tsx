@@ -8,12 +8,10 @@ import React, {
 } from 'react';
 
 import { t } from 'i18next';
-import { nanoid } from 'nanoid';
 
 import {
   ErrorBadge,
   ErrorLevel,
-  NotificationType,
   OrderDirection,
   OrderOptions,
   Pagination,
@@ -29,26 +27,18 @@ import { AssetRenderer } from '../../../../2_molecules/AssetRenderer/AssetRender
 import { ExportCSV } from '../../../../2_molecules/ExportCSV/ExportCSV';
 import { TxIdWithNotification } from '../../../../2_molecules/TxIdWithNotification/TransactionIdWithNotification';
 import { BTC_RENDER_PRECISION } from '../../../../../constants/currencies';
-import {
-  DEFAULT_HISTORY_FRAME_PAGE_SIZE,
-  EXPORT_RECORD_LIMIT,
-} from '../../../../../constants/general';
-import { useNotificationContext } from '../../../../../contexts/NotificationContext';
-import { useAccount } from '../../../../../hooks/useAccount';
+import { DEFAULT_HISTORY_FRAME_PAGE_SIZE } from '../../../../../constants/general';
 import { useBlockNumber } from '../../../../../hooks/useBlockNumber';
 import { useMaintenance } from '../../../../../hooks/useMaintenance';
 import { translations } from '../../../../../locales/i18n';
-import { rskClient } from '../../../../../utils/clients';
-import { useGetBorrowHistoryLazyQuery } from '../../../../../utils/graphql/rsk/generated';
 import { dateFormat } from '../../../../../utils/helpers';
-import { useGetNewLoans } from './hooks/useGetNewLoans';
+import { useGetDepositCollateralLoans } from './hooks/useGetDepositCollateralLoans';
 
 const pageSize = DEFAULT_HISTORY_FRAME_PAGE_SIZE;
 
-export const NewLoanHistoryFrame: FC<PropsWithChildren> = ({ children }) => {
-  const { account } = useAccount();
-  const { addNotification } = useNotificationContext();
-
+export const DepositCollateralLoanFrame: FC<PropsWithChildren> = ({
+  children,
+}) => {
   const [page, setPage] = useState(0);
   const chain = chains.find(chain => chain.id === defaultChainId);
 
@@ -59,8 +49,7 @@ export const NewLoanHistoryFrame: FC<PropsWithChildren> = ({ children }) => {
     orderDirection: OrderDirection.Desc,
   });
 
-  const { data, loading, refetch } = useGetNewLoans(
-    account,
+  const { data, loading, refetch, exportData } = useGetDepositCollateralLoans(
     pageSize,
     page,
     orderOptions,
@@ -70,14 +59,10 @@ export const NewLoanHistoryFrame: FC<PropsWithChildren> = ({ children }) => {
     refetch();
   }, [refetch, block]);
 
-  const [getBorrowHistory] = useGetBorrowHistoryLazyQuery({
-    client: rskClient,
-  });
-
   const generateRowTitle = useCallback(
     (row: any) => (
       <Paragraph size={ParagraphSize.small} className="text-left">
-        {t(translations.borrowHistory.transactionTypes.createLoan)}
+        {t(translations.borrowHistory.transactionTypes.depositCollateral)}
         {' - '}
         {dateFormat(row.timestamp)}
       </Paragraph>
@@ -97,41 +82,21 @@ export const NewLoanHistoryFrame: FC<PropsWithChildren> = ({ children }) => {
         id: 'transactionType',
         title: t(translations.common.tables.columnTitles.transactionType),
         cellRenderer: () =>
-          t(translations.borrowHistory.transactionTypes.createLoan),
+          t(translations.borrowHistory.transactionTypes.depositCollateral),
       },
       {
-        id: 'collateralAmount',
-        title: t(translations.loanHistory.table.collateralAmount),
+        id: 'collateralChange',
+        title: t(translations.loanHistory.table.collateralChange),
         cellRenderer: tx => (
           <div className="inline-flex gap-1 items-center">
             <AmountRenderer
-              value={tx.newCollateral}
+              value={tx.depositAmount}
               precision={BTC_RENDER_PRECISION}
-              dataAttribute="borrow-new-collateral"
+              dataAttribute="rollover-fee"
+              prefix="+"
             />
             <AssetRenderer address={tx.collateralToken} />
           </div>
-        ),
-      },
-      {
-        id: 'debtAmount',
-        title: t(translations.loanHistory.table.debtAmount),
-        cellRenderer: tx => (
-          <div className="inline-flex gap-1 items-center">
-            <AmountRenderer
-              value={tx.newPrincipal}
-              precision={BTC_RENDER_PRECISION}
-              dataAttribute="borrow-new-debt"
-            />
-            <AssetRenderer address={tx.loanToken} />
-          </div>
-        ),
-      },
-      {
-        id: 'interestRate',
-        title: 'Interest Rate',
-        cellRenderer: tx => (
-          <AmountRenderer value={tx.interestRate} precision={2} suffix="%" />
         ),
       },
       {
@@ -175,39 +140,6 @@ export const NewLoanHistoryFrame: FC<PropsWithChildren> = ({ children }) => {
     [loading, data],
   );
 
-  const exportData = useCallback(async () => {
-    const { data } = await getBorrowHistory({
-      variables: {
-        skip: 0,
-        pageSize: EXPORT_RECORD_LIMIT,
-        user: account?.toLowerCase(),
-      },
-    });
-    let list = data?.borrows || [];
-
-    if (!list || !list.length) {
-      addNotification({
-        type: NotificationType.warning,
-        title: t(translations.common.tables.actions.noDataToExport),
-        content: '',
-        dismissible: true,
-        id: nanoid(),
-      });
-    }
-
-    return list.map(tx => ({
-      timestamp: dateFormat(tx.timestamp),
-      transactionType: t(
-        translations.borrowHistory.transactionTypes.createLoan,
-      ),
-      collateralAmount: tx.newCollateral,
-      debtAmount: tx.newPrincipal,
-      interestRate: tx.interestRate,
-      loanId: tx.loanId.id,
-      TXID: tx.transaction.id,
-    }));
-  }, [account, addNotification, getBorrowHistory]);
-
   useEffect(() => {
     setPage(0);
   }, [orderOptions]);
@@ -222,7 +154,7 @@ export const NewLoanHistoryFrame: FC<PropsWithChildren> = ({ children }) => {
         <div className="flex-row items-center ml-2 gap-4 hidden lg:inline-flex">
           <ExportCSV
             getData={exportData}
-            filename="New loans"
+            filename="Deposit collateral loans"
             disabled={!data || data.length === 0 || exportLocked}
           />
           {exportLocked && (
@@ -243,7 +175,7 @@ export const NewLoanHistoryFrame: FC<PropsWithChildren> = ({ children }) => {
           isLoading={loading}
           className="bg-gray-80 text-gray-10 lg:px-6 lg:py-4"
           noData={t(translations.common.tables.noData)}
-          dataAttribute="new-loans-table"
+          dataAttribute="deposit-collaterals-table"
         />
         <Pagination
           page={page}
@@ -251,7 +183,7 @@ export const NewLoanHistoryFrame: FC<PropsWithChildren> = ({ children }) => {
           onChange={onPageChange}
           itemsPerPage={pageSize}
           isNextButtonDisabled={isNextButtonDisabled}
-          dataAttribute="new-loans-pagination"
+          dataAttribute="deposit-collaterals-pagination"
         />
       </div>
     </>

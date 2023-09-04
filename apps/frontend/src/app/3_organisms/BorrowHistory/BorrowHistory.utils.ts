@@ -13,10 +13,6 @@ export const borrowHistoryOptions = [
     label: t(translations.borrowHistory.types.newLoan),
   },
   {
-    value: BorrowHistoryType.newLoan,
-    label: t(translations.borrowHistory.types.newLoan),
-  },
-  {
     value: BorrowHistoryType.depositCollateralLoan,
     label: t(translations.borrowHistory.types.depositCollateralLoan),
   },

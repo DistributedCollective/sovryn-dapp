@@ -168,7 +168,7 @@ export const RolloverLoanHistoryFrame: FC<PropsWithChildren> = ({
         <div className="flex-row items-center ml-2 gap-4 hidden lg:inline-flex">
           <ExportCSV
             getData={exportData}
-            filename="collateral surplus withdrawals"
+            filename="Rollover loans"
             disabled={!data || data.length === 0 || exportLocked}
           />
           {exportLocked && (
@@ -189,7 +189,7 @@ export const RolloverLoanHistoryFrame: FC<PropsWithChildren> = ({
           isLoading={loading}
           className="bg-gray-80 text-gray-10 lg:px-6 lg:py-4"
           noData={t(translations.common.tables.noData)}
-          dataAttribute="surplus-withdrawals-table"
+          dataAttribute="rollover-loans-table"
         />
         <Pagination
           page={page}
@@ -197,7 +197,7 @@ export const RolloverLoanHistoryFrame: FC<PropsWithChildren> = ({
           onChange={onPageChange}
           itemsPerPage={pageSize}
           isNextButtonDisabled={isNextButtonDisabled}
-          dataAttribute="surplus-withdrawals-pagination"
+          dataAttribute="rollover-loans-pagination"
         />
       </div>
     </>

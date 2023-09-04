@@ -6,7 +6,7 @@ import { useGetLoansQuery } from '../../../../utils/graphql/rsk/generated';
 
 export const useGetLoanIds = () => {
   // const { account } = useAccount();
-  const account = '0x605e01516891c9b7a97ab7a393cd991ce7acf711';
+  const account = '0x2bd2201bfe156a71eb0d02837172ffc237218505';
   const { loading, data, refetch } = useGetLoansQuery({
     variables: {
       user: account?.toLowerCase(),

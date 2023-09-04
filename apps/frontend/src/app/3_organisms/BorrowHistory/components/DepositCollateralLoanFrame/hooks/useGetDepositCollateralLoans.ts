@@ -12,13 +12,14 @@ import { useNotificationContext } from '../../../../../../contexts/NotificationC
 import { translations } from '../../../../../../locales/i18n';
 import { rskClient } from '../../../../../../utils/clients';
 import {
-  Rollover_OrderBy,
-  useGetRolloversLazyQuery,
-  useGetRolloversQuery,
+  DepositCollateral_OrderBy,
+  useGetDepositCollateralsLazyQuery,
+  useGetDepositCollateralsQuery,
 } from '../../../../../../utils/graphql/rsk/generated';
+import { dateFormat } from '../../../../../../utils/helpers';
 import { useGetLoanIds } from '../../../hooks/useGetLoanIds';
 
-export const useGetRolloverLoans = (
+export const useGetDepositCollateralLoans = (
   pageSize: number,
   page: number,
   orderOptions: OrderOptions,
@@ -31,7 +32,7 @@ export const useGetRolloverLoans = (
   } = useGetLoanIds();
   const { addNotification } = useNotificationContext();
 
-  const [getRollovers] = useGetRolloversLazyQuery({
+  const [getDepositCollateralLoans] = useGetDepositCollateralsLazyQuery({
     client: rskClient,
   });
 
@@ -40,7 +41,7 @@ export const useGetRolloverLoans = (
       loanIds,
       skip: page * pageSize,
       pageSize,
-      orderBy: (orderOptions.orderBy as Rollover_OrderBy) || undefined,
+      orderBy: (orderOptions.orderBy as DepositCollateral_OrderBy) || undefined,
       orderDirection: orderOptions.orderDirection || undefined,
     }),
     [
@@ -56,7 +57,7 @@ export const useGetRolloverLoans = (
     loading,
     data,
     refetch: refetchRollovers,
-  } = useGetRolloversQuery({
+  } = useGetDepositCollateralsQuery({
     variables: config,
     client: rskClient,
   });
@@ -66,14 +67,14 @@ export const useGetRolloverLoans = (
       return [];
     }
 
-    return data.rollovers.map((tx, i) => {
+    return data.depositCollaterals.map((tx, i) => {
       const loan = loans[i];
 
       return {
         id: tx.transaction.id,
         loanId: tx.loanId.id,
-        principal: tx.principal,
-        collateral: tx.collateral,
+        depositAmount: tx.depositAmount,
+        rate: tx.rate,
         timestamp: tx.timestamp,
         hash: tx.transaction.id,
         collateralToken: loan?.collateralToken.id,
@@ -88,14 +89,14 @@ export const useGetRolloverLoans = (
   }, [refetchLoanIds, refetchRollovers]);
 
   const exportData = useCallback(async () => {
-    const { data } = await getRollovers({
+    const { data } = await getDepositCollateralLoans({
       variables: {
         skip: 0,
         pageSize: EXPORT_RECORD_LIMIT,
         loanIds,
       },
     });
-    let list = data?.rollovers || [];
+    let list = data?.depositCollaterals || [];
 
     if (!list || !list.length) {
       addNotification({
@@ -115,26 +116,25 @@ export const useGetRolloverLoans = (
         if (loan?.collateralToken?.id) {
           const token = await getTokenDetailsByAddress(
             loan?.collateralToken?.id,
-          );
-          if (token.symbol) {
+          ).catch(console.log);
+          if (token?.symbol) {
             collateralToken = ` ${getTokenDisplayName(token.symbol)}`;
           }
         }
 
         return {
-          timestamp: tx.timestamp,
+          timestamp: dateFormat(tx.timestamp),
           transactionType: t(
-            translations.borrowHistory.transactionTypes.rollovers,
+            translations.borrowHistory.transactionTypes.depositCollateral,
           ),
-          rolloverFee: tx.principal + collateralToken,
-          newCollateralBalance: tx.collateral + collateralToken,
+          collateralChange: '+' + tx.depositAmount + collateralToken,
           loanId: tx.loanId.id,
           TXID: tx.transaction.id,
         };
       }),
     );
     return result;
-  }, [addNotification, getRollovers, loanIds, loans]);
+  }, [addNotification, getDepositCollateralLoans, loanIds, loans]);
 
   return {
     loading: loading || loadingLoanIds,

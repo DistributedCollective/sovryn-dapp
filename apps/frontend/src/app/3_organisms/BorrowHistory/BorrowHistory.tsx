@@ -5,8 +5,9 @@ import { Select } from '@sovryn/ui';
 import { BorrowHistoryType } from './BorrowHistory.types';
 import { borrowHistoryOptions } from './BorrowHistory.utils';
 import { CollateralSurplusHistoryFrame } from './components/CollateralSurplusFrame/CollateralSurplusHistoryFrame';
+import { DepositCollateralLoanFrame } from './components/DepositCollateralLoanFrame/DepositCollateralLoanFrame';
 import { NewLoanHistoryFrame } from './components/NewLoanFrame/NewLoanHistoryFrame';
-import { RolloverLoanHistoryFrame } from './components/RolloverLoanFrame copy/RolloverLoanHistoryFrame';
+import { RolloverLoanHistoryFrame } from './components/RolloverLoanFrame/RolloverLoanHistoryFrame';
 import { TransactionHistoryFrame } from './components/TransactionHistoryFrame';
 
 export const BorrowHistory: FC = () => {
@@ -38,6 +39,12 @@ export const BorrowHistory: FC = () => {
         );
       case BorrowHistoryType.newLoan:
         return <NewLoanHistoryFrame>{selectComponent}</NewLoanHistoryFrame>;
+      case BorrowHistoryType.depositCollateralLoan:
+        return (
+          <DepositCollateralLoanFrame>
+            {selectComponent}
+          </DepositCollateralLoanFrame>
+        );
       case BorrowHistoryType.rolloversLoan:
         return (
           <RolloverLoanHistoryFrame>{selectComponent}</RolloverLoanHistoryFrame>

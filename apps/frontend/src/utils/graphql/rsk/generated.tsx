@@ -14394,6 +14394,50 @@ export type GetBorrowHistoryQuery = {
   }>;
 };
 
+export type GetCloseWithDepositsQueryVariables = Exact<{
+  loanIds?: InputMaybe<Array<Scalars['String']> | Scalars['String']>;
+  skip: Scalars['Int'];
+  pageSize: Scalars['Int'];
+  orderBy?: InputMaybe<CloseWithDeposit_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+}>;
+
+export type GetCloseWithDepositsQuery = {
+  __typename?: 'Query';
+  closeWithDeposits: Array<{
+    __typename?: 'CloseWithDeposit';
+    collateralToken: string;
+    loanToken: string;
+    repayAmount: string;
+    collateralWithdrawAmount: string;
+    timestamp: number;
+    loanId: { __typename?: 'Loan'; id: string };
+    transaction: { __typename?: 'Transaction'; id: string };
+  }>;
+};
+
+export type GetCloseWithSwapsQueryVariables = Exact<{
+  loanIds?: InputMaybe<Array<Scalars['String']> | Scalars['String']>;
+  skip: Scalars['Int'];
+  pageSize: Scalars['Int'];
+  orderBy?: InputMaybe<CloseWithSwap_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+}>;
+
+export type GetCloseWithSwapsQuery = {
+  __typename?: 'Query';
+  closeWithSwaps: Array<{
+    __typename?: 'CloseWithSwap';
+    collateralToken: string;
+    loanToken: string;
+    positionCloseSize: string;
+    loanCloseAmount: string;
+    timestamp: number;
+    loanId: { __typename?: 'Loan'; id: string };
+    transaction: { __typename?: 'Transaction'; id: string };
+  }>;
+};
+
 export type GetDelegateChangesQueryVariables = Exact<{
   user?: InputMaybe<Scalars['String']>;
   skip: Scalars['Int'];
@@ -14412,6 +14456,27 @@ export type GetDelegateChangesQuery = {
     delegate?: { __typename?: 'User'; id: string } | null;
     previousDelegate?: { __typename?: 'User'; id: string } | null;
     user: { __typename?: 'User'; id: string };
+  }>;
+};
+
+export type GetDepositCollateralsQueryVariables = Exact<{
+  loanIds?: InputMaybe<Array<Scalars['String']> | Scalars['String']>;
+  skip: Scalars['Int'];
+  pageSize: Scalars['Int'];
+  orderBy?: InputMaybe<DepositCollateral_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+}>;
+
+export type GetDepositCollateralsQuery = {
+  __typename?: 'Query';
+  depositCollaterals: Array<{
+    __typename?: 'DepositCollateral';
+    depositAmount: string;
+    rate?: string | null;
+    timestamp: number;
+    emittedBy: string;
+    loanId: { __typename?: 'Loan'; id: string };
+    transaction: { __typename?: 'Transaction'; id: string };
   }>;
 };
 
@@ -14518,6 +14583,28 @@ export type GetLendHistoryQuery = {
       }> | null;
     }> | null;
   } | null;
+};
+
+export type GetLiquidatesQueryVariables = Exact<{
+  loanIds?: InputMaybe<Array<Scalars['String']> | Scalars['String']>;
+  skip: Scalars['Int'];
+  pageSize: Scalars['Int'];
+  orderBy?: InputMaybe<Liquidate_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+}>;
+
+export type GetLiquidatesQuery = {
+  __typename?: 'Query';
+  liquidates: Array<{
+    __typename?: 'Liquidate';
+    collateralToken: string;
+    loanToken: string;
+    repayAmount: string;
+    collateralWithdrawAmount: string;
+    timestamp: number;
+    loanId: { __typename?: 'Loan'; id: string };
+    transaction: { __typename?: 'Transaction'; id: string };
+  }>;
 };
 
 export type GetLoansQueryVariables = Exact<{
@@ -15011,6 +15098,174 @@ export type GetBorrowHistoryQueryResult = Apollo.QueryResult<
   GetBorrowHistoryQuery,
   GetBorrowHistoryQueryVariables
 >;
+export const GetCloseWithDepositsDocument = gql`
+  query getCloseWithDeposits(
+    $loanIds: [String!]
+    $skip: Int!
+    $pageSize: Int!
+    $orderBy: CloseWithDeposit_orderBy
+    $orderDirection: OrderDirection
+  ) {
+    closeWithDeposits(
+      where: { loanId_in: $loanIds }
+      first: $pageSize
+      skip: $skip
+      orderBy: $orderBy
+      orderDirection: $orderDirection
+    ) {
+      loanId {
+        id
+      }
+      collateralToken
+      loanToken
+      repayAmount
+      collateralWithdrawAmount
+      timestamp
+      transaction {
+        id
+      }
+    }
+  }
+`;
+
+/**
+ * __useGetCloseWithDepositsQuery__
+ *
+ * To run a query within a React component, call `useGetCloseWithDepositsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetCloseWithDepositsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetCloseWithDepositsQuery({
+ *   variables: {
+ *      loanIds: // value for 'loanIds'
+ *      skip: // value for 'skip'
+ *      pageSize: // value for 'pageSize'
+ *      orderBy: // value for 'orderBy'
+ *      orderDirection: // value for 'orderDirection'
+ *   },
+ * });
+ */
+export function useGetCloseWithDepositsQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    GetCloseWithDepositsQuery,
+    GetCloseWithDepositsQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    GetCloseWithDepositsQuery,
+    GetCloseWithDepositsQueryVariables
+  >(GetCloseWithDepositsDocument, options);
+}
+export function useGetCloseWithDepositsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    GetCloseWithDepositsQuery,
+    GetCloseWithDepositsQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    GetCloseWithDepositsQuery,
+    GetCloseWithDepositsQueryVariables
+  >(GetCloseWithDepositsDocument, options);
+}
+export type GetCloseWithDepositsQueryHookResult = ReturnType<
+  typeof useGetCloseWithDepositsQuery
+>;
+export type GetCloseWithDepositsLazyQueryHookResult = ReturnType<
+  typeof useGetCloseWithDepositsLazyQuery
+>;
+export type GetCloseWithDepositsQueryResult = Apollo.QueryResult<
+  GetCloseWithDepositsQuery,
+  GetCloseWithDepositsQueryVariables
+>;
+export const GetCloseWithSwapsDocument = gql`
+  query getCloseWithSwaps(
+    $loanIds: [String!]
+    $skip: Int!
+    $pageSize: Int!
+    $orderBy: CloseWithSwap_orderBy
+    $orderDirection: OrderDirection
+  ) {
+    closeWithSwaps(
+      where: { loanId_in: $loanIds }
+      first: $pageSize
+      skip: $skip
+      orderBy: $orderBy
+      orderDirection: $orderDirection
+    ) {
+      loanId {
+        id
+      }
+      collateralToken
+      loanToken
+      positionCloseSize
+      loanCloseAmount
+      timestamp
+      transaction {
+        id
+      }
+    }
+  }
+`;
+
+/**
+ * __useGetCloseWithSwapsQuery__
+ *
+ * To run a query within a React component, call `useGetCloseWithSwapsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetCloseWithSwapsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetCloseWithSwapsQuery({
+ *   variables: {
+ *      loanIds: // value for 'loanIds'
+ *      skip: // value for 'skip'
+ *      pageSize: // value for 'pageSize'
+ *      orderBy: // value for 'orderBy'
+ *      orderDirection: // value for 'orderDirection'
+ *   },
+ * });
+ */
+export function useGetCloseWithSwapsQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    GetCloseWithSwapsQuery,
+    GetCloseWithSwapsQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    GetCloseWithSwapsQuery,
+    GetCloseWithSwapsQueryVariables
+  >(GetCloseWithSwapsDocument, options);
+}
+export function useGetCloseWithSwapsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    GetCloseWithSwapsQuery,
+    GetCloseWithSwapsQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    GetCloseWithSwapsQuery,
+    GetCloseWithSwapsQueryVariables
+  >(GetCloseWithSwapsDocument, options);
+}
+export type GetCloseWithSwapsQueryHookResult = ReturnType<
+  typeof useGetCloseWithSwapsQuery
+>;
+export type GetCloseWithSwapsLazyQueryHookResult = ReturnType<
+  typeof useGetCloseWithSwapsLazyQuery
+>;
+export type GetCloseWithSwapsQueryResult = Apollo.QueryResult<
+  GetCloseWithSwapsQuery,
+  GetCloseWithSwapsQueryVariables
+>;
 export const GetDelegateChangesDocument = gql`
   query getDelegateChanges(
     $user: String
@@ -15095,6 +15350,89 @@ export type GetDelegateChangesLazyQueryHookResult = ReturnType<
 export type GetDelegateChangesQueryResult = Apollo.QueryResult<
   GetDelegateChangesQuery,
   GetDelegateChangesQueryVariables
+>;
+export const GetDepositCollateralsDocument = gql`
+  query getDepositCollaterals(
+    $loanIds: [String!]
+    $skip: Int!
+    $pageSize: Int!
+    $orderBy: DepositCollateral_orderBy
+    $orderDirection: OrderDirection
+  ) {
+    depositCollaterals(
+      where: { loanId_in: $loanIds }
+      first: $pageSize
+      skip: $skip
+      orderBy: $orderBy
+      orderDirection: $orderDirection
+    ) {
+      loanId {
+        id
+      }
+      depositAmount
+      rate
+      timestamp
+      emittedBy
+      transaction {
+        id
+      }
+    }
+  }
+`;
+
+/**
+ * __useGetDepositCollateralsQuery__
+ *
+ * To run a query within a React component, call `useGetDepositCollateralsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetDepositCollateralsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetDepositCollateralsQuery({
+ *   variables: {
+ *      loanIds: // value for 'loanIds'
+ *      skip: // value for 'skip'
+ *      pageSize: // value for 'pageSize'
+ *      orderBy: // value for 'orderBy'
+ *      orderDirection: // value for 'orderDirection'
+ *   },
+ * });
+ */
+export function useGetDepositCollateralsQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    GetDepositCollateralsQuery,
+    GetDepositCollateralsQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    GetDepositCollateralsQuery,
+    GetDepositCollateralsQueryVariables
+  >(GetDepositCollateralsDocument, options);
+}
+export function useGetDepositCollateralsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    GetDepositCollateralsQuery,
+    GetDepositCollateralsQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    GetDepositCollateralsQuery,
+    GetDepositCollateralsQueryVariables
+  >(GetDepositCollateralsDocument, options);
+}
+export type GetDepositCollateralsQueryHookResult = ReturnType<
+  typeof useGetDepositCollateralsQuery
+>;
+export type GetDepositCollateralsLazyQueryHookResult = ReturnType<
+  typeof useGetDepositCollateralsLazyQuery
+>;
+export type GetDepositCollateralsQueryResult = Apollo.QueryResult<
+  GetDepositCollateralsQuery,
+  GetDepositCollateralsQueryVariables
 >;
 export const GetExtendedStakingDurationsDocument = gql`
   query getExtendedStakingDurations(
@@ -15460,6 +15798,90 @@ export type GetLendHistoryLazyQueryHookResult = ReturnType<
 export type GetLendHistoryQueryResult = Apollo.QueryResult<
   GetLendHistoryQuery,
   GetLendHistoryQueryVariables
+>;
+export const GetLiquidatesDocument = gql`
+  query getLiquidates(
+    $loanIds: [String!]
+    $skip: Int!
+    $pageSize: Int!
+    $orderBy: Liquidate_orderBy
+    $orderDirection: OrderDirection
+  ) {
+    liquidates(
+      where: { loanId_in: $loanIds }
+      first: $pageSize
+      skip: $skip
+      orderBy: $orderBy
+      orderDirection: $orderDirection
+    ) {
+      loanId {
+        id
+      }
+      collateralToken
+      loanToken
+      repayAmount
+      collateralWithdrawAmount
+      timestamp
+      transaction {
+        id
+      }
+    }
+  }
+`;
+
+/**
+ * __useGetLiquidatesQuery__
+ *
+ * To run a query within a React component, call `useGetLiquidatesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetLiquidatesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetLiquidatesQuery({
+ *   variables: {
+ *      loanIds: // value for 'loanIds'
+ *      skip: // value for 'skip'
+ *      pageSize: // value for 'pageSize'
+ *      orderBy: // value for 'orderBy'
+ *      orderDirection: // value for 'orderDirection'
+ *   },
+ * });
+ */
+export function useGetLiquidatesQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    GetLiquidatesQuery,
+    GetLiquidatesQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<GetLiquidatesQuery, GetLiquidatesQueryVariables>(
+    GetLiquidatesDocument,
+    options,
+  );
+}
+export function useGetLiquidatesLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    GetLiquidatesQuery,
+    GetLiquidatesQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<GetLiquidatesQuery, GetLiquidatesQueryVariables>(
+    GetLiquidatesDocument,
+    options,
+  );
+}
+export type GetLiquidatesQueryHookResult = ReturnType<
+  typeof useGetLiquidatesQuery
+>;
+export type GetLiquidatesLazyQueryHookResult = ReturnType<
+  typeof useGetLiquidatesLazyQuery
+>;
+export type GetLiquidatesQueryResult = Apollo.QueryResult<
+  GetLiquidatesQuery,
+  GetLiquidatesQueryVariables
 >;
 export const GetLoansDocument = gql`
   query getLoans($user: String) {

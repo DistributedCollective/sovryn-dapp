@@ -22,12 +22,17 @@ import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRen
 import { AssetRenderer } from '../../../../2_molecules/AssetRenderer/AssetRenderer';
 import { convertLoanTokenToSupportedAssets } from '../../../../5_pages/BorrowPage/components/OpenLoansTable/OpenLoans.utils';
 import { LoanItem } from '../../../../5_pages/BorrowPage/components/OpenLoansTable/OpenLoansTable.types';
-import { MINIMUM_COLLATERAL_RATIO_BORROWING_MAINTENANCE } from '../../../../../constants/lending';
+import {
+  MINIMUM_COLLATERAL_RATIO_BORROWING_MAINTENANCE,
+  MINIMUM_COLLATERAL_RATIO_LENDING_POOLS,
+  MINIMUM_COLLATERAL_RATIO_LENDING_POOLS_SOV,
+} from '../../../../../constants/lending';
 import { getTokenDisplayName } from '../../../../../constants/tokens';
 import { useMaxAssetBalance } from '../../../../../hooks/useMaxAssetBalance';
 import { useGetRBTCPrice } from '../../../../../hooks/zero/useGetRBTCPrice';
 import { translations } from '../../../../../locales/i18n';
 import { decimalic } from '../../../../../utils/math';
+import { getCollateralRatioThresholds } from '../../../BorrowLoanForm/components/NewLoanForm/NewLoanForm.utils';
 import { useBorrow } from '../../../BorrowLoanForm/components/NewLoanForm/hooks/useBorrow';
 import { useGetMaximumCollateralAmount } from '../../../BorrowLoanForm/components/NewLoanForm/hooks/useGetMaximumCollateralAmount';
 import { getOriginationFeeAmount } from '../../../ZeroLocForm/utils';
@@ -42,7 +47,6 @@ import {
   calculateDebtRepaidPercentage,
   calculatePrepaidInterest,
   calculateRepayCollateralWithdrawn,
-  getCollateralRatioThresholds,
   normalizeToken,
   renderValue,
 } from './AdjustLoanForm.utils';
@@ -251,18 +255,21 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
     [isBorrowTab, maximumAvailableRepayAmount, maximumBorrowAmount],
   );
 
-  const isValidDebtAmount = useMemo(
-    () => debtSize.lte(debtTokenBalance),
-    [debtSize, debtTokenBalance],
-  );
-
   const isValidCollateralAmount = useMemo(
     () => collateralSize.lte(maxCollateralAmount),
     [collateralSize, maxCollateralAmount],
   );
 
+  const minimumCollateralRatio = useMemo(
+    () =>
+      collateralToken === SupportedTokens.sov
+        ? MINIMUM_COLLATERAL_RATIO_LENDING_POOLS_SOV
+        : MINIMUM_COLLATERAL_RATIO_LENDING_POOLS,
+    [collateralToken],
+  );
+
   const collateralRatio = useMemo(() => {
-    if ((debtSize.isZero() && collateralSize.isZero()) || !isValidDebtAmount) {
+    if (debtSize.isZero() && collateralSize.isZero()) {
       return Decimal.ZERO;
     }
 
@@ -282,7 +289,6 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
   }, [
     collateralSize,
     debtSize,
-    isValidDebtAmount,
     isCollateralWithdrawMode,
     newCollateralAmount,
     loan.debt,
@@ -295,26 +301,20 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
   ]);
 
   const isValidCollateralRatio = useMemo(() => {
-    if ((collateralSize.isZero() && debtSize.isZero()) || !isValidDebtAmount) {
+    if (collateralSize.isZero() && debtSize.isZero()) {
       return true;
     }
-    return collateralRatio.gte(
-      MINIMUM_COLLATERAL_RATIO_BORROWING_MAINTENANCE.mul(100),
-    );
-  }, [collateralRatio, collateralSize, debtSize, isValidDebtAmount]);
+    return collateralRatio.gte(minimumCollateralRatio.mul(100));
+  }, [collateralRatio, collateralSize, debtSize, minimumCollateralRatio]);
 
   const collateralRatioError = useMemo(() => {
-    if (
-      collateralRatio.lt(
-        MINIMUM_COLLATERAL_RATIO_BORROWING_MAINTENANCE.mul(100),
-      )
-    ) {
+    if (collateralRatio.lt(minimumCollateralRatio.mul(100))) {
       return t(pageTranslations.labels.collateralRatioError, {
-        min: MINIMUM_COLLATERAL_RATIO_BORROWING_MAINTENANCE.mul(100),
+        min: minimumCollateralRatio.mul(100),
       });
     }
     return '';
-  }, [collateralRatio]);
+  }, [collateralRatio, minimumCollateralRatio]);
 
   const liquidationPrice = useMemo(() => {
     if (collateralSize.isZero() && debtSize.isZero()) {
@@ -508,11 +508,7 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
 
   const submitButtonDisabled = useMemo(() => {
     if (isRepayTab) {
-      return (
-        debtSize.isZero() ||
-        !isValidDebtAmount ||
-        !(Number(debtAmount) <= maxDebtAmount.toNumber())
-      );
+      return debtSize.isZero() || debtSize.gt(maxDebtAmount);
     }
 
     if (isBorrowTab) {
@@ -520,8 +516,7 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
         (debtSize.isZero() && collateralSize.isZero()) ||
         collateralRatioError !== '' ||
         !isValidCollateralAmount ||
-        !isValidDebtAmount ||
-        !(Number(debtAmount) <= maxDebtAmount.toNumber())
+        debtSize.gt(maxDebtAmount)
       );
     }
 
@@ -542,11 +537,9 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
     isCollateralWithdrawMode,
     isCloseTab,
     debtSize,
-    isValidDebtAmount,
     collateralSize,
     collateralRatioError,
     isValidCollateralAmount,
-    debtAmount,
     maxDebtAmount,
     isValidCloseAmount,
   ]);
@@ -587,8 +580,8 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
   ]);
 
   const collateralRatioThresholds = useMemo(
-    () => getCollateralRatioThresholds(),
-    [],
+    () => getCollateralRatioThresholds(collateralToken),
+    [collateralToken],
   );
 
   return (

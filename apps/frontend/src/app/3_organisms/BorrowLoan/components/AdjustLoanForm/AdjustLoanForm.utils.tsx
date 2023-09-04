@@ -11,7 +11,6 @@ import {
   BTC_RENDER_PRECISION,
   TOKEN_RENDER_PRECISION,
 } from '../../../../../constants/currencies';
-import { MINIMUM_COLLATERAL_RATIO_BORROWING_MAINTENANCE } from '../../../../../constants/lending';
 import { translations } from '../../../../../locales/i18n';
 import { decimalic } from '../../../../../utils/math';
 import { SECONDS_IN_YEAR } from './AdjustLoanForm.constants';
@@ -89,17 +88,3 @@ export const areValuesIdentical = (
 
   return Math.abs(firstValue.sub(secondValue).toNumber()) < epsilon;
 };
-
-export const getCollateralRatioThresholds = () => ({
-  START: MINIMUM_COLLATERAL_RATIO_BORROWING_MAINTENANCE.mul(100)
-    .mul(0.9)
-    .toNumber(),
-  MIDDLE_START:
-    MINIMUM_COLLATERAL_RATIO_BORROWING_MAINTENANCE.mul(100).toNumber() - 0.1,
-  MIDDLE_END: MINIMUM_COLLATERAL_RATIO_BORROWING_MAINTENANCE.mul(100)
-    .mul(1.55)
-    .toNumber(),
-  END: MINIMUM_COLLATERAL_RATIO_BORROWING_MAINTENANCE.mul(100)
-    .mul(2)
-    .toNumber(),
-});

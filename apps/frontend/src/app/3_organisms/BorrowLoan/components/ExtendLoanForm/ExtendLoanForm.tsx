@@ -1,5 +1,6 @@
 import React, { FC, useEffect, useMemo, useState } from 'react';
 
+import dayjs from 'dayjs';
 import { t } from 'i18next';
 
 import { SupportedTokens } from '@sovryn/contracts';
@@ -8,7 +9,6 @@ import {
   Button,
   ButtonStyle,
   ButtonType,
-  Datepicker,
   DynamicValue,
   ErrorBadge,
   ErrorLevel,
@@ -30,9 +30,11 @@ import { useGetRBTCPrice } from '../../../../../hooks/zero/useGetRBTCPrice';
 import { translations } from '../../../../../locales/i18n';
 import { dateFormat } from '../../../../../utils/helpers';
 import { decimalic } from '../../../../../utils/math';
+import { DEFAULT_LOAN_DURATION } from '../../../BorrowLoanForm/components/NewLoanForm/NewLoanForm.constants';
 import { useGetCollateralAssetPrice } from '../AdjustLoanForm/hooks/useGetCollateralAssetPrice';
 import { normalizeToken, renderValue } from './ExtendLoanForm.utils';
-import { CurrentLoanData } from './components/CurrentLoanData';
+import { CurrentLoanData } from './components/CurrentLoanData/CurrentLoanData';
+import { RollOverDatePicker } from './components/RollOverDatePicker/RollOverDatePicker';
 import { useExtendLoan } from './hooks/useExtendLoan';
 
 const pageTranslations = translations.fixedInterestPage.extendLoanDialog;
@@ -43,7 +45,9 @@ type ExtendLoanFormProps = {
 };
 
 export const ExtendLoanForm: FC<ExtendLoanFormProps> = ({ loan }) => {
-  const [nextRolloverDate, setNextRolloverDate] = useState('');
+  const [nextRolloverDate, setNextRolloverDate] = useState(
+    dayjs().add(DEFAULT_LOAN_DURATION, 'day').unix(),
+  );
   const [amount] = useState('');
 
   const [collateralAssetPrice, setCollateralAssetPrice] = useState('0');
@@ -72,7 +76,7 @@ export const ExtendLoanForm: FC<ExtendLoanFormProps> = ({ loan }) => {
   );
 
   const newCollateralAmount = useMemo(() => {
-    return decimalic(loan.collateral.toString()).add(depositAmount);
+    return decimalic(loan.collateral.toString()).sub(depositAmount);
   }, [loan.collateral, depositAmount]);
 
   const collateralRatio = useMemo(() => {
@@ -172,12 +176,11 @@ export const ExtendLoanForm: FC<ExtendLoanFormProps> = ({ loan }) => {
           />
         </SimpleTable>
 
-        <Datepicker
-          className="min-w-full mb-6"
-          label={t(pageTranslations.labels.nextRolloverDate)}
-          value={nextRolloverDate}
-          min={loan.rolloverDate}
+        <RollOverDatePicker
+          date={nextRolloverDate}
           onChange={setNextRolloverDate}
+          className="min-w-full mb-6"
+          minDate={loan.rolloverDate}
         />
 
         <div className="flex md:flex-row flex-col mb-3">

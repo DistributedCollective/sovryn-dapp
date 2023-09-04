@@ -26,4 +26,3 @@ export * from './Notification';
 export * from './NotificationStack';
 export * from './Table';
 export * from './ErrorList';
-export * from './Datepicker';

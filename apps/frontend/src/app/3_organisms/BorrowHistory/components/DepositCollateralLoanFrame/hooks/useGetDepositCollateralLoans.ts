@@ -3,7 +3,6 @@ import { useCallback, useMemo } from 'react';
 import { t } from 'i18next';
 import { nanoid } from 'nanoid';
 
-import { getTokenDetailsByAddress } from '@sovryn/contracts';
 import { NotificationType, OrderOptions } from '@sovryn/ui';
 
 import { EXPORT_RECORD_LIMIT } from '../../../../../../constants/general';
@@ -26,7 +25,6 @@ export const useGetDepositCollateralLoans = (
 ) => {
   const {
     loanIds,
-    loans,
     loading: loadingLoanIds,
     refetch: refetchLoanIds,
   } = useGetLoanIds();
@@ -67,21 +65,17 @@ export const useGetDepositCollateralLoans = (
       return [];
     }
 
-    return data.depositCollaterals.map((tx, i) => {
-      const loan = loans[i];
-
-      return {
-        id: tx.transaction.id,
-        loanId: tx.loanId.id,
-        depositAmount: tx.depositAmount,
-        rate: tx.rate,
-        timestamp: tx.timestamp,
-        hash: tx.transaction.id,
-        collateralToken: loan?.collateralToken.id,
-        loanToken: loan?.loanToken.id,
-      };
-    });
-  }, [data, loans]);
+    return data.depositCollaterals.map(tx => ({
+      id: tx.transaction.id,
+      loanId: tx.loanId.id,
+      depositAmount: tx.depositAmount,
+      rate: tx.rate,
+      timestamp: tx.timestamp,
+      hash: tx.transaction.id,
+      collateralToken: tx.loanId.collateralToken.symbol,
+      loanToken: tx.loanId.loanToken.symbol,
+    }));
+  }, [data]);
 
   const refetch = useCallback(() => {
     refetchRollovers();
@@ -108,33 +102,18 @@ export const useGetDepositCollateralLoans = (
       });
     }
 
-    const result = Promise.all(
-      list.map(async (tx, i) => {
-        const loan = loans[i];
-
-        let collateralToken = '';
-        if (loan?.collateralToken?.id) {
-          const token = await getTokenDetailsByAddress(
-            loan?.collateralToken?.id,
-          ).catch(console.log);
-          if (token?.symbol) {
-            collateralToken = ` ${getTokenDisplayName(token.symbol)}`;
-          }
-        }
-
-        return {
-          timestamp: dateFormat(tx.timestamp),
-          transactionType: t(
-            translations.borrowHistory.transactionTypes.depositCollateral,
-          ),
-          collateralChange: '+' + tx.depositAmount + collateralToken,
-          loanId: tx.loanId.id,
-          TXID: tx.transaction.id,
-        };
-      }),
-    );
-    return result;
-  }, [addNotification, getDepositCollateralLoans, loanIds, loans]);
+    return list.map(tx => ({
+      timestamp: dateFormat(tx.timestamp),
+      transactionType: t(
+        translations.borrowHistory.transactionTypes.depositCollateral,
+      ),
+      collateralWithdrawn: `+ ${tx.depositAmount} ${getTokenDisplayName(
+        tx.loanId.collateralToken.symbol || '',
+      )}`,
+      loanId: tx.loanId.id,
+      TXID: tx.transaction.id,
+    }));
+  }, [addNotification, getDepositCollateralLoans, loanIds]);
 
   return {
     loading: loading || loadingLoanIds,

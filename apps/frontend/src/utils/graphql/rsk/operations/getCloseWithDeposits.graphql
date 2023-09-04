@@ -14,6 +14,14 @@ query getCloseWithDeposits(
   ) {
     loanId {
       id
+      collateralToken {
+        id
+        symbol
+      }
+      loanToken {
+        id
+        symbol
+      }
     }
     collateralToken
     loanToken

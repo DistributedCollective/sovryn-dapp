@@ -14,6 +14,14 @@ query getDepositCollaterals(
   ) {
     loanId {
       id
+      collateralToken {
+        id
+        symbol
+      }
+      loanToken {
+        id
+        symbol
+      }
     }
     depositAmount
     rate

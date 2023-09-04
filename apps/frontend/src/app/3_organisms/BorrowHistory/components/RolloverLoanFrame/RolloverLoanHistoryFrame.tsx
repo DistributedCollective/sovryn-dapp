@@ -95,7 +95,7 @@ export const RolloverLoanHistoryFrame: FC<PropsWithChildren> = ({
               dataAttribute="rollover-fee"
               prefix="-"
             />
-            <AssetRenderer address={tx.collateralToken} />
+            <AssetRenderer asset={tx.collateralToken} />
           </div>
         ),
       },
@@ -109,7 +109,7 @@ export const RolloverLoanHistoryFrame: FC<PropsWithChildren> = ({
               precision={BTC_RENDER_PRECISION}
               dataAttribute="new-collateral"
             />
-            <AssetRenderer address={tx.collateralToken} />
+            <AssetRenderer asset={tx.collateralToken} />
           </div>
         ),
       },

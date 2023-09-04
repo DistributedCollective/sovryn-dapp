@@ -33,6 +33,7 @@ import {
   DEFAULT_HISTORY_FRAME_PAGE_SIZE,
   EXPORT_RECORD_LIMIT,
 } from '../../../../../constants/general';
+import { getTokenDisplayName } from '../../../../../constants/tokens';
 import { useNotificationContext } from '../../../../../contexts/NotificationContext';
 import { useAccount } from '../../../../../hooks/useAccount';
 import { useBlockNumber } from '../../../../../hooks/useBlockNumber';
@@ -109,7 +110,7 @@ export const NewLoanHistoryFrame: FC<PropsWithChildren> = ({ children }) => {
               precision={BTC_RENDER_PRECISION}
               dataAttribute="borrow-new-collateral"
             />
-            <AssetRenderer address={tx.collateralToken} />
+            <AssetRenderer asset={tx.collateralToken} />
           </div>
         ),
       },
@@ -123,7 +124,7 @@ export const NewLoanHistoryFrame: FC<PropsWithChildren> = ({ children }) => {
               precision={BTC_RENDER_PRECISION}
               dataAttribute="borrow-new-debt"
             />
-            <AssetRenderer address={tx.loanToken} />
+            <AssetRenderer asset={tx.loanToken} />
           </div>
         ),
       },
@@ -200,8 +201,12 @@ export const NewLoanHistoryFrame: FC<PropsWithChildren> = ({ children }) => {
       transactionType: t(
         translations.borrowHistory.transactionTypes.createLoan,
       ),
-      collateralAmount: tx.newCollateral,
-      debtAmount: tx.newPrincipal,
+      collateralAmount: `${tx.newCollateral} ${getTokenDisplayName(
+        tx.loanId.collateralToken.symbol || '',
+      )}`,
+      debtAmount: `${tx.newPrincipal} ${getTokenDisplayName(
+        tx.loanId.loanToken.symbol || '',
+      )}`,
       interestRate: tx.interestRate,
       loanId: tx.loanId.id,
       TXID: tx.transaction.id,

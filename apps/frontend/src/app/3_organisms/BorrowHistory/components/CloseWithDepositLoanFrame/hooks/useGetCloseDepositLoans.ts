@@ -11,14 +11,14 @@ import { useNotificationContext } from '../../../../../../contexts/NotificationC
 import { translations } from '../../../../../../locales/i18n';
 import { rskClient } from '../../../../../../utils/clients';
 import {
-  Rollover_OrderBy,
-  useGetRolloversLazyQuery,
-  useGetRolloversQuery,
+  CloseWithDeposit_OrderBy,
+  useGetCloseWithDepositsLazyQuery,
+  useGetCloseWithDepositsQuery,
 } from '../../../../../../utils/graphql/rsk/generated';
 import { dateFormat } from '../../../../../../utils/helpers';
 import { useGetLoanIds } from '../../../hooks/useGetLoanIds';
 
-export const useGetRolloverLoans = (
+export const useGetCloseDepositLoans = (
   pageSize: number,
   page: number,
   orderOptions: OrderOptions,
@@ -30,16 +30,12 @@ export const useGetRolloverLoans = (
   } = useGetLoanIds();
   const { addNotification } = useNotificationContext();
 
-  const [getRollovers] = useGetRolloversLazyQuery({
-    client: rskClient,
-  });
-
   const config = useMemo(
     () => ({
       loanIds,
       skip: page * pageSize,
       pageSize,
-      orderBy: (orderOptions.orderBy as Rollover_OrderBy) || undefined,
+      orderBy: (orderOptions.orderBy as CloseWithDeposit_OrderBy) || undefined,
       orderDirection: orderOptions.orderDirection || undefined,
     }),
     [
@@ -51,11 +47,15 @@ export const useGetRolloverLoans = (
     ],
   );
 
+  const [getCloseWithDeposits] = useGetCloseWithDepositsLazyQuery({
+    client: rskClient,
+  });
+
   const {
     loading,
     data,
-    refetch: refetchRollovers,
-  } = useGetRolloversQuery({
+    refetch: refetchLoans,
+  } = useGetCloseWithDepositsQuery({
     variables: config,
     client: rskClient,
   });
@@ -65,32 +65,32 @@ export const useGetRolloverLoans = (
       return [];
     }
 
-    return data.rollovers.map(tx => ({
+    return data.closeWithDeposits.map(tx => ({
       id: tx.transaction.id,
       loanId: tx.loanId.id,
-      principal: tx.principal,
-      collateral: tx.collateral,
-      timestamp: tx.timestamp,
-      hash: tx.transaction.id,
+      collateralWithdrawAmount: tx.collateralWithdrawAmount,
+      repayAmount: tx.repayAmount,
       collateralToken: tx.loanId.collateralToken.symbol,
       loanToken: tx.loanId.loanToken.symbol,
+      timestamp: tx.timestamp,
+      hash: tx.transaction.id,
     }));
   }, [data]);
 
   const refetch = useCallback(() => {
-    refetchRollovers();
+    refetchLoans();
     refetchLoanIds();
-  }, [refetchLoanIds, refetchRollovers]);
+  }, [refetchLoanIds, refetchLoans]);
 
   const exportData = useCallback(async () => {
-    const { data } = await getRollovers({
+    const { data } = await getCloseWithDeposits({
       variables: {
         skip: 0,
         pageSize: EXPORT_RECORD_LIMIT,
         loanIds,
       },
     });
-    let list = data?.rollovers || [];
+    let list = data?.closeWithDeposits || [];
 
     if (!list || !list.length) {
       addNotification({
@@ -102,20 +102,23 @@ export const useGetRolloverLoans = (
       });
     }
 
-    return list.map(tx => ({
-      timestamp: dateFormat(tx.timestamp),
-      transactionType: t(translations.borrowHistory.transactionTypes.rollovers),
-
-      rolloverFee: `${tx.principal} ${getTokenDisplayName(
-        tx.loanId.collateralToken.symbol || '',
-      )}`,
-      newCollateralBalance: `${tx.collateral} ${getTokenDisplayName(
-        tx.loanId.collateralToken.symbol || '',
-      )}`,
-      loanId: tx.loanId.id,
-      TXID: tx.transaction.id,
-    }));
-  }, [addNotification, getRollovers, loanIds]);
+    return list.map(tx => {
+      return {
+        timestamp: dateFormat(tx.timestamp),
+        transactionType: t(
+          translations.borrowHistory.transactionTypes.closeSwap,
+        ),
+        collateralWithdrawn: `${
+          tx.collateralWithdrawAmount
+        } ${getTokenDisplayName(tx.loanId.collateralToken.symbol || '')}`,
+        debtRepaid: `${tx.repayAmount} ${getTokenDisplayName(
+          tx.loanId.loanToken.symbol || '',
+        )}`,
+        loanId: tx.loanId.id,
+        TXID: tx.transaction.id,
+      };
+    });
+  }, [addNotification, getCloseWithDeposits, loanIds]);
 
   return {
     loading: loading || loadingLoanIds,

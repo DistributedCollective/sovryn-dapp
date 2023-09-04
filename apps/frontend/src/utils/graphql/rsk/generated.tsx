@@ -14389,7 +14389,16 @@ export type GetBorrowHistoryQuery = {
     interestDuration: string;
     collateralToLoanRate: string;
     timestamp: number;
-    loanId: { __typename?: 'Loan'; id: string };
+    loanId: {
+      __typename?: 'Loan';
+      id: string;
+      collateralToken: {
+        __typename?: 'Token';
+        id: string;
+        symbol?: string | null;
+      };
+      loanToken: { __typename?: 'Token'; id: string; symbol?: string | null };
+    };
     transaction: { __typename?: 'Transaction'; id: string };
   }>;
 };
@@ -14411,7 +14420,16 @@ export type GetCloseWithDepositsQuery = {
     repayAmount: string;
     collateralWithdrawAmount: string;
     timestamp: number;
-    loanId: { __typename?: 'Loan'; id: string };
+    loanId: {
+      __typename?: 'Loan';
+      id: string;
+      collateralToken: {
+        __typename?: 'Token';
+        id: string;
+        symbol?: string | null;
+      };
+      loanToken: { __typename?: 'Token'; id: string; symbol?: string | null };
+    };
     transaction: { __typename?: 'Transaction'; id: string };
   }>;
 };
@@ -14433,7 +14451,16 @@ export type GetCloseWithSwapsQuery = {
     positionCloseSize: string;
     loanCloseAmount: string;
     timestamp: number;
-    loanId: { __typename?: 'Loan'; id: string };
+    loanId: {
+      __typename?: 'Loan';
+      id: string;
+      collateralToken: {
+        __typename?: 'Token';
+        id: string;
+        symbol?: string | null;
+      };
+      loanToken: { __typename?: 'Token'; id: string; symbol?: string | null };
+    };
     transaction: { __typename?: 'Transaction'; id: string };
   }>;
 };
@@ -14475,7 +14502,16 @@ export type GetDepositCollateralsQuery = {
     rate?: string | null;
     timestamp: number;
     emittedBy: string;
-    loanId: { __typename?: 'Loan'; id: string };
+    loanId: {
+      __typename?: 'Loan';
+      id: string;
+      collateralToken: {
+        __typename?: 'Token';
+        id: string;
+        symbol?: string | null;
+      };
+      loanToken: { __typename?: 'Token'; id: string; symbol?: string | null };
+    };
     transaction: { __typename?: 'Transaction'; id: string };
   }>;
 };
@@ -14602,7 +14638,16 @@ export type GetLiquidatesQuery = {
     repayAmount: string;
     collateralWithdrawAmount: string;
     timestamp: number;
-    loanId: { __typename?: 'Loan'; id: string };
+    loanId: {
+      __typename?: 'Loan';
+      id: string;
+      collateralToken: {
+        __typename?: 'Token';
+        id: string;
+        symbol?: string | null;
+      };
+      loanToken: { __typename?: 'Token'; id: string; symbol?: string | null };
+    };
     transaction: { __typename?: 'Transaction'; id: string };
   }>;
 };
@@ -14672,7 +14717,16 @@ export type GetRolloversQuery = {
     timestamp: number;
     emittedBy: string;
     user: { __typename?: 'User'; id: string };
-    loanId: { __typename?: 'Loan'; id: string };
+    loanId: {
+      __typename?: 'Loan';
+      id: string;
+      collateralToken: {
+        __typename?: 'Token';
+        id: string;
+        symbol?: string | null;
+      };
+      loanToken: { __typename?: 'Token'; id: string; symbol?: string | null };
+    };
     rewardReceiver: { __typename?: 'User'; id: string };
     transaction: { __typename?: 'Transaction'; id: string };
   }>;
@@ -15028,6 +15082,14 @@ export const GetBorrowHistoryDocument = gql`
     ) {
       loanId {
         id
+        collateralToken {
+          id
+          symbol
+        }
+        loanToken {
+          id
+          symbol
+        }
       }
       loanToken
       collateralToken
@@ -15115,6 +15177,14 @@ export const GetCloseWithDepositsDocument = gql`
     ) {
       loanId {
         id
+        collateralToken {
+          id
+          symbol
+        }
+        loanToken {
+          id
+          symbol
+        }
       }
       collateralToken
       loanToken
@@ -15199,6 +15269,14 @@ export const GetCloseWithSwapsDocument = gql`
     ) {
       loanId {
         id
+        collateralToken {
+          id
+          symbol
+        }
+        loanToken {
+          id
+          symbol
+        }
       }
       collateralToken
       loanToken
@@ -15368,6 +15446,14 @@ export const GetDepositCollateralsDocument = gql`
     ) {
       loanId {
         id
+        collateralToken {
+          id
+          symbol
+        }
+        loanToken {
+          id
+          symbol
+        }
       }
       depositAmount
       rate
@@ -15816,6 +15902,14 @@ export const GetLiquidatesDocument = gql`
     ) {
       loanId {
         id
+        collateralToken {
+          id
+          symbol
+        }
+        loanToken {
+          id
+          symbol
+        }
       }
       collateralToken
       loanToken
@@ -16054,6 +16148,14 @@ export const GetRolloversDocument = gql`
       }
       loanId {
         id
+        collateralToken {
+          id
+          symbol
+        }
+        loanToken {
+          id
+          symbol
+        }
       }
       lender
       principal

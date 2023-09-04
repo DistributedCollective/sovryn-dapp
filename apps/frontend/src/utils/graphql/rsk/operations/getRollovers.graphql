@@ -18,6 +18,14 @@ query getRollovers(
     }
     loanId {
       id
+      collateralToken {
+        id
+        symbol
+      }
+      loanToken {
+        id
+        symbol
+      }
     }
     lender
     principal

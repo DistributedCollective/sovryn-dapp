@@ -4,8 +4,11 @@ import { Select } from '@sovryn/ui';
 
 import { BorrowHistoryType } from './BorrowHistory.types';
 import { borrowHistoryOptions } from './BorrowHistory.utils';
+import { CloseWithDepositLoanFrame } from './components/CloseWithDepositLoanFrame/CloseWithDepositLoanFrame';
+import { CloseWithSwapLoanFrame } from './components/CloseWithSwapLoanFrame/CloseWithSwapLoanFrame';
 import { CollateralSurplusHistoryFrame } from './components/CollateralSurplusFrame/CollateralSurplusHistoryFrame';
 import { DepositCollateralLoanFrame } from './components/DepositCollateralLoanFrame/DepositCollateralLoanFrame';
+import { LiquidationLoanFrame } from './components/LiquidationLoanFrame/LiquidationLoanFrame';
 import { NewLoanHistoryFrame } from './components/NewLoanFrame/NewLoanHistoryFrame';
 import { RolloverLoanHistoryFrame } from './components/RolloverLoanFrame/RolloverLoanHistoryFrame';
 import { TransactionHistoryFrame } from './components/TransactionHistoryFrame';
@@ -45,6 +48,18 @@ export const BorrowHistory: FC = () => {
             {selectComponent}
           </DepositCollateralLoanFrame>
         );
+      case BorrowHistoryType.closeWithSwapLoan:
+        return (
+          <CloseWithSwapLoanFrame>{selectComponent}</CloseWithSwapLoanFrame>
+        );
+      case BorrowHistoryType.closeWithDepositLoan:
+        return (
+          <CloseWithDepositLoanFrame>
+            {selectComponent}
+          </CloseWithDepositLoanFrame>
+        );
+      case BorrowHistoryType.liquidationLoan:
+        return <LiquidationLoanFrame>{selectComponent}</LiquidationLoanFrame>;
       case BorrowHistoryType.rolloversLoan:
         return (
           <RolloverLoanHistoryFrame>{selectComponent}</RolloverLoanHistoryFrame>

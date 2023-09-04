@@ -32,11 +32,11 @@ import { useBlockNumber } from '../../../../../hooks/useBlockNumber';
 import { useMaintenance } from '../../../../../hooks/useMaintenance';
 import { translations } from '../../../../../locales/i18n';
 import { dateFormat } from '../../../../../utils/helpers';
-import { useGetDepositCollateralLoans } from './hooks/useGetDepositCollateralLoans';
+import { useGetCloseDepositLoans } from './hooks/useGetCloseDepositLoans';
 
 const pageSize = DEFAULT_HISTORY_FRAME_PAGE_SIZE;
 
-export const DepositCollateralLoanFrame: FC<PropsWithChildren> = ({
+export const CloseWithDepositLoanFrame: FC<PropsWithChildren> = ({
   children,
 }) => {
   const [page, setPage] = useState(0);
@@ -49,7 +49,7 @@ export const DepositCollateralLoanFrame: FC<PropsWithChildren> = ({
     orderDirection: OrderDirection.Desc,
   });
 
-  const { data, loading, refetch, exportData } = useGetDepositCollateralLoans(
+  const { data, loading, refetch, exportData } = useGetCloseDepositLoans(
     pageSize,
     page,
     orderOptions,
@@ -62,7 +62,7 @@ export const DepositCollateralLoanFrame: FC<PropsWithChildren> = ({
   const generateRowTitle = useCallback(
     (row: any) => (
       <Paragraph size={ParagraphSize.small} className="text-left">
-        {t(translations.borrowHistory.transactionTypes.depositCollateral)}
+        {t(translations.borrowHistory.transactionTypes.closeDeposit)}
         {' - '}
         {dateFormat(row.timestamp)}
       </Paragraph>
@@ -82,20 +82,31 @@ export const DepositCollateralLoanFrame: FC<PropsWithChildren> = ({
         id: 'transactionType',
         title: t(translations.common.tables.columnTitles.transactionType),
         cellRenderer: () =>
-          t(translations.borrowHistory.transactionTypes.depositCollateral),
+          t(translations.borrowHistory.transactionTypes.closeDeposit),
       },
       {
-        id: 'collateralChange',
-        title: t(translations.loanHistory.table.collateralChange),
+        id: 'collateralWithdrawn',
+        title: t(translations.loanHistory.table.collateralWithdrawn),
         cellRenderer: tx => (
           <div className="inline-flex gap-1 items-center">
             <AmountRenderer
-              value={tx.depositAmount}
+              value={tx.collateralWithdrawAmount}
               precision={BTC_RENDER_PRECISION}
-              dataAttribute="rollover-fee"
-              prefix="+"
             />
             <AssetRenderer asset={tx.collateralToken} />
+          </div>
+        ),
+      },
+      {
+        id: 'debtRepaid',
+        title: t(translations.loanHistory.table.debtRepaid),
+        cellRenderer: tx => (
+          <div className="inline-flex gap-1 items-center">
+            <AmountRenderer
+              value={tx.repayAmount}
+              precision={BTC_RENDER_PRECISION}
+            />
+            <AssetRenderer asset={tx.loanToken} />
           </div>
         ),
       },
@@ -154,7 +165,7 @@ export const DepositCollateralLoanFrame: FC<PropsWithChildren> = ({
         <div className="flex-row items-center ml-2 gap-4 hidden lg:inline-flex">
           <ExportCSV
             getData={exportData}
-            filename="Deposit collateral loans"
+            filename="close with deposit loans"
             disabled={!data || data.length === 0 || exportLocked}
           />
           {exportLocked && (
@@ -175,7 +186,7 @@ export const DepositCollateralLoanFrame: FC<PropsWithChildren> = ({
           isLoading={loading}
           className="bg-gray-80 text-gray-10 lg:px-6 lg:py-4"
           noData={t(translations.common.tables.noData)}
-          dataAttribute="deposit-collaterals-table"
+          dataAttribute="close-with-deposits-table"
         />
         <Pagination
           page={page}
@@ -183,7 +194,7 @@ export const DepositCollateralLoanFrame: FC<PropsWithChildren> = ({
           onChange={onPageChange}
           itemsPerPage={pageSize}
           isNextButtonDisabled={isNextButtonDisabled}
-          dataAttribute="deposit-collaterals-pagination"
+          dataAttribute="close-with-deposits-pagination"
         />
       </div>
     </>

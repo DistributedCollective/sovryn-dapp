@@ -1,12 +1,11 @@
 import { useMemo } from 'react';
 
-// import { useAccount } from '../../../../hooks/useAccount';
+import { useAccount } from '../../../../hooks/useAccount';
 import { rskClient } from '../../../../utils/clients';
 import { useGetLoansQuery } from '../../../../utils/graphql/rsk/generated';
 
 export const useGetLoanIds = () => {
-  // const { account } = useAccount();
-  const account = '0x2bd2201bfe156a71eb0d02837172ffc237218505';
+  const { account } = useAccount();
   const { loading, data, refetch } = useGetLoansQuery({
     variables: {
       user: account?.toLowerCase(),

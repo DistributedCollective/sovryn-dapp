@@ -28,10 +28,7 @@ import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRen
 import { AssetRenderer } from '../../../../2_molecules/AssetRenderer/AssetRenderer';
 import { ExportCSV } from '../../../../2_molecules/ExportCSV/ExportCSV';
 import { TxIdWithNotification } from '../../../../2_molecules/TxIdWithNotification/TransactionIdWithNotification';
-import {
-  BITCOIN,
-  BTC_RENDER_PRECISION,
-} from '../../../../../constants/currencies';
+import { BTC_RENDER_PRECISION } from '../../../../../constants/currencies';
 import {
   DEFAULT_HISTORY_FRAME_PAGE_SIZE,
   EXPORT_RECORD_LIMIT,
@@ -41,18 +38,14 @@ import { useAccount } from '../../../../../hooks/useAccount';
 import { useBlockNumber } from '../../../../../hooks/useBlockNumber';
 import { useMaintenance } from '../../../../../hooks/useMaintenance';
 import { translations } from '../../../../../locales/i18n';
-import { zeroClient } from '../../../../../utils/clients';
-import {
-  CollSurplusChange_Filter,
-  useGetCollSurplusChangesLazyQuery,
-} from '../../../../../utils/graphql/zero/generated';
+import { rskClient } from '../../../../../utils/clients';
+import { useGetBorrowHistoryLazyQuery } from '../../../../../utils/graphql/rsk/generated';
 import { dateFormat } from '../../../../../utils/helpers';
-import { formatValue } from '../../../../../utils/math';
-import { useGetLoans } from './hooks/useGetLoans';
+import { useGetNewLoans } from './hooks/useGetNewLoans';
 
 const pageSize = DEFAULT_HISTORY_FRAME_PAGE_SIZE;
 
-export const LoanHistoryFrame: FC<PropsWithChildren> = ({ children }) => {
+export const NewLoanHistoryFrame: FC<PropsWithChildren> = ({ children }) => {
   const { account } = useAccount();
   const { addNotification } = useNotificationContext();
 
@@ -66,7 +59,7 @@ export const LoanHistoryFrame: FC<PropsWithChildren> = ({ children }) => {
     orderDirection: OrderDirection.Desc,
   });
 
-  const { data, loading, refetch } = useGetLoans(
+  const { data, loading, refetch } = useGetNewLoans(
     account,
     pageSize,
     page,
@@ -77,8 +70,8 @@ export const LoanHistoryFrame: FC<PropsWithChildren> = ({ children }) => {
     refetch();
   }, [refetch, block]);
 
-  const [getCollSurplusChanges] = useGetCollSurplusChangesLazyQuery({
-    client: zeroClient,
+  const [getBorrowHistory] = useGetBorrowHistoryLazyQuery({
+    client: rskClient,
   });
 
   const generateRowTitle = useCallback(
@@ -101,8 +94,14 @@ export const LoanHistoryFrame: FC<PropsWithChildren> = ({ children }) => {
         sortable: true,
       },
       {
-        id: 'newCollateral',
-        title: t(translations.loanHistory.table.newCollateral),
+        id: 'transactionType',
+        title: t(translations.common.tables.columnTitles.transactionType),
+        cellRenderer: () =>
+          t(translations.borrowHistory.transactionTypes.createLoan),
+      },
+      {
+        id: 'collateralAmount',
+        title: t(translations.loanHistory.table.collateralAmount),
         cellRenderer: tx => (
           <div className="inline-flex gap-1 items-center">
             <AmountRenderer
@@ -116,7 +115,7 @@ export const LoanHistoryFrame: FC<PropsWithChildren> = ({ children }) => {
       },
       {
         id: 'interestRate',
-        title: t(translations.loanHistory.table.newDebt),
+        title: t(translations.loanHistory.table.debtAmount),
         cellRenderer: tx => (
           <div className="inline-flex gap-1 items-center">
             <AmountRenderer
@@ -177,17 +176,14 @@ export const LoanHistoryFrame: FC<PropsWithChildren> = ({ children }) => {
   );
 
   const exportData = useCallback(async () => {
-    const { data } = await getCollSurplusChanges({
+    const { data } = await getBorrowHistory({
       variables: {
         skip: 0,
-        filters: {
-          user_contains: account || '',
-          collSurplusAfter: '0',
-        } as CollSurplusChange_Filter,
         pageSize: EXPORT_RECORD_LIMIT,
+        user: account?.toLowerCase(),
       },
     });
-    let list = data?.collSurplusChanges || [];
+    let list = data?.borrows || [];
 
     if (!list || !list.length) {
       addNotification({
@@ -200,17 +196,17 @@ export const LoanHistoryFrame: FC<PropsWithChildren> = ({ children }) => {
     }
 
     return list.map(tx => ({
-      timestamp: dateFormat(tx.transaction.timestamp),
-      collateralChange: `${formatValue(
-        Math.abs(Number(tx.collSurplusChange)),
-        BTC_RENDER_PRECISION,
-      )} ${BITCOIN}`,
+      timestamp: tx.timestamp,
       transactionType: t(
-        translations.collateralSurplusHistory.table.withdrawSurplus,
+        translations.borrowHistory.transactionTypes.createLoan,
       ),
-      transactionID: tx.transaction.id,
+      collateralAmount: tx.newCollateral,
+      debtAmount: tx.newPrincipal,
+      interestRate: tx.interestRate,
+      loanId: tx.loanId.id,
+      hash: tx.transaction.id,
     }));
-  }, [account, addNotification, getCollSurplusChanges]);
+  }, [account, addNotification, getBorrowHistory]);
 
   useEffect(() => {
     setPage(0);

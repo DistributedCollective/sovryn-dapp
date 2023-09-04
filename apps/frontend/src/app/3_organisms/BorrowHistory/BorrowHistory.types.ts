@@ -1,5 +1,10 @@
 export enum BorrowHistoryType {
   lineOfCredit = 'lineOfCredit',
-  fixedInterestLoan = 'fixedInterestLoan',
+  newLoan = 'newLoan',
+  depositCollateralLoan = 'depositCollateralLoan',
+  closeWithSwapLoan = 'closeWithSwapLoan',
+  closeWithDepositLoan = 'closeWithDepositLoan',
+  liquidationLoan = 'liquidationLoan',
+  rolloversLoan = 'rolloversLoan',
   collateralSurplus = 'collateralSurplus',
 }

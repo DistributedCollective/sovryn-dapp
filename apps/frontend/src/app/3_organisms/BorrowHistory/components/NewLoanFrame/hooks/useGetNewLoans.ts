@@ -8,7 +8,7 @@ import {
   useGetBorrowHistoryQuery,
 } from '../../../../../../utils/graphql/rsk/generated';
 
-export const useGetLoans = (
+export const useGetNewLoans = (
   account: string,
   pageSize: number,
   page: number,

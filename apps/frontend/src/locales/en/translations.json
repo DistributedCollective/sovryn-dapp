@@ -544,7 +544,7 @@
             "closeTabInsufficientLoanTokenBalance": "You need an additional {{amount}} {{token}} in order to close your loan."
         },
         "extendLoanDialog": {
-            "title": "Extend a loan",
+            "title": "Extend loan",
             "currentDebt": "Current debt",
             "currentCollateral": "Current collateral",
             "collateralRatio": "Collateral ratio",

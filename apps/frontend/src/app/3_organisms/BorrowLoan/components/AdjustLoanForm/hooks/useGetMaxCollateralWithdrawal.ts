@@ -10,7 +10,7 @@ import { decimalic } from '../../../../../../utils/math';
 import { normalizeToken } from '../AdjustLoanForm.utils';
 import { useGetCollateralAssetPrice } from './useGetCollateralAssetPrice';
 
-export const useGetMaxCollateralWithdrawal = (loan: LoanItem) => {
+export const useGetMaxCollateralWithdrawal = (loan: LoanItem): Decimal => {
   const borrowToken = useMemo(
     () => normalizeToken(loan.debtAsset.toLowerCase()),
     [loan.debtAsset],

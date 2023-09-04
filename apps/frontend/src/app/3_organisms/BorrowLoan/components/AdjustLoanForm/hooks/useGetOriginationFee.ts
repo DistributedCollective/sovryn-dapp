@@ -5,6 +5,7 @@ import { Decimal } from '@sovryn/utils';
 import { defaultChainId } from '../../../../../../config/chains';
 
 import { useLoadContract } from '../../../../../../hooks/useLoadContract';
+import { asyncCall } from '../../../../../../store/rxjs/provider-cache';
 
 export const useGetOriginationFee = () => {
   const [originationFee, setOriginationFee] = useState(Decimal.ZERO);
@@ -16,7 +17,9 @@ export const useGetOriginationFee = () => {
         return;
       }
 
-      const result = await contract.borrowingFeePercent();
+      const result = await asyncCall('protocol/borrowingFeePercent', () =>
+        contract.borrowingFeePercent(),
+      );
 
       if (result) {
         setOriginationFee(Decimal.fromBigNumberString(result));

@@ -48,6 +48,7 @@ import {
 } from './AdjustLoanForm.utils';
 import { CurrentLoanData } from './components/CurrentLoanData';
 import { Label } from './components/Label';
+import { useDepositCollateral } from './hooks/useDepositCollateral';
 import { useGetBorrowingAPR } from './hooks/useGetBorrowingAPR';
 import { useGetCollateralAssetPrice } from './hooks/useGetCollateralAssetPrice';
 import { useGetInterestRefund } from './hooks/useGetInterestRefund';
@@ -364,6 +365,7 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
   const handleRepay = useRepayLoan();
   const handleBorrow = useBorrow();
   const handleWithdrawCollateral = useWithdrawCollateral();
+  const handleDepositCollateral = useDepositCollateral();
 
   const handleFormSubmit = useCallback(() => {
     if (isCloseTab) {
@@ -384,14 +386,18 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
     }
 
     if (isBorrowTab) {
-      handleBorrow(
-        debtToken,
-        debtAmount === '' ? '0' : debtAmount,
-        loan.rolloverDate,
-        collateralAmount === '' ? '0' : collateralAmount,
-        collateralToken,
-        loan.id,
-      );
+      if (debtAmount === '' || debtAmount === '0') {
+        handleDepositCollateral(collateralAmount, collateralToken, loan.id);
+      } else {
+        handleBorrow(
+          debtToken,
+          debtAmount,
+          loan.rolloverDate,
+          collateralAmount === '' ? '0' : collateralAmount,
+          collateralToken,
+          loan.id,
+        );
+      }
     }
 
     if (isCollateralWithdrawMode) {
@@ -404,6 +410,7 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
     debtSize,
     debtToken,
     handleBorrow,
+    handleDepositCollateral,
     handleRepay,
     handleWithdrawCollateral,
     isBorrowTab,

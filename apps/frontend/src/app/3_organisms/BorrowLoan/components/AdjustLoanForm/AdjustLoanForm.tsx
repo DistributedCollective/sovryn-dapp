@@ -80,7 +80,6 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
   );
 
   const originationFeeRate = useGetOriginationFee();
-  const [collateralAssetPrice, setCollateralAssetPrice] = useState('0');
 
   const debtToken = useMemo(
     () => normalizeToken(loan.debtAsset.toLowerCase()),
@@ -253,13 +252,13 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
   );
 
   const isValidDebtAmount = useMemo(
-    () => Number(debtAmount) <= Number(debtTokenBalance),
-    [debtAmount, debtTokenBalance],
+    () => debtSize.lte(debtTokenBalance),
+    [debtSize, debtTokenBalance],
   );
 
   const isValidCollateralAmount = useMemo(
-    () => Number(collateralAmount) <= Number(maxCollateralAmount),
-    [collateralAmount, maxCollateralAmount],
+    () => collateralSize.lte(maxCollateralAmount),
+    [collateralSize, maxCollateralAmount],
   );
 
   const collateralRatio = useMemo(() => {
@@ -338,19 +337,17 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
     newTotalDebt,
   ]);
 
-  useEffect(() => {
-    const price = decimalic(
-      collateralToken === SupportedTokens.rbtc ? rbtcPrice : collateralPriceUsd,
-    ).div(debtToken === SupportedTokens.rbtc ? rbtcPrice : borrowPriceUsd);
-
-    setCollateralAssetPrice(price.toString());
-  }, [
-    collateralToken,
-    borrowPriceUsd,
-    rbtcPrice,
-    collateralPriceUsd,
-    debtToken,
-  ]);
+  const collateralAssetPrice = useMemo(
+    () =>
+      decimalic(
+        collateralToken === SupportedTokens.rbtc
+          ? rbtcPrice
+          : collateralPriceUsd,
+      )
+        .div(debtToken === SupportedTokens.rbtc ? rbtcPrice : borrowPriceUsd)
+        .toString(),
+    [borrowPriceUsd, collateralPriceUsd, collateralToken, debtToken, rbtcPrice],
+  );
 
   const setCloseDebtTabValues = useCallback(() => {
     setDebtAmount(totalDebtWithoutInterestRefund.toString());

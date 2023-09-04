@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, useMemo } from 'react';
 
 import { t } from 'i18next';
 import { Helmet } from 'react-helmet-async';
@@ -9,9 +9,15 @@ import { useAccount } from '../../../hooks/useAccount';
 import { translations } from '../../../locales/i18n';
 import { BorrowAssetsTable } from './components/BorrowAssetsTable/BorrowAssetsTable';
 import { OpenLoansTable } from './components/OpenLoansTable/OpenLoansTable';
+import { useGetOpenLoans } from './components/OpenLoansTable/hooks/useGetOpenLoans';
 
 const BorrowPage: FC = () => {
   const { account } = useAccount();
+  const { data: loans, loading } = useGetOpenLoans();
+  const hasOpenLoans = useMemo(
+    () => loans?.length > 0 && account,
+    [loans, account],
+  );
 
   return (
     <>
@@ -32,7 +38,7 @@ const BorrowPage: FC = () => {
         </Paragraph>
 
         <div className="w-full">
-          {account && <OpenLoansTable />}
+          {hasOpenLoans && <OpenLoansTable loans={loans} loading={loading} />}
           <BorrowAssetsTable />
         </div>
       </div>

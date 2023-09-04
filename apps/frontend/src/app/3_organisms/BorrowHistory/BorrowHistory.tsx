@@ -6,6 +6,7 @@ import { BorrowHistoryType } from './BorrowHistory.types';
 import { borrowHistoryOptions } from './BorrowHistory.utils';
 import { CollateralSurplusHistoryFrame } from './components/CollateralSurplusFrame/CollateralSurplusHistoryFrame';
 import { NewLoanHistoryFrame } from './components/NewLoanFrame/NewLoanHistoryFrame';
+import { RolloverLoanHistoryFrame } from './components/RolloverLoanFrame copy/RolloverLoanHistoryFrame';
 import { TransactionHistoryFrame } from './components/TransactionHistoryFrame';
 
 export const BorrowHistory: FC = () => {
@@ -37,6 +38,10 @@ export const BorrowHistory: FC = () => {
         );
       case BorrowHistoryType.newLoan:
         return <NewLoanHistoryFrame>{selectComponent}</NewLoanHistoryFrame>;
+      case BorrowHistoryType.rolloversLoan:
+        return (
+          <RolloverLoanHistoryFrame>{selectComponent}</RolloverLoanHistoryFrame>
+        );
       case BorrowHistoryType.collateralSurplus:
         return (
           <CollateralSurplusHistoryFrame>

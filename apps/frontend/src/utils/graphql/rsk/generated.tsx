@@ -14520,6 +14520,28 @@ export type GetLendHistoryQuery = {
   } | null;
 };
 
+export type GetLoansQueryVariables = Exact<{
+  user?: InputMaybe<Scalars['String']>;
+}>;
+
+export type GetLoansQuery = {
+  __typename?: 'Query';
+  loans: Array<{
+    __typename?: 'Loan';
+    id: string;
+    borrowedAmount: string;
+    positionSize: string;
+    nextRollover?: number | null;
+    loanToken: { __typename?: 'Token'; id: string; symbol?: string | null };
+    collateralToken: {
+      __typename?: 'Token';
+      id: string;
+      symbol?: string | null;
+    };
+    borrow?: Array<{ __typename?: 'Borrow'; interestRate: string }> | null;
+  }>;
+};
+
 export type GetRewardsEarnedHistoryQueryVariables = Exact<{
   user?: InputMaybe<Scalars['String']>;
   skip: Scalars['Int'];
@@ -14538,6 +14560,33 @@ export type GetRewardsEarnedHistoryQuery = {
     amount: string;
     token?: string | null;
     timestamp: number;
+    transaction: { __typename?: 'Transaction'; id: string };
+  }>;
+};
+
+export type GetRolloversQueryVariables = Exact<{
+  loanIds?: InputMaybe<Array<Scalars['String']> | Scalars['String']>;
+  skip: Scalars['Int'];
+  pageSize: Scalars['Int'];
+  orderBy?: InputMaybe<Rollover_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+}>;
+
+export type GetRolloversQuery = {
+  __typename?: 'Query';
+  rollovers: Array<{
+    __typename?: 'Rollover';
+    id: string;
+    lender: string;
+    principal: string;
+    collateral: string;
+    endTimestamp: number;
+    reward: string;
+    timestamp: number;
+    emittedBy: string;
+    user: { __typename?: 'User'; id: string };
+    loanId: { __typename?: 'Loan'; id: string };
+    rewardReceiver: { __typename?: 'User'; id: string };
     transaction: { __typename?: 'Transaction'; id: string };
   }>;
 };
@@ -15412,6 +15461,73 @@ export type GetLendHistoryQueryResult = Apollo.QueryResult<
   GetLendHistoryQuery,
   GetLendHistoryQueryVariables
 >;
+export const GetLoansDocument = gql`
+  query getLoans($user: String) {
+    loans(where: { user: $user, type: Borrow }) {
+      id
+      loanToken {
+        id
+        symbol
+      }
+      collateralToken {
+        id
+        symbol
+      }
+      borrowedAmount
+      positionSize
+      nextRollover
+      borrow(first: 1, orderBy: timestamp, orderDirection: desc) {
+        interestRate
+      }
+    }
+  }
+`;
+
+/**
+ * __useGetLoansQuery__
+ *
+ * To run a query within a React component, call `useGetLoansQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetLoansQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetLoansQuery({
+ *   variables: {
+ *      user: // value for 'user'
+ *   },
+ * });
+ */
+export function useGetLoansQuery(
+  baseOptions?: Apollo.QueryHookOptions<GetLoansQuery, GetLoansQueryVariables>,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<GetLoansQuery, GetLoansQueryVariables>(
+    GetLoansDocument,
+    options,
+  );
+}
+export function useGetLoansLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    GetLoansQuery,
+    GetLoansQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<GetLoansQuery, GetLoansQueryVariables>(
+    GetLoansDocument,
+    options,
+  );
+}
+export type GetLoansQueryHookResult = ReturnType<typeof useGetLoansQuery>;
+export type GetLoansLazyQueryHookResult = ReturnType<
+  typeof useGetLoansLazyQuery
+>;
+export type GetLoansQueryResult = Apollo.QueryResult<
+  GetLoansQuery,
+  GetLoansQueryVariables
+>;
 export const GetRewardsEarnedHistoryDocument = gql`
   query getRewardsEarnedHistory(
     $user: String
@@ -15494,6 +15610,99 @@ export type GetRewardsEarnedHistoryLazyQueryHookResult = ReturnType<
 export type GetRewardsEarnedHistoryQueryResult = Apollo.QueryResult<
   GetRewardsEarnedHistoryQuery,
   GetRewardsEarnedHistoryQueryVariables
+>;
+export const GetRolloversDocument = gql`
+  query getRollovers(
+    $loanIds: [String!]
+    $skip: Int!
+    $pageSize: Int!
+    $orderBy: Rollover_orderBy
+    $orderDirection: OrderDirection
+  ) {
+    rollovers(
+      where: { loanId_in: $loanIds }
+      first: $pageSize
+      skip: $skip
+      orderBy: $orderBy
+      orderDirection: $orderDirection
+    ) {
+      id
+      user {
+        id
+      }
+      loanId {
+        id
+      }
+      lender
+      principal
+      collateral
+      endTimestamp
+      rewardReceiver {
+        id
+      }
+      reward
+      timestamp
+      emittedBy
+      transaction {
+        id
+      }
+    }
+  }
+`;
+
+/**
+ * __useGetRolloversQuery__
+ *
+ * To run a query within a React component, call `useGetRolloversQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetRolloversQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetRolloversQuery({
+ *   variables: {
+ *      loanIds: // value for 'loanIds'
+ *      skip: // value for 'skip'
+ *      pageSize: // value for 'pageSize'
+ *      orderBy: // value for 'orderBy'
+ *      orderDirection: // value for 'orderDirection'
+ *   },
+ * });
+ */
+export function useGetRolloversQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    GetRolloversQuery,
+    GetRolloversQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<GetRolloversQuery, GetRolloversQueryVariables>(
+    GetRolloversDocument,
+    options,
+  );
+}
+export function useGetRolloversLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    GetRolloversQuery,
+    GetRolloversQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<GetRolloversQuery, GetRolloversQueryVariables>(
+    GetRolloversDocument,
+    options,
+  );
+}
+export type GetRolloversQueryHookResult = ReturnType<
+  typeof useGetRolloversQuery
+>;
+export type GetRolloversLazyQueryHookResult = ReturnType<
+  typeof useGetRolloversLazyQuery
+>;
+export type GetRolloversQueryResult = Apollo.QueryResult<
+  GetRolloversQuery,
+  GetRolloversQueryVariables
 >;
 export const GetSmartTokensDocument = gql`
   query getSmartTokens(

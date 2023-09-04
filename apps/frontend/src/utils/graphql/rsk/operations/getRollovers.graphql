@@ -1,0 +1,36 @@
+query getRollovers(
+  $loanIds: [String!]
+  $skip: Int!
+  $pageSize: Int!
+  $orderBy: Rollover_orderBy
+  $orderDirection: OrderDirection
+) {
+  rollovers(
+    where: { loanId_in: $loanIds }
+    first: $pageSize
+    skip: $skip
+    orderBy: $orderBy
+    orderDirection: $orderDirection
+  ) {
+    id
+    user {
+      id
+    }
+    loanId {
+      id
+    }
+    lender
+    principal
+    collateral
+    endTimestamp
+    rewardReceiver {
+      id
+    }
+    reward
+    timestamp
+    emittedBy
+    transaction {
+      id
+    }
+  }
+}

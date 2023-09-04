@@ -773,7 +773,7 @@
             "closeWithSwapLoan": "Fixed-interest loan - Adjust - Close with swap",
             "closeWithDepositLoan": "Fixed-interest loan - Adjust - Close with deposit",
             "liquidationLoan": "Fixed-interest loan - Liquidation",
-            "rolloversLoan": "Fixed-interest loan",
+            "rolloversLoan": "Fixed-interest loan - Rollovers",
             "collateralSurplus": "Collateral surplus"
         },
         "transactionTypes": {

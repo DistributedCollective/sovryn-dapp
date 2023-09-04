@@ -1,0 +1,19 @@
+query getLoans($user: String) {
+  loans(where: { user: $user, type: Borrow }) {
+    id
+    loanToken {
+      id
+      symbol
+    }
+    collateralToken {
+      id
+      symbol
+    }
+    borrowedAmount
+    positionSize
+    nextRollover
+    borrow(first: 1, orderBy: timestamp, orderDirection: desc) {
+      interestRate
+    }
+  }
+}

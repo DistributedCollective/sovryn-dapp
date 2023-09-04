@@ -529,7 +529,8 @@
                 "close": "Close a loan",
                 "withdrawCollateral": "Withdraw collateral",
                 "repay": "Repay a loan",
-                "adjust": "Adjust a loan"
+                "adjust": "Adjust a loan",
+                "addCollateral": "Add collateral"
             },
             "labels": {
                 "borrowApr": "Borrow APR",

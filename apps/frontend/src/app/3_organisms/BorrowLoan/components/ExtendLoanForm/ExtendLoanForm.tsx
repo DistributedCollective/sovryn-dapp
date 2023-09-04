@@ -77,7 +77,7 @@ export const ExtendLoanForm: FC<ExtendLoanFormProps> = ({ loan }) => {
 
   const collateralRatio = useMemo(() => {
     if (!nextRolloverDate) {
-      return Decimal.ZERO;
+      return Decimal.from(loan.collateralRatio);
     }
 
     const debt = Decimal.from(loan.debt);
@@ -96,6 +96,7 @@ export const ExtendLoanForm: FC<ExtendLoanFormProps> = ({ loan }) => {
     collateralPriceUsd,
     collateralToken,
     debtToken,
+    loan.collateralRatio,
     loan.debt,
     newCollateralAmount,
     nextRolloverDate,
@@ -147,6 +148,10 @@ export const ExtendLoanForm: FC<ExtendLoanFormProps> = ({ loan }) => {
         ? dateFormat(Number(nextRolloverDate))
         : t(translations.common.na),
     [nextRolloverDate],
+  );
+  const submitButtonDisabled = useMemo(
+    () => !isValidCollateralRatio || !nextRolloverDate,
+    [isValidCollateralRatio, nextRolloverDate],
   );
 
   return (
@@ -335,6 +340,7 @@ export const ExtendLoanForm: FC<ExtendLoanFormProps> = ({ loan }) => {
           text={t(translations.common.buttons.confirm)}
           className="w-full"
           onClick={handleSubmit}
+          disabled={submitButtonDisabled}
           dataAttribute="adjust-loan-confirm-button"
         />
       </div>

@@ -24,12 +24,12 @@ import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRen
 import { AssetRenderer } from '../../../../2_molecules/AssetRenderer/AssetRenderer';
 import { LoanItem } from '../../../../5_pages/BorrowPage/components/OpenLoansTable/OpenLoansTable.types';
 import { COLLATERAL_RATIO_THRESHOLDS } from '../../../../../constants/general';
+import { MINIMUM_COLLATERAL_RATIO_BORROWING_MAINTENANCE } from '../../../../../constants/lending';
 import { getTokenDisplayName } from '../../../../../constants/tokens';
 import { useGetRBTCPrice } from '../../../../../hooks/zero/useGetRBTCPrice';
 import { translations } from '../../../../../locales/i18n';
 import { dateFormat } from '../../../../../utils/helpers';
 import { decimalic } from '../../../../../utils/math';
-import { MINIMUM_COLLATERAL_RATIO } from '../../../ZeroLocForm/constants';
 import { useGetCollateralAssetPrice } from '../AdjustLoanForm/hooks/useGetCollateralAssetPrice';
 import { normalizeToken, renderValue } from './ExtendLoanForm.utils';
 import { CurrentLoanData } from './components/CurrentLoanData';
@@ -103,7 +103,9 @@ export const ExtendLoanForm: FC<ExtendLoanFormProps> = ({ loan }) => {
   ]);
 
   const isValidCollateralRatio = useMemo(() => {
-    return collateralRatio.gte(MINIMUM_COLLATERAL_RATIO.mul(100));
+    return collateralRatio.gte(
+      MINIMUM_COLLATERAL_RATIO_BORROWING_MAINTENANCE.mul(100),
+    );
   }, [collateralRatio]);
 
   const newTotalDebt = useMemo(() => {
@@ -111,18 +113,22 @@ export const ExtendLoanForm: FC<ExtendLoanFormProps> = ({ loan }) => {
   }, [loan.debt]);
 
   const collateralRatioError = useMemo(() => {
-    if (collateralRatio.lt(MINIMUM_COLLATERAL_RATIO.mul(100))) {
+    if (
+      collateralRatio.lt(
+        MINIMUM_COLLATERAL_RATIO_BORROWING_MAINTENANCE.mul(100),
+      )
+    ) {
       return t(pageTranslations.labels.collateralRatioError, {
-        min: MINIMUM_COLLATERAL_RATIO.mul(100),
+        min: MINIMUM_COLLATERAL_RATIO_BORROWING_MAINTENANCE.mul(100),
       });
     }
     return '';
   }, [collateralRatio]);
 
   const liquidationPrice = useMemo(() => {
-    return MINIMUM_COLLATERAL_RATIO.mul(newTotalDebt.toString()).div(
-      newCollateralAmount,
-    );
+    return MINIMUM_COLLATERAL_RATIO_BORROWING_MAINTENANCE.mul(
+      newTotalDebt.toString(),
+    ).div(newCollateralAmount);
   }, [newCollateralAmount, newTotalDebt]);
 
   useEffect(() => {

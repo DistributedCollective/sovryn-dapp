@@ -47,13 +47,13 @@ export const useExtendLoan = (
 
     transactions.push({
       title: t(
-        translations.fixedInterestPage.adjustLoanDialog.dialogTitles.close,
+        translations.fixedInterestPage.extendLoanDialog.dialogTitles.extend,
       ),
       request: {
         type: TransactionType.signTransaction,
         contract,
         fnName: 'extendLoanDuration',
-        args: [loan.id, toWei(depositAmount), useCollateral],
+        args: [loan.id, toWei(depositAmount), useCollateral, '0x'],
         gasLimit: GAS_LIMIT.REPAY_LOAN,
       },
     });

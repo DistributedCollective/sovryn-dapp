@@ -11,6 +11,7 @@ import {
   BTC_RENDER_PRECISION,
   TOKEN_RENDER_PRECISION,
 } from '../../../../../constants/currencies';
+import { MINIMUM_COLLATERAL_RATIO_BORROWING_MAINTENANCE } from '../../../../../constants/lending';
 import { translations } from '../../../../../locales/i18n';
 import { decimalic } from '../../../../../utils/math';
 import { SECONDS_IN_YEAR } from './AdjustLoanForm.constants';
@@ -18,6 +19,10 @@ import { SECONDS_IN_YEAR } from './AdjustLoanForm.constants';
 export const normalizeToken = (token: string) => {
   if (token.toLowerCase() === SupportedTokens.wrbtc) {
     return SupportedTokens.rbtc;
+  }
+
+  if (token.toLowerCase() === 'bitpro') {
+    return SupportedTokens.bpro;
   }
 
   return SupportedTokens[token] || token;
@@ -62,21 +67,39 @@ export const calculatePrepaidInterest = (
   return interest;
 };
 
+export const calculateDebtRepaidPercentage = (
+  totalDebt: string,
+  debtRepaid: Decimal,
+) => Decimal.from(debtRepaid).div(totalDebt);
+
 export const calculateRepayCollateralWithdrawn = (
   totalDebt: string,
   debtRepaid: Decimal,
   totalCollateral: string,
-) => {
-  const debtRepaidPercentage = Decimal.from(debtRepaid).div(totalDebt);
-
-  return Decimal.from(totalCollateral).mul(debtRepaidPercentage);
-};
+) =>
+  Decimal.from(totalCollateral).mul(
+    calculateDebtRepaidPercentage(totalDebt, debtRepaid),
+  );
 
 export const areValuesIdentical = (
   firstValue: Decimal,
   secondValue: Decimal,
 ) => {
-  const epsilon = 0.000000000000001;
+  const epsilon = 0.0000000000001;
 
   return Math.abs(firstValue.sub(secondValue).toNumber()) < epsilon;
 };
+
+export const getCollateralRatioThresholds = () => ({
+  START: MINIMUM_COLLATERAL_RATIO_BORROWING_MAINTENANCE.mul(100)
+    .mul(0.9)
+    .toNumber(),
+  MIDDLE_START:
+    MINIMUM_COLLATERAL_RATIO_BORROWING_MAINTENANCE.mul(100).toNumber() - 0.1,
+  MIDDLE_END: MINIMUM_COLLATERAL_RATIO_BORROWING_MAINTENANCE.mul(100)
+    .mul(1.55)
+    .toNumber(),
+  END: MINIMUM_COLLATERAL_RATIO_BORROWING_MAINTENANCE.mul(100)
+    .mul(2)
+    .toNumber(),
+});

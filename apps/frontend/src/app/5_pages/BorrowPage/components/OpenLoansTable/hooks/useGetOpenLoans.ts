@@ -11,6 +11,7 @@ import { useBlockNumber } from '../../../../../../hooks/useBlockNumber';
 import { useLoadContract } from '../../../../../../hooks/useLoadContract';
 import { useGetActiveLoansQuery } from '../../../../../../utils/graphql/rsk/generated';
 import {
+  calculateApr,
   calculateCollateralRatio,
   calculateLiquidationPrice,
   isSupportedPool,
@@ -95,37 +96,37 @@ export const useGetOpenLoans = () => {
   }
 
   const result: LoanItem[] =
-    data?.loans
-      .filter(item =>
-        isSupportedPool(item.loanToken.symbol, item.collateralToken.symbol),
-      )
-      .map(item => {
-        const loanSmartContract = loanItemsSmartContract.find(
-          loan => loan.id.toLowerCase() === item.id.toLowerCase(),
-        );
+    loanItemsSmartContract.map(item => {
+      const subgraphData = data.loans.find(
+        loan => loan.id.toLowerCase() === item.id.toLowerCase(),
+      );
 
-        return {
-          id: item.id,
-          debt: loanSmartContract?.debt.toNumber() || 0,
-          debtAsset: item.loanToken.symbol || '',
-          collateral: loanSmartContract?.collateral.toNumber() || 0,
-          collateralAsset: item.collateralToken.symbol || '',
-          collateralRatio: calculateCollateralRatio(
-            loanSmartContract?.debt.toString() || '',
-            item.loanToken.lastPriceBtc,
-            loanSmartContract?.collateral.toString() || '',
-            item.collateralToken.lastPriceBtc,
-          ),
-          liquidationPrice: calculateLiquidationPrice(
-            loanSmartContract?.debt.toString() || '1',
-            loanSmartContract?.collateral.toString() || '1',
-          ),
-          apr: item?.borrow?.[0].interestRate || '',
-          rolloverDate: item.nextRollover || dayjs().unix(),
-          interestOwedPerDay:
-            loanSmartContract?.interestOwedPerDay.toNumber() || 0,
-        };
-      }) || [];
+      return {
+        id: item.id,
+        debt: item?.debt.toNumber() || 0,
+        debtAsset: subgraphData?.loanToken.symbol || '',
+        collateral: item?.collateral.toNumber() || 0,
+        collateralAsset: subgraphData?.collateralToken.symbol || '',
+        collateralRatio: calculateCollateralRatio(
+          item?.debt.toString() || '1',
+          subgraphData?.loanToken.lastPriceBtc || '1',
+          item?.collateral.toString() || '1',
+          subgraphData?.collateralToken.lastPriceBtc || '1',
+        ),
+        liquidationPrice: calculateLiquidationPrice(
+          item?.debt.toString() || '1',
+          item?.collateral.toString() || '1',
+        ),
+        apr: calculateApr(item.interestOwedPerDay, item.debt),
+        rolloverDate: subgraphData?.nextRollover || dayjs().unix(),
+        interestOwedPerDay: item?.interestOwedPerDay.toNumber() || 0,
+      };
+    }) || [];
 
-  return { data: result, loading };
+  return {
+    data: result.filter(item =>
+      isSupportedPool(item.debtAsset, item.collateralAsset),
+    ),
+    loading,
+  };
 };

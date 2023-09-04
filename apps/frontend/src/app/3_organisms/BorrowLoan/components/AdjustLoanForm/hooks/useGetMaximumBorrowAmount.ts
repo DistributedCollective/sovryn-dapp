@@ -92,6 +92,10 @@ export const useGetMaximumBorrowAmount = (
     [debt, maxBorrow, prepaidInterest],
   );
 
+  if (result.lte(Decimal.ZERO)) {
+    return Decimal.ZERO;
+  }
+
   return result.gt(Decimal.fromBigNumberString(borrowAssetBalance))
     ? Decimal.fromBigNumberString(borrowAssetBalance)
     : result;

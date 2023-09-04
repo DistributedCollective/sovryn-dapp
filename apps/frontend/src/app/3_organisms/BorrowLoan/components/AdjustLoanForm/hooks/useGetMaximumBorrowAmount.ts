@@ -4,8 +4,10 @@ import { SupportedTokens } from '@sovryn/contracts';
 import { Decimal } from '@sovryn/utils';
 
 import { LoanItem } from '../../../../../5_pages/BorrowPage/components/OpenLoansTable/OpenLoansTable.types';
-import { MINIMUM_COLLATERAL_RATIO_BORROWING_MAINTENANCE } from '../../../../../../constants/lending';
-import { useMaxAssetBalance } from '../../../../../../hooks/useMaxAssetBalance';
+import {
+  MINIMUM_COLLATERAL_RATIO_LENDING_POOLS,
+  MINIMUM_COLLATERAL_RATIO_LENDING_POOLS_SOV,
+} from '../../../../../../constants/lending';
 import { useGetRBTCPrice } from '../../../../../../hooks/zero/useGetRBTCPrice';
 import { decimalic } from '../../../../../../utils/math';
 import { calculatePrepaidInterest } from '../../../../BorrowLoanForm/components/NewLoanForm/NewLoanForm.utils';
@@ -17,7 +19,7 @@ import { useGetCollateralAssetPrice } from './useGetCollateralAssetPrice';
 export const useGetMaximumBorrowAmount = (
   loan: LoanItem,
   collateralAmount?: Decimal,
-) => {
+): Decimal => {
   const borrowToken = useMemo(
     () => normalizeToken(loan.debtAsset.toLowerCase()),
     [loan.debtAsset],
@@ -27,8 +29,6 @@ export const useGetMaximumBorrowAmount = (
     () => normalizeToken(loan.collateralAsset.toLowerCase()),
     [loan.collateralAsset],
   );
-
-  const { weiBalance: borrowAssetBalance } = useMaxAssetBalance(borrowToken);
 
   const { maximumCollateralAmount } = useGetMaximumCollateralAmount(
     collateralToken,
@@ -69,9 +69,17 @@ export const useGetMaximumBorrowAmount = (
     ],
   );
 
+  const minimumCollateralRatio = useMemo(
+    () =>
+      collateralToken === SupportedTokens.sov
+        ? MINIMUM_COLLATERAL_RATIO_LENDING_POOLS_SOV
+        : MINIMUM_COLLATERAL_RATIO_LENDING_POOLS,
+    [collateralToken],
+  );
+
   const maximumLoanToCollateralRatio = useMemo(
-    () => Decimal.ONE.div(MINIMUM_COLLATERAL_RATIO_BORROWING_MAINTENANCE),
-    [],
+    () => Decimal.ONE.div(minimumCollateralRatio),
+    [minimumCollateralRatio],
   );
 
   const maxBorrow = useMemo(
@@ -96,7 +104,5 @@ export const useGetMaximumBorrowAmount = (
     return Decimal.ZERO;
   }
 
-  return result.gt(Decimal.fromBigNumberString(borrowAssetBalance))
-    ? Decimal.fromBigNumberString(borrowAssetBalance)
-    : result;
+  return result;
 };

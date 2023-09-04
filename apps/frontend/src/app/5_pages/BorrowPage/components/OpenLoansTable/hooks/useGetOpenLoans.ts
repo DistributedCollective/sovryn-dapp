@@ -69,6 +69,9 @@ export const useGetOpenLoans = () => {
             id: item.loanId,
             debt: Decimal.fromBigNumberString(item.principal),
             collateral: Decimal.fromBigNumberString(item.collateral),
+            interestOwedPerDay: Decimal.fromBigNumberString(
+              item.interestOwedPerDay,
+            ),
           })),
         );
       }
@@ -119,6 +122,8 @@ export const useGetOpenLoans = () => {
           ),
           apr: item?.borrow?.[0].interestRate || '',
           rolloverDate: item.nextRollover || dayjs().unix(),
+          interestOwedPerDay:
+            loanSmartContract?.interestOwedPerDay.toNumber() || 0,
         };
       }) || [];
 

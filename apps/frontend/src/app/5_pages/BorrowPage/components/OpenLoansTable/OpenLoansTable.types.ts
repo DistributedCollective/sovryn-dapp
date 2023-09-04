@@ -10,10 +10,12 @@ export type LoanItem = {
   liquidationPrice: number;
   apr: string;
   rolloverDate: number;
+  interestOwedPerDay: number;
 };
 
 export type LoanItemSmartContract = {
   id: string;
   debt: Decimal;
   collateral: Decimal;
+  interestOwedPerDay: Decimal;
 };

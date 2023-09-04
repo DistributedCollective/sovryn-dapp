@@ -33,6 +33,7 @@ import { MINIMUM_COLLATERAL_RATIO } from '../../../ZeroLocForm/constants';
 import { useGetCollateralAssetPrice } from '../AdjustLoanForm/hooks/useGetCollateralAssetPrice';
 import { normalizeToken, renderValue } from './ExtendLoanForm.utils';
 import { CurrentLoanData } from './components/CurrentLoanData';
+import { useExtendLoan } from './hooks/useExtendLoan';
 
 const pageTranslations = translations.fixedInterestPage.extendLoanDialog;
 
@@ -59,14 +60,20 @@ export const ExtendLoanForm: FC<ExtendLoanFormProps> = ({ loan }) => {
 
   const [useCollateral, setUseCollateral] = useState(true);
 
+  const { depositAmount, handleSubmit } = useExtendLoan(
+    loan,
+    nextRolloverDate,
+    useCollateral,
+  );
+
   const { borrowPriceUsd, collateralPriceUsd } = useGetCollateralAssetPrice(
     debtToken,
     collateralToken,
   );
 
   const newCollateralAmount = useMemo(() => {
-    return decimalic(loan.collateral.toString()).add(0.0002);
-  }, [loan.collateral]);
+    return decimalic(loan.collateral.toString()).add(depositAmount);
+  }, [loan.collateral, depositAmount]);
 
   const collateralRatio = useMemo(() => {
     if (!nextRolloverDate) {
@@ -188,7 +195,7 @@ export const ExtendLoanForm: FC<ExtendLoanFormProps> = ({ loan }) => {
           <>
             <div className="flex items-center mb-8 gap-3">
               <AmountInput
-                value={amount}
+                value={depositAmount}
                 label={t(translations.common.amount)}
                 className="w-full flex-grow-0 flex-shrink"
                 placeholder="0"
@@ -321,6 +328,7 @@ export const ExtendLoanForm: FC<ExtendLoanFormProps> = ({ loan }) => {
           style={ButtonStyle.primary}
           text={t(translations.common.buttons.confirm)}
           className="w-full"
+          onClick={handleSubmit}
           dataAttribute="adjust-loan-confirm-button"
         />
       </div>

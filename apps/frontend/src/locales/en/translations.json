@@ -547,6 +547,9 @@
             "currentCollateral": "Current collateral",
             "collateralRatio": "Collateral ratio",
             "confirm": "Confirm",
+            "dialogTitles": {
+                "extend": "Extend a loan"
+            },
             "labels": {
                 "currentRolloverDate": "Current rollover date",
                 "nextRolloverDate": "Next rollover date",

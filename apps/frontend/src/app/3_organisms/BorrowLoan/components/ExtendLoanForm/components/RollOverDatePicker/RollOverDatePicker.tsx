@@ -45,7 +45,7 @@ export const RollOverDatePicker: FC<RollOverDatePickerProps> = ({
   };
 
   const handleCalendarClick = useCallback(() => {
-    setIsCalendarVisible(true);
+    setIsCalendarVisible(previousValue => !previousValue);
   }, []);
 
   return (

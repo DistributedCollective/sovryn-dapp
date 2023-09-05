@@ -143,10 +143,13 @@ export const ExtendLoanForm: FC<ExtendLoanFormProps> = ({ loan }) => {
   ]);
 
   const isValidCollateralRatio = useMemo(() => {
-    return collateralRatio.gte(
-      MINIMUM_COLLATERAL_RATIO_BORROWING_MAINTENANCE.mul(100),
+    return (
+      Number(collateralAssetPrice) === 0 ||
+      collateralRatio.gte(
+        MINIMUM_COLLATERAL_RATIO_BORROWING_MAINTENANCE.mul(100),
+      )
     );
-  }, [collateralRatio]);
+  }, [collateralAssetPrice, collateralRatio]);
 
   const collateralRatioError = useMemo(() => {
     if (

@@ -7,7 +7,6 @@ import {
   MINIMUM_COLLATERAL_RATIO_LENDING_POOLS,
   MINIMUM_COLLATERAL_RATIO_LENDING_POOLS_SOV,
 } from '../../../../../../constants/lending';
-import { useMaxAssetBalance } from '../../../../../../hooks/useMaxAssetBalance';
 import { useGetRBTCPrice } from '../../../../../../hooks/zero/useGetRBTCPrice';
 import { decimalic } from '../../../../../../utils/math';
 import { calculatePrepaidInterest } from '../NewLoanForm.utils';
@@ -21,7 +20,6 @@ export const useGetMaximumBorrowAmount = (
   borrowApr: string,
   collateralAmount?: Decimal,
 ) => {
-  const { weiBalance: borrowAssetBalance } = useMaxAssetBalance(borrowToken);
   const { maximumCollateralAmount } =
     useGetMaximumCollateralAmount(collateralToken);
 
@@ -87,7 +85,5 @@ export const useGetMaximumBorrowAmount = (
     [maxBorrow, prepaidInterest],
   );
 
-  return result.gt(Decimal.fromBigNumberString(borrowAssetBalance))
-    ? Decimal.fromBigNumberString(borrowAssetBalance)
-    : result;
+  return result;
 };

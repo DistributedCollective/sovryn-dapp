@@ -138,7 +138,7 @@ export const getLocaleSeparators = () => {
 export const getDecimalPartLength = (value: Decimalish) =>
   decimalic(value).toString().split('.')?.[1]?.length || 0;
 
-export const decimalic = (value: Decimalish | undefined | null) => {
+export const decimalic = (value: Decimalish | undefined | null): Decimal => {
   value = Decimal.from(value || 0);
   if (value.infinite || !value) {
     return Decimal.ZERO;

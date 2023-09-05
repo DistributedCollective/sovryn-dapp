@@ -2,33 +2,36 @@ import React, { FC, useCallback, useState } from 'react';
 
 import classNames from 'classnames';
 import dayjs from 'dayjs';
-import { t } from 'i18next';
 import { DayPicker } from 'react-day-picker';
 
 import { Icon, IconNames, Paragraph } from '@sovryn/ui';
 
-import { translations } from '../../../../../../../locales/i18n';
-import styles from './RollOverDatePicker.module.css';
+import styles from './DatePicker.module.css';
 
-type RollOverDatePickerProps = {
+type DatePickerProps = {
   date: number;
   onChange: (value: number) => void;
   className?: string;
-  minDate: number;
+  minDate?: number;
+  maxDate?: number;
+  label: string;
+  isCalendarVisible?: boolean;
+  setIsCalendarVisible: (value: React.SetStateAction<boolean>) => void;
 };
 
-const pageTranslations = translations.fixedInterestPage.extendLoanDialog;
-
-export const RollOverDatePicker: FC<RollOverDatePickerProps> = ({
+export const DatePicker: FC<DatePickerProps> = ({
   date,
   onChange,
   className,
+  label,
   minDate,
+  maxDate,
+  isCalendarVisible,
+  setIsCalendarVisible,
 }) => {
   const [selected, setSelected] = useState<Date | undefined>(
     dayjs.unix(date).toDate(),
   );
-  const [isCalendarVisible, setIsCalendarVisible] = useState(false);
 
   const handleDaySelect = (date: Date | undefined) => {
     if (!date) {
@@ -46,7 +49,7 @@ export const RollOverDatePicker: FC<RollOverDatePickerProps> = ({
 
   const handleCalendarClick = useCallback(() => {
     setIsCalendarVisible(previousValue => !previousValue);
-  }, []);
+  }, [setIsCalendarVisible]);
 
   return (
     <div
@@ -55,10 +58,7 @@ export const RollOverDatePicker: FC<RollOverDatePickerProps> = ({
         'bg-gray-70 rounded min-h-10 px-3 flex items-center justify-between relative m-0',
       )}
     >
-      <Paragraph
-        className="font-medium"
-        children={t(pageTranslations.labels.nextRolloverDate)}
-      />
+      <Paragraph className="font-medium" children={label} />
       <div
         className="cursor-pointer flex items-center"
         onClick={handleCalendarClick}
@@ -83,7 +83,8 @@ export const RollOverDatePicker: FC<RollOverDatePickerProps> = ({
             defaultMonth={selected}
             selected={selected}
             onSelect={handleDaySelect}
-            fromDate={dayjs.unix(minDate).toDate()}
+            fromDate={minDate ? dayjs.unix(minDate).toDate() : dayjs().toDate()}
+            toDate={maxDate ? dayjs.unix(maxDate).toDate() : undefined}
             modifiersClassNames={{
               selected: styles.selected,
             }}

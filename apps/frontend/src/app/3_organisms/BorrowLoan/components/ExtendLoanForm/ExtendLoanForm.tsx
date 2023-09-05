@@ -99,9 +99,11 @@ export const ExtendLoanForm: FC<ExtendLoanFormProps> = ({ loan }) => {
     useCollateral,
   ]);
 
-  const newCollateralAmount = useMemo(() => {
-    return decimalic(loan.collateral.toString()).sub(collateralChange);
-  }, [collateralChange, loan.collateral]);
+  const newCollateralAmount = useMemo(
+    () =>
+      decimalic(loan.collateral.toString()).sub(collateralChange.toString()),
+    [collateralChange, loan.collateral],
+  );
 
   const newTotalDebt = useMemo(
     () =>
@@ -158,7 +160,7 @@ export const ExtendLoanForm: FC<ExtendLoanFormProps> = ({ loan }) => {
   const liquidationPrice = useMemo(() => {
     return MINIMUM_COLLATERAL_RATIO_BORROWING_MAINTENANCE.mul(
       newTotalDebt.toString(),
-    ).div(newCollateralAmount);
+    ).div(newCollateralAmount || 1);
   }, [newCollateralAmount, newTotalDebt]);
 
   useEffect(() => {

@@ -497,7 +497,7 @@ export const NewLoanForm: FC<NewLoanFormProps> = ({ pool }) => {
               <DynamicValue
                 initialValue="0"
                 value={liquidationPrice.toString()}
-                renderer={value => renderValue(value, collateralToken)}
+                renderer={value => renderValue(value, borrowToken)}
               />
             }
           />

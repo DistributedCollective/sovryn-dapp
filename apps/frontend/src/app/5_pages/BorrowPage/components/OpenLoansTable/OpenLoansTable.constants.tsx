@@ -49,8 +49,8 @@ export const COLUMNS_CONFIG = [
       <>
         <AmountRenderer
           value={item.liquidationPrice}
-          suffix={normalizeSuffix(item.collateralAsset)}
-          precision={getAmountPrecision(item.collateralAsset)}
+          suffix={normalizeSuffix(item.debtAsset)}
+          precision={getAmountPrecision(item.debtAsset)}
         />
       </>
     ),

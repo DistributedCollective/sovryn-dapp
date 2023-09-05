@@ -22,6 +22,7 @@ import { Decimal } from '@sovryn/utils';
 
 import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { AssetRenderer } from '../../../../2_molecules/AssetRenderer/AssetRenderer';
+import { DatePicker } from '../../../../2_molecules/DatePicker/DatePicker';
 import { LoanItem } from '../../../../5_pages/BorrowPage/components/OpenLoansTable/OpenLoansTable.types';
 import { COLLATERAL_RATIO_THRESHOLDS } from '../../../../../constants/general';
 import { MINIMUM_COLLATERAL_RATIO_BORROWING_MAINTENANCE } from '../../../../../constants/lending';
@@ -34,7 +35,6 @@ import { decimalic } from '../../../../../utils/math';
 import { useGetCollateralAssetPrice } from '../AdjustLoanForm/hooks/useGetCollateralAssetPrice';
 import { normalizeToken, renderValue } from './ExtendLoanForm.utils';
 import { CurrentLoanData } from './components/CurrentLoanData/CurrentLoanData';
-import { RollOverDatePicker } from './components/RollOverDatePicker/RollOverDatePicker';
 import { useExtendLoan } from './hooks/useExtendLoan';
 
 const pageTranslations = translations.fixedInterestPage.extendLoanDialog;
@@ -53,6 +53,7 @@ export const ExtendLoanForm: FC<ExtendLoanFormProps> = ({ loan }) => {
       .add(1, 'day')
       .unix(),
   );
+  const [isCalendarVisible, setIsCalendarVisible] = useState(false);
   const [collateralAssetPrice, setCollateralAssetPrice] = useState('0');
 
   const debtToken = useMemo(
@@ -210,11 +211,14 @@ export const ExtendLoanForm: FC<ExtendLoanFormProps> = ({ loan }) => {
           />
         </SimpleTable>
 
-        <RollOverDatePicker
+        <DatePicker
           date={nextRolloverDate}
           onChange={setNextRolloverDate}
           className="min-w-full mb-6"
           minDate={loan.rolloverDate}
+          setIsCalendarVisible={setIsCalendarVisible}
+          isCalendarVisible={isCalendarVisible}
+          label={t(pageTranslations.labels.nextRolloverDate)}
         />
 
         <div className="flex md:flex-row flex-col mb-3">

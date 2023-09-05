@@ -26,6 +26,7 @@ import { LoanItem } from '../../../../5_pages/BorrowPage/components/OpenLoansTab
 import { COLLATERAL_RATIO_THRESHOLDS } from '../../../../../constants/general';
 import { MINIMUM_COLLATERAL_RATIO_BORROWING_MAINTENANCE } from '../../../../../constants/lending';
 import { getTokenDisplayName } from '../../../../../constants/tokens';
+import { useMaintenance } from '../../../../../hooks/useMaintenance';
 import { useGetRBTCPrice } from '../../../../../hooks/zero/useGetRBTCPrice';
 import { translations } from '../../../../../locales/i18n';
 import { dateFormat } from '../../../../../utils/helpers';
@@ -44,6 +45,9 @@ type ExtendLoanFormProps = {
 };
 
 export const ExtendLoanForm: FC<ExtendLoanFormProps> = ({ loan }) => {
+  const { checkMaintenance, States } = useMaintenance();
+  const dappLocked = checkMaintenance(States.FULLD2);
+
   const [nextRolloverDate, setNextRolloverDate] = useState(
     dayjs(loan.rolloverDate * 1000)
       .add(1, 'day')
@@ -181,8 +185,8 @@ export const ExtendLoanForm: FC<ExtendLoanFormProps> = ({ loan }) => {
     [nextRolloverDate],
   );
   const submitButtonDisabled = useMemo(
-    () => !isValidCollateralRatio || !nextRolloverDate,
-    [isValidCollateralRatio, nextRolloverDate],
+    () => !isValidCollateralRatio || !nextRolloverDate || dappLocked,
+    [isValidCollateralRatio, nextRolloverDate, dappLocked],
   );
 
   return (
@@ -363,17 +367,21 @@ export const ExtendLoanForm: FC<ExtendLoanFormProps> = ({ loan }) => {
         </div>
       </div>
 
-      <div className="mt-8 flex flex-row items-center justify-between gap-8">
-        <Button
-          type={ButtonType.submit}
-          style={ButtonStyle.primary}
-          text={t(translations.common.buttons.confirm)}
-          className="w-full"
-          onClick={handleSubmit}
-          disabled={submitButtonDisabled}
-          dataAttribute="adjust-loan-confirm-button"
+      <Button
+        type={ButtonType.submit}
+        style={ButtonStyle.primary}
+        text={t(translations.common.buttons.confirm)}
+        className="w-full mt-8"
+        onClick={handleSubmit}
+        disabled={submitButtonDisabled}
+        dataAttribute="adjust-loan-confirm-button"
+      />
+      {dappLocked && (
+        <ErrorBadge
+          level={ErrorLevel.Warning}
+          message={t(translations.maintenanceMode.featureDisabled)}
         />
-      </div>
+      )}
     </>
   );
 };

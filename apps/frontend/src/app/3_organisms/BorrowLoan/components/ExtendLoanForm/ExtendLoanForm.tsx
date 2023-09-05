@@ -48,8 +48,6 @@ export const ExtendLoanForm: FC<ExtendLoanFormProps> = ({ loan }) => {
   const [nextRolloverDate, setNextRolloverDate] = useState(
     dayjs().add(DEFAULT_LOAN_DURATION, 'day').unix(),
   );
-  const [amount] = useState('');
-
   const [collateralAssetPrice, setCollateralAssetPrice] = useState('0');
 
   const debtToken = useMemo(
@@ -75,19 +73,48 @@ export const ExtendLoanForm: FC<ExtendLoanFormProps> = ({ loan }) => {
     collateralToken,
   );
 
+  const collateralChange = useMemo(() => {
+    if (useCollateral) {
+      const collateralUsdPrice =
+        collateralToken === SupportedTokens.rbtc
+          ? rbtcPrice
+          : collateralPriceUsd;
+      const loanTokenUsdPrice =
+        debtToken === SupportedTokens.rbtc ? rbtcPrice : borrowPriceUsd;
+
+      return decimalic(depositAmount)
+        .mul(loanTokenUsdPrice)
+        .div(collateralUsdPrice || 1);
+    }
+    return decimalic(0);
+  }, [
+    borrowPriceUsd,
+    collateralPriceUsd,
+    collateralToken,
+    debtToken,
+    depositAmount,
+    rbtcPrice,
+    useCollateral,
+  ]);
+
   const newCollateralAmount = useMemo(() => {
-    return decimalic(loan.collateral.toString()).sub(depositAmount);
-  }, [loan.collateral, depositAmount]);
+    return decimalic(loan.collateral.toString()).sub(collateralChange);
+  }, [collateralChange, loan.collateral]);
+
+  const newTotalDebt = useMemo(
+    () =>
+      decimalic(loan.debt.toString()).add(useCollateral ? 0 : depositAmount),
+    [depositAmount, loan.debt, useCollateral],
+  );
 
   const collateralRatio = useMemo(() => {
     if (!nextRolloverDate) {
       return Decimal.from(loan.collateralRatio);
     }
 
-    const debt = Decimal.from(loan.debt);
     const collateralUsdPrice =
       collateralToken === SupportedTokens.rbtc ? rbtcPrice : collateralPriceUsd;
-    const totalDebtUsd = debt.mul(
+    const totalDebtUsd = newTotalDebt.mul(
       debtToken === SupportedTokens.rbtc ? rbtcPrice : borrowPriceUsd,
     );
 
@@ -101,8 +128,8 @@ export const ExtendLoanForm: FC<ExtendLoanFormProps> = ({ loan }) => {
     collateralToken,
     debtToken,
     loan.collateralRatio,
-    loan.debt,
     newCollateralAmount,
+    newTotalDebt,
     nextRolloverDate,
     rbtcPrice,
   ]);
@@ -112,10 +139,6 @@ export const ExtendLoanForm: FC<ExtendLoanFormProps> = ({ loan }) => {
       MINIMUM_COLLATERAL_RATIO_BORROWING_MAINTENANCE.mul(100),
     );
   }, [collateralRatio]);
-
-  const newTotalDebt = useMemo(() => {
-    return decimalic(loan.debt.toString());
-  }, [loan.debt]);
 
   const collateralRatioError = useMemo(() => {
     if (
@@ -209,7 +232,7 @@ export const ExtendLoanForm: FC<ExtendLoanFormProps> = ({ loan }) => {
           <>
             <div className="flex items-center mb-8 gap-3">
               <AmountInput
-                value={depositAmount}
+                value={collateralChange.toString()}
                 label={t(translations.common.amount)}
                 className="w-full flex-grow-0 flex-shrink"
                 placeholder="0"
@@ -278,7 +301,7 @@ export const ExtendLoanForm: FC<ExtendLoanFormProps> = ({ loan }) => {
           <>
             <div className="flex items-center mb-8 gap-3">
               <AmountInput
-                value={amount}
+                value={depositAmount}
                 label={t(translations.common.amount)}
                 className="w-full flex-grow-0 flex-shrink"
                 placeholder="0"
@@ -293,7 +316,7 @@ export const ExtendLoanForm: FC<ExtendLoanFormProps> = ({ loan }) => {
                 label={t(pageTranslations.labels.prepaidInterestAmount)}
                 value={
                   <AmountRenderer
-                    value={0.001}
+                    value={depositAmount}
                     suffix={getTokenDisplayName(debtToken)}
                   />
                 }

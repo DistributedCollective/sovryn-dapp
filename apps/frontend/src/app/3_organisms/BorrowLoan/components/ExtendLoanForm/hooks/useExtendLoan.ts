@@ -2,6 +2,7 @@ import { useCallback, useMemo } from 'react';
 
 import { t } from 'i18next';
 
+import { SupportedTokens } from '@sovryn/contracts';
 import { Decimal } from '@sovryn/utils';
 
 import { defaultChainId } from '../../../../../../config/chains';
@@ -13,6 +14,7 @@ import { useAccount } from '../../../../../../hooks/useAccount';
 import { useLoadContract } from '../../../../../../hooks/useLoadContract';
 import { translations } from '../../../../../../locales/i18n';
 import { toWei } from '../../../../../../utils/math';
+import { prepareApproveTransaction } from '../../../../../../utils/transactions';
 import {
   Transaction,
   TransactionType,
@@ -20,6 +22,7 @@ import {
 
 export const useExtendLoan = (
   loan: LoanItem,
+  debtToken: SupportedTokens,
   nextRollover: string | number,
   useCollateral: boolean,
 ) => {
@@ -45,6 +48,19 @@ export const useExtendLoan = (
 
     const transactions: Transaction[] = [];
 
+    const weiDepositAmount = toWei(depositAmount);
+    if (!useCollateral) {
+      const approve = await prepareApproveTransaction({
+        token: debtToken,
+        amount: weiDepositAmount,
+        signer,
+        spender: contract.address,
+      });
+      if (approve) {
+        transactions.push(approve);
+      }
+    }
+
     transactions.push({
       title: t(
         translations.fixedInterestPage.extendLoanDialog.dialogTitles.extend,
@@ -53,7 +69,7 @@ export const useExtendLoan = (
         type: TransactionType.signTransaction,
         contract,
         fnName: 'extendLoanDuration',
-        args: [loan.id, toWei(depositAmount), useCollateral, '0x'],
+        args: [loan.id, weiDepositAmount, useCollateral, '0x'],
         gasLimit: GAS_LIMIT.REPAY_LOAN,
       },
     });
@@ -67,6 +83,7 @@ export const useExtendLoan = (
   }, [
     account,
     contract,
+    debtToken,
     depositAmount,
     loan.id,
     setIsOpen,

@@ -30,7 +30,6 @@ import { useGetRBTCPrice } from '../../../../../hooks/zero/useGetRBTCPrice';
 import { translations } from '../../../../../locales/i18n';
 import { dateFormat } from '../../../../../utils/helpers';
 import { decimalic } from '../../../../../utils/math';
-import { DEFAULT_LOAN_DURATION } from '../../../BorrowLoanForm/components/NewLoanForm/NewLoanForm.constants';
 import { useGetCollateralAssetPrice } from '../AdjustLoanForm/hooks/useGetCollateralAssetPrice';
 import { normalizeToken, renderValue } from './ExtendLoanForm.utils';
 import { CurrentLoanData } from './components/CurrentLoanData/CurrentLoanData';
@@ -46,7 +45,9 @@ type ExtendLoanFormProps = {
 
 export const ExtendLoanForm: FC<ExtendLoanFormProps> = ({ loan }) => {
   const [nextRolloverDate, setNextRolloverDate] = useState(
-    dayjs().add(DEFAULT_LOAN_DURATION, 'day').unix(),
+    dayjs(loan.rolloverDate * 1000)
+      .add(1, 'day')
+      .unix(),
   );
   const [collateralAssetPrice, setCollateralAssetPrice] = useState('0');
 
@@ -64,6 +65,7 @@ export const ExtendLoanForm: FC<ExtendLoanFormProps> = ({ loan }) => {
 
   const { depositAmount, handleSubmit } = useExtendLoan(
     loan,
+    debtToken,
     nextRolloverDate,
     useCollateral,
   );

@@ -73,6 +73,7 @@ export const useGetOpenLoans = () => {
             interestOwedPerDay: Decimal.fromBigNumberString(
               item.interestOwedPerDay,
             ),
+            endTimestamp: Decimal.from(item.endTimestamp.toString()),
           })),
         );
       }
@@ -118,7 +119,7 @@ export const useGetOpenLoans = () => {
           item?.collateral.toString() || '1',
         ),
         apr: calculateApr(item.interestOwedPerDay, item.debt),
-        rolloverDate: subgraphData?.nextRollover || dayjs().unix(),
+        rolloverDate: item?.endTimestamp.toNumber() || dayjs().unix(),
         interestOwedPerDay: item?.interestOwedPerDay.toNumber() || 0,
       };
     }) || [];

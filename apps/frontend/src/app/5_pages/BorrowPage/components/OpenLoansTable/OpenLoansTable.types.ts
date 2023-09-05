@@ -18,4 +18,5 @@ export type LoanItemSmartContract = {
   debt: Decimal;
   collateral: Decimal;
   interestOwedPerDay: Decimal;
+  endTimestamp: Decimal;
 };

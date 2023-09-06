@@ -32,10 +32,8 @@ export const useGetBorrowingAPR = (
   }, [assetContract, borrowAmount]);
 
   useEffect(() => {
-    if (Number(borrowAmount) > 0) {
-      updateAPR();
-    }
-  }, [updateAPR, borrowAmount, borrowApr]);
+    updateAPR();
+  }, [updateAPR, borrowAmount]);
 
   return { borrowApr };
 };

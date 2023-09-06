@@ -3,25 +3,37 @@ import { useMemo } from 'react';
 import { SupportedTokens } from '@sovryn/contracts';
 import { Decimal } from '@sovryn/utils';
 
+import { LoanItem } from '../../../../../5_pages/BorrowPage/components/OpenLoansTable/OpenLoansTable.types';
 import {
   MINIMUM_COLLATERAL_RATIO_LENDING_POOLS,
   MINIMUM_COLLATERAL_RATIO_LENDING_POOLS_SOV,
 } from '../../../../../../constants/lending';
 import { useGetRBTCPrice } from '../../../../../../hooks/zero/useGetRBTCPrice';
 import { decimalic } from '../../../../../../utils/math';
-import { calculatePrepaidInterest } from '../NewLoanForm.utils';
+import { calculatePrepaidInterest } from '../../../../BorrowLoanForm/components/NewLoanForm/NewLoanForm.utils';
+import { useGetMaximumCollateralAmount } from '../../../../BorrowLoanForm/components/NewLoanForm/hooks/useGetMaximumCollateralAmount';
+import { normalizeToken } from '../AdjustLoanForm.utils';
+import { useGetBorrowingAPR } from './useGetBorrowingAPR';
 import { useGetCollateralAssetPrice } from './useGetCollateralAssetPrice';
-import { useGetMaximumCollateralAmount } from './useGetMaximumCollateralAmount';
 
 export const useGetMaximumBorrowAmount = (
-  borrowToken: SupportedTokens,
-  collateralToken: SupportedTokens,
-  loanDuration: number,
-  borrowApr: string,
+  loan: LoanItem,
   collateralAmount?: Decimal,
-) => {
-  const { maximumCollateralAmount } =
-    useGetMaximumCollateralAmount(collateralToken);
+): Decimal => {
+  const borrowToken = useMemo(
+    () => normalizeToken(loan.debtAsset.toLowerCase()),
+    [loan.debtAsset],
+  );
+
+  const collateralToken = useMemo(
+    () => normalizeToken(loan.collateralAsset.toLowerCase()),
+    [loan.collateralAsset],
+  );
+
+  const { maximumCollateralAmount } = useGetMaximumCollateralAmount(
+    collateralToken,
+    collateralAmount,
+  );
 
   const collateral = useMemo(
     () =>
@@ -31,8 +43,11 @@ export const useGetMaximumBorrowAmount = (
     [collateralAmount, maximumCollateralAmount],
   );
 
-  const { price: rbtcPrice } = useGetRBTCPrice();
+  const debt = useMemo(() => loan.debt, [loan.debt]);
 
+  const { borrowApr } = useGetBorrowingAPR(borrowToken, Decimal.from(debt));
+
+  const { price: rbtcPrice } = useGetRBTCPrice();
   const { borrowPriceUsd, collateralPriceUsd } = useGetCollateralAssetPrice(
     borrowToken,
     collateralToken,
@@ -76,14 +91,18 @@ export const useGetMaximumBorrowAmount = (
   );
 
   const prepaidInterest = useMemo(
-    () => calculatePrepaidInterest(borrowApr, maxBorrow, loanDuration),
-    [borrowApr, loanDuration, maxBorrow],
+    () => calculatePrepaidInterest(borrowApr, maxBorrow, loan.rolloverDate),
+    [borrowApr, loan.rolloverDate, maxBorrow],
   );
 
   const result: Decimal = useMemo(
-    () => maxBorrow.sub(prepaidInterest),
-    [maxBorrow, prepaidInterest],
+    () => maxBorrow.sub(prepaidInterest).sub(debt),
+    [debt, maxBorrow, prepaidInterest],
   );
+
+  if (result.lte(Decimal.ZERO)) {
+    return Decimal.ZERO;
+  }
 
   return result;
 };

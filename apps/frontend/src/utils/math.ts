@@ -1,5 +1,6 @@
 import { isBigNumberish } from '@ethersproject/bignumber/lib/bignumber';
 
+import dayjs from 'dayjs';
 import { BigNumberish, BigNumber } from 'ethers';
 import { formatUnits, parseUnits } from 'ethers/lib/utils';
 
@@ -137,7 +138,7 @@ export const getLocaleSeparators = () => {
 export const getDecimalPartLength = (value: Decimalish) =>
   decimalic(value).toString().split('.')?.[1]?.length || 0;
 
-export const decimalic = (value: Decimalish | undefined | null) => {
+export const decimalic = (value: Decimalish | undefined | null): Decimal => {
   value = Decimal.from(value || 0);
   if (value.infinite || !value) {
     return Decimal.ZERO;
@@ -147,3 +148,10 @@ export const decimalic = (value: Decimalish | undefined | null) => {
 
 export const isScientificNumber = (value: number) =>
   String(value).search(/e[-+]?/) > 0;
+
+export const calculateDateDifferenceInHours = (date: number) => {
+  const targetDate = dayjs.unix(date);
+  const currentDate = dayjs();
+
+  return Math.abs(targetDate.diff(currentDate, 'hours'));
+};

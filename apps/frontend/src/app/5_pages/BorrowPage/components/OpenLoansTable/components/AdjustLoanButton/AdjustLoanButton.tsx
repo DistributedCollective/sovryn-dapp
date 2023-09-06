@@ -1,24 +1,61 @@
-import React, { FC, useState } from 'react';
+import React, { FC, useCallback, useReducer } from 'react';
 
 import { t } from 'i18next';
 
-import { Button, ButtonStyle } from '@sovryn/ui';
+import {
+  Button,
+  ButtonStyle,
+  Dialog,
+  DialogBody,
+  DialogHeader,
+  DialogSize,
+} from '@sovryn/ui';
 
+import { AdjustLoanForm } from '../../../../../../3_organisms/BorrowLoan/components/AdjustLoanForm/AdjustLoanForm';
+import { useAccount } from '../../../../../../../hooks/useAccount';
 import { translations } from '../../../../../../../locales/i18n';
-import { AdjustLoanDialog } from '../AdjustLoanDialog/AdjustLoanDialog';
+import { LoanItem } from '../../OpenLoansTable.types';
 
-export const AdjustLoanButton: FC = () => {
-  const [isOpen, setIsOpen] = useState(false);
+type AdjustLoanButtonProps = {
+  loan: LoanItem;
+};
+
+export const AdjustLoanButton: FC<AdjustLoanButtonProps> = ({ loan }) => {
+  const { account } = useAccount();
+  const [openAdjustLoanDialog, toggleAdjustLoanDialog] = useReducer(
+    v => !v,
+    false,
+  );
+
+  const onSuccess = useCallback(
+    () => toggleAdjustLoanDialog(),
+    [toggleAdjustLoanDialog],
+  );
 
   return (
     <>
       <Button
         text={t(translations.fixedInterestPage.openLoansTable.actions.adjust)}
         style={ButtonStyle.primary}
-        onClick={() => setIsOpen(true)}
+        onClick={toggleAdjustLoanDialog}
+        disabled={!account}
+        dataAttribute="adjust-loan-button"
       />
 
-      <AdjustLoanDialog isOpen={isOpen} onClose={() => setIsOpen(false)} />
+      <Dialog
+        isOpen={openAdjustLoanDialog}
+        dataAttribute="adjust-loan-dialog"
+        width={DialogSize.md}
+        disableFocusTrap
+      >
+        <DialogHeader
+          title={t(translations.fixedInterestPage.adjustLoanDialog.title)}
+          onClose={toggleAdjustLoanDialog}
+        />
+        <DialogBody
+          children={<AdjustLoanForm loan={loan} onSuccess={onSuccess} />}
+        />
+      </Dialog>
     </>
   );
 };

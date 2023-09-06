@@ -7,12 +7,12 @@ import { Decimal } from '@sovryn/utils';
 
 import { useGetRBTCPrice } from '../../../../../../hooks/zero/useGetRBTCPrice';
 import { decimalic } from '../../../../../../utils/math';
+import { useGetBorrowingAPR } from '../../../../BorrowLoan/components/AdjustLoanForm/hooks/useGetBorrowingAPR';
 import {
   DEFAULT_LOAN_DURATION,
   SECONDS_IN_DAY,
   SECONDS_IN_YEAR,
 } from '../NewLoanForm.constants';
-import { useGetBorrowingAPR } from './useGetBorrowingAPR';
 import { useGetCollateralAssetPrice } from './useGetCollateralAssetPrice';
 
 export const useGetMaximumFirstRolloverDate = (
@@ -46,7 +46,7 @@ export const useGetMaximumFirstRolloverDate = (
 
   const { borrowApr } = useGetBorrowingAPR(
     borrowToken,
-    !borrowAmount || borrowAmount.isZero() ? Decimal.ONE : borrowAmount,
+    !borrowAmount || borrowAmount.isZero() ? Decimal.ZERO : borrowAmount,
   );
 
   //   const apr = useMemo(

@@ -3,37 +3,31 @@ import { useMemo } from 'react';
 import { SupportedTokens } from '@sovryn/contracts';
 import { Decimal } from '@sovryn/utils';
 
-import { useLiquityBaseParams } from '../../../../../5_pages/ZeroPage/hooks/useLiquityBaseParams';
-import { RBTC_GAS_FEE_RESERVE } from '../../../../../../constants/general';
 import { useMaxAssetBalance } from '../../../../../../hooks/useMaxAssetBalance';
+import { useGetOriginationFee } from '../../../../BorrowLoan/components/AdjustLoanForm/hooks/useGetOriginationFee';
 
-export const useGetMaximumCollateralAmount = (asset: SupportedTokens) => {
+export const useGetMaximumCollateralAmount = (
+  asset: SupportedTokens,
+  currentCollateral?: Decimal,
+) => {
   const { weiBalance: assetBalance, loading } = useMaxAssetBalance(asset);
-  const { minBorrowingFeeRate } = useLiquityBaseParams();
+  const originationFeeRate = useGetOriginationFee();
 
   const collateralAmount = useMemo(
-    () => Decimal.fromBigNumberString(assetBalance),
-    [assetBalance],
-  );
-
-  const balance = useMemo(
     () =>
-      asset === SupportedTokens.rbtc
-        ? collateralAmount.sub(RBTC_GAS_FEE_RESERVE)
-        : collateralAmount,
-    [asset, collateralAmount],
-  );
-
-  const originationFeeRate = useMemo(
-    () => minBorrowingFeeRate.div(100),
-    [minBorrowingFeeRate],
+      Decimal.fromBigNumberString(assetBalance).add(
+        currentCollateral ? currentCollateral : Decimal.ZERO,
+      ),
+    [assetBalance, currentCollateral],
   );
 
   const result = useMemo(
     () =>
-      loading ? Decimal.ZERO : balance.mul(Decimal.ONE.sub(originationFeeRate)),
-    [balance, loading, originationFeeRate],
+      loading
+        ? Decimal.ZERO
+        : collateralAmount.mul(Decimal.ONE.sub(originationFeeRate.div(100))),
+    [collateralAmount, loading, originationFeeRate],
   );
 
-  return result;
+  return { maximumCollateralAmount: result, loading };
 };

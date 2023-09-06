@@ -49,11 +49,11 @@ export const renderValue = (
 export const calculatePrepaidInterest = (
   apr: string,
   borrowSize: Decimal,
-  borrowDays: number,
+  targetDate: number,
 ) => {
   const currentDate = dayjs().unix();
   const aprAmount = Decimal.fromBigNumberString(apr).div(100);
-  const prepaidInterestDuration = Math.ceil(borrowDays - currentDate);
+  const prepaidInterestDuration = Math.ceil(targetDate - currentDate);
 
   if (borrowSize.isZero() || apr === '0') {
     return Decimal.ZERO;

@@ -36,6 +36,7 @@ import { translations } from '../../../../../locales/i18n';
 import { LendingPool } from '../../../../../utils/LendingPool';
 import { dateFormat } from '../../../../../utils/helpers';
 import { decimalic } from '../../../../../utils/math';
+import { useGetBorrowingAPR } from '../../../BorrowLoan/components/AdjustLoanForm/hooks/useGetBorrowingAPR';
 import { AdvancedSettings } from '../AdvancedSettings/AdvancedSettings';
 import { DEFAULT_LOAN_DURATION } from './NewLoanForm.constants';
 import {
@@ -44,12 +45,11 @@ import {
   getOriginationFeeAmount,
   renderValue,
 } from './NewLoanForm.utils';
-import { useGetBorrowingAPR } from './hooks/useGetBorrowingAPR';
+import { useBorrow } from './hooks/useBorrow';
 import { useGetCollateralAssetPrice } from './hooks/useGetCollateralAssetPrice';
 import { useGetMaximumBorrowAmount } from './hooks/useGetMaximumBorrowAmount';
 import { useGetMaximumCollateralAmount } from './hooks/useGetMaximumCollateralAmount';
 import { useGetMaximumFirstRolloverDate } from './hooks/useGetMaximumFirstRolloverDate';
-import { useOpenNewLoan } from './hooks/useOpenNewLoan';
 
 const pageTranslations = translations.fixedInterestPage;
 
@@ -142,7 +142,8 @@ export const NewLoanForm: FC<NewLoanFormProps> = ({ pool }) => {
     [maximumBorrowAmount, setBorrowAmount],
   );
 
-  const maxCollateralAmount = useGetMaximumCollateralAmount(collateralToken);
+  const { maximumCollateralAmount: maxCollateralAmount } =
+    useGetMaximumCollateralAmount(collateralToken);
 
   const onCollateralTokenChange = useCallback(
     (value: SupportedTokens) => {
@@ -267,7 +268,7 @@ export const NewLoanForm: FC<NewLoanFormProps> = ({ pool }) => {
     isValidCollateralRatio,
   ]);
 
-  const handleSubmit = useOpenNewLoan();
+  const handleSubmit = useBorrow();
   const handleFormSubmit = useCallback(() => {
     handleSubmit(
       borrowToken,
@@ -496,7 +497,7 @@ export const NewLoanForm: FC<NewLoanFormProps> = ({ pool }) => {
               <DynamicValue
                 initialValue="0"
                 value={liquidationPrice.toString()}
-                renderer={value => renderValue(value, collateralToken)}
+                renderer={value => renderValue(value, borrowToken)}
               />
             }
           />

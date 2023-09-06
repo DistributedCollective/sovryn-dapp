@@ -1,5 +1,6 @@
 import { useCallback } from 'react';
 
+import dayjs from 'dayjs';
 import { constants, ethers } from 'ethers';
 import { t } from 'i18next';
 
@@ -21,9 +22,10 @@ import {
   Transaction,
   TransactionType,
 } from '../../../../TransactionStepDialog/TransactionStepDialog.types';
-import { SECONDS_IN_DAY } from '../NewLoanForm.constants';
 
-export const useOpenNewLoan = () => {
+const currentDate = dayjs().unix();
+
+export const useBorrow = () => {
   const { account, signer } = useAccount();
   const { setTransactions, setIsOpen, setTitle } = useTransactionContext();
 
@@ -31,13 +33,16 @@ export const useOpenNewLoan = () => {
     async (
       borrowToken: SupportedTokens,
       borrowAmount: string,
-      loanDuration: number,
+      firstRolloverDate: number,
       collateralAmount: string,
       collateralToken: SupportedTokens,
+      loanId?: string,
     ) => {
       if (!signer) {
         return;
       }
+
+      const loanDuration = Math.ceil(firstRolloverDate - currentDate);
 
       const isCollateralRbtc = collateralToken === SupportedTokens.rbtc;
 
@@ -55,8 +60,6 @@ export const useOpenNewLoan = () => {
         defaultChainId,
       );
 
-      const initialLoanDuration = SECONDS_IN_DAY * 28; // TODO: This is just hardcoded for now, will be dynamic in the future
-
       const transactions: Transaction[] = [];
 
       if (!isCollateralRbtc) {
@@ -71,18 +74,24 @@ export const useOpenNewLoan = () => {
         }
       }
 
+      const transactionTitle =
+        loanId && loanId !== ''
+          ? t(
+              translations.fixedInterestPage.adjustLoanDialog.dialogTitles
+                .adjust,
+            )
+          : t(translations.fixedInterestPage.newLoanDialog.transaction.title);
+
       transactions.push({
-        title: t(
-          translations.fixedInterestPage.newLoanDialog.transaction.title,
-        ),
+        title: transactionTitle,
         request: {
           type: TransactionType.signTransaction,
           contract: borrowTokenContract,
           fnName: 'borrow',
           args: [
-            constants.HashZero,
+            loanId && loanId !== '' ? loanId : constants.HashZero,
             toWei(borrowAmount),
-            initialLoanDuration,
+            loanDuration,
             toWei(collateralAmount),
             collateralTokenAddress,
             account,
@@ -94,9 +103,7 @@ export const useOpenNewLoan = () => {
         },
       });
 
-      setTitle(
-        t(translations.fixedInterestPage.newLoanDialog.transaction.title),
-      );
+      setTitle(transactionTitle);
       setTransactions(transactions);
       setIsOpen(true);
     },

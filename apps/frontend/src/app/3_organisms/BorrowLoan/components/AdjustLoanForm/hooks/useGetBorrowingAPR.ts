@@ -1,12 +1,12 @@
 import { useCallback, useEffect, useState } from 'react';
 
-import { SupportedTokens } from '@sovryn/contracts';
 import { Decimal } from '@sovryn/utils';
 
 import { useLoadContract } from '../../../../../../hooks/useLoadContract';
+import { asyncCall } from '../../../../../../store/rxjs/provider-cache';
 
 export const useGetBorrowingAPR = (
-  borrowToken: SupportedTokens,
+  borrowToken: string,
   borrowAmount: Decimal,
 ) => {
   const [borrowApr, setBorrowApr] = useState('0');
@@ -18,9 +18,11 @@ export const useGetBorrowingAPR = (
       return;
     }
     try {
-      const borrowApr = await assetContract.nextBorrowInterestRate(
-        borrowAmount,
+      const borrowApr = await asyncCall(
+        `borrowApr/${assetContract.address}/${borrowAmount}`,
+        () => assetContract.nextBorrowInterestRate(borrowAmount),
       );
+
       if (borrowApr) {
         setBorrowApr(borrowApr);
       }
@@ -30,10 +32,8 @@ export const useGetBorrowingAPR = (
   }, [assetContract, borrowAmount]);
 
   useEffect(() => {
-    if (Number(borrowApr) === 0 && borrowAmount.gt(0)) {
-      updateAPR();
-    }
-  }, [updateAPR, borrowAmount, borrowApr]);
+    updateAPR();
+  }, [updateAPR, borrowAmount]);
 
   return { borrowApr };
 };

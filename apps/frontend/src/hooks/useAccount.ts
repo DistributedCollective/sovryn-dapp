@@ -17,7 +17,7 @@ export const useAccount = () => {
   const signer = useMemo(() => web3provider?.getSigner(), [web3provider]);
 
   return {
-    account: wallets[0]?.accounts[0]?.address || '',
+    account: wallets[0]?.accounts[0]?.address.toLowerCase() || '',
     type: wallets[0]?.label,
     eip1193Provider: wallets[0]?.provider,
     provider: web3provider,

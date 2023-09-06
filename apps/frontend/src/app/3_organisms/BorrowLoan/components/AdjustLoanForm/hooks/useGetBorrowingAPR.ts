@@ -3,6 +3,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { Decimal } from '@sovryn/utils';
 
 import { useLoadContract } from '../../../../../../hooks/useLoadContract';
+import { asyncCall } from '../../../../../../store/rxjs/provider-cache';
 
 export const useGetBorrowingAPR = (
   borrowToken: string,
@@ -10,19 +11,18 @@ export const useGetBorrowingAPR = (
 ) => {
   const [borrowApr, setBorrowApr] = useState('0');
 
-  const normalizeToken =
-    borrowToken === 'wrbtc' ? 'rbtc' : borrowToken.toLowerCase();
-
-  const assetContract = useLoadContract(normalizeToken, 'lendTokens');
+  const assetContract = useLoadContract(borrowToken, 'lendTokens');
 
   const updateAPR = useCallback(async () => {
     if (!assetContract) {
       return;
     }
     try {
-      const borrowApr = await assetContract.nextBorrowInterestRate(
-        borrowAmount,
+      const borrowApr = await asyncCall(
+        `borrowApr/${assetContract.address}/${borrowAmount}`,
+        () => assetContract.nextBorrowInterestRate(borrowAmount),
       );
+
       if (borrowApr) {
         setBorrowApr(borrowApr);
       }
@@ -32,7 +32,7 @@ export const useGetBorrowingAPR = (
   }, [assetContract, borrowAmount]);
 
   useEffect(() => {
-    if (Number(borrowApr) === 0 && Number(borrowAmount) > 0) {
+    if (Number(borrowAmount) > 0) {
       updateAPR();
     }
   }, [updateAPR, borrowAmount, borrowApr]);

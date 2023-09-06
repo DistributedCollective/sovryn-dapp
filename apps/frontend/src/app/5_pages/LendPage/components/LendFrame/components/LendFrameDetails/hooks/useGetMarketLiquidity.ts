@@ -7,12 +7,12 @@ import { fromWei } from '../../../../../../../../utils/math';
 export const useGetMarketLiquidity = (asset: SupportedTokens) => {
   const lendContract = useLoadContract(asset, 'loanTokens');
 
-  const { value: availableAmount } = useCacheCall(
+  const { value } = useCacheCall(
     `loanTokens/${asset}/marketLiquidity`,
-    () => lendContract?.marketLiquidity()?.then(fromWei),
+    () => lendContract?.marketLiquidity(),
     [],
     '0',
   );
 
-  return { availableAmount };
+  return { availableAmount: value ? fromWei(value) : value };
 };

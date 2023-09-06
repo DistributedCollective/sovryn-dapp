@@ -53,7 +53,7 @@ export const AdvancedSettings: FC<AdvancedSettingsProps> = ({
   }, [maxDate, onChange]);
 
   const handleCalendarClick = useCallback(() => {
-    setIsCalendarVisible(true);
+    setIsCalendarVisible(previousValue => !previousValue);
   }, []);
 
   return (

@@ -56,6 +56,7 @@ import { useDepositCollateral } from './hooks/useDepositCollateral';
 import { useGetBorrowingAPR } from './hooks/useGetBorrowingAPR';
 import { useGetCollateralAssetPrice } from './hooks/useGetCollateralAssetPrice';
 import { useGetInterestRefund } from './hooks/useGetInterestRefund';
+import { useGetMaintenanceStates } from './hooks/useGetMaintenanceStates';
 import { useGetMaxCollateralWithdrawal } from './hooks/useGetMaxCollateralWithdrawal';
 import { useGetMaxRepayAmount } from './hooks/useGetMaxRepayAmount';
 import { useGetMaximumBorrowAmount } from './hooks/useGetMaximumBorrowAmount';
@@ -83,6 +84,26 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
     CollateralTabAction.AddCollateral,
   );
 
+  const isCloseTab = useMemo(() => debtTab === DebtTabAction.Close, [debtTab]);
+  const isBorrowTab = useMemo(
+    () => debtTab === DebtTabAction.Borrow,
+    [debtTab],
+  );
+  const isRepayTab = useMemo(() => debtTab === DebtTabAction.Repay, [debtTab]);
+
+  const isAddCollateralTab = useMemo(
+    () => collateralTab === CollateralTabAction.AddCollateral,
+    [collateralTab],
+  );
+  const isCollateralWithdrawTab = useMemo(
+    () => collateralTab === CollateralTabAction.WithdrawCollateral,
+    [collateralTab],
+  );
+  const isCollateralWithdrawMode = useMemo(
+    () => isCollateralWithdrawTab && debtTab === DebtTabAction.None,
+    [debtTab, isCollateralWithdrawTab],
+  );
+
   const originationFeeRate = useGetOriginationFee();
 
   const debtToken = useMemo(
@@ -93,9 +114,43 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
     () => normalizeToken(loan.collateralAsset.toLowerCase()),
     [loan.collateralAsset],
   );
-  const { price: rbtcPrice } = useGetRBTCPrice();
 
-  const isCloseTab = useMemo(() => debtTab === DebtTabAction.Close, [debtTab]);
+  const {
+    isBorrowLocked,
+    isRepayLocked,
+    isCloseLocked,
+    isAddCollateralLocked,
+    isWithdrawCollateralLocked,
+  } = useGetMaintenanceStates(debtToken);
+
+  const isDebtAmountDisabled = useMemo(
+    () =>
+      (isBorrowLocked && isBorrowTab) ||
+      (isRepayLocked && isRepayTab) ||
+      (isCloseLocked && isCloseTab),
+    [
+      isBorrowLocked,
+      isBorrowTab,
+      isCloseLocked,
+      isCloseTab,
+      isRepayLocked,
+      isRepayTab,
+    ],
+  );
+
+  const isCollateralAmountDisabled = useMemo(
+    () =>
+      (isAddCollateralLocked && isAddCollateralTab) ||
+      (isWithdrawCollateralLocked && isCollateralWithdrawTab),
+    [
+      isAddCollateralLocked,
+      isAddCollateralTab,
+      isCollateralWithdrawTab,
+      isWithdrawCollateralLocked,
+    ],
+  );
+
+  const { price: rbtcPrice } = useGetRBTCPrice();
 
   const fullInterestRefundValue = useGetInterestRefund(loan.id);
   const totalDebtWithoutInterestRefund = useMemo(
@@ -119,23 +174,6 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
     useGetMaxRepayAmount(debtToken, loan);
 
   const { borrowApr } = useGetBorrowingAPR(debtToken, debtSize);
-
-  const isCollateralWithdrawTab = useMemo(
-    () => collateralTab === CollateralTabAction.WithdrawCollateral,
-    [collateralTab],
-  );
-
-  const isCollateralWithdrawMode = useMemo(
-    () => isCollateralWithdrawTab && debtTab === DebtTabAction.None,
-    [debtTab, isCollateralWithdrawTab],
-  );
-
-  const isBorrowTab = useMemo(
-    () => debtTab === DebtTabAction.Borrow,
-    [debtTab],
-  );
-
-  const isRepayTab = useMemo(() => debtTab === DebtTabAction.Repay, [debtTab]);
 
   const { balance: debtTokenBalance } = useMaxAssetBalance(
     debtToken as SupportedTokens,
@@ -508,7 +546,12 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
 
   const submitButtonDisabled = useMemo(() => {
     if (isRepayTab) {
-      return debtSize.isZero() || debtSize.gt(maxDebtAmount);
+      return (
+        debtSize.isZero() ||
+        debtSize.gt(maxDebtAmount) ||
+        isDebtAmountDisabled ||
+        isCollateralAmountDisabled
+      );
     }
 
     if (isBorrowTab) {
@@ -516,7 +559,9 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
         (debtSize.isZero() && collateralSize.isZero()) ||
         collateralRatioError !== '' ||
         !isValidCollateralAmount ||
-        debtSize.gt(maxDebtAmount)
+        debtSize.gt(maxDebtAmount) ||
+        isDebtAmountDisabled ||
+        isCollateralAmountDisabled
       );
     }
 
@@ -524,12 +569,18 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
       return (
         collateralSize.isZero() ||
         collateralRatioError !== '' ||
-        !isValidCollateralAmount
+        !isValidCollateralAmount ||
+        isDebtAmountDisabled ||
+        isCollateralAmountDisabled
       );
     }
 
     if (isCloseTab) {
-      return !isValidCloseAmount;
+      return (
+        !isValidCloseAmount ||
+        isDebtAmountDisabled ||
+        isCollateralAmountDisabled
+      );
     }
   }, [
     isRepayTab,
@@ -537,10 +588,12 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
     isCollateralWithdrawMode,
     isCloseTab,
     debtSize,
+    maxDebtAmount,
     collateralSize,
     collateralRatioError,
     isValidCollateralAmount,
-    maxDebtAmount,
+    isDebtAmountDisabled,
+    isCollateralAmountDisabled,
     isValidCloseAmount,
   ]);
 
@@ -610,7 +663,6 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
         labelElement="div"
         className="w-full"
         dataAttribute="adjust-loan-debt-amount"
-        // errorLabel={debtError}
       >
         <div className="w-full flex flex-row justify-between items-center gap-3">
           <AmountInput
@@ -620,7 +672,9 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
             label={t(translations.common.amount)}
             className="w-full flex-grow-0 flex-shrink"
             placeholder="0"
-            disabled={isCloseTab || isCollateralWithdrawMode}
+            disabled={
+              isCloseTab || isCollateralWithdrawMode || isDebtAmountDisabled
+            }
           />
           <AssetRenderer
             dataAttribute="adjust-loan-debt-asset"
@@ -629,6 +683,12 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
             className="min-w-24 h-10 rounded bg-gray-60 items-center px-4 mr-0"
           />
         </div>
+        {isDebtAmountDisabled && (
+          <ErrorBadge
+            level={ErrorLevel.Warning}
+            message={t(translations.maintenanceMode.featureDisabled)}
+          />
+        )}
       </FormGroup>
       <FormGroup
         label={
@@ -648,7 +708,6 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
         labelElement="div"
         className="max-w-none mt-8"
         dataAttribute="adjust-loan-collateral-amount"
-        // errorLabel={collateralError}
       >
         <div className="w-full flex flex-row justify-between items-center gap-3">
           <AmountInput
@@ -657,9 +716,8 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
             maxAmount={maxCollateralAmount.toNumber()}
             label={t(translations.common.amount)}
             className="max-w-none"
-            // invalid={collateralError}
             placeholder="0"
-            disabled={isCloseTab || isRepayTab}
+            disabled={isCloseTab || isRepayTab || isCollateralAmountDisabled}
           />
           <AssetRenderer
             dataAttribute="adjust-loan-collateral-asset"
@@ -668,6 +726,12 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
             className="min-w-24 h-10 rounded bg-gray-60 items-center px-4 mr-0"
           />
         </div>
+        {isCollateralAmountDisabled && (
+          <ErrorBadge
+            level={ErrorLevel.Warning}
+            message={t(translations.maintenanceMode.featureDisabled)}
+          />
+        )}
       </FormGroup>
 
       <div className="mt-6">

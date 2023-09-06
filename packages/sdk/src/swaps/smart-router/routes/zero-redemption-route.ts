@@ -163,7 +163,7 @@ export const zeroRedemptionSwapRoute: SwapRouteFunction = (
           to: rawPopulatedTransaction.to,
           data: rawPopulatedTransaction.data,
           value: '0',
-          gasLimit: gasLimit,
+          gasLimit,
           ...overrides,
         };
       }
@@ -178,11 +178,15 @@ export const zeroRedemptionSwapRoute: SwapRouteFunction = (
           Decimal.fromBigNumberString(amount.toString()),
         );
 
+        const gasLimit = rawPopulatedTransaction.gasLimit?.lt(800_000)
+          ? 800_000
+          : rawPopulatedTransaction.gasLimit;
+
         return {
           to: rawPopulatedTransaction.to,
           data: rawPopulatedTransaction.data,
           value: '0',
-          gasLimit: rawPopulatedTransaction.gasLimit,
+          gasLimit,
           ...overrides,
         };
       }

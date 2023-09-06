@@ -12,7 +12,7 @@ import {
   getTokenContract,
   getZeroContract,
 } from '@sovryn/contracts';
-import { ChainId, numberToChainId } from '@sovryn/ethers-provider';
+import { ChainId, ChainIds, numberToChainId } from '@sovryn/ethers-provider';
 
 import { SovrynErrorCode, makeError } from '../../../errors/errors';
 import {
@@ -113,7 +113,13 @@ export const zeroRedemptionSwapRoute: SwapRouteFunction = (
         )
         .add(Decimal.from(0.001));
 
-      const price = await feed.queryRate(wrbtc.address, rusdt.address);
+      const price = await feed.queryRate(
+        wrbtc.address,
+        // price feed uses old rUSDT address for testnet
+        chainId === ChainIds.RSK_TESTNET
+          ? '0x4D5a316D23eBE168d8f887b4447bf8DbFA4901CC'.toLowerCase()
+          : rusdt.address,
+      );
 
       const btcUsd = BigNumber.from(amount)
         .mul(price.precision)
@@ -149,11 +155,15 @@ export const zeroRedemptionSwapRoute: SwapRouteFunction = (
             options.permit,
           );
 
+        const gasLimit = rawPopulatedTransaction.gasLimit?.lt(800_000)
+          ? 800_000
+          : rawPopulatedTransaction.gasLimit;
+
         return {
           to: rawPopulatedTransaction.to,
           data: rawPopulatedTransaction.data,
           value: '0',
-          gasLimit: rawPopulatedTransaction.gasLimit,
+          gasLimit: gasLimit,
           ...overrides,
         };
       }

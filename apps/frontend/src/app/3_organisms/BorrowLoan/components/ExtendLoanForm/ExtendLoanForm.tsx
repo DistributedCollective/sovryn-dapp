@@ -36,6 +36,7 @@ import { translations } from '../../../../../locales/i18n';
 import { dateFormat } from '../../../../../utils/helpers';
 import { decimalic } from '../../../../../utils/math';
 import { getCollateralRatioThresholds } from '../../../BorrowLoanForm/components/NewLoanForm/NewLoanForm.utils';
+import { getCollateralAssetPrice } from '../../BorrowLoan.utils';
 import { useGetCollateralAssetPrice } from '../AdjustLoanForm/hooks/useGetCollateralAssetPrice';
 import { normalizeToken, renderValue } from './ExtendLoanForm.utils';
 import { CurrentLoanData } from './components/CurrentLoanData/CurrentLoanData';
@@ -146,11 +147,17 @@ export const ExtendLoanForm: FC<ExtendLoanFormProps> = ({ loan }) => {
     nextRolloverDate,
   ]);
 
-  const collateralAssetPrice = useMemo(() => {
-    return collateralToken === SupportedTokens.rbtc
-      ? decimalic(rbtcPrice).div(borrowPriceUsd).toString()
-      : decimalic(collateralPriceUsd).div(rbtcPrice).toString();
-  }, [borrowPriceUsd, collateralPriceUsd, collateralToken, rbtcPrice]);
+  const collateralAssetPrice = useMemo(
+    () =>
+      getCollateralAssetPrice(
+        collateralToken,
+        debtToken,
+        rbtcPrice,
+        collateralPriceUsd,
+        borrowPriceUsd,
+      ),
+    [borrowPriceUsd, collateralPriceUsd, collateralToken, debtToken, rbtcPrice],
+  );
 
   const isValidCollateralRatio = useMemo(() => {
     return (

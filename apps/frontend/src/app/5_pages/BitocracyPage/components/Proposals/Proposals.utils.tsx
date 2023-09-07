@@ -3,7 +3,7 @@ import React from 'react';
 import classNames from 'classnames';
 
 import { ProposalState } from '../../BitocracyPage.types';
-import { StatusIcons } from './PastProposals.constants';
+import { StatusIcons } from './Proposals.constants';
 
 export const getStatusIcon = (status: ProposalState) => (
   <img

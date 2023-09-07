@@ -23,7 +23,7 @@ export const ProposalCardsMobile: FC<ProposalCardsMobileProps> = ({
   const navigate = useNavigate();
 
   const handleCardClick = useCallback(
-    (proposal: Proposal) => navigate(`/bitocracy/${proposal.proposalId}`),
+    (proposal: Proposal) => navigate(`/bitocracy/${proposal.id}`),
     [navigate],
   );
 

@@ -1,19 +1,17 @@
-import React from 'react';
-import { FC } from 'react';
+import React, { FC, useMemo } from 'react';
 
 import { t } from 'i18next';
 
 import { SupportedTokens } from '@sovryn/contracts';
 
-import { useGetTokenContract } from '../../../../../hooks/useGetContract';
+import {
+  useGetProtocolContract,
+  useGetTokenContract,
+} from '../../../../../hooks/useGetContract';
 import { translations } from '../../../../../locales/i18n';
 import { Proposal } from '../../../../../utils/graphql/rsk/generated';
-import { areAddressesEqual, isMainnet } from '../../../../../utils/helpers';
-import {
-  GovernorContractAdminAddress,
-  GovernorContractOwnerAddress,
-} from '../../BitocracyPage.constants';
-import { SIGNATURE_SYMBOL } from '../PastProposals/PastProposals.constants';
+import { areAddressesEqual } from '../../../../../utils/helpers';
+import { SIGNATURE_SYMBOL } from '../Proposals/Proposals.constants';
 
 type ProposalTypeProps = {
   proposal: Proposal;
@@ -21,38 +19,37 @@ type ProposalTypeProps = {
 
 export const ProposalType: FC<ProposalTypeProps> = ({ proposal }) => {
   const sovContract = useGetTokenContract(SupportedTokens.sov);
+  const adminAddress = useGetProtocolContract('governorAdmin')?.address ?? '';
+  const ownerAddress = useGetProtocolContract('governorOwner')?.address ?? '';
 
-  const adminAddress = isMainnet()
-    ? GovernorContractAdminAddress.mainnet
-    : GovernorContractAdminAddress.testnet;
-  const ownerAddress = isMainnet()
-    ? GovernorContractOwnerAddress.mainnet
-    : GovernorContractOwnerAddress.testnet;
+  const type = useMemo(() => {
+    let result = '';
 
-  let type = '';
-
-  if (areAddressesEqual(proposal.emittedBy.id, adminAddress)) {
-    type += t(translations.bitocracyPage.proposalType.admin) + ' ';
-  } else if (areAddressesEqual(proposal.emittedBy.id, ownerAddress)) {
-    type += t(translations.bitocracyPage.proposalType.owner) + ' ';
-  } else {
-    type += t(translations.bitocracyPage.proposalType.other) + ' ';
-  }
-
-  if (
-    proposal.targets.length === 1 &&
-    proposal.targets[0] === sovContract?.address
-  ) {
-    if (proposal.signatures[0] === SIGNATURE_SYMBOL) {
-      type += t(translations.bitocracyPage.proposalType.nonExecutable);
+    if (areAddressesEqual(proposal.emittedBy.id, adminAddress)) {
+      result += t(translations.bitocracyPage.proposalType.admin) + ' ';
+    } else if (areAddressesEqual(proposal.emittedBy.id, ownerAddress)) {
+      result += t(translations.bitocracyPage.proposalType.owner) + ' ';
     } else {
-      type += t(translations.bitocracyPage.proposalType.executable);
+      result += t(translations.bitocracyPage.proposalType.other) + ' ';
     }
-  } else if (proposal.targets.length > 1) {
-    type += t(translations.bitocracyPage.proposalType.executable);
-  } else {
-    type += t(translations.bitocracyPage.proposalType.nonExecutable);
-  }
+
+    if (
+      proposal.targets.length === 1 &&
+      proposal.targets[0] === sovContract?.address
+    ) {
+      if (proposal.signatures[0] === SIGNATURE_SYMBOL) {
+        result += t(translations.bitocracyPage.proposalType.nonExecutable);
+      } else {
+        result += t(translations.bitocracyPage.proposalType.executable);
+      }
+    } else if (proposal.targets.length > 1) {
+      result += t(translations.bitocracyPage.proposalType.executable);
+    } else {
+      result += t(translations.bitocracyPage.proposalType.nonExecutable);
+    }
+
+    return result;
+  }, [proposal, adminAddress, ownerAddress, sovContract]);
 
   return <>{type}</>;
 };

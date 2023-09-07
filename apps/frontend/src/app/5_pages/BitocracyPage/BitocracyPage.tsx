@@ -14,14 +14,15 @@ import {
 import { useAccount } from '../../../hooks/useAccount';
 import { translations } from '../../../locales/i18n';
 import { useGetPersonalStakingStatistics } from '../StakePage/components/PersonalStakingStatistics/hooks/useGetPersonalStakingStatistics';
-import LiveProposals from './components/LiveProposals/LiveProposals';
-import PastProposals from './components/PastProposals/PastProposals';
+import { Proposals } from './components/Proposals/Proposals';
+import { useGetProposals } from './hooks/useGetProposals';
 
 const pageTranslations = translations.bitocracyPage;
 
 const BitocracyPage: FC = () => {
   const { account } = useAccount();
   const { votingPower } = useGetPersonalStakingStatistics();
+  const { loading, data: proposals } = useGetProposals();
 
   const isNewProposalButtonVisible = useMemo(
     () => (votingPower ? Number(votingPower) > 0 : false),
@@ -58,9 +59,7 @@ const BitocracyPage: FC = () => {
             )}
           </div>
         )}
-
-        <LiveProposals />
-        <PastProposals />
+        <Proposals proposals={proposals} loading={loading} />
       </div>
     </>
   );

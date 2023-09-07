@@ -10,8 +10,8 @@ import { translations } from '../../../../../locales/i18n';
 import { Proposal } from '../../../../../utils/graphql/rsk/generated';
 import { decimalic } from '../../../../../utils/math';
 import { ProposalState } from '../../BitocracyPage.types';
-import { GRACE_PERIOD_IN_SECONDS } from '../PastProposals/PastProposals.constants';
-import { getStatusIcon } from '../PastProposals/PastProposals.utils';
+import { GRACE_PERIOD_IN_SECONDS } from '../Proposals/Proposals.constants';
+import { getStatusIcon } from '../Proposals/Proposals.utils';
 
 type ProposalStatusProps = {
   proposal: Proposal;

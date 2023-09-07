@@ -32,4 +32,8 @@ export const menuItemsMapping = [
     text: t(translations.header.nav.convert),
     url: '/convert',
   },
+  {
+    text: t(translations.header.nav.bitocracy),
+    url: '/bitocracy',
+  },
 ];

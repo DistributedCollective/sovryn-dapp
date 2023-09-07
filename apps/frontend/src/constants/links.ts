@@ -47,6 +47,8 @@ export const WIKI_LINKS = {
     'https://wiki.sovryn.com/en/sovryn-dapp/subprotocols/zero-zusd#stability-pool-rewards',
   YIELD_FARMING:
     'https://wiki.sovryn.com/en/sovryn-dapp/market-making#yield-farming',
+  BORROWING:
+    'https://wiki.sovryn.com/sovryn-dapp/borrowing#basics-of-borrowing-on-sovryn',
 };
 
 export const HELPDESK_LINK = 'https://help.sovryn.app/';

@@ -15,6 +15,7 @@ import {
   ErrorBadge,
   ErrorLevel,
   HealthBar,
+  Link,
   Paragraph,
   ParagraphSize,
   Select,
@@ -32,6 +33,7 @@ import {
   MINIMUM_COLLATERAL_RATIO_LENDING_POOLS,
   MINIMUM_COLLATERAL_RATIO_BORROWING_MAINTENANCE,
 } from '../../../../../constants/lending';
+import { WIKI_LINKS } from '../../../../../constants/links';
 import { useGetRBTCPrice } from '../../../../../hooks/zero/useGetRBTCPrice';
 import { translations } from '../../../../../locales/i18n';
 import { LendingPool } from '../../../../../utils/LendingPool';
@@ -524,13 +526,13 @@ export const NewLoanForm: FC<NewLoanFormProps> = ({ pool }) => {
           label={
             <Trans
               i18nKey={pageTranslations.newLoanDialog.labels.disclaimer}
-              // TODO: Add the link once we have it.
-              // components={[
-              //   <Link
-              //     text={t(pageTranslations.newLoanDialog.labels.disclaimerCTA)}
-              //     href="#"
-              //   />,
-              // ]}
+              components={[
+                <Link
+                  text={t(pageTranslations.newLoanDialog.labels.disclaimerCTA)}
+                  href={WIKI_LINKS.BORROWING}
+                  className="no-underline"
+                />,
+              ]}
             />
           }
         />

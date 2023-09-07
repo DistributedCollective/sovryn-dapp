@@ -73,38 +73,33 @@ export const Proposals: FC<ProposalsProps> = ({ proposals, loading }) => {
         </div>
       )}
 
-      {!isActive && (
-        <div className="sm:mt-12 w-full sm:p-6 sm:border sm:border-gray-50 rounded sm:bg-gray-90 mb-8">
-          <Paragraph className="text-base font-medium mb-3 md:mb-6">
-            {t(translations.bitocracyPage.pastProposals)}
-          </Paragraph>
+      <div className="sm:mt-12 w-full sm:p-6 sm:border sm:border-gray-50 rounded sm:bg-gray-90 mb-8">
+        <Paragraph className="text-base font-medium mb-3 md:mb-6">
+          {t(translations.bitocracyPage.pastProposals)}
+        </Paragraph>
 
-          <div className="bg-gray-80 p-4 rounded hidden lg:block">
-            <Table
-              columns={columnsConfig}
-              rows={pastProposals}
-              rowTitle={generateRowTitle}
-              isLoading={loading}
-              className="text-gray-10 lg:px-6 lg:py-4 text-xs"
-              isClickable={true}
-              onRowClick={handleRowClick}
-              noData={
-                <span className="italic">
-                  {t(translations.common.tables.noData)}
-                </span>
-              }
-              dataAttribute="bitocracy-past-proposals-table"
-            />
-          </div>
-
-          <div className="block lg:hidden">
-            <ProposalCardsMobile
-              isLoading={loading}
-              proposals={pastProposals}
-            />
-          </div>
+        <div className="bg-gray-80 p-4 rounded hidden lg:block">
+          <Table
+            columns={columnsConfig}
+            rows={pastProposals}
+            rowTitle={generateRowTitle}
+            isLoading={loading}
+            className="text-gray-10 lg:px-6 lg:py-4 text-xs"
+            isClickable={true}
+            onRowClick={handleRowClick}
+            noData={
+              <span className="italic">
+                {t(translations.common.tables.noData)}
+              </span>
+            }
+            dataAttribute="bitocracy-past-proposals-table"
+          />
         </div>
-      )}
+
+        <div className="block lg:hidden">
+          <ProposalCardsMobile isLoading={loading} proposals={pastProposals} />
+        </div>
+      </div>
     </>
   );
 };

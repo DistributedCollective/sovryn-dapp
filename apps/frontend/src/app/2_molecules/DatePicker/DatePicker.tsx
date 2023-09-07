@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useState } from 'react';
+import React, { FC, useCallback, useMemo } from 'react';
 
 import classNames from 'classnames';
 import dayjs from 'dayjs';
@@ -19,6 +19,17 @@ type DatePickerProps = {
   setIsCalendarVisible: (value: React.SetStateAction<boolean>) => void;
 };
 
+const datePickerStylesOverride = (
+  <style>
+    {`
+        .rdp-button:hover:not([disabled]):not(.rdp-day_selected) {
+          background-color: #F57118;
+          border-radius: 0;
+        }
+      `}
+  </style>
+);
+
 export const DatePicker: FC<DatePickerProps> = ({
   date,
   onChange,
@@ -29,23 +40,23 @@ export const DatePicker: FC<DatePickerProps> = ({
   isCalendarVisible,
   setIsCalendarVisible,
 }) => {
-  const [selected, setSelected] = useState<Date | undefined>(
-    dayjs.unix(date).toDate(),
-  );
+  const selected = useMemo(() => dayjs.unix(date).toDate(), [date]);
 
-  const handleDaySelect = (date: Date | undefined) => {
-    if (!date) {
-      return;
-    }
-    setSelected(date);
-    setIsCalendarVisible(false);
-    const selectedDateTime = dayjs(date);
-    const currentTime = dayjs();
-    const timestamp =
-      selectedDateTime.unix() +
-      currentTime.diff(currentTime.startOf('day'), 'seconds');
-    onChange(timestamp);
-  };
+  const handleDaySelect = useCallback(
+    (date: Date | undefined) => {
+      if (!date) {
+        return;
+      }
+      setIsCalendarVisible(false);
+      const selectedDateTime = dayjs(date);
+      const currentTime = dayjs();
+      const timestamp =
+        selectedDateTime.unix() +
+        currentTime.diff(currentTime.startOf('day'), 'seconds');
+      onChange(timestamp);
+    },
+    [onChange, setIsCalendarVisible],
+  );
 
   const handleCalendarClick = useCallback(() => {
     setIsCalendarVisible(previousValue => !previousValue);
@@ -69,14 +80,7 @@ export const DatePicker: FC<DatePickerProps> = ({
 
       {isCalendarVisible && (
         <div className="absolute top-10 left-0 right-0 z-10">
-          <style>
-            {`
-                    .rdp-button:hover:not([disabled]):not(.rdp-day_selected) {
-                      background-color: #F57118;
-                      border-radius: 0;
-                    }
-                  `}
-          </style>
+          {datePickerStylesOverride}
           <DayPicker
             initialFocus={isCalendarVisible}
             mode="single"

@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useMemo, useState } from 'react';
+import React, { FC, useMemo, useState } from 'react';
 
 import dayjs from 'dayjs';
 import { t } from 'i18next';
@@ -24,14 +24,18 @@ import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRen
 import { AssetRenderer } from '../../../../2_molecules/AssetRenderer/AssetRenderer';
 import { DatePicker } from '../../../../2_molecules/DatePicker/DatePicker';
 import { LoanItem } from '../../../../5_pages/BorrowPage/components/OpenLoansTable/OpenLoansTable.types';
-import { COLLATERAL_RATIO_THRESHOLDS } from '../../../../../constants/general';
-import { MINIMUM_COLLATERAL_RATIO_BORROWING_MAINTENANCE } from '../../../../../constants/lending';
+import {
+  MINIMUM_COLLATERAL_RATIO_BORROWING_MAINTENANCE,
+  MINIMUM_COLLATERAL_RATIO_LENDING_POOLS,
+  MINIMUM_COLLATERAL_RATIO_LENDING_POOLS_SOV,
+} from '../../../../../constants/lending';
 import { getTokenDisplayName } from '../../../../../constants/tokens';
 import { useMaintenance } from '../../../../../hooks/useMaintenance';
 import { useGetRBTCPrice } from '../../../../../hooks/zero/useGetRBTCPrice';
 import { translations } from '../../../../../locales/i18n';
 import { dateFormat } from '../../../../../utils/helpers';
 import { decimalic } from '../../../../../utils/math';
+import { getCollateralRatioThresholds } from '../../../BorrowLoanForm/components/NewLoanForm/NewLoanForm.utils';
 import { useGetCollateralAssetPrice } from '../AdjustLoanForm/hooks/useGetCollateralAssetPrice';
 import { normalizeToken, renderValue } from './ExtendLoanForm.utils';
 import { CurrentLoanData } from './components/CurrentLoanData/CurrentLoanData';
@@ -54,7 +58,6 @@ export const ExtendLoanForm: FC<ExtendLoanFormProps> = ({ loan }) => {
       .unix(),
   );
   const [isCalendarVisible, setIsCalendarVisible] = useState(false);
-  const [collateralAssetPrice, setCollateralAssetPrice] = useState('0');
 
   const debtToken = useMemo(
     () => normalizeToken(loan.debtAsset.toLowerCase()),
@@ -80,29 +83,29 @@ export const ExtendLoanForm: FC<ExtendLoanFormProps> = ({ loan }) => {
     collateralToken,
   );
 
+  const collateralRatioThresholds = useMemo(
+    () => getCollateralRatioThresholds(collateralToken),
+    [collateralToken],
+  );
+
+  const collateralUsdPrice = useMemo(
+    () =>
+      collateralToken === SupportedTokens.rbtc ? rbtcPrice : collateralPriceUsd,
+    [collateralPriceUsd, collateralToken, rbtcPrice],
+  );
+  const loanTokenUsdPrice = useMemo(
+    () => (debtToken === SupportedTokens.rbtc ? rbtcPrice : borrowPriceUsd),
+    [borrowPriceUsd, debtToken, rbtcPrice],
+  );
+
   const collateralChange = useMemo(() => {
     if (useCollateral) {
-      const collateralUsdPrice =
-        collateralToken === SupportedTokens.rbtc
-          ? rbtcPrice
-          : collateralPriceUsd;
-      const loanTokenUsdPrice =
-        debtToken === SupportedTokens.rbtc ? rbtcPrice : borrowPriceUsd;
-
       return decimalic(depositAmount)
         .mul(loanTokenUsdPrice)
         .div(collateralUsdPrice || 1);
     }
     return decimalic(0);
-  }, [
-    borrowPriceUsd,
-    collateralPriceUsd,
-    collateralToken,
-    debtToken,
-    depositAmount,
-    rbtcPrice,
-    useCollateral,
-  ]);
+  }, [collateralUsdPrice, depositAmount, loanTokenUsdPrice, useCollateral]);
 
   const newCollateralAmount = useMemo(
     () =>
@@ -116,70 +119,60 @@ export const ExtendLoanForm: FC<ExtendLoanFormProps> = ({ loan }) => {
     [depositAmount, loan.debt, useCollateral],
   );
 
+  const minimumCollateralRatio = useMemo(
+    () =>
+      collateralToken === SupportedTokens.sov
+        ? MINIMUM_COLLATERAL_RATIO_LENDING_POOLS_SOV
+        : MINIMUM_COLLATERAL_RATIO_LENDING_POOLS,
+    [collateralToken],
+  );
+
   const collateralRatio = useMemo(() => {
     if (!nextRolloverDate) {
       return Decimal.from(loan.collateralRatio);
     }
-
-    const collateralUsdPrice =
-      collateralToken === SupportedTokens.rbtc ? rbtcPrice : collateralPriceUsd;
-    const totalDebtUsd = newTotalDebt.mul(
-      debtToken === SupportedTokens.rbtc ? rbtcPrice : borrowPriceUsd,
-    );
+    const totalDebtUsd = newTotalDebt.mul(loanTokenUsdPrice);
 
     return newCollateralAmount
       .mul(collateralUsdPrice)
       .div(totalDebtUsd)
       .mul(100);
   }, [
-    borrowPriceUsd,
-    collateralPriceUsd,
-    collateralToken,
-    debtToken,
+    collateralUsdPrice,
     loan.collateralRatio,
+    loanTokenUsdPrice,
     newCollateralAmount,
     newTotalDebt,
     nextRolloverDate,
-    rbtcPrice,
   ]);
+
+  const collateralAssetPrice = useMemo(() => {
+    return collateralToken === SupportedTokens.rbtc
+      ? decimalic(rbtcPrice).div(borrowPriceUsd).toString()
+      : decimalic(collateralPriceUsd).div(rbtcPrice).toString();
+  }, [borrowPriceUsd, collateralPriceUsd, collateralToken, rbtcPrice]);
 
   const isValidCollateralRatio = useMemo(() => {
     return (
       Number(collateralAssetPrice) === 0 ||
-      collateralRatio.gte(
-        MINIMUM_COLLATERAL_RATIO_BORROWING_MAINTENANCE.mul(100),
-      )
+      collateralRatio.gte(minimumCollateralRatio.mul(100))
     );
-  }, [collateralAssetPrice, collateralRatio]);
+  }, [collateralAssetPrice, collateralRatio, minimumCollateralRatio]);
 
   const collateralRatioError = useMemo(() => {
-    if (
-      collateralRatio.lt(
-        MINIMUM_COLLATERAL_RATIO_BORROWING_MAINTENANCE.mul(100),
-      )
-    ) {
+    if (collateralRatio.lt(minimumCollateralRatio.mul(100))) {
       return t(pageTranslations.labels.collateralRatioError, {
-        min: MINIMUM_COLLATERAL_RATIO_BORROWING_MAINTENANCE.mul(100),
+        min: minimumCollateralRatio.mul(100),
       });
     }
     return '';
-  }, [collateralRatio]);
+  }, [collateralRatio, minimumCollateralRatio]);
 
   const liquidationPrice = useMemo(() => {
     return MINIMUM_COLLATERAL_RATIO_BORROWING_MAINTENANCE.mul(
       newTotalDebt.toString(),
     ).div(newCollateralAmount || 1);
   }, [newCollateralAmount, newTotalDebt]);
-
-  useEffect(() => {
-    if (collateralToken === SupportedTokens.rbtc) {
-      const price = decimalic(rbtcPrice).div(borrowPriceUsd);
-      setCollateralAssetPrice(price.toString());
-    } else {
-      const price = decimalic(collateralPriceUsd).div(rbtcPrice);
-      setCollateralAssetPrice(price.toString());
-    }
-  }, [collateralToken, borrowPriceUsd, rbtcPrice, collateralPriceUsd]);
 
   const renderNewRolloverDate = useMemo(
     () =>
@@ -297,10 +290,10 @@ export const ExtendLoanForm: FC<ExtendLoanFormProps> = ({ loan }) => {
             </div>
 
             <HealthBar
-              start={COLLATERAL_RATIO_THRESHOLDS.START}
-              middleStart={COLLATERAL_RATIO_THRESHOLDS.MIDDLE_START}
-              middleEnd={COLLATERAL_RATIO_THRESHOLDS.MIDDLE_END}
-              end={COLLATERAL_RATIO_THRESHOLDS.END}
+              start={collateralRatioThresholds.START}
+              middleStart={collateralRatioThresholds.MIDDLE_START}
+              middleEnd={collateralRatioThresholds.MIDDLE_END}
+              end={collateralRatioThresholds.END}
               value={collateralRatio.toNumber()}
             />
             {!isValidCollateralRatio && (
@@ -354,7 +347,7 @@ export const ExtendLoanForm: FC<ExtendLoanFormProps> = ({ loan }) => {
                 <DynamicValue
                   initialValue="0"
                   value={liquidationPrice.toString()}
-                  renderer={value => renderValue(value, collateralToken)}
+                  renderer={value => renderValue(value, debtToken)}
                 />
               }
             />

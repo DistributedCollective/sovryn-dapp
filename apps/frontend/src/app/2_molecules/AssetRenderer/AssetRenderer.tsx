@@ -58,15 +58,18 @@ export const AssetRenderer: FC<AssetRendererProps> = ({
   const [logo, setLogo] = useState<string | undefined>(undefined);
 
   useEffect(() => {
-    const getLogo = async () => {
+    const getAssetDetails = async () => {
       if (asset) {
         await getTokenDetails(asset)
-          .then(item => setLogo(item.icon))
+          .then(item => {
+            setLogo(item.icon);
+            setToken(item.symbol);
+          })
           .catch(() => setLogo(''));
       }
     };
 
-    showAssetLogo && getLogo();
+    !address && !!asset && getAssetDetails();
   }, [address, asset, showAssetLogo]);
 
   useEffect(() => {

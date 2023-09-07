@@ -22,3 +22,8 @@ export const generateRowTitle = (item: Proposal) => (
     {item.description}
   </Paragraph>
 );
+
+export const prettifyId = (item: string) => {
+  const id = item.split('-');
+  return id[1];
+};

@@ -7,7 +7,7 @@ import { Icon, IconNames, Paragraph } from '@sovryn/ui';
 
 import { translations } from '../../../../../locales/i18n';
 import { Proposal } from '../../../../../utils/graphql/rsk/generated';
-import { renderEndDate } from '../../BitocracyPage.utils';
+import { prettifyId, renderEndDate } from '../../BitocracyPage.utils';
 import { ProposalStatus } from '../ProposalStatus/ProposalStatus';
 import { ProposalType } from '../ProposalType/ProposalType';
 
@@ -23,7 +23,7 @@ export const ProposalCardsMobile: FC<ProposalCardsMobileProps> = ({
   const navigate = useNavigate();
 
   const handleCardClick = useCallback(
-    (proposal: Proposal) => navigate(`/bitocracy/${proposal.id}`),
+    (proposal: Proposal) => navigate(`/bitocracy/${prettifyId(proposal.id)}`),
     [navigate],
   );
 

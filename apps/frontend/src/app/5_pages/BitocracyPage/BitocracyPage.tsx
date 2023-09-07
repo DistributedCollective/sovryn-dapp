@@ -50,12 +50,15 @@ const BitocracyPage: FC = () => {
             <Button
               style={ButtonStyle.ghost}
               text={t(pageTranslations.actions.bitocracyAlerts)}
+              className="mb-3 sm:mb-0"
             />
             {isNewProposalButtonVisible && (
-              <Button
-                text={t(pageTranslations.actions.newProposal)}
-                className="sm:ml-3 sm:relative sm:bottom-0 sm:left-0 sm:right-0 fixed bottom-6 left-4 right-7"
-              />
+              <div className="bg-gray-90 sm:bg-transparent p-4 pb-8 sm:p-0 border-t sm:border-none border-gray-60 flex items-center justify-center sm:ml-3 sm:relative fixed bottom-0 left-0 right-0 z-10 sm:z-0">
+                <Button
+                  text={t(pageTranslations.actions.newProposal)}
+                  className="w-full sm:w-auto"
+                />
+              </div>
             )}
           </div>
         )}

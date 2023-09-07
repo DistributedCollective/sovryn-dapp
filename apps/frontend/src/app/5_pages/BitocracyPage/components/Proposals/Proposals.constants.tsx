@@ -47,7 +47,9 @@ export const columnsConfig = [
     id: '',
     title: '',
     cellRenderer: (proposal: Proposal) => (
-      <ProposalViewButton proposal={proposal} />
+      <div className="flex justify-end items-center">
+        <ProposalViewButton proposal={proposal} />
+      </div>
     ),
   },
 ];

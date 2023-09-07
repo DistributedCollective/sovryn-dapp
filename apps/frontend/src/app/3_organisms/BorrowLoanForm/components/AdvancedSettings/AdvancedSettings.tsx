@@ -33,7 +33,6 @@ export const AdvancedSettings: FC<AdvancedSettingsProps> = ({
     setIsCalendarVisible(false);
   }, [maxDate, onChange]);
 
-
   return (
     <Accordion
       open={open}

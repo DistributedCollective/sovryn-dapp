@@ -157,13 +157,14 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
     () => Decimal.from(loan.debt).sub(fullInterestRefundValue),
     [fullInterestRefundValue, loan.debt],
   );
+
   const interestRefundRepayValue = useMemo(() => {
     const debtRepayPercentage = calculateDebtRepaidPercentage(
-      totalDebtWithoutInterestRefund.toString(),
+      loan.debt.toString(),
       debtSize,
     );
     return fullInterestRefundValue.mul(debtRepayPercentage);
-  }, [debtSize, fullInterestRefundValue, totalDebtWithoutInterestRefund]);
+  }, [debtSize, fullInterestRefundValue, loan.debt]);
 
   const interestRefund = useMemo(
     () => (isCloseTab ? fullInterestRefundValue : interestRefundRepayValue),
@@ -213,11 +214,11 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
       isRepayTab
         ? calculateRepayCollateralWithdrawn(
             maximumRepayAmount.toString(),
-            debtSize,
+            debtSize.sub(interestRefund),
             loan.collateral.toString(),
           )
         : Decimal.ZERO,
-    [debtSize, isRepayTab, loan.collateral, maximumRepayAmount],
+    [debtSize, interestRefund, isRepayTab, loan.collateral, maximumRepayAmount],
   );
 
   const newCollateralAmount = useMemo(() => {
@@ -270,7 +271,7 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
       if (areValuesIdentical(debtSize, maximumRepayAmount)) {
         return Decimal.ZERO;
       }
-      return decimalic(loan.debt.toString()).sub(debtSize).sub(interestRefund);
+      return decimalic(loan.debt.toString()).sub(debtSize);
     }
 
     return decimalic(loan.debt.toString())
@@ -283,7 +284,6 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
     loan.debt,
     prepaidInterest,
     maximumRepayAmount,
-    interestRefund,
   ]);
 
   const maximumBorrowAmount = useGetMaximumBorrowAmount(loan, collateralSize);

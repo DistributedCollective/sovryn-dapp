@@ -486,6 +486,7 @@
         },
         "title": "Fixed-interest loans",
         "subtitle": "Borrow without rate hikes",
+        "invalidAmountError": "Exceeds maximum amount",
         "borrowAssetsTable": {
             "title": "Assets to borrow",
             "borrowAprMobile": "APR",

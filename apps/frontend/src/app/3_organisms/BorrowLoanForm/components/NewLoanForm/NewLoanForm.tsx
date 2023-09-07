@@ -178,7 +178,6 @@ export const NewLoanForm: FC<NewLoanFormProps> = ({ pool }) => {
     borrowDays,
   );
 
-  // TODO: Verify with Light if we want to show it.
   const originationFee = useMemo(
     () => getOriginationFeeAmount(collateralSize, minBorrowingFeeRate),
     [collateralSize, minBorrowingFeeRate],

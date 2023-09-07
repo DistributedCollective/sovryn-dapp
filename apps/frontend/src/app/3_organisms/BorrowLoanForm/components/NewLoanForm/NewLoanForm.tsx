@@ -30,6 +30,7 @@ import { BITCOIN } from '../../../../../constants/currencies';
 import {
   MINIMUM_COLLATERAL_RATIO_LENDING_POOLS_SOV,
   MINIMUM_COLLATERAL_RATIO_LENDING_POOLS,
+  MINIMUM_COLLATERAL_RATIO_BORROWING_MAINTENANCE,
 } from '../../../../../constants/lending';
 import { useGetRBTCPrice } from '../../../../../hooks/zero/useGetRBTCPrice';
 import { translations } from '../../../../../locales/i18n';
@@ -236,13 +237,10 @@ export const NewLoanForm: FC<NewLoanFormProps> = ({ pool }) => {
     if (!isValidCollateralRatio) {
       return Decimal.ZERO;
     }
-    return minimumCollateralRatio.mul(borrowSize).div(collateralSize);
-  }, [
-    isValidCollateralRatio,
-    minimumCollateralRatio,
-    borrowSize,
-    collateralSize,
-  ]);
+    return MINIMUM_COLLATERAL_RATIO_BORROWING_MAINTENANCE.mul(borrowSize).div(
+      collateralSize,
+    );
+  }, [isValidCollateralRatio, borrowSize, collateralSize]);
 
   const renderFirstRolloverDate = useMemo(() => {
     if (borrowSize.lte(Decimal.ZERO) || collateralSize.lte(Decimal.ZERO)) {

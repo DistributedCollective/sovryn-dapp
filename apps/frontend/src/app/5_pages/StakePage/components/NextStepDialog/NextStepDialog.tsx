@@ -56,21 +56,27 @@ export const NextStepDialog: FC<NextStepDialogProps> = ({
         onClose={() => setSettingDialogOpen(false)}
       />
       <Dialog isOpen={!isDissmised && isOpen} onClose={onConfirm}>
-        <DialogHeader title={t(translationBasePath.dialogTitle)} />
+        <DialogHeader
+          title={t(translationBasePath.dialogTitle)}
+          onClose={onConfirm}
+        />
         <div className="py-6 px-4">
           <Heading className="mb-6 font-normal" type={HeadingType.h1}>
             {t(translationBasePath.title)}
           </Heading>
           <div className="flex-col py-7 px-5 rounded bg-gray-80">
             <div className="flex">
-              <div className="bg-gray-70 min-w-[4.375rem] h-[4.375rem] rounded mr-4 text-sovryn-blue flex items-center justify-center">
+              <div className="bg-gray-70 min-w-[4.375rem] h-[4.375rem] rounded mr-5 text-sovryn-blue flex items-center justify-center">
                 <Icon size={50} icon={IconNames.MAIL} />
               </div>
               <div className="flex flex-col items-start justify-start">
                 <Heading className="text-white mb-2" type={HeadingType.h2}>
                   {t(translationBasePath.emailNotifications)}
                 </Heading>
-                <Heading className="text-gray-10 mb-2" type={HeadingType.h3}>
+                <Heading
+                  className="text-gray-10 mb-2 leading-5 font-medium"
+                  type={HeadingType.h3}
+                >
                   {t(translationBasePath.description)}
                 </Heading>
               </div>

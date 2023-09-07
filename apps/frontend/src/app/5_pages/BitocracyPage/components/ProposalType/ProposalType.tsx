@@ -9,15 +9,11 @@ import {
   useGetTokenContract,
 } from '../../../../../hooks/useGetContract';
 import { translations } from '../../../../../locales/i18n';
-import { Proposal } from '../../../../../utils/graphql/rsk/generated';
 import { areAddressesEqual } from '../../../../../utils/helpers';
+import { ProposalProps } from '../../BitocracyPage.types';
 import { SIGNATURE_SYMBOL } from '../Proposals/Proposals.constants';
 
-type ProposalTypeProps = {
-  proposal: Proposal;
-};
-
-export const ProposalType: FC<ProposalTypeProps> = ({ proposal }) => {
+export const ProposalType: FC<ProposalProps> = ({ proposal }) => {
   const sovContract = useGetTokenContract(SupportedTokens.sov);
   const adminAddress = useGetProtocolContract('governorAdmin')?.address ?? '';
   const ownerAddress = useGetProtocolContract('governorOwner')?.address ?? '';

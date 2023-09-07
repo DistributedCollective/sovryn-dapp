@@ -1,7 +1,6 @@
-import React, { FC, useCallback, useMemo } from 'react';
+import React, { FC, useMemo } from 'react';
 
 import { t } from 'i18next';
-import { useNavigate } from 'react-router-dom';
 
 import { Paragraph, Table } from '@sovryn/ui';
 
@@ -18,7 +17,6 @@ type ProposalsProps = {
 };
 
 export const Proposals: FC<ProposalsProps> = ({ proposals, loading }) => {
-  const navigate = useNavigate();
   const { value: blockNumber } = useBlockNumber();
 
   const activeProposals = useMemo(
@@ -32,11 +30,6 @@ export const Proposals: FC<ProposalsProps> = ({ proposals, loading }) => {
   );
 
   const isActive = useMemo(() => activeProposals.length > 0, [activeProposals]);
-
-  const handleRowClick = useCallback(
-    (proposal: Proposal) => navigate(`/bitocracy/${proposal.id}`),
-    [navigate],
-  );
 
   return (
     <>
@@ -53,8 +46,6 @@ export const Proposals: FC<ProposalsProps> = ({ proposals, loading }) => {
               rowTitle={generateRowTitle}
               isLoading={loading}
               className="text-gray-10 lg:px-6 lg:py-4 text-xs"
-              isClickable={true}
-              onRowClick={handleRowClick}
               noData={
                 <span className="italic">
                   {t(translations.common.tables.noData)}
@@ -85,8 +76,6 @@ export const Proposals: FC<ProposalsProps> = ({ proposals, loading }) => {
             rowTitle={generateRowTitle}
             isLoading={loading}
             className="text-gray-10 lg:px-6 lg:py-4 text-xs"
-            isClickable={true}
-            onRowClick={handleRowClick}
             noData={
               <span className="italic">
                 {t(translations.common.tables.noData)}

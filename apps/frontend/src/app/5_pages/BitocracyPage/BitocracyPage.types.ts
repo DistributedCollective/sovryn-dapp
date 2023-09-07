@@ -1,3 +1,5 @@
+import { Proposal } from '../../../utils/graphql/rsk/generated';
+
 export enum ProposalState {
   Pending,
   Active,
@@ -8,3 +10,7 @@ export enum ProposalState {
   Expired,
   Executed,
 }
+
+export type ProposalProps = {
+  proposal: Proposal;
+};

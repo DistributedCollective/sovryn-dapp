@@ -2,8 +2,6 @@ import React from 'react';
 
 import { t } from 'i18next';
 
-import { Paragraph } from '@sovryn/ui';
-
 import iconActive from '../../../../../assets/images/ProposalStatuses/icon-active.svg';
 import iconExecuted from '../../../../../assets/images/ProposalStatuses/icon-executed.svg';
 import iconPending from '../../../../../assets/images/ProposalStatuses/icon-pending.svg';
@@ -14,7 +12,9 @@ import { Proposal } from '../../../../../utils/graphql/rsk/generated';
 import { ProposalState } from '../../BitocracyPage.types';
 import { renderEndDate } from '../../BitocracyPage.utils';
 import { ProposalStatus } from '../ProposalStatus/ProposalStatus';
+import { ProposalTitle } from '../ProposalTitle/ProposalTitle';
 import { ProposalType } from '../ProposalType/ProposalType';
+import { ProposalViewButton } from '../ProposalViewButton/ProposalViewButton';
 
 export const columnsConfig = [
   {
@@ -27,12 +27,7 @@ export const columnsConfig = [
   {
     id: 'title',
     title: t(translations.bitocracyPage.table.title),
-    cellRenderer: (proposal: Proposal) => (
-      <Paragraph
-        children={proposal.description}
-        className="truncate max-w-64 m-0 sm:text-base"
-      />
-    ),
+    cellRenderer: (proposal: Proposal) => <ProposalTitle proposal={proposal} />,
   },
   {
     id: 'type',
@@ -47,6 +42,13 @@ export const columnsConfig = [
     id: 'endDate',
     title: t(translations.bitocracyPage.table.endDate),
     cellRenderer: renderEndDate,
+  },
+  {
+    id: '',
+    title: '',
+    cellRenderer: (proposal: Proposal) => (
+      <ProposalViewButton proposal={proposal} />
+    ),
   },
 ];
 

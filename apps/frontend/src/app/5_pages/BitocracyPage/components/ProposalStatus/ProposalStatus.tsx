@@ -7,17 +7,12 @@ import { Paragraph } from '@sovryn/ui';
 import { MS } from '../../../../../constants/general';
 import { useBlockNumber } from '../../../../../hooks/useBlockNumber';
 import { translations } from '../../../../../locales/i18n';
-import { Proposal } from '../../../../../utils/graphql/rsk/generated';
 import { decimalic } from '../../../../../utils/math';
-import { ProposalState } from '../../BitocracyPage.types';
+import { ProposalProps, ProposalState } from '../../BitocracyPage.types';
 import { GRACE_PERIOD_IN_SECONDS } from '../Proposals/Proposals.constants';
 import { getStatusIcon } from '../Proposals/Proposals.utils';
 
-type ProposalStatusProps = {
-  proposal: Proposal;
-};
-
-export const ProposalStatus: FC<ProposalStatusProps> = ({ proposal }) => {
+export const ProposalStatus: FC<ProposalProps> = ({ proposal }) => {
   const { value: blockNumber } = useBlockNumber();
   const currentTimeStamp = useMemo(() => Math.ceil(Date.now() / MS), []);
 

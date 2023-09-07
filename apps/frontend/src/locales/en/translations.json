@@ -504,7 +504,8 @@
         },
         "actions": {
             "newProposal": "New proposal",
-            "bitocracyAlerts": "Bitocracy alerts"
+            "bitocracyAlerts": "Bitocracy alerts",
+            "view": "View"
         }
     },
     "fastBtc": {

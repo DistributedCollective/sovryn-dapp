@@ -477,8 +477,35 @@
         },
         "title": "Bitocracy",
         "subtitle": "Help decide the future of Sovryn",
-        "pastProposals": "Past Proposals",
-        "liveProposals": "Live Proposals"
+        "pastProposals": "Past proposals",
+        "liveProposals": "Live proposals",
+        "table": {
+            "status": "Status",
+            "title": "Title",
+            "type": "Type",
+            "endDate": "End date"
+        },
+        "proposalStatus": {
+            "active": "In progress",
+            "queued": "Queued for execution",
+            "executed": "Executed",
+            "succeeded": "Succeeded",
+            "pending": "Pending execution",
+            "canceled": "Vetoed",
+            "expired": "Expired",
+            "defeated": "Rejected"
+        },
+        "proposalType": {
+            "admin": "Admin",
+            "owner": "Owner",
+            "executable": "(executable)",
+            "nonExecutable": "(non-executable)",
+            "other": "Other"
+        },
+        "actions": {
+            "newProposal": "New proposal",
+            "bitocracyAlerts": "Bitocracy alerts"
+        }
     },
     "fastBtc": {
         "mainScreen": {

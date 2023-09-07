@@ -616,7 +616,7 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
             .sub(interestRefund)
             .sub(debtTokenBalance)
             .toString(),
-          token: debtToken,
+          token: debtToken.toUpperCase(),
         },
       );
     }

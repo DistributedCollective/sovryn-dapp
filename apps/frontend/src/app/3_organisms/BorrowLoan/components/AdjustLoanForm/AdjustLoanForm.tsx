@@ -293,10 +293,13 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
     [isBorrowTab, maximumAvailableRepayAmount, maximumBorrowAmount],
   );
 
-  const isValidDebtAmount = useMemo(
-    () => debtSize.lte(maxDebtAmount),
-    [debtSize, maxDebtAmount],
-  );
+  const isValidDebtAmount = useMemo(() => {
+    if (isCloseTab) {
+      return true;
+    }
+
+    return debtSize.lte(maxDebtAmount);
+  }, [debtSize, isCloseTab, maxDebtAmount]);
 
   const isValidCollateralAmount = useMemo(
     () => collateralSize.lte(maxCollateralAmount),

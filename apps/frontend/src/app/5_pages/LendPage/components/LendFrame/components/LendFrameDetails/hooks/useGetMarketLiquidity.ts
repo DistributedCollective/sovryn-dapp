@@ -8,8 +8,8 @@ export const useGetMarketLiquidity = (asset: SupportedTokens) => {
   const lendContract = useLoadContract(asset, 'loanTokens');
 
   const { value } = useCacheCall(
-    `loanTokens/${asset}/marketLiquidity`,
-    () => lendContract?.marketLiquidity(),
+    `loanTokens/${lendContract?.address}/marketLiquidity`,
+    async () => lendContract?.marketLiquidity(),
     [],
     '0',
   );

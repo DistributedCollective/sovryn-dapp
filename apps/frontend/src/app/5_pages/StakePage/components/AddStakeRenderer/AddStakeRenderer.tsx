@@ -1,6 +1,7 @@
 import React, { FC, useReducer } from 'react';
 
 import { t } from 'i18next';
+import { useNavigate } from 'react-router-dom';
 
 import {
   Button,
@@ -22,6 +23,7 @@ type AddStakeRendererProps = {
 export const AddStakeRenderer: FC<AddStakeRendererProps> = ({
   hasStakedValue,
 }) => {
+  const navigate = useNavigate();
   const [openCreateStakeDialog, toggleCreateStakeDialog] = useReducer(
     v => !v,
     false,
@@ -34,7 +36,7 @@ export const AddStakeRenderer: FC<AddStakeRendererProps> = ({
           style={ButtonStyle.ghost}
           size={ButtonSize.small}
           text={t(translations.stakePage.table.rewardsButton)}
-          href="/rewards"
+          onClick={() => navigate('/rewards')}
           dataAttribute="stakes-rewards-button"
           className="w-full md:w-auto"
         />

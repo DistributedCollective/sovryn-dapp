@@ -7,7 +7,7 @@ import { EIP1193Provider } from '@sovryn/onboard-common';
 import tailwindConfig from '@sovryn/tailwindcss-config';
 import { Decimalish } from '@sovryn/utils';
 
-import { MS } from '../constants/general';
+import { MAX_PROCESSABLE_CHECKPOINTS_RBTC, MS } from '../constants/general';
 import {
   MAX_PROCESSABLE_CHECKPOINTS_SOV,
   MAX_PROCESSABLE_CHECKPOINTS_TOKENS,
@@ -172,6 +172,8 @@ export const getMaxProcessableCheckpoints = (asset: SupportedTokens) => {
       return MAX_PROCESSABLE_CHECKPOINTS_ZUSD;
     case SupportedTokens.sov:
       return MAX_PROCESSABLE_CHECKPOINTS_SOV;
+    case SupportedTokens.rbtc:
+      return MAX_PROCESSABLE_CHECKPOINTS_RBTC;
     default:
       return MAX_PROCESSABLE_CHECKPOINTS_TOKENS;
   }

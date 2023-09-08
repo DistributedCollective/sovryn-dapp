@@ -1,5 +1,6 @@
 import React from 'react';
 
+import { BigNumber } from 'ethers';
 import { t } from 'i18next';
 
 import { SupportedTokens } from '@sovryn/contracts';
@@ -49,13 +50,13 @@ export const renderValue = (
   );
 
 export const calculatePrepaidInterest = (
-  apr: string,
+  apr: BigNumber,
   debtSize: string,
   duration: number,
 ) => {
-  const aprAmount = Decimal.fromBigNumberString(apr).div(100);
+  const aprAmount = Decimal.fromBigNumberString(apr.toString()).div(100);
 
-  if (debtSize === '0' || apr === '0') {
+  if (debtSize === '0' || apr.eq('0')) {
     return Decimal.ZERO;
   }
 

@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 
+import { BigNumber } from 'ethers';
+
 import { Decimal } from '@sovryn/utils';
 
 import { useLoadContract } from '../../../../../../hooks/useLoadContract';
@@ -9,7 +11,7 @@ export const useGetBorrowingAPR = (
   borrowToken: string,
   borrowAmount: Decimal,
 ) => {
-  const [borrowApr, setBorrowApr] = useState('0');
+  const [borrowApr, setBorrowApr] = useState(BigNumber.from(0));
 
   const assetContract = useLoadContract(borrowToken, 'lendTokens');
 

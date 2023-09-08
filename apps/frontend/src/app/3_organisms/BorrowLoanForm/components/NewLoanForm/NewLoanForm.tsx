@@ -418,7 +418,9 @@ export const NewLoanForm: FC<NewLoanFormProps> = ({ pool }) => {
             value={
               <DynamicValue
                 initialValue="0"
-                value={Decimal.fromBigNumberString(borrowApr).toString()}
+                value={Decimal.fromBigNumberString(
+                  borrowApr.toString(),
+                ).toString()}
                 renderer={value => renderValue(value, '%', 0)}
               />
             }

@@ -70,7 +70,7 @@ export const useGetMaximumFirstRolloverDate = (
               .add(borrowAmount),
           )
             .sub(1)
-            .div(Decimal.fromBigNumberString(borrowApr)),
+            .div(Decimal.fromBigNumberString(borrowApr.toString())),
         ),
     [borrowAmount, borrowApr, collateralAmount, collateralPriceInLoanAsset],
   );

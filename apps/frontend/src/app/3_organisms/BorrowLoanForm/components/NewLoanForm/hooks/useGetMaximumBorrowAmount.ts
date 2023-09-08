@@ -1,5 +1,7 @@
 import { useMemo } from 'react';
 
+import { BigNumber } from 'ethers';
+
 import { SupportedTokens } from '@sovryn/contracts';
 import { Decimal } from '@sovryn/utils';
 
@@ -17,7 +19,7 @@ export const useGetMaximumBorrowAmount = (
   borrowToken: SupportedTokens,
   collateralToken: SupportedTokens,
   loanDuration: number,
-  borrowApr: string,
+  borrowApr: BigNumber,
   collateralAmount?: Decimal,
 ) => {
   const { maximumCollateralAmount } =

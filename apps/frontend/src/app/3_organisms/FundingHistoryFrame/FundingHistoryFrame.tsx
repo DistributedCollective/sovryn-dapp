@@ -27,14 +27,15 @@ import {
   BitcoinTransfer_OrderBy,
   useGetFundingLazyQuery,
 } from '../../../utils/graphql/rsk/generated';
-import { useGetFundingHistory } from './hooks/useGetFundingHistory';
-import { FundingHistoryType } from './types';
+import { dateFormat } from '../../../utils/helpers';
+import { FundingHistoryType } from './FundingHistoryFrame.types';
 import {
   columnsConfig,
   generateRowTitle,
   parseData,
   transactionTypeRenderer,
-} from './utils';
+} from './FundingHistoryFrame.utils';
+import { useGetFundingHistory } from './hooks/useGetFundingHistory';
 
 const pageSize = DEFAULT_HISTORY_FRAME_PAGE_SIZE;
 
@@ -128,10 +129,13 @@ export const FundingHistoryFrame: FC = () => {
         acc.push(
           {
             ...rows[0],
+            received: `${rows[0].received}`,
+            serviceFee: `${rows[0].serviceFee}`,
             type: transactionTypeRenderer(rows[0]),
           },
           {
             ...rows[1],
+            sent: `${rows[1].sent}`,
             type: transactionTypeRenderer(rows[1]),
           },
         );
@@ -139,7 +143,15 @@ export const FundingHistoryFrame: FC = () => {
       return acc;
     }, []);
 
-    return fundingData.map(item => ({ ...item, token: BITCOIN }));
+    return fundingData.map(({ ...item }) => ({
+      timestamp: dateFormat(item.timestamp),
+      type: item.type,
+      sent: item.sent,
+      received: item.received,
+      serviceFee: item.serviceFee,
+      token: BITCOIN,
+      txHash: item.txHash,
+    }));
   }, [t, account, addNotification, getFundingHistory, orderOptions]);
 
   useEffect(() => {

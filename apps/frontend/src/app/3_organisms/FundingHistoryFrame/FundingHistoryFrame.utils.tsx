@@ -16,7 +16,7 @@ import {
   getBtcExplorerUrl,
   getRskExplorerUrl,
 } from '../../../utils/helpers';
-import { FundingHistoryType } from './types';
+import { FundingHistoryType } from './FundingHistoryFrame.types';
 
 export const generateRowTitle = (item: FundingHistoryType) => (
   <Paragraph size={ParagraphSize.small} className="text-left">

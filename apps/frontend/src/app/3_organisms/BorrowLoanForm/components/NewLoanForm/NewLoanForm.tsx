@@ -39,6 +39,7 @@ import { translations } from '../../../../../locales/i18n';
 import { LendingPool } from '../../../../../utils/LendingPool';
 import { dateFormat } from '../../../../../utils/helpers';
 import { decimalic } from '../../../../../utils/math';
+import { useGetAvgBorrowingAPR } from '../../../BorrowLoan/components/AdjustLoanForm/hooks/useGetAvgBorrowingAPR';
 import { useGetBorrowingAPR } from '../../../BorrowLoan/components/AdjustLoanForm/hooks/useGetBorrowingAPR';
 import { AdvancedSettings } from '../AdvancedSettings/AdvancedSettings';
 import { DEFAULT_LOAN_DURATION } from './NewLoanForm.constants';
@@ -81,7 +82,11 @@ export const NewLoanForm: FC<NewLoanFormProps> = ({ pool }) => {
     useState(false);
   const borrowToken = useMemo(() => pool.getAsset(), [pool]);
   const { minBorrowingFeeRate } = useLiquityBaseParams();
-  const { borrowApr } = useGetBorrowingAPR(borrowToken, borrowSize);
+  const { avgBorrowApr: borrowApr } = useGetAvgBorrowingAPR(borrowToken);
+  const { borrowApr: userBorrowApr } = useGetBorrowingAPR(
+    borrowToken,
+    borrowSize,
+  );
   const { price: rbtcPrice } = useGetRBTCPrice();
 
   const [borrowDays, setBorrowDays] = useState(
@@ -419,7 +424,7 @@ export const NewLoanForm: FC<NewLoanFormProps> = ({ pool }) => {
               <DynamicValue
                 initialValue="0"
                 value={Decimal.fromBigNumberString(
-                  borrowApr.toString(),
+                  userBorrowApr.toString(),
                 ).toString()}
                 renderer={value => renderValue(value, '%', 0)}
               />

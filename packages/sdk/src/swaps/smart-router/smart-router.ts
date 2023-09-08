@@ -55,7 +55,7 @@ export class SmartRouter {
       routes.map(async route => {
         const quote = await route
           .quote(entry, destination, amount)
-          .catch(() => {});
+          .catch(console.error);
         if (!quote) {
           return { route, quote: BigNumber.from(0) };
         }

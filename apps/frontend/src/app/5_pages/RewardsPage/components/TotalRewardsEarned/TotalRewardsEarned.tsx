@@ -32,6 +32,7 @@ export const TotalRewardsEarned: FC = () => {
           precision={BTC_RENDER_PRECISION}
           dataAttribute="total-earned-rewards"
           isAnimated
+          tooltipClassName="break-all sm:break-normal sm:max-w-full ml-4 sm:ml-0"
         />
       );
     }

@@ -44,10 +44,10 @@ export const LendFrameBalance: FC<LendFrameBalanceProps> = ({ pool }) => {
     [useLM, totalProfit, profit],
   );
 
-  const renderBalance = useMemo(
-    () => decimalic(assetBalance).sub(poolProfit).toString(),
-    [assetBalance, poolProfit],
-  );
+  const renderBalance = useMemo(() => {
+    const balance = decimalic(assetBalance).sub(poolProfit);
+    return balance.gt(0) ? balance.toString() : '0';
+  }, [assetBalance, poolProfit]);
 
   if (!account) {
     return <div>{t(translations.common.na)}</div>;

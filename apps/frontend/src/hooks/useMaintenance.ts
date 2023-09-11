@@ -95,7 +95,7 @@ enum States {
   STAKING_DECREASE = 'stakingDecrease',
   STAKING_DELEGATE = 'stakingVestingDelegate',
 
-  BORROW_FULL = 'borrow_Full',
+  BORROW_FULL = 'borrowFull',
   D2_BORROW_BTC_NEW_LOANS = 'd2BorrowBTC_NewLoans',
   D2_BORROW_BTC_BORROW = 'd2BorrowBTC_Borrow',
   D2_BORROW_BTC_REPAY = 'd2BorrowBTC_Repay',

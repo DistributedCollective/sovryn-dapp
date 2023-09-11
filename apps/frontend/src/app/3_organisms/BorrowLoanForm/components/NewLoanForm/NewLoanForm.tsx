@@ -15,6 +15,7 @@ import {
   ErrorBadge,
   ErrorLevel,
   HealthBar,
+  Link,
   Paragraph,
   ParagraphSize,
   Select,
@@ -30,12 +31,15 @@ import { BITCOIN } from '../../../../../constants/currencies';
 import {
   MINIMUM_COLLATERAL_RATIO_LENDING_POOLS_SOV,
   MINIMUM_COLLATERAL_RATIO_LENDING_POOLS,
+  MINIMUM_COLLATERAL_RATIO_BORROWING_MAINTENANCE,
 } from '../../../../../constants/lending';
+import { WIKI_LINKS } from '../../../../../constants/links';
 import { useGetRBTCPrice } from '../../../../../hooks/zero/useGetRBTCPrice';
 import { translations } from '../../../../../locales/i18n';
 import { LendingPool } from '../../../../../utils/LendingPool';
 import { dateFormat } from '../../../../../utils/helpers';
 import { decimalic } from '../../../../../utils/math';
+import { useGetAvgBorrowingAPR } from '../../../BorrowLoan/components/AdjustLoanForm/hooks/useGetAvgBorrowingAPR';
 import { useGetBorrowingAPR } from '../../../BorrowLoan/components/AdjustLoanForm/hooks/useGetBorrowingAPR';
 import { AdvancedSettings } from '../AdvancedSettings/AdvancedSettings';
 import { DEFAULT_LOAN_DURATION } from './NewLoanForm.constants';
@@ -78,7 +82,11 @@ export const NewLoanForm: FC<NewLoanFormProps> = ({ pool }) => {
     useState(false);
   const borrowToken = useMemo(() => pool.getAsset(), [pool]);
   const { minBorrowingFeeRate } = useLiquityBaseParams();
-  const { borrowApr } = useGetBorrowingAPR(borrowToken, borrowSize);
+  const { avgBorrowApr: borrowApr } = useGetAvgBorrowingAPR(borrowToken);
+  const { borrowApr: userBorrowApr } = useGetBorrowingAPR(
+    borrowToken,
+    borrowSize,
+  );
   const { price: rbtcPrice } = useGetRBTCPrice();
 
   const [borrowDays, setBorrowDays] = useState(
@@ -175,7 +183,6 @@ export const NewLoanForm: FC<NewLoanFormProps> = ({ pool }) => {
     borrowDays,
   );
 
-  // TODO: Verify with Light if we want to show it.
   const originationFee = useMemo(
     () => getOriginationFeeAmount(collateralSize, minBorrowingFeeRate),
     [collateralSize, minBorrowingFeeRate],
@@ -236,13 +243,10 @@ export const NewLoanForm: FC<NewLoanFormProps> = ({ pool }) => {
     if (!isValidCollateralRatio) {
       return Decimal.ZERO;
     }
-    return minimumCollateralRatio.mul(borrowSize).div(collateralSize);
-  }, [
-    isValidCollateralRatio,
-    minimumCollateralRatio,
-    borrowSize,
-    collateralSize,
-  ]);
+    return MINIMUM_COLLATERAL_RATIO_BORROWING_MAINTENANCE.mul(borrowSize).div(
+      collateralSize,
+    );
+  }, [isValidCollateralRatio, borrowSize, collateralSize]);
 
   const renderFirstRolloverDate = useMemo(() => {
     if (borrowSize.lte(Decimal.ZERO) || collateralSize.lte(Decimal.ZERO)) {
@@ -419,7 +423,9 @@ export const NewLoanForm: FC<NewLoanFormProps> = ({ pool }) => {
             value={
               <DynamicValue
                 initialValue="0"
-                value={Decimal.fromBigNumberString(borrowApr).toString()}
+                value={Decimal.fromBigNumberString(
+                  userBorrowApr.toString(),
+                ).toString()}
                 renderer={value => renderValue(value, '%', 0)}
               />
             }
@@ -526,13 +532,13 @@ export const NewLoanForm: FC<NewLoanFormProps> = ({ pool }) => {
           label={
             <Trans
               i18nKey={pageTranslations.newLoanDialog.labels.disclaimer}
-              // TODO: Add the link once we have it.
-              // components={[
-              //   <Link
-              //     text={t(pageTranslations.newLoanDialog.labels.disclaimerCTA)}
-              //     href="#"
-              //   />,
-              // ]}
+              components={[
+                <Link
+                  text={t(pageTranslations.newLoanDialog.labels.disclaimerCTA)}
+                  href={WIKI_LINKS.BORROWING}
+                  className="no-underline"
+                />,
+              ]}
             />
           }
         />

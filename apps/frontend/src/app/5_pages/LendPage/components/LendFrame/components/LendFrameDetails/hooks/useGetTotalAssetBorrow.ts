@@ -8,7 +8,7 @@ export const useGetTotalAssetBorrow = (asset: SupportedTokens) => {
   const lendContract = useLoadContract(asset, 'loanTokens');
 
   const { value } = useCacheCall(
-    `loanTokens/${asset}/totalAssetBorrow`,
+    `loanTokens/${lendContract?.address}/totalAssetBorrow`,
     async () => lendContract?.totalAssetBorrow(),
     [],
     '0',

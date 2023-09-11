@@ -20,7 +20,7 @@ export const NextBorrowInterestRate: FC<NextBorrowInterestRateProps> = ({
   return (
     <div className="lg:text-base text-sm pr-1 lg:font-semibold font-medium prevent-row-click">
       <AmountRenderer
-        value={Decimal.fromBigNumberString(borrowApr).toString()}
+        value={Decimal.fromBigNumberString(borrowApr.toString()).toString()}
         suffix={`%`}
         precision={2}
         dataAttribute="borrow-next-borrow-interest-rate"

@@ -2,15 +2,10 @@ import { useCallback, useEffect, useState } from 'react';
 
 import { BigNumber } from 'ethers';
 
-import { Decimal } from '@sovryn/utils';
-
 import { useLoadContract } from '../../../../../../hooks/useLoadContract';
 import { asyncCall } from '../../../../../../store/rxjs/provider-cache';
 
-export const useGetBorrowingAPR = (
-  borrowToken: string,
-  borrowAmount: Decimal,
-) => {
+export const useGetAvgBorrowingAPR = (borrowToken: string) => {
   const [borrowApr, setBorrowApr] = useState(BigNumber.from(0));
 
   const assetContract = useLoadContract(borrowToken, 'lendTokens');
@@ -21,21 +16,21 @@ export const useGetBorrowingAPR = (
     }
     try {
       const borrowApr = await asyncCall(
-        `borrowApr/${assetContract.address}/${borrowAmount}`,
-        () => assetContract.nextBorrowInterestRate(borrowAmount),
+        `borrowAvgApr/${assetContract?.address}`,
+        () => assetContract?.avgBorrowInterestRate(),
       );
 
       if (borrowApr) {
         setBorrowApr(borrowApr);
       }
     } catch (error) {
-      console.error('Error fetching borrow APR:', error);
+      console.error('Error fetching AVG borrow APR:', error);
     }
-  }, [assetContract, borrowAmount]);
+  }, [assetContract]);
 
   useEffect(() => {
     updateAPR();
-  }, [updateAPR, borrowAmount]);
+  }, [updateAPR]);
 
-  return { borrowApr };
+  return { avgBorrowApr: borrowApr };
 };

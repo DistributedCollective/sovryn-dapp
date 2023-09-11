@@ -486,6 +486,7 @@
         },
         "title": "Fixed-interest loans",
         "subtitle": "Borrow without rate hikes",
+        "invalidAmountError": "Exceeds maximum amount",
         "borrowAssetsTable": {
             "title": "Assets to borrow",
             "borrowAprMobile": "APR",
@@ -564,7 +565,7 @@
                 "collateralRatioError": "Collateral ratio must be at least {{min}}%",
                 "liquidationPrice": "Liquidation price",
                 "collateralPrice": "{{token}} price",
-                "disclaimer": "I understand that my collateral may be liquidated or used to pay rollover fees if applicable.",
+                "disclaimer": "I understand that my collateral may be liquidated or used to pay rollover fees if applicable. <0>Learn more</0>",
                 "disclaimerCTA": "Learn more"
             },
             "transaction": {

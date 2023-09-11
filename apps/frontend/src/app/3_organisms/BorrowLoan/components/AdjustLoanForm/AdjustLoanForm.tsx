@@ -157,13 +157,14 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
     () => Decimal.from(loan.debt).sub(fullInterestRefundValue),
     [fullInterestRefundValue, loan.debt],
   );
+
   const interestRefundRepayValue = useMemo(() => {
     const debtRepayPercentage = calculateDebtRepaidPercentage(
-      totalDebtWithoutInterestRefund.toString(),
+      loan.debt.toString(),
       debtSize,
     );
     return fullInterestRefundValue.mul(debtRepayPercentage);
-  }, [debtSize, fullInterestRefundValue, totalDebtWithoutInterestRefund]);
+  }, [debtSize, fullInterestRefundValue, loan.debt]);
 
   const interestRefund = useMemo(
     () => (isCloseTab ? fullInterestRefundValue : interestRefundRepayValue),
@@ -213,11 +214,11 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
       isRepayTab
         ? calculateRepayCollateralWithdrawn(
             maximumRepayAmount.toString(),
-            debtSize,
+            debtSize.sub(interestRefund),
             loan.collateral.toString(),
           )
         : Decimal.ZERO,
-    [debtSize, isRepayTab, loan.collateral, maximumRepayAmount],
+    [debtSize, interestRefund, isRepayTab, loan.collateral, maximumRepayAmount],
   );
 
   const newCollateralAmount = useMemo(() => {
@@ -270,7 +271,7 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
       if (areValuesIdentical(debtSize, maximumRepayAmount)) {
         return Decimal.ZERO;
       }
-      return decimalic(loan.debt.toString()).sub(debtSize).sub(interestRefund);
+      return decimalic(loan.debt.toString()).sub(debtSize);
     }
 
     return decimalic(loan.debt.toString())
@@ -283,7 +284,6 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
     loan.debt,
     prepaidInterest,
     maximumRepayAmount,
-    interestRefund,
   ]);
 
   const maximumBorrowAmount = useGetMaximumBorrowAmount(loan, collateralSize);
@@ -292,6 +292,14 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
     () => (isBorrowTab ? maximumBorrowAmount : maximumAvailableRepayAmount),
     [isBorrowTab, maximumAvailableRepayAmount, maximumBorrowAmount],
   );
+
+  const isValidDebtAmount = useMemo(() => {
+    if (isCloseTab) {
+      return true;
+    }
+
+    return debtSize.lte(maxDebtAmount);
+  }, [debtSize, isCloseTab, maxDebtAmount]);
 
   const isValidCollateralAmount = useMemo(
     () => collateralSize.lte(maxCollateralAmount),
@@ -608,7 +616,7 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
             .sub(interestRefund)
             .sub(debtTokenBalance)
             .toString(),
-          token: debtToken,
+          token: debtToken.toUpperCase(),
         },
       );
     }
@@ -637,6 +645,22 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
     [collateralToken],
   );
 
+  const collateralAmountErrorLabel = useMemo(
+    () =>
+      !isValidCollateralAmount
+        ? t(translations.fixedInterestPage.invalidAmountError)
+        : undefined,
+    [isValidCollateralAmount],
+  );
+
+  const debtAmountErrorLabel = useMemo(
+    () =>
+      !isValidDebtAmount
+        ? t(translations.fixedInterestPage.invalidAmountError)
+        : undefined,
+    [isValidDebtAmount],
+  );
+
   return (
     <>
       <CurrentLoanData
@@ -661,6 +685,7 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
           />
         }
         labelElement="div"
+        errorLabel={debtAmountErrorLabel}
         className="w-full"
         dataAttribute="adjust-loan-debt-amount"
       >
@@ -671,6 +696,7 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
             maxAmount={maxDebtAmount.toNumber()}
             label={t(translations.common.amount)}
             className="w-full flex-grow-0 flex-shrink"
+            invalid={!isValidDebtAmount}
             placeholder="0"
             disabled={
               isCloseTab || isCollateralWithdrawMode || isDebtAmountDisabled
@@ -707,6 +733,7 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
         }
         labelElement="div"
         className="max-w-none mt-8"
+        errorLabel={collateralAmountErrorLabel}
         dataAttribute="adjust-loan-collateral-amount"
       >
         <div className="w-full flex flex-row justify-between items-center gap-3">
@@ -717,6 +744,7 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
             label={t(translations.common.amount)}
             className="max-w-none"
             placeholder="0"
+            invalid={!isValidCollateralAmount}
             disabled={isCloseTab || isRepayTab || isCollateralAmountDisabled}
           />
           <AssetRenderer
@@ -742,7 +770,9 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
               value={
                 <DynamicValue
                   initialValue="0"
-                  value={Decimal.fromBigNumberString(borrowApr).toString()}
+                  value={Decimal.fromBigNumberString(
+                    borrowApr.toString(),
+                  ).toString()}
                   renderer={value => renderValue(value, '%', 0)}
                 />
               }

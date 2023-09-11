@@ -12,7 +12,6 @@ import {
   TOKEN_RENDER_PRECISION,
 } from '../../../../../../constants/currencies';
 import { translations } from '../../../../../../locales/i18n';
-import { formatValue } from '../../../../../../utils/math';
 
 type CurrentLoanDataProps = {
   debt: number;
@@ -70,7 +69,7 @@ export const CurrentLoanData: FC<CurrentLoanDataProps> = ({
           value={
             <div className="flex flex-row justify-start items-center">
               <CRatioIndicator className="mr-2" value={collateralRatio} />
-              {formatValue(collateralRatio)}%
+              <AmountRenderer value={collateralRatio} suffix="%" />
             </div>
           }
         />

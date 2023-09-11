@@ -21,7 +21,7 @@ export const normalizeToken = (token: string) => {
     return SupportedTokens.rbtc;
   }
 
-  if (token.toLowerCase() === 'bitpro') {
+  if (token.toLowerCase() === 'bitpro' || token.toLowerCase() === 'bitp') {
     return SupportedTokens.bpro;
   }
 

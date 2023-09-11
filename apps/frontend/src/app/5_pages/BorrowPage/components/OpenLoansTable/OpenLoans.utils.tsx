@@ -58,7 +58,10 @@ export const convertLoanTokenToSupportedAssets = (loanToken: string) => {
     return SupportedTokens.rbtc;
   }
 
-  if (loanToken.toLowerCase() === 'bitpro') {
+  if (
+    loanToken.toLowerCase() === 'bitpro' ||
+    loanToken.toLowerCase() === 'bitp'
+  ) {
     return SupportedTokens.bpro;
   }
 

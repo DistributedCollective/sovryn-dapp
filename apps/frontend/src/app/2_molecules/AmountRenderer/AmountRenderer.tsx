@@ -22,6 +22,10 @@ import {
   getLocaleSeparators,
   decimalic,
 } from '../../../utils/math';
+import {
+  calculateDecimalPlaces,
+  isValueBetweenZeroAndOne,
+} from './AmountRenderer.utils';
 
 const { decimal, thousand } = getLocaleSeparators();
 
@@ -79,28 +83,10 @@ export const AmountRenderer: FC<AmountRendererProps> = ({
     [useTooltip, valueIsRounded],
   );
 
-  const calculateDecimalPlaces = useCallback(
-    (value: Decimalish, precision: number) => {
-      const decimalValue = decimalic(value).toString();
-      const [, decimals = ''] = decimalValue.split('.');
-      const nonZeroIndex = decimals.search(/[^0]/);
-      return nonZeroIndex !== -1
-        ? Math.max(nonZeroIndex + 1, precision)
-        : precision;
-    },
-    [],
-  );
-
   const calculatedPrecision = useMemo(
     () => calculateDecimalPlaces(value, precision),
-    [value, precision, calculateDecimalPlaces],
+    [value, precision],
   );
-
-  const isValueBetweenZeroAndOne = useCallback((value: number) => {
-    const isGreaterThanZero = value > 0;
-    const isLessThanOne = value < 1;
-    return isGreaterThanZero && isLessThanOne;
-  }, []);
 
   const countUpValues = useMemo(() => {
     const endValue = decimalic(value).toString();
@@ -125,7 +111,7 @@ export const AmountRenderer: FC<AmountRendererProps> = ({
           ? calculatedPrecision
           : precision,
       ),
-    [value, calculatedPrecision, precision, isValueBetweenZeroAndOne],
+    [value, calculatedPrecision, precision],
   );
 
   return (

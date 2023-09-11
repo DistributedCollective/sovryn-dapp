@@ -64,25 +64,6 @@ export const AmountRenderer: FC<AmountRendererProps> = ({
     });
   }, [addNotification, value]);
 
-  const countUpValues = useMemo(() => {
-    const endValue = decimalic(value).toString();
-
-    const [whole = '', decimals = ''] = endValue.split('.');
-    const end = parseFloat(
-      (whole ?? 0) + '.' + (decimals ?? 0).slice(0, precision),
-    );
-
-    return {
-      end,
-      decimals: getDecimalPartLength(end),
-    };
-  }, [precision, value]);
-
-  const localeFormattedValue = useMemo(
-    () => formatValue(value, precision),
-    [value, precision],
-  );
-
   const valueIsRounded = useMemo(
     () => getDecimalPartLength(value) > precision,
     [precision, value],
@@ -96,6 +77,55 @@ export const AmountRenderer: FC<AmountRendererProps> = ({
   const shouldShowTooltip = useMemo(
     () => useTooltip && valueIsRounded,
     [useTooltip, valueIsRounded],
+  );
+
+  const calculateDecimalPlaces = useCallback(
+    (value: Decimalish, precision: number) => {
+      const decimalValue = decimalic(value).toString();
+      const [, decimals = ''] = decimalValue.split('.');
+      const nonZeroIndex = decimals.search(/[^0]/);
+      return nonZeroIndex !== -1
+        ? Math.max(nonZeroIndex + 1, precision)
+        : precision;
+    },
+    [],
+  );
+
+  const calculatedPrecision = useMemo(
+    () => calculateDecimalPlaces(value, precision),
+    [value, precision, calculateDecimalPlaces],
+  );
+
+  const isValueBetweenZeroAndOne = useCallback((value: number) => {
+    const isGreaterThanZero = value > 0;
+    const isLessThanOne = value < 1;
+    return isGreaterThanZero && isLessThanOne;
+  }, []);
+
+  const countUpValues = useMemo(() => {
+    const endValue = decimalic(value).toString();
+    const [whole = '', decimals = ''] = endValue.split('.');
+    const checkPrecision =
+      Number(whole) < 1 && Number(whole) > 0 ? calculatedPrecision : precision;
+    const end = parseFloat(
+      (whole ?? 0) + '.' + (decimals ?? 0).slice(0, checkPrecision),
+    );
+
+    return {
+      end,
+      decimals: getDecimalPartLength(end),
+    };
+  }, [calculatedPrecision, value, precision]);
+
+  const localeFormattedValue = useMemo(
+    () =>
+      formatValue(
+        value,
+        isValueBetweenZeroAndOne(Number(value))
+          ? calculatedPrecision
+          : precision,
+      ),
+    [value, calculatedPrecision, precision, isValueBetweenZeroAndOne],
   );
 
   return (
@@ -123,7 +153,7 @@ export const AmountRenderer: FC<AmountRendererProps> = ({
           <CountUp
             start={0}
             end={countUpValues.end}
-            decimals={countUpValues.decimals}
+            decimals={calculatedPrecision}
             duration={1} //do not set lower than 1 overwise it can cause a bug
             separator={thousand}
             decimal={decimal}

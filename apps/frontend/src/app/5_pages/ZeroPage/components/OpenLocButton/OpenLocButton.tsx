@@ -1,5 +1,6 @@
 import React, { FC, useMemo } from 'react';
 
+import classNames from 'classnames';
 import { t } from 'i18next';
 
 import { SupportedTokens } from '@sovryn/contracts';
@@ -8,12 +9,14 @@ import { Button } from '@sovryn/ui';
 import { useAssetBalance } from '../../../../../hooks/useAssetBalance';
 import { translations } from '../../../../../locales/i18n';
 
-export type ConnectedUserBannerProps = {
+export type OpenLocButtonProps = {
   openLOC: () => void;
+  className?: string;
 };
 
-export const ConnectedUserBanner: FC<ConnectedUserBannerProps> = ({
+export const OpenLocButton: FC<OpenLocButtonProps> = ({
   openLOC,
+  className,
 }) => {
   const { balance, loading } = useAssetBalance(SupportedTokens.rbtc);
 
@@ -28,7 +31,12 @@ export const ConnectedUserBanner: FC<ConnectedUserBannerProps> = ({
   }
 
   return (
-    <div className="flex justify-center md:justify-end mb-9">
+    <div
+      className={classNames(
+        'flex justify-center md:justify-end mb-9',
+        className,
+      )}
+    >
       <Button
         className="flex-1 md:flex-initial max-w-[20.5rem] md:max-w-none "
         onClick={openLOC}

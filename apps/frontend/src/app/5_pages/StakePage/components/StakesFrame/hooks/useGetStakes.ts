@@ -23,9 +23,12 @@ export const useGetStakes = () => {
 
     try {
       setLoading(true);
-      const result = await asyncCall(`staking/stakes/${account}`, () =>
-        stakingContract.getStakes(account),
+      const result = await asyncCall(
+        `staking/stakes/${account}`,
+        () => stakingContract.getStakes(account),
+        { force: true },
       );
+
       if (result) {
         const { stakes, dates } = result;
         const stakesArray = await Promise.all(

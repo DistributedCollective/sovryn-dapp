@@ -24,7 +24,6 @@ import {
 import { Decimal } from '@sovryn/utils';
 
 import { withDeferredLoaderData } from '../../0_meta/DeferredDataLoader/withDeferredRouterData';
-import { DashboardWelcomeBanner } from '../../2_molecules/DashboardWelcomeBanner/DashboardWelcomeBanner';
 import { LOCStatus } from '../../2_molecules/LOCStatus/LOCStatus';
 import { SystemStats } from '../../2_molecules/SystemStats/SystemStats';
 import { GettingStartedPopup } from '../../3_organisms/GettingStartedPopup/GettingStartedPopup';
@@ -37,10 +36,10 @@ import { DEBT_TOKEN } from '../../3_organisms/ZeroLocForm/constants';
 import { LIQUIDATION_RESERVE_AMOUNT } from '../../../constants/general';
 import { getTokenDisplayName } from '../../../constants/tokens';
 import { useTransactionContext } from '../../../contexts/TransactionContext';
-import { useWalletConnect } from '../../../hooks';
 import { useAccount } from '../../../hooks/useAccount';
 import { translations } from '../../../locales/i18n';
 import { decimalic } from '../../../utils/math';
+import { OpenLocButton } from './components/OpenLocButton/OpenLocButton';
 import { useClaimCollateralSurplus } from './hooks/useClaimCollateralSurplus';
 import { useHandleTrove } from './hooks/useHandleTrove';
 import { useLiquityBaseParams } from './hooks/useLiquityBaseParams';
@@ -61,7 +60,6 @@ const ZeroPage: FC<ZeroPageProps> = ({ deferred: [price] }) => {
   const [collateralSurplusBalance, setCollateralSurplusBalance] =
     useState<Decimal>();
 
-  const { connectWallet } = useWalletConnect();
   const { account } = useAccount();
   const { refetch: getOpenTroves } = useGetUserOpenTrove(account);
   const { minBorrowingFeeRate } = useLiquityBaseParams();
@@ -140,10 +138,11 @@ const ZeroPage: FC<ZeroPageProps> = ({ deferred: [price] }) => {
       <Helmet>
         <title>{t(translations.zeroPage.meta.title)}</title>
       </Helmet>
-      <div className="px-0 container max-w-[100rem] md:mb-2 mt-4 mb-7">
-        {!showWelcomeBanner && !isLoading && (
+      <div className="px-0 container max-w-[100rem] mb-7">
+        {!account && <div className="mt-6 lg:mt-12"></div>}
+        {account && !showWelcomeBanner && !isLoading && (
           <LOCStatus
-            className="mb-6"
+            className="mt-4 mb-6"
             collateral={collateral}
             debt={debt}
             cRatio={getRatio(price)}
@@ -154,15 +153,11 @@ const ZeroPage: FC<ZeroPageProps> = ({ deferred: [price] }) => {
             onWithdraw={claimCollateralSurplus}
           />
         )}
-
-        {showWelcomeBanner && !isLoading && (
-          <DashboardWelcomeBanner
-            openLOC={toggle}
-            connectWallet={connectWallet}
-            className="mb-10 md:mb-4"
-          />
+        {account && showWelcomeBanner && !isLoading && (
+          <div className="mt-6 lg:mt-12">
+            <OpenLocButton openLOC={toggle} className="mb-10 md:mb-4" />
+          </div>
         )}
-
         <div className="flex-col-reverse lg:flex-row flex items-stretch md:p-4 md:bg-gray-90 rounded gap-9 md:gap-20">
           <div className="md:min-w-[23rem] min-w-auto">
             <SystemStats />

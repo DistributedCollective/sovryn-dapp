@@ -37,6 +37,7 @@ import { getCollateralRatioThresholds } from '../../../BorrowLoanForm/components
 import { useBorrow } from '../../../BorrowLoanForm/components/NewLoanForm/hooks/useBorrow';
 import { useGetMaximumCollateralAmount } from '../../../BorrowLoanForm/components/NewLoanForm/hooks/useGetMaximumCollateralAmount';
 import { getOriginationFeeAmount } from '../../../ZeroLocForm/utils';
+import { getCollateralAssetPrice } from '../../BorrowLoan.utils';
 import {
   COLLATERAL_TABS,
   DEBT_TABS,
@@ -383,13 +384,13 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
 
   const collateralAssetPrice = useMemo(
     () =>
-      decimalic(
-        collateralToken === SupportedTokens.rbtc
-          ? rbtcPrice
-          : collateralPriceUsd,
-      )
-        .div(debtToken === SupportedTokens.rbtc ? rbtcPrice : borrowPriceUsd)
-        .toString(),
+      getCollateralAssetPrice(
+        collateralToken,
+        debtToken,
+        rbtcPrice,
+        collateralPriceUsd,
+        borrowPriceUsd,
+      ),
     [borrowPriceUsd, collateralPriceUsd, collateralToken, debtToken, rbtcPrice],
   );
 

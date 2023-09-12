@@ -547,7 +547,27 @@
             "closeTabInsufficientLoanTokenBalance": "You need an additional {{amount}} {{token}} in order to close your loan."
         },
         "extendLoanDialog": {
-            "title": "Extend a loan"
+            "title": "Extend loan",
+            "currentDebt": "Current debt",
+            "currentCollateral": "Current collateral",
+            "collateralRatio": "Collateral ratio",
+            "confirm": "Confirm",
+            "dialogTitles": {
+                "extend": "Extend a loan"
+            },
+            "labels": {
+                "currentRolloverDate": "Current rollover date",
+                "nextRolloverDate": "Next rollover date",
+                "payPrepaidInterest": "Pay prepaid interest with",
+                "prepaidInterestAmount": "Prepaid interest amount",
+                "collateral": "Collateral",
+                "wallet": "Wallet",
+                "newRolloverDate": "New rollover date",
+                "newCollateralBalance": "New collateral balance",
+                "liquidationPrice": "Liquidation price",
+                "collateralPrice": "{{token}} price",
+                "collateralRatioError": "Collateral ratio must be at least {{min}}%"
+            }
         },
         "newLoanDialog": {
             "title": "New loan",

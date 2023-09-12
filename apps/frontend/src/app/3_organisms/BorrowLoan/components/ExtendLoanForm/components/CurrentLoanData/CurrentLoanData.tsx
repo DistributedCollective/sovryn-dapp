@@ -69,11 +69,7 @@ export const CurrentLoanData: FC<CurrentLoanDataProps> = ({
           value={
             <div className="flex flex-row justify-start items-center">
               <CRatioIndicator className="mr-2" value={collateralRatio} />
-              <AmountRenderer
-                value={collateralRatio}
-                suffix="%"
-                precision={2}
-              />
+              <AmountRenderer value={collateralRatio} suffix="%" />
             </div>
           }
         />

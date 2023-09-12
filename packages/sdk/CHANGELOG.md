@@ -1,5 +1,11 @@
 # @sovryn/sdk
 
+## 0.0.5
+
+### Patch Changes
+
+- 73fbbb9e: SOV-2921: improve zero redemption conversion route
+
 ## 0.0.4
 
 ### Patch Changes

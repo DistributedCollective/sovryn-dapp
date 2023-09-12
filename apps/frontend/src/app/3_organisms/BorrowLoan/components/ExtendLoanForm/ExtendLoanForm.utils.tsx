@@ -15,14 +15,6 @@ import { translations } from '../../../../../locales/i18n';
 import { decimalic } from '../../../../../utils/math';
 import { SECONDS_IN_YEAR } from './ExtendLoanForm.constants';
 
-export const normalizeToken = (token: string) => {
-  if (token.toLowerCase() === SupportedTokens.wrbtc) {
-    return SupportedTokens.rbtc;
-  }
-
-  return SupportedTokens[token] || token;
-};
-
 export const renderValue = (
   value: string,
   token: SupportedTokens | string,

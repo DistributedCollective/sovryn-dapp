@@ -42,6 +42,7 @@ import { dateFormat } from '../../../../../utils/helpers';
 import { decimalic } from '../../../../../utils/math';
 import { useGetAvgBorrowingAPR } from '../../../BorrowLoan/components/AdjustLoanForm/hooks/useGetAvgBorrowingAPR';
 import { useGetBorrowingAPR } from '../../../BorrowLoan/components/AdjustLoanForm/hooks/useGetBorrowingAPR';
+import { useGetMaintenanceStates } from '../../../BorrowLoan/components/AdjustLoanForm/hooks/useGetMaintenanceStates';
 import { AdvancedSettings } from '../AdvancedSettings/AdvancedSettings';
 import { DEFAULT_LOAN_DURATION } from './NewLoanForm.constants';
 import {
@@ -253,17 +254,6 @@ export const NewLoanForm: FC<NewLoanFormProps> = ({ pool }) => {
     [borrowSize, collateralSize],
   );
 
-  const submitButtonDisabled = useMemo(() => {
-    const isFormValid = collateralSize.gt(0) && borrowSize.gt(0);
-
-    return !isFormValid || !hasDisclaimerBeenChecked || !isValidCollateralRatio;
-  }, [
-    hasDisclaimerBeenChecked,
-    collateralSize,
-    borrowSize,
-    isValidCollateralRatio,
-  ]);
-
   const handleSubmit = useBorrow();
   const handleFormSubmit = useCallback(() => {
     handleSubmit(
@@ -304,6 +294,25 @@ export const NewLoanForm: FC<NewLoanFormProps> = ({ pool }) => {
     [collateralToken],
   );
 
+  const { isBorrowLocked } = useGetMaintenanceStates(borrowToken);
+
+  const submitButtonDisabled = useMemo(() => {
+    const isFormValid = collateralSize.gt(0) && borrowSize.gt(0);
+
+    return (
+      !isFormValid ||
+      !hasDisclaimerBeenChecked ||
+      !isValidCollateralRatio ||
+      isBorrowLocked
+    );
+  }, [
+    collateralSize,
+    borrowSize,
+    hasDisclaimerBeenChecked,
+    isValidCollateralRatio,
+    isBorrowLocked,
+  ]);
+
   return (
     <>
       <div className="flex flex-row justify-between items-center">
@@ -328,6 +337,7 @@ export const NewLoanForm: FC<NewLoanFormProps> = ({ pool }) => {
           invalid={!isValidBorrowAmount}
           placeholder="0"
           dataAttribute="new-loan-borrow-amount"
+          disabled={isBorrowLocked}
         />
         <AssetRenderer
           dataAttribute="new-loan-borrow-asset"
@@ -341,6 +351,12 @@ export const NewLoanForm: FC<NewLoanFormProps> = ({ pool }) => {
           level={ErrorLevel.Critical}
           message={t(pageTranslations.newLoanDialog.invalidAmountError)}
           dataAttribute="new-loan-borrow-amount-error"
+        />
+      )}
+      {isBorrowLocked && (
+        <ErrorBadge
+          level={ErrorLevel.Warning}
+          message={t(translations.maintenanceMode.featureDisabled)}
         />
       )}
 
@@ -366,6 +382,7 @@ export const NewLoanForm: FC<NewLoanFormProps> = ({ pool }) => {
           invalid={!isValidCollateralAmount}
           placeholder="0"
           dataAttribute="new-loan-collateral-amount"
+          disabled={isBorrowLocked}
         />
         {isMultipleCollateral ? (
           <Select

@@ -16,7 +16,7 @@ import { translations } from '../../../../../locales/i18n';
 import { decimalic } from '../../../../../utils/math';
 import { SECONDS_IN_YEAR } from './AdjustLoanForm.constants';
 
-export const normalizeToken = (token: string) => {
+export const normalizeToken = (token: string): SupportedTokens => {
   if (token.toLowerCase() === SupportedTokens.wrbtc) {
     return SupportedTokens.rbtc;
   }

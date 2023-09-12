@@ -37,8 +37,10 @@ import { dateFormat } from '../../../../../utils/helpers';
 import { decimalic } from '../../../../../utils/math';
 import { getCollateralRatioThresholds } from '../../../BorrowLoanForm/components/NewLoanForm/NewLoanForm.utils';
 import { getCollateralAssetPrice } from '../../BorrowLoan.utils';
+import { normalizeToken } from '../AdjustLoanForm/AdjustLoanForm.utils';
 import { useGetCollateralAssetPrice } from '../AdjustLoanForm/hooks/useGetCollateralAssetPrice';
-import { normalizeToken, renderValue } from './ExtendLoanForm.utils';
+import { useGetMaintenanceStates } from '../AdjustLoanForm/hooks/useGetMaintenanceStates';
+import { renderValue } from './ExtendLoanForm.utils';
 import { CurrentLoanData } from './components/CurrentLoanData/CurrentLoanData';
 import { useExtendLoan } from './hooks/useExtendLoan';
 
@@ -188,9 +190,16 @@ export const ExtendLoanForm: FC<ExtendLoanFormProps> = ({ loan }) => {
         : t(translations.common.na),
     [nextRolloverDate],
   );
+
+  const { isExtendLocked } = useGetMaintenanceStates(debtToken);
+
   const submitButtonDisabled = useMemo(
-    () => !isValidCollateralRatio || !nextRolloverDate || dappLocked,
-    [isValidCollateralRatio, nextRolloverDate, dappLocked],
+    () =>
+      !isValidCollateralRatio ||
+      !nextRolloverDate ||
+      dappLocked ||
+      isExtendLocked,
+    [isValidCollateralRatio, nextRolloverDate, dappLocked, isExtendLocked],
   );
 
   return (
@@ -383,7 +392,7 @@ export const ExtendLoanForm: FC<ExtendLoanFormProps> = ({ loan }) => {
         disabled={submitButtonDisabled}
         dataAttribute="adjust-loan-confirm-button"
       />
-      {dappLocked && (
+      {(dappLocked || isExtendLocked) && (
         <ErrorBadge
           level={ErrorLevel.Warning}
           message={t(translations.maintenanceMode.featureDisabled)}

@@ -34,6 +34,7 @@ import {
   MINIMUM_COLLATERAL_RATIO_BORROWING_MAINTENANCE,
 } from '../../../../../constants/lending';
 import { WIKI_LINKS } from '../../../../../constants/links';
+import { useDecimalAmountInput } from '../../../../../hooks/useDecimalAmountInput';
 import { useGetRBTCPrice } from '../../../../../hooks/zero/useGetRBTCPrice';
 import { translations } from '../../../../../locales/i18n';
 import { LendingPool } from '../../../../../utils/LendingPool';
@@ -65,19 +66,10 @@ type NewLoanFormProps = {
 };
 
 export const NewLoanForm: FC<NewLoanFormProps> = ({ pool }) => {
-  const [borrowAmount, setBorrowAmount] = useState('');
-  const [collateralAmount, setCollateralAmount] = useState('');
-  const borrowSize = useMemo(
-    () =>
-      borrowAmount && borrowAmount !== ''
-        ? Decimal.from(borrowAmount)
-        : Decimal.ZERO,
-    [borrowAmount],
-  );
-  const collateralSize = useMemo(
-    () => decimalic(collateralAmount),
-    [collateralAmount],
-  );
+  const [borrowAmount, setBorrowAmount, borrowSize] = useDecimalAmountInput('');
+  const [collateralAmount, setCollateralAmount, collateralSize] =
+    useDecimalAmountInput('');
+
   const [hasDisclaimerBeenChecked, setHasDisclaimerBeenChecked] =
     useState(false);
   const borrowToken = useMemo(() => pool.getAsset(), [pool]);
@@ -178,7 +170,7 @@ export const NewLoanForm: FC<NewLoanFormProps> = ({ pool }) => {
   );
 
   const preparedInterest = calculatePrepaidInterest(
-    borrowApr,
+    userBorrowApr,
     borrowSize,
     borrowDays,
   );

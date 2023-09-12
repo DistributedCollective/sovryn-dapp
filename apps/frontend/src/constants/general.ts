@@ -41,3 +41,4 @@ export const WEIGHT_FACTOR = 10;
 export const MS = 1e3;
 
 export const RBTC_GAS_FEE_RESERVE = 0.000402832;
+export const MAX_PROCESSABLE_CHECKPOINTS_RBTC = 56;

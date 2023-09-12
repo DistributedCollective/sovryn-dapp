@@ -22,6 +22,10 @@ import {
   getLocaleSeparators,
   decimalic,
 } from '../../../utils/math';
+import {
+  calculateDecimalPlaces,
+  isValueBetweenZeroAndOne,
+} from './AmountRenderer.utils';
 
 const { decimal, thousand } = getLocaleSeparators();
 
@@ -64,25 +68,6 @@ export const AmountRenderer: FC<AmountRendererProps> = ({
     });
   }, [addNotification, value]);
 
-  const countUpValues = useMemo(() => {
-    const endValue = decimalic(value).toString();
-
-    const [whole = '', decimals = ''] = endValue.split('.');
-    const end = parseFloat(
-      (whole ?? 0) + '.' + (decimals ?? 0).slice(0, precision),
-    );
-
-    return {
-      end,
-      decimals: getDecimalPartLength(end),
-    };
-  }, [precision, value]);
-
-  const localeFormattedValue = useMemo(
-    () => formatValue(value, precision),
-    [value, precision],
-  );
-
   const valueIsRounded = useMemo(
     () => getDecimalPartLength(value) > precision,
     [precision, value],
@@ -96,6 +81,37 @@ export const AmountRenderer: FC<AmountRendererProps> = ({
   const shouldShowTooltip = useMemo(
     () => useTooltip && valueIsRounded,
     [useTooltip, valueIsRounded],
+  );
+
+  const calculatedPrecision = useMemo(
+    () => calculateDecimalPlaces(value, precision),
+    [value, precision],
+  );
+
+  const countUpValues = useMemo(() => {
+    const endValue = decimalic(value).toString();
+    const [whole = '', decimals = ''] = endValue.split('.');
+    const checkPrecision =
+      Number(whole) < 1 && Number(whole) > 0 ? calculatedPrecision : precision;
+    const end = parseFloat(
+      (whole ?? 0) + '.' + (decimals ?? 0).slice(0, checkPrecision),
+    );
+
+    return {
+      end,
+      decimals: getDecimalPartLength(end),
+    };
+  }, [calculatedPrecision, value, precision]);
+
+  const localeFormattedValue = useMemo(
+    () =>
+      formatValue(
+        value,
+        isValueBetweenZeroAndOne(Number(value))
+          ? calculatedPrecision
+          : precision,
+      ),
+    [value, calculatedPrecision, precision],
   );
 
   return (
@@ -123,7 +139,7 @@ export const AmountRenderer: FC<AmountRendererProps> = ({
           <CountUp
             start={0}
             end={countUpValues.end}
-            decimals={countUpValues.decimals}
+            decimals={calculatedPrecision}
             duration={1} //do not set lower than 1 overwise it can cause a bug
             separator={thousand}
             decimal={decimal}

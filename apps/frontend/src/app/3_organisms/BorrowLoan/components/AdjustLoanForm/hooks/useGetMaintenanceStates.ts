@@ -9,13 +9,10 @@ export const useGetMaintenanceStates = (poolToken: SupportedTokens) => {
   const { checkMaintenance } = useMaintenance();
   const maintenanceStates = useGetBorrowMaintenance(poolToken);
 
-  //   const isFullyLocked = useMemo(
-  //     () => checkMaintenance(maintenanceStates.FULL),
-  //     [checkMaintenance, maintenanceStates.FULL],
-  //   );
-
-  // TODO: This is just a temporary workaround so we can continue with QA until we have the correct values in admin panel
-  const isFullyLocked = false;
+  const isFullyLocked = useMemo(
+    () => checkMaintenance(maintenanceStates.FULL),
+    [checkMaintenance, maintenanceStates.FULL],
+  );
 
   const isBorrowLocked = useMemo(
     () =>
@@ -36,6 +33,13 @@ export const useGetMaintenanceStates = (poolToken: SupportedTokens) => {
       isFullyLocked ||
       (maintenanceStates.CLOSE && checkMaintenance(maintenanceStates.CLOSE)),
     [checkMaintenance, isFullyLocked, maintenanceStates.CLOSE],
+  );
+
+  const isExtendLocked = useMemo(
+    () =>
+      isFullyLocked ||
+      (maintenanceStates.EXTEND && checkMaintenance(maintenanceStates.EXTEND)),
+    [checkMaintenance, isFullyLocked, maintenanceStates.EXTEND],
   );
 
   const isAddCollateralLocked = useMemo(
@@ -59,6 +63,7 @@ export const useGetMaintenanceStates = (poolToken: SupportedTokens) => {
     isBorrowLocked,
     isRepayLocked,
     isCloseLocked,
+    isExtendLocked,
     isAddCollateralLocked,
     isWithdrawCollateralLocked,
   };

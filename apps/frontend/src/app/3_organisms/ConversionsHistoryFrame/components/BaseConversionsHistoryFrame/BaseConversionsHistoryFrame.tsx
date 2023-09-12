@@ -51,7 +51,7 @@ export const BaseConversionsHistoryFrame: React.FC<
   );
 
   const isNextButtonDisabled = useMemo(
-    () => !isLoading && totalItems <= DEFAULT_HISTORY_FRAME_PAGE_SIZE,
+    () => !isLoading && totalItems < DEFAULT_HISTORY_FRAME_PAGE_SIZE,
     [totalItems, isLoading],
   );
 

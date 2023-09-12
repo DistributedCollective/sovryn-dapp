@@ -1,5 +1,18 @@
 # frontend
 
+## 1.0.26
+
+### Patch Changes
+
+- 7b207c2f: SOV-3025: fix reward link redirect on Stake page
+- ba836902: SOV-3018/SOV-3020: Fix Funding CSV export fields
+- 73fbbb9e: SOV-2921: improve zero redemption conversion route
+- 629f39e3: SOV-2862: Fix delegate address display reset after extending Stake
+- fdf82ac7: Update maintenance state ids
+- 0af72eb9: SOV-3019: fix issue with total numbers
+- Updated dependencies [73fbbb9e]
+  - @sovryn/sdk@0.0.5
+
 ## 1.0.25
 
 ### Patch Changes

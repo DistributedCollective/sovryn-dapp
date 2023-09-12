@@ -37,10 +37,11 @@ export const useGetMaximumBorrowAmount = (
 
   const collateral = useMemo(
     () =>
-      !collateralAmount || collateralAmount.isZero()
+      (!collateralAmount || collateralAmount.isZero()
         ? maximumCollateralAmount
-        : collateralAmount,
-    [collateralAmount, maximumCollateralAmount],
+        : collateralAmount
+      ).add(loan.collateral),
+    [collateralAmount, loan.collateral, maximumCollateralAmount],
   );
 
   const debt = useMemo(() => loan.debt, [loan.debt]);

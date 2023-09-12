@@ -8,7 +8,7 @@ import {
   useGetBorrowHistoryQuery,
 } from '../../../../../../utils/graphql/rsk/generated';
 
-export const useGetLoans = (
+export const useGetNewLoans = (
   account: string,
   pageSize: number,
   page: number,
@@ -38,8 +38,8 @@ export const useGetLoans = (
     return data.borrows.map(tx => ({
       id: tx.transaction.id,
       loanId: tx.loanId.id,
-      loanToken: tx.loanToken,
-      collateralToken: tx.collateralToken,
+      collateralToken: tx.loanId.collateralToken.symbol,
+      loanToken: tx.loanId.loanToken.symbol,
       newPrincipal: tx.newPrincipal,
       newCollateral: tx.newCollateral,
       interestRate: tx.interestRate,

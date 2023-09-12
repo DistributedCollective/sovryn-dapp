@@ -1,12 +1,12 @@
-query getBorrowHistory(
-  $user: String
+query getCloseWithSwaps(
+  $loanIds: [String!]
   $skip: Int!
   $pageSize: Int!
-  $orderBy: Borrow_orderBy
+  $orderBy: CloseWithSwap_orderBy
   $orderDirection: OrderDirection
 ) {
-  borrows(
-    where: { user: $user }
+  closeWithSwaps(
+    where: { loanId_in: $loanIds }
     first: $pageSize
     skip: $skip
     orderBy: $orderBy
@@ -23,13 +23,10 @@ query getBorrowHistory(
         symbol
       }
     }
-    loanToken
     collateralToken
-    newPrincipal
-    newCollateral
-    interestRate
-    interestDuration
-    collateralToLoanRate
+    loanToken
+    positionCloseSize
+    loanCloseAmount
     timestamp
     transaction {
       id

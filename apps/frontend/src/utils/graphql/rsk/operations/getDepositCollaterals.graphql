@@ -1,12 +1,12 @@
-query getBorrowHistory(
-  $user: String
+query getDepositCollaterals(
+  $loanIds: [String!]
   $skip: Int!
   $pageSize: Int!
-  $orderBy: Borrow_orderBy
+  $orderBy: DepositCollateral_orderBy
   $orderDirection: OrderDirection
 ) {
-  borrows(
-    where: { user: $user }
+  depositCollaterals(
+    where: { loanId_in: $loanIds }
     first: $pageSize
     skip: $skip
     orderBy: $orderBy
@@ -23,14 +23,10 @@ query getBorrowHistory(
         symbol
       }
     }
-    loanToken
-    collateralToken
-    newPrincipal
-    newCollateral
-    interestRate
-    interestDuration
-    collateralToLoanRate
+    depositAmount
+    rate
     timestamp
+    emittedBy
     transaction {
       id
     }

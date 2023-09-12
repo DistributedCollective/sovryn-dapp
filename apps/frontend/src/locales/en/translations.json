@@ -814,11 +814,24 @@
             "adjust": "Adjust"
         }
     },
-    "locHistory": {
+    "borrowHistory": {
         "types": {
             "lineOfCredit": "Line of credit",
-            "fixedInterestLoan": "Fixed-interest loan",
+            "newLoan": "Fixed-interest loan - New loan",
+            "depositCollateralLoan": "Fixed-interest loan - Adjust - Deposit collateral",
+            "closeWithSwapLoan": "Fixed-interest loan - Adjust - Close with swap",
+            "closeWithDepositLoan": "Fixed-interest loan - Adjust - Close with deposit",
+            "liquidationLoan": "Fixed-interest loan - Liquidation",
+            "rolloversLoan": "Fixed-interest loan - Rollovers",
             "collateralSurplus": "Collateral surplus"
+        },
+        "transactionTypes": {
+            "createLoan": "Create loan",
+            "depositCollateral": "Deposit collateral",
+            "closeSwap": "Close with swap",
+            "closeDeposit": "Close with deposit",
+            "liquidation": "Liquidation",
+            "rollovers": "Rollovers"
         }
     },
     "transactionHistory": {
@@ -895,8 +908,15 @@
     "loanHistory": {
         "table": {
             "collateralChange": "Collateral change",
+            "collateralAmount": "Collateral amount",
+            "collateralWithdrawn": "Collateral withdrawn",
+            "collateralLiquidated": "Collateral liquidated",
             "newCollateral": "New collateral balance",
             "debtChange": "Debt change",
+            "debtAmount": "Debt amount",
+            "debtRepaid": "Debt repaid",
+            "rolloverFee": "Rollover fee",
+            "interestPayment": "Interest payment",
             "originationFee": "Origination fee",
             "interest": "Interest payment/refund",
             "newDebt": "New debt balance",

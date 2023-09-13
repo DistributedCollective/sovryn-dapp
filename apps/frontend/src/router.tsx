@@ -65,6 +65,14 @@ const routes = [
         loader: zeroPageLoader,
       },
       {
+        path: '/borrow/fixed-interest',
+        element: <BorrowPage />,
+      },
+      {
+        path: '/borrow',
+        loader: () => redirect('/borrow/fixed-interest'),
+      },
+      {
         path: '/earn/stability-pool',
         element: <EarnPage />,
         loader: earnPageLoader,
@@ -93,10 +101,6 @@ const routes = [
       {
         path: '/earn/staking',
         element: <StakePage />,
-      },
-      {
-        path: '/borrow/fixed-interest',
-        element: <BorrowPage />,
       },
     ],
   },

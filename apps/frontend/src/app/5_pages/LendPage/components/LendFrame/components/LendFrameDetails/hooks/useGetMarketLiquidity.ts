@@ -14,5 +14,5 @@ export const useGetMarketLiquidity = (asset: SupportedTokens) => {
     '0',
   );
 
-  return { availableAmount: value ? fromWei(value) : value };
+  return { availableAmount: value ? fromWei(value) : '0' };
 };

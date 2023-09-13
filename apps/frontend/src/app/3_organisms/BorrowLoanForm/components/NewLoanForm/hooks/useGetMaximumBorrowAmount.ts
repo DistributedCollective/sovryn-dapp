@@ -5,6 +5,7 @@ import { BigNumber } from 'ethers';
 import { SupportedTokens } from '@sovryn/contracts';
 import { Decimal } from '@sovryn/utils';
 
+import { useGetMarketLiquidity } from '../../../../../5_pages/LendPage/components/LendFrame/components/LendFrameDetails/hooks/useGetMarketLiquidity';
 import {
   MINIMUM_COLLATERAL_RATIO_LENDING_POOLS,
   MINIMUM_COLLATERAL_RATIO_LENDING_POOLS_SOV,
@@ -22,6 +23,7 @@ export const useGetMaximumBorrowAmount = (
   borrowApr: BigNumber,
   collateralAmount?: Decimal,
 ) => {
+  const { availableAmount } = useGetMarketLiquidity(borrowToken);
   const { maximumCollateralAmount } =
     useGetMaximumCollateralAmount(collateralToken);
 
@@ -83,8 +85,11 @@ export const useGetMaximumBorrowAmount = (
   );
 
   const result: Decimal = useMemo(
-    () => maxBorrow.sub(prepaidInterest),
-    [maxBorrow, prepaidInterest],
+    () =>
+      Decimal.min(decimalic(availableAmount), maxBorrow)
+        .sub(prepaidInterest)
+        .mul(1 - 0.002),
+    [availableAmount, maxBorrow, prepaidInterest],
   );
 
   return result;

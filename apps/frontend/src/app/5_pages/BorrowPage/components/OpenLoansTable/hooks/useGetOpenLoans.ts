@@ -81,14 +81,14 @@ export const useGetOpenLoans = () => {
       console.error(`Error while fetching loans: ${error}`);
     } finally {
       setLoadingLoans(false);
+      setProcessedBlock(blockNumber);
     }
-  }, [account, contract]);
+  }, [account, blockNumber, contract]);
 
   useEffect(() => {
     if (blockNumber !== processedBlock) {
       refetch();
       getUserLoans();
-      setProcessedBlock(blockNumber);
     }
   }, [blockNumber, getUserLoans, processedBlock, refetch]);
 

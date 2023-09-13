@@ -32,9 +32,14 @@ export const CurrentLoanData: FC<CurrentLoanDataProps> = ({
   collateralRatio,
   className,
 }) => {
-  const isTokenRbtc = useMemo(
+  const isDebtRbtc = useMemo(
     () => debtToken === SupportedTokens.rbtc,
     [debtToken],
+  );
+
+  const isCollateralRbtc = useMemo(
+    () => collateralToken === SupportedTokens.rbtc,
+    [collateralToken],
   );
 
   return (
@@ -45,9 +50,9 @@ export const CurrentLoanData: FC<CurrentLoanDataProps> = ({
           value={
             <AmountRenderer
               value={debt}
-              suffix={isTokenRbtc ? BITCOIN : debtToken}
+              suffix={isDebtRbtc ? BITCOIN : debtToken}
               precision={
-                isTokenRbtc ? BTC_RENDER_PRECISION : TOKEN_RENDER_PRECISION
+                isDebtRbtc ? BTC_RENDER_PRECISION : TOKEN_RENDER_PRECISION
               }
             />
           }
@@ -57,9 +62,9 @@ export const CurrentLoanData: FC<CurrentLoanDataProps> = ({
           value={
             <AmountRenderer
               value={collateral}
-              suffix={collateralToken}
+              suffix={isCollateralRbtc ? BITCOIN : collateralToken}
               precision={
-                isTokenRbtc ? BTC_RENDER_PRECISION : TOKEN_RENDER_PRECISION
+                isCollateralRbtc ? BTC_RENDER_PRECISION : TOKEN_RENDER_PRECISION
               }
             />
           }

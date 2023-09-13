@@ -297,7 +297,11 @@ export const NewLoanForm: FC<NewLoanFormProps> = ({ pool }) => {
   const { isBorrowLocked } = useGetMaintenanceStates(borrowToken);
 
   const submitButtonDisabled = useMemo(() => {
-    const isFormValid = collateralSize.gt(0) && borrowSize.gt(0);
+    const isFormValid =
+      collateralSize.gt(0) &&
+      borrowSize.gt(0) &&
+      collateralSize.lte(maxCollateralAmount) &&
+      borrowSize.lte(maximumBorrowAmount);
 
     return (
       !isFormValid ||
@@ -308,6 +312,8 @@ export const NewLoanForm: FC<NewLoanFormProps> = ({ pool }) => {
   }, [
     collateralSize,
     borrowSize,
+    maxCollateralAmount,
+    maximumBorrowAmount,
     hasDisclaimerBeenChecked,
     isValidCollateralRatio,
     isBorrowLocked,

@@ -30,7 +30,7 @@ export const useGetMaximumBorrowAmount = (
     [loan.collateralAsset],
   );
 
-  const { maximumCollateralAmount } = useGetMaximumCollateralAmount(
+  const { maximumCollateralAmount, loading } = useGetMaximumCollateralAmount(
     collateralToken,
     collateralAmount,
   );
@@ -105,5 +105,5 @@ export const useGetMaximumBorrowAmount = (
     return Decimal.ZERO;
   }
 
-  return result;
+  return loading ? Decimal.ZERO : result;
 };

@@ -30,6 +30,7 @@ import {
 import { getTokenDisplayName } from '../../../../../constants/tokens';
 import { useDecimalAmountInput } from '../../../../../hooks/useDecimalAmountInput';
 import { useMaxAssetBalance } from '../../../../../hooks/useMaxAssetBalance';
+import { useQueryRate } from '../../../../../hooks/useQueryRate';
 import { useGetRBTCPrice } from '../../../../../hooks/zero/useGetRBTCPrice';
 import { translations } from '../../../../../locales/i18n';
 import { decimalic } from '../../../../../utils/math';
@@ -313,6 +314,8 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
     [collateralToken],
   );
 
+  const [collateralToLoanRate] = useQueryRate(collateralToken, debtToken);
+
   const collateralRatio = useMemo(() => {
     if (debtSize.isZero() && collateralSize.isZero()) {
       return Decimal.ZERO;
@@ -321,28 +324,16 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
     const debt = isCollateralWithdrawMode
       ? Decimal.from(loan.debt)
       : newTotalDebt;
-    const collateralUsdPrice =
-      collateralToken === SupportedTokens.rbtc ? rbtcPrice : collateralPriceUsd;
-    const totalDebtUsd = debt.mul(
-      debtToken === SupportedTokens.rbtc ? rbtcPrice : borrowPriceUsd,
-    );
 
-    return newCollateralAmount
-      .mul(collateralUsdPrice)
-      .div(totalDebtUsd)
-      .mul(100);
+    return newCollateralAmount.mul(collateralToLoanRate).div(debt).mul(100);
   }, [
-    collateralSize,
     debtSize,
+    collateralSize,
     isCollateralWithdrawMode,
-    newCollateralAmount,
     loan.debt,
     newTotalDebt,
-    collateralToken,
-    rbtcPrice,
-    collateralPriceUsd,
-    debtToken,
-    borrowPriceUsd,
+    newCollateralAmount,
+    collateralToLoanRate,
   ]);
 
   const isValidCollateralRatio = useMemo(() => {

@@ -101,7 +101,7 @@ export const useGetMaximumBorrowAmount = (
     [debt, maxBorrow, prepaidInterest],
   );
 
-  if (result.lte(Decimal.ZERO)) {
+  if (result.lte(Decimal.ZERO) || rbtcPrice === '0' || borrowPriceUsd === '0') {
     return Decimal.ZERO;
   }
 

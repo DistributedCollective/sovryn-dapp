@@ -136,6 +136,10 @@ export const ExtendLoanForm: FC<ExtendLoanFormProps> = ({ loan }) => {
     }
     const totalDebtUsd = newTotalDebt.mul(loanTokenUsdPrice);
 
+    if (totalDebtUsd.isZero()) {
+      return Decimal.ZERO;
+    }
+
     return newCollateralAmount
       .mul(collateralUsdPrice)
       .div(totalDebtUsd)

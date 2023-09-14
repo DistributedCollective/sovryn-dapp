@@ -808,11 +808,17 @@
             "stakingRevenue": "Withdraw staking revenue",
             "stakingSubsidies": "Withdraw staking subsidy"
         },
+        "vestingOperation": {
+            "tokensWithdrawn": "Withdraw vested reward",
+            "teamTokensRevoked": "Team tokens revoked",
+            "tokensStaked": "Tokens Staked"
+        },
         "types": {
             "stabilityPoolRewards": "Stability pool rewards",
             "stabilityPoolSubsidies": "Stability pool subsidies",
             "stakingRevenue": "Staking Revenue",
-            "stakingSubsidies": "Staking Subsidies"
+            "stakingSubsidies": "Staking Subsidies",
+            "vestingRewards": "Vesting rewards"
         }
     },
     "stakingHistory": {

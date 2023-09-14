@@ -20,4 +20,8 @@ export const rewardHistoryOptions = [
     value: RewardHistoryType.stakingSubsidies,
     label: t(translations.rewardHistory.types.stakingSubsidies),
   },
+  {
+    value: RewardHistoryType.vestingRewards,
+    label: t(translations.rewardHistory.types.vestingRewards),
+  },
 ];

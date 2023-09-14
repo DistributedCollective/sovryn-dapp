@@ -21,17 +21,15 @@ export const getAmountPrecision = (asset: string) =>
     ? BTC_RENDER_PRECISION
     : TOKEN_RENDER_PRECISION;
 
-export const calculateCollateralRatio = (
-  borrowedAmount: string,
-  borrowedBtcRate: string,
-  collateral: string,
-  collateralBtcRate: string,
-) => {
-  const debtInBtc = decimalic(borrowedAmount).mul(borrowedBtcRate);
-  const collateralInBtc = decimalic(collateral).mul(collateralBtcRate);
+export const normalizeTokenSuffix = (asset: SupportedTokens) =>
+  [SupportedTokens.wrbtc, SupportedTokens.rbtc].includes(asset)
+    ? BITCOIN
+    : asset;
 
-  return collateralInBtc.div(debtInBtc).mul(100).toNumber();
-};
+export const getTokenAmountPrecision = (asset: SupportedTokens) =>
+  [SupportedTokens.wrbtc, SupportedTokens.rbtc].includes(asset)
+    ? BTC_RENDER_PRECISION
+    : TOKEN_RENDER_PRECISION;
 
 export const calculateLiquidationPrice = (
   borrowedAmount: string,
@@ -48,7 +46,7 @@ export const calculateLiquidationPrice = (
 export const generateRowTitle = (item: LoanItem) => (
   <AmountRenderer
     value={item.debt}
-    suffix={normalizeSuffix(item.debtAsset)}
+    suffix={normalizeTokenSuffix(item.debtAsset)}
     precision={getAmountPrecision(item.debtAsset)}
   />
 );

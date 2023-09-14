@@ -1,11 +1,12 @@
+import { SupportedTokens } from '@sovryn/contracts';
 import { Decimal } from '@sovryn/utils';
 
 export type LoanItem = {
   id: string;
   debt: number;
-  debtAsset: string;
+  debtAsset: SupportedTokens;
   collateral: number;
-  collateralAsset: string;
+  collateralAsset: SupportedTokens;
   collateralRatio: number;
   liquidationPrice: number;
   apr: string;

@@ -2,6 +2,8 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import dayjs from 'dayjs';
 
+import { SupportedTokens, getTokenDetailsByAddress } from '@sovryn/contracts';
+import { noop } from '@sovryn/ui';
 import { Decimal } from '@sovryn/utils';
 
 import { defaultChainId } from '../../../../../../config/chains';
@@ -9,14 +11,16 @@ import { defaultChainId } from '../../../../../../config/chains';
 import { useAccount } from '../../../../../../hooks/useAccount';
 import { useBlockNumber } from '../../../../../../hooks/useBlockNumber';
 import { useLoadContract } from '../../../../../../hooks/useLoadContract';
+import { queryRate } from '../../../../../../utils/calls';
 import { useGetActiveLoansQuery } from '../../../../../../utils/graphql/rsk/generated';
+import { decimalic } from '../../../../../../utils/math';
 import {
   calculateApr,
-  calculateCollateralRatio,
   calculateLiquidationPrice,
+  convertLoanTokenToSupportedAssets,
   isSupportedPool,
 } from '../OpenLoans.utils';
-import { LoanItem, LoanItemSmartContract } from '../OpenLoansTable.types';
+import { LoanItem } from '../OpenLoansTable.types';
 
 const start = 0;
 const count = 1000;
@@ -31,7 +35,7 @@ export const useGetOpenLoans = () => {
   const contract = useLoadContract('protocol', 'protocol', defaultChainId);
   const [loadingLoans, setLoadingLoans] = useState(false);
   const [loanItemsSmartContract, setLoanItemsSmartContract] = useState<
-    LoanItemSmartContract[]
+    LoanItem[]
   >([]);
 
   const {
@@ -64,24 +68,62 @@ export const useGetOpenLoans = () => {
         unsafeOnly,
       );
 
-      if (loans) {
-        setLoanItemsSmartContract(
-          loans.map(item => ({
+      if (!loans) {
+        return;
+      }
+
+      const rates = await mapRates(loans);
+
+      const result = loans
+        .map(item => {
+          const rate = rates.find(
+            rate =>
+              rate.loanTokenAddress === item.loanToken &&
+              rate.collateralTokenAddress === item.collateralToken,
+          );
+
+          if (!rate) {
+            return null;
+          }
+
+          const debt = Decimal.fromBigNumberString(item.principal);
+          const collateral = Decimal.fromBigNumberString(item.collateral);
+
+          return {
             id: item.loanId,
-            debt: Decimal.fromBigNumberString(item.principal),
-            collateral: Decimal.fromBigNumberString(item.collateral),
+            debt,
+            debtAsset: convertLoanTokenToSupportedAssets(rate.loanToken),
+            collateral,
+            collateralAsset: convertLoanTokenToSupportedAssets(
+              rate.collateralToken,
+            ),
+            collateralRatio: decimalic(collateral.mul(rate.rate))
+              .div(debt)
+              .mul(100)
+              .toNumber(),
+            liquidationPrice: calculateLiquidationPrice(
+              item?.principal.toString() || '1',
+              item?.collateral.toString() || '1',
+            ),
+            apr: calculateApr(
+              Decimal.fromBigNumberString(item.interestOwedPerDay),
+              debt,
+            ),
+            rolloverDate: Number(item.endTimestamp) || dayjs().unix(),
             interestOwedPerDay: Decimal.fromBigNumberString(
               item.interestOwedPerDay,
             ),
-            endTimestamp: Decimal.from(item.endTimestamp.toString()),
-          })),
-        );
-      }
+          };
+        })
+        .filter(Boolean)
+        .filter(item => isSupportedPool(item.debtAsset, item.collateralAsset));
+
+      setLoanItemsSmartContract(result);
+      setProcessedBlock(blockNumber);
     } catch (error) {
       console.error(`Error while fetching loans: ${error}`);
     } finally {
       setLoadingLoans(false);
-      setProcessedBlock(blockNumber);
     }
   }, [account, blockNumber, contract]);
 
@@ -96,38 +138,62 @@ export const useGetOpenLoans = () => {
     return { data: [], loading };
   }
 
-  const result: LoanItem[] =
-    loanItemsSmartContract.map(item => {
-      const subgraphData = data.loans.find(
-        loan => loan.id.toLowerCase() === item.id.toLowerCase(),
-      );
-
-      return {
-        id: item.id,
-        debt: item?.debt.toNumber() || 0,
-        debtAsset: subgraphData?.loanToken.symbol || '',
-        collateral: item?.collateral.toNumber() || 0,
-        collateralAsset: subgraphData?.collateralToken.symbol || '',
-        collateralRatio: calculateCollateralRatio(
-          item?.debt.toString() || '1',
-          subgraphData?.loanToken.lastPriceBtc || '1',
-          item?.collateral.toString() || '1',
-          subgraphData?.collateralToken.lastPriceBtc || '1',
-        ),
-        liquidationPrice: calculateLiquidationPrice(
-          item?.debt.toString() || '1',
-          item?.collateral.toString() || '1',
-        ),
-        apr: calculateApr(item.interestOwedPerDay, item.debt),
-        rolloverDate: item?.endTimestamp.toNumber() || dayjs().unix(),
-        interestOwedPerDay: item?.interestOwedPerDay.toNumber() || 0,
-      };
-    }) || [];
-
   return {
-    data: result.filter(item =>
-      isSupportedPool(item.debtAsset, item.collateralAsset),
-    ),
+    data: loanItemsSmartContract,
     loading,
   };
+};
+
+const mapRates = async (
+  loans: { collateralToken: string; loanToken: string }[],
+) => {
+  // filter out duplicate collateralToken + loanToken pairs
+  const uniquePairs = loans.reduce(
+    (acc, item) =>
+      acc.find(
+        i =>
+          i.collateralToken.toLowerCase() ===
+            item.collateralToken.toLowerCase() &&
+          i.loanToken.toLowerCase() === item.loanToken.toLowerCase(),
+      )
+        ? acc
+        : [...acc, item],
+    [] as { collateralToken: string; loanToken: string }[],
+  );
+
+  const tokens = await Promise.all(
+    uniquePairs.map(async item => ({
+      collateralTokenAddress: item.collateralToken,
+      loanTokenAddress: item.loanToken,
+      collateralToken: (
+        await getTokenDetailsByAddress(item.collateralToken).catch(noop)
+      )?.symbol,
+      loanToken: (
+        await getTokenDetailsByAddress(item.loanToken).catch(noop)
+      )?.symbol,
+    })),
+  ).then(
+    items =>
+      items.filter(item => item.collateralToken && item.loanToken) as {
+        collateralToken: SupportedTokens;
+        loanToken: SupportedTokens;
+        collateralTokenAddress: string;
+        loanTokenAddress: string;
+      }[],
+  );
+
+  const rates = await Promise.all(
+    tokens.map(item =>
+      queryRate(item.collateralToken, item.loanToken).then(result => ({
+        collateralToken: item.collateralToken,
+        loanToken: item.loanToken,
+        collateralTokenAddress: item.collateralTokenAddress,
+        loanTokenAddress: item.loanTokenAddress,
+        rate: result.rate,
+        precision: result.precision,
+      })),
+    ),
+  );
+
+  return rates;
 };

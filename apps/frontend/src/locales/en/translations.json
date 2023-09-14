@@ -634,6 +634,35 @@
             "view": "View"
         }
     },
+    "proposalPage": {
+        "meta": {
+            "title": "Bitocracy - Sovryn"
+        },
+        "proposedBy": "Proposed by",
+        "proposalID": "Proposal ID",
+        "status": "Status",
+        "timeToVote": "Time left to vote",
+        "voteEnded": "Vote ended",
+        "castYourVote": "Cast your vote",
+        "connectMessage": "Connect wallet to check voter status",
+        "discussionLink": "Discussion link:",
+        "proposalText": "Proposal text:",
+        "executableDetails": {
+            "title": "Executable details",
+            "executable": "Executable",
+            "assetName": "Asset name: ",
+            "assetAmount": "Asset amount: ",
+            "assetAddress": "Asset address: ",
+            "contractAddress": "Contract address: ",
+            "recipientAddress": "Recipient address: ",
+            "functionName": "Function name: ",
+            "data": "Data: "
+        },
+        "castVote": "Cast your vote",
+        "stakeSOV": "Stake SOV",
+        "noVote": "No vote cast on this proposal",
+        "ineligibleVote": "Ineligible to vote - no SOV staked at proposal creation time <br/> Stake SOV to be eligible to vote on future proposals"
+    },
     "fastBtc": {
         "mainScreen": {
             "title": "Funding",
@@ -1167,22 +1196,22 @@
         "withdraw": "Withdraw {{symbol}}"
     },
     "proposalVotingResults": {
-      "title": "Voting results",
-      "inProgress": "Voting in progress",
-      "exportCSV": "Export CSV",
-      "support": {
-        "title": "Support",
-        "required": "Support required:",
-        "current": "Current support:",
-        "requiredValue": "> {{value}}%",
-        "currentValue": "{{value}}%"
-      },
-      "quorum": {
-        "title": "Turnout",
-        "required": "Turnout required:",
-        "current": "Current turnout:",
-        "requiredValue": "{{value}} VP ({{percent}}%)",
-        "currentValue": "{{value}} VP ({{percent}}%)"
-      }
+        "title": "Voting results",
+        "inProgress": "Voting in progress",
+        "exportCSV": "Export CSV",
+        "support": {
+            "title": "Support",
+            "required": "Support required:",
+            "current": "Current support:",
+            "requiredValue": "> {{value}}%",
+            "currentValue": "{{value}}%"
+        },
+        "quorum": {
+            "title": "Turnout",
+            "required": "Turnout required:",
+            "current": "Current turnout:",
+            "requiredValue": "{{value}} VP ({{percent}}%)",
+            "currentValue": "{{value}} VP ({{percent}}%)"
+        }
     }
 }

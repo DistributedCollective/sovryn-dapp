@@ -49,7 +49,7 @@ export const useExtendLoan = (
     const transactions: Transaction[] = [];
 
     const weiDepositAmount = toWei(depositAmount);
-    if (!useCollateral) {
+    if (!useCollateral && debtToken !== SupportedTokens.rbtc) {
       const approve = await prepareApproveTransaction({
         token: debtToken,
         amount: weiDepositAmount,

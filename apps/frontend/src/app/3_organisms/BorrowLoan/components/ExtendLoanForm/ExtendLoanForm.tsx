@@ -31,14 +31,12 @@ import {
 } from '../../../../../constants/lending';
 import { getTokenDisplayName } from '../../../../../constants/tokens';
 import { useMaintenance } from '../../../../../hooks/useMaintenance';
-import { useGetRBTCPrice } from '../../../../../hooks/zero/useGetRBTCPrice';
+import { useQueryRate } from '../../../../../hooks/useQueryRate';
 import { translations } from '../../../../../locales/i18n';
 import { dateFormat } from '../../../../../utils/helpers';
 import { decimalic } from '../../../../../utils/math';
 import { getCollateralRatioThresholds } from '../../../BorrowLoanForm/components/NewLoanForm/NewLoanForm.utils';
-import { getCollateralAssetPrice } from '../../BorrowLoan.utils';
 import { normalizeToken } from '../AdjustLoanForm/AdjustLoanForm.utils';
-import { useGetCollateralAssetPrice } from '../AdjustLoanForm/hooks/useGetCollateralAssetPrice';
 import { useGetMaintenanceStates } from '../AdjustLoanForm/hooks/useGetMaintenanceStates';
 import { renderValue } from './ExtendLoanForm.utils';
 import { CurrentLoanData } from './components/CurrentLoanData/CurrentLoanData';
@@ -70,7 +68,8 @@ export const ExtendLoanForm: FC<ExtendLoanFormProps> = ({ loan }) => {
     () => normalizeToken(loan.collateralAsset.toLowerCase()),
     [loan.collateralAsset],
   );
-  const { price: rbtcPrice } = useGetRBTCPrice();
+
+  const [collateralAssetPrice] = useQueryRate(collateralToken, debtToken);
 
   const [useCollateral, setUseCollateral] = useState(true);
 
@@ -81,34 +80,17 @@ export const ExtendLoanForm: FC<ExtendLoanFormProps> = ({ loan }) => {
     useCollateral,
   );
 
-  const { borrowPriceUsd, collateralPriceUsd } = useGetCollateralAssetPrice(
-    debtToken,
-    collateralToken,
-  );
-
   const collateralRatioThresholds = useMemo(
     () => getCollateralRatioThresholds(collateralToken),
     [collateralToken],
   );
 
-  const collateralUsdPrice = useMemo(
-    () =>
-      collateralToken === SupportedTokens.rbtc ? rbtcPrice : collateralPriceUsd,
-    [collateralPriceUsd, collateralToken, rbtcPrice],
-  );
-  const loanTokenUsdPrice = useMemo(
-    () => (debtToken === SupportedTokens.rbtc ? rbtcPrice : borrowPriceUsd),
-    [borrowPriceUsd, debtToken, rbtcPrice],
-  );
-
   const collateralChange = useMemo(() => {
     if (useCollateral) {
-      return decimalic(depositAmount)
-        .mul(loanTokenUsdPrice)
-        .div(collateralUsdPrice || 1);
+      return decimalic(depositAmount).div(collateralAssetPrice || 1);
     }
     return decimalic(0);
-  }, [collateralUsdPrice, depositAmount, loanTokenUsdPrice, useCollateral]);
+  }, [collateralAssetPrice, depositAmount, useCollateral]);
 
   const newCollateralAmount = useMemo(
     () =>
@@ -134,36 +116,22 @@ export const ExtendLoanForm: FC<ExtendLoanFormProps> = ({ loan }) => {
     if (!nextRolloverDate) {
       return Decimal.from(loan.collateralRatio);
     }
-    const totalDebtUsd = newTotalDebt.mul(loanTokenUsdPrice);
 
-    if (totalDebtUsd.isZero()) {
+    if (newTotalDebt.isZero()) {
       return Decimal.ZERO;
     }
 
     return newCollateralAmount
-      .mul(collateralUsdPrice)
-      .div(totalDebtUsd)
+      .mul(collateralAssetPrice)
+      .div(newTotalDebt)
       .mul(100);
   }, [
-    collateralUsdPrice,
+    collateralAssetPrice,
     loan.collateralRatio,
-    loanTokenUsdPrice,
     newCollateralAmount,
     newTotalDebt,
     nextRolloverDate,
   ]);
-
-  const collateralAssetPrice = useMemo(
-    () =>
-      getCollateralAssetPrice(
-        collateralToken,
-        debtToken,
-        rbtcPrice,
-        collateralPriceUsd,
-        borrowPriceUsd,
-      ),
-    [borrowPriceUsd, collateralPriceUsd, collateralToken, debtToken, rbtcPrice],
-  );
 
   const isValidCollateralRatio = useMemo(() => {
     return (
@@ -199,11 +167,17 @@ export const ExtendLoanForm: FC<ExtendLoanFormProps> = ({ loan }) => {
 
   const submitButtonDisabled = useMemo(
     () =>
-      !isValidCollateralRatio ||
+      (!isValidCollateralRatio && useCollateral) ||
       !nextRolloverDate ||
       dappLocked ||
       isExtendLocked,
-    [isValidCollateralRatio, nextRolloverDate, dappLocked, isExtendLocked],
+    [
+      isValidCollateralRatio,
+      useCollateral,
+      nextRolloverDate,
+      dappLocked,
+      isExtendLocked,
+    ],
   );
 
   return (
@@ -378,7 +352,7 @@ export const ExtendLoanForm: FC<ExtendLoanFormProps> = ({ loan }) => {
               value={
                 <DynamicValue
                   initialValue="0"
-                  value={collateralAssetPrice}
+                  value={collateralAssetPrice.toString()}
                   renderer={value => renderValue(value, debtToken)}
                 />
               }

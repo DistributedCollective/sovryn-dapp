@@ -8,13 +8,11 @@ import {
   MINIMUM_COLLATERAL_RATIO_LENDING_POOLS,
   MINIMUM_COLLATERAL_RATIO_LENDING_POOLS_SOV,
 } from '../../../../../../constants/lending';
-import { useGetRBTCPrice } from '../../../../../../hooks/zero/useGetRBTCPrice';
-import { decimalic } from '../../../../../../utils/math';
+import { useQueryRate } from '../../../../../../hooks/useQueryRate';
 import { calculatePrepaidInterest } from '../../../../BorrowLoanForm/components/NewLoanForm/NewLoanForm.utils';
 import { useGetMaximumCollateralAmount } from '../../../../BorrowLoanForm/components/NewLoanForm/hooks/useGetMaximumCollateralAmount';
 import { normalizeToken } from '../AdjustLoanForm.utils';
 import { useGetBorrowingAPR } from './useGetBorrowingAPR';
-import { useGetCollateralAssetPrice } from './useGetCollateralAssetPrice';
 
 export const useGetMaximumBorrowAmount = (
   loan: LoanItem,
@@ -48,26 +46,10 @@ export const useGetMaximumBorrowAmount = (
 
   const { borrowApr } = useGetBorrowingAPR(borrowToken, Decimal.from(debt));
 
-  const { price: rbtcPrice } = useGetRBTCPrice();
-  const { borrowPriceUsd, collateralPriceUsd } = useGetCollateralAssetPrice(
-    borrowToken,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [collateralPriceInLoanAsset, precision, loadingRates] = useQueryRate(
     collateralToken,
-  );
-
-  const collateralPriceInLoanAsset = useMemo(
-    () =>
-      decimalic(
-        collateralToken === SupportedTokens.rbtc
-          ? rbtcPrice
-          : collateralPriceUsd,
-      ).div(borrowToken === SupportedTokens.rbtc ? rbtcPrice : borrowPriceUsd),
-    [
-      borrowToken,
-      borrowPriceUsd,
-      collateralToken,
-      collateralPriceUsd,
-      rbtcPrice,
-    ],
+    borrowToken,
   );
 
   const minimumCollateralRatio = useMemo(
@@ -101,9 +83,9 @@ export const useGetMaximumBorrowAmount = (
     [debt, maxBorrow, prepaidInterest],
   );
 
-  if (result.lte(Decimal.ZERO) || rbtcPrice === '0' || borrowPriceUsd === '0') {
+  if (result.lte(Decimal.ZERO) || loading || loadingRates) {
     return Decimal.ZERO;
   }
 
-  return loading ? Decimal.ZERO : result;
+  return result;
 };

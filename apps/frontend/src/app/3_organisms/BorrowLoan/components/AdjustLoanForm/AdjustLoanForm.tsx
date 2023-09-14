@@ -31,14 +31,12 @@ import { getTokenDisplayName } from '../../../../../constants/tokens';
 import { useDecimalAmountInput } from '../../../../../hooks/useDecimalAmountInput';
 import { useMaxAssetBalance } from '../../../../../hooks/useMaxAssetBalance';
 import { useQueryRate } from '../../../../../hooks/useQueryRate';
-import { useGetRBTCPrice } from '../../../../../hooks/zero/useGetRBTCPrice';
 import { translations } from '../../../../../locales/i18n';
 import { decimalic } from '../../../../../utils/math';
 import { getCollateralRatioThresholds } from '../../../BorrowLoanForm/components/NewLoanForm/NewLoanForm.utils';
 import { useBorrow } from '../../../BorrowLoanForm/components/NewLoanForm/hooks/useBorrow';
 import { useGetMaximumCollateralAmount } from '../../../BorrowLoanForm/components/NewLoanForm/hooks/useGetMaximumCollateralAmount';
 import { getOriginationFeeAmount } from '../../../ZeroLocForm/utils';
-import { getCollateralAssetPrice } from '../../BorrowLoan.utils';
 import {
   COLLATERAL_TABS,
   DEBT_TABS,
@@ -57,7 +55,6 @@ import { CurrentLoanData } from './components/CurrentLoanData';
 import { Label } from './components/Label';
 import { useDepositCollateral } from './hooks/useDepositCollateral';
 import { useGetBorrowingAPR } from './hooks/useGetBorrowingAPR';
-import { useGetCollateralAssetPrice } from './hooks/useGetCollateralAssetPrice';
 import { useGetInterestRefund } from './hooks/useGetInterestRefund';
 import { useGetMaintenanceStates } from './hooks/useGetMaintenanceStates';
 import { useGetMaxCollateralWithdrawal } from './hooks/useGetMaxCollateralWithdrawal';
@@ -150,8 +147,6 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
     ],
   );
 
-  const { price: rbtcPrice } = useGetRBTCPrice();
-
   const fullInterestRefundValue = useGetInterestRefund(loan.id);
   const totalDebtWithoutInterestRefund = useMemo(
     () => Decimal.from(loan.debt).sub(fullInterestRefundValue),
@@ -178,10 +173,6 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
 
   const { balance: debtTokenBalance } = useMaxAssetBalance(
     debtToken as SupportedTokens,
-  );
-  const { borrowPriceUsd, collateralPriceUsd } = useGetCollateralAssetPrice(
-    debtToken,
-    collateralToken,
   );
 
   const { maximumCollateralAmount, loading: isMaximumCollateralAmountLoading } =
@@ -373,17 +364,7 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
     newTotalDebt,
   ]);
 
-  const collateralAssetPrice = useMemo(
-    () =>
-      getCollateralAssetPrice(
-        collateralToken,
-        debtToken,
-        rbtcPrice,
-        collateralPriceUsd,
-        borrowPriceUsd,
-      ),
-    [borrowPriceUsd, collateralPriceUsd, collateralToken, debtToken, rbtcPrice],
-  );
+  const [collateralAssetPrice] = useQueryRate(collateralToken, debtToken);
 
   const setCloseDebtTabValues = useCallback(() => {
     setDebtAmount(totalDebtWithoutInterestRefund.toString());
@@ -882,7 +863,7 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
               value={
                 <DynamicValue
                   initialValue="0"
-                  value={collateralAssetPrice}
+                  value={collateralAssetPrice.toString()}
                   renderer={value => renderValue(value, debtToken)}
                 />
               }

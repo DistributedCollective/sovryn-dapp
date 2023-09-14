@@ -10,10 +10,9 @@ import {
   MINIMUM_COLLATERAL_RATIO_LENDING_POOLS,
   MINIMUM_COLLATERAL_RATIO_LENDING_POOLS_SOV,
 } from '../../../../../../constants/lending';
-import { useGetRBTCPrice } from '../../../../../../hooks/zero/useGetRBTCPrice';
+import { useQueryRate } from '../../../../../../hooks/useQueryRate';
 import { decimalic } from '../../../../../../utils/math';
 import { calculatePrepaidInterest } from '../NewLoanForm.utils';
-import { useGetCollateralAssetPrice } from './useGetCollateralAssetPrice';
 import { useGetMaximumCollateralAmount } from './useGetMaximumCollateralAmount';
 
 export const useGetMaximumBorrowAmount = (
@@ -27,35 +26,17 @@ export const useGetMaximumBorrowAmount = (
   const { maximumCollateralAmount } =
     useGetMaximumCollateralAmount(collateralToken);
 
+  const [collateralPriceInLoanAsset] = useQueryRate(
+    collateralToken,
+    borrowToken,
+  );
+
   const collateral = useMemo(
     () =>
       !collateralAmount || collateralAmount.isZero()
         ? maximumCollateralAmount
         : collateralAmount,
     [collateralAmount, maximumCollateralAmount],
-  );
-
-  const { price: rbtcPrice } = useGetRBTCPrice();
-
-  const { borrowPriceUsd, collateralPriceUsd } = useGetCollateralAssetPrice(
-    borrowToken,
-    collateralToken,
-  );
-
-  const collateralPriceInLoanAsset = useMemo(
-    () =>
-      decimalic(
-        collateralToken === SupportedTokens.rbtc
-          ? rbtcPrice
-          : collateralPriceUsd,
-      ).div(borrowToken === SupportedTokens.rbtc ? rbtcPrice : borrowPriceUsd),
-    [
-      borrowToken,
-      borrowPriceUsd,
-      collateralToken,
-      collateralPriceUsd,
-      rbtcPrice,
-    ],
   );
 
   const minimumCollateralRatio = useMemo(

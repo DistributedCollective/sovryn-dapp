@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
+import React, { FC, useCallback, useMemo, useState } from 'react';
 
 import dayjs from 'dayjs';
 import { t } from 'i18next';
@@ -35,11 +35,10 @@ import {
 } from '../../../../../constants/lending';
 import { WIKI_LINKS } from '../../../../../constants/links';
 import { useDecimalAmountInput } from '../../../../../hooks/useDecimalAmountInput';
-import { useGetRBTCPrice } from '../../../../../hooks/zero/useGetRBTCPrice';
+import { useQueryRate } from '../../../../../hooks/useQueryRate';
 import { translations } from '../../../../../locales/i18n';
 import { LendingPool } from '../../../../../utils/LendingPool';
 import { dateFormat } from '../../../../../utils/helpers';
-import { decimalic } from '../../../../../utils/math';
 import { useGetAvgBorrowingAPR } from '../../../BorrowLoan/components/AdjustLoanForm/hooks/useGetAvgBorrowingAPR';
 import { useGetBorrowingAPR } from '../../../BorrowLoan/components/AdjustLoanForm/hooks/useGetBorrowingAPR';
 import { useGetMaintenanceStates } from '../../../BorrowLoan/components/AdjustLoanForm/hooks/useGetMaintenanceStates';
@@ -52,7 +51,6 @@ import {
   renderValue,
 } from './NewLoanForm.utils';
 import { useBorrow } from './hooks/useBorrow';
-import { useGetCollateralAssetPrice } from './hooks/useGetCollateralAssetPrice';
 import { useGetMaximumBorrowAmount } from './hooks/useGetMaximumBorrowAmount';
 import { useGetMaximumCollateralAmount } from './hooks/useGetMaximumCollateralAmount';
 import { useGetMaximumFirstRolloverDate } from './hooks/useGetMaximumFirstRolloverDate';
@@ -80,13 +78,11 @@ export const NewLoanForm: FC<NewLoanFormProps> = ({ pool }) => {
     borrowToken,
     borrowSize,
   );
-  const { price: rbtcPrice } = useGetRBTCPrice();
 
   const [borrowDays, setBorrowDays] = useState(
     dayjs(defaultFirstRolloverDate).unix(),
   );
   const collateralAssets = useMemo(() => pool.getBorrowCollateral(), [pool]);
-  const [collateralAssetPrice, setCollateralAssetPrice] = useState('0');
 
   const sortedCollateralAssets = useMemo(() => {
     const sorted = [...collateralAssets].sort();
@@ -104,6 +100,8 @@ export const NewLoanForm: FC<NewLoanFormProps> = ({ pool }) => {
   const [collateralToken, setCollateralToken] = useState<SupportedTokens>(
     sortedCollateralAssets[0],
   );
+
+  const [collateralToLoanRate] = useQueryRate(collateralToken, borrowToken);
 
   const isMultipleCollateral = useMemo(
     () => collateralAssets.length > 1,
@@ -123,11 +121,6 @@ export const NewLoanForm: FC<NewLoanFormProps> = ({ pool }) => {
         ),
       })),
     [sortedCollateralAssets],
-  );
-
-  const { borrowPriceUsd, collateralPriceUsd } = useGetCollateralAssetPrice(
-    borrowToken,
-    collateralToken,
   );
 
   const maximumBorrowAmount = useGetMaximumBorrowAmount(
@@ -198,23 +191,9 @@ export const NewLoanForm: FC<NewLoanFormProps> = ({ pool }) => {
     if ([collateralSize, totalBorrow, borrowSize].some(v => v.isZero())) {
       return Decimal.ZERO;
     }
-    const price =
-      collateralToken === SupportedTokens.rbtc ? rbtcPrice : collateralPriceUsd;
-    const totalBorrowUSD = totalBorrow.mul(
-      borrowToken === SupportedTokens.rbtc ? rbtcPrice : borrowPriceUsd,
-    );
 
-    return collateralSize.mul(price).div(totalBorrowUSD).mul(100);
-  }, [
-    collateralSize,
-    totalBorrow,
-    borrowSize,
-    collateralToken,
-    rbtcPrice,
-    collateralPriceUsd,
-    borrowToken,
-    borrowPriceUsd,
-  ]);
+    return collateralSize.mul(collateralToLoanRate).div(totalBorrow).mul(100);
+  }, [collateralSize, totalBorrow, borrowSize, collateralToLoanRate]);
 
   const isValidCollateralRatio = useMemo(() => {
     if (collateralSize.isZero() || borrowSize.isZero()) {
@@ -271,16 +250,6 @@ export const NewLoanForm: FC<NewLoanFormProps> = ({ pool }) => {
     collateralToken,
     handleSubmit,
   ]);
-
-  useEffect(() => {
-    if (collateralToken === SupportedTokens.rbtc) {
-      const price = decimalic(rbtcPrice).div(borrowPriceUsd);
-      setCollateralAssetPrice(price.toString());
-    } else {
-      const price = decimalic(collateralPriceUsd).div(rbtcPrice);
-      setCollateralAssetPrice(price.toString());
-    }
-  }, [collateralToken, borrowPriceUsd, rbtcPrice, collateralPriceUsd]);
 
   const maximumFirstRolloverDate = useGetMaximumFirstRolloverDate(
     collateralSize,
@@ -532,7 +501,7 @@ export const NewLoanForm: FC<NewLoanFormProps> = ({ pool }) => {
             value={
               <DynamicValue
                 initialValue="0"
-                value={collateralAssetPrice}
+                value={collateralToLoanRate.toString()}
                 renderer={value => renderValue(value, borrowToken)}
               />
             }

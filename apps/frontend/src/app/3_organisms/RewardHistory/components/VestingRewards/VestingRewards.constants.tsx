@@ -12,6 +12,21 @@ import { VestingHistoryItem } from '../../../../../utils/graphql/rsk/generated';
 import { dateFormat } from '../../../../../utils/helpers';
 import { getTransactionType } from './VestingRewards.utils';
 
+const renderAmount = (item: VestingHistoryItem) => {
+  if (item.amount === '-') {
+    return '⁠—';
+  }
+
+  return (
+    <AmountRenderer
+      value={item.amount}
+      suffix={SupportedTokens.sov}
+      precision={TOKEN_RENDER_PRECISION}
+      dataAttribute="vesting-reward-history-amount"
+    />
+  );
+};
+
 export const COLUMNS_CONFIG = [
   {
     id: 'timestamp',
@@ -27,14 +42,7 @@ export const COLUMNS_CONFIG = [
   {
     id: 'amount',
     title: t(translations.common.tables.columnTitles.amount),
-    cellRenderer: (tx: VestingHistoryItem) => (
-      <AmountRenderer
-        value={tx.amount}
-        suffix={SupportedTokens.sov}
-        precision={TOKEN_RENDER_PRECISION}
-        dataAttribute="vesting-reward-history-amount"
-      />
-    ),
+    cellRenderer: renderAmount,
   },
   {
     id: 'transactionID',

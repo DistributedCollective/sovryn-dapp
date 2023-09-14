@@ -55,6 +55,7 @@ import {
 } from './AdjustLoanForm.utils';
 import { CurrentLoanData } from './components/CurrentLoanData';
 import { Label } from './components/Label';
+import { useCloseWithDepositIsTinyPosition } from './hooks/useCloseWithDepositIsTinyPosition';
 import { useDepositCollateral } from './hooks/useDepositCollateral';
 import { useGetBorrowingAPR } from './hooks/useGetBorrowingAPR';
 import { useGetCollateralAssetPrice } from './hooks/useGetCollateralAssetPrice';
@@ -103,6 +104,8 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
     () => isCollateralWithdrawTab && debtTab === DebtTabAction.None,
     [debtTab, isCollateralWithdrawTab],
   );
+
+  const [isTinyPosition, setIsTinyPosition] = useState(false);
 
   const originationFeeRate = useGetOriginationFee();
 
@@ -471,9 +474,12 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
           resetCloseDebtTabValues();
           return;
         case DebtTabAction.Repay:
+          if (isCloseTab) {
+            setIsTinyPosition(false);
+            resetCloseDebtTabValues();
+          }
           setCollateralTab(CollateralTabAction.WithdrawCollateral);
           setDebtTab(value);
-          resetCloseDebtTabValues();
           return;
         case DebtTabAction.Close:
           setCollateralTab(CollateralTabAction.WithdrawCollateral);
@@ -484,7 +490,7 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
           return;
       }
     },
-    [resetCloseDebtTabValues, setCloseDebtTabValues],
+    [isCloseTab, resetCloseDebtTabValues, setCloseDebtTabValues],
   );
 
   const onCollateralTabChange = useCallback(
@@ -528,14 +534,31 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
     maximumRepayAmount,
   ]);
 
+  const isLeavingTinyPosition = useCloseWithDepositIsTinyPosition(
+    loan.id,
+    debtAmount,
+  );
+
   useEffect(() => {
-    if (isRepayTab && areValuesIdentical(debtSize, maximumRepayAmount)) {
+    if (debtAmount !== '' && debtAmount !== '0') {
+      setIsTinyPosition(isLeavingTinyPosition);
+    }
+  }, [debtAmount, isLeavingTinyPosition]);
+
+  useEffect(() => {
+    if (
+      isRepayTab &&
+      (areValuesIdentical(debtSize, maximumRepayAmount) || isTinyPosition)
+    ) {
       setDebtTab(DebtTabAction.Close);
       setCloseDebtTabValues();
     }
   }, [
+    debtAmount,
     debtSize,
+    isLeavingTinyPosition,
     isRepayTab,
+    isTinyPosition,
     maximumRepayAmount,
     resetCloseDebtTabValues,
     setCloseDebtTabValues,

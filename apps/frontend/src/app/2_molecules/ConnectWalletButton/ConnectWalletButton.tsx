@@ -89,7 +89,7 @@ export const ConnectWalletButton: FC<
               <MenuItem
                 text={t(translations.connectWalletButton.settings)}
                 onClick={handleSettingsClick}
-                dataAttribute={`${dataAttribute}-menu-settings`}
+                dataAttribute={`${dataAttribute}-menu-notifications`}
               />
             </Menu>
           }

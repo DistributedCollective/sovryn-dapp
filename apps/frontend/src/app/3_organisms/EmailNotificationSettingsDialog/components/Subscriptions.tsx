@@ -32,6 +32,7 @@ export const Subscriptions: FC<SubscriptionsProps> = ({
     liquidationsToggle,
     stabilityPoolToggle,
     systemToggle,
+    bitocracyToggle,
   } = useEmailNotificationSettingsContext();
 
   const {
@@ -39,6 +40,7 @@ export const Subscriptions: FC<SubscriptionsProps> = ({
     liquidationsToggleHandler,
     stabilityPoolToggleHandler,
     systemToggleHandler,
+    bitocracyToggleHandler,
   } = useHandleSubscriptions();
 
   const items: ToggleItem[] = useMemo(
@@ -65,6 +67,13 @@ export const Subscriptions: FC<SubscriptionsProps> = ({
         className: 'mb-7',
       },
       {
+        checked: bitocracyToggle,
+        onChange: bitocracyToggleHandler,
+        label: t(baseTranslationPath.bitocracyToggle),
+        dataAttributeSuffix: 'bitocracy',
+        className: 'mb-7',
+      },
+      {
         checked: systemToggle,
         onChange: systemToggleHandler,
         label: t(baseTranslationPath.systemToggle),
@@ -80,6 +89,8 @@ export const Subscriptions: FC<SubscriptionsProps> = ({
       stabilityPoolToggleHandler,
       systemToggle,
       systemToggleHandler,
+      bitocracyToggle,
+      bitocracyToggleHandler,
     ],
   );
 

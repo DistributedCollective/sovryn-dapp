@@ -1,4 +1,4 @@
-import React, { FC, useReducer } from 'react';
+import React, { FC, useCallback, useReducer } from 'react';
 
 import { t } from 'i18next';
 
@@ -18,15 +18,23 @@ import { StakeItem } from '../StakesFrame/StakesFrame.types';
 
 type AdjustStakeRendererProps = {
   stake: StakeItem;
+  onSuccess: () => void;
 };
 
 export const AdjustStakeRenderer: FC<AdjustStakeRendererProps> = ({
   stake,
+  onSuccess,
 }) => {
   const [openCreateStakeDialog, toggleAdjustStakeDialog] = useReducer(
     v => !v,
     false,
   );
+
+  const onAdjustSuccess = useCallback(() => {
+    console.log('onAdjustSuccess');
+    onSuccess();
+    toggleAdjustStakeDialog();
+  }, [onSuccess]);
 
   return (
     <div className="flex lg:justify-end">
@@ -48,7 +56,7 @@ export const AdjustStakeRenderer: FC<AdjustStakeRendererProps> = ({
           onClose={toggleAdjustStakeDialog}
         />
         <DialogBody>
-          <AdjustStakeForm stake={stake} onSuccess={toggleAdjustStakeDialog} />
+          <AdjustStakeForm stake={stake} onSuccess={onAdjustSuccess} />
         </DialogBody>
       </Dialog>
     </div>

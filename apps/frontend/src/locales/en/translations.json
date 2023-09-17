@@ -516,7 +516,7 @@
             }
         },
         "adjustLoanDialog": {
-            "title": "Adjust a loan",
+            "title": "Adjust loan",
             "currentDebt": "Current debt",
             "currentCollateral": "Current collateral",
             "collateralRatio": "Collateral ratio",
@@ -531,7 +531,7 @@
                 "close": "Close a loan",
                 "withdrawCollateral": "Withdraw collateral",
                 "repay": "Repay a loan",
-                "adjust": "Adjust a loan",
+                "adjust": "Adjust loan",
                 "addCollateral": "Add collateral"
             },
             "labels": {
@@ -553,7 +553,7 @@
             "collateralRatio": "Collateral ratio",
             "confirm": "Confirm",
             "dialogTitles": {
-                "extend": "Extend a loan"
+                "extend": "Extend loan"
             },
             "labels": {
                 "currentRolloverDate": "Current rollover date",

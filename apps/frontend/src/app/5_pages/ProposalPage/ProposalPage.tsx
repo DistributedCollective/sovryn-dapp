@@ -8,19 +8,24 @@ import { Heading, Paragraph, ParagraphSize } from '@sovryn/ui';
 
 import { TxIdWithNotification } from '../../2_molecules/TxIdWithNotification/TransactionIdWithNotification';
 import { ProposalVotingResults } from '../../3_organisms/ProposalVotingResults';
+import { useGetProtocolContract } from '../../../hooks/useGetContract';
 import { translations } from '../../../locales/i18n';
+import { areAddressesEqual } from '../../../utils/helpers';
 import { ProposalStatus } from '../BitocracyPage/components/ProposalStatus/ProposalStatus';
 import { parseProposalInfo } from './ProposalPage.utils';
 import { CastVote } from './components/CastVote/CastVote';
 import { ExecutableDetails } from './components/ExecutableDetails/ExecutableDetails';
 import { ProposalInfo } from './components/ProposalInfo/ProposalInfo';
 import { VoteTimer } from './components/VoteTimer/VoteTimer';
-import { useGetProposalById } from './hooks/useGetProposals';
+import { useGetProposalById } from './hooks/useGetProposalById';
 
 const pageTranslations = translations.proposalPage;
 
 const ProposalPage: FC = () => {
   let { id } = useParams();
+
+  const adminAddress = useGetProtocolContract('governorAdmin')?.address ?? '';
+  const ownerAddress = useGetProtocolContract('governorOwner')?.address ?? '';
 
   const { proposal } = useGetProposalById(id);
 
@@ -28,7 +33,18 @@ const ProposalPage: FC = () => {
     return parseProposalInfo(proposal);
   }, [proposal]);
 
-  console.log(proposal);
+  const proposerType = useMemo(() => {
+    if (!proposal) {
+      return;
+    }
+
+    if (areAddressesEqual(proposal.emittedBy.id, adminAddress)) {
+      return t(translations.bitocracyPage.proposalType.admin) + '-';
+    } else if (areAddressesEqual(proposal.emittedBy.id, ownerAddress)) {
+      return t(translations.bitocracyPage.proposalType.owner) + '-';
+    }
+  }, [adminAddress, ownerAddress, proposal]);
+
   return (
     <>
       <Helmet>
@@ -69,7 +85,8 @@ const ProposalPage: FC = () => {
               <span className="inline-block w-20">
                 {t(pageTranslations.proposalID)}
               </span>
-              {proposal?.id}
+              {proposerType}
+              {proposal?.proposalId}
             </Paragraph>
           </div>
 

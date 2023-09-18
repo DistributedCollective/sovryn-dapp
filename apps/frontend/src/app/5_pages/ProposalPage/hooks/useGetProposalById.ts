@@ -1,0 +1,23 @@
+import { useMemo } from 'react';
+
+import { rskClient } from '../../../../utils/clients';
+import {
+  Proposal,
+  useGetProposalQuery,
+} from '../../../../utils/graphql/rsk/generated';
+
+export const useGetProposalById = (id: string | undefined) => {
+  const { loading, data } = useGetProposalQuery({
+    client: rskClient,
+    variables: {
+      id,
+    },
+  });
+
+  const proposal = useMemo(
+    () => data?.proposals[0] as Proposal | undefined,
+    [data],
+  );
+
+  return { loading, proposal };
+};

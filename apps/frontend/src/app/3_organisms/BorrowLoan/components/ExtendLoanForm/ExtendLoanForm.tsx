@@ -53,11 +53,15 @@ export const ExtendLoanForm: FC<ExtendLoanFormProps> = ({ loan }) => {
   const { checkMaintenance, States } = useMaintenance();
   const dappLocked = checkMaintenance(States.FULLD2);
 
-  const [nextRolloverDate, setNextRolloverDate] = useState(
-    dayjs(loan.rolloverDate * 1000)
-      .add(1, 'day')
-      .unix(),
+  const minRollOverDate = useMemo(
+    () =>
+      dayjs(loan.rolloverDate * 1000)
+        .add(1, 'day')
+        .unix(),
+    [loan.rolloverDate],
   );
+
+  const [nextRolloverDate, setNextRolloverDate] = useState(minRollOverDate);
   const [isCalendarVisible, setIsCalendarVisible] = useState(false);
 
   const debtToken = useMemo(
@@ -202,7 +206,7 @@ export const ExtendLoanForm: FC<ExtendLoanFormProps> = ({ loan }) => {
           date={nextRolloverDate}
           onChange={setNextRolloverDate}
           className="min-w-full mb-6"
-          minDate={loan.rolloverDate}
+          minDate={minRollOverDate}
           setIsCalendarVisible={setIsCalendarVisible}
           isCalendarVisible={isCalendarVisible}
           label={t(pageTranslations.labels.nextRolloverDate)}

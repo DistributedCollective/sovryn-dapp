@@ -12,6 +12,7 @@ export type LoanItem = {
   apr: string;
   rolloverDate: number;
   interestOwedPerDay: number;
+  startMargin: Decimal;
 };
 
 export type LoanItemSmartContract = {

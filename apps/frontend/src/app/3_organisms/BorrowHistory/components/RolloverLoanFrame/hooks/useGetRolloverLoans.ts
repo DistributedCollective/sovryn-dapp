@@ -88,6 +88,7 @@ export const useGetRolloverLoans = (
         skip: 0,
         pageSize: EXPORT_RECORD_LIMIT,
         loanIds,
+        orderBy: Rollover_OrderBy.Timestamp,
       },
     });
     let list = data?.rollovers || [];
@@ -105,7 +106,6 @@ export const useGetRolloverLoans = (
     return list.map(tx => ({
       timestamp: dateFormat(tx.timestamp),
       transactionType: t(translations.borrowHistory.transactionTypes.rollovers),
-
       rolloverFee: `${tx.principal} ${getTokenDisplayName(
         tx.loanId.collateralToken.symbol || '',
       )}`,

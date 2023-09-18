@@ -88,6 +88,7 @@ export const useGetCloseDepositLoans = (
         skip: 0,
         pageSize: EXPORT_RECORD_LIMIT,
         loanIds,
+        orderBy: CloseWithDeposit_OrderBy.Timestamp,
       },
     });
     let list = data?.closeWithDeposits || [];

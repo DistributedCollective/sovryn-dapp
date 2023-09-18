@@ -43,6 +43,7 @@ import { translations } from '../../../../../locales/i18n';
 import { zeroClient } from '../../../../../utils/clients';
 import {
   CollSurplusChange_Filter,
+  CollSurplusChange_OrderBy,
   useGetCollSurplusChangesLazyQuery,
 } from '../../../../../utils/graphql/zero/generated';
 import { dateFormat } from '../../../../../utils/helpers';
@@ -163,6 +164,7 @@ export const CollateralSurplusHistoryFrame: FC<PropsWithChildren> = ({
           collSurplusAfter: '0',
         } as CollSurplusChange_Filter,
         pageSize: EXPORT_RECORD_LIMIT,
+        orderBy: CollSurplusChange_OrderBy.SequenceNumber,
       },
     });
     let list = data?.collSurplusChanges || [];

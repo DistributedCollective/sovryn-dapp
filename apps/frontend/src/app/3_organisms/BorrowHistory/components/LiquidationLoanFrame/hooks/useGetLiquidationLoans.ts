@@ -88,6 +88,7 @@ export const useGetLiquidationLoans = (
         skip: 0,
         pageSize: EXPORT_RECORD_LIMIT,
         loanIds,
+        orderBy: Liquidate_OrderBy.Timestamp,
       },
     });
     let list = data?.liquidates || [];

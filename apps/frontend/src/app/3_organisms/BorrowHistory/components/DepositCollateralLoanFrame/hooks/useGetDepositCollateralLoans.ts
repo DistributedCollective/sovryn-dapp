@@ -88,6 +88,7 @@ export const useGetDepositCollateralLoans = (
         skip: 0,
         pageSize: EXPORT_RECORD_LIMIT,
         loanIds,
+        orderBy: DepositCollateral_OrderBy.Timestamp,
       },
     });
     let list = data?.depositCollaterals || [];

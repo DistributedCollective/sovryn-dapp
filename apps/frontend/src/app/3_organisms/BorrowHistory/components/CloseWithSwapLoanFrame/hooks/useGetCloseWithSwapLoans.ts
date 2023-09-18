@@ -88,6 +88,7 @@ export const useGetCloseWithSwapLoans = (
         skip: 0,
         pageSize: EXPORT_RECORD_LIMIT,
         loanIds,
+        orderBy: CloseWithSwap_OrderBy.Timestamp,
       },
     });
     let list = data?.closeWithSwaps || [];

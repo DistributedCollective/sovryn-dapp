@@ -5,6 +5,7 @@ import { useTimer } from 'react-timer-hook';
 
 import { Paragraph, ParagraphSize } from '@sovryn/ui';
 
+import { useBlockNumber } from '../../../../../hooks/useBlockNumber';
 import { translations } from '../../../../../locales/i18n';
 import { Proposal } from '../../../../../utils/graphql/rsk/generated';
 import { BLOCK_TIME_IN_SECONDS } from '../../../BitocracyPage/BitocracyPage.constants';
@@ -20,6 +21,7 @@ type VoteTimerProps = {
 
 export const VoteTimer: FC<VoteTimerProps> = ({ proposal, className }) => {
   const status = useProposalStatus(proposal);
+  const { value: blockNumber } = useBlockNumber();
 
   const expiryTimestamp = useMemo(() => {
     const secondsBetweenBlocks =
@@ -37,8 +39,10 @@ export const VoteTimer: FC<VoteTimerProps> = ({ proposal, className }) => {
       return t(pageTranslations.voteEnded);
     }
 
-    return [days, hours, minutes, seconds].join(':');
-  }, [days, hours, minutes, seconds, status]);
+    return `${[days, hours, minutes, seconds].join(':')} (${
+      proposal.endBlock - blockNumber
+    }) ${t(pageTranslations.blocks)}`;
+  }, [blockNumber, days, hours, minutes, proposal.endBlock, seconds, status]);
 
   return (
     <div className={className}>

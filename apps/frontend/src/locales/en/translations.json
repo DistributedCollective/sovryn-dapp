@@ -643,6 +643,7 @@
         "status": "Status",
         "timeToVote": "Time left to vote",
         "voteEnded": "Vote ended",
+        "blocks": "blocks",
         "castYourVote": "Cast your vote",
         "connectMessage": "Connect wallet to check voter status",
         "discussionLink": "Discussion link:",

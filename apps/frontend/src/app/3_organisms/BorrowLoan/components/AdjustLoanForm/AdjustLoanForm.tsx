@@ -183,6 +183,10 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
   const maximumCollateralWithdraw = useGetMaxCollateralWithdrawal(loan);
 
   const maxCollateralAmount = useMemo(() => {
+    if (debtTab === DebtTabAction.Close) {
+      return decimalic(loan.collateral);
+    }
+
     if (isCollateralWithdrawMode) {
       return maximumCollateralWithdraw;
     }
@@ -191,8 +195,10 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
       ? Decimal.ZERO
       : maximumCollateralAmount;
   }, [
+    debtTab,
     isCollateralWithdrawMode,
     isMaximumCollateralAmountLoading,
+    loan.collateral,
     maximumCollateralAmount,
     maximumCollateralWithdraw,
   ]);

@@ -45,7 +45,6 @@ import { useGetMaintenanceStates } from '../../../BorrowLoan/components/AdjustLo
 import { AdvancedSettings } from '../AdvancedSettings/AdvancedSettings';
 import { DEFAULT_LOAN_DURATION } from './NewLoanForm.constants';
 import {
-  calculateMargin,
   calculatePrepaidInterest,
   getCollateralRatioThresholds,
   getOriginationFeeAmount,
@@ -479,15 +478,6 @@ export const NewLoanForm: FC<NewLoanFormProps> = ({ pool }) => {
           dataAttribute="new-loan-collateral-ratio-error"
         />
       )}
-
-      <p>
-        Margin:{' '}
-        {calculateMargin(
-          collateralSize,
-          borrowSize,
-          collateralToLoanRate,
-        ).toString()}
-      </p>
 
       <div className="mt-6">
         <SimpleTable>

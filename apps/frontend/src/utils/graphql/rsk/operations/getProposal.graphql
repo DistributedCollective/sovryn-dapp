@@ -1,5 +1,5 @@
-query getProposal($id: ID) {
-  proposals(where: { id: $id }) {
+query getProposal($id: ID!) {
+  proposal(id: $id) {
     id
     canceled {
       id

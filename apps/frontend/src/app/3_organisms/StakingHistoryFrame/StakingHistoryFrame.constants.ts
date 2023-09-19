@@ -20,4 +20,8 @@ export const stakingHistoryOptions = [
     value: StakingHistoryType.delegate,
     label: t(translations.stakingHistory.delegate),
   },
+  {
+    value: StakingHistoryType.delegateVesting,
+    label: t(translations.stakingHistory.delegateVesting),
+  },
 ];

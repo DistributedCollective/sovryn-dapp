@@ -5,6 +5,7 @@ import { StakingDelegateChanges } from './components/StakingDelegateChanges/Stak
 import { StakingExtendedDuration } from './components/StakingExtendedDuration/StakingExtendedDuration';
 import { StakingHistory } from './components/StakingHistory/StakingHistory';
 import { StakingWithdraws } from './components/StakingWithdraws/StakingWithdraws';
+import { VestingDelegateChanges } from './components/VestingDelegateChanges/VestingDelegateChanges';
 
 export const StakingHistoryFrame: FC = () => {
   const [selectedHistoryType, setSelectedHistoryType] = useState(
@@ -36,6 +37,12 @@ export const StakingHistoryFrame: FC = () => {
       )}
       {selectedHistoryType === StakingHistoryType.delegate && (
         <StakingDelegateChanges
+          selectedHistoryType={selectedHistoryType}
+          onChangeHistoryType={onChangeHistoryType}
+        />
+      )}
+      {selectedHistoryType === StakingHistoryType.delegateVesting && (
+        <VestingDelegateChanges
           selectedHistoryType={selectedHistoryType}
           onChangeHistoryType={onChangeHistoryType}
         />

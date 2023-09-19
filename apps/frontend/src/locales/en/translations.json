@@ -826,7 +826,7 @@
             "collateralSurplus": "Collateral surplus"
         },
         "transactionTypes": {
-            "createLoan": "Create loan",
+            "createLoan": "Create / Increase loan",
             "depositCollateral": "Deposit collateral",
             "closeSwap": "Close with swap",
             "closeDeposit": "Close with deposit",

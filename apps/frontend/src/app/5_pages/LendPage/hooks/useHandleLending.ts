@@ -16,8 +16,8 @@ import { useTransactionContext } from '../../../../contexts/TransactionContext';
 import { useAccount } from '../../../../hooks/useAccount';
 import { translations } from '../../../../locales/i18n';
 import { asyncCall } from '../../../../store/rxjs/provider-cache';
+import { LendingPoolDictionary } from '../../../../utils/LendingPoolDictionary';
 import { prepareApproveTransaction } from '../../../../utils/transactions';
-import { LendingPoolDictionary } from '../utils/LendingPoolDictionary';
 import { lendingBalanceOf } from '../utils/contract-calls';
 
 export type Args = Partial<{

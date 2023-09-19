@@ -232,6 +232,7 @@ export const InputBase = React.forwardRef<HTMLInputElement, InputBaseProps>(
         onChange={shouldAllowChanges ? handleChange : noop}
         onBlur={shouldAllowChanges ? handleOnBlur : resetIOSStylesOnBlur}
         onFocus={handleOnFocus}
+        title=""
         {...applyDataAttr(dataAttribute)}
       />
     );

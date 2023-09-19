@@ -6,7 +6,7 @@ import { HelperButton } from '@sovryn/ui';
 
 import { AssetRenderer } from '../../../../2_molecules/AssetRenderer/AssetRenderer';
 import { translations } from '../../../../../locales/i18n';
-import { LendingPool } from '../../utils/LendingPool';
+import { LendingPool } from '../../../../../utils/LendingPool';
 import { AcceptedCollateral } from '../AcceptedCollateral/AcceptedCollateral';
 import { NextSupplyInterestRate } from '../NextSupplyInterestRate/NextSupplyInterestRate';
 import { LendFrameAction } from './components/LendFrameAction/LendFrameAction';

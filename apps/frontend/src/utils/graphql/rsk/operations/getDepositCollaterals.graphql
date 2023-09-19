@@ -1,0 +1,34 @@
+query getDepositCollaterals(
+  $loanIds: [String!]
+  $skip: Int!
+  $pageSize: Int!
+  $orderBy: DepositCollateral_orderBy
+  $orderDirection: OrderDirection
+) {
+  depositCollaterals(
+    where: { loanId_in: $loanIds }
+    first: $pageSize
+    skip: $skip
+    orderBy: $orderBy
+    orderDirection: $orderDirection
+  ) {
+    loanId {
+      id
+      collateralToken {
+        id
+        symbol
+      }
+      loanToken {
+        id
+        symbol
+      }
+    }
+    depositAmount
+    rate
+    timestamp
+    emittedBy
+    transaction {
+      id
+    }
+  }
+}

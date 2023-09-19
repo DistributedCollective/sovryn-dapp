@@ -7,12 +7,12 @@ import { fromWei } from '../../../../../../../../utils/math';
 export const useGetTotalAssetBorrow = (asset: SupportedTokens) => {
   const lendContract = useLoadContract(asset, 'loanTokens');
 
-  const { value: borrowedAmount } = useCacheCall(
-    `loanTokens/${asset}/totalAssetBorrow`,
-    async () => lendContract?.totalAssetBorrow().then(fromWei),
+  const { value } = useCacheCall(
+    `loanTokens/${lendContract?.address}/totalAssetBorrow`,
+    async () => lendContract?.totalAssetBorrow(),
     [],
     '0',
   );
 
-  return { borrowedAmount };
+  return { borrowedAmount: value ? fromWei(value) : value };
 };

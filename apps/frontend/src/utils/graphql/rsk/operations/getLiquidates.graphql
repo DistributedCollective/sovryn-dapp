@@ -1,0 +1,35 @@
+query getLiquidates(
+  $loanIds: [String!]
+  $skip: Int!
+  $pageSize: Int!
+  $orderBy: Liquidate_orderBy
+  $orderDirection: OrderDirection
+) {
+  liquidates(
+    where: { loanId_in: $loanIds }
+    first: $pageSize
+    skip: $skip
+    orderBy: $orderBy
+    orderDirection: $orderDirection
+  ) {
+    loanId {
+      id
+      collateralToken {
+        id
+        symbol
+      }
+      loanToken {
+        id
+        symbol
+      }
+    }
+    collateralToken
+    loanToken
+    repayAmount
+    collateralWithdrawAmount
+    timestamp
+    transaction {
+      id
+    }
+  }
+}

@@ -75,7 +75,15 @@
         "funding": "Funding",
         "fundWallet": "Fund your Wallet",
         "nav": {
-            "borrow": "Borrow",
+            "borrow": {
+                "title": "Borrow",
+                "subMenu": {
+                    "fixedInterest": "Fixed-interest loans",
+                    "fixedInterestDescription": "Borrow without rate hikes",
+                    "lineOfCredit": "Zero line of credit",
+                    "lineOfCreditDescription": "Borrow without interest"
+                }
+            },
             "earn": {
                 "title": "Earn",
                 "subMenu": {
@@ -378,6 +386,7 @@
         "minimumReceived": "Minimum received",
         "maximumPrice": "Maximum price"
     },
+
     "stakePage": {
         "meta": {
             "title": "Stake - Sovryn"
@@ -469,6 +478,123 @@
             "delegateStakeTitle": "Delegate voting power"
         }
     },
+
+    "fixedInterestPage": {
+        "meta": {
+            "title": "Fixed-interest loans - Sovryn",
+            "description": "TBD"
+        },
+        "title": "Fixed-interest loans",
+        "subtitle": "Borrow without rate hikes",
+        "invalidAmountError": "Exceeds maximum amount",
+        "borrowAssetsTable": {
+            "title": "Assets to borrow",
+            "borrowAprMobile": "APR",
+            "columns": {
+                "asset": "Asset",
+                "borrowApr": "Borrow APR",
+                "availableSupply": "Available supply",
+                "acceptedCollateral": "Accepted collateral",
+                "minCollateralRatio": "Min collateral ratio",
+                "minCollateralRatioTooltip": "The minimum collateral ratio required to maintain the loan after it is opened. This may differ from the minimum initial collateral ratio, which changes depending on the collateral asset used."
+            },
+            "action": "New loan"
+        },
+        "openLoansTable": {
+            "title": "Loans",
+            "columns": {
+                "debt": "Debt",
+                "collateral": "Collateral",
+                "collateralRatio": "Collateral ratio",
+                "liquidationPrice": "Liquidation price",
+                "apr": "APR",
+                "rolloverDate": "Rollover date"
+            },
+            "actions": {
+                "adjust": "Adjust",
+                "extend": "Extend"
+            }
+        },
+        "adjustLoanDialog": {
+            "title": "Adjust loan",
+            "currentDebt": "Current debt",
+            "currentCollateral": "Current collateral",
+            "collateralRatio": "Collateral ratio",
+            "actions": {
+                "borrow": "Borrow",
+                "repay": "Repay",
+                "close": "Close",
+                "add": "Add collateral",
+                "withdraw": "Withdraw collateral"
+            },
+            "dialogTitles": {
+                "close": "Close a loan",
+                "withdrawCollateral": "Withdraw collateral",
+                "repay": "Repay a loan",
+                "adjust": "Adjust loan",
+                "addCollateral": "Add collateral"
+            },
+            "labels": {
+                "borrowApr": "Borrow APR",
+                "originationFee": "Origination fee",
+                "interestRefund": "Interest refund",
+                "newCollateralBalance": "New collateral balance",
+                "newTotalDebt": "New total debt",
+                "liquidationPrice": "Liquidation price",
+                "collateralPrice": "{{token}} price",
+                "collateralRatioError": "Collateral ratio must be at least {{min}}%"
+            },
+            "closeTabInsufficientLoanTokenBalance": "You need an additional {{amount}} {{token}} in order to close your loan."
+        },
+        "extendLoanDialog": {
+            "title": "Extend loan",
+            "currentDebt": "Current debt",
+            "currentCollateral": "Current collateral",
+            "collateralRatio": "Collateral ratio",
+            "confirm": "Confirm",
+            "dialogTitles": {
+                "extend": "Extend loan"
+            },
+            "labels": {
+                "currentRolloverDate": "Current rollover date",
+                "nextRolloverDate": "Next rollover date",
+                "payPrepaidInterest": "Pay prepaid interest with",
+                "prepaidInterestAmount": "Prepaid interest amount",
+                "collateral": "Collateral",
+                "wallet": "Wallet",
+                "newRolloverDate": "New rollover date",
+                "newCollateralBalance": "New collateral balance",
+                "liquidationPrice": "Liquidation price",
+                "collateralPrice": "{{token}} price",
+                "collateralRatioError": "Collateral ratio must be at least {{min}}%"
+            }
+        },
+        "newLoanDialog": {
+            "title": "New loan",
+            "borrow": "Borrow",
+            "collateral": "Collateral",
+            "invalidAmountError": "Exceeds maximum amount",
+            "labels": {
+                "borrowApr": "Borrow APR",
+                "firstRolloverDate": "First rollover date",
+                "maxDuration": "max duration",
+                "preparedInterest": "Prepaid interest",
+                "originationFee": "Origination fee",
+                "totalDebt": "Total debt",
+                "collateralRatio": "Collateral ratio",
+                "collateralRatioError": "Collateral ratio must be at least {{min}}%",
+                "liquidationPrice": "Liquidation price",
+                "collateralPrice": "{{token}} price",
+                "disclaimer": "I understand that my collateral may be liquidated or used to pay rollover fees if applicable. <0>Learn more</0>",
+                "disclaimerCTA": "Learn more"
+            },
+            "transaction": {
+                "title": "Open new loan"
+            }
+        },
+        "collateralRatio": "collateral ratio"
+    },
+
     "fastBtc": {
         "mainScreen": {
             "title": "Funding",
@@ -650,7 +776,7 @@
         "title": "My transaction history",
         "table": {
             "tabs": {
-                "lineOfCredit": "Line of credit",
+                "borrow": "Borrow",
                 "redemptions": "Redemptions",
                 "earn": "Earn",
                 "convert": "Conversion",
@@ -688,10 +814,24 @@
             "adjust": "Adjust"
         }
     },
-    "locHistory": {
+    "borrowHistory": {
         "types": {
             "lineOfCredit": "Line of credit",
+            "newLoan": "Fixed-interest loan - New loan",
+            "depositCollateralLoan": "Fixed-interest loan - Adjust - Deposit collateral",
+            "closeWithSwapLoan": "Fixed-interest loan - Adjust - Close with swap",
+            "closeWithDepositLoan": "Fixed-interest loan - Adjust - Close with deposit",
+            "liquidationLoan": "Fixed-interest loan - Liquidation",
+            "rolloversLoan": "Fixed-interest loan - Rollovers",
             "collateralSurplus": "Collateral surplus"
+        },
+        "transactionTypes": {
+            "createLoan": "Create / Increase loan",
+            "depositCollateral": "Deposit collateral",
+            "closeSwap": "Close with swap",
+            "closeDeposit": "Close with deposit",
+            "liquidation": "Liquidation",
+            "rollovers": "Rollovers"
         }
     },
     "transactionHistory": {
@@ -763,6 +903,25 @@
             "columns": {
                 "balanceChange": "Balance change"
             }
+        }
+    },
+    "loanHistory": {
+        "table": {
+            "collateralChange": "Collateral change",
+            "collateralAmount": "Collateral amount",
+            "collateralWithdrawn": "Collateral withdrawn",
+            "collateralLiquidated": "Collateral liquidated",
+            "newCollateral": "New collateral balance",
+            "debtChange": "Debt change",
+            "debtAmount": "Debt amount",
+            "debtRepaid": "Debt repaid",
+            "rolloverFee": "Rollover fee",
+            "interestPayment": "Interest payment",
+            "originationFee": "Origination fee",
+            "interest": "Interest payment/refund",
+            "newDebt": "New debt balance",
+            "loanID": "Loan ID",
+            "TXID": "TXID"
         }
     },
     "stabilityPoolHistory": {

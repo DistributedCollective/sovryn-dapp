@@ -39,6 +39,9 @@ const RewardsPage = loadable(
 );
 const LendPage = loadable(() => import('./app/5_pages/LendPage/LendPage'));
 const StakePage = loadable(() => import('./app/5_pages/StakePage/StakePage'));
+const BorrowPage = loadable(
+  () => import('./app/5_pages/BorrowPage/BorrowPage'),
+);
 
 const routes = [
   {
@@ -57,9 +60,17 @@ const routes = [
         loader: zeroPageLoader,
       },
       {
-        path: '/borrow',
+        path: '/borrow/line-of-credit',
         element: <Zero />,
         loader: zeroPageLoader,
+      },
+      {
+        path: '/borrow/fixed-interest',
+        element: <BorrowPage />,
+      },
+      {
+        path: '/borrow',
+        loader: () => redirect('/borrow/fixed-interest'),
       },
       {
         path: '/earn/stability-pool',

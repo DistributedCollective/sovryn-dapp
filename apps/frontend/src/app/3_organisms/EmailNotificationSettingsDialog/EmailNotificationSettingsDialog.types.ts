@@ -21,6 +21,9 @@ export enum NotificationMessageType {
   ZeroRecovery = 'ZeroRecovery',
   ZeroRedemptionFull = 'ZeroRedemptionFull',
   ZeroRedemptionPartial = 'ZeroRedemptionPartial',
+  LoanMarginCall = 'LoanMarginCall',
+  LoanLiquidation = 'LoanLiquidation',
+  LoanMarginCallUndercollateralized = 'LoanMarginCallUndercollateralized',
 }
 
 export enum AlertGroup {
@@ -39,12 +42,15 @@ export const AlertGroupToNotificationsMapping: Record<
     NotificationMessageType.ZeroCcr,
     NotificationMessageType.ZeroCriticalIcrNormal,
     NotificationMessageType.ZeroCriticalIcrRecovery,
+    NotificationMessageType.LoanMarginCall,
+    NotificationMessageType.LoanMarginCallUndercollateralized,
   ],
   Liquidations: [
     NotificationMessageType.ZeroLiquidation,
     NotificationMessageType.ZeroLiquidationSurplus,
     NotificationMessageType.ZeroRedemptionFull,
     NotificationMessageType.ZeroRedemptionPartial,
+    NotificationMessageType.LoanLiquidation,
   ],
   StabilityPool: [NotificationMessageType.ZeroGain],
   System: [
@@ -101,6 +107,18 @@ export const defaultSubscriptionsArray: Notification[] = [
   },
   {
     notification: NotificationMessageType.ZeroRedemptionPartial,
+    isSubscribed: false,
+  },
+  {
+    notification: NotificationMessageType.LoanMarginCall,
+    isSubscribed: false,
+  },
+  {
+    notification: NotificationMessageType.LoanMarginCallUndercollateralized,
+    isSubscribed: false,
+  },
+  {
+    notification: NotificationMessageType.LoanLiquidation,
     isSubscribed: false,
   },
 ];

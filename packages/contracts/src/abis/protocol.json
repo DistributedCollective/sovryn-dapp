@@ -2226,6 +2226,37 @@
     "constant": true,
     "inputs": [
       {
+        "internalType": "bytes32",
+        "name": "loanId",
+        "type": "bytes32"
+      },
+      {
+        "internalType": "uint256",
+        "name": "depositAmount",
+        "type": "uint256"
+      }
+    ],
+    "name": "checkCloseWithDepositIsTinyPosition",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "isTinyPosition",
+        "type": "bool"
+      },
+      {
+        "internalType": "uint256",
+        "name": "tinyPositionAmount",
+        "type": "uint256"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [
+      {
         "internalType": "address",
         "name": "sourceToken",
         "type": "address"
@@ -2450,6 +2481,42 @@
       }
     ],
     "name": "extendLoanByInterest",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "secondsExtended",
+        "type": "uint256"
+      }
+    ],
+    "payable": true,
+    "stateMutability": "payable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "loanId",
+        "type": "bytes32"
+      },
+      {
+        "internalType": "uint256",
+        "name": "depositAmount",
+        "type": "uint256"
+      },
+      {
+        "internalType": "bool",
+        "name": "useCollateral",
+        "type": "bool"
+      },
+      {
+        "internalType": "bytes",
+        "name": "",
+        "type": "bytes"
+      }
+    ],
+    "name": "extendLoanDuration",
     "outputs": [
       {
         "internalType": "uint256",

@@ -9,7 +9,7 @@ import { Decimal } from '@sovryn/utils';
 import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { AssetRenderer } from '../../../../2_molecules/AssetRenderer/AssetRenderer';
 import { translations } from '../../../../../locales/i18n';
-import { LendingPoolDictionary } from '../../utils/LendingPoolDictionary';
+import { LendingPoolDictionary } from '../../../../../utils/LendingPoolDictionary';
 import { AcceptedCollateral } from '../AcceptedCollateral/AcceptedCollateral';
 import styles from './CurrentStats.module.css';
 

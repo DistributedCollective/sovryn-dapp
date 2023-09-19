@@ -3,7 +3,11 @@ import { useEffect } from 'react';
 
 import classNames from 'classnames';
 
-import { getTokenDetails, SupportedTokens } from '@sovryn/contracts';
+import {
+  getTokenDetails,
+  getTokenDetailsByAddress,
+  SupportedTokens,
+} from '@sovryn/contracts';
 import { applyDataAttr } from '@sovryn/ui';
 
 import { getTokenDisplayName } from '../../../constants/tokens';
@@ -13,7 +17,11 @@ type AssetRendererProps = {
   /**
    * The asset that will be rendered and it's required.
    */
-  asset: SupportedTokens;
+  asset?: SupportedTokens;
+  /**
+   * The asset address.
+   */
+  address?: string;
   /**
    * Whether to show the asset logo or not.
    * */
@@ -39,22 +47,45 @@ type AssetRendererProps = {
 
 export const AssetRenderer: FC<AssetRendererProps> = ({
   asset,
+  address,
   showAssetLogo,
   assetClassName,
   className,
   dataAttribute,
   logoClassName,
 }) => {
+  const [token, setToken] = useState(asset);
   const [logo, setLogo] = useState<string | undefined>(undefined);
 
   useEffect(() => {
-    const getLogo = async () =>
-      await getTokenDetails(asset)
-        .then(item => setLogo(item.icon))
-        .catch(() => setLogo(''));
+    const getAssetDetails = async () => {
+      if (asset) {
+        await getTokenDetails(asset)
+          .then(item => {
+            setLogo(item.icon);
+            setToken(item.symbol);
+          })
+          .catch(() => setLogo(''));
+      }
+    };
 
-    showAssetLogo && getLogo();
-  }, [asset, showAssetLogo]);
+    !address && !!asset && getAssetDetails();
+  }, [address, asset, showAssetLogo]);
+
+  useEffect(() => {
+    const getAssetDetails = async () => {
+      if (address) {
+        await getTokenDetailsByAddress(address)
+          .then(item => {
+            setLogo(item.icon);
+            setToken(item.symbol);
+          })
+          .catch(() => setLogo(''));
+      }
+    };
+
+    !asset && !!address && getAssetDetails();
+  }, [address, asset, showAssetLogo]);
 
   return (
     <div
@@ -67,9 +98,11 @@ export const AssetRenderer: FC<AssetRendererProps> = ({
           dangerouslySetInnerHTML={{ __html: logo }}
         />
       )}
-      <span className={classNames(styles.asset, assetClassName)}>
-        {getTokenDisplayName(asset)}
-      </span>
+      {token && (
+        <span className={classNames(styles.asset, assetClassName)}>
+          {getTokenDisplayName(token)}
+        </span>
+      )}
     </div>
   );
 };

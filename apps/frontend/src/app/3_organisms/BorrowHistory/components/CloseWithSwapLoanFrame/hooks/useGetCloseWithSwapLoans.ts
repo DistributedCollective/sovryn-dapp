@@ -85,9 +85,9 @@ export const useGetCloseWithSwapLoans = (
   const exportData = useCallback(async () => {
     const { data } = await getCloseWithSwaps({
       variables: {
+        ...config,
         skip: 0,
         pageSize: EXPORT_RECORD_LIMIT,
-        loanIds,
       },
     });
     let list = data?.closeWithSwaps || [];
@@ -118,7 +118,7 @@ export const useGetCloseWithSwapLoans = (
         TXID: tx.transaction.id,
       };
     });
-  }, [addNotification, getCloseWithSwaps, loanIds]);
+  }, [addNotification, config, getCloseWithSwaps]);
 
   return {
     loading: loading || loadingLoanIds,

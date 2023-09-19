@@ -40,7 +40,10 @@ import { useBlockNumber } from '../../../../../hooks/useBlockNumber';
 import { useMaintenance } from '../../../../../hooks/useMaintenance';
 import { translations } from '../../../../../locales/i18n';
 import { rskClient } from '../../../../../utils/clients';
-import { useGetBorrowHistoryLazyQuery } from '../../../../../utils/graphql/rsk/generated';
+import {
+  Borrow_OrderBy,
+  useGetBorrowHistoryLazyQuery,
+} from '../../../../../utils/graphql/rsk/generated';
 import { dateFormat } from '../../../../../utils/helpers';
 import { useGetNewLoans } from './hooks/useGetNewLoans';
 
@@ -182,6 +185,8 @@ export const NewLoanHistoryFrame: FC<PropsWithChildren> = ({ children }) => {
         skip: 0,
         pageSize: EXPORT_RECORD_LIMIT,
         user: account?.toLowerCase(),
+        orderBy: (orderOptions.orderBy as Borrow_OrderBy) || undefined,
+        orderDirection: orderOptions.orderDirection || undefined,
       },
     });
     let list = data?.borrows || [];
@@ -211,7 +216,13 @@ export const NewLoanHistoryFrame: FC<PropsWithChildren> = ({ children }) => {
       loanId: tx.loanId.id,
       TXID: tx.transaction.id,
     }));
-  }, [account, addNotification, getBorrowHistory]);
+  }, [
+    account,
+    addNotification,
+    getBorrowHistory,
+    orderOptions.orderBy,
+    orderOptions.orderDirection,
+  ]);
 
   useEffect(() => {
     setPage(0);

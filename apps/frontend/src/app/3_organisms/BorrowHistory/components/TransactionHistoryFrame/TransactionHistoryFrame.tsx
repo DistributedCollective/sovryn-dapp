@@ -480,11 +480,12 @@ export const TransactionHistoryFrame: FC<PropsWithChildren> = ({
   const exportData = useCallback(async () => {
     const data = await getTroves({
       variables: {
-        user: account,
         skip: 0,
         pageSize: EXPORT_RECORD_LIMIT,
-        orderBy: orderOptions.orderBy as TroveChange_OrderBy,
-        orderDirection: orderOptions.orderDirection,
+        user: account?.toLowerCase(),
+        orderBy: (orderOptions.orderBy as TroveChange_OrderBy) || undefined,
+        orderDirection: orderOptions.orderDirection || undefined,
+        filters,
       },
       client: zeroClient,
     }).then(res => res.data);
@@ -523,6 +524,7 @@ export const TransactionHistoryFrame: FC<PropsWithChildren> = ({
     account,
     orderOptions.orderBy,
     orderOptions.orderDirection,
+    filters,
     addNotification,
     getTroveType,
     renderLiquidationReserve,

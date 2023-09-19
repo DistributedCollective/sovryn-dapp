@@ -10,8 +10,12 @@ import {
   ButtonSize,
   ButtonStyle,
   Heading,
+  Icon,
+  IconNames,
   Paragraph,
   ParagraphSize,
+  TooltipTrigger,
+  Tooltip,
 } from '@sovryn/ui';
 
 import { useAccount } from '../../../../../hooks/useAccount';
@@ -20,6 +24,7 @@ import { Proposal } from '../../../../../utils/graphql/rsk/generated';
 import { ProposalState } from '../../../BitocracyPage/BitocracyPage.types';
 import { useProposalStatus } from '../../../BitocracyPage/hooks/useProposalStatus';
 import { useGetPersonalStakingStatistics } from '../../../StakePage/components/PersonalStakingStatistics/hooks/useGetPersonalStakingStatistics';
+import { useGetUserVote } from '../../hooks/useGetUserVote';
 
 const pageTranslations = translations.proposalPage;
 
@@ -32,6 +37,7 @@ export const CastVote: FC<CastVoteProps> = ({ proposal, className }) => {
   const { votingPower } = useGetPersonalStakingStatistics();
   const { account } = useAccount();
   const status = useProposalStatus(proposal);
+  const { vote } = useGetUserVote(proposal.id);
 
   const hasVotingPower = useMemo(
     () => (votingPower ? Number(votingPower) > 0 : false),
@@ -88,6 +94,72 @@ export const CastVote: FC<CastVoteProps> = ({ proposal, className }) => {
           >
             <Trans i18nKey={pageTranslations.connectMessage} />
           </Paragraph>
+        )}
+        {!!vote && (
+          <div className="flex items-center gap-8">
+            <Tooltip
+              content={
+                <span className="font-medium">
+                  {t(pageTranslations.supportText)}
+                </span>
+              }
+              trigger={TooltipTrigger.click}
+              disabled={!vote.support}
+            >
+              <div>
+                <Button
+                  className={classNames('w-52', {
+                    'bg-gray-50': !!vote.support,
+                    'hover:bg-gray-80 focus:bg-gray-80': !vote.support,
+                  })}
+                  style={ButtonStyle.secondary}
+                  size={ButtonSize.large}
+                  disabled={!vote.support}
+                  text={
+                    <span className="flex items-center">
+                      <Icon
+                        className="mr-2.5 text-positive"
+                        size={14}
+                        icon={IconNames.CHECK}
+                      />
+                      {t(pageTranslations.support)}
+                    </span>
+                  }
+                />
+              </div>
+            </Tooltip>
+
+            <Tooltip
+              content={
+                <span className="font-medium">
+                  {t(pageTranslations.rejectText)}
+                </span>
+              }
+              trigger={TooltipTrigger.click}
+              disabled={vote.support}
+            >
+              <div>
+                <Button
+                  className={classNames('w-52', {
+                    'bg-gray-50': !vote.support,
+                    'hover:bg-gray-80 focus:bg-gray-80': vote.support,
+                  })}
+                  style={ButtonStyle.secondary}
+                  size={ButtonSize.large}
+                  text={
+                    <span className="flex items-center">
+                      <Icon
+                        className="mr-2.5 text-negative"
+                        size={12}
+                        icon={IconNames.X_MARK}
+                      />
+                      {t(pageTranslations.reject)}
+                    </span>
+                  }
+                />
+              </div>
+            </Tooltip>
+          </div>
         )}
       </div>
     </div>

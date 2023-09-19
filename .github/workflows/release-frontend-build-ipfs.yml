@@ -26,6 +26,7 @@ jobs:
           pinataSecret: ${{ secrets.PINATA_SECRET }}
   upload_build:
     name: Upload Frontend Build To IPFS
+    needs: unpin_previous_builds
     runs-on: ubuntu-latest
     outputs:
       commit_short_hash: ${{ steps.commit.outputs.short }}

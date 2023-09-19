@@ -185,7 +185,8 @@ export const NewLoanHistoryFrame: FC<PropsWithChildren> = ({ children }) => {
         skip: 0,
         pageSize: EXPORT_RECORD_LIMIT,
         user: account?.toLowerCase(),
-        orderBy: Borrow_OrderBy.Timestamp,
+        orderBy: (orderOptions.orderBy as Borrow_OrderBy) || undefined,
+        orderDirection: orderOptions.orderDirection || undefined,
       },
     });
     let list = data?.borrows || [];
@@ -215,7 +216,13 @@ export const NewLoanHistoryFrame: FC<PropsWithChildren> = ({ children }) => {
       loanId: tx.loanId.id,
       TXID: tx.transaction.id,
     }));
-  }, [account, addNotification, getBorrowHistory]);
+  }, [
+    account,
+    addNotification,
+    getBorrowHistory,
+    orderOptions.orderBy,
+    orderOptions.orderDirection,
+  ]);
 
   useEffect(() => {
     setPage(0);

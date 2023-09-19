@@ -85,10 +85,9 @@ export const useGetCloseDepositLoans = (
   const exportData = useCallback(async () => {
     const { data } = await getCloseWithDeposits({
       variables: {
+        ...config,
         skip: 0,
         pageSize: EXPORT_RECORD_LIMIT,
-        loanIds,
-        orderBy: CloseWithDeposit_OrderBy.Timestamp,
       },
     });
     let list = data?.closeWithDeposits || [];
@@ -119,7 +118,7 @@ export const useGetCloseDepositLoans = (
         TXID: tx.transaction.id,
       };
     });
-  }, [addNotification, getCloseWithDeposits, loanIds]);
+  }, [addNotification, config, getCloseWithDeposits]);
 
   return {
     loading: loading || loadingLoanIds,

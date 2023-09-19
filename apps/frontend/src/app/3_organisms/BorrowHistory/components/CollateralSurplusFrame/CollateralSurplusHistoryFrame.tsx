@@ -8,12 +8,10 @@ import React, {
 } from 'react';
 
 import { t } from 'i18next';
-import { nanoid } from 'nanoid';
 
 import {
   ErrorBadge,
   ErrorLevel,
-  NotificationType,
   OrderDirection,
   OrderOptions,
   Pagination,
@@ -31,23 +29,12 @@ import {
   BITCOIN,
   BTC_RENDER_PRECISION,
 } from '../../../../../constants/currencies';
-import {
-  DEFAULT_HISTORY_FRAME_PAGE_SIZE,
-  EXPORT_RECORD_LIMIT,
-} from '../../../../../constants/general';
-import { useNotificationContext } from '../../../../../contexts/NotificationContext';
+import { DEFAULT_HISTORY_FRAME_PAGE_SIZE } from '../../../../../constants/general';
 import { useAccount } from '../../../../../hooks/useAccount';
 import { useBlockNumber } from '../../../../../hooks/useBlockNumber';
 import { useMaintenance } from '../../../../../hooks/useMaintenance';
 import { translations } from '../../../../../locales/i18n';
-import { zeroClient } from '../../../../../utils/clients';
-import {
-  CollSurplusChange_Filter,
-  CollSurplusChange_OrderBy,
-  useGetCollSurplusChangesLazyQuery,
-} from '../../../../../utils/graphql/zero/generated';
 import { dateFormat } from '../../../../../utils/helpers';
-import { formatValue } from '../../../../../utils/math';
 import { useGetCollateralSurplusWithdrawals } from './hooks/useGetCollateralSurplusWithdrawals';
 
 const pageSize = DEFAULT_HISTORY_FRAME_PAGE_SIZE;
@@ -56,7 +43,6 @@ export const CollateralSurplusHistoryFrame: FC<PropsWithChildren> = ({
   children,
 }) => {
   const { account } = useAccount();
-  const { addNotification } = useNotificationContext();
 
   const [page, setPage] = useState(0);
   const chain = chains.find(chain => chain.id === defaultChainId);
@@ -68,20 +54,12 @@ export const CollateralSurplusHistoryFrame: FC<PropsWithChildren> = ({
     orderDirection: OrderDirection.Desc,
   });
 
-  const { data, loading, refetch } = useGetCollateralSurplusWithdrawals(
-    account,
-    pageSize,
-    page,
-    orderOptions,
-  );
+  const { data, loading, refetch, exportData } =
+    useGetCollateralSurplusWithdrawals(account, pageSize, page, orderOptions);
 
   useEffect(() => {
     refetch();
   }, [refetch, block]);
-
-  const [getCollSurplusChanges] = useGetCollSurplusChangesLazyQuery({
-    client: zeroClient,
-  });
 
   const renderCollateralChange = useCallback(
     (collSurplusChange: string) => (
@@ -154,44 +132,6 @@ export const CollateralSurplusHistoryFrame: FC<PropsWithChildren> = ({
     () => !loading && data?.length < pageSize,
     [loading, data],
   );
-
-  const exportData = useCallback(async () => {
-    const { data } = await getCollSurplusChanges({
-      variables: {
-        skip: 0,
-        filters: {
-          user_contains: account || '',
-          collSurplusAfter: '0',
-        } as CollSurplusChange_Filter,
-        pageSize: EXPORT_RECORD_LIMIT,
-        orderBy: CollSurplusChange_OrderBy.SequenceNumber,
-      },
-    });
-    let list = data?.collSurplusChanges || [];
-
-    if (!list || !list.length) {
-      addNotification({
-        type: NotificationType.warning,
-        title: t(translations.common.tables.actions.noDataToExport),
-        content: '',
-        dismissible: true,
-        id: nanoid(),
-      });
-    }
-
-    return list.map(tx => ({
-      timestamp: dateFormat(tx.transaction.timestamp),
-      collateralChange: formatValue(
-        Math.abs(Number(tx.collSurplusChange)),
-        BTC_RENDER_PRECISION,
-      ),
-      collateralChangeToken: BITCOIN,
-      transactionType: t(
-        translations.collateralSurplusHistory.table.withdrawSurplus,
-      ),
-      transactionID: tx.transaction.id,
-    }));
-  }, [account, addNotification, getCollSurplusChanges]);
 
   useEffect(() => {
     setPage(0);

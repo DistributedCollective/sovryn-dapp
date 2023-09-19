@@ -85,10 +85,9 @@ export const useGetDepositCollateralLoans = (
   const exportData = useCallback(async () => {
     const { data } = await getDepositCollateralLoans({
       variables: {
+        ...config,
         skip: 0,
         pageSize: EXPORT_RECORD_LIMIT,
-        loanIds,
-        orderBy: DepositCollateral_OrderBy.Timestamp,
       },
     });
     let list = data?.depositCollaterals || [];
@@ -114,7 +113,7 @@ export const useGetDepositCollateralLoans = (
       loanId: tx.loanId.id,
       TXID: tx.transaction.id,
     }));
-  }, [addNotification, getDepositCollateralLoans, loanIds]);
+  }, [addNotification, config, getDepositCollateralLoans]);
 
   return {
     loading: loading || loadingLoanIds,

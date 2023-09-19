@@ -1,17 +1,11 @@
 name: 'Pinata Unpin Content'
-description: 'Get a list of pinned content and unpin those content'
+description: 'Get a list of all pinned content and unpin it'
 inputs:
   pinataKey:
-    description: "Pinata Key"
+    description: 'Pinata Key'
     required: true
-  pinataSecret: 
-    description: "Pinata Secret"
-    required: true
-  pinName:
-    description: 'Pin Name in metadata'
-    required: true
-  pinEndTimestamp:
-    description: 'Pin End Timestamp'
+  pinataSecret:
+    description: 'Pinata Secret'
     required: true
 runs:
   using: 'node16'

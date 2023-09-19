@@ -1,5 +1,11 @@
 # @sovryn/ui
 
+## 1.0.13
+
+### Patch Changes
+
+- 8d9a3fd4: SOV-2748: Add Calendar to Icon list
+
 ## 1.0.12
 
 ### Patch Changes

@@ -1,5 +1,43 @@
 # frontend
 
+## 1.0.27
+
+### Patch Changes
+
+- 8d9a3fd4: SOV-3171: borrow history export order
+- f88ff42b: SOV-3025: fix reward link redirect on Stake page
+- 8d9a3fd4: SOV-2747: Borrow page skeleton
+- 8d9a3fd4: SOV-2800: Borrow - Maintenance mode states
+- 8d9a3fd4: SOV-3143: Fix repaying tiny position
+- f88ff42b: SOV-3018/SOV-3020: Fix Funding CSV export fields
+- f88ff42b: SOV-2754: Update token amount output component
+- 8d9a3fd4: SOV-3089: Fix Loan modal titles
+- 8d9a3fd4: SOV-2747: Borrow page
+- 8d9a3fd4: SOV-2829: Borrow page initial config
+- 8d9a3fd4: SOV-2749: add adjust loan dialog
+- f88ff42b: SOV-2921: improve zero redemption conversion route
+- 8d9a3fd4: SOV-2989: Develop D2 Borrow page - Extend loan modal
+- f88ff42b: SOV-2862: Fix delegate address display reset after extending Stake
+- 8d9a3fd4: Update maintenance state ids
+- 8d9a3fd4: SOV-3031: borrow ui tweaks
+- 8d9a3fd4: SOV-2755: add fixed-interest notifications
+- 8d9a3fd4: SOV-2747: Finalize Borrow page
+- 8d9a3fd4: SOV-2748: Borrow page - New loan modal
+- 8d9a3fd4: SOV-3145: Fix extend modal allowance
+- 8d9a3fd4: SOV-3151: update createLoan label
+- 8d9a3fd4: SOV-2750: Borrow Transaction History
+- 8d9a3fd4: SOV-2941: Update Borrow history
+- 8d9a3fd4: SOV-2995: update open loans table
+- Updated dependencies [8d9a3fd4]
+- Updated dependencies [8d9a3fd4]
+- Updated dependencies [8d9a3fd4]
+- Updated dependencies [f88ff42b]
+- Updated dependencies [8d9a3fd4]
+- Updated dependencies [8d9a3fd4]
+  - @sovryn/contracts@1.0.14
+  - @sovryn/ui@1.0.13
+  - @sovryn/sdk@0.0.6
+
 ## 1.0.26
 
 ### Patch Changes

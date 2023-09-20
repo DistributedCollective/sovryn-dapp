@@ -39,6 +39,7 @@ query getProposal($id: ID!) {
       transaction {
         id
       }
+      timestamp
     }
     emittedBy {
       id

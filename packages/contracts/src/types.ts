@@ -1,4 +1,6 @@
-import { ContractInterface } from 'ethers';
+import { Provider } from '@ethersproject/abstract-provider';
+
+import type { Contract, ContractInterface, Signer } from 'ethers';
 
 import type { ChainId } from '@sovryn/ethers-provider';
 
@@ -10,6 +12,7 @@ export type ContractNetworkName = keyof typeof contracts[ContractGroup];
 export type ContractConfigData = {
   address: string;
   abi: ContractInterface;
+  contract: (signerOrProvider?: Signer | Provider) => Contract;
 };
 
 export type AsyncContractConfigData = {

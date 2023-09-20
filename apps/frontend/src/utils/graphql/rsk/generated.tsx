@@ -14971,6 +14971,7 @@ export type GetProposalQuery = {
       __typename?: 'VoteCast';
       votes: string;
       support: boolean;
+      timestamp: number;
       voter: { __typename?: 'User'; id: string };
       transaction: { __typename?: 'Transaction'; id: string };
     }> | null;
@@ -15820,6 +15821,7 @@ export const GetProposalDocument = gql`
         transaction {
           id
         }
+        timestamp
       }
       emittedBy {
         id

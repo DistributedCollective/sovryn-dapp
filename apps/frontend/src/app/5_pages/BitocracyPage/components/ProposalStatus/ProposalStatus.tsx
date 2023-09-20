@@ -1,5 +1,6 @@
 import React, { FC } from 'react';
 
+import classNames from 'classnames';
 import { t } from 'i18next';
 
 import { Paragraph } from '@sovryn/ui';
@@ -9,11 +10,17 @@ import { ProposalProps, ProposalState } from '../../BitocracyPage.types';
 import { useProposalStatus } from '../../hooks/useProposalStatus';
 import { getStatusIcon } from '../Proposals/Proposals.utils';
 
-export const ProposalStatus: FC<ProposalProps> = ({ proposal }) => {
+type ProposalStatusProps = ProposalProps & {
+  className?: string;
+};
+export const ProposalStatus: FC<ProposalStatusProps> = ({
+  proposal,
+  className,
+}) => {
   const status = useProposalStatus(proposal);
 
   return (
-    <div className="flex items-center">
+    <div className={classNames('flex items-center', className)}>
       {getStatusIcon(status)}
       <Paragraph
         className={`${

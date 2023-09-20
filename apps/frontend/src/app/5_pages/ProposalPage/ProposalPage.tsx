@@ -7,7 +7,7 @@ import { useParams } from 'react-router-dom';
 import { Heading, Paragraph, ParagraphSize } from '@sovryn/ui';
 
 import { TxIdWithNotification } from '../../2_molecules/TxIdWithNotification/TransactionIdWithNotification';
-import { ProposalVotingResults } from '../../3_organisms/ProposalVotingResults';
+import { ProposalVotingResults } from '../../3_organisms/ProposalVotingResults/ProposalVotingResults';
 import { useGetProtocolContract } from '../../../hooks/useGetContract';
 import { translations } from '../../../locales/i18n';
 import { areAddressesEqual } from '../../../utils/helpers';
@@ -50,22 +50,16 @@ const ProposalPage: FC = () => {
       <Helmet>
         <title>{t(pageTranslations.meta.title)}</title>
       </Helmet>
-      <div className="w-full flex flex-row gap-20 text-left text-gray-10 mt-6 sm:mt-16 max-w-7xl">
-        <div className="w-2/3 flex flex-col gap-6">
-          <div className="px-6 pb-6">
-            <Heading className="text-base sm:text-2xl font-medium">
+      <div className="w-full flex flex-col md:flex-row gap-20 text-left text-gray-10 mt-6 mb-5 sm:mt-16 max-w-7xl">
+        <div className="w-full md:w-2/3 flex flex-col gap-6">
+          <div className="md:px-6 md:pb-6">
+            <Heading className="text-base sm:text-2xl font-medium break-all">
               {proposalInfo.title}
             </Heading>
-            <Paragraph
-              size={ParagraphSize.small}
-              className="mt-2.5 sm:mt-3 font-medium text-gray-30"
-            >
+            <div className="mt-2.5 sm:mt-3 font-medium text-gray-30 break-all">
               {proposalInfo.summary}
-            </Paragraph>
-            <Paragraph
-              size={ParagraphSize.base}
-              className="mt-2.5 sm:mt-6 text-xs font-medium text-gray-30"
-            >
+            </div>
+            <div className="mt-2.5 sm:mt-6 text-xs font-medium text-gray-30 flex justify-between md:justify-start">
               <span className="inline-block w-20">
                 {t(pageTranslations.proposedBy)}
               </span>
@@ -74,25 +68,51 @@ const ProposalPage: FC = () => {
                 <TxIdWithNotification
                   href=""
                   value={proposal?.proposer}
-                  dataAttribute="stability-pool-history-address-id"
+                  dataAttribute="proposal-proposer-address-id"
                 />
               )}
-            </Paragraph>
+            </div>
             <Paragraph
               size={ParagraphSize.base}
-              className="mt-1 text-xs font-medium text-gray-30"
+              className="mt-1 text-xs font-medium text-gray-30 flex justify-between md:justify-start"
             >
               <span className="inline-block w-20">
                 {t(pageTranslations.proposalID)}
               </span>
-              {proposerType}
-              {proposal?.proposalId}
+              <span className="text-gray-10">
+                {proposerType}
+                {proposal?.proposalId}
+              </span>
             </Paragraph>
+
+            {proposal && (
+              <div className="md:hidden mt-6">
+                <div className="flex flex-row items-center justify-between mb-2">
+                  <Paragraph
+                    size={ParagraphSize.small}
+                    className="font-xs text-gray-30"
+                  >
+                    {t(pageTranslations.status)}
+                  </Paragraph>
+
+                  <ProposalStatus proposal={proposal} />
+                </div>
+
+                <VoteTimer
+                  className="flex flex-row justify-between"
+                  proposal={proposal}
+                />
+              </div>
+            )}
           </div>
 
           {proposal && (
             <>
               <CastVote proposal={proposal} />
+
+              <div className="md:hidden">
+                <ProposalVotingResults proposal={proposal} />
+              </div>
               <ProposalInfo
                 link={proposalInfo.link}
                 description={proposalInfo.description}
@@ -101,7 +121,7 @@ const ProposalPage: FC = () => {
             </>
           )}
         </div>
-        <div className="w-1/3">
+        <div className="w-1/3 hidden md:block min-w-[18rem]">
           {proposal && (
             <>
               <div className="mb-20 flex gap-10">

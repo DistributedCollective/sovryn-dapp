@@ -11,13 +11,13 @@ import {
   ParagraphSize,
 } from '@sovryn/ui';
 
+import { ProposalVotingResults } from '../../3_organisms/ProposalVotingResults/ProposalVotingResults';
 import { useAccount } from '../../../hooks/useAccount';
-import { ProposalVotingResults } from '../../3_organisms/ProposalVotingResults';
 import { translations } from '../../../locales/i18n';
+import { Proposal } from '../../../utils/graphql/rsk/generated';
 import { useGetPersonalStakingStatistics } from '../StakePage/components/PersonalStakingStatistics/hooks/useGetPersonalStakingStatistics';
 import { Proposals } from './components/Proposals/Proposals';
 import { useGetProposals } from './hooks/useGetProposals';
-import { Proposal } from '../../../utils/graphql/rsk/generated';
 
 const pageTranslations = translations.bitocracyPage;
 

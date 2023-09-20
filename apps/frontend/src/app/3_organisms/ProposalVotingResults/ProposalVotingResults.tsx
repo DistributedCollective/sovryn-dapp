@@ -1,31 +1,33 @@
-import React, { FC, useMemo } from 'react';
+import React, { FC, useCallback, useMemo } from 'react';
 
 import { t } from 'i18next';
+import { nanoid } from 'nanoid';
 
 import {
   Bar,
-  Button,
-  ButtonStyle,
   HelperButton,
+  NotificationType,
   Paragraph,
   ParagraphSize,
 } from '@sovryn/ui';
 import { Decimal } from '@sovryn/utils';
 
+import { ExportCSV } from '../../2_molecules/ExportCSV/ExportCSV';
+import { useNotificationContext } from '../../../contexts/NotificationContext';
 import { useBlockNumber } from '../../../hooks/useBlockNumber';
 import { translations } from '../../../locales/i18n';
 import { Proposal } from '../../../utils/graphql/rsk/generated';
-import { decimalic, formatValue } from '../../../utils/math';
+import { dateFormat } from '../../../utils/helpers';
+import { decimalic, formatValue, fromWei } from '../../../utils/math';
 
 export type ProposalVotingResultsProps = {
   proposal: Proposal;
-  onExportCSV?: () => void;
 };
 
 export const ProposalVotingResults: FC<ProposalVotingResultsProps> = ({
   proposal,
-  onExportCSV,
 }) => {
+  const { addNotification } = useNotificationContext();
   const currentBlock = useBlockNumber().value;
   const { votesFor, votesAgainst, endBlock, emittedBy, quorum } = proposal;
   const { majorityPercentageVotes, quorumPercentageVotes } = emittedBy;
@@ -55,6 +57,29 @@ export const ProposalVotingResults: FC<ProposalVotingResultsProps> = ({
     };
   }, [quorum, quorumPercentageVotes, votesAgainst, votesFor]);
 
+  const exportData = useCallback(async () => {
+    if (!proposal.votes || !proposal.votes.length) {
+      addNotification({
+        type: NotificationType.warning,
+        title: t(translations.common.tables.actions.noDataToExport),
+        content: '',
+        dismissible: true,
+        id: nanoid(),
+      });
+      return [];
+    }
+
+    return proposal.votes?.map(vote => ({
+      date: dateFormat(vote.timestamp),
+      address: vote.voter.id,
+      vote: vote.support
+        ? t(translations.proposalPage.support)
+        : t(translations.proposalPage.reject),
+      votes: fromWei(vote.votes),
+      TXID: vote.transaction.id,
+    }));
+  }, [addNotification, proposal]);
+
   return (
     <div className="w-full bg-gray-90 p-6">
       <div className="flex flex-row justify-between mb-8">
@@ -66,10 +91,10 @@ export const ProposalVotingResults: FC<ProposalVotingResultsProps> = ({
             {t(translations.proposalVotingResults.inProgress)}
           </Paragraph>
         ) : (
-          <Button
-            text={t(translations.proposalVotingResults.exportCSV)}
-            onClick={onExportCSV}
-            style={ButtonStyle.secondary}
+          <ExportCSV
+            getData={exportData}
+            filename="proposal-voting-results"
+            disabled={!proposal.votes || !proposal.votes.length}
           />
         )}
       </div>

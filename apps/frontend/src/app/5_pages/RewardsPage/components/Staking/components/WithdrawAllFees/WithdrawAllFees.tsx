@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useMemo } from 'react';
+import React, { FC, useCallback, useMemo, useState } from 'react';
 
 import { Contract } from 'ethers';
 import { t } from 'i18next';
@@ -32,6 +32,7 @@ const MAX_NEXT_POSITIVE_CHECKPOINT = 75;
 
 export const WithdrawAllFees: FC<WithdrawFeeProps> = ({ fees, refetch }) => {
   const { account } = useAccount();
+  const [loading, setLoading] = useState(false);
   const { setTransactions, setIsOpen, setTitle } = useTransactionContext();
 
   const { checkMaintenance, States } = useMaintenance();
@@ -56,6 +57,7 @@ export const WithdrawAllFees: FC<WithdrawFeeProps> = ({ fees, refetch }) => {
     if (!feeSharing) {
       return;
     }
+    setLoading(true);
 
     const claimable = fees.filter(fee => decimalic(fee.value).gt(0));
 
@@ -70,15 +72,32 @@ export const WithdrawAllFees: FC<WithdrawFeeProps> = ({ fees, refetch }) => {
           hasFees: result.hasFees,
         })),
       ),
-    ).then(result => result.filter(fee => fee.hasSkippedCheckpoints));
-
-    console.log({ checkpoints });
+    ).then(result => result.filter(fee => fee.hasFees));
 
     if (checkpoints.length === 0) {
-      // todo: show error message about impossibility to withdraw
       console.warn('No checkpoints to withdraw');
+      setLoading(false);
       return;
     }
+
+    const nonRbtcRegular = checkpoints
+      .filter(
+        item => !isBtcBasedToken(item.token) && !item.hasSkippedCheckpoints,
+      )
+      .map(item => item.contractAddress);
+
+    const rbtcRegular = checkpoints
+      .filter(
+        item => isBtcBasedToken(item.token) && !item.hasSkippedCheckpoints,
+      )
+      .map(item => item.contractAddress);
+
+    const tokensWithSkippedCheckpoints = checkpoints
+      .filter(item => item.hasSkippedCheckpoints)
+      .map(item => ({
+        tokenAddress: item.contractAddress,
+        fromCheckpoint: item.startFrom,
+      }));
 
     // END: Fetch checkpoints
 
@@ -91,10 +110,11 @@ export const WithdrawAllFees: FC<WithdrawFeeProps> = ({ fees, refetch }) => {
       request: {
         type: TransactionType.signTransaction,
         contract: feeSharing,
-        fnName: 'withdrawStartingFromCheckpoints',
+        fnName: 'claimAllCollectedFees',
         args: [
-          claimable.map(({ contractAddress }) => contractAddress),
-          claimable.map(({ startFrom }) => startFrom),
+          nonRbtcRegular,
+          rbtcRegular,
+          tokensWithSkippedCheckpoints,
           MAX_CHECKPOINTS,
           account,
         ],
@@ -106,6 +126,7 @@ export const WithdrawAllFees: FC<WithdrawFeeProps> = ({ fees, refetch }) => {
     setTransactions(transactions);
     setTitle(txTitle);
     setIsOpen(true);
+    setLoading(false);
   }, [
     account,
     feeSharing,
@@ -122,7 +143,8 @@ export const WithdrawAllFees: FC<WithdrawFeeProps> = ({ fees, refetch }) => {
       style={ButtonStyle.secondary}
       text={t(translations.rewardPage.stabilityPool.actions.withdrawAll)}
       onClick={onSubmit}
-      disabled={isClaimDisabled}
+      disabled={isClaimDisabled || loading}
+      loading={loading}
       className="w-full lg:w-auto whitespace-nowrap"
       dataAttribute="rewards-withdraw"
     />
@@ -179,4 +201,8 @@ async function getNextPositiveCheckpoint(
     hasFees: false,
     hasSkippedCheckpoints: false,
   };
+}
+
+function isBtcBasedToken(token: SupportedTokens) {
+  return [SupportedTokens.rbtc, SupportedTokens.wrbtc].includes(token);
 }

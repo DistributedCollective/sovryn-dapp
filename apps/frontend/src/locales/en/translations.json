@@ -96,7 +96,8 @@
                 }
             },
             "convert": "Convert",
-            "stake": "Stake"
+            "stake": "Stake",
+            "bitocracy": "Bitocracy"
         }
     },
     "footer": {
@@ -595,6 +596,16 @@
         "collateralRatio": "collateral ratio"
     },
 
+    "bitocracyPage": {
+        "meta": {
+            "title": "Bitocracy - Sovryn",
+            "description": "Help decide the future of Sovryn by participating in governance of the protocol."
+        },
+        "title": "Bitocracy",
+        "subtitle": "Help decide the future of Sovryn",
+        "pastProposals": "Past Proposals",
+        "liveProposals": "Live Proposals"
+    },
     "fastBtc": {
         "mainScreen": {
             "title": "Funding",

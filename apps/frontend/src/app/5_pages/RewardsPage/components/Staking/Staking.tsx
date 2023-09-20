@@ -15,8 +15,7 @@ import { decimalic } from '../../../../../utils/math';
 import { useGetFeesEarned } from '../../hooks/useGetFeesEarned';
 import { useGetLiquidSovClaimAmount } from '../../hooks/useGetLiquidSovClaimAmount';
 import { columns } from './Staking.constants';
-import { getStakingRevenueType } from './Staking.utils';
-import { WithdrawFee } from './components/WithdrawFee/WithdrawFee';
+import { WithdrawAllFees } from './components/WithdrawAllFees/WithdrawAllFees';
 import { WithdrawLiquidFee } from './components/WithdrawLiquidFee/WithdrawLiquidFee';
 
 export const Staking: FC = () => {
@@ -29,29 +28,34 @@ export const Staking: FC = () => {
     refetch: refetchLiquidSovClaim,
   } = useGetLiquidSovClaimAmount();
 
-  const rows = useMemo(() => {
-    const noRewards =
-      !earnedFees.some(earnedFee => decimalic(earnedFee.value).gt(0)) &&
-      !decimalic(liquidSovClaimAmount).gt(0);
+  const noRewards = useMemo(
+    () =>
+      (!earnedFees.some(earnedFee => decimalic(earnedFee.value).gt(0)) &&
+        !decimalic(liquidSovClaimAmount).gt(0)) ||
+      !account,
+    [account, earnedFees, liquidSovClaimAmount],
+  );
 
-    if (!account || loading || noRewards) {
-      return [];
-    }
-
-    return [
-      ...earnedFees.map(earnedFee => ({
-        type: getStakingRevenueType(earnedFee.token),
+  const rows1 = useMemo(
+    () => [
+      {
+        type: t(translations.rewardPage.staking.stakingRevenue),
         amount: (
-          <AmountRenderer
-            value={formatUnits(earnedFee.value, 18)}
-            suffix={getTokenDisplayName(earnedFee.token)}
-            precision={BTC_RENDER_PRECISION}
-            dataAttribute={`${earnedFee.token}-rewards-amount`}
-          />
+          <div className="flex flex-col gap-1 my-4 text-left">
+            {earnedFees.map(fee => (
+              <AmountRenderer
+                key={fee.token}
+                value={formatUnits(fee.value, 18)}
+                suffix={getTokenDisplayName(fee.token)}
+                precision={BTC_RENDER_PRECISION}
+                dataAttribute={`${fee.token}-rewards-amount`}
+              />
+            ))}
+          </div>
         ),
-        action: <WithdrawFee {...earnedFee} refetch={refetch} />,
-        key: `${earnedFee.token}-fee`,
-      })),
+        action: <WithdrawAllFees fees={earnedFees} refetch={refetch} />,
+        key: `all-fee`,
+      },
       {
         type: t(translations.rewardPage.staking.stakingSubsidies),
         amount: (
@@ -71,23 +75,22 @@ export const Staking: FC = () => {
         ),
         key: `${SupportedTokens.sov}-liquid-fee`,
       },
-    ];
-  }, [
-    account,
-    earnedFees,
-    lastWithdrawalInterval,
-    liquidSovClaimAmount,
-    loading,
-    refetch,
-    refetchLiquidSovClaim,
-  ]);
+    ],
+    [
+      earnedFees,
+      lastWithdrawalInterval,
+      liquidSovClaimAmount,
+      refetch,
+      refetchLiquidSovClaim,
+    ],
+  );
 
   return (
-    <div className="flex flex-col items-center w-full">
+    <div className="flex flex-col items-center w-full gap-y-8">
       <div className="lg:bg-gray-80 lg:py-4 lg:px-4 rounded w-full">
         <Table
           columns={columns}
-          rows={rows}
+          rows={noRewards ? [] : rows1}
           isLoading={!!account ? loading : false}
           rowKey={row => row.key}
           noData={

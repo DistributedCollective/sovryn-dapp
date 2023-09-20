@@ -708,7 +708,8 @@
             "stakingRevenue": "Staking revenue",
             "actions": {
                 "transferToLOC": "Transfer to LOC",
-                "withdraw": "Withdraw"
+                "withdraw": "Withdraw",
+                "withdrawAll": "Withdraw All"
             },
             "tx": {
                 "withdraw": "Withdraw rewards to your address",

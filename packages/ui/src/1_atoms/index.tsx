@@ -14,3 +14,4 @@ export * from './DynamicValue';
 export * from './Lottie';
 export * from './ErrorBadge';
 export * from './Toggle';
+export * from './Bar/Bar';

@@ -31,7 +31,6 @@ export const AdjustStakeRenderer: FC<AdjustStakeRendererProps> = ({
   );
 
   const onAdjustSuccess = useCallback(() => {
-    console.log('onAdjustSuccess');
     onSuccess();
     toggleAdjustStakeDialog();
   }, [onSuccess]);

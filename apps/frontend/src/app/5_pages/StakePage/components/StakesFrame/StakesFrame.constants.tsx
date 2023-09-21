@@ -55,8 +55,9 @@ export const COLUMNS_CONFIG = (onSuccess: () => void) => [
   {
     id: 'actions',
     title: ' ',
-    cellRenderer: (item: StakeItem) =>
-      AdjustStakeRenderer({ stake: item, onSuccess }),
+    cellRenderer: (item: StakeItem) => (
+      <AdjustStakeRenderer stake={item} onSuccess={onSuccess} />
+    ),
     labelClassName: 'hidden lg:table-cell',
     valueClassName: 'w-full lg:w-auto',
     className: 'flex',

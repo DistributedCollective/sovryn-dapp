@@ -7,6 +7,7 @@ import { useParams } from 'react-router-dom';
 import { Heading, Paragraph, ParagraphSize } from '@sovryn/ui';
 
 import { TxIdWithNotification } from '../../2_molecules/TxIdWithNotification/TransactionIdWithNotification';
+import { ProposalVotingPower } from '../../3_organisms/ProposalVotingPower/ProposalVotingPower';
 import { ProposalVotingResults } from '../../3_organisms/ProposalVotingResults/ProposalVotingResults';
 import { useGetProtocolContract } from '../../../hooks/useGetContract';
 import { translations } from '../../../locales/i18n';
@@ -113,6 +114,7 @@ const ProposalPage: FC = () => {
           <CastVote proposal={proposal} />
 
           <div className="md:hidden">
+            <ProposalVotingPower proposal={proposal} />
             <ProposalVotingResults proposal={proposal} />
           </div>
           <ProposalInfo
@@ -136,6 +138,7 @@ const ProposalPage: FC = () => {
 
             <VoteTimer proposal={proposal} />
           </div>
+          <ProposalVotingPower proposal={proposal} />
           <ProposalVotingResults proposal={proposal} />
         </div>
         {/* {account && (

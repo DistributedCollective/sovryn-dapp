@@ -11,7 +11,6 @@ import { useAccount } from '../../../../../hooks/useAccount';
 import { useAssetBalance } from '../../../../../hooks/useAssetBalance';
 import { useLoadContract } from '../../../../../hooks/useLoadContract';
 import { translations } from '../../../../../locales/i18n';
-import { decimalic } from '../../../../../utils/math';
 import {
   ProposalProps,
   ProposalState,
@@ -42,28 +41,31 @@ export const ProposalAction: FC<ProposalActionProps> = ({
   const { balance, loading } = useAssetBalance(SupportedTokens.rbtc);
   const status = useProposalStatus(proposal);
 
-  const isDisabled = useMemo(() => {
-    return !account || decimalic(balance).eq('0') || !contract || loading;
-  }, [account, balance, loading, contract]);
+  const isDisabled = useMemo(
+    () => !account || balance.isZero() || !contract || loading,
+    [account, balance, loading, contract],
+  );
 
-  const isActionVisible = useMemo(() => {
-    return (
+  const isActionVisible = useMemo(
+    () =>
       contract &&
-      (status === ProposalState.Succeeded || status === ProposalState.Pending)
-    );
-  }, [status, contract]);
-
-  const action = useMemo(() => {
-    return status === ProposalState.Pending
-      ? ProposalActionType.queue
-      : ProposalActionType.execute;
-  }, [status]);
-
-  const actionButtonText = useMemo(() => {
-    return status === ProposalState.Pending
-      ? t(pageTranslations.actions.queue)
-      : t(pageTranslations.actions.execute);
-  }, [status]);
+      (status === ProposalState.Succeeded || status === ProposalState.Pending),
+    [status, contract],
+  );
+  const action = useMemo(
+    () =>
+      status === ProposalState.Pending
+        ? ProposalActionType.queue
+        : ProposalActionType.execute,
+    [status],
+  );
+  const actionButtonText = useMemo(
+    () =>
+      status === ProposalState.Pending
+        ? t(pageTranslations.actions.queue)
+        : t(pageTranslations.actions.execute),
+    [status],
+  );
 
   const handleProposal = useHandleProposal();
 

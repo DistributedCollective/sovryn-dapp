@@ -29,8 +29,20 @@ export const ProposalVotingResults: FC<ProposalVotingResultsProps> = ({
 }) => {
   const { addNotification } = useNotificationContext();
   const currentBlock = useBlockNumber().value;
-  const { votesFor, votesAgainst, endBlock, emittedBy, quorum } = proposal;
+  const {
+    votesFor,
+    votesAgainst,
+    endBlock,
+    emittedBy,
+    quorum,
+    votes: proposalVotes,
+  } = proposal;
   const { majorityPercentageVotes, quorumPercentageVotes } = emittedBy;
+
+  const hasVotes = useMemo(
+    () => proposalVotes && proposalVotes.length > 0,
+    [proposalVotes],
+  );
 
   const { support, turnout, votes } = useMemo(() => {
     const votes = Decimal.fromBigNumberString(votesFor).add(
@@ -58,7 +70,7 @@ export const ProposalVotingResults: FC<ProposalVotingResultsProps> = ({
   }, [quorum, quorumPercentageVotes, votesAgainst, votesFor]);
 
   const exportData = useCallback(async () => {
-    if (!proposal.votes || !proposal.votes.length) {
+    if (!hasVotes) {
       addNotification({
         type: NotificationType.warning,
         title: t(translations.common.tables.actions.noDataToExport),
@@ -66,19 +78,20 @@ export const ProposalVotingResults: FC<ProposalVotingResultsProps> = ({
         dismissible: true,
         id: nanoid(),
       });
-      return [];
     }
 
-    return proposal.votes?.map(vote => ({
-      date: dateFormat(vote.timestamp),
-      address: vote.voter.id,
-      vote: vote.support
-        ? t(translations.proposalPage.support)
-        : t(translations.proposalPage.reject),
-      votes: fromWei(vote.votes),
-      TXID: vote.transaction.id,
-    }));
-  }, [addNotification, proposal]);
+    return (
+      proposalVotes?.map(vote => ({
+        date: dateFormat(vote.timestamp),
+        address: vote.voter.id,
+        vote: vote.support
+          ? t(translations.proposalPage.support)
+          : t(translations.proposalPage.reject),
+        votes: fromWei(vote.votes),
+        TXID: vote.transaction.id,
+      })) ?? []
+    );
+  }, [addNotification, proposalVotes, hasVotes]);
 
   return (
     <div className="w-full bg-gray-90 p-6">
@@ -94,7 +107,7 @@ export const ProposalVotingResults: FC<ProposalVotingResultsProps> = ({
           <ExportCSV
             getData={exportData}
             filename="proposal-voting-results"
-            disabled={!proposal.votes || !proposal.votes.length}
+            disabled={!hasVotes}
           />
         )}
       </div>

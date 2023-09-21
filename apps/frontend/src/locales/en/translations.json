@@ -666,7 +666,11 @@
         "reject": "Reject",
         "rejectText": "You voted to reject this proposal",
         "noVote": "No vote cast on this proposal",
-        "ineligibleVote": "Ineligible to vote - no SOV staked at proposal creation time <br/> Stake SOV to be eligible to vote on future proposals"
+        "ineligibleVote": "Ineligible to vote - no SOV staked at proposal creation time <br/> Stake SOV to be eligible to vote on future proposals",
+        "actions": {
+            "queue": "Queue for execution",
+            "execute": "Execute proposal"
+        }
     },
     "fastBtc": {
         "mainScreen": {

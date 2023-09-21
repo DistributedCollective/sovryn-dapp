@@ -18,7 +18,6 @@ import {
   ErrorBadge,
   ErrorLevel,
   Heading,
-  HelperButton,
   Paragraph,
   ParagraphSize,
   Select,
@@ -419,18 +418,11 @@ const EarnPage: FC = () => {
 
           <SimpleTable className="mt-3">
             <SimpleTableRow
-              label={
-                <span className="flex items-center gap-1">
-                  {t(pageTranslations.subsidiesRewardRate)}
-                  <HelperButton
-                    content={t(pageTranslations.subsidiesRewardRateInfo)}
-                  />
-                </span>
-              }
+              label={t(pageTranslations.subsidiesRewardRate)}
               valueClassName={classNames('transition-colors', {
                 'text-primary-10': !isAmountZero,
               })}
-              value={`${formatValue(apy, 2)}% APY`}
+              value={`${formatValue(apy, 2)}% APR`}
             />
           </SimpleTable>
 

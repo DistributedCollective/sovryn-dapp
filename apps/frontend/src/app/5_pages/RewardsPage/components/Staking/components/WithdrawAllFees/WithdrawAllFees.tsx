@@ -21,6 +21,7 @@ import { useMaintenance } from '../../../../../../../hooks/useMaintenance';
 import { translations } from '../../../../../../../locales/i18n';
 import { decimalic } from '../../../../../../../utils/math';
 import { EarnedFee } from '../../../../RewardsPage.types';
+import { UserCheckpoint } from './WithdrawlAllFees.types';
 
 type WithdrawFeeProps = {
   fees: EarnedFee[];
@@ -61,7 +62,6 @@ export const WithdrawAllFees: FC<WithdrawFeeProps> = ({ fees, refetch }) => {
 
     const claimable = fees.filter(fee => decimalic(fee.value).gt(0));
 
-    // TODO: it might be not needed to fetch checkpoints when SC is updated.
     // START: Fetch checkpoints
     const checkpoints = await Promise.all(
       claimable.map(fee =>
@@ -149,13 +149,6 @@ export const WithdrawAllFees: FC<WithdrawFeeProps> = ({ fees, refetch }) => {
       dataAttribute="rewards-withdraw"
     />
   );
-};
-
-type UserCheckpoint = {
-  token: SupportedTokens;
-  checkpointNum: number;
-  hasFees: boolean;
-  hasSkippedCheckpoints: boolean;
 };
 
 let feeSharingContract: Contract;

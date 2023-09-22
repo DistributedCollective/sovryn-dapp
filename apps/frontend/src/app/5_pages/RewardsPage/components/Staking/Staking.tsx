@@ -36,7 +36,7 @@ export const Staking: FC = () => {
     [account, earnedFees, liquidSovClaimAmount],
   );
 
-  const rows1 = useMemo(
+  const rows = useMemo(
     () => [
       {
         type: t(translations.rewardPage.staking.stakingRevenue),
@@ -90,7 +90,7 @@ export const Staking: FC = () => {
       <div className="lg:bg-gray-80 lg:py-4 lg:px-4 rounded w-full">
         <Table
           columns={columns}
-          rows={noRewards ? [] : rows1}
+          rows={noRewards ? [] : rows}
           isLoading={!!account ? loading : false}
           rowKey={row => row.key}
           noData={

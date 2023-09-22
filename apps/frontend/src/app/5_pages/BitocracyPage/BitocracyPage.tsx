@@ -1,4 +1,4 @@
-import React, { FC, useMemo } from 'react';
+import React, { FC } from 'react';
 
 import { t } from 'i18next';
 import { Helmet } from 'react-helmet-async';
@@ -11,13 +11,13 @@ import {
   ParagraphSize,
 } from '@sovryn/ui';
 
-import { useAccount } from '../../../hooks/useAccount';
 import { ProposalVotingResults } from '../../3_organisms/ProposalVotingResults';
+import { useAccount } from '../../../hooks/useAccount';
 import { translations } from '../../../locales/i18n';
-import { useGetPersonalStakingStatistics } from '../StakePage/components/PersonalStakingStatistics/hooks/useGetPersonalStakingStatistics';
+import { Proposal } from '../../../utils/graphql/rsk/generated';
+import { NewProposalButton } from './components/NewProposalButton/NewProposalButton';
 import { Proposals } from './components/Proposals/Proposals';
 import { useGetProposals } from './hooks/useGetProposals';
-import { Proposal } from '../../../utils/graphql/rsk/generated';
 
 const pageTranslations = translations.bitocracyPage;
 
@@ -39,13 +39,7 @@ const proposal = {
 
 const BitocracyPage: FC = () => {
   const { account } = useAccount();
-  const { votingPower } = useGetPersonalStakingStatistics();
   const { loading, data: proposals } = useGetProposals();
-
-  const isNewProposalButtonVisible = useMemo(
-    () => (votingPower ? Number(votingPower) > 0 : false),
-    [votingPower],
-  );
 
   return (
     <>
@@ -70,14 +64,7 @@ const BitocracyPage: FC = () => {
               text={t(pageTranslations.actions.bitocracyAlerts)}
               className="mb-3 sm:mb-0"
             />
-            {isNewProposalButtonVisible && (
-              <div className="bg-gray-90 sm:bg-transparent p-4 pb-8 sm:p-0 border-t sm:border-none border-gray-60 flex items-center justify-center sm:ml-3 sm:relative fixed bottom-0 left-0 right-0 z-10 sm:z-0">
-                <Button
-                  text={t(pageTranslations.actions.newProposal)}
-                  className="w-full sm:w-auto"
-                />
-              </div>
-            )}
+            <NewProposalButton />
           </div>
         )}
         <Proposals proposals={proposals} loading={loading} />

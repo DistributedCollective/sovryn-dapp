@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useMemo, useReducer } from 'react';
+import React, { FC, useMemo, useReducer } from 'react';
 
 import { t } from 'i18next';
 
@@ -29,11 +29,6 @@ export const NewProposalButton: FC = () => {
     [votingPower],
   );
 
-  const onSuccess = useCallback(
-    () => toggleNewProposalDialog(),
-    [toggleNewProposalDialog],
-  );
-
   return (
     <>
       {isNewProposalButtonVisible && (
@@ -56,7 +51,7 @@ export const NewProposalButton: FC = () => {
           title={t(pageTranslations.actions.newProposal)}
           onClose={toggleNewProposalDialog}
         />
-        <DialogBody children={<NewProposalForm onSuccess={onSuccess} />} />
+        <DialogBody children={<NewProposalForm />} />
       </Dialog>
     </>
   );

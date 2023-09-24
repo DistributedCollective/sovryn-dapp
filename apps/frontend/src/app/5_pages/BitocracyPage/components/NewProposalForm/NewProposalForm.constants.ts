@@ -1,6 +1,10 @@
-import { ProposalType } from './NewProposalForm.types';
+import {
+  ProposalContract,
+  ProposalTreasury,
+  ProposalType,
+} from './NewProposalForm.types';
 
-export const proposalTypeOptions = [
+export const PROPOSAL_TYPE_OPTIONS = [
   {
     value: ProposalType.Parameter,
     label: ProposalType.Parameter,
@@ -15,68 +19,68 @@ export const proposalTypeOptions = [
   },
 ];
 
-export const proposalContractOptions = [
+export const PROPOSAL_CONTRACT_OPTIONS = [
   {
-    value: 'Sovryn Protocol',
-    label: 'Sovryn Protocol',
+    value: ProposalContract.SovrynProtocol,
+    label: ProposalContract.SovrynProtocol,
   },
   {
-    value: 'Staking',
-    label: 'Staking',
+    value: ProposalContract.Staking,
+    label: ProposalContract.Staking,
   },
   {
-    value: 'LoanTokenLogicLM',
-    label: 'LoanTokenLogicLM',
+    value: ProposalContract.LoanTokenLogicLM,
+    label: ProposalContract.LoanTokenLogicLM,
   },
   {
-    value: 'LoanTokenLogicWRBTC',
-    label: 'LoanTokenLogicWRBTC',
+    value: ProposalContract.LoanTokenLogicWRBTC,
+    label: ProposalContract.LoanTokenLogicWRBTC,
   },
   {
-    value: 'iDOC',
-    label: 'iDOC',
+    value: ProposalContract.iDOC,
+    label: ProposalContract.iDOC,
   },
   {
-    value: 'iUSDT',
-    label: 'iUSDT',
+    value: ProposalContract.iUSDT,
+    label: ProposalContract.iUSDT,
   },
   {
-    value: 'iRBTC',
-    label: 'iRBTC',
+    value: ProposalContract.iRBTC,
+    label: ProposalContract.iRBTC,
   },
   {
-    value: 'iBPRO',
-    label: 'iBPRO',
+    value: ProposalContract.iBPRO,
+    label: ProposalContract.iBPRO,
   },
   {
-    value: 'iXUSD',
-    label: 'iXUSD',
+    value: ProposalContract.iXUSD,
+    label: ProposalContract.iXUSD,
   },
 ];
 
-export const proposalTreasuryOptions = [
+export const PROPOSAL_TREASURY_OPTIONS = [
   {
-    value: 'Sovryn Protocol',
-    label: 'Sovryn Protocol',
+    value: ProposalTreasury.SovrynProtocol,
+    label: ProposalTreasury.SovrynProtocol,
   },
   {
-    value: 'Staking',
-    label: 'Staking',
+    value: ProposalTreasury.Staking,
+    label: ProposalTreasury.Staking,
   },
   {
-    value: 'LoanTokenLogicLM',
-    label: 'LoanTokenLogicLM',
+    value: ProposalTreasury.LoanTokenLogicLM,
+    label: ProposalTreasury.LoanTokenLogicLM,
   },
   {
-    value: 'Adoption Fund',
-    label: 'Adoption Fund',
+    value: ProposalTreasury.AdoptionFund,
+    label: ProposalTreasury.AdoptionFund,
   },
   {
-    value: 'Development Fund',
-    label: 'Development Fund',
+    value: ProposalTreasury.DevelopmentFund,
+    label: ProposalTreasury.DevelopmentFund,
   },
   {
-    value: 'Ecosystem Fund',
-    label: 'Ecosystem Fund',
+    value: ProposalTreasury.EcosystemFund,
+    label: ProposalTreasury.EcosystemFund,
   },
 ];

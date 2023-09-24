@@ -6,34 +6,31 @@ import { Select, Button } from '@sovryn/ui';
 
 import { translations } from '../../../../../locales/i18n';
 import {
-  proposalContractOptions,
-  proposalTreasuryOptions,
-  proposalTypeOptions,
+  PROPOSAL_CONTRACT_OPTIONS,
+  PROPOSAL_TYPE_OPTIONS,
+  PROPOSAL_TREASURY_OPTIONS,
 } from './NewProposalForm.constants';
 import { ProposalType } from './NewProposalForm.types';
 
-type NewLoanFormProps = {
-  onSuccess: () => void;
-};
-
-export const NewProposalForm: FC<NewLoanFormProps> = () => {
+export const NewProposalForm: FC = () => {
   const [proposalType, setProposalType] = useState(ProposalType.Parameter);
   const [proposalContract, setProposalContract] = useState('');
   const [proposalTreasuryAccount, setProposalTreasuryAccount] = useState('');
+
   return (
     <>
       <div className="flex flex-col gap-4">
         <Select
           value={proposalType}
           onChange={setProposalType}
-          options={proposalTypeOptions}
+          options={PROPOSAL_TYPE_OPTIONS}
           className="w-full"
         />
         {proposalType === ProposalType.Parameter && (
           <Select
             value={proposalContract}
             onChange={setProposalContract}
-            options={proposalContractOptions}
+            options={PROPOSAL_CONTRACT_OPTIONS}
             className="w-full"
           />
         )}
@@ -41,7 +38,7 @@ export const NewProposalForm: FC<NewLoanFormProps> = () => {
           <Select
             value={proposalTreasuryAccount}
             onChange={setProposalTreasuryAccount}
-            options={proposalTreasuryOptions}
+            options={PROPOSAL_TREASURY_OPTIONS}
             className="w-full"
           />
         )}

@@ -28,7 +28,7 @@ export const BorrowHistory: FC = () => {
         value={selectedHistoryType}
         onChange={onChangeRewardHistory}
         options={borrowHistoryOptions}
-        className="min-w-36"
+        className="min-w-36 w-full lg:w-auto"
       />
     ),
     [selectedHistoryType, onChangeRewardHistory],

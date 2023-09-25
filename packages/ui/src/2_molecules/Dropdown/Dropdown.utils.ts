@@ -1,5 +1,16 @@
 import { DropdownCoords, DropdownMode } from './Dropdown.types';
 
+const safeLeftPosition = (left: number, maxWidth: number) => {
+  if (left < 0) {
+    return 0;
+  }
+  if (left + maxWidth > window.innerWidth) {
+    const newLeft = window.innerWidth - maxWidth;
+    return newLeft > 16 ? newLeft - 16 : newLeft;
+  }
+  return left;
+};
+
 export const getDropdownPositionStyles = (
   coords: DropdownCoords,
   mode: DropdownMode,
@@ -26,20 +37,23 @@ export const getDropdownPositionStyles = (
 
   const DropdownPosition = {
     left: {
-      left: `${left}px`,
+      left: `${safeLeftPosition(left, dropdownWidth)}px`,
       maxWidth: `${windowWidth - left}px`,
     },
     right: {
-      left: `${left + buttonWidth}px`,
+      left: `${safeLeftPosition(left + buttonWidth, dropdownWidth)}px`,
       maxWidth: `${left + buttonWidth}px`,
       transform: 'translateX(-100%)',
     },
     center: {
-      left: `${left - (centerWidthDropdown - buttonWidth) / 2}px`,
+      left: `${safeLeftPosition(
+        left - (centerWidthDropdown - buttonWidth) / 2,
+        dropdownWidth,
+      )}px`,
       maxWidth: `${maxCenterWidthDropdown}px`,
     },
     sameWidth: {
-      left: `${left}px`,
+      left: `${safeLeftPosition(left, dropdownWidth)}px`,
       minWidth: `${buttonWidth}px`,
       width: `auto`,
     },

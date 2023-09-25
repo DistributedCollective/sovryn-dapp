@@ -1,5 +1,6 @@
 import React, { FC, useMemo } from 'react';
 
+import { BigNumber } from 'ethers';
 import { formatUnits } from 'ethers/lib/utils';
 import { t } from 'i18next';
 
@@ -12,6 +13,7 @@ import { getTokenDisplayName } from '../../../../../constants/tokens';
 import { useAccount } from '../../../../../hooks/useAccount';
 import { translations } from '../../../../../locales/i18n';
 import { decimalic } from '../../../../../utils/math';
+import { EarnedFee } from '../../RewardsPage.types';
 import { useGetFeesEarned } from '../../hooks/useGetFeesEarned';
 import { useGetLiquidSovClaimAmount } from '../../hooks/useGetLiquidSovClaimAmount';
 import { columns } from './Staking.constants';
@@ -36,13 +38,42 @@ export const Staking: FC = () => {
     [account, earnedFees, liquidSovClaimAmount],
   );
 
+  const earnedFeesSum = useMemo(() => {
+    const btcFees = earnedFees.filter(
+      earnedFee =>
+        earnedFee.token === SupportedTokens.rbtc ||
+        earnedFee.token === SupportedTokens.wrbtc,
+    );
+
+    if (!btcFees.length) {
+      return earnedFees;
+    }
+
+    const otherFees = earnedFees.filter(
+      earnedFee =>
+        earnedFee.token !== SupportedTokens.rbtc &&
+        earnedFee.token !== SupportedTokens.wrbtc,
+    );
+
+    const btcFeesSum: EarnedFee = {
+      token: SupportedTokens.rbtc,
+      value: btcFees
+        .reduce((sum, fee) => sum.add(fee.value), BigNumber.from(0))
+        .toString(),
+      contractAddress: '',
+      rbtcValue: 0,
+    };
+
+    return [btcFeesSum, ...otherFees];
+  }, [earnedFees]);
+
   const rows = useMemo(
     () => [
       {
         type: t(translations.rewardPage.staking.stakingRevenue),
         amount: (
           <div className="flex flex-col gap-1 my-4 text-left">
-            {earnedFees.map(fee => (
+            {earnedFeesSum.map(fee => (
               <AmountRenderer
                 key={fee.token}
                 value={formatUnits(fee.value, 18)}
@@ -78,6 +109,7 @@ export const Staking: FC = () => {
     ],
     [
       earnedFees,
+      earnedFeesSum,
       lastWithdrawalInterval,
       liquidSovClaimAmount,
       refetch,

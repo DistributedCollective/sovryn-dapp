@@ -5,9 +5,9 @@ import dayjs from 'dayjs';
 import { SupportedTokens } from '@sovryn/contracts';
 import { Decimal } from '@sovryn/utils';
 
+import { useGetBorrowingAPR } from '../../../../../5_pages/BorrowPage/components/AdjustLoanForm/hooks/useGetBorrowingAPR';
 import { useGetRBTCPrice } from '../../../../../../hooks/zero/useGetRBTCPrice';
 import { decimalic } from '../../../../../../utils/math';
-import { useGetBorrowingAPR } from '../../../../BorrowLoan/components/AdjustLoanForm/hooks/useGetBorrowingAPR';
 import {
   DEFAULT_LOAN_DURATION,
   SECONDS_IN_DAY,

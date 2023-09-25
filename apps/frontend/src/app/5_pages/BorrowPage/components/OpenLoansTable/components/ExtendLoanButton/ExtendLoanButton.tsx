@@ -11,9 +11,9 @@ import {
   DialogSize,
 } from '@sovryn/ui';
 
-import { ExtendLoanForm } from '../../../../../../3_organisms/BorrowLoan/components/ExtendLoanForm/ExtendLoanForm';
 import { useAccount } from '../../../../../../../hooks/useAccount';
 import { translations } from '../../../../../../../locales/i18n';
+import { ExtendLoanForm } from '../../../ExtendLoanForm/ExtendLoanForm';
 import { LoanItem } from '../../OpenLoansTable.types';
 
 type ExtendLoanButtonProps = {

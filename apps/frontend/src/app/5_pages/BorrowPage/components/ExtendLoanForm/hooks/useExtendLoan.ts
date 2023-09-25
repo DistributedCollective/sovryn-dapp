@@ -7,6 +7,10 @@ import { Decimal } from '@sovryn/utils';
 
 import { defaultChainId } from '../../../../../../config/chains';
 
+import {
+  Transaction,
+  TransactionType,
+} from '../../../../../3_organisms/TransactionStepDialog/TransactionStepDialog.types';
 import { LoanItem } from '../../../../../5_pages/BorrowPage/components/OpenLoansTable/OpenLoansTable.types';
 import { GAS_LIMIT } from '../../../../../../constants/gasLimits';
 import { useTransactionContext } from '../../../../../../contexts/TransactionContext';
@@ -15,10 +19,6 @@ import { useLoadContract } from '../../../../../../hooks/useLoadContract';
 import { translations } from '../../../../../../locales/i18n';
 import { toWei } from '../../../../../../utils/math';
 import { prepareApproveTransaction } from '../../../../../../utils/transactions';
-import {
-  Transaction,
-  TransactionType,
-} from '../../../../TransactionStepDialog/TransactionStepDialog.types';
 
 export const useExtendLoan = (
   loan: LoanItem,

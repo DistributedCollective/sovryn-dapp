@@ -6,6 +6,10 @@ import { SupportedTokens } from '@sovryn/contracts';
 
 import { defaultChainId } from '../../../../../../config/chains';
 
+import {
+  Transaction,
+  TransactionType,
+} from '../../../../../3_organisms/TransactionStepDialog/TransactionStepDialog.types';
 import { GAS_LIMIT } from '../../../../../../constants/gasLimits';
 import { useTransactionContext } from '../../../../../../contexts/TransactionContext';
 import { useAccount } from '../../../../../../hooks/useAccount';
@@ -13,35 +17,33 @@ import { useLoadContract } from '../../../../../../hooks/useLoadContract';
 import { translations } from '../../../../../../locales/i18n';
 import { toWei } from '../../../../../../utils/math';
 import { prepareApproveTransaction } from '../../../../../../utils/transactions';
-import {
-  Transaction,
-  TransactionType,
-} from '../../../../TransactionStepDialog/TransactionStepDialog.types';
 
-export const useDepositCollateral = () => {
+export const useRepayLoan = () => {
   const contract = useLoadContract('protocol', 'protocol', defaultChainId);
   const { setTransactions, setIsOpen, setTitle } = useTransactionContext();
   const { account, signer } = useAccount();
 
   const handleSubmit = useCallback(
     async (
-      depositAmount: string,
-      depositToken: SupportedTokens,
+      repayAmount: string,
       loanId: string,
+      borrowToken: SupportedTokens,
+      isPartialRepay?: boolean,
     ) => {
       if (!contract || !account || !signer) {
         return;
       }
 
-      const weiDepositAmount = toWei(depositAmount);
-      const isDepositTokenRbtc = depositToken === SupportedTokens.rbtc;
+      const weiRepayAmount = toWei(repayAmount);
+
+      const isBorrowTokenRbtc = borrowToken === SupportedTokens.rbtc;
 
       const transactions: Transaction[] = [];
 
-      if (!isDepositTokenRbtc) {
+      if (!isBorrowTokenRbtc) {
         const approve = await prepareApproveTransaction({
-          token: depositToken,
-          amount: weiDepositAmount,
+          token: borrowToken,
+          amount: weiRepayAmount,
           signer,
           spender: contract.address,
         });
@@ -52,15 +54,16 @@ export const useDepositCollateral = () => {
 
       transactions.push({
         title: t(
-          translations.fixedInterestPage.adjustLoanDialog.dialogTitles
-            .addCollateral,
+          translations.fixedInterestPage.adjustLoanDialog.dialogTitles[
+            isPartialRepay ? 'repay' : 'close'
+          ],
         ),
         request: {
           type: TransactionType.signTransaction,
           contract,
-          fnName: 'depositCollateral',
-          args: [loanId, weiDepositAmount],
-          value: isDepositTokenRbtc ? weiDepositAmount : '0',
+          fnName: 'closeWithDeposit',
+          args: [loanId, account, weiRepayAmount],
+          value: isBorrowTokenRbtc ? weiRepayAmount : '0',
           gasLimit: GAS_LIMIT.REPAY_LOAN,
         },
       });
@@ -68,13 +71,14 @@ export const useDepositCollateral = () => {
       setTransactions(transactions);
       setTitle(
         t(
-          translations.fixedInterestPage.adjustLoanDialog.dialogTitles
-            .addCollateral,
+          translations.fixedInterestPage.adjustLoanDialog.dialogTitles[
+            isPartialRepay ? 'repay' : 'close'
+          ],
         ),
       );
+      setTransactions(transactions);
       setIsOpen(true);
     },
-
     [account, contract, setIsOpen, setTitle, setTransactions, signer],
   );
 

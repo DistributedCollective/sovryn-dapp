@@ -9,8 +9,8 @@ import {
   MINIMUM_COLLATERAL_RATIO_LENDING_POOLS_SOV,
 } from '../../../../../../constants/lending';
 import { useQueryRate } from '../../../../../../hooks/useQueryRate';
-import { calculatePrepaidInterest } from '../../../../BorrowLoanForm/components/NewLoanForm/NewLoanForm.utils';
-import { useGetMaximumCollateralAmount } from '../../../../BorrowLoanForm/components/NewLoanForm/hooks/useGetMaximumCollateralAmount';
+import { calculatePrepaidInterest } from '../../NewLoanForm/NewLoanForm.utils';
+import { useGetMaximumCollateralAmount } from '../../NewLoanForm/hooks/useGetMaximumCollateralAmount';
 import { normalizeToken } from '../AdjustLoanForm.utils';
 import { useGetBorrowingAPR } from './useGetBorrowingAPR';
 

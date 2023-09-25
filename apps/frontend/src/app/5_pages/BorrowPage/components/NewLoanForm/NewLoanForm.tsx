@@ -26,6 +26,9 @@ import { Decimal } from '@sovryn/utils';
 
 import { AssetRenderer } from '../../../../2_molecules/AssetRenderer/AssetRenderer';
 import { MaxButton } from '../../../../2_molecules/MaxButton/MaxButton';
+import { useGetAvgBorrowingAPR } from '../../../../5_pages/BorrowPage/components/AdjustLoanForm/hooks/useGetAvgBorrowingAPR';
+import { useGetBorrowingAPR } from '../../../../5_pages/BorrowPage/components/AdjustLoanForm/hooks/useGetBorrowingAPR';
+import { useGetMaintenanceStates } from '../../../../5_pages/BorrowPage/components/AdjustLoanForm/hooks/useGetMaintenanceStates';
 import { useLiquityBaseParams } from '../../../../5_pages/ZeroPage/hooks/useLiquityBaseParams';
 import { BITCOIN } from '../../../../../constants/currencies';
 import {
@@ -39,9 +42,6 @@ import { useQueryRate } from '../../../../../hooks/useQueryRate';
 import { translations } from '../../../../../locales/i18n';
 import { LendingPool } from '../../../../../utils/LendingPool';
 import { dateFormat } from '../../../../../utils/helpers';
-import { useGetAvgBorrowingAPR } from '../../../BorrowLoan/components/AdjustLoanForm/hooks/useGetAvgBorrowingAPR';
-import { useGetBorrowingAPR } from '../../../BorrowLoan/components/AdjustLoanForm/hooks/useGetBorrowingAPR';
-import { useGetMaintenanceStates } from '../../../BorrowLoan/components/AdjustLoanForm/hooks/useGetMaintenanceStates';
 import { AdvancedSettings } from '../AdvancedSettings/AdvancedSettings';
 import { DEFAULT_LOAN_DURATION } from './NewLoanForm.constants';
 import {

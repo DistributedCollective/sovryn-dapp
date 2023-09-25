@@ -3,8 +3,8 @@ import { useMemo } from 'react';
 import { SupportedTokens } from '@sovryn/contracts';
 import { Decimal } from '@sovryn/utils';
 
+import { useGetOriginationFee } from '../../../../../5_pages/BorrowPage/components/AdjustLoanForm/hooks/useGetOriginationFee';
 import { useMaxAssetBalance } from '../../../../../../hooks/useMaxAssetBalance';
-import { useGetOriginationFee } from '../../../../BorrowLoan/components/AdjustLoanForm/hooks/useGetOriginationFee';
 
 export const useGetMaximumCollateralAmount = (
   asset: SupportedTokens,

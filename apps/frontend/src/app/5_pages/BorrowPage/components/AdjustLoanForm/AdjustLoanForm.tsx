@@ -20,6 +20,7 @@ import { Decimal } from '@sovryn/utils';
 
 import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { AssetRenderer } from '../../../../2_molecules/AssetRenderer/AssetRenderer';
+import { getOriginationFeeAmount } from '../../../../3_organisms/ZeroLocForm/utils';
 import { convertLoanTokenToSupportedAssets } from '../../../../5_pages/BorrowPage/components/OpenLoansTable/OpenLoans.utils';
 import { LoanItem } from '../../../../5_pages/BorrowPage/components/OpenLoansTable/OpenLoansTable.types';
 import {
@@ -33,9 +34,8 @@ import { useMaxAssetBalance } from '../../../../../hooks/useMaxAssetBalance';
 import { useQueryRate } from '../../../../../hooks/useQueryRate';
 import { translations } from '../../../../../locales/i18n';
 import { decimalic } from '../../../../../utils/math';
-import { getCollateralRatioThresholds } from '../../../BorrowLoanForm/components/NewLoanForm/NewLoanForm.utils';
-import { useGetMaximumCollateralAmount } from '../../../BorrowLoanForm/components/NewLoanForm/hooks/useGetMaximumCollateralAmount';
-import { getOriginationFeeAmount } from '../../../ZeroLocForm/utils';
+import { getCollateralRatioThresholds } from '../NewLoanForm/NewLoanForm.utils';
+import { useGetMaximumCollateralAmount } from '../NewLoanForm/hooks/useGetMaximumCollateralAmount';
 import {
   COLLATERAL_TABS,
   DEBT_TABS,

@@ -12,16 +12,16 @@ import {
 
 import { defaultChainId } from '../../../../../../config/chains';
 
+import {
+  Transaction,
+  TransactionType,
+} from '../../../../../3_organisms/TransactionStepDialog/TransactionStepDialog.types';
 import { GAS_LIMIT } from '../../../../../../constants/gasLimits';
 import { useTransactionContext } from '../../../../../../contexts/TransactionContext';
 import { useAccount } from '../../../../../../hooks/useAccount';
 import { translations } from '../../../../../../locales/i18n';
 import { toWei } from '../../../../../../utils/math';
 import { prepareApproveTransaction } from '../../../../../../utils/transactions';
-import {
-  Transaction,
-  TransactionType,
-} from '../../../../TransactionStepDialog/TransactionStepDialog.types';
 
 const currentDate = dayjs().unix();
 

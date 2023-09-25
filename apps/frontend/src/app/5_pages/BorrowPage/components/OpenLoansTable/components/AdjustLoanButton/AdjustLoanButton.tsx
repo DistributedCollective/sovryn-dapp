@@ -11,9 +11,9 @@ import {
   DialogSize,
 } from '@sovryn/ui';
 
-import { AdjustLoanForm } from '../../../../../../3_organisms/BorrowLoan/components/AdjustLoanForm/AdjustLoanForm';
 import { useAccount } from '../../../../../../../hooks/useAccount';
 import { translations } from '../../../../../../../locales/i18n';
+import { AdjustLoanForm } from '../../../AdjustLoanForm/AdjustLoanForm';
 import { LoanItem } from '../../OpenLoansTable.types';
 
 type AdjustLoanButtonProps = {

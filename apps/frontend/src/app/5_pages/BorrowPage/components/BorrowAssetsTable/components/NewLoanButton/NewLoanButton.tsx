@@ -11,10 +11,10 @@ import {
   DialogSize,
 } from '@sovryn/ui';
 
-import { NewLoanForm } from '../../../../../../3_organisms/BorrowLoanForm/components/NewLoanForm/NewLoanForm';
 import { useAccount } from '../../../../../../../hooks/useAccount';
 import { translations } from '../../../../../../../locales/i18n';
 import { LendingPool } from '../../../../../../../utils/LendingPool';
+import { NewLoanForm } from '../../../NewLoanForm/NewLoanForm';
 
 type NewLoanButtonProps = {
   pool: LendingPool;

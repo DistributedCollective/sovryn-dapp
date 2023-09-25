@@ -422,7 +422,7 @@ const EarnPage: FC = () => {
               valueClassName={classNames('transition-colors', {
                 'text-primary-10': !isAmountZero,
               })}
-              value={`${formatValue(apy, 2)}% APR`}
+              value={`${formatValue(apy, 2)}% ${t(pageTranslations.apr)}`}
             />
           </SimpleTable>
 

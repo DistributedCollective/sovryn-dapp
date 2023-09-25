@@ -29,7 +29,7 @@ export const NavItem: FC<NavItemProps> = ({ item, onClick }) => {
     <NavDropdown
       text={item.text}
       className={classNames(
-        'text-gray-30 font-normal text-sm hover:bg-gray-70 hover:text-gray-10 min-w-auto w-full md:w-auto',
+        'text-gray-30 font-normal text-sm hover:bg-gray-70 hover:text-gray-10 min-w-auto w-full lg:w-auto',
         {
           'bg-transparent border-none': !isPathActive(item.url),
           'bg-gray-70 border-gray-70': isMobile,

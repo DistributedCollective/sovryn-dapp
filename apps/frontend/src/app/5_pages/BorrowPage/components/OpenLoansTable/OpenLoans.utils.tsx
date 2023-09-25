@@ -11,25 +11,14 @@ import {
 } from '../../../../../constants/currencies';
 import { LendingPoolDictionary } from '../../../../../utils/LendingPoolDictionary';
 import { decimalic } from '../../../../../utils/math';
+import { isBitpro, isBtcBasedAsset } from '../../BorrowPage.utils';
 import { LoanItem } from './OpenLoansTable.types';
 
 export const normalizeSuffix = (asset: string) =>
-  asset === 'WRBTC' ? BITCOIN : asset;
+  isBtcBasedAsset(asset) ? BITCOIN : asset;
 
 export const getAmountPrecision = (asset: string) =>
-  ['WRBTC', BITCOIN].includes(asset)
-    ? BTC_RENDER_PRECISION
-    : TOKEN_RENDER_PRECISION;
-
-export const normalizeTokenSuffix = (asset: SupportedTokens) =>
-  [SupportedTokens.wrbtc, SupportedTokens.rbtc].includes(asset)
-    ? BITCOIN
-    : asset;
-
-export const getTokenAmountPrecision = (asset: SupportedTokens) =>
-  [SupportedTokens.wrbtc, SupportedTokens.rbtc].includes(asset)
-    ? BTC_RENDER_PRECISION
-    : TOKEN_RENDER_PRECISION;
+  isBtcBasedAsset(asset) ? BTC_RENDER_PRECISION : TOKEN_RENDER_PRECISION;
 
 export const calculateLiquidationPrice = (
   borrowedAmount: string,
@@ -46,20 +35,17 @@ export const calculateLiquidationPrice = (
 export const generateRowTitle = (item: LoanItem) => (
   <AmountRenderer
     value={item.debt}
-    suffix={normalizeTokenSuffix(item.debtAsset)}
+    suffix={normalizeSuffix(item.debtAsset)}
     precision={getAmountPrecision(item.debtAsset)}
   />
 );
 
 export const convertLoanTokenToSupportedAssets = (loanToken: string) => {
-  if (loanToken.toLowerCase() === 'wrbtc') {
+  if (isBtcBasedAsset(loanToken)) {
     return SupportedTokens.rbtc;
   }
 
-  if (
-    loanToken.toLowerCase() === 'bitpro' ||
-    loanToken.toLowerCase() === 'bitp'
-  ) {
+  if (isBitpro(loanToken)) {
     return SupportedTokens.bpro;
   }
 

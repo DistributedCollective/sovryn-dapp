@@ -5,7 +5,7 @@ import { t } from 'i18next';
 import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { translations } from '../../../../../locales/i18n';
 import { dateFormat } from '../../../../../utils/helpers';
-import { getAmountPrecision, normalizeTokenSuffix } from './OpenLoans.utils';
+import { getAmountPrecision, normalizeSuffix } from './OpenLoans.utils';
 import { LoanItem } from './OpenLoansTable.types';
 import { AdjustLoanButton } from './components/AdjustLoanButton/AdjustLoanButton';
 import { ExtendLoanButton } from './components/ExtendLoanButton/ExtendLoanButton';
@@ -19,7 +19,7 @@ export const COLUMNS_CONFIG = [
     cellRenderer: (item: LoanItem) => (
       <AmountRenderer
         value={item.debt}
-        suffix={normalizeTokenSuffix(item.debtAsset)}
+        suffix={normalizeSuffix(item.debtAsset)}
         precision={getAmountPrecision(item.debtAsset)}
       />
     ),
@@ -30,7 +30,7 @@ export const COLUMNS_CONFIG = [
     cellRenderer: (item: LoanItem) => (
       <AmountRenderer
         value={item.collateral}
-        suffix={normalizeTokenSuffix(item.collateralAsset)}
+        suffix={normalizeSuffix(item.collateralAsset)}
         precision={getAmountPrecision(item.collateralAsset)}
       />
     ),
@@ -49,7 +49,7 @@ export const COLUMNS_CONFIG = [
       <>
         <AmountRenderer
           value={item.liquidationPrice}
-          suffix={normalizeTokenSuffix(item.debtAsset)}
+          suffix={normalizeSuffix(item.debtAsset)}
           precision={getAmountPrecision(item.debtAsset)}
         />
       </>

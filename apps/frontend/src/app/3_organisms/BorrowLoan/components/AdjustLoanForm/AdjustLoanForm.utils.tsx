@@ -8,6 +8,10 @@ import { Decimal } from '@sovryn/utils';
 
 import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRenderer';
 import {
+  isBitpro,
+  isBtcBasedAsset,
+} from '../../../../5_pages/BorrowPage/BorrowPage.utils';
+import {
   BITCOIN,
   BTC_RENDER_PRECISION,
   TOKEN_RENDER_PRECISION,
@@ -17,11 +21,11 @@ import { decimalic } from '../../../../../utils/math';
 import { SECONDS_IN_YEAR } from './AdjustLoanForm.constants';
 
 export const normalizeToken = (token: string): SupportedTokens => {
-  if (token.toLowerCase() === SupportedTokens.wrbtc) {
+  if (isBtcBasedAsset(token)) {
     return SupportedTokens.rbtc;
   }
 
-  if (token.toLowerCase() === 'bitpro' || token.toLowerCase() === 'bitp') {
+  if (isBitpro(token)) {
     return SupportedTokens.bpro;
   }
 

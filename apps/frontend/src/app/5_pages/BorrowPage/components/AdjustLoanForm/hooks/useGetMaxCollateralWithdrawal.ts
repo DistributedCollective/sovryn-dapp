@@ -7,7 +7,7 @@ import { LoanItem } from '../../../../../5_pages/BorrowPage/components/OpenLoans
 import { MINIMUM_COLLATERAL_RATIO_BORROWING_MAINTENANCE } from '../../../../../../constants/lending';
 import { useGetRBTCPrice } from '../../../../../../hooks/zero/useGetRBTCPrice';
 import { decimalic } from '../../../../../../utils/math';
-import { normalizeToken } from '../AdjustLoanForm.utils';
+import { normalizeToken } from '../../../BorrowPage.utils';
 import { useGetCollateralAssetPrice } from './useGetCollateralAssetPrice';
 
 export const useGetMaxCollateralWithdrawal = (loan: LoanItem): Decimal => {

@@ -20,7 +20,6 @@ import { Decimal } from '@sovryn/utils';
 
 import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { AssetRenderer } from '../../../../2_molecules/AssetRenderer/AssetRenderer';
-import { getOriginationFeeAmount } from '../../../../3_organisms/ZeroLocForm/utils';
 import { convertLoanTokenToSupportedAssets } from '../../../../5_pages/BorrowPage/components/OpenLoansTable/OpenLoans.utils';
 import { LoanItem } from '../../../../5_pages/BorrowPage/components/OpenLoansTable/OpenLoansTable.types';
 import {
@@ -34,7 +33,14 @@ import { useMaxAssetBalance } from '../../../../../hooks/useMaxAssetBalance';
 import { useQueryRate } from '../../../../../hooks/useQueryRate';
 import { translations } from '../../../../../locales/i18n';
 import { decimalic } from '../../../../../utils/math';
-import { getCollateralRatioThresholds } from '../NewLoanForm/NewLoanForm.utils';
+import {
+  areValuesIdentical,
+  calculatePrepaidInterestFromDuration,
+  getCollateralRatioThresholds,
+  getOriginationFeeAmount,
+  normalizeToken,
+  renderValue,
+} from '../../BorrowPage.utils';
 import { useGetMaximumCollateralAmount } from '../NewLoanForm/hooks/useGetMaximumCollateralAmount';
 import {
   COLLATERAL_TABS,
@@ -43,12 +49,8 @@ import {
 } from './AdjustLoanForm.constants';
 import { CollateralTabAction, DebtTabAction } from './AdjustLoanForm.types';
 import {
-  areValuesIdentical,
   calculateDebtRepaidPercentage,
-  calculatePrepaidInterest,
   calculateRepayCollateralWithdrawn,
-  normalizeToken,
-  renderValue,
 } from './AdjustLoanForm.utils';
 import { CurrentLoanData } from './components/CurrentLoanData';
 import { Label } from './components/Label';
@@ -204,7 +206,7 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
   ]);
 
   const originationFee = useMemo(
-    () => getOriginationFeeAmount(collateralSize, originationFeeRate.div(100)),
+    () => getOriginationFeeAmount(collateralSize, originationFeeRate),
     [originationFeeRate, collateralSize],
   );
 
@@ -255,7 +257,7 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
     collateralWithdrawn,
   ]);
 
-  const prepaidInterest = calculatePrepaidInterest(
+  const prepaidInterest = calculatePrepaidInterestFromDuration(
     borrowApr,
     debtSize.toString(),
     INTEREST_DURATION,

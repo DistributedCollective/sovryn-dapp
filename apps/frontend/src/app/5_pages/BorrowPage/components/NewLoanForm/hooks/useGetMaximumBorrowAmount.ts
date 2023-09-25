@@ -12,7 +12,7 @@ import {
 } from '../../../../../../constants/lending';
 import { useQueryRate } from '../../../../../../hooks/useQueryRate';
 import { decimalic } from '../../../../../../utils/math';
-import { calculatePrepaidInterest } from '../NewLoanForm.utils';
+import { calculatePrepaidInterestFromTargetDate } from '../../../BorrowPage.utils';
 import { useGetMaximumCollateralAmount } from './useGetMaximumCollateralAmount';
 
 export const useGetMaximumBorrowAmount = (
@@ -61,7 +61,12 @@ export const useGetMaximumBorrowAmount = (
   );
 
   const prepaidInterest = useMemo(
-    () => calculatePrepaidInterest(borrowApr, maxBorrow, loanDuration),
+    () =>
+      calculatePrepaidInterestFromTargetDate(
+        borrowApr,
+        maxBorrow,
+        loanDuration,
+      ),
     [borrowApr, loanDuration, maxBorrow],
   );
 

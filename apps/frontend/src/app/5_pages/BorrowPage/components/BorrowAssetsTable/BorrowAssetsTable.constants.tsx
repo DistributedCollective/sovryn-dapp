@@ -9,7 +9,7 @@ import { MINIMUM_COLLATERAL_RATIO_BORROWING_MAINTENANCE } from '../../../../../c
 import { translations } from '../../../../../locales/i18n';
 import { LendingPool } from '../../../../../utils/LendingPool';
 import { AcceptedCollateral } from '../../../LendPage/components/AcceptedCollateral/AcceptedCollateral';
-import { normalizeToken } from '../AdjustLoanForm/AdjustLoanForm.utils';
+import { normalizeToken } from '../../BorrowPage.utils';
 import { AvailableSupply } from './components/AvailableSupply/AvailableSupply';
 import { NewLoanButton } from './components/NewLoanButton/NewLoanButton';
 import { NextBorrowInterestRate } from './components/NextBorrowInterestRate/NextBorrowInterestRate';

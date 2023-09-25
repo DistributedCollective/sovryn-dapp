@@ -35,10 +35,12 @@ import { useQueryRate } from '../../../../../hooks/useQueryRate';
 import { translations } from '../../../../../locales/i18n';
 import { dateFormat } from '../../../../../utils/helpers';
 import { decimalic } from '../../../../../utils/math';
-import { normalizeToken } from '../AdjustLoanForm/AdjustLoanForm.utils';
+import {
+  getCollateralRatioThresholds,
+  normalizeToken,
+  renderValue,
+} from '../../BorrowPage.utils';
 import { useGetMaintenanceStates } from '../AdjustLoanForm/hooks/useGetMaintenanceStates';
-import { getCollateralRatioThresholds } from '../NewLoanForm/NewLoanForm.utils';
-import { renderValue } from './ExtendLoanForm.utils';
 import { CurrentLoanData } from './components/CurrentLoanData/CurrentLoanData';
 import { useExtendLoan } from './hooks/useExtendLoan';
 

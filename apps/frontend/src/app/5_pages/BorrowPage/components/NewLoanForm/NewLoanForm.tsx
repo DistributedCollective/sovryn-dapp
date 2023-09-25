@@ -29,7 +29,6 @@ import { MaxButton } from '../../../../2_molecules/MaxButton/MaxButton';
 import { useGetAvgBorrowingAPR } from '../../../../5_pages/BorrowPage/components/AdjustLoanForm/hooks/useGetAvgBorrowingAPR';
 import { useGetBorrowingAPR } from '../../../../5_pages/BorrowPage/components/AdjustLoanForm/hooks/useGetBorrowingAPR';
 import { useGetMaintenanceStates } from '../../../../5_pages/BorrowPage/components/AdjustLoanForm/hooks/useGetMaintenanceStates';
-import { useLiquityBaseParams } from '../../../../5_pages/ZeroPage/hooks/useLiquityBaseParams';
 import { BITCOIN } from '../../../../../constants/currencies';
 import {
   MINIMUM_COLLATERAL_RATIO_LENDING_POOLS_SOV,
@@ -42,14 +41,15 @@ import { useQueryRate } from '../../../../../hooks/useQueryRate';
 import { translations } from '../../../../../locales/i18n';
 import { LendingPool } from '../../../../../utils/LendingPool';
 import { dateFormat } from '../../../../../utils/helpers';
-import { AdvancedSettings } from '../AdvancedSettings/AdvancedSettings';
-import { DEFAULT_LOAN_DURATION } from './NewLoanForm.constants';
 import {
-  calculatePrepaidInterest,
+  calculatePrepaidInterestFromTargetDate,
   getCollateralRatioThresholds,
   getOriginationFeeAmount,
   renderValue,
-} from './NewLoanForm.utils';
+} from '../../BorrowPage.utils';
+import { useGetOriginationFee } from '../AdjustLoanForm/hooks/useGetOriginationFee';
+import { AdvancedSettings } from '../AdvancedSettings/AdvancedSettings';
+import { DEFAULT_LOAN_DURATION } from './NewLoanForm.constants';
 import { useBorrow } from './hooks/useBorrow';
 import { useGetMaximumBorrowAmount } from './hooks/useGetMaximumBorrowAmount';
 import { useGetMaximumCollateralAmount } from './hooks/useGetMaximumCollateralAmount';
@@ -72,7 +72,7 @@ export const NewLoanForm: FC<NewLoanFormProps> = ({ pool }) => {
   const [hasDisclaimerBeenChecked, setHasDisclaimerBeenChecked] =
     useState(false);
   const borrowToken = useMemo(() => pool.getAsset(), [pool]);
-  const { minBorrowingFeeRate } = useLiquityBaseParams();
+  const originationFeeRate = useGetOriginationFee();
   const { avgBorrowApr: borrowApr } = useGetAvgBorrowingAPR(borrowToken);
   const { borrowApr: userBorrowApr } = useGetBorrowingAPR(
     borrowToken,
@@ -163,15 +163,15 @@ export const NewLoanForm: FC<NewLoanFormProps> = ({ pool }) => {
     [collateralSize, maxCollateralAmount],
   );
 
-  const preparedInterest = calculatePrepaidInterest(
+  const preparedInterest = calculatePrepaidInterestFromTargetDate(
     userBorrowApr,
     borrowSize,
     borrowDays,
   );
 
   const originationFee = useMemo(
-    () => getOriginationFeeAmount(collateralSize, minBorrowingFeeRate),
-    [collateralSize, minBorrowingFeeRate],
+    () => getOriginationFeeAmount(collateralSize, originationFeeRate),
+    [collateralSize, originationFeeRate],
   );
 
   const totalBorrow = useMemo(

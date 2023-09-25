@@ -9,9 +9,11 @@ import {
   MINIMUM_COLLATERAL_RATIO_LENDING_POOLS_SOV,
 } from '../../../../../../constants/lending';
 import { useQueryRate } from '../../../../../../hooks/useQueryRate';
-import { calculatePrepaidInterest } from '../../NewLoanForm/NewLoanForm.utils';
+import {
+  calculatePrepaidInterestFromTargetDate,
+  normalizeToken,
+} from '../../../BorrowPage.utils';
 import { useGetMaximumCollateralAmount } from '../../NewLoanForm/hooks/useGetMaximumCollateralAmount';
-import { normalizeToken } from '../AdjustLoanForm.utils';
 import { useGetBorrowingAPR } from './useGetBorrowingAPR';
 
 export const useGetMaximumBorrowAmount = (
@@ -74,7 +76,12 @@ export const useGetMaximumBorrowAmount = (
   );
 
   const prepaidInterest = useMemo(
-    () => calculatePrepaidInterest(borrowApr, maxBorrow, loan.rolloverDate),
+    () =>
+      calculatePrepaidInterestFromTargetDate(
+        borrowApr,
+        maxBorrow,
+        loan.rolloverDate,
+      ),
     [borrowApr, loan.rolloverDate, maxBorrow],
   );
 

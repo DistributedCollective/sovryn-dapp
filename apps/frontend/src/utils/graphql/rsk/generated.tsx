@@ -15241,7 +15241,7 @@ export const GetDelegateChangesDocument = gql`
     $orderDirection: OrderDirection
   ) {
     v2DelegateChangeds(
-      where: { user: $user }
+      where: { user: $user, previousDelegate_not: null }
       first: $pageSize
       skip: $skip
       orderBy: $orderBy

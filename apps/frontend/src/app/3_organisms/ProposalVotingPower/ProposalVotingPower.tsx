@@ -2,13 +2,8 @@ import React, { FC, useMemo } from 'react';
 
 import { t } from 'i18next';
 
-import { HelperButton, Paragraph, ParagraphSize } from '@sovryn/ui';
+import { Paragraph, ParagraphSize } from '@sovryn/ui';
 
-import {
-  ProposalProps,
-  ProposalState,
-} from '../../5_pages/BitocracyPage/BitocracyPage.types';
-import { useProposalStatus } from '../../5_pages/BitocracyPage/hooks/useProposalStatus';
 import { VP } from '../../5_pages/StakePage/StakePage.constants';
 import { useGetPersonalStakingStatistics } from '../../5_pages/StakePage/components/PersonalStakingStatistics/hooks/useGetPersonalStakingStatistics';
 import { useGetStakingStatistics } from '../../5_pages/StakePage/components/StakingStatistics/hooks/useGetStakingStatistics';
@@ -17,17 +12,10 @@ import { translations } from '../../../locales/i18n';
 import { decimalic, fromWei } from '../../../utils/math';
 import { LabeledAmount } from './ProposalVotingPower.utils';
 
-export const ProposalVotingPower: FC<ProposalProps> = ({ proposal }) => {
+export const ProposalVotingPower: FC = () => {
   const { account } = useAccount();
   const { votingPower } = useGetPersonalStakingStatistics();
   const { totalVotingPower } = useGetStakingStatistics();
-
-  const status = useProposalStatus(proposal);
-
-  const isVotingPowerVisible = useMemo(
-    () => status === ProposalState.Active,
-    [status],
-  );
 
   const votingPowerShare = useMemo(() => {
     if (!votingPower || !totalVotingPower) {
@@ -41,7 +29,7 @@ export const ProposalVotingPower: FC<ProposalProps> = ({ proposal }) => {
     return getVotingPowerShare.toNumber();
   }, [votingPower, totalVotingPower]);
 
-  return !isVotingPowerVisible ? (
+  return (
     <div className="bg-gray-90 rounded mb-6 p-6">
       <Paragraph size={ParagraphSize.base} className="font-medium mb-6">
         {t(translations.proposalVotingPower.title)}
@@ -49,48 +37,7 @@ export const ProposalVotingPower: FC<ProposalProps> = ({ proposal }) => {
 
       <div className="flex items-center">
         <LabeledAmount
-          label={
-            <span className="flex items-center gap-1">
-              {t(translations.proposalVotingPower.votingPower)}{' '}
-              <HelperButton
-                tooltipClassName="max-w-56 md:max-w-96"
-                content={
-                  <div className="flex flex-col">
-                    <div>
-                      {t(
-                        translations.stakePage.personalStatistics
-                          .votingPowerInfo.line1,
-                      )}
-                      :{' '}
-                      <b>
-                        {fromWei(votingPower)} {VP}
-                      </b>
-                    </div>
-                    <div>
-                      {t(
-                        translations.stakePage.personalStatistics
-                          .votingPowerInfo.line2,
-                      )}
-                      :{' '}
-                      <b>
-                        {fromWei(0)} {VP}
-                      </b>
-                    </div>
-                    <div>
-                      {t(
-                        translations.stakePage.personalStatistics
-                          .votingPowerInfo.line3,
-                      )}
-                      :{' '}
-                      <b>
-                        {fromWei(votingPower)} {VP}
-                      </b>
-                    </div>
-                  </div>
-                }
-              />
-            </span>
-          }
+          label={t(translations.proposalVotingPower.votingPower)}
           amount={account ? fromWei(votingPower) : undefined}
           amountSuffix={VP}
         />
@@ -102,5 +49,5 @@ export const ProposalVotingPower: FC<ProposalProps> = ({ proposal }) => {
         />
       </div>
     </div>
-  ) : null;
+  );
 };

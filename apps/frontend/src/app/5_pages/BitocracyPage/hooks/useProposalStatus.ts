@@ -7,23 +7,25 @@ import { decimalic } from '../../../../utils/math';
 import { ProposalState } from '../BitocracyPage.types';
 import { GRACE_PERIOD_IN_SECONDS } from '../components/Proposals/Proposals.constants';
 
-export const useProposalStatus = (proposal: Proposal) => {
+export const useProposalStatus = (proposal?: Proposal) => {
   const { value: blockNumber } = useBlockNumber();
   const currentTimeStamp = useMemo(() => Math.ceil(Date.now() / MS), []);
 
   const totalVotes = useMemo(
-    () => decimalic(proposal.votesFor).add(proposal.votesAgainst),
-    [proposal.votesFor, proposal.votesAgainst],
+    () => decimalic(proposal?.votesFor).add(proposal?.votesAgainst || 0),
+    [proposal],
   );
   const totalVotesMajorityPercentage = useMemo(
-    () => totalVotes.div(100).mul(proposal.majorityPercentage),
-    [totalVotes, proposal.majorityPercentage],
+    () => totalVotes.div(100).mul(proposal?.majorityPercentage || 0),
+    [totalVotes, proposal],
   );
 
   return useMemo(() => {
     let status: ProposalState;
 
-    if (proposal.canceled) {
+    if (!proposal) {
+      status = ProposalState.Pending;
+    } else if (proposal.canceled) {
       status = ProposalState.Canceled;
     } else if (blockNumber <= proposal.endBlock) {
       status = ProposalState.Active;
@@ -51,13 +53,7 @@ export const useProposalStatus = (proposal: Proposal) => {
   }, [
     blockNumber,
     currentTimeStamp,
-    proposal.canceled,
-    proposal.endBlock,
-    proposal.eta,
-    proposal.executed,
-    proposal.quorum,
-    proposal.startBlock,
-    proposal.votesFor,
+    proposal,
     totalVotes,
     totalVotesMajorityPercentage,
   ]);

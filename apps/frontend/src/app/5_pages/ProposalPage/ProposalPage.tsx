@@ -12,7 +12,9 @@ import { ProposalVotingResults } from '../../3_organisms/ProposalVotingResults/P
 import { useGetProtocolContract } from '../../../hooks/useGetContract';
 import { translations } from '../../../locales/i18n';
 import { areAddressesEqual } from '../../../utils/helpers';
+import { ProposalState } from '../BitocracyPage/BitocracyPage.types';
 import { ProposalStatus } from '../BitocracyPage/components/ProposalStatus/ProposalStatus';
+import { useProposalStatus } from '../BitocracyPage/hooks/useProposalStatus';
 import { parseProposalInfo } from './ProposalPage.utils';
 import { CastVote } from './components/CastVote/CastVote';
 import { ExecutableDetails } from './components/ExecutableDetails/ExecutableDetails';
@@ -29,6 +31,13 @@ const ProposalPage: FC = () => {
   const ownerAddress = useGetProtocolContract('governorOwner')?.address ?? '';
 
   const { proposal } = useGetProposalById(id || '');
+
+  const status = useProposalStatus(proposal);
+
+  const isVotingPowerVisible = useMemo(
+    () => status === ProposalState.Active,
+    [status],
+  );
 
   const proposalInfo = useMemo(() => {
     return parseProposalInfo(proposal);
@@ -114,7 +123,7 @@ const ProposalPage: FC = () => {
           <CastVote proposal={proposal} />
 
           <div className="md:hidden">
-            <ProposalVotingPower proposal={proposal} />
+            {isVotingPowerVisible && <ProposalVotingPower />}
             <ProposalVotingResults proposal={proposal} />
           </div>
           <ProposalInfo
@@ -138,7 +147,7 @@ const ProposalPage: FC = () => {
 
             <VoteTimer proposal={proposal} />
           </div>
-          <ProposalVotingPower proposal={proposal} />
+          {isVotingPowerVisible && <ProposalVotingPower />}
           <ProposalVotingResults proposal={proposal} />
         </div>
         {/* {account && (

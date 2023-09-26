@@ -29,7 +29,7 @@ export const NavItem: FC<NavItemProps> = ({ item, onClick }) => {
     <NavDropdown
       text={item.text}
       className={classNames(
-        'text-gray-30 font-normal text-sm hover:bg-gray-70 hover:text-gray-10 min-w-auto w-full lg:w-auto',
+        'rounded-b-none text-gray-30 font-normal text-sm hover:bg-gray-70 hover:text-gray-10 min-w-auto w-full lg:w-auto lg:rounded',
         {
           'bg-transparent border-none': !isPathActive(item.url),
           'bg-gray-70 border-gray-70': isMobile,
@@ -37,7 +37,7 @@ export const NavItem: FC<NavItemProps> = ({ item, onClick }) => {
       )}
       active={isPathActive(item.url)}
     >
-      <Menu>
+      <Menu className="rounded-t-none rounded-b px-2 py-3 lg:rounded lg:p-1">
         {item.submenu.map(({ text, label, url }) => (
           <MenuItemWithRouter
             key={text}

@@ -19,7 +19,7 @@ export const LabeledAmount = ({
       size={ParagraphSize.base}
       className="text-gray-30 md:mb-3 leading-4 text-xs"
     >
-      {t(label)}
+      {label}
     </Paragraph>
     {amount ? (
       <AmountRenderer

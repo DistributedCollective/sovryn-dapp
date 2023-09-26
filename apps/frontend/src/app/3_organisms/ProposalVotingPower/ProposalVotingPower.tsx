@@ -2,7 +2,7 @@ import React, { FC, useMemo } from 'react';
 
 import { t } from 'i18next';
 
-import { Paragraph, ParagraphSize } from '@sovryn/ui';
+import { HelperButton, Paragraph, ParagraphSize } from '@sovryn/ui';
 
 import {
   ProposalProps,
@@ -41,7 +41,7 @@ export const ProposalVotingPower: FC<ProposalProps> = ({ proposal }) => {
     return getVotingPowerShare.toNumber();
   }, [votingPower, totalVotingPower]);
 
-  return isVotingPowerVisible ? (
+  return !isVotingPowerVisible ? (
     <div className="bg-gray-90 rounded mb-6 p-6">
       <Paragraph size={ParagraphSize.base} className="font-medium mb-6">
         {t(translations.proposalVotingPower.title)}
@@ -49,12 +49,53 @@ export const ProposalVotingPower: FC<ProposalProps> = ({ proposal }) => {
 
       <div className="flex items-center">
         <LabeledAmount
-          label={translations.proposalVotingPower.votingPower}
+          label={
+            <span className="flex items-center gap-1">
+              {t(translations.proposalVotingPower.votingPower)}{' '}
+              <HelperButton
+                tooltipClassName="max-w-56 md:max-w-96"
+                content={
+                  <div className="flex flex-col">
+                    <div>
+                      {t(
+                        translations.stakePage.personalStatistics
+                          .votingPowerInfo.line1,
+                      )}
+                      :{' '}
+                      <b>
+                        {fromWei(votingPower)} {VP}
+                      </b>
+                    </div>
+                    <div>
+                      {t(
+                        translations.stakePage.personalStatistics
+                          .votingPowerInfo.line2,
+                      )}
+                      :{' '}
+                      <b>
+                        {fromWei(0)} {VP}
+                      </b>
+                    </div>
+                    <div>
+                      {t(
+                        translations.stakePage.personalStatistics
+                          .votingPowerInfo.line3,
+                      )}
+                      :{' '}
+                      <b>
+                        {fromWei(votingPower)} {VP}
+                      </b>
+                    </div>
+                  </div>
+                }
+              />
+            </span>
+          }
           amount={account ? fromWei(votingPower) : undefined}
           amountSuffix={VP}
         />
         <LabeledAmount
-          label={translations.proposalVotingPower.votingPowerShare}
+          label={t(translations.proposalVotingPower.votingPowerShare)}
           amount={account ? votingPowerShare : undefined}
           amountSuffix="%"
           precision={5}

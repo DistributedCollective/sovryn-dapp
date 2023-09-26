@@ -41,7 +41,7 @@ import {
   renderValue,
 } from '../../BorrowPage.utils';
 import { useGetMaintenanceStates } from '../AdjustLoanForm/hooks/useGetMaintenanceStates';
-import { CurrentLoanData } from './components/CurrentLoanData/CurrentLoanData';
+import { CurrentLoanData } from '../CurrentLoanData/CurrentLoanData';
 import { useExtendLoan } from './hooks/useExtendLoan';
 
 const pageTranslations = translations.fixedInterestPage.extendLoanDialog;

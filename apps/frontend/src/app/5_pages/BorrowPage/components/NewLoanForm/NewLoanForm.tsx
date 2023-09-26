@@ -48,8 +48,8 @@ import {
   renderValue,
 } from '../../BorrowPage.utils';
 import { useGetOriginationFee } from '../AdjustLoanForm/hooks/useGetOriginationFee';
-import { AdvancedSettings } from '../AdvancedSettings/AdvancedSettings';
 import { DEFAULT_LOAN_DURATION } from './NewLoanForm.constants';
+import { AdvancedSettings } from './components/AdvancedSettings/AdvancedSettings';
 import { useBorrow } from './hooks/useBorrow';
 import { useGetMaximumBorrowAmount } from './hooks/useGetMaximumBorrowAmount';
 import { useGetMaximumCollateralAmount } from './hooks/useGetMaximumCollateralAmount';

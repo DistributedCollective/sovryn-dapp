@@ -4,14 +4,14 @@ import { t } from 'i18next';
 
 import { SupportedTokens } from '@sovryn/contracts';
 
-import { AmountRenderer } from '../../../../../2_molecules/AmountRenderer/AmountRenderer';
-import { CRatioIndicator } from '../../../../../2_molecules/LOCStatus/components/CRatioIndicator/CRatioIndicator';
+import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRenderer';
+import { CRatioIndicator } from '../../../../2_molecules/LOCStatus/components/CRatioIndicator/CRatioIndicator';
 import {
   BITCOIN,
   BTC_RENDER_PRECISION,
   TOKEN_RENDER_PRECISION,
-} from '../../../../../../constants/currencies';
-import { translations } from '../../../../../../locales/i18n';
+} from '../../../../../constants/currencies';
+import { translations } from '../../../../../locales/i18n';
 
 type CurrentLoanDataProps = {
   debt: number;

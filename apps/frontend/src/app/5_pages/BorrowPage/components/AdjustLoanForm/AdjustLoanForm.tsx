@@ -41,6 +41,7 @@ import {
   normalizeToken,
   renderValue,
 } from '../../BorrowPage.utils';
+import { CurrentLoanData } from '../CurrentLoanData/CurrentLoanData';
 import { useGetMaximumCollateralAmount } from '../NewLoanForm/hooks/useGetMaximumCollateralAmount';
 import {
   COLLATERAL_TABS,
@@ -52,7 +53,6 @@ import {
   calculateDebtRepaidPercentage,
   calculateRepayCollateralWithdrawn,
 } from './AdjustLoanForm.utils';
-import { CurrentLoanData } from './components/CurrentLoanData';
 import { Label } from './components/Label';
 import { useCloseWithDepositIsTinyPosition } from './hooks/useCloseWithDepositIsTinyPosition';
 import { useDepositCollateral } from './hooks/useDepositCollateral';

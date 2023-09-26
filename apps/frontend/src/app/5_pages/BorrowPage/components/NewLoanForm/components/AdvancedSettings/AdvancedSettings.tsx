@@ -6,8 +6,8 @@ import 'react-day-picker/dist/style.css';
 
 import { Accordion } from '@sovryn/ui';
 
-import { DatePicker } from '../../../../2_molecules/DatePicker/DatePicker';
-import { translations } from '../../../../../locales/i18n';
+import { DatePicker } from '../../../../../../2_molecules/DatePicker/DatePicker';
+import { translations } from '../../../../../../../locales/i18n';
 import { MaxDuration } from '../MaxDuration/MaxDuration';
 
 type AdvancedSettingsProps = {

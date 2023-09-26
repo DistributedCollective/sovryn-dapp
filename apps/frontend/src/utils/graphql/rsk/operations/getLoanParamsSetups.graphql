@@ -1,0 +1,19 @@
+query getLoanParamsSetups {
+  loanParamsSetups {
+    collateralToken {
+      id
+    }
+    id
+    loanToken {
+      id
+    }
+    maintenanceMargin
+    minInitialMargin
+    maxLoanTerm
+    owner
+    timestamp
+    transaction {
+      id
+    }
+  }
+}

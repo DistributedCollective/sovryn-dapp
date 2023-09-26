@@ -217,6 +217,7 @@ export const StabilityPool: FC = () => {
           rows={rows}
           isLoading={!!account ? loadingTroves : false}
           rowKey={row => row.type}
+          dataAttribute="stability-pool-rewards-table"
           noData={
             <span className="italic">
               {!!account

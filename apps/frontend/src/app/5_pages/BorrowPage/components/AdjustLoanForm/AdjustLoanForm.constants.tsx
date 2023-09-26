@@ -3,8 +3,7 @@ import { t } from 'i18next';
 import { translations } from '../../../../../locales/i18n';
 import { CollateralTabAction, DebtTabAction } from './AdjustLoanForm.types';
 
-export const SECONDS_IN_YEAR = 31536000;
-export const INTEREST_DURATION = 3600;
+export const INTEREST_DURATION = 3600; // according to the PRD
 
 export const ACTIVE_CLASSNAME = 'bg-gray-70 text-primary-20';
 

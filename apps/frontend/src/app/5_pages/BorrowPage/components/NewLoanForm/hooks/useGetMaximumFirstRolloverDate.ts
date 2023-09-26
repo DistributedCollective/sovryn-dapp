@@ -6,13 +6,13 @@ import { SupportedTokens } from '@sovryn/contracts';
 import { Decimal } from '@sovryn/utils';
 
 import { useGetBorrowingAPR } from '../../../../../5_pages/BorrowPage/components/AdjustLoanForm/hooks/useGetBorrowingAPR';
-import { useGetRBTCPrice } from '../../../../../../hooks/zero/useGetRBTCPrice';
-import { decimalic } from '../../../../../../utils/math';
 import {
-  DEFAULT_LOAN_DURATION,
   SECONDS_IN_DAY,
   SECONDS_IN_YEAR,
-} from '../NewLoanForm.constants';
+} from '../../../../../../constants/general';
+import { useGetRBTCPrice } from '../../../../../../hooks/zero/useGetRBTCPrice';
+import { decimalic } from '../../../../../../utils/math';
+import { DEFAULT_LOAN_DURATION } from '../NewLoanForm.constants';
 import { useGetCollateralAssetPrice } from './useGetCollateralAssetPrice';
 
 export const useGetMaximumFirstRolloverDate = (

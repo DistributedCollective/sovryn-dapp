@@ -1,2 +1,0 @@
-export const SECONDS_IN_YEAR = 31536000;
-export const INTEREST_DURATION = 3600;

@@ -13,13 +13,13 @@ import {
   BTC_RENDER_PRECISION,
   TOKEN_RENDER_PRECISION,
 } from '../../../constants/currencies';
+import { SECONDS_IN_YEAR } from '../../../constants/general';
 import {
   MINIMUM_COLLATERAL_RATIO_LENDING_POOLS_SOV,
   MINIMUM_COLLATERAL_RATIO_LENDING_POOLS,
 } from '../../../constants/lending';
 import { translations } from '../../../locales/i18n';
 import { decimalic } from '../../../utils/math';
-import { SECONDS_IN_YEAR } from './components/AdjustLoanForm/AdjustLoanForm.constants';
 
 export const isBtcBasedAsset = (asset: string) =>
   asset.toLowerCase() === SupportedTokens.rbtc ||

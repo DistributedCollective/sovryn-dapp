@@ -38,11 +38,7 @@ export const TableMobile = <RowType extends RowObject>({
     {(!rows || rows.length === 0) && (
       <>
         {isLoading ? (
-          Array.from(Array(4).keys()).map(i => (
-            <div key={i} className={styles.noData}>
-              <span className={styles.loading} />
-            </div>
-          ))
+          <div className={styles.loading}>Loading data…</div>
         ) : (
           <div className={styles.noData}>{noData ? noData : 'No data'}</div>
         )}

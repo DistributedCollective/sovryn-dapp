@@ -3,6 +3,7 @@ export enum StakingHistoryType {
   unstake = 'unstake',
   extend = 'extend',
   delegate = 'delegate',
+  delegateVesting = 'delegateVesting',
 }
 
 export type StakingHistoryProps = {

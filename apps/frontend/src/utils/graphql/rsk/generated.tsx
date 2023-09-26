@@ -3019,6 +3019,137 @@ export enum FeeType {
   Trading = 'Trading',
 }
 
+export type GovernorContract = {
+  __typename?: 'GovernorContract';
+  guardian: Scalars['Bytes'];
+  /**
+   * Address of the governance contract
+   *
+   */
+  id: Scalars['ID'];
+  /**
+   * Majority percentage.
+   *
+   */
+  majorityPercentageVotes: Scalars['Int'];
+  /**
+   * The maximum number of actions that can be included in a proposal.
+   *
+   */
+  proposalMaxOperations: Scalars['Int'];
+  proposals: Array<Proposal>;
+  /**
+   * Percentage of current total voting power require to vote.
+   *
+   */
+  quorumPercentageVotes: Scalars['Int'];
+  staking: Scalars['Bytes'];
+  timelock: Scalars['Bytes'];
+  /**
+   * The delay before voting on a proposal may take place, once proposed, in blocks.
+   *
+   */
+  votingDelay: Scalars['Int'];
+  /**
+   * The duration of voting on a proposal, in blocks.
+   *
+   */
+  votingPeriod: Scalars['Int'];
+};
+
+export type GovernorContractProposalsArgs = {
+  first?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<Proposal_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+  skip?: InputMaybe<Scalars['Int']>;
+  where?: InputMaybe<Proposal_Filter>;
+};
+
+export type GovernorContract_Filter = {
+  /** Filter for the block changed event. */
+  _change_block?: InputMaybe<BlockChangedFilter>;
+  guardian?: InputMaybe<Scalars['Bytes']>;
+  guardian_contains?: InputMaybe<Scalars['Bytes']>;
+  guardian_in?: InputMaybe<Array<Scalars['Bytes']>>;
+  guardian_not?: InputMaybe<Scalars['Bytes']>;
+  guardian_not_contains?: InputMaybe<Scalars['Bytes']>;
+  guardian_not_in?: InputMaybe<Array<Scalars['Bytes']>>;
+  id?: InputMaybe<Scalars['ID']>;
+  id_gt?: InputMaybe<Scalars['ID']>;
+  id_gte?: InputMaybe<Scalars['ID']>;
+  id_in?: InputMaybe<Array<Scalars['ID']>>;
+  id_lt?: InputMaybe<Scalars['ID']>;
+  id_lte?: InputMaybe<Scalars['ID']>;
+  id_not?: InputMaybe<Scalars['ID']>;
+  id_not_in?: InputMaybe<Array<Scalars['ID']>>;
+  majorityPercentageVotes?: InputMaybe<Scalars['Int']>;
+  majorityPercentageVotes_gt?: InputMaybe<Scalars['Int']>;
+  majorityPercentageVotes_gte?: InputMaybe<Scalars['Int']>;
+  majorityPercentageVotes_in?: InputMaybe<Array<Scalars['Int']>>;
+  majorityPercentageVotes_lt?: InputMaybe<Scalars['Int']>;
+  majorityPercentageVotes_lte?: InputMaybe<Scalars['Int']>;
+  majorityPercentageVotes_not?: InputMaybe<Scalars['Int']>;
+  majorityPercentageVotes_not_in?: InputMaybe<Array<Scalars['Int']>>;
+  proposalMaxOperations?: InputMaybe<Scalars['Int']>;
+  proposalMaxOperations_gt?: InputMaybe<Scalars['Int']>;
+  proposalMaxOperations_gte?: InputMaybe<Scalars['Int']>;
+  proposalMaxOperations_in?: InputMaybe<Array<Scalars['Int']>>;
+  proposalMaxOperations_lt?: InputMaybe<Scalars['Int']>;
+  proposalMaxOperations_lte?: InputMaybe<Scalars['Int']>;
+  proposalMaxOperations_not?: InputMaybe<Scalars['Int']>;
+  proposalMaxOperations_not_in?: InputMaybe<Array<Scalars['Int']>>;
+  proposals_?: InputMaybe<Proposal_Filter>;
+  quorumPercentageVotes?: InputMaybe<Scalars['Int']>;
+  quorumPercentageVotes_gt?: InputMaybe<Scalars['Int']>;
+  quorumPercentageVotes_gte?: InputMaybe<Scalars['Int']>;
+  quorumPercentageVotes_in?: InputMaybe<Array<Scalars['Int']>>;
+  quorumPercentageVotes_lt?: InputMaybe<Scalars['Int']>;
+  quorumPercentageVotes_lte?: InputMaybe<Scalars['Int']>;
+  quorumPercentageVotes_not?: InputMaybe<Scalars['Int']>;
+  quorumPercentageVotes_not_in?: InputMaybe<Array<Scalars['Int']>>;
+  staking?: InputMaybe<Scalars['Bytes']>;
+  staking_contains?: InputMaybe<Scalars['Bytes']>;
+  staking_in?: InputMaybe<Array<Scalars['Bytes']>>;
+  staking_not?: InputMaybe<Scalars['Bytes']>;
+  staking_not_contains?: InputMaybe<Scalars['Bytes']>;
+  staking_not_in?: InputMaybe<Array<Scalars['Bytes']>>;
+  timelock?: InputMaybe<Scalars['Bytes']>;
+  timelock_contains?: InputMaybe<Scalars['Bytes']>;
+  timelock_in?: InputMaybe<Array<Scalars['Bytes']>>;
+  timelock_not?: InputMaybe<Scalars['Bytes']>;
+  timelock_not_contains?: InputMaybe<Scalars['Bytes']>;
+  timelock_not_in?: InputMaybe<Array<Scalars['Bytes']>>;
+  votingDelay?: InputMaybe<Scalars['Int']>;
+  votingDelay_gt?: InputMaybe<Scalars['Int']>;
+  votingDelay_gte?: InputMaybe<Scalars['Int']>;
+  votingDelay_in?: InputMaybe<Array<Scalars['Int']>>;
+  votingDelay_lt?: InputMaybe<Scalars['Int']>;
+  votingDelay_lte?: InputMaybe<Scalars['Int']>;
+  votingDelay_not?: InputMaybe<Scalars['Int']>;
+  votingDelay_not_in?: InputMaybe<Array<Scalars['Int']>>;
+  votingPeriod?: InputMaybe<Scalars['Int']>;
+  votingPeriod_gt?: InputMaybe<Scalars['Int']>;
+  votingPeriod_gte?: InputMaybe<Scalars['Int']>;
+  votingPeriod_in?: InputMaybe<Array<Scalars['Int']>>;
+  votingPeriod_lt?: InputMaybe<Scalars['Int']>;
+  votingPeriod_lte?: InputMaybe<Scalars['Int']>;
+  votingPeriod_not?: InputMaybe<Scalars['Int']>;
+  votingPeriod_not_in?: InputMaybe<Array<Scalars['Int']>>;
+};
+
+export enum GovernorContract_OrderBy {
+  Guardian = 'guardian',
+  Id = 'id',
+  MajorityPercentageVotes = 'majorityPercentageVotes',
+  ProposalMaxOperations = 'proposalMaxOperations',
+  Proposals = 'proposals',
+  QuorumPercentageVotes = 'quorumPercentageVotes',
+  Staking = 'staking',
+  Timelock = 'timelock',
+  VotingDelay = 'votingDelay',
+  VotingPeriod = 'votingPeriod',
+}
+
 /**
  * Candlesticks are for presentational purposes on the dapp. This entity supports the candlestick trading data on the trading view charts.
  * Trading data is available for the following pairs:
@@ -6528,6 +6659,7 @@ export enum PoolToken_OrderBy {
  */
 export type Proposal = {
   __typename?: 'Proposal';
+  calldatas: Array<Scalars['String']>;
   /**
    * If the proposal was canceled, the transaction that canceled it (otherwise null)
    *
@@ -6557,12 +6689,17 @@ export type Proposal = {
    * The contract that emitted this event
    *
    */
-  emittedBy: Scalars['Bytes'];
+  emittedBy: GovernorContract;
   /**
    * Block when voting ends
    *
    */
   endBlock: Scalars['Int'];
+  /**
+   * The timestamp that the proposal will be available for execution, set once the vote succeeds.
+   *
+   */
+  eta?: Maybe<Scalars['Int']>;
   /**
    * If the proposal was executed, the transaction that executed it (otherwise null)
    *
@@ -6573,6 +6710,11 @@ export type Proposal = {
    *
    */
   id: Scalars['ID'];
+  /**
+   * The majority percentage required for this proposal.
+   *
+   */
+  majorityPercentage: Scalars['BigInt'];
   proposalId: Scalars['Int'];
   /**
    * Address of the user who created this proposal
@@ -6585,6 +6727,11 @@ export type Proposal = {
    */
   queued?: Maybe<Transaction>;
   /**
+   * The quorum required for this proposal.
+   *
+   */
+  quorum: Scalars['BigInt'];
+  /**
    * Function signatures in the targeted contract that would be affected by this proposal passing
    *
    */
@@ -6594,6 +6741,7 @@ export type Proposal = {
    *
    */
   startBlock: Scalars['Int'];
+  stateChanges: Array<ProposalStateChange>;
   /**
    * Contract or contracts that this proposal targets
    *
@@ -6628,6 +6776,20 @@ export type Proposal = {
  * To see if a Proposal has been executed, see if the executed property is null or if it has a transaction
  *
  */
+export type ProposalStateChangesArgs = {
+  first?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<ProposalStateChange_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+  skip?: InputMaybe<Scalars['Int']>;
+  where?: InputMaybe<ProposalStateChange_Filter>;
+};
+
+/**
+ * A Proposal is created each time a SIP (Sovryn Improvement Proposal) is proposed
+ * The Proposal is created, voted on, and then executed if it passes
+ * To see if a Proposal has been executed, see if the executed property is null or if it has a transaction
+ *
+ */
 export type ProposalVotesArgs = {
   first?: InputMaybe<Scalars['Int']>;
   orderBy?: InputMaybe<VoteCast_OrderBy>;
@@ -6636,9 +6798,114 @@ export type ProposalVotesArgs = {
   where?: InputMaybe<VoteCast_Filter>;
 };
 
+export enum ProposalState {
+  Canceled = 'Canceled',
+  Created = 'Created',
+  Executed = 'Executed',
+  Queued = 'Queued',
+}
+
+export type ProposalStateChange = {
+  __typename?: 'ProposalStateChange';
+  emittedBy: Scalars['Bytes'];
+  id: Scalars['ID'];
+  proposal: Proposal;
+  state: ProposalState;
+  timestamp: Scalars['Int'];
+  transaction: Transaction;
+};
+
+export type ProposalStateChange_Filter = {
+  /** Filter for the block changed event. */
+  _change_block?: InputMaybe<BlockChangedFilter>;
+  emittedBy?: InputMaybe<Scalars['Bytes']>;
+  emittedBy_contains?: InputMaybe<Scalars['Bytes']>;
+  emittedBy_in?: InputMaybe<Array<Scalars['Bytes']>>;
+  emittedBy_not?: InputMaybe<Scalars['Bytes']>;
+  emittedBy_not_contains?: InputMaybe<Scalars['Bytes']>;
+  emittedBy_not_in?: InputMaybe<Array<Scalars['Bytes']>>;
+  id?: InputMaybe<Scalars['ID']>;
+  id_gt?: InputMaybe<Scalars['ID']>;
+  id_gte?: InputMaybe<Scalars['ID']>;
+  id_in?: InputMaybe<Array<Scalars['ID']>>;
+  id_lt?: InputMaybe<Scalars['ID']>;
+  id_lte?: InputMaybe<Scalars['ID']>;
+  id_not?: InputMaybe<Scalars['ID']>;
+  id_not_in?: InputMaybe<Array<Scalars['ID']>>;
+  proposal?: InputMaybe<Scalars['String']>;
+  proposal_?: InputMaybe<Proposal_Filter>;
+  proposal_contains?: InputMaybe<Scalars['String']>;
+  proposal_contains_nocase?: InputMaybe<Scalars['String']>;
+  proposal_ends_with?: InputMaybe<Scalars['String']>;
+  proposal_ends_with_nocase?: InputMaybe<Scalars['String']>;
+  proposal_gt?: InputMaybe<Scalars['String']>;
+  proposal_gte?: InputMaybe<Scalars['String']>;
+  proposal_in?: InputMaybe<Array<Scalars['String']>>;
+  proposal_lt?: InputMaybe<Scalars['String']>;
+  proposal_lte?: InputMaybe<Scalars['String']>;
+  proposal_not?: InputMaybe<Scalars['String']>;
+  proposal_not_contains?: InputMaybe<Scalars['String']>;
+  proposal_not_contains_nocase?: InputMaybe<Scalars['String']>;
+  proposal_not_ends_with?: InputMaybe<Scalars['String']>;
+  proposal_not_ends_with_nocase?: InputMaybe<Scalars['String']>;
+  proposal_not_in?: InputMaybe<Array<Scalars['String']>>;
+  proposal_not_starts_with?: InputMaybe<Scalars['String']>;
+  proposal_not_starts_with_nocase?: InputMaybe<Scalars['String']>;
+  proposal_starts_with?: InputMaybe<Scalars['String']>;
+  proposal_starts_with_nocase?: InputMaybe<Scalars['String']>;
+  state?: InputMaybe<ProposalState>;
+  state_in?: InputMaybe<Array<ProposalState>>;
+  state_not?: InputMaybe<ProposalState>;
+  state_not_in?: InputMaybe<Array<ProposalState>>;
+  timestamp?: InputMaybe<Scalars['Int']>;
+  timestamp_gt?: InputMaybe<Scalars['Int']>;
+  timestamp_gte?: InputMaybe<Scalars['Int']>;
+  timestamp_in?: InputMaybe<Array<Scalars['Int']>>;
+  timestamp_lt?: InputMaybe<Scalars['Int']>;
+  timestamp_lte?: InputMaybe<Scalars['Int']>;
+  timestamp_not?: InputMaybe<Scalars['Int']>;
+  timestamp_not_in?: InputMaybe<Array<Scalars['Int']>>;
+  transaction?: InputMaybe<Scalars['String']>;
+  transaction_?: InputMaybe<Transaction_Filter>;
+  transaction_contains?: InputMaybe<Scalars['String']>;
+  transaction_contains_nocase?: InputMaybe<Scalars['String']>;
+  transaction_ends_with?: InputMaybe<Scalars['String']>;
+  transaction_ends_with_nocase?: InputMaybe<Scalars['String']>;
+  transaction_gt?: InputMaybe<Scalars['String']>;
+  transaction_gte?: InputMaybe<Scalars['String']>;
+  transaction_in?: InputMaybe<Array<Scalars['String']>>;
+  transaction_lt?: InputMaybe<Scalars['String']>;
+  transaction_lte?: InputMaybe<Scalars['String']>;
+  transaction_not?: InputMaybe<Scalars['String']>;
+  transaction_not_contains?: InputMaybe<Scalars['String']>;
+  transaction_not_contains_nocase?: InputMaybe<Scalars['String']>;
+  transaction_not_ends_with?: InputMaybe<Scalars['String']>;
+  transaction_not_ends_with_nocase?: InputMaybe<Scalars['String']>;
+  transaction_not_in?: InputMaybe<Array<Scalars['String']>>;
+  transaction_not_starts_with?: InputMaybe<Scalars['String']>;
+  transaction_not_starts_with_nocase?: InputMaybe<Scalars['String']>;
+  transaction_starts_with?: InputMaybe<Scalars['String']>;
+  transaction_starts_with_nocase?: InputMaybe<Scalars['String']>;
+};
+
+export enum ProposalStateChange_OrderBy {
+  EmittedBy = 'emittedBy',
+  Id = 'id',
+  Proposal = 'proposal',
+  State = 'state',
+  Timestamp = 'timestamp',
+  Transaction = 'transaction',
+}
+
 export type Proposal_Filter = {
   /** Filter for the block changed event. */
   _change_block?: InputMaybe<BlockChangedFilter>;
+  calldatas?: InputMaybe<Array<Scalars['String']>>;
+  calldatas_contains?: InputMaybe<Array<Scalars['String']>>;
+  calldatas_contains_nocase?: InputMaybe<Array<Scalars['String']>>;
+  calldatas_not?: InputMaybe<Array<Scalars['String']>>;
+  calldatas_not_contains?: InputMaybe<Array<Scalars['String']>>;
+  calldatas_not_contains_nocase?: InputMaybe<Array<Scalars['String']>>;
   canceled?: InputMaybe<Scalars['String']>;
   canceled_?: InputMaybe<Transaction_Filter>;
   canceled_contains?: InputMaybe<Scalars['String']>;
@@ -6717,12 +6984,27 @@ export type Proposal_Filter = {
   description_not_starts_with_nocase?: InputMaybe<Scalars['String']>;
   description_starts_with?: InputMaybe<Scalars['String']>;
   description_starts_with_nocase?: InputMaybe<Scalars['String']>;
-  emittedBy?: InputMaybe<Scalars['Bytes']>;
-  emittedBy_contains?: InputMaybe<Scalars['Bytes']>;
-  emittedBy_in?: InputMaybe<Array<Scalars['Bytes']>>;
-  emittedBy_not?: InputMaybe<Scalars['Bytes']>;
-  emittedBy_not_contains?: InputMaybe<Scalars['Bytes']>;
-  emittedBy_not_in?: InputMaybe<Array<Scalars['Bytes']>>;
+  emittedBy?: InputMaybe<Scalars['String']>;
+  emittedBy_?: InputMaybe<GovernorContract_Filter>;
+  emittedBy_contains?: InputMaybe<Scalars['String']>;
+  emittedBy_contains_nocase?: InputMaybe<Scalars['String']>;
+  emittedBy_ends_with?: InputMaybe<Scalars['String']>;
+  emittedBy_ends_with_nocase?: InputMaybe<Scalars['String']>;
+  emittedBy_gt?: InputMaybe<Scalars['String']>;
+  emittedBy_gte?: InputMaybe<Scalars['String']>;
+  emittedBy_in?: InputMaybe<Array<Scalars['String']>>;
+  emittedBy_lt?: InputMaybe<Scalars['String']>;
+  emittedBy_lte?: InputMaybe<Scalars['String']>;
+  emittedBy_not?: InputMaybe<Scalars['String']>;
+  emittedBy_not_contains?: InputMaybe<Scalars['String']>;
+  emittedBy_not_contains_nocase?: InputMaybe<Scalars['String']>;
+  emittedBy_not_ends_with?: InputMaybe<Scalars['String']>;
+  emittedBy_not_ends_with_nocase?: InputMaybe<Scalars['String']>;
+  emittedBy_not_in?: InputMaybe<Array<Scalars['String']>>;
+  emittedBy_not_starts_with?: InputMaybe<Scalars['String']>;
+  emittedBy_not_starts_with_nocase?: InputMaybe<Scalars['String']>;
+  emittedBy_starts_with?: InputMaybe<Scalars['String']>;
+  emittedBy_starts_with_nocase?: InputMaybe<Scalars['String']>;
   endBlock?: InputMaybe<Scalars['Int']>;
   endBlock_gt?: InputMaybe<Scalars['Int']>;
   endBlock_gte?: InputMaybe<Scalars['Int']>;
@@ -6731,6 +7013,14 @@ export type Proposal_Filter = {
   endBlock_lte?: InputMaybe<Scalars['Int']>;
   endBlock_not?: InputMaybe<Scalars['Int']>;
   endBlock_not_in?: InputMaybe<Array<Scalars['Int']>>;
+  eta?: InputMaybe<Scalars['Int']>;
+  eta_gt?: InputMaybe<Scalars['Int']>;
+  eta_gte?: InputMaybe<Scalars['Int']>;
+  eta_in?: InputMaybe<Array<Scalars['Int']>>;
+  eta_lt?: InputMaybe<Scalars['Int']>;
+  eta_lte?: InputMaybe<Scalars['Int']>;
+  eta_not?: InputMaybe<Scalars['Int']>;
+  eta_not_in?: InputMaybe<Array<Scalars['Int']>>;
   executed?: InputMaybe<Scalars['String']>;
   executed_?: InputMaybe<Transaction_Filter>;
   executed_contains?: InputMaybe<Scalars['String']>;
@@ -6760,6 +7050,14 @@ export type Proposal_Filter = {
   id_lte?: InputMaybe<Scalars['ID']>;
   id_not?: InputMaybe<Scalars['ID']>;
   id_not_in?: InputMaybe<Array<Scalars['ID']>>;
+  majorityPercentage?: InputMaybe<Scalars['BigInt']>;
+  majorityPercentage_gt?: InputMaybe<Scalars['BigInt']>;
+  majorityPercentage_gte?: InputMaybe<Scalars['BigInt']>;
+  majorityPercentage_in?: InputMaybe<Array<Scalars['BigInt']>>;
+  majorityPercentage_lt?: InputMaybe<Scalars['BigInt']>;
+  majorityPercentage_lte?: InputMaybe<Scalars['BigInt']>;
+  majorityPercentage_not?: InputMaybe<Scalars['BigInt']>;
+  majorityPercentage_not_in?: InputMaybe<Array<Scalars['BigInt']>>;
   proposalId?: InputMaybe<Scalars['Int']>;
   proposalId_gt?: InputMaybe<Scalars['Int']>;
   proposalId_gte?: InputMaybe<Scalars['Int']>;
@@ -6795,6 +7093,14 @@ export type Proposal_Filter = {
   queued_not_starts_with_nocase?: InputMaybe<Scalars['String']>;
   queued_starts_with?: InputMaybe<Scalars['String']>;
   queued_starts_with_nocase?: InputMaybe<Scalars['String']>;
+  quorum?: InputMaybe<Scalars['BigInt']>;
+  quorum_gt?: InputMaybe<Scalars['BigInt']>;
+  quorum_gte?: InputMaybe<Scalars['BigInt']>;
+  quorum_in?: InputMaybe<Array<Scalars['BigInt']>>;
+  quorum_lt?: InputMaybe<Scalars['BigInt']>;
+  quorum_lte?: InputMaybe<Scalars['BigInt']>;
+  quorum_not?: InputMaybe<Scalars['BigInt']>;
+  quorum_not_in?: InputMaybe<Array<Scalars['BigInt']>>;
   signatures?: InputMaybe<Array<Scalars['String']>>;
   signatures_contains?: InputMaybe<Array<Scalars['String']>>;
   signatures_contains_nocase?: InputMaybe<Array<Scalars['String']>>;
@@ -6809,6 +7115,7 @@ export type Proposal_Filter = {
   startBlock_lte?: InputMaybe<Scalars['Int']>;
   startBlock_not?: InputMaybe<Scalars['Int']>;
   startBlock_not_in?: InputMaybe<Array<Scalars['Int']>>;
+  stateChanges_?: InputMaybe<ProposalStateChange_Filter>;
   targets?: InputMaybe<Array<Scalars['String']>>;
   targets_contains?: InputMaybe<Array<Scalars['String']>>;
   targets_contains_nocase?: InputMaybe<Array<Scalars['String']>>;
@@ -6849,6 +7156,7 @@ export type Proposal_Filter = {
 };
 
 export enum Proposal_OrderBy {
+  Calldatas = 'calldatas',
   Canceled = 'canceled',
   CountVotersAgainst = 'countVotersAgainst',
   CountVotersFor = 'countVotersFor',
@@ -6856,13 +7164,17 @@ export enum Proposal_OrderBy {
   Description = 'description',
   EmittedBy = 'emittedBy',
   EndBlock = 'endBlock',
+  Eta = 'eta',
   Executed = 'executed',
   Id = 'id',
+  MajorityPercentage = 'majorityPercentage',
   ProposalId = 'proposalId',
   Proposer = 'proposer',
   Queued = 'queued',
+  Quorum = 'quorum',
   Signatures = 'signatures',
   StartBlock = 'startBlock',
+  StateChanges = 'stateChanges',
   Targets = 'targets',
   Timestamp = 'timestamp',
   Values = 'values',
@@ -7385,6 +7697,8 @@ export type Query = {
   federations: Array<Federation>;
   feeSharingTokensTransferred?: Maybe<FeeSharingTokensTransferred>;
   feeSharingTokensTransferreds: Array<FeeSharingTokensTransferred>;
+  governorContract?: Maybe<GovernorContract>;
+  governorContracts: Array<GovernorContract>;
   icandleStick?: Maybe<ICandleStick>;
   icandleSticks: Array<ICandleStick>;
   lendingHistoryItem?: Maybe<LendingHistoryItem>;
@@ -7428,6 +7742,8 @@ export type Query = {
   poolToken?: Maybe<PoolToken>;
   poolTokens: Array<PoolToken>;
   proposal?: Maybe<Proposal>;
+  proposalStateChange?: Maybe<ProposalStateChange>;
+  proposalStateChanges: Array<ProposalStateChange>;
   proposals: Array<Proposal>;
   protocolStats: Array<ProtocolStats>;
   protocolWithdrawFee?: Maybe<ProtocolWithdrawFee>;
@@ -7796,6 +8112,22 @@ export type QueryFeeSharingTokensTransferredsArgs = {
   where?: InputMaybe<FeeSharingTokensTransferred_Filter>;
 };
 
+export type QueryGovernorContractArgs = {
+  block?: InputMaybe<Block_Height>;
+  id: Scalars['ID'];
+  subgraphError?: _SubgraphErrorPolicy_;
+};
+
+export type QueryGovernorContractsArgs = {
+  block?: InputMaybe<Block_Height>;
+  first?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<GovernorContract_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+  skip?: InputMaybe<Scalars['Int']>;
+  subgraphError?: _SubgraphErrorPolicy_;
+  where?: InputMaybe<GovernorContract_Filter>;
+};
+
 export type QueryIcandleStickArgs = {
   block?: InputMaybe<Block_Height>;
   id: Scalars['ID'];
@@ -8136,6 +8468,22 @@ export type QueryProposalArgs = {
   block?: InputMaybe<Block_Height>;
   id: Scalars['ID'];
   subgraphError?: _SubgraphErrorPolicy_;
+};
+
+export type QueryProposalStateChangeArgs = {
+  block?: InputMaybe<Block_Height>;
+  id: Scalars['ID'];
+  subgraphError?: _SubgraphErrorPolicy_;
+};
+
+export type QueryProposalStateChangesArgs = {
+  block?: InputMaybe<Block_Height>;
+  first?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<ProposalStateChange_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+  skip?: InputMaybe<Scalars['Int']>;
+  subgraphError?: _SubgraphErrorPolicy_;
+  where?: InputMaybe<ProposalStateChange_Filter>;
 };
 
 export type QueryProposalsArgs = {
@@ -9332,6 +9680,7 @@ export enum StakeHistoryAction {
    *
    */
   Delegate = 'Delegate',
+  DelegateVested = 'DelegateVested',
   /**
    * Extending an existing stake. The amount of the stake remains the same, but the lockedUntil date increases.
    *
@@ -9372,6 +9721,8 @@ export type StakeHistoryItem = {
   __typename?: 'StakeHistoryItem';
   action: StakeHistoryAction;
   amount?: Maybe<Scalars['BigDecimal']>;
+  delegatee?: Maybe<User>;
+  emittedBy: Scalars['Bytes'];
   id: Scalars['ID'];
   lockedUntil?: Maybe<Scalars['Int']>;
   timestamp: Scalars['Int'];
@@ -9395,6 +9746,33 @@ export type StakeHistoryItem_Filter = {
   amount_lte?: InputMaybe<Scalars['BigDecimal']>;
   amount_not?: InputMaybe<Scalars['BigDecimal']>;
   amount_not_in?: InputMaybe<Array<Scalars['BigDecimal']>>;
+  delegatee?: InputMaybe<Scalars['String']>;
+  delegatee_?: InputMaybe<User_Filter>;
+  delegatee_contains?: InputMaybe<Scalars['String']>;
+  delegatee_contains_nocase?: InputMaybe<Scalars['String']>;
+  delegatee_ends_with?: InputMaybe<Scalars['String']>;
+  delegatee_ends_with_nocase?: InputMaybe<Scalars['String']>;
+  delegatee_gt?: InputMaybe<Scalars['String']>;
+  delegatee_gte?: InputMaybe<Scalars['String']>;
+  delegatee_in?: InputMaybe<Array<Scalars['String']>>;
+  delegatee_lt?: InputMaybe<Scalars['String']>;
+  delegatee_lte?: InputMaybe<Scalars['String']>;
+  delegatee_not?: InputMaybe<Scalars['String']>;
+  delegatee_not_contains?: InputMaybe<Scalars['String']>;
+  delegatee_not_contains_nocase?: InputMaybe<Scalars['String']>;
+  delegatee_not_ends_with?: InputMaybe<Scalars['String']>;
+  delegatee_not_ends_with_nocase?: InputMaybe<Scalars['String']>;
+  delegatee_not_in?: InputMaybe<Array<Scalars['String']>>;
+  delegatee_not_starts_with?: InputMaybe<Scalars['String']>;
+  delegatee_not_starts_with_nocase?: InputMaybe<Scalars['String']>;
+  delegatee_starts_with?: InputMaybe<Scalars['String']>;
+  delegatee_starts_with_nocase?: InputMaybe<Scalars['String']>;
+  emittedBy?: InputMaybe<Scalars['Bytes']>;
+  emittedBy_contains?: InputMaybe<Scalars['Bytes']>;
+  emittedBy_in?: InputMaybe<Array<Scalars['Bytes']>>;
+  emittedBy_not?: InputMaybe<Scalars['Bytes']>;
+  emittedBy_not_contains?: InputMaybe<Scalars['Bytes']>;
+  emittedBy_not_in?: InputMaybe<Array<Scalars['Bytes']>>;
   id?: InputMaybe<Scalars['ID']>;
   id_gt?: InputMaybe<Scalars['ID']>;
   id_gte?: InputMaybe<Scalars['ID']>;
@@ -9486,6 +9864,8 @@ export type StakeHistoryItem_Filter = {
 export enum StakeHistoryItem_OrderBy {
   Action = 'action',
   Amount = 'amount',
+  Delegatee = 'delegatee',
+  EmittedBy = 'emittedBy',
   Id = 'id',
   LockedUntil = 'lockedUntil',
   Timestamp = 'timestamp',
@@ -9611,6 +9991,8 @@ export type Subscription = {
   federations: Array<Federation>;
   feeSharingTokensTransferred?: Maybe<FeeSharingTokensTransferred>;
   feeSharingTokensTransferreds: Array<FeeSharingTokensTransferred>;
+  governorContract?: Maybe<GovernorContract>;
+  governorContracts: Array<GovernorContract>;
   icandleStick?: Maybe<ICandleStick>;
   icandleSticks: Array<ICandleStick>;
   lendingHistoryItem?: Maybe<LendingHistoryItem>;
@@ -9654,6 +10036,8 @@ export type Subscription = {
   poolToken?: Maybe<PoolToken>;
   poolTokens: Array<PoolToken>;
   proposal?: Maybe<Proposal>;
+  proposalStateChange?: Maybe<ProposalStateChange>;
+  proposalStateChanges: Array<ProposalStateChange>;
   proposals: Array<Proposal>;
   protocolStats: Array<ProtocolStats>;
   protocolWithdrawFee?: Maybe<ProtocolWithdrawFee>;
@@ -10022,6 +10406,22 @@ export type SubscriptionFeeSharingTokensTransferredsArgs = {
   where?: InputMaybe<FeeSharingTokensTransferred_Filter>;
 };
 
+export type SubscriptionGovernorContractArgs = {
+  block?: InputMaybe<Block_Height>;
+  id: Scalars['ID'];
+  subgraphError?: _SubgraphErrorPolicy_;
+};
+
+export type SubscriptionGovernorContractsArgs = {
+  block?: InputMaybe<Block_Height>;
+  first?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<GovernorContract_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+  skip?: InputMaybe<Scalars['Int']>;
+  subgraphError?: _SubgraphErrorPolicy_;
+  where?: InputMaybe<GovernorContract_Filter>;
+};
+
 export type SubscriptionIcandleStickArgs = {
   block?: InputMaybe<Block_Height>;
   id: Scalars['ID'];
@@ -10362,6 +10762,22 @@ export type SubscriptionProposalArgs = {
   block?: InputMaybe<Block_Height>;
   id: Scalars['ID'];
   subgraphError?: _SubgraphErrorPolicy_;
+};
+
+export type SubscriptionProposalStateChangeArgs = {
+  block?: InputMaybe<Block_Height>;
+  id: Scalars['ID'];
+  subgraphError?: _SubgraphErrorPolicy_;
+};
+
+export type SubscriptionProposalStateChangesArgs = {
+  block?: InputMaybe<Block_Height>;
+  first?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<ProposalStateChange_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+  skip?: InputMaybe<Scalars['Int']>;
+  subgraphError?: _SubgraphErrorPolicy_;
+  where?: InputMaybe<ProposalStateChange_Filter>;
 };
 
 export type SubscriptionProposalsArgs = {
@@ -13674,10 +14090,20 @@ export type VestingContract = {
    */
   stakeHistory?: Maybe<Array<VestingHistoryItem>>;
   /**
+   * Staking contract address
+   *
+   */
+  staking: Scalars['Bytes'];
+  /**
    * The initial balance when this contract was created. This is often 0, as tokens can be added to the contract after contract creation
    *
    */
   startingBalance: Scalars['BigDecimal'];
+  /**
+   * Token staked in this vesting contract
+   *
+   */
+  token: Scalars['Bytes'];
   /**
    * Type of contract (see VestingContractType docs for more details)
    *
@@ -13838,6 +14264,12 @@ export type VestingContract_Filter = {
   id_not?: InputMaybe<Scalars['ID']>;
   id_not_in?: InputMaybe<Array<Scalars['ID']>>;
   stakeHistory_?: InputMaybe<VestingHistoryItem_Filter>;
+  staking?: InputMaybe<Scalars['Bytes']>;
+  staking_contains?: InputMaybe<Scalars['Bytes']>;
+  staking_in?: InputMaybe<Array<Scalars['Bytes']>>;
+  staking_not?: InputMaybe<Scalars['Bytes']>;
+  staking_not_contains?: InputMaybe<Scalars['Bytes']>;
+  staking_not_in?: InputMaybe<Array<Scalars['Bytes']>>;
   startingBalance?: InputMaybe<Scalars['BigDecimal']>;
   startingBalance_gt?: InputMaybe<Scalars['BigDecimal']>;
   startingBalance_gte?: InputMaybe<Scalars['BigDecimal']>;
@@ -13846,6 +14278,12 @@ export type VestingContract_Filter = {
   startingBalance_lte?: InputMaybe<Scalars['BigDecimal']>;
   startingBalance_not?: InputMaybe<Scalars['BigDecimal']>;
   startingBalance_not_in?: InputMaybe<Array<Scalars['BigDecimal']>>;
+  token?: InputMaybe<Scalars['Bytes']>;
+  token_contains?: InputMaybe<Scalars['Bytes']>;
+  token_in?: InputMaybe<Array<Scalars['Bytes']>>;
+  token_not?: InputMaybe<Scalars['Bytes']>;
+  token_not_contains?: InputMaybe<Scalars['Bytes']>;
+  token_not_in?: InputMaybe<Array<Scalars['Bytes']>>;
   type?: InputMaybe<VestingContractType>;
   type_in?: InputMaybe<Array<VestingContractType>>;
   type_not?: InputMaybe<VestingContractType>;
@@ -13883,7 +14321,9 @@ export enum VestingContract_OrderBy {
   EmittedBy = 'emittedBy',
   Id = 'id',
   StakeHistory = 'stakeHistory',
+  Staking = 'staking',
   StartingBalance = 'startingBalance',
+  Token = 'token',
   Type = 'type',
   User = 'user',
 }
@@ -13900,6 +14340,11 @@ export type VestingHistoryItem = {
    *
    */
   amount: Scalars['BigDecimal'];
+  /**
+   * Delegated too
+   *
+   */
+  delegatee?: Maybe<User>;
   emittedBy: Scalars['Bytes'];
   /**
    * ID is transaction hash + "-" + log index
@@ -13927,6 +14372,11 @@ export type VestingHistoryItem = {
 };
 
 export enum VestingHistoryItemAction {
+  /**
+   * When a user delegates their vesting contract to another user
+   *
+   */
+  DelegateChanged = 'DelegateChanged',
   /**
    * This is only relevant to Team tokens. For Team contracts, a vesting contract can be revoked by governance if a team member leaves the project.
    * If this happens, all tokens still locked are returned to the exchequer.
@@ -13961,6 +14411,27 @@ export type VestingHistoryItem_Filter = {
   amount_lte?: InputMaybe<Scalars['BigDecimal']>;
   amount_not?: InputMaybe<Scalars['BigDecimal']>;
   amount_not_in?: InputMaybe<Array<Scalars['BigDecimal']>>;
+  delegatee?: InputMaybe<Scalars['String']>;
+  delegatee_?: InputMaybe<User_Filter>;
+  delegatee_contains?: InputMaybe<Scalars['String']>;
+  delegatee_contains_nocase?: InputMaybe<Scalars['String']>;
+  delegatee_ends_with?: InputMaybe<Scalars['String']>;
+  delegatee_ends_with_nocase?: InputMaybe<Scalars['String']>;
+  delegatee_gt?: InputMaybe<Scalars['String']>;
+  delegatee_gte?: InputMaybe<Scalars['String']>;
+  delegatee_in?: InputMaybe<Array<Scalars['String']>>;
+  delegatee_lt?: InputMaybe<Scalars['String']>;
+  delegatee_lte?: InputMaybe<Scalars['String']>;
+  delegatee_not?: InputMaybe<Scalars['String']>;
+  delegatee_not_contains?: InputMaybe<Scalars['String']>;
+  delegatee_not_contains_nocase?: InputMaybe<Scalars['String']>;
+  delegatee_not_ends_with?: InputMaybe<Scalars['String']>;
+  delegatee_not_ends_with_nocase?: InputMaybe<Scalars['String']>;
+  delegatee_not_in?: InputMaybe<Array<Scalars['String']>>;
+  delegatee_not_starts_with?: InputMaybe<Scalars['String']>;
+  delegatee_not_starts_with_nocase?: InputMaybe<Scalars['String']>;
+  delegatee_starts_with?: InputMaybe<Scalars['String']>;
+  delegatee_starts_with_nocase?: InputMaybe<Scalars['String']>;
   emittedBy?: InputMaybe<Scalars['Bytes']>;
   emittedBy_contains?: InputMaybe<Scalars['Bytes']>;
   emittedBy_in?: InputMaybe<Array<Scalars['Bytes']>>;
@@ -14046,6 +14517,7 @@ export type VestingHistoryItem_Filter = {
 export enum VestingHistoryItem_OrderBy {
   Action = 'action',
   Amount = 'amount',
+  Delegatee = 'delegatee',
   EmittedBy = 'emittedBy',
   Id = 'id',
   LockedUntil = 'lockedUntil',
@@ -14902,6 +15374,35 @@ export type GetVestingContractsIdQuery = {
   vestingContracts: Array<{ __typename?: 'VestingContract'; id: string }>;
 };
 
+export type GetUserVestingContractsQueryVariables = Exact<{
+  userAddress: Scalars['String'];
+}>;
+
+export type GetUserVestingContractsQuery = {
+  __typename?: 'Query';
+  vestingContracts: Array<{ __typename?: 'VestingContract'; id: string }>;
+};
+
+export type GetDelegateChangesForVestingsQueryVariables = Exact<{
+  vestingContracts?: InputMaybe<Array<Scalars['String']> | Scalars['String']>;
+  skip: Scalars['Int'];
+  pageSize: Scalars['Int'];
+  orderBy?: InputMaybe<VestingHistoryItem_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+}>;
+
+export type GetDelegateChangesForVestingsQuery = {
+  __typename?: 'Query';
+  vestingHistoryItems: Array<{
+    __typename?: 'VestingHistoryItem';
+    id: string;
+    amount: string;
+    timestamp: number;
+    delegatee?: { __typename?: 'User'; id: string } | null;
+    transaction: { __typename?: 'Transaction'; id: string };
+  }>;
+};
+
 export type GetVestingHistoryQueryVariables = Exact<{
   vestingAddress?: InputMaybe<Scalars['ID']>;
 }>;
@@ -15381,7 +15882,7 @@ export const GetDelegateChangesDocument = gql`
     $orderDirection: OrderDirection
   ) {
     v2DelegateChangeds(
-      where: { user: $user }
+      where: { user: $user, previousDelegate_not: null }
       first: $pageSize
       skip: $skip
       orderBy: $orderBy
@@ -16955,6 +17456,146 @@ export type GetVestingContractsIdLazyQueryHookResult = ReturnType<
 export type GetVestingContractsIdQueryResult = Apollo.QueryResult<
   GetVestingContractsIdQuery,
   GetVestingContractsIdQueryVariables
+>;
+export const GetUserVestingContractsDocument = gql`
+  query getUserVestingContracts($userAddress: String!) {
+    vestingContracts(where: { user: $userAddress }) {
+      id
+    }
+  }
+`;
+
+/**
+ * __useGetUserVestingContractsQuery__
+ *
+ * To run a query within a React component, call `useGetUserVestingContractsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetUserVestingContractsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetUserVestingContractsQuery({
+ *   variables: {
+ *      userAddress: // value for 'userAddress'
+ *   },
+ * });
+ */
+export function useGetUserVestingContractsQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    GetUserVestingContractsQuery,
+    GetUserVestingContractsQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    GetUserVestingContractsQuery,
+    GetUserVestingContractsQueryVariables
+  >(GetUserVestingContractsDocument, options);
+}
+export function useGetUserVestingContractsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    GetUserVestingContractsQuery,
+    GetUserVestingContractsQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    GetUserVestingContractsQuery,
+    GetUserVestingContractsQueryVariables
+  >(GetUserVestingContractsDocument, options);
+}
+export type GetUserVestingContractsQueryHookResult = ReturnType<
+  typeof useGetUserVestingContractsQuery
+>;
+export type GetUserVestingContractsLazyQueryHookResult = ReturnType<
+  typeof useGetUserVestingContractsLazyQuery
+>;
+export type GetUserVestingContractsQueryResult = Apollo.QueryResult<
+  GetUserVestingContractsQuery,
+  GetUserVestingContractsQueryVariables
+>;
+export const GetDelegateChangesForVestingsDocument = gql`
+  query getDelegateChangesForVestings(
+    $vestingContracts: [String!]
+    $skip: Int!
+    $pageSize: Int!
+    $orderBy: VestingHistoryItem_orderBy
+    $orderDirection: OrderDirection
+  ) {
+    vestingHistoryItems(
+      where: { staker_in: $vestingContracts, action: DelegateChanged }
+      orderBy: $orderBy
+      orderDirection: $orderDirection
+      first: $pageSize
+      skip: $skip
+    ) {
+      id
+      delegatee {
+        id
+      }
+      amount
+      timestamp
+      transaction {
+        id
+      }
+    }
+  }
+`;
+
+/**
+ * __useGetDelegateChangesForVestingsQuery__
+ *
+ * To run a query within a React component, call `useGetDelegateChangesForVestingsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetDelegateChangesForVestingsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetDelegateChangesForVestingsQuery({
+ *   variables: {
+ *      vestingContracts: // value for 'vestingContracts'
+ *      skip: // value for 'skip'
+ *      pageSize: // value for 'pageSize'
+ *      orderBy: // value for 'orderBy'
+ *      orderDirection: // value for 'orderDirection'
+ *   },
+ * });
+ */
+export function useGetDelegateChangesForVestingsQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    GetDelegateChangesForVestingsQuery,
+    GetDelegateChangesForVestingsQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    GetDelegateChangesForVestingsQuery,
+    GetDelegateChangesForVestingsQueryVariables
+  >(GetDelegateChangesForVestingsDocument, options);
+}
+export function useGetDelegateChangesForVestingsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    GetDelegateChangesForVestingsQuery,
+    GetDelegateChangesForVestingsQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    GetDelegateChangesForVestingsQuery,
+    GetDelegateChangesForVestingsQueryVariables
+  >(GetDelegateChangesForVestingsDocument, options);
+}
+export type GetDelegateChangesForVestingsQueryHookResult = ReturnType<
+  typeof useGetDelegateChangesForVestingsQuery
+>;
+export type GetDelegateChangesForVestingsLazyQueryHookResult = ReturnType<
+  typeof useGetDelegateChangesForVestingsLazyQuery
+>;
+export type GetDelegateChangesForVestingsQueryResult = Apollo.QueryResult<
+  GetDelegateChangesForVestingsQuery,
+  GetDelegateChangesForVestingsQueryVariables
 >;
 export const GetVestingHistoryDocument = gql`
   query getVestingHistory($vestingAddress: ID) {

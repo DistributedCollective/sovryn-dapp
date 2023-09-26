@@ -1,5 +1,19 @@
 # frontend
 
+## 1.0.28
+
+### Patch Changes
+
+- 26a9feb5: SOV-2756: Clean up Babelfish token config
+- 774b032b: SOV-3021: Fix earned tooltip layout
+- 2347b43c: SOV-2993: Vesting reward history
+- 0b72c502: SOV-2992: lending withdraw with max amount issue
+- df04edaa: SOV-2913: vesting delegate history
+- aad41527: SOV-2942: fix adjust stake data refresh
+- 0cd49a90: SOV-3077: Prevent reward SOV claiming and force user to withdraw unclaimed SOV if the LM vesting contracts has too many liquid stakes
+- Updated dependencies [26a9feb5]
+  - @sovryn/contracts@1.0.15
+
 ## 1.0.27
 
 ### Patch Changes

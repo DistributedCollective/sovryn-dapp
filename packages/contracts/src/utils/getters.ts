@@ -21,6 +21,11 @@ export const getLoanTokenContract = async (
   chain: ChainId = ChainIds.RSK_MAINNET,
 ): Promise<ContractConfigData> => getContract(token, 'loanTokens', chain);
 
+export const getLendTokenContract = async (
+  token: string,
+  chain: ChainId = ChainIds.RSK_MAINNET,
+): Promise<ContractConfigData> => getContract(token, 'lendTokens', chain);
+
 export const getProtocolContract = async (
   token: string,
   chain: ChainId = ChainIds.RSK_MAINNET,

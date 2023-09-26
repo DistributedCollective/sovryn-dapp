@@ -1,0 +1,35 @@
+query getCloseWithSwaps(
+  $loanIds: [String!]
+  $skip: Int!
+  $pageSize: Int!
+  $orderBy: CloseWithSwap_orderBy
+  $orderDirection: OrderDirection
+) {
+  closeWithSwaps(
+    where: { loanId_in: $loanIds }
+    first: $pageSize
+    skip: $skip
+    orderBy: $orderBy
+    orderDirection: $orderDirection
+  ) {
+    loanId {
+      id
+      collateralToken {
+        id
+        symbol
+      }
+      loanToken {
+        id
+        symbol
+      }
+    }
+    collateralToken
+    loanToken
+    positionCloseSize
+    loanCloseAmount
+    timestamp
+    transaction {
+      id
+    }
+  }
+}

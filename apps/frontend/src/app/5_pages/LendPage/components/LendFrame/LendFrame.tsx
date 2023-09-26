@@ -5,7 +5,7 @@ import { t } from 'i18next';
 import { Paragraph, Table } from '@sovryn/ui';
 
 import { translations } from '../../../../../locales/i18n';
-import { LendingPoolDictionary } from '../../utils/LendingPoolDictionary';
+import { LendingPoolDictionary } from '../../../../../utils/LendingPoolDictionary';
 import { COLUMNS_CONFIG } from './LendFrame.constants';
 import { generateRowTitle } from './LendFrame.utils';
 import { LendFrameDetails } from './components/LendFrameDetails/LendFrameDetails';

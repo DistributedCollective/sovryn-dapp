@@ -36,7 +36,7 @@ export enum SupportedTokens {
   rdoc = 'rdoc',
   bnbs = 'bnbs',
   eths = 'eths',
-  fish = 'babelfish',
+  fish = 'fish',
   moc = 'moc',
   rif = 'rif',
   bpro = 'bpro',

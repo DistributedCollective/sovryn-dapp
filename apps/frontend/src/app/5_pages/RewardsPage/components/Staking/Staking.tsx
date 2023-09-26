@@ -90,6 +90,7 @@ export const Staking: FC = () => {
           rows={rows}
           isLoading={!!account ? loading : false}
           rowKey={row => row.key}
+          dataAttribute="staking-rewards-table"
           noData={
             <span className="italic">
               {!!account

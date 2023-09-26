@@ -6,7 +6,7 @@ import { Tooltip, TooltipTrigger } from '@sovryn/ui';
 
 import { getTokenDisplayName } from '../../../../../constants/tokens';
 import { translations } from '../../../../../locales/i18n';
-import { LendingPool } from '../../utils/LendingPool';
+import { LendingPool } from '../../../../../utils/LendingPool';
 import { AssetTooltipContent } from './components/AssetTooltipContent';
 
 const COLLATERAL_ITEMS_TO_SHOW = 3;
@@ -28,7 +28,7 @@ export const AcceptedCollateral: FC<AcceptedCollateralProps> = ({ pool }) => {
         <Tooltip
           key={index}
           tooltipClassName="min-w-44 min-h-10"
-          className="font-medium inline-flex whitespace-pre items-center cursor-pointer text-primary-20 underline text-xs w-auto prevent-row-click"
+          className="font-medium inline-flex whitespace-pre items-center cursor-pointer text-primary-20 underline text-tiny md:text-xs w-auto prevent-row-click"
           content={<AssetTooltipContent asset={item} />}
           dataAttribute="lend-accepted-collateral-tooltip-asset"
           trigger={TooltipTrigger.click}
@@ -46,7 +46,7 @@ export const AcceptedCollateral: FC<AcceptedCollateralProps> = ({ pool }) => {
     return (
       <Tooltip
         tooltipClassName="min-w-40 min-h-28 flex flex-col items-start justify-center"
-        className="inline-flex flex-wrap whitespace-pre items-center cursor-pointer text-primary-20 underline text-xs prevent-row-click"
+        className="inline-flex flex-wrap whitespace-pre items-center cursor-pointer text-primary-20 underline text-tiny md:text-xs prevent-row-click"
         content={<AssetTooltipContent pools={availableAssets} />}
         dataAttribute="lend-accepted-collateral-tooltip-asset"
         trigger={TooltipTrigger.click}

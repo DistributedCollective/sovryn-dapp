@@ -41,6 +41,8 @@ export const useMaxAssetBalance = (
       0,
     );
 
+    // console.log('ss', composeGas(gasPrice || '0', gasLimit).toString());
+
     return {
       weiBalance: value.toBigNumber().toString(),
       balance: value,

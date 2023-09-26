@@ -14799,6 +14799,36 @@ export enum _SubgraphErrorPolicy_ {
   Deny = 'deny',
 }
 
+export type GetActiveLoansQueryVariables = Exact<{
+  user?: InputMaybe<Scalars['String']>;
+}>;
+
+export type GetActiveLoansQuery = {
+  __typename?: 'Query';
+  loans: Array<{
+    __typename?: 'Loan';
+    id: string;
+    borrowedAmount: string;
+    positionSize: string;
+    nextRollover?: number | null;
+    loanToken: {
+      __typename?: 'Token';
+      id: string;
+      lastPriceBtc: string;
+      lastPriceUsd: string;
+      symbol?: string | null;
+    };
+    collateralToken: {
+      __typename?: 'Token';
+      id: string;
+      lastPriceBtc: string;
+      lastPriceUsd: string;
+      symbol?: string | null;
+    };
+    borrow?: Array<{ __typename?: 'Borrow'; interestRate: string }> | null;
+  }>;
+};
+
 export type GetBitcoinTxIdQueryVariables = Exact<{
   createdAtTx?: InputMaybe<Scalars['String']>;
 }>;
@@ -14808,6 +14838,102 @@ export type GetBitcoinTxIdQuery = {
   bitcoinTransfers: Array<{
     __typename?: 'BitcoinTransfer';
     bitcoinTxHash?: string | null;
+  }>;
+};
+
+export type GetBorrowHistoryQueryVariables = Exact<{
+  user?: InputMaybe<Scalars['String']>;
+  skip: Scalars['Int'];
+  pageSize: Scalars['Int'];
+  orderBy?: InputMaybe<Borrow_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+}>;
+
+export type GetBorrowHistoryQuery = {
+  __typename?: 'Query';
+  borrows: Array<{
+    __typename?: 'Borrow';
+    loanToken: string;
+    collateralToken: string;
+    newPrincipal: string;
+    newCollateral: string;
+    interestRate: string;
+    interestDuration: string;
+    collateralToLoanRate: string;
+    timestamp: number;
+    loanId: {
+      __typename?: 'Loan';
+      id: string;
+      collateralToken: {
+        __typename?: 'Token';
+        id: string;
+        symbol?: string | null;
+      };
+      loanToken: { __typename?: 'Token'; id: string; symbol?: string | null };
+    };
+    transaction: { __typename?: 'Transaction'; id: string };
+  }>;
+};
+
+export type GetCloseWithDepositsQueryVariables = Exact<{
+  loanIds?: InputMaybe<Array<Scalars['String']> | Scalars['String']>;
+  skip: Scalars['Int'];
+  pageSize: Scalars['Int'];
+  orderBy?: InputMaybe<CloseWithDeposit_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+}>;
+
+export type GetCloseWithDepositsQuery = {
+  __typename?: 'Query';
+  closeWithDeposits: Array<{
+    __typename?: 'CloseWithDeposit';
+    collateralToken: string;
+    loanToken: string;
+    repayAmount: string;
+    collateralWithdrawAmount: string;
+    timestamp: number;
+    loanId: {
+      __typename?: 'Loan';
+      id: string;
+      collateralToken: {
+        __typename?: 'Token';
+        id: string;
+        symbol?: string | null;
+      };
+      loanToken: { __typename?: 'Token'; id: string; symbol?: string | null };
+    };
+    transaction: { __typename?: 'Transaction'; id: string };
+  }>;
+};
+
+export type GetCloseWithSwapsQueryVariables = Exact<{
+  loanIds?: InputMaybe<Array<Scalars['String']> | Scalars['String']>;
+  skip: Scalars['Int'];
+  pageSize: Scalars['Int'];
+  orderBy?: InputMaybe<CloseWithSwap_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+}>;
+
+export type GetCloseWithSwapsQuery = {
+  __typename?: 'Query';
+  closeWithSwaps: Array<{
+    __typename?: 'CloseWithSwap';
+    collateralToken: string;
+    loanToken: string;
+    positionCloseSize: string;
+    loanCloseAmount: string;
+    timestamp: number;
+    loanId: {
+      __typename?: 'Loan';
+      id: string;
+      collateralToken: {
+        __typename?: 'Token';
+        id: string;
+        symbol?: string | null;
+      };
+      loanToken: { __typename?: 'Token'; id: string; symbol?: string | null };
+    };
+    transaction: { __typename?: 'Transaction'; id: string };
   }>;
 };
 
@@ -14829,6 +14955,36 @@ export type GetDelegateChangesQuery = {
     delegate?: { __typename?: 'User'; id: string } | null;
     previousDelegate?: { __typename?: 'User'; id: string } | null;
     user: { __typename?: 'User'; id: string };
+  }>;
+};
+
+export type GetDepositCollateralsQueryVariables = Exact<{
+  loanIds?: InputMaybe<Array<Scalars['String']> | Scalars['String']>;
+  skip: Scalars['Int'];
+  pageSize: Scalars['Int'];
+  orderBy?: InputMaybe<DepositCollateral_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+}>;
+
+export type GetDepositCollateralsQuery = {
+  __typename?: 'Query';
+  depositCollaterals: Array<{
+    __typename?: 'DepositCollateral';
+    depositAmount: string;
+    rate?: string | null;
+    timestamp: number;
+    emittedBy: string;
+    loanId: {
+      __typename?: 'Loan';
+      id: string;
+      collateralToken: {
+        __typename?: 'Token';
+        id: string;
+        symbol?: string | null;
+      };
+      loanToken: { __typename?: 'Token'; id: string; symbol?: string | null };
+    };
+    transaction: { __typename?: 'Transaction'; id: string };
   }>;
 };
 
@@ -14937,6 +15093,59 @@ export type GetLendHistoryQuery = {
   } | null;
 };
 
+export type GetLiquidatesQueryVariables = Exact<{
+  loanIds?: InputMaybe<Array<Scalars['String']> | Scalars['String']>;
+  skip: Scalars['Int'];
+  pageSize: Scalars['Int'];
+  orderBy?: InputMaybe<Liquidate_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+}>;
+
+export type GetLiquidatesQuery = {
+  __typename?: 'Query';
+  liquidates: Array<{
+    __typename?: 'Liquidate';
+    collateralToken: string;
+    loanToken: string;
+    repayAmount: string;
+    collateralWithdrawAmount: string;
+    timestamp: number;
+    loanId: {
+      __typename?: 'Loan';
+      id: string;
+      collateralToken: {
+        __typename?: 'Token';
+        id: string;
+        symbol?: string | null;
+      };
+      loanToken: { __typename?: 'Token'; id: string; symbol?: string | null };
+    };
+    transaction: { __typename?: 'Transaction'; id: string };
+  }>;
+};
+
+export type GetLoansQueryVariables = Exact<{
+  user?: InputMaybe<Scalars['String']>;
+}>;
+
+export type GetLoansQuery = {
+  __typename?: 'Query';
+  loans: Array<{
+    __typename?: 'Loan';
+    id: string;
+    borrowedAmount: string;
+    positionSize: string;
+    nextRollover?: number | null;
+    loanToken: { __typename?: 'Token'; id: string; symbol?: string | null };
+    collateralToken: {
+      __typename?: 'Token';
+      id: string;
+      symbol?: string | null;
+    };
+    borrow?: Array<{ __typename?: 'Borrow'; interestRate: string }> | null;
+  }>;
+};
+
 export type GetRewardsEarnedHistoryQueryVariables = Exact<{
   user?: InputMaybe<Scalars['String']>;
   skip: Scalars['Int'];
@@ -14955,6 +15164,42 @@ export type GetRewardsEarnedHistoryQuery = {
     amount: string;
     token?: string | null;
     timestamp: number;
+    transaction: { __typename?: 'Transaction'; id: string };
+  }>;
+};
+
+export type GetRolloversQueryVariables = Exact<{
+  loanIds?: InputMaybe<Array<Scalars['String']> | Scalars['String']>;
+  skip: Scalars['Int'];
+  pageSize: Scalars['Int'];
+  orderBy?: InputMaybe<Rollover_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+}>;
+
+export type GetRolloversQuery = {
+  __typename?: 'Query';
+  rollovers: Array<{
+    __typename?: 'Rollover';
+    id: string;
+    lender: string;
+    principal: string;
+    collateral: string;
+    endTimestamp: number;
+    reward: string;
+    timestamp: number;
+    emittedBy: string;
+    user: { __typename?: 'User'; id: string };
+    loanId: {
+      __typename?: 'Loan';
+      id: string;
+      collateralToken: {
+        __typename?: 'Token';
+        id: string;
+        symbol?: string | null;
+      };
+      loanToken: { __typename?: 'Token'; id: string; symbol?: string | null };
+    };
+    rewardReceiver: { __typename?: 'User'; id: string };
     transaction: { __typename?: 'Transaction'; id: string };
   }>;
 };
@@ -15045,6 +15290,19 @@ export type GetSwapHistoryQuery = {
   }>;
 };
 
+export type GetTokenQueryVariables = Exact<{
+  id: Scalars['ID'];
+}>;
+
+export type GetTokenQuery = {
+  __typename?: 'Query';
+  token?: {
+    __typename?: 'Token';
+    lastPriceUsd: string;
+    lastPriceBtc: string;
+  } | null;
+};
+
 export type GetTokenRatesQueryVariables = Exact<{ [key: string]: never }>;
 
 export type GetTokenRatesQuery = {
@@ -15107,6 +15365,15 @@ export type GetVestingContractsQuery = {
   }>;
 };
 
+export type GetVestingContractsIdQueryVariables = Exact<{
+  user?: InputMaybe<Scalars['String']>;
+}>;
+
+export type GetVestingContractsIdQuery = {
+  __typename?: 'Query';
+  vestingContracts: Array<{ __typename?: 'VestingContract'; id: string }>;
+};
+
 export type GetUserVestingContractsQueryVariables = Exact<{
   userAddress: Scalars['String'];
 }>;
@@ -15154,6 +15421,25 @@ export type GetVestingHistoryQuery = {
   }>;
 };
 
+export type GetVestingHistoryItemsQueryVariables = Exact<{
+  stakers?: InputMaybe<Array<Scalars['String']> | Scalars['String']>;
+  skip: Scalars['Int'];
+  pageSize: Scalars['Int'];
+  orderBy?: InputMaybe<VestingHistoryItem_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+}>;
+
+export type GetVestingHistoryItemsQuery = {
+  __typename?: 'Query';
+  vestingHistoryItems: Array<{
+    __typename?: 'VestingHistoryItem';
+    timestamp: number;
+    action: VestingHistoryItemAction;
+    amount: string;
+    transaction: { __typename?: 'Transaction'; id: string };
+  }>;
+};
+
 export type GetVestingUnlockBalanceQueryVariables = Exact<{
   vestingAddress?: InputMaybe<Scalars['ID']>;
   timestamp?: InputMaybe<Scalars['Int']>;
@@ -15174,6 +15460,82 @@ export type GetVestingUnlockBalanceQuery = {
   }>;
 };
 
+export const GetActiveLoansDocument = gql`
+  query getActiveLoans($user: String) {
+    loans(where: { user: $user, type: Borrow }) {
+      id
+      loanToken {
+        id
+        lastPriceBtc
+        lastPriceUsd
+        symbol
+      }
+      collateralToken {
+        id
+        lastPriceBtc
+        lastPriceUsd
+        symbol
+      }
+      borrowedAmount
+      positionSize
+      nextRollover
+      borrow(first: 1, orderBy: timestamp, orderDirection: desc) {
+        interestRate
+      }
+    }
+  }
+`;
+
+/**
+ * __useGetActiveLoansQuery__
+ *
+ * To run a query within a React component, call `useGetActiveLoansQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetActiveLoansQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetActiveLoansQuery({
+ *   variables: {
+ *      user: // value for 'user'
+ *   },
+ * });
+ */
+export function useGetActiveLoansQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    GetActiveLoansQuery,
+    GetActiveLoansQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<GetActiveLoansQuery, GetActiveLoansQueryVariables>(
+    GetActiveLoansDocument,
+    options,
+  );
+}
+export function useGetActiveLoansLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    GetActiveLoansQuery,
+    GetActiveLoansQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<GetActiveLoansQuery, GetActiveLoansQueryVariables>(
+    GetActiveLoansDocument,
+    options,
+  );
+}
+export type GetActiveLoansQueryHookResult = ReturnType<
+  typeof useGetActiveLoansQuery
+>;
+export type GetActiveLoansLazyQueryHookResult = ReturnType<
+  typeof useGetActiveLoansLazyQuery
+>;
+export type GetActiveLoansQueryResult = Apollo.QueryResult<
+  GetActiveLoansQuery,
+  GetActiveLoansQueryVariables
+>;
 export const GetBitcoinTxIdDocument = gql`
   query getBitcoinTxId($createdAtTx: String) {
     bitcoinTransfers(where: { createdAtTx: $createdAtTx }, first: 1) {
@@ -15231,6 +15593,285 @@ export type GetBitcoinTxIdLazyQueryHookResult = ReturnType<
 export type GetBitcoinTxIdQueryResult = Apollo.QueryResult<
   GetBitcoinTxIdQuery,
   GetBitcoinTxIdQueryVariables
+>;
+export const GetBorrowHistoryDocument = gql`
+  query getBorrowHistory(
+    $user: String
+    $skip: Int!
+    $pageSize: Int!
+    $orderBy: Borrow_orderBy
+    $orderDirection: OrderDirection
+  ) {
+    borrows(
+      where: { user: $user }
+      first: $pageSize
+      skip: $skip
+      orderBy: $orderBy
+      orderDirection: $orderDirection
+    ) {
+      loanId {
+        id
+        collateralToken {
+          id
+          symbol
+        }
+        loanToken {
+          id
+          symbol
+        }
+      }
+      loanToken
+      collateralToken
+      newPrincipal
+      newCollateral
+      interestRate
+      interestDuration
+      collateralToLoanRate
+      timestamp
+      transaction {
+        id
+      }
+    }
+  }
+`;
+
+/**
+ * __useGetBorrowHistoryQuery__
+ *
+ * To run a query within a React component, call `useGetBorrowHistoryQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetBorrowHistoryQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetBorrowHistoryQuery({
+ *   variables: {
+ *      user: // value for 'user'
+ *      skip: // value for 'skip'
+ *      pageSize: // value for 'pageSize'
+ *      orderBy: // value for 'orderBy'
+ *      orderDirection: // value for 'orderDirection'
+ *   },
+ * });
+ */
+export function useGetBorrowHistoryQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    GetBorrowHistoryQuery,
+    GetBorrowHistoryQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<GetBorrowHistoryQuery, GetBorrowHistoryQueryVariables>(
+    GetBorrowHistoryDocument,
+    options,
+  );
+}
+export function useGetBorrowHistoryLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    GetBorrowHistoryQuery,
+    GetBorrowHistoryQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    GetBorrowHistoryQuery,
+    GetBorrowHistoryQueryVariables
+  >(GetBorrowHistoryDocument, options);
+}
+export type GetBorrowHistoryQueryHookResult = ReturnType<
+  typeof useGetBorrowHistoryQuery
+>;
+export type GetBorrowHistoryLazyQueryHookResult = ReturnType<
+  typeof useGetBorrowHistoryLazyQuery
+>;
+export type GetBorrowHistoryQueryResult = Apollo.QueryResult<
+  GetBorrowHistoryQuery,
+  GetBorrowHistoryQueryVariables
+>;
+export const GetCloseWithDepositsDocument = gql`
+  query getCloseWithDeposits(
+    $loanIds: [String!]
+    $skip: Int!
+    $pageSize: Int!
+    $orderBy: CloseWithDeposit_orderBy
+    $orderDirection: OrderDirection
+  ) {
+    closeWithDeposits(
+      where: { loanId_in: $loanIds }
+      first: $pageSize
+      skip: $skip
+      orderBy: $orderBy
+      orderDirection: $orderDirection
+    ) {
+      loanId {
+        id
+        collateralToken {
+          id
+          symbol
+        }
+        loanToken {
+          id
+          symbol
+        }
+      }
+      collateralToken
+      loanToken
+      repayAmount
+      collateralWithdrawAmount
+      timestamp
+      transaction {
+        id
+      }
+    }
+  }
+`;
+
+/**
+ * __useGetCloseWithDepositsQuery__
+ *
+ * To run a query within a React component, call `useGetCloseWithDepositsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetCloseWithDepositsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetCloseWithDepositsQuery({
+ *   variables: {
+ *      loanIds: // value for 'loanIds'
+ *      skip: // value for 'skip'
+ *      pageSize: // value for 'pageSize'
+ *      orderBy: // value for 'orderBy'
+ *      orderDirection: // value for 'orderDirection'
+ *   },
+ * });
+ */
+export function useGetCloseWithDepositsQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    GetCloseWithDepositsQuery,
+    GetCloseWithDepositsQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    GetCloseWithDepositsQuery,
+    GetCloseWithDepositsQueryVariables
+  >(GetCloseWithDepositsDocument, options);
+}
+export function useGetCloseWithDepositsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    GetCloseWithDepositsQuery,
+    GetCloseWithDepositsQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    GetCloseWithDepositsQuery,
+    GetCloseWithDepositsQueryVariables
+  >(GetCloseWithDepositsDocument, options);
+}
+export type GetCloseWithDepositsQueryHookResult = ReturnType<
+  typeof useGetCloseWithDepositsQuery
+>;
+export type GetCloseWithDepositsLazyQueryHookResult = ReturnType<
+  typeof useGetCloseWithDepositsLazyQuery
+>;
+export type GetCloseWithDepositsQueryResult = Apollo.QueryResult<
+  GetCloseWithDepositsQuery,
+  GetCloseWithDepositsQueryVariables
+>;
+export const GetCloseWithSwapsDocument = gql`
+  query getCloseWithSwaps(
+    $loanIds: [String!]
+    $skip: Int!
+    $pageSize: Int!
+    $orderBy: CloseWithSwap_orderBy
+    $orderDirection: OrderDirection
+  ) {
+    closeWithSwaps(
+      where: { loanId_in: $loanIds }
+      first: $pageSize
+      skip: $skip
+      orderBy: $orderBy
+      orderDirection: $orderDirection
+    ) {
+      loanId {
+        id
+        collateralToken {
+          id
+          symbol
+        }
+        loanToken {
+          id
+          symbol
+        }
+      }
+      collateralToken
+      loanToken
+      positionCloseSize
+      loanCloseAmount
+      timestamp
+      transaction {
+        id
+      }
+    }
+  }
+`;
+
+/**
+ * __useGetCloseWithSwapsQuery__
+ *
+ * To run a query within a React component, call `useGetCloseWithSwapsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetCloseWithSwapsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetCloseWithSwapsQuery({
+ *   variables: {
+ *      loanIds: // value for 'loanIds'
+ *      skip: // value for 'skip'
+ *      pageSize: // value for 'pageSize'
+ *      orderBy: // value for 'orderBy'
+ *      orderDirection: // value for 'orderDirection'
+ *   },
+ * });
+ */
+export function useGetCloseWithSwapsQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    GetCloseWithSwapsQuery,
+    GetCloseWithSwapsQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    GetCloseWithSwapsQuery,
+    GetCloseWithSwapsQueryVariables
+  >(GetCloseWithSwapsDocument, options);
+}
+export function useGetCloseWithSwapsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    GetCloseWithSwapsQuery,
+    GetCloseWithSwapsQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    GetCloseWithSwapsQuery,
+    GetCloseWithSwapsQueryVariables
+  >(GetCloseWithSwapsDocument, options);
+}
+export type GetCloseWithSwapsQueryHookResult = ReturnType<
+  typeof useGetCloseWithSwapsQuery
+>;
+export type GetCloseWithSwapsLazyQueryHookResult = ReturnType<
+  typeof useGetCloseWithSwapsLazyQuery
+>;
+export type GetCloseWithSwapsQueryResult = Apollo.QueryResult<
+  GetCloseWithSwapsQuery,
+  GetCloseWithSwapsQueryVariables
 >;
 export const GetDelegateChangesDocument = gql`
   query getDelegateChanges(
@@ -15316,6 +15957,97 @@ export type GetDelegateChangesLazyQueryHookResult = ReturnType<
 export type GetDelegateChangesQueryResult = Apollo.QueryResult<
   GetDelegateChangesQuery,
   GetDelegateChangesQueryVariables
+>;
+export const GetDepositCollateralsDocument = gql`
+  query getDepositCollaterals(
+    $loanIds: [String!]
+    $skip: Int!
+    $pageSize: Int!
+    $orderBy: DepositCollateral_orderBy
+    $orderDirection: OrderDirection
+  ) {
+    depositCollaterals(
+      where: { loanId_in: $loanIds }
+      first: $pageSize
+      skip: $skip
+      orderBy: $orderBy
+      orderDirection: $orderDirection
+    ) {
+      loanId {
+        id
+        collateralToken {
+          id
+          symbol
+        }
+        loanToken {
+          id
+          symbol
+        }
+      }
+      depositAmount
+      rate
+      timestamp
+      emittedBy
+      transaction {
+        id
+      }
+    }
+  }
+`;
+
+/**
+ * __useGetDepositCollateralsQuery__
+ *
+ * To run a query within a React component, call `useGetDepositCollateralsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetDepositCollateralsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetDepositCollateralsQuery({
+ *   variables: {
+ *      loanIds: // value for 'loanIds'
+ *      skip: // value for 'skip'
+ *      pageSize: // value for 'pageSize'
+ *      orderBy: // value for 'orderBy'
+ *      orderDirection: // value for 'orderDirection'
+ *   },
+ * });
+ */
+export function useGetDepositCollateralsQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    GetDepositCollateralsQuery,
+    GetDepositCollateralsQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    GetDepositCollateralsQuery,
+    GetDepositCollateralsQueryVariables
+  >(GetDepositCollateralsDocument, options);
+}
+export function useGetDepositCollateralsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    GetDepositCollateralsQuery,
+    GetDepositCollateralsQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    GetDepositCollateralsQuery,
+    GetDepositCollateralsQueryVariables
+  >(GetDepositCollateralsDocument, options);
+}
+export type GetDepositCollateralsQueryHookResult = ReturnType<
+  typeof useGetDepositCollateralsQuery
+>;
+export type GetDepositCollateralsLazyQueryHookResult = ReturnType<
+  typeof useGetDepositCollateralsLazyQuery
+>;
+export type GetDepositCollateralsQueryResult = Apollo.QueryResult<
+  GetDepositCollateralsQuery,
+  GetDepositCollateralsQueryVariables
 >;
 export const GetExtendedStakingDurationsDocument = gql`
   query getExtendedStakingDurations(
@@ -15682,6 +16414,165 @@ export type GetLendHistoryQueryResult = Apollo.QueryResult<
   GetLendHistoryQuery,
   GetLendHistoryQueryVariables
 >;
+export const GetLiquidatesDocument = gql`
+  query getLiquidates(
+    $loanIds: [String!]
+    $skip: Int!
+    $pageSize: Int!
+    $orderBy: Liquidate_orderBy
+    $orderDirection: OrderDirection
+  ) {
+    liquidates(
+      where: { loanId_in: $loanIds }
+      first: $pageSize
+      skip: $skip
+      orderBy: $orderBy
+      orderDirection: $orderDirection
+    ) {
+      loanId {
+        id
+        collateralToken {
+          id
+          symbol
+        }
+        loanToken {
+          id
+          symbol
+        }
+      }
+      collateralToken
+      loanToken
+      repayAmount
+      collateralWithdrawAmount
+      timestamp
+      transaction {
+        id
+      }
+    }
+  }
+`;
+
+/**
+ * __useGetLiquidatesQuery__
+ *
+ * To run a query within a React component, call `useGetLiquidatesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetLiquidatesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetLiquidatesQuery({
+ *   variables: {
+ *      loanIds: // value for 'loanIds'
+ *      skip: // value for 'skip'
+ *      pageSize: // value for 'pageSize'
+ *      orderBy: // value for 'orderBy'
+ *      orderDirection: // value for 'orderDirection'
+ *   },
+ * });
+ */
+export function useGetLiquidatesQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    GetLiquidatesQuery,
+    GetLiquidatesQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<GetLiquidatesQuery, GetLiquidatesQueryVariables>(
+    GetLiquidatesDocument,
+    options,
+  );
+}
+export function useGetLiquidatesLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    GetLiquidatesQuery,
+    GetLiquidatesQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<GetLiquidatesQuery, GetLiquidatesQueryVariables>(
+    GetLiquidatesDocument,
+    options,
+  );
+}
+export type GetLiquidatesQueryHookResult = ReturnType<
+  typeof useGetLiquidatesQuery
+>;
+export type GetLiquidatesLazyQueryHookResult = ReturnType<
+  typeof useGetLiquidatesLazyQuery
+>;
+export type GetLiquidatesQueryResult = Apollo.QueryResult<
+  GetLiquidatesQuery,
+  GetLiquidatesQueryVariables
+>;
+export const GetLoansDocument = gql`
+  query getLoans($user: String) {
+    loans(where: { user: $user, type: Borrow }) {
+      id
+      loanToken {
+        id
+        symbol
+      }
+      collateralToken {
+        id
+        symbol
+      }
+      borrowedAmount
+      positionSize
+      nextRollover
+      borrow(first: 1, orderBy: timestamp, orderDirection: desc) {
+        interestRate
+      }
+    }
+  }
+`;
+
+/**
+ * __useGetLoansQuery__
+ *
+ * To run a query within a React component, call `useGetLoansQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetLoansQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetLoansQuery({
+ *   variables: {
+ *      user: // value for 'user'
+ *   },
+ * });
+ */
+export function useGetLoansQuery(
+  baseOptions?: Apollo.QueryHookOptions<GetLoansQuery, GetLoansQueryVariables>,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<GetLoansQuery, GetLoansQueryVariables>(
+    GetLoansDocument,
+    options,
+  );
+}
+export function useGetLoansLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    GetLoansQuery,
+    GetLoansQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<GetLoansQuery, GetLoansQueryVariables>(
+    GetLoansDocument,
+    options,
+  );
+}
+export type GetLoansQueryHookResult = ReturnType<typeof useGetLoansQuery>;
+export type GetLoansLazyQueryHookResult = ReturnType<
+  typeof useGetLoansLazyQuery
+>;
+export type GetLoansQueryResult = Apollo.QueryResult<
+  GetLoansQuery,
+  GetLoansQueryVariables
+>;
 export const GetRewardsEarnedHistoryDocument = gql`
   query getRewardsEarnedHistory(
     $user: String
@@ -15764,6 +16655,107 @@ export type GetRewardsEarnedHistoryLazyQueryHookResult = ReturnType<
 export type GetRewardsEarnedHistoryQueryResult = Apollo.QueryResult<
   GetRewardsEarnedHistoryQuery,
   GetRewardsEarnedHistoryQueryVariables
+>;
+export const GetRolloversDocument = gql`
+  query getRollovers(
+    $loanIds: [String!]
+    $skip: Int!
+    $pageSize: Int!
+    $orderBy: Rollover_orderBy
+    $orderDirection: OrderDirection
+  ) {
+    rollovers(
+      where: { loanId_in: $loanIds }
+      first: $pageSize
+      skip: $skip
+      orderBy: $orderBy
+      orderDirection: $orderDirection
+    ) {
+      id
+      user {
+        id
+      }
+      loanId {
+        id
+        collateralToken {
+          id
+          symbol
+        }
+        loanToken {
+          id
+          symbol
+        }
+      }
+      lender
+      principal
+      collateral
+      endTimestamp
+      rewardReceiver {
+        id
+      }
+      reward
+      timestamp
+      emittedBy
+      transaction {
+        id
+      }
+    }
+  }
+`;
+
+/**
+ * __useGetRolloversQuery__
+ *
+ * To run a query within a React component, call `useGetRolloversQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetRolloversQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetRolloversQuery({
+ *   variables: {
+ *      loanIds: // value for 'loanIds'
+ *      skip: // value for 'skip'
+ *      pageSize: // value for 'pageSize'
+ *      orderBy: // value for 'orderBy'
+ *      orderDirection: // value for 'orderDirection'
+ *   },
+ * });
+ */
+export function useGetRolloversQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    GetRolloversQuery,
+    GetRolloversQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<GetRolloversQuery, GetRolloversQueryVariables>(
+    GetRolloversDocument,
+    options,
+  );
+}
+export function useGetRolloversLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    GetRolloversQuery,
+    GetRolloversQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<GetRolloversQuery, GetRolloversQueryVariables>(
+    GetRolloversDocument,
+    options,
+  );
+}
+export type GetRolloversQueryHookResult = ReturnType<
+  typeof useGetRolloversQuery
+>;
+export type GetRolloversLazyQueryHookResult = ReturnType<
+  typeof useGetRolloversLazyQuery
+>;
+export type GetRolloversQueryResult = Apollo.QueryResult<
+  GetRolloversQuery,
+  GetRolloversQueryVariables
 >;
 export const GetSmartTokensDocument = gql`
   query getSmartTokens(
@@ -16098,6 +17090,60 @@ export type GetSwapHistoryQueryResult = Apollo.QueryResult<
   GetSwapHistoryQuery,
   GetSwapHistoryQueryVariables
 >;
+export const GetTokenDocument = gql`
+  query getToken($id: ID!) {
+    token(id: $id) {
+      lastPriceUsd
+      lastPriceBtc
+    }
+  }
+`;
+
+/**
+ * __useGetTokenQuery__
+ *
+ * To run a query within a React component, call `useGetTokenQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetTokenQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetTokenQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useGetTokenQuery(
+  baseOptions: Apollo.QueryHookOptions<GetTokenQuery, GetTokenQueryVariables>,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<GetTokenQuery, GetTokenQueryVariables>(
+    GetTokenDocument,
+    options,
+  );
+}
+export function useGetTokenLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    GetTokenQuery,
+    GetTokenQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<GetTokenQuery, GetTokenQueryVariables>(
+    GetTokenDocument,
+    options,
+  );
+}
+export type GetTokenQueryHookResult = ReturnType<typeof useGetTokenQuery>;
+export type GetTokenLazyQueryHookResult = ReturnType<
+  typeof useGetTokenLazyQuery
+>;
+export type GetTokenQueryResult = Apollo.QueryResult<
+  GetTokenQuery,
+  GetTokenQueryVariables
+>;
 export const GetTokenRatesDocument = gql`
   query getTokenRates {
     tokens {
@@ -16353,6 +17399,64 @@ export type GetVestingContractsQueryResult = Apollo.QueryResult<
   GetVestingContractsQuery,
   GetVestingContractsQueryVariables
 >;
+export const GetVestingContractsIdDocument = gql`
+  query getVestingContractsId($user: String) {
+    vestingContracts(where: { user: $user }) {
+      id
+    }
+  }
+`;
+
+/**
+ * __useGetVestingContractsIdQuery__
+ *
+ * To run a query within a React component, call `useGetVestingContractsIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetVestingContractsIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetVestingContractsIdQuery({
+ *   variables: {
+ *      user: // value for 'user'
+ *   },
+ * });
+ */
+export function useGetVestingContractsIdQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    GetVestingContractsIdQuery,
+    GetVestingContractsIdQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    GetVestingContractsIdQuery,
+    GetVestingContractsIdQueryVariables
+  >(GetVestingContractsIdDocument, options);
+}
+export function useGetVestingContractsIdLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    GetVestingContractsIdQuery,
+    GetVestingContractsIdQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    GetVestingContractsIdQuery,
+    GetVestingContractsIdQueryVariables
+  >(GetVestingContractsIdDocument, options);
+}
+export type GetVestingContractsIdQueryHookResult = ReturnType<
+  typeof useGetVestingContractsIdQuery
+>;
+export type GetVestingContractsIdLazyQueryHookResult = ReturnType<
+  typeof useGetVestingContractsIdLazyQuery
+>;
+export type GetVestingContractsIdQueryResult = Apollo.QueryResult<
+  GetVestingContractsIdQuery,
+  GetVestingContractsIdQueryVariables
+>;
 export const GetUserVestingContractsDocument = gql`
   query getUserVestingContracts($userAddress: String!) {
     vestingContracts(where: { user: $userAddress }) {
@@ -16560,6 +17664,85 @@ export type GetVestingHistoryLazyQueryHookResult = ReturnType<
 export type GetVestingHistoryQueryResult = Apollo.QueryResult<
   GetVestingHistoryQuery,
   GetVestingHistoryQueryVariables
+>;
+export const GetVestingHistoryItemsDocument = gql`
+  query getVestingHistoryItems(
+    $stakers: [String!]
+    $skip: Int!
+    $pageSize: Int!
+    $orderBy: VestingHistoryItem_orderBy
+    $orderDirection: OrderDirection
+  ) {
+    vestingHistoryItems(
+      where: { action: TokensWithdrawn, staker_in: $stakers }
+      first: $pageSize
+      skip: $skip
+      orderBy: $orderBy
+      orderDirection: $orderDirection
+    ) {
+      timestamp
+      action
+      amount
+      transaction {
+        id
+      }
+    }
+  }
+`;
+
+/**
+ * __useGetVestingHistoryItemsQuery__
+ *
+ * To run a query within a React component, call `useGetVestingHistoryItemsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetVestingHistoryItemsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetVestingHistoryItemsQuery({
+ *   variables: {
+ *      stakers: // value for 'stakers'
+ *      skip: // value for 'skip'
+ *      pageSize: // value for 'pageSize'
+ *      orderBy: // value for 'orderBy'
+ *      orderDirection: // value for 'orderDirection'
+ *   },
+ * });
+ */
+export function useGetVestingHistoryItemsQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    GetVestingHistoryItemsQuery,
+    GetVestingHistoryItemsQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    GetVestingHistoryItemsQuery,
+    GetVestingHistoryItemsQueryVariables
+  >(GetVestingHistoryItemsDocument, options);
+}
+export function useGetVestingHistoryItemsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    GetVestingHistoryItemsQuery,
+    GetVestingHistoryItemsQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    GetVestingHistoryItemsQuery,
+    GetVestingHistoryItemsQueryVariables
+  >(GetVestingHistoryItemsDocument, options);
+}
+export type GetVestingHistoryItemsQueryHookResult = ReturnType<
+  typeof useGetVestingHistoryItemsQuery
+>;
+export type GetVestingHistoryItemsLazyQueryHookResult = ReturnType<
+  typeof useGetVestingHistoryItemsLazyQuery
+>;
+export type GetVestingHistoryItemsQueryResult = Apollo.QueryResult<
+  GetVestingHistoryItemsQuery,
+  GetVestingHistoryItemsQueryVariables
 >;
 export const GetVestingUnlockBalanceDocument = gql`
   query getVestingUnlockBalance(

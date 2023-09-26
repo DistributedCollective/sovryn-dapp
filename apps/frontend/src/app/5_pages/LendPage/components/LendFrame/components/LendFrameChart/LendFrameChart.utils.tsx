@@ -3,7 +3,7 @@ import { t } from 'i18next';
 
 import { getTokenDisplayName } from '../../../../../../../constants/tokens';
 import { translations } from '../../../../../../../locales/i18n';
-import { LendingPool } from '../../../../utils/LendingPool';
+import { LendingPool } from '../../../../../../../utils/LendingPool';
 import { MockData, PoolHistoryData } from './LendFrameChart.types';
 
 //TODO - it will be removed after API is ready

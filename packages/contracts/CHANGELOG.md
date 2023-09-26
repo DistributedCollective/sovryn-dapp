@@ -1,5 +1,14 @@
 # @sovryn/contracts
 
+## 1.0.14
+
+### Patch Changes
+
+- 8d9a3fd4: SOV-3143: Fix repaying tiny position
+- 8d9a3fd4: SOV-2748: Update test utils for contracts package
+- 8d9a3fd4: SOV-2989: Develop D2 Borrow page - Extend loan modal
+- 8d9a3fd4: SOV-2747: Add lend token contracts
+
 ## 1.0.13
 
 ### Patch Changes

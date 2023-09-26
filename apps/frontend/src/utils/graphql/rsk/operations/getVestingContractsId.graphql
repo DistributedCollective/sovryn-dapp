@@ -1,0 +1,5 @@
+query getVestingContractsId($user: String) {
+  vestingContracts(where: { user: $user }) {
+    id
+  }
+}

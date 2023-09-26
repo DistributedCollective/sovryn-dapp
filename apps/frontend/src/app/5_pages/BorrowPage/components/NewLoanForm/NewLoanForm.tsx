@@ -26,9 +26,6 @@ import { Decimal } from '@sovryn/utils';
 
 import { AssetRenderer } from '../../../../2_molecules/AssetRenderer/AssetRenderer';
 import { MaxButton } from '../../../../2_molecules/MaxButton/MaxButton';
-import { useGetAvgBorrowingAPR } from '../../../../5_pages/BorrowPage/components/AdjustLoanForm/hooks/useGetAvgBorrowingAPR';
-import { useGetBorrowingAPR } from '../../../../5_pages/BorrowPage/components/AdjustLoanForm/hooks/useGetBorrowingAPR';
-import { useGetMaintenanceStates } from '../../../../5_pages/BorrowPage/components/AdjustLoanForm/hooks/useGetMaintenanceStates';
 import { BITCOIN } from '../../../../../constants/currencies';
 import {
   MINIMUM_COLLATERAL_RATIO_LENDING_POOLS_SOV,
@@ -47,10 +44,13 @@ import {
   getOriginationFeeAmount,
   renderValue,
 } from '../../BorrowPage.utils';
-import { useGetOriginationFee } from '../AdjustLoanForm/hooks/useGetOriginationFee';
+import { useGetBorrowingAPR } from '../../hooks/useGetBorrowingAPR';
+import { useGetMaintenanceStates } from '../../hooks/useGetMaintenanceStates';
+import { useGetOriginationFee } from '../../hooks/useGetOriginationFee';
 import { DEFAULT_LOAN_DURATION } from './NewLoanForm.constants';
 import { AdvancedSettings } from './components/AdvancedSettings/AdvancedSettings';
 import { useBorrow } from './hooks/useBorrow';
+import { useGetAvgBorrowingAPR } from './hooks/useGetAvgBorrowingAPR';
 import { useGetMaximumBorrowAmount } from './hooks/useGetMaximumBorrowAmount';
 import { useGetMaximumCollateralAmount } from './hooks/useGetMaximumCollateralAmount';
 import { useGetMaximumFirstRolloverDate } from './hooks/useGetMaximumFirstRolloverDate';

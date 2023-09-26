@@ -13,8 +13,8 @@ import {
   calculatePrepaidInterestFromTargetDate,
   normalizeToken,
 } from '../../../BorrowPage.utils';
+import { useGetBorrowingAPR } from '../../../hooks/useGetBorrowingAPR';
 import { useGetMaximumCollateralAmount } from '../../NewLoanForm/hooks/useGetMaximumCollateralAmount';
-import { useGetBorrowingAPR } from './useGetBorrowingAPR';
 
 export const useGetMaximumBorrowAmount = (
   loan: LoanItem,

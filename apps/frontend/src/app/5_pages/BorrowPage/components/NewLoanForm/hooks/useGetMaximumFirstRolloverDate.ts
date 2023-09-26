@@ -5,15 +5,15 @@ import dayjs from 'dayjs';
 import { SupportedTokens } from '@sovryn/contracts';
 import { Decimal } from '@sovryn/utils';
 
-import { useGetBorrowingAPR } from '../../../../../5_pages/BorrowPage/components/AdjustLoanForm/hooks/useGetBorrowingAPR';
 import {
   SECONDS_IN_DAY,
   SECONDS_IN_YEAR,
 } from '../../../../../../constants/general';
 import { useGetRBTCPrice } from '../../../../../../hooks/zero/useGetRBTCPrice';
 import { decimalic } from '../../../../../../utils/math';
+import { useGetBorrowingAPR } from '../../../hooks/useGetBorrowingAPR';
+import { useGetCollateralAssetPrice } from '../../../hooks/useGetCollateralAssetPrice';
 import { DEFAULT_LOAN_DURATION } from '../NewLoanForm.constants';
-import { useGetCollateralAssetPrice } from './useGetCollateralAssetPrice';
 
 export const useGetMaximumFirstRolloverDate = (
   collateralAmount: Decimal,

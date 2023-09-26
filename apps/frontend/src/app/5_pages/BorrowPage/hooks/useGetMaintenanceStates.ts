@@ -2,8 +2,8 @@ import { useMemo } from 'react';
 
 import { SupportedTokens } from '@sovryn/contracts';
 
-import { useGetBorrowMaintenance } from '../../../../../5_pages/BorrowPage/hooks/useGetBorrowMaintenance';
-import { useMaintenance } from '../../../../../../hooks/useMaintenance';
+import { useMaintenance } from '../../../../hooks/useMaintenance';
+import { useGetBorrowMaintenance } from './useGetBorrowMaintenance';
 
 export const useGetMaintenanceStates = (poolToken: SupportedTokens) => {
   const { checkMaintenance } = useMaintenance();

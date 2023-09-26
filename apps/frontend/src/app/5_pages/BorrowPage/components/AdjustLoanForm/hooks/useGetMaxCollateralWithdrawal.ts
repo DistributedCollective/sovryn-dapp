@@ -8,7 +8,7 @@ import { MINIMUM_COLLATERAL_RATIO_BORROWING_MAINTENANCE } from '../../../../../.
 import { useGetRBTCPrice } from '../../../../../../hooks/zero/useGetRBTCPrice';
 import { decimalic } from '../../../../../../utils/math';
 import { normalizeToken } from '../../../BorrowPage.utils';
-import { useGetCollateralAssetPrice } from './useGetCollateralAssetPrice';
+import { useGetCollateralAssetPrice } from '../../../hooks/useGetCollateralAssetPrice';
 
 export const useGetMaxCollateralWithdrawal = (loan: LoanItem): Decimal => {
   const borrowToken = useMemo(

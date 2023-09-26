@@ -4,8 +4,8 @@ import { BigNumber } from 'ethers';
 
 import { Decimal } from '@sovryn/utils';
 
-import { useLoadContract } from '../../../../../../hooks/useLoadContract';
-import { asyncCall } from '../../../../../../store/rxjs/provider-cache';
+import { useLoadContract } from '../../../../hooks/useLoadContract';
+import { asyncCall } from '../../../../store/rxjs/provider-cache';
 
 export const useGetBorrowingAPR = (
   borrowToken: string,

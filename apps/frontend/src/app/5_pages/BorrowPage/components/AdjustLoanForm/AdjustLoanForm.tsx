@@ -41,6 +41,9 @@ import {
   normalizeToken,
   renderValue,
 } from '../../BorrowPage.utils';
+import { useGetBorrowingAPR } from '../../hooks/useGetBorrowingAPR';
+import { useGetMaintenanceStates } from '../../hooks/useGetMaintenanceStates';
+import { useGetOriginationFee } from '../../hooks/useGetOriginationFee';
 import { CurrentLoanData } from '../CurrentLoanData/CurrentLoanData';
 import { useGetMaximumCollateralAmount } from '../NewLoanForm/hooks/useGetMaximumCollateralAmount';
 import {
@@ -56,13 +59,10 @@ import {
 import { Label } from './components/Label';
 import { useCloseWithDepositIsTinyPosition } from './hooks/useCloseWithDepositIsTinyPosition';
 import { useDepositCollateral } from './hooks/useDepositCollateral';
-import { useGetBorrowingAPR } from './hooks/useGetBorrowingAPR';
 import { useGetInterestRefund } from './hooks/useGetInterestRefund';
-import { useGetMaintenanceStates } from './hooks/useGetMaintenanceStates';
 import { useGetMaxCollateralWithdrawal } from './hooks/useGetMaxCollateralWithdrawal';
 import { useGetMaxRepayAmount } from './hooks/useGetMaxRepayAmount';
 import { useGetMaximumBorrowAmount } from './hooks/useGetMaximumBorrowAmount';
-import { useGetOriginationFee } from './hooks/useGetOriginationFee';
 import { useRepayLoan } from './hooks/useRepayLoan';
 import { useWithdrawCollateral } from './hooks/useWithdrawCollateral';
 

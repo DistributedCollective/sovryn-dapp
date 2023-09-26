@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 
 import { SupportedTokens, getTokenContract } from '@sovryn/contracts';
 
-import { defaultChainId } from '../../../../../../config/chains';
+import { defaultChainId } from '../../../../config/chains';
 
 import { useGetTokenPrice } from './useGetTokenPrice';
 

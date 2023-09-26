@@ -40,7 +40,7 @@ import {
   normalizeToken,
   renderValue,
 } from '../../BorrowPage.utils';
-import { useGetMaintenanceStates } from '../AdjustLoanForm/hooks/useGetMaintenanceStates';
+import { useGetMaintenanceStates } from '../../hooks/useGetMaintenanceStates';
 import { CurrentLoanData } from '../CurrentLoanData/CurrentLoanData';
 import { useExtendLoan } from './hooks/useExtendLoan';
 

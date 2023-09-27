@@ -15,10 +15,6 @@ export const useProposalStatus = (proposal: Proposal) => {
     () => decimalic(proposal.votesFor).add(proposal.votesAgainst),
     [proposal.votesFor, proposal.votesAgainst],
   );
-  const totalVotesMajorityPercentage = useMemo(
-    () => totalVotes.div(100).mul(proposal.majorityPercentage),
-    [totalVotes, proposal.majorityPercentage],
-  );
 
   return useMemo(() => {
     let status: ProposalState;
@@ -30,7 +26,7 @@ export const useProposalStatus = (proposal: Proposal) => {
     } else if (blockNumber <= proposal.startBlock) {
       status = ProposalState.Pending;
     } else if (
-      decimalic(proposal.votesFor).lte(totalVotesMajorityPercentage) ||
+      decimalic(proposal.votesFor).lte(proposal.majorityPercentage) ||
       decimalic(totalVotes).lt(proposal.quorum)
     ) {
       status = ProposalState.Defeated;
@@ -58,7 +54,7 @@ export const useProposalStatus = (proposal: Proposal) => {
     proposal.quorum,
     proposal.startBlock,
     proposal.votesFor,
+    proposal.majorityPercentage,
     totalVotes,
-    totalVotesMajorityPercentage,
   ]);
 };

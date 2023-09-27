@@ -10,8 +10,8 @@ import {
   TOKEN_RENDER_PRECISION,
 } from '../../../../../constants/currencies';
 import { LendingPoolDictionary } from '../../../../../utils/LendingPoolDictionary';
+import { isBitpro, isBtcBasedAsset } from '../../../../../utils/helpers';
 import { decimalic } from '../../../../../utils/math';
-import { isBitpro, isBtcBasedAsset } from '../../BorrowPage.utils';
 import { LoanItem } from './OpenLoansTable.types';
 
 export const normalizeSuffix = (asset: string) =>

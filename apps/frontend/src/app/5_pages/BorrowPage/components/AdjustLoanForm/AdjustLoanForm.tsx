@@ -32,9 +32,9 @@ import { useDecimalAmountInput } from '../../../../../hooks/useDecimalAmountInpu
 import { useMaxAssetBalance } from '../../../../../hooks/useMaxAssetBalance';
 import { useQueryRate } from '../../../../../hooks/useQueryRate';
 import { translations } from '../../../../../locales/i18n';
+import { areValuesIdentical } from '../../../../../utils/helpers';
 import { decimalic } from '../../../../../utils/math';
 import {
-  areValuesIdentical,
   calculatePrepaidInterestFromDuration,
   getCollateralRatioThresholds,
   getOriginationFeeAmount,

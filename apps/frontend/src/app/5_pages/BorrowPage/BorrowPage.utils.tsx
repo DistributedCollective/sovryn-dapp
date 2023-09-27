@@ -19,17 +19,8 @@ import {
   MINIMUM_COLLATERAL_RATIO_LENDING_POOLS,
 } from '../../../constants/lending';
 import { translations } from '../../../locales/i18n';
+import { isBitpro, isBtcBasedAsset } from '../../../utils/helpers';
 import { decimalic } from '../../../utils/math';
-
-export const isBtcBasedAsset = (asset: string) =>
-  asset.toLowerCase() === SupportedTokens.rbtc ||
-  asset.toLowerCase() === SupportedTokens.wrbtc ||
-  asset.toUpperCase() === BITCOIN;
-
-export const isBitpro = (asset: string) =>
-  asset.toLowerCase() === 'bitpro' ||
-  asset.toLowerCase() === 'bitp' ||
-  asset.toLowerCase() === SupportedTokens.bpro;
 
 export const getCollateralAssetPrice = (
   collateralToken: SupportedTokens,
@@ -64,15 +55,6 @@ export const renderValue = (
       }
     />
   );
-
-export const areValuesIdentical = (
-  firstValue: Decimal,
-  secondValue: Decimal,
-) => {
-  const epsilon = 0.0000000000001;
-
-  return Math.abs(firstValue.sub(secondValue).toNumber()) < epsilon;
-};
 
 export const calculatePrepaidInterestFromDuration = (
   apr: BigNumber,

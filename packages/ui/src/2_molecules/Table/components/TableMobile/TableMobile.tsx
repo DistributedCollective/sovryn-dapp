@@ -14,6 +14,7 @@ export const TableMobile = <RowType extends RowObject>({
   onRowClick,
   dataAttribute,
   noData,
+  loadingData,
   isLoading,
   className,
   expandedContent,
@@ -36,13 +37,9 @@ export const TableMobile = <RowType extends RowObject>({
       ))}
 
     {(!rows || rows.length === 0) && (
-      <>
-        {isLoading ? (
-          <div className={styles.loading}>Loading data…</div>
-        ) : (
-          <div className={styles.noData}>{noData ? noData : 'No data'}</div>
-        )}
-      </>
+      <div className={isLoading ? styles.loading : styles.noData}>
+        {isLoading ? loadingData || 'Loading data…' : noData || 'No data'}
+      </div>
     )}
   </div>
 );

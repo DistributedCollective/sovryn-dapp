@@ -228,6 +228,7 @@ export const StabilityPoolSubsidies: FC<RewardHistoryProps> = ({
           isLoading={loading}
           className="bg-gray-80 text-gray-10 lg:px-6 lg:py-4"
           noData={t(translations.common.tables.noData)}
+          loadingData={t(translations.common.tables.loading)}
           dataAttribute="subsidy-history-reward-table"
         />
         <Pagination

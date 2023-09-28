@@ -34,7 +34,8 @@
                 "noDataToExport": "No data to export"
             },
             "noData": "No data available",
-            "noDataWithFilters": "No data with the current filters"
+            "noDataWithFilters": "No data with the current filters",
+            "loading": "Loading data..."
         },
         "max": "max",
         "amount": "Amount",

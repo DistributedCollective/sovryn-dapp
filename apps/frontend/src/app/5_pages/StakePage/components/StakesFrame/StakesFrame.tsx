@@ -75,6 +75,7 @@ export const StakesFrame: FC = () => {
                 : t(translations.stakePage.table.notConnected)}
             </span>
           }
+          loadingData={t(translations.common.tables.loading)}
           dataAttribute="stakes-table"
         />
         {account && (

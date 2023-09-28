@@ -30,12 +30,19 @@ export const Staking: FC = () => {
     refetch: refetchLiquidSovClaim,
   } = useGetLiquidSovClaimAmount();
 
+  const hasEarnedFees = useMemo(
+    () => earnedFees.some(earnedFee => decimalic(earnedFee.value).gt(0)),
+    [earnedFees],
+  );
+
+  const hasLiquidSov = useMemo(
+    () => decimalic(liquidSovClaimAmount).gt(0),
+    [liquidSovClaimAmount],
+  );
+
   const noRewards = useMemo(
-    () =>
-      (!earnedFees.some(earnedFee => decimalic(earnedFee.value).gt(0)) &&
-        !decimalic(liquidSovClaimAmount).gt(0)) ||
-      !account,
-    [account, earnedFees, liquidSovClaimAmount],
+    () => (!hasEarnedFees && !hasLiquidSov) || !account,
+    [hasEarnedFees, hasLiquidSov, account],
   );
 
   const earnedFeesSum = useMemo(() => {
@@ -69,50 +76,60 @@ export const Staking: FC = () => {
 
   const rows = useMemo(
     () => [
-      {
-        type: t(translations.rewardPage.staking.stakingRevenue),
-        amount: (
-          <div className="flex flex-col gap-1 my-4 text-left">
-            {earnedFeesSum.map(fee => (
-              <AmountRenderer
-                key={fee.token}
-                value={formatUnits(fee.value, 18)}
-                suffix={getTokenDisplayName(fee.token)}
-                precision={BTC_RENDER_PRECISION}
-                dataAttribute={`${fee.token}-rewards-amount`}
-              />
-            ))}
-          </div>
-        ),
-        action: <WithdrawAllFees fees={earnedFees} refetch={refetch} />,
-        key: `all-fee`,
-      },
-      {
-        type: t(translations.rewardPage.staking.stakingSubsidies),
-        amount: (
-          <AmountRenderer
-            value={formatUnits(liquidSovClaimAmount, 18)}
-            suffix={getTokenDisplayName(SupportedTokens.sov)}
-            precision={BTC_RENDER_PRECISION}
-            dataAttribute={`${SupportedTokens.sov}-liquid-amount`}
-          />
-        ),
-        action: (
-          <WithdrawLiquidFee
-            amountToClaim={liquidSovClaimAmount}
-            lastWithdrawalInterval={lastWithdrawalInterval}
-            refetch={refetchLiquidSovClaim}
-          />
-        ),
-        key: `${SupportedTokens.sov}-liquid-fee`,
-      },
+      ...(hasEarnedFees
+        ? [
+            {
+              type: t(translations.rewardPage.staking.stakingRevenue),
+              amount: (
+                <div className="flex flex-col gap-1 my-4 text-left">
+                  {earnedFeesSum.map(fee => (
+                    <AmountRenderer
+                      key={fee.token}
+                      value={formatUnits(fee.value, 18)}
+                      suffix={getTokenDisplayName(fee.token)}
+                      precision={BTC_RENDER_PRECISION}
+                      dataAttribute={`${fee.token}-rewards-amount`}
+                    />
+                  ))}
+                </div>
+              ),
+              action: <WithdrawAllFees fees={earnedFees} refetch={refetch} />,
+              key: `all-fee`,
+            },
+          ]
+        : []),
+      ...(hasLiquidSov
+        ? [
+            {
+              type: t(translations.rewardPage.staking.stakingSubsidies),
+              amount: (
+                <AmountRenderer
+                  value={formatUnits(liquidSovClaimAmount, 18)}
+                  suffix={getTokenDisplayName(SupportedTokens.sov)}
+                  precision={BTC_RENDER_PRECISION}
+                  dataAttribute={`${SupportedTokens.sov}-liquid-amount`}
+                />
+              ),
+              action: (
+                <WithdrawLiquidFee
+                  amountToClaim={liquidSovClaimAmount}
+                  lastWithdrawalInterval={lastWithdrawalInterval}
+                  refetch={refetchLiquidSovClaim}
+                />
+              ),
+              key: `${SupportedTokens.sov}-liquid-fee`,
+            },
+          ]
+        : []),
     ],
     [
-      earnedFees,
+      hasEarnedFees,
       earnedFeesSum,
-      lastWithdrawalInterval,
-      liquidSovClaimAmount,
+      earnedFees,
       refetch,
+      hasLiquidSov,
+      liquidSovClaimAmount,
+      lastWithdrawalInterval,
       refetchLiquidSovClaim,
     ],
   );

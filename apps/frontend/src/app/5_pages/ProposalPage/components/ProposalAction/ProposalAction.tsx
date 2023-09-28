@@ -49,22 +49,27 @@ export const ProposalAction: FC<ProposalActionProps> = ({
   const isActionVisible = useMemo(
     () =>
       contract &&
-      (status === ProposalState.Succeeded || status === ProposalState.Pending),
+      (status === ProposalState.Succeeded || status === ProposalState.Queued),
     [status, contract],
   );
-  const action = useMemo(
-    () =>
-      status === ProposalState.Pending
-        ? ProposalActionType.queue
-        : ProposalActionType.execute,
-    [status],
-  );
+
+  const action = useMemo(() => {
+    switch (status) {
+      case ProposalState.Succeeded:
+        return ProposalActionType.queue;
+      case ProposalState.Queued:
+        return ProposalActionType.execute;
+      default:
+        return ProposalActionType.queue;
+    }
+  }, [status]);
+
   const actionButtonText = useMemo(
     () =>
-      status === ProposalState.Pending
+      action === ProposalActionType.queue
         ? t(pageTranslations.actions.queue)
         : t(pageTranslations.actions.execute),
-    [status],
+    [action],
   );
 
   const handleProposal = useHandleProposal();

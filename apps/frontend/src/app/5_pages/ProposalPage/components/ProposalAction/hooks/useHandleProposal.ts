@@ -38,7 +38,10 @@ export const useHandleProposal = () => {
           contract,
           fnName: action,
           args: [proposalId],
-          gasLimit: GAS_LIMIT.PROPOSAL_ACTION,
+          gasLimit:
+            action === ProposalActionType.queue
+              ? GAS_LIMIT.PROPOSAL_QUEUE
+              : GAS_LIMIT.PROPOSAL_EXECUTE,
         },
       });
 

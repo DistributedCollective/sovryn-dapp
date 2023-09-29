@@ -21,7 +21,6 @@ export const ProposalViewButton: FC<ProposalProps> = ({ proposal }) => {
       text={t(translations.bitocracyPage.actions.view)}
       style={ButtonStyle.secondary}
       onClick={handleClick}
-      hrefExternal
       dataAttribute="bitocracy-proposal-view-button"
     />
   );

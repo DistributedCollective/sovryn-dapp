@@ -18,14 +18,14 @@ export const LendFrameChart: FC<LendFrameProps> = memo(({ pool }) => {
   const { lendHistory } = useGetLendHistory(asset);
 
   const mockData = convertPoolHistoryToMockData(lendHistory);
-  const lendAPRTickStep = useMemo(
-    () => (Math.max(...mockData.lendAPR) - Math.min(...mockData.lendAPR)) / 6,
-    [mockData.lendAPR],
+  const lendAprTickStep = useMemo(
+    () => (Math.max(...mockData.lendApr) - Math.min(...mockData.lendApr)) / 6,
+    [mockData.lendApr],
   );
 
   const chartOptions = useMemo(
-    () => getChartOptions(lendAPRTickStep, mockData, pool),
-    [lendAPRTickStep, mockData, pool],
+    () => getChartOptions(lendAprTickStep, mockData, pool),
+    [lendAprTickStep, mockData, pool],
   );
 
   useEffect(() => {

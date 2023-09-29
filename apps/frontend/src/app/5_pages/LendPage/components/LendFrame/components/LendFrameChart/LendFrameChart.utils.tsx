@@ -58,12 +58,12 @@ export const convertPoolHistoryToMockData = (
   const dates = poolHistory.map(entry =>
     dayjs(entry.timestamp).format('YYYY-MM-DD'),
   );
-  const lendAPR = poolHistory.map(entry => parseFloat(entry.supply_apr));
+  const lendApr = poolHistory.map(entry => parseFloat(entry.supply_apr));
   const totalLiquidity = poolHistory.map(entry => parseFloat(entry.supply));
 
   return {
     dates,
-    lendAPR,
+    lendApr,
     totalLiquidity,
   };
 };
@@ -90,7 +90,7 @@ export const getChartData = (
     datasets: [
       {
         label: t(translations.lendPage.table.lendApr),
-        data: mockData.lendAPR,
+        data: mockData.lendApr,
         backgroundColor: lendAprGradient,
         borderColor: '#72EADE',
         fill: true,
@@ -111,7 +111,7 @@ export const getChartData = (
 };
 
 export const getChartOptions = (
-  lendAPRTickStep: number,
+  lendAprTickStep: number,
   mockData: MockData,
   pool: LendingPool,
 ) => {
@@ -123,7 +123,7 @@ export const getChartOptions = (
   const fontWeight = '500';
   const dashGridType = 'dash';
 
-  const lendAPRAxisOptions = {
+  const lendAprAxisOptions = {
     border: {
       color: borderColor,
     },
@@ -136,9 +136,9 @@ export const getChartOptions = (
     },
     ticks: {
       callback: value => Number(value).toFixed(3) + '%',
-      stepSize: lendAPRTickStep,
-      min: Math.min(...mockData.lendAPR) - 3 * lendAPRTickStep,
-      max: Math.max(...mockData.lendAPR) + 3 * lendAPRTickStep,
+      stepSize: lendAprTickStep,
+      min: Math.min(...mockData.lendApr) - 3 * lendAprTickStep,
+      max: Math.max(...mockData.lendApr) + 3 * lendAprTickStep,
       color: textColor,
       font: {
         family: fontFamily,
@@ -224,7 +224,7 @@ export const getChartOptions = (
       },
     },
     scales: {
-      y1: lendAPRAxisOptions,
+      y1: lendAprAxisOptions,
       y: borrowedAvailableAxisOptions,
       x: xAxisOptions,
     },

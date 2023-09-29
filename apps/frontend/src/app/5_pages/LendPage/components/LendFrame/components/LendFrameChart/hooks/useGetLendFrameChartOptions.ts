@@ -5,7 +5,7 @@ import { LendingPool } from '../../../../../../../../utils/LendingPool';
 import { MockData } from '../LendFrameChart.types';
 
 export const useGetLendFrameChartOptions = (
-  lendAPRTickStep: number,
+  lendAprTickStep: number,
   mockData: MockData,
   pool: LendingPool,
 ) => {
@@ -44,9 +44,9 @@ export const useGetLendFrameChartOptions = (
         },
         ticks: {
           callback: value => Number(value).toFixed(0) + '%',
-          stepSize: lendAPRTickStep,
-          min: Math.min(...mockData.lendAPR) - 3 * lendAPRTickStep,
-          max: Math.max(...mockData.lendAPR) + 3 * lendAPRTickStep,
+          stepSize: lendAprTickStep,
+          min: Math.min(...mockData.lendApr) - 3 * lendAprTickStep,
+          max: Math.max(...mockData.lendApr) + 3 * lendAprTickStep,
           color: '#B6BAC2',
           font: {
             family: 'Roboto',

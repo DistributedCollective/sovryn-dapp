@@ -1,6 +1,6 @@
 export type ChartData = {
   date: Date;
-  lendAPR: number;
+  lendApr: number;
   availableLiquidity: number;
   borrowedLiquidity: number;
 };
@@ -18,6 +18,6 @@ export type PoolHistoryData = {
 
 export type MockData = {
   dates: string[];
-  lendAPR: number[];
+  lendApr: number[];
   totalLiquidity: number[];
 };

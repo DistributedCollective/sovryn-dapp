@@ -58,12 +58,12 @@ export const convertPoolHistoryToMockData = (
   const dates = poolHistory.map(entry =>
     dayjs(entry.timestamp).format('YYYY-MM-DD'),
   );
-  const lendAPY = poolHistory.map(entry => parseFloat(entry.supply_apr));
+  const lendAPR = poolHistory.map(entry => parseFloat(entry.supply_apr));
   const totalLiquidity = poolHistory.map(entry => parseFloat(entry.supply));
 
   return {
     dates,
-    lendAPY,
+    lendAPR,
     totalLiquidity,
   };
 };
@@ -82,7 +82,7 @@ export const customCanvasBackgroundColor = {
 
 export const getChartData = (
   mockData: MockData,
-  lendApyGradient: CanvasGradient | undefined,
+  lendAprGradient: CanvasGradient | undefined,
   totalLiquidityGradient: CanvasGradient | undefined,
 ) => {
   return {
@@ -90,8 +90,8 @@ export const getChartData = (
     datasets: [
       {
         label: t(translations.lendPage.table.lendApr),
-        data: mockData.lendAPY,
-        backgroundColor: lendApyGradient,
+        data: mockData.lendAPR,
+        backgroundColor: lendAprGradient,
         borderColor: '#72EADE',
         fill: true,
         yAxisID: 'y1',
@@ -111,7 +111,7 @@ export const getChartData = (
 };
 
 export const getChartOptions = (
-  lendAPYTickStep: number,
+  lendAPRTickStep: number,
   mockData: MockData,
   pool: LendingPool,
 ) => {
@@ -123,7 +123,7 @@ export const getChartOptions = (
   const fontWeight = '500';
   const dashGridType = 'dash';
 
-  const lendAPYAxisOptions = {
+  const lendAPRAxisOptions = {
     border: {
       color: borderColor,
     },
@@ -136,9 +136,9 @@ export const getChartOptions = (
     },
     ticks: {
       callback: value => Number(value).toFixed(3) + '%',
-      stepSize: lendAPYTickStep,
-      min: Math.min(...mockData.lendAPY) - 3 * lendAPYTickStep,
-      max: Math.max(...mockData.lendAPY) + 3 * lendAPYTickStep,
+      stepSize: lendAPRTickStep,
+      min: Math.min(...mockData.lendAPR) - 3 * lendAPRTickStep,
+      max: Math.max(...mockData.lendAPR) + 3 * lendAPRTickStep,
       color: textColor,
       font: {
         family: fontFamily,
@@ -224,7 +224,7 @@ export const getChartOptions = (
       },
     },
     scales: {
-      y1: lendAPYAxisOptions,
+      y1: lendAPRAxisOptions,
       y: borrowedAvailableAxisOptions,
       x: xAxisOptions,
     },

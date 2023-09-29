@@ -33,7 +33,7 @@ export const FixedInterestPoolRowTitle: FC<FixedInterestPoolRowTitleProps> = ({
       <span className="text-gray-30 ml-1 font-medium">
         {isBorrow
           ? t(translations.fixedInterestPage.borrowAssetsTable.borrowAprMobile)
-          : t(translations.lendPage.table.lendApyMobile)}
+          : t(translations.lendPage.table.lendAprMobile)}
       </span>
     </div>
   </div>

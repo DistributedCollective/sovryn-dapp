@@ -1,8 +1,11 @@
+import { t } from 'i18next';
+
+import { translations } from '../../../../../../../../locales/i18n';
 import { LendingPool } from '../../../../../../../../utils/LendingPool';
 import { MockData } from '../LendFrameChart.types';
 
 export const useGetLendFrameChartOptions = (
-  lendAPYTickStep: number,
+  lendAPRTickStep: number,
   mockData: MockData,
   pool: LendingPool,
 ) => {
@@ -36,14 +39,14 @@ export const useGetLendFrameChartOptions = (
         display: true,
         title: {
           display: true,
-          text: 'Lend APY',
+          text: t(translations.lending.apr),
           color: '#B6BAC2',
         },
         ticks: {
           callback: value => Number(value).toFixed(0) + '%',
-          stepSize: lendAPYTickStep,
-          min: Math.min(...mockData.lendAPY) - 3 * lendAPYTickStep,
-          max: Math.max(...mockData.lendAPY) + 3 * lendAPYTickStep,
+          stepSize: lendAPRTickStep,
+          min: Math.min(...mockData.lendAPR) - 3 * lendAPRTickStep,
+          max: Math.max(...mockData.lendAPR) + 3 * lendAPRTickStep,
           color: '#B6BAC2',
           font: {
             family: 'Roboto',

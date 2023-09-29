@@ -29,7 +29,7 @@ export type LendingModalProps = {
 
 export type FullLendingModalState = {
   token: SupportedTokens;
-  apy: Decimal;
+  apr: Decimal;
   poolTokenContract: Contract;
   tokenContract: Contract;
   tokenDetails: TokenDetailsData;
@@ -72,14 +72,14 @@ export const LendingModalContainer: FC<LendingModalProps> = ({ onDeposit }) => {
         signer,
       );
 
-      const apy = await asyncCall(
+      const apr = await asyncCall(
         `poolToken/${poolToken.address}/nextSupplyInterestRate`,
         () => poolTokenContract?.nextSupplyInterestRate('0'),
       ).then(Decimal.fromBigNumberString);
 
       setState({
         token: value,
-        apy,
+        apr,
         poolTokenContract,
         tokenContract,
         tokenDetails,
@@ -110,7 +110,7 @@ export const LendingModalContainer: FC<LendingModalProps> = ({ onDeposit }) => {
       <DialogBody>
         {state != null && (
           <>
-            <CurrentStats token={state.token} apy={state.apy} />
+            <CurrentStats token={state.token} apr={state.apr} />
             <LendingForm state={state} onConfirm={handleConfirm} />
           </>
         )}

@@ -56,8 +56,8 @@ export const LendFrameAction: FC<LendFrameProps> = ({ pool }) => {
         <Button
           style={ButtonStyle.primary}
           size={ButtonSize.small}
-          text={t(translations.lendPage.actions.lend)}
-          dataAttribute="lend-frame-lend-button"
+          text={t(translations.lendPage.actions.deposit)}
+          dataAttribute="lend-frame-deposit-button"
           className="w-full lg:w-auto prevent-row-click"
           disabled={!account}
           onClick={handleLendClick}

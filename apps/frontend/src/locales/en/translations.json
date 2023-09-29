@@ -797,8 +797,8 @@
         "table": {
             "lend": "Lend",
             "asset": "Asset",
-            "lendApy": "Lend APY",
-            "lendApyMobile": "APY",
+            "lendApr": "Lend APR",
+            "lendApyMobile": "APR",
             "lendApyInfo": "Interest rate is variable based on the current utilization rate and loans outstanding",
             "acceptedCollateral": "Accepted collateral",
             "balance": "Balance",
@@ -811,9 +811,10 @@
             "borrowed": "Borrowed"
         },
         "actions": {
-            "lend": "Lend",
+            "deposit": "Deposit",
             "adjust": "Adjust"
-        }
+        },
+        "apr": "APR"
     },
     "borrowHistory": {
         "types": {
@@ -1115,18 +1116,18 @@
         "title": "Adjust lending balance",
         "deposit": "Deposit",
         "withdraw": "Withdraw",
-        "apy": "Current lend APY",
-        "newApy": "New lend APY",
+        "apr": "Current lend APR",
+        "newApr": "New lend APR",
         "currentBalance": "Current lending balance",
         "newBalance": "New lending balance"
     },
     "lending": {
-        "title": "Lend",
-        "disclaimer": "I understand that the APY is variable and that there must be available liquidity in the pool for me to be able to withdraw my lending balance.",
+        "title": "Deposit",
+        "disclaimer": "I understand that the APR is variable and that there must be available liquidity in the pool for me to be able to withdraw my lending balance.",
         "learnMore": "Learn more",
-        "apy": "Lend APY",
+        "apr": "Lend APR",
         "acceptedCollateral": "Accepted collateral",
-        "newApy": "New lend APY",
+        "newApr": "New lend APR",
         "form": {
             "invalidAmountError": "Exceeds maximum amount"
         }

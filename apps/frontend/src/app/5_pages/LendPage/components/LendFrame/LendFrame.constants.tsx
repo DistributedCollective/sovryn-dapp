@@ -30,7 +30,7 @@ export const COLUMNS_CONFIG = [
     id: 'lendApy',
     title: (
       <span className="flex items-center gap-1">
-        {t(translations.lendPage.table.lendApy)}{' '}
+        {t(translations.lendPage.table.lendApr)}{' '}
         <HelperButton content={t(translations.lendPage.table.lendApyInfo)} />
       </span>
     ),

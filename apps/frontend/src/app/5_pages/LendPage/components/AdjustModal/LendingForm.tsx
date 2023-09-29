@@ -164,8 +164,13 @@ export const LendingForm: FC<DepositProps> = ({ state, onConfirm }) => {
       )}
       <SimpleTable className="mt-8">
         <SimpleTableRow
-          label={t(translations.lendingAdjust.newApy)}
-          value={<AmountRenderer value={newApy} suffix="% APY" />}
+          label={t(translations.lendingAdjust.newApr)}
+          value={
+            <AmountRenderer
+              value={newApy}
+              suffix={`% ${t(translations.lending.apr)}`}
+            />
+          }
         />
         <SimpleTableRow
           label={t(translations.lendingAdjust.newBalance)}

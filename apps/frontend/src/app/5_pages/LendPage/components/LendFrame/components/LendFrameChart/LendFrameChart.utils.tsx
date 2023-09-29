@@ -89,7 +89,7 @@ export const getChartData = (
     labels: mockData.dates,
     datasets: [
       {
-        label: t(translations.lendPage.table.lendApy),
+        label: t(translations.lendPage.table.lendApr),
         data: mockData.lendAPY,
         backgroundColor: lendApyGradient,
         borderColor: '#72EADE',
@@ -131,7 +131,7 @@ export const getChartOptions = (
     display: true,
     title: {
       display: true,
-      text: t(translations.lendPage.table.lendApy),
+      text: t(translations.lendPage.table.lendApr),
       color: textColor,
     },
     ticks: {

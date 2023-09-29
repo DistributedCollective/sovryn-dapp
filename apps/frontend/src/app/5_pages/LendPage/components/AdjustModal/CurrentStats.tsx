@@ -32,7 +32,7 @@ export const CurrentStats: FC<CurrentStatsProps> = ({
     <div className="flex gap-8">
       <div className="mt-6 flex flex-col gap-2">
         <Paragraph className="font-medium text-gray-30">
-          {t(translations.lendingAdjust.apy)}
+          {t(translations.lendingAdjust.apr)}
         </Paragraph>
         <AmountRenderer value={apy} suffix="%" />
       </div>

@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useMemo, useState } from 'react';
+import React, { FC, useCallback, useMemo } from 'react';
 
 import { t } from 'i18next';
 import { Helmet } from 'react-helmet-async';
@@ -11,10 +11,10 @@ import {
   ParagraphSize,
 } from '@sovryn/ui';
 
-import { EmailNotificationSettingsDialog } from '../../3_organisms/EmailNotificationSettingsDialog/EmailNotificationSettingsDialog';
 import { ProposalVotingResults } from '../../3_organisms/ProposalVotingResults';
 import { useAccount } from '../../../hooks/useAccount';
 import { translations } from '../../../locales/i18n';
+import { sharedState } from '../../../store/rxjs/shared-state';
 import { Proposal } from '../../../utils/graphql/rsk/generated';
 import { useGetPersonalStakingStatistics } from '../StakePage/components/PersonalStakingStatistics/hooks/useGetPersonalStakingStatistics';
 import { Proposals } from './components/Proposals/Proposals';
@@ -43,23 +43,13 @@ const BitocracyPage: FC = () => {
   const { votingPower } = useGetPersonalStakingStatistics();
   const { loading, data: proposals } = useGetProposals();
 
-  const [
-    isNotificationSettingsDialogOpen,
-    setIsNotificationSettingsDialogOpen,
-  ] = useState(false);
-
   const isNewProposalButtonVisible = useMemo(
     () => (votingPower ? Number(votingPower) > 0 : false),
     [votingPower],
   );
 
   const handleAlertsClick = useCallback(
-    () => setIsNotificationSettingsDialogOpen(true),
-    [],
-  );
-
-  const handleNotificationSettingsDialogClose = useCallback(
-    () => setIsNotificationSettingsDialogOpen(false),
+    () => sharedState.actions.openEmailNotificationSettingsDialog(),
     [],
   );
 
@@ -104,11 +94,6 @@ const BitocracyPage: FC = () => {
         <div className="mt-12" />
         <ProposalVotingResults proposal={{ ...proposal, endBlock: 0 }} />
       </div>
-
-      <EmailNotificationSettingsDialog
-        isOpen={isNotificationSettingsDialogOpen}
-        onClose={handleNotificationSettingsDialogClose}
-      />
     </>
   );
 };

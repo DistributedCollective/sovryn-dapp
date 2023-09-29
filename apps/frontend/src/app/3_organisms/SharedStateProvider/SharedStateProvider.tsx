@@ -4,7 +4,9 @@ import { useAccount } from '../../../hooks/useAccount';
 import {
   sharedState,
   FastBtcDialogState,
+  EmailNotificationSettingsDialogState,
 } from '../../../store/rxjs/shared-state';
+import { EmailNotificationSettingsDialog } from '../EmailNotificationSettingsDialog/EmailNotificationSettingsDialog';
 import { FastBtcDialog } from '../FastBtcDialog/FastBtcDialog';
 
 export const SharedStateProvider: React.FC<React.PropsWithChildren> = ({
@@ -16,6 +18,11 @@ export const SharedStateProvider: React.FC<React.PropsWithChildren> = ({
     sharedState.get().fastBtcDialog,
   );
 
+  const [emailNotificationSettingsDialog, setEmailNotificationSettingsDialog] =
+    useState<EmailNotificationSettingsDialogState>(
+      sharedState.get().emailNotificationSettingsDialog,
+    );
+
   useEffect(() => {
     const fastBtcDialogSubscription = sharedState
       .select('fastBtcDialog')
@@ -26,8 +33,23 @@ export const SharedStateProvider: React.FC<React.PropsWithChildren> = ({
     };
   }, []);
 
+  useEffect(() => {
+    const emailNotificationSettingsDialogSubscription = sharedState
+      .select('emailNotificationSettingsDialog')
+      .subscribe(setEmailNotificationSettingsDialog);
+
+    return () => {
+      emailNotificationSettingsDialogSubscription.unsubscribe();
+    };
+  }, []);
+
   const handleFastBtcDialogClose = useCallback(
     () => sharedState.actions.closeFastBtcDialog(),
+    [],
+  );
+
+  const handleEmailNotificationSettingsDialogClose = useCallback(
+    () => sharedState.actions.closeEmailNotificationSettingsDialog(),
     [],
   );
 
@@ -46,6 +68,11 @@ export const SharedStateProvider: React.FC<React.PropsWithChildren> = ({
         isOpen={fastBtcDialog.isOpen}
         shouldHideSend={fastBtcDialog.shouldHideSend}
         onClose={handleFastBtcDialogClose}
+      />
+
+      <EmailNotificationSettingsDialog
+        isOpen={emailNotificationSettingsDialog.isOpen}
+        onClose={handleEmailNotificationSettingsDialogClose}
       />
     </>
   );

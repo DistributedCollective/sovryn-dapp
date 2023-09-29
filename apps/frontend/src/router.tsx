@@ -100,7 +100,7 @@ const routes = [
         element: <BitocracyPage />,
       },
       {
-        path: '/bitocracy/proposal/:id',
+        path: '/bitocracy/:id',
         element: <ProposalPage />,
       },
       {

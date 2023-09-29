@@ -1,6 +1,7 @@
-import React, { FC, useMemo } from 'react';
+import React, { FC, useCallback, useMemo } from 'react';
 
 import { t } from 'i18next';
+import { useNavigate } from 'react-router-dom';
 
 import { Paragraph, Table } from '@sovryn/ui';
 
@@ -18,6 +19,7 @@ type ProposalsProps = {
 
 export const Proposals: FC<ProposalsProps> = ({ proposals, loading }) => {
   const { value: blockNumber } = useBlockNumber();
+  const navigate = useNavigate();
 
   const activeProposals = useMemo(
     () => proposals.filter(proposal => blockNumber <= proposal.endBlock),
@@ -30,6 +32,11 @@ export const Proposals: FC<ProposalsProps> = ({ proposals, loading }) => {
   );
 
   const isActive = useMemo(() => activeProposals.length > 0, [activeProposals]);
+
+  const handleRowClick = useCallback(
+    (proposal: Proposal) => navigate(`/bitocracy/${proposal.id}`),
+    [navigate],
+  );
 
   return (
     <>
@@ -82,6 +89,7 @@ export const Proposals: FC<ProposalsProps> = ({ proposals, loading }) => {
               </span>
             }
             dataAttribute="bitocracy-past-proposals-table"
+            onRowClick={handleRowClick}
           />
         </div>
 

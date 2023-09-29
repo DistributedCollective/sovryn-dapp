@@ -3,6 +3,8 @@ import { useCallback } from 'react';
 import { Contract } from 'ethers';
 import { t } from 'i18next';
 
+import { getProtocolContract } from '@sovryn/contracts';
+
 import {
   Transaction,
   TransactionType,
@@ -22,12 +24,15 @@ export const useHandleProposal = () => {
   const handleSubmit = useCallback(
     async (
       proposalId: number,
-      contract: Contract,
+      contractAddress: string,
       action: ProposalActionType,
     ) => {
-      if (!contract || !account || !signer) {
+      if (!account || !signer) {
         return;
       }
+
+      const abi = (await getProtocolContract('governorOwner')).abi;
+      const contract = new Contract(contractAddress, abi, signer);
 
       const transactions: Transaction[] = [];
 

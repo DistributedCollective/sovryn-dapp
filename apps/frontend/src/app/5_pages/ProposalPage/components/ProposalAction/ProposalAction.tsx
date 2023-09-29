@@ -5,11 +5,8 @@ import { t } from 'i18next';
 import { SupportedTokens } from '@sovryn/contracts';
 import { Button, ButtonStyle } from '@sovryn/ui';
 
-import { defaultChainId } from '../../../../../config/chains';
-
 import { useAccount } from '../../../../../hooks/useAccount';
 import { useAssetBalance } from '../../../../../hooks/useAssetBalance';
-import { useLoadContract } from '../../../../../hooks/useLoadContract';
 import { translations } from '../../../../../locales/i18n';
 import {
   ProposalProps,
@@ -20,7 +17,6 @@ import { ProposalActionType } from './ProposalAction.types';
 import { useHandleProposal } from './hooks/useHandleProposal';
 
 type ProposalActionProps = ProposalProps & {
-  contractName: string | undefined;
   className?: string;
 };
 
@@ -28,57 +24,51 @@ const pageTranslations = translations.proposalPage;
 
 export const ProposalAction: FC<ProposalActionProps> = ({
   proposal,
-  contractName,
   className,
 }) => {
   const { account } = useAccount();
-  const contract = useLoadContract(
-    `governor${contractName}`,
-    'protocol',
-    defaultChainId,
-  );
 
   const { balance, loading } = useAssetBalance(SupportedTokens.rbtc);
   const status = useProposalStatus(proposal);
 
   const isDisabled = useMemo(
-    () => !account || balance.isZero() || !contract || loading,
-    [account, balance, loading, contract],
-  );
-
-  const isActionVisible = useMemo(
-    () =>
-      contract &&
-      (status === ProposalState.Succeeded || status === ProposalState.Queued),
-    [status, contract],
+    () => !account || balance.isZero() || loading,
+    [account, balance, loading],
   );
 
   const action = useMemo(() => {
-    switch (status) {
-      case ProposalState.Succeeded:
-        return ProposalActionType.queue;
-      case ProposalState.Queued:
-        return ProposalActionType.execute;
-      default:
-        return ProposalActionType.queue;
+    if (status === ProposalState.Succeeded) {
+      return ProposalActionType.queue;
     }
-  }, [status]);
+    if (status === ProposalState.Queued && (proposal?.eta || 0) < Date.now()) {
+      return ProposalActionType.execute;
+    }
+    return ProposalActionType.none;
+  }, [proposal?.eta, status]);
 
-  const actionButtonText = useMemo(
-    () =>
-      action === ProposalActionType.queue
-        ? t(pageTranslations.actions.queue)
-        : t(pageTranslations.actions.execute),
+  const actionButtonText = useMemo(() => {
+    switch (action) {
+      case ProposalActionType.queue:
+        return t(pageTranslations.actions.queue);
+      case ProposalActionType.execute:
+        return t(pageTranslations.actions.execute);
+      default:
+        return '';
+    }
+  }, [action]);
+
+  const isActionVisible = useMemo(
+    () => action !== ProposalActionType.none,
     [action],
   );
 
   const handleProposal = useHandleProposal();
 
   const handleSubmit = useCallback(() => {
-    if (proposal && contract) {
-      handleProposal(proposal.proposalId, contract, action);
+    if (proposal?.emittedBy?.id) {
+      handleProposal(proposal.proposalId, proposal.emittedBy.id, action);
     }
-  }, [handleProposal, proposal, contract, action]);
+  }, [handleProposal, proposal, action]);
 
   return isActionVisible ? (
     <Button

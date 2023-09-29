@@ -102,11 +102,7 @@ const ProposalPage: FC = () => {
 
                   <div className="flex flex-col items-end">
                     <ProposalStatus proposal={proposal} />
-                    <ProposalAction
-                      proposal={proposal}
-                      contractName={proposerType}
-                      className="mt-1"
-                    />
+                    <ProposalAction proposal={proposal} className="mt-1" />
                   </div>
                 </div>
 
@@ -140,11 +136,7 @@ const ProposalPage: FC = () => {
               </Paragraph>
 
               <ProposalStatus proposal={proposal} />
-              <ProposalAction
-                proposal={proposal}
-                contractName={proposerType}
-                className="ml-4 pl-0.5"
-              />
+              <ProposalAction proposal={proposal} className="ml-4 pl-0.5" />
             </div>
 
             <VoteTimer proposal={proposal} />

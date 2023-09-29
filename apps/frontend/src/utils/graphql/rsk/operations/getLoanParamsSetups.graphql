@@ -1,5 +1,9 @@
-query getLoanParamsSetups {
-  loanParamsSetups {
+query getLoanParamsSetups($loanToken: String) {
+  loanParamsSetups(
+    orderBy: timestamp
+    orderDirection: desc
+    where: { loanToken: $loanToken }
+  ) {
     collateralToken {
       id
     }

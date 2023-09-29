@@ -15299,7 +15299,9 @@ export type GetLiquidatesQuery = {
   }>;
 };
 
-export type GetLoanParamsSetupsQueryVariables = Exact<{ [key: string]: never }>;
+export type GetLoanParamsSetupsQueryVariables = Exact<{
+  loanToken?: InputMaybe<Scalars['String']>;
+}>;
 
 export type GetLoanParamsSetupsQuery = {
   __typename?: 'Query';
@@ -16700,8 +16702,12 @@ export type GetLiquidatesQueryResult = Apollo.QueryResult<
   GetLiquidatesQueryVariables
 >;
 export const GetLoanParamsSetupsDocument = gql`
-  query getLoanParamsSetups {
-    loanParamsSetups {
+  query getLoanParamsSetups($loanToken: String) {
+    loanParamsSetups(
+      orderBy: timestamp
+      orderDirection: desc
+      where: { loanToken: $loanToken }
+    ) {
       collateralToken {
         id
       }
@@ -16733,6 +16739,7 @@ export const GetLoanParamsSetupsDocument = gql`
  * @example
  * const { data, loading, error } = useGetLoanParamsSetupsQuery({
  *   variables: {
+ *      loanToken: // value for 'loanToken'
  *   },
  * });
  */

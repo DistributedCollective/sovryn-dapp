@@ -1,5 +1,16 @@
 # frontend
 
+## 1.0.29
+
+### Patch Changes
+
+- 35600eda: feat: claim all rewards with single tx
+- ef1cc8b3: SOV-2787: updated notification service api
+- Updated dependencies [35600eda]
+- Updated dependencies [35600eda]
+  - @sovryn/ui@1.0.14
+  - @sovryn/contracts@1.0.16
+
 ## 1.0.28
 
 ### Patch Changes

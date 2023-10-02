@@ -6,6 +6,7 @@ import { t } from 'i18next';
 import { noop } from '@sovryn/ui';
 
 import { TransactionType } from '../../../3_organisms/TransactionStepDialog/TransactionStepDialog.types';
+import { GAS_LIMIT } from '../../../../constants/gasLimits';
 import { useTransactionContext } from '../../../../contexts/TransactionContext';
 import { useAccount } from '../../../../hooks/useAccount';
 import { useGetProtocolContract } from '../../../../hooks/useGetContract';
@@ -19,7 +20,7 @@ export const useVote = (proposal: Proposal, onComplete = noop) => {
   const { setTransactions, setIsOpen, setTitle } = useTransactionContext();
   const governorAdmin = useGetProtocolContract('governorAdmin');
 
-  const handleSubmit = useCallback(
+  const submit = useCallback(
     async (support: boolean) => {
       if (!signer && !governorAdmin) {
         return;
@@ -33,17 +34,20 @@ export const useVote = (proposal: Proposal, onComplete = noop) => {
 
       setTransactions([
         {
-          title: t(pageTranslations.support),
+          title: t(
+            support ? pageTranslations.support : pageTranslations.reject,
+          ),
           request: {
             type: TransactionType.signTransaction,
             contract,
             fnName: 'castVote',
             args: [proposal.proposalId, support],
+            gasLimit: GAS_LIMIT.PROPOSAL_SUPPORT,
           },
           onComplete: onComplete,
         },
       ]);
-      setTitle(t(pageTranslations.support));
+      setTitle(t(support ? pageTranslations.support : pageTranslations.reject));
       setIsOpen(true);
     },
     [
@@ -58,5 +62,5 @@ export const useVote = (proposal: Proposal, onComplete = noop) => {
     ],
   );
 
-  return { handleSubmit };
+  return { submit };
 };

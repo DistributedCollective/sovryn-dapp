@@ -1,4 +1,4 @@
-import React, { FC, useMemo } from 'react';
+import React, { FC, useCallback, useMemo } from 'react';
 
 import classNames from 'classnames';
 import { t } from 'i18next';
@@ -45,7 +45,7 @@ export const CastVote: FC<CastVoteProps> = ({
   const status = useProposalStatus(proposal);
   const { vote } = useGetUserVote(proposal.id);
 
-  const { handleSubmit } = useVote(proposal, refetch);
+  const { submit } = useVote(proposal, refetch);
 
   const hasVotingPower = useMemo(
     () => (votingPower ? Number(votingPower) > 0 : false),
@@ -63,6 +63,8 @@ export const CastVote: FC<CastVoteProps> = ({
       status !== ProposalState.Active,
     [account, proposal.votes?.length, status],
   );
+  const handleSupport = useCallback(() => submit(true), [submit]);
+  const handleReject = useCallback(() => submit(false), [submit]);
 
   return (
     <div className={classNames('bg-gray-80 p-6 rounded', className)}>
@@ -182,7 +184,7 @@ export const CastVote: FC<CastVoteProps> = ({
               className="w-52"
               style={ButtonStyle.secondary}
               size={ButtonSize.large}
-              onClick={() => handleSubmit(true)}
+              onClick={handleSupport}
               text={
                 <span className="flex items-center">
                   <Icon
@@ -199,7 +201,7 @@ export const CastVote: FC<CastVoteProps> = ({
               className="w-52"
               style={ButtonStyle.secondary}
               size={ButtonSize.large}
-              onClick={() => handleSubmit(false)}
+              onClick={handleReject}
               text={
                 <span className="flex items-center">
                   <Icon

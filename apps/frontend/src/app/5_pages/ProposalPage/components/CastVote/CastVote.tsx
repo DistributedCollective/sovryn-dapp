@@ -24,6 +24,7 @@ import { Proposal } from '../../../../../utils/graphql/rsk/generated';
 import { ProposalState } from '../../../BitocracyPage/BitocracyPage.types';
 import { useProposalStatus } from '../../../BitocracyPage/hooks/useProposalStatus';
 import { useGetPersonalStakingStatistics } from '../../../StakePage/components/PersonalStakingStatistics/hooks/useGetPersonalStakingStatistics';
+import { VoteType } from '../../ProposalPage.types';
 import { useGetUserVote } from '../../hooks/useGetUserVote';
 import { useVote } from '../../hooks/useVote';
 
@@ -43,7 +44,7 @@ export const CastVote: FC<CastVoteProps> = ({
   const { votingPower } = useGetPersonalStakingStatistics();
   const { account } = useAccount();
   const status = useProposalStatus(proposal);
-  const { vote, loading } = useGetUserVote(proposal.id);
+  const { vote: hasUserVoted, loading } = useGetUserVote(proposal.id);
 
   const { submit } = useVote(proposal, refetch);
 
@@ -63,8 +64,8 @@ export const CastVote: FC<CastVoteProps> = ({
       status !== ProposalState.Active,
     [account, proposal.votes?.length, status],
   );
-  const handleSupport = useCallback(() => submit(true), [submit]);
-  const handleReject = useCallback(() => submit(false), [submit]);
+  const handleSupport = useCallback(() => submit(VoteType.Support), [submit]);
+  const handleReject = useCallback(() => submit(VoteType.Reject), [submit]);
 
   return (
     <div className={classNames('bg-gray-80 p-6 rounded', className)}>
@@ -111,7 +112,7 @@ export const CastVote: FC<CastVoteProps> = ({
               <Trans i18nKey={pageTranslations.connectMessage} />
             </Paragraph>
           )}
-          {!!vote && (
+          {!!hasUserVoted && (
             <div className="flex items-center gap-8">
               <Tooltip
                 content={
@@ -120,14 +121,14 @@ export const CastVote: FC<CastVoteProps> = ({
                   </span>
                 }
                 trigger={TooltipTrigger.click}
-                disabled={!vote.support}
+                disabled={!hasUserVoted.support}
               >
                 <div>
                   <Button
                     className={classNames('w-52', {
-                      'bg-gray-50': !!vote.support,
+                      'bg-gray-50': !!hasUserVoted.support,
                       'hover:bg-gray-80 focus:bg-gray-80 cursor-default':
-                        !vote.support,
+                        !hasUserVoted.support,
                     })}
                     style={ButtonStyle.secondary}
                     size={ButtonSize.large}
@@ -152,14 +153,14 @@ export const CastVote: FC<CastVoteProps> = ({
                   </span>
                 }
                 trigger={TooltipTrigger.click}
-                disabled={!!vote.support}
+                disabled={!!hasUserVoted.support}
               >
                 <div>
                   <Button
                     className={classNames('w-52', {
-                      'bg-gray-50': !vote.support,
+                      'bg-gray-50': !hasUserVoted.support,
                       'hover:bg-gray-80 focus:bg-gray-80 cursor-default':
-                        !!vote.support,
+                        !!hasUserVoted.support,
                     })}
                     style={ButtonStyle.secondary}
                     size={ButtonSize.large}
@@ -179,7 +180,7 @@ export const CastVote: FC<CastVoteProps> = ({
             </div>
           )}
 
-          {!vote && status === ProposalState.Active && (
+          {!hasUserVoted && status === ProposalState.Active && (
             <div className="flex items-center gap-8">
               <Button
                 className="w-52"

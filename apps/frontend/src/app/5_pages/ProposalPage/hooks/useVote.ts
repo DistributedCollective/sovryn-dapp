@@ -12,6 +12,7 @@ import { useAccount } from '../../../../hooks/useAccount';
 import { useGetProtocolContract } from '../../../../hooks/useGetContract';
 import { translations } from '../../../../locales/i18n';
 import { Proposal } from '../../../../utils/graphql/rsk/generated';
+import { VoteType } from '../ProposalPage.types';
 
 const pageTranslations = translations.proposalPage;
 
@@ -21,7 +22,7 @@ export const useVote = (proposal: Proposal, onComplete = noop) => {
   const governorAdmin = useGetProtocolContract('governorAdmin');
 
   const submit = useCallback(
-    async (support: boolean) => {
+    async (voteType: VoteType) => {
       if (!signer && !governorAdmin) {
         return;
       }
@@ -35,19 +36,27 @@ export const useVote = (proposal: Proposal, onComplete = noop) => {
       setTransactions([
         {
           title: t(
-            support ? pageTranslations.support : pageTranslations.reject,
+            voteType === VoteType.Support
+              ? pageTranslations.support
+              : pageTranslations.reject,
           ),
           request: {
             type: TransactionType.signTransaction,
             contract,
             fnName: 'castVote',
-            args: [proposal.proposalId, support],
-            gasLimit: GAS_LIMIT.PROPOSAL_SUPPORT,
+            args: [proposal.proposalId, voteType === VoteType.Support],
+            gasLimit: GAS_LIMIT.PROPOSAL_VOTE,
           },
           onComplete: onComplete,
         },
       ]);
-      setTitle(t(support ? pageTranslations.support : pageTranslations.reject));
+      setTitle(
+        t(
+          voteType === VoteType.Support
+            ? pageTranslations.support
+            : pageTranslations.reject,
+        ),
+      );
       setIsOpen(true);
     },
     [

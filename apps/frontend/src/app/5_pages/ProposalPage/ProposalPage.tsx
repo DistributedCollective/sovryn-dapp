@@ -31,7 +31,7 @@ const ProposalPage: FC = () => {
   const adminAddress = useGetProtocolContract('governorAdmin')?.address ?? '';
   const ownerAddress = useGetProtocolContract('governorOwner')?.address ?? '';
 
-  const { proposal } = useGetProposalById(id || '');
+  const { proposal, refetch } = useGetProposalById(id || '');
 
   const status = useProposalStatus(proposal);
 
@@ -124,7 +124,7 @@ const ProposalPage: FC = () => {
             )}
           </div>
 
-          <CastVote proposal={proposal} />
+          <CastVote proposal={proposal} refetch={refetch} />
 
           <div className="md:hidden">
             {isVotingPowerVisible && <ProposalVotingPower />}

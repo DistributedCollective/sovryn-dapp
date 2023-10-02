@@ -32,15 +32,20 @@ const pageTranslations = translations.proposalPage;
 type CastVoteProps = {
   className?: string;
   proposal: Proposal;
+  refetch: () => void;
 };
 
-export const CastVote: FC<CastVoteProps> = ({ proposal, className }) => {
+export const CastVote: FC<CastVoteProps> = ({
+  proposal,
+  className,
+  refetch,
+}) => {
   const { votingPower } = useGetPersonalStakingStatistics();
   const { account } = useAccount();
   const status = useProposalStatus(proposal);
   const { vote } = useGetUserVote(proposal.id);
 
-  const { handleSubmit } = useVote(proposal);
+  const { handleSubmit } = useVote(proposal, refetch);
 
   const hasVotingPower = useMemo(
     () => (votingPower ? Number(votingPower) > 0 : false),

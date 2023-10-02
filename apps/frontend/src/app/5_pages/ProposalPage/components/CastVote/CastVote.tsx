@@ -25,6 +25,7 @@ import { ProposalState } from '../../../BitocracyPage/BitocracyPage.types';
 import { useProposalStatus } from '../../../BitocracyPage/hooks/useProposalStatus';
 import { useGetPersonalStakingStatistics } from '../../../StakePage/components/PersonalStakingStatistics/hooks/useGetPersonalStakingStatistics';
 import { useGetUserVote } from '../../hooks/useGetUserVote';
+import { useVote } from '../../hooks/useVote';
 
 const pageTranslations = translations.proposalPage;
 
@@ -39,6 +40,8 @@ export const CastVote: FC<CastVoteProps> = ({ proposal, className }) => {
   const status = useProposalStatus(proposal);
   const { vote } = useGetUserVote(proposal.id);
 
+  const { handleSubmit } = useVote(proposal);
+
   const hasVotingPower = useMemo(
     () => (votingPower ? Number(votingPower) > 0 : false),
     [votingPower],
@@ -49,8 +52,11 @@ export const CastVote: FC<CastVoteProps> = ({ proposal, className }) => {
     [account, hasVotingPower, status],
   );
   const noVote = useMemo(
-    () => proposal.votes?.length === 0,
-    [proposal.votes?.length],
+    () =>
+      proposal.votes?.length === 0 &&
+      account &&
+      status !== ProposalState.Active,
+    [account, proposal.votes?.length, status],
   );
 
   return (
@@ -80,7 +86,7 @@ export const CastVote: FC<CastVoteProps> = ({ proposal, className }) => {
           </div>
         )}
 
-        {!ineligibleVote && noVote && account && (
+        {!ineligibleVote && noVote && (
           <Paragraph
             size={ParagraphSize.base}
             className="text-xs italic font-medium leading-relaxed"
@@ -112,11 +118,11 @@ export const CastVote: FC<CastVoteProps> = ({ proposal, className }) => {
                 <Button
                   className={classNames('w-52', {
                     'bg-gray-50': !!vote.support,
-                    'hover:bg-gray-80 focus:bg-gray-80': !vote.support,
+                    'hover:bg-gray-80 focus:bg-gray-80 cursor-default':
+                      !vote.support,
                   })}
                   style={ButtonStyle.secondary}
                   size={ButtonSize.large}
-                  disabled={!vote.support}
                   text={
                     <span className="flex items-center">
                       <Icon
@@ -138,13 +144,14 @@ export const CastVote: FC<CastVoteProps> = ({ proposal, className }) => {
                 </span>
               }
               trigger={TooltipTrigger.click}
-              disabled={vote.support}
+              disabled={!!vote.support}
             >
               <div>
                 <Button
                   className={classNames('w-52', {
                     'bg-gray-50': !vote.support,
-                    'hover:bg-gray-80 focus:bg-gray-80': vote.support,
+                    'hover:bg-gray-80 focus:bg-gray-80 cursor-default':
+                      !!vote.support,
                   })}
                   style={ButtonStyle.secondary}
                   size={ButtonSize.large}
@@ -161,6 +168,44 @@ export const CastVote: FC<CastVoteProps> = ({ proposal, className }) => {
                 />
               </div>
             </Tooltip>
+          </div>
+        )}
+
+        {!vote && status === ProposalState.Active && (
+          <div className="flex items-center gap-8">
+            <Button
+              className="w-52"
+              style={ButtonStyle.secondary}
+              size={ButtonSize.large}
+              onClick={() => handleSubmit(true)}
+              text={
+                <span className="flex items-center">
+                  <Icon
+                    className="mr-2.5 text-positive"
+                    size={14}
+                    icon={IconNames.CHECK}
+                  />
+                  {t(pageTranslations.support)}
+                </span>
+              }
+            />
+
+            <Button
+              className="w-52"
+              style={ButtonStyle.secondary}
+              size={ButtonSize.large}
+              onClick={() => handleSubmit(false)}
+              text={
+                <span className="flex items-center">
+                  <Icon
+                    className="mr-2.5 text-negative"
+                    size={12}
+                    icon={IconNames.X_MARK}
+                  />
+                  {t(pageTranslations.reject)}
+                </span>
+              }
+            />
           </div>
         )}
       </div>

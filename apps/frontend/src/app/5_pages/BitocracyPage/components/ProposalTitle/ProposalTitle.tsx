@@ -4,10 +4,12 @@ import { Tooltip, TooltipTrigger } from '@sovryn/ui';
 
 import { ProposalProps } from '../../BitocracyPage.types';
 
+const titleCharacterLimit = 50;
+
 export const ProposalTitle: FC<ProposalProps> = ({ proposal }) => {
   const title = useMemo(() => {
-    let title = proposal?.description.slice(0, 50);
-    if (proposal && proposal?.description.length > 50) {
+    let title = proposal?.description.slice(0, titleCharacterLimit);
+    if (proposal && proposal?.description.length > titleCharacterLimit) {
       title += '...';
     }
 

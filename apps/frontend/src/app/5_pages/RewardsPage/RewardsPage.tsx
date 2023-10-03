@@ -99,7 +99,7 @@ const RewardsPage: FC = () => {
         <title>{t(translations.rewardPage.meta.title)}</title>
       </Helmet>
 
-      <div className="flex flex-col lg:flex-row gap-2 lg:gap-5 2xl:gap-28 w-full xl:w-5/6 text-gray-10 mt-6 lg:mt-12">
+      <div className="px-0 container md:mx-9 mx-0 md:mb-2 mb-7 flex flex-col lg:flex-row gap-2 lg:gap-5 2xl:gap-28 text-gray-10 mt-6 lg:mt-12">
         <div className="flex flex-col gap-4 w-full lg:w-72 2xl:w-[26.25rem]">
           <TotalRewardsEarned />
 

@@ -17,7 +17,7 @@ export const ProposalTitle: FC<ProposalProps> = ({ proposal }) => {
 
   return (
     <Tooltip
-      trigger={TooltipTrigger.click}
+      trigger={TooltipTrigger.hover}
       className="sm:text-base cursor-pointer"
       tooltipClassName="break-words"
       content={<>{proposal.description}</>}

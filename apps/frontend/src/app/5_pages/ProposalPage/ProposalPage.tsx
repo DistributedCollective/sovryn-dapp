@@ -27,7 +27,7 @@ const ProposalPage: FC = () => {
   const adminAddress = useGetProtocolContract('governorAdmin')?.address ?? '';
   const ownerAddress = useGetProtocolContract('governorOwner')?.address ?? '';
 
-  const { proposal } = useGetProposalById(id);
+  const { proposal } = useGetProposalById(id || '');
 
   const proposalInfo = useMemo(() => {
     return parseProposalInfo(proposal);

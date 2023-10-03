@@ -22,7 +22,7 @@ export function parseProposalInfo(proposal: Proposal | undefined) {
       title: title || '',
       link: link || '',
       summary: summary || '',
-      description: description || '',
+      description: sanitizeHtml(description || ''),
     };
   } else if (proposal?.description.startsWith('SIP')) {
     const [title, ...description] = (proposal?.description || '').split(',');
@@ -31,7 +31,7 @@ export function parseProposalInfo(proposal: Proposal | undefined) {
       title: title || '',
       link: '',
       summary: '',
-      description: description.join(),
+      description: sanitizeHtml(description.join()),
     };
   } else {
     let title = proposal?.description.slice(0, 50);
@@ -43,7 +43,7 @@ export function parseProposalInfo(proposal: Proposal | undefined) {
       title: title || '',
       link: '',
       summary: '',
-      description: proposal?.description || '',
+      description: sanitizeHtml(proposal?.description || ''),
     };
   }
 }

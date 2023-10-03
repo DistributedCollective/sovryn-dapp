@@ -5,6 +5,7 @@ import { useTimer } from 'react-timer-hook';
 
 import { Paragraph, ParagraphSize } from '@sovryn/ui';
 
+import { MS } from '../../../../../constants/general';
 import { useBlockNumber } from '../../../../../hooks/useBlockNumber';
 import { translations } from '../../../../../locales/i18n';
 import { Proposal } from '../../../../../utils/graphql/rsk/generated';
@@ -26,12 +27,11 @@ export const VoteTimer: FC<VoteTimerProps> = ({ proposal, className }) => {
   const expiryTimestamp = useMemo(() => {
     const secondsBetweenBlocks =
       (proposal.endBlock - proposal.startBlock) * BLOCK_TIME_IN_SECONDS;
-    return new Date((proposal.timestamp + secondsBetweenBlocks) * 1000);
+    return new Date((proposal.timestamp + secondsBetweenBlocks) * MS);
   }, [proposal.endBlock, proposal.startBlock, proposal.timestamp]);
 
   const { seconds, minutes, hours, days } = useTimer({
     expiryTimestamp,
-    autoStart: true,
   });
 
   const label = useMemo(() => {

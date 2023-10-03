@@ -11,7 +11,7 @@ import {
   ParagraphSize,
 } from '@sovryn/ui';
 
-import { ProposalVotingResults } from '../../3_organisms/ProposalVotingResults';
+import { ProposalVotingResults } from '../../3_organisms/ProposalVotingResults/ProposalVotingResults';
 import { useAccount } from '../../../hooks/useAccount';
 import { translations } from '../../../locales/i18n';
 import { sharedState } from '../../../store/rxjs/shared-state';

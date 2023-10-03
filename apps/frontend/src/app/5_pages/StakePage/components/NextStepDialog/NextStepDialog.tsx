@@ -16,6 +16,7 @@ import {
 } from '@sovryn/ui';
 
 import { EmailNotificationSettingsDialog } from '../../../../3_organisms/EmailNotificationSettingsDialog/EmailNotificationSettingsDialog';
+import { useTransactionContext } from '../../../../../contexts/TransactionContext';
 import { translations } from '../../../../../locales/i18n';
 
 const localStorageKey = 'nextStepPopup';
@@ -30,6 +31,7 @@ export const NextStepDialog: FC<NextStepDialogProps> = ({
   isOpen,
   onConfirm,
 }) => {
+  const { isOpen: isTxDialogOpen } = useTransactionContext();
   const [isDissmised, setIsDissmised] = useState(
     !!reactLocalStorage.get(localStorageKey),
   );
@@ -55,7 +57,10 @@ export const NextStepDialog: FC<NextStepDialogProps> = ({
         isOpen={settingDialogOpen}
         onClose={() => setSettingDialogOpen(false)}
       />
-      <Dialog isOpen={!isDissmised && isOpen} onClose={onClose}>
+      <Dialog
+        isOpen={!isDissmised && isOpen && !isTxDialogOpen}
+        onClose={onClose}
+      >
         <DialogHeader
           title={t(translationBasePath.dialogTitle)}
           onClose={onClose}

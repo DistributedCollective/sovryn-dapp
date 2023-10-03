@@ -33,6 +33,7 @@ export const TableDesktop = <RowType extends RowObject>({
   expandedContent,
   expandedClassNames = '',
   preventExpandOnClickClass,
+  hideHeader = false,
 }: TableProps<RowType>) => {
   const [selectedIndex, setSelectedIndex] = useState<number>();
   useEffect(() => {
@@ -76,43 +77,45 @@ export const TableDesktop = <RowType extends RowObject>({
       className={classNames(styles.table, className)}
       {...applyDataAttr(dataAttribute)}
     >
-      <thead>
-        <tr>
-          {columns.map(column => (
-            <th
-              key={column.id.toString()}
-              className={classNames(
-                styles.header,
-                column.align && [styles[`text${column.align}`]],
-                column.className,
-              )}
-            >
-              <span className={styles.headerContent}>
-                <span
-                  onClick={() => onHeaderClick(column)}
-                  className={classNames(styles.title, {
-                    [styles.sortable]: column.sortable,
-                  })}
-                >
-                  <>
-                    {column.title || column.id}
-                    {column.sortable && (
-                      <OrderDirectionIcon
-                        orderBy={orderOptions?.orderBy}
-                        orderDirection={orderOptions?.orderDirection}
-                        id={column.id.toString()}
-                        className={styles.icon}
-                      />
-                    )}
-                  </>
-                </span>
+      {hideHeader === false && (
+        <thead>
+          <tr>
+            {columns.map(column => (
+              <th
+                key={column.id.toString()}
+                className={classNames(
+                  styles.header,
+                  column.align && [styles[`text${column.align}`]],
+                  column.className,
+                )}
+              >
+                <span className={styles.headerContent}>
+                  <span
+                    onClick={() => onHeaderClick(column)}
+                    className={classNames(styles.title, {
+                      [styles.sortable]: column.sortable,
+                    })}
+                  >
+                    <>
+                      {column.title || column.id}
+                      {column.sortable && (
+                        <OrderDirectionIcon
+                          orderBy={orderOptions?.orderBy}
+                          orderDirection={orderOptions?.orderDirection}
+                          id={column.id.toString()}
+                          className={styles.icon}
+                        />
+                      )}
+                    </>
+                  </span>
 
-                {isValidElement(column.filter) && column.filter}
-              </span>
-            </th>
-          ))}
-        </tr>
-      </thead>
+                  {isValidElement(column.filter) && column.filter}
+                </span>
+              </th>
+            ))}
+          </tr>
+        </thead>
+      )}
       <tbody className={styles.body}>
         {rows &&
           rows.length >= 1 &&

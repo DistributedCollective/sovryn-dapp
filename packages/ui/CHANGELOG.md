@@ -1,5 +1,11 @@
 # @sovryn/ui
 
+## 1.0.14
+
+### Patch Changes
+
+- 35600eda: feat: allow to hide table header row
+
 ## 1.0.13
 
 ### Patch Changes

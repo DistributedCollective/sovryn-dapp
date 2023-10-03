@@ -1,0 +1,31 @@
+query getUserVestingContracts($userAddress: String!) {
+  vestingContracts(where: { user: $userAddress }) {
+    id
+  }
+}
+
+query getDelegateChangesForVestings(
+  $vestingContracts: [String!]
+  $skip: Int!
+  $pageSize: Int!
+  $orderBy: VestingHistoryItem_orderBy
+  $orderDirection: OrderDirection
+) {
+  vestingHistoryItems(
+    where: { staker_in: $vestingContracts, action: DelegateChanged }
+    orderBy: $orderBy
+    orderDirection: $orderDirection
+    first: $pageSize
+    skip: $skip
+  ) {
+    id
+    delegatee {
+      id
+    }
+    amount
+    timestamp
+    transaction {
+      id
+    }
+  }
+}

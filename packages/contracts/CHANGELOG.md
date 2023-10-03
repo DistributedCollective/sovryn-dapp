@@ -1,5 +1,17 @@
 # @sovryn/contracts
 
+## 1.0.16
+
+### Patch Changes
+
+- 35600eda: feat: contracts exports ethers contract instance too
+
+## 1.0.15
+
+### Patch Changes
+
+- 26a9feb5: SOV-2756: Clean up Babelfish token config
+
 ## 1.0.14
 
 ### Patch Changes

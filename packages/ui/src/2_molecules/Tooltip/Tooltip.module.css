@@ -1,6 +1,7 @@
 .tooltip {
-  @apply bg-gray-10 text-xs rounded p-3 text-gray-90 absolute top-0 inline-block min-w-5 max-w-72 leading-5 opacity-0;
+  @apply bg-gray-10 text-xs rounded p-3 text-gray-90 absolute top-0 inline-block min-w-5 max-w-64 sm:max-w-96 leading-5 opacity-0;
   z-index: 999999;
+  word-break: break-word;
 
   &.bottom,
   &.bottom-start,

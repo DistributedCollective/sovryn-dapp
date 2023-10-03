@@ -15,7 +15,7 @@ import { VotingPowerCellRenderer } from './components/VotingPowerCellRenderer';
 
 const rskExplorerUrl = getRskExplorerUrl();
 
-export const COLUMNS_CONFIG = [
+export const COLUMNS_CONFIG = (onSuccess: () => void) => [
   {
     id: 'stakeAmount',
     title: t(translations.stakePage.table.stakeAmount),
@@ -55,7 +55,9 @@ export const COLUMNS_CONFIG = [
   {
     id: 'actions',
     title: ' ',
-    cellRenderer: (item: StakeItem) => AdjustStakeRenderer({ stake: item }),
+    cellRenderer: (item: StakeItem) => (
+      <AdjustStakeRenderer stake={item} onSuccess={onSuccess} />
+    ),
     labelClassName: 'hidden lg:table-cell',
     valueClassName: 'w-full lg:w-auto',
     className: 'flex',

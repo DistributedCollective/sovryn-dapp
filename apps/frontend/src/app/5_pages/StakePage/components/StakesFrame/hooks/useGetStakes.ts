@@ -68,5 +68,5 @@ export const useGetStakes = () => {
     prevBlockRef.current = block;
   }, [block, account, updateStakes]);
 
-  return { stakes, loading };
+  return { stakes, loading, refetch: updateStakes };
 };

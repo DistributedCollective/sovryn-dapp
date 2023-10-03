@@ -1,0 +1,22 @@
+query getVestingHistoryItems(
+  $stakers: [String!]
+  $skip: Int!
+  $pageSize: Int!
+  $orderBy: VestingHistoryItem_orderBy
+  $orderDirection: OrderDirection
+) {
+  vestingHistoryItems(
+    where: { action: TokensWithdrawn, staker_in: $stakers }
+    first: $pageSize
+    skip: $skip
+    orderBy: $orderBy
+    orderDirection: $orderDirection
+  ) {
+    timestamp
+    action
+    amount
+    transaction {
+      id
+    }
+  }
+}

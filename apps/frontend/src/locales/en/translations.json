@@ -747,7 +747,8 @@
             "stakingRevenue": "Staking revenue",
             "actions": {
                 "transferToLOC": "Transfer to LOC",
-                "withdraw": "Withdraw"
+                "withdraw": "Withdraw",
+                "withdrawAll": "Withdraw All"
             },
             "tx": {
                 "withdraw": "Withdraw rewards to your address",
@@ -775,7 +776,8 @@
         "staking": {
             "stakingSubsidies": "Staking subsidies",
             "stakingRevenue": "Staking revenue",
-            "stakingRevenueLegacy": "Staking revenue (legacy)"
+            "stakingRevenueLegacy": "Staking revenue (legacy)",
+            "liquidityMiningError": "Your liquidity mining vesting contract holds more than {{count}} checkpoints worth of rewards. Please withdraw liquid rewards from your vesting contract to enable the 'Withdraw' button and claim additional rewards."
         },
         "vesting": {
             "tx": {
@@ -1006,11 +1008,17 @@
             "stakingRevenue": "Withdraw staking revenue",
             "stakingSubsidies": "Withdraw staking subsidy"
         },
+        "vestingOperation": {
+            "tokensWithdrawn": "Withdraw vested reward",
+            "teamTokensRevoked": "Team tokens revoked",
+            "tokensStaked": "Tokens Staked"
+        },
         "types": {
             "stabilityPoolRewards": "Stability pool rewards",
             "stabilityPoolSubsidies": "Stability pool subsidies",
             "stakingRevenue": "Staking Revenue",
-            "stakingSubsidies": "Staking Subsidies"
+            "stakingSubsidies": "Staking Subsidies",
+            "vestingRewards": "Vesting rewards"
         }
     },
     "stakingHistory": {
@@ -1022,6 +1030,7 @@
         "unstake": "Unstake",
         "extend": "Extend staking duration",
         "delegate": "Change delegate",
+        "delegateVesting": "Vesting delegate changes",
         "newDelegate": "New delegate",
         "newDate": "New date",
         "previousDate": "Previous date",

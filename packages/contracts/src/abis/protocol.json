@@ -897,6 +897,37 @@
       {
         "indexed": true,
         "internalType": "address",
+        "name": "sender",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "sourceTokenAddress",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "destTokenAddress",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "contract IERC20[]",
+        "name": "defaultPath",
+        "type": "address[]"
+      }
+    ],
+    "name": "RemoveDefaultPathConversion",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
         "name": "user",
         "type": "address"
       },
@@ -944,6 +975,31 @@
       }
     ],
     "name": "Rollover",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "sender",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "oldAdmin",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "newAdmin",
+        "type": "address"
+      }
+    ],
+    "name": "SetAdmin",
     "type": "event"
   },
   {
@@ -1069,6 +1125,37 @@
       }
     ],
     "name": "SetBorrowingFeePercent",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "sender",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "sourceTokenAddress",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "destTokenAddress",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "contract IERC20[]",
+        "name": "defaultPath",
+        "type": "address[]"
+      }
+    ],
+    "name": "SetDefaultPathConversion",
     "type": "event"
   },
   {
@@ -1256,6 +1343,31 @@
         "type": "address"
       },
       {
+        "indexed": true,
+        "internalType": "address",
+        "name": "oldPauser",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "newPauser",
+        "type": "address"
+      }
+    ],
+    "name": "SetPauser",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "sender",
+        "type": "address"
+      },
+      {
         "indexed": false,
         "internalType": "address",
         "name": "oldValue",
@@ -1369,6 +1481,31 @@
       }
     ],
     "name": "SetRolloverBaseReward",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "sender",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "oldRolloverFlexFeePercent",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "newRolloverFlexFeePercent",
+        "type": "uint256"
+      }
+    ],
+    "name": "SetRolloverFlexFeePercent",
     "type": "event"
   },
   {
@@ -2066,14 +2203,83 @@
         "type": "uint256"
       },
       {
-        "internalType": "address[4]",
+        "components": [
+          {
+            "internalType": "address",
+            "name": "lender",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "borrower",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "receiver",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "manager",
+            "type": "address"
+          }
+        ],
+        "internalType": "struct MarginTradeStructHelpers.SentAddresses",
         "name": "sentAddresses",
-        "type": "address[4]"
+        "type": "tuple"
       },
       {
-        "internalType": "uint256[5]",
+        "components": [
+          {
+            "internalType": "uint256",
+            "name": "interestRate",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "newPrincipal",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "interestInitialAmount",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "loanTokenSent",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "collateralTokenSent",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "minEntryPrice",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "loanToCollateralSwapRate",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "interestDuration",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "entryLeverage",
+            "type": "uint256"
+          }
+        ],
+        "internalType": "struct MarginTradeStructHelpers.SentAmounts",
         "name": "sentValues",
-        "type": "uint256[5]"
+        "type": "tuple"
       },
       {
         "internalType": "bytes",
@@ -2670,6 +2876,139 @@
     "constant": true,
     "inputs": [
       {
+        "internalType": "uint256",
+        "name": "start",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "count",
+        "type": "uint256"
+      },
+      {
+        "internalType": "bool",
+        "name": "unsafeOnly",
+        "type": "bool"
+      }
+    ],
+    "name": "getActiveLoansV2",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "bytes32",
+            "name": "loanId",
+            "type": "bytes32"
+          },
+          {
+            "internalType": "address",
+            "name": "loanToken",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "collateralToken",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "borrower",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "principal",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "collateral",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "interestOwedPerDay",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "interestDepositRemaining",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "startRate",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "startMargin",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "maintenanceMargin",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "currentMargin",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "maxLoanTerm",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "endTimestamp",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "maxLiquidatable",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "maxSeizable",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "creationTimestamp",
+            "type": "uint256"
+          }
+        ],
+        "internalType": "struct ISovryn.LoanReturnDataV2[]",
+        "name": "loansDataV2",
+        "type": "tuple[]"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "getAdmin",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [
+      {
         "internalType": "address",
         "name": "referrer",
         "type": "address"
@@ -2867,6 +3206,32 @@
         "internalType": "uint256",
         "name": "",
         "type": "uint256"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "sourceTokenAddress",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "destTokenAddress",
+        "type": "address"
+      }
+    ],
+    "name": "getDefaultPathConversion",
+    "outputs": [
+      {
+        "internalType": "contract IERC20[]",
+        "name": "",
+        "type": "address[]"
       }
     ],
     "payable": false,
@@ -3235,7 +3600,7 @@
     "type": "function"
   },
   {
-    "constant": false,
+    "constant": true,
     "inputs": [
       {
         "internalType": "uint256",
@@ -3249,9 +3614,123 @@
       }
     ],
     "name": "getLoanPoolsList",
-    "outputs": [],
+    "outputs": [
+      {
+        "internalType": "bytes32[]",
+        "name": "",
+        "type": "bytes32[]"
+      }
+    ],
     "payable": false,
-    "stateMutability": "nonpayable",
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "loanId",
+        "type": "bytes32"
+      }
+    ],
+    "name": "getLoanV2",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "bytes32",
+            "name": "loanId",
+            "type": "bytes32"
+          },
+          {
+            "internalType": "address",
+            "name": "loanToken",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "collateralToken",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "borrower",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "principal",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "collateral",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "interestOwedPerDay",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "interestDepositRemaining",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "startRate",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "startMargin",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "maintenanceMargin",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "currentMargin",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "maxLoanTerm",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "endTimestamp",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "maxLiquidatable",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "maxSeizable",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "creationTimestamp",
+            "type": "uint256"
+          }
+        ],
+        "internalType": "struct ISovryn.LoanReturnDataV2",
+        "name": "loanDataV2",
+        "type": "tuple"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
     "type": "function"
   },
   {
@@ -3278,6 +3757,21 @@
         "internalType": "uint256",
         "name": "",
         "type": "uint256"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "getPauser",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
       }
     ],
     "payable": false,
@@ -3626,6 +4120,139 @@
         ],
         "internalType": "struct ISovryn.LoanReturnData[]",
         "name": "loansData",
+        "type": "tuple[]"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "user",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "start",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "count",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "loanType",
+        "type": "uint256"
+      },
+      {
+        "internalType": "bool",
+        "name": "isLender",
+        "type": "bool"
+      },
+      {
+        "internalType": "bool",
+        "name": "unsafeOnly",
+        "type": "bool"
+      }
+    ],
+    "name": "getUserLoansV2",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "bytes32",
+            "name": "loanId",
+            "type": "bytes32"
+          },
+          {
+            "internalType": "address",
+            "name": "loanToken",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "collateralToken",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "borrower",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "principal",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "collateral",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "interestOwedPerDay",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "interestDepositRemaining",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "startRate",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "startMargin",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "maintenanceMargin",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "currentMargin",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "maxLoanTerm",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "endTimestamp",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "maxLiquidatable",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "maxSeizable",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "creationTimestamp",
+            "type": "uint256"
+          }
+        ],
+        "internalType": "struct ISovryn.LoanReturnDataV2[]",
+        "name": "loansDataV2",
         "type": "tuple[]"
       }
     ],
@@ -4382,6 +5009,51 @@
     "constant": false,
     "inputs": [
       {
+        "internalType": "bytes32",
+        "name": "loanId",
+        "type": "bytes32"
+      },
+      {
+        "internalType": "address",
+        "name": "receiver",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "withdrawAmount",
+        "type": "uint256"
+      }
+    ],
+    "name": "reduceLoanDuration",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "sourceTokenAddress",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "destTokenAddress",
+        "type": "address"
+      }
+    ],
+    "name": "removeDefaultPathConversion",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
         "internalType": "address",
         "name": "target",
         "type": "address"
@@ -4447,6 +5119,21 @@
     "constant": false,
     "inputs": [
       {
+        "internalType": "address",
+        "name": "newAdmin",
+        "type": "address"
+      }
+    ],
+    "name": "setAdmin",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
         "internalType": "uint256",
         "name": "newValue",
         "type": "uint256"
@@ -4503,6 +5190,21 @@
       }
     ],
     "name": "setBorrowingFeePercent",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "internalType": "contract IERC20[]",
+        "name": "defaultPath",
+        "type": "address[]"
+      }
+    ],
+    "name": "setDefaultPathConversion",
     "outputs": [],
     "payable": false,
     "stateMutability": "nonpayable",
@@ -4683,6 +5385,21 @@
     "inputs": [
       {
         "internalType": "address",
+        "name": "newPauser",
+        "type": "address"
+      }
+    ],
+    "name": "setPauser",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "internalType": "address",
         "name": "newContract",
         "type": "address"
       }
@@ -4733,6 +5450,21 @@
       }
     ],
     "name": "setRolloverBaseReward",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "newRolloverFlexFeePercent",
+        "type": "uint256"
+      }
+    ],
+    "name": "setRolloverFlexFeePercent",
     "outputs": [],
     "payable": false,
     "stateMutability": "nonpayable",

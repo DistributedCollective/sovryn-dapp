@@ -6,7 +6,7 @@ import { Proposal } from '../../../utils/graphql/rsk/generated';
 import { dateFormat } from '../../../utils/helpers';
 import { BLOCK_TIME_IN_SECONDS } from './BitocracyPage.constants';
 
-export const renderEndDate = (item: Proposal) => {
+export const renderProposalEndDate = (item: Proposal) => {
   const secondsBetweenBlocks =
     (item.endBlock - item.startBlock) * BLOCK_TIME_IN_SECONDS;
   const endTime = item.timestamp + secondsBetweenBlocks;

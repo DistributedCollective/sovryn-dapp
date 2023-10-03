@@ -1,15 +1,17 @@
 import { useMemo } from 'react';
 
+import { SupportedTokens } from '@sovryn/contracts';
 import { Decimal } from '@sovryn/utils';
 
 import { MINIMUM_COLLATERAL_RATIO_BORROWING_MAINTENANCE } from '../../../../constants/lending';
+import { useGetTokenContract } from '../../../../hooks/useGetContract';
 import { rskClient } from '../../../../utils/clients';
 import { useGetLoanParamsSetupsQuery } from '../../../../utils/graphql/rsk/generated';
 import { decimalic } from '../../../../utils/math';
 
-export const useGetMinCollateralRatio = (
-  loanToken: string | undefined,
-): Decimal => {
+export const useGetMinCollateralRatio = (token: SupportedTokens): Decimal => {
+  const loanToken = useGetTokenContract(token)?.address;
+
   const { data } = useGetLoanParamsSetupsQuery({
     client: rskClient,
     variables: {

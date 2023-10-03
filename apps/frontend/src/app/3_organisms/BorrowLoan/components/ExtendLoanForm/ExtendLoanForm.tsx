@@ -30,7 +30,6 @@ import {
   MINIMUM_COLLATERAL_RATIO_LENDING_POOLS_SOV,
 } from '../../../../../constants/lending';
 import { getTokenDisplayName } from '../../../../../constants/tokens';
-import { useGetTokenContract } from '../../../../../hooks/useGetContract';
 import { useMaintenance } from '../../../../../hooks/useMaintenance';
 import { useQueryRate } from '../../../../../hooks/useQueryRate';
 import { translations } from '../../../../../locales/i18n';
@@ -74,7 +73,6 @@ export const ExtendLoanForm: FC<ExtendLoanFormProps> = ({ loan }) => {
     [loan.collateralAsset],
   );
 
-  const debtTokenContract = useGetTokenContract(debtToken);
   const [collateralAssetPrice] = useQueryRate(collateralToken, debtToken);
 
   const [useCollateral, setUseCollateral] = useState(true);
@@ -155,9 +153,7 @@ export const ExtendLoanForm: FC<ExtendLoanFormProps> = ({ loan }) => {
     return '';
   }, [collateralRatio, minimumCollateralRatio]);
 
-  const maintenanceMargin = useGetMinCollateralRatio(
-    debtTokenContract?.address,
-  );
+  const maintenanceMargin = useGetMinCollateralRatio(debtToken);
 
   const liquidationPrice = useMemo(() => {
     return maintenanceMargin

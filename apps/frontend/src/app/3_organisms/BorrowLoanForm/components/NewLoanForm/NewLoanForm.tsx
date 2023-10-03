@@ -35,7 +35,6 @@ import {
 } from '../../../../../constants/lending';
 import { WIKI_LINKS } from '../../../../../constants/links';
 import { useDecimalAmountInput } from '../../../../../hooks/useDecimalAmountInput';
-import { useGetTokenContract } from '../../../../../hooks/useGetContract';
 import { useQueryRate } from '../../../../../hooks/useQueryRate';
 import { translations } from '../../../../../locales/i18n';
 import { LendingPool } from '../../../../../utils/LendingPool';
@@ -73,7 +72,6 @@ export const NewLoanForm: FC<NewLoanFormProps> = ({ pool }) => {
   const [hasDisclaimerBeenChecked, setHasDisclaimerBeenChecked] =
     useState(false);
   const borrowToken = useMemo(() => pool.getAsset(), [pool]);
-  const borrowTokenContract = useGetTokenContract(borrowToken);
   const { minBorrowingFeeRate } = useLiquityBaseParams();
   const { avgBorrowApr: borrowApr } = useGetAvgBorrowingAPR(borrowToken);
   const { borrowApr: userBorrowApr } = useGetBorrowingAPR(
@@ -213,9 +211,7 @@ export const NewLoanForm: FC<NewLoanFormProps> = ({ pool }) => {
     return '';
   }, [collateralRatio, minimumCollateralRatio]);
 
-  const maintenanceMargin = useGetMinCollateralRatio(
-    borrowTokenContract?.address,
-  );
+  const maintenanceMargin = useGetMinCollateralRatio(borrowToken);
   const liquidationPrice = useMemo(() => {
     if (!isValidCollateralRatio) {
       return Decimal.ZERO;

@@ -29,7 +29,6 @@ import {
 } from '../../../../../constants/lending';
 import { getTokenDisplayName } from '../../../../../constants/tokens';
 import { useDecimalAmountInput } from '../../../../../hooks/useDecimalAmountInput';
-import { useGetTokenContract } from '../../../../../hooks/useGetContract';
 import { useMaxAssetBalance } from '../../../../../hooks/useMaxAssetBalance';
 import { useQueryRate } from '../../../../../hooks/useQueryRate';
 import { translations } from '../../../../../locales/i18n';
@@ -336,10 +335,7 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
     collateralToLoanRate,
   ]);
 
-  const debtTokenContract = useGetTokenContract(debtToken);
-  const maintenanceMargin = useGetMinCollateralRatio(
-    debtTokenContract?.address,
-  );
+  const maintenanceMargin = useGetMinCollateralRatio(debtToken);
 
   const isValidCollateralRatio = useMemo(() => {
     if (collateralSize.isZero() && debtSize.isZero()) {

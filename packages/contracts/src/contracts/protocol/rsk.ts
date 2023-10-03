@@ -89,4 +89,12 @@ export const rsk: Record<string, AsyncContractConfigData> = {
     getAbi: async () =>
       (await import('../../abis/vestingRegistry.json')).default,
   },
+  governorAdmin: {
+    address: '0xfF25f66b7D7F385503D70574AE0170b6B1622dAd',
+    getAbi: async () => [],
+  },
+  governorOwner: {
+    address: '0x6496DF39D000478a7A7352C01E0E713835051CcD',
+    getAbi: async () => [],
+  },
 };

@@ -1,0 +1,55 @@
+query getProposals {
+  proposals(orderBy: timestamp, orderDirection: desc) {
+    id
+    canceled {
+      id
+    }
+    executed {
+      id
+    }
+    queued {
+      id
+    }
+    created {
+      id
+    }
+    votesFor
+    votesAgainst
+    countVotersFor
+    countVotersAgainst
+    quorum
+    majorityPercentage
+    eta
+    proposalId
+    targets
+    values
+    signatures
+    calldatas
+    startBlock
+    endBlock
+    description
+    timestamp
+    votes {
+      voter {
+        id
+      }
+      votes
+      support
+      transaction {
+        id
+      }
+    }
+    emittedBy {
+      id
+      votingDelay
+      votingPeriod
+      quorumPercentageVotes
+      majorityPercentageVotes
+    }
+    stateChanges {
+      id
+      state
+      timestamp
+    }
+  }
+}

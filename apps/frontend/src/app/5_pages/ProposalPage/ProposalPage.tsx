@@ -10,8 +10,10 @@ import { TxIdWithNotification } from '../../2_molecules/TxIdWithNotification/Tra
 import { ProposalVotingResults } from '../../3_organisms/ProposalVotingResults';
 import { translations } from '../../../locales/i18n';
 import { ProposalStatus } from '../BitocracyPage/components/ProposalStatus/ProposalStatus';
+import { parseProposalInfo } from './ProposalPage.utils';
 import { CastVote } from './components/CastVote/CastVote';
 import { ExecutableDetails } from './components/ExecutableDetails/ExecutableDetails';
+import { ProposalInfo } from './components/ProposalInfo/ProposalInfo';
 import { VoteTimer } from './components/VoteTimer/VoteTimer';
 import { useGetProposalById } from './hooks/useGetProposals';
 
@@ -23,24 +25,10 @@ const ProposalPage: FC = () => {
   const { proposal } = useGetProposalById(id);
 
   const proposalInfo = useMemo(() => {
-    if (!proposal) {
-      return {
-        title: '',
-        link: '',
-        summary: '',
-        description: '',
-      };
-    }
-    const data = proposal?.description.split('\n');
-
-    return {
-      title: data[0] || '',
-      link: data[1] || '',
-      summary: data[2] || '',
-      description: data[4] || '',
-    };
+    return parseProposalInfo(proposal);
   }, [proposal]);
 
+  console.log(proposal);
   return (
     <>
       <Helmet>
@@ -56,7 +44,7 @@ const ProposalPage: FC = () => {
               size={ParagraphSize.small}
               className="mt-2.5 sm:mt-3 font-medium text-gray-30"
             >
-              {proposalInfo.description}
+              {proposalInfo.summary}
             </Paragraph>
             <Paragraph
               size={ParagraphSize.base}
@@ -85,9 +73,16 @@ const ProposalPage: FC = () => {
             </Paragraph>
           </div>
 
-          {proposal && <CastVote proposal={proposal} />}
-
-          {proposal && <ExecutableDetails proposal={proposal} />}
+          {proposal && (
+            <>
+              <CastVote proposal={proposal} />
+              <ProposalInfo
+                link={proposalInfo.link}
+                description={proposalInfo.description}
+              />
+              <ExecutableDetails proposal={proposal} />
+            </>
+          )}
         </div>
         <div className="w-1/3">
           {proposal && (

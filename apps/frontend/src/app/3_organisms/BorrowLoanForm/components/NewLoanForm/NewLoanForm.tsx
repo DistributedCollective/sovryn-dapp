@@ -26,15 +26,16 @@ import { Decimal } from '@sovryn/utils';
 
 import { AssetRenderer } from '../../../../2_molecules/AssetRenderer/AssetRenderer';
 import { MaxButton } from '../../../../2_molecules/MaxButton/MaxButton';
+import { useGetMinCollateralRatio } from '../../../../5_pages/BorrowPage/hooks/useGetMinCollateralRatio';
 import { useLiquityBaseParams } from '../../../../5_pages/ZeroPage/hooks/useLiquityBaseParams';
 import { BITCOIN } from '../../../../../constants/currencies';
 import {
   MINIMUM_COLLATERAL_RATIO_LENDING_POOLS_SOV,
   MINIMUM_COLLATERAL_RATIO_LENDING_POOLS,
-  MINIMUM_COLLATERAL_RATIO_BORROWING_MAINTENANCE,
 } from '../../../../../constants/lending';
 import { WIKI_LINKS } from '../../../../../constants/links';
 import { useDecimalAmountInput } from '../../../../../hooks/useDecimalAmountInput';
+import { useGetTokenContract } from '../../../../../hooks/useGetContract';
 import { useQueryRate } from '../../../../../hooks/useQueryRate';
 import { translations } from '../../../../../locales/i18n';
 import { LendingPool } from '../../../../../utils/LendingPool';
@@ -72,6 +73,7 @@ export const NewLoanForm: FC<NewLoanFormProps> = ({ pool }) => {
   const [hasDisclaimerBeenChecked, setHasDisclaimerBeenChecked] =
     useState(false);
   const borrowToken = useMemo(() => pool.getAsset(), [pool]);
+  const borrowTokenContract = useGetTokenContract(borrowToken);
   const { minBorrowingFeeRate } = useLiquityBaseParams();
   const { avgBorrowApr: borrowApr } = useGetAvgBorrowingAPR(borrowToken);
   const { borrowApr: userBorrowApr } = useGetBorrowingAPR(
@@ -211,14 +213,15 @@ export const NewLoanForm: FC<NewLoanFormProps> = ({ pool }) => {
     return '';
   }, [collateralRatio, minimumCollateralRatio]);
 
+  const maintenanceMargin = useGetMinCollateralRatio(
+    borrowTokenContract?.address,
+  );
   const liquidationPrice = useMemo(() => {
     if (!isValidCollateralRatio) {
       return Decimal.ZERO;
     }
-    return MINIMUM_COLLATERAL_RATIO_BORROWING_MAINTENANCE.mul(borrowSize).div(
-      collateralSize,
-    );
-  }, [isValidCollateralRatio, borrowSize, collateralSize]);
+    return maintenanceMargin.mul(borrowSize).div(collateralSize);
+  }, [isValidCollateralRatio, maintenanceMargin, borrowSize, collateralSize]);
 
   const renderFirstRolloverDate = useMemo(() => {
     if (borrowSize.lte(Decimal.ZERO) || collateralSize.lte(Decimal.ZERO)) {

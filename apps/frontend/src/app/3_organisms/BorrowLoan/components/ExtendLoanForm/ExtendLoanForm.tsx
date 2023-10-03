@@ -24,12 +24,13 @@ import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRen
 import { AssetRenderer } from '../../../../2_molecules/AssetRenderer/AssetRenderer';
 import { DatePicker } from '../../../../2_molecules/DatePicker/DatePicker';
 import { LoanItem } from '../../../../5_pages/BorrowPage/components/OpenLoansTable/OpenLoansTable.types';
+import { useGetMinCollateralRatio } from '../../../../5_pages/BorrowPage/hooks/useGetMinCollateralRatio';
 import {
-  MINIMUM_COLLATERAL_RATIO_BORROWING_MAINTENANCE,
   MINIMUM_COLLATERAL_RATIO_LENDING_POOLS,
   MINIMUM_COLLATERAL_RATIO_LENDING_POOLS_SOV,
 } from '../../../../../constants/lending';
 import { getTokenDisplayName } from '../../../../../constants/tokens';
+import { useGetTokenContract } from '../../../../../hooks/useGetContract';
 import { useMaintenance } from '../../../../../hooks/useMaintenance';
 import { useQueryRate } from '../../../../../hooks/useQueryRate';
 import { translations } from '../../../../../locales/i18n';
@@ -73,6 +74,7 @@ export const ExtendLoanForm: FC<ExtendLoanFormProps> = ({ loan }) => {
     [loan.collateralAsset],
   );
 
+  const debtTokenContract = useGetTokenContract(debtToken);
   const [collateralAssetPrice] = useQueryRate(collateralToken, debtToken);
 
   const [useCollateral, setUseCollateral] = useState(true);
@@ -153,11 +155,15 @@ export const ExtendLoanForm: FC<ExtendLoanFormProps> = ({ loan }) => {
     return '';
   }, [collateralRatio, minimumCollateralRatio]);
 
+  const maintenanceMargin = useGetMinCollateralRatio(
+    debtTokenContract?.address,
+  );
+
   const liquidationPrice = useMemo(() => {
-    return MINIMUM_COLLATERAL_RATIO_BORROWING_MAINTENANCE.mul(
-      newTotalDebt.toString(),
-    ).div(newCollateralAmount || 1);
-  }, [newCollateralAmount, newTotalDebt]);
+    return maintenanceMargin
+      .mul(newTotalDebt.toString())
+      .div(newCollateralAmount || 1);
+  }, [maintenanceMargin, newCollateralAmount, newTotalDebt]);
 
   const renderNewRolloverDate = useMemo(
     () =>

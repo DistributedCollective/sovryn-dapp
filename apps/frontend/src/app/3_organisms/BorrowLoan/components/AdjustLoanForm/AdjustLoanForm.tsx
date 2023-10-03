@@ -22,13 +22,14 @@ import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRen
 import { AssetRenderer } from '../../../../2_molecules/AssetRenderer/AssetRenderer';
 import { convertLoanTokenToSupportedAssets } from '../../../../5_pages/BorrowPage/components/OpenLoansTable/OpenLoans.utils';
 import { LoanItem } from '../../../../5_pages/BorrowPage/components/OpenLoansTable/OpenLoansTable.types';
+import { useGetMinCollateralRatio } from '../../../../5_pages/BorrowPage/hooks/useGetMinCollateralRatio';
 import {
-  MINIMUM_COLLATERAL_RATIO_BORROWING_MAINTENANCE,
   MINIMUM_COLLATERAL_RATIO_LENDING_POOLS,
   MINIMUM_COLLATERAL_RATIO_LENDING_POOLS_SOV,
 } from '../../../../../constants/lending';
 import { getTokenDisplayName } from '../../../../../constants/tokens';
 import { useDecimalAmountInput } from '../../../../../hooks/useDecimalAmountInput';
+import { useGetTokenContract } from '../../../../../hooks/useGetContract';
 import { useMaxAssetBalance } from '../../../../../hooks/useMaxAssetBalance';
 import { useQueryRate } from '../../../../../hooks/useQueryRate';
 import { translations } from '../../../../../locales/i18n';
@@ -335,6 +336,11 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
     collateralToLoanRate,
   ]);
 
+  const debtTokenContract = useGetTokenContract(debtToken);
+  const maintenanceMargin = useGetMinCollateralRatio(
+    debtTokenContract?.address,
+  );
+
   const isValidCollateralRatio = useMemo(() => {
     if (collateralSize.isZero() && debtSize.isZero()) {
       return true;
@@ -360,14 +366,13 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
       ? Decimal.from(loan.debt)
       : newTotalDebt;
 
-    return MINIMUM_COLLATERAL_RATIO_BORROWING_MAINTENANCE.mul(debt).div(
-      newCollateralAmount,
-    );
+    return maintenanceMargin.mul(debt).div(newCollateralAmount);
   }, [
     collateralSize,
     debtSize,
     isCollateralWithdrawMode,
     loan.debt,
+    maintenanceMargin,
     newCollateralAmount,
     newTotalDebt,
   ]);

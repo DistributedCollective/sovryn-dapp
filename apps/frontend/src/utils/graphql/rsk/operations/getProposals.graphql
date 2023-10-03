@@ -18,7 +18,6 @@ query getProposals {
     countVotersFor
     countVotersAgainst
     quorum
-    proposer
     majorityPercentage
     eta
     proposalId

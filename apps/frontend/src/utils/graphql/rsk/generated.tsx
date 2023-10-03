@@ -15159,7 +15159,6 @@ export type GetProposalsQuery = {
     countVotersFor: number;
     countVotersAgainst: number;
     quorum: string;
-    proposer: string;
     majorityPercentage: string;
     eta?: number | null;
     proposalId: number;
@@ -16539,7 +16538,6 @@ export const GetProposalsDocument = gql`
       countVotersFor
       countVotersAgainst
       quorum
-      proposer
       majorityPercentage
       eta
       proposalId

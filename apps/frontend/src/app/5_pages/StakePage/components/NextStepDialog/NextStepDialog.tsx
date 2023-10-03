@@ -38,13 +38,13 @@ export const NextStepDialog: FC<NextStepDialogProps> = ({
 
   const onClose = useCallback(() => {
     if (checked) {
-      reactLocalStorage.set(localStorageKey, 'false');
+      reactLocalStorage.set(localStorageKey, 'true');
       setIsDissmised(true);
     }
     onConfirm();
   }, [checked, onConfirm]);
 
-  const onClick = useCallback(() => {
+  const onSignup = useCallback(() => {
     setSettingDialogOpen(true);
     onClose();
   }, [onClose]);
@@ -55,10 +55,10 @@ export const NextStepDialog: FC<NextStepDialogProps> = ({
         isOpen={settingDialogOpen}
         onClose={() => setSettingDialogOpen(false)}
       />
-      <Dialog isOpen={!isDissmised && isOpen} onClose={onConfirm}>
+      <Dialog isOpen={!isDissmised && isOpen} onClose={onClose}>
         <DialogHeader
           title={t(translationBasePath.dialogTitle)}
-          onClose={onConfirm}
+          onClose={onClose}
         />
         <div className="py-6 px-4">
           <Heading className="mb-6 font-normal" type={HeadingType.h1}>
@@ -94,7 +94,7 @@ export const NextStepDialog: FC<NextStepDialogProps> = ({
             className="w-full md:w-auto"
             type={ButtonType.button}
             text={t(translationBasePath.signUp)}
-            onClick={onClick}
+            onClick={onSignup}
           />
         </div>
       </Dialog>

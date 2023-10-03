@@ -65,7 +65,9 @@ export const CastVote: FC<CastVoteProps> = ({ proposal, className }) => {
               size={ParagraphSize.base}
               className="text-xs italic font-medium leading-relaxed"
             >
-              <Trans i18nKey={pageTranslations.ineligibleVote} />
+              {t(pageTranslations.ineligibleVote)}
+              <br />
+              {t(pageTranslations.eligibleVote)}
             </Paragraph>
 
             <Link to="/earn/staking" className="no-underline">

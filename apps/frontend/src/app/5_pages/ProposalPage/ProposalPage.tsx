@@ -15,6 +15,7 @@ import { ProposalStatus } from '../BitocracyPage/components/ProposalStatus/Propo
 import { parseProposalInfo } from './ProposalPage.utils';
 import { CastVote } from './components/CastVote/CastVote';
 import { ExecutableDetails } from './components/ExecutableDetails/ExecutableDetails';
+import { ProposalAction } from './components/ProposalAction/ProposalAction';
 import { ProposalInfo } from './components/ProposalInfo/ProposalInfo';
 import { VoteTimer } from './components/VoteTimer/VoteTimer';
 import { useGetProposalById } from './hooks/useGetProposalById';
@@ -39,9 +40,9 @@ const ProposalPage: FC = () => {
     }
 
     if (areAddressesEqual(proposal.emittedBy.id, adminAddress)) {
-      return t(translations.bitocracyPage.proposalType.admin) + '-';
+      return t(translations.bitocracyPage.proposalType.admin);
     } else if (areAddressesEqual(proposal.emittedBy.id, ownerAddress)) {
-      return t(translations.bitocracyPage.proposalType.owner) + '-';
+      return t(translations.bitocracyPage.proposalType.owner);
     }
   }, [adminAddress, ownerAddress, proposal]);
 
@@ -84,14 +85,14 @@ const ProposalPage: FC = () => {
                 {t(pageTranslations.proposalID)}
               </span>
               <span className="text-gray-10">
-                {proposerType}
+                {proposerType ? `${proposerType}-` : ''}
                 {proposal.proposalId}
               </span>
             </Paragraph>
 
             {proposal && (
               <div className="md:hidden mt-6">
-                <div className="flex flex-row items-center justify-between mb-2">
+                <div className="flex flex-row items-start justify-between mb-2">
                   <Paragraph
                     size={ParagraphSize.small}
                     className="font-xs text-gray-30"
@@ -99,7 +100,10 @@ const ProposalPage: FC = () => {
                     {t(pageTranslations.status)}
                   </Paragraph>
 
-                  <ProposalStatus proposal={proposal} />
+                  <div className="flex flex-col items-end">
+                    <ProposalStatus proposal={proposal} />
+                    <ProposalAction proposal={proposal} className="mt-1" />
+                  </div>
                 </div>
 
                 <VoteTimer
@@ -132,6 +136,7 @@ const ProposalPage: FC = () => {
               </Paragraph>
 
               <ProposalStatus proposal={proposal} />
+              <ProposalAction proposal={proposal} className="ml-4 pl-0.5" />
             </div>
 
             <VoteTimer proposal={proposal} />

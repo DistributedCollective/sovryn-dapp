@@ -91,7 +91,6 @@ export const useHandleSubscriptions = () => {
       setStabilityPoolToggle,
       setSystemToggle,
       setBitocracyToggle,
-      withDefaultSubscriptions,
     ],
   );
 

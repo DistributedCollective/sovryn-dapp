@@ -6,7 +6,7 @@ import {
   useGetProposalQuery,
 } from '../../../../utils/graphql/rsk/generated';
 
-export const useGetProposalById = (id: string | undefined) => {
+export const useGetProposalById = (id: string) => {
   const { loading, data } = useGetProposalQuery({
     client: rskClient,
     variables: {
@@ -15,7 +15,7 @@ export const useGetProposalById = (id: string | undefined) => {
   });
 
   const proposal = useMemo(
-    () => data?.proposals[0] as Proposal | undefined,
+    () => data?.proposal as Proposal | undefined,
     [data],
   );
 

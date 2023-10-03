@@ -45,6 +45,10 @@ const ProposalPage: FC = () => {
     }
   }, [adminAddress, ownerAddress, proposal]);
 
+  if (!proposal) {
+    return <>Loading....</>;
+  }
+
   return (
     <>
       <Helmet>
@@ -64,10 +68,10 @@ const ProposalPage: FC = () => {
                 {t(pageTranslations.proposedBy)}
               </span>
 
-              {proposal?.proposer && (
+              {proposal.proposer && (
                 <TxIdWithNotification
                   href=""
-                  value={proposal?.proposer}
+                  value={proposal.proposer}
                   dataAttribute="proposal-proposer-address-id"
                 />
               )}
@@ -81,7 +85,7 @@ const ProposalPage: FC = () => {
               </span>
               <span className="text-gray-10">
                 {proposerType}
-                {proposal?.proposalId}
+                {proposal.proposalId}
               </span>
             </Paragraph>
 
@@ -106,41 +110,33 @@ const ProposalPage: FC = () => {
             )}
           </div>
 
-          {proposal && (
-            <>
-              <CastVote proposal={proposal} />
+          <CastVote proposal={proposal} />
 
-              <div className="md:hidden">
-                <ProposalVotingResults proposal={proposal} />
-              </div>
-              <ProposalInfo
-                link={proposalInfo.link}
-                description={proposalInfo.description}
-              />
-              <ExecutableDetails proposal={proposal} />
-            </>
-          )}
+          <div className="md:hidden">
+            <ProposalVotingResults proposal={proposal} />
+          </div>
+          <ProposalInfo
+            link={proposalInfo.link}
+            description={proposalInfo.description}
+          />
+          <ExecutableDetails proposal={proposal} />
         </div>
         <div className="w-1/3 hidden md:block min-w-[18rem]">
-          {proposal && (
-            <>
-              <div className="mb-20 flex gap-10">
-                <div>
-                  <Paragraph
-                    size={ParagraphSize.small}
-                    className="mb-3 font-xs text-gray-30"
-                  >
-                    {t(pageTranslations.status)}
-                  </Paragraph>
+          <div className="mb-20 flex gap-10">
+            <div>
+              <Paragraph
+                size={ParagraphSize.small}
+                className="mb-3 font-xs text-gray-30"
+              >
+                {t(pageTranslations.status)}
+              </Paragraph>
 
-                  <ProposalStatus proposal={proposal} />
-                </div>
+              <ProposalStatus proposal={proposal} />
+            </div>
 
-                <VoteTimer proposal={proposal} />
-              </div>
-              <ProposalVotingResults proposal={proposal} />
-            </>
-          )}
+            <VoteTimer proposal={proposal} />
+          </div>
+          <ProposalVotingResults proposal={proposal} />
         </div>
         {/* {account && (
           <div className="flex w-full items-center sm:justify-end justify-center">

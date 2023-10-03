@@ -1174,5 +1174,24 @@
     "lendingTx": {
         "deposit": "Deposit {{symbol}}",
         "withdraw": "Withdraw {{symbol}}"
+    },
+    "proposalVotingResults": {
+      "title": "Voting results",
+      "inProgress": "Voting in progress",
+      "exportCSV": "Export CSV",
+      "support": {
+        "title": "Support",
+        "required": "Support required:",
+        "current": "Current support:",
+        "requiredValue": "> {{value}}%",
+        "currentValue": "{{value}}%"
+      },
+      "quorum": {
+        "title": "Turnout",
+        "required": "Turnout required:",
+        "current": "Current turnout:",
+        "requiredValue": "{{value}} VP ({{percent}}%)",
+        "currentValue": "{{value}} VP ({{percent}}%)"
+      }
     }
 }

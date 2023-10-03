@@ -1,0 +1,20 @@
+.container {
+  @apply w-full relative h-8 flex flex-col justify-center items-center;
+}
+
+.background {
+  @apply w-full bg-gray-50 h-[0.356rem] relative rounded;
+}
+
+.foreground {
+  @apply h-[0.356rem] bg-primary-30 rounded;
+}
+
+.threshold {
+  @apply absolute h-[1.875rem] w-[0.52rem] flex flex-col justify-between items-center;
+  top: -0.76rem;
+}
+
+.threshold-line {
+  @apply w-[0.125rem] h-[0.475rem] bg-gray-40;
+}

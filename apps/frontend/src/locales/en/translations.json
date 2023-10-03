@@ -1236,5 +1236,10 @@
             "requiredValue": "{{value}} VP ({{percent}}%)",
             "currentValue": "{{value}} VP ({{percent}}%)"
         }
+    },
+    "proposalVotingPower": {
+        "title": "Your voting power",
+        "votingPower": "Voting power",
+        "votingPowerShare": "Voting power share"
     }
 }

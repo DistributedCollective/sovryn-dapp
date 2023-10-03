@@ -11,7 +11,8 @@ export const ProposalViewButton: FC<ProposalProps> = ({ proposal }) => (
   <Button
     text={t(translations.bitocracyPage.actions.view)}
     style={ButtonStyle.secondary}
+    href={`/bitocracy/proposal/${proposal.id}`}
+    hrefExternal
     dataAttribute="bitocracy-proposal-view-button"
-    onClick={() => window.open(`/bitocracy/proposal/${proposal.id}`, '_blank')}
   />
 );

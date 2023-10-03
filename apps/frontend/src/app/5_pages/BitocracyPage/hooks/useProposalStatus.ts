@@ -1,5 +1,7 @@
 import { useMemo } from 'react';
 
+import { Decimal } from '@sovryn/utils';
+
 import { MS } from '../../../../constants/general';
 import { useBlockNumber } from '../../../../hooks/useBlockNumber';
 import { Proposal } from '../../../../utils/graphql/rsk/generated';
@@ -7,21 +9,24 @@ import { decimalic } from '../../../../utils/math';
 import { ProposalState } from '../BitocracyPage.types';
 import { GRACE_PERIOD_IN_SECONDS } from '../components/Proposals/Proposals.constants';
 
-export const useProposalStatus = (proposal: Proposal) => {
+export const useProposalStatus = (proposal?: Proposal) => {
   const { value: blockNumber } = useBlockNumber();
   const currentTimeStamp = useMemo(() => Math.ceil(Date.now() / MS), []);
 
-  const totalVotes = useMemo(
-    () => decimalic(proposal.votesFor).add(proposal.votesAgainst),
-    [proposal.votesFor, proposal.votesAgainst],
-  );
-  const totalVotesMajorityPercentage = useMemo(
-    () => totalVotes.div(100).mul(proposal.majorityPercentage),
-    [totalVotes, proposal.majorityPercentage],
-  );
-
   return useMemo(() => {
+    if (!proposal) {
+      return ProposalState.Pending;
+    }
+
     let status: ProposalState;
+
+    const totalVotes = Decimal.fromBigNumberString(proposal.votesFor).add(
+      Decimal.fromBigNumberString(proposal.votesAgainst),
+    );
+
+    const supportPercentage = Decimal.fromBigNumberString(proposal.votesFor)
+      .div(totalVotes)
+      .mul(100);
 
     if (proposal.canceled) {
       status = ProposalState.Canceled;
@@ -30,8 +35,8 @@ export const useProposalStatus = (proposal: Proposal) => {
     } else if (blockNumber <= proposal.startBlock) {
       status = ProposalState.Pending;
     } else if (
-      decimalic(proposal.votesFor).lte(totalVotesMajorityPercentage) ||
-      decimalic(totalVotes).lt(proposal.quorum)
+      supportPercentage.lte(proposal.emittedBy.majorityPercentageVotes) ||
+      decimalic(totalVotes).lt(Decimal.fromBigNumberString(proposal.quorum))
     ) {
       status = ProposalState.Defeated;
     } else if (proposal.eta === 0) {
@@ -48,17 +53,5 @@ export const useProposalStatus = (proposal: Proposal) => {
     }
 
     return status;
-  }, [
-    blockNumber,
-    currentTimeStamp,
-    proposal.canceled,
-    proposal.endBlock,
-    proposal.eta,
-    proposal.executed,
-    proposal.quorum,
-    proposal.startBlock,
-    proposal.votesFor,
-    totalVotes,
-    totalVotesMajorityPercentage,
-  ]);
+  }, [blockNumber, currentTimeStamp, proposal]);
 };

@@ -26,6 +26,8 @@ type EmailNotificationSettingsContextValue = {
   setStabilityPoolToggle: React.Dispatch<React.SetStateAction<boolean>>;
   systemToggle: boolean;
   setSystemToggle: React.Dispatch<React.SetStateAction<boolean>>;
+  bitocracyToggle: boolean;
+  setBitocracyToggle: React.Dispatch<React.SetStateAction<boolean>>;
   haveSubscriptionsBeenUpdated: boolean;
 };
 
@@ -42,6 +44,8 @@ const defaultContextValue: EmailNotificationSettingsContextValue = {
   setStabilityPoolToggle: noop,
   systemToggle: false,
   setSystemToggle: noop,
+  bitocracyToggle: false,
+  setBitocracyToggle: noop,
   haveSubscriptionsBeenUpdated: false,
 };
 
@@ -69,6 +73,7 @@ export const EmailNotificationSettingsContextProvider: React.FC<
   const [liquidationsToggle, setLiquidationsToggle] = useState(false);
   const [stabilityPoolToggle, setStabilityPoolToggle] = useState(false);
   const [systemToggle, setSystemToggle] = useState(false);
+  const [bitocracyToggle, setBitocracyToggle] = useState(false);
 
   const resetSubscriptions = useCallback(() => {
     setSubscriptions(defaultContextValue.subscriptions);
@@ -117,6 +122,8 @@ export const EmailNotificationSettingsContextProvider: React.FC<
         setStabilityPoolToggle,
         systemToggle,
         setSystemToggle,
+        bitocracyToggle,
+        setBitocracyToggle,
         haveSubscriptionsBeenUpdated,
       }}
     >

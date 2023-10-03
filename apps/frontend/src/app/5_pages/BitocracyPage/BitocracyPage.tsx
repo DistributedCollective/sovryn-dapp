@@ -1,4 +1,4 @@
-import React, { FC, useMemo } from 'react';
+import React, { FC, useCallback, useMemo } from 'react';
 
 import { t } from 'i18next';
 import { Helmet } from 'react-helmet-async';
@@ -11,13 +11,14 @@ import {
   ParagraphSize,
 } from '@sovryn/ui';
 
-import { useAccount } from '../../../hooks/useAccount';
 import { ProposalVotingResults } from '../../3_organisms/ProposalVotingResults';
+import { useAccount } from '../../../hooks/useAccount';
 import { translations } from '../../../locales/i18n';
+import { sharedState } from '../../../store/rxjs/shared-state';
+import { Proposal } from '../../../utils/graphql/rsk/generated';
 import { useGetPersonalStakingStatistics } from '../StakePage/components/PersonalStakingStatistics/hooks/useGetPersonalStakingStatistics';
 import { Proposals } from './components/Proposals/Proposals';
 import { useGetProposals } from './hooks/useGetProposals';
-import { Proposal } from '../../../utils/graphql/rsk/generated';
 
 const pageTranslations = translations.bitocracyPage;
 
@@ -47,6 +48,11 @@ const BitocracyPage: FC = () => {
     [votingPower],
   );
 
+  const handleAlertsClick = useCallback(
+    () => sharedState.actions.openEmailNotificationSettingsDialog(),
+    [],
+  );
+
   return (
     <>
       <Helmet>
@@ -69,6 +75,7 @@ const BitocracyPage: FC = () => {
               style={ButtonStyle.ghost}
               text={t(pageTranslations.actions.bitocracyAlerts)}
               className="mb-3 sm:mb-0"
+              onClick={handleAlertsClick}
             />
             {isNewProposalButtonVisible && (
               <div className="bg-gray-90 sm:bg-transparent p-4 pb-8 sm:p-0 border-t sm:border-none border-gray-60 flex items-center justify-center sm:ml-3 sm:relative fixed bottom-0 left-0 right-0 z-10 sm:z-0">

@@ -14,6 +14,7 @@ import {
   ParagraphSize,
 } from '@sovryn/ui';
 
+import { useAccount } from '../../../../../hooks/useAccount';
 import { translations } from '../../../../../locales/i18n';
 import { Proposal } from '../../../../../utils/graphql/rsk/generated';
 import { ProposalState } from '../../../BitocracyPage/BitocracyPage.types';
@@ -29,6 +30,7 @@ type CastVoteProps = {
 
 export const CastVote: FC<CastVoteProps> = ({ proposal, className }) => {
   const { votingPower } = useGetPersonalStakingStatistics();
+  const { account } = useAccount();
   const status = useProposalStatus(proposal);
 
   const hasVotingPower = useMemo(
@@ -37,8 +39,12 @@ export const CastVote: FC<CastVoteProps> = ({ proposal, className }) => {
   );
 
   const ineligibleVote = useMemo(
-    () => status === ProposalState.Active && !hasVotingPower,
-    [hasVotingPower, status],
+    () => status === ProposalState.Active && !hasVotingPower && account,
+    [account, hasVotingPower, status],
+  );
+  const noVote = useMemo(
+    () => proposal.votes?.length === 0,
+    [proposal.votes?.length],
   );
 
   return (
@@ -66,12 +72,23 @@ export const CastVote: FC<CastVoteProps> = ({ proposal, className }) => {
           </div>
         )}
 
-        <Paragraph
-          size={ParagraphSize.base}
-          className="text-xs italic font-medium leading-relaxed"
-        >
-          <Trans i18nKey={pageTranslations.noVote} />
-        </Paragraph>
+        {noVote && account && (
+          <Paragraph
+            size={ParagraphSize.base}
+            className="text-xs italic font-medium leading-relaxed"
+          >
+            <Trans i18nKey={pageTranslations.noVote} />
+          </Paragraph>
+        )}
+
+        {!account && (
+          <Paragraph
+            size={ParagraphSize.base}
+            className="text-xs italic font-medium leading-relaxed"
+          >
+            <Trans i18nKey={pageTranslations.connectMessage} />
+          </Paragraph>
+        )}
       </div>
     </div>
   );

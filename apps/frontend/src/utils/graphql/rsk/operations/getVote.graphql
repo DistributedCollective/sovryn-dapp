@@ -1,0 +1,16 @@
+query getVote($id: String, $voter: String) {
+  voteCasts(where: { proposal: $id, voter: $voter }) {
+    emittedBy
+    id
+    proposalId
+    support
+    timestamp
+    transaction {
+      id
+    }
+    voter {
+      id
+    }
+    votes
+  }
+}

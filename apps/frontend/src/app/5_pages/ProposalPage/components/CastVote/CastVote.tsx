@@ -33,18 +33,13 @@ const pageTranslations = translations.proposalPage;
 type CastVoteProps = {
   className?: string;
   proposal: Proposal;
-  refetch: () => void;
 };
 
-export const CastVote: FC<CastVoteProps> = ({
-  proposal,
-  className,
-  refetch,
-}) => {
+export const CastVote: FC<CastVoteProps> = ({ proposal, className }) => {
   const { votingPower } = useGetPersonalStakingStatistics();
   const { account } = useAccount();
   const status = useProposalStatus(proposal);
-  const { vote: hasUserVoted, loading } = useGetUserVote(proposal.id);
+  const { vote: hasUserVoted, loading, refetch } = useGetUserVote(proposal.id);
 
   const { submit } = useVote(proposal, refetch);
 
@@ -53,140 +48,48 @@ export const CastVote: FC<CastVoteProps> = ({
     [votingPower],
   );
 
-  const ineligibleVote = useMemo(
-    () => status === ProposalState.Active && !hasVotingPower && account,
-    [account, hasVotingPower, status],
-  );
-  const noVote = useMemo(
-    () =>
-      proposal.votes?.length === 0 &&
-      account &&
-      status !== ProposalState.Active,
-    [account, proposal.votes?.length, status],
-  );
   const handleSupport = useCallback(() => submit(VoteType.Support), [submit]);
   const handleReject = useCallback(() => submit(VoteType.Reject), [submit]);
 
-  return (
-    <div className={classNames('bg-gray-80 p-6 rounded', className)}>
-      <Heading className="text-sm font-medium">
-        {t(pageTranslations.castVote)}
-      </Heading>
-      {!loading && (
-        <div className="mt-8">
-          {ineligibleVote && (
-            <div className="flex items-center justify-between">
-              <Paragraph
-                size={ParagraphSize.base}
-                className="text-xs italic font-medium leading-relaxed"
-              >
-                {t(pageTranslations.ineligibleVote)}
-                <br />
-                {t(pageTranslations.eligibleVote)}
-              </Paragraph>
+  const content = useMemo(() => {
+    if (!account) {
+      return (
+        <Paragraph
+          size={ParagraphSize.base}
+          className="text-xs italic font-medium leading-relaxed"
+        >
+          <Trans i18nKey={pageTranslations.connectMessage} />
+        </Paragraph>
+      );
+    }
 
-              <Link to="/earn/staking" className="no-underline">
-                <Button
-                  style={ButtonStyle.secondary}
-                  size={ButtonSize.large}
-                  text={t(pageTranslations.stakeSOV)}
-                />
-              </Link>
-            </div>
-          )}
+    if (loading) {
+      return null;
+    }
 
-          {!ineligibleVote && noVote && (
-            <Paragraph
-              size={ParagraphSize.base}
-              className="text-xs italic font-medium leading-relaxed"
-            >
-              <Trans i18nKey={pageTranslations.noVote} />
-            </Paragraph>
-          )}
+    const ineligibleVote = status === ProposalState.Active && !hasVotingPower;
 
-          {!account && (
-            <Paragraph
-              size={ParagraphSize.base}
-              className="text-xs italic font-medium leading-relaxed"
-            >
-              <Trans i18nKey={pageTranslations.connectMessage} />
-            </Paragraph>
-          )}
-          {!!hasUserVoted && (
-            <div className="flex items-center gap-8">
-              <Tooltip
-                content={
-                  <span className="font-medium">
-                    {t(pageTranslations.supportText)}
-                  </span>
-                }
-                trigger={TooltipTrigger.click}
-                disabled={!hasUserVoted.support}
-              >
-                <div>
-                  <Button
-                    className={classNames('w-52', {
-                      'bg-gray-50': !!hasUserVoted.support,
-                      'hover:bg-gray-80 focus:bg-gray-80 cursor-default':
-                        !hasUserVoted.support,
-                    })}
-                    style={ButtonStyle.secondary}
-                    size={ButtonSize.large}
-                    text={
-                      <span className="flex items-center">
-                        <Icon
-                          className="mr-2.5 text-positive"
-                          size={14}
-                          icon={IconNames.CHECK}
-                        />
-                        {t(pageTranslations.support)}
-                      </span>
-                    }
-                  />
-                </div>
-              </Tooltip>
-
-              <Tooltip
-                content={
-                  <span className="font-medium">
-                    {t(pageTranslations.rejectText)}
-                  </span>
-                }
-                trigger={TooltipTrigger.click}
-                disabled={!!hasUserVoted.support}
-              >
-                <div>
-                  <Button
-                    className={classNames('w-52', {
-                      'bg-gray-50': !hasUserVoted.support,
-                      'hover:bg-gray-80 focus:bg-gray-80 cursor-default':
-                        !!hasUserVoted.support,
-                    })}
-                    style={ButtonStyle.secondary}
-                    size={ButtonSize.large}
-                    text={
-                      <span className="flex items-center">
-                        <Icon
-                          className="mr-2.5 text-negative"
-                          size={12}
-                          icon={IconNames.X_MARK}
-                        />
-                        {t(pageTranslations.reject)}
-                      </span>
-                    }
-                  />
-                </div>
-              </Tooltip>
-            </div>
-          )}
-
-          {!hasUserVoted && status === ProposalState.Active && (
-            <div className="flex items-center gap-8">
+    if (!!hasUserVoted) {
+      return (
+        <div className="flex items-center gap-8">
+          <Tooltip
+            content={
+              <span className="font-medium">
+                {t(pageTranslations.supportText)}
+              </span>
+            }
+            trigger={TooltipTrigger.click}
+            disabled={!hasUserVoted.support}
+          >
+            <div>
               <Button
-                className="w-52"
+                className={classNames('w-52', {
+                  'bg-gray-50': !!hasUserVoted.support,
+                  'hover:bg-gray-80 focus:bg-gray-80 cursor-default':
+                    !hasUserVoted.support,
+                })}
                 style={ButtonStyle.secondary}
                 size={ButtonSize.large}
-                onClick={handleSupport}
                 text={
                   <span className="flex items-center">
                     <Icon
@@ -198,12 +101,27 @@ export const CastVote: FC<CastVoteProps> = ({
                   </span>
                 }
               />
+            </div>
+          </Tooltip>
 
+          <Tooltip
+            content={
+              <span className="font-medium">
+                {t(pageTranslations.rejectText)}
+              </span>
+            }
+            trigger={TooltipTrigger.click}
+            disabled={!!hasUserVoted.support}
+          >
+            <div>
               <Button
-                className="w-52"
+                className={classNames('w-52', {
+                  'bg-gray-50': !hasUserVoted.support,
+                  'hover:bg-gray-80 focus:bg-gray-80 cursor-default':
+                    !!hasUserVoted.support,
+                })}
                 style={ButtonStyle.secondary}
                 size={ButtonSize.large}
-                onClick={handleReject}
                 text={
                   <span className="flex items-center">
                     <Icon
@@ -216,9 +134,100 @@ export const CastVote: FC<CastVoteProps> = ({
                 }
               />
             </div>
-          )}
+          </Tooltip>
         </div>
-      )}
+      );
+    }
+
+    if (ineligibleVote) {
+      return (
+        <div className="flex items-center justify-between">
+          <Paragraph
+            size={ParagraphSize.base}
+            className="text-xs italic font-medium leading-relaxed"
+          >
+            {t(pageTranslations.ineligibleVote)}
+            <br />
+            {t(pageTranslations.eligibleVote)}
+          </Paragraph>
+
+          <Link to="/earn/staking" className="no-underline">
+            <Button
+              style={ButtonStyle.secondary}
+              size={ButtonSize.large}
+              text={t(pageTranslations.stakeSOV)}
+            />
+          </Link>
+        </div>
+      );
+    }
+
+    if (!hasUserVoted && status === ProposalState.Active) {
+      return (
+        <div className="flex items-center gap-8">
+          <Button
+            className="w-52"
+            style={ButtonStyle.secondary}
+            size={ButtonSize.large}
+            onClick={handleSupport}
+            text={
+              <span className="flex items-center">
+                <Icon
+                  className="mr-2.5 text-positive"
+                  size={14}
+                  icon={IconNames.CHECK}
+                />
+                {t(pageTranslations.support)}
+              </span>
+            }
+          />
+
+          <Button
+            className="w-52"
+            style={ButtonStyle.secondary}
+            size={ButtonSize.large}
+            onClick={handleReject}
+            text={
+              <span className="flex items-center">
+                <Icon
+                  className="mr-2.5 text-negative"
+                  size={12}
+                  icon={IconNames.X_MARK}
+                />
+                {t(pageTranslations.reject)}
+              </span>
+            }
+          />
+        </div>
+      );
+    }
+
+    if (!hasUserVoted && status !== ProposalState.Active) {
+      return (
+        <Paragraph
+          size={ParagraphSize.base}
+          className="text-xs italic font-medium leading-relaxed"
+        >
+          <Trans i18nKey={pageTranslations.noVote} />
+        </Paragraph>
+      );
+    }
+  }, [
+    account,
+    handleReject,
+    handleSupport,
+    hasUserVoted,
+    hasVotingPower,
+    loading,
+    status,
+  ]);
+
+  return (
+    <div className={classNames('bg-gray-80 p-6 rounded', className)}>
+      <Heading className="text-sm font-medium">
+        {t(pageTranslations.castVote)}
+      </Heading>
+      <div className="mt-8">{content}</div>
     </div>
   );
 };

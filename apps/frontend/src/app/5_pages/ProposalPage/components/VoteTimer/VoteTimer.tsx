@@ -3,12 +3,13 @@ import React, { FC, useMemo } from 'react';
 import { t } from 'i18next';
 import { useTimer } from 'react-timer-hook';
 
-import { Paragraph, ParagraphSize } from '@sovryn/ui';
+import { Paragraph, ParagraphSize, Tooltip } from '@sovryn/ui';
 
 import { MS } from '../../../../../constants/general';
 import { useBlockNumber } from '../../../../../hooks/useBlockNumber';
 import { translations } from '../../../../../locales/i18n';
 import { Proposal } from '../../../../../utils/graphql/rsk/generated';
+import { dateFormat } from '../../../../../utils/helpers';
 import { BLOCK_TIME_IN_SECONDS } from '../../../BitocracyPage/BitocracyPage.constants';
 import { ProposalState } from '../../../BitocracyPage/BitocracyPage.types';
 import { useProposalStatus } from '../../../BitocracyPage/hooks/useProposalStatus';
@@ -57,7 +58,31 @@ export const VoteTimer: FC<VoteTimerProps> = ({ proposal, className }) => {
         size={ParagraphSize.small}
         className="mb-3 font-medium font-xs"
       >
-        {label}
+        <Tooltip
+          content={
+            <div className="font-medium">
+              <span className="font-semibold">
+                {t(pageTranslations.voteStart)}
+              </span>
+              <br />
+              <span>
+                {dateFormat(proposal.timestamp)} ({t(pageTranslations.block)} #
+                {proposal.startBlock})
+              </span>
+              <br />
+              <span className="font-semibold">
+                {t(pageTranslations.voteEnd)}
+              </span>
+              <br />
+              <span>
+                {dateFormat(expiryTimestamp.getTime() / MS)} (
+                {t(pageTranslations.block)} #{proposal.endBlock})
+              </span>
+            </div>
+          }
+        >
+          <span>{label}</span>
+        </Tooltip>
       </Paragraph>
     </div>
   );

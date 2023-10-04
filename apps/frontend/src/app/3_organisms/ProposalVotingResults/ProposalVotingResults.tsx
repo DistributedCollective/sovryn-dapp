@@ -35,10 +35,9 @@ export const ProposalVotingResults: FC<ProposalVotingResultsProps> = ({
       Decimal.fromBigNumberString(votesAgainst),
     );
 
-    const support = Decimal.fromBigNumberString(votesFor)
-      .div(votes)
-      .mul(100)
-      .toNumber();
+    const support = votes.isZero()
+      ? 0
+      : Decimal.fromBigNumberString(votesFor).div(votes).mul(100).toNumber();
 
     const turnout = votes
       .div(

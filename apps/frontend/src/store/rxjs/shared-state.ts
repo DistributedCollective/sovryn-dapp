@@ -9,6 +9,7 @@ import {
 
 export type EventDriverState = {
   fastBtcDialog: FastBtcDialogState;
+  emailNotificationSettingsDialog: EmailNotificationSettingsDialogState;
 };
 
 export type FastBtcDialogState = {
@@ -16,10 +17,17 @@ export type FastBtcDialogState = {
   shouldHideSend: boolean;
 };
 
+export type EmailNotificationSettingsDialogState = {
+  isOpen: boolean;
+};
+
 const INITIAL_STATE = {
   fastBtcDialog: {
     isOpen: false,
     shouldHideSend: false,
+  },
+  emailNotificationSettingsDialog: {
+    isOpen: false,
   },
 };
 
@@ -74,11 +82,29 @@ const closeFastBtcDialog = () =>
     },
   }));
 
+const openEmailNotificationSettingsDialog = () =>
+  dispatch(state => ({
+    ...state,
+    emailNotificationSettingsDialog: {
+      isOpen: true,
+    },
+  }));
+
+const closeEmailNotificationSettingsDialog = () =>
+  dispatch(state => ({
+    ...state,
+    emailNotificationSettingsDialog: {
+      isOpen: false,
+    },
+  }));
+
 export const sharedState = {
   get,
   select,
   actions: {
     openFastBtcDialog,
     closeFastBtcDialog,
+    openEmailNotificationSettingsDialog,
+    closeEmailNotificationSettingsDialog,
   },
 };

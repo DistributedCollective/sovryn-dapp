@@ -20,7 +20,7 @@ export const ConvertHistory: FC = () => {
         value={selectedHistoryType}
         onChange={setSelectedHistoryType}
         options={CONVERT_HISTORY_OPTIONS}
-        className="min-w-36"
+        className="min-w-36 w-full lg:w-auto"
       />
     ),
     [selectedHistoryType],

@@ -141,6 +141,7 @@ export const RewardsEarnedHistory: FC<RewardHistoryProps> = ({
           value={selectedHistoryType}
           onChange={onChangeRewardHistory}
           options={rewardHistoryOptions}
+          className="min-w-36 w-full lg:w-auto"
         />
         <div className="flex-row items-center ml-2 gap-4 hidden lg:inline-flex">
           <ExportCSV

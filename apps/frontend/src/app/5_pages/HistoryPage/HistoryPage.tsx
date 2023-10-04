@@ -120,7 +120,7 @@ const HistoryPage: FC = () => {
         <div className="w-full">
           <div className={styles.mobileSelect}>
             <Select
-              className="min-w-[12rem]"
+              className="min-w-[12rem] w-full lg:w-auto"
               options={options}
               value={String(index)}
               onChange={value => setIndex(Number(value))}

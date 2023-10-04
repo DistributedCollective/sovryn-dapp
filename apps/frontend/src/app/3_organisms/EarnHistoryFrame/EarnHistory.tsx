@@ -19,7 +19,7 @@ export const EarnHistory: FC = () => {
         value={selectedHistoryType}
         onChange={setSelectedHistoryType}
         options={EARN_HISTORY_OPTIONS}
-        className="min-w-36"
+        className="min-w-36 w-full lg:w-auto"
       />
     ),
     [selectedHistoryType],

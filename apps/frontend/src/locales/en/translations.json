@@ -479,6 +479,14 @@
             "extendStakeTitle": "Extend stake",
             "delegateStake": "Delegate voting power details",
             "delegateStakeTitle": "Delegate voting power"
+        },
+        "nextStepDialog": {
+            "dialogTitle": "Next steps",
+            "title": "Sign up for important alerts",
+            "description": "Receive an email every time a new proposal is created. Then cast your vote to make your voice heard in Sovryn Bitocracy.",
+            "emailNotifications": "Email notifications",
+            "doNotShowAgain": "Don't show again",
+            "signUp": "Sign up"
         }
     },
 

@@ -1,0 +1,60 @@
+import React, { FC, useMemo } from 'react';
+
+import { t } from 'i18next';
+import { useTimer } from 'react-timer-hook';
+
+import { Paragraph, ParagraphSize } from '@sovryn/ui';
+
+import { translations } from '../../../../../locales/i18n';
+import { Proposal } from '../../../../../utils/graphql/rsk/generated';
+import { BLOCK_TIME_IN_SECONDS } from '../../../BitocracyPage/BitocracyPage.constants';
+import { ProposalState } from '../../../BitocracyPage/BitocracyPage.types';
+import { useProposalStatus } from '../../../BitocracyPage/hooks/useProposalStatus';
+
+const pageTranslations = translations.proposalPage;
+
+type VoteTimerProps = {
+  className?: string;
+  proposal: Proposal;
+};
+
+export const VoteTimer: FC<VoteTimerProps> = ({ proposal, className }) => {
+  const status = useProposalStatus(proposal);
+
+  const expiryTimestamp = useMemo(() => {
+    const secondsBetweenBlocks =
+      (proposal.endBlock - proposal.startBlock) * BLOCK_TIME_IN_SECONDS;
+    return new Date((proposal.timestamp + secondsBetweenBlocks) * 1000);
+  }, [proposal.endBlock, proposal.startBlock, proposal.timestamp]);
+
+  const { seconds, minutes, hours, days } = useTimer({
+    expiryTimestamp,
+    autoStart: true,
+  });
+
+  const label = useMemo(() => {
+    if (status !== ProposalState.Active) {
+      return t(pageTranslations.voteEnded);
+    }
+
+    return [days, hours, minutes, seconds].join(':');
+  }, [days, hours, minutes, seconds, status]);
+
+  return (
+    <div className={className}>
+      <Paragraph
+        size={ParagraphSize.small}
+        className="mb-3 font-xs text-gray-30"
+      >
+        {t(pageTranslations.timeToVote)}
+      </Paragraph>
+
+      <Paragraph
+        size={ParagraphSize.small}
+        className="mb-3 font-medium font-xs"
+      >
+        {label}
+      </Paragraph>
+    </div>
+  );
+};

@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useMemo } from 'react';
+import React, { FC, useCallback } from 'react';
 
 import { t } from 'i18next';
 import { Helmet } from 'react-helmet-async';
@@ -14,7 +14,7 @@ import {
 import { useAccount } from '../../../hooks/useAccount';
 import { translations } from '../../../locales/i18n';
 import { sharedState } from '../../../store/rxjs/shared-state';
-import { useGetPersonalStakingStatistics } from '../StakePage/components/PersonalStakingStatistics/hooks/useGetPersonalStakingStatistics';
+import { NewProposalButton } from './components/NewProposalButton/NewProposalButton';
 import { Proposals } from './components/Proposals/Proposals';
 import { useGetProposals } from './hooks/useGetProposals';
 
@@ -22,13 +22,7 @@ const pageTranslations = translations.bitocracyPage;
 
 const BitocracyPage: FC = () => {
   const { account } = useAccount();
-  const { votingPower } = useGetPersonalStakingStatistics();
   const { loading, data: proposals } = useGetProposals();
-
-  const isNewProposalButtonVisible = useMemo(
-    () => (votingPower ? Number(votingPower) > 0 : false),
-    [votingPower],
-  );
 
   const handleAlertsClick = useCallback(
     () => sharedState.actions.openEmailNotificationSettingsDialog(),
@@ -59,14 +53,7 @@ const BitocracyPage: FC = () => {
               className="mb-3 sm:mb-0"
               onClick={handleAlertsClick}
             />
-            {isNewProposalButtonVisible && (
-              <div className="bg-gray-90 sm:bg-transparent p-4 pb-8 sm:p-0 border-t sm:border-none border-gray-60 flex items-center justify-center sm:ml-3 sm:relative fixed bottom-0 left-0 right-0 z-10 sm:z-0">
-                <Button
-                  text={t(pageTranslations.actions.newProposal)}
-                  className="w-full sm:w-auto"
-                />
-              </div>
-            )}
+            <NewProposalButton />
           </div>
         )}
         <Proposals proposals={proposals} loading={loading} />

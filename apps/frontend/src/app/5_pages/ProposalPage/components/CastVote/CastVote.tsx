@@ -78,7 +78,7 @@ export const CastVote: FC<CastVoteProps> = ({ proposal, className }) => {
           </div>
         )}
 
-        {noVote && account && (
+        {!ineligibleVote && noVote && account && (
           <Paragraph
             size={ParagraphSize.base}
             className="text-xs italic font-medium leading-relaxed"

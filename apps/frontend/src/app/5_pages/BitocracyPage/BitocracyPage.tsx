@@ -11,32 +11,14 @@ import {
   ParagraphSize,
 } from '@sovryn/ui';
 
-import { ProposalVotingResults } from '../../3_organisms/ProposalVotingResults';
 import { useAccount } from '../../../hooks/useAccount';
 import { translations } from '../../../locales/i18n';
 import { sharedState } from '../../../store/rxjs/shared-state';
-import { Proposal } from '../../../utils/graphql/rsk/generated';
 import { useGetPersonalStakingStatistics } from '../StakePage/components/PersonalStakingStatistics/hooks/useGetPersonalStakingStatistics';
 import { Proposals } from './components/Proposals/Proposals';
 import { useGetProposals } from './hooks/useGetProposals';
 
 const pageTranslations = translations.bitocracyPage;
-
-// DUMMY DATA, REMOVE WHEN REAL DATA IS AVAILABLE
-const proposal = {
-  id: '0x6496df39d000478a7a7352c01e0e713835051ccd-32',
-  votesFor: '25642394317449679336562867',
-  votesAgainst: '9204395962492958076500991',
-  endBlock: 5505959,
-  startBlock: 5505952,
-  quorum: '20928484835262004265672060',
-  majorityPercentage: '73249696923417014929852210',
-  emittedBy: {
-    id: '0x6496df39d000478a7a7352c01e0e713835051ccd',
-    majorityPercentageVotes: 70,
-    quorumPercentageVotes: 20,
-  },
-} as Proposal;
 
 const BitocracyPage: FC = () => {
   const { account } = useAccount();
@@ -88,11 +70,6 @@ const BitocracyPage: FC = () => {
           </div>
         )}
         <Proposals proposals={proposals} loading={loading} />
-
-        <div className="mt-12" />
-        <ProposalVotingResults proposal={proposal} />
-        <div className="mt-12" />
-        <ProposalVotingResults proposal={{ ...proposal, endBlock: 0 }} />
       </div>
     </>
   );

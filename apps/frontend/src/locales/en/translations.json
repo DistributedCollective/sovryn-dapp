@@ -361,7 +361,8 @@
             "withdraw": "Withdraw {{asset}}",
             "depositTitle": "Deposit {{asset}} to the stability pool",
             "deposit": "Deposit {{asset}}"
-        }
+        },
+        "apr": "APR"
     },
 
     "convertPage": {

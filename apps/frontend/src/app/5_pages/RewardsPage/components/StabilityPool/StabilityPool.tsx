@@ -225,6 +225,7 @@ export const StabilityPool: FC = () => {
                 : t(translations.rewardPage.stabilityPool.notConnected)}
             </span>
           }
+          loadingData={t(translations.common.tables.loading)}
           rowTitle={row => (
             <div className="flex flex-col items-start gap-1">
               <Paragraph className="text-gray-40 font-medium">

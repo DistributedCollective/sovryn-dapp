@@ -20,12 +20,8 @@
   }
 }
 
-.noData {
+.noData, .loading {
   @apply relative py-6 px-5 text-center;
-}
-
-.loading {
-  @apply h-6 block bg-gray-50 rounded animate-pulse;
 }
 
 .header {

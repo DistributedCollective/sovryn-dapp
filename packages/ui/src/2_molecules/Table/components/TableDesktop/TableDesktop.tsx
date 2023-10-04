@@ -24,6 +24,7 @@ export const TableDesktop = <RowType extends RowObject>({
   rows,
   rowKey,
   noData,
+  loadingData,
   onRowClick,
   dataAttribute,
   isClickable,
@@ -146,24 +147,13 @@ export const TableDesktop = <RowType extends RowObject>({
               ))}
             </tr>
 
-            {isLoading ? (
-              Array.from(Array(4).keys()).map(i => (
-                <Fragment key={i}>
-                  <tr className={rowStyles.row}>
-                    <td className={styles.noData} colSpan={999}>
-                      <span className={styles.loading} />
-                    </td>
-                  </tr>
-                  <tr className={styles.spacer}></tr>
-                </Fragment>
-              ))
-            ) : (
-              <tr className={rowStyles.row}>
-                <td className={styles.noData} colSpan={999}>
-                  {noData ? noData : 'No data'}
-                </td>
-              </tr>
-            )}
+            <tr className={rowStyles.row}>
+              <td className={styles.loading} colSpan={999}>
+                {isLoading
+                  ? loadingData || 'Loading data…'
+                  : noData || 'No data'}
+              </td>
+            </tr>
           </>
         )}
       </tbody>

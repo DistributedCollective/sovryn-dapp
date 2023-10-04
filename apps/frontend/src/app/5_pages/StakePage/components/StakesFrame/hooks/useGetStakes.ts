@@ -17,7 +17,7 @@ export const useGetStakes = () => {
   const prevBlockRef = useRef<number | undefined>(block);
 
   const updateStakes = useCallback(async () => {
-    if (!stakingContract) {
+    if (!stakingContract || !account) {
       return;
     }
 
@@ -61,7 +61,7 @@ export const useGetStakes = () => {
       return;
     }
 
-    if (prevBlockRef.current !== block) {
+    if (prevBlockRef.current !== block || account) {
       updateStakes();
     }
 

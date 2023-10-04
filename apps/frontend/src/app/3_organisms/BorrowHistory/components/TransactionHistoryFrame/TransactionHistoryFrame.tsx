@@ -563,6 +563,7 @@ export const TransactionHistoryFrame: FC<PropsWithChildren> = ({
           isLoading={loading}
           className="bg-gray-80 text-gray-10 lg:px-6 lg:py-4"
           noData={noDataLabel}
+          loadingData={t(translations.common.tables.loading)}
           dataAttribute="transaction-history-table"
         />
         <Pagination

@@ -150,6 +150,7 @@ export const Staking: FC = () => {
                 : t(translations.rewardPage.stabilityPool.notConnected)}
             </span>
           }
+          loadingData={t(translations.common.tables.loading)}
           rowTitle={row => (
             <div className="flex flex-col items-start gap-1 font-medium">
               <Paragraph className="text-gray-40">{row.type}</Paragraph>

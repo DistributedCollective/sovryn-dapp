@@ -12,6 +12,7 @@ import {
 
 import { translations } from '../../../../../locales/i18n';
 import { useGetPersonalStakingStatistics } from '../../../StakePage/components/PersonalStakingStatistics/hooks/useGetPersonalStakingStatistics';
+import { ProposalContextProvider } from '../../contexts/NewProposalContext';
 import { NewProposalForm } from '../NewProposalForm/NewProposalForm';
 
 const pageTranslations = translations.bitocracyPage;
@@ -30,7 +31,7 @@ export const NewProposalButton: FC = () => {
   );
 
   return (
-    <>
+    <ProposalContextProvider>
       {isNewProposalButtonVisible && (
         <div className="bg-gray-90 sm:bg-transparent p-4 pb-8 sm:p-0 border-t sm:border-none border-gray-60 flex items-center justify-center sm:ml-3 sm:relative fixed bottom-0 left-0 right-0 z-10 sm:z-0">
           <Button
@@ -53,6 +54,6 @@ export const NewProposalButton: FC = () => {
         />
         <DialogBody children={<NewProposalForm />} />
       </Dialog>
-    </>
+    </ProposalContextProvider>
   );
 };

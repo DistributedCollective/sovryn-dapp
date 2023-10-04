@@ -1197,5 +1197,9 @@
         "requiredValue": "{{value}} VP ({{percent}}%)",
         "currentValue": "{{value}} VP ({{percent}}%)"
       }
+    },
+    "newProposalTx": {
+      "title": "Submit Proposal",
+      "description": "Submit a new proposal to the Bitocracy"
     }
 }

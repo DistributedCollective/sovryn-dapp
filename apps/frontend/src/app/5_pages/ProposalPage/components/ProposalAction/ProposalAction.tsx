@@ -40,7 +40,10 @@ export const ProposalAction: FC<ProposalActionProps> = ({
     if (status === ProposalState.Succeeded) {
       return ProposalActionType.queue;
     }
-    if (status === ProposalState.Queued && (proposal?.eta || 0) < Date.now()) {
+    if (
+      status === ProposalState.Queued &&
+      (proposal?.eta || 0) < Date.now() / 1000
+    ) {
       return ProposalActionType.execute;
     }
     return ProposalActionType.none;

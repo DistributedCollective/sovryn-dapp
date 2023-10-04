@@ -15094,12 +15094,12 @@ export type GetLendHistoryQuery = {
 };
 
 export type GetProposalQueryVariables = Exact<{
-  id?: InputMaybe<Scalars['ID']>;
+  id: Scalars['ID'];
 }>;
 
 export type GetProposalQuery = {
   __typename?: 'Query';
-  proposals: Array<{
+  proposal?: {
     __typename?: 'Proposal';
     id: string;
     votesFor: string;
@@ -15144,7 +15144,7 @@ export type GetProposalQuery = {
       state: ProposalState;
       timestamp: number;
     }>;
-  }>;
+  } | null;
 };
 
 export type GetProposalsQueryVariables = Exact<{ [key: string]: never }>;
@@ -16411,8 +16411,8 @@ export type GetLendHistoryQueryResult = Apollo.QueryResult<
   GetLendHistoryQueryVariables
 >;
 export const GetProposalDocument = gql`
-  query getProposal($id: ID) {
-    proposals(where: { id: $id }) {
+  query getProposal($id: ID!) {
+    proposal(id: $id) {
       id
       canceled {
         id
@@ -16486,7 +16486,7 @@ export const GetProposalDocument = gql`
  * });
  */
 export function useGetProposalQuery(
-  baseOptions?: Apollo.QueryHookOptions<
+  baseOptions: Apollo.QueryHookOptions<
     GetProposalQuery,
     GetProposalQueryVariables
   >,

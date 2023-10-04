@@ -15146,6 +15146,57 @@ export type GetLoansQuery = {
   }>;
 };
 
+export type GetProposalsQueryVariables = Exact<{ [key: string]: never }>;
+
+export type GetProposalsQuery = {
+  __typename?: 'Query';
+  proposals: Array<{
+    __typename?: 'Proposal';
+    id: string;
+    votesFor: string;
+    votesAgainst: string;
+    countVotersFor: number;
+    countVotersAgainst: number;
+    quorum: string;
+    majorityPercentage: string;
+    eta?: number | null;
+    proposalId: number;
+    targets: Array<string>;
+    values: Array<string>;
+    signatures: Array<string>;
+    calldatas: Array<string>;
+    startBlock: number;
+    endBlock: number;
+    description: string;
+    timestamp: number;
+    canceled?: { __typename?: 'Transaction'; id: string } | null;
+    executed?: { __typename?: 'Transaction'; id: string } | null;
+    queued?: { __typename?: 'Transaction'; id: string } | null;
+    created: { __typename?: 'Transaction'; id: string };
+    votes?: Array<{
+      __typename?: 'VoteCast';
+      votes: string;
+      support: boolean;
+      voter: { __typename?: 'User'; id: string };
+      transaction: { __typename?: 'Transaction'; id: string };
+    }> | null;
+    emittedBy: {
+      __typename?: 'GovernorContract';
+      id: string;
+      votingDelay: number;
+      votingPeriod: number;
+      quorumPercentageVotes: number;
+      majorityPercentageVotes: number;
+    };
+    stateChanges: Array<{
+      __typename?: 'ProposalStateChange';
+      id: string;
+      state: ProposalState;
+      timestamp: number;
+    }>;
+  }>;
+};
+
 export type GetRewardsEarnedHistoryQueryVariables = Exact<{
   user?: InputMaybe<Scalars['String']>;
   skip: Scalars['Int'];
@@ -16572,6 +16623,113 @@ export type GetLoansLazyQueryHookResult = ReturnType<
 export type GetLoansQueryResult = Apollo.QueryResult<
   GetLoansQuery,
   GetLoansQueryVariables
+>;
+export const GetProposalsDocument = gql`
+  query getProposals {
+    proposals(orderBy: timestamp, orderDirection: desc) {
+      id
+      canceled {
+        id
+      }
+      executed {
+        id
+      }
+      queued {
+        id
+      }
+      created {
+        id
+      }
+      votesFor
+      votesAgainst
+      countVotersFor
+      countVotersAgainst
+      quorum
+      majorityPercentage
+      eta
+      proposalId
+      targets
+      values
+      signatures
+      calldatas
+      startBlock
+      endBlock
+      description
+      timestamp
+      votes {
+        voter {
+          id
+        }
+        votes
+        support
+        transaction {
+          id
+        }
+      }
+      emittedBy {
+        id
+        votingDelay
+        votingPeriod
+        quorumPercentageVotes
+        majorityPercentageVotes
+      }
+      stateChanges {
+        id
+        state
+        timestamp
+      }
+    }
+  }
+`;
+
+/**
+ * __useGetProposalsQuery__
+ *
+ * To run a query within a React component, call `useGetProposalsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetProposalsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetProposalsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetProposalsQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    GetProposalsQuery,
+    GetProposalsQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<GetProposalsQuery, GetProposalsQueryVariables>(
+    GetProposalsDocument,
+    options,
+  );
+}
+export function useGetProposalsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    GetProposalsQuery,
+    GetProposalsQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<GetProposalsQuery, GetProposalsQueryVariables>(
+    GetProposalsDocument,
+    options,
+  );
+}
+export type GetProposalsQueryHookResult = ReturnType<
+  typeof useGetProposalsQuery
+>;
+export type GetProposalsLazyQueryHookResult = ReturnType<
+  typeof useGetProposalsLazyQuery
+>;
+export type GetProposalsQueryResult = Apollo.QueryResult<
+  GetProposalsQuery,
+  GetProposalsQueryVariables
 >;
 export const GetRewardsEarnedHistoryDocument = gql`
   query getRewardsEarnedHistory(

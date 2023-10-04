@@ -36,13 +36,15 @@ export const ExecutableDetails: FC<ExecutableDetailsProps> = ({ proposal }) => {
       <Heading className="text-sm font-medium">
         {t(pageTranslations.title)}
       </Heading>
-      <div className="px-3 py-4 mt-2 flex flex-wrap gap-16">
+      <div className="py-1 mt-2 flex flex-wrap gap-16">
         {executableList.map((executable, i) => (
-          <div key={executable.signature} className="w-80 font-medium">
+          <div
+            key={executable.signature}
+            className="w-80 font-medium bg-gray-80 p-3 rounded"
+          >
             <Heading className="text-xs">
               {t(pageTranslations.executable)} #{i + 1}
             </Heading>
-            <span />
 
             <div className="grid grid-cols-2 w-full text-gray-30 gap-3 mt-3">
               <Paragraph size={ParagraphSize.base} className="text-xs">
@@ -84,16 +86,13 @@ export const ExecutableDetails: FC<ExecutableDetailsProps> = ({ proposal }) => {
               <Paragraph size={ParagraphSize.base} className="text-xs">
                 {t(pageTranslations.contractAddress)}
               </Paragraph>
-              <Paragraph
-                size={ParagraphSize.base}
-                className="text-xs text-right"
-              >
+              <div className="text-xs text-right">
                 <TxIdWithNotification
                   href=""
                   value={executable.target}
-                  dataAttribute="stability-pool-history-address-id"
+                  dataAttribute="proposal-contract-address-id"
                 />
-              </Paragraph>
+              </div>
             </div>
 
             <div className="grid grid-cols-2 w-full text-gray-30 gap-3 mt-3">

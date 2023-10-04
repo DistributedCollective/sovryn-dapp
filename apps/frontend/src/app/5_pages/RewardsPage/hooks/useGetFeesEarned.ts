@@ -4,6 +4,7 @@ import { BigNumber } from 'ethers';
 
 import { SupportedTokens, getProtocolContract } from '@sovryn/contracts';
 import { getTokenContract } from '@sovryn/contracts';
+import { getLoanTokenContract } from '@sovryn/contracts';
 import { getProvider } from '@sovryn/ethers-provider';
 
 import { defaultChainId } from '../../../../config/chains';
@@ -14,13 +15,15 @@ import { useMulticall } from '../../../../hooks/useMulticall';
 import { EarnedFee } from '../RewardsPage.types';
 
 const MAX_CHECKPOINTS = 50;
-const FEE_ASSETS = [
+const FEE_TOKEN_ASSETS = [
   SupportedTokens.rbtc,
   SupportedTokens.wrbtc,
   SupportedTokens.sov,
   SupportedTokens.zusd,
   SupportedTokens.mynt,
 ];
+
+const FEE_LOAN_ASSETS = [SupportedTokens.rbtc];
 
 let btcDummyAddress: string;
 
@@ -55,8 +58,8 @@ export const useGetFeesEarned = () => {
       return;
     }
     // set defaults
-    const defaultTokenData = await Promise.all(
-      FEE_ASSETS.map(async asset => ({
+    const defaultTokenData = await Promise.all([
+      ...FEE_TOKEN_ASSETS.map(async asset => ({
         token: asset,
         contractAddress:
           asset === SupportedTokens.rbtc
@@ -69,8 +72,21 @@ export const useGetFeesEarned = () => {
         ...(asset !== SupportedTokens.rbtc
           ? { startFrom: 0, maxCheckpoints: 0 }
           : {}),
+        iToken: false,
       })),
-    );
+      ...FEE_LOAN_ASSETS.map(async asset => ({
+        token: asset,
+        contractAddress: (
+          await getLoanTokenContract(asset, defaultChainId)
+        ).address,
+        value: '0',
+        rbtcValue: 0,
+        startFrom: 0,
+        maxCheckpoints: 0,
+        iToken: true,
+      })),
+    ]);
+
     setEarnedFees(defaultTokenData);
 
     if (!account) {
@@ -88,35 +104,35 @@ export const useGetFeesEarned = () => {
     const feeSharingContract = contract(getProvider(defaultChainId));
 
     const checkpoints = await multicall(
-      defaultTokenData.flatMap(({ token, contractAddress }) => [
+      defaultTokenData.flatMap(({ contractAddress }) => [
         {
           contract: feeSharingContract,
           fnName: 'totalTokenCheckpoints',
           args: [contractAddress],
-          key: `${token}/totalTokenCheckpoints`,
+          key: `${contractAddress}/totalTokenCheckpoints`,
           parser: (value: string) => Number(value),
         },
         {
           contract: feeSharingContract,
           fnName: 'processedCheckpoints',
           args: [account, contractAddress],
-          key: `${token}/processedCheckpoints`,
+          key: `${contractAddress}/processedCheckpoints`,
           parser: (value: string) => Number(value),
         },
       ]),
     );
 
     const amounts = await multicall(
-      defaultTokenData.map(({ token, contractAddress }) => ({
+      defaultTokenData.map(({ contractAddress }) => ({
         contract: feeSharingContract,
         fnName: 'getAllUserFeesPerMaxCheckpoints',
         args: [
           account,
           contractAddress,
-          Math.max(checkpoints[`${token}/processedCheckpoints`], 0),
+          Math.max(checkpoints[`${contractAddress}/processedCheckpoints`], 0),
           MAX_CHECKPOINTS,
         ],
-        key: token,
+        key: contractAddress,
         parser: ({ fees }: { fees: string[] }) =>
           fees.reduce((prev, cur) => prev.add(cur), BigNumber.from(0)),
       })),
@@ -125,10 +141,12 @@ export const useGetFeesEarned = () => {
     const results = defaultTokenData.map((tokenData, index) => ({
       token: tokenData.token,
       contractAddress: tokenData.contractAddress,
-      value: amounts[tokenData.token].toString(),
+      value: amounts[tokenData.contractAddress].toString(),
       rbtcValue: 0,
-      startFrom: checkpoints[`${tokenData.token}/processedCheckpoints`],
-      maxCheckpoints: checkpoints[`${tokenData.token}/totalTokenCheckpoints`],
+      startFrom:
+        checkpoints[`${tokenData.contractAddress}/processedCheckpoints`],
+      maxCheckpoints:
+        checkpoints[`${tokenData.contractAddress}/totalTokenCheckpoints`],
     }));
 
     if (isMounted()) {

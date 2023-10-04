@@ -24,6 +24,7 @@ export enum NotificationMessageType {
   LoanMarginCall = 'LoanMarginCall',
   LoanLiquidation = 'LoanLiquidation',
   LoanMarginCallUndercollateralized = 'LoanMarginCallUndercollateralized',
+  BitocracyVote = 'BitocracyVote',
 }
 
 export enum AlertGroup {
@@ -31,6 +32,7 @@ export enum AlertGroup {
   Liquidations = 'Liquidations',
   StabilityPool = 'StabilityPool',
   System = 'System',
+  BitocracyVote = 'BitocracyVote',
 }
 
 export const AlertGroupToNotificationsMapping: Record<
@@ -57,6 +59,7 @@ export const AlertGroupToNotificationsMapping: Record<
     NotificationMessageType.ZeroLowTcr,
     NotificationMessageType.ZeroRecovery,
   ],
+  BitocracyVote: [NotificationMessageType.BitocracyVote],
 };
 
 export type Notification = {
@@ -119,6 +122,10 @@ export const defaultSubscriptionsArray: Notification[] = [
   },
   {
     notification: NotificationMessageType.LoanLiquidation,
+    isSubscribed: false,
+  },
+  {
+    notification: NotificationMessageType.BitocracyVote,
     isSubscribed: false,
   },
 ];

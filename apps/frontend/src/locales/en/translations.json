@@ -67,7 +67,7 @@
     "connectWalletButton": {
         "connect": "Get started",
         "rewards": "Rewards",
-        "settings": "Settings",
+        "notifications": "Notifications",
         "history": "History",
         "copyAddress": "Copy address",
         "disconnect": "Disconnect"
@@ -1045,15 +1045,16 @@
         }
     },
     "emailNotificationsDialog": {
-        "dialogTitle": "Settings",
-        "title": "Sign up to receive important notifications about the state of your line of credit and the Zero protocol",
+        "dialogTitle": "Notifications",
+        "title": "Sign up to receive important notifications about Sovryn loans, Zero recovery mode, Bitocracy votes, and more",
         "emailInputLabel": "Email address",
         "emailInputPlaceholder": "Enter email",
         "alertGroups": {
             "marginCallsToggle": "Margin call alerts",
             "liquidationsToggle": "Liquidation and redemption alerts",
             "stabilityPoolToggle": "Stability pool alerts",
-            "systemToggle": "System alerts"
+            "systemToggle": "System alerts",
+            "bitocracyToggle": "Bitocracy alerts"
         },
         "successMessage": "Your preferences have been saved.",
         "errorMessage": "Something went wrong, please try again.",

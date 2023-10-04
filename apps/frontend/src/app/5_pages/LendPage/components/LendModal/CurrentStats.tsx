@@ -14,11 +14,11 @@ import { AcceptedCollateral } from '../AcceptedCollateral/AcceptedCollateral';
 import styles from './CurrentStats.module.css';
 
 export type CurrentStatsProps = {
-  apy: Decimal;
+  apr: Decimal;
   token: SupportedTokens;
 };
 
-export const CurrentStats: FC<CurrentStatsProps> = ({ apy, token }) => {
+export const CurrentStats: FC<CurrentStatsProps> = ({ apr, token }) => {
   const pool = LendingPoolDictionary.get(token);
 
   return (
@@ -31,9 +31,9 @@ export const CurrentStats: FC<CurrentStatsProps> = ({ apy, token }) => {
       <div className="flex gap-8">
         <div className="mt-6 flex flex-col gap-2">
           <Paragraph className="font-medium text-gray-30">
-            {t(translations.lending.apy)}
+            {t(translations.lending.apr)}
           </Paragraph>
-          <AmountRenderer value={apy} suffix="%" />
+          <AmountRenderer value={apr} suffix="%" />
         </div>
         <div className="mt-6 flex flex-col gap-2">
           <Paragraph className="font-medium text-gray-30">

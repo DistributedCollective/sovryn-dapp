@@ -34,7 +34,7 @@ export type AdjustModalProps = {
 
 export type FullAdjustModalState = {
   token: SupportedTokens;
-  apy: Decimal;
+  apr: Decimal;
   balance: Decimal;
   liquidity: Decimal;
   poolTokenContract: Contract;
@@ -93,7 +93,7 @@ export const AdjustLendingModalContainer: FC<AdjustModalProps> = ({
         () => poolTokenContract?.marketLiquidity(),
       ).then(Decimal.fromBigNumberString);
 
-      const apy = await asyncCall(
+      const apr = await asyncCall(
         `poolToken/${poolToken.address}/nextSupplyInterestRate`,
         () => poolTokenContract?.nextSupplyInterestRate('0'),
       ).then(Decimal.fromBigNumberString);
@@ -102,7 +102,7 @@ export const AdjustLendingModalContainer: FC<AdjustModalProps> = ({
         token: value,
         balance,
         liquidity,
-        apy,
+        apr,
         poolTokenContract,
         tokenContract,
         tokenDetails,
@@ -140,7 +140,7 @@ export const AdjustLendingModalContainer: FC<AdjustModalProps> = ({
             <div className="bg-gray-90 p-4 rounded">
               <CurrentStats
                 symbol={state.token}
-                apy={state.apy}
+                apr={state.apr}
                 balance={state.balance}
               />
             </div>

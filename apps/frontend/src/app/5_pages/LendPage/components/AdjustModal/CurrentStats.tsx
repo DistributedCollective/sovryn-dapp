@@ -13,13 +13,13 @@ import { translations } from '../../../../../locales/i18n';
 import styles from './CurrentStats.module.css';
 
 export type CurrentStatsProps = {
-  apy: Decimal;
+  apr: Decimal;
   balance: Decimal;
   symbol: SupportedTokens;
 };
 
 export const CurrentStats: FC<CurrentStatsProps> = ({
-  apy,
+  apr,
   balance,
   symbol,
 }) => (
@@ -32,9 +32,9 @@ export const CurrentStats: FC<CurrentStatsProps> = ({
     <div className="flex gap-8">
       <div className="mt-6 flex flex-col gap-2">
         <Paragraph className="font-medium text-gray-30">
-          {t(translations.lendingAdjust.apy)}
+          {t(translations.lendingAdjust.apr)}
         </Paragraph>
-        <AmountRenderer value={apy} suffix="%" />
+        <AmountRenderer value={apr} suffix="%" />
       </div>
       <div className="mt-6 flex flex-col gap-2">
         <Paragraph className="font-medium text-gray-30">

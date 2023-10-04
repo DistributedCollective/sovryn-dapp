@@ -85,8 +85,8 @@ export const LendingForm: FC<DepositProps> = ({ state, onConfirm }) => {
   }, [amount, balance, isDeposit, state.balance]);
 
   const [totalSupply, setTotalSupply] = useState<BigNumber>(BigNumber.from(0));
-  const [lendApy, setLendApy] = useState<Decimal>(state.apy);
-  const [withdrawApy, setWithdrawApy] = useState<Decimal>(state.apy);
+  const [lendApr, setLendApr] = useState<Decimal>(state.apr);
+  const [withdrawApr, setWithdrawApr] = useState<Decimal>(state.apr);
 
   useEffect(() => {
     asyncCall(
@@ -100,7 +100,7 @@ export const LendingForm: FC<DepositProps> = ({ state, onConfirm }) => {
       asyncCall(
         `lending/${state.poolTokenContract.address}/nextSupplyInterestRate/${amount}`,
         () => state.poolTokenContract.nextSupplyInterestRate(amount),
-      ).then(res => setLendApy(Decimal.fromBigNumberString(res.toString())));
+      ).then(res => setLendApr(Decimal.fromBigNumberString(res.toString())));
     }
   }, [state.poolTokenContract, amount, type, isDeposit]);
 
@@ -115,14 +115,14 @@ export const LendingForm: FC<DepositProps> = ({ state, onConfirm }) => {
             totalSupply.sub(amount),
           ),
       ).then(res =>
-        setWithdrawApy(Decimal.fromBigNumberString(res.toString())),
+        setWithdrawApr(Decimal.fromBigNumberString(res.toString())),
       );
     }
   }, [amount, isDeposit, state.poolTokenContract, totalSupply]);
 
-  const newApy = useMemo(
-    () => (isDeposit ? lendApy : withdrawApy),
-    [isDeposit, lendApy, withdrawApy],
+  const newApr = useMemo(
+    () => (isDeposit ? lendApr : withdrawApr),
+    [isDeposit, lendApr, withdrawApr],
   );
 
   // reset value when tab changed
@@ -164,8 +164,13 @@ export const LendingForm: FC<DepositProps> = ({ state, onConfirm }) => {
       )}
       <SimpleTable className="mt-8">
         <SimpleTableRow
-          label={t(translations.lendingAdjust.newApy)}
-          value={<AmountRenderer value={newApy} suffix="% APY" />}
+          label={t(translations.lendingAdjust.newApr)}
+          value={
+            <AmountRenderer
+              value={newApr}
+              suffix={`% ${t(translations.lendPage.apr)}`}
+            />
+          }
         />
         <SimpleTableRow
           label={t(translations.lendingAdjust.newBalance)}

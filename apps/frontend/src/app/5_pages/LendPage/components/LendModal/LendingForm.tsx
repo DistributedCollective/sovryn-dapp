@@ -67,13 +67,13 @@ export const LendingForm: FC<DepositProps> = ({ state, onConfirm }) => {
     [isValidAmount, hasDisclaimerBeenChecked, depositLocked],
   );
 
-  const [lendApy, setLendApy] = useState<Decimal>(state.apy);
+  const [lendApr, setLendApr] = useState<Decimal>(state.apr);
 
   useEffect(() => {
     asyncCall(
       `lending/${state.poolTokenContract.address}/nextSupplyInterestRate/${amount}`,
       () => state.poolTokenContract.nextSupplyInterestRate(amount),
-    ).then(res => setLendApy(Decimal.fromBigNumberString(res.toString())));
+    ).then(res => setLendApr(Decimal.fromBigNumberString(res.toString())));
   }, [state.poolTokenContract, amount]);
 
   useEffect(() => setValue(''), [setValue]);
@@ -113,8 +113,13 @@ export const LendingForm: FC<DepositProps> = ({ state, onConfirm }) => {
       )}
       <SimpleTable className="mt-6">
         <SimpleTableRow
-          label={t(translations.lending.newApy)}
-          value={<AmountRenderer value={lendApy} suffix="% APY" />}
+          label={t(translations.lending.newApr)}
+          value={
+            <AmountRenderer
+              value={lendApr}
+              suffix={`% ${t(translations.lendPage.apr)}`}
+            />
+          }
         />
       </SimpleTable>
 

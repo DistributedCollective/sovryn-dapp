@@ -58,12 +58,12 @@ export const convertPoolHistoryToMockData = (
   const dates = poolHistory.map(entry =>
     dayjs(entry.timestamp).format('YYYY-MM-DD'),
   );
-  const lendAPY = poolHistory.map(entry => parseFloat(entry.supply_apr));
+  const lendApr = poolHistory.map(entry => parseFloat(entry.supply_apr));
   const totalLiquidity = poolHistory.map(entry => parseFloat(entry.supply));
 
   return {
     dates,
-    lendAPY,
+    lendApr,
     totalLiquidity,
   };
 };
@@ -82,16 +82,16 @@ export const customCanvasBackgroundColor = {
 
 export const getChartData = (
   mockData: MockData,
-  lendApyGradient: CanvasGradient | undefined,
+  lendAprGradient: CanvasGradient | undefined,
   totalLiquidityGradient: CanvasGradient | undefined,
 ) => {
   return {
     labels: mockData.dates,
     datasets: [
       {
-        label: t(translations.lendPage.table.lendApy),
-        data: mockData.lendAPY,
-        backgroundColor: lendApyGradient,
+        label: t(translations.lendPage.table.lendApr),
+        data: mockData.lendApr,
+        backgroundColor: lendAprGradient,
         borderColor: '#72EADE',
         fill: true,
         yAxisID: 'y1',
@@ -111,7 +111,7 @@ export const getChartData = (
 };
 
 export const getChartOptions = (
-  lendAPYTickStep: number,
+  lendAprTickStep: number,
   mockData: MockData,
   pool: LendingPool,
 ) => {
@@ -123,7 +123,7 @@ export const getChartOptions = (
   const fontWeight = '500';
   const dashGridType = 'dash';
 
-  const lendAPYAxisOptions = {
+  const lendAprAxisOptions = {
     border: {
       color: borderColor,
     },
@@ -131,14 +131,14 @@ export const getChartOptions = (
     display: true,
     title: {
       display: true,
-      text: t(translations.lendPage.table.lendApy),
+      text: t(translations.lendPage.table.lendApr),
       color: textColor,
     },
     ticks: {
       callback: value => Number(value).toFixed(3) + '%',
-      stepSize: lendAPYTickStep,
-      min: Math.min(...mockData.lendAPY) - 3 * lendAPYTickStep,
-      max: Math.max(...mockData.lendAPY) + 3 * lendAPYTickStep,
+      stepSize: lendAprTickStep,
+      min: Math.min(...mockData.lendApr) - 3 * lendAprTickStep,
+      max: Math.max(...mockData.lendApr) + 3 * lendAprTickStep,
       color: textColor,
       font: {
         family: fontFamily,
@@ -224,7 +224,7 @@ export const getChartOptions = (
       },
     },
     scales: {
-      y1: lendAPYAxisOptions,
+      y1: lendAprAxisOptions,
       y: borrowedAvailableAxisOptions,
       x: xAxisOptions,
     },

@@ -1,9 +1,3 @@
-export enum ProposalType {
-  Parameter = 'Parameter',
-  Proclamation = 'Proclamation',
-  Treasury = 'Treasury',
-}
-
 export enum ProposalContract {
   SovrynProtocol = 'Sovryn Protocol',
   Staking = 'Staking',

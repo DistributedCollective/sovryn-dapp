@@ -75,7 +75,7 @@ export const ProposalVotingResults: FC<ProposalVotingResultsProps> = ({
       vote: vote.support
         ? t(translations.proposalPage.support)
         : t(translations.proposalPage.reject),
-      votes: fromWei(vote.votes),
+      votingPower: fromWei(vote.votes),
       TXID: vote.transaction.id,
     }));
   }, [addNotification, proposal]);

@@ -14,7 +14,7 @@ import { useIsMounted } from '../../../../hooks/useIsMounted';
 import { useMulticall } from '../../../../hooks/useMulticall';
 import { EarnedFee } from '../RewardsPage.types';
 
-const MAX_CHECKPOINTS = 50;
+const MAX_CHECKPOINTS = 150;
 const FEE_TOKEN_ASSETS = [
   SupportedTokens.rbtc,
   SupportedTokens.wrbtc,

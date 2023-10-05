@@ -9,7 +9,7 @@ import {
 
 export const useGetUserVote = (proposalId: string | undefined) => {
   const { account } = useAccount();
-  const { loading, data } = useGetVoteQuery({
+  const { loading, data, refetch } = useGetVoteQuery({
     client: rskClient,
     variables: {
       id: proposalId,
@@ -22,5 +22,5 @@ export const useGetUserVote = (proposalId: string | undefined) => {
     [data],
   );
 
-  return { loading, vote };
+  return { loading, vote, refetch };
 };

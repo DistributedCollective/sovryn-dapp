@@ -7,7 +7,7 @@ import {
 } from '../../../../utils/graphql/rsk/generated';
 
 export const useGetProposalById = (id: string) => {
-  const { loading, data } = useGetProposalQuery({
+  const { loading, data, refetch } = useGetProposalQuery({
     client: rskClient,
     variables: {
       id,
@@ -19,5 +19,5 @@ export const useGetProposalById = (id: string) => {
     [data],
   );
 
-  return { loading, proposal };
+  return { loading, proposal, refetch };
 };

@@ -10,7 +10,7 @@ import iconSucceed from '../../../../../assets/images/ProposalStatuses/icon-succ
 import { translations } from '../../../../../locales/i18n';
 import { Proposal } from '../../../../../utils/graphql/rsk/generated';
 import { ProposalState } from '../../BitocracyPage.types';
-import { renderEndDate } from '../../BitocracyPage.utils';
+import { renderProposalEndDate } from '../../BitocracyPage.utils';
 import { ProposalStatus } from '../ProposalStatus/ProposalStatus';
 import { ProposalTitle } from '../ProposalTitle/ProposalTitle';
 import { ProposalType } from '../ProposalType/ProposalType';
@@ -41,7 +41,7 @@ export const columnsConfig = [
   {
     id: 'endDate',
     title: t(translations.bitocracyPage.table.endDate),
-    cellRenderer: renderEndDate,
+    cellRenderer: renderProposalEndDate,
   },
   {
     id: '',

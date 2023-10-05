@@ -7,7 +7,7 @@ import { Icon, IconNames, Paragraph } from '@sovryn/ui';
 
 import { translations } from '../../../../../locales/i18n';
 import { Proposal } from '../../../../../utils/graphql/rsk/generated';
-import { prettifyId, renderEndDate } from '../../BitocracyPage.utils';
+import { renderProposalEndDate } from '../../BitocracyPage.utils';
 import { ProposalStatus } from '../ProposalStatus/ProposalStatus';
 import { ProposalType } from '../ProposalType/ProposalType';
 
@@ -23,7 +23,7 @@ export const ProposalCardsMobile: FC<ProposalCardsMobileProps> = ({
   const navigate = useNavigate();
 
   const handleCardClick = useCallback(
-    (proposal: Proposal) => navigate(`/bitocracy/${prettifyId(proposal.id)}`),
+    (proposal: Proposal) => navigate(`/bitocracy/${proposal.id}`),
     [navigate],
   );
 
@@ -70,7 +70,7 @@ export const ProposalCardsMobile: FC<ProposalCardsMobileProps> = ({
         </div>
         <div className="text-gray-30 text-xs flex items-center justify-between">
           <span>{t(translations.bitocracyPage.table.endDate)}</span>
-          <span>{renderEndDate(proposal)}</span>
+          <span>{renderProposalEndDate(proposal)}</span>
         </div>
       </div>
     ));

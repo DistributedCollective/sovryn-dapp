@@ -90,11 +90,11 @@ export const rskTestnet: Record<string, AsyncContractConfigData> = {
       (await import('../../abis/vestingRegistry.json')).default,
   },
   governorAdmin: {
-    address: '0x1528f0341a1Ea546780caD690F54b4FBE1834ED4',
-    getAbi: async () => [],
+    address: '0xc9a558f522755C1Ea6C25a885ae8131E00c9971A',
+    getAbi: async () => (await import('../../abis/governor.json')).default,
   },
   governorOwner: {
-    address: '0x058FD3F6a40b92b311B49E5e3E064300600021D7',
-    getAbi: async () => [],
+    address: '0x69dB16Aa6EEf291Fec522581F4fc9c82dFE60beD',
+    getAbi: async () => (await import('../../abis/governor.json')).default,
   },
 };

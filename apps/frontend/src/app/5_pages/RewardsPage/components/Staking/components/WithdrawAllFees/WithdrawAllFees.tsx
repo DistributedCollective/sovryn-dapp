@@ -28,7 +28,7 @@ type WithdrawFeeProps = {
   refetch: () => void;
 };
 
-const MAX_CHECKPOINTS = 50;
+const MAX_CHECKPOINTS = 150;
 const MAX_NEXT_POSITIVE_CHECKPOINT = 75;
 
 export const WithdrawAllFees: FC<WithdrawFeeProps> = ({ fees, refetch }) => {

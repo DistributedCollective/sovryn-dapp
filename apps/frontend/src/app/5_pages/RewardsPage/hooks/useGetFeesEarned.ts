@@ -14,7 +14,7 @@ import { useIsMounted } from '../../../../hooks/useIsMounted';
 import { useMulticall } from '../../../../hooks/useMulticall';
 import { EarnedFee } from '../RewardsPage.types';
 
-const MAX_CHECKPOINTS = 150;
+const MAX_CHECKPOINTS = 50;
 const FEE_TOKEN_ASSETS = [
   SupportedTokens.rbtc,
   SupportedTokens.wrbtc,
@@ -59,6 +59,17 @@ export const useGetFeesEarned = () => {
     }
     // set defaults
     const defaultTokenData = await Promise.all([
+      ...FEE_LOAN_ASSETS.map(async asset => ({
+        token: asset,
+        contractAddress: (
+          await getLoanTokenContract(asset, defaultChainId)
+        ).address,
+        value: '0',
+        rbtcValue: 0,
+        startFrom: 0,
+        maxCheckpoints: 0,
+        iToken: true,
+      })),
       ...FEE_TOKEN_ASSETS.map(async asset => ({
         token: asset,
         contractAddress:
@@ -73,17 +84,6 @@ export const useGetFeesEarned = () => {
           ? { startFrom: 0, maxCheckpoints: 0 }
           : {}),
         iToken: false,
-      })),
-      ...FEE_LOAN_ASSETS.map(async asset => ({
-        token: asset,
-        contractAddress: (
-          await getLoanTokenContract(asset, defaultChainId)
-        ).address,
-        value: '0',
-        rbtcValue: 0,
-        startFrom: 0,
-        maxCheckpoints: 0,
-        iToken: true,
       })),
     ]);
 

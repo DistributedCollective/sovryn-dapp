@@ -1,90 +1,81 @@
-import React, { FC, useEffect, useState } from 'react';
-
-import { t } from 'i18next';
+import React, { FC, useCallback, useEffect, useState } from 'react';
 
 import { getProtocolContract } from '@sovryn/contracts';
-import { Select, Button, SelectOption } from '@sovryn/ui';
 
 import { defaultChainId } from '../../../../../config/chains';
 
-import { translations } from '../../../../../locales/i18n';
 import { useProposalContext } from '../../contexts/NewProposalContext';
-import { ProposalCreationType } from '../../contexts/ProposalContext.types';
 import {
-  PROPOSAL_TYPE_OPTIONS,
-  PROPOSAL_TREASURY_OPTIONS,
-} from './NewProposalForm.constants';
+  ProposalCreationStep,
+  ProposalCreationType,
+} from '../../contexts/ProposalContext.types';
+
+import { ProposalDataForm } from './components/ProposalDataForm/ProposalDataForm';
+import { ProposalInitialStep } from './components/ProposalInitialStep/ProposalInitialStep';
 
 export const NewProposalForm: FC = () => {
   const {
+    step,
+    setStep,
     type: proposalType,
     setType: setProposalType,
+    details,
     setDetails,
     governor,
     setGovernor,
     submit,
   } = useProposalContext();
   const [proposalTreasuryAccount, setProposalTreasuryAccount] = useState('');
-  const [governors, setGovernors] = useState<SelectOption<string>[]>([]);
 
   // todo: these should be implemented in their own components.
   useEffect(() => {
-    setDetails({
-      title: 'SIP: Default title',
-      link: 'https://sovryn.app',
-      summary: 'Default summary',
-      text: 'Default *text*',
-    });
     Promise.all([
       getProtocolContract('governorOwner', defaultChainId),
       getProtocolContract('governorAdmin', defaultChainId),
     ]).then(([owner, admin]) => {
-      setGovernors([
-        {
-          label: 'Owner',
-          value: owner.address,
-        },
-        {
-          label: 'Admin',
-          value: admin.address,
-        },
-      ]);
       setGovernor(owner.address);
     });
   }, [setDetails, setGovernor]);
 
-  return (
-    <>
-      <div className="flex flex-col gap-4">
-        <Select
-          value={proposalType}
-          onChange={setProposalType}
-          options={PROPOSAL_TYPE_OPTIONS}
-          className="w-full"
-        />
-        {proposalType === ProposalCreationType.Parameters && (
-          <Select
-            value={governor || ''}
-            onChange={setGovernor}
-            options={governors}
-            className="w-full"
-          />
-        )}
-        {proposalType === ProposalCreationType.Treasury && (
-          <Select
-            value={proposalTreasuryAccount}
-            onChange={setProposalTreasuryAccount}
-            options={PROPOSAL_TREASURY_OPTIONS}
-            className="w-full"
-          />
-        )}
+  const handlePreview = useCallback(() => {
+    // todo: also pass current step to know which step to go back to.
+    setStep(ProposalCreationStep.Overview);
+  }, [setStep]);
 
-        <Button
-          text={t(translations.common.buttons.continue)}
-          className="w-full sm:w-auto"
-          onClick={() => submit()}
-        />
-      </div>
-    </>
-  );
+  const handleSubmit = useCallback(async () => {
+    if (step === ProposalCreationStep.Details) {
+      if (proposalType === ProposalCreationType.Proclamation) {
+        submit();
+      } else {
+        setStep(ProposalCreationStep.Parameters);
+      }
+    }
+  }, [proposalType, setStep, step, submit]);
+
+  if (step === ProposalCreationStep.SelectType) {
+    return (
+      <ProposalInitialStep
+        setProposalTab={setStep}
+        proposalType={proposalType}
+        setProposalType={setProposalType}
+        proposalContract={governor || ''}
+        setProposalContract={setGovernor}
+        proposalTreasuryAccount={proposalTreasuryAccount}
+        setProposalTreasuryAccount={setProposalTreasuryAccount}
+      />
+    );
+  } else if (step === ProposalCreationStep.Details) {
+    return (
+      <ProposalDataForm
+        value={details}
+        onChange={setDetails}
+        proposalType={proposalType}
+        onBack={() => setStep(ProposalCreationStep.SelectType)}
+        onPreview={handlePreview}
+        onSubmit={handleSubmit}
+      />
+    );
+  } else {
+    return null;
+  }
 };

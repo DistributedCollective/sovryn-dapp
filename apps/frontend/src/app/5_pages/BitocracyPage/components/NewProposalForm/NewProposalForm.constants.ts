@@ -81,3 +81,10 @@ export const PROPOSAL_TREASURY_OPTIONS = [
     label: ProposalTreasury.EcosystemFund,
   },
 ];
+
+export const INITIAL_PROPOSAL_STATE = {
+  title: '',
+  discussionURL: '',
+  summary: '',
+  description: '',
+};

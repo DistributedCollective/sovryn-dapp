@@ -19,7 +19,7 @@ export enum ProposalTreasury {
   EcosystemFund = 'Ecosystem Fund',
 }
 
-export interface ProposalOverviewData {
+export interface ProposalFormData {
   title: string;
   discussionURL: string;
   summary: string;

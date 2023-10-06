@@ -112,6 +112,18 @@ export const validateEmail = (email: string) => {
   return re.test(email);
 };
 
+export const validateURL = (link: string) => {
+  const re1 =
+    // eslint-disable-next-line no-useless-escape
+    /^[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_\+.~#?&//=]*)$/;
+
+  const re2 =
+    // eslint-disable-next-line no-useless-escape
+    /^https?:\/\/(?:www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_\+.~#?&\/=]*)$/;
+
+  return re1.test(link) || re2.test(link);
+};
+
 export const parseJwt = (token: string) => {
   var base64Url = token.split('.')[1];
   var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');

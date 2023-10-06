@@ -638,9 +638,10 @@
             "nonExecutable": "(non-executable)",
             "other": "Other"
         },
-        "proposalOverview": {
+        "proposalDataForm": {
             "title": "Title",
             "discussionURL": "Discussion URL",
+            "invalidURL": "Invalid URL",
             "proposalSummary": "Proposal summary",
             "description": "Description"
         },

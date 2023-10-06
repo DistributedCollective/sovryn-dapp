@@ -19,7 +19,8 @@ import {
   ProposalTab,
   ProposalType,
 } from './NewProposalForm.types';
-import { ProposalOverview } from './components/ProposalOverview/ProposalOverview';
+import { ProposalDataForm } from './components/ProposalDataForm/ProposalDataForm';
+import { ProposalInitialStep } from './components/ProposalInitialStep/ProposalInitialStep';
 
 export const NewProposalForm: FC = () => {
   const {
@@ -61,42 +62,19 @@ export const NewProposalForm: FC = () => {
 
   if (proposalTab === ProposalTab.Initial) {
     return (
-      <>
-        <div className="flex flex-col gap-4">
-          <Select
-            value={proposalType}
-            onChange={setProposalType}
-            options={PROPOSAL_TYPE_OPTIONS}
-            className="w-full"
-          />
-          {proposalType === ProposalType.Parameter && (
-            <Select
-              value={proposalContract}
-              onChange={setProposalContract}
-              options={PROPOSAL_CONTRACT_OPTIONS}
-              className="w-full"
-            />
-          )}
-          {proposalType === ProposalType.Treasury && (
-            <Select
-              value={proposalTreasuryAccount}
-              onChange={setProposalTreasuryAccount}
-              options={PROPOSAL_TREASURY_OPTIONS}
-              className="w-full"
-            />
-          )}
-
-          <Button
-            text={t(translations.common.buttons.continue)}
-            className="w-full sm:w-auto"
-            onClick={() => setProposalTab(ProposalTab.Overview)}
-          />
-        </div>
-      </>
+      <ProposalInitialStep
+        setProposalTab={setProposalTab}
+        proposalType={proposalType}
+        setProposalType={setProposalType}
+        proposalContract={proposalContract}
+        setProposalContract={setProposalContract}
+        proposalTreasuryAccount={proposalTreasuryAccount}
+        setProposalTreasuryAccount={setProposalTreasuryAccount}
+      />
     );
   } else if (proposalTab === ProposalTab.Overview) {
     return (
-      <ProposalOverview
+      <ProposalDataForm
         value={form}
         onChange={setForm}
         proposalType={proposalType}

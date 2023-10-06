@@ -109,7 +109,7 @@ export const ProposalDataForm: FC<ProposalDataFormProps> = ({
       >
         <Input
           value={form.text}
-          maxLength={10000}
+          maxLength={30000}
           className="max-w-[22rem]"
           onChangeText={text => setForm(form => ({ ...form, text }))}
           size={InputSize.large}

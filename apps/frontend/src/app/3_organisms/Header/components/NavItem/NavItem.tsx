@@ -48,6 +48,7 @@ export const NavItem: FC<NavItemProps> = ({ item, onClick }) => {
             dataAttribute={`dapp-menu-${text.toLowerCase().replace(' ', '-')}`}
             isActive={isPathActive(url)}
             className="no-underline"
+            onClick={onClick}
           />
         ))}
       </Menu>

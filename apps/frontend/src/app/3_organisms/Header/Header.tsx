@@ -78,7 +78,7 @@ export const Header: FC = () => {
           <ol className="flex flex-col gap-4 lg:flex-row w-full lg:w-auto">
             {menuItemsMapping.map((item, index) => (
               <li key={index}>
-                <NavItem item={item} />
+                <NavItem item={item} onClick={toggle} />
               </li>
             ))}
             <ProductLinks />

@@ -51,7 +51,6 @@ export const ProposalDataForm: FC<ProposalDataFormProps> = ({
     onBack();
   }, [form, onBack, onChange]);
 
-  const onChangeHandler = useCallback(() => onChange(form), [form, onChange]);
   const handleSubmit = useCallback(() => {
     onChange(form);
     onSubmit();

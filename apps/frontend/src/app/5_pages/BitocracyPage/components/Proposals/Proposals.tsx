@@ -59,6 +59,7 @@ export const Proposals: FC<ProposalsProps> = ({ proposals, loading }) => {
                 </span>
               }
               dataAttribute="bitocracy-live-proposals-table"
+              onRowClick={handleRowClick}
             />
           </div>
 

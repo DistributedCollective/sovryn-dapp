@@ -14,13 +14,18 @@ import {
 
 import { translations } from '../../../../../../../locales/i18n';
 import { validateURL } from '../../../../../../../utils/helpers';
-import { ProposalFormData, ProposalType } from '../../NewProposalForm.types';
+import {
+  ProposalCreationDetails,
+  ProposalCreationType,
+} from '../../../../contexts/ProposalContext.types';
 
 export type ProposalDataFormProps = {
-  value: ProposalFormData;
-  onChange: (value: ProposalFormData) => void;
-  proposalType: ProposalType;
+  value: ProposalCreationDetails;
+  onChange: (value: ProposalCreationDetails) => void;
+  proposalType: ProposalCreationType;
   onBack: () => void;
+  onSubmit: () => void;
+  onPreview: () => void;
 };
 
 export const ProposalDataForm: FC<ProposalDataFormProps> = ({
@@ -28,29 +33,37 @@ export const ProposalDataForm: FC<ProposalDataFormProps> = ({
   onChange,
   proposalType,
   onBack,
+  onSubmit,
+  onPreview,
 }) => {
-  const [form, setForm] = useState(value);
+  const [form, setForm] = useState<ProposalCreationDetails>(value);
 
-  const isValidURL = useMemo(
-    () => validateURL(form.discussionURL),
-    [form.discussionURL],
-  );
+  const isValidUrl = useMemo(() => validateURL(form.link), [form.link]);
 
   const isSubmitDisabled = useMemo(
     () =>
-      !form.title ||
-      !form.description ||
-      !form.discussionURL ||
-      !form.description ||
-      !isValidURL,
-    [form.description, form.discussionURL, form.title, isValidURL],
+      !form.title || !form.summary || !form.link || !form.text || !isValidUrl,
+    [form.link, form.summary, form.text, form.title, isValidUrl],
   );
 
+  const handleBack = useCallback(() => {
+    onChange(form);
+    onBack();
+  }, [form, onBack, onChange]);
+
   const onChangeHandler = useCallback(() => onChange(form), [form, onChange]);
+  const handleSubmit = useCallback(() => {
+    onChange(form);
+    onSubmit();
+  }, [form, onChange, onSubmit]);
+  const handlePreview = useCallback(() => {
+    onChange(form);
+    onPreview();
+  }, [form, onChange, onPreview]);
 
   return (
     <div className="flex flex-col gap-4 relative pt-4">
-      <button className="absolute left-0 -top-2" onClick={onBack}>
+      <button className="absolute left-0 -top-2" onClick={handleBack}>
         <Icon size={14} icon={IconNames.ARROW_BACK} />
       </button>
       <FormGroup label={t(translations.bitocracyPage.proposalDataForm.title)}>
@@ -64,19 +77,17 @@ export const ProposalDataForm: FC<ProposalDataFormProps> = ({
       </FormGroup>
 
       <FormGroup
-        label={t(translations.bitocracyPage.proposalDataForm.discussionURL)}
+        label={t(translations.bitocracyPage.proposalDataForm.discussionUrl)}
         errorLabel={
-          isValidURL || !form.discussionURL
+          isValidUrl || !form.link
             ? undefined
             : t(translations.bitocracyPage.proposalDataForm.invalidURL)
         }
       >
         <Input
-          value={form.discussionURL}
+          value={form.link}
           className="max-w-[22rem]"
-          onChangeText={discussionURL =>
-            setForm(form => ({ ...form, discussionURL }))
-          }
+          onChangeText={link => setForm(form => ({ ...form, link }))}
           size={InputSize.large}
         />
       </FormGroup>
@@ -97,38 +108,37 @@ export const ProposalDataForm: FC<ProposalDataFormProps> = ({
         label={t(translations.bitocracyPage.proposalDataForm.description)}
       >
         <Input
-          value={form.description}
+          value={form.text}
           maxLength={10000}
           className="max-w-[22rem]"
-          onChangeText={description =>
-            setForm(form => ({ ...form, description }))
-          }
+          onChangeText={text => setForm(form => ({ ...form, text }))}
           size={InputSize.large}
         />
       </FormGroup>
 
-      {[ProposalType.Parameter, ProposalType.Treasury].includes(
-        proposalType,
-      ) && (
+      {[
+        ProposalCreationType.Parameters,
+        ProposalCreationType.Treasury,
+      ].includes(proposalType) && (
         <Button
           text={t(translations.common.buttons.continue)}
           className="w-full sm:w-auto mt-4"
-          onClick={onChangeHandler}
+          onClick={handleSubmit}
           disabled={isSubmitDisabled}
         />
       )}
 
-      {proposalType === ProposalType.Proclamation && (
+      {proposalType === ProposalCreationType.Proclamation && (
         <div className="flex items-center gap-4 mt-4">
           <Button
             text={t(translations.bitocracyPage.actions.preview)}
-            onClick={onChangeHandler}
+            onClick={handlePreview}
             style={ButtonStyle.secondary}
             className="flex-1"
           />
           <Button
             text={t(translations.common.buttons.continue)}
-            onClick={onChangeHandler}
+            onClick={handleSubmit}
             disabled={isSubmitDisabled}
             className="flex-1"
           />

@@ -113,15 +113,15 @@ export const validateEmail = (email: string) => {
 };
 
 export const validateURL = (link: string) => {
-  const re1 =
+  const httpUrl =
     // eslint-disable-next-line no-useless-escape
     /^[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_\+.~#?&//=]*)$/;
 
-  const re2 =
+  const wwwUrl =
     // eslint-disable-next-line no-useless-escape
     /^https?:\/\/(?:www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_\+.~#?&\/=]*)$/;
 
-  return re1.test(link) || re2.test(link);
+  return httpUrl.test(link) || wwwUrl.test(link);
 };
 
 export const parseJwt = (token: string) => {

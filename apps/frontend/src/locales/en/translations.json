@@ -640,7 +640,7 @@
         },
         "proposalDataForm": {
             "title": "Title",
-            "discussionURL": "Discussion URL",
+            "discussionUrl": "Discussion URL",
             "invalidURL": "Invalid URL",
             "proposalSummary": "Proposal summary",
             "description": "Description"

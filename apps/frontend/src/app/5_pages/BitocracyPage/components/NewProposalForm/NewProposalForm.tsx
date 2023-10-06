@@ -1,84 +1,78 @@
-import React, { FC, useEffect, useState } from 'react';
-
-import { t } from 'i18next';
+import React, { FC, useCallback, useEffect, useState } from 'react';
 
 import { getProtocolContract } from '@sovryn/contracts';
-import { Select, Button, SelectOption } from '@sovryn/ui';
 
 import { defaultChainId } from '../../../../../config/chains';
 
-import { translations } from '../../../../../locales/i18n';
 import { useProposalContext } from '../../contexts/NewProposalContext';
-import { ProposalCreationType } from '../../contexts/ProposalContext.types';
 import {
-  PROPOSAL_TYPE_OPTIONS,
-  PROPOSAL_TREASURY_OPTIONS,
-} from './NewProposalForm.constants';
-import {
-  ProposalOverviewData,
-  ProposalTab,
-  ProposalType,
-} from './NewProposalForm.types';
+  ProposalCreationStep,
+  ProposalCreationType,
+} from '../../contexts/ProposalContext.types';
+
 import { ProposalDataForm } from './components/ProposalDataForm/ProposalDataForm';
 import { ProposalInitialStep } from './components/ProposalInitialStep/ProposalInitialStep';
 
 export const NewProposalForm: FC = () => {
   const {
+    step,
+    setStep,
     type: proposalType,
     setType: setProposalType,
+    details,
     setDetails,
     governor,
     setGovernor,
     submit,
   } = useProposalContext();
   const [proposalTreasuryAccount, setProposalTreasuryAccount] = useState('');
-  const [governors, setGovernors] = useState<SelectOption<string>[]>([]);
 
   // todo: these should be implemented in their own components.
   useEffect(() => {
-    setDetails({
-      title: 'SIP: Default title',
-      link: 'https://sovryn.app',
-      summary: 'Default summary',
-      text: 'Default *text*',
-    });
     Promise.all([
       getProtocolContract('governorOwner', defaultChainId),
       getProtocolContract('governorAdmin', defaultChainId),
     ]).then(([owner, admin]) => {
-      setGovernors([
-        {
-          label: 'Owner',
-          value: owner.address,
-        },
-        {
-          label: 'Admin',
-          value: admin.address,
-        },
-      ]);
       setGovernor(owner.address);
     });
   }, [setDetails, setGovernor]);
 
-  if (proposalTab === ProposalTab.Initial) {
+  const handlePreview = useCallback(() => {
+    // todo: also pass current step to know which step to go back to.
+    setStep(ProposalCreationStep.Overview);
+  }, [setStep]);
+
+  const handleSubmit = useCallback(async () => {
+    if (step === ProposalCreationStep.Details) {
+      if (proposalType === ProposalCreationType.Proclamation) {
+        submit();
+      } else {
+        setStep(ProposalCreationStep.Parameters);
+      }
+    }
+  }, [proposalType, setStep, step, submit]);
+
+  if (step === ProposalCreationStep.SelectType) {
     return (
       <ProposalInitialStep
-        setProposalTab={setProposalTab}
+        setProposalTab={setStep}
         proposalType={proposalType}
         setProposalType={setProposalType}
-        proposalContract={proposalContract}
-        setProposalContract={setProposalContract}
+        proposalContract={governor || ''}
+        setProposalContract={setGovernor}
         proposalTreasuryAccount={proposalTreasuryAccount}
         setProposalTreasuryAccount={setProposalTreasuryAccount}
       />
     );
-  } else if (proposalTab === ProposalTab.Overview) {
+  } else if (step === ProposalCreationStep.Details) {
     return (
       <ProposalDataForm
-        value={form}
-        onChange={setForm}
+        value={details}
+        onChange={setDetails}
         proposalType={proposalType}
-        onBack={() => setProposalTab(ProposalTab.Initial)}
+        onBack={() => setStep(ProposalCreationStep.SelectType)}
+        onPreview={handlePreview}
+        onSubmit={handleSubmit}
       />
     );
   } else {

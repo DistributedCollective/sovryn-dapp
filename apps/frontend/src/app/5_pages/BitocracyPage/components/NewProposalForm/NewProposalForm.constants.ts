@@ -84,7 +84,7 @@ export const PROPOSAL_TREASURY_OPTIONS = [
 
 export const INITIAL_PROPOSAL_STATE = {
   title: '',
-  discussionURL: '',
+  discussionUrl: '',
   summary: '',
   description: '',
 };

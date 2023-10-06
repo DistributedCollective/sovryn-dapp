@@ -10,12 +10,15 @@ import {
   PROPOSAL_TREASURY_OPTIONS,
   PROPOSAL_TYPE_OPTIONS,
 } from '../../NewProposalForm.constants';
-import { ProposalTab, ProposalType } from '../../NewProposalForm.types';
+import {
+  ProposalCreationStep,
+  ProposalCreationType,
+} from '../../../../contexts/ProposalContext.types';
 
 export type ProposalInitialStepProps = {
-  setProposalTab: (value: ProposalTab) => void;
-  setProposalType: (value: ProposalType) => void;
-  proposalType: ProposalType;
+  setProposalTab: (value: ProposalCreationStep) => void;
+  setProposalType: (value: ProposalCreationType) => void;
+  proposalType: ProposalCreationType;
   setProposalContract: (value: string) => void;
   proposalContract: string;
   setProposalTreasuryAccount: (value: string) => void;
@@ -38,7 +41,7 @@ export const ProposalInitialStep: FC<ProposalInitialStepProps> = ({
       options={PROPOSAL_TYPE_OPTIONS}
       className="w-full"
     />
-    {proposalType === ProposalType.Parameter && (
+    {proposalType === ProposalCreationType.Parameters && (
       <Select
         value={proposalContract}
         onChange={setProposalContract}
@@ -46,7 +49,7 @@ export const ProposalInitialStep: FC<ProposalInitialStepProps> = ({
         className="w-full"
       />
     )}
-    {proposalType === ProposalType.Treasury && (
+    {proposalType === ProposalCreationType.Treasury && (
       <Select
         value={proposalTreasuryAccount}
         onChange={setProposalTreasuryAccount}
@@ -58,7 +61,7 @@ export const ProposalInitialStep: FC<ProposalInitialStepProps> = ({
     <Button
       text={t(translations.common.buttons.continue)}
       className="w-full sm:w-auto"
-      onClick={() => setProposalTab(ProposalTab.Overview)}
+      onClick={() => setProposalTab(ProposalCreationStep.Details)}
     />
   </div>
 );

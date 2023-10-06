@@ -31,17 +31,12 @@ export const ProposalType: FC<ProposalProps> = ({ proposal }) => {
 
     if (
       proposal.targets.length === 1 &&
-      proposal.targets[0] === sovContract?.address
+      proposal.targets[0] === sovContract?.address &&
+      proposal.signatures[0] === SIGNATURE_SYMBOL
     ) {
-      if (proposal.signatures[0] === SIGNATURE_SYMBOL) {
-        result += t(translations.bitocracyPage.proposalType.nonExecutable);
-      } else {
-        result += t(translations.bitocracyPage.proposalType.executable);
-      }
-    } else if (proposal.targets.length > 1) {
-      result += t(translations.bitocracyPage.proposalType.executable);
-    } else {
       result += t(translations.bitocracyPage.proposalType.nonExecutable);
+    } else {
+      result += t(translations.bitocracyPage.proposalType.executable);
     }
 
     return result;

@@ -16,8 +16,8 @@ import { EarnedFee } from '../RewardsPage.types';
 
 const MAX_CHECKPOINTS = 50;
 const FEE_TOKEN_ASSETS = [
-  SupportedTokens.rbtc,
   SupportedTokens.wrbtc,
+  SupportedTokens.rbtc,
   SupportedTokens.sov,
   SupportedTokens.zusd,
   SupportedTokens.mynt,

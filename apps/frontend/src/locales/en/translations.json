@@ -638,10 +638,17 @@
             "nonExecutable": "(non-executable)",
             "other": "Other"
         },
+        "proposalOverview": {
+            "title": "Title",
+            "discussionURL": "Discussion URL",
+            "proposalSummary": "Proposal summary",
+            "description": "Description"
+        },
         "actions": {
             "newProposal": "New proposal",
             "bitocracyAlerts": "Bitocracy alerts",
-            "view": "View"
+            "view": "View",
+            "preview": "Preview"
         }
     },
     "proposalPage": {

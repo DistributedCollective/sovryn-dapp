@@ -18,3 +18,10 @@ export enum ProposalTreasury {
   DevelopmentFund = 'Development Fund',
   EcosystemFund = 'Ecosystem Fund',
 }
+
+export interface ProposalOverviewData {
+  title: string;
+  discussionURL: string;
+  summary: string;
+  description: string;
+}

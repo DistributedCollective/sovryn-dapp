@@ -12,6 +12,7 @@ import {
   ProposalProps,
   ProposalState,
 } from '../../../BitocracyPage/BitocracyPage.types';
+import { useIsExecutableProposal } from '../../../BitocracyPage/hooks/useIsExecutableProposal';
 import { useProposalStatus } from '../../../BitocracyPage/hooks/useProposalStatus';
 import { ProposalActionType } from './ProposalAction.types';
 import { useHandleProposal } from './hooks/useHandleProposal';
@@ -30,6 +31,7 @@ export const ProposalAction: FC<ProposalActionProps> = ({
 
   const { balance, loading } = useAssetBalance(SupportedTokens.rbtc);
   const status = useProposalStatus(proposal);
+  const isExecutableProposal = useIsExecutableProposal(proposal);
 
   const isDisabled = useMemo(
     () => !account || balance.isZero() || loading,
@@ -61,8 +63,8 @@ export const ProposalAction: FC<ProposalActionProps> = ({
   }, [action]);
 
   const isActionVisible = useMemo(
-    () => action !== ProposalActionType.none,
-    [action],
+    () => action !== ProposalActionType.none && isExecutableProposal,
+    [action, isExecutableProposal],
   );
 
   const handleProposal = useHandleProposal();

@@ -2,4 +2,4 @@
 "@sovryn/ui": patch
 ---
 
-SOV-3303: update nav menu
+SOV-3303: fix Dropdown horizontal positioning bug

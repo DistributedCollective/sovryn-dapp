@@ -39,7 +39,7 @@ export const ExecutableDetails: FC<ExecutableDetailsProps> = ({ proposal }) => {
       <Heading className="text-sm font-medium">
         {t(pageTranslations.title)}
       </Heading>
-      <div className="py-1 mt-2 flex flex-wrap gap-16">
+      <div className="py-1 mt-2 flex flex-col flex-wrap gap-8">
         {!isExecutableProposal ? (
           <Paragraph className="text-gray-30 font-medium">
             {t(translations.common.na)}
@@ -48,7 +48,7 @@ export const ExecutableDetails: FC<ExecutableDetailsProps> = ({ proposal }) => {
           executableList.map((executable, i) => (
             <div
               key={executable.signature}
-              className="w-80 font-medium bg-gray-80 p-3 rounded"
+              className="w-full font-medium bg-gray-80 p-3 rounded"
             >
               <Heading className="text-xs">
                 {t(pageTranslations.executable)} #{i + 1}

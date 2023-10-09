@@ -17,7 +17,7 @@ export const LabeledAmount = ({
   <div className="basis-full font-medium">
     <Paragraph
       size={ParagraphSize.base}
-      className="text-gray-30 md:mb-3 leading-4 text-xs"
+      className="text-gray-30 lg:mb-3 leading-4 text-xs"
     >
       {label}
     </Paragraph>

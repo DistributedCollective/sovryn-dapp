@@ -65,16 +65,16 @@ const ProposalPage: FC = () => {
       <Helmet>
         <title>{t(pageTranslations.meta.title)}</title>
       </Helmet>
-      <div className="w-full flex flex-col md:flex-row gap-20 text-left text-gray-10 mt-6 mb-5 sm:mt-16 max-w-7xl">
-        <div className="w-full md:w-2/3 flex flex-col gap-6">
-          <div className="md:px-6 md:pb-6">
+      <div className="w-full flex flex-col lg:flex-row lg:gap-5 xl:gap-20 text-left text-gray-10 mt-6 mb-5 sm:mt-16 max-w-7xl">
+        <div className="w-full lg:w-2/3 flex flex-col gap-6">
+          <div className="lg:px-6 lg:pb-6">
             <Heading className="text-base sm:text-2xl font-medium break-all">
               {proposalInfo.title}
             </Heading>
             <div className="mt-2.5 sm:mt-3 font-medium text-gray-30 break-all">
               {proposalInfo.summary}
             </div>
-            <div className="mt-2.5 sm:mt-6 text-xs font-medium text-gray-30 flex justify-between md:justify-start">
+            <div className="mt-2.5 sm:mt-6 text-xs font-medium text-gray-30 flex justify-between lg:justify-start">
               <span className="inline-block w-20">
                 {t(pageTranslations.proposedBy)}
               </span>
@@ -89,7 +89,7 @@ const ProposalPage: FC = () => {
             </div>
             <Paragraph
               size={ParagraphSize.base}
-              className="mt-1 text-xs font-medium text-gray-30 flex justify-between md:justify-start"
+              className="mt-1 text-xs font-medium text-gray-30 flex justify-between lg:justify-start"
             >
               <span className="inline-block w-20">
                 {t(pageTranslations.proposalID)}
@@ -101,7 +101,7 @@ const ProposalPage: FC = () => {
             </Paragraph>
 
             {proposal && (
-              <div className="md:hidden mt-6">
+              <div className="lg:hidden mt-6">
                 <div className="flex flex-row items-start justify-between mb-2">
                   <Paragraph
                     size={ParagraphSize.small}
@@ -126,7 +126,7 @@ const ProposalPage: FC = () => {
 
           <CastVote proposal={proposal} />
 
-          <div className="md:hidden">
+          <div className="lg:hidden">
             {isVotingPowerVisible && <ProposalVotingPower />}
             <ProposalVotingResults proposal={proposal} />
           </div>
@@ -136,7 +136,7 @@ const ProposalPage: FC = () => {
           />
           <ExecutableDetails proposal={proposal} />
         </div>
-        <div className="w-1/3 hidden md:block min-w-[18rem]">
+        <div className="w-1/3 hidden lg:block min-w-[18rem]">
           <div className="mb-20 flex gap-10">
             <div>
               <Paragraph

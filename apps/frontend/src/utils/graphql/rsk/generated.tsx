@@ -5009,6 +5009,145 @@ export type LoanTradeArgs = {
   where?: InputMaybe<Trade_Filter>;
 };
 
+export type LoanParamsSetup = {
+  __typename?: 'LoanParamsSetup';
+  collateralToken: Token;
+  id: Scalars['ID'];
+  loanToken: Token;
+  maintenanceMargin: Scalars['BigDecimal'];
+  maxLoanTerm: Scalars['Int'];
+  minInitialMargin: Scalars['BigDecimal'];
+  owner: Scalars['Bytes'];
+  timestamp: Scalars['Int'];
+  transaction: Transaction;
+};
+
+export type LoanParamsSetup_Filter = {
+  /** Filter for the block changed event. */
+  _change_block?: InputMaybe<BlockChangedFilter>;
+  collateralToken?: InputMaybe<Scalars['String']>;
+  collateralToken_?: InputMaybe<Token_Filter>;
+  collateralToken_contains?: InputMaybe<Scalars['String']>;
+  collateralToken_contains_nocase?: InputMaybe<Scalars['String']>;
+  collateralToken_ends_with?: InputMaybe<Scalars['String']>;
+  collateralToken_ends_with_nocase?: InputMaybe<Scalars['String']>;
+  collateralToken_gt?: InputMaybe<Scalars['String']>;
+  collateralToken_gte?: InputMaybe<Scalars['String']>;
+  collateralToken_in?: InputMaybe<Array<Scalars['String']>>;
+  collateralToken_lt?: InputMaybe<Scalars['String']>;
+  collateralToken_lte?: InputMaybe<Scalars['String']>;
+  collateralToken_not?: InputMaybe<Scalars['String']>;
+  collateralToken_not_contains?: InputMaybe<Scalars['String']>;
+  collateralToken_not_contains_nocase?: InputMaybe<Scalars['String']>;
+  collateralToken_not_ends_with?: InputMaybe<Scalars['String']>;
+  collateralToken_not_ends_with_nocase?: InputMaybe<Scalars['String']>;
+  collateralToken_not_in?: InputMaybe<Array<Scalars['String']>>;
+  collateralToken_not_starts_with?: InputMaybe<Scalars['String']>;
+  collateralToken_not_starts_with_nocase?: InputMaybe<Scalars['String']>;
+  collateralToken_starts_with?: InputMaybe<Scalars['String']>;
+  collateralToken_starts_with_nocase?: InputMaybe<Scalars['String']>;
+  id?: InputMaybe<Scalars['ID']>;
+  id_gt?: InputMaybe<Scalars['ID']>;
+  id_gte?: InputMaybe<Scalars['ID']>;
+  id_in?: InputMaybe<Array<Scalars['ID']>>;
+  id_lt?: InputMaybe<Scalars['ID']>;
+  id_lte?: InputMaybe<Scalars['ID']>;
+  id_not?: InputMaybe<Scalars['ID']>;
+  id_not_in?: InputMaybe<Array<Scalars['ID']>>;
+  loanToken?: InputMaybe<Scalars['String']>;
+  loanToken_?: InputMaybe<Token_Filter>;
+  loanToken_contains?: InputMaybe<Scalars['String']>;
+  loanToken_contains_nocase?: InputMaybe<Scalars['String']>;
+  loanToken_ends_with?: InputMaybe<Scalars['String']>;
+  loanToken_ends_with_nocase?: InputMaybe<Scalars['String']>;
+  loanToken_gt?: InputMaybe<Scalars['String']>;
+  loanToken_gte?: InputMaybe<Scalars['String']>;
+  loanToken_in?: InputMaybe<Array<Scalars['String']>>;
+  loanToken_lt?: InputMaybe<Scalars['String']>;
+  loanToken_lte?: InputMaybe<Scalars['String']>;
+  loanToken_not?: InputMaybe<Scalars['String']>;
+  loanToken_not_contains?: InputMaybe<Scalars['String']>;
+  loanToken_not_contains_nocase?: InputMaybe<Scalars['String']>;
+  loanToken_not_ends_with?: InputMaybe<Scalars['String']>;
+  loanToken_not_ends_with_nocase?: InputMaybe<Scalars['String']>;
+  loanToken_not_in?: InputMaybe<Array<Scalars['String']>>;
+  loanToken_not_starts_with?: InputMaybe<Scalars['String']>;
+  loanToken_not_starts_with_nocase?: InputMaybe<Scalars['String']>;
+  loanToken_starts_with?: InputMaybe<Scalars['String']>;
+  loanToken_starts_with_nocase?: InputMaybe<Scalars['String']>;
+  maintenanceMargin?: InputMaybe<Scalars['BigDecimal']>;
+  maintenanceMargin_gt?: InputMaybe<Scalars['BigDecimal']>;
+  maintenanceMargin_gte?: InputMaybe<Scalars['BigDecimal']>;
+  maintenanceMargin_in?: InputMaybe<Array<Scalars['BigDecimal']>>;
+  maintenanceMargin_lt?: InputMaybe<Scalars['BigDecimal']>;
+  maintenanceMargin_lte?: InputMaybe<Scalars['BigDecimal']>;
+  maintenanceMargin_not?: InputMaybe<Scalars['BigDecimal']>;
+  maintenanceMargin_not_in?: InputMaybe<Array<Scalars['BigDecimal']>>;
+  maxLoanTerm?: InputMaybe<Scalars['Int']>;
+  maxLoanTerm_gt?: InputMaybe<Scalars['Int']>;
+  maxLoanTerm_gte?: InputMaybe<Scalars['Int']>;
+  maxLoanTerm_in?: InputMaybe<Array<Scalars['Int']>>;
+  maxLoanTerm_lt?: InputMaybe<Scalars['Int']>;
+  maxLoanTerm_lte?: InputMaybe<Scalars['Int']>;
+  maxLoanTerm_not?: InputMaybe<Scalars['Int']>;
+  maxLoanTerm_not_in?: InputMaybe<Array<Scalars['Int']>>;
+  minInitialMargin?: InputMaybe<Scalars['BigDecimal']>;
+  minInitialMargin_gt?: InputMaybe<Scalars['BigDecimal']>;
+  minInitialMargin_gte?: InputMaybe<Scalars['BigDecimal']>;
+  minInitialMargin_in?: InputMaybe<Array<Scalars['BigDecimal']>>;
+  minInitialMargin_lt?: InputMaybe<Scalars['BigDecimal']>;
+  minInitialMargin_lte?: InputMaybe<Scalars['BigDecimal']>;
+  minInitialMargin_not?: InputMaybe<Scalars['BigDecimal']>;
+  minInitialMargin_not_in?: InputMaybe<Array<Scalars['BigDecimal']>>;
+  owner?: InputMaybe<Scalars['Bytes']>;
+  owner_contains?: InputMaybe<Scalars['Bytes']>;
+  owner_in?: InputMaybe<Array<Scalars['Bytes']>>;
+  owner_not?: InputMaybe<Scalars['Bytes']>;
+  owner_not_contains?: InputMaybe<Scalars['Bytes']>;
+  owner_not_in?: InputMaybe<Array<Scalars['Bytes']>>;
+  timestamp?: InputMaybe<Scalars['Int']>;
+  timestamp_gt?: InputMaybe<Scalars['Int']>;
+  timestamp_gte?: InputMaybe<Scalars['Int']>;
+  timestamp_in?: InputMaybe<Array<Scalars['Int']>>;
+  timestamp_lt?: InputMaybe<Scalars['Int']>;
+  timestamp_lte?: InputMaybe<Scalars['Int']>;
+  timestamp_not?: InputMaybe<Scalars['Int']>;
+  timestamp_not_in?: InputMaybe<Array<Scalars['Int']>>;
+  transaction?: InputMaybe<Scalars['String']>;
+  transaction_?: InputMaybe<Transaction_Filter>;
+  transaction_contains?: InputMaybe<Scalars['String']>;
+  transaction_contains_nocase?: InputMaybe<Scalars['String']>;
+  transaction_ends_with?: InputMaybe<Scalars['String']>;
+  transaction_ends_with_nocase?: InputMaybe<Scalars['String']>;
+  transaction_gt?: InputMaybe<Scalars['String']>;
+  transaction_gte?: InputMaybe<Scalars['String']>;
+  transaction_in?: InputMaybe<Array<Scalars['String']>>;
+  transaction_lt?: InputMaybe<Scalars['String']>;
+  transaction_lte?: InputMaybe<Scalars['String']>;
+  transaction_not?: InputMaybe<Scalars['String']>;
+  transaction_not_contains?: InputMaybe<Scalars['String']>;
+  transaction_not_contains_nocase?: InputMaybe<Scalars['String']>;
+  transaction_not_ends_with?: InputMaybe<Scalars['String']>;
+  transaction_not_ends_with_nocase?: InputMaybe<Scalars['String']>;
+  transaction_not_in?: InputMaybe<Array<Scalars['String']>>;
+  transaction_not_starts_with?: InputMaybe<Scalars['String']>;
+  transaction_not_starts_with_nocase?: InputMaybe<Scalars['String']>;
+  transaction_starts_with?: InputMaybe<Scalars['String']>;
+  transaction_starts_with_nocase?: InputMaybe<Scalars['String']>;
+};
+
+export enum LoanParamsSetup_OrderBy {
+  CollateralToken = 'collateralToken',
+  Id = 'id',
+  LoanToken = 'loanToken',
+  MaintenanceMargin = 'maintenanceMargin',
+  MaxLoanTerm = 'maxLoanTerm',
+  MinInitialMargin = 'minInitialMargin',
+  Owner = 'owner',
+  Timestamp = 'timestamp',
+  Transaction = 'transaction',
+}
+
 export enum LoanType {
   /**
    * Borrow is a loan originating from a user simply borrowing funds
@@ -7718,6 +7857,8 @@ export type Query = {
   liquidityPoolTokens: Array<LiquidityPoolToken>;
   liquidityPools: Array<LiquidityPool>;
   loan?: Maybe<Loan>;
+  loanParamsSetup?: Maybe<LoanParamsSetup>;
+  loanParamsSetups: Array<LoanParamsSetup>;
   loans: Array<Loan>;
   marginOrderCanceled?: Maybe<MarginOrderCanceled>;
   marginOrderCanceleds: Array<MarginOrderCanceled>;
@@ -8276,6 +8417,22 @@ export type QueryLoanArgs = {
   block?: InputMaybe<Block_Height>;
   id: Scalars['ID'];
   subgraphError?: _SubgraphErrorPolicy_;
+};
+
+export type QueryLoanParamsSetupArgs = {
+  block?: InputMaybe<Block_Height>;
+  id: Scalars['ID'];
+  subgraphError?: _SubgraphErrorPolicy_;
+};
+
+export type QueryLoanParamsSetupsArgs = {
+  block?: InputMaybe<Block_Height>;
+  first?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<LoanParamsSetup_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+  skip?: InputMaybe<Scalars['Int']>;
+  subgraphError?: _SubgraphErrorPolicy_;
+  where?: InputMaybe<LoanParamsSetup_Filter>;
 };
 
 export type QueryLoansArgs = {
@@ -10012,6 +10169,8 @@ export type Subscription = {
   liquidityPoolTokens: Array<LiquidityPoolToken>;
   liquidityPools: Array<LiquidityPool>;
   loan?: Maybe<Loan>;
+  loanParamsSetup?: Maybe<LoanParamsSetup>;
+  loanParamsSetups: Array<LoanParamsSetup>;
   loans: Array<Loan>;
   marginOrderCanceled?: Maybe<MarginOrderCanceled>;
   marginOrderCanceleds: Array<MarginOrderCanceled>;
@@ -10570,6 +10729,22 @@ export type SubscriptionLoanArgs = {
   block?: InputMaybe<Block_Height>;
   id: Scalars['ID'];
   subgraphError?: _SubgraphErrorPolicy_;
+};
+
+export type SubscriptionLoanParamsSetupArgs = {
+  block?: InputMaybe<Block_Height>;
+  id: Scalars['ID'];
+  subgraphError?: _SubgraphErrorPolicy_;
+};
+
+export type SubscriptionLoanParamsSetupsArgs = {
+  block?: InputMaybe<Block_Height>;
+  first?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<LoanParamsSetup_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+  skip?: InputMaybe<Scalars['Int']>;
+  subgraphError?: _SubgraphErrorPolicy_;
+  where?: InputMaybe<LoanParamsSetup_Filter>;
 };
 
 export type SubscriptionLoansArgs = {
@@ -15124,6 +15299,26 @@ export type GetLiquidatesQuery = {
   }>;
 };
 
+export type GetLoanParamsSetupsQueryVariables = Exact<{
+  loanToken?: InputMaybe<Scalars['String']>;
+}>;
+
+export type GetLoanParamsSetupsQuery = {
+  __typename?: 'Query';
+  loanParamsSetups: Array<{
+    __typename?: 'LoanParamsSetup';
+    id: string;
+    maintenanceMargin: string;
+    minInitialMargin: string;
+    maxLoanTerm: number;
+    owner: string;
+    timestamp: number;
+    collateralToken: { __typename?: 'Token'; id: string };
+    loanToken: { __typename?: 'Token'; id: string };
+    transaction: { __typename?: 'Transaction'; id: string };
+  }>;
+};
+
 export type GetLoansQueryVariables = Exact<{
   user?: InputMaybe<Scalars['String']>;
 }>;
@@ -16505,6 +16700,82 @@ export type GetLiquidatesLazyQueryHookResult = ReturnType<
 export type GetLiquidatesQueryResult = Apollo.QueryResult<
   GetLiquidatesQuery,
   GetLiquidatesQueryVariables
+>;
+export const GetLoanParamsSetupsDocument = gql`
+  query getLoanParamsSetups($loanToken: String) {
+    loanParamsSetups(
+      orderBy: timestamp
+      orderDirection: desc
+      where: { loanToken: $loanToken }
+    ) {
+      collateralToken {
+        id
+      }
+      id
+      loanToken {
+        id
+      }
+      maintenanceMargin
+      minInitialMargin
+      maxLoanTerm
+      owner
+      timestamp
+      transaction {
+        id
+      }
+    }
+  }
+`;
+
+/**
+ * __useGetLoanParamsSetupsQuery__
+ *
+ * To run a query within a React component, call `useGetLoanParamsSetupsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetLoanParamsSetupsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetLoanParamsSetupsQuery({
+ *   variables: {
+ *      loanToken: // value for 'loanToken'
+ *   },
+ * });
+ */
+export function useGetLoanParamsSetupsQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    GetLoanParamsSetupsQuery,
+    GetLoanParamsSetupsQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    GetLoanParamsSetupsQuery,
+    GetLoanParamsSetupsQueryVariables
+  >(GetLoanParamsSetupsDocument, options);
+}
+export function useGetLoanParamsSetupsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    GetLoanParamsSetupsQuery,
+    GetLoanParamsSetupsQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    GetLoanParamsSetupsQuery,
+    GetLoanParamsSetupsQueryVariables
+  >(GetLoanParamsSetupsDocument, options);
+}
+export type GetLoanParamsSetupsQueryHookResult = ReturnType<
+  typeof useGetLoanParamsSetupsQuery
+>;
+export type GetLoanParamsSetupsLazyQueryHookResult = ReturnType<
+  typeof useGetLoanParamsSetupsLazyQuery
+>;
+export type GetLoanParamsSetupsQueryResult = Apollo.QueryResult<
+  GetLoanParamsSetupsQuery,
+  GetLoanParamsSetupsQueryVariables
 >;
 export const GetLoansDocument = gql`
   query getLoans($user: String) {

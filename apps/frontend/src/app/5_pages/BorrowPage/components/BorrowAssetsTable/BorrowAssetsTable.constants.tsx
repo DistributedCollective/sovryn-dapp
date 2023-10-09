@@ -6,11 +6,11 @@ import { HelperButton } from '@sovryn/ui';
 
 import { AssetRenderer } from '../../../../2_molecules/AssetRenderer/AssetRenderer';
 import { normalizeToken } from '../../../../3_organisms/BorrowLoan/components/AdjustLoanForm/AdjustLoanForm.utils';
-import { MINIMUM_COLLATERAL_RATIO_BORROWING_MAINTENANCE } from '../../../../../constants/lending';
 import { translations } from '../../../../../locales/i18n';
 import { LendingPool } from '../../../../../utils/LendingPool';
 import { AcceptedCollateral } from '../../../LendPage/components/AcceptedCollateral/AcceptedCollateral';
 import { AvailableSupply } from './components/AvailableSupply/AvailableSupply';
+import { MinCollateralRatio } from './components/MinCollateralRatio/MinCollateralRatio';
 import { NewLoanButton } from './components/NewLoanButton/NewLoanButton';
 import { NextBorrowInterestRate } from './components/NextBorrowInterestRate/NextBorrowInterestRate';
 
@@ -62,9 +62,9 @@ export const COLUMNS_CONFIG = [
         />
       </span>
     ),
-    cellRenderer: () => (
+    cellRenderer: (pool: LendingPool) => (
       <div>
-        {MINIMUM_COLLATERAL_RATIO_BORROWING_MAINTENANCE.mul(100).toString()}%
+        <MinCollateralRatio pool={pool} />
       </div>
     ),
   },

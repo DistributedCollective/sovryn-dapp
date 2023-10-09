@@ -32,7 +32,7 @@ export const NewProposalForm: FC = () => {
     Promise.all([
       getProtocolContract('governorOwner', defaultChainId),
       getProtocolContract('governorAdmin', defaultChainId),
-    ]).then(([owner, admin]) => {
+    ]).then(([owner]) => {
       setGovernor(owner.address);
     });
   }, [setDetails, setGovernor]);
@@ -51,6 +51,10 @@ export const NewProposalForm: FC = () => {
       }
     }
   }, [proposalType, setStep, step, submit]);
+
+  useEffect(() => {
+    setStep(ProposalCreationStep.SelectType);
+  }, [setStep]);
 
   if (step === ProposalCreationStep.SelectType) {
     return (

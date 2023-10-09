@@ -2,50 +2,38 @@ import React, { FC, useMemo } from 'react';
 
 import { t } from 'i18next';
 
-import { SupportedTokens } from '@sovryn/contracts';
-
-import {
-  useGetProtocolContract,
-  useGetTokenContract,
-} from '../../../../../hooks/useGetContract';
+import { useGetProtocolContract } from '../../../../../hooks/useGetContract';
 import { translations } from '../../../../../locales/i18n';
 import { areAddressesEqual } from '../../../../../utils/helpers';
 import { ProposalProps } from '../../BitocracyPage.types';
-import { SIGNATURE_SYMBOL } from '../Proposals/Proposals.constants';
+import { useIsExecutableProposal } from '../../hooks/useIsExecutableProposal';
+
+const baseTranslations = translations.bitocracyPage.proposalType;
 
 export const ProposalType: FC<ProposalProps> = ({ proposal }) => {
-  const sovContract = useGetTokenContract(SupportedTokens.sov);
   const adminAddress = useGetProtocolContract('governorAdmin')?.address ?? '';
   const ownerAddress = useGetProtocolContract('governorOwner')?.address ?? '';
+  const isExecutableProposal = useIsExecutableProposal(proposal);
 
   const type = useMemo(() => {
     let result = '';
 
     if (areAddressesEqual(proposal.emittedBy.id, adminAddress)) {
-      result += t(translations.bitocracyPage.proposalType.admin) + ' ';
+      result += t(baseTranslations.admin) + ' ';
     } else if (areAddressesEqual(proposal.emittedBy.id, ownerAddress)) {
-      result += t(translations.bitocracyPage.proposalType.owner) + ' ';
+      result += t(baseTranslations.owner) + ' ';
     } else {
-      result += t(translations.bitocracyPage.proposalType.other) + ' ';
+      result += t(baseTranslations.other) + ' ';
     }
 
-    if (
-      proposal.targets.length === 1 &&
-      proposal.targets[0] === sovContract?.address
-    ) {
-      if (proposal.signatures[0] === SIGNATURE_SYMBOL) {
-        result += t(translations.bitocracyPage.proposalType.nonExecutable);
-      } else {
-        result += t(translations.bitocracyPage.proposalType.executable);
-      }
-    } else if (proposal.targets.length > 1) {
-      result += t(translations.bitocracyPage.proposalType.executable);
+    if (isExecutableProposal) {
+      result += t(baseTranslations.executable);
     } else {
-      result += t(translations.bitocracyPage.proposalType.nonExecutable);
+      result += t(baseTranslations.nonExecutable);
     }
 
     return result;
-  }, [proposal, adminAddress, ownerAddress, sovContract]);
+  }, [proposal.emittedBy.id, adminAddress, ownerAddress, isExecutableProposal]);
 
   return <>{type}</>;
 };

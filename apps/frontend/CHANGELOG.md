@@ -1,5 +1,25 @@
 # frontend
 
+## 1.0.30
+
+### Patch Changes
+
+- be97908c: SOV-3022: Update staking loading data
+- 8edd408b: SOV-3074: fix decimal places on total rewards tooltip
+- 541b98dd: SOV-3197: Increase gas limit for delegating vesting stake
+- 93998577: SOV-3136: update lend page text
+- 50c278d8: SOV-3073: fix mobile navigation
+- 68bfa997: SOV-3065: Pull minimum collateral ratios from subgraph
+- c916f49d: SOV-3137: Stability pool updates
+- b3bf103c: SOV-3139: fix dropdown positioning
+- c10084fe: SOV-3034: rewards page banner update
+- Updated dependencies [be97908c]
+- Updated dependencies [ab9b50e7]
+- Updated dependencies [50c278d8]
+- Updated dependencies [c681ea39]
+- Updated dependencies [b3bf103c]
+  - @sovryn/ui@1.0.15
+
 ## 1.0.29
 
 ### Patch Changes

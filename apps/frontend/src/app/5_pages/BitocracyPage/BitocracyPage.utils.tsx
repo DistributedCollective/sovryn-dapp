@@ -1,9 +1,11 @@
 import React from 'react';
 
 import { Paragraph, ParagraphSize } from '@sovryn/ui';
+import { Decimal } from '@sovryn/utils';
 
 import { Proposal } from '../../../utils/graphql/rsk/generated';
 import { dateFormat } from '../../../utils/helpers';
+import { decimalic } from '../../../utils/math';
 import { BLOCK_TIME_IN_SECONDS } from './BitocracyPage.constants';
 
 export const renderProposalEndDate = (item: Proposal) => {
@@ -26,4 +28,19 @@ export const generateRowTitle = (item: Proposal) => (
 export const prettifyId = (item: string) => {
   const id = item.split('-');
   return id[1];
+};
+
+export const shouldProposalBeDefeated = (proposal: Proposal) => {
+  const totalVotes = Decimal.fromBigNumberString(proposal.votesFor).add(
+    Decimal.fromBigNumberString(proposal.votesAgainst),
+  );
+
+  const supportPercentage = Decimal.fromBigNumberString(proposal.votesFor)
+    .div(totalVotes)
+    .mul(100);
+
+  return (
+    supportPercentage.lte(proposal.emittedBy.majorityPercentageVotes) ||
+    decimalic(totalVotes).lt(Decimal.fromBigNumberString(proposal.quorum))
+  );
 };

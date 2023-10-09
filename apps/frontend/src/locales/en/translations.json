@@ -631,6 +631,10 @@
             "expired": "Expired",
             "defeated": "Rejected"
         },
+        "proposalStatusDetail": {
+            "willSucceed": "Will succeed",
+            "willBeDefeated": "Will be rejected"
+        },
         "proposalType": {
             "admin": "Admin",
             "owner": "Owner",

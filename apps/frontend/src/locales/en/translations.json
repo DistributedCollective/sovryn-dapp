@@ -633,7 +633,7 @@
         },
         "proposalStatusDetail": {
             "willSucceed": "Will succeed",
-            "willBeDefeated": "Will be defeated"
+            "willBeDefeated": "Will be rejected"
         },
         "proposalType": {
             "admin": "Admin",

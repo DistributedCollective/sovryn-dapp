@@ -623,12 +623,12 @@
         },
         "proposalStatus": {
             "active": "In progress",
-            "queued": "Queued for execution",
-            "executed": "Executed",
-            "succeeded": "Succeeded",
+            "queued": "Succeeded - Queued for execution",
+            "executed": "Succeeded - Executed",
+            "succeeded": "Succeeded - Queue for execution",
             "pending": "Pending execution",
             "canceled": "Vetoed",
-            "expired": "Expired",
+            "expired": "Succeeded - Expired",
             "defeated": "Rejected"
         },
         "proposalStatusDetail": {

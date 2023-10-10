@@ -46,7 +46,6 @@ const pageTranslations = translations.fixedInterestPage.extendLoanDialog;
 
 type ExtendLoanFormProps = {
   loan: LoanItem;
-  onSuccess: () => void;
 };
 
 export const ExtendLoanForm: FC<ExtendLoanFormProps> = ({ loan }) => {

@@ -130,7 +130,6 @@ export const useGetOpenLoans = () => {
 
   useEffect(() => {
     if (blockNumber !== processedBlock) {
-      console.log('refetch loans!');
       refetch();
       getUserLoans();
     }

@@ -68,7 +68,6 @@ const pageTranslations = translations.fixedInterestPage.adjustLoanDialog;
 
 type AdjustLoanFormProps = {
   loan: LoanItem;
-  onSuccess: () => void;
 };
 
 export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {

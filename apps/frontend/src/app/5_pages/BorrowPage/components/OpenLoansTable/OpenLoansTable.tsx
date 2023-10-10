@@ -37,12 +37,12 @@ export const OpenLoansTable: FC<OpenLoansTableProps> = ({ loans, loading }) => {
     [setExtendLoanId],
   );
 
-  const adjustLoan = useMemo(
+  const loanToAdjust = useMemo(
     () => loans.find(loan => loan.id === adjustLoanId),
     [adjustLoanId, loans],
   );
 
-  const extendLoan = useMemo(
+  const loanToExtend = useMemo(
     () => loans.find(loan => loan.id === extendLoanId),
     [extendLoanId, loans],
   );
@@ -69,7 +69,7 @@ export const OpenLoansTable: FC<OpenLoansTableProps> = ({ loans, loading }) => {
       </div>
 
       <Dialog
-        isOpen={!!adjustLoan}
+        isOpen={!!loanToAdjust}
         dataAttribute="extend-loan-dialog"
         width={DialogSize.md}
         disableFocusTrap
@@ -78,15 +78,11 @@ export const OpenLoansTable: FC<OpenLoansTableProps> = ({ loans, loading }) => {
           title={t(translations.fixedInterestPage.extendLoanDialog.title)}
           onClose={onAdjustClose}
         />
-        <DialogBody
-          children={
-            <AdjustLoanForm loan={adjustLoan!} onSuccess={onAdjustClose} />
-          }
-        />
+        <DialogBody children={<AdjustLoanForm loan={loanToAdjust!} />} />
       </Dialog>
 
       <Dialog
-        isOpen={!!extendLoan}
+        isOpen={!!loanToExtend}
         dataAttribute="extend-loan-dialog"
         width={DialogSize.md}
         disableFocusTrap
@@ -95,11 +91,7 @@ export const OpenLoansTable: FC<OpenLoansTableProps> = ({ loans, loading }) => {
           title={t(translations.fixedInterestPage.extendLoanDialog.title)}
           onClose={onExtendClose}
         />
-        <DialogBody
-          children={
-            <ExtendLoanForm loan={extendLoan!} onSuccess={onExtendClose} />
-          }
-        />
+        <DialogBody children={<ExtendLoanForm loan={loanToExtend!} />} />
       </Dialog>
     </div>
   );

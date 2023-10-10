@@ -1,5 +1,15 @@
 # @sovryn/ui
 
+## 1.0.15
+
+### Patch Changes
+
+- be97908c: SOV-3022: Update staking loading data
+- ab9b50e7: SOV-3002: fix tooltip positioning
+- 50c278d8: SOV-3073: fix mobile navigation
+- c681ea39: SOV-3303: fix Dropdown horizontal positioning bug
+- b3bf103c: SOV-3139: fix dropdown positioning
+
 ## 1.0.14
 
 ### Patch Changes

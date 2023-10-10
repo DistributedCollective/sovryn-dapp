@@ -6,6 +6,7 @@ import { useParams } from 'react-router-dom';
 
 import { Heading, Paragraph, ParagraphSize } from '@sovryn/ui';
 
+import { LoaderWithLogo } from '../../1_atoms/LoaderWithLogo/LoaderWithLogo';
 import { TxIdWithNotification } from '../../2_molecules/TxIdWithNotification/TransactionIdWithNotification';
 import { ProposalVotingPower } from '../../3_organisms/ProposalVotingPower/ProposalVotingPower';
 import { ProposalVotingResults } from '../../3_organisms/ProposalVotingResults/ProposalVotingResults';
@@ -57,7 +58,7 @@ const ProposalPage: FC = () => {
   }, [adminAddress, ownerAddress, proposal]);
 
   if (!proposal) {
-    return <>Loading....</>;
+    return <LoaderWithLogo />;
   }
 
   return (
@@ -155,23 +156,6 @@ const ProposalPage: FC = () => {
           {isVotingPowerVisible && <ProposalVotingPower />}
           <ProposalVotingResults proposal={proposal} />
         </div>
-        {/* {account && (
-          <div className="flex w-full items-center sm:justify-end justify-center">
-            <Button
-              style={ButtonStyle.ghost}
-              text={t(pageTranslations.actions.bitocracyAlerts)}
-              className="mb-3 sm:mb-0"
-            />
-            {isNewProposalButtonVisible && (
-              <div className="bg-gray-90 sm:bg-transparent p-4 pb-8 sm:p-0 border-t sm:border-none border-gray-60 flex items-center justify-center sm:ml-3 sm:relative fixed bottom-0 left-0 right-0 z-10 sm:z-0">
-                <Button
-                  text={t(pageTranslations.actions.newProposal)}
-                  className="w-full sm:w-auto"
-                />
-              </div>
-            )}
-          </div>
-        )} */}
       </div>
     </>
   );

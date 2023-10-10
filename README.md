@@ -1,4 +1,4 @@
-[GitHub](https://github.com/DistributedCollective) | [Wiki](https://wiki.sovryn.com/en/home) | [Forum](https://forum.sovryn.app/) | [Blog](https://sovryn.com/all-things-sovryn/) | [LinkedIn](https://www.linkedin.com/company/sovryn/about/) | [Twitter](https://twitter.com/SovrynBTC) | [Discord](https://discord.gg/sovryn)
+[GitHub](https://github.com/DistributedCollective) | [Wiki](https://wiki.sovryn.com/en/home) | [Forum](https://forum.sovryn.app/) | [Blog](https://sovryn.com/all-things-sovryn/) | [LinkedIn](https://www.linkedin.com/company/sovryn/about/) | [Twitter](https://x.com/SovrynBTC) | [Discord](https://discord.gg/sovryn)
 
 # Sovryn Dapp
 

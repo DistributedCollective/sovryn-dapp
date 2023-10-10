@@ -12,11 +12,12 @@ import {
 } from '@sovryn/ui';
 
 import { useAccount } from '../../../hooks/useAccount';
+import { translations } from '../../../locales/i18n';
 import { sharedState } from '../../../store/rxjs/shared-state';
 import { NewProposalButton } from './components/NewProposalButton/NewProposalButton';
 import { Proposals } from './components/Proposals/Proposals';
+import { ProposalContextProvider } from './contexts/NewProposalContext';
 import { useGetProposals } from './hooks/useGetProposals';
-import { translations } from '../../../locales/i18n';
 
 const pageTranslations = translations.bitocracyPage;
 
@@ -30,7 +31,7 @@ const BitocracyPage: FC = () => {
   );
 
   return (
-    <>
+    <ProposalContextProvider>
       <Helmet>
         <title>{t(pageTranslations.meta.title)}</title>
       </Helmet>
@@ -58,7 +59,7 @@ const BitocracyPage: FC = () => {
         )}
         <Proposals proposals={proposals} loading={loading} />
       </div>
-    </>
+    </ProposalContextProvider>
   );
 };
 

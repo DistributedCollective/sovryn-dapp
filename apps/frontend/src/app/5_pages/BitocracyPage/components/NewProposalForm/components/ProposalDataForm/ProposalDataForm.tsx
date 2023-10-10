@@ -1,6 +1,15 @@
-import React, { FC, useCallback, useMemo, useState } from 'react';
+import React, {
+  ChangeEvent,
+  FC,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 
 import { t } from 'i18next';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 
 import {
   Button,
@@ -10,6 +19,8 @@ import {
   IconNames,
   Input,
   InputSize,
+  TabType,
+  Tabs,
 } from '@sovryn/ui';
 
 import { translations } from '../../../../../../../locales/i18n';
@@ -18,6 +29,14 @@ import {
   ProposalCreationDetails,
   ProposalCreationType,
 } from '../../../../contexts/ProposalContext.types';
+import {
+  maxCharactersLength,
+  maxDiscussionUrlLength,
+  maxProposalTextLength,
+} from './ProposalDataForm.constants';
+import { generateFormGroupLabel } from './ProposalDataForm.utils';
+
+const ACTIVE_CLASSNAME = 'text-primary-20';
 
 export type ProposalDataFormProps = {
   value: ProposalCreationDetails;
@@ -37,6 +56,22 @@ export const ProposalDataForm: FC<ProposalDataFormProps> = ({
   onPreview,
 }) => {
   const [form, setForm] = useState<ProposalCreationDetails>(value);
+  const [index, setIndex] = useState(0);
+  const handleInputChangeInput = useCallback(
+    (event: ChangeEvent<HTMLInputElement>) => {
+      const { name, value } = event.target;
+      setForm(prevForm => ({ ...prevForm, [name]: value }));
+    },
+    [],
+  );
+
+  const handleInputChangeTextarea = useCallback(
+    (event: ChangeEvent<HTMLTextAreaElement>) => {
+      const { name, value } = event.target;
+      setForm(prevForm => ({ ...prevForm, [name]: value }));
+    },
+    [],
+  );
 
   const isValidUrl = useMemo(() => validateURL(form.link), [form.link]);
 
@@ -55,28 +90,84 @@ export const ProposalDataForm: FC<ProposalDataFormProps> = ({
     onChange(form);
     onSubmit();
   }, [form, onChange, onSubmit]);
+
   const handlePreview = useCallback(() => {
     onChange(form);
     onPreview();
   }, [form, onChange, onPreview]);
 
+  const tabs = useMemo(
+    () => [
+      {
+        label: t(translations.bitocracyPage.actions.edit),
+        content: (
+          <textarea
+            name="text"
+            maxLength={maxProposalTextLength}
+            value={form.text}
+            onChange={handleInputChangeTextarea}
+            className="block w-full bg-gray-70 border border-gray-70 p-3 rounded focus:border-gray-60 h-36 mt-2"
+          />
+        ),
+        activeClassName: ACTIVE_CLASSNAME,
+      },
+      {
+        label: t(translations.bitocracyPage.actions.preview),
+        content: (
+          <ReactMarkdown
+            remarkPlugins={[remarkGfm]}
+            className="w-full bg-gray-70 border border-gray-70 p-3 rounded focus:border-gray-60 mt-2 h-36 overflow-auto"
+          >
+            {form.text}
+          </ReactMarkdown>
+        ),
+        activeClassName: ACTIVE_CLASSNAME,
+      },
+    ],
+    [form.text, handleInputChangeTextarea],
+  );
+
+  useEffect(() => {
+    setForm(value);
+  }, [value]);
+
   return (
-    <div className="flex flex-col gap-4 relative pt-4">
-      <button className="absolute left-0 -top-2" onClick={handleBack}>
-        <Icon size={14} icon={IconNames.ARROW_BACK} />
-      </button>
-      <FormGroup label={t(translations.bitocracyPage.proposalDataForm.title)}>
+    <div className="flex flex-col gap-8 relative pb-4">
+      <Button
+        onClick={handleBack}
+        style={ButtonStyle.ghost}
+        className="text-gray-10 inline-flex justify-start items-center text-base font-medium cursor-pointer"
+        text={
+          <>
+            <Icon size={12} icon={IconNames.ARROW_LEFT} className="mr-2" />
+            {t(translations.common.buttons.back)}
+          </>
+        }
+      />
+      <FormGroup
+        label={generateFormGroupLabel(
+          t(translations.bitocracyPage.proposalDataForm.title),
+          form.title,
+          maxCharactersLength,
+        )}
+      >
         <Input
           value={form.title}
-          maxLength={140}
-          className="max-w-[22rem]"
+          maxLength={maxCharactersLength}
+          className="max-w-full"
           onChangeText={title => setForm(form => ({ ...form, title }))}
           size={InputSize.large}
+          onChange={handleInputChangeInput}
+          name="title"
         />
       </FormGroup>
 
       <FormGroup
-        label={t(translations.bitocracyPage.proposalDataForm.discussionUrl)}
+        label={generateFormGroupLabel(
+          t(translations.bitocracyPage.proposalDataForm.discussionUrl),
+          form.link,
+          maxDiscussionUrlLength,
+        )}
         errorLabel={
           isValidUrl || !form.link
             ? undefined
@@ -85,33 +176,44 @@ export const ProposalDataForm: FC<ProposalDataFormProps> = ({
       >
         <Input
           value={form.link}
-          className="max-w-[22rem]"
+          maxLength={maxDiscussionUrlLength}
+          className="max-w-full"
           onChangeText={link => setForm(form => ({ ...form, link }))}
           size={InputSize.large}
+          onChange={handleInputChangeInput}
+          name="link"
         />
       </FormGroup>
 
       <FormGroup
-        label={t(translations.bitocracyPage.proposalDataForm.proposalSummary)}
+        label={generateFormGroupLabel(
+          t(translations.bitocracyPage.proposalDataForm.proposalSummary),
+          form.summary,
+          maxCharactersLength,
+        )}
       >
-        <Input
+        <textarea
+          name="summary"
+          maxLength={maxCharactersLength}
           value={form.summary}
-          maxLength={140}
-          className="max-w-[22rem]"
-          onChangeText={summary => setForm(form => ({ ...form, summary }))}
-          size={InputSize.large}
+          onChange={handleInputChangeTextarea}
+          className="w-full bg-gray-70 border border-gray-70 p-3 rounded focus:border-gray-60 min-h-[3.75rem] overflow-hidden"
         />
       </FormGroup>
 
       <FormGroup
-        label={t(translations.bitocracyPage.proposalDataForm.description)}
+        label={generateFormGroupLabel(
+          t(translations.bitocracyPage.proposalDataForm.proposalText),
+          form.text,
+          maxProposalTextLength.toLocaleString(),
+        )}
       >
-        <Input
-          value={form.text}
-          maxLength={30000}
-          className="max-w-[22rem]"
-          onChangeText={text => setForm(form => ({ ...form, text }))}
-          size={InputSize.large}
+        <Tabs
+          items={tabs}
+          onChange={setIndex}
+          index={index}
+          type={TabType.secondary}
+          className="block mb-2"
         />
       </FormGroup>
 
@@ -121,14 +223,15 @@ export const ProposalDataForm: FC<ProposalDataFormProps> = ({
       ].includes(proposalType) && (
         <Button
           text={t(translations.common.buttons.continue)}
-          className="w-full sm:w-auto mt-4"
+          className="w-full sm:w-auto self-center min-w-44 "
           onClick={handleSubmit}
+          style={ButtonStyle.secondary}
           disabled={isSubmitDisabled}
         />
       )}
 
       {proposalType === ProposalCreationType.Proclamation && (
-        <div className="flex items-center gap-4 mt-4">
+        <div className="flex items-center gap-4">
           <Button
             text={t(translations.bitocracyPage.actions.preview)}
             onClick={handlePreview}

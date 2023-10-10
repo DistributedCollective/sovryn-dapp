@@ -9,8 +9,9 @@ import {
   ProposalCreationStep,
   ProposalCreationType,
 } from '../../contexts/ProposalContext.types';
-
+import { PreviewProposalDialog } from './components/PreviewProposalDialog/PreviewProposalDialog';
 import { ProposalDataForm } from './components/ProposalDataForm/ProposalDataForm';
+import { formatProposalText } from './components/ProposalDataForm/ProposalDataForm.utils';
 import { ProposalInitialStep } from './components/ProposalInitialStep/ProposalInitialStep';
 
 export const NewProposalForm: FC = () => {
@@ -43,6 +44,15 @@ export const NewProposalForm: FC = () => {
   }, [setStep]);
 
   const handleSubmit = useCallback(async () => {
+    const proposalFormatText = formatProposalText(
+      details.title,
+      details.link,
+      details.summary,
+      details.text,
+    );
+
+    console.log('formatted data', proposalFormatText);
+
     if (step === ProposalCreationStep.Details) {
       if (proposalType === ProposalCreationType.Proclamation) {
         submit();
@@ -50,7 +60,7 @@ export const NewProposalForm: FC = () => {
         setStep(ProposalCreationStep.Parameters);
       }
     }
-  }, [proposalType, setStep, step, submit]);
+  }, [proposalType, setStep, step, submit, details]);
 
   if (step === ProposalCreationStep.SelectType) {
     return (
@@ -75,6 +85,8 @@ export const NewProposalForm: FC = () => {
         onSubmit={handleSubmit}
       />
     );
+  } else if (step === ProposalCreationStep.Overview) {
+    return <PreviewProposalDialog />;
   } else {
     return null;
   }

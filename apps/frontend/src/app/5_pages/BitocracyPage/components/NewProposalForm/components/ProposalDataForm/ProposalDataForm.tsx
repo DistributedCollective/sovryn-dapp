@@ -30,9 +30,10 @@ import {
   ProposalCreationType,
 } from '../../../../contexts/ProposalContext.types';
 import {
-  maxCharactersLength,
-  maxDiscussionUrlLength,
-  maxProposalTextLength,
+  MAXIMUM_SUMMARY_LENGTH,
+  MAXIMUM_TITLE_LENGTH,
+  MAXIMUM_PROPOSAL_TEXT_LENGTH,
+  MAXIMUM_DISCUSSION_URL_LENGTH,
 } from './ProposalDataForm.constants';
 import { generateFormGroupLabel } from './ProposalDataForm.utils';
 
@@ -103,7 +104,7 @@ export const ProposalDataForm: FC<ProposalDataFormProps> = ({
         content: (
           <textarea
             name="text"
-            maxLength={maxProposalTextLength}
+            maxLength={MAXIMUM_PROPOSAL_TEXT_LENGTH}
             value={form.text}
             onChange={handleInputChangeTextarea}
             className="block w-full bg-gray-70 border border-gray-70 p-3 rounded focus:border-gray-60 h-36 mt-2"
@@ -148,12 +149,12 @@ export const ProposalDataForm: FC<ProposalDataFormProps> = ({
         label={generateFormGroupLabel(
           t(translations.bitocracyPage.proposalDataForm.title),
           form.title,
-          maxCharactersLength,
+          MAXIMUM_TITLE_LENGTH,
         )}
       >
         <Input
           value={form.title}
-          maxLength={maxCharactersLength}
+          maxLength={MAXIMUM_TITLE_LENGTH}
           className="max-w-full"
           onChangeText={title => setForm(form => ({ ...form, title }))}
           size={InputSize.large}
@@ -166,7 +167,7 @@ export const ProposalDataForm: FC<ProposalDataFormProps> = ({
         label={generateFormGroupLabel(
           t(translations.bitocracyPage.proposalDataForm.discussionUrl),
           form.link,
-          maxDiscussionUrlLength,
+          MAXIMUM_DISCUSSION_URL_LENGTH,
         )}
         errorLabel={
           isValidUrl || !form.link
@@ -176,7 +177,7 @@ export const ProposalDataForm: FC<ProposalDataFormProps> = ({
       >
         <Input
           value={form.link}
-          maxLength={maxDiscussionUrlLength}
+          maxLength={MAXIMUM_DISCUSSION_URL_LENGTH}
           className="max-w-full"
           onChangeText={link => setForm(form => ({ ...form, link }))}
           size={InputSize.large}
@@ -189,12 +190,12 @@ export const ProposalDataForm: FC<ProposalDataFormProps> = ({
         label={generateFormGroupLabel(
           t(translations.bitocracyPage.proposalDataForm.proposalSummary),
           form.summary,
-          maxCharactersLength,
+          MAXIMUM_SUMMARY_LENGTH,
         )}
       >
         <textarea
           name="summary"
-          maxLength={maxCharactersLength}
+          maxLength={MAXIMUM_SUMMARY_LENGTH}
           value={form.summary}
           onChange={handleInputChangeTextarea}
           className="w-full bg-gray-70 border border-gray-70 p-3 rounded focus:border-gray-60 min-h-[3.75rem] overflow-hidden"
@@ -205,7 +206,7 @@ export const ProposalDataForm: FC<ProposalDataFormProps> = ({
         label={generateFormGroupLabel(
           t(translations.bitocracyPage.proposalDataForm.proposalText),
           form.text,
-          maxProposalTextLength.toLocaleString(),
+          MAXIMUM_PROPOSAL_TEXT_LENGTH.toLocaleString(),
         )}
       >
         <Tabs

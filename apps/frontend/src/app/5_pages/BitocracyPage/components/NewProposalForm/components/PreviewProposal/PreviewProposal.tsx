@@ -34,7 +34,7 @@ export const PreviewProposal: FC = () => {
 
   return (
     <>
-      <div className="w-full flex flex-col md:flex-row gap-20 text-left text-gray-10 mb-5 mt-2 pb-10">
+      <div className="w-full flex flex-col md:flex-row gap-20 text-left text-gray-10 mb-5 mt-2 pb-14">
         <div className="w-full flex flex-col gap-6 sm:max-h-[35rem] overflow-auto">
           <div className="md:px-6 md:pb-6">
             <Heading className="text-base sm:text-2xl font-medium break-all">

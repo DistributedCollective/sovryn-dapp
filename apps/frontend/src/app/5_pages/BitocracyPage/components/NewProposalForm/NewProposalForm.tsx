@@ -11,7 +11,6 @@ import {
 } from '../../contexts/ProposalContext.types';
 import { PreviewProposalDialog } from './components/PreviewProposalDialog/PreviewProposalDialog';
 import { ProposalDataForm } from './components/ProposalDataForm/ProposalDataForm';
-import { formatProposalText } from './components/ProposalDataForm/ProposalDataForm.utils';
 import { ProposalInitialStep } from './components/ProposalInitialStep/ProposalInitialStep';
 
 export const NewProposalForm: FC = () => {
@@ -44,15 +43,6 @@ export const NewProposalForm: FC = () => {
   }, [setStep]);
 
   const handleSubmit = useCallback(async () => {
-    const proposalFormatText = formatProposalText(
-      details.title,
-      details.link,
-      details.summary,
-      details.text,
-    );
-
-    console.log('formatted data', proposalFormatText);
-
     if (step === ProposalCreationStep.Details) {
       if (proposalType === ProposalCreationType.Proclamation) {
         submit();
@@ -60,7 +50,7 @@ export const NewProposalForm: FC = () => {
         setStep(ProposalCreationStep.Parameters);
       }
     }
-  }, [proposalType, setStep, step, submit, details]);
+  }, [proposalType, setStep, step, submit]);
 
   if (step === ProposalCreationStep.SelectType) {
     return (

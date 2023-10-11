@@ -4,8 +4,7 @@
 
 ### Patch Changes
 
-- 37382136: SOV-3010: Individual Proposal page
-- 37382136: SOV-3008: add bar component with threshold option
+- 37382136: SOV-3008: Add bar component with threshold option
 
 ## 1.0.15
 

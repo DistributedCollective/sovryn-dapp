@@ -4,28 +4,8 @@
 
 ### Patch Changes
 
-- 37382136: SOV-3196: add voting tooltips to Voting proposals page
-- 37382136: SOV-3319: Fix proposal type
-- 37382136: SOV-3012: Bitocracy alerts
 - 8c3d97eb: SOV-3289: Resolve issue with iWRBTC Rewards not being shown or claimable from Rewards page
-- 37382136: SOV-3225: Open proposal on row click
-- 37382136: SOV-3195: add voting power section
-- 37382136: SOV-3334: Fix cast vote mobile
-- 37382136: fix: Bitocracy proposal issues
-- 37382136: SOV-3327: Fix status labels
 - 37382136: Bitocracy page
-- 37382136: SOV-3239: Support/Reject button in Cast your vote
-- 37382136: SOV-3010: Individual Proposal page
-- 37382136: SOV-3011: Export CSV
-- 37382136: SOV-2922: voting proposals page
-- 37382136: SOV-3226: Fix bitocracy alerts button
-- 37382136: SOV-3312: Fix small bugs
-- 37382136: SOV-3288: Show the current state of voting
-- 37382136: SOV-3013: Voting - Next Steps modal
-- 37382136: SOV-3009: voting actions
-- Updated dependencies [37382136]
-- Updated dependencies [37382136]
-- Updated dependencies [37382136]
 - Updated dependencies [37382136]
   - @sovryn/contracts@1.0.17
   - @sovryn/ui@1.0.16

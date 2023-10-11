@@ -4,8 +4,7 @@
 
 ### Patch Changes
 
-- 37382136: SOV-3239: Support/Reject button in Cast your vote
-- 37382136: SOV-3009: voting actions
+- 37382136: SOV-3239 / SOV-3009: Add bitocracy contracts
 
 ## 1.0.16
 

@@ -21,9 +21,10 @@ export const NewProposalForm: FC = () => {
     setType: setProposalType,
     details,
     setDetails,
-    governor,
     setGovernor,
     submit,
+    parametersContract,
+    setParametersContract,
   } = useProposalContext();
   const [proposalTreasuryAccount, setProposalTreasuryAccount] = useState('');
 
@@ -58,8 +59,8 @@ export const NewProposalForm: FC = () => {
         setProposalTab={setStep}
         proposalType={proposalType}
         setProposalType={setProposalType}
-        proposalContract={governor || ''}
-        setProposalContract={setGovernor}
+        parametersContract={parametersContract}
+        setParametersContract={setParametersContract}
         proposalTreasuryAccount={proposalTreasuryAccount}
         setProposalTreasuryAccount={setProposalTreasuryAccount}
       />

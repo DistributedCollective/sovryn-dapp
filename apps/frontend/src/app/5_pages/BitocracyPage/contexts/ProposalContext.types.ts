@@ -1,6 +1,7 @@
 import { Dispatch, SetStateAction } from 'react';
 
 import { TransactionCallbacks } from '../../../3_organisms/TransactionStepDialog/TransactionStepDialog.types';
+import { ProposalContract } from '../components/NewProposalForm/NewProposalForm.types';
 
 export type ProposalContextValue = {
   step: ProposalCreationStep;
@@ -12,6 +13,8 @@ export type ProposalContextValue = {
   governor: string | null;
   setGovernor: Dispatch<SetStateAction<string | null>>;
   parameters: ProposalCreationParameter[];
+  parametersContract: ProposalContract;
+  setParametersContract: Dispatch<SetStateAction<ProposalContract>>;
   setParameters: Dispatch<SetStateAction<ProposalCreationParameter[]>>;
   submit: (callbacks?: Partial<TransactionCallbacks>) => void;
   reset: () => void;

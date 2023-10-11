@@ -21,6 +21,7 @@ import { GAS_LIMIT } from '../../../../constants/gasLimits';
 import { useTransactionContext } from '../../../../contexts/TransactionContext';
 import { useAccount } from '../../../../hooks/useAccount';
 import { translations } from '../../../../locales/i18n';
+import { ProposalContract } from '../components/NewProposalForm/NewProposalForm.types';
 import {
   ProposalContextValue,
   ProposalCreationDetails,
@@ -43,6 +44,8 @@ const defaultContextValue: ProposalContextValue = {
   governor: null,
   setGovernor: noop,
   parameters: [],
+  parametersContract: ProposalContract.SovrynProtocol,
+  setParametersContract: noop,
   setParameters: noop,
   submit: noop,
   reset: noop,
@@ -75,6 +78,10 @@ export const ProposalContextProvider: FC<PropsWithChildren> = ({
   const [parameters, setParameters] = useState<
     ProposalContextValue['parameters']
   >(defaultContextValue.parameters);
+
+  const [parametersContract, setParametersContract] = useState(
+    defaultContextValue.parametersContract,
+  );
 
   const submit = useCallback(
     async (callbacks?: Partial<TransactionCallbacks>) => {
@@ -207,6 +214,8 @@ export const ProposalContextProvider: FC<PropsWithChildren> = ({
         governor,
         setGovernor,
         parameters,
+        parametersContract,
+        setParametersContract,
         setParameters,
         submit,
         reset,

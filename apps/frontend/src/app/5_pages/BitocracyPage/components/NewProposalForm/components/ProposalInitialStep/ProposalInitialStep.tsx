@@ -14,13 +14,14 @@ import {
   PROPOSAL_TREASURY_OPTIONS,
   PROPOSAL_TYPE_OPTIONS,
 } from '../../NewProposalForm.constants';
+import { ProposalContract } from '../../NewProposalForm.types';
 
 export type ProposalInitialStepProps = {
   setProposalTab: (value: ProposalCreationStep) => void;
   setProposalType: (value: ProposalCreationType) => void;
   proposalType: ProposalCreationType;
-  setProposalContract: (value: string) => void;
-  proposalContract: string;
+  setParametersContract: (value: ProposalContract) => void;
+  parametersContract: ProposalContract;
   setProposalTreasuryAccount: (value: string) => void;
   proposalTreasuryAccount: string;
 };
@@ -29,8 +30,8 @@ export const ProposalInitialStep: FC<ProposalInitialStepProps> = ({
   setProposalTab,
   setProposalType,
   proposalType,
-  setProposalContract,
-  proposalContract,
+  setParametersContract,
+  parametersContract,
   setProposalTreasuryAccount,
   proposalTreasuryAccount,
 }) => (
@@ -43,8 +44,8 @@ export const ProposalInitialStep: FC<ProposalInitialStepProps> = ({
     />
     {proposalType === ProposalCreationType.Parameters && (
       <Select
-        value={proposalContract}
-        onChange={setProposalContract}
+        value={parametersContract}
+        onChange={setParametersContract}
         options={PROPOSAL_CONTRACT_OPTIONS}
         className="w-full"
       />

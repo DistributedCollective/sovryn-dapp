@@ -1,21 +1,18 @@
-import {
-  ProposalContract,
-  ProposalTreasury,
-  ProposalType,
-} from './NewProposalForm.types';
+import { ProposalCreationType } from '../../contexts/ProposalContext.types';
+import { ProposalContract, ProposalTreasury } from './NewProposalForm.types';
 
 export const PROPOSAL_TYPE_OPTIONS = [
   {
-    value: ProposalType.Parameter,
-    label: ProposalType.Parameter,
+    value: ProposalCreationType.Parameters,
+    label: ProposalCreationType.Parameters,
   },
   {
-    value: ProposalType.Proclamation,
-    label: ProposalType.Proclamation,
+    value: ProposalCreationType.Proclamation,
+    label: ProposalCreationType.Proclamation,
   },
   {
-    value: ProposalType.Treasury,
-    label: ProposalType.Treasury,
+    value: ProposalCreationType.Treasury,
+    label: ProposalCreationType.Treasury,
   },
 ];
 

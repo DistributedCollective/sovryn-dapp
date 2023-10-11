@@ -20,7 +20,8 @@
             "done": "Done",
             "close": "Close",
             "retry": "Retry",
-            "skip": "Skip"
+            "skip": "Skip",
+            "back": "Back"
         },
         "na": "N/A",
         "tables": {
@@ -647,13 +648,17 @@
             "discussionUrl": "Discussion URL",
             "invalidURL": "Invalid URL",
             "proposalSummary": "Proposal summary",
-            "description": "Description"
+            "proposalText": "Proposal text"
         },
         "actions": {
-            "newProposal": "New proposal",
+            "createProposal": "Create proposal",
             "bitocracyAlerts": "Bitocracy alerts",
             "view": "View",
-            "preview": "Preview"
+            "preview": "Preview",
+            "edit": "Edit"
+        },
+        "proposalPreview": {
+            "title": "Preview mode"
         }
     },
     "proposalPage": {
@@ -1242,31 +1247,31 @@
         "withdraw": "Withdraw {{symbol}}"
     },
     "proposalVotingResults": {
-      "title": "Voting results",
-      "inProgress": "Voting in progress",
-      "exportCSV": "Export CSV",
-      "support": {
-        "title": "Support",
-        "required": "Support required:",
-        "current": "Current support:",
-        "requiredValue": "> {{value}}%",
-        "currentValue": "{{value}}%"
-      },
-      "quorum": {
-        "title": "Turnout",
-        "required": "Turnout required:",
-        "current": "Current turnout:",
-        "requiredValue": "{{value}} VP ({{percent}}%)",
-        "currentValue": "{{value}} VP ({{percent}}%)"
-      }
+        "title": "Voting results",
+        "inProgress": "Voting in progress",
+        "exportCSV": "Export CSV",
+        "support": {
+            "title": "Support",
+            "required": "Support required:",
+            "current": "Current support:",
+            "requiredValue": "> {{value}}%",
+            "currentValue": "{{value}}%"
+        },
+        "quorum": {
+            "title": "Turnout",
+            "required": "Turnout required:",
+            "current": "Current turnout:",
+            "requiredValue": "{{value}} VP ({{percent}}%)",
+            "currentValue": "{{value}} VP ({{percent}}%)"
+        }
     },
     "proposalVotingPower": {
-      "title": "Your voting power",
-      "votingPower": "Voting power",
-      "votingPowerShare": "Voting power share"
+        "title": "Your voting power",
+        "votingPower": "Voting power",
+        "votingPowerShare": "Voting power share"
     },
     "newProposalTx": {
-      "title": "Submit Proposal",
-      "description": "Submit a new proposal to the Bitocracy"
+        "title": "Submit Proposal",
+        "description": "Submit a new proposal to the Bitocracy"
     }
 }

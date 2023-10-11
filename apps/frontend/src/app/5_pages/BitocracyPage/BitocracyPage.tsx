@@ -12,13 +12,12 @@ import {
 } from '@sovryn/ui';
 
 import { useAccount } from '../../../hooks/useAccount';
+import { translations } from '../../../locales/i18n';
 import { sharedState } from '../../../store/rxjs/shared-state';
 import { NewProposalButton } from './components/NewProposalButton/NewProposalButton';
 import { Proposals } from './components/Proposals/Proposals';
+import { ProposalContextProvider } from './contexts/NewProposalContext';
 import { useGetProposals } from './hooks/useGetProposals';
-
-// TODO: This is just a temporary solution until we merge new proposal PR.
-const isNewProposalEnabled = false;
 
 const pageTranslations = translations.bitocracyPage;
 
@@ -26,19 +25,13 @@ const BitocracyPage: FC = () => {
   const { account } = useAccount();
   const { loading, data: proposals } = useGetProposals();
 
-  const isNewProposalButtonVisible = useMemo(
-    () =>
-      votingPower && isNewProposalEnabled ? Number(votingPower) > 0 : false,
-    [votingPower],
-  );
-
   const handleAlertsClick = useCallback(
     () => sharedState.actions.openEmailNotificationSettingsDialog(),
     [],
   );
 
   return (
-    <>
+    <ProposalContextProvider>
       <Helmet>
         <title>{t(pageTranslations.meta.title)}</title>
       </Helmet>
@@ -66,7 +59,7 @@ const BitocracyPage: FC = () => {
         )}
         <Proposals proposals={proposals} loading={loading} />
       </div>
-    </>
+    </ProposalContextProvider>
   );
 };
 

@@ -6,14 +6,14 @@ import { Button, Select } from '@sovryn/ui';
 
 import { translations } from '../../../../../../../locales/i18n';
 import {
+  ProposalCreationStep,
+  ProposalCreationType,
+} from '../../../../contexts/ProposalContext.types';
+import {
   PROPOSAL_CONTRACT_OPTIONS,
   PROPOSAL_TREASURY_OPTIONS,
   PROPOSAL_TYPE_OPTIONS,
 } from '../../NewProposalForm.constants';
-import {
-  ProposalCreationStep,
-  ProposalCreationType,
-} from '../../../../contexts/ProposalContext.types';
 
 export type ProposalInitialStepProps = {
   setProposalTab: (value: ProposalCreationStep) => void;

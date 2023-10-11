@@ -9,7 +9,7 @@ import {
   ProposalCreationStep,
   ProposalCreationType,
 } from '../../contexts/ProposalContext.types';
-
+import { PreviewProposalDialog } from './components/PreviewProposalDialog/PreviewProposalDialog';
 import { ProposalDataForm } from './components/ProposalDataForm/ProposalDataForm';
 import { ProposalInitialStep } from './components/ProposalInitialStep/ProposalInitialStep';
 
@@ -75,6 +75,8 @@ export const NewProposalForm: FC = () => {
         onSubmit={handleSubmit}
       />
     );
+  } else if (step === ProposalCreationStep.Overview) {
+    return <PreviewProposalDialog />;
   } else {
     return null;
   }

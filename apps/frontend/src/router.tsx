@@ -42,6 +42,12 @@ const StakePage = loadable(() => import('./app/5_pages/StakePage/StakePage'));
 const BorrowPage = loadable(
   () => import('./app/5_pages/BorrowPage/BorrowPage'),
 );
+const BitocracyPage = loadable(
+  () => import('./app/5_pages/BitocracyPage/BitocracyPage'),
+);
+const ProposalPage = loadable(
+  () => import('./app/5_pages/ProposalPage/ProposalPage'),
+);
 
 const routes = [
   {
@@ -88,6 +94,14 @@ const routes = [
       {
         path: '/convert',
         element: <ConvertPage />,
+      },
+      {
+        path: '/bitocracy',
+        element: <BitocracyPage />,
+      },
+      {
+        path: '/bitocracy/:id',
+        element: <ProposalPage />,
       },
       {
         path: '/history',

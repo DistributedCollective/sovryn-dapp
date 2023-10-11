@@ -67,7 +67,7 @@
     "connectWalletButton": {
         "connect": "Get started",
         "rewards": "Rewards",
-        "settings": "Settings",
+        "notifications": "Notifications",
         "history": "History",
         "copyAddress": "Copy address",
         "disconnect": "Disconnect"
@@ -97,7 +97,8 @@
                 }
             },
             "convert": "Convert",
-            "stake": "Stake"
+            "stake": "Stake",
+            "bitocracy": "Bitocracy"
         }
     },
     "footer": {
@@ -478,6 +479,14 @@
             "extendStakeTitle": "Extend stake",
             "delegateStake": "Delegate voting power details",
             "delegateStakeTitle": "Delegate voting power"
+        },
+        "nextStepDialog": {
+            "dialogTitle": "Next steps",
+            "title": "Sign up for important alerts",
+            "description": "Receive an email every time a new proposal is created. Then cast your vote to make your voice heard in Sovryn Bitocracy.",
+            "emailNotifications": "Email notifications",
+            "doNotShowAgain": "Don't show again",
+            "signUp": "Sign up"
         }
     },
 
@@ -597,6 +606,90 @@
         "collateralRatio": "collateral ratio"
     },
 
+    "bitocracyPage": {
+        "meta": {
+            "title": "Bitocracy - Sovryn",
+            "description": "Help decide the future of Sovryn by participating in governance of the protocol."
+        },
+        "title": "Bitocracy",
+        "subtitle": "Help decide the future of Sovryn",
+        "pastProposals": "Past proposals",
+        "liveProposals": "Live proposals",
+        "table": {
+            "status": "Status",
+            "title": "Title",
+            "type": "Type",
+            "endDate": "End date"
+        },
+        "proposalStatus": {
+            "active": "In progress",
+            "queued": "Succeeded - Queued for execution",
+            "executed": "Succeeded - Executed",
+            "succeeded": "Succeeded - Queue for execution",
+            "pending": "Pending execution",
+            "canceled": "Vetoed",
+            "expired": "Succeeded - Expired",
+            "defeated": "Rejected"
+        },
+        "proposalStatusDetail": {
+            "willSucceed": "Will succeed",
+            "willBeDefeated": "Will be rejected"
+        },
+        "proposalType": {
+            "admin": "Admin",
+            "owner": "Owner",
+            "executable": "(executable)",
+            "nonExecutable": "(non-executable)",
+            "other": "Other"
+        },
+        "actions": {
+            "newProposal": "New proposal",
+            "bitocracyAlerts": "Bitocracy alerts",
+            "view": "View"
+        }
+    },
+    "proposalPage": {
+        "meta": {
+            "title": "Bitocracy - Sovryn"
+        },
+        "proposedBy": "Proposed by",
+        "proposalID": "Proposal ID",
+        "status": "Status",
+        "timeToVote": "Time left to vote",
+        "voteStart": "Vote start:",
+        "voteEnd": "Vote end:",
+        "voteEnded": "Vote ended",
+        "blocks": "blocks",
+        "block": "block",
+        "castYourVote": "Cast your vote",
+        "connectMessage": "Connect wallet to check voter status",
+        "discussionLink": "Discussion link:",
+        "proposalText": "Proposal text:",
+        "executableDetails": {
+            "title": "Executable details",
+            "executable": "Executable",
+            "assetName": "Asset name: ",
+            "assetAmount": "Asset amount: ",
+            "assetAddress": "Asset address: ",
+            "contractAddress": "Contract address: ",
+            "recipientAddress": "Recipient address: ",
+            "functionName": "Function name: ",
+            "data": "Data: "
+        },
+        "castVote": "Cast your vote",
+        "stakeSOV": "Stake SOV",
+        "support": "Support",
+        "supportText": "You voted to support this proposal",
+        "reject": "Reject",
+        "rejectText": "You voted to reject this proposal",
+        "noVote": "No vote cast on this proposal",
+        "ineligibleVote": "Ineligible to vote - no SOV staked at proposal creation time",
+        "eligibleVote": "Stake SOV to be eligible to vote on future proposals",
+        "actions": {
+            "queue": "Queue for execution",
+            "execute": "Execute proposal"
+        }
+    },
     "fastBtc": {
         "mainScreen": {
             "title": "Funding",
@@ -1006,15 +1099,16 @@
         }
     },
     "emailNotificationsDialog": {
-        "dialogTitle": "Settings",
-        "title": "Sign up to receive important notifications about the state of your line of credit and the Zero protocol",
+        "dialogTitle": "Notifications",
+        "title": "Sign up to receive important notifications about Sovryn loans, Zero recovery mode, Bitocracy votes, and more",
         "emailInputLabel": "Email address",
         "emailInputPlaceholder": "Enter email",
         "alertGroups": {
             "marginCallsToggle": "Margin call alerts",
             "liquidationsToggle": "Liquidation and redemption alerts",
             "stabilityPoolToggle": "Stability pool alerts",
-            "systemToggle": "System alerts"
+            "systemToggle": "System alerts",
+            "bitocracyToggle": "Bitocracy alerts"
         },
         "successMessage": "Your preferences have been saved.",
         "errorMessage": "Something went wrong, please try again.",
@@ -1138,5 +1232,29 @@
     "lendingTx": {
         "deposit": "Deposit {{symbol}}",
         "withdraw": "Withdraw {{symbol}}"
+    },
+    "proposalVotingResults": {
+        "title": "Voting results",
+        "inProgress": "Voting in progress",
+        "exportCSV": "Export CSV",
+        "support": {
+            "title": "Support",
+            "required": "Support required:",
+            "current": "Current support:",
+            "requiredValue": "> {{value}}%",
+            "currentValue": "{{value}}%"
+        },
+        "quorum": {
+            "title": "Turnout",
+            "required": "Turnout required:",
+            "current": "Current turnout:",
+            "requiredValue": "{{value}} VP ({{percent}}%)",
+            "currentValue": "{{value}} VP ({{percent}}%)"
+        }
+    },
+    "proposalVotingPower": {
+        "title": "Your voting power",
+        "votingPower": "Voting power",
+        "votingPowerShare": "Voting power share"
     }
 }

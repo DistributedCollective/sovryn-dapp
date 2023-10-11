@@ -71,7 +71,7 @@ export const CastVote: FC<CastVoteProps> = ({ proposal, className }) => {
 
     if (!!hasUserVoted) {
       return (
-        <div className="flex items-center gap-8">
+        <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-8">
           <Tooltip
             content={
               <span className="font-medium">
@@ -80,10 +80,11 @@ export const CastVote: FC<CastVoteProps> = ({ proposal, className }) => {
             }
             trigger={TooltipTrigger.click}
             disabled={!hasUserVoted.support}
+            className="w-full sm:w-52"
           >
             <div>
               <Button
-                className={classNames('w-52', {
+                className={classNames('w-full', {
                   'bg-gray-50': !!hasUserVoted.support,
                   'hover:bg-gray-80 focus:bg-gray-80 cursor-default':
                     !hasUserVoted.support,
@@ -112,10 +113,11 @@ export const CastVote: FC<CastVoteProps> = ({ proposal, className }) => {
             }
             trigger={TooltipTrigger.click}
             disabled={!!hasUserVoted.support}
+            className="w-full sm:w-52"
           >
             <div>
               <Button
-                className={classNames('w-52', {
+                className={classNames('w-full', {
                   'bg-gray-50': !hasUserVoted.support,
                   'hover:bg-gray-80 focus:bg-gray-80 cursor-default':
                     !!hasUserVoted.support,
@@ -164,9 +166,9 @@ export const CastVote: FC<CastVoteProps> = ({ proposal, className }) => {
 
     if (!hasUserVoted && status === ProposalState.Active) {
       return (
-        <div className="flex items-center gap-8">
+        <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-8">
           <Button
-            className="w-52"
+            className="w-full sm:w-52"
             style={ButtonStyle.secondary}
             size={ButtonSize.large}
             onClick={handleSupport}
@@ -183,7 +185,7 @@ export const CastVote: FC<CastVoteProps> = ({ proposal, className }) => {
           />
 
           <Button
-            className="w-52"
+            className="w-full sm:w-52"
             style={ButtonStyle.secondary}
             size={ButtonSize.large}
             onClick={handleReject}

@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useEffect, useState } from 'react';
+import React, { FC, useCallback, useEffect } from 'react';
 
 import { getProtocolContract } from '@sovryn/contracts';
 
@@ -21,11 +21,9 @@ export const NewProposalForm: FC = () => {
     setType: setProposalType,
     details,
     setDetails,
-    governor,
     setGovernor,
     submit,
   } = useProposalContext();
-  const [proposalTreasuryAccount, setProposalTreasuryAccount] = useState('');
 
   // todo: these should be implemented in their own components.
   useEffect(() => {
@@ -58,10 +56,6 @@ export const NewProposalForm: FC = () => {
         setProposalTab={setStep}
         proposalType={proposalType}
         setProposalType={setProposalType}
-        proposalContract={governor || ''}
-        setProposalContract={setGovernor}
-        proposalTreasuryAccount={proposalTreasuryAccount}
-        setProposalTreasuryAccount={setProposalTreasuryAccount}
       />
     );
   } else if (step === ProposalCreationStep.Details) {

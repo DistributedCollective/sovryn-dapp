@@ -626,6 +626,7 @@
             "queued": "Succeeded - Queued for execution",
             "executed": "Succeeded - Executed",
             "succeeded": "Succeeded - Queue for execution",
+            "succeededNonExecutable": "Succeeded",
             "pending": "Pending execution",
             "canceled": "Vetoed",
             "expired": "Succeeded - Expired",

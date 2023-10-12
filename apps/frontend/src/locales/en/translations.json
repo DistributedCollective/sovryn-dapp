@@ -643,10 +643,18 @@
             "nonExecutable": "(non-executable)",
             "other": "Other"
         },
+        "proposalDataForm": {
+            "title": "Title",
+            "discussionUrl": "Discussion URL",
+            "invalidURL": "Invalid URL",
+            "proposalSummary": "Proposal summary",
+            "description": "Description"
+        },
         "actions": {
             "newProposal": "New proposal",
             "bitocracyAlerts": "Bitocracy alerts",
-            "view": "View"
+            "view": "View",
+            "preview": "Preview"
         }
     },
     "proposalPage": {

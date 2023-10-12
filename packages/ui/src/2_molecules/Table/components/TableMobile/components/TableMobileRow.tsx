@@ -41,8 +41,7 @@ export const TableMobileRow = <RowType extends RowObject>({
       style={AccordionStyle.secondary}
     >
       <div onClick={onClick} className={styles.row}>
-        {!expandedContent &&
-          !renderer &&
+        {!renderer &&
           columns.map(column => (
             <SimpleTableRow
               key={column.id.toString()}

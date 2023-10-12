@@ -1,4 +1,4 @@
-import React, { FC, useMemo } from 'react';
+import React, { FC } from 'react';
 
 import classNames from 'classnames';
 import { t } from 'i18next';

@@ -11,8 +11,8 @@ import {
   ParagraphSize,
 } from '@sovryn/ui';
 
-import { useAccount } from '../../../hooks/useAccount';
 import { ProposalVotingResults } from '../../3_organisms/ProposalVotingResults';
+import { useAccount } from '../../../hooks/useAccount';
 import { translations } from '../../../locales/i18n';
 import { sharedState } from '../../../store/rxjs/shared-state';
 import { useGetPersonalStakingStatistics } from '../StakePage/components/PersonalStakingStatistics/hooks/useGetPersonalStakingStatistics';

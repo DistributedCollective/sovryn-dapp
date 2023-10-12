@@ -1,5 +1,15 @@
 # frontend
 
+## 1.0.31
+
+### Patch Changes
+
+- 8c3d97eb: SOV-3289: Resolve issue with iWRBTC Rewards not being shown or claimable from Rewards page
+- 37382136: Bitocracy page
+- Updated dependencies [37382136]
+  - @sovryn/contracts@1.0.17
+  - @sovryn/ui@1.0.16
+
 ## 1.0.30
 
 ### Patch Changes

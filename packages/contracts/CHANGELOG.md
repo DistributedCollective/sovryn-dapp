@@ -1,5 +1,11 @@
 # @sovryn/contracts
 
+## 1.0.17
+
+### Patch Changes
+
+- 37382136: SOV-3239 / SOV-3009: Add bitocracy contracts
+
 ## 1.0.16
 
 ### Patch Changes

@@ -38,6 +38,7 @@
             "noDataWithFilters": "No data with the current filters",
             "loading": "Loading data..."
         },
+        "custom": "Custom",
         "max": "max",
         "amount": "Amount",
         "deposit": "Deposit",
@@ -662,6 +663,7 @@
             "title": "Preview mode"
         }
     },
+
     "proposalPage": {
         "meta": {
             "title": "Bitocracy - Sovryn"
@@ -702,8 +704,22 @@
         "actions": {
             "queue": "Queue for execution",
             "execute": "Execute proposal"
+        },
+        "currentValue": "Current value",
+        "newValue": "New value",
+        "governor": "Governor",
+        "governorAdmin": "Governor Admin",
+        "governorOwner": "Governor Owner",
+        "parameter": "Parameter",
+        "contract": "Contract",
+        "customContract": {
+            "address": "Address",
+            "value": "Value",
+            "signature": "Signature",
+            "calldata": "Calldata"
         }
     },
+
     "fastBtc": {
         "mainScreen": {
             "title": "Funding",

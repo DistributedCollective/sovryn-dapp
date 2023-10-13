@@ -1,5 +1,12 @@
+import { t } from 'i18next';
+
+import { translations } from '../../../../../locales/i18n';
 import { ProposalCreationType } from '../../contexts/ProposalContext.types';
-import { ProposalContract, ProposalTreasury } from './NewProposalForm.types';
+import {
+  Governor,
+  ProposalContract,
+  ProposalTreasury,
+} from './NewProposalForm.types';
 
 export const PROPOSAL_TYPE_OPTIONS = [
   {
@@ -53,6 +60,10 @@ export const PROPOSAL_CONTRACT_OPTIONS = [
     value: ProposalContract.iXUSD,
     label: ProposalContract.iXUSD,
   },
+  {
+    value: t(translations.common.custom),
+    label: t(translations.common.custom),
+  },
 ];
 
 export const PROPOSAL_TREASURY_OPTIONS = [
@@ -79,5 +90,16 @@ export const PROPOSAL_TREASURY_OPTIONS = [
   {
     value: ProposalTreasury.EcosystemFund,
     label: ProposalTreasury.EcosystemFund,
+  },
+];
+
+export const GOVERNOR_OPTIONS = [
+  {
+    value: Governor.Admin,
+    label: t(translations.proposalPage.governorAdmin),
+  },
+  {
+    value: Governor.Owner,
+    label: t(translations.proposalPage.governorOwner),
   },
 ];

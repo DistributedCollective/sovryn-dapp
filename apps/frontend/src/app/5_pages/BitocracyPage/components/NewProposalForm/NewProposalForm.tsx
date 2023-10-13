@@ -9,6 +9,7 @@ import {
   ProposalCreationStep,
   ProposalCreationType,
 } from '../../contexts/ProposalContext.types';
+import { ParametersStep } from './components/ParametersStep/ParametersStep';
 import { PreviewProposalDialog } from './components/PreviewProposalDialog/PreviewProposalDialog';
 import { ProposalDataForm } from './components/ProposalDataForm/ProposalDataForm';
 import { ProposalInitialStep } from './components/ProposalInitialStep/ProposalInitialStep';
@@ -71,6 +72,10 @@ export const NewProposalForm: FC = () => {
     );
   } else if (step === ProposalCreationStep.Overview) {
     return <PreviewProposalDialog />;
+  } else if (step === ProposalCreationStep.Parameters) {
+    return (
+      <ParametersStep onBack={() => setStep(ProposalCreationStep.Details)} />
+    );
   } else {
     return null;
   }

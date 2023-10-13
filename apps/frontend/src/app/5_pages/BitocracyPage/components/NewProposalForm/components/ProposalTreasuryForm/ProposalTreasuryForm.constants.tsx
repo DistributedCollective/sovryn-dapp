@@ -1,5 +1,7 @@
 import { t } from 'i18next';
 
+import { SupportedTokens } from '@sovryn/contracts';
+
 import { translations } from '../../../../../../../locales/i18n';
 import { ProposalTreasuryType } from './ProposalTreasuryForm.types';
 
@@ -25,3 +27,11 @@ export const PROPOSAL_TREASURY_OPTIONS = [
     label: t(translations.bitocracyPage.proposalTreasuryForm.developmentFund),
   },
 ];
+
+export const initialTransferState = {
+  treasuryType: ProposalTreasuryType.governorVaultOwner,
+  treasuryTypeContract: '',
+  recipientAddress: '',
+  amount: '',
+  token: SupportedTokens.sov,
+};

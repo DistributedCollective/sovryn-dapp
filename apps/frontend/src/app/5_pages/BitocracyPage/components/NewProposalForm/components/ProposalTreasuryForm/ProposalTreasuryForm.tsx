@@ -15,12 +15,11 @@ import {
   ProposalTransferData,
   ProposalTransferType,
 } from './ProposalTreasuryForm.types';
-import { initialTransfer } from './ProposalTreasuryForm.utils';
 import { ProposalTransfer } from './components/ProposalTransfer/ProposalTransfer';
+import { useInitialTransferState } from './hooks/useInitialTransferState';
 
-export type ProposalTreasuryFormProps = {
+type ProposalTreasuryFormProps = {
   value: ProposalTransferData[];
-  // onChange: (value: ProposalTransferData[]) => void;
 };
 
 export const ProposalTreasuryForm: FC<ProposalTreasuryFormProps> = ({
@@ -28,15 +27,15 @@ export const ProposalTreasuryForm: FC<ProposalTreasuryFormProps> = ({
 }) => {
   const { setTreasuryDetails, setStep } = useProposalContext();
   const [maxAmountError, setMaxAmountError] = useState(false);
+  const initialTransfer = useInitialTransferState();
 
   const handleBack = useCallback(
     () => setStep(ProposalCreationStep.Details),
     [setStep],
   );
 
-  const [transfers, setTransfers] = useState(
-    value.length ? value : [initialTransfer],
-  );
+  const [transfers, setTransfers] = useState(value);
+  console.log('transfers', transfers);
 
   const isValidTransfer = useCallback(
     (transfer: ProposalTransferData) => {
@@ -57,7 +56,7 @@ export const ProposalTreasuryForm: FC<ProposalTreasuryFormProps> = ({
 
   const handleAddTransfer = useCallback(
     () => setTransfers([...transfers, initialTransfer]),
-    [transfers],
+    [transfers, initialTransfer],
   );
 
   const removeTransfer = useCallback(
@@ -70,7 +69,7 @@ export const ProposalTreasuryForm: FC<ProposalTreasuryFormProps> = ({
   );
 
   const handleTransferChange = useCallback(
-    async (index: number, fieldName: string, value: any) => {
+    async (index: number, fieldName: string, value: string) => {
       const updatedTransfers = [...transfers];
       updatedTransfers[index] = {
         ...updatedTransfers[index],
@@ -89,12 +88,13 @@ export const ProposalTreasuryForm: FC<ProposalTreasuryFormProps> = ({
   );
 
   useEffect(() => {
-    if (transfers) {
+    if (transfers.length) {
       setTreasuryDetails(transfers);
+    } else {
+      setTransfers([initialTransfer]);
+      setTreasuryDetails([initialTransfer]);
     }
-  }, [transfers, setTreasuryDetails]);
-
-  console.log('transfers', transfers);
+  }, [setTreasuryDetails, transfers, initialTransfer]);
 
   return (
     <div className="flex flex-col gap-7 relative pb-4">

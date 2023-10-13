@@ -1,4 +1,4 @@
-import React, { FC, useMemo, useState } from 'react';
+import React, { FC, useCallback, useEffect } from 'react';
 
 import { t } from 'i18next';
 
@@ -8,81 +8,48 @@ import {
   FormGroup,
   Icon,
   IconNames,
-  Input,
   Select,
-  SimpleTable,
-  SimpleTableRow,
 } from '@sovryn/ui';
 
 import { translations } from '../../../../../../../locales/i18n';
 import { useProposalContext } from '../../../../contexts/NewProposalContext';
-import {
-  GOVERNOR_OPTIONS,
-  PROPOSAL_CONTRACT_OPTIONS,
-} from '../../NewProposalForm.constants';
+import { ProposalCreationParameter } from '../../../../contexts/ProposalContext.types';
+import { GOVERNOR_OPTIONS } from '../../NewProposalForm.constants';
+import { Parameter } from './components/Parameter/Parameter';
 
-// TODO: Add real parameters
-const parameterOptions = [
-  {
-    value: 'Placeholder',
-    label: 'Placeholder',
-  },
-];
+const DEFAULT_PARAMETER: ProposalCreationParameter = {
+  target: '',
+  value: '0x0',
+  signature: '',
+  calldata: '0x0',
+  functionName: '',
+  newValue: '',
+};
 
 type ParametersStepProps = {
   onBack: () => void;
 };
 
 export const ParametersStep: FC<ParametersStepProps> = ({ onBack }) => {
-  const { governor, setGovernor } = useProposalContext();
-  const [proposalContract, setProposalContract] = useState('');
-  const [parameter, setParameter] = useState('');
-  const [newValue, setNewValue] = useState('');
+  const { governor, setGovernor, parameters, setParameters } =
+    useProposalContext();
 
-  const [customAddress, setCustomAddress] = useState('');
-  const [customValue, setCustomValue] = useState('');
-  const [customContract, setCustomContract] = useState('');
-  const [customCalldata, setCustomCalldata] = useState('');
+  useEffect(() => {
+    if (!parameters || parameters.length === 0) {
+      setParameters([{ index: 1, ...DEFAULT_PARAMETER }]);
+    }
+  }, [parameters, setParameters]);
 
-  const isCustomContract = useMemo(
-    () => proposalContract === 'Custom',
-    [proposalContract],
-  );
+  const handleAddClick = useCallback(() => {
+    const lastParameterIndex = parameters[parameters.length - 1].index!;
 
-  const customContractSection = useMemo(
-    () => (
-      <>
-        <FormGroup
-          label={t(translations.proposalPage.customContract.address)}
-          className="mt-4"
-        >
-          <Input value={customAddress} onChangeText={setCustomAddress} />
-        </FormGroup>
+    const updatedParameters = [
+      ...parameters,
+      { index: lastParameterIndex + 1, ...DEFAULT_PARAMETER },
+    ];
 
-        <FormGroup
-          label={t(translations.proposalPage.customContract.value)}
-          className="mt-4"
-        >
-          <Input value={customValue} onChangeText={setCustomValue} />
-        </FormGroup>
-
-        <FormGroup
-          label={t(translations.proposalPage.customContract.signature)}
-          className="mt-4"
-        >
-          <Input value={customContract} onChangeText={setCustomContract} />
-        </FormGroup>
-
-        <FormGroup
-          label={t(translations.proposalPage.customContract.calldata)}
-          className="mt-4"
-        >
-          <Input value={customCalldata} onChangeText={setCustomCalldata} />
-        </FormGroup>
-      </>
-    ),
-    [customAddress, customCalldata, customContract, customValue],
-  );
+    setParameters(updatedParameters);
+  }, [parameters, setParameters]);
 
   return (
     <div>
@@ -107,50 +74,11 @@ export const ParametersStep: FC<ParametersStepProps> = ({ onBack }) => {
         />
       </FormGroup>
 
-      <div className="p-3 mt-4 rounded bg-gray-90">
-        <FormGroup label={t(translations.proposalPage.contract)}>
-          <Select
-            value={proposalContract}
-            onChange={setProposalContract}
-            options={PROPOSAL_CONTRACT_OPTIONS}
-            className="w-full"
-          />
-        </FormGroup>
+      {parameters.map(item => (
+        <Parameter parameter={item} />
+      ))}
 
-        {isCustomContract ? (
-          customContractSection
-        ) : (
-          <FormGroup
-            label={t(translations.proposalPage.parameter)}
-            className="mt-6"
-          >
-            <Select
-              value={parameter}
-              onChange={setParameter}
-              options={parameterOptions}
-              className="w-full"
-            />
-
-            <SimpleTable className="mt-8">
-              <SimpleTableRow
-                label={t(translations.proposalPage.currentValue)}
-                value={5}
-              />
-            </SimpleTable>
-
-            <div className="flex items-center justify-between mt-4">
-              <div className="whitespace-nowrap mr-4">
-                {t(translations.proposalPage.newValue)}
-              </div>
-              <Input
-                value={newValue}
-                onChangeText={setNewValue}
-                className="max-w-none"
-              />
-            </div>
-          </FormGroup>
-        )}
-      </div>
+      <Button text={'Add'} onClick={handleAddClick} />
     </div>
   );
 };

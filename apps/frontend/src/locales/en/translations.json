@@ -660,6 +660,18 @@
         },
         "proposalPreview": {
             "title": "Preview mode"
+        },
+        "proposalTreasuryForm": {
+            "treasuryAccount": "Treasury account",
+            "recipientAddress": "Recipient address",
+            "invalidRecipientAddress": "Invalid entry. Please enter a Rootstock address.",
+            "invalidAmountError": "Exceeds maximum amount",
+            "add": "Add",
+            "governorVaultOwner": "Governor Vault - Owner",
+            "governorVaultAdmin": "Governor Vault - Admin",
+            "adoptionFund": "Adoption Fund",
+            "developmentFund": "Development Fund",
+            "ecosystemFund": "Ecosystem Fund"
         }
     },
     "proposalPage": {

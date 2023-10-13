@@ -12,6 +12,7 @@ import {
 import { PreviewProposalDialog } from './components/PreviewProposalDialog/PreviewProposalDialog';
 import { ProposalDataForm } from './components/ProposalDataForm/ProposalDataForm';
 import { ProposalInitialStep } from './components/ProposalInitialStep/ProposalInitialStep';
+import { ProposalTreasuryForm } from './components/ProposalTreasuryForm/ProposalTreasuryForm';
 
 export const NewProposalForm: FC = () => {
   const {
@@ -21,6 +22,7 @@ export const NewProposalForm: FC = () => {
     setType: setProposalType,
     details,
     setDetails,
+    treasuryDetails,
     governor,
     setGovernor,
     submit,
@@ -46,6 +48,8 @@ export const NewProposalForm: FC = () => {
     if (step === ProposalCreationStep.Details) {
       if (proposalType === ProposalCreationType.Proclamation) {
         submit();
+      } else if (proposalType === ProposalCreationType.Treasury) {
+        setStep(ProposalCreationStep.Treasury);
       } else {
         setStep(ProposalCreationStep.Parameters);
       }
@@ -77,6 +81,8 @@ export const NewProposalForm: FC = () => {
     );
   } else if (step === ProposalCreationStep.Overview) {
     return <PreviewProposalDialog />;
+  } else if (step === ProposalCreationStep.Treasury) {
+    return <ProposalTreasuryForm value={treasuryDetails} />;
   } else {
     return null;
   }

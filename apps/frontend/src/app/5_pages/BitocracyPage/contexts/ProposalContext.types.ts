@@ -1,6 +1,9 @@
 import { Dispatch, SetStateAction } from 'react';
 
+import { SupportedTokens } from '@sovryn/contracts';
+
 import { TransactionCallbacks } from '../../../3_organisms/TransactionStepDialog/TransactionStepDialog.types';
+import { ProposalTreasuryType } from '../components/NewProposalForm/components/ProposalTreasuryForm/ProposalTreasuryForm.types';
 
 export type ProposalContextValue = {
   step: ProposalCreationStep;
@@ -9,6 +12,10 @@ export type ProposalContextValue = {
   setType: Dispatch<SetStateAction<ProposalCreationType>>;
   details: ProposalCreationDetails;
   setDetails: Dispatch<SetStateAction<ProposalCreationDetails>>;
+  treasuryDetails: ProposalCreationTreasuryDetails[];
+  setTreasuryDetails: Dispatch<
+    SetStateAction<ProposalCreationTreasuryDetails[]>
+  >;
   governor: string | null;
   setGovernor: Dispatch<SetStateAction<string | null>>;
   parameters: ProposalCreationParameter[];
@@ -36,6 +43,14 @@ export type ProposalCreationDetails = {
   link: string;
   summary: string;
   text: string;
+};
+
+export type ProposalCreationTreasuryDetails = {
+  treasuryType: ProposalTreasuryType;
+  treasuryTypeContract: string;
+  recipientAddress: string;
+  amount: string;
+  token: SupportedTokens;
 };
 
 export type ProposalCreationParameter = {

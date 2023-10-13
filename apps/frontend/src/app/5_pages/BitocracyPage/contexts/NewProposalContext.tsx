@@ -40,6 +40,8 @@ const defaultContextValue: ProposalContextValue = {
     text: '',
   },
   setDetails: noop,
+  treasuryDetails: [],
+  setTreasuryDetails: noop,
   governor: null,
   setGovernor: noop,
   parameters: [],
@@ -69,6 +71,9 @@ export const ProposalContextProvider: FC<PropsWithChildren> = ({
   const [details, setDetails] = useState<ProposalCreationDetails>(
     defaultContextValue.details,
   );
+  const [treasuryDetails, setTreasuryDetails] = useState<
+    ProposalContextValue['treasuryDetails']
+  >(defaultContextValue.treasuryDetails);
   const [governor, setGovernor] = useState<string | null>(
     defaultContextValue.governor,
   );
@@ -191,6 +196,7 @@ export const ProposalContextProvider: FC<PropsWithChildren> = ({
     setStep(defaultContextValue.step);
     setType(defaultContextValue.type);
     setDetails(defaultContextValue.details);
+    setTreasuryDetails(defaultContextValue.treasuryDetails);
     setGovernor(defaultContextValue.governor);
     setParameters(defaultContextValue.parameters);
   }, []);
@@ -204,6 +210,8 @@ export const ProposalContextProvider: FC<PropsWithChildren> = ({
         setType,
         details,
         setDetails,
+        treasuryDetails,
+        setTreasuryDetails,
         governor,
         setGovernor,
         parameters,

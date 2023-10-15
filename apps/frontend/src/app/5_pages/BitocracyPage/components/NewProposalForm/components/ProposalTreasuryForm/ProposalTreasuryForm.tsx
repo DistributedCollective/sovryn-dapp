@@ -118,7 +118,7 @@ export const ProposalTreasuryForm: FC<ProposalTreasuryFormProps> = ({
           onChange={(fieldName, value) =>
             handleTransferChange(index, fieldName, value)
           }
-          index={index}
+          transfersLength={transfers.length}
           onError={setMaxAmountError}
         />
       ))}

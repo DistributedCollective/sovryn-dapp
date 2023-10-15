@@ -671,7 +671,8 @@
             "governorVaultAdmin": "Governor Vault - Admin",
             "adoptionFund": "Adoption Fund",
             "developmentFund": "Development Fund",
-            "ecosystemFund": "Ecosystem Fund"
+            "ecosystemFund": "Ecosystem Fund",
+            "accountBalance": "Account balance:"
         }
     },
     "proposalPage": {

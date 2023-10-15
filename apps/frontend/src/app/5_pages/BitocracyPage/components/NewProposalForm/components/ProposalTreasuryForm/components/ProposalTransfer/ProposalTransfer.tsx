@@ -31,8 +31,8 @@ import {
 } from '../../ProposalTreasuryForm.types';
 
 type ProposalTransferProps = {
-  index: number;
   transfer: ProposalTransferData;
+  transfersLength: number;
   onChange: (
     fieldName: string,
     value: string | SupportedTokens | ProposalTransferType,
@@ -41,8 +41,10 @@ type ProposalTransferProps = {
   onError: (error: boolean) => void;
 };
 
+const pageTranslations = translations.bitocracyPage.proposalTreasuryForm;
+
 export const ProposalTransfer: FC<ProposalTransferProps> = ({
-  index,
+  transfersLength,
   transfer,
   onChange,
   onRemove,
@@ -85,18 +87,14 @@ export const ProposalTransfer: FC<ProposalTransferProps> = ({
 
   const errorAddressMessage = useMemo(() => {
     if (!isValidAddress && !isAddress(transfer.recipientAddress)) {
-      return t(
-        translations.bitocracyPage.proposalTreasuryForm.invalidRecipientAddress,
-      );
+      return t(pageTranslations.invalidRecipientAddress);
     }
     return '';
   }, [isValidAddress, transfer.recipientAddress]);
 
   const errorAmountMessage = useMemo(() => {
     if (Number(transfer.amount) > Number(userBalance)) {
-      return t(
-        translations.bitocracyPage.proposalTreasuryForm.invalidAmountError,
-      );
+      return t(pageTranslations.invalidAmountError);
     }
     return '';
   }, [transfer.amount, userBalance]);
@@ -115,7 +113,7 @@ export const ProposalTransfer: FC<ProposalTransferProps> = ({
       <FormGroup
         label={
           <Paragraph size={ParagraphSize.base} className="font-medium">
-            {t(translations.bitocracyPage.proposalTreasuryForm.treasuryAccount)}
+            {t(pageTranslations.treasuryAccount)}
           </Paragraph>
         }
         labelElement="div"
@@ -132,7 +130,7 @@ export const ProposalTransfer: FC<ProposalTransferProps> = ({
             className="w-full"
             dataAttribute={`proposal-treasury-${transfer.treasuryType}`}
           />
-          {index > 0 && (
+          {transfersLength > 1 && ( // Only show the Remove button if there are two or more transfers
             <Button
               onClick={onRemove}
               text={<Icon className="mx-4" icon={IconNames.X_MARK} />}
@@ -145,10 +143,8 @@ export const ProposalTransfer: FC<ProposalTransferProps> = ({
 
       <FormGroup
         label={
-          <Paragraph size={ParagraphSize.base} className="font-medium">
-            {t(
-              translations.bitocracyPage.proposalTreasuryForm.recipientAddress,
-            )}
+          <Paragraph size={ParagraphSize.base} className="font-medium mt-1">
+            {t(pageTranslations.recipientAddress)}
           </Paragraph>
         }
         labelElement="div"
@@ -179,7 +175,8 @@ export const ProposalTransfer: FC<ProposalTransferProps> = ({
             }
             value={maximumAmount}
             token={transfer.token}
-            dataAttribute="earn-max-button"
+            dataAttribute="proposal-treasury-max-button"
+            label={t(pageTranslations.accountBalance)}
           />
         </div>
         <div className="w-full flex flex-row justify-between items-center">

@@ -22,8 +22,11 @@ const DEFAULT_PARAMETER: ProposalCreationParameter = {
   value: '0x0',
   signature: '',
   calldata: '0x0',
-  functionName: '',
-  newValue: '',
+  parametersStepExtraData: {
+    functionName: '',
+    newValue: '',
+    index: 1,
+  },
 };
 
 type ParametersStepProps = {
@@ -36,16 +39,23 @@ export const ParametersStep: FC<ParametersStepProps> = ({ onBack }) => {
 
   useEffect(() => {
     if (!parameters || parameters.length === 0) {
-      setParameters([{ index: 1, ...DEFAULT_PARAMETER }]);
+      setParameters([{ ...DEFAULT_PARAMETER }]);
     }
   }, [parameters, setParameters]);
 
   const handleAddClick = useCallback(() => {
-    const lastParameterIndex = parameters[parameters.length - 1].index!;
+    const lastParameterIndex =
+      parameters[parameters.length - 1]?.parametersStepExtraData?.index!;
 
     const updatedParameters = [
       ...parameters,
-      { index: lastParameterIndex + 1, ...DEFAULT_PARAMETER },
+      {
+        ...DEFAULT_PARAMETER,
+        parametersStepExtraData: {
+          ...DEFAULT_PARAMETER.parametersStepExtraData,
+          index: lastParameterIndex + 1,
+        },
+      },
     ];
 
     setParameters(updatedParameters);

@@ -38,8 +38,13 @@ export type ProposalCreationDetails = {
   text: string;
 };
 
-export type ProposalCreationParameter = {
+export type ParametersStepExtraData = {
   index?: number;
+  functionName?: string;
+  newValue?: string;
+};
+
+export type ProposalCreationParameter = {
   // address which will be called by the governance contract
   target: string;
   // value of native tokens in wei which will be sent to target (default to "0x0")
@@ -48,6 +53,6 @@ export type ProposalCreationParameter = {
   signature: string;
   // abi encoded arguments (for signature) to be passed to the function (default to "0x0")
   calldata: string;
-  functionName?: string;
-  newValue?: string;
+  // extra data needed for parameters step
+  parametersStepExtraData?: ParametersStepExtraData;
 };

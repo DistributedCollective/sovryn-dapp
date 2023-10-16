@@ -1,4 +1,4 @@
-import React, { FC, useMemo, useState } from 'react';
+import React, { FC, useCallback, useMemo } from 'react';
 
 import { t } from 'i18next';
 
@@ -11,6 +11,7 @@ import {
 } from '@sovryn/ui';
 
 import { translations } from '../../../../../../../../../locales/i18n';
+import { useProposalContext } from '../../../../../../contexts/NewProposalContext';
 import { ProposalCreationParameter } from '../../../../../../contexts/ProposalContext.types';
 import { PROPOSAL_CONTRACT_OPTIONS } from '../../../../NewProposalForm.constants';
 
@@ -27,19 +28,51 @@ type ParameterProps = {
 };
 
 export const Parameter: FC<ParameterProps> = ({ parameter }) => {
-  //const { setParameters } = useProposalContext();
-  const [proposalContract, setProposalContract] = useState('');
-  //const [parameter, setParameter] = useState('');
-  const [newValue, setNewValue] = useState('');
-
-  const [customAddress, setCustomAddress] = useState('');
-  const [customValue, setCustomValue] = useState('');
-  const [customContract, setCustomContract] = useState('');
-  const [customCalldata, setCustomCalldata] = useState('');
+  const { parameters, setParameters } = useProposalContext();
 
   const isCustomContract = useMemo(
-    () => proposalContract === 'Custom',
-    [proposalContract],
+    () => parameter?.parametersStepExtraData?.functionName === 'Custom',
+    [parameter?.parametersStepExtraData?.functionName],
+  );
+
+  const onChangeProperty = useCallback(
+    (propertyName: string, value: string) => {
+      const updatedParameters = parameters.map(item => {
+        if (
+          item?.parametersStepExtraData?.index ===
+          parameter?.parametersStepExtraData?.index
+        ) {
+          return { ...item, [propertyName]: value };
+        }
+        return item;
+      });
+
+      setParameters(updatedParameters);
+    },
+    [parameter?.parametersStepExtraData?.index, parameters, setParameters],
+  );
+
+  const onChangeExtraProperty = useCallback(
+    (propertyName: string, value: string) => {
+      const updatedParameters = parameters.map(item => {
+        if (
+          item?.parametersStepExtraData?.index ===
+          parameter?.parametersStepExtraData?.index
+        ) {
+          return {
+            ...item,
+            parametersStepExtraData: {
+              ...item?.parametersStepExtraData,
+              [propertyName]: value,
+            },
+          };
+        }
+        return item;
+      });
+
+      setParameters(updatedParameters);
+    },
+    [parameter?.parametersStepExtraData?.index, parameters, setParameters],
   );
 
   const customContractSection = useMemo(
@@ -49,40 +82,58 @@ export const Parameter: FC<ParameterProps> = ({ parameter }) => {
           label={t(translations.proposalPage.customContract.address)}
           className="mt-4"
         >
-          <Input value={customAddress} onChangeText={setCustomAddress} />
+          <Input
+            value={parameter.target}
+            onChangeText={value => onChangeProperty('target', value)}
+          />
         </FormGroup>
 
         <FormGroup
           label={t(translations.proposalPage.customContract.value)}
           className="mt-4"
         >
-          <Input value={customValue} onChangeText={setCustomValue} />
+          <Input
+            value={parameter.value}
+            onChangeText={value => onChangeProperty('value', value)}
+          />
         </FormGroup>
 
         <FormGroup
           label={t(translations.proposalPage.customContract.signature)}
           className="mt-4"
         >
-          <Input value={customContract} onChangeText={setCustomContract} />
+          <Input
+            value={parameter.signature}
+            onChangeText={value => onChangeProperty('signature', value)}
+          />
         </FormGroup>
 
         <FormGroup
           label={t(translations.proposalPage.customContract.calldata)}
           className="mt-4"
         >
-          <Input value={customCalldata} onChangeText={setCustomCalldata} />
+          <Input
+            value={parameter.calldata}
+            onChangeText={value => onChangeProperty('calldata', value)}
+          />
         </FormGroup>
       </>
     ),
-    [customAddress, customCalldata, customContract, customValue],
+    [
+      onChangeProperty,
+      parameter.calldata,
+      parameter.signature,
+      parameter.target,
+      parameter.value,
+    ],
   );
 
   return (
     <div className="p-3 mt-4 rounded bg-gray-90">
       <FormGroup label={t(translations.proposalPage.contract)}>
         <Select
-          value={proposalContract}
-          onChange={setProposalContract}
+          value={parameter?.parametersStepExtraData?.functionName || ''}
+          onChange={value => onChangeExtraProperty('functionName', value)}
           options={PROPOSAL_CONTRACT_OPTIONS}
           className="w-full"
         />
@@ -116,8 +167,8 @@ export const Parameter: FC<ParameterProps> = ({ parameter }) => {
               {t(translations.proposalPage.newValue)}
             </div>
             <Input
-              value={newValue}
-              onChangeText={setNewValue}
+              value={parameter.parametersStepExtraData?.newValue}
+              onChangeText={value => onChangeExtraProperty('newValue', value)}
               className="max-w-none"
             />
           </div>

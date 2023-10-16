@@ -4,6 +4,8 @@ import { t } from 'i18next';
 
 import {
   FormGroup,
+  Icon,
+  IconNames,
   Input,
   Select,
   SimpleTable,
@@ -51,6 +53,16 @@ export const Parameter: FC<ParameterProps> = ({ parameter }) => {
     },
     [parameter?.parametersStepExtraData?.index, parameters, setParameters],
   );
+
+  const handleDeleteClick = useCallback(() => {
+    const updatedParameters = parameters.filter(
+      item =>
+        item?.parametersStepExtraData?.index !==
+        parameter?.parametersStepExtraData?.index,
+    );
+
+    setParameters(updatedParameters);
+  }, [parameter?.parametersStepExtraData?.index, parameters, setParameters]);
 
   const onChangeExtraProperty = useCallback(
     (propertyName: string, value: string) => {
@@ -131,12 +143,17 @@ export const Parameter: FC<ParameterProps> = ({ parameter }) => {
   return (
     <div className="p-3 mt-4 rounded bg-gray-90">
       <FormGroup label={t(translations.proposalPage.contract)}>
-        <Select
-          value={parameter?.parametersStepExtraData?.functionName || ''}
-          onChange={value => onChangeExtraProperty('functionName', value)}
-          options={PROPOSAL_CONTRACT_OPTIONS}
-          className="w-full"
-        />
+        <div className="flex items-center">
+          <Select
+            value={parameter?.parametersStepExtraData?.functionName || ''}
+            onChange={value => onChangeExtraProperty('functionName', value)}
+            options={PROPOSAL_CONTRACT_OPTIONS}
+            className="w-full"
+          />
+          <div onClick={handleDeleteClick} className="cursor-pointer ml-4">
+            <Icon icon={IconNames.X_MARK} size={12} />
+          </div>
+        </div>
       </FormGroup>
 
       {isCustomContract ? (

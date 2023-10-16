@@ -20,7 +20,7 @@
     <style>
       body {
         font-size: 16px;
-        background: #0D0D0F;
+        background: #0d0d0f;
         color: #ffffff;
         margin: 0;
         padding: 0;
@@ -64,33 +64,8 @@
         left: 0;
         width: 100%;
         height: 100%;
-        
       }
     </style>
-    <% if (process.env.NODE_ENV === "production") { %>
-    <script src="https://cmp.osano.com/16BSnVTBY9ksVax/3abc690b-3747-4ba3-b1fb-fcaefd6ab8c1/osano.js"></script>
-    <% } %> <% if (process.env.REACT_APP_GOOGLE_ANALYTICS) { %>
-    <!-- Google Tag Manager -->
-    <script>
-      (function (w, d, s, l, i) {
-        w[l] = w[l] || [];
-        w[l].push({ 'gtm.start': new Date().getTime(), event: 'gtm.js' });
-        var f = d.getElementsByTagName(s)[0],
-          j = d.createElement(s),
-          dl = l != 'dataLayer' ? '&l=' + l : '';
-        j.async = true;
-        j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
-        f.parentNode.insertBefore(j, f);
-      })(
-        window,
-        document,
-        'script',
-        'dataLayer',
-        '%REACT_APP_GOOGLE_ANALYTICS%',
-      );
-    </script>
-    <!-- End Google Tag Manager -->
-    <% } %>
     <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
     <link
       href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
@@ -136,21 +111,8 @@
     </script>
     <!-- End Tiledesk Code -->
     <% } %>
-
   </head>
   <body>
-    <% if (process.env.REACT_APP_GOOGLE_ANALYTICS) { %>
-    <!-- Google Tag Manager (noscript) -->
-    <noscript>
-      <iframe
-        src="https://www.googletagmanager.com/ns.html?id=%REACT_APP_GOOGLE_ANALYTICS%"
-        height="0"
-        width="0"
-        style="display: none; visibility: hidden"
-      ></iframe>
-    </noscript>
-    <!-- End Google Tag Manager (noscript) -->
-    <% } %>
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root"></div>
     <div id="overlay"></div>
@@ -191,7 +153,7 @@
           // Unable to find incoming service worker, but it's clear that error
           // is caused by an old service worker cache, so we can reload the page
           if (err.message.includes("Unexpected token '<'")) {
-              navigator.serviceWorker.ready.then(async registration => {
+            navigator.serviceWorker.ready.then(async registration => {
               await registration.unregister();
               window.location.reload();
             });

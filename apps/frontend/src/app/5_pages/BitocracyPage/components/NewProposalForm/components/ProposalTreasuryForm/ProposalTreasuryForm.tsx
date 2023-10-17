@@ -14,9 +14,9 @@ import {
   ProposalCreationParameter,
   ProposalCreationStep,
 } from '../../../../contexts/ProposalContext.types';
-import { ProposalTransferType } from './ProposalTreasuryForm.types';
-import { ProposalTransfer } from './components/ProposalTransfer/ProposalTransfer';
-import { useInitialTransferState } from './hooks/useInitialTransferState';
+import { ProposalParameterType } from './ProposalTreasuryForm.types';
+import { ProposalParameter } from './components/ProposalParameter/ProposalParameter';
+import { useInitialParameterState } from './hooks/useInitialParameterState';
 
 type ProposalTreasuryFormProps = {
   onPreview: () => void;
@@ -27,17 +27,14 @@ export const ProposalTreasuryForm: FC<ProposalTreasuryFormProps> = ({
 }) => {
   const { setParameters, setStep, parameters } = useProposalContext();
   const [maxAmountError, setMaxAmountError] = useState(false);
-  const initialTransfer = useInitialTransferState();
+  const initialParameter = useInitialParameterState();
 
-  const [transfers, setTransfers] = useState(parameters);
-  console.log('transfers', transfers);
-
-  const isValidTransfer = useCallback(
-    (transfer: ProposalCreationParameter) => {
+  const isValidParameter = useCallback(
+    (parameter: ProposalCreationParameter) => {
       return (
-        transfer.parametersStepExtraData?.treasuryType &&
-        isAddress(transfer.parametersStepExtraData.recipientAddress || '') &&
-        Number(transfer.parametersStepExtraData.amount) > 0 &&
+        parameter.parametersStepExtraData?.treasuryType &&
+        isAddress(parameter.parametersStepExtraData.recipientAddress || '') &&
+        Number(parameter.parametersStepExtraData.amount) > 0 &&
         !maxAmountError
       );
     },
@@ -45,53 +42,53 @@ export const ProposalTreasuryForm: FC<ProposalTreasuryFormProps> = ({
   );
 
   const isConfirmDisabled = useMemo(
-    () => !transfers.every(isValidTransfer),
-    [transfers, isValidTransfer],
+    () => !parameters.every(isValidParameter),
+    [parameters, isValidParameter],
   );
 
   const handleAddClick = useCallback(() => {
-    const lastTransfer = transfers[transfers.length - 1];
-    const nextIndex = (lastTransfer?.parametersStepExtraData?.index || 0) + 1;
+    const lastParameter = parameters[parameters.length - 1];
+    const nextIndex = (lastParameter?.parametersStepExtraData?.index || 0) + 1;
 
-    const newTransfer = {
-      ...initialTransfer,
+    const newParameter = {
+      ...initialParameter,
       parametersStepExtraData: {
-        ...initialTransfer.parametersStepExtraData,
+        ...initialParameter.parametersStepExtraData,
         index: nextIndex,
       },
     };
 
-    setTransfers([...transfers, newTransfer]);
-  }, [transfers, initialTransfer]);
+    setParameters([...parameters, newParameter]);
+  }, [parameters, initialParameter, setParameters]);
 
-  const handleRemoveClick = useCallback(
+  const handleDeleteClick = useCallback(
     (index: number) => {
-      const updatedTransfers = [...transfers];
-      updatedTransfers.splice(index, 1);
-      setTransfers(updatedTransfers);
+      const updatedParameters = [...parameters];
+      updatedParameters.splice(index, 1);
+      setParameters(updatedParameters);
     },
-    [transfers],
+    [parameters, setParameters],
   );
 
-  const handleTransferChange = useCallback(
+  const handleChangeClick = useCallback(
     async (index: number, fieldName: string, value: string) => {
-      const updatedTransfers = [...transfers];
-      updatedTransfers[index].parametersStepExtraData = {
-        ...updatedTransfers[index].parametersStepExtraData,
+      const updatedParameters = [...parameters];
+      updatedParameters[index].parametersStepExtraData = {
+        ...updatedParameters[index].parametersStepExtraData,
         [fieldName]: value,
       };
 
-      if (fieldName === ProposalTransferType.treasuryType) {
+      if (fieldName === ProposalParameterType.treasuryType) {
         const contract = await getProtocolContract(value, defaultChainId);
-        updatedTransfers[index].parametersStepExtraData = {
-          ...updatedTransfers[index].parametersStepExtraData,
+        updatedParameters[index].parametersStepExtraData = {
+          ...updatedParameters[index].parametersStepExtraData,
           treasuryTypeContract: contract.address,
         };
       }
 
-      setTransfers(updatedTransfers);
+      setParameters(updatedParameters);
     },
-    [transfers],
+    [parameters, setParameters],
   );
 
   const handleBack = useCallback(
@@ -100,13 +97,10 @@ export const ProposalTreasuryForm: FC<ProposalTreasuryFormProps> = ({
   );
 
   useEffect(() => {
-    if (transfers.length) {
-      setParameters(transfers);
-    } else {
-      setTransfers([initialTransfer]);
-      setParameters([initialTransfer]);
+    if (parameters.length === 0) {
+      setParameters([initialParameter]);
     }
-  }, [setParameters, transfers, initialTransfer]);
+  }, [parameters, initialParameter, setParameters]);
 
   return (
     <div className="flex flex-col gap-7 relative pb-4">
@@ -122,15 +116,15 @@ export const ProposalTreasuryForm: FC<ProposalTreasuryFormProps> = ({
         }
       />
 
-      {transfers.map((transfer, index) => (
-        <ProposalTransfer
+      {parameters.map((parameter, index) => (
+        <ProposalParameter
           key={index}
-          transfer={transfer}
-          onRemove={() => handleRemoveClick(index)}
+          parameter={parameter}
+          onRemove={() => handleDeleteClick(index)}
           onChange={(fieldName, value) =>
-            handleTransferChange(index, fieldName, value)
+            handleChangeClick(index, fieldName, value)
           }
-          transfersLength={transfers.length}
+          parametersLength={parameters.length}
           onError={setMaxAmountError}
         />
       ))}

@@ -4,21 +4,21 @@ import { getProtocolContract } from '@sovryn/contracts';
 
 import { defaultChainId } from '../../../../../../../../config/chains';
 
-import { DEFAULT_TRANSFER } from '../ProposalTreasuryForm.constants';
+import { DEFAULT_PARAMETER } from '../ProposalTreasuryForm.constants';
 
-export const useInitialTransferState = () => {
-  const [initialTransfer, setInitialTransfer] = useState(DEFAULT_TRANSFER);
+export const useInitialParameterState = () => {
+  const [initialState, setInitialState] = useState(DEFAULT_PARAMETER);
 
   const fetchTreasuryTypeContract = useCallback(() => {
     getProtocolContract(
-      initialTransfer.parametersStepExtraData?.treasuryType || '',
+      initialState.parametersStepExtraData?.treasuryType || '',
       defaultChainId,
     )
       .then(contract => {
-        setInitialTransfer(prevTransfer => ({
-          ...prevTransfer,
+        setInitialState(prevValue => ({
+          ...prevValue,
           parametersStepExtraData: {
-            ...prevTransfer.parametersStepExtraData,
+            ...prevValue.parametersStepExtraData,
             treasuryTypeContract: contract.address,
           },
         }));
@@ -26,14 +26,14 @@ export const useInitialTransferState = () => {
       .catch(error => {
         console.error('Error fetching contract:', error);
       });
-  }, [initialTransfer.parametersStepExtraData?.treasuryType]);
+  }, [initialState.parametersStepExtraData?.treasuryType]);
 
   useEffect(() => {
     fetchTreasuryTypeContract();
   }, [
-    initialTransfer.parametersStepExtraData?.treasuryType,
+    initialState.parametersStepExtraData?.treasuryType,
     fetchTreasuryTypeContract,
   ]);
 
-  return initialTransfer;
+  return initialState;
 };

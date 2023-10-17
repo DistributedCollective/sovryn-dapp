@@ -25,16 +25,16 @@ import { translations } from '../../../../../../../../../locales/i18n';
 import { ProposalCreationParameter } from '../../../../../../contexts/ProposalContext.types';
 import { PROPOSAL_TREASURY_OPTIONS } from '../../ProposalTreasuryForm.constants';
 import {
-  ProposalTransferType,
+  ProposalParameterType,
   ProposalTreasuryType,
 } from '../../ProposalTreasuryForm.types';
 
-type ProposalTransferProps = {
-  transfer: ProposalCreationParameter;
-  transfersLength: number;
+type ProposalParameterProps = {
+  parameter: ProposalCreationParameter;
+  parametersLength: number;
   onChange: (
     fieldName: string,
-    value: string | SupportedTokens | ProposalTransferType,
+    value: string | SupportedTokens | ProposalParameterType,
   ) => void;
   onRemove: () => void;
   onError: (error: boolean) => void;
@@ -42,16 +42,16 @@ type ProposalTransferProps = {
 
 const pageTranslations = translations.bitocracyPage.proposalTreasuryForm;
 
-export const ProposalTransfer: FC<ProposalTransferProps> = ({
-  transfersLength,
-  transfer,
+export const ProposalParameter: FC<ProposalParameterProps> = ({
+  parameter,
+  parametersLength,
   onChange,
   onRemove,
   onError,
 }) => {
   const { account } = useAccount();
   const { balance: userBalance } = useMaxAssetBalance(
-    transfer.parametersStepExtraData?.token || SupportedTokens.rbtc,
+    parameter.parametersStepExtraData?.token || SupportedTokens.rbtc,
   );
 
   const tokenOptions = useMemo(
@@ -71,29 +71,29 @@ export const ProposalTransfer: FC<ProposalTransferProps> = ({
 
   const isValidAddress = useMemo(
     () =>
-      isAddress(transfer.parametersStepExtraData?.recipientAddress || '') ||
-      !transfer.parametersStepExtraData?.recipientAddress,
-    [transfer.parametersStepExtraData?.recipientAddress],
+      isAddress(parameter.parametersStepExtraData?.recipientAddress || '') ||
+      !parameter.parametersStepExtraData?.recipientAddress,
+    [parameter.parametersStepExtraData?.recipientAddress],
   );
 
   const errorAddressMessage = useMemo(() => {
     if (
       !isValidAddress &&
-      !isAddress(transfer.parametersStepExtraData?.recipientAddress || '')
+      !isAddress(parameter.parametersStepExtraData?.recipientAddress || '')
     ) {
       return t(pageTranslations.invalidRecipientAddress);
     }
     return '';
-  }, [isValidAddress, transfer.parametersStepExtraData?.recipientAddress]);
+  }, [isValidAddress, parameter.parametersStepExtraData?.recipientAddress]);
 
   const errorAmountMessage = useMemo(() => {
     if (
-      Number(transfer.parametersStepExtraData?.amount) > Number(userBalance)
+      Number(parameter.parametersStepExtraData?.amount) > Number(userBalance)
     ) {
       return t(pageTranslations.invalidAmountError);
     }
     return '';
-  }, [transfer.parametersStepExtraData?.amount, userBalance]);
+  }, [parameter.parametersStepExtraData?.amount, userBalance]);
 
   const maximumAmount = useMemo(
     () => (account ? userBalance : ''),
@@ -102,9 +102,9 @@ export const ProposalTransfer: FC<ProposalTransferProps> = ({
 
   useEffect(() => {
     onError(
-      Number(transfer.parametersStepExtraData?.amount) > Number(userBalance),
+      Number(parameter.parametersStepExtraData?.amount) > Number(userBalance),
     );
-  }, [transfer.parametersStepExtraData?.amount, userBalance, onError]);
+  }, [parameter.parametersStepExtraData?.amount, userBalance, onError]);
 
   return (
     <div className="bg-gray-90 rounded p-3 gap-3 flex flex-col">
@@ -121,20 +121,20 @@ export const ProposalTransfer: FC<ProposalTransferProps> = ({
         <div className="flex justify-between items-center">
           <Select
             value={
-              transfer.parametersStepExtraData?.treasuryType ||
+              parameter.parametersStepExtraData?.treasuryType ||
               ProposalTreasuryType.governorVaultOwner
             }
             onChange={value =>
-              onChange(ProposalTransferType.treasuryType, value)
+              onChange(ProposalParameterType.treasuryType, value)
             }
             options={PROPOSAL_TREASURY_OPTIONS}
             className="w-full"
             dataAttribute={`proposal-treasury-${
-              transfer.parametersStepExtraData?.treasuryType ||
+              parameter.parametersStepExtraData?.treasuryType ||
               ProposalTreasuryType.governorVaultOwner
             }`}
           />
-          {transfersLength > 1 && (
+          {parametersLength > 1 && (
             <Button
               onClick={onRemove}
               text={<Icon className="mx-4" icon={IconNames.X_MARK} />}
@@ -157,9 +157,9 @@ export const ProposalTransfer: FC<ProposalTransferProps> = ({
         errorLabel={errorAddressMessage}
       >
         <Input
-          value={transfer.parametersStepExtraData?.recipientAddress}
+          value={parameter.parametersStepExtraData?.recipientAddress}
           onChangeText={value =>
-            onChange(ProposalTransferType.recipientAddress, value)
+            onChange(ProposalParameterType.recipientAddress, value)
           }
           dataAttribute="proposal-treasury-recipient-input"
           classNameInput="min-h-10"
@@ -175,11 +175,11 @@ export const ProposalTransfer: FC<ProposalTransferProps> = ({
         <div className="w-full flex flex-row justify-end mb-1">
           <MaxButton
             onClick={() =>
-              onChange(ProposalTransferType.amount, userBalance.toString())
+              onChange(ProposalParameterType.amount, userBalance.toString())
             }
             value={maximumAmount}
             token={
-              transfer.parametersStepExtraData?.token || SupportedTokens.rbtc
+              parameter.parametersStepExtraData?.token || SupportedTokens.rbtc
             }
             dataAttribute="proposal-treasury-max-button"
             label={t(pageTranslations.accountBalance)}
@@ -187,8 +187,10 @@ export const ProposalTransfer: FC<ProposalTransferProps> = ({
         </div>
         <div className="w-full flex flex-row justify-between items-center">
           <AmountInput
-            value={transfer.parametersStepExtraData?.amount}
-            onChangeText={value => onChange(ProposalTransferType.amount, value)}
+            value={parameter.parametersStepExtraData?.amount}
+            onChangeText={value =>
+              onChange(ProposalParameterType.amount, value)
+            }
             min={0}
             label={t(translations.common.amount)}
             className="w-full flex-grow-0 flex-shrink"
@@ -196,9 +198,9 @@ export const ProposalTransfer: FC<ProposalTransferProps> = ({
           />
           <Select
             value={
-              transfer.parametersStepExtraData?.token || SupportedTokens.rbtc
+              parameter.parametersStepExtraData?.token || SupportedTokens.rbtc
             }
-            onChange={value => onChange(ProposalTransferType.token, value)}
+            onChange={value => onChange(ProposalParameterType.token, value)}
             options={tokenOptions}
             labelRenderer={({ value }) => (
               <AssetRenderer

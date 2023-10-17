@@ -29,7 +29,7 @@ export const PROPOSAL_TREASURY_OPTIONS = [
   },
 ];
 
-export const DEFAULT_TRANSFER: ProposalCreationParameter = {
+export const DEFAULT_PARAMETER: ProposalCreationParameter = {
   target: '',
   value: '0x0',
   signature: '',

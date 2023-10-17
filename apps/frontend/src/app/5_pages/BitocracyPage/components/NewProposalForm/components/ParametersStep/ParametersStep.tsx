@@ -84,8 +84,8 @@ export const ParametersStep: FC<ParametersStepProps> = ({ onBack }) => {
         />
       </FormGroup>
 
-      {parameters.map(item => (
-        <Parameter parameter={item} />
+      {parameters.map((item, index) => (
+        <Parameter parameter={item} key={index} />
       ))}
 
       <Button text={'Add'} onClick={handleAddClick} />

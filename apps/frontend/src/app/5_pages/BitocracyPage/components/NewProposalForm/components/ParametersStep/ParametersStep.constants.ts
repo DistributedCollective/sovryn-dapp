@@ -1,6 +1,6 @@
 export const SOVRYN_PROTOCOL_OPTIONS = [
   {
-    value: 'tradingRebateRewardsBasisPoint',
+    value: 'getTradingRebateRewardsBasisPoint',
     label: 'tradingRebateRewardsBasisPoint',
   },
   {
@@ -28,12 +28,12 @@ export const SOVRYN_PROTOCOL_OPTIONS = [
     label: 'maxDisagreement',
   },
   {
-    value: 'pauser',
+    value: 'getPauser',
     label: 'pauser',
   },
   {
-    value: 'pause',
-    label: 'pauser',
+    value: 'isProtocolPaused',
+    label: 'paused',
   },
 ];
 
@@ -50,14 +50,14 @@ export const STAKING_CONTRACT_OPTIONS = [
 
 export const LOAN_TOKEN_LOGIC_LM_OPTIONS = [
   {
-    value: '_paused',
+    value: 'paused',
     label: '_paused',
   },
 ];
 
 export const LOAN_TOKEN_LOGIC_WRBTC_OPTIONS = [
   {
-    value: '_paused',
+    value: 'paused',
     label: '_paused',
   },
 ];

@@ -17,6 +17,7 @@ import { useProposalContext } from '../../../../../../contexts/NewProposalContex
 import { ProposalCreationParameter } from '../../../../../../contexts/ProposalContext.types';
 import { PROPOSAL_CONTRACT_OPTIONS } from '../../../../NewProposalForm.constants';
 import { getParameterOptions } from '../../ParametersStep.utils';
+import { useGetCurrentParameterValue } from './hooks/useGetCurrentParameterValue';
 
 type ParameterProps = {
   parameter: ProposalCreationParameter;
@@ -24,6 +25,11 @@ type ParameterProps = {
 
 export const Parameter: FC<ParameterProps> = ({ parameter }) => {
   const { parameters, setParameters } = useProposalContext();
+
+  const parameterValue = useGetCurrentParameterValue(
+    parameter?.parametersStepExtraData?.parameterName || '',
+    parameter?.parametersStepExtraData?.functionName || '',
+  );
 
   const parameterOptions = useMemo(
     () =>
@@ -174,7 +180,8 @@ export const Parameter: FC<ParameterProps> = ({ parameter }) => {
           <SimpleTable className="mt-8">
             <SimpleTableRow
               label={t(translations.proposalPage.currentValue)}
-              value={5}
+              value={parameterValue}
+              className="flex justify-between"
             />
           </SimpleTable>
 

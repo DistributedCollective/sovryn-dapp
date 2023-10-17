@@ -12,10 +12,6 @@ export type ProposalContextValue = {
   setType: Dispatch<SetStateAction<ProposalCreationType>>;
   details: ProposalCreationDetails;
   setDetails: Dispatch<SetStateAction<ProposalCreationDetails>>;
-  treasuryDetails: ProposalCreationTreasuryDetails[];
-  setTreasuryDetails: Dispatch<
-    SetStateAction<ProposalCreationTreasuryDetails[]>
-  >;
   governor: string | null;
   setGovernor: Dispatch<SetStateAction<string | null>>;
   parameters: ProposalCreationParameter[];
@@ -45,12 +41,15 @@ export type ProposalCreationDetails = {
   text: string;
 };
 
-export type ProposalCreationTreasuryDetails = {
-  treasuryType: ProposalTreasuryType;
-  treasuryTypeContract: string;
-  recipientAddress: string;
-  amount: string;
-  token: SupportedTokens;
+export type ParametersStepExtraData = {
+  index?: number;
+  functionName?: string;
+  newValue?: string;
+  treasuryType?: ProposalTreasuryType;
+  treasuryTypeContract?: string;
+  recipientAddress?: string;
+  amount?: string;
+  token?: SupportedTokens;
 };
 
 export type ProposalCreationParameter = {
@@ -62,4 +61,6 @@ export type ProposalCreationParameter = {
   signature: string;
   // abi encoded arguments (for signature) to be passed to the function (default to "0x0")
   calldata: string;
+  // extra data needed for parameters step
+  parametersStepExtraData?: ParametersStepExtraData;
 };

@@ -3,6 +3,7 @@ import { t } from 'i18next';
 import { SupportedTokens } from '@sovryn/contracts';
 
 import { translations } from '../../../../../../../locales/i18n';
+import { ProposalCreationParameter } from '../../../../contexts/ProposalContext.types';
 import { ProposalTreasuryType } from './ProposalTreasuryForm.types';
 
 export const PROPOSAL_TREASURY_OPTIONS = [
@@ -28,10 +29,17 @@ export const PROPOSAL_TREASURY_OPTIONS = [
   },
 ];
 
-export const initialTransferState = {
-  treasuryType: ProposalTreasuryType.governorVaultOwner,
-  treasuryTypeContract: '',
-  recipientAddress: '',
-  amount: '',
-  token: SupportedTokens.sov,
+export const DEFAULT_TRANSFER: ProposalCreationParameter = {
+  target: '',
+  value: '0x0',
+  signature: '',
+  calldata: '0x0',
+  parametersStepExtraData: {
+    treasuryType: ProposalTreasuryType.governorVaultOwner,
+    treasuryTypeContract: '',
+    recipientAddress: '',
+    amount: '',
+    token: SupportedTokens.rbtc,
+    index: 1,
+  },
 };

@@ -22,12 +22,12 @@ export const NewProposalForm: FC = () => {
     setType: setProposalType,
     details,
     setDetails,
-    treasuryDetails,
     governor,
     setGovernor,
     submit,
   } = useProposalContext();
   const [proposalTreasuryAccount, setProposalTreasuryAccount] = useState('');
+  const [isPreview, setIsPreview] = useState(false);
 
   // todo: these should be implemented in their own components.
   useEffect(() => {
@@ -40,9 +40,12 @@ export const NewProposalForm: FC = () => {
   }, [setDetails, setGovernor]);
 
   const handlePreview = useCallback(() => {
-    // todo: also pass current step to know which step to go back to.
-    setStep(ProposalCreationStep.Overview);
-  }, [setStep]);
+    setIsPreview(true);
+  }, []);
+
+  const handleBack = useCallback(() => {
+    setIsPreview(false);
+  }, []);
 
   const handleSubmit = useCallback(async () => {
     if (step === ProposalCreationStep.Details) {
@@ -69,7 +72,7 @@ export const NewProposalForm: FC = () => {
       />
     );
   } else if (step === ProposalCreationStep.Details) {
-    return (
+    return !isPreview ? (
       <ProposalDataForm
         value={details}
         onChange={setDetails}
@@ -78,11 +81,15 @@ export const NewProposalForm: FC = () => {
         onPreview={handlePreview}
         onSubmit={handleSubmit}
       />
+    ) : (
+      <PreviewProposalDialog onClose={handleBack} />
     );
-  } else if (step === ProposalCreationStep.Overview) {
-    return <PreviewProposalDialog />;
   } else if (step === ProposalCreationStep.Treasury) {
-    return <ProposalTreasuryForm value={treasuryDetails} />;
+    return isPreview ? (
+      <PreviewProposalDialog onClose={handleBack} />
+    ) : (
+      <ProposalTreasuryForm onPreview={handlePreview} />
+    );
   } else {
     return null;
   }

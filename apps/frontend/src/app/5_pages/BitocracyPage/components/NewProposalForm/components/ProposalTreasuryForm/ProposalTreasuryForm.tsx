@@ -5,8 +5,6 @@ import { t } from 'i18next';
 import { getProtocolContract } from '@sovryn/contracts';
 import { Button, ButtonStyle, Icon, IconNames } from '@sovryn/ui';
 
-import { defaultChainId } from '../../../../../../../config/chains';
-
 import { isAddress } from '../../../../../../3_organisms/StakeForm/components/AdjustStakeForm/AdjustStakeForm.utils';
 import { translations } from '../../../../../../../locales/i18n';
 import { useProposalContext } from '../../../../contexts/NewProposalContext';
@@ -15,26 +13,29 @@ import {
   ProposalCreationStep,
 } from '../../../../contexts/ProposalContext.types';
 import { ProposalParameterType } from './ProposalTreasuryForm.types';
-import { ProposalParameter } from './components/ProposalParameter/ProposalParameter';
+import { ProposalTreasuryParameter } from './components/ProposalTreasuryParameter/ProposalTreasuryParameter';
 import { useInitialParameterState } from './hooks/useInitialParameterState';
 
 type ProposalTreasuryFormProps = {
   onPreview: () => void;
+  updateConfirmButtonState: (value: boolean) => void;
 };
 
 export const ProposalTreasuryForm: FC<ProposalTreasuryFormProps> = ({
   onPreview,
+  updateConfirmButtonState,
 }) => {
-  const { setParameters, setStep, parameters } = useProposalContext();
+  const { setParameters, setStep, parameters, submit } = useProposalContext();
   const [maxAmountError, setMaxAmountError] = useState(false);
   const initialParameter = useInitialParameterState();
+  console.log('parameters', parameters);
 
   const isValidParameter = useCallback(
     (parameter: ProposalCreationParameter) => {
       return (
         parameter.parametersStepExtraData?.treasuryType &&
         isAddress(parameter.parametersStepExtraData.recipientAddress || '') &&
-        Number(parameter.parametersStepExtraData.amount) > 0 &&
+        Number(parameter.value) > 0 &&
         !maxAmountError
       );
     },
@@ -70,7 +71,7 @@ export const ProposalTreasuryForm: FC<ProposalTreasuryFormProps> = ({
     [parameters, setParameters],
   );
 
-  const handleChangeClick = useCallback(
+  const handleChange = useCallback(
     async (index: number, fieldName: string, value: string) => {
       const updatedParameters = [...parameters];
       updatedParameters[index].parametersStepExtraData = {
@@ -78,11 +79,16 @@ export const ProposalTreasuryForm: FC<ProposalTreasuryFormProps> = ({
         [fieldName]: value,
       };
 
+      updatedParameters[index] = {
+        ...updatedParameters[index],
+        [fieldName]: value,
+      };
+
       if (fieldName === ProposalParameterType.treasuryType) {
-        const contract = await getProtocolContract(value, defaultChainId);
-        updatedParameters[index].parametersStepExtraData = {
-          ...updatedParameters[index].parametersStepExtraData,
-          treasuryTypeContract: contract.address,
+        const contract = await getProtocolContract(value);
+        updatedParameters[index] = {
+          ...updatedParameters[index],
+          target: contract.address,
         };
       }
 
@@ -96,11 +102,19 @@ export const ProposalTreasuryForm: FC<ProposalTreasuryFormProps> = ({
     [setStep],
   );
 
+  const handleSubmit = useCallback(() => {
+    submit();
+  }, [submit]);
+
   useEffect(() => {
     if (parameters.length === 0) {
       setParameters([initialParameter]);
     }
   }, [parameters, initialParameter, setParameters]);
+
+  useEffect(() => {
+    updateConfirmButtonState(isConfirmDisabled);
+  }, [isConfirmDisabled, updateConfirmButtonState]);
 
   return (
     <div className="flex flex-col gap-7 relative pb-4">
@@ -117,13 +131,11 @@ export const ProposalTreasuryForm: FC<ProposalTreasuryFormProps> = ({
       />
 
       {parameters.map((parameter, index) => (
-        <ProposalParameter
+        <ProposalTreasuryParameter
           key={index}
           parameter={parameter}
           onRemove={() => handleDeleteClick(index)}
-          onChange={(fieldName, value) =>
-            handleChangeClick(index, fieldName, value)
-          }
+          onChange={(fieldName, value) => handleChange(index, fieldName, value)}
           parametersLength={parameters.length}
           onError={setMaxAmountError}
         />
@@ -147,6 +159,7 @@ export const ProposalTreasuryForm: FC<ProposalTreasuryFormProps> = ({
           text={t(translations.common.buttons.confirm)}
           disabled={isConfirmDisabled}
           className="flex-1"
+          onClick={handleSubmit}
         />
       </div>
     </div>

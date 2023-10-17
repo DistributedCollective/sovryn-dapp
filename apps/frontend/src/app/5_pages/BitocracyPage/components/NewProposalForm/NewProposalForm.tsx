@@ -28,6 +28,7 @@ export const NewProposalForm: FC = () => {
   } = useProposalContext();
   const [proposalTreasuryAccount, setProposalTreasuryAccount] = useState('');
   const [isPreview, setIsPreview] = useState(false);
+  const [isConfirmButtonDisabled, setIsConfirmButtonDisabled] = useState(true);
 
   // todo: these should be implemented in their own components.
   useEffect(() => {
@@ -41,6 +42,10 @@ export const NewProposalForm: FC = () => {
 
   const handlePreview = useCallback(() => {
     setIsPreview(true);
+  }, []);
+
+  const handleConfirmButtonState = useCallback((value: boolean) => {
+    setIsConfirmButtonDisabled(value);
   }, []);
 
   const handleBack = useCallback(() => {
@@ -86,9 +91,15 @@ export const NewProposalForm: FC = () => {
     );
   } else if (step === ProposalCreationStep.Treasury) {
     return isPreview ? (
-      <PreviewProposalDialog onClose={handleBack} />
+      <PreviewProposalDialog
+        disabled={isConfirmButtonDisabled}
+        onClose={handleBack}
+      />
     ) : (
-      <ProposalTreasuryForm onPreview={handlePreview} />
+      <ProposalTreasuryForm
+        updateConfirmButtonState={handleConfirmButtonState}
+        onPreview={handlePreview}
+      />
     );
   } else {
     return null;

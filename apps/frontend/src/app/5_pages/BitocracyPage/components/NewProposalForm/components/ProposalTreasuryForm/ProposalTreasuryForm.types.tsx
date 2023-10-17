@@ -7,8 +7,6 @@ export enum ProposalTreasuryType {
 
 export enum ProposalParameterType {
   treasuryType = 'treasuryType',
-  treasuryTypeContract = 'treasuryTypeContract',
-  amount = 'amount',
   token = 'token',
   recipientAddress = 'recipientAddress',
 }

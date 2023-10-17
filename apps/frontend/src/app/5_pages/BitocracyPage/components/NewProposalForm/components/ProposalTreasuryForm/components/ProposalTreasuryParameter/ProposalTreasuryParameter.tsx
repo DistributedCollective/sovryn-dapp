@@ -29,7 +29,7 @@ import {
   ProposalTreasuryType,
 } from '../../ProposalTreasuryForm.types';
 
-type ProposalParameterProps = {
+type ProposalTreasuryParameterProps = {
   parameter: ProposalCreationParameter;
   parametersLength: number;
   onChange: (
@@ -42,7 +42,7 @@ type ProposalParameterProps = {
 
 const pageTranslations = translations.bitocracyPage.proposalTreasuryForm;
 
-export const ProposalParameter: FC<ProposalParameterProps> = ({
+export const ProposalTreasuryParameter: FC<ProposalTreasuryParameterProps> = ({
   parameter,
   parametersLength,
   onChange,
@@ -56,7 +56,9 @@ export const ProposalParameter: FC<ProposalParameterProps> = ({
 
   const tokenOptions = useMemo(
     () =>
-      SupportedTokenList.map(token => ({
+      SupportedTokenList.filter(
+        token => token.symbol !== SupportedTokens.wrbtc,
+      ).map(token => ({
         value: token.symbol,
         label: (
           <AssetRenderer
@@ -87,24 +89,20 @@ export const ProposalParameter: FC<ProposalParameterProps> = ({
   }, [isValidAddress, parameter.parametersStepExtraData?.recipientAddress]);
 
   const errorAmountMessage = useMemo(() => {
-    if (
-      Number(parameter.parametersStepExtraData?.amount) > Number(userBalance)
-    ) {
+    if (Number(parameter.value) > Number(userBalance)) {
       return t(pageTranslations.invalidAmountError);
     }
     return '';
-  }, [parameter.parametersStepExtraData?.amount, userBalance]);
+  }, [parameter.value, userBalance]);
 
   const maximumAmount = useMemo(
-    () => (account ? userBalance : ''),
+    () => (account ? userBalance : 0),
     [userBalance, account],
   );
 
   useEffect(() => {
-    onError(
-      Number(parameter.parametersStepExtraData?.amount) > Number(userBalance),
-    );
-  }, [parameter.parametersStepExtraData?.amount, userBalance, onError]);
+    onError(Number(parameter.value) > Number(userBalance));
+  }, [parameter.value, userBalance, onError]);
 
   return (
     <div className="bg-gray-90 rounded p-3 gap-3 flex flex-col">
@@ -129,10 +127,7 @@ export const ProposalParameter: FC<ProposalParameterProps> = ({
             }
             options={PROPOSAL_TREASURY_OPTIONS}
             className="w-full"
-            dataAttribute={`proposal-treasury-${
-              parameter.parametersStepExtraData?.treasuryType ||
-              ProposalTreasuryType.governorVaultOwner
-            }`}
+            dataAttribute="proposal-treasury-type"
           />
           {parametersLength > 1 && (
             <Button
@@ -174,9 +169,7 @@ export const ProposalParameter: FC<ProposalParameterProps> = ({
       >
         <div className="w-full flex flex-row justify-end mb-1">
           <MaxButton
-            onClick={() =>
-              onChange(ProposalParameterType.amount, userBalance.toString())
-            }
+            onClick={() => onChange('value', userBalance.toString())}
             value={maximumAmount}
             token={
               parameter.parametersStepExtraData?.token || SupportedTokens.rbtc
@@ -187,10 +180,8 @@ export const ProposalParameter: FC<ProposalParameterProps> = ({
         </div>
         <div className="w-full flex flex-row justify-between items-center">
           <AmountInput
-            value={parameter.parametersStepExtraData?.amount}
-            onChangeText={value =>
-              onChange(ProposalParameterType.amount, value)
-            }
+            value={parameter.value}
+            onChangeText={value => onChange('value', value)}
             min={0}
             label={t(translations.common.amount)}
             className="w-full flex-grow-0 flex-shrink"

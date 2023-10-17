@@ -15,12 +15,9 @@ export const useInitialParameterState = () => {
       defaultChainId,
     )
       .then(contract => {
-        setInitialState(prevValue => ({
-          ...prevValue,
-          parametersStepExtraData: {
-            ...prevValue.parametersStepExtraData,
-            treasuryTypeContract: contract.address,
-          },
+        setInitialState(prevState => ({
+          ...prevState,
+          target: contract.address,
         }));
       })
       .catch(error => {
@@ -30,10 +27,7 @@ export const useInitialParameterState = () => {
 
   useEffect(() => {
     fetchTreasuryTypeContract();
-  }, [
-    initialState.parametersStepExtraData?.treasuryType,
-    fetchTreasuryTypeContract,
-  ]);
+  }, [initialState.target, fetchTreasuryTypeContract]);
 
   return initialState;
 };

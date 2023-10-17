@@ -11,10 +11,12 @@ const pageTranslations = translations.bitocracyPage;
 
 type PreviewProposalDialogProps = {
   onClose: () => void;
+  disabled?: boolean;
 };
 
 export const PreviewProposalDialog: FC<PreviewProposalDialogProps> = ({
   onClose,
+  disabled,
 }) => (
   <Dialog
     isOpen={true}
@@ -27,7 +29,7 @@ export const PreviewProposalDialog: FC<PreviewProposalDialogProps> = ({
       onClose={onClose}
     />
     <DialogBody>
-      <PreviewProposal onClose={onClose} />
+      <PreviewProposal disabled={disabled} onClose={onClose} />
     </DialogBody>
   </Dialog>
 );

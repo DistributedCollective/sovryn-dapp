@@ -15,16 +15,20 @@ import { useAccount } from '../../../../../../../hooks/useAccount';
 import { translations } from '../../../../../../../locales/i18n';
 import { ProposalInfo } from '../../../../../ProposalPage/components/ProposalInfo/ProposalInfo';
 import { useProposalContext } from '../../../../contexts/NewProposalContext';
+import { ExecutableDetails } from './components/ExecutableDetails.tsx/ExecutableDetail';
 
 const pageTranslations = translations.proposalPage;
 
 type PreviewProposalProps = {
   onClose: () => void;
+  disabled?: boolean;
 };
 
-export const PreviewProposal: FC<PreviewProposalProps> = ({ onClose }) => {
-  const { details, submit, type } = useProposalContext();
-
+export const PreviewProposal: FC<PreviewProposalProps> = ({
+  onClose,
+  disabled,
+}) => {
+  const { details, submit, type, parameters } = useProposalContext();
   const { account } = useAccount();
 
   const handleSubmit = useCallback(() => {
@@ -67,6 +71,9 @@ export const PreviewProposal: FC<PreviewProposalProps> = ({ onClose }) => {
           </div>
 
           <ProposalInfo link={details.link} description={details.text} />
+          {parameters.length > 0 && (
+            <ExecutableDetails parameters={parameters} />
+          )}
         </div>
       </div>
 
@@ -81,6 +88,7 @@ export const PreviewProposal: FC<PreviewProposalProps> = ({ onClose }) => {
           text={t(translations.common.buttons.confirm)}
           onClick={handleSubmit}
           className="flex-1 max-w-44"
+          disabled={disabled}
         />
       </div>
     </>

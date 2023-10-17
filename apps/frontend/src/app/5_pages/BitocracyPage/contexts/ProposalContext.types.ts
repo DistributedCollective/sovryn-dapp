@@ -46,9 +46,7 @@ export type ParametersStepExtraData = {
   functionName?: string;
   newValue?: string;
   treasuryType?: ProposalTreasuryType;
-  treasuryTypeContract?: string;
   recipientAddress?: string;
-  amount?: string;
   token?: SupportedTokens;
 };
 

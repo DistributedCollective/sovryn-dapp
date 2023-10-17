@@ -6,7 +6,6 @@ export enum TreasuryType {
 }
 
 export enum TreasuryParameterType {
-  treasuryType = 'treasuryType',
   token = 'token',
   recipientAddress = 'recipientAddress',
 }

@@ -2,7 +2,6 @@ import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 
 import { t } from 'i18next';
 
-import { getProtocolContract } from '@sovryn/contracts';
 import { Button, ButtonStyle, Icon, IconNames } from '@sovryn/ui';
 
 import { isAddress } from '../../../../../../3_organisms/StakeForm/components/AdjustStakeForm/AdjustStakeForm.utils';
@@ -12,9 +11,8 @@ import {
   ProposalCreationParameter,
   ProposalCreationStep,
 } from '../../../../contexts/ProposalContext.types';
-import { TreasuryParameterType } from './TreasuryStep.types';
+import { DEFAULT_PARAMETER } from './TreasuryStep.constants';
 import { Parameter } from './components/Parameter/Parameter';
-import { useParameterState } from './hooks/useParameterState';
 
 type TreasuryStepProps = {
   onPreview: () => void;
@@ -27,14 +25,12 @@ export const TreasuryStep: FC<TreasuryStepProps> = ({
 }) => {
   const { setParameters, setStep, parameters, submit } = useProposalContext();
   const [maxAmountError, setMaxAmountError] = useState(false);
-  const initialParameter = useParameterState();
   console.log('parameters', parameters);
 
   const isValidParameter = useCallback(
     (parameter: ProposalCreationParameter) => {
       return (
-        parameter.parametersStepExtraData?.treasuryType &&
-        isAddress(parameter.parametersStepExtraData.recipientAddress || '') &&
+        isAddress(parameter?.parametersStepExtraData?.recipientAddress || '') &&
         Number(parameter.value) > 0 &&
         !maxAmountError
       );
@@ -52,49 +48,15 @@ export const TreasuryStep: FC<TreasuryStepProps> = ({
     const nextIndex = (lastParameter?.parametersStepExtraData?.index || 0) + 1;
 
     const newParameter = {
-      ...initialParameter,
+      ...DEFAULT_PARAMETER,
       parametersStepExtraData: {
+        ...DEFAULT_PARAMETER.parametersStepExtraData,
         index: nextIndex,
       },
     };
 
     setParameters([...parameters, newParameter]);
-  }, [parameters, initialParameter, setParameters]);
-
-  const handleDeleteClick = useCallback(
-    (index: number) => {
-      const updatedParameters = [...parameters];
-      updatedParameters.splice(index, 1);
-      setParameters(updatedParameters);
-    },
-    [parameters, setParameters],
-  );
-
-  const handleChange = useCallback(
-    async (index: number, fieldName: string, value: string) => {
-      const updatedParameters = [...parameters];
-      updatedParameters[index].parametersStepExtraData = {
-        ...updatedParameters[index].parametersStepExtraData,
-        [fieldName]: value,
-      };
-
-      updatedParameters[index] = {
-        ...updatedParameters[index],
-        [fieldName]: value,
-      };
-
-      if (fieldName === TreasuryParameterType.treasuryType) {
-        const contract = await getProtocolContract(value);
-        updatedParameters[index] = {
-          ...updatedParameters[index],
-          target: contract.address,
-        };
-      }
-
-      setParameters(updatedParameters);
-    },
-    [parameters, setParameters],
-  );
+  }, [parameters, setParameters]);
 
   const handleBack = useCallback(
     () => setStep(ProposalCreationStep.Details),
@@ -107,9 +69,9 @@ export const TreasuryStep: FC<TreasuryStepProps> = ({
 
   useEffect(() => {
     if (parameters.length === 0) {
-      setParameters([initialParameter]);
+      setParameters([DEFAULT_PARAMETER]);
     }
-  }, [parameters, initialParameter, setParameters]);
+  }, [parameters, setParameters]);
 
   useEffect(() => {
     updateConfirmButtonState(isConfirmDisabled);
@@ -133,9 +95,6 @@ export const TreasuryStep: FC<TreasuryStepProps> = ({
         <Parameter
           key={index}
           parameter={parameter}
-          onRemove={() => handleDeleteClick(index)}
-          onChange={(fieldName, value) => handleChange(index, fieldName, value)}
-          parametersLength={parameters.length}
           onError={setMaxAmountError}
         />
       ))}

@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useMemo } from 'react';
+import React, { FC, useCallback, useEffect, useMemo } from 'react';
 
 import { t } from 'i18next';
 
@@ -22,30 +22,20 @@ import { isAddress } from '../../../../../../../../3_organisms/StakeForm/compone
 import { useAccount } from '../../../../../../../../../hooks/useAccount';
 import { useMaxAssetBalance } from '../../../../../../../../../hooks/useMaxAssetBalance';
 import { translations } from '../../../../../../../../../locales/i18n';
+import { useProposalContext } from '../../../../../../contexts/NewProposalContext';
 import { ProposalCreationParameter } from '../../../../../../contexts/ProposalContext.types';
 import { TREASURY_OPTIONS } from '../../TreasuryStep.constants';
-import { TreasuryParameterType, TreasuryType } from '../../TreasuryStep.types';
+import { TreasuryParameterType } from '../../TreasuryStep.types';
 
 type ParameterProps = {
   parameter: ProposalCreationParameter;
-  parametersLength: number;
-  onChange: (
-    fieldName: string,
-    value: string | SupportedTokens | TreasuryParameterType,
-  ) => void;
-  onRemove: () => void;
   onError: (error: boolean) => void;
 };
 
 const pageTranslations = translations.bitocracyPage.proposalTreasuryForm;
 
-export const Parameter: FC<ParameterProps> = ({
-  parameter,
-  parametersLength,
-  onChange,
-  onRemove,
-  onError,
-}) => {
+export const Parameter: FC<ParameterProps> = ({ parameter, onError }) => {
+  const { parameters, setParameters } = useProposalContext();
   const { account } = useAccount();
   const { balance: userBalance } = useMaxAssetBalance(
     parameter.parametersStepExtraData?.token || SupportedTokens.rbtc,
@@ -97,6 +87,56 @@ export const Parameter: FC<ParameterProps> = ({
     [userBalance, account],
   );
 
+  const handleDeleteClick = useCallback(() => {
+    const updatedParameters = parameters.filter(
+      item =>
+        item?.parametersStepExtraData?.index !==
+        parameter?.parametersStepExtraData?.index,
+    );
+
+    setParameters(updatedParameters);
+  }, [parameter?.parametersStepExtraData?.index, parameters, setParameters]);
+
+  const onChangeProperty = useCallback(
+    (propertyName: string, value: string) => {
+      const updatedParameters = parameters.map(item => {
+        if (
+          item?.parametersStepExtraData?.index ===
+          parameter?.parametersStepExtraData?.index
+        ) {
+          return { ...item, [propertyName]: value };
+        }
+        return item;
+      });
+
+      setParameters(updatedParameters);
+    },
+    [parameter?.parametersStepExtraData?.index, parameters, setParameters],
+  );
+
+  const onChangeExtraProperty = useCallback(
+    (propertyName: string, value: string) => {
+      const updatedParameters = parameters.map(item => {
+        if (
+          item?.parametersStepExtraData?.index ===
+          parameter?.parametersStepExtraData?.index
+        ) {
+          return {
+            ...item,
+            parametersStepExtraData: {
+              ...item?.parametersStepExtraData,
+              [propertyName]: value,
+            },
+          };
+        }
+        return item;
+      });
+
+      setParameters(updatedParameters);
+    },
+    [parameter?.parametersStepExtraData?.index, parameters, setParameters],
+  );
+
   useEffect(() => {
     onError(Number(parameter.value) > Number(userBalance));
   }, [parameter.value, userBalance, onError]);
@@ -115,20 +155,15 @@ export const Parameter: FC<ParameterProps> = ({
       >
         <div className="flex justify-between items-center">
           <Select
-            value={
-              parameter.parametersStepExtraData?.treasuryType ||
-              TreasuryType.governorVaultOwner
-            }
-            onChange={value =>
-              onChange(TreasuryParameterType.treasuryType, value)
-            }
+            value={parameter.target}
+            onChange={value => onChangeProperty('target', value)}
             options={TREASURY_OPTIONS}
             className="w-full"
             dataAttribute="proposal-treasury-select"
           />
-          {parametersLength > 1 && (
+          {parameters.length > 1 && (
             <Button
-              onClick={onRemove}
+              onClick={handleDeleteClick}
               text={<Icon className="mx-4" icon={IconNames.X_MARK} />}
               style={ButtonStyle.ghost}
               className="text-sov-white ml-2 opacity-80 hover:opacity-100"
@@ -151,7 +186,7 @@ export const Parameter: FC<ParameterProps> = ({
         <Input
           value={parameter.parametersStepExtraData?.recipientAddress}
           onChangeText={value =>
-            onChange(TreasuryParameterType.recipientAddress, value)
+            onChangeExtraProperty(TreasuryParameterType.recipientAddress, value)
           }
           dataAttribute="proposal-treasury-recipient-address"
           classNameInput="min-h-10"
@@ -166,7 +201,7 @@ export const Parameter: FC<ParameterProps> = ({
       >
         <div className="w-full flex flex-row justify-end mb-1">
           <MaxButton
-            onClick={() => onChange('value', userBalance.toString())}
+            onClick={() => onChangeProperty('value', userBalance.toString())}
             value={maximumAmount}
             token={
               parameter.parametersStepExtraData?.token || SupportedTokens.rbtc
@@ -178,7 +213,7 @@ export const Parameter: FC<ParameterProps> = ({
         <div className="w-full flex flex-row justify-between items-center">
           <AmountInput
             value={parameter.value}
-            onChangeText={value => onChange('value', value)}
+            onChangeText={value => onChangeProperty('value', value)}
             min={0}
             label={t(translations.common.amount)}
             className="w-full flex-grow-0 flex-shrink"
@@ -188,7 +223,9 @@ export const Parameter: FC<ParameterProps> = ({
             value={
               parameter.parametersStepExtraData?.token || SupportedTokens.rbtc
             }
-            onChange={value => onChange(TreasuryParameterType.token, value)}
+            onChange={value =>
+              onChangeExtraProperty(TreasuryParameterType.token, value)
+            }
             options={tokenOptions}
             labelRenderer={({ value }) => (
               <AssetRenderer

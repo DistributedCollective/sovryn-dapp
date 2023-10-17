@@ -12,9 +12,9 @@ import {
   ProposalCreationParameter,
   ProposalCreationStep,
 } from '../../../../contexts/ProposalContext.types';
-import { ProposalParameterType } from './ProposalTreasuryForm.types';
-import { ProposalTreasuryParameter } from './components/ProposalTreasuryParameter/ProposalTreasuryParameter';
-import { useInitialParameterState } from './hooks/useInitialParameterState';
+import { ProposalTreasuryParameterType } from './ProposalTreasuryForm.types';
+import { Parameter } from './components/Parameter/Parameter';
+import { useParameterState } from './hooks/useParameterState';
 
 type ProposalTreasuryFormProps = {
   onPreview: () => void;
@@ -27,7 +27,7 @@ export const ProposalTreasuryForm: FC<ProposalTreasuryFormProps> = ({
 }) => {
   const { setParameters, setStep, parameters, submit } = useProposalContext();
   const [maxAmountError, setMaxAmountError] = useState(false);
-  const initialParameter = useInitialParameterState();
+  const initialParameter = useParameterState();
   console.log('parameters', parameters);
 
   const isValidParameter = useCallback(
@@ -54,7 +54,6 @@ export const ProposalTreasuryForm: FC<ProposalTreasuryFormProps> = ({
     const newParameter = {
       ...initialParameter,
       parametersStepExtraData: {
-        ...initialParameter.parametersStepExtraData,
         index: nextIndex,
       },
     };
@@ -84,7 +83,7 @@ export const ProposalTreasuryForm: FC<ProposalTreasuryFormProps> = ({
         [fieldName]: value,
       };
 
-      if (fieldName === ProposalParameterType.treasuryType) {
+      if (fieldName === ProposalTreasuryParameterType.treasuryType) {
         const contract = await getProtocolContract(value);
         updatedParameters[index] = {
           ...updatedParameters[index],
@@ -131,7 +130,7 @@ export const ProposalTreasuryForm: FC<ProposalTreasuryFormProps> = ({
       />
 
       {parameters.map((parameter, index) => (
-        <ProposalTreasuryParameter
+        <Parameter
           key={index}
           parameter={parameter}
           onRemove={() => handleDeleteClick(index)}

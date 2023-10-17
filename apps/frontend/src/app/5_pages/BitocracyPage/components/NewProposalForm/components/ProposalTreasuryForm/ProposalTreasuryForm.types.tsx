@@ -5,7 +5,7 @@ export enum ProposalTreasuryType {
   developmentFund = 'developmentFund',
 }
 
-export enum ProposalParameterType {
+export enum ProposalTreasuryParameterType {
   treasuryType = 'treasuryType',
   token = 'token',
   recipientAddress = 'recipientAddress',

@@ -25,16 +25,16 @@ import { translations } from '../../../../../../../../../locales/i18n';
 import { ProposalCreationParameter } from '../../../../../../contexts/ProposalContext.types';
 import { PROPOSAL_TREASURY_OPTIONS } from '../../ProposalTreasuryForm.constants';
 import {
-  ProposalParameterType,
+  ProposalTreasuryParameterType,
   ProposalTreasuryType,
 } from '../../ProposalTreasuryForm.types';
 
-type ProposalTreasuryParameterProps = {
+type ParameterProps = {
   parameter: ProposalCreationParameter;
   parametersLength: number;
   onChange: (
     fieldName: string,
-    value: string | SupportedTokens | ProposalParameterType,
+    value: string | SupportedTokens | ProposalTreasuryParameterType,
   ) => void;
   onRemove: () => void;
   onError: (error: boolean) => void;
@@ -42,7 +42,7 @@ type ProposalTreasuryParameterProps = {
 
 const pageTranslations = translations.bitocracyPage.proposalTreasuryForm;
 
-export const ProposalTreasuryParameter: FC<ProposalTreasuryParameterProps> = ({
+export const Parameter: FC<ParameterProps> = ({
   parameter,
   parametersLength,
   onChange,
@@ -123,7 +123,7 @@ export const ProposalTreasuryParameter: FC<ProposalTreasuryParameterProps> = ({
               ProposalTreasuryType.governorVaultOwner
             }
             onChange={value =>
-              onChange(ProposalParameterType.treasuryType, value)
+              onChange(ProposalTreasuryParameterType.treasuryType, value)
             }
             options={PROPOSAL_TREASURY_OPTIONS}
             className="w-full"
@@ -148,15 +148,15 @@ export const ProposalTreasuryParameter: FC<ProposalTreasuryParameterProps> = ({
         }
         labelElement="div"
         className="w-full"
-        dataAttribute="proposal-treasury-recipient-address"
+        dataAttribute="proposal-treasury-recipient-label"
         errorLabel={errorAddressMessage}
       >
         <Input
           value={parameter.parametersStepExtraData?.recipientAddress}
           onChangeText={value =>
-            onChange(ProposalParameterType.recipientAddress, value)
+            onChange(ProposalTreasuryParameterType.recipientAddress, value)
           }
-          dataAttribute="proposal-treasury-recipient-input"
+          dataAttribute="proposal-treasury-recipient-address"
           classNameInput="min-h-10"
           className="max-w-full"
         />
@@ -191,7 +191,9 @@ export const ProposalTreasuryParameter: FC<ProposalTreasuryParameterProps> = ({
             value={
               parameter.parametersStepExtraData?.token || SupportedTokens.rbtc
             }
-            onChange={value => onChange(ProposalParameterType.token, value)}
+            onChange={value =>
+              onChange(ProposalTreasuryParameterType.token, value)
+            }
             options={tokenOptions}
             labelRenderer={({ value }) => (
               <AssetRenderer

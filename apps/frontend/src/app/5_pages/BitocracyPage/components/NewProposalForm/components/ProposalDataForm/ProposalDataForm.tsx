@@ -35,7 +35,10 @@ import {
   MAXIMUM_PROPOSAL_TEXT_LENGTH,
   MAXIMUM_DISCUSSION_URL_LENGTH,
 } from './ProposalDataForm.constants';
-import { generateFormGroupLabel } from './ProposalDataForm.utils';
+import {
+  formatProposalText,
+  generateFormGroupLabel,
+} from './ProposalDataForm.utils';
 
 const ACTIVE_CLASSNAME = 'text-primary-20';
 
@@ -57,6 +60,8 @@ export const ProposalDataForm: FC<ProposalDataFormProps> = ({
   onPreview,
 }) => {
   const [form, setForm] = useState<ProposalCreationDetails>(value);
+  console.log(formatProposalText({ ...form }));
+
   const [index, setIndex] = useState(0);
   const handleInputChangeInput = useCallback(
     (event: ChangeEvent<HTMLInputElement>) => {
@@ -107,7 +112,7 @@ export const ProposalDataForm: FC<ProposalDataFormProps> = ({
             maxLength={MAXIMUM_PROPOSAL_TEXT_LENGTH}
             value={form.text}
             onChange={handleInputChangeTextarea}
-            className="block w-full bg-gray-70 border border-gray-70 p-3 rounded focus:border-gray-60 h-36 mt-2"
+            className="block w-full bg-gray-70 border border-gray-70 p-3 rounded focus:border-gray-60 min-h-36 mt-2"
           />
         ),
         activeClassName: ACTIVE_CLASSNAME,
@@ -117,7 +122,7 @@ export const ProposalDataForm: FC<ProposalDataFormProps> = ({
         content: (
           <ReactMarkdown
             remarkPlugins={[remarkGfm]}
-            className="w-full bg-gray-70 border border-gray-70 p-3 rounded focus:border-gray-60 mt-2 h-36 overflow-auto"
+            className="w-full bg-gray-70 border border-gray-70 p-3 rounded focus:border-gray-60 mt-2 min-h-36 overflow-auto"
           >
             {form.text}
           </ReactMarkdown>

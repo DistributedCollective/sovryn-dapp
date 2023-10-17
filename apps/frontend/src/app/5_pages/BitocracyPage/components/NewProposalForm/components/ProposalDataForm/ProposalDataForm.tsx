@@ -60,7 +60,6 @@ export const ProposalDataForm: FC<ProposalDataFormProps> = ({
   onPreview,
 }) => {
   const [form, setForm] = useState<ProposalCreationDetails>(value);
-  console.log(formatProposalText({ ...form }));
 
   const [index, setIndex] = useState(0);
   const handleInputChangeInput = useCallback(
@@ -95,6 +94,7 @@ export const ProposalDataForm: FC<ProposalDataFormProps> = ({
   const handleSubmit = useCallback(() => {
     onChange(form);
     onSubmit();
+    console.log(formatProposalText({ ...form }));
   }, [form, onChange, onSubmit]);
 
   const handlePreview = useCallback(() => {

@@ -1,11 +1,11 @@
-export enum ProposalTreasuryType {
+export enum TreasuryType {
   governorVaultOwner = 'governorVaultOwner',
   governorVaultAdmin = 'governorVaultAdmin',
   adoptionFund = 'adoptionFund',
   developmentFund = 'developmentFund',
 }
 
-export enum ProposalTreasuryParameterType {
+export enum TreasuryParameterType {
   treasuryType = 'treasuryType',
   token = 'token',
   recipientAddress = 'recipientAddress',

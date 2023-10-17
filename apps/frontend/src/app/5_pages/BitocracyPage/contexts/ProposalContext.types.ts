@@ -3,7 +3,7 @@ import { Dispatch, SetStateAction } from 'react';
 import { SupportedTokens } from '@sovryn/contracts';
 
 import { TransactionCallbacks } from '../../../3_organisms/TransactionStepDialog/TransactionStepDialog.types';
-import { ProposalTreasuryType } from '../components/NewProposalForm/components/ProposalTreasuryForm/ProposalTreasuryForm.types';
+import { TreasuryType } from '../components/NewProposalForm/components/TreasuryStep/TreasuryStep.types';
 
 export type ProposalContextValue = {
   step: ProposalCreationStep;
@@ -45,7 +45,7 @@ export type ParametersStepExtraData = {
   index?: number;
   functionName?: string;
   newValue?: string;
-  treasuryType?: ProposalTreasuryType;
+  treasuryType?: TreasuryType;
   recipientAddress?: string;
   token?: SupportedTokens;
 };

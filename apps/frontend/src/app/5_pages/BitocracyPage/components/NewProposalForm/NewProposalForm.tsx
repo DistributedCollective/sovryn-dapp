@@ -12,7 +12,7 @@ import {
 import { PreviewProposalDialog } from './components/PreviewProposalDialog/PreviewProposalDialog';
 import { ProposalDataForm } from './components/ProposalDataForm/ProposalDataForm';
 import { ProposalInitialStep } from './components/ProposalInitialStep/ProposalInitialStep';
-import { ProposalTreasuryForm } from './components/ProposalTreasuryForm/ProposalTreasuryForm';
+import { TreasuryStep } from './components/TreasuryStep/TreasuryStep';
 
 export const NewProposalForm: FC = () => {
   const {
@@ -96,7 +96,7 @@ export const NewProposalForm: FC = () => {
         onClose={handleBack}
       />
     ) : (
-      <ProposalTreasuryForm
+      <TreasuryStep
         updateConfirmButtonState={handleConfirmButtonState}
         onPreview={handlePreview}
       />

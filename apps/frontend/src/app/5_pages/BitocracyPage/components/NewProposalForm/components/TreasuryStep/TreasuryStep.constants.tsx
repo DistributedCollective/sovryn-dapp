@@ -4,27 +4,27 @@ import { SupportedTokens } from '@sovryn/contracts';
 
 import { translations } from '../../../../../../../locales/i18n';
 import { ProposalCreationParameter } from '../../../../contexts/ProposalContext.types';
-import { ProposalTreasuryType } from './ProposalTreasuryForm.types';
+import { TreasuryType } from './TreasuryStep.types';
 
-export const PROPOSAL_TREASURY_OPTIONS = [
+export const TREASURY_OPTIONS = [
   {
-    value: ProposalTreasuryType.governorVaultOwner,
+    value: TreasuryType.governorVaultOwner,
     label: t(
       translations.bitocracyPage.proposalTreasuryForm.governorVaultOwner,
     ),
   },
   {
-    value: ProposalTreasuryType.governorVaultAdmin,
+    value: TreasuryType.governorVaultAdmin,
     label: t(
       translations.bitocracyPage.proposalTreasuryForm.governorVaultAdmin,
     ),
   },
   {
-    value: ProposalTreasuryType.adoptionFund,
+    value: TreasuryType.adoptionFund,
     label: t(translations.bitocracyPage.proposalTreasuryForm.adoptionFund),
   },
   {
-    value: ProposalTreasuryType.developmentFund,
+    value: TreasuryType.developmentFund,
     label: t(translations.bitocracyPage.proposalTreasuryForm.developmentFund),
   },
 ];
@@ -35,7 +35,7 @@ export const DEFAULT_PARAMETER: ProposalCreationParameter = {
   signature: '',
   calldata: '0x0',
   parametersStepExtraData: {
-    treasuryType: ProposalTreasuryType.governorVaultOwner,
+    treasuryType: TreasuryType.governorVaultOwner,
     recipientAddress: '',
     token: SupportedTokens.rbtc,
     index: 1,

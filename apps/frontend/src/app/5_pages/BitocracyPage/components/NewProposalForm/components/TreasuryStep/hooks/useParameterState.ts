@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 
 import { getProtocolContract } from '@sovryn/contracts';
 
-import { DEFAULT_PARAMETER } from '../ProposalTreasuryForm.constants';
+import { DEFAULT_PARAMETER } from '../TreasuryStep.constants';
 
 export const useParameterState = () => {
   const [initialState, setInitialState] = useState(DEFAULT_PARAMETER);

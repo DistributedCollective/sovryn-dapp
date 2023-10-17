@@ -12,16 +12,16 @@ import {
   ProposalCreationParameter,
   ProposalCreationStep,
 } from '../../../../contexts/ProposalContext.types';
-import { ProposalTreasuryParameterType } from './ProposalTreasuryForm.types';
+import { TreasuryParameterType } from './TreasuryStep.types';
 import { Parameter } from './components/Parameter/Parameter';
 import { useParameterState } from './hooks/useParameterState';
 
-type ProposalTreasuryFormProps = {
+type TreasuryStepProps = {
   onPreview: () => void;
   updateConfirmButtonState: (value: boolean) => void;
 };
 
-export const ProposalTreasuryForm: FC<ProposalTreasuryFormProps> = ({
+export const TreasuryStep: FC<TreasuryStepProps> = ({
   onPreview,
   updateConfirmButtonState,
 }) => {
@@ -83,7 +83,7 @@ export const ProposalTreasuryForm: FC<ProposalTreasuryFormProps> = ({
         [fieldName]: value,
       };
 
-      if (fieldName === ProposalTreasuryParameterType.treasuryType) {
+      if (fieldName === TreasuryParameterType.treasuryType) {
         const contract = await getProtocolContract(value);
         updatedParameters[index] = {
           ...updatedParameters[index],

@@ -23,18 +23,15 @@ import { useAccount } from '../../../../../../../../../hooks/useAccount';
 import { useMaxAssetBalance } from '../../../../../../../../../hooks/useMaxAssetBalance';
 import { translations } from '../../../../../../../../../locales/i18n';
 import { ProposalCreationParameter } from '../../../../../../contexts/ProposalContext.types';
-import { PROPOSAL_TREASURY_OPTIONS } from '../../ProposalTreasuryForm.constants';
-import {
-  ProposalTreasuryParameterType,
-  ProposalTreasuryType,
-} from '../../ProposalTreasuryForm.types';
+import { TREASURY_OPTIONS } from '../../TreasuryStep.constants';
+import { TreasuryParameterType, TreasuryType } from '../../TreasuryStep.types';
 
 type ParameterProps = {
   parameter: ProposalCreationParameter;
   parametersLength: number;
   onChange: (
     fieldName: string,
-    value: string | SupportedTokens | ProposalTreasuryParameterType,
+    value: string | SupportedTokens | TreasuryParameterType,
   ) => void;
   onRemove: () => void;
   onError: (error: boolean) => void;
@@ -114,20 +111,20 @@ export const Parameter: FC<ParameterProps> = ({
         }
         labelElement="div"
         className="w-full"
-        dataAttribute="proposal-treasury-treasury-account"
+        dataAttribute="proposal-treasury-account"
       >
         <div className="flex justify-between items-center">
           <Select
             value={
               parameter.parametersStepExtraData?.treasuryType ||
-              ProposalTreasuryType.governorVaultOwner
+              TreasuryType.governorVaultOwner
             }
             onChange={value =>
-              onChange(ProposalTreasuryParameterType.treasuryType, value)
+              onChange(TreasuryParameterType.treasuryType, value)
             }
-            options={PROPOSAL_TREASURY_OPTIONS}
+            options={TREASURY_OPTIONS}
             className="w-full"
-            dataAttribute="proposal-treasury-type"
+            dataAttribute="proposal-treasury-select"
           />
           {parametersLength > 1 && (
             <Button
@@ -154,7 +151,7 @@ export const Parameter: FC<ParameterProps> = ({
         <Input
           value={parameter.parametersStepExtraData?.recipientAddress}
           onChangeText={value =>
-            onChange(ProposalTreasuryParameterType.recipientAddress, value)
+            onChange(TreasuryParameterType.recipientAddress, value)
           }
           dataAttribute="proposal-treasury-recipient-address"
           classNameInput="min-h-10"
@@ -191,9 +188,7 @@ export const Parameter: FC<ParameterProps> = ({
             value={
               parameter.parametersStepExtraData?.token || SupportedTokens.rbtc
             }
-            onChange={value =>
-              onChange(ProposalTreasuryParameterType.token, value)
-            }
+            onChange={value => onChange(TreasuryParameterType.token, value)}
             options={tokenOptions}
             labelRenderer={({ value }) => (
               <AssetRenderer

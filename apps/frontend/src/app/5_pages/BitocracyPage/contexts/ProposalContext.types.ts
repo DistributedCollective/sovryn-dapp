@@ -41,6 +41,7 @@ export type ProposalCreationDetails = {
 export type ParametersStepExtraData = {
   index?: number;
   functionName?: string;
+  parameterName?: string;
   newValue?: string;
 };
 

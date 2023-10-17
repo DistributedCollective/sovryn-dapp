@@ -16,14 +16,7 @@ import { translations } from '../../../../../../../../../locales/i18n';
 import { useProposalContext } from '../../../../../../contexts/NewProposalContext';
 import { ProposalCreationParameter } from '../../../../../../contexts/ProposalContext.types';
 import { PROPOSAL_CONTRACT_OPTIONS } from '../../../../NewProposalForm.constants';
-
-// TODO: Add real parameters
-const parameterOptions = [
-  {
-    value: 'Placeholder',
-    label: 'Placeholder',
-  },
-];
+import { getParameterOptions } from '../../ParametersStep.utils';
 
 type ParameterProps = {
   parameter: ProposalCreationParameter;
@@ -31,6 +24,14 @@ type ParameterProps = {
 
 export const Parameter: FC<ParameterProps> = ({ parameter }) => {
   const { parameters, setParameters } = useProposalContext();
+
+  const parameterOptions = useMemo(
+    () =>
+      getParameterOptions(
+        parameter?.parametersStepExtraData?.functionName || '',
+      ),
+    [parameter?.parametersStepExtraData?.functionName],
+  );
 
   const isCustomContract = useMemo(
     () => parameter?.parametersStepExtraData?.functionName === 'Custom',
@@ -164,10 +165,8 @@ export const Parameter: FC<ParameterProps> = ({ parameter }) => {
           className="mt-6"
         >
           <Select
-            value={'parameter'}
-            onChange={() => {
-              console.log(`test`);
-            }}
+            value={parameter?.parametersStepExtraData?.parameterName || ''}
+            onChange={value => onChangeExtraProperty('parameterName', value)}
             options={parameterOptions}
             className="w-full"
           />

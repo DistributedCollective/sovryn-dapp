@@ -23,11 +23,7 @@ export const ExecutableDetails: FC<ExecutableDetailsProps> = ({
     </Heading>
     <div className="py-1 mt-2 flex flex-col flex-wrap gap-8">
       {parameters.map((parameter, i) => (
-        <ProposalExecutableDetail
-          key={parameter.signature + i}
-          parameter={parameter}
-          index={i}
-        />
+        <ProposalExecutableDetail key={i} parameter={parameter} index={i} />
       ))}
     </div>
   </div>

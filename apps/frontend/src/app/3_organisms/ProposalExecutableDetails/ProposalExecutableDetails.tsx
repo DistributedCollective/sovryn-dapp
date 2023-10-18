@@ -7,7 +7,7 @@ import { Heading } from '@sovryn/ui';
 import { TxIdWithNotification } from '../../2_molecules/TxIdWithNotification/TransactionIdWithNotification';
 import { ProposalCreationParameter } from '../../5_pages/BitocracyPage/contexts/ProposalContext.types';
 import { translations } from '../../../locales/i18n';
-import { renderDetail } from './ProposalExecutableDetails.utils';
+import { ProposalRenderDetail } from './components/ProposalRenderDetail/ProposalRenderDetail';
 
 type ProposalExecutableDetailProps = {
   parameter: ProposalCreationParameter;
@@ -26,33 +26,42 @@ export const ProposalExecutableDetail: FC<ProposalExecutableDetailProps> = ({
     </Heading>
 
     <div className="w-full text-gray-30">
-      {renderDetail(t(pageTranslations.assetName), '-', 'text-right')}
-      {renderDetail(
-        t(pageTranslations.assetAmount),
-        parameter.value || '0',
-        'text-right',
-      )}
-      {renderDetail(t(pageTranslations.assetAddress), '-', 'text-right')}
-      {renderDetail(
-        t(pageTranslations.contractAddress),
-        <TxIdWithNotification
-          href=""
-          value={parameter.target}
-          dataAttribute="proposal-contract-address-id"
-        />,
-        'text-right',
-      )}
-      {renderDetail(t(pageTranslations.recipientAddress), '-', 'text-right')}
-      {renderDetail(
-        t(pageTranslations.functionName),
-        parameter.signature,
-        'break-all text-right',
-      )}
-      {renderDetail(
-        t(pageTranslations.data),
-        parameter.calldata,
-        'break-all text-right',
-      )}
+      <ProposalRenderDetail
+        label={t(pageTranslations.assetName)}
+        content={'-'}
+      />
+      <ProposalRenderDetail
+        label={t(pageTranslations.assetAmount)}
+        content={parameter.value || '0'}
+      />
+      <ProposalRenderDetail
+        label={t(pageTranslations.assetAddress)}
+        content={'-'}
+      />
+      <ProposalRenderDetail
+        label={t(pageTranslations.contractAddress)}
+        content={
+          <TxIdWithNotification
+            href=""
+            value={parameter.target}
+            dataAttribute="proposal-contract-address-id"
+          />
+        }
+      />
+      <ProposalRenderDetail
+        label={t(pageTranslations.recipientAddress)}
+        content={'-'}
+      />
+      <ProposalRenderDetail
+        label={t(pageTranslations.functionName)}
+        content={parameter.signature}
+        className="break-all"
+      />
+      <ProposalRenderDetail
+        label={t(pageTranslations.data)}
+        content={parameter.calldata}
+        className="break-all"
+      />
     </div>
   </div>
 );

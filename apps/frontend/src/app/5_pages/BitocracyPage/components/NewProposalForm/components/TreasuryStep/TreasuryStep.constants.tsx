@@ -42,9 +42,10 @@ export const DEFAULT_PARAMETER: ProposalCreationParameter = {
   value: '0x0',
   signature: '',
   calldata: '0x0',
-  parametersStepExtraData: {
+  treasuryStepExtraData: {
     recipientAddress: '',
     token: SupportedTokens.rbtc,
+    amount: '0',
     index: 1,
   },
 };

@@ -22,6 +22,7 @@ import { isAddress } from '../../../../../../../../3_organisms/StakeForm/compone
 import { useAccount } from '../../../../../../../../../hooks/useAccount';
 import { useMaxAssetBalance } from '../../../../../../../../../hooks/useMaxAssetBalance';
 import { translations } from '../../../../../../../../../locales/i18n';
+import { decimalic } from '../../../../../../../../../utils/math';
 import { useProposalContext } from '../../../../../../contexts/NewProposalContext';
 import { ProposalCreationParameter } from '../../../../../../contexts/ProposalContext.types';
 import { TREASURY_OPTIONS } from '../../TreasuryStep.constants';
@@ -38,7 +39,7 @@ export const Parameter: FC<ParameterProps> = ({ parameter, onError }) => {
   const { parameters, setParameters } = useProposalContext();
   const { account } = useAccount();
   const { balance: userBalance } = useMaxAssetBalance(
-    parameter.parametersStepExtraData?.token || SupportedTokens.rbtc,
+    parameter.treasuryStepExtraData?.token || SupportedTokens.rbtc,
   );
 
   const tokenOptions = useMemo(
@@ -60,27 +61,24 @@ export const Parameter: FC<ParameterProps> = ({ parameter, onError }) => {
 
   const isValidAddress = useMemo(
     () =>
-      isAddress(parameter.parametersStepExtraData?.recipientAddress || '') ||
-      !parameter.parametersStepExtraData?.recipientAddress,
-    [parameter.parametersStepExtraData?.recipientAddress],
+      isAddress(parameter.treasuryStepExtraData?.recipientAddress || '') ||
+      !parameter.treasuryStepExtraData?.recipientAddress,
+    [parameter.treasuryStepExtraData?.recipientAddress],
   );
 
   const errorAddressMessage = useMemo(() => {
-    if (
-      !isValidAddress &&
-      !isAddress(parameter.parametersStepExtraData?.recipientAddress || '')
-    ) {
+    if (!isValidAddress) {
       return t(pageTranslations.invalidRecipientAddress);
     }
     return '';
-  }, [isValidAddress, parameter.parametersStepExtraData?.recipientAddress]);
+  }, [isValidAddress]);
 
   const errorAmountMessage = useMemo(() => {
-    if (Number(parameter.value) > Number(userBalance)) {
+    if (decimalic(parameter?.treasuryStepExtraData?.amount).gt(userBalance)) {
       return t(pageTranslations.invalidAmountError);
     }
     return '';
-  }, [parameter.value, userBalance]);
+  }, [parameter?.treasuryStepExtraData?.amount, userBalance]);
 
   const maximumAmount = useMemo(
     () => (account ? userBalance : 0),
@@ -90,19 +88,19 @@ export const Parameter: FC<ParameterProps> = ({ parameter, onError }) => {
   const handleDeleteClick = useCallback(() => {
     const updatedParameters = parameters.filter(
       item =>
-        item?.parametersStepExtraData?.index !==
-        parameter?.parametersStepExtraData?.index,
+        item?.treasuryStepExtraData?.index !==
+        parameter?.treasuryStepExtraData?.index,
     );
 
     setParameters(updatedParameters);
-  }, [parameter?.parametersStepExtraData?.index, parameters, setParameters]);
+  }, [parameter?.treasuryStepExtraData?.index, parameters, setParameters]);
 
   const onChangeProperty = useCallback(
     (propertyName: string, value: string) => {
       const updatedParameters = parameters.map(item => {
         if (
-          item?.parametersStepExtraData?.index ===
-          parameter?.parametersStepExtraData?.index
+          item?.treasuryStepExtraData?.index ===
+          parameter?.treasuryStepExtraData?.index
         ) {
           return { ...item, [propertyName]: value };
         }
@@ -111,20 +109,20 @@ export const Parameter: FC<ParameterProps> = ({ parameter, onError }) => {
 
       setParameters(updatedParameters);
     },
-    [parameter?.parametersStepExtraData?.index, parameters, setParameters],
+    [parameter?.treasuryStepExtraData?.index, parameters, setParameters],
   );
 
   const onChangeExtraProperty = useCallback(
     (propertyName: string, value: string) => {
       const updatedParameters = parameters.map(item => {
         if (
-          item?.parametersStepExtraData?.index ===
-          parameter?.parametersStepExtraData?.index
+          item?.treasuryStepExtraData?.index ===
+          parameter?.treasuryStepExtraData?.index
         ) {
           return {
             ...item,
-            parametersStepExtraData: {
-              ...item?.parametersStepExtraData,
+            treasuryStepExtraData: {
+              ...item?.treasuryStepExtraData,
               [propertyName]: value,
             },
           };
@@ -134,12 +132,14 @@ export const Parameter: FC<ParameterProps> = ({ parameter, onError }) => {
 
       setParameters(updatedParameters);
     },
-    [parameter?.parametersStepExtraData?.index, parameters, setParameters],
+    [parameter?.treasuryStepExtraData?.index, parameters, setParameters],
   );
 
   useEffect(() => {
-    onError(Number(parameter.value) > Number(userBalance));
-  }, [parameter.value, userBalance, onError]);
+    onError(
+      decimalic(parameter?.treasuryStepExtraData?.amount).gt(userBalance),
+    );
+  }, [parameter?.treasuryStepExtraData?.amount, userBalance, onError]);
 
   return (
     <div className="bg-gray-90 rounded p-3 gap-3 flex flex-col">
@@ -184,7 +184,7 @@ export const Parameter: FC<ParameterProps> = ({ parameter, onError }) => {
         errorLabel={errorAddressMessage}
       >
         <Input
-          value={parameter.parametersStepExtraData?.recipientAddress}
+          value={parameter.treasuryStepExtraData?.recipientAddress}
           onChangeText={value =>
             onChangeExtraProperty(TreasuryParameterType.recipientAddress, value)
           }
@@ -201,10 +201,15 @@ export const Parameter: FC<ParameterProps> = ({ parameter, onError }) => {
       >
         <div className="w-full flex flex-row justify-end mb-1">
           <MaxButton
-            onClick={() => onChangeProperty('value', userBalance.toString())}
+            onClick={() =>
+              onChangeExtraProperty(
+                TreasuryParameterType.amount,
+                userBalance.toString(),
+              )
+            }
             value={maximumAmount}
             token={
-              parameter.parametersStepExtraData?.token || SupportedTokens.rbtc
+              parameter.treasuryStepExtraData?.token || SupportedTokens.rbtc
             }
             dataAttribute="proposal-treasury-max-button"
             label={t(pageTranslations.accountBalance)}
@@ -212,16 +217,17 @@ export const Parameter: FC<ParameterProps> = ({ parameter, onError }) => {
         </div>
         <div className="w-full flex flex-row justify-between items-center">
           <AmountInput
-            value={parameter.value}
-            onChangeText={value => onChangeProperty('value', value)}
+            value={parameter.treasuryStepExtraData?.amount}
+            onChangeText={value =>
+              onChangeExtraProperty(TreasuryParameterType.amount, value)
+            }
             min={0}
             label={t(translations.common.amount)}
             className="w-full flex-grow-0 flex-shrink"
-            placeholder="0"
           />
           <Select
             value={
-              parameter.parametersStepExtraData?.token || SupportedTokens.rbtc
+              parameter.treasuryStepExtraData?.token || SupportedTokens.rbtc
             }
             onChange={value =>
               onChangeExtraProperty(TreasuryParameterType.token, value)

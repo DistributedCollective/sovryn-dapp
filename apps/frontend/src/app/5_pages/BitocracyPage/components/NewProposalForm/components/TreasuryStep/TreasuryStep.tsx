@@ -28,13 +28,10 @@ export const TreasuryStep: FC<TreasuryStepProps> = ({
   console.log('parameters', parameters);
 
   const isValidParameter = useCallback(
-    (parameter: ProposalCreationParameter) => {
-      return (
-        isAddress(parameter?.parametersStepExtraData?.recipientAddress || '') &&
-        Number(parameter.value) > 0 &&
-        !maxAmountError
-      );
-    },
+    (parameter: ProposalCreationParameter) =>
+      isAddress(parameter?.treasuryStepExtraData?.recipientAddress || '') &&
+      Number(parameter?.treasuryStepExtraData?.amount) > 0 &&
+      !maxAmountError,
     [maxAmountError],
   );
 
@@ -45,12 +42,12 @@ export const TreasuryStep: FC<TreasuryStepProps> = ({
 
   const handleAddClick = useCallback(() => {
     const lastParameter = parameters[parameters.length - 1];
-    const nextIndex = (lastParameter?.parametersStepExtraData?.index || 0) + 1;
+    const nextIndex = (lastParameter?.treasuryStepExtraData?.index || 0) + 1;
 
     const newParameter = {
       ...DEFAULT_PARAMETER,
-      parametersStepExtraData: {
-        ...DEFAULT_PARAMETER.parametersStepExtraData,
+      treasuryStepExtraData: {
+        ...DEFAULT_PARAMETER.treasuryStepExtraData,
         index: nextIndex,
       },
     };

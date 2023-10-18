@@ -26,7 +26,6 @@ export const NewProposalForm: FC = () => {
     setGovernor,
     submit,
   } = useProposalContext();
-  const [proposalTreasuryAccount, setProposalTreasuryAccount] = useState('');
   const [isPreview, setIsPreview] = useState(false);
   const [isConfirmButtonDisabled, setIsConfirmButtonDisabled] = useState(true);
 
@@ -42,10 +41,6 @@ export const NewProposalForm: FC = () => {
 
   const handlePreview = useCallback(() => {
     setIsPreview(true);
-  }, []);
-
-  const handleConfirmButtonState = useCallback((value: boolean) => {
-    setIsConfirmButtonDisabled(value);
   }, []);
 
   const handleBack = useCallback(() => {
@@ -72,8 +67,6 @@ export const NewProposalForm: FC = () => {
         setProposalType={setProposalType}
         proposalContract={governor || ''}
         setProposalContract={setGovernor}
-        proposalTreasuryAccount={proposalTreasuryAccount}
-        setProposalTreasuryAccount={setProposalTreasuryAccount}
       />
     );
   } else if (step === ProposalCreationStep.Details) {
@@ -97,7 +90,7 @@ export const NewProposalForm: FC = () => {
       />
     ) : (
       <TreasuryStep
-        updateConfirmButtonState={handleConfirmButtonState}
+        updateConfirmButtonState={setIsConfirmButtonDisabled}
         onPreview={handlePreview}
       />
     );

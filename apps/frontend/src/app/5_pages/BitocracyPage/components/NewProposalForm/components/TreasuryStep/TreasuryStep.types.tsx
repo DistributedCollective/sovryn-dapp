@@ -8,4 +8,5 @@ export enum TreasuryType {
 export enum TreasuryParameterType {
   token = 'token',
   recipientAddress = 'recipientAddress',
+  amount = 'amount',
 }

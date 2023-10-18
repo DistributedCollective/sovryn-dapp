@@ -114,6 +114,7 @@ export const Parameter: FC<ParameterProps> = ({ parameter }) => {
           <Input
             value={parameter.value}
             onChangeText={value => onChangeProperty('value', value)}
+            className="max-w-none"
           />
         </FormGroup>
 
@@ -124,6 +125,7 @@ export const Parameter: FC<ParameterProps> = ({ parameter }) => {
           <Input
             value={parameter.signature}
             onChangeText={value => onChangeProperty('signature', value)}
+            className="max-w-none"
           />
         </FormGroup>
 
@@ -134,6 +136,7 @@ export const Parameter: FC<ParameterProps> = ({ parameter }) => {
           <Input
             value={parameter.calldata}
             onChangeText={value => onChangeProperty('calldata', value)}
+            className="max-w-none"
           />
         </FormGroup>
       </>
@@ -156,6 +159,7 @@ export const Parameter: FC<ParameterProps> = ({ parameter }) => {
           <Input
             value={parameter.target}
             onChangeText={value => onChangeProperty('target', value)}
+            className="max-w-none"
           />
         </FormGroup>
 
@@ -175,9 +179,11 @@ export const Parameter: FC<ParameterProps> = ({ parameter }) => {
             options={contractOptions}
             className="w-full"
           />
-          <div onClick={handleDeleteClick} className="cursor-pointer ml-4">
-            <Icon icon={IconNames.X_MARK} size={12} />
-          </div>
+          {parameters.length > 1 && (
+            <div onClick={handleDeleteClick} className="cursor-pointer ml-4">
+              <Icon icon={IconNames.X_MARK} size={12} />
+            </div>
+          )}
         </div>
       </FormGroup>
 
@@ -207,10 +213,10 @@ export const Parameter: FC<ParameterProps> = ({ parameter }) => {
                 />
               </SimpleTable>
 
-              <div className="flex items-center justify-between mt-4">
-                <div className="whitespace-nowrap mr-4">
-                  {t(translations.proposalPage.newValue)}
-                </div>
+              <FormGroup
+                label={t(translations.proposalPage.newValue)}
+                className="mt-4"
+              >
                 <Input
                   value={parameter.parametersStepExtraData?.newValue}
                   onChangeText={value =>
@@ -218,7 +224,7 @@ export const Parameter: FC<ParameterProps> = ({ parameter }) => {
                   }
                   className="max-w-none"
                 />
-              </div>
+              </FormGroup>
             </>
           )}
         </FormGroup>

@@ -60,10 +60,6 @@ export const PROPOSAL_CONTRACT_OPTIONS = [
     value: ProposalContract.iXUSD,
     label: ProposalContract.iXUSD,
   },
-  {
-    value: t(translations.common.custom),
-    label: t(translations.common.custom),
-  },
 ];
 
 export const PROPOSAL_TREASURY_OPTIONS = [

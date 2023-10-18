@@ -16,8 +16,11 @@ import { translations } from '../../../../../../../../../locales/i18n';
 import { useProposalContext } from '../../../../../../contexts/NewProposalContext';
 import { ProposalCreationParameter } from '../../../../../../contexts/ProposalContext.types';
 import { PROPOSAL_CONTRACT_OPTIONS } from '../../../../NewProposalForm.constants';
+import { CUSTOM_OPTION } from '../../ParametersStep.constants';
 import { getParameterOptions } from '../../ParametersStep.utils';
 import { useGetCurrentParameterValue } from './hooks/useGetCurrentParameterValue';
+
+const contractOptions = [...PROPOSAL_CONTRACT_OPTIONS, ...CUSTOM_OPTION];
 
 type ParameterProps = {
   parameter: ProposalCreationParameter;
@@ -32,16 +35,23 @@ export const Parameter: FC<ParameterProps> = ({ parameter }) => {
   );
 
   const parameterOptions = useMemo(
-    () =>
-      getParameterOptions(
+    () => [
+      ...getParameterOptions(
         parameter?.parametersStepExtraData?.functionName || '',
       ),
+      ...CUSTOM_OPTION,
+    ],
     [parameter?.parametersStepExtraData?.functionName],
   );
 
   const isCustomContract = useMemo(
-    () => parameter?.parametersStepExtraData?.functionName === 'Custom',
+    () => parameter?.parametersStepExtraData?.functionName === 'custom',
     [parameter?.parametersStepExtraData?.functionName],
+  );
+
+  const isCustomParameter = useMemo(
+    () => parameter?.parametersStepExtraData?.parameterName === 'custom',
+    [parameter?.parametersStepExtraData?.parameterName],
   );
 
   const onChangeProperty = useCallback(
@@ -94,19 +104,9 @@ export const Parameter: FC<ParameterProps> = ({ parameter }) => {
     [parameter?.parametersStepExtraData?.index, parameters, setParameters],
   );
 
-  const customContractSection = useMemo(
+  const customParameterSection = useMemo(
     () => (
       <>
-        <FormGroup
-          label={t(translations.proposalPage.customContract.address)}
-          className="mt-4"
-        >
-          <Input
-            value={parameter.target}
-            onChangeText={value => onChangeProperty('target', value)}
-          />
-        </FormGroup>
-
         <FormGroup
           label={t(translations.proposalPage.customContract.value)}
           className="mt-4"
@@ -142,9 +142,27 @@ export const Parameter: FC<ParameterProps> = ({ parameter }) => {
       onChangeProperty,
       parameter.calldata,
       parameter.signature,
-      parameter.target,
       parameter.value,
     ],
+  );
+
+  const customContractSection = useMemo(
+    () => (
+      <>
+        <FormGroup
+          label={t(translations.proposalPage.customContract.address)}
+          className="mt-4"
+        >
+          <Input
+            value={parameter.target}
+            onChangeText={value => onChangeProperty('target', value)}
+          />
+        </FormGroup>
+
+        {customParameterSection}
+      </>
+    ),
+    [customParameterSection, onChangeProperty, parameter.target],
   );
 
   return (
@@ -154,7 +172,7 @@ export const Parameter: FC<ParameterProps> = ({ parameter }) => {
           <Select
             value={parameter?.parametersStepExtraData?.functionName || ''}
             onChange={value => onChangeExtraProperty('functionName', value)}
-            options={PROPOSAL_CONTRACT_OPTIONS}
+            options={contractOptions}
             className="w-full"
           />
           <div onClick={handleDeleteClick} className="cursor-pointer ml-4">
@@ -177,24 +195,32 @@ export const Parameter: FC<ParameterProps> = ({ parameter }) => {
             className="w-full"
           />
 
-          <SimpleTable className="mt-8">
-            <SimpleTableRow
-              label={t(translations.proposalPage.currentValue)}
-              value={parameterValue}
-              className="flex justify-between"
-            />
-          </SimpleTable>
+          {isCustomParameter ? (
+            customParameterSection
+          ) : (
+            <>
+              <SimpleTable className="mt-8">
+                <SimpleTableRow
+                  label={t(translations.proposalPage.currentValue)}
+                  value={parameterValue}
+                  className="flex justify-between"
+                />
+              </SimpleTable>
 
-          <div className="flex items-center justify-between mt-4">
-            <div className="whitespace-nowrap mr-4">
-              {t(translations.proposalPage.newValue)}
-            </div>
-            <Input
-              value={parameter.parametersStepExtraData?.newValue}
-              onChangeText={value => onChangeExtraProperty('newValue', value)}
-              className="max-w-none"
-            />
-          </div>
+              <div className="flex items-center justify-between mt-4">
+                <div className="whitespace-nowrap mr-4">
+                  {t(translations.proposalPage.newValue)}
+                </div>
+                <Input
+                  value={parameter.parametersStepExtraData?.newValue}
+                  onChangeText={value =>
+                    onChangeExtraProperty('newValue', value)
+                  }
+                  className="max-w-none"
+                />
+              </div>
+            </>
+          )}
         </FormGroup>
       )}
     </div>

@@ -1,3 +1,7 @@
+import { t } from 'i18next';
+
+import { translations } from '../../../../../../../locales/i18n';
+
 export const SOVRYN_PROTOCOL_OPTIONS = [
   {
     value: 'getTradingRebateRewardsBasisPoint',
@@ -70,5 +74,12 @@ export const LOAN_TOKEN_OPTIONS = [
   {
     value: 'paused',
     label: 'paused',
+  },
+];
+
+export const CUSTOM_OPTION = [
+  {
+    value: 'custom',
+    label: t(translations.common.custom),
   },
 ];

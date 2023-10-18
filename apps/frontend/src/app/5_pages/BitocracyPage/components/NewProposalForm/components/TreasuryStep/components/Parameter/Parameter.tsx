@@ -27,6 +27,11 @@ import { useProposalContext } from '../../../../../../contexts/NewProposalContex
 import { ProposalCreationParameter } from '../../../../../../contexts/ProposalContext.types';
 import { TREASURY_OPTIONS } from '../../TreasuryStep.constants';
 import { TreasuryParameterType } from '../../TreasuryStep.types';
+import {
+  renderCalldata,
+  renderSignature,
+  isValidParameter,
+} from './Parameter.utils';
 
 type ParameterProps = {
   parameter: ProposalCreationParameter;
@@ -59,12 +64,11 @@ export const Parameter: FC<ParameterProps> = ({ parameter, onError }) => {
     [],
   );
 
-  const isValidAddress = useMemo(
-    () =>
-      isAddress(parameter.treasuryStepExtraData?.recipientAddress || '') ||
-      !parameter.treasuryStepExtraData?.recipientAddress,
-    [parameter.treasuryStepExtraData?.recipientAddress],
-  );
+  const isValidAddress = useMemo(() => {
+    const recipientAddress =
+      parameter.treasuryStepExtraData?.recipientAddress || '';
+    return recipientAddress === '' || !!isAddress(recipientAddress);
+  }, [parameter.treasuryStepExtraData?.recipientAddress]);
 
   const errorAddressMessage = useMemo(() => {
     if (!isValidAddress) {
@@ -134,6 +138,23 @@ export const Parameter: FC<ParameterProps> = ({ parameter, onError }) => {
     },
     [parameter?.treasuryStepExtraData?.index, parameters, setParameters],
   );
+
+  useEffect(() => {
+    const { token, amount, recipientAddress } =
+      parameter.treasuryStepExtraData || {};
+    if (token) {
+      const signature = renderSignature(token);
+      if (parameter.signature !== signature) {
+        onChangeProperty('signature', signature);
+      }
+    }
+    if (isValidParameter(parameter, isValidAddress)) {
+      const calldata = renderCalldata(recipientAddress || '', amount || '0');
+      if (parameter.calldata !== calldata) {
+        onChangeProperty('calldata', calldata);
+      }
+    }
+  }, [onChangeProperty, parameter, isValidAddress]);
 
   useEffect(() => {
     onError(
@@ -242,6 +263,7 @@ export const Parameter: FC<ParameterProps> = ({ parameter, onError }) => {
               />
             )}
             className="min-w-[6.7rem] sm:ml-0 ml-3"
+            menuClassName="max-h-72 sm:max-h-56"
             dataAttribute="proposal-treasury-token"
           />
         </div>

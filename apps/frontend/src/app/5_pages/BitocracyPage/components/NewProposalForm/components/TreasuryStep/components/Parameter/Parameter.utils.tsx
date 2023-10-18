@@ -1,0 +1,36 @@
+import { isValidChecksumAddress } from 'ethereumjs-util';
+import { ethers } from 'ethers';
+
+import { SupportedTokens } from '@sovryn/contracts';
+
+import { toWei } from '../../../../../../../../../utils/math';
+import { ProposalCreationParameter } from '../../../../../../contexts/ProposalContext.types';
+
+export const renderCalldata = (recipientAddress: string, amount: string) => {
+  const coder = new ethers.utils.AbiCoder();
+  return coder.encode(
+    ['address', 'uint256'],
+    [recipientAddress, toWei(amount)],
+  );
+};
+
+export const renderSignature = (token: string) => {
+  return token === SupportedTokens.rbtc
+    ? 'transferRbtc(address,uint256)'
+    : 'transferTokens(address,address,uint256)';
+};
+
+export const isValidParameter = (
+  parameter: ProposalCreationParameter,
+  isValidAddress: boolean,
+) => {
+  const { token, amount, recipientAddress } =
+    parameter.treasuryStepExtraData || {};
+  return (
+    token &&
+    amount &&
+    isValidAddress &&
+    recipientAddress &&
+    isValidChecksumAddress(recipientAddress)
+  );
+};

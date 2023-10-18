@@ -32,9 +32,15 @@ export const getContractDetails = (
     case ProposalContract.Staking:
       return { contractName: 'staking', contractGroup: 'protocol' };
     case ProposalContract.LoanTokenLogicLM:
-      return { contractName: 'staking', contractGroup: 'protocol' }; // TODO: Add the address and the ABI, this is just a placeholder
+      return {
+        contractName: 'loanTokenLogicBeaconLM',
+        contractGroup: 'protocol',
+      };
     case ProposalContract.LoanTokenLogicWRBTC:
-      return { contractName: 'rbtc', contractGroup: 'loanTokens' }; // TODO: Add the address and the ABI, this is just a placeholder
+      return {
+        contractName: 'loanTokenLogicBeaconWrbtc',
+        contractGroup: 'protocol',
+      };
     case ProposalContract.iDOC:
       return { contractName: 'doc', contractGroup: 'loanTokens' };
     case ProposalContract.iUSDT:

@@ -20,13 +20,13 @@ import { AssetRenderer } from '../../../../../../../../2_molecules/AssetRenderer
 import { MaxButton } from '../../../../../../../../2_molecules/MaxButton/MaxButton';
 import { isAddress } from '../../../../../../../../3_organisms/StakeForm/components/AdjustStakeForm/AdjustStakeForm.utils';
 import { useAccount } from '../../../../../../../../../hooks/useAccount';
-import { useMaxAssetBalance } from '../../../../../../../../../hooks/useMaxAssetBalance';
 import { translations } from '../../../../../../../../../locales/i18n';
 import { decimalic } from '../../../../../../../../../utils/math';
 import { useProposalContext } from '../../../../../../contexts/NewProposalContext';
 import { ProposalCreationParameter } from '../../../../../../contexts/ProposalContext.types';
 import { TREASURY_OPTIONS } from '../../TreasuryStep.constants';
 import { TreasuryParameterType } from '../../TreasuryStep.types';
+import { useGetTreasuryAssetBalance } from '../../hooks/useGetTreasuryAssetBalance';
 import {
   renderCalldata,
   renderSignature,
@@ -43,8 +43,9 @@ const pageTranslations = translations.bitocracyPage.proposalTreasuryForm;
 export const Parameter: FC<ParameterProps> = ({ parameter, onError }) => {
   const { parameters, setParameters } = useProposalContext();
   const { account } = useAccount();
-  const { balance: userBalance } = useMaxAssetBalance(
+  const { assetBalance } = useGetTreasuryAssetBalance(
     parameter.treasuryStepExtraData?.token || SupportedTokens.rbtc,
+    parameter.target,
   );
 
   const tokenOptions = useMemo(
@@ -78,15 +79,15 @@ export const Parameter: FC<ParameterProps> = ({ parameter, onError }) => {
   }, [isValidAddress]);
 
   const errorAmountMessage = useMemo(() => {
-    if (decimalic(parameter?.treasuryStepExtraData?.amount).gt(userBalance)) {
+    if (decimalic(parameter?.treasuryStepExtraData?.amount).gt(assetBalance)) {
       return t(pageTranslations.invalidAmountError);
     }
     return '';
-  }, [parameter?.treasuryStepExtraData?.amount, userBalance]);
+  }, [parameter?.treasuryStepExtraData?.amount, assetBalance]);
 
   const maximumAmount = useMemo(
-    () => (account ? userBalance : 0),
-    [userBalance, account],
+    () => (account ? assetBalance : 0),
+    [assetBalance, account],
   );
 
   const handleDeleteClick = useCallback(() => {
@@ -158,9 +159,9 @@ export const Parameter: FC<ParameterProps> = ({ parameter, onError }) => {
 
   useEffect(() => {
     onError(
-      decimalic(parameter?.treasuryStepExtraData?.amount).gt(userBalance),
+      decimalic(parameter?.treasuryStepExtraData?.amount).gt(assetBalance),
     );
-  }, [parameter?.treasuryStepExtraData?.amount, userBalance, onError]);
+  }, [parameter?.treasuryStepExtraData?.amount, assetBalance, onError]);
 
   return (
     <div className="bg-gray-90 rounded p-3 gap-3 flex flex-col">
@@ -225,7 +226,7 @@ export const Parameter: FC<ParameterProps> = ({ parameter, onError }) => {
             onClick={() =>
               onChangeExtraProperty(
                 TreasuryParameterType.amount,
-                userBalance.toString(),
+                assetBalance.toString(),
               )
             }
             value={maximumAmount}

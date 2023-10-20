@@ -1,12 +1,16 @@
-import React, { FC, useCallback, useMemo } from 'react';
+import React, { FC, useCallback, useEffect, useMemo } from 'react';
 
 import { t } from 'i18next';
 
 import {
+  Button,
+  ButtonStyle,
   FormGroup,
   Icon,
   IconNames,
   Input,
+  Paragraph,
+  ParagraphSize,
   Select,
   SimpleTable,
   SimpleTableRow,
@@ -17,7 +21,12 @@ import { useProposalContext } from '../../../../../../contexts/NewProposalContex
 import { ProposalCreationParameter } from '../../../../../../contexts/ProposalContext.types';
 import { PROPOSAL_CONTRACT_OPTIONS } from '../../../../NewProposalForm.constants';
 import { CUSTOM_OPTION } from '../../ParametersStep.constants';
-import { getParameterOptions } from '../../ParametersStep.utils';
+import {
+  getParameterOptions,
+  isValidParameter,
+  renderCalldata,
+  renderSignature,
+} from '../../ParametersStep.utils';
 import { useGetCurrentParameterValue } from './hooks/useGetCurrentParameterValue';
 
 const contractOptions = [...PROPOSAL_CONTRACT_OPTIONS, ...CUSTOM_OPTION];
@@ -27,7 +36,9 @@ type ParameterProps = {
 };
 
 export const Parameter: FC<ParameterProps> = ({ parameter }) => {
-  const { parameters, setParameters } = useProposalContext();
+  const { parameters, setParameters, governor } = useProposalContext();
+
+  console.log('parameter', parameters);
 
   const parameterValue = useGetCurrentParameterValue(
     parameter?.parametersStepExtraData?.parameterName || '',
@@ -106,40 +117,55 @@ export const Parameter: FC<ParameterProps> = ({ parameter }) => {
 
   const customParameterSection = useMemo(
     () => (
-      <>
+      <div className="gap-3 flex flex-col">
         <FormGroup
-          label={t(translations.proposalPage.customContract.value)}
-          className="mt-4"
+          label={
+            <Paragraph size={ParagraphSize.base} className="font-medium">
+              {t(translations.proposalPage.customContract.value)}
+            </Paragraph>
+          }
+          labelElement="div"
         >
           <Input
             value={parameter.value}
             onChangeText={value => onChangeProperty('value', value)}
             className="max-w-none"
+            classNameInput="h-10"
           />
         </FormGroup>
 
         <FormGroup
-          label={t(translations.proposalPage.customContract.signature)}
-          className="mt-4"
+          label={
+            <Paragraph size={ParagraphSize.base} className="font-medium">
+              {t(translations.proposalPage.customContract.signature)}
+            </Paragraph>
+          }
+          labelElement="div"
         >
           <Input
             value={parameter.signature}
             onChangeText={value => onChangeProperty('signature', value)}
             className="max-w-none"
+            classNameInput="h-10"
           />
         </FormGroup>
 
         <FormGroup
-          label={t(translations.proposalPage.customContract.calldata)}
-          className="mt-4"
+          label={
+            <Paragraph size={ParagraphSize.base} className="font-medium">
+              {t(translations.proposalPage.customContract.calldata)}
+            </Paragraph>
+          }
+          labelElement="div"
         >
           <Input
             value={parameter.calldata}
             onChangeText={value => onChangeProperty('calldata', value)}
             className="max-w-none"
+            classNameInput="h-10"
           />
         </FormGroup>
-      </>
+      </div>
     ),
     [
       onChangeProperty,
@@ -151,27 +177,61 @@ export const Parameter: FC<ParameterProps> = ({ parameter }) => {
 
   const customContractSection = useMemo(
     () => (
-      <>
+      <div className="gap-3 flex flex-col">
         <FormGroup
-          label={t(translations.proposalPage.customContract.address)}
-          className="mt-4"
+          label={
+            <Paragraph size={ParagraphSize.base} className="font-medium">
+              {t(translations.proposalPage.customContract.address)}
+            </Paragraph>
+          }
+          labelElement="div"
         >
           <Input
             value={parameter.target}
             onChangeText={value => onChangeProperty('target', value)}
             className="max-w-none"
+            classNameInput="h-10"
           />
         </FormGroup>
 
         {customParameterSection}
-      </>
+      </div>
     ),
     [customParameterSection, onChangeProperty, parameter.target],
   );
 
+  useEffect(() => {
+    const { functionName, newValue } = parameter.parametersStepExtraData || {};
+    const customContract =
+      parameter?.parametersStepExtraData?.functionName === 'custom';
+    if (
+      functionName &&
+      !customContract &&
+      parameter.parametersStepExtraData?.parameterName !== 'custom'
+    ) {
+      const signature = renderSignature(functionName);
+      if (parameter.signature !== signature) {
+        onChangeProperty('signature', signature);
+      }
+    }
+    if (isValidParameter(parameter) && functionName && !customContract) {
+      const calldata = renderCalldata(functionName, newValue || parameterValue);
+      if (parameter.calldata !== calldata) {
+        onChangeProperty('calldata', calldata);
+      }
+    }
+  }, [onChangeProperty, parameter, governor, parameterValue]);
+
   return (
-    <div className="p-3 mt-4 rounded bg-gray-90">
-      <FormGroup label={t(translations.proposalPage.contract)}>
+    <div className="p-3 rounded bg-gray-90 gap-6 flex flex-col">
+      <FormGroup
+        label={
+          <Paragraph size={ParagraphSize.base} className="font-medium">
+            {t(translations.proposalPage.contract)}
+          </Paragraph>
+        }
+        labelElement="div"
+      >
         <div className="flex items-center">
           <Select
             value={parameter?.parametersStepExtraData?.functionName || ''}
@@ -180,9 +240,12 @@ export const Parameter: FC<ParameterProps> = ({ parameter }) => {
             className="w-full"
           />
           {parameters.length > 1 && (
-            <div onClick={handleDeleteClick} className="cursor-pointer ml-4">
-              <Icon icon={IconNames.X_MARK} size={12} />
-            </div>
+            <Button
+              onClick={handleDeleteClick}
+              text={<Icon className="mx-4" icon={IconNames.X_MARK} />}
+              style={ButtonStyle.ghost}
+              className="text-sov-white ml-2 opacity-80 hover:opacity-100"
+            />
           )}
         </div>
       </FormGroup>
@@ -191,21 +254,25 @@ export const Parameter: FC<ParameterProps> = ({ parameter }) => {
         customContractSection
       ) : (
         <FormGroup
-          label={t(translations.proposalPage.parameter)}
-          className="mt-6"
+          label={
+            <Paragraph size={ParagraphSize.base} className="font-medium">
+              {t(translations.proposalPage.parameter)}
+            </Paragraph>
+          }
+          labelElement="div"
         >
           <Select
             value={parameter?.parametersStepExtraData?.parameterName || ''}
             onChange={value => onChangeExtraProperty('parameterName', value)}
             options={parameterOptions}
-            className="w-full"
+            className="w-full mb-6"
           />
 
           {isCustomParameter ? (
             customParameterSection
           ) : (
-            <>
-              <SimpleTable className="mt-8">
+            <div className="gap-6 flex flex-col mt-6">
+              <SimpleTable className="min-h-10 justify-center">
                 <SimpleTableRow
                   label={t(translations.proposalPage.currentValue)}
                   value={parameterValue}
@@ -214,8 +281,12 @@ export const Parameter: FC<ParameterProps> = ({ parameter }) => {
               </SimpleTable>
 
               <FormGroup
-                label={t(translations.proposalPage.newValue)}
-                className="mt-4"
+                label={
+                  <Paragraph size={ParagraphSize.base} className="font-medium">
+                    {t(translations.proposalPage.newValue)}
+                  </Paragraph>
+                }
+                labelElement="div"
               >
                 <Input
                   value={parameter.parametersStepExtraData?.newValue}
@@ -223,9 +294,10 @@ export const Parameter: FC<ParameterProps> = ({ parameter }) => {
                     onChangeExtraProperty('newValue', value)
                   }
                   className="max-w-none"
+                  classNameInput="h-10"
                 />
               </FormGroup>
-            </>
+            </div>
           )}
         </FormGroup>
       )}

@@ -703,7 +703,8 @@
         "eligibleVote": "Stake SOV to be eligible to vote on future proposals",
         "actions": {
             "queue": "Queue for execution",
-            "execute": "Execute proposal"
+            "execute": "Execute proposal",
+            "add": "Add"
         },
         "currentValue": "Current value",
         "newValue": "New value",

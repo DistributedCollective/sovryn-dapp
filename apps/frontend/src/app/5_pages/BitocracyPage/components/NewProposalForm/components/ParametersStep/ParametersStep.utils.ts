@@ -1,3 +1,6 @@
+import { ethers } from 'ethers';
+
+import { ProposalCreationParameter } from '../../../../contexts/ProposalContext.types';
 import { ProposalContract } from '../../NewProposalForm.types';
 import {
   LOAN_TOKEN_LOGIC_LM_OPTIONS,
@@ -52,4 +55,38 @@ export const getContractDetails = (
     default:
       return { contractName: 'xusd', contractGroup: 'loanTokens' };
   }
+};
+
+export const renderCalldata = (contract: string, value: any) => {
+  const coder = new ethers.utils.AbiCoder();
+  let encodedValue;
+
+  if (typeof value === 'number') {
+    // Encode as uint256 for numbers
+    encodedValue = coder.encode(['address', 'uint256'], [contract, value]);
+  } else if (typeof value === 'boolean') {
+    // Encode as bool for booleans
+    encodedValue = coder.encode(['address', 'bool'], [contract, value]);
+  } else if (typeof value === 'string') {
+    // Encode as bytes for strings
+    const utf8Bytes = ethers.utils.toUtf8Bytes(contract);
+    encodedValue = coder.encode(['address', 'bytes'], [contract, utf8Bytes]);
+  } else {
+    throw new Error('Unsupported value type');
+  }
+
+  return encodedValue;
+};
+
+export const renderSignature = (functionName: string) =>
+  `${functionName}(address,uint256)`;
+
+export const isValidParameter = (parameter: ProposalCreationParameter) => {
+  const { functionName, parameterName, newValue } =
+    parameter.parametersStepExtraData || {};
+  let isCustomParamValid = true;
+  if (functionName === 'custom' && parameter.target === '') {
+    isCustomParamValid = false;
+  }
+  return functionName && parameterName && newValue && isCustomParamValid;
 };

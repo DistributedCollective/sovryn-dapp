@@ -1,5 +1,5 @@
 export enum ProposalContract {
-  SovrynProtocol = 'Sovryn Protocol',
+  SovrynProtocol = 'sovrynProtocol',
   Staking = 'Staking',
   LoanTokenLogicLM = 'LoanTokenLogicLM',
   LoanTokenLogicWRBTC = 'LoanTokenLogicWRBTC',

@@ -1,8 +1,4 @@
-import React, { FC, useCallback, useEffect } from 'react';
-
-import { getProtocolContract } from '@sovryn/contracts';
-
-import { defaultChainId } from '../../../../../config/chains';
+import React, { FC, useCallback } from 'react';
 
 import { useProposalContext } from '../../contexts/NewProposalContext';
 import {
@@ -22,19 +18,8 @@ export const NewProposalForm: FC = () => {
     setType: setProposalType,
     details,
     setDetails,
-    setGovernor,
     submit,
   } = useProposalContext();
-
-  // todo: these should be implemented in their own components.
-  useEffect(() => {
-    Promise.all([
-      getProtocolContract('governorOwner', defaultChainId),
-      getProtocolContract('governorAdmin', defaultChainId),
-    ]).then(([owner, admin]) => {
-      setGovernor(owner.address);
-    });
-  }, [setDetails, setGovernor]);
 
   const handlePreview = useCallback(() => {
     // todo: also pass current step to know which step to go back to.
@@ -74,7 +59,10 @@ export const NewProposalForm: FC = () => {
     return <PreviewProposalDialog />;
   } else if (step === ProposalCreationStep.Parameters) {
     return (
-      <ParametersStep onBack={() => setStep(ProposalCreationStep.Details)} />
+      <ParametersStep
+        onBack={() => setStep(ProposalCreationStep.Details)}
+        onPreview={handlePreview}
+      />
     );
   } else {
     return null;

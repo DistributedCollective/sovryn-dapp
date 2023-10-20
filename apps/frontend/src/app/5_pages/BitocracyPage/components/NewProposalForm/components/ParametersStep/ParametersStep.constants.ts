@@ -1,6 +1,8 @@
 import { t } from 'i18next';
 
 import { translations } from '../../../../../../../locales/i18n';
+import { ProposalCreationParameter } from '../../../../contexts/ProposalContext.types';
+import { ProposalContract } from '../../NewProposalForm.types';
 
 export const SOVRYN_PROTOCOL_OPTIONS = [
   {
@@ -83,3 +85,15 @@ export const CUSTOM_OPTION = [
     label: t(translations.common.custom),
   },
 ];
+
+export const DEFAULT_PARAMETER: ProposalCreationParameter = {
+  target: '',
+  value: '0x0',
+  signature: '',
+  calldata: '0x0',
+  parametersStepExtraData: {
+    functionName: ProposalContract.SovrynProtocol,
+    newValue: '',
+    index: 1,
+  },
+};

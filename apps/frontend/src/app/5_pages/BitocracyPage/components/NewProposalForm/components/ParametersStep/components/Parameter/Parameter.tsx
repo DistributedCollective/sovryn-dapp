@@ -38,8 +38,6 @@ type ParameterProps = {
 export const Parameter: FC<ParameterProps> = ({ parameter }) => {
   const { parameters, setParameters, governor } = useProposalContext();
 
-  console.log('parameter', parameters);
-
   const { parameterValue, contractAddress } = useGetCurrentParameterValue(
     parameter?.parametersStepExtraData?.parameterName || '',
     parameter?.parametersStepExtraData?.functionName || '',

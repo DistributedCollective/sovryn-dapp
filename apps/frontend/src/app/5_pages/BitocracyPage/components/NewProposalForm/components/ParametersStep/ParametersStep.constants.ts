@@ -95,5 +95,6 @@ export const DEFAULT_PARAMETER: ProposalCreationParameter = {
     functionName: ProposalContract.SovrynProtocol,
     newValue: '',
     index: 1,
+    parameterName: '',
   },
 };

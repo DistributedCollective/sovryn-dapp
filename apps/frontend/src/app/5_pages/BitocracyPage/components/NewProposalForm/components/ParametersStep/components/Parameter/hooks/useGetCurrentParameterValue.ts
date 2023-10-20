@@ -13,6 +13,7 @@ export const useGetCurrentParameterValue = (
   contract: string,
 ) => {
   const [parameterValue, setParameterValue] = useState('');
+  const [contractAddress, setContractAddress] = useState('');
 
   const { contractName, contractGroup } = useMemo(
     () => getContractDetails(contract),
@@ -25,7 +26,9 @@ export const useGetCurrentParameterValue = (
   );
 
   const fetchParameterValue = useCallback(async () => {
-    if (!loadedContract || !parameter || !contract) {
+    if (!loadedContract || !parameter || parameter === 'custom' || !contract) {
+      setContractAddress('');
+      setParameterValue('');
       return;
     }
 
@@ -37,6 +40,7 @@ export const useGetCurrentParameterValue = (
         );
 
         if (parameterValue !== null || parameterValue !== undefined) {
+          setContractAddress(loadedContract.address);
           if (typeof parameterValue === 'object') {
             setParameterValue(BigNumber.from(parameterValue).toString());
           } else {
@@ -47,6 +51,8 @@ export const useGetCurrentParameterValue = (
         console.error(
           `Function '${parameter}' does not exist on the contract.`,
         );
+        setContractAddress('');
+        setParameterValue('');
       }
     } catch (error) {
       console.error(`Error fetching parameter value: ${error}`);
@@ -57,5 +63,5 @@ export const useGetCurrentParameterValue = (
     fetchParameterValue();
   }, [fetchParameterValue]);
 
-  return parameterValue;
+  return { parameterValue, contractAddress };
 };

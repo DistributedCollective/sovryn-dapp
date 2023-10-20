@@ -40,7 +40,7 @@ export const Parameter: FC<ParameterProps> = ({ parameter }) => {
 
   console.log('parameter', parameters);
 
-  const parameterValue = useGetCurrentParameterValue(
+  const { parameterValue, contractAddress } = useGetCurrentParameterValue(
     parameter?.parametersStepExtraData?.parameterName || '',
     parameter?.parametersStepExtraData?.functionName || '',
   );
@@ -65,23 +65,6 @@ export const Parameter: FC<ParameterProps> = ({ parameter }) => {
     [parameter?.parametersStepExtraData?.parameterName],
   );
 
-  const onChangeProperty = useCallback(
-    (propertyName: string, value: string) => {
-      const updatedParameters = parameters.map(item => {
-        if (
-          item?.parametersStepExtraData?.index ===
-          parameter?.parametersStepExtraData?.index
-        ) {
-          return { ...item, [propertyName]: value };
-        }
-        return item;
-      });
-
-      setParameters(updatedParameters);
-    },
-    [parameter?.parametersStepExtraData?.index, parameters, setParameters],
-  );
-
   const handleDeleteClick = useCallback(() => {
     const updatedParameters = parameters.filter(
       item =>
@@ -92,8 +75,8 @@ export const Parameter: FC<ParameterProps> = ({ parameter }) => {
     setParameters(updatedParameters);
   }, [parameter?.parametersStepExtraData?.index, parameters, setParameters]);
 
-  const onChangeExtraProperty = useCallback(
-    (propertyName: string, value: string) => {
+  const updateParameters = useCallback(
+    updatedProperties => {
       const updatedParameters = parameters.map(item => {
         if (
           item?.parametersStepExtraData?.index ===
@@ -101,10 +84,7 @@ export const Parameter: FC<ParameterProps> = ({ parameter }) => {
         ) {
           return {
             ...item,
-            parametersStepExtraData: {
-              ...item?.parametersStepExtraData,
-              [propertyName]: value,
-            },
+            ...updatedProperties,
           };
         }
         return item;
@@ -113,6 +93,36 @@ export const Parameter: FC<ParameterProps> = ({ parameter }) => {
       setParameters(updatedParameters);
     },
     [parameter?.parametersStepExtraData?.index, parameters, setParameters],
+  );
+
+  const onChangeProperty = useCallback(
+    (propertyName: string, value: string) => {
+      updateParameters({ [propertyName]: value });
+    },
+    [updateParameters],
+  );
+
+  const onChangeExtraProperty = useCallback(
+    (propertyName: string, value: string) => {
+      if (propertyName === 'functionName') {
+        updateParameters({
+          parametersStepExtraData: {
+            ...parameter.parametersStepExtraData,
+            [propertyName]: value,
+            parameterName: '',
+            newValue: '',
+          },
+        });
+      } else {
+        updateParameters({
+          parametersStepExtraData: {
+            ...parameter.parametersStepExtraData,
+            [propertyName]: value,
+          },
+        });
+      }
+    },
+    [updateParameters, parameter],
   );
 
   const customParameterSection = useMemo(
@@ -201,26 +211,29 @@ export const Parameter: FC<ParameterProps> = ({ parameter }) => {
   );
 
   useEffect(() => {
-    const { functionName, newValue } = parameter.parametersStepExtraData || {};
-    const customContract =
-      parameter?.parametersStepExtraData?.functionName === 'custom';
-    if (
-      functionName &&
-      !customContract &&
-      parameter.parametersStepExtraData?.parameterName !== 'custom'
-    ) {
+    const { functionName, newValue, parameterName } =
+      parameter.parametersStepExtraData || {};
+    const customContract = functionName === 'custom';
+    const customParameter = parameterName === 'custom';
+    if (functionName && !customContract && !customParameter) {
       const signature = renderSignature(functionName);
       if (parameter.signature !== signature) {
         onChangeProperty('signature', signature);
       }
     }
-    if (isValidParameter(parameter) && functionName && !customContract) {
-      const calldata = renderCalldata(functionName, newValue || parameterValue);
+    if (
+      isValidParameter(parameter) &&
+      functionName &&
+      !customContract &&
+      newValue &&
+      contractAddress
+    ) {
+      const calldata = renderCalldata(contractAddress, newValue);
       if (parameter.calldata !== calldata) {
         onChangeProperty('calldata', calldata);
       }
     }
-  }, [onChangeProperty, parameter, governor, parameterValue]);
+  }, [onChangeProperty, parameter, governor, contractAddress]);
 
   return (
     <div className="p-3 rounded bg-gray-90 gap-6 flex flex-col">

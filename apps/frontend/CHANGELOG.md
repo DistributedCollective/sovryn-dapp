@@ -1,5 +1,11 @@
 # frontend
 
+## 1.0.32
+
+### Patch Changes
+
+- 2832d32e: fix: bump onboard packages
+
 ## 1.0.31
 
 ### Patch Changes

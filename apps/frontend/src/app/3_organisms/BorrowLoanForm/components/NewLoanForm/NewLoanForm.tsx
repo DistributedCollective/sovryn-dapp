@@ -514,7 +514,7 @@ export const NewLoanForm: FC<NewLoanFormProps> = ({ pool }) => {
           onChangeValue={setHasDisclaimerBeenChecked}
           label={
             <Trans
-              i18nKey={pageTranslations.newLoanDialog.labels.disclaimer}
+              i18nKey={t(pageTranslations.newLoanDialog.labels.disclaimer)}
               components={[
                 <Link
                   text={t(pageTranslations.newLoanDialog.labels.disclaimerCTA)}

@@ -4,8 +4,10 @@
 
 ### Patch Changes
 
-- 1210dc50: SOV-3364: New loan disclaimer
-- 2832d32e: fix: bump onboard packages
+- 1210dc50: SOV-3364: Fix broken localizations
+
+## 1.0.31.1
+- 2832d32e: Fix Trezor Wallet connection
 
 ## 1.0.31
 

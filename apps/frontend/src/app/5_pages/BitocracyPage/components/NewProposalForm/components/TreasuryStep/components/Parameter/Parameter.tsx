@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useEffect, useMemo } from 'react';
+import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 
 import { t } from 'i18next';
 
@@ -24,7 +24,11 @@ import { translations } from '../../../../../../../../../locales/i18n';
 import { decimalic } from '../../../../../../../../../utils/math';
 import { useProposalContext } from '../../../../../../contexts/NewProposalContext';
 import { ProposalCreationParameter } from '../../../../../../contexts/ProposalContext.types';
-import { TREASURY_OPTIONS } from '../../TreasuryStep.constants';
+import {
+  GOVERNOR_VAULT_ADMIN_ADDRESS,
+  GOVERNOR_VAULT_OWNER_ADDRESS,
+  TREASURY_OPTIONS,
+} from '../../TreasuryStep.constants';
 import { TreasuryParameterType } from '../../TreasuryStep.types';
 import { useGetTokenDetails } from '../../hooks/useGetTokenDetails';
 import {
@@ -41,7 +45,9 @@ type ParameterProps = {
 const pageTranslations = translations.bitocracyPage.proposalTreasuryForm;
 
 export const Parameter: FC<ParameterProps> = ({ parameter, onError }) => {
-  const { parameters, setParameters } = useProposalContext();
+  const { parameters, setParameters, setGovernor } = useProposalContext();
+  const [filteredOptions, setFilteredOptions] = useState(TREASURY_OPTIONS);
+
   const { account } = useAccount();
   const { assetBalance, assetAddress } = useGetTokenDetails(
     parameter.treasuryStepExtraData?.token || SupportedTokens.rbtc,
@@ -141,6 +147,34 @@ export const Parameter: FC<ParameterProps> = ({ parameter, onError }) => {
   );
 
   useEffect(() => {
+    if (parameter.target === GOVERNOR_VAULT_OWNER_ADDRESS) {
+      setGovernor(GOVERNOR_VAULT_OWNER_ADDRESS);
+    } else if (parameter.target === GOVERNOR_VAULT_ADMIN_ADDRESS) {
+      setGovernor(GOVERNOR_VAULT_ADMIN_ADDRESS);
+    }
+  }, [parameter.target, setGovernor]);
+
+  useEffect(() => {
+    const selectedValue = parameter.target;
+    const updatedOptions = TREASURY_OPTIONS.filter(option => {
+      if (parameters.length > 1) {
+        if (
+          (selectedValue === GOVERNOR_VAULT_OWNER_ADDRESS &&
+            option.value === GOVERNOR_VAULT_ADMIN_ADDRESS) ||
+          (selectedValue === GOVERNOR_VAULT_ADMIN_ADDRESS &&
+            option.value === GOVERNOR_VAULT_OWNER_ADDRESS)
+        ) {
+          return false;
+        }
+      }
+      return true;
+    });
+
+    setFilteredOptions(updatedOptions);
+    setGovernor(selectedValue);
+  }, [parameter.target, parameters, onChangeProperty, setGovernor]);
+
+  useEffect(() => {
     const { token, amount, recipientAddress } =
       parameter.treasuryStepExtraData || {};
 
@@ -192,7 +226,7 @@ export const Parameter: FC<ParameterProps> = ({ parameter, onError }) => {
           <Select
             value={parameter.target}
             onChange={value => onChangeProperty('target', value)}
-            options={TREASURY_OPTIONS}
+            options={filteredOptions}
             className="w-full"
             dataAttribute="proposal-treasury-select"
           />

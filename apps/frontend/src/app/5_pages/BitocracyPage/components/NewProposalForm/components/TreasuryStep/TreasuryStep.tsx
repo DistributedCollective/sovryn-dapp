@@ -11,7 +11,11 @@ import {
   ProposalCreationParameter,
   ProposalCreationStep,
 } from '../../../../contexts/ProposalContext.types';
-import { DEFAULT_PARAMETER } from './TreasuryStep.constants';
+import {
+  DEFAULT_PARAMETER,
+  GOVERNOR_VAULT_ADMIN_ADDRESS,
+  GOVERNOR_VAULT_OWNER_ADDRESS,
+} from './TreasuryStep.constants';
 import { Parameter } from './components/Parameter/Parameter';
 
 type TreasuryStepProps = {
@@ -25,7 +29,6 @@ export const TreasuryStep: FC<TreasuryStepProps> = ({
 }) => {
   const { setParameters, setStep, parameters, submit } = useProposalContext();
   const [maxAmountError, setMaxAmountError] = useState(false);
-  console.log('parameters', parameters);
 
   const isValidParameter = useCallback(
     (parameter: ProposalCreationParameter) =>
@@ -46,6 +49,11 @@ export const TreasuryStep: FC<TreasuryStepProps> = ({
 
     const newParameter = {
       ...DEFAULT_PARAMETER,
+      target:
+        lastParameter.target === GOVERNOR_VAULT_OWNER_ADDRESS ||
+        lastParameter.target === GOVERNOR_VAULT_ADMIN_ADDRESS
+          ? lastParameter.target
+          : GOVERNOR_VAULT_OWNER_ADDRESS,
       treasuryStepExtraData: {
         ...DEFAULT_PARAMETER.treasuryStepExtraData,
         index: nextIndex,

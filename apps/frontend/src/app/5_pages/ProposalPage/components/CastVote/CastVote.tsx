@@ -210,7 +210,7 @@ export const CastVote: FC<CastVoteProps> = ({ proposal, className }) => {
           size={ParagraphSize.base}
           className="text-xs italic font-medium leading-relaxed"
         >
-          <Trans i18nKey={pageTranslations.noVote} />
+          <Trans i18nKey={t(pageTranslations.noVote)} />
         </Paragraph>
       );
     }

@@ -1,61 +1,33 @@
-import React, { FC, useCallback, useReducer } from 'react';
+import React, { FC, useCallback } from 'react';
 
 import { t } from 'i18next';
 
-import {
-  Button,
-  ButtonStyle,
-  Dialog,
-  DialogBody,
-  DialogHeader,
-  DialogSize,
-} from '@sovryn/ui';
+import { Button, ButtonStyle } from '@sovryn/ui';
 
-import { AdjustLoanForm } from '../../../../../../3_organisms/BorrowLoan/components/AdjustLoanForm/AdjustLoanForm';
 import { useAccount } from '../../../../../../../hooks/useAccount';
 import { translations } from '../../../../../../../locales/i18n';
 import { LoanItem } from '../../OpenLoansTable.types';
 
 type AdjustLoanButtonProps = {
   loan: LoanItem;
+  onClick: (id: string) => void;
 };
 
-export const AdjustLoanButton: FC<AdjustLoanButtonProps> = ({ loan }) => {
+export const AdjustLoanButton: FC<AdjustLoanButtonProps> = ({
+  loan,
+  onClick,
+}) => {
   const { account } = useAccount();
-  const [openAdjustLoanDialog, toggleAdjustLoanDialog] = useReducer(
-    v => !v,
-    false,
-  );
 
-  const onSuccess = useCallback(
-    () => toggleAdjustLoanDialog(),
-    [toggleAdjustLoanDialog],
-  );
+  const onAdjust = useCallback(() => onClick(loan.id), [loan, onClick]);
 
   return (
-    <>
-      <Button
-        text={t(translations.fixedInterestPage.openLoansTable.actions.adjust)}
-        style={ButtonStyle.primary}
-        onClick={toggleAdjustLoanDialog}
-        disabled={!account}
-        dataAttribute="adjust-loan-button"
-      />
-
-      <Dialog
-        isOpen={openAdjustLoanDialog}
-        dataAttribute="adjust-loan-dialog"
-        width={DialogSize.md}
-        disableFocusTrap
-      >
-        <DialogHeader
-          title={t(translations.fixedInterestPage.adjustLoanDialog.title)}
-          onClose={toggleAdjustLoanDialog}
-        />
-        <DialogBody
-          children={<AdjustLoanForm loan={loan} onSuccess={onSuccess} />}
-        />
-      </Dialog>
-    </>
+    <Button
+      text={t(translations.fixedInterestPage.openLoansTable.actions.adjust)}
+      style={ButtonStyle.primary}
+      onClick={onAdjust}
+      disabled={!account}
+      dataAttribute="adjust-loan-button"
+    />
   );
 };

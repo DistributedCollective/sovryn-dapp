@@ -9,6 +9,7 @@ import styles from './MenuItemWithRouter.module.css';
 
 type MenuItemWithRouterProps = {
   className?: string;
+  onClick?: () => void;
   icon?: IconType;
   text: ReactNode;
   label?: ReactNode;
@@ -20,6 +21,7 @@ type MenuItemWithRouterProps = {
 
 export const MenuItemWithRouter: FC<MenuItemWithRouterProps> = ({
   className,
+  onClick,
   icon,
   text,
   label,
@@ -38,6 +40,7 @@ export const MenuItemWithRouter: FC<MenuItemWithRouterProps> = ({
         [styles.disabled]: disabled,
         [styles.active]: isActive,
       })}
+      onClick={onClick}
     >
       <div className={styles.hostBlock}>
         <div className={styles.hostFlex}>

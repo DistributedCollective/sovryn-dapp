@@ -19,10 +19,10 @@
 }
 
 .dropdown {
-  @apply static overflow-x-auto transition-colors z-[9999] opacity-0 w-full lg:fixed lg:mt-1;
+  @apply static overflow-x-auto transition-colors z-[9999] opacity-0 w-full lg:fixed lg:mt-1 h-0;
 
   &.isVisible {
-    @apply opacity-100;
+    @apply opacity-100 h-auto;
   }
 }
 

@@ -42,3 +42,6 @@ export const MS = 1e3;
 
 export const RBTC_GAS_FEE_RESERVE = 0.000402832;
 export const MAX_PROCESSABLE_CHECKPOINTS_RBTC = 56;
+
+export const SECONDS_IN_DAY = 86400;
+export const SECONDS_IN_YEAR = 31536000;

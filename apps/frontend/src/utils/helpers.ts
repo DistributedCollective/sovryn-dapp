@@ -6,7 +6,9 @@ import { SupportedTokens } from '@sovryn/contracts';
 import { EIP1193Provider } from '@sovryn/onboard-common';
 import tailwindConfig from '@sovryn/tailwindcss-config';
 import { Decimalish } from '@sovryn/utils';
+import { Decimal } from '@sovryn/utils';
 
+import { BITCOIN } from '../constants/currencies';
 import { MAX_PROCESSABLE_CHECKPOINTS_RBTC, MS } from '../constants/general';
 import {
   MAX_PROCESSABLE_CHECKPOINTS_SOV,
@@ -183,4 +185,23 @@ export const getMaxProcessableCheckpoints = (asset: SupportedTokens) => {
     default:
       return MAX_PROCESSABLE_CHECKPOINTS_TOKENS;
   }
+};
+
+export const isBtcBasedAsset = (asset: string) =>
+  asset.toLowerCase() === SupportedTokens.rbtc ||
+  asset.toLowerCase() === SupportedTokens.wrbtc ||
+  asset.toUpperCase() === BITCOIN;
+
+export const isBitpro = (asset: string) =>
+  asset.toLowerCase() === 'bitpro' ||
+  asset.toLowerCase() === 'bitp' ||
+  asset.toLowerCase() === SupportedTokens.bpro;
+
+export const areValuesIdentical = (
+  firstValue: Decimal,
+  secondValue: Decimal,
+) => {
+  const epsilon = 0.0000000000001;
+
+  return Math.abs(firstValue.sub(secondValue).toNumber()) < epsilon;
 };

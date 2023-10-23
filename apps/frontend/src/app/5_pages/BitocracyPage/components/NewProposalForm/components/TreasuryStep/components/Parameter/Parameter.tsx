@@ -26,7 +26,7 @@ import { useProposalContext } from '../../../../../../contexts/NewProposalContex
 import { ProposalCreationParameter } from '../../../../../../contexts/ProposalContext.types';
 import { TREASURY_OPTIONS } from '../../TreasuryStep.constants';
 import { TreasuryParameterType } from '../../TreasuryStep.types';
-import { useGetTreasuryAssetBalance } from '../../hooks/useGetTreasuryAssetBalance';
+import { useGetTokenDetails } from '../../hooks/useGetTokenDetails';
 import {
   renderCalldata,
   renderSignature,
@@ -43,7 +43,7 @@ const pageTranslations = translations.bitocracyPage.proposalTreasuryForm;
 export const Parameter: FC<ParameterProps> = ({ parameter, onError }) => {
   const { parameters, setParameters } = useProposalContext();
   const { account } = useAccount();
-  const { assetBalance } = useGetTreasuryAssetBalance(
+  const { assetBalance, assetAddress } = useGetTokenDetails(
     parameter.treasuryStepExtraData?.token || SupportedTokens.rbtc,
     parameter.target,
   );
@@ -143,19 +143,32 @@ export const Parameter: FC<ParameterProps> = ({ parameter, onError }) => {
   useEffect(() => {
     const { token, amount, recipientAddress } =
       parameter.treasuryStepExtraData || {};
+
     if (token) {
       const signature = renderSignature(token);
       if (parameter.signature !== signature) {
         onChangeProperty('signature', signature);
       }
-    }
-    if (isValidParameter(parameter, isValidAddress)) {
-      const calldata = renderCalldata(recipientAddress || '', amount || '0');
-      if (parameter.calldata !== calldata) {
-        onChangeProperty('calldata', calldata);
+
+      if (isValidParameter(parameter, isValidAddress)) {
+        let calldata: string;
+
+        if (token === SupportedTokens.rbtc) {
+          calldata = renderCalldata(recipientAddress || '', amount || '0');
+        } else {
+          calldata = renderCalldata(
+            recipientAddress || '',
+            amount || '0',
+            assetAddress,
+          );
+        }
+
+        if (parameter.calldata !== calldata) {
+          onChangeProperty('calldata', calldata);
+        }
       }
     }
-  }, [onChangeProperty, parameter, isValidAddress]);
+  }, [onChangeProperty, parameter, isValidAddress, assetAddress]);
 
   useEffect(() => {
     onError(

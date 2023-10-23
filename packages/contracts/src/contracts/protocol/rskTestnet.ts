@@ -97,20 +97,4 @@ export const rskTestnet: Record<string, AsyncContractConfigData> = {
     address: '0x69dB16Aa6EEf291Fec522581F4fc9c82dFE60beD',
     getAbi: async () => (await import('../../abis/governor.json')).default,
   },
-  governorVaultOwner: {
-    address: '0x05f4f068DF59a5aA7911f57cE4f41ebFBcB8E247',
-    getAbi: async () => [],
-  },
-  governorVaultAdmin: {
-    address: '0x51C754330c6cD04B810014E769Dab0343E31409E',
-    getAbi: async () => [],
-  },
-  adoptionFund: {
-    address: '0x0f31cfd6aAb4d378668Ad74DeFa89d3f4DB26633',
-    getAbi: async () => [],
-  },
-  developmentFund: {
-    address: '0x617866cC4a089c3653ddC31a618b078291839AeB',
-    getAbi: async () => [],
-  },
 };

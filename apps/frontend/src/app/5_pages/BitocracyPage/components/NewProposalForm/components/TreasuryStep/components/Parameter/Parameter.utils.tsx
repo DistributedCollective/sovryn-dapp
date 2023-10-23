@@ -6,12 +6,23 @@ import { SupportedTokens } from '@sovryn/contracts';
 import { toWei } from '../../../../../../../../../utils/math';
 import { ProposalCreationParameter } from '../../../../../../contexts/ProposalContext.types';
 
-export const renderCalldata = (recipientAddress: string, amount: string) => {
+export const renderCalldata = (
+  recipientAddress: string,
+  amount: string,
+  tokenAddress?: string,
+) => {
   const coder = new ethers.utils.AbiCoder();
-  return coder.encode(
-    ['address', 'uint256'],
-    [recipientAddress, toWei(amount)],
-  );
+  if (!tokenAddress) {
+    return coder.encode(
+      ['address', 'uint256'],
+      [recipientAddress, toWei(amount)],
+    );
+  } else {
+    return coder.encode(
+      ['address', 'address', 'uint256'],
+      [recipientAddress, tokenAddress, toWei(amount)],
+    );
+  }
 };
 
 export const renderSignature = (token: string) => {

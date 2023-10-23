@@ -6,12 +6,11 @@ import { getProvider } from '@sovryn/ethers-provider';
 import { useGetTokenContract } from '../../../../../../../../hooks/useGetContract';
 import { fromWei } from '../../../../../../../../utils/math';
 
-export const useGetTreasuryAssetBalance = (
-  asset: SupportedTokens,
-  address: string,
-) => {
+export const useGetTokenDetails = (asset: SupportedTokens, address: string) => {
   const contract = useGetTokenContract(asset);
+
   const [assetBalance, setAssetBalance] = useState('0');
+  const assetAddress = contract?.address;
 
   const getTreasuryTokenContract = useCallback(async () => {
     if (!contract || !address) {
@@ -38,5 +37,5 @@ export const useGetTreasuryAssetBalance = (
     getTreasuryTokenContract();
   }, [getTreasuryTokenContract]);
 
-  return { assetBalance };
+  return { assetBalance, assetAddress };
 };

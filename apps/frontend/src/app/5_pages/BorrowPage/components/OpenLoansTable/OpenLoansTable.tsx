@@ -11,9 +11,9 @@ import {
   Table,
 } from '@sovryn/ui';
 
-import { AdjustLoanForm } from '../../../../3_organisms/BorrowLoan/components/AdjustLoanForm/AdjustLoanForm';
-import { ExtendLoanForm } from '../../../../3_organisms/BorrowLoan/components/ExtendLoanForm/ExtendLoanForm';
 import { translations } from '../../../../../locales/i18n';
+import { AdjustLoanForm } from '../AdjustLoanForm/AdjustLoanForm';
+import { ExtendLoanForm } from '../ExtendLoanForm/ExtendLoanForm';
 import { generateRowTitle } from './OpenLoans.utils';
 import { COLUMNS_CONFIG } from './OpenLoansTable.constants';
 import { LoanItem } from './OpenLoansTable.types';

@@ -26,11 +26,11 @@ import { Decimal } from '@sovryn/utils';
 
 import { AssetRenderer } from '../../../../2_molecules/AssetRenderer/AssetRenderer';
 import { MaxButton } from '../../../../2_molecules/MaxButton/MaxButton';
+import { useGetMinCollateralRatio } from '../../../../5_pages/BorrowPage/hooks/useGetMinCollateralRatio';
 import { BITCOIN } from '../../../../../constants/currencies';
 import {
   MINIMUM_COLLATERAL_RATIO_LENDING_POOLS_SOV,
   MINIMUM_COLLATERAL_RATIO_LENDING_POOLS,
-  MINIMUM_COLLATERAL_RATIO_BORROWING_MAINTENANCE,
 } from '../../../../../constants/lending';
 import { WIKI_LINKS } from '../../../../../constants/links';
 import { useDecimalAmountInput } from '../../../../../hooks/useDecimalAmountInput';
@@ -211,14 +211,13 @@ export const NewLoanForm: FC<NewLoanFormProps> = ({ pool }) => {
     return '';
   }, [collateralRatio, minimumCollateralRatio]);
 
+  const maintenanceMargin = useGetMinCollateralRatio(borrowToken);
   const liquidationPrice = useMemo(() => {
     if (!isValidCollateralRatio) {
       return Decimal.ZERO;
     }
-    return MINIMUM_COLLATERAL_RATIO_BORROWING_MAINTENANCE.mul(borrowSize).div(
-      collateralSize,
-    );
-  }, [isValidCollateralRatio, borrowSize, collateralSize]);
+    return maintenanceMargin.mul(borrowSize).div(collateralSize);
+  }, [isValidCollateralRatio, maintenanceMargin, borrowSize, collateralSize]);
 
   const renderFirstRolloverDate = useMemo(() => {
     if (borrowSize.lte(Decimal.ZERO) || collateralSize.lte(Decimal.ZERO)) {
@@ -515,7 +514,7 @@ export const NewLoanForm: FC<NewLoanFormProps> = ({ pool }) => {
           onChangeValue={setHasDisclaimerBeenChecked}
           label={
             <Trans
-              i18nKey={pageTranslations.newLoanDialog.labels.disclaimer}
+              i18nKey={t(pageTranslations.newLoanDialog.labels.disclaimer)}
               components={[
                 <Link
                   text={t(pageTranslations.newLoanDialog.labels.disclaimerCTA)}

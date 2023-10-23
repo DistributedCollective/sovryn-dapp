@@ -24,6 +24,7 @@ type WithdrawFeeProps = EarnedFee & {
   refetch: () => void;
 };
 
+/** @deprecated */
 export const WithdrawFee: FC<WithdrawFeeProps> = ({
   token,
   value,

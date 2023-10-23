@@ -6,7 +6,7 @@
     "common": {
         "socials": {
             "discord": "Discord",
-            "twitter": "Twitter",
+            "twitter": "X",
             "telegram": "Telegram",
             "github": "Github"
         },
@@ -34,7 +34,8 @@
                 "noDataToExport": "No data to export"
             },
             "noData": "No data available",
-            "noDataWithFilters": "No data with the current filters"
+            "noDataWithFilters": "No data with the current filters",
+            "loading": "Loading data..."
         },
         "max": "max",
         "amount": "Amount",
@@ -66,7 +67,7 @@
     "connectWalletButton": {
         "connect": "Get started",
         "rewards": "Rewards",
-        "settings": "Settings",
+        "notifications": "Notifications",
         "history": "History",
         "copyAddress": "Copy address",
         "disconnect": "Disconnect"
@@ -96,7 +97,8 @@
                 }
             },
             "convert": "Convert",
-            "stake": "Stake"
+            "stake": "Stake",
+            "bitocracy": "Bitocracy"
         }
     },
     "footer": {
@@ -360,7 +362,8 @@
             "withdraw": "Withdraw {{asset}}",
             "depositTitle": "Deposit {{asset}} to the stability pool",
             "deposit": "Deposit {{asset}}"
-        }
+        },
+        "apr": "APR"
     },
 
     "convertPage": {
@@ -476,6 +479,14 @@
             "extendStakeTitle": "Extend stake",
             "delegateStake": "Delegate voting power details",
             "delegateStakeTitle": "Delegate voting power"
+        },
+        "nextStepDialog": {
+            "dialogTitle": "Next steps",
+            "title": "Sign up for important alerts",
+            "description": "Receive an email every time a new proposal is created. Then cast your vote to make your voice heard in Sovryn Bitocracy.",
+            "emailNotifications": "Email notifications",
+            "doNotShowAgain": "Don't show again",
+            "signUp": "Sign up"
         }
     },
 
@@ -595,6 +606,91 @@
         "collateralRatio": "collateral ratio"
     },
 
+    "bitocracyPage": {
+        "meta": {
+            "title": "Bitocracy - Sovryn",
+            "description": "Help decide the future of Sovryn by participating in governance of the protocol."
+        },
+        "title": "Bitocracy",
+        "subtitle": "Help decide the future of Sovryn",
+        "pastProposals": "Past proposals",
+        "liveProposals": "Live proposals",
+        "table": {
+            "status": "Status",
+            "title": "Title",
+            "type": "Type",
+            "endDate": "End date"
+        },
+        "proposalStatus": {
+            "active": "In progress",
+            "queued": "Succeeded - Queued for execution",
+            "executed": "Succeeded - Executed",
+            "succeeded": "Succeeded - Queue for execution",
+            "succeededNonExecutable": "Succeeded",
+            "pending": "Pending execution",
+            "canceled": "Vetoed",
+            "expired": "Succeeded - Expired",
+            "defeated": "Rejected"
+        },
+        "proposalStatusDetail": {
+            "willSucceed": "Will succeed",
+            "willBeDefeated": "Will be rejected"
+        },
+        "proposalType": {
+            "admin": "Admin",
+            "owner": "Owner",
+            "executable": "(executable)",
+            "nonExecutable": "(non-executable)",
+            "other": "Other"
+        },
+        "actions": {
+            "newProposal": "New proposal",
+            "bitocracyAlerts": "Bitocracy alerts",
+            "view": "View"
+        }
+    },
+    "proposalPage": {
+        "meta": {
+            "title": "Bitocracy - Sovryn"
+        },
+        "proposedBy": "Proposed by",
+        "proposalID": "Proposal ID",
+        "status": "Status",
+        "timeToVote": "Time left to vote",
+        "voteStart": "Vote start:",
+        "voteEnd": "Vote end:",
+        "voteEnded": "Vote ended",
+        "blocks": "blocks",
+        "block": "block",
+        "castYourVote": "Cast your vote",
+        "connectMessage": "Connect wallet to check voter status",
+        "discussionLink": "Discussion link:",
+        "proposalText": "Proposal text:",
+        "executableDetails": {
+            "title": "Executable details",
+            "executable": "Executable",
+            "assetName": "Asset name: ",
+            "assetAmount": "Asset amount: ",
+            "assetAddress": "Asset address: ",
+            "contractAddress": "Contract address: ",
+            "recipientAddress": "Recipient address: ",
+            "functionName": "Function name: ",
+            "data": "Data: "
+        },
+        "castVote": "Cast your vote",
+        "stakeSOV": "Stake SOV",
+        "support": "Support",
+        "supportText": "You voted to support this proposal",
+        "reject": "Reject",
+        "rejectText": "You voted to reject this proposal",
+        "noVote": "No vote cast on this proposal",
+        "ineligibleVote": "Ineligible to vote - no SOV staked at proposal creation time",
+        "eligibleVote": "Stake SOV to be eligible to vote on future proposals",
+        "actions": {
+            "queue": "Queue for execution",
+            "execute": "Execute proposal"
+        }
+    },
     "fastBtc": {
         "mainScreen": {
             "title": "Funding",
@@ -708,7 +804,8 @@
             "stakingRevenue": "Staking revenue",
             "actions": {
                 "transferToLOC": "Transfer to LOC",
-                "withdraw": "Withdraw"
+                "withdraw": "Withdraw",
+                "withdrawAll": "Withdraw All"
             },
             "tx": {
                 "withdraw": "Withdraw rewards to your address",
@@ -736,7 +833,8 @@
         "staking": {
             "stakingSubsidies": "Staking subsidies",
             "stakingRevenue": "Staking revenue",
-            "stakingRevenueLegacy": "Staking revenue (legacy)"
+            "stakingRevenueLegacy": "Staking revenue (legacy)",
+            "liquidityMiningError": "Your liquidity mining vesting contract holds more than {{count}} checkpoints worth of rewards. Please withdraw liquid rewards from your vesting contract to enable the 'Withdraw' button and claim additional rewards."
         },
         "vesting": {
             "tx": {
@@ -796,9 +894,9 @@
         "table": {
             "lend": "Lend",
             "asset": "Asset",
-            "lendApy": "Lend APY",
-            "lendApyMobile": "APY",
-            "lendApyInfo": "Interest rate is variable based on the current utilization rate and loans outstanding",
+            "lendApr": "Lend APR",
+            "lendAprMobile": "APR",
+            "lendAprInfo": "Interest rate is variable based on the current utilization rate and loans outstanding",
             "acceptedCollateral": "Accepted collateral",
             "balance": "Balance",
             "interestEarned": "Interest earned",
@@ -810,9 +908,10 @@
             "borrowed": "Borrowed"
         },
         "actions": {
-            "lend": "Lend",
+            "deposit": "Deposit",
             "adjust": "Adjust"
-        }
+        },
+        "apr": "APR"
     },
     "borrowHistory": {
         "types": {
@@ -967,11 +1066,17 @@
             "stakingRevenue": "Withdraw staking revenue",
             "stakingSubsidies": "Withdraw staking subsidy"
         },
+        "vestingOperation": {
+            "tokensWithdrawn": "Withdraw vested reward",
+            "teamTokensRevoked": "Team tokens revoked",
+            "tokensStaked": "Tokens Staked"
+        },
         "types": {
             "stabilityPoolRewards": "Stability pool rewards",
             "stabilityPoolSubsidies": "Stability pool subsidies",
             "stakingRevenue": "Staking Revenue",
-            "stakingSubsidies": "Staking Subsidies"
+            "stakingSubsidies": "Staking Subsidies",
+            "vestingRewards": "Vesting rewards"
         }
     },
     "stakingHistory": {
@@ -983,6 +1088,7 @@
         "unstake": "Unstake",
         "extend": "Extend staking duration",
         "delegate": "Change delegate",
+        "delegateVesting": "Vesting delegate changes",
         "newDelegate": "New delegate",
         "newDate": "New date",
         "previousDate": "Previous date",
@@ -994,15 +1100,16 @@
         }
     },
     "emailNotificationsDialog": {
-        "dialogTitle": "Settings",
-        "title": "Sign up to receive important notifications about the state of your line of credit and the Zero protocol",
+        "dialogTitle": "Notifications",
+        "title": "Sign up to receive important notifications about Sovryn loans, Zero recovery mode, Bitocracy votes, and more",
         "emailInputLabel": "Email address",
         "emailInputPlaceholder": "Enter email",
         "alertGroups": {
             "marginCallsToggle": "Margin call alerts",
             "liquidationsToggle": "Liquidation and redemption alerts",
             "stabilityPoolToggle": "Stability pool alerts",
-            "systemToggle": "System alerts"
+            "systemToggle": "System alerts",
+            "bitocracyToggle": "Bitocracy alerts"
         },
         "successMessage": "Your preferences have been saved.",
         "errorMessage": "Something went wrong, please try again.",
@@ -1107,18 +1214,18 @@
         "title": "Adjust lending balance",
         "deposit": "Deposit",
         "withdraw": "Withdraw",
-        "apy": "Current lend APY",
-        "newApy": "New lend APY",
+        "apr": "Current lend APR",
+        "newApr": "New lend APR",
         "currentBalance": "Current lending balance",
         "newBalance": "New lending balance"
     },
     "lending": {
-        "title": "Lend",
-        "disclaimer": "I understand that the APY is variable and that there must be available liquidity in the pool for me to be able to withdraw my lending balance.",
+        "title": "Deposit",
+        "disclaimer": "I understand that the APR is variable and that there must be available liquidity in the pool for me to be able to withdraw my lending balance.",
         "learnMore": "Learn more",
-        "apy": "Lend APY",
+        "apr": "Lend APR",
         "acceptedCollateral": "Accepted collateral",
-        "newApy": "New lend APY",
+        "newApr": "New lend APR",
         "form": {
             "invalidAmountError": "Exceeds maximum amount"
         }
@@ -1126,5 +1233,29 @@
     "lendingTx": {
         "deposit": "Deposit {{symbol}}",
         "withdraw": "Withdraw {{symbol}}"
+    },
+    "proposalVotingResults": {
+        "title": "Voting results",
+        "inProgress": "Voting in progress",
+        "exportCSV": "Export CSV",
+        "support": {
+            "title": "Support",
+            "required": "Support required:",
+            "current": "Current support:",
+            "requiredValue": "> {{value}}%",
+            "currentValue": "{{value}}%"
+        },
+        "quorum": {
+            "title": "Turnout",
+            "required": "Turnout required:",
+            "current": "Current turnout:",
+            "requiredValue": "{{value}} VP ({{percent}}%)",
+            "currentValue": "{{value}} VP ({{percent}}%)"
+        }
+    },
+    "proposalVotingPower": {
+        "title": "Your voting power",
+        "votingPower": "Voting power",
+        "votingPowerShare": "Voting power share"
     }
 }

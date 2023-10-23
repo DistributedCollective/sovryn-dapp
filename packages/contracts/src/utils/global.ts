@@ -1,4 +1,6 @@
-import { ContractInterface } from 'ethers';
+import type { Provider } from '@ethersproject/providers';
+
+import { ContractInterface, Contract, Signer } from 'ethers';
 import get from 'lodash.get';
 import set from 'lodash.set';
 
@@ -93,7 +95,7 @@ export const getContract = async (
     throw new Error(`getContract: Unknown contract: ${name}`);
   }
 
-  let contractData: ContractConfigData;
+  let contractData: Omit<ContractConfigData, 'contract'>;
 
   if (typeof contract === 'string') {
     contractData = {
@@ -107,9 +109,16 @@ export const getContract = async (
     };
   }
 
-  set(cacheByKey, [chainId, group, name], contractData);
+  const data: ContractConfigData = {
+    address: contractData.address,
+    abi: contractData.abi,
+    contract: (signerOrProvider?: Signer | Provider) =>
+      new Contract(contractData.address, contractData.abi, signerOrProvider),
+  };
 
-  return contractData;
+  set(cacheByKey, [chainId, group, name], data);
+
+  return data;
 };
 
 export const getContractGroupAbi = async (

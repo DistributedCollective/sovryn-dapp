@@ -134,6 +134,7 @@ export const StakingWithdraws: FC<StakingHistoryProps> = ({
           value={selectedHistoryType}
           onChange={onChangeHistoryType}
           options={stakingHistoryOptions}
+          className="min-w-36 w-full lg:w-auto"
         />
         <div className="flex-row items-center ml-2 gap-4 hidden lg:inline-flex">
           <ExportCSV
@@ -159,6 +160,7 @@ export const StakingWithdraws: FC<StakingHistoryProps> = ({
           isLoading={loading}
           className="bg-gray-80 text-gray-10 lg:px-6 lg:py-4"
           noData={t(translations.common.tables.noData)}
+          loadingData={t(translations.common.tables.loading)}
           dataAttribute="staking-withdrawns-history-table"
         />
         <Pagination

@@ -1,4 +1,4 @@
-import React, { FC, PropsWithChildren, useCallback, useState } from 'react';
+import React, { FC, PropsWithChildren, useCallback } from 'react';
 
 import { t } from 'i18next';
 import { nanoid } from 'nanoid';
@@ -12,9 +12,9 @@ import {
   WalletIdentity,
 } from '@sovryn/ui';
 
-import { EmailNotificationSettingsDialog } from '../../3_organisms/EmailNotificationSettingsDialog/EmailNotificationSettingsDialog';
 import { useNotificationContext } from '../../../contexts/NotificationContext';
 import { translations } from '../../../locales/i18n';
+import { sharedState } from '../../../store/rxjs/shared-state';
 
 export type ConnectWalletButtonProps = {
   onConnect: () => void;
@@ -35,7 +35,6 @@ export const ConnectWalletButton: FC<
   className,
   dataAttribute,
 }) => {
-  const [open, setOpen] = useState(false);
   const { addNotification } = useNotificationContext();
 
   const onCopyAddress = useCallback(() => {
@@ -47,6 +46,11 @@ export const ConnectWalletButton: FC<
       id: nanoid(),
     });
   }, [addNotification]);
+
+  const handleSettingsClick = useCallback(
+    () => sharedState.actions.openEmailNotificationSettingsDialog(),
+    [],
+  );
 
   if (!address) {
     return (
@@ -83,9 +87,9 @@ export const ConnectWalletButton: FC<
                 />
               </Link>
               <MenuItem
-                text={t(translations.connectWalletButton.settings)}
-                onClick={() => setOpen(true)}
-                dataAttribute={`${dataAttribute}-menu-settings`}
+                text={t(translations.connectWalletButton.notifications)}
+                onClick={handleSettingsClick}
+                dataAttribute={`${dataAttribute}-menu-notifications`}
               />
             </Menu>
           }
@@ -93,10 +97,6 @@ export const ConnectWalletButton: FC<
             copyAddress: t(translations.connectWalletButton.copyAddress),
             disconnect: t(translations.connectWalletButton.disconnect),
           }}
-        />
-        <EmailNotificationSettingsDialog
-          isOpen={open}
-          onClose={() => setOpen(false)}
         />
       </>
     );

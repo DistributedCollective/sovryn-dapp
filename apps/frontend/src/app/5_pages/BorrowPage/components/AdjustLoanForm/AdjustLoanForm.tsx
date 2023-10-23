@@ -22,8 +22,8 @@ import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRen
 import { AssetRenderer } from '../../../../2_molecules/AssetRenderer/AssetRenderer';
 import { convertLoanTokenToSupportedAssets } from '../../../../5_pages/BorrowPage/components/OpenLoansTable/OpenLoans.utils';
 import { LoanItem } from '../../../../5_pages/BorrowPage/components/OpenLoansTable/OpenLoansTable.types';
+import { useGetMinCollateralRatio } from '../../../../5_pages/BorrowPage/hooks/useGetMinCollateralRatio';
 import {
-  MINIMUM_COLLATERAL_RATIO_BORROWING_MAINTENANCE,
   MINIMUM_COLLATERAL_RATIO_LENDING_POOLS,
   MINIMUM_COLLATERAL_RATIO_LENDING_POOLS_SOV,
 } from '../../../../../constants/lending';
@@ -70,7 +70,6 @@ const pageTranslations = translations.fixedInterestPage.adjustLoanDialog;
 
 type AdjustLoanFormProps = {
   loan: LoanItem;
-  onSuccess: () => void;
 };
 
 export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
@@ -337,6 +336,8 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
     collateralToLoanRate,
   ]);
 
+  const maintenanceMargin = useGetMinCollateralRatio(debtToken);
+
   const isValidCollateralRatio = useMemo(() => {
     if (collateralSize.isZero() && debtSize.isZero()) {
       return true;
@@ -362,14 +363,13 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
       ? Decimal.from(loan.debt)
       : newTotalDebt;
 
-    return MINIMUM_COLLATERAL_RATIO_BORROWING_MAINTENANCE.mul(debt).div(
-      newCollateralAmount,
-    );
+    return maintenanceMargin.mul(debt).div(newCollateralAmount);
   }, [
     collateralSize,
     debtSize,
     isCollateralWithdrawMode,
     loan.debt,
+    maintenanceMargin,
     newCollateralAmount,
     newTotalDebt,
   ]);

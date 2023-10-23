@@ -73,6 +73,7 @@ export const VestingStakesFrame: FC = () => {
                 : t(translations.stakePage.table.notConnected)}
             </span>
           }
+          loadingData={t(translations.common.tables.loading)}
           dataAttribute="vesting-stakes-table"
         />
         {account && (

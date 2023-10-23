@@ -1,204 +1,163 @@
-import { useEffect, useState, useMemo, useCallback } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 
-import { SupportedTokens } from '@sovryn/contracts';
+import { BigNumber } from 'ethers';
+
+import { SupportedTokens, getProtocolContract } from '@sovryn/contracts';
+import { getTokenContract } from '@sovryn/contracts';
+import { getLoanTokenContract } from '@sovryn/contracts';
+import { getProvider } from '@sovryn/ethers-provider';
+
+import { defaultChainId } from '../../../../config/chains';
 
 import { useAccount } from '../../../../hooks/useAccount';
-import {
-  useGetProtocolContract,
-  useGetTokenContract,
-} from '../../../../hooks/useGetContract';
+import { useIsMounted } from '../../../../hooks/useIsMounted';
 import { useMulticall } from '../../../../hooks/useMulticall';
 import { EarnedFee } from '../RewardsPage.types';
-import { useGetTokenCheckpoints } from './useGetTokenCheckpoints';
 
-const DEFAULT_RBTC_DUMMY_ADDRESS = '0xeabd29be3c3187500df86a2613c6470e12f2d77d';
+const MAX_CHECKPOINTS = 50;
+const FEE_TOKEN_ASSETS = [
+  SupportedTokens.wrbtc,
+  SupportedTokens.rbtc,
+  SupportedTokens.sov,
+  SupportedTokens.zusd,
+  SupportedTokens.mynt,
+];
+
+const FEE_LOAN_ASSETS = [SupportedTokens.rbtc];
+
+let btcDummyAddress: string;
+
+const getRbtcDummyAddress = async () => {
+  if (!btcDummyAddress) {
+    const { contract } = await getProtocolContract(
+      'feeSharing',
+      defaultChainId,
+    );
+    btcDummyAddress = await contract(
+      getProvider(defaultChainId),
+    ).RBTC_DUMMY_ADDRESS_FOR_CHECKPOINT();
+  }
+  return btcDummyAddress;
+};
 
 export const useGetFeesEarned = () => {
+  const isMounted = useIsMounted();
   const { account } = useAccount();
-  const [loading, setLoading] = useState(true);
-  const [RBTCDummyAddress, setRBTCDummyAddress] = useState(
-    DEFAULT_RBTC_DUMMY_ADDRESS,
-  );
-
-  const feeSharing = useGetProtocolContract('feeSharing');
-  const sovContract = useGetTokenContract('sov');
-  const myntContract = useGetTokenContract('mynt');
-  const zusdContract = useGetTokenContract('zusd');
-
-  const contractAddresses = useMemo(
-    () => ({
-      [SupportedTokens.rbtc]: RBTCDummyAddress,
-      [SupportedTokens.sov]: sovContract?.address!,
-      [SupportedTokens.zusd]: zusdContract?.address!,
-      [SupportedTokens.mynt]: myntContract?.address!,
-    }),
-    [
-      RBTCDummyAddress,
-      myntContract?.address,
-      sovContract?.address,
-      zusdContract?.address,
-    ],
-  );
-
-  const isLoadingContracts = useMemo(
-    () => !!Object.keys(contractAddresses).find(key => !contractAddresses[key]),
-    [contractAddresses],
-  );
-
-  const {
-    userCheckpoint: sovUserCheckpoint,
-    maxWithdrawCheckpoint: sovMaxWithdrawCheckpoint,
-  } = useGetTokenCheckpoints(SupportedTokens.sov);
-  const {
-    userCheckpoint: myntUserCheckpoint,
-    maxWithdrawCheckpoint: myntMaxWithdrawCheckpoint,
-  } = useGetTokenCheckpoints(SupportedTokens.mynt);
-  const {
-    userCheckpoint: zusdUserCheckpoint,
-    maxWithdrawCheckpoint: zusdMaxWithdrawCheckpoint,
-  } = useGetTokenCheckpoints(SupportedTokens.zusd);
-
-  const getStartFrom = useCallback(
-    (asset: SupportedTokens) => {
-      switch (asset) {
-        case SupportedTokens.sov:
-          return Number(sovUserCheckpoint?.checkpointNum) || 0;
-        case SupportedTokens.mynt:
-          return Number(myntUserCheckpoint?.checkpointNum) || 0;
-        case SupportedTokens.zusd:
-          return Number(zusdUserCheckpoint?.checkpointNum) || 0;
-        default:
-          return 0;
-      }
-    },
-    [sovUserCheckpoint, myntUserCheckpoint, zusdUserCheckpoint],
-  );
-
-  const getMaxCheckpoints = useCallback(
-    (asset: SupportedTokens) => {
-      switch (asset) {
-        case SupportedTokens.sov:
-          return sovMaxWithdrawCheckpoint;
-        case SupportedTokens.mynt:
-          return myntMaxWithdrawCheckpoint;
-        case SupportedTokens.zusd:
-          return zusdMaxWithdrawCheckpoint;
-        default:
-          return 0;
-      }
-    },
-    [
-      sovMaxWithdrawCheckpoint,
-      myntMaxWithdrawCheckpoint,
-      zusdMaxWithdrawCheckpoint,
-    ],
-  );
-
-  const generateDefaultEarnedFees = useCallback(() => {
-    return Object.entries(contractAddresses).map(
-      ([token, contractAddress]): EarnedFee => ({
-        token: token as SupportedTokens,
-        contractAddress,
-        value: '0',
-        rbtcValue: 0,
-        ...(token !== SupportedTokens.rbtc
-          ? { startFrom: 0, maxCheckpoints: 0 }
-          : {}),
-      }),
-    );
-  }, [contractAddresses]);
-
-  const [earnedFees, setEarnedFees] = useState(generateDefaultEarnedFees());
-
   const multicall = useMulticall();
 
+  const [loading, setLoading] = useState(true);
+  const [earnedFees, setEarnedFees] = useState<EarnedFee[]>([]);
+
   const getAvailableFees = useCallback(async () => {
-    if (
-      !sovMaxWithdrawCheckpoint ||
-      !zusdMaxWithdrawCheckpoint ||
-      !myntMaxWithdrawCheckpoint ||
-      isLoadingContracts ||
-      !account ||
-      !feeSharing
-    ) {
+    if (!isMounted()) {
+      return;
+    }
+    if (!account || !multicall) {
+      setEarnedFees([]);
+      setLoading(false);
+      return;
+    }
+    // set defaults
+    const defaultTokenData = await Promise.all([
+      ...FEE_LOAN_ASSETS.map(async asset => ({
+        token: asset,
+        contractAddress: (
+          await getLoanTokenContract(asset, defaultChainId)
+        ).address,
+        value: '0',
+        rbtcValue: 0,
+        startFrom: 0,
+        maxCheckpoints: 0,
+        iToken: true,
+      })),
+      ...FEE_TOKEN_ASSETS.map(async asset => ({
+        token: asset,
+        contractAddress:
+          asset === SupportedTokens.rbtc
+            ? await getRbtcDummyAddress()
+            : (
+                await getTokenContract(asset, defaultChainId)
+              ).address,
+        value: '0',
+        rbtcValue: 0,
+        ...(asset !== SupportedTokens.rbtc
+          ? { startFrom: 0, maxCheckpoints: 0 }
+          : {}),
+        iToken: false,
+      })),
+    ]);
+
+    setEarnedFees(defaultTokenData);
+
+    if (!account) {
+      setLoading(false);
       return;
     }
 
-    const earnedFees = generateDefaultEarnedFees();
-
-    const callData = earnedFees.map(fee => {
-      const isRBTC = fee.token === SupportedTokens.rbtc;
-      const fnName = isRBTC
-        ? 'getAccumulatedRBTCFeeBalances'
-        : 'getAccumulatedFeesForCheckpointsRange';
-      const startFrom = Math.max(getStartFrom(fee.token) - 1, 0);
-      const args = isRBTC
-        ? [account]
-        : [
-            account,
-            fee.contractAddress,
-            startFrom,
-            getMaxCheckpoints(fee.token),
-          ];
-      return {
-        contract: feeSharing,
-        fnName,
-        args,
-        key: fee.token,
-        parser: value => value[0].toString(),
-      };
-    });
-
-    const result = await multicall(callData);
-
     setLoading(true);
 
-    const fees = earnedFees.map((fee, i) => ({
-      ...fee,
-      value: result[i],
+    const { contract } = await getProtocolContract(
+      'feeSharing',
+      defaultChainId,
+    );
+
+    const feeSharingContract = contract(getProvider(defaultChainId));
+
+    const checkpoints = await multicall(
+      defaultTokenData.flatMap(({ contractAddress }) => [
+        {
+          contract: feeSharingContract,
+          fnName: 'totalTokenCheckpoints',
+          args: [contractAddress],
+          key: `${contractAddress}/totalTokenCheckpoints`,
+          parser: (value: string) => Number(value),
+        },
+        {
+          contract: feeSharingContract,
+          fnName: 'processedCheckpoints',
+          args: [account, contractAddress],
+          key: `${contractAddress}/processedCheckpoints`,
+          parser: (value: string) => Number(value),
+        },
+      ]),
+    );
+
+    const amounts = await multicall(
+      defaultTokenData.map(({ contractAddress }) => ({
+        contract: feeSharingContract,
+        fnName: 'getAllUserFeesPerMaxCheckpoints',
+        args: [
+          account,
+          contractAddress,
+          Math.max(checkpoints[`${contractAddress}/processedCheckpoints`], 0),
+          MAX_CHECKPOINTS,
+        ],
+        key: contractAddress,
+        parser: ({ fees }: { fees: string[] }) =>
+          fees.reduce((prev, cur) => prev.add(cur), BigNumber.from(0)),
+      })),
+    );
+
+    const results = defaultTokenData.map((tokenData, index) => ({
+      token: tokenData.token,
+      contractAddress: tokenData.contractAddress,
+      value: amounts[tokenData.contractAddress].toString(),
+      rbtcValue: 0,
+      startFrom:
+        checkpoints[`${tokenData.contractAddress}/processedCheckpoints`],
+      maxCheckpoints:
+        checkpoints[`${tokenData.contractAddress}/totalTokenCheckpoints`],
     }));
 
-    setEarnedFees([...fees]);
-    setLoading(false);
-  }, [
-    account,
-    feeSharing,
-    generateDefaultEarnedFees,
-    getMaxCheckpoints,
-    getStartFrom,
-    isLoadingContracts,
-    multicall,
-    myntMaxWithdrawCheckpoint,
-    sovMaxWithdrawCheckpoint,
-    zusdMaxWithdrawCheckpoint,
-  ]);
-
-  useEffect(() => {
-    const getRbtcDummyAddress = async () => {
-      try {
-        const result = await feeSharing?.RBTC_DUMMY_ADDRESS_FOR_CHECKPOINT();
-
-        setRBTCDummyAddress(result);
-      } catch (error) {
-        console.error('Error getting RBTC dummy address:', error);
-      }
-    };
-
-    getRbtcDummyAddress();
-  }, [feeSharing]);
-
-  useEffect(() => {
-    if (account && !isLoadingContracts) {
-      getAvailableFees();
+    if (isMounted()) {
+      setEarnedFees(results);
+      setLoading(false);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [
-    account,
-    sovMaxWithdrawCheckpoint,
-    zusdMaxWithdrawCheckpoint,
-    myntMaxWithdrawCheckpoint,
-    isLoadingContracts,
-  ]);
+  }, [account, isMounted, multicall]);
+
+  useEffect(() => {
+    getAvailableFees().catch(console.error);
+  }, [getAvailableFees]);
 
   return {
     loading,

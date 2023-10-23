@@ -2,7 +2,19 @@ import { t } from 'i18next';
 
 import { translations } from '../../../locales/i18n';
 
-export const menuItemsMapping = [
+export type MenuItem = {
+  text: string;
+  url: string;
+  submenu?: SubMenuItem[];
+};
+
+export type SubMenuItem = {
+  text: string;
+  label: string;
+  url: string;
+};
+
+export const menuItemsMapping: MenuItem[] = [
   {
     text: t(translations.header.nav.borrow.title),
     url: '/borrow',
@@ -47,5 +59,9 @@ export const menuItemsMapping = [
   {
     text: t(translations.header.nav.convert),
     url: '/convert',
+  },
+  {
+    text: t(translations.header.nav.bitocracy),
+    url: '/bitocracy',
   },
 ];

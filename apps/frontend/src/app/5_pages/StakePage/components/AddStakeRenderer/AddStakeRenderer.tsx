@@ -1,4 +1,4 @@
-import React, { FC, useReducer } from 'react';
+import React, { FC, useCallback, useReducer, useState } from 'react';
 
 import { t } from 'i18next';
 import { useNavigate } from 'react-router-dom';
@@ -15,6 +15,7 @@ import {
 
 import { AddStakeForm } from '../../../../3_organisms/StakeForm/components/AddStakeForm/AddStakeForm';
 import { translations } from '../../../../../locales/i18n';
+import { NextStepDialog } from '../NextStepDialog/NextStepDialog';
 
 type AddStakeRendererProps = {
   hasStakedValue: boolean;
@@ -24,13 +25,22 @@ export const AddStakeRenderer: FC<AddStakeRendererProps> = ({
   hasStakedValue,
 }) => {
   const navigate = useNavigate();
+  const [isNextStepOpen, setIsNextStepOpen] = useState(false);
   const [openCreateStakeDialog, toggleCreateStakeDialog] = useReducer(
     v => !v,
     false,
   );
 
+  const onSuccess = useCallback(() => {
+    toggleCreateStakeDialog();
+    setIsNextStepOpen(true);
+  }, []);
+
+  const onConfirm = useCallback(() => setIsNextStepOpen(false), []);
+
   return (
     <div className="flex md:flex-row items-center gap-4 flex-col-reverse">
+      <NextStepDialog isOpen={isNextStepOpen} onConfirm={onConfirm} />
       {hasStakedValue && (
         <Button
           style={ButtonStyle.ghost}
@@ -68,10 +78,7 @@ export const AddStakeRenderer: FC<AddStakeRendererProps> = ({
           onClose={toggleCreateStakeDialog}
         />
         <DialogBody>
-          <AddStakeForm
-            hasStakedValue={hasStakedValue}
-            onSuccess={toggleCreateStakeDialog}
-          />
+          <AddStakeForm hasStakedValue={hasStakedValue} onSuccess={onSuccess} />
         </DialogBody>
       </Dialog>
     </div>

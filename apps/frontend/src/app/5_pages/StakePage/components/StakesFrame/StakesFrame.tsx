@@ -17,7 +17,7 @@ const pageSize = DEFAULT_PAGE_SIZE;
 
 export const StakesFrame: FC = () => {
   const { account } = useAccount();
-  const { stakes, loading } = useGetStakes();
+  const { stakes, loading, refetch } = useGetStakes();
   const { balance } = useGetStakingBalanceOf(account);
 
   const hasStakedValue = useMemo(() => Number(balance) > 0, [balance]);
@@ -48,6 +48,8 @@ export const StakesFrame: FC = () => {
     [loading, paginatedStakes?.length, stakes?.length],
   );
 
+  const columns = useMemo(() => COLUMNS_CONFIG(refetch), [refetch]);
+
   return (
     <div className="flex flex-col mb-10">
       <div className="flex justify-between items-center mb-3 md:mb-6">
@@ -61,7 +63,7 @@ export const StakesFrame: FC = () => {
 
       <div className="bg-gray-80 py-4 px-4 rounded">
         <Table
-          columns={COLUMNS_CONFIG}
+          columns={columns}
           rows={paginatedStakes}
           rowTitle={generateRowTitle}
           isLoading={loading}
@@ -73,6 +75,7 @@ export const StakesFrame: FC = () => {
                 : t(translations.stakePage.table.notConnected)}
             </span>
           }
+          loadingData={t(translations.common.tables.loading)}
           dataAttribute="stakes-table"
         />
         {account && (

@@ -28,6 +28,7 @@ export const LendFrame: FC = () => {
           rowTitle={generateRowTitle}
           className="text-gray-10 lg:px-6 lg:py-4 text-xs"
           noData={t(translations.common.tables.noData)}
+          loadingData={t(translations.common.tables.loading)}
           dataAttribute="lend-frame-table"
           expandedContent={pool => <LendFrameDetails pool={pool} />}
           expandedClassNames="border border-gray-70 border-t-0"

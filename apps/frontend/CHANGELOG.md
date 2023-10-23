@@ -1,5 +1,69 @@
 # frontend
 
+## 1.0.32
+
+### Patch Changes
+
+- 1210dc50: SOV-3364: Fix broken localizations
+
+## 1.0.31.1
+- 2832d32e: Fix Trezor Wallet connection
+
+## 1.0.31
+
+### Patch Changes
+
+- 8c3d97eb: SOV-3289: Resolve issue with iWRBTC Rewards not being shown or claimable from Rewards page
+- 37382136: Bitocracy page
+- Updated dependencies [37382136]
+  - @sovryn/contracts@1.0.17
+  - @sovryn/ui@1.0.16
+
+## 1.0.30
+
+### Patch Changes
+
+- be97908c: SOV-3022: Update staking loading data
+- 8edd408b: SOV-3074: fix decimal places on total rewards tooltip
+- 541b98dd: SOV-3197: Increase gas limit for delegating vesting stake
+- 93998577: SOV-3136: update lend page text
+- 50c278d8: SOV-3073: fix mobile navigation
+- 68bfa997: SOV-3065: Pull minimum collateral ratios from subgraph
+- c916f49d: SOV-3137: Stability pool updates
+- b3bf103c: SOV-3139: fix dropdown positioning
+- c10084fe: SOV-3034: rewards page banner update
+- Updated dependencies [be97908c]
+- Updated dependencies [ab9b50e7]
+- Updated dependencies [50c278d8]
+- Updated dependencies [c681ea39]
+- Updated dependencies [b3bf103c]
+  - @sovryn/ui@1.0.15
+
+## 1.0.29
+
+### Patch Changes
+
+- 35600eda: feat: claim all rewards with single tx
+- ef1cc8b3: SOV-2787: updated notification service api
+- Updated dependencies [35600eda]
+- Updated dependencies [35600eda]
+  - @sovryn/ui@1.0.14
+  - @sovryn/contracts@1.0.16
+
+## 1.0.28
+
+### Patch Changes
+
+- 26a9feb5: SOV-2756: Clean up Babelfish token config
+- 774b032b: SOV-3021: Fix earned tooltip layout
+- 2347b43c: SOV-2993: Vesting reward history
+- 0b72c502: SOV-2992: lending withdraw with max amount issue
+- df04edaa: SOV-2913: vesting delegate history
+- aad41527: SOV-2942: fix adjust stake data refresh
+- 0cd49a90: SOV-3077: Prevent reward SOV claiming and force user to withdraw unclaimed SOV if the LM vesting contracts has too many liquid stakes
+- Updated dependencies [26a9feb5]
+  - @sovryn/contracts@1.0.15
+
 ## 1.0.27
 
 ### Patch Changes

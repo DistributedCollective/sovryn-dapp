@@ -2,10 +2,6 @@
   @apply flex flex-col;
 }
 
-.loading {
-  @apply h-10 block bg-gray-50 rounded animate-pulse;
-}
-
-.noData {
+.noData, .loading {
   @apply relative text-center my-1;
 }

@@ -12,7 +12,10 @@ import { ExtendLoanButton } from './components/ExtendLoanButton/ExtendLoanButton
 
 const translation = translations.fixedInterestPage.openLoansTable.columns;
 
-export const COLUMNS_CONFIG = [
+export const COLUMNS_CONFIG = (
+  onAdjust: (id: string) => void,
+  onExtend: (id: string) => void,
+) => [
   {
     id: 'debt',
     title: t(translation.debt),
@@ -72,8 +75,8 @@ export const COLUMNS_CONFIG = [
     title: '',
     cellRenderer: (item: LoanItem) => (
       <div className="flex gap-4 justify-end">
-        <AdjustLoanButton loan={item} />
-        <ExtendLoanButton loan={item} />
+        <AdjustLoanButton onClick={onAdjust} loan={item} />
+        <ExtendLoanButton onClick={onExtend} loan={item} />
       </div>
     ),
   },

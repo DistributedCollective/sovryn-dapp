@@ -4,6 +4,7 @@ import { RewardHistoryType } from './RewardHistory.types';
 import { RewardsEarnedHistory } from './components/RewardsEarnedHistory/RewardsEarnedHistory';
 import { StabilityPoolRewards } from './components/StabilityPoolRewards/StabilityPoolRewards';
 import { StabilityPoolSubsidies } from './components/StabilityPoolSubsidies/StabilityPoolSubsidies';
+import { VestingRewards } from './components/VestingRewards/VestingRewards';
 
 export const RewardHistory: FC = () => {
   const [selectedHistoryType, setSelectedHistoryType] = useState(
@@ -33,6 +34,12 @@ export const RewardHistory: FC = () => {
         RewardHistoryType.stakingSubsidies,
       ].includes(selectedHistoryType) && (
         <RewardsEarnedHistory
+          selectedHistoryType={selectedHistoryType}
+          onChangeRewardHistory={onChangeRewardHistory}
+        />
+      )}
+      {selectedHistoryType === RewardHistoryType.vestingRewards && (
+        <VestingRewards
           selectedHistoryType={selectedHistoryType}
           onChangeRewardHistory={onChangeRewardHistory}
         />

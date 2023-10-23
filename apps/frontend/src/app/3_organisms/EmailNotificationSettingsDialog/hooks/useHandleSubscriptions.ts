@@ -20,6 +20,7 @@ export const useHandleSubscriptions = () => {
     setStabilityPoolToggle,
     setSystemToggle,
     setServerSubscriptionsState,
+    setBitocracyToggle,
   } = useEmailNotificationSettingsContext();
 
   const resetSubscriptions = useCallback(() => {
@@ -28,12 +29,14 @@ export const useHandleSubscriptions = () => {
     setLiquidationsToggle(false);
     setStabilityPoolToggle(false);
     setSystemToggle(false);
+    setBitocracyToggle(false);
   }, [
     resetSubscriptionsState,
     setMarginCallsToggle,
     setLiquidationsToggle,
     setStabilityPoolToggle,
     setSystemToggle,
+    setBitocracyToggle,
   ]);
 
   const withDefaultSubscriptions = useCallback(
@@ -75,6 +78,9 @@ export const useHandleSubscriptions = () => {
       setSystemToggle(
         isSubscribedToGroup(AlertGroup.System, parsedSubscriptions),
       );
+      setBitocracyToggle(
+        isSubscribedToGroup(AlertGroup.BitocracyVote, parsedSubscriptions),
+      );
     },
     [
       withDefaultSubscriptions,
@@ -84,6 +90,7 @@ export const useHandleSubscriptions = () => {
       setLiquidationsToggle,
       setStabilityPoolToggle,
       setSystemToggle,
+      setBitocracyToggle,
     ],
   );
 
@@ -145,6 +152,11 @@ export const useHandleSubscriptions = () => {
     setSystemToggle(prevValue => !prevValue);
   }, [updateSubscriptions, setSystemToggle]);
 
+  const bitocracyToggleHandler = useCallback(() => {
+    updateSubscriptions(AlertGroup.BitocracyVote);
+    setBitocracyToggle(prevValue => !prevValue);
+  }, [updateSubscriptions, setBitocracyToggle]);
+
   return {
     resetSubscriptions,
     parseSubscriptionsResponse,
@@ -152,5 +164,6 @@ export const useHandleSubscriptions = () => {
     liquidationsToggleHandler,
     stabilityPoolToggleHandler,
     systemToggleHandler,
+    bitocracyToggleHandler,
   };
 };

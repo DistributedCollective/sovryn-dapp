@@ -18,14 +18,14 @@ export const LendFrameChart: FC<LendFrameProps> = memo(({ pool }) => {
   const { lendHistory } = useGetLendHistory(asset);
 
   const mockData = convertPoolHistoryToMockData(lendHistory);
-  const lendAPYTickStep = useMemo(
-    () => (Math.max(...mockData.lendAPY) - Math.min(...mockData.lendAPY)) / 6,
-    [mockData.lendAPY],
+  const lendAprTickStep = useMemo(
+    () => (Math.max(...mockData.lendApr) - Math.min(...mockData.lendApr)) / 6,
+    [mockData.lendApr],
   );
 
   const chartOptions = useMemo(
-    () => getChartOptions(lendAPYTickStep, mockData, pool),
-    [lendAPYTickStep, mockData, pool],
+    () => getChartOptions(lendAprTickStep, mockData, pool),
+    [lendAprTickStep, mockData, pool],
   );
 
   useEffect(() => {
@@ -37,14 +37,14 @@ export const LendFrameChart: FC<LendFrameProps> = memo(({ pool }) => {
       return;
     }
 
-    const lendApyGradient = chartRef.current?.ctx?.createLinearGradient(
+    const lendAprGradient = chartRef.current?.ctx?.createLinearGradient(
       0,
       0,
       0,
       400,
     );
-    lendApyGradient?.addColorStop(0, 'rgba(114, 234, 222, 1)');
-    lendApyGradient?.addColorStop(1, 'rgba(114, 234, 222, 0.09');
+    lendAprGradient?.addColorStop(0, 'rgba(114, 234, 222, 1)');
+    lendAprGradient?.addColorStop(1, 'rgba(114, 234, 222, 0.09');
 
     const totalLiquidityGradient = chartRef.current?.ctx?.createLinearGradient(
       0,
@@ -62,7 +62,7 @@ export const LendFrameChart: FC<LendFrameProps> = memo(({ pool }) => {
 
     chartRef.current = new Chart(canvas.current, {
       type: 'line',
-      data: getChartData(mockData, lendApyGradient, totalLiquidityGradient),
+      data: getChartData(mockData, lendAprGradient, totalLiquidityGradient),
       options: chartOptions,
       plugins: [customCanvasBackgroundColor],
     });

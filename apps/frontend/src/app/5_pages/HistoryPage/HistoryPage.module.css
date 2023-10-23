@@ -7,5 +7,5 @@
 }
 
 .mobileSelect {
-  @apply flex mt-6 justify-center lg:hidden;
+  @apply flex mt-6 justify-start lg:hidden;
 }

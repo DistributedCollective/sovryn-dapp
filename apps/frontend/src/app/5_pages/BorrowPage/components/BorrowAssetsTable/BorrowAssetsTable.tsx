@@ -26,6 +26,7 @@ export const BorrowAssetsTable: FC = () => (
         rowTitle={generateRowTitle}
         className="text-gray-10 lg:px-6 lg:py-4 text-xs"
         noData={t(translations.common.tables.noData)}
+        loadingData={t(translations.common.tables.loading)}
         dataAttribute="borrow-assets-table"
       />
     </div>

@@ -49,3 +49,5 @@ export const DEFAULT_PARAMETER: ProposalCreationParameter = {
     index: 1,
   },
 };
+
+export const REQUIRED_VOTING_POWER = 0.01;

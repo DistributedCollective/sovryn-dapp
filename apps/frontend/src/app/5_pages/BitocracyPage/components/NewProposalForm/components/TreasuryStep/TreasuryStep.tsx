@@ -6,6 +6,8 @@ import { Button, ButtonStyle, Icon, IconNames } from '@sovryn/ui';
 
 import { isAddress } from '../../../../../../3_organisms/StakeForm/components/AdjustStakeForm/AdjustStakeForm.utils';
 import { translations } from '../../../../../../../locales/i18n';
+import { useGetPersonalStakingStatistics } from '../../../../../StakePage/components/PersonalStakingStatistics/hooks/useGetPersonalStakingStatistics';
+import { useGetStakingStatistics } from '../../../../../StakePage/components/StakingStatistics/hooks/useGetStakingStatistics';
 import { useProposalContext } from '../../../../contexts/NewProposalContext';
 import {
   ProposalCreationParameter,
@@ -15,6 +17,7 @@ import {
   DEFAULT_PARAMETER,
   GOVERNOR_VAULT_ADMIN_ADDRESS,
   GOVERNOR_VAULT_OWNER_ADDRESS,
+  REQUIRED_VOTING_POWER,
 } from './TreasuryStep.constants';
 import { Parameter } from './components/Parameter/Parameter';
 
@@ -30,6 +33,9 @@ export const TreasuryStep: FC<TreasuryStepProps> = ({
   const { setParameters, setStep, parameters, submit } = useProposalContext();
   const [maxAmountError, setMaxAmountError] = useState(false);
 
+  const { votingPower } = useGetPersonalStakingStatistics();
+  const { totalVotingPower } = useGetStakingStatistics();
+
   const isValidParameter = useCallback(
     (parameter: ProposalCreationParameter) =>
       isAddress(parameter?.treasuryStepExtraData?.recipientAddress || '') &&
@@ -38,9 +44,18 @@ export const TreasuryStep: FC<TreasuryStepProps> = ({
     [maxAmountError],
   );
 
+  const hasVotingPower = useMemo(() => {
+    if (votingPower && totalVotingPower) {
+      const requiredVotingPower = totalVotingPower * REQUIRED_VOTING_POWER;
+      return votingPower >= requiredVotingPower;
+    } else {
+      return false;
+    }
+  }, [votingPower, totalVotingPower]);
+
   const isConfirmDisabled = useMemo(
-    () => !parameters.every(isValidParameter),
-    [parameters, isValidParameter],
+    () => !parameters.every(isValidParameter) && !hasVotingPower,
+    [parameters, isValidParameter, hasVotingPower],
   );
 
   const handleAddClick = useCallback(() => {

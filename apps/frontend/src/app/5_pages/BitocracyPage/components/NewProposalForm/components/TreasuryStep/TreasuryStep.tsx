@@ -70,7 +70,7 @@ export const TreasuryStep: FC<TreasuryStepProps> = ({
   const isValidParameter = useCallback(
     (parameter: ProposalCreationParameter) =>
       isAddress(parameter?.treasuryStepExtraData?.recipientAddress || '') &&
-      Number(parameter?.treasuryStepExtraData?.amount) > 0 &&
+      // Number(parameter?.treasuryStepExtraData?.amount) > 0 &&
       !maxAmountError,
     [maxAmountError],
   );

@@ -3,7 +3,7 @@ import { Story } from '@storybook/react';
 
 import { ComponentProps, useCallback, useReducer, useState } from 'react';
 
-import { Button, Heading } from '../../1_atoms';
+import { Button, Heading, Icon, IconNames } from '../../1_atoms';
 import { Dialog } from '../Dialog/Dialog';
 import { DialogSize } from '../Dialog/Dialog.types';
 import { VerticalTabs } from './VerticalTabs';
@@ -60,9 +60,18 @@ const DialogTemplate: Story<ComponentProps<typeof VerticalTabs>> = args => {
 export const Basic = Template.bind({});
 Basic.args = {
   items: [
-    { label: 'Tab 1', content: 'Tab 1 Content' },
-    { label: 'Tab 2', content: 'Tab 2 Content' },
-    { label: 'Tab 3', content: 'Tab 3 Content' },
+    {
+      label: 'Tab 1',
+      content: 'Tab 1 Content',
+    },
+    {
+      label: 'Tab 2',
+      content: 'Tab 2 Content',
+    },
+    {
+      label: 'Tab 3',
+      content: 'Tab 3 Content',
+    },
     {
       label: 'Tab4 ',
       infoText: 'Example with long content',
@@ -76,6 +85,12 @@ Basic.args = {
           </ol>
         </div>
       ),
+      icon: <Icon className="text-sovryn-blue" icon={IconNames.CHECK} />,
+    },
+    {
+      label: 'No account',
+      content: <div>No account</div>,
+      className: 'ml-[3.75rem]',
     },
   ],
   selectedIndex: 0,

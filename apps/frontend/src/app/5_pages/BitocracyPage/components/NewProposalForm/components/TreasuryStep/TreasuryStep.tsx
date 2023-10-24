@@ -18,6 +18,7 @@ import { defaultChainId } from '../../../../../../../config/chains';
 
 import { isAddress } from '../../../../../../3_organisms/StakeForm/components/AdjustStakeForm/AdjustStakeForm.utils';
 import { translations } from '../../../../../../../locales/i18n';
+import { decimalic } from '../../../../../../../utils/math';
 import { useGetPersonalStakingStatistics } from '../../../../../StakePage/components/PersonalStakingStatistics/hooks/useGetPersonalStakingStatistics';
 import { useGetStakingStatistics } from '../../../../../StakePage/components/StakingStatistics/hooks/useGetStakingStatistics';
 import { useProposalContext } from '../../../../contexts/NewProposalContext';
@@ -28,7 +29,6 @@ import {
 import { Governor } from '../../NewProposalForm.types';
 import {
   DEFAULT_PARAMETER,
-  GOVERNOR_VAULT_ADMIN_ADDRESS,
   GOVERNOR_VAULT_OWNER_ADDRESS,
   REQUIRED_VOTING_POWER,
 } from './TreasuryStep.constants';
@@ -77,11 +77,12 @@ export const TreasuryStep: FC<TreasuryStepProps> = ({
 
   const hasVotingPower = useMemo(() => {
     if (votingPower && totalVotingPower) {
-      const requiredVotingPower = totalVotingPower * REQUIRED_VOTING_POWER;
-      return votingPower >= requiredVotingPower;
-    } else {
-      return false;
+      const requiredVotingPower = decimalic(totalVotingPower.toString()).mul(
+        REQUIRED_VOTING_POWER,
+      );
+      return decimalic(votingPower.toString()).gte(requiredVotingPower);
     }
+    return false;
   }, [votingPower, totalVotingPower]);
 
   const isConfirmDisabled = useMemo(
@@ -95,11 +96,7 @@ export const TreasuryStep: FC<TreasuryStepProps> = ({
 
     const newParameter = {
       ...DEFAULT_PARAMETER,
-      target:
-        lastParameter.target === GOVERNOR_VAULT_OWNER_ADDRESS ||
-        lastParameter.target === GOVERNOR_VAULT_ADMIN_ADDRESS
-          ? lastParameter.target
-          : GOVERNOR_VAULT_OWNER_ADDRESS,
+      target: GOVERNOR_VAULT_OWNER_ADDRESS || '',
       treasuryStepExtraData: {
         ...DEFAULT_PARAMETER.treasuryStepExtraData,
         index: nextIndex,
@@ -136,7 +133,7 @@ export const TreasuryStep: FC<TreasuryStepProps> = ({
       setGovernorOwner(owner.address);
       setGovernorAdmin(admin.address);
     });
-  }, [setGovernor]);
+  }, [setGovernorOwner, setGovernorAdmin]);
 
   return (
     <div className="flex flex-col gap-7 relative pb-4">

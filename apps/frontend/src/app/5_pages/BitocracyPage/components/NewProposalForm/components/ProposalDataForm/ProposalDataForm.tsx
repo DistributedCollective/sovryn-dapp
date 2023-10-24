@@ -35,10 +35,7 @@ import {
   MAXIMUM_PROPOSAL_TEXT_LENGTH,
   MAXIMUM_DISCUSSION_URL_LENGTH,
 } from './ProposalDataForm.constants';
-import {
-  formatProposalText,
-  generateFormGroupLabel,
-} from './ProposalDataForm.utils';
+import { generateFormGroupLabel } from './ProposalDataForm.utils';
 
 const ACTIVE_CLASSNAME = 'text-primary-20';
 
@@ -94,7 +91,6 @@ export const ProposalDataForm: FC<ProposalDataFormProps> = ({
   const handleSubmit = useCallback(() => {
     onChange(form);
     onSubmit();
-    console.log(formatProposalText({ ...form }));
   }, [form, onChange, onSubmit]);
 
   const handlePreview = useCallback(() => {

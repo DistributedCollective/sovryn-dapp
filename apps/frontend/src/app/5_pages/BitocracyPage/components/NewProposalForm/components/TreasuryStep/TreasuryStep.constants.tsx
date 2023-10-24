@@ -7,6 +7,7 @@ import { defaultChainId } from '../../../../../../../config/chains';
 
 import { translations } from '../../../../../../../locales/i18n';
 import { ProposalCreationParameter } from '../../../../contexts/ProposalContext.types';
+import { Governor } from '../../NewProposalForm.types';
 
 const governorVaultOwnerAddresses = {
   [ChainIds.RSK_MAINNET]: '0x05f4f068DF59a5aA7911f57cE4f41ebFBcB8E247',
@@ -42,20 +43,24 @@ export const TREASURY_OPTIONS = [
     label: t(
       translations.bitocracyPage.proposalTreasuryForm.governorVaultOwner,
     ),
+    governor: Governor.Owner,
   },
   {
     value: GOVERNOR_VAULT_ADMIN_ADDRESS,
     label: t(
       translations.bitocracyPage.proposalTreasuryForm.governorVaultAdmin,
     ),
+    governor: Governor.Admin,
   },
   {
     value: ADOPTION_FUND_ADDRESS,
     label: t(translations.bitocracyPage.proposalTreasuryForm.adoptionFund),
+    governor: Governor.Owner,
   },
   {
     value: DEVELOPMENT_FUND_ADDRESS,
     label: t(translations.bitocracyPage.proposalTreasuryForm.developmentFund),
+    governor: Governor.Owner,
   },
 ];
 

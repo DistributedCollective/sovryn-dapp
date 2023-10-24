@@ -24,11 +24,8 @@ import { translations } from '../../../../../../../../../locales/i18n';
 import { decimalic } from '../../../../../../../../../utils/math';
 import { useProposalContext } from '../../../../../../contexts/NewProposalContext';
 import { ProposalCreationParameter } from '../../../../../../contexts/ProposalContext.types';
-import {
-  GOVERNOR_VAULT_ADMIN_ADDRESS,
-  GOVERNOR_VAULT_OWNER_ADDRESS,
-  TREASURY_OPTIONS,
-} from '../../TreasuryStep.constants';
+import { Governor } from '../../../../NewProposalForm.types';
+import { TREASURY_OPTIONS } from '../../TreasuryStep.constants';
 import { TreasuryParameterType } from '../../TreasuryStep.types';
 import { useGetTokenDetails } from '../../hooks/useGetTokenDetails';
 import {
@@ -40,12 +37,19 @@ import {
 type ParameterProps = {
   parameter: ProposalCreationParameter;
   onError: (error: boolean) => void;
+  governorAdmin: string;
+  governorOwner: string;
 };
 
 const pageTranslations = translations.bitocracyPage.proposalTreasuryForm;
 
-export const Parameter: FC<ParameterProps> = ({ parameter, onError }) => {
-  const { parameters, setParameters, setGovernor } = useProposalContext();
+export const Parameter: FC<ParameterProps> = ({
+  parameter,
+  onError,
+  governorAdmin,
+  governorOwner,
+}) => {
+  const { parameters, setParameters, governor } = useProposalContext();
   const [filteredOptions, setFilteredOptions] = useState(TREASURY_OPTIONS);
 
   const { account } = useAccount();
@@ -147,32 +151,25 @@ export const Parameter: FC<ParameterProps> = ({ parameter, onError }) => {
   );
 
   useEffect(() => {
-    if (parameter.target === GOVERNOR_VAULT_OWNER_ADDRESS) {
-      setGovernor(GOVERNOR_VAULT_OWNER_ADDRESS);
-    } else if (parameter.target === GOVERNOR_VAULT_ADMIN_ADDRESS) {
-      setGovernor(GOVERNOR_VAULT_ADMIN_ADDRESS);
+    if (governor === governorOwner) {
+      const updatedOptions = TREASURY_OPTIONS.filter(
+        option => option.governor !== Governor.Admin,
+      );
+      setFilteredOptions(updatedOptions);
+    } else if (governor === governorAdmin) {
+      const updatedOptions = TREASURY_OPTIONS.filter(
+        option => option.governor !== Governor.Owner,
+      );
+      setFilteredOptions(updatedOptions);
     }
-  }, [parameter.target, setGovernor]);
-
-  useEffect(() => {
-    const selectedValue = parameter.target;
-    const updatedOptions = TREASURY_OPTIONS.filter(option => {
-      if (parameters.length > 1) {
-        if (
-          (selectedValue === GOVERNOR_VAULT_OWNER_ADDRESS &&
-            option.value === GOVERNOR_VAULT_ADMIN_ADDRESS) ||
-          (selectedValue === GOVERNOR_VAULT_ADMIN_ADDRESS &&
-            option.value === GOVERNOR_VAULT_OWNER_ADDRESS)
-        ) {
-          return false;
-        }
-      }
-      return true;
-    });
-
-    setFilteredOptions(updatedOptions);
-    setGovernor(selectedValue);
-  }, [parameter.target, parameters, onChangeProperty, setGovernor]);
+  }, [
+    governor,
+    setFilteredOptions,
+    governorOwner,
+    governorAdmin,
+    onChangeProperty,
+    parameter.target,
+  ]);
 
   useEffect(() => {
     const { token, amount, recipientAddress } =

@@ -703,6 +703,9 @@
             "functionName": "Function name: ",
             "data": "Data: "
         },
+        "governor": "Governor",
+        "governorAdmin": "Governor Admin",
+        "governorOwner": "Governor Owner",
         "castVote": "Cast your vote",
         "stakeSOV": "Stake SOV",
         "support": "Support",

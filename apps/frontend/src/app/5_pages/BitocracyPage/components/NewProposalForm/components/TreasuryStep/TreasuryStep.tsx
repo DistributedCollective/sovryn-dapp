@@ -2,7 +2,19 @@ import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 
 import { t } from 'i18next';
 
-import { Button, ButtonStyle, Icon, IconNames } from '@sovryn/ui';
+import { getProtocolContract } from '@sovryn/contracts';
+import {
+  Button,
+  ButtonStyle,
+  FormGroup,
+  Icon,
+  IconNames,
+  Paragraph,
+  ParagraphSize,
+  Select,
+} from '@sovryn/ui';
+
+import { defaultChainId } from '../../../../../../../config/chains';
 
 import { isAddress } from '../../../../../../3_organisms/StakeForm/components/AdjustStakeForm/AdjustStakeForm.utils';
 import { translations } from '../../../../../../../locales/i18n';
@@ -13,6 +25,7 @@ import {
   ProposalCreationParameter,
   ProposalCreationStep,
 } from '../../../../contexts/ProposalContext.types';
+import { Governor } from '../../NewProposalForm.types';
 import {
   DEFAULT_PARAMETER,
   GOVERNOR_VAULT_ADMIN_ADDRESS,
@@ -30,8 +43,26 @@ export const TreasuryStep: FC<TreasuryStepProps> = ({
   onPreview,
   updateConfirmButtonState,
 }) => {
-  const { setParameters, setStep, parameters, submit } = useProposalContext();
+  const { setParameters, setStep, parameters, submit, governor, setGovernor } =
+    useProposalContext();
   const [maxAmountError, setMaxAmountError] = useState(false);
+
+  const [governorOwner, setGovernorOwner] = useState('');
+  const [governorAdmin, setGovernorAdmin] = useState('');
+
+  const GOVERNOR_OPTIONS = useMemo(
+    () => [
+      {
+        value: governorAdmin,
+        label: t(translations.proposalPage.governorAdmin),
+      },
+      {
+        value: governorOwner,
+        label: t(translations.proposalPage.governorOwner),
+      },
+    ],
+    [governorAdmin, governorOwner],
+  );
 
   const { votingPower } = useGetPersonalStakingStatistics();
   const { totalVotingPower } = useGetStakingStatistics();
@@ -54,8 +85,8 @@ export const TreasuryStep: FC<TreasuryStepProps> = ({
   }, [votingPower, totalVotingPower]);
 
   const isConfirmDisabled = useMemo(
-    () => !parameters.every(isValidParameter) && !hasVotingPower,
-    [parameters, isValidParameter, hasVotingPower],
+    () => !parameters.every(isValidParameter) || !hasVotingPower || !governor,
+    [parameters, isValidParameter, hasVotingPower, governor],
   );
 
   const handleAddClick = useCallback(() => {
@@ -97,6 +128,16 @@ export const TreasuryStep: FC<TreasuryStepProps> = ({
     updateConfirmButtonState(isConfirmDisabled);
   }, [isConfirmDisabled, updateConfirmButtonState]);
 
+  useEffect(() => {
+    Promise.all([
+      getProtocolContract(Governor.Owner, defaultChainId),
+      getProtocolContract(Governor.Admin, defaultChainId),
+    ]).then(([owner, admin]) => {
+      setGovernorOwner(owner.address);
+      setGovernorAdmin(admin.address);
+    });
+  }, [setGovernor]);
+
   return (
     <div className="flex flex-col gap-7 relative pb-4">
       <Button
@@ -111,11 +152,29 @@ export const TreasuryStep: FC<TreasuryStepProps> = ({
         }
       />
 
+      <FormGroup
+        label={
+          <Paragraph size={ParagraphSize.base} className="font-medium">
+            {t(translations.proposalPage.governor)}
+          </Paragraph>
+        }
+        labelElement="div"
+      >
+        <Select
+          value={governor || ''}
+          onChange={setGovernor}
+          options={GOVERNOR_OPTIONS}
+          className="w-full"
+        />
+      </FormGroup>
+
       {parameters.map((parameter, index) => (
         <Parameter
           key={index}
           parameter={parameter}
           onError={setMaxAmountError}
+          governorAdmin={governorAdmin}
+          governorOwner={governorOwner}
         />
       ))}
 

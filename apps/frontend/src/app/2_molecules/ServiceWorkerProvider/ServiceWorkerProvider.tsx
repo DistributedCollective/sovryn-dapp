@@ -58,7 +58,7 @@ export const ServiceWorkerProvider: FC<PropsWithChildren> = ({ children }) => {
             <>
               <Paragraph className="mb-3">
                 <Trans
-                  i18nKey={translations.appUpdateDialog.changelog}
+                  i18nKey={t(translations.appUpdateDialog.changelog)}
                   components={[
                     <a
                       href={getChangelogUrl(CURRENT_RELEASE.commit)}

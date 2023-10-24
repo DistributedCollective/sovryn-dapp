@@ -1,4 +1,4 @@
-import { useTranslation } from 'react-i18next';
+import { t } from 'i18next';
 
 import { SupportedTokens } from '@sovryn/contracts';
 import { prettyTx } from '@sovryn/ui';
@@ -19,7 +19,6 @@ export const useGetChartOptions = (
   redemptionBuffer: number,
   userTrovesBelowCount: number,
 ) => {
-  const { t } = useTranslation();
   const { account } = useAccount();
   return {
     responsive: true,

@@ -1,4 +1,4 @@
-import React, { FC, useCallback } from 'react';
+import React, { FC, useCallback, useEffect } from 'react';
 
 import { useProposalContext } from '../../contexts/NewProposalContext';
 import {

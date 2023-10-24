@@ -26,7 +26,7 @@ export const NotFoundPage: FC = () => (
       title=""
       description={
         <Trans
-          i18nKey={translations.notFoundPage.description}
+          i18nKey={t(translations.notFoundPage.description)}
           components={[
             <Link
               className="leading-tight font-normal text-sm lg:text-base text-center"

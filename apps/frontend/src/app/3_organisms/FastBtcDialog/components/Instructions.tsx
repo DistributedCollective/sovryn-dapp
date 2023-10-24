@@ -39,7 +39,7 @@ export const Instructions: React.FC<InstructionsProps> = ({ isReceive }) => {
         <li className="mb-4">{t(translation.line4, { hours: 1.5 })}</li>
         <li>
           <Trans
-            i18nKey={translation.line5}
+            i18nKey={t(translation.line5)}
             tOptions={{ hours: 1.5 }}
             components={[
               <Link text={t(translation.line5cta)} href={HELPDESK_LINK} />,

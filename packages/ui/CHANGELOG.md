@@ -1,5 +1,12 @@
 # @sovryn/ui
 
+## 1.0.17
+
+### Patch Changes
+
+- 3787c8e3: fix: SOV-3224 expand table on mobile
+- cb549d3d: SOV-3210: update twitter logo
+
 ## 1.0.16
 
 ### Patch Changes

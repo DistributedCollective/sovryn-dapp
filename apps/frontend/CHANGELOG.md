@@ -1,5 +1,19 @@
 # frontend
 
+## 1.0.33
+
+### Patch Changes
+
+- 23671b25: SOV-3375: fix broken localisations
+- 6765a49f: SOV-3061: Refactor Borrow page
+- dec66af7: SOV-3240: remove analytics scripts
+- bf2ab891: SOV-3223: Close menu when menu option is clicked
+- 49f155da: SOV-3285: use Convert page as default landing page
+- 812601fa: SOV-3172: Extend Borrow Dialog automatically closes when transaction completes
+- Updated dependencies [3787c8e3]
+- Updated dependencies [cb549d3d]
+  - @sovryn/ui@1.0.17
+
 ## 1.0.32
 
 ### Patch Changes
@@ -7,6 +21,7 @@
 - 1210dc50: SOV-3364: Fix broken localizations
 
 ## 1.0.31.1
+
 - 2832d32e: Fix Trezor Wallet connection
 
 ## 1.0.31

@@ -16,24 +16,36 @@ import {
 
 import { defaultChainId } from '../../../../../../../config/chains';
 
+import { isAddress } from '../../../../../../3_organisms/StakeForm/components/AdjustStakeForm/AdjustStakeForm.utils';
 import { translations } from '../../../../../../../locales/i18n';
+import { decimalic } from '../../../../../../../utils/math';
+import { useGetPersonalStakingStatistics } from '../../../../../StakePage/components/PersonalStakingStatistics/hooks/useGetPersonalStakingStatistics';
+import { useGetStakingStatistics } from '../../../../../StakePage/components/StakingStatistics/hooks/useGetStakingStatistics';
 import { useProposalContext } from '../../../../contexts/NewProposalContext';
-import { ProposalCreationParameter, ProposalCreationStep } from '../../../../contexts/ProposalContext.types';
+import {
+  ProposalCreationParameter,
+  ProposalCreationStep,
+} from '../../../../contexts/ProposalContext.types';
 import { Governor } from '../../NewProposalForm.types';
+import {
+  DEFAULT_PARAMETER,
+  GOVERNOR_VAULT_OWNER_ADDRESS,
+  REQUIRED_VOTING_POWER,
+} from './TreasuryStep.constants';
 import { Parameter } from './components/Parameter/Parameter';
-import { DEFAULT_PARAMETER } from '../../NewProposalForm.constants';
 
-type ParametersStepProps = {
-  updateConfirmButtonState: (value: boolean) => void;
+type TreasuryStepProps = {
   onPreview: () => void;
+  updateConfirmButtonState: (value: boolean) => void;
 };
 
-export const ParametersStep: FC<ParametersStepProps> = ({
-  updateConfirmButtonState,
+export const TreasuryStep: FC<TreasuryStepProps> = ({
   onPreview,
+  updateConfirmButtonState,
 }) => {
-  const { governor, setGovernor, parameters, setParameters, submit, setStep } =
+  const { setParameters, setStep, parameters, submit, governor, setGovernor } =
     useProposalContext();
+  const [maxAmountError, setMaxAmountError] = useState(false);
 
   const [governorOwner, setGovernorOwner] = useState('');
   const [governorAdmin, setGovernorAdmin] = useState('');
@@ -52,67 +64,66 @@ export const ParametersStep: FC<ParametersStepProps> = ({
     [governorAdmin, governorOwner],
   );
 
-  useEffect(() => {
-    if (!parameters || parameters.length === 0) {
-      setParameters([{ ...DEFAULT_PARAMETER }]);
-    }
-  }, [parameters, setParameters]);
+  const { votingPower } = useGetPersonalStakingStatistics();
+  const { totalVotingPower } = useGetStakingStatistics();
 
   const isValidParameter = useCallback(
-    (parameter: ProposalCreationParameter) => {
-      if (parameter?.parametersStepExtraData?.functionName === 'custom') {
-        return (
-          parameter?.value &&
-          parameter?.signature &&
-          parameter?.calldata &&
-          parameter?.target
-        );
-      }
-
-      if (parameter?.parametersStepExtraData?.parameterName === 'custom') {
-        return parameter?.value && parameter?.signature && parameter?.calldata;
-      }
-
-      return (
-        parameter?.parametersStepExtraData?.functionName &&
-        parameter?.parametersStepExtraData?.parameterName &&
-        parameter?.parametersStepExtraData?.newValue
-      );
-    },
-    [],
+    (parameter: ProposalCreationParameter) =>
+      isAddress(parameter?.treasuryStepExtraData?.recipientAddress || '') &&
+      // Number(parameter?.treasuryStepExtraData?.amount) > 0 &&
+      !maxAmountError,
+    [maxAmountError],
   );
+
+  const hasVotingPower = useMemo(() => {
+    if (votingPower && totalVotingPower) {
+      const requiredVotingPower = decimalic(totalVotingPower.toString()).mul(
+        REQUIRED_VOTING_POWER,
+      );
+      return decimalic(votingPower.toString()).gte(requiredVotingPower);
+    }
+    return false;
+  }, [votingPower, totalVotingPower]);
 
   const isConfirmDisabled = useMemo(
-    () => !parameters.every(isValidParameter) || !governor,
-    [parameters, isValidParameter, governor],
+    () => !parameters.every(isValidParameter) || !hasVotingPower || !governor,
+    [parameters, isValidParameter, hasVotingPower, governor],
   );
+
+  const handleAddClick = useCallback(() => {
+    const lastParameter = parameters[parameters.length - 1];
+    const nextIndex = (lastParameter?.treasuryStepExtraData?.index || 0) + 1;
+
+    const newParameter = {
+      ...DEFAULT_PARAMETER,
+      target: GOVERNOR_VAULT_OWNER_ADDRESS || '',
+      treasuryStepExtraData: {
+        ...DEFAULT_PARAMETER.treasuryStepExtraData,
+        index: nextIndex,
+      },
+    };
+
+    setParameters([...parameters, newParameter]);
+  }, [parameters, setParameters]);
 
   const handleBack = useCallback(
     () => setStep(ProposalCreationStep.Details),
     [setStep],
   );
 
-  const handleAddClick = useCallback(() => {
-    const lastParameterIndex =
-      parameters[parameters.length - 1]?.parametersStepExtraData?.index!;
-
-    const updatedParameters = [
-      ...parameters,
-      {
-        ...DEFAULT_PARAMETER,
-        parametersStepExtraData: {
-          ...DEFAULT_PARAMETER.parametersStepExtraData,
-          index: lastParameterIndex + 1,
-        },
-      },
-    ];
-
-    setParameters(updatedParameters);
-  }, [parameters, setParameters]);
-
   const handleSubmit = useCallback(() => {
     submit();
   }, [submit]);
+
+  useEffect(() => {
+    if (parameters.length === 0) {
+      setParameters([DEFAULT_PARAMETER]);
+    }
+  }, [parameters, setParameters]);
+
+  useEffect(() => {
+    updateConfirmButtonState(isConfirmDisabled);
+  }, [isConfirmDisabled, updateConfirmButtonState]);
 
   useEffect(() => {
     Promise.all([
@@ -122,11 +133,7 @@ export const ParametersStep: FC<ParametersStepProps> = ({
       setGovernorOwner(owner.address);
       setGovernorAdmin(admin.address);
     });
-  }, [setGovernor]);
-
-  useEffect(() => {
-    updateConfirmButtonState(isConfirmDisabled);
-  }, [isConfirmDisabled, updateConfirmButtonState]);
+  }, [setGovernorOwner, setGovernorAdmin]);
 
   return (
     <div className="flex flex-col gap-7 relative pb-4">
@@ -158,12 +165,18 @@ export const ParametersStep: FC<ParametersStepProps> = ({
         />
       </FormGroup>
 
-      {parameters.map((item, index) => (
-        <Parameter parameter={item} key={index} />
+      {parameters.map((parameter, index) => (
+        <Parameter
+          key={index}
+          parameter={parameter}
+          onError={setMaxAmountError}
+          governorAdmin={governorAdmin}
+          governorOwner={governorOwner}
+        />
       ))}
 
       <Button
-        text={`+ ${t(translations.proposalPage.actions.add)}`}
+        text={`+ ${t(translations.bitocracyPage.proposalTreasuryForm.add)}`}
         className="m-auto"
         style={ButtonStyle.secondary}
         onClick={handleAddClick}

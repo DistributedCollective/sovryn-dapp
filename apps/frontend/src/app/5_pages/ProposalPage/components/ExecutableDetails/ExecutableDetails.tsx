@@ -1,10 +1,10 @@
-import React, { FC, useMemo } from 'react';
+import React, { FC } from 'react';
 
 import { t } from 'i18next';
 
-import { Heading, Paragraph, ParagraphSize } from '@sovryn/ui';
+import { Heading, Paragraph } from '@sovryn/ui';
 
-import { TxIdWithNotification } from '../../../../2_molecules/TxIdWithNotification/TransactionIdWithNotification';
+import { ProposalExecutableDetail } from '../../../../3_organisms/ProposalExecutableDetails/ProposalExecutableDetails';
 import { translations } from '../../../../../locales/i18n';
 import { Proposal } from '../../../../../utils/graphql/rsk/generated';
 import { useIsExecutableProposal } from '../../../BitocracyPage/hooks/useIsExecutableProposal';
@@ -12,28 +12,11 @@ import { useIsExecutableProposal } from '../../../BitocracyPage/hooks/useIsExecu
 const pageTranslations = translations.proposalPage.executableDetails;
 
 type ExecutableDetailsProps = {
-  className?: string;
   proposal: Proposal;
 };
 
 export const ExecutableDetails: FC<ExecutableDetailsProps> = ({ proposal }) => {
   const isExecutableProposal = useIsExecutableProposal(proposal);
-
-  const executableList = useMemo(
-    () =>
-      proposal.signatures.map((signature, i) => ({
-        signature: signature.split('(')[0],
-        target: proposal.targets[i],
-        value: proposal.values[i],
-        calldata: proposal.calldatas[i],
-      })),
-    [
-      proposal.calldatas,
-      proposal.signatures,
-      proposal.targets,
-      proposal.values,
-    ],
-  );
   return (
     <div className="bg-gray-90 p-6 rounded">
       <Heading className="text-sm font-medium">
@@ -45,100 +28,17 @@ export const ExecutableDetails: FC<ExecutableDetailsProps> = ({ proposal }) => {
             {t(translations.common.na)}
           </Paragraph>
         ) : (
-          executableList.map((executable, i) => (
-            <div
-              key={executable.signature}
-              className="w-full font-medium bg-gray-80 p-3 rounded"
-            >
-              <Heading className="text-xs">
-                {t(pageTranslations.executable)} #{i + 1}
-              </Heading>
-
-              <div className="grid grid-cols-2 w-full text-gray-30 gap-3 mt-3">
-                <Paragraph size={ParagraphSize.base} className="text-xs">
-                  {t(pageTranslations.assetName)}
-                </Paragraph>
-                <Paragraph
-                  size={ParagraphSize.base}
-                  className="text-xs text-right"
-                >
-                  -
-                </Paragraph>
-              </div>
-
-              <div className="grid grid-cols-2 w-full text-gray-30 gap-3 mt-3">
-                <Paragraph size={ParagraphSize.base} className="text-xs">
-                  {t(pageTranslations.assetAmount)}
-                </Paragraph>
-                <Paragraph
-                  size={ParagraphSize.base}
-                  className="text-xs text-right"
-                >
-                  {executable.value}
-                </Paragraph>
-              </div>
-
-              <div className="grid grid-cols-2 w-full text-gray-30 gap-3 mt-3">
-                <Paragraph size={ParagraphSize.base} className="text-xs">
-                  {t(pageTranslations.assetAddress)}
-                </Paragraph>
-                <Paragraph
-                  size={ParagraphSize.base}
-                  className="text-xs text-right"
-                >
-                  -
-                </Paragraph>
-              </div>
-
-              <div className="grid grid-cols-2 w-full text-gray-30 gap-3 mt-3">
-                <Paragraph size={ParagraphSize.base} className="text-xs">
-                  {t(pageTranslations.contractAddress)}
-                </Paragraph>
-                <div className="text-xs text-right">
-                  <TxIdWithNotification
-                    href=""
-                    value={executable.target}
-                    dataAttribute="proposal-contract-address-id"
-                  />
-                </div>
-              </div>
-
-              <div className="grid grid-cols-2 w-full text-gray-30 gap-3 mt-3">
-                <Paragraph size={ParagraphSize.base} className="text-xs">
-                  {t(pageTranslations.recipientAddress)}
-                </Paragraph>
-                <Paragraph
-                  size={ParagraphSize.base}
-                  className="text-xs text-right"
-                >
-                  -
-                </Paragraph>
-              </div>
-
-              <div className="grid grid-cols-2 w-full text-gray-30 gap-3 mt-3">
-                <Paragraph size={ParagraphSize.base} className="text-xs">
-                  {t(pageTranslations.functionName)}
-                </Paragraph>
-                <Paragraph
-                  size={ParagraphSize.base}
-                  className="text-xs text-right break-all"
-                >
-                  {executable.signature}
-                </Paragraph>
-              </div>
-
-              <div className="grid grid-cols-2 w-full text-gray-30 gap-3 mt-3">
-                <Paragraph size={ParagraphSize.base} className="text-xs">
-                  {t(pageTranslations.data)}
-                </Paragraph>
-                <Paragraph
-                  size={ParagraphSize.base}
-                  className="text-xs text-right break-all"
-                >
-                  {executable.calldata}
-                </Paragraph>
-              </div>
-            </div>
+          proposal.signatures.map((signature, i) => (
+            <ProposalExecutableDetail
+              key={signature}
+              parameter={{
+                signature: signature.split('(')[0],
+                target: proposal.targets[i],
+                value: proposal.values[i],
+                calldata: proposal.calldatas[i],
+              }}
+              index={i}
+            />
           ))
         )}
       </div>

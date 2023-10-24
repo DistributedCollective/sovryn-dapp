@@ -1,4 +1,5 @@
-import { ProposalCreationType } from '../../contexts/ProposalContext.types';
+import { SupportedTokens } from '@sovryn/contracts';
+import { ProposalCreationParameter, ProposalCreationStep, ProposalCreationType } from '../../contexts/ProposalContext.types';
 import { ProposalContract, ProposalTreasury } from './NewProposalForm.types';
 
 export const PROPOSAL_TYPE_OPTIONS = [
@@ -81,3 +82,22 @@ export const PROPOSAL_TREASURY_OPTIONS = [
     label: ProposalTreasury.EcosystemFund,
   },
 ];
+
+export const DEFAULT_PARAMETER: ProposalCreationParameter = {
+  target: '',
+  value: '0x0',
+  signature: '',
+  calldata: '0x0',
+  parametersStepExtraData: {
+    functionName: ProposalContract.SovrynProtocol,
+    newValue: '',
+    index: 1,
+    parameterName: '',
+  },
+  treasuryStepExtraData: {
+    recipientAddress: '',
+    token: SupportedTokens.rbtc,
+    amount: '0',
+    index: 1,
+  },
+};

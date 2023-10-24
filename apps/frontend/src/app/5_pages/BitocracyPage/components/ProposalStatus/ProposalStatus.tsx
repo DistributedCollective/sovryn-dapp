@@ -64,8 +64,8 @@ export const ProposalStatus: FC<ProposalStatusProps> = ({
         } font-semibold`}
         children={
           <>
-            <div>{statusMessage}</div>
-            <div>{activeProposalDetailMessage}</div>
+            <span>{statusMessage}</span>
+            <span>{activeProposalDetailMessage}</span>
           </>
         }
       />

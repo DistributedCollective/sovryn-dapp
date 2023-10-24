@@ -16,6 +16,7 @@ type MaxButtonProps = {
   precision?: number;
   token: SupportedTokens;
   dataAttribute?: string;
+  label?: string;
 };
 
 export const MaxButton: FC<MaxButtonProps> = ({
@@ -24,13 +25,14 @@ export const MaxButton: FC<MaxButtonProps> = ({
   precision = 4,
   token,
   dataAttribute,
+  label = t(translations.common.max),
 }) => (
   <button
     onClick={onClick}
     className="text-xs font-medium underline whitespace-nowrap"
     {...applyDataAttr(dataAttribute)}
   >
-    {`(${t(translations.common.max)} `}
+    {`(${label} `}
     <AmountRenderer
       value={value}
       precision={precision}

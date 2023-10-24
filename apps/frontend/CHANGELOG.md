@@ -9,7 +9,7 @@
 - dec66af7: SOV-3240: remove analytics scripts
 - bf2ab891: SOV-3223: Close menu when menu option is clicked
 - 49f155da: SOV-3285: use Convert page as default landing page
-- 812601fa: SOV-3172: Dialog automatically closes when transaction completes
+- 812601fa: SOV-3172: Extend Borrow Dialog automatically closes when transaction completes
 - Updated dependencies [3787c8e3]
 - Updated dependencies [cb549d3d]
   - @sovryn/ui@1.0.17

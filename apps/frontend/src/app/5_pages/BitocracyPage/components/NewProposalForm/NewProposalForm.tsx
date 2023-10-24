@@ -36,6 +36,10 @@ export const NewProposalForm: FC = () => {
     }
   }, [proposalType, setStep, step, submit]);
 
+  useEffect(() => {
+    setStep(ProposalCreationStep.SelectType);
+  }, [setStep]);
+
   if (step === ProposalCreationStep.SelectType) {
     return (
       <ProposalInitialStep

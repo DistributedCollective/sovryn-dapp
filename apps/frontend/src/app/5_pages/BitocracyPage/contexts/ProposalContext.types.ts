@@ -1,5 +1,7 @@
 import { Dispatch, SetStateAction } from 'react';
 
+import { SupportedTokens } from '@sovryn/contracts';
+
 import { TransactionCallbacks } from '../../../3_organisms/TransactionStepDialog/TransactionStepDialog.types';
 
 export type ProposalContextValue = {
@@ -38,6 +40,15 @@ export type ProposalCreationDetails = {
   text: string;
 };
 
+export type TreasuryStepExtraData = {
+  index?: number;
+  functionName?: string;
+  newValue?: string;
+  recipientAddress?: string;
+  token?: SupportedTokens;
+  amount?: string;
+};
+
 export type ProposalCreationParameter = {
   // address which will be called by the governance contract
   target: string;
@@ -47,4 +58,6 @@ export type ProposalCreationParameter = {
   signature: string;
   // abi encoded arguments (for signature) to be passed to the function (default to "0x0")
   calldata: string;
+  // extra data needed for parameters step
+  treasuryStepExtraData?: TreasuryStepExtraData;
 };

@@ -18,3 +18,8 @@ export enum ProposalTreasury {
   DevelopmentFund = 'Development Fund',
   EcosystemFund = 'Ecosystem Fund',
 }
+
+export enum Governor {
+  Admin = 'governorAdmin',
+  Owner = 'governorOwner',
+}

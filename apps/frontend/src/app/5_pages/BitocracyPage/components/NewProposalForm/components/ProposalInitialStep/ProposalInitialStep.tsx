@@ -11,7 +11,6 @@ import {
 } from '../../../../contexts/ProposalContext.types';
 import {
   PROPOSAL_CONTRACT_OPTIONS,
-  PROPOSAL_TREASURY_OPTIONS,
   PROPOSAL_TYPE_OPTIONS,
 } from '../../NewProposalForm.constants';
 
@@ -21,8 +20,6 @@ export type ProposalInitialStepProps = {
   proposalType: ProposalCreationType;
   setProposalContract: (value: string) => void;
   proposalContract: string;
-  setProposalTreasuryAccount: (value: string) => void;
-  proposalTreasuryAccount: string;
 };
 
 export const ProposalInitialStep: FC<ProposalInitialStepProps> = ({
@@ -31,8 +28,6 @@ export const ProposalInitialStep: FC<ProposalInitialStepProps> = ({
   proposalType,
   setProposalContract,
   proposalContract,
-  setProposalTreasuryAccount,
-  proposalTreasuryAccount,
 }) => (
   <div className="flex flex-col gap-4">
     <Select
@@ -46,14 +41,6 @@ export const ProposalInitialStep: FC<ProposalInitialStepProps> = ({
         value={proposalContract}
         onChange={setProposalContract}
         options={PROPOSAL_CONTRACT_OPTIONS}
-        className="w-full"
-      />
-    )}
-    {proposalType === ProposalCreationType.Treasury && (
-      <Select
-        value={proposalTreasuryAccount}
-        onChange={setProposalTreasuryAccount}
-        options={PROPOSAL_TREASURY_OPTIONS}
         className="w-full"
       />
     )}

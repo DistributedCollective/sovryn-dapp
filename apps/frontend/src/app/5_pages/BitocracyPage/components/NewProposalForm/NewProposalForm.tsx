@@ -12,6 +12,7 @@ import {
 import { PreviewProposalDialog } from './components/PreviewProposalDialog/PreviewProposalDialog';
 import { ProposalDataForm } from './components/ProposalDataForm/ProposalDataForm';
 import { ProposalInitialStep } from './components/ProposalInitialStep/ProposalInitialStep';
+import { TreasuryStep } from './components/TreasuryStep/TreasuryStep';
 
 export const NewProposalForm: FC = () => {
   const {
@@ -25,7 +26,8 @@ export const NewProposalForm: FC = () => {
     setGovernor,
     submit,
   } = useProposalContext();
-  const [proposalTreasuryAccount, setProposalTreasuryAccount] = useState('');
+  const [isPreview, setIsPreview] = useState(false);
+  const [isConfirmButtonDisabled, setIsConfirmButtonDisabled] = useState(true);
 
   // todo: these should be implemented in their own components.
   useEffect(() => {
@@ -38,14 +40,19 @@ export const NewProposalForm: FC = () => {
   }, [setDetails, setGovernor]);
 
   const handlePreview = useCallback(() => {
-    // todo: also pass current step to know which step to go back to.
-    setStep(ProposalCreationStep.Overview);
-  }, [setStep]);
+    setIsPreview(true);
+  }, []);
+
+  const handleBack = useCallback(() => {
+    setIsPreview(false);
+  }, []);
 
   const handleSubmit = useCallback(async () => {
     if (step === ProposalCreationStep.Details) {
       if (proposalType === ProposalCreationType.Proclamation) {
         submit();
+      } else if (proposalType === ProposalCreationType.Treasury) {
+        setStep(ProposalCreationStep.Treasury);
       } else {
         setStep(ProposalCreationStep.Parameters);
       }
@@ -64,12 +71,10 @@ export const NewProposalForm: FC = () => {
         setProposalType={setProposalType}
         proposalContract={governor || ''}
         setProposalContract={setGovernor}
-        proposalTreasuryAccount={proposalTreasuryAccount}
-        setProposalTreasuryAccount={setProposalTreasuryAccount}
       />
     );
   } else if (step === ProposalCreationStep.Details) {
-    return (
+    return !isPreview ? (
       <ProposalDataForm
         value={details}
         onChange={setDetails}
@@ -78,9 +83,21 @@ export const NewProposalForm: FC = () => {
         onPreview={handlePreview}
         onSubmit={handleSubmit}
       />
+    ) : (
+      <PreviewProposalDialog onClose={handleBack} />
     );
-  } else if (step === ProposalCreationStep.Overview) {
-    return <PreviewProposalDialog />;
+  } else if (step === ProposalCreationStep.Treasury) {
+    return isPreview ? (
+      <PreviewProposalDialog
+        disabled={isConfirmButtonDisabled}
+        onClose={handleBack}
+      />
+    ) : (
+      <TreasuryStep
+        updateConfirmButtonState={setIsConfirmButtonDisabled}
+        onPreview={handlePreview}
+      />
+    );
   } else {
     return null;
   }

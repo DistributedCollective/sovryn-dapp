@@ -15,22 +15,25 @@ import { useAccount } from '../../../../../../../hooks/useAccount';
 import { translations } from '../../../../../../../locales/i18n';
 import { ProposalInfo } from '../../../../../ProposalPage/components/ProposalInfo/ProposalInfo';
 import { useProposalContext } from '../../../../contexts/NewProposalContext';
-import { ProposalCreationStep } from '../../../../contexts/ProposalContext.types';
+import { ExecutableDetails } from './components/ExecutableDetails.tsx/ExecutableDetail';
 
 const pageTranslations = translations.proposalPage;
 
-export const PreviewProposal: FC = () => {
-  const { details, submit, type, setStep } = useProposalContext();
+type PreviewProposalProps = {
+  onClose: () => void;
+  disabled?: boolean;
+};
 
+export const PreviewProposal: FC<PreviewProposalProps> = ({
+  onClose,
+  disabled,
+}) => {
+  const { details, submit, type, parameters } = useProposalContext();
   const { account } = useAccount();
 
   const handleSubmit = useCallback(() => {
     submit();
   }, [submit]);
-
-  const handleClose = useCallback(() => {
-    setStep(ProposalCreationStep.Details);
-  }, [setStep]);
 
   return (
     <>
@@ -68,13 +71,16 @@ export const PreviewProposal: FC = () => {
           </div>
 
           <ProposalInfo link={details.link} description={details.text} />
+          {parameters.length > 0 && (
+            <ExecutableDetails parameters={parameters} />
+          )}
         </div>
       </div>
 
       <div className="flex items-center gap-4 bg-sovryn-black p-6 pb-10 border-t sm:border-none border-gray-60 justify-center sm:absolute fixed bottom-0 left-0 right-0 z-10">
         <Button
           text={t(translations.common.buttons.back)}
-          onClick={handleClose}
+          onClick={onClose}
           style={ButtonStyle.secondary}
           className="flex-1 max-w-44"
         />
@@ -82,6 +88,7 @@ export const PreviewProposal: FC = () => {
           text={t(translations.common.buttons.confirm)}
           onClick={handleSubmit}
           className="flex-1 max-w-44"
+          disabled={disabled}
         />
       </div>
     </>

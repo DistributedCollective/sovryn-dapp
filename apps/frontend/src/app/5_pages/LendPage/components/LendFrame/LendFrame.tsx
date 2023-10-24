@@ -7,7 +7,7 @@ import { Paragraph, Table } from '@sovryn/ui';
 import { translations } from '../../../../../locales/i18n';
 import { LendingPoolDictionary } from '../../../../../utils/LendingPoolDictionary';
 import { COLUMNS_CONFIG } from './LendFrame.constants';
-import { generateRowTitle } from './LendFrame.utils';
+import { generateRowSubTitle, generateRowTitle } from './LendFrame.utils';
 import { LendFrameDetails } from './components/LendFrameDetails/LendFrameDetails';
 
 export const LendFrame: FC = () => {
@@ -21,7 +21,7 @@ export const LendFrame: FC = () => {
         </Paragraph>
       </div>
 
-      <div className="bg-gray-80 py-4 px-4 rounded">
+      <div className="lg:bg-gray-80 lg:p-4 rounded">
         <Table
           columns={COLUMNS_CONFIG}
           rows={lendPools}
@@ -33,6 +33,7 @@ export const LendFrame: FC = () => {
           expandedContent={pool => <LendFrameDetails pool={pool} />}
           expandedClassNames="border border-gray-70 border-t-0"
           preventExpandOnClickClass="prevent-row-click"
+          rowSubTitle={generateRowSubTitle}
         />
       </div>
     </div>

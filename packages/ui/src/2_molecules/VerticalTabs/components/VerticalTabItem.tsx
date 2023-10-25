@@ -14,6 +14,8 @@ export const VerticalTabItem: FC<VerticalTabsItemButtonProps> = ({
   active,
   dataAttribute,
   onClick,
+  icon,
+  className,
 }) => {
   return (
     <button
@@ -23,8 +25,11 @@ export const VerticalTabItem: FC<VerticalTabsItemButtonProps> = ({
       data-active={active}
       onClick={onClick}
     >
-      <Heading type={HeadingType.h2}>{label}</Heading>
-      {infoText && <Paragraph className={styles.info}>{infoText}</Paragraph>}
+      {icon && <span className={styles.icon}> {icon} </span>}
+      <div className={className}>
+        <Heading type={HeadingType.h2}>{label}</Heading>
+        {infoText && <Paragraph className={styles.info}>{infoText}</Paragraph>}
+      </div>
     </button>
   );
 };

@@ -1,11 +1,16 @@
 .button {
-  @apply w-full block text-left text-gray-10 text-opacity-50 font-medium bg-transparent;
+  @apply w-full block text-left text-gray-10 transition-opacity opacity-50 font-medium bg-transparent flex items-center gap-3;
 
-  &.active, &:hover {
-    @apply text-opacity-100;
+  &.active,
+  &:hover {
+    @apply opacity-100;
   }
-  
+
   & .info {
     @apply block mt-2;
+  }
+
+  & .icon {
+    @apply flex items-center justify-center w-12 h-12 rounded bg-gray-70;
   }
 }

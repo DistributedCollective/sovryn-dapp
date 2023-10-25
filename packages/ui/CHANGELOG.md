@@ -1,5 +1,11 @@
 # @sovryn/ui
 
+## 1.0.18
+
+### Patch Changes
+
+- 327ac92e: SOV-3333: update vertical tabs style
+
 ## 1.0.17
 
 ### Patch Changes

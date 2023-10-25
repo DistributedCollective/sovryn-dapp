@@ -129,6 +129,22 @@ export const Parameter: FC<ParameterProps> = ({ parameter }) => {
         <FormGroup
           label={
             <Paragraph size={ParagraphSize.base} className="font-medium">
+              {t(translations.proposalPage.customContract.address)}
+            </Paragraph>
+          }
+          labelElement="div"
+        >
+          <Input
+            value={parameter.target}
+            onChangeText={value => onChangeProperty('target', value)}
+            className="max-w-none"
+            classNameInput="h-10"
+          />
+        </FormGroup>
+
+        <FormGroup
+          label={
+            <Paragraph size={ParagraphSize.base} className="font-medium">
               {t(translations.proposalPage.customContract.value)}
             </Paragraph>
           }
@@ -145,7 +161,7 @@ export const Parameter: FC<ParameterProps> = ({ parameter }) => {
         <FormGroup
           label={
             <Paragraph size={ParagraphSize.base} className="font-medium">
-              {t(translations.proposalPage.customContract.signature)}
+              {t(translations.proposalPage.customContract.functionName)}
             </Paragraph>
           }
           labelElement="div"
@@ -180,32 +196,8 @@ export const Parameter: FC<ParameterProps> = ({ parameter }) => {
       parameter.calldata,
       parameter.signature,
       parameter.value,
+      parameter.target,
     ],
-  );
-
-  const customContractSection = useMemo(
-    () => (
-      <div className="gap-3 flex flex-col">
-        <FormGroup
-          label={
-            <Paragraph size={ParagraphSize.base} className="font-medium">
-              {t(translations.proposalPage.customContract.address)}
-            </Paragraph>
-          }
-          labelElement="div"
-        >
-          <Input
-            value={parameter.target}
-            onChangeText={value => onChangeProperty('target', value)}
-            className="max-w-none"
-            classNameInput="h-10"
-          />
-        </FormGroup>
-
-        {customParameterSection}
-      </div>
-    ),
-    [customParameterSection, onChangeProperty, parameter.target],
   );
 
   useEffect(() => {
@@ -262,7 +254,7 @@ export const Parameter: FC<ParameterProps> = ({ parameter }) => {
       </FormGroup>
 
       {isCustomContract ? (
-        customContractSection
+        customParameterSection
       ) : (
         <FormGroup
           label={

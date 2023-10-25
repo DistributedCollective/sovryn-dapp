@@ -1,12 +1,10 @@
 import { t } from 'i18next';
 
-import { SupportedTokens } from '@sovryn/contracts';
 import { ChainIds } from '@sovryn/ethers-provider';
 
 import { defaultChainId } from '../../../../../../../config/chains';
 
 import { translations } from '../../../../../../../locales/i18n';
-import { ProposalCreationParameter } from '../../../../contexts/ProposalContext.types';
 import { Governor } from '../../NewProposalForm.types';
 
 const governorVaultOwnerAddresses = {
@@ -63,18 +61,5 @@ export const TREASURY_OPTIONS = [
     governor: Governor.Owner,
   },
 ];
-
-export const DEFAULT_PARAMETER: ProposalCreationParameter = {
-  target: GOVERNOR_VAULT_OWNER_ADDRESS,
-  value: '0x0',
-  signature: '',
-  calldata: '0x0',
-  treasuryStepExtraData: {
-    recipientAddress: '',
-    token: SupportedTokens.rbtc,
-    amount: '0',
-    index: 1,
-  },
-};
 
 export const REQUIRED_VOTING_POWER = 0.01;

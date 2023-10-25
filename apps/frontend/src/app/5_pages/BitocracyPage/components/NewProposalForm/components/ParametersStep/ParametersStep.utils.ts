@@ -84,9 +84,14 @@ export const renderSignature = (functionName: string) =>
 export const isValidParameter = (parameter: ProposalCreationParameter) => {
   const { functionName, parameterName, newValue } =
     parameter.parametersStepExtraData || {};
-  let isCustomParamValid = true;
-  if (functionName === 'custom' && parameter.target === '') {
-    isCustomParamValid = false;
+
+  if (functionName === 'custom' || parameterName === 'custom') {
+    return (
+      parameter?.value &&
+      parameter?.signature &&
+      parameter?.calldata &&
+      parameter?.target
+    );
   }
-  return functionName && parameterName && newValue && isCustomParamValid;
+  return functionName && parameterName && newValue;
 };

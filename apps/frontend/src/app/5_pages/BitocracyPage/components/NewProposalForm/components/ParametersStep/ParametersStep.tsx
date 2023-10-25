@@ -18,10 +18,11 @@ import { defaultChainId } from '../../../../../../../config/chains';
 
 import { translations } from '../../../../../../../locales/i18n';
 import { useProposalContext } from '../../../../contexts/NewProposalContext';
-import { ProposalCreationParameter, ProposalCreationStep } from '../../../../contexts/ProposalContext.types';
-import { Governor } from '../../NewProposalForm.types';
-import { Parameter } from './components/Parameter/Parameter';
+import { ProposalCreationStep } from '../../../../contexts/ProposalContext.types';
 import { DEFAULT_PARAMETER } from '../../NewProposalForm.constants';
+import { Governor } from '../../NewProposalForm.types';
+import { isValidParameter } from './ParametersStep.utils';
+import { Parameter } from './components/Parameter/Parameter';
 
 type ParametersStepProps = {
   updateConfirmButtonState: (value: boolean) => void;
@@ -58,33 +59,9 @@ export const ParametersStep: FC<ParametersStepProps> = ({
     }
   }, [parameters, setParameters]);
 
-  const isValidParameter = useCallback(
-    (parameter: ProposalCreationParameter) => {
-      if (parameter?.parametersStepExtraData?.functionName === 'custom') {
-        return (
-          parameter?.value &&
-          parameter?.signature &&
-          parameter?.calldata &&
-          parameter?.target
-        );
-      }
-
-      if (parameter?.parametersStepExtraData?.parameterName === 'custom') {
-        return parameter?.value && parameter?.signature && parameter?.calldata;
-      }
-
-      return (
-        parameter?.parametersStepExtraData?.functionName &&
-        parameter?.parametersStepExtraData?.parameterName &&
-        parameter?.parametersStepExtraData?.newValue
-      );
-    },
-    [],
-  );
-
   const isConfirmDisabled = useMemo(
     () => !parameters.every(isValidParameter) || !governor,
-    [parameters, isValidParameter, governor],
+    [parameters, governor],
   );
 
   const handleBack = useCallback(

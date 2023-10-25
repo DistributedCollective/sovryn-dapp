@@ -5,11 +5,11 @@ import {
   ProposalCreationStep,
   ProposalCreationType,
 } from '../../contexts/ProposalContext.types';
+import { ParametersStep } from './components/ParametersStep/ParametersStep';
 import { PreviewProposalDialog } from './components/PreviewProposalDialog/PreviewProposalDialog';
 import { ProposalDataForm } from './components/ProposalDataForm/ProposalDataForm';
 import { ProposalInitialStep } from './components/ProposalInitialStep/ProposalInitialStep';
 import { TreasuryStep } from './components/TreasuryStep/TreasuryStep';
-import { ParametersStep } from './components/ParametersStep/ParametersStep';
 
 export const NewProposalForm: FC = () => {
   const {
@@ -59,6 +59,15 @@ export const NewProposalForm: FC = () => {
       );
     }
 
+    if (isPreview) {
+      return (
+        <PreviewProposalDialog
+          disabled={isConfirmButtonDisabled}
+          onClose={handleBack}
+        />
+      );
+    }
+
     if (step === ProposalCreationStep.Parameters) {
       return (
         <ParametersStep
@@ -73,15 +82,6 @@ export const NewProposalForm: FC = () => {
         <TreasuryStep
           onPreview={handlePreview}
           updateConfirmButtonState={setIsConfirmButtonDisabled}
-        />
-      );
-    }
-
-    if (isPreview) {
-      return (
-        <PreviewProposalDialog
-          disabled={isConfirmButtonDisabled}
-          onClose={handleBack}
         />
       );
     }
@@ -105,6 +105,7 @@ export const NewProposalForm: FC = () => {
     handleBack,
     handlePreview,
     handleSubmit,
+    setProposalType,
     isConfirmButtonDisabled,
     isPreview,
     proposalType,
@@ -114,5 +115,4 @@ export const NewProposalForm: FC = () => {
   ]);
 
   return renderContent;
-
 };

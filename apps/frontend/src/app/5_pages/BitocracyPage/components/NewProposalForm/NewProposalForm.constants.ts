@@ -1,5 +1,9 @@
 import { SupportedTokens } from '@sovryn/contracts';
-import { ProposalCreationParameter, ProposalCreationStep, ProposalCreationType } from '../../contexts/ProposalContext.types';
+
+import {
+  ProposalCreationParameter,
+  ProposalCreationType,
+} from '../../contexts/ProposalContext.types';
 import { ProposalContract, ProposalTreasury } from './NewProposalForm.types';
 
 export const PROPOSAL_TYPE_OPTIONS = [

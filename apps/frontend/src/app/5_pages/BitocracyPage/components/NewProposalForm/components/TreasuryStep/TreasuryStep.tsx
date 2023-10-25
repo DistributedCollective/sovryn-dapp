@@ -26,9 +26,9 @@ import {
   ProposalCreationParameter,
   ProposalCreationStep,
 } from '../../../../contexts/ProposalContext.types';
+import { DEFAULT_PARAMETER } from '../../NewProposalForm.constants';
 import { Governor } from '../../NewProposalForm.types';
 import {
-  DEFAULT_PARAMETER,
   GOVERNOR_VAULT_OWNER_ADDRESS,
   REQUIRED_VOTING_POWER,
 } from './TreasuryStep.constants';
@@ -134,6 +134,17 @@ export const TreasuryStep: FC<TreasuryStepProps> = ({
       setGovernorAdmin(admin.address);
     });
   }, [setGovernorOwner, setGovernorAdmin]);
+
+  useEffect(() => {
+    if (parameters.length === 1 && parameters[0].target === '') {
+      setParameters([
+        {
+          ...parameters[0],
+          target: GOVERNOR_VAULT_OWNER_ADDRESS || '',
+        },
+      ]);
+    }
+  }, [parameters, setParameters]);
 
   return (
     <div className="flex flex-col gap-7 relative pb-4">

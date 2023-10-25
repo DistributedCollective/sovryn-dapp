@@ -724,14 +724,12 @@
         },
         "currentValue": "Current value",
         "newValue": "New value",
-        "governor": "Governor",
-        "governorAdmin": "Governor Admin",
-        "governorOwner": "Governor Owner",
         "parameter": "Parameter",
         "contract": "Contract",
         "customContract": {
             "address": "Address",
             "value": "Value",
+            "functionName": "Function name",
             "signature": "Signature",
             "calldata": "Calldata"
         }

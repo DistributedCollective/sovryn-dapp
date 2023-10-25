@@ -49,8 +49,6 @@ export type ParametersStepExtraData = {
 
 export type TreasuryStepExtraData = {
   index?: number;
-  functionName?: string;
-  newValue?: string;
   recipientAddress?: string;
   token?: SupportedTokens;
   amount?: string;

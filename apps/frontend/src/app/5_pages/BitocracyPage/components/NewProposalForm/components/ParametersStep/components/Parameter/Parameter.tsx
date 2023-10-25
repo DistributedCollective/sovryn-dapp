@@ -225,6 +225,12 @@ export const Parameter: FC<ParameterProps> = ({ parameter }) => {
     }
   }, [onChangeProperty, parameter, governor, contractAddress]);
 
+  useEffect(() => {
+    if (contractAddress && parameter.target !== contractAddress) {
+      onChangeProperty('target', contractAddress);
+    }
+  }, [onChangeProperty, parameter, contractAddress]);
+
   return (
     <div className="p-3 rounded bg-gray-90 gap-6 flex flex-col">
       <FormGroup

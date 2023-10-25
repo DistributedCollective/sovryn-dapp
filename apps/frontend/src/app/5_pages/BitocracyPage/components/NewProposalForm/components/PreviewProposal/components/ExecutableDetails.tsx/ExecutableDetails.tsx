@@ -4,9 +4,9 @@ import { t } from 'i18next';
 
 import { Heading } from '@sovryn/ui';
 
-import { ProposalExecutableDetail } from '../../../../../../../../3_organisms/ProposalExecutableDetails/ProposalExecutableDetails';
 import { translations } from '../../../../../../../../../locales/i18n';
 import { ProposalCreationParameter } from '../../../../../../contexts/ProposalContext.types';
+import { ExecutableDetail } from '../ExecutableDetail/ExecutableDetail';
 
 type ExecutableDetailsProps = {
   parameters: ProposalCreationParameter[];
@@ -23,7 +23,7 @@ export const ExecutableDetails: FC<ExecutableDetailsProps> = ({
     </Heading>
     <div className="py-1 mt-2 flex flex-col flex-wrap gap-8">
       {parameters.map((parameter, i) => (
-        <ProposalExecutableDetail key={i} parameter={parameter} index={i} />
+        <ExecutableDetail key={i} parameter={parameter} index={i} />
       ))}
     </div>
   </div>

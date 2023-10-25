@@ -16,7 +16,7 @@ import { translations } from '../../../../../../../locales/i18n';
 import { ProposalInfo } from '../../../../../ProposalPage/components/ProposalInfo/ProposalInfo';
 import { useProposalContext } from '../../../../contexts/NewProposalContext';
 import { ProposalCreationStep } from '../../../../contexts/ProposalContext.types';
-import { ExecutableDetails } from './components/ExecutableDetails.tsx/ExecutableDetail';
+import { ExecutableDetails } from './components/ExecutableDetails.tsx/ExecutableDetails';
 
 const pageTranslations = translations.proposalPage;
 

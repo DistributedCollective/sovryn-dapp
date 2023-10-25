@@ -703,7 +703,14 @@
             "contractAddress": "Contract address: ",
             "recipientAddress": "Recipient address: ",
             "functionName": "Function name: ",
-            "data": "Data: "
+            "data": "Data: ",
+            "contract": "Contract",
+            "parameter": "Parameter",
+            "signature": "Signature",
+            "calldata": "Calldata",
+            "value": "Value",
+            "newValue": "New value",
+            "amount": "Amount"
         },
         "governor": "Governor",
         "governorAdmin": "Governor Admin",

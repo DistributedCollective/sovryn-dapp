@@ -39,8 +39,9 @@ export const useGetCurrentParameterValue = (
           () => loadedContract[parameter](),
         );
 
+        setContractAddress(loadedContract.address);
+
         if (parameterValue !== null || parameterValue !== undefined) {
-          setContractAddress(loadedContract.address);
           if (typeof parameterValue === 'object') {
             setParameterValue(BigNumber.from(parameterValue).toString());
           } else {

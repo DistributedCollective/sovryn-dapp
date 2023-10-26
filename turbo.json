@@ -33,6 +33,10 @@
     },
     "generate:graphql:fetch:mainnet": {
       "outputs": []
+    },
+    "find-deadcode": {
+      "outputs": [],
+      "cache": false
     }
   }
 }

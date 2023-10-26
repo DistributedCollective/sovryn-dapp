@@ -14,7 +14,7 @@ type TableMobileRowProps<RowType extends RowObject> = {
   title: ReactNode;
   expandedContent?: (row: RowType) => ReactNode;
   renderer?: (row: RowType) => ReactNode;
-  subTitle?: ReactNode;
+  subtitleRenderer?: (row: RowType) => ReactNode;
 };
 
 export const TableMobileRow = <RowType extends RowObject>({
@@ -25,7 +25,7 @@ export const TableMobileRow = <RowType extends RowObject>({
   title,
   expandedContent,
   renderer,
-  subTitle,
+  subtitleRenderer,
 }: TableMobileRowProps<RowType>) => {
   const [open, setOpen] = useState(false);
 
@@ -63,7 +63,7 @@ export const TableMobileRow = <RowType extends RowObject>({
           {renderer && renderer(row)}
         </div>
       </Accordion>
-      {!open && subTitle}
+      {!open && subtitleRenderer && subtitleRenderer(row)}
     </>
   );
 };

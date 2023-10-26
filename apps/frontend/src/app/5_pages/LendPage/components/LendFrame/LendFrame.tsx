@@ -33,7 +33,7 @@ export const LendFrame: FC = () => {
           expandedContent={pool => <LendFrameDetails pool={pool} />}
           expandedClassNames="border border-gray-70 border-t-0"
           preventExpandOnClickClass="prevent-row-click"
-          rowSubTitle={generateRowSubTitle}
+          subtitleRenderer={generateRowSubTitle}
         />
       </div>
     </div>

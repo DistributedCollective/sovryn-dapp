@@ -3,8 +3,3 @@ export type StakeItem = {
   unlockDate: number;
   delegate: string;
 };
-
-export type StakingData = {
-  dates: string[];
-  stakes: string[];
-};

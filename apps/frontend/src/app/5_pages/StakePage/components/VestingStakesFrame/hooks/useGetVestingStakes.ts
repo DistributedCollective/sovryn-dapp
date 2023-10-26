@@ -16,15 +16,12 @@ const getLabel = (type: string, typeCreation: string): VestingGroup => {
     '1 2': 'origin',
     '1 3': 'reward',
     '1 4': 'fouryear',
-    // 'fish vestingRegistryFish': 'fish',
-    // 'fishAirdrop vestingRegistryFish': 'fishAirdrop',
   }[`${type} ${typeCreation}`];
 };
 
 export const useGetVestingStakes = () => {
   const { account } = useAccount();
   const { vestingContracts, loadingVestings } = useGetVestings();
-  // const { vestingFishContract, loadingVestingsFish } = useGetVestingsFish(); TODO: Fish vesting contracts will be supported in a later release
   const [vestingStakes, setVestingStakes] = useState<Vesting[]>([]);
 
   const prepareVestingData = useCallback(
@@ -40,15 +37,6 @@ export const useGetVestingStakes = () => {
           typeCreations.push(vestingCreationType.toString());
         },
       );
-
-      // if (
-      //   vestingFishContract.length &&
-      //   constants.AddressZero !== vestingFishContract
-      // ) {
-      //   addresses.push(vestingFishContract);
-      //   types.push('fish');
-      //   typeCreations.push('vestingRegistryFish');
-      // }
 
       return { addresses, types, typeCreations };
     },

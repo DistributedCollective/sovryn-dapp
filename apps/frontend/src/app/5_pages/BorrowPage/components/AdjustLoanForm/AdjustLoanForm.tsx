@@ -674,18 +674,6 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
     [isValidDebtAmount],
   );
 
-  // const maxDrawdown = calculateMaxDrawdown(
-  //   decimalic(loan.collateral.toString()),
-  //   decimalic(loan.debt.toString()).add(debtSize),
-  //   loan.startMargin,
-  //   decimalic(1).div(collateralToLoanRate),
-  // );
-
-  // const drawdownInLoan = maxDrawdown
-  //   .mul(collateralToLoanRate)
-  //   .mul(100)
-  //   .div(loan.startMargin.add(100));
-
   return (
     <>
       <CurrentLoanData

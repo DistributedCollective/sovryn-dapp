@@ -14,11 +14,3 @@ export type LoanItem = {
   interestOwedPerDay: number;
   startMargin: Decimal;
 };
-
-export type LoanItemSmartContract = {
-  id: string;
-  debt: Decimal;
-  collateral: Decimal;
-  interestOwedPerDay: Decimal;
-  endTimestamp: Decimal;
-};

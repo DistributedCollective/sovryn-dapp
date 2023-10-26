@@ -1,14 +1,6 @@
 import sanitizeHtml from 'sanitize-html';
 
 import { Proposal } from '../../../utils/graphql/rsk/generated';
-import { BLOCK_TIME_IN_SECONDS } from '../BitocracyPage/BitocracyPage.constants';
-
-export function getSecondsBetweenBlocks(
-  startBlock: number,
-  endBlock: number,
-): number {
-  return (Number(endBlock) - Number(startBlock)) * BLOCK_TIME_IN_SECONDS;
-}
 
 export function parseProposalInfo(proposal: Proposal | undefined) {
   if (proposal?.description.includes('\n---\n')) {

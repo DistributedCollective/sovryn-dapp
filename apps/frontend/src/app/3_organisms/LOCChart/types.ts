@@ -12,8 +12,3 @@ export enum ChartSortingType {
   id = 'id',
   collateralRatio = 'collateralRatio',
 }
-
-export enum TrovesFilterType {
-  above = 'above',
-  below = 'below',
-}

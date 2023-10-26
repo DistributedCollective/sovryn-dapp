@@ -21,23 +21,7 @@ export const PROPOSAL_TYPE_OPTIONS = [
   },
 ];
 
-export const PROPOSAL_CONTRACT_OPTIONS = [
-  {
-    value: ProposalContract.SovrynProtocol,
-    label: ProposalContract.SovrynProtocol,
-  },
-  {
-    value: ProposalContract.Staking,
-    label: ProposalContract.Staking,
-  },
-  {
-    value: ProposalContract.LoanTokenLogicLM,
-    label: ProposalContract.LoanTokenLogicLM,
-  },
-  {
-    value: ProposalContract.LoanTokenLogicWRBTC,
-    label: ProposalContract.LoanTokenLogicWRBTC,
-  },
+export const PROPOSAL_ITOKENS_OPTIONS = [
   {
     value: ProposalContract.iDOC,
     label: ProposalContract.iDOC,
@@ -58,6 +42,26 @@ export const PROPOSAL_CONTRACT_OPTIONS = [
     value: ProposalContract.iXUSD,
     label: ProposalContract.iXUSD,
   },
+];
+
+export const PROPOSAL_CONTRACT_OPTIONS = [
+  {
+    value: ProposalContract.SovrynProtocol,
+    label: ProposalContract.SovrynProtocol,
+  },
+  {
+    value: ProposalContract.Staking,
+    label: ProposalContract.Staking,
+  },
+  {
+    value: ProposalContract.LoanTokenLogicLM,
+    label: ProposalContract.LoanTokenLogicLM,
+  },
+  {
+    value: ProposalContract.LoanTokenLogicWRBTC,
+    label: ProposalContract.LoanTokenLogicWRBTC,
+  },
+  ...PROPOSAL_ITOKENS_OPTIONS,
 ];
 
 export const PROPOSAL_TREASURY_OPTIONS = [

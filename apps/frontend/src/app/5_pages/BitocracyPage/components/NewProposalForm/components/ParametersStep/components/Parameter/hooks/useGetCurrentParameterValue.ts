@@ -1,11 +1,13 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
-import { BigNumber } from 'ethers';
+import { BigNumber, Contract } from 'ethers';
 
-import { ContractGroup } from '@sovryn/contracts';
+import { ContractGroup, getProtocolContract } from '@sovryn/contracts';
+import { getProvider } from '@sovryn/ethers-provider';
+
+import { defaultChainId } from '../../../../../../../../../../config/chains';
 
 import { useLoadContract } from '../../../../../../../../../../hooks/useLoadContract';
-import { asyncCall } from '../../../../../../../../../../store/rxjs/provider-cache';
 import { getContractDetails } from '../../../ParametersStep.utils';
 
 export const useGetCurrentParameterValue = (
@@ -14,7 +16,6 @@ export const useGetCurrentParameterValue = (
 ) => {
   const [parameterValue, setParameterValue] = useState('');
   const [contractAddress, setContractAddress] = useState('');
-
   const { contractName, contractGroup } = useMemo(
     () => getContractDetails(contract),
     [contract],
@@ -25,29 +26,38 @@ export const useGetCurrentParameterValue = (
     contractGroup as ContractGroup,
   );
 
-  const fetchParameterValue = useCallback(async () => {
-    if (!loadedContract || !parameter || parameter === 'custom' || !contract) {
-      setContractAddress('');
-      setParameterValue('');
-      return;
-    }
+  useEffect(() => {
+    const fetchParameter = async () => {
+      if (!loadedContract || !parameter || parameter === 'custom') {
+        return;
+      }
 
-    try {
-      if (typeof loadedContract[parameter] === 'function') {
-        const parameterValue = await asyncCall(
-          `newProposal/${contract}/${parameter}`,
-          () => loadedContract[parameter](),
+      const loanTokenSettingsLowerAdminAbi = (
+        await getProtocolContract('loanTokenSettingsLowerAdmin')
+      ).abi;
+      const provider = getProvider(defaultChainId);
+      const contractInstance = new Contract(
+        loadedContract.address,
+        loanTokenSettingsLowerAdminAbi,
+        provider,
+      );
+
+      let parameterResult = '';
+
+      if (parameter === 'checkPause') {
+        parameterResult = await contractInstance.checkPause(parameter);
+      } else {
+        parameterResult = await loadedContract[parameter]();
+      }
+
+      setContractAddress(loadedContract.address);
+
+      if (parameterResult !== null && parameterResult !== undefined) {
+        setParameterValue(
+          typeof parameterResult === 'object'
+            ? BigNumber.from(parameterResult).toString()
+            : String(parameterResult),
         );
-
-        setContractAddress(loadedContract.address);
-
-        if (parameterValue !== null || parameterValue !== undefined) {
-          if (typeof parameterValue === 'object') {
-            setParameterValue(BigNumber.from(parameterValue).toString());
-          } else {
-            setParameterValue(String(parameterValue));
-          }
-        }
       } else {
         console.error(
           `Function '${parameter}' does not exist on the contract.`,
@@ -55,14 +65,10 @@ export const useGetCurrentParameterValue = (
         setContractAddress('');
         setParameterValue('');
       }
-    } catch (error) {
-      console.error(`Error fetching parameter value: ${error}`);
-    }
-  }, [contract, loadedContract, parameter]);
+    };
 
-  useEffect(() => {
-    fetchParameterValue();
-  }, [fetchParameterValue]);
+    fetchParameter();
+  }, [loadedContract, parameter]);
 
   return { parameterValue, contractAddress };
 };

@@ -57,34 +57,36 @@ export const getContractDetails = (
   }
 };
 
-export const renderCalldata = (contract: string, value: any) => {
+function encodeParameters(types: string[], values: any[]): string {
   const coder = new ethers.utils.AbiCoder();
-  let encodedValue;
+  return coder.encode(types, values);
+}
 
-  if (typeof value === 'number') {
-    // Encode as uint256 for numbers
-    encodedValue = coder.encode(['address', 'uint256'], [contract, value]);
-  } else if (typeof value === 'boolean') {
-    // Encode as bool for booleans
-    encodedValue = coder.encode(['address', 'bool'], [contract, value]);
-  } else if (typeof value === 'string') {
-    // Encode as bytes for strings
-    const utf8Bytes = ethers.utils.toUtf8Bytes(contract);
-    encodedValue = coder.encode(['address', 'bytes'], [contract, utf8Bytes]);
-  } else {
-    throw new Error('Unsupported value type');
+export const renderCalldata = (
+  contract: string,
+  value: any,
+  type: string[],
+  isToken: boolean,
+  token: string,
+  parameterName: string,
+) => {
+  try {
+    const parameters =
+      isToken && parameterName === 'checkPause'
+        ? [contract, token, value]
+        : [contract, value];
+    const encodedValue = encodeParameters(['address', ...type], parameters);
+    return encodedValue;
+  } catch (error) {
+    console.error('Error encoding data:', error);
+    throw error;
   }
-
-  return encodedValue;
 };
-
-export const renderSignature = (functionName: string) =>
-  `${functionName}(address,uint256)`;
 
 export const isValidParameter = (parameter: ProposalCreationParameter) => {
   const { functionName, parameterName, newValue } =
     parameter.parametersStepExtraData || {};
-
+  const { calldata } = parameter;
   if (functionName === 'custom' || parameterName === 'custom') {
     return (
       parameter?.value &&
@@ -93,5 +95,5 @@ export const isValidParameter = (parameter: ProposalCreationParameter) => {
       parameter?.target
     );
   }
-  return functionName && parameterName && newValue;
+  return functionName && parameterName && newValue && calldata;
 };

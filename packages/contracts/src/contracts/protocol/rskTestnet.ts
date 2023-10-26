@@ -107,4 +107,9 @@ export const rskTestnet: Record<string, AsyncContractConfigData> = {
     getAbi: async () =>
       (await import('../../abis/loanTokenLogicBeacon.json')).default,
   },
+  loanTokenSettingsLowerAdmin: {
+    address: '0x7cA151dc569fa88701f149fc81e960376C111203',
+    getAbi: async () =>
+      (await import('../../abis/LoanTokenSettingsLowerAdmin.json')).default,
+  },
 };

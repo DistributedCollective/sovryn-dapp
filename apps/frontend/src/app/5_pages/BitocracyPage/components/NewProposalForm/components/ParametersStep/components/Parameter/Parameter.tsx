@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useEffect, useMemo } from 'react';
+import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 
 import { t } from 'i18next';
 
@@ -19,13 +19,15 @@ import {
 import { translations } from '../../../../../../../../../locales/i18n';
 import { useProposalContext } from '../../../../../../contexts/NewProposalContext';
 import { ProposalCreationParameter } from '../../../../../../contexts/ProposalContext.types';
-import { PROPOSAL_CONTRACT_OPTIONS } from '../../../../NewProposalForm.constants';
+import {
+  PROPOSAL_CONTRACT_OPTIONS,
+  PROPOSAL_ITOKENS_OPTIONS,
+} from '../../../../NewProposalForm.constants';
 import { CUSTOM_OPTION } from '../../ParametersStep.constants';
 import {
   getParameterOptions,
   isValidParameter,
   renderCalldata,
-  renderSignature,
 } from '../../ParametersStep.utils';
 import { useGetCurrentParameterValue } from './hooks/useGetCurrentParameterValue';
 
@@ -37,6 +39,15 @@ type ParameterProps = {
 
 export const Parameter: FC<ParameterProps> = ({ parameter }) => {
   const { parameters, setParameters, governor } = useProposalContext();
+
+  const isToken = useMemo(
+    () =>
+      PROPOSAL_ITOKENS_OPTIONS.some(
+        option =>
+          option.value === parameter?.parametersStepExtraData?.functionName,
+      ),
+    [parameter?.parametersStepExtraData?.functionName],
+  );
 
   const { parameterValue, contractAddress } = useGetCurrentParameterValue(
     parameter?.parametersStepExtraData?.parameterName || '',
@@ -200,36 +211,84 @@ export const Parameter: FC<ParameterProps> = ({ parameter }) => {
     ],
   );
 
+  const getParameterType = useCallback(
+    (parameterName: string) => {
+      const parameter = parameterOptions.find(
+        option => option.value === parameterName,
+      );
+      if (parameter) {
+        return parameter.types;
+      } else {
+        return '';
+      }
+    },
+    [parameterOptions],
+  );
+
   useEffect(() => {
     const { functionName, newValue, parameterName } =
       parameter.parametersStepExtraData || {};
-    const customContract = functionName === 'custom';
-    const customParameter = parameterName === 'custom';
-    if (functionName && !customContract && !customParameter) {
-      const signature = renderSignature(functionName);
-      if (parameter.signature !== signature) {
-        onChangeProperty('signature', signature);
-      }
-    }
     if (
       isValidParameter(parameter) &&
       functionName &&
-      !customContract &&
+      functionName !== 'custom' &&
+      parameterName !== 'custom' &&
       newValue &&
-      contractAddress
+      contractAddress &&
+      parameterName
     ) {
-      const calldata = renderCalldata(contractAddress, newValue);
-      if (parameter.calldata !== calldata) {
-        onChangeProperty('calldata', calldata);
+      const type = getParameterType(parameterName);
+      if (type) {
+        const calldata = renderCalldata(
+          contractAddress,
+          newValue,
+          type,
+          isToken,
+          functionName,
+          parameterName,
+        );
+        if (parameter.calldata !== calldata) {
+          onChangeProperty('calldata', calldata);
+        }
       }
+    } else if (parameter.calldata !== '0x0') {
+      onChangeProperty('calldata', '0x0');
     }
-  }, [onChangeProperty, parameter, governor, contractAddress]);
+  }, [
+    onChangeProperty,
+    parameter,
+    governor,
+    contractAddress,
+    getParameterType,
+    isToken,
+  ]);
 
   useEffect(() => {
     if (contractAddress && parameter.target !== contractAddress) {
       onChangeProperty('target', contractAddress);
     }
   }, [onChangeProperty, parameter, contractAddress]);
+
+  const [selectedParameter, setSelectedParameter] = useState('');
+
+  useEffect(() => {
+    if (
+      parameter.parametersStepExtraData?.parameterName &&
+      selectedParameter !== parameter.parametersStepExtraData?.parameterName
+    ) {
+      const selectedParameterValue = parameterOptions.find(
+        option =>
+          option.value === parameter.parametersStepExtraData?.parameterName,
+      );
+      setSelectedParameter(parameter.parametersStepExtraData?.parameterName);
+      onChangeProperty('signature', selectedParameterValue?.signature || '');
+    }
+  }, [
+    onChangeProperty,
+    parameter.parametersStepExtraData?.parameterName,
+    parameterOptions,
+    selectedParameter,
+  ]);
 
   return (
     <div className="p-3 rounded bg-gray-90 gap-6 flex flex-col">

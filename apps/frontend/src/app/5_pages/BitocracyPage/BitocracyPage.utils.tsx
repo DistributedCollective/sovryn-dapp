@@ -25,11 +25,6 @@ export const generateRowTitle = (item: Proposal) => (
   </Paragraph>
 );
 
-export const prettifyId = (item: string) => {
-  const id = item.split('-');
-  return id[1];
-};
-
 export const shouldProposalBeDefeated = (proposal: Proposal) => {
   const totalVotes = Decimal.fromBigNumberString(proposal.votesFor).add(
     Decimal.fromBigNumberString(proposal.votesAgainst),

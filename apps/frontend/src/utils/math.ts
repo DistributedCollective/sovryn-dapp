@@ -1,6 +1,5 @@
 import { isBigNumberish } from '@ethersproject/bignumber/lib/bignumber';
 
-import dayjs from 'dayjs';
 import { BigNumberish, BigNumber } from 'ethers';
 import { formatUnits, parseUnits } from 'ethers/lib/utils';
 
@@ -148,10 +147,3 @@ export const decimalic = (value: Decimalish | undefined | null): Decimal => {
 
 export const isScientificNumber = (value: number) =>
   String(value).search(/e[-+]?/) > 0;
-
-export const calculateDateDifferenceInHours = (date: number) => {
-  const targetDate = dayjs.unix(date);
-  const currentDate = dayjs();
-
-  return Math.abs(targetDate.diff(currentDate, 'hours'));
-};

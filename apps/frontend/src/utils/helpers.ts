@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import { providers, TypedDataDomain, TypedDataField } from 'ethers';
+import { providers } from 'ethers';
 import resolveConfig from 'tailwindcss/resolveConfig';
 
 import { SupportedTokens } from '@sovryn/contracts';
@@ -9,12 +9,7 @@ import { Decimalish } from '@sovryn/utils';
 import { Decimal } from '@sovryn/utils';
 
 import { BITCOIN } from '../constants/currencies';
-import { MAX_PROCESSABLE_CHECKPOINTS_RBTC, MS } from '../constants/general';
-import {
-  MAX_PROCESSABLE_CHECKPOINTS_SOV,
-  MAX_PROCESSABLE_CHECKPOINTS_TOKENS,
-  MAX_PROCESSABLE_CHECKPOINTS_ZUSD,
-} from '../constants/general';
+import { MS } from '../constants/general';
 import {
   BTC_EXPLORER,
   GRAPH_WRAPPER,
@@ -33,24 +28,6 @@ export const prettyTx = (
   const start = text.substr(0, startLength);
   const end = text.substr(-endLength);
   return `${start} ··· ${end}`;
-};
-
-export const signTypedData = async (
-  provider: EIP1193Provider,
-  domain: TypedDataDomain,
-  types: Record<string, Array<TypedDataField>>,
-  data: Record<string, any>,
-) => {
-  // A Signer MUST always make sure, that if present, the "from" field
-  //  matches the Signer, before sending or signing a transaction
-  // A Signer SHOULD always wrap private information (such as a private
-  //  key or mnemonic) in a function, so that console.log does not leak
-  //  the data
-  const signer = new providers.Web3Provider(provider);
-  const signature = await signer
-    .getSigner()
-    ._signTypedData(domain, types, data);
-  return signature;
 };
 
 export const currentNetwork: Environments = !!process.env.REACT_APP_NETWORK
@@ -135,10 +112,6 @@ export const validateJwt = (token: string) => {
   return parsedToken?.exp > now;
 };
 
-export const valueIsDefined = <T>(
-  entry: [string, T | undefined],
-): entry is [string, T] => entry[1] !== undefined;
-
 export const composeGas = (priceInGwei: Decimalish, limitInWei: Decimalish) =>
   decimalic(priceInGwei)
     .mul(10 ** 9)
@@ -173,19 +146,6 @@ export const calculateCollateralRatio = (
 
 export const removeTrailingZerosFromString = (value: string) =>
   value.includes('.') ? value.replace(/\.?0+$/, '') : value;
-
-export const getMaxProcessableCheckpoints = (asset: SupportedTokens) => {
-  switch (asset) {
-    case SupportedTokens.zusd:
-      return MAX_PROCESSABLE_CHECKPOINTS_ZUSD;
-    case SupportedTokens.sov:
-      return MAX_PROCESSABLE_CHECKPOINTS_SOV;
-    case SupportedTokens.rbtc:
-      return MAX_PROCESSABLE_CHECKPOINTS_RBTC;
-    default:
-      return MAX_PROCESSABLE_CHECKPOINTS_TOKENS;
-  }
-};
 
 export const isBtcBasedAsset = (asset: string) =>
   asset.toLowerCase() === SupportedTokens.rbtc ||

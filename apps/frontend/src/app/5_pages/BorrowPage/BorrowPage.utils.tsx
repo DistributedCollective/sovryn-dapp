@@ -22,19 +22,6 @@ import { translations } from '../../../locales/i18n';
 import { isBitpro, isBtcBasedAsset } from '../../../utils/helpers';
 import { decimalic } from '../../../utils/math';
 
-export const getCollateralAssetPrice = (
-  collateralToken: SupportedTokens,
-  debtToken: SupportedTokens,
-  rbtcPrice: string,
-  collateralPriceUsd: string,
-  borrowPriceUsd: string,
-) =>
-  decimalic(
-    collateralToken === SupportedTokens.rbtc ? rbtcPrice : collateralPriceUsd,
-  )
-    .div(debtToken === SupportedTokens.rbtc ? rbtcPrice : borrowPriceUsd)
-    .toString();
-
 export const renderValue = (
   value: string,
   token: SupportedTokens | string,

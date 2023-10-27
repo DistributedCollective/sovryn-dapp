@@ -1,6 +1,3 @@
-import { decimalic } from '../../../utils/math';
-import { TroveData } from './types';
-
 export const chartConfig = {
   defaultFont: 'Roboto',
   fontColor: '#F5F5F5',
@@ -22,11 +19,6 @@ export const chartConfig = {
   minValue: 7,
   maxValue: 21,
 };
-
-export const sortData = (data: TroveData[]) =>
-  data.sort((a, b) =>
-    decimalic(a.collateralRatio).sub(b.collateralRatio).toNumber(),
-  );
 
 export const calculateRedemptionBuffer = (
   debt: number,

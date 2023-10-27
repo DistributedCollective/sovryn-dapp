@@ -1,4 +1,4 @@
-import { getNumberSeperator } from '../../utils/helpers';
+import { getNumberSeparator } from '../../utils/helpers';
 
 export const prepareValueForEvent = (
   originalEvent: React.ChangeEvent<HTMLInputElement>,
@@ -45,7 +45,7 @@ export const prepareValueToRender = (
       return lastValue;
     }
 
-    const renderSeperator = getNumberSeperator(locale);
+    const renderSeperator = getNumberSeparator(locale);
 
     if (value.endsWith('.') || value.endsWith(',')) {
       return `${value.slice(0, -1)}${renderSeperator}${

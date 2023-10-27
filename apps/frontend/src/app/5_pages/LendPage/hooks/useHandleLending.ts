@@ -20,12 +20,6 @@ import { LendingPoolDictionary } from '../../../../utils/LendingPoolDictionary';
 import { prepareApproveTransaction } from '../../../../utils/transactions';
 import { lendingBalanceOf } from '../utils/contract-calls';
 
-export type Args = Partial<{
-  tokenDetails: TokenDetailsData;
-  tokenContract: Contract;
-  poolTokenContract: Contract;
-}>;
-
 export const useHandleLending = (
   onBegin: () => void,
   onComplete: () => void,

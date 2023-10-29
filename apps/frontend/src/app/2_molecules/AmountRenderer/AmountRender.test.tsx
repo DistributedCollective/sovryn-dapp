@@ -4,6 +4,7 @@ import React from 'react';
 
 import 'jest-canvas-mock';
 
+import { BITCOIN, BTC_RENDER_PRECISION } from '../../../constants/currencies';
 import { AmountRenderer } from './AmountRenderer';
 
 jest.mock('nanoid', () => {
@@ -33,17 +34,30 @@ describe('AmountRenderer', () => {
     expect(roundedValue).toBeInTheDocument();
   });
 
-  test('renders with rounded value when amount is between 0 and 1', () => {
+  it('renders with rounded value when amount is between 0 and 1', () => {
     render(<AmountRenderer value={0.00000000123} />);
 
     const roundedValue = screen.getByText(/~ 0.000000001/);
     expect(roundedValue).toBeInTheDocument();
   });
 
-  test('renders with rounded value when amount is very small', () => {
+  it('renders with rounded value when amount is very small', () => {
     render(<AmountRenderer value={0.000000000000000123} />);
 
     const roundedValue = screen.getByText(/~ 0.0000000000000001/);
+    expect(roundedValue).toBeInTheDocument();
+  });
+
+  it('renders with rounded value when amount is very small with suffix and precision', () => {
+    render(
+      <AmountRenderer
+        suffix={BITCOIN}
+        precision={BTC_RENDER_PRECISION}
+        value={0.000000000002285901}
+      />,
+    );
+
+    const roundedValue = screen.getByText(/~ 0.000000000002 BTC/);
     expect(roundedValue).toBeInTheDocument();
   });
 });

@@ -91,8 +91,9 @@ export const AmountRenderer: FC<AmountRendererProps> = ({
   const countUpValues = useMemo(() => {
     const endValue = decimalic(value).toString();
     const [whole = '', decimals = ''] = endValue.split('.');
-    const checkPrecision =
-      Number(whole) < 1 && Number(whole) > 0 ? calculatedPrecision : precision;
+    const checkPrecision = isValueBetweenZeroAndOne(Number(value))
+      ? calculatedPrecision
+      : precision;
     const end = parseFloat(
       (whole ?? 0) + '.' + (decimals ?? 0).slice(0, checkPrecision),
     );

@@ -19,10 +19,7 @@ import {
 import { translations } from '../../../../../../../../../locales/i18n';
 import { useProposalContext } from '../../../../../../contexts/NewProposalContext';
 import { ProposalCreationParameter } from '../../../../../../contexts/ProposalContext.types';
-import {
-  PROPOSAL_CONTRACT_OPTIONS,
-  PROPOSAL_TOKEN_OPTIONS,
-} from '../../../../NewProposalForm.constants';
+import { PROPOSAL_CONTRACT_OPTIONS } from '../../../../NewProposalForm.constants';
 import { CUSTOM_OPTION } from '../../ParametersStep.constants';
 import {
   getParameterOptions,
@@ -39,15 +36,6 @@ type ParameterProps = {
 
 export const Parameter: FC<ParameterProps> = ({ parameter }) => {
   const { parameters, setParameters, governor } = useProposalContext();
-
-  const isToken = useMemo(
-    () =>
-      PROPOSAL_TOKEN_OPTIONS.some(
-        option =>
-          option.value === parameter?.parametersStepExtraData?.functionName,
-      ),
-    [parameter?.parametersStepExtraData?.functionName],
-  );
 
   const { parameterValue, contractAddress } = useGetCurrentParameterValue(
     parameter?.parametersStepExtraData?.parameterName || '',
@@ -136,23 +124,7 @@ export const Parameter: FC<ParameterProps> = ({ parameter }) => {
 
   const customParameterSection = useMemo(
     () => (
-      <div className="gap-3 flex flex-col">
-        <FormGroup
-          label={
-            <Paragraph size={ParagraphSize.base} className="font-medium">
-              {t(translations.proposalPage.customContract.address)}
-            </Paragraph>
-          }
-          labelElement="div"
-        >
-          <Input
-            value={parameter.target}
-            onChangeText={value => onChangeProperty('target', value)}
-            className="max-w-none"
-            classNameInput="h-10"
-          />
-        </FormGroup>
-
+      <>
         <FormGroup
           label={
             <Paragraph size={ParagraphSize.base} className="font-medium">
@@ -200,14 +172,13 @@ export const Parameter: FC<ParameterProps> = ({ parameter }) => {
             classNameInput="h-10"
           />
         </FormGroup>
-      </div>
+      </>
     ),
     [
       onChangeProperty,
       parameter.calldata,
       parameter.signature,
       parameter.value,
-      parameter.target,
     ],
   );
 
@@ -252,7 +223,6 @@ export const Parameter: FC<ParameterProps> = ({ parameter }) => {
     governor,
     contractAddress,
     getParameterType,
-    isToken,
   ]);
 
   useEffect(() => {
@@ -311,7 +281,25 @@ export const Parameter: FC<ParameterProps> = ({ parameter }) => {
       </FormGroup>
 
       {isCustomContract ? (
-        customParameterSection
+        <div className="gap-3 flex flex-col">
+          <FormGroup
+            label={
+              <Paragraph size={ParagraphSize.base} className="font-medium">
+                {t(translations.proposalPage.customContract.address)}
+              </Paragraph>
+            }
+            labelElement="div"
+          >
+            <Input
+              value={parameter.target}
+              onChangeText={value => onChangeProperty('target', value)}
+              className="max-w-none"
+              classNameInput="h-10"
+            />
+          </FormGroup>
+
+          {customParameterSection}
+        </div>
       ) : (
         <FormGroup
           label={
@@ -329,7 +317,7 @@ export const Parameter: FC<ParameterProps> = ({ parameter }) => {
           />
 
           {isCustomParameter ? (
-            customParameterSection
+            <div className="gap-3 flex flex-col">{customParameterSection}</div>
           ) : (
             <div className="gap-6 flex flex-col mt-6">
               <SimpleTable className="min-h-10 justify-center">

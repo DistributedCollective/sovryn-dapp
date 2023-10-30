@@ -1,6 +1,6 @@
 import React, { FC, ReactNode } from 'react';
 
-import { Paragraph, ParagraphSize } from '@sovryn/ui';
+import classNames from 'classnames';
 
 type ProposalRenderDetailProps = {
   label: string;
@@ -13,15 +13,8 @@ export const ProposalRenderDetail: FC<ProposalRenderDetailProps> = ({
   content,
   className,
 }) => (
-  <div className="grid grid-cols-2 w-full text-gray-30 gap-3 mt-3">
-    <Paragraph size={ParagraphSize.base} className="text-xs">
-      {label}
-    </Paragraph>
-    <Paragraph
-      size={ParagraphSize.base}
-      className={`text-xs text-right ${className}`}
-    >
-      {content}
-    </Paragraph>
+  <div className={classNames('grid grid-cols-2 w-full gap-3 mt-3', className)}>
+    <div className="text-xs">{label}</div>
+    <div className="text-xs text-right">{content}</div>
   </div>
 );

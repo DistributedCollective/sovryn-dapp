@@ -1,14 +1,11 @@
-import React, { FC, useCallback, useEffect, useState } from 'react';
-
-import { getProtocolContract } from '@sovryn/contracts';
-
-import { defaultChainId } from '../../../../../config/chains';
+import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 
 import { useProposalContext } from '../../contexts/NewProposalContext';
 import {
   ProposalCreationStep,
   ProposalCreationType,
 } from '../../contexts/ProposalContext.types';
+import { ParametersStep } from './components/ParametersStep/ParametersStep';
 import { PreviewProposalDialog } from './components/PreviewProposalDialog/PreviewProposalDialog';
 import { ProposalDataForm } from './components/ProposalDataForm/ProposalDataForm';
 import { ProposalInitialStep } from './components/ProposalInitialStep/ProposalInitialStep';
@@ -22,22 +19,10 @@ export const NewProposalForm: FC = () => {
     setType: setProposalType,
     details,
     setDetails,
-    governor,
-    setGovernor,
     submit,
   } = useProposalContext();
   const [isPreview, setIsPreview] = useState(false);
   const [isConfirmButtonDisabled, setIsConfirmButtonDisabled] = useState(true);
-
-  // todo: these should be implemented in their own components.
-  useEffect(() => {
-    Promise.all([
-      getProtocolContract('governorOwner', defaultChainId),
-      getProtocolContract('governorAdmin', defaultChainId),
-    ]).then(([owner]) => {
-      setGovernor(owner.address);
-    });
-  }, [setDetails, setGovernor]);
 
   const handlePreview = useCallback(() => {
     setIsPreview(true);
@@ -63,42 +48,71 @@ export const NewProposalForm: FC = () => {
     setStep(ProposalCreationStep.SelectType);
   }, [setStep]);
 
-  if (step === ProposalCreationStep.SelectType) {
-    return (
-      <ProposalInitialStep
-        setProposalTab={setStep}
-        proposalType={proposalType}
-        setProposalType={setProposalType}
-        proposalContract={governor || ''}
-        setProposalContract={setGovernor}
-      />
-    );
-  } else if (step === ProposalCreationStep.Details) {
-    return !isPreview ? (
-      <ProposalDataForm
-        value={details}
-        onChange={setDetails}
-        proposalType={proposalType}
-        onBack={() => setStep(ProposalCreationStep.SelectType)}
-        onPreview={handlePreview}
-        onSubmit={handleSubmit}
-      />
-    ) : (
-      <PreviewProposalDialog onClose={handleBack} />
-    );
-  } else if (step === ProposalCreationStep.Treasury) {
-    return isPreview ? (
-      <PreviewProposalDialog
-        disabled={isConfirmButtonDisabled}
-        onClose={handleBack}
-      />
-    ) : (
-      <TreasuryStep
-        updateConfirmButtonState={setIsConfirmButtonDisabled}
-        onPreview={handlePreview}
-      />
-    );
-  } else {
+  const renderContent = useMemo(() => {
+    if (step === ProposalCreationStep.SelectType) {
+      return (
+        <ProposalInitialStep
+          setProposalTab={setStep}
+          proposalType={proposalType}
+          setProposalType={setProposalType}
+        />
+      );
+    }
+
+    if (isPreview) {
+      return (
+        <PreviewProposalDialog
+          disabled={isConfirmButtonDisabled}
+          onClose={handleBack}
+        />
+      );
+    }
+
+    if (step === ProposalCreationStep.Parameters) {
+      return (
+        <ParametersStep
+          onPreview={handlePreview}
+          updateConfirmButtonState={setIsConfirmButtonDisabled}
+        />
+      );
+    }
+
+    if (step === ProposalCreationStep.Treasury) {
+      return (
+        <TreasuryStep
+          onPreview={handlePreview}
+          updateConfirmButtonState={setIsConfirmButtonDisabled}
+        />
+      );
+    }
+
+    if (step === ProposalCreationStep.Details) {
+      return (
+        <ProposalDataForm
+          value={details}
+          onChange={setDetails}
+          proposalType={proposalType}
+          onBack={() => setStep(ProposalCreationStep.SelectType)}
+          onPreview={handlePreview}
+          onSubmit={handleSubmit}
+        />
+      );
+    }
+
     return null;
-  }
+  }, [
+    details,
+    handleBack,
+    handlePreview,
+    handleSubmit,
+    setProposalType,
+    isConfirmButtonDisabled,
+    isPreview,
+    proposalType,
+    setDetails,
+    setStep,
+    step,
+  ]);
+
+  return renderContent;
 };

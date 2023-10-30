@@ -11,6 +11,7 @@ import { t } from 'i18next';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 
+import { getProtocolContract } from '@sovryn/contracts';
 import {
   Button,
   ButtonStyle,
@@ -23,12 +24,16 @@ import {
   Tabs,
 } from '@sovryn/ui';
 
+import { defaultChainId } from '../../../../../../../config/chains';
+
 import { translations } from '../../../../../../../locales/i18n';
 import { validateURL } from '../../../../../../../utils/helpers';
+import { useProposalContext } from '../../../../contexts/NewProposalContext';
 import {
   ProposalCreationDetails,
   ProposalCreationType,
 } from '../../../../contexts/ProposalContext.types';
+import { Governor } from '../../NewProposalForm.types';
 import {
   MAXIMUM_SUMMARY_LENGTH,
   MAXIMUM_TITLE_LENGTH,
@@ -57,7 +62,8 @@ export const ProposalDataForm: FC<ProposalDataFormProps> = ({
   onPreview,
 }) => {
   const [form, setForm] = useState<ProposalCreationDetails>(value);
-
+  const { setGovernor } = useProposalContext();
+  const [governorOwner, setGovernorOwner] = useState('');
   const [index, setIndex] = useState(0);
   const handleInputChangeInput = useCallback(
     (event: ChangeEvent<HTMLInputElement>) => {
@@ -90,8 +96,11 @@ export const ProposalDataForm: FC<ProposalDataFormProps> = ({
 
   const handleSubmit = useCallback(() => {
     onChange(form);
+    if (proposalType === ProposalCreationType.Proclamation) {
+      setGovernor(governorOwner);
+    }
     onSubmit();
-  }, [form, onChange, onSubmit]);
+  }, [form, onChange, onSubmit, proposalType, governorOwner, setGovernor]);
 
   const handlePreview = useCallback(() => {
     onChange(form);
@@ -132,6 +141,12 @@ export const ProposalDataForm: FC<ProposalDataFormProps> = ({
   useEffect(() => {
     setForm(value);
   }, [value]);
+
+  useEffect(() => {
+    getProtocolContract(Governor.Owner, defaultChainId).then(owner => {
+      setGovernorOwner(owner.address);
+    });
+  }, [setGovernorOwner]);
 
   return (
     <div className="flex flex-col gap-8 relative pb-4">

@@ -38,6 +38,7 @@
             "noDataWithFilters": "No data with the current filters",
             "loading": "Loading data..."
         },
+        "custom": "Custom",
         "max": "max",
         "amount": "Amount",
         "deposit": "Deposit",
@@ -675,6 +676,7 @@
             "accountBalance": "Account balance:"
         }
     },
+
     "proposalPage": {
         "meta": {
             "title": "Bitocracy - Sovryn"
@@ -701,7 +703,14 @@
             "contractAddress": "Contract address: ",
             "recipientAddress": "Recipient address: ",
             "functionName": "Function name: ",
-            "data": "Data: "
+            "data": "Data: ",
+            "contract": "Contract",
+            "parameter": "Parameter",
+            "signature": "Signature",
+            "calldata": "Calldata",
+            "value": "Value",
+            "newValue": "New value",
+            "amount": "Amount"
         },
         "governor": "Governor",
         "governorAdmin": "Governor Admin",
@@ -717,9 +726,22 @@
         "eligibleVote": "Stake SOV to be eligible to vote on future proposals",
         "actions": {
             "queue": "Queue for execution",
-            "execute": "Execute proposal"
+            "execute": "Execute proposal",
+            "add": "Add"
+        },
+        "currentValue": "Current value",
+        "newValue": "New value",
+        "parameter": "Parameter",
+        "contract": "Contract",
+        "customContract": {
+            "address": "Address",
+            "value": "Value",
+            "functionName": "Function name",
+            "signature": "Signature",
+            "calldata": "Calldata"
         }
     },
+
     "fastBtc": {
         "mainScreen": {
             "title": "Funding",

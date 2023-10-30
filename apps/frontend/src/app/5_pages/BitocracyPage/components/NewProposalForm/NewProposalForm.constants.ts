@@ -1,4 +1,9 @@
-import { ProposalCreationType } from '../../contexts/ProposalContext.types';
+import { SupportedTokens } from '@sovryn/contracts';
+
+import {
+  ProposalCreationParameter,
+  ProposalCreationType,
+} from '../../contexts/ProposalContext.types';
 import { ProposalContract, ProposalTreasury } from './NewProposalForm.types';
 
 export const PROPOSAL_TYPE_OPTIONS = [
@@ -16,23 +21,7 @@ export const PROPOSAL_TYPE_OPTIONS = [
   },
 ];
 
-export const PROPOSAL_CONTRACT_OPTIONS = [
-  {
-    value: ProposalContract.SovrynProtocol,
-    label: ProposalContract.SovrynProtocol,
-  },
-  {
-    value: ProposalContract.Staking,
-    label: ProposalContract.Staking,
-  },
-  {
-    value: ProposalContract.LoanTokenLogicLM,
-    label: ProposalContract.LoanTokenLogicLM,
-  },
-  {
-    value: ProposalContract.LoanTokenLogicWRBTC,
-    label: ProposalContract.LoanTokenLogicWRBTC,
-  },
+export const PROPOSAL_TOKEN_OPTIONS = [
   {
     value: ProposalContract.iDOC,
     label: ProposalContract.iDOC,
@@ -53,6 +42,26 @@ export const PROPOSAL_CONTRACT_OPTIONS = [
     value: ProposalContract.iXUSD,
     label: ProposalContract.iXUSD,
   },
+];
+
+export const PROPOSAL_CONTRACT_OPTIONS = [
+  {
+    value: ProposalContract.SovrynProtocol,
+    label: ProposalContract.SovrynProtocol,
+  },
+  {
+    value: ProposalContract.Staking,
+    label: ProposalContract.Staking,
+  },
+  {
+    value: ProposalContract.LoanTokenLogicLM,
+    label: ProposalContract.LoanTokenLogicLM,
+  },
+  {
+    value: ProposalContract.LoanTokenLogicWRBTC,
+    label: ProposalContract.LoanTokenLogicWRBTC,
+  },
+  ...PROPOSAL_TOKEN_OPTIONS,
 ];
 
 export const PROPOSAL_TREASURY_OPTIONS = [
@@ -81,3 +90,22 @@ export const PROPOSAL_TREASURY_OPTIONS = [
     label: ProposalTreasury.EcosystemFund,
   },
 ];
+
+export const DEFAULT_PARAMETER: ProposalCreationParameter = {
+  target: '',
+  value: '0x0',
+  signature: '',
+  calldata: '0x0',
+  parametersStepExtraData: {
+    functionName: ProposalContract.SovrynProtocol,
+    newValue: '',
+    index: 1,
+    parameterName: '',
+  },
+  treasuryStepExtraData: {
+    recipientAddress: '',
+    token: SupportedTokens.rbtc,
+    amount: '0',
+    index: 1,
+  },
+};

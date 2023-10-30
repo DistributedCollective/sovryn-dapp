@@ -9,25 +9,18 @@ import {
   ProposalCreationStep,
   ProposalCreationType,
 } from '../../../../contexts/ProposalContext.types';
-import {
-  PROPOSAL_CONTRACT_OPTIONS,
-  PROPOSAL_TYPE_OPTIONS,
-} from '../../NewProposalForm.constants';
+import { PROPOSAL_TYPE_OPTIONS } from '../../NewProposalForm.constants';
 
 export type ProposalInitialStepProps = {
   setProposalTab: (value: ProposalCreationStep) => void;
   setProposalType: (value: ProposalCreationType) => void;
   proposalType: ProposalCreationType;
-  setProposalContract: (value: string) => void;
-  proposalContract: string;
 };
 
 export const ProposalInitialStep: FC<ProposalInitialStepProps> = ({
   setProposalTab,
   setProposalType,
   proposalType,
-  setProposalContract,
-  proposalContract,
 }) => (
   <div className="flex flex-col gap-4">
     <Select
@@ -36,14 +29,6 @@ export const ProposalInitialStep: FC<ProposalInitialStepProps> = ({
       options={PROPOSAL_TYPE_OPTIONS}
       className="w-full"
     />
-    {proposalType === ProposalCreationType.Parameters && (
-      <Select
-        value={proposalContract}
-        onChange={setProposalContract}
-        options={PROPOSAL_CONTRACT_OPTIONS}
-        className="w-full"
-      />
-    )}
 
     <Button
       text={t(translations.common.buttons.continue)}

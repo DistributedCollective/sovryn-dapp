@@ -40,10 +40,15 @@ export type ProposalCreationDetails = {
   text: string;
 };
 
-export type TreasuryStepExtraData = {
+export type ParametersStepExtraData = {
   index?: number;
   functionName?: string;
+  parameterName?: string;
   newValue?: string;
+};
+
+export type TreasuryStepExtraData = {
+  index?: number;
   recipientAddress?: string;
   token?: SupportedTokens;
   amount?: string;
@@ -59,5 +64,6 @@ export type ProposalCreationParameter = {
   // abi encoded arguments (for signature) to be passed to the function (default to "0x0")
   calldata: string;
   // extra data needed for parameters step
+  parametersStepExtraData?: ParametersStepExtraData;
   treasuryStepExtraData?: TreasuryStepExtraData;
 };

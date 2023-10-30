@@ -15,7 +15,8 @@ import { useAccount } from '../../../../../../../hooks/useAccount';
 import { translations } from '../../../../../../../locales/i18n';
 import { ProposalInfo } from '../../../../../ProposalPage/components/ProposalInfo/ProposalInfo';
 import { useProposalContext } from '../../../../contexts/NewProposalContext';
-import { ExecutableDetails } from './components/ExecutableDetails.tsx/ExecutableDetail';
+import { ProposalCreationStep } from '../../../../contexts/ProposalContext.types';
+import { ExecutableDetails } from './components/ExecutableDetails.tsx/ExecutableDetails';
 
 const pageTranslations = translations.proposalPage;
 
@@ -28,7 +29,7 @@ export const PreviewProposal: FC<PreviewProposalProps> = ({
   onClose,
   disabled,
 }) => {
-  const { details, submit, type, parameters } = useProposalContext();
+  const { details, submit, type, parameters, step } = useProposalContext();
   const { account } = useAccount();
 
   const handleSubmit = useCallback(() => {
@@ -71,7 +72,7 @@ export const PreviewProposal: FC<PreviewProposalProps> = ({
           </div>
 
           <ProposalInfo link={details.link} description={details.text} />
-          {parameters.length > 0 && (
+          {parameters.length > 0 && step !== ProposalCreationStep.Details && (
             <ExecutableDetails parameters={parameters} />
           )}
         </div>

@@ -21,7 +21,7 @@ import { useProposalContext } from '../../../../../../contexts/NewProposalContex
 import { ProposalCreationParameter } from '../../../../../../contexts/ProposalContext.types';
 import {
   PROPOSAL_CONTRACT_OPTIONS,
-  PROPOSAL_ITOKENS_OPTIONS,
+  PROPOSAL_TOKEN_OPTIONS,
 } from '../../../../NewProposalForm.constants';
 import { CUSTOM_OPTION } from '../../ParametersStep.constants';
 import {
@@ -42,7 +42,7 @@ export const Parameter: FC<ParameterProps> = ({ parameter }) => {
 
   const isToken = useMemo(
     () =>
-      PROPOSAL_ITOKENS_OPTIONS.some(
+      PROPOSAL_TOKEN_OPTIONS.some(
         option =>
           option.value === parameter?.parametersStepExtraData?.functionName,
       ),
@@ -233,7 +233,6 @@ export const Parameter: FC<ParameterProps> = ({ parameter }) => {
       functionName &&
       functionName !== 'custom' &&
       parameterName !== 'custom' &&
-      newValue &&
       contractAddress &&
       parameterName
     ) {

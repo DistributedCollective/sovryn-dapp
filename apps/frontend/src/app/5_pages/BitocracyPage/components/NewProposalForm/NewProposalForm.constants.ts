@@ -21,7 +21,7 @@ export const PROPOSAL_TYPE_OPTIONS = [
   },
 ];
 
-export const PROPOSAL_ITOKENS_OPTIONS = [
+export const PROPOSAL_TOKEN_OPTIONS = [
   {
     value: ProposalContract.iDOC,
     label: ProposalContract.iDOC,
@@ -61,7 +61,7 @@ export const PROPOSAL_CONTRACT_OPTIONS = [
     value: ProposalContract.LoanTokenLogicWRBTC,
     label: ProposalContract.LoanTokenLogicWRBTC,
   },
-  ...PROPOSAL_ITOKENS_OPTIONS,
+  ...PROPOSAL_TOKEN_OPTIONS,
 ];
 
 export const PROPOSAL_TREASURY_OPTIONS = [

@@ -57,10 +57,10 @@ export const getContractDetails = (
   }
 };
 
-function encodeParameters(types: string[], values: any[]): string {
+const encodeParameters = (types: string[], values: any[]): string => {
   const coder = new ethers.utils.AbiCoder();
   return coder.encode(types, values);
-}
+};
 
 export const renderCalldata = (
   contract: string,

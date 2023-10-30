@@ -32,19 +32,21 @@ export const useGetCurrentParameterValue = (
         return;
       }
 
-      const loanTokenSettingsLowerAdminAbi = (
-        await getProtocolContract('loanTokenSettingsLowerAdmin')
-      ).abi;
-      const provider = getProvider(defaultChainId);
-      const contractInstance = new Contract(
-        loadedContract.address,
-        loanTokenSettingsLowerAdminAbi,
-        provider,
-      );
-
       let parameterResult = '';
 
       if (parameter === 'checkPause') {
+        const loanTokenSettingsLowerAdminAbi = (
+          await getProtocolContract('loanTokenSettingsLowerAdmin')
+        ).abi;
+
+        const provider = getProvider(defaultChainId);
+
+        const contractInstance = new Contract(
+          loadedContract.address,
+          loanTokenSettingsLowerAdminAbi,
+          provider,
+        );
+
         parameterResult = await contractInstance.checkPause(parameter);
       } else {
         parameterResult = await loadedContract[parameter]();

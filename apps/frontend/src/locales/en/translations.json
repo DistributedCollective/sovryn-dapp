@@ -93,7 +93,9 @@
                     "stabilityPool": "Stability pool",
                     "stabilityPoolDescription": "Earn BTC from Zero liquidations",
                     "staking": "Staking",
-                    "stakingDescription": "Gain voting power and earn fees"
+                    "stakingDescription": "Gain voting power and earn fees",
+                    "marketMaking": "Market making",
+                    "marketMakingDescription": "Earn fees from AMM swaps"
                 }
             },
             "convert": "Convert",
@@ -912,6 +914,11 @@
             "adjust": "Adjust"
         },
         "apr": "APR"
+    },
+    "marketMakingPage": {
+        "meta": {
+            "title": "Market Making - Sovryn"
+        }
     },
     "borrowHistory": {
         "types": {

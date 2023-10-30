@@ -1,5 +1,12 @@
 # frontend
 
+## 1.0.34
+
+### Patch Changes
+
+- fba20d8d: SOV-3422: increase suggested gas limit for claiming rewards
+- 23feeada: SOV-3345: Codebase cleanup
+
 ## 1.0.33
 
 ### Patch Changes

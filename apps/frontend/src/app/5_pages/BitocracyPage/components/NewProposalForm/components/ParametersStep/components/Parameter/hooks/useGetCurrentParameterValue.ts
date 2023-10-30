@@ -1,11 +1,8 @@
 import { useEffect, useMemo, useState } from 'react';
 
-import { BigNumber, Contract } from 'ethers';
+import { BigNumber } from 'ethers';
 
-import { ContractGroup, getProtocolContract } from '@sovryn/contracts';
-import { getProvider } from '@sovryn/ethers-provider';
-
-import { defaultChainId } from '../../../../../../../../../../config/chains';
+import { ContractGroup } from '@sovryn/contracts';
 
 import { useLoadContract } from '../../../../../../../../../../hooks/useLoadContract';
 import { getContractDetails } from '../../../ParametersStep.utils';
@@ -32,25 +29,7 @@ export const useGetCurrentParameterValue = (
         return;
       }
 
-      let parameterResult = '';
-
-      if (parameter === 'checkPause') {
-        const loanTokenSettingsLowerAdminAbi = (
-          await getProtocolContract('loanTokenSettingsLowerAdmin')
-        ).abi;
-
-        const provider = getProvider(defaultChainId);
-
-        const contractInstance = new Contract(
-          loadedContract.address,
-          loanTokenSettingsLowerAdminAbi,
-          provider,
-        );
-
-        parameterResult = await contractInstance.checkPause(parameter);
-      } else {
-        parameterResult = await loadedContract[parameter]();
-      }
+      const parameterResult = await loadedContract[parameter]();
 
       setContractAddress(loadedContract.address);
 

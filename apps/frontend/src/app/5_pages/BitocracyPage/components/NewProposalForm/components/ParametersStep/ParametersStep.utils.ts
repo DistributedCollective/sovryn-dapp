@@ -62,20 +62,10 @@ const encodeParameters = (types: string[], values: any[]): string => {
   return coder.encode(types, values);
 };
 
-export const renderCalldata = (
-  contract: string,
-  value: any,
-  type: string[],
-  isToken: boolean,
-  token: string,
-  parameterName: string,
-) => {
+export const renderCalldata = (value: any, type: string[]) => {
   try {
-    const parameters =
-      isToken && parameterName === 'checkPause'
-        ? [contract, token, value]
-        : [contract, value];
-    const encodedValue = encodeParameters(['address', ...type], parameters);
+    const parameters = [value];
+    const encodedValue = encodeParameters(type, parameters);
     return encodedValue;
   } catch (error) {
     console.error('Error encoding data:', error);

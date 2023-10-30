@@ -99,12 +99,6 @@ export const LOAN_TOKEN_OPTIONS = [
     signature: 'setPauser(address)',
     types: ['address'],
   },
-  {
-    value: 'checkPause',
-    label: 'checkPause',
-    signature: 'toggleFunctionPause(string, bool)',
-    types: ['string', 'bool'],
-  },
 ];
 
 export const CUSTOM_OPTION = [

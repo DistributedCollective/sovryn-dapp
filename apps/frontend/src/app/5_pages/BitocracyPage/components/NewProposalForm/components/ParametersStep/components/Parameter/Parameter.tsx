@@ -238,14 +238,7 @@ export const Parameter: FC<ParameterProps> = ({ parameter }) => {
     ) {
       const type = getParameterType(parameterName);
       if (type) {
-        const calldata = renderCalldata(
-          contractAddress,
-          newValue,
-          type,
-          isToken,
-          functionName,
-          parameterName,
-        );
+        const calldata = renderCalldata(newValue, type);
         if (parameter.calldata !== calldata) {
           onChangeProperty('calldata', calldata);
         }

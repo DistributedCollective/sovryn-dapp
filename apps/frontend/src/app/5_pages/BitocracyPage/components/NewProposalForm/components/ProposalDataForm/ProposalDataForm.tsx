@@ -51,6 +51,7 @@ export type ProposalDataFormProps = {
   onBack: () => void;
   onSubmit: () => void;
   onPreview: () => void;
+  updateConfirmButtonState: (value: boolean) => void;
 };
 
 export const ProposalDataForm: FC<ProposalDataFormProps> = ({
@@ -60,6 +61,7 @@ export const ProposalDataForm: FC<ProposalDataFormProps> = ({
   onBack,
   onSubmit,
   onPreview,
+  updateConfirmButtonState,
 }) => {
   const [form, setForm] = useState<ProposalCreationDetails>(value);
   const { setGovernor } = useProposalContext();
@@ -89,6 +91,12 @@ export const ProposalDataForm: FC<ProposalDataFormProps> = ({
     [form.link, form.summary, form.text, form.title, isValidUrl],
   );
 
+  useEffect(() => {
+    if (proposalType === ProposalCreationType.Proclamation) {
+      updateConfirmButtonState(isSubmitDisabled);
+    }
+  }, [isSubmitDisabled, proposalType, updateConfirmButtonState]);
+
   const handleBack = useCallback(() => {
     onChange(form);
     onBack();
@@ -96,11 +104,8 @@ export const ProposalDataForm: FC<ProposalDataFormProps> = ({
 
   const handleSubmit = useCallback(() => {
     onChange(form);
-    if (proposalType === ProposalCreationType.Proclamation) {
-      setGovernor(governorOwner);
-    }
     onSubmit();
-  }, [form, onChange, onSubmit, proposalType, governorOwner, setGovernor]);
+  }, [form, onChange, onSubmit]);
 
   const handlePreview = useCallback(() => {
     onChange(form);
@@ -143,10 +148,13 @@ export const ProposalDataForm: FC<ProposalDataFormProps> = ({
   }, [value]);
 
   useEffect(() => {
-    getProtocolContract(Governor.Owner, defaultChainId).then(owner => {
-      setGovernorOwner(owner.address);
-    });
-  }, [setGovernorOwner]);
+    if (proposalType === ProposalCreationType.Proclamation && !governorOwner) {
+      getProtocolContract(Governor.Owner, defaultChainId).then(owner => {
+        setGovernorOwner(owner.address);
+        setGovernor(owner.address);
+      });
+    }
+  }, [governorOwner, proposalType, setGovernor, setGovernorOwner]);
 
   return (
     <div className="flex flex-col gap-8 relative pb-4">
@@ -256,7 +264,7 @@ export const ProposalDataForm: FC<ProposalDataFormProps> = ({
             className="flex-1"
           />
           <Button
-            text={t(translations.common.buttons.continue)}
+            text={t(translations.common.buttons.confirm)}
             onClick={handleSubmit}
             disabled={isSubmitDisabled}
             className="flex-1"

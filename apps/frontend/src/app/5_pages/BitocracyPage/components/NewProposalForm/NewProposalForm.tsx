@@ -95,6 +95,7 @@ export const NewProposalForm: FC = () => {
           onBack={() => setStep(ProposalCreationStep.SelectType)}
           onPreview={handlePreview}
           onSubmit={handleSubmit}
+          updateConfirmButtonState={setIsConfirmButtonDisabled}
         />
       );
     }

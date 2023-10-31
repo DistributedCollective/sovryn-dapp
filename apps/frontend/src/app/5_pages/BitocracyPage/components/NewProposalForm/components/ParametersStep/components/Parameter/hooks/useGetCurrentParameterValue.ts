@@ -25,31 +25,33 @@ export const useGetCurrentParameterValue = (
 
   useEffect(() => {
     const fetchParameter = async () => {
-      if (!loadedContract || !parameter || parameter === 'custom') {
+      if (!loadedContract || !parameter || contract === 'custom') {
         return;
       }
 
-      const parameterResult = await loadedContract[parameter]();
-
       setContractAddress(loadedContract.address);
 
-      if (parameterResult !== null && parameterResult !== undefined) {
-        setParameterValue(
-          typeof parameterResult === 'object'
-            ? BigNumber.from(parameterResult).toString()
-            : String(parameterResult),
-        );
-      } else {
-        console.error(
-          `Function '${parameter}' does not exist on the contract.`,
-        );
-        setContractAddress('');
-        setParameterValue('');
+      if (parameter !== 'custom') {
+        const parameterResult = await loadedContract[parameter]();
+
+        if (parameterResult !== null && parameterResult !== undefined) {
+          setParameterValue(
+            typeof parameterResult === 'object'
+              ? BigNumber.from(parameterResult).toString()
+              : String(parameterResult),
+          );
+        } else {
+          console.error(
+            `Function '${parameter}' does not exist on the contract.`,
+          );
+          setContractAddress('');
+          setParameterValue('');
+        }
       }
     };
 
     fetchParameter();
-  }, [loadedContract, parameter]);
+  }, [contract, loadedContract, parameter]);
 
   return { parameterValue, contractAddress };
 };

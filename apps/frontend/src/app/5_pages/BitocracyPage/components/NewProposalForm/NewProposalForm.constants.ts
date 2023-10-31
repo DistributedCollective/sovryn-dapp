@@ -1,5 +1,8 @@
+import { t } from 'i18next';
+
 import { SupportedTokens } from '@sovryn/contracts';
 
+import { translations } from '../../../../../locales/i18n';
 import {
   ProposalCreationParameter,
   ProposalCreationType,
@@ -9,15 +12,15 @@ import { ProposalContract, ProposalTreasury } from './NewProposalForm.types';
 export const PROPOSAL_TYPE_OPTIONS = [
   {
     value: ProposalCreationType.Parameters,
-    label: ProposalCreationType.Parameters,
+    label: t(translations.bitocracyPage.proposalInitialStep.parameter),
   },
   {
     value: ProposalCreationType.Proclamation,
-    label: ProposalCreationType.Proclamation,
+    label: t(translations.bitocracyPage.proposalInitialStep.proclamation),
   },
   {
     value: ProposalCreationType.Treasury,
-    label: ProposalCreationType.Treasury,
+    label: t(translations.bitocracyPage.proposalInitialStep.treasury),
   },
 ];
 

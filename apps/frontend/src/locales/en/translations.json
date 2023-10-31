@@ -645,6 +645,11 @@
             "nonExecutable": "(non-executable)",
             "other": "Other"
         },
+        "proposalInitialStep": {
+            "parameter": "Parameter",
+            "proclamation": "Proclamation",
+            "treasury": "Treasury"
+        },
         "proposalDataForm": {
             "title": "Title",
             "discussionUrl": "Discussion URL",

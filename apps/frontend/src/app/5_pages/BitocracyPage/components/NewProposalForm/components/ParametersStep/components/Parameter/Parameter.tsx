@@ -214,8 +214,6 @@ export const Parameter: FC<ParameterProps> = ({ parameter }) => {
           onChangeProperty('calldata', calldata);
         }
       }
-    } else if (parameter.calldata !== '0x0') {
-      onChangeProperty('calldata', '0x0');
     }
   }, [
     onChangeProperty,

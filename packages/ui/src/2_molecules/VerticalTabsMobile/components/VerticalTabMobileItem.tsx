@@ -1,5 +1,7 @@
 import React, { FC } from 'react';
 
+import classNames from 'classnames';
+
 import { applyDataAttr } from '../../../utils';
 import { VerticalTabMobileItemButtonProps } from '../VerticalTabsMobile.types';
 import styles from './VerticalTabMobileItem.module.css';
@@ -10,9 +12,10 @@ export const VerticalTabMobileItem: FC<VerticalTabMobileItemButtonProps> = ({
   infoText,
   dataAttribute,
   onClick,
+  className,
 }) => (
   <button
-    className={styles.button}
+    className={classNames(styles.button, className)}
     disabled={disabled}
     {...applyDataAttr(dataAttribute)}
     onClick={onClick}

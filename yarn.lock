@@ -4516,10 +4516,10 @@
   dependencies:
     "@ethersproject/bignumber" "5.0.15"
 
-"@sovryn-zero/lib-ethers@0.2.6-early.access.0":
-  version "0.2.6-early.access.0"
-  resolved "https://registry.yarnpkg.com/@sovryn-zero/lib-ethers/-/lib-ethers-0.2.6-early.access.0.tgz#3f9995c033f10b62035cf29a651420899f3e624f"
-  integrity sha512-D1VAShiVgBbkYfRyPwkkoiPfJoHo16/SjRfvDRJ04mE9uphVN3zs1q9RTBoO9ar9cvUfOym9A2wTGp9Ib3mY0Q==
+"@sovryn-zero/lib-ethers@0.2.6-early.access.1":
+  version "0.2.6-early.access.1"
+  resolved "https://registry.yarnpkg.com/@sovryn-zero/lib-ethers/-/lib-ethers-0.2.6-early.access.1.tgz#a478ac46c21ba70077409879617efa661935bd62"
+  integrity sha512-Sq/tX0dJQOIYTRIinOls/fH4C6xWsKk73ZUCFtUuqBs0ZP2nJivq29VeIdxHXxVLFVw0gFHaHpBYJhkjEeZBVA==
 
 "@sovryn/onboard-common@1.0.0":
   version "1.0.0"

@@ -1,5 +1,11 @@
 # @sovryn/ui
 
+## 1.0.19
+
+### Patch Changes
+
+- 671278f8: SOV-3435: Vertical tab mobile custom classname
+
 ## 1.0.18
 
 ### Patch Changes

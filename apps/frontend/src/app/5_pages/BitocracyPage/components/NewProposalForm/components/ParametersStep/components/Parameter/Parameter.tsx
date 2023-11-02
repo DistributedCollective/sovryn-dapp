@@ -23,7 +23,9 @@ import { PROPOSAL_CONTRACT_OPTIONS } from '../../../../NewProposalForm.constants
 import { CUSTOM_OPTION } from '../../ParametersStep.constants';
 import {
   getParameterOptions,
+  getParameterType,
   isValidParameter,
+  isValidValue,
   renderCalldata,
 } from '../../ParametersStep.utils';
 import { useGetCurrentParameterValue } from './hooks/useGetCurrentParameterValue';
@@ -182,18 +184,21 @@ export const Parameter: FC<ParameterProps> = ({ parameter }) => {
     ],
   );
 
-  const getParameterType = useCallback(
-    (parameterName: string) => {
-      const parameter = parameterOptions.find(
-        option => option.value === parameterName,
-      );
-      if (parameter) {
-        return parameter.types;
-      } else {
-        return '';
-      }
-    },
-    [parameterOptions],
+  const isValidNewValue = useMemo(
+    () => !isCustomContract && !isCustomParameter && isValidValue(parameter),
+    [isCustomContract, isCustomParameter, parameter],
+  );
+
+  const parameterType = useMemo(
+    () =>
+      getParameterType(
+        parameter?.parametersStepExtraData?.parameterName || '',
+        parameter?.parametersStepExtraData?.functionName || '',
+      ),
+    [
+      parameter?.parametersStepExtraData?.functionName,
+      parameter?.parametersStepExtraData?.parameterName,
+    ],
   );
 
   useEffect(() => {
@@ -201,15 +206,15 @@ export const Parameter: FC<ParameterProps> = ({ parameter }) => {
       parameter.parametersStepExtraData || {};
     if (
       isValidParameter(parameter) &&
+      isValidNewValue &&
       functionName &&
       functionName !== 'custom' &&
       parameterName !== 'custom' &&
       contractAddress &&
       parameterName
     ) {
-      const type = getParameterType(parameterName);
-      if (type) {
-        const calldata = renderCalldata(newValue, type);
+      if (parameterType) {
+        const calldata = renderCalldata(newValue, parameterType);
         if (parameter.calldata !== calldata) {
           onChangeProperty('calldata', calldata);
         }
@@ -220,7 +225,24 @@ export const Parameter: FC<ParameterProps> = ({ parameter }) => {
     parameter,
     governor,
     contractAddress,
-    getParameterType,
+    isValidNewValue,
+    parameterType,
+  ]);
+
+  useEffect(() => {
+    if (
+      parameter.calldata !== '0x0' &&
+      (!isValidNewValue ||
+        !parameter?.parametersStepExtraData?.newValue ||
+        parameter?.parametersStepExtraData?.newValue === '')
+    ) {
+      onChangeProperty('calldata', '0x0');
+    }
+  }, [
+    isValidNewValue,
+    onChangeProperty,
+    parameter.calldata,
+    parameter?.parametersStepExtraData?.newValue,
   ]);
 
   useEffect(() => {
@@ -249,6 +271,16 @@ export const Parameter: FC<ParameterProps> = ({ parameter }) => {
     parameterOptions,
     selectedParameter,
   ]);
+
+  const newValueErrorMessage = useMemo(() => {
+    if (!isValidNewValue) {
+      return t(translations.proposalPage.invalidNewValue, {
+        type: parameterType,
+      });
+    }
+
+    return '';
+  }, [isValidNewValue, parameterType]);
 
   return (
     <div className="p-3 rounded bg-gray-90 gap-6 flex flex-col">
@@ -332,6 +364,7 @@ export const Parameter: FC<ParameterProps> = ({ parameter }) => {
                     {t(translations.proposalPage.newValue)}
                   </Paragraph>
                 }
+                errorLabel={newValueErrorMessage}
                 labelElement="div"
               >
                 <Input

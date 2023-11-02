@@ -738,6 +738,7 @@
         "newValue": "New value",
         "parameter": "Parameter",
         "contract": "Contract",
+        "invalidNewValue": "Invalid value for type {{type}}",
         "customContract": {
             "address": "Address",
             "value": "Value",

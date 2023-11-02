@@ -9,15 +9,16 @@ import {
   DialogHeader,
   DialogSize,
 } from '@sovryn/ui';
+import { Decimal } from '@sovryn/utils';
 
+import { useGetVotingPowerShare } from '../../../../../hooks/useGetVotingPowerShare';
 import { translations } from '../../../../../locales/i18n';
-import { useGetPersonalStakingStatistics } from '../../../StakePage/components/PersonalStakingStatistics/hooks/useGetPersonalStakingStatistics';
 import { NewProposalForm } from '../NewProposalForm/NewProposalForm';
 
 const pageTranslations = translations.bitocracyPage;
 
 export const NewProposalButton: FC = () => {
-  const { votingPower } = useGetPersonalStakingStatistics();
+  const votingPowerShare = useGetVotingPowerShare();
 
   const [openNewProposalDialog, toggleNewProposalDialog] = useReducer(
     v => !v,
@@ -25,8 +26,8 @@ export const NewProposalButton: FC = () => {
   );
 
   const isNewProposalButtonVisible = useMemo(
-    () => (votingPower ? Number(votingPower) > 0 : false),
-    [votingPower],
+    () => (votingPowerShare ? votingPowerShare.gt(Decimal.ONE) : false),
+    [votingPowerShare],
   );
 
   return (

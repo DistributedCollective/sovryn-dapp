@@ -21,6 +21,7 @@ query getProposals {
     majorityPercentage
     eta
     proposalId
+    proposer
     targets
     values
     signatures

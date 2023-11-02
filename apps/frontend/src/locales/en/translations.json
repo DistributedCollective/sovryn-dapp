@@ -617,6 +617,7 @@
         "subtitle": "Help decide the future of Sovryn",
         "pastProposals": "Past proposals",
         "liveProposals": "Live proposals",
+        "activeProposalError": "Only one proposal may be active from a single wallet",
         "table": {
             "status": "Status",
             "title": "Title",

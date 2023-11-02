@@ -230,22 +230,6 @@ export const Parameter: FC<ParameterProps> = ({ parameter }) => {
   ]);
 
   useEffect(() => {
-    if (
-      parameter.calldata !== '0x0' &&
-      (!isValidNewValue ||
-        !parameter?.parametersStepExtraData?.newValue ||
-        parameter?.parametersStepExtraData?.newValue === '')
-    ) {
-      onChangeProperty('calldata', '0x0');
-    }
-  }, [
-    isValidNewValue,
-    onChangeProperty,
-    parameter.calldata,
-    parameter?.parametersStepExtraData?.newValue,
-  ]);
-
-  useEffect(() => {
     if (contractAddress && parameter.target !== contractAddress) {
       onChangeProperty('target', contractAddress);
     }
@@ -256,6 +240,7 @@ export const Parameter: FC<ParameterProps> = ({ parameter }) => {
   useEffect(() => {
     if (
       parameter.parametersStepExtraData?.parameterName &&
+      parameter.parametersStepExtraData?.parameterName !== 'custom' &&
       selectedParameter !== parameter.parametersStepExtraData?.parameterName
     ) {
       const selectedParameterValue = parameterOptions.find(

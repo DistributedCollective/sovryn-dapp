@@ -5,7 +5,6 @@ import { useNavigate } from 'react-router-dom';
 
 import { Paragraph, Table } from '@sovryn/ui';
 
-import { useBlockNumber } from '../../../../../hooks/useBlockNumber';
 import { translations } from '../../../../../locales/i18n';
 import { Proposal } from '../../../../../utils/graphql/rsk/generated';
 import { generateRowTitle } from '../../BitocracyPage.utils';
@@ -13,23 +12,17 @@ import { ProposalCardsMobile } from '../ProposalCardsMobile/ProposalCardsMobile'
 import { columnsConfig } from './Proposals.constants';
 
 type ProposalsProps = {
-  proposals: Proposal[];
+  activeProposals: Proposal[];
+  pastProposals: Proposal[];
   loading: boolean;
 };
 
-export const Proposals: FC<ProposalsProps> = ({ proposals, loading }) => {
-  const { value: blockNumber } = useBlockNumber();
+export const Proposals: FC<ProposalsProps> = ({
+  activeProposals,
+  pastProposals,
+  loading,
+}) => {
   const navigate = useNavigate();
-
-  const activeProposals = useMemo(
-    () => proposals.filter(proposal => blockNumber <= proposal.endBlock),
-    [proposals, blockNumber],
-  );
-
-  const pastProposals = useMemo(
-    () => proposals.filter(proposal => blockNumber > proposal.endBlock),
-    [proposals, blockNumber],
-  );
 
   const isActive = useMemo(() => activeProposals.length > 0, [activeProposals]);
 

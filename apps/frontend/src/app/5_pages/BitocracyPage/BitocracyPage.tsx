@@ -1,4 +1,4 @@
-import React, { FC, useCallback } from 'react';
+import React, { FC, useCallback, useMemo } from 'react';
 
 import { t } from 'i18next';
 import { Helmet } from 'react-helmet-async';
@@ -12,6 +12,7 @@ import {
 } from '@sovryn/ui';
 
 import { useAccount } from '../../../hooks/useAccount';
+import { useBlockNumber } from '../../../hooks/useBlockNumber';
 import { translations } from '../../../locales/i18n';
 import { sharedState } from '../../../store/rxjs/shared-state';
 import { NewProposalButton } from './components/NewProposalButton/NewProposalButton';
@@ -24,6 +25,23 @@ const pageTranslations = translations.bitocracyPage;
 const BitocracyPage: FC = () => {
   const { account } = useAccount();
   const { loading, data: proposals } = useGetProposals();
+
+  const { value: blockNumber } = useBlockNumber();
+
+  const activeProposals = useMemo(
+    () => proposals.filter(proposal => blockNumber <= proposal.endBlock),
+    [proposals, blockNumber],
+  );
+
+  const hasActiveProposal = useMemo(
+    () => activeProposals.some(item => item.proposer === account),
+    [account, activeProposals],
+  );
+
+  const pastProposals = useMemo(
+    () => proposals.filter(proposal => blockNumber > proposal.endBlock),
+    [proposals, blockNumber],
+  );
 
   const handleAlertsClick = useCallback(
     () => sharedState.actions.openEmailNotificationSettingsDialog(),
@@ -54,10 +72,14 @@ const BitocracyPage: FC = () => {
               className="mb-3 sm:mb-0"
               onClick={handleAlertsClick}
             />
-            <NewProposalButton />
+            <NewProposalButton hasActiveProposal={hasActiveProposal} />
           </div>
         )}
-        <Proposals proposals={proposals} loading={loading} />
+        <Proposals
+          activeProposals={activeProposals}
+          pastProposals={pastProposals}
+          loading={loading}
+        />
       </div>
     </ProposalContextProvider>
   );

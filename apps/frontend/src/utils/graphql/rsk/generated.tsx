@@ -15411,6 +15411,7 @@ export type GetProposalsQuery = {
     majorityPercentage: string;
     eta?: number | null;
     proposalId: number;
+    proposer: string;
     targets: Array<string>;
     values: Array<string>;
     signatures: Array<string>;
@@ -17102,6 +17103,7 @@ export const GetProposalsDocument = gql`
       majorityPercentage
       eta
       proposalId
+      proposer
       targets
       values
       signatures

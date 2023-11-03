@@ -1,3 +1,6 @@
+import { isBigNumberish } from '@ethersproject/bignumber/lib/bignumber';
+
+import { isValidChecksumAddress } from 'ethereumjs-util';
 import { ethers } from 'ethers';
 
 import { ProposalCreationParameter } from '../../../../contexts/ProposalContext.types';
@@ -86,4 +89,42 @@ export const isValidParameter = (parameter: ProposalCreationParameter) => {
     );
   }
   return functionName && parameterName && newValue && calldata;
+};
+
+export const getParameterType = (
+  parameterName: string,
+  functionName: string,
+) => {
+  const parameterOptions = getParameterOptions(functionName);
+  const parameter = parameterOptions.find(
+    option => option.value === parameterName,
+  );
+  if (parameter) {
+    return parameter.types;
+  } else {
+    return '';
+  }
+};
+
+export const isValidValue = (parameter: ProposalCreationParameter) => {
+  const { functionName, parameterName, newValue } =
+    parameter.parametersStepExtraData || {};
+
+  if (functionName === 'custom' || parameterName === 'custom' || !newValue) {
+    return true;
+  }
+
+  const type = getParameterType(parameterName || '', functionName || '');
+
+  if (!type) {
+    return true;
+  }
+
+  if (type[0] === 'address') {
+    return isValidChecksumAddress(newValue);
+  } else if (type[0] === 'uint256') {
+    return isBigNumberish(newValue);
+  } else if (type[0] === 'bool') {
+    return ['true', 'false'].includes(newValue.toLowerCase());
+  }
 };

@@ -35,6 +35,7 @@ export type TableProps<RowType extends RowObject> = {
   preventExpandOnClickClass?: string;
   mobileRenderer?: (row: RowType) => ReactNode;
   hideHeader?: boolean;
+  subtitleRenderer?: (row: RowType) => ReactNode;
 };
 
 export enum OrderDirection {

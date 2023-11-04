@@ -933,6 +933,16 @@
             "returnsInfo": "The return rate shown is based on swap fees, plus liquidity mining rewards (if applicable), earned by the given pool in the previous 24 hour period, extrapolated to show an estimated annual percentage rate of return.",
             "volume": "24H volume",
             "balance": "Balance"
+        },
+        "adjustAndDepositModal": {
+            "titles": {
+                "initialDeposit": "AMM pool deposit",
+                "adjust": "Adjust AMM pool balance"
+            },
+            "currentStatistics": {
+                "returnRate": "Return rate",
+                "currentBalance": "Current balance"
+            }
         }
     },
     "borrowHistory": {

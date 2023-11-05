@@ -37,6 +37,7 @@ import { MaxButton } from '../../2_molecules/MaxButton/MaxButton';
 import { TOKEN_RENDER_PRECISION } from '../../../constants/currencies';
 import { getTokenDisplayName } from '../../../constants/tokens';
 import { useAccount } from '../../../hooks/useAccount';
+import { useAssetBalance } from '../../../hooks/useAssetBalance';
 import { useWeiAmountInput } from '../../../hooks/useWeiAmountInput';
 import { translations } from '../../../locales/i18n';
 import { removeTrailingZerosFromString } from '../../../utils/helpers';
@@ -44,6 +45,7 @@ import { decimalic, fromWei } from '../../../utils/math';
 import { smartRouter, stableCoins } from './ConvertPage.types';
 import { useConversionMaintenance } from './hooks/useConversionMaintenance';
 import { useGetMaximumAvailableAmount } from './hooks/useGetMaximumAvailableAmount';
+import { useGetMyntConversionAmount } from './hooks/useGetMyntConversionAmount';
 import { useHandleConversion } from './hooks/useHandleConversion';
 
 const commonTranslations = translations.common;
@@ -75,10 +77,12 @@ const ConvertPage: FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const fromToken = searchParams.get('from');
   const toToken = searchParams.get('to');
+  const { balance: myntBalance } = useAssetBalance(SupportedTokens.mynt);
 
   const [slippageTolerance, setSlippageTolerance] = useState('0.5');
 
   const [priceInQuote, setPriceQuote] = useState(false);
+  const [hasMyntBalance, setHasMyntBalance] = useState(false);
 
   const [amount, setAmount, weiAmount] = useWeiAmountInput('');
 
@@ -101,6 +105,11 @@ const ConvertPage: FC = () => {
   const [sourceToken, setSourceToken] =
     useState<SupportedTokens>(defaultSourceToken);
 
+  const { convertedMyntAmount } = useGetMyntConversionAmount(
+    amount,
+    sourceToken,
+  );
+
   const [showAdvancedSettings, setShowAdvancedSettings] = useState(false);
 
   const [tokenOptions, setTokenOptions] = useState<
@@ -114,10 +123,19 @@ const ConvertPage: FC = () => {
     useState<SupportedTokens>();
 
   useEffect(() => {
-    smartRouter
-      .getEntries()
-      .then(tokens => tokensToOptions(tokens, setTokenOptions));
-  }, []);
+    smartRouter.getEntries().then(tokens => {
+      tokensToOptions(tokens, options => {
+        if (!hasMyntBalance) {
+          const filteredOptions = options.filter(
+            option => option.value !== SupportedTokens.mynt,
+          );
+          setTokenOptions(filteredOptions);
+        } else {
+          setTokenOptions(options);
+        }
+      });
+    });
+  }, [sourceToken, hasMyntBalance]);
 
   useEffect(() => {
     (async () => {
@@ -127,9 +145,26 @@ const ConvertPage: FC = () => {
       );
 
       smartRouter.getDestination(sourceTokenDetails.address).then(tokens => {
-        tokensToOptions(tokens, setDestinationTokenOptions);
-        setTokenOptionsSource(sourceToken);
+        tokensToOptions(tokens, options => {
+          if (sourceToken === SupportedTokens.mynt) {
+            const filteredOptions = options.filter(
+              token => token.value === SupportedTokens.sov,
+            );
+            setDestinationTokenOptions(filteredOptions);
+            setTokenOptionsSource(sourceToken);
+          } else {
+            const filteredOptions = options.filter(
+              option => option.value !== SupportedTokens.mynt,
+            );
+            setDestinationTokenOptions(filteredOptions);
+            setTokenOptionsSource(sourceToken);
+          }
+        });
       });
+
+      if (sourceToken === SupportedTokens.mynt) {
+        setDestinationToken(SupportedTokens.sov);
+      }
     })();
   }, [sourceToken]);
 
@@ -282,10 +317,13 @@ const ConvertPage: FC = () => {
     ],
   );
 
-  const renderDestinationAmount = useMemo(
-    () => quote || t(commonTranslations.na),
-    [quote],
-  );
+  const renderDestinationAmount = useMemo(() => {
+    if (sourceToken === SupportedTokens.mynt) {
+      return convertedMyntAmount || t(commonTranslations.na);
+    } else {
+      return quote || t(commonTranslations.na);
+    }
+  }, [quote, convertedMyntAmount, sourceToken]);
 
   const renderPriceAmount = useMemo(() => {
     if (price) {
@@ -305,6 +343,16 @@ const ConvertPage: FC = () => {
     () => setPriceQuote(value => !value),
     [],
   );
+
+  useEffect(() => {
+    if (hasMyntBalance) {
+      if (fromToken === SupportedTokens.mynt) {
+        setSourceToken(SupportedTokens.mynt);
+      }
+    } else if (fromToken === SupportedTokens.mynt && !hasMyntBalance) {
+      setSourceToken(SupportedTokens.dllr);
+    }
+  }, [sourceToken, destinationToken, hasMyntBalance, fromToken]);
 
   useEffect(() => {
     if (fromToken) {
@@ -336,8 +384,10 @@ const ConvertPage: FC = () => {
   useEffect(() => {
     if (!account) {
       setAmount('');
+    } else {
+      setHasMyntBalance(myntBalance.gt(0));
     }
-  }, [account, setAmount]);
+  }, [account, setAmount, myntBalance]);
 
   useEffect(() => {
     if (

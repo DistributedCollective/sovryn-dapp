@@ -4,6 +4,7 @@ import {
   SupportedTokens,
   getProtocolContract,
   getTokenContract,
+  getTokenDetailsByAddress,
 } from '@sovryn/contracts';
 import { ChainId, numberToChainId } from '@sovryn/ethers-provider';
 
@@ -26,6 +27,7 @@ export const ammSwapRoute: SwapRouteFunction = (
   let swapConverter: Contract;
   let rbtcConverter: Contract;
   let protocolContract: Contract;
+  let fixedRateMyntContract: Contract;
 
   const getChainId = async () => {
     if (!chainId) {
@@ -46,7 +48,18 @@ export const ammSwapRoute: SwapRouteFunction = (
     return swapConverter;
   };
 
+  const getFixedRateMyntContract = async () => {
+    const chainId = await getChainId();
+    const { address, abi } = await getProtocolContract(
+      'fixedRateMynt',
+      chainId,
+    );
+    return new Contract(address, abi, provider);
+  };
+
   const getConverterContract = async (entry: string, destination: string) => {
+    const tokenSymbol = (await getTokenDetailsByAddress(entry)).symbol;
+
     if ((await isNativeToken(entry)) || (await isNativeToken(destination))) {
       if (!rbtcConverter) {
         const chainId = await getChainId();
@@ -57,6 +70,11 @@ export const ammSwapRoute: SwapRouteFunction = (
         rbtcConverter = new Contract(address, abi, provider);
       }
       return rbtcConverter;
+    } else if (tokenSymbol === SupportedTokens.mynt) {
+      if (!fixedRateMyntContract) {
+        fixedRateMyntContract = await getFixedRateMyntContract();
+      }
+      return fixedRateMyntContract;
     }
 
     return getSwapNetworkContract();
@@ -106,6 +124,7 @@ export const ammSwapRoute: SwapRouteFunction = (
           SupportedTokens.moc,
           SupportedTokens.rif,
           SupportedTokens.sov,
+          SupportedTokens.mynt,
           // Temporarily disabled in https://sovryn.atlassian.net/browse/SOV-2595
           // SupportedTokens.eths,
           // SupportedTokens.bnbs,
@@ -190,6 +209,7 @@ export const ammSwapRoute: SwapRouteFunction = (
       ).conversionPath(baseToken, quoteToken);
 
       const converter = await getConverterContract(entry, destination);
+      const tokenSymbol = (await getTokenDetailsByAddress(entry)).symbol;
 
       const expectedReturn = await this.quote(
         entry,
@@ -202,7 +222,11 @@ export const ammSwapRoute: SwapRouteFunction = (
 
       let args = [path, amount, minReturn];
 
-      if (!entryIsNative && !destinationIsNative) {
+      if (
+        !entryIsNative &&
+        !destinationIsNative &&
+        tokenSymbol !== SupportedTokens.mynt
+      ) {
         args = [
           path,
           amount,
@@ -213,9 +237,14 @@ export const ammSwapRoute: SwapRouteFunction = (
         ];
       }
 
+      const data =
+        tokenSymbol === SupportedTokens.mynt
+          ? converter.interface.encodeFunctionData('convert', [amount])
+          : converter.interface.encodeFunctionData('convertByPath', args);
+
       return {
         to: converter.address,
-        data: converter.interface.encodeFunctionData('convertByPath', args),
+        data: data,
         value: entryIsNative ? amount.toString() : '0',
         ...overrides,
       };

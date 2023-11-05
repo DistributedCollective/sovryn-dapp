@@ -97,4 +97,9 @@ export const rskTestnet: Record<string, AsyncContractConfigData> = {
     address: '0x69dB16Aa6EEf291Fec522581F4fc9c82dFE60beD',
     getAbi: async () => (await import('../../abis/governor.json')).default,
   },
+  fixedRateMynt: {
+    address: '0x36C6554EE2FcCAb1389aF309aB0793abce0E91F3',
+    getAbi: async () =>
+      (await import('../../abis/fixedRateConverter.json')).default,
+  },
 };

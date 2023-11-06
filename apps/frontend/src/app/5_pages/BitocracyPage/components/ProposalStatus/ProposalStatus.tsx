@@ -65,6 +65,7 @@ export const ProposalStatus: FC<ProposalStatusProps> = ({
         children={
           <>
             <span>{statusMessage}</span>
+            <br />
             <span>{activeProposalDetailMessage}</span>
           </>
         }

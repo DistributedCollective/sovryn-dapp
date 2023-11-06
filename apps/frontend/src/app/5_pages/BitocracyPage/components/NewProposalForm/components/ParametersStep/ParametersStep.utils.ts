@@ -83,6 +83,7 @@ export const isValidParameter = (parameter: ProposalCreationParameter) => {
   if (functionName === 'custom' || parameterName === 'custom') {
     return (
       parameter?.value &&
+      isValidNumericValue(parameter?.value) &&
       parameter?.signature &&
       parameter?.calldata &&
       parameter?.target
@@ -106,6 +107,14 @@ export const getParameterType = (
   }
 };
 
+export const isValidNumericValue = (value: string | number | boolean) => {
+  if (value === '') {
+    return true;
+  }
+
+  return value === '0x' ? false : isBigNumberish(value); // calling isBigNumberish with just '0x' would result in an exception
+};
+
 export const isValidValue = (parameter: ProposalCreationParameter) => {
   const { functionName, parameterName, newValue } =
     parameter.parametersStepExtraData || {};
@@ -123,7 +132,7 @@ export const isValidValue = (parameter: ProposalCreationParameter) => {
   if (type[0] === 'address') {
     return isValidChecksumAddress(newValue);
   } else if (type[0] === 'uint256') {
-    return isBigNumberish(newValue);
+    return isValidNumericValue(newValue);
   } else if (type[0] === 'bool') {
     return ['true', 'false'].includes(newValue.toLowerCase());
   }

@@ -13,6 +13,8 @@ import { t } from 'i18next';
 import { SupportedTokens, getTokenDetails } from '@sovryn/contracts';
 import { noop } from '@sovryn/ui';
 
+import { defaultChainId } from '../../../../config/chains';
+
 import {
   TransactionCallbacks,
   TransactionType,
@@ -90,7 +92,10 @@ export const ProposalContextProvider: FC<PropsWithChildren> = ({
 
       if (type === ProposalCreationType.Proclamation) {
         // make proclamation "non-executable" proposal.
-        const { address } = await getTokenDetails(SupportedTokens.sov);
+        const { address } = await getTokenDetails(
+          SupportedTokens.sov,
+          defaultChainId,
+        );
         actions = [
           {
             target: address,

@@ -24,6 +24,7 @@ import { CUSTOM_OPTION } from '../../ParametersStep.constants';
 import {
   getParameterOptions,
   getParameterType,
+  isValidNumericValue,
   isValidParameter,
   isValidValue,
   renderCalldata,
@@ -124,6 +125,13 @@ export const Parameter: FC<ParameterProps> = ({ parameter }) => {
     [updateParameters, parameter],
   );
 
+  const isValidCustomValue = useMemo(
+    () =>
+      (isCustomContract || isCustomParameter) &&
+      isValidNumericValue(parameter.value),
+    [isCustomContract, isCustomParameter, parameter.value],
+  );
+
   const customParameterSection = useMemo(
     () => (
       <>
@@ -134,6 +142,13 @@ export const Parameter: FC<ParameterProps> = ({ parameter }) => {
             </Paragraph>
           }
           labelElement="div"
+          errorLabel={
+            isValidCustomValue
+              ? ''
+              : t(translations.proposalPage.invalidNewValue, {
+                  type: 'uint256',
+                })
+          }
         >
           <Input
             value={parameter.value}
@@ -177,6 +192,7 @@ export const Parameter: FC<ParameterProps> = ({ parameter }) => {
       </>
     ),
     [
+      isValidCustomValue,
       onChangeProperty,
       parameter.calldata,
       parameter.signature,

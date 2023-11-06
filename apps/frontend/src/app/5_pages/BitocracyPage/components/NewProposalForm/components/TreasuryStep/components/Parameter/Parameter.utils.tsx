@@ -3,7 +3,7 @@ import { ethers } from 'ethers';
 
 import { SupportedTokens } from '@sovryn/contracts';
 
-import { toWei } from '../../../../../../../../../utils/math';
+import { decimalic, toWei } from '../../../../../../../../../utils/math';
 import { ProposalCreationParameter } from '../../../../../../contexts/ProposalContext.types';
 
 export const renderCalldata = (
@@ -37,9 +37,11 @@ export const isValidParameter = (
 ) => {
   const { token, amount, recipientAddress } =
     parameter.treasuryStepExtraData || {};
+
   return (
     token &&
     amount &&
+    decimalic(amount).gt(0) &&
     isValidAddress &&
     recipientAddress &&
     isValidChecksumAddress(recipientAddress)

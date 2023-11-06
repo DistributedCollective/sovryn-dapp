@@ -33,6 +33,7 @@ import {
   REQUIRED_VOTING_POWER,
 } from './TreasuryStep.constants';
 import { Parameter } from './components/Parameter/Parameter';
+import { isValidParameter } from './components/Parameter/Parameter.utils';
 
 type TreasuryStepProps = {
   onPreview: () => void;
@@ -67,10 +68,10 @@ export const TreasuryStep: FC<TreasuryStepProps> = ({
   const { votingPower } = useGetPersonalStakingStatistics();
   const { totalVotingPower } = useGetStakingStatistics();
 
-  const isValidParameter = useCallback(
+  const isValid = useCallback(
     (parameter: ProposalCreationParameter) =>
       isAddress(parameter?.treasuryStepExtraData?.recipientAddress || '') &&
-      // Number(parameter?.treasuryStepExtraData?.amount) > 0 &&
+      isValidParameter(parameter, true) &&
       !maxAmountError,
     [maxAmountError],
   );
@@ -86,8 +87,8 @@ export const TreasuryStep: FC<TreasuryStepProps> = ({
   }, [votingPower, totalVotingPower]);
 
   const isConfirmDisabled = useMemo(
-    () => !parameters.every(isValidParameter) || !hasVotingPower || !governor,
-    [parameters, isValidParameter, hasVotingPower, governor],
+    () => !parameters.every(isValid) || !hasVotingPower || !governor,
+    [parameters, isValid, hasVotingPower, governor],
   );
 
   const handleAddClick = useCallback(() => {

@@ -1,0 +1,7 @@
+.wrapper {
+  @apply text-gray-10 text-xs font-medium bg-gray-80 p-6 rounded border border-transparent hover:border-gray-50 transition-colors w-[16.75rem];
+}
+
+.assetLogo svg {
+  @apply mr-0 w-8 h-8;
+}

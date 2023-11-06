@@ -1,0 +1,77 @@
+import React, { FC } from 'react';
+
+import classNames from 'classnames';
+import { t } from 'i18next';
+
+import { SupportedTokens } from '@sovryn/contracts';
+
+import { getTokenDisplayName } from '../../../constants/tokens';
+import { translations } from '../../../locales/i18n';
+import { AmountRenderer } from '../AmountRenderer/AmountRenderer';
+import { AssetRenderer } from '../AssetRenderer/AssetRenderer';
+import styles from './PromoCard.module.css';
+
+type PromoCardProps = {
+  className?: string;
+  asset1: SupportedTokens;
+  asset2: SupportedTokens;
+  apy: string;
+  rewards: string;
+  rewardToken: SupportedTokens;
+  rewardsLabel: string;
+};
+
+export const PromoCard: FC<PromoCardProps> = ({
+  className,
+  asset1,
+  asset2,
+  rewards,
+  rewardToken,
+  rewardsLabel,
+  apy,
+}) => (
+  <div className={classNames(styles.wrapper, className)}>
+    <div className="flex items-center mb-3">
+      <AssetRenderer
+        asset={asset1}
+        showAssetLogo
+        className="mr-0"
+        assetClassName="hidden"
+        logoClassName={styles.assetLogo}
+      />
+      <AssetRenderer
+        asset={asset2}
+        showAssetLogo
+        className="mr-0 -ml-2"
+        assetClassName="hidden"
+        logoClassName={styles.assetLogo}
+      />
+      <span className="flex items-center ml-2 text-gray-10">
+        {getTokenDisplayName(asset1)}/{getTokenDisplayName(asset2)}
+      </span>
+    </div>
+
+    <div className="flex items-center justify-between">
+      <div className="flex flex-col">
+        <span className="text-gray-30 mb-1.5">{rewardsLabel}</span>
+        <span className="text-white text-base">
+          <AmountRenderer
+            value={rewards}
+            suffix={getTokenDisplayName(rewardToken)}
+            isAnimated
+            precision={0}
+          />
+        </span>
+      </div>
+
+      <div className="flex flex-col">
+        <span className="text-gray-30 mb-1.5">
+          {t(translations.promotion.currentAPY)}
+        </span>
+        <span className="text-white text-base">
+          <AmountRenderer value={apy} suffix="%" isAnimated precision={2} />
+        </span>
+      </div>
+    </div>
+  </div>
+);

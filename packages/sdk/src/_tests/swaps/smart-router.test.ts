@@ -27,7 +27,7 @@ describe('SmartRouter', () => {
 
   describe('getAvailableRoutes', () => {
     it('return all available routes', async () => {
-      expect(router.getAvailableRoutes()).toHaveLength(4);
+      expect(router.getAvailableRoutes()).toHaveLength(5);
     });
   });
 

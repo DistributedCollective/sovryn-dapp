@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useMemo } from 'react';
+import React, { FC, useCallback, useEffect, useState } from 'react';
 
 import { t } from 'i18next';
 import { nanoid } from 'nanoid';
@@ -32,7 +32,13 @@ export const ProposalVotingResults: FC<ProposalVotingResultsProps> = ({
   const { votesFor, votesAgainst, endBlock, emittedBy, quorum } = proposal;
   const { majorityPercentageVotes, quorumPercentageVotes } = emittedBy;
 
-  const { support, turnout, votes } = useMemo(() => {
+  const [votesData, setVotesData] = useState({
+    votes: Decimal.ZERO,
+    support: 0,
+    turnout: 0,
+  });
+
+  useEffect(() => {
     const votes = Decimal.fromBigNumberString(votesFor).add(
       Decimal.fromBigNumberString(votesAgainst),
     );
@@ -50,12 +56,12 @@ export const ProposalVotingResults: FC<ProposalVotingResultsProps> = ({
       .mul(100)
       .toNumber();
 
-    return {
+    setVotesData({
       votes,
       support,
       turnout,
-    };
-  }, [quorum, quorumPercentageVotes, votesAgainst, votesFor]);
+    });
+  }, [quorum, quorumPercentageVotes, votesAgainst, votesFor, currentBlock]);
 
   const exportData = useCallback(async () => {
     if (!proposal.votes || !proposal.votes.length) {
@@ -119,14 +125,14 @@ export const ProposalVotingResults: FC<ProposalVotingResultsProps> = ({
                 </Paragraph>
                 <Paragraph>
                   {t(translations.proposalVotingResults.support.currentValue, {
-                    value: formatValue(support, 3),
+                    value: formatValue(votesData.support, 3),
                   })}
                 </Paragraph>
               </>
             }
           />
         </div>
-        <Bar value={support} threshold={majorityPercentageVotes} />
+        <Bar value={votesData.support} threshold={majorityPercentageVotes} />
       </div>
 
       <div className="mt-4">
@@ -150,15 +156,15 @@ export const ProposalVotingResults: FC<ProposalVotingResultsProps> = ({
                 </Paragraph>
                 <Paragraph>
                   {t(translations.proposalVotingResults.quorum.currentValue, {
-                    value: formatValue(votes, 4),
-                    percent: formatValue(turnout, 3),
+                    value: formatValue(votesData.votes, 4),
+                    percent: formatValue(votesData.turnout, 3),
                   })}
                 </Paragraph>
               </>
             }
           />
         </div>
-        <Bar value={turnout} threshold={quorumPercentageVotes} />
+        <Bar value={votesData.turnout} threshold={quorumPercentageVotes} />
       </div>
     </div>
   );

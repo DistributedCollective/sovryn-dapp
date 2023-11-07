@@ -43,9 +43,9 @@ export const NewProposalButton: FC<NewProposalButtonProps> = ({
         <Tooltip
           content={t(pageTranslations.activeProposalError)}
           disabled={!hasActiveProposal}
-          className="mb-3 sm:mb-0 ml-3 sm:relative"
+          className="sm:ml-3 sm:relative fixed bottom-0 left-0 right-0 z-10 sm:z-0 p-4 pb-8 sm:p-0 bg-gray-90 sm:bg-transparent border-t sm:border-none border-gray-60"
         >
-          <div className="bg-gray-90 sm:bg-transparent p-4 pb-8 sm:p-0 border-t sm:border-none border-gray-60 flex items-center justify-center  z-10 sm:z-0">
+          <div className="flex items-center justify-center">
             <Button
               text={t(pageTranslations.actions.createProposal)}
               className="w-full sm:w-auto"

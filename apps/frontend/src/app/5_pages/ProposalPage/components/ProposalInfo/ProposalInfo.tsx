@@ -17,10 +17,10 @@ type ProposalInfoProps = {
 
 export const ProposalInfo: FC<ProposalInfoProps> = ({ link, description }) => (
   <div className="bg-gray-90 px-6 pt-6 pb-3 rounded">
-    <div className="flex">
+    <div className="sm:flex sm:mb-0 mb-2">
       <Paragraph
         size={ParagraphSize.base}
-        className="text-xs w-24 mb-3 text-gray-30"
+        className="text-xs min-w-24 w-24 mb-3 text-gray-30"
       >
         {t(pageTranslations.discussionLink)}
       </Paragraph>
@@ -38,15 +38,18 @@ export const ProposalInfo: FC<ProposalInfoProps> = ({ link, description }) => (
       )}
     </div>
 
-    <div className="flex">
+    <div className="sm:flex sm:mb-0 mb-2">
       <Paragraph
         size={ParagraphSize.base}
-        className="text-xs w-24 text-gray-30"
+        className="text-xs min-w-24 w-24 text-gray-30"
       >
         {t(pageTranslations.proposalText)}
       </Paragraph>
       <div>
-        <ReactMarkdown className="text-xs" remarkPlugins={[remarkGfm]}>
+        <ReactMarkdown
+          className="text-xs text-gray-30 break-words sm:break-normal"
+          remarkPlugins={[remarkGfm]}
+        >
           {description}
         </ReactMarkdown>
       </div>

@@ -30,7 +30,7 @@
 }
 
 .active {
-  outline-color: rgba(114, 234, 222, 0.5);
+  @apply outline-positive/50;
 }
 
 .expanded {

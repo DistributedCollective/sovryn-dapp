@@ -6,16 +6,16 @@ import { SupportedTokens } from '@sovryn/contracts';
 
 import { getTokenDisplayName } from '../../../constants/tokens';
 import { AssetRenderer } from '../AssetRenderer/AssetRenderer';
-import styles from './PairRenderer.module.css';
+import styles from './AssetPairRenderer.module.css';
 
-type PairRendererProps = {
+type AssetPairRendererProps = {
   className?: string;
   asset1: SupportedTokens;
   asset2: SupportedTokens;
   hideSymbol?: boolean;
 };
 
-export const PairRenderer: FC<PairRendererProps> = ({
+export const AssetPairRenderer: FC<AssetPairRendererProps> = ({
   className,
   asset1,
   asset2,

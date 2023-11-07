@@ -1,58 +1,43 @@
-import React, { FC } from 'react';
+import React, { FC, ReactNode } from 'react';
 
 import classNames from 'classnames';
-import { t } from 'i18next';
 
 import { SupportedTokens } from '@sovryn/contracts';
 
-import { getTokenDisplayName } from '../../../constants/tokens';
-import { translations } from '../../../locales/i18n';
-import { AmountRenderer } from '../AmountRenderer/AmountRenderer';
-import { PairRenderer } from '../PairRenderer/PairRenderer';
+import { AssetPairRenderer } from '../AssetPairRenderer/AssetPairRenderer';
 import styles from './PromoCard.module.css';
 
 type PromoCardProps = {
   className?: string;
   asset1: SupportedTokens;
   asset2: SupportedTokens;
-  apy: string;
-  rewards: string;
-  rewardToken: SupportedTokens;
-  rewardsLabel: string;
+  label1: string;
+  child1: ReactNode;
+  label2: string;
+  child2: ReactNode;
 };
 
 export const PromoCard: FC<PromoCardProps> = ({
   className,
   asset1,
   asset2,
-  rewards,
-  rewardToken,
-  rewardsLabel,
-  apy,
+  label1,
+  child1,
+  label2,
+  child2,
 }) => (
   <div className={classNames(styles.wrapper, className)}>
-    <PairRenderer className="mb-3" asset1={asset1} asset2={asset2} />
+    <AssetPairRenderer className="mb-3" asset1={asset1} asset2={asset2} />
 
     <div className="flex items-center justify-between">
       <div className="flex flex-col">
-        <span className="text-gray-30 mb-1.5">{rewardsLabel}</span>
-        <span className="text-white text-base">
-          <AmountRenderer
-            value={rewards}
-            suffix={getTokenDisplayName(rewardToken)}
-            isAnimated
-            precision={0}
-          />
-        </span>
+        <span className="text-gray-30 mb-1.5">{label1}</span>
+        <span className="text-white text-base">{child1}</span>
       </div>
 
       <div className="flex flex-col">
-        <span className="text-gray-30 mb-1.5">
-          {t(translations.promotion.currentAPY)}
-        </span>
-        <span className="text-white text-base">
-          <AmountRenderer value={apy} suffix="%" isAnimated precision={2} />
-        </span>
+        <span className="text-gray-30 mb-1.5">{label2}</span>
+        <span className="text-white text-base">{child2}</span>
       </div>
     </div>
   </div>

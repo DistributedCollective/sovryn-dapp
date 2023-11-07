@@ -5,7 +5,9 @@ import { Helmet } from 'react-helmet-async';
 
 import { SupportedTokens } from '@sovryn/contracts';
 
+import { AmountRenderer } from '../../2_molecules/AmountRenderer/AmountRenderer';
 import { PromoCard } from '../../2_molecules/PromoCard/PromoCard';
+import { getTokenDisplayName } from '../../../constants/tokens';
 import { translations } from '../../../locales/i18n';
 
 const MarketMakingPage: FC = () => (
@@ -19,10 +21,19 @@ const MarketMakingPage: FC = () => (
         <PromoCard
           asset1={SupportedTokens.bpro}
           asset2={SupportedTokens.rbtc}
-          rewards="15000"
-          rewardsLabel={t('promotion.weeklyRewards')}
-          apy="7.06"
-          rewardToken={SupportedTokens.sov}
+          label1={t('promotion.weeklyRewards')}
+          child1={
+            <AmountRenderer
+              value="15000"
+              suffix={getTokenDisplayName(SupportedTokens.sov)}
+              isAnimated
+              precision={0}
+            />
+          }
+          label2={t(translations.promotion.currentAPY)}
+          child2={
+            <AmountRenderer value="7.06" suffix="%" isAnimated precision={2} />
+          }
         />
       </div>
     </div>

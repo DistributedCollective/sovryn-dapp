@@ -8,6 +8,7 @@ import { Paragraph } from '@sovryn/ui';
 import { translations } from '../../../../../locales/i18n';
 import { ProposalProps, ProposalState } from '../../BitocracyPage.types';
 import { shouldProposalBeDefeated } from '../../BitocracyPage.utils';
+import { useIsExecutableProposal } from '../../hooks/useIsExecutableProposal';
 import { useProposalStatus } from '../../hooks/useProposalStatus';
 import { getStatusIcon } from '../Proposals/Proposals.utils';
 
@@ -21,6 +22,7 @@ export const ProposalStatus: FC<ProposalStatusProps> = ({
   isProposalDetail = false,
 }) => {
   const status = useProposalStatus(proposal);
+  const isExecutableProposal = useIsExecutableProposal(proposal);
 
   const activeProposalDetailMessage = useMemo(() => {
     if (!isProposalDetail || status !== ProposalState.Active) {
@@ -32,6 +34,27 @@ export const ProposalStatus: FC<ProposalStatusProps> = ({
       : t(translations.bitocracyPage.proposalStatusDetail.willSucceed);
   }, [isProposalDetail, proposal, status]);
 
+  const statusMessage = useMemo(() => {
+    if (
+      [
+        ProposalState.Succeeded,
+        ProposalState.Queued,
+        ProposalState.Executed,
+      ].includes(status) &&
+      !isExecutableProposal
+    ) {
+      return t(
+        translations.bitocracyPage.proposalStatus.succeededNonExecutable,
+      );
+    }
+
+    return t(
+      translations.bitocracyPage.proposalStatus[
+        ProposalState[status].toLowerCase()
+      ],
+    );
+  }, [isExecutableProposal, status]);
+
   return (
     <div className={classNames('flex items-start', className)}>
       {getStatusIcon(status)}
@@ -41,14 +64,9 @@ export const ProposalStatus: FC<ProposalStatusProps> = ({
         } font-semibold`}
         children={
           <>
-            <div>
-              {t(
-                translations.bitocracyPage.proposalStatus[
-                  ProposalState[status].toLowerCase()
-                ],
-              )}
-            </div>
-            <div>{activeProposalDetailMessage}</div>
+            <span>{statusMessage}</span>
+            <br />
+            <span>{activeProposalDetailMessage}</span>
           </>
         }
       />

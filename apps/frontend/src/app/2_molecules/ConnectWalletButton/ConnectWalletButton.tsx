@@ -16,7 +16,7 @@ import { useNotificationContext } from '../../../contexts/NotificationContext';
 import { translations } from '../../../locales/i18n';
 import { sharedState } from '../../../store/rxjs/shared-state';
 
-export type ConnectWalletButtonProps = {
+type ConnectWalletButtonProps = {
   onConnect: () => void;
   onDisconnect: () => void;
   address: string | undefined;

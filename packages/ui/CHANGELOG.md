@@ -1,5 +1,36 @@
 # @sovryn/ui
 
+## 1.0.20
+
+### Patch Changes
+
+- 45f981a4: SOV-3003: Update mobile lending
+
+## 1.0.19
+
+### Patch Changes
+
+- 671278f8: SOV-3435: Vertical tab mobile custom classname
+
+## 1.0.18
+
+### Patch Changes
+
+- 327ac92e: SOV-3333: update vertical tabs style
+
+## 1.0.17
+
+### Patch Changes
+
+- 3787c8e3: fix: SOV-3224 expand table on mobile
+- cb549d3d: SOV-3210: update twitter logo
+
+## 1.0.16
+
+### Patch Changes
+
+- 37382136: SOV-3008: Add bar component with threshold option
+
 ## 1.0.15
 
 ### Patch Changes

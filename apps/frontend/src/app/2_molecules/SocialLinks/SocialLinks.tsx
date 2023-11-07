@@ -9,7 +9,7 @@ import { GITHUB_LINKS, SOCIAL_LINKS } from '../../../constants/links';
 import { translations } from '../../../locales/i18n';
 import styles from './SocialLinks.module.css';
 
-export type SocialLinksProps = {
+type SocialLinksProps = {
   className?: string;
   innerClassName?: string;
   dataAttribute?: string;

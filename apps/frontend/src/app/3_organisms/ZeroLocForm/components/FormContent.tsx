@@ -585,7 +585,7 @@ export const FormContent: FC<FormContentProps> = props => {
             onChangeValue={setHasDisclaimerBeenChecked}
             label={
               <Trans
-                i18nKey={translations.adjustCreditLine.labels.disclaimer}
+                i18nKey={t(translations.adjustCreditLine.labels.disclaimer)}
                 components={[
                   <Link
                     text={t(translations.adjustCreditLine.labels.disclaimerCTA)}

@@ -136,11 +136,6 @@ export const observeCall = (id: string) => {
   );
 };
 
-export const getCall = (id: string) => {
-  const state = store.getValue();
-  return state[id];
-};
-
 export const idHash = (args: any[]) => {
   const params = args.map(item => item.toString().toLowerCase());
   const json = JSON.stringify(params);

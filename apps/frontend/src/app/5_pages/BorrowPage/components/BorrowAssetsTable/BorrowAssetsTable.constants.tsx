@@ -5,10 +5,10 @@ import { t } from 'i18next';
 import { HelperButton } from '@sovryn/ui';
 
 import { AssetRenderer } from '../../../../2_molecules/AssetRenderer/AssetRenderer';
-import { normalizeToken } from '../../../../3_organisms/BorrowLoan/components/AdjustLoanForm/AdjustLoanForm.utils';
 import { translations } from '../../../../../locales/i18n';
 import { LendingPool } from '../../../../../utils/LendingPool';
 import { AcceptedCollateral } from '../../../LendPage/components/AcceptedCollateral/AcceptedCollateral';
+import { normalizeToken } from '../../BorrowPage.utils';
 import { AvailableSupply } from './components/AvailableSupply/AvailableSupply';
 import { MinCollateralRatio } from './components/MinCollateralRatio/MinCollateralRatio';
 import { NewLoanButton } from './components/NewLoanButton/NewLoanButton';

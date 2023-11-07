@@ -1,5 +1,0 @@
----
-'frontend': patch
----
-
-Bitocracy page

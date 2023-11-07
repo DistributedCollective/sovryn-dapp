@@ -1,5 +1,61 @@
 # frontend
 
+## 1.0.35
+
+### Patch Changes
+
+- b231e8d4: SOV-3333: improve wallet discovery in wallet connection flow
+- 8abf5e42: SOV-3324: fix nav menu toggle
+- 45f981a4: SOV-3003: Update mobile lending
+- 87a209c1: fix: refresh vote block
+- 60ce6933: SOV-3323 lend my lending balance
+- ce99d264: Bitocracy: New Proposal flow
+- Updated dependencies [45f981a4]
+- Updated dependencies [ce99d264]
+  - @sovryn/ui@1.0.20
+  - @sovryn/contracts@1.0.18
+
+## 1.0.34
+
+### Patch Changes
+
+- fba20d8d: SOV-3422: increase suggested gas limit for claiming rewards
+- 23feeada: SOV-3345: Codebase cleanup
+
+## 1.0.33
+
+### Patch Changes
+
+- 23671b25: SOV-3375: fix broken localisations
+- 6765a49f: SOV-3061: Refactor Borrow page
+- dec66af7: SOV-3240: remove analytics scripts
+- bf2ab891: SOV-3223: Close menu when menu option is clicked
+- 49f155da: SOV-3285: use Convert page as default landing page
+- 812601fa: SOV-3172: Extend Borrow Dialog automatically closes when transaction completes
+- Updated dependencies [3787c8e3]
+- Updated dependencies [cb549d3d]
+  - @sovryn/ui@1.0.17
+
+## 1.0.32
+
+### Patch Changes
+
+- 1210dc50: SOV-3364: Fix broken localizations
+
+## 1.0.31.1
+
+- 2832d32e: Fix Trezor Wallet connection
+
+## 1.0.31
+
+### Patch Changes
+
+- 8c3d97eb: SOV-3289: Resolve issue with iWRBTC Rewards not being shown or claimable from Rewards page
+- 37382136: Bitocracy page
+- Updated dependencies [37382136]
+  - @sovryn/contracts@1.0.17
+  - @sovryn/ui@1.0.16
+
 ## 1.0.30
 
 ### Patch Changes

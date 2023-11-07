@@ -61,9 +61,12 @@ const routes = [
     errorElement: <ErrorPage />,
     children: [
       {
-        element: <Zero />,
         index: true,
-        loader: zeroPageLoader,
+        element: <ConvertPage />,
+      },
+      {
+        path: '/convert',
+        element: <ConvertPage />,
       },
       {
         path: '/borrow/line-of-credit',
@@ -90,10 +93,6 @@ const routes = [
       {
         path: '/earn',
         loader: () => redirect('/earn/lend'),
-      },
-      {
-        path: '/convert',
-        element: <ConvertPage />,
       },
       {
         path: '/bitocracy',

@@ -3,7 +3,7 @@ import { Environments } from '../types/global';
 export const SOCIAL_LINKS = {
   DISCORD: 'https://discord.gg/sovryn',
   TELEGRAM: 'https://t.me/SovrynBitcoin',
-  TWITTER: ' https://twitter.com/SovrynBTC',
+  TWITTER: 'https://x.com/SovrynBTC',
 };
 
 export const GITHUB_LINKS = {

@@ -1,8 +1,4 @@
-import { ChainIds } from '@sovryn/ethers-provider';
-
 import { ReleaseFileContent } from '../types/global';
-
-export const REQUIRED_CHAIN = ChainIds.RSK_TESTNET;
 
 export const APPROVAL_FUNCTION = 'approve';
 
@@ -34,11 +30,7 @@ export const CURRENT_RELEASE: ReleaseFileContent = JSON.parse(
   process.env.REACT_APP_RELEASE_DATA || '{}',
 );
 
-export const MAX_PROCESSABLE_CHECKPOINTS_ZUSD = 300;
-export const MAX_PROCESSABLE_CHECKPOINTS_SOV = 200;
-export const MAX_PROCESSABLE_CHECKPOINTS_TOKENS = 150;
-export const WEIGHT_FACTOR = 10;
 export const MS = 1e3;
 
-export const RBTC_GAS_FEE_RESERVE = 0.000402832;
-export const MAX_PROCESSABLE_CHECKPOINTS_RBTC = 56;
+export const SECONDS_IN_DAY = 86400;
+export const SECONDS_IN_YEAR = 31536000;

@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useMemo } from 'react';
+import React, { FC, useCallback, useEffect, useMemo } from 'react';
 
 import classNames from 'classnames';
 import { t } from 'i18next';
@@ -19,6 +19,7 @@ import {
 } from '@sovryn/ui';
 
 import { useAccount } from '../../../../../hooks/useAccount';
+import { useBlockNumber } from '../../../../../hooks/useBlockNumber';
 import { translations } from '../../../../../locales/i18n';
 import { Proposal } from '../../../../../utils/graphql/rsk/generated';
 import { ProposalState } from '../../../BitocracyPage/BitocracyPage.types';
@@ -40,6 +41,11 @@ export const CastVote: FC<CastVoteProps> = ({ proposal, className }) => {
   const { account } = useAccount();
   const status = useProposalStatus(proposal);
   const { vote: hasUserVoted, loading, refetch } = useGetUserVote(proposal.id);
+  const { value: block } = useBlockNumber();
+
+  useEffect(() => {
+    refetch();
+  }, [refetch, block]);
 
   const { submit } = useVote(proposal, refetch);
 
@@ -58,7 +64,7 @@ export const CastVote: FC<CastVoteProps> = ({ proposal, className }) => {
           size={ParagraphSize.base}
           className="text-xs italic font-medium leading-relaxed"
         >
-          <Trans i18nKey={pageTranslations.connectMessage} />
+          <Trans i18nKey={t(pageTranslations.connectMessage)} />
         </Paragraph>
       );
     }
@@ -210,7 +216,7 @@ export const CastVote: FC<CastVoteProps> = ({ proposal, className }) => {
           size={ParagraphSize.base}
           className="text-xs italic font-medium leading-relaxed"
         >
-          <Trans i18nKey={pageTranslations.noVote} />
+          <Trans i18nKey={t(pageTranslations.noVote)} />
         </Paragraph>
       );
     }

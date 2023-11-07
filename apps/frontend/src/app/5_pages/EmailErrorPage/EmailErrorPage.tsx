@@ -17,7 +17,7 @@ export const EmailErrorPage = () => (
     title={t(translations.emailNotifications.errorPage.title)}
     subtitle={
       <Trans
-        i18nKey={translations.emailNotifications.errorPage.subtitle}
+        i18nKey={t(translations.emailNotifications.errorPage.subtitle)}
         components={[
           <Link
             className="leading-[1.125rem] font-normal text-sm lg:text-base text-center"

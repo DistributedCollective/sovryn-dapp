@@ -3,7 +3,11 @@ import React, { FC } from 'react';
 import { t } from 'i18next';
 import { Helmet } from 'react-helmet-async';
 
+import { Heading, Paragraph, ParagraphSize } from '@sovryn/ui';
+
 import { translations } from '../../../locales/i18n';
+import { MarketMakingTable } from './components/MarketMakingTable/MarketMakingTable';
+import { Promotions } from './components/Promotions/Promotions';
 
 const MarketMakingPage: FC = () => (
   <>
@@ -11,10 +15,21 @@ const MarketMakingPage: FC = () => (
       <title>{t(translations.marketMakingPage.meta.title)}</title>
     </Helmet>
 
-    <div className="px-0 container md:mx-9 mx-0 md:mb-2 mt-4 mb-7">
-      <div className="w-full md:bg-gray-90 md:py-7 md:px-6 rounded mb-6">
-        content
-      </div>
+    <div className="w-full flex flex-col items-center text-gray-10 mt-6 sm:mt-24 max-w-6xl">
+      <Heading className="text-center mb-3 lg:text-2xl">
+        {t(translations.marketMakingPage.title)}
+      </Heading>
+
+      <Paragraph
+        className="text-center mb-6 lg:mb-10"
+        size={ParagraphSize.base}
+      >
+        {t(translations.marketMakingPage.subtitle)}
+      </Paragraph>
+
+      <Promotions />
+
+      <MarketMakingTable />
     </div>
   </>
 );

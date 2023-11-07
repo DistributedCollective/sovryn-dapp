@@ -918,6 +918,21 @@
     "marketMakingPage": {
         "meta": {
             "title": "Market Making - Sovryn"
+        },
+        "title": "Market making",
+        "subtitle": "Earn fees from AMM swaps",
+        "promotions": {
+            "p1": "Provide a 1:1 ratio of two assets to the AMM pool and instantly start accruing your share of weekly rewards.",
+            "p2": "Next rewards recalibration on October 17.",
+            "learnMoreLink": "Learn more"
+        },
+        "table": {
+            "pair": "Pair",
+            "liquidity": "Liquidity",
+            "returns": "Returns",
+            "returnsInfo": "The return rate shown is based on swap fees, plus liquidity mining rewards (if applicable), earned by the given pool in the previous 24 hour period, extrapolated to show an estimated annual percentage rate of return.",
+            "volume": "24H volume",
+            "balance": "Balance"
         }
     },
     "borrowHistory": {

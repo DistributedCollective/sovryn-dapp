@@ -1,4 +1,4 @@
-import { Contract, constants, providers } from 'ethers';
+import { BigNumber, Contract, constants, providers, utils } from 'ethers';
 
 import {
   SupportedTokens,
@@ -15,13 +15,14 @@ import {
 } from '../../../internal/utils';
 import { SwapPairs, SwapRouteFunction } from '../types';
 
+const FIXED_RATE_AMOUNT = '0.004723550439442834';
+
 export const myntFixedRateRoute: SwapRouteFunction = (
   provider: providers.Provider,
 ) => {
   let pairCache: SwapPairs;
   let chainId: ChainId;
   let fixedRateMyntContract: Contract;
-  let protocolContract: Contract;
 
   const getChainId = async () => {
     if (!chainId) {
@@ -46,53 +47,29 @@ export const myntFixedRateRoute: SwapRouteFunction = (
     return fixedRateMyntContract;
   };
 
-  const getSwapQuoteContract = async () => {
-    if (!protocolContract) {
-      const chainId = await getChainId();
-      const { address, abi } = await getProtocolContract('protocol', chainId);
-      protocolContract = new Contract(address, abi, provider);
-    }
-    return protocolContract;
-  };
-
   return {
     name: 'MyntFixedRate',
     pairs: async () => {
       if (!pairCache) {
         const chainId = await getChainId();
-
-        const swapTokens = [SupportedTokens.sov, SupportedTokens.mynt];
-
-        const contracts = await Promise.all(
-          swapTokens.map(token => getTokenContract(token, chainId)),
-        );
-
-        const addresses = contracts.map(contract =>
-          contract.address.toLowerCase(),
-        );
-
-        const pairs = new Map<string, string[]>();
-
-        for (const address of addresses) {
-          const pair = addresses.filter(a => a !== address);
-          pairs.set(address, pair);
-        }
-
-        pairCache = pairs;
+        const mynt = (
+          await getTokenContract(SupportedTokens.mynt, chainId)
+        ).address.toLowerCase();
+        const sov = (
+          await getTokenContract(SupportedTokens.sov, chainId)
+        ).address.toLowerCase();
+        pairCache = new Map<string, string[]>([[mynt, [sov]]]);
       }
-
       return pairCache;
     },
     quote: async (entry, destination, amount) => {
-      return (await getSwapQuoteContract())
-        .getSwapExpectedReturn(
-          entry.toLowerCase(),
-          destination.toLowerCase(),
-          amount,
-        )
-        .catch(e => {
-          throw makeError(e.message, SovrynErrorCode.ETHERS_CALL_EXCEPTION);
-        });
+      const converter = await getConverterContract();
+      const maxAmount = await converter.convertMax();
+      const rate = utils.parseEther(FIXED_RATE_AMOUNT);
+      if (BigNumber.from(amount).gt(maxAmount)) {
+        throw new Error('Amount exceeds the maximum convertible MYNT limit.');
+      }
+      return BigNumber.from(amount).mul(rate).div(constants.WeiPerEther);
     },
     approve: async (entry, destination, amount, from, overrides) => {
       const converter = await getConverterContract();

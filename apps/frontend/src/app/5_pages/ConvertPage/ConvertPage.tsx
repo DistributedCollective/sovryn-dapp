@@ -45,7 +45,6 @@ import { decimalic, fromWei } from '../../../utils/math';
 import { smartRouter, stableCoins } from './ConvertPage.types';
 import { useConversionMaintenance } from './hooks/useConversionMaintenance';
 import { useGetMaximumAvailableAmount } from './hooks/useGetMaximumAvailableAmount';
-import { useGetMyntConversionAmount } from './hooks/useGetMyntConversionAmount';
 import { useHandleConversion } from './hooks/useHandleConversion';
 
 const commonTranslations = translations.common;
@@ -82,8 +81,7 @@ const ConvertPage: FC = () => {
   const [slippageTolerance, setSlippageTolerance] = useState('0.5');
 
   const [priceInQuote, setPriceQuote] = useState(false);
-  const [hasMyntBalance, setHasMyntBalance] = useState(false);
-
+  const hasMyntBalance = useMemo(() => myntBalance.gt(0), [myntBalance]);
   const [amount, setAmount, weiAmount] = useWeiAmountInput('');
 
   const [quote, setQuote] = useState('');
@@ -105,11 +103,6 @@ const ConvertPage: FC = () => {
   const [sourceToken, setSourceToken] =
     useState<SupportedTokens>(defaultSourceToken);
 
-  const { convertedMyntAmount } = useGetMyntConversionAmount(
-    amount,
-    sourceToken,
-  );
-
   const [showAdvancedSettings, setShowAdvancedSettings] = useState(false);
 
   const [tokenOptions, setTokenOptions] = useState<
@@ -119,23 +112,15 @@ const ConvertPage: FC = () => {
   const [destinationTokenOptions, setDestinationTokenOptions] = useState<
     SelectOption<SupportedTokens>[]
   >([]);
+
   const [tokenOptionsSource, setTokenOptionsSource] =
     useState<SupportedTokens>();
 
   useEffect(() => {
-    smartRouter.getEntries().then(tokens => {
-      tokensToOptions(tokens, options => {
-        if (!hasMyntBalance) {
-          const filteredOptions = options.filter(
-            option => option.value !== SupportedTokens.mynt,
-          );
-          setTokenOptions(filteredOptions);
-        } else {
-          setTokenOptions(options);
-        }
-      });
-    });
-  }, [sourceToken, hasMyntBalance]);
+    smartRouter
+      .getEntries()
+      .then(tokens => tokensToOptions(tokens, setTokenOptions));
+  }, [sourceToken]);
 
   useEffect(() => {
     (async () => {
@@ -143,23 +128,9 @@ const ConvertPage: FC = () => {
         sourceToken,
         defaultChainId,
       );
-
       smartRouter.getDestination(sourceTokenDetails.address).then(tokens => {
-        tokensToOptions(tokens, options => {
-          if (sourceToken === SupportedTokens.mynt) {
-            const filteredOptions = options.filter(
-              token => token.value === SupportedTokens.sov,
-            );
-            setDestinationTokenOptions(filteredOptions);
-            setTokenOptionsSource(sourceToken);
-          } else {
-            const filteredOptions = options.filter(
-              option => option.value !== SupportedTokens.mynt,
-            );
-            setDestinationTokenOptions(filteredOptions);
-            setTokenOptionsSource(sourceToken);
-          }
-        });
+        tokensToOptions(tokens, setDestinationTokenOptions);
+        setTokenOptionsSource(sourceToken);
       });
 
       if (sourceToken === SupportedTokens.mynt) {
@@ -317,13 +288,10 @@ const ConvertPage: FC = () => {
     ],
   );
 
-  const renderDestinationAmount = useMemo(() => {
-    if (sourceToken === SupportedTokens.mynt) {
-      return convertedMyntAmount || t(commonTranslations.na);
-    } else {
-      return quote || t(commonTranslations.na);
-    }
-  }, [quote, convertedMyntAmount, sourceToken]);
+  const renderDestinationAmount = useMemo(
+    () => quote || t(commonTranslations.na),
+    [quote],
+  );
 
   const renderPriceAmount = useMemo(() => {
     if (price) {
@@ -384,10 +352,8 @@ const ConvertPage: FC = () => {
   useEffect(() => {
     if (!account) {
       setAmount('');
-    } else {
-      setHasMyntBalance(myntBalance.gt(0));
     }
-  }, [account, setAmount, myntBalance]);
+  }, [account, setAmount]);
 
   useEffect(() => {
     if (

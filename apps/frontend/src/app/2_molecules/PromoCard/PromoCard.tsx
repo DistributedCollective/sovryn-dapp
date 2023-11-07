@@ -8,7 +8,7 @@ import { SupportedTokens } from '@sovryn/contracts';
 import { getTokenDisplayName } from '../../../constants/tokens';
 import { translations } from '../../../locales/i18n';
 import { AmountRenderer } from '../AmountRenderer/AmountRenderer';
-import { AssetRenderer } from '../AssetRenderer/AssetRenderer';
+import { PairRenderer } from '../PairRenderer/PairRenderer';
 import styles from './PromoCard.module.css';
 
 type PromoCardProps = {
@@ -31,25 +31,7 @@ export const PromoCard: FC<PromoCardProps> = ({
   apy,
 }) => (
   <div className={classNames(styles.wrapper, className)}>
-    <div className="flex items-center mb-3">
-      <AssetRenderer
-        asset={asset1}
-        showAssetLogo
-        className="mr-0"
-        assetClassName="hidden"
-        logoClassName={styles.assetLogo}
-      />
-      <AssetRenderer
-        asset={asset2}
-        showAssetLogo
-        className="mr-0 -ml-2"
-        assetClassName="hidden"
-        logoClassName={styles.assetLogo}
-      />
-      <span className="flex items-center ml-2 text-gray-10">
-        {getTokenDisplayName(asset1)}/{getTokenDisplayName(asset2)}
-      </span>
-    </div>
+    <PairRenderer className="mb-3" asset1={asset1} asset2={asset2} />
 
     <div className="flex items-center justify-between">
       <div className="flex flex-col">

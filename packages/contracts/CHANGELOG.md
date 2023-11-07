@@ -1,5 +1,11 @@
 # @sovryn/contracts
 
+## 1.0.18
+
+### Patch Changes
+
+- ce99d264: SOV-3234: add loan token logic and settings contract definitions
+
 ## 1.0.17
 
 ### Patch Changes

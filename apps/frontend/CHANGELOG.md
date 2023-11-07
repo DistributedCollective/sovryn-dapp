@@ -1,5 +1,20 @@
 # frontend
 
+## 1.0.35
+
+### Patch Changes
+
+- b231e8d4: SOV-3333: improve wallet discovery in wallet connection flow
+- 8abf5e42: SOV-3324: fix nav menu toggle
+- 45f981a4: SOV-3003: Update mobile lending
+- 87a209c1: fix: refresh vote block
+- 60ce6933: SOV-3323 lend my lending balance
+- ce99d264: Bitocracy: New Proposal flow
+- Updated dependencies [45f981a4]
+- Updated dependencies [ce99d264]
+  - @sovryn/ui@1.0.20
+  - @sovryn/contracts@1.0.18
+
 ## 1.0.34
 
 ### Patch Changes

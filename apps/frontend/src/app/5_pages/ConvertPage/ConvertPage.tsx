@@ -120,7 +120,7 @@ const ConvertPage: FC = () => {
     smartRouter
       .getEntries()
       .then(tokens => tokensToOptions(tokens, setTokenOptions));
-  }, [sourceToken]);
+  }, []);
 
   useEffect(() => {
     (async () => {

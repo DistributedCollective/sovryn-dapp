@@ -1,6 +1,5 @@
 ---
-"frontend": patch
 "@sovryn/contracts": patch
 ---
 
-Feat/sov 3234 parameters
+SOV-3234: add loan token logic and settings contract definitions

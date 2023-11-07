@@ -1,5 +1,11 @@
 # @sovryn/ui
 
+## 1.0.20
+
+### Patch Changes
+
+- 45f981a4: SOV-3003: Update mobile lending
+
 ## 1.0.19
 
 ### Patch Changes

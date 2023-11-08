@@ -19,12 +19,12 @@ const responsive = {
   },
   tablet: {
     breakpoint: { max: 1199, min: 992 },
-    items: 3,
+    items: 2,
     slidesToSlide: 1,
   },
   mobile: {
     breakpoint: { max: 992, min: 0 },
-    items: 2,
+    items: 1,
     slidesToSlide: 1,
   },
 };

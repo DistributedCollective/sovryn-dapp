@@ -2,12 +2,11 @@ import { SupportedTokens } from '@sovryn/contracts';
 
 import { defaultChainId } from '../../../../config/chains';
 
-import { mainnetAmm } from '../constants/mainnet';
-import { testnetAmm } from '../constants/testnet';
+import { MAINNET_AMM, TESTNET_AMM } from '../MarketMakingPage.constants';
 import { AmmLiquidityPool } from './AmmLiquidityPool';
 
 export class AmmLiquidityPoolDictionary {
-  private static items: AmmLiquidityPool[] = [...mainnetAmm, ...testnetAmm];
+  private static items: AmmLiquidityPool[] = [...MAINNET_AMM, ...TESTNET_AMM];
 
   public static list(): AmmLiquidityPool[] {
     return this.items.filter(item => item.chainId === defaultChainId);

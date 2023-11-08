@@ -2,11 +2,12 @@ import React from 'react';
 
 import { t } from 'i18next';
 
-import { ButtonStyle, Button, HelperButton } from '@sovryn/ui';
+import { HelperButton } from '@sovryn/ui';
 
 import { AssetPairRenderer } from '../../../../2_molecules/AssetPairRenderer/AssetPairRenderer';
 import { translations } from '../../../../../locales/i18n';
 import { AmmLiquidityPool } from '../../utils/AmmLiquidityPool';
+import { PoolsTableAction } from './components/PoolsTableAction/PoolsTableAction';
 
 export const COLUMNS_CONFIG = [
   {
@@ -51,12 +52,7 @@ export const COLUMNS_CONFIG = [
   {
     id: '',
     title: '',
-    cellRenderer: () => (
-      <Button
-        text={t(translations.common.deposit)}
-        style={ButtonStyle.primary}
-      />
-    ),
+    cellRenderer: (pool: AmmLiquidityPool) => <PoolsTableAction pool={pool} />,
     className: 'hidden lg:table-cell',
   },
 ];

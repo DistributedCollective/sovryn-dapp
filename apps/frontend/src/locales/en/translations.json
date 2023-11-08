@@ -40,6 +40,7 @@
         "max": "max",
         "amount": "Amount",
         "deposit": "Deposit",
+        "adjust": "Adjust",
         "withdraw": "Withdraw",
         "txId": "TXID",
         "btc": "BTC",

@@ -1,8 +1,7 @@
-import React, { FC, useCallback, useState } from 'react';
+import React, { FC, useCallback, useMemo, useState } from 'react';
 
 import { t } from 'i18next';
 
-import { SupportedTokens } from '@sovryn/contracts';
 import {
   Dialog,
   DialogHeader,
@@ -17,51 +16,67 @@ import { CurrentStatistics } from '../../../../2_molecules/CurrentStatistics/Cur
 import { LabelWithTabsAndMaxButton } from '../../../../2_molecules/LabelWithTabsAndMaxButton/LabelWithTabsAndMaxButton';
 import { useWeiAmountInput } from '../../../../../hooks/useWeiAmountInput';
 import { translations } from '../../../../../locales/i18n';
+import { renderTokenSymbol } from '../../../../../utils/helpers';
+import { AmmLiquidityPool } from '../../utils/AmmLiquidityPool';
 import { TABS } from './AdjustAndDepositModal.constants';
 import { AdjustType } from './AdjustAndDepositModal.types';
+
+// TODO: Fetch user balance
+const maxBalance: Decimal = Decimal.from(100);
 
 const pageTranslations = translations.marketMakingPage.adjustAndDepositModal;
 
 type AdjustAndDepositModalProps = {
   isOpen: boolean;
   onClose: () => void;
+  isInitialDeposit: boolean;
+  pool: AmmLiquidityPool;
 };
 
 export const AdjustAndDepositModal: FC<AdjustAndDepositModalProps> = ({
   isOpen,
   onClose,
+  isInitialDeposit,
+  pool,
 }) => {
   const [adjustType, setAdjustType] = useState(AdjustType.Deposit);
   const [value, setValue] = useWeiAmountInput('');
 
   const handleMaxClick = useCallback(
-    () => setValue(Decimal.from(100).toString()),
+    () => setValue(maxBalance.toString()),
     [setValue],
   );
+
+  const token = useMemo(() => pool.assetA, [pool.assetA]);
 
   return (
     <Dialog disableFocusTrap isOpen={isOpen}>
       <DialogHeader
-        title={t(pageTranslations.titles.adjust)}
+        title={t(
+          pageTranslations.titles[
+            isInitialDeposit ? 'initialDeposit' : 'adjust'
+          ],
+        )}
         onClose={onClose}
       />
       <DialogBody>
         <>
           <div className="bg-gray-90 p-4 rounded">
             <CurrentStatistics
-              symbol={SupportedTokens.dllr}
+              symbol={pool.assetA}
+              symbol2={pool.assetB}
               label1={t(pageTranslations.currentStatistics.returnRate)}
               label2={t(pageTranslations.currentStatistics.currentBalance)}
               value1="Up to 8.55% APR"
-              value2="0 DLLR"
+              value2={`0 ${renderTokenSymbol(token)}`}
             />
           </div>
           <div>
             <FormGroup
               label={
                 <LabelWithTabsAndMaxButton
-                  token={SupportedTokens.dllr}
-                  maxAmount={Decimal.from(100)}
+                  token={token}
+                  maxAmount={maxBalance}
                   tabs={TABS}
                   onTabChange={setAdjustType}
                   onMaxAmountClicked={handleMaxClick}
@@ -77,10 +92,10 @@ export const AdjustAndDepositModal: FC<AdjustAndDepositModalProps> = ({
               <AmountInput
                 value={value}
                 onChangeText={setValue}
-                maxAmount={100}
+                maxAmount={Number(maxBalance)}
                 label={t(translations.common.amount)}
                 className="max-w-none"
-                unit={<AssetRenderer asset={SupportedTokens.dllr} />}
+                unit={<AssetRenderer asset={token} />}
                 placeholder="0"
               />
             </FormGroup>

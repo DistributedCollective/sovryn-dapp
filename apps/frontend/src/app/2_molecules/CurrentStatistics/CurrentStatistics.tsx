@@ -3,6 +3,7 @@ import React, { FC } from 'react';
 import { SupportedTokens } from '@sovryn/contracts';
 import { Paragraph } from '@sovryn/ui';
 
+import { AssetPairRenderer } from '../AssetPairRenderer/AssetPairRenderer';
 import { AssetRenderer } from '../AssetRenderer/AssetRenderer';
 import styles from './CurrentStatistics.module.css';
 
@@ -24,11 +25,16 @@ export const CurrentStatistics: FC<CurrentStatisticsProps> = ({
   value2,
 }) => (
   <>
-    <AssetRenderer
-      logoClassName={styles.assetLogo}
-      showAssetLogo
-      asset={symbol}
-    />
+    {!!symbol2 ? (
+      <AssetPairRenderer asset1={symbol} asset2={symbol2} />
+    ) : (
+      <AssetRenderer
+        logoClassName={styles.assetLogo}
+        showAssetLogo
+        asset={symbol}
+      />
+    )}
+
     <div className="flex gap-8">
       <div className="mt-6 flex flex-col gap-2">
         <Paragraph className="font-medium text-gray-30">{label1}</Paragraph>

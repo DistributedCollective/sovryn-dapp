@@ -165,3 +165,18 @@ export const areValuesIdentical = (
 
   return Math.abs(firstValue.sub(secondValue).toNumber()) < epsilon;
 };
+
+export const normalizeToken = (token: string): SupportedTokens => {
+  if (isBtcBasedAsset(token)) {
+    return SupportedTokens.rbtc;
+  }
+
+  if (isBitpro(token)) {
+    return SupportedTokens.bpro;
+  }
+
+  return SupportedTokens[token] || token;
+};
+
+export const renderTokenSymbol = (token: string) =>
+  normalizeToken(token).toUpperCase();

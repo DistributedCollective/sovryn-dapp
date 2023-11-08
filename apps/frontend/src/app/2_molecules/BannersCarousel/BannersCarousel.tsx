@@ -37,24 +37,22 @@ type BannersCarouselProps = {
 export const BannersCarousel: React.FC<BannersCarouselProps> = ({
   children,
   className,
-}) => {
-  return (
-    <div className={className}>
-      <Carousel
-        arrows
-        responsive={responsive}
-        draggable
-        focusOnSelect={false}
-        minimumTouchDrag={80}
-        renderDotsOutside
-        customLeftArrow={<CustomLeftArrow />}
-        customRightArrow={<CustomRightArrow />}
-        showDots
-        swipeable
-        className="xl:tw-block px-4"
-      >
-        {children}
-      </Carousel>
-    </div>
-  );
-};
+}) => (
+  <div className={className}>
+    <Carousel
+      arrows
+      responsive={responsive}
+      draggable
+      focusOnSelect={false}
+      minimumTouchDrag={80}
+      renderDotsOutside
+      customLeftArrow={<CustomLeftArrow />}
+      customRightArrow={<CustomRightArrow />}
+      showDots
+      swipeable
+      className="xl:tw-block px-4"
+    >
+      {children}
+    </Carousel>
+  </div>
+);

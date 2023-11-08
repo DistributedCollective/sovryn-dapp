@@ -1,12 +1,9 @@
 import { SupportedTokens } from '@sovryn/contracts';
 import { ChainIds } from '@sovryn/ethers-provider';
 
-import { PromotionColor } from '../MarketMakingPage.types';
-
 export type ConverterVersion = 1 | 2;
 
 export class AmmLiquidityPool {
-  private _promotionColor?: PromotionColor | string;
   private _hasSovRewards: boolean = true;
   private _previousConverters: string[] = [];
 
@@ -34,13 +31,6 @@ export class AmmLiquidityPool {
     if (poolTokenB) {
       this.poolTokenB = poolTokenB.toLowerCase();
     }
-  }
-  public setPromotionColor(color: PromotionColor | string) {
-    this._promotionColor = color;
-    return this;
-  }
-  public get lootDropColor() {
-    return this._promotionColor;
   }
   public getPoolTokenAddress(asset: SupportedTokens) {
     if (asset === this.assetA) {

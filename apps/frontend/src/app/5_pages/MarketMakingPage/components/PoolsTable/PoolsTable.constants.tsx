@@ -11,14 +11,14 @@ import { AmmLiquidityPool } from '../../utils/AmmLiquidityPool';
 export const COLUMNS_CONFIG = [
   {
     id: 'pair',
-    title: t(translations.marketMakingPage.table.pair),
+    title: t(translations.marketMakingPage.poolsTable.pair),
     cellRenderer: (pool: AmmLiquidityPool) => (
       <AssetPairRenderer asset1={pool.assetA} asset2={pool.assetB} />
     ),
   },
   {
     id: 'liquidity',
-    title: t(translations.marketMakingPage.table.liquidity),
+    title: t(translations.marketMakingPage.poolsTable.liquidity),
     cellRenderer: (pool: AmmLiquidityPool) => (
       <div className="flex flex-col">
         <span>100,000 {pool.assetA}</span>
@@ -30,9 +30,9 @@ export const COLUMNS_CONFIG = [
     id: 'returns',
     title: (
       <span className="flex items-center gap-1">
-        {t(translations.marketMakingPage.table.returns)}{' '}
+        {t(translations.marketMakingPage.poolsTable.returns)}{' '}
         <HelperButton
-          content={t(translations.marketMakingPage.table.returnsInfo)}
+          content={t(translations.marketMakingPage.poolsTable.returnsInfo)}
         />
       </span>
     ),
@@ -40,19 +40,22 @@ export const COLUMNS_CONFIG = [
   },
   {
     id: 'volume',
-    title: t(translations.marketMakingPage.table.volume),
+    title: t(translations.marketMakingPage.poolsTable.volume),
     cellRenderer: () => '10',
   },
   {
     id: 'balance',
-    title: t(translations.marketMakingPage.table.balance),
+    title: t(translations.marketMakingPage.poolsTable.balance),
     cellRenderer: () => 'N/A',
   },
   {
     id: '',
     title: '',
     cellRenderer: () => (
-      <Button text={t('common.deposit')} style={ButtonStyle.primary} />
+      <Button
+        text={t(translations.common.deposit)}
+        style={ButtonStyle.primary}
+      />
     ),
     className: 'hidden lg:table-cell',
   },

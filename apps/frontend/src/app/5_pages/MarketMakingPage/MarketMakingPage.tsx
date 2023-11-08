@@ -6,7 +6,7 @@ import { Helmet } from 'react-helmet-async';
 import { Heading, Paragraph, ParagraphSize } from '@sovryn/ui';
 
 import { translations } from '../../../locales/i18n';
-import { MarketMakingTable } from './components/MarketMakingTable/MarketMakingTable';
+import { PoolsTable } from './components/PoolsTable/PoolsTable';
 import { Promotions } from './components/Promotions/Promotions';
 
 const MarketMakingPage: FC = () => (
@@ -29,7 +29,7 @@ const MarketMakingPage: FC = () => (
 
       <Promotions />
 
-      <MarketMakingTable />
+      <PoolsTable />
     </div>
   </>
 );

@@ -9,12 +9,12 @@ import { AssetPairSize } from '../../../../2_molecules/AssetPairRenderer/AssetPa
 import { translations } from '../../../../../locales/i18n';
 import { AmmLiquidityPool } from '../../utils/AmmLiquidityPool';
 import { AmmLiquidityPoolDictionary } from '../../utils/AmmLiquidityPoolDictionary';
-import { COLUMNS_CONFIG } from './MarketMakingTable.constants';
-import styles from './MarketMakingTable.module.css';
+import { COLUMNS_CONFIG } from './PoolsTable.constants';
+import styles from './PoolsTable.module.css';
 
 const ammPools = AmmLiquidityPoolDictionary.list();
 
-export const MarketMakingTable: FC = () => {
+export const PoolsTable: FC = () => {
   const generateRowTitle = useCallback(
     (pool: AmmLiquidityPool) => (
       <div className="flex items-center">

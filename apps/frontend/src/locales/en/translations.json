@@ -1279,5 +1279,9 @@
         "title": "Your voting power",
         "votingPower": "Voting power",
         "votingPowerShare": "Voting power share"
+    },
+    "promotion": {
+        "currentAPY": "Current APY",
+        "weeklyRewards": "Weekly rewards"
     }
 }

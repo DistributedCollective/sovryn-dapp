@@ -943,6 +943,11 @@
             "currentStatistics": {
                 "returnRate": "Return rate",
                 "currentBalance": "Current balance"
+            },
+            "newPoolStatistics": {
+                "newPoolBalance": "New pool balance",
+                "transferRewards": "Transfer rewards",
+                "weeklyRewardsEstimation": "Weekly rewards estimation"
             }
         }
     },

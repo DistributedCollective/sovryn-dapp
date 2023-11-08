@@ -20,6 +20,7 @@ import { renderTokenSymbol } from '../../../../../utils/helpers';
 import { AmmLiquidityPool } from '../../utils/AmmLiquidityPool';
 import { TABS } from './AdjustAndDepositModal.constants';
 import { AdjustType } from './AdjustAndDepositModal.types';
+import { NewPoolStatistics } from './components/NewPoolStatistics/NewPoolStatistics';
 
 // TODO: Fetch user balance
 const maxBalance: Decimal = Decimal.from(100);
@@ -40,7 +41,7 @@ export const AdjustAndDepositModal: FC<AdjustAndDepositModalProps> = ({
   pool,
 }) => {
   const [adjustType, setAdjustType] = useState(AdjustType.Deposit);
-  const [value, setValue] = useWeiAmountInput('');
+  const [value, setValue, amount] = useWeiAmountInput('');
 
   const handleMaxClick = useCallback(
     () => setValue(maxBalance.toString()),
@@ -100,6 +101,12 @@ export const AdjustAndDepositModal: FC<AdjustAndDepositModalProps> = ({
               />
             </FormGroup>
           </div>
+          <NewPoolStatistics
+            amount={Decimal.fromBigNumberString(amount.toString())}
+            isInitialDeposit={isInitialDeposit}
+            adjustType={adjustType}
+            pool={pool}
+          />
         </>
       </DialogBody>
     </Dialog>

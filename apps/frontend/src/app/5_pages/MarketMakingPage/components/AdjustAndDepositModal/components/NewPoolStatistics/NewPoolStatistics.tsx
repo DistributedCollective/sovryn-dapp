@@ -48,7 +48,7 @@ export const NewPoolStatistics: FC<NewPoolStatisticsProps> = ({
   );
 
   return (
-    <SimpleTable className="mt-8">
+    <SimpleTable className="mt-6">
       <SimpleTableRow
         label={t(pageTranslations.newPoolBalance)}
         value={

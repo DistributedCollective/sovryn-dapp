@@ -3,6 +3,7 @@ import React, { FC, useCallback, useMemo, useState } from 'react';
 import { t } from 'i18next';
 import { Trans } from 'react-i18next';
 
+import { SupportedTokens } from '@sovryn/contracts';
 import {
   Dialog,
   DialogHeader,
@@ -21,13 +22,14 @@ import { Decimal } from '@sovryn/utils';
 import { AssetRenderer } from '../../../../2_molecules/AssetRenderer/AssetRenderer';
 import { CurrentStatistics } from '../../../../2_molecules/CurrentStatistics/CurrentStatistics';
 import { LabelWithTabsAndMaxButton } from '../../../../2_molecules/LabelWithTabsAndMaxButton/LabelWithTabsAndMaxButton';
+import { MaxButton } from '../../../../2_molecules/MaxButton/MaxButton';
 import { WIKI_LINKS } from '../../../../../constants/links';
 import { useWeiAmountInput } from '../../../../../hooks/useWeiAmountInput';
 import { translations } from '../../../../../locales/i18n';
-import { renderTokenSymbol } from '../../../../../utils/helpers';
 import { AmmLiquidityPool } from '../../utils/AmmLiquidityPool';
 import { TABS } from './AdjustAndDepositModal.constants';
 import { AdjustType } from './AdjustAndDepositModal.types';
+import { CurrentBalance } from './components/CurrentBalance/CurrentBalance';
 import { NewPoolStatistics } from './components/NewPoolStatistics/NewPoolStatistics';
 
 // TODO: Fetch user balance
@@ -73,6 +75,12 @@ export const AdjustAndDepositModal: FC<AdjustAndDepositModalProps> = ({
     [decimalAmount, hasDisclaimerBeenChecked, isInitialDeposit, value],
   );
 
+  // TODO: Add the calculation
+  const btcValue = useMemo(
+    () => decimalAmount.mul(0.1).toString(),
+    [decimalAmount],
+  );
+
   return (
     <Dialog disableFocusTrap isOpen={isOpen}>
       <DialogHeader
@@ -92,23 +100,33 @@ export const AdjustAndDepositModal: FC<AdjustAndDepositModalProps> = ({
               label1={t(pageTranslations.currentStatistics.returnRate)}
               label2={t(pageTranslations.currentStatistics.currentBalance)}
               value1="Up to 8.55% APR"
-              value2={`0 ${renderTokenSymbol(token)}`}
+              value2={<CurrentBalance pool={pool} />}
             />
           </div>
 
           <div>
             <FormGroup
               label={
-                <LabelWithTabsAndMaxButton
-                  token={token}
-                  maxAmount={maxBalance}
-                  tabs={TABS}
-                  onTabChange={setAdjustType}
-                  onMaxAmountClicked={handleMaxClick}
-                  index={adjustType}
-                  setIndex={setAdjustType}
-                  dataAttributePrefix="adjust-amm-pool"
-                />
+                isInitialDeposit ? (
+                  <div className="flex justify-end w-full">
+                    <MaxButton
+                      value={maxBalance}
+                      token={token}
+                      onClick={handleMaxClick}
+                    />
+                  </div>
+                ) : (
+                  <LabelWithTabsAndMaxButton
+                    token={token}
+                    maxAmount={maxBalance}
+                    tabs={TABS}
+                    onTabChange={setAdjustType}
+                    onMaxAmountClicked={handleMaxClick}
+                    index={adjustType}
+                    setIndex={setAdjustType}
+                    dataAttributePrefix="adjust-amm-pool"
+                  />
+                )
               }
               labelElement="div"
               className="max-w-none mt-8"
@@ -122,6 +140,14 @@ export const AdjustAndDepositModal: FC<AdjustAndDepositModalProps> = ({
                 className="max-w-none"
                 unit={<AssetRenderer asset={token} />}
                 placeholder="0"
+              />
+
+              <AmountInput
+                label={t(translations.common.amount)}
+                value={btcValue}
+                className="max-w-none mt-6"
+                unit={<AssetRenderer asset={SupportedTokens.rbtc} />}
+                readOnly
               />
             </FormGroup>
           </div>

@@ -63,7 +63,8 @@
         "transactionTypes": {
             "deposit": "Deposit",
             "withdrawal": "Withdrawal"
-        }
+        },
+        "learnMore": "Learn more"
     },
     "connectWalletButton": {
         "connect": "Get started",
@@ -948,7 +949,8 @@
                 "newPoolBalance": "New pool balance",
                 "transferRewards": "Transfer rewards",
                 "weeklyRewardsEstimation": "Weekly rewards estimation"
-            }
+            },
+            "initialDepositDisclaimer": "I understand that my deposit will be at risk of divergence loss as the price of each asset changes. <0>Learn more</0>"
         }
     },
     "borrowHistory": {

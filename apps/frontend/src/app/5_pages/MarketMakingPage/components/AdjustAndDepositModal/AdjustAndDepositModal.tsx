@@ -1,6 +1,7 @@
 import React, { FC, useCallback, useMemo, useState } from 'react';
 
 import { t } from 'i18next';
+import { Trans } from 'react-i18next';
 
 import {
   Dialog,
@@ -8,12 +9,19 @@ import {
   DialogBody,
   AmountInput,
   FormGroup,
+  Checkbox,
+  Link,
+  Button,
+  ButtonType,
+  ButtonStyle,
+  noop,
 } from '@sovryn/ui';
 import { Decimal } from '@sovryn/utils';
 
 import { AssetRenderer } from '../../../../2_molecules/AssetRenderer/AssetRenderer';
 import { CurrentStatistics } from '../../../../2_molecules/CurrentStatistics/CurrentStatistics';
 import { LabelWithTabsAndMaxButton } from '../../../../2_molecules/LabelWithTabsAndMaxButton/LabelWithTabsAndMaxButton';
+import { WIKI_LINKS } from '../../../../../constants/links';
 import { useWeiAmountInput } from '../../../../../hooks/useWeiAmountInput';
 import { translations } from '../../../../../locales/i18n';
 import { renderTokenSymbol } from '../../../../../utils/helpers';
@@ -42,6 +50,8 @@ export const AdjustAndDepositModal: FC<AdjustAndDepositModalProps> = ({
 }) => {
   const [adjustType, setAdjustType] = useState(AdjustType.Deposit);
   const [value, setValue, amount] = useWeiAmountInput('');
+  const [hasDisclaimerBeenChecked, setHasDisclaimerBeenChecked] =
+    useState(false);
 
   const handleMaxClick = useCallback(
     () => setValue(maxBalance.toString()),
@@ -49,6 +59,19 @@ export const AdjustAndDepositModal: FC<AdjustAndDepositModalProps> = ({
   );
 
   const token = useMemo(() => pool.assetA, [pool.assetA]);
+
+  const decimalAmount = useMemo(
+    (): Decimal => Decimal.fromBigNumberString(amount.toString()),
+    [amount],
+  );
+
+  const isValidForm = useMemo(
+    () =>
+      value !== '' &&
+      decimalAmount.gt(Decimal.ZERO) &&
+      (!isInitialDeposit || (isInitialDeposit && hasDisclaimerBeenChecked)),
+    [decimalAmount, hasDisclaimerBeenChecked, isInitialDeposit, value],
+  );
 
   return (
     <Dialog disableFocusTrap isOpen={isOpen}>
@@ -72,6 +95,7 @@ export const AdjustAndDepositModal: FC<AdjustAndDepositModalProps> = ({
               value2={`0 ${renderTokenSymbol(token)}`}
             />
           </div>
+
           <div>
             <FormGroup
               label={
@@ -101,12 +125,46 @@ export const AdjustAndDepositModal: FC<AdjustAndDepositModalProps> = ({
               />
             </FormGroup>
           </div>
+
           <NewPoolStatistics
-            amount={Decimal.fromBigNumberString(amount.toString())}
+            amount={decimalAmount}
             isInitialDeposit={isInitialDeposit}
             adjustType={adjustType}
             pool={pool}
           />
+
+          {isInitialDeposit && (
+            <div className="mt-6">
+              <Checkbox
+                checked={hasDisclaimerBeenChecked}
+                onChangeValue={setHasDisclaimerBeenChecked}
+                label={
+                  <Trans
+                    i18nKey={t(pageTranslations.initialDepositDisclaimer)}
+                    components={[
+                      <Link
+                        text={t(translations.common.learnMore)}
+                        href={WIKI_LINKS.BORROWING} // TODO: Find out what link should be here, it's not mentioned in the PRD
+                        className="no-underline"
+                      />,
+                    ]}
+                  />
+                }
+              />
+            </div>
+          )}
+
+          <div className="mt-6 flex flex-row items-center justify-between gap-8">
+            <Button
+              type={ButtonType.submit}
+              style={ButtonStyle.primary}
+              text={t(translations.common.buttons.confirm)}
+              className="w-full"
+              onClick={noop} // TODO: Add a submit handler
+              dataAttribute="new-loan-confirm-button"
+              disabled={!isValidForm}
+            />
+          </div>
         </>
       </DialogBody>
     </Dialog>

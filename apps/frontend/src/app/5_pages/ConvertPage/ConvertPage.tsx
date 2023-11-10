@@ -113,9 +113,6 @@ const ConvertPage: FC = () => {
     SelectOption<SupportedTokens>[]
   >([]);
 
-  const [tokenOptionsSource, setTokenOptionsSource] =
-    useState<SupportedTokens>();
-
   useEffect(() => {
     smartRouter
       .getEntries()
@@ -130,7 +127,6 @@ const ConvertPage: FC = () => {
       );
       smartRouter.getDestination(sourceTokenDetails.address).then(tokens => {
         tokensToOptions(tokens, setDestinationTokenOptions);
-        setTokenOptionsSource(sourceToken);
       });
 
       if (sourceToken === SupportedTokens.mynt) {
@@ -138,6 +134,16 @@ const ConvertPage: FC = () => {
       }
     })();
   }, [sourceToken]);
+
+  const filteredOptions = useMemo(
+    () => tokenOptions.filter(option => option.value !== SupportedTokens.mynt),
+    [tokenOptions],
+  );
+
+  const sourceTokenOptions = useMemo(
+    () => (hasMyntBalance ? tokenOptions : filteredOptions),
+    [hasMyntBalance, tokenOptions, filteredOptions],
+  );
 
   const [destinationToken, setDestinationToken] = useState<
     SupportedTokens | ''
@@ -313,16 +319,6 @@ const ConvertPage: FC = () => {
   );
 
   useEffect(() => {
-    if (hasMyntBalance) {
-      if (fromToken === SupportedTokens.mynt) {
-        setSourceToken(SupportedTokens.mynt);
-      }
-    } else if (fromToken === SupportedTokens.mynt && !hasMyntBalance) {
-      setSourceToken(SupportedTokens.dllr);
-    }
-  }, [sourceToken, destinationToken, hasMyntBalance, fromToken]);
-
-  useEffect(() => {
     if (fromToken) {
       setSourceToken(fromToken as SupportedTokens);
     }
@@ -330,6 +326,14 @@ const ConvertPage: FC = () => {
       setDestinationToken(toToken as SupportedTokens);
     }
   }, [fromToken, toToken]);
+
+  useEffect(() => {
+    if (hasMyntBalance && fromToken === SupportedTokens.mynt) {
+      setSourceToken(SupportedTokens.mynt);
+    } else if (!hasMyntBalance && fromToken === SupportedTokens.mynt) {
+      setSourceToken(SupportedTokens.dllr);
+    }
+  }, [hasMyntBalance, fromToken]);
 
   useEffect(() => {
     const urlParams = new URLSearchParams();
@@ -354,20 +358,6 @@ const ConvertPage: FC = () => {
       setAmount('');
     }
   }, [account, setAmount]);
-
-  useEffect(() => {
-    if (
-      tokenOptionsSource === sourceToken &&
-      !destinationTokenOptions.find(token => token.value === destinationToken)
-    ) {
-      setDestinationToken('');
-    }
-  }, [
-    sourceToken,
-    destinationTokenOptions,
-    destinationToken,
-    tokenOptionsSource,
-  ]);
 
   return (
     <>
@@ -417,7 +407,7 @@ const ConvertPage: FC = () => {
               <Select
                 value={sourceToken}
                 onChange={onSourceTokenChange}
-                options={tokenOptions}
+                options={sourceTokenOptions}
                 labelRenderer={() => getAssetRenderer(sourceToken)}
                 className="min-w-[6.7rem]"
                 menuClassName="max-h-[10rem] sm:max-h-[20rem]"

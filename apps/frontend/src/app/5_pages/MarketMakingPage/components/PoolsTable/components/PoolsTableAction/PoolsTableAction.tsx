@@ -45,7 +45,7 @@ export const PoolsTableAction: FC<PoolsTableActionProps> = ({ pool }) => {
           style={ButtonStyle.primary}
           size={ButtonSize.small}
           text={t(translations.common.deposit)}
-          dataAttribute="lend-frame-deposit-button"
+          dataAttribute="pools-table-deposit-button"
           className="w-full lg:w-auto prevent-row-click"
           disabled={!account}
           onClick={handleDepositClick}
@@ -55,7 +55,7 @@ export const PoolsTableAction: FC<PoolsTableActionProps> = ({ pool }) => {
           style={ButtonStyle.secondary}
           size={ButtonSize.small}
           text={t(translations.common.adjust)}
-          dataAttribute="lend-frame-adjust-button"
+          dataAttribute="pools-table-adjust-button"
           className="w-full lg:w-auto prevent-row-click"
           disabled={!account}
           onClick={handleAdjustClick}

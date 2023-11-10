@@ -135,14 +135,12 @@ const ConvertPage: FC = () => {
     })();
   }, [sourceToken]);
 
-  const filteredOptions = useMemo(
-    () => tokenOptions.filter(option => option.value !== SupportedTokens.mynt),
-    [tokenOptions],
-  );
-
   const sourceTokenOptions = useMemo(
-    () => (hasMyntBalance ? tokenOptions : filteredOptions),
-    [hasMyntBalance, tokenOptions, filteredOptions],
+    () =>
+      hasMyntBalance
+        ? tokenOptions
+        : tokenOptions.filter(option => option.value !== SupportedTokens.mynt),
+    [hasMyntBalance, tokenOptions],
   );
 
   const [destinationToken, setDestinationToken] = useState<

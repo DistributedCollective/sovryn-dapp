@@ -4,15 +4,14 @@ import { SupportedTokens } from '@sovryn/contracts';
 import { ITabItem, Tabs, TabType } from '@sovryn/ui';
 import { Decimal } from '@sovryn/utils';
 
-import { MaxButton } from '../../../../../2_molecules/MaxButton/MaxButton';
-import { normalizeSuffix } from '../../../../../5_pages/BorrowPage/components/OpenLoansTable/OpenLoans.utils';
-import { CollateralTabAction, DebtTabAction } from '../AdjustLoanForm.types';
+import { normalizeSuffix } from '../../5_pages/BorrowPage/components/OpenLoansTable/OpenLoans.utils';
+import { MaxButton } from '../MaxButton/MaxButton';
 
 interface ITabItemExtended<T> extends ITabItem {
   tabAction: T;
 }
 
-type CustomLabelProps<T> = {
+type LabelWithTabsAndMaxButtonProps<T> = {
   maxAmount: Decimal;
   token: string;
   tabs: ITabItemExtended<T>[];
@@ -21,9 +20,10 @@ type CustomLabelProps<T> = {
   isDisabled?: boolean;
   index: number;
   setIndex: (index: number) => void;
+  dataAttributePrefix?: string;
 };
 
-export const Label = <T extends DebtTabAction | CollateralTabAction>({
+export function LabelWithTabsAndMaxButton<T>({
   maxAmount,
   token,
   tabs,
@@ -32,7 +32,8 @@ export const Label = <T extends DebtTabAction | CollateralTabAction>({
   isDisabled,
   index,
   setIndex,
-}: CustomLabelProps<T>) => {
+  dataAttributePrefix,
+}: LabelWithTabsAndMaxButtonProps<T>) {
   const onChangeIndex = useCallback(
     (index: number) => {
       setIndex(index);
@@ -55,9 +56,9 @@ export const Label = <T extends DebtTabAction | CollateralTabAction>({
           onClick={onMaxAmountClicked}
           value={maxAmount}
           token={normalizeSuffix(token) as SupportedTokens}
-          dataAttribute={`adjust-loan-${token}-max`}
+          dataAttribute={`${dataAttributePrefix}-${token}-max`}
         />
       )}
     </div>
   );
-};
+}

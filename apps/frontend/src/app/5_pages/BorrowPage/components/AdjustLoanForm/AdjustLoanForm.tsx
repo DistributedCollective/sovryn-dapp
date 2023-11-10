@@ -20,6 +20,7 @@ import { Decimal } from '@sovryn/utils';
 
 import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { AssetRenderer } from '../../../../2_molecules/AssetRenderer/AssetRenderer';
+import { LabelWithTabsAndMaxButton } from '../../../../2_molecules/LabelWithTabsAndMaxButton/LabelWithTabsAndMaxButton';
 import { convertLoanTokenToSupportedAssets } from '../../../../5_pages/BorrowPage/components/OpenLoansTable/OpenLoans.utils';
 import { LoanItem } from '../../../../5_pages/BorrowPage/components/OpenLoansTable/OpenLoansTable.types';
 import { useGetMinCollateralRatio } from '../../../../5_pages/BorrowPage/hooks/useGetMinCollateralRatio';
@@ -56,7 +57,6 @@ import {
   calculateDebtRepaidPercentage,
   calculateRepayCollateralWithdrawn,
 } from './AdjustLoanForm.utils';
-import { Label } from './components/Label';
 import { useCloseWithDepositIsTinyPosition } from './hooks/useCloseWithDepositIsTinyPosition';
 import { useDepositCollateral } from './hooks/useDepositCollateral';
 import { useGetInterestRefund } from './hooks/useGetInterestRefund';
@@ -686,7 +686,7 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
 
       <FormGroup
         label={
-          <Label
+          <LabelWithTabsAndMaxButton
             token={loan.debtAsset}
             maxAmount={maxDebtAmount}
             tabs={DEBT_TABS}
@@ -695,6 +695,7 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
             isDisabled={isCloseTab || isCollateralWithdrawMode}
             index={debtTab}
             setIndex={setDebtTab}
+            dataAttributePrefix="adjust-loan"
           />
         }
         labelElement="div"
@@ -734,7 +735,7 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
       </FormGroup>
       <FormGroup
         label={
-          <Label
+          <LabelWithTabsAndMaxButton
             token={collateralToken}
             maxAmount={maxCollateralAmount}
             tabs={COLLATERAL_TABS}
@@ -745,6 +746,7 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
             index={collateralTab}
             setIndex={setCollateralTab}
             isDisabled={isCloseTab || isRepayTab}
+            dataAttributePrefix="adjust-loan"
           />
         }
         labelElement="div"

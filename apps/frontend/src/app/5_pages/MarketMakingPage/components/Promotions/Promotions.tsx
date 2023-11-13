@@ -28,7 +28,7 @@ export const Promotions: FC = () => (
         />
       </Paragraph>
     </div>
-    <BannersCarousel>
+    <BannersCarousel className="-mx-4 md:mx-2">
       <PromoCard
         asset1={SupportedTokens.bpro}
         asset2={SupportedTokens.rbtc}

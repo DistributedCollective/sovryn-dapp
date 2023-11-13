@@ -55,7 +55,7 @@ type ZeroPageProps = {
 const ZeroPage: FC<ZeroPageProps> = ({ deferred: [price] }) => {
   const { liquity } = useLoaderData() as ZeroPageLoaderData;
   const { checkMaintenance, States } = useMaintenance();
-  const openLOCLocked = checkMaintenance(States.ZERO_OPEN_LOC);
+  const openLocLocked = checkMaintenance(States.ZERO_OPEN_LOC);
 
   const { isOpen: isTxOpen } = useTransactionContext();
   const [open, toggle] = useReducer(v => !v, false);
@@ -158,16 +158,13 @@ const ZeroPage: FC<ZeroPageProps> = ({ deferred: [price] }) => {
             onWithdraw={claimCollateralSurplus}
           />
         )}
-        {account &&
-          showWelcomeBanner &&
-          !isLoading &&
-          (!openLOCLocked || hasLoc) && (
-            <div className="mt-6 lg:mt-12">
-              <OpenLocButton openLOC={toggle} className="mb-10 md:mb-4" />
-            </div>
-          )}
+        {account && showWelcomeBanner && !isLoading && !openLocLocked && (
+          <div className="mt-6 lg:mt-12">
+            <OpenLocButton openLOC={toggle} className="mb-10 md:mb-4" />
+          </div>
+        )}
 
-        {openLOCLocked && !hasLoc && !isLoading && (
+        {openLocLocked && !hasLoc && !isLoading && (
           <div className="my-2 flex justify-center">
             <ErrorBadge
               className="px-8"

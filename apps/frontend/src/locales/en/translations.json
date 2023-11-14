@@ -951,6 +951,17 @@
                 "weeklyRewardsEstimation": "Weekly rewards estimation"
             },
             "initialDepositDisclaimer": "I understand that my deposit will be at risk of divergence loss as the price of each asset changes. <0>Learn more</0>"
+        },
+        "marketMakingOperations": {
+            "deposit": "Deposit",
+            "withdraw": "Withdraw"
+        },
+        "marketMakingTx": {
+            "deposit": "Deposit liquidity",
+            "withdraw": "Withdraw liquidity"
+        },
+        "form": {
+            "invalidAmountError": "Exceeds maximum amount"
         }
     },
     "borrowHistory": {

@@ -7,11 +7,9 @@ import { Decimal } from '@sovryn/utils';
 
 import { useAccount } from '../../../../../../../hooks/useAccount';
 import { translations } from '../../../../../../../locales/i18n';
+import { useGetUserInfo } from '../../../../hooks/useGetUserInfo';
 import { AmmLiquidityPool } from '../../../../utils/AmmLiquidityPool';
 import { AdjustAndDepositModal } from '../../../AdjustAndDepositModal/AdjustAndDepositModal';
-
-// TODO: Fetch pool balance in the component. If you want to test the adjust functionality, set it to Decimal.ONE
-const poolBalance = Decimal.ZERO; // Decimal.ONE
 
 type PoolsTableActionProps = {
   pool: AmmLiquidityPool;
@@ -19,6 +17,7 @@ type PoolsTableActionProps = {
 
 export const PoolsTableAction: FC<PoolsTableActionProps> = ({ pool }) => {
   const { account } = useAccount();
+  const { balanceA: poolBalance } = useGetUserInfo(pool);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isInitialDeposit, setIsInitialDeposit] = useState(true);

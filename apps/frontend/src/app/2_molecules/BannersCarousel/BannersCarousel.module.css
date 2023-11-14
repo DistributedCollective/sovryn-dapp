@@ -1,7 +1,7 @@
 .arrow {
-  @apply items-center justify-center hidden md:flex absolute cursor-pointer w-4 h-4 top-0 h-full;
+  @apply items-center justify-center hidden sm:flex absolute cursor-pointer w-4 h-4 top-0 h-full;
 }
 
 .item > div {
-  @apply mx-4 md:mx-auto;
+  @apply mx-4 sm:mx-auto;
 }

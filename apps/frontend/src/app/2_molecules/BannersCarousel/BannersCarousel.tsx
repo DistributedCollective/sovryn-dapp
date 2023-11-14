@@ -29,8 +29,13 @@ const responsive = {
     items: 2,
     slidesToSlide: 1,
   },
+  bigMobile: {
+    breakpoint: { max: 768, min: 576 },
+    items: 1,
+    slidesToSlide: 1,
+  },
   mobile: {
-    breakpoint: { max: 768, min: 0 },
+    breakpoint: { max: 576, min: 0 },
     items: 1,
     slidesToSlide: 1,
     partialVisibilityGutter: 80,
@@ -46,12 +51,12 @@ export const BannersCarousel: React.FC<BannersCarouselProps> = ({
   children,
   className,
 }) => (
-  <div className={classNames(className, 'relative md:px-6')}>
+  <div className={classNames(className, 'relative sm:px-6')}>
     <Carousel
       arrows
       responsive={responsive}
       draggable
-      partialVisbile
+      partialVisible
       focusOnSelect={false}
       minimumTouchDrag={80}
       customLeftArrow={<CustomLeftArrow />}

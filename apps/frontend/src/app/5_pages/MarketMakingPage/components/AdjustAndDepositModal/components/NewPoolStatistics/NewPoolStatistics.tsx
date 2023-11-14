@@ -65,8 +65,8 @@ export const NewPoolStatistics: FC<NewPoolStatisticsProps> = ({
   const newPoolBalanceA = useMemo(
     () =>
       adjustType === AdjustType.Deposit || isInitialDeposit
-        ? decimalic(balanceA).add(amount).toNumber().toFixed(0)
-        : decimalic(balanceA).sub(amount).toNumber().toFixed(0),
+        ? decimalic(balanceA).add(decimalic(amount))
+        : decimalic(balanceA).sub(decimalic(amount)),
     [adjustType, amount, isInitialDeposit, balanceA],
   );
 
@@ -120,7 +120,10 @@ export const NewPoolStatistics: FC<NewPoolStatisticsProps> = ({
           amount.isZero() ? (
             t(translations.common.na)
           ) : (
-            <AmountRenderer value={fromWei(newPoolBalanceA)} suffix={tokenA} />
+            <AmountRenderer
+              value={fromWei(newPoolBalanceA.toString())}
+              suffix={tokenA}
+            />
           )
         }
         valueClassName={classNames(amount.gt(0) && 'text-primary-10')}

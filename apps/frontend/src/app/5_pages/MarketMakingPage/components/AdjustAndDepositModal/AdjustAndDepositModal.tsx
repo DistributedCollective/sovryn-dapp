@@ -34,7 +34,7 @@ import { useAccount } from '../../../../../hooks/useAccount';
 import { useMaxAssetBalance } from '../../../../../hooks/useMaxAssetBalance';
 import { useWeiAmountInput } from '../../../../../hooks/useWeiAmountInput';
 import { translations } from '../../../../../locales/i18n';
-import { decimalic, fromWei, toWei } from '../../../../../utils/math';
+import { decimalic, fromWei } from '../../../../../utils/math';
 import { useGetExpectedTokenAmount } from '../../hooks/useGetExpectedTokenAmount';
 import { useGetUserInfo } from '../../hooks/useGetUserInfo';
 import { useHandleMarketMaking } from '../../hooks/useHandleMarketMaking';
@@ -83,19 +83,19 @@ export const AdjustAndDepositModal: FC<AdjustAndDepositModalProps> = ({
   const [hasDisclaimerBeenChecked, setHasDisclaimerBeenChecked] =
     useState(false);
 
-  const { balance: userBalance } = useMaxAssetBalance(
+  const { weiBalance: maxTokenToDepositAmount } = useMaxAssetBalance(
     token,
     defaultChainId,
     GAS_LIMIT.MARKET_MAKING_ADD_LIQUIDITY,
   );
 
   const maxBalance = useMemo(
-    () => (isDeposit ? userBalance : decimalic(fromWei(balanceA.toString()))),
-    [isDeposit, balanceA, userBalance],
+    () => (isDeposit ? maxTokenToDepositAmount : balanceA.toString()),
+    [isDeposit, balanceA, maxTokenToDepositAmount],
   );
 
   const handleMaxClick = useCallback(
-    () => setValue(maxBalance.toString()),
+    () => setValue(fromWei(maxBalance)),
     [maxBalance, setValue],
   );
 
@@ -131,18 +131,23 @@ export const AdjustAndDepositModal: FC<AdjustAndDepositModalProps> = ({
   ]);
 
   const isValidForm = useMemo(
-    () =>
-      (!isInitialDeposit || (isInitialDeposit && hasDisclaimerBeenChecked)) &&
-      decimalAmount.lte(decimalic(toWei(maxBalance.toString()).toString())),
-    [hasDisclaimerBeenChecked, isInitialDeposit, maxBalance, decimalAmount],
+    () => decimalAmount.lte(maxBalance),
+    [maxBalance, decimalAmount],
   );
 
   const isSubmitDisabled = useMemo(
     () =>
       decimalAmount.isZero() ||
+      (!hasDisclaimerBeenChecked && isInitialDeposit) ||
       !isValidForm ||
-      decimalAmount.gt(decimalic(toWei(maxBalance.toString()).toString())),
-    [maxBalance, decimalAmount, isValidForm],
+      decimalAmount.gt(maxBalance),
+    [
+      maxBalance,
+      decimalAmount,
+      isValidForm,
+      hasDisclaimerBeenChecked,
+      isInitialDeposit,
+    ],
   );
 
   useEffect(() => {
@@ -200,7 +205,7 @@ export const AdjustAndDepositModal: FC<AdjustAndDepositModalProps> = ({
                 isInitialDeposit ? (
                   <div className="flex justify-end w-full">
                     <MaxButton
-                      value={maxBalance}
+                      value={fromWei(maxBalance)}
                       token={token}
                       onClick={handleMaxClick}
                     />
@@ -208,7 +213,7 @@ export const AdjustAndDepositModal: FC<AdjustAndDepositModalProps> = ({
                 ) : (
                   <LabelWithTabsAndMaxButton
                     token={token}
-                    maxAmount={maxBalance}
+                    maxAmount={decimalic(fromWei(maxBalance))}
                     tabs={TABS}
                     onTabChange={setAdjustType}
                     onMaxAmountClicked={handleMaxClick}
@@ -225,7 +230,7 @@ export const AdjustAndDepositModal: FC<AdjustAndDepositModalProps> = ({
               <AmountInput
                 value={value}
                 onChangeText={setValue}
-                maxAmount={maxBalance.toNumber()}
+                maxAmount={decimalic(maxBalance).toNumber()}
                 label={t(translations.common.amount)}
                 className="max-w-none"
                 unit={<AssetRenderer asset={token} />}

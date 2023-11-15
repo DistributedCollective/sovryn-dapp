@@ -10,10 +10,9 @@ import {
   SECONDS_IN_YEAR,
 } from '../../../../../../constants/general';
 import { useGetRBTCPrice } from '../../../../../../hooks/zero/useGetRBTCPrice';
-import { decimalic } from '../../../../../../utils/math';
+import { decimalic, fromWei } from '../../../../../../utils/math';
 import { useGetBorrowingAPR } from '../../../hooks/useGetBorrowingAPR';
 import { useGetCollateralAssetPrice } from '../../../hooks/useGetCollateralAssetPrice';
-import { DEFAULT_LOAN_DURATION } from '../NewLoanForm.constants';
 
 export const useGetMaximumFirstRolloverDate = (
   collateralAmount: Decimal,
@@ -49,12 +48,6 @@ export const useGetMaximumFirstRolloverDate = (
     !borrowAmount || borrowAmount.isZero() ? Decimal.ZERO : borrowAmount,
   );
 
-  //   const apr = useMemo(
-  //     () => Decimal.fromBigNumberString(borrowApr).div(100),
-  //     [borrowApr],
-  //   );
-
-  // TODO: Validate with light, this is just the best effort implementation
   const result = useMemo(
     () =>
       Decimal.from(-1)
@@ -70,18 +63,10 @@ export const useGetMaximumFirstRolloverDate = (
               .add(borrowAmount),
           )
             .sub(1)
-            .div(Decimal.fromBigNumberString(borrowApr.toString())),
+            .div(Decimal.from(fromWei(borrowApr))),
         ),
     [borrowAmount, borrowApr, collateralAmount, collateralPriceInLoanAsset],
   );
 
-  const daysInFuture = useMemo(
-    () =>
-      Math.floor(result.toNumber()) < DEFAULT_LOAN_DURATION
-        ? DEFAULT_LOAN_DURATION
-        : Math.floor(result.toNumber()),
-    [result],
-  );
-
-  return dayjs().add(daysInFuture, 'day').unix();
+  return dayjs().add(result.toNumber(), 'month').unix();
 };

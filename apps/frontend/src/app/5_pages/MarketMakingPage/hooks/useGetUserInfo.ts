@@ -25,9 +25,8 @@ export const useGetUserInfo = (pool: AmmLiquidityPool) => {
   const [balanceB, setBalanceB] = useState<Decimal>(Decimal.ZERO);
   const [loadingB, setLoadingB] = useState(false);
   const liquidityMiningProxy = useGetProtocolContract('liquidityMiningProxy');
-  const babelfishAggregator = useGetProtocolContract('babelfishAggregator');
-  const getContractA = useGetTokenContract(assetA, defaultChainId);
-  const getContractB = useGetTokenContract(
+  const contractTokenA = useGetTokenContract(assetA, defaultChainId);
+  const contractTokenB = useGetTokenContract(
     SupportedTokens.wrbtc,
     defaultChainId,
   );
@@ -45,16 +44,9 @@ export const useGetUserInfo = (pool: AmmLiquidityPool) => {
   );
 
   useEffect(() => {
-    if (
-      !account ||
-      !liquidityMiningProxy ||
-      !babelfishAggregator ||
-      !getContractA ||
-      !getContractB
-    ) {
+    if (!liquidityMiningProxy || !account) {
       return;
     }
-
     const getV1Balance = async () => {
       const info = await getUserInfo(poolTokenA);
       setReward(info.reward);
@@ -72,11 +64,11 @@ export const useGetUserInfo = (pool: AmmLiquidityPool) => {
       const totalSupply = await contract
         .totalSupply()
         .then(Decimal.fromBigNumberString);
-      const converterBalanceA = await getContractA
-        .balanceOf(pool.converter)
+      const converterBalanceA = await contractTokenA
+        ?.balanceOf(pool.converter)
         .then(Decimal.fromBigNumberString);
-      const converterBalanceB = await getContractB
-        .balanceOf(pool.converter)
+      const converterBalanceB = await contractTokenB
+        ?.balanceOf(pool.converter)
         .then(Decimal.fromBigNumberString);
 
       const balanceA = info.amount.div(totalSupply).mul(converterBalanceA);
@@ -88,7 +80,7 @@ export const useGetUserInfo = (pool: AmmLiquidityPool) => {
       };
     };
 
-    if (pool.converterVersion === 1) {
+    if (pool.converterVersion === 1 && contractTokenA && contractTokenB) {
       setLoadingA(true);
       setLoadingB(true);
       getV1Balance()
@@ -106,15 +98,14 @@ export const useGetUserInfo = (pool: AmmLiquidityPool) => {
     account,
     assetA,
     assetB,
-    babelfishAggregator,
     liquidityMiningProxy,
     pool.converter,
     pool.converterVersion,
     poolTokenA,
     poolTokenB,
     getUserInfo,
-    getContractA,
-    getContractB,
+    contractTokenA,
+    contractTokenB,
   ]);
 
   return {

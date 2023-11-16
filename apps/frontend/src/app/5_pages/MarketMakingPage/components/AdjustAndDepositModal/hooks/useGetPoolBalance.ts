@@ -1,13 +1,8 @@
 import { useEffect, useState } from 'react';
 
-import { ethers } from 'ethers';
-
-import { getProtocolContract } from '@sovryn/contracts';
-import { getProvider } from '@sovryn/ethers-provider';
 import { Decimal } from '@sovryn/utils';
 
-import { defaultChainId } from '../../../../../../config/chains';
-
+import { useGetProtocolContract } from '../../../../../../hooks/useGetContract';
 import { decimalic } from '../../../../../../utils/math';
 import { AmmLiquidityPool } from '../../../utils/AmmLiquidityPool';
 import { AdjustType } from '../AdjustAndDepositModal.types';
@@ -22,29 +17,30 @@ export const useGetPoolBalance = (
   const [tokenPoolBalance, setTokenPoolBalance] = useState<Decimal>(
     Decimal.ZERO,
   );
+  const liquidityMiningProxy = useGetProtocolContract('liquidityMiningProxy');
 
   useEffect(() => {
     const fetchPoolBalance = async () => {
-      const { abi, address } = await getProtocolContract(
-        'liquidityMiningProxy',
-        defaultChainId,
-      );
-
-      const contract = new ethers.Contract(
-        address,
-        abi,
-        getProvider(defaultChainId),
-      );
-      const poolBalance = await contract.getUserInfo(pool.poolTokenA, account);
-
-      if (poolBalance) {
-        setTokenPoolBalance(decimalic(poolBalance.amount.toString()));
+      if (!liquidityMiningProxy) {
+        return;
+      }
+      try {
+        const poolBalance = await liquidityMiningProxy.getUserInfo(
+          pool.poolTokenA,
+          account,
+        );
+        if (poolBalance) {
+          setTokenPoolBalance(decimalic(poolBalance.amount.toString()));
+        }
+      } catch (error) {
+        console.error('Error fetching pool balance:', error);
       }
     };
+
     if (!isAmountZero && adjustType === AdjustType.Withdraw && !loadingA) {
       fetchPoolBalance();
     }
-  }, [isAmountZero, adjustType, loadingA, pool, account]);
+  }, [isAmountZero, adjustType, loadingA, pool, account, liquidityMiningProxy]);
 
   return { tokenPoolBalance };
 };

@@ -14,7 +14,7 @@ import { AmmLiquidityPool } from '../utils/AmmLiquidityPool';
 export const useGetExpectedTokenAmount = (
   pool: AmmLiquidityPool,
   amount: Decimal,
-) => {
+): Decimal => {
   const [balanceA, setBalanceA] = useState<Decimal>(Decimal.ZERO);
   const [balanceB, setBalanceB] = useState<Decimal>(Decimal.ZERO);
 
@@ -65,7 +65,5 @@ export const useGetExpectedTokenAmount = (
     }
   }, [fetchBalance, amount, balanceA, balanceB]);
 
-  return {
-    amount: expectedTokenAmount || Decimal.ZERO,
-  };
+  return expectedTokenAmount || Decimal.ZERO;
 };

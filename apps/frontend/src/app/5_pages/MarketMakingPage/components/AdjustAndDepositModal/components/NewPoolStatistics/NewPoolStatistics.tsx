@@ -52,23 +52,22 @@ export const NewPoolStatistics: FC<NewPoolStatisticsProps> = ({
     [reward, accumulatedRewards],
   );
 
-  const { amount: expectedTokenAmount } = useGetExpectedTokenAmount(
-    pool,
-    decimalic(value),
-  );
+  const decimalValue = useMemo(() => decimalic(value), [value]);
+
+  const expectedTokenAmount = useGetExpectedTokenAmount(pool, decimalValue);
   const isAmountZero = useMemo(() => decimalAmount.isZero(), [decimalAmount]);
 
   const newPoolBalanceA = useMemo(
     () =>
       adjustType === AdjustType.Deposit || isInitialDeposit
-        ? balanceA.add(decimalic(value))
-        : balanceA.sub(decimalic(value)),
-    [adjustType, value, isInitialDeposit, balanceA],
+        ? balanceA.add(decimalValue)
+        : balanceA.sub(decimalValue),
+    [adjustType, decimalValue, isInitialDeposit, balanceA],
   );
 
   const { weeklyRewardsEstimation } = useGetPoolBalanceAndRewards(
     pool,
-    decimalic(value),
+    decimalValue,
     Decimal.fromBigNumberString(rbtcPrice),
   );
 

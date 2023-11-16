@@ -114,10 +114,9 @@ export const AdjustAndDepositModal: FC<AdjustAndDepositModalProps> = ({
     [maxBalance, setValue],
   );
 
-  const { amount: expectedTokenAmount } = useGetExpectedTokenAmount(
-    pool,
-    decimalic(value),
-  );
+  const decimalValue = useMemo(() => decimalic(value), [value]);
+
+  const expectedTokenAmount = useGetExpectedTokenAmount(pool, decimalValue);
   const minReturn1 = getMinReturn(decimalAmount);
   const minReturn2 = getMinReturn(
     Decimal.from(toWei(expectedTokenAmount.toString()).toString()),
@@ -142,8 +141,8 @@ export const AdjustAndDepositModal: FC<AdjustAndDepositModalProps> = ({
   ]);
 
   const isValidForm = useMemo(
-    () => decimalic(value).lte(maxBalance) || isAmountZero,
-    [maxBalance, value, isAmountZero],
+    () => decimalValue.lte(maxBalance) || isAmountZero,
+    [maxBalance, decimalValue, isAmountZero],
   );
 
   const isSubmitDisabled = useMemo(

@@ -1,13 +1,11 @@
 import { useEffect, useState } from 'react';
 
-import { ethers } from 'ethers';
-
-import { SupportedTokens, getTokenContract } from '@sovryn/contracts';
-import { getProvider } from '@sovryn/ethers-provider';
+import { SupportedTokens } from '@sovryn/contracts';
 import { Decimal } from '@sovryn/utils';
 
 import { defaultChainId } from '../../../../../../config/chains';
 
+import { useGetTokenContract } from '../../../../../../hooks/useGetContract';
 import { AmmLiquidityPool } from '../../../utils/AmmLiquidityPool';
 import { WEEKLY_REWARDS_AMOUNT } from '../AdjustAndDepositModal.constants';
 
@@ -19,24 +17,18 @@ export const useGetPoolBalanceAndRewards = (
   const [weeklyRewardsEstimation, setWeeklyRewardsEstimation] =
     useState<Decimal>(Decimal.ZERO);
 
+  const tokenContract = useGetTokenContract(
+    SupportedTokens.wrbtc,
+    defaultChainId,
+  );
+
   useEffect(() => {
     const fetchPoolBalance = async () => {
+      if (!tokenContract) {
+        return;
+      }
       try {
-        const { abi, address } = await getTokenContract(
-          SupportedTokens.wrbtc,
-          defaultChainId,
-        );
-        const contract = new ethers.Contract(
-          address,
-          abi,
-          getProvider(defaultChainId),
-        );
-
-        if (!contract) {
-          return;
-        }
-
-        const poolBalance = await contract
+        const poolBalance = await tokenContract
           .balanceOf(pool.converter)
           .then(Decimal.fromBigNumberString);
         if (poolBalance) {
@@ -54,7 +46,7 @@ export const useGetPoolBalanceAndRewards = (
     if (newPoolBalanceA.gt(0) && rbtcPrice) {
       fetchPoolBalance();
     }
-  }, [newPoolBalanceA, pool.converter, pool.assetB, rbtcPrice]);
+  }, [newPoolBalanceA, pool.converter, pool.assetB, rbtcPrice, tokenContract]);
 
   return { weeklyRewardsEstimation };
 };

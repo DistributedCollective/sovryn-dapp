@@ -1,33 +1,25 @@
 import { useEffect, useState } from 'react';
 
-import { Contract } from 'ethers';
-
-import { getProtocolContract } from '@sovryn/contracts';
-import { getProvider } from '@sovryn/ethers-provider';
 import { Decimal } from '@sovryn/utils';
 
-import { defaultChainId } from '../../../../config/chains';
-
 import { useAccount } from '../../../../hooks/useAccount';
+import { useGetProtocolContract } from '../../../../hooks/useGetContract';
 import { asyncCall } from '../../../../store/rxjs/provider-cache';
 
 export const useGetAccumulatedReward = (poolToken: string) => {
   const { account } = useAccount();
   const [reward, setReward] = useState<Decimal>(Decimal.ZERO);
-
+  const liquidityMiningProxy = useGetProtocolContract('liquidityMiningProxy');
   useEffect(() => {
     const fetchReward = async () => {
-      const { abi, address } = await getProtocolContract(
-        'liquidityMiningProxy',
-        defaultChainId,
-      );
-
-      const contract = new Contract(address, abi, getProvider(defaultChainId));
-
+      if (!liquidityMiningProxy) {
+        return;
+      }
       try {
         const userAccumulatedReward = await asyncCall(
           `liquidityMiningProxy/getUserAccumulatedReward/${poolToken}/${account}`,
-          () => contract.getUserAccumulatedReward(poolToken, account),
+          () =>
+            liquidityMiningProxy.getUserAccumulatedReward(poolToken, account),
         ).then(Decimal.fromBigNumberString);
         setReward(userAccumulatedReward);
       } catch (error) {
@@ -38,7 +30,7 @@ export const useGetAccumulatedReward = (poolToken: string) => {
     if (account && poolToken) {
       fetchReward();
     }
-  }, [account, poolToken]);
+  }, [account, poolToken, liquidityMiningProxy]);
 
   return { reward };
 };

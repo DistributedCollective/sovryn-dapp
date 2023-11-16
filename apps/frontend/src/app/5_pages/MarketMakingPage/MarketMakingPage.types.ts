@@ -1,4 +1,6 @@
+import { Decimal } from '@sovryn/utils';
+
 export type UserInfo = {
-  amount: string;
-  reward: string;
+  amount: Decimal;
+  reward: Decimal;
 };

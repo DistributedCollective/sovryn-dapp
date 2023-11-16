@@ -15,13 +15,8 @@ export const useGetExpectedTokenAmount = (
   pool: AmmLiquidityPool,
   amount: Decimal,
 ) => {
-  const [balanceA, setBalanceA] = useState('0');
-  const [balanceB, setBalanceB] = useState('0');
-
-  const expectedTokenAmount = useMemo(
-    () => amount.mul(balanceB).div(balanceA).toNumber().toFixed(0),
-    [balanceA, balanceB, amount],
-  );
+  const [balanceA, setBalanceA] = useState<Decimal>(Decimal.ZERO);
+  const [balanceB, setBalanceB] = useState<Decimal>(Decimal.ZERO);
 
   const fetchBalance = useCallback(async () => {
     const [loanTokenContract, sovTokenContract, wrbtcContract] =
@@ -45,23 +40,32 @@ export const useGetExpectedTokenAmount = (
     const [balanceOfA, balanceOfB] = await Promise.all([
       asyncCall(
         `loanToken/${loanTokenContract.address}/balanceOf/${pool.converter}`,
-        () => contractA.balanceOf(pool.converter),
+        () =>
+          contractA.balanceOf(pool.converter).then(Decimal.fromBigNumberString),
       ),
       asyncCall(
         `loanToken/${wrbtcContract.address}/balanceOf/${pool.converter}`,
-        () => contractB.balanceOf(pool.converter),
+        () =>
+          contractB.balanceOf(pool.converter).then(Decimal.fromBigNumberString),
       ),
     ]);
 
-    setBalanceA(balanceOfA.toString());
-    setBalanceB(balanceOfB.toString());
+    setBalanceA(balanceOfA);
+    setBalanceB(balanceOfB);
   }, [pool]);
 
+  const expectedTokenAmount = useMemo(
+    () => amount.mul(balanceB).div(balanceA),
+    [balanceA, balanceB, amount],
+  );
+
   useEffect(() => {
-    fetchBalance();
-  }, [fetchBalance]);
+    if (!amount.isZero()) {
+      fetchBalance();
+    }
+  }, [fetchBalance, amount, balanceA, balanceB]);
 
   return {
-    amount: expectedTokenAmount,
+    amount: expectedTokenAmount || Decimal.ZERO,
   };
 };

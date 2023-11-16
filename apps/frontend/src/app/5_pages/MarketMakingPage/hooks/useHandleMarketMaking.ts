@@ -17,7 +17,7 @@ import { useTransactionContext } from '../../../../contexts/TransactionContext';
 import { useAccount } from '../../../../hooks/useAccount';
 import { useGetProtocolContract } from '../../../../hooks/useGetContract';
 import { translations } from '../../../../locales/i18n';
-import { decimalic } from '../../../../utils/math';
+import { toWei } from '../../../../utils/math';
 import { prepareApproveTransaction } from '../../../../utils/transactions';
 import { AmmLiquidityPool } from '../utils/AmmLiquidityPool';
 
@@ -33,7 +33,7 @@ export const useHandleMarketMaking = (onComplete: () => void) => {
         return;
       }
 
-      const [tokenAContract, tokenBContract] = await Promise.all([
+      const [tokenAContractAddress, tokenBContractAddress] = await Promise.all([
         getTokenContract(pool.assetA, defaultChainId).then(
           item => item.address,
         ),
@@ -41,15 +41,17 @@ export const useHandleMarketMaking = (onComplete: () => void) => {
           item => item.address,
         ),
       ]);
-
-      const minReturn = amountB.sub(amountB.div(100)).toNumber().toFixed(0);
+      const minReturn = toWei(amountB.toString())
+        .sub(toWei(amountB.toString()).div(100))
+        .toNumber()
+        .toFixed(0);
 
       const transactions: Transaction[] = [];
 
       if (pool.assetA !== SupportedTokens.rbtc) {
         const approve = await prepareApproveTransaction({
           token: pool.assetA,
-          amount: decimalic(amountA.toString()).toString(),
+          amount: amountA.toString(),
           signer,
           spender: btcWrapperProxyContract.address,
         });
@@ -69,11 +71,11 @@ export const useHandleMarketMaking = (onComplete: () => void) => {
           fnName: 'addLiquidityToV1',
           args: [
             pool.converter,
-            [tokenBContract, tokenAContract],
-            [amountB.toString(), amountA.toString()],
+            [tokenBContractAddress, tokenAContractAddress],
+            [toWei(amountB.toString()), amountA.toString()],
             minReturn,
           ],
-          value: amountB.toString(),
+          value: toWei(amountB.toString()),
           gasLimit: GAS_LIMIT.MARKET_MAKING_ADD_LIQUIDITY,
         },
         onComplete,
@@ -128,7 +130,7 @@ export const useHandleMarketMaking = (onComplete: () => void) => {
       if (pool.assetA !== SupportedTokens.rbtc) {
         const approve = await prepareApproveTransaction({
           token: pool.assetA,
-          amount: decimalic(amount.toString()).toString(),
+          amount: amount.toString(),
           signer,
           spender: btcWrapperProxyContract.address,
         });
@@ -148,7 +150,7 @@ export const useHandleMarketMaking = (onComplete: () => void) => {
           fnName: 'removeLiquidityFromV1',
           args: [
             pool.converter,
-            poolWeiAmount,
+            poolWeiAmount.toString(),
             [tokenBContract.toLowerCase(), tokenAContract.toLowerCase()],
             [minReturn2, minReturn1],
           ],

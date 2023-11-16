@@ -1,15 +1,11 @@
-import React, { FC, useEffect, useMemo, useState } from 'react';
+import React, { FC, useMemo } from 'react';
 
 import classNames from 'classnames';
-import { ethers } from 'ethers';
 import { t } from 'i18next';
 
-import { SupportedTokens, getTokenContract } from '@sovryn/contracts';
-import { getProvider } from '@sovryn/ethers-provider';
+import { SupportedTokens } from '@sovryn/contracts';
 import { SimpleTable, SimpleTableRow } from '@sovryn/ui';
 import { Decimal } from '@sovryn/utils';
-
-import { defaultChainId } from '../../../../../../../config/chains';
 
 import { AmountRenderer } from '../../../../../../2_molecules/AmountRenderer/AmountRenderer';
 import {
@@ -19,27 +15,28 @@ import {
 } from '../../../../../../../constants/currencies';
 import { useGetRBTCPrice } from '../../../../../../../hooks/zero/useGetRBTCPrice';
 import { translations } from '../../../../../../../locales/i18n';
-import { decimalic, fromWei } from '../../../../../../../utils/math';
+import { decimalic } from '../../../../../../../utils/math';
 import { useGetAccumulatedReward } from '../../../../hooks/useGetAccumulatedReward';
 import { useGetExpectedTokenAmount } from '../../../../hooks/useGetExpectedTokenAmount';
 import { useGetUserInfo } from '../../../../hooks/useGetUserInfo';
 import { AmmLiquidityPool } from '../../../../utils/AmmLiquidityPool';
 import { AdjustType } from '../../AdjustAndDepositModal.types';
+import { useGetPoolBalanceAndRewards } from '../../hooks/useGetPoolBalanceAndRewards';
 
 const pageTranslations =
   translations.marketMakingPage.adjustAndDepositModal.newPoolStatistics;
 
-const WEEKLY_REWARDS_AMOUNT = '20000';
-
 type NewPoolStatisticsProps = {
-  amount: Decimal;
+  value: string;
+  decimalAmount: Decimal;
   isInitialDeposit: boolean;
   adjustType: AdjustType;
   pool: AmmLiquidityPool;
 };
 
 export const NewPoolStatistics: FC<NewPoolStatisticsProps> = ({
-  amount,
+  value,
+  decimalAmount,
   isInitialDeposit,
   adjustType,
   pool,
@@ -51,97 +48,74 @@ export const NewPoolStatistics: FC<NewPoolStatisticsProps> = ({
   const { reward: accumulatedRewards } = useGetUserInfo(pool);
 
   const renderRewards = useMemo(
-    () =>
-      fromWei(decimalic(reward).add(decimalic(accumulatedRewards)).toString()),
+    () => reward.add(accumulatedRewards),
     [reward, accumulatedRewards],
   );
-  const [weeklyRewardsEstimation, setWeeklyRewardsEstimation] = useState('0');
 
   const { amount: expectedTokenAmount } = useGetExpectedTokenAmount(
     pool,
-    amount,
+    decimalic(value),
   );
+  const isAmountZero = useMemo(() => decimalAmount.isZero(), [decimalAmount]);
 
   const newPoolBalanceA = useMemo(
     () =>
       adjustType === AdjustType.Deposit || isInitialDeposit
-        ? decimalic(balanceA).add(decimalic(amount))
-        : decimalic(balanceA).sub(decimalic(amount)),
-    [adjustType, amount, isInitialDeposit, balanceA],
+        ? balanceA.add(decimalic(value))
+        : balanceA.sub(decimalic(value)),
+    [adjustType, value, isInitialDeposit, balanceA],
+  );
+
+  const { weeklyRewardsEstimation } = useGetPoolBalanceAndRewards(
+    pool,
+    decimalic(value),
+    Decimal.fromBigNumberString(rbtcPrice),
   );
 
   const newPoolBalanceB = useMemo(
     () =>
       adjustType === AdjustType.Deposit || isInitialDeposit
-        ? decimalic(balanceB).add(expectedTokenAmount).toNumber().toFixed(0)
-        : amount.eq(balanceA)
-        ? '0'
-        : decimalic(balanceB).sub(expectedTokenAmount).toNumber().toFixed(0),
+        ? balanceB.add(expectedTokenAmount)
+        : decimalAmount.eq(balanceA)
+        ? Decimal.ZERO
+        : balanceB.sub(expectedTokenAmount),
     [
       adjustType,
-      expectedTokenAmount,
       isInitialDeposit,
       balanceB,
-      amount,
+      expectedTokenAmount,
+      decimalAmount,
       balanceA,
     ],
   );
-
-  useEffect(() => {
-    const fetchPoolBalance = async () => {
-      const { address, abi } = await getTokenContract(
-        SupportedTokens.wrbtc,
-        defaultChainId,
-      );
-      const contract = new ethers.Contract(
-        address,
-        abi,
-        getProvider(defaultChainId),
-      );
-      const poolBalance = await contract.balanceOf(pool.converter);
-      if (poolBalance) {
-        const value = decimalic(newPoolBalanceA)
-          .div(decimalic(poolBalance.toString()))
-          .mul(decimalic(WEEKLY_REWARDS_AMOUNT))
-          .mul(decimalic(rbtcPrice))
-          .toNumber()
-          .toFixed(0);
-        setWeeklyRewardsEstimation(value);
-      }
-    };
-    fetchPoolBalance();
-  }, [newPoolBalanceA, pool.converter, pool.assetB, rbtcPrice]);
 
   return (
     <SimpleTable className="mt-6">
       <SimpleTableRow
         label={t(pageTranslations.newPoolBalance)}
         value={
-          amount.isZero() ? (
+          decimalAmount.isZero() ? (
             t(translations.common.na)
           ) : (
-            <AmountRenderer
-              value={fromWei(newPoolBalanceA.toString())}
-              suffix={tokenA}
-            />
+            <AmountRenderer value={newPoolBalanceA} suffix={tokenA} />
           )
         }
-        valueClassName={classNames(amount.gt(0) && 'text-primary-10')}
+        valueClassName={classNames(!isAmountZero && 'text-primary-10')}
       />
-      {amount.gt(0) && Number(newPoolBalanceB) > 0 && (
+      {!isAmountZero && newPoolBalanceB.gt(0) && (
         <SimpleTableRow
           label=""
           value={
             <AmountRenderer
-              value={fromWei(decimalic(newPoolBalanceB).toString())}
+              value={newPoolBalanceB}
               suffix={BITCOIN}
               precision={BTC_RENDER_PRECISION}
             />
           }
-          valueClassName={classNames(amount.gt(0) && 'text-primary-10')}
+          valueClassName="text-primary-10"
         />
       )}
-      {!isInitialDeposit && Number(renderRewards) > 0 && (
+      {!isInitialDeposit && renderRewards.gt(0) && (
         <SimpleTableRow
           label={t(pageTranslations.transferRewards)}
           value={
@@ -156,17 +130,17 @@ export const NewPoolStatistics: FC<NewPoolStatisticsProps> = ({
       <SimpleTableRow
         label={t(pageTranslations.weeklyRewardsEstimation)}
         value={
-          amount.isZero() ? (
+          isAmountZero ? (
             t(translations.common.na)
           ) : (
             <AmountRenderer
-              value={fromWei(weeklyRewardsEstimation)}
+              value={weeklyRewardsEstimation}
               suffix={BITCOIN}
               precision={BTC_RENDER_PRECISION}
             />
           )
         }
-        valueClassName={classNames(amount.gt(0) && 'text-primary-10')}
+        valueClassName={classNames(!isAmountZero && 'text-primary-10')}
       />
     </SimpleTable>
   );

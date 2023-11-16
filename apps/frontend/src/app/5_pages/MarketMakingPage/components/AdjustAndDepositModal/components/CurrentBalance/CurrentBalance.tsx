@@ -7,7 +7,6 @@ import {
   TOKEN_RENDER_PRECISION,
 } from '../../../../../../../constants/currencies';
 import { renderTokenSymbol } from '../../../../../../../utils/helpers';
-import { fromWei } from '../../../../../../../utils/math';
 import { useGetUserInfo } from '../../../../hooks/useGetUserInfo';
 import { AmmLiquidityPool } from '../../../../utils/AmmLiquidityPool';
 
@@ -22,7 +21,7 @@ export const CurrentBalance: FC<CurrentBalanceProps> = ({ pool }) => {
       <div className="leading-none">
         {
           <AmountRenderer
-            value={fromWei(balanceA.toString())}
+            value={balanceA}
             suffix={renderTokenSymbol(pool.assetA)}
             precision={TOKEN_RENDER_PRECISION}
           />
@@ -31,7 +30,7 @@ export const CurrentBalance: FC<CurrentBalanceProps> = ({ pool }) => {
       <div className="leading-none">
         {
           <AmountRenderer
-            value={fromWei(balanceB.toString())}
+            value={balanceB}
             suffix={BITCOIN}
             precision={BTC_RENDER_PRECISION}
           />

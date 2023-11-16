@@ -2,74 +2,62 @@ import { useCallback, useEffect, useState } from 'react';
 
 import { ethers } from 'ethers';
 
-import {
-  SupportedTokens,
-  getProtocolContract,
-  getTokenContract,
-} from '@sovryn/contracts';
+import { SupportedTokens, getProtocolContract } from '@sovryn/contracts';
 import { getProvider } from '@sovryn/ethers-provider';
 import { Decimal } from '@sovryn/utils';
 
 import { defaultChainId } from '../../../../config/chains';
 
 import { useAccount } from '../../../../hooks/useAccount';
-import { useGetProtocolContract } from '../../../../hooks/useGetContract';
+import {
+  useGetProtocolContract,
+  useGetTokenContract,
+} from '../../../../hooks/useGetContract';
 import { asyncCall } from '../../../../store/rxjs/provider-cache';
-import { decimalic } from '../../../../utils/math';
-import { UserInfo } from '../MarketMakingPage.types';
 import { AmmLiquidityPool } from '../utils/AmmLiquidityPool';
 
 export const useGetUserInfo = (pool: AmmLiquidityPool) => {
   const { account } = useAccount();
   const { assetA, assetB, poolTokenA, poolTokenB } = pool;
-  const [reward, setReward] = useState('0');
-  const [balanceA, setBalanceA] = useState(Decimal.ZERO);
+  const [reward, setReward] = useState<Decimal>(Decimal.ZERO);
+  const [balanceA, setBalanceA] = useState<Decimal>(Decimal.ZERO);
   const [loadingA, setLoadingA] = useState(false);
-  const [balanceB, setBalanceB] = useState(Decimal.ZERO);
+  const [balanceB, setBalanceB] = useState<Decimal>(Decimal.ZERO);
   const [loadingB, setLoadingB] = useState(false);
   const liquidityMiningProxy = useGetProtocolContract('liquidityMiningProxy');
   const babelfishAggregator = useGetProtocolContract('babelfishAggregator');
+  const getContractA = useGetTokenContract(assetA, defaultChainId);
+  const getContractB = useGetTokenContract(
+    SupportedTokens.wrbtc,
+    defaultChainId,
+  );
 
   const getUserInfo = useCallback(
-    async (token: string) => {
-      return await asyncCall(
+    async (token: string) =>
+      await asyncCall(
         `liquidityMiningProxy/getUserInfo/${token}/${account}`,
         () => liquidityMiningProxy?.getUserInfo(token, account),
-      ).then(res => ({
-        amount: res?.amount || '0',
-        reward: res?.accumulatedReward || '0',
-      }));
-    },
+      ).then(({ amount, accumulatedReward }) => ({
+        amount: Decimal.fromBigNumberString(amount),
+        reward: Decimal.fromBigNumberString(accumulatedReward),
+      })),
     [account, liquidityMiningProxy],
   );
 
-  const getContract = useCallback(async (token: string) => {
-    const { address, abi } = await getTokenContract(
-      token === SupportedTokens.rbtc ? SupportedTokens.wrbtc : token,
-      defaultChainId,
-    );
-    return new ethers.Contract(address, abi, getProvider(defaultChainId));
-  }, []);
-
-  const getBalance = useCallback(
-    async (info: UserInfo, totalSupply: Decimal, converterBalance: Decimal) => {
-      return decimalic(info.amount.toString())
-        .div(totalSupply)
-        .mul(converterBalance)
-        .toNumber()
-        .toFixed(0);
-    },
-    [],
-  );
-
   useEffect(() => {
-    if (!account || !liquidityMiningProxy || !babelfishAggregator) {
+    if (
+      !account ||
+      !liquidityMiningProxy ||
+      !babelfishAggregator ||
+      !getContractA ||
+      !getContractB
+    ) {
       return;
     }
 
     const getV1Balance = async () => {
       const info = await getUserInfo(poolTokenA);
-      setReward(info.reward.toString());
+      setReward(info.reward);
 
       const { abi } = await getProtocolContract(
         'babelfishAggregator',
@@ -80,21 +68,20 @@ export const useGetUserInfo = (pool: AmmLiquidityPool) => {
         abi,
         getProvider(defaultChainId),
       );
+
       const totalSupply = await contract
         .totalSupply()
         .then(Decimal.fromBigNumberString);
-
-      const getConverterBalanceA = await getContract(assetA);
-      const getConverterBalanceB = await getContract(assetB);
-      const converterBalanceA = await getConverterBalanceA
+      const converterBalanceA = await getContractA
         .balanceOf(pool.converter)
         .then(Decimal.fromBigNumberString);
-      const converterBalanceB = await getConverterBalanceB
+      const converterBalanceB = await getContractB
         .balanceOf(pool.converter)
         .then(Decimal.fromBigNumberString);
 
-      const balanceA = await getBalance(info, totalSupply, converterBalanceA);
-      const balanceB = await getBalance(info, totalSupply, converterBalanceB);
+      const balanceA = info.amount.div(totalSupply).mul(converterBalanceA);
+      const balanceB = info.amount.div(totalSupply).mul(converterBalanceB);
+
       return {
         balanceA,
         balanceB,
@@ -105,9 +92,11 @@ export const useGetUserInfo = (pool: AmmLiquidityPool) => {
       setLoadingA(true);
       setLoadingB(true);
       getV1Balance()
-        .then(result => {
-          setBalanceA(decimalic(result.balanceA));
-          setBalanceB(decimalic(result.balanceB));
+        .then(({ balanceA, balanceB }) => {
+          setBalanceA(balanceA);
+          setBalanceB(balanceB);
+        })
+        .finally(() => {
           setLoadingA(false);
           setLoadingB(false);
         })
@@ -123,9 +112,9 @@ export const useGetUserInfo = (pool: AmmLiquidityPool) => {
     pool.converterVersion,
     poolTokenA,
     poolTokenB,
-    getContract,
-    getBalance,
     getUserInfo,
+    getContractA,
+    getContractB,
   ]);
 
   return {

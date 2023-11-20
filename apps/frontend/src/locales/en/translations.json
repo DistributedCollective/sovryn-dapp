@@ -1036,9 +1036,19 @@
     "earnHistory": {
         "types": {
             "stabilityPool": "Stability pool",
-            "lending": "Lending"
+            "lending": "Lending",
+            "marketMaking": "Market making"
         },
         "lendingHistory": {
+            "columns": {
+                "balanceChange": "Balance change"
+            }
+        },
+        "marketMakingHistory": {
+            "types": {
+                "deposit": "Deposit",
+                "withdrawal": "Withdrawal"
+            },
             "columns": {
                 "balanceChange": "Balance change"
             }

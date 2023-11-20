@@ -15299,6 +15299,24 @@ export type GetLiquidatesQuery = {
   }>;
 };
 
+export type GetLiquidityHistoryQueryVariables = Exact<{
+  user?: InputMaybe<Scalars['String']>;
+}>;
+
+export type GetLiquidityHistoryQuery = {
+  __typename?: 'Query';
+  liquidityHistoryItems: Array<{
+    __typename?: 'LiquidityHistoryItem';
+    amount: string;
+    type: LiquidityHistoryType;
+    emittedBy: string;
+    timestamp: number;
+    reserveToken: { __typename?: 'Token'; id: string; symbol?: string | null };
+    transaction: { __typename?: 'Transaction'; id: string };
+    liquidityPool: { __typename?: 'LiquidityPool'; id: string };
+  }>;
+};
+
 export type GetLoanParamsSetupsQueryVariables = Exact<{
   loanToken?: InputMaybe<Scalars['String']>;
 }>;
@@ -16826,6 +16844,81 @@ export type GetLiquidatesLazyQueryHookResult = ReturnType<
 export type GetLiquidatesQueryResult = Apollo.QueryResult<
   GetLiquidatesQuery,
   GetLiquidatesQueryVariables
+>;
+export const GetLiquidityHistoryDocument = gql`
+  query getLiquidityHistory($user: String) {
+    liquidityHistoryItems(
+      where: { user: $user }
+      orderBy: timestamp
+      orderDirection: desc
+    ) {
+      amount
+      type
+      emittedBy
+      timestamp
+      reserveToken {
+        id
+        symbol
+      }
+      transaction {
+        id
+      }
+      liquidityPool {
+        id
+      }
+    }
+  }
+`;
+
+/**
+ * __useGetLiquidityHistoryQuery__
+ *
+ * To run a query within a React component, call `useGetLiquidityHistoryQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetLiquidityHistoryQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetLiquidityHistoryQuery({
+ *   variables: {
+ *      user: // value for 'user'
+ *   },
+ * });
+ */
+export function useGetLiquidityHistoryQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    GetLiquidityHistoryQuery,
+    GetLiquidityHistoryQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    GetLiquidityHistoryQuery,
+    GetLiquidityHistoryQueryVariables
+  >(GetLiquidityHistoryDocument, options);
+}
+export function useGetLiquidityHistoryLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    GetLiquidityHistoryQuery,
+    GetLiquidityHistoryQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    GetLiquidityHistoryQuery,
+    GetLiquidityHistoryQueryVariables
+  >(GetLiquidityHistoryDocument, options);
+}
+export type GetLiquidityHistoryQueryHookResult = ReturnType<
+  typeof useGetLiquidityHistoryQuery
+>;
+export type GetLiquidityHistoryLazyQueryHookResult = ReturnType<
+  typeof useGetLiquidityHistoryLazyQuery
+>;
+export type GetLiquidityHistoryQueryResult = Apollo.QueryResult<
+  GetLiquidityHistoryQuery,
+  GetLiquidityHistoryQueryVariables
 >;
 export const GetLoanParamsSetupsDocument = gql`
   query getLoanParamsSetups($loanToken: String) {

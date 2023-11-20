@@ -60,7 +60,7 @@ export const TableRow = <RowType extends RowObject>({
       <tr
         key={index}
         className={classNames(styles.row, className, styles[size], {
-          [styles.clickable]: isClickable,
+          [styles.clickable]: isClickable || expandedContent,
           [styles.active]: isClickable && isSelected,
           [styles.expanded]: expandedRow && expandedContent,
         })}

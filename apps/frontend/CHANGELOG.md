@@ -1,5 +1,21 @@
 # frontend
 
+## 1.0.36
+
+### Patch Changes
+
+- 2a0049c2: SOV-3369: Add Enkrypt Wallet to list of browser wallets
+- f9006e45: SOV-3283: add fixed rate mynt converter
+- edacb4b7: SOV-3361: Fix Bitocracy page voting data refresh
+- 42c092e7: SOV-3371: update maintenance mode state for Zero - Open LOC
+- e6103e06: SOV-3475: Tooltip copy update
+- 4509411d: SOV-3372: clean up Sovryn Alpha links in dapp candybox menu
+- Updated dependencies [f9006e45]
+- Updated dependencies [c67169ef]
+  - @sovryn/contracts@1.0.19
+  - @sovryn/sdk@0.0.7
+  - @sovryn/ui@1.0.21
+
 ## 1.0.35
 
 ### Patch Changes

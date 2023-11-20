@@ -1,5 +1,11 @@
 # @sovryn/ui
 
+## 1.0.21
+
+### Patch Changes
+
+- c67169ef: SOV-3392: update Table Row component styling
+
 ## 1.0.20
 
 ### Patch Changes

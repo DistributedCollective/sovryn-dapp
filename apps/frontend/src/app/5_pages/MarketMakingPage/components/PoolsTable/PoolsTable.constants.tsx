@@ -53,6 +53,6 @@ export const COLUMNS_CONFIG = [
     id: '',
     title: '',
     cellRenderer: (pool: AmmLiquidityPool) => <PoolsTableAction pool={pool} />,
-    className: 'hidden lg:table-cell',
+    className: 'table-cell',
   },
 ];

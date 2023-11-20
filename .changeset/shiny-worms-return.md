@@ -2,4 +2,4 @@
 "frontend": patch
 ---
 
-fix: refresh vote block
+SOV-3361: Fix Bitocracy page voting data refresh

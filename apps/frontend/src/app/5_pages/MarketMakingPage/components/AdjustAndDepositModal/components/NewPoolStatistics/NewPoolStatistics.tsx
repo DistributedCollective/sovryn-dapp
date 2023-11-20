@@ -13,7 +13,6 @@ import {
   BTC_RENDER_PRECISION,
   TOKEN_RENDER_PRECISION,
 } from '../../../../../../../constants/currencies';
-import { useGetRBTCPrice } from '../../../../../../../hooks/zero/useGetRBTCPrice';
 import { translations } from '../../../../../../../locales/i18n';
 import { decimalic } from '../../../../../../../utils/math';
 import { useGetAccumulatedReward } from '../../../../hooks/useGetAccumulatedReward';
@@ -43,7 +42,6 @@ export const NewPoolStatistics: FC<NewPoolStatisticsProps> = ({
 }) => {
   const tokenA = useMemo(() => pool.assetA, [pool.assetA]);
   const { balanceA, balanceB } = useGetUserInfo(pool);
-  const { price: rbtcPrice } = useGetRBTCPrice();
   const { reward } = useGetAccumulatedReward(pool.poolTokenA);
   const { reward: accumulatedRewards } = useGetUserInfo(pool);
 
@@ -65,12 +63,6 @@ export const NewPoolStatistics: FC<NewPoolStatisticsProps> = ({
     [adjustType, decimalValue, isInitialDeposit, balanceA],
   );
 
-  const { weeklyRewardsEstimation } = useGetPoolBalanceAndRewards(
-    pool,
-    decimalValue,
-    Decimal.fromBigNumberString(rbtcPrice),
-  );
-
   const newPoolBalanceB = useMemo(
     () =>
       adjustType === AdjustType.Deposit || isInitialDeposit
@@ -86,6 +78,11 @@ export const NewPoolStatistics: FC<NewPoolStatisticsProps> = ({
       decimalAmount,
       balanceA,
     ],
+  );
+
+  const { weeklyRewardsEstimation } = useGetPoolBalanceAndRewards(
+    pool,
+    newPoolBalanceB,
   );
 
   return (

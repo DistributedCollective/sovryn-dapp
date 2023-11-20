@@ -60,10 +60,8 @@ export const useGetExpectedTokenAmount = (
   );
 
   useEffect(() => {
-    if (!amount.isZero()) {
-      fetchBalance();
-    }
-  }, [fetchBalance, amount, balanceA, balanceB]);
+    fetchBalance();
+  }, [fetchBalance]);
 
   return expectedTokenAmount || Decimal.ZERO;
 };

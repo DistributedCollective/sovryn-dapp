@@ -123,7 +123,7 @@ export const AdjustAndDepositModal: FC<AdjustAndDepositModalProps> = ({
   );
 
   const handleSubmit = useCallback(() => {
-    if (adjustType === AdjustType.Deposit) {
+    if (isDeposit) {
       onDeposit(pool, decimalAmount, expectedTokenAmount);
     } else {
       onWithdraw(pool, poolWeiAmount, decimalAmount, [minReturn1, minReturn2]);
@@ -133,7 +133,7 @@ export const AdjustAndDepositModal: FC<AdjustAndDepositModalProps> = ({
     onDeposit,
     onWithdraw,
     pool,
-    adjustType,
+    isDeposit,
     decimalAmount,
     poolWeiAmount,
     minReturn1,

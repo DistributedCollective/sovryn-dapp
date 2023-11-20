@@ -27,7 +27,7 @@ describe('SmartRouter', () => {
 
   describe('getAvailableRoutes', () => {
     it('return all available routes', async () => {
-      expect(router.getAvailableRoutes()).toHaveLength(4);
+      expect(router.getAvailableRoutes()).toHaveLength(5);
     });
   });
 
@@ -115,7 +115,7 @@ describe('SmartRouter', () => {
     });
 
     it('returns all available entries', async () => {
-      await expect(router.getEntries()).resolves.toHaveLength(8);
+      await expect(router.getEntries()).resolves.toHaveLength(9);
     });
 
     it('returns all available destinations for entry token', async () => {

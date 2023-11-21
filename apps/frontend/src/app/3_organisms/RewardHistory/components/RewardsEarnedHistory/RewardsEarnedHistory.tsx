@@ -68,6 +68,8 @@ export const RewardsEarnedHistory: FC<RewardHistoryProps> = ({
         return [RewardsEarnedAction.UserFeeWithdrawn];
       case RewardHistoryType.stakingSubsidies:
         return [RewardsEarnedAction.StakingRewardWithdrawn];
+      case RewardHistoryType.liquidityMiningVestingRewards:
+        return [RewardsEarnedAction.RewardSovStaked];
       default:
         return [RewardsEarnedAction.RewardClaimed];
     }
@@ -151,7 +153,7 @@ export const RewardsEarnedHistory: FC<RewardHistoryProps> = ({
         <div className="flex-row items-center ml-2 gap-4 hidden lg:inline-flex">
           <ExportCSV
             getData={exportData}
-            filename="staking-revenue-rewards"
+            filename={selectedHistoryType}
             disabled={!data || data.length === 0 || exportLocked}
           />
           {exportLocked && (

@@ -21,6 +21,11 @@ export const getTransactionType = (action: RewardsEarnedAction) => {
       return t(translations.rewardHistory.stakingOperation.stakingRevenue);
     case RewardsEarnedAction.StakingRewardWithdrawn:
       return t(translations.rewardHistory.stakingOperation.stakingSubsidies);
+    case RewardsEarnedAction.RewardSovStaked:
+      return t(
+        translations.rewardHistory.stakingOperation
+          .liquidityMiningVestingRewards,
+      );
     default:
       return '';
   }

@@ -15301,6 +15301,9 @@ export type GetLiquidatesQuery = {
 
 export type GetLiquidityHistoryQueryVariables = Exact<{
   user?: InputMaybe<Scalars['String']>;
+  skip: Scalars['Int'];
+  pageSize: Scalars['Int'];
+  orderDirection?: InputMaybe<OrderDirection>;
 }>;
 
 export type GetLiquidityHistoryQuery = {
@@ -16846,11 +16849,18 @@ export type GetLiquidatesQueryResult = Apollo.QueryResult<
   GetLiquidatesQueryVariables
 >;
 export const GetLiquidityHistoryDocument = gql`
-  query getLiquidityHistory($user: String) {
+  query getLiquidityHistory(
+    $user: String
+    $skip: Int!
+    $pageSize: Int!
+    $orderDirection: OrderDirection
+  ) {
     liquidityHistoryItems(
       where: { user: $user }
+      first: $pageSize
+      skip: $skip
       orderBy: timestamp
-      orderDirection: desc
+      orderDirection: $orderDirection
     ) {
       amount
       type
@@ -16883,11 +16893,14 @@ export const GetLiquidityHistoryDocument = gql`
  * const { data, loading, error } = useGetLiquidityHistoryQuery({
  *   variables: {
  *      user: // value for 'user'
+ *      skip: // value for 'skip'
+ *      pageSize: // value for 'pageSize'
+ *      orderDirection: // value for 'orderDirection'
  *   },
  * });
  */
 export function useGetLiquidityHistoryQuery(
-  baseOptions?: Apollo.QueryHookOptions<
+  baseOptions: Apollo.QueryHookOptions<
     GetLiquidityHistoryQuery,
     GetLiquidityHistoryQueryVariables
   >,

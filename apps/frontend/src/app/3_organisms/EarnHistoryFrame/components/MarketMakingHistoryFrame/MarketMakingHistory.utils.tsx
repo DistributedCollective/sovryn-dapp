@@ -2,6 +2,8 @@ import React from 'react';
 
 import { t } from 'i18next';
 
+import { Paragraph, ParagraphSize } from '@sovryn/ui';
+
 import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { getTokenDisplayName } from '../../../../../constants/tokens';
 import { translations } from '../../../../../locales/i18n';
@@ -9,6 +11,7 @@ import {
   LiquidityHistoryItem,
   LiquidityHistoryType,
 } from '../../../../../utils/graphql/rsk/generated';
+import { dateFormat } from '../../../../../utils/helpers';
 import { decimalic } from '../../../../../utils/math';
 
 export const getTransactionType = (item: LiquidityHistoryItem) =>
@@ -27,4 +30,12 @@ export const renderBalanceChange = (item: LiquidityHistoryItem) => (
     }
     suffix={getTokenDisplayName(item.reserveToken.symbol || '')}
   />
+);
+
+export const generateRowTitle = (item: LiquidityHistoryItem) => (
+  <Paragraph size={ParagraphSize.small} className="text-left">
+    {getTransactionType(item)}
+    {' - '}
+    {dateFormat(item.timestamp)}
+  </Paragraph>
 );

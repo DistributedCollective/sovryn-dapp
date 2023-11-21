@@ -29,7 +29,10 @@ import { useMaintenance } from '../../../../../hooks/useMaintenance';
 import { translations } from '../../../../../locales/i18n';
 import { LiquidityHistoryItem } from '../../../../../utils/graphql/rsk/generated';
 import { dateFormat } from '../../../../../utils/helpers';
-import { getTransactionType } from './MarketMakingHistory.utils';
+import {
+  generateRowTitle,
+  getTransactionType,
+} from './MarketMakingHistory.utils';
 import { COLUMNS_CONFIG } from './MarketMakingHistoryFrame.constants';
 import { useGetMarketMakingHistory } from './hooks/useGetMarketMakingHistory';
 
@@ -45,29 +48,21 @@ export const MarketMakingHistoryFrame: FC<PropsWithChildren> = ({
   const exportLocked = checkMaintenance(States.ZERO_EXPORT_CSV);
 
   const [orderOptions, setOrderOptions] = useState<OrderOptions>({
-    orderBy: 'timestamp',
     orderDirection: OrderDirection.Desc,
   });
 
   const { value: block } = useBlockNumber();
 
-  const { data, loading, refetch } = useGetMarketMakingHistory();
+  const { data, loading, refetch } = useGetMarketMakingHistory(
+    pageSize,
+    page,
+    orderOptions.orderDirection!,
+  );
 
-  const items = useMemo(() => {
-    const result = data?.liquidityHistoryItems as LiquidityHistoryItem[];
-
-    if (!loading && result?.length > 1) {
-      const sortedResult = [...result].sort((a, b) =>
-        orderOptions.orderDirection === OrderDirection.Asc
-          ? a.timestamp - b.timestamp
-          : b.timestamp - a.timestamp,
-      );
-
-      return sortedResult;
-    }
-
-    return [];
-  }, [data?.liquidityHistoryItems, loading, orderOptions.orderDirection]);
+  const items = useMemo(
+    () => (data?.liquidityHistoryItems as LiquidityHistoryItem[]) || [],
+    [data?.liquidityHistoryItems],
+  );
 
   const exportData = useCallback(async () => {
     if (!items || items?.length < 1) {
@@ -88,11 +83,6 @@ export const MarketMakingHistoryFrame: FC<PropsWithChildren> = ({
       transactionId: item.transaction.id,
     }));
   }, [addNotification, items]);
-
-  const paginatedItems = useMemo(
-    () => items.slice(page * pageSize, page * pageSize + pageSize),
-    [items, page],
-  );
 
   useEffect(() => {
     refetch();
@@ -141,7 +131,8 @@ export const MarketMakingHistoryFrame: FC<PropsWithChildren> = ({
       <div className="bg-gray-80 py-4 px-4 rounded">
         <Table
           columns={COLUMNS_CONFIG}
-          rows={paginatedItems}
+          rowTitle={generateRowTitle}
+          rows={items}
           setOrderOptions={setOrderOptions}
           orderOptions={orderOptions}
           isLoading={loading}
@@ -158,7 +149,6 @@ export const MarketMakingHistoryFrame: FC<PropsWithChildren> = ({
           itemsPerPage={pageSize}
           isNextButtonDisabled={isNextButtonDisabled}
           dataAttribute="market-making-history-pagination"
-          totalItems={items.length}
         />
       </div>
     </>

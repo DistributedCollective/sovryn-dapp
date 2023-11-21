@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useMemo, useState } from 'react';
+import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 
 import { t } from 'i18next';
 import { Trans } from 'react-i18next';
@@ -15,25 +15,37 @@ import {
   Button,
   ButtonType,
   ButtonStyle,
-  noop,
+  ErrorBadge,
+  ErrorLevel,
 } from '@sovryn/ui';
 import { Decimal } from '@sovryn/utils';
+
+import { defaultChainId } from '../../../../../config/chains';
 
 import { AssetRenderer } from '../../../../2_molecules/AssetRenderer/AssetRenderer';
 import { CurrentStatistics } from '../../../../2_molecules/CurrentStatistics/CurrentStatistics';
 import { LabelWithTabsAndMaxButton } from '../../../../2_molecules/LabelWithTabsAndMaxButton/LabelWithTabsAndMaxButton';
 import { MaxButton } from '../../../../2_molecules/MaxButton/MaxButton';
+import { GAS_LIMIT } from '../../../../../constants/gasLimits';
 import { WIKI_LINKS } from '../../../../../constants/links';
+import { useAccount } from '../../../../../hooks/useAccount';
+import { useMaxAssetBalance } from '../../../../../hooks/useMaxAssetBalance';
 import { useWeiAmountInput } from '../../../../../hooks/useWeiAmountInput';
 import { translations } from '../../../../../locales/i18n';
+import { decimalic, toWei } from '../../../../../utils/math';
+import { useGetExpectedTokenAmount } from '../../hooks/useGetExpectedTokenAmount';
+import { useGetUserInfo } from '../../hooks/useGetUserInfo';
+import { useHandleMarketMaking } from '../../hooks/useHandleMarketMaking';
 import { AmmLiquidityPool } from '../../utils/AmmLiquidityPool';
 import { TABS } from './AdjustAndDepositModal.constants';
 import { AdjustType } from './AdjustAndDepositModal.types';
+import {
+  calculatePoolWeiAmount,
+  getMinReturn,
+} from './AdjustAndDepositModal.utils';
 import { CurrentBalance } from './components/CurrentBalance/CurrentBalance';
 import { NewPoolStatistics } from './components/NewPoolStatistics/NewPoolStatistics';
-
-// TODO: Fetch user balance
-const maxBalance: Decimal = Decimal.from(100);
+import { useGetPoolBalance } from './hooks/useGetPoolBalance';
 
 const pageTranslations = translations.marketMakingPage.adjustAndDepositModal;
 
@@ -52,34 +64,101 @@ export const AdjustAndDepositModal: FC<AdjustAndDepositModalProps> = ({
 }) => {
   const [adjustType, setAdjustType] = useState(AdjustType.Deposit);
   const [value, setValue, amount] = useWeiAmountInput('');
-  const [hasDisclaimerBeenChecked, setHasDisclaimerBeenChecked] =
-    useState(false);
-
-  const handleMaxClick = useCallback(
-    () => setValue(maxBalance.toString()),
-    [setValue],
-  );
-
-  const token = useMemo(() => pool.assetA, [pool.assetA]);
+  const { account } = useAccount();
+  const { onDeposit, onWithdraw } = useHandleMarketMaking(onClose);
+  const { balanceA, loadingA } = useGetUserInfo(pool);
 
   const decimalAmount = useMemo(
-    (): Decimal => Decimal.fromBigNumberString(amount.toString()),
+    (): Decimal => decimalic(amount.toString()),
     [amount],
   );
 
-  const isValidForm = useMemo(
-    () =>
-      value !== '' &&
-      decimalAmount.gt(Decimal.ZERO) &&
-      (!isInitialDeposit || (isInitialDeposit && hasDisclaimerBeenChecked)),
-    [decimalAmount, hasDisclaimerBeenChecked, isInitialDeposit, value],
+  const isAmountZero = useMemo(() => amount.isZero(), [amount]);
+  const { tokenPoolBalance } = useGetPoolBalance(
+    isAmountZero,
+    adjustType,
+    loadingA,
+    pool,
+    account,
   );
 
-  // TODO: Add the calculation
-  const btcValue = useMemo(
-    () => decimalAmount.mul(0.1).toString(),
-    [decimalAmount],
+  const poolWeiAmount = calculatePoolWeiAmount(
+    Decimal.fromBigNumberString(amount.toString()),
+    balanceA,
+    tokenPoolBalance,
   );
+
+  const token = useMemo(() => pool.assetA, [pool.assetA]);
+  const isDeposit = useMemo(
+    () => adjustType === AdjustType.Deposit,
+    [adjustType],
+  );
+  const [hasDisclaimerBeenChecked, setHasDisclaimerBeenChecked] =
+    useState(false);
+
+  const { balance: maxTokenToDepositAmount } = useMaxAssetBalance(
+    token,
+    defaultChainId,
+    isDeposit
+      ? GAS_LIMIT.MARKET_MAKING_ADD_LIQUIDITY
+      : GAS_LIMIT.MARKET_MAKING_REMOVE_LIQUIDITY,
+  );
+
+  const maxBalance = useMemo(
+    () => (isDeposit ? maxTokenToDepositAmount : balanceA),
+    [isDeposit, balanceA, maxTokenToDepositAmount],
+  );
+
+  const handleMaxClick = useCallback(
+    () => setValue(maxBalance.toString()),
+    [maxBalance, setValue],
+  );
+
+  const decimalValue = useMemo(() => decimalic(value), [value]);
+
+  const expectedTokenAmount = useGetExpectedTokenAmount(pool, decimalValue);
+  const minReturn1 = getMinReturn(decimalAmount);
+  const minReturn2 = getMinReturn(
+    Decimal.from(toWei(expectedTokenAmount.toString()).toString()),
+  );
+
+  const handleSubmit = useCallback(() => {
+    if (isDeposit) {
+      onDeposit(pool, decimalAmount, expectedTokenAmount);
+    } else {
+      onWithdraw(pool, poolWeiAmount, decimalAmount, [minReturn1, minReturn2]);
+    }
+  }, [
+    expectedTokenAmount,
+    onDeposit,
+    onWithdraw,
+    pool,
+    isDeposit,
+    decimalAmount,
+    poolWeiAmount,
+    minReturn1,
+    minReturn2,
+  ]);
+
+  const isValidForm = useMemo(
+    () => decimalValue.lte(maxBalance) || isAmountZero,
+    [maxBalance, decimalValue, isAmountZero],
+  );
+
+  const isSubmitDisabled = useMemo(
+    () =>
+      decimalAmount.isZero() ||
+      (!hasDisclaimerBeenChecked && isInitialDeposit) ||
+      !isValidForm,
+    [decimalAmount, isValidForm, hasDisclaimerBeenChecked, isInitialDeposit],
+  );
+
+  useEffect(() => {
+    setValue('');
+    if (isInitialDeposit) {
+      setAdjustType(AdjustType.Deposit);
+    }
+  }, [setValue, isInitialDeposit, adjustType, account]);
 
   return (
     <Dialog disableFocusTrap isOpen={isOpen}>
@@ -135,16 +214,27 @@ export const AdjustAndDepositModal: FC<AdjustAndDepositModalProps> = ({
               <AmountInput
                 value={value}
                 onChangeText={setValue}
-                maxAmount={Number(maxBalance)}
+                maxAmount={maxBalance.toNumber()}
                 label={t(translations.common.amount)}
                 className="max-w-none"
                 unit={<AssetRenderer asset={token} />}
+                disabled={!account}
+                invalid={!isValidForm}
                 placeholder="0"
               />
+              {!isValidForm && (
+                <ErrorBadge
+                  level={ErrorLevel.Critical}
+                  message={t(
+                    translations.marketMakingPage.form.invalidAmountError,
+                  )}
+                  dataAttribute="adjust-market-making-amount-error"
+                />
+              )}
 
               <AmountInput
                 label={t(translations.common.amount)}
-                value={btcValue}
+                value={expectedTokenAmount.toString()}
                 className="max-w-none mt-6"
                 unit={<AssetRenderer asset={SupportedTokens.rbtc} />}
                 readOnly
@@ -153,7 +243,8 @@ export const AdjustAndDepositModal: FC<AdjustAndDepositModalProps> = ({
           </div>
 
           <NewPoolStatistics
-            amount={decimalAmount}
+            value={value}
+            decimalAmount={decimalAmount}
             isInitialDeposit={isInitialDeposit}
             adjustType={adjustType}
             pool={pool}
@@ -186,9 +277,9 @@ export const AdjustAndDepositModal: FC<AdjustAndDepositModalProps> = ({
               style={ButtonStyle.primary}
               text={t(translations.common.buttons.confirm)}
               className="w-full"
-              onClick={noop} // TODO: Add a submit handler
+              onClick={handleSubmit}
               dataAttribute="new-loan-confirm-button"
-              disabled={!isValidForm}
+              disabled={isSubmitDisabled}
             />
           </div>
         </>

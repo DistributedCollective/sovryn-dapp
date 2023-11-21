@@ -1,35 +1,41 @@
 import React, { FC } from 'react';
 
-import { Decimal } from '@sovryn/utils';
-
 import { AmountRenderer } from '../../../../../../2_molecules/AmountRenderer/AmountRenderer';
+import {
+  BITCOIN,
+  BTC_RENDER_PRECISION,
+  TOKEN_RENDER_PRECISION,
+} from '../../../../../../../constants/currencies';
 import { renderTokenSymbol } from '../../../../../../../utils/helpers';
+import { useGetUserInfo } from '../../../../hooks/useGetUserInfo';
 import { AmmLiquidityPool } from '../../../../utils/AmmLiquidityPool';
-
-const tokenBalance = Decimal.ZERO;
-const rbtcBalance = Decimal.ZERO;
 
 type CurrentBalanceProps = {
   pool: AmmLiquidityPool;
 };
 
-export const CurrentBalance: FC<CurrentBalanceProps> = ({ pool }) => (
-  <>
-    <div className="leading-none">
-      {
-        <AmountRenderer
-          value={tokenBalance}
-          suffix={renderTokenSymbol(pool.assetA)}
-        />
-      }
-    </div>
-    <div className="leading-none">
-      {
-        <AmountRenderer
-          value={rbtcBalance}
-          suffix={renderTokenSymbol(pool.assetB)}
-        />
-      }
-    </div>
-  </>
-);
+export const CurrentBalance: FC<CurrentBalanceProps> = ({ pool }) => {
+  const { balanceA, balanceB } = useGetUserInfo(pool);
+  return (
+    <>
+      <div className="leading-none">
+        {
+          <AmountRenderer
+            value={balanceA}
+            suffix={renderTokenSymbol(pool.assetA)}
+            precision={TOKEN_RENDER_PRECISION}
+          />
+        }
+      </div>
+      <div className="leading-none">
+        {
+          <AmountRenderer
+            value={balanceB}
+            suffix={BITCOIN}
+            precision={BTC_RENDER_PRECISION}
+          />
+        }
+      </div>
+    </>
+  );
+};

@@ -1113,6 +1113,7 @@
             "transferGainToLineOfCredit": "Transfer gain to line of credit"
         },
         "stakingOperation": {
+            "liquidityMiningRewards": "Withdraw liquid reward",
             "stakingRevenue": "Withdraw staking revenue",
             "stakingSubsidies": "Withdraw staking subsidy"
         },
@@ -1122,6 +1123,7 @@
             "tokensStaked": "Tokens Staked"
         },
         "types": {
+            "liquidityMiningRewards": "Liquidity mining rewards",
             "stabilityPoolRewards": "Stability pool rewards",
             "stabilityPoolSubsidies": "Stability pool subsidies",
             "stakingRevenue": "Staking Revenue",

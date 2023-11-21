@@ -60,13 +60,18 @@ export const RewardsEarnedHistory: FC<RewardHistoryProps> = ({
     orderDirection: OrderDirection.Desc,
   });
 
-  const historyAction = useMemo(
-    () =>
-      selectedHistoryType === RewardHistoryType.stakingRevenue
-        ? [RewardsEarnedAction.UserFeeWithdrawn]
-        : [RewardsEarnedAction.StakingRewardWithdrawn],
-    [selectedHistoryType],
-  );
+  const historyAction = useMemo(() => {
+    switch (selectedHistoryType) {
+      case RewardHistoryType.liquidityMiningRewards:
+        return [RewardsEarnedAction.RewardClaimed];
+      case RewardHistoryType.stakingRevenue:
+        return [RewardsEarnedAction.UserFeeWithdrawn];
+      case RewardHistoryType.stakingSubsidies:
+        return [RewardsEarnedAction.StakingRewardWithdrawn];
+      default:
+        return [RewardsEarnedAction.RewardClaimed];
+    }
+  }, [selectedHistoryType]);
 
   const { data, loading } = useGetRewardsEarned(
     account,

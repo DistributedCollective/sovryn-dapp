@@ -5,10 +5,12 @@ export const SERVICES_CONFIG = {
     [Services.Maintenance]:
       'https://maintenance-mode.test.sovryn.app/maintenance',
     [Services.Notification]: 'https://notify.test.sovryn.app/',
+    [Services.Amm]: 'https://amm-apy.test.sovryn.app/',
   },
   [Environments.Mainnet]: {
     [Services.Maintenance]: 'https://maintenance-mode.sovryn.app/maintenance',
     [Services.Notification]: 'https://notify.sovryn.app/',
+    [Services.Amm]: 'https://amm-apy.sovryn.app/',
   },
 };
 

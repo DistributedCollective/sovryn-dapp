@@ -9,6 +9,7 @@ import { AssetPairSize } from '../../../../2_molecules/AssetPairRenderer/AssetPa
 import { translations } from '../../../../../locales/i18n';
 import { AmmLiquidityPool } from '../../utils/AmmLiquidityPool';
 import { AmmLiquidityPoolDictionary } from '../../utils/AmmLiquidityPoolDictionary';
+import { PoolDetails } from '../PoolDetails/PoolDetails';
 import { COLUMNS_CONFIG } from './PoolsTable.constants';
 import styles from './PoolsTable.module.css';
 
@@ -39,6 +40,7 @@ export const PoolsTable: FC = () => {
         dataAttribute="amm-pool-table"
         expandedClassNames="border border-gray-70 border-t-0"
         preventExpandOnClickClass="prevent-row-click"
+        expandedContent={row => <PoolDetails pool={row} />}
         rowTitle={generateRowTitle}
       />
     </div>

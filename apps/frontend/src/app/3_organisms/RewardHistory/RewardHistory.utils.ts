@@ -25,11 +25,7 @@ export const rewardHistoryOptions = [
     label: t(translations.rewardHistory.types.stakingSubsidies),
   },
   {
-    value: RewardHistoryType.stakingVestingRewards,
-    label: t(translations.rewardHistory.types.stakingVestingRewards),
-  },
-  {
-    value: RewardHistoryType.liquidityMiningVestingRewards,
-    label: t(translations.rewardHistory.types.liquidityMiningVestingRewards),
+    value: RewardHistoryType.vestingRewards,
+    label: t(translations.rewardHistory.types.vestingRewards),
   },
 ];

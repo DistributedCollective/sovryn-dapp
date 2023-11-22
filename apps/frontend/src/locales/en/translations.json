@@ -1115,8 +1115,7 @@
         "stakingOperation": {
             "liquidityMiningRewards": "Withdraw liquid reward",
             "stakingRevenue": "Withdraw staking revenue",
-            "stakingSubsidies": "Withdraw staking subsidy",
-            "liquidityMiningVestingRewards": "Withdraw vested reward"
+            "stakingSubsidies": "Withdraw staking subsidy"
         },
         "vestingOperation": {
             "tokensWithdrawn": "Withdraw vested reward",
@@ -1129,8 +1128,7 @@
             "stabilityPoolSubsidies": "Stability pool subsidies",
             "stakingRevenue": "Staking Revenue",
             "stakingSubsidies": "Staking Subsidies",
-            "stakingVestingRewards": "Staking vesting rewards",
-            "liquidityMiningVestingRewards": "Liquidity mining vesting rewards"
+            "vestingRewards": "Vesting rewards"
         }
     },
     "stakingHistory": {

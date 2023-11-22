@@ -4,8 +4,7 @@ export enum RewardHistoryType {
   stabilityPoolSubsidies = 'stabilityPoolSubsidies',
   stakingRevenue = 'stakingRevenue',
   stakingSubsidies = 'stakingSubsidies',
-  stakingVestingRewards = 'stakingVestingRewards',
-  liquidityMiningVestingRewards = 'liquidityMiningVestingRewards',
+  vestingRewards = 'vestingRewards',
 }
 
 export type RewardHistoryProps = {

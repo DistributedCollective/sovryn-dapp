@@ -33,14 +33,13 @@ export const RewardHistory: FC = () => {
         RewardHistoryType.liquidityMiningRewards,
         RewardHistoryType.stakingRevenue,
         RewardHistoryType.stakingSubsidies,
-        RewardHistoryType.liquidityMiningVestingRewards,
       ].includes(selectedHistoryType) && (
         <RewardsEarnedHistory
           selectedHistoryType={selectedHistoryType}
           onChangeRewardHistory={onChangeRewardHistory}
         />
       )}
-      {selectedHistoryType === RewardHistoryType.stakingVestingRewards && (
+      {selectedHistoryType === RewardHistoryType.vestingRewards && (
         <VestingRewards
           selectedHistoryType={selectedHistoryType}
           onChangeRewardHistory={onChangeRewardHistory}

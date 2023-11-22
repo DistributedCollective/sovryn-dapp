@@ -68,8 +68,6 @@ export const RewardsEarnedHistory: FC<RewardHistoryProps> = ({
         return [RewardsEarnedAction.UserFeeWithdrawn];
       case RewardHistoryType.stakingSubsidies:
         return [RewardsEarnedAction.StakingRewardWithdrawn];
-      case RewardHistoryType.liquidityMiningVestingRewards:
-        return [RewardsEarnedAction.RewardSovStaked];
       default:
         return [RewardsEarnedAction.RewardClaimed];
     }

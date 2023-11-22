@@ -37,6 +37,7 @@ import { MaxButton } from '../../2_molecules/MaxButton/MaxButton';
 import { TOKEN_RENDER_PRECISION } from '../../../constants/currencies';
 import { getTokenDisplayName } from '../../../constants/tokens';
 import { useAccount } from '../../../hooks/useAccount';
+import { useAssetBalance } from '../../../hooks/useAssetBalance';
 import { useWeiAmountInput } from '../../../hooks/useWeiAmountInput';
 import { translations } from '../../../locales/i18n';
 import { removeTrailingZerosFromString } from '../../../utils/helpers';
@@ -75,11 +76,12 @@ const ConvertPage: FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const fromToken = searchParams.get('from');
   const toToken = searchParams.get('to');
+  const { balance: myntBalance } = useAssetBalance(SupportedTokens.mynt);
 
   const [slippageTolerance, setSlippageTolerance] = useState('0.5');
 
   const [priceInQuote, setPriceQuote] = useState(false);
-
+  const hasMyntBalance = useMemo(() => myntBalance.gt(0), [myntBalance]);
   const [amount, setAmount, weiAmount] = useWeiAmountInput('');
 
   const [quote, setQuote] = useState('');
@@ -110,8 +112,6 @@ const ConvertPage: FC = () => {
   const [destinationTokenOptions, setDestinationTokenOptions] = useState<
     SelectOption<SupportedTokens>[]
   >([]);
-  const [tokenOptionsSource, setTokenOptionsSource] =
-    useState<SupportedTokens>();
 
   useEffect(() => {
     smartRouter
@@ -125,13 +125,23 @@ const ConvertPage: FC = () => {
         sourceToken,
         defaultChainId,
       );
-
       smartRouter.getDestination(sourceTokenDetails.address).then(tokens => {
         tokensToOptions(tokens, setDestinationTokenOptions);
-        setTokenOptionsSource(sourceToken);
       });
+
+      if (sourceToken === SupportedTokens.mynt) {
+        setDestinationToken(SupportedTokens.sov);
+      }
     })();
   }, [sourceToken]);
+
+  const sourceTokenOptions = useMemo(
+    () =>
+      hasMyntBalance
+        ? tokenOptions
+        : tokenOptions.filter(option => option.value !== SupportedTokens.mynt),
+    [hasMyntBalance, tokenOptions],
+  );
 
   const [destinationToken, setDestinationToken] = useState<
     SupportedTokens | ''
@@ -316,6 +326,14 @@ const ConvertPage: FC = () => {
   }, [fromToken, toToken]);
 
   useEffect(() => {
+    if (hasMyntBalance && fromToken === SupportedTokens.mynt) {
+      setSourceToken(SupportedTokens.mynt);
+    } else if (!hasMyntBalance && fromToken === SupportedTokens.mynt) {
+      setSourceToken(SupportedTokens.dllr);
+    }
+  }, [hasMyntBalance, fromToken]);
+
+  useEffect(() => {
     const urlParams = new URLSearchParams();
 
     if (sourceToken) {
@@ -338,20 +356,6 @@ const ConvertPage: FC = () => {
       setAmount('');
     }
   }, [account, setAmount]);
-
-  useEffect(() => {
-    if (
-      tokenOptionsSource === sourceToken &&
-      !destinationTokenOptions.find(token => token.value === destinationToken)
-    ) {
-      setDestinationToken('');
-    }
-  }, [
-    sourceToken,
-    destinationTokenOptions,
-    destinationToken,
-    tokenOptionsSource,
-  ]);
 
   return (
     <>
@@ -401,7 +405,7 @@ const ConvertPage: FC = () => {
               <Select
                 value={sourceToken}
                 onChange={onSourceTokenChange}
-                options={tokenOptions}
+                options={sourceTokenOptions}
                 labelRenderer={() => getAssetRenderer(sourceToken)}
                 className="min-w-[6.7rem]"
                 menuClassName="max-h-[10rem] sm:max-h-[20rem]"

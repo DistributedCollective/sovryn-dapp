@@ -36,7 +36,7 @@ export const NavItem: FC<NavItemProps> = ({ item, onClick }) => {
         },
       )}
       active={isPathActive(item.url)}
-      closeOnClick
+      closeOnClick={!isMobile}
     >
       <Menu className="rounded-t-none rounded-b px-2 py-3 lg:rounded lg:p-1">
         {item.submenu.map(({ text, label, url }) => (

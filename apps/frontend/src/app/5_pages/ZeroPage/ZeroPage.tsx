@@ -17,6 +17,8 @@ import {
   DialogBody,
   DialogHeader,
   DialogSize,
+  ErrorBadge,
+  ErrorLevel,
   Paragraph,
   ParagraphSize,
   ParagraphStyle,
@@ -37,6 +39,7 @@ import { LIQUIDATION_RESERVE_AMOUNT } from '../../../constants/general';
 import { getTokenDisplayName } from '../../../constants/tokens';
 import { useTransactionContext } from '../../../contexts/TransactionContext';
 import { useAccount } from '../../../hooks/useAccount';
+import { useMaintenance } from '../../../hooks/useMaintenance';
 import { translations } from '../../../locales/i18n';
 import { decimalic } from '../../../utils/math';
 import { OpenLocButton } from './components/OpenLocButton/OpenLocButton';
@@ -51,6 +54,8 @@ type ZeroPageProps = {
 
 const ZeroPage: FC<ZeroPageProps> = ({ deferred: [price] }) => {
   const { liquity } = useLoaderData() as ZeroPageLoaderData;
+  const { checkMaintenance, States } = useMaintenance();
+  const openLocLocked = checkMaintenance(States.ZERO_OPEN_LOC);
 
   const { isOpen: isTxOpen } = useTransactionContext();
   const [open, toggle] = useReducer(v => !v, false);
@@ -153,9 +158,19 @@ const ZeroPage: FC<ZeroPageProps> = ({ deferred: [price] }) => {
             onWithdraw={claimCollateralSurplus}
           />
         )}
-        {account && showWelcomeBanner && !isLoading && (
+        {account && showWelcomeBanner && !isLoading && !openLocLocked && (
           <div className="mt-6 lg:mt-12">
             <OpenLocButton openLOC={toggle} className="mb-10 md:mb-4" />
+          </div>
+        )}
+
+        {openLocLocked && !hasLoc && !isLoading && (
+          <div className="my-2 flex justify-center">
+            <ErrorBadge
+              className="px-8"
+              level={ErrorLevel.Warning}
+              message={t(translations.maintenanceMode.openingLOC)}
+            />
           </div>
         )}
         <div className="flex-col-reverse lg:flex-row flex items-stretch md:p-4 md:bg-gray-90 rounded gap-9 md:gap-20">

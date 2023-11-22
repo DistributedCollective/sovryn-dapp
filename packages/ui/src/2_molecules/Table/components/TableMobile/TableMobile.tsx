@@ -19,6 +19,7 @@ export const TableMobile = <RowType extends RowObject>({
   className,
   expandedContent,
   mobileRenderer,
+  subtitleRenderer,
 }: TableProps<RowType>) => (
   <div className={classNames(styles.wrapper, className)}>
     {rows &&
@@ -33,6 +34,7 @@ export const TableMobile = <RowType extends RowObject>({
           dataAttribute={dataAttribute}
           expandedContent={expandedContent}
           renderer={mobileRenderer}
+          subtitleRenderer={subtitleRenderer}
         />
       ))}
 

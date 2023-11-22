@@ -20,7 +20,8 @@
             "done": "Done",
             "close": "Close",
             "retry": "Retry",
-            "skip": "Skip"
+            "skip": "Skip",
+            "back": "Back"
         },
         "na": "N/A",
         "tables": {
@@ -37,6 +38,7 @@
             "noDataWithFilters": "No data with the current filters",
             "loading": "Loading data..."
         },
+        "custom": "Custom",
         "max": "max",
         "amount": "Amount",
         "deposit": "Deposit",
@@ -136,6 +138,7 @@
     "maintenanceMode": {
         "fastBtc": "Fast BTC is locked",
         "featureDisabled": "This feature is currently disabled",
+        "openingLOC": "Opening a line of credit is currently disabled",
         "fullD2": {
             "title": "Sovryn is in maintenance mode.",
             "description": "Follow the social channels linked in the footer for further updates."
@@ -619,6 +622,7 @@
         "subtitle": "Help decide the future of Sovryn",
         "pastProposals": "Past proposals",
         "liveProposals": "Live proposals",
+        "activeProposalError": "An address may only create one live proposal at a time.",
         "table": {
             "status": "Status",
             "title": "Title",
@@ -647,12 +651,43 @@
             "nonExecutable": "(non-executable)",
             "other": "Other"
         },
+        "proposalInitialStep": {
+            "parameter": "Parameter",
+            "proclamation": "Proclamation",
+            "treasury": "Treasury"
+        },
+        "proposalDataForm": {
+            "title": "Title",
+            "discussionUrl": "Discussion URL",
+            "invalidURL": "Invalid URL",
+            "proposalSummary": "Proposal summary",
+            "proposalText": "Proposal text"
+        },
         "actions": {
-            "newProposal": "New proposal",
+            "createProposal": "Create proposal",
             "bitocracyAlerts": "Bitocracy alerts",
-            "view": "View"
+            "view": "View",
+            "preview": "Preview",
+            "edit": "Edit"
+        },
+        "proposalPreview": {
+            "title": "Preview mode"
+        },
+        "proposalTreasuryForm": {
+            "treasuryAccount": "Treasury account",
+            "recipientAddress": "Recipient address",
+            "invalidRecipientAddress": "Invalid entry. Please enter a Rootstock address.",
+            "invalidAmountError": "Exceeds maximum amount",
+            "add": "Add",
+            "governorVaultOwner": "Governor Vault - Owner",
+            "governorVaultAdmin": "Governor Vault - Admin",
+            "adoptionFund": "Adoption Fund",
+            "developmentFund": "Development Fund",
+            "ecosystemFund": "Ecosystem Fund",
+            "accountBalance": "Account balance:"
         }
     },
+
     "proposalPage": {
         "meta": {
             "title": "Bitocracy - Sovryn"
@@ -679,8 +714,18 @@
             "contractAddress": "Contract address: ",
             "recipientAddress": "Recipient address: ",
             "functionName": "Function name: ",
-            "data": "Data: "
+            "data": "Data: ",
+            "contract": "Contract",
+            "parameter": "Parameter",
+            "signature": "Signature",
+            "calldata": "Calldata",
+            "value": "Value",
+            "newValue": "New value",
+            "amount": "Amount"
         },
+        "governor": "Governor",
+        "governorAdmin": "Governor Admin",
+        "governorOwner": "Governor Owner",
         "castVote": "Cast your vote",
         "stakeSOV": "Stake SOV",
         "support": "Support",
@@ -692,9 +737,23 @@
         "eligibleVote": "Stake SOV to be eligible to vote on future proposals",
         "actions": {
             "queue": "Queue for execution",
-            "execute": "Execute proposal"
+            "execute": "Execute proposal",
+            "add": "Add"
+        },
+        "currentValue": "Current value",
+        "newValue": "New value",
+        "parameter": "Parameter",
+        "contract": "Contract",
+        "invalidNewValue": "Invalid value for type {{type}}",
+        "customContract": {
+            "address": "Address",
+            "value": "Value",
+            "functionName": "Function name",
+            "signature": "Signature",
+            "calldata": "Calldata"
         }
     },
+
     "fastBtc": {
         "mainScreen": {
             "title": "Funding",
@@ -1312,5 +1371,9 @@
     "promotion": {
         "currentAPY": "Current APY",
         "weeklyRewards": "Weekly rewards"
+    },
+    "newProposalTx": {
+        "title": "Submit Proposal",
+        "description": "Submit a new proposal to the Bitocracy"
     }
 }

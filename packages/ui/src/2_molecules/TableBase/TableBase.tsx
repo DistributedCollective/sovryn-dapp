@@ -39,12 +39,10 @@ export const TableBase = <RowType extends RowObject>({
   const handleRowClick = useCallback(
     (row: RowType) => {
       onRowClick?.(row);
-
-      console.log('index', rows?.indexOf(row));
-
-      setSelectedIndex(rows?.indexOf(row));
+      const index = rows?.indexOf(row);
+      setSelectedIndex(index === selectedIndex ? undefined : index);
     },
-    [onRowClick, rows],
+    [onRowClick, rows, selectedIndex],
   );
 
   return (

@@ -27,7 +27,9 @@ export const VerticalTabItem: FC<VerticalTabsItemButtonProps> = ({
     >
       {icon && <span className={styles.icon}> {icon} </span>}
       <div className={className}>
-        <Heading type={HeadingType.h2}>{label}</Heading>
+        <Heading className={styles.heading} type={HeadingType.h2}>
+          {label}
+        </Heading>
         {infoText && <Paragraph className={styles.info}>{infoText}</Paragraph>}
       </div>
     </button>

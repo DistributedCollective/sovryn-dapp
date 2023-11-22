@@ -64,14 +64,14 @@ export const NavDropdown = forwardRef<HTMLButtonElement, DropdownProps>(
     const { isMobile } = useIsMobile();
     const buttonRef = useRef<HTMLButtonElement>(null);
     const dropdownRef = useRef<HTMLDivElement>(null);
-    const [isOpen, setOpen] = useState(false);
+    const [isOpen, setOpen] = useState(!!active);
     const [coords, setCoords] = useState<Nullable<DropdownCoords>>(null);
 
     useImperativeHandle(ref, () => buttonRef.current!);
 
     const isAccordionActive = useMemo(
-      () => isMobile && active,
-      [isMobile, active],
+      () => isMobile && isOpen,
+      [isMobile, isOpen],
     );
 
     const onButtonClick = useCallback(
@@ -152,6 +152,10 @@ export const NavDropdown = forwardRef<HTMLButtonElement, DropdownProps>(
         };
       }
     }, [isOpen, updateCoords, onOpen, mode, onClose]);
+
+    useEffect(() => {
+      setOpen(!!active);
+    }, [active]);
 
     const renderDropdown = useMemo(
       () => (

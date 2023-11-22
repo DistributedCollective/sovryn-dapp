@@ -995,6 +995,11 @@
             "volume": "24H volume",
             "balance": "Balance"
         },
+        "poolsTableReturns": {
+            "title": "Up to {{percent}}% APR",
+            "before": "Before liquidity mining rewards: {{percent}}%",
+            "after": "After liquidity mining rewards: {{percent}}%"
+        },
         "adjustAndDepositModal": {
             "titles": {
                 "initialDeposit": "AMM pool deposit",

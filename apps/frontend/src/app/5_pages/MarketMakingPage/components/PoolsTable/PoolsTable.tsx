@@ -11,18 +11,20 @@ import { AmmLiquidityPool } from '../../utils/AmmLiquidityPool';
 import { AmmLiquidityPoolDictionary } from '../../utils/AmmLiquidityPoolDictionary';
 import { COLUMNS_CONFIG } from './PoolsTable.constants';
 import styles from './PoolsTable.module.css';
+import { PoolsTableReturns } from './components/PoolsTableReturns/PoolsTableReturns';
 
 const ammPools = AmmLiquidityPoolDictionary.list();
 
 export const PoolsTable: FC = () => {
   const generateRowTitle = useCallback(
     (pool: AmmLiquidityPool) => (
-      <div className="flex items-center">
+      <div className="flex items-center justify-between w-full">
         <AssetPairRenderer
           asset1={pool.assetA}
           asset2={pool.assetB}
           size={AssetPairSize.small}
         />
+        <PoolsTableReturns pool={pool} className="text-sm font-semibold" />
       </div>
     ),
     [],

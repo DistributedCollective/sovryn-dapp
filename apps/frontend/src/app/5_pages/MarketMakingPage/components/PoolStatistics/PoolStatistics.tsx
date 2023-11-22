@@ -93,7 +93,7 @@ export const PoolsStatistics: FC<PoolsStatisticsProps> = ({ pool }) => {
         label={
           <span className={labelClassName}>
             {t(pageTranslations.lpFeeRate)}{' '}
-            <HelperButton content={pageTranslations.lpFeeRateInfo} />
+            <HelperButton content={t(pageTranslations.lpFeeRateInfo)} />
           </span>
         }
         value={renderLpFeeRate}
@@ -104,7 +104,7 @@ export const PoolsStatistics: FC<PoolsStatisticsProps> = ({ pool }) => {
         label={
           <span className={labelClassName}>
             {t(pageTranslations.bitocracyFeeRate)}{' '}
-            <HelperButton content={pageTranslations.bitocracyFeeRateInfo} />
+            <HelperButton content={t(pageTranslations.bitocracyFeeRateInfo)} />
           </span>
         }
         value={renderBitocracyFeeRate}
@@ -115,7 +115,7 @@ export const PoolsStatistics: FC<PoolsStatisticsProps> = ({ pool }) => {
         label={
           <span className={labelClassName}>
             {t(pageTranslations.totalSwapFeeRate)}{' '}
-            <HelperButton content={pageTranslations.totalSwapFeeRateInfo} />
+            <HelperButton content={t(pageTranslations.totalSwapFeeRateInfo)} />
           </span>
         }
         value={renderTotalSwapFeeRate}

@@ -962,6 +962,11 @@
         },
         "form": {
             "invalidAmountError": "Exceeds maximum amount"
+        },
+        "poolVolumeChart": {
+            "apr": "APR",
+            "volume": "Volume",
+            "24hVolume": "24h volume"
         }
     },
     "borrowHistory": {

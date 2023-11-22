@@ -10,7 +10,7 @@ export const useGetProtocolFee = () => {
 
   const protocolFee = useMemo(() => {
     const protocolFee = data?.swapSettings[0].protocolFee ?? 0;
-    return protocolFee / 100;
+    return protocolFee / 1e4;
   }, [data]);
 
   return { loading, protocolFee, refetch };

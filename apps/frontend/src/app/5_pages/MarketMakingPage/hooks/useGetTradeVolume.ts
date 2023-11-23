@@ -1,20 +1,18 @@
 import { useMemo } from 'react';
 
+import { SECONDS_IN_DAY } from '../../../../constants/general';
 import { rskClient } from '../../../../utils/clients';
 import {
   GetTradeVolumeQuery,
   useGetTradeVolumeQuery,
 } from '../../../../utils/graphql/rsk/generated';
-import { get24HoursAgoInSeconds } from '../MarketMakingPage.utils';
 
 export const useGetTradeVolume = (pool: string) => {
-  const timestamp = get24HoursAgoInSeconds();
-
   const { loading, data, refetch } = useGetTradeVolumeQuery({
     client: rskClient,
     variables: {
       pool: pool,
-      timestamp: timestamp,
+      timestamp: SECONDS_IN_DAY,
     },
   });
 

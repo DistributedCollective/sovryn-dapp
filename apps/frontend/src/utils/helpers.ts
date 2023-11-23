@@ -11,6 +11,7 @@ import { Decimal } from '@sovryn/utils';
 import { BITCOIN } from '../constants/currencies';
 import { MS } from '../constants/general';
 import {
+  AMM_SERVICE,
   BTC_EXPLORER,
   GRAPH_WRAPPER,
   RSK_EXPLORER,
@@ -68,6 +69,9 @@ export const getBitocracyUrl = () =>
 
 export const getGraphWrapperUrl = () =>
   GRAPH_WRAPPER[isMainnet() ? Environments.Mainnet : Environments.Testnet];
+
+export const getAmmServiceUrl = () =>
+  AMM_SERVICE[isMainnet() ? Environments.Mainnet : Environments.Testnet];
 
 export const dateFormat = (timestamp: number) => {
   const stamp = dayjs.tz(Number(timestamp) * MS, 'UTC');

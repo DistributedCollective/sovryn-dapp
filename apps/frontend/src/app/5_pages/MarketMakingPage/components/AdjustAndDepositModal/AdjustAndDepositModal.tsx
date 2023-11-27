@@ -37,6 +37,7 @@ import { useGetExpectedTokenAmount } from '../../hooks/useGetExpectedTokenAmount
 import { useGetUserInfo } from '../../hooks/useGetUserInfo';
 import { useHandleMarketMaking } from '../../hooks/useHandleMarketMaking';
 import { AmmLiquidityPool } from '../../utils/AmmLiquidityPool';
+import { PoolsTableReturns } from '../PoolsTable/components/PoolsTableReturns/PoolsTableReturns';
 import { TABS } from './AdjustAndDepositModal.constants';
 import { AdjustType } from './AdjustAndDepositModal.types';
 import {
@@ -178,7 +179,12 @@ export const AdjustAndDepositModal: FC<AdjustAndDepositModalProps> = ({
               symbol2={pool.assetB}
               label1={t(pageTranslations.currentStatistics.returnRate)}
               label2={t(pageTranslations.currentStatistics.currentBalance)}
-              value1="Up to 8.55% APR"
+              value1={
+                <PoolsTableReturns
+                  className="text-xs font-semibold"
+                  pool={pool}
+                />
+              }
               value2={<CurrentBalance pool={pool} />}
             />
           </div>

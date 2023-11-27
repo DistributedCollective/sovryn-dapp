@@ -8,6 +8,7 @@ import { AssetPairRenderer } from '../../../../2_molecules/AssetPairRenderer/Ass
 import { translations } from '../../../../../locales/i18n';
 import { AmmLiquidityPool } from '../../utils/AmmLiquidityPool';
 import { PoolsTableAction } from './components/PoolsTableAction/PoolsTableAction';
+import { PoolsTableReturns } from './components/PoolsTableReturns/PoolsTableReturns';
 
 export const COLUMNS_CONFIG = [
   {
@@ -37,7 +38,8 @@ export const COLUMNS_CONFIG = [
         />
       </span>
     ),
-    cellRenderer: () => 'Up to 8.55% APR',
+    cellRenderer: (pool: AmmLiquidityPool) => <PoolsTableReturns pool={pool} />,
+    className: 'hidden lg:block',
   },
   {
     id: 'volume',

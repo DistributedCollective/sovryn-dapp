@@ -34,7 +34,6 @@ import { useWeiAmountInput } from '../../../../../hooks/useWeiAmountInput';
 import { translations } from '../../../../../locales/i18n';
 import { decimalic, toWei } from '../../../../../utils/math';
 import { useGetExpectedTokenAmount } from '../../hooks/useGetExpectedTokenAmount';
-import { useGetReturnRate } from '../../hooks/useGetReturnRate';
 import { useGetUserInfo } from '../../hooks/useGetUserInfo';
 import { useHandleMarketMaking } from '../../hooks/useHandleMarketMaking';
 import { AmmLiquidityPool } from '../../utils/AmmLiquidityPool';
@@ -69,7 +68,6 @@ export const AdjustAndDepositModal: FC<AdjustAndDepositModalProps> = ({
   const { account } = useAccount();
   const { onDeposit, onWithdraw } = useHandleMarketMaking(onClose);
   const { balanceA, loadingA } = useGetUserInfo(pool);
-  const { returnRates } = useGetReturnRate(pool.converter);
 
   const decimalAmount = useMemo(
     (): Decimal => decimalic(amount.toString()),

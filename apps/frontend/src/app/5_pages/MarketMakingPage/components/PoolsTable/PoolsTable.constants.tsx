@@ -33,7 +33,7 @@ export const COLUMNS_CONFIG = [
     id: 'returns',
     title: (
       <span className="flex items-center gap-1">
-        {t(translations.marketMakingPage.poolsTable.returns)}{' '}
+        {t(translations.marketMakingPage.poolsTable.returnsRate)}{' '}
         <HelperButton
           content={t(translations.marketMakingPage.poolsTable.returnsInfo)}
         />

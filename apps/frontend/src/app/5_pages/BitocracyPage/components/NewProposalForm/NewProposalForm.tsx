@@ -17,8 +17,6 @@ export const NewProposalForm: FC = () => {
     setStep,
     type: proposalType,
     setType: setProposalType,
-    details,
-    setDetails,
     submit,
   } = useProposalContext();
   const [isPreview, setIsPreview] = useState(false);
@@ -89,8 +87,6 @@ export const NewProposalForm: FC = () => {
     if (step === ProposalCreationStep.Details) {
       return (
         <ProposalDataForm
-          value={details}
-          onChange={setDetails}
           proposalType={proposalType}
           onBack={() => setStep(ProposalCreationStep.SelectType)}
           onPreview={handlePreview}
@@ -102,7 +98,6 @@ export const NewProposalForm: FC = () => {
 
     return null;
   }, [
-    details,
     handleBack,
     handlePreview,
     handleSubmit,
@@ -110,7 +105,6 @@ export const NewProposalForm: FC = () => {
     isConfirmButtonDisabled,
     isPreview,
     proposalType,
-    setDetails,
     setStep,
     step,
   ]);

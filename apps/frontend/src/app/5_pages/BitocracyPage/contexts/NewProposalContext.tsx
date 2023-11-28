@@ -181,11 +181,14 @@ export const ProposalContextProvider: FC<PropsWithChildren> = ({
       setIsOpen(true);
     },
     [
-      type,
-      details,
+      signer,
       governor,
       parameters,
-      signer,
+      type,
+      details.title,
+      details.link,
+      details.summary,
+      details.text,
       setTitle,
       setTransactions,
       setIsOpen,

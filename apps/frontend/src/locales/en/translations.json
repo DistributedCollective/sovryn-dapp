@@ -965,8 +965,8 @@
         },
         "poolVolumeChart": {
             "apr": "APR",
-            "volume": "Volume",
-            "24hVolume": "24h volume"
+            "volume": "Volume (BTC)",
+            "24hVolume": "24h volume (BTC)"
         }
     },
     "borrowHistory": {

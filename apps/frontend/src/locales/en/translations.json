@@ -987,6 +987,7 @@
             "p2": "Next rewards recalibration on October 17.",
             "learnMoreLink": "Learn more"
         },
+        "rewards": "Rewards",
         "poolsTable": {
             "pair": "Pair",
             "liquidity": "Liquidity",

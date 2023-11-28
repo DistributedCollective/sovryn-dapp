@@ -18,6 +18,7 @@ export const COLUMNS_CONFIG = [
     cellRenderer: (pool: AmmLiquidityPool) => (
       <AssetPairRenderer asset1={pool.assetA} asset2={pool.assetB} />
     ),
+    className: 'hidden lg:block',
   },
   {
     id: 'liquidity',

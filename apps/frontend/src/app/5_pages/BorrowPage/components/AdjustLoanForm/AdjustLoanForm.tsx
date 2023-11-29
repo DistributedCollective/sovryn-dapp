@@ -45,6 +45,7 @@ import { useGetBorrowingAPR } from '../../hooks/useGetBorrowingAPR';
 import { useGetMaintenanceStates } from '../../hooks/useGetMaintenanceStates';
 import { useGetOriginationFee } from '../../hooks/useGetOriginationFee';
 import { CurrentLoanData } from '../CurrentLoanData/CurrentLoanData';
+import { useBorrow } from '../NewLoanForm/hooks/useBorrow';
 import { useGetMaximumCollateralAmount } from '../NewLoanForm/hooks/useGetMaximumCollateralAmount';
 import {
   COLLATERAL_TABS,
@@ -65,6 +66,7 @@ import { useGetMaxRepayAmount } from './hooks/useGetMaxRepayAmount';
 import { useGetMaximumBorrowAmount } from './hooks/useGetMaximumBorrowAmount';
 import { useRepayLoan } from './hooks/useRepayLoan';
 import { useWithdrawCollateral } from './hooks/useWithdrawCollateral';
+import { getBorrowAmount, getMaxDrawdown } from './utils';
 
 const pageTranslations = translations.fixedInterestPage.adjustLoanDialog;
 
@@ -77,9 +79,9 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
   const [collateralAmount, setCollateralAmount, collateralSize] =
     useDecimalAmountInput('');
 
-  const [debtTab, setDebtTab] = useState(DebtTabAction.Repay);
+  const [debtTab, setDebtTab] = useState(DebtTabAction.Borrow);
   const [collateralTab, setCollateralTab] = useState(
-    CollateralTabAction.WithdrawCollateral,
+    CollateralTabAction.AddCollateral,
   );
 
   const isCloseTab = useMemo(() => debtTab === DebtTabAction.Close, [debtTab]);
@@ -392,7 +394,7 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
   }, [setCollateralAmount, setDebtAmount]);
 
   const handleRepay = useRepayLoan();
-  // const handleBorrow = useBorrow();
+  const handleBorrow = useBorrow();
   const handleWithdrawCollateral = useWithdrawCollateral();
   const handleDepositCollateral = useDepositCollateral();
 
@@ -416,53 +418,60 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
       return;
     }
 
+    if (isBorrowTab) {
+      if (debtSize.isZero()) {
+        handleDepositCollateral(collateralAmount, collateralToken, loan.id);
+      } else {
+        handleBorrow(
+          debtToken,
+          debtAmount,
+          loan.rolloverDate,
+          collateralSize.toString(),
+          collateralToken,
+          loan.id,
+        );
+      }
+      return;
+    }
+
     if (isAddCollateralTab) {
       handleDepositCollateral(collateralAmount, collateralToken, loan.id);
       return;
     }
-
-    // if (isBorrowTab) {
-    //   if (debtSize.isZero()) {
-    //     handleDepositCollateral(collateralAmount, collateralToken, loan.id);
-    //   } else {
-    //     handleBorrow(
-    //       debtToken,
-    //       debtAmount,
-    //       loan.rolloverDate,
-    //       collateralSize.toString(),
-    //       collateralToken,
-    //       loan.id,
-    //     );
-    //   }
-    // }
 
     if (isCollateralWithdrawMode) {
       handleWithdrawCollateral(collateralAmount, loan.id);
     }
   }, [
     collateralAmount,
+    collateralSize,
     collateralToken,
+    debtAmount,
     debtSize,
+    debtToken,
+    handleBorrow,
     handleDepositCollateral,
     handleRepay,
     handleWithdrawCollateral,
     isAddCollateralTab,
+    isBorrowTab,
     isCloseTab,
     isCollateralWithdrawMode,
     isRepayTab,
     loan.debt,
     loan.debtAsset,
     loan.id,
+    loan.rolloverDate,
   ]);
 
   const onDebtTabChange = useCallback(
     (value: DebtTabAction) => {
       switch (value) {
-        // case DebtTabAction.Borrow:
-        //   setCollateralTab(CollateralTabAction.AddCollateral);
-        //   setDebtTab(value);
-        //   resetCloseDebtTabValues();
-        //   return;
+        case DebtTabAction.Borrow:
+          setCollateralTab(CollateralTabAction.AddCollateral);
+          setDebtTab(value);
+          resetCloseDebtTabValues();
+          return;
         case DebtTabAction.Repay:
           if (isCloseTab) {
             setIsTinyPosition(false);
@@ -487,11 +496,10 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
     (value: CollateralTabAction) => {
       switch (value) {
         case CollateralTabAction.AddCollateral:
-          // if (!isBorrowTab) {
-          //   setDebtTab(DebtTabAction.Borrow);
-          // }
+          if (!isBorrowTab) {
+            setDebtTab(DebtTabAction.Borrow);
+          }
 
-          setDebtTab(DebtTabAction.None);
           setDebtAmount(loan.debt.toString());
 
           setCollateralTab(value);
@@ -674,6 +682,42 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
     [isValidDebtAmount],
   );
 
+  const [drawDown, setDrawDown] = useState(Decimal.ZERO);
+  const [maxBorrow, setMaxBorrow] = useState(Decimal.ZERO);
+
+  useEffect(() => {
+    getMaxDrawdown(
+      loan.debtAsset,
+      loan.collateralAsset,
+      decimalic(loan.debt),
+      decimalic(loan.collateral),
+      loan.startMargin,
+    ).then(setDrawDown);
+  }, [
+    loan.collateral,
+    loan.collateralAsset,
+    loan.debt,
+    loan.debtAsset,
+    loan.startMargin,
+  ]);
+
+  useEffect(() => {
+    getBorrowAmount(
+      loan.debtAsset,
+      drawDown.add(collateralSize.mul(isAddCollateralTab ? 1 : -1)),
+      loan.collateralAsset,
+      Math.max(Math.floor(loan.rolloverDate - Date.now() / 1000), 0),
+      // 28 * 86400,
+    ).then(setMaxBorrow);
+  }, [
+    collateralSize,
+    drawDown,
+    isAddCollateralTab,
+    loan.collateralAsset,
+    loan.debtAsset,
+    loan.rolloverDate,
+  ]);
+
   return (
     <>
       <CurrentLoanData
@@ -712,10 +756,7 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
             invalid={!isValidDebtAmount}
             placeholder="0"
             disabled={
-              isCloseTab ||
-              isCollateralWithdrawMode ||
-              isDebtAmountDisabled ||
-              isAddCollateralTab
+              isCloseTab || isCollateralWithdrawMode || isDebtAmountDisabled
             }
           />
           <AssetRenderer
@@ -921,7 +962,9 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
           className="w-full"
           onClick={handleFormSubmit}
           dataAttribute="adjust-loan-confirm-button"
-          disabled={submitButtonDisabled}
+          disabled={
+            submitButtonDisabled || (isBorrowTab && debtSize.gt(maxBorrow))
+          }
         />
       </div>
     </>

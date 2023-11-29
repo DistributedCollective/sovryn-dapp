@@ -1,8 +1,8 @@
 export enum DebtTabAction {
   None = -1,
+  Borrow,
   Repay,
   Close,
-  Borrow,
 }
 
 export enum CollateralTabAction {

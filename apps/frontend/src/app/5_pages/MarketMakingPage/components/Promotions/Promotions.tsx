@@ -15,10 +15,6 @@ import { useGetPromotionsData } from '../../hooks/useGetPromotionsData';
 export const Promotions: FC = () => {
   const { data, loading } = useGetPromotionsData();
 
-  console.log({
-    data,
-    loading,
-  });
   return (
     <div className="w-full md:bg-gray-90 rounded md:py-7">
       <div className="md:px-6">
@@ -63,34 +59,6 @@ export const Promotions: FC = () => {
               }
             />
           ))}
-
-        {/* <PromotionCard
-                key={item.asset1}
-                appSection={AppSection.YieldFarm}
-                backgroundColor={item.promotionColor}
-                title={t(translations.promotions.title, {
-                  rewardAmount: `${item.rewardAmount / 1000}K`,
-                })}
-                text={t(translations.promotions.text, {
-                  asset1: item.asset1,
-                  asset2: item.asset2,
-                  rewardAmount: item.rewardAmount.toLocaleString(
-                    navigator.language,
-                  ),
-                })}
-                duration={
-                  customDurationText || t(translations.promotions.duration)
-                }
-                learnMoreLink={learnMoreYieldFarming}
-                logoAsset1={item.asset1}
-                logoAsset2={item.asset2}
-                linkAsset={item.linkAsset}
-                linkDataActionId={`${dataAttributePrefix}-${item.asset1}`}
-                className={cardClassName}
-                imageClassName={cardImageClassName}
-                ammData={item.ammData}
-                poolTokenA={item.poolTokenA}
-              /> */}
       </BannersCarousel>
     </div>
   );

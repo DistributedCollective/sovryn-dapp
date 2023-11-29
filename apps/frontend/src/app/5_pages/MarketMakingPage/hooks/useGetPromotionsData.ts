@@ -45,12 +45,6 @@ export const useGetPromotionsData = (): PromotionsDataResponse => {
             }
           }
 
-          if (rewardAmount) {
-            console.log({
-              item,
-              pool,
-            });
-          }
           if (!pool) {
             return PLACEHOLDER_PROMOTION;
           }

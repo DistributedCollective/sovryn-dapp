@@ -7,16 +7,23 @@ import { ContextLink } from '@sovryn/ui';
 import { translations } from '../../../../../../../locales/i18n';
 import { useGetReturnRate } from '../../../../hooks/useGetReturnRate';
 import { AmmLiquidityPool } from '../../../../utils/AmmLiquidityPool';
+import styles from './PoolsTableReturns.module.css';
 
 type PoolsTableReturnsProps = {
   pool: AmmLiquidityPool;
   className?: string;
 };
+
 export const PoolsTableReturns: FC<PoolsTableReturnsProps> = ({
   pool,
   className,
 }) => {
   const { returnRates } = useGetReturnRate(pool.converter);
+
+  const hasRewards = useMemo(
+    () => Number(returnRates.afterRewards) > 0,
+    [returnRates],
+  );
 
   const renderTooltipChildren = useMemo(
     () => (
@@ -37,21 +44,28 @@ export const PoolsTableReturns: FC<PoolsTableReturnsProps> = ({
   );
 
   const renderChildren = useMemo(
-    () => (
-      <div>
-        {t(translations.marketMakingPage.poolsTableReturns.title, {
-          percent: returnRates.afterRewards,
-        })}
-      </div>
-    ),
-    [returnRates],
+    () =>
+      hasRewards
+        ? t(translations.marketMakingPage.poolsTableReturns.title, {
+            percent: returnRates.afterRewards,
+          })
+        : '0%',
+    [returnRates, hasRewards],
   );
 
-  return (
-    <ContextLink
-      className={className}
-      children={renderChildren}
-      tooltipContent={renderTooltipChildren}
-    />
+  const renderComponent = useMemo(
+    () =>
+      hasRewards ? (
+        <ContextLink
+          className={className}
+          children={renderChildren}
+          tooltipContent={renderTooltipChildren}
+        />
+      ) : (
+        <div className={styles.rewards}>{renderChildren}</div>
+      ),
+    [className, hasRewards, renderChildren, renderTooltipChildren],
   );
+
+  return renderComponent;
 };

@@ -12,7 +12,11 @@ import { getTokenDisplayName } from '../../../../../constants/tokens';
 import { translations } from '../../../../../locales/i18n';
 import { useGetPromotionsData } from '../../hooks/useGetPromotionsData';
 
-export const Promotions: FC = () => {
+type PoolsTableProps = {
+  setActivePool: (poolKey: string) => void;
+};
+
+export const Promotions: FC<PoolsTableProps> = ({ setActivePool }) => {
   const { data, loading } = useGetPromotionsData();
 
   return (
@@ -57,6 +61,7 @@ export const Promotions: FC = () => {
                   precision={2}
                 />
               }
+              onClick={() => setActivePool(item.pool?.key || '')}
             />
           ))}
       </BannersCarousel>

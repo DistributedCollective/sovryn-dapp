@@ -64,6 +64,7 @@ export const useGetPromotionsData = (): PromotionsDataResponse => {
             linkAsset: pool.key,
             ammData: ammHistory,
             apy,
+            pool,
           };
         });
 

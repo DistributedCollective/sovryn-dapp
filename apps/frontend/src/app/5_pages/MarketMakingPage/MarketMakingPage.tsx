@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, useCallback, useState } from 'react';
 
 import { t } from 'i18next';
 import { Helmet } from 'react-helmet-async';
@@ -9,29 +9,38 @@ import { translations } from '../../../locales/i18n';
 import { PoolsTable } from './components/PoolsTable/PoolsTable';
 import { Promotions } from './components/Promotions/Promotions';
 
-const MarketMakingPage: FC = () => (
-  <>
-    <Helmet>
-      <title>{t(translations.marketMakingPage.meta.title)}</title>
-    </Helmet>
+const MarketMakingPage: FC = () => {
+  const [activePool, setActivePool] = useState('');
 
-    <div className="w-full flex flex-col items-center text-gray-10 mt-6 sm:mt-24 max-w-[74.75rem]">
-      <Heading className="text-center mb-1 lg:mb-3 text-base lg:text-2xl">
-        {t(translations.marketMakingPage.title)}
-      </Heading>
+  const setActivePoolkey = useCallback(
+    poolKey => setActivePool(activePool === poolKey ? '' : poolKey),
+    [activePool],
+  );
 
-      <Paragraph
-        className="text-center mb-5 lg:mb-10"
-        size={ParagraphSize.base}
-      >
-        {t(translations.marketMakingPage.subtitle)}
-      </Paragraph>
+  return (
+    <>
+      <Helmet>
+        <title>{t(translations.marketMakingPage.meta.title)}</title>
+      </Helmet>
 
-      <Promotions />
+      <div className="w-full flex flex-col items-center text-gray-10 mt-6 sm:mt-24 max-w-[74.75rem]">
+        <Heading className="text-center mb-1 lg:mb-3 text-base lg:text-2xl">
+          {t(translations.marketMakingPage.title)}
+        </Heading>
 
-      <PoolsTable />
-    </div>
-  </>
-);
+        <Paragraph
+          className="text-center mb-5 lg:mb-10"
+          size={ParagraphSize.base}
+        >
+          {t(translations.marketMakingPage.subtitle)}
+        </Paragraph>
+
+        <Promotions setActivePool={setActivePool} />
+
+        <PoolsTable setActivePool={setActivePoolkey} activePool={activePool} />
+      </div>
+    </>
+  );
+};
 
 export default MarketMakingPage;

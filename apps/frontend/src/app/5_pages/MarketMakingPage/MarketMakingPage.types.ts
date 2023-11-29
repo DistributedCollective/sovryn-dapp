@@ -1,6 +1,8 @@
 import { SupportedTokens } from '@sovryn/contracts';
 import { Decimal } from '@sovryn/utils';
 
+import { AmmLiquidityPool } from './utils/AmmLiquidityPool';
+
 export type UserInfo = {
   amount: Decimal;
   reward: Decimal;
@@ -37,6 +39,7 @@ export type PromotionData = {
   linkAsset?: string;
   ammData: AmmHistory;
   apy: string;
+  pool?: AmmLiquidityPool;
 };
 
 export type PromotionsDataResponse = {

@@ -50,7 +50,7 @@ export const PoolsTable: FC = () => {
             text={t(translations.marketMakingPage.rewards)}
             onClick={() => navigate('/rewards')}
             dataAttribute="amm-rewards-button"
-            className="w-full md:w-auto"
+            className="w-auto"
           />
         </div>
       )}

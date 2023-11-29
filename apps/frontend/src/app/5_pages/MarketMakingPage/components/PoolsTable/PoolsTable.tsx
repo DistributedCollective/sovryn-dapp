@@ -65,7 +65,6 @@ export const PoolsTable: FC = () => {
         preventExpandOnClickClass="prevent-row-click"
         expandedContent={generateExpandedContent}
         rowTitle={generateRowTitle}
-        preventExpandOnClickClass="prevent-row-click"
       />
     </div>
   );

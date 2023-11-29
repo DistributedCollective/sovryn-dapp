@@ -9,6 +9,7 @@ import { translations } from '../../../../../locales/i18n';
 import { AmmLiquidityPool } from '../../utils/AmmLiquidityPool';
 import { PoolsTableAction } from './components/PoolsTableAction/PoolsTableAction';
 import { PoolsTableReturns } from './components/PoolsTableReturns/PoolsTableReturns';
+import { PoolsTableTradeVolume } from './components/PoolsTableTradeVolume/PoolsTableTradeVolume';
 
 export const COLUMNS_CONFIG = [
   {
@@ -32,7 +33,7 @@ export const COLUMNS_CONFIG = [
     id: 'returns',
     title: (
       <span className="flex items-center gap-1">
-        {t(translations.marketMakingPage.poolsTable.returns)}{' '}
+        {t(translations.marketMakingPage.poolsTable.returnsRate)}{' '}
         <HelperButton
           content={t(translations.marketMakingPage.poolsTable.returnsInfo)}
         />
@@ -44,7 +45,9 @@ export const COLUMNS_CONFIG = [
   {
     id: 'volume',
     title: t(translations.marketMakingPage.poolsTable.volume),
-    cellRenderer: () => '10',
+    cellRenderer: (pool: AmmLiquidityPool) => (
+      <PoolsTableTradeVolume pool={pool} />
+    ),
   },
   {
     id: 'balance',

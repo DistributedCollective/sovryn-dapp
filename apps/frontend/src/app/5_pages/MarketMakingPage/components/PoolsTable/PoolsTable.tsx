@@ -35,6 +35,10 @@ export const PoolsTable: FC = () => {
     ),
     [],
   );
+  const generateExpandedContent = useCallback(
+    (pool: AmmLiquidityPool) => <PoolsStatistics pool={pool} />,
+    [],
+  );
 
   return (
     <div className="bg-gray-90 py-4 px-4 rounded w-full mt-8">
@@ -58,11 +62,10 @@ export const PoolsTable: FC = () => {
         loadingData={t(translations.common.tables.loading)}
         dataAttribute="amm-pool-table"
         expandedClassNames="border border-gray-70 border-t-0"
-        expandedContent={(pool: AmmLiquidityPool) => (
-          <PoolsStatistics pool={pool} />
-        )}
         preventExpandOnClickClass="prevent-row-click"
+        expandedContent={generateExpandedContent}
         rowTitle={generateRowTitle}
+        preventExpandOnClickClass="prevent-row-click"
       />
     </div>
   );

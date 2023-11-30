@@ -51,10 +51,14 @@ export const PoolsTable: FC<PoolsTableProps> = ({
   );
   const generateExpandedContent = useCallback(
     (pool: AmmLiquidityPool) => (
-      <>
-        <PoolsStatistics pool={pool} />
-        <PoolDetails pool={pool} />
-      </>
+      <div className="flex flex-row w-full">
+        <div>
+          <PoolsStatistics pool={pool} />
+        </div>
+        <div className="w-3/4 p-4">
+          <PoolDetails pool={pool} />
+        </div>
+      </div>
     ),
     [],
   );

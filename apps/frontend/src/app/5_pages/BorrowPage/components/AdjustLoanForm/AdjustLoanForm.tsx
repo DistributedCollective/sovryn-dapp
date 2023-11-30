@@ -60,13 +60,13 @@ import {
 import { Label } from './components/Label';
 import { useCloseWithDepositIsTinyPosition } from './hooks/useCloseWithDepositIsTinyPosition';
 import { useDepositCollateral } from './hooks/useDepositCollateral';
+import { useDrawdown } from './hooks/useDrawdown';
 import { useGetInterestRefund } from './hooks/useGetInterestRefund';
 import { useGetMaxCollateralWithdrawal } from './hooks/useGetMaxCollateralWithdrawal';
 import { useGetMaxRepayAmount } from './hooks/useGetMaxRepayAmount';
 import { useGetMaximumBorrowAmount } from './hooks/useGetMaximumBorrowAmount';
 import { useRepayLoan } from './hooks/useRepayLoan';
 import { useWithdrawCollateral } from './hooks/useWithdrawCollateral';
-import { getBorrowAmount, getMaxDrawdown } from './utils';
 
 const pageTranslations = translations.fixedInterestPage.adjustLoanDialog;
 
@@ -682,41 +682,7 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
     [isValidDebtAmount],
   );
 
-  const [drawDown, setDrawDown] = useState(Decimal.ZERO);
-  const [maxBorrow, setMaxBorrow] = useState(Decimal.ZERO);
-
-  useEffect(() => {
-    getMaxDrawdown(
-      loan.debtAsset,
-      loan.collateralAsset,
-      decimalic(loan.debt),
-      decimalic(loan.collateral),
-      loan.startMargin,
-    ).then(setDrawDown);
-  }, [
-    loan.collateral,
-    loan.collateralAsset,
-    loan.debt,
-    loan.debtAsset,
-    loan.startMargin,
-  ]);
-
-  useEffect(() => {
-    getBorrowAmount(
-      loan.debtAsset,
-      drawDown.add(collateralSize.mul(isAddCollateralTab ? 1 : -1)),
-      loan.collateralAsset,
-      Math.max(Math.floor(loan.rolloverDate - Date.now() / 1000), 0),
-      // 28 * 86400,
-    ).then(setMaxBorrow);
-  }, [
-    collateralSize,
-    drawDown,
-    isAddCollateralTab,
-    loan.collateralAsset,
-    loan.debtAsset,
-    loan.rolloverDate,
-  ]);
+  const { maxBorrow } = useDrawdown(loan, collateralSize, isAddCollateralTab);
 
   return (
     <>

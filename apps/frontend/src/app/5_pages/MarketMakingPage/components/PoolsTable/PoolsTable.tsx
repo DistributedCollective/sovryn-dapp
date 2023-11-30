@@ -1,4 +1,4 @@
-import React, { FC, useCallback } from 'react';
+import React, { FC, useCallback, useMemo } from 'react';
 
 import { t } from 'i18next';
 import { useNavigate } from 'react-router-dom';
@@ -18,9 +18,22 @@ import { PoolsTableReturns } from './components/PoolsTableReturns/PoolsTableRetu
 
 const ammPools = AmmLiquidityPoolDictionary.list();
 
-export const PoolsTable: FC = () => {
+type PoolsTableProps = {
+  activePool?: string;
+  setActivePool: (poolKey: string) => void;
+};
+
+export const PoolsTable: FC<PoolsTableProps> = ({
+  activePool,
+  setActivePool,
+}) => {
   const navigate = useNavigate();
   const { account } = useAccount();
+  
+  const expandedIndex = useMemo(
+    () => ammPools.findIndex(pool => pool.key === activePool),
+    [activePool],
+  );
 
   const generateRowTitle = useCallback(
     (pool: AmmLiquidityPool) => (
@@ -57,6 +70,8 @@ export const PoolsTable: FC = () => {
       <Table
         columns={COLUMNS_CONFIG}
         rows={ammPools}
+        onRowClick={pool => setActivePool(pool.key)}
+        expandedIndex={expandedIndex}
         className={styles.table}
         noData={t(translations.common.tables.noData)}
         loadingData={t(translations.common.tables.loading)}

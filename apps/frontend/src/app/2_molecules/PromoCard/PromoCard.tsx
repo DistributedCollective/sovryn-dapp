@@ -15,6 +15,7 @@ type PromoCardProps = {
   child1: ReactNode;
   label2: string;
   child2: ReactNode;
+  onClick?: () => void;
 };
 
 export const PromoCard: FC<PromoCardProps> = ({
@@ -25,8 +26,14 @@ export const PromoCard: FC<PromoCardProps> = ({
   child1,
   label2,
   child2,
+  onClick,
 }) => (
-  <div className={classNames(styles.wrapper, className)}>
+  <div
+    onClick={onClick}
+    className={classNames(styles.wrapper, className, {
+      'cursor-pointer': !!onClick,
+    })}
+  >
     <AssetPairRenderer className="mb-3" asset1={asset1} asset2={asset2} />
 
     <div className="flex items-center justify-between">

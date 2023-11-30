@@ -1035,6 +1035,11 @@
         },
         "form": {
             "invalidAmountError": "Exceeds maximum amount"
+        },
+        "poolVolumeChart": {
+            "apr": "APR",
+            "volume": "Volume (BTC)",
+            "24hVolume": "24h volume (BTC)"
         }
     },
     "borrowHistory": {

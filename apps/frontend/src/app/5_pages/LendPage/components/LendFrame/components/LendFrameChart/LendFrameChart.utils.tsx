@@ -6,52 +6,6 @@ import { translations } from '../../../../../../../locales/i18n';
 import { LendingPool } from '../../../../../../../utils/LendingPool';
 import { MockData, PoolHistoryData } from './LendFrameChart.types';
 
-//TODO - it will be removed after API is ready
-// export const generateDates = (): string[] => {
-//   const currentDate = dayjs();
-//   const dayOfMonth = currentDate.date();
-//   // const year = currentDate.year();
-//   // const month = currentDate.month() + 1; // Note: dayjs months are zero-based, so we add 1.
-
-//   let dates: string[] = [];
-
-//   if (dayOfMonth <= 15) {
-//     // Dates when today's date is between 1-15 of this month
-//     dates = [
-//       // 15th of the month three months ago
-//       currentDate.subtract(3, 'month').date(15).format('YYYY-MM-DD'),
-//       // 1st of the month two months ago
-//       currentDate.subtract(2, 'month').date(1).format('YYYY-MM-DD'),
-//       // 15th of the month two months ago
-//       currentDate.subtract(2, 'month').date(15).format('YYYY-MM-DD'),
-//       // 1st of the month one month ago
-//       currentDate.subtract(1, 'month').date(1).format('YYYY-MM-DD'),
-//       // 15th of the month one month ago
-//       currentDate.subtract(1, 'month').date(15).format('YYYY-MM-DD'),
-//       // 1st of this month
-//       currentDate.date(1).format('YYYY-MM-DD'),
-//     ];
-//   } else {
-//     // Dates when today's date is between 15-last day of this month
-//     dates = [
-//       // 1st of the month two months ago
-//       currentDate.subtract(2, 'month').date(1).format('YYYY-MM-DD'),
-//       // 15th of the month two months ago
-//       currentDate.subtract(2, 'month').date(15).format('YYYY-MM-DD'),
-//       // 1st of the month one month ago
-//       currentDate.subtract(1, 'month').date(1).format('YYYY-MM-DD'),
-//       // 15th of the month one month ago
-//       currentDate.subtract(1, 'month').date(15).format('YYYY-MM-DD'),
-//       // 1st of this month
-//       currentDate.date(1).format('YYYY-MM-DD'),
-//       // 15th of this month
-//       currentDate.date(15).format('YYYY-MM-DD'),
-//     ];
-//   }
-
-//   return dates;
-// };
-
 export const convertPoolHistoryToMockData = (
   poolHistory: PoolHistoryData[],
 ): MockData => {

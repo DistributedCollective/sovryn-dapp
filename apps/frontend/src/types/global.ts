@@ -6,6 +6,7 @@ export enum Environments {
 export enum Services {
   Maintenance = 'maintenance',
   Notification = 'notification',
+  Amm = 'amm',
 }
 
 export type ReleaseFileContent = {

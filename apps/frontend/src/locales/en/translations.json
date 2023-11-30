@@ -850,6 +850,7 @@
         "tabs": {
             "title": "Available rewards",
             "titles": {
+                "liquidityMining": "Liquidity mining",
                 "stabilityPool": "Stability pool",
                 "staking": "Staking",
                 "vesting": "Vesting"
@@ -898,6 +899,26 @@
             "stakingRevenue": "Staking revenue",
             "stakingRevenueLegacy": "Staking revenue (legacy)",
             "liquidityMiningError": "Your liquidity mining vesting contract holds more than {{count}} checkpoints worth of rewards. Please withdraw liquid rewards from your vesting contract to enable the 'Withdraw' button and claim additional rewards."
+        },
+        "liquidityMining": {
+            "rewardType": "Reward type",
+            "amount": "Amount",
+            "pool": "Pool",
+            "rewardTypeInfo": "Claiming will simultaneously claim all available liquidity mining rewards, both liquid and vested. For the vested rewards, claiming will automatically start a vesting period of 40 weeks with a maximum 4-week cliff. <0>Learn more</0>",
+            "rewardTypeInfoCTA": "Learn more",
+            "noRewards": "No rewards available",
+            "notConnected": "Connect wallet to check for rewards",
+            "types": {
+                "ammLPrewardsVested": "AMM LP rewards (vested)",
+                "ammLPrewardsLiquid": "AMM LP rewards (liquid)",
+                "lendingRewardsLiquid": "Lending rewards (liquid)",
+                "lendingRewardsVested": "Lending rewards (vested)",
+                "tradingFeeRebateLiquid": "Trading fee rebate (liquid)",
+                "tradingFeeRebateVested": "Trading fee rebate (vested)"
+            },
+            "actions": {
+                "claimAll": "Claim all"
+            }
         },
         "vesting": {
             "tx": {

@@ -24,6 +24,7 @@ import { translations } from '../../../locales/i18n';
 import { generateD1Link } from '../../../utils/helpers';
 import styles from './RewardsPage.module.css';
 import { Banner } from './components/Banner/Banner';
+import { LiquidityMining } from './components/LiquidityMining/LiquidityMining';
 import { MaxStakingAPR } from './components/MaxStakingAPR/MaxStakingAPR';
 import { StabilityPool } from './components/StabilityPool/StabilityPool';
 import { Staking } from './components/Staking/Staking';
@@ -42,6 +43,16 @@ const RewardsPage: FC = () => {
 
   const items = useMemo(() => {
     return [
+      {
+        label: t(translations.rewardPage.tabs.titles.liquidityMining),
+        content: (
+          <div className="px-0 py-4 lg:p-4">
+            <LiquidityMining />
+          </div>
+        ),
+        activeClassName: ACTIVE_CLASSNAME,
+        dataAttribute: 'liquidityMiningRewards',
+      },
       {
         label: t(translations.rewardPage.tabs.titles.stabilityPool),
         content: (

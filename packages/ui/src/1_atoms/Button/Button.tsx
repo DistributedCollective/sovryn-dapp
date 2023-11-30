@@ -21,6 +21,7 @@ export interface IButtonProps {
   size?: ButtonSize;
   style?: ButtonStyle;
   disabled?: boolean;
+  disabledStyle?: boolean;
   loading?: boolean;
   className?: string;
   dataAttribute?: string;
@@ -40,6 +41,7 @@ export const Button = forwardRef<
       style = ButtonStyle.primary,
       type = ButtonType.button,
       disabled,
+      disabledStyle,
       loading,
       className,
       dataAttribute,
@@ -54,10 +56,10 @@ export const Button = forwardRef<
           styles[size],
           styles[style],
           styles[type],
-          disabled && styles.disabled,
+          (disabled || disabledStyle) && styles.disabled,
           className,
         ),
-      [loading, size, style, type, disabled, className],
+      [loading, size, style, type, disabled, disabledStyle, className],
     );
 
     const onClickHandler = useMemo(

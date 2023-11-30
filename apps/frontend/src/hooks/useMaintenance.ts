@@ -138,6 +138,14 @@ enum States {
   D2_BORROW_BPRO_EXTEND = 'd2BorrowBPROxExtend',
   D2_BORROW_BPRO_ADD_COLLATERAL = 'd2BorrowBPROxAddCollateral',
   D2_BORROW_BPRO_WITHDRAW_COLLATERAL = 'd2BorrowBPROxWithdrawCollateral',
+
+  D2_MARKET_MAKING_FULL = 'marketMakingFull',
+  D2_MARKET_MAKING_DLLR = 'marketMakingDLLR',
+  D2_MARKET_MAKING_SOV = 'marketMakingSOV',
+  D2_MARKET_MAKING_FISH = 'marketMakingFISH',
+  D2_MARKET_MAKING_MOC = 'marketMakingMOC',
+  D2_MARKET_MAKING_RIF = 'marketMakingRIF',
+  D2_MARKET_MAKING_MYNT = 'marketMakingMYNT',
 }
 
 type MaintenanceResult = {

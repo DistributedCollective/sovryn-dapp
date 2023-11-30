@@ -1,0 +1,5 @@
+query getTradeVolume($pool: String, $timestamp: Int!) {
+  poolVolumeItems(where: { pool: $pool, timestamp_gt: $timestamp }) {
+    btcAmount
+  }
+}

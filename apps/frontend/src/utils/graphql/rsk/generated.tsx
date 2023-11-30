@@ -15944,6 +15944,16 @@ export type GetTokenRatesQuery = {
   }>;
 };
 
+export type GetTradeVolumeQueryVariables = Exact<{
+  pool?: InputMaybe<Scalars['String']>;
+  timestamp: Scalars['Int'];
+}>;
+
+export type GetTradeVolumeQuery = {
+  __typename?: 'Query';
+  poolVolumeItems: Array<{ __typename?: 'PoolVolumeItem'; btcAmount: string }>;
+};
+
 export type GetTransactionsQueryVariables = Exact<{
   limit: Scalars['Int'];
 }>;
@@ -18409,6 +18419,65 @@ export type GetTokenRatesLazyQueryHookResult = ReturnType<
 export type GetTokenRatesQueryResult = Apollo.QueryResult<
   GetTokenRatesQuery,
   GetTokenRatesQueryVariables
+>;
+export const GetTradeVolumeDocument = gql`
+  query getTradeVolume($pool: String, $timestamp: Int!) {
+    poolVolumeItems(where: { pool: $pool, timestamp_gt: $timestamp }) {
+      btcAmount
+    }
+  }
+`;
+
+/**
+ * __useGetTradeVolumeQuery__
+ *
+ * To run a query within a React component, call `useGetTradeVolumeQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetTradeVolumeQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetTradeVolumeQuery({
+ *   variables: {
+ *      pool: // value for 'pool'
+ *      timestamp: // value for 'timestamp'
+ *   },
+ * });
+ */
+export function useGetTradeVolumeQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    GetTradeVolumeQuery,
+    GetTradeVolumeQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<GetTradeVolumeQuery, GetTradeVolumeQueryVariables>(
+    GetTradeVolumeDocument,
+    options,
+  );
+}
+export function useGetTradeVolumeLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    GetTradeVolumeQuery,
+    GetTradeVolumeQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<GetTradeVolumeQuery, GetTradeVolumeQueryVariables>(
+    GetTradeVolumeDocument,
+    options,
+  );
+}
+export type GetTradeVolumeQueryHookResult = ReturnType<
+  typeof useGetTradeVolumeQuery
+>;
+export type GetTradeVolumeLazyQueryHookResult = ReturnType<
+  typeof useGetTradeVolumeLazyQuery
+>;
+export type GetTradeVolumeQueryResult = Apollo.QueryResult<
+  GetTradeVolumeQuery,
+  GetTradeVolumeQueryVariables
 >;
 export const GetTransactionsDocument = gql`
   query getTransactions($limit: Int!) {

@@ -61,13 +61,13 @@ export const PoolsTableAction: FC<PoolsTableActionProps> = ({ pool }) => {
   }, []);
 
   return (
-    <div className="flex items-center justify-center lg:justify-end">
+    <div className="flex items-center justify-center lg:justify-end w-full">
       <Tooltip
         trigger={TooltipTrigger.click}
         content={<>{t(translations.maintenanceMode.featureDisabled)}</>}
         disabled={!actionLocked}
         children={
-          <div>
+          <>
             {!account || poolBalance.lte(Decimal.ZERO) ? (
               <Button
                 style={ButtonStyle.primary}
@@ -91,7 +91,7 @@ export const PoolsTableAction: FC<PoolsTableActionProps> = ({ pool }) => {
                 onClick={handleAdjustClick}
               />
             )}
-          </div>
+          </>
         }
       />
 

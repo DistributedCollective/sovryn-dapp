@@ -1,5 +1,13 @@
 # @sovryn/sdk
 
+## 0.0.7
+
+### Patch Changes
+
+- f9006e45: SOV-3283: add fixed rate mynt converter
+- Updated dependencies [f9006e45]
+  - @sovryn/contracts@1.0.19
+
 ## 0.0.6
 
 ### Patch Changes

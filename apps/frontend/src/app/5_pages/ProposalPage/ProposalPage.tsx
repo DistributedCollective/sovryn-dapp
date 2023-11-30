@@ -1,4 +1,4 @@
-import React, { FC, useMemo } from 'react';
+import React, { FC, useEffect, useMemo } from 'react';
 
 import { t } from 'i18next';
 import { Helmet } from 'react-helmet-async';
@@ -10,6 +10,7 @@ import { LoaderWithLogo } from '../../1_atoms/LoaderWithLogo/LoaderWithLogo';
 import { TxIdWithNotification } from '../../2_molecules/TxIdWithNotification/TransactionIdWithNotification';
 import { ProposalVotingPower } from '../../3_organisms/ProposalVotingPower/ProposalVotingPower';
 import { ProposalVotingResults } from '../../3_organisms/ProposalVotingResults/ProposalVotingResults';
+import { useBlockNumber } from '../../../hooks/useBlockNumber';
 import { useGetProtocolContract } from '../../../hooks/useGetContract';
 import { translations } from '../../../locales/i18n';
 import { areAddressesEqual } from '../../../utils/helpers';
@@ -28,11 +29,11 @@ const pageTranslations = translations.proposalPage;
 
 const ProposalPage: FC = () => {
   let { id } = useParams();
-
+  const { value: block } = useBlockNumber();
   const adminAddress = useGetProtocolContract('governorAdmin')?.address ?? '';
   const ownerAddress = useGetProtocolContract('governorOwner')?.address ?? '';
 
-  const { proposal } = useGetProposalById(id || '');
+  const { proposal, refetch } = useGetProposalById(id || '');
 
   const status = useProposalStatus(proposal);
 
@@ -56,6 +57,10 @@ const ProposalPage: FC = () => {
       return t(translations.bitocracyPage.proposalType.owner);
     }
   }, [adminAddress, ownerAddress, proposal]);
+
+  useEffect(() => {
+    refetch();
+  }, [refetch, block]);
 
   if (!proposal) {
     return <LoaderWithLogo />;

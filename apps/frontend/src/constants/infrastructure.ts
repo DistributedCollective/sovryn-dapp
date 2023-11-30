@@ -48,4 +48,9 @@ export const GRAPH_WRAPPER = {
   [Environments.Testnet]: 'https://graph-wrapper.test.sovryn.app',
 };
 
+export const AMM_SERVICE = {
+  [Environments.Mainnet]: 'https://amm-apy.sovryn.app/',
+  [Environments.Testnet]: 'https://amm-apy.test.sovryn.app/',
+};
+
 export const ESTIMATOR_URI = process.env.REACT_APP_ESTIMATOR_URI;

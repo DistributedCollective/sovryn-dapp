@@ -1,6 +1,7 @@
 import { SupportedTokens } from '@sovryn/contracts';
 import { ChainIds } from '@sovryn/ethers-provider';
 
+import { PromotionData } from './MarketMakingPage.types';
 import { AmmLiquidityPool } from './utils/AmmLiquidityPool';
 
 export const MAINNET_AMM = [
@@ -121,3 +122,27 @@ export const TESTNET_AMM = [
     '0xB12FA09a50c56e9a0C826b98e76DA7645017AB4D',
   ),
 ];
+
+export const BLOCKS_PER_WEEK = 20160;
+
+export const MINIMUM_REWARD = 500;
+
+export const PLACEHOLDER_PROMOTION: PromotionData = {
+  rewardAmount: 0,
+  type: 'AMM',
+  poolTokenA: '',
+  asset1: SupportedTokens.sov,
+  asset2: SupportedTokens.rbtc,
+  ammData: {
+    pool: '',
+    data: {},
+    balanceHistory: [],
+  },
+  linkAsset: '',
+  apy: '',
+};
+
+export const AMM_SERVICE_URL = {
+  [ChainIds.RSK_MAINNET]: 'https://amm-apy.sovryn.app/',
+  [ChainIds.RSK_TESTNET]: 'https://amm-apy.test.sovryn.app/',
+};

@@ -9,32 +9,21 @@ import { Decimal } from '@sovryn/utils';
 import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { TOKEN_RENDER_PRECISION } from '../../../../../constants/currencies';
 import { useAccount } from '../../../../../hooks/useAccount';
+import { useGetVotingPowerShare } from '../../../../../hooks/useGetVotingPowerShare';
 import { translations } from '../../../../../locales/i18n';
-import { decimalic, fromWei } from '../../../../../utils/math';
+import { fromWei } from '../../../../../utils/math';
 import { VP } from '../../StakePage.constants';
 import { PersonalStatistics } from '../../StakePage.utils';
 import { useGetStakingBalanceOf } from '../../hooks/useGetStakingBalanceOf';
 import { useGetTotalVestingsBalance } from '../../hooks/useGetTotalVestingsBalance';
-import { useGetStakingStatistics } from '../StakingStatistics/hooks/useGetStakingStatistics';
 import { useGetPersonalStakingStatistics } from './hooks/useGetPersonalStakingStatistics';
 
 export const PersonalStakingStatistics = () => {
   const { account } = useAccount();
   const { votingPower } = useGetPersonalStakingStatistics();
   const { balance: stakedValue } = useGetStakingBalanceOf(account);
-  const { totalVotingPower } = useGetStakingStatistics();
 
-  const votingPowerShare = useMemo(() => {
-    if (!votingPower || !totalVotingPower) {
-      return 0;
-    }
-    const votingPowerDecimal = decimalic(votingPower.toString());
-    const totalVotingPowerDecimal = decimalic(totalVotingPower.toString());
-    const getVotingPowerShare = votingPowerDecimal
-      .div(totalVotingPowerDecimal)
-      .mul(100);
-    return getVotingPowerShare.toNumber();
-  }, [votingPower, totalVotingPower]);
+  const votingPowerShare = useGetVotingPowerShare();
 
   const totalVestingsBalance = useGetTotalVestingsBalance();
 

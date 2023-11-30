@@ -97,4 +97,24 @@ export const rskTestnet: Record<string, AsyncContractConfigData> = {
     address: '0x69dB16Aa6EEf291Fec522581F4fc9c82dFE60beD',
     getAbi: async () => (await import('../../abis/governor.json')).default,
   },
+  fixedRateMynt: {
+    address: '0x36C6554EE2FcCAb1389aF309aB0793abce0E91F3',
+    getAbi: async () =>
+      (await import('../../abis/fixedRateConverter.json')).default,
+  },
+  loanTokenLogicBeaconWrbtc: {
+    address: '0x6EDEeC91f5C0A57248BF4D7dBce2c689c74F3c06',
+    getAbi: async () =>
+      (await import('../../abis/loanTokenLogicBeacon.json')).default,
+  },
+  loanTokenLogicBeaconLM: {
+    address: '0xb9f993E7Da03D8a21Cda6fa1925BAAE17C6932aE',
+    getAbi: async () =>
+      (await import('../../abis/loanTokenLogicBeacon.json')).default,
+  },
+  loanTokenSettingsLowerAdmin: {
+    address: '0x7cA151dc569fa88701f149fc81e960376C111203',
+    getAbi: async () =>
+      (await import('../../abis/LoanTokenSettingsLowerAdmin.json')).default,
+  },
 };

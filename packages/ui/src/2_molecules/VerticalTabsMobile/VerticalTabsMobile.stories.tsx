@@ -124,6 +124,7 @@ Basic.args = {
           Tab 3 Content
         </>
       ),
+      className: 'h-20',
     },
     {
       label: 'Tab4 ',

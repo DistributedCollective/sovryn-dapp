@@ -24,18 +24,25 @@ export type TransactionStepData = {
   config: TransactionConfig;
 };
 
-export type Transaction = {
-  title: string;
-  subtitle?: string;
-  request: TransactionRequest;
-  onStart?: (hash: string) => void;
-  onComplete?: (result: string | PermitTransactionResponse) => void;
-  onChangeStatus?: (status: StatusType) => void;
-  updateHandler?: (
+export type TransactionCallbacks = {
+  onStart: (hash: string) => void;
+  onComplete: (result: string | PermitTransactionResponse) => void;
+  onChangeStatus: (status: StatusType) => void;
+};
+
+export type TransactionUpdateHandler = {
+  updateHandler: (
     request: TransactionRequest,
     receipts: TransactionReceipt[],
   ) => TransactionRequest | Promise<TransactionRequest>;
 };
+
+export type Transaction = {
+  title: string;
+  subtitle?: string;
+  request: TransactionRequest;
+} & Partial<TransactionCallbacks> &
+  Partial<TransactionUpdateHandler>;
 
 export enum TransactionType {
   signMessage = 'sign',

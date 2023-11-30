@@ -11,6 +11,7 @@ import { Decimal } from '@sovryn/utils';
 import { BITCOIN } from '../constants/currencies';
 import { MS } from '../constants/general';
 import {
+  AMM_SERVICE,
   BTC_EXPLORER,
   GRAPH_WRAPPER,
   RSK_EXPLORER,
@@ -69,6 +70,9 @@ export const getBitocracyUrl = () =>
 export const getGraphWrapperUrl = () =>
   GRAPH_WRAPPER[isMainnet() ? Environments.Mainnet : Environments.Testnet];
 
+export const getAmmServiceUrl = () =>
+  AMM_SERVICE[isMainnet() ? Environments.Mainnet : Environments.Testnet];
+
 export const dateFormat = (timestamp: number) => {
   const stamp = dayjs.tz(Number(timestamp) * MS, 'UTC');
   return stamp.format(`YYYY-MM-DD HH:MM:ss +UTC`);
@@ -89,6 +93,18 @@ export const validateEmail = (email: string) => {
   const re =
     /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
   return re.test(email);
+};
+
+export const validateURL = (link: string) => {
+  const protocolRelativeUrl =
+    // eslint-disable-next-line no-useless-escape
+    /^[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_\+.~#?&//=]*)$/;
+
+  const url =
+    // eslint-disable-next-line no-useless-escape
+    /^https?:\/\/(?:www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_\+.~#?&\/=]*)$/;
+
+  return protocolRelativeUrl.test(link) || url.test(link);
 };
 
 export const parseJwt = (token: string) => {

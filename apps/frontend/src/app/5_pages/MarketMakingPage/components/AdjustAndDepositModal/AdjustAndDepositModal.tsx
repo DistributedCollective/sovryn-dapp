@@ -20,16 +20,12 @@ import {
 } from '@sovryn/ui';
 import { Decimal } from '@sovryn/utils';
 
-import { defaultChainId } from '../../../../../config/chains';
-
 import { AssetRenderer } from '../../../../2_molecules/AssetRenderer/AssetRenderer';
 import { CurrentStatistics } from '../../../../2_molecules/CurrentStatistics/CurrentStatistics';
 import { LabelWithTabsAndMaxButton } from '../../../../2_molecules/LabelWithTabsAndMaxButton/LabelWithTabsAndMaxButton';
 import { MaxButton } from '../../../../2_molecules/MaxButton/MaxButton';
-import { GAS_LIMIT } from '../../../../../constants/gasLimits';
 import { WIKI_LINKS } from '../../../../../constants/links';
 import { useAccount } from '../../../../../hooks/useAccount';
-import { useMaxAssetBalance } from '../../../../../hooks/useMaxAssetBalance';
 import { useWeiAmountInput } from '../../../../../hooks/useWeiAmountInput';
 import { translations } from '../../../../../locales/i18n';
 import { decimalic, toWei } from '../../../../../utils/math';
@@ -46,6 +42,7 @@ import {
 } from './AdjustAndDepositModal.utils';
 import { CurrentBalance } from './components/CurrentBalance/CurrentBalance';
 import { NewPoolStatistics } from './components/NewPoolStatistics/NewPoolStatistics';
+import { useGetMaxDeposit } from './hooks/useGetMaxDeposit';
 import { useGetPoolBalance } from './hooks/useGetPoolBalance';
 
 const pageTranslations = translations.marketMakingPage.adjustAndDepositModal;
@@ -97,13 +94,7 @@ export const AdjustAndDepositModal: FC<AdjustAndDepositModalProps> = ({
   const [hasDisclaimerBeenChecked, setHasDisclaimerBeenChecked] =
     useState(false);
 
-  const { balance: maxTokenToDepositAmount } = useMaxAssetBalance(
-    token,
-    defaultChainId,
-    isDeposit
-      ? GAS_LIMIT.MARKET_MAKING_ADD_LIQUIDITY
-      : GAS_LIMIT.MARKET_MAKING_REMOVE_LIQUIDITY,
-  );
+  const maxTokenToDepositAmount = useGetMaxDeposit(pool.assetA, isDeposit);
 
   const maxBalance = useMemo(
     () => (isDeposit ? maxTokenToDepositAmount : balanceA),

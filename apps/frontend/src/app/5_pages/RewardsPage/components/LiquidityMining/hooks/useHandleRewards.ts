@@ -1,5 +1,6 @@
 import { useCallback } from 'react';
 
+import { constants } from 'ethers';
 import { t } from 'i18next';
 
 import {
@@ -28,7 +29,7 @@ export const useHandleRewards = () => {
         type: TransactionType.signTransaction,
         contract: liquidityMiningProxy,
         fnName: 'claimRewardFromAllPools',
-        args: [account.toLowerCase()],
+        args: [constants.AddressZero],
         gasLimit: GAS_LIMIT.CLAIM_VESTED_SOV_REWARDS,
       },
     };

@@ -37,6 +37,7 @@ import { useGetExpectedTokenAmount } from '../../hooks/useGetExpectedTokenAmount
 import { useGetUserInfo } from '../../hooks/useGetUserInfo';
 import { useHandleMarketMaking } from '../../hooks/useHandleMarketMaking';
 import { AmmLiquidityPool } from '../../utils/AmmLiquidityPool';
+import { CurrentBalance } from '../PoolsTable/components/CurrentBalance/CurrentBalance';
 import { PoolsTableReturns } from '../PoolsTable/components/PoolsTableReturns/PoolsTableReturns';
 import { TABS } from './AdjustAndDepositModal.constants';
 import { AdjustType } from './AdjustAndDepositModal.types';
@@ -44,7 +45,6 @@ import {
   calculatePoolWeiAmount,
   getMinReturn,
 } from './AdjustAndDepositModal.utils';
-import { CurrentBalance } from './components/CurrentBalance/CurrentBalance';
 import { NewPoolStatistics } from './components/NewPoolStatistics/NewPoolStatistics';
 import { useGetPoolBalance } from './hooks/useGetPoolBalance';
 

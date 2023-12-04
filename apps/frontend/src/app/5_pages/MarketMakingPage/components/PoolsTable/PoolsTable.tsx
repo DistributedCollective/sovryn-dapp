@@ -15,6 +15,7 @@ import { PoolDetails } from '../PoolDetails/PoolDetails';
 import { PoolsStatistics } from '../PoolStatistics/PoolStatistics';
 import { COLUMNS_CONFIG } from './PoolsTable.constants';
 import styles from './PoolsTable.module.css';
+import { CurrentBalance } from './components/CurrentBalance/CurrentBalance';
 import { PoolsTableReturns } from './components/PoolsTableReturns/PoolsTableReturns';
 
 const ammPools = AmmLiquidityPoolDictionary.list();
@@ -89,6 +90,7 @@ export const PoolsTable: FC<PoolsTableProps> = ({
         expandedClassNames="border border-gray-70 border-t-0"
         preventExpandOnClickClass="prevent-row-click"
         expandedContent={generateExpandedContent}
+        subtitleRenderer={pool => <CurrentBalance pool={pool} showLabel />}
         rowTitle={generateRowTitle}
       />
     </div>

@@ -43,8 +43,7 @@ export const useHandleMarketMaking = (onComplete: () => void) => {
       ]);
       const minReturn = toWei(amountB.toString())
         .sub(toWei(amountB.toString()).div(100))
-        .toNumber()
-        .toFixed(0);
+        .toString();
 
       const transactions: Transaction[] = [];
 

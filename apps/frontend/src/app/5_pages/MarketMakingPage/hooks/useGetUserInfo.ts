@@ -13,12 +13,11 @@ import {
   useGetProtocolContract,
   useGetTokenContract,
 } from '../../../../hooks/useGetContract';
-import { asyncCall } from '../../../../store/rxjs/provider-cache';
 import { AmmLiquidityPool } from '../utils/AmmLiquidityPool';
 
 export const useGetUserInfo = (pool: AmmLiquidityPool) => {
   const { account } = useAccount();
-  const { assetA, assetB, poolTokenA, poolTokenB } = pool;
+  const { assetA, poolTokenA } = pool;
   const [reward, setReward] = useState<Decimal>(Decimal.ZERO);
   const [balanceA, setBalanceA] = useState<Decimal>(Decimal.ZERO);
   const [loadingA, setLoadingA] = useState(false);
@@ -33,17 +32,16 @@ export const useGetUserInfo = (pool: AmmLiquidityPool) => {
 
   const getUserInfo = useCallback(
     async (token: string) =>
-      await asyncCall(
-        `liquidityMiningProxy/getUserInfo/${token}/${account}`,
-        () => liquidityMiningProxy?.getUserInfo(token, account),
-      ).then(({ amount, accumulatedReward }) => ({
-        amount: Decimal.fromBigNumberString(amount),
-        reward: Decimal.fromBigNumberString(accumulatedReward),
-      })),
+      liquidityMiningProxy
+        ?.getUserInfo(token, account)
+        .then(({ amount, accumulatedReward }) => ({
+          amount: Decimal.fromBigNumberString(amount),
+          reward: Decimal.fromBigNumberString(accumulatedReward),
+        })),
     [account, liquidityMiningProxy],
   );
 
-  useEffect(() => {
+  const fetch = useCallback(() => {
     if (!liquidityMiningProxy || !account) {
       return;
     }
@@ -96,17 +94,16 @@ export const useGetUserInfo = (pool: AmmLiquidityPool) => {
     }
   }, [
     account,
-    assetA,
-    assetB,
     liquidityMiningProxy,
     pool.converter,
     pool.converterVersion,
     poolTokenA,
-    poolTokenB,
     getUserInfo,
     contractTokenA,
     contractTokenB,
   ]);
+
+  useEffect(() => fetch(), [fetch]);
 
   return {
     balanceA,
@@ -114,5 +111,6 @@ export const useGetUserInfo = (pool: AmmLiquidityPool) => {
     loadingA,
     loadingB,
     reward,
+    refetch: fetch,
   };
 };

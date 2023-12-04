@@ -66,8 +66,17 @@ export const AdjustAndDepositModal: FC<AdjustAndDepositModalProps> = ({
   const [adjustType, setAdjustType] = useState(AdjustType.Deposit);
   const [value, setValue, amount] = useWeiAmountInput('');
   const { account } = useAccount();
-  const { onDeposit, onWithdraw } = useHandleMarketMaking(onClose);
-  const { balanceA, loadingA } = useGetUserInfo(pool);
+
+  const { balanceA, loadingA, balanceB, refetch } = useGetUserInfo(pool);
+
+  const onCompleteTransaction = useCallback(() => {
+    refetch();
+    onClose();
+  }, [onClose, refetch]);
+
+  const { onDeposit, onWithdraw } = useHandleMarketMaking(
+    onCompleteTransaction,
+  );
 
   const decimalAmount = useMemo(
     (): Decimal => decimalic(amount.toString()),
@@ -185,7 +194,13 @@ export const AdjustAndDepositModal: FC<AdjustAndDepositModalProps> = ({
                   pool={pool}
                 />
               }
-              value2={<CurrentBalance pool={pool} />}
+              value2={
+                <CurrentBalance
+                  pool={pool}
+                  balanceA={balanceA}
+                  balanceB={balanceB}
+                />
+              }
             />
           </div>
 

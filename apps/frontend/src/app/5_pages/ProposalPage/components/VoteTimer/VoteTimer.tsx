@@ -40,13 +40,23 @@ export const VoteTimer: FC<VoteTimerProps> = ({ proposal, className }) => {
       return t(pageTranslations.voteEnded);
     }
 
-    const time = [days, hours, minutes, seconds];
+    const timeArray = [days, hours, minutes, seconds];
 
     if (!days) {
-      time.shift();
+      timeArray.shift();
     }
 
-    return `${time.join(':')} (${proposal.endBlock - blockNumber}) ${t(
+    if (!hours) {
+      timeArray.shift();
+    }
+
+    if (!minutes) {
+      timeArray.shift();
+    }
+
+    return `${timeArray
+      .map(time => String(time).padStart(2, '0'))
+      .join(':')} (${proposal.endBlock - blockNumber}) ${t(
       pageTranslations.blocks,
     )}`;
   }, [blockNumber, days, hours, minutes, proposal.endBlock, seconds, status]);

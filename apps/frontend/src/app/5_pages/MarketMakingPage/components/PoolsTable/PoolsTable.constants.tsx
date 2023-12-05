@@ -7,7 +7,9 @@ import { HelperButton } from '@sovryn/ui';
 import { AssetPairRenderer } from '../../../../2_molecules/AssetPairRenderer/AssetPairRenderer';
 import { translations } from '../../../../../locales/i18n';
 import { AmmLiquidityPool } from '../../utils/AmmLiquidityPool';
+import { CurrentBalanceRenderer } from './components/CurrentBalanceRenderer/CurrentBalanceRenderer';
 import { PoolsTableAction } from './components/PoolsTableAction/PoolsTableAction';
+import { PoolsTableLiquidity } from './components/PoolsTableLiquidity/PoolsTableLiquidity';
 import { PoolsTableReturns } from './components/PoolsTableReturns/PoolsTableReturns';
 import { PoolsTableTradeVolume } from './components/PoolsTableTradeVolume/PoolsTableTradeVolume';
 
@@ -24,10 +26,7 @@ export const COLUMNS_CONFIG = [
     id: 'liquidity',
     title: t(translations.marketMakingPage.poolsTable.liquidity),
     cellRenderer: (pool: AmmLiquidityPool) => (
-      <div className="flex flex-col">
-        <span>100,000 {pool.assetA}</span>
-        <span>4 {pool.assetB}</span>
-      </div>
+      <PoolsTableLiquidity pool={pool} />
     ),
   },
   {
@@ -53,7 +52,11 @@ export const COLUMNS_CONFIG = [
   {
     id: 'balance',
     title: t(translations.marketMakingPage.poolsTable.balance),
-    cellRenderer: () => 'N/A',
+    cellRenderer: (pool: AmmLiquidityPool) => (
+      <div className="flex flex-col gap-1">
+        <CurrentBalanceRenderer pool={pool} showLabel={false} />
+      </div>
+    ),
   },
   {
     id: '',

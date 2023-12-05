@@ -1,7 +1,7 @@
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 
+import { t } from 'i18next';
 import { nanoid } from 'nanoid';
-import { useTranslation } from 'react-i18next';
 
 import {
   ErrorBadge,
@@ -42,7 +42,6 @@ export const StakingExtendedDuration: FC<StakingHistoryProps> = ({
   onChangeHistoryType,
   selectedHistoryType,
 }) => {
-  const { t } = useTranslation();
   const { account } = useAccount();
   const { addNotification } = useNotificationContext();
 
@@ -120,7 +119,6 @@ export const StakingExtendedDuration: FC<StakingHistoryProps> = ({
     orderOptions.orderBy,
     orderOptions.orderDirection,
     addNotification,
-    t,
   ]);
 
   useEffect(() => {

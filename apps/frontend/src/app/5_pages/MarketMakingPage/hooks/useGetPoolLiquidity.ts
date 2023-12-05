@@ -9,7 +9,7 @@ import { useGetTokenContract } from '../../../../hooks/useGetContract';
 import { asyncCall } from '../../../../store/rxjs/provider-cache';
 import { AmmLiquidityPool } from '../utils/AmmLiquidityPool';
 
-export const useGetLiquidity = (pool: AmmLiquidityPool) => {
+export const useGetPoolLiquidity = (pool: AmmLiquidityPool) => {
   const [liquidity, setLiquidity] = useState<{
     balanceTokenA: Decimal;
     balanceTokenB: Decimal;

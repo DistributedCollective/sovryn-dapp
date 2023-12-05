@@ -1,5 +1,11 @@
 # @sovryn/ui
 
+## 1.0.22
+
+### Patch Changes
+
+- e24befac: SOV-3389: Context Link component
+
 ## 1.0.21
 
 ### Patch Changes

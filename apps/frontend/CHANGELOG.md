@@ -1,5 +1,13 @@
 # frontend
 
+## 1.0.37
+
+### Patch Changes
+
+- cb660fb1: SOV-3390: Fixed Rate Borrow - add ability to increase debt without adding collateral
+- Updated dependencies [e24befac]
+  - @sovryn/ui@1.0.22
+
 ## 1.0.36
 
 ### Patch Changes

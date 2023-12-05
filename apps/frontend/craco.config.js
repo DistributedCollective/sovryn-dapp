@@ -52,6 +52,11 @@ module.exports = {
         /Configure maximumFileSizeToCacheInBytes to change this limit/,
       ];
       config.resolve.fallback = {
+        http: require.resolve('stream-http'),
+        https: require.resolve('https-browserify'),
+        net: false,
+        tls: false,
+        zlib: require.resolve('browserify-zlib'),
         stream: require.resolve('stream-browserify'),
         buffer: require.resolve('buffer'),
         crypto: require.resolve('crypto-browserify'),

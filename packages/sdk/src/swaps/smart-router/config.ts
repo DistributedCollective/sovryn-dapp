@@ -1,3 +1,4 @@
+import { airSwapRoute } from './routes/air-swap-route';
 import { ammSwapRoute } from './routes/amm-swap-route';
 import { mocIntegrationSwapRoute } from './routes/moc-integration-swap-route';
 import { myntBassetRoute } from './routes/mynt-basset-route';
@@ -9,4 +10,5 @@ export const DEFAULT_SWAP_ROUTES: SwapRouteFunction[] = [
   myntBassetRoute,
   myntFixedRateRoute,
   mocIntegrationSwapRoute,
+  airSwapRoute,
 ];

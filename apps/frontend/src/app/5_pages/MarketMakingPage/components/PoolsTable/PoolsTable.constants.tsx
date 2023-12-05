@@ -7,7 +7,7 @@ import { HelperButton } from '@sovryn/ui';
 import { AssetPairRenderer } from '../../../../2_molecules/AssetPairRenderer/AssetPairRenderer';
 import { translations } from '../../../../../locales/i18n';
 import { AmmLiquidityPool } from '../../utils/AmmLiquidityPool';
-import { CurrentBalance } from './components/CurrentBalance/CurrentBalance';
+import { CurrentBalanceRenderer } from './components/CurrentBalanceRenderer/CurrentBalanceRenderer';
 import { PoolsTableAction } from './components/PoolsTableAction/PoolsTableAction';
 import { PoolsTableLiquidity } from './components/PoolsTableLiquidity/PoolsTableLiquidity';
 import { PoolsTableReturns } from './components/PoolsTableReturns/PoolsTableReturns';
@@ -54,7 +54,7 @@ export const COLUMNS_CONFIG = [
     title: t(translations.marketMakingPage.poolsTable.balance),
     cellRenderer: (pool: AmmLiquidityPool) => (
       <div className="flex flex-col gap-1">
-        <CurrentBalance pool={pool} />
+        <CurrentBalanceRenderer pool={pool} showLabel={false} />
       </div>
     ),
   },

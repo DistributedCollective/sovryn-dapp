@@ -2,6 +2,8 @@ import React, { FC, useMemo } from 'react';
 
 import { t } from 'i18next';
 
+import { Decimal } from '@sovryn/utils';
+
 import { AmountRenderer } from '../../../../../../2_molecules/AmountRenderer/AmountRenderer';
 import {
   BITCOIN,
@@ -11,20 +13,22 @@ import {
 import { useAccount } from '../../../../../../../hooks/useAccount';
 import { translations } from '../../../../../../../locales/i18n';
 import { renderTokenSymbol } from '../../../../../../../utils/helpers';
-import { useGetUserInfo } from '../../../../hooks/useGetUserInfo';
 import { AmmLiquidityPool } from '../../../../utils/AmmLiquidityPool';
 
 type CurrentBalanceProps = {
   pool: AmmLiquidityPool;
+  balanceA: Decimal;
+  balanceB: Decimal;
   showLabel?: boolean;
 };
 
 export const CurrentBalance: FC<CurrentBalanceProps> = ({
   pool,
+  balanceA,
+  balanceB,
   showLabel = false,
 }) => {
   const { account } = useAccount();
-  const { balanceA, balanceB } = useGetUserInfo(pool);
 
   const hasBalance = useMemo(
     () => balanceA.gt(0) && balanceB.gt(0),

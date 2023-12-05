@@ -21,7 +21,7 @@ describe('Moc Integration Route', () => {
   const rbtc = constants.AddressZero;
   let dllr: string;
   let moc: string;
-  // let mocIntegration: string;
+  let mocIntegration: string;
   let masset: string;
   let doc: Contract;
   let balance: BigNumber = constants.WeiPerEther;
@@ -31,7 +31,7 @@ describe('Moc Integration Route', () => {
     route = mocIntegrationSwapRoute(fixture.provider);
     dllr = await makeTokenAddress(SupportedTokens.dllr);
     moc = await makeTokenAddress(SupportedTokens.moc);
-    // mocIntegration = (await getProtocolContract('mocIntegrationProxy')).address;
+    mocIntegration = (await getProtocolContract('mocIntegrationProxy')).address;
     masset = (await getProtocolContract('massetManager')).address;
     const { address, abi } = await getTokenContract(SupportedTokens.doc);
     doc = new Contract(address, abi, fixture.provider);
@@ -75,38 +75,23 @@ describe('Moc Integration Route', () => {
   });
 
   describe('approve', () => {
-    // @see https://sovryn.atlassian.net/browse/SOV-3560
-    // it('returns undefined for approval tx request', async () => {
-    //   await expect(
-    //     route.approve(dllr, rbtc, constants.WeiPerEther, constants.AddressZero),
-    //   ).resolves.toBe(undefined);
-    // });
-    it('returns transaction request data for approval for ERC-20 tokens', async () => {
+    it('returns undefined for approval tx request', async () => {
       await expect(
-        route.approve(dllr, rbtc, constants.MaxInt256, constants.AddressZero),
-      ).resolves.toMatchObject({
-        to: expect.any(String),
-        data: expect.any(String),
-      });
+        route.approve(dllr, rbtc, constants.WeiPerEther, constants.AddressZero),
+      ).resolves.toBe(undefined);
     });
   });
 
   describe('permit', () => {
-    // @see https://sovryn.atlassian.net/browse/SOV-3560
-    // it('returns valid permit request for DLLR to RBTC swap', async () => {
-    //   await expect(
-    //     route.permit(dllr, rbtc, constants.WeiPerEther, constants.AddressZero),
-    //   ).resolves.toMatchObject({
-    //     token: dllr,
-    //     spender: mocIntegration,
-    //     owner: constants.AddressZero,
-    //     value: constants.WeiPerEther,
-    //   });
-    // });
-    it('returns undefined for permit function', async () => {
+    it('returns valid permit request for DLLR to RBTC swap', async () => {
       await expect(
-        route.permit(dllr, rbtc, constants.MaxInt256, constants.AddressZero),
-      ).resolves.toBe(undefined);
+        route.permit(dllr, rbtc, constants.WeiPerEther, constants.AddressZero),
+      ).resolves.toMatchObject({
+        token: dllr,
+        spender: mocIntegration,
+        owner: constants.AddressZero,
+        value: constants.WeiPerEther,
+      });
     });
 
     it('returns undefined for permit function for non-valid pair', async () => {

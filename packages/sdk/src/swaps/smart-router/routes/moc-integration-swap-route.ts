@@ -8,11 +8,7 @@ import {
 import { ChainId, ChainIds, numberToChainId } from '@sovryn/ethers-provider';
 
 import { SovrynErrorCode, makeError } from '../../../errors/errors';
-import {
-  areAddressesEqual,
-  hasEnoughAllowance,
-  makeApproveRequest,
-} from '../../../internal/utils';
+import { areAddressesEqual } from '../../../internal/utils';
 import { SwapPairs, SwapRouteFunction } from '../types';
 
 // Supports converting DLLR to RBTC via getDocFromDllrAndRedeemRBTC function on the MoCIntegration contract.
@@ -202,54 +198,22 @@ export const mocIntegrationSwapRoute: SwapRouteFunction = (
         SovrynErrorCode.SWAP_PAIR_NOT_AVAILABLE,
       );
     },
-    async approve(entry, destination, amount, from, overrides) {
+    async approve() {
+      return undefined;
+    },
+    async permit(entry, destination, amount, from, overrides) {
+      // DLLR needs to be permitted for the moc contract
       if (await isValidPair(entry, destination)) {
         const spender = await getMocIntegrationContract();
-
-        if (
-          await hasEnoughAllowance(
-            provider,
-            entry,
-            spender.address,
-            from,
-            amount ?? constants.MaxUint256,
-          )
-        ) {
-          return undefined;
-        }
-
         return {
-          ...makeApproveRequest(
-            entry,
-            spender.address,
-            amount ?? constants.MaxUint256,
-          ),
+          token: entry,
+          spender: spender.address,
+          owner: from,
+          value: amount,
           ...overrides,
         };
       }
-
-      throw makeError(
-        `Cannot swap ${entry} to ${destination}`,
-        SovrynErrorCode.SWAP_PAIR_NOT_AVAILABLE,
-      );
-    },
-    // @see https://sovryn.atlassian.net/browse/SOV-3560
-    async permit() {
       return undefined;
     },
-    // async permit(entry, destination, amount, from, overrides) {
-    //   // DLLR needs to be permitted for the moc contract
-    //   if (await isValidPair(entry, destination)) {
-    //     const spender = await getMocIntegrationContract();
-    //     return {
-    //       token: entry,
-    //       spender: spender.address,
-    //       owner: from,
-    //       value: amount,
-    //       ...overrides,
-    //     };
-    //   }
-    //   return undefined;
-    // },
   };
 };

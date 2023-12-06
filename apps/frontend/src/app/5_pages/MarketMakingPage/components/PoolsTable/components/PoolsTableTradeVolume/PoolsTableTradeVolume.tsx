@@ -7,6 +7,7 @@ import {
   BITCOIN,
   BTC_RENDER_PRECISION,
 } from '../../../../../../../constants/currencies';
+import { useBlockNumber } from '../../../../../../../hooks/useBlockNumber';
 import { translations } from '../../../../../../../locales/i18n';
 import { useGetTradeVolume } from '../../../../hooks/useGetTradeVolume';
 import { AmmLiquidityPool } from '../../../../utils/AmmLiquidityPool';
@@ -19,6 +20,7 @@ export const PoolsTableTradeVolume: FC<PoolsTableTradeVolumeProps> = ({
   pool,
 }) => {
   const { poolVolume, loading, refetch } = useGetTradeVolume(pool.converter);
+  const { value: block } = useBlockNumber();
 
   const renderPoolVolume = useMemo(
     () => (
@@ -40,7 +42,7 @@ export const PoolsTableTradeVolume: FC<PoolsTableTradeVolumeProps> = ({
 
   useEffect(() => {
     refetch();
-  }, [refetch]);
+  }, [refetch, block]);
 
   return <>{renderPoolVolume}</>;
 };

@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 
+import { useBlockNumber } from '../../../../hooks/useBlockNumber';
 import { getAmmServiceUrl } from '../../../../utils/helpers';
 
 type PoolData = {
@@ -24,6 +25,8 @@ type ReturnRates = {
 
 export const useGetReturnRate = (targetPool: string) => {
   const ammServiceUrl = getAmmServiceUrl();
+  const { value: block } = useBlockNumber();
+
   const [returnRates, setReturnRates] = useState<ReturnRates>({
     beforeRewards: '0',
     afterRewards: '0',
@@ -59,7 +62,7 @@ export const useGetReturnRate = (targetPool: string) => {
     };
 
     fetchData();
-  }, [ammServiceUrl, targetPool]);
+  }, [ammServiceUrl, targetPool, block]);
 
   return { returnRates };
 };

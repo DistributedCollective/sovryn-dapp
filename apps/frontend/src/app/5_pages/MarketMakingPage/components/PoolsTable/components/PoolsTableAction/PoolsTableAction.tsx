@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useMemo, useState } from 'react';
+import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 
 import { t } from 'i18next';
 
@@ -12,6 +12,7 @@ import {
 import { Decimal } from '@sovryn/utils';
 
 import { useAccount } from '../../../../../../../hooks/useAccount';
+import { useBlockNumber } from '../../../../../../../hooks/useBlockNumber';
 import { useMaintenance } from '../../../../../../../hooks/useMaintenance';
 import { translations } from '../../../../../../../locales/i18n';
 import { useCheckPoolMaintenance } from '../../../../hooks/useCheckPoolMaintenance';
@@ -25,11 +26,12 @@ type PoolsTableActionProps = {
 
 export const PoolsTableAction: FC<PoolsTableActionProps> = ({ pool }) => {
   const { account } = useAccount();
+  const { value: block } = useBlockNumber();
 
   const { checkMaintenance, States } = useMaintenance();
   const poolLocked = useCheckPoolMaintenance(pool);
 
-  const { balanceA: poolBalance } = useGetUserInfo(pool);
+  const { balanceA: poolBalance, refetch } = useGetUserInfo(pool);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isInitialDeposit, setIsInitialDeposit] = useState(true);
@@ -59,6 +61,10 @@ export const PoolsTableAction: FC<PoolsTableActionProps> = ({ pool }) => {
     setIsInitialDeposit(true);
     setIsModalOpen(false);
   }, []);
+
+  useEffect(() => {
+    refetch();
+  }, [refetch, block]);
 
   return (
     <div className="flex items-center justify-center lg:justify-end w-full">

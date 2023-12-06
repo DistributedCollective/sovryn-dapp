@@ -1,5 +1,6 @@
-import React, { FC } from 'react';
+import React, { FC, useEffect } from 'react';
 
+import { useBlockNumber } from '../../../../../../../hooks/useBlockNumber';
 import { useGetUserInfo } from '../../../../hooks/useGetUserInfo';
 import { AmmLiquidityPool } from '../../../../utils/AmmLiquidityPool';
 import { CurrentBalance } from '../CurrentBalance/CurrentBalance';
@@ -13,7 +14,12 @@ export const CurrentBalanceRenderer: FC<CurrentBalanceRendererProps> = ({
   pool,
   showLabel = false,
 }) => {
-  const { balanceA, balanceB } = useGetUserInfo(pool);
+  const { balanceA, balanceB, refetch } = useGetUserInfo(pool);
+  const { value: block } = useBlockNumber();
+
+  useEffect(() => {
+    refetch();
+  }, [refetch, block]);
 
   return (
     <CurrentBalance

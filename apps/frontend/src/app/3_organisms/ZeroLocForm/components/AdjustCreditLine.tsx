@@ -6,7 +6,6 @@ import { SupportedTokens } from '@sovryn/contracts';
 import { ErrorLevel } from '@sovryn/ui';
 import { Decimal } from '@sovryn/utils';
 
-import { ADJUST_BORROW_ASSETS } from '../../../5_pages/ZeroPage/constants';
 import { useLiquityBaseParams } from '../../../5_pages/ZeroPage/hooks/useLiquityBaseParams';
 import {
   BITCOIN,
@@ -426,7 +425,6 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
       debtError={debtError}
       collateralError={collateralError}
       errors={errors}
-      acceptedTokens={ADJUST_BORROW_ASSETS}
     />
   );
 };

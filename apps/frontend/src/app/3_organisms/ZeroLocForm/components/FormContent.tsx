@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, FC, useState } from 'react';
+import React, { useCallback, useMemo, FC, useState, useEffect } from 'react';
 
 import { t } from 'i18next';
 import { Trans } from 'react-i18next';
@@ -26,7 +26,10 @@ import { Decimal } from '@sovryn/utils';
 import { AdvancedSettings } from '../../../2_molecules/AdvancedSettings/AdvancedSettings';
 import { AmountRenderer } from '../../../2_molecules/AmountRenderer/AmountRenderer';
 import { AssetRenderer } from '../../../2_molecules/AssetRenderer/AssetRenderer';
-import { BORROW_ASSETS } from '../../../5_pages/ZeroPage/constants';
+import {
+  BORROW_ASSETS,
+  REPAYMENT_ASSETS,
+} from '../../../5_pages/ZeroPage/constants';
 import { useLiquityBaseParams } from '../../../5_pages/ZeroPage/hooks/useLiquityBaseParams';
 import {
   BITCOIN,
@@ -346,7 +349,10 @@ export const FormContent: FC<FormContentProps> = props => {
 
   const tokenOptions = useMemo(
     () =>
-      (props.acceptedTokens ?? BORROW_ASSETS).map(token => ({
+      (props.hasTrove && props.debtType === AmountType.Remove
+        ? REPAYMENT_ASSETS
+        : BORROW_ASSETS
+      ).map(token => ({
         value: token,
         label: (
           <AssetRenderer
@@ -356,8 +362,14 @@ export const FormContent: FC<FormContentProps> = props => {
           />
         ),
       })),
-    [props.acceptedTokens],
+    [props],
   );
+
+  useEffect(() => {
+    if (props.hasTrove && props.debtType === AmountType.Remove) {
+      props.onDebtTokenChange(REPAYMENT_ASSETS[0]);
+    }
+  }, [props]);
 
   return (
     <div className="w-full">

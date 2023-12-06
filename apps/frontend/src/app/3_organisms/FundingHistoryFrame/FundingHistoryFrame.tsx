@@ -122,7 +122,6 @@ export const FundingHistoryFrame: FC = () => {
 
     const fundingData = funding.reduce((acc: FundingHistoryType[], item) => {
       const rows = parseData(item as BitcoinTransfer);
-
       // make sure rows has at least 2 elements before using spread operator
       if (rows.length >= 2) {
         acc.push(

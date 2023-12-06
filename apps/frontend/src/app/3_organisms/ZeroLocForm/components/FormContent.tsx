@@ -96,7 +96,6 @@ export type FormContentProps = {
   debtError?: string;
   collateralError?: string;
   errors?: ErrorBadgeProps[];
-  acceptedTokens?: SupportedTokens[];
 } & (OpenTroveProps | AdjustTroveProps);
 
 const ACTIVE_CLASSNAME = 'bg-gray-70 text-primary-20';

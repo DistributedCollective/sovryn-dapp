@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useState } from 'react';
+import React, { FC, useCallback, useEffect, useState } from 'react';
 
 import { t } from 'i18next';
 import { Helmet } from 'react-helmet-async';
@@ -11,11 +11,18 @@ import { Promotions } from './components/Promotions/Promotions';
 
 const MarketMakingPage: FC = () => {
   const [activePool, setActivePool] = useState('');
+  const [isPromoCardClicked, setIsPromoCardClicked] = useState(false);
 
-  const setActivePoolkey = useCallback(
-    poolKey => setActivePool(activePool === poolKey ? '' : poolKey),
+  const setActivePoolKey = useCallback(
+    (poolKey: string) => setActivePool(activePool === poolKey ? '' : poolKey),
     [activePool],
   );
+
+  useEffect(() => {
+    if (activePool) {
+      setIsPromoCardClicked(false);
+    }
+  }, [activePool]);
 
   return (
     <>
@@ -35,9 +42,16 @@ const MarketMakingPage: FC = () => {
           {t(translations.marketMakingPage.subtitle)}
         </Paragraph>
 
-        <Promotions setActivePool={setActivePool} />
+        <Promotions
+          setActivePool={setActivePool}
+          onClick={setIsPromoCardClicked}
+        />
 
-        <PoolsTable setActivePool={setActivePoolkey} activePool={activePool} />
+        <PoolsTable
+          setActivePool={setActivePoolKey}
+          shouldScroll={isPromoCardClicked}
+          activePool={activePool}
+        />
       </div>
     </>
   );

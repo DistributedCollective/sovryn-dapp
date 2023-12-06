@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, useCallback } from 'react';
 
 import { t } from 'i18next';
 
@@ -14,10 +14,19 @@ import { useGetPromotionsData } from '../../hooks/useGetPromotionsData';
 
 type PoolsTableProps = {
   setActivePool: (poolKey: string) => void;
+  onClick?: (value: boolean) => void;
 };
 
-export const Promotions: FC<PoolsTableProps> = ({ setActivePool }) => {
+export const Promotions: FC<PoolsTableProps> = ({ setActivePool, onClick }) => {
   const { data, loading } = useGetPromotionsData();
+
+  const handleClick = useCallback(
+    (poolKey: string) => {
+      setActivePool(poolKey);
+      onClick?.(true);
+    },
+    [setActivePool, onClick],
+  );
 
   return (
     <div className="w-full md:bg-gray-90 rounded md:py-7">
@@ -36,7 +45,9 @@ export const Promotions: FC<PoolsTableProps> = ({ setActivePool }) => {
           />
         </Paragraph>
       </div>
-      <BannersCarousel className="-mx-4 sm:mx-2">
+      <BannersCarousel
+        className={`${data.length > 1 ? '-mx-4' : '-ml-4'} sm:mx-2`}
+      >
         {!loading &&
           data.map(item => (
             <PromoCard
@@ -61,7 +72,7 @@ export const Promotions: FC<PoolsTableProps> = ({ setActivePool }) => {
                   precision={2}
                 />
               }
-              onClick={() => setActivePool(item.pool?.key || '')}
+              onClick={() => handleClick(item.pool?.key || '')}
             />
           ))}
       </BannersCarousel>

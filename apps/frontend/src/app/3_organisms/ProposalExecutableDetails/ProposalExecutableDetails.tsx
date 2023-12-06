@@ -4,17 +4,21 @@ import { t } from 'i18next';
 
 import { Heading } from '@sovryn/ui';
 
+import { AmountRenderer } from '../../2_molecules/AmountRenderer/AmountRenderer';
 import { TxIdWithNotification } from '../../2_molecules/TxIdWithNotification/TransactionIdWithNotification';
 import { ProposalCreationParameter } from '../../5_pages/BitocracyPage/contexts/ProposalContext.types';
 import { translations } from '../../../locales/i18n';
+import { getRskExplorerUrl } from '../../../utils/helpers';
+import { isTreasuryProposalParameter } from './ProposalExecutableDetails.utils';
 import { ProposalRenderDetail } from './components/ProposalRenderDetail/ProposalRenderDetail';
-
-const TREASURY_PROPOSAL_SIGNATURES = ['transferRbtc', 'transferTokens'];
+import { useGetTreasuryExecutableDetail } from './hooks/useGetTreasuryExecutableDetails';
 
 type ProposalExecutableDetailProps = {
   parameter: ProposalCreationParameter;
   index: number;
 };
+
+const rskExplorerUrl = getRskExplorerUrl();
 
 const pageTranslations = translations.proposalPage.executableDetails;
 
@@ -22,10 +26,13 @@ export const ProposalExecutableDetail: FC<ProposalExecutableDetailProps> = ({
   parameter,
   index,
 }) => {
-  const isTreasuryProposalParameter = useMemo(
-    () => TREASURY_PROPOSAL_SIGNATURES.includes(parameter.signature),
+  const isTreasuryProposal = useMemo(
+    () => isTreasuryProposalParameter(parameter.signature),
     [parameter.signature],
   );
+
+  const { assetName, assetAmount, assetAddress, recipientAddress } =
+    useGetTreasuryExecutableDetail(parameter);
 
   return (
     <div className="w-full font-medium bg-gray-80 p-3 rounded">
@@ -34,19 +41,25 @@ export const ProposalExecutableDetail: FC<ProposalExecutableDetailProps> = ({
       </Heading>
 
       <div className="w-full text-gray-30">
-        {isTreasuryProposalParameter && (
+        {isTreasuryProposal && (
           <>
             <ProposalRenderDetail
               label={t(pageTranslations.assetName)}
-              content={'-'}
+              content={assetName?.toUpperCase()}
             />
             <ProposalRenderDetail
               label={t(pageTranslations.assetAmount)}
-              content={parameter.value || '0'}
+              content={<AmountRenderer value={assetAmount} />}
             />
             <ProposalRenderDetail
               label={t(pageTranslations.assetAddress)}
-              content={'-'}
+              content={
+                <TxIdWithNotification
+                  href={`${rskExplorerUrl}/address/${assetAddress}`}
+                  value={assetAddress}
+                  dataAttribute="treasury-proposal-asset-address"
+                />
+              }
             />
           </>
         )}
@@ -55,17 +68,23 @@ export const ProposalExecutableDetail: FC<ProposalExecutableDetailProps> = ({
           label={t(pageTranslations.contractAddress)}
           content={
             <TxIdWithNotification
-              href=""
+              href={`${rskExplorerUrl}/address/${parameter.target}`}
               value={parameter.target}
               dataAttribute="proposal-contract-address-id"
             />
           }
         />
 
-        {isTreasuryProposalParameter && (
+        {isTreasuryProposal && (
           <ProposalRenderDetail
             label={t(pageTranslations.recipientAddress)}
-            content={'-'}
+            content={
+              <TxIdWithNotification
+                href={`${rskExplorerUrl}/address/${recipientAddress}`}
+                value={recipientAddress}
+                dataAttribute="treasury-proposal-recipient-address"
+              />
+            }
           />
         )}
 

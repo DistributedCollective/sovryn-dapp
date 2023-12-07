@@ -4,7 +4,7 @@ import classNames from 'classnames';
 import { t } from 'i18next';
 
 import { SupportedTokens } from '@sovryn/contracts';
-import { SimpleTable, SimpleTableRow } from '@sovryn/ui';
+import { HelperButton, SimpleTable, SimpleTableRow } from '@sovryn/ui';
 import { Decimal } from '@sovryn/utils';
 
 import { AmountRenderer } from '../../../../../../2_molecules/AmountRenderer/AmountRenderer';
@@ -124,7 +124,15 @@ export const NewPoolStatistics: FC<NewPoolStatisticsProps> = ({
         />
       )}
       <SimpleTableRow
-        label={t(pageTranslations.weeklyRewardsEstimation)}
+        label={
+          <span className="flex items-center gap-1">
+            {t(pageTranslations.weeklyRewardsEstimation)}{' '}
+            <HelperButton
+              tooltipClassName="max-w-56 md:max-w-96"
+              content={t(pageTranslations.weeklyRewardsEstimationInfo)}
+            />
+          </span>
+        }
         value={
           isAmountZero ? (
             t(translations.common.na)

@@ -2,6 +2,7 @@ import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 
 import { t } from 'i18next';
 
+import { SupportedTokens } from '@sovryn/contracts';
 import {
   ButtonStyle,
   ButtonSize,
@@ -32,6 +33,11 @@ export const PoolsTableAction: FC<PoolsTableActionProps> = ({ pool }) => {
   const poolLocked = useCheckPoolMaintenance(pool);
 
   const { balanceA: poolBalance, refetch } = useGetUserInfo(pool);
+
+  const isMynt = useMemo(
+    () => pool.assetA === SupportedTokens.mynt,
+    [pool.assetA],
+  );
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isInitialDeposit, setIsInitialDeposit] = useState(true);
@@ -82,7 +88,7 @@ export const PoolsTableAction: FC<PoolsTableActionProps> = ({ pool }) => {
                 dataAttribute="pools-table-deposit-button"
                 className="w-full lg:w-auto prevent-row-click"
                 disabledStyle={actionLocked}
-                disabled={!account}
+                disabled={!account || isMynt}
                 onClick={handleDepositClick}
               />
             ) : (

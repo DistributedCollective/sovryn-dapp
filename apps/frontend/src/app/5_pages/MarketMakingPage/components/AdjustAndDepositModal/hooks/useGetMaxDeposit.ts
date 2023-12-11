@@ -7,25 +7,25 @@ import { defaultChainId } from '../../../../../../config/chains';
 
 import { GAS_LIMIT } from '../../../../../../constants/gasLimits';
 import { useAssetBalance } from '../../../../../../hooks/useAssetBalance';
+import { useGasPrice } from '../../../../../../hooks/useGasPrice';
 import { useGetTokenContract } from '../../../../../../hooks/useGetContract';
-import { useMaxAssetBalance } from '../../../../../../hooks/useMaxAssetBalance';
-import { getRskChainId } from '../../../../../../utils/chain';
 import { useGetTokenPrice } from '../../../../BorrowPage/hooks/useGetTokenPrice';
 
-export const useGetMaxDeposit = (
-  asset: SupportedTokens,
-  isDeposit: boolean,
-) => {
-  const { balance: balanceTokenB } = useMaxAssetBalance(
+export const useGetMaxDeposit = (asset: SupportedTokens) => {
+  const { balance: balanceTokenA } = useAssetBalance(asset, defaultChainId);
+  const { balance: balanceTokenB } = useAssetBalance(
     SupportedTokens.rbtc,
     defaultChainId,
-    isDeposit
-      ? GAS_LIMIT.MARKET_MAKING_ADD_LIQUIDITY
-      : GAS_LIMIT.MARKET_MAKING_REMOVE_LIQUIDITY,
   );
 
-  const { balance: balanceTokenA } = useAssetBalance(asset, getRskChainId());
-  const contractTokenA = useGetTokenContract(asset, getRskChainId());
+  const contractTokenA = useGetTokenContract(asset, defaultChainId);
+
+  const gasPrice = useGasPrice(defaultChainId);
+
+  const gasLimit = useMemo(
+    () => gasPrice.mul(GAS_LIMIT.MAX).div(Decimal.from(10).pow(8)),
+    [gasPrice],
+  );
 
   const { data } = useGetTokenPrice(contractTokenA?.address || '');
 
@@ -40,11 +40,12 @@ export const useGetMaxDeposit = (
     if (!balanceTokenB || !priceTokenA || !balanceTokenA) {
       return Decimal.ZERO;
     }
-    const maxDeposit = balanceTokenB.mul(priceTokenA);
+    const maxDeposit = balanceTokenB.sub(gasLimit).mul(priceTokenA);
+
     return balanceTokenB.mul(priceTokenA).lt(balanceTokenA)
       ? maxDeposit
       : balanceTokenA;
-  }, [balanceTokenA, balanceTokenB, priceTokenA]);
+  }, [balanceTokenA, balanceTokenB, priceTokenA, gasLimit]);
 
   return maxDepositValue;
 };

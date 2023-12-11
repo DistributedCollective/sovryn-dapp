@@ -54,7 +54,7 @@ export const useGetExpectedTokenAmount = (
     setBalanceB(balanceOfB);
   }, [pool]);
 
-  const expectedTokenAmount = useMemo(
+  const expectedTokenAmount: Decimal = useMemo(
     () => amount.mul(balanceB).div(balanceA),
     [balanceA, balanceB, amount],
   );

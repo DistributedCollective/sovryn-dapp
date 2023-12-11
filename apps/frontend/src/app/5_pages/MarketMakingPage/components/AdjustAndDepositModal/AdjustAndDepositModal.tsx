@@ -20,15 +20,12 @@ import {
 } from '@sovryn/ui';
 import { Decimal } from '@sovryn/utils';
 
-import { defaultChainId } from '../../../../../config/chains';
-
 import { AssetRenderer } from '../../../../2_molecules/AssetRenderer/AssetRenderer';
 import { CurrentStatistics } from '../../../../2_molecules/CurrentStatistics/CurrentStatistics';
 import { LabelWithTabsAndMaxButton } from '../../../../2_molecules/LabelWithTabsAndMaxButton/LabelWithTabsAndMaxButton';
 import { MaxButton } from '../../../../2_molecules/MaxButton/MaxButton';
 import { WIKI_LINKS } from '../../../../../constants/links';
 import { useAccount } from '../../../../../hooks/useAccount';
-import { useAssetBalance } from '../../../../../hooks/useAssetBalance';
 import { useWeiAmountInput } from '../../../../../hooks/useWeiAmountInput';
 import { translations } from '../../../../../locales/i18n';
 import { decimalic, toWei } from '../../../../../utils/math';
@@ -68,10 +65,6 @@ export const AdjustAndDepositModal: FC<AdjustAndDepositModalProps> = ({
   const { account } = useAccount();
 
   const { balanceA, loadingA, balanceB, refetch } = useGetUserInfo(pool);
-  const { balance: balanceBtc } = useAssetBalance(
-    SupportedTokens.rbtc,
-    defaultChainId,
-  );
 
   const onCompleteTransaction = useCallback(() => {
     refetch();
@@ -110,7 +103,7 @@ export const AdjustAndDepositModal: FC<AdjustAndDepositModalProps> = ({
   const [hasDisclaimerBeenChecked, setHasDisclaimerBeenChecked] =
     useState(false);
 
-  const maxTokenToDepositAmount = useGetMaxDeposit(pool.assetA);
+  const maxTokenToDepositAmount = useGetMaxDeposit(pool, isDeposit);
 
   const maxBalance = useMemo(
     () => (isDeposit ? maxTokenToDepositAmount : balanceA),
@@ -153,24 +146,12 @@ export const AdjustAndDepositModal: FC<AdjustAndDepositModalProps> = ({
     [maxBalance, decimalValue, isAmountZero],
   );
 
-  const isValidExpectedAmount = useMemo(
-    () => expectedTokenAmount.lte(balanceBtc),
-    [expectedTokenAmount, balanceBtc],
-  );
-
   const isSubmitDisabled = useMemo(
     () =>
       decimalAmount.isZero() ||
       (!hasDisclaimerBeenChecked && isInitialDeposit) ||
-      !isValidForm ||
-      !isValidExpectedAmount,
-    [
-      decimalAmount,
-      isValidForm,
-      hasDisclaimerBeenChecked,
-      isInitialDeposit,
-      isValidExpectedAmount,
-    ],
+      !isValidForm,
+    [decimalAmount, isValidForm, hasDisclaimerBeenChecked, isInitialDeposit],
   );
 
   useEffect(() => {
@@ -270,15 +251,6 @@ export const AdjustAndDepositModal: FC<AdjustAndDepositModalProps> = ({
                 unit={<AssetRenderer asset={SupportedTokens.rbtc} />}
                 readOnly
               />
-              {!isValidExpectedAmount && (
-                <ErrorBadge
-                  level={ErrorLevel.Critical}
-                  message={t(
-                    translations.marketMakingPage.form.invalidAmountError,
-                  )}
-                  dataAttribute="adjust-market-making-expected-amount-error"
-                />
-              )}
             </FormGroup>
           </div>
 

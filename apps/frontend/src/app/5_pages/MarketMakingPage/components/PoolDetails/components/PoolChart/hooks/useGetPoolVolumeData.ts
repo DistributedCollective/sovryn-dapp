@@ -13,8 +13,6 @@ export type PoolVolumeData = {
   btcVolume: string;
 };
 
-export const MAX_HISTORY_DAYS = 60;
-
 export const useGetPoolVolumeData = (pool: AmmLiquidityPool) => {
   const [data, setData] = useState<PoolVolumeData[]>([]);
   const [isFetched, setIsFetched] = useState(false);
@@ -46,5 +44,5 @@ export const useGetPoolVolumeData = (pool: AmmLiquidityPool) => {
     }
   }, [getData, isFetched]);
 
-  return data.slice(0, MAX_HISTORY_DAYS);
+  return data;
 };

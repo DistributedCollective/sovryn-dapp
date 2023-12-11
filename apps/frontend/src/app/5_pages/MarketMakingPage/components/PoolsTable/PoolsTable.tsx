@@ -44,7 +44,7 @@ export const PoolsTable: FC<PoolsTableProps> = ({
     (pool: AmmLiquidityPool) => (
       <div
         className="flex items-center justify-between w-full"
-        data-pool-key={`${pool.key}`}
+        data-pool-key={pool.key}
       >
         <AssetPairRenderer
           asset1={pool.assetA}

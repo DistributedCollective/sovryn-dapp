@@ -18,7 +18,7 @@ export const COLUMNS_CONFIG = [
     id: 'pair',
     title: t(translations.marketMakingPage.poolsTable.pair),
     cellRenderer: (pool: AmmLiquidityPool) => (
-      <div data-pool-key={`${pool.key}`}>
+      <div data-pool-key={pool.key}>
         <AssetPairRenderer asset1={pool.assetA} asset2={pool.assetB} />
       </div>
     ),

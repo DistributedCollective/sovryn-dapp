@@ -81,16 +81,39 @@ export const PoolsTableAction: FC<PoolsTableActionProps> = ({ pool }) => {
         children={
           <>
             {!account || poolBalance.lte(Decimal.ZERO) ? (
-              <Button
-                style={ButtonStyle.primary}
-                size={ButtonSize.small}
-                text={t(translations.common.deposit)}
-                dataAttribute="pools-table-deposit-button"
-                className="w-full lg:w-auto prevent-row-click"
-                disabledStyle={actionLocked}
-                disabled={!account || isMynt}
-                onClick={handleDepositClick}
-              />
+              isMynt ? (
+                <Tooltip
+                  children={
+                    <div>
+                      <Button
+                        style={ButtonStyle.primary}
+                        size={ButtonSize.small}
+                        text={t(translations.common.deposit)}
+                        dataAttribute="pools-table-deposit-button"
+                        className="w-full lg:w-auto prevent-row-click"
+                        disabled
+                      />
+                    </div>
+                  }
+                  content={t(
+                    translations.marketMakingPage.marketMakingOperations
+                      .depositNotAllowed,
+                  )}
+                  dataAttribute="pools-table-deposit-button-tooltip"
+                  className="w-full lg:w-auto prevent-row-click"
+                />
+              ) : (
+                <Button
+                  style={ButtonStyle.primary}
+                  size={ButtonSize.small}
+                  text={t(translations.common.deposit)}
+                  dataAttribute="pools-table-deposit-button"
+                  className="w-full lg:w-auto prevent-row-click"
+                  disabledStyle={actionLocked}
+                  disabled={!account}
+                  onClick={handleDepositClick}
+                />
+              )
             ) : (
               <Button
                 style={ButtonStyle.secondary}

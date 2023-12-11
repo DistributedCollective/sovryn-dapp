@@ -1028,7 +1028,8 @@
         },
         "marketMakingOperations": {
             "deposit": "Deposit",
-            "withdraw": "Withdraw"
+            "withdraw": "Withdraw",
+            "depositNotAllowed": "Deposits to this pool are disabled"
         },
         "marketMakingTx": {
             "deposit": "Deposit liquidity",

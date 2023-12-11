@@ -2,12 +2,9 @@ import React, { FC, useEffect, useMemo, useRef } from 'react';
 
 import ChartLibrary from 'chart.js/auto';
 
+import { CUSTOM_CANVAS_BACKGROUND_COLOR } from './Chart.constants';
 import { MockData } from './Chart.types';
-import {
-  customCanvasBackgroundColor,
-  getChartData,
-  getChartOptions,
-} from './Chart.utils';
+import { getChartData, getChartOptions } from './Chart.utils';
 
 type ChartProps = {
   mockData: MockData;
@@ -55,7 +52,7 @@ export const Chart: FC<ChartProps> = ({
       type: 'line',
       data: getChartData(mockData, gradient1, gradient2),
       options: chartOptions,
-      plugins: [customCanvasBackgroundColor],
+      plugins: [CUSTOM_CANVAS_BACKGROUND_COLOR],
     });
 
     return () => {

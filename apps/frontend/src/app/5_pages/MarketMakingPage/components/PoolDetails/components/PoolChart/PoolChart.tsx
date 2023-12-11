@@ -5,6 +5,12 @@ import { t } from 'i18next';
 import { Chart } from '../../../../../../2_molecules/Chart/Chart';
 import { translations } from '../../../../../../../locales/i18n';
 import { AmmLiquidityPool } from '../../../../utils/AmmLiquidityPool';
+import {
+  GRADIENT1_COLOR1,
+  GRADIENT1_COLOR2,
+  GRADIENT2_COLOR1,
+  GRADIENT2_COLOR2,
+} from './PoolChart.constants';
 import { convertPoolVolumeDataToMockData } from './PoolChart.utils';
 import { useGetPoolVolumeData } from './hooks/useGetPoolVolumeData';
 
@@ -27,8 +33,8 @@ export const PoolChart: FC<PoolChartProps> = ({ pool }) => {
       tickStep={tickStep}
       yLabel1={t(translations.marketMakingPage.poolVolumeChart.apr)}
       yLabel2={t(translations.marketMakingPage.poolVolumeChart.volume)}
-      gradient1Colors={['rgba(130, 134, 143, 1)', 'rgba(130, 134, 143, 0.09)']}
-      gradient2Colors={['rgba(245, 140, 49, 1)', 'rgba(245, 140, 49, 0.09)']}
+      gradient1Colors={[GRADIENT1_COLOR1, GRADIENT1_COLOR2]}
+      gradient2Colors={[GRADIENT2_COLOR1, GRADIENT2_COLOR2]}
     />
   );
 };

@@ -6,6 +6,12 @@ import { Chart } from '../../../../../../2_molecules/Chart/Chart';
 import { getTokenDisplayName } from '../../../../../../../constants/tokens';
 import { translations } from '../../../../../../../locales/i18n';
 import { LendFrameProps } from '../../LendFrame.types';
+import {
+  GRADIENT1_COLOR1,
+  GRADIENT1_COLOR2,
+  GRADIENT2_COLOR1,
+  GRADIENT2_COLOR2,
+} from './LendFrameChart.constants';
 import { convertPoolHistoryToMockData } from './LendFrameChart.utils';
 import { useGetLendHistory } from './hooks/useGetLendHistory';
 
@@ -27,8 +33,8 @@ export const LendFrameChart: FC<LendFrameProps> = memo(({ pool }) => {
       yLabel2={`${t(
         translations.lendPage.table.totalLiquidity,
       )} ${getTokenDisplayName(pool.getAsset())}`}
-      gradient1Colors={['rgba(114, 234, 222, 1)', 'rgba(114, 234, 222, 0.09']}
-      gradient2Colors={['rgba(130, 134, 143, 1)', 'rgba(130, 134, 143, 0.09)']}
+      gradient1Colors={[GRADIENT1_COLOR1, GRADIENT1_COLOR2]}
+      gradient2Colors={[GRADIENT2_COLOR1, GRADIENT2_COLOR2]}
     />
   );
 });

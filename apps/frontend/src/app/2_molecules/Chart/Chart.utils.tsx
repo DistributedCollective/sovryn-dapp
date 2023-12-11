@@ -1,3 +1,12 @@
+import {
+  BORDER_COLOR,
+  TEXT_COLOR,
+  FONT_FAMILY,
+  FONT_SIZE,
+  FONT_WEIGHT,
+  DASH_GRID_TYPE,
+  PRIMARY_COLOR,
+} from './Chart.constants';
 import { MockData } from './Chart.types';
 
 export const getChartOptions = (
@@ -6,67 +15,59 @@ export const getChartOptions = (
   yLabel1: string,
   yLabel2: string,
 ) => {
-  const primaryColor = '#2C303B';
-  const textColor = '#f5f5f5';
-  const borderColor = '#484D59';
-  const fontFamily = 'Roboto';
-  const fontSize = 12;
-  const fontWeight = '500';
-  const dashGridType = 'dash';
-
   const data1AxisOptions = {
     border: {
-      color: borderColor,
+      color: BORDER_COLOR,
     },
     position: 'left' as const,
     display: true,
     title: {
       display: true,
       text: yLabel1,
-      color: textColor,
+      color: TEXT_COLOR,
     },
     ticks: {
       callback: value => Number(value).toFixed(3) + '%',
       stepSize: tickStep,
       min: Math.min(...mockData.data1) - 3 * tickStep,
       max: Math.max(...mockData.data1) + 3 * tickStep,
-      color: textColor,
+      color: TEXT_COLOR,
       font: {
-        family: fontFamily,
-        fontSize,
-        fontWeight,
+        family: FONT_FAMILY,
+        fontSize: FONT_SIZE,
+        fontWeight: FONT_WEIGHT,
       },
       padding: 5,
     },
     grid: {
       drawOnChartArea: true,
       drawTicks: true,
-      gridDashType: dashGridType,
-      tickColor: borderColor,
+      gridDashType: DASH_GRID_TYPE,
+      tickColor: BORDER_COLOR,
     },
   };
 
   const data2AxisOptions = {
     border: {
-      color: borderColor,
+      color: BORDER_COLOR,
     },
     display: true,
     position: 'right' as const,
     title: {
       display: true,
       text: yLabel2,
-      color: textColor,
+      color: TEXT_COLOR,
     },
     grid: {
       drawTicks: true,
-      tickColor: borderColor,
+      tickColor: BORDER_COLOR,
     },
     ticks: {
-      color: textColor,
+      color: TEXT_COLOR,
       font: {
-        family: fontFamily,
-        fontSize,
-        fontWeight,
+        family: FONT_FAMILY,
+        fontSize: FONT_SIZE,
+        fontWeight: FONT_WEIGHT,
       },
       padding: 5,
     },
@@ -74,19 +75,19 @@ export const getChartOptions = (
 
   const xAxisOptions = {
     border: {
-      color: borderColor,
+      color: BORDER_COLOR,
     },
     grid: {
       drawTicks: true,
-      tickColor: borderColor,
+      tickColor: BORDER_COLOR,
     },
     display: true,
     ticks: {
-      color: textColor,
+      color: TEXT_COLOR,
       font: {
-        family: fontFamily,
-        fontSize,
-        fontWeight,
+        family: FONT_FAMILY,
+        fontSize: FONT_SIZE,
+        fontWeight: FONT_WEIGHT,
       },
       padding: 15,
       maxTicksLimit: 7,
@@ -98,11 +99,11 @@ export const getChartOptions = (
     maintainAspectRatio: false,
     plugins: {
       customCanvasBackgroundColor: {
-        color: primaryColor,
+        color: PRIMARY_COLOR,
       },
       legend: {
         labels: {
-          color: textColor,
+          color: TEXT_COLOR,
           boxWidth: 12,
           boxHeight: 12,
           padding: 20,
@@ -132,40 +133,26 @@ export const getChartData = (
   mockData: MockData,
   gradient1: CanvasGradient | undefined,
   gradient2: CanvasGradient | undefined,
-) => {
-  return {
-    labels: mockData.xLabels,
-    datasets: [
-      {
-        label: mockData.label1,
-        data: mockData.data1,
-        backgroundColor: gradient1,
-        borderColor: mockData.borderColor1,
-        fill: true,
-        yAxisID: 'y1',
-        pointRadius: 0,
-      },
-      {
-        label: mockData.label2,
-        data: mockData.data2,
-        backgroundColor: gradient2,
-        borderColor: mockData.borderColor2,
-        fill: true,
-        yAxisID: 'y',
-        pointRadius: 0,
-      },
-    ],
-  };
-};
-
-export const customCanvasBackgroundColor = {
-  id: 'customCanvasBackgroundColor',
-  beforeDraw: (chart, options) => {
-    const { ctx } = chart;
-    ctx.save();
-    ctx.globalCompositeOperation = 'destination-over';
-    ctx.fillStyle = options.color || '#2C303B';
-    ctx.fillRect(0, 0, chart.width, chart.height);
-    ctx.restore();
-  },
-};
+) => ({
+  labels: mockData.xLabels,
+  datasets: [
+    {
+      label: mockData.label1,
+      data: mockData.data1,
+      backgroundColor: gradient1,
+      borderColor: mockData.borderColor1,
+      fill: true,
+      yAxisID: 'y1',
+      pointRadius: 0,
+    },
+    {
+      label: mockData.label2,
+      data: mockData.data2,
+      backgroundColor: gradient2,
+      borderColor: mockData.borderColor2,
+      fill: true,
+      yAxisID: 'y',
+      pointRadius: 0,
+    },
+  ],
+});

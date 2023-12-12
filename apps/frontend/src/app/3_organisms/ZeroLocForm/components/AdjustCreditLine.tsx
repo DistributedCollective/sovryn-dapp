@@ -6,7 +6,6 @@ import { SupportedTokens } from '@sovryn/contracts';
 import { ErrorLevel } from '@sovryn/ui';
 import { Decimal } from '@sovryn/utils';
 
-import { BORROW_ASSETS } from '../../../5_pages/ZeroPage/constants';
 import { useLiquityBaseParams } from '../../../5_pages/ZeroPage/hooks/useLiquityBaseParams';
 import {
   BITCOIN,
@@ -62,7 +61,9 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
   const [collateralAmountInput, setCollateralAmount, collateralAmount] =
     useAmountInput('');
   const [debtAmountInput, setDebtAmount, debtAmount] = useAmountInput('');
-  const [debtToken, setDebtToken] = useState<SupportedTokens>(BORROW_ASSETS[0]);
+  const [debtToken, setDebtToken] = useState<SupportedTokens>(
+    SupportedTokens.zusd,
+  );
   const [maxOriginationFeeRate, setMaxOriginationFeeRate] = useState('0');
 
   const debtSize = useMemo(() => decimalic(debtAmount), [debtAmount]);

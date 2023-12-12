@@ -6,12 +6,12 @@ import React from 'react';
 import { ContextLink } from './ContextLink';
 
 describe('ContextLink', () => {
-  it('should render children and show tooltip on hover', () => {
+  it('should render children and show tooltip on click', () => {
     const { getByText } = render(
       <ContextLink tooltipContent="Tooltip">Link</ContextLink>,
     );
     const link = getByText('Link');
-    userEvent.hover(link);
+    userEvent.click(link);
     const tooltip = getByText('Tooltip');
     expect(tooltip).toBeInTheDocument();
   });

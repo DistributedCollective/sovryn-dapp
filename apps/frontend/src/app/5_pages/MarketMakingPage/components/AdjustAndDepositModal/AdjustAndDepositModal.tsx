@@ -103,7 +103,7 @@ export const AdjustAndDepositModal: FC<AdjustAndDepositModalProps> = ({
   const [hasDisclaimerBeenChecked, setHasDisclaimerBeenChecked] =
     useState(false);
 
-  const maxTokenToDepositAmount = useGetMaxDeposit(pool.assetA, isDeposit);
+  const maxTokenToDepositAmount = useGetMaxDeposit(pool, isDeposit);
 
   const maxBalance = useMemo(
     () => (isDeposit ? maxTokenToDepositAmount : balanceA),

@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useMemo } from 'react';
+import React, { FC, useCallback, useEffect, useMemo, useRef } from 'react';
 
 import { t } from 'i18next';
 import { useNavigate } from 'react-router-dom';
@@ -23,14 +23,17 @@ const ammPools = AmmLiquidityPoolDictionary.list();
 type PoolsTableProps = {
   activePool?: string;
   setActivePool: (poolKey: string) => void;
+  shouldScroll?: boolean;
 };
 
 export const PoolsTable: FC<PoolsTableProps> = ({
   activePool,
   setActivePool,
+  shouldScroll = false,
 }) => {
   const navigate = useNavigate();
   const { account } = useAccount();
+  const tableRef = useRef<HTMLDivElement>(null);
 
   const expandedIndex = useMemo(
     () => ammPools.findIndex(pool => pool.key === activePool),
@@ -39,7 +42,10 @@ export const PoolsTable: FC<PoolsTableProps> = ({
 
   const generateRowTitle = useCallback(
     (pool: AmmLiquidityPool) => (
-      <div className="flex items-center justify-between w-full">
+      <div
+        className="flex items-center justify-between w-full"
+        data-pool-key={pool.key}
+      >
         <AssetPairRenderer
           asset1={pool.assetA}
           asset2={pool.assetB}
@@ -64,8 +70,19 @@ export const PoolsTable: FC<PoolsTableProps> = ({
     [],
   );
 
+  useEffect(() => {
+    if (shouldScroll && tableRef.current && activePool) {
+      const activeRow = tableRef.current.querySelector(
+        `[data-pool-key="${activePool}"]`,
+      );
+      if (activeRow) {
+        activeRow.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    }
+  }, [activePool, shouldScroll]);
+
   return (
-    <div className="bg-gray-90 py-4 px-4 rounded w-full mt-8">
+    <div ref={tableRef} className="bg-gray-90 py-4 px-4 rounded w-full mt-8">
       {account && (
         <div className="flex justify-end mb-2.5">
           <Button

@@ -29,6 +29,7 @@ export const renderBalanceChange = (item: LiquidityHistoryItem) => (
         : decimalic(item.amount).mul(-1)
     }
     suffix={getTokenDisplayName(item.reserveToken.symbol || '')}
+    prefix={item.type === LiquidityHistoryType.Added ? '+' : ''}
   />
 );
 

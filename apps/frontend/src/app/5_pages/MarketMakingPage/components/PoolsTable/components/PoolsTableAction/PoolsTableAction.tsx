@@ -1,7 +1,8 @@
-import React, { FC, useCallback, useMemo, useState } from 'react';
+import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 
 import { t } from 'i18next';
 
+import { SupportedTokens } from '@sovryn/contracts';
 import {
   ButtonStyle,
   ButtonSize,
@@ -12,6 +13,7 @@ import {
 import { Decimal } from '@sovryn/utils';
 
 import { useAccount } from '../../../../../../../hooks/useAccount';
+import { useBlockNumber } from '../../../../../../../hooks/useBlockNumber';
 import { useMaintenance } from '../../../../../../../hooks/useMaintenance';
 import { translations } from '../../../../../../../locales/i18n';
 import { useCheckPoolMaintenance } from '../../../../hooks/useCheckPoolMaintenance';
@@ -25,11 +27,17 @@ type PoolsTableActionProps = {
 
 export const PoolsTableAction: FC<PoolsTableActionProps> = ({ pool }) => {
   const { account } = useAccount();
+  const { value: block } = useBlockNumber();
 
   const { checkMaintenance, States } = useMaintenance();
   const poolLocked = useCheckPoolMaintenance(pool);
 
-  const { balanceA: poolBalance } = useGetUserInfo(pool);
+  const { balanceA: poolBalance, refetch } = useGetUserInfo(pool);
+
+  const isMynt = useMemo(
+    () => pool.assetA === SupportedTokens.mynt,
+    [pool.assetA],
+  );
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isInitialDeposit, setIsInitialDeposit] = useState(true);
@@ -60,6 +68,10 @@ export const PoolsTableAction: FC<PoolsTableActionProps> = ({ pool }) => {
     setIsModalOpen(false);
   }, []);
 
+  useEffect(() => {
+    refetch();
+  }, [refetch, block]);
+
   return (
     <div className="flex items-center justify-center lg:justify-end w-full">
       <Tooltip
@@ -69,16 +81,39 @@ export const PoolsTableAction: FC<PoolsTableActionProps> = ({ pool }) => {
         children={
           <>
             {!account || poolBalance.lte(Decimal.ZERO) ? (
-              <Button
-                style={ButtonStyle.primary}
-                size={ButtonSize.small}
-                text={t(translations.common.deposit)}
-                dataAttribute="pools-table-deposit-button"
-                className="w-full lg:w-auto prevent-row-click"
-                disabledStyle={actionLocked}
-                disabled={!account}
-                onClick={handleDepositClick}
-              />
+              isMynt ? (
+                <Tooltip
+                  children={
+                    <div>
+                      <Button
+                        style={ButtonStyle.primary}
+                        size={ButtonSize.small}
+                        text={t(translations.common.deposit)}
+                        dataAttribute="pools-table-deposit-button"
+                        className="w-full lg:w-auto prevent-row-click"
+                        disabled
+                      />
+                    </div>
+                  }
+                  content={t(
+                    translations.marketMakingPage.marketMakingOperations
+                      .depositNotAllowed,
+                  )}
+                  dataAttribute="pools-table-deposit-button-tooltip"
+                  className="w-full lg:w-auto prevent-row-click"
+                />
+              ) : (
+                <Button
+                  style={ButtonStyle.primary}
+                  size={ButtonSize.small}
+                  text={t(translations.common.deposit)}
+                  dataAttribute="pools-table-deposit-button"
+                  className="w-full lg:w-auto prevent-row-click"
+                  disabledStyle={actionLocked}
+                  disabled={!account}
+                  onClick={handleDepositClick}
+                />
+              )
             ) : (
               <Button
                 style={ButtonStyle.secondary}

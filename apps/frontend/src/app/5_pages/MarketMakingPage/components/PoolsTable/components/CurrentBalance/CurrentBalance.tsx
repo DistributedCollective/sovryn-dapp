@@ -56,7 +56,7 @@ export const CurrentBalance: FC<CurrentBalanceProps> = ({
   return account ? (
     <>
       {showLabel && hasBalance && (
-        <div className="flex justify-between items-start bg-gray-70 rounded-b -mt-2 px-3 pt-2 pb-3 text-xs">
+        <div className="flex justify-between items-start bg-gray-70 rounded-b -mt-2 mb-1 px-3 pt-2 pb-3 text-xs">
           <span className="text-xs font-medium">
             {t(translations.marketMakingPage.poolsTable.balance)}
           </span>

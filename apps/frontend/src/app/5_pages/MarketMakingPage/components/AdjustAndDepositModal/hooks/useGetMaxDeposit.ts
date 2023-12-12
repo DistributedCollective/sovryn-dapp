@@ -7,27 +7,54 @@ import { defaultChainId } from '../../../../../../config/chains';
 
 import { GAS_LIMIT } from '../../../../../../constants/gasLimits';
 import { useAssetBalance } from '../../../../../../hooks/useAssetBalance';
+import { useGasPrice } from '../../../../../../hooks/useGasPrice';
 import { useGetTokenContract } from '../../../../../../hooks/useGetContract';
-import { useMaxAssetBalance } from '../../../../../../hooks/useMaxAssetBalance';
-import { getRskChainId } from '../../../../../../utils/chain';
+import { composeGas } from '../../../../../../utils/helpers';
 import { useGetTokenPrice } from '../../../../BorrowPage/hooks/useGetTokenPrice';
+import { AmmLiquidityPool } from '../../../utils/AmmLiquidityPool';
+import { useGetPoolsBalance } from './useGetPoolsBalance';
 
 export const useGetMaxDeposit = (
-  asset: SupportedTokens,
+  pool: AmmLiquidityPool,
   isDeposit: boolean,
 ) => {
-  const { balance: balanceTokenB } = useMaxAssetBalance(
+  const { balance: balanceTokenA } = useAssetBalance(
+    pool.assetA,
+    defaultChainId,
+  );
+  const { balance: balanceTokenB } = useAssetBalance(
     SupportedTokens.rbtc,
     defaultChainId,
-    isDeposit
-      ? GAS_LIMIT.MARKET_MAKING_ADD_LIQUIDITY
-      : GAS_LIMIT.MARKET_MAKING_REMOVE_LIQUIDITY,
   );
 
-  const { balance: balanceTokenA } = useAssetBalance(asset, getRskChainId());
-  const contractTokenA = useGetTokenContract(asset, getRskChainId());
+  const { poolBalanceA, poolBalanceB } = useGetPoolsBalance(pool);
+
+  const contractTokenA = useGetTokenContract(pool.assetA, defaultChainId);
+
+  const gasPrice = useGasPrice(defaultChainId);
+
+  const gasLimit = useMemo(
+    () =>
+      composeGas(
+        gasPrice || '0',
+        isDeposit
+          ? GAS_LIMIT.MARKET_MAKING_ADD_LIQUIDITY
+          : GAS_LIMIT.MARKET_MAKING_REMOVE_LIQUIDITY,
+      ),
+    [gasPrice, isDeposit],
+  );
+
+  const balanceBtcWithoutGas = useMemo(
+    () => balanceTokenB.sub(gasLimit),
+    [balanceTokenB, gasLimit],
+  );
 
   const { data } = useGetTokenPrice(contractTokenA?.address || '');
+
+  const maxAllowedTokenAmount: Decimal = useMemo(
+    () => balanceBtcWithoutGas.mul(poolBalanceA).div(poolBalanceB),
+    [poolBalanceA, poolBalanceB, balanceBtcWithoutGas],
+  );
 
   const priceTokenA = useMemo(() => {
     if (!data?.token?.lastPriceBtc) {
@@ -40,11 +67,14 @@ export const useGetMaxDeposit = (
     if (!balanceTokenB || !priceTokenA || !balanceTokenA) {
       return Decimal.ZERO;
     }
-    const maxDeposit = balanceTokenB.mul(priceTokenA);
+    const maxDeposit = balanceTokenB.sub(gasLimit).mul(priceTokenA);
+
     return balanceTokenB.mul(priceTokenA).lt(balanceTokenA)
       ? maxDeposit
       : balanceTokenA;
-  }, [balanceTokenA, balanceTokenB, priceTokenA]);
+  }, [balanceTokenA, balanceTokenB, priceTokenA, gasLimit]);
 
-  return maxDepositValue;
+  return maxDepositValue.lte(maxAllowedTokenAmount)
+    ? maxDepositValue
+    : maxAllowedTokenAmount;
 };

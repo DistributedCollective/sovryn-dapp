@@ -1,5 +1,12 @@
 # frontend
 
+## 1.0.38
+
+### Patch Changes
+
+- 4b901463: SOV-3560: disable permit functionality for DLLR
+- 1d44cce6: SOV-3457: Show treasury proposal executable details
+
 ## 1.0.37
 
 ### Patch Changes

@@ -24,6 +24,8 @@
     "@sovryn/ui": "*",
     "@sovryn/utils": "0.0.1",
     "bitcoin-address-validation": "2.2.1",
+    "bitcoinjs-lib": "6.1.5",
+    "bolt11": "1.4.1",
     "chart.js": "4.1.1",
     "classnames": "2.3.2",
     "date-fns": "2.30.0",
@@ -38,6 +40,7 @@
     "lodash.set": "4.3.2",
     "nanoid": "4.0.0",
     "qrcode.react": "3.1.0",
+    "randombytes": "2.1.0",
     "react": "18.2.0",
     "react-chartjs-2": "5.1.0",
     "react-countup": "6.4.0",
@@ -81,9 +84,9 @@
     "git-revision-webpack-plugin": "^5.0.0",
     "stream-browserify": "^3.0.0",
     "ts-loader": "^9.3.1",
+    "ts-prune": "0.10.3",
     "typescript": "^4.7.4",
-    "webpack": "^5.74.0",
-    "ts-prune": "0.10.3"
+    "webpack": "^5.74.0"
   },
   "scripts": {
     "predev": "yarn generate:graphql",

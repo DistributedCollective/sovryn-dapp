@@ -15954,6 +15954,23 @@ export type GetTradeVolumeQuery = {
   poolVolumeItems: Array<{ __typename?: 'PoolVolumeItem'; btcAmount: string }>;
 };
 
+export type GetTradingRewardsQueryVariables = Exact<{
+  id: Scalars['ID'];
+}>;
+
+export type GetTradingRewardsQuery = {
+  __typename?: 'Query';
+  userRewardsEarnedHistory?: {
+    __typename?: 'UserRewardsEarnedHistory';
+    availableTradingRewards: string;
+    totalTradingRewards: string;
+    totalLendingRewards: string;
+    totalLiquidityRewards: string;
+    totalStakingRewards: string;
+    totalFeeWithdrawn: string;
+  } | null;
+};
+
 export type GetTransactionsQueryVariables = Exact<{
   limit: Scalars['Int'];
 }>;
@@ -18478,6 +18495,69 @@ export type GetTradeVolumeLazyQueryHookResult = ReturnType<
 export type GetTradeVolumeQueryResult = Apollo.QueryResult<
   GetTradeVolumeQuery,
   GetTradeVolumeQueryVariables
+>;
+export const GetTradingRewardsDocument = gql`
+  query getTradingRewards($id: ID!) {
+    userRewardsEarnedHistory(id: $id) {
+      availableTradingRewards
+      totalTradingRewards
+      totalLendingRewards
+      totalLiquidityRewards
+      totalStakingRewards
+      totalFeeWithdrawn
+    }
+  }
+`;
+
+/**
+ * __useGetTradingRewardsQuery__
+ *
+ * To run a query within a React component, call `useGetTradingRewardsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetTradingRewardsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetTradingRewardsQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useGetTradingRewardsQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    GetTradingRewardsQuery,
+    GetTradingRewardsQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    GetTradingRewardsQuery,
+    GetTradingRewardsQueryVariables
+  >(GetTradingRewardsDocument, options);
+}
+export function useGetTradingRewardsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    GetTradingRewardsQuery,
+    GetTradingRewardsQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    GetTradingRewardsQuery,
+    GetTradingRewardsQueryVariables
+  >(GetTradingRewardsDocument, options);
+}
+export type GetTradingRewardsQueryHookResult = ReturnType<
+  typeof useGetTradingRewardsQuery
+>;
+export type GetTradingRewardsLazyQueryHookResult = ReturnType<
+  typeof useGetTradingRewardsLazyQuery
+>;
+export type GetTradingRewardsQueryResult = Apollo.QueryResult<
+  GetTradingRewardsQuery,
+  GetTradingRewardsQueryVariables
 >;
 export const GetTransactionsDocument = gql`
   query getTransactions($limit: Int!) {

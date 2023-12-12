@@ -10,7 +10,7 @@ export const DEBT_TABS = [
   // {
   //   tabAction: DebtTabAction.Borrow,
   //   label: t(translations.fixedInterestPage.adjustLoanDialog.actions.borrow),
-  //   activeClassName: ACTIVE_CLASSNAME,
+  //   activeClassName: TAB_ACTIVE_CLASSNAME,
   // },
   {
     tabAction: DebtTabAction.Repay,

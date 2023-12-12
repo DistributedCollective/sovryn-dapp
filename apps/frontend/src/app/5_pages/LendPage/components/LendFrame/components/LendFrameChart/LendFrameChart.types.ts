@@ -4,9 +4,3 @@ export type PoolHistoryData = {
   borrow_apr: string;
   timestamp: string;
 };
-
-export type MockData = {
-  dates: string[];
-  lendApr: number[];
-  totalLiquidity: number[];
-};

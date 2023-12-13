@@ -1045,7 +1045,7 @@
                 "weeklyRewardsEstimation": "Weekly rewards estimation",
                 "weeklyRewardsEstimationInfo": "Based on the current return rate, converting all eligible rewards to BTC at the current market price. You can earn more or less depending on the current value of rewards and the pool volume."
             },
-            "initialDepositDisclaimer": "I understand that my deposit will be at risk of divergence loss as the price of each asset changes. <0>Learn more</0>"
+            "initialDepositDisclaimer": "I understand that my deposit will be at risk of divergence loss as the price of each asset changes."
         },
         "marketMakingOperations": {
             "deposit": "Deposit",

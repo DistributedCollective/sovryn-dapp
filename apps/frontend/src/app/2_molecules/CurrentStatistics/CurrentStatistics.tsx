@@ -9,7 +9,7 @@ import styles from './CurrentStatistics.module.css';
 
 export type CurrentStatisticsProps = {
   symbol: SupportedTokens;
-  symbol2?: SupportedTokens; // TODO: Use it to render two assets in AssetRenderer
+  symbol2?: SupportedTokens;
   label1: string;
   label2: string;
   value1: React.ReactNode;

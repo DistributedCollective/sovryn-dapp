@@ -1,7 +1,6 @@
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 
 import { t } from 'i18next';
-import { Trans } from 'react-i18next';
 
 import { SupportedTokens } from '@sovryn/contracts';
 import {
@@ -11,7 +10,6 @@ import {
   AmountInput,
   FormGroup,
   Checkbox,
-  Link,
   Button,
   ButtonType,
   ButtonStyle,
@@ -24,7 +22,6 @@ import { AssetRenderer } from '../../../../2_molecules/AssetRenderer/AssetRender
 import { CurrentStatistics } from '../../../../2_molecules/CurrentStatistics/CurrentStatistics';
 import { LabelWithTabsAndMaxButton } from '../../../../2_molecules/LabelWithTabsAndMaxButton/LabelWithTabsAndMaxButton';
 import { MaxButton } from '../../../../2_molecules/MaxButton/MaxButton';
-import { WIKI_LINKS } from '../../../../../constants/links';
 import { useAccount } from '../../../../../hooks/useAccount';
 import { useWeiAmountInput } from '../../../../../hooks/useWeiAmountInput';
 import { translations } from '../../../../../locales/i18n';
@@ -267,18 +264,7 @@ export const AdjustAndDepositModal: FC<AdjustAndDepositModalProps> = ({
               <Checkbox
                 checked={hasDisclaimerBeenChecked}
                 onChangeValue={setHasDisclaimerBeenChecked}
-                label={
-                  <Trans
-                    i18nKey={t(pageTranslations.initialDepositDisclaimer)}
-                    components={[
-                      <Link
-                        text={t(translations.common.learnMore)}
-                        href={WIKI_LINKS.BORROWING} // TODO: Find out what link should be here, it's not mentioned in the PRD
-                        className="no-underline"
-                      />,
-                    ]}
-                  />
-                }
+                label={t(pageTranslations.initialDepositDisclaimer)}
               />
             </div>
           )}

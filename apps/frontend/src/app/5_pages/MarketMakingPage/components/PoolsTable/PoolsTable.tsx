@@ -11,7 +11,7 @@ import { useAccount } from '../../../../../hooks/useAccount';
 import { translations } from '../../../../../locales/i18n';
 import { AmmLiquidityPool } from '../../utils/AmmLiquidityPool';
 import { AmmLiquidityPoolDictionary } from '../../utils/AmmLiquidityPoolDictionary';
-import { PoolDetails } from '../PoolDetails/PoolDetails';
+import { PoolChart } from '../PoolDetails/components/PoolChart/PoolChart';
 import { PoolsStatistics } from '../PoolStatistics/PoolStatistics';
 import { COLUMNS_CONFIG } from './PoolsTable.constants';
 import styles from './PoolsTable.module.css';
@@ -63,7 +63,7 @@ export const PoolsTable: FC<PoolsTableProps> = ({
           <PoolsStatistics pool={pool} />
         </div>
         <div className="lg:w-3/4 lg:p-4">
-          <PoolDetails pool={pool} />
+          <PoolChart pool={pool} />
         </div>
       </div>
     ),

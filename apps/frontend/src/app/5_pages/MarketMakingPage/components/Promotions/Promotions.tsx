@@ -8,6 +8,7 @@ import { Paragraph, ParagraphSize, Button, ButtonStyle } from '@sovryn/ui';
 import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { BannersCarousel } from '../../../../2_molecules/BannersCarousel/BannersCarousel';
 import { PromoCard } from '../../../../2_molecules/PromoCard/PromoCard';
+import { WIKI_LINKS } from '../../../../../constants/links';
 import { getTokenDisplayName } from '../../../../../constants/tokens';
 import { translations } from '../../../../../locales/i18n';
 import { useGetPromotionsData } from '../../hooks/useGetPromotionsData';
@@ -38,7 +39,7 @@ export const Promotions: FC<PoolsTableProps> = ({ setActivePool, onClick }) => {
           {t(translations.marketMakingPage.promotions.p2)}
           <Button
             text={t(translations.stakePage.stakingRewards.learnMoreLink)}
-            href={''}
+            href={WIKI_LINKS.YIELD_FARMING}
             className="ml-1"
             style={ButtonStyle.ghost}
             hrefExternal

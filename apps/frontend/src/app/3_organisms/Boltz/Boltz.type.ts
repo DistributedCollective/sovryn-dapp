@@ -1,25 +1,44 @@
-export interface CreateReverseSwapResponse {
+export type CreateReverseSwapResponse = {
   id: string;
   invoice: string;
-  refundAddress: string;
   lockupAddress: string;
+  refundAddress: string;
   timeoutBlockHeight: number;
   onchainAmount: number;
-}
+};
 
-export interface CreateSwapResponse {
+export type ReverseSwap = CreateReverseSwapResponse & {
+  asset: string;
+  date: number;
+  onchainAddress: string;
+  preimage: string;
+  receiveAmount: number;
+  reverse: boolean;
+  sendAmount: number;
+};
+
+export type CreateSwapResponse = {
   id: string;
-  invoice: string;
+  address: string;
+  acceptZeroConf: boolean;
   claimAddress: string;
   timeoutBlockHeight: number;
   expectedAmount: number;
-}
+};
 
-export interface CheckSwapStatusResponse {
+export type Swap = CreateSwapResponse & {
+  invoice: string;
+  asset: string;
+  date: number;
+  onchainAddress: string;
+  reverse: boolean;
+};
+
+export type CheckSwapStatusResponse = {
   status: string;
-}
+};
 
-export interface GetContractsResponse {
+export type GetContractsResponse = {
   [key: string]: {
     network: {
       chainId: number;
@@ -29,9 +48,9 @@ export interface GetContractsResponse {
       ERC20Swap: string;
     };
   };
-}
+};
 
-export interface BoltzPair {
+export type BoltzPair = {
   hash: string;
   rate: number;
   limits: {
@@ -62,4 +81,4 @@ export interface BoltzPair {
       };
     };
   };
-}
+};

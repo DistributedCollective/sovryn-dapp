@@ -78,6 +78,14 @@ export const dateFormat = (timestamp: number) => {
   return stamp.format(`YYYY-MM-DD HH:MM:ss +UTC`);
 };
 
+export const getNextDay = (day: number) => {
+  if (day < 1 || day > 7) {
+    throw new Error('Invalid day, must be integer in range 1-7');
+  }
+
+  return dayjs().utc().startOf('week').add(1, 'week').day(day).format('MMMM D');
+};
+
 export const signMessage = async (
   provider: EIP1193Provider,
   message: string,

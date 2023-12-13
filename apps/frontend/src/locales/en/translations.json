@@ -1005,7 +1005,7 @@
         "subtitle": "Earn fees from AMM swaps",
         "promotions": {
             "p1": "Provide a 1:1 ratio of two assets to the AMM pool and instantly start accruing your share of weekly rewards.",
-            "p2": "Next rewards recalibration on October 17.",
+            "p2": "Next rewards recalibration on {{recalibrationDate}}.",
             "learnMoreLink": "Learn more"
         },
         "rewards": "Rewards",

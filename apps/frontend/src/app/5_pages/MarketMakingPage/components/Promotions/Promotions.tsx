@@ -11,6 +11,7 @@ import { PromoCard } from '../../../../2_molecules/PromoCard/PromoCard';
 import { WIKI_LINKS } from '../../../../../constants/links';
 import { getTokenDisplayName } from '../../../../../constants/tokens';
 import { translations } from '../../../../../locales/i18n';
+import { getNextDay } from '../../../../../utils/helpers';
 import { useGetPromotionsData } from '../../hooks/useGetPromotionsData';
 
 type PoolsTableProps = {
@@ -20,6 +21,7 @@ type PoolsTableProps = {
 
 export const Promotions: FC<PoolsTableProps> = ({ setActivePool, onClick }) => {
   const { data, loading } = useGetPromotionsData();
+  const recalibrationDate = getNextDay(2);
 
   const handleClick = useCallback(
     (poolKey: string) => {
@@ -36,7 +38,9 @@ export const Promotions: FC<PoolsTableProps> = ({ setActivePool, onClick }) => {
           {t(translations.marketMakingPage.promotions.p1)}
         </Paragraph>
         <Paragraph className="mb-6 text-gray-30" size={ParagraphSize.base}>
-          {t(translations.marketMakingPage.promotions.p2)}
+          {t(translations.marketMakingPage.promotions.p2, {
+            recalibrationDate,
+          })}
           <Button
             text={t(translations.stakePage.stakingRewards.learnMoreLink)}
             href={WIKI_LINKS.YIELD_FARMING}

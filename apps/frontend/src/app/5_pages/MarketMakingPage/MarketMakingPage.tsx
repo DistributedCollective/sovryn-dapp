@@ -30,7 +30,7 @@ const MarketMakingPage: FC = () => {
         <title>{t(translations.marketMakingPage.meta.title)}</title>
       </Helmet>
 
-      <div className="w-full flex flex-col items-center text-gray-10 mt-6 sm:mt-24 max-w-[74.75rem]">
+      <div className="w-full flex flex-col items-center text-gray-10 mt-6 mb-4 sm:mt-24 max-w-[74.75rem]">
         <Heading className="text-center mb-1 lg:mb-3 text-base lg:text-2xl">
           {t(translations.marketMakingPage.title)}
         </Heading>

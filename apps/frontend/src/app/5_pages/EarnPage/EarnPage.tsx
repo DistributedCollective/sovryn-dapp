@@ -56,7 +56,8 @@ const EarnPage: FC = () => {
   const [poolBalance, setPoolBalance] = useState(Decimal.ZERO);
   const [ZUSDInStabilityPool, setZUSDInStabilityPool] = useState(Decimal.ZERO);
   const [rewardsAmount, setRewardsAmount] = useState(Decimal.ZERO);
-  const [token, setToken] = useState<SupportedTokens>(SupportedTokens.dllr);
+  const [token, setToken] = useState<SupportedTokens>(SupportedTokens.zusd);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [isLoading, setIsLoading] = useState(false);
   const { apy } = useGetSubsidiesAPR();
 
@@ -176,20 +177,20 @@ const EarnPage: FC = () => {
     [setAmount],
   );
 
-  const { weiBalance: zusdWeiBalance } = useAssetBalance(SupportedTokens.zusd);
-  const { weiBalance: dllrWeiBalance } = useAssetBalance(SupportedTokens.dllr);
+  // const { weiBalance: zusdWeiBalance } = useAssetBalance(SupportedTokens.zusd);
+  // const { weiBalance: dllrWeiBalance } = useAssetBalance(SupportedTokens.dllr);
 
-  useEffect(() => {
-    if (
-      isDeposit &&
-      Number(zusdWeiBalance) > 0 &&
-      Number(dllrWeiBalance) === 0
-    ) {
-      setToken(SupportedTokens.zusd);
-    } else {
-      setToken(SupportedTokens.dllr);
-    }
-  }, [dllrWeiBalance, zusdWeiBalance, isDeposit, isLoading]);
+  // useEffect(() => {
+  //   if (
+  //     isDeposit &&
+  //     Number(zusdWeiBalance) > 0 &&
+  //     Number(dllrWeiBalance) === 0
+  //   ) {
+  //     setToken(SupportedTokens.zusd);
+  //   } else {
+  //     setToken(SupportedTokens.dllr);
+  //   }
+  // }, [dllrWeiBalance, zusdWeiBalance, isDeposit, isLoading]);
 
   const getAssetRenderer = useCallback(
     (token: SupportedTokens) => (

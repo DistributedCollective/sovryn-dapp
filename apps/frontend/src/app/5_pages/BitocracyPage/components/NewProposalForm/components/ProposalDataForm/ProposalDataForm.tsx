@@ -29,10 +29,7 @@ import { defaultChainId } from '../../../../../../../config/chains';
 import { translations } from '../../../../../../../locales/i18n';
 import { validateURL } from '../../../../../../../utils/helpers';
 import { useProposalContext } from '../../../../contexts/NewProposalContext';
-import {
-  ProposalCreationDetails,
-  ProposalCreationType,
-} from '../../../../contexts/ProposalContext.types';
+import { ProposalCreationType } from '../../../../contexts/ProposalContext.types';
 import { Governor } from '../../NewProposalForm.types';
 import {
   MAXIMUM_SUMMARY_LENGTH,
@@ -45,8 +42,6 @@ import { generateFormGroupLabel } from './ProposalDataForm.utils';
 const ACTIVE_CLASSNAME = 'text-primary-20';
 
 export type ProposalDataFormProps = {
-  value: ProposalCreationDetails;
-  onChange: (value: ProposalCreationDetails) => void;
   proposalType: ProposalCreationType;
   onBack: () => void;
   onSubmit: () => void;
@@ -55,16 +50,17 @@ export type ProposalDataFormProps = {
 };
 
 export const ProposalDataForm: FC<ProposalDataFormProps> = ({
-  value,
-  onChange,
   proposalType,
   onBack,
   onSubmit,
   onPreview,
   updateConfirmButtonState,
 }) => {
-  const [form, setForm] = useState<ProposalCreationDetails>(value);
-  const { setGovernor } = useProposalContext();
+  const {
+    setGovernor,
+    details: form,
+    setDetails: setForm,
+  } = useProposalContext();
   const [governorOwner, setGovernorOwner] = useState('');
   const [index, setIndex] = useState(0);
   const handleInputChangeInput = useCallback(
@@ -72,7 +68,7 @@ export const ProposalDataForm: FC<ProposalDataFormProps> = ({
       const { name, value } = event.target;
       setForm(prevForm => ({ ...prevForm, [name]: value }));
     },
-    [],
+    [setForm],
   );
 
   const handleInputChangeTextarea = useCallback(
@@ -80,7 +76,7 @@ export const ProposalDataForm: FC<ProposalDataFormProps> = ({
       const { name, value } = event.target;
       setForm(prevForm => ({ ...prevForm, [name]: value }));
     },
-    [],
+    [setForm],
   );
 
   const isValidUrl = useMemo(() => validateURL(form.link), [form.link]);
@@ -98,19 +94,16 @@ export const ProposalDataForm: FC<ProposalDataFormProps> = ({
   }, [isSubmitDisabled, proposalType, updateConfirmButtonState]);
 
   const handleBack = useCallback(() => {
-    onChange(form);
     onBack();
-  }, [form, onBack, onChange]);
+  }, [onBack]);
 
   const handleSubmit = useCallback(() => {
-    onChange(form);
     onSubmit();
-  }, [form, onChange, onSubmit]);
+  }, [onSubmit]);
 
   const handlePreview = useCallback(() => {
-    onChange(form);
     onPreview();
-  }, [form, onChange, onPreview]);
+  }, [onPreview]);
 
   const tabs = useMemo(
     () => [
@@ -142,10 +135,6 @@ export const ProposalDataForm: FC<ProposalDataFormProps> = ({
     ],
     [form.text, handleInputChangeTextarea],
   );
-
-  useEffect(() => {
-    setForm(value);
-  }, [value]);
 
   useEffect(() => {
     if (proposalType === ProposalCreationType.Proclamation && !governorOwner) {

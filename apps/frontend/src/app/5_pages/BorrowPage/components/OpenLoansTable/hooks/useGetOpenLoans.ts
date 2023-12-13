@@ -114,6 +114,10 @@ export const useGetOpenLoans = () => {
               item.interestOwedPerDay,
             ),
             startMargin: Decimal.fromBigNumberString(item.startMargin),
+            currentMargin: Decimal.fromBigNumberString(item.currentMargin),
+            maintenanceMargin: Decimal.fromBigNumberString(
+              item.maintenanceMargin,
+            ),
           };
         })
         .filter(Boolean)

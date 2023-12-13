@@ -7,11 +7,11 @@ import { CollateralTabAction, DebtTabAction } from './AdjustLoanForm.types';
 export const INTEREST_DURATION = 3600; // according to the PRD
 
 export const DEBT_TABS = [
-  // {
-  //   tabAction: DebtTabAction.Borrow,
-  //   label: t(translations.fixedInterestPage.adjustLoanDialog.actions.borrow),
-  //   activeClassName: TAB_ACTIVE_CLASSNAME,
-  // },
+  {
+    tabAction: DebtTabAction.Borrow,
+    label: t(translations.fixedInterestPage.adjustLoanDialog.actions.borrow),
+    activeClassName: TAB_ACTIVE_CLASSNAME,
+  },
   {
     tabAction: DebtTabAction.Repay,
     label: t(translations.fixedInterestPage.adjustLoanDialog.actions.repay),

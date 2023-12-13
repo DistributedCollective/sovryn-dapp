@@ -43,7 +43,7 @@ export const CloseCreditLine: FC<CloseCreditLineProps> = ({
 }) => {
   const { isRecoveryMode } = useZeroData(rbtcPrice);
   const [creditToken, setCreditToken] = useState<SupportedTokens>(
-    SupportedTokens.dllr,
+    SupportedTokens.zusd,
   );
 
   const { checkMaintenance, States } = useMaintenance();
@@ -89,7 +89,7 @@ export const CloseCreditLine: FC<CloseCreditLineProps> = ({
 
   const tokenOptions = useMemo(
     () =>
-      [SupportedTokens.zusd, SupportedTokens.dllr].map(token => ({
+      [SupportedTokens.zusd /*, SupportedTokens.dllr*/].map(token => ({
         value: token,
         label: (
           <AssetRenderer

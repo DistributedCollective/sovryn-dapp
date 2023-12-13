@@ -108,3 +108,11 @@ export const normalizeToken = (token: string): SupportedTokens => {
 
   return SupportedTokens[token] || token;
 };
+
+export const normalizeTokenWrapped = (token: string): SupportedTokens => {
+  if (isBtcBasedAsset(token)) {
+    return SupportedTokens.wrbtc;
+  }
+
+  return normalizeToken(token);
+};

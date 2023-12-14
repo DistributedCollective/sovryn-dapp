@@ -1,5 +1,12 @@
 # frontend
 
+## 1.0.39
+
+### Patch Changes
+
+- dfbdc975: SOV-3466: Fix current Proposal parameter value mobile styles
+- 4987d37e: Market Making page
+
 ## 1.0.38
 
 ### Patch Changes

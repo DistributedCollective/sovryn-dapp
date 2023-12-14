@@ -351,11 +351,12 @@ export const Parameter: FC<ParameterProps> = ({ parameter }) => {
             <div className="gap-3 flex flex-col">{customParameterSection}</div>
           ) : (
             <div className="gap-6 flex flex-col mt-6">
-              <SimpleTable className="min-h-10 justify-center">
+              <SimpleTable className="min-h-10 justify-center px-1.5 sm:px-3">
                 <SimpleTableRow
                   label={t(translations.proposalPage.currentValue)}
                   value={parameterValue}
-                  className="flex justify-between"
+                  className="flex flex-col sm:flex-row justify-between"
+                  valueClassName="text-start sm:text-right mt-2 sm:mt-0"
                 />
               </SimpleTable>
 

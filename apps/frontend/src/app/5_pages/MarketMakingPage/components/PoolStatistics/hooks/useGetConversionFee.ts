@@ -7,7 +7,7 @@ export const useGetConversionFee = (poolToken: string) => {
   const { loading, data, refetch } = useGetConversionFeeQuery({
     client: rskClient,
     variables: {
-      smartToken: poolToken,
+      smartToken: poolToken.toLowerCase(),
     },
   });
 

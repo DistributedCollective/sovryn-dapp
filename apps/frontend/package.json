@@ -46,6 +46,7 @@
     "react-helmet-async": "1.3.0",
     "react-i18next": "12.0.0",
     "react-markdown": "8.0.7",
+    "react-multi-carousel": "2.8.4",
     "react-router-dom": "6.4.2",
     "react-scripts": "5.0.1",
     "react-timer-hook": "3.0.7",
@@ -81,9 +82,9 @@
     "git-revision-webpack-plugin": "^5.0.0",
     "stream-browserify": "^3.0.0",
     "ts-loader": "^9.3.1",
+    "ts-prune": "0.10.3",
     "typescript": "^4.7.4",
-    "webpack": "^5.74.0",
-    "ts-prune": "0.10.3"
+    "webpack": "^5.74.0"
   },
   "scripts": {
     "predev": "yarn generate:graphql",

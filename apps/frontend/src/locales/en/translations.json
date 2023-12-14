@@ -42,6 +42,7 @@
         "max": "max",
         "amount": "Amount",
         "deposit": "Deposit",
+        "adjust": "Adjust",
         "withdraw": "Withdraw",
         "txId": "TXID",
         "btc": "BTC",
@@ -64,7 +65,8 @@
         "transactionTypes": {
             "deposit": "Deposit",
             "withdrawal": "Withdrawal"
-        }
+        },
+        "learnMore": "Learn more"
     },
     "connectWalletButton": {
         "connect": "Get started",
@@ -95,7 +97,9 @@
                     "stabilityPool": "Stability pool",
                     "stabilityPoolDescription": "Earn BTC from Zero liquidations",
                     "staking": "Staking",
-                    "stakingDescription": "Gain voting power and earn fees"
+                    "stakingDescription": "Gain voting power and earn fees",
+                    "marketMaking": "Market making",
+                    "marketMakingDescription": "Earn fees from AMM swaps"
                 }
             },
             "convert": "Convert",
@@ -846,6 +850,7 @@
         "tabs": {
             "title": "Available rewards",
             "titles": {
+                "liquidityMining": "Liquidity mining",
                 "stabilityPool": "Stability pool",
                 "staking": "Staking",
                 "vesting": "Vesting"
@@ -894,6 +899,26 @@
             "stakingRevenue": "Staking revenue",
             "stakingRevenueLegacy": "Staking revenue (legacy)",
             "liquidityMiningError": "Your liquidity mining vesting contract holds more than {{count}} checkpoints worth of rewards. Please withdraw liquid rewards from your vesting contract to enable the 'Withdraw' button and claim additional rewards."
+        },
+        "liquidityMining": {
+            "rewardType": "Reward type",
+            "amount": "Amount",
+            "pool": "Pool",
+            "rewardTypeInfo": "Claiming will simultaneously claim all available liquidity mining rewards, both liquid and vested. For the vested rewards, claiming will automatically start a vesting period of 40 weeks with a maximum 4-week cliff. <0>Learn more</0>",
+            "rewardTypeInfoCTA": "Learn more",
+            "noRewards": "No rewards available",
+            "notConnected": "Connect wallet to check for rewards",
+            "types": {
+                "ammLPrewardsVested": "AMM LP rewards (vested)",
+                "ammLPrewardsLiquid": "AMM LP rewards (liquid)",
+                "lendingRewardsLiquid": "Lending rewards (liquid)",
+                "lendingRewardsVested": "Lending rewards (vested)",
+                "tradingFeeRebateLiquid": "Trading fee rebate (liquid)",
+                "tradingFeeRebateVested": "Trading fee rebate (vested)"
+            },
+            "actions": {
+                "claimAll": "Claim all"
+            }
         },
         "vesting": {
             "tx": {
@@ -971,6 +996,74 @@
             "adjust": "Adjust"
         },
         "apr": "APR"
+    },
+    "marketMakingPage": {
+        "meta": {
+            "title": "Market Making - Sovryn"
+        },
+        "title": "Market making",
+        "subtitle": "Earn fees from AMM swaps",
+        "promotions": {
+            "p1": "Provide a 1:1 ratio of two assets to the AMM pool and instantly start accruing your share of weekly rewards.",
+            "p2": "Next rewards recalibration on {{recalibrationDate}}.",
+            "learnMoreLink": "Learn more"
+        },
+        "rewards": "Rewards",
+        "poolsTable": {
+            "pair": "Pair",
+            "liquidity": "Liquidity",
+            "returnsRate": "Return rate",
+            "returnsInfo": "The return rate shown is based on swap fees, plus liquidity mining rewards (if applicable), earned by the given pool in the previous 24 hour period, extrapolated to show an estimated annual percentage rate of return.",
+            "volume": "24H volume",
+            "balance": "Balance"
+        },
+        "poolsTableReturns": {
+            "title": "Up to {{percent}}% APR",
+            "before": "Before liquidity mining rewards: {{percent}}%",
+            "after": "After liquidity mining rewards: {{percent}}%"
+        },
+        "poolStatistics": {
+            "lpFeeRate": "LP fee rate",
+            "lpFeeRateInfo": "The fee rate that is charged per swap and given to AMM LPs",
+            "bitocracyFeeRate": "Bitocracy fee rate",
+            "bitocracyFeeRateInfo": "The fee rate that is charged per swap and given to SOV stakers",
+            "totalSwapFeeRate": "Total fee rate",
+            "totalSwapFeeRateInfo": "The sum of the LP fee rate and Bitocracy fee rate"
+        },
+        "adjustAndDepositModal": {
+            "titles": {
+                "initialDeposit": "AMM pool deposit",
+                "adjust": "Adjust AMM pool balance"
+            },
+            "currentStatistics": {
+                "returnRate": "Return rate",
+                "currentBalance": "Current balance"
+            },
+            "newPoolStatistics": {
+                "newPoolBalance": "New pool balance",
+                "transferRewards": "Transfer rewards",
+                "weeklyRewardsEstimation": "Weekly rewards estimation",
+                "weeklyRewardsEstimationInfo": "Based on the current return rate, converting all eligible rewards to BTC at the current market price. You can earn more or less depending on the current value of rewards and the pool volume."
+            },
+            "initialDepositDisclaimer": "I understand that my deposit will be at risk of divergence loss as the price of each asset changes."
+        },
+        "marketMakingOperations": {
+            "deposit": "Deposit",
+            "withdraw": "Withdraw",
+            "depositNotAllowed": "Deposits to this pool are disabled"
+        },
+        "marketMakingTx": {
+            "deposit": "Deposit liquidity",
+            "withdraw": "Withdraw liquidity"
+        },
+        "form": {
+            "invalidAmountError": "Exceeds maximum amount"
+        },
+        "poolVolumeChart": {
+            "apr": "APR",
+            "volume": "Volume (BTC)",
+            "24hVolume": "24h volume (BTC)"
+        }
     },
     "borrowHistory": {
         "types": {
@@ -1055,9 +1148,19 @@
     "earnHistory": {
         "types": {
             "stabilityPool": "Stability pool",
-            "lending": "Lending"
+            "lending": "Lending",
+            "marketMaking": "Market making"
         },
         "lendingHistory": {
+            "columns": {
+                "balanceChange": "Balance change"
+            }
+        },
+        "marketMakingHistory": {
+            "types": {
+                "deposit": "Deposit",
+                "withdrawal": "Withdrawal"
+            },
             "columns": {
                 "balanceChange": "Balance change"
             }
@@ -1122,6 +1225,7 @@
             "transferGainToLineOfCredit": "Transfer gain to line of credit"
         },
         "stakingOperation": {
+            "liquidityMiningRewards": "Withdraw liquid reward",
             "stakingRevenue": "Withdraw staking revenue",
             "stakingSubsidies": "Withdraw staking subsidy"
         },
@@ -1131,6 +1235,7 @@
             "tokensStaked": "Tokens Staked"
         },
         "types": {
+            "liquidityMiningRewards": "Liquidity mining rewards",
             "stabilityPoolRewards": "Stability pool rewards",
             "stabilityPoolSubsidies": "Stability pool subsidies",
             "stakingRevenue": "Staking Revenue",
@@ -1316,6 +1421,10 @@
         "title": "Your voting power",
         "votingPower": "Voting power",
         "votingPowerShare": "Voting power share"
+    },
+    "promotion": {
+        "currentAPY": "Current APY",
+        "weeklyRewards": "Weekly rewards"
     },
     "newProposalTx": {
         "title": "Submit Proposal",

@@ -38,6 +38,9 @@ const RewardsPage = loadable(
   () => import('./app/5_pages/RewardsPage/RewardsPage'),
 );
 const LendPage = loadable(() => import('./app/5_pages/LendPage/LendPage'));
+const MarketMakingPage = loadable(
+  () => import('./app/5_pages/MarketMakingPage/MarketMakingPage'),
+);
 const StakePage = loadable(() => import('./app/5_pages/StakePage/StakePage'));
 const BorrowPage = loadable(
   () => import('./app/5_pages/BorrowPage/BorrowPage'),
@@ -89,6 +92,10 @@ const routes = [
       {
         path: '/earn/lend',
         element: <LendPage />,
+      },
+      {
+        path: '/earn/market-making',
+        element: <MarketMakingPage />,
       },
       {
         path: '/earn',

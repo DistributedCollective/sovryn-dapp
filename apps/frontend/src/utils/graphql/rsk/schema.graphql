@@ -2903,6 +2903,10 @@ type GovernorContract {
   staking: Bytes!
   timelock: Bytes!
 
+  "Timestamp when this contract has created a proposal and was loaded into the graph.\n"
+  timestamp: Int!
+  type: GovernorType!
+
   "The delay before voting on a proposal may take place, once proposed, in blocks.\n"
   votingDelay: Int!
 
@@ -2966,6 +2970,18 @@ input GovernorContract_filter {
   timelock_not: Bytes
   timelock_not_contains: Bytes
   timelock_not_in: [Bytes!]
+  timestamp: Int
+  timestamp_gt: Int
+  timestamp_gte: Int
+  timestamp_in: [Int!]
+  timestamp_lt: Int
+  timestamp_lte: Int
+  timestamp_not: Int
+  timestamp_not_in: [Int!]
+  type: GovernorType
+  type_in: [GovernorType!]
+  type_not: GovernorType
+  type_not_in: [GovernorType!]
   votingDelay: Int
   votingDelay_gt: Int
   votingDelay_gte: Int
@@ -2993,8 +3009,16 @@ enum GovernorContract_orderBy {
   quorumPercentageVotes
   staking
   timelock
+  timestamp
+  type
   votingDelay
   votingPeriod
+}
+
+enum GovernorType {
+  Admin
+  Other
+  Owner
 }
 
 "Candlesticks are for presentational purposes on the dapp. This entity supports the candlestick trading data on the trading view charts.\nTrading data is available for the following pairs:\n1. All tokens to RBTC\n2. All tokens to current usdStablecoin (see ProtocolStats entity for more information)\nThere is not candlestick data for other trading pairs as this would cause the amount of data stored to increase exponentially\n"
@@ -4082,6 +4106,13 @@ type LiquidityPool {
 
   "Divide by maxConversionFee to get percentage\n"
   conversionFee: BigInt
+  conversions(
+    first: Int = 100
+    orderBy: PoolVolumeItem_orderBy
+    orderDirection: OrderDirection
+    skip: Int = 0
+    where: PoolVolumeItem_filter
+  ): [PoolVolumeItem!]
   createdAtBlockNumber: Int
   createdAtTimestamp: Int
   createdAtTransaction: Transaction!
@@ -4263,6 +4294,7 @@ input LiquidityPool_filter {
   conversionFee_lte: BigInt
   conversionFee_not: BigInt
   conversionFee_not_in: [BigInt!]
+  conversions_: PoolVolumeItem_filter
   createdAtBlockNumber: Int
   createdAtBlockNumber_gt: Int
   createdAtBlockNumber_gte: Int
@@ -4459,6 +4491,7 @@ enum LiquidityPool_orderBy {
   activated
   connectorTokens
   conversionFee
+  conversions
   createdAtBlockNumber
   createdAtTimestamp
   createdAtTransaction
@@ -6362,6 +6395,118 @@ enum PoolToken_orderBy {
   name
   symbol
   underlyingAssets
+}
+
+type PoolVolumeItem {
+  btcAmount: BigDecimal!
+  conversion: Conversion!
+  id: ID!
+  pool: LiquidityPool!
+  timestamp: Int!
+  transaction: Transaction!
+}
+
+input PoolVolumeItem_filter {
+  """
+  Filter for the block changed event.
+  """
+  _change_block: BlockChangedFilter
+  btcAmount: BigDecimal
+  btcAmount_gt: BigDecimal
+  btcAmount_gte: BigDecimal
+  btcAmount_in: [BigDecimal!]
+  btcAmount_lt: BigDecimal
+  btcAmount_lte: BigDecimal
+  btcAmount_not: BigDecimal
+  btcAmount_not_in: [BigDecimal!]
+  conversion: String
+  conversion_: Conversion_filter
+  conversion_contains: String
+  conversion_contains_nocase: String
+  conversion_ends_with: String
+  conversion_ends_with_nocase: String
+  conversion_gt: String
+  conversion_gte: String
+  conversion_in: [String!]
+  conversion_lt: String
+  conversion_lte: String
+  conversion_not: String
+  conversion_not_contains: String
+  conversion_not_contains_nocase: String
+  conversion_not_ends_with: String
+  conversion_not_ends_with_nocase: String
+  conversion_not_in: [String!]
+  conversion_not_starts_with: String
+  conversion_not_starts_with_nocase: String
+  conversion_starts_with: String
+  conversion_starts_with_nocase: String
+  id: ID
+  id_gt: ID
+  id_gte: ID
+  id_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_not: ID
+  id_not_in: [ID!]
+  pool: String
+  pool_: LiquidityPool_filter
+  pool_contains: String
+  pool_contains_nocase: String
+  pool_ends_with: String
+  pool_ends_with_nocase: String
+  pool_gt: String
+  pool_gte: String
+  pool_in: [String!]
+  pool_lt: String
+  pool_lte: String
+  pool_not: String
+  pool_not_contains: String
+  pool_not_contains_nocase: String
+  pool_not_ends_with: String
+  pool_not_ends_with_nocase: String
+  pool_not_in: [String!]
+  pool_not_starts_with: String
+  pool_not_starts_with_nocase: String
+  pool_starts_with: String
+  pool_starts_with_nocase: String
+  timestamp: Int
+  timestamp_gt: Int
+  timestamp_gte: Int
+  timestamp_in: [Int!]
+  timestamp_lt: Int
+  timestamp_lte: Int
+  timestamp_not: Int
+  timestamp_not_in: [Int!]
+  transaction: String
+  transaction_: Transaction_filter
+  transaction_contains: String
+  transaction_contains_nocase: String
+  transaction_ends_with: String
+  transaction_ends_with_nocase: String
+  transaction_gt: String
+  transaction_gte: String
+  transaction_in: [String!]
+  transaction_lt: String
+  transaction_lte: String
+  transaction_not: String
+  transaction_not_contains: String
+  transaction_not_contains_nocase: String
+  transaction_not_ends_with: String
+  transaction_not_ends_with_nocase: String
+  transaction_not_in: [String!]
+  transaction_not_starts_with: String
+  transaction_not_starts_with_nocase: String
+  transaction_starts_with: String
+  transaction_starts_with_nocase: String
+}
+
+enum PoolVolumeItem_orderBy {
+  btcAmount
+  conversion
+  id
+  pool
+  timestamp
+  transaction
 }
 
 "A Proposal is created each time a SIP (Sovryn Improvement Proposal) is proposed\nThe Proposal is created, voted on, and then executed if it passes\nTo see if a Proposal has been executed, see if the executed property is null or if it has a transaction\n"
@@ -8428,6 +8573,34 @@ type Query {
     subgraphError: _SubgraphErrorPolicy_! = deny
     where: PoolToken_filter
   ): [PoolToken!]!
+  poolVolumeItem(
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+    id: ID!
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): PoolVolumeItem
+  poolVolumeItems(
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+    first: Int = 100
+    orderBy: PoolVolumeItem_orderBy
+    orderDirection: OrderDirection
+    skip: Int = 0
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+    where: PoolVolumeItem_filter
+  ): [PoolVolumeItem!]!
   proposal(
     """
     The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
@@ -8708,6 +8881,34 @@ type Query {
     """
     subgraphError: _SubgraphErrorPolicy_! = deny
   ): Swap
+  swapSetting(
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+    id: ID!
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): SwapSetting
+  swapSettings(
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+    first: Int = 100
+    orderBy: SwapSetting_orderBy
+    orderDirection: OrderDirection
+    skip: Int = 0
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+    where: SwapSetting_filter
+  ): [SwapSetting!]!
   swaps(
     """
     The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
@@ -11380,6 +11581,34 @@ type Subscription {
     subgraphError: _SubgraphErrorPolicy_! = deny
     where: PoolToken_filter
   ): [PoolToken!]!
+  poolVolumeItem(
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+    id: ID!
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): PoolVolumeItem
+  poolVolumeItems(
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+    first: Int = 100
+    orderBy: PoolVolumeItem_orderBy
+    orderDirection: OrderDirection
+    skip: Int = 0
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+    where: PoolVolumeItem_filter
+  ): [PoolVolumeItem!]!
   proposal(
     """
     The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
@@ -11660,6 +11889,34 @@ type Subscription {
     """
     subgraphError: _SubgraphErrorPolicy_! = deny
   ): Swap
+  swapSetting(
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+    id: ID!
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): SwapSetting
+  swapSettings(
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+    first: Int = 100
+    orderBy: SwapSetting_orderBy
+    orderDirection: OrderDirection
+    skip: Int = 0
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+    where: SwapSetting_filter
+  ): [SwapSetting!]!
   swaps(
     """
     The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
@@ -12268,6 +12525,49 @@ type Swap {
 
   "If this swap was initiated by a contract (for example as part of a Margin Trade), User will be null.\nOtherwise, this is the user that initiated the transaction.\n"
   user: User
+}
+
+type SwapSetting {
+  id: ID!
+  protocolFee: Int!
+  timestamp: Int!
+}
+
+input SwapSetting_filter {
+  """
+  Filter for the block changed event.
+  """
+  _change_block: BlockChangedFilter
+  id: ID
+  id_gt: ID
+  id_gte: ID
+  id_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_not: ID
+  id_not_in: [ID!]
+  protocolFee: Int
+  protocolFee_gt: Int
+  protocolFee_gte: Int
+  protocolFee_in: [Int!]
+  protocolFee_lt: Int
+  protocolFee_lte: Int
+  protocolFee_not: Int
+  protocolFee_not_in: [Int!]
+  timestamp: Int
+  timestamp_gt: Int
+  timestamp_gte: Int
+  timestamp_in: [Int!]
+  timestamp_lt: Int
+  timestamp_lte: Int
+  timestamp_not: Int
+  timestamp_not_in: [Int!]
+}
+
+enum SwapSetting_orderBy {
+  id
+  protocolFee
+  timestamp
 }
 
 enum SwapType {

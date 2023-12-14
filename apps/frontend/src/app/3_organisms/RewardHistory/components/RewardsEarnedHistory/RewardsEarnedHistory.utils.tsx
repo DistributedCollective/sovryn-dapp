@@ -13,6 +13,10 @@ import { dateFormat } from '../../../../../utils/helpers';
 
 export const getTransactionType = (action: RewardsEarnedAction) => {
   switch (action) {
+    case RewardsEarnedAction.RewardClaimed:
+      return t(
+        translations.rewardHistory.stakingOperation.liquidityMiningRewards,
+      );
     case RewardsEarnedAction.UserFeeWithdrawn:
       return t(translations.rewardHistory.stakingOperation.stakingRevenue);
     case RewardsEarnedAction.StakingRewardWithdrawn:

@@ -5,10 +5,12 @@ export const SERVICES_CONFIG = {
     [Services.Maintenance]:
       'https://maintenance-mode.test.sovryn.app/maintenance',
     [Services.Notification]: 'https://notify.test.sovryn.app/',
+    [Services.Amm]: 'https://amm-apy.test.sovryn.app/',
   },
   [Environments.Mainnet]: {
     [Services.Maintenance]: 'https://maintenance-mode.sovryn.app/maintenance',
     [Services.Notification]: 'https://notify.sovryn.app/',
+    [Services.Amm]: 'https://amm-apy.sovryn.app/',
   },
 };
 
@@ -44,6 +46,11 @@ export const BTC_EXPLORER = {
 export const GRAPH_WRAPPER = {
   [Environments.Mainnet]: 'https://graph-wrapper.sovryn.app',
   [Environments.Testnet]: 'https://graph-wrapper.test.sovryn.app',
+};
+
+export const AMM_SERVICE = {
+  [Environments.Mainnet]: 'https://amm-apy.sovryn.app/',
+  [Environments.Testnet]: 'https://amm-apy.test.sovryn.app/',
 };
 
 export const ESTIMATOR_URI = process.env.REACT_APP_ESTIMATOR_URI;

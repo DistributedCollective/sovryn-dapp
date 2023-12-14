@@ -5,6 +5,7 @@ import { Select } from '@sovryn/ui';
 import { EARN_HISTORY_OPTIONS } from './EarnHistory.constants';
 import { EarnHistoryType } from './EarnHistory.types';
 import { LendingHistoryFrame } from './components/LendingHistoryFrame/LendingHistoryFrame';
+import { MarketMakingHistoryFrame } from './components/MarketMakingHistoryFrame/MarketMakingHistoryFrame';
 import { StabilityPoolHistoryFrame } from './components/StabilityPoolHistoryFrame/StabilityPoolHistoryFrame';
 
 export const EarnHistory: FC = () => {
@@ -39,6 +40,15 @@ export const EarnHistory: FC = () => {
         return (
           <>
             <LendingHistoryFrame>{SelectComponent}</LendingHistoryFrame>
+          </>
+        );
+
+      case EarnHistoryType.marketMaking:
+        return (
+          <>
+            <MarketMakingHistoryFrame>
+              {SelectComponent}
+            </MarketMakingHistoryFrame>
           </>
         );
     }

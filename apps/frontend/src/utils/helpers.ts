@@ -11,6 +11,7 @@ import { Decimal } from '@sovryn/utils';
 import { BITCOIN } from '../constants/currencies';
 import { MS } from '../constants/general';
 import {
+  AMM_SERVICE,
   BTC_EXPLORER,
   GRAPH_WRAPPER,
   RSK_EXPLORER,
@@ -69,9 +70,20 @@ export const getBitocracyUrl = () =>
 export const getGraphWrapperUrl = () =>
   GRAPH_WRAPPER[isMainnet() ? Environments.Mainnet : Environments.Testnet];
 
+export const getAmmServiceUrl = () =>
+  AMM_SERVICE[isMainnet() ? Environments.Mainnet : Environments.Testnet];
+
 export const dateFormat = (timestamp: number) => {
   const stamp = dayjs.tz(Number(timestamp) * MS, 'UTC');
   return stamp.format(`YYYY-MM-DD HH:MM:ss +UTC`);
+};
+
+export const getNextDay = (day: number) => {
+  if (day < 1 || day > 7) {
+    throw new Error('Invalid day, must be integer in range 1-7');
+  }
+
+  return dayjs().utc().startOf('week').add(1, 'week').day(day).format('MMMM D');
 };
 
 export const signMessage = async (
@@ -177,3 +189,18 @@ export const areValuesIdentical = (
 
   return Math.abs(firstValue.sub(secondValue).toNumber()) < epsilon;
 };
+
+export const normalizeToken = (token: string): SupportedTokens => {
+  if (isBtcBasedAsset(token)) {
+    return SupportedTokens.rbtc;
+  }
+
+  if (isBitpro(token)) {
+    return SupportedTokens.bpro;
+  }
+
+  return SupportedTokens[token] || token;
+};
+
+export const renderTokenSymbol = (token: string) =>
+  normalizeToken(token).toUpperCase();

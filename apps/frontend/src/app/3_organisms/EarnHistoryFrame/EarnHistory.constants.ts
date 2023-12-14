@@ -12,4 +12,8 @@ export const EARN_HISTORY_OPTIONS = [
     value: EarnHistoryType.lending,
     label: t(translations.earnHistory.types.lending),
   },
+  {
+    value: EarnHistoryType.marketMaking,
+    label: t(translations.earnHistory.types.marketMaking),
+  },
 ];

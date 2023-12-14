@@ -1,0 +1,7 @@
+.arrow {
+  @apply items-center justify-center hidden sm:flex absolute cursor-pointer w-4 top-0 h-full;
+}
+
+.item > div {
+  @apply ml-4 sm:mx-auto;
+}

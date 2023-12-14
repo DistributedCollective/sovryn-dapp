@@ -14,13 +14,15 @@ import { Decimal } from '@sovryn/utils';
 
 import { defaultChainId } from '../../../../../config/chains';
 
+import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRenderer';
+import { CurrentStatistics } from '../../../../2_molecules/CurrentStatistics/CurrentStatistics';
+import { getTokenDisplayName } from '../../../../../constants/tokens';
 import { useAccount } from '../../../../../hooks/useAccount';
 import { translations } from '../../../../../locales/i18n';
 import { eventDriven } from '../../../../../store/rxjs/event-driven';
 import { asyncCall } from '../../../../../store/rxjs/provider-cache';
 import { Nullable } from '../../../../../types/global';
 import { LendModalAction } from '../../LendPage.types';
-import { CurrentStats } from './CurrentStats';
 import { FormType, LendingForm } from './LendingForm';
 
 export type AdjustModalProps = {
@@ -138,10 +140,17 @@ export const AdjustLendingModalContainer: FC<AdjustModalProps> = ({
         {state != null && (
           <>
             <div className="bg-gray-90 p-4 rounded">
-              <CurrentStats
+              <CurrentStatistics
                 symbol={state.token}
-                apr={state.apr}
-                balance={state.balance}
+                label1={t(translations.lendingAdjust.apr)}
+                label2={t(translations.lendingAdjust.currentBalance)}
+                value1={<AmountRenderer value={state.apr} suffix="%" />}
+                value2={
+                  <AmountRenderer
+                    value={state.balance}
+                    suffix={getTokenDisplayName(state.token)}
+                  />
+                }
               />
             </div>
             <LendingForm state={state} onConfirm={handleConfirm} />

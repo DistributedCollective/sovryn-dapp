@@ -1,7 +1,7 @@
 import { getNumberSeparator } from '../../utils/helpers';
 
-export const prepareValueForEvent = (
-  originalEvent: React.ChangeEvent<HTMLInputElement>,
+export const prepareValueForEvent = <T = HTMLInputElement>(
+  originalEvent: React.ChangeEvent<T>,
   newValue: string,
 ) => ({
   ...originalEvent,

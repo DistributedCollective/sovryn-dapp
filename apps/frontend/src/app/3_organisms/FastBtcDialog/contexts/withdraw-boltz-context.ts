@@ -1,9 +1,9 @@
 import { createContext, Dispatch, SetStateAction } from 'react';
 
-export enum WithdrawStep {
+export enum WithdrawBoltzStep {
   MAIN,
   AMOUNT,
-  ADDRESS,
+  INVOICE,
   REVIEW,
   CONFIRM,
   PROCESSING,
@@ -11,9 +11,9 @@ export enum WithdrawStep {
 }
 
 export type WithdrawContextStateType = {
-  step: WithdrawStep;
+  step: WithdrawBoltzStep;
   amount: string;
-  address: string;
+  invoice: string;
   limits: WithdrawLimits;
 };
 
@@ -33,9 +33,9 @@ export type WithdrawContextType = WithdrawContextStateType &
   WithdrawContextFunctionsType;
 
 export const defaultValue: WithdrawContextType = {
-  step: WithdrawStep.MAIN,
+  step: WithdrawBoltzStep.MAIN,
   amount: '',
-  address: '',
+  invoice: '',
   limits: {
     min: 0,
     max: 0,

@@ -4,11 +4,11 @@ import { BITCOIN } from '../../../../../../constants/currencies';
 import { BTC_IN_SATOSHIS } from '../../../../../../constants/general';
 import { formatValue } from '../../../../../../utils/math';
 import { DYNAMIC_FEE_DIVISOR } from '../../../constants';
-import { WithdrawContext } from '../../../contexts/withdraw-context';
 import { Limits } from '../../Limits';
+import { WithdrawBoltzContext } from '../../../contexts/withdraw-boltz-context';
 
 export const TransferPolicies: React.FC = () => {
-  const { limits } = useContext(WithdrawContext);
+  const { limits } = useContext(WithdrawBoltzContext);
 
   const minimumAmount = useMemo(() => {
     const minimum = limits.min / BTC_IN_SATOSHIS;

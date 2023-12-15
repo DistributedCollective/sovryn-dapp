@@ -30,14 +30,14 @@ import { useMaxAssetBalance } from '../../../../../../hooks/useMaxAssetBalance';
 import { translations } from '../../../../../../locales/i18n';
 import { fromWei, toWei } from '../../../../../../utils/math';
 import { GAS_LIMIT_FAST_BTC_WITHDRAW } from '../../../constants';
-import {
-  WithdrawContext,
-  WithdrawStep,
-} from '../../../contexts/withdraw-context';
 import { TransferPolicies } from './TransferPolicies';
+import {
+  WithdrawBoltzContext,
+  WithdrawBoltzStep,
+} from '../../../contexts/withdraw-boltz-context';
 
 export const AmountForm: React.FC = () => {
-  const { amount, limits, set } = useContext(WithdrawContext);
+  const { amount, limits, set } = useContext(WithdrawBoltzContext);
 
   const { checkMaintenance, States } = useMaintenance();
   const fastBtcLocked = checkMaintenance(States.FASTBTC_SEND);
@@ -79,7 +79,7 @@ export const AmountForm: React.FC = () => {
       set(prevState => ({
         ...prevState,
         amount: Number(value).toFixed(8),
-        step: WithdrawStep.ADDRESS,
+        step: WithdrawBoltzStep.INVOICE,
       })),
     [set, value],
   );

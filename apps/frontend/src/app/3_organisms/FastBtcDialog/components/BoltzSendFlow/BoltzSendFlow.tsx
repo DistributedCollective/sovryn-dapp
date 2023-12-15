@@ -1,31 +1,33 @@
 import React, { useCallback } from 'react';
 
-import { WithdrawStep } from '../../contexts/withdraw-context';
-import { useWithdrawBridgeConfig } from '../../hooks/useWithdrawBridgeConfig';
 import { GoBackButton } from '../GoBackButton';
 import { MobileCloseButton } from '../MobileCloseButton';
-import { AddressForm } from './components/AddressForm';
+import { InvoiceForm } from './components/InvoiceForm';
 import { AmountForm } from './components/AmountForm';
 import { ConfirmationScreens } from './components/ConfirmationScreens';
 import { MainScreen } from './components/MainScreen';
-import { WithdrawBoltzContext } from '../../contexts/withdraw-boltz-context';
+import {
+  WithdrawBoltzContext,
+  WithdrawBoltzStep,
+} from '../../contexts/withdraw-boltz-context';
+import { useWithdrawBoltzConfig } from '../../hooks/useWithdrawBoltzConfig';
 
 const allowedStepsToGoBackFrom = [
-  WithdrawStep.AMOUNT,
-  WithdrawStep.ADDRESS,
-  WithdrawStep.REVIEW,
+  WithdrawBoltzStep.AMOUNT,
+  WithdrawBoltzStep.INVOICE,
+  WithdrawBoltzStep.REVIEW,
 ];
 
-const getBackStep = (step: WithdrawStep) => {
+const getBackStep = (step: WithdrawBoltzStep) => {
   switch (step) {
-    case WithdrawStep.AMOUNT:
-      return WithdrawStep.MAIN;
-    case WithdrawStep.ADDRESS:
-      return WithdrawStep.AMOUNT;
-    case WithdrawStep.REVIEW:
-      return WithdrawStep.ADDRESS;
+    case WithdrawBoltzStep.AMOUNT:
+      return WithdrawBoltzStep.MAIN;
+    case WithdrawBoltzStep.INVOICE:
+      return WithdrawBoltzStep.AMOUNT;
+    case WithdrawBoltzStep.REVIEW:
+      return WithdrawBoltzStep.INVOICE;
     default:
-      return WithdrawStep.AMOUNT;
+      return WithdrawBoltzStep.AMOUNT;
   }
 };
 
@@ -34,7 +36,7 @@ type SendFlowProps = {
 };
 
 export const BoltzSendFlow: React.FC<SendFlowProps> = ({ onClose }) => {
-  const value = useWithdrawBridgeConfig();
+  const value = useWithdrawBoltzConfig();
   const { step, set } = value;
 
   const onBackClick = useCallback(() => {
@@ -48,14 +50,14 @@ export const BoltzSendFlow: React.FC<SendFlowProps> = ({ onClose }) => {
       )}
 
       <div className="mt-0 md:mt-12">
-        {step === WithdrawStep.MAIN && <MainScreen />}
-        {step === WithdrawStep.AMOUNT && <AmountForm />}
-        {step === WithdrawStep.ADDRESS && <AddressForm />}
+        {step === WithdrawBoltzStep.MAIN && <MainScreen />}
+        {step === WithdrawBoltzStep.AMOUNT && <AmountForm />}
+        {step === WithdrawBoltzStep.INVOICE && <InvoiceForm />}
         {[
-          WithdrawStep.REVIEW,
-          WithdrawStep.CONFIRM,
-          WithdrawStep.PROCESSING,
-          WithdrawStep.COMPLETED,
+          WithdrawBoltzStep.REVIEW,
+          WithdrawBoltzStep.CONFIRM,
+          WithdrawBoltzStep.PROCESSING,
+          WithdrawBoltzStep.COMPLETED,
         ].includes(step) && <ConfirmationScreens onClose={onClose} />}
       </div>
 

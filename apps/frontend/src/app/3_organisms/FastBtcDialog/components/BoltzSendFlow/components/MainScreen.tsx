@@ -7,8 +7,10 @@ import { Button, ButtonStyle, ErrorBadge, ErrorLevel } from '@sovryn/ui';
 import { useAccount } from '../../../../../../hooks/useAccount';
 import { useMaintenance } from '../../../../../../hooks/useMaintenance';
 import { translations } from '../../../../../../locales/i18n';
-import { WithdrawStep } from '../../../contexts/withdraw-context';
-import { WithdrawBoltzContext } from '../../../contexts/withdraw-boltz-context';
+import {
+  WithdrawBoltzContext,
+  WithdrawBoltzStep,
+} from '../../../contexts/withdraw-boltz-context';
 import { Instructions } from './Instructions';
 
 export const MainScreen: React.FC = () => {
@@ -19,7 +21,7 @@ export const MainScreen: React.FC = () => {
   const fastBtcLocked = checkMaintenance(States.FASTBTC_SEND);
 
   const onContinueClick = useCallback(
-    () => set(prevState => ({ ...prevState, step: WithdrawStep.AMOUNT })),
+    () => set(prevState => ({ ...prevState, step: WithdrawBoltzStep.AMOUNT })),
     [set],
   );
 

@@ -1,0 +1,43 @@
+.wrapper {
+  @apply w-full max-w-xs flex flex-row justify-between items-center font-body;
+}
+
+.container {
+  @apply relative flex-grow
+}
+
+.input {
+  @apply w-full h-auto rounded p-3 leading-tight text-xs font-medium text-gray-10 bg-gray-70 hover:bg-gray-60;
+
+  &.large {
+    @apply min-h-10;
+  }
+
+  &.small {
+    @apply min-h-8;
+  }
+
+  &::placeholder {
+    @apply text-gray-30;
+  }
+
+  &:focus {
+    @apply border border-gray-50 bg-gray-60;
+  }
+
+  &:disabled {
+    @apply cursor-not-allowed bg-gray-70-ol text-gray-10/50;
+
+    &::placeholder {
+      @apply text-gray-30/50;
+    }
+  }
+
+  &:read-only:not(:disabled) {
+    @apply bg-gray-70/50 border border-gray-50 text-gray-30;
+  }
+}
+
+.invalid {
+  @apply border border-error-light bg-gray-60;
+}

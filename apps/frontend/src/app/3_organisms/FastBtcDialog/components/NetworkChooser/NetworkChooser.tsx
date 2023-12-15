@@ -3,6 +3,7 @@ import React, { FC } from 'react';
 import { ReceiveFlow } from '../ReceiveFlow/ReceiveFlow';
 import { SendFlow } from '../SendFlow/SendFlow';
 import { Network, useFastBtcDialogStore } from '../../store';
+import { BoltzSendFlow } from '../BoltzSendFlow/BoltzSendFlow';
 
 export enum Direction {
   Receive,
@@ -44,7 +45,7 @@ export const NetworkChooser: FC<NetworkChooserProps> = ({
       {direction === Direction.Send && (
         <>
           {network === Network.bitcoin && <SendFlow onClose={onClose} />}
-          {network === Network.lightning && <p>Add send flow component here</p>}
+          {network === Network.lightning && <BoltzSendFlow onClose={onClose} />}
         </>
       )}
     </>

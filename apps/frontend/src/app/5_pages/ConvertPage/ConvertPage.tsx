@@ -42,6 +42,7 @@ import { useWeiAmountInput } from '../../../hooks/useWeiAmountInput';
 import { translations } from '../../../locales/i18n';
 import { removeTrailingZerosFromString } from '../../../utils/helpers';
 import { decimalic, fromWei } from '../../../utils/math';
+import { FIXED_MYNT_RATE, FIXED_RATE_ROUTES } from './ConvertPage.constants';
 import { smartRouter, stableCoins } from './ConvertPage.types';
 import { useConversionMaintenance } from './hooks/useConversionMaintenance';
 import { useGetMaximumAvailableAmount } from './hooks/useGetMaximumAvailableAmount';
@@ -159,16 +160,25 @@ const ConvertPage: FC = () => {
     [amount, maximumAmountToConvert],
   );
 
+  const isMyntFixRoute = useMemo(
+    () => route && route.name === 'MyntFixedRate',
+    [route],
+  );
+
   const minimumReceived = useMemo(() => {
-    if (!quote || !slippageTolerance) {
+    if (!quote || !slippageTolerance || !route) {
       return '';
+    }
+
+    if (FIXED_RATE_ROUTES.includes(route.name)) {
+      return quote;
     }
 
     return Decimal.from(quote)
       .mul(100 - Number(slippageTolerance))
       .div(100)
       .toString();
-  }, [quote, slippageTolerance]);
+  }, [quote, route, slippageTolerance]);
 
   const priceToken = useMemo<SupportedTokens>(() => {
     if (!destinationToken) {
@@ -190,12 +200,23 @@ const ConvertPage: FC = () => {
       return '';
     }
 
+    if (isMyntFixRoute) {
+      return FIXED_MYNT_RATE;
+    }
+
     if (priceToken === destinationToken) {
       return decimalic(minimumReceived).div(amount).toString();
     } else {
       return decimalic(amount).div(minimumReceived).toString();
     }
-  }, [amount, destinationToken, minimumReceived, priceToken, quote]);
+  }, [
+    amount,
+    destinationToken,
+    isMyntFixRoute,
+    minimumReceived,
+    priceToken,
+    quote,
+  ]);
 
   useEffect(() => {
     (async () => {

@@ -393,6 +393,13 @@
         "maximumPrice": "Maximum price"
     },
 
+    "landingPage": {
+        "meta": {
+            "title": "Welcome to Sovryn",
+            "description": "The Decentralized Bitcoin Trading And Lending Platform"
+        }
+    },
+
     "stakePage": {
         "meta": {
             "title": "Stake - Sovryn"

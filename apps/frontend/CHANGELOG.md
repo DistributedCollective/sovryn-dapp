@@ -1,5 +1,13 @@
 # frontend
 
+## 1.0.40
+
+### Patch Changes
+
+- 6705fa2f: SOV-3464: Proposals - fix timer formatting
+- 48b04374: SOV-3416: Use mempool.space instead of BlockCypher for bitcoin block explorer links
+  Fix broken localisations in history tables
+
 ## 1.0.39
 
 ### Patch Changes

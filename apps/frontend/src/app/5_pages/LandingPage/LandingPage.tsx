@@ -4,6 +4,7 @@ import { t } from 'i18next';
 import { Helmet } from 'react-helmet-async';
 
 import { translations } from '../../../locales/i18n';
+import { QuickLaunch } from './components/QuickLaunch/QuickLaunch';
 
 const pageTranslations = translations.landingPage;
 
@@ -24,9 +25,7 @@ const LandingPage: FC = () => {
           <div className="min-h-40 flex justify-end">Banner section</div>
         </div>
 
-        <div className="bg-gray-80 rounded min-h-72 p-6 mb-10">
-          Quick launch section
-        </div>
+        <QuickLaunch />
 
         <div className="grid xl:grid-cols-2 mb-10">
           <div>How to get started section</div>

@@ -39,8 +39,8 @@ export const RSK_EXPLORER = {
 };
 
 export const BTC_EXPLORER = {
-  [Environments.Mainnet]: 'https://live.blockcypher.com/btc',
-  [Environments.Testnet]: 'https://live.blockcypher.com/btc-testnet',
+  [Environments.Mainnet]: 'https://mempool.space',
+  [Environments.Testnet]: 'https://mempool.space/testnet',
 };
 
 export const GRAPH_WRAPPER = {

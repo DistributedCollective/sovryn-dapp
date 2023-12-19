@@ -7,6 +7,7 @@ import { Button, ButtonStyle, Paragraph } from '@sovryn/ui';
 
 import borrowBg from '../../../../../assets/images/QuickLaunch/borrow_bg.svg';
 import earnBg from '../../../../../assets/images/QuickLaunch/earn_bg.svg';
+import lendBg from '../../../../../assets/images/QuickLaunch/lend_bg.svg';
 import stakeBg from '../../../../../assets/images/QuickLaunch/stake_bg.svg';
 import { translations } from '../../../../../locales/i18n';
 import { useGetNextSupplyInterestRate } from '../../../LendPage/hooks/useGetNextSupplyInterestRate';
@@ -53,7 +54,7 @@ export const QuickLaunch: FC = () => {
       description: t(pageTranslations.quickLaunch.lend.description),
       action: t(pageTranslations.quickLaunch.lend.action),
       url: '/earn/lend',
-      backgroundImage: earnBg,
+      backgroundImage: lendBg,
     },
     {
       title: t(pageTranslations.quickLaunch.borrow.title),

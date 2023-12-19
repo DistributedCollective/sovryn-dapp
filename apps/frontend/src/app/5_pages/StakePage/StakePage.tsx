@@ -22,7 +22,7 @@ const StakePage: FC = () => {
   return (
     <>
       <Helmet>
-        <title>{t(translations.earnPage.meta.title)}</title>
+        <title>{t(translations.stakePage.meta.title)}</title>
       </Helmet>
 
       <div className="px-0 container md:mx-9 mx-0 md:mb-2 mt-4 mb-7">

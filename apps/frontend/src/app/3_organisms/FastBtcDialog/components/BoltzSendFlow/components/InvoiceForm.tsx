@@ -38,30 +38,37 @@ import {
   BITCOIN,
   BTC_RENDER_PRECISION,
 } from '../../../../../../constants/currencies';
+import { decodeInvoice } from '../../../../Boltz/Boltz.utils';
+import { decimalic } from '../../../../../../utils/math';
 
-enum AddressValidationState {
+enum InvoiceValidationState {
   NONE = 'NONE',
   LOADING = 'LOADING',
   VALID = 'VALID',
   INVALID = 'INVALID',
+  EXPIRED = 'EXPIRED',
+  BALANCE = 'BALANCE',
 }
 
 export const InvoiceForm: React.FC = () => {
   const { amount, invoice, set } = useContext(WithdrawBoltzContext);
 
-  const fastBtcBridgeContract = useGetProtocolContract('fastBtcBridge');
-
   const { checkMaintenance, States } = useMaintenance();
   const fastBtcLocked = checkMaintenance(States.FASTBTC_SEND);
 
-  const [addressValidationState, setAddressValidationState] = useState(
-    AddressValidationState.NONE,
+  const [invoiceValidationState, setInvoiceValidationState] = useState(
+    InvoiceValidationState.NONE,
   );
   const [value, setValue] = useState(invoice);
 
   const invalidInvoice = useMemo(
-    () => addressValidationState === AddressValidationState.INVALID,
-    [addressValidationState],
+    () =>
+      [
+        InvoiceValidationState.INVALID,
+        InvoiceValidationState.EXPIRED,
+        InvoiceValidationState.BALANCE,
+      ].includes(invoiceValidationState),
+    [invoiceValidationState],
   );
 
   const onContinueClick = useCallback(
@@ -74,43 +81,37 @@ export const InvoiceForm: React.FC = () => {
     [set, value],
   );
 
-  const validateAddress = useCallback(
-    (address: string) => {
-      setAddressValidationState(AddressValidationState.LOADING);
-      const isValidBtcAddress = validate(address);
+  const validateInvoice = useCallback(
+    (invoice: string) => {
+      setInvoiceValidationState(InvoiceValidationState.LOADING);
+      const decoded = decodeInvoice(invoice);
+      if (decoded) {
+        if ((decoded.expiry ?? 0) < Date.now() / 1000) {
+          setInvoiceValidationState(InvoiceValidationState.EXPIRED);
+          return;
+        }
 
-      if (!fastBtcBridgeContract) {
-        return;
-      }
+        if (!decimalic(amount).eq(decimalic(decoded.satoshis).div(1e8))) {
+          setInvoiceValidationState(InvoiceValidationState.BALANCE);
+          return;
+        }
 
-      const isValid = fastBtcBridgeContract.isValidBtcAddress(address);
-
-      if (isValidBtcAddress && isValid) {
-        const { type, network } = getAddressInfo(address);
-        const isNetworkValid =
-          network.toLowerCase() === currentNetwork.toLowerCase();
-        const isTypeValid = type.toLowerCase() !== AddressType.p2tr;
-
-        setAddressValidationState(
-          isNetworkValid && isTypeValid
-            ? AddressValidationState.VALID
-            : AddressValidationState.INVALID,
-        );
+        setInvoiceValidationState(InvoiceValidationState.VALID);
       } else {
-        setAddressValidationState(AddressValidationState.INVALID);
+        setInvoiceValidationState(InvoiceValidationState.INVALID);
       }
     },
-    [fastBtcBridgeContract],
+    [amount],
   );
 
   useEffect(() => {
     if (value && value !== '') {
-      setAddressValidationState(AddressValidationState.LOADING);
-      validateAddress(value);
+      setInvoiceValidationState(InvoiceValidationState.LOADING);
+      validateInvoice(value);
     } else {
-      setAddressValidationState(AddressValidationState.NONE);
+      setInvoiceValidationState(InvoiceValidationState.NONE);
     }
-  }, [value, validateAddress]);
+  }, [value, validateInvoice]);
 
   const isSubmitDisabled = useMemo(
     () => invalidInvoice || fastBtcLocked || !value || value === '',
@@ -152,7 +153,11 @@ export const InvoiceForm: React.FC = () => {
         {invalidInvoice && (
           <ErrorBadge
             level={ErrorLevel.Critical}
-            message={t(translations.boltz.send.invoice.invalidInvoice)}
+            message={t(
+              translations.boltz.send.invoice.invalidInvoice[
+                invoiceValidationState
+              ],
+            )}
           />
         )}
       </div>

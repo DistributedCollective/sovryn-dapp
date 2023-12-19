@@ -103,14 +103,18 @@ export const AmountForm: React.FC = () => {
 
   return (
     <>
-      <Heading type={HeadingType.h2} className="font-medium mb-8 text-center">
-        {t(translations.fastBtc.send.amountForm.title)}
+      <Heading type={HeadingType.h2} className="font-medium mb-3 text-center">
+        {t(translations.boltz.send.amount.title)}
       </Heading>
+
+      <Paragraph size={ParagraphSize.small} className="mb-8 text-center">
+        {t(translations.boltz.send.amount.description)}
+      </Paragraph>
 
       <div>
         <div className="flex items-center justify-between mb-3">
           <Paragraph size={ParagraphSize.base} className="font-medium">
-            {t(translations.fastBtc.send.amountForm.amountLabel)}
+            {t(translations.boltz.send.amount.amountLabel)}
           </Paragraph>
 
           <MaxButton

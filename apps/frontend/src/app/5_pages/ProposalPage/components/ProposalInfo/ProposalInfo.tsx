@@ -47,7 +47,7 @@ export const ProposalInfo: FC<ProposalInfoProps> = ({ link, description }) => (
       </Paragraph>
       <div className="overflow-auto">
         <ReactMarkdown
-          className="text-xs text-gray-30 break-words sm:break-keep"
+          className="text-xs text-gray-30 break-words sm:break-words"
           remarkPlugins={[remarkGfm]}
         >
           {description}

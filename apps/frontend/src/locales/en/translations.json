@@ -401,6 +401,28 @@
         "meta": {
             "title": "Welcome to Sovryn",
             "description": "The Decentralized Bitcoin Trading And Lending Platform"
+        },
+        "quickLaunch": {
+            "stake": {
+                "title": "Stake SOV – earn up to {{amount}}% APY",
+                "description": "Earn a share of Sovryn’s revenue & vote on key decisions in Bitocracy.",
+                "action": "Stake SOV"
+            },
+            "earn": {
+                "title": "Earn up to {{amount}}% APY in AMM",
+                "description": "Deposit in the AMM pools, earn from trades and get SOV rewards.",
+                "action": "Deposit in AMM"
+            },
+            "lend": {
+                "title": "Lend DLLR – earn {{amount}}% APY",
+                "description": "Lend you DLLR and earn interest from Borrowers.",
+                "action": "Lend DLLR"
+            },
+            "borrow": {
+                "title": "Borrow with Sovryn",
+                "description": "Borrow against your assets in Sovryn’s lending pools.",
+                "action": "Borrow with Sovryn"
+            }
         }
     },
 

@@ -40,7 +40,7 @@ export const checkSwapStatus = async (id: string) => {
 
 export const streamSwapStatus = async (
   id: string,
-  cb: (status: string) => void,
+  cb: (status: any) => void,
 ) => {
   const stream = new EventSource(
     BOLTZ_URL[defaultChainId] + '/streamswapstatus?id=' + id,
@@ -51,6 +51,8 @@ export const streamSwapStatus = async (
 
     cb(data.status);
   };
+
+  return stream;
 };
 
 export const swapToBTC = async (

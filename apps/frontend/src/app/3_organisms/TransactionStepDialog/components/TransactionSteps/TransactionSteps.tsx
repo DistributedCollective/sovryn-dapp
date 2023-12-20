@@ -111,7 +111,7 @@ export const TransactionSteps: FC<TransactionStepsProps> = ({
             fnName === APPROVAL_FUNCTION ? false : undefined;
           item.config.gasPrice = request.gasPrice ?? gasPrice;
         } else if (isSignTransactionDataRequest(request)) {
-          const { signer, data, to, gasLimit } = request;
+          const { signer, data, to, value, gasLimit } = request;
 
           item.config.gasLimit =
             gasLimit ??
@@ -119,6 +119,7 @@ export const TransactionSteps: FC<TransactionStepsProps> = ({
               await signer.estimateGas({
                 to,
                 data,
+                value,
               })
             ).toString();
 

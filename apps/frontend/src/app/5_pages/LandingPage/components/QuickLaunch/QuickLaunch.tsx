@@ -10,6 +10,7 @@ import earnBg from '../../../../../assets/images/QuickLaunch/earn_bg.svg';
 import lendBg from '../../../../../assets/images/QuickLaunch/lend_bg.svg';
 import stakeBg from '../../../../../assets/images/QuickLaunch/stake_bg.svg';
 import { translations } from '../../../../../locales/i18n';
+import { formatValue } from '../../../../../utils/math';
 import { useGetNextSupplyInterestRate } from '../../../LendPage/hooks/useGetNextSupplyInterestRate';
 import { useGetReturnRate } from '../../../MarketMakingPage/hooks/useGetReturnRate';
 import { AmmLiquidityPoolDictionary } from '../../../MarketMakingPage/utils/AmmLiquidityPoolDictionary';
@@ -31,7 +32,7 @@ export const QuickLaunch: FC = () => {
   const options = [
     {
       title: t(pageTranslations.quickLaunch.stake.title, {
-        amount: maxStakingApr || 0,
+        amount: formatValue(maxStakingApr, 2),
       }),
       description: t(pageTranslations.quickLaunch.stake.description),
       action: t(pageTranslations.quickLaunch.stake.action),
@@ -40,7 +41,7 @@ export const QuickLaunch: FC = () => {
     },
     {
       title: t(pageTranslations.quickLaunch.earn.title, {
-        amount: Number(returnRates.afterRewards).toFixed(2),
+        amount: formatValue(returnRates.afterRewards, 2),
       }),
       description: t(pageTranslations.quickLaunch.earn.description),
       action: t(pageTranslations.quickLaunch.earn.action),
@@ -49,7 +50,7 @@ export const QuickLaunch: FC = () => {
     },
     {
       title: t(pageTranslations.quickLaunch.lend.title, {
-        amount: Number(interestRate).toFixed(2),
+        amount: formatValue(interestRate, 2),
       }),
       description: t(pageTranslations.quickLaunch.lend.description),
       action: t(pageTranslations.quickLaunch.lend.action),
@@ -82,7 +83,7 @@ export const QuickLaunch: FC = () => {
             children={option.title}
           />
           <Paragraph
-            className="mb-4 md:mb-6 font-medium xl:pr-0 pr-12"
+            className="mb-4 md:mb-6 font-medium xl:pr-0 pr-12 text-gray-30"
             children={option.description}
           />
           <Button

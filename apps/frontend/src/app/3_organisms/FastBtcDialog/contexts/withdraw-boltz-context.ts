@@ -10,39 +10,85 @@ export enum WithdrawBoltzStep {
   COMPLETED,
 }
 
-export type WithdrawContextStateType = {
+export type WithdrawBoltzContextStateType = {
   step: WithdrawBoltzStep;
   amount: string;
   invoice: string;
-  limits: WithdrawLimits;
+  loadingPairData: boolean;
+  limits: BoltzLimits;
+  fees: BoltzFees;
+  rate: number;
+  hash: string;
 };
 
-type WithdrawLimits = {
-  min: number;
-  max: number;
-  baseFee: number;
-  dynamicFee: number;
-  loading: boolean;
+type BoltzFees = {
+  percentage: number;
+  percentageSwapIn: number;
+  minerFees: {
+    baseAsset: BoltzMinerFees;
+    quoteAsset: BoltzMinerFees;
+  };
+};
+
+type BoltzMinerFees = {
+  normal: number;
+  reverse: {
+    claim: number;
+    lockup: number;
+  };
+};
+
+type BoltzLimits = {
+  minimal: number;
+  maximal: number;
+  maximalZeroConf: {
+    baseAsset: number;
+    quoteAsset: number;
+  };
 };
 
 export type WithdrawContextFunctionsType = {
-  set: Dispatch<SetStateAction<WithdrawContextStateType>>;
+  set: Dispatch<SetStateAction<WithdrawBoltzContextStateType>>;
 };
 
-export type WithdrawContextType = WithdrawContextStateType &
+export type WithdrawContextType = WithdrawBoltzContextStateType &
   WithdrawContextFunctionsType;
 
 export const defaultValue: WithdrawContextType = {
   step: WithdrawBoltzStep.MAIN,
   amount: '',
   invoice: '',
-  limits: {
-    min: 0,
-    max: 0,
-    baseFee: 0,
-    dynamicFee: 0,
-    loading: true,
+  fees: {
+    percentage: 0,
+    percentageSwapIn: 0,
+    minerFees: {
+      quoteAsset: {
+        normal: 0,
+        reverse: {
+          claim: 0,
+          lockup: 0,
+        },
+      },
+      baseAsset: {
+        normal: 0,
+        reverse: {
+          claim: 0,
+          lockup: 0,
+        },
+      },
+    },
   },
+  limits: {
+    minimal: 0,
+    maximal: 0,
+    maximalZeroConf: {
+      baseAsset: 0,
+      quoteAsset: 0,
+    },
+  },
+  rate: 1,
+  hash: '',
+  loadingPairData: true,
   set: () => {
     throw new Error('set() has not been defined.');
   },

@@ -1,51 +1,43 @@
 import React, { useContext, useMemo } from 'react';
 
-import { BITCOIN } from '../../../../../../constants/currencies';
+import { Decimalish } from '@sovryn/utils';
+
 import { BTC_IN_SATOSHIS } from '../../../../../../constants/general';
-import { formatValue } from '../../../../../../utils/math';
-import { DYNAMIC_FEE_DIVISOR } from '../../../constants';
+import { decimalic } from '../../../../../../utils/math';
 import { WithdrawBoltzContext } from '../../../contexts/withdraw-boltz-context';
 import { Limits } from './Limits';
 
-export const TransferPolicies: React.FC = () => {
-  const { limits } = useContext(WithdrawBoltzContext);
+export type TransferPoliciesProps = {
+  amount: Decimalish;
+};
 
-  const minimumAmount = useMemo(() => {
-    const minimum = limits.min / BTC_IN_SATOSHIS;
+export const TransferPolicies: React.FC<TransferPoliciesProps> = ({
+  amount,
+}) => {
+  const { limits, fees } = useContext(WithdrawBoltzContext);
 
-    return `${formatValue(minimum, 5)} ${BITCOIN}`;
-  }, [limits.min]);
-
-  const maximumAmount = useMemo(
-    () => `${formatValue(limits.max / BTC_IN_SATOSHIS, 3)} ${BITCOIN}`,
-    [limits.max],
+  const conversionRate = useMemo(
+    () => decimalic(fees.percentageSwapIn),
+    [fees.percentageSwapIn],
   );
 
-  const serviceFee = useMemo(() => {
-    const baseFee = limits.baseFee / BTC_IN_SATOSHIS;
-
-    if (!limits.dynamicFee) {
-      return `${formatValue(baseFee, 6)} ${BITCOIN}`;
+  const conversionFee = useMemo(() => {
+    const value = decimalic(amount);
+    if (value.gt(0)) {
+      return value.mul(conversionRate.div(100));
     }
-
-    if (!limits.baseFee) {
-      return `${formatValue(
-        (limits.dynamicFee / DYNAMIC_FEE_DIVISOR) * 100,
-        2,
-      )} %`;
-    }
-
-    return `
-          ${formatValue(baseFee, 6)} ${BITCOIN} +
-          ${formatValue((limits.dynamicFee / DYNAMIC_FEE_DIVISOR) * 100, 2)} %
-        `;
-  }, [limits.baseFee, limits.dynamicFee]);
+    return decimalic(0);
+  }, [amount, conversionRate]);
 
   return (
     <Limits
-      minimumAmount={minimumAmount}
-      maximumAmount={maximumAmount}
-      serviceFee={serviceFee}
+      minimumAmount={decimalic(limits.minimal).div(BTC_IN_SATOSHIS)}
+      maximumAmount={decimalic(limits.maximal).div(BTC_IN_SATOSHIS)}
+      conversionRate={decimalic(fees.percentageSwapIn)}
+      conversionFee={conversionFee}
+      networkFee={decimalic(fees.minerFees.baseAsset.normal).div(
+        BTC_IN_SATOSHIS,
+      )}
       className="mt-8"
     />
   );

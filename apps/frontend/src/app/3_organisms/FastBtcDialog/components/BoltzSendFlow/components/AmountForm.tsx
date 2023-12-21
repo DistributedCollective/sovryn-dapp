@@ -23,12 +23,12 @@ import {
   BITCOIN,
   BTC_RENDER_PRECISION,
 } from '../../../../../../constants/currencies';
+import { GAS_LIMIT } from '../../../../../../constants/gasLimits';
 import { BTC_IN_SATOSHIS } from '../../../../../../constants/general';
 import { useMaintenance } from '../../../../../../hooks/useMaintenance';
 import { useMaxAssetBalance } from '../../../../../../hooks/useMaxAssetBalance';
 import { translations } from '../../../../../../locales/i18n';
 import { decimalic } from '../../../../../../utils/math';
-import { GAS_LIMIT_BOLTZ_SEND } from '../../../constants';
 import {
   WithdrawBoltzContext,
   WithdrawBoltzStep,
@@ -44,15 +44,28 @@ export const AmountForm: React.FC = () => {
   const { balance } = useMaxAssetBalance(
     SupportedTokens.rbtc,
     defaultChainId,
-    GAS_LIMIT_BOLTZ_SEND,
+    GAS_LIMIT.BOLTZ_SEND,
   );
 
   const [value, setValue] = useState(amount || '0');
 
-  const maximumAmount = useMemo(
-    () => Decimal.min(decimalic(limits.maximal).div(BTC_IN_SATOSHIS), balance),
-    [balance, limits.maximal],
-  );
+  const maximumAmount = useMemo(() => {
+    const feeForMaximumBalance = balance
+      .mul(fees.percentageSwapIn / 100)
+      .add(decimalic(fees.minerFees.baseAsset.normal).div(BTC_IN_SATOSHIS));
+    return Decimal.max(
+      Decimal.min(
+        decimalic(limits.maximal).div(BTC_IN_SATOSHIS),
+        balance.sub(feeForMaximumBalance),
+      ),
+      0,
+    );
+  }, [
+    balance,
+    fees.minerFees.baseAsset.normal,
+    fees.percentageSwapIn,
+    limits.maximal,
+  ]);
 
   const invalid = useMemo(() => {
     const amount = decimalic(value);
@@ -92,8 +105,11 @@ export const AmountForm: React.FC = () => {
     if (value === '0') {
       return false;
     }
-    return decimalic(value).gt(decimalic(limits.maximal).div(BTC_IN_SATOSHIS));
-  }, [limits.maximal, value]);
+    return (
+      decimalic(value).gt(decimalic(limits.maximal).div(BTC_IN_SATOSHIS)) ||
+      decimalic(value).gt(balance)
+    );
+  }, [balance, limits.maximal, value]);
 
   const onMaximumAmountClick = useCallback(
     () => setValue(maximumAmount.toString()),

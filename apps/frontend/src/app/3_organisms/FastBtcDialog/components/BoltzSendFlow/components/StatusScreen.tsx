@@ -1,10 +1,12 @@
-import React, { useEffect, useMemo } from 'react';
+import React, { useCallback, useContext, useMemo } from 'react';
 
 import classNames from 'classnames';
 import { t } from 'i18next';
 
 import {
   Button,
+  ErrorBadge,
+  ErrorLevel,
   Heading,
   HeadingType,
   Icon,
@@ -12,71 +14,122 @@ import {
   StatusType,
 } from '@sovryn/ui';
 
+import { AmountRenderer } from '../../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { StatusIcon } from '../../../../../2_molecules/StatusIcon/StatusIcon';
 import { TxIdWithNotification } from '../../../../../2_molecules/TxIdWithNotification/TransactionIdWithNotification';
 import { BITCOIN } from '../../../../../../constants/currencies';
-import { useBlockNumber } from '../../../../../../hooks/useBlockNumber';
+import { useMaintenance } from '../../../../../../hooks/useMaintenance';
 import { translations } from '../../../../../../locales/i18n';
-import { useGetBitcoinTxIdQuery } from '../../../../../../utils/graphql/rsk/generated';
 import { getRskExplorerUrl } from '../../../../../../utils/helpers';
-import { formatValue } from '../../../../../../utils/math';
+import { decimalic } from '../../../../../../utils/math';
+import { WithdrawBoltzContext } from '../../../contexts/withdraw-boltz-context';
 import { BoltzStatus, BoltzStatusType } from './BoltzStatus';
 
 const translation = translations.boltz.send.confirmationScreens;
 
-const getTitle = (status: StatusType) => {
-  return 'title';
-  // switch (status) {
-  //   case StatusType.error:
-  //     return t(translation.statusTitleFailed);
-  //   case StatusType.success:
-  //     return t(translation.statusTitleComplete);
-  //   default:
-  //     return t(translation.statusTitleProcessing);
-  // }
+const getTitle = (txStatus: StatusType, BoltzStatus: BoltzStatusType) => {
+  if (!BoltzStatus) {
+    return t(translation.titles.default);
+  }
+  if (txStatus === StatusType.error) {
+    return t(translation.titles.error);
+  }
+
+  if (
+    txStatus === StatusType.success &&
+    [
+      BoltzStatusType.paid,
+      BoltzStatusType.txClaimed,
+      BoltzStatusType.settled,
+    ].includes(BoltzStatus)
+  ) {
+    return t(translation.titles.success);
+  }
+
+  return t(translation.titles.pending);
+};
+
+const getDescription = (txStatus: StatusType, boltzStatus: BoltzStatusType) => {
+  if (txStatus === StatusType.idle || !boltzStatus) {
+    return t(translation.descriptions.default);
+  }
+
+  if (txStatus === StatusType.error) {
+    return (
+      <StatusIcon
+        status={StatusType.error}
+        dataAttribute="funding-send-status"
+      />
+    );
+  }
+
+  if (
+    txStatus === StatusType.success &&
+    [
+      BoltzStatusType.paid,
+      BoltzStatusType.txClaimed,
+      BoltzStatusType.settled,
+    ].includes(boltzStatus)
+  ) {
+    return (
+      <StatusIcon
+        status={StatusType.success}
+        dataAttribute="funding-send-status"
+      />
+    );
+  }
+
+  return (
+    <StatusIcon
+      status={StatusType.pending}
+      dataAttribute="funding-send-status"
+    />
+  );
 };
 
 const rskExplorerUrl = getRskExplorerUrl();
 
 type StatusScreenProps = {
   from: string;
-  to: string;
   amount: string;
-  feesPaid: number;
-  receiveAmount: number;
   txHash?: string;
+  refundTxHash?: string;
   txStatus: StatusType;
   boltzStatus?: BoltzStatusType;
+  onConfirm: () => void;
+  onRefund: () => void;
   onClose: () => void;
   onRetry: () => void;
 };
 
 export const StatusScreen: React.FC<StatusScreenProps> = ({
   from,
-  to,
   amount,
-  feesPaid,
-  receiveAmount,
   txHash,
   txStatus,
+  refundTxHash,
   boltzStatus,
-  onClose,
+  onConfirm,
   onRetry,
+  onRefund,
+  onClose,
 }) => {
-  const { value: block } = useBlockNumber();
+  const { fees } = useContext(WithdrawBoltzContext);
+  const { checkMaintenance, States } = useMaintenance();
+  const fastBtcLocked = checkMaintenance(States.FASTBTC_SEND);
 
-  const { data, refetch } = useGetBitcoinTxIdQuery({
-    variables: { createdAtTx: txHash || '' },
-  });
-
-  const bitcoinTxHash = useMemo(
-    () => data?.bitcoinTransfers?.[0]?.bitcoinTxHash,
-    [data],
+  const conversionFee = useMemo(
+    () => decimalic(amount).mul(decimalic(fees.percentageSwapIn).div(100)),
+    [amount, fees.percentageSwapIn],
   );
 
-  useEffect(() => {
-    refetch();
-  }, [refetch, txHash, block]);
+  const sendAmount = useMemo(
+    () =>
+      decimalic(amount)
+        .add(conversionFee)
+        .add(decimalic(fees.minerFees.baseAsset.normal).div(1e8)),
+    [amount, conversionFee, fees.minerFees.baseAsset.normal],
+  );
 
   const items = useMemo(
     () => [
@@ -92,33 +145,37 @@ export const StatusScreen: React.FC<StatusScreenProps> = ({
       {
         label: t(translation.sending),
         value: (
-          <>
-            {formatValue(Number(amount), 8)} {BITCOIN}
-          </>
+          <AmountRenderer value={sendAmount} suffix={BITCOIN} precision={8} />
         ),
       },
       {
         label: t(translation.conversionFee),
         value: (
-          <>
-            {formatValue(Number(amount), 8)} {BITCOIN}
-          </>
+          <AmountRenderer
+            value={conversionFee}
+            suffix={BITCOIN}
+            precision={8}
+          />
         ),
       },
       {
         label: t(translation.networkFee),
         value: (
-          <>
-            {formatValue(Number(amount), 8)} {BITCOIN}
-          </>
+          <AmountRenderer
+            value={decimalic(fees.minerFees.baseAsset.normal).div(1e8)}
+            suffix={BITCOIN}
+            precision={8}
+          />
         ),
       },
       {
         label: t(translation.receiving),
         value: (
-          <>
-            {formatValue(receiveAmount, 8)} {BITCOIN}
-          </>
+          <AmountRenderer
+            value={decimalic(amount)}
+            suffix={BITCOIN}
+            precision={8}
+          />
         ),
       },
       {
@@ -136,41 +193,77 @@ export const StatusScreen: React.FC<StatusScreenProps> = ({
         label: t(translation.lightningInvoiceStatus),
         value: <BoltzStatus status={boltzStatus} />,
       },
+      ...(refundTxHash
+        ? [
+            {
+              label: t(translation.refundTx),
+              value: (
+                <TxIdWithNotification
+                  value={refundTxHash}
+                  href={`${rskExplorerUrl}/tx/${refundTxHash}`}
+                />
+              ),
+            },
+          ]
+        : []),
     ],
-    [amount, from, receiveAmount, txHash, boltzStatus],
+    [
+      from,
+      sendAmount,
+      conversionFee,
+      fees.minerFees.baseAsset.normal,
+      amount,
+      txHash,
+      boltzStatus,
+      refundTxHash,
+    ],
   );
 
-  const status = useMemo(() => {
-    if (txStatus !== StatusType.success) {
-      return txStatus;
+  const showButton = useMemo(
+    () =>
+      [StatusType.idle, StatusType.error].includes(txStatus) ||
+      [
+        BoltzStatusType.paid,
+        BoltzStatusType.txClaimed,
+        BoltzStatusType.txRefunded,
+        BoltzStatusType.failedToPay,
+      ].includes(boltzStatus!),
+    [boltzStatus, txStatus],
+  );
+  const disabledButton = useMemo(() => fastBtcLocked, [fastBtcLocked]);
+  const buttonTitle = useMemo(() => {
+    if (boltzStatus === BoltzStatusType.failedToPay) {
+      return t(translations.common.buttons.refund);
+    }
+    if (txStatus === StatusType.idle) {
+      return t(translations.common.buttons.confirm);
+    }
+    return t(translations.common.buttons.done);
+  }, [boltzStatus, txStatus]);
+
+  const handleButtonClick = useCallback(() => {
+    if (txStatus === StatusType.idle) {
+      return onConfirm();
     }
 
-    if (!bitcoinTxHash) {
-      return StatusType.pending;
+    if (txStatus === StatusType.error) {
+      return onRetry();
     }
 
-    return StatusType.success;
-  }, [bitcoinTxHash, txStatus]);
+    if (boltzStatus === BoltzStatusType.failedToPay) {
+      return onRefund();
+    }
 
-  const hasTransactionFailed = useMemo(
-    () => status === StatusType.error,
-    [status],
-  );
-
-  const isDoneButtonDisabled = useMemo(
-    () => status === StatusType.pending,
-    [status],
-  );
+    onClose();
+  }, [boltzStatus, onClose, onConfirm, onRefund, onRetry, txStatus]);
 
   return (
     <div className="text-center">
       <Heading type={HeadingType.h2} className="font-medium mb-6">
-        {getTitle(status)}
+        {getTitle(txStatus, boltzStatus!)}
       </Heading>
 
-      <div className="mb-6">
-        <StatusIcon status={status} dataAttribute="funding-send-status" />
-      </div>
+      <div className="mb-6">{getDescription(txStatus, boltzStatus!)}</div>
 
       <div className="bg-gray-80 border rounded border-gray-50 p-3 text-xs text-gray-30">
         {items.map(({ label, value }, index) => (
@@ -186,17 +279,23 @@ export const StatusScreen: React.FC<StatusScreenProps> = ({
         ))}
       </div>
 
-      <Button
-        text={t(
-          translations.common.buttons[hasTransactionFailed ? 'retry' : 'done'],
-        )}
-        onClick={hasTransactionFailed ? onRetry : onClose}
-        disabled={isDoneButtonDisabled}
-        className="mt-8 w-full"
-        dataAttribute={`funding-send-${
-          hasTransactionFailed ? 'retry' : 'done'
-        }`}
-      />
+      {showButton && (
+        <div className="mt-8">
+          <Button
+            text={buttonTitle}
+            onClick={handleButtonClick}
+            disabled={disabledButton}
+            className="w-full"
+            dataAttribute="funding-send-confirm"
+          />
+          {fastBtcLocked && (
+            <ErrorBadge
+              level={ErrorLevel.Warning}
+              message={t(translations.maintenanceMode.fastBtc)}
+            />
+          )}
+        </div>
+      )}
     </div>
   );
 };

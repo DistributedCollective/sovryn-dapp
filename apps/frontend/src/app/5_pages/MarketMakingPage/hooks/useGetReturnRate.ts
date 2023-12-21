@@ -40,18 +40,17 @@ export const useGetReturnRate = (targetPool: string) => {
         if (data[targetPool]) {
           const targetPoolData =
             data[targetPool].data[Object.keys(data[targetPool].data)[0]];
-          const totalAPY = targetPoolData.reduce(
-            (acc, entry) => {
-              acc.beforeRewards = (
-                parseFloat(acc.beforeRewards) + parseFloat(entry.APY_rewards_pc)
-              ).toFixed(2);
-              acc.afterRewards = (
-                parseFloat(acc.afterRewards) + parseFloat(entry.APY_pc)
-              ).toFixed(2);
-              return acc;
-            },
-            { beforeRewards: '0', afterRewards: '0' } as ReturnRates,
-          );
+          const lastEntry = targetPoolData[targetPoolData.length - 1];
+
+          const totalAPY = {
+            beforeRewards: lastEntry
+              ? parseFloat(lastEntry.APY_rewards_pc).toFixed(2)
+              : '0',
+            afterRewards: lastEntry
+              ? parseFloat(lastEntry.APY_pc).toFixed(2)
+              : '0',
+          };
+
           setReturnRates(totalAPY);
         } else {
           setReturnRates({ beforeRewards: '0', afterRewards: '0' });

@@ -162,7 +162,7 @@
 
     "zeroPage": {
         "meta": {
-            "title": "Borrow - Sovryn",
+            "title": "Zero line of credit - Sovryn",
             "description": "0% interest loans with Sovryn's Zero protocol. Borrow ZUSD or DLLR against your Bitcoin in a fully decentralized system. Increase your earning potential today."
         },
         "dashboardWelcomeBanner": {
@@ -349,7 +349,7 @@
 
     "earnPage": {
         "meta": {
-            "title": "Earn - Sovryn",
+            "title": "Stability pool - Sovryn",
             "description": "Earn BTC by supplying ZUSD and ensure full collateralization of Zero with the Stability Pool. Join Sovryn's decentralized Zero protocol and start earning now."
         },
         "title": "Stability pool",
@@ -375,7 +375,7 @@
 
     "convertPage": {
         "meta": {
-            "title": "Convert - Sovryn",
+            "title": "Sovryn - DeFi for bitcoin",
             "description": "Convert between stablecoins on Zero - ZUSD, DOC, and Sovryn DLLR - using the Zero and Mynt protocols. Exchange with ease and convenience."
         },
         "title": "Convert",
@@ -399,7 +399,7 @@
 
     "stakePage": {
         "meta": {
-            "title": "Stake - Sovryn"
+            "title": "Staking - Sovryn"
         },
         "statistics": {
             "title": "Global staking statistics",

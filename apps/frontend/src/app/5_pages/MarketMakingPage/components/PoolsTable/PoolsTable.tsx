@@ -56,6 +56,7 @@ export const PoolsTable: FC<PoolsTableProps> = ({
     ),
     [],
   );
+
   const generateExpandedContent = useCallback(
     (pool: AmmLiquidityPool) => (
       <div className="lg:flex flex-row w-full">
@@ -68,6 +69,11 @@ export const PoolsTable: FC<PoolsTableProps> = ({
       </div>
     ),
     [],
+  );
+
+  const onPoolClick = useCallback(
+    (pool: AmmLiquidityPool) => setActivePool(pool.key),
+    [setActivePool],
   );
 
   useEffect(() => {
@@ -98,7 +104,7 @@ export const PoolsTable: FC<PoolsTableProps> = ({
       <Table
         columns={COLUMNS_CONFIG}
         rows={ammPools}
-        onRowClick={pool => setActivePool(pool.key)}
+        onRowClick={onPoolClick}
         expandedIndex={expandedIndex}
         className={styles.table}
         noData={t(translations.common.tables.noData)}

@@ -1,0 +1,46 @@
+import React, { FC, RefObject, useCallback } from 'react';
+
+import { t } from 'i18next';
+import { Trans } from 'react-i18next';
+
+import { Button, ButtonStyle } from '@sovryn/ui';
+
+import { translations } from '../../../../../locales/i18n';
+
+const pageTranslations = translations.landingPage.titleSection;
+
+type TitleSectionProps = {
+  ctaRef: RefObject<HTMLDivElement>;
+};
+
+export const TitleSection: FC<TitleSectionProps> = ({ ctaRef }) => {
+  const ctaClickHandler = useCallback(() => {
+    if (ctaRef.current) {
+      ctaRef.current.scrollIntoView({
+        behavior: 'smooth',
+        block: 'center',
+      });
+    }
+  }, [ctaRef]);
+
+  return (
+    <div className="min-h-40">
+      <div className="text-2xl font-medium leading-7 text-gray-10">
+        {t(pageTranslations.title)}
+      </div>
+      <div className="text-sm font-medium text-gray-30 mt-3">
+        {t(pageTranslations.description)}
+      </div>
+      <Trans
+        i18nKey={t(pageTranslations.cta)}
+        components={[
+          <Button
+            text={t(pageTranslations.ctaText)}
+            onClick={ctaClickHandler}
+            style={ButtonStyle.ghost}
+          />,
+        ]}
+      />
+    </div>
+  );
+};

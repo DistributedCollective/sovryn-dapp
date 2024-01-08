@@ -1,14 +1,17 @@
-import React, { FC } from 'react';
+import React, { FC, useRef } from 'react';
 
 import { t } from 'i18next';
 import { Helmet } from 'react-helmet-async';
 
 import { translations } from '../../../locales/i18n';
 import { QuickLaunch } from './components/QuickLaunch/QuickLaunch';
+import { TitleSection } from './components/TitleSection/TitleSection';
 
 const pageTranslations = translations.landingPage;
 
 const LandingPage: FC = () => {
+  const gettingStartedRef = useRef<HTMLDivElement>(null);
+
   return (
     <>
       <Helmet>
@@ -21,14 +24,15 @@ const LandingPage: FC = () => {
 
       <div className="container max-w-screen-xl mx-auto my-4">
         <div className="grid xl:grid-cols-2 mb-10">
-          <div className="min-h-40">Welcome section</div>
+          <TitleSection ctaRef={gettingStartedRef} />
+
           <div className="min-h-40 flex justify-end">Banner section</div>
         </div>
 
         <QuickLaunch />
 
         <div className="grid xl:grid-cols-2 mb-10">
-          <div>How to get started section</div>
+          <div ref={gettingStartedRef}>How to get started section</div>
           <div className="py-8 px-6 rounded bg-gray-90">FAQ section</div>
         </div>
       </div>

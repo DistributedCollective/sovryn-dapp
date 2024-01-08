@@ -423,6 +423,12 @@
                 "description": "Borrow against your assets in Sovryn’s lending pools.",
                 "action": "Borrow with Sovryn"
             }
+        },
+        "titleSection": {
+            "title": "Welcome to Sovryn",
+            "description": "The decentralized bitcoin trading and lending platform",
+            "cta": "<0>New to Sovryn?</0>",
+            "ctaText": "New to Sovryn?"
         }
     },
 

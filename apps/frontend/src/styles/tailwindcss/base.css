@@ -45,4 +45,13 @@
   #root {
     @apply flex flex-col min-h-full;
   }
+
+  @font-face {
+    font-family: 'Druk LC';
+    src: url('../../../public/assets/DrukLC-Medium.woff2') format('woff2'),
+      url('../../../public/assets/DrukLC-Medium.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+  }
 }

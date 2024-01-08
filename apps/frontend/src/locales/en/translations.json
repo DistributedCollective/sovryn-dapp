@@ -423,6 +423,13 @@
                 "description": "Borrow against your assets in Sovryn’s lending pools.",
                 "action": "Borrow with Sovryn"
             }
+        },
+        "promotions": {
+            "sov": {
+                "title": "BUY SOV - Shape The future",
+                "description": "Buy SOV - Sovryn’s governance token. Stake to earn rewards and vote in Bitocracy.",
+                "cta": "Buy SOV"
+            }
         }
     },
 

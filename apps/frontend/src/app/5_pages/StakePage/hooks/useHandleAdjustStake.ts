@@ -124,7 +124,7 @@ export const useHandleAdjustStake = (
             type: TransactionType.signTransaction,
             contract: stakingContract,
             fnName: 'delegate',
-            args: [delegateAddress, timestamp],
+            args: [delegateAddress.toLowerCase(), timestamp],
             gasLimit: GAS_LIMIT.STAKING_STAKE,
           },
           onComplete,

@@ -22,7 +22,7 @@ const LandingPage: FC = () => {
         />
       </Helmet>
 
-      <div className="container max-w-screen-xl mx-auto my-4">
+      <div className="container max-w-screen-xl mx-auto mt-10 mb-20">
         <div className="grid xl:grid-cols-2 mb-10">
           <TitleSection ctaRef={gettingStartedRef} />
 

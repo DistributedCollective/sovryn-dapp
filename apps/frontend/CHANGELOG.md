@@ -1,5 +1,15 @@
 # frontend
 
+## 1.0.41
+
+### Patch Changes
+
+- 34f8b686: SOV-3654: add lowercase address in staking delegate
+- 71f57ff2: SOV-3641: MM: Fix Return Rate on the MM page
+- 5ae2703c: SOV-3527: change page titles
+- 00d55f43: SOV-3550: proposal title formatting
+- d4013865: SOV-3535: Show correct values with fixed conversion rate routes
+
 ## 1.0.40
 
 ### Patch Changes

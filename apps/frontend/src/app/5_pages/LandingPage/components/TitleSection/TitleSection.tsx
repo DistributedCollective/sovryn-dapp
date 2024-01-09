@@ -28,7 +28,7 @@ export const TitleSection: FC<TitleSectionProps> = ({ ctaRef }) => {
       <div className="text-2xl font-medium leading-7 text-gray-10">
         {t(pageTranslations.title)}
       </div>
-      <div className="text-sm font-medium text-gray-30 mt-3">
+      <div className="text-sm font-medium mt-3 text-gray-30">
         {t(pageTranslations.description)}
       </div>
       <Trans

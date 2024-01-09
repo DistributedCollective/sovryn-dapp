@@ -4,6 +4,7 @@ import { t } from 'i18next';
 import { Helmet } from 'react-helmet-async';
 
 import { translations } from '../../../locales/i18n';
+import { ProtocolData } from './components/ProtocolData/ProtocolData';
 import { QuickLaunch } from './components/QuickLaunch/QuickLaunch';
 import { TitleSection } from './components/TitleSection/TitleSection';
 
@@ -27,6 +28,10 @@ const LandingPage: FC = () => {
           <TitleSection ctaRef={gettingStartedRef} />
 
           <div className="min-h-40 flex justify-end">Banner section</div>
+        </div>
+
+        <div>
+          <ProtocolData />
         </div>
 
         <QuickLaunch />

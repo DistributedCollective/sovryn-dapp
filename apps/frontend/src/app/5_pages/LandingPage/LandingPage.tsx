@@ -25,13 +25,12 @@ const LandingPage: FC = () => {
 
       <div className="container max-w-screen-xl mx-auto mt-10 mb-20">
         <div className="grid xl:grid-cols-2 mb-10">
-          <TitleSection ctaRef={gettingStartedRef} />
+          <div>
+            <TitleSection ctaRef={gettingStartedRef} />
+            <ProtocolData />
+          </div>
 
           <div className="min-h-40 flex justify-end">Banner section</div>
-        </div>
-
-        <div>
-          <ProtocolData />
         </div>
 
         <QuickLaunch />

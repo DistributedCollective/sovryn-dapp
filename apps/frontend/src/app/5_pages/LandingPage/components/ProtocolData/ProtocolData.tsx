@@ -1,6 +1,9 @@
 import React, { FC, useCallback, useRef, useState } from 'react';
 
 import axios, { Canceler } from 'axios';
+import { t } from 'i18next';
+
+import { Button, ButtonStyle } from '@sovryn/ui';
 
 import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRenderer';
 import {
@@ -10,35 +13,25 @@ import {
   USD,
 } from '../../../../../constants/currencies';
 import { useInterval } from '../../../../../hooks/useInterval';
-import { getGraphWrapperUrl } from '../../../../../utils/helpers';
-import { LockedDataResult, VolumeDataResult } from './ProtocolData.types';
+import { translations } from '../../../../../locales/i18n';
+import {
+  DATA_REFRESH_INTERVAL,
+  DEFAULT_LOCKED_DATA,
+  DEFAULT_VOLUME_DATA,
+  LOCKED_DATA_URL,
+  VOLUME_DATA_URL,
+} from './ProtocolData.constants';
 
-const graphWrapper = getGraphWrapperUrl();
-
-const lockedDataUrl = `${graphWrapper}/cmc/tvl`;
-const volumeDataUrl = `${graphWrapper}/cmc/summary`;
-
-const defaultLockedData: LockedDataResult = {
-  btc: 0,
-  usd: 0,
-};
-
-const defaultVolumeData: VolumeDataResult = {
-  btc: 0,
-  usd: 0,
-};
+const pageTranslations = translations.landingPage.protocolDataSection;
 
 export const ProtocolData: FC = () => {
-  const [lockedDataLoading, setLockedDataLoading] = useState(false);
-  const [lockedData, setLockedData] = useState(defaultLockedData);
+  const [lockedData, setLockedData] = useState(DEFAULT_LOCKED_DATA);
   const cancelLockedDataRequest = useRef<Canceler>();
 
-  const [volumeDataLoading, setVolumeDataLoading] = useState(false);
-  const [volumeData, setVolumeData] = useState(defaultVolumeData);
+  const [volumeData, setVolumeData] = useState(DEFAULT_VOLUME_DATA);
   const cancelVolumeDataRequest = useRef<Canceler>();
 
   const fetchLockedData = useCallback(() => {
-    setLockedDataLoading(true);
     cancelLockedDataRequest.current && cancelLockedDataRequest.current();
 
     const cancelToken = new axios.CancelToken(c => {
@@ -46,7 +39,7 @@ export const ProtocolData: FC = () => {
     });
 
     axios
-      .get(lockedDataUrl, {
+      .get(LOCKED_DATA_URL, {
         params: {
           stmp: Date.now(),
         },
@@ -57,14 +50,10 @@ export const ProtocolData: FC = () => {
           btc: result.data?.total_btc || 0,
           usd: result.data?.total_usd || 0,
         });
-      })
-      .finally(() => {
-        setLockedDataLoading(false);
       });
   }, []);
 
   const fetchVolumeData = useCallback(() => {
-    setVolumeDataLoading(true);
     cancelVolumeDataRequest.current && cancelVolumeDataRequest.current();
 
     const cancelToken = new axios.CancelToken(c => {
@@ -72,7 +61,7 @@ export const ProtocolData: FC = () => {
     });
 
     axios
-      .get(volumeDataUrl, {
+      .get(VOLUME_DATA_URL, {
         params: {
           extra: true,
           stmp: Date.now(),
@@ -89,9 +78,6 @@ export const ProtocolData: FC = () => {
           btc: result.data?.total_volume_btc || 0,
           usd: result.data?.total_volume_usd || 0,
         });
-      })
-      .finally(() => {
-        setVolumeDataLoading(false);
       });
   }, []);
 
@@ -100,19 +86,29 @@ export const ProtocolData: FC = () => {
       fetchLockedData();
       fetchVolumeData();
     },
-    600000, // 1 minute
+    DATA_REFRESH_INTERVAL,
     { immediate: true },
   );
 
   return (
     <div>
-      <div className="text-base font-medium text-gray-10">Protocol Data</div>
+      <div className="text-base font-medium text-gray-10">
+        {t(pageTranslations.title)}
+        <Button
+          text={t(pageTranslations.cta)}
+          href="" // TODO: This page does not exist yet, add link here once it's implemented
+          style={ButtonStyle.ghost}
+          className="text-sm font-medium ml-4"
+        />
+      </div>
       <div className="flex mt-4 font-medium">
         <div>
-          <div className="text-xs  text-gray-30 mb-3">Total value locked</div>
+          <div className="text-xs  text-gray-30 mb-3">
+            {t(pageTranslations.totalValueLocked)}
+          </div>
           <div className="text-2xl text-gray-10">
             <AmountRenderer
-              value={lockedDataLoading ? '0' : lockedData.btc}
+              value={lockedData.btc}
               suffix={BITCOIN}
               precision={BTC_RENDER_PRECISION}
               className="block text-2xl text-gray-10"
@@ -129,10 +125,12 @@ export const ProtocolData: FC = () => {
         </div>
 
         <div className="ml-20">
-          <div className="text-xs  text-gray-30 mb-3">24 hour volume</div>
+          <div className="text-xs  text-gray-30 mb-3">
+            {t(pageTranslations.volume)}
+          </div>
           <div className="text-2xl text-gray-10">
             <AmountRenderer
-              value={volumeDataLoading ? 0 : volumeData.btc}
+              value={volumeData.btc}
               suffix={BITCOIN}
               precision={BTC_RENDER_PRECISION}
               className="block text-2xl text-gray-10"

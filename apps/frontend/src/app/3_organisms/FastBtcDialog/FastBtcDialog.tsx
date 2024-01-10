@@ -16,10 +16,8 @@ import {
 import { useAccount } from '../../../hooks/useAccount';
 import { useIsMobile } from '../../../hooks/useIsMobile';
 import { translations } from '../../../locales/i18n';
-import {
-  Direction,
-  NetworkChooser,
-} from './components/NetworkChooser/NetworkChooser';
+import { NetworkChooser } from './components/NetworkChooser/NetworkChooser';
+import { Direction } from './components/NetworkChooser/NetworkChooser.type';
 import { useFastBtcDialogStore } from './store';
 
 const ACTIVE_CLASSNAME = 'border-t-primary-30';
@@ -117,7 +115,7 @@ export const FastBtcDialog: React.FC<FastBtcDialogProps> = ({
         items={items}
         onChange={onChangeIndex}
         selectedIndex={index}
-        tabsClassName="min-h-[39rem] block pt-0 relative"
+        tabsClassName="min-h-[44rem] block pt-0 relative"
         headerClassName="pb-0 pt-5"
         footerClassName="absolute bottom-5 left-5"
         contentClassName="px-10 pb-10 pt-6"

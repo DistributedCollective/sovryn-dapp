@@ -12,6 +12,7 @@ export type ReverseSwap = CreateReverseSwapResponse & {
   date: number;
   onchainAddress: string;
   preimage: string;
+  preimageHash: string;
   receiveAmount: number;
   reverse: boolean;
   sendAmount: number;

@@ -4,6 +4,8 @@ import { t } from 'i18next';
 import { Helmet } from 'react-helmet-async';
 
 import { translations } from '../../../locales/i18n';
+import { FaqSection } from './components/FaqSection/FaqSection';
+import { GetStarted } from './components/GetStarted/GetStarted';
 import { QuickLaunch } from './components/QuickLaunch/QuickLaunch';
 import { TitleSection } from './components/TitleSection/TitleSection';
 
@@ -31,9 +33,12 @@ const LandingPage: FC = () => {
 
         <QuickLaunch />
 
-        <div className="grid xl:grid-cols-2 mb-10">
-          <div ref={gettingStartedRef}>How to get started section</div>
-          <div className="py-8 px-6 rounded bg-gray-90">FAQ section</div>
+        <div
+          className="grid xl:grid-cols-2 mb-10 sm:mx-6"
+          ref={gettingStartedRef}
+        >
+          <GetStarted />
+          <FaqSection />
         </div>
       </div>
     </>

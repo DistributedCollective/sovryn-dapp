@@ -402,6 +402,41 @@
             "title": "Welcome to Sovryn",
             "description": "The Decentralized Bitcoin Trading And Lending Platform"
         },
+        "getStarted": {
+            "title": "Get started",
+            "steps": {
+                "first": {
+                    "title": "Connect your wallet",
+                    "description": "Sovryn supports the most popular browser and hardware wallets."
+                },
+                "second": {
+                    "title": "Deposit BTC",
+                    "description": "Transfer BTC from the bitcoin network to your Rootstock address."
+                },
+                "third": {
+                    "title": "Start earning",
+                    "description": "Enjoy permisionless and decentralized trading keeping the full control of your funds."
+                }
+            },
+            "actions": {
+                "getStarted": "Get Started",
+                "fundYourWallet": "Fund Wallet",
+                "learnMore": "Learn more in wiki"
+            }
+        },
+        "faqSection": {
+            "title": "FAQ",
+            "list": {
+                "first": {
+                    "title": "What is Sovryn?",
+                    "description": " Sovryn is a decentralized trading and lending platform for Bitcoin. It is a non-custodial and permissionless smart contract-based system built on the Bitcoin-based Rootstock (RSK) blockchain. Sovryn is a DeFi platform that allows you to trade, lend, and leverage your Bitcoin and other assets in a decentralized way."
+                },
+                "second": {
+                    "title": "On which blockchain does Sovryn operate?",
+                    "description": "Sovryn runs on Rootstock, which derives its security from the bitcoin network. The native token of Rootstock is RBTC, an exact 1:1 BTC peg. When you transfer bitcoin into Rootstock, your bitcoin is locked and the equivalent amount is released as RBTC on Rootstock. Using RBTC, your bitcoin takes on new capabilities. You can borrow, lend, and trade on Sovryn. In addition, all fees are paid in RBTC, so you don't need a separate asset just for transaction fees."
+                }
+            }
+        },
         "quickLaunch": {
             "stake": {
                 "title": "Stake SOV – earn up to {{amount}}% APY",

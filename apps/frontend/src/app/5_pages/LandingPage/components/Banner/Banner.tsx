@@ -20,7 +20,7 @@ export const Banner: FC = () => {
       <Carousel
         arrows={false}
         draggable
-        partialVisible
+        partialVisible={false}
         focusOnSelect={false}
         responsive={{
           large: {
@@ -41,6 +41,28 @@ export const Banner: FC = () => {
       >
         <LandingPromoCard
           heading={t(translations.landingPage.promotions.sov.title)}
+          description={t(translations.landingPage.promotions.sov.description)}
+          actions={
+            <>
+              <Button
+                style={ButtonStyle.secondary}
+                size={ButtonSize.large}
+                text={t(translations.landingPage.promotions.sov.cta)}
+                onClick={() => navigate('/convert?from=rbtc&to=sov')}
+              />
+
+              <Button
+                text={t(translations.stakePage.stakingRewards.learnMoreLink)}
+                href={WIKI_LINKS.STAKING}
+                style={ButtonStyle.ghost}
+                hrefExternal
+              />
+            </>
+          }
+        />
+
+        <LandingPromoCard
+          heading={'Promo Test'}
           description={t(translations.landingPage.promotions.sov.description)}
           actions={
             <>

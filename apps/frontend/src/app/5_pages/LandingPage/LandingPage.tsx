@@ -29,7 +29,7 @@ const LandingPage: FC = () => {
             <TitleSection ctaRef={gettingStartedRef} />
           </div>
 
-          <div className="min-h-40 w-full lg:max-w-[26rem] flex justify-end">
+          <div className="min-h-40 w-full lg:max-w-[26.5rem] flex justify-end">
             <Banner />
           </div>
         </div>

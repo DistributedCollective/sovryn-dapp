@@ -430,6 +430,12 @@
                 "description": "Buy SOV - Sovryn’s governance token. Stake to earn rewards and vote in Bitocracy.",
                 "cta": "Buy SOV"
             }
+        },
+        "titleSection": {
+            "title": "Welcome to Sovryn",
+            "description": "The decentralized bitcoin trading and lending platform",
+            "cta": "<0>New to Sovryn?</0>",
+            "ctaText": "New to Sovryn?"
         }
     },
 

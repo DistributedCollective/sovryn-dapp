@@ -18,12 +18,12 @@ import {
   streamSwapStatus,
   swapToLighting,
 } from '../../../../Boltz/Boltz.utils';
+import EtherSwapABI from '../../../../Boltz/EtherSwap.json';
 import { TransactionType } from '../../../../TransactionStepDialog/TransactionStepDialog.types';
 import {
   WithdrawBoltzContext,
   WithdrawBoltzStep,
 } from '../../../contexts/withdraw-boltz-context';
-import EtherSwapABI from '../../../utils/EtherSwap.json';
 import { BoltzStatusType } from './BoltzStatus';
 import { StatusScreen } from './StatusScreen';
 

@@ -9,11 +9,7 @@ import { Network, useFastBtcDialogStore } from '../../store';
 import { BoltzSendFlow } from '../BoltzSendFlow/BoltzSendFlow';
 import { ReceiveFlow } from '../ReceiveFlow/ReceiveFlow';
 import { SendFlow } from '../SendFlow/SendFlow';
-
-export enum Direction {
-  Receive,
-  Send,
-}
+import { Direction } from './NetworkChooser.type';
 
 type NetworkChooserProps = {
   direction: Direction;

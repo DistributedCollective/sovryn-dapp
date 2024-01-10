@@ -76,21 +76,25 @@ export const InvoiceForm: React.FC = () => {
 
   const validateInvoice = useCallback(
     (invoice: string) => {
-      setInvoiceValidationState(InvoiceValidationState.LOADING);
-      const decoded = decodeInvoice(invoice);
-      if (decoded) {
-        if ((decoded.expiry ?? 0) < Date.now() / 1000) {
-          setInvoiceValidationState(InvoiceValidationState.EXPIRED);
-          return;
-        }
+      try {
+        setInvoiceValidationState(InvoiceValidationState.LOADING);
+        const decoded = decodeInvoice(invoice);
+        if (decoded) {
+          if ((decoded.expiry ?? 0) < Date.now() / 1000) {
+            setInvoiceValidationState(InvoiceValidationState.EXPIRED);
+            return;
+          }
 
-        if (!decimalic(amount).eq(decimalic(decoded.satoshis).div(1e8))) {
-          setInvoiceValidationState(InvoiceValidationState.BALANCE);
-          return;
-        }
+          if (!decimalic(amount).eq(decimalic(decoded.satoshis).div(1e8))) {
+            setInvoiceValidationState(InvoiceValidationState.BALANCE);
+            return;
+          }
 
-        setInvoiceValidationState(InvoiceValidationState.VALID);
-      } else {
+          setInvoiceValidationState(InvoiceValidationState.VALID);
+        } else {
+          setInvoiceValidationState(InvoiceValidationState.INVALID);
+        }
+      } catch (e) {
         setInvoiceValidationState(InvoiceValidationState.INVALID);
       }
     },

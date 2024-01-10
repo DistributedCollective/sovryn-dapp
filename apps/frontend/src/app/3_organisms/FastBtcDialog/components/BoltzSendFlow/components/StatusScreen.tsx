@@ -15,7 +15,6 @@ import {
 } from '@sovryn/ui';
 
 import { AmountRenderer } from '../../../../../2_molecules/AmountRenderer/AmountRenderer';
-import { StatusIcon } from '../../../../../2_molecules/StatusIcon/StatusIcon';
 import { TxIdWithNotification } from '../../../../../2_molecules/TxIdWithNotification/TransactionIdWithNotification';
 import { BITCOIN } from '../../../../../../constants/currencies';
 import { useMaintenance } from '../../../../../../hooks/useMaintenance';
@@ -24,68 +23,9 @@ import { getRskExplorerUrl } from '../../../../../../utils/helpers';
 import { decimalic } from '../../../../../../utils/math';
 import { WithdrawBoltzContext } from '../../../contexts/withdraw-boltz-context';
 import { BoltzStatus, BoltzStatusType } from './BoltzStatus';
+import { getDescription, getTitle } from './StatusScreen.utils';
 
 const translation = translations.boltz.send.confirmationScreens;
-
-const getTitle = (txStatus: StatusType, BoltzStatus: BoltzStatusType) => {
-  if (!BoltzStatus) {
-    return t(translation.titles.default);
-  }
-  if (txStatus === StatusType.error) {
-    return t(translation.titles.error);
-  }
-
-  if (
-    txStatus === StatusType.success &&
-    [
-      BoltzStatusType.paid,
-      BoltzStatusType.txClaimed,
-      BoltzStatusType.settled,
-    ].includes(BoltzStatus)
-  ) {
-    return t(translation.titles.success);
-  }
-
-  return t(translation.titles.pending);
-};
-
-const getDescription = (txStatus: StatusType, boltzStatus: BoltzStatusType) => {
-  if (txStatus === StatusType.idle || !boltzStatus) {
-    return t(translation.descriptions.default);
-  }
-
-  if (txStatus === StatusType.error) {
-    return (
-      <StatusIcon
-        status={StatusType.error}
-        dataAttribute="funding-send-status"
-      />
-    );
-  }
-
-  if (
-    txStatus === StatusType.success &&
-    [
-      BoltzStatusType.paid,
-      BoltzStatusType.txClaimed,
-      BoltzStatusType.settled,
-    ].includes(boltzStatus)
-  ) {
-    return (
-      <StatusIcon
-        status={StatusType.success}
-        dataAttribute="funding-send-status"
-      />
-    );
-  }
-
-  return (
-    <StatusIcon
-      status={StatusType.pending}
-      dataAttribute="funding-send-status"
-    />
-  );
-};
 
 const rskExplorerUrl = getRskExplorerUrl();
 

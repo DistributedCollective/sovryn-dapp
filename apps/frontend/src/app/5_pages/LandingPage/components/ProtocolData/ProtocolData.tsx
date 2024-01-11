@@ -1,6 +1,5 @@
-import React, { FC, useCallback, useRef, useState } from 'react';
+import React, { FC } from 'react';
 
-import axios, { Canceler } from 'axios';
 import { t } from 'i18next';
 
 import { Button, ButtonStyle } from '@sovryn/ui';
@@ -12,106 +11,37 @@ import {
   TOKEN_RENDER_PRECISION,
   USD,
 } from '../../../../../constants/currencies';
-import { useInterval } from '../../../../../hooks/useInterval';
 import { translations } from '../../../../../locales/i18n';
-import {
-  DATA_REFRESH_INTERVAL,
-  DEFAULT_LOCKED_DATA,
-  DEFAULT_VOLUME_DATA,
-  LOCKED_DATA_URL,
-  VOLUME_DATA_URL,
-} from './ProtocolData.constants';
+import { useGetData } from './hooks/useGetData';
 
 const pageTranslations = translations.landingPage.protocolDataSection;
 
 export const ProtocolData: FC = () => {
-  const [lockedData, setLockedData] = useState(DEFAULT_LOCKED_DATA);
-  const cancelLockedDataRequest = useRef<Canceler>();
-
-  const [volumeData, setVolumeData] = useState(DEFAULT_VOLUME_DATA);
-  const cancelVolumeDataRequest = useRef<Canceler>();
-
-  const fetchLockedData = useCallback(() => {
-    cancelLockedDataRequest.current && cancelLockedDataRequest.current();
-
-    const cancelToken = new axios.CancelToken(c => {
-      cancelLockedDataRequest.current = c;
-    });
-
-    axios
-      .get(LOCKED_DATA_URL, {
-        params: {
-          stmp: Date.now(),
-        },
-        cancelToken,
-      })
-      .then(result => {
-        setLockedData({
-          btc: result.data?.total_btc || 0,
-          usd: result.data?.total_usd || 0,
-        });
-      });
-  }, []);
-
-  const fetchVolumeData = useCallback(() => {
-    cancelVolumeDataRequest.current && cancelVolumeDataRequest.current();
-
-    const cancelToken = new axios.CancelToken(c => {
-      cancelVolumeDataRequest.current = c;
-    });
-
-    axios
-      .get(VOLUME_DATA_URL, {
-        params: {
-          extra: true,
-          stmp: Date.now(),
-        },
-        headers: {
-          'Cache-Control': 'no-cache',
-          Pragma: 'no-cache',
-          Expires: '30',
-        },
-        cancelToken,
-      })
-      .then(result => {
-        setVolumeData({
-          btc: result.data?.total_volume_btc || 0,
-          usd: result.data?.total_volume_usd || 0,
-        });
-      });
-  }, []);
-
-  useInterval(
-    () => {
-      fetchLockedData();
-      fetchVolumeData();
-    },
-    DATA_REFRESH_INTERVAL,
-    { immediate: true },
-  );
+  const { lockedData, volumeData } = useGetData();
 
   return (
     <div>
-      <div className="text-base font-medium text-gray-10">
-        {t(pageTranslations.title)}
-        <Button
-          text={t(pageTranslations.cta)}
-          href="" // TODO: This page does not exist yet, add link here once it's implemented
-          style={ButtonStyle.ghost}
-          className="text-sm font-medium ml-4"
-        />
+      <div className="text-base font-medium text-gray-10 sm:justify-start justify-between flex">
+        <div>
+          {t(pageTranslations.title)}
+          <Button
+            text={t(pageTranslations.cta)}
+            href="" // TODO: This page does not exist yet, add link here once it's implemented
+            style={ButtonStyle.ghost}
+            className="text-sm font-medium ml-4"
+          />
+        </div>
       </div>
-      <div className="flex mt-4 font-medium">
+      <div className="flex mt-6 font-medium">
         <div>
           <div className="text-xs  text-gray-30 mb-3">
             {t(pageTranslations.totalValueLocked)}
           </div>
-          <div className="text-2xl text-gray-10">
+          <div className="sm:text-2xl text-gray-10 text-sm sm:font-medium font-semibold">
             <AmountRenderer
               value={lockedData.btc}
               suffix={BITCOIN}
               precision={BTC_RENDER_PRECISION}
-              className="block text-2xl text-gray-10"
             />
           </div>
 
@@ -124,16 +54,15 @@ export const ProtocolData: FC = () => {
           </div>
         </div>
 
-        <div className="ml-20">
+        <div className="sm:ml-20 ml-10">
           <div className="text-xs  text-gray-30 mb-3">
             {t(pageTranslations.volume)}
           </div>
-          <div className="text-2xl text-gray-10">
+          <div className="sm:text-2xl text-gray-10 text-sm sm:font-medium font-semibold">
             <AmountRenderer
               value={volumeData.btc}
               suffix={BITCOIN}
               precision={BTC_RENDER_PRECISION}
-              className="block text-2xl text-gray-10"
             />
           </div>
 

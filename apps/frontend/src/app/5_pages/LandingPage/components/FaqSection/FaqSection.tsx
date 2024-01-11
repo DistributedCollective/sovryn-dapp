@@ -17,6 +17,18 @@ const faqData = [
     title: t(pageTranslations.list.second.title),
     description: t(pageTranslations.list.second.description),
   },
+  {
+    title: t(pageTranslations.list.third.title),
+    description: t(pageTranslations.list.third.description),
+  },
+  {
+    title: t(pageTranslations.list.fourth.title),
+    description: t(pageTranslations.list.fourth.description),
+  },
+  {
+    title: t(pageTranslations.list.fifth.title),
+    description: t(pageTranslations.list.fifth.description),
+  },
 ];
 
 export const FaqSection: FC = () => {

@@ -5,13 +5,12 @@ import { t } from 'i18next';
 import { Button, ButtonStyle } from '@sovryn/ui';
 
 import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRenderer';
-import {
-  BITCOIN,
-  BTC_RENDER_PRECISION,
-  TOKEN_RENDER_PRECISION,
-  USD,
-} from '../../../../../constants/currencies';
+import { BITCOIN, USD } from '../../../../../constants/currencies';
 import { translations } from '../../../../../locales/i18n';
+import {
+  BTC_VALUE_PRECISION,
+  USD_VALUE_PRECISION,
+} from './ProtocolData.constants';
 import { useGetData } from './hooks/useGetData';
 
 const pageTranslations = translations.landingPage.protocolDataSection;
@@ -41,7 +40,7 @@ export const ProtocolData: FC = () => {
             <AmountRenderer
               value={lockedData.btc}
               suffix={BITCOIN}
-              precision={BTC_RENDER_PRECISION}
+              precision={BTC_VALUE_PRECISION}
             />
           </div>
 
@@ -49,7 +48,7 @@ export const ProtocolData: FC = () => {
             <AmountRenderer
               value={lockedData.usd}
               suffix={USD}
-              precision={TOKEN_RENDER_PRECISION}
+              precision={USD_VALUE_PRECISION}
             />
           </div>
         </div>
@@ -62,7 +61,7 @@ export const ProtocolData: FC = () => {
             <AmountRenderer
               value={volumeData.btc}
               suffix={BITCOIN}
-              precision={BTC_RENDER_PRECISION}
+              precision={BTC_VALUE_PRECISION}
             />
           </div>
 
@@ -70,7 +69,7 @@ export const ProtocolData: FC = () => {
             <AmountRenderer
               value={volumeData.usd}
               suffix={USD}
-              precision={TOKEN_RENDER_PRECISION}
+              precision={USD_VALUE_PRECISION}
             />
           </div>
         </div>

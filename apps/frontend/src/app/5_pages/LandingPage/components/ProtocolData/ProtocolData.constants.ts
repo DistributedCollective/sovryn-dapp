@@ -17,3 +17,6 @@ const graphWrapper = getGraphWrapperUrl();
 
 export const LOCKED_DATA_URL = `${graphWrapper}/cmc/tvl`;
 export const VOLUME_DATA_URL = `${graphWrapper}/cmc/summary`;
+
+export const BTC_VALUE_PRECISION = 4;
+export const USD_VALUE_PRECISION = 2;

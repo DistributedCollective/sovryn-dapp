@@ -21,8 +21,8 @@ export const ProtocolData: FC = () => {
 
   return (
     <div>
-      <div className="text-base font-medium text-gray-10 sm:justify-start justify-between flex">
-        <div>
+      <div className="text-base font-medium text-gray-10">
+        <div className="sm:justify-start justify-between flex">
           {t(pageTranslations.title)}
           <Button
             text={t(pageTranslations.cta)}

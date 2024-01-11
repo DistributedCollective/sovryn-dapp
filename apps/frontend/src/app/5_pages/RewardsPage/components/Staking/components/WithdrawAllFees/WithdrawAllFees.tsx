@@ -150,13 +150,13 @@ export const WithdrawAllFees: FC<WithdrawFeeProps> = ({ fees, refetch }) => {
         className="w-full lg:w-auto whitespace-nowrap"
         dataAttribute="rewards-withdraw"
       />
-      <FormGroup className="my-2" label="Max check point:">
+      <FormGroup className="my-2" label="Max checkpoints">
         <Input
           type="number"
           min="0"
           className="w-20"
-          onChange={e => setMaxCheckpoints(Number(e.target.value))}
-          value={maxCheckpoints}
+          onChange={e => setMaxCheckpoints(parseInt(e.target.value || '0'))}
+          value={maxCheckpoints.toString()}
         />
       </FormGroup>
     </div>

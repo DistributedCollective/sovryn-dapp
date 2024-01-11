@@ -57,6 +57,7 @@ export const GetStarted: FC = () => {
           className="ml-6"
           style={ButtonStyle.ghost}
           href={GETTING_STARTED_URL}
+          hrefExternal
           dataAttribute="get-started-section-learn-more"
         />
       </div>

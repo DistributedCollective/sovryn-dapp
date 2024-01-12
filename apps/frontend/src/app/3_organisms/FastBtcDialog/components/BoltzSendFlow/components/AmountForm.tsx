@@ -39,7 +39,7 @@ export const AmountForm: React.FC = () => {
   const { amount, limits, fees, set } = useContext(WithdrawBoltzContext);
 
   const { checkMaintenance, States } = useMaintenance();
-  const fastBtcLocked = checkMaintenance(States.FASTBTC_SEND);
+  const boltzLocked = checkMaintenance(States.BOLTZ_SEND);
 
   const { balance } = useMaxAssetBalance(
     SupportedTokens.rbtc,
@@ -162,20 +162,20 @@ export const AmountForm: React.FC = () => {
 
         <TransferPolicies amount={value} />
 
-        <Button
-          text={t(translations.common.buttons.continue)}
-          onClick={onContinueClick}
-          disabled={invalid || fastBtcLocked}
-          style={ButtonStyle.secondary}
-          className="mt-10 w-full"
-          dataAttribute="funding-send-amount-confirm"
-        />
-
-        {fastBtcLocked && (
+        {boltzLocked ? (
           <ErrorBadge
             level={ErrorLevel.Warning}
-            message={t(translations.maintenanceMode.fastBtc)}
+            message={t(translations.maintenanceMode.boltz)}
             dataAttribute="funding-send-amount-confirm-error"
+          />
+        ) : (
+          <Button
+            text={t(translations.common.buttons.continue)}
+            onClick={onContinueClick}
+            disabled={invalid || boltzLocked}
+            style={ButtonStyle.secondary}
+            className="mt-10 w-full"
+            dataAttribute="funding-send-amount-confirm"
           />
         )}
       </div>

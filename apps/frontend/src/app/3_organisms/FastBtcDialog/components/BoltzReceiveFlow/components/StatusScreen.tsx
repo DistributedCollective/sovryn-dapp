@@ -64,7 +64,7 @@ export const StatusScreen: React.FC<StatusScreenProps> = ({
   onClaim,
 }) => {
   const { checkMaintenance, States } = useMaintenance();
-  const fastBtcLocked = checkMaintenance(States.FASTBTC_RECEIVE);
+  const boltzLocked = checkMaintenance(States.BOLTZ_RECEIVE);
 
   const items = useMemo(
     () => [
@@ -149,8 +149,8 @@ export const StatusScreen: React.FC<StatusScreenProps> = ({
   );
 
   const disabledButton = useMemo(
-    () => fastBtcLocked || txStatus === StatusType.pending,
-    [fastBtcLocked, txStatus],
+    () => boltzLocked || txStatus === StatusType.pending,
+    [boltzLocked, txStatus],
   );
   const buttonTitle = useMemo(() => {
     if (
@@ -204,17 +204,18 @@ export const StatusScreen: React.FC<StatusScreenProps> = ({
 
       {showButton && (
         <div className="mt-8">
-          <Button
-            text={buttonTitle}
-            onClick={handleButtonClick}
-            disabled={disabledButton}
-            className="w-full"
-            dataAttribute="funding-receive-confirm"
-          />
-          {fastBtcLocked && (
+          {boltzLocked ? (
             <ErrorBadge
               level={ErrorLevel.Warning}
-              message={t(translations.maintenanceMode.fastBtc)}
+              message={t(translations.maintenanceMode.boltz)}
+            />
+          ) : (
+            <Button
+              text={buttonTitle}
+              onClick={handleButtonClick}
+              disabled={disabledButton}
+              className="w-full"
+              dataAttribute="funding-receive-confirm"
             />
           )}
         </div>

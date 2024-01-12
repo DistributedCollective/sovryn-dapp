@@ -20,7 +20,7 @@ export const MainScreen: React.FC = () => {
   const { set } = useContext(DepositBoltzContext);
 
   const { checkMaintenance, States } = useMaintenance();
-  const fastBtcLocked = checkMaintenance(States.FASTBTC_SEND);
+  const boltzLocked = checkMaintenance(States.BOLTZ_RECEIVE);
 
   const onContinueClick = useCallback(
     () => set(prevState => ({ ...prevState, step: DepositBoltzStep.AMOUNT })),
@@ -47,10 +47,10 @@ export const MainScreen: React.FC = () => {
     <div>
       <Instructions />
 
-      {fastBtcLocked ? (
+      {boltzLocked ? (
         <ErrorBadge
           level={ErrorLevel.Warning}
-          message={t(translations.maintenanceMode.fastBtc)}
+          message={t(translations.maintenanceMode.boltz)}
         />
       ) : (
         <Button

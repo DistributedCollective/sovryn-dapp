@@ -18,7 +18,7 @@ export const TitleSection: FC<TitleSectionProps> = ({ ctaRef }) => {
     if (ctaRef.current) {
       ctaRef.current.scrollIntoView({
         behavior: 'smooth',
-        block: 'center',
+        block: 'start',
       });
     }
   }, [ctaRef]);

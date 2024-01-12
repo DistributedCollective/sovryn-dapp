@@ -4,9 +4,9 @@ import { t } from 'i18next';
 import { Helmet } from 'react-helmet-async';
 
 import { translations } from '../../../locales/i18n';
+import { Banner } from './components/Banner/Banner';
 import { FaqSection } from './components/FaqSection/FaqSection';
 import { GetStarted } from './components/GetStarted/GetStarted';
-import { Banner } from './components/Banner/Banner';
 import { ProtocolData } from './components/ProtocolData/ProtocolData';
 import { QuickLaunch } from './components/QuickLaunch/QuickLaunch';
 import { TitleSection } from './components/TitleSection/TitleSection';
@@ -41,7 +41,7 @@ const LandingPage: FC = () => {
         <QuickLaunch />
 
         <div
-          className="grid xl:grid-cols-2 mb-10 sm:mx-6"
+          className="grid xl:grid-cols-2 pt-3 mb-10 sm:mx-6"
           ref={gettingStartedRef}
         >
           <GetStarted />

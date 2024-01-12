@@ -56,7 +56,7 @@ export const StatusScreen: React.FC<StatusScreenProps> = ({
 }) => {
   const { fees } = useContext(WithdrawBoltzContext);
   const { checkMaintenance, States } = useMaintenance();
-  const fastBtcLocked = checkMaintenance(States.FASTBTC_SEND);
+  const boltzLocked = checkMaintenance(States.BOLTZ_SEND);
 
   const conversionFee = useMemo(
     () => decimalic(amount).mul(decimalic(fees.percentageSwapIn).div(100)),
@@ -170,7 +170,7 @@ export const StatusScreen: React.FC<StatusScreenProps> = ({
       ].includes(boltzStatus!),
     [boltzStatus, txStatus],
   );
-  const disabledButton = useMemo(() => fastBtcLocked, [fastBtcLocked]);
+  const disabledButton = useMemo(() => boltzLocked, [boltzLocked]);
   const buttonTitle = useMemo(() => {
     if (boltzStatus === BoltzStatusType.failedToPay) {
       return t(translations.common.buttons.refund);
@@ -228,10 +228,10 @@ export const StatusScreen: React.FC<StatusScreenProps> = ({
             className="w-full"
             dataAttribute="funding-send-confirm"
           />
-          {fastBtcLocked && (
+          {boltzLocked && (
             <ErrorBadge
               level={ErrorLevel.Warning}
-              message={t(translations.maintenanceMode.fastBtc)}
+              message={t(translations.maintenanceMode.boltz)}
             />
           )}
         </div>

@@ -43,7 +43,7 @@ export const ReviewScreen: React.FC<ReviewScreenProps> = ({
   conversionFee,
 }) => {
   const { checkMaintenance, States } = useMaintenance();
-  const fastBtcLocked = checkMaintenance(States.FASTBTC_SEND);
+  const boltzLocked = checkMaintenance(States.BOLTZ_RECEIVE);
 
   const items = useMemo(
     () => [
@@ -119,17 +119,18 @@ export const ReviewScreen: React.FC<ReviewScreenProps> = ({
       </div>
 
       <div className="mt-8">
-        <Button
-          text={t(translations.common.buttons.confirm)}
-          onClick={onConfirm}
-          disabled={fastBtcLocked}
-          className="w-full"
-          dataAttribute="funding-send-confirm"
-        />
-        {fastBtcLocked && (
+        {boltzLocked ? (
           <ErrorBadge
             level={ErrorLevel.Warning}
-            message={t(translations.maintenanceMode.fastBtc)}
+            message={t(translations.maintenanceMode.boltz)}
+          />
+        ) : (
+          <Button
+            text={t(translations.common.buttons.confirm)}
+            onClick={onConfirm}
+            disabled={boltzLocked}
+            className="w-full"
+            dataAttribute="funding-send-confirm"
           />
         )}
       </div>

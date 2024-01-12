@@ -184,6 +184,7 @@ export const ConfirmationScreens: React.FC<ConfirmationScreensProps> = ({
       txStatus={txStatus}
       refundTxHash={refundTxHash}
       boltzStatus={boltzStatus}
+      swapData={swapData}
       from={account}
       amount={amount}
       onConfirm={handleConfirm}

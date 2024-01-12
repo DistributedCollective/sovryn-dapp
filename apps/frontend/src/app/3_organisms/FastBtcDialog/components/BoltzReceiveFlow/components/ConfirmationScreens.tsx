@@ -162,6 +162,7 @@ export const ConfirmationScreens: React.FC<ConfirmationScreensProps> = ({
       to={account}
       amount={amount}
       receiveAmount={swapData.receiveAmount}
+      swapData={swapData}
       onClaim={handleClaim}
       onRetry={handleRetry}
       onClose={onClose}

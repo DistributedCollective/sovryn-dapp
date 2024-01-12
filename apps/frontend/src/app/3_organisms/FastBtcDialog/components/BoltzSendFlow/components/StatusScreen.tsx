@@ -21,6 +21,7 @@ import { useMaintenance } from '../../../../../../hooks/useMaintenance';
 import { translations } from '../../../../../../locales/i18n';
 import { getRskExplorerUrl } from '../../../../../../utils/helpers';
 import { decimalic } from '../../../../../../utils/math';
+import { Swap } from '../../../../Boltz/Boltz.type';
 import { WithdrawBoltzContext } from '../../../contexts/withdraw-boltz-context';
 import { BoltzStatus, BoltzStatusType } from './BoltzStatus';
 import { getDescription, getTitle } from './StatusScreen.utils';
@@ -36,6 +37,7 @@ type StatusScreenProps = {
   refundTxHash?: string;
   txStatus: StatusType;
   boltzStatus?: BoltzStatusType;
+  swapData?: Swap;
   onConfirm: () => void;
   onRefund: () => void;
   onClose: () => void;
@@ -49,6 +51,7 @@ export const StatusScreen: React.FC<StatusScreenProps> = ({
   txStatus,
   refundTxHash,
   boltzStatus,
+  swapData,
   onConfirm,
   onRetry,
   onRefund,
@@ -119,6 +122,10 @@ export const StatusScreen: React.FC<StatusScreenProps> = ({
         ),
       },
       {
+        label: t(translation.swapId),
+        value: swapData?.id ? swapData.id : <Icon icon={IconNames.PENDING} />,
+      },
+      {
         label: t(translation.rootstockTx),
         value: txHash ? (
           <TxIdWithNotification
@@ -153,6 +160,7 @@ export const StatusScreen: React.FC<StatusScreenProps> = ({
       conversionFee,
       fees.minerFees.baseAsset.normal,
       amount,
+      swapData,
       txHash,
       boltzStatus,
       refundTxHash,

@@ -6,6 +6,7 @@ import { Heading, HeadingType, WalletContainer } from '@sovryn/ui';
 
 import { translations } from '../../../../../locales/i18n';
 import { Network, useFastBtcDialogStore } from '../../store';
+import { BoltzReceiveFlow } from '../BoltzReceiveFlow/BoltzReceiveFlow';
 import { BoltzSendFlow } from '../BoltzSendFlow/BoltzSendFlow';
 import { ReceiveFlow } from '../ReceiveFlow/ReceiveFlow';
 import { SendFlow } from '../SendFlow/SendFlow';
@@ -55,7 +56,9 @@ export const NetworkChooser: FC<NetworkChooserProps> = ({
       {direction === Direction.Receive && (
         <>
           {network === Network.bitcoin && <ReceiveFlow onClose={onClose} />}
-          {network === Network.lightning && <p>Add receive flow component</p>}
+          {network === Network.lightning && (
+            <BoltzReceiveFlow onClose={onClose} />
+          )}
         </>
       )}
       {direction === Direction.Send && (

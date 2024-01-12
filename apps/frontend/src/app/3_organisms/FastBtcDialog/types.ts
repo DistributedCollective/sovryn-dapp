@@ -10,3 +10,29 @@ export enum ReceiveEvents {
   getDepositAddress = 'getDepositAddress',
   getDepositHistory = 'getDepositHistory',
 }
+
+export type BoltzFees = {
+  percentage: number;
+  percentageSwapIn: number;
+  minerFees: {
+    baseAsset: BoltzMinerFees;
+    quoteAsset: BoltzMinerFees;
+  };
+};
+
+export type BoltzMinerFees = {
+  normal: number;
+  reverse: {
+    claim: number;
+    lockup: number;
+  };
+};
+
+export type BoltzLimits = {
+  minimal: number;
+  maximal: number;
+  maximalZeroConf: {
+    baseAsset: number;
+    quoteAsset: number;
+  };
+};

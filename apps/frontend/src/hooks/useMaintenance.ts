@@ -63,6 +63,8 @@ enum States {
   FULLD2 = 'fullD2',
   FASTBTC_SEND = 'fastBTCSend', // shared between D1 and D2
   FASTBTC_RECEIVE = 'fastBTCReceive', // shared between D1 and D2
+  BOLTZ_SEND = 'boltzSend',
+  BOLTZ_RECEIVE = 'boltzReceive',
   ZERO_CONVERT = 'zeroConvert',
   ZERO_CONVERT_SRC_MOC = 'zeroConvertSrcMOC',
   ZERO_CONVERT_SRC_MYNT = 'zeroConvertSrcMYNT',

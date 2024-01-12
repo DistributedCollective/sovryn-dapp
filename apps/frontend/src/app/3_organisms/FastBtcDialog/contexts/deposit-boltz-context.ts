@@ -2,20 +2,15 @@ import { createContext, Dispatch, SetStateAction } from 'react';
 
 import { BoltzFees, BoltzLimits } from '../types';
 
-export enum WithdrawBoltzStep {
+export enum DepositBoltzStep {
   MAIN,
   AMOUNT,
-  INVOICE,
   REVIEW,
-  CONFIRM,
-  PROCESSING,
-  COMPLETED,
 }
 
-export type WithdrawBoltzContextStateType = {
-  step: WithdrawBoltzStep;
+export type DepositBoltzContextStateType = {
+  step: DepositBoltzStep;
   amount: string;
-  invoice: string;
   loadingPairData: boolean;
   limits: BoltzLimits;
   fees: BoltzFees;
@@ -23,17 +18,16 @@ export type WithdrawBoltzContextStateType = {
   hash: string;
 };
 
-export type WithdrawContextFunctionsType = {
-  set: Dispatch<SetStateAction<WithdrawBoltzContextStateType>>;
+export type DepositContextFunctionsType = {
+  set: Dispatch<SetStateAction<DepositBoltzContextStateType>>;
 };
 
-export type WithdrawContextType = WithdrawBoltzContextStateType &
-  WithdrawContextFunctionsType;
+export type DepositContextType = DepositBoltzContextStateType &
+  DepositContextFunctionsType;
 
-export const defaultValue: WithdrawContextType = {
-  step: WithdrawBoltzStep.MAIN,
+export const defaultValue: DepositContextType = {
+  step: DepositBoltzStep.MAIN,
   amount: '',
-  invoice: '',
   fees: {
     percentage: 0,
     percentageSwapIn: 0,
@@ -70,5 +64,5 @@ export const defaultValue: WithdrawContextType = {
   },
 };
 
-export const WithdrawBoltzContext =
-  createContext<WithdrawContextType>(defaultValue);
+export const DepositBoltzContext =
+  createContext<DepositContextType>(defaultValue);

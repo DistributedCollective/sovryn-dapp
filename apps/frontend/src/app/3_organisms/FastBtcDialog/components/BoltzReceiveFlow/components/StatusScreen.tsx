@@ -1,6 +1,7 @@
-import React, { useCallback, useContext, useMemo } from 'react';
+import React, { useCallback, useMemo } from 'react';
 
 import classNames from 'classnames';
+import { formatUnits } from 'ethers/lib/utils';
 import { t } from 'i18next';
 
 import {
@@ -13,6 +14,7 @@ import {
   IconNames,
   StatusType,
 } from '@sovryn/ui';
+import { Decimalish } from '@sovryn/utils';
 
 import { AmountRenderer } from '../../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { TxIdWithNotification } from '../../../../../2_molecules/TxIdWithNotification/TransactionIdWithNotification';
@@ -20,72 +22,69 @@ import { BITCOIN } from '../../../../../../constants/currencies';
 import { useMaintenance } from '../../../../../../hooks/useMaintenance';
 import { translations } from '../../../../../../locales/i18n';
 import { getRskExplorerUrl } from '../../../../../../utils/helpers';
-import { decimalic } from '../../../../../../utils/math';
-import { WithdrawBoltzContext } from '../../../contexts/withdraw-boltz-context';
-import { BoltzStatus, BoltzStatusType } from './BoltzStatus';
+import { formatValue } from '../../../../../../utils/math';
+import {
+  BoltzStatus,
+  BoltzStatusType,
+} from '../../BoltzSendFlow/components/BoltzStatus';
+import { InvoiceScreen } from './InvoiceScreen';
 import { getDescription, getTitle } from './StatusScreen.utils';
 
-const translation = translations.boltz.send.confirmationScreens;
+const translation = translations.boltz.receive.confirmationScreens;
 
 const rskExplorerUrl = getRskExplorerUrl();
 
 type StatusScreenProps = {
-  from: string;
+  to: string;
   amount: string;
+  receiveAmount: Decimalish;
+  invoice: string;
   txHash?: string;
-  refundTxHash?: string;
   txStatus: StatusType;
   boltzStatus?: BoltzStatusType;
-  onConfirm: () => void;
-  onRefund: () => void;
+  onClaim: () => void;
   onClose: () => void;
   onRetry: () => void;
+  networkFee: Decimalish;
+  conversionFee: Decimalish;
 };
 
 export const StatusScreen: React.FC<StatusScreenProps> = ({
-  from,
+  to,
   amount,
+  receiveAmount,
   txHash,
   txStatus,
-  refundTxHash,
   boltzStatus,
-  onConfirm,
   onRetry,
-  onRefund,
   onClose,
+  networkFee,
+  conversionFee,
+  invoice,
+  onClaim,
 }) => {
-  const { fees } = useContext(WithdrawBoltzContext);
   const { checkMaintenance, States } = useMaintenance();
-  const boltzLocked = checkMaintenance(States.BOLTZ_SEND);
-
-  const conversionFee = useMemo(
-    () => decimalic(amount).mul(decimalic(fees.percentageSwapIn).div(100)),
-    [amount, fees.percentageSwapIn],
-  );
-
-  const sendAmount = useMemo(
-    () =>
-      decimalic(amount)
-        .add(conversionFee)
-        .add(decimalic(fees.minerFees.baseAsset.normal).div(1e8)),
-    [amount, conversionFee, fees.minerFees.baseAsset.normal],
-  );
+  const boltzLocked = checkMaintenance(States.BOLTZ_RECEIVE);
 
   const items = useMemo(
     () => [
       {
-        label: t(translation.from),
+        label: t(translation.to),
         value: (
           <TxIdWithNotification
-            value={from}
-            href={`${rskExplorerUrl}/address/${from}`}
+            value={to}
+            href={`${rskExplorerUrl}/address/${to}`}
           />
         ),
       },
       {
-        label: t(translation.sending),
+        label: t(translation.receiving),
         value: (
-          <AmountRenderer value={sendAmount} suffix={BITCOIN} precision={8} />
+          <AmountRenderer
+            value={formatUnits(receiveAmount.toString(), 8)}
+            suffix={BITCOIN}
+            precision={8}
+          />
         ),
       },
       {
@@ -101,22 +100,27 @@ export const StatusScreen: React.FC<StatusScreenProps> = ({
       {
         label: t(translation.networkFee),
         value: (
-          <AmountRenderer
-            value={decimalic(fees.minerFees.baseAsset.normal).div(1e8)}
-            suffix={BITCOIN}
-            precision={8}
-          />
+          <AmountRenderer value={networkFee} suffix={BITCOIN} precision={8} />
         ),
       },
       {
-        label: t(translation.receiving),
+        label: t(translation.amountSent),
         value: (
-          <AmountRenderer
-            value={decimalic(amount)}
-            suffix={BITCOIN}
-            precision={8}
-          />
+          <>
+            {formatValue(Number(amount), 8)} {BITCOIN}
+          </>
         ),
+      },
+      {
+        label: t(translation.lightningInvoice),
+        value:
+          boltzStatus === BoltzStatusType.txConfirmed ? (
+            <span className="text-success">
+              {t(translations.boltz.receive.confirmationScreens.paid)}
+            </span>
+          ) : (
+            <BoltzStatus status={boltzStatus} />
+          ),
       },
       {
         label: t(translation.rootstockTx),
@@ -129,73 +133,52 @@ export const StatusScreen: React.FC<StatusScreenProps> = ({
           <Icon icon={IconNames.PENDING} />
         ),
       },
-      {
-        label: t(translation.lightningInvoiceStatus),
-        value: <BoltzStatus status={boltzStatus} />,
-      },
-      ...(refundTxHash
-        ? [
-            {
-              label: t(translation.refundTx),
-              value: (
-                <TxIdWithNotification
-                  value={refundTxHash}
-                  href={`${rskExplorerUrl}/tx/${refundTxHash}`}
-                />
-              ),
-            },
-          ]
-        : []),
     ],
-    [
-      from,
-      sendAmount,
-      conversionFee,
-      fees.minerFees.baseAsset.normal,
-      amount,
-      txHash,
-      boltzStatus,
-      refundTxHash,
-    ],
+    [to, receiveAmount, conversionFee, networkFee, amount, boltzStatus, txHash],
   );
 
   const showButton = useMemo(
     () =>
-      [StatusType.idle, StatusType.error].includes(txStatus) ||
+      boltzStatus &&
       [
+        BoltzStatusType.txConfirmed,
         BoltzStatusType.paid,
-        BoltzStatusType.txClaimed,
-        BoltzStatusType.txRefunded,
-        BoltzStatusType.failedToPay,
-      ].includes(boltzStatus!),
-    [boltzStatus, txStatus],
+        BoltzStatusType.settled,
+      ].includes(boltzStatus),
+    [boltzStatus],
   );
-  const disabledButton = useMemo(() => boltzLocked, [boltzLocked]);
+
+  const disabledButton = useMemo(
+    () => boltzLocked || txStatus === StatusType.pending,
+    [boltzLocked, txStatus],
+  );
   const buttonTitle = useMemo(() => {
-    if (boltzStatus === BoltzStatusType.failedToPay) {
-      return t(translations.common.buttons.refund);
+    if (
+      boltzStatus === BoltzStatusType.txConfirmed &&
+      txStatus === StatusType.idle
+    ) {
+      return t(translations.boltz.receive.finalize);
     }
-    if (txStatus === StatusType.idle) {
-      return t(translations.common.buttons.confirm);
+    if (txStatus === StatusType.error) {
+      return t(translations.common.buttons.retry);
     }
     return t(translations.common.buttons.done);
   }, [boltzStatus, txStatus]);
 
   const handleButtonClick = useCallback(() => {
-    if (txStatus === StatusType.idle) {
-      return onConfirm();
+    if (
+      boltzStatus === BoltzStatusType.txConfirmed &&
+      txStatus === StatusType.idle
+    ) {
+      return onClaim();
     }
 
     if (txStatus === StatusType.error) {
       return onRetry();
     }
 
-    if (boltzStatus === BoltzStatusType.failedToPay) {
-      return onRefund();
-    }
-
     onClose();
-  }, [boltzStatus, onClose, onConfirm, onRefund, onRetry, txStatus]);
+  }, [boltzStatus, onClaim, onClose, onRetry, txStatus]);
 
   return (
     <div className="text-center">
@@ -221,20 +204,25 @@ export const StatusScreen: React.FC<StatusScreenProps> = ({
 
       {showButton && (
         <div className="mt-8">
-          <Button
-            text={buttonTitle}
-            onClick={handleButtonClick}
-            disabled={disabledButton}
-            className="w-full"
-            dataAttribute="funding-send-confirm"
-          />
-          {boltzLocked && (
+          {boltzLocked ? (
             <ErrorBadge
               level={ErrorLevel.Warning}
               message={t(translations.maintenanceMode.boltz)}
             />
+          ) : (
+            <Button
+              text={buttonTitle}
+              onClick={handleButtonClick}
+              disabled={disabledButton}
+              className="w-full"
+              dataAttribute="funding-receive-confirm"
+            />
           )}
         </div>
+      )}
+
+      {boltzStatus === BoltzStatusType.swapCreated && (
+        <InvoiceScreen invoice={invoice} />
       )}
     </div>
   );

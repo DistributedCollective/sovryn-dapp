@@ -5,6 +5,7 @@ import { Helmet } from 'react-helmet-async';
 
 import { translations } from '../../../locales/i18n';
 import { Banner } from './components/Banner/Banner';
+import { ProtocolData } from './components/ProtocolData/ProtocolData';
 import { QuickLaunch } from './components/QuickLaunch/QuickLaunch';
 import { TitleSection } from './components/TitleSection/TitleSection';
 
@@ -27,6 +28,7 @@ const LandingPage: FC = () => {
         <div className="flex flex-col lg:flex-row mb-10">
           <div className="flex-1 min-h-40">
             <TitleSection ctaRef={gettingStartedRef} />
+            <ProtocolData />
           </div>
 
           <div className="min-h-40 w-full lg:max-w-[26.5rem] flex justify-end">

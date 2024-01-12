@@ -472,11 +472,24 @@
                 "action": "Borrow with Sovryn"
             }
         },
+        "promotions": {
+            "sov": {
+                "title": "BUY SOV - Shape The future",
+                "description": "Buy SOV - Sovryn’s governance token. Stake to earn rewards and vote in Bitocracy.",
+                "cta": "Buy SOV"
+            }
+        },
         "titleSection": {
             "title": "Welcome to Sovryn",
             "description": "The decentralized bitcoin trading and lending platform",
             "cta": "<0>New to Sovryn?</0>",
             "ctaText": "New to Sovryn?"
+        },
+        "protocolDataSection": {
+            "title": "Protocol Data",
+            "cta": "View more",
+            "totalValueLocked": "Total value locked",
+            "volume": "24 hour volume"
         }
     },
 

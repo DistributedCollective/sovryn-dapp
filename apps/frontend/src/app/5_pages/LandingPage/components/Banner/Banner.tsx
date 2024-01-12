@@ -33,36 +33,14 @@ export const Banner: FC = () => {
         swipeable
         className="static"
         renderDotsOutside
-        showDots
-        autoPlay={true}
+        showDots={false} // Needs to be true when we have more than 1 promo
+        autoPlay={false} // Needs to be true when we have more than 1 promo
         dotListClass={styles.dot}
         autoPlaySpeed={15000}
         infinite
       >
         <LandingPromoCard
           heading={t(translations.landingPage.promotions.sov.title)}
-          description={t(translations.landingPage.promotions.sov.description)}
-          actions={
-            <>
-              <Button
-                style={ButtonStyle.secondary}
-                size={ButtonSize.large}
-                text={t(translations.landingPage.promotions.sov.cta)}
-                onClick={() => navigate('/convert?from=rbtc&to=sov')}
-              />
-
-              <Button
-                text={t(translations.stakePage.stakingRewards.learnMoreLink)}
-                href={WIKI_LINKS.STAKING}
-                style={ButtonStyle.ghost}
-                hrefExternal
-              />
-            </>
-          }
-        />
-
-        <LandingPromoCard
-          heading={'Promo Test'}
           description={t(translations.landingPage.promotions.sov.description)}
           actions={
             <>

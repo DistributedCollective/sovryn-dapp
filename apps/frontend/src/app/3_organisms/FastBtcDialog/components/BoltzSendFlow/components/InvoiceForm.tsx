@@ -115,6 +115,10 @@ export const InvoiceForm: React.FC = () => {
     [boltzLocked, invalidInvoice, value],
   );
 
+  const handleAmountClick = useCallback(async () => {
+    await navigator.clipboard.writeText(amount);
+  }, [amount]);
+
   return (
     <div className="text-center">
       <Heading type={HeadingType.h2} className="font-medium mb-8">
@@ -127,14 +131,16 @@ export const InvoiceForm: React.FC = () => {
       >
         {t(translations.boltz.send.invoice.description)}
       </Paragraph>
-      <AmountInput
-        label={t(translations.common.amount)}
-        readOnly
-        unit={BITCOIN}
-        value={amount}
-        decimalPrecision={BTC_RENDER_PRECISION}
-        className="max-w-none"
-      />
+      <div onClick={handleAmountClick} className="cursor-pointer">
+        <AmountInput
+          label={t(translations.common.amount)}
+          readOnly
+          unit={BITCOIN}
+          value={amount}
+          decimalPrecision={BTC_RENDER_PRECISION}
+          className="max-w-none"
+        />
+      </div>
 
       <div className="mt-4 text-left">
         <Paragraph size={ParagraphSize.base} className="font-medium mb-3">

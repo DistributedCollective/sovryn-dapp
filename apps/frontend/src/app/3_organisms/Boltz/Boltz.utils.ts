@@ -130,6 +130,11 @@ export const swapToLighting = async (
       ...data,
     };
   } catch (error) {
+    if (axios.isAxiosError(error)) {
+      if (error.response?.status === 400) {
+        throw new Error(error.response.data.error);
+      }
+    }
     throw error;
   }
 };

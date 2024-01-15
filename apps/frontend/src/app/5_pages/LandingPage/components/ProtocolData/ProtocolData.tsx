@@ -2,8 +2,6 @@ import React, { FC } from 'react';
 
 import { t } from 'i18next';
 
-import { Button, ButtonStyle } from '@sovryn/ui';
-
 import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { BITCOIN, USD } from '../../../../../constants/currencies';
 import { translations } from '../../../../../locales/i18n';
@@ -23,12 +21,6 @@ export const ProtocolData: FC = () => {
       <div className="text-base font-medium text-gray-10">
         <div className="sm:justify-start justify-between flex">
           {t(pageTranslations.title)}
-          <Button
-            text={t(pageTranslations.cta)}
-            href="" // TODO: This page does not exist yet, add link here once it's implemented
-            style={ButtonStyle.ghost}
-            className="text-sm font-medium ml-4"
-          />
         </div>
       </div>
       <div className="flex mt-6 font-medium">

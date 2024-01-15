@@ -7,6 +7,7 @@ import remarkGfm from 'remark-gfm';
 import { Paragraph, ParagraphSize } from '@sovryn/ui';
 
 import { translations } from '../../../../../locales/i18n';
+import styles from './ProposalInfo.module.css';
 
 const pageTranslations = translations.proposalPage;
 
@@ -38,18 +39,15 @@ export const ProposalInfo: FC<ProposalInfoProps> = ({ link, description }) => (
       )}
     </div>
 
-    <div className="sm:flex sm:mb-0 mb-2">
+    <div className="sm:flex sm:mb-0 mb-2 overflow-hidden">
       <Paragraph
         size={ParagraphSize.base}
         className="text-xs min-w-24 w-24 text-gray-30"
       >
         {t(pageTranslations.proposalText)}
       </Paragraph>
-      <div className="overflow-auto">
-        <ReactMarkdown
-          className="text-xs text-gray-30 break-words sm:break-words"
-          remarkPlugins={[remarkGfm]}
-        >
+      <div className="flex-1 w-full sm:w-[calc(100%-6rem)]">
+        <ReactMarkdown className={styles.markdown} remarkPlugins={[remarkGfm]}>
           {description}
         </ReactMarkdown>
       </div>

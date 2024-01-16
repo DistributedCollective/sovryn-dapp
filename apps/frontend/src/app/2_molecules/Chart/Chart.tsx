@@ -63,7 +63,12 @@ export const Chart: FC<ChartProps> = ({
   }, [chartOptions, gradient1Colors, gradient2Colors, mockData]);
 
   return (
-    <div className="lg:h-[37rem] h-64 rounded">
+    <div
+      onClick={e => {
+        e.stopPropagation();
+      }}
+      className="lg:h-[37rem] h-64 rounded"
+    >
       <canvas ref={canvas}></canvas>
     </div>
   );

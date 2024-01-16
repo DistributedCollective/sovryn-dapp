@@ -51,6 +51,9 @@ const BitocracyPage = loadable(
 const ProposalPage = loadable(
   () => import('./app/5_pages/ProposalPage/ProposalPage'),
 );
+const PortfolioPage = loadable(
+  () => import('./app/5_pages/PortfolioPage/PortfolioPage'),
+);
 
 const routes = [
   {
@@ -116,6 +119,11 @@ const routes = [
       {
         path: '/rewards',
         element: <RewardsPage />,
+        loader: zeroPageLoader,
+      },
+      {
+        path: '/portfolio',
+        element: <PortfolioPage />,
         loader: zeroPageLoader,
       },
       {

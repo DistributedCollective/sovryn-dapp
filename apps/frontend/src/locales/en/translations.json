@@ -74,7 +74,8 @@
         "notifications": "Notifications",
         "history": "History",
         "copyAddress": "Copy address",
-        "disconnect": "Disconnect"
+        "disconnect": "Disconnect",
+        "portfolio": "Portfolio"
     },
     "header": {
         "funding": "Funding",
@@ -1429,5 +1430,10 @@
     "newProposalTx": {
         "title": "Submit Proposal",
         "description": "Submit a new proposal to the Bitocracy"
+    },
+    "portfolioPage": {
+        "meta": {
+            "title": "Portfolio - Sovryn"
+        }
     }
 }

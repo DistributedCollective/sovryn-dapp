@@ -1,5 +1,5 @@
 .markdown {
-  @apply w-full text-xs text-gray-30 break-words sm:break-words;
+  @apply w-full text-xs text-gray-30;
 
   > pre {
     @apply whitespace-pre-wrap break-words;

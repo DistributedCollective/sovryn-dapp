@@ -46,7 +46,7 @@ export const ProposalInfo: FC<ProposalInfoProps> = ({ link, description }) => (
       >
         {t(pageTranslations.proposalText)}
       </Paragraph>
-      <div className="flex-1 w-full sm:w-[calc(100%-6rem)]">
+      <div className="flex-1">
         <ReactMarkdown className={styles.markdown} remarkPlugins={[remarkGfm]}>
           {description}
         </ReactMarkdown>

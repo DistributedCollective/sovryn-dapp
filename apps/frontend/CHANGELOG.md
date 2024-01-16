@@ -1,5 +1,16 @@
 # frontend
 
+## 1.0.42
+
+### Patch Changes
+
+- a11440c5: SOV-3615: Landing page initial config
+- 163aa12f: SOV-3563: switch on/off APR/24h issue
+- 5c7c11da: SOV-3628: Long SIP text now breaks onto multiple lines
+- a11440c5: SOV-3527: change page titles
+- a11440c5: SOV-3632: Banner Carousel
+- a11440c5: SOV-3535: Show correct values with fixed conversion rate routes
+
 ## 1.0.41
 
 ### Patch Changes

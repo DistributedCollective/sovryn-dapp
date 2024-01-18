@@ -1,4 +1,4 @@
-import React, { FC, useCallback } from 'react';
+import React, { FC, useCallback, useMemo } from 'react';
 
 import { t } from 'i18next';
 
@@ -8,6 +8,7 @@ import { translations } from '../../../../../locales/i18n';
 import { Network, useFastBtcDialogStore } from '../../store';
 import { BoltzReceiveFlow } from '../BoltzReceiveFlow/BoltzReceiveFlow';
 import { BoltzSendFlow } from '../BoltzSendFlow/BoltzSendFlow';
+import { MobileCloseButton } from '../MobileCloseButton';
 import { ReceiveFlow } from '../ReceiveFlow/ReceiveFlow';
 import { SendFlow } from '../SendFlow/SendFlow';
 import { Direction } from './NetworkChooser.type';
@@ -29,13 +30,18 @@ export const NetworkChooser: FC<NetworkChooserProps> = ({
     [setNetwork],
   );
 
+  const isReceiveDirection = useMemo(
+    () => direction === Direction.Receive,
+    [direction],
+  );
+
   if (network === Network.none) {
     return (
       <div className="flex flex-col gap-y-3 text-center">
         <Heading type={HeadingType.h2} className="font-medium mb-8">
           {t(
             translations.fastBtc.networkChooser[
-              direction === Direction.Receive ? 'receive' : 'send'
+              isReceiveDirection ? 'receive' : 'send'
             ].title,
           )}
         </Heading>
@@ -47,13 +53,20 @@ export const NetworkChooser: FC<NetworkChooserProps> = ({
           name={t(translations.fastBtc.networkChooser.networks.lightning)}
           onClick={handleNetworkChange(Network.lightning)}
         />
+
+        <MobileCloseButton
+          onClick={onClose}
+          dataAttribute={`network-chooser-${
+            isReceiveDirection ? 'receive' : 'send'
+          }-close`}
+        />
       </div>
     );
   }
 
   return (
     <>
-      {direction === Direction.Receive && (
+      {isReceiveDirection && (
         <>
           {network === Network.bitcoin && <ReceiveFlow onClose={onClose} />}
           {network === Network.lightning && (

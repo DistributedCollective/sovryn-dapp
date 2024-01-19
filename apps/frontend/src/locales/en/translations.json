@@ -1434,6 +1434,17 @@
     "portfolioPage": {
         "meta": {
             "title": "Portfolio - Sovryn"
+        },
+        "protocolSection": {
+            "marketMaking": "Market Making",
+            "stabilityPool": "Stability Pool",
+            "zeroLine": "Zero line of credit",
+            "lending": "Lending",
+            "staking": "Staking",
+            "deposit": "Deposit",
+            "openLoan": "Open loan",
+            "stakeSOV": "Stake SOV",
+            "depositValue": "Deposit value"
         }
     }
 }

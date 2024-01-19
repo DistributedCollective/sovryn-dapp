@@ -4,6 +4,7 @@ import { t } from 'i18next';
 import { Helmet } from 'react-helmet-async';
 
 import { translations } from '../../../locales/i18n';
+import { ProtocolSection } from './components/ProtocolSection/ProtocolSection';
 
 const PortfolioPage: FC = () => (
   <>
@@ -12,11 +13,11 @@ const PortfolioPage: FC = () => (
     </Helmet>
 
     <div className="px-0 container md:mx-9 mx-0 md:mb-2 mt-12 mb-7">
-      <div className="grid grid-cols-3 gap-20 w-full mb-6">
-        <div className="col-span-2 md:col-span-1 md:bg-gray-90 rounded md:py-7 md:px-6">
-          Total Value Section
+      <div className="grid grid-cols-9 gap-10 md:gap-12 lg:gap-20 w-full mb-6">
+        <div className="col-span-9 md:col-span-4 lg:col-span-3 md:bg-gray-90 rounded md:py-7 md:px-6">
+          <ProtocolSection />
         </div>
-        <div className="col-span-2 md:bg-gray-90 rounded md:py-7 md:px-6">
+        <div className="col-span-9 md:col-span-5 lg:col-span-6 md:bg-gray-90 rounded md:py-7 md:px-6">
           Balances
         </div>
       </div>

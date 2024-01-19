@@ -154,8 +154,12 @@ export const NavDropdown = forwardRef<HTMLButtonElement, DropdownProps>(
     }, [isOpen, updateCoords, onOpen, mode, onClose]);
 
     useEffect(() => {
-      setOpen(!!active);
-    }, [active]);
+      if (isMobile) {
+        setOpen(!!active);
+      } else {
+        setOpen(false);
+      }
+    }, [active, isMobile]);
 
     const renderDropdown = useMemo(
       () => (

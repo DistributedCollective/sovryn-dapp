@@ -9,7 +9,7 @@ type DepositRowProps = {
 };
 
 export const DepositRow: FC<DepositRowProps> = ({ title, value, cta }) => (
-  <div className="grid items-center grid-cols-2 lg:grid-cols-3 bg-gray-80 rounded py-[1.125rem] px-4">
+  <div className="grid items-center grid-cols-2 lg:grid-cols-3 bg-gray-80 rounded py-[1.125rem] px-4 text-gray-10 font-medium">
     <Paragraph className="text-left">{title}</Paragraph>
     <Paragraph className="text-right">{value}</Paragraph>
     <div className="hidden lg:block text-right">{cta}</div>

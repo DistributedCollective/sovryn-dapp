@@ -1437,7 +1437,7 @@
         },
         "protocolSection": {
             "marketMaking": "Market Making",
-            "stabilityPool": "Stability pool",
+            "stabilityPool": "Stability Pool",
             "zeroLine": "Zero line of credit",
             "lending": "Lending",
             "staking": "Staking",

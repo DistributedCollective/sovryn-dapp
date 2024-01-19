@@ -1,5 +1,6 @@
 export enum URIType {
   BITCOIN = 'bitcoin:',
+  LIGHTNING = 'lightning:',
 }
 
 export enum ReceiveEvents {

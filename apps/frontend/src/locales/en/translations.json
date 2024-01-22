@@ -46,6 +46,7 @@
         "withdraw": "Withdraw",
         "txId": "TXID",
         "btc": "BTC",
+        "usd": "USD",
         "tx": {
             "signPermitTitle": "Permit {{symbol}}",
             "signPermitSubtitle": "Sign a permit to allow the contract to spend your {{symbol}}",
@@ -1445,6 +1446,10 @@
             "openLoan": "Open loan",
             "stakeSOV": "Stake SOV",
             "depositValue": "Deposit value"
+        },
+        "protocolTvlSection": {
+            "totalValue": "Total value",
+            "totalRewardsEarned": "Total rewards earned"
         }
     }
 }

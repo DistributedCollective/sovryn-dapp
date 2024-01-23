@@ -12,22 +12,26 @@ import stakeBg from '../../../../../assets/images/QuickLaunch/stake_bg.svg';
 import { translations } from '../../../../../locales/i18n';
 import { formatValue } from '../../../../../utils/math';
 import { useGetNextSupplyInterestRate } from '../../../LendPage/hooks/useGetNextSupplyInterestRate';
-import { useGetReturnRate } from '../../../MarketMakingPage/hooks/useGetReturnRate';
-import { AmmLiquidityPoolDictionary } from '../../../MarketMakingPage/utils/AmmLiquidityPoolDictionary';
+import { useGetReturnRates } from '../../../MarketMakingPage/hooks/useGetReturnRates';
 import { useGetStakingStatistics } from '../../../StakePage/components/StakingStatistics/hooks/useGetStakingStatistics';
 
 const pageTranslations = translations.landingPage;
-const ammPools = AmmLiquidityPoolDictionary.list();
 
 export const QuickLaunch: FC = () => {
-  const sovPool = useMemo(
-    () =>
-      ammPools.find(pool => pool.assetA === SupportedTokens.sov) || ammPools[0],
-    [],
-  );
   const { maxStakingApr } = useGetStakingStatistics();
   const { interestRate } = useGetNextSupplyInterestRate(SupportedTokens.dllr);
-  const { returnRates } = useGetReturnRate(sovPool.converter);
+  const { rates } = useGetReturnRates();
+
+  const maxRate = useMemo(() => {
+    let maxRewards = '0';
+    rates.forEach(rate => {
+      if (Number(rate.afterRewards) > Number(maxRewards)) {
+        maxRewards = rate.afterRewards;
+      }
+    });
+
+    return maxRewards;
+  }, [rates]);
 
   const options = [
     {
@@ -41,7 +45,7 @@ export const QuickLaunch: FC = () => {
     },
     {
       title: t(pageTranslations.quickLaunch.earn.title, {
-        amount: formatValue(returnRates.afterRewards, 2),
+        amount: formatValue(maxRate, 2),
       }),
       description: t(pageTranslations.quickLaunch.earn.description),
       action: t(pageTranslations.quickLaunch.earn.action),

@@ -1518,7 +1518,7 @@
         "votingPowerShare": "Voting power share"
     },
     "promotion": {
-        "currentAPY": "Current APY",
+        "currentAPR": "Current APR",
         "weeklyRewards": "Weekly rewards"
     },
     "newProposalTx": {

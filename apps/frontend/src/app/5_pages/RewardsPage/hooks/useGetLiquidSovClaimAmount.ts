@@ -56,7 +56,10 @@ export const useGetLiquidSovClaimAmount = () => {
           restartTime = lastWithdrawalInterval;
         }
 
-        restartTime += Number(maxDuration);
+        if (result.amount === 0) {
+          restartTime += Number(maxDuration);
+        }
+
         lastWithdrawalInterval = result.lastWithdrawalInterval;
         amount = result.amount;
         checks--;
@@ -67,7 +70,7 @@ export const useGetLiquidSovClaimAmount = () => {
     }
 
     return {
-      lastWithdrawalInterval,
+      lastWithdrawalInterval: restartTime,
       amount: decimalic(amount).toString(),
     };
   }, [account, staking, stakingRewards]);

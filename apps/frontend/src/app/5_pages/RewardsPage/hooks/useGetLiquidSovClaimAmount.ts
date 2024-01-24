@@ -25,13 +25,13 @@ export const useGetLiquidSovClaimAmount = () => {
     }
 
     const now = Math.ceil(Date.now() / 1000);
-    const lockDate = await staking.timestampToLockDate(now);
+
     const maxDuration = await stakingRewards.maxDuration();
 
     let checks = 30;
     let amount = 0;
     let lastWithdrawalInterval = 0;
-    let restartTime = lockDate;
+    let restartTime = 0;
 
     // Call getStakerCurrentReward(True, restartTime) until either
     // a) lastWithdrawalInterval > 0 and amount > 0 OR b) restartTime >= now

@@ -56,7 +56,7 @@ export const useGetLiquidSovClaimAmount = () => {
           restartTime = lastWithdrawalInterval;
         }
 
-        restartTime += maxDuration;
+        restartTime += Number(maxDuration);
         lastWithdrawalInterval = result.lastWithdrawalInterval;
         amount = result.amount;
         checks--;

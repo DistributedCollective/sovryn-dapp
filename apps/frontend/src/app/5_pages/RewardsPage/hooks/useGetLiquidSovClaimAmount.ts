@@ -25,7 +25,6 @@ export const useGetLiquidSovClaimAmount = () => {
     }
 
     const now = Math.ceil(Date.now() / 1000);
-
     const maxDuration = await stakingRewards.maxDuration();
 
     let checks = 30;

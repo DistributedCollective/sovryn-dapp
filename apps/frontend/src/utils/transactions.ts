@@ -1,4 +1,10 @@
 import { JsonRpcSigner } from '@ethersproject/providers';
+import {
+  PERMIT2_ADDRESS,
+  PermitTransferFrom,
+  SignatureTransfer,
+  MaxAllowanceTransferAmount,
+} from '@uniswap/permit2-sdk';
 
 import dayjs, { ManipulateType } from 'dayjs';
 import { BigNumber, BigNumberish, ethers } from 'ethers';
@@ -15,6 +21,7 @@ import {
   TransactionRequest,
   TransactionType,
 } from '../app/3_organisms/TransactionStepDialog/TransactionStepDialog.types';
+import { toDeadline } from '../app/5_pages/ZeroPage/hooks/useHandleTrove';
 import { APPROVAL_FUNCTION } from '../constants/general';
 import { getTokenDisplayName } from '../constants/tokens';
 import { translations } from '../locales/i18n';
@@ -67,6 +74,53 @@ export const preparePermitTransaction = async ({
   };
 };
 
+export const preparePermit2Transaction = async (
+  permit: PermitTransferFrom,
+  signer: JsonRpcSigner,
+): Promise<Transaction> => {
+  const { domain, types, values } = SignatureTransfer.getPermitData(
+    permit,
+    PERMIT2_ADDRESS,
+    parseInt(getRskChainId()),
+  );
+
+  return {
+    title: 'Permit2 for DLLR',
+    subtitle: 'This is bringing back DLLR and permits',
+    request: {
+      type: TransactionType.signTypedData,
+      domain,
+      types,
+      value: values,
+      signer,
+    },
+  };
+};
+
+export const getPermitTransferFrom = async (
+  spender: string,
+  amount: string,
+  nonce: number,
+  token = SupportedTokens.dllr,
+): Promise<PermitTransferFrom> => {
+  const { address: tokenAddress } = await getTokenContract(
+    token,
+    getRskChainId(),
+  );
+
+  const permitTransferFrom: PermitTransferFrom = {
+    permitted: {
+      token: tokenAddress,
+      amount,
+    },
+    spender,
+    nonce,
+    deadline: toDeadline(1000 * 60 * 60 * 24 * 30 /** 30 days */),
+  };
+
+  return permitTransferFrom;
+};
+
 type PrepareApproveTransactionOptions = {
   token: SupportedTokens;
   chain?: ChainId;
@@ -74,6 +128,7 @@ type PrepareApproveTransactionOptions = {
   amount?: BigNumberish;
   signer?: JsonRpcSigner;
   contract?: ethers.Contract;
+  approveMaximumAmount?: boolean;
 };
 
 export const prepareApproveTransaction = async ({
@@ -83,6 +138,7 @@ export const prepareApproveTransaction = async ({
   amount = '0',
   signer,
   contract,
+  approveMaximumAmount = false,
 }: PrepareApproveTransactionOptions): Promise<Transaction | undefined> => {
   const loadTokenContract = async () => {
     if (contract) {
@@ -115,7 +171,10 @@ export const prepareApproveTransaction = async ({
         type: TransactionType.signTransaction,
         contract: tokenContract,
         fnName: APPROVAL_FUNCTION,
-        args: [spender, amount],
+        args: [
+          spender,
+          approveMaximumAmount ? MaxAllowanceTransferAmount : amount,
+        ],
       },
     };
   }
@@ -133,10 +192,12 @@ export const permitHandler =
     if (
       receipts.length &&
       receipts[permitIndex]?.status === TransactionReceiptStatus.success &&
-      receipts[permitIndex]?.request.type === TransactionType.signPermit
+      (receipts[permitIndex]?.request.type === TransactionType.signPermit ||
+        receipts[permitIndex]?.request.type === TransactionType.signTypedData)
     ) {
       return override(request, receipts[permitIndex].response);
     }
+
     return request;
   };
 

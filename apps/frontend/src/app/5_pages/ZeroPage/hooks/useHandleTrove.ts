@@ -1,3 +1,5 @@
+import { PERMIT2_ADDRESS } from '@uniswap/permit2-sdk';
+
 import { useCallback } from 'react';
 
 import { Contract } from 'ethers';
@@ -22,13 +24,20 @@ import { getRskChainId } from '../../../../utils/chain';
 import { loadLiquity } from '../../../../utils/liquity';
 import { toWei } from '../../../../utils/math';
 import {
+  getPermitTransferFrom,
   permitHandler,
+  prepareApproveTransaction,
+  preparePermit2Transaction,
   preparePermitTransaction,
   UNSIGNED_PERMIT,
 } from '../../../../utils/transactions';
 import { adjustTrove, openTrove } from '../utils/trove-manager';
 
 const baseTranslationPath = translations.zeroPage.tx;
+
+export const toDeadline = (expiration: number): number => {
+  return Math.floor((Date.now() + expiration) / 1000);
+};
 
 const getAdjustTroveTexts = (
   value: CreditLineSubmitValue,
@@ -89,7 +98,7 @@ export const useHandleTrove = (
   hasLoc: boolean,
   callbacks?: Partial<HandleTroveCallbacks>,
 ) => {
-  const { signer, account } = useAccount();
+  const { signer, account, provider } = useAccount();
   const { setTransactions, setIsOpen, setTitle } = useTransactionContext();
 
   const handleTroveSubmit = useCallback(
@@ -210,6 +219,104 @@ export const useHandleTrove = (
   );
 
   const handleTroveClose = useCallback(
+    async (token: SupportedTokens) => {
+      if (signer && provider) {
+        const { address, abi } = await getContract(
+          'borrowerOperations',
+          'zero',
+          getRskChainId(),
+        );
+        const contract = new Contract(address, abi, signer);
+        const isDllr = token === SupportedTokens.dllr;
+
+        if (isDllr) {
+          const { liquity } = await loadLiquity();
+          const value = await liquity
+            .getTrove(account)
+            .then(trove => toWei(trove.netDebt.toString()).toString());
+
+          const nonce = await contract.nonces(account);
+
+          const permitTransferFrom = await getPermitTransferFrom(
+            address,
+            value,
+            nonce,
+          );
+
+          const transactions: Transaction[] = [];
+
+          const approveTx = await prepareApproveTransaction({
+            token: SupportedTokens.dllr,
+            spender: PERMIT2_ADDRESS,
+            amount: value,
+            signer,
+            approveMaximumAmount: true,
+          });
+
+          if (approveTx) {
+            transactions.push(approveTx);
+          }
+
+          transactions.push(
+            await preparePermit2Transaction(permitTransferFrom, signer),
+          );
+
+          transactions.push({
+            title: t(baseTranslationPath.close),
+            request: {
+              type: TransactionType.signTransaction,
+              contract,
+              fnName: 'closeNueTroveWithPermit2',
+              args: [permitTransferFrom, ''],
+              gasLimit: GAS_LIMIT.CLOSE_DLLR_TROVE,
+            },
+            onComplete: callbacks?.onTroveClosed,
+            updateHandler: permitHandler((req, res) => {
+              if (isTransactionRequest(req)) {
+                req.args = [permitTransferFrom, res];
+              }
+              return req;
+            }),
+          });
+
+          setTransactions(transactions);
+        } else if (token === SupportedTokens.zusd) {
+          setTransactions([
+            {
+              title: t(baseTranslationPath.close),
+              request: {
+                type: TransactionType.signTransaction,
+                contract,
+                fnName: 'closeTrove',
+                args: [],
+                gasLimit: GAS_LIMIT.CLOSE_TROVE,
+              },
+              onComplete: callbacks?.onTroveClosed,
+            },
+          ]);
+        } else {
+          throw new Error('Unsupported token');
+        }
+
+        setIsOpen(true);
+        setTitle(t(baseTranslationPath.closeTitle));
+      }
+    },
+    [
+      account,
+      callbacks?.onTroveClosed,
+      provider,
+      setIsOpen,
+      setTitle,
+      setTransactions,
+      signer,
+    ],
+  );
+
+  // Do not delete and do not use, this is preserved only for backwards compatibility
+  // in case we deploy FE and contracts on other chains than RSK
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const handleTroveCloseLegacy = useCallback(
     async (token: SupportedTokens) => {
       if (signer) {
         const { address, abi } = await getContract(

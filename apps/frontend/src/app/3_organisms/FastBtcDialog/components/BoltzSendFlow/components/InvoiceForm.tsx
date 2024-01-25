@@ -25,6 +25,7 @@ import {
   BITCOIN,
   BTC_RENDER_PRECISION,
 } from '../../../../../../constants/currencies';
+import { useClipboard } from '../../../../../../hooks/useClipboard';
 import { useMaintenance } from '../../../../../../hooks/useMaintenance';
 import { translations } from '../../../../../../locales/i18n';
 import { decimalic } from '../../../../../../utils/math';
@@ -115,9 +116,9 @@ export const InvoiceForm: React.FC = () => {
     [boltzLocked, invalidInvoice, value],
   );
 
-  const handleAmountClick = useCallback(async () => {
-    await navigator.clipboard.writeText(amount);
-  }, [amount]);
+  const { write } = useClipboard();
+
+  const handleAmountClick = useCallback(() => write(amount), [amount, write]);
 
   return (
     <div className="text-center">

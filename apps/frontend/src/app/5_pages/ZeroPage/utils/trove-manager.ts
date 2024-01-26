@@ -76,7 +76,10 @@ export const adjustTrove = async (
 
   return {
     value: value.hex,
-    fn: token === SupportedTokens.dllr ? 'adjustNueTrove' : 'adjustTrove',
+    fn:
+      token === SupportedTokens.dllr
+        ? 'adjustNueTroveWithPermit2'
+        : 'adjustTrove',
     args: [
       borrowingRate,
       (withdrawCollateral ?? Decimal.ZERO).hex,

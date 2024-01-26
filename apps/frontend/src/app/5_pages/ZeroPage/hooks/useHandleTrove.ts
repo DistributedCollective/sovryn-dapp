@@ -1,4 +1,4 @@
-import { PERMIT2_ADDRESS } from '@uniswap/permit2-sdk';
+import { PERMIT2_ADDRESS, PermitTransferFrom } from '@uniswap/permit2-sdk';
 
 import { useCallback } from 'react';
 
@@ -102,6 +102,143 @@ export const useHandleTrove = (
   const { setTransactions, setIsOpen, setTitle } = useTransactionContext();
 
   const handleTroveSubmit = useCallback(
+    async (value: CreditLineSubmitValue) => {
+      if (signer) {
+        const { address, abi } = await getContract(
+          'borrowerOperations',
+          'zero',
+          getRskChainId(),
+        );
+
+        const contract = new Contract(address, abi, signer);
+
+        if (hasLoc) {
+          const { dialogTitle, transactionTitle } = getAdjustTroveTexts(value);
+
+          const params: Partial<TroveAdjustmentParams<Decimalish>> = {};
+
+          if (value.borrow) {
+            params.borrowZUSD = value.borrow;
+          }
+
+          if (value.repay) {
+            params.repayZUSD = value.repay;
+          }
+
+          if (value.depositCollateral) {
+            params.depositCollateral = value.depositCollateral;
+          }
+
+          if (value.withdrawCollateral) {
+            params.withdrawCollateral = value.withdrawCollateral;
+          }
+
+          const isDllr = value.token === SupportedTokens.dllr;
+          const transactions: Transaction[] = [];
+          let permitTransferFrom: PermitTransferFrom;
+
+          if (isDllr && params.repayZUSD) {
+            const value = toWei(params.repayZUSD.toString()).toString();
+
+            const approveTx = await prepareApproveTransaction({
+              token: SupportedTokens.dllr,
+              spender: PERMIT2_ADDRESS,
+              amount: value,
+              signer,
+              approveMaximumAmount: true,
+            });
+
+            if (approveTx) {
+              transactions.push(approveTx);
+            }
+
+            const nonce = await contract.nonces(account);
+
+            permitTransferFrom = await getPermitTransferFrom(
+              address,
+              value,
+              nonce,
+            );
+            transactions.push(
+              await preparePermit2Transaction(permitTransferFrom, signer),
+            );
+          }
+
+          const adjustedTrove = await adjustTrove(
+            value.token,
+            account,
+            params,
+            value.maxOriginationFeeRate,
+          );
+
+          transactions.push({
+            title: transactionTitle,
+            request: {
+              type: TransactionType.signTransaction,
+              contract,
+              fnName: adjustedTrove.fn,
+              args: isDllr
+                ? [...adjustedTrove.args, '', '']
+                : adjustedTrove.args,
+              value: adjustedTrove.value,
+              gasLimit: GAS_LIMIT.ADJUST_TROVE,
+            },
+            onComplete: callbacks?.onTroveAdjusted,
+            updateHandler: permitHandler((req, res) => {
+              if (isTransactionRequest(req) && isDllr) {
+                req.args = [...adjustedTrove.args, permitTransferFrom, res];
+              }
+              return req;
+            }),
+          });
+
+          setTransactions(transactions);
+          setIsOpen(true);
+          setTitle(dialogTitle);
+        } else {
+          const openedTrove = await openTrove(
+            value.token,
+            {
+              borrowZUSD: value.borrow || '0',
+              depositCollateral: value.depositCollateral || '0',
+            },
+            value.maxOriginationFeeRate,
+          );
+          setTransactions([
+            {
+              title: t(baseTranslationPath.open),
+              request: {
+                type: TransactionType.signTransaction,
+                contract,
+                fnName: openedTrove.fn,
+                args: openedTrove.args,
+                value: openedTrove.value,
+                gasLimit: GAS_LIMIT.OPEN_TROVE,
+              },
+              onComplete: callbacks?.onTroveOpened,
+            },
+          ]);
+          setIsOpen(true);
+          setTitle(t(baseTranslationPath.openTitle));
+        }
+      }
+    },
+    [
+      account,
+      callbacks?.onTroveAdjusted,
+      callbacks?.onTroveOpened,
+      hasLoc,
+      setIsOpen,
+      setTitle,
+      setTransactions,
+      signer,
+    ],
+  );
+
+  // Do not delete and do not use, this is preserved only for backwards compatibility
+  // in case we deploy FE and contracts on other chains than RSK
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const handleTroveSubmitLegacy = useCallback(
     async (value: CreditLineSubmitValue) => {
       if (signer) {
         const { address, abi } = await getContract(

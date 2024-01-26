@@ -20,8 +20,6 @@ export const ProtocolSection: FC = () => {
   const [protocolValues, setProtocolValues] = useState<PoolValues>({});
   const { price: btcPrice } = useGetRBTCPrice();
 
-  console.log('protocolValues', protocolValues);
-
   const handleValueUpdate = useCallback(
     (newBalance: Decimal, protocolIdentifier: ProtocolTypes) => {
       setProtocolValues(prevValues => {

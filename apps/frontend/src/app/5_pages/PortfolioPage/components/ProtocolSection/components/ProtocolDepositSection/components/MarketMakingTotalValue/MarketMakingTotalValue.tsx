@@ -71,14 +71,10 @@ export const MarketMakingTotalValue: FC<ProtocolSectionProps> = ({
   );
 
   useEffect(() => {
-    const totalBalance = Object.values(poolValues).reduce(
-      (total, balance) => total.add(balance),
-      Decimal.ZERO,
-    );
     if (totalBalance.gt(Decimal.ZERO) && account) {
       onValueChange(totalBalance, ProtocolTypes.MARKET_MAKING);
     }
-  }, [poolValues, onValueChange, account]);
+  }, [poolValues, onValueChange, account, totalBalance]);
 
   useEffect(() => {
     if (!account || totalBalance.isZero()) {

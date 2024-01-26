@@ -1,43 +1,36 @@
-import React, { FC, useCallback, useMemo } from 'react';
+import React, { FC, useMemo } from 'react';
 
 import classNames from 'classnames';
 import { t } from 'i18next';
 
 import { Button, ButtonStyle, Paragraph } from '@sovryn/ui';
+import { Decimal } from '@sovryn/utils';
 
 import { AmountRenderer } from '../../../../../../2_molecules/AmountRenderer/AmountRenderer';
-import {
-  BITCOIN,
-  USD,
-  BTC_RENDER_PRECISION,
-  TOKEN_RENDER_PRECISION,
-} from '../../../../../../../constants/currencies';
-import { useGetRBTCPrice } from '../../../../../../../hooks/zero/useGetRBTCPrice';
+import { BITCOIN, USD } from '../../../../../../../constants/currencies';
 import { translations } from '../../../../../../../locales/i18n';
 import { decimalic } from '../../../../../../../utils/math';
 import { useTotalStakingRewards } from '../../../../../RewardsPage/components/TotalRewardsEarned/hooks/useTotalStakingRewards';
+import {
+  getCurrencyPrecision,
+  getConvertedValue,
+} from '../../ProtocolSection.utils';
 
 type ProtocolTvlSectionProps = {
+  totalValue: Decimal;
   selectedCurrency: string;
+  btcPrice: string;
   onCurrencyChange: (currency: string) => void;
 };
 
 export const ProtocolTvlSection: FC<ProtocolTvlSectionProps> = ({
+  totalValue,
   selectedCurrency,
+  btcPrice,
   onCurrencyChange,
 }) => {
   const currencies = useMemo(() => [BITCOIN, USD], []);
-  const { price: btcPrice } = useGetRBTCPrice();
-
   const { totalStakingRewards } = useTotalStakingRewards();
-
-  const currencyPrecision = useMemo(
-    () =>
-      selectedCurrency === BITCOIN
-        ? BTC_RENDER_PRECISION
-        : TOKEN_RENDER_PRECISION,
-    [selectedCurrency],
-  );
 
   const renderCurrencyClassName = useMemo(
     () => (currency: string) =>
@@ -50,22 +43,6 @@ export const ProtocolTvlSection: FC<ProtocolTvlSectionProps> = ({
   const renderRewardsClassName = useMemo(
     () => (Number(totalStakingRewards) > 0 ? 'text-positive' : ''),
     [totalStakingRewards],
-  );
-
-  const getEqualUsdValue = useCallback(
-    (btcAmount: string) => {
-      if (btcPrice) {
-        return decimalic(btcPrice).mul(btcAmount).toString();
-      }
-      return 0;
-    },
-    [btcPrice],
-  );
-
-  const renderEquivalentValue = useMemo(
-    () => (btcAmount: string) =>
-      selectedCurrency === BITCOIN ? btcAmount : getEqualUsdValue(btcAmount),
-    [selectedCurrency, getEqualUsdValue],
   );
 
   return (
@@ -89,11 +66,11 @@ export const ProtocolTvlSection: FC<ProtocolTvlSectionProps> = ({
         </div>
       </div>
 
-      <div className="rounded md:bg-gray-80 text-gray-10 font-medium md:text-[2.25rem] md:p-3 mb-4">
+      <div className="rounded md:bg-gray-80 text-gray-10 font-medium md:text-[2.25rem] md:p-3 mb-4 truncate">
         <AmountRenderer
-          value={renderEquivalentValue('1')}
+          value={getConvertedValue(totalValue, selectedCurrency, btcPrice)}
           suffix={selectedCurrency}
-          precision={currencyPrecision}
+          precision={getCurrencyPrecision(selectedCurrency)}
           dataAttribute="portfolio-total-value"
           isAnimated
         />
@@ -105,9 +82,13 @@ export const ProtocolTvlSection: FC<ProtocolTvlSectionProps> = ({
         </Paragraph>
         <div className={renderRewardsClassName}>
           <AmountRenderer
-            value={renderEquivalentValue(totalStakingRewards)}
+            value={getConvertedValue(
+              decimalic(totalStakingRewards),
+              selectedCurrency,
+              btcPrice,
+            )}
             suffix={selectedCurrency}
-            precision={currencyPrecision}
+            precision={getCurrencyPrecision(selectedCurrency)}
             dataAttribute="portfolio-total-earned-rewards"
             isAnimated
           />

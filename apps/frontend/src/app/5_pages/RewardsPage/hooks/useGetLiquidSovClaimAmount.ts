@@ -25,12 +25,14 @@ export const useGetLiquidSovClaimAmount = () => {
     }
 
     const now = Math.ceil(Date.now() / 1000);
+    const startTime = await stakingRewards.startTime();
     const maxDuration = await stakingRewards.maxDuration();
+    const result = await stakingRewards.getStakerCurrentReward(false, 0);
 
     let checks = 30;
-    let amount = 0;
+    let intervalAmount = 0;
     let lastWithdrawalInterval = 0;
-    let restartTime = 0;
+    let restartTime = Number(startTime);
 
     // Call getStakerCurrentReward(True, restartTime) until either
     // a) lastWithdrawalInterval > 0 and amount > 0 OR b) restartTime >= now
@@ -38,7 +40,7 @@ export const useGetLiquidSovClaimAmount = () => {
 
     while (
       !(
-        (lastWithdrawalInterval > 0 && amount > 0) ||
+        (lastWithdrawalInterval > 0 && intervalAmount > 0) ||
         restartTime >= now ||
         checks < 0
       )
@@ -60,7 +62,7 @@ export const useGetLiquidSovClaimAmount = () => {
         }
 
         lastWithdrawalInterval = result.lastWithdrawalInterval;
-        amount = result.amount;
+        intervalAmount = result.amount;
         checks--;
       } catch (e) {
         console.error(e);
@@ -70,7 +72,10 @@ export const useGetLiquidSovClaimAmount = () => {
 
     return {
       lastWithdrawalInterval: restartTime,
-      amount: decimalic(amount).toString(),
+      amount:
+        !result?.amount || result.amount === '0'
+          ? '0'
+          : decimalic(result.amount).toString(),
     };
   }, [account, staking, stakingRewards]);
 

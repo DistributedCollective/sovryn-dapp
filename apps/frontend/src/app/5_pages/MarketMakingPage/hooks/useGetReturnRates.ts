@@ -2,66 +2,57 @@ import { useState, useEffect } from 'react';
 
 import { useBlockNumber } from '../../../../hooks/useBlockNumber';
 import { getAmmServiceUrl } from '../../../../utils/helpers';
+import { AmmLiquidityPoolDictionary } from '../utils/AmmLiquidityPoolDictionary';
+import { AmmResponse, ReturnRates } from './useGetReturnRate';
 
-type PoolData = {
-  APY_fees_pc: string;
-  APY_rewards_pc: string;
-  APY_pc: string;
+const ammPools = AmmLiquidityPoolDictionary.list();
+
+type ReturnRatePool = ReturnRates & {
+  pool: string;
 };
-
-export type AmmResponse = {
-  [key: string]: {
-    pool: string;
-    data: {
-      [key: string]: PoolData[];
-    };
-  };
-};
-
-export type ReturnRates = {
-  beforeRewards: string;
-  afterRewards: string;
-};
-
-export const useGetReturnRate = (targetPool: string) => {
+export const useGetReturnRates = () => {
   const ammServiceUrl = getAmmServiceUrl();
   const { value: block } = useBlockNumber();
-
-  const [returnRates, setReturnRates] = useState<ReturnRates>({
-    beforeRewards: '0',
-    afterRewards: '0',
-  });
+  const [rates, setRates] = useState<ReturnRatePool[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await fetch(`${ammServiceUrl}/amm`);
         const data: AmmResponse = await response.json();
-        if (data[targetPool]) {
+
+        const rates: ReturnRatePool[] = [];
+
+        ammPools.forEach(ammPool => {
+          if (!data[ammPool.converter]) {
+            return;
+          }
+
           const targetPoolData =
-            data[targetPool].data[Object.keys(data[targetPool].data)[0]];
+            data[ammPool.converter].data[
+              Object.keys(data[ammPool.converter].data)[0]
+            ];
           const lastEntry = targetPoolData[targetPoolData.length - 1];
 
-          const totalAPY = {
+          rates.push({
             beforeRewards: lastEntry
               ? parseFloat(lastEntry.APY_rewards_pc).toFixed(2)
               : '0',
             afterRewards: lastEntry
               ? parseFloat(lastEntry.APY_pc).toFixed(2)
               : '0',
-          };
+            pool: ammPool.converter,
+          });
+        });
 
-          setReturnRates(totalAPY);
-        } else {
-          setReturnRates({ beforeRewards: '0', afterRewards: '0' });
-        }
+        setRates([...rates]);
       } catch (error) {
         console.error('Error fetching amm pool data:', error);
       }
     };
 
     fetchData();
-  }, [ammServiceUrl, targetPool, block]);
+  }, [ammServiceUrl, block]);
 
-  return { returnRates };
+  return { rates };
 };

@@ -447,23 +447,22 @@
                     "title": "What can I do on the Sovryn dapp?",
                     "description": "You can trade, swap, provide liquidity, stake, lend, or borrow funds."
                 }
-
             }
         },
         "quickLaunch": {
             "stake": {
-                "title": "Stake SOV – earn up to {{amount}}% APY",
+                "title": "Stake SOV – earn up to {{amount}}% APR",
                 "description": "Earn a share of Sovryn’s revenue & vote on key decisions in Bitocracy.",
                 "action": "Stake SOV"
             },
             "earn": {
-                "title": "Earn up to {{amount}}% APY in AMM",
+                "title": "Earn up to {{amount}}% APR in AMM",
                 "description": "Deposit in the AMM pools, earn from trades and get SOV rewards.",
                 "action": "Deposit in AMM"
             },
             "lend": {
-                "title": "Lend DLLR – earn {{amount}}% APY",
-                "description": "Lend you DLLR and earn interest from Borrowers.",
+                "title": "Lend DLLR – earn {{amount}}% APR",
+                "description": "Lend your DLLR and earn interest from Borrowers.",
                 "action": "Lend DLLR"
             },
             "borrow": {
@@ -1519,7 +1518,7 @@
         "votingPowerShare": "Voting power share"
     },
     "promotion": {
-        "currentAPY": "Current APY",
+        "currentAPR": "Current APR",
         "weeklyRewards": "Weekly rewards"
     },
     "newProposalTx": {

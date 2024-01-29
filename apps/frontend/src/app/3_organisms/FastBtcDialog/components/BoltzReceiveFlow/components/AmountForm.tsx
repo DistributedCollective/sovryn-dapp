@@ -57,19 +57,24 @@ export const AmountForm: React.FC = () => {
 
   const maximumAmount = useMemo(() => {
     const feeForMaximumBalance = balance
-      .mul(fees.percentageSwapIn / 100)
-      .add(decimalic(fees.minerFees.baseAsset.normal).div(BTC_IN_SATOSHIS));
-    return Decimal.max(
-      Decimal.min(
-        decimalic(limits.maximal).div(BTC_IN_SATOSHIS),
-        balance.sub(feeForMaximumBalance),
-      ),
-      0,
-    );
+      .mul(fees.percentage / 100)
+      .add(
+        decimalic(fees.minerFees.baseAsset.reverse.lockup).div(BTC_IN_SATOSHIS),
+      );
+
+    const amount = decimalic(limits.maximal).div(BTC_IN_SATOSHIS);
+
+    const b = amount
+      .sub(decimalic(fees.percentage / 100).mul(amount))
+      .sub(
+        decimalic(fees.minerFees.baseAsset.reverse.lockup).div(BTC_IN_SATOSHIS),
+      );
+
+    return Decimal.max(Decimal.min(b, balance.sub(feeForMaximumBalance)), 0);
   }, [
     balance,
-    fees.minerFees.baseAsset.normal,
-    fees.percentageSwapIn,
+    fees.minerFees.baseAsset.reverse.lockup,
+    fees.percentage,
     limits.maximal,
   ]);
 
@@ -84,16 +89,18 @@ export const AmountForm: React.FC = () => {
     }
 
     const fee = amount
-      .mul(fees.percentageSwapIn / 100)
-      .add(decimalic(fees.minerFees.baseAsset.normal).div(BTC_IN_SATOSHIS));
+      .mul(fees.percentage / 100)
+      .add(
+        decimalic(fees.minerFees.baseAsset.reverse.lockup).div(BTC_IN_SATOSHIS),
+      );
 
     return amount.add(fee).gt(balance);
   }, [
     value,
     limits.minimal,
     limits.maximal,
-    fees.percentageSwapIn,
-    fees.minerFees.baseAsset.normal,
+    fees.percentage,
+    fees.minerFees.baseAsset.reverse.lockup,
     balance,
   ]);
 

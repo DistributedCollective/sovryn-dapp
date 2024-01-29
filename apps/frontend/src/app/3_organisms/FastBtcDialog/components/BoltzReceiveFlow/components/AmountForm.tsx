@@ -124,6 +124,13 @@ export const AmountForm: React.FC = () => {
     );
   }, [balance, limits.maximal, value]);
 
+  const minSubceed = useMemo(() => {
+    if (value === '0') {
+      return false;
+    }
+    return decimalic(limits.minimal).div(BTC_IN_SATOSHIS).gt(value);
+  }, [limits.minimal, value]);
+
   const onMaximumAmountClick = useCallback(
     () => setValue(maximumAmount.toString()),
     [maximumAmount],
@@ -169,6 +176,11 @@ export const AmountForm: React.FC = () => {
           {maxExceed && (
             <Paragraph className="text-error-light font-medium mt-2">
               {t(translations.fastBtc.send.addressForm.maxExceed)}
+            </Paragraph>
+          )}
+          {minSubceed && (
+            <Paragraph className="text-error-light font-medium mt-2">
+              {t(translations.fastBtc.send.addressForm.minSubceed)}
             </Paragraph>
           )}
         </div>

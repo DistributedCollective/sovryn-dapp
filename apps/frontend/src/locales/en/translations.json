@@ -814,6 +814,7 @@
                 "title": "Enter recipient's bitcoin address",
                 "addressLabel": "Address",
                 "maxExceed": "Exceeds maximum amount",
+                "minSubceed": "Amount is less than transfer minimum",
                 "invalidAddress": "Invalid address"
             },
             "confirmationScreens": {

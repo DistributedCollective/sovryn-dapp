@@ -1,6 +1,7 @@
 import React, { FC, useMemo } from 'react';
 
 import { t } from 'i18next';
+import { useNavigate } from 'react-router-dom';
 
 import { SupportedTokens } from '@sovryn/contracts';
 import { Button, ButtonStyle, Paragraph } from '@sovryn/ui';
@@ -18,6 +19,7 @@ import { useGetStakingStatistics } from '../../../StakePage/components/StakingSt
 const pageTranslations = translations.landingPage;
 
 export const QuickLaunch: FC = () => {
+  const navigate = useNavigate();
   const { maxStakingApr } = useGetStakingStatistics();
   const { interestRate } = useGetNextSupplyInterestRate(SupportedTokens.dllr);
   const { rates } = useGetReturnRates();
@@ -40,7 +42,7 @@ export const QuickLaunch: FC = () => {
       }),
       description: t(pageTranslations.quickLaunch.stake.description),
       action: t(pageTranslations.quickLaunch.stake.action),
-      url: '/earn/staking',
+      url: () => navigate('/earn/staking'),
       backgroundImage: stakeBg,
     },
     {
@@ -49,7 +51,7 @@ export const QuickLaunch: FC = () => {
       }),
       description: t(pageTranslations.quickLaunch.earn.description),
       action: t(pageTranslations.quickLaunch.earn.action),
-      url: '/earn/market-making',
+      url: () => navigate('/earn/market-making'),
       backgroundImage: earnBg,
     },
     {
@@ -58,14 +60,14 @@ export const QuickLaunch: FC = () => {
       }),
       description: t(pageTranslations.quickLaunch.lend.description),
       action: t(pageTranslations.quickLaunch.lend.action),
-      url: '/earn/lend',
+      url: () => navigate('/earn/lend'),
       backgroundImage: lendBg,
     },
     {
       title: t(pageTranslations.quickLaunch.borrow.title),
       description: t(pageTranslations.quickLaunch.borrow.description),
       action: t(pageTranslations.quickLaunch.borrow.action),
-      url: '/borrow/fixed-interest',
+      url: () => navigate('/borrow/fixed-interest'),
       backgroundImage: borrowBg,
     },
   ];
@@ -93,7 +95,7 @@ export const QuickLaunch: FC = () => {
           <Button
             className="w-full sm:w-auto"
             text={option.action}
-            href={option.url}
+            onClick={option.url}
             style={ButtonStyle.secondary}
           />
         </div>

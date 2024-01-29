@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, useCallback } from 'react';
 
 import { t } from 'i18next';
 import Carousel from 'react-multi-carousel';
@@ -14,6 +14,11 @@ import { LandingPromoCard } from './components/LandingPromoCard/LandingPromoCard
 
 export const Banner: FC = () => {
   const navigate = useNavigate();
+
+  const handleClick = useCallback(
+    () => navigate('/convert?from=rbtc&to=sov'),
+    [navigate],
+  );
 
   return (
     <div className="w-full relative pb-7">
@@ -48,7 +53,7 @@ export const Banner: FC = () => {
                 style={ButtonStyle.secondary}
                 size={ButtonSize.large}
                 text={t(translations.landingPage.promotions.sov.cta)}
-                onClick={() => navigate('/convert?from=rbtc&to=sov')}
+                onClick={handleClick}
               />
 
               <Button

@@ -14,33 +14,34 @@ import styles from './AssetBalanceRow.module.css';
 
 type AssetBalanceRowProps = {
   token: SupportedTokens;
-  updateUSDValue: (usdValue: string) => void;
+  updateUsdValue: (usdValue: string) => void;
 };
 
 export const AssetBalanceRow: FC<AssetBalanceRowProps> = ({
   token,
-  updateUSDValue,
+  updateUsdValue,
 }) => {
   const { weiBalance, balance } = useAssetBalance(token, getRskChainId());
   const { usdValue } = useDollarValue(token, weiBalance);
 
   useEffect(() => {
-    updateUSDValue(usdValue);
+    updateUsdValue(usdValue);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [usdValue]);
 
   return (
-    <div className="px-4 lg:px-6 border border-gray-70 grid items-center grid-cols-3 bg-gray-70 md:bg-gray-80 rounded py-[0.8125rem] text-gray-10 font-medium">
-      <Paragraph className="flex items-center">
+    <div className="px-4 lg:px-6 border border-gray-70 grid items-center grid-cols-3 bg-gray-70 md:bg-gray-80 rounded py-[0.8125rem] text-gray-10 font-medium min-h-14">
+      <div className="flex items-center font-medium text-base sm:text-xs">
         <AssetRenderer
           asset={token}
           showAssetLogo
           logoClassName={styles.assetLogo}
+          assetClassName={styles.asset}
         />
         <span className="text-gray-40 hidden lg:block">
           {getTokenLongName(token)}
         </span>
-      </Paragraph>
+      </div>
       <Paragraph className="text-right lg:text-left">
         <AmountRenderer
           value={balance}

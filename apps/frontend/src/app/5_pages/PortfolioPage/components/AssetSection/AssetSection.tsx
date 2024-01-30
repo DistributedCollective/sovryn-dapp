@@ -26,7 +26,7 @@ const tokens = [
 export const AssetSection: FC = () => {
   const { price: btcPrice } = useGetRBTCPrice();
 
-  const [usdValues, setUSDValues] = useState(
+  const [usdValues, setUsdValues] = useState(
     tokens.reduce((obj, token) => {
       obj[token] = '0';
       return obj;
@@ -63,8 +63,8 @@ export const AssetSection: FC = () => {
           <AssetBalanceRow
             key={token}
             token={token}
-            updateUSDValue={(usdValue: string) =>
-              setUSDValues(usdValues => ({
+            updateUsdValue={(usdValue: string) =>
+              setUsdValues(usdValues => ({
                 ...usdValues,
                 [token]: usdValue,
               }))

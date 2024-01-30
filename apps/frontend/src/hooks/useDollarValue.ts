@@ -11,7 +11,9 @@ import { useCacheCall } from './useCacheCall';
 import { useTokenDetailsByAsset } from './useTokenDetailsByAsset';
 
 export function useDollarValue(asset: SupportedTokens, weiAmount: string) {
-  if (asset === SupportedTokens.zusd) asset = SupportedTokens.xusd;
+  if (asset === SupportedTokens.zusd) {
+    asset = SupportedTokens.xusd;
+  }
   const assetDetails = useTokenDetailsByAsset(asset);
   const dllrDetails = useTokenDetailsByAsset(SupportedTokens.dllr);
 

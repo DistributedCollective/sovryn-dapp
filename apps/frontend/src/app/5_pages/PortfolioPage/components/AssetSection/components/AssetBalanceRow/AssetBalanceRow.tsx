@@ -26,8 +26,7 @@ export const AssetBalanceRow: FC<AssetBalanceRowProps> = ({
 
   useEffect(() => {
     updateUsdValue(usdValue);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [usdValue]);
+  }, [usdValue, updateUsdValue]);
 
   return (
     <div className="px-4 lg:px-6 border border-gray-70 grid items-center grid-cols-3 bg-gray-70 md:bg-gray-80 rounded py-[0.8125rem] text-gray-10 font-medium min-h-14">

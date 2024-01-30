@@ -4562,10 +4562,10 @@
   resolved "https://registry.yarnpkg.com/@socket.io/component-emitter/-/component-emitter-3.1.0.tgz#96116f2a912e0c02817345b3c10751069920d553"
   integrity sha512-+9jVqKhRSpsc591z5vX+X5Yyw+he/HCB4iQ/RYxw35CEPaY1gnsNE43nf9n9AaYjAQrTiI/mOwKUKdUs9vf7Xg==
 
-"@sovryn-zero/contracts@0.4.0-early.access":
-  version "0.4.0-early.access"
-  resolved "https://registry.yarnpkg.com/@sovryn-zero/contracts/-/contracts-0.4.0-early.access.tgz#809c6e4eb75fd4701c6716478c4b8bf9e1378b68"
-  integrity sha512-ktCGv0d0MCJBiCY+a6wdkPxrOdNXkRNDW81h7MMczW5i9OyRVJEAC8lAADGcYuQDm3nkKhvPzUsdjAM/i48smw==
+"@sovryn-zero/contracts@0.4.1-early.access":
+  version "0.4.1-early.access"
+  resolved "https://registry.yarnpkg.com/@sovryn-zero/contracts/-/contracts-0.4.1-early.access.tgz#e1f59b8a3c262a0bda8e8d8059cbe8d23703a81d"
+  integrity sha512-NzL1TA4HurayVUEuaMsV1k9HMWt8/sWMspQPHD8E/HBCFFHyYNOXbo6E3LMcb3PoXVrJUIyEa3MUCAYFq2+WOw==
 
 "@sovryn-zero/lib-base@0.2.1":
   version "0.2.1"

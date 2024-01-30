@@ -152,13 +152,7 @@ export const useHandleTrove = (
               transactions.push(approveTx);
             }
 
-            const nonce = await contract.nonces(account);
-
-            permitTransferFrom = await getPermitTransferFrom(
-              address,
-              value,
-              nonce,
-            );
+            permitTransferFrom = await getPermitTransferFrom(address, value);
             transactions.push(
               await preparePermit2Transaction(permitTransferFrom, signer),
             );
@@ -372,12 +366,9 @@ export const useHandleTrove = (
             .getTrove(account)
             .then(trove => toWei(trove.netDebt.toString()).toString());
 
-          const nonce = await contract.nonces(account);
-
           const permitTransferFrom = await getPermitTransferFrom(
             address,
             value,
-            nonce,
           );
 
           const transactions: Transaction[] = [];

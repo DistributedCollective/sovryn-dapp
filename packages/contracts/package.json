@@ -17,7 +17,7 @@
     "lint": "eslint ./src/**/*.ts"
   },
   "dependencies": {
-    "@sovryn-zero/contracts": "0.4.0-early.access",
+    "@sovryn-zero/contracts": "0.4.1-early.access",
     "@sovryn/ethers-provider": "*",
     "ethers": "5.7.1",
     "lodash.get": "4.4.2",

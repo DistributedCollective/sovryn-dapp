@@ -209,16 +209,9 @@ export const useHandleConversion = (
     if (requiresPermit2) {
       const contract = await getRouteContract(route, signer);
 
-      // TODO: Nonce generating needs to be changed
-      const nonce =
-        route.name === 'MocIntegration'
-          ? await contract.getPermit2Nonce(account)
-          : await contract.nonces(account);
-
       permitTransferFrom = await getPermitTransferFrom(
         contract.address,
         weiAmount.toString(),
-        nonce,
       );
 
       transactions.push(

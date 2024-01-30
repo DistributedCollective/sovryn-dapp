@@ -173,9 +173,9 @@ export const mocIntegrationSwapRoute: SwapRouteFunction = (
     },
     async swap(entry, destination, amount, from, options, overrides) {
       if (await isValidPair(entry, destination)) {
-        if (!options?.permit) {
+        if (!options?.permitTransferFrom) {
           throw makeError(
-            `Permit is required for swap.`,
+            `Permit2 is required for swap.`,
             SovrynErrorCode.UNKNOWN_ERROR,
           );
         }
@@ -184,8 +184,8 @@ export const mocIntegrationSwapRoute: SwapRouteFunction = (
         return {
           to: mocIntegration.address,
           data: mocIntegration.interface.encodeFunctionData(
-            'getDocFromDllrAndRedeemRBTC',
-            [amount, options?.permit],
+            'getDocFromDllrAndRedeemRbtcWithPermit2',
+            [options?.permitTransferFrom, options?.signature],
           ),
           value: '0',
           gasLimit: 800_000,
@@ -201,19 +201,6 @@ export const mocIntegrationSwapRoute: SwapRouteFunction = (
     async approve() {
       return undefined;
     },
-    async permit(entry, destination, amount, from, overrides) {
-      // DLLR needs to be permitted for the moc contract
-      if (await isValidPair(entry, destination)) {
-        const spender = await getMocIntegrationContract();
-        return {
-          token: entry,
-          spender: spender.address,
-          owner: from,
-          value: amount,
-          ...overrides,
-        };
-      }
-      return undefined;
-    },
+    permit: async () => Promise.resolve(undefined),
   };
 };

@@ -1,4 +1,5 @@
 import type { TransactionRequest } from '@ethersproject/abstract-provider';
+import { PermitTransferFrom } from '@uniswap/permit2-sdk';
 
 import type { BigNumber, BigNumberish, providers } from 'ethers';
 
@@ -10,6 +11,8 @@ export type Options = {
 
 export type SwapOptions = {
   permit?: PermitTransactionResponse;
+  permitTransferFrom?: PermitTransferFrom;
+  signature?: string;
 } & Options;
 
 export type SwapRoute = {

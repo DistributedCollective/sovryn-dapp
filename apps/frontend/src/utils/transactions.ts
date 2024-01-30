@@ -7,12 +7,13 @@ import {
 } from '@uniswap/permit2-sdk';
 
 import dayjs, { ManipulateType } from 'dayjs';
-import { BigNumber, BigNumberish, ethers } from 'ethers';
+import { BigNumber, BigNumberish, constants, ethers } from 'ethers';
 import { t } from 'i18next';
 
 import { getTokenContract, SupportedTokens } from '@sovryn/contracts';
 import { ChainId } from '@sovryn/ethers-provider';
 import { PermitTransactionResponse } from '@sovryn/sdk';
+import { Decimal } from '@sovryn/utils';
 
 import {
   Transaction,
@@ -21,18 +22,34 @@ import {
   TransactionRequest,
   TransactionType,
 } from '../app/3_organisms/TransactionStepDialog/TransactionStepDialog.types';
-import { toDeadline } from '../app/5_pages/ZeroPage/hooks/useHandleTrove';
 import { APPROVAL_FUNCTION } from '../constants/general';
 import { getTokenDisplayName } from '../constants/tokens';
 import { translations } from '../locales/i18n';
 import { getRskChainId } from './chain';
 
+export const toDeadline = (expiration: number): number => {
+  return Math.floor((Date.now() + expiration) / 1000);
+};
+
 export const UNSIGNED_PERMIT = {
   deadline: 0,
   v: 0,
-  r: ethers.constants.HashZero,
-  s: ethers.constants.HashZero,
+  r: constants.HashZero,
+  s: constants.HashZero,
 } as PermitTransactionResponse;
+
+export const EMPTY_PERMIT_TRANSFER_FROM = {
+  permitted: {
+    token: constants.AddressZero,
+    amount: Decimal.ONE.toString(),
+  },
+  spender: constants.AddressZero,
+  nonce: 0,
+  deadline: toDeadline(1000 * 60 * 60 * 24 * 30 /** 30 days */),
+} as PermitTransferFrom;
+
+export const DEFAULT_SIGNATURE =
+  '0x86638c772f972d496f6671bc8157498b853ef064f134e813ddd25269c6a01a385ed8032201f3b91a84b46d75bb3ea50c919a576927975bab5b91829833eb8e111c';
 
 type PreparePermitTransactionOptions = {
   token: SupportedTokens;

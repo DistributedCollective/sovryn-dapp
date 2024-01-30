@@ -1,3 +1,5 @@
+import { PERMIT2_ADDRESS, PermitTransferFrom } from '@uniswap/permit2-sdk';
+
 import { useCallback } from 'react';
 
 import { BigNumber, ethers } from 'ethers';
@@ -23,11 +25,16 @@ import { useTransactionContext } from '../../../../contexts/TransactionContext';
 import { useAccount } from '../../../../hooks/useAccount';
 import { translations } from '../../../../locales/i18n';
 import {
+  DEFAULT_SIGNATURE,
+  EMPTY_PERMIT_TRANSFER_FROM,
+  getPermitTransferFrom,
   permitHandler,
   prepareApproveTransaction,
+  preparePermit2Transaction,
   preparePermitTransaction,
   UNSIGNED_PERMIT,
 } from '../../../../utils/transactions';
+import { getRouteContract } from '../ConvertPage.utils';
 
 export const useHandleConversion = (
   sourceToken: SupportedTokens,
@@ -125,6 +132,9 @@ export const useHandleConversion = (
       return;
     }
 
+    const requiresPermit2 =
+      !!route && ['ZeroRedemption', 'MocIntegration'].includes(route.name);
+
     const [sourceTokenDetails, destinationTokenDetails] = await Promise.all([
       getTokenDetails(sourceToken, defaultChainId),
       getTokenDetails(destinationToken, defaultChainId),
@@ -139,7 +149,26 @@ export const useHandleConversion = (
 
     const transactions: Transaction[] = [];
 
-    if (approveTxData && approveTxData.to && approveTxData.data) {
+    if (requiresPermit2) {
+      const approveTx = await prepareApproveTransaction({
+        token: SupportedTokens.dllr,
+        spender: PERMIT2_ADDRESS,
+        amount: weiAmount,
+        signer,
+        approveMaximumAmount: true,
+      });
+
+      if (approveTx) {
+        transactions.push(approveTx);
+      }
+    }
+
+    if (
+      !requiresPermit2 &&
+      approveTxData &&
+      approveTxData.to &&
+      approveTxData.data
+    ) {
       transactions.push({
         title: t(translations.convertPage.txDialog.approve, {
           asset: getTokenDisplayName(sourceToken),
@@ -162,7 +191,7 @@ export const useHandleConversion = (
       account,
     );
 
-    if (permitTxData) {
+    if (!requiresPermit2 && permitTxData) {
       transactions.push(
         await preparePermitTransaction({
           token: sourceTokenDetails.symbol,
@@ -175,6 +204,28 @@ export const useHandleConversion = (
       );
     }
 
+    let permitTransferFrom: PermitTransferFrom;
+
+    if (requiresPermit2) {
+      const contract = await getRouteContract(route, signer);
+
+      // TODO: Nonce generating needs to be changed
+      const nonce =
+        route.name === 'MocIntegration'
+          ? await contract.getPermit2Nonce(account)
+          : await contract.nonces(account);
+
+      permitTransferFrom = await getPermitTransferFrom(
+        contract.address,
+        weiAmount.toString(),
+        nonce,
+      );
+
+      transactions.push(
+        await preparePermit2Transaction(permitTransferFrom, signer),
+      );
+    }
+
     const txData = await route.swap(
       sourceTokenDetails.address,
       destinationTokenDetails.address,
@@ -182,6 +233,10 @@ export const useHandleConversion = (
       account,
       {
         permit: permitTxData ? UNSIGNED_PERMIT : undefined,
+        permitTransferFrom: requiresPermit2
+          ? EMPTY_PERMIT_TRANSFER_FROM
+          : undefined,
+        signature: DEFAULT_SIGNATURE,
         slippage: Number(slippageTolerance) * 100,
       },
     );
@@ -202,18 +257,34 @@ export const useHandleConversion = (
         },
         onComplete,
         updateHandler: permitHandler(async (req, res) => {
-          if (isSignTransactionDataRequest(req) && !!permitTxData) {
-            const { data } = await route.swap(
-              sourceTokenDetails.address,
-              destinationTokenDetails.address,
-              weiAmount,
-              account,
-              {
-                permit: res as PermitTransactionResponse,
-                slippage: Number(slippageTolerance) * 100,
-              },
-            );
-            req.data = data!;
+          if (isSignTransactionDataRequest(req)) {
+            if (!requiresPermit2 && !!permitTxData) {
+              const { data } = await route.swap(
+                sourceTokenDetails.address,
+                destinationTokenDetails.address,
+                weiAmount,
+                account,
+                {
+                  permit: res as PermitTransactionResponse,
+                  slippage: Number(slippageTolerance) * 100,
+                },
+              );
+              req.data = data!;
+            }
+
+            if (requiresPermit2 && !!permitTransferFrom) {
+              const { data } = await route.swap(
+                sourceTokenDetails.address,
+                destinationTokenDetails.address,
+                weiAmount,
+                account,
+                {
+                  permitTransferFrom,
+                  signature: typeof res === 'string' ? res : '',
+                },
+              );
+              req.data = data!;
+            }
           }
           return req;
         }),

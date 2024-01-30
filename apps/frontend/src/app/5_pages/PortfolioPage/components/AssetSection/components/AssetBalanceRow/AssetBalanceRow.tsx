@@ -6,6 +6,7 @@ import { Paragraph } from '@sovryn/ui';
 import { AmountRenderer } from '../../../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { AssetRenderer } from '../../../../../../2_molecules/AssetRenderer/AssetRenderer';
 import { getTokenLongName } from '../../../../../../../constants/tokens';
+import { useAccount } from '../../../../../../../hooks/useAccount';
 import { useAssetBalance } from '../../../../../../../hooks/useAssetBalance';
 import { useDollarValue } from '../../../../../../../hooks/useDollarValue';
 import { getRskChainId } from '../../../../../../../utils/chain';
@@ -21,6 +22,7 @@ export const AssetBalanceRow: FC<AssetBalanceRowProps> = ({
   token,
   updateUsdValue,
 }) => {
+  const { account } = useAccount();
   const { weiBalance, balance } = useAssetBalance(token, getRskChainId());
   const { usdValue } = useDollarValue(token, weiBalance);
 
@@ -43,7 +45,7 @@ export const AssetBalanceRow: FC<AssetBalanceRowProps> = ({
       </div>
       <Paragraph className="text-right lg:text-left">
         <AmountRenderer
-          value={balance}
+          value={account ? balance : '0'}
           precision={getCurrencyPrecision(token)}
           isAnimated
         />
@@ -51,7 +53,7 @@ export const AssetBalanceRow: FC<AssetBalanceRowProps> = ({
       <Paragraph className="text-gray-30 text-right lg:text-left">
         $&nbsp;
         <AmountRenderer
-          value={usdValue}
+          value={account ? usdValue : '0'}
           prefix="$"
           precision={getCurrencyPrecision(token)}
           isAnimated

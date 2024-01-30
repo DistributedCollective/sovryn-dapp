@@ -8,6 +8,7 @@ import { Decimal } from '@sovryn/utils';
 
 import { AmountRenderer } from '../../../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { BITCOIN, USD } from '../../../../../../../constants/currencies';
+import { useAccount } from '../../../../../../../hooks/useAccount';
 import { translations } from '../../../../../../../locales/i18n';
 import {
   getCurrencyPrecision,
@@ -23,6 +24,7 @@ export const TotalAssetSection: FC<TotalAssetSectionProps> = ({
   totalValue,
   btcPrice,
 }) => {
+  const { account } = useAccount();
   const [selectedCurrency, setSelectedCurrency] = useState(BITCOIN);
 
   const currencies = useMemo(() => [BITCOIN, USD], []);
@@ -36,8 +38,11 @@ export const TotalAssetSection: FC<TotalAssetSectionProps> = ({
   );
 
   const convertedAmount = useMemo(
-    () => getConvertedValue(totalValue, selectedCurrency, btcPrice),
-    [btcPrice, selectedCurrency, totalValue],
+    () =>
+      account
+        ? getConvertedValue(totalValue, selectedCurrency, btcPrice)
+        : Decimal.ZERO,
+    [btcPrice, selectedCurrency, totalValue, account],
   );
 
   return (

@@ -43,14 +43,14 @@ export const AssetBalanceRow: FC<AssetBalanceRowProps> = ({
           {getTokenLongName(token)}
         </span>
       </div>
-      <Paragraph className="text-right lg:text-left">
+      <Paragraph className="text-right lg:text-left truncate">
         <AmountRenderer
           value={account ? balance : '0'}
           precision={getCurrencyPrecision(token)}
           isAnimated
         />
       </Paragraph>
-      <Paragraph className="text-gray-30 text-right lg:text-left">
+      <Paragraph className="text-gray-30 text-right lg:text-left truncate">
         $&nbsp;
         <AmountRenderer
           value={account ? usdValue : '0'}

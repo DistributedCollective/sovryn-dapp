@@ -1450,6 +1450,15 @@
         "protocolTvlSection": {
             "totalValue": "Total value",
             "totalRewardsEarned": "Total rewards earned"
+        },
+        "assetSection": {
+            "totalAssets": "Total assets",
+            "fundWallet": "Fund wallet",
+            "convert": "Convert",
+            "withdraw": "Withdraw",
+            "asset": "Asset",
+            "balance": "Balance",
+            "usdValue": "USD Value"
         }
     }
 }

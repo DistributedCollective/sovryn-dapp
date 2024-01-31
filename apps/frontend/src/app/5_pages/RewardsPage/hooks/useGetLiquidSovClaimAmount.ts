@@ -1,13 +1,14 @@
 import { useCallback, useEffect, useState } from 'react';
 
+import { Decimal } from '@sovryn/utils';
+
 import { useAccount } from '../../../../hooks/useAccount';
 import { useGetProtocolContract } from '../../../../hooks/useGetContract';
-import { decimalic } from '../../../../utils/math';
 
 export const useGetLiquidSovClaimAmount = () => {
   const [value, setValue] = useState({
     lastWithdrawalInterval: 0,
-    amount: '0',
+    amount: Decimal.ZERO,
     loading: true,
   });
 
@@ -19,7 +20,7 @@ export const useGetLiquidSovClaimAmount = () => {
     if (!account || !staking || !stakingRewards) {
       return {
         lastWithdrawalInterval: 0,
-        amount: '0',
+        amount: Decimal.ZERO,
         loading: false,
       };
     }
@@ -74,8 +75,8 @@ export const useGetLiquidSovClaimAmount = () => {
       lastWithdrawalInterval: restartTime,
       amount:
         !result?.amount || result.amount === '0'
-          ? '0'
-          : decimalic(result.amount).toString(),
+          ? Decimal.ZERO
+          : Decimal.fromBigNumberString(result.amount),
     };
   }, [account, staking, stakingRewards]);
 

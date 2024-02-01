@@ -33,7 +33,7 @@ export const AssetSectionActions: FC = () => {
 
   return (
     <>
-      <div className="flex md:hidden w-full justify-center items-center gap-8">
+      <div className="flex md:hidden w-full justify-center items-center gap-8 my-4">
         <div className="flex flex-col gap-3 items-center">
           <button
             onClick={handleFundWallet}
@@ -70,7 +70,7 @@ export const AssetSectionActions: FC = () => {
           </div>
         )}
       </div>
-      <div className="hidden md:flex items-center gap-4 mt-2.5 mb-6">
+      <div className="hidden md:flex items-center gap-4 mt-4 mb-6">
         <Button
           className="w-[7.75rem]"
           style={ButtonStyle.primary}

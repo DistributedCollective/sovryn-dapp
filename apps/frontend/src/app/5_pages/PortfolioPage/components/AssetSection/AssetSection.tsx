@@ -53,7 +53,7 @@ export const AssetSection: FC = () => {
   );
 
   return (
-    <div className="flex flex-col gap-3">
+    <div className="flex flex-col">
       <ProtocolTotalSection
         totalValue={totalValue}
         selectedCurrency={selectedCurrency}
@@ -65,7 +65,7 @@ export const AssetSection: FC = () => {
 
       <AssetSectionActions />
 
-      <div className="flex flex-col gap-2 md:gap-3">
+      <div className="flex flex-col gap-2 md:gap-3 mt-3">
         <div className="hidden md:grid grid-cols-3 px-6 py-2">
           <Paragraph>
             {t(translations.portfolioPage.assetSection.asset)}

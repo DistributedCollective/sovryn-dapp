@@ -14,12 +14,12 @@ import { translations } from '../../../../../locales/i18n';
 import { getNextDay } from '../../../../../utils/helpers';
 import { useGetPromotionsData } from '../../hooks/useGetPromotionsData';
 
-type PoolsTableProps = {
+type PromotionsProps = {
   setActivePool: (poolKey: string) => void;
   onClick?: (value: boolean) => void;
 };
 
-export const Promotions: FC<PoolsTableProps> = ({ setActivePool, onClick }) => {
+export const Promotions: FC<PromotionsProps> = ({ setActivePool, onClick }) => {
   const { data, loading } = useGetPromotionsData();
   const recalibrationDate = getNextDay(2);
 
@@ -68,7 +68,7 @@ export const Promotions: FC<PoolsTableProps> = ({ setActivePool, onClick }) => {
                   precision={0}
                 />
               }
-              label2={t(translations.promotion.currentAPY)}
+              label2={t(translations.promotion.currentAPR)}
               child2={
                 <AmountRenderer
                   value={item.apy}

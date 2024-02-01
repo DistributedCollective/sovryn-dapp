@@ -5,4 +5,11 @@ module.exports = {
     './public/**/*.html',
     '../../packages/ui/src/**/*.{html,ts,tsx,css}',
   ],
+  theme: {
+    extend: {
+      fontFamily: {
+        druk: ['Druk LC'],
+      },
+    },
+  },
 };

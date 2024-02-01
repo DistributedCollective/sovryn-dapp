@@ -2,6 +2,7 @@ import React, { FC, useMemo } from 'react';
 
 import classNames from 'classnames';
 import { t } from 'i18next';
+import { useNavigate } from 'react-router-dom';
 
 import { Button, ButtonStyle, Paragraph } from '@sovryn/ui';
 import { Decimal } from '@sovryn/utils';
@@ -29,6 +30,8 @@ export const ProtocolTvlSection: FC<ProtocolTvlSectionProps> = ({
   btcPrice,
   onCurrencyChange,
 }) => {
+  const navigate = useNavigate();
+
   const currencies = useMemo(() => [BITCOIN, USD], []);
   const { totalStakingRewards } = useTotalStakingRewards();
 
@@ -41,7 +44,8 @@ export const ProtocolTvlSection: FC<ProtocolTvlSectionProps> = ({
   );
 
   const renderRewardsClassName = useMemo(
-    () => (Number(totalStakingRewards) > 0 ? 'text-positive' : ''),
+    () =>
+      Number(totalStakingRewards) > 0 ? 'text-positive cursor-pointer' : '',
     [totalStakingRewards],
   );
 
@@ -80,13 +84,17 @@ export const ProtocolTvlSection: FC<ProtocolTvlSectionProps> = ({
         <Paragraph className="text-gray-30">
           {t(translations.portfolioPage.protocolTvlSection.totalRewardsEarned)}
         </Paragraph>
-        <div className={renderRewardsClassName}>
+        <div
+          className={renderRewardsClassName}
+          onClick={() => navigate('/rewards')}
+        >
           <AmountRenderer
             value={getConvertedValue(
               decimalic(totalStakingRewards),
               selectedCurrency,
               btcPrice,
             )}
+            useTooltip={false}
             suffix={selectedCurrency}
             precision={getCurrencyPrecision(selectedCurrency)}
             dataAttribute="portfolio-total-earned-rewards"

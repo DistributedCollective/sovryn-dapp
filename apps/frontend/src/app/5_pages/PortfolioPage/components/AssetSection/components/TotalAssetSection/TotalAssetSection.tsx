@@ -10,10 +10,8 @@ import { AmountRenderer } from '../../../../../../2_molecules/AmountRenderer/Amo
 import { BITCOIN, USD } from '../../../../../../../constants/currencies';
 import { useAccount } from '../../../../../../../hooks/useAccount';
 import { translations } from '../../../../../../../locales/i18n';
-import {
-  getCurrencyPrecision,
-  getConvertedValue,
-} from '../../AssetSection.utils';
+import { getCurrencyPrecision } from '../../../ProtocolSection/ProtocolSection.utils';
+import { getConvertedValue } from '../../AssetSection.utils';
 
 type TotalAssetSectionProps = {
   totalValue: Decimal;

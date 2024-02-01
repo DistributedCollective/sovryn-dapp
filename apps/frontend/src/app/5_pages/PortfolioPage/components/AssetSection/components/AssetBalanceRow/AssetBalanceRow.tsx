@@ -10,7 +10,7 @@ import { useAccount } from '../../../../../../../hooks/useAccount';
 import { useAssetBalance } from '../../../../../../../hooks/useAssetBalance';
 import { useDollarValue } from '../../../../../../../hooks/useDollarValue';
 import { getRskChainId } from '../../../../../../../utils/chain';
-import { getCurrencyPrecision } from '../../AssetSection.utils';
+import { getCurrencyPrecision } from '../../../ProtocolSection/ProtocolSection.utils';
 import styles from './AssetBalanceRow.module.css';
 
 type AssetBalanceRowProps = {

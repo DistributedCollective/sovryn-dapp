@@ -6,16 +6,20 @@ import { SupportedTokens } from '@sovryn/contracts';
 import { Paragraph } from '@sovryn/ui';
 import { Decimal } from '@sovryn/utils';
 
+import { BITCOIN } from '../../../../../constants/currencies';
+import { useAccount } from '../../../../../hooks/useAccount';
 import { useGetRBTCPrice } from '../../../../../hooks/zero/useGetRBTCPrice';
 import { translations } from '../../../../../locales/i18n';
+import { decimalic } from '../../../../../utils/math';
+import { ProtocolTotalSection } from '../ProtocolSection/components/ProtocolTotalSection/ProtocolTotalSection';
 import { initialUsdValues, availableTokens } from './AssetSection.constants';
 import { AssetBalanceRow } from './components/AssetBalanceRow/AssetBalanceRow';
 import { AssetSectionActions } from './components/AssetSectionActions/AssetSectionActions';
-import { TotalAssetSection } from './components/TotalAssetSection/TotalAssetSection';
 
 export const AssetSection: FC = () => {
+  const { account } = useAccount();
   const { price: btcPrice } = useGetRBTCPrice();
-
+  const [selectedCurrency, setSelectedCurrency] = useState(BITCOIN);
   const [usdValues, setUsdValues] = useState(initialUsdValues);
 
   const updateUsdValue = useCallback(
@@ -35,19 +39,33 @@ export const AssetSection: FC = () => {
 
   const totalUsdValue = useMemo(
     () =>
-      Object.keys(usdValues)
-        .map(token => usdValues[token])
-        .reduce((sum: Decimal, val: string) => sum.add(val), Decimal.ZERO),
-    [usdValues],
+      account
+        ? Object.keys(usdValues)
+            .map(token => usdValues[token])
+            .reduce((sum: Decimal, val: string) => sum.add(val), Decimal.ZERO)
+        : Decimal.ZERO,
+    [usdValues, account],
+  );
+
+  const totalValue = useMemo(
+    () => decimalic(totalUsdValue.div(btcPrice).toString()),
+    [totalUsdValue, btcPrice],
   );
 
   return (
-    <div className="flex flex-col">
-      <TotalAssetSection btcPrice={btcPrice} totalValue={totalUsdValue} />
+    <div className="flex flex-col gap-3">
+      <ProtocolTotalSection
+        totalValue={totalValue}
+        selectedCurrency={selectedCurrency}
+        btcPrice={btcPrice}
+        onCurrencyChange={setSelectedCurrency}
+        title={t(translations.portfolioPage.assetSection.totalAssets)}
+        className="md:max-w-sm"
+      />
 
       <AssetSectionActions />
 
-      <div className="flex flex-col gap-2 md:gap-3 mt-3">
+      <div className="flex flex-col gap-2 md:gap-3">
         <div className="hidden md:grid grid-cols-3 px-6 py-2">
           <Paragraph>
             {t(translations.portfolioPage.assetSection.asset)}

@@ -1,3 +1,5 @@
+import { MaxAllowanceTransferAmount } from '@uniswap/permit2-sdk';
+
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 
 import classNames from 'classnames';
@@ -260,7 +262,8 @@ export const TransactionStep: FC<TransactionStepProps> = ({
                 <SimpleTableRow
                   label={t(translations.common.amount)}
                   value={
-                    config.unlimitedAmount ? (
+                    config.unlimitedAmount ||
+                    config.amount === MaxAllowanceTransferAmount ? (
                       '∞'
                     ) : (
                       <AmountRenderer

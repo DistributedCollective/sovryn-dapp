@@ -31,6 +31,11 @@ export const AssetSectionActions: FC = () => {
     [],
   );
 
+  const isRbtcWithdrawalAllowed = useMemo(
+    () => hasRbtcBalance && account,
+    [hasRbtcBalance, account],
+  );
+
   return (
     <>
       <div className="flex md:hidden w-full justify-center items-center gap-8 my-4">
@@ -56,7 +61,7 @@ export const AssetSectionActions: FC = () => {
             {t(translations.portfolioPage.assetSection.convert)}
           </Paragraph>
         </div>
-        {hasRbtcBalance && account && (
+        {isRbtcWithdrawalAllowed && (
           <div className="flex flex-col gap-3 items-center">
             <button
               onClick={handleWithdraw}
@@ -83,7 +88,7 @@ export const AssetSectionActions: FC = () => {
           onClick={() => navigate('/convert?&to=sov')}
           text={t(translations.portfolioPage.assetSection.convert)}
         />
-        {hasRbtcBalance && account && (
+        {isRbtcWithdrawalAllowed && (
           <Button
             className="w-[7.75rem]"
             style={ButtonStyle.secondary}

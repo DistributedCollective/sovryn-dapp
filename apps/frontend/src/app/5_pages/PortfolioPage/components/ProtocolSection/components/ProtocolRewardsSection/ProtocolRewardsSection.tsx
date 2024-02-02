@@ -1,5 +1,6 @@
 import React, { FC, useMemo } from 'react';
 
+import classNames from 'classnames';
 import { t } from 'i18next';
 import { useNavigate } from 'react-router-dom';
 
@@ -26,8 +27,7 @@ export const ProtocolRewardsSection: FC<ProtocolRewardsSectionProps> = ({
   const navigate = useNavigate();
   const { totalStakingRewards } = useTotalStakingRewards();
   const renderRewardsClassName = useMemo(
-    () =>
-      Number(totalStakingRewards) > 0 ? 'text-positive cursor-pointer' : '',
+    () => (Number(totalStakingRewards) > 0 ? 'text-positive' : ''),
     [totalStakingRewards],
   );
   return (
@@ -36,7 +36,7 @@ export const ProtocolRewardsSection: FC<ProtocolRewardsSectionProps> = ({
         {t(translations.portfolioPage.protocolSection.totalRewardsEarned)}
       </Paragraph>
       <div
-        className={renderRewardsClassName}
+        className={classNames('cursor-pointer', renderRewardsClassName)}
         onClick={() => navigate('/rewards')}
       >
         <AmountRenderer

@@ -118,11 +118,8 @@ export const AmountForm: React.FC = () => {
     if (value === '0') {
       return false;
     }
-    return (
-      decimalic(value).gt(decimalic(limits.maximal).div(BTC_IN_SATOSHIS)) ||
-      decimalic(value).gt(balance)
-    );
-  }, [balance, limits.maximal, value]);
+    return decimalic(value).gt(decimalic(limits.maximal).div(BTC_IN_SATOSHIS));
+  }, [limits.maximal, value]);
 
   const minSubceed = useMemo(() => {
     if (value === '0') {

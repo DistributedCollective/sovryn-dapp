@@ -171,15 +171,16 @@ export const useHandleTrove = (
               type: TransactionType.signTransaction,
               contract,
               fnName: adjustedTrove.fn,
-              args: isDllr
-                ? [...adjustedTrove.args, '', '']
-                : adjustedTrove.args,
+              args:
+                isDllr && params.repayZUSD
+                  ? [...adjustedTrove.args, '', '']
+                  : adjustedTrove.args,
               value: adjustedTrove.value,
               gasLimit: GAS_LIMIT.ADJUST_TROVE,
             },
             onComplete: callbacks?.onTroveAdjusted,
             updateHandler: permitHandler((req, res) => {
-              if (isTransactionRequest(req) && isDllr) {
+              if (isTransactionRequest(req) && isDllr && params.repayZUSD) {
                 req.args = [...adjustedTrove.args, permitTransferFrom, res];
               }
               return req;

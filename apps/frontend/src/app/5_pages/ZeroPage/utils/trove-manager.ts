@@ -77,7 +77,7 @@ export const adjustTrove = async (
   return {
     value: value.hex,
     fn:
-      token === SupportedTokens.dllr
+      token === SupportedTokens.dllr && repayZUSD
         ? 'adjustNueTroveWithPermit2'
         : 'adjustTrove',
     args: [

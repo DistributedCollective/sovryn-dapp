@@ -323,7 +323,12 @@ export const TransactionStep: FC<TransactionStepProps> = ({
                     options={amountOptions}
                     onChange={onChange}
                     className="mt-1"
-                    defaultChecked={config.unlimitedAmount ? 1 : 0}
+                    defaultChecked={
+                      config.unlimitedAmount ||
+                      config.amount === MaxAllowanceTransferAmount
+                        ? 1
+                        : 0
+                    }
                   />
                   <Heading type={HeadingType.h3} className="mb-3">
                     {t(translations.transactionStep.gasSettings)}

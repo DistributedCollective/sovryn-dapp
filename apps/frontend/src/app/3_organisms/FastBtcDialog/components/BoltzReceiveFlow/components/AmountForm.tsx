@@ -20,19 +20,14 @@ import {
   Paragraph,
   ParagraphSize,
 } from '@sovryn/ui';
-import { Decimal } from '@sovryn/utils';
-
-import { defaultChainId } from '../../../../../../config/chains';
 
 import { MaxButton } from '../../../../../2_molecules/MaxButton/MaxButton';
 import {
   BITCOIN,
   BTC_RENDER_PRECISION,
 } from '../../../../../../constants/currencies';
-import { GAS_LIMIT } from '../../../../../../constants/gasLimits';
 import { BTC_IN_SATOSHIS } from '../../../../../../constants/general';
 import { useMaintenance } from '../../../../../../hooks/useMaintenance';
-import { useMaxAssetBalance } from '../../../../../../hooks/useMaxAssetBalance';
 import { translations } from '../../../../../../locales/i18n';
 import { decimalic } from '../../../../../../utils/math';
 import {
@@ -47,32 +42,17 @@ export const AmountForm: React.FC = () => {
   const { checkMaintenance, States } = useMaintenance();
   const boltzLocked = checkMaintenance(States.BOLTZ_RECEIVE);
 
-  const { balance } = useMaxAssetBalance(
-    SupportedTokens.rbtc,
-    defaultChainId,
-    GAS_LIMIT.BOLTZ_SEND,
-  );
-
   const [value, setValue] = useState(amount || '0');
 
   const maximumAmount = useMemo(() => {
-    const feeForMaximumBalance = balance
-      .mul(fees.percentage / 100)
-      .add(
-        decimalic(fees.minerFees.baseAsset.reverse.lockup).div(BTC_IN_SATOSHIS),
-      );
-
     const amount = decimalic(limits.maximal).div(BTC_IN_SATOSHIS);
 
-    const b = amount
+    return amount
       .sub(decimalic(fees.percentage / 100).mul(amount))
       .sub(
         decimalic(fees.minerFees.baseAsset.reverse.lockup).div(BTC_IN_SATOSHIS),
       );
-
-    return Decimal.max(Decimal.min(b, balance.sub(feeForMaximumBalance)), 0);
   }, [
-    balance,
     fees.minerFees.baseAsset.reverse.lockup,
     fees.percentage,
     limits.maximal,

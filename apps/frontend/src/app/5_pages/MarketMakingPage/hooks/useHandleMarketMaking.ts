@@ -27,7 +27,7 @@ export const useHandleMarketMaking = (onComplete: () => void) => {
   const { setTransactions, setIsOpen, setTitle } = useTransactionContext();
   const btcWrapperProxyContract = useGetProtocolContract('btcWrapperProxy');
 
-  const onDeposit = useCallback(
+  const onDepositV1 = useCallback(
     async (pool: AmmLiquidityPool, amountA: Decimal, amountB: Decimal) => {
       if (!account || !signer || !btcWrapperProxyContract) {
         return;
@@ -99,7 +99,71 @@ export const useHandleMarketMaking = (onComplete: () => void) => {
     ],
   );
 
-  const onWithdraw = useCallback(
+  const onDepositV2 = useCallback(
+    async (pool: AmmLiquidityPool, asset: SupportedTokens, amount: Decimal) => {
+      if (!account || !signer || !btcWrapperProxyContract) {
+        return;
+      }
+
+      const tokenContract = await getTokenContract(asset, defaultChainId);
+
+      const minReturn = '1';
+
+      const transactions: Transaction[] = [];
+
+      if (asset !== SupportedTokens.rbtc) {
+        const approve = await prepareApproveTransaction({
+          token: asset,
+          amount: amount.toString(),
+          signer,
+          spender: btcWrapperProxyContract.address,
+        });
+
+        if (approve) {
+          transactions.push(approve);
+        }
+      }
+
+      transactions.push({
+        title: t(translations.marketMakingPage.marketMakingTx.deposit, {
+          symbol: getTokenDisplayName(asset),
+        }),
+        request: {
+          type: TransactionType.signTransaction,
+          contract: btcWrapperProxyContract,
+          fnName: 'addLiquidityToV2',
+          args: [
+            pool.converter,
+            tokenContract.address,
+            amount.toString(),
+            minReturn,
+          ],
+          value: asset === SupportedTokens.rbtc ? amount.toString() : '0',
+          gasLimit: GAS_LIMIT.MARKET_MAKING_ADD_LIQUIDITY,
+        },
+        onComplete,
+      });
+
+      setTransactions(transactions);
+      setTitle(
+        t(translations.marketMakingPage.marketMakingTx.deposit, {
+          symbol: getTokenDisplayName(asset),
+        }),
+      );
+      setIsOpen(true);
+    },
+    [
+      account,
+      btcWrapperProxyContract,
+      onComplete,
+      setIsOpen,
+      setTitle,
+      setTransactions,
+      signer,
+    ],
+  );
+
+  const onWithdrawV1 = useCallback(
     async (
       pool: AmmLiquidityPool,
       poolWeiAmount: string,
@@ -178,7 +242,8 @@ export const useHandleMarketMaking = (onComplete: () => void) => {
   );
 
   return {
-    onDeposit,
-    onWithdraw,
+    onDepositV1,
+    onDepositV2,
+    onWithdrawV1,
   };
 };

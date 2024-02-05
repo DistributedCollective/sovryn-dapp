@@ -63,12 +63,17 @@ export const AdjustAndDepositModal: FC<AdjustAndDepositModalProps> = ({
 
   const { balanceA, loadingA, balanceB, refetch } = useGetUserInfo(pool);
 
+  const isV2Pool = useMemo(
+    () => pool.converterVersion === 2,
+    [pool.converterVersion],
+  );
+
   const onCompleteTransaction = useCallback(() => {
     refetch();
     onClose();
   }, [onClose, refetch]);
 
-  const { onDeposit, onWithdraw } = useHandleMarketMaking(
+  const { onDepositV1, onDepositV2, onWithdrawV1 } = useHandleMarketMaking(
     onCompleteTransaction,
   );
 
@@ -121,18 +126,29 @@ export const AdjustAndDepositModal: FC<AdjustAndDepositModalProps> = ({
   );
 
   const handleSubmit = useCallback(() => {
-    if (isDeposit) {
-      onDeposit(pool, decimalAmount, expectedTokenAmount);
+    if (isV2Pool) {
+      if (isDeposit) {
+        onDepositV2(pool, SupportedTokens.doc, decimalAmount); // TODO: Make it general, currently it works only for DOC deposits
+      }
     } else {
-      onWithdraw(pool, poolWeiAmount, decimalAmount, [minReturn1, minReturn2]);
+      if (isDeposit) {
+        onDepositV1(pool, decimalAmount, expectedTokenAmount);
+      } else {
+        onWithdrawV1(pool, poolWeiAmount, decimalAmount, [
+          minReturn1,
+          minReturn2,
+        ]);
+      }
     }
   }, [
-    expectedTokenAmount,
-    onDeposit,
-    onWithdraw,
-    pool,
+    isV2Pool,
     isDeposit,
+    onDepositV2,
+    pool,
     decimalAmount,
+    onDepositV1,
+    expectedTokenAmount,
+    onWithdrawV1,
     poolWeiAmount,
     minReturn1,
     minReturn2,
@@ -241,13 +257,15 @@ export const AdjustAndDepositModal: FC<AdjustAndDepositModalProps> = ({
                 />
               )}
 
-              <AmountInput
-                label={t(translations.common.amount)}
-                value={expectedTokenAmount.toString()}
-                className="max-w-none mt-6"
-                unit={<AssetRenderer asset={SupportedTokens.rbtc} />}
-                readOnly
-              />
+              {!isV2Pool && (
+                <AmountInput
+                  label={t(translations.common.amount)}
+                  value={expectedTokenAmount.toString()}
+                  className="max-w-none mt-6"
+                  unit={<AssetRenderer asset={SupportedTokens.rbtc} />}
+                  readOnly
+                />
+              )}
             </FormGroup>
           </div>
 

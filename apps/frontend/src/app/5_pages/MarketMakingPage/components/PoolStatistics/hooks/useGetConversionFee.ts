@@ -24,7 +24,7 @@ export const useGetConversionFee = (poolToken: string) => {
       return 0;
     }
 
-    return Number(conversionFeeAmount) / Number(maxConversionFeeAmount);
+    return (Number(conversionFeeAmount) * 100) / Number(maxConversionFeeAmount);
   }, [data]);
 
   return { loading, conversionFee, refetch };

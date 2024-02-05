@@ -9,6 +9,7 @@ import {
 import { decimalic, fromWei, toWei } from '../utils/math';
 import { useCacheCall } from './useCacheCall';
 import { useTokenDetailsByAsset } from './useTokenDetailsByAsset';
+import { useGetRBTCPrice } from './zero/useGetRBTCPrice';
 
 export function useDollarValue(asset: SupportedTokens, weiAmount: string) {
   if (asset === SupportedTokens.zusd) {
@@ -16,6 +17,8 @@ export function useDollarValue(asset: SupportedTokens, weiAmount: string) {
   }
   const assetDetails = useTokenDetailsByAsset(asset);
   const dllrDetails = useTokenDetailsByAsset(SupportedTokens.dllr);
+  const { price: btcPrice } = useGetRBTCPrice();
+  const isNativeAsset = useMemo(() => asset === SupportedTokens.rbtc, [asset]);
 
   const { value: usdPrice, loading } = useCacheCall(
     `dollarValue/${asset}`,
@@ -57,11 +60,18 @@ export function useDollarValue(asset: SupportedTokens, weiAmount: string) {
       return fromWei(weiAmount);
     } else {
       return decimalic(weiAmount)
-        .mul(usdPrice)
+        .mul(isNativeAsset ? btcPrice : usdPrice)
         .div(10 ** decimals)
         .toString();
     }
-  }, [asset, assetDetails?.decimalPrecision, usdPrice, weiAmount]);
+  }, [
+    asset,
+    assetDetails?.decimalPrecision,
+    usdPrice,
+    weiAmount,
+    btcPrice,
+    isNativeAsset,
+  ]);
 
   return {
     loading,

@@ -43,6 +43,7 @@ export const AssetSectionActions: FC = () => {
           <button
             onClick={handleFundWallet}
             className="bg-gray-70 w-12 h-12 rounded flex items-center justify-center"
+            disabled={!account}
           >
             <DepositIcon />
           </button>
@@ -81,6 +82,7 @@ export const AssetSectionActions: FC = () => {
           style={ButtonStyle.primary}
           onClick={handleFundWallet}
           text={t(translations.portfolioPage.assetSection.fundWallet)}
+          disabled={!account}
         />
         <Button
           className="w-[7.75rem]"

@@ -78,12 +78,19 @@ export const PoolsTable: FC<PoolsTableProps> = ({
 
   useEffect(() => {
     if (shouldScroll && tableRef.current && activePool) {
-      const activeRow = tableRef.current.querySelector(
+      const activeRows = tableRef.current.querySelectorAll(
         `[data-pool-key="${activePool}"]`,
       );
-      if (activeRow) {
+      activeRows.forEach(activeRow => {
+        const parentElement = activeRow.parentElement;
+        if (
+          parentElement?.dataset.layoutId &&
+          !parentElement.nextElementSibling
+        ) {
+          parentElement.click();
+        }
         activeRow.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      }
+      });
     }
   }, [activePool, shouldScroll]);
 

@@ -33,6 +33,8 @@ type NewPoolStatisticsProps = {
   pool: AmmLiquidityPool;
 };
 
+// TODO: Adjust for v2 pools
+
 export const NewPoolStatistics: FC<NewPoolStatisticsProps> = ({
   value,
   decimalAmount,

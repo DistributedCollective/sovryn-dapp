@@ -15,6 +15,9 @@ import {
   ButtonStyle,
   ErrorBadge,
   ErrorLevel,
+  ITabItem,
+  Tabs,
+  TabType,
 } from '@sovryn/ui';
 import { Decimal } from '@sovryn/utils';
 
@@ -22,6 +25,7 @@ import { AssetRenderer } from '../../../../2_molecules/AssetRenderer/AssetRender
 import { CurrentStatistics } from '../../../../2_molecules/CurrentStatistics/CurrentStatistics';
 import { LabelWithTabsAndMaxButton } from '../../../../2_molecules/LabelWithTabsAndMaxButton/LabelWithTabsAndMaxButton';
 import { MaxButton } from '../../../../2_molecules/MaxButton/MaxButton';
+import { TAB_ACTIVE_CLASSNAME } from '../../../../../constants/general';
 import { useAccount } from '../../../../../hooks/useAccount';
 import { useWeiAmountInput } from '../../../../../hooks/useWeiAmountInput';
 import { translations } from '../../../../../locales/i18n';
@@ -58,8 +62,28 @@ export const AdjustAndDepositModal: FC<AdjustAndDepositModalProps> = ({
   pool,
 }) => {
   const [adjustType, setAdjustType] = useState(AdjustType.Deposit);
+  const [assetTabIndex, setAssetTabIndex] = useState(0);
   const [value, setValue, amount] = useWeiAmountInput('');
   const { account } = useAccount();
+
+  const token = useMemo(
+    () => (assetTabIndex === 0 ? pool.assetA : pool.assetB),
+    [assetTabIndex, pool.assetA, pool.assetB],
+  );
+
+  const assetTabOptions: ITabItem[] = useMemo(
+    () => [
+      {
+        label: <AssetRenderer asset={pool.assetA} />,
+        activeClassName: TAB_ACTIVE_CLASSNAME,
+      },
+      {
+        label: <AssetRenderer asset={pool.assetB} />,
+        activeClassName: TAB_ACTIVE_CLASSNAME,
+      },
+    ],
+    [pool.assetA, pool.assetB],
+  );
 
   const { balanceA, loadingA, balanceB, refetch } = useGetUserInfo(pool);
 
@@ -87,17 +111,16 @@ export const AdjustAndDepositModal: FC<AdjustAndDepositModalProps> = ({
     isAmountZero,
     adjustType,
     loadingA,
-    pool,
+    assetTabIndex === 0 ? pool.poolTokenA : pool.poolTokenB!,
     account,
   );
 
   const poolWeiAmount = calculatePoolWeiAmount(
     Decimal.fromBigNumberString(amount.toString()),
-    balanceA,
+    assetTabIndex === 0 ? balanceA : balanceB,
     tokenPoolBalance,
   );
 
-  const token = useMemo(() => pool.assetA, [pool.assetA]);
   const isDeposit = useMemo(
     () => adjustType === AdjustType.Deposit,
     [adjustType],
@@ -105,11 +128,27 @@ export const AdjustAndDepositModal: FC<AdjustAndDepositModalProps> = ({
   const [hasDisclaimerBeenChecked, setHasDisclaimerBeenChecked] =
     useState(false);
 
-  const maxTokenToDepositAmount = useGetMaxDeposit(pool, isDeposit);
+  const { maximumV1Deposit, balanceTokenA, balanceTokenB } = useGetMaxDeposit(
+    pool,
+    isDeposit,
+  );
+
+  const maxTokenToDepositAmount = useMemo(() => {
+    if (isV2Pool) {
+      return assetTabIndex === 0 ? balanceTokenA : balanceTokenB;
+    }
+
+    return maximumV1Deposit;
+  }, [assetTabIndex, balanceTokenA, balanceTokenB, isV2Pool, maximumV1Deposit]);
+
+  const maxWithdrawalAmount = useMemo(
+    () => (assetTabIndex === 0 ? balanceA : balanceB),
+    [assetTabIndex, balanceA, balanceB],
+  );
 
   const maxBalance = useMemo(
-    () => (isDeposit ? maxTokenToDepositAmount : balanceA),
-    [isDeposit, balanceA, maxTokenToDepositAmount],
+    () => (isDeposit ? maxTokenToDepositAmount : maxWithdrawalAmount),
+    [isDeposit, maxTokenToDepositAmount, maxWithdrawalAmount],
   );
 
   const handleMaxClick = useCallback(
@@ -128,7 +167,11 @@ export const AdjustAndDepositModal: FC<AdjustAndDepositModalProps> = ({
   const handleSubmit = useCallback(() => {
     if (isV2Pool) {
       if (isDeposit) {
-        onDepositV2(pool, SupportedTokens.doc, decimalAmount); // TODO: Make it general, currently it works only for DOC deposits
+        onDepositV2(
+          pool,
+          assetTabIndex === 0 ? pool.assetA : pool.assetB,
+          decimalAmount,
+        );
       }
     } else {
       if (isDeposit) {
@@ -145,6 +188,7 @@ export const AdjustAndDepositModal: FC<AdjustAndDepositModalProps> = ({
     isDeposit,
     onDepositV2,
     pool,
+    assetTabIndex,
     decimalAmount,
     onDepositV1,
     expectedTokenAmount,
@@ -236,6 +280,18 @@ export const AdjustAndDepositModal: FC<AdjustAndDepositModalProps> = ({
               className="max-w-none mt-8"
               dataAttribute="adjust-amm-pool-amount"
             >
+              {pool.converterVersion === 2 && (
+                <div>
+                  <Tabs
+                    items={assetTabOptions}
+                    onChange={setAssetTabIndex}
+                    index={assetTabIndex}
+                    type={TabType.secondary}
+                    className="mb-4"
+                  />
+                </div>
+              )}
+
               <AmountInput
                 value={value}
                 onChangeText={setValue}

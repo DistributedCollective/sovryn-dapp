@@ -12,9 +12,9 @@ export const useGetConversionFee = (poolToken: string) => {
   });
 
   const conversionFee = useMemo(() => {
-    const conversionFeeAmount = data?.liquidityPools[0].conversionFee ?? 0;
+    const conversionFeeAmount = data?.liquidityPools[0]?.conversionFee ?? 0;
     const maxConversionFeeAmount =
-      data?.liquidityPools[0].maxConversionFee ?? 0;
+      data?.liquidityPools[0]?.maxConversionFee ?? 0;
 
     if (
       !conversionFeeAmount ||

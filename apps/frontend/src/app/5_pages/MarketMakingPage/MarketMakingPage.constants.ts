@@ -200,3 +200,5 @@ export const AMM_SERVICE_URL = {
   [ChainIds.RSK_MAINNET]: 'https://amm-apy.sovryn.app/',
   [ChainIds.RSK_TESTNET]: 'https://amm-apy.test.sovryn.app/',
 };
+
+export const DEPOSIT_MIN_RETURN = '1';

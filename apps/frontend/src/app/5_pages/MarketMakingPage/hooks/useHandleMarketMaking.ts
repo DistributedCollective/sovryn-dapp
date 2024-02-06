@@ -19,6 +19,7 @@ import { useGetProtocolContract } from '../../../../hooks/useGetContract';
 import { translations } from '../../../../locales/i18n';
 import { toWei } from '../../../../utils/math';
 import { prepareApproveTransaction } from '../../../../utils/transactions';
+import { DEPOSIT_MIN_RETURN } from '../MarketMakingPage.constants';
 import { AmmLiquidityPool } from '../utils/AmmLiquidityPool';
 
 export const useHandleMarketMaking = (onComplete: () => void) => {
@@ -41,9 +42,6 @@ export const useHandleMarketMaking = (onComplete: () => void) => {
           item => item.address,
         ),
       ]);
-      const minReturn = toWei(amountB.toString())
-        .sub(toWei(amountB.toString()).div(100))
-        .toString();
 
       const transactions: Transaction[] = [];
 
@@ -72,7 +70,7 @@ export const useHandleMarketMaking = (onComplete: () => void) => {
             pool.converter,
             [tokenBContractAddress, tokenAContractAddress],
             [toWei(amountB.toString()), amountA.toString()],
-            minReturn,
+            DEPOSIT_MIN_RETURN,
           ],
           value: toWei(amountB.toString()),
           gasLimit: GAS_LIMIT.MARKET_MAKING_ADD_LIQUIDITY,
@@ -110,8 +108,6 @@ export const useHandleMarketMaking = (onComplete: () => void) => {
 
       const tokenContract = await getTokenContract(token, defaultChainId);
 
-      const minReturn = '1';
-
       const transactions: Transaction[] = [];
 
       if (asset !== SupportedTokens.rbtc) {
@@ -139,7 +135,7 @@ export const useHandleMarketMaking = (onComplete: () => void) => {
             pool.converter,
             tokenContract.address,
             amount.toString(),
-            minReturn,
+            DEPOSIT_MIN_RETURN,
           ],
           value: asset === SupportedTokens.rbtc ? amount.toString() : '0',
           gasLimit: GAS_LIMIT.MARKET_MAKING_ADD_LIQUIDITY,

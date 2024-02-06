@@ -325,6 +325,7 @@ export const AdjustAndDepositModal: FC<AdjustAndDepositModalProps> = ({
 
           <NewPoolStatistics
             value={value}
+            asset={token}
             decimalAmount={decimalAmount}
             isInitialDeposit={isInitialDeposit}
             adjustType={adjustType}

@@ -63,25 +63,13 @@ export const AmountForm: React.FC = () => {
     if (
       amount.lte(0) ||
       amount.lt(decimalic(limits.minimal).div(BTC_IN_SATOSHIS)) ||
-      amount.gt(decimalic(limits.maximal).div(BTC_IN_SATOSHIS))
+      amount.gt(decimalic(maximumAmount))
     ) {
       return true;
     }
 
-    const fee = amount
-      .mul(fees.percentage / 100)
-      .add(
-        decimalic(fees.minerFees.baseAsset.reverse.lockup).div(BTC_IN_SATOSHIS),
-      );
-
-    return amount.add(fee).gt(decimalic(limits.maximal).div(BTC_IN_SATOSHIS));
-  }, [
-    value,
-    limits.minimal,
-    limits.maximal,
-    fees.percentage,
-    fees.minerFees.baseAsset.reverse.lockup,
-  ]);
+    return false;
+  }, [value, limits.minimal, maximumAmount]);
 
   const onContinueClick = useCallback(
     () =>

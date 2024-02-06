@@ -44,10 +44,10 @@ describe('SmartRouter', () => {
       ).resolves.toHaveLength(3);
     });
 
-    it('returns no routes for DLLR to XUSD swap', async () => {
+    it('returns 1 routes for DLLR to XUSD swap', async () => {
       await expect(
         router.getAvailableRoutesForAssets(dllr, xusd),
-      ).resolves.toHaveLength(0);
+      ).resolves.toHaveLength(1);
     });
   });
 
@@ -115,11 +115,11 @@ describe('SmartRouter', () => {
     });
 
     it('returns all available entries', async () => {
-      await expect(router.getEntries()).resolves.toHaveLength(9);
+      await expect(router.getEntries()).resolves.toHaveLength(13);
     });
 
     it('returns all available destinations for entry token', async () => {
-      await expect(router.getDestination(sov)).resolves.toHaveLength(5);
+      await expect(router.getDestination(sov)).resolves.toHaveLength(12);
     });
 
     it('returns data about token', async () => {

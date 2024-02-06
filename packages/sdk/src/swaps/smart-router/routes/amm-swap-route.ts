@@ -106,9 +106,13 @@ export const ammSwapRoute: SwapRouteFunction = (
           SupportedTokens.moc,
           SupportedTokens.rif,
           SupportedTokens.sov,
-          // Temporarily disabled in https://sovryn.atlassian.net/browse/SOV-2595
-          // SupportedTokens.eths,
-          // SupportedTokens.bnbs,
+          SupportedTokens.bnbs,
+          SupportedTokens.doc,
+          SupportedTokens.rusdt,
+          SupportedTokens.eths,
+          SupportedTokens.xusd,
+          SupportedTokens.zusd,
+          SupportedTokens.mynt,
         ];
 
         const contracts = await Promise.all(

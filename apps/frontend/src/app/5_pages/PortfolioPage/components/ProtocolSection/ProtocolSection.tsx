@@ -11,7 +11,8 @@ import { useGetRBTCPrice } from '../../../../../hooks/zero/useGetRBTCPrice';
 import { translations } from '../../../../../locales/i18n';
 import { ProtocolTypes, PoolValues } from './ProtocolSection.types';
 import { ProtocolDepositSection } from './components/ProtocolDepositSection/ProtocolDepositSection';
-import { ProtocolTvlSection } from './components/ProtocolTvlSection/ProtocolTvlSection';
+import { ProtocolRewardsSection } from './components/ProtocolRewardsSection/ProtocolRewardsSection';
+import { ProtocolTotalSection } from './components/ProtocolTotalSection/ProtocolTotalSection';
 
 export const ProtocolSection: FC = () => {
   const { account } = useAccount();
@@ -58,11 +59,15 @@ export const ProtocolSection: FC = () => {
 
   return (
     <div className="flex flex-col gap-3">
-      <ProtocolTvlSection
+      <ProtocolTotalSection
         totalValue={value}
         selectedCurrency={selectedCurrency}
         btcPrice={btcPrice}
         onCurrencyChange={setSelectedCurrency}
+      />
+      <ProtocolRewardsSection
+        selectedCurrency={selectedCurrency}
+        btcPrice={btcPrice}
       />
       <Paragraph className="text-right text-gray-30 font-medium">
         {t(translations.portfolioPage.protocolSection.depositValue)}

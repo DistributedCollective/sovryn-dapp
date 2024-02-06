@@ -9,12 +9,14 @@ import { Button, ButtonStyle, Paragraph } from '@sovryn/ui';
 import { ReactComponent as ConvertIcon } from '../../../../../../../assets/images/convert.svg';
 import { ReactComponent as DepositIcon } from '../../../../../../../assets/images/deposit.svg';
 import { ReactComponent as WithdrawIcon } from '../../../../../../../assets/images/withdraw.svg';
+import { useAccount } from '../../../../../../../hooks/useAccount';
 import { useAssetBalance } from '../../../../../../../hooks/useAssetBalance';
 import { translations } from '../../../../../../../locales/i18n';
 import { sharedState } from '../../../../../../../store/rxjs/shared-state';
 
 export const AssetSectionActions: FC = () => {
   const navigate = useNavigate();
+  const { account } = useAccount();
 
   const { balance } = useAssetBalance(SupportedTokens.rbtc);
   const hasRbtcBalance = useMemo(() => Number(balance) !== 0, [balance]);
@@ -29,6 +31,11 @@ export const AssetSectionActions: FC = () => {
     [],
   );
 
+  const isRbtcWithdrawalAllowed = useMemo(
+    () => hasRbtcBalance && account,
+    [hasRbtcBalance, account],
+  );
+
   return (
     <>
       <div className="flex md:hidden w-full justify-center items-center gap-8 my-4">
@@ -36,6 +43,7 @@ export const AssetSectionActions: FC = () => {
           <button
             onClick={handleFundWallet}
             className="bg-gray-70 w-12 h-12 rounded flex items-center justify-center"
+            disabled={!account}
           >
             <DepositIcon />
           </button>
@@ -54,7 +62,7 @@ export const AssetSectionActions: FC = () => {
             {t(translations.portfolioPage.assetSection.convert)}
           </Paragraph>
         </div>
-        {hasRbtcBalance && (
+        {isRbtcWithdrawalAllowed && (
           <div className="flex flex-col gap-3 items-center">
             <button
               onClick={handleWithdraw}
@@ -68,12 +76,13 @@ export const AssetSectionActions: FC = () => {
           </div>
         )}
       </div>
-      <div className="hidden md:flex items-center gap-4 my-6">
+      <div className="hidden md:flex items-center gap-4 mt-4 mb-6">
         <Button
           className="w-[7.75rem]"
           style={ButtonStyle.primary}
           onClick={handleFundWallet}
           text={t(translations.portfolioPage.assetSection.fundWallet)}
+          disabled={!account}
         />
         <Button
           className="w-[7.75rem]"
@@ -81,7 +90,7 @@ export const AssetSectionActions: FC = () => {
           onClick={() => navigate('/convert?&to=sov')}
           text={t(translations.portfolioPage.assetSection.convert)}
         />
-        {hasRbtcBalance && (
+        {isRbtcWithdrawalAllowed && (
           <Button
             className="w-[7.75rem]"
             style={ButtonStyle.secondary}

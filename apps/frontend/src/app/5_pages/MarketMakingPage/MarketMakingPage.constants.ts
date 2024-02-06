@@ -68,6 +68,66 @@ export const MAINNET_AMM = [
     '0x3a18e61d9c9f1546dea013478dd653c793098f17',
     '0x36263AC99ecDcf1aB20513D580B7d8D32D3C439d',
   ).setPreviousConverters(['0x25B8D024B39174824424f032423E03dd7dcCF044']),
+  new AmmLiquidityPool(
+    SupportedTokens.xusd,
+    SupportedTokens.rbtc,
+    1,
+    ChainIds.RSK_MAINNET,
+    '0xa9c3d9681215ef7623dc28ea6b75bf87fdf285d9',
+    '0x6f96096687952349DD5944E0EB1Be327DcdeB705',
+  ).setPreviousConverters([
+    '0x029448377a56c15928ec783baf6ca736ed99a57f',
+    '0x34163bb263ac77e9d6315676a2b9624cfc5ff861',
+  ]),
+  new AmmLiquidityPool(
+    SupportedTokens.rusdt,
+    SupportedTokens.rbtc,
+    2,
+    ChainIds.RSK_MAINNET,
+    '0x448c2474b255576554EeD36c24430ccFac131cE3',
+    '0x40580E31cc14DbF7a0859f38Ab36A84262df821D',
+    '0x9c4017D1C04cFa0F97FDc9505e33a0D8ac84817F',
+  ),
+  new AmmLiquidityPool(
+    SupportedTokens.bnbs,
+    SupportedTokens.rbtc,
+    1,
+    ChainIds.RSK_MAINNET,
+    '0x1684b871ec5f93de142e79a670b541d75be07ead',
+    '0x8f3d24ab3510294f1466aa105f78901b90d79d4d',
+  ).setPreviousConverters([
+    '0x3a36919f1d6729ea8bd2a04f72bd9d5396f7e549',
+    '0x150bc1f9f1020255d44385865928aadc6b7ad9f3',
+  ]),
+  new AmmLiquidityPool(
+    SupportedTokens.eths,
+    SupportedTokens.rbtc,
+    1,
+    ChainIds.RSK_MAINNET,
+    '0xa57ec11497f45fe86eca50f4f1c9e75c8016a1af',
+    '0xF41Ed702df2B84AcE02772C6a0D8AE46465aA5F4',
+  ).setPreviousConverters([
+    '0xcef26b429e272960d8fa2ea190b06df5dd8f68e2',
+    '0xd8397c1944862b6a9674c85a5496c208dc9417bb',
+  ]),
+  new AmmLiquidityPool(
+    SupportedTokens.doc,
+    SupportedTokens.rbtc,
+    2,
+    ChainIds.RSK_MAINNET,
+    '0xd715192612F03D20BaE53a5054aF530C9Bb0fA3f',
+    '0x2dc80332C19FBCd5169ab4a579d87eE006Cb72c0',
+    '0x840437BdE7346EC13B5451417Df50586F4dAF836',
+  ),
+  new AmmLiquidityPool(
+    SupportedTokens.bpro,
+    SupportedTokens.rbtc,
+    2,
+    ChainIds.RSK_MAINNET,
+    '0x26463990196B74aD5644865E4d4567E4A411e065',
+    '0x9CE25371426763025C04a9FCd581fbb9E4593475',
+    '0x75e327A83aD2BFD53da12EB718fCCFC68Bc57535',
+  ),
 ];
 
 export const TESTNET_AMM = [

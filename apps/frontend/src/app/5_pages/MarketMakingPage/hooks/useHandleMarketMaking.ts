@@ -105,7 +105,10 @@ export const useHandleMarketMaking = (onComplete: () => void) => {
         return;
       }
 
-      const tokenContract = await getTokenContract(asset, defaultChainId);
+      const token =
+        asset === SupportedTokens.rbtc ? SupportedTokens.wrbtc : asset;
+
+      const tokenContract = await getTokenContract(token, defaultChainId);
 
       const minReturn = '1';
 
@@ -241,9 +244,79 @@ export const useHandleMarketMaking = (onComplete: () => void) => {
     ],
   );
 
+  const onWithdrawV2 = useCallback(
+    async (
+      pool: AmmLiquidityPool,
+      asset: SupportedTokens,
+      poolWeiAmount: string,
+      amount: Decimal,
+      minReturn: string,
+    ) => {
+      if (!account || !signer || !btcWrapperProxyContract) {
+        return;
+      }
+
+      const token =
+        asset === SupportedTokens.rbtc ? SupportedTokens.wrbtc : asset;
+
+      const tokenContract = await getTokenContract(token, defaultChainId);
+
+      const transactions: Transaction[] = [];
+
+      if (asset !== SupportedTokens.rbtc) {
+        const approve = await prepareApproveTransaction({
+          token: asset,
+          amount: amount.toString(),
+          signer,
+          spender: btcWrapperProxyContract.address,
+        });
+
+        if (approve) {
+          transactions.push(approve);
+        }
+      }
+
+      transactions.push({
+        title: t(translations.marketMakingPage.marketMakingTx.withdraw, {
+          symbol: getTokenDisplayName(pool.assetA),
+        }),
+        request: {
+          type: TransactionType.signTransaction,
+          contract: btcWrapperProxyContract,
+          fnName: 'removeLiquidityFromV2',
+          args: [
+            pool.converter,
+            tokenContract.address,
+            poolWeiAmount.toString(),
+            minReturn,
+          ],
+          gasLimit: GAS_LIMIT.MARKET_MAKING_REMOVE_LIQUIDITY,
+        },
+        onComplete,
+      });
+
+      setTransactions(transactions);
+      setTitle(
+        t(translations.marketMakingPage.marketMakingTx.withdraw, {
+          symbol: getTokenDisplayName(pool.assetA),
+        }),
+      );
+      setIsOpen(true);
+    },
+    [
+      account,
+      signer,
+      onComplete,
+      setTransactions,
+      setTitle,
+      setIsOpen,
+      btcWrapperProxyContract,
+    ],
+  );
   return {
     onDepositV1,
     onDepositV2,
     onWithdrawV1,
+    onWithdrawV2,
   };
 };

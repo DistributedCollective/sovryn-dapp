@@ -97,9 +97,8 @@ export const AdjustAndDepositModal: FC<AdjustAndDepositModalProps> = ({
     onClose();
   }, [onClose, refetch]);
 
-  const { onDepositV1, onDepositV2, onWithdrawV1 } = useHandleMarketMaking(
-    onCompleteTransaction,
-  );
+  const { onDepositV1, onDepositV2, onWithdrawV1, onWithdrawV2 } =
+    useHandleMarketMaking(onCompleteTransaction);
 
   const decimalAmount = useMemo(
     (): Decimal => decimalic(amount.toString()),
@@ -167,11 +166,9 @@ export const AdjustAndDepositModal: FC<AdjustAndDepositModalProps> = ({
   const handleSubmit = useCallback(() => {
     if (isV2Pool) {
       if (isDeposit) {
-        onDepositV2(
-          pool,
-          assetTabIndex === 0 ? pool.assetA : pool.assetB,
-          decimalAmount,
-        );
+        onDepositV2(pool, token, decimalAmount);
+      } else {
+        onWithdrawV2(pool, token, poolWeiAmount, decimalAmount, '1');
       }
     } else {
       if (isDeposit) {
@@ -188,12 +185,13 @@ export const AdjustAndDepositModal: FC<AdjustAndDepositModalProps> = ({
     isDeposit,
     onDepositV2,
     pool,
-    assetTabIndex,
+    token,
     decimalAmount,
+    onWithdrawV2,
+    poolWeiAmount,
     onDepositV1,
     expectedTokenAmount,
     onWithdrawV1,
-    poolWeiAmount,
     minReturn1,
     minReturn2,
   ]);

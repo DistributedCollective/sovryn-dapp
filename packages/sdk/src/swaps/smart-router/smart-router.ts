@@ -150,7 +150,7 @@ export class SmartRouter {
 
   private async getStableCoinsDetails(
     chainId?: ChainId,
-  ): Promise<TokenDetailsData> {
+  ): Promise<TokenDetailsData[]> {
     return await Promise.all(
       stableCoins.map(token => getTokenDetails(token, chainId)),
     );

@@ -32,7 +32,11 @@ export const PoolsTableAction: FC<PoolsTableActionProps> = ({ pool }) => {
   const { checkMaintenance, States } = useMaintenance();
   const poolLocked = useCheckPoolMaintenance(pool);
 
-  const { balanceA: poolBalance, refetch } = useGetUserInfo(pool);
+  const {
+    balanceA: poolBalanceA,
+    balanceB: poolBalanceB,
+    refetch,
+  } = useGetUserInfo(pool);
 
   const isMynt = useMemo(
     () => pool.assetA === SupportedTokens.mynt,
@@ -80,7 +84,9 @@ export const PoolsTableAction: FC<PoolsTableActionProps> = ({ pool }) => {
         disabled={!actionLocked}
         children={
           <>
-            {!account || poolBalance.lte(Decimal.ZERO) ? (
+            {!account ||
+            (poolBalanceA.lte(Decimal.ZERO) &&
+              poolBalanceB.lte(Decimal.ZERO)) ? (
               isMynt ? (
                 <Tooltip
                   children={

@@ -33,7 +33,7 @@ export class LendingPoolDictionary {
         false,
       ),
     ],
-    /*[
+    [
       SupportedTokens.xusd,
       new LendingPool(
         'XUSD',
@@ -59,10 +59,6 @@ export class LendingPoolDictionary {
       ),
     ],
     [
-      SupportedTokens.rusdt,
-      new LendingPool('USDT', SupportedTokens.rusdt, [], false, true),
-    ],
-    [
       SupportedTokens.bpro,
       new LendingPool(
         'BPRO',
@@ -77,7 +73,11 @@ export class LendingPoolDictionary {
         false,
         false,
       ),
-    ],*/
+    ],
+    // [
+    //   SupportedTokens.rusdt,
+    //   new LendingPool('USDT', SupportedTokens.rusdt, [], false, true),
+    // ],
   ]);
 
   public static get(asset: SupportedTokens): LendingPool {

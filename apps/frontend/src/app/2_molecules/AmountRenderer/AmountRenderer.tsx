@@ -144,7 +144,7 @@ export const AmountRenderer: FC<AmountRendererProps> = ({
             duration={1} //do not set lower than 1 overwise it can cause a bug
             separator={thousand}
             decimal={decimal}
-            prefix={shouldShowRoundingPrefix ? '~ ' : ''}
+            prefix={shouldShowRoundingPrefix ? `~ ${prefix}` : `${prefix}`}
             suffix={` ${suffix.toUpperCase()}`}
           />
         ) : (

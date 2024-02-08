@@ -36,7 +36,7 @@ export const Staking: FC = () => {
   );
 
   const hasLiquidSov = useMemo(
-    () => decimalic(liquidSovClaimAmount).gt(0),
+    () => liquidSovClaimAmount.gt(0),
     [liquidSovClaimAmount],
   );
 
@@ -104,7 +104,7 @@ export const Staking: FC = () => {
               type: t(translations.rewardPage.staking.stakingSubsidies),
               amount: (
                 <AmountRenderer
-                  value={formatUnits(liquidSovClaimAmount, 18)}
+                  value={liquidSovClaimAmount}
                   suffix={getTokenDisplayName(SupportedTokens.sov)}
                   precision={BTC_RENDER_PRECISION}
                   dataAttribute={`${SupportedTokens.sov}-liquid-amount`}
@@ -112,7 +112,7 @@ export const Staking: FC = () => {
               ),
               action: (
                 <WithdrawLiquidFee
-                  amountToClaim={liquidSovClaimAmount}
+                  amountToClaim={liquidSovClaimAmount.toBigNumber().toString()}
                   lastWithdrawalInterval={lastWithdrawalInterval}
                   refetch={refetchLiquidSovClaim}
                 />

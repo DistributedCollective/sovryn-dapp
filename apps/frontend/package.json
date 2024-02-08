@@ -1,6 +1,6 @@
 {
   "name": "frontend",
-  "version": "1.0.41",
+  "version": "1.0.44",
   "homepage": ".",
   "private": true,
   "dependencies": {
@@ -55,7 +55,8 @@
     "rxjs": "7.5.6",
     "sanitize-html": "2.11.0",
     "socket.io-client": "4.5.4",
-    "utf8": "^3.0.0"
+    "utf8": "^3.0.0",
+    "@uniswap/permit2-sdk": "1.2.0"
   },
   "devDependencies": {
     "@babel/core": "7.18.2",

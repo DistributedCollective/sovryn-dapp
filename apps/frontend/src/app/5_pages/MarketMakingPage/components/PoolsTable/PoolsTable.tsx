@@ -56,6 +56,7 @@ export const PoolsTable: FC<PoolsTableProps> = ({
     ),
     [],
   );
+
   const generateExpandedContent = useCallback(
     (pool: AmmLiquidityPool) => (
       <div className="lg:flex flex-row w-full">
@@ -70,14 +71,26 @@ export const PoolsTable: FC<PoolsTableProps> = ({
     [],
   );
 
+  const onPoolClick = useCallback(
+    (pool: AmmLiquidityPool) => setActivePool(pool.key),
+    [setActivePool],
+  );
+
   useEffect(() => {
     if (shouldScroll && tableRef.current && activePool) {
-      const activeRow = tableRef.current.querySelector(
+      const activeRows = tableRef.current.querySelectorAll(
         `[data-pool-key="${activePool}"]`,
       );
-      if (activeRow) {
+      activeRows.forEach(activeRow => {
+        const parentElement = activeRow.parentElement;
+        if (
+          parentElement?.dataset.layoutId &&
+          !parentElement.nextElementSibling
+        ) {
+          parentElement.click();
+        }
         activeRow.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      }
+      });
     }
   }, [activePool, shouldScroll]);
 
@@ -98,7 +111,7 @@ export const PoolsTable: FC<PoolsTableProps> = ({
       <Table
         columns={COLUMNS_CONFIG}
         rows={ammPools}
-        onRowClick={pool => setActivePool(pool.key)}
+        onRowClick={onPoolClick}
         expandedIndex={expandedIndex}
         className={styles.table}
         noData={t(translations.common.tables.noData)}

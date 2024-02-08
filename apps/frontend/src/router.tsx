@@ -51,6 +51,9 @@ const BitocracyPage = loadable(
 const ProposalPage = loadable(
   () => import('./app/5_pages/ProposalPage/ProposalPage'),
 );
+const LandingPage = loadable(
+  () => import('./app/5_pages/LandingPage/LandingPage'),
+);
 const PortfolioPage = loadable(
   () => import('./app/5_pages/PortfolioPage/PortfolioPage'),
 );
@@ -68,7 +71,7 @@ const routes = [
     children: [
       {
         index: true,
-        element: <ConvertPage />,
+        element: <LandingPage />,
       },
       {
         path: '/convert',

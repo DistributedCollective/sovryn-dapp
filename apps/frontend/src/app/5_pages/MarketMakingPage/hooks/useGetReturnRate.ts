@@ -9,7 +9,7 @@ type PoolData = {
   APY_pc: string;
 };
 
-type AmmResponse = {
+export type AmmResponse = {
   [key: string]: {
     pool: string;
     data: {
@@ -18,7 +18,7 @@ type AmmResponse = {
   };
 };
 
-type ReturnRates = {
+export type ReturnRates = {
   beforeRewards: string;
   afterRewards: string;
 };

@@ -177,20 +177,20 @@ const EarnPage: FC = () => {
     [setAmount],
   );
 
-  // const { weiBalance: zusdWeiBalance } = useAssetBalance(SupportedTokens.zusd);
-  // const { weiBalance: dllrWeiBalance } = useAssetBalance(SupportedTokens.dllr);
+  const { weiBalance: zusdWeiBalance } = useAssetBalance(SupportedTokens.zusd);
+  const { weiBalance: dllrWeiBalance } = useAssetBalance(SupportedTokens.dllr);
 
-  // useEffect(() => {
-  //   if (
-  //     isDeposit &&
-  //     Number(zusdWeiBalance) > 0 &&
-  //     Number(dllrWeiBalance) === 0
-  //   ) {
-  //     setToken(SupportedTokens.zusd);
-  //   } else {
-  //     setToken(SupportedTokens.dllr);
-  //   }
-  // }, [dllrWeiBalance, zusdWeiBalance, isDeposit, isLoading]);
+  useEffect(() => {
+    if (
+      isDeposit &&
+      Number(zusdWeiBalance) > 0 &&
+      Number(dllrWeiBalance) === 0
+    ) {
+      setToken(SupportedTokens.zusd);
+    } else {
+      setToken(SupportedTokens.dllr);
+    }
+  }, [dllrWeiBalance, zusdWeiBalance, isDeposit, isLoading]);
 
   const getAssetRenderer = useCallback(
     (token: SupportedTokens) => (

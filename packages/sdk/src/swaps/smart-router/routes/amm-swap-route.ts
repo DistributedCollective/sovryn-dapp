@@ -113,6 +113,7 @@ export const ammSwapRoute: SwapRouteFunction = (
           SupportedTokens.xusd,
           SupportedTokens.zusd,
           SupportedTokens.mynt,
+          SupportedTokens.bpro,
         ];
 
         const contracts = await Promise.all(

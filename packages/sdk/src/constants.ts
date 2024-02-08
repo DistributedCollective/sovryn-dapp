@@ -9,5 +9,4 @@ export const STABLECOINS: SupportedTokens[] = [
   SupportedTokens.xusd,
   SupportedTokens.doc,
   SupportedTokens.rusdt,
-  SupportedTokens.bpro,
 ];

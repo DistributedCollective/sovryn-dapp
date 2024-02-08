@@ -115,11 +115,11 @@ describe('SmartRouter', () => {
     });
 
     it('returns all available entries', async () => {
-      await expect(router.getEntries()).resolves.toHaveLength(13);
+      await expect(router.getEntries()).resolves.toHaveLength(14);
     });
 
     it('returns all available destinations for entry token', async () => {
-      await expect(router.getDestination(sov)).resolves.toHaveLength(12);
+      await expect(router.getDestination(sov)).resolves.toHaveLength(13);
     });
 
     it('returns data about token', async () => {

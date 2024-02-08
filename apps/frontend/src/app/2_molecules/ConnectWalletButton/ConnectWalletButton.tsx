@@ -73,6 +73,13 @@ export const ConnectWalletButton: FC<
           className={className}
           content={
             <Menu className="mb-4">
+              <Link to="/portfolio" className="no-underline">
+                <MenuItem
+                  text={t(translations.connectWalletButton.portfolio)}
+                  className="no-underline"
+                  dataAttribute={`${dataAttribute}-menu-portfolio`}
+                />
+              </Link>
               <Link to="/rewards" className="no-underline">
                 <MenuItem
                   text={t(translations.connectWalletButton.rewards)}

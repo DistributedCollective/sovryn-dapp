@@ -46,6 +46,7 @@
         "withdraw": "Withdraw",
         "txId": "TXID",
         "btc": "BTC",
+        "usd": "USD",
         "tx": {
             "signPermitTitle": "Permit {{symbol}}",
             "signPermitSubtitle": "Sign a permit to allow the contract to spend your {{symbol}}",
@@ -74,7 +75,8 @@
         "notifications": "Notifications",
         "history": "History",
         "copyAddress": "Copy address",
-        "disconnect": "Disconnect"
+        "disconnect": "Disconnect",
+        "portfolio": "Portfolio"
     },
     "header": {
         "funding": "Funding",
@@ -1524,5 +1526,32 @@
     "newProposalTx": {
         "title": "Submit Proposal",
         "description": "Submit a new proposal to the Bitocracy"
+    },
+    "portfolioPage": {
+        "meta": {
+            "title": "Portfolio - Sovryn"
+        },
+        "protocolSection": {
+            "marketMaking": "Market Making",
+            "stabilityPool": "Stability Pool",
+            "zeroLine": "Zero line of credit",
+            "lending": "Lending",
+            "staking": "Staking",
+            "deposit": "Deposit",
+            "openLoan": "Open loan",
+            "stakeSOV": "Stake SOV",
+            "depositValue": "Deposit value",
+            "totalValue": "Total value",
+            "totalRewardsEarned": "Total rewards earned"
+        },
+        "assetSection": {
+            "totalAssets": "Total assets",
+            "fundWallet": "Fund wallet",
+            "convert": "Convert",
+            "withdraw": "Withdraw",
+            "asset": "Asset",
+            "balance": "Balance",
+            "usdValue": "USD Value"
+        }
     }
 }

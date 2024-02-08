@@ -1,5 +1,21 @@
 # frontend
 
+## 1.0.44
+
+### Patch Changes
+
+- ea09cef2: SOV-3590: fix promo card click
+- 2f4a41f8: SOV-3727: Adjust staking rewards claim
+- be01a806: SOV-3736: fix AMM pool “LP fee rate“
+
+## 1.0.43
+
+### Patch Changes
+
+- e833d9fa: SOV-3716: Close top navigation menus automatically when switching to Landing page
+- fb5e9527: SOV-3737: Update language used on Landing page promo cards
+- 2c73437e: SOV-3677: Raise the Gas Limit for Stability Pool
+
 ## 1.0.42
 
 ### Patch Changes

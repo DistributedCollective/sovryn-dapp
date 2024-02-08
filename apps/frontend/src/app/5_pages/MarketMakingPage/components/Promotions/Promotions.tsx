@@ -68,7 +68,7 @@ export const Promotions: FC<PromotionsProps> = ({ setActivePool, onClick }) => {
                   precision={0}
                 />
               }
-              label2={t(translations.promotion.currentAPY)}
+              label2={t(translations.promotion.currentAPR)}
               child2={
                 <AmountRenderer
                   value={item.apy}

@@ -1,6 +1,7 @@
 import React, { FC, useMemo } from 'react';
 
 import { t } from 'i18next';
+import { useNavigate } from 'react-router-dom';
 
 import { SupportedTokens } from '@sovryn/contracts';
 import { Button, ButtonStyle, Paragraph } from '@sovryn/ui';
@@ -12,22 +13,27 @@ import stakeBg from '../../../../../assets/images/QuickLaunch/stake_bg.svg';
 import { translations } from '../../../../../locales/i18n';
 import { formatValue } from '../../../../../utils/math';
 import { useGetNextSupplyInterestRate } from '../../../LendPage/hooks/useGetNextSupplyInterestRate';
-import { useGetReturnRate } from '../../../MarketMakingPage/hooks/useGetReturnRate';
-import { AmmLiquidityPoolDictionary } from '../../../MarketMakingPage/utils/AmmLiquidityPoolDictionary';
+import { useGetReturnRates } from '../../../MarketMakingPage/hooks/useGetReturnRates';
 import { useGetStakingStatistics } from '../../../StakePage/components/StakingStatistics/hooks/useGetStakingStatistics';
 
 const pageTranslations = translations.landingPage;
-const ammPools = AmmLiquidityPoolDictionary.list();
 
 export const QuickLaunch: FC = () => {
-  const sovPool = useMemo(
-    () =>
-      ammPools.find(pool => pool.assetA === SupportedTokens.sov) || ammPools[0],
-    [],
-  );
+  const navigate = useNavigate();
   const { maxStakingApr } = useGetStakingStatistics();
   const { interestRate } = useGetNextSupplyInterestRate(SupportedTokens.dllr);
-  const { returnRates } = useGetReturnRate(sovPool.converter);
+  const { rates } = useGetReturnRates();
+
+  const maxRate = useMemo(() => {
+    let maxRewards = '0';
+    rates.forEach(rate => {
+      if (Number(rate.afterRewards) > Number(maxRewards)) {
+        maxRewards = rate.afterRewards;
+      }
+    });
+
+    return maxRewards;
+  }, [rates]);
 
   const options = [
     {
@@ -36,16 +42,16 @@ export const QuickLaunch: FC = () => {
       }),
       description: t(pageTranslations.quickLaunch.stake.description),
       action: t(pageTranslations.quickLaunch.stake.action),
-      url: '/earn/staking',
+      url: () => navigate('/earn/staking'),
       backgroundImage: stakeBg,
     },
     {
       title: t(pageTranslations.quickLaunch.earn.title, {
-        amount: formatValue(returnRates.afterRewards, 2),
+        amount: formatValue(maxRate, 2),
       }),
       description: t(pageTranslations.quickLaunch.earn.description),
       action: t(pageTranslations.quickLaunch.earn.action),
-      url: '/earn/market-making',
+      url: () => navigate('/earn/market-making'),
       backgroundImage: earnBg,
     },
     {
@@ -54,14 +60,14 @@ export const QuickLaunch: FC = () => {
       }),
       description: t(pageTranslations.quickLaunch.lend.description),
       action: t(pageTranslations.quickLaunch.lend.action),
-      url: '/earn/lend',
+      url: () => navigate('/earn/lend'),
       backgroundImage: lendBg,
     },
     {
       title: t(pageTranslations.quickLaunch.borrow.title),
       description: t(pageTranslations.quickLaunch.borrow.description),
       action: t(pageTranslations.quickLaunch.borrow.action),
-      url: '/borrow/fixed-interest',
+      url: () => navigate('/borrow/fixed-interest'),
       backgroundImage: borrowBg,
     },
   ];
@@ -89,7 +95,7 @@ export const QuickLaunch: FC = () => {
           <Button
             className="w-full sm:w-auto"
             text={option.action}
-            href={option.url}
+            onClick={option.url}
             style={ButtonStyle.secondary}
           />
         </div>

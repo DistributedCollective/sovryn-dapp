@@ -1,13 +1,8 @@
 import { BigNumber, BigNumberish, providers } from 'ethers';
 
-import {
-  TokenDetailsData,
-  getTokenDetailsByAddress,
-  getTokenDetails,
-} from '@sovryn/contracts';
+import { TokenDetailsData, getTokenDetailsByAddress } from '@sovryn/contracts';
 import { ChainId } from '@sovryn/ethers-provider';
 
-import { STABLECOINS } from '../../constants';
 import { DEFAULT_SWAP_ROUTES } from './config';
 import { SwapRoute, SwapRouteFunction } from './types';
 
@@ -127,32 +122,10 @@ export class SmartRouter {
     entry: string,
     chainId?: ChainId,
   ): Promise<string[]> {
-    const stablecoinsDetails = await this.getStablecoinsDetails(chainId);
-    const isStablecoin = stablecoinsDetails.find(
-      token => token.address.toLowerCase() === entry.toLowerCase(),
-    );
-
-    const destinations = ((await this.getPairs()).get(entry) ?? []).filter(
-      destinationToken =>
-        !isStablecoin ||
-        !stablecoinsDetails.find(
-          token =>
-            token.address.toLowerCase() === destinationToken.toLowerCase(),
-        ),
-    );
-
-    return destinations;
+    return (await this.getPairs()).get(entry) ?? [];
   }
 
   public async getTokenDetails(token: string): Promise<TokenDetailsData> {
     return getTokenDetailsByAddress(token);
-  }
-
-  private async getStablecoinsDetails(
-    chainId?: ChainId,
-  ): Promise<TokenDetailsData[]> {
-    return await Promise.all(
-      STABLECOINS.map(token => getTokenDetails(token, chainId)),
-    );
   }
 }

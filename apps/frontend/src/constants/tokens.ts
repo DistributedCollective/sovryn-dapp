@@ -1,12 +1,23 @@
 import { SupportedTokens } from '@sovryn/contracts';
 
+import { isBitpro, isBtcBasedAsset } from '../utils/helpers';
+
 export const tokensDisplayName = {
   [SupportedTokens.bnbs]: 'BNB',
   [SupportedTokens.rbtc]: 'BTC',
   [SupportedTokens.eths]: 'ETH',
   [SupportedTokens.fish]: 'FISH',
-  [SupportedTokens.wrbtc]: 'BTC',
 };
 
-export const getTokenDisplayName = (token: SupportedTokens | string): string =>
-  tokensDisplayName[token?.toLowerCase()] || token?.toUpperCase();
+export const getTokenDisplayName = (
+  token: SupportedTokens | string,
+): string => {
+  if (isBtcBasedAsset(token)) {
+    token = SupportedTokens.rbtc;
+  }
+
+  if (isBitpro(token)) {
+    token = SupportedTokens.bpro;
+  }
+  return tokensDisplayName[token?.toLowerCase()] || token?.toUpperCase();
+};

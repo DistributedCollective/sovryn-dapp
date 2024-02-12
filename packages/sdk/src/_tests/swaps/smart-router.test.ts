@@ -44,10 +44,10 @@ describe('SmartRouter', () => {
       ).resolves.toHaveLength(3);
     });
 
-    it('returns 1 routes for DLLR to XUSD swap', async () => {
+    it('returns 0 routes for DLLR to XUSD swap', async () => {
       await expect(
         router.getAvailableRoutesForAssets(dllr, xusd),
-      ).resolves.toHaveLength(1);
+      ).resolves.toHaveLength(0);
     });
   });
 

@@ -7,6 +7,7 @@ import {
 } from '@sovryn/contracts';
 import { ChainId, numberToChainId } from '@sovryn/ethers-provider';
 
+import { STABLECOINS } from '../../../constants';
 import { SovrynErrorCode, makeError } from '../../../errors/errors';
 import {
   canSwapPair,
@@ -116,19 +117,31 @@ export const ammSwapRoute: SwapRouteFunction = (
           SupportedTokens.bpro,
         ];
 
-        const contracts = await Promise.all(
-          swapTokens.map(token => getTokenContract(token, chainId)),
-        );
-
-        const addresses = contracts.map(contract =>
-          contract.address.toLowerCase(),
-        );
+        const contracts = (
+          await Promise.all(
+            swapTokens.map(token => getTokenContract(token, chainId)),
+          )
+        ).map((contract, index) => ({
+          address: contract.address.toLowerCase(),
+          token: swapTokens[index],
+        }));
 
         const pairs = new Map<string, string[]>();
 
-        for (const address of addresses) {
-          const pair = addresses.filter(a => a !== address);
-          pairs.set(address, pair);
+        for (const contract of contracts) {
+          const isStablecoin = STABLECOINS.find(
+            token => token === contract.token,
+          );
+
+          const pair = contracts
+            .filter(a => {
+              return (
+                a.address !== contract.address &&
+                (!isStablecoin || !STABLECOINS.find(token => token === a.token))
+              );
+            })
+            .map(contract => contract.address);
+          pairs.set(contract.address, pair);
         }
 
         pairCache = pairs;

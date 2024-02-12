@@ -68,6 +68,15 @@ export const MAINNET_AMM = [
     '0x3a18e61d9c9f1546dea013478dd653c793098f17',
     '0x36263AC99ecDcf1aB20513D580B7d8D32D3C439d',
   ).setPreviousConverters(['0x25B8D024B39174824424f032423E03dd7dcCF044']),
+  new AmmLiquidityPool(
+    SupportedTokens.rusdt,
+    SupportedTokens.rbtc,
+    2,
+    ChainIds.RSK_MAINNET,
+    '0x448c2474b255576554EeD36c24430ccFac131cE3',
+    '0x40580E31cc14DbF7a0859f38Ab36A84262df821D',
+    '0x9c4017D1C04cFa0F97FDc9505e33a0D8ac84817F',
+  ),
 ];
 
 export const TESTNET_AMM = [
@@ -120,6 +129,15 @@ export const TESTNET_AMM = [
     ChainIds.RSK_TESTNET,
     '0x84953dAF0E7a9fFb8B4fDf7F948185e1cF85852e',
     '0xB12FA09a50c56e9a0C826b98e76DA7645017AB4D',
+  ),
+  new AmmLiquidityPool(
+    SupportedTokens.rusdt,
+    SupportedTokens.rbtc,
+    2,
+    ChainIds.RSK_TESTNET,
+    '0x133eBE9c8bA524C9B1B601E794dF527f390729bF',
+    '0x7274305BB36d66F70cB8824621EC26d52ABe9069',
+    '0xfFBBF93Ecd27C8b500Bd35D554802F7F349A1E9B',
   ),
 ];
 

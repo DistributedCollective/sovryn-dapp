@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 
 import { useBlockNumber } from '../../../../hooks/useBlockNumber';
 import { getAmmServiceUrl } from '../../../../utils/helpers';
+import { AmmLiquidityPool } from '../utils/AmmLiquidityPool';
 
 type PoolData = {
   APY_fees_pc: string;
@@ -23,7 +24,11 @@ export type ReturnRates = {
   afterRewards: string;
 };
 
-export const useGetReturnRate = (targetPool: string) => {
+export const useGetReturnRate = ({
+  converter,
+  converterVersion,
+  poolTokenA,
+}: AmmLiquidityPool) => {
   const ammServiceUrl = getAmmServiceUrl();
   const { value: block } = useBlockNumber();
 
@@ -37,10 +42,14 @@ export const useGetReturnRate = (targetPool: string) => {
       try {
         const response = await fetch(`${ammServiceUrl}/amm`);
         const data: AmmResponse = await response.json();
-        if (data[targetPool]) {
-          const targetPoolData =
-            data[targetPool].data[Object.keys(data[targetPool].data)[0]];
-          const lastEntry = targetPoolData[targetPoolData.length - 1];
+
+        if (data[converter]) {
+          const poolData =
+            converterVersion === 1
+              ? data[converter].data[Object.keys(data[converter].data)[0]]
+              : data[converter].data[poolTokenA];
+
+          const lastEntry = poolData[poolData.length - 1];
 
           const totalAPY = {
             beforeRewards: lastEntry
@@ -61,7 +70,7 @@ export const useGetReturnRate = (targetPool: string) => {
     };
 
     fetchData();
-  }, [ammServiceUrl, targetPool, block]);
+  }, [ammServiceUrl, block, converter, converterVersion, poolTokenA]);
 
   return { returnRates };
 };

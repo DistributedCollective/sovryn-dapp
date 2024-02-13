@@ -5,6 +5,8 @@ import { Contract } from 'ethers';
 import { SupportedTokens } from '@sovryn/contracts';
 import { Decimal } from '@sovryn/utils';
 
+import { defaultChainId } from '../../../../config/chains';
+
 import { useAccount } from '../../../../hooks/useAccount';
 import { useGetTokenContract } from '../../../../hooks/useGetContract';
 import { asyncCall } from '../../../../store/rxjs/provider-cache';
@@ -20,8 +22,11 @@ export const useGetPoolLiquidity = (pool: AmmLiquidityPool) => {
   });
 
   const { signer } = useAccount();
-  const contractTokenA = useGetTokenContract(pool.assetA);
-  const contractTokenB = useGetTokenContract(SupportedTokens.wrbtc);
+  const contractTokenA = useGetTokenContract(pool.assetA, defaultChainId);
+  const contractTokenB = useGetTokenContract(
+    SupportedTokens.wrbtc,
+    defaultChainId,
+  );
 
   useEffect(() => {
     const fetchDataV1 = async () => {
@@ -54,23 +59,22 @@ export const useGetPoolLiquidity = (pool: AmmLiquidityPool) => {
         return;
       }
       const contract = new Contract(pool.converter, pool.converterAbi, signer);
-      console.log(`fetching v2 balance for pool: ${pool.converter}`);
 
       try {
         const fetchBalance = async (tokenContract: Contract) =>
-          // await asyncCall(
-          //   `${
-          //     pool.converter
-          //   }/reserveStakedBalance/${tokenContract.address.toLowerCase()}`,
-          //   () =>
-          //     contract.reserveStakedBalance(
-          //       tokenContract.address.toLowerCase(),
-          //     ),
-          // ).then(Decimal.fromBigNumberString);
+          await asyncCall(
+            `${
+              pool.converter
+            }/reserveStakedBalance/${tokenContract.address.toLowerCase()}`,
+            () =>
+              contract.reserveStakedBalance(
+                tokenContract.address.toLowerCase(),
+              ),
+          ).then(Decimal.fromBigNumberString);
 
-          await contract
-            .reserveStakedBalance(tokenContract.address.toLowerCase())
-            .then(Decimal.fromBigNumberString);
+        // await contract
+        //   .reserveStakedBalance(tokenContract.address.toLowerCase())
+        //   .then(Decimal.fromBigNumberString);
 
         const [tokenBalance, btcBalance] = await Promise.all([
           fetchBalance(contractTokenA),

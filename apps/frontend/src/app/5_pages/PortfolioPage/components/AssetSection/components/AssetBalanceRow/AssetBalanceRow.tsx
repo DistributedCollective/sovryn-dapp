@@ -51,10 +51,9 @@ export const AssetBalanceRow: FC<AssetBalanceRowProps> = ({
         />
       </Paragraph>
       <Paragraph className="text-gray-30 text-right lg:text-left truncate">
-        $&nbsp;
         <AmountRenderer
           value={account ? usdValue : '0'}
-          prefix="$"
+          suffix="USD"
           precision={getCurrencyPrecision(token)}
           isAnimated
         />

@@ -15,6 +15,7 @@ import { translations } from '../../../../../locales/i18n';
 import { decimalic } from '../../../../../utils/math';
 import { EarnedFee } from '../../RewardsPage.types';
 import { useGetFeesEarned } from '../../hooks/useGetFeesEarned';
+import { useGetLiquidOsSovClaimAmount } from '../../hooks/useGetLiquidOsSovClaimAmount';
 import { useGetLiquidSovClaimAmount } from '../../hooks/useGetLiquidSovClaimAmount';
 import { columns } from './Staking.constants';
 import { WithdrawAllFees } from './components/WithdrawAllFees/WithdrawAllFees';
@@ -30,6 +31,8 @@ export const Staking: FC = () => {
     refetch: refetchLiquidSovClaim,
   } = useGetLiquidSovClaimAmount();
 
+  const liquidOsSovClaimAmount = useGetLiquidOsSovClaimAmount();
+
   const hasEarnedFees = useMemo(
     () => earnedFees.some(earnedFee => decimalic(earnedFee.value).gt(0)),
     [earnedFees],
@@ -38,6 +41,11 @@ export const Staking: FC = () => {
   const hasLiquidSov = useMemo(
     () => liquidSovClaimAmount.gt(0),
     [liquidSovClaimAmount],
+  );
+
+  const hasLiquidOsSov = useMemo(
+    () => liquidOsSovClaimAmount.gt(0),
+    [liquidOsSovClaimAmount],
   );
 
   const noRewards = useMemo(
@@ -121,10 +129,28 @@ export const Staking: FC = () => {
             },
           ]
         : []),
+      ...(hasLiquidOsSov
+        ? [
+            {
+              type: t(translations.rewardPage.staking.stakingSubsidiesOs),
+              amount: (
+                <AmountRenderer
+                  value={liquidOsSovClaimAmount}
+                  suffix={getTokenDisplayName(SupportedTokens.sov)}
+                  precision={BTC_RENDER_PRECISION}
+                  dataAttribute={`${SupportedTokens.sov}-os-liquid-amount`}
+                />
+              ),
+              key: `${SupportedTokens.sov}-os-liquid-fee`,
+            },
+          ]
+        : []),
     ],
     [
       hasEarnedFees,
       earnedFeesSum,
+      hasLiquidOsSov,
+      liquidOsSovClaimAmount,
       earnedFees,
       refetch,
       hasLiquidSov,

@@ -112,7 +112,6 @@ export const ammSwapRoute: SwapRouteFunction = (
           SupportedTokens.rusdt,
           SupportedTokens.eths,
           SupportedTokens.xusd,
-          SupportedTokens.zusd,
           SupportedTokens.mynt,
           SupportedTokens.bpro,
         ];

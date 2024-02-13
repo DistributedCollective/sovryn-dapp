@@ -54,18 +54,23 @@ export const useGetPoolLiquidity = (pool: AmmLiquidityPool) => {
         return;
       }
       const contract = new Contract(pool.converter, pool.converterAbi, signer);
+      console.log(`fetching v2 balance for pool: ${pool.converter}`);
 
       try {
         const fetchBalance = async (tokenContract: Contract) =>
-          await asyncCall(
-            `${
-              pool.converter
-            }/reserveStakedBalance/${tokenContract.address.toLowerCase()}`,
-            () =>
-              contract.reserveStakedBalance(
-                tokenContract.address.toLowerCase(),
-              ),
-          ).then(Decimal.fromBigNumberString);
+          // await asyncCall(
+          //   `${
+          //     pool.converter
+          //   }/reserveStakedBalance/${tokenContract.address.toLowerCase()}`,
+          //   () =>
+          //     contract.reserveStakedBalance(
+          //       tokenContract.address.toLowerCase(),
+          //     ),
+          // ).then(Decimal.fromBigNumberString);
+
+          await contract
+            .reserveStakedBalance(tokenContract.address.toLowerCase())
+            .then(Decimal.fromBigNumberString);
 
         const [tokenBalance, btcBalance] = await Promise.all([
           fetchBalance(contractTokenA),

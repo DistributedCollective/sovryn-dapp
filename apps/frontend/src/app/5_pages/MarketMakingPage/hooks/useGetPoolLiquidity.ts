@@ -3,13 +3,14 @@ import { useEffect, useState } from 'react';
 import { Contract } from 'ethers';
 
 import { SupportedTokens } from '@sovryn/contracts';
+import { getProvider } from '@sovryn/ethers-provider';
 import { Decimal } from '@sovryn/utils';
 
 import { defaultChainId } from '../../../../config/chains';
 
-import { useAccount } from '../../../../hooks/useAccount';
 import { useGetTokenContract } from '../../../../hooks/useGetContract';
 import { asyncCall } from '../../../../store/rxjs/provider-cache';
+import { getRskChainId } from '../../../../utils/chain';
 import { AmmLiquidityPool } from '../utils/AmmLiquidityPool';
 
 export const useGetPoolLiquidity = (pool: AmmLiquidityPool) => {
@@ -21,7 +22,6 @@ export const useGetPoolLiquidity = (pool: AmmLiquidityPool) => {
     balanceTokenB: Decimal.ZERO,
   });
 
-  const { signer } = useAccount();
   const contractTokenA = useGetTokenContract(pool.assetA, defaultChainId);
   const contractTokenB = useGetTokenContract(
     SupportedTokens.wrbtc,
@@ -55,10 +55,15 @@ export const useGetPoolLiquidity = (pool: AmmLiquidityPool) => {
     };
 
     const fetchDataV2 = async () => {
-      if (!signer || !contractTokenA || !contractTokenB) {
+      if (!contractTokenA || !contractTokenB) {
         return;
       }
-      const contract = new Contract(pool.converter, pool.converterAbi, signer);
+      const provider = getProvider(getRskChainId());
+      const contract = new Contract(
+        pool.converter,
+        pool.converterAbi,
+        provider,
+      );
 
       try {
         const fetchBalance = async (tokenContract: Contract) =>
@@ -71,10 +76,6 @@ export const useGetPoolLiquidity = (pool: AmmLiquidityPool) => {
                 tokenContract.address.toLowerCase(),
               ),
           ).then(Decimal.fromBigNumberString);
-
-        // await contract
-        //   .reserveStakedBalance(tokenContract.address.toLowerCase())
-        //   .then(Decimal.fromBigNumberString);
 
         const [tokenBalance, btcBalance] = await Promise.all([
           fetchBalance(contractTokenA),
@@ -91,7 +92,7 @@ export const useGetPoolLiquidity = (pool: AmmLiquidityPool) => {
     };
 
     pool.converterVersion === 1 ? fetchDataV1() : fetchDataV2();
-  }, [pool, contractTokenA, contractTokenB, signer]);
+  }, [pool, contractTokenA, contractTokenB]);
 
   return liquidity;
 };

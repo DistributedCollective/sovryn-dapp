@@ -74,7 +74,13 @@ export const useGetMaxDeposit = (
       : balanceTokenA;
   }, [balanceTokenA, balanceTokenB, priceTokenA, gasLimit]);
 
-  return maxDepositValue.lte(maxAllowedTokenAmount)
-    ? maxDepositValue
-    : maxAllowedTokenAmount;
+  const maximumV1Deposit = useMemo(
+    () =>
+      maxDepositValue.lte(maxAllowedTokenAmount)
+        ? maxDepositValue
+        : maxAllowedTokenAmount,
+    [maxAllowedTokenAmount, maxDepositValue],
+  );
+
+  return { maximumV1Deposit, balanceTokenA, balanceTokenB };
 };

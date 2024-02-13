@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 
-import { ethers } from 'ethers';
+import { Contract, ethers } from 'ethers';
 
 import { SupportedTokens, getProtocolContract } from '@sovryn/contracts';
 import { getProvider } from '@sovryn/ethers-provider';
@@ -16,8 +16,8 @@ import {
 import { AmmLiquidityPool } from '../utils/AmmLiquidityPool';
 
 export const useGetUserInfo = (pool: AmmLiquidityPool) => {
-  const { account } = useAccount();
-  const { assetA, poolTokenA } = pool;
+  const { account, signer } = useAccount();
+  const { assetA, poolTokenA, poolTokenB } = pool;
   const [reward, setReward] = useState<Decimal>(Decimal.ZERO);
   const [balanceA, setBalanceA] = useState<Decimal>(Decimal.ZERO);
   const [loadingA, setLoadingA] = useState(false);
@@ -39,6 +39,20 @@ export const useGetUserInfo = (pool: AmmLiquidityPool) => {
           reward: Decimal.fromBigNumberString(accumulatedReward),
         })),
     [account, liquidityMiningProxy],
+  );
+
+  const getBalance = useCallback(
+    async (token: string, amount: string) => {
+      const contract = new Contract(pool.converter, pool.converterAbi, signer);
+
+      const { 0: balance } = await contract.removeLiquidityReturnAndFee(
+        token,
+        amount,
+      );
+
+      return Decimal.fromBigNumberString(balance);
+    },
+    [pool.converter, pool.converterAbi, signer],
   );
 
   const fetch = useCallback(() => {
@@ -78,6 +92,12 @@ export const useGetUserInfo = (pool: AmmLiquidityPool) => {
       };
     };
 
+    const getV2Balance = async (token: string) => {
+      const info = await getUserInfo(token);
+      setReward(info.reward);
+      return await getBalance(token, info.amount);
+    };
+
     if (pool.converterVersion === 1 && contractTokenA && contractTokenB) {
       setLoadingA(true);
       setLoadingB(true);
@@ -91,16 +111,35 @@ export const useGetUserInfo = (pool: AmmLiquidityPool) => {
           setLoadingB(false);
         })
         .catch(console.error);
+    } else if (pool.converterVersion === 2 && poolTokenB) {
+      setLoadingA(true);
+      setLoadingB(true);
+      getV2Balance(poolTokenA)
+        .then(result => {
+          setBalanceA(result);
+        })
+        .finally(() => {
+          setLoadingA(false);
+        });
+      getV2Balance(poolTokenB)
+        .then(result => {
+          setBalanceB(result);
+        })
+        .finally(() => {
+          setLoadingB(false);
+        });
     }
   }, [
-    account,
     liquidityMiningProxy,
-    pool.converter,
+    account,
     pool.converterVersion,
-    poolTokenA,
-    getUserInfo,
+    pool.converter,
     contractTokenA,
     contractTokenB,
+    poolTokenB,
+    getUserInfo,
+    poolTokenA,
+    getBalance,
   ]);
 
   useEffect(() => fetch(), [fetch]);

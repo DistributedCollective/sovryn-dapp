@@ -1,11 +1,5 @@
 # @sovryn/contracts
 
-## 1.0.20
-
-### Patch Changes
-
-- e66342d2: SOV-3561: Re-enable EIP-2612 support
-
 ## 1.0.19
 
 ### Patch Changes

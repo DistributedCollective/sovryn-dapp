@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import { providers } from 'ethers';
+import { BigNumber, providers } from 'ethers';
 import resolveConfig from 'tailwindcss/resolveConfig';
 
 import { SupportedTokens } from '@sovryn/contracts';
@@ -204,3 +204,6 @@ export const normalizeToken = (token: string): SupportedTokens => {
 
 export const renderTokenSymbol = (token: string) =>
   normalizeToken(token).toUpperCase();
+
+export const generateNonce = () =>
+  BigNumber.from(Math.floor(Date.now() + Math.random() * 100));

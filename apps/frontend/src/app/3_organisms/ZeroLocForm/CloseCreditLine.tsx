@@ -89,7 +89,7 @@ export const CloseCreditLine: FC<CloseCreditLineProps> = ({
 
   const tokenOptions = useMemo(
     () =>
-      [SupportedTokens.zusd /*, SupportedTokens.dllr*/].map(token => ({
+      [SupportedTokens.zusd, SupportedTokens.dllr].map(token => ({
         value: token,
         label: (
           <AssetRenderer

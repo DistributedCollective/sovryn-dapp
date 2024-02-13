@@ -1,3 +1,5 @@
+import { PERMIT2_ADDRESS, PermitTransferFrom } from '@uniswap/permit2-sdk';
+
 import { useCallback } from 'react';
 
 import { BigNumberish, ethers } from 'ethers';
@@ -19,9 +21,10 @@ import { useAccount } from '../../../../hooks/useAccount';
 import { translations } from '../../../../locales/i18n';
 import { getRskChainId } from '../../../../utils/chain';
 import {
-  UNSIGNED_PERMIT,
+  getPermitTransferFrom,
   permitHandler,
-  preparePermitTransaction,
+  prepareApproveTransaction,
+  preparePermit2Transaction,
 } from '../../../../utils/transactions';
 
 export const useHandleStabilityDeposit = (
@@ -104,14 +107,28 @@ export const useHandleStabilityDeposit = (
     const stabilityPool = await getStabilityPoolContract();
     const weiAmount = amount.toBigNumber().toString();
     const transactions: Transaction[] = [];
+    let permitTransferFrom: PermitTransferFrom;
+
     if (isDllrToken) {
+      const approveTx = await prepareApproveTransaction({
+        token: SupportedTokens.dllr,
+        spender: PERMIT2_ADDRESS,
+        amount: weiAmount,
+        signer,
+        approveMaximumAmount: true,
+      });
+
+      if (approveTx) {
+        transactions.push(approveTx);
+      }
+
+      permitTransferFrom = await getPermitTransferFrom(
+        stabilityPool.address,
+        weiAmount,
+      );
+
       transactions.push(
-        await preparePermitTransaction({
-          token: SupportedTokens.dllr,
-          signer,
-          spender: stabilityPool.address,
-          value: weiAmount,
-        }),
+        await preparePermit2Transaction(permitTransferFrom, signer),
       );
     }
 
@@ -122,9 +139,9 @@ export const useHandleStabilityDeposit = (
       request: {
         type: TransactionType.signTransaction,
         contract: stabilityPool,
-        fnName: isDllrToken ? 'provideToSpFromDLLR' : 'provideToSP',
+        fnName: isDllrToken ? 'provideToSpFromDllrWithPermit2' : 'provideToSP',
         args: isDllrToken
-          ? [weiAmount, UNSIGNED_PERMIT]
+          ? [weiAmount, '', '']
           : [weiAmount, ethers.constants.AddressZero],
         gasLimit: isDllrToken
           ? GAS_LIMIT.STABILITY_POOL_DLLR
@@ -133,7 +150,7 @@ export const useHandleStabilityDeposit = (
       onComplete,
       updateHandler: permitHandler((req, res) => {
         if (isTransactionRequest(req) && isDllrToken) {
-          req.args[1] = res;
+          req.args = [weiAmount, permitTransferFrom, res];
         }
         return req;
       }),

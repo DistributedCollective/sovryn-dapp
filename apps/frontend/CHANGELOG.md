@@ -1,5 +1,16 @@
 # frontend
 
+## 1.0.45
+
+### Patch Changes
+
+- e66342d2: SOV-3719: Portfolio page
+- 4c4b6383: fix: missing prefix in AmountRenderer when countUp prop is used
+- e66342d2: SOV-3561: Re-enable EIP-2612 support
+- Updated dependencies [e66342d2]
+  - @sovryn/contracts@1.0.20
+  - @sovryn/sdk@0.0.8
+
 ## 1.0.44
 
 ### Patch Changes

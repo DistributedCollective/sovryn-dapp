@@ -65,6 +65,11 @@ export const Footer: FC<FooterProps> = ({ showDashboardLink }) => {
         href: '/policies/privacy-policy',
         name: t(translations.footer.policy),
       },
+      {
+        id: 'stats',
+        href: '/stats',
+        name: t(translations.footer.stats),
+      },
     ],
     [showDashboardLink],
   );

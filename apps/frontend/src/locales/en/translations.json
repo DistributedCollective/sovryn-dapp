@@ -118,6 +118,7 @@
         "fees": "Fees",
         "terms": "Terms of service",
         "policy": "Privacy policy",
+        "stats": "Stats",
         "buildID": "Build ID:"
     },
     "wrongNetworkSwitcher": {
@@ -1552,6 +1553,19 @@
             "asset": "Asset",
             "balance": "Balance",
             "usdValue": "USD Value"
+        }
+    },
+    "protocolDataPage": {
+        "meta": {
+            "title": "Protocol data - Sovryn"
+        },
+        "title": "Protocol data",
+        "subtitle": "Cryptocurrency prices, yield and ecosystem statistics",
+        "sections": {
+            "pricesBy24hChange": "Prices by 24h change",
+            "lendAndBorrow": "Lend and borrow",
+            "marketMaking": "Market making",
+            "ecosystemStatistics": "Ecosystem statistics"
         }
     }
 }

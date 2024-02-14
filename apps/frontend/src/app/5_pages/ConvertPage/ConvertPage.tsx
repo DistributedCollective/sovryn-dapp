@@ -126,11 +126,9 @@ const ConvertPage: FC = () => {
         sourceToken,
         defaultChainId,
       );
-      smartRouter
-        .getDestination(sourceTokenDetails.address, defaultChainId)
-        .then(tokens => {
-          tokensToOptions(tokens, setDestinationTokenOptions);
-        });
+      smartRouter.getDestination(sourceTokenDetails.address).then(tokens => {
+        tokensToOptions(tokens, setDestinationTokenOptions);
+      });
 
       if (sourceToken === SupportedTokens.mynt) {
         setDestinationToken(SupportedTokens.sov);

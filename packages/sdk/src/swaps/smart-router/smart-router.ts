@@ -1,7 +1,6 @@
 import { BigNumber, BigNumberish, providers } from 'ethers';
 
 import { TokenDetailsData, getTokenDetailsByAddress } from '@sovryn/contracts';
-import { ChainId } from '@sovryn/ethers-provider';
 
 import { DEFAULT_SWAP_ROUTES } from './config';
 import { SwapRoute, SwapRouteFunction } from './types';
@@ -118,10 +117,7 @@ export class SmartRouter {
   }
 
   // return all available destinations for entry token
-  public async getDestination(
-    entry: string,
-    chainId?: ChainId,
-  ): Promise<string[]> {
+  public async getDestination(entry: string): Promise<string[]> {
     return (await this.getPairs()).get(entry) ?? [];
   }
 

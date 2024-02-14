@@ -26,7 +26,7 @@ export const rsk: Record<string, AsyncContractConfigData> = {
     getAbi: async () =>
       (await import('../../abis/loanTokenLogicWRBTC.json')).default,
   },
-  usdt: {
+  rusdt: {
     address: '0x849C47f9C259E9D62F289BF1b2729039698D8387',
     getAbi: async () =>
       (await import('../../abis/loanTokenLogicStandard.json')).default,

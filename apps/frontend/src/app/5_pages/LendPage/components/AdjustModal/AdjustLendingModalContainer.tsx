@@ -32,6 +32,8 @@ export type AdjustModalProps = {
     token: TokenDetailsData,
     pool: Contract,
   ) => void;
+  onClose: () => void;
+  isOpen: boolean;
 };
 
 export type FullAdjustModalState = {
@@ -47,6 +49,8 @@ export type FullAdjustModalState = {
 export const AdjustLendingModalContainer: FC<AdjustModalProps> = ({
   onDeposit,
   onWithdraw,
+  onClose,
+  isOpen,
 }) => {
   const { subscribe, push } = useMemo(
     () => eventDriven<Nullable<SupportedTokens>>(LendModalAction.Adjust),
@@ -114,7 +118,10 @@ export const AdjustLendingModalContainer: FC<AdjustModalProps> = ({
     return () => sub.unsubscribe();
   }, [account, signer, subscribe]);
 
-  const handleCloseModal = useCallback(() => push(null), [push]);
+  const handleCloseModal = useCallback(() => {
+    push(null);
+    onClose();
+  }, [onClose, push]);
 
   const handleConfirm = useCallback(
     (type: FormType, amount: Decimal) => {
@@ -131,7 +138,7 @@ export const AdjustLendingModalContainer: FC<AdjustModalProps> = ({
   );
 
   return (
-    <Dialog disableFocusTrap isOpen={state != null}>
+    <Dialog disableFocusTrap isOpen={isOpen}>
       <DialogHeader
         title={t(translations.lendingAdjust.title)}
         onClose={handleCloseModal}

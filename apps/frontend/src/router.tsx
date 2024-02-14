@@ -58,6 +58,10 @@ const PortfolioPage = loadable(
   () => import('./app/5_pages/PortfolioPage/PortfolioPage'),
 );
 
+const LeaderboardPage = loadable(
+  () => import('./app/5_pages/LeaderboardPage/LeaderboardPage'),
+);
+
 const routes = [
   {
     path: '/',
@@ -132,6 +136,10 @@ const routes = [
       {
         path: '/earn/staking',
         element: <StakePage />,
+      },
+      {
+        path: '/leaderboard',
+        element: <LeaderboardPage />,
       },
     ],
   },

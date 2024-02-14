@@ -4,8 +4,8 @@ import { t } from 'i18next';
 import { useNavigate } from 'react-router-dom';
 
 import { SupportedTokens } from '@sovryn/contracts';
-import { Button, ButtonStyle, Paragraph } from '@sovryn/ui';
 
+import { CTA } from '../../../../2_molecules/CTA/CTA';
 import borrowBg from '../../../../../assets/images/QuickLaunch/borrow_bg.svg';
 import earnBg from '../../../../../assets/images/QuickLaunch/earn_bg.svg';
 import lendBg from '../../../../../assets/images/QuickLaunch/lend_bg.svg';
@@ -75,30 +75,14 @@ export const QuickLaunch: FC = () => {
   return (
     <div className="bg-gray-80 rounded min-h-72 md:p-6 p-4 sm:mb-14 mb-10 grid md:grid-cols-2 xl:grid-cols-4 md:gap-6 gap-4">
       {options.map((option, index) => (
-        <div
-          key={index}
-          className="relative p-4 md:p-6 bg-gray-70 rounded flex flex-col md:items-start justify-end md:min-h-60 min-h-40"
-        >
-          <img
-            src={option.backgroundImage}
-            alt={option.title}
-            className="absolute top-0 right-0 md:max-w-none max-w-14"
-          />
-          <Paragraph
-            className="mb-6 font-medium text-sm xl:max-w-36 xl:pr-0 pr-12"
-            children={option.title}
-          />
-          <Paragraph
-            className="mb-4 md:mb-6 font-medium xl:pr-0 pr-12 text-gray-30"
-            children={option.description}
-          />
-          <Button
-            className="w-full sm:w-auto"
-            text={option.action}
-            onClick={option.url}
-            style={ButtonStyle.secondary}
-          />
-        </div>
+        <CTA
+          index={index}
+          backgroundImage={option.backgroundImage}
+          title={option.title}
+          description={option.description}
+          action={option.action}
+          navigateTo={option.url}
+        />
       ))}
     </div>
   );

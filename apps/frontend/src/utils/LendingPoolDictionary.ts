@@ -74,10 +74,6 @@ export class LendingPoolDictionary {
         false,
       ),
     ],
-    // [
-    //   SupportedTokens.rusdt,
-    //   new LendingPool('USDT', SupportedTokens.rusdt, [], false, true),
-    // ],
   ]);
 
   public static get(asset: SupportedTokens): LendingPool {

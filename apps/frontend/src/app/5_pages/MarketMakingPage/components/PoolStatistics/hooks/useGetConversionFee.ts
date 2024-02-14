@@ -12,9 +12,9 @@ export const useGetConversionFee = (poolToken: string) => {
   });
 
   const conversionFee = useMemo(() => {
-    const conversionFeeAmount = data?.liquidityPools[0].conversionFee ?? 0;
+    const conversionFeeAmount = data?.liquidityPools[0]?.conversionFee ?? 0;
     const maxConversionFeeAmount =
-      data?.liquidityPools[0].maxConversionFee ?? 0;
+      data?.liquidityPools[0]?.maxConversionFee ?? 0;
 
     if (
       !conversionFeeAmount ||
@@ -24,7 +24,7 @@ export const useGetConversionFee = (poolToken: string) => {
       return 0;
     }
 
-    return Number(conversionFeeAmount) / Number(maxConversionFeeAmount);
+    return (Number(conversionFeeAmount) * 100) / Number(maxConversionFeeAmount);
   }, [data]);
 
   return { loading, conversionFee, refetch };

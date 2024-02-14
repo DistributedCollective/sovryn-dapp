@@ -1,5 +1,13 @@
 # frontend
 
+## 1.0.44
+
+### Patch Changes
+
+- ea09cef2: SOV-3590: fix promo card click
+- 2f4a41f8: SOV-3727: Adjust staking rewards claim
+- be01a806: SOV-3736: fix AMM pool “LP fee rate“
+
 ## 1.0.43
 
 ### Patch Changes

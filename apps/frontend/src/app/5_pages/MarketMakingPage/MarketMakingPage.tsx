@@ -5,11 +5,13 @@ import { Helmet } from 'react-helmet-async';
 
 import { Heading, Paragraph, ParagraphSize } from '@sovryn/ui';
 
+import { useIsMobile } from '../../../hooks/useIsMobile';
 import { translations } from '../../../locales/i18n';
 import { PoolsTable } from './components/PoolsTable/PoolsTable';
 import { Promotions } from './components/Promotions/Promotions';
 
 const MarketMakingPage: FC = () => {
+  const { isMobile } = useIsMobile();
   const [activePool, setActivePool] = useState('');
   const [isPromoCardClicked, setIsPromoCardClicked] = useState(false);
 
@@ -19,10 +21,12 @@ const MarketMakingPage: FC = () => {
   );
 
   useEffect(() => {
-    if (activePool) {
+    if (activePool && !isMobile) {
       setIsPromoCardClicked(false);
+    } else {
+      setActivePool('');
     }
-  }, [activePool]);
+  }, [activePool, isMobile]);
 
   return (
     <>

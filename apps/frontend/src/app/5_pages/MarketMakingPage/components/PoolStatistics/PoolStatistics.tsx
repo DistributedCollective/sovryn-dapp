@@ -36,7 +36,7 @@ export const PoolsStatistics: FC<PoolsStatisticsProps> = ({ pool }) => {
 
   const renderLpFeeRate = useMemo(
     () =>
-      !conversionFeeLoading ? (
+      !conversionFeeLoading && !!conversionFee ? (
         <AmountRenderer
           value={conversionFee}
           suffix="%"

@@ -4,14 +4,13 @@ import { Decimal } from '@sovryn/utils';
 
 import { useGetProtocolContract } from '../../../../../../hooks/useGetContract';
 import { decimalic } from '../../../../../../utils/math';
-import { AmmLiquidityPool } from '../../../utils/AmmLiquidityPool';
 import { AdjustType } from '../AdjustAndDepositModal.types';
 
 export const useGetPoolBalance = (
   isAmountZero: boolean,
   adjustType: AdjustType,
   loadingA: boolean,
-  pool: AmmLiquidityPool,
+  poolToken: string,
   account: string,
 ) => {
   const [tokenPoolBalance, setTokenPoolBalance] = useState<Decimal>(
@@ -26,7 +25,7 @@ export const useGetPoolBalance = (
       }
       try {
         const poolBalance = await liquidityMiningProxy.getUserInfo(
-          pool.poolTokenA,
+          poolToken,
           account,
         );
         if (poolBalance) {
@@ -40,7 +39,14 @@ export const useGetPoolBalance = (
     if (!isAmountZero && adjustType === AdjustType.Withdraw && !loadingA) {
       fetchPoolBalance();
     }
-  }, [isAmountZero, adjustType, loadingA, pool, account, liquidityMiningProxy]);
+  }, [
+    isAmountZero,
+    adjustType,
+    loadingA,
+    account,
+    liquidityMiningProxy,
+    poolToken,
+  ]);
 
   return { tokenPoolBalance };
 };

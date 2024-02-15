@@ -13,7 +13,7 @@ export const REDASH_APR_URL = {
 };
 
 export const STAKING_REWARDS_LEARN_MORE_LINK =
-  'https://sovryn.com/all-things-sovryn/5-amazing-benefits-of-staking-sov';
+  'https://wiki.sovryn.com/en/governance/staking-vesting-voting#benefits-of-sov-staking';
 
 export const STAKING_DELEGATION_LEARN_MORE_LINK =
   'https://forum.sovryn.com/c/bitocracy/delegates/24';

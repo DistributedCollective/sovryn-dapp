@@ -851,6 +851,34 @@
         }
     },
 
+    "leaderboardPage": {
+        "headerLink": "Get PoWa",
+        "title": "You’ve got the POWA!",
+        "subtitle": "A Taproot Assets token - a new Bitcoin token class.",
+        "description": "Earn Points by staking, trading, or promoting Sovryn on Twitter. POWA will be airdropped to everyone across the leaderboard according to their earned points. Trade your POWA on Sovryn, Use your POWA to buy upcoming NFT collections. Connect your wallet to see how many points you already have!",
+        "primaryCta": "How to earn points",
+        "secondaryCta": "More about POWA",
+        "ctaLinksSection": {
+            "title": "1 Billion POWA Prize Pool!",
+            "subtitle": "The more points you’ll have - the more POWA you’ll get!",
+            "stake": {
+                "title": "Stake",
+                "description": "Existing stakes Earn 1 point for each VP they hold. New Stake and re-stakes earn 10 points for each VP they hold!",
+                "cta": "Stake SOV"
+            },
+            "trade": {
+                "title": "Trade",
+                "description": "Get 25 points per $1 value you bring in, 10 points per $1 deposit into the SOV or DLLR AMMs, and 1 point per $1 trade.",
+                "cta": "Deposit stablecoins"
+            },
+            "social": {
+                "title": "Get social!",
+                "description": "Earn points for Twitter engagement! Like, Share and Tweet for some sweet POWA at the airdrop.",
+                "cta": "Twitter quests"
+            }
+        }
+    },
+
     "fastBtc": {
         "mainScreen": {
             "title": "Funding",

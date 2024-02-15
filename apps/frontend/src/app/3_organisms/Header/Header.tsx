@@ -91,7 +91,7 @@ export const Header: FC = () => {
             ))}
             <ProductLinks />
             <Button
-              text="Get PoWa points"
+              text={t(translations.leaderboardPage.headerLink)}
               style={ButtonStyle.primary}
               className="bg-[#24BFB74D]/[0.3] border-[#24BFB74D]/[0.3] hover:bg-[#24BFB74D]"
               onClick={handleLeaderboardClick}

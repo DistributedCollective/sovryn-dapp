@@ -10,6 +10,7 @@ import socialBg from '../../../assets/images/Leaderboard/social.svg';
 import stakeBg from '../../../assets/images/Leaderboard/stake.svg';
 import tradeBg from '../../../assets/images/Leaderboard/trade.svg';
 import { translations } from '../../../locales/i18n';
+import { PointsSection } from './components/PointsSection/PointsSection';
 
 const baseTranslation = translations.leaderboardPage;
 const ctaLinksTranslation = translations.leaderboardPage.ctaLinksSection;
@@ -94,6 +95,8 @@ const LeaderboardPage: FC = () => {
           ),
         )}
       </div>
+
+      <PointsSection />
     </div>
   );
 };

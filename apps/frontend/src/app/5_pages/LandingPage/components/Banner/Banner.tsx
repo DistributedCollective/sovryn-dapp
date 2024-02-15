@@ -15,10 +15,7 @@ import { LandingPromoCard } from './components/LandingPromoCard/LandingPromoCard
 export const Banner: FC = () => {
   const navigate = useNavigate();
 
-  const handleClick = useCallback(
-    () => navigate('/convert?from=rbtc&to=sov'),
-    [navigate],
-  );
+  const handleClick = useCallback(() => navigate('/leaderboard'), [navigate]);
 
   return (
     <div className="w-full relative pb-7">
@@ -45,20 +42,24 @@ export const Banner: FC = () => {
         infinite
       >
         <LandingPromoCard
-          heading={t(translations.landingPage.promotions.sov.title)}
-          description={t(translations.landingPage.promotions.sov.description)}
+          heading={t(translations.landingPage.promotions.competition.title)}
+          description={t(
+            translations.landingPage.promotions.competition.description,
+          )}
           actions={
             <>
               <Button
                 style={ButtonStyle.secondary}
                 size={ButtonSize.large}
-                text={t(translations.landingPage.promotions.sov.cta)}
+                text={t(translations.landingPage.promotions.competition.cta)}
                 onClick={handleClick}
               />
 
               <Button
-                text={t(translations.stakePage.stakingRewards.learnMoreLink)}
-                href={WIKI_LINKS.STAKING}
+                text={t(
+                  translations.landingPage.promotions.competition.secondaryCta,
+                )}
+                href={WIKI_LINKS.STAKING} // TODO: Needs to be changed later, the landing page does not exist yet
                 style={ButtonStyle.ghost}
                 hrefExternal
               />

@@ -478,6 +478,12 @@
                 "title": "BUY SOV - Shape The future",
                 "description": "Buy SOV - Sovryn’s governance token. Stake to earn rewards and vote in Bitocracy.",
                 "cta": "Buy SOV"
+            },
+            "competition": {
+                "title": "YOU’VE GOT THE POWA",
+                "description": "Every Sovryn user already has points that will convert to POWA - a new bitcoin-token asset class. See how many points you’ve got:",
+                "cta": "Leaderboard",
+                "secondaryCta": "More about POWA"
             }
         },
         "titleSection": {
@@ -875,6 +881,34 @@
                 "title": "Get social!",
                 "description": "Earn points for Twitter engagement! Like, Share and Tweet for some sweet POWA at the airdrop.",
                 "cta": "Twitter quests"
+            }
+        },
+        "pointsSection": {
+            "title": "Gain POWA!",
+            "description": "Actions on the Sovryn dApp and on Twitter earn you points. Points convert to POWA - the next Bitcoin token class.",
+            "tables": {
+                "trading": {
+                    "title": "Earn points by trading",
+                    "item1": "Provide liquidity for SOV/DLLR pool, per $1 value",
+                    "item2": "Any AMM trade, per $1 value",
+                    "item3": "Import stablecoins, per $1 value",
+                    "item4": "Top importer of the week",
+                    "item5": "Top importer of the week"
+                },
+                "staking": {
+                    "title": "Earn points by staking",
+                    "item1": "New stakes, 1VP",
+                    "item2": "Existing stakes, 1 VP",
+                    "item3": "Top Staker of the Week",
+                    "item4": "Top Staker of the Day"
+                },
+                "social": {
+                    "title": "Earn points on social media",
+                    "item1": "Like",
+                    "item2": "Follow",
+                    "item3": "Retweet",
+                    "item4": "Tweet"
+                }
             }
         }
     },

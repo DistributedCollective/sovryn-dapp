@@ -61,14 +61,6 @@ export const MAINNET_AMM = [
     '0xf6377dec9ce79b5bc0576618a5cd3e95f49f9ace',
   ]),
   new AmmLiquidityPool(
-    SupportedTokens.mynt,
-    SupportedTokens.rbtc,
-    1,
-    ChainIds.RSK_MAINNET,
-    '0x3a18e61d9c9f1546dea013478dd653c793098f17',
-    '0x36263AC99ecDcf1aB20513D580B7d8D32D3C439d',
-  ).setPreviousConverters(['0x25B8D024B39174824424f032423E03dd7dcCF044']),
-  new AmmLiquidityPool(
     SupportedTokens.xusd,
     SupportedTokens.rbtc,
     1,

@@ -1,5 +1,12 @@
 # frontend
 
+## 1.0.45
+
+### Patch Changes
+
+- e66342d2: SOV-3719: Portfolio page
+- 4c4b6383: fix: missing prefix in AmountRenderer when countUp prop is used
+
 ## 1.0.44
 
 ### Patch Changes

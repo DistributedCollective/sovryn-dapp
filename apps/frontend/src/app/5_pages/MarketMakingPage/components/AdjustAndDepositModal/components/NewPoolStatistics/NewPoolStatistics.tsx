@@ -45,7 +45,6 @@ export const NewPoolStatistics: FC<NewPoolStatisticsProps> = ({
   const tokenA = useMemo(() => pool.assetA, [pool.assetA]);
   const { balanceA, balanceB } = useGetUserInfo(pool);
   const { reward } = useGetAccumulatedReward(pool.poolTokenA);
-  const { reward: accumulatedRewards } = useGetUserInfo(pool);
 
   const isTokenA = useMemo(() => asset === pool.assetA, [asset, pool.assetA]);
   const isV2Pool = useMemo(
@@ -56,11 +55,6 @@ export const NewPoolStatistics: FC<NewPoolStatisticsProps> = ({
   const isDeposit = useMemo(
     () => adjustType === AdjustType.Deposit || isInitialDeposit,
     [adjustType, isInitialDeposit],
-  );
-
-  const renderRewards = useMemo(
-    () => reward.add(accumulatedRewards),
-    [reward, accumulatedRewards],
   );
 
   const decimalValue = useMemo(() => decimalic(value), [value]);
@@ -135,12 +129,12 @@ export const NewPoolStatistics: FC<NewPoolStatisticsProps> = ({
           valueClassName="text-primary-10"
         />
       )}
-      {!isInitialDeposit && renderRewards.gt(0) && (
+      {!isInitialDeposit && reward.gt(0) && (
         <SimpleTableRow
           label={t(pageTranslations.transferRewards)}
           value={
             <AmountRenderer
-              value={renderRewards}
+              value={reward}
               suffix={SupportedTokens.sov}
               precision={TOKEN_RENDER_PRECISION}
             />

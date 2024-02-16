@@ -5,6 +5,7 @@ export const availableTokens = [
   SupportedTokens.rbtc,
   SupportedTokens.sov,
   SupportedTokens.dllr,
+  SupportedTokens.zusd,
   SupportedTokens.xusd,
   SupportedTokens.fish,
   SupportedTokens.moc,

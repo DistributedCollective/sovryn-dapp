@@ -69,7 +69,7 @@ export const ProtocolSection: FC = () => {
         selectedCurrency={selectedCurrency}
         btcPrice={btcPrice}
       />
-      <Paragraph className="text-right text-gray-30 font-medium">
+      <Paragraph className="text-gray-30 font-medium">
         {t(translations.portfolioPage.protocolSection.depositValue)}
       </Paragraph>
       <ProtocolDepositSection

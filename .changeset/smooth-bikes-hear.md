@@ -1,6 +1,5 @@
 ---
-"frontend": patch
 "@sovryn/sdk": patch
 ---
 
-SOV-3773: Add new tokens to Convert page
+SOV-3773: Update asset lists and smart-router swap routes

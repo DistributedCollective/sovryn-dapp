@@ -2,4 +2,4 @@
 "frontend": patch
 ---
 
-SOV-3774: add new Borrowing assets and collateral types
+Add new assets to Lending/Borrowing, Convert, and Market Making pages

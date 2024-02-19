@@ -11,6 +11,11 @@ export const availableTokens = [
   SupportedTokens.moc,
   SupportedTokens.rif,
   SupportedTokens.doc,
+  SupportedTokens.mynt,
+  SupportedTokens.rusdt,
+  SupportedTokens.bnbs,
+  SupportedTokens.eths,
+  SupportedTokens.bpro,
 ];
 
 export const initialUsdValues = availableTokens.reduce(

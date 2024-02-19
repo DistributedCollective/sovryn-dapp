@@ -7,8 +7,7 @@ export const SocialLeaderboard: FC = () => {
         <iframe
           src="https://gleam.io/2Pqut/tiltom-test"
           title="competition"
-          width="484"
-          height="440"
+          className="rounded w-[30.25rem] h-[30.75rem]"
         ></iframe>
       </div>
 
@@ -17,8 +16,7 @@ export const SocialLeaderboard: FC = () => {
           src="https://gleam.io/2Pqut/leaderboard"
           title="leaderboard"
           id="leaderboard"
-          width="484"
-          height="500"
+          className="rounded-b w-[30.25rem] h-[31.25rem]"
         ></iframe>
       </div>
     </>

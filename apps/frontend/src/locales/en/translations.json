@@ -883,6 +883,20 @@
                 "cta": "Twitter quests"
             }
         },
+        "tables": {
+            "trading": {
+                "participants": "Participants",
+                "points": "Points",
+                "badges": {
+                    "earlyUser": "+5% Early user",
+                    "genesis": "+5% Genesis",
+                    "nft": "+5% NFT holder",
+                    "origin": "+5% Origin",
+                    "topImporterDay": "+10% Top Trader D",
+                    "topImporterWeek": "+10% Top Trader W"
+                }
+            }
+        },
         "pointsSection": {
             "title": "Gain POWA!",
             "description": "Actions on the Sovryn dApp and on Twitter earn you points. Points convert to POWA - the next Bitcoin token class.",

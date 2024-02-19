@@ -1562,10 +1562,19 @@
         "title": "Protocol data",
         "subtitle": "Cryptocurrency prices, yield and ecosystem statistics",
         "sections": {
-            "pricesBy24hChange": "Prices by 24h change",
             "lendAndBorrow": "Lend and borrow",
             "marketMaking": "Market making",
             "ecosystemStatistics": "Ecosystem statistics"
+        },
+        "pricesBy24hChange": {
+            "title": "Prices by 24h change",
+            "asset": "Asset",
+            "price": "Price",
+            "24h": "24h%",
+            "7d": "7d%",
+            "marketCap": "Market cap",
+            "circulationSupply": "Circulation supply",
+            "convert": "Convert"
         }
     }
 }

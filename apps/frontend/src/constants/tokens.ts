@@ -38,7 +38,7 @@ export const tokensLongName = {
   [SupportedTokens.doc]: 'Dollar on Chain',
   [SupportedTokens.rif]: 'RSK Infrastructure Framework',
   [SupportedTokens.bpro]: 'BitPro',
-  [SupportedTokens.bnbs]: 'Binance Smart Chain',
+  [SupportedTokens.bnbs]: 'Binance Coin',
   [SupportedTokens.eths]: 'Ethereum',
 };
 

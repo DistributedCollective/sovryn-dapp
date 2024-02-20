@@ -59,6 +59,10 @@ export class LendingPoolDictionary {
       ),
     ],
     [
+      SupportedTokens.rusdt,
+      new LendingPool('USDT', SupportedTokens.rusdt, [], false, true),
+    ],
+    [
       SupportedTokens.bpro,
       new LendingPool(
         'BPRO',

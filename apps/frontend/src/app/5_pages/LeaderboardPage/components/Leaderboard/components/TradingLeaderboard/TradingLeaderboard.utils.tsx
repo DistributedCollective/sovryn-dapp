@@ -1,0 +1,56 @@
+import React from 'react';
+
+import { prettyTx } from '@sovryn/ui';
+
+import { AmountRenderer } from '../../../../../../2_molecules/AmountRenderer/AmountRenderer';
+import { Badges } from '../../Badges/Badges';
+import { TradingBadges, User } from '../../Leaderboard.types';
+
+export const parseBadges = (data: any): TradingBadges[] => {
+  let badges: TradingBadges[] = [];
+
+  if (data.early_user === 1) {
+    badges.push(TradingBadges.EARLY_USER);
+  }
+
+  if (data.genesis === 1) {
+    badges.push(TradingBadges.GENESIS);
+  }
+
+  if (data.origin === 1) {
+    badges.push(TradingBadges.ORIGIN);
+  }
+
+  if (data.nft === 1) {
+    badges.push(TradingBadges.NFT);
+  }
+
+  if (data.top_importer_day === 1) {
+    badges.push(TradingBadges.TOP_IMPORTER_DAY);
+  }
+
+  if (data.top_importer_week === 1) {
+    badges.push(TradingBadges.TOP_IMPORTER_WEEK);
+  }
+
+  return badges;
+};
+
+export const generateRowTitle = (row: User) => (
+  <>
+    <div className="flex w-full">
+      <div className="mr-8 text-xs font-medium">{row.rank}</div>
+      <div className="w-full">
+        <div className="flex items-center justify-between mb-1 text-xs font-medium">
+          <div className="mr-4">{prettyTx(row.wallet)}</div>
+          <div>
+            <AmountRenderer value={row.points} showRoundingPrefix={false} />
+          </div>
+        </div>
+        <div className="flex flex-wrap gap-y-1">
+          <Badges user={row} />
+        </div>
+      </div>
+    </div>
+  </>
+);

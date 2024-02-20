@@ -2,15 +2,14 @@ import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 
 import { Pagination, Table } from '@sovryn/ui';
 
-import { DEFAULT_PAGE_SIZE } from '../../../../../../../constants/general';
 import { User } from '../../Leaderboard.types';
 import {
   COLUMNS_CONFIG,
   TRADING_LEADERBOARD_URL,
 } from './TradingLeaderboard.constants';
-import { parseBadges } from './TradingLeaderboard.utils';
+import { generateRowTitle, parseBadges } from './TradingLeaderboard.utils';
 
-const pageSize = DEFAULT_PAGE_SIZE;
+const pageSize = 20;
 
 export const TradingLeaderboard: FC = () => {
   const [users, setUsers] = useState<User[]>([]);
@@ -75,18 +74,16 @@ export const TradingLeaderboard: FC = () => {
           <Table
             columns={COLUMNS_CONFIG}
             rows={paginatedUsers}
-            // rowTitle={generateRowTitle}
-            // isLoading={loading}
+            rowTitle={generateRowTitle}
             className="bg-gray-80 text-gray-10 lg:px-6 lg:py-4"
-            // noData={noDataLabel}
-            // loadingData={t(translations.common.tables.loading)}
             dataAttribute="trading-leaderboard"
+            preventExpandOnClickClass="prevent-row-click"
+            flatMode={true}
           />
           <Pagination
             page={page}
             className="lg:pb-6 mt-3 lg:mt-6 justify-center lg:justify-start w-[5rem]"
             onChange={onPageChange}
-            totalItems={users.length}
             itemsPerPage={pageSize}
             isNextButtonDisabled={isNextButtonDisabled}
             dataAttribute="trading-leaderboard-pagination"

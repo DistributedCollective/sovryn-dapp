@@ -15,6 +15,7 @@ type TableMobileRowProps<RowType extends RowObject> = {
   expandedContent?: (row: RowType) => ReactNode;
   renderer?: (row: RowType) => ReactNode;
   subtitleRenderer?: (row: RowType) => ReactNode;
+  flatMode?: boolean;
 };
 
 export const TableMobileRow = <RowType extends RowObject>({
@@ -26,12 +27,15 @@ export const TableMobileRow = <RowType extends RowObject>({
   expandedContent,
   renderer,
   subtitleRenderer,
+  flatMode,
 }: TableMobileRowProps<RowType>) => {
   const [open, setOpen] = useState(false);
 
   const onClick = useCallback(() => {
-    onRowClick?.(row);
-  }, [onRowClick, row]);
+    if (!flatMode) {
+      onRowClick?.(row);
+    }
+  }, [flatMode, onRowClick, row]);
 
   return (
     <>
@@ -42,6 +46,7 @@ export const TableMobileRow = <RowType extends RowObject>({
         labelClassName={styles.accordion}
         dataAttribute={dataAttribute}
         style={AccordionStyle.secondary}
+        flatMode={flatMode}
       >
         <div onClick={onClick} className={styles.row}>
           {!renderer &&

@@ -37,6 +37,7 @@ export type TableProps<RowType extends RowObject> = {
   hideHeader?: boolean;
   subtitleRenderer?: (row: RowType) => ReactNode;
   expandedIndex?: number;
+  flatMode?: boolean;
 };
 
 export enum OrderDirection {

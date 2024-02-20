@@ -2,6 +2,7 @@ import React from 'react';
 
 import { t } from 'i18next';
 
+import { AmountRenderer } from '../../../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { translations } from '../../../../../../../locales/i18n';
 import { prettyTx } from '../../../../../../../utils/helpers';
 import { Badges } from '../../Badges/Badges';
@@ -26,13 +27,17 @@ export const COLUMNS_CONFIG = [
     cellRenderer: (row: User) => (
       <div className="flex items-center">
         <div className="mr-4">{prettyTx(row.wallet)}</div>
-        <Badges user={row} />
+        <div className="flex-wrap gap-y-1">
+          <Badges user={row} />
+        </div>
       </div>
     ),
   },
   {
     id: 'points',
     title: t(translations.leaderboardPage.tables.trading.points),
-    cellRenderer: (row: User) => <span>{row.points}</span>,
+    cellRenderer: (row: User) => (
+      <AmountRenderer value={row.points} showRoundingPrefix={false} />
+    ),
   },
 ];

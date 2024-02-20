@@ -10,9 +10,9 @@ import {
   BTC_RENDER_PRECISION,
   TOKEN_RENDER_PRECISION,
 } from '../../../../../../../constants/currencies';
+import { getTokenDisplayName } from '../../../../../../../constants/tokens';
 import { useAccount } from '../../../../../../../hooks/useAccount';
 import { translations } from '../../../../../../../locales/i18n';
-import { renderTokenSymbol } from '../../../../../../../utils/helpers';
 import { AmmLiquidityPool } from '../../../../utils/AmmLiquidityPool';
 
 type CurrentBalanceProps = {
@@ -31,7 +31,7 @@ export const CurrentBalance: FC<CurrentBalanceProps> = ({
   const { account } = useAccount();
 
   const hasBalance = useMemo(
-    () => balanceA.gt(0) && balanceB.gt(0),
+    () => balanceA.gt(0) || balanceB.gt(0),
     [balanceA, balanceB],
   );
 
@@ -40,7 +40,7 @@ export const CurrentBalance: FC<CurrentBalanceProps> = ({
       <div className="flex-col flex font-medium">
         <AmountRenderer
           value={balanceA}
-          suffix={renderTokenSymbol(pool.assetA)}
+          suffix={getTokenDisplayName(pool.assetA)}
           precision={TOKEN_RENDER_PRECISION}
         />
         <AmountRenderer

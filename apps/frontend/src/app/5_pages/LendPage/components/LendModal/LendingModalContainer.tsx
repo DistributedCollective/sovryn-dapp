@@ -25,6 +25,8 @@ import { LendingForm } from './LendingForm';
 
 export type LendingModalProps = {
   onDeposit: (amount: Decimal, token: TokenDetailsData, pool: Contract) => void;
+  onClose: () => void;
+  isOpen: boolean;
 };
 
 export type FullLendingModalState = {
@@ -35,7 +37,11 @@ export type FullLendingModalState = {
   tokenDetails: TokenDetailsData;
 };
 
-export const LendingModalContainer: FC<LendingModalProps> = ({ onDeposit }) => {
+export const LendingModalContainer: FC<LendingModalProps> = ({
+  onDeposit,
+  onClose,
+  isOpen,
+}) => {
   const { subscribe, push } = useMemo(
     () => eventDriven<Nullable<SupportedTokens>>(LendModalAction.Lend),
     [],
@@ -89,7 +95,10 @@ export const LendingModalContainer: FC<LendingModalProps> = ({ onDeposit }) => {
     return () => sub.unsubscribe();
   }, [account, signer, subscribe]);
 
-  const handleCloseModal = useCallback(() => push(null), [push]);
+  const handleCloseModal = useCallback(() => {
+    push(null);
+    onClose();
+  }, [onClose, push]);
 
   const handleConfirm = useCallback(
     (amount: Decimal) => {
@@ -102,7 +111,7 @@ export const LendingModalContainer: FC<LendingModalProps> = ({ onDeposit }) => {
   );
 
   return (
-    <Dialog disableFocusTrap width={DialogSize.sm} isOpen={state != null}>
+    <Dialog disableFocusTrap width={DialogSize.sm} isOpen={isOpen}>
       <DialogHeader
         title={t(translations.lending.title)}
         onClose={handleCloseModal}

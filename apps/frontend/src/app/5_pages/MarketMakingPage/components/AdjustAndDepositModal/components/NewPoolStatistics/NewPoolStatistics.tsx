@@ -27,6 +27,7 @@ const pageTranslations =
 
 type NewPoolStatisticsProps = {
   value: string;
+  asset: SupportedTokens;
   decimalAmount: Decimal;
   isInitialDeposit: boolean;
   adjustType: AdjustType;
@@ -35,6 +36,7 @@ type NewPoolStatisticsProps = {
 
 export const NewPoolStatistics: FC<NewPoolStatisticsProps> = ({
   value,
+  asset,
   decimalAmount,
   isInitialDeposit,
   adjustType,
@@ -43,35 +45,58 @@ export const NewPoolStatistics: FC<NewPoolStatisticsProps> = ({
   const tokenA = useMemo(() => pool.assetA, [pool.assetA]);
   const { balanceA, balanceB } = useGetUserInfo(pool);
   const { reward } = useGetAccumulatedReward(pool.poolTokenA);
+
+  const isTokenA = useMemo(() => asset === pool.assetA, [asset, pool.assetA]);
+  const isV2Pool = useMemo(
+    () => pool.converterVersion === 2,
+    [pool.converterVersion],
+  );
+
+  const isDeposit = useMemo(
+    () => adjustType === AdjustType.Deposit || isInitialDeposit,
+    [adjustType, isInitialDeposit],
+  );
+
   const decimalValue = useMemo(() => decimalic(value), [value]);
 
   const expectedTokenAmount = useGetExpectedTokenAmount(pool, decimalValue);
   const isAmountZero = useMemo(() => decimalAmount.isZero(), [decimalAmount]);
 
-  const newPoolBalanceA = useMemo(
-    () =>
-      adjustType === AdjustType.Deposit || isInitialDeposit
-        ? balanceA.add(decimalValue)
-        : balanceA.sub(decimalValue),
-    [adjustType, decimalValue, isInitialDeposit, balanceA],
-  );
+  const newPoolBalanceA = useMemo(() => {
+    if (isV2Pool && !isTokenA) {
+      return balanceA;
+    }
 
-  const newPoolBalanceB = useMemo(
-    () =>
-      adjustType === AdjustType.Deposit || isInitialDeposit
-        ? balanceB.add(expectedTokenAmount)
-        : decimalAmount.eq(balanceA)
-        ? Decimal.ZERO
-        : balanceB.sub(expectedTokenAmount),
-    [
-      adjustType,
-      isInitialDeposit,
-      balanceB,
-      expectedTokenAmount,
-      decimalAmount,
-      balanceA,
-    ],
-  );
+    return isDeposit ? balanceA.add(decimalValue) : balanceA.sub(decimalValue);
+  }, [isV2Pool, isTokenA, isDeposit, balanceA, decimalValue]);
+
+  const newPoolBalanceB = useMemo(() => {
+    if (isV2Pool) {
+      if (isTokenA) {
+        return balanceB;
+      }
+      return isDeposit
+        ? balanceB.add(decimalValue)
+        : balanceB.sub(decimalValue);
+    }
+
+    return adjustType === AdjustType.Deposit || isInitialDeposit
+      ? balanceB.add(expectedTokenAmount)
+      : decimalAmount.eq(balanceA)
+      ? Decimal.ZERO
+      : balanceB.sub(expectedTokenAmount);
+  }, [
+    isTokenA,
+    isV2Pool,
+    adjustType,
+    isInitialDeposit,
+    balanceB,
+    expectedTokenAmount,
+    decimalAmount,
+    balanceA,
+    isDeposit,
+    decimalValue,
+  ]);
 
   const { weeklyRewardsEstimation } = useGetPoolBalanceAndRewards(
     pool,

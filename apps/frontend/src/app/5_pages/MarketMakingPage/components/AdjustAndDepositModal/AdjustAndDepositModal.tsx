@@ -15,6 +15,9 @@ import {
   ButtonStyle,
   ErrorBadge,
   ErrorLevel,
+  Tabs,
+  TabType,
+  Select,
 } from '@sovryn/ui';
 import { Decimal } from '@sovryn/utils';
 
@@ -58,19 +61,54 @@ export const AdjustAndDepositModal: FC<AdjustAndDepositModalProps> = ({
   pool,
 }) => {
   const [adjustType, setAdjustType] = useState(AdjustType.Deposit);
+  const [selectedAsset, setSelectedAsset] = useState(pool.assetA);
   const [value, setValue, amount] = useWeiAmountInput('');
   const { account } = useAccount();
 
+  const assetSelectOptions = useMemo(
+    () => [
+      {
+        value: pool.assetA,
+        label: (
+          <AssetRenderer
+            showAssetLogo
+            asset={pool.assetA}
+            assetClassName="font-medium"
+          />
+        ),
+      },
+      {
+        value: pool.assetB,
+        label: (
+          <AssetRenderer
+            showAssetLogo
+            asset={pool.assetB}
+            assetClassName="font-medium"
+          />
+        ),
+      },
+    ],
+    [pool.assetA, pool.assetB],
+  );
+
+  const onChangeIndex = useCallback((index: number) => {
+    setAdjustType(index);
+  }, []);
+
   const { balanceA, loadingA, balanceB, refetch } = useGetUserInfo(pool);
+
+  const isV2Pool = useMemo(
+    () => pool.converterVersion === 2,
+    [pool.converterVersion],
+  );
 
   const onCompleteTransaction = useCallback(() => {
     refetch();
     onClose();
   }, [onClose, refetch]);
 
-  const { onDeposit, onWithdraw } = useHandleMarketMaking(
-    onCompleteTransaction,
-  );
+  const { onDepositV1, onDepositV2, onWithdrawV1, onWithdrawV2 } =
+    useHandleMarketMaking(onCompleteTransaction);
 
   const decimalAmount = useMemo(
     (): Decimal => decimalic(amount.toString()),
@@ -82,17 +120,16 @@ export const AdjustAndDepositModal: FC<AdjustAndDepositModalProps> = ({
     isAmountZero,
     adjustType,
     loadingA,
-    pool,
+    selectedAsset === pool.assetA ? pool.poolTokenA : pool.poolTokenB!,
     account,
   );
 
   const poolWeiAmount = calculatePoolWeiAmount(
     Decimal.fromBigNumberString(amount.toString()),
-    balanceA,
+    selectedAsset === pool.assetA ? balanceA : balanceB,
     tokenPoolBalance,
   );
 
-  const token = useMemo(() => pool.assetA, [pool.assetA]);
   const isDeposit = useMemo(
     () => adjustType === AdjustType.Deposit,
     [adjustType],
@@ -100,11 +137,34 @@ export const AdjustAndDepositModal: FC<AdjustAndDepositModalProps> = ({
   const [hasDisclaimerBeenChecked, setHasDisclaimerBeenChecked] =
     useState(false);
 
-  const maxTokenToDepositAmount = useGetMaxDeposit(pool, isDeposit);
+  const { maximumV1Deposit, balanceTokenA, balanceTokenB } = useGetMaxDeposit(
+    pool,
+    isDeposit,
+  );
+
+  const maxTokenToDepositAmount = useMemo(() => {
+    if (isV2Pool) {
+      return selectedAsset === pool.assetA ? balanceTokenA : balanceTokenB;
+    }
+
+    return maximumV1Deposit;
+  }, [
+    balanceTokenA,
+    balanceTokenB,
+    isV2Pool,
+    maximumV1Deposit,
+    pool.assetA,
+    selectedAsset,
+  ]);
+
+  const maxWithdrawalAmount = useMemo(
+    () => (selectedAsset === pool.assetA ? balanceA : balanceB),
+    [balanceA, balanceB, pool.assetA, selectedAsset],
+  );
 
   const maxBalance = useMemo(
-    () => (isDeposit ? maxTokenToDepositAmount : balanceA),
-    [isDeposit, balanceA, maxTokenToDepositAmount],
+    () => (isDeposit ? maxTokenToDepositAmount : maxWithdrawalAmount),
+    [isDeposit, maxTokenToDepositAmount, maxWithdrawalAmount],
   );
 
   const handleMaxClick = useCallback(
@@ -121,19 +181,34 @@ export const AdjustAndDepositModal: FC<AdjustAndDepositModalProps> = ({
   );
 
   const handleSubmit = useCallback(() => {
-    if (isDeposit) {
-      onDeposit(pool, decimalAmount, expectedTokenAmount);
+    if (isV2Pool) {
+      if (isDeposit) {
+        onDepositV2(pool, selectedAsset, decimalAmount);
+      } else {
+        onWithdrawV2(pool, selectedAsset, poolWeiAmount, decimalAmount, '1');
+      }
     } else {
-      onWithdraw(pool, poolWeiAmount, decimalAmount, [minReturn1, minReturn2]);
+      if (isDeposit) {
+        onDepositV1(pool, decimalAmount, expectedTokenAmount);
+      } else {
+        onWithdrawV1(pool, poolWeiAmount, decimalAmount, [
+          minReturn1,
+          minReturn2,
+        ]);
+      }
     }
   }, [
-    expectedTokenAmount,
-    onDeposit,
-    onWithdraw,
-    pool,
+    isV2Pool,
     isDeposit,
+    onDepositV2,
+    pool,
+    selectedAsset,
     decimalAmount,
+    onWithdrawV2,
     poolWeiAmount,
+    onDepositV1,
+    expectedTokenAmount,
+    onWithdrawV1,
     minReturn1,
     minReturn2,
   ]);
@@ -195,38 +270,67 @@ export const AdjustAndDepositModal: FC<AdjustAndDepositModalProps> = ({
           <div>
             <FormGroup
               label={
-                isInitialDeposit ? (
-                  <div className="flex justify-end w-full">
-                    <MaxButton
-                      value={maxBalance}
-                      token={token}
-                      onClick={handleMaxClick}
+                pool.converterVersion === 1 ? (
+                  isInitialDeposit ? (
+                    <div className="flex justify-end w-full">
+                      <MaxButton
+                        value={maxBalance}
+                        token={selectedAsset}
+                        onClick={handleMaxClick}
+                      />
+                    </div>
+                  ) : (
+                    <LabelWithTabsAndMaxButton
+                      token={selectedAsset}
+                      maxAmount={maxBalance}
+                      tabs={TABS}
+                      onTabChange={setAdjustType}
+                      onMaxAmountClicked={handleMaxClick}
+                      index={adjustType}
+                      setIndex={setAdjustType}
+                      dataAttributePrefix="adjust-amm-pool"
                     />
-                  </div>
+                  )
                 ) : (
-                  <LabelWithTabsAndMaxButton
-                    token={token}
-                    maxAmount={maxBalance}
-                    tabs={TABS}
-                    onTabChange={setAdjustType}
-                    onMaxAmountClicked={handleMaxClick}
-                    index={adjustType}
-                    setIndex={setAdjustType}
-                    dataAttributePrefix="adjust-amm-pool"
-                  />
+                  <>
+                    {!isInitialDeposit && (
+                      <Tabs
+                        index={adjustType}
+                        items={TABS}
+                        onChange={onChangeIndex}
+                        type={TabType.secondary}
+                      />
+                    )}
+                  </>
                 )
               }
               labelElement="div"
               className="max-w-none mt-8"
               dataAttribute="adjust-amm-pool-amount"
             >
+              {pool.converterVersion === 2 && (
+                <div className="w-full flex flex-row justify-between items-baseline mb-2 mt-6">
+                  <Select
+                    value={selectedAsset}
+                    options={assetSelectOptions}
+                    onChange={setSelectedAsset}
+                    className="h-[1.875rem] w-[9.25rem]"
+                  />
+                  <MaxButton
+                    value={maxBalance}
+                    token={selectedAsset}
+                    onClick={handleMaxClick}
+                  />
+                </div>
+              )}
+
               <AmountInput
                 value={value}
                 onChangeText={setValue}
                 maxAmount={maxBalance.toNumber()}
                 label={t(translations.common.amount)}
                 className="max-w-none"
-                unit={<AssetRenderer asset={token} />}
+                unit={<AssetRenderer asset={selectedAsset} />}
                 disabled={!account}
                 invalid={!isValidForm}
                 placeholder="0"
@@ -241,18 +345,21 @@ export const AdjustAndDepositModal: FC<AdjustAndDepositModalProps> = ({
                 />
               )}
 
-              <AmountInput
-                label={t(translations.common.amount)}
-                value={expectedTokenAmount.toString()}
-                className="max-w-none mt-6"
-                unit={<AssetRenderer asset={SupportedTokens.rbtc} />}
-                readOnly
-              />
+              {!isV2Pool && (
+                <AmountInput
+                  label={t(translations.common.amount)}
+                  value={expectedTokenAmount.toString()}
+                  className="max-w-none mt-6"
+                  unit={<AssetRenderer asset={SupportedTokens.rbtc} />}
+                  readOnly
+                />
+              )}
             </FormGroup>
           </div>
 
           <NewPoolStatistics
             value={value}
+            asset={selectedAsset}
             decimalAmount={decimalAmount}
             isInitialDeposit={isInitialDeposit}
             adjustType={adjustType}

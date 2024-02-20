@@ -18,7 +18,7 @@ export const PoolsTableReturns: FC<PoolsTableReturnsProps> = ({
   pool,
   className,
 }) => {
-  const { returnRates } = useGetReturnRate(pool.converter);
+  const { returnRates } = useGetReturnRate(pool);
 
   const hasRewards = useMemo(
     () => Number(returnRates.afterRewards) > 0,

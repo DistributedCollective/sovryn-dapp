@@ -39,7 +39,7 @@ export const parseBadges = (data: any): TradingBadges[] => {
 export const generateRowTitle = (row: User) => (
   <>
     <div className="flex w-full">
-      <div className="mr-8 text-xs font-medium">{row.rank}</div>
+      <div className="text-xs font-medium w-9 text-left">{row.rank}</div>
       <div className="w-full">
         <div className="flex items-center justify-between mb-1 text-xs font-medium">
           <div className="mr-4">{prettyTx(row.wallet)}</div>

@@ -884,9 +884,13 @@
             }
         },
         "tables": {
+            "connectWalletText": "Connect your wallet to see how many points you’ve got.",
+            "connectWalletCta": "Connect wallet",
             "trading": {
+                "pointsInfo": "Trading has a 25% share of the PoWa reward pool",
                 "participants": "Participants",
                 "points": "Points",
+                "yourPosition": "Your position",
                 "badges": {
                     "earlyUser": "+5% Early user",
                     "genesis": "+5% Genesis",

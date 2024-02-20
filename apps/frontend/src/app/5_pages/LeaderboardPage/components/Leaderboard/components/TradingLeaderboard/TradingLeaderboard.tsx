@@ -1,7 +1,12 @@
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 
-import { Pagination, Table } from '@sovryn/ui';
+import { t } from 'i18next';
 
+import { Button, Pagination, Table } from '@sovryn/ui';
+
+import { useAccount } from '../../../../../../../hooks/useAccount';
+import { useWalletConnect } from '../../../../../../../hooks/useWalletConnect';
+import { translations } from '../../../../../../../locales/i18n';
 import { User } from '../../Leaderboard.types';
 import {
   COLUMNS_CONFIG,
@@ -12,7 +17,25 @@ import { generateRowTitle, parseBadges } from './TradingLeaderboard.utils';
 const pageSize = 20;
 
 export const TradingLeaderboard: FC = () => {
+  const { account } = useAccount();
   const [users, setUsers] = useState<User[]>([]);
+  const { connectWallet } = useWalletConnect();
+
+  const connectWalletMessage = useMemo(
+    () => (
+      <div className="flex items-center justify-center bg-gray-70 lg:bg-gray-90 px-2.5 py-3 lg:p-0 rounded">
+        <div className="text-xs font-medium italic mr-4">
+          {t(translations.leaderboardPage.tables.connectWalletText)}
+        </div>
+        <Button
+          text={t(translations.leaderboardPage.tables.connectWalletCta)}
+          onClick={connectWallet}
+          className="text-sm font-medium"
+        />
+      </div>
+    ),
+    [connectWallet],
+  );
 
   const [page, setPage] = useState(0);
 
@@ -63,16 +86,42 @@ export const TradingLeaderboard: FC = () => {
     }
   }, []);
 
+  const connectedWalletRow = useMemo(() => {
+    if (account && users.length > 0) {
+      const user = users.find(
+        item => item.wallet.toLowerCase() === account.toLowerCase(),
+      );
+
+      if (user) {
+        return [user];
+      }
+      return [];
+    }
+    return [];
+  }, [account, users]);
+
   useEffect(() => {
     fetchData();
   }, [fetchData]);
 
   return (
     <>
-      {users && (
+      <div className="p-4">
+        <div className="mt-4 text-sm font-medium text-gray-30 text-end">
+          {t(translations.leaderboardPage.tables.trading.pointsInfo)}
+        </div>
+        <div className="mt-8 mb-8 rounded">
+          <Table
+            rows={connectedWalletRow}
+            columns={COLUMNS_CONFIG(true)}
+            rowTitle={generateRowTitle}
+            noData={!account ? connectWalletMessage : 'No data'}
+            flatMode={true}
+          />
+        </div>
         <div className="bg-gray-80 py-4 px-4 rounded">
           <Table
-            columns={COLUMNS_CONFIG}
+            columns={COLUMNS_CONFIG(false)}
             rows={paginatedUsers}
             rowTitle={generateRowTitle}
             className="bg-gray-80 text-gray-10 lg:px-6 lg:py-4"
@@ -89,7 +138,7 @@ export const TradingLeaderboard: FC = () => {
             dataAttribute="trading-leaderboard-pagination"
           />
         </div>
-      )}
+      </div>
     </>
   );
 };

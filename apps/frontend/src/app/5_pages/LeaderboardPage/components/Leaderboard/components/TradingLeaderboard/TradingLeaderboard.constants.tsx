@@ -15,15 +15,19 @@ export const TRADING_LEADERBOARD_URL =
 export const STAKING_LEADERBOARD_URL =
   'https://redash.sovryn.app/api/queries/545/results.json?api_key=sjTLMq48pU0yHJlDBWrFiQQS2x0jTtk7BChYTC8J';
 
-export const COLUMNS_CONFIG = [
+export const COLUMNS_CONFIG = (isSingleUser: boolean) => [
   {
     id: '',
     title: '',
-    cellRenderer: (row: User) => <span>{row.rank}</span>,
+    cellRenderer: (row: User) => <div>{row.rank}</div>,
   },
   {
     id: 'wallet',
-    title: t(translations.leaderboardPage.tables.trading.participants),
+    title: t(
+      translations.leaderboardPage.tables.trading[
+        isSingleUser ? 'yourPosition' : 'participants'
+      ],
+    ),
     cellRenderer: (row: User) => (
       <div className="flex items-center">
         <div className="mr-4">{prettyTx(row.wallet)}</div>

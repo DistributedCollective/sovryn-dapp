@@ -1,5 +1,11 @@
 # @sovryn/sdk
 
+## 0.0.8
+
+### Patch Changes
+
+- 5ffe098c: SOV-3773: Update asset lists and smart-router swap routes
+
 ## 0.0.7
 
 ### Patch Changes

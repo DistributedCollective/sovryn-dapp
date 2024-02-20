@@ -1,4 +1,11 @@
-import React, { FC, useMemo } from 'react';
+import React, {
+  Dispatch,
+  FC,
+  RefObject,
+  SetStateAction,
+  useCallback,
+  useMemo,
+} from 'react';
 
 import { t } from 'i18next';
 import { useNavigate } from 'react-router-dom';
@@ -11,8 +18,24 @@ import { translations } from '../../../../../locales/i18n';
 
 const baseTranslation = translations.leaderboardPage.ctaLinksSection;
 
-export const CTALinks: FC = () => {
+type CTALinksProps = {
+  tableRef: RefObject<HTMLDivElement>;
+  setTabIndex: Dispatch<SetStateAction<number>>;
+};
+
+export const CTALinks: FC<CTALinksProps> = ({ tableRef, setTabIndex }) => {
   const navigate = useNavigate();
+
+  const socialClickHandler = useCallback(() => {
+    if (tableRef.current) {
+      tableRef.current.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start',
+      });
+
+      setTabIndex(2);
+    }
+  }, [setTabIndex, tableRef]);
 
   const options = useMemo(
     () => [
@@ -35,11 +58,11 @@ export const CTALinks: FC = () => {
         title: t(baseTranslation.social.title),
         description: t(baseTranslation.social.description),
         action: t(baseTranslation.social.cta),
-        url: () => navigate('/earn/staking'),
+        url: socialClickHandler,
         backgroundImage: socialBg,
       },
     ],
-    [navigate],
+    [navigate, socialClickHandler],
   );
 
   return (

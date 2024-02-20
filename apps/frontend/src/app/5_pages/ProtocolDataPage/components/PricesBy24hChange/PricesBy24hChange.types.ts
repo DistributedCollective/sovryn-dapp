@@ -32,6 +32,6 @@ export type AssetData = {
   updated: string;
 };
 
-export type Assets = {
+export type AssetsData = {
   [key: string]: AssetData;
 };

@@ -15,8 +15,8 @@ export const PriceChange: React.FC<PriceChangeProps> = ({ value }) => {
   return (
     <div
       className={classNames('inline-flex items-center', {
-        'text-trade-short': value < 0,
-        'text-trade-long': value > 0,
+        'text-negative': value < 0,
+        'text-positive': value > 0,
       })}
     >
       <AssetValue value={Decimal.from(value)} showNegativeSign={value < 0} />%

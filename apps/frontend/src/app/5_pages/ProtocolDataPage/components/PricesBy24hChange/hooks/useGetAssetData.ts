@@ -5,10 +5,10 @@ import axios, { Canceler } from 'axios';
 import { useInterval } from '../../../../../../hooks/useInterval';
 import { DATA_REFRESH_INTERVAL } from '../../../../LandingPage/components/ProtocolData/ProtocolData.constants';
 import { ASSET_DATA_URL } from '../../../ProtocolData.constants';
-import { Assets } from '../PricesBy24hChange.types';
+import { AssetsData } from '../PricesBy24hChange.types';
 
 export const useGetAssetData = () => {
-  const [assetData, setAssetData] = useState<Assets>();
+  const [assetData, setAssetData] = useState<AssetsData>();
   const cancelPairsDataRequest = useRef<Canceler>();
 
   const fetchPairsData = useCallback(() => {

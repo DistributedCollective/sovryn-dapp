@@ -1,24 +1,28 @@
 import React, { FC, useCallback, useMemo, useState } from 'react';
 
 import { t } from 'i18next';
+import { Trans } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 
+import { getTokenDetailsByAddress } from '@sovryn/contracts';
 import {
   Button,
   ButtonStyle,
+  HelperButton,
   Pagination,
   Paragraph,
   SimpleTableRow,
   Table,
 } from '@sovryn/ui';
-import { Decimal } from '@sovryn/utils';
 
 import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { AssetRenderer } from '../../../../2_molecules/AssetRenderer/AssetRenderer';
+import { useIsMobile } from '../../../../../hooks/useIsMobile';
 import { translations } from '../../../../../locales/i18n';
 import { decimalic } from '../../../../../utils/math';
 import { pageTranslations } from '../../ProtocolDataPage.constants';
 import { COLUMNS_CONFIG } from './PricesBy24hChange.constants';
+import { parseCryptoPairs } from './PricesBy24hChange.utils';
 import { PriceChange } from './components/PriceChange';
 import { useGetAssetData } from './hooks/useGetAssetData';
 import { useGetCryptoPairs } from './hooks/useGetCryptoPairs';
@@ -26,52 +30,14 @@ import { useGetCryptoPairs } from './hooks/useGetCryptoPairs';
 const pageSize = 8;
 
 export const PricesBy24hChange: FC = () => {
-  const pairs = useGetCryptoPairs();
+  const { pairs, isLoading } = useGetCryptoPairs();
   const assetData = useGetAssetData();
   const [page, setPage] = useState(0);
   const navigate = useNavigate();
+  const { isMobile } = useIsMobile();
 
   const rows = useMemo(() => {
-    if (!pairs.length) {
-      return [];
-    }
-
-    return pairs
-      .map(pair => {
-        const result = [
-          {
-            asset: pair.base_id,
-            price24h: Number(pair.price_change_percent_24h_usd),
-            priceWeek: Number(pair.price_change_week_usd),
-            lastPrice: Number(pair.last_price_usd),
-            assetData: assetData && assetData[pair?.base_id],
-          },
-        ];
-
-        if (pair.base_symbol_legacy === 'USDT') {
-          result.push({
-            asset: pair.quote_id,
-            price24h: -Number(pair.price_change_percent_24h),
-            priceWeek: -Number(pair.price_change_week),
-            lastPrice: Number(1 / pair.last_price),
-            assetData: assetData && assetData[pair?.quote_id],
-          });
-        }
-
-        return result;
-      })
-      .flat()
-      .map(pair => {
-        const marketCap = Decimal.from(
-          pair.assetData?.circulating_supply || '0',
-        ).mul(pair.lastPrice || '0');
-        return {
-          ...pair,
-          marketCap,
-          circulatingSupply: pair.assetData?.circulating_supply || '0',
-        };
-      })
-      .sort((pairA, pairB) => (pairA.marketCap.gt(pairB.marketCap) ? -1 : 1));
+    return parseCryptoPairs(pairs, assetData);
   }, [assetData, pairs]);
 
   const paginatedItems = useMemo(
@@ -94,9 +60,19 @@ export const PricesBy24hChange: FC = () => {
     [page, rows],
   );
 
+  const convert = useCallback(
+    async (tokenAddress: string) => {
+      try {
+        const token = await getTokenDetailsByAddress(tokenAddress);
+        navigate('/convert?from=' + token.symbol);
+      } catch (error) {}
+    },
+    [navigate],
+  );
+
   const generateRowTitle = useCallback(
     (pair: any) => (
-      <div className="flex items-center w-full justify-between">
+      <div className="flex items-center w-full justify-between pr-3">
         <AssetRenderer
           showAssetLogo
           address={pair.asset}
@@ -115,7 +91,22 @@ export const PricesBy24hChange: FC = () => {
     (pair: any) => (
       <div className="flex flex-col">
         <SimpleTableRow
-          label={t(translations.protocolDataPage.pricesBy24hChange.marketCap)}
+          label={
+            <span className="flex items-center gap-1">
+              {t(translations.protocolDataPage.pricesBy24hChange.marketCap)}
+              <HelperButton
+                content={
+                  <Trans
+                    i18nKey={t(
+                      translations.protocolDataPage.pricesBy24hChange
+                        .marketCapTooltip,
+                    )}
+                    components={[<strong className="font-bold" />]}
+                  />
+                }
+              />
+            </span>
+          }
           value={
             <AmountRenderer
               value={decimalic(pair.marketCap).toString()}
@@ -124,9 +115,25 @@ export const PricesBy24hChange: FC = () => {
           }
         />
         <SimpleTableRow
-          label={t(
-            translations.protocolDataPage.pricesBy24hChange.circulationSupply,
-          )}
+          label={
+            <span className="flex items-center gap-1">
+              {t(
+                translations.protocolDataPage.pricesBy24hChange
+                  .circulationSupply,
+              )}
+              <HelperButton
+                content={
+                  <Trans
+                    i18nKey={t(
+                      translations.protocolDataPage.pricesBy24hChange
+                        .circulatingSupplyTooltip,
+                    )}
+                    components={[<strong className="font-bold" />]}
+                  />
+                }
+              />
+            </span>
+          }
           value={
             <AmountRenderer
               value={decimalic(pair.circulatingSupply).toString()}
@@ -139,11 +146,11 @@ export const PricesBy24hChange: FC = () => {
           text={t(translations.protocolDataPage.pricesBy24hChange.convert)}
           style={ButtonStyle.secondary}
           className="mt-2 mb-3"
-          onClick={() => navigate('/convert')}
+          onClick={() => convert(pair.asset)}
         />
       </div>
     ),
-    [navigate],
+    [convert],
   );
 
   return (
@@ -165,6 +172,10 @@ export const PricesBy24hChange: FC = () => {
           rows={paginatedItems}
           rowTitle={generateRowTitle}
           mobileRenderer={mobileRenderer}
+          onRowClick={pair => !isMobile && convert(pair.asset)}
+          isClickable
+          isLoading={isLoading && !rows.length}
+          rowClassName="bg-gray-80"
         />
         <Pagination
           page={page}

@@ -1,6 +1,9 @@
 import React from 'react';
 
 import { t } from 'i18next';
+import { Trans } from 'react-i18next';
+
+import { HelperButton } from '@sovryn/ui';
 
 import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { AssetRenderer } from '../../../../2_molecules/AssetRenderer/AssetRenderer';
@@ -48,7 +51,19 @@ export const COLUMNS_CONFIG = [
   },
   {
     id: 'marketCap',
-    title: t(translation.marketCap),
+    title: (
+      <span className="flex items-center gap-1">
+        {t(translation.marketCap)}
+        <HelperButton
+          content={
+            <Trans
+              i18nKey={t(translation.marketCapTooltip)}
+              components={[<strong className="font-bold" />]}
+            />
+          }
+        />
+      </span>
+    ),
     cellRenderer: pair => (
       <AmountRenderer
         value={decimalic(pair.marketCap).toString()}
@@ -58,7 +73,19 @@ export const COLUMNS_CONFIG = [
   },
   {
     id: 'circulationSupply',
-    title: t(translation.circulationSupply),
+    title: (
+      <span className="flex items-center gap-1">
+        {t(translation.circulationSupply)}
+        <HelperButton
+          content={
+            <Trans
+              i18nKey={t(translation.circulatingSupplyTooltip)}
+              components={[<strong className="font-bold" />]}
+            />
+          }
+        />
+      </span>
+    ),
     cellRenderer: pair => (
       <AmountRenderer
         value={decimalic(pair.circulatingSupply).toString()}

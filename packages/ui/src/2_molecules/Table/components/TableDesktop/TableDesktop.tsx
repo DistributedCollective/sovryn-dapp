@@ -20,6 +20,7 @@ import { OrderDirectionIcon } from './components/OrderDirectionIcon/OrderDirecti
 // No React.FC, since doesn't support Generic PropTypes
 export const TableDesktop = <RowType extends RowObject>({
   className,
+  rowClassName,
   columns,
   rows,
   rowKey,
@@ -131,7 +132,7 @@ export const TableDesktop = <RowType extends RowObject>({
               isSelected={index === selectedIndex}
               dataAttribute={dataAttribute}
               isClickable={isClickable}
-              className={styles.row}
+              className={classNames(styles.row, rowClassName)}
               size={TableRowSize.large}
               expandedContent={expandedContent}
               expandedClassNames={expandedClassNames}

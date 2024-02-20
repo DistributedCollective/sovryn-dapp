@@ -13,18 +13,20 @@ const deprecatedPair =
   '0x74858FE37d391f81F89472e1D8BC8Ef9CF67B3b1'.toLowerCase();
 
 export const useGetCryptoPairs = () => {
-  const [pairsData, setPairsData] = useState<{ [key: string]: PairData }>({});
+  const [pairList, setPairList] = useState<PairData[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
   const cancelPairsDataRequest = useRef<Canceler>();
 
-  const fetchPairsData = useCallback(() => {
-    cancelPairsDataRequest.current && cancelPairsDataRequest.current();
+  const fetchPairsData = useCallback(async () => {
+    try {
+      setIsLoading(true);
+      cancelPairsDataRequest.current && cancelPairsDataRequest.current();
 
-    const cancelToken = new axios.CancelToken(c => {
-      cancelPairsDataRequest.current = c;
-    });
+      const cancelToken = new axios.CancelToken(c => {
+        cancelPairsDataRequest.current = c;
+      });
 
-    axios
-      .get(VOLUME_DATA_URL, {
+      const { data } = await axios.get(VOLUME_DATA_URL, {
         params: {
           extra: true,
           stmp: Date.now(),
@@ -35,10 +37,15 @@ export const useGetCryptoPairs = () => {
           Expires: '30',
         },
         cancelToken,
-      })
-      .then(result => {
-        setPairsData(result.data.pairs);
       });
+
+      const pairs = Object.keys(data.pairs)
+        .map(key => data.pairs[key])
+        .filter((pair: PairData) => pair) as PairData[];
+
+      setPairList(pairs);
+    } catch (error) {}
+    setIsLoading(false);
   }, []);
 
   useInterval(
@@ -49,19 +56,20 @@ export const useGetCryptoPairs = () => {
     { immediate: true },
   );
 
-  const pairList = useMemo(
+  const pairs = useMemo(
     () =>
-      Object.keys(pairsData)
-        .map(key => pairsData[key])
-        .filter((pair: PairData) => pair),
-    [pairsData],
+      isMainnet() || isStaging()
+        ? pairList
+        : pairList.filter(
+            pair =>
+              pair.base_id.toLowerCase() !== deprecatedPair &&
+              pair.quote_id.toLowerCase() !== deprecatedPair,
+          ),
+    [pairList],
   );
 
-  return isMainnet() || isStaging()
-    ? pairList
-    : pairList.filter(
-        pair =>
-          pair.base_id.toLowerCase() !== deprecatedPair &&
-          pair.quote_id.toLowerCase() !== deprecatedPair,
-      );
+  return {
+    pairs,
+    isLoading,
+  };
 };

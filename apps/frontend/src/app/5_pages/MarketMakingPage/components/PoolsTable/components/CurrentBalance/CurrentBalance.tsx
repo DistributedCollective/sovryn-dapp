@@ -31,7 +31,7 @@ export const CurrentBalance: FC<CurrentBalanceProps> = ({
   const { account } = useAccount();
 
   const hasBalance = useMemo(
-    () => balanceA.gt(0) && balanceB.gt(0),
+    () => balanceA.gt(0) || balanceB.gt(0),
     [balanceA, balanceB],
   );
 

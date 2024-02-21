@@ -31,8 +31,8 @@ export const COLUMNS_CONFIG = (isSingleUser: boolean) => [
       ],
     ),
     cellRenderer: (row: User) => (
-      <div className="flex items-center">
-        <div className="mr-4">{prettyTx(row.wallet)}</div>
+      <div>
+        <div>{prettyTx(row.wallet)}</div>
         <div className="flex-wrap gap-y-1">
           <Badges user={row} />
         </div>

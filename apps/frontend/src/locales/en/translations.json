@@ -903,12 +903,15 @@
                 }
             },
             "trading": {
+                "tabTitle": "Trading",
                 "pointsInfo": "Trading has a 25% share of the PoWa reward pool"
             },
             "staking": {
+                "tabTitle": "Staking",
                 "pointsInfo": "Staking has a 40% share of the PoWa reward pool"
             },
             "social": {
+                "tabTitle": "Social power",
                 "pointsInfo": "Social activity has a 25% share of the PoWa reward pool"
             }
         },

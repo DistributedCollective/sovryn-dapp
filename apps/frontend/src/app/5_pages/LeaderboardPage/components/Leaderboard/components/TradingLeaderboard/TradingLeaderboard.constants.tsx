@@ -5,15 +5,16 @@ import { t } from 'i18next';
 import { AmountRenderer } from '../../../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { translations } from '../../../../../../../locales/i18n';
 import { prettyTx } from '../../../../../../../utils/helpers';
-import { Badges } from '../../Badges/Badges';
 import { User } from '../../Leaderboard.types';
+import { Badges } from '../Badges/Badges';
 
 export const TRADING_LEADERBOARD_URL =
   'https://redash.sovryn.app/api/queries/544/results.json?api_key=52Jy2PGF5HZVye97NCG9e8nNDDPZ1iFo65Hfo1sk';
 
-// TODO: Move somewhere else
 export const STAKING_LEADERBOARD_URL =
   'https://redash.sovryn.app/api/queries/545/results.json?api_key=sjTLMq48pU0yHJlDBWrFiQQS2x0jTtk7BChYTC8J';
+
+export const PAGE_SIZE = 20;
 
 export const COLUMNS_CONFIG = (isSingleUser: boolean) => [
   {

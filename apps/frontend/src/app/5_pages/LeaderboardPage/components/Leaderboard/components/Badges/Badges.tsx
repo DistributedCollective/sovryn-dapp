@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 
 import { Badge } from '@sovryn/ui';
 
-import { User } from '../Leaderboard.types';
+import { User } from '../../Leaderboard.types';
 import { getBadgeDetails } from './Badges.utils';
 
 type BadgesProps = {

@@ -2,8 +2,8 @@ import { t } from 'i18next';
 
 import { BadgeStyle } from '@sovryn/ui';
 
-import { translations } from '../../../../../../locales/i18n';
-import { TradingBadges } from '../Leaderboard.types';
+import { translations } from '../../../../../../../locales/i18n';
+import { TradingBadges } from '../../Leaderboard.types';
 
 const baseTranslation = translations.leaderboardPage.tables.trading.badges;
 

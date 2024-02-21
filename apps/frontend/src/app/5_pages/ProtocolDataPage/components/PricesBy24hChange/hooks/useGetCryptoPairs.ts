@@ -18,7 +18,6 @@ export const useGetCryptoPairs = () => {
   const cancelPairsDataRequest = useRef<Canceler>();
 
   const fetchPairsData = useCallback(async () => {
-    console.log('fetchPairsData!');
     try {
       setIsLoading(true);
       cancelPairsDataRequest.current && cancelPairsDataRequest.current();
@@ -68,9 +67,6 @@ export const useGetCryptoPairs = () => {
           ),
     [pairList],
   );
-  console.log({
-    isLoading,
-  });
 
   return {
     pairs,

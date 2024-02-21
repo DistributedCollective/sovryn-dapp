@@ -78,14 +78,12 @@ export const PricesBy24hChange: FC = () => {
   const generateRowTitle = useCallback(
     (pair: CryptoPair) => (
       <div className="flex items-center w-full justify-between pr-3 py-1.5 text-xs">
-        <div className="text-sm">
-          <AssetRenderer
-            showAssetLogo
-            address={pair.asset}
-            className="lg:justify-start justify-end"
-            assetClassName="text-sm font-medium"
-          />
-        </div>
+        <AssetRenderer
+          showAssetLogo
+          address={pair.asset}
+          className="lg:justify-start justify-end"
+          assetClassName="text-base font-medium"
+        />
         <AmountRenderer
           value={decimalic(pair.lastPrice).toString()}
           prefix="$ "

@@ -35,10 +35,12 @@ export const COLUMNS_CONFIG = [
     id: 'prices',
     title: t(translation.price),
     cellRenderer: (pair: CryptoPair) => (
-      <AmountRenderer
-        value={decimalic(pair.lastPrice).toString()}
-        prefix="$ "
-      />
+      <div className="text-base">
+        <AmountRenderer
+          value={decimalic(pair.lastPrice).toString()}
+          prefix="$ "
+        />
+      </div>
     ),
   },
   {

@@ -10,6 +10,7 @@ import { AssetRenderer } from '../../../../2_molecules/AssetRenderer/AssetRender
 import { translations } from '../../../../../locales/i18n';
 import { decimalic } from '../../../../../utils/math';
 import styles from './PricesBy24hChange.module.css';
+import { CryptoPair } from './PricesBy24hChange.types';
 import { PriceChange } from './components/PriceChange';
 
 const translation = translations.protocolDataPage.pricesBy24hChange;
@@ -18,12 +19,13 @@ export const COLUMNS_CONFIG = [
   {
     id: 'asset',
     title: t(translation.asset),
-    cellRenderer: pair => (
+    cellRenderer: (pair: CryptoPair) => (
       <AssetRenderer
         showAssetLogo
         address={pair.asset}
         logoClassName={styles.assetLogo}
         className="lg:justify-start justify-end"
+        assetClassName="font-medium"
         showLongName
         assetLongNameClassName="ml-2 text-gray-40 hidden lg:block"
       />
@@ -32,7 +34,7 @@ export const COLUMNS_CONFIG = [
   {
     id: 'prices',
     title: t(translation.price),
-    cellRenderer: pair => (
+    cellRenderer: (pair: CryptoPair) => (
       <AmountRenderer
         value={decimalic(pair.lastPrice).toString()}
         prefix="$ "
@@ -42,12 +44,12 @@ export const COLUMNS_CONFIG = [
   {
     id: '24h',
     title: t(translation['24h']),
-    cellRenderer: pair => <PriceChange value={pair.price24h} />,
+    cellRenderer: (pair: CryptoPair) => <PriceChange value={pair.price24h} />,
   },
   {
     id: '7d',
     title: t(translation['7d']),
-    cellRenderer: pair => <PriceChange value={pair.priceWeek} />,
+    cellRenderer: (pair: CryptoPair) => <PriceChange value={pair.priceWeek} />,
   },
   {
     id: 'marketCap',
@@ -64,7 +66,7 @@ export const COLUMNS_CONFIG = [
         />
       </span>
     ),
-    cellRenderer: pair => (
+    cellRenderer: (pair: CryptoPair) => (
       <AmountRenderer
         value={decimalic(pair.marketCap).toString()}
         prefix="$ "
@@ -86,7 +88,7 @@ export const COLUMNS_CONFIG = [
         />
       </span>
     ),
-    cellRenderer: pair => (
+    cellRenderer: (pair: CryptoPair) => (
       <AmountRenderer
         value={decimalic(pair.circulatingSupply).toString()}
         prefix="$ "
@@ -94,3 +96,5 @@ export const COLUMNS_CONFIG = [
     ),
   },
 ];
+
+export const DEFAULT_PRICES_PAGE_SIZE = 8;

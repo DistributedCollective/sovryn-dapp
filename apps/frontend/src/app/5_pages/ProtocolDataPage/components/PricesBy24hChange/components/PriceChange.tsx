@@ -21,8 +21,10 @@ export const PriceChange: React.FC<PriceChangeProps> = ({ value }) => {
     >
       <AssetValue value={Decimal.from(value)} showNegativeSign={value < 0} />%
       <Icon
-        className="ml-2"
-        size={12}
+        className={classNames('ml-1', {
+          'rotate-90': value < 0,
+        })}
+        size={10}
         icon={IconNames.TOP_RIGHT_ARROW}
         viewBox="0 0 9 8"
       />

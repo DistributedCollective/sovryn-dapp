@@ -21,13 +21,17 @@ import { useIsMobile } from '../../../../../hooks/useIsMobile';
 import { translations } from '../../../../../locales/i18n';
 import { decimalic } from '../../../../../utils/math';
 import { pageTranslations } from '../../ProtocolDataPage.constants';
-import { COLUMNS_CONFIG } from './PricesBy24hChange.constants';
+import {
+  COLUMNS_CONFIG,
+  DEFAULT_PRICES_PAGE_SIZE,
+} from './PricesBy24hChange.constants';
+import { CryptoPair } from './PricesBy24hChange.types';
 import { parseCryptoPairs } from './PricesBy24hChange.utils';
 import { PriceChange } from './components/PriceChange';
 import { useGetAssetData } from './hooks/useGetAssetData';
 import { useGetCryptoPairs } from './hooks/useGetCryptoPairs';
 
-const pageSize = 8;
+const pageSize = DEFAULT_PRICES_PAGE_SIZE;
 
 export const PricesBy24hChange: FC = () => {
   const { pairs, isLoading } = useGetCryptoPairs();
@@ -36,9 +40,10 @@ export const PricesBy24hChange: FC = () => {
   const navigate = useNavigate();
   const { isMobile } = useIsMobile();
 
-  const rows = useMemo(() => {
-    return parseCryptoPairs(pairs, assetData);
-  }, [assetData, pairs]);
+  const rows = useMemo(
+    () => parseCryptoPairs(pairs, assetData),
+    [assetData, pairs],
+  );
 
   const paginatedItems = useMemo(
     () => rows?.slice(page * pageSize, (page + 1) * pageSize),
@@ -71,13 +76,16 @@ export const PricesBy24hChange: FC = () => {
   );
 
   const generateRowTitle = useCallback(
-    (pair: any) => (
-      <div className="flex items-center w-full justify-between pr-3">
-        <AssetRenderer
-          showAssetLogo
-          address={pair.asset}
-          className="lg:justify-start justify-end"
-        />
+    (pair: CryptoPair) => (
+      <div className="flex items-center w-full justify-between pr-3 py-1.5 text-xs">
+        <div className="text-sm">
+          <AssetRenderer
+            showAssetLogo
+            address={pair.asset}
+            className="lg:justify-start justify-end"
+            assetClassName="text-sm font-medium"
+          />
+        </div>
         <AmountRenderer
           value={decimalic(pair.lastPrice).toString()}
           prefix="$ "
@@ -88,7 +96,7 @@ export const PricesBy24hChange: FC = () => {
     [],
   );
   const mobileRenderer = useCallback(
-    (pair: any) => (
+    (pair: CryptoPair) => (
       <div className="flex flex-col">
         <SimpleTableRow
           label={
@@ -174,7 +182,7 @@ export const PricesBy24hChange: FC = () => {
           mobileRenderer={mobileRenderer}
           onRowClick={pair => !isMobile && convert(pair.asset)}
           isClickable
-          isLoading={isLoading && !rows.length}
+          isLoading={isLoading}
           rowClassName="bg-gray-80"
         />
         <Pagination

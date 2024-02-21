@@ -1,11 +1,11 @@
 import { Decimal } from '@sovryn/utils';
 
-import { AssetsData, PairData } from './PricesBy24hChange.types';
+import { AssetsData, CryptoPair, PairData } from './PricesBy24hChange.types';
 
 export const parseCryptoPairs = (
   pairs: PairData[],
   assetData: AssetsData | undefined,
-) => {
+): CryptoPair[] => {
   if (!pairs.length) {
     return [];
   }

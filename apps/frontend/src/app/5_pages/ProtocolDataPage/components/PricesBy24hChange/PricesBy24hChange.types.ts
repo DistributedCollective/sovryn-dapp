@@ -1,3 +1,5 @@
+import { Decimal } from '@sovryn/utils';
+
 export type PairData = {
   trading_pairs: string;
   base_symbol: string;
@@ -34,4 +36,14 @@ export type AssetData = {
 
 export type AssetsData = {
   [key: string]: AssetData;
+};
+
+export type CryptoPair = {
+  marketCap: Decimal;
+  circulatingSupply: string | number;
+  asset: string;
+  price24h: number;
+  priceWeek: number;
+  lastPrice: number;
+  assetData: AssetData | undefined;
 };

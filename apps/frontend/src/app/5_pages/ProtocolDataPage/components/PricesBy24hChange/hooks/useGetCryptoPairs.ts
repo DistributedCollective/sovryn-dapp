@@ -14,10 +14,11 @@ const deprecatedPair =
 
 export const useGetCryptoPairs = () => {
   const [pairList, setPairList] = useState<PairData[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const cancelPairsDataRequest = useRef<Canceler>();
 
   const fetchPairsData = useCallback(async () => {
+    console.log('fetchPairsData!');
     try {
       setIsLoading(true);
       cancelPairsDataRequest.current && cancelPairsDataRequest.current();
@@ -67,6 +68,9 @@ export const useGetCryptoPairs = () => {
           ),
     [pairList],
   );
+  console.log({
+    isLoading,
+  });
 
   return {
     pairs,

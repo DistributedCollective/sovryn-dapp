@@ -4,8 +4,8 @@ import { t } from 'i18next';
 
 import { Button } from '@sovryn/ui';
 
-import { useWalletConnect } from '../../../../../../hooks';
-import { translations } from '../../../../../../locales/i18n';
+import { useWalletConnect } from '../../../../../../../../hooks';
+import { translations } from '../../../../../../../../locales/i18n';
 
 export const useGetConnectWalletMessage = () => {
   const { connectWallet } = useWalletConnect();

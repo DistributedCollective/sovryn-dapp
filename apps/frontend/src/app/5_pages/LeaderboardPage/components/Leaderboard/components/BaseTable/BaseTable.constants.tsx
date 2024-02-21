@@ -9,6 +9,9 @@ import { translations } from '../../../../../../../locales/i18n';
 import { User } from '../../Leaderboard.types';
 import { Badges } from '../Badges/Badges';
 
+export const TRADING_LEADERBOARD_URL =
+  'https://redash.sovryn.app/api/queries/544/results.json?api_key=52Jy2PGF5HZVye97NCG9e8nNDDPZ1iFo65Hfo1sk';
+
 export const STAKING_LEADERBOARD_URL =
   'https://redash.sovryn.app/api/queries/545/results.json?api_key=sjTLMq48pU0yHJlDBWrFiQQS2x0jTtk7BChYTC8J';
 
@@ -23,8 +26,8 @@ export const COLUMNS_CONFIG = (isSingleUser: boolean) => [
   {
     id: 'wallet',
     title: t(
-      translations.leaderboardPage.tables.trading[
-        isSingleUser ? 'yourPosition' : 'participants'
+      translations.leaderboardPage.tables.baseTable[
+        isSingleUser ? 'yourPosition' : 'participant'
       ],
     ),
     cellRenderer: (row: User) => (
@@ -38,7 +41,7 @@ export const COLUMNS_CONFIG = (isSingleUser: boolean) => [
   },
   {
     id: 'points',
-    title: t(translations.leaderboardPage.tables.trading.points),
+    title: t(translations.leaderboardPage.tables.baseTable.points),
     cellRenderer: (row: User) => (
       <AmountRenderer value={row.points} showRoundingPrefix={false} />
     ),

@@ -3,6 +3,10 @@ import React, { FC } from 'react';
 import { t } from 'i18next';
 
 import { translations } from '../../../../../../../locales/i18n';
+import {
+  COMPETITION_URL,
+  LEADERBOARD_URL,
+} from './SocialLeaderboard.constants';
 
 export const SocialLeaderboard: FC = () => {
   return (
@@ -13,7 +17,7 @@ export const SocialLeaderboard: FC = () => {
 
       <div className="flex flex-row justify-center mt-8">
         <iframe
-          src="https://gleam.io/2Pqut/tiltom-test"
+          src={COMPETITION_URL}
           title="competition"
           className="rounded w-[30.25rem] h-[30.75rem]"
         ></iframe>
@@ -21,7 +25,7 @@ export const SocialLeaderboard: FC = () => {
 
       <div className="flex flex-row justify-center mb-8">
         <iframe
-          src="https://gleam.io/2Pqut/leaderboard"
+          src={LEADERBOARD_URL}
           title="leaderboard"
           id="leaderboard"
           className="rounded-b w-[30.25rem] h-[31.25rem]"

@@ -1,7 +1,7 @@
 import { useCallback, useMemo, useState } from 'react';
 
 import { User } from '../../../Leaderboard.types';
-import { PAGE_SIZE } from '../TradingLeaderboard.constants';
+import { PAGE_SIZE } from '../BaseTable.constants';
 
 export const useHandlePagination = (users: User[]) => {
   const [page, setPage] = useState(0);

@@ -5,7 +5,7 @@ import { BadgeStyle } from '@sovryn/ui';
 import { translations } from '../../../../../../../locales/i18n';
 import { UserBadges } from '../../Leaderboard.types';
 
-const baseTranslation = translations.leaderboardPage.tables.trading.badges;
+const baseTranslation = translations.leaderboardPage.tables.baseTable.badges;
 
 export const getBadgeDetails = (badge: UserBadges) => {
   switch (badge) {

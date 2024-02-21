@@ -3,7 +3,7 @@ import React from 'react';
 import { prettyTx } from '@sovryn/ui';
 
 import { AmountRenderer } from '../../../../../../2_molecules/AmountRenderer/AmountRenderer';
-import { UserBadges, User } from '../../Leaderboard.types';
+import { User, UserBadges } from '../../Leaderboard.types';
 import { Badges } from '../Badges/Badges';
 
 export const parseBadges = (data: any): UserBadges[] => {

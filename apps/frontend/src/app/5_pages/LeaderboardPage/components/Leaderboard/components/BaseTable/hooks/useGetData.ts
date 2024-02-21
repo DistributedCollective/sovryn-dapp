@@ -2,15 +2,14 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { useAccount } from '../../../../../../../../hooks/useAccount';
 import { User } from '../../../Leaderboard.types';
-import { parseBadges } from '../../TradingLeaderboard/TradingLeaderboard.utils';
-import { STAKING_LEADERBOARD_URL } from '../StakingLeaderboard.constants';
+import { parseBadges } from '../BaseTable.utils';
 
-export const useGetData = () => {
+export const useGetData = (url: string) => {
   const { account } = useAccount();
   const [users, setUsers] = useState<User[]>([]);
 
   const fetchData = useCallback(async () => {
-    const response = await fetch(STAKING_LEADERBOARD_URL);
+    const response = await fetch(url);
 
     if (response.ok) {
       const data = await response.json();
@@ -30,7 +29,7 @@ export const useGetData = () => {
         }
       }
     }
-  }, []);
+  }, [url]);
 
   const connectedWalletRow = useMemo(() => {
     if (account && users.length > 0) {

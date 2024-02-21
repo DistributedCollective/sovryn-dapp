@@ -886,9 +886,8 @@
         "tables": {
             "connectWalletText": "Connect your wallet to see how many points you’ve got.",
             "connectWalletCta": "Connect wallet",
-            "trading": {
-                "pointsInfo": "Trading has a 25% share of the PoWa reward pool",
-                "participants": "Participants",
+            "baseTable": {
+                "participant": "Participant",
                 "points": "Points",
                 "yourPosition": "Your position",
                 "badges": {
@@ -902,6 +901,9 @@
                     "topStakerDay": "+10% Top Staker D",
                     "topStakerWeek": "+10% Top Staker W"
                 }
+            },
+            "trading": {
+                "pointsInfo": "Trading has a 25% share of the PoWa reward pool"
             },
             "staking": {
                 "pointsInfo": "Staking has a 40% share of the PoWa reward pool"

@@ -3,34 +3,46 @@ import React from 'react';
 import { prettyTx } from '@sovryn/ui';
 
 import { AmountRenderer } from '../../../../../../2_molecules/AmountRenderer/AmountRenderer';
-import { TradingBadges, User } from '../../Leaderboard.types';
+import { UserBadges, User } from '../../Leaderboard.types';
 import { Badges } from '../Badges/Badges';
 
-export const parseBadges = (data: any): TradingBadges[] => {
-  let badges: TradingBadges[] = [];
+export const parseBadges = (data: any): UserBadges[] => {
+  let badges: UserBadges[] = [];
 
   if (data.early_user === 1) {
-    badges.push(TradingBadges.EARLY_USER);
+    badges.push(UserBadges.EARLY_USER);
   }
 
   if (data.genesis === 1) {
-    badges.push(TradingBadges.GENESIS);
+    badges.push(UserBadges.GENESIS);
   }
 
   if (data.origin === 1) {
-    badges.push(TradingBadges.ORIGIN);
+    badges.push(UserBadges.ORIGIN);
   }
 
   if (data.nft === 1) {
-    badges.push(TradingBadges.NFT);
+    badges.push(UserBadges.NFT);
   }
 
   if (data.top_importer_day === 1) {
-    badges.push(TradingBadges.TOP_IMPORTER_DAY);
+    badges.push(UserBadges.TOP_IMPORTER_DAY);
   }
 
   if (data.top_importer_week === 1) {
-    badges.push(TradingBadges.TOP_IMPORTER_WEEK);
+    badges.push(UserBadges.TOP_IMPORTER_WEEK);
+  }
+
+  if (data.voter === 1) {
+    badges.push(UserBadges.VOTER);
+  }
+
+  if (data.top_staker_day === 1) {
+    badges.push(UserBadges.TOP_STAKER_DAY);
+  }
+
+  if (data.top_staker_week === 1) {
+    badges.push(UserBadges.TOP_STAKER_WEEK);
   }
 
   return badges;

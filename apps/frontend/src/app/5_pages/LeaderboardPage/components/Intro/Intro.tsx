@@ -44,6 +44,8 @@ export const Intro: FC<IntroProps> = ({ pointsSectionRef }) => {
         <Button
           text={t(baseTranslation.secondaryCta)}
           style={ButtonStyle.ghost}
+          hrefExternal
+          href="https://sovryn.com/powa"
         />
       </div>
 

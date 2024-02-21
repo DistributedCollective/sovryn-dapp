@@ -3,40 +3,55 @@ import { t } from 'i18next';
 import { BadgeStyle } from '@sovryn/ui';
 
 import { translations } from '../../../../../../../locales/i18n';
-import { TradingBadges } from '../../Leaderboard.types';
+import { UserBadges } from '../../Leaderboard.types';
 
 const baseTranslation = translations.leaderboardPage.tables.trading.badges;
 
-export const getBadgeDetails = (badge: TradingBadges) => {
+export const getBadgeDetails = (badge: UserBadges) => {
   switch (badge) {
-    case TradingBadges.EARLY_USER:
+    case UserBadges.EARLY_USER:
       return {
         title: t(baseTranslation.earlyUser),
         style: BadgeStyle.teal,
       };
-    case TradingBadges.GENESIS:
+    case UserBadges.GENESIS:
       return {
         title: t(baseTranslation.genesis),
         style: BadgeStyle.teal,
       };
-    case TradingBadges.NFT:
+    case UserBadges.NFT:
       return {
         title: t(baseTranslation.nft),
         style: BadgeStyle.teal,
       };
-    case TradingBadges.ORIGIN:
+    case UserBadges.ORIGIN:
       return {
         title: t(baseTranslation.origin),
         style: BadgeStyle.teal,
       };
-    case TradingBadges.TOP_IMPORTER_DAY:
+    case UserBadges.TOP_IMPORTER_DAY:
       return {
         title: t(baseTranslation.topImporterDay),
         style: BadgeStyle.brown,
       };
-    case TradingBadges.TOP_IMPORTER_WEEK:
+    case UserBadges.TOP_IMPORTER_WEEK:
       return {
         title: t(baseTranslation.topImporterWeek),
+        style: BadgeStyle.brown,
+      };
+    case UserBadges.VOTER:
+      return {
+        title: t(baseTranslation.voter),
+        style: BadgeStyle.teal,
+      };
+    case UserBadges.TOP_STAKER_DAY:
+      return {
+        title: t(baseTranslation.topStakerDay),
+        style: BadgeStyle.brown,
+      };
+    case UserBadges.TOP_STAKER_WEEK:
+      return {
+        title: t(baseTranslation.topStakerWeek),
         style: BadgeStyle.brown,
       };
   }

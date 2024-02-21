@@ -897,7 +897,10 @@
                     "nft": "+5% NFT holder",
                     "origin": "+5% Origin",
                     "topImporterDay": "+10% Top Trader D",
-                    "topImporterWeek": "+10% Top Trader W"
+                    "topImporterWeek": "+10% Top Trader W",
+                    "voter": "+5% Voter",
+                    "topStakerDay": "+10% Top Staker D",
+                    "topStakerWeek": "+10% Top Staker W"
                 }
             },
             "staking": {

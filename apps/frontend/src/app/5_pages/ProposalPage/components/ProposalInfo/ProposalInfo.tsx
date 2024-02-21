@@ -26,10 +26,10 @@ export const ProposalInfo: FC<ProposalInfoProps> = ({ link, description }) => (
         {t(pageTranslations.discussionLink)}
       </Paragraph>
       {link && (
-        <Paragraph size={ParagraphSize.base} className="text-xs">
+        <Paragraph size={ParagraphSize.base} className="text-sm leading-5">
           <a
             href={link}
-            className="text-primary-20"
+            className="text-primary-20 break-words"
             target="_blank"
             rel="noreferrer"
           >
@@ -42,11 +42,11 @@ export const ProposalInfo: FC<ProposalInfoProps> = ({ link, description }) => (
     <div className="sm:flex sm:mb-0 mb-2 overflow-hidden">
       <Paragraph
         size={ParagraphSize.base}
-        className="text-xs min-w-24 w-24 text-gray-30"
+        className="text-xs min-w-24 w-24 text-gray-30 mb-2"
       >
         {t(pageTranslations.proposalText)}
       </Paragraph>
-      <div className="flex-1">
+      <div className={styles.description}>
         <ReactMarkdown className={styles.markdown} remarkPlugins={[remarkGfm]}>
           {description}
         </ReactMarkdown>

@@ -28,6 +28,7 @@ import { defaultChainId } from '../../../../../../../config/chains';
 
 import { translations } from '../../../../../../../locales/i18n';
 import { validateURL } from '../../../../../../../utils/helpers';
+import styles from '../../../../../ProposalPage/components/ProposalInfo/ProposalInfo.module.css';
 import { useProposalContext } from '../../../../contexts/NewProposalContext';
 import { ProposalCreationType } from '../../../../contexts/ProposalContext.types';
 import { Governor } from '../../NewProposalForm.types';
@@ -123,12 +124,14 @@ export const ProposalDataForm: FC<ProposalDataFormProps> = ({
       {
         label: t(translations.bitocracyPage.actions.preview),
         content: (
-          <ReactMarkdown
-            remarkPlugins={[remarkGfm]}
-            className="w-full bg-gray-70 border border-gray-70 p-3 rounded focus:border-gray-60 mt-2 min-h-36 overflow-auto"
-          >
-            {form.text}
-          </ReactMarkdown>
+          <div className={styles.description}>
+            <ReactMarkdown
+              remarkPlugins={[remarkGfm]}
+              className="w-full bg-gray-70 border border-gray-70 p-3 rounded focus:border-gray-60 mt-2 min-h-36 overflow-auto"
+            >
+              {form.text}
+            </ReactMarkdown>
+          </div>
         ),
         activeClassName: ACTIVE_CLASSNAME,
       },

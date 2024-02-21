@@ -899,6 +899,12 @@
                     "topImporterDay": "+10% Top Trader D",
                     "topImporterWeek": "+10% Top Trader W"
                 }
+            },
+            "staking": {
+                "pointsInfo": "Staking has a 40% share of the PoWa reward pool"
+            },
+            "social": {
+                "pointsInfo": "Social activity has a 25% share of the PoWa reward pool"
             }
         },
         "pointsSection": {

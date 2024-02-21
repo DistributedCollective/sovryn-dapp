@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, RefObject, useCallback } from 'react';
 
 import { t } from 'i18next';
 
@@ -8,35 +8,53 @@ import { translations } from '../../../../../locales/i18n';
 
 const baseTranslation = translations.leaderboardPage;
 
-export const Intro: FC = () => (
-  <div className="w-full md:w-[26rem] text-center">
-    <div className="text-2xl font-medium mt-9">{t(baseTranslation.title)}</div>
-    <div className="text-sm font-semibold mt-4">
-      {t(baseTranslation.subtitle)}
-    </div>
-    <div className="text-sm font-medium mt-6">
-      {t(baseTranslation.description)}
-    </div>
+type IntroProps = {
+  pointsSectionRef: RefObject<HTMLDivElement>;
+};
 
-    <div className="mt-4">
-      <Button
-        text={t(baseTranslation.primaryCta)}
-        style={ButtonStyle.secondary}
-        className="mr-4"
-      />
-      <Button
-        text={t(baseTranslation.secondaryCta)}
-        style={ButtonStyle.ghost}
-      />
-    </div>
+export const Intro: FC<IntroProps> = ({ pointsSectionRef }) => {
+  const primaryCtaClickHandler = useCallback(() => {
+    if (pointsSectionRef.current) {
+      pointsSectionRef.current.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start',
+      });
+    }
+  }, [pointsSectionRef]);
 
-    <div className="mt-11">
-      <div className="text-2xl font-medium mt-9">
-        {t(baseTranslation.ctaLinksSection.title)}
+  return (
+    <div className="w-full md:w-[26rem] text-center">
+      <div className="text-2xl font-medium mt-4 lg:mt-9">
+        {t(baseTranslation.title)}
       </div>
       <div className="text-sm font-semibold mt-4">
-        {t(baseTranslation.ctaLinksSection.subtitle)}
+        {t(baseTranslation.subtitle)}
+      </div>
+      <div className="text-sm font-medium mt-6">
+        {t(baseTranslation.description)}
+      </div>
+
+      <div className="mt-4">
+        <Button
+          text={t(baseTranslation.primaryCta)}
+          style={ButtonStyle.secondary}
+          className="mr-4"
+          onClick={primaryCtaClickHandler}
+        />
+        <Button
+          text={t(baseTranslation.secondaryCta)}
+          style={ButtonStyle.ghost}
+        />
+      </div>
+
+      <div className="mt-11">
+        <div className="text-2xl font-medium mt-9">
+          {t(baseTranslation.ctaLinksSection.title)}
+        </div>
+        <div className="text-sm font-semibold mt-4">
+          {t(baseTranslation.ctaLinksSection.subtitle)}
+        </div>
       </div>
     </div>
-  </div>
-);
+  );
+};

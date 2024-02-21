@@ -23,7 +23,7 @@ export const StakingLeaderboard: FC = () => {
   return (
     <div className="p-4">
       <div className="mt-4 text-sm font-medium text-gray-30 text-end">
-        {t(translations.leaderboardPage.tables.trading.pointsInfo)}
+        {t(translations.leaderboardPage.tables.staking.pointsInfo)}
       </div>
       <div className="mt-8 mb-8 rounded">
         <Table
@@ -44,7 +44,7 @@ export const StakingLeaderboard: FC = () => {
           rows={paginatedUsers}
           rowTitle={generateRowTitle}
           className="bg-gray-80 text-gray-10 lg:px-6 lg:py-4"
-          dataAttribute="trading-leaderboard"
+          dataAttribute="staking-leaderboard"
           preventExpandOnClickClass="prevent-row-click"
           flatMode={true}
         />
@@ -54,7 +54,7 @@ export const StakingLeaderboard: FC = () => {
           onChange={onPageChange}
           itemsPerPage={PAGE_SIZE}
           isNextButtonDisabled={isNextButtonDisabled}
-          dataAttribute="trading-leaderboard-pagination"
+          dataAttribute="staking-leaderboard-pagination"
         />
       </div>
     </div>

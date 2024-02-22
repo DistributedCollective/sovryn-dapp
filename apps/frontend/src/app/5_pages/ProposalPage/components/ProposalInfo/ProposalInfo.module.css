@@ -19,14 +19,14 @@
   }
 
   ul {
-    @apply list-disc pl-5 mb-2 text-sm;
+    @apply list-disc pl-5 mb-2;
   }
 
   ol {
-    @apply list-decimal pl-5 mb-2 text-sm;
+    @apply list-decimal pl-5 mb-2;
   }
 
   p {
-    @apply mb-2 text-sm leading-5;
+    @apply mb-2;
   }
 }

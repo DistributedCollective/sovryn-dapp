@@ -5,6 +5,7 @@ import { t } from 'i18next';
 import { Button, ButtonStyle } from '@sovryn/ui';
 
 import { translations } from '../../../../../locales/i18n';
+import { scrollToElement } from '../../../../../utils/helpers';
 
 const baseTranslation = translations.leaderboardPage;
 
@@ -14,12 +15,7 @@ type IntroProps = {
 
 export const Intro: FC<IntroProps> = ({ pointsSectionRef }) => {
   const primaryCtaClickHandler = useCallback(() => {
-    if (pointsSectionRef.current) {
-      pointsSectionRef.current.scrollIntoView({
-        behavior: 'smooth',
-        block: 'start',
-      });
-    }
+    scrollToElement(pointsSectionRef);
   }, [pointsSectionRef]);
 
   return (

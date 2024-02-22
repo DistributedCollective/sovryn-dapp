@@ -5,6 +5,7 @@ import { t } from 'i18next';
 import { Table, Pagination } from '@sovryn/ui';
 
 import { useAccount } from '../../../../../../../hooks/useAccount';
+import { useHandlePagination } from '../../../../../../../hooks/useHandlePagination';
 import { translations } from '../../../../../../../locales/i18n';
 import {
   COLUMNS_CONFIG,
@@ -14,9 +15,8 @@ import {
 } from './BaseTable.constants';
 import { TableType } from './BaseTable.types';
 import { generateRowTitle } from './BaseTable.utils';
-import { useGetConnectWalletMessage } from './hooks/useGetConnectWalletMessage';
+import { ConnectWalletMessage } from './components/ConnectWalletMessage/ConnectWalletMessage';
 import { useGetData } from './hooks/useGetData';
-import { useHandlePagination } from './hooks/useHandlePagination';
 
 type BaseTableProps = {
   type: TableType;
@@ -31,11 +31,10 @@ export const BaseTable: FC<BaseTableProps> = ({ type }) => {
     () => (isStakingTable ? STAKING_LEADERBOARD_URL : TRADING_LEADERBOARD_URL),
     [isStakingTable],
   );
-  const { users, connectedWalletRow } = useGetData(dataUrl);
+  const { loading, users, connectedWalletRow } = useGetData(dataUrl);
 
-  const connectWalletMessage = useGetConnectWalletMessage();
-  const { page, onPageChange, paginatedUsers, isNextButtonDisabled } =
-    useHandlePagination(users);
+  const { page, onPageChange, paginatedItems, isNextButtonDisabled } =
+    useHandlePagination(users, PAGE_SIZE);
 
   return (
     <div className="p-4">
@@ -52,17 +51,21 @@ export const BaseTable: FC<BaseTableProps> = ({ type }) => {
           columns={COLUMNS_CONFIG(true)}
           rowTitle={generateRowTitle}
           noData={
-            !account
-              ? connectWalletMessage
-              : t(translations.common.tables.noData)
+            !account ? (
+              <ConnectWalletMessage />
+            ) : (
+              t(translations.common.tables.noData)
+            )
           }
+          isLoading={!!account && loading}
           flatMode={true}
         />
       </div>
       <div className="bg-gray-80 py-4 px-4 rounded">
         <Table
           columns={COLUMNS_CONFIG(false)}
-          rows={paginatedUsers}
+          rows={paginatedItems}
+          isLoading={loading}
           rowTitle={generateRowTitle}
           className="bg-gray-80 text-gray-10 lg:px-6 lg:py-4"
           dataAttribute="trading-leaderboard"

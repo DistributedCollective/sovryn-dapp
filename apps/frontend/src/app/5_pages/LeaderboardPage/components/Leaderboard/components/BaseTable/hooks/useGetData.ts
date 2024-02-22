@@ -7,8 +7,10 @@ import { parseBadges } from '../BaseTable.utils';
 export const useGetData = (url: string) => {
   const { account } = useAccount();
   const [users, setUsers] = useState<User[]>([]);
+  const [loading, setLoading] = useState(false);
 
   const fetchData = useCallback(async () => {
+    setLoading(true);
     const response = await fetch(url);
 
     if (response.ok) {
@@ -29,6 +31,7 @@ export const useGetData = (url: string) => {
         }
       }
     }
+    setLoading(false);
   }, [url]);
 
   const connectedWalletRow = useMemo(() => {
@@ -49,5 +52,5 @@ export const useGetData = (url: string) => {
     fetchData();
   }, [fetchData]);
 
-  return { users, connectedWalletRow };
+  return { loading, users, connectedWalletRow };
 };

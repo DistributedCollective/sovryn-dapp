@@ -21,7 +21,7 @@ export const COLUMNS_CONFIG = (isSingleUser: boolean) => [
   {
     id: '',
     title: '',
-    cellRenderer: (row: User) => <div>{row.rank}</div>,
+    cellRenderer: (row: User) => row.rank,
   },
   {
     id: 'wallet',

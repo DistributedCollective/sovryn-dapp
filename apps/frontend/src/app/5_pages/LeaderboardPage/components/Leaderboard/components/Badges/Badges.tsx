@@ -11,8 +11,8 @@ type BadgesProps = {
 
 export const Badges: FC<BadgesProps> = ({ user }) => (
   <>
-    {user.badges.map(item => {
-      const { title, style } = getBadgeDetails(item);
+    {user.badges.map(badge => {
+      const { title, style } = getBadgeDetails(badge);
 
       return (
         <Badge content={title} className="p-2 mr-1 rounded" style={style} />

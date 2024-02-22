@@ -5,7 +5,7 @@ import {
   getProtocolContract,
   getTokenContract,
 } from '@sovryn/contracts';
-import { ChainId, numberToChainId } from '@sovryn/ethers-provider';
+import { ChainId, ChainIds, numberToChainId } from '@sovryn/ethers-provider';
 
 import { STABLECOINS } from '../../../constants';
 import { SovrynErrorCode, makeError } from '../../../errors/errors';
@@ -96,6 +96,7 @@ export const ammSwapRoute: SwapRouteFunction = (
 
   return {
     name: 'AMM',
+    chains: [ChainIds.RSK_MAINNET, ChainIds.RSK_TESTNET],
     pairs: async () => {
       if (!pairCache) {
         const chainId = await getChainId();

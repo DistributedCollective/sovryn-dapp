@@ -1563,9 +1563,17 @@
         "subtitle": "Cryptocurrency prices, yield and ecosystem statistics",
         "sections": {
             "pricesBy24hChange": "Prices by 24h change",
-            "lendAndBorrow": "Lend and borrow",
             "marketMaking": "Market making",
             "ecosystemStatistics": "Ecosystem statistics"
+        },
+        "lendAndBorrow": {
+            "title": "Lend and borrow",
+            "asset": "Asset",
+            "borrowApr": "Borrow APR",
+            "lendApr": "Lend APR",
+            "availableSupply": "Available supply",
+            "lend": "Lend",
+            "borrow": "Borrow"
         }
     }
 }

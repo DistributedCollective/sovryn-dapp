@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, RefObject } from 'react';
 
 import classNames from 'classnames';
 import { t } from 'i18next';
@@ -11,9 +11,16 @@ import styles from './PointsSection.module.css';
 const baseTranslation = translations.leaderboardPage.pointsSection;
 const tablesTranslation = translations.leaderboardPage.pointsSection.tables;
 
-export const PointsSection: FC = () => (
+type PointsSectionProps = {
+  pointsSectionRef: RefObject<HTMLDivElement>;
+};
+
+export const PointsSection: FC<PointsSectionProps> = ({ pointsSectionRef }) => (
   <>
-    <div className="w-full md:w-[26rem] text-center mb-8">
+    <div
+      ref={pointsSectionRef}
+      className="w-full md:w-[26rem] text-center mb-8"
+    >
       <div className="text-2xl font-medium mt-9">
         {t(baseTranslation.title)}
       </div>

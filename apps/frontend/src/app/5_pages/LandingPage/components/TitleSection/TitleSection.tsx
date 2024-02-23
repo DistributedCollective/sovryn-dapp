@@ -6,6 +6,7 @@ import { Trans } from 'react-i18next';
 import { Button, ButtonStyle } from '@sovryn/ui';
 
 import { translations } from '../../../../../locales/i18n';
+import { scrollToElement } from '../../../../../utils/helpers';
 
 const pageTranslations = translations.landingPage.titleSection;
 
@@ -15,12 +16,7 @@ type TitleSectionProps = {
 
 export const TitleSection: FC<TitleSectionProps> = ({ ctaRef }) => {
   const ctaClickHandler = useCallback(() => {
-    if (ctaRef.current) {
-      ctaRef.current.scrollIntoView({
-        behavior: 'smooth',
-        block: 'start',
-      });
-    }
+    scrollToElement(ctaRef);
   }, [ctaRef]);
 
   return (

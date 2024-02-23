@@ -1,4 +1,4 @@
-import React, { useMemo, useCallback } from 'react';
+import React, { useMemo, useCallback, RefObject } from 'react';
 
 import classNames from 'classnames';
 
@@ -22,6 +22,7 @@ type TabsProps = {
   onChange?: (index: number) => void;
   type?: TabType;
   size?: TabSize;
+  wrapperRef?: RefObject<HTMLDivElement>;
 };
 
 export const Tabs: React.FC<TabsProps> = ({
@@ -32,6 +33,7 @@ export const Tabs: React.FC<TabsProps> = ({
   contentClassName,
   type = TabType.primary,
   size = TabSize.normal,
+  wrapperRef,
 }) => {
   const selectTab = useCallback(
     (item: ITabItem, index: number) => {
@@ -45,7 +47,7 @@ export const Tabs: React.FC<TabsProps> = ({
   const content = useMemo(() => items[index]?.content, [index, items]);
 
   return (
-    <div className={classNames(styles.wrapper, className)}>
+    <div className={classNames(styles.wrapper, className)} ref={wrapperRef}>
       <div className={classNames(styles.tabs, styles[type])}>
         {items.map((item, i) => (
           <Tab

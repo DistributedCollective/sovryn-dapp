@@ -883,6 +883,38 @@
                 "cta": "Twitter quests"
             }
         },
+        "tables": {
+            "connectWalletText": "Connect your wallet to see how many points you’ve got.",
+            "connectWalletCta": "Connect wallet",
+            "baseTable": {
+                "participant": "Participant",
+                "points": "Points",
+                "yourPosition": "Your position",
+                "badges": {
+                    "earlyUser": "+5% Early user",
+                    "genesis": "+5% Genesis",
+                    "nft": "+5% NFT holder",
+                    "origin": "+5% Origin",
+                    "topImporterDay": "+10% Top Trader D",
+                    "topImporterWeek": "+10% Top Trader W",
+                    "voter": "+5% Voter",
+                    "topStakerDay": "+10% Top Staker D",
+                    "topStakerWeek": "+10% Top Staker W"
+                }
+            },
+            "trading": {
+                "tabTitle": "Trading",
+                "pointsInfo": "Trading has a 25% share of the PoWa reward pool"
+            },
+            "staking": {
+                "tabTitle": "Staking",
+                "pointsInfo": "Staking has a 40% share of the PoWa reward pool"
+            },
+            "social": {
+                "tabTitle": "Social power",
+                "pointsInfo": "Social activity has a 25% share of the PoWa reward pool"
+            }
+        },
         "pointsSection": {
             "title": "Gain POWA!",
             "description": "Actions on the Sovryn dApp and on Twitter earn you points. Points convert to POWA - the next Bitcoin token class.",

@@ -1,9 +1,8 @@
 import React, { FC } from 'react';
 
-export const TradingLeaderboard: FC = () => {
-  return (
-    <div>
-      <div>Trading leaderboard</div>
-    </div>
-  );
-};
+import { BaseTable } from '../BaseTable/BaseTable';
+import { TableType } from '../BaseTable/BaseTable.types';
+
+export const TradingLeaderboard: FC = () => (
+  <BaseTable type={TableType.Trading} />
+);

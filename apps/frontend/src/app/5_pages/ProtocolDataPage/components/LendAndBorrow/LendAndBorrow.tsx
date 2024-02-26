@@ -115,6 +115,7 @@ export const LendAndBorrow: FC = () => {
           dataAttribute="lend-borrow-table"
           rowTitle={generateRowTitle}
           mobileRenderer={mobileRenderer}
+          rowClassName="bg-gray-80"
         />
       </div>
     </div>

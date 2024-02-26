@@ -17,7 +17,7 @@ export enum Chains {
 //   isMainnet() ? ChainIds.RSK_MAINNET : ChainIds.RSK_TESTNET
 // ) as string;
 
-export const defaultChainId = ChainIds.SEPOLIA;
+export const defaultChainId = ChainIds.MAINNET;
 
 // @dev: temp solution for hardware wallets to connect to the correct chain
 // good enough for now, but should be refactored when cross-chain support is needed
@@ -40,11 +40,20 @@ export const chains: Chain[] = [
         blockExplorerUrl: RSK_EXPLORER[Environments.Testnet],
       },
   {
+    id: ChainIds.MAINNET,
+    label: 'Ethereum',
+    token: 'ETH',
+    publicRpcUrl:
+      'https://mainnet.infura.io/v3/0c19878edb3f4400993ad7925d3d2cca',
+    rpcUrl: 'https://mainnet.infura.io/v3/0c19878edb3f4400993ad7925d3d2cca',
+    blockExplorerUrl: 'https://etherscan.io',
+  },
+  {
     id: ChainIds.SEPOLIA,
     label: 'Sepolia',
     token: 'ETH',
-    publicRpcUrl: PUBLIC_RSK_RPC[Environments.Mainnet],
-    rpcUrl: RSK_RPC[Environments.Mainnet],
+    publicRpcUrl: 'https://ethereum-sepolia.publicnode.com',
+    rpcUrl: 'https://ethereum-sepolia.publicnode.com',
     blockExplorerUrl: 'https://sepolia.etherscan.io',
   },
 ];

@@ -144,7 +144,7 @@ export const resolveIcon = async (tokenBaseInfo: TokenBaseInfo) => {
   const icon = await getIcon();
 
   if (!icon) {
-    throw new Error(`getTokenDetails: Icon not found for token: ${symbol}`);
+    throw new Error(`resolveIcon: Icon not found for token: ${symbol}`);
   }
 
   iconCache.set(symbol, icon);
@@ -158,7 +158,7 @@ export const getTokenDetailsData = async (
   const tokenBaseInfo = SupportedTokenList.find(token => token.symbol === name);
 
   if (!tokenBaseInfo) {
-    throw new Error(`getTokenDetails: Unsupported token: ${name}`);
+    throw new Error(`getTokenDetailsData: Unsupported token: ${name}`);
   }
 
   const { address, abi } = await getContract(name, 'tokens', chainId);
@@ -178,6 +178,7 @@ export const getTokenDetailsData = async (
 
 export const getTokenDetailsDataByAddress = async (
   address: string,
+  chainId: ChainId,
 ): Promise<TokenDetailsData> => {
   const contract = await findContract(address);
 
@@ -186,7 +187,9 @@ export const getTokenDetailsDataByAddress = async (
   );
 
   if (!tokenBaseInfo) {
-    throw new Error(`getTokenDetails: Unsupported token: ${address}`);
+    throw new Error(
+      `getTokenDetailsDataByAddress: Unsupported token: ${address}`,
+    );
   }
 
   const icon = await resolveIcon(tokenBaseInfo);

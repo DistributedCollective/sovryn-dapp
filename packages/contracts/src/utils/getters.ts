@@ -43,4 +43,5 @@ export const getTokenDetails = async (
 
 export const getTokenDetailsByAddress = async (
   address: string,
-): Promise<TokenDetailsData> => getTokenDetailsDataByAddress(address);
+  chain: ChainId = ChainIds.RSK_MAINNET,
+): Promise<TokenDetailsData> => getTokenDetailsDataByAddress(address, chain);

@@ -56,7 +56,9 @@ const tokensToOptions = (
   callback: (options: SelectOption<SupportedTokens>[]) => void,
 ) =>
   Promise.all(
-    addresses.map(address => smartRouter.getTokenDetails(address)),
+    addresses.map(address =>
+      smartRouter.getTokenDetails(address, defaultChainId),
+    ),
   ).then(tokens =>
     callback(
       tokens.map(token => ({
@@ -225,9 +227,12 @@ const ConvertPage: FC = () => {
       setQuote('');
       setRoute(undefined);
 
-      if (!sourceToken || !destinationToken || weiAmount.lte(0)) {
+      // if (!sourceToken || !destinationToken || weiAmount.lte(0)) {
+      if (!sourceToken || !destinationToken) {
         return;
       }
+
+      console.log('search?', sourceToken, destinationToken, weiAmount.toString(), defaultChainId);
 
       const [sourceTokenDetails, destinationTokenDetails] = await Promise.all([
         getTokenDetails(sourceToken, defaultChainId),
@@ -240,6 +245,8 @@ const ConvertPage: FC = () => {
         destinationTokenDetails.address,
         weiAmount,
       );
+
+      console.log('get best quote result', result);
 
       setRoute(result.route);
       const quote = removeTrailingZerosFromString(

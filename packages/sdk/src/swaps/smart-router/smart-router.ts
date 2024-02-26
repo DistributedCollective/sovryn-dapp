@@ -132,7 +132,10 @@ export class SmartRouter {
     return (await this.getPairs(chain)).get(entry) ?? [];
   }
 
-  public async getTokenDetails(token: string): Promise<TokenDetailsData> {
-    return getTokenDetailsByAddress(token);
+  public async getTokenDetails(
+    token: string,
+    chain: ChainId,
+  ): Promise<TokenDetailsData> {
+    return getTokenDetailsByAddress(token, chain);
   }
 }

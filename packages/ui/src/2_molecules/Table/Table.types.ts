@@ -18,6 +18,7 @@ export type ColumnOptions<RowType extends RowObject> = {
 
 export type TableProps<RowType extends RowObject> = {
   className?: string;
+  rowClassName?: string;
   columns: ColumnOptions<RowType>[];
   rows?: RowType[];
   rowKey?: (row: RowType) => number | string;

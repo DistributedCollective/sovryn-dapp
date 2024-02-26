@@ -20,11 +20,12 @@ export const COLUMNS_CONFIG = [
     id: 'asset',
     title: t(translation.asset),
     cellRenderer: (pool: LendingPool) => (
-      <div className="flex items-center font-medium text-base sm:text-xs">
+      <div className="flex items-center">
         <AssetRenderer
           showAssetLogo
           asset={pool.getAsset()}
           className="lg:justify-start justify-end"
+          assetClassName="text-xs font-medium"
         />
         <span className="text-gray-40 hidden lg:block">
           {getTokenLongName(pool.getAsset())}

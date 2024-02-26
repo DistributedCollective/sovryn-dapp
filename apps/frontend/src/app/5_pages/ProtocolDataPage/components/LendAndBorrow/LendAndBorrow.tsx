@@ -33,6 +33,7 @@ export const LendAndBorrow: FC = () => {
         showAssetLogo
         asset={pool.getAsset()}
         className="lg:justify-start justify-end my-2"
+        assetClassName="text-base font-medium"
       />
     ),
     [],

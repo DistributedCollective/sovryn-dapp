@@ -28,13 +28,23 @@ export const LendAndBorrow: FC = () => {
   const navigate = useNavigate();
 
   const generateRowTitle = useCallback(
-    (pool: LendingPool) => (
-      <AssetRenderer
-        showAssetLogo
-        asset={pool.getAsset()}
-        className="lg:justify-start justify-end my-2"
-        assetClassName="text-base font-medium"
-      />
+    (pool: LendingPool, isOpen?: boolean) => (
+      <div className="flex justify-between items-center w-full">
+        <AssetRenderer
+          showAssetLogo
+          asset={pool.getAsset()}
+          className="lg:justify-start justify-end my-2"
+          assetClassName="text-base font-medium"
+        />
+        {!isOpen && (
+          <div className="pl-1 flex items-center">
+            <NextBorrowInterestRate asset={pool.getAsset()} />
+            <span className="text-gray-30 ml-1 font-medium">
+              {t(translations.protocolDataPage.lendAndBorrow.borrowApr)}
+            </span>
+          </div>
+        )}
+      </div>
     ),
     [],
   );

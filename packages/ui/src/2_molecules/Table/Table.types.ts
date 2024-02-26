@@ -21,7 +21,7 @@ export type TableProps<RowType extends RowObject> = {
   columns: ColumnOptions<RowType>[];
   rows?: RowType[];
   rowKey?: (row: RowType) => number | string;
-  rowTitle?: (row: RowType) => ReactNode;
+  rowTitle?: (row: RowType, isOpen?: boolean) => ReactNode;
   noData?: ReactNode;
   loadingData?: ReactNode;
   onRowClick?: (row: RowType) => void;

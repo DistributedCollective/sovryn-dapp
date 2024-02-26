@@ -1,4 +1,4 @@
-import { ReactNode, useCallback, useState } from 'react';
+import { ReactNode, useCallback, useMemo, useState } from 'react';
 
 import { Accordion, AccordionStyle } from '../../../../../1_atoms';
 import { noop } from '../../../../../utils';
@@ -11,10 +11,13 @@ type TableMobileRowProps<RowType extends RowObject> = {
   row: RowType;
   onRowClick?: (row: RowType) => void;
   dataAttribute?: string;
-  title: ReactNode;
+  titleRenderer:
+    | ((row: RowType, isOpen?: boolean | undefined) => React.ReactNode)
+    | undefined;
   expandedContent?: (row: RowType) => ReactNode;
   renderer?: (row: RowType) => ReactNode;
   subtitleRenderer?: (row: RowType) => ReactNode;
+  index: number;
 };
 
 export const TableMobileRow = <RowType extends RowObject>({
@@ -22,10 +25,11 @@ export const TableMobileRow = <RowType extends RowObject>({
   row,
   onRowClick = noop,
   dataAttribute,
-  title,
+  titleRenderer,
   expandedContent,
   renderer,
   subtitleRenderer,
+  index,
 }: TableMobileRowProps<RowType>) => {
   const [open, setOpen] = useState(false);
 
@@ -33,6 +37,10 @@ export const TableMobileRow = <RowType extends RowObject>({
     onRowClick?.(row);
   }, [onRowClick, row]);
 
+  const title = useMemo(
+    () => <>{titleRenderer?.(row, open) || index}</>,
+    [index, open, row, titleRenderer],
+  );
   return (
     <>
       <Accordion

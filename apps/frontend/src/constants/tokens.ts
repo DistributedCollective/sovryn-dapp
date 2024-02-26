@@ -1,15 +1,32 @@
 import { SupportedTokens } from '@sovryn/contracts';
 
+import { isBitpro, isBtcBasedAsset } from '../utils/helpers';
+
 export const tokensDisplayName = {
   [SupportedTokens.bnbs]: 'BNB',
   [SupportedTokens.rbtc]: 'BTC',
   [SupportedTokens.eths]: 'ETH',
   [SupportedTokens.fish]: 'FISH',
-  [SupportedTokens.wrbtc]: 'BTC',
 };
 
-export const getTokenDisplayName = (token: SupportedTokens | string): string =>
-  tokensDisplayName[token?.toLowerCase()] || token?.toUpperCase();
+export const resolveTokenName = (token: SupportedTokens | string): string => {
+  if (isBtcBasedAsset(token)) {
+    token = SupportedTokens.rbtc;
+  }
+
+  if (isBitpro(token)) {
+    token = SupportedTokens.bpro;
+  }
+
+  return token;
+};
+
+export const getTokenDisplayName = (
+  token: SupportedTokens | string,
+): string => {
+  token = resolveTokenName(token);
+  return tokensDisplayName[token?.toLowerCase()] || token?.toUpperCase();
+};
 
 export const tokensLongName = {
   [SupportedTokens.rbtc]: 'Bitcoin',
@@ -21,9 +38,11 @@ export const tokensLongName = {
   [SupportedTokens.doc]: 'Dollar on Chain',
   [SupportedTokens.rif]: 'RSK Infrastructure Framework',
   [SupportedTokens.bpro]: 'BitPro',
-  [SupportedTokens.bnbs]: 'Binance Smart Chain',
+  [SupportedTokens.bnbs]: 'Binance Coin',
   [SupportedTokens.eths]: 'Ethereum',
 };
 
-export const getTokenLongName = (token: SupportedTokens | string): string =>
-  tokensLongName[token?.toLowerCase()] || getTokenDisplayName(token);
+export const getTokenLongName = (token: SupportedTokens | string): string => {
+  token = resolveTokenName(token);
+  return tokensLongName[token?.toLowerCase()] || getTokenDisplayName(token);
+};

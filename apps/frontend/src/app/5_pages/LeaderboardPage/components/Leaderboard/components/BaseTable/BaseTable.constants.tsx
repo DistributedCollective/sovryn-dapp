@@ -22,16 +22,16 @@ export const MAXIMUM_USERS_TO_SHOW = 500;
 export const COLUMNS_CONFIG = (isSingleUser: boolean) => [
   {
     id: '',
-    title: '',
+    title: isSingleUser
+      ? t(translations.leaderboardPage.tables.baseTable.yourPosition)
+      : '',
     cellRenderer: (row: User) => row.rank,
   },
   {
-    id: 'wallet',
-    title: t(
-      translations.leaderboardPage.tables.baseTable[
-        isSingleUser ? 'yourPosition' : 'participant'
-      ],
-    ),
+    id: isSingleUser ? '' : 'wallet',
+    title: isSingleUser
+      ? ''
+      : t(translations.leaderboardPage.tables.baseTable.participant),
     cellRenderer: (row: User) => (
       <div>
         <div>{prettyTx(row.wallet)}</div>

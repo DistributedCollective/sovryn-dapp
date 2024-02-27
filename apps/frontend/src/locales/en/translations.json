@@ -1562,7 +1562,6 @@
         "title": "Protocol data",
         "subtitle": "Cryptocurrency prices, yield and ecosystem statistics",
         "sections": {
-            "marketMaking": "Market making",
             "ecosystemStatistics": "Ecosystem statistics"
         },
         "lendAndBorrow": {
@@ -1596,6 +1595,15 @@
             "myntAggregatorContract": "MYNT aggregator contract",
             "bitocracyStakingContract": "Bitocracy staking contract",
             "total": "Total"
+        },
+        "marketMaking": {
+            "title": "Market making",
+            "pool": "Pool",
+            "liquidity": "Liquidity",
+            "contractBalance": "Contract balance",
+            "returns": "Returns",
+            "volume": "24H volume",
+            "deposit": "Deposit"
         }
     }
 }

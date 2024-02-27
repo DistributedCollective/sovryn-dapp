@@ -3,7 +3,7 @@ import React from 'react';
 import { t } from 'i18next';
 import { Trans } from 'react-i18next';
 
-import { HelperButton, TooltipTrigger } from '@sovryn/ui';
+import { HelperButton } from '@sovryn/ui';
 
 import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { AssetRenderer } from '../../../../2_molecules/AssetRenderer/AssetRenderer';
@@ -39,7 +39,6 @@ export const COLUMNS_CONFIG = [
         <AmountRenderer
           value={decimalic(pair.lastPrice).toString()}
           prefix="$ "
-          trigger={TooltipTrigger.hover}
         />
       </div>
     ),
@@ -73,7 +72,6 @@ export const COLUMNS_CONFIG = [
       <AmountRenderer
         value={decimalic(pair.marketCap).toString()}
         prefix="$ "
-        trigger={TooltipTrigger.hover}
       />
     ),
   },
@@ -96,7 +94,6 @@ export const COLUMNS_CONFIG = [
       <AmountRenderer
         value={decimalic(pair.circulatingSupply).toString()}
         prefix="$ "
-        trigger={TooltipTrigger.hover}
       />
     ),
   },

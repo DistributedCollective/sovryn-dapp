@@ -45,6 +45,10 @@ export const parseBadges = (data: any): UserBadges[] => {
     badges.push(UserBadges.TOP_STAKER_WEEK);
   }
 
+  if (data.wallet === 1) {
+    badges.push(UserBadges.WALLET);
+  }
+
   return badges;
 };
 

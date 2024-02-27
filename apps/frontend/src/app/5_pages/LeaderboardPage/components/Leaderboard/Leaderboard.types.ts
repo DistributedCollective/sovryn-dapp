@@ -8,6 +8,7 @@ export enum UserBadges {
   VOTER = 'voter',
   TOP_STAKER_DAY = 'top_staker_day',
   TOP_STAKER_WEEK = 'top_staker_week',
+  WALLET = 'wallet',
 }
 
 export type User = {

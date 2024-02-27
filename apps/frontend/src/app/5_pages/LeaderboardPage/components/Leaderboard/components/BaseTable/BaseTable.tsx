@@ -45,7 +45,7 @@ export const BaseTable: FC<BaseTableProps> = ({ type }) => {
           ].pointsInfo,
         )}
       </div>
-      <div className="mt-8 mb-8 rounded">
+      <div className="my-8 mx-4 rounded">
         <Table
           rows={connectedWalletRow}
           columns={COLUMNS_CONFIG(true)}
@@ -74,7 +74,8 @@ export const BaseTable: FC<BaseTableProps> = ({ type }) => {
         />
         <Pagination
           page={page}
-          className="lg:pb-6 mt-3 lg:mt-6 justify-center lg:justify-start w-[5rem]"
+          totalItems={users.length}
+          className="lg:pb-6 mt-3 lg:mt-6 max-w-20"
           onChange={onPageChange}
           itemsPerPage={PAGE_SIZE}
           isNextButtonDisabled={isNextButtonDisabled}

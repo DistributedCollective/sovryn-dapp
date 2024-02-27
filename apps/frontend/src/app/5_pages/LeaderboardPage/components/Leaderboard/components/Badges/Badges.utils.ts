@@ -32,12 +32,12 @@ export const getBadgeDetails = (badge: UserBadges) => {
     case UserBadges.TOP_IMPORTER_DAY:
       return {
         title: t(baseTranslation.topImporterDay),
-        style: BadgeStyle.brown,
+        style: BadgeStyle.grayLight,
       };
     case UserBadges.TOP_IMPORTER_WEEK:
       return {
         title: t(baseTranslation.topImporterWeek),
-        style: BadgeStyle.brown,
+        style: BadgeStyle.grayLight,
       };
     case UserBadges.VOTER:
       return {
@@ -53,6 +53,11 @@ export const getBadgeDetails = (badge: UserBadges) => {
       return {
         title: t(baseTranslation.topStakerWeek),
         style: BadgeStyle.brown,
+      };
+    case UserBadges.WALLET:
+      return {
+        title: t(baseTranslation.wallet),
+        style: BadgeStyle.gray,
       };
   }
 };

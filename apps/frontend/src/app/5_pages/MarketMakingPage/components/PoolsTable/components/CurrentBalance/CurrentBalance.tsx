@@ -37,7 +37,7 @@ export const CurrentBalance: FC<CurrentBalanceProps> = ({
 
   const renderAmount = useMemo(
     () => (
-      <div className="flex-col flex font-medium">
+      <div className="flex-col flex font-medium gap-0.5">
         <AmountRenderer
           value={balanceA}
           suffix={getTokenDisplayName(pool.assetA)}

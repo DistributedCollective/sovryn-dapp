@@ -160,7 +160,7 @@ export const PricesBy24hChange: FC = () => {
   );
 
   return (
-    <div className="w-full md:bg-gray-90 md:py-7 md:px-6 rounded mb-9">
+    <div className="w-full md:border md:border-gray-50 md:bg-gray-90 md:py-7 md:px-6 rounded mb-9">
       <div className="flex items-center justify-between mb-6">
         <Paragraph
           className="md:text-2xl text-base font-medium"
@@ -185,7 +185,7 @@ export const PricesBy24hChange: FC = () => {
         />
         <Pagination
           page={page}
-          className="lg:pb-6 mt-3 lg:mt-6 justify-center lg:justify-start"
+          className="lg:pb-6 mt-3 lg:mt-6 justify-start"
           onChange={onPageChange}
           itemsPerPage={pageSize}
           dataAttribute="pairs-prices-pagination"

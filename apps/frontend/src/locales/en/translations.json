@@ -1562,7 +1562,6 @@
         "title": "Protocol data",
         "subtitle": "Cryptocurrency prices, yield and ecosystem statistics",
         "sections": {
-            "marketMaking": "Market making",
             "ecosystemStatistics": "Ecosystem statistics"
         },
         "lendAndBorrow": {
@@ -1585,6 +1584,15 @@
             "circulationSupply": "Circulation supply",
             "circulatingSupplyTooltip": "We have updated the circulation supply formula to be showing the amount of liquid SOV token in line with market standards. SOV that has been unlocked from the adoption and development funds is now counted as circulating, and SOV that has been staked (either through vesting or voluntary staking) is not counted as circulating. <br /> <br />There is no change to your funds with this change. Just a standardisation of the displayed Circulating Supply.",
             "convert": "Convert"
+        },
+        "marketMaking": {
+            "title": "Market making",
+            "pool": "Pool",
+            "liquidity": "Liquidity",
+            "contractBalance": "Contract balance",
+            "returns": "Returns",
+            "volume": "24H volume",
+            "deposit": "Deposit"
         }
     }
 }

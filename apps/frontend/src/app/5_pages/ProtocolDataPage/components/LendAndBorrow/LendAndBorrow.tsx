@@ -87,7 +87,7 @@ export const LendAndBorrow: FC = () => {
   );
 
   return (
-    <div className="w-full md:bg-gray-90 md:py-7 md:px-6 rounded mb-9">
+    <div className="w-full md:border md:border-gray-50 md:bg-gray-90 md:py-7 md:px-6 rounded mb-9">
       <div className="flex items-center justify-between">
         <Paragraph
           className="md:text-2xl text-base font-medium"

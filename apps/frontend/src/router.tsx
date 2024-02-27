@@ -139,6 +139,7 @@ const routes = [
       {
         path: '/stats',
         element: <ProtocolDataPage />,
+        loader: zeroPageLoader,
       },
     ],
   },

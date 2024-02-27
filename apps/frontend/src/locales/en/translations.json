@@ -1585,6 +1585,17 @@
             "circulationSupply": "Circulation supply",
             "circulatingSupplyTooltip": "We have updated the circulation supply formula to be showing the amount of liquid SOV token in line with market standards. SOV that has been unlocked from the adoption and development funds is now counted as circulating, and SOV that has been staked (either through vesting or voluntary staking) is not counted as circulating. <br /> <br />There is no change to your funds with this change. Just a standardisation of the displayed Circulating Supply.",
             "convert": "Convert"
+        },
+        "ecosystemStatistics": {
+            "title": "Ecosystem statistics",
+            "protocolContracts": "Protocol contracts",
+            "lendingContracts": "Lending contracts",
+            "ammContracts": "AMM contracts",
+            "zeroContracts": "Zero contracts",
+            "subTotal": "Subtotal",
+            "myntAggregatorContract": "MYNT aggregator contract",
+            "bitocracyStakingContract": "Bitocracy staking contract",
+            "total": "Total"
         }
     }
 }

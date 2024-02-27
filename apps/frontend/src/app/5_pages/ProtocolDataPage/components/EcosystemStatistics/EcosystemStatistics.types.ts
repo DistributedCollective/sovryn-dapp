@@ -7,3 +7,12 @@ export type EcosystemStatisticsProps = {
 };
 
 export type PoolData = Record<string, Decimal>;
+
+export enum EcosystemContracts {
+  ProtocolContracts = 'protocolContracts',
+  LendingContracts = 'lendingContracts',
+  AmmContracts = 'ammContracts',
+  ZeroContracts = 'zeroContracts',
+  MyntAggregatorContracts = 'myntAggregatorContracts',
+  BitocracyStakingContract = 'bitocracyStakingContract',
+}

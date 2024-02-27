@@ -3,7 +3,7 @@ import React, { FC, useEffect } from 'react';
 import { AmountRenderer } from '../../../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { useGetData } from '../../../../../LandingPage/components/ProtocolData/hooks/useGetData';
 import { getCurrencyPrecision } from '../../../../../PortfolioPage/components/ProtocolSection/ProtocolSection.utils';
-import { EcosystemContracts } from '../../EcosystemStatistics.constants';
+import { EcosystemContracts } from '../../EcosystemStatistics.types';
 import { EcosystemStatisticsProps } from '../../EcosystemStatistics.types';
 
 export const ProtocolContracts: FC<EcosystemStatisticsProps> = ({

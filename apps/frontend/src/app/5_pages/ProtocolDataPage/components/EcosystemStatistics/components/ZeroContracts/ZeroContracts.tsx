@@ -15,7 +15,7 @@ import {
   getConvertedValue,
   getCurrencyPrecision,
 } from '../../../../../PortfolioPage/components/ProtocolSection/ProtocolSection.utils';
-import { EcosystemContracts } from '../../EcosystemStatistics.constants';
+import { EcosystemContracts } from '../../EcosystemStatistics.types';
 import { EcosystemStatisticsProps } from '../../EcosystemStatistics.types';
 
 export const ZeroContracts: FC<EcosystemStatisticsProps> = ({

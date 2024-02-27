@@ -9,7 +9,7 @@ import {
   getConvertedValue,
   getCurrencyPrecision,
 } from '../../../../../PortfolioPage/components/ProtocolSection/ProtocolSection.utils';
-import { EcosystemContracts } from '../../EcosystemStatistics.constants';
+import { EcosystemContracts } from '../../EcosystemStatistics.types';
 import {
   PoolData,
   EcosystemStatisticsProps,

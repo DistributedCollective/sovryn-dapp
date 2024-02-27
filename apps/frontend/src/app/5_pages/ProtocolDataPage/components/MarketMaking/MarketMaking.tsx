@@ -63,6 +63,7 @@ export const MarketMaking: FC = () => {
           asset1={pool.assetA}
           asset2={pool.assetB}
           size={AssetPairSize.small}
+          className="my-1 text-base font-medium"
         />
         <PoolsTableReturns pool={pool} className="text-sm" />
       </div>
@@ -115,7 +116,7 @@ export const MarketMaking: FC = () => {
         className="md:text-2xl text-base font-medium"
         children={t(pageTranslations.marketMaking.title)}
       />
-      <div className="mt-2 md:mt-8">
+      <div className="py-4 md:mt-5">
         <Table
           columns={COLUMNS_CONFIG}
           rows={ammPools}

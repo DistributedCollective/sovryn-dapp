@@ -13,11 +13,13 @@ export enum Chains {
   BSC = 'bsc',
 }
 
-// export const defaultChainId = (
-//   isMainnet() ? ChainIds.RSK_MAINNET : ChainIds.RSK_TESTNET
-// ) as string;
+export const defaultChainId = (
+  isMainnet() ? ChainIds.RSK_MAINNET : ChainIds.RSK_TESTNET
+) as string;
 
-export const defaultChainId = ChainIds.MAINNET;
+export const defaultRskChainId = (
+  isMainnet() ? ChainIds.RSK_MAINNET : ChainIds.RSK_TESTNET
+) as string;
 
 // @dev: temp solution for hardware wallets to connect to the correct chain
 // good enough for now, but should be refactored when cross-chain support is needed

@@ -11,6 +11,7 @@ type TransactionIdRendererProps = {
 
 const chain = chains.find(chain => chain.id === defaultChainId);
 
+// todo: should accept chainId as a prop
 export const TransactionIdRenderer: React.FC<TransactionIdRendererProps> = ({
   hash,
   dataAttribute,

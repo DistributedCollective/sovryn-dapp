@@ -10,7 +10,7 @@ import { decimalic, fromWei, toWei } from '../utils/math';
 import { useCacheCall } from './useCacheCall';
 import { useTokenDetailsByAsset } from './useTokenDetailsByAsset';
 import { useGetRBTCPrice } from './zero/useGetRBTCPrice';
-import { defaultChainId } from '../config/chains';
+import { defaultRskChainId } from '../config/chains';
 
 export function useDollarValue(asset: SupportedTokens, weiAmount: string) {
   if (asset === SupportedTokens.zusd) {
@@ -33,7 +33,7 @@ export function useDollarValue(asset: SupportedTokens, weiAmount: string) {
       }
 
       const result = await smartRouter.getBestQuote(
-        defaultChainId,
+        defaultRskChainId,
         assetDetails?.address,
         dllrDetails?.address,
         toWei('0.01'),

@@ -14,8 +14,6 @@ import {
 } from '@sovryn/ui';
 import { Decimal } from '@sovryn/utils';
 
-import { defaultChainId } from '../../../../../config/chains';
-
 import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { AssetRenderer } from '../../../../2_molecules/AssetRenderer/AssetRenderer';
 import { MaxButton } from '../../../../2_molecules/MaxButton/MaxButton';
@@ -26,6 +24,7 @@ import { useWeiAmountInput } from '../../../../../hooks/useWeiAmountInput';
 import { translations } from '../../../../../locales/i18n';
 import { asyncCall } from '../../../../../store/rxjs/provider-cache';
 import { FullLendingModalState } from './LendingModalContainer';
+import { useCurrentChain } from '../../../../../hooks/useChainStore';
 
 export type DepositProps = {
   state: FullLendingModalState;
@@ -37,10 +36,11 @@ export const LendingForm: FC<DepositProps> = ({ state, onConfirm }) => {
 
   const { checkMaintenance, States } = useMaintenance();
   const depositLocked = checkMaintenance(States.DEPOSIT_LEND);
+  const currentChainId = useCurrentChain();
 
   const { balance } = useMaxAssetBalance(
     state.token,
-    defaultChainId,
+    currentChainId,
     GAS_LIMIT.LENDING_MINT,
   );
 

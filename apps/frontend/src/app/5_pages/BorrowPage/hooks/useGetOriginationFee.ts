@@ -2,14 +2,14 @@ import { useEffect, useState } from 'react';
 
 import { Decimal } from '@sovryn/utils';
 
-import { defaultChainId } from '../../../../config/chains';
-
 import { useLoadContract } from '../../../../hooks/useLoadContract';
 import { asyncCall } from '../../../../store/rxjs/provider-cache';
+import { useCurrentChain } from '../../../../hooks/useChainStore';
 
 export const useGetOriginationFee = () => {
+  const currentChainId = useCurrentChain();
   const [originationFee, setOriginationFee] = useState(Decimal.ZERO);
-  const contract = useLoadContract('protocol', 'protocol', defaultChainId);
+  const contract = useLoadContract('protocol', 'protocol', currentChainId);
 
   useEffect(() => {
     const fetchOriginationFee = async () => {

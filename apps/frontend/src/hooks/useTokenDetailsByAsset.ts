@@ -6,14 +6,14 @@ import {
   TokenDetailsData,
 } from '@sovryn/contracts';
 
-import { defaultChainId } from '../config/chains';
+import { defaultRskChainId } from '../config/chains';
 
 export const useTokenDetailsByAsset = (asset?: SupportedTokens) => {
   const [token, setToken] = useState<TokenDetailsData | undefined>();
 
   useEffect(() => {
     const getTokenDetail = () => {
-      getTokenDetails(asset!, defaultChainId)
+      getTokenDetails(asset!, defaultRskChainId)
         .then(setToken)
         .catch(e => {
           console.error('token not found?', e);

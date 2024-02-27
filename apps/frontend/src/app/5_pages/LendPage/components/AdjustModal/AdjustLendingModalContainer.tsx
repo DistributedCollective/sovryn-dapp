@@ -12,8 +12,6 @@ import {
 import { Dialog, DialogBody, DialogHeader } from '@sovryn/ui';
 import { Decimal } from '@sovryn/utils';
 
-import { defaultChainId } from '../../../../../config/chains';
-
 import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { CurrentStatistics } from '../../../../2_molecules/CurrentStatistics/CurrentStatistics';
 import { getTokenDisplayName } from '../../../../../constants/tokens';
@@ -24,6 +22,7 @@ import { asyncCall } from '../../../../../store/rxjs/provider-cache';
 import { Nullable } from '../../../../../types/global';
 import { LendModalAction } from '../../LendPage.types';
 import { FormType, LendingForm } from './LendingForm';
+import { useCurrentChain } from '../../../../../hooks/useChainStore';
 
 export type AdjustModalProps = {
   onDeposit: (amount: Decimal, token: TokenDetailsData, pool: Contract) => void;
@@ -58,8 +57,10 @@ export const AdjustLendingModalContainer: FC<AdjustModalProps> = ({
   );
 
   const { signer, account } = useAccount();
+  const currentChainId = useCurrentChain();
 
   const [state, setState] = useState<Nullable<FullAdjustModalState>>(null);
+
 
   useEffect(() => {
     const sub = subscribe(async value => {
@@ -68,14 +69,14 @@ export const AdjustLendingModalContainer: FC<AdjustModalProps> = ({
         return;
       }
 
-      const poolToken = await getLoanTokenContract(value, defaultChainId);
+      const poolToken = await getLoanTokenContract(value, currentChainId);
 
       if (!poolToken) {
         setState(null);
         return;
       }
 
-      const tokenDetails = await getTokenDetails(value, defaultChainId);
+      const tokenDetails = await getTokenDetails(value, currentChainId);
 
       const poolTokenContract = new Contract(
         poolToken.address,
@@ -116,7 +117,7 @@ export const AdjustLendingModalContainer: FC<AdjustModalProps> = ({
     });
 
     return () => sub.unsubscribe();
-  }, [account, signer, subscribe]);
+  }, [account, currentChainId, signer, subscribe]);
 
   const handleCloseModal = useCallback(() => {
     push(null);

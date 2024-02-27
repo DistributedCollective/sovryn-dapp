@@ -5,8 +5,6 @@ import { t } from 'i18next';
 import { SupportedTokens, getTokenDetailsData } from '@sovryn/contracts';
 import { Link, LinkStyle } from '@sovryn/ui';
 
-import { defaultChainId } from '../../../../../../config/chains';
-
 import {
   MINIMUM_COLLATERAL_RATIO_LENDING_POOLS,
   MINIMUM_COLLATERAL_RATIO_LENDING_POOLS_SOV,
@@ -15,6 +13,7 @@ import { getTokenDisplayName } from '../../../../../../constants/tokens';
 import { translations } from '../../../../../../locales/i18n';
 import { getRskExplorerUrl } from '../../../../../../utils/helpers';
 import { decimalic } from '../../../../../../utils/math';
+import { useCurrentChain } from '../../../../../../hooks/useChainStore';
 
 type AssetTooltipContentProps = {
   asset?: SupportedTokens;
@@ -25,6 +24,7 @@ export const AssetTooltipContent: FC<AssetTooltipContentProps> = ({
   asset,
   pools,
 }) => {
+  const currentChainId = useCurrentChain();
   const rskExplorerUrl = getRskExplorerUrl();
   const [tooltipContent, setTooltipContent] = useState<ReactNode>(null);
 
@@ -48,7 +48,7 @@ export const AssetTooltipContent: FC<AssetTooltipContentProps> = ({
           tokens.map(async token => {
             const { address } = await getTokenDetailsData(
               token,
-              defaultChainId,
+              currentChainId,
             );
 
             const minimumCollateralRatio =

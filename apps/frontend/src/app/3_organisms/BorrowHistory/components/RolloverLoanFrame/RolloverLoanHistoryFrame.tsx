@@ -20,7 +20,7 @@ import {
   Table,
 } from '@sovryn/ui';
 
-import { chains, defaultChainId } from '../../../../../config/chains';
+import { chains, defaultRskChainId } from '../../../../../config/chains';
 
 import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { AssetRenderer } from '../../../../2_molecules/AssetRenderer/AssetRenderer';
@@ -40,7 +40,7 @@ export const RolloverLoanHistoryFrame: FC<PropsWithChildren> = ({
   children,
 }) => {
   const [page, setPage] = useState(0);
-  const chain = chains.find(chain => chain.id === defaultChainId);
+  const chain = chains.find(chain => chain.id === defaultRskChainId);
 
   const { value: block } = useBlockNumber();
 

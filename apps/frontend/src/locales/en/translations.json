@@ -899,7 +899,8 @@
                     "topImporterWeek": "+10% Top Trader W",
                     "voter": "+5% Voter",
                     "topStakerDay": "+10% Top Staker D",
-                    "topStakerWeek": "+10% Top Staker W"
+                    "topStakerWeek": "+10% Top Staker W",
+                    "wallet": "+100 points"
                 }
             },
             "trading": {
@@ -925,7 +926,7 @@
                     "item2": "Any AMM trade, per $1 value",
                     "item3": "Import stablecoins, per $1 value",
                     "item4": "Top importer of the week",
-                    "item5": "Top importer of the week"
+                    "item5": "Top importer of the day"
                 },
                 "staking": {
                     "title": "Earn points by staking",

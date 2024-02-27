@@ -15,7 +15,9 @@ export const TRADING_LEADERBOARD_URL =
 export const STAKING_LEADERBOARD_URL =
   'https://redash.sovryn.app/api/queries/545/results.json?api_key=sjTLMq48pU0yHJlDBWrFiQQS2x0jTtk7BChYTC8J';
 
-export const PAGE_SIZE = 20;
+export const PAGE_SIZE = 50;
+
+export const MAXIMUM_USERS_TO_SHOW = 500;
 
 export const COLUMNS_CONFIG = (isSingleUser: boolean) => [
   {

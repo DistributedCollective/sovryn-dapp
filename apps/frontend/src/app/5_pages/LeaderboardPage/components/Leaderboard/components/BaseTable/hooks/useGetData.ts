@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { useAccount } from '../../../../../../../../hooks/useAccount';
 import { User } from '../../../Leaderboard.types';
+import { MAXIMUM_USERS_TO_SHOW } from '../BaseTable.constants';
 import { parseBadges } from '../BaseTable.utils';
 
 export const useGetData = (url: string) => {
@@ -52,5 +53,9 @@ export const useGetData = (url: string) => {
     fetchData();
   }, [fetchData]);
 
-  return { loading, users, connectedWalletRow };
+  return {
+    loading,
+    users: users.slice(0, MAXIMUM_USERS_TO_SHOW),
+    connectedWalletRow,
+  };
 };

@@ -32,23 +32,18 @@ export const AmmContracts: FC<EcosystemStatisticsProps> = ({
     });
   }, []);
 
-  const calculateBalance = useCallback(
-    () =>
-      Object.values(poolsData).reduce(
-        (total, balance) => total.add(balance),
-        Decimal.ZERO,
-      ),
-    [poolsData],
-  );
+  const balance = useMemo(() => {
+    const totalBalance = Object.values(poolsData).reduce(
+      (total, balance) => total.add(balance),
+      Decimal.ZERO,
+    );
 
-  const renderBalance = useMemo(
-    () => getConvertedValue(calculateBalance(), selectedCurrency, btcPrice),
-    [calculateBalance, selectedCurrency, btcPrice],
-  );
+    return getConvertedValue(totalBalance, selectedCurrency, btcPrice);
+  }, [poolsData, selectedCurrency, btcPrice]);
 
   useEffect(() => {
-    onChange(EcosystemContracts.AmmContracts, decimalic(renderBalance));
-  }, [renderBalance, onChange]);
+    onChange(EcosystemContracts.AmmContracts, decimalic(balance));
+  }, [balance, onChange]);
 
   return (
     <>
@@ -60,7 +55,7 @@ export const AmmContracts: FC<EcosystemStatisticsProps> = ({
         />
       ))}
       <AmountRenderer
-        value={renderBalance}
+        value={balance}
         suffix={selectedCurrency}
         precision={getCurrencyPrecision(selectedCurrency)}
         dataAttribute="ecosystem-statistics-amm-contracts-value"

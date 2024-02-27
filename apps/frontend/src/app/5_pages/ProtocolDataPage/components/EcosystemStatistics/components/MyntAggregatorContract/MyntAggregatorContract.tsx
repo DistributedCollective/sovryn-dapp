@@ -32,26 +32,18 @@ export const MyntAggregatorContract: FC<EcosystemStatisticsProps> = ({
     });
   }, []);
 
-  const calculateBalance = useCallback(
-    () =>
-      Object.values(poolsData).reduce(
-        (total, balance) => total.add(balance),
-        Decimal.ZERO,
-      ),
-    [poolsData],
-  );
+  const balance = useMemo(() => {
+    const calculateBalance = Object.values(poolsData).reduce(
+      (total, balance) => total.add(balance),
+      Decimal.ZERO,
+    );
 
-  const renderBalance = useMemo(
-    () => getConvertedValue(calculateBalance(), selectedCurrency, btcPrice),
-    [calculateBalance, selectedCurrency, btcPrice],
-  );
+    return getConvertedValue(calculateBalance, selectedCurrency, btcPrice);
+  }, [poolsData, selectedCurrency, btcPrice]);
 
   useEffect(() => {
-    onChange(
-      EcosystemContracts.MyntAggregatorContracts,
-      decimalic(renderBalance),
-    );
-  }, [renderBalance, onChange]);
+    onChange(EcosystemContracts.MyntAggregatorContracts, decimalic(balance));
+  }, [balance, onChange]);
 
   return (
     <>
@@ -63,7 +55,7 @@ export const MyntAggregatorContract: FC<EcosystemStatisticsProps> = ({
         />
       ))}
       <AmountRenderer
-        value={renderBalance}
+        value={balance}
         suffix={selectedCurrency}
         precision={getCurrencyPrecision(selectedCurrency)}
         dataAttribute="ecosystem-statistics-mynt-aggregator-contract-value"

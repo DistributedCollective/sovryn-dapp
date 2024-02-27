@@ -58,7 +58,7 @@ export const EcosystemStatistics: FC = () => {
     [setPoolsData, setSubPoolsData],
   );
 
-  const renderSubTotalBalance = useCallback(
+  const subTotalBalance = useMemo(
     () =>
       Object.values(subPoolsData).reduce(
         (total, balance) => total.add(balance),
@@ -67,12 +67,12 @@ export const EcosystemStatistics: FC = () => {
     [subPoolsData],
   );
 
-  const renderTotalBalance = useCallback(
+  const totalBalance = useMemo(
     () =>
       Object.values(poolsData)
         .reduce((total, balance) => total.add(balance), Decimal.ZERO)
-        .add(renderSubTotalBalance()),
-    [poolsData, renderSubTotalBalance],
+        .add(subTotalBalance),
+    [poolsData, subTotalBalance],
   );
 
   const list = useMemo(
@@ -131,7 +131,7 @@ export const EcosystemStatistics: FC = () => {
         title: t(pageTranslations.ecosystemStatistics.subTotal),
         value: (
           <AmountRenderer
-            value={renderSubTotalBalance()}
+            value={subTotalBalance}
             suffix={selectedCurrency}
             precision={getCurrencyPrecision(selectedCurrency)}
             dataAttribute="ecosystem-statistics-subtotal-value"
@@ -153,7 +153,7 @@ export const EcosystemStatistics: FC = () => {
         title: t(pageTranslations.ecosystemStatistics.total),
         value: (
           <AmountRenderer
-            value={renderTotalBalance()}
+            value={totalBalance}
             suffix={selectedCurrency}
             precision={getCurrencyPrecision(selectedCurrency)}
             dataAttribute="ecosystem-statistics-total-value"
@@ -165,8 +165,8 @@ export const EcosystemStatistics: FC = () => {
     [
       btcPrice,
       handleBalanceChange,
-      renderSubTotalBalance,
-      renderTotalBalance,
+      subTotalBalance,
+      totalBalance,
       selectedCurrency,
     ],
   );
@@ -196,11 +196,13 @@ export const EcosystemStatistics: FC = () => {
         {list.map((item, index) => (
           <div
             key={index}
-            className={`flex justify-between items-center lg:px-6 px-0 lg:py-3 py-0 lg:rounded lg:min-h-[3.75rem] font-medium lg:border lg:border-gray-70 ${
-              item.highlight
-                ? 'lg:bg-gray-70 text-gray-10'
-                : 'lg:bg-gray-80 lg:text-gray-10 text-gray-30'
-            }`}
+            className={classNames(
+              'flex justify-between items-center lg:px-6 px-0 lg:py-3 py-0 lg:rounded lg:min-h-[3.75rem] font-medium lg:border lg:border-gray-70',
+              {
+                'lg:bg-gray-70 text-gray-10': item.highlight,
+                'lg:bg-gray-80 lg:text-gray-10 text-gray-30': !item.highlight,
+              },
+            )}
           >
             <Paragraph children={item.title} />
             <div className="lg:text-base text-xs">{item.value}</div>

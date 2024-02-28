@@ -185,7 +185,7 @@ export const PricesBy24hChange: FC = () => {
         />
         <Pagination
           page={page}
-          className="lg:pb-6 mt-3 lg:mt-6 justify-start"
+          className="mt-3 lg:mt-6 justify-start"
           onChange={onPageChange}
           itemsPerPage={pageSize}
           dataAttribute="pairs-prices-pagination"

@@ -6,14 +6,11 @@ import { useSearchParams } from 'react-router-dom';
 
 import { Heading, Paragraph, ParagraphSize } from '@sovryn/ui';
 
-import { useIsMobile } from '../../../hooks/useIsMobile';
 import { translations } from '../../../locales/i18n';
 import { PoolsTable } from './components/PoolsTable/PoolsTable';
 import { Promotions } from './components/Promotions/Promotions';
 
 const MarketMakingPage: FC = () => {
-  const { isMobile } = useIsMobile();
-
   const [searchParams, setSearchParams] = useSearchParams();
   const pool = searchParams.get('pool');
   const [activePool, setActivePool] = useState(pool || '');
@@ -41,11 +38,11 @@ const MarketMakingPage: FC = () => {
     if (activePool !== pool) {
       setActivePool(pool || '');
     }
-  }, [activePool, isMobile, pool]);
+  }, [activePool, pool]);
 
   useEffect(() => {
     if (pool) {
-      setIsPromoCardClicked(false);
+      setIsPromoCardClicked(true);
     } else {
       setActivePool('');
     }

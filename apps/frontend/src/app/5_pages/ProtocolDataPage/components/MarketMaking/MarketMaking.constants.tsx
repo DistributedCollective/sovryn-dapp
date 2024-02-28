@@ -6,11 +6,11 @@ import { HelperButton } from '@sovryn/ui';
 
 import { AssetPairRenderer } from '../../../../2_molecules/AssetPairRenderer/AssetPairRenderer';
 import { translations } from '../../../../../locales/i18n';
-import { CurrentBalanceRenderer } from '../../../MarketMakingPage/components/PoolsTable/components/CurrentBalanceRenderer/CurrentBalanceRenderer';
 import { PoolsTableLiquidity } from '../../../MarketMakingPage/components/PoolsTable/components/PoolsTableLiquidity/PoolsTableLiquidity';
 import { PoolsTableReturns } from '../../../MarketMakingPage/components/PoolsTable/components/PoolsTableReturns/PoolsTableReturns';
 import { PoolsTableTradeVolume } from '../../../MarketMakingPage/components/PoolsTable/components/PoolsTableTradeVolume/PoolsTableTradeVolume';
 import { AmmLiquidityPool } from '../../../MarketMakingPage/utils/AmmLiquidityPool';
+import { PoolBalance } from './components/PoolBalance/PoolBalance';
 
 export const COLUMNS_CONFIG = [
   {
@@ -33,9 +33,7 @@ export const COLUMNS_CONFIG = [
   {
     id: 'balance',
     title: t(translations.protocolDataPage.marketMaking.contractBalance),
-    cellRenderer: (pool: AmmLiquidityPool) => (
-      <CurrentBalanceRenderer pool={pool} showLabel={false} />
-    ),
+    cellRenderer: (pool: AmmLiquidityPool) => <PoolBalance pool={pool} />,
   },
   {
     id: 'returns',

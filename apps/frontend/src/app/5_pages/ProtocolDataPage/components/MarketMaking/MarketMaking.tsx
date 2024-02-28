@@ -15,7 +15,6 @@ import { AssetPairRenderer } from '../../../../2_molecules/AssetPairRenderer/Ass
 import { AssetPairSize } from '../../../../2_molecules/AssetPairRenderer/AssetPairRenderer.types';
 import { useIsMobile } from '../../../../../hooks/useIsMobile';
 import { translations } from '../../../../../locales/i18n';
-import { CurrentBalanceRenderer } from '../../../MarketMakingPage/components/PoolsTable/components/CurrentBalanceRenderer/CurrentBalanceRenderer';
 import { PoolsTableLiquidity } from '../../../MarketMakingPage/components/PoolsTable/components/PoolsTableLiquidity/PoolsTableLiquidity';
 import { PoolsTableReturns } from '../../../MarketMakingPage/components/PoolsTable/components/PoolsTableReturns/PoolsTableReturns';
 import { PoolsTableTradeVolume } from '../../../MarketMakingPage/components/PoolsTable/components/PoolsTableTradeVolume/PoolsTableTradeVolume';
@@ -23,6 +22,7 @@ import { AmmLiquidityPool } from '../../../MarketMakingPage/utils/AmmLiquidityPo
 import { AmmLiquidityPoolDictionary } from '../../../MarketMakingPage/utils/AmmLiquidityPoolDictionary';
 import { pageTranslations } from '../../ProtocolDataPage.constants';
 import { COLUMNS_CONFIG, DEFAULT_PAGE_SIZE } from './MarketMaking.constants';
+import { PoolBalance } from './components/PoolBalance/PoolBalance';
 
 const pools = AmmLiquidityPoolDictionary.list();
 
@@ -92,7 +92,7 @@ export const MarketMaking: FC = () => {
 
         <SimpleTableRow
           label={t(translations.protocolDataPage.marketMaking.contractBalance)}
-          value={<CurrentBalanceRenderer pool={pool} showLabel={false} />}
+          value={<PoolBalance pool={pool} />}
         />
 
         <SimpleTableRow
@@ -113,10 +113,10 @@ export const MarketMaking: FC = () => {
   return (
     <div className="w-full md:border md:border-gray-50 md:bg-gray-90 md:py-7 md:px-6 rounded mb-9">
       <Paragraph
-        className="md:text-2xl text-base font-medium"
+        className="md:text-2xl text-base font-medium  mb-6"
         children={t(pageTranslations.marketMaking.title)}
       />
-      <div className="py-4 md:mt-5">
+      <div className="md:mt-5">
         <Table
           columns={COLUMNS_CONFIG}
           rows={ammPools}
@@ -132,7 +132,7 @@ export const MarketMaking: FC = () => {
         />
         <Pagination
           page={page}
-          className="lg:pb-6 mt-3 lg:mt-6 justify-start"
+          className="mt-3 lg:mt-6 justify-start"
           onChange={onPageChange}
           itemsPerPage={DEFAULT_PAGE_SIZE}
           isNextButtonDisabled={isNextButtonDisabled}

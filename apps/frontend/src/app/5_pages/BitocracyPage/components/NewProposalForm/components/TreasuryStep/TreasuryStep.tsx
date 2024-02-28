@@ -14,7 +14,7 @@ import {
   Select,
 } from '@sovryn/ui';
 
-import { defaultRskChainId } from '../../../../../../../config/chains';
+import { rskChainId } from '../../../../../../../config/chains';
 
 import { isAddress } from '../../../../../../3_organisms/StakeForm/components/AdjustStakeForm/AdjustStakeForm.utils';
 import { translations } from '../../../../../../../locales/i18n';
@@ -128,8 +128,8 @@ export const TreasuryStep: FC<TreasuryStepProps> = ({
 
   useEffect(() => {
     Promise.all([
-      getProtocolContract(Governor.Owner, defaultRskChainId),
-      getProtocolContract(Governor.Admin, defaultRskChainId),
+      getProtocolContract(Governor.Owner, rskChainId),
+      getProtocolContract(Governor.Admin, rskChainId),
     ]).then(([owner, admin]) => {
       setGovernorOwner(owner.address);
       setGovernorAdmin(admin.address);

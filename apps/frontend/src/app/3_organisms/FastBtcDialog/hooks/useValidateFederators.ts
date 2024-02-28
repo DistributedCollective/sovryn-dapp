@@ -1,6 +1,6 @@
 import { useCallback, useContext, useEffect, useState } from 'react';
 
-import { defaultRskChainId } from '../../../../config/chains';
+import { rskChainId } from '../../../../config/chains';
 
 import { useAccount } from '../../../../hooks/useAccount';
 import { useGetProtocolContract } from '../../../../hooks/useGetContract';
@@ -32,7 +32,7 @@ export const useValidateFederators = () => {
         address,
         account,
         signature.signature,
-        defaultRskChainId,
+        rskChainId,
         fastBtcMultisigContract.address,
       );
 

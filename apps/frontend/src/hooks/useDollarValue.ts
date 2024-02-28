@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 
 import { SupportedTokens } from '@sovryn/contracts';
 
-import { defaultRskChainId } from '../config/chains';
+import { rskChainId } from '../config/chains';
 
 import {
   smartRouter,
@@ -24,7 +24,7 @@ export function useDollarValue(asset: SupportedTokens, weiAmount: string) {
 
   const { value: usdPrice, loading } = useCacheCall(
     `dollarValue/${asset}`,
-    defaultRskChainId,
+    rskChainId,
     async () => {
       if (
         !assetDetails?.address ||
@@ -35,7 +35,7 @@ export function useDollarValue(asset: SupportedTokens, weiAmount: string) {
       }
 
       const result = await smartRouter.getBestQuote(
-        defaultRskChainId,
+        rskChainId,
         assetDetails?.address,
         dllrDetails?.address,
         toWei('0.01'),

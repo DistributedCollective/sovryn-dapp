@@ -12,7 +12,7 @@ import {
 import { Dialog, DialogBody, DialogHeader, DialogSize } from '@sovryn/ui';
 import { Decimal } from '@sovryn/utils';
 
-import { defaultRskChainId } from '../../../../../config/chains';
+import { rskChainId } from '../../../../../config/chains';
 
 import { useAccount } from '../../../../../hooks/useAccount';
 import { translations } from '../../../../../locales/i18n';
@@ -58,13 +58,13 @@ export const LendingModalContainer: FC<LendingModalProps> = ({
         return;
       }
 
-      const poolToken = await getLoanTokenContract(value, defaultRskChainId);
+      const poolToken = await getLoanTokenContract(value, rskChainId);
       if (!poolToken) {
         setState(null);
         return;
       }
 
-      const tokenDetails = await getTokenDetails(value, defaultRskChainId);
+      const tokenDetails = await getTokenDetails(value, rskChainId);
 
       const poolTokenContract = new Contract(
         poolToken.address,

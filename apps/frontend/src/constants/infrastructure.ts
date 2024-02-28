@@ -20,6 +20,11 @@ export const PUBLIC_RSK_RPC = {
   [Environments.Testnet]: 'https://testnet.sovryn.app/rpc',
 };
 
+export const PUBLIC_BOB_RPC = {
+  [Environments.Mainnet]: 'https://rpc.gobob.xyz',
+  [Environments.Testnet]: 'https://testnet.rpc.gobob.xyz',
+};
+
 // Used for contract calls
 export const RSK_RPC = {
   [Environments.Mainnet]: [
@@ -32,10 +37,30 @@ export const RSK_RPC = {
   ],
 };
 
+export const BOB_RPC = {
+  [Environments.Mainnet]: [PUBLIC_BOB_RPC[Environments.Mainnet]],
+  [Environments.Testnet]: [PUBLIC_BOB_RPC[Environments.Testnet]],
+};
+
+export const BOB_RELAYER = {
+  [Environments.Mainnet]: 'https://gsn-relay.gobob.xyz',
+  [Environments.Testnet]: 'https://gsn-relay-sepolia.gobob.xyz',
+};
+
+export const BOB_BUNDLER = {
+  [Environments.Mainnet]: 'https://bundler.gobob.xyz',
+  [Environments.Testnet]: 'https://bundler-sepolia.gobob.xyz',
+};
+
 //TODO: refactor this into separate dictionary file once we add more chains
 export const RSK_EXPLORER = {
   [Environments.Mainnet]: 'https://explorer.rsk.co',
   [Environments.Testnet]: 'https://explorer.testnet.rsk.co',
+};
+
+export const BOB_EXPLORER = {
+  [Environments.Mainnet]: 'https://explorer.gobob.xyz',
+  [Environments.Testnet]: 'https://testnet-explorer.gobob.xyz',
 };
 
 export const BTC_EXPLORER = {

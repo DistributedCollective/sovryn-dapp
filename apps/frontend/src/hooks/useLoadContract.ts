@@ -5,7 +5,7 @@ import { ContractInterface, ethers } from 'ethers';
 import { ContractGroup, getContract } from '@sovryn/contracts';
 import { ChainId, getProvider } from '@sovryn/ethers-provider';
 
-import { defaultRskChainId } from '../config/chains';
+import { rskChainId } from '../config/chains';
 
 import { useAccount } from './useAccount';
 import { useIsMounted } from './useIsMounted';
@@ -13,7 +13,7 @@ import { useIsMounted } from './useIsMounted';
 export const useLoadContract = (
   contractName: string,
   group: ContractGroup,
-  chain: ChainId = defaultRskChainId,
+  chain: ChainId = rskChainId,
   customSigner?: ethers.providers.JsonRpcSigner,
 ) => {
   const isMounted = useIsMounted();

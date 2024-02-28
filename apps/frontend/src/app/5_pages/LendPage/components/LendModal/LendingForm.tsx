@@ -14,7 +14,7 @@ import {
 } from '@sovryn/ui';
 import { Decimal } from '@sovryn/utils';
 
-import { defaultRskChainId } from '../../../../../config/chains';
+import { rskChainId } from '../../../../../config/chains';
 
 import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { AssetRenderer } from '../../../../2_molecules/AssetRenderer/AssetRenderer';
@@ -40,7 +40,7 @@ export const LendingForm: FC<DepositProps> = ({ state, onConfirm }) => {
 
   const { balance } = useMaxAssetBalance(
     state.token,
-    defaultRskChainId,
+    rskChainId,
     GAS_LIMIT.LENDING_MINT,
   );
 

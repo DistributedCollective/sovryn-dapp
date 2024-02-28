@@ -20,7 +20,7 @@ import {
   Table,
 } from '@sovryn/ui';
 
-import { chains, defaultRskChainId } from '../../../../../config/chains';
+import { chains, rskChainId } from '../../../../../config/chains';
 
 import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { AssetRenderer } from '../../../../2_molecules/AssetRenderer/AssetRenderer';
@@ -38,7 +38,7 @@ const pageSize = DEFAULT_HISTORY_FRAME_PAGE_SIZE;
 
 export const LiquidationLoanFrame: FC<PropsWithChildren> = ({ children }) => {
   const [page, setPage] = useState(0);
-  const chain = chains.find(chain => chain.id === defaultRskChainId);
+  const chain = chains.find(chain => chain.id === rskChainId);
 
   const { value: block } = useBlockNumber();
 

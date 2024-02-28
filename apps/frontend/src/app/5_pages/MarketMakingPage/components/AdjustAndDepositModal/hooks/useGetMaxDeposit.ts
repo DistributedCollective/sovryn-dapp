@@ -3,7 +3,7 @@ import { useMemo } from 'react';
 import { SupportedTokens } from '@sovryn/contracts';
 import { Decimal } from '@sovryn/utils';
 
-import { defaultRskChainId } from '../../../../../../config/chains';
+import { rskChainId } from '../../../../../../config/chains';
 
 import { GAS_LIMIT } from '../../../../../../constants/gasLimits';
 import { useAssetBalance } from '../../../../../../hooks/useAssetBalance';
@@ -18,20 +18,17 @@ export const useGetMaxDeposit = (
   pool: AmmLiquidityPool,
   isDeposit: boolean,
 ) => {
-  const { balance: balanceTokenA } = useAssetBalance(
-    pool.assetA,
-    defaultRskChainId,
-  );
+  const { balance: balanceTokenA } = useAssetBalance(pool.assetA, rskChainId);
   const { balance: balanceTokenB } = useAssetBalance(
     SupportedTokens.rbtc,
-    defaultRskChainId,
+    rskChainId,
   );
 
   const { poolBalanceA, poolBalanceB } = useGetPoolsBalance(pool);
 
-  const contractTokenA = useGetTokenContract(pool.assetA, defaultRskChainId);
+  const contractTokenA = useGetTokenContract(pool.assetA, rskChainId);
 
-  const gasPrice = useGasPrice(defaultRskChainId);
+  const gasPrice = useGasPrice(rskChainId);
 
   const gasLimit = useMemo(
     () =>

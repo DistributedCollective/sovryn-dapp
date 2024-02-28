@@ -7,7 +7,7 @@ import { SupportedTokens, getProtocolContract } from '@sovryn/contracts';
 import { getProvider } from '@sovryn/ethers-provider';
 import { Button, ButtonType, ButtonStyle } from '@sovryn/ui';
 
-import { defaultRskChainId } from '../../../../../../../config/chains';
+import { rskChainId } from '../../../../../../../config/chains';
 
 import {
   Transaction,
@@ -155,8 +155,8 @@ let feeSharingContract: Contract;
 const getFeeSharingContract = async () => {
   if (!feeSharingContract) {
     feeSharingContract = (
-      await getProtocolContract('feeSharing', defaultRskChainId)
-    ).contract(getProvider(defaultRskChainId));
+      await getProtocolContract('feeSharing', rskChainId)
+    ).contract(getProvider(rskChainId));
   }
   return feeSharingContract;
 };

@@ -3,7 +3,7 @@ import React, { FC, useEffect, useMemo, useState } from 'react';
 import { SupportedTokens, getTokenDetails } from '@sovryn/contracts';
 import { Decimal } from '@sovryn/utils';
 
-import { defaultRskChainId } from '../../../../../../../../../config/chains';
+import { rskChainId } from '../../../../../../../../../config/chains';
 
 import { AmountRenderer } from '../../../../../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { useAccount } from '../../../../../../../../../hooks/useAccount';
@@ -43,13 +43,13 @@ export const StakingTotalValue: FC<ProtocolSectionProps> = ({
       (async () => {
         const [sourceTokenDetails, destinationTokenDetails] = await Promise.all(
           [
-            getTokenDetails(SupportedTokens.sov, defaultRskChainId),
-            getTokenDetails(SupportedTokens.rbtc, defaultRskChainId),
+            getTokenDetails(SupportedTokens.sov, rskChainId),
+            getTokenDetails(SupportedTokens.rbtc, rskChainId),
           ],
         );
 
         const result = await smartRouter.getBestQuote(
-          defaultRskChainId,
+          rskChainId,
           sourceTokenDetails.address,
           destinationTokenDetails.address,
           stakedValue.toString(),

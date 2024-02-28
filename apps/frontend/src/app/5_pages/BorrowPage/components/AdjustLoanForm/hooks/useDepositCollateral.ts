@@ -4,7 +4,7 @@ import { t } from 'i18next';
 
 import { SupportedTokens } from '@sovryn/contracts';
 
-import { defaultRskChainId } from '../../../../../../config/chains';
+import { rskChainId } from '../../../../../../config/chains';
 
 import {
   Transaction,
@@ -19,7 +19,7 @@ import { toWei } from '../../../../../../utils/math';
 import { prepareApproveTransaction } from '../../../../../../utils/transactions';
 
 export const useDepositCollateral = () => {
-  const contract = useLoadContract('protocol', 'protocol', defaultRskChainId);
+  const contract = useLoadContract('protocol', 'protocol', rskChainId);
   const { setTransactions, setIsOpen, setTitle } = useTransactionContext();
   const { account, signer } = useAccount();
 

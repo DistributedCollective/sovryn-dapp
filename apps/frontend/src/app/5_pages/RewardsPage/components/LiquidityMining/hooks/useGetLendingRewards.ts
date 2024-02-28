@@ -4,7 +4,7 @@ import { SupportedTokens } from '@sovryn/contracts';
 import { getLoanTokenContract } from '@sovryn/contracts';
 import { Decimal } from '@sovryn/utils';
 
-import { defaultRskChainId } from '../../../../../../config/chains';
+import { rskChainId } from '../../../../../../config/chains';
 
 import { useGetProtocolContract } from '../../../../../../hooks/useGetContract';
 import { asyncCall } from '../../../../../../store/rxjs/provider-cache';
@@ -34,11 +34,11 @@ export const useGetLendingRewards = (account: string) => {
       try {
         const dllrToken = await getLoanTokenContract(
           SupportedTokens.xusd,
-          defaultRskChainId,
+          rskChainId,
         );
         const btcToken = await getLoanTokenContract(
           SupportedTokens.rbtc,
-          defaultRskChainId,
+          rskChainId,
         );
 
         const [dllrPool, btcPool] = await Promise.all([

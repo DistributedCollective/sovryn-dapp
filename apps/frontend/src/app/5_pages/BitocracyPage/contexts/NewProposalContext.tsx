@@ -13,7 +13,7 @@ import { t } from 'i18next';
 import { SupportedTokens, getTokenDetails } from '@sovryn/contracts';
 import { noop } from '@sovryn/ui';
 
-import { defaultRskChainId } from '../../../../config/chains';
+import { rskChainId } from '../../../../config/chains';
 
 import {
   TransactionCallbacks,
@@ -94,7 +94,7 @@ export const ProposalContextProvider: FC<PropsWithChildren> = ({
         // make proclamation "non-executable" proposal.
         const { address } = await getTokenDetails(
           SupportedTokens.sov,
-          defaultRskChainId,
+          rskChainId,
         );
         actions = [
           {

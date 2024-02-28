@@ -5,7 +5,7 @@ import { t } from 'i18next';
 import { SupportedTokens, getTokenDetailsData } from '@sovryn/contracts';
 import { Link, LinkStyle } from '@sovryn/ui';
 
-import { defaultRskChainId } from '../../../../../../config/chains';
+import { rskChainId } from '../../../../../../config/chains';
 
 import {
   MINIMUM_COLLATERAL_RATIO_LENDING_POOLS,
@@ -46,10 +46,7 @@ export const AssetTooltipContent: FC<AssetTooltipContentProps> = ({
       try {
         const links = await Promise.all(
           tokens.map(async token => {
-            const { address } = await getTokenDetailsData(
-              token,
-              defaultRskChainId,
-            );
+            const { address } = await getTokenDetailsData(token, rskChainId);
 
             const minimumCollateralRatio =
               token === SupportedTokens.sov

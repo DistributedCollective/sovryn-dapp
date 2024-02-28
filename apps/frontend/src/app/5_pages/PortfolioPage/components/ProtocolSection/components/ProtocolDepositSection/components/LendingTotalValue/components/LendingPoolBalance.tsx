@@ -3,7 +3,7 @@ import { FC, useEffect, useMemo, useState } from 'react';
 import { SupportedTokens, getTokenDetails } from '@sovryn/contracts';
 import { Decimal } from '@sovryn/utils';
 
-import { defaultRskChainId } from '../../../../../../../../../../config/chains';
+import { rskChainId } from '../../../../../../../../../../config/chains';
 
 import { LendingPool } from '../../../../../../../../../../utils/LendingPool';
 import { removeTrailingZerosFromString } from '../../../../../../../../../../utils/helpers';
@@ -43,13 +43,13 @@ export const LendingPoolBalance: FC<LendingPoolBalanceProps> = ({
       } else {
         const [sourceTokenDetails, destinationTokenDetails] = await Promise.all(
           [
-            getTokenDetails(asset, defaultRskChainId),
-            getTokenDetails(SupportedTokens.rbtc, defaultRskChainId),
+            getTokenDetails(asset, rskChainId),
+            getTokenDetails(SupportedTokens.rbtc, rskChainId),
           ],
         );
 
         const result = await smartRouter.getBestQuote(
-          defaultRskChainId,
+          rskChainId,
           sourceTokenDetails.address,
           destinationTokenDetails.address,
           toWei(assetBalance),

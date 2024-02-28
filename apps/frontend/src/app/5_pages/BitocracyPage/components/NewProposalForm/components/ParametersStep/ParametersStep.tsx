@@ -14,7 +14,7 @@ import {
   Select,
 } from '@sovryn/ui';
 
-import { defaultRskChainId } from '../../../../../../../config/chains';
+import { rskChainId } from '../../../../../../../config/chains';
 
 import { translations } from '../../../../../../../locales/i18n';
 import { useProposalContext } from '../../../../contexts/NewProposalContext';
@@ -93,8 +93,8 @@ export const ParametersStep: FC<ParametersStepProps> = ({
 
   useEffect(() => {
     Promise.all([
-      getProtocolContract(Governor.Owner, defaultRskChainId),
-      getProtocolContract(Governor.Admin, defaultRskChainId),
+      getProtocolContract(Governor.Owner, rskChainId),
+      getProtocolContract(Governor.Admin, rskChainId),
     ]).then(([owner, admin]) => {
       setGovernorOwner(owner.address);
       setGovernorAdmin(admin.address);

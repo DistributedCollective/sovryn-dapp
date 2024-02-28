@@ -7,7 +7,7 @@ import { getTokenContract } from '@sovryn/contracts';
 import { getLoanTokenContract } from '@sovryn/contracts';
 import { getProvider } from '@sovryn/ethers-provider';
 
-import { defaultRskChainId } from '../../../../config/chains';
+import { rskChainId } from '../../../../config/chains';
 
 import { useAccount } from '../../../../hooks/useAccount';
 import { useIsMounted } from '../../../../hooks/useIsMounted';
@@ -29,12 +29,9 @@ let btcDummyAddress: string;
 
 const getRbtcDummyAddress = async () => {
   if (!btcDummyAddress) {
-    const { contract } = await getProtocolContract(
-      'feeSharing',
-      defaultRskChainId,
-    );
+    const { contract } = await getProtocolContract('feeSharing', rskChainId);
     btcDummyAddress = await contract(
-      getProvider(defaultRskChainId),
+      getProvider(rskChainId),
     ).RBTC_DUMMY_ADDRESS_FOR_CHECKPOINT();
   }
   return btcDummyAddress;
@@ -62,7 +59,7 @@ export const useGetFeesEarned = () => {
       ...FEE_LOAN_ASSETS.map(async asset => ({
         token: asset,
         contractAddress: (
-          await getLoanTokenContract(asset, defaultRskChainId)
+          await getLoanTokenContract(asset, rskChainId)
         ).address,
         value: '0',
         rbtcValue: 0,
@@ -76,7 +73,7 @@ export const useGetFeesEarned = () => {
           asset === SupportedTokens.rbtc
             ? await getRbtcDummyAddress()
             : (
-                await getTokenContract(asset, defaultRskChainId)
+                await getTokenContract(asset, rskChainId)
               ).address,
         value: '0',
         rbtcValue: 0,
@@ -96,12 +93,9 @@ export const useGetFeesEarned = () => {
 
     setLoading(true);
 
-    const { contract } = await getProtocolContract(
-      'feeSharing',
-      defaultRskChainId,
-    );
+    const { contract } = await getProtocolContract('feeSharing', rskChainId);
 
-    const feeSharingContract = contract(getProvider(defaultRskChainId));
+    const feeSharingContract = contract(getProvider(rskChainId));
 
     const checkpoints = await multicall(
       defaultTokenData.flatMap(({ contractAddress }) => [

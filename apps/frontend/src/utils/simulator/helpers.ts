@@ -1,4 +1,4 @@
-import { defaultRskChainId } from '../../config/chains';
+import { rskChainId } from '../../config/chains';
 
 import { SimulatedTx } from './types';
 
@@ -31,7 +31,7 @@ export const FAKE_SIMULATOR_TX_DATA: SimulatedTx = {
     index: 0,
     input: '',
     method: '',
-    network_id: defaultRskChainId,
+    network_id: rskChainId,
     nonce: 0,
     status: true,
     timestamp: '',

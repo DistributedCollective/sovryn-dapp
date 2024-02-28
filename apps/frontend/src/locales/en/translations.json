@@ -885,6 +885,7 @@
         },
         "tables": {
             "connectWalletText": "Connect your wallet to see how many points you’ve got.",
+            "participantNotFound": "Take any action on the dapp to start earning points",
             "connectWalletCta": "Connect wallet",
             "baseTable": {
                 "participant": "Participant",

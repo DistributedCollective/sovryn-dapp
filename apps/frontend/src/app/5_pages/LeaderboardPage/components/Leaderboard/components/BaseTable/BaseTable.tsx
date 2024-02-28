@@ -54,7 +54,7 @@ export const BaseTable: FC<BaseTableProps> = ({ type }) => {
             !account ? (
               <ConnectWalletMessage />
             ) : (
-              t(translations.common.tables.noData)
+              t(translations.leaderboardPage.tables.participantNotFound)
             )
           }
           isLoading={!!account && loading}

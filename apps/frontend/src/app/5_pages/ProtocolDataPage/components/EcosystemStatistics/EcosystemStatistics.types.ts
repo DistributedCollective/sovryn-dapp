@@ -1,18 +1,11 @@
-import { Decimal } from '@sovryn/utils';
-
-export type EcosystemStatisticsProps = {
-  selectedCurrency: string;
-  btcPrice: string;
-  onChange: (section: string, value: Decimal, isSubSection?: boolean) => void;
+export type ContractData = {
+  title: string;
+  value: number;
+  dataAttribute: string;
+  highlight?: boolean;
 };
 
-export type PoolData = Record<string, Decimal>;
-
-export enum EcosystemContracts {
-  ProtocolContracts = 'protocolContracts',
-  LendingContracts = 'lendingContracts',
-  AmmContracts = 'ammContracts',
-  ZeroContracts = 'zeroContracts',
-  MyntAggregatorContracts = 'myntAggregatorContracts',
-  BitocracyStakingContract = 'bitocracyStakingContract',
-}
+export type ContractDataItem = {
+  totalBtc: number;
+  totalUsd: number;
+};

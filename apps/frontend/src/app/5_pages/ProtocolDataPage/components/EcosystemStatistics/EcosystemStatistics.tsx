@@ -4,29 +4,20 @@ import classNames from 'classnames';
 import { t } from 'i18next';
 
 import { Button, ButtonStyle, Paragraph } from '@sovryn/ui';
-import { Decimal } from '@sovryn/utils';
 
 import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { BITCOIN, USD } from '../../../../../constants/currencies';
-import { useGetRBTCPrice } from '../../../../../hooks/zero/useGetRBTCPrice';
 import { translations } from '../../../../../locales/i18n';
+import { useGetData } from '../../../LandingPage/components/ProtocolData/hooks/useGetData';
 import { getCurrencyPrecision } from '../../../PortfolioPage/components/ProtocolSection/ProtocolSection.utils';
 import { pageTranslations } from '../../ProtocolDataPage.constants';
-import { PoolData } from './EcosystemStatistics.types';
-import { AmmContracts } from './components/AmmContracts/AmmContracts';
-import { BitocracyStakingContract } from './components/BitocracyStakingContract/BitocracyStakingContract';
-import { LendingContracts } from './components/LendingContracts/LendingContracts';
-import { MyntAggregatorContract } from './components/MyntAggregatorContract/MyntAggregatorContract';
-import { ProtocolContracts } from './components/ProtocolContracts/ProtocolContracts';
-import { ZeroContracts } from './components/ZeroContracts/ZeroContracts';
+import { ContractData, ContractDataItem } from './EcosystemStatistics.types';
 
 export const EcosystemStatistics: FC = () => {
+  const { lockedData } = useGetData();
+
   const currencies = useMemo(() => [BITCOIN, USD], []);
   const [selectedCurrency, setSelectedCurrency] = useState(BITCOIN);
-  const [poolsData, setPoolsData] = useState<PoolData>({});
-  const [subPoolsData, setSubPoolsData] = useState<PoolData>({});
-
-  const { price: btcPrice } = useGetRBTCPrice();
 
   const renderCurrencyClassName = useMemo(
     () => (currency: string) =>
@@ -41,133 +32,91 @@ export const EcosystemStatistics: FC = () => {
     [selectedCurrency, setSelectedCurrency],
   );
 
-  const handleBalanceChange = useCallback(
-    (section: string, balance: Decimal, isSubSection: boolean = true) => {
-      if (isSubSection) {
-        setSubPoolsData(prevBalances => ({
-          ...prevBalances,
-          [section]: balance,
-        }));
-      } else {
-        setPoolsData(prevBalances => ({
-          ...prevBalances,
-          [section]: balance,
-        }));
-      }
-    },
-    [setPoolsData, setSubPoolsData],
+  const convertedValue = useCallback(
+    (item: ContractDataItem) =>
+      selectedCurrency === BITCOIN ? item.totalBtc : item.totalUsd,
+    [selectedCurrency],
   );
 
-  const subTotalBalance = useMemo(
+  const subTotalBtcValue = useMemo(
     () =>
-      Object.values(subPoolsData).reduce(
-        (total, balance) => total.add(balance),
-        Decimal.ZERO,
-      ),
-    [subPoolsData],
+      selectedCurrency === BITCOIN
+        ? lockedData.tvlProtocol.totalBtc +
+          lockedData.tvlLending.totalBtc +
+          lockedData.tvlAmm.totalBtc +
+          lockedData.tvlZero.totalBtc +
+          lockedData.tvlMynt.totalBtc
+        : 0,
+    [lockedData, selectedCurrency],
   );
 
-  const totalBalance = useMemo(
+  const subTotalUsdValue = useMemo(
     () =>
-      Object.values(poolsData)
-        .reduce((total, balance) => total.add(balance), Decimal.ZERO)
-        .add(subTotalBalance),
-    [poolsData, subTotalBalance],
+      selectedCurrency === USD
+        ? lockedData.tvlProtocol.totalUsd +
+          lockedData.tvlLending.totalUsd +
+          lockedData.tvlAmm.totalUsd +
+          lockedData.tvlZero.totalUsd +
+          lockedData.tvlMynt.totalUsd
+        : 0,
+    [lockedData, selectedCurrency],
   );
 
-  const list = useMemo(
+  const list: ContractData[] = useMemo(
     () => [
       {
         title: t(pageTranslations.ecosystemStatistics.protocolContracts),
-        value: (
-          <ProtocolContracts
-            selectedCurrency={selectedCurrency}
-            btcPrice={btcPrice}
-            onChange={handleBalanceChange}
-          />
-        ),
+        value: convertedValue(lockedData.tvlProtocol),
+        dataAttribute: 'ecosystem-statistics-protocol-contract-value',
       },
       {
         title: t(pageTranslations.ecosystemStatistics.lendingContracts),
-        value: (
-          <LendingContracts
-            selectedCurrency={selectedCurrency}
-            btcPrice={btcPrice}
-            onChange={handleBalanceChange}
-          />
-        ),
+        value: convertedValue(lockedData.tvlLending),
+        dataAttribute: 'ecosystem-statistics-lending-contract-value',
       },
       {
         title: t(pageTranslations.ecosystemStatistics.ammContracts),
-        value: (
-          <AmmContracts
-            selectedCurrency={selectedCurrency}
-            btcPrice={btcPrice}
-            onChange={handleBalanceChange}
-          />
-        ),
+        value: convertedValue(lockedData.tvlAmm),
+        dataAttribute: 'ecosystem-statistics-amm-contract-value',
       },
       {
         title: t(pageTranslations.ecosystemStatistics.zeroContracts),
-        value: (
-          <ZeroContracts
-            selectedCurrency={selectedCurrency}
-            btcPrice={btcPrice}
-            onChange={handleBalanceChange}
-          />
-        ),
+        value: convertedValue(lockedData.tvlZero),
+        dataAttribute: 'ecosystem-statistics-zero-contract-value',
       },
       {
         title: t(pageTranslations.ecosystemStatistics.myntAggregatorContract),
-        value: (
-          <MyntAggregatorContract
-            btcPrice={btcPrice}
-            selectedCurrency={selectedCurrency}
-            onChange={handleBalanceChange}
-          />
-        ),
+        value: convertedValue(lockedData.tvlMynt),
+        dataAttribute: 'ecosystem-statistics-mynt-aggregator-value',
       },
       {
         title: t(pageTranslations.ecosystemStatistics.subTotal),
-        value: (
-          <AmountRenderer
-            value={subTotalBalance}
-            suffix={selectedCurrency}
-            precision={getCurrencyPrecision(selectedCurrency)}
-            dataAttribute="ecosystem-statistics-subtotal-value"
-          />
-        ),
+        value:
+          selectedCurrency === BITCOIN ? subTotalBtcValue : subTotalUsdValue,
+        dataAttribute: 'ecosystem-statistics-subtotal-value',
         highlight: true,
       },
       {
         title: t(pageTranslations.ecosystemStatistics.bitocracyStakingContract),
-        value: (
-          <BitocracyStakingContract
-            btcPrice={btcPrice}
-            selectedCurrency={selectedCurrency}
-            onChange={handleBalanceChange}
-          />
-        ),
+        value: convertedValue(lockedData.tvlStaking),
+        dataAttribute: 'ecosystem-statistics-bitocracy-staking-value',
       },
       {
         title: t(pageTranslations.ecosystemStatistics.total),
-        value: (
-          <AmountRenderer
-            value={totalBalance}
-            suffix={selectedCurrency}
-            precision={getCurrencyPrecision(selectedCurrency)}
-            dataAttribute="ecosystem-statistics-total-value"
-          />
-        ),
+        value:
+          selectedCurrency === BITCOIN
+            ? lockedData.total_btc
+            : lockedData.total_usd,
+        dataAttribute: 'ecosystem-statistics-total-value',
         highlight: true,
       },
     ],
     [
-      btcPrice,
-      handleBalanceChange,
-      subTotalBalance,
-      totalBalance,
+      lockedData,
       selectedCurrency,
+      convertedValue,
+      subTotalBtcValue,
+      subTotalUsdValue,
     ],
   );
 
@@ -205,7 +154,14 @@ export const EcosystemStatistics: FC = () => {
             )}
           >
             <Paragraph children={item.title} />
-            <div className="lg:text-base text-xs">{item.value}</div>
+            <div className="lg:text-base text-xs">
+              <AmountRenderer
+                value={item.value}
+                suffix={selectedCurrency}
+                precision={getCurrencyPrecision(selectedCurrency)}
+                dataAttribute={item.dataAttribute}
+              />
+            </div>
           </div>
         ))}
       </div>

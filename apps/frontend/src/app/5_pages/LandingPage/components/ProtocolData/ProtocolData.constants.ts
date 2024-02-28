@@ -4,8 +4,36 @@ import { LockedDataResult, VolumeDataResult } from './ProtocolData.types';
 export const DATA_REFRESH_INTERVAL = 60000; // 1 minute
 
 export const DEFAULT_LOCKED_DATA: LockedDataResult = {
-  btc: 0,
-  usd: 0,
+  tvlLending: {
+    totalBtc: 0,
+    totalUsd: 0,
+  },
+  tvlAmm: {
+    totalBtc: 0,
+    totalUsd: 0,
+  },
+  tvlProtocol: {
+    totalBtc: 0,
+    totalUsd: 0,
+  },
+  tvlStaking: {
+    totalBtc: 0,
+    totalUsd: 0,
+  },
+  tvlSubprotocols: {
+    totalBtc: 0,
+    totalUsd: 0,
+  },
+  tvlZero: {
+    totalBtc: 0,
+    totalUsd: 0,
+  },
+  tvlMynt: {
+    totalBtc: 0,
+    totalUsd: 0,
+  },
+  total_btc: 0,
+  total_usd: 0,
 };
 
 export const DEFAULT_VOLUME_DATA: VolumeDataResult = {

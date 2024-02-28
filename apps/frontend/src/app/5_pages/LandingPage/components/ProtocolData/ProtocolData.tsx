@@ -43,7 +43,7 @@ export const ProtocolData: FC = () => {
           </div>
           <div className="sm:text-2xl text-gray-10 text-sm sm:font-medium font-semibold">
             <AmountRenderer
-              value={lockedData.btc}
+              value={lockedData.total_btc}
               suffix={BITCOIN}
               precision={BTC_VALUE_PRECISION}
             />
@@ -51,7 +51,7 @@ export const ProtocolData: FC = () => {
 
           <div className="text-[#BEBFC2] text-sm">
             <AmountRenderer
-              value={lockedData.usd}
+              value={lockedData.total_usd}
               suffix={USD}
               precision={USD_VALUE_PRECISION}
             />

@@ -38,7 +38,7 @@ export const COLUMNS_CONFIG = [
       <div className="text-base">
         <AmountRenderer
           value={decimalic(pair.lastPrice).toString()}
-          prefix="$ "
+          suffix="USD"
         />
       </div>
     ),
@@ -71,7 +71,7 @@ export const COLUMNS_CONFIG = [
     cellRenderer: (pair: CryptoPair) => (
       <AmountRenderer
         value={decimalic(pair.marketCap).toString()}
-        prefix="$ "
+        suffix="USD"
       />
     ),
   },
@@ -79,7 +79,7 @@ export const COLUMNS_CONFIG = [
     id: 'circulationSupply',
     title: (
       <span className="flex items-center gap-1">
-        {t(translation.circulationSupply)}
+        {t(translation.circulatingSupply)}
         <HelperButton
           content={
             <Trans
@@ -91,10 +91,7 @@ export const COLUMNS_CONFIG = [
       </span>
     ),
     cellRenderer: (pair: CryptoPair) => (
-      <AmountRenderer
-        value={decimalic(pair.circulatingSupply).toString()}
-        prefix="$ "
-      />
+      <AmountRenderer value={decimalic(pair.circulatingSupply).toString()} />
     ),
   },
 ];

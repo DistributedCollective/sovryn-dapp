@@ -116,7 +116,7 @@ export const PricesBy24hChange: FC = () => {
           value={
             <AmountRenderer
               value={decimalic(pair.marketCap).toString()}
-              prefix="$ "
+              suffix="USD"
             />
           }
         />
@@ -125,7 +125,7 @@ export const PricesBy24hChange: FC = () => {
             <span className="flex items-center gap-1">
               {t(
                 translations.protocolDataPage.pricesBy24hChange
-                  .circulationSupply,
+                  .circulatingSupply,
               )}
               <HelperButton
                 content={
@@ -143,7 +143,7 @@ export const PricesBy24hChange: FC = () => {
           value={
             <AmountRenderer
               value={decimalic(pair.circulatingSupply).toString()}
-              prefix="$ "
+              suffix="USD"
             />
           }
         />

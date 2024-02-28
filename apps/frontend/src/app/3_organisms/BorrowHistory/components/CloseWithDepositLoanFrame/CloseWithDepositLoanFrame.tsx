@@ -20,7 +20,7 @@ import {
   Table,
 } from '@sovryn/ui';
 
-import { chains } from '../../../../../config/chains';
+import { chains, defaultRskChainId } from '../../../../../config/chains';
 
 import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { AssetRenderer } from '../../../../2_molecules/AssetRenderer/AssetRenderer';
@@ -33,7 +33,6 @@ import { useMaintenance } from '../../../../../hooks/useMaintenance';
 import { translations } from '../../../../../locales/i18n';
 import { dateFormat } from '../../../../../utils/helpers';
 import { useGetCloseDepositLoans } from './hooks/useGetCloseDepositLoans';
-import { useCurrentChain } from '../../../../../hooks/useChainStore';
 
 const pageSize = DEFAULT_HISTORY_FRAME_PAGE_SIZE;
 
@@ -41,12 +40,8 @@ export const CloseWithDepositLoanFrame: FC<PropsWithChildren> = ({
   children,
 }) => {
   const [page, setPage] = useState(0);
-  const currentChainId = useCurrentChain();
 
-  const chain = useMemo(
-    () => chains.find(chain => chain.id === currentChainId),
-    [currentChainId],
-  );
+  const chain = chains.find(chain => chain.id === defaultRskChainId);
 
   const { value: block } = useBlockNumber();
 

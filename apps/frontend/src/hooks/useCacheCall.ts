@@ -2,6 +2,8 @@ import { DependencyList, useEffect, useMemo, useState } from 'react';
 
 import { Subscription } from 'rxjs';
 
+import { ChainId } from '@sovryn/ethers-provider';
+
 import {
   CacheCallOptions,
   observeCall,
@@ -9,7 +11,6 @@ import {
 } from '../store/rxjs/provider-cache';
 import { useBlockNumber } from './useBlockNumber';
 import { useIsMounted } from './useIsMounted';
-import { useCurrentChain } from './useChainStore';
 
 type State<T> = {
   value: T;
@@ -19,14 +20,14 @@ type State<T> = {
 
 export const useCacheCall = <T>(
   key: string,
+  chain: ChainId,
   callback: () => Promise<T>,
   deps?: DependencyList,
   defaultValue?: T,
   options?: Partial<CacheCallOptions>,
 ): State<T> => {
-  const currentChainId = useCurrentChain();
   const isMounted = useIsMounted();
-  const { value: block } = useBlockNumber(currentChainId);
+  const { value: block } = useBlockNumber(chain);
 
   const [state, setState] = useState<State<T>>({
     value: defaultValue ?? (null as T),
@@ -41,7 +42,7 @@ export const useCacheCall = <T>(
 
     let sub: Subscription;
 
-    sub = observeCall(`call:${key}`).subscribe(e => {
+    sub = observeCall(`call:${chain}:${key}`).subscribe(e => {
       if (isMounted()) {
         setState({
           ...e.result,
@@ -50,7 +51,7 @@ export const useCacheCall = <T>(
       }
     });
 
-    startCall(`call:${key}`, callback, {
+    startCall(`call:${chain}:${key}`, callback, {
       ...options,
       blockNumber: options?.blockNumber || block,
     });

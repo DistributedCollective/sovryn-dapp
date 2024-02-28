@@ -17,10 +17,11 @@ import { fromWei } from '../../../../utils/math';
 export const useGetBalanceOf = (asset: SupportedTokens) => {
   const { account } = useAccount();
 
-  const lendContract = useLoadContract(asset, 'loanTokens');
+  const lendContract = useLoadContract(asset, 'loanTokens', defaultRskChainId);
 
   const { value: balanceTotal } = useCacheCall(
     `loanTokens/${lendContract?.address}/balanceOf/${account}`,
+    defaultRskChainId,
     async () => {
       if (!account) {
         return Promise.resolve('0');

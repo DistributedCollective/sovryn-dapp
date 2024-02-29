@@ -915,8 +915,7 @@
             },
             "social": {
                 "tabTitle": "Influence",
-                "pointsInfo": "Social activity has a 25% share of the PoWa reward pool.",
-                "joinSquad": "Join the <0>Sov Squad</0> to get notified about new quests"
+                "pointsInfo": "Social activity has a 25% share of the PoWa reward pool."
             }
         },
         "pointsSection": {

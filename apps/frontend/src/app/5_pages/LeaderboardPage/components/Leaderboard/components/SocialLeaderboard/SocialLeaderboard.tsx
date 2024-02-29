@@ -1,7 +1,6 @@
 import React, { FC } from 'react';
 
 import { t } from 'i18next';
-import { Trans } from 'react-i18next';
 
 import { translations } from '../../../../../../../locales/i18n';
 import {
@@ -16,21 +15,6 @@ export const SocialLeaderboard: FC = () => {
         {t(translations.leaderboardPage.tables.social.pointsInfo)}
       </div>
       <div className="flex flex-col mt-8">
-        <div className="flex flex-row justify-center">
-          <Trans
-            i18nKey={t(translations.leaderboardPage.tables.social.joinSquad)}
-            components={[
-              <a
-                href="https://t.me/SovSquad"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="mx-1 mb-4"
-              >
-                Sov Squad
-              </a>,
-            ]}
-          />
-        </div>
         <div className="flex flex-row justify-center">
           <iframe
             src={COMPETITION_URL}

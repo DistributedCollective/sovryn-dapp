@@ -17,6 +17,7 @@
 
 - e66342d2: SOV-3719: Portfolio page
 - 4c4b6383: fix: missing prefix in AmountRenderer when countUp prop is used
+- SOV-3561: Re-enable EIP-2612 support
 
 ## 1.0.44
 

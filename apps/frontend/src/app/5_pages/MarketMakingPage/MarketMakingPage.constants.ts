@@ -68,6 +68,66 @@ export const MAINNET_AMM = [
     '0x3a18e61d9c9f1546dea013478dd653c793098f17',
     '0x36263AC99ecDcf1aB20513D580B7d8D32D3C439d',
   ).setPreviousConverters(['0x25B8D024B39174824424f032423E03dd7dcCF044']),
+  new AmmLiquidityPool(
+    SupportedTokens.xusd,
+    SupportedTokens.rbtc,
+    1,
+    ChainIds.RSK_MAINNET,
+    '0xa9c3d9681215ef7623dc28ea6b75bf87fdf285d9',
+    '0x6f96096687952349DD5944E0EB1Be327DcdeB705',
+  ).setPreviousConverters([
+    '0x029448377a56c15928ec783baf6ca736ed99a57f',
+    '0x34163bb263ac77e9d6315676a2b9624cfc5ff861',
+  ]),
+  new AmmLiquidityPool(
+    SupportedTokens.rusdt,
+    SupportedTokens.rbtc,
+    2,
+    ChainIds.RSK_MAINNET,
+    '0x448c2474b255576554EeD36c24430ccFac131cE3',
+    '0x40580E31cc14DbF7a0859f38Ab36A84262df821D',
+    '0x9c4017D1C04cFa0F97FDc9505e33a0D8ac84817F',
+  ),
+  new AmmLiquidityPool(
+    SupportedTokens.bnbs,
+    SupportedTokens.rbtc,
+    1,
+    ChainIds.RSK_MAINNET,
+    '0x1684b871ec5f93de142e79a670b541d75be07ead',
+    '0x8f3d24ab3510294f1466aa105f78901b90d79d4d',
+  ).setPreviousConverters([
+    '0x3a36919f1d6729ea8bd2a04f72bd9d5396f7e549',
+    '0x150bc1f9f1020255d44385865928aadc6b7ad9f3',
+  ]),
+  new AmmLiquidityPool(
+    SupportedTokens.eths,
+    SupportedTokens.rbtc,
+    1,
+    ChainIds.RSK_MAINNET,
+    '0xa57ec11497f45fe86eca50f4f1c9e75c8016a1af',
+    '0xF41Ed702df2B84AcE02772C6a0D8AE46465aA5F4',
+  ).setPreviousConverters([
+    '0xcef26b429e272960d8fa2ea190b06df5dd8f68e2',
+    '0xd8397c1944862b6a9674c85a5496c208dc9417bb',
+  ]),
+  new AmmLiquidityPool(
+    SupportedTokens.doc,
+    SupportedTokens.rbtc,
+    2,
+    ChainIds.RSK_MAINNET,
+    '0xd715192612F03D20BaE53a5054aF530C9Bb0fA3f',
+    '0x2dc80332C19FBCd5169ab4a579d87eE006Cb72c0',
+    '0x840437BdE7346EC13B5451417Df50586F4dAF836',
+  ),
+  new AmmLiquidityPool(
+    SupportedTokens.bpro,
+    SupportedTokens.rbtc,
+    2,
+    ChainIds.RSK_MAINNET,
+    '0x26463990196B74aD5644865E4d4567E4A411e065',
+    '0x9CE25371426763025C04a9FCd581fbb9E4593475',
+    '0x75e327A83aD2BFD53da12EB718fCCFC68Bc57535',
+  ),
 ];
 
 export const TESTNET_AMM = [
@@ -121,6 +181,60 @@ export const TESTNET_AMM = [
     '0x84953dAF0E7a9fFb8B4fDf7F948185e1cF85852e',
     '0xB12FA09a50c56e9a0C826b98e76DA7645017AB4D',
   ),
+  new AmmLiquidityPool(
+    SupportedTokens.xusd,
+    SupportedTokens.rbtc,
+    1,
+    ChainIds.RSK_TESTNET,
+    '0xD877fd00ECF08eD78BF549fbc74bac3001aBBb07',
+    '0xb89D193c8a9Ae3fadF73B23519c215a0B7DD1B37',
+  ).setPreviousConverters([
+    '0x9a1aE300b23F4C676186e6d417ac586889aAfF42',
+    '0xe5e750ead0e564e489b0776273e4a10f3f3d4028',
+  ]),
+  new AmmLiquidityPool(
+    SupportedTokens.rusdt,
+    SupportedTokens.rbtc,
+    2,
+    ChainIds.RSK_TESTNET,
+    '0x133eBE9c8bA524C9B1B601E794dF527f390729bF',
+    '0x7274305BB36d66F70cB8824621EC26d52ABe9069',
+    '0xfFBBF93Ecd27C8b500Bd35D554802F7F349A1E9B',
+  ),
+  new AmmLiquidityPool(
+    SupportedTokens.bnbs,
+    SupportedTokens.rbtc,
+    1,
+    ChainIds.RSK_TESTNET,
+    '0x20d5c55c92615d416d73b34c8afed99288e99be1',
+    '0xf97A3589c3fE2059fA3AB4819317B77b4BC6c9A8',
+  ).setPreviousConverters(['0xA8D7FDd2f67273F178EFe731d4becd38E2A94E11']),
+  new AmmLiquidityPool(
+    SupportedTokens.eths,
+    SupportedTokens.rbtc,
+    1,
+    ChainIds.RSK_TESTNET,
+    '0x9f570ffe6c421e2c7611aaea14770b807e9fb424',
+    '0xBb5B900EDa0F1459F582aB2436EA825a927f5bA2',
+  ).setPreviousConverters(['0x4c493276E14791472633B55aaD82E49D28540bC6']),
+  new AmmLiquidityPool(
+    SupportedTokens.doc,
+    SupportedTokens.rbtc,
+    2,
+    ChainIds.RSK_TESTNET,
+    '0x497b0517dd24f66c456e93bc0adbb2a2bf159ec4',
+    '0x6787161bc4F8d54e6ac6fcB9643Af6f4a12DfF28',
+    '0x7F433CC76298bB5099c15C1C7C8f2e89A8370111',
+  ),
+  new AmmLiquidityPool(
+    SupportedTokens.bpro,
+    SupportedTokens.rbtc,
+    2,
+    ChainIds.RSK_TESTNET,
+    '0xe4E467D8B5f61b5C83048d857210678eB86730A4',
+    '0xdaf6FD8370f5245d98E829c766e008cd39E8F060',
+    '0x98e5F39D8C675972A66ea165040Cb81803c440A3',
+  ),
 ];
 
 export const BLOCKS_PER_WEEK = 20160;
@@ -146,3 +260,5 @@ export const AMM_SERVICE_URL = {
   [ChainIds.RSK_MAINNET]: 'https://amm-apy.sovryn.app/',
   [ChainIds.RSK_TESTNET]: 'https://amm-apy.test.sovryn.app/',
 };
+
+export const DEPOSIT_MIN_RETURN = '1';

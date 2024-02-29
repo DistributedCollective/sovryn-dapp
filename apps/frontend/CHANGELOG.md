@@ -1,5 +1,23 @@
 # frontend
 
+## 1.0.46
+
+### Patch Changes
+
+- bcc17cc9: SOV-3822: replace staking rewards wiki link
+- 5ffe098c: Add new assets to Lending/Borrowing, Convert, and Market Making pages
+- 2b3c0303: SOV-3869: Portfolio - add ZUSD and update Protocol Deposits title
+- a31fedbf: SOV-3653: Fix LP reward display
+- Updated dependencies [5ffe098c]
+  - @sovryn/sdk@0.0.8
+
+## 1.0.45
+
+### Patch Changes
+
+- e66342d2: SOV-3719: Portfolio page
+- 4c4b6383: fix: missing prefix in AmountRenderer when countUp prop is used
+
 ## 1.0.44
 
 ### Patch Changes

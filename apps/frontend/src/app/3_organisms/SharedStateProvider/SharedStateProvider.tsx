@@ -68,6 +68,7 @@ export const SharedStateProvider: React.FC<React.PropsWithChildren> = ({
         isOpen={fastBtcDialog.isOpen}
         shouldHideSend={fastBtcDialog.shouldHideSend}
         onClose={handleFastBtcDialogClose}
+        step={fastBtcDialog.step}
       />
 
       <EmailNotificationSettingsDialog

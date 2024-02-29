@@ -6,6 +6,7 @@ import {
   BTC_RENDER_PRECISION,
   TOKEN_RENDER_PRECISION,
 } from '../../../../../../../constants/currencies';
+import { getTokenDisplayName } from '../../../../../../../constants/tokens';
 import { useGetPoolLiquidity } from '../../../../hooks/useGetPoolLiquidity';
 import { AmmLiquidityPool } from '../../../../utils/AmmLiquidityPool';
 
@@ -19,7 +20,7 @@ export const PoolsTableLiquidity: FC<PoolsTableLiquidityProps> = ({ pool }) => {
     <div className="flex flex-col">
       <AmountRenderer
         value={balanceTokenA}
-        suffix={pool.assetA}
+        suffix={getTokenDisplayName(pool.assetA)}
         precision={TOKEN_RENDER_PRECISION}
       />
       <AmountRenderer

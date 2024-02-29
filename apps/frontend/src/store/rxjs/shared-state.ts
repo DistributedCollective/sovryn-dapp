@@ -15,6 +15,7 @@ export type EventDriverState = {
 export type FastBtcDialogState = {
   isOpen: boolean;
   shouldHideSend: boolean;
+  step?: number;
 };
 
 export type EmailNotificationSettingsDialogState = {
@@ -25,6 +26,7 @@ const INITIAL_STATE = {
   fastBtcDialog: {
     isOpen: false,
     shouldHideSend: false,
+    step: 0,
   },
   emailNotificationSettingsDialog: {
     isOpen: false,
@@ -64,12 +66,13 @@ function select<T extends keyof EventDriverState>(
 const get = (): EventDriverState => store.getValue();
 
 // Actions
-const openFastBtcDialog = (shouldHideSend: boolean = false) =>
+const openFastBtcDialog = (shouldHideSend: boolean = false, step: number = 0) =>
   dispatch(state => ({
     ...state,
     fastBtcDialog: {
       isOpen: true,
       shouldHideSend,
+      step,
     },
   }));
 

@@ -1,6 +1,7 @@
 import React, { FC, RefObject, useCallback } from 'react';
 
 import { t } from 'i18next';
+import { Trans } from 'react-i18next';
 
 import { Button, ButtonStyle } from '@sovryn/ui';
 
@@ -28,7 +29,13 @@ export const Intro: FC<IntroProps> = ({ pointsSectionRef }) => {
         {t(baseTranslation.subtitle)}
       </div>
       <div className="text-sm font-medium mt-6">
-        {t(baseTranslation.description)}
+        <Trans
+          i18nKey={t(baseTranslation.description1)}
+          components={[<span className="font-bold">Bitcoin OS</span>]}
+        />
+      </div>
+      <div className="text-sm font-medium mt-4">
+        {t(baseTranslation.description2)}
       </div>
 
       <div className="mt-4">

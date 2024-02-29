@@ -482,7 +482,7 @@
             "competition": {
                 "title": "YOU’VE GOT THE POWA",
                 "description": "Anyone using Sovryn already has points that will convert to POWA - a new bitcoin-token that allows an early use of what’s to come with the BitcoinOS launch. See how many points you’ve got:",
-                "cta": "Points Leaderboard",
+                "cta": "Leaderboard",
                 "secondaryCta": "More about POWA"
             }
         },
@@ -861,7 +861,8 @@
         "headerLink": "POWA Points",
         "title": "You’ve got the POWA!",
         "subtitle": "Earn Points - get POWA",
-        "description": "POWA is the most powaful Bitcoin token! Minted on an entirely new Bitcoin technology, POWA tokens allow early use of what's to come with the BitcoinOS launch. Stake, Trade, or use your Influence to earn Points. The POWA will be given to anyone who earns points. Connect your wallet to see how many points you already have!",
+        "description1": "POWA is the most powaful Bitcoin token! Minted on an entirely new Bitcoin technology, POWA tokens allow early use of what's to come with the <0>BitcoinOS</0> launch.",
+        "description2": "Stake, Trade, or use your Influence to earn Points and POWA. Connect your wallet to see how many points you already have!",
         "primaryCta": "How to earn points",
         "secondaryCta": "More about POWA",
         "ctaLinksSection": {
@@ -869,7 +870,7 @@
             "subtitle": "The more points you’ll have - the more POWA you’ll get!",
             "stake": {
                 "title": "Stake",
-                "description": "Existing stakes earn 1 point for each Voting Power they hold. New Stake and re-stakes earn 10 points for each VP they hold!",
+                "description": "The longer you stake, the more POWA you’ll get! Existing stakes earn 1 point for each Voting Power they hold. New and re-stakes earn 10 points for each VP.",
                 "cta": "Stake SOV"
             },
             "trade": {
@@ -879,7 +880,7 @@
             },
             "social": {
                 "title": "Influence",
-                "description": "Earn points from your social influence! Like, Share, and Tweet to be given the POWA!",
+                "description": "Earn points for your social influence! Like, Share, and Tweet to be given the POWA!",
                 "cta": "Twitter quests"
             }
         },

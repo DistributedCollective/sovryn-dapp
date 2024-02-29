@@ -24,7 +24,7 @@ export const SocialLeaderboard: FC = () => {
                 href="https://t.me/SovSquad"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="mx-1"
+                className="mx-1 mb-4"
               >
                 Sov Squad
               </a>,

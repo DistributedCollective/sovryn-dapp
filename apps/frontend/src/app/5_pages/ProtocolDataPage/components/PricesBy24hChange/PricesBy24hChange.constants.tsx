@@ -7,6 +7,7 @@ import { HelperButton } from '@sovryn/ui';
 
 import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { AssetRenderer } from '../../../../2_molecules/AssetRenderer/AssetRenderer';
+import { USD } from '../../../../../constants/currencies';
 import { translations } from '../../../../../locales/i18n';
 import { decimalic } from '../../../../../utils/math';
 import styles from './PricesBy24hChange.module.css';
@@ -38,7 +39,7 @@ export const COLUMNS_CONFIG = [
       <div className="text-base">
         <AmountRenderer
           value={decimalic(pair.lastPrice).toString()}
-          suffix="USD"
+          suffix={USD}
         />
       </div>
     ),
@@ -71,7 +72,7 @@ export const COLUMNS_CONFIG = [
     cellRenderer: (pair: CryptoPair) => (
       <AmountRenderer
         value={decimalic(pair.marketCap).toString()}
-        suffix="USD"
+        suffix={USD}
       />
     ),
   },

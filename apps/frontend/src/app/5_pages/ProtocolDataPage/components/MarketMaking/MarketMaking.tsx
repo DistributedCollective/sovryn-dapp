@@ -111,12 +111,12 @@ export const MarketMaking: FC = () => {
   );
 
   return (
-    <div className="w-full md:border md:border-gray-50 md:bg-gray-90 md:py-7 md:px-6 rounded mb-9">
+    <div className="w-full md:border md:border-gray-50 md:bg-gray-90 md:py-7 md:px-6 rounded md:mb-9 mb-12">
       <Paragraph
-        className="md:text-2xl text-base font-medium  mb-6"
+        className="md:text-2xl text-base font-medium md:mb-10 mb-3 mt-2"
         children={t(pageTranslations.marketMaking.title)}
       />
-      <div className="md:mt-5">
+      <>
         <Table
           columns={COLUMNS_CONFIG}
           rows={ammPools}
@@ -138,7 +138,7 @@ export const MarketMaking: FC = () => {
           isNextButtonDisabled={isNextButtonDisabled}
           dataAttribute="vesting-stakes-pagination"
         />
-      </div>
+      </>
     </div>
   );
 };

@@ -94,22 +94,7 @@ export const PointsSection: FC<PointsSectionProps> = ({ pointsSectionRef }) => (
         <SimpleTableRow
           className={classNames(styles.tableRow, 'mb-2.5')}
           label={t(tablesTranslation.social.item1)}
-          value={5}
-        />
-        <SimpleTableRow
-          className={classNames(styles.tableRow, 'mb-2.5')}
-          label={t(tablesTranslation.social.item2)}
-          value={10}
-        />
-        <SimpleTableRow
-          className={classNames(styles.tableRow, 'mb-2.5')}
-          label={t(tablesTranslation.social.item3)}
-          value={200}
-        />
-        <SimpleTableRow
-          className={styles.tableRow}
-          label={t(tablesTranslation.social.item4)}
-          value={500}
+          value=""
         />
       </SimpleTable>
     </div>

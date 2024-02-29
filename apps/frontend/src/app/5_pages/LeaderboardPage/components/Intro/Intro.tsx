@@ -4,6 +4,7 @@ import { t } from 'i18next';
 
 import { Button, ButtonStyle } from '@sovryn/ui';
 
+import { POWA_LINK } from '../../../../../constants/links';
 import { translations } from '../../../../../locales/i18n';
 import { scrollToElement } from '../../../../../utils/helpers';
 
@@ -41,7 +42,7 @@ export const Intro: FC<IntroProps> = ({ pointsSectionRef }) => {
           text={t(baseTranslation.secondaryCta)}
           style={ButtonStyle.ghost}
           hrefExternal
-          href="https://sovryn.com/powa"
+          href={POWA_LINK}
         />
       </div>
 

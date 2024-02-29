@@ -481,8 +481,8 @@
             },
             "competition": {
                 "title": "YOU’VE GOT THE POWA",
-                "description": "Every Sovryn user already has points that will convert to POWA - a new bitcoin-token asset class. See how many points you’ve got:",
-                "cta": "Leaderboard",
+                "description": "Anyone using Sovryn already has points that will convert to POWA - a new bitcoin-token that allows an early use of what’s to come with the BitcoinOS launch. See how many points you’ve got:",
+                "cta": "Points Leaderboard",
                 "secondaryCta": "More about POWA"
             }
         },
@@ -858,28 +858,28 @@
     },
 
     "leaderboardPage": {
-        "headerLink": "Get PoWa",
+        "headerLink": "POWA Points",
         "title": "You’ve got the POWA!",
-        "subtitle": "A Taproot Assets token - a new Bitcoin token class.",
-        "description": "Earn Points by staking, trading, or promoting Sovryn on Twitter. POWA will be airdropped to everyone across the leaderboard according to their earned points. Trade your POWA on Sovryn, Use your POWA to buy upcoming NFT collections. Connect your wallet to see how many points you already have!",
+        "subtitle": "Earn Points - get POWA",
+        "description": "POWA is the most powaful Bitcoin token! Minted on an entirely new Bitcoin technology, POWA tokens allow early use of what's to come with the BitcoinOS launch. Stake, Trade, or use your Influence to earn Points. The POWA will be given to anyone who earns points. Connect your wallet to see how many points you already have!",
         "primaryCta": "How to earn points",
         "secondaryCta": "More about POWA",
         "ctaLinksSection": {
-            "title": "1 Billion POWA Prize Pool!",
+            "title": "1 Trillion POWA Prize Pool!",
             "subtitle": "The more points you’ll have - the more POWA you’ll get!",
             "stake": {
                 "title": "Stake",
-                "description": "Existing stakes Earn 1 point for each VP they hold. New Stake and re-stakes earn 10 points for each VP they hold!",
+                "description": "Existing stakes earn 1 point for each Voting Power they hold. New Stake and re-stakes earn 10 points for each VP they hold!",
                 "cta": "Stake SOV"
             },
             "trade": {
                 "title": "Trade",
-                "description": "Get 25 points per $1 value you bring in, 10 points per $1 deposit into the SOV or DLLR AMMs, and 1 point per $1 trade.",
+                "description": "Get 25 points per $1 value you bridge into Sovryn, 10 points per $1 deposit into the SOV or DLLR AMMs, and 1 point per $1 trade.",
                 "cta": "Deposit stablecoins"
             },
             "social": {
-                "title": "Get social!",
-                "description": "Earn points for Twitter engagement! Like, Share and Tweet for some sweet POWA at the airdrop.",
+                "title": "Influence",
+                "description": "Earn points from your social influence! Like, Share, and Tweet to be given the POWA!",
                 "cta": "Twitter quests"
             }
         },
@@ -913,8 +913,9 @@
                 "pointsInfo": "Staking has a 40% share of the PoWa reward pool"
             },
             "social": {
-                "tabTitle": "Social power",
-                "pointsInfo": "Social activity has a 25% share of the PoWa reward pool"
+                "tabTitle": "Influence",
+                "pointsInfo": "Social activity has a 25% share of the PoWa reward pool.",
+                "joinSquad": "Join the <0>Sov Squad</0> to get notified about new quests"
             }
         },
         "pointsSection": {
@@ -922,7 +923,7 @@
             "description": "Actions on the Sovryn dApp and on Twitter earn you points. Points convert to POWA - the next Bitcoin token class.",
             "tables": {
                 "trading": {
-                    "title": "Earn points by trading",
+                    "title": "Trade",
                     "item1": "Provide liquidity for SOV/DLLR pool, per $1 value",
                     "item2": "Any AMM trade, per $1 value",
                     "item3": "Import stablecoins, per $1 value",
@@ -930,18 +931,15 @@
                     "item5": "Top importer of the day"
                 },
                 "staking": {
-                    "title": "Earn points by staking",
+                    "title": "Stake",
                     "item1": "New stakes, 1VP",
                     "item2": "Existing stakes, 1 VP",
                     "item3": "Top Staker of the Week",
                     "item4": "Top Staker of the Day"
                 },
                 "social": {
-                    "title": "Earn points on social media",
-                    "item1": "Like",
-                    "item2": "Follow",
-                    "item3": "Retweet",
-                    "item4": "Tweet"
+                    "title": "Influence",
+                    "item1": "See Influence leaderboard for current quests points breakdown."
                 }
             }
         }

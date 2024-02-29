@@ -87,8 +87,8 @@ export const LendAndBorrow: FC = () => {
   );
 
   return (
-    <div className="w-full md:border md:border-gray-50 md:bg-gray-90 md:py-7 md:px-6 rounded mb-9">
-      <div className="flex items-center justify-between">
+    <div className="w-full md:border md:border-gray-50 md:bg-gray-90 md:py-7 md:px-6 rounded md:mb-9 mb-12">
+      <div className="flex items-center justify-between md:mb-8 mb-3 mt-2">
         <Paragraph
           className="md:text-2xl text-base font-medium"
           children={t(pageTranslations.lendAndBorrow.title)}
@@ -105,7 +105,7 @@ export const LendAndBorrow: FC = () => {
           />
         </div>
       </div>
-      <div className="py-4 md:mt-5">
+      <>
         <Table
           columns={COLUMNS_CONFIG}
           rows={lendPools}
@@ -117,7 +117,7 @@ export const LendAndBorrow: FC = () => {
           mobileRenderer={mobileRenderer}
           rowClassName="bg-gray-80"
         />
-      </div>
+      </>
     </div>
   );
 };

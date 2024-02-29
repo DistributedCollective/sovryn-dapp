@@ -122,7 +122,7 @@ export const EcosystemStatistics: FC = () => {
 
   return (
     <div className="w-full md:bg-gray-90 md:py-7 md:px-6 rounded mb-9">
-      <div className="lg:flex justify-between items-center lg:mb-6 mb-3">
+      <div className="lg:flex justify-between items-center md:mb-6 mb-3 mt-2">
         <Paragraph
           className="md:text-2xl mb-3 lg:mb-0 text-base font-medium"
           children={t(pageTranslations.ecosystemStatistics.title)}
@@ -154,7 +154,7 @@ export const EcosystemStatistics: FC = () => {
             )}
           >
             <Paragraph children={item.title} />
-            <div className="lg:text-base text-xs">
+            <div className="lg:text-base text-xs xl:mr-48">
               <AmountRenderer
                 value={item.value}
                 suffix={selectedCurrency}

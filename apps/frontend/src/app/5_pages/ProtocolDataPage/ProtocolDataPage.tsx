@@ -54,7 +54,7 @@ const ProtocolDataPage: FC = () => {
         <title>{t(pageTranslations.meta.title)}</title>
       </Helmet>
 
-      <div className="w-full grid grid-cols-1 justify-center text-gray-10 md:mx-9 mx-0 md:mb-2 mt-7 mb-7 max-w-6xl">
+      <div className="w-full grid grid-cols-1 justify-center text-gray-10 md:mx-9 mx-0 md:mb-2 md:mt-7 mt-4 mb-7 max-w-6xl">
         <Heading className="text-center mb-3 lg:text-2xl text-base font-medium">
           {t(pageTranslations.title)}
         </Heading>

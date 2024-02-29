@@ -17,6 +17,7 @@ import {
 
 import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { AssetRenderer } from '../../../../2_molecules/AssetRenderer/AssetRenderer';
+import { USD } from '../../../../../constants/currencies';
 import { useIsMobile } from '../../../../../hooks/useIsMobile';
 import { translations } from '../../../../../locales/i18n';
 import { decimalic } from '../../../../../utils/math';
@@ -86,7 +87,7 @@ export const PricesBy24hChange: FC = () => {
         />
         <AmountRenderer
           value={decimalic(pair.lastPrice).toString()}
-          prefix="$ "
+          suffix="USD"
         />
         <PriceChange value={pair.price24h} />
       </div>
@@ -116,7 +117,7 @@ export const PricesBy24hChange: FC = () => {
           value={
             <AmountRenderer
               value={decimalic(pair.marketCap).toString()}
-              suffix="USD"
+              suffix={USD}
             />
           }
         />
@@ -143,7 +144,6 @@ export const PricesBy24hChange: FC = () => {
           value={
             <AmountRenderer
               value={decimalic(pair.circulatingSupply).toString()}
-              suffix="USD"
             />
           }
         />
@@ -160,8 +160,8 @@ export const PricesBy24hChange: FC = () => {
   );
 
   return (
-    <div className="w-full md:border md:border-gray-50 md:bg-gray-90 md:py-7 md:px-6 rounded mb-9">
-      <div className="flex items-center justify-between mb-6">
+    <div className="w-full md:border md:border-gray-50 md:bg-gray-90 md:py-7 md:px-6 rounded md:mb-9 mb-12">
+      <div className="flex items-center justify-between md:mb-8 mb-3 mt-2">
         <Paragraph
           className="md:text-2xl text-base font-medium"
           children={t(pageTranslations.pricesBy24hChange.title)}
@@ -172,7 +172,7 @@ export const PricesBy24hChange: FC = () => {
           onClick={() => navigate('/convert')}
         />
       </div>
-      <div className="min-h-72 mt-5">
+      <>
         <Table
           columns={COLUMNS_CONFIG}
           rows={paginatedItems}
@@ -191,7 +191,7 @@ export const PricesBy24hChange: FC = () => {
           dataAttribute="pairs-prices-pagination"
           isNextButtonDisabled={isNextButtonDisabled}
         />
-      </div>
+      </>
     </div>
   );
 };

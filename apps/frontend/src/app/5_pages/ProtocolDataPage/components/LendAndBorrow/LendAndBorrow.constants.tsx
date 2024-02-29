@@ -12,6 +12,7 @@ import { normalizeToken } from '../../../BorrowPage/BorrowPage.utils';
 import { AvailableSupply } from '../../../BorrowPage/components/BorrowAssetsTable/components/AvailableSupply/AvailableSupply';
 import { NextBorrowInterestRate } from '../../../BorrowPage/components/BorrowAssetsTable/components/NextBorrowInterestRate/NextBorrowInterestRate';
 import { NextSupplyInterestRate } from '../../../LendPage/components/NextSupplyInterestRate/NextSupplyInterestRate';
+import styles from './LendAndBorrow.module.css';
 
 const translation = translations.protocolDataPage.lendAndBorrow;
 
@@ -24,6 +25,7 @@ export const COLUMNS_CONFIG = [
         <AssetRenderer
           showAssetLogo
           asset={pool.getAsset()}
+          logoClassName={styles.assetLogo}
           className="lg:justify-start justify-end"
           assetClassName="text-xs font-medium"
         />

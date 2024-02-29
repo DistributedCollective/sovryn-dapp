@@ -87,7 +87,7 @@ export const PricesBy24hChange: FC = () => {
         />
         <AmountRenderer
           value={decimalic(pair.lastPrice).toString()}
-          prefix="$ "
+          suffix="USD"
         />
         <PriceChange value={pair.price24h} />
       </div>
@@ -144,7 +144,6 @@ export const PricesBy24hChange: FC = () => {
           value={
             <AmountRenderer
               value={decimalic(pair.circulatingSupply).toString()}
-              suffix={USD}
             />
           }
         />

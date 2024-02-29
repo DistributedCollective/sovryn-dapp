@@ -1,5 +1,18 @@
 # frontend
 
+## 1.0.47
+
+### Patch Changes
+
+- 3d6870a1: SOV-3827: Protocol Data Page
+- 865fa7ba: SOV-3823: Fix markdown display on Bitocracy
+- 3d6870a1: SOV-3847: Lend and borrow section
+- 3d6870a1: SOV-3850: Ecosystem Statistics section
+- 3d6870a1: SOV-3849: Market making section
+- 3d6870a1: SOV-3801: 24hr Price Changes section
+- Updated dependencies [3d6870a1]
+  - @sovryn/ui@1.0.23
+
 ## 1.0.46
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # @sovryn/ui
 
+## 1.0.23
+
+### Patch Changes
+
+- 3d6870a1: SOV-3801: 24hr Price Changes section
+
 ## 1.0.22
 
 ### Patch Changes

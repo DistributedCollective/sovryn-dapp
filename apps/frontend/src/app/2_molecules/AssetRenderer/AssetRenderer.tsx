@@ -10,7 +10,10 @@ import {
 } from '@sovryn/contracts';
 import { applyDataAttr } from '@sovryn/ui';
 
-import { getTokenDisplayName } from '../../../constants/tokens';
+import {
+  getTokenDisplayName,
+  getTokenLongName,
+} from '../../../constants/tokens';
 import styles from './AssetRenderer.module.css';
 
 type AssetRendererProps = {
@@ -24,11 +27,11 @@ type AssetRendererProps = {
   address?: string;
   /**
    * Whether to show the asset logo or not.
+   * @default false
    * */
   showAssetLogo?: boolean;
   /**
    * Applied classNames to the asset element.
-   * @default false
    * */
   assetClassName?: string;
   /**
@@ -43,6 +46,14 @@ type AssetRendererProps = {
    * Applied data attribute to the outer element.
    * */
   dataAttribute?: string;
+  /**
+   * Whether to show the asset long name.
+   * */
+  showLongName?: boolean;
+  /**
+   * Applied classNames to the asset long name element.
+   * */
+  assetLongNameClassName?: string;
 };
 
 export const AssetRenderer: FC<AssetRendererProps> = ({
@@ -53,6 +64,8 @@ export const AssetRenderer: FC<AssetRendererProps> = ({
   className,
   dataAttribute,
   logoClassName,
+  showLongName,
+  assetLongNameClassName,
 }) => {
   const [token, setToken] = useState(asset);
   const [logo, setLogo] = useState<string | undefined>(undefined);
@@ -101,6 +114,12 @@ export const AssetRenderer: FC<AssetRendererProps> = ({
       {token && (
         <span className={classNames(styles.asset, assetClassName)}>
           {getTokenDisplayName(token)}
+        </span>
+      )}
+
+      {token && showLongName && (
+        <span className={assetLongNameClassName}>
+          {getTokenLongName(token)}
         </span>
       )}
     </div>

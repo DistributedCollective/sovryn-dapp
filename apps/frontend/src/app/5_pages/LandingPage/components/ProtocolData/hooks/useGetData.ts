@@ -33,10 +33,7 @@ export const useGetData = () => {
         cancelToken,
       })
       .then(result => {
-        setLockedData({
-          btc: result.data?.total_btc || 0,
-          usd: result.data?.total_usd || 0,
-        });
+        setLockedData(result.data);
       });
   }, []);
 

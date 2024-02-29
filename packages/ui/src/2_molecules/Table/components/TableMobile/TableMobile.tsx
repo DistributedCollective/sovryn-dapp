@@ -27,9 +27,10 @@ export const TableMobile = <RowType extends RowObject>({
       rows.map((row, index) => (
         <TableMobileRow
           key={rowKey?.(row) || JSON.stringify(row)}
-          title={rowTitle?.(row) || index}
+          titleRenderer={rowTitle}
           columns={columns}
           row={row}
+          index={index}
           onRowClick={onRowClick}
           dataAttribute={dataAttribute}
           expandedContent={expandedContent}

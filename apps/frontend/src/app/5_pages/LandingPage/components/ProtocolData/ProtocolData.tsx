@@ -1,6 +1,9 @@
-import React, { FC } from 'react';
+import React, { FC, useCallback } from 'react';
 
 import { t } from 'i18next';
+import { useNavigate } from 'react-router-dom';
+
+import { Button, ButtonStyle } from '@sovryn/ui';
 
 import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { BITCOIN, USD } from '../../../../../constants/currencies';
@@ -15,12 +18,22 @@ const pageTranslations = translations.landingPage.protocolDataSection;
 
 export const ProtocolData: FC = () => {
   const { lockedData, volumeData } = useGetData();
+  const navigate = useNavigate();
+
+  const handleClick = useCallback(() => navigate('/stats'), [navigate]);
 
   return (
     <div>
       <div className="text-base font-medium text-gray-10">
-        <div className="sm:justify-start justify-between flex">
+        <div className="sm:justify-start justify-between flex items-baseline">
           {t(pageTranslations.title)}
+          <Button
+            text={t(pageTranslations.cta)}
+            style={ButtonStyle.ghost}
+            onClick={handleClick}
+            dataAttribute="protocol-data-view-button"
+            className="ml-3"
+          />
         </div>
       </div>
       <div className="flex mt-6 font-medium">
@@ -30,7 +43,7 @@ export const ProtocolData: FC = () => {
           </div>
           <div className="sm:text-2xl text-gray-10 text-sm sm:font-medium font-semibold">
             <AmountRenderer
-              value={lockedData.btc}
+              value={lockedData.total_btc}
               suffix={BITCOIN}
               precision={BTC_VALUE_PRECISION}
             />
@@ -38,7 +51,7 @@ export const ProtocolData: FC = () => {
 
           <div className="text-[#BEBFC2] text-sm">
             <AmountRenderer
-              value={lockedData.usd}
+              value={lockedData.total_usd}
               suffix={USD}
               precision={USD_VALUE_PRECISION}
             />

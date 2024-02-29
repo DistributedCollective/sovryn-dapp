@@ -115,7 +115,12 @@ export const Tooltip: FC<TooltipProps> = ({
     const events = !disabled && {
       onMouseEnter: trigger === TooltipTrigger.hover ? handleShow : noop,
       onMouseLeave: trigger === TooltipTrigger.hover ? handleHide : noop,
-      onClick: trigger === TooltipTrigger.click ? handleShow : noop,
+      onClick: e => {
+        if (trigger === TooltipTrigger.click) {
+          e.stopPropagation();
+          handleShow();
+        }
+      },
       onFocus: trigger === TooltipTrigger.focus ? handleShow : noop,
       onBlur: trigger === TooltipTrigger.focus ? handleHide : noop,
     };
@@ -178,6 +183,7 @@ export const Tooltip: FC<TooltipProps> = ({
             role="tooltip"
             onMouseEnter={onMouseHover}
             onMouseLeave={onMouseHover}
+            onClick={e => e.stopPropagation()}
           >
             {content}
           </div>

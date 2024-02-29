@@ -57,6 +57,9 @@ const LandingPage = loadable(
 const PortfolioPage = loadable(
   () => import('./app/5_pages/PortfolioPage/PortfolioPage'),
 );
+const ProtocolDataPage = loadable(
+  () => import('./app/5_pages/ProtocolDataPage/ProtocolDataPage'),
+);
 
 const routes = [
   {
@@ -132,6 +135,10 @@ const routes = [
       {
         path: '/earn/staking',
         element: <StakePage />,
+      },
+      {
+        path: '/stats',
+        element: <ProtocolDataPage />,
       },
     ],
   },

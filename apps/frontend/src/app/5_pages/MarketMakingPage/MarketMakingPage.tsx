@@ -2,31 +2,51 @@ import React, { FC, useCallback, useEffect, useState } from 'react';
 
 import { t } from 'i18next';
 import { Helmet } from 'react-helmet-async';
+import { useSearchParams } from 'react-router-dom';
 
 import { Heading, Paragraph, ParagraphSize } from '@sovryn/ui';
 
-import { useIsMobile } from '../../../hooks/useIsMobile';
 import { translations } from '../../../locales/i18n';
 import { PoolsTable } from './components/PoolsTable/PoolsTable';
 import { Promotions } from './components/Promotions/Promotions';
 
 const MarketMakingPage: FC = () => {
-  const { isMobile } = useIsMobile();
-  const [activePool, setActivePool] = useState('');
+  const [searchParams, setSearchParams] = useSearchParams();
+  const pool = searchParams.get('pool');
+  const [activePool, setActivePool] = useState(pool || '');
   const [isPromoCardClicked, setIsPromoCardClicked] = useState(false);
 
   const setActivePoolKey = useCallback(
-    (poolKey: string) => setActivePool(activePool === poolKey ? '' : poolKey),
-    [activePool],
+    (poolKey: string) => {
+      const newPool = activePool === poolKey ? '' : poolKey;
+      setActivePool(newPool);
+
+      const urlParams = new URLSearchParams();
+
+      if (newPool) {
+        urlParams.set('pool', newPool);
+      } else {
+        urlParams.delete('pool');
+      }
+
+      setSearchParams(new URLSearchParams(urlParams));
+    },
+    [activePool, setSearchParams],
   );
 
   useEffect(() => {
-    if (activePool && !isMobile) {
-      setIsPromoCardClicked(false);
+    if (activePool !== pool) {
+      setActivePool(pool || '');
+    }
+  }, [activePool, pool]);
+
+  useEffect(() => {
+    if (pool) {
+      setIsPromoCardClicked(true);
     } else {
       setActivePool('');
     }
-  }, [activePool, isMobile]);
+  }, [pool]);
 
   return (
     <>

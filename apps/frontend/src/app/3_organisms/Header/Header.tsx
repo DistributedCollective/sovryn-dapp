@@ -34,7 +34,7 @@ export const Header: FC = () => {
   const navigate = useNavigate();
 
   const handleLeaderboardClick = useCallback(
-    () => navigate(`/leaderboard`),
+    () => navigate(`/powa`),
     [navigate],
   );
 

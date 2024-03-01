@@ -138,7 +138,7 @@ const routes = [
         element: <StakePage />,
       },
       {
-        path: '/leaderboard',
+        path: '/powa',
         element: <LeaderboardPage />,
       },
     ],

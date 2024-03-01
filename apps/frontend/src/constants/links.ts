@@ -54,3 +54,5 @@ export const WIKI_LINKS = {
 };
 
 export const HELPDESK_LINK = 'https://help.sovryn.app/';
+
+export const POWA_LINK = 'https://sovryn.com/powa';

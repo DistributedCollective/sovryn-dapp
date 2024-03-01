@@ -1,8 +1,5 @@
 import React, { FC } from 'react';
 
-import { t } from 'i18next';
-
-import { translations } from '../../../../../../../locales/i18n';
 import {
   COMPETITION_URL,
   LEADERBOARD_URL,
@@ -11,9 +8,6 @@ import {
 export const SocialLeaderboard: FC = () => {
   return (
     <div className="p-4">
-      <div className="mt-4 text-sm font-medium text-gray-30 text-end">
-        {t(translations.leaderboardPage.tables.social.pointsInfo)}
-      </div>
       <div className="flex flex-col mt-8">
         <div className="flex flex-row justify-center">
           <iframe

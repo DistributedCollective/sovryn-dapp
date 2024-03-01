@@ -15,7 +15,7 @@ import { LandingPromoCard } from './components/LandingPromoCard/LandingPromoCard
 export const Banner: FC = () => {
   const navigate = useNavigate();
 
-  const handleClick = useCallback(() => navigate('/leaderboard'), [navigate]);
+  const handleClick = useCallback(() => navigate('/powa'), [navigate]);
 
   return (
     <div className="w-full relative pb-7">

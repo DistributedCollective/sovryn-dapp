@@ -38,13 +38,6 @@ export const BaseTable: FC<BaseTableProps> = ({ type }) => {
 
   return (
     <div className="p-4">
-      <div className="mt-4 text-sm font-medium text-gray-30 text-end">
-        {t(
-          translations.leaderboardPage.tables[
-            isStakingTable ? 'staking' : 'trading'
-          ].pointsInfo,
-        )}
-      </div>
       <div className="my-8 mx-4 rounded">
         <Table
           rows={connectedWalletRow}

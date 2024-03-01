@@ -897,25 +897,22 @@
                     "genesis": "+5% Genesis",
                     "nft": "+5% NFT holder",
                     "origin": "+5% Origin",
-                    "topImporterDay": "+10% Top Trader D",
-                    "topImporterWeek": "+10% Top Trader W",
+                    "topImporterDay": "+10% Daily top importer",
+                    "topImporterWeek": "+10% Weekly top importer",
                     "voter": "+5% Voter",
-                    "topStakerDay": "+10% Top Staker D",
-                    "topStakerWeek": "+10% Top Staker W",
+                    "topStakerDay": "+10% Daily top staker",
+                    "topStakerWeek": "+10% Weekly top trader",
                     "wallet": "+100 points"
                 }
             },
             "trading": {
-                "tabTitle": "Trading",
-                "pointsInfo": "Trading has a 25% share of the PoWa reward pool"
+                "tabTitle": "Trading"
             },
             "staking": {
-                "tabTitle": "Staking",
-                "pointsInfo": "Staking has a 40% share of the PoWa reward pool"
+                "tabTitle": "Staking"
             },
             "social": {
-                "tabTitle": "Influence",
-                "pointsInfo": "Social activity has a 25% share of the PoWa reward pool."
+                "tabTitle": "Influence"
             }
         },
         "pointsSection": {
@@ -927,15 +924,15 @@
                     "item1": "Provide liquidity for SOV/DLLR pool, per $1 value",
                     "item2": "Any AMM trade, per $1 value",
                     "item3": "Import stablecoins, per $1 value",
-                    "item4": "Top importer of the week",
-                    "item5": "Top importer of the day"
+                    "item4": "Weekly top  importer",
+                    "item5": "Daily top importer"
                 },
                 "staking": {
                     "title": "Stake",
-                    "item1": "New stakes, 1VP",
+                    "item1": "New and re-stakes, 1VP",
                     "item2": "Existing stakes, 1 VP",
-                    "item3": "Top Staker of the Week",
-                    "item4": "Top Staker of the Day"
+                    "item3": "Weekly top staker",
+                    "item4": "Daily top staker"
                 },
                 "social": {
                     "title": "Influence",

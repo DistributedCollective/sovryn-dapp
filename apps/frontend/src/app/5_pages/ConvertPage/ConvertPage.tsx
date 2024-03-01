@@ -42,11 +42,15 @@ import { useAssetBalance } from '../../../hooks/useAssetBalance';
 import { useCurrentChain } from '../../../hooks/useChainStore';
 import { useWeiAmountInput } from '../../../hooks/useWeiAmountInput';
 import { translations } from '../../../locales/i18n';
-import { isRskChain } from '../../../utils/chain';
 import { removeTrailingZerosFromString } from '../../../utils/helpers';
 import { decimalic, fromWei } from '../../../utils/math';
 import { FIXED_MYNT_RATE, FIXED_RATE_ROUTES } from './ConvertPage.constants';
-import { smartRouterRsk, stableCoins, SWAP_ROUTES } from './ConvertPage.types';
+import {
+  defaultSwapEntries,
+  smartRouterRsk,
+  stableCoins,
+  SWAP_ROUTES,
+} from './ConvertPage.types';
 import { useConversionMaintenance } from './hooks/useConversionMaintenance';
 import { useGetMaximumAvailableAmount } from './hooks/useGetMaximumAvailableAmount';
 import { useHandleConversion } from './hooks/useHandleConversion';
@@ -109,9 +113,7 @@ const ConvertPage: FC = () => {
         return SupportedTokens[key];
       }
     }
-    return isRskChain(currentChainId)
-      ? SupportedTokens.dllr
-      : SupportedTokens.btc;
+    return defaultSwapEntries[currentChainId];
   }, [currentChainId, fromToken]);
 
   const [sourceToken, setSourceToken] =
@@ -126,6 +128,14 @@ const ConvertPage: FC = () => {
   const [destinationTokenOptions, setDestinationTokenOptions] = useState<
     SelectOption<SupportedTokens>[]
   >([]);
+
+  useEffect(() => {
+    const newToken = defaultSwapEntries[currentChainId];
+    if (!!newToken) {
+      setAmount('');
+      setSourceToken(newToken);
+    }
+  }, [currentChainId, setAmount]);
 
   useEffect(() => {
     smartRouter

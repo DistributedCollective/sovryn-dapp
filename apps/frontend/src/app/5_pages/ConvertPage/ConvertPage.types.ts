@@ -1,12 +1,10 @@
 import { SupportedTokens } from '@sovryn/contracts';
 import { getProvider } from '@sovryn/ethers-provider';
 import { SmartRouter, smartRoutes } from '@sovryn/sdk';
-import { defaultChainId } from '../../../config/chains';
 
-// todo: request provider dynamically based on the current chain inside of the component instead.
-const provider = getProvider(defaultChainId);
+import { rskChainId } from '../../../config/chains';
 
-const SWAP_ROUTES = [
+export const SWAP_ROUTES = [
   smartRoutes.ammSwapRoute,
   smartRoutes.myntBassetRoute,
   smartRoutes.myntFixedRateRoute,
@@ -14,7 +12,10 @@ const SWAP_ROUTES = [
   smartRoutes.ambientRoute,
 ];
 
-export const smartRouter = new SmartRouter(provider, SWAP_ROUTES);
+export const smartRouterRsk = new SmartRouter(
+  getProvider(rskChainId),
+  SWAP_ROUTES,
+);
 
 export const stableCoins = [
   SupportedTokens.zusd,

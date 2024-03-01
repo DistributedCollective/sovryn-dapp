@@ -6,7 +6,10 @@ import { Helmet } from 'react-helmet-async';
 import { useSearchParams } from 'react-router-dom';
 
 import { getTokenDetails, SupportedTokens } from '@sovryn/contracts';
+import { ChainId } from '@sovryn/ethers-provider';
+import { getProvider } from '@sovryn/ethers-provider';
 import { SwapRoute } from '@sovryn/sdk';
+import { SmartRouter } from '@sovryn/sdk';
 import {
   Accordion,
   AmountInput,
@@ -36,17 +39,17 @@ import { TOKEN_RENDER_PRECISION } from '../../../constants/currencies';
 import { getTokenDisplayName } from '../../../constants/tokens';
 import { useAccount } from '../../../hooks/useAccount';
 import { useAssetBalance } from '../../../hooks/useAssetBalance';
+import { useCurrentChain } from '../../../hooks/useChainStore';
 import { useWeiAmountInput } from '../../../hooks/useWeiAmountInput';
 import { translations } from '../../../locales/i18n';
+import { isRskChain } from '../../../utils/chain';
 import { removeTrailingZerosFromString } from '../../../utils/helpers';
 import { decimalic, fromWei } from '../../../utils/math';
 import { FIXED_MYNT_RATE, FIXED_RATE_ROUTES } from './ConvertPage.constants';
-import { smartRouter, stableCoins } from './ConvertPage.types';
+import { smartRouterRsk, stableCoins, SWAP_ROUTES } from './ConvertPage.types';
 import { useConversionMaintenance } from './hooks/useConversionMaintenance';
 import { useGetMaximumAvailableAmount } from './hooks/useGetMaximumAvailableAmount';
 import { useHandleConversion } from './hooks/useHandleConversion';
-import { useCurrentChain } from '../../../hooks/useChainStore';
-import { ChainId } from '@sovryn/ethers-provider';
 
 const commonTranslations = translations.common;
 const pageTranslations = translations.convertPage;
@@ -57,7 +60,7 @@ const tokensToOptions = (
   callback: (options: SelectOption<SupportedTokens>[]) => void,
 ) =>
   Promise.all(
-    addresses.map(address => smartRouter.getTokenDetails(address, chain)),
+    addresses.map(address => smartRouterRsk.getTokenDetails(address, chain)),
   ).then(tokens =>
     callback(
       tokens.map(token => ({
@@ -75,6 +78,12 @@ const tokensToOptions = (
 
 const ConvertPage: FC = () => {
   const currentChainId = useCurrentChain();
+
+  const smartRouter = useMemo(
+    () => new SmartRouter(getProvider(currentChainId), SWAP_ROUTES),
+    [currentChainId],
+  );
+
   const { account } = useAccount();
   const [searchParams, setSearchParams] = useSearchParams();
   const fromToken = searchParams.get('from');
@@ -100,8 +109,10 @@ const ConvertPage: FC = () => {
         return SupportedTokens[key];
       }
     }
-    return SupportedTokens.dllr;
-  }, [fromToken]);
+    return isRskChain(currentChainId)
+      ? SupportedTokens.dllr
+      : SupportedTokens.btc;
+  }, [currentChainId, fromToken]);
 
   const [sourceToken, setSourceToken] =
     useState<SupportedTokens>(defaultSourceToken);
@@ -120,7 +131,7 @@ const ConvertPage: FC = () => {
     smartRouter
       .getEntries(currentChainId)
       .then(tokens => tokensToOptions(tokens, currentChainId, setTokenOptions));
-  }, [currentChainId]);
+  }, [currentChainId, smartRouter]);
 
   useEffect(() => {
     (async () => {
@@ -138,7 +149,7 @@ const ConvertPage: FC = () => {
         setDestinationToken(SupportedTokens.sov);
       }
     })();
-  }, [currentChainId, sourceToken]);
+  }, [currentChainId, smartRouter, sourceToken]);
 
   const sourceTokenOptions = useMemo(
     () =>
@@ -237,7 +248,7 @@ const ConvertPage: FC = () => {
         getTokenDetails(destinationToken, currentChainId),
       ]);
 
-      const result = await smartRouter.getBestQuote(
+      const result = await smartRouterRsk.getBestQuote(
         currentChainId,
         sourceTokenDetails.address,
         destinationTokenDetails.address,

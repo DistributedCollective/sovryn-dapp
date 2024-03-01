@@ -5,6 +5,9 @@ import { Helmet } from 'react-helmet-async';
 
 import { Heading, Paragraph, ParagraphSize } from '@sovryn/ui';
 
+import { rskChainId } from '../../../config/chains';
+
+import { NetworkBanner } from '../../2_molecules/NetworkBanner/NetworkBanner';
 import { translations } from '../../../locales/i18n';
 import { LendFrame } from './components/LendFrame/LendFrame';
 
@@ -25,6 +28,8 @@ const LendPage: FC = () => (
       >
         {t(translations.lendPage.subtitle)}
       </Paragraph>
+
+      <NetworkBanner requiredChainId={rskChainId} />
 
       <div className="w-full md:bg-gray-90 md:py-7 md:px-6 rounded mb-6">
         <LendFrame />

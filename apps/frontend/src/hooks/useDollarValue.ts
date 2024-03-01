@@ -5,7 +5,7 @@ import { SupportedTokens } from '@sovryn/contracts';
 import { rskChainId } from '../config/chains';
 
 import {
-  smartRouter,
+  smartRouterRsk,
   stableCoins,
 } from '../app/5_pages/ConvertPage/ConvertPage.types';
 import { decimalic, fromWei, toWei } from '../utils/math';
@@ -34,7 +34,7 @@ export function useDollarValue(asset: SupportedTokens, weiAmount: string) {
         return '0';
       }
 
-      const result = await smartRouter.getBestQuote(
+      const result = await smartRouterRsk.getBestQuote(
         rskChainId,
         assetDetails?.address,
         dllrDetails?.address,

@@ -10,7 +10,7 @@ import { useAccount } from '../../../../../../../../../hooks/useAccount';
 import { useBlockNumber } from '../../../../../../../../../hooks/useBlockNumber';
 import { removeTrailingZerosFromString } from '../../../../../../../../../utils/helpers';
 import { decimalic, fromWei } from '../../../../../../../../../utils/math';
-import { smartRouter } from '../../../../../../../ConvertPage/ConvertPage.types';
+import { smartRouterRsk } from '../../../../../../../ConvertPage/ConvertPage.types';
 import { useGetStakingBalanceOf } from '../../../../../../../StakePage/hooks/useGetStakingBalanceOf';
 import {
   ProtocolSectionProps,
@@ -48,7 +48,7 @@ export const StakingTotalValue: FC<ProtocolSectionProps> = ({
           ],
         );
 
-        const result = await smartRouter.getBestQuote(
+        const result = await smartRouterRsk.getBestQuote(
           rskChainId,
           sourceTokenDetails.address,
           destinationTokenDetails.address,

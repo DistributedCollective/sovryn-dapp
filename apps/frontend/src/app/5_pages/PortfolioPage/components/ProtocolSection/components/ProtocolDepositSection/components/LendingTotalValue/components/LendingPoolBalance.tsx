@@ -12,7 +12,7 @@ import {
   fromWei,
   toWei,
 } from '../../../../../../../../../../utils/math';
-import { smartRouter } from '../../../../../../../../ConvertPage/ConvertPage.types';
+import { smartRouterRsk } from '../../../../../../../../ConvertPage/ConvertPage.types';
 import { useGetAssetBalanceOf } from '../../../../../../../../LendPage/components/LendFrame/components/LendFrameBalance/hooks/useGetAssetBalanceOf';
 
 type LendingPoolBalanceProps = {
@@ -48,7 +48,7 @@ export const LendingPoolBalance: FC<LendingPoolBalanceProps> = ({
           ],
         );
 
-        const result = await smartRouter.getBestQuote(
+        const result = await smartRouterRsk.getBestQuote(
           rskChainId,
           sourceTokenDetails.address,
           destinationTokenDetails.address,

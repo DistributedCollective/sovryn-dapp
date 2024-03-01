@@ -1,6 +1,8 @@
 import setup, { Chain, ChainIds } from '@sovryn/ethers-provider';
 import { ChainId } from '@sovryn/ethers-provider';
 
+import bobLogo from '../assets/chains/bob.svg';
+import rskLogo from '../assets/chains/rsk.svg';
 import {
   BOB_EXPLORER,
   BOB_RPC,
@@ -29,9 +31,9 @@ export const bobChainId = (
   isMainnet() ? ChainIds.BOB_MAINNET : ChainIds.BOB_TESTNET
 ) as ChainId;
 
-// @dev: temp solution for hardware wallets to connect to the correct chain
-// good enough for now, but should be refactored when cross-chain support is needed
-export const chains: Chain[] = [
+export type ChainWithLogo = Chain & { icon: string };
+
+export const chains: ChainWithLogo[] = [
   ...(isMainnet()
     ? [
         {
@@ -41,6 +43,7 @@ export const chains: Chain[] = [
           publicRpcUrl: PUBLIC_RSK_RPC[Environments.Mainnet],
           rpcUrl: RSK_RPC[Environments.Mainnet],
           blockExplorerUrl: RSK_EXPLORER[Environments.Mainnet],
+          icon: rskLogo,
         },
         {
           id: ChainIds.BOB_MAINNET,
@@ -49,6 +52,7 @@ export const chains: Chain[] = [
           publicRpcUrl: PUBLIC_BOB_RPC[Environments.Mainnet],
           rpcUrl: BOB_RPC[Environments.Mainnet],
           blockExplorerUrl: BOB_EXPLORER[Environments.Mainnet],
+          icon: bobLogo,
         },
       ]
     : [
@@ -59,6 +63,7 @@ export const chains: Chain[] = [
           publicRpcUrl: PUBLIC_RSK_RPC[Environments.Testnet],
           rpcUrl: RSK_RPC[Environments.Testnet],
           blockExplorerUrl: RSK_EXPLORER[Environments.Testnet],
+          icon: rskLogo,
         },
         {
           id: ChainIds.BOB_TESTNET,
@@ -67,6 +72,7 @@ export const chains: Chain[] = [
           publicRpcUrl: PUBLIC_BOB_RPC[Environments.Testnet],
           rpcUrl: BOB_RPC[Environments.Testnet],
           blockExplorerUrl: BOB_EXPLORER[Environments.Testnet],
+          icon: bobLogo,
         },
       ]),
 ];

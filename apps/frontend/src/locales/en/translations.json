@@ -870,7 +870,7 @@
             "subtitle": "The more points you’ll have - the more POWA you’ll get!",
             "stake": {
                 "title": "Stake",
-                "description": "The longer you stake, the more POWA you’ll get! Existing stakes earn 1 point for each Voting Power they hold. New and re-stakes earn 10 points for each VP.",
+                "description": "The longer you stake, the more POWA you’ll get! Existing stakes earn 1 point for each Voting Power. New and re-stakes earn 10 points for each VP.",
                 "cta": "Stake SOV"
             },
             "trade": {

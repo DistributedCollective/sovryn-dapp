@@ -1,5 +1,11 @@
 # frontend
 
+## 1.0.48
+
+### Patch Changes
+
+- 50f7724d: SOV-3935: Competition leaderboard
+
 ## 1.0.47
 
 ### Patch Changes

@@ -38,7 +38,7 @@ export const chains: ChainWithLogo[] = [
     ? [
         {
           id: ChainIds.RSK_MAINNET,
-          label: 'Rootstock',
+          label: 'RSK',
           token: 'RBTC',
           publicRpcUrl: PUBLIC_RSK_RPC[Environments.Mainnet],
           rpcUrl: RSK_RPC[Environments.Mainnet],
@@ -58,7 +58,7 @@ export const chains: ChainWithLogo[] = [
     : [
         {
           id: ChainIds.RSK_TESTNET,
-          label: 'Rootstock testnet',
+          label: 'RSK',
           token: 'tRBTC',
           publicRpcUrl: PUBLIC_RSK_RPC[Environments.Testnet],
           rpcUrl: RSK_RPC[Environments.Testnet],
@@ -67,7 +67,7 @@ export const chains: ChainWithLogo[] = [
         },
         {
           id: ChainIds.BOB_TESTNET,
-          label: 'BOB testnet',
+          label: 'BOB',
           token: 'tBTC',
           publicRpcUrl: PUBLIC_BOB_RPC[Environments.Testnet],
           rpcUrl: BOB_RPC[Environments.Testnet],

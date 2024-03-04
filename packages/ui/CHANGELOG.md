@@ -4,7 +4,7 @@
 
 ### Patch Changes
 
-- 3d6870a1: SOV-3801: 24hr Price Changes section
+- 3d6870a1: SOV-3801: Add new icon, extend properties on Table component, prevent onClick events from propagating from Tooltip clicks
 
 ## 1.0.22
 

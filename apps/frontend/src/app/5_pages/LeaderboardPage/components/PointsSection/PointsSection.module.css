@@ -1,0 +1,3 @@
+.tableRow {
+  @apply flex justify-between;
+}

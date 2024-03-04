@@ -23,6 +23,7 @@ export interface IAccordionProps {
   onClick?: (toOpen: boolean) => void;
   dataAttribute?: string;
   style?: AccordionStyle;
+  flatMode?: boolean;
 }
 
 export const Accordion: FC<IAccordionProps> = ({
@@ -35,10 +36,11 @@ export const Accordion: FC<IAccordionProps> = ({
   dataAttribute,
   labelClassName,
   style = AccordionStyle.primary,
+  flatMode,
 }) => {
   const onClickCallback = useCallback(
-    () => !disabled && onClick?.(!open),
-    [disabled, open, onClick],
+    () => !disabled && !flatMode && onClick?.(!open),
+    [disabled, flatMode, onClick, open],
   );
 
   return (
@@ -61,15 +63,17 @@ export const Accordion: FC<IAccordionProps> = ({
             label
           )}
         </>
-        <div className={styles.arrow}>
-          <Icon
-            icon={IconNames.ARROW_DOWN}
-            size={8}
-            className={classNames(styles.icon, {
-              [styles.isOpen]: open,
-            })}
-          />
-        </div>
+        {!flatMode && (
+          <div className={styles.arrow}>
+            <Icon
+              icon={IconNames.ARROW_DOWN}
+              size={8}
+              className={classNames(styles.icon, {
+                [styles.isOpen]: open,
+              })}
+            />
+          </div>
+        )}
       </button>
       {open && (
         <div

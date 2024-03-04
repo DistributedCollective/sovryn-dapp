@@ -12,4 +12,16 @@
   &.gray {
     @apply bg-gray-50 text-gray-10;
   }
+
+  &.teal {
+    @apply bg-[#255C60] text-sovryn-blue;
+  }
+
+  &.brown {
+    @apply bg-[#8A370E] text-primary-30;
+  }
+
+  &.grayLight {
+    @apply bg-gray-40 text-gray-10;
+  }
 }

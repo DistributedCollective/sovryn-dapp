@@ -57,6 +57,9 @@ const LandingPage = loadable(
 const PortfolioPage = loadable(
   () => import('./app/5_pages/PortfolioPage/PortfolioPage'),
 );
+const ProtocolDataPage = loadable(
+  () => import('./app/5_pages/ProtocolDataPage/ProtocolDataPage'),
+);
 
 const LeaderboardPage = loadable(
   () => import('./app/5_pages/LeaderboardPage/LeaderboardPage'),
@@ -140,6 +143,10 @@ const routes = [
       {
         path: '/powa',
         element: <LeaderboardPage />,
+      },
+      {
+        path: '/stats',
+        element: <ProtocolDataPage />,
       },
     ],
   },

@@ -65,6 +65,12 @@ export const Footer: FC<FooterProps> = ({ showDashboardLink }) => {
         href: '/policies/privacy-policy',
         name: t(translations.footer.policy),
       },
+      {
+        id: 'stats',
+        href: '/stats',
+        name: t(translations.footer.stats),
+        openNewTab: false,
+      },
     ],
     [showDashboardLink],
   );
@@ -83,7 +89,12 @@ export const Footer: FC<FooterProps> = ({ showDashboardLink }) => {
       links={
         <div className="flex flex-row justify-center flex-wrap gap-x-6 gap-y-5">
           {footerLinks.map(link => (
-            <Link key={link.id} href={link.href} text={link.name} />
+            <Link
+              key={link.id}
+              href={link.href}
+              text={link.name}
+              openNewTab={link.openNewTab}
+            />
           ))}
         </div>
       }
@@ -95,6 +106,7 @@ export const Footer: FC<FooterProps> = ({ showDashboardLink }) => {
               text={`${t(
                 translations.footer.buildID,
               )} ${CURRENT_RELEASE.commit?.substring(0, 7)}`}
+              openNewTab={true}
             />
           </div>
           <SocialLinks dataAttribute="footer-social" />

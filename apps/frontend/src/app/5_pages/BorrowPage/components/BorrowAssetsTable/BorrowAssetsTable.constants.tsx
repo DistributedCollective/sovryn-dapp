@@ -2,6 +2,7 @@ import React from 'react';
 
 import { t } from 'i18next';
 
+import { SupportedTokens } from '@sovryn/contracts';
 import { HelperButton } from '@sovryn/ui';
 
 import { AssetRenderer } from '../../../../2_molecules/AssetRenderer/AssetRenderer';
@@ -15,6 +16,8 @@ import { NewLoanButton } from './components/NewLoanButton/NewLoanButton';
 import { NextBorrowInterestRate } from './components/NextBorrowInterestRate/NextBorrowInterestRate';
 
 const translation = translations.fixedInterestPage.borrowAssetsTable.columns;
+
+export const EXCLUDED_ASSETS = [SupportedTokens.rusdt];
 
 export const COLUMNS_CONFIG = [
   {

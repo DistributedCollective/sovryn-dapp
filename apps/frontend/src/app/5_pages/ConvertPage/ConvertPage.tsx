@@ -75,8 +75,8 @@ const tokensToOptions = (
 const ConvertPage: FC = () => {
   const { account } = useAccount();
   const [searchParams, setSearchParams] = useSearchParams();
-  const fromToken = searchParams.get('from');
-  const toToken = searchParams.get('to');
+  const fromToken = searchParams.get('from') || '';
+  const toToken = searchParams.get('to') || '';
   const { balance: myntBalance } = useAssetBalance(SupportedTokens.mynt);
 
   const [slippageTolerance, setSlippageTolerance] = useState('0.5');
@@ -369,8 +369,10 @@ const ConvertPage: FC = () => {
       urlParams.delete('to');
     }
 
-    setSearchParams(new URLSearchParams(urlParams));
-  }, [sourceToken, destinationToken, setSearchParams]);
+    if (toToken !== destinationToken || fromToken !== sourceToken) {
+      setSearchParams(new URLSearchParams(urlParams));
+    }
+  }, [sourceToken, destinationToken, setSearchParams, toToken, fromToken]);
 
   useEffect(() => {
     if (!account) {

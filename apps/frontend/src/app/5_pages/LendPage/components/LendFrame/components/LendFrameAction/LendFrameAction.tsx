@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useMemo } from 'react';
+import React, { FC, useCallback, useMemo, useState } from 'react';
 
 import { t } from 'i18next';
 
@@ -20,6 +20,8 @@ export const LendFrameAction: FC<LendFrameProps> = ({ pool }) => {
   const asset = useMemo(() => pool.getAsset(), [pool]);
   const { account } = useAccount();
   const { assetBalance } = useGetAssetBalanceOf(asset);
+  const [isAdjustModalOpen, setIsAdjustModalOpen] = useState(false);
+  const [isLendModalOpen, setIsLendModalOpen] = useState(false);
 
   const { push: adjust } = useMemo(
     () => eventDriven<Nullable<SupportedTokens>>(LendModalAction.Adjust),
@@ -32,15 +34,19 @@ export const LendFrameAction: FC<LendFrameProps> = ({ pool }) => {
 
   const handleAdjustClick = useCallback(async () => {
     adjust(pool.getAsset());
+    setIsAdjustModalOpen(true);
   }, [adjust, pool]);
 
   const handleLendClick = useCallback(async () => {
     lend(pool.getAsset());
+    setIsLendModalOpen(true);
   }, [lend, pool]);
 
   const handleCloseModal = useCallback(() => {
     adjust(null);
     lend(null);
+    setIsAdjustModalOpen(false);
+    setIsLendModalOpen(false);
   }, [adjust, lend]);
 
   const handleComplete = useCallback(() => {}, []);
@@ -77,8 +83,14 @@ export const LendFrameAction: FC<LendFrameProps> = ({ pool }) => {
       <AdjustLendingModalContainer
         onDeposit={handleDeposit}
         onWithdraw={handleWithdraw}
+        onClose={handleCloseModal}
+        isOpen={isAdjustModalOpen}
       />
-      <LendingModalContainer onDeposit={handleDeposit} />
+      <LendingModalContainer
+        onDeposit={handleDeposit}
+        onClose={handleCloseModal}
+        isOpen={isLendModalOpen}
+      />
     </div>
   );
 };

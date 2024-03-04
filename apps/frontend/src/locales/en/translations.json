@@ -118,6 +118,7 @@
         "fees": "Fees",
         "terms": "Terms of service",
         "policy": "Privacy policy",
+        "stats": "Stats",
         "buildID": "Build ID:"
     },
     "wrongNetworkSwitcher": {
@@ -1631,7 +1632,7 @@
             "deposit": "Deposit",
             "openLoan": "Open loan",
             "stakeSOV": "Stake SOV",
-            "depositValue": "Deposit value",
+            "depositValue": "Deposits",
             "totalValue": "Total value",
             "totalRewardsEarned": "Total rewards earned"
         },
@@ -1643,6 +1644,57 @@
             "asset": "Asset",
             "balance": "Balance",
             "usdValue": "USD Value"
+        }
+    },
+    "protocolDataPage": {
+        "meta": {
+            "title": "Protocol data - Sovryn"
+        },
+        "title": "Protocol data",
+        "subtitle": "Cryptocurrency prices, yield and ecosystem statistics",
+        "sections": {
+            "ecosystemStatistics": "Ecosystem statistics"
+        },
+        "lendAndBorrow": {
+            "title": "Lend and borrow",
+            "asset": "Asset",
+            "borrowApr": "Borrow APR",
+            "lendApr": "Lend APR",
+            "availableSupply": "Available supply",
+            "lend": "Lend",
+            "borrow": "Borrow"
+        },
+        "pricesBy24hChange": {
+            "title": "Prices by 24h change",
+            "asset": "Asset",
+            "price": "Price",
+            "24h": "24h%",
+            "7d": "7d%",
+            "marketCap": "Market cap",
+            "marketCapTooltip": "Market cap is calculated as circulating supply * current USD price. <br /> <br /> For SOV, circulating supply = total supply (100m) - tokens in vesting contracts, <0>not including </0> tokens in adoption and development fund contracts. <br /> <br /> For RBTC, circulating supply = BTC locked in the RSK 2 Way Peg <br /> <br /> For all other tokens, circulating supply = total supply <br /> <br /> For tokens that have come across a bridge from another chain, the circulating supply is the supply of that token on the RSK chain. For example, the circulating supply of ETHs is not equal to the circulating supply of ETH on ethereum.",
+            "circulatingSupply": "Circulating supply",
+            "circulatingSupplyTooltip": "We have updated the circulating supply formula to show the amount of liquid SOV token in line with market standards. SOV that has been unlocked from the adoption and development funds is now counted as circulating, and SOV that has been staked (either through vesting or voluntary staking) is not counted as circulating.",
+            "convert": "Convert"
+        },
+        "ecosystemStatistics": {
+            "title": "Ecosystem statistics",
+            "protocolContracts": "Protocol contracts",
+            "lendingContracts": "Lending contracts",
+            "ammContracts": "AMM contracts",
+            "zeroContracts": "Zero contracts",
+            "subTotal": "Subtotal",
+            "myntAggregatorContract": "MYNT aggregator contract",
+            "bitocracyStakingContract": "Bitocracy staking contract",
+            "total": "Total"
+        },
+        "marketMaking": {
+            "title": "Market making",
+            "pool": "Pool",
+            "liquidity": "Liquidity",
+            "contractBalance": "Contract balance",
+            "returns": "Returns",
+            "volume": "24H volume",
+            "deposit": "Deposit"
         }
     }
 }

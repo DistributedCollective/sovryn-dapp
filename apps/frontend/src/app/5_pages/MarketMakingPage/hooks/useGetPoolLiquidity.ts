@@ -3,10 +3,14 @@ import { useEffect, useState } from 'react';
 import { Contract } from 'ethers';
 
 import { SupportedTokens } from '@sovryn/contracts';
+import { getProvider } from '@sovryn/ethers-provider';
 import { Decimal } from '@sovryn/utils';
+
+import { defaultChainId } from '../../../../config/chains';
 
 import { useGetTokenContract } from '../../../../hooks/useGetContract';
 import { asyncCall } from '../../../../store/rxjs/provider-cache';
+import { getRskChainId } from '../../../../utils/chain';
 import { AmmLiquidityPool } from '../utils/AmmLiquidityPool';
 
 export const useGetPoolLiquidity = (pool: AmmLiquidityPool) => {
@@ -18,11 +22,14 @@ export const useGetPoolLiquidity = (pool: AmmLiquidityPool) => {
     balanceTokenB: Decimal.ZERO,
   });
 
-  const contractTokenA = useGetTokenContract(pool.assetA);
-  const contractTokenB = useGetTokenContract(SupportedTokens.wrbtc);
+  const contractTokenA = useGetTokenContract(pool.assetA, defaultChainId);
+  const contractTokenB = useGetTokenContract(
+    SupportedTokens.wrbtc,
+    defaultChainId,
+  );
 
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchDataV1 = async () => {
       if (!contractTokenA || !contractTokenB) {
         return;
       }
@@ -47,7 +54,44 @@ export const useGetPoolLiquidity = (pool: AmmLiquidityPool) => {
       }
     };
 
-    fetchData();
+    const fetchDataV2 = async () => {
+      if (!contractTokenA || !contractTokenB) {
+        return;
+      }
+      const provider = getProvider(getRskChainId());
+      const contract = new Contract(
+        pool.converter,
+        pool.converterAbi,
+        provider,
+      );
+
+      try {
+        const fetchBalance = async (tokenContract: Contract) =>
+          await asyncCall(
+            `${
+              pool.converter
+            }/reserveStakedBalance/${tokenContract.address.toLowerCase()}`,
+            () =>
+              contract.reserveStakedBalance(
+                tokenContract.address.toLowerCase(),
+              ),
+          ).then(Decimal.fromBigNumberString);
+
+        const [tokenBalance, btcBalance] = await Promise.all([
+          fetchBalance(contractTokenA),
+          fetchBalance(contractTokenB),
+        ]);
+
+        setLiquidity({
+          balanceTokenA: tokenBalance,
+          balanceTokenB: btcBalance,
+        });
+      } catch (error) {
+        console.error('Error fetching pool balance:', error);
+      }
+    };
+
+    pool.converterVersion === 1 ? fetchDataV1() : fetchDataV2();
   }, [pool, contractTokenA, contractTokenB]);
 
   return liquidity;

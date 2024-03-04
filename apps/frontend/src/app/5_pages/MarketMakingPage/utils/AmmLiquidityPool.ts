@@ -1,5 +1,10 @@
+import { ContractInterface } from 'ethers';
+
 import { SupportedTokens } from '@sovryn/contracts';
 import { ChainIds } from '@sovryn/ethers-provider';
+
+import LiquidityPoolV1Converter from '../abis/LiquidityPoolV1Converter.json';
+import LiquidityPoolV2Converter from '../abis/LiquidityPoolV2Converter.json';
 
 export type ConverterVersion = 1 | 2;
 
@@ -68,5 +73,11 @@ export class AmmLiquidityPool {
 
   public get key() {
     return `${this.assetA}/${this.assetB}`;
+  }
+
+  public get converterAbi(): ContractInterface {
+    return this.converterVersion === 1
+      ? LiquidityPoolV1Converter
+      : LiquidityPoolV2Converter;
   }
 }

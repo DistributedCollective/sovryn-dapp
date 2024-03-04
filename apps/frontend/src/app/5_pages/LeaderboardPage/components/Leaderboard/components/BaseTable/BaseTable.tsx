@@ -20,9 +20,10 @@ import { useGetData } from './hooks/useGetData';
 
 type BaseTableProps = {
   type: TableType;
+  tableSubtitle?: string;
 };
 
-export const BaseTable: FC<BaseTableProps> = ({ type }) => {
+export const BaseTable: FC<BaseTableProps> = ({ type, tableSubtitle }) => {
   const { account } = useAccount();
 
   const isStakingTable = useMemo(() => type === TableType.Staking, [type]);
@@ -54,6 +55,9 @@ export const BaseTable: FC<BaseTableProps> = ({ type }) => {
           flatMode={true}
         />
       </div>
+      {tableSubtitle && (
+        <div className="text-sm text-center">{tableSubtitle}</div>
+      )}
       <div className="bg-gray-80 py-4 px-4 rounded">
         <Table
           columns={COLUMNS_CONFIG(false)}

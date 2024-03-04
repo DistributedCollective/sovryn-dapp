@@ -910,7 +910,8 @@
                 "tabTitle": "Trading"
             },
             "staking": {
-                "tabTitle": "Staking"
+                "tabTitle": "Staking",
+                "tableSubtitle": "Please note that the system is currently undercounting restaking. This will be addressed in a coming update."
             },
             "social": {
                 "tabTitle": "Influence"

@@ -1,5 +1,14 @@
 # frontend
 
+## 1.0.47
+
+### Patch Changes
+
+- 3d6870a1: SOV-3827: Protocol Data Page
+- 865fa7ba: SOV-3823: Fix markdown display on Bitocracy
+- Updated dependencies [3d6870a1]
+  - @sovryn/ui@1.0.23
+
 ## 1.0.46
 
 ### Patch Changes

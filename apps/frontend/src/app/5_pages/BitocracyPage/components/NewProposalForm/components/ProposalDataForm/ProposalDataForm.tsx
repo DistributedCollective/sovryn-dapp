@@ -24,7 +24,7 @@ import {
   Tabs,
 } from '@sovryn/ui';
 
-import { defaultRskChainId } from '../../../../../../../config/chains';
+import { RSK_CHAIN_ID } from '../../../../../../../config/chains';
 
 import { translations } from '../../../../../../../locales/i18n';
 import { validateURL } from '../../../../../../../utils/helpers';
@@ -138,7 +138,7 @@ export const ProposalDataForm: FC<ProposalDataFormProps> = ({
 
   useEffect(() => {
     if (proposalType === ProposalCreationType.Proclamation && !governorOwner) {
-      getProtocolContract(Governor.Owner, defaultRskChainId).then(owner => {
+      getProtocolContract(Governor.Owner, RSK_CHAIN_ID).then(owner => {
         setGovernorOwner(owner.address);
         setGovernor(owner.address);
       });

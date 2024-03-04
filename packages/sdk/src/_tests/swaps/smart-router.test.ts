@@ -1,12 +1,12 @@
 import { BigNumber, ethers, providers } from 'ethers';
 
 import { SupportedTokens, getTokenContract } from '@sovryn/contracts';
+import { ChainIds } from '@sovryn/ethers-provider';
 
 import { smartRoutes } from '../../swaps/smart-router';
 import { SmartRouter } from '../../swaps/smart-router/smart-router';
 import { makeChainFixture } from '../_fixtures/chain';
 import { TEST_TIMEOUT } from '../config';
-import { ChainIds } from '@sovryn/ethers-provider';
 
 describe('SmartRouter', () => {
   jest.setTimeout(TEST_TIMEOUT);
@@ -127,13 +127,15 @@ describe('SmartRouter', () => {
     });
 
     it('returns data about token', async () => {
-      await expect(router.getTokenDetails(btc)).resolves.toMatchObject({
-        address: btc,
-        symbol: 'rbtc',
-        decimalPrecision: 18,
-        icon: expect.any(String),
-        abi: expect.any(Array),
-      });
+      await expect(router.getTokenDetails(btc, chainId)).resolves.toMatchObject(
+        {
+          address: btc,
+          symbol: 'rbtc',
+          decimalPrecision: 18,
+          icon: expect.any(String),
+          abi: expect.any(Array),
+        },
+      );
     });
   });
 });

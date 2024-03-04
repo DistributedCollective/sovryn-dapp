@@ -28,7 +28,10 @@ export type ContractData = {
   name: string;
 };
 
+// todo: deprecate this?
 export enum SupportedTokens {
+  btc = 'btc',
+  usdt = 'usdt',
   rbtc = 'rbtc',
   wrbtc = 'wrbtc',
   zusd = 'zusd',

@@ -6,7 +6,7 @@ import { SupportedTokens, getTokenDetailsByAddress } from '@sovryn/contracts';
 import { noop } from '@sovryn/ui';
 import { Decimal } from '@sovryn/utils';
 
-import { defaultRskChainId } from '../../../../../../config/chains';
+import { RSK_CHAIN_ID } from '../../../../../../config/chains';
 
 import { useAccount } from '../../../../../../hooks/useAccount';
 import { useBlockNumber } from '../../../../../../hooks/useBlockNumber';
@@ -32,7 +32,7 @@ export const useGetOpenLoans = () => {
   const { account } = useAccount();
   const { value: blockNumber } = useBlockNumber();
   const [processedBlock, setProcessedBlock] = useState<number | undefined>();
-  const contract = useLoadContract('protocol', 'protocol', defaultRskChainId);
+  const contract = useLoadContract('protocol', 'protocol', RSK_CHAIN_ID);
   const [loadingLoans, setLoadingLoans] = useState(false);
   const [loanItemsSmartContract, setLoanItemsSmartContract] = useState<
     LoanItem[]

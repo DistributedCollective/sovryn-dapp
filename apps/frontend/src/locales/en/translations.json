@@ -1553,5 +1553,8 @@
             "balance": "Balance",
             "usdValue": "USD Value"
         }
+    },
+    "networkBanner": {
+      "content": "This page is only available on {{network}} network. Please switch your wallet to the correct network."
     }
 }

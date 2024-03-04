@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 
 import { SupportedTokens, getTokenContract } from '@sovryn/contracts';
 
-import { defaultRskChainId } from '../../../../config/chains';
+import { RSK_CHAIN_ID } from '../../../../config/chains';
 
 import { useGetTokenPrice } from './useGetTokenPrice';
 
@@ -17,12 +17,12 @@ export const useGetCollateralAssetPrice = (
   const [collateralAddress, setCollateralAddress] = useState('');
 
   const getBorrowTokenContract = useCallback(async () => {
-    const contract = await getTokenContract(borrowToken, defaultRskChainId);
+    const contract = await getTokenContract(borrowToken, RSK_CHAIN_ID);
     return contract;
   }, [borrowToken]);
 
   const getCollateralTokenContract = useCallback(async () => {
-    const contract = await getTokenContract(collateralToken, defaultRskChainId);
+    const contract = await getTokenContract(collateralToken, RSK_CHAIN_ID);
     return contract;
   }, [collateralToken]);
 

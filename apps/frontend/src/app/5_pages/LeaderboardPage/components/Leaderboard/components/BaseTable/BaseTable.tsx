@@ -56,7 +56,7 @@ export const BaseTable: FC<BaseTableProps> = ({ type, tableSubtitle }) => {
         />
       </div>
       {tableSubtitle && (
-        <div className="text-sm text-center">{tableSubtitle}</div>
+        <div className="text-sm text-center mb-1">{tableSubtitle}</div>
       )}
       <div className="bg-gray-80 py-4 px-4 rounded">
         <Table

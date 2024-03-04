@@ -5,7 +5,7 @@ import { t } from 'i18next';
 import { SupportedTokens, getTokenContract } from '@sovryn/contracts';
 import { Decimal } from '@sovryn/utils';
 
-import { rskChainId } from '../../../../config/chains';
+import { RSK_CHAIN_ID } from '../../../../config/chains';
 
 import {
   Transaction,
@@ -35,8 +35,8 @@ export const useHandleMarketMaking = (onComplete: () => void) => {
       }
 
       const [tokenAContractAddress, tokenBContractAddress] = await Promise.all([
-        getTokenContract(pool.assetA, rskChainId).then(item => item.address),
-        getTokenContract(SupportedTokens.wrbtc, rskChainId).then(
+        getTokenContract(pool.assetA, RSK_CHAIN_ID).then(item => item.address),
+        getTokenContract(SupportedTokens.wrbtc, RSK_CHAIN_ID).then(
           item => item.address,
         ),
       ]);
@@ -104,7 +104,7 @@ export const useHandleMarketMaking = (onComplete: () => void) => {
       const token =
         asset === SupportedTokens.rbtc ? SupportedTokens.wrbtc : asset;
 
-      const tokenContract = await getTokenContract(token, rskChainId);
+      const tokenContract = await getTokenContract(token, RSK_CHAIN_ID);
 
       const transactions: Transaction[] = [];
 
@@ -173,11 +173,11 @@ export const useHandleMarketMaking = (onComplete: () => void) => {
 
       const tokenAContractPromise = getTokenContract(
         pool.assetA,
-        rskChainId,
+        RSK_CHAIN_ID,
       ).then(item => item.address);
       const tokenBContractPromise = getTokenContract(
         SupportedTokens.wrbtc,
-        rskChainId,
+        RSK_CHAIN_ID,
       ).then(item => item.address);
 
       const [tokenAContract, tokenBContract] = await Promise.all([
@@ -253,7 +253,7 @@ export const useHandleMarketMaking = (onComplete: () => void) => {
       const token =
         asset === SupportedTokens.rbtc ? SupportedTokens.wrbtc : asset;
 
-      const tokenContract = await getTokenContract(token, rskChainId);
+      const tokenContract = await getTokenContract(token, RSK_CHAIN_ID);
 
       const transactions: Transaction[] = [];
 

@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 
 import { Dropdown, Menu, MenuItem } from '@sovryn/ui';
 
-import { chains } from '../../../config/chains';
+import { APP_CHAIN_LIST } from '../../../config/chains';
 
 import { useChainStore } from '../../../hooks/useChainStore';
 import styles from './NetworkPicker.module.css';
@@ -10,7 +10,7 @@ import styles from './NetworkPicker.module.css';
 export const NetworkPicker = () => {
   const { currentChainId, setCurrentChainId } = useChainStore();
   const selectedChain = useMemo(
-    () => chains.find(chain => chain.id === currentChainId),
+    () => APP_CHAIN_LIST.find(chain => chain.id === currentChainId),
     [currentChainId],
   );
   return (
@@ -28,7 +28,7 @@ export const NetworkPicker = () => {
       className="h-8 min-w-0"
     >
       <Menu>
-        {chains.map(item => (
+        {APP_CHAIN_LIST.map(item => (
           <MenuItem
             key={item.id}
             text={

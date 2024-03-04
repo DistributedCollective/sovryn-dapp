@@ -12,11 +12,11 @@ import { BITCOIN } from '../constants/currencies';
 import { MS } from '../constants/general';
 import {
   AMM_SERVICE,
-  BTC_EXPLORER,
   GRAPH_WRAPPER,
-  RSK_EXPLORER,
   SERVICES_CONFIG,
 } from '../constants/infrastructure';
+import { BTC } from '../constants/infrastructure/btc';
+import { RSK } from '../constants/infrastructure/rsk';
 import { ALPHA_LINKS, BITOCRACY_LINKS, GITHUB_LINKS } from '../constants/links';
 import { Environments } from '../types/global';
 import { decimalic } from './math';
@@ -49,10 +49,10 @@ export const getServicesConfig = () =>
   SERVICES_CONFIG[isMainnet() ? Environments.Mainnet : Environments.Testnet];
 
 export const getRskExplorerUrl = () =>
-  RSK_EXPLORER[isMainnet() ? 'mainnet' : 'testnet'];
+  RSK.explorer[isMainnet() ? 'mainnet' : 'testnet'];
 
 export const getBtcExplorerUrl = () =>
-  BTC_EXPLORER[isMainnet() ? 'mainnet' : 'testnet'];
+  BTC.explorer[isMainnet() ? 'mainnet' : 'testnet'];
 
 export const getD1Url = () =>
   isStaging()

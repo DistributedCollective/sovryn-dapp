@@ -6,7 +6,7 @@ import { SupportedTokens, getTokenContract } from '@sovryn/contracts';
 import { getProvider } from '@sovryn/ethers-provider';
 import { Decimal } from '@sovryn/utils';
 
-import { rskChainId } from '../../../../../../config/chains';
+import { RSK_CHAIN_ID } from '../../../../../../config/chains';
 
 import { asyncCall } from '../../../../../../store/rxjs/provider-cache';
 import { AmmLiquidityPool } from '../../../utils/AmmLiquidityPool';
@@ -18,20 +18,20 @@ export const useGetPoolsBalance = (pool: AmmLiquidityPool) => {
   const fetchBalance = useCallback(async () => {
     const [loanTokenContract, sovTokenContract, wrbtcContract] =
       await Promise.all([
-        getTokenContract(pool.assetA, rskChainId),
-        getTokenContract(SupportedTokens.sov, rskChainId),
-        getTokenContract(SupportedTokens.wrbtc, rskChainId),
+        getTokenContract(pool.assetA, RSK_CHAIN_ID),
+        getTokenContract(SupportedTokens.sov, RSK_CHAIN_ID),
+        getTokenContract(SupportedTokens.wrbtc, RSK_CHAIN_ID),
       ]);
 
     const contractA = new Contract(
       loanTokenContract.address,
       sovTokenContract.abi,
-      getProvider(rskChainId),
+      getProvider(RSK_CHAIN_ID),
     );
     const contractB = new Contract(
       wrbtcContract.address,
       sovTokenContract.abi,
-      getProvider(rskChainId),
+      getProvider(RSK_CHAIN_ID),
     );
 
     const [balanceOfA, balanceOfB] = await Promise.all([

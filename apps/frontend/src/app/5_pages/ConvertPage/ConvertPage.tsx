@@ -46,11 +46,11 @@ import { removeTrailingZerosFromString } from '../../../utils/helpers';
 import { decimalic, fromWei } from '../../../utils/math';
 import { FIXED_MYNT_RATE, FIXED_RATE_ROUTES } from './ConvertPage.constants';
 import {
-  defaultSwapEntries,
-  smartRouterRsk,
-  stableCoins,
+  DEFAULT_SWAP_ENTRIES,
+  SMART_ROUTER_RSK,
+  SMART_ROUTER_STABLECOINS,
   SWAP_ROUTES,
-} from './ConvertPage.types';
+} from './ConvertPage.constants';
 import { useConversionMaintenance } from './hooks/useConversionMaintenance';
 import { useGetMaximumAvailableAmount } from './hooks/useGetMaximumAvailableAmount';
 import { useHandleConversion } from './hooks/useHandleConversion';
@@ -64,7 +64,7 @@ const tokensToOptions = (
   callback: (options: SelectOption<SupportedTokens>[]) => void,
 ) =>
   Promise.all(
-    addresses.map(address => smartRouterRsk.getTokenDetails(address, chain)),
+    addresses.map(address => SMART_ROUTER_RSK.getTokenDetails(address, chain)),
   ).then(tokens =>
     callback(
       tokens.map(token => ({
@@ -113,7 +113,7 @@ const ConvertPage: FC = () => {
         return SupportedTokens[key];
       }
     }
-    return defaultSwapEntries[currentChainId];
+    return DEFAULT_SWAP_ENTRIES[currentChainId];
   }, [currentChainId, fromToken]);
 
   const [sourceToken, setSourceToken] =
@@ -130,7 +130,7 @@ const ConvertPage: FC = () => {
   >([]);
 
   useEffect(() => {
-    const newToken = defaultSwapEntries[currentChainId];
+    const newToken = DEFAULT_SWAP_ENTRIES[currentChainId];
     if (!!newToken) {
       setAmount('');
       setSourceToken(newToken);
@@ -209,7 +209,10 @@ const ConvertPage: FC = () => {
     if (!destinationToken) {
       return sourceToken;
     }
-    if (priceInQuote || stableCoins.find(token => token === destinationToken)) {
+    if (
+      priceInQuote ||
+      SMART_ROUTER_STABLECOINS.find(token => token === destinationToken)
+    ) {
       return destinationToken;
     }
     return sourceToken;
@@ -258,7 +261,7 @@ const ConvertPage: FC = () => {
         getTokenDetails(destinationToken, currentChainId),
       ]);
 
-      const result = await smartRouterRsk.getBestQuote(
+      const result = await SMART_ROUTER_RSK.getBestQuote(
         currentChainId,
         sourceTokenDetails.address,
         destinationTokenDetails.address,

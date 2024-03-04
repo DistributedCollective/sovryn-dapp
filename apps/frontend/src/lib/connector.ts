@@ -5,7 +5,7 @@ import ledgerModule from '@sovryn/onboard-ledger';
 import trezorModule from '@sovryn/onboard-trezor';
 import walletConnectModule from '@sovryn/onboard-walletconnect';
 
-import { chains } from '../config/chains';
+import { APP_CHAIN_LIST } from '../config/chains';
 
 const basePaths: BasePath[] = [
   { label: 'RSK Mainnet', value: "m/44'/137'/0'/0" },
@@ -31,7 +31,7 @@ const walletConnect = walletConnectModule({
 
 export const onboard = Onboard({
   wallets: [injected, walletConnect, ledger, trezor],
-  chains: chains.map(item => ({
+  chains: APP_CHAIN_LIST.map(item => ({
     ...item,
     rpcUrl: typeof item.rpcUrl === 'string' ? item.rpcUrl : item.rpcUrl[0],
   })),

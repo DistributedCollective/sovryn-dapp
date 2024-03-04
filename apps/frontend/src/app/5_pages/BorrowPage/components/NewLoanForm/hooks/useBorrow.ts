@@ -10,7 +10,7 @@ import {
   getTokenContract,
 } from '@sovryn/contracts';
 
-import { rskChainId } from '../../../../../../config/chains';
+import { RSK_CHAIN_ID } from '../../../../../../config/chains';
 
 import {
   Transaction,
@@ -47,7 +47,7 @@ export const useBorrow = () => {
       const isCollateralRbtc = collateralToken === SupportedTokens.rbtc;
 
       const { abi: borrowTokenAbi, address: borrowTokenAddress } =
-        await getLendTokenContract(borrowToken, rskChainId);
+        await getLendTokenContract(borrowToken, RSK_CHAIN_ID);
 
       const borrowTokenContract = new ethers.Contract(
         borrowTokenAddress,
@@ -57,7 +57,7 @@ export const useBorrow = () => {
 
       const { address: collateralTokenAddress } = await getTokenContract(
         isCollateralRbtc ? SupportedTokens.wrbtc : collateralToken,
-        rskChainId,
+        RSK_CHAIN_ID,
       );
 
       const transactions: Transaction[] = [];

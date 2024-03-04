@@ -6,7 +6,7 @@ import { SupportedTokens } from '@sovryn/contracts';
 import { getProvider } from '@sovryn/ethers-provider';
 import { Decimal } from '@sovryn/utils';
 
-import { rskChainId } from '../../../../config/chains';
+import { RSK_CHAIN_ID } from '../../../../config/chains';
 
 import { useGetTokenContract } from '../../../../hooks/useGetContract';
 import { asyncCall } from '../../../../store/rxjs/provider-cache';
@@ -22,8 +22,11 @@ export const useGetPoolLiquidity = (pool: AmmLiquidityPool) => {
     balanceTokenB: Decimal.ZERO,
   });
 
-  const contractTokenA = useGetTokenContract(pool.assetA, rskChainId);
-  const contractTokenB = useGetTokenContract(SupportedTokens.wrbtc, rskChainId);
+  const contractTokenA = useGetTokenContract(pool.assetA, RSK_CHAIN_ID);
+  const contractTokenB = useGetTokenContract(
+    SupportedTokens.wrbtc,
+    RSK_CHAIN_ID,
+  );
 
   useEffect(() => {
     const fetchDataV1 = async () => {

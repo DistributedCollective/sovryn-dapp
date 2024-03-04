@@ -20,7 +20,7 @@ import {
   Table,
 } from '@sovryn/ui';
 
-import { chains, rskChainId } from '../../../../../config/chains';
+import { APP_CHAIN_LIST, RSK_CHAIN_ID } from '../../../../../config/chains';
 
 import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { ExportCSV } from '../../../../2_molecules/ExportCSV/ExportCSV';
@@ -45,7 +45,7 @@ export const CollateralSurplusHistoryFrame: FC<PropsWithChildren> = ({
   const { account } = useAccount();
 
   const [page, setPage] = useState(0);
-  const chain = chains.find(chain => chain.id === rskChainId);
+  const chain = APP_CHAIN_LIST.find(chain => chain.id === RSK_CHAIN_ID);
 
   const { value: block } = useBlockNumber();
 

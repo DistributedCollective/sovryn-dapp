@@ -1,17 +1,17 @@
 import { SupportedTokens } from '@sovryn/contracts';
 
-import { rskChainId } from '../../../../config/chains';
+import { RSK_CHAIN_ID } from '../../../../config/chains';
 
 import { useCacheCall } from '../../../../hooks/useCacheCall';
 import { useLoadContract } from '../../../../hooks/useLoadContract';
 import { fromWei } from '../../../../utils/math';
 
 export const useGetNextSupplyInterestRate = (asset: SupportedTokens) => {
-  const lendContract = useLoadContract(asset, 'loanTokens', rskChainId);
+  const lendContract = useLoadContract(asset, 'loanTokens', RSK_CHAIN_ID);
 
   const { value: interestRate } = useCacheCall(
     `poolToken/${lendContract?.address}/nextSupplyInterestRate`,
-    rskChainId,
+    RSK_CHAIN_ID,
     async () => lendContract?.nextSupplyInterestRate('0').then(fromWei),
     [],
     '0',

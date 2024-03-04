@@ -4,7 +4,7 @@ import { t } from 'i18next';
 
 import { Paragraph, NotificationType, Button, ButtonStyle } from '@sovryn/ui';
 
-import { chains } from '../config/chains';
+import { APP_CHAIN_LIST } from '../config/chains';
 
 import { useNotificationContext } from '../contexts/NotificationContext';
 import { useCurrentChain } from './useChainStore';
@@ -29,7 +29,7 @@ export const useWrongNetworkCheck = () => {
 
   useEffect(() => {
     if (isWrongChain) {
-      const expectedChain = chains.find(chain => chain.id === chainId);
+      const expectedChain = APP_CHAIN_LIST.find(chain => chain.id === chainId);
       addNotification(
         {
           type: NotificationType.warning,

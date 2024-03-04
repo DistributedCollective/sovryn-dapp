@@ -3,7 +3,7 @@ import { persist, createJSONStorage } from 'zustand/middleware';
 
 import { ChainId } from '@sovryn/ethers-provider';
 
-import { defaultChainId } from '../config/chains';
+import { DEFAULT_CHAIN_ID } from '../config/chains';
 
 import { onboard } from '../lib/connector';
 
@@ -15,8 +15,8 @@ type ChainStore = {
 export const useChainStore = create<ChainStore>()(
   persist(
     set => ({
-      currentChainId: defaultChainId,
-      setCurrentChainId: async (chainId: ChainId = defaultChainId) => {
+      currentChainId: DEFAULT_CHAIN_ID,
+      setCurrentChainId: async (chainId: ChainId = DEFAULT_CHAIN_ID) => {
         // todo: should disconnect wallets which does not support network changes
         await onboard.setChain({ chainId });
         set({ currentChainId: chainId });
@@ -34,5 +34,5 @@ export const useCurrentChain = (): ChainId =>
 
 export const getCurrentChain = (): ChainId =>
   useChainStore.getState().currentChainId;
-export const setCurrentChain = (chainId: ChainId = defaultChainId) =>
+export const setCurrentChain = (chainId: ChainId = DEFAULT_CHAIN_ID) =>
   useChainStore.getState().setCurrentChainId(chainId);

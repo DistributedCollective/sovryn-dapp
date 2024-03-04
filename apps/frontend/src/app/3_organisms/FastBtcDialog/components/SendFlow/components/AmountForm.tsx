@@ -16,7 +16,7 @@ import {
   ParagraphSize,
 } from '@sovryn/ui';
 
-import { rskChainId } from '../../../../../../config/chains';
+import { RSK_CHAIN_ID } from '../../../../../../config/chains';
 
 import { MaxButton } from '../../../../../2_molecules/MaxButton/MaxButton';
 import {
@@ -48,7 +48,7 @@ export const AmountForm: React.FC = () => {
 
   const { bigNumberBalance: rbtcWeiBalance } = useAssetBalance(
     SupportedTokens.rbtc,
-    rskChainId,
+    RSK_CHAIN_ID,
   );
 
   const [value, setValue] = useState(amount || '0');

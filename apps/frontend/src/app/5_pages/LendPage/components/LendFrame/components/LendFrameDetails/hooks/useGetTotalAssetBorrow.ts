@@ -1,17 +1,17 @@
 import { SupportedTokens } from '@sovryn/contracts';
 
-import { rskChainId } from '../../../../../../../../config/chains';
+import { RSK_CHAIN_ID } from '../../../../../../../../config/chains';
 
 import { useCacheCall } from '../../../../../../../../hooks/useCacheCall';
 import { useLoadContract } from '../../../../../../../../hooks/useLoadContract';
 import { fromWei } from '../../../../../../../../utils/math';
 
 export const useGetTotalAssetBorrow = (asset: SupportedTokens) => {
-  const lendContract = useLoadContract(asset, 'loanTokens', rskChainId);
+  const lendContract = useLoadContract(asset, 'loanTokens', RSK_CHAIN_ID);
 
   const { value } = useCacheCall(
     `loanTokens/${lendContract?.address}/totalAssetBorrow`,
-    rskChainId,
+    RSK_CHAIN_ID,
     async () => lendContract?.totalAssetBorrow(),
     [],
     '0',

@@ -20,6 +20,7 @@ import { useGetLiquidSovClaimAmount } from '../../hooks/useGetLiquidSovClaimAmou
 import { columns } from './Staking.constants';
 import { WithdrawAllFees } from './components/WithdrawAllFees/WithdrawAllFees';
 import { WithdrawLiquidFee } from './components/WithdrawLiquidFee/WithdrawLiquidFee';
+import { WithdrawLiquidOsFee } from './components/WithdrawLiquidOsFee/WithdrawLiquidOsFee';
 
 export const Staking: FC = () => {
   const { account } = useAccount();
@@ -31,7 +32,11 @@ export const Staking: FC = () => {
     refetch: refetchLiquidSovClaim,
   } = useGetLiquidSovClaimAmount();
 
-  const liquidOsSovClaimAmount = useGetLiquidOsSovClaimAmount();
+  const {
+    amount: liquidOsSovClaimAmount,
+    nextWithdrawTimestamp,
+    refetch: refetchLiquidOsSovClaim,
+  } = useGetLiquidOsSovClaimAmount();
 
   const hasEarnedFees = useMemo(
     () => earnedFees.some(earnedFee => decimalic(earnedFee.value).gt(0)),
@@ -141,6 +146,13 @@ export const Staking: FC = () => {
                   dataAttribute={`${SupportedTokens.sov}-os-liquid-amount`}
                 />
               ),
+              action: (
+                <WithdrawLiquidOsFee
+                  amountToClaim={liquidOsSovClaimAmount}
+                  nextWithdrawTimestamp={nextWithdrawTimestamp}
+                  refetch={refetchLiquidOsSovClaim}
+                />
+              ),
               key: `${SupportedTokens.sov}-os-liquid-fee`,
             },
           ]
@@ -151,12 +163,14 @@ export const Staking: FC = () => {
       earnedFeesSum,
       hasLiquidOsSov,
       liquidOsSovClaimAmount,
+      nextWithdrawTimestamp,
       earnedFees,
       refetch,
       hasLiquidSov,
       liquidSovClaimAmount,
       lastWithdrawalInterval,
       refetchLiquidSovClaim,
+      refetchLiquidOsSovClaim,
     ],
   );
 

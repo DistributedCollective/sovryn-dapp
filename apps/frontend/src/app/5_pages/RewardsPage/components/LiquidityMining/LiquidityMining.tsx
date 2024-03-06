@@ -6,6 +6,7 @@ import { SupportedTokens } from '@sovryn/contracts';
 import { Paragraph, Table } from '@sovryn/ui';
 
 import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRenderer';
+import { useRequiredChain } from '../../../../2_molecules/NetworkBanner/hooks/useRequiredChain';
 import {
   BITCOIN,
   TOKEN_RENDER_PRECISION,
@@ -26,6 +27,7 @@ const pageTranslations = translations.rewardPage.liquidityMining;
 export const LiquidityMining: FC = () => {
   const { account } = useAccount();
   const { value: block } = useBlockNumber();
+  const { invalidChain } = useRequiredChain();
   const { vestedRewards, liquidRewards, loading } =
     useGetLiquidityRewards(account);
   const {
@@ -48,13 +50,15 @@ export const LiquidityMining: FC = () => {
         vestedRewards.isZero() &&
         lendingRewards.isZero() &&
         availableTradingRewards === '0') ||
+      invalidChain ||
       isLoading
     );
   }, [
     liquidRewards,
     vestedRewards,
-    availableTradingRewards,
     lendingRewards,
+    availableTradingRewards,
+    invalidChain,
     isLoading,
   ]);
 

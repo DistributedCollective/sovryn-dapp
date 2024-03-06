@@ -13,9 +13,11 @@ import {
 } from '../Boltz.utils';
 import EtherSwapABI from '../EtherSwap.json';
 
+// todo: move to fastbtc hooks
 export const useBoltz = () => {
   const { signer } = useAccount();
 
+  /** @deprecated */
   const lock = useCallback(
     async (swapData: Swap | undefined) => {
       try {
@@ -49,6 +51,7 @@ export const useBoltz = () => {
     [signer],
   );
 
+  /** @deprecated */
   const claim = async (reverseSwapData: ReverseSwap | undefined) => {
     try {
       const data = await getContracts();

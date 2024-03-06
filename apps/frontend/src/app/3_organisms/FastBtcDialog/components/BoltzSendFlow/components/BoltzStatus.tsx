@@ -6,58 +6,42 @@ import { t } from 'i18next';
 import { Icon, IconNames } from '@sovryn/ui';
 
 import { translations } from '../../../../../../locales/i18n';
-
-export enum BoltzStatusType {
-  set = 'invoice.set',
-  pending = 'invoice.pending',
-  paid = 'invoice.paid',
-  settled = 'invoice.settled',
-  expired = 'invoice.expired',
-  failedToPay = 'invoice.failedToPay',
-  swapCreated = 'swap.created',
-  swapExpired = 'swap.expired',
-  txMempool = 'transaction.mempool',
-  txConfirmed = 'transaction.confirmed',
-  txFailed = 'transaction.failed',
-  txClaimed = 'transaction.claimed',
-  txRefunded = 'transaction.refunded',
-  minerFeePaid = 'minerFee.paid',
-}
+import { StatusEnum, Status } from '../../../utils/boltz';
 
 type BoltzStatusProps = {
-  status?: BoltzStatusType;
+  status?: Status;
 };
 
 export const BoltzStatus: FC<BoltzStatusProps> = ({ status }) => {
   const renderStatusMessage = useMemo(() => {
     switch (status) {
-      case BoltzStatusType.set:
+      case StatusEnum.set:
         return t(translations.boltz.send.boltzStatus.invoiceSet);
-      case BoltzStatusType.pending:
+      case StatusEnum.pending:
         return t(translations.boltz.send.boltzStatus.invoicePending);
-      case BoltzStatusType.paid:
+      case StatusEnum.paid:
         return t(translations.boltz.send.boltzStatus.invoicePaid);
-      case BoltzStatusType.settled:
+      case StatusEnum.settled:
         return t(translations.boltz.send.boltzStatus.invoiceSettled);
-      case BoltzStatusType.expired:
+      case StatusEnum.expired:
         return t(translations.boltz.send.boltzStatus.invoiceExpired);
-      case BoltzStatusType.failedToPay:
+      case StatusEnum.failedToPay:
         return t(translations.boltz.send.boltzStatus.invoiceFailedToPay);
-      case BoltzStatusType.swapCreated:
+      case StatusEnum.swapCreated:
         return t(translations.boltz.send.boltzStatus.swapCreated);
-      case BoltzStatusType.swapExpired:
+      case StatusEnum.swapExpired:
         return t(translations.boltz.send.boltzStatus.swapExpired);
-      case BoltzStatusType.txMempool:
+      case StatusEnum.txMempool:
         return t(translations.boltz.send.boltzStatus.txMempool);
-      case BoltzStatusType.txConfirmed:
+      case StatusEnum.txConfirmed:
         return t(translations.boltz.send.boltzStatus.txConfirmed);
-      case BoltzStatusType.txClaimed:
+      case StatusEnum.txClaimed:
         return t(translations.boltz.send.boltzStatus.txClaimed);
-      case BoltzStatusType.txFailed:
+      case StatusEnum.txFailed:
         return t(translations.boltz.send.boltzStatus.txFailed);
-      case BoltzStatusType.txRefunded:
+      case StatusEnum.txRefunded:
         return t(translations.boltz.send.boltzStatus.txRefunded);
-      case BoltzStatusType.minerFeePaid:
+      case StatusEnum.minerFeePaid:
         return t(translations.boltz.send.boltzStatus.minerFeePaid);
       default:
         return status;
@@ -70,16 +54,16 @@ export const BoltzStatus: FC<BoltzStatusProps> = ({ status }) => {
     <div
       className={classNames({
         'text-success': [
-          BoltzStatusType.paid,
-          BoltzStatusType.txClaimed,
-          BoltzStatusType.txRefunded,
-        ].includes(status),
+          StatusEnum.paid,
+          StatusEnum.txClaimed,
+          StatusEnum.txRefunded,
+        ].includes(status as StatusEnum),
         'text-danger': [
-          BoltzStatusType.failedToPay,
-          BoltzStatusType.expired,
-          BoltzStatusType.swapExpired,
-          BoltzStatusType.txFailed,
-        ].includes(status),
+          StatusEnum.failedToPay,
+          StatusEnum.expired,
+          StatusEnum.swapExpired,
+          StatusEnum.txFailed,
+        ].includes(status as StatusEnum),
       })}
     >
       {renderStatusMessage}

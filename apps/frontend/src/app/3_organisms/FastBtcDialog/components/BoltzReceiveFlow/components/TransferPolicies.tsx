@@ -34,24 +34,16 @@ export const TransferPolicies: React.FC<TransferPoliciesProps> = ({
 
     return amount
       .sub(decimalic(fees.percentage / 100).mul(amount))
-      .sub(
-        decimalic(fees.minerFees.baseAsset.reverse.lockup).div(BTC_IN_SATOSHIS),
-      );
-  }, [
-    fees.minerFees.baseAsset.reverse.lockup,
-    fees.percentage,
-    limits.maximal,
-  ]);
+      .sub(decimalic(fees.minerFees.lockup).div(BTC_IN_SATOSHIS));
+  }, [fees.minerFees.lockup, fees.percentage, limits.maximal]);
 
   return (
     <Limits
       minimumAmount={decimalic(limits.minimal).div(BTC_IN_SATOSHIS)}
       maximumAmount={maximumAmount.toString(8)}
-      conversionRate={decimalic(fees.percentageSwapIn)}
+      conversionRate={decimalic(fees.percentage)}
       conversionFee={conversionFee}
-      networkFee={decimalic(fees.minerFees.baseAsset.reverse.lockup).div(
-        BTC_IN_SATOSHIS,
-      )}
+      networkFee={decimalic(fees.minerFees.lockup).div(BTC_IN_SATOSHIS)}
       className="mt-8"
     />
   );

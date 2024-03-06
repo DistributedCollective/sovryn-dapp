@@ -51,8 +51,8 @@ export const AmountForm: React.FC = () => {
 
   const maximumAmount = useMemo(() => {
     const feeForMaximumBalance = balance
-      .mul(fees.percentageSwapIn / 100)
-      .add(decimalic(fees.minerFees.baseAsset.normal).div(BTC_IN_SATOSHIS));
+      .mul(fees.percentage / 100)
+      .add(decimalic(fees.minerFees).div(BTC_IN_SATOSHIS));
     return Decimal.max(
       Decimal.min(
         decimalic(limits.maximal).div(BTC_IN_SATOSHIS),
@@ -60,12 +60,7 @@ export const AmountForm: React.FC = () => {
       ),
       0,
     );
-  }, [
-    balance,
-    fees.minerFees.baseAsset.normal,
-    fees.percentageSwapIn,
-    limits.maximal,
-  ]);
+  }, [balance, fees.minerFees, fees.percentage, limits.maximal]);
 
   const invalid = useMemo(() => {
     const amount = decimalic(value);
@@ -78,16 +73,16 @@ export const AmountForm: React.FC = () => {
     }
 
     const fee = amount
-      .mul(fees.percentageSwapIn / 100)
-      .add(decimalic(fees.minerFees.baseAsset.normal).div(BTC_IN_SATOSHIS));
+      .mul(fees.percentage / 100)
+      .add(decimalic(fees.minerFees).div(BTC_IN_SATOSHIS));
 
     return amount.add(fee).gt(balance);
   }, [
     value,
     limits.minimal,
     limits.maximal,
-    fees.percentageSwapIn,
-    fees.minerFees.baseAsset.normal,
+    fees.percentage,
+    fees.minerFees,
     balance,
   ]);
 

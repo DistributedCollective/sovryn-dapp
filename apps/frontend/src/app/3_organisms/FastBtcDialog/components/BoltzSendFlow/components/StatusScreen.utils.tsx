@@ -6,14 +6,11 @@ import { StatusType } from '@sovryn/ui';
 
 import { StatusIcon } from '../../../../../2_molecules/StatusIcon/StatusIcon';
 import { translations } from '../../../../../../locales/i18n';
-import { BoltzStatusType } from './BoltzStatus';
+import { Status, StatusEnum } from '../../../utils/boltz';
 
 const translation = translations.boltz.send.confirmationScreens;
 
-export const getTitle = (
-  txStatus: StatusType,
-  boltzStatus: BoltzStatusType,
-) => {
+export const getTitle = (txStatus: StatusType, boltzStatus: Status) => {
   if (!boltzStatus) {
     return t(translation.titles.default);
   }
@@ -23,11 +20,9 @@ export const getTitle = (
 
   if (
     txStatus === StatusType.success &&
-    [
-      BoltzStatusType.paid,
-      BoltzStatusType.txClaimed,
-      BoltzStatusType.settled,
-    ].includes(boltzStatus)
+    [StatusEnum.paid, StatusEnum.txClaimed, StatusEnum.settled].includes(
+      boltzStatus as StatusEnum,
+    )
   ) {
     return t(translation.titles.success);
   }
@@ -35,10 +30,7 @@ export const getTitle = (
   return t(translation.titles.pending);
 };
 
-export const getDescription = (
-  txStatus: StatusType,
-  boltzStatus: BoltzStatusType,
-) => {
+export const getDescription = (txStatus: StatusType, boltzStatus: Status) => {
   if (txStatus === StatusType.idle || !boltzStatus) {
     return t(translation.descriptions.default);
   }
@@ -54,11 +46,9 @@ export const getDescription = (
 
   if (
     txStatus === StatusType.success &&
-    [
-      BoltzStatusType.paid,
-      BoltzStatusType.txClaimed,
-      BoltzStatusType.settled,
-    ].includes(boltzStatus)
+    [StatusEnum.paid, StatusEnum.txClaimed, StatusEnum.settled].includes(
+      boltzStatus as StatusEnum,
+    )
   ) {
     return (
       <StatusIcon

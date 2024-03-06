@@ -6,14 +6,11 @@ import { StatusType } from '@sovryn/ui';
 
 import { StatusIcon } from '../../../../../2_molecules/StatusIcon/StatusIcon';
 import { translations } from '../../../../../../locales/i18n';
-import { BoltzStatusType } from '../../BoltzSendFlow/components/BoltzStatus';
+import { Status, StatusEnum } from '../../../utils/boltz';
 
 const translation = translations.boltz.receive.confirmationScreens;
 
-export const getTitle = (
-  txStatus: StatusType,
-  boltzStatus: BoltzStatusType,
-) => {
+export const getTitle = (txStatus: StatusType, boltzStatus: Status) => {
   if (!boltzStatus) {
     return t(translation.titles.default);
   }
@@ -23,36 +20,25 @@ export const getTitle = (
 
   if (
     txStatus === StatusType.success &&
-    [
-      BoltzStatusType.paid,
-      BoltzStatusType.txClaimed,
-      BoltzStatusType.settled,
-    ].includes(boltzStatus)
+    [StatusEnum.paid, StatusEnum.txClaimed, StatusEnum.settled].includes(
+      boltzStatus as StatusEnum,
+    )
   ) {
     return t(translation.titles.success);
   }
 
-  if (
-    txStatus === StatusType.idle &&
-    boltzStatus === BoltzStatusType.txConfirmed
-  ) {
+  if (txStatus === StatusType.idle && boltzStatus === StatusEnum.txConfirmed) {
     return t(translation.titles.confirmed);
   }
 
-  if (
-    txStatus === StatusType.idle &&
-    boltzStatus === BoltzStatusType.swapCreated
-  ) {
+  if (txStatus === StatusType.idle && boltzStatus === StatusEnum.swapCreated) {
     return '';
   }
 
   return t(translation.titles.pending);
 };
 
-export const getDescription = (
-  txStatus: StatusType,
-  boltzStatus: BoltzStatusType,
-) => {
+export const getDescription = (txStatus: StatusType, boltzStatus: Status) => {
   if (txStatus === StatusType.idle || !boltzStatus) {
     return '';
   }
@@ -68,11 +54,9 @@ export const getDescription = (
 
   if (
     txStatus === StatusType.success &&
-    [
-      BoltzStatusType.paid,
-      BoltzStatusType.txClaimed,
-      BoltzStatusType.settled,
-    ].includes(boltzStatus)
+    [StatusEnum.paid, StatusEnum.txClaimed, StatusEnum.settled].includes(
+      boltzStatus as StatusEnum,
+    )
   ) {
     return (
       <StatusIcon

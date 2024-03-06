@@ -24,7 +24,7 @@ import {
   WithdrawBoltzContext,
   WithdrawBoltzStep,
 } from '../../../contexts/withdraw-boltz-context';
-import { BoltzStatusType } from './BoltzStatus';
+import { Status } from '../../../utils/boltz';
 import { StatusScreen } from './StatusScreen';
 
 type ConfirmationScreensProps = {
@@ -44,7 +44,7 @@ export const ConfirmationScreens: React.FC<ConfirmationScreensProps> = ({
     undefined,
   );
   const [txStatus, setTxStatus] = useState(StatusType.idle);
-  const [boltzStatus, setBoltzStatus] = useState<BoltzStatusType>();
+  const [boltzStatus, setBoltzStatus] = useState<Status>();
   const [swapData, setSwapData] = useState<Swap>();
   const [error, setError] = useState<string>();
 

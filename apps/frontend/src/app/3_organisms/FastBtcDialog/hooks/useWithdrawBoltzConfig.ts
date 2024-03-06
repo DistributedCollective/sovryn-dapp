@@ -1,10 +1,11 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
-import { getContracts, getPair } from '../../Boltz/Boltz.utils';
+import { getContracts } from '../../Boltz/Boltz.utils';
 import {
   defaultValue,
   WithdrawBoltzContextStateType,
 } from '../contexts/withdraw-boltz-context';
+import { boltz } from '../utils/boltz';
 
 export function useWithdrawBoltzConfig() {
   const [state, setState] =
@@ -12,7 +13,9 @@ export function useWithdrawBoltzConfig() {
 
   const getBoltzLimits = useCallback(async () => {
     const contracts = await getContracts();
-    const pair = await getPair();
+    const pair = await boltz
+      .getSubmarineSwapPairs()
+      .then(pairs => pairs['RBTC']['BTC']);
     return {
       pair: pair!,
       contracts,

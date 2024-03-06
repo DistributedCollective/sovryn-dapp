@@ -23,7 +23,8 @@ import { getRskExplorerUrl } from '../../../../../../utils/helpers';
 import { decimalic } from '../../../../../../utils/math';
 import { Swap } from '../../../../Boltz/Boltz.type';
 import { WithdrawBoltzContext } from '../../../contexts/withdraw-boltz-context';
-import { BoltzStatus, BoltzStatusType } from './BoltzStatus';
+import { Status, StatusEnum } from '../../../utils/boltz';
+import { BoltzStatus } from './BoltzStatus';
 import { getDescription, getTitle } from './StatusScreen.utils';
 
 const translation = translations.boltz.send.confirmationScreens;
@@ -36,7 +37,7 @@ type StatusScreenProps = {
   txHash?: string;
   refundTxHash?: string;
   txStatus: StatusType;
-  boltzStatus?: BoltzStatusType;
+  boltzStatus?: Status;
   swapData?: Swap;
   error?: string;
   onConfirm: () => void;
@@ -64,16 +65,16 @@ export const StatusScreen: React.FC<StatusScreenProps> = ({
   const boltzLocked = checkMaintenance(States.BOLTZ_SEND);
 
   const conversionFee = useMemo(
-    () => decimalic(amount).mul(decimalic(fees.percentageSwapIn).div(100)),
-    [amount, fees.percentageSwapIn],
+    () => decimalic(amount).mul(decimalic(fees.percentage).div(100)),
+    [amount, fees.percentage],
   );
 
   const sendAmount = useMemo(
     () =>
       decimalic(amount)
         .add(conversionFee)
-        .add(decimalic(fees.minerFees.baseAsset.normal).div(1e8)),
-    [amount, conversionFee, fees.minerFees.baseAsset.normal],
+        .add(decimalic(fees.minerFees).div(1e8)),
+    [amount, conversionFee, fees.minerFees],
   );
 
   const items = useMemo(
@@ -107,7 +108,7 @@ export const StatusScreen: React.FC<StatusScreenProps> = ({
         label: t(translation.networkFee),
         value: (
           <AmountRenderer
-            value={decimalic(fees.minerFees.baseAsset.normal).div(1e8)}
+            value={decimalic(fees.minerFees).div(1e8)}
             suffix={BITCOIN}
             precision={8}
           />
@@ -160,7 +161,7 @@ export const StatusScreen: React.FC<StatusScreenProps> = ({
       from,
       sendAmount,
       conversionFee,
-      fees.minerFees.baseAsset.normal,
+      fees.minerFees,
       amount,
       swapData,
       txHash,
@@ -173,16 +174,16 @@ export const StatusScreen: React.FC<StatusScreenProps> = ({
     () =>
       [StatusType.idle, StatusType.error].includes(txStatus) ||
       [
-        BoltzStatusType.paid,
-        BoltzStatusType.txClaimed,
-        BoltzStatusType.txRefunded,
-        BoltzStatusType.failedToPay,
-      ].includes(boltzStatus!),
+        StatusEnum.paid,
+        StatusEnum.txClaimed,
+        StatusEnum.txRefunded,
+        StatusEnum.failedToPay,
+      ].includes(boltzStatus as StatusEnum),
     [boltzStatus, txStatus],
   );
   const disabledButton = useMemo(() => boltzLocked, [boltzLocked]);
   const buttonTitle = useMemo(() => {
-    if (boltzStatus === BoltzStatusType.failedToPay) {
+    if (boltzStatus === StatusEnum.failedToPay) {
       return t(translations.common.buttons.refund);
     }
     if (txStatus === StatusType.idle) {
@@ -200,7 +201,7 @@ export const StatusScreen: React.FC<StatusScreenProps> = ({
       return onRetry();
     }
 
-    if (boltzStatus === BoltzStatusType.failedToPay) {
+    if (boltzStatus === StatusEnum.failedToPay) {
       return onRefund();
     }
 

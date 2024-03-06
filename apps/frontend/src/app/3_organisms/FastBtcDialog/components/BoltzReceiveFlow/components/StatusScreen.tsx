@@ -23,11 +23,8 @@ import { useMaintenance } from '../../../../../../hooks/useMaintenance';
 import { translations } from '../../../../../../locales/i18n';
 import { getRskExplorerUrl } from '../../../../../../utils/helpers';
 import { formatValue } from '../../../../../../utils/math';
-import { ReverseSwap } from '../../../../Boltz/Boltz.type';
-import {
-  BoltzStatus,
-  BoltzStatusType,
-} from '../../BoltzSendFlow/components/BoltzStatus';
+import { ReverseSwapResponse, Status, StatusEnum } from '../../../utils/boltz';
+import { BoltzStatus } from '../../BoltzSendFlow/components/BoltzStatus';
 import { InvoiceScreen } from './InvoiceScreen';
 import { getDescription, getTitle } from './StatusScreen.utils';
 
@@ -42,8 +39,8 @@ type StatusScreenProps = {
   invoice: string;
   txHash?: string;
   txStatus: StatusType;
-  boltzStatus?: BoltzStatusType;
-  swapData?: ReverseSwap;
+  boltzStatus?: Status;
+  swapData?: ReverseSwapResponse;
   onClaim: () => void;
   onClose: () => void;
   onRetry: () => void;
@@ -121,7 +118,7 @@ export const StatusScreen: React.FC<StatusScreenProps> = ({
       {
         label: t(translation.lightningInvoice),
         value:
-          boltzStatus === BoltzStatusType.txConfirmed ? (
+          boltzStatus === StatusEnum.txConfirmed ? (
             <span className="text-success">
               {t(translations.boltz.receive.confirmationScreens.paid)}
             </span>
@@ -156,11 +153,9 @@ export const StatusScreen: React.FC<StatusScreenProps> = ({
   const showButton = useMemo(
     () =>
       boltzStatus &&
-      [
-        BoltzStatusType.txConfirmed,
-        BoltzStatusType.paid,
-        BoltzStatusType.settled,
-      ].includes(boltzStatus),
+      [StatusEnum.txConfirmed, StatusEnum.paid, StatusEnum.settled].includes(
+        boltzStatus as StatusEnum,
+      ),
     [boltzStatus],
   );
 
@@ -170,7 +165,7 @@ export const StatusScreen: React.FC<StatusScreenProps> = ({
   );
   const buttonTitle = useMemo(() => {
     if (
-      boltzStatus === BoltzStatusType.txConfirmed &&
+      boltzStatus === StatusEnum.txConfirmed &&
       txStatus === StatusType.idle
     ) {
       return t(translations.boltz.receive.finalize);
@@ -183,7 +178,7 @@ export const StatusScreen: React.FC<StatusScreenProps> = ({
 
   const handleButtonClick = useCallback(() => {
     if (
-      boltzStatus === BoltzStatusType.txConfirmed &&
+      boltzStatus === StatusEnum.txConfirmed &&
       txStatus === StatusType.idle
     ) {
       return onClaim();
@@ -237,7 +232,7 @@ export const StatusScreen: React.FC<StatusScreenProps> = ({
         </div>
       )}
 
-      {boltzStatus === BoltzStatusType.swapCreated && (
+      {boltzStatus === StatusEnum.swapCreated && (
         <InvoiceScreen invoice={invoice} />
       )}
     </div>

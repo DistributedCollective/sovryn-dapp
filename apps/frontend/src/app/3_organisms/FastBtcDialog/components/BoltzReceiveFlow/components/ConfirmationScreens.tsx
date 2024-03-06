@@ -3,9 +3,11 @@ import React, {
   useContext,
   useEffect,
   useMemo,
+  useRef,
   useState,
 } from 'react';
 
+import { randomBytes } from 'crypto';
 import { Contract } from 'ethers';
 import { parseUnits } from 'ethers/lib/utils';
 import { t } from 'i18next';
@@ -17,13 +19,10 @@ import { useTransactionContext } from '../../../../../../contexts/TransactionCon
 import { useAccount } from '../../../../../../hooks/useAccount';
 import { translations } from '../../../../../../locales/i18n';
 import { decimalic } from '../../../../../../utils/math';
-import { ReverseSwap } from '../../../../Boltz/Boltz.type';
 import {
   getContracts,
   prefix0x,
   satoshiToWei,
-  streamSwapStatus,
-  swapToBTC,
 } from '../../../../Boltz/Boltz.utils';
 import EtherSwapABI from '../../../../Boltz/EtherSwap.json';
 import { TransactionType } from '../../../../TransactionStepDialog/TransactionStepDialog.types';
@@ -31,7 +30,12 @@ import {
   DepositBoltzContext,
   DepositBoltzStep,
 } from '../../../contexts/deposit-boltz-context';
-import { BoltzStatusType } from '../../BoltzSendFlow/components/BoltzStatus';
+import {
+  BoltzListener,
+  Status,
+  ReverseSwapResponse,
+  boltz,
+} from '../../../utils/boltz';
 import { ReviewScreen } from './ReviewScreen';
 import { StatusScreen } from './StatusScreen';
 
@@ -49,53 +53,75 @@ export const ConfirmationScreens: React.FC<ConfirmationScreensProps> = ({
 
   const [txHash, setTxHash] = useState<string | undefined>(undefined);
   const [txStatus, setTxStatus] = useState(StatusType.idle);
-  const [boltzStatus, setBoltzStatus] = useState<BoltzStatusType>();
-  const [swapData, setSwapData] = useState<ReverseSwap>();
+  const [boltzStatus, setBoltzStatus] = useState<Status>();
+  const [swapData, setSwapData] = useState<
+    ReverseSwapResponse & { preimageHash: string }
+  >();
 
-  useEffect(() => {
-    if (!swapData) {
-      return;
+  const wsRef = useRef<BoltzListener>();
+
+  const beginListening = useCallback(async (id: string) => {
+    if (wsRef.current) {
+      wsRef.current.close();
     }
-    let event: EventSource;
-    (async () => {
-      event = await streamSwapStatus(swapData?.id, setBoltzStatus);
-    })();
-
-    return () => {
-      event?.close();
-    };
-  }, [swapData]);
+    wsRef.current = boltz.listen(id);
+    wsRef.current.status(({ status }) => {
+      console.log('status:', status);
+      setBoltzStatus(status);
+    });
+  }, []);
 
   useEffect(() => {
     const swap = localStorage.getItem('reverse-swap');
 
     if (swap) {
-      setSwapData(JSON.parse(swap));
+      const data = JSON.parse(swap);
+      setSwapData(data);
+      beginListening(data.id);
     }
-  }, []);
+
+    return () => {
+      if (wsRef.current) {
+        wsRef.current.close();
+      }
+    };
+  }, [beginListening]);
 
   const conversionFee = useMemo(
     () =>
       decimalic(amount)
-        .add(decimalic(fees.minerFees.baseAsset.reverse.lockup).div(1e8))
+        .add(decimalic(fees.minerFees.lockup).div(1e8))
         .mul(decimalic(fees.percentage).div(100)),
-    [amount, fees.minerFees.baseAsset.reverse.lockup, fees.percentage],
+    [amount, fees.minerFees.lockup, fees.percentage],
   );
 
   const sendAmount = useMemo(
     () =>
       decimalic(amount)
-        .add(decimalic(fees.minerFees.baseAsset.reverse.lockup).div(1e8))
+        .add(decimalic(fees.minerFees.lockup).div(1e8))
         .div(decimalic(1).sub(decimalic(fees.percentage).div(100)))
         .toString(8),
-    [amount, fees.minerFees.baseAsset.reverse.lockup, fees.percentage],
+    [amount, fees.minerFees.lockup, fees.percentage],
   );
 
   const handleConfirm = useCallback(async () => {
-    const swap = await swapToBTC(Number(parseUnits(sendAmount, 8)), account);
-    setSwapData(swap);
-    localStorage.setItem('reverse-swap', JSON.stringify(swap));
-  }, [sendAmount, account]);
+    const preimage = randomBytes(32);
+    const preimageHash = preimage.toString('hex');
+
+    const result = await boltz.reverseSwap({
+      invoiceAmount: Number(parseUnits(sendAmount, 8)),
+      to: 'RBTC',
+      from: 'BTC',
+      preimageHash,
+      claimAddress: account,
+    });
+
+    const data = { ...result, preimageHash };
+
+    beginListening(result.id);
+    setSwapData(data);
+    localStorage.setItem('reverse-swap', JSON.stringify(data));
+  }, [sendAmount, account, beginListening]);
 
   const handleClaim = useCallback(async () => {
     if (!swapData) {
@@ -119,7 +145,7 @@ export const ConfirmationScreens: React.FC<ConfirmationScreensProps> = ({
           contract,
           fnName: 'claim',
           args: [
-            prefix0x(swapData.preimage),
+            prefix0x(swapData.preimageHash),
             satoshiToWei(swapData.onchainAmount),
             swapData.refundAddress,
             swapData.timeoutBlockHeight,
@@ -137,7 +163,7 @@ export const ConfirmationScreens: React.FC<ConfirmationScreensProps> = ({
 
     setTitle(t(translations.boltz.receive.txDialog.title));
     setIsOpen(true);
-  }, [swapData, setTransactions, signer, setTitle, setIsOpen]);
+  }, [swapData, signer, setTransactions, setTitle, setIsOpen]);
 
   const handleRetry = useCallback(() => {
     set(prevState => ({ ...prevState, step: DepositBoltzStep.REVIEW }));
@@ -151,7 +177,7 @@ export const ConfirmationScreens: React.FC<ConfirmationScreensProps> = ({
         receiveAmount={amount}
         to={account}
         amount={sendAmount}
-        networkFee={decimalic(fees.minerFees.baseAsset.reverse.lockup).div(1e8)}
+        networkFee={decimalic(fees.minerFees.lockup).div(1e8)}
         conversionFee={conversionFee}
       />
     );
@@ -165,12 +191,12 @@ export const ConfirmationScreens: React.FC<ConfirmationScreensProps> = ({
       boltzStatus={boltzStatus}
       to={account}
       amount={sendAmount}
-      receiveAmount={swapData.receiveAmount}
+      receiveAmount={swapData.onchainAmount}
       swapData={swapData}
       onClaim={handleClaim}
       onRetry={handleRetry}
       onClose={onClose}
-      networkFee={decimalic(fees.minerFees.baseAsset.reverse.lockup).div(1e8)}
+      networkFee={decimalic(fees.minerFees.lockup).div(1e8)}
       conversionFee={conversionFee}
     />
   );

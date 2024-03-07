@@ -81,25 +81,19 @@ export class CrocSwapPlan {
   async generateTxData(
     args: CrocSwapExecOpts = {},
   ): Promise<CrocTransactionData> {
-    const gasEst = await this.estimateGas(args);
-    const callArgs = Object.assign({ gasEst: gasEst }, args);
-    return this.buildTxData(Object.assign({}, args, callArgs));
+    return this.buildTxData(args);
   }
 
   async generateSwapData(
     args: CrocSwapExecOpts = {},
   ): Promise<CrocTransactionData> {
-    const gasEst = await this.estimateGas(args);
-    const callArgs = Object.assign({ gasEst: gasEst }, args);
-    return this.buildTxData(Object.assign({}, args, callArgs));
+    return this.buildTxData(args);
   }
 
   async generateSwapArgs(
     args: CrocSwapExecOpts = {},
-  ): Promise<CrocSwapExecOpts & { gasEst: BigNumber }> {
-    const gasEst = await this.estimateGas(args);
-    const callArgs = Object.assign({ gasEst: gasEst }, args);
-    return Object.assign({}, args, callArgs);
+  ): Promise<CrocSwapExecOpts> {
+    return args;
   }
 
   async swap(args: CrocSwapExecOpts = {}): Promise<TransactionResponse> {

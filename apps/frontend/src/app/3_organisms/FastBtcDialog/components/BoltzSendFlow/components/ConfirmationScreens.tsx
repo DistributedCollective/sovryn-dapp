@@ -9,24 +9,20 @@ import { GAS_LIMIT } from '../../../../../../constants/gasLimits';
 import { useTransactionContext } from '../../../../../../contexts/TransactionContext';
 import { useAccount } from '../../../../../../hooks/useAccount';
 import { translations } from '../../../../../../locales/i18n';
+import { prefix0x } from '../../../../../../utils/helpers';
 import { decimalic } from '../../../../../../utils/math';
-import {
-  decodeInvoice,
-  getContracts,
-  prefix0x,
-} from '../../../../Boltz/Boltz.utils';
-import EtherSwapABI from '../../../../Boltz/EtherSwap.json';
 import { TransactionType } from '../../../../TransactionStepDialog/TransactionStepDialog.types';
 import {
   WithdrawBoltzContext,
   WithdrawBoltzStep,
 } from '../../../contexts/withdraw-boltz-context';
+import EtherSwapABI from '../../../utils/boltz/EtherSwap.json';
+import { boltz } from '../../../utils/boltz/boltz.client';
 import {
   BoltzListener,
   Status,
   SubmarineSwapResponse,
-  boltz,
-} from '../../../utils/boltz';
+} from '../../../utils/boltz/boltz.types';
 import { StatusScreen } from './StatusScreen';
 
 type ConfirmationScreensProps = {
@@ -86,7 +82,7 @@ export const ConfirmationScreens: React.FC<ConfirmationScreensProps> = ({
 
       const value = decimalic(swap.expectedAmount).div(1e8).toBigNumber();
 
-      const data = await getContracts();
+      const data = await boltz.getContracts();
       const etherSwapAddress = data?.rsk.swapContracts.EtherSwap;
 
       if (!etherSwapAddress || !swap) {
@@ -103,7 +99,7 @@ export const ConfirmationScreens: React.FC<ConfirmationScreensProps> = ({
             contract,
             fnName: 'lock',
             args: [
-              prefix0x(decodeInvoice(invoice).preimageHash),
+              prefix0x(boltz.decodeInvoice(invoice).preimageHash),
               swap?.claimAddress,
               swap?.timeoutBlockHeight,
             ],
@@ -154,7 +150,7 @@ export const ConfirmationScreens: React.FC<ConfirmationScreensProps> = ({
 
     const value = decimalic(swap.expectedAmount).div(1e8).toBigNumber();
 
-    const data = await getContracts();
+    const data = await boltz.getContracts();
     const etherSwapAddress = data?.rsk.swapContracts.EtherSwap;
 
     if (!etherSwapAddress || !swap) {
@@ -171,7 +167,7 @@ export const ConfirmationScreens: React.FC<ConfirmationScreensProps> = ({
           contract,
           fnName: 'refund',
           args: [
-            prefix0x(decodeInvoice(invoice).preimageHash),
+            prefix0x(boltz.decodeInvoice(invoice).preimageHash),
             value,
             swap?.claimAddress,
             swap?.timeoutBlockHeight,

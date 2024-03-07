@@ -1,6 +1,6 @@
 import { createContext, Dispatch, SetStateAction } from 'react';
 
-import { SubmarineSwapPair } from '../utils/boltz';
+import { SubmarineSwapPair } from '../utils/boltz/boltz.types';
 
 export enum WithdrawBoltzStep {
   MAIN,

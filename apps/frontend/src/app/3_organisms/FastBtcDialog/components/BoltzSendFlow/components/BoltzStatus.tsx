@@ -6,7 +6,7 @@ import { t } from 'i18next';
 import { Icon, IconNames } from '@sovryn/ui';
 
 import { translations } from '../../../../../../locales/i18n';
-import { StatusEnum, Status } from '../../../utils/boltz';
+import { Status, StatusEnum } from '../../../utils/boltz/boltz.types';
 
 type BoltzStatusProps = {
   status?: Status;

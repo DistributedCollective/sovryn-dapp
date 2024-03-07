@@ -1,24 +1,3 @@
-import Axios from 'axios';
-
-import { isMainnet } from '../../../../utils/helpers';
-
-const baseUrl = isMainnet()
-  ? 'https://api.boltz.exchange/api/v2'
-  : 'https://testnet.boltz.exchange/api/v2';
-
-const client = Axios.create({
-  baseURL: baseUrl,
-  headers: {
-    'Content-Type': 'application/json',
-  },
-});
-
-client.interceptors.response.use(
-  ok => ok,
-  error =>
-    Promise.reject(new Error(error.response?.data?.error || error.message)),
-);
-
 export enum StatusEnum {
   set = 'invoice.set',
   pending = 'invoice.pending',
@@ -56,10 +35,6 @@ export type GetSubmarineSwapPairsResponse = Record<
   string,
   Record<string, SubmarineSwapPair>
 >;
-const getSubmarineSwapPairs = () =>
-  client
-    .get<GetSubmarineSwapPairsResponse>('/swap/submarine')
-    .then(res => res.data);
 
 export type SubmarineSwapBody = {
   from: string;
@@ -101,12 +76,6 @@ export type SwapResponse = {
     hexh: string;
   };
 };
-const getSwap = (id: string) => client.get<SwapResponse>(`/swap/${id}`);
-
-const submarineSwap = (body: Partial<SubmarineSwapBody>) =>
-  client
-    .post<SubmarineSwapResponse>('/swap/submarine', body)
-    .then(res => res.data);
 
 export type SubmarineSwapTransactionResponse = {
   id: string;
@@ -115,11 +84,6 @@ export type SubmarineSwapTransactionResponse = {
   timeoutEta: number;
 };
 
-const getSubmarineSwapTransaction = (id: string) =>
-  client.get<SubmarineSwapTransactionResponse>(
-    `/swap/submarine/${id}/transaction`,
-  );
-
 export type SubmarineRefundBody = {
   id: string;
   pubNonce: string;
@@ -127,11 +91,6 @@ export type SubmarineRefundBody = {
   index: number;
 };
 export type SubmarineRefundResponse = {};
-
-const submarineRefund = (body: SubmarineRefundBody) =>
-  client
-    .post<SubmarineRefundResponse>('/swap/submarine/refund', body)
-    .then(res => res.data);
 
 export type ReverseSwapPair = {
   hash: string;
@@ -153,8 +112,6 @@ export type GetReversePairsResponse = Record<
   string,
   Record<string, ReverseSwapPair>
 >;
-const getReverseSwapPairs = () =>
-  client.get<GetReversePairsResponse>(`/swap/reverse`).then(res => res.data);
 
 export type ReverseSwapBody = {
   from: string;
@@ -188,18 +145,11 @@ export type ReverseSwapResponse = {
   blindinKey: string;
 };
 
-const reverseSwap = (body: Partial<ReverseSwapBody>) =>
-  client.post<ReverseSwapResponse>(`/swap/reverse`, body).then(res => res.data);
-
 export type ReverseSwapTransactionResponse = {
   id: string;
   hex: string;
   timeoutBlockHeight: number;
 };
-const getReverseSwapTransaction = (id: string) =>
-  client
-    .get<ReverseSwapTransactionResponse>(`/swap/reverse/${id}/transaction`)
-    .then(res => res.data);
 
 export type ClaimReverseSwapBody = {
   id: string;
@@ -212,69 +162,21 @@ export type ClaimReverseSwapResponse = {
   pubNonce: string;
   partialSignature: string;
 };
-const claimReverseSwap = (body: ClaimReverseSwapBody) =>
-  client
-    .post<ClaimReverseSwapResponse>(`/swap/reverse/claim`, body)
-    .then(res => res.data);
-
-let socket: WebSocket;
 
 export type BoltzListener = {
   status: (cb: (data: { id: string; status: Status }) => void) => () => void;
   close: () => void;
 };
 
-const listen = (id: string | string[]): BoltzListener => {
-  if (socket) {
-    socket.close();
-  }
-  socket = new WebSocket(`${baseUrl.replace('https://', 'wss://')}/ws`);
-
-  socket.addEventListener('open', () => {
-    socket.send(
-      JSON.stringify({
-        op: 'subscribe',
-        channel: 'swap.update',
-        args: Array.isArray(id) ? id : [id],
-      }),
-    );
-  });
-
-  return {
-    status: (cb: (data: { id: string; status: Status }) => void) => {
-      const listener = (raw: MessageEvent) => {
-        const msg = JSON.parse(raw.data);
-        if (msg.event !== 'update') {
-          return;
-        }
-
-        const status = msg.args[0].status;
-        const id = msg.args[0].id;
-
-        cb({ id, status });
-      };
-
-      socket.addEventListener('message', listener);
-
-      return () => {
-        socket.removeEventListener('message', listener);
-      };
-    },
-    close: () => {
-      socket.close();
-    },
+export type ContractsResponse = {
+  [key: string]: {
+    network: {
+      chainId: number;
+    };
+    tokens: object;
+    swapContracts: {
+      EtherSwap: string;
+      ERC20Swap: string;
+    };
   };
-};
-
-export const boltz = {
-  getSubmarineSwapPairs,
-  submarineSwap,
-  getSwap,
-  getSubmarineSwapTransaction,
-  submarineRefund,
-  getReverseSwapPairs,
-  reverseSwap,
-  getReverseSwapTransaction,
-  claimReverseSwap,
-  listen,
 };

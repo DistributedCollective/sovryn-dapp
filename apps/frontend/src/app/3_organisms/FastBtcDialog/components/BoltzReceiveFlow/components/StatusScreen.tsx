@@ -23,7 +23,11 @@ import { useMaintenance } from '../../../../../../hooks/useMaintenance';
 import { translations } from '../../../../../../locales/i18n';
 import { getRskExplorerUrl } from '../../../../../../utils/helpers';
 import { formatValue } from '../../../../../../utils/math';
-import { ReverseSwapResponse, Status, StatusEnum } from '../../../utils/boltz';
+import {
+  ReverseSwapResponse,
+  Status,
+  StatusEnum,
+} from '../../../utils/boltz/boltz.types';
 import { BoltzStatus } from '../../BoltzSendFlow/components/BoltzStatus';
 import { InvoiceScreen } from './InvoiceScreen';
 import { getDescription, getTitle } from './StatusScreen.utils';

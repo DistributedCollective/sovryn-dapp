@@ -26,7 +26,7 @@ import {
   Status,
   StatusEnum,
   SubmarineSwapResponse,
-} from '../../../utils/boltz';
+} from '../../../utils/boltz/boltz.types';
 import { BoltzStatus } from './BoltzStatus';
 import { getDescription, getTitle } from './StatusScreen.utils';
 

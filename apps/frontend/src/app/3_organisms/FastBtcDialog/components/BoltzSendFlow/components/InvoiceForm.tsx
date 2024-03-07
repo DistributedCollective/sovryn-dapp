@@ -29,11 +29,11 @@ import { useClipboard } from '../../../../../../hooks/useClipboard';
 import { useMaintenance } from '../../../../../../hooks/useMaintenance';
 import { translations } from '../../../../../../locales/i18n';
 import { decimalic } from '../../../../../../utils/math';
-import { decodeInvoice } from '../../../../Boltz/Boltz.utils';
 import {
   WithdrawBoltzContext,
   WithdrawBoltzStep,
 } from '../../../contexts/withdraw-boltz-context';
+import { boltz } from '../../../utils/boltz/boltz.client';
 
 enum InvoiceValidationState {
   NONE = 'NONE',
@@ -79,7 +79,7 @@ export const InvoiceForm: React.FC = () => {
     (invoice: string) => {
       try {
         setInvoiceValidationState(InvoiceValidationState.LOADING);
-        const decoded = decodeInvoice(invoice);
+        const decoded = boltz.decodeInvoice(invoice);
         if (decoded) {
           if ((decoded.expiry ?? 0) < Date.now() / 1000) {
             setInvoiceValidationState(InvoiceValidationState.EXPIRED);

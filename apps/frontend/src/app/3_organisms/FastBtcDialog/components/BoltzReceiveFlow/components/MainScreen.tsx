@@ -12,7 +12,7 @@ import {
   DepositBoltzContext,
   DepositBoltzStep,
 } from '../../../contexts/deposit-boltz-context';
-import { ReverseSwapResponse } from '../../../utils/boltz';
+import { ReverseSwapResponse } from '../../../utils/boltz/boltz.types';
 import { Instructions } from './Instructions';
 
 export const MainScreen: React.FC = () => {

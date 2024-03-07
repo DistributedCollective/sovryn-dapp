@@ -1,6 +1,6 @@
 import { createContext, Dispatch, SetStateAction } from 'react';
 
-import { ReverseSwapPair } from '../utils/boltz';
+import { ReverseSwapPair } from '../utils/boltz/boltz.types';
 
 export enum DepositBoltzStep {
   MAIN,

@@ -1,11 +1,6 @@
 import { ChainIds } from '@sovryn/ethers-provider';
 
-import { defaultChainId } from '../../../config/chains';
-
-export const BOLTZ_API_URLS = {
-  [ChainIds.RSK_MAINNET]: 'https://api.boltz.exchange/',
-  [ChainIds.RSK_TESTNET]: 'https://testnet.boltz.exchange/api/',
-};
+import { defaultChainId } from '../../../../../config/chains';
 
 export const BOLTZ_EXCHANGE_URLS = {
   [ChainIds.RSK_MAINNET]: 'https://boltz.exchange/',

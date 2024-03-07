@@ -1,18 +1,17 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
-import { getContracts } from '../../Boltz/Boltz.utils';
 import {
   defaultValue,
   DepositBoltzContextStateType,
 } from '../contexts/deposit-boltz-context';
-import { boltz } from '../utils/boltz';
+import { boltz } from '../utils/boltz/boltz.client';
 
 export function useDepositBoltzConfig() {
   const [state, setState] =
     useState<DepositBoltzContextStateType>(defaultValue);
 
   const getBoltzLimits = useCallback(async () => {
-    const contracts = await getContracts();
+    const contracts = await boltz.getContracts();
     const pair = await boltz
       .getReverseSwapPairs()
       .then(pairs => pairs['BTC']['RBTC']);

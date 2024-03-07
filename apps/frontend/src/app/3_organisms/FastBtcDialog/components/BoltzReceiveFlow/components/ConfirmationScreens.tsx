@@ -19,24 +19,20 @@ import { GAS_LIMIT } from '../../../../../../constants/gasLimits';
 import { useTransactionContext } from '../../../../../../contexts/TransactionContext';
 import { useAccount } from '../../../../../../hooks/useAccount';
 import { translations } from '../../../../../../locales/i18n';
+import { prefix0x } from '../../../../../../utils/helpers';
 import { decimalic } from '../../../../../../utils/math';
-import {
-  getContracts,
-  prefix0x,
-  satoshiToWei,
-} from '../../../../Boltz/Boltz.utils';
-import EtherSwapABI from '../../../../Boltz/EtherSwap.json';
 import { TransactionType } from '../../../../TransactionStepDialog/TransactionStepDialog.types';
 import {
   DepositBoltzContext,
   DepositBoltzStep,
 } from '../../../contexts/deposit-boltz-context';
+import EtherSwapABI from '../../../utils/boltz/EtherSwap.json';
+import { boltz } from '../../../utils/boltz/boltz.client';
 import {
   BoltzListener,
-  Status,
   ReverseSwapResponse,
-  boltz,
-} from '../../../utils/boltz';
+  Status,
+} from '../../../utils/boltz/boltz.types';
 import { ReviewScreen } from './ReviewScreen';
 import { StatusScreen } from './StatusScreen';
 
@@ -133,7 +129,7 @@ export const ConfirmationScreens: React.FC<ConfirmationScreensProps> = ({
       return;
     }
 
-    const contractData = await getContracts();
+    const contractData = await boltz.getContracts();
     const etherSwapAddress = contractData?.rsk.swapContracts.EtherSwap;
 
     if (!etherSwapAddress) {
@@ -151,7 +147,7 @@ export const ConfirmationScreens: React.FC<ConfirmationScreensProps> = ({
           fnName: 'claim',
           args: [
             prefix0x(swapData.preimage),
-            satoshiToWei(swapData.onchainAmount),
+            parseUnits(swapData.onchainAmount.toString(), 10),
             swapData.refundAddress,
             swapData.timeoutBlockHeight,
           ],

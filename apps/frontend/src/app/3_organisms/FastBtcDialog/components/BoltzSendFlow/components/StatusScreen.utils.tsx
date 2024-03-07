@@ -6,7 +6,7 @@ import { StatusType } from '@sovryn/ui';
 
 import { StatusIcon } from '../../../../../2_molecules/StatusIcon/StatusIcon';
 import { translations } from '../../../../../../locales/i18n';
-import { Status, StatusEnum } from '../../../utils/boltz';
+import { Status, StatusEnum } from '../../../utils/boltz/boltz.types';
 
 const translation = translations.boltz.send.confirmationScreens;
 

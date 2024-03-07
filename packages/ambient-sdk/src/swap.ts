@@ -1,7 +1,7 @@
 import { AddressZero } from '@ethersproject/constants';
 import { TransactionResponse } from '@ethersproject/providers';
 
-import { BigNumber, ContractFunction } from 'ethers';
+import { BigNumber, Contract, ContractFunction, utils } from 'ethers';
 import { AbiCoder } from 'ethers/lib/utils';
 
 import { MAX_SQRT_PRICE, MIN_SQRT_PRICE } from './constants';
@@ -78,6 +78,30 @@ export class CrocSwapPlan {
     this.callType = '';
   }
 
+  async generateTxData(
+    args: CrocSwapExecOpts = {},
+  ): Promise<CrocTransactionData> {
+    const gasEst = await this.estimateGas(args);
+    const callArgs = Object.assign({ gasEst: gasEst }, args);
+    return this.buildTxData(Object.assign({}, args, callArgs));
+  }
+
+  async generateSwapData(
+    args: CrocSwapExecOpts = {},
+  ): Promise<CrocTransactionData> {
+    const gasEst = await this.estimateGas(args);
+    const callArgs = Object.assign({ gasEst: gasEst }, args);
+    return this.buildTxData(Object.assign({}, args, callArgs));
+  }
+
+  async generateSwapArgs(
+    args: CrocSwapExecOpts = {},
+  ): Promise<CrocSwapExecOpts & { gasEst: BigNumber }> {
+    const gasEst = await this.estimateGas(args);
+    const callArgs = Object.assign({ gasEst: gasEst }, args);
+    return Object.assign({}, args, callArgs);
+  }
+
   async swap(args: CrocSwapExecOpts = {}): Promise<TransactionResponse> {
     const gasEst = await this.estimateGas(args);
     const callArgs = Object.assign({ gasEst: gasEst }, args);
@@ -97,6 +121,119 @@ export class CrocSwapPlan {
     const callArgs = Object.assign({ gasEst: gasEst }, args);
 
     return this.callStatic(Object.assign({}, args, callArgs));
+  }
+
+  private async buildTxData(
+    args: CrocSwapExecOpts,
+  ): Promise<CrocTransactionData> {
+    const { to, data, value } = await this.hotPathBuildTxData(
+      await this.txBase(),
+      args,
+    );
+
+    return {
+      to: to || '',
+      data: data || '',
+      value: value || BigNumber.from(0),
+    };
+  }
+
+  private async hotPathBuildTxData<T>(
+    base: { [name: string]: ContractFunction<T> },
+    args: CrocSwapExecOpts,
+  ): Promise<CrocTransactionData> {
+    const reader = new CrocSlotReader(this.context);
+    if (this.callType === 'proxy') {
+      return this.userCmdBuildTxData(base as Contract, args);
+    } else if (this.callType === 'router') {
+      return this.swapBuildTxData(base as Contract, args);
+    } else if (this.callType === 'bypass') {
+      return this.swapBuildTxData(base as Contract, args);
+    } else {
+      return (await reader.isHotPathOpen())
+        ? this.swapBuildTxData(base as Contract, args)
+        : this.userCmdBuildTxData(base as Contract, args);
+    }
+  }
+
+  private async userCmdBuildTxData(
+    contract: Contract,
+    args: CrocSwapExecOpts,
+  ): Promise<CrocTransactionData> {
+    const TIP = 0;
+    const surplusFlags = this.maskSurplusArgs(args);
+
+    const HOT_PROXY_IDX = 1;
+
+    const abi = new utils.AbiCoder();
+    const cmd = abi.encode(
+      [
+        'address',
+        'address',
+        'uint256',
+        'bool',
+        'bool',
+        'uint128',
+        'uint16',
+        'uint128',
+        'uint128',
+        'uint8',
+      ],
+      [
+        this.baseToken.tokenAddr,
+        this.quoteToken.tokenAddr,
+        (await this.context).chain.poolIndex,
+        this.sellBase,
+        this.qtyInBase,
+        await this.qty,
+        TIP,
+        await this.calcLimitPrice(),
+        await this.calcSlipQty(),
+        surplusFlags,
+      ],
+    );
+
+    const txData = await contract.populateTransaction.userCmd(
+      HOT_PROXY_IDX,
+      cmd,
+      await this.buildTxArgs(surplusFlags, args.gasEst),
+    );
+
+    return {
+      to: txData.to || '',
+      data: txData.data || '',
+      value: txData.value || BigNumber.from(0),
+    };
+  }
+
+  private async swapBuildTxData(
+    contract: Contract,
+    args: CrocSwapExecOpts,
+  ): Promise<CrocTransactionData> {
+    const TIP = 0;
+    const surplusFlags = this.maskSurplusArgs(args);
+
+    const txData = await contract.populateTransaction.swap(
+      this.baseToken.tokenAddr,
+      this.quoteToken.tokenAddr,
+      (
+        await this.context
+      ).chain.poolIndex,
+      this.sellBase,
+      this.qtyInBase,
+      await this.qty,
+      TIP,
+      await this.calcLimitPrice(),
+      await this.calcSlipQty(),
+      surplusFlags,
+      await this.buildTxArgs(surplusFlags, args.gasEst),
+    );
+
+    return {
+      to: txData.to || '',
+      data: txData.data || '',
+      value: txData.value || BigNumber.from(0),
+    };
   }
 
   private async sendTx(args: CrocSwapExecOpts): Promise<TransactionResponse> {

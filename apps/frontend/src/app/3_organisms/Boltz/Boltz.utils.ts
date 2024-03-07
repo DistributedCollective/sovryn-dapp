@@ -9,7 +9,6 @@ import { defaultChainId } from '../../../config/chains';
 import { BOLTZ_API_URLS } from './Boltz.constants';
 import {
   BoltzPair,
-  CheckSwapStatusResponse,
   CreateReverseSwapResponse,
   CreateSwapResponse,
   GetContractsResponse,
@@ -25,36 +24,6 @@ export const getPair = async () => {
 
     return data.pairs['RBTC/BTC'] as BoltzPair;
   } catch (error) {}
-};
-
-export const checkSwapStatus = async (id: string) => {
-  try {
-    const { data } = await axios.post<CheckSwapStatusResponse>(
-      BOLTZ_API_URLS[defaultChainId] + 'swapstatus',
-      {
-        id,
-      },
-    );
-
-    return data.status;
-  } catch (error) {}
-};
-
-export const streamSwapStatus = async (
-  id: string,
-  cb: (status: any) => void,
-) => {
-  const stream = new EventSource(
-    BOLTZ_API_URLS[defaultChainId] + '/streamswapstatus?id=' + id,
-  );
-
-  stream.onmessage = function (event) {
-    const data = JSON.parse(event.data);
-
-    cb(data.status);
-  };
-
-  return stream;
 };
 
 export const swapToBTC = async (

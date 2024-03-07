@@ -7,6 +7,7 @@ import React, {
   useState,
 } from 'react';
 
+import { crypto } from 'bitcoinjs-lib';
 import { randomBytes } from 'crypto';
 import { Contract } from 'ethers';
 import { parseUnits } from 'ethers/lib/utils';
@@ -55,7 +56,7 @@ export const ConfirmationScreens: React.FC<ConfirmationScreensProps> = ({
   const [txStatus, setTxStatus] = useState(StatusType.idle);
   const [boltzStatus, setBoltzStatus] = useState<Status>();
   const [swapData, setSwapData] = useState<
-    ReverseSwapResponse & { preimageHash: string }
+    ReverseSwapResponse & { preimageHash: string; preimage: string }
   >();
 
   const wsRef = useRef<BoltzListener>();
@@ -106,7 +107,7 @@ export const ConfirmationScreens: React.FC<ConfirmationScreensProps> = ({
 
   const handleConfirm = useCallback(async () => {
     const preimage = randomBytes(32);
-    const preimageHash = preimage.toString('hex');
+    const preimageHash = crypto.sha256(preimage).toString('hex');
 
     const result = await boltz.reverseSwap({
       invoiceAmount: Number(parseUnits(sendAmount, 8)),
@@ -116,7 +117,11 @@ export const ConfirmationScreens: React.FC<ConfirmationScreensProps> = ({
       claimAddress: account,
     });
 
-    const data = { ...result, preimageHash };
+    const data = {
+      ...result,
+      preimage: preimage.toString('hex'),
+      preimageHash,
+    };
 
     beginListening(result.id);
     setSwapData(data);
@@ -145,7 +150,7 @@ export const ConfirmationScreens: React.FC<ConfirmationScreensProps> = ({
           contract,
           fnName: 'claim',
           args: [
-            prefix0x(swapData.preimageHash),
+            prefix0x(swapData.preimage),
             satoshiToWei(swapData.onchainAmount),
             swapData.refundAddress,
             swapData.timeoutBlockHeight,

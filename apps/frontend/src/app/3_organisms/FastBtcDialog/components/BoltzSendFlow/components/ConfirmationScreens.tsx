@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useRef, useState } from 'react';
 
 import { Contract } from 'ethers';
 import { t } from 'i18next';
@@ -10,13 +10,10 @@ import { useTransactionContext } from '../../../../../../contexts/TransactionCon
 import { useAccount } from '../../../../../../hooks/useAccount';
 import { translations } from '../../../../../../locales/i18n';
 import { decimalic } from '../../../../../../utils/math';
-import { Swap } from '../../../../Boltz/Boltz.type';
 import {
   decodeInvoice,
   getContracts,
   prefix0x,
-  streamSwapStatus,
-  swapToLighting,
 } from '../../../../Boltz/Boltz.utils';
 import EtherSwapABI from '../../../../Boltz/EtherSwap.json';
 import { TransactionType } from '../../../../TransactionStepDialog/TransactionStepDialog.types';
@@ -24,7 +21,12 @@ import {
   WithdrawBoltzContext,
   WithdrawBoltzStep,
 } from '../../../contexts/withdraw-boltz-context';
-import { Status } from '../../../utils/boltz';
+import {
+  BoltzListener,
+  Status,
+  SubmarineSwapResponse,
+  boltz,
+} from '../../../utils/boltz';
 import { StatusScreen } from './StatusScreen';
 
 type ConfirmationScreensProps = {
@@ -45,30 +47,36 @@ export const ConfirmationScreens: React.FC<ConfirmationScreensProps> = ({
   );
   const [txStatus, setTxStatus] = useState(StatusType.idle);
   const [boltzStatus, setBoltzStatus] = useState<Status>();
-  const [swapData, setSwapData] = useState<Swap>();
+  const [swapData, setSwapData] = useState<SubmarineSwapResponse>();
   const [error, setError] = useState<string>();
 
-  useEffect(() => {
-    if (!swapData) {
-      return;
-    }
-    let event: EventSource;
-    (async () => {
-      event = await streamSwapStatus(swapData?.id, setBoltzStatus);
-    })();
+  const wsRef = useRef<BoltzListener>();
 
-    return () => {
-      event?.close();
-    };
-  }, [swapData]);
+  const beginListening = useCallback(async (id: string) => {
+    if (wsRef.current) {
+      wsRef.current.close();
+    }
+    wsRef.current = boltz.listen(id);
+    wsRef.current.status(({ status }) => {
+      console.log('status:', status);
+      setBoltzStatus(status);
+    });
+  }, []);
 
   const handleConfirm = useCallback(async () => {
     try {
       setError(undefined);
       let swap = swapData;
       if (!swapData) {
-        swap = await swapToLighting(invoice, account);
+        swap = await boltz.submarineSwap({
+          invoice,
+          from: 'RBTC',
+          to: 'BTC',
+          refundAddress: account,
+        });
+
         setSwapData(swap);
+        beginListening(swap.id);
       }
 
       if (!swap) {
@@ -95,7 +103,7 @@ export const ConfirmationScreens: React.FC<ConfirmationScreensProps> = ({
             contract,
             fnName: 'lock',
             args: [
-              prefix0x(decodeInvoice(swap?.invoice).preimageHash),
+              prefix0x(decodeInvoice(invoice).preimageHash),
               swap?.claimAddress,
               swap?.timeoutBlockHeight,
             ],
@@ -116,16 +124,18 @@ export const ConfirmationScreens: React.FC<ConfirmationScreensProps> = ({
       setTitle(t(translations.fastBtc.send.txDialog.title));
       setIsOpen(true);
     } catch (e) {
+      console.log('error:', e);
       setError(e.message);
     }
   }, [
     swapData,
     signer,
     setTransactions,
+    invoice,
     setTitle,
     setIsOpen,
-    invoice,
     account,
+    beginListening,
     set,
   ]);
 
@@ -161,7 +171,7 @@ export const ConfirmationScreens: React.FC<ConfirmationScreensProps> = ({
           contract,
           fnName: 'refund',
           args: [
-            prefix0x(decodeInvoice(swap?.invoice).preimageHash),
+            prefix0x(decodeInvoice(invoice).preimageHash),
             value,
             swap?.claimAddress,
             swap?.timeoutBlockHeight,
@@ -182,7 +192,7 @@ export const ConfirmationScreens: React.FC<ConfirmationScreensProps> = ({
 
     setTitle(t(translations.fastBtc.send.txDialog.title));
     setIsOpen(true);
-  }, [swapData, setTransactions, signer, setTitle, setIsOpen, set]);
+  }, [swapData, signer, setTransactions, invoice, setTitle, setIsOpen, set]);
 
   return (
     <StatusScreen

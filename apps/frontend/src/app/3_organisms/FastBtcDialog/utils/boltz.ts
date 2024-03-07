@@ -13,6 +13,12 @@ const client = Axios.create({
   },
 });
 
+client.interceptors.response.use(
+  ok => ok,
+  error =>
+    Promise.reject(new Error(error.response?.data?.error || error.message)),
+);
+
 export enum StatusEnum {
   set = 'invoice.set',
   pending = 'invoice.pending',
@@ -58,8 +64,9 @@ const getSubmarineSwapPairs = () =>
 export type SubmarineSwapBody = {
   from: string;
   to: string;
-  invocie: string;
+  invoice: string;
   refundPublicKey: string;
+  refundAddress: string;
   pairHash: string;
   referallId: string;
 };
@@ -79,6 +86,7 @@ export type SubmarineSwapResponse = {
     };
   };
   claimPublicKey: string;
+  claimAddress: string;
   timeoutBlockHeight: number;
   acceptZeroConf: boolean;
   expectedAmount: number;
@@ -95,7 +103,7 @@ export type SwapResponse = {
 };
 const getSwap = (id: string) => client.get<SwapResponse>(`/swap/${id}`);
 
-const submarineSwap = (body: SubmarineSwapBody) =>
+const submarineSwap = (body: Partial<SubmarineSwapBody>) =>
   client
     .post<SubmarineSwapResponse>('/swap/submarine', body)
     .then(res => res.data);

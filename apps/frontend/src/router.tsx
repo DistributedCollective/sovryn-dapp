@@ -48,9 +48,6 @@ const BitocracyPage = loadable(
 const ProposalPage = loadable(
   () => import('./app/5_pages/ProposalPage/ProposalPage'),
 );
-const BoltzPagePage = loadable(
-  () => import('./app/5_pages/BoltzPage/BoltzPage'),
-);
 
 const routes = [
   {
@@ -117,10 +114,6 @@ const routes = [
       {
         path: '/earn/staking',
         element: <StakePage />,
-      },
-      {
-        path: '/boltz',
-        element: <BoltzPagePage />,
       },
     ],
   },

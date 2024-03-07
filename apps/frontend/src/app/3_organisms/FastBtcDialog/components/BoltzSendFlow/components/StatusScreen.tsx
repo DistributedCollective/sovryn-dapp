@@ -21,9 +21,12 @@ import { useMaintenance } from '../../../../../../hooks/useMaintenance';
 import { translations } from '../../../../../../locales/i18n';
 import { getRskExplorerUrl } from '../../../../../../utils/helpers';
 import { decimalic } from '../../../../../../utils/math';
-import { Swap } from '../../../../Boltz/Boltz.type';
 import { WithdrawBoltzContext } from '../../../contexts/withdraw-boltz-context';
-import { Status, StatusEnum } from '../../../utils/boltz';
+import {
+  Status,
+  StatusEnum,
+  SubmarineSwapResponse,
+} from '../../../utils/boltz';
 import { BoltzStatus } from './BoltzStatus';
 import { getDescription, getTitle } from './StatusScreen.utils';
 
@@ -38,7 +41,7 @@ type StatusScreenProps = {
   refundTxHash?: string;
   txStatus: StatusType;
   boltzStatus?: Status;
-  swapData?: Swap;
+  swapData?: SubmarineSwapResponse;
   error?: string;
   onConfirm: () => void;
   onRefund: () => void;

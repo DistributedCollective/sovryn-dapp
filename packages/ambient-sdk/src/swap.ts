@@ -246,7 +246,7 @@ export class CrocSwapPlan {
     return this.hotPathCall(base.estimateGas, args);
   }
 
-  private async txBase() {
+  async txBase() {
     if (this.callType === 'router') {
       const router = (await this.context).router;
       if (!router) {
@@ -390,7 +390,7 @@ export class CrocSwapPlan {
     };
   }
 
-  private maskSurplusArgs(args?: CrocSwapExecOpts): number {
+  public maskSurplusArgs(args?: CrocSwapExecOpts): number {
     return encodeSurplusArg(this.maskSurplusFlags(args));
   }
 
@@ -406,7 +406,7 @@ export class CrocSwapPlan {
     }
   }
 
-  private async buildTxArgs(surplusArg: number, gasEst?: BigNumber) {
+  public async buildTxArgs(surplusArg: number, gasEst?: BigNumber) {
     const txArgs = await this.attachEthMsg(surplusArg);
 
     if (gasEst) {

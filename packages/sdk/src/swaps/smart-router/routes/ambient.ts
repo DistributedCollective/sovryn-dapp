@@ -5,7 +5,6 @@ import { getTokenContract } from '@sovryn/contracts';
 import { ChainIds } from '@sovryn/ethers-provider';
 import { numberToChainId } from '@sovryn/ethers-provider';
 
-import { SovrynErrorCode, makeError } from '../../../errors/errors';
 import { SwapRouteFunction } from '../types';
 
 export const ambientRoute: SwapRouteFunction = (
@@ -56,21 +55,43 @@ export const ambientRoute: SwapRouteFunction = (
       return utils.parseEther(impact.buyQty);
     },
     approve: async (entry, destination, amount, from, overrides) => {
+      console.log('approve', entry, destination, amount, from, overrides);
+
       const plan = await makePlan(entry, destination, BigNumber.from(amount));
-      console.log(plan);
-      return Promise.resolve(undefined);
+      const contract = await plan.txBase();
+
+      const approveTx = await contract.populateTransaction.approve(
+        plan.baseToken.tokenAddr,
+        plan.qtyInBase ? await plan.qty : await plan.calcSlipQty(),
+        overrides,
+      );
+
+      return approveTx;
     },
     permit: async () => Promise.resolve(undefined),
     async swap(entry, destination, amount, from, options, overrides) {
       const plan = await makePlan(entry, destination, BigNumber.from(amount));
-      console.log('plan::', plan);
-      const tx = await plan.swapArgs({ from: from });
-      console.log('tx::', tx);
+      const tx = await plan.generateSwapData({ from: from });
+      const contract = await plan.txBase();
 
-      throw makeError(
-        'swap not implemented',
-        SovrynErrorCode.ETHERS_CALL_EXCEPTION,
+      const swapTx = await contract.populateTransaction.swap(
+        plan.baseToken.tokenAddr,
+        plan.quoteToken.tokenAddr,
+        (
+          await plan.context
+        ).chain.poolIndex,
+        plan.sellBase,
+        plan.qtyInBase,
+        await plan.qty,
+        0,
+        await plan.calcLimitPrice(),
+        await plan.calcSlipQty(),
+        plan.maskSurplusArgs(),
+        await plan.buildTxArgs(plan.maskSurplusArgs(), tx.value),
+        overrides,
       );
+
+      return swapTx;
     },
   };
 };

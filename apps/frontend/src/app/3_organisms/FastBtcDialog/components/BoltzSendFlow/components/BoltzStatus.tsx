@@ -39,6 +39,8 @@ export const BoltzStatus: FC<BoltzStatusProps> = ({ status }) => {
         return t(translations.boltz.send.boltzStatus.txClaimed);
       case StatusEnum.txFailed:
         return t(translations.boltz.send.boltzStatus.txFailed);
+      case StatusEnum.txLockupFailed:
+        return t(translations.boltz.send.boltzStatus.txLockupFailed);
       case StatusEnum.txRefunded:
         return t(translations.boltz.send.boltzStatus.txRefunded);
       case StatusEnum.minerFeePaid:
@@ -63,6 +65,7 @@ export const BoltzStatus: FC<BoltzStatusProps> = ({ status }) => {
           StatusEnum.expired,
           StatusEnum.swapExpired,
           StatusEnum.txFailed,
+          StatusEnum.txLockupFailed,
         ].includes(status as StatusEnum),
       })}
     >

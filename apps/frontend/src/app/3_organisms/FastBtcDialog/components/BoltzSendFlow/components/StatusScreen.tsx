@@ -181,12 +181,16 @@ export const StatusScreen: React.FC<StatusScreenProps> = ({
         StatusEnum.txClaimed,
         StatusEnum.txRefunded,
         StatusEnum.failedToPay,
+        StatusEnum.txLockupFailed,
       ].includes(boltzStatus as StatusEnum),
     [boltzStatus, txStatus],
   );
   const disabledButton = useMemo(() => boltzLocked, [boltzLocked]);
   const buttonTitle = useMemo(() => {
-    if (boltzStatus === StatusEnum.failedToPay) {
+    if (
+      boltzStatus === StatusEnum.failedToPay ||
+      boltzStatus === StatusEnum.txLockupFailed
+    ) {
       return t(translations.common.buttons.refund);
     }
     if (txStatus === StatusType.idle) {
@@ -196,16 +200,19 @@ export const StatusScreen: React.FC<StatusScreenProps> = ({
   }, [boltzStatus, txStatus]);
 
   const handleButtonClick = useCallback(() => {
+    if (
+      boltzStatus === StatusEnum.failedToPay ||
+      boltzStatus === StatusEnum.txLockupFailed
+    ) {
+      return onRefund();
+    }
+
     if (txStatus === StatusType.idle) {
       return onConfirm();
     }
 
     if (txStatus === StatusType.error) {
       return onRetry();
-    }
-
-    if (boltzStatus === StatusEnum.failedToPay) {
-      return onRefund();
     }
 
     onClose();

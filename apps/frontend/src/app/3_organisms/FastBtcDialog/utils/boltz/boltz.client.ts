@@ -43,7 +43,8 @@ const getSubmarineSwapPairs = () =>
     .get<GetSubmarineSwapPairsResponse>('/swap/submarine')
     .then(res => res.data);
 
-const getSwap = (id: string) => client.get<SwapResponse>(`/swap/${id}`);
+const getSwap = (id: string) =>
+  client.get<SwapResponse>(`/swap/${id}`).then(res => res.data);
 
 const submarineSwap = (body: Partial<SubmarineSwapBody>) =>
   client
@@ -51,9 +52,9 @@ const submarineSwap = (body: Partial<SubmarineSwapBody>) =>
     .then(res => res.data);
 
 const getSubmarineSwapTransaction = (id: string) =>
-  client.get<SubmarineSwapTransactionResponse>(
-    `/swap/submarine/${id}/transaction`,
-  );
+  client
+    .get<SubmarineSwapTransactionResponse>(`/swap/submarine/${id}/transaction`)
+    .then(res => res.data);
 
 const submarineRefund = (body: SubmarineRefundBody) =>
   client
@@ -141,6 +142,11 @@ const decodeInvoice = (
   }
 };
 
+const getRefundSignature = (id: string) =>
+  client
+    .get<{ signature: string }>(`/swap/submarine/${id}/refund`)
+    .then(res => res.data.signature);
+
 export const boltz = {
   getSubmarineSwapPairs,
   submarineSwap,
@@ -154,4 +160,5 @@ export const boltz = {
   listen,
   getContracts,
   decodeInvoice,
+  getRefundSignature,
 };

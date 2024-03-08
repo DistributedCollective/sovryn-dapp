@@ -12,6 +12,7 @@ export enum StatusEnum {
   txFailed = 'transaction.failed',
   txClaimed = 'transaction.claimed',
   txRefunded = 'transaction.refunded',
+  txLockupFailed = 'transaction.lockupFailed',
   minerFeePaid = 'minerFee.paid',
 }
 

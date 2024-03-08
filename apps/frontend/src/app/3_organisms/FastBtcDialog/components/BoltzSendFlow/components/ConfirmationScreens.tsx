@@ -1,15 +1,17 @@
 import React, { useCallback, useContext, useRef, useState } from 'react';
 
 import { Contract } from 'ethers';
+import { splitSignature } from 'ethers/lib/utils';
 import { t } from 'i18next';
 
+import { getProvider } from '@sovryn/ethers-provider';
 import { StatusType } from '@sovryn/ui';
 
 import { GAS_LIMIT } from '../../../../../../constants/gasLimits';
 import { useTransactionContext } from '../../../../../../contexts/TransactionContext';
 import { useAccount } from '../../../../../../hooks/useAccount';
 import { translations } from '../../../../../../locales/i18n';
-import { prefix0x } from '../../../../../../utils/helpers';
+import { prefix0x, satoshiToWei } from '../../../../../../utils/helpers';
 import { decimalic } from '../../../../../../utils/math';
 import { TransactionType } from '../../../../TransactionStepDialog/TransactionStepDialog.types';
 import {
@@ -53,10 +55,7 @@ export const ConfirmationScreens: React.FC<ConfirmationScreensProps> = ({
       wsRef.current.close();
     }
     wsRef.current = boltz.listen(id);
-    wsRef.current.status(({ status }) => {
-      console.log('status:', status);
-      setBoltzStatus(status);
-    });
+    wsRef.current.status(({ status }) => setBoltzStatus(status));
   }, []);
 
   const handleConfirm = useCallback(async () => {
@@ -148,30 +147,46 @@ export const ConfirmationScreens: React.FC<ConfirmationScreensProps> = ({
       return;
     }
 
-    const value = decimalic(swap.expectedAmount).div(1e8).toBigNumber();
-
-    const data = await boltz.getContracts();
+    const [data, block, signature] = await Promise.all([
+      boltz.getContracts(),
+      getProvider().getBlockNumber(),
+      boltz.getRefundSignature(swap.id),
+    ]);
     const etherSwapAddress = data?.rsk.swapContracts.EtherSwap;
 
-    if (!etherSwapAddress || !swap) {
+    if (!etherSwapAddress || !swap || !signature) {
       return;
     }
     const contract = new Contract(etherSwapAddress, EtherSwapABI.abi, signer);
 
-    setTransactions([
-      {
-        title: t(translations.boltz.send.txDialog.title),
-        request: {
-          type: TransactionType.signTransaction,
-          value,
-          contract,
-          fnName: 'refund',
-          args: [
-            prefix0x(boltz.decodeInvoice(invoice).preimageHash),
-            value,
+    const { v, r, s } = splitSignature(signature);
+
+    const preimageHash = prefix0x(boltz.decodeInvoice(invoice).preimageHash);
+    const amount = satoshiToWei(swap.expectedAmount);
+
+    const fnName =
+      swap.timeoutBlockHeight < block ? 'refund' : 'refundCooperative';
+    const args =
+      swap.timeoutBlockHeight < block
+        ? [preimageHash, amount, swap?.claimAddress, swap?.timeoutBlockHeight]
+        : [
+            preimageHash,
+            amount,
             swap?.claimAddress,
             swap?.timeoutBlockHeight,
-          ],
+            v,
+            r,
+            s,
+          ];
+
+    setTransactions([
+      {
+        title: t(translations.boltz.send.txDialog.refundTitle),
+        request: {
+          type: TransactionType.signTransaction,
+          contract,
+          fnName,
+          args,
           gasLimit: GAS_LIMIT.BOLTZ_REFUND,
         },
         onStart: hash => {

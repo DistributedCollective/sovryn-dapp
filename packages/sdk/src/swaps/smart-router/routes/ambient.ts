@@ -1,10 +1,14 @@
-import { BigNumber, utils, providers } from 'ethers';
+import { BigNumber, utils, providers, constants } from 'ethers';
 
 import { CrocEnv } from '@sovryn/ambient-sdk';
 import { getTokenContract } from '@sovryn/contracts';
 import { ChainIds } from '@sovryn/ethers-provider';
 import { numberToChainId } from '@sovryn/ethers-provider';
 
+import {
+  hasEnoughAllowance,
+  makeApproveRequest,
+} from '../../../internal/utils';
 import { SwapRouteFunction } from '../types';
 
 export const ambientRoute: SwapRouteFunction = (
@@ -60,38 +64,38 @@ export const ambientRoute: SwapRouteFunction = (
       const plan = await makePlan(entry, destination, BigNumber.from(amount));
       const contract = await plan.txBase();
 
-      const approveTx = await contract.populateTransaction.approve(
-        plan.baseToken.tokenAddr,
-        plan.qtyInBase ? await plan.qty : await plan.calcSlipQty(),
-        overrides,
-      );
+      if (
+        await hasEnoughAllowance(
+          provider,
+          entry,
+          contract.address, // Use the contract address directly
+          from,
+          amount ?? constants.MaxUint256,
+        )
+      ) {
+        return undefined;
+      }
 
-      return approveTx;
+      return {
+        ...makeApproveRequest(
+          plan.baseToken.tokenAddr,
+          contract.address, // Use the contract address directly
+          amount ?? constants.MaxUint256,
+        ),
+        ...overrides,
+      };
     },
     permit: async () => Promise.resolve(undefined),
-    async swap(entry, destination, amount, from, options, overrides) {
+    swap: async (entry, destination, amount, from, options, overrides) => {
       const plan = await makePlan(entry, destination, BigNumber.from(amount));
-      const tx = await plan.generateSwapData({ from: from });
-      const contract = await plan.txBase();
+      const txData = await plan.generateSwapData({ from: from });
 
-      const swapTx = await contract.populateTransaction.swap(
-        plan.baseToken.tokenAddr,
-        plan.quoteToken.tokenAddr,
-        (
-          await plan.context
-        ).chain.poolIndex,
-        plan.sellBase,
-        plan.qtyInBase,
-        await plan.qty,
-        0,
-        await plan.calcLimitPrice(),
-        await plan.calcSlipQty(),
-        plan.maskSurplusArgs(),
-        await plan.buildTxArgs(plan.maskSurplusArgs(), tx.value),
-        overrides,
-      );
-
-      return swapTx;
+      return {
+        to: txData.to,
+        data: txData.data,
+        value: txData.value,
+        ...overrides,
+      };
     },
   };
 };

@@ -4,7 +4,6 @@ import { t } from 'i18next';
 
 import { SupportedTokens } from '@sovryn/contracts';
 import { Button, ButtonType, ButtonStyle } from '@sovryn/ui';
-import { Decimal } from '@sovryn/utils';
 
 import { TransactionType } from '../../../../../../3_organisms/TransactionStepDialog/TransactionStepDialog.types';
 import { useTransactionContext } from '../../../../../../../contexts/TransactionContext';
@@ -16,7 +15,7 @@ import { getRskChainId } from '../../../../../../../utils/chain';
 import { decimalic } from '../../../../../../../utils/math';
 
 type WithdrawLiquidOsFeeProps = {
-  amountToClaim: Decimal;
+  amountToClaim: string;
   nextWithdrawTimestamp: number;
   refetch: () => void;
 };
@@ -41,7 +40,7 @@ export const WithdrawLiquidOsFee: FC<WithdrawLiquidOsFeeProps> = ({
   );
 
   const hasTokenBalance = useMemo(
-    () => tokenBalance.bigNumberBalance.gte(amountToClaim.toString()),
+    () => tokenBalance.bigNumberBalance.gte(amountToClaim),
     [amountToClaim, tokenBalance],
   );
 

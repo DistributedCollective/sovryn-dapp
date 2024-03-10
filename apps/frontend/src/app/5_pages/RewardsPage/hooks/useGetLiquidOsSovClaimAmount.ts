@@ -24,13 +24,14 @@ export const useGetLiquidOsSovClaimAmount = () => {
     }
 
     try {
-      const rewards = await stakingRewardsOs.getStakerCurrentReward(false, 0);
+      const result = await stakingRewardsOs.getStakerCurrentReward(false, 0);
+
       return {
         amount:
-          !rewards?.amount || rewards.amount.isZero()
+          !result?.amount || result.amount.isZero()
             ? Decimal.ZERO
-            : Decimal.fromBigNumberString(rewards.amount),
-        nextWithdrawTimestamp: rewards.nextWithdrawTimestamp.toNumber(),
+            : Decimal.fromBigNumberString(result.amount),
+        nextWithdrawTimestamp: result.nextWithdrawTimestamp.toNumber(),
         loading: false,
       };
     } catch (error) {

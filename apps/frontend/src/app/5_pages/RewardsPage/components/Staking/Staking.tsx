@@ -148,7 +148,9 @@ export const Staking: FC = () => {
               ),
               action: (
                 <WithdrawLiquidOsFee
-                  amountToClaim={liquidOsSovClaimAmount}
+                  amountToClaim={liquidOsSovClaimAmount
+                    .toBigNumber()
+                    .toString()}
                   nextWithdrawTimestamp={nextWithdrawTimestamp}
                   refetch={refetchLiquidOsSovClaim}
                 />

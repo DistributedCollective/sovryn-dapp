@@ -2,4 +2,4 @@
 "frontend": patch
 ---
 
-Fix SIP executable status
+SOV-3963: Use name() to indetify SIP proposal as non-executable

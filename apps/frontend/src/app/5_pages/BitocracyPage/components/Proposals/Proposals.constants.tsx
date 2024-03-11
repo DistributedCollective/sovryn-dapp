@@ -67,4 +67,4 @@ export const StatusIcons: Record<ProposalState, string> = {
 
 export const GRACE_PERIOD_IN_SECONDS = 1209600; // 14 days
 
-export const SIGNATURE_SYMBOL = 'symbol()';
+export const SIGNATURE_SYMBOLS = ['symbol()', 'name()'];

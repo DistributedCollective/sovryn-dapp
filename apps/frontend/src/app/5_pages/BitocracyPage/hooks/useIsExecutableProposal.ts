@@ -4,7 +4,7 @@ import { SupportedTokens } from '@sovryn/contracts';
 
 import { useGetTokenContract } from '../../../../hooks/useGetContract';
 import { Proposal } from '../../../../utils/graphql/rsk/generated';
-import { SIGNATURE_SYMBOL } from '../components/Proposals/Proposals.constants';
+import { SIGNATURE_SYMBOLS } from '../components/Proposals/Proposals.constants';
 
 export const useIsExecutableProposal = (proposal: Proposal) => {
   const sovContract = useGetTokenContract(SupportedTokens.sov);
@@ -13,7 +13,7 @@ export const useIsExecutableProposal = (proposal: Proposal) => {
     if (
       proposal.targets.length === 1 &&
       proposal.targets[0] === sovContract?.address &&
-      proposal.signatures[0] === SIGNATURE_SYMBOL
+      SIGNATURE_SYMBOLS.includes(proposal.signatures[0])
     ) {
       return false;
     } else {

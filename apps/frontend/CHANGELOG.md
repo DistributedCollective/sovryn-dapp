@@ -4,7 +4,7 @@
 
 ### Patch Changes
 
-- d9f276a7: SOV-3963: Use name() to indetify SIP proposal as non-executable
+- d9f276a7: SOV-3963: Use name() to identify SIP proposal as non-executable
 
 ## 1.0.48
 

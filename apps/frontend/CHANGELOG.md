@@ -1,5 +1,11 @@
 # frontend
 
+## 1.0.49
+
+### Patch Changes
+
+- d9f276a7: SOV-3963: Use name() to identify SIP proposal as non-executable
+
 ## 1.0.48
 
 ### Patch Changes

@@ -24,7 +24,7 @@ import { decimalic } from '../../../../../../utils/math';
 import { WithdrawBoltzContext } from '../../../contexts/withdraw-boltz-context';
 import {
   Status,
-  StatusEnum,
+  BoltzTxStatus,
   SubmarineSwapResponse,
 } from '../../../utils/boltz/boltz.types';
 import { BoltzStatus } from './BoltzStatus';
@@ -177,19 +177,19 @@ export const StatusScreen: React.FC<StatusScreenProps> = ({
     () =>
       [StatusType.idle, StatusType.error].includes(txStatus) ||
       [
-        StatusEnum.paid,
-        StatusEnum.txClaimed,
-        StatusEnum.txRefunded,
-        StatusEnum.failedToPay,
-        StatusEnum.txLockupFailed,
-      ].includes(boltzStatus as StatusEnum),
+        BoltzTxStatus.paid,
+        BoltzTxStatus.txClaimed,
+        BoltzTxStatus.txRefunded,
+        BoltzTxStatus.failedToPay,
+        BoltzTxStatus.txLockupFailed,
+      ].includes(boltzStatus as BoltzTxStatus),
     [boltzStatus, txStatus],
   );
   const disabledButton = useMemo(() => boltzLocked, [boltzLocked]);
   const buttonTitle = useMemo(() => {
     if (
-      boltzStatus === StatusEnum.failedToPay ||
-      boltzStatus === StatusEnum.txLockupFailed
+      boltzStatus === BoltzTxStatus.failedToPay ||
+      boltzStatus === BoltzTxStatus.txLockupFailed
     ) {
       return t(translations.common.buttons.refund);
     }
@@ -201,8 +201,8 @@ export const StatusScreen: React.FC<StatusScreenProps> = ({
 
   const handleButtonClick = useCallback(() => {
     if (
-      boltzStatus === StatusEnum.failedToPay ||
-      boltzStatus === StatusEnum.txLockupFailed
+      boltzStatus === BoltzTxStatus.failedToPay ||
+      boltzStatus === BoltzTxStatus.txLockupFailed
     ) {
       return onRefund();
     }

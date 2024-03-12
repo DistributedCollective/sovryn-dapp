@@ -26,7 +26,7 @@ import { formatValue } from '../../../../../../utils/math';
 import {
   ReverseSwapResponse,
   Status,
-  StatusEnum,
+  BoltzTxStatus,
 } from '../../../utils/boltz/boltz.types';
 import { BoltzStatus } from '../../BoltzSendFlow/components/BoltzStatus';
 import { InvoiceScreen } from './InvoiceScreen';
@@ -122,7 +122,7 @@ export const StatusScreen: React.FC<StatusScreenProps> = ({
       {
         label: t(translation.lightningInvoice),
         value:
-          boltzStatus === StatusEnum.txConfirmed ? (
+          boltzStatus === BoltzTxStatus.txConfirmed ? (
             <span className="text-success">
               {t(translations.boltz.receive.confirmationScreens.paid)}
             </span>
@@ -157,8 +157,8 @@ export const StatusScreen: React.FC<StatusScreenProps> = ({
   const showButton = useMemo(
     () =>
       boltzStatus &&
-      [StatusEnum.txConfirmed, StatusEnum.paid, StatusEnum.settled].includes(
-        boltzStatus as StatusEnum,
+      [BoltzTxStatus.txConfirmed, BoltzTxStatus.paid, BoltzTxStatus.settled].includes(
+        boltzStatus as BoltzTxStatus,
       ),
     [boltzStatus],
   );
@@ -169,7 +169,7 @@ export const StatusScreen: React.FC<StatusScreenProps> = ({
   );
   const buttonTitle = useMemo(() => {
     if (
-      boltzStatus === StatusEnum.txConfirmed &&
+      boltzStatus === BoltzTxStatus.txConfirmed &&
       txStatus === StatusType.idle
     ) {
       return t(translations.boltz.receive.finalize);
@@ -182,7 +182,7 @@ export const StatusScreen: React.FC<StatusScreenProps> = ({
 
   const handleButtonClick = useCallback(() => {
     if (
-      boltzStatus === StatusEnum.txConfirmed &&
+      boltzStatus === BoltzTxStatus.txConfirmed &&
       txStatus === StatusType.idle
     ) {
       return onClaim();
@@ -236,7 +236,7 @@ export const StatusScreen: React.FC<StatusScreenProps> = ({
         </div>
       )}
 
-      {boltzStatus === StatusEnum.swapCreated && (
+      {boltzStatus === BoltzTxStatus.swapCreated && (
         <InvoiceScreen invoice={invoice} />
       )}
     </div>

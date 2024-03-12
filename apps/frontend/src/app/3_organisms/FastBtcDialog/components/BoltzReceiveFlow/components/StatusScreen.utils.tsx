@@ -6,7 +6,7 @@ import { StatusType } from '@sovryn/ui';
 
 import { StatusIcon } from '../../../../../2_molecules/StatusIcon/StatusIcon';
 import { translations } from '../../../../../../locales/i18n';
-import { Status, StatusEnum } from '../../../utils/boltz/boltz.types';
+import { Status, BoltzTxStatus } from '../../../utils/boltz/boltz.types';
 
 const translation = translations.boltz.receive.confirmationScreens;
 
@@ -20,18 +20,18 @@ export const getTitle = (txStatus: StatusType, boltzStatus: Status) => {
 
   if (
     txStatus === StatusType.success &&
-    [StatusEnum.paid, StatusEnum.txClaimed, StatusEnum.settled].includes(
-      boltzStatus as StatusEnum,
+    [BoltzTxStatus.paid, BoltzTxStatus.txClaimed, BoltzTxStatus.settled].includes(
+      boltzStatus as BoltzTxStatus,
     )
   ) {
     return t(translation.titles.success);
   }
 
-  if (txStatus === StatusType.idle && boltzStatus === StatusEnum.txConfirmed) {
+  if (txStatus === StatusType.idle && boltzStatus === BoltzTxStatus.txConfirmed) {
     return t(translation.titles.confirmed);
   }
 
-  if (txStatus === StatusType.idle && boltzStatus === StatusEnum.swapCreated) {
+  if (txStatus === StatusType.idle && boltzStatus === BoltzTxStatus.swapCreated) {
     return '';
   }
 
@@ -54,8 +54,8 @@ export const getDescription = (txStatus: StatusType, boltzStatus: Status) => {
 
   if (
     txStatus === StatusType.success &&
-    [StatusEnum.paid, StatusEnum.txClaimed, StatusEnum.settled].includes(
-      boltzStatus as StatusEnum,
+    [BoltzTxStatus.paid, BoltzTxStatus.txClaimed, BoltzTxStatus.settled].includes(
+      boltzStatus as BoltzTxStatus,
     )
   ) {
     return (

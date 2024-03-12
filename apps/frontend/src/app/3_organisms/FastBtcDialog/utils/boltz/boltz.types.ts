@@ -1,4 +1,4 @@
-export enum StatusEnum {
+export enum BoltzTxStatus {
   set = 'invoice.set',
   pending = 'invoice.pending',
   paid = 'invoice.paid',
@@ -16,7 +16,7 @@ export enum StatusEnum {
   minerFeePaid = 'minerFee.paid',
 }
 
-export type Status = StatusEnum | string;
+export type Status = BoltzTxStatus | string;
 
 export type SubmarineSwapPair = {
   hash: string;

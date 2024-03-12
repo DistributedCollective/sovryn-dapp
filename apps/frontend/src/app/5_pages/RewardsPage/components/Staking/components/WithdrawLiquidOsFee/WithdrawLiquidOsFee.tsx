@@ -2,16 +2,14 @@ import React, { FC, useCallback, useMemo } from 'react';
 
 import { t } from 'i18next';
 
-import { SupportedTokens } from '@sovryn/contracts';
 import { Button, ButtonType, ButtonStyle } from '@sovryn/ui';
 
 import { TransactionType } from '../../../../../../3_organisms/TransactionStepDialog/TransactionStepDialog.types';
+import { GAS_LIMIT } from '../../../../../../../constants/gasLimits';
 import { useTransactionContext } from '../../../../../../../contexts/TransactionContext';
-import { useAssetBalance } from '../../../../../../../hooks/useAssetBalance';
 import { useGetProtocolContract } from '../../../../../../../hooks/useGetContract';
 import { useMaintenance } from '../../../../../../../hooks/useMaintenance';
 import { translations } from '../../../../../../../locales/i18n';
-import { getRskChainId } from '../../../../../../../utils/chain';
 import { decimalic } from '../../../../../../../utils/math';
 
 type WithdrawLiquidOsFeeProps = {
@@ -33,24 +31,12 @@ export const WithdrawLiquidOsFee: FC<WithdrawLiquidOsFeeProps> = ({
 
   const stakingRewards = useGetProtocolContract('stakingRewardsOs');
 
-  const tokenBalance = useAssetBalance(
-    SupportedTokens.ossov,
-    getRskChainId(),
-    stakingRewards?.address,
-  );
-
-  const hasTokenBalance = useMemo(
-    () => tokenBalance.bigNumberBalance.gte(amountToClaim),
-    [amountToClaim, tokenBalance],
-  );
-
   const isClaimDisabled = useMemo(
     () =>
       claimLiquidSovLocked ||
-      !hasTokenBalance ||
       rewardsLocked ||
       decimalic(amountToClaim).isZero(),
-    [amountToClaim, claimLiquidSovLocked, hasTokenBalance, rewardsLocked],
+    [amountToClaim, claimLiquidSovLocked, rewardsLocked],
   );
 
   const onComplete = useCallback(() => {
@@ -73,6 +59,7 @@ export const WithdrawLiquidOsFee: FC<WithdrawLiquidOsFeeProps> = ({
           contract: stakingRewards,
           fnName: 'collectReward',
           args: [nextWithdrawTimestamp],
+          gasLimit: GAS_LIMIT.REWARDS,
         },
         onComplete,
       },

@@ -141,7 +141,7 @@ export const Staking: FC = () => {
               amount: (
                 <AmountRenderer
                   value={liquidOsSovClaimAmount}
-                  suffix={getTokenDisplayName(SupportedTokens.sov)}
+                  suffix={getTokenDisplayName(SupportedTokens.ossov)}
                   precision={BTC_RENDER_PRECISION}
                   dataAttribute={`${SupportedTokens.sov}-os-liquid-amount`}
                 />

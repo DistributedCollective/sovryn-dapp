@@ -7,7 +7,7 @@ import { Heading, HeadingType, Link } from '@sovryn/ui';
 
 import { HELPDESK_LINK } from '../../../../../../constants/links';
 import { translations } from '../../../../../../locales/i18n';
-import { BOLTZ_EXCHANGE_URL } from '../../../../Boltz/Boltz.constants';
+import { BOLTZ_EXCHANGE_URL } from '../../../utils/boltz/boltz.constants';
 
 export const Instructions: React.FC = () => (
   <>

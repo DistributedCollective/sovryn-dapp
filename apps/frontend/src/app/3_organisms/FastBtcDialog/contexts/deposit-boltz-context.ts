@@ -1,6 +1,6 @@
 import { createContext, Dispatch, SetStateAction } from 'react';
 
-import { BoltzFees, BoltzLimits } from '../types';
+import { ReverseSwapPair } from '../utils/boltz/boltz.types';
 
 export enum DepositBoltzStep {
   MAIN,
@@ -12,8 +12,8 @@ export type DepositBoltzContextStateType = {
   step: DepositBoltzStep;
   amount: string;
   loadingPairData: boolean;
-  limits: BoltzLimits;
-  fees: BoltzFees;
+  limits: ReverseSwapPair['limits'];
+  fees: ReverseSwapPair['fees'];
   rate: number;
   hash: string;
 };
@@ -30,31 +30,15 @@ export const defaultValue: DepositContextType = {
   amount: '',
   fees: {
     percentage: 0,
-    percentageSwapIn: 0,
     minerFees: {
-      quoteAsset: {
-        normal: 0,
-        reverse: {
-          claim: 0,
-          lockup: 0,
-        },
-      },
-      baseAsset: {
-        normal: 0,
-        reverse: {
-          claim: 0,
-          lockup: 0,
-        },
-      },
+      claim: 0,
+      lockup: 0,
     },
   },
   limits: {
     minimal: 0,
     maximal: 0,
-    maximalZeroConf: {
-      baseAsset: 0,
-      quoteAsset: 0,
-    },
+    maximalZeroConf: 0,
   },
   rate: 1,
   hash: '',

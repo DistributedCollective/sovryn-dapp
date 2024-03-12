@@ -8,11 +8,11 @@ import { Button, ButtonStyle, ErrorBadge, ErrorLevel } from '@sovryn/ui';
 import { useAccount } from '../../../../../../hooks/useAccount';
 import { useMaintenance } from '../../../../../../hooks/useMaintenance';
 import { translations } from '../../../../../../locales/i18n';
-import { ReverseSwap } from '../../../../Boltz/Boltz.type';
 import {
   DepositBoltzContext,
   DepositBoltzStep,
 } from '../../../contexts/deposit-boltz-context';
+import { ReverseSwapResponse } from '../../../utils/boltz/boltz.types';
 import { Instructions } from './Instructions';
 
 export const MainScreen: React.FC = () => {
@@ -32,11 +32,10 @@ export const MainScreen: React.FC = () => {
 
     if (swap) {
       try {
-        const swapData: ReverseSwap = JSON.parse(swap);
-
+        const swapData: ReverseSwapResponse = JSON.parse(swap);
         set(prevState => ({
           ...prevState,
-          amount: formatUnits(swapData.sendAmount, 8),
+          amount: formatUnits(swapData.onchainAmount, 8),
           step: DepositBoltzStep.REVIEW,
         }));
       } catch (error) {}

@@ -1,6 +1,6 @@
 import { createContext, Dispatch, SetStateAction } from 'react';
 
-import { BoltzFees, BoltzLimits } from '../types';
+import { SubmarineSwapPair } from '../utils/boltz/boltz.types';
 
 export enum WithdrawBoltzStep {
   MAIN,
@@ -17,8 +17,8 @@ export type WithdrawBoltzContextStateType = {
   amount: string;
   invoice: string;
   loadingPairData: boolean;
-  limits: BoltzLimits;
-  fees: BoltzFees;
+  limits: SubmarineSwapPair['limits'];
+  fees: SubmarineSwapPair['fees'];
   rate: number;
   hash: string;
 };
@@ -36,31 +36,12 @@ export const defaultValue: WithdrawContextType = {
   invoice: '',
   fees: {
     percentage: 0,
-    percentageSwapIn: 0,
-    minerFees: {
-      quoteAsset: {
-        normal: 0,
-        reverse: {
-          claim: 0,
-          lockup: 0,
-        },
-      },
-      baseAsset: {
-        normal: 0,
-        reverse: {
-          claim: 0,
-          lockup: 0,
-        },
-      },
-    },
+    minerFees: 0,
   },
   limits: {
     minimal: 0,
     maximal: 0,
-    maximalZeroConf: {
-      baseAsset: 0,
-      quoteAsset: 0,
-    },
+    maximalZeroConf: 0,
   },
   rate: 1,
   hash: '',

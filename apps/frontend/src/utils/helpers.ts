@@ -177,3 +177,9 @@ export const areValuesIdentical = (
 
   return Math.abs(firstValue.sub(secondValue).toNumber()) < epsilon;
 };
+
+export const prefix0x = (val: string) =>
+  val.startsWith('0x') ? val : `0x${val}`;
+
+export const satoshiToWei = (satoshis: number) =>
+  BigInt(satoshis) * BigInt(10 ** 10);

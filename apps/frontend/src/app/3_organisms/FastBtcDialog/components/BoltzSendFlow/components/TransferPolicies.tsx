@@ -17,8 +17,8 @@ export const TransferPolicies: React.FC<TransferPoliciesProps> = ({
   const { limits, fees } = useContext(WithdrawBoltzContext);
 
   const conversionRate = useMemo(
-    () => decimalic(fees.percentageSwapIn),
-    [fees.percentageSwapIn],
+    () => decimalic(fees.percentage),
+    [fees.percentage],
   );
 
   const conversionFee = useMemo(() => {
@@ -33,11 +33,9 @@ export const TransferPolicies: React.FC<TransferPoliciesProps> = ({
     <Limits
       minimumAmount={decimalic(limits.minimal).div(BTC_IN_SATOSHIS)}
       maximumAmount={decimalic(limits.maximal).div(BTC_IN_SATOSHIS)}
-      conversionRate={decimalic(fees.percentageSwapIn)}
+      conversionRate={decimalic(fees.percentage)}
       conversionFee={conversionFee}
-      networkFee={decimalic(fees.minerFees.baseAsset.normal).div(
-        BTC_IN_SATOSHIS,
-      )}
+      networkFee={decimalic(fees.minerFees).div(BTC_IN_SATOSHIS)}
       className="mt-8"
     />
   );

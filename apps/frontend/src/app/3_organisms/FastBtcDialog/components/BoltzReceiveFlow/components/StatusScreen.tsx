@@ -157,9 +157,11 @@ export const StatusScreen: React.FC<StatusScreenProps> = ({
   const showButton = useMemo(
     () =>
       boltzStatus &&
-      [BoltzTxStatus.txConfirmed, BoltzTxStatus.paid, BoltzTxStatus.settled].includes(
-        boltzStatus as BoltzTxStatus,
-      ),
+      [
+        BoltzTxStatus.txConfirmed,
+        BoltzTxStatus.paid,
+        BoltzTxStatus.settled,
+      ].includes(boltzStatus as BoltzTxStatus),
     [boltzStatus],
   );
 

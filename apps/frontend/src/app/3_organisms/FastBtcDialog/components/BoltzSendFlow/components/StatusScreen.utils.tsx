@@ -20,9 +20,11 @@ export const getTitle = (txStatus: StatusType, boltzStatus: Status) => {
 
   if (
     txStatus === StatusType.success &&
-    [BoltzTxStatus.paid, BoltzTxStatus.txClaimed, BoltzTxStatus.settled].includes(
-      boltzStatus as BoltzTxStatus,
-    )
+    [
+      BoltzTxStatus.paid,
+      BoltzTxStatus.txClaimed,
+      BoltzTxStatus.settled,
+    ].includes(boltzStatus as BoltzTxStatus)
   ) {
     return t(translation.titles.success);
   }
@@ -46,9 +48,11 @@ export const getDescription = (txStatus: StatusType, boltzStatus: Status) => {
 
   if (
     txStatus === StatusType.success &&
-    [BoltzTxStatus.paid, BoltzTxStatus.txClaimed, BoltzTxStatus.settled].includes(
-      boltzStatus as BoltzTxStatus,
-    )
+    [
+      BoltzTxStatus.paid,
+      BoltzTxStatus.txClaimed,
+      BoltzTxStatus.settled,
+    ].includes(boltzStatus as BoltzTxStatus)
   ) {
     return (
       <StatusIcon

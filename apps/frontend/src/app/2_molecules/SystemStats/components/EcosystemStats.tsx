@@ -36,29 +36,53 @@ export const EcosystemStats: FC<EcosystemStatsProps> = ({
   );
   const myntMassetManager = useLoadContract('massetManager', 'protocol');
 
-  const { balance: babelFishZUSDBalance } = useAssetBalance(
-    SupportedTokens.zusd,
+  // const { balance: babelFishZUSDBalance } = useAssetBalance(
+  //   SupportedTokens.zusd,
+  //   getRskChainId(),
+  //   babelFishMassetManager?.address.toLowerCase() || '',
+  // );
+
+  const { balance: babelFishDLLRBalance } = useAssetBalance(
+    SupportedTokens.dllr,
     getRskChainId(),
     babelFishMassetManager?.address.toLowerCase() || '',
   );
 
-  const renderBabelFishZUSDBalance = useMemo(
+  const renderBabelFishDLLRBalance = useMemo(
     () =>
-      babelFishZUSDBalance ? (
+      babelFishDLLRBalance ? (
         <>
           <AmountRenderer
-            value={babelFishZUSDBalance}
-            suffix={SupportedTokens.zusd}
+            value={babelFishDLLRBalance}
+            suffix={SupportedTokens.dllr}
             precision={USD_DISPLAY_PRECISION}
             showRoundingPrefix={false}
-            dataAttribute="ecosystem-statistics-babel-fish-zusd-balance"
+            dataAttribute="ecosystem-statistics-babel-fish-dllr-balance"
           />
         </>
       ) : (
         0
       ),
-    [babelFishZUSDBalance],
+    [babelFishDLLRBalance],
   );
+
+  // const renderBabelFishZUSDBalance = useMemo(
+  //   () =>
+  //     babelFishZUSDBalance ? (
+  //       <>
+  //         <AmountRenderer
+  //           value={babelFishZUSDBalance}
+  //           suffix={SupportedTokens.zusd}
+  //           precision={USD_DISPLAY_PRECISION}
+  //           showRoundingPrefix={false}
+  //           dataAttribute="ecosystem-statistics-babel-fish-zusd-balance"
+  //         />
+  //       </>
+  //     ) : (
+  //       0
+  //     ),
+  //   [babelFishZUSDBalance],
+  // );
 
   const { balance: myntZUSDBalance } = useAssetBalance(
     SupportedTokens.zusd,
@@ -135,10 +159,15 @@ export const EcosystemStats: FC<EcosystemStatsProps> = ({
         dataAttribute="ecosystem-statistics-table"
         className="lg:max-w-[23.125rem]"
       >
-        <SimpleTableRow
+        {/* <SimpleTableRow
           className="mb-8"
           label={t(translations.stats.ecosystem.babelFishZUSDBalance)}
           value={renderBabelFishZUSDBalance}
+        /> */}
+        <SimpleTableRow
+          className="mb-8"
+          label={t(translations.stats.ecosystem.babelFishDLLRBalance)}
+          value={renderBabelFishDLLRBalance}
         />
         <SimpleTableRow
           className="mb-8"

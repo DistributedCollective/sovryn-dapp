@@ -21,6 +21,7 @@ import { translations } from '../../../../../locales/i18n';
 import { AmmLiquidityPoolDictionary } from '../../utils/AmmLiquidityPoolDictionary';
 import { useGetMaxDeposit } from '../AdjustAndDepositModal/hooks/useGetMaxDeposit';
 import { NewPoolStatistics } from './components/NewPoolStatistics/NewPoolStatistics';
+import { PriceRange } from './components/PriceRange/PriceRange';
 
 // TODO: This will be a prop and will likely use a different set of pools
 const POOL = AmmLiquidityPoolDictionary.list().filter(
@@ -43,7 +44,6 @@ export const BobDepositModal: FC<BobDepositModalProps> = ({
 
   const [slippageTolerance, setSlippageTolerance] = useState(0.5);
 
-  const [isPriceRangeExpanded, setIsPriceRangeExpanded] = useState(false);
   const [isSlippageExpanded, setIsSlippageExpanded] = useState(false);
 
   // TODO: We will need a separate hook for Ambient pool deposits
@@ -124,16 +124,7 @@ export const BobDepositModal: FC<BobDepositModalProps> = ({
             />
           </FormGroup>
 
-          <div className="bg-gray-90 px-2 py-4 mt-6 rounded">
-            <Accordion
-              label="Price range"
-              open={isPriceRangeExpanded}
-              onClick={() => setIsPriceRangeExpanded(!isPriceRangeExpanded)}
-              labelClassName="justify-between"
-            >
-              Price range
-            </Accordion>
-          </div>
+          <PriceRange />
 
           <div className="bg-gray-90 px-2 py-4 mt-6 rounded">
             <Accordion

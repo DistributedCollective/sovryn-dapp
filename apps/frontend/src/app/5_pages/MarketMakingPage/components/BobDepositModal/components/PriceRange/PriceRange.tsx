@@ -1,7 +1,10 @@
 import React, { FC, useState } from 'react';
 
+import { t } from 'i18next';
+
 import { Accordion, Toggle, ToggleAlignment } from '@sovryn/ui';
 
+import { translations } from '../../../../../../../locales/i18n';
 import { BalancedRange } from './components/BalancedRange/BalancedRange';
 import { UnbalancedRange } from './components/UnbalancedRange/UnbalancedRange';
 
@@ -12,7 +15,7 @@ export const PriceRange: FC = () => {
   return (
     <div className="bg-gray-90 px-2 py-4 mt-6 rounded">
       <Accordion
-        label="Price range"
+        label={t(translations.bobMarketMakingPage.depositModal.priceRange)}
         open={isPriceRangeExpanded}
         onClick={() => setIsPriceRangeExpanded(!isPriceRangeExpanded)}
         labelClassName="justify-between"
@@ -21,7 +24,7 @@ export const PriceRange: FC = () => {
           <Toggle
             checked={isBalanced}
             onChange={() => setIsBalanced(!isBalanced)}
-            label="Balanced"
+            label={t(translations.bobMarketMakingPage.depositModal.balanced)}
             alignment={ToggleAlignment.RIGHT}
           />
         </div>

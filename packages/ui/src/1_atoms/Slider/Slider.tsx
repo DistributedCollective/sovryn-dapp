@@ -10,6 +10,7 @@ type SliderProps = {
   step?: number;
   onAfterChange?: (value: number, thumbIndex: number) => void;
   onChange?: (value: number, thumbIndex: number) => void;
+  value?: number;
 };
 
 export const Slider: FC<SliderProps> = props => (

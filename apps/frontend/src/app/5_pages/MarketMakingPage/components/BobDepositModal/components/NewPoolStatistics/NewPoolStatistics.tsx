@@ -1,5 +1,7 @@
 import React, { FC } from 'react';
 
+import { t } from 'i18next';
+
 import { SupportedTokens } from '@sovryn/contracts';
 import { SimpleTable, SimpleTableRow } from '@sovryn/ui';
 
@@ -8,7 +10,11 @@ import {
   BTC_RENDER_PRECISION,
   TOKEN_RENDER_PRECISION,
 } from '../../../../../../../constants/currencies';
+import { translations } from '../../../../../../../locales/i18n';
 import { AmmLiquidityPool } from '../../../../utils/AmmLiquidityPool';
+
+const pageTranslations =
+  translations.bobMarketMakingPage.depositModal.newPoolStatistics;
 
 type NewPoolStatisticsProps = {
   pool: AmmLiquidityPool;
@@ -18,7 +24,7 @@ export const NewPoolStatistics: FC<NewPoolStatisticsProps> = ({ pool }) => {
   return (
     <SimpleTable className="mt-6">
       <SimpleTableRow
-        label="New pool balance"
+        label={t(pageTranslations.newPoolBalance)}
         value={<AmountRenderer value={1700} suffix={pool.assetA} />}
         className="mb-1"
         valueClassName="text-primary-10"
@@ -29,7 +35,9 @@ export const NewPoolStatistics: FC<NewPoolStatisticsProps> = ({ pool }) => {
         valueClassName="text-primary-10"
       />
       <SimpleTableRow
-        label={`Current ${pool.assetB.toUpperCase()} price`}
+        label={t(pageTranslations.currentPrice, {
+          token: pool.assetB.toUpperCase(),
+        })}
         value={
           <AmountRenderer
             value={51456.245605939}
@@ -43,7 +51,7 @@ export const NewPoolStatistics: FC<NewPoolStatisticsProps> = ({ pool }) => {
         }
       />
       <SimpleTableRow
-        label="LP fee rate"
+        label={t(pageTranslations.lpFeeRate)}
         value={<AmountRenderer value={0.36} suffix="%" />}
       />
     </SimpleTable>

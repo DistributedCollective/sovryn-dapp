@@ -32,6 +32,8 @@ const POOL = AmmLiquidityPoolDictionary.list().filter(
   pool => pool.assetA === SupportedTokens.dllr,
 )[0];
 
+const pageTranslations = translations.bobMarketMakingPage.depositModal;
+
 type BobDepositModalProps = {
   isOpen: boolean;
   onClose: () => void;
@@ -73,13 +75,13 @@ export const BobDepositModal: FC<BobDepositModalProps> = ({
   return (
     <>
       <Dialog disableFocusTrap isOpen={isOpen}>
-        <DialogHeader title="Bob deposit modal" onClose={onClose} />
+        <DialogHeader title={t(pageTranslations.title)} onClose={onClose} />
         <DialogBody>
           <div className="bg-gray-90 p-4 rounded">
             <CurrentStatistics
               symbol={POOL.assetA}
               symbol2={POOL.assetB}
-              label1="Return rate"
+              label1={t(pageTranslations.returnRate)}
               value1="5.6%"
               className="flex justify-between"
             />
@@ -97,7 +99,7 @@ export const BobDepositModal: FC<BobDepositModalProps> = ({
             }
             labelElement="div"
             className="max-w-none mt-8"
-            dataAttribute="adjust-amm-pool-amount"
+            dataAttribute="bob-amm-pool-deposit-asset1"
           >
             <AmountInput
               value={firstAssetValue}
@@ -123,7 +125,7 @@ export const BobDepositModal: FC<BobDepositModalProps> = ({
             }
             labelElement="div"
             className="max-w-none mt-8"
-            dataAttribute="adjust-amm-pool-amount"
+            dataAttribute="bob-amm-pool-deposit-asset2"
           >
             <AmountInput
               value={secondAssetValue}
@@ -141,7 +143,7 @@ export const BobDepositModal: FC<BobDepositModalProps> = ({
 
           <div className="bg-gray-90 px-2 py-4 mt-6 rounded">
             <Accordion
-              label="Slippage"
+              label={t(pageTranslations.slippage)}
               open={isSlippageExpanded}
               onClick={() => setIsSlippageExpanded(!isSlippageExpanded)}
               labelClassName="justify-between"
@@ -149,7 +151,7 @@ export const BobDepositModal: FC<BobDepositModalProps> = ({
               <AmountInput
                 value={slippageTolerance}
                 onChange={e => setSlippageTolerance(e.target.value)}
-                label="Maximum slippage"
+                label={t(pageTranslations.maximumSlippage)}
                 className="max-w-none w-full"
                 unit="%"
                 step={0.01}
@@ -166,10 +168,7 @@ export const BobDepositModal: FC<BobDepositModalProps> = ({
             <Checkbox
               checked={hasDisclaimerBeenChecked}
               onChangeValue={setHasDisclaimerBeenChecked}
-              label={t(
-                translations.marketMakingPage.adjustAndDepositModal
-                  .initialDepositDisclaimer,
-              )}
+              label={t(pageTranslations.depositDisclaimer)}
             />
           </div>
 

@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useState } from 'react';
+import React, { FC, useCallback, useMemo, useState } from 'react';
 
 import { t } from 'i18next';
 
@@ -6,6 +6,10 @@ import { SupportedTokens } from '@sovryn/contracts';
 import {
   Accordion,
   AmountInput,
+  Button,
+  ButtonStyle,
+  ButtonType,
+  Checkbox,
   Dialog,
   DialogBody,
   DialogHeader,
@@ -39,6 +43,9 @@ export const BobDepositModal: FC<BobDepositModalProps> = ({
 }) => {
   const { account } = useAccount();
 
+  const [hasDisclaimerBeenChecked, setHasDisclaimerBeenChecked] =
+    useState(false);
+
   const [firstAssetValue, setFirstAssetValue] = useWeiAmountInput('');
   const [secondAssetValue, setSecondAssetValue] = useWeiAmountInput('');
 
@@ -56,6 +63,12 @@ export const BobDepositModal: FC<BobDepositModalProps> = ({
   const handleSecondAssetMaxClick = useCallback(() => {
     setSecondAssetValue(balanceTokenB.toString());
   }, [balanceTokenB, setSecondAssetValue]);
+
+  const handleSubmit = useCallback(() => {
+    console.log(`submit`);
+  }, []);
+
+  const isSubmitDisabled = useMemo(() => !account, [account]);
 
   return (
     <>
@@ -148,6 +161,29 @@ export const BobDepositModal: FC<BobDepositModalProps> = ({
           </div>
 
           <NewPoolStatistics pool={POOL} />
+
+          <div className="mt-8">
+            <Checkbox
+              checked={hasDisclaimerBeenChecked}
+              onChangeValue={setHasDisclaimerBeenChecked}
+              label={t(
+                translations.marketMakingPage.adjustAndDepositModal
+                  .initialDepositDisclaimer,
+              )}
+            />
+          </div>
+
+          <div className="mt-6 flex flex-row items-center justify-between gap-8">
+            <Button
+              type={ButtonType.submit}
+              style={ButtonStyle.primary}
+              text={t(translations.common.buttons.confirm)}
+              className="w-full"
+              onClick={handleSubmit}
+              dataAttribute="new-loan-confirm-button"
+              disabled={isSubmitDisabled}
+            />
+          </div>
         </DialogBody>
       </Dialog>
     </>

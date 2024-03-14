@@ -1,10 +1,16 @@
-import React, { FC, useMemo, useState } from 'react';
+import React, { FC, useCallback, useMemo, useState } from 'react';
 
 import classNames from 'classnames';
 
-import { Button, ButtonStyle, SimpleTable, SimpleTableRow } from '@sovryn/ui';
+import {
+  Button,
+  ButtonStyle,
+  SimpleTable,
+  SimpleTableRow,
+  Slider,
+} from '@sovryn/ui';
 
-const BUTTON_OPTIONS = ['5', '10', '25', '50', 'Ambient'];
+import { BUTTON_OPTIONS } from './BalancedRange.constants';
 
 export const BalancedRange: FC = () => {
   const [selectedRangeWidth, setSelectedRangeWidth] = useState(
@@ -17,13 +23,17 @@ export const BalancedRange: FC = () => {
   );
 
   const renderRangeWidthClassName = useMemo(
-    () => (selectedRange: string) =>
+    () => (rangeOption: string) =>
       classNames('ml-2 p-1 w-12 h-6', {
-        'bg-gray-50': selectedRangeWidth === selectedRange,
-        'w-fit px-2': selectedRange === 'Ambient',
+        'bg-gray-50': selectedRangeWidth === rangeOption,
+        'w-fit px-2': rangeOption === 'Ambient',
       }),
     [selectedRangeWidth],
   );
+
+  const onSliderChange = useCallback(value => {
+    console.log(`value is: ${value} `);
+  }, []);
 
   return (
     <>
@@ -46,7 +56,11 @@ export const BalancedRange: FC = () => {
         ))}
       </div>
 
-      <SimpleTable className="mt-4">
+      <div className="px-4 mt-4">
+        <Slider onChange={onSliderChange} />
+      </div>
+
+      <SimpleTable className="mt-12">
         <SimpleTableRow label="Min price" value="1950.86 DLLR" />
         <SimpleTableRow label="Max price" value="1950.86 DLLR" />
       </SimpleTable>

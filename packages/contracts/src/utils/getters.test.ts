@@ -2,24 +2,30 @@ import { ChainIds } from '@sovryn/ethers-provider';
 
 import { contracts } from '../contracts';
 import {
+  getAssetContract,
   getLendTokenContract,
   getLoanTokenContract,
   getProtocolContract,
-  getTokenContract,
   getZeroContract,
 } from './getters';
 
 describe('utils/contracts/getters.ts', () => {
-  describe('getTokenContract', () => {
+  describe('getAssetContract', () => {
     it('load lowercased xusd token contract address', async () => {
-      const token = await getTokenContract('xusd');
-      expect(token.address).toBe(contracts.tokens.rsk?.xusd.toLowerCase());
+      const token = await getAssetContract('xusd');
+      expect(token.address).toBe(
+        contracts.assets.rsk
+          ?.find(item => item.symbol === 'XUSD')
+          ?.address.toLowerCase(),
+      );
     });
 
     it('loads lowercased xusd token contract from non default chain', async () => {
-      const token = await getTokenContract('xusd', ChainIds.RSK_TESTNET);
+      const token = await getAssetContract('xusd', ChainIds.RSK_TESTNET);
       expect(token.address).toBe(
-        contracts.tokens.rskTestnet?.xusd.toLowerCase(),
+        contracts.assets.rskTestnet
+          ?.find(item => item.symbol === 'XUSD')
+          ?.address.toLowerCase(),
       );
     });
   });

@@ -1,20 +1,16 @@
 import { ChainId, ChainIds } from '@sovryn/ethers-provider';
 
-import {
-  ContractConfigData,
-  SupportedTokens,
-  TokenDetailsData,
-} from '../types';
+import { AssetDetailsData, ContractConfigData } from '../types';
 import {
   getContract,
-  getTokenDetailsData,
+  getAssetDetailsData,
   getTokenDetailsDataByAddress,
 } from './global';
 
-export const getTokenContract = async (
+export const getAssetContract = async (
   token: string,
   chain: ChainId = ChainIds.RSK_MAINNET,
-): Promise<ContractConfigData> => getContract(token, 'tokens', chain);
+): Promise<ContractConfigData> => getContract(token, 'assets', chain);
 
 export const getLoanTokenContract = async (
   token: string,
@@ -36,12 +32,12 @@ export const getZeroContract = async (
   chain: ChainId = ChainIds.RSK_MAINNET,
 ): Promise<ContractConfigData> => getContract(token, 'zero', chain);
 
-export const getTokenDetails = async (
-  token: SupportedTokens,
+export const getAsset = async (
+  symbol: string,
   chain: ChainId = ChainIds.RSK_MAINNET,
-): Promise<TokenDetailsData> => getTokenDetailsData(token, chain);
+): Promise<AssetDetailsData> => getAssetDetailsData(symbol, chain);
 
-export const getTokenDetailsByAddress = async (
+export const getAssetByAddress = async (
   address: string,
   chain: ChainId = ChainIds.RSK_MAINNET,
-): Promise<TokenDetailsData> => getTokenDetailsDataByAddress(address, chain);
+): Promise<AssetDetailsData> => getTokenDetailsDataByAddress(address, chain);

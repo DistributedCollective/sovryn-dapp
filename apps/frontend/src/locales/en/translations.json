@@ -1271,7 +1271,8 @@
                 "newPoolBalance": "New pool balance",
                 "currentPrice": "Current {{token}} price",
                 "lpFeeRate": "LP fee rate"
-            }
+            },
+            "rangeWidth": "Range width"
         }
     },
 

@@ -1,6 +1,7 @@
 import React, { FC, useCallback, useMemo, useState } from 'react';
 
 import classNames from 'classnames';
+import { t } from 'i18next';
 
 import {
   Button,
@@ -10,54 +11,44 @@ import {
   Slider,
 } from '@sovryn/ui';
 
+import { translations } from '../../../../../../../../../locales/i18n';
 import { BUTTON_OPTIONS, INFINITE } from './BalancedRange.constants';
 
 export const BalancedRange: FC = () => {
-  const [selectedRangeWidth, setSelectedRangeWidth] = useState(
-    BUTTON_OPTIONS[0],
-  );
+  const [rangeWidth, setRangeWidth] = useState(BUTTON_OPTIONS[0]);
 
-  const isInfiniteRange = useMemo(
-    () => selectedRangeWidth === INFINITE,
-    [selectedRangeWidth],
-  );
-
-  const [sliderValue, setSliderValue] = useState(
-    isInfiniteRange ? 100 : Number(selectedRangeWidth),
-  );
+  const isInfiniteRange = useMemo(() => rangeWidth === 100, [rangeWidth]);
 
   const renderRangeWidthClassName = useMemo(
-    () => (rangeOption: string) =>
+    () => (rangeOption: number) =>
       classNames('ml-2 p-1 w-12 h-6', {
-        'bg-gray-50': selectedRangeWidth === rangeOption,
-        'w-fit px-2': rangeOption === INFINITE,
+        'bg-gray-50': rangeWidth === rangeOption,
+        'w-fit px-2': rangeOption === 100,
       }),
-    [selectedRangeWidth],
+    [rangeWidth],
   );
 
-  const onSliderChange = useCallback(value => {
-    setSliderValue(value);
-  }, []);
-
-  const onButtonClick = useCallback((value: string) => {
-    setSelectedRangeWidth(value);
+  const onRangeChange = useCallback((value: number) => {
+    setRangeWidth(value);
   }, []);
 
   return (
     <>
       <div className="flex items-center flex-col">
-        <div className="text-xs font-medium text-gray-30">Range width</div>
+        <div className="text-xs font-medium text-gray-30">
+          {t(translations.bobMarketMakingPage.depositModal.rangeWidth)}
+        </div>
         <div className="bg-gray-80 rounded text-gray-10 text-sm font-medium px-12 py-2 mt-2">
-          {!isInfiniteRange ? `~ ${sliderValue}%` : INFINITE}
+          {!isInfiniteRange ? `~ ${rangeWidth}%` : INFINITE}
         </div>
       </div>
 
       <div className="flex justify-center mt-4">
         {BUTTON_OPTIONS.map(item => (
           <Button
-            text={item !== INFINITE ? `${item}%` : item}
+            text={item === 100 ? INFINITE : `${item}%`}
             key={item}
-            onClick={() => onButtonClick(item)}
+            onClick={() => onRangeChange(item)}
             style={ButtonStyle.secondary}
             className={renderRangeWidthClassName(item)}
           />
@@ -65,7 +56,7 @@ export const BalancedRange: FC = () => {
       </div>
 
       <div className="px-4 mt-4">
-        <Slider onChange={onSliderChange} value={sliderValue} />
+        <Slider onChange={onRangeChange} value={rangeWidth} />
       </div>
 
       <SimpleTable className="mt-12">

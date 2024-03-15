@@ -1,5 +1,11 @@
 # frontend
 
+## 1.0.50
+
+### Patch Changes
+
+- 8a310501: SOV-3978: Leaderboard copy adjustments
+
 ## 1.0.49
 
 ### Patch Changes

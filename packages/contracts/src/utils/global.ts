@@ -158,7 +158,7 @@ export const resolveIcon = async (assetBaseDetails: AssetDetails) => {
   return icon;
 };
 
-export const getAssetDetails = async (
+export const getAsset = async (
   symbol: string,
   chainId: ChainId,
 ): Promise<AssetDetails> => {
@@ -179,11 +179,11 @@ export const getAssetDetails = async (
   return tokenBaseInfo;
 };
 
-export const getAssetDetailsData = async (
+export const getAssetData = async (
   symbol: string,
   chainId: ChainId,
 ): Promise<AssetDetailsData> => {
-  const tokenBaseInfo = await getAssetDetails(symbol, chainId);
+  const tokenBaseInfo = await getAsset(symbol, chainId);
   const { abi, contract } = await getContract(symbol, 'assets', chainId);
 
   const icon = await resolveIcon(tokenBaseInfo);
@@ -198,7 +198,7 @@ export const getAssetDetailsData = async (
   return tokenDetails;
 };
 
-export const getTokenDetailsDataByAddress = async (
+export const getAssetDataByAddress = async (
   address: string,
   chainId: ChainId,
 ): Promise<AssetDetailsData> => {

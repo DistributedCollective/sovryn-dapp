@@ -1,34 +1,28 @@
 import { Contract } from 'ethers';
 
-import {
-  SupportedTokens,
-  getProtocolContract,
-  getTokenContract,
-} from '@sovryn/contracts';
+import { getProtocolContract } from '@sovryn/contracts';
 import { getProvider } from '@sovryn/ethers-provider';
 import { Decimal } from '@sovryn/utils';
 
 import { RSK_CHAIN_ID } from '../config/chains';
 
 import { asyncCall } from '../store/rxjs/provider-cache';
-
-const normalizeToken = (token: SupportedTokens) =>
-  token === SupportedTokens.rbtc ? SupportedTokens.wrbtc : token;
+import { normalizeAsset } from './asset';
 
 export const queryReturn = async (
-  sourceToken: SupportedTokens,
-  destToken: SupportedTokens,
+  sourceToken: string,
+  destToken: string,
   sourceAmount: Decimal,
 ): Promise<Decimal> =>
   asyncCall<Decimal>(
     `priceFeed/return/${sourceToken}-${destToken}/${sourceAmount.toHexString()}`,
     async () => {
-      const { address: sourceTokenAddress } = await getTokenContract(
-        normalizeToken(sourceToken),
+      const { address: sourceTokenAddress } = normalizeAsset(
+        sourceToken,
         RSK_CHAIN_ID,
       );
-      const { address: destTokenAddress } = await getTokenContract(
-        normalizeToken(destToken),
+      const { address: destTokenAddress } = normalizeAsset(
+        destToken,
         RSK_CHAIN_ID,
       );
       const { address, abi } = await getProtocolContract(
@@ -47,18 +41,18 @@ export const queryReturn = async (
   );
 
 export const queryRate = async (
-  sourceToken: SupportedTokens,
-  destToken: SupportedTokens,
+  sourceToken: string,
+  destToken: string,
 ): Promise<{ rate: Decimal; precision: Decimal }> =>
   asyncCall<{ rate: Decimal; precision: Decimal }>(
     `priceFeed/rate/${sourceToken}-${destToken}`,
     async () => {
-      const { address: sourceTokenAddress } = await getTokenContract(
-        normalizeToken(sourceToken),
+      const { address: sourceTokenAddress } = normalizeAsset(
+        sourceToken,
         RSK_CHAIN_ID,
       );
-      const { address: destTokenAddress } = await getTokenContract(
-        normalizeToken(destToken),
+      const { address: destTokenAddress } = normalizeAsset(
+        destToken,
         RSK_CHAIN_ID,
       );
       const { address, abi } = await getProtocolContract(

@@ -1,48 +1,8 @@
-import { SupportedTokens } from '@sovryn/contracts';
-
-import { isBitpro, isBtcBasedAsset } from '../utils/helpers';
-
-export const tokensDisplayName = {
-  [SupportedTokens.bnbs]: 'BNB',
-  [SupportedTokens.rbtc]: 'BTC',
-  [SupportedTokens.eths]: 'ETH',
-  [SupportedTokens.fish]: 'FISH',
-};
-
-export const resolveTokenName = (token: SupportedTokens | string): string => {
-  if (isBtcBasedAsset(token)) {
-    token = SupportedTokens.rbtc;
-  }
-
-  if (isBitpro(token)) {
-    token = SupportedTokens.bpro;
-  }
-
-  return token;
-};
+import { normalizeAsset } from '../utils/asset';
+import { ChainId } from '@sovryn/ethers-provider';
+import { RSK_CHAIN_ID } from '../config/chains';
 
 export const getTokenDisplayName = (
-  token: SupportedTokens | string,
-): string => {
-  token = resolveTokenName(token);
-  return tokensDisplayName[token?.toLowerCase()] || token?.toUpperCase();
-};
-
-export const tokensLongName = {
-  [SupportedTokens.rbtc]: 'Bitcoin',
-  [SupportedTokens.sov]: 'Sovryn Token',
-  [SupportedTokens.dllr]: 'Sovryn Dollar',
-  [SupportedTokens.fish]: 'Babelfish',
-  [SupportedTokens.zusd]: 'Zero USD',
-  [SupportedTokens.moc]: 'Money On Chain',
-  [SupportedTokens.doc]: 'Dollar on Chain',
-  [SupportedTokens.rif]: 'RSK Infrastructure Framework',
-  [SupportedTokens.bpro]: 'BitPro',
-  [SupportedTokens.bnbs]: 'Binance Coin',
-  [SupportedTokens.eths]: 'Ethereum',
-};
-
-export const getTokenLongName = (token: SupportedTokens | string): string => {
-  token = resolveTokenName(token);
-  return tokensLongName[token?.toLowerCase()] || getTokenDisplayName(token);
-};
+  token: string,
+  chainId: ChainId = RSK_CHAIN_ID,
+): string => normalizeAsset(token, chainId)?.name || token.toUpperCase();

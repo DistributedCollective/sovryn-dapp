@@ -3,7 +3,6 @@ import React, { FC } from 'react';
 import { t } from 'i18next';
 import { Trans } from 'react-i18next';
 
-import { SupportedTokens } from '@sovryn/contracts';
 import { HelperButton, Link, SimpleTable } from '@sovryn/ui';
 import { Decimal } from '@sovryn/utils';
 
@@ -18,6 +17,11 @@ import {
   renderParagraph,
   renderPool,
 } from './LiquidityMiningMobile.utils';
+import {
+  COMMON_SYMBOLS,
+  normalizeAsset,
+} from '../../../../../../../utils/asset';
+import { RSK_CHAIN_ID } from '../../../../../../../config/chains';
 
 type LiquidityMiningMobileProps = {
   className?: string;
@@ -78,7 +82,9 @@ export const LiquidityMiningMobile: FC<LiquidityMiningMobileProps> = ({
             <div>
               {renderAmount(lendingRewards, 'lendingRewardsVested')}
               {renderPool(
-                `${SupportedTokens.dllr.toLocaleUpperCase()}, ${BITCOIN.toLocaleUpperCase()}`,
+                `${
+                  normalizeAsset(COMMON_SYMBOLS.DLLR, RSK_CHAIN_ID).symbol
+                }, ${BITCOIN.toLocaleUpperCase()}`,
               )}
             </div>
             <div>

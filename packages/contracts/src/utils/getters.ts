@@ -3,8 +3,8 @@ import { ChainId, ChainIds } from '@sovryn/ethers-provider';
 import { AssetDetailsData, ContractConfigData } from '../types';
 import {
   getContract,
-  getAssetDetailsData,
-  getTokenDetailsDataByAddress,
+  getAssetData,
+  getAssetDataByAddress,
 } from './global';
 
 export const getAssetContract = async (
@@ -31,13 +31,3 @@ export const getZeroContract = async (
   token: string,
   chain: ChainId = ChainIds.RSK_MAINNET,
 ): Promise<ContractConfigData> => getContract(token, 'zero', chain);
-
-export const getAsset = async (
-  symbol: string,
-  chain: ChainId = ChainIds.RSK_MAINNET,
-): Promise<AssetDetailsData> => getAssetDetailsData(symbol, chain);
-
-export const getAssetByAddress = async (
-  address: string,
-  chain: ChainId = ChainIds.RSK_MAINNET,
-): Promise<AssetDetailsData> => getTokenDetailsDataByAddress(address, chain);

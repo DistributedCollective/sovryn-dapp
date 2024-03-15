@@ -2,7 +2,6 @@ import React, { useMemo } from 'react';
 
 import { t } from 'i18next';
 
-import { SupportedTokens } from '@sovryn/contracts';
 import { Heading, HelperButton } from '@sovryn/ui';
 import { Decimal } from '@sovryn/utils';
 
@@ -17,6 +16,8 @@ import { PersonalStatistics } from '../../StakePage.utils';
 import { useGetStakingBalanceOf } from '../../hooks/useGetStakingBalanceOf';
 import { useGetTotalVestingsBalance } from '../../hooks/useGetTotalVestingsBalance';
 import { useGetPersonalStakingStatistics } from './hooks/useGetPersonalStakingStatistics';
+import { COMMON_SYMBOLS, normalizeAsset } from '../../../../../utils/asset';
+import { RSK_CHAIN_ID } from '../../../../../config/chains';
 
 export const PersonalStakingStatistics = () => {
   const { account } = useAccount();
@@ -46,7 +47,7 @@ export const PersonalStakingStatistics = () => {
             value={
               <AmountRenderer
                 value={totalStakedValue}
-                suffix={SupportedTokens.sov}
+                suffix={normalizeAsset(COMMON_SYMBOLS.SOV, RSK_CHAIN_ID).symbol}
                 precision={TOKEN_RENDER_PRECISION}
               />
             }

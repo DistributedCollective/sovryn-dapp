@@ -4,7 +4,6 @@ import { BigNumber } from 'ethers';
 import { formatUnits } from 'ethers/lib/utils';
 import { t } from 'i18next';
 
-import { SupportedTokens } from '@sovryn/contracts';
 import { Paragraph, Table } from '@sovryn/ui';
 
 import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRenderer';
@@ -19,6 +18,7 @@ import { useGetLiquidSovClaimAmount } from '../../hooks/useGetLiquidSovClaimAmou
 import { columns } from './Staking.constants';
 import { WithdrawAllFees } from './components/WithdrawAllFees/WithdrawAllFees';
 import { WithdrawLiquidFee } from './components/WithdrawLiquidFee/WithdrawLiquidFee';
+import { COMMON_SYMBOLS } from '../../../../../utils/asset';
 
 export const Staking: FC = () => {
   const { account } = useAccount();
@@ -48,8 +48,8 @@ export const Staking: FC = () => {
   const earnedFeesSum = useMemo(() => {
     const btcFees = earnedFees.filter(
       earnedFee =>
-        earnedFee.token === SupportedTokens.rbtc ||
-        earnedFee.token === SupportedTokens.wrbtc,
+        earnedFee.token.toUpperCase() === 'BTC' ||
+        earnedFee.token.toUpperCase() === 'WBTC',
     );
 
     if (!btcFees.length) {
@@ -58,12 +58,12 @@ export const Staking: FC = () => {
 
     const otherFees = earnedFees.filter(
       earnedFee =>
-        earnedFee.token !== SupportedTokens.rbtc &&
-        earnedFee.token !== SupportedTokens.wrbtc,
+        earnedFee.token.toUpperCase() !== 'BTC' &&
+        earnedFee.token.toUpperCase() !== 'WBTC',
     );
 
     const btcFeesSum: EarnedFee = {
-      token: SupportedTokens.rbtc,
+      token: 'BTC',
       value: btcFees
         .reduce((sum, fee) => sum.add(fee.value), BigNumber.from(0))
         .toString(),
@@ -105,9 +105,9 @@ export const Staking: FC = () => {
               amount: (
                 <AmountRenderer
                   value={liquidSovClaimAmount}
-                  suffix={getTokenDisplayName(SupportedTokens.sov)}
+                  suffix={getTokenDisplayName(COMMON_SYMBOLS.SOV)}
                   precision={BTC_RENDER_PRECISION}
-                  dataAttribute={`${SupportedTokens.sov}-liquid-amount`}
+                  dataAttribute={`sov-liquid-amount`}
                 />
               ),
               action: (
@@ -117,7 +117,7 @@ export const Staking: FC = () => {
                   refetch={refetchLiquidSovClaim}
                 />
               ),
-              key: `${SupportedTokens.sov}-liquid-fee`,
+              key: `sov-liquid-fee`,
             },
           ]
         : []),

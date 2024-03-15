@@ -7,9 +7,9 @@ import { formatUnits, parseUnits } from 'ethers/lib/utils';
 import { t } from 'i18next';
 
 import {
-  getTokenDetailsByAddress,
-  TokenDetailsData,
+  AssetDetailsData,
   findContract,
+  getAssetDataByAddress,
 } from '@sovryn/contracts';
 import {
   Accordion,
@@ -36,7 +36,6 @@ import {
   BTC_RENDER_PRECISION,
 } from '../../../../../constants/currencies';
 import { APPROVAL_FUNCTION } from '../../../../../constants/general';
-import { tokensDisplayName } from '../../../../../constants/tokens';
 import { translations } from '../../../../../locales/i18n';
 import { fromWei, toWei } from '../../../../../utils/math';
 import {
@@ -73,13 +72,13 @@ export const TransactionStep: FC<TransactionStepProps> = ({
   isLoading,
 }) => {
   const { request, title, subtitle } = transaction;
-  const [token, setToken] = useState<TokenDetailsData | undefined>();
+  const [token, setToken] = useState<AssetDetailsData | undefined>();
 
   useEffect(() => {
     const updateToken = (address: string) => {
       findContract(address).then(result => {
-        if (result.group === 'tokens') {
-          getTokenDetailsByAddress(address)
+        if (result.group === 'assets') {
+          getAssetDataByAddress(address, RSK_CHAIN_ID)
             .then(setToken)
             .catch(e => {
               console.error('token not found?', result, e);
@@ -152,20 +151,20 @@ export const TransactionStep: FC<TransactionStepProps> = ({
   }, [gasPrice, request, updateConfig]);
 
   const parsedAmount = useMemo(() => {
-    return token?.decimalPrecision && config.amount !== undefined
-      ? formatUnits(config.amount?.toString(), token?.decimalPrecision)
+    return token?.decimals && config.amount !== undefined
+      ? formatUnits(config.amount?.toString(), token?.decimals)
       : '';
-  }, [config.amount, token?.decimalPrecision]);
+  }, [config.amount, token?.decimals]);
 
   const minAmount = useMemo(() => {
     if (isTransactionRequest(request)) {
       const { fnName, args } = request;
       return fnName === APPROVAL_FUNCTION
-        ? formatUnits(args[1], token?.decimalPrecision)
+        ? formatUnits(args[1], token?.decimals)
         : '0';
     }
     return '0';
-  }, [request, token?.decimalPrecision]);
+  }, [request, token?.decimals]);
 
   const amountOptions = useMemo(
     () => [
@@ -184,10 +183,7 @@ export const TransactionStep: FC<TransactionStepProps> = ({
             onChange={e =>
               updateConfig({
                 ...config,
-                amount: parseUnits(
-                  String(e.target.value),
-                  token?.decimalPrecision,
-                ),
+                amount: parseUnits(String(e.target.value), token?.decimals),
               })
             }
           />
@@ -201,14 +197,7 @@ export const TransactionStep: FC<TransactionStepProps> = ({
         helper: t(translations.transactionStep.unlimitedAmountTooltip),
       },
     ],
-    [
-      config,
-      minAmount,
-      parsedAmount,
-      step,
-      token?.decimalPrecision,
-      updateConfig,
-    ],
+    [config, minAmount, parsedAmount, step, token?.decimals, updateConfig],
   );
 
   const [advanced, setAdvanced] = useState(false);
@@ -268,10 +257,7 @@ export const TransactionStep: FC<TransactionStepProps> = ({
                     ) : (
                       <AmountRenderer
                         value={parsedAmount}
-                        suffix={
-                          tokensDisplayName[token?.symbol || ''] ||
-                          token?.symbol
-                        }
+                        suffix={token?.symbol}
                       />
                     )
                   }

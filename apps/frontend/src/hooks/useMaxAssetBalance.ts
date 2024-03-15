@@ -2,33 +2,29 @@ import { useMemo } from 'react';
 
 import { constants } from 'ethers';
 
-import {
-  ContractConfigData,
-  getTokenContract,
-  SupportedTokens,
-} from '@sovryn/contracts';
+import { AssetDetailsData, getAssetData } from '@sovryn/contracts';
 import { ChainId } from '@sovryn/ethers-provider';
 import { Decimalish, Decimal } from '@sovryn/utils';
 
 import { GAS_LIMIT } from '../constants/gasLimits';
 import { CacheCallOptions } from '../store/rxjs/provider-cache';
-import { getRskChainId } from '../utils/chain';
 import { composeGas } from '../utils/helpers';
 import { AssetBalanceResponse, useAssetBalance } from './useAssetBalance';
 import { useAsync } from './useAsync';
 import { useGasPrice } from './useGasPrice';
+import { RSK_CHAIN_ID } from '../config/chains';
 
 export const useMaxAssetBalance = (
-  asset: SupportedTokens,
-  chainId: ChainId = getRskChainId(),
+  asset: string,
+  chainId: ChainId = RSK_CHAIN_ID,
   gasLimit: Decimalish = GAS_LIMIT.MAX,
   options?: Partial<CacheCallOptions>,
 ): AssetBalanceResponse => {
   const gasPrice = useGasPrice(chainId);
   const result = useAssetBalance(asset, chainId, null, 0, options);
 
-  const contract = useAsync<ContractConfigData>(() =>
-    getTokenContract(asset, chainId),
+  const contract = useAsync<AssetDetailsData>(() =>
+    getAssetData(asset, chainId),
   );
 
   return useMemo(() => {

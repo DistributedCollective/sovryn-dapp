@@ -2,7 +2,6 @@ import dayjs from 'dayjs';
 import { BigNumber, providers } from 'ethers';
 import resolveConfig from 'tailwindcss/resolveConfig';
 
-import { SupportedTokens } from '@sovryn/contracts';
 import { EIP1193Provider } from '@sovryn/onboard-common';
 import tailwindConfig from '@sovryn/tailwindcss-config';
 import { Decimalish } from '@sovryn/utils';
@@ -20,6 +19,8 @@ import { RSK } from '../constants/infrastructure/rsk';
 import { ALPHA_LINKS, BITOCRACY_LINKS, GITHUB_LINKS } from '../constants/links';
 import { Environments } from '../types/global';
 import { decimalic } from './math';
+import { normalizeAsset } from './asset';
+import { RSK_CHAIN_ID } from '../config/chains';
 
 export const prettyTx = (
   text: string,
@@ -172,14 +173,15 @@ export const removeTrailingZerosFromString = (value: string) =>
   value.includes('.') ? value.replace(/\.?0+$/, '') : value;
 
 export const isBtcBasedAsset = (asset: string) =>
-  asset.toLowerCase() === SupportedTokens.rbtc ||
-  asset.toLowerCase() === SupportedTokens.wrbtc ||
+  asset.toLowerCase() === 'rbtc' ||
+  asset.toLowerCase() === 'wrbtc' ||
+  asset.toLowerCase() === 'wbtc' ||
   asset.toUpperCase() === BITCOIN;
 
 export const isBitpro = (asset: string) =>
   asset.toLowerCase() === 'bitpro' ||
   asset.toLowerCase() === 'bitp' ||
-  asset.toLowerCase() === SupportedTokens.bpro;
+  asset.toLowerCase() === 'bpro';
 
 export const areValuesIdentical = (
   firstValue: Decimal,
@@ -190,20 +192,8 @@ export const areValuesIdentical = (
   return Math.abs(firstValue.sub(secondValue).toNumber()) < epsilon;
 };
 
-export const normalizeToken = (token: string): SupportedTokens => {
-  if (isBtcBasedAsset(token)) {
-    return SupportedTokens.rbtc;
-  }
-
-  if (isBitpro(token)) {
-    return SupportedTokens.bpro;
-  }
-
-  return SupportedTokens[token] || token;
-};
-
 export const renderTokenSymbol = (token: string) =>
-  normalizeToken(token).toUpperCase();
+  normalizeAsset(token, RSK_CHAIN_ID).symbol;
 
 export const generateNonce = () =>
   BigNumber.from(Math.floor(Date.now() + Math.random() * 100));

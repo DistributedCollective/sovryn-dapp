@@ -3,12 +3,7 @@ import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { Contract } from 'ethers';
 import { t } from 'i18next';
 
-import {
-  SupportedTokens,
-  TokenDetailsData,
-  getLoanTokenContract,
-  getTokenDetails,
-} from '@sovryn/contracts';
+import { getLoanTokenContract } from '@sovryn/contracts';
 import { Dialog, DialogBody, DialogHeader } from '@sovryn/ui';
 import { Decimal } from '@sovryn/utils';
 

@@ -2,7 +2,6 @@ import React, { FC, useCallback, useMemo } from 'react';
 
 import { t } from 'i18next';
 
-import { SupportedTokens } from '@sovryn/contracts';
 import { Button, ButtonType, ButtonStyle, Tooltip } from '@sovryn/ui';
 
 import { TransactionType } from '../../../../../../3_organisms/TransactionStepDialog/TransactionStepDialog.types';
@@ -12,11 +11,12 @@ import { useAssetBalance } from '../../../../../../../hooks/useAssetBalance';
 import { useGetProtocolContract } from '../../../../../../../hooks/useGetContract';
 import { useMaintenance } from '../../../../../../../hooks/useMaintenance';
 import { translations } from '../../../../../../../locales/i18n';
-import { getRskChainId } from '../../../../../../../utils/chain';
 import { decimalic } from '../../../../../../../utils/math';
 import { MAX_LIQUID_STAKES } from '../../Staking.constants';
 import useGetFilteredDates from '../../hooks/useGetFilteredDates';
 import useGetVestingAddresses from '../../hooks/useGetVestingAddresses';
+import { COMMON_SYMBOLS } from '../../../../../../../utils/asset';
+import { RSK_CHAIN_ID } from '../../../../../../../config/chains';
 
 type WithdrawLiquidFeeProps = {
   amountToClaim: string;
@@ -55,8 +55,8 @@ export const WithdrawLiquidFee: FC<WithdrawLiquidFeeProps> = ({
 
   const stakingRewards = useGetProtocolContract('stakingRewards');
   const tokenBalance = useAssetBalance(
-    SupportedTokens.sov,
-    getRskChainId(),
+    COMMON_SYMBOLS.SOV,
+    RSK_CHAIN_ID,
     stakingRewards?.address,
   );
 

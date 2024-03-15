@@ -2,8 +2,7 @@ import { useEffect, useState, useCallback } from 'react';
 
 import { BigNumber } from 'ethers';
 
-import { SupportedTokens, getProtocolContract } from '@sovryn/contracts';
-import { getTokenContract } from '@sovryn/contracts';
+import { getProtocolContract } from '@sovryn/contracts';
 import { getLoanTokenContract } from '@sovryn/contracts';
 import { getProvider } from '@sovryn/ethers-provider';
 
@@ -13,17 +12,12 @@ import { useAccount } from '../../../../hooks/useAccount';
 import { useIsMounted } from '../../../../hooks/useIsMounted';
 import { useMulticall } from '../../../../hooks/useMulticall';
 import { EarnedFee } from '../RewardsPage.types';
+import { COMMON_SYMBOLS, normalizeAsset } from '../../../../utils/asset';
 
 const MAX_CHECKPOINTS = 50;
-const FEE_TOKEN_ASSETS = [
-  SupportedTokens.wrbtc,
-  SupportedTokens.rbtc,
-  SupportedTokens.sov,
-  SupportedTokens.zusd,
-  SupportedTokens.mynt,
-];
+const FEE_TOKEN_ASSETS = ['WBTC', 'BTC', 'SOV', 'ZUSD', 'MYNT'];
 
-const FEE_LOAN_ASSETS = [SupportedTokens.rbtc];
+const FEE_LOAN_ASSETS = [COMMON_SYMBOLS.BTC];
 
 let btcDummyAddress: string;
 
@@ -70,14 +64,12 @@ export const useGetFeesEarned = () => {
       ...FEE_TOKEN_ASSETS.map(async asset => ({
         token: asset,
         contractAddress:
-          asset === SupportedTokens.rbtc
+          asset.toUpperCase() === COMMON_SYMBOLS.BTC
             ? await getRbtcDummyAddress()
-            : (
-                await getTokenContract(asset, RSK_CHAIN_ID)
-              ).address,
+            : normalizeAsset(asset, RSK_CHAIN_ID).address,
         value: '0',
         rbtcValue: 0,
-        ...(asset !== SupportedTokens.rbtc
+        ...(asset.toUpperCase() !== COMMON_SYMBOLS.BTC
           ? { startFrom: 0, maxCheckpoints: 0 }
           : {}),
         iToken: false,

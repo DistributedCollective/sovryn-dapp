@@ -3,6 +3,7 @@ import { ChainId } from '@sovryn/ethers-provider';
 
 import { isMainnet } from './helpers';
 
+/** @deprecated use RSK_CHAIN_ID */
 export const getRskChainId = () =>
   isMainnet() ? ChainIds.RSK_MAINNET : ChainIds.RSK_TESTNET;
 

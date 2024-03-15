@@ -1,6 +1,5 @@
 import React, { FC } from 'react';
 
-import { SupportedTokens } from '@sovryn/contracts';
 import { Paragraph } from '@sovryn/ui';
 
 import { AssetPairRenderer } from '../AssetPairRenderer/AssetPairRenderer';
@@ -8,8 +7,8 @@ import { AssetRenderer } from '../AssetRenderer/AssetRenderer';
 import styles from './CurrentStatistics.module.css';
 
 export type CurrentStatisticsProps = {
-  symbol: SupportedTokens;
-  symbol2?: SupportedTokens;
+  symbol: string;
+  symbol2?: string;
   label1: string;
   label2: string;
   value1: React.ReactNode;

@@ -30,10 +30,10 @@ export const useGetMaxCollateralWithdrawal = (loan: LoanItem): Decimal => {
   const collateralPriceInLoanAsset = useMemo(
     () =>
       decimalic(
-        collateralToken === SupportedTokens.rbtc
+        collateralToken === COMMON_SYMBOLS.BTC
           ? rbtcPrice
           : collateralPriceUsd,
-      ).div(borrowToken === SupportedTokens.rbtc ? rbtcPrice : borrowPriceUsd),
+      ).div(borrowToken === COMMON_SYMBOLS.BTC ? rbtcPrice : borrowPriceUsd),
     [
       borrowToken,
       borrowPriceUsd,

@@ -29,7 +29,7 @@ export const COLUMNS_CONFIG = [
     cellRenderer: (tx: StakingExtendedDurationItem) => (
       <AmountRenderer
         value={tx.amountStaked || 0}
-        suffix={getTokenDisplayName(SupportedTokens.sov)}
+        suffix={getTokenDisplayName(COMMON_SYMBOLS.SOV)}
       />
     ),
     sortable: true,

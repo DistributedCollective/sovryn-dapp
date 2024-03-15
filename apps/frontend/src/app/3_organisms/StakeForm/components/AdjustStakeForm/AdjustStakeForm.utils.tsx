@@ -32,7 +32,7 @@ export const renderPenaltyAmount = (
   return (
     <AmountRenderer
       value={Number(penaltyAmount)}
-      suffix={`${SupportedTokens.sov} (${penaltyAmountPercentage}%)`}
+      suffix={`${COMMON_SYMBOLS.SOV} (${penaltyAmountPercentage}%)`}
       precision={TOKEN_RENDER_PRECISION}
     />
   );
@@ -53,7 +53,7 @@ export const renderNewStakedAmount = (
           ? decimalic(stakeAmount).sub(amount)
           : decimalic(stakeAmount).add(amount)
       }
-      suffix={SupportedTokens.sov}
+      suffix={COMMON_SYMBOLS.SOV}
       precision={TOKEN_RENDER_PRECISION}
     />
   );

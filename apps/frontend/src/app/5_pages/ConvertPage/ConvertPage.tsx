@@ -94,7 +94,7 @@ const ConvertPage: FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const fromToken = searchParams.get('from');
   const toToken = searchParams.get('to');
-  const { balance: myntBalance } = useAssetBalance(SupportedTokens.mynt);
+  const { balance: myntBalance } = useAssetBalance('MYNT');
 
   const [slippageTolerance, setSlippageTolerance] = useState('0.5');
 
@@ -157,8 +157,8 @@ const ConvertPage: FC = () => {
           tokensToOptions(tokens, currentChainId, setDestinationTokenOptions);
         });
 
-      if (sourceToken === SupportedTokens.mynt) {
-        setDestinationToken(SupportedTokens.sov);
+      if (sourceToken === 'MYNT') {
+        setDestinationToken(COMMON_SYMBOLS.SOV);
       }
     })();
   }, [currentChainId, smartRouter, sourceToken, tokensToOptions]);
@@ -167,7 +167,7 @@ const ConvertPage: FC = () => {
     () =>
       hasMyntBalance
         ? tokenOptions
-        : tokenOptions.filter(option => option.value !== SupportedTokens.mynt),
+        : tokenOptions.filter(option => option.value !== 'MYNT'),
     [hasMyntBalance, tokenOptions],
   );
 
@@ -381,10 +381,10 @@ const ConvertPage: FC = () => {
   }, [fromToken, toToken]);
 
   useEffect(() => {
-    if (hasMyntBalance && fromToken === SupportedTokens.mynt) {
-      setSourceToken(SupportedTokens.mynt);
-    } else if (!hasMyntBalance && fromToken === SupportedTokens.mynt) {
-      setSourceToken(SupportedTokens.dllr);
+    if (hasMyntBalance && fromToken === 'MYNT') {
+      setSourceToken('MYNT');
+    } else if (!hasMyntBalance && fromToken === 'MYNT') {
+      setSourceToken(COMMON_SYMBOLS.DLLR);
     }
   }, [hasMyntBalance, fromToken]);
 

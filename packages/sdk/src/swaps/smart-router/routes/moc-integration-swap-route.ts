@@ -35,7 +35,7 @@ export const mocIntegrationSwapRoute: SwapRouteFunction = (
     if (
       areAddressesEqual(
         entry,
-        (await getTokenContract(SupportedTokens.dllr, chainId)).address,
+        (await getTokenContract(COMMON_SYMBOLS.DLLR, chainId)).address,
       ) &&
       areAddressesEqual(destination, constants.AddressZero)
     ) {
@@ -108,7 +108,7 @@ export const mocIntegrationSwapRoute: SwapRouteFunction = (
   const getDocContract = async () => {
     if (!docContract) {
       const { address, abi } = await getTokenContract(
-        SupportedTokens.doc,
+        'DOC',
         await getChainId(),
       );
       docContract = new Contract(address, abi, provider);
@@ -127,7 +127,7 @@ export const mocIntegrationSwapRoute: SwapRouteFunction = (
       const chainId = await getChainId();
 
       const dllr = (
-        await getTokenContract(SupportedTokens.dllr, chainId)
+        await getTokenContract(COMMON_SYMBOLS.DLLR, chainId)
       ).address.toLowerCase();
       const rbtc = constants.AddressZero;
 

@@ -20,7 +20,7 @@ const renderAmount = (item: VestingHistoryItem) => {
   return (
     <AmountRenderer
       value={item.amount}
-      suffix={SupportedTokens.sov}
+      suffix={COMMON_SYMBOLS.SOV}
       precision={TOKEN_RENDER_PRECISION}
       dataAttribute="vesting-reward-history-amount"
     />

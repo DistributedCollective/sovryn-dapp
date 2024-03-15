@@ -60,7 +60,7 @@ const EarnPage: FC = () => {
   const [poolBalance, setPoolBalance] = useState(Decimal.ZERO);
   const [ZUSDInStabilityPool, setZUSDInStabilityPool] = useState(Decimal.ZERO);
   const [rewardsAmount, setRewardsAmount] = useState(Decimal.ZERO);
-  const [token, setToken] = useState<SupportedTokens>(SupportedTokens.zusd);
+  const [token, setToken] = useState<SupportedTokens>(COMMON_SYMBOLS.ZUSD);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [isLoading, setIsLoading] = useState(false);
   const { apy } = useGetSubsidiesAPR();
@@ -181,8 +181,8 @@ const EarnPage: FC = () => {
     [setAmount],
   );
 
-  const { weiBalance: zusdWeiBalance } = useAssetBalance(SupportedTokens.zusd);
-  const { weiBalance: dllrWeiBalance } = useAssetBalance(SupportedTokens.dllr);
+  const { weiBalance: zusdWeiBalance } = useAssetBalance(COMMON_SYMBOLS.ZUSD);
+  const { weiBalance: dllrWeiBalance } = useAssetBalance(COMMON_SYMBOLS.DLLR);
 
   useEffect(() => {
     if (
@@ -190,9 +190,9 @@ const EarnPage: FC = () => {
       Number(zusdWeiBalance) > 0 &&
       Number(dllrWeiBalance) === 0
     ) {
-      setToken(SupportedTokens.zusd);
+      setToken(COMMON_SYMBOLS.ZUSD);
     } else {
-      setToken(SupportedTokens.dllr);
+      setToken(COMMON_SYMBOLS.DLLR);
     }
   }, [dllrWeiBalance, zusdWeiBalance, isDeposit, isLoading]);
 
@@ -263,7 +263,7 @@ const EarnPage: FC = () => {
     return (
       <AmountRenderer
         value={newPoolBalance}
-        suffix={SupportedTokens.zusd}
+        suffix={COMMON_SYMBOLS.ZUSD}
         precision={TOKEN_RENDER_PRECISION}
       />
     );
@@ -296,7 +296,7 @@ const EarnPage: FC = () => {
   );
 
   const isInMaintenance = useMemo(
-    () => actionLocked || (dllrLocked && token === SupportedTokens.dllr),
+    () => actionLocked || (dllrLocked && token === COMMON_SYMBOLS.DLLR),
     [actionLocked, dllrLocked, token],
   );
 
@@ -441,7 +441,7 @@ const EarnPage: FC = () => {
               value={
                 <AmountRenderer
                   value={poolBalance}
-                  suffix={SupportedTokens.zusd}
+                  suffix={COMMON_SYMBOLS.ZUSD}
                   precision={TOKEN_RENDER_PRECISION}
                 />
               }

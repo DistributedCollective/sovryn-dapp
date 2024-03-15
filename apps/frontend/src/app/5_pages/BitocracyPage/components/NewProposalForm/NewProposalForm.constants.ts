@@ -107,7 +107,7 @@ export const DEFAULT_PARAMETER: ProposalCreationParameter = {
   },
   treasuryStepExtraData: {
     recipientAddress: '',
-    token: SupportedTokens.rbtc,
+    token: COMMON_SYMBOLS.BTC,
     amount: '0',
     index: 1,
   },

@@ -87,7 +87,7 @@ export const NewLoanForm: FC<NewLoanFormProps> = ({ pool }) => {
   const sortedCollateralAssets = useMemo(() => {
     const sorted = [...collateralAssets].sort();
 
-    const btcIndex = sorted.findIndex(asset => asset === SupportedTokens.rbtc);
+    const btcIndex = sorted.findIndex(asset => asset === COMMON_SYMBOLS.BTC);
 
     if (btcIndex !== -1) {
       const btcAsset = sorted.splice(btcIndex, 1);
@@ -181,7 +181,7 @@ export const NewLoanForm: FC<NewLoanFormProps> = ({ pool }) => {
 
   const minimumCollateralRatio = useMemo(
     () =>
-      collateralToken === SupportedTokens.sov
+      collateralToken === COMMON_SYMBOLS.SOV
         ? MINIMUM_COLLATERAL_RATIO_LENDING_POOLS_SOV
         : MINIMUM_COLLATERAL_RATIO_LENDING_POOLS,
     [collateralToken],
@@ -493,7 +493,7 @@ export const NewLoanForm: FC<NewLoanFormProps> = ({ pool }) => {
           <SimpleTableRow
             label={t(pageTranslations.newLoanDialog.labels.collateralPrice, {
               token:
-                collateralToken === SupportedTokens.rbtc
+                collateralToken === COMMON_SYMBOLS.BTC
                   ? BITCOIN
                   : collateralToken.toLocaleUpperCase(),
             })}

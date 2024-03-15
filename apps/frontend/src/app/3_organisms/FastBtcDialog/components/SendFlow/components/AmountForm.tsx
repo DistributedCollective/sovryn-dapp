@@ -43,11 +43,11 @@ export const AmountForm: React.FC = () => {
   const fastBtcLocked = checkMaintenance(States.FASTBTC_SEND);
 
   const { bigNumberBalance: maxAmountWei } = useMaxAssetBalance(
-    SupportedTokens.rbtc,
+    COMMON_SYMBOLS.BTC,
   );
 
   const { bigNumberBalance: rbtcWeiBalance } = useAssetBalance(
-    SupportedTokens.rbtc,
+    COMMON_SYMBOLS.BTC,
     RSK_CHAIN_ID,
   );
 
@@ -116,7 +116,7 @@ export const AmountForm: React.FC = () => {
           <MaxButton
             onClick={onMaximumAmountClick}
             value={fromWei(maxAmount)}
-            token={SupportedTokens.rbtc}
+            token={COMMON_SYMBOLS.BTC}
             precision={BTC_RENDER_PRECISION}
             dataAttribute="funding-send-amount-max"
           />

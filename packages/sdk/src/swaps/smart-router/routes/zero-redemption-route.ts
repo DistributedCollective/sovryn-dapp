@@ -72,10 +72,10 @@ export const zeroRedemptionSwapRoute: SwapRouteFunction = (
       const chainId = await getChainId();
 
       const dllr = (
-        await getTokenContract(SupportedTokens.dllr, chainId)
+        await getTokenContract(COMMON_SYMBOLS.DLLR, chainId)
       ).address.toLowerCase();
       const zusd = (
-        await getTokenContract(SupportedTokens.zusd, chainId)
+        await getTokenContract(COMMON_SYMBOLS.ZUSD, chainId)
       ).address.toLowerCase();
       const rbtc = constants.AddressZero;
 
@@ -104,8 +104,8 @@ export const zeroRedemptionSwapRoute: SwapRouteFunction = (
         ethers.getFees(),
         ethers.getTotal(),
         getPriceFeedContract(),
-        getTokenContract(SupportedTokens.wrbtc, chainId),
-        getTokenContract(SupportedTokens.rusdt, chainId),
+        getTokenContract('WBTC', chainId),
+        getTokenContract('RUSDT', chainId),
       ]);
 
       const maxRedemptionRate = fees
@@ -140,7 +140,7 @@ export const zeroRedemptionSwapRoute: SwapRouteFunction = (
       if (
         areAddressesEqual(
           entry,
-          (await getTokenContract(SupportedTokens.dllr, chainId)).address,
+          (await getTokenContract(COMMON_SYMBOLS.DLLR, chainId)).address,
         )
       ) {
         if (!options?.permit) {
@@ -172,7 +172,7 @@ export const zeroRedemptionSwapRoute: SwapRouteFunction = (
       if (
         areAddressesEqual(
           entry,
-          (await getTokenContract(SupportedTokens.zusd, chainId)).address,
+          (await getTokenContract(COMMON_SYMBOLS.ZUSD, chainId)).address,
         )
       ) {
         const { rawPopulatedTransaction } = await populatable.redeemZUSD(
@@ -202,7 +202,7 @@ export const zeroRedemptionSwapRoute: SwapRouteFunction = (
       if (
         areAddressesEqual(
           entry,
-          (await getTokenContract(SupportedTokens.zusd, chainId)).address,
+          (await getTokenContract(COMMON_SYMBOLS.ZUSD, chainId)).address,
         ) &&
         areAddressesEqual(destination, constants.AddressZero)
       ) {
@@ -233,7 +233,7 @@ export const zeroRedemptionSwapRoute: SwapRouteFunction = (
       if (
         areAddressesEqual(
           entry,
-          (await getTokenContract(SupportedTokens.dllr, chainId)).address,
+          (await getTokenContract(COMMON_SYMBOLS.DLLR, chainId)).address,
         ) &&
         areAddressesEqual(destination, constants.AddressZero)
       ) {

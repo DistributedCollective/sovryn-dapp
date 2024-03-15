@@ -3,7 +3,11 @@ import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { Contract } from 'ethers';
 import { t } from 'i18next';
 
-import { getLoanTokenContract } from '@sovryn/contracts';
+import {
+  AssetDetailsData,
+  getAssetData,
+  getLoanTokenContract,
+} from '@sovryn/contracts';
 import { Dialog, DialogBody, DialogHeader } from '@sovryn/ui';
 import { Decimal } from '@sovryn/utils';
 
@@ -21,10 +25,10 @@ import { LendModalAction } from '../../LendPage.types';
 import { FormType, LendingForm } from './LendingForm';
 
 export type AdjustModalProps = {
-  onDeposit: (amount: Decimal, token: TokenDetailsData, pool: Contract) => void;
+  onDeposit: (amount: Decimal, token: AssetDetailsData, pool: Contract) => void;
   onWithdraw: (
     amount: Decimal,
-    token: TokenDetailsData,
+    token: AssetDetailsData,
     pool: Contract,
   ) => void;
   onClose: () => void;
@@ -32,13 +36,13 @@ export type AdjustModalProps = {
 };
 
 export type FullAdjustModalState = {
-  token: SupportedTokens;
+  token: string;
   apr: Decimal;
   balance: Decimal;
   liquidity: Decimal;
   poolTokenContract: Contract;
   tokenContract: Contract;
-  tokenDetails: TokenDetailsData;
+  tokenDetails: AssetDetailsData;
 };
 
 export const AdjustLendingModalContainer: FC<AdjustModalProps> = ({
@@ -48,7 +52,7 @@ export const AdjustLendingModalContainer: FC<AdjustModalProps> = ({
   isOpen,
 }) => {
   const { subscribe, push } = useMemo(
-    () => eventDriven<Nullable<SupportedTokens>>(LendModalAction.Adjust),
+    () => eventDriven<Nullable<string>>(LendModalAction.Adjust),
     [],
   );
 
@@ -70,7 +74,7 @@ export const AdjustLendingModalContainer: FC<AdjustModalProps> = ({
         return;
       }
 
-      const tokenDetails = await getTokenDetails(value, RSK_CHAIN_ID);
+      const tokenDetails = await getAssetData(value, RSK_CHAIN_ID);
 
       const poolTokenContract = new Contract(
         poolToken.address,

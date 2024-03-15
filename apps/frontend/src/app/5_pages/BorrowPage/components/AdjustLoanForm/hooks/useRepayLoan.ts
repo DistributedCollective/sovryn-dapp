@@ -36,7 +36,7 @@ export const useRepayLoan = () => {
 
       const weiRepayAmount = toWei(repayAmount);
 
-      const isBorrowTokenRbtc = borrowToken === SupportedTokens.rbtc;
+      const isBorrowTokenRbtc = borrowToken === COMMON_SYMBOLS.BTC;
 
       const transactions: Transaction[] = [];
 

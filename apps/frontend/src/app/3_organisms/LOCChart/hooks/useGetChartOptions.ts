@@ -50,7 +50,7 @@ export const useGetChartOptions = (
               `${t(translations.chart.debtAmount)}: ${formatValue(
                 Number(debt),
                 TOKEN_RENDER_PRECISION,
-              )} ${SupportedTokens.zusd.toUpperCase()}`,
+              )} ${COMMON_SYMBOLS.ZUSD.toUpperCase()}`,
               `${t(translations.chart.collateralRatio)}: ${formatValue(
                 Number(collateralRatio),
                 0,
@@ -62,7 +62,7 @@ export const useGetChartOptions = (
                 `${t(translations.chart.redemptionBuffer)}: ${formatValue(
                   redemptionBuffer,
                   TOKEN_RENDER_PRECISION,
-                )} ${SupportedTokens.zusd.toUpperCase()}`,
+                )} ${COMMON_SYMBOLS.ZUSD.toUpperCase()}`,
               );
             }
             return tooltipContent;

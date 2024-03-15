@@ -21,10 +21,10 @@ describe('SmartRouter', () => {
     provider = (await makeChainFixture()).provider;
     router = new SmartRouter(provider, Object.values(smartRoutes));
 
-    xusd = (await getTokenContract(SupportedTokens.xusd)).address;
-    sov = (await getTokenContract(SupportedTokens.sov)).address;
-    dllr = (await getTokenContract(SupportedTokens.dllr)).address;
-    zusd = (await getTokenContract(SupportedTokens.zusd)).address;
+    xusd = (await getTokenContract(COMMON_SYMBOLS.XUSD)).address;
+    sov = (await getTokenContract(COMMON_SYMBOLS.SOV)).address;
+    dllr = (await getTokenContract(COMMON_SYMBOLS.DLLR)).address;
+    zusd = (await getTokenContract(COMMON_SYMBOLS.ZUSD)).address;
   });
 
   describe('getAvailableRoutes', () => {

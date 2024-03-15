@@ -9,6 +9,9 @@ export const normalizeAsset = (asset: string, chainId: ChainId) =>
 export const normalizeNativeAsset = (chainId: ChainId) =>
   contracts.assets[getNetworkByChainId(chainId)]?.find(item => item.isNative)!;
 
+export const listAssetsOfChain = (chainId: ChainId) =>
+  contracts.assets[getNetworkByChainId(chainId)] || [];
+
 export const COMMON_SYMBOLS = {
   BTC: 'BTC',
   SOV: 'SOV',

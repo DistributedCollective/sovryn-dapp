@@ -74,7 +74,7 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
   const {
     balance: maxCollateralToDepositAmount,
     loading: maxRbtcBalanceLoading,
-  } = useMaxAssetBalance(SupportedTokens.rbtc);
+  } = useMaxAssetBalance(COMMON_SYMBOLS.BTC);
   const { balance: debtTokenBalance } = useAssetBalance(debtToken);
 
   const isIncreasingDebt = useMemo(

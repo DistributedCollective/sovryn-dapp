@@ -37,7 +37,7 @@ export const COLUMNS_CONFIG = [
       redemption.tokensActuallyRedeemed.length ? (
         <AmountRenderer
           value={redemption.tokensActuallyRedeemed}
-          suffix={SupportedTokens.zusd}
+          suffix={COMMON_SYMBOLS.ZUSD}
           precision={TOKEN_RENDER_PRECISION}
           dataAttribute="redemption-history-zusd-redeemed"
         />

@@ -20,9 +20,9 @@ describe('Mynt bAsset Route', () => {
   beforeAll(async () => {
     const fixture = await makeChainFixture();
     route = myntBassetRoute(fixture.provider);
-    rbtc = await makeTokenAddress(SupportedTokens.rbtc);
-    dllr = await makeTokenAddress(SupportedTokens.dllr);
-    zusd = await makeTokenAddress(SupportedTokens.zusd);
+    rbtc = await makeTokenAddress(COMMON_SYMBOLS.BTC);
+    dllr = await makeTokenAddress(COMMON_SYMBOLS.DLLR);
+    zusd = await makeTokenAddress(COMMON_SYMBOLS.ZUSD);
   });
 
   it('has correct name', () => {

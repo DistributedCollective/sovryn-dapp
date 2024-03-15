@@ -44,7 +44,7 @@ export const useBorrow = () => {
 
       const loanDuration = Math.ceil(firstRolloverDate - currentDate);
 
-      const isCollateralRbtc = collateralToken === SupportedTokens.rbtc;
+      const isCollateralRbtc = collateralToken === COMMON_SYMBOLS.BTC;
 
       const { abi: borrowTokenAbi, address: borrowTokenAddress } =
         await getLendTokenContract(borrowToken, RSK_CHAIN_ID);
@@ -56,7 +56,7 @@ export const useBorrow = () => {
       );
 
       const { address: collateralTokenAddress } = await getTokenContract(
-        isCollateralRbtc ? SupportedTokens.wrbtc : collateralToken,
+        isCollateralRbtc ? 'WBTC' : collateralToken,
         RSK_CHAIN_ID,
       );
 

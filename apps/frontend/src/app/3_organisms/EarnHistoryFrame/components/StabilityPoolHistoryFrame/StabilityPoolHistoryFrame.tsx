@@ -160,7 +160,7 @@ export const StabilityPoolHistoryFrame: FC<PropsWithChildren> = ({
         {balance.length ? (
           <AmountRenderer
             value={balance}
-            suffix={SupportedTokens.zusd}
+            suffix={COMMON_SYMBOLS.ZUSD}
             precision={TOKEN_RENDER_PRECISION}
             dataAttribute="stability-pool-history-balance-change"
             prefix={renderSign(balance)}
@@ -179,7 +179,7 @@ export const StabilityPoolHistoryFrame: FC<PropsWithChildren> = ({
         {stabilityDeposit ? (
           <AmountRenderer
             value={stabilityDeposit.depositedAmountAfter}
-            suffix={SupportedTokens.zusd}
+            suffix={COMMON_SYMBOLS.ZUSD}
             precision={TOKEN_RENDER_PRECISION}
             dataAttribute="stability-pool-history-new-balance"
           />
@@ -300,7 +300,7 @@ export const StabilityPoolHistoryFrame: FC<PropsWithChildren> = ({
       transactionType: getTransactionType(tx.stabilityDepositOperation),
       balanceChange: tx.depositedAmountChange,
       newBalance: tx.depositedAmountAfter,
-      token: getTokenDisplayName(SupportedTokens.zusd),
+      token: getTokenDisplayName(COMMON_SYMBOLS.ZUSD),
       transactionID: tx.transaction.id,
     }));
   }, [account, getStabilityPool, orderOptions, filters, addNotification]);

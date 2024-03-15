@@ -36,7 +36,7 @@ export const myntBassetRoute: SwapRouteFunction = (
     if (!dllr) {
       const chainId = await getChainId();
       dllr = (
-        await getTokenContract(SupportedTokens.dllr, chainId)
+        await getTokenContract(COMMON_SYMBOLS.DLLR, chainId)
       ).address.toLowerCase();
     }
     return dllr;
@@ -65,10 +65,10 @@ export const myntBassetRoute: SwapRouteFunction = (
       const chainId = await getChainId();
       const dllr = await getDllrToken();
       const zusd = (
-        await getTokenContract(SupportedTokens.zusd, chainId)
+        await getTokenContract(COMMON_SYMBOLS.ZUSD, chainId)
       ).address.toLowerCase();
       const doc = (
-        await getTokenContract(SupportedTokens.doc, chainId)
+        await getTokenContract('DOC', chainId)
       ).address.toLowerCase();
 
       pairCache = new Map<string, string[]>([

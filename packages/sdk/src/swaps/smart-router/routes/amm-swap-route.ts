@@ -76,7 +76,7 @@ export const ammSwapRoute: SwapRouteFunction = (
     token === constants.AddressZero ||
     token ===
       (
-        await getTokenContract(SupportedTokens.wrbtc, await getChainId())
+        await getTokenContract('WBTC', await getChainId())
       ).address.toLowerCase();
 
   const validatedTokenAddress = async (token: string) => {
@@ -86,7 +86,7 @@ export const ammSwapRoute: SwapRouteFunction = (
         return wrbtcAddress;
       }
       const chainId = await getChainId();
-      wrbtcAddress = (await getTokenContract(SupportedTokens.wrbtc, chainId))
+      wrbtcAddress = (await getTokenContract('WBTC', chainId))
         .address;
       return wrbtcAddress;
     }
@@ -102,19 +102,19 @@ export const ammSwapRoute: SwapRouteFunction = (
         const chainId = await getChainId();
 
         const swapTokens = [
-          SupportedTokens.rbtc,
-          SupportedTokens.dllr,
+          COMMON_SYMBOLS.BTC,
+          COMMON_SYMBOLS.DLLR,
           SupportedTokens.fish,
           SupportedTokens.moc,
           SupportedTokens.rif,
-          SupportedTokens.sov,
-          SupportedTokens.bnbs,
-          SupportedTokens.doc,
-          SupportedTokens.rusdt,
-          SupportedTokens.eths,
-          SupportedTokens.xusd,
-          SupportedTokens.mynt,
-          SupportedTokens.bpro,
+          COMMON_SYMBOLS.SOV,
+          'BNB',
+          'DOC',
+          'RUSDT',
+          'ETH',
+          COMMON_SYMBOLS.XUSD,
+          'MYNT',
+          'BPRO',
         ];
 
         const contracts = (

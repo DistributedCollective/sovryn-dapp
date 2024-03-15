@@ -2,7 +2,6 @@ import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 
 import { t } from 'i18next';
 
-import { SupportedTokenList, SupportedTokens } from '@sovryn/contracts';
 import {
   FormGroup,
   Input,
@@ -33,6 +32,11 @@ import {
   renderSignature,
   isValidParameter,
 } from './Parameter.utils';
+import {
+  COMMON_SYMBOLS,
+  listAssetsOfChain,
+} from '../../../../../../../../../utils/asset';
+import { RSK_CHAIN_ID } from '../../../../../../../../../config/chains';
 
 type ParameterProps = {
   parameter: ProposalCreationParameter;
@@ -54,24 +58,24 @@ export const Parameter: FC<ParameterProps> = ({
 
   const { account } = useAccount();
   const { assetBalance, assetAddress } = useGetTokenDetails(
-    parameter.treasuryStepExtraData?.token || SupportedTokens.rbtc,
+    parameter.treasuryStepExtraData?.token || COMMON_SYMBOLS.BTC,
     parameter.target,
   );
 
   const tokenOptions = useMemo(
     () =>
-      SupportedTokenList.filter(
-        token => token.symbol !== SupportedTokens.wrbtc,
-      ).map(token => ({
-        value: token.symbol,
-        label: (
-          <AssetRenderer
-            showAssetLogo
-            asset={token.symbol}
-            assetClassName="font-medium"
-          />
-        ),
-      })),
+      listAssetsOfChain(RSK_CHAIN_ID)
+        .filter(token => token.symbol !== 'WBTC')
+        .map(token => ({
+          value: token.symbol,
+          label: (
+            <AssetRenderer
+              showAssetLogo
+              asset={token.symbol}
+              assetClassName="font-medium"
+            />
+          ),
+        })),
     [],
   );
 
@@ -184,7 +188,7 @@ export const Parameter: FC<ParameterProps> = ({
       if (isValidParameter(parameter, isValidAddress)) {
         let calldata: string;
 
-        if (token === SupportedTokens.rbtc) {
+        if (token === COMMON_SYMBOLS.BTC) {
           calldata = renderCalldata(recipientAddress || '', amount || '0');
         } else {
           calldata = renderCalldata(
@@ -274,9 +278,7 @@ export const Parameter: FC<ParameterProps> = ({
               )
             }
             value={maximumAmount}
-            token={
-              parameter.treasuryStepExtraData?.token || SupportedTokens.rbtc
-            }
+            token={parameter.treasuryStepExtraData?.token || COMMON_SYMBOLS.BTC}
             dataAttribute="proposal-treasury-max-button"
             label={t(pageTranslations.accountBalance)}
           />
@@ -292,9 +294,7 @@ export const Parameter: FC<ParameterProps> = ({
             className="w-full flex-grow-0 flex-shrink"
           />
           <Select
-            value={
-              parameter.treasuryStepExtraData?.token || SupportedTokens.rbtc
-            }
+            value={parameter.treasuryStepExtraData?.token || COMMON_SYMBOLS.BTC}
             onChange={value =>
               onChangeExtraProperty(TreasuryParameterType.token, value)
             }
@@ -303,7 +303,7 @@ export const Parameter: FC<ParameterProps> = ({
               <AssetRenderer
                 dataAttribute="proposal-treasury-asset"
                 showAssetLogo
-                asset={SupportedTokens[value]}
+                asset={value}
                 assetClassName="font-medium"
               />
             )}

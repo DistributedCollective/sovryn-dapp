@@ -17,7 +17,7 @@ import { NextBorrowInterestRate } from './components/NextBorrowInterestRate/Next
 
 const translation = translations.fixedInterestPage.borrowAssetsTable.columns;
 
-export const EXCLUDED_ASSETS = [SupportedTokens.rusdt];
+export const EXCLUDED_ASSETS = ['RUSDT'];
 
 export const COLUMNS_CONFIG = [
   {

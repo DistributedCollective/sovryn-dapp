@@ -33,7 +33,7 @@ export const Header: FC = () => {
     useWalletConnect();
   useWrongNetworkCheck();
 
-  const { balance } = useAssetBalance(SupportedTokens.rbtc);
+  const { balance } = useAssetBalance(COMMON_SYMBOLS.BTC);
 
   const hasRbtcBalance = useMemo(() => Number(balance) !== 0, [balance]);
 

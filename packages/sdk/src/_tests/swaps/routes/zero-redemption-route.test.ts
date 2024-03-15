@@ -21,8 +21,8 @@ describe('Zero Redemption Route', () => {
   beforeAll(async () => {
     const fixture = await makeChainFixture();
     route = zeroRedemptionSwapRoute(fixture.provider);
-    dllr = await makeTokenAddress(SupportedTokens.dllr);
-    zusd = await makeTokenAddress(SupportedTokens.zusd);
+    dllr = await makeTokenAddress(COMMON_SYMBOLS.DLLR);
+    zusd = await makeTokenAddress(COMMON_SYMBOLS.ZUSD);
   });
 
   it('has correct name', () => {

@@ -26,7 +26,7 @@ export const renderCalldata = (
 };
 
 export const renderSignature = (token: string) => {
-  return token === SupportedTokens.rbtc
+  return token === COMMON_SYMBOLS.BTC
     ? 'transferRbtc(address,uint256)'
     : 'transferTokens(address,address,uint256)';
 };

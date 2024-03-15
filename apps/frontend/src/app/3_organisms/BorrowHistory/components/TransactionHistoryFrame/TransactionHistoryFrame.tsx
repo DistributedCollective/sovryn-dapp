@@ -222,7 +222,7 @@ export const TransactionHistoryFrame: FC<PropsWithChildren> = ({
 
     if (troveOperation === TroveOperation.OpenTrove) {
       return `+${LIQUIDATION_RESERVE_AMOUNT} ${
-        isCsvExport ? '' : SupportedTokens.zusd
+        isCsvExport ? '' : COMMON_SYMBOLS.ZUSD
       }`;
     }
 
@@ -232,7 +232,7 @@ export const TransactionHistoryFrame: FC<PropsWithChildren> = ({
         redemption?.partial === true)
     ) {
       return `-${LIQUIDATION_RESERVE_AMOUNT} ${
-        isCsvExport ? '' : SupportedTokens.zusd
+        isCsvExport ? '' : COMMON_SYMBOLS.ZUSD
       }`;
     }
 
@@ -270,7 +270,7 @@ export const TransactionHistoryFrame: FC<PropsWithChildren> = ({
         {trove.debtChange.length ? (
           <AmountRenderer
             value={trove.debtChange}
-            suffix={SupportedTokens.zusd}
+            suffix={COMMON_SYMBOLS.ZUSD}
             precision={TOKEN_RENDER_PRECISION}
             dataAttribute="transaction-history-debt-change"
             prefix={renderSign(trove.debtChange, trove.troveOperation)}
@@ -289,7 +289,7 @@ export const TransactionHistoryFrame: FC<PropsWithChildren> = ({
         {trove.debtAfter.length ? (
           <AmountRenderer
             value={trove.debtAfter}
-            suffix={SupportedTokens.zusd}
+            suffix={COMMON_SYMBOLS.ZUSD}
             precision={TOKEN_RENDER_PRECISION}
             dataAttribute="transaction-history-new-debt"
           />
@@ -348,7 +348,7 @@ export const TransactionHistoryFrame: FC<PropsWithChildren> = ({
         <>
           <AmountRenderer
             value={borrowingFee}
-            suffix={SupportedTokens.zusd}
+            suffix={COMMON_SYMBOLS.ZUSD}
             precision={TOKEN_RENDER_PRECISION}
             dataAttribute="transaction-history-borrowing-fee"
           />{' '}
@@ -510,13 +510,13 @@ export const TransactionHistoryFrame: FC<PropsWithChildren> = ({
       newCollateralBalance: tx.collateralAfter,
       newCollateralBalanceToken: BITCOIN,
       debtChange: tx.debtChange,
-      debtChangeToken: getTokenDisplayName(SupportedTokens.zusd),
+      debtChangeToken: getTokenDisplayName(COMMON_SYMBOLS.ZUSD),
       liquidationReserveAmount: renderLiquidationReserve(tx, true),
-      liquidationReserveAmountToken: getTokenDisplayName(SupportedTokens.zusd),
+      liquidationReserveAmountToken: getTokenDisplayName(COMMON_SYMBOLS.ZUSD),
       newDebtBalance: tx.debtAfter,
-      newDebtBalanceToken: getTokenDisplayName(SupportedTokens.zusd),
+      newDebtBalanceToken: getTokenDisplayName(COMMON_SYMBOLS.ZUSD),
       originationFee: tx.borrowingFee || '-',
-      originationFeeToken: getTokenDisplayName(SupportedTokens.zusd),
+      originationFeeToken: getTokenDisplayName(COMMON_SYMBOLS.ZUSD),
       transactionID: tx.transaction.id,
     }));
   }, [

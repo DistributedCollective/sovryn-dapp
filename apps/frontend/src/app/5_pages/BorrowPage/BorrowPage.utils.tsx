@@ -4,12 +4,10 @@ import dayjs from 'dayjs';
 import { BigNumber } from 'ethers';
 import { t } from 'i18next';
 
-import { SupportedTokens } from '@sovryn/contracts';
 import { Decimal } from '@sovryn/utils';
 
 import { AmountRenderer } from '../../2_molecules/AmountRenderer/AmountRenderer';
 import {
-  BITCOIN,
   BTC_RENDER_PRECISION,
   TOKEN_RENDER_PRECISION,
 } from '../../../constants/currencies';
@@ -21,10 +19,12 @@ import {
 import { translations } from '../../../locales/i18n';
 import { isBitpro, isBtcBasedAsset } from '../../../utils/helpers';
 import { decimalic } from '../../../utils/math';
+import { COMMON_SYMBOLS, normalizeAsset } from '../../../utils/asset';
+import { RSK_CHAIN_ID } from '../../../config/chains';
 
 export const renderValue = (
   value: string,
-  token: SupportedTokens | string,
+  token: string,
   tokenPrecision?: number,
 ) =>
   decimalic(value).isZero() ? (
@@ -32,10 +32,10 @@ export const renderValue = (
   ) : (
     <AmountRenderer
       value={value}
-      suffix={token === SupportedTokens.rbtc ? BITCOIN : token}
+      suffix={token}
       precision={
         !tokenPrecision
-          ? token === SupportedTokens.rbtc
+          ? token === COMMON_SYMBOLS.BTC
             ? BTC_RENDER_PRECISION
             : TOKEN_RENDER_PRECISION
           : tokenPrecision
@@ -81,11 +81,9 @@ export const getOriginationFeeAmount = (
   originationFeeRate: Decimal,
 ) => collateralAmount.mul(originationFeeRate.div(100));
 
-export const getCollateralRatioThresholds = (
-  collateralToken: SupportedTokens,
-) => {
+export const getCollateralRatioThresholds = (collateralToken: string) => {
   const minimumCollateralRatio =
-    collateralToken === SupportedTokens.sov
+    collateralToken === COMMON_SYMBOLS.SOV
       ? MINIMUM_COLLATERAL_RATIO_LENDING_POOLS_SOV.mul(100)
       : MINIMUM_COLLATERAL_RATIO_LENDING_POOLS.mul(100);
 
@@ -97,21 +95,21 @@ export const getCollateralRatioThresholds = (
   };
 };
 
-export const normalizeToken = (token: string): SupportedTokens => {
+export const normalizeToken = (token: string): string => {
   if (isBtcBasedAsset(token)) {
-    return SupportedTokens.rbtc;
+    return COMMON_SYMBOLS.BTC;
   }
 
   if (isBitpro(token)) {
-    return SupportedTokens.bpro;
+    return 'BPRO';
   }
 
-  return SupportedTokens[token] || token;
+  return normalizeAsset(token, RSK_CHAIN_ID)?.symbol || token;
 };
 
-export const normalizeTokenWrapped = (token: string): SupportedTokens => {
+export const normalizeTokenWrapped = (token: string): string => {
   if (isBtcBasedAsset(token)) {
-    return SupportedTokens.wrbtc;
+    return 'WBTC';
   }
 
   return normalizeToken(token);

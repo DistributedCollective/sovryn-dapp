@@ -4,9 +4,9 @@ import { SupportedTokens } from '@sovryn/contracts';
 export const DEFAULT_SWAP_SLIPPAGE = 100; // 1%
 
 export const STABLECOINS: SupportedTokens[] = [
-  SupportedTokens.zusd,
-  SupportedTokens.dllr,
-  SupportedTokens.xusd,
-  SupportedTokens.doc,
-  SupportedTokens.rusdt,
+  COMMON_SYMBOLS.ZUSD,
+  COMMON_SYMBOLS.DLLR,
+  COMMON_SYMBOLS.XUSD,
+  'DOC',
+  'RUSDT',
 ];

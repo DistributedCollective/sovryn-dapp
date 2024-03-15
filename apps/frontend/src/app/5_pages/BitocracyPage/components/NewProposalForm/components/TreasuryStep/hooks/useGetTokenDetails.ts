@@ -18,7 +18,7 @@ export const useGetTokenDetails = (asset: SupportedTokens, address: string) => {
     }
 
     try {
-      if (asset === SupportedTokens.rbtc) {
+      if (asset === COMMON_SYMBOLS.BTC) {
         const balance = await getProvider().getBalance(address);
         const assetBalance = fromWei(balance);
         setAssetBalance(assetBalance);

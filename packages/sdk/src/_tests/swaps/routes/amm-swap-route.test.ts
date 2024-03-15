@@ -22,9 +22,9 @@ describe('AMM Route', () => {
   beforeAll(async () => {
     const fixture = await makeChainFixture();
     route = ammSwapRoute(fixture.provider);
-    sov = await makeTokenAddress(SupportedTokens.sov);
-    dllr = await makeTokenAddress(SupportedTokens.dllr);
-    rbtc = await makeTokenAddress(SupportedTokens.rbtc);
+    sov = await makeTokenAddress(COMMON_SYMBOLS.SOV);
+    dllr = await makeTokenAddress(COMMON_SYMBOLS.DLLR);
+    rbtc = await makeTokenAddress(COMMON_SYMBOLS.BTC);
   });
 
   it('has correct name', () => {

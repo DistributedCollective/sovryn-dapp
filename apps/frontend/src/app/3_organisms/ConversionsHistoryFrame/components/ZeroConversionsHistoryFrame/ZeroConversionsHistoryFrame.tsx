@@ -105,7 +105,7 @@ export const ZeroConversionsHistoryFrame: React.FC<PropsWithChildren> = ({
       sent: redemption.tokensActuallyRedeemed.length
         ? redemption.tokensActuallyRedeemed
         : '-',
-      sentToken: getTokenDisplayName(SupportedTokens.zusd),
+      sentToken: getTokenDisplayName(COMMON_SYMBOLS.ZUSD),
       received: redemption.collateralRedeemed.length
         ? redemption.collateralRedeemed
         : '-',

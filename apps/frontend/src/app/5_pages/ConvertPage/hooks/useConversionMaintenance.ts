@@ -38,15 +38,15 @@ export const useConversionMaintenance = (
     isLocked =
       isLocked ||
       (dllrLocked &&
-        [sourceToken, destinationToken].includes(SupportedTokens.dllr));
+        [sourceToken, destinationToken].includes(COMMON_SYMBOLS.DLLR));
 
-    if (destinationToken === SupportedTokens.rbtc) {
+    if (destinationToken === COMMON_SYMBOLS.BTC) {
       isLocked =
-        isLocked || (srcBNBSRBTCLocked && sourceToken === SupportedTokens.bnbs);
+        isLocked || (srcBNBSRBTCLocked && sourceToken === 'BNB');
       isLocked =
-        isLocked || (srcDLLRRBTCLocked && sourceToken === SupportedTokens.dllr);
+        isLocked || (srcDLLRRBTCLocked && sourceToken === COMMON_SYMBOLS.DLLR);
       isLocked =
-        isLocked || (srcETHSRBTCLocked && sourceToken === SupportedTokens.eths);
+        isLocked || (srcETHSRBTCLocked && sourceToken === 'ETH');
       isLocked =
         isLocked || (srcFISHRBTCLocked && sourceToken === SupportedTokens.fish);
       isLocked =
@@ -54,7 +54,7 @@ export const useConversionMaintenance = (
       isLocked =
         isLocked || (srcRIFRBTCLocked && sourceToken === SupportedTokens.rif);
       isLocked =
-        isLocked || (srcSOVRBTCLocked && sourceToken === SupportedTokens.sov);
+        isLocked || (srcSOVRBTCLocked && sourceToken === COMMON_SYMBOLS.SOV);
     }
 
     return isLocked;

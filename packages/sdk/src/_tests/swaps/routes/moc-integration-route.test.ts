@@ -31,10 +31,10 @@ describe('Moc Integration Route', () => {
   beforeAll(async () => {
     const fixture = await makeChainFixture();
     route = mocIntegrationSwapRoute(fixture.provider);
-    dllr = await makeTokenAddress(SupportedTokens.dllr);
+    dllr = await makeTokenAddress(COMMON_SYMBOLS.DLLR);
     moc = await makeTokenAddress(SupportedTokens.moc);
     masset = (await getProtocolContract('massetManager')).address;
-    const { address, abi } = await getTokenContract(SupportedTokens.doc);
+    const { address, abi } = await getTokenContract('DOC');
     doc = new Contract(address, abi, fixture.provider);
 
     balance = await doc.balanceOf(masset);

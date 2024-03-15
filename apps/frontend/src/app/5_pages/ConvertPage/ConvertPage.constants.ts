@@ -23,23 +23,23 @@ export const SMART_ROUTER_RSK = new SmartRouter(
 );
 
 export const SMART_ROUTER_STABLECOINS = [
-  SupportedTokens.zusd,
-  SupportedTokens.dllr,
-  SupportedTokens.xusd,
-  SupportedTokens.doc,
-  SupportedTokens.rdoc,
-  SupportedTokens.rusdt,
+  COMMON_SYMBOLS.ZUSD,
+  COMMON_SYMBOLS.DLLR,
+  COMMON_SYMBOLS.XUSD,
+  'DOC',
+  'RDOC',
+  'RUSDT',
 ];
 
-export const BASSETS = [SupportedTokens.zusd, SupportedTokens.doc];
-export const MASSET = SupportedTokens.dllr;
+export const BASSETS = [COMMON_SYMBOLS.ZUSD, 'DOC'];
+export const MASSET = COMMON_SYMBOLS.DLLR;
 
 export const SMART_ROUTER_ALLOWED_TOKENS = [...BASSETS, MASSET];
 
 export const DEFAULT_SWAP_ENTRIES: Partial<Record<ChainIds, SupportedTokens>> =
   {
-    [ChainIds.RSK_MAINNET]: SupportedTokens.dllr,
-    [ChainIds.RSK_TESTNET]: SupportedTokens.dllr,
-    [ChainIds.BOB_MAINNET]: SupportedTokens.btc,
-    [ChainIds.BOB_TESTNET]: SupportedTokens.btc,
+    [ChainIds.RSK_MAINNET]: COMMON_SYMBOLS.DLLR,
+    [ChainIds.RSK_TESTNET]: COMMON_SYMBOLS.DLLR,
+    [ChainIds.BOB_MAINNET]: COMMON_SYMBOLS.BTC,
+    [ChainIds.BOB_TESTNET]: COMMON_SYMBOLS.BTC,
   };

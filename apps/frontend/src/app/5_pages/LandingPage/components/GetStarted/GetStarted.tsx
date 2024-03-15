@@ -2,7 +2,6 @@ import React, { FC, useCallback, useMemo } from 'react';
 
 import { t } from 'i18next';
 
-import { SupportedTokens } from '@sovryn/contracts';
 import { Button, ButtonSize, ButtonStyle, Paragraph } from '@sovryn/ui';
 
 import { ConnectWalletButton } from '../../../../2_molecules';
@@ -12,13 +11,14 @@ import { translations } from '../../../../../locales/i18n';
 import { sharedState } from '../../../../../store/rxjs/shared-state';
 import { GETTING_STARTED_URL } from './GetStarted.constants';
 import { GetStartedSteps } from './components/GetStartedSteps/GetStartedSteps';
+import { COMMON_SYMBOLS } from '../../../../../utils/asset';
 
 const pageTranslations = translations.landingPage.getStarted;
 
 export const GetStarted: FC = () => {
   const { connectWallet, disconnectWallet, account, pending } =
     useWalletConnect();
-  const { balance } = useAssetBalance(SupportedTokens.rbtc);
+  const { balance } = useAssetBalance(COMMON_SYMBOLS.BTC);
 
   const hasRbtcBalance = useMemo(() => Number(balance) !== 0, [balance]);
 

@@ -30,7 +30,7 @@ export const COLUMNS_CONFIG = [
       <AmountRenderer
         value={tx.amount || 0}
         prefix="+"
-        suffix={getTokenDisplayName(SupportedTokens.sov)}
+        suffix={getTokenDisplayName(COMMON_SYMBOLS.SOV)}
       />
     ),
     sortable: true,

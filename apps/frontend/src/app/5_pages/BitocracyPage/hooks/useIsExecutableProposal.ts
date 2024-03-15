@@ -7,7 +7,7 @@ import { Proposal } from '../../../../utils/graphql/rsk/generated';
 import { SIGNATURE_SYMBOL } from '../components/Proposals/Proposals.constants';
 
 export const useIsExecutableProposal = (proposal: Proposal) => {
-  const sovContract = useGetTokenContract(SupportedTokens.sov);
+  const sovContract = useGetTokenContract(COMMON_SYMBOLS.SOV);
 
   const isExecutableProposal = useMemo(() => {
     if (

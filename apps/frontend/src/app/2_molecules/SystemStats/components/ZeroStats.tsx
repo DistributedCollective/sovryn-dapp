@@ -82,7 +82,7 @@ export const ZeroStats: FC<ZeroStatsProps> = ({ className, dataAttribute }) => {
       zusdSupply ? (
         <AmountRenderer
           value={zusdSupply}
-          suffix={SupportedTokens.zusd}
+          suffix={COMMON_SYMBOLS.ZUSD}
           precision={USD_DISPLAY_PRECISION}
           showRoundingPrefix={false}
           dataAttribute="zero-statistics-zusd-supply"
@@ -99,7 +99,7 @@ export const ZeroStats: FC<ZeroStatsProps> = ({ className, dataAttribute }) => {
         <>
           <AmountRenderer
             value={zusdInStabilityPool}
-            suffix={SupportedTokens.zusd}
+            suffix={COMMON_SYMBOLS.ZUSD}
             precision={USD_DISPLAY_PRECISION}
             showRoundingPrefix={false}
             dataAttribute="zero-statistics-zusd-in-stability-pool"

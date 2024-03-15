@@ -3,7 +3,6 @@ import { useCallback } from 'react';
 import { Contract } from 'ethers';
 import { t } from 'i18next';
 
-import { SupportedTokens, TokenDetailsData } from '@sovryn/contracts';
 import { Decimal } from '@sovryn/utils';
 
 import {
@@ -19,6 +18,8 @@ import { asyncCall } from '../../../../store/rxjs/provider-cache';
 import { LendingPoolDictionary } from '../../../../utils/LendingPoolDictionary';
 import { prepareApproveTransaction } from '../../../../utils/transactions';
 import { lendingBalanceOf } from '../utils/contract-calls';
+import { AssetDetailsData } from '@sovryn/contracts';
+import { COMMON_SYMBOLS } from '../../../../utils/asset';
 
 export const useHandleLending = (
   onBegin: () => void,
@@ -31,7 +32,7 @@ export const useHandleLending = (
   const handleDeposit = useCallback(
     async (
       amount: Decimal,
-      tokenDetails: TokenDetailsData,
+      tokenDetails: AssetDetailsData,
       poolTokenContract: Contract,
     ) => {
       if (!account || !signer || !tokenDetails || !poolTokenContract) {
@@ -42,7 +43,7 @@ export const useHandleLending = (
       const poolUsesLM = pool?.useLM || false;
 
       const transactions: Transaction[] = [];
-      if (tokenDetails.symbol !== SupportedTokens.rbtc) {
+      if (!tokenDetails.isNative) {
         const approve = await prepareApproveTransaction({
           token: tokenDetails.symbol,
           amount: amount.toBigNumber().toString(),
@@ -57,7 +58,7 @@ export const useHandleLending = (
 
       // make sure contract has signer.
       const contract = poolTokenContract.connect(signer);
-      const native = tokenDetails.symbol === SupportedTokens.rbtc;
+      const native = tokenDetails.symbol === COMMON_SYMBOLS.BTC;
 
       transactions.push({
         title: t(translations.lendingTx.deposit, {
@@ -101,7 +102,7 @@ export const useHandleLending = (
   const handleWithdraw = useCallback(
     async (
       amount: Decimal,
-      tokenDetails: TokenDetailsData,
+      tokenDetails: AssetDetailsData,
       poolTokenContract: Contract,
     ) => {
       if (!account || !signer || !tokenDetails || !poolTokenContract) {
@@ -117,7 +118,7 @@ export const useHandleLending = (
       const transactions: Transaction[] = [];
 
       // todo: we may need to approve iToken spending if poolUsesLM is false.
-      const native = tokenDetails.symbol === SupportedTokens.rbtc;
+      const native = tokenDetails.symbol === COMMON_SYMBOLS.BTC;
 
       const assetBalance = await asyncCall(
         `poolToken/${poolTokenContract.address}/assetBalanceOf/${account}`,

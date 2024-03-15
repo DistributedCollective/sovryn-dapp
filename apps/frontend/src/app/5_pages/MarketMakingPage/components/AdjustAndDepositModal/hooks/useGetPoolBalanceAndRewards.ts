@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
 
-import { SupportedTokens } from '@sovryn/contracts';
 import { Decimal } from '@sovryn/utils';
 
 import { RSK_CHAIN_ID } from '../../../../../../config/chains';
@@ -18,7 +17,7 @@ export const useGetPoolBalanceAndRewards = (
   const [weeklyRewardsEstimation, setWeeklyRewardsEstimation] =
     useState<Decimal>(Decimal.ZERO);
 
-  const poolContract = useGetTokenContract(SupportedTokens.wrbtc, RSK_CHAIN_ID);
+  const poolContract = useGetTokenContract('WBTC', RSK_CHAIN_ID);
 
   const tokenContract = useGetTokenContract(pool.assetA, RSK_CHAIN_ID);
   const { data: tokenPrice } = useGetTokenPrice(tokenContract?.address || '');

@@ -67,6 +67,7 @@ import { useGetMaxRepayAmount } from './hooks/useGetMaxRepayAmount';
 import { useGetMaximumBorrowAmount } from './hooks/useGetMaximumBorrowAmount';
 import { useRepayLoan } from './hooks/useRepayLoan';
 import { useWithdrawCollateral } from './hooks/useWithdrawCollateral';
+import { COMMON_SYMBOLS } from '../../../../../utils/asset';
 
 const pageTranslations = translations.fixedInterestPage.adjustLoanDialog;
 
@@ -310,7 +311,7 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
 
   const minimumCollateralRatio = useMemo(
     () =>
-      collateralToken === SupportedTokens.sov
+      collateralToken === COMMON_SYMBOLS.SOV
         ? MINIMUM_COLLATERAL_RATIO_LENDING_POOLS_SOV
         : MINIMUM_COLLATERAL_RATIO_LENDING_POOLS,
     [collateralToken],
@@ -775,7 +776,7 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
           <AssetRenderer
             dataAttribute="adjust-loan-collateral-asset"
             showAssetLogo
-            asset={SupportedTokens[collateralToken]}
+            asset={collateralToken}
             className="min-w-24 h-10 rounded bg-gray-60 items-center px-4 mr-0"
           />
         </div>

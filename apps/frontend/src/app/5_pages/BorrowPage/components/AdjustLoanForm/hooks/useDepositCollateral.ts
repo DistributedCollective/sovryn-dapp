@@ -34,7 +34,7 @@ export const useDepositCollateral = () => {
       }
 
       const weiDepositAmount = toWei(depositAmount);
-      const isDepositTokenRbtc = depositToken === SupportedTokens.rbtc;
+      const isDepositTokenRbtc = depositToken === COMMON_SYMBOLS.BTC;
 
       const transactions: Transaction[] = [];
 

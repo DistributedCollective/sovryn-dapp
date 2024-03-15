@@ -111,7 +111,7 @@ export const ExtendLoanForm: FC<ExtendLoanFormProps> = ({ loan }) => {
 
   const minimumCollateralRatio = useMemo(
     () =>
-      collateralToken === SupportedTokens.sov
+      collateralToken === COMMON_SYMBOLS.SOV
         ? MINIMUM_COLLATERAL_RATIO_LENDING_POOLS_SOV
         : MINIMUM_COLLATERAL_RATIO_LENDING_POOLS,
     [collateralToken],

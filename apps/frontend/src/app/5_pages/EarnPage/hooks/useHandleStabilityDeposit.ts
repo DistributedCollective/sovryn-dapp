@@ -5,7 +5,6 @@ import { useCallback } from 'react';
 import { BigNumberish, ethers } from 'ethers';
 import { t } from 'i18next';
 
-import { SupportedTokens } from '@sovryn/contracts';
 import { getContract } from '@sovryn/contracts';
 import { Decimal } from '@sovryn/utils';
 
@@ -19,22 +18,23 @@ import { getTokenDisplayName } from '../../../../constants/tokens';
 import { useTransactionContext } from '../../../../contexts/TransactionContext';
 import { useAccount } from '../../../../hooks/useAccount';
 import { translations } from '../../../../locales/i18n';
-import { getRskChainId } from '../../../../utils/chain';
 import {
   getPermitTransferFrom,
   permitHandler,
   prepareApproveTransaction,
   preparePermit2Transaction,
 } from '../../../../utils/transactions';
+import { COMMON_SYMBOLS } from '../../../../utils/asset';
+import { RSK_CHAIN_ID } from '../../../../config/chains';
 
 export const useHandleStabilityDeposit = (
-  token: SupportedTokens,
+  token: string,
   amount: Decimal,
   hasRewardsToClaim: boolean,
   isDeposit: boolean,
   onComplete: () => void,
 ) => {
-  const isDllrToken = token === SupportedTokens.dllr;
+  const isDllrToken = token === COMMON_SYMBOLS.DLLR;
 
   const { signer } = useAccount();
   const { setTransactions, setIsOpen, setTitle } = useTransactionContext();
@@ -43,7 +43,7 @@ export const useHandleStabilityDeposit = (
     const { address, abi: massetManagerAbi } = await getContract(
       'stabilityPool',
       'zero',
-      getRskChainId(),
+      RSK_CHAIN_ID,
     );
 
     return new ethers.Contract(address, massetManagerAbi, signer);
@@ -111,7 +111,7 @@ export const useHandleStabilityDeposit = (
 
     if (isDllrToken) {
       const approveTx = await prepareApproveTransaction({
-        token: SupportedTokens.dllr,
+        token: COMMON_SYMBOLS.DLLR,
         spender: PERMIT2_ADDRESS,
         amount: weiAmount,
         signer,

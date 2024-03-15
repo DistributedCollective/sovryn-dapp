@@ -2,7 +2,6 @@ import { useCallback, useEffect, useState } from 'react';
 
 import { Contract } from 'ethers';
 
-import { SupportedTokens, getTokenContract } from '@sovryn/contracts';
 import { getProvider } from '@sovryn/ethers-provider';
 import { Decimal } from '@sovryn/utils';
 
@@ -10,6 +9,8 @@ import { RSK_CHAIN_ID } from '../../../../../../config/chains';
 
 import { asyncCall } from '../../../../../../store/rxjs/provider-cache';
 import { AmmLiquidityPool } from '../../../utils/AmmLiquidityPool';
+import { getAssetData } from '@sovryn/contracts';
+import { COMMON_SYMBOLS } from '../../../../../../utils/asset';
 
 export const useGetPoolsBalance = (pool: AmmLiquidityPool) => {
   const [poolBalanceA, setPoolBalanceA] = useState(Decimal.ZERO);
@@ -18,9 +19,9 @@ export const useGetPoolsBalance = (pool: AmmLiquidityPool) => {
   const fetchBalance = useCallback(async () => {
     const [loanTokenContract, sovTokenContract, wrbtcContract] =
       await Promise.all([
-        getTokenContract(pool.assetA, RSK_CHAIN_ID),
-        getTokenContract(SupportedTokens.sov, RSK_CHAIN_ID),
-        getTokenContract(SupportedTokens.wrbtc, RSK_CHAIN_ID),
+        getAssetData(pool.assetA, RSK_CHAIN_ID),
+        getAssetData(COMMON_SYMBOLS.SOV, RSK_CHAIN_ID),
+        getAssetData('WBTC', RSK_CHAIN_ID),
       ]);
 
     const contractA = new Contract(

@@ -3,8 +3,6 @@ import { useEffect, useState } from 'react';
 import { Contract } from 'ethers/lib/ethers';
 import { Subscription } from 'zen-observable-ts';
 
-import { getTokenDetails } from '@sovryn/contracts';
-import { SupportedTokens } from '@sovryn/contracts';
 import { getProvider } from '@sovryn/ethers-provider';
 import { Decimal } from '@sovryn/utils';
 
@@ -15,12 +13,13 @@ import {
   observeCall,
   startCall,
 } from '../../../../store/rxjs/provider-cache';
-import { getRskChainId } from '../../../../utils/chain';
 import { EcosystemDataType } from '../types';
+import { getAssetData } from '@sovryn/contracts';
+import { RSK_CHAIN_ID } from '../../../../config/chains';
 
 export const useGetTotalSupply = (
-  asset: SupportedTokens,
-  chainId = getRskChainId(),
+  asset: string,
+  chainId = RSK_CHAIN_ID,
 ): CacheCallResponse<Decimal> => {
   const { value: block } = useBlockNumber(chainId);
   const [state, setState] = useState<CacheCallResponse<Decimal>>({
@@ -32,7 +31,7 @@ export const useGetTotalSupply = (
   useEffect(() => {
     let sub: Subscription;
     const getTotalSupply = async () => {
-      const tokenDetails = await getTokenDetails(asset, chainId);
+      const tokenDetails = await getAssetData(asset, chainId);
       const hashedArgs = idHash([
         tokenDetails.address,
         EcosystemDataType.totalSupply,

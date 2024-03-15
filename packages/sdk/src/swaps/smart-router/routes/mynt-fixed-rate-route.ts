@@ -54,10 +54,10 @@ export const myntFixedRateRoute: SwapRouteFunction = (
       if (!pairCache) {
         const chainId = await getChainId();
         const mynt = (
-          await getTokenContract(SupportedTokens.mynt, chainId)
+          await getTokenContract('MYNT', chainId)
         ).address.toLowerCase();
         const sov = (
-          await getTokenContract(SupportedTokens.sov, chainId)
+          await getTokenContract(COMMON_SYMBOLS.SOV, chainId)
         ).address.toLowerCase();
         pairCache = new Map<string, string[]>([[mynt, [sov]]]);
       }

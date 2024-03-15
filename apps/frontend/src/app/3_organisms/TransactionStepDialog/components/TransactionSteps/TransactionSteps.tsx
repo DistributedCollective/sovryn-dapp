@@ -59,7 +59,7 @@ export const TransactionSteps: FC<TransactionStepsProps> = ({
   const [error, setError] = useState(false);
   const [estimatedGasFee, setEstimatedGasFee] = useState(0);
   const { balance: rbtcBalance, loading } = useAssetBalance(
-    SupportedTokens.rbtc,
+    COMMON_SYMBOLS.BTC,
   );
   const { account } = useAccount();
 

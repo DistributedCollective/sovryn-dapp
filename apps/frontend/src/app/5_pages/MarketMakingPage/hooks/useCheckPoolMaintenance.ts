@@ -1,7 +1,5 @@
 import { useMemo } from 'react';
 
-import { SupportedTokens } from '@sovryn/contracts';
-
 import { useMaintenance } from '../../../../hooks/useMaintenance';
 import { AmmLiquidityPool } from '../utils/AmmLiquidityPool';
 
@@ -10,17 +8,17 @@ export const useCheckPoolMaintenance = (pool: AmmLiquidityPool) => {
 
   return useMemo(() => {
     switch (pool.assetA) {
-      case SupportedTokens.dllr:
+      case 'DLLR':
         return checkMaintenance(States.D2_MARKET_MAKING_DLLR);
-      case SupportedTokens.fish:
+      case 'FISH':
         return checkMaintenance(States.D2_MARKET_MAKING_FISH);
-      case SupportedTokens.moc:
+      case 'MOC':
         return checkMaintenance(States.D2_MARKET_MAKING_MOC);
-      case SupportedTokens.mynt:
+      case 'MYNT':
         return checkMaintenance(States.D2_MARKET_MAKING_MYNT);
-      case SupportedTokens.rif:
+      case 'RIF':
         return checkMaintenance(States.D2_MARKET_MAKING_RIF);
-      case SupportedTokens.sov:
+      case 'SOV':
         return checkMaintenance(States.D2_MARKET_MAKING_SOV);
       default:
         return false;

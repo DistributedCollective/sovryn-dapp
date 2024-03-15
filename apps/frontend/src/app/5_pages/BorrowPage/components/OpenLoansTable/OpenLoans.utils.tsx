@@ -42,11 +42,11 @@ export const generateRowTitle = (item: LoanItem) => (
 
 export const convertLoanTokenToSupportedAssets = (loanToken: string) => {
   if (isBtcBasedAsset(loanToken)) {
-    return SupportedTokens.rbtc;
+    return COMMON_SYMBOLS.BTC;
   }
 
   if (isBitpro(loanToken)) {
-    return SupportedTokens.bpro;
+    return 'BPRO';
   }
 
   return loanToken.toLowerCase() as SupportedTokens;

@@ -33,12 +33,12 @@ export const CurrentLoanData: FC<CurrentLoanDataProps> = ({
   className,
 }) => {
   const isDebtRbtc = useMemo(
-    () => debtToken === SupportedTokens.rbtc,
+    () => debtToken === COMMON_SYMBOLS.BTC,
     [debtToken],
   );
 
   const isCollateralRbtc = useMemo(
-    () => collateralToken === SupportedTokens.rbtc,
+    () => collateralToken === COMMON_SYMBOLS.BTC,
     [collateralToken],
   );
 

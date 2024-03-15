@@ -160,7 +160,7 @@ export const useHandleConversion = (
 
     if (requiresPermit2) {
       const approveTx = await prepareApproveTransaction({
-        token: SupportedTokens.dllr,
+        token: COMMON_SYMBOLS.DLLR,
         spender: PERMIT2_ADDRESS,
         amount: weiAmount,
         signer,

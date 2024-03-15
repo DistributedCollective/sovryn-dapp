@@ -923,7 +923,7 @@
             "tables": {
                 "trading": {
                     "title": "Trade",
-                    "item1": "Provide liquidity for SOV/DLLR pool, per $1 value",
+                    "item1": "Provide liquidity for SOV or DLLR AMMs, per $1 value",
                     "item2": "Any AMM trade, per $1 value",
                     "item3": "Import stablecoins, per $1 value",
                     "item4": "Weekly top  importer",

@@ -1179,7 +1179,9 @@
                 "currentPrice": "Current {{token}} price",
                 "lpFeeRate": "LP fee rate"
             },
-            "rangeWidth": "Range width"
+            "rangeWidth": "Range width",
+            "minPrice": "Min price",
+            "maxPrice": "Max price"
         }
     },
 

@@ -1,8 +1,23 @@
 import React, { FC, useCallback } from 'react';
 
+import { t } from 'i18next';
+
+import { translations } from '../../../../../../../../../locales/i18n';
 import { Input } from './components/Input/Input';
 
-export const UnbalancedRange: FC = () => {
+type UnbalancedRangeProps = {
+  lowerBoundaryPrice: number;
+  upperBoundaryPrice: number;
+  lowerBoundaryPercentage: number;
+  upperBoundaryPercentage: number;
+};
+
+export const UnbalancedRange: FC<UnbalancedRangeProps> = ({
+  lowerBoundaryPercentage,
+  lowerBoundaryPrice,
+  upperBoundaryPercentage,
+  upperBoundaryPrice,
+}) => {
   const onMinPriceMinusClick = useCallback(() => {
     console.log(`min price minus click`);
   }, []);
@@ -22,17 +37,20 @@ export const UnbalancedRange: FC = () => {
   return (
     <div className="flex justify-between px-4">
       <Input
+        label={t(translations.bobMarketMakingPage.depositModal.minPrice)}
         onMinusClick={onMinPriceMinusClick}
         onPlusClick={onMinPricePlusClick}
-        value={53410.56}
-        range={10}
+        value={lowerBoundaryPrice}
+        range={lowerBoundaryPercentage}
+        isLowerBoundary
       />
 
       <Input
+        label={t(translations.bobMarketMakingPage.depositModal.maxPrice)}
         onMinusClick={onMaxPriceMinusClick}
         onPlusClick={onMaxPricePlusClick}
-        value={53410.56}
-        range={10}
+        value={upperBoundaryPrice}
+        range={upperBoundaryPercentage}
       />
     </div>
   );

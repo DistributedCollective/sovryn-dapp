@@ -1,13 +1,9 @@
 import { Contract, constants, providers } from 'ethers';
 
-import {
-  SupportedTokens,
-  getProtocolContract,
-  getTokenContract,
-} from '@sovryn/contracts';
+import { getAssetContract, getProtocolContract } from '@sovryn/contracts';
 import { ChainId, ChainIds, numberToChainId } from '@sovryn/ethers-provider';
 
-import { STABLECOINS } from '../../../constants';
+import { RSK_STABLECOINS } from '../../../constants';
 import { SovrynErrorCode, makeError } from '../../../errors/errors';
 import {
   canSwapPair,
@@ -76,7 +72,7 @@ export const ammSwapRoute: SwapRouteFunction = (
     token === constants.AddressZero ||
     token ===
       (
-        await getTokenContract('WBTC', await getChainId())
+        await getAssetContract('WBTC', await getChainId())
       ).address.toLowerCase();
 
   const validatedTokenAddress = async (token: string) => {
@@ -86,8 +82,7 @@ export const ammSwapRoute: SwapRouteFunction = (
         return wrbtcAddress;
       }
       const chainId = await getChainId();
-      wrbtcAddress = (await getTokenContract('WBTC', chainId))
-        .address;
+      wrbtcAddress = (await getAssetContract('WBTC', chainId)).address;
       return wrbtcAddress;
     }
 
@@ -102,24 +97,24 @@ export const ammSwapRoute: SwapRouteFunction = (
         const chainId = await getChainId();
 
         const swapTokens = [
-          COMMON_SYMBOLS.BTC,
-          COMMON_SYMBOLS.DLLR,
-          SupportedTokens.fish,
-          SupportedTokens.moc,
-          SupportedTokens.rif,
-          COMMON_SYMBOLS.SOV,
+          'BTC',
+          'DLLR',
+          'FISH',
+          'MOC',
+          'RIF',
+          'SOV',
           'BNB',
           'DOC',
           'RUSDT',
           'ETH',
-          COMMON_SYMBOLS.XUSD,
+          'XUSD',
           'MYNT',
           'BPRO',
         ];
 
         const contracts = (
           await Promise.all(
-            swapTokens.map(token => getTokenContract(token, chainId)),
+            swapTokens.map(token => getAssetContract(token, chainId)),
           )
         ).map((contract, index) => ({
           address: contract.address.toLowerCase(),
@@ -129,7 +124,7 @@ export const ammSwapRoute: SwapRouteFunction = (
         const pairs = new Map<string, string[]>();
 
         for (const contract of contracts) {
-          const isStablecoin = STABLECOINS.find(
+          const isStablecoin = RSK_STABLECOINS.find(
             token => token === contract.token,
           );
 
@@ -137,7 +132,8 @@ export const ammSwapRoute: SwapRouteFunction = (
             .filter(a => {
               return (
                 a.address !== contract.address &&
-                (!isStablecoin || !STABLECOINS.find(token => token === a.token))
+                (!isStablecoin ||
+                  !RSK_STABLECOINS.find(token => token === a.token))
               );
             })
             .map(contract => contract.address);

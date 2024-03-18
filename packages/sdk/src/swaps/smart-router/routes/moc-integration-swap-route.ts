@@ -1,10 +1,6 @@
 import { Contract, constants, providers } from 'ethers';
 
-import {
-  SupportedTokens,
-  getProtocolContract,
-  getTokenContract,
-} from '@sovryn/contracts';
+import { getAssetContract, getProtocolContract } from '@sovryn/contracts';
 import { ChainId, ChainIds, numberToChainId } from '@sovryn/ethers-provider';
 
 import { SovrynErrorCode, makeError } from '../../../errors/errors';
@@ -35,7 +31,7 @@ export const mocIntegrationSwapRoute: SwapRouteFunction = (
     if (
       areAddressesEqual(
         entry,
-        (await getTokenContract(COMMON_SYMBOLS.DLLR, chainId)).address,
+        (await getAssetContract('DLLR', chainId)).address,
       ) &&
       areAddressesEqual(destination, constants.AddressZero)
     ) {
@@ -107,7 +103,7 @@ export const mocIntegrationSwapRoute: SwapRouteFunction = (
 
   const getDocContract = async () => {
     if (!docContract) {
-      const { address, abi } = await getTokenContract(
+      const { address, abi } = await getAssetContract(
         'DOC',
         await getChainId(),
       );
@@ -127,7 +123,7 @@ export const mocIntegrationSwapRoute: SwapRouteFunction = (
       const chainId = await getChainId();
 
       const dllr = (
-        await getTokenContract(COMMON_SYMBOLS.DLLR, chainId)
+        await getAssetContract('DLLR', chainId)
       ).address.toLowerCase();
       const rbtc = constants.AddressZero;
 

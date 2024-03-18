@@ -1,7 +1,7 @@
 import { BigNumber, utils, providers, constants } from 'ethers';
 
 import { CrocEnv } from '@sovryn/ambient-sdk';
-import { getTokenContract } from '@sovryn/contracts';
+import { getAssetContract } from '@sovryn/contracts';
 import { ChainIds } from '@sovryn/ethers-provider';
 import { numberToChainId } from '@sovryn/ethers-provider';
 
@@ -44,10 +44,10 @@ export const ambientRoute: SwapRouteFunction = (
     pairs: async () => {
       const chainId = await getChainId();
       console.log('chainId', chainId);
-      const btc = await getTokenContract('btc', chainId);
-      const sov = await getTokenContract('sov', chainId);
-      const usdc = await getTokenContract('usdc', chainId);
-      const wbtc = await getTokenContract('wbtc', chainId);
+      const btc = await getAssetContract('BTC', chainId);
+      const sov = await getAssetContract('SOV', chainId);
+      const usdc = await getAssetContract('USDC', chainId);
+      const wbtc = await getAssetContract('WBTC', chainId);
 
       return new Map<string, string[]>([
         [btc.address, [sov.address, usdc.address, wbtc.address]],

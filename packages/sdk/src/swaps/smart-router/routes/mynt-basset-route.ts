@@ -1,10 +1,6 @@
 import { BigNumber, Contract, constants, providers } from 'ethers';
 
-import {
-  SupportedTokens,
-  getProtocolContract,
-  getTokenContract,
-} from '@sovryn/contracts';
+import { getAssetContract, getProtocolContract } from '@sovryn/contracts';
 import { ChainId, ChainIds, numberToChainId } from '@sovryn/ethers-provider';
 
 import { SovrynErrorCode, makeError } from '../../../errors/errors';
@@ -35,9 +31,7 @@ export const myntBassetRoute: SwapRouteFunction = (
   const getDllrToken = async () => {
     if (!dllr) {
       const chainId = await getChainId();
-      dllr = (
-        await getTokenContract(COMMON_SYMBOLS.DLLR, chainId)
-      ).address.toLowerCase();
+      dllr = (await getAssetContract('DLLR', chainId)).address.toLowerCase();
     }
     return dllr;
   };
@@ -65,10 +59,10 @@ export const myntBassetRoute: SwapRouteFunction = (
       const chainId = await getChainId();
       const dllr = await getDllrToken();
       const zusd = (
-        await getTokenContract(COMMON_SYMBOLS.ZUSD, chainId)
+        await getAssetContract('ZUSD', chainId)
       ).address.toLowerCase();
       const doc = (
-        await getTokenContract('DOC', chainId)
+        await getAssetContract('DOC', chainId)
       ).address.toLowerCase();
 
       pairCache = new Map<string, string[]>([

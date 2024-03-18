@@ -4,7 +4,9 @@ import { AssetDetailsData, getAssetData } from '@sovryn/contracts';
 
 import { RSK_CHAIN_ID } from '../config/chains';
 
-export const useTokenDetailsByAsset = (asset?: string) => {
+export const useTokenDetailsByAsset = (
+  asset?: string,
+): AssetDetailsData | undefined => {
   const [token, setToken] = useState<AssetDetailsData | undefined>();
 
   useEffect(() => {

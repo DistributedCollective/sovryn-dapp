@@ -29,18 +29,7 @@ export const PriceRange: FC = () => {
           />
         </div>
 
-        <div>
-          {isBalanced ? (
-            <BalancedRange />
-          ) : (
-            <UnbalancedRange
-              lowerBoundaryPercentage={10}
-              lowerBoundaryPrice={53410.56}
-              upperBoundaryPercentage={10}
-              upperBoundaryPrice={53410.56}
-            />
-          )}
-        </div>
+        <div>{isBalanced ? <BalancedRange /> : <UnbalancedRange />}</div>
       </Accordion>
     </div>
   );

@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useMemo, useState } from 'react';
+import React, { FC, useCallback, useMemo } from 'react';
 
 import classNames from 'classnames';
 import { t } from 'i18next';
@@ -12,10 +12,11 @@ import {
 } from '@sovryn/ui';
 
 import { translations } from '../../../../../../../../../locales/i18n';
+import { useDepositContext } from '../../../../contexts/BobDepositModalContext';
 import { BUTTON_OPTIONS, INFINITE } from './BalancedRange.constants';
 
 export const BalancedRange: FC = () => {
-  const [rangeWidth, setRangeWidth] = useState(BUTTON_OPTIONS[0]);
+  const { rangeWidth, setRangeWidth } = useDepositContext();
 
   const isInfiniteRange = useMemo(() => rangeWidth === 100, [rangeWidth]);
 
@@ -28,9 +29,12 @@ export const BalancedRange: FC = () => {
     [rangeWidth],
   );
 
-  const onRangeChange = useCallback((value: number) => {
-    setRangeWidth(value);
-  }, []);
+  const onRangeChange = useCallback(
+    (value: number) => {
+      setRangeWidth(value);
+    },
+    [setRangeWidth],
+  );
 
   return (
     <>

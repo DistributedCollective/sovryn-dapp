@@ -45,7 +45,7 @@ export class LendingPoolDictionary {
         false,
       ),
     ],
-    ['RUSDT', new LendingPool('USDT', [], false, true)],
+    ['RUSDT', new LendingPool('RUSDT', [], false, true)],
     [
       'BPRO',
       new LendingPool(

@@ -1,16 +1,16 @@
 import { useMemo } from 'react';
 
-import { SupportedTokens } from '@sovryn/contracts';
 import { Decimal } from '@sovryn/utils';
 
 import { useMaxAssetBalance } from '../../../../../../hooks/useMaxAssetBalance';
 import { useGetOriginationFee } from '../../../hooks/useGetOriginationFee';
 
 export const useGetMaximumCollateralAmount = (
-  asset: SupportedTokens,
+  asset: string,
   currentCollateral?: Decimal,
 ) => {
   const { weiBalance: assetBalance, loading } = useMaxAssetBalance(asset);
+
   const originationFeeRate = useGetOriginationFee();
 
   const collateralAmount = useMemo(

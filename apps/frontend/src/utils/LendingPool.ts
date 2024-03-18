@@ -1,9 +1,11 @@
 import { AssetDetails } from '@sovryn/contracts';
+
 import { RSK_CHAIN_ID } from '../config/chains';
+
 import { normalizeAsset } from './asset';
 
 export class LendingPool {
-  private _details;
+  private _details: AssetDetails;
   constructor(
     private _asset: string,
     private _borrowCollateral: string[] = [],

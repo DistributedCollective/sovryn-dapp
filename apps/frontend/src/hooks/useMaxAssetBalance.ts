@@ -6,13 +6,14 @@ import { AssetDetailsData, getAssetData } from '@sovryn/contracts';
 import { ChainId } from '@sovryn/ethers-provider';
 import { Decimalish, Decimal } from '@sovryn/utils';
 
+import { RSK_CHAIN_ID } from '../config/chains';
+
 import { GAS_LIMIT } from '../constants/gasLimits';
 import { CacheCallOptions } from '../store/rxjs/provider-cache';
 import { composeGas } from '../utils/helpers';
 import { AssetBalanceResponse, useAssetBalance } from './useAssetBalance';
 import { useAsync } from './useAsync';
 import { useGasPrice } from './useGasPrice';
-import { RSK_CHAIN_ID } from '../config/chains';
 
 export const useMaxAssetBalance = (
   asset: string,
@@ -36,8 +37,6 @@ export const useMaxAssetBalance = (
       ),
       0,
     );
-
-    // console.log('ss', composeGas(gasPrice || '0', gasLimit).toString());
 
     return {
       weiBalance: value.toBigNumber().toString(),

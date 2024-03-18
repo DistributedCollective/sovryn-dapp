@@ -4,7 +4,7 @@ import dayjs from 'dayjs';
 import { constants, ethers } from 'ethers';
 import { t } from 'i18next';
 
-import { getAssetData, getLendTokenContract } from '@sovryn/contracts';
+import { getAssetData, getLoanTokenContract } from '@sovryn/contracts';
 
 import { RSK_CHAIN_ID } from '../../../../../../config/chains';
 
@@ -44,7 +44,7 @@ export const useBorrow = () => {
       const isCollateralRbtc = collateralToken === COMMON_SYMBOLS.BTC;
 
       const { abi: borrowTokenAbi, address: borrowTokenAddress } =
-        await getLendTokenContract(borrowToken, RSK_CHAIN_ID);
+        await getLoanTokenContract(borrowToken, RSK_CHAIN_ID);
 
       const borrowTokenContract = new ethers.Contract(
         borrowTokenAddress,

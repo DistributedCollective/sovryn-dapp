@@ -3,7 +3,6 @@ import { ChainIds } from '@sovryn/ethers-provider';
 import { contracts } from '../contracts';
 import {
   getAssetContract,
-  getLendTokenContract,
   getLoanTokenContract,
   getProtocolContract,
   getZeroContract,
@@ -32,48 +31,16 @@ describe('utils/contracts/getters.ts', () => {
 
   describe('getLoanTokenContract', () => {
     it('load lowercased xusd loan token contract address', async () => {
-      const token = await getLoanTokenContract('xusd');
+      const token = await getLoanTokenContract('XUSD');
       expect(token.address).toBe(
-        contracts.loanTokens.rsk?.xusd.address.toLowerCase(),
+        contracts.loanTokens.rsk?.XUSD.address.toLowerCase(),
       );
     });
 
     it('loads lowercased xusd loan token contract from non default chain', async () => {
-      const token = await getLoanTokenContract('xusd', ChainIds.RSK_TESTNET);
+      const token = await getLoanTokenContract('XUSD', ChainIds.RSK_TESTNET);
       expect(token.address).toBe(
-        contracts.loanTokens.rskTestnet?.xusd.address.toLowerCase(),
-      );
-    });
-  });
-
-  describe('getLendTokenContract', () => {
-    it('load lowercased dllr lend token contract address', async () => {
-      const token = await getLendTokenContract('dllr');
-      expect(token.address).toBe(
-        contracts.lendTokens.rsk?.dllr.address.toLowerCase(),
-      );
-    });
-
-    it('loads lowercased dllr lend token contract from non default chain', async () => {
-      const token = await getLendTokenContract('dllr', ChainIds.RSK_TESTNET);
-      expect(token.address).toBe(
-        contracts.lendTokens.rskTestnet?.dllr.address.toLowerCase(),
-      );
-    });
-  });
-
-  describe('getLendTokenContract', () => {
-    it('load lowercased dllr lend token contract address', async () => {
-      const token = await getLendTokenContract('dllr');
-      expect(token.address).toBe(
-        contracts.lendTokens.rsk?.dllr.address.toLowerCase(),
-      );
-    });
-
-    it('loads lowercased dllr lend token contract from non default chain', async () => {
-      const token = await getLendTokenContract('dllr', ChainIds.RSK_TESTNET);
-      expect(token.address).toBe(
-        contracts.lendTokens.rskTestnet?.dllr.address.toLowerCase(),
+        contracts.loanTokens.rskTestnet?.XUSD.address.toLowerCase(),
       );
     });
   });

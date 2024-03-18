@@ -23,6 +23,7 @@ export const useGetMaximumBorrowAmount = (
   collateralAmount?: Decimal,
 ) => {
   const { availableAmount } = useGetMarketLiquidity(borrowToken);
+
   const { maximumCollateralAmount } =
     useGetMaximumCollateralAmount(collateralToken);
 

@@ -3,36 +3,40 @@ import React, { FC, useCallback } from 'react';
 import { t } from 'i18next';
 
 import { translations } from '../../../../../../../../../locales/i18n';
+import { useDepositContext } from '../../../../contexts/BobDepositModalContext';
 import { Input } from './components/Input/Input';
 
-type UnbalancedRangeProps = {
-  lowerBoundaryPrice: number;
-  upperBoundaryPrice: number;
-  lowerBoundaryPercentage: number;
-  upperBoundaryPercentage: number;
-};
+export const UnbalancedRange: FC = () => {
+  const {
+    lowerBoundaryPrice,
+    lowerBoundaryPercentage,
+    upperBoundaryPrice,
+    upperBoundaryPercentage,
+    setLowerBoundaryPrice,
+    setLowerBoundaryPercentage,
+    setUpperBoundaryPrice,
+    setUpperBoundaryPercentage,
+  } = useDepositContext();
 
-export const UnbalancedRange: FC<UnbalancedRangeProps> = ({
-  lowerBoundaryPercentage,
-  lowerBoundaryPrice,
-  upperBoundaryPercentage,
-  upperBoundaryPrice,
-}) => {
   const onMinPriceMinusClick = useCallback(() => {
-    console.log(`min price minus click`);
-  }, []);
+    setLowerBoundaryPrice(previousValue => previousValue - 10);
+    setLowerBoundaryPercentage(previousValue => previousValue - 1);
+  }, [setLowerBoundaryPercentage, setLowerBoundaryPrice]);
 
   const onMinPricePlusClick = useCallback(() => {
-    console.log(`min price plus click`);
-  }, []);
+    setLowerBoundaryPrice(previousValue => previousValue + 10);
+    setLowerBoundaryPercentage(previousValue => previousValue + 1);
+  }, [setLowerBoundaryPercentage, setLowerBoundaryPrice]);
 
   const onMaxPriceMinusClick = useCallback(() => {
-    console.log(`max price minus click`);
-  }, []);
+    setUpperBoundaryPrice(previousValue => previousValue - 10);
+    setUpperBoundaryPercentage(previousValue => previousValue - 1);
+  }, [setUpperBoundaryPercentage, setUpperBoundaryPrice]);
 
   const onMaxPricePlusClick = useCallback(() => {
-    console.log(`max price plus click`);
-  }, []);
+    setUpperBoundaryPrice(previousValue => previousValue + 10);
+    setUpperBoundaryPercentage(previousValue => previousValue + 1);
+  }, [setUpperBoundaryPercentage, setUpperBoundaryPrice]);
 
   return (
     <div className="flex justify-between px-4">

@@ -9,9 +9,10 @@ import { BOB_CHAIN_ID } from '../../../config/chains';
 
 import { NetworkBanner } from '../../2_molecules/NetworkBanner/NetworkBanner';
 import { useAccount } from '../../../hooks/useAccount';
+import { createRangePositionTx } from './ambient-utils';
 
 const TBTC = constants.AddressZero;
-const SOV = '0x5a42EF62CE3f49888284a604833466A94fd9fc36';
+const SOV = '0x1f4a4737ECcB77B4b63B34edFb32515940d69A34';
 const USDC = '0x27c3321E40f039d10D5FF831F528C9CEAE601B1d';
 // const WBTC = '0x2868d708e442A6a940670d26100036d426F1e16b';
 // const USDCc = '0x4F245e278BEC589bAacF36Ba688B412D51874457';
@@ -64,7 +65,7 @@ export const BobAmmPage: React.FC = () => {
     }
 
     const tokenA = croc.current.tokens.materialize(TBTC);
-    const tokenB = croc.current.tokens.materialize(USDC);
+    const tokenB = croc.current.tokens.materialize(SOV);
 
     const pool = croc.current.pool(tokenA.tokenAddr, tokenB.tokenAddr);
     console.log({ pool });
@@ -81,26 +82,26 @@ export const BobAmmPage: React.FC = () => {
       console.log('init pool price: ', tx);
     }
 
-    // const tx = await createRangePositionTx({
-    //   crocEnv: croc.current,
-    //   isAmbient: true,
-    //   slippageTolerancePercentage: 0.5,
-    //   tokenA: {
-    //     address: tokenA.tokenAddr,
-    //     qty: 0.1,
-    //     isWithdrawFromDexChecked: false,
-    //   },
-    //   tokenB: {
-    //     address: tokenB.tokenAddr,
-    //     qty: 100,
-    //     isWithdrawFromDexChecked: false,
-    //   },
-    //   isTokenAPrimaryRange: true,
-    //   tick: { low: 1, high: 80000 },
-    // });
+    const tx = await createRangePositionTx({
+      crocEnv: croc.current,
+      isAmbient: true,
+      slippageTolerancePercentage: 0.5,
+      tokenA: {
+        address: tokenA.tokenAddr,
+        qty: 0.01,
+        isWithdrawFromDexChecked: false,
+      },
+      tokenB: {
+        address: tokenB.tokenAddr,
+        qty: 10,
+        isWithdrawFromDexChecked: false,
+      },
+      isTokenAPrimaryRange: true,
+      tick: { low: 1, high: 80000 },
+    });
 
-    // console.log('tx', tx);
-    // console.log('tx', tx?.hash);
+    console.log('tx', tx);
+    console.log('tx', tx?.hash);
   }, []);
 
   const handleSwap = useCallback(async () => {
@@ -137,7 +138,7 @@ export const BobAmmPage: React.FC = () => {
           <button onClick={handlePoolInit}>Initialize pool BTC/USDC</button>
         </li>
         <li>
-          <button onClick={handleDeposit}>Deposit to BTC/USDC</button>
+          <button onClick={handleDeposit}>Deposit to BTC/SOV</button>
         </li>
         <li>
           <button onClick={handleSwap}>Swap USDC/USDCc</button>

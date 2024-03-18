@@ -9,7 +9,10 @@ import {
   TOKEN_RENDER_PRECISION,
 } from '../../../../../constants/currencies';
 import { LendingPoolDictionary } from '../../../../../utils/LendingPoolDictionary';
-import { COMMON_SYMBOLS } from '../../../../../utils/asset';
+import {
+  COMMON_SYMBOLS,
+  maybeUnwrappedAsset,
+} from '../../../../../utils/asset';
 import { isBitpro, isBtcBasedAsset } from '../../../../../utils/helpers';
 import { decimalic } from '../../../../../utils/math';
 import { LoanItem } from './OpenLoansTable.types';
@@ -49,7 +52,7 @@ export const convertLoanTokenToSupportedAssets = (loanToken: string) => {
     return 'BPRO';
   }
 
-  return loanToken.toLowerCase();
+  return maybeUnwrappedAsset(loanToken.toLowerCase());
 };
 
 export const isSupportedPool = (

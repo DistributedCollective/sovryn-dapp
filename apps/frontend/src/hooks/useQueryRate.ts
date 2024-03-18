@@ -2,9 +2,11 @@ import { useEffect, useState } from 'react';
 
 import { Decimal } from '@sovryn/utils';
 
+import { maybeWrappedAsset } from '../utils/asset';
 import { queryRate } from '../utils/calls';
 import { useIsMounted } from './useIsMounted';
 
+// only for RSK network.
 export const useQueryRate = (
   sourceToken: string,
   destToken: string,
@@ -18,7 +20,10 @@ export const useQueryRate = (
   useEffect(() => {
     if (isMounted()) {
       setLoading(true);
-      queryRate(sourceToken, destToken).then(result => {
+      queryRate(
+        maybeWrappedAsset(sourceToken),
+        maybeWrappedAsset(destToken),
+      ).then(result => {
         if (isMounted()) {
           setRate(result.rate);
           setPrecision(result.precision);

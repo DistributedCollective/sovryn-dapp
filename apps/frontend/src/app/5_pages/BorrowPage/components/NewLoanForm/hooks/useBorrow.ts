@@ -16,7 +16,10 @@ import { GAS_LIMIT } from '../../../../../../constants/gasLimits';
 import { useTransactionContext } from '../../../../../../contexts/TransactionContext';
 import { useAccount } from '../../../../../../hooks/useAccount';
 import { translations } from '../../../../../../locales/i18n';
-import { COMMON_SYMBOLS } from '../../../../../../utils/asset';
+import {
+  COMMON_SYMBOLS,
+  maybeWrappedAsset,
+} from '../../../../../../utils/asset';
 import { toWei } from '../../../../../../utils/math';
 import { prepareApproveTransaction } from '../../../../../../utils/transactions';
 
@@ -41,10 +44,15 @@ export const useBorrow = () => {
 
       const loanDuration = Math.ceil(firstRolloverDate - currentDate);
 
-      const isCollateralRbtc = collateralToken === COMMON_SYMBOLS.WBTC;
+      const isCollateralRbtc =
+        collateralToken === COMMON_SYMBOLS.WBTC ||
+        collateralToken === COMMON_SYMBOLS.BTC;
 
       const { abi: borrowTokenAbi, address: borrowTokenAddress } =
-        await getLoanTokenContract(borrowToken, RSK_CHAIN_ID);
+        await getLoanTokenContract(
+          maybeWrappedAsset(borrowToken),
+          RSK_CHAIN_ID,
+        );
 
       const borrowTokenContract = new ethers.Contract(
         borrowTokenAddress,
@@ -53,7 +61,7 @@ export const useBorrow = () => {
       );
 
       const { address: collateralTokenAddress } = await getAssetData(
-        collateralToken,
+        maybeWrappedAsset(collateralToken),
         RSK_CHAIN_ID,
       );
 

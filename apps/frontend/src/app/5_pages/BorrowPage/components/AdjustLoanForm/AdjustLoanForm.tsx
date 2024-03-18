@@ -2,7 +2,6 @@ import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 
 import { t } from 'i18next';
 
-import { SupportedTokens } from '@sovryn/contracts';
 import {
   AmountInput,
   Button,
@@ -33,6 +32,7 @@ import { useDecimalAmountInput } from '../../../../../hooks/useDecimalAmountInpu
 import { useMaxAssetBalance } from '../../../../../hooks/useMaxAssetBalance';
 import { useQueryRate } from '../../../../../hooks/useQueryRate';
 import { translations } from '../../../../../locales/i18n';
+import { COMMON_SYMBOLS } from '../../../../../utils/asset';
 import { areValuesIdentical } from '../../../../../utils/helpers';
 import { decimalic } from '../../../../../utils/math';
 import {
@@ -67,7 +67,6 @@ import { useGetMaxRepayAmount } from './hooks/useGetMaxRepayAmount';
 import { useGetMaximumBorrowAmount } from './hooks/useGetMaximumBorrowAmount';
 import { useRepayLoan } from './hooks/useRepayLoan';
 import { useWithdrawCollateral } from './hooks/useWithdrawCollateral';
-import { COMMON_SYMBOLS } from '../../../../../utils/asset';
 
 const pageTranslations = translations.fixedInterestPage.adjustLoanDialog;
 
@@ -177,9 +176,7 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
 
   const { borrowApr } = useGetBorrowingAPR(debtToken, debtSize);
 
-  const { balance: debtTokenBalance } = useMaxAssetBalance(
-    debtToken as SupportedTokens,
-  );
+  const { balance: debtTokenBalance } = useMaxAssetBalance(debtToken);
 
   const { maximumCollateralAmount, loading: isMaximumCollateralAmountLoading } =
     useGetMaximumCollateralAmount(collateralToken);

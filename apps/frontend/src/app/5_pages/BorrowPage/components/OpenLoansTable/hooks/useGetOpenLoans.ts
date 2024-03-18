@@ -78,8 +78,10 @@ export const useGetOpenLoans = () => {
         .map(item => {
           const rate = rates.find(
             rate =>
-              rate.loanTokenAddress === item.loanToken &&
-              rate.collateralTokenAddress === item.collateralToken,
+              rate.loanTokenAddress.toLowerCase() ===
+                item.loanToken.toLowerCase() &&
+              rate.collateralTokenAddress.toLowerCase() ===
+                item.collateralToken.toLowerCase(),
           );
 
           if (!rate) {

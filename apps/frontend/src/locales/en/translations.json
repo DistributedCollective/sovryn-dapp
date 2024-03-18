@@ -943,6 +943,17 @@
             }
         }
     },
+    "runeBridge": {
+      "mainScreen": {
+        "title": "Rune Bridge",
+        "tabs": {
+          "receiveLabel": "Receive",
+          "receiveInfoText": "Transfer Rune Token from other networks to your Rootstock address",
+          "sendLabel": "Send",
+          "sendInfoText": "Transfer RSK Token from the Rootstock network to a specified address"
+        }
+      }
+    },
 
     "fastBtc": {
         "mainScreen": {
@@ -1644,7 +1655,8 @@
             "withdraw": "Withdraw",
             "asset": "Asset",
             "balance": "Balance",
-            "usdValue": "USD Value"
+            "usdValue": "USD Value",
+            "runeBridge": "Rune Bridge"
         }
     },
     "protocolDataPage": {

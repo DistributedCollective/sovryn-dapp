@@ -36,6 +36,11 @@ export const AssetSectionActions: FC = () => {
     [hasRbtcBalance, account],
   );
 
+  const handleExchangeRune = useCallback(
+    () => sharedState.actions.openRuneBridgeDialog(!hasRbtcBalance),
+    [hasRbtcBalance],
+  );
+
   return (
     <>
       <div className="flex md:hidden w-full justify-center items-center gap-8 my-4">
@@ -89,6 +94,13 @@ export const AssetSectionActions: FC = () => {
           style={ButtonStyle.secondary}
           onClick={() => navigate('/convert?&to=sov')}
           text={t(translations.portfolioPage.assetSection.convert)}
+        />
+        <Button
+          className="w-[7.75rem]"
+          style={ButtonStyle.secondary}
+          onClick={handleExchangeRune}
+          text={t(translations.portfolioPage.assetSection.runeBridge)}
+          disabled={!account}
         />
         {isRbtcWithdrawalAllowed && (
           <Button

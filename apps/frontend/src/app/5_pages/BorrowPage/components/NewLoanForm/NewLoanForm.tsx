@@ -4,7 +4,6 @@ import dayjs from 'dayjs';
 import { t } from 'i18next';
 import { Trans } from 'react-i18next';
 
-import { SupportedTokens } from '@sovryn/contracts';
 import {
   AmountInput,
   Button,
@@ -37,6 +36,7 @@ import { useDecimalAmountInput } from '../../../../../hooks/useDecimalAmountInpu
 import { useQueryRate } from '../../../../../hooks/useQueryRate';
 import { translations } from '../../../../../locales/i18n';
 import { LendingPool } from '../../../../../utils/LendingPool';
+import { COMMON_SYMBOLS } from '../../../../../utils/asset';
 import { dateFormat } from '../../../../../utils/helpers';
 import {
   calculatePrepaidInterestFromTargetDate,
@@ -97,7 +97,7 @@ export const NewLoanForm: FC<NewLoanFormProps> = ({ pool }) => {
     return sorted;
   }, [collateralAssets]);
 
-  const [collateralToken, setCollateralToken] = useState<SupportedTokens>(
+  const [collateralToken, setCollateralToken] = useState<string>(
     sortedCollateralAssets[0],
   );
 
@@ -140,7 +140,7 @@ export const NewLoanForm: FC<NewLoanFormProps> = ({ pool }) => {
     useGetMaximumCollateralAmount(collateralToken);
 
   const onCollateralTokenChange = useCallback(
-    (value: SupportedTokens) => {
+    (value: string) => {
       setCollateralToken(value);
       setCollateralAmount('');
     },
@@ -316,7 +316,7 @@ export const NewLoanForm: FC<NewLoanFormProps> = ({ pool }) => {
         <AssetRenderer
           dataAttribute="new-loan-borrow-asset"
           showAssetLogo
-          asset={SupportedTokens[borrowToken]}
+          asset={borrowToken}
           className="min-w-[6.7rem] h-10 rounded bg-gray-60 items-center px-4 mr-0"
         />
       </div>
@@ -367,7 +367,7 @@ export const NewLoanForm: FC<NewLoanFormProps> = ({ pool }) => {
               <AssetRenderer
                 dataAttribute="new-loan-collateral-asset"
                 showAssetLogo
-                asset={SupportedTokens[value]}
+                asset={value}
               />
             )}
             className="min-w-[6.7rem]"
@@ -378,7 +378,7 @@ export const NewLoanForm: FC<NewLoanFormProps> = ({ pool }) => {
           <AssetRenderer
             dataAttribute="new-loan-collateral-asset"
             showAssetLogo
-            asset={SupportedTokens[collateralToken]}
+            asset={collateralToken}
             className="min-w-[6.7rem] h-10 rounded bg-gray-60 items-center px-4 mr-0"
           />
         )}

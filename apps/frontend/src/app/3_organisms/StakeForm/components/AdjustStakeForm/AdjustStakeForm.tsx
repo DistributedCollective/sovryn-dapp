@@ -4,7 +4,6 @@ import dayjs from 'dayjs';
 import { t } from 'i18next';
 import { Trans } from 'react-i18next';
 
-import { SupportedTokens } from '@sovryn/contracts';
 import {
   AmountInput,
   Button,
@@ -39,6 +38,7 @@ import { useAccount } from '../../../../../hooks/useAccount';
 import { useAssetBalance } from '../../../../../hooks/useAssetBalance';
 import { useMaintenance } from '../../../../../hooks/useMaintenance';
 import { translations } from '../../../../../locales/i18n';
+import { COMMON_SYMBOLS } from '../../../../../utils/asset';
 import { areAddressesEqual } from '../../../../../utils/helpers';
 import { AdjustStakeFormProps } from '../../StakeForm.types';
 import { useGetPenaltyAmount } from '../../hooks/useGetPenaltyAmount';

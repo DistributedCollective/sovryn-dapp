@@ -2,8 +2,6 @@ import React, { FC, ReactNode, useMemo } from 'react';
 
 import { t } from 'i18next';
 
-import { SupportedTokens } from '@sovryn/contracts';
-
 import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { CRatioIndicator } from '../../../../2_molecules/LOCStatus/components/CRatioIndicator/CRatioIndicator';
 import {
@@ -12,12 +10,13 @@ import {
   TOKEN_RENDER_PRECISION,
 } from '../../../../../constants/currencies';
 import { translations } from '../../../../../locales/i18n';
+import { COMMON_SYMBOLS } from '../../../../../utils/asset';
 
 type CurrentLoanDataProps = {
   debt: number;
-  debtToken: SupportedTokens;
+  debtToken: string;
   collateral: number;
-  collateralToken: SupportedTokens;
+  collateralToken: string;
   collateralRatio: number;
   className?: string;
 };

@@ -1,8 +1,7 @@
 import { t } from 'i18next';
 
-import { SupportedTokens } from '@sovryn/contracts';
-
 import { translations } from '../../../../../locales/i18n';
+import { COMMON_SYMBOLS } from '../../../../../utils/asset';
 import {
   ProposalCreationParameter,
   ProposalCreationType,

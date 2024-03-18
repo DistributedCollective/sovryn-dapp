@@ -10,7 +10,6 @@ import React, {
 import { t } from 'i18next';
 import { nanoid } from 'nanoid';
 
-import { SupportedTokens } from '@sovryn/contracts';
 import {
   ErrorBadge,
   ErrorLevel,
@@ -47,6 +46,7 @@ import { useAccount } from '../../../../../hooks/useAccount';
 import { useBlockNumber } from '../../../../../hooks/useBlockNumber';
 import { useMaintenance } from '../../../../../hooks/useMaintenance';
 import { translations } from '../../../../../locales/i18n';
+import { COMMON_SYMBOLS } from '../../../../../utils/asset';
 import { zeroClient } from '../../../../../utils/clients';
 import {
   InputMaybe,

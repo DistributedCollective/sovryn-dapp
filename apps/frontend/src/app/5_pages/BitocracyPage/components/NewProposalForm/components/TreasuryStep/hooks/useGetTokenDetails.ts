@@ -1,12 +1,12 @@
 import { useCallback, useEffect, useState } from 'react';
 
-import { SupportedTokens } from '@sovryn/contracts';
 import { getProvider } from '@sovryn/ethers-provider';
 
 import { useGetTokenContract } from '../../../../../../../../hooks/useGetContract';
+import { COMMON_SYMBOLS } from '../../../../../../../../utils/asset';
 import { fromWei } from '../../../../../../../../utils/math';
 
-export const useGetTokenDetails = (asset: SupportedTokens, address: string) => {
+export const useGetTokenDetails = (asset: string, address: string) => {
   const contract = useGetTokenContract(asset);
 
   const [assetBalance, setAssetBalance] = useState('0');

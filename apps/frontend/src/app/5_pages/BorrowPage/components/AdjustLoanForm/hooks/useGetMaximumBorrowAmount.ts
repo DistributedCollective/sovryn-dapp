@@ -1,6 +1,5 @@
 import { useMemo } from 'react';
 
-import { SupportedTokens } from '@sovryn/contracts';
 import { Decimal } from '@sovryn/utils';
 
 import { LoanItem } from '../../../../../5_pages/BorrowPage/components/OpenLoansTable/OpenLoansTable.types';
@@ -9,6 +8,7 @@ import {
   MINIMUM_COLLATERAL_RATIO_LENDING_POOLS_SOV,
 } from '../../../../../../constants/lending';
 import { useQueryRate } from '../../../../../../hooks/useQueryRate';
+import { COMMON_SYMBOLS } from '../../../../../../utils/asset';
 import {
   calculatePrepaidInterestFromTargetDate,
   normalizeToken,

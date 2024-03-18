@@ -1,8 +1,7 @@
 import { isValidChecksumAddress } from 'ethereumjs-util';
 import { ethers } from 'ethers';
 
-import { SupportedTokens } from '@sovryn/contracts';
-
+import { COMMON_SYMBOLS } from '../../../../../../../../../utils/asset';
 import { decimalic, toWei } from '../../../../../../../../../utils/math';
 import { ProposalCreationParameter } from '../../../../../../contexts/ProposalContext.types';
 

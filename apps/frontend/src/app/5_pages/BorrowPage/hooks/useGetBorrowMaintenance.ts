@@ -1,10 +1,9 @@
 import { useMemo } from 'react';
 
-import { SupportedTokens } from '@sovryn/contracts';
-
 import { useMaintenance } from '../../../../hooks/useMaintenance';
+import { COMMON_SYMBOLS } from '../../../../utils/asset';
 
-export const useGetBorrowMaintenance = (asset: SupportedTokens) => {
+export const useGetBorrowMaintenance = (asset: string) => {
   const { States } = useMaintenance();
 
   return useMemo(() => {

@@ -1,8 +1,7 @@
 import {
-  SupportedTokens,
+  getAssetData,
   getLoanTokenContract,
   getProtocolContract,
-  getTokenDetails,
 } from '@sovryn/contracts';
 import { getProvider } from '@sovryn/ethers-provider';
 import { Decimal } from '@sovryn/utils';
@@ -26,8 +25,8 @@ export const calculateRepayCollateralWithdrawn = (
   );
 
 export const getMaxDrawdown = async (
-  loanToken: SupportedTokens,
-  collateralToken: SupportedTokens,
+  loanToken: string,
+  collateralToken: string,
   loanAmount: Decimal,
   collateralAmount: Decimal,
   margin: Decimal,
@@ -36,10 +35,10 @@ export const getMaxDrawdown = async (
     getProtocolContract('priceFeed', RSK_CHAIN_ID).then(({ contract }) =>
       contract(getProvider(RSK_CHAIN_ID)),
     ),
-    getTokenDetails(normalizeTokenWrapped(loanToken), RSK_CHAIN_ID).then(
+    getAssetData(normalizeTokenWrapped(loanToken), RSK_CHAIN_ID).then(
       ({ address }) => address,
     ),
-    getTokenDetails(normalizeTokenWrapped(collateralToken), RSK_CHAIN_ID).then(
+    getAssetData(normalizeTokenWrapped(collateralToken), RSK_CHAIN_ID).then(
       ({ address }) => address,
     ),
   ]);
@@ -55,18 +54,16 @@ export const getMaxDrawdown = async (
 };
 
 export const getBorrowAmount = async (
-  loanToken: SupportedTokens,
+  loanToken: string,
   collateralAmount: Decimal,
-  collateralToken: SupportedTokens,
+  collateralToken: string,
   durationInSeconds: number,
 ): Promise<Decimal> => {
   const [contract, collateralTokenAddress] = await Promise.all([
     getLoanTokenContract(loanToken, RSK_CHAIN_ID).then(({ contract }) =>
       contract(getProvider(RSK_CHAIN_ID)),
     ),
-    getTokenDetails(collateralToken, RSK_CHAIN_ID).then(
-      ({ address }) => address,
-    ),
+    getAssetData(collateralToken, RSK_CHAIN_ID).then(({ address }) => address),
   ]);
 
   const amount = await contract.getBorrowAmountForDeposit(

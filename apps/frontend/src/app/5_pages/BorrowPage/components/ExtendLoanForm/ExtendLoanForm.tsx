@@ -3,7 +3,6 @@ import React, { FC, useMemo, useState } from 'react';
 import dayjs from 'dayjs';
 import { t } from 'i18next';
 
-import { SupportedTokens } from '@sovryn/contracts';
 import {
   AmountInput,
   Button,
@@ -33,6 +32,7 @@ import { getTokenDisplayName } from '../../../../../constants/tokens';
 import { useMaintenance } from '../../../../../hooks/useMaintenance';
 import { useQueryRate } from '../../../../../hooks/useQueryRate';
 import { translations } from '../../../../../locales/i18n';
+import { COMMON_SYMBOLS } from '../../../../../utils/asset';
 import { dateFormat } from '../../../../../utils/helpers';
 import { decimalic } from '../../../../../utils/math';
 import {

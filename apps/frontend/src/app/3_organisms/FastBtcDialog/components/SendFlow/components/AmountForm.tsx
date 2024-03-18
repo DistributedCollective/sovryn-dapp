@@ -3,7 +3,6 @@ import React, { useCallback, useContext, useMemo, useState } from 'react';
 import { parseUnits } from 'ethers/lib/utils';
 import { t } from 'i18next';
 
-import { SupportedTokens } from '@sovryn/contracts';
 import {
   AmountInput,
   Button,
@@ -28,6 +27,7 @@ import { useAssetBalance } from '../../../../../../hooks/useAssetBalance';
 import { useMaintenance } from '../../../../../../hooks/useMaintenance';
 import { useMaxAssetBalance } from '../../../../../../hooks/useMaxAssetBalance';
 import { translations } from '../../../../../../locales/i18n';
+import { COMMON_SYMBOLS } from '../../../../../../utils/asset';
 import { fromWei, toWei } from '../../../../../../utils/math';
 import { GAS_LIMIT_FAST_BTC_WITHDRAW } from '../../../constants';
 import {

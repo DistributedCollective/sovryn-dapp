@@ -9,7 +9,6 @@ import {
   EthersLiquity,
   ReadableEthersLiquityWithStore,
 } from '@sovryn-zero/lib-ethers';
-import { SupportedTokens } from '@sovryn/contracts';
 import {
   AmountInput,
   Button,
@@ -46,6 +45,7 @@ import { useGetRBTCPrice } from '../../../hooks/zero/useGetRBTCPrice';
 import { useGetTroves } from '../../../hooks/zero/useGetTroves';
 import { useUnderCollateralizedTrovesExist } from '../../../hooks/zero/useUnderCollateralizedTrovesExist';
 import { translations } from '../../../locales/i18n';
+import { COMMON_SYMBOLS } from '../../../utils/asset';
 import { formatValue, decimalic } from '../../../utils/math';
 import { tokenList } from './EarnPage.types';
 import { useGetSubsidiesAPR } from './hooks/useGetSubsidiesAPR';
@@ -60,7 +60,7 @@ const EarnPage: FC = () => {
   const [poolBalance, setPoolBalance] = useState(Decimal.ZERO);
   const [ZUSDInStabilityPool, setZUSDInStabilityPool] = useState(Decimal.ZERO);
   const [rewardsAmount, setRewardsAmount] = useState(Decimal.ZERO);
-  const [token, setToken] = useState<SupportedTokens>(COMMON_SYMBOLS.ZUSD);
+  const [token, setToken] = useState<string>(COMMON_SYMBOLS.ZUSD);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [isLoading, setIsLoading] = useState(false);
   const { apy } = useGetSubsidiesAPR();
@@ -174,7 +174,7 @@ const EarnPage: FC = () => {
   );
 
   const onTokenChange = useCallback(
-    (value: SupportedTokens) => {
+    (value: string) => {
       setToken(value);
       setAmount('');
     },
@@ -197,7 +197,7 @@ const EarnPage: FC = () => {
   }, [dllrWeiBalance, zusdWeiBalance, isDeposit, isLoading]);
 
   const getAssetRenderer = useCallback(
-    (token: SupportedTokens) => (
+    (token: string) => (
       <AssetRenderer showAssetLogo asset={token} assetClassName="font-medium" />
     ),
     [],

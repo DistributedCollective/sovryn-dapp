@@ -7,7 +7,6 @@ import {
   EthersLiquity,
   ReadableEthersLiquityWithStore,
 } from '@sovryn-zero/lib-ethers';
-import { SupportedTokens } from '@sovryn/contracts';
 import {
   applyDataAttr,
   Paragraph,
@@ -23,6 +22,7 @@ import { BITCOIN, USD } from '../../../../constants/currencies';
 import { useBlockNumber } from '../../../../hooks/useBlockNumber';
 import { useGetRBTCPrice } from '../../../../hooks/zero/useGetRBTCPrice';
 import { translations } from '../../../../locales/i18n';
+import { COMMON_SYMBOLS } from '../../../../utils/asset';
 import { calculateCollateralRatio } from '../../../../utils/helpers';
 import {
   formatCompactValue,

@@ -1,5 +1,4 @@
-import { SupportedTokens } from '@sovryn/contracts';
-
+import { COMMON_SYMBOLS } from '../../../utils/asset';
 import { decimalic } from '../../../utils/math';
 
 export const CRITICAL_COLLATERAL_RATIO = decimalic(1.5); // 150%

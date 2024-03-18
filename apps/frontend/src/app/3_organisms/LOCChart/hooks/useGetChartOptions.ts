@@ -1,6 +1,5 @@
 import { t } from 'i18next';
 
-import { SupportedTokens } from '@sovryn/contracts';
 import { prettyTx } from '@sovryn/ui';
 
 import {
@@ -9,6 +8,7 @@ import {
   TOKEN_RENDER_PRECISION,
 } from '../../../../constants/currencies';
 import { translations } from '../../../../locales/i18n';
+import { COMMON_SYMBOLS } from '../../../../utils/asset';
 import { areAddressesEqual } from '../../../../utils/helpers';
 import { formatValue } from '../../../../utils/math';
 import { chartConfig } from '../utils';

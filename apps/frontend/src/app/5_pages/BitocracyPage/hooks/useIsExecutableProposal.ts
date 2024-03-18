@@ -1,8 +1,7 @@
 import { useMemo } from 'react';
 
-import { SupportedTokens } from '@sovryn/contracts';
-
 import { useGetTokenContract } from '../../../../hooks/useGetContract';
+import { COMMON_SYMBOLS } from '../../../../utils/asset';
 import { Proposal } from '../../../../utils/graphql/rsk/generated';
 import { SIGNATURE_SYMBOL } from '../components/Proposals/Proposals.constants';
 

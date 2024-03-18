@@ -4,11 +4,7 @@ import dayjs from 'dayjs';
 import { constants, ethers } from 'ethers';
 import { t } from 'i18next';
 
-import {
-  SupportedTokens,
-  getLendTokenContract,
-  getTokenContract,
-} from '@sovryn/contracts';
+import { getAssetData, getLendTokenContract } from '@sovryn/contracts';
 
 import { RSK_CHAIN_ID } from '../../../../../../config/chains';
 
@@ -20,6 +16,7 @@ import { GAS_LIMIT } from '../../../../../../constants/gasLimits';
 import { useTransactionContext } from '../../../../../../contexts/TransactionContext';
 import { useAccount } from '../../../../../../hooks/useAccount';
 import { translations } from '../../../../../../locales/i18n';
+import { COMMON_SYMBOLS } from '../../../../../../utils/asset';
 import { toWei } from '../../../../../../utils/math';
 import { prepareApproveTransaction } from '../../../../../../utils/transactions';
 
@@ -31,11 +28,11 @@ export const useBorrow = () => {
 
   const handleSubmit = useCallback(
     async (
-      borrowToken: SupportedTokens,
+      borrowToken: string,
       borrowAmount: string,
       firstRolloverDate: number,
       collateralAmount: string,
-      collateralToken: SupportedTokens,
+      collateralToken: string,
       loanId?: string,
     ) => {
       if (!signer) {
@@ -55,7 +52,7 @@ export const useBorrow = () => {
         signer,
       );
 
-      const { address: collateralTokenAddress } = await getTokenContract(
+      const { address: collateralTokenAddress } = await getAssetData(
         isCollateralRbtc ? 'WBTC' : collateralToken,
         RSK_CHAIN_ID,
       );

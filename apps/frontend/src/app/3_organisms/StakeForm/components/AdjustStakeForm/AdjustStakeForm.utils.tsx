@@ -2,13 +2,12 @@ import React from 'react';
 
 import { t } from 'i18next';
 
-import { SupportedTokens } from '@sovryn/contracts';
-
 import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { VP } from '../../../../5_pages/StakePage/StakePage.constants';
 import { AdjustStakeAction } from '../../../../5_pages/StakePage/StakePage.types';
 import { TOKEN_RENDER_PRECISION } from '../../../../../constants/currencies';
 import { translations } from '../../../../../locales/i18n';
+import { COMMON_SYMBOLS } from '../../../../../utils/asset';
 import { decimalic } from '../../../../../utils/math';
 
 export const renderPenaltyAmount = (

@@ -2,7 +2,6 @@ import React, { FC, useCallback, useMemo, useReducer } from 'react';
 
 import { t } from 'i18next';
 
-import { SupportedTokens } from '@sovryn/contracts';
 import {
   Button,
   ButtonStyle,
@@ -21,6 +20,7 @@ import { useWalletConnect, useWrongNetworkCheck } from '../../../hooks';
 import { useAssetBalance } from '../../../hooks/useAssetBalance';
 import { translations } from '../../../locales/i18n';
 import { sharedState } from '../../../store/rxjs/shared-state';
+import { COMMON_SYMBOLS } from '../../../utils/asset';
 import { isMainnet, isTestnetFastBtcEnabled } from '../../../utils/helpers';
 import { menuItemsMapping } from './Header.constants';
 import { NavItem } from './components/NavItem/NavItem';

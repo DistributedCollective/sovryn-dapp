@@ -5,7 +5,6 @@ import { ethers } from 'ethers';
 import { parseUnits } from 'ethers/lib/utils';
 import { t } from 'i18next';
 
-import { SupportedTokens } from '@sovryn/contracts';
 import {
   Button,
   ErrorBadge,
@@ -19,6 +18,7 @@ import { APPROVAL_FUNCTION } from '../../../../../constants/general';
 import { useAccount } from '../../../../../hooks/useAccount';
 import { useAssetBalance } from '../../../../../hooks/useAssetBalance';
 import { translations } from '../../../../../locales/i18n';
+import { COMMON_SYMBOLS } from '../../../../../utils/asset';
 import { sleep } from '../../../../../utils/helpers';
 import { fromWei, toWei } from '../../../../../utils/math';
 import { signERC2612Permit } from '../../../../../utils/permit/permit';
@@ -58,9 +58,7 @@ export const TransactionSteps: FC<TransactionStepsProps> = ({
   const [step, setStep] = useState(-1);
   const [error, setError] = useState(false);
   const [estimatedGasFee, setEstimatedGasFee] = useState(0);
-  const { balance: rbtcBalance, loading } = useAssetBalance(
-    COMMON_SYMBOLS.BTC,
-  );
+  const { balance: rbtcBalance, loading } = useAssetBalance(COMMON_SYMBOLS.BTC);
   const { account } = useAccount();
 
   const hasEnoughBalance = useMemo(

@@ -1,13 +1,13 @@
 import { useMemo } from 'react';
 
-import { SupportedTokens } from '@sovryn/contracts';
 import { SwapRoute } from '@sovryn/sdk';
 
 import { useMaintenance } from '../../../../hooks/useMaintenance';
+import { COMMON_SYMBOLS } from '../../../../utils/asset';
 
 export const useConversionMaintenance = (
-  sourceToken: SupportedTokens,
-  destinationToken: SupportedTokens,
+  sourceToken: string,
+  destinationToken: string,
   route?: SwapRoute,
 ) => {
   const { checkMaintenance, States } = useMaintenance();
@@ -41,18 +41,13 @@ export const useConversionMaintenance = (
         [sourceToken, destinationToken].includes(COMMON_SYMBOLS.DLLR));
 
     if (destinationToken === COMMON_SYMBOLS.BTC) {
-      isLocked =
-        isLocked || (srcBNBSRBTCLocked && sourceToken === 'BNB');
+      isLocked = isLocked || (srcBNBSRBTCLocked && sourceToken === 'BNB');
       isLocked =
         isLocked || (srcDLLRRBTCLocked && sourceToken === COMMON_SYMBOLS.DLLR);
-      isLocked =
-        isLocked || (srcETHSRBTCLocked && sourceToken === 'ETH');
-      isLocked =
-        isLocked || (srcFISHRBTCLocked && sourceToken === SupportedTokens.fish);
-      isLocked =
-        isLocked || (srcMOCRBTCLocked && sourceToken === SupportedTokens.moc);
-      isLocked =
-        isLocked || (srcRIFRBTCLocked && sourceToken === SupportedTokens.rif);
+      isLocked = isLocked || (srcETHSRBTCLocked && sourceToken === 'ETH');
+      isLocked = isLocked || (srcFISHRBTCLocked && sourceToken === 'FISH');
+      isLocked = isLocked || (srcMOCRBTCLocked && sourceToken === 'MOC');
+      isLocked = isLocked || (srcRIFRBTCLocked && sourceToken === 'RIF');
       isLocked =
         isLocked || (srcSOVRBTCLocked && sourceToken === COMMON_SYMBOLS.SOV);
     }

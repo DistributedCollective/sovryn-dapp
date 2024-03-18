@@ -4,10 +4,10 @@ import { useEffect } from 'react';
 import classNames from 'classnames';
 
 import { getAssetData, getAssetDataByAddress } from '@sovryn/contracts';
+import { ChainId, ChainIds } from '@sovryn/ethers-provider';
 import { applyDataAttr } from '@sovryn/ui';
 
 import styles from './AssetRenderer.module.css';
-import { ChainId, ChainIds } from '@sovryn/ethers-provider';
 
 type AssetRendererProps = {
   /**
@@ -54,7 +54,6 @@ export const AssetRenderer: FC<AssetRendererProps> = ({
 }) => {
   const [token, setToken] = useState(asset);
   const [logo, setLogo] = useState<string | undefined>(undefined);
-  const [name, setName] = useState<string | undefined>(undefined);
 
   useEffect(() => {
     if (asset && !address) {
@@ -62,7 +61,6 @@ export const AssetRenderer: FC<AssetRendererProps> = ({
         .then(item => {
           setLogo(item.icon);
           setToken(item.symbol);
-          setName(item.name);
         })
         .catch(() => setLogo(''));
     }
@@ -74,7 +72,6 @@ export const AssetRenderer: FC<AssetRendererProps> = ({
         .then(item => {
           setLogo(item.icon);
           setToken(item.symbol);
-          setName(item.name);
         })
         .catch(() => setLogo(''));
     }
@@ -93,7 +90,7 @@ export const AssetRenderer: FC<AssetRendererProps> = ({
       )}
       {token && (
         <span className={classNames(styles.asset, assetClassName)}>
-          {name ?? token}
+          {token}
         </span>
       )}
     </div>

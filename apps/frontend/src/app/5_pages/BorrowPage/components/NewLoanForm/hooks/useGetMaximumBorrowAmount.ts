@@ -10,7 +10,10 @@ import {
   MINIMUM_COLLATERAL_RATIO_LENDING_POOLS_SOV,
 } from '../../../../../../constants/lending';
 import { useQueryRate } from '../../../../../../hooks/useQueryRate';
-import { COMMON_SYMBOLS } from '../../../../../../utils/asset';
+import {
+  COMMON_SYMBOLS,
+  maybeUnwrappedAsset,
+} from '../../../../../../utils/asset';
 import { decimalic } from '../../../../../../utils/math';
 import { calculatePrepaidInterestFromTargetDate } from '../../../BorrowPage.utils';
 import { useGetMaximumCollateralAmount } from './useGetMaximumCollateralAmount';
@@ -24,8 +27,9 @@ export const useGetMaximumBorrowAmount = (
 ) => {
   const { availableAmount } = useGetMarketLiquidity(borrowToken);
 
-  const { maximumCollateralAmount } =
-    useGetMaximumCollateralAmount(collateralToken);
+  const { maximumCollateralAmount } = useGetMaximumCollateralAmount(
+    maybeUnwrappedAsset(collateralToken),
+  );
 
   const [collateralPriceInLoanAsset] = useQueryRate(
     collateralToken,

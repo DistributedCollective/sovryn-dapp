@@ -1,14 +1,13 @@
 import { useEffect, useState } from 'react';
 
-import { SupportedTokens } from '@sovryn/contracts';
 import { Decimal } from '@sovryn/utils';
 
 import { queryRate } from '../utils/calls';
 import { useIsMounted } from './useIsMounted';
 
 export const useQueryRate = (
-  sourceToken: SupportedTokens,
-  destToken: SupportedTokens,
+  sourceToken: string,
+  destToken: string,
 ): [Decimal, Decimal, boolean] => {
   const [rate, setRate] = useState<Decimal>(Decimal.ZERO);
   const [precision, setPrecision] = useState<Decimal>(Decimal.ONE);

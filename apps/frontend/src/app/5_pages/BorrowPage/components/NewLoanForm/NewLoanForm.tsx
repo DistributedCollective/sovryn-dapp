@@ -36,7 +36,11 @@ import { useDecimalAmountInput } from '../../../../../hooks/useDecimalAmountInpu
 import { useQueryRate } from '../../../../../hooks/useQueryRate';
 import { translations } from '../../../../../locales/i18n';
 import { LendingPool } from '../../../../../utils/LendingPool';
-import { COMMON_SYMBOLS } from '../../../../../utils/asset';
+import {
+  COMMON_SYMBOLS,
+  maybeUnwrappedAsset,
+  maybeWrappedAsset,
+} from '../../../../../utils/asset';
 import { dateFormat } from '../../../../../utils/helpers';
 import {
   calculatePrepaidInterestFromTargetDate,
@@ -71,7 +75,7 @@ export const NewLoanForm: FC<NewLoanFormProps> = ({ pool }) => {
 
   const [hasDisclaimerBeenChecked, setHasDisclaimerBeenChecked] =
     useState(false);
-  const borrowToken = useMemo(() => pool.getAsset(), [pool]);
+  const borrowToken = useMemo(() => maybeWrappedAsset(pool.getAsset()), [pool]);
   const originationFeeRate = useGetOriginationFee();
   const { avgBorrowApr: borrowApr } = useGetAvgBorrowingAPR(borrowToken);
   const { borrowApr: userBorrowApr } = useGetBorrowingAPR(
@@ -82,12 +86,15 @@ export const NewLoanForm: FC<NewLoanFormProps> = ({ pool }) => {
   const [borrowDays, setBorrowDays] = useState(
     dayjs(defaultFirstRolloverDate).unix(),
   );
-  const collateralAssets = useMemo(() => pool.getBorrowCollateral(), [pool]);
+  const collateralAssets = useMemo(
+    () => pool.getBorrowCollateral().map(item => maybeWrappedAsset(item)),
+    [pool],
+  );
 
   const sortedCollateralAssets = useMemo(() => {
     const sorted = [...collateralAssets].sort();
 
-    const btcIndex = sorted.findIndex(asset => asset === COMMON_SYMBOLS.BTC);
+    const btcIndex = sorted.findIndex(asset => asset === COMMON_SYMBOLS.WBTC);
 
     if (btcIndex !== -1) {
       const btcAsset = sorted.splice(btcIndex, 1);
@@ -115,7 +122,7 @@ export const NewLoanForm: FC<NewLoanFormProps> = ({ pool }) => {
         label: (
           <AssetRenderer
             showAssetLogo
-            asset={token}
+            asset={maybeUnwrappedAsset(token)}
             assetClassName="font-medium"
           />
         ),
@@ -124,8 +131,8 @@ export const NewLoanForm: FC<NewLoanFormProps> = ({ pool }) => {
   );
 
   const maximumBorrowAmount = useGetMaximumBorrowAmount(
-    borrowToken,
-    collateralToken,
+    maybeWrappedAsset(borrowToken),
+    maybeWrappedAsset(collateralToken),
     borrowDays,
     borrowApr,
     collateralSize,
@@ -137,7 +144,7 @@ export const NewLoanForm: FC<NewLoanFormProps> = ({ pool }) => {
   );
 
   const { maximumCollateralAmount: maxCollateralAmount } =
-    useGetMaximumCollateralAmount(collateralToken);
+    useGetMaximumCollateralAmount(maybeUnwrappedAsset(collateralToken));
 
   const onCollateralTokenChange = useCallback(
     (value: string) => {
@@ -297,7 +304,7 @@ export const NewLoanForm: FC<NewLoanFormProps> = ({ pool }) => {
         <MaxButton
           onClick={onMaximumBorrowAmountClick}
           value={maximumBorrowAmount}
-          token={borrowToken}
+          token={maybeUnwrappedAsset(borrowToken)}
           dataAttribute="new-loan-maximum-borrow-amount-button"
         />
       </div>
@@ -316,7 +323,7 @@ export const NewLoanForm: FC<NewLoanFormProps> = ({ pool }) => {
         <AssetRenderer
           dataAttribute="new-loan-borrow-asset"
           showAssetLogo
-          asset={borrowToken}
+          asset={maybeUnwrappedAsset(borrowToken)}
           className="min-w-[6.7rem] h-10 rounded bg-gray-60 items-center px-4 mr-0"
         />
       </div>
@@ -342,7 +349,7 @@ export const NewLoanForm: FC<NewLoanFormProps> = ({ pool }) => {
         <MaxButton
           onClick={onMaximumCollateralAmountClick}
           value={maxCollateralAmount}
-          token={collateralToken}
+          token={maybeUnwrappedAsset(collateralToken)}
           dataAttribute="new-loan-maximum-collateral-amount-button"
         />
       </div>
@@ -367,7 +374,7 @@ export const NewLoanForm: FC<NewLoanFormProps> = ({ pool }) => {
               <AssetRenderer
                 dataAttribute="new-loan-collateral-asset"
                 showAssetLogo
-                asset={value}
+                asset={maybeUnwrappedAsset(value)}
               />
             )}
             className="min-w-[6.7rem]"
@@ -378,7 +385,7 @@ export const NewLoanForm: FC<NewLoanFormProps> = ({ pool }) => {
           <AssetRenderer
             dataAttribute="new-loan-collateral-asset"
             showAssetLogo
-            asset={collateralToken}
+            asset={maybeUnwrappedAsset(collateralToken)}
             className="min-w-[6.7rem] h-10 rounded bg-gray-60 items-center px-4 mr-0"
           />
         )}
@@ -493,7 +500,7 @@ export const NewLoanForm: FC<NewLoanFormProps> = ({ pool }) => {
           <SimpleTableRow
             label={t(pageTranslations.newLoanDialog.labels.collateralPrice, {
               token:
-                collateralToken === COMMON_SYMBOLS.BTC
+                collateralToken === COMMON_SYMBOLS.WBTC
                   ? BITCOIN
                   : collateralToken.toLocaleUpperCase(),
             })}

@@ -1,5 +1,11 @@
 import { contracts } from '@sovryn/contracts';
-import { ChainId, getNetworkByChainId } from '@sovryn/ethers-provider';
+import {
+  ChainId,
+  ChainIds,
+  getNetworkByChainId,
+} from '@sovryn/ethers-provider';
+
+import { RSK_CHAIN_ID } from '../config/chains';
 
 export const normalizeAsset = (asset: string, chainId: ChainId) =>
   contracts.assets[getNetworkByChainId(chainId)]?.find(
@@ -14,9 +20,38 @@ export const listAssetsOfChain = (chainId: ChainId) =>
 
 export const COMMON_SYMBOLS = {
   BTC: 'BTC',
+  WBTC: 'WBTC',
   SOV: 'SOV',
   DLLR: 'DLLR',
   ZUSD: 'ZUSD',
   XUSD: 'XUSD',
   DOC: 'DOC',
+};
+
+export const maybeWrappedAsset = (
+  asset: string,
+  chainId: ChainId = RSK_CHAIN_ID,
+) => {
+  asset = asset.toUpperCase();
+  if (
+    asset === COMMON_SYMBOLS.BTC &&
+    [ChainIds.RSK_MAINNET, ChainIds.RSK_TESTNET].includes(chainId as ChainIds)
+  ) {
+    return 'WBTC';
+  }
+  return normalizeAsset(asset, chainId)?.symbol || asset.toUpperCase();
+};
+
+export const maybeUnwrappedAsset = (
+  asset: string,
+  chainId: ChainId = RSK_CHAIN_ID,
+) => {
+  asset = asset.toUpperCase();
+  if (
+    asset === 'WBTC' &&
+    [ChainIds.RSK_MAINNET, ChainIds.RSK_TESTNET].includes(chainId as ChainIds)
+  ) {
+    return COMMON_SYMBOLS.BTC;
+  }
+  return normalizeAsset(asset, chainId)?.symbol || asset.toUpperCase();
 };

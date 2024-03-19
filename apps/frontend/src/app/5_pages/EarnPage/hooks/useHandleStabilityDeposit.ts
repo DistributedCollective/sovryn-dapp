@@ -8,6 +8,8 @@ import { t } from 'i18next';
 import { getContract } from '@sovryn/contracts';
 import { Decimal } from '@sovryn/utils';
 
+import { RSK_CHAIN_ID } from '../../../../config/chains';
+
 import {
   Transaction,
   TransactionType,
@@ -18,14 +20,13 @@ import { getTokenDisplayName } from '../../../../constants/tokens';
 import { useTransactionContext } from '../../../../contexts/TransactionContext';
 import { useAccount } from '../../../../hooks/useAccount';
 import { translations } from '../../../../locales/i18n';
+import { COMMON_SYMBOLS, compareAssets } from '../../../../utils/asset';
 import {
   getPermitTransferFrom,
   permitHandler,
   prepareApproveTransaction,
   preparePermit2Transaction,
 } from '../../../../utils/transactions';
-import { COMMON_SYMBOLS } from '../../../../utils/asset';
-import { RSK_CHAIN_ID } from '../../../../config/chains';
 
 export const useHandleStabilityDeposit = (
   token: string,
@@ -34,7 +35,7 @@ export const useHandleStabilityDeposit = (
   isDeposit: boolean,
   onComplete: () => void,
 ) => {
-  const isDllrToken = token === COMMON_SYMBOLS.DLLR;
+  const isDllrToken = compareAssets(token, COMMON_SYMBOLS.DLLR);
 
   const { signer } = useAccount();
   const { setTransactions, setIsOpen, setTitle } = useTransactionContext();

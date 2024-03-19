@@ -338,7 +338,7 @@ export const TransactionSteps: FC<TransactionStepsProps> = ({
       setStep(transactions.length);
     } catch (error) {
       onTxStatusChange?.(StatusType.error);
-      console.log('error:', error);
+      console.error('error:', error);
 
       transactions[0].onChangeStatus?.(StatusType.error);
 

@@ -187,6 +187,9 @@ export const StatusScreen: React.FC<StatusScreenProps> = ({
   );
   const disabledButton = useMemo(() => boltzLocked, [boltzLocked]);
   const buttonTitle = useMemo(() => {
+    if ([BoltzTxStatus.txClaimed].includes(boltzStatus as BoltzTxStatus)) {
+      return t(translations.common.buttons.done);
+    }
     if (
       boltzStatus === BoltzTxStatus.failedToPay ||
       boltzStatus === BoltzTxStatus.txLockupFailed
@@ -200,6 +203,10 @@ export const StatusScreen: React.FC<StatusScreenProps> = ({
   }, [boltzStatus, txStatus]);
 
   const handleButtonClick = useCallback(() => {
+    if ([BoltzTxStatus.txClaimed].includes(boltzStatus as BoltzTxStatus)) {
+      return onClose();
+    }
+
     if (
       boltzStatus === BoltzTxStatus.failedToPay ||
       boltzStatus === BoltzTxStatus.txLockupFailed

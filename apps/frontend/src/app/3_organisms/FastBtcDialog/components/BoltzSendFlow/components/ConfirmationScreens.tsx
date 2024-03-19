@@ -1,4 +1,10 @@
-import React, { useCallback, useContext, useRef, useState } from 'react';
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 
 import { Contract } from 'ethers';
 import { splitSignature } from 'ethers/lib/utils';
@@ -20,11 +26,7 @@ import {
 } from '../../../contexts/withdraw-boltz-context';
 import EtherSwapABI from '../../../utils/boltz/EtherSwap.json';
 import { boltz } from '../../../utils/boltz/boltz.client';
-import {
-  BoltzListener,
-  Status,
-  SubmarineSwapResponse,
-} from '../../../utils/boltz/boltz.types';
+import { BoltzListener, Status } from '../../../utils/boltz/boltz.types';
 import { StatusScreen } from './StatusScreen';
 
 type ConfirmationScreensProps = {
@@ -35,7 +37,13 @@ export const ConfirmationScreens: React.FC<ConfirmationScreensProps> = ({
   onClose,
 }) => {
   const { account, signer } = useAccount();
-  const { invoice, amount, set } = useContext(WithdrawBoltzContext);
+  const {
+    invoice,
+    amount,
+    swap: swapData,
+    set,
+    hash,
+  } = useContext(WithdrawBoltzContext);
 
   const { setTransactions, setTitle, setIsOpen } = useTransactionContext();
 
@@ -45,7 +53,6 @@ export const ConfirmationScreens: React.FC<ConfirmationScreensProps> = ({
   );
   const [txStatus, setTxStatus] = useState(StatusType.idle);
   const [boltzStatus, setBoltzStatus] = useState<Status>();
-  const [swapData, setSwapData] = useState<SubmarineSwapResponse>();
   const [error, setError] = useState<string>();
 
   const wsRef = useRef<BoltzListener>();
@@ -58,6 +65,12 @@ export const ConfirmationScreens: React.FC<ConfirmationScreensProps> = ({
     wsRef.current.status(({ status }) => setBoltzStatus(status));
   }, []);
 
+  useEffect(() => {
+    if (swapData) {
+      beginListening(swapData.id);
+    }
+  }, [swapData, beginListening]);
+
   const handleConfirm = useCallback(async () => {
     try {
       setError(undefined);
@@ -65,13 +78,17 @@ export const ConfirmationScreens: React.FC<ConfirmationScreensProps> = ({
       if (!swapData) {
         swap = await boltz.submarineSwap({
           invoice,
-          from: 'RBTC',
+          pairHash: hash,
           to: 'BTC',
-          refundAddress: account,
+          from: 'RBTC',
+          // refundAddress: account,
         });
 
-        setSwapData(swap);
-        beginListening(swap.id);
+        localStorage.setItem(
+          'submarine-swap',
+          JSON.stringify({ swap, invoice, amount }),
+        );
+        set(p => ({ ...p, swap }));
       }
 
       if (!swap) {
@@ -79,7 +96,11 @@ export const ConfirmationScreens: React.FC<ConfirmationScreensProps> = ({
         return;
       }
 
-      const value = decimalic(swap.expectedAmount).div(1e8).toBigNumber();
+      // const value = decimalic(swap.expectedAmount).div(1e8).toBigNumber();
+      const value = decimalic(swap.expectedAmount)
+        .sub(0.0001)
+        .div(1e8)
+        .toBigNumber();
 
       const data = await boltz.getContracts();
       const etherSwapAddress = data?.rsk.swapContracts.EtherSwap;
@@ -129,8 +150,8 @@ export const ConfirmationScreens: React.FC<ConfirmationScreensProps> = ({
     invoice,
     setTitle,
     setIsOpen,
-    account,
-    beginListening,
+    hash,
+    amount,
     set,
   ]);
 
@@ -205,6 +226,11 @@ export const ConfirmationScreens: React.FC<ConfirmationScreensProps> = ({
     setIsOpen(true);
   }, [swapData, signer, setTransactions, invoice, setTitle, setIsOpen, set]);
 
+  const handleClose = useCallback(() => {
+    localStorage.removeItem('submarine-swap');
+    onClose();
+  }, [onClose]);
+
   return (
     <StatusScreen
       txHash={txHash}
@@ -218,7 +244,7 @@ export const ConfirmationScreens: React.FC<ConfirmationScreensProps> = ({
       onConfirm={handleConfirm}
       onRefund={handleRefund}
       onRetry={handleRetry}
-      onClose={onClose}
+      onClose={handleClose}
     />
   );
 };

@@ -1,16 +1,16 @@
 import React, { useCallback } from 'react';
 
-import { GoBackButton } from '../GoBackButton';
-import { MobileCloseButton } from '../MobileCloseButton';
-import { InvoiceForm } from './components/InvoiceForm';
-import { AmountForm } from './components/AmountForm';
-import { ConfirmationScreens } from './components/ConfirmationScreens';
-import { MainScreen } from './components/MainScreen';
 import {
   WithdrawBoltzContext,
   WithdrawBoltzStep,
 } from '../../contexts/withdraw-boltz-context';
 import { useWithdrawBoltzConfig } from '../../hooks/useWithdrawBoltzConfig';
+import { GoBackButton } from '../GoBackButton';
+import { MobileCloseButton } from '../MobileCloseButton';
+import { AmountForm } from './components/AmountForm';
+import { ConfirmationScreens } from './components/ConfirmationScreens';
+import { InvoiceForm } from './components/InvoiceForm';
+import { MainScreen } from './components/MainScreen';
 
 const allowedStepsToGoBackFrom = [
   WithdrawBoltzStep.AMOUNT,
@@ -40,6 +40,18 @@ export const BoltzSendFlow: React.FC<SendFlowProps> = ({ onClose }) => {
   const { step, set } = value;
 
   const onBackClick = useCallback(() => {
+    if (step === WithdrawBoltzStep.REVIEW) {
+      if (localStorage.getItem('submarine-swap')) {
+        if (
+          window.confirm('Going back will clear the current swap. Continue?')
+        ) {
+          localStorage.removeItem('submarine-swap');
+          set(prevState => ({ ...prevState, step: getBackStep(step) }));
+        } else {
+          return;
+        }
+      }
+    }
     set(prevState => ({ ...prevState, step: getBackStep(step) }));
   }, [set, step]);
 

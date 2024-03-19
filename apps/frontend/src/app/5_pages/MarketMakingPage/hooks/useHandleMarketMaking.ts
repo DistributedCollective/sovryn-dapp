@@ -2,6 +2,7 @@ import { useCallback } from 'react';
 
 import { t } from 'i18next';
 
+import { getAssetContract } from '@sovryn/contracts';
 import { Decimal } from '@sovryn/utils';
 
 import { RSK_CHAIN_ID } from '../../../../config/chains';
@@ -16,12 +17,15 @@ import { useTransactionContext } from '../../../../contexts/TransactionContext';
 import { useAccount } from '../../../../hooks/useAccount';
 import { useGetProtocolContract } from '../../../../hooks/useGetContract';
 import { translations } from '../../../../locales/i18n';
+import {
+  COMMON_SYMBOLS,
+  maybeWrappedAsset,
+  normalizeAsset,
+} from '../../../../utils/asset';
 import { toWei } from '../../../../utils/math';
 import { prepareApproveTransaction } from '../../../../utils/transactions';
 import { DEPOSIT_MIN_RETURN } from '../MarketMakingPage.constants';
 import { AmmLiquidityPool } from '../utils/AmmLiquidityPool';
-import { COMMON_SYMBOLS, normalizeAsset } from '../../../../utils/asset';
-import { getAssetContract } from '@sovryn/contracts';
 
 export const useHandleMarketMaking = (onComplete: () => void) => {
   const { account, signer } = useAccount();
@@ -36,10 +40,13 @@ export const useHandleMarketMaking = (onComplete: () => void) => {
       }
 
       const [tokenAContractAddress, tokenBContractAddress] = await Promise.all([
-        getAssetContract(pool.assetA, RSK_CHAIN_ID).then(item => item.address),
-        getAssetContract(COMMON_SYMBOLS.BTC, RSK_CHAIN_ID).then(
+        getAssetContract(maybeWrappedAsset(pool.assetA), RSK_CHAIN_ID).then(
           item => item.address,
         ),
+        getAssetContract(
+          maybeWrappedAsset(COMMON_SYMBOLS.BTC),
+          RSK_CHAIN_ID,
+        ).then(item => item.address),
       ]);
 
       const transactions: Transaction[] = [];
@@ -102,7 +109,7 @@ export const useHandleMarketMaking = (onComplete: () => void) => {
         return;
       }
 
-      const token = asset === COMMON_SYMBOLS.BTC ? 'WBTC' : asset;
+      const token = maybeWrappedAsset(asset);
 
       const tokenContract = await getAssetContract(token, RSK_CHAIN_ID);
 
@@ -251,7 +258,7 @@ export const useHandleMarketMaking = (onComplete: () => void) => {
         return;
       }
 
-      const token = asset === COMMON_SYMBOLS.BTC ? 'WBTC' : asset;
+      const token = maybeWrappedAsset(asset);
 
       const tokenContract = await getAssetContract(token, RSK_CHAIN_ID);
 

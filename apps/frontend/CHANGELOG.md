@@ -1,5 +1,13 @@
 # frontend
 
+## 1.0.51
+
+### Patch Changes
+
+- 3ffea217: SOV-3964: open links in SIP proposals in a new browser tab
+- 0c16d474: SOV-3917: New voting power is now shown correctly when extending an existing stake
+- 0061ffe3: SOV-3870: Replace ZUSD with DLLR in Ecosystem Statistics
+
 ## 1.0.50
 
 ### Patch Changes

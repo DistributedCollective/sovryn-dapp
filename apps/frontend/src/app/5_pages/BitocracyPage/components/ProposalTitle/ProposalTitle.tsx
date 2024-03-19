@@ -32,6 +32,13 @@ export const ProposalTitle: FC<ProposalProps> = ({ proposal }) => {
           <ReactMarkdown
             remarkPlugins={[remarkGfm]}
             className="max-h-64 overflow-auto"
+            components={{
+              a: props => (
+                <a href={props.href} target="_blank" rel="noreferrer">
+                  {props.children}
+                </a>
+              ),
+            }}
           >
             {proposalInfo.description}
           </ReactMarkdown>

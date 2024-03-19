@@ -47,7 +47,17 @@ export const ProposalInfo: FC<ProposalInfoProps> = ({ link, description }) => (
         {t(pageTranslations.proposalText)}
       </Paragraph>
       <div className={styles.description}>
-        <ReactMarkdown className={styles.markdown} remarkPlugins={[remarkGfm]}>
+        <ReactMarkdown
+          components={{
+            a: props => (
+              <a href={props.href} target="_blank" rel="noreferrer">
+                {props.children}
+              </a>
+            ),
+          }}
+          className={styles.markdown}
+          remarkPlugins={[remarkGfm]}
+        >
           {description}
         </ReactMarkdown>
       </div>

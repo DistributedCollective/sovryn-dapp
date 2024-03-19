@@ -28,6 +28,9 @@ export const COMMON_SYMBOLS = {
   DOC: 'DOC',
 };
 
+export const compareAssets = (asset1: string, asset2: string) =>
+  asset1.toUpperCase() === asset2.toUpperCase();
+
 export const maybeWrappedAsset = (
   asset: string,
   chainId: ChainId = RSK_CHAIN_ID,

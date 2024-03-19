@@ -8,6 +8,8 @@ import { t } from 'i18next';
 import { Decimalish, TroveAdjustmentParams } from '@sovryn-zero/lib-base';
 import { getContract } from '@sovryn/contracts';
 
+import { RSK_CHAIN_ID } from '../../../../config/chains';
+
 import {
   Transaction,
   TransactionType,
@@ -19,6 +21,7 @@ import { getTokenDisplayName } from '../../../../constants/tokens';
 import { useTransactionContext } from '../../../../contexts/TransactionContext';
 import { useAccount } from '../../../../hooks/useAccount';
 import { translations } from '../../../../locales/i18n';
+import { COMMON_SYMBOLS, compareAssets } from '../../../../utils/asset';
 import { loadLiquity } from '../../../../utils/liquity';
 import { toWei } from '../../../../utils/math';
 import {
@@ -30,8 +33,6 @@ import {
   UNSIGNED_PERMIT,
 } from '../../../../utils/transactions';
 import { adjustTrove, openTrove } from '../utils/trove-manager';
-import { RSK_CHAIN_ID } from '../../../../config/chains';
-import { COMMON_SYMBOLS } from '../../../../utils/asset';
 
 const baseTranslationPath = translations.zeroPage.tx;
 
@@ -133,7 +134,7 @@ export const useHandleTrove = (
             params.withdrawCollateral = value.withdrawCollateral;
           }
 
-          const isDllr = value.token.toUpperCase() === COMMON_SYMBOLS.DLLR;
+          const isDllr = compareAssets(value.token, COMMON_SYMBOLS.DLLR);
           const transactions: Transaction[] = [];
           let permitTransferFrom: PermitTransferFrom;
 
@@ -359,7 +360,7 @@ export const useHandleTrove = (
           RSK_CHAIN_ID,
         );
         const contract = new Contract(address, abi, signer);
-        const isDllr = token.toUpperCase() === COMMON_SYMBOLS.DLLR;
+        const isDllr = compareAssets(token, COMMON_SYMBOLS.DLLR);
 
         if (isDllr) {
           const { liquity } = await loadLiquity();
@@ -409,7 +410,7 @@ export const useHandleTrove = (
           });
 
           setTransactions(transactions);
-        } else if (token.toLowerCase() === COMMON_SYMBOLS.ZUSD) {
+        } else if (compareAssets(token, COMMON_SYMBOLS.ZUSD)) {
           setTransactions([
             {
               title: t(baseTranslationPath.close),

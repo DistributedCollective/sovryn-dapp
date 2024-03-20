@@ -211,7 +211,8 @@ const LOCAL_FORK_CHAIN: ChainSpec = Object.assign({}, GOERLI_CHAIN, {
 export const CHAIN_SPECS: { [chainId: string]: ChainSpec } = {
   '0x1': MAINNET_CHAIN,
   '0x5': GOERLI_CHAIN,
-  '0x6f': BOB_TESTNET_CHAIN,
+  '0x6f': BOB_TESTNET_CHAIN, // 111
+  '0x97114f': BOB_TESTNET_CHAIN,
   '0x7a69': LOCAL_FORK_CHAIN,
   '0x66eed': ARB_GOERLI_CHAIN,
   '0xaa36a7': SEPOLIA_CHAIN,

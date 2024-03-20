@@ -180,24 +180,24 @@ const SCROLL_CHAIN: ChainSpec = {
 };
 
 const BOB_TESTNET_CHAIN: ChainSpec = {
-  nodeUrl: 'https://testnet.rpc.gobob.xyz',
+  nodeUrl: 'https://bob-sepolia.rpc.caldera.xyz/http',
   addrs: {
-    dex: '0x302aA12bB6A9cee2782d02024986b58eBE58A246',
-    query: '0x3beb724c3c2b8ae0DfCe74015B21f6cf962D9881',
-    impact: '0xc442ce6a859d3155B4c1347dD424ad11a936f560',
-    router: '0x31B957FE4C68B1949C38F2F8AaeB0028C6860a5d',
-    routerBypass: '0xf1e7167A0b085B52A8ad02A5Cc48eD2027b8B577',
+    dex: '0xdA95787c585F179BE374a241C8f0cdC25dC5A751',
+    query: '0xA6b5f74DDCc75b4b561D84B19Ad7FD51f0405483',
+    impact: '0xE00d0EeFfC2F6838b003c81Fe45894D6400c0B28',
+    router: '0x718425f091Df36637e14602635B9a17a20Ba23E4',
+    routerBypass: '0x007b3AA69A846cB1f76b60b3088230A52D2A83AC',
   },
   poolIndex: 36000,
   isTestNet: true,
-  chainId: '0x6f',
+  chainId: '0x97114f',
   gridSize: 16,
   proxyPaths: {
     cold: 3,
     long: 4,
     liq: 2,
   },
-  blockExplorer: 'https://testnet-explorer.gobob.xyz/',
+  blockExplorer: 'https://bob-sepolia.explorer.caldera.xyz',
   displayName: 'BOB Testnet',
   logoUrl: ETHEREUM_LOGO,
 };

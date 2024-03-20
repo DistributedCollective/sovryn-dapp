@@ -63,7 +63,7 @@ export const APP_CHAIN_LIST: ChainWithLogo[] = [
         {
           id: ChainIds.BOB_TESTNET,
           label: 'BOB',
-          token: 'tBTC',
+          token: 'tETH',
           publicRpcUrl: BOB.publicRpc[Environments.Testnet],
           rpcUrl: BOB.rpc[Environments.Testnet],
           blockExplorerUrl: BOB.explorer[Environments.Testnet],

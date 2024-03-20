@@ -43,17 +43,16 @@ export const ambientRoute: SwapRouteFunction = (
     chains: [ChainIds.BOB_MAINNET, ChainIds.BOB_TESTNET],
     pairs: async () => {
       const chainId = await getChainId();
-      console.log('chainId', chainId);
-      const btc = await getAssetContract('BTC', chainId);
+      const btc = await getAssetContract('ETH', chainId);
       const sov = await getAssetContract('SOV', chainId);
       const usdc = await getAssetContract('USDC', chainId);
-      const wbtc = await getAssetContract('WBTC', chainId);
+      const usdt = await getAssetContract('USDT', chainId);
 
       return new Map<string, string[]>([
-        [btc.address, [sov.address, usdc.address, wbtc.address]],
-        [sov.address, [btc.address, usdc.address, wbtc.address]],
-        [usdc.address, [btc.address, sov.address, wbtc.address]],
-        [wbtc.address, [btc.address, sov.address, usdc.address]],
+        [btc.address, [sov.address, usdc.address, usdt.address]],
+        [sov.address, [btc.address, usdc.address, usdt.address]],
+        [usdc.address, [btc.address, sov.address, usdt.address]],
+        [usdt.address, [btc.address, sov.address, usdc.address]],
       ]);
     },
     quote: async (entry, destination, amount) => {

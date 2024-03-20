@@ -2,7 +2,7 @@ import { Environments } from '../../types/global';
 
 const rpc = {
   [Environments.Mainnet]: 'https://rpc.gobob.xyz',
-  [Environments.Testnet]: 'https://testnet.rpc.gobob.xyz',
+  [Environments.Testnet]: 'https://bob-sepolia.rpc.caldera.xyz/http',
 };
 
 export const BOB = {
@@ -10,7 +10,7 @@ export const BOB = {
   publicRpc: rpc,
   explorer: {
     [Environments.Mainnet]: 'https://explorer.gobob.xyz',
-    [Environments.Testnet]: 'https://testnet-explorer.gobob.xyz',
+    [Environments.Testnet]: 'https://bob-sepolia.explorer.caldera.xyz',
   },
   relayer: {
     [Environments.Mainnet]: 'https://gsn-relay.gobob.xyz',

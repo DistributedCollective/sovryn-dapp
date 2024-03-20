@@ -211,8 +211,8 @@ export const zeroRedemptionSwapRoute: SwapRouteFunction = (
           await hasEnoughAllowance(
             provider,
             entry,
-            spender,
             from,
+            spender,
             amount ?? constants.MaxUint256,
           )
         ) {

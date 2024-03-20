@@ -118,8 +118,8 @@ export const myntBassetRoute: SwapRouteFunction = (
         await hasEnoughAllowance(
           provider,
           entry,
-          spender,
           from,
+          spender,
           amount ?? constants.MaxUint256,
         )
       ) {

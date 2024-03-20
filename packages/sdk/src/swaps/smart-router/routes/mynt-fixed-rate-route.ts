@@ -71,8 +71,8 @@ export const myntFixedRateRoute: SwapRouteFunction = (
         await hasEnoughAllowance(
           provider,
           entry,
-          converter.address,
           from,
+          converter.address,
           amount ?? constants.MaxUint256,
         )
       ) {

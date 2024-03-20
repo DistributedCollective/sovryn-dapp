@@ -166,8 +166,8 @@ export const ammSwapRoute: SwapRouteFunction = (
         await hasEnoughAllowance(
           provider,
           entry,
-          converter.address,
           from,
+          converter.address,
           amount ?? constants.MaxUint256,
         )
       ) {

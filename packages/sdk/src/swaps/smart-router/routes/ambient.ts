@@ -77,8 +77,8 @@ export const ambientRoute: SwapRouteFunction = (
         await hasEnoughAllowance(
           provider,
           entry,
-          contract.address, // Use the contract address directly
           from,
+          contract.address, // Use the contract address directly
           amount ?? constants.MaxUint256,
         )
       ) {
@@ -87,7 +87,7 @@ export const ambientRoute: SwapRouteFunction = (
 
       return {
         ...makeApproveRequest(
-          plan.baseToken.tokenAddr,
+          entry,
           contract.address, // Use the contract address directly
           amount ?? constants.MaxUint256,
         ),

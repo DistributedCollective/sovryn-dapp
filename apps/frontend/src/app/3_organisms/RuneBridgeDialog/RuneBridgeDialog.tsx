@@ -14,10 +14,12 @@ import {
 } from '@sovryn/ui';
 
 import { useAccount } from '../../../hooks/useAccount';
-// import { useIsMobile } from '../../../hooks/useIsMobile';
+import { useIsMobile } from '../../../hooks/useIsMobile';
 import { translations } from '../../../locales/i18n';
 import { RSKToRune, RuneToRSK } from './components';
-import { ContractContextProvider } from './contextproviders/contract_context_provider';
+import { ContractContextProvider } from './contextproviders/ContractContextProvider';
+import { ReceiveFlowContextProvider } from './contextproviders/ReceiveContextProvider';
+import { SendFlowContextProvider } from './contextproviders/SendContextProvider';
 
 const ACTIVE_CLASSNAME = 'border-t-primary-30';
 
@@ -39,8 +41,7 @@ export const RuneBridgeDialog: React.FC<RuneBridgeDialogProps> = ({
   const [index, setIndex] = useState(step);
   const { account } = useAccount();
 
-  // const { isMobile } = useIsMobile();
-  const [dialogSizes, setDialogSizes] = useState(DialogSize.xl2);
+  const { isMobile } = useIsMobile();
   useEffect(() => {
     setIndex(step);
   }, [step]);
@@ -50,14 +51,22 @@ export const RuneBridgeDialog: React.FC<RuneBridgeDialogProps> = ({
       {
         label: t(translation.tabs.receiveLabel),
         infoText: t(translation.tabs.receiveInfoText),
-        content: <RuneToRSK onClose={onClose} />,
+        content: (
+          <ReceiveFlowContextProvider>
+            <RuneToRSK onClose={onClose} />
+          </ReceiveFlowContextProvider>
+        ),
         activeClassName: ACTIVE_CLASSNAME,
         dataAttribute: 'funding-receive',
       },
       {
         label: t(translation.tabs.sendLabel),
         infoText: t(translation.tabs.sendInfoText),
-        content: <RSKToRune onClose={onClose} />,
+        content: (
+          <SendFlowContextProvider>
+            <RSKToRune onClose={onClose} />
+          </SendFlowContextProvider>
+        ),
         activeClassName: ACTIVE_CLASSNAME,
         dataAttribute: 'funding-send',
       },
@@ -66,9 +75,11 @@ export const RuneBridgeDialog: React.FC<RuneBridgeDialogProps> = ({
 
   const onChangeIndex = useCallback((index: number | null) => {
     index !== null ? setIndex(index) : setIndex(0);
-    setDialogSizes(index === 0 ? DialogSize.xl5 : DialogSize.xl2);
   }, []);
-
+  const dialogSize = useMemo(
+    () => (isMobile ? DialogSize.md : DialogSize.xl2),
+    [isMobile],
+  );
   // Reset the selected index to 0 in case the connected account changes because the new account may have the Send tab hidden and it would crash the app if we tried to access that index
   useEffect(() => {
     setIndex(0);
@@ -77,7 +88,7 @@ export const RuneBridgeDialog: React.FC<RuneBridgeDialogProps> = ({
   return (
     <Dialog
       isOpen={isOpen}
-      width={dialogSizes}
+      width={dialogSize}
       className="p-4 flex items-center sm:p-0"
       disableFocusTrap
       closeOnEscape={false}

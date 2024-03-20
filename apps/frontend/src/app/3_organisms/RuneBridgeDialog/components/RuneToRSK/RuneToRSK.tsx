@@ -1,92 +1,35 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 
-import {
-  Align,
-  ButtonStyle,
-  InputSize,
-  RowObject,
-  Button,
-  FormGroup,
-  Heading,
-  Input,
-  TransactionId,
-  Select,
-  TableBase,
-} from '@sovryn/ui';
-
-import { useContractServices } from '../../hooks/useContractServices';
+import { StatusScreen } from '../../../FastBtcDialog/components/ReceiveFlow/components/StatusScreen';
+import { ReceiveflowStep } from '../../contexts/receiveflow';
+import { useReceiveFlowService } from '../../hooks/useReceiveFlowService';
+import { GoBackButton } from '../GoBackButton';
+import { AddressForm } from './components/AddressForm';
+import { MainScreen } from './components/MainScreen';
 
 interface RuneToRSKProps {
   onClose: () => void;
 }
 
 export const RuneToRSK: React.FC<RuneToRSKProps> = ({ onClose }) => {
-  const { requestDepositAddress, depositAddress, tokenBalances } =
-    useContractServices();
-  console.log('tokenBalances', tokenBalances);
-  const options = tokenBalances.map(tokenBalance => {
-    return {
-      label: tokenBalance.name,
-      value: tokenBalance.tokenContractAddress,
-    };
-  });
+  const { step, set } = useReceiveFlowService();
+  const onBackClick = useCallback(() => {
+    set(prevState => ({ ...prevState, step: ReceiveflowStep.MAIN }));
+  }, [set]);
 
-  const rows: RowObject[] = tokenBalances.map((tokenBalance, index) => {
-    return {
-      address: (
-        <TransactionId
-          href={`https://explorer.testnet.rsk.co/address/${tokenBalance.tokenContractAddress}`}
-          value={tokenBalance.tokenContractAddress}
-        />
-      ),
-      balance: `${tokenBalance.balance} ${tokenBalance.symbol}`,
-      name: tokenBalance.name,
-    };
-  });
   return (
-    <div className="flex flex-col">
-      <FormGroup>
-        <Heading>Rune to RSK</Heading>
-        <Select onChange={() => {}} options={options} value="1" />
-        <Button
-          onClick={requestDepositAddress}
-          style={ButtonStyle.secondary}
-          text="Generate deposit address"
-        />
-        <Input
-          onChangeText={() => {}}
-          size={InputSize.small}
-          type="text"
-          label="deposit address"
-          value={depositAddress}
-          disabled={true}
-          readOnly={true}
-        />
-      </FormGroup>
-      <div className="">
-        <TableBase
-          columns={[
-            {
-              align: Align.left,
-              id: 'name',
-              title: 'Name',
-            },
-            {
-              align: Align.left,
-              id: 'address',
-              title: 'Address',
-            },
-            {
-              align: Align.left,
-              id: 'balance',
-              title: 'Balance',
-            },
-          ]}
-          dataAttribute="addressTable"
-          onRowClick={() => {}}
-          rowKey={row => row.name}
-          rows={rows}
-        />
+    <div>
+      {step === ReceiveflowStep.ADDRESS && (
+        <GoBackButton onClick={onBackClick} />
+      )}
+
+      <div className="mt-0 md:mt-12">
+        {step === ReceiveflowStep.MAIN && <MainScreen />}
+
+        {step === ReceiveflowStep.ADDRESS && <AddressForm />}
+        {[ReceiveflowStep.PROCESSING, ReceiveflowStep.COMPLETED].includes(
+          step,
+        ) && <StatusScreen onClose={onClose} />}
       </div>
     </div>
   );

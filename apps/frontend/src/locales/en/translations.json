@@ -952,7 +952,66 @@
           "sendLabel": "Send",
           "sendInfoText": "Transfer RSK Token from the Rootstock network to a specified address"
         }
-      }
+      },
+        "receiveInstructions": {
+            "title": "Instructions",
+            "line1": "Only transfer Rune token from the bitcoin network",
+            "line2": "Do not send less than the minimum amount",
+            "line3": "Do not send more than the maximum amount",
+            "line4": "Allow up to {{hours}} hrs to process",
+            "line5": "If your transaction takes longer than {{hours}} hrs please <0>create a support ticket</0>",
+            "line5cta": "create a support ticket"
+        },
+      "sendInstructions": {
+            "title": "Instructions",
+            "line1": "Only transfer RSK token to the bitcoin network",
+            "line2": "Do not send less than the minimum amount",
+            "line3": "Do not send more than the maximum amount",
+            "line4": "Allow up to {{hours}} hrs to process",
+            "line5": "If your transaction takes longer than {{hours}} hrs please <0>create a support ticket</0>",
+            "line5cta": "create a support ticket",
+            "supportedFormats": "Supported address formats: P2PKH, P2SH, P2WPKH, P2WSH"
+        },
+        "limits": {
+            "title": "Transfer policies",
+            "minimumAmount": "Minimum amount",
+            "maximumAmount": "Maximum amount",
+            "serviceFee": "Service fee"
+        },
+        "addressForm": {
+            "title": "Send BTC to this address",
+            "copyAddressSuccess": "Address was copied to clipboard.",
+            "invalidSignatures": "We had an error while trying to verify a deposit address"
+        },
+        "send": {
+            "amountForm": {
+                "title": "Select and enter the amount of Rootstock Token to send",
+                "amountLabel": "Send"
+            },
+            "addressForm": {
+                "title": "Enter recipient's bitcoin address",
+                "addressLabel": "Address",
+                "maxExceed": "Exceeds maximum amount",
+                "invalidAddress": "Invalid address"
+            },
+            "confirmationScreens": {
+                "reviewTitle": "Transfer details",
+                "statusTitleProcessing": "Transfer processing...",
+                "statusTitleComplete": "Transfer complete",
+                "statusTitleFailed": "Transfer failed",
+                "from": "From",
+                "to": "To",
+                "sending": "Sending",
+                "serviceFee": "Service fee",
+                "receiving": "Receiving",
+                "hash": "Rootstock TXID",
+                "bitcoinTxId": "Bitcoin TXID"
+            },
+            "txDialog": {
+                "title": "Send BTC to the bitcoin network",
+                "sendBTC": "Send BTC"
+            }
+        }
     },
 
     "fastBtc": {

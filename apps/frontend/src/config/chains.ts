@@ -13,9 +13,11 @@ export enum Chains {
   BSC = 'bsc',
 }
 
-export const defaultChainId = (
-  isMainnet() ? ChainIds.RSK_MAINNET : ChainIds.RSK_TESTNET
-) as string;
+// export const defaultChainId = (
+//   isMainnet() ? ChainIds.RSK_MAINNET : ChainIds.RSK_TESTNET
+// ) as string;
+
+export const defaultChainId = ChainIds.SEPOLIA;
 
 // @dev: temp solution for hardware wallets to connect to the correct chain
 // good enough for now, but should be refactored when cross-chain support is needed
@@ -37,6 +39,14 @@ export const chains: Chain[] = [
         rpcUrl: RSK_RPC[Environments.Testnet],
         blockExplorerUrl: RSK_EXPLORER[Environments.Testnet],
       },
+  {
+    id: ChainIds.SEPOLIA,
+    label: 'Sepolia',
+    token: 'ETH',
+    publicRpcUrl: PUBLIC_RSK_RPC[Environments.Mainnet],
+    rpcUrl: RSK_RPC[Environments.Mainnet],
+    blockExplorerUrl: 'https://sepolia.etherscan.io',
+  },
 ];
 
 setup(chains);

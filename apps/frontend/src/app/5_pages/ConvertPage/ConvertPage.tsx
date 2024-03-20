@@ -116,7 +116,7 @@ const ConvertPage: FC = () => {
 
   useEffect(() => {
     smartRouter
-      .getEntries()
+      .getEntries(defaultChainId)
       .then(tokens => tokensToOptions(tokens, setTokenOptions));
   }, []);
 
@@ -126,9 +126,11 @@ const ConvertPage: FC = () => {
         sourceToken,
         defaultChainId,
       );
-      smartRouter.getDestination(sourceTokenDetails.address).then(tokens => {
-        tokensToOptions(tokens, setDestinationTokenOptions);
-      });
+      smartRouter
+        .getDestination(defaultChainId, sourceTokenDetails.address)
+        .then(tokens => {
+          tokensToOptions(tokens, setDestinationTokenOptions);
+        });
 
       if (sourceToken === SupportedTokens.mynt) {
         setDestinationToken(SupportedTokens.sov);
@@ -233,6 +235,7 @@ const ConvertPage: FC = () => {
       ]);
 
       const result = await smartRouter.getBestQuote(
+        defaultChainId,
         sourceTokenDetails.address,
         destinationTokenDetails.address,
         weiAmount,

@@ -49,6 +49,7 @@ export const LendingPoolBalance: FC<LendingPoolBalanceProps> = ({
         );
 
         const result = await smartRouter.getBestQuote(
+          defaultChainId,
           sourceTokenDetails.address,
           destinationTokenDetails.address,
           toWei(assetBalance),

@@ -118,6 +118,7 @@ export const mocIntegrationSwapRoute: SwapRouteFunction = (
 
   return {
     name: 'MocIntegration',
+    chains: [ChainIds.RSK_MAINNET, ChainIds.RSK_TESTNET],
     async pairs() {
       if (pairCache) {
         return pairCache;

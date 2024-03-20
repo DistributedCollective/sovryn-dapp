@@ -5,7 +5,7 @@ import {
   getProtocolContract,
   getTokenContract,
 } from '@sovryn/contracts';
-import { ChainId, numberToChainId } from '@sovryn/ethers-provider';
+import { ChainId, ChainIds, numberToChainId } from '@sovryn/ethers-provider';
 
 import { SovrynErrorCode, makeError } from '../../../errors/errors';
 import {
@@ -56,6 +56,7 @@ export const myntBassetRoute: SwapRouteFunction = (
 
   return {
     name: 'MyntBasset',
+    chains: [ChainIds.RSK_MAINNET, ChainIds.RSK_TESTNET],
     async pairs() {
       if (pairCache) {
         return pairCache;

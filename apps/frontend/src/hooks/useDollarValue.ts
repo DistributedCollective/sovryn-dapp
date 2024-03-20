@@ -2,6 +2,8 @@ import { useMemo } from 'react';
 
 import { SupportedTokens } from '@sovryn/contracts';
 
+import { defaultRskChainId } from '../config/chains';
+
 import {
   smartRouter,
   stableCoins,
@@ -10,7 +12,6 @@ import { decimalic, fromWei, toWei } from '../utils/math';
 import { useCacheCall } from './useCacheCall';
 import { useTokenDetailsByAsset } from './useTokenDetailsByAsset';
 import { useGetRBTCPrice } from './zero/useGetRBTCPrice';
-import { defaultRskChainId } from '../config/chains';
 
 export function useDollarValue(asset: SupportedTokens, weiAmount: string) {
   if (asset === SupportedTokens.zusd) {
@@ -23,6 +24,7 @@ export function useDollarValue(asset: SupportedTokens, weiAmount: string) {
 
   const { value: usdPrice, loading } = useCacheCall(
     `dollarValue/${asset}`,
+    defaultRskChainId,
     async () => {
       if (
         !assetDetails?.address ||

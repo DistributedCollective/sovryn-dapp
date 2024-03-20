@@ -3,8 +3,11 @@ import { useEffect, useState } from 'react';
 import { Contract } from 'ethers/lib/ethers';
 import { Subscription } from 'zen-observable-ts';
 
+import { getAssetData } from '@sovryn/contracts';
 import { getProvider } from '@sovryn/ethers-provider';
 import { Decimal } from '@sovryn/utils';
+
+import { RSK_CHAIN_ID } from '../../../../config/chains';
 
 import { useBlockNumber } from '../../../../hooks/useBlockNumber';
 import {
@@ -14,8 +17,6 @@ import {
   startCall,
 } from '../../../../store/rxjs/provider-cache';
 import { EcosystemDataType } from '../types';
-import { getAssetData } from '@sovryn/contracts';
-import { RSK_CHAIN_ID } from '../../../../config/chains';
 
 export const useGetTotalSupply = (
   asset: string,
@@ -33,6 +34,7 @@ export const useGetTotalSupply = (
     const getTotalSupply = async () => {
       const tokenDetails = await getAssetData(asset, chainId);
       const hashedArgs = idHash([
+        chainId,
         tokenDetails.address,
         EcosystemDataType.totalSupply,
       ]);

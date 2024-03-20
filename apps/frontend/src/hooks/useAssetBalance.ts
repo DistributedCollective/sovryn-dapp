@@ -3,8 +3,11 @@ import { useEffect, useMemo, useState } from 'react';
 import { BigNumber, constants } from 'ethers';
 import { Subscription } from 'zen-observable-ts';
 
+import { getAssetData } from '@sovryn/contracts';
 import { ChainId, getProvider } from '@sovryn/ethers-provider';
 import { Decimal } from '@sovryn/utils';
+
+import { RSK_CHAIN_ID } from '../config/chains';
 
 import {
   CacheCallOptions,
@@ -12,12 +15,10 @@ import {
   observeCall,
   startCall,
 } from '../store/rxjs/provider-cache';
-import { getRskChainId } from '../utils/chain';
 import { fromWei, decimalic } from '../utils/math';
 import { useBlockNumber } from './useBlockNumber';
 import { useIsMounted } from './useIsMounted';
 import { useWalletConnect } from './useWalletConnect';
-import { getAssetData } from '@sovryn/contracts';
 
 export type AssetBalanceResponse = {
   balance: Decimal;
@@ -31,7 +32,7 @@ export type AssetBalanceResponse = {
 
 export const useAssetBalance = (
   asset: string,
-  chainId: ChainId = getRskChainId(),
+  chainId: ChainId = RSK_CHAIN_ID,
   address: string | null = null,
   walletIndex: number = 0,
   options?: Partial<CacheCallOptions>,
@@ -66,6 +67,7 @@ export const useAssetBalance = (
       const tokenDetails = await getAssetData(asset, chainId);
 
       const hashedArgs = idHash([
+        chainId,
         tokenDetails.address,
         tokenDetails.address === constants.AddressZero
           ? 'nativeBalance'
@@ -101,17 +103,16 @@ export const useAssetBalance = (
         });
       });
 
-      const callback =
-        tokenDetails.address === constants.AddressZero
-          ? () =>
-              getProvider(chainId)
-                .getBalance(account)
-                .then(result => result.toString())
-          : () =>
-              tokenDetails
-                .contract(getProvider(chainId))
-                .balanceOf(account)
-                .then(result => result.toString());
+      const callback = tokenDetails.isNative
+        ? () =>
+            getProvider(chainId)
+              .getBalance(account)
+              .then(result => result.toString())
+        : () =>
+            tokenDetails
+              .contract(getProvider(chainId))
+              .balanceOf(account)
+              .then(result => result.toString());
 
       startCall(hashedArgs, callback, {
         ...options,

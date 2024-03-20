@@ -28,6 +28,7 @@ export const COMMON_SYMBOLS = {
   DOC: 'DOC',
   BPRO: 'BPRO',
   RUSDT: 'RUSDT',
+  ETH: 'ETH',
 };
 
 export const compareAssets = (asset1?: string | null, asset2?: string | null) =>

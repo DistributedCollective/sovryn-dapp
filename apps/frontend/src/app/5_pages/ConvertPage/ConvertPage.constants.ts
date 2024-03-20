@@ -42,6 +42,6 @@ export const DEFAULT_SWAP_ENTRIES: Partial<Record<ChainIds, SupportedTokens>> =
   {
     [ChainIds.RSK_MAINNET]: COMMON_SYMBOLS.DLLR,
     [ChainIds.RSK_TESTNET]: COMMON_SYMBOLS.DLLR,
-    [ChainIds.BOB_MAINNET]: COMMON_SYMBOLS.BTC,
-    [ChainIds.BOB_TESTNET]: COMMON_SYMBOLS.BTC,
+    [ChainIds.BOB_MAINNET]: COMMON_SYMBOLS.ETH,
+    [ChainIds.BOB_TESTNET]: COMMON_SYMBOLS.ETH,
   };

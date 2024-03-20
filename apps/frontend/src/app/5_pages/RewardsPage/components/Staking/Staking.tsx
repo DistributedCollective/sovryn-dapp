@@ -11,6 +11,7 @@ import { BTC_RENDER_PRECISION } from '../../../../../constants/currencies';
 import { getTokenDisplayName } from '../../../../../constants/tokens';
 import { useAccount } from '../../../../../hooks/useAccount';
 import { translations } from '../../../../../locales/i18n';
+import { COMMON_SYMBOLS } from '../../../../../utils/asset';
 import { decimalic } from '../../../../../utils/math';
 import { EarnedFee } from '../../RewardsPage.types';
 import { useGetFeesEarned } from '../../hooks/useGetFeesEarned';
@@ -18,7 +19,6 @@ import { useGetLiquidSovClaimAmount } from '../../hooks/useGetLiquidSovClaimAmou
 import { columns } from './Staking.constants';
 import { WithdrawAllFees } from './components/WithdrawAllFees/WithdrawAllFees';
 import { WithdrawLiquidFee } from './components/WithdrawLiquidFee/WithdrawLiquidFee';
-import { COMMON_SYMBOLS } from '../../../../../utils/asset';
 
 export const Staking: FC = () => {
   const { account } = useAccount();
@@ -48,8 +48,8 @@ export const Staking: FC = () => {
   const earnedFeesSum = useMemo(() => {
     const btcFees = earnedFees.filter(
       earnedFee =>
-        earnedFee.token.toUpperCase() === 'BTC' ||
-        earnedFee.token.toUpperCase() === 'WBTC',
+        earnedFee.token.toUpperCase() === COMMON_SYMBOLS.BTC ||
+        earnedFee.token.toUpperCase() === COMMON_SYMBOLS.WBTC,
     );
 
     if (!btcFees.length) {
@@ -58,12 +58,12 @@ export const Staking: FC = () => {
 
     const otherFees = earnedFees.filter(
       earnedFee =>
-        earnedFee.token.toUpperCase() !== 'BTC' &&
-        earnedFee.token.toUpperCase() !== 'WBTC',
+        earnedFee.token.toUpperCase() !== COMMON_SYMBOLS.BTC &&
+        earnedFee.token.toUpperCase() !== COMMON_SYMBOLS.WBTC,
     );
 
     const btcFeesSum: EarnedFee = {
-      token: 'BTC',
+      token: COMMON_SYMBOLS.BTC,
       value: btcFees
         .reduce((sum, fee) => sum.add(fee.value), BigNumber.from(0))
         .toString(),

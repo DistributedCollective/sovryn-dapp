@@ -2,16 +2,17 @@ import React from 'react';
 
 import { t } from 'i18next';
 
+import { RSK_CHAIN_ID } from '../../../../../config/chains';
+
 import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { TxIdWithNotification } from '../../../../2_molecules/TxIdWithNotification/TransactionIdWithNotification';
 import { TOKEN_RENDER_PRECISION } from '../../../../../constants/currencies';
 import { translations } from '../../../../../locales/i18n';
+import { COMMON_SYMBOLS, findAsset } from '../../../../../utils/asset';
 import { dateFormat, getRskExplorerUrl } from '../../../../../utils/helpers';
 import { AdjustStakeRenderer } from '../AdjustStakeRenderer/AdjustStakeRenderer';
 import { StakeItem } from './StakesFrame.types';
 import { VotingPowerCellRenderer } from './components/VotingPowerCellRenderer';
-import { COMMON_SYMBOLS, normalizeAsset } from '../../../../../utils/asset';
-import { RSK_CHAIN_ID } from '../../../../../config/chains';
 
 const rskExplorerUrl = getRskExplorerUrl();
 
@@ -22,7 +23,7 @@ export const COLUMNS_CONFIG = (onSuccess: () => void) => [
     cellRenderer: (item: StakeItem) => (
       <AmountRenderer
         value={item.stakedAmount}
-        suffix={normalizeAsset(COMMON_SYMBOLS.SOV, RSK_CHAIN_ID).symbol}
+        suffix={findAsset(COMMON_SYMBOLS.SOV, RSK_CHAIN_ID).symbol}
         precision={TOKEN_RENDER_PRECISION}
         showRoundingPrefix
         dataAttribute="stake-amount"

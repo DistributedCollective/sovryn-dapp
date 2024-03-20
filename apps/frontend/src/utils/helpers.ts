@@ -7,7 +7,8 @@ import tailwindConfig from '@sovryn/tailwindcss-config';
 import { Decimalish } from '@sovryn/utils';
 import { Decimal } from '@sovryn/utils';
 
-import { BITCOIN } from '../constants/currencies';
+import { RSK_CHAIN_ID } from '../config/chains';
+
 import { MS } from '../constants/general';
 import {
   AMM_SERVICE,
@@ -18,9 +19,8 @@ import { BTC } from '../constants/infrastructure/btc';
 import { RSK } from '../constants/infrastructure/rsk';
 import { ALPHA_LINKS, BITOCRACY_LINKS, GITHUB_LINKS } from '../constants/links';
 import { Environments } from '../types/global';
+import { COMMON_SYMBOLS, findAsset } from './asset';
 import { decimalic } from './math';
-import { normalizeAsset } from './asset';
-import { RSK_CHAIN_ID } from '../config/chains';
 
 export const prettyTx = (
   text: string,
@@ -173,15 +173,12 @@ export const removeTrailingZerosFromString = (value: string) =>
   value.includes('.') ? value.replace(/\.?0+$/, '') : value;
 
 export const isBtcBasedAsset = (asset: string) =>
-  asset.toLowerCase() === 'rbtc' ||
-  asset.toLowerCase() === 'wrbtc' ||
-  asset.toLowerCase() === 'wbtc' ||
-  asset.toUpperCase() === BITCOIN;
+  [COMMON_SYMBOLS.BTC, COMMON_SYMBOLS.WBTC, 'RBTC', 'WRBTC'].includes(
+    asset.toUpperCase(),
+  );
 
 export const isBitpro = (asset: string) =>
-  asset.toLowerCase() === 'bitpro' ||
-  asset.toLowerCase() === 'bitp' ||
-  asset.toLowerCase() === 'bpro';
+  [COMMON_SYMBOLS.BPRO, 'BITPRO', 'BITP'].includes(asset.toUpperCase());
 
 export const areValuesIdentical = (
   firstValue: Decimal,
@@ -193,7 +190,7 @@ export const areValuesIdentical = (
 };
 
 export const renderTokenSymbol = (token: string) =>
-  normalizeAsset(token, RSK_CHAIN_ID).symbol;
+  findAsset(token, RSK_CHAIN_ID).symbol;
 
 export const generateNonce = () =>
   BigNumber.from(Math.floor(Date.now() + Math.random() * 100));

@@ -11,11 +11,17 @@ import { RSK_CHAIN_ID } from '../../../../config/chains';
 import { useAccount } from '../../../../hooks/useAccount';
 import { useIsMounted } from '../../../../hooks/useIsMounted';
 import { useMulticall } from '../../../../hooks/useMulticall';
+import { COMMON_SYMBOLS, findAsset } from '../../../../utils/asset';
 import { EarnedFee } from '../RewardsPage.types';
-import { COMMON_SYMBOLS, normalizeAsset } from '../../../../utils/asset';
 
 const MAX_CHECKPOINTS = 50;
-const FEE_TOKEN_ASSETS = ['WBTC', 'BTC', 'SOV', 'ZUSD', 'MYNT'];
+const FEE_TOKEN_ASSETS = [
+  COMMON_SYMBOLS.WBTC,
+  COMMON_SYMBOLS.BTC,
+  COMMON_SYMBOLS.SOV,
+  COMMON_SYMBOLS.ZUSD,
+  'MYNT',
+];
 
 const FEE_LOAN_ASSETS = [COMMON_SYMBOLS.BTC];
 
@@ -66,7 +72,7 @@ export const useGetFeesEarned = () => {
         contractAddress:
           asset.toUpperCase() === COMMON_SYMBOLS.BTC
             ? await getRbtcDummyAddress()
-            : normalizeAsset(asset, RSK_CHAIN_ID).address,
+            : findAsset(asset, RSK_CHAIN_ID).address,
         value: '0',
         rbtcValue: 0,
         ...(asset.toUpperCase() !== COMMON_SYMBOLS.BTC

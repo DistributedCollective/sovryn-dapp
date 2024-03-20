@@ -41,7 +41,7 @@ export const useGetBorrowMaintenance = (asset: string) => {
           WITHDRAW_COLLATERAL: States.D2_BORROW_XUSD_WITHDRAW_COLLATERAL,
           FULL: States.BORROW_FULL,
         };
-      case 'DOC':
+      case COMMON_SYMBOLS.DOC:
         return {
           NEW_LOANS: States.D2_BORROW_DOC_NEW_LOANS,
           BORROW: States.D2_BORROW_DOC_BORROW,
@@ -52,7 +52,7 @@ export const useGetBorrowMaintenance = (asset: string) => {
           WITHDRAW_COLLATERAL: States.D2_BORROW_DOC_WITHDRAW_COLLATERAL,
           FULL: States.BORROW_FULL,
         };
-      case 'RUSDT':
+      case COMMON_SYMBOLS.RUSDT:
         return {
           NEW_LOANS: States.D2_BORROW_USDT_NEW_LOANS,
           BORROW: States.D2_BORROW_USDT_BORROW,
@@ -63,7 +63,7 @@ export const useGetBorrowMaintenance = (asset: string) => {
           WITHDRAW_COLLATERAL: States.D2_BORROW_USDT_WITHDRAW_COLLATERAL,
           FULL: States.BORROW_FULL,
         };
-      case 'BPRO':
+      case COMMON_SYMBOLS.BPRO:
         return {
           NEW_LOANS: States.D2_BORROW_BPRO_NEW_LOANS,
           BORROW: States.D2_BORROW_BPRO_BORROW,

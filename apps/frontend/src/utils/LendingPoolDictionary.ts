@@ -45,7 +45,10 @@ export class LendingPoolDictionary {
         false,
       ),
     ],
-    ['RUSDT', new LendingPool('RUSDT', [], false, true)],
+    [
+      COMMON_SYMBOLS.RUSDT,
+      new LendingPool(COMMON_SYMBOLS.RUSDT, [], false, true),
+    ],
     [
       'BPRO',
       new LendingPool(

@@ -6,6 +6,8 @@ import { t } from 'i18next';
 
 import { Decimal } from '@sovryn/utils';
 
+import { RSK_CHAIN_ID } from '../../../config/chains';
+
 import { AmountRenderer } from '../../2_molecules/AmountRenderer/AmountRenderer';
 import {
   BTC_RENDER_PRECISION,
@@ -17,10 +19,9 @@ import {
   MINIMUM_COLLATERAL_RATIO_LENDING_POOLS,
 } from '../../../constants/lending';
 import { translations } from '../../../locales/i18n';
+import { COMMON_SYMBOLS, findAsset } from '../../../utils/asset';
 import { isBitpro, isBtcBasedAsset } from '../../../utils/helpers';
 import { decimalic } from '../../../utils/math';
-import { COMMON_SYMBOLS, normalizeAsset } from '../../../utils/asset';
-import { RSK_CHAIN_ID } from '../../../config/chains';
 
 export const renderValue = (
   value: string,
@@ -101,15 +102,15 @@ export const normalizeToken = (token: string): string => {
   }
 
   if (isBitpro(token)) {
-    return 'BPRO';
+    return COMMON_SYMBOLS.BPRO;
   }
 
-  return normalizeAsset(token, RSK_CHAIN_ID)?.symbol || token;
+  return findAsset(token, RSK_CHAIN_ID)?.symbol || token;
 };
 
 export const normalizeTokenWrapped = (token: string): string => {
   if (isBtcBasedAsset(token)) {
-    return 'WBTC';
+    return COMMON_SYMBOLS.WBTC;
   }
 
   return normalizeToken(token);

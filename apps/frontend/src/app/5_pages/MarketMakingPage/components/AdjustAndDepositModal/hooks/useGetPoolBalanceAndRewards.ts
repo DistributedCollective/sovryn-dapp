@@ -5,6 +5,7 @@ import { Decimal } from '@sovryn/utils';
 import { RSK_CHAIN_ID } from '../../../../../../config/chains';
 
 import { useGetTokenContract } from '../../../../../../hooks/useGetContract';
+import { COMMON_SYMBOLS } from '../../../../../../utils/asset';
 import { decimalic } from '../../../../../../utils/math';
 import { useGetTokenPrice } from '../../../../BorrowPage/hooks/useGetTokenPrice';
 import { AmmLiquidityPool } from '../../../utils/AmmLiquidityPool';
@@ -17,7 +18,7 @@ export const useGetPoolBalanceAndRewards = (
   const [weeklyRewardsEstimation, setWeeklyRewardsEstimation] =
     useState<Decimal>(Decimal.ZERO);
 
-  const poolContract = useGetTokenContract('WBTC', RSK_CHAIN_ID);
+  const poolContract = useGetTokenContract(COMMON_SYMBOLS.WBTC, RSK_CHAIN_ID);
 
   const tokenContract = useGetTokenContract(pool.assetA, RSK_CHAIN_ID);
   const { data: tokenPrice } = useGetTokenPrice(tokenContract?.address || '');

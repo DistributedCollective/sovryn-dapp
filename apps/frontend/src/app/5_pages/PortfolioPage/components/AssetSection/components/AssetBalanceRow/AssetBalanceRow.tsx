@@ -2,15 +2,16 @@ import React, { FC, useEffect } from 'react';
 
 import { Paragraph } from '@sovryn/ui';
 
+import { RSK_CHAIN_ID } from '../../../../../../../config/chains';
+
 import { AmountRenderer } from '../../../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { AssetRenderer } from '../../../../../../2_molecules/AssetRenderer/AssetRenderer';
 import { useAccount } from '../../../../../../../hooks/useAccount';
 import { useAssetBalance } from '../../../../../../../hooks/useAssetBalance';
 import { useDollarValue } from '../../../../../../../hooks/useDollarValue';
+import { findAsset } from '../../../../../../../utils/asset';
 import { getCurrencyPrecision } from '../../../ProtocolSection/ProtocolSection.utils';
 import styles from './AssetBalanceRow.module.css';
-import { RSK_CHAIN_ID } from '../../../../../../../config/chains';
-import { normalizeAsset } from '../../../../../../../utils/asset';
 
 type AssetBalanceRowProps = {
   token: string;
@@ -39,7 +40,7 @@ export const AssetBalanceRow: FC<AssetBalanceRowProps> = ({
           assetClassName={styles.asset}
         />
         <span className="text-gray-40 hidden lg:block">
-          {normalizeAsset(token, RSK_CHAIN_ID).name}
+          {findAsset(token, RSK_CHAIN_ID).name}
         </span>
       </div>
       <Paragraph className="text-right lg:text-left truncate">

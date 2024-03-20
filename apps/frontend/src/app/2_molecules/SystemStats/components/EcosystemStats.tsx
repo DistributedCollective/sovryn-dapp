@@ -11,13 +11,14 @@ import {
   SimpleTableRow,
 } from '@sovryn/ui';
 
+import { RSK_CHAIN_ID } from '../../../../config/chains';
+
 import { useAssetBalance } from '../../../../hooks/useAssetBalance';
 import { useLoadContract } from '../../../../hooks/useLoadContract';
 import { translations } from '../../../../locales/i18n';
+import { COMMON_SYMBOLS, findAsset } from '../../../../utils/asset';
 import { AmountRenderer } from '../../AmountRenderer/AmountRenderer';
 import { useGetTotalSupply } from '../hooks/useGetTotalSupply';
-import { RSK_CHAIN_ID } from '../../../../config/chains';
-import { COMMON_SYMBOLS, normalizeAsset } from '../../../../utils/asset';
 
 type EcosystemStatsProps = {
   className?: string;
@@ -48,7 +49,7 @@ export const EcosystemStats: FC<EcosystemStatsProps> = ({
         <>
           <AmountRenderer
             value={babelFishZUSDBalance}
-            suffix={normalizeAsset(COMMON_SYMBOLS.ZUSD, RSK_CHAIN_ID)?.symbol}
+            suffix={findAsset(COMMON_SYMBOLS.ZUSD, RSK_CHAIN_ID)?.symbol}
             precision={USD_DISPLAY_PRECISION}
             showRoundingPrefix={false}
             dataAttribute="ecosystem-statistics-babel-fish-zusd-balance"
@@ -71,7 +72,7 @@ export const EcosystemStats: FC<EcosystemStatsProps> = ({
       myntZUSDBalance ? (
         <AmountRenderer
           value={myntZUSDBalance}
-          suffix={normalizeAsset(COMMON_SYMBOLS.ZUSD, RSK_CHAIN_ID)?.symbol}
+          suffix={findAsset(COMMON_SYMBOLS.ZUSD, RSK_CHAIN_ID)?.symbol}
           precision={USD_DISPLAY_PRECISION}
           showRoundingPrefix={false}
           dataAttribute="ecosystem-statistics-mynt-zusd-balance"
@@ -93,7 +94,7 @@ export const EcosystemStats: FC<EcosystemStatsProps> = ({
       myntDOCBalance ? (
         <AmountRenderer
           value={myntDOCBalance}
-          suffix={normalizeAsset(COMMON_SYMBOLS.DOC, RSK_CHAIN_ID)?.symbol}
+          suffix={findAsset(COMMON_SYMBOLS.DOC, RSK_CHAIN_ID)?.symbol}
           precision={USD_DISPLAY_PRECISION}
           showRoundingPrefix={false}
           dataAttribute="ecosystem-statistics-mynt-doc-balance"
@@ -111,7 +112,7 @@ export const EcosystemStats: FC<EcosystemStatsProps> = ({
       totalDLLRSupply ? (
         <AmountRenderer
           value={totalDLLRSupply}
-          suffix={normalizeAsset(COMMON_SYMBOLS.DLLR, RSK_CHAIN_ID)?.symbol}
+          suffix={findAsset(COMMON_SYMBOLS.DLLR, RSK_CHAIN_ID)?.symbol}
           precision={USD_DISPLAY_PRECISION}
           showRoundingPrefix={false}
           dataAttribute="ecosystem-statistics-total-dllr-supply"

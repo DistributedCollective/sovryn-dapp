@@ -58,6 +58,8 @@ import { useHandleConversion } from './hooks/useHandleConversion';
 const commonTranslations = translations.common;
 const pageTranslations = translations.convertPage;
 
+const MYNT_TOKEN = 'MYNT';
+
 const ConvertPage: FC = () => {
   const currentChainId = useCurrentChain();
 
@@ -95,7 +97,7 @@ const ConvertPage: FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const fromToken = searchParams.get('from');
   const toToken = searchParams.get('to');
-  const { balance: myntBalance } = useAssetBalance('MYNT');
+  const { balance: myntBalance } = useAssetBalance(MYNT_TOKEN);
 
   const [slippageTolerance, setSlippageTolerance] = useState('0.5');
 
@@ -155,7 +157,7 @@ const ConvertPage: FC = () => {
           tokensToOptions(tokens, currentChainId, setDestinationTokenOptions);
         });
 
-      if (sourceToken === 'MYNT') {
+      if (sourceToken === MYNT_TOKEN) {
         setDestinationToken(COMMON_SYMBOLS.SOV);
       }
     })();
@@ -165,7 +167,7 @@ const ConvertPage: FC = () => {
     () =>
       hasMyntBalance
         ? tokenOptions
-        : tokenOptions.filter(option => option.value !== 'MYNT'),
+        : tokenOptions.filter(option => option.value !== MYNT_TOKEN),
     [hasMyntBalance, tokenOptions],
   );
 
@@ -377,9 +379,9 @@ const ConvertPage: FC = () => {
   }, [fromToken, toToken]);
 
   useEffect(() => {
-    if (hasMyntBalance && fromToken === 'MYNT') {
-      setSourceToken('MYNT');
-    } else if (!hasMyntBalance && fromToken === 'MYNT') {
+    if (hasMyntBalance && fromToken === MYNT_TOKEN) {
+      setSourceToken(MYNT_TOKEN);
+    } else if (!hasMyntBalance && fromToken === MYNT_TOKEN) {
       setSourceToken(COMMON_SYMBOLS.DLLR);
     }
   }, [hasMyntBalance, fromToken]);

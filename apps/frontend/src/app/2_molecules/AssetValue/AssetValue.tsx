@@ -6,11 +6,12 @@ import classNames from 'classnames';
 import { Tooltip, TooltipTrigger } from '@sovryn/ui';
 import { Decimal } from '@sovryn/utils';
 
+import { RSK_CHAIN_ID } from '../../../config/chains';
+
+import { findAsset } from '../../../utils/asset';
 import { AssetRenderer } from '../AssetRenderer/AssetRenderer';
 import styles from './AssetValue.module.css';
 import { AssetValueMode, AssetValueProps } from './types';
-import { normalizeAsset } from '../../../utils/asset';
-import { RSK_CHAIN_ID } from '../../../config/chains';
 
 export const AssetValue: React.FC<AssetValueProps> = ({
   value,
@@ -38,7 +39,7 @@ export const AssetValue: React.FC<AssetValueProps> = ({
     let max = maxDecimals;
     if (mode === AssetValueMode.predefined) {
       if (asset) {
-        const token = normalizeAsset(asset, chainId);
+        const token = findAsset(asset, chainId);
         min = token?.decimals || 2;
       } else {
         min = 2;

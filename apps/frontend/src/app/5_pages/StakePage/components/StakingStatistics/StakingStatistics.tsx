@@ -11,17 +11,18 @@ import {
   ParagraphStyle,
 } from '@sovryn/ui';
 
+import { RSK_CHAIN_ID } from '../../../../../config/chains';
+
 import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { TOKEN_RENDER_PRECISION } from '../../../../../constants/currencies';
 import { useAssetBalance } from '../../../../../hooks/useAssetBalance';
 import { useLoadContract } from '../../../../../hooks/useLoadContract';
 import { translations } from '../../../../../locales/i18n';
+import { COMMON_SYMBOLS, findAsset } from '../../../../../utils/asset';
 import { fromWei } from '../../../../../utils/math';
 import { APR, MAX_STAKING_APR_LINK, VP } from '../../StakePage.constants';
 import { GlobalStatistics } from '../../StakePage.utils';
 import { useGetStakingStatistics } from './hooks/useGetStakingStatistics';
-import { COMMON_SYMBOLS, normalizeAsset } from '../../../../../utils/asset';
-import { RSK_CHAIN_ID } from '../../../../../config/chains';
 
 export const StakingStatistics = () => {
   const { totalVotingPower, maxStakingApr } = useGetStakingStatistics();
@@ -62,7 +63,7 @@ export const StakingStatistics = () => {
           value={
             <AmountRenderer
               value={totalStakedSov?.balance}
-              suffix={normalizeAsset(COMMON_SYMBOLS.SOV, RSK_CHAIN_ID).symbol}
+              suffix={findAsset(COMMON_SYMBOLS.SOV, RSK_CHAIN_ID).symbol}
               precision={TOKEN_RENDER_PRECISION}
             />
           }

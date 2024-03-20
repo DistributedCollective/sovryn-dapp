@@ -2,7 +2,7 @@ import { AssetDetails } from '@sovryn/contracts';
 
 import { RSK_CHAIN_ID } from '../config/chains';
 
-import { normalizeAsset } from './asset';
+import { findAsset } from './asset';
 
 export class LendingPool {
   private _details: AssetDetails;
@@ -12,7 +12,7 @@ export class LendingPool {
     public readonly useLM: boolean,
     public readonly deprecated: boolean = false,
   ) {
-    this._details = normalizeAsset(this._asset, RSK_CHAIN_ID);
+    this._details = findAsset(this._asset, RSK_CHAIN_ID);
   }
   public getName(): string {
     return this._details.symbol;

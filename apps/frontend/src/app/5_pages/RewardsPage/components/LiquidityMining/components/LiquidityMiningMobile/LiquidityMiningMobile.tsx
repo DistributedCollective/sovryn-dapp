@@ -6,10 +6,13 @@ import { Trans } from 'react-i18next';
 import { HelperButton, Link, SimpleTable } from '@sovryn/ui';
 import { Decimal } from '@sovryn/utils';
 
+import { RSK_CHAIN_ID } from '../../../../../../../config/chains';
+
 import { BITCOIN } from '../../../../../../../constants/currencies';
 import { WIKI_LINKS } from '../../../../../../../constants/links';
 import { useAccount } from '../../../../../../../hooks/useAccount';
 import { translations } from '../../../../../../../locales/i18n';
+import { COMMON_SYMBOLS, findAsset } from '../../../../../../../utils/asset';
 import { useHandleRewards } from '../../hooks/useHandleRewards';
 import { LiquidityMiningAction } from '../LiquidityMiningAction/LiquidityMiningAction';
 import {
@@ -17,11 +20,6 @@ import {
   renderParagraph,
   renderPool,
 } from './LiquidityMiningMobile.utils';
-import {
-  COMMON_SYMBOLS,
-  normalizeAsset,
-} from '../../../../../../../utils/asset';
-import { RSK_CHAIN_ID } from '../../../../../../../config/chains';
 
 type LiquidityMiningMobileProps = {
   className?: string;
@@ -83,7 +81,7 @@ export const LiquidityMiningMobile: FC<LiquidityMiningMobileProps> = ({
               {renderAmount(lendingRewards, 'lendingRewardsVested')}
               {renderPool(
                 `${
-                  normalizeAsset(COMMON_SYMBOLS.DLLR, RSK_CHAIN_ID).symbol
+                  findAsset(COMMON_SYMBOLS.DLLR, RSK_CHAIN_ID).symbol
                 }, ${BITCOIN.toLocaleUpperCase()}`,
               )}
             </div>

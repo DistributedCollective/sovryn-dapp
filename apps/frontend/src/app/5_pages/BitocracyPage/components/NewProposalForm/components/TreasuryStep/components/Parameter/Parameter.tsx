@@ -15,11 +15,18 @@ import {
   IconNames,
 } from '@sovryn/ui';
 
+import { RSK_CHAIN_ID } from '../../../../../../../../../config/chains';
+
 import { AssetRenderer } from '../../../../../../../../2_molecules/AssetRenderer/AssetRenderer';
 import { MaxButton } from '../../../../../../../../2_molecules/MaxButton/MaxButton';
 import { isAddress } from '../../../../../../../../3_organisms/StakeForm/components/AdjustStakeForm/AdjustStakeForm.utils';
 import { useAccount } from '../../../../../../../../../hooks/useAccount';
 import { translations } from '../../../../../../../../../locales/i18n';
+import {
+  COMMON_SYMBOLS,
+  compareAssets,
+  listAssetsOfChain,
+} from '../../../../../../../../../utils/asset';
 import { decimalic } from '../../../../../../../../../utils/math';
 import { useProposalContext } from '../../../../../../contexts/NewProposalContext';
 import { ProposalCreationParameter } from '../../../../../../contexts/ProposalContext.types';
@@ -32,11 +39,6 @@ import {
   renderSignature,
   isValidParameter,
 } from './Parameter.utils';
-import {
-  COMMON_SYMBOLS,
-  listAssetsOfChain,
-} from '../../../../../../../../../utils/asset';
-import { RSK_CHAIN_ID } from '../../../../../../../../../config/chains';
 
 type ParameterProps = {
   parameter: ProposalCreationParameter;
@@ -65,7 +67,7 @@ export const Parameter: FC<ParameterProps> = ({
   const tokenOptions = useMemo(
     () =>
       listAssetsOfChain(RSK_CHAIN_ID)
-        .filter(token => token.symbol !== 'WBTC')
+        .filter(token => !compareAssets(token.symbol, COMMON_SYMBOLS.WBTC))
         .map(token => ({
           value: token.symbol,
           label: (

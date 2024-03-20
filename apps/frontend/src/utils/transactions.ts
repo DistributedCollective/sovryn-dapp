@@ -10,9 +10,12 @@ import dayjs, { ManipulateType } from 'dayjs';
 import { BigNumber, BigNumberish, constants, ethers } from 'ethers';
 import { t } from 'i18next';
 
+import { getAssetData } from '@sovryn/contracts';
 import { ChainId } from '@sovryn/ethers-provider';
 import { PermitTransactionResponse } from '@sovryn/sdk';
 import { Decimal } from '@sovryn/utils';
+
+import { RSK_CHAIN_ID } from '../config/chains';
 
 import {
   Transaction,
@@ -23,10 +26,8 @@ import {
 } from '../app/3_organisms/TransactionStepDialog/TransactionStepDialog.types';
 import { APPROVAL_FUNCTION } from '../constants/general';
 import { translations } from '../locales/i18n';
+import { COMMON_SYMBOLS, findAsset } from './asset';
 import { generateNonce } from './helpers';
-import { COMMON_SYMBOLS, normalizeAsset } from './asset';
-import { RSK_CHAIN_ID } from '../config/chains';
-import { getAssetData } from '@sovryn/contracts';
 
 export const prepareDeadline = (
   value: number = 1,
@@ -73,7 +74,7 @@ export const preparePermitTransaction = async ({
   deadline = prepareDeadline(),
   nonce,
 }: PreparePermitTransactionOptions): Promise<Transaction> => {
-  const { address: tokenAddress, symbol } = normalizeAsset(token, chain);
+  const { address: tokenAddress, symbol } = findAsset(token, chain);
   return {
     title: t(translations.common.tx.signPermitTitle, {
       symbol,
@@ -104,7 +105,7 @@ export const preparePermit2Transaction = async (
     parseInt(RSK_CHAIN_ID),
   );
 
-  const { symbol } = normalizeAsset(COMMON_SYMBOLS.DLLR, RSK_CHAIN_ID);
+  const { symbol } = findAsset(COMMON_SYMBOLS.DLLR, RSK_CHAIN_ID);
 
   return {
     title: t(translations.common.tx.signPermitTitle, {
@@ -128,7 +129,7 @@ export const getPermitTransferFrom = async (
   amount: string,
   token = COMMON_SYMBOLS.DLLR,
 ): Promise<PermitTransferFrom> => {
-  const { address: tokenAddress } = normalizeAsset(token, RSK_CHAIN_ID);
+  const { address: tokenAddress } = findAsset(token, RSK_CHAIN_ID);
 
   const nonce = generateNonce();
 
@@ -179,7 +180,7 @@ export const prepareApproveTransaction = async ({
   const owner = await tokenContract.signer.getAddress();
 
   const allowance = await tokenContract.allowance(owner, spender);
-  const symbol = normalizeAsset(token, chain)?.symbol;
+  const symbol = findAsset(token, chain)?.symbol;
 
   if (BigNumber.from(allowance).lt(amount)) {
     return {

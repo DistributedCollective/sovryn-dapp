@@ -5,19 +5,20 @@ import { t } from 'i18next';
 import { Heading, HelperButton } from '@sovryn/ui';
 import { Decimal } from '@sovryn/utils';
 
+import { RSK_CHAIN_ID } from '../../../../../config/chains';
+
 import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { TOKEN_RENDER_PRECISION } from '../../../../../constants/currencies';
 import { useAccount } from '../../../../../hooks/useAccount';
 import { useGetVotingPowerShare } from '../../../../../hooks/useGetVotingPowerShare';
 import { translations } from '../../../../../locales/i18n';
+import { COMMON_SYMBOLS, findAsset } from '../../../../../utils/asset';
 import { fromWei } from '../../../../../utils/math';
 import { VP } from '../../StakePage.constants';
 import { PersonalStatistics } from '../../StakePage.utils';
 import { useGetStakingBalanceOf } from '../../hooks/useGetStakingBalanceOf';
 import { useGetTotalVestingsBalance } from '../../hooks/useGetTotalVestingsBalance';
 import { useGetPersonalStakingStatistics } from './hooks/useGetPersonalStakingStatistics';
-import { COMMON_SYMBOLS, normalizeAsset } from '../../../../../utils/asset';
-import { RSK_CHAIN_ID } from '../../../../../config/chains';
 
 export const PersonalStakingStatistics = () => {
   const { account } = useAccount();
@@ -47,7 +48,7 @@ export const PersonalStakingStatistics = () => {
             value={
               <AmountRenderer
                 value={totalStakedValue}
-                suffix={normalizeAsset(COMMON_SYMBOLS.SOV, RSK_CHAIN_ID).symbol}
+                suffix={findAsset(COMMON_SYMBOLS.SOV, RSK_CHAIN_ID).symbol}
                 precision={TOKEN_RENDER_PRECISION}
               />
             }

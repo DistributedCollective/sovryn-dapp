@@ -1,8 +1,8 @@
 import { ChainIds } from '@sovryn/ethers-provider';
 
+import { COMMON_SYMBOLS } from '../../../utils/asset';
 import { PromotionData } from './MarketMakingPage.types';
 import { AmmLiquidityPool } from './utils/AmmLiquidityPool';
-import { COMMON_SYMBOLS } from '../../../utils/asset';
 
 export const MAINNET_AMM = [
   new AmmLiquidityPool(
@@ -69,7 +69,7 @@ export const MAINNET_AMM = [
     '0x36263AC99ecDcf1aB20513D580B7d8D32D3C439d',
   ).setPreviousConverters(['0x25B8D024B39174824424f032423E03dd7dcCF044']),
   new AmmLiquidityPool(
-    'XUSD',
+    COMMON_SYMBOLS.XUSD,
     COMMON_SYMBOLS.BTC,
     1,
     ChainIds.RSK_MAINNET,
@@ -80,7 +80,7 @@ export const MAINNET_AMM = [
     '0x34163bb263ac77e9d6315676a2b9624cfc5ff861',
   ]),
   new AmmLiquidityPool(
-    'RUSDT',
+    COMMON_SYMBOLS.RUSDT,
     COMMON_SYMBOLS.BTC,
     2,
     ChainIds.RSK_MAINNET,
@@ -193,7 +193,7 @@ export const TESTNET_AMM = [
     '0xe5e750ead0e564e489b0776273e4a10f3f3d4028',
   ]),
   new AmmLiquidityPool(
-    'RUSDT',
+    COMMON_SYMBOLS.RUSDT,
     COMMON_SYMBOLS.BTC,
     2,
     ChainIds.RSK_TESTNET,

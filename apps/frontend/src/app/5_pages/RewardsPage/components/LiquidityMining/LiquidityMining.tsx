@@ -4,6 +4,8 @@ import { t } from 'i18next';
 
 import { Paragraph, Table } from '@sovryn/ui';
 
+import { RSK_CHAIN_ID } from '../../../../../config/chains';
+
 import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { useRequiredChain } from '../../../../2_molecules/NetworkBanner/hooks/useRequiredChain';
 import {
@@ -13,6 +15,7 @@ import {
 import { useAccount } from '../../../../../hooks/useAccount';
 import { useBlockNumber } from '../../../../../hooks/useBlockNumber';
 import { translations } from '../../../../../locales/i18n';
+import { COMMON_SYMBOLS, findAsset } from '../../../../../utils/asset';
 import { columns } from './LiquidityMining.constants';
 import { LiquidityMiningAction } from './components/LiquidityMiningAction/LiquidityMiningAction';
 import { LiquidityMiningMobile } from './components/LiquidityMiningMobile/LiquidityMiningMobile';
@@ -20,8 +23,6 @@ import { useGetLendingRewards } from './hooks/useGetLendingRewards';
 import { useGetLiquidityRewards } from './hooks/useGetLiquidityRewards';
 import { useGetTradingRewards } from './hooks/useGetTradingRewards';
 import { useHandleRewards } from './hooks/useHandleRewards';
-import { COMMON_SYMBOLS, normalizeAsset } from '../../../../../utils/asset';
-import { RSK_CHAIN_ID } from '../../../../../config/chains';
 
 const pageTranslations = translations.rewardPage.liquidityMining;
 
@@ -66,7 +67,7 @@ export const LiquidityMining: FC = () => {
   const handleRewards = useHandleRewards();
 
   const sovSuffix = useMemo(
-    () => normalizeAsset(COMMON_SYMBOLS.SOV, RSK_CHAIN_ID).symbol,
+    () => findAsset(COMMON_SYMBOLS.SOV, RSK_CHAIN_ID).symbol,
     [],
   );
 
@@ -159,7 +160,7 @@ export const LiquidityMining: FC = () => {
               <Paragraph
                 dataAttribute="liquidity-mining-lending-rewards-vested-pool"
                 children={`${
-                  normalizeAsset(COMMON_SYMBOLS.DLLR, RSK_CHAIN_ID).symbol
+                  findAsset(COMMON_SYMBOLS.DLLR, RSK_CHAIN_ID).symbol
                 }, ${BITCOIN.toLocaleUpperCase()}`}
               />
             )}

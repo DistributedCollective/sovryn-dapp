@@ -2,11 +2,12 @@ import React, { FC } from 'react';
 
 import classNames from 'classnames';
 
+import { ChainId, ChainIds } from '@sovryn/ethers-provider';
+
+import { findAsset } from '../../../utils/asset';
 import { AssetRenderer } from '../AssetRenderer/AssetRenderer';
 import styles from './AssetPairRenderer.module.css';
 import { AssetPairSize } from './AssetPairRenderer.types';
-import { normalizeAsset } from '../../../utils/asset';
-import { ChainId, ChainIds } from '@sovryn/ethers-provider';
 
 type AssetPairRendererProps = {
   className?: string;
@@ -42,8 +43,8 @@ export const AssetPairRenderer: FC<AssetPairRendererProps> = ({
     />
     {!hideSymbol && (
       <span className="flex items-center ml-2 text-gray-10">
-        {normalizeAsset(asset1, chainId)?.symbol}/
-        {normalizeAsset(asset2, chainId)?.symbol}
+        {findAsset(asset1, chainId)?.symbol}/
+        {findAsset(asset2, chainId)?.symbol}
       </span>
     )}
   </div>

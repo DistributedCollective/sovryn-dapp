@@ -7,7 +7,7 @@ import { Decimal } from '@sovryn/utils';
 import { RSK_CHAIN_ID } from '../config/chains';
 
 import { asyncCall } from '../store/rxjs/provider-cache';
-import { normalizeAsset } from './asset';
+import { findAsset } from './asset';
 
 export const queryReturn = async (
   sourceToken: string,
@@ -17,14 +17,11 @@ export const queryReturn = async (
   asyncCall<Decimal>(
     `priceFeed/return/${sourceToken}-${destToken}/${sourceAmount.toHexString()}`,
     async () => {
-      const { address: sourceTokenAddress } = normalizeAsset(
+      const { address: sourceTokenAddress } = findAsset(
         sourceToken,
         RSK_CHAIN_ID,
       );
-      const { address: destTokenAddress } = normalizeAsset(
-        destToken,
-        RSK_CHAIN_ID,
-      );
+      const { address: destTokenAddress } = findAsset(destToken, RSK_CHAIN_ID);
       const { address, abi } = await getProtocolContract(
         'priceFeed',
         RSK_CHAIN_ID,
@@ -47,14 +44,11 @@ export const queryRate = async (
   asyncCall<{ rate: Decimal; precision: Decimal }>(
     `priceFeed/rate/${sourceToken}-${destToken}`,
     async () => {
-      const { address: sourceTokenAddress } = normalizeAsset(
+      const { address: sourceTokenAddress } = findAsset(
         sourceToken,
         RSK_CHAIN_ID,
       );
-      const { address: destTokenAddress } = normalizeAsset(
-        destToken,
-        RSK_CHAIN_ID,
-      );
+      const { address: destTokenAddress } = findAsset(destToken, RSK_CHAIN_ID);
       const { address, abi } = await getProtocolContract(
         'priceFeed',
         RSK_CHAIN_ID,

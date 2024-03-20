@@ -13,6 +13,7 @@ import {
   useGetProtocolContract,
   useGetTokenContract,
 } from '../../../../hooks/useGetContract';
+import { COMMON_SYMBOLS } from '../../../../utils/asset';
 import { AmmLiquidityPool } from '../utils/AmmLiquidityPool';
 
 export const useGetUserInfo = (pool: AmmLiquidityPool) => {
@@ -25,7 +26,7 @@ export const useGetUserInfo = (pool: AmmLiquidityPool) => {
   const [loadingB, setLoadingB] = useState(false);
   const liquidityMiningProxy = useGetProtocolContract('liquidityMiningProxy');
   const contractTokenA = useGetTokenContract(assetA, RSK_CHAIN_ID);
-  const contractTokenB = useGetTokenContract('WBTC', RSK_CHAIN_ID);
+  const contractTokenB = useGetTokenContract(COMMON_SYMBOLS.WBTC, RSK_CHAIN_ID);
 
   const getUserInfo = useCallback(
     async (token: string) =>

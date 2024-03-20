@@ -7,12 +7,12 @@ import {
 
 import { RSK_CHAIN_ID } from '../config/chains';
 
-export const normalizeAsset = (asset: string, chainId: ChainId) =>
+export const findAsset = (asset: string, chainId: ChainId) =>
   contracts.assets[getNetworkByChainId(chainId)]?.find(
     item => item.symbol.toLowerCase() === asset.toLowerCase(),
   )!;
 
-export const normalizeNativeAsset = (chainId: ChainId) =>
+export const findNativeAsset = (chainId: ChainId) =>
   contracts.assets[getNetworkByChainId(chainId)]?.find(item => item.isNative)!;
 
 export const listAssetsOfChain = (chainId: ChainId) =>
@@ -26,10 +26,12 @@ export const COMMON_SYMBOLS = {
   ZUSD: 'ZUSD',
   XUSD: 'XUSD',
   DOC: 'DOC',
+  BPRO: 'BPRO',
+  RUSDT: 'RUSDT',
 };
 
-export const compareAssets = (asset1: string, asset2: string) =>
-  asset1.toUpperCase() === asset2.toUpperCase();
+export const compareAssets = (asset1?: string | null, asset2?: string | null) =>
+  asset1?.toUpperCase() === asset2?.toUpperCase();
 
 export const maybeWrappedAsset = (
   asset: string,
@@ -40,9 +42,9 @@ export const maybeWrappedAsset = (
     asset === COMMON_SYMBOLS.BTC &&
     [ChainIds.RSK_MAINNET, ChainIds.RSK_TESTNET].includes(chainId as ChainIds)
   ) {
-    return 'WBTC';
+    return COMMON_SYMBOLS.WBTC;
   }
-  return normalizeAsset(asset, chainId)?.symbol || asset.toUpperCase();
+  return findAsset(asset, chainId)?.symbol || asset.toUpperCase();
 };
 
 export const maybeUnwrappedAsset = (
@@ -51,10 +53,10 @@ export const maybeUnwrappedAsset = (
 ) => {
   asset = asset.toUpperCase();
   if (
-    asset === 'WBTC' &&
+    compareAssets(asset, COMMON_SYMBOLS.WBTC) &&
     [ChainIds.RSK_MAINNET, ChainIds.RSK_TESTNET].includes(chainId as ChainIds)
   ) {
     return COMMON_SYMBOLS.BTC;
   }
-  return normalizeAsset(asset, chainId)?.symbol || asset.toUpperCase();
+  return findAsset(asset, chainId)?.symbol || asset.toUpperCase();
 };

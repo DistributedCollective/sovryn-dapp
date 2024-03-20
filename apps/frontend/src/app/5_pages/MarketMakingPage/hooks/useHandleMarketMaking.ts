@@ -20,7 +20,7 @@ import { translations } from '../../../../locales/i18n';
 import {
   COMMON_SYMBOLS,
   maybeWrappedAsset,
-  normalizeAsset,
+  findAsset,
 } from '../../../../utils/asset';
 import { toWei } from '../../../../utils/math';
 import { prepareApproveTransaction } from '../../../../utils/transactions';
@@ -51,7 +51,7 @@ export const useHandleMarketMaking = (onComplete: () => void) => {
 
       const transactions: Transaction[] = [];
 
-      if (!normalizeAsset(pool.assetA, RSK_CHAIN_ID)?.isNative) {
+      if (!findAsset(pool.assetA, RSK_CHAIN_ID)?.isNative) {
         const approve = await prepareApproveTransaction({
           token: pool.assetA,
           amount: amountA.toString(),
@@ -115,7 +115,7 @@ export const useHandleMarketMaking = (onComplete: () => void) => {
 
       const transactions: Transaction[] = [];
 
-      if (!normalizeAsset(asset, RSK_CHAIN_ID)?.isNative) {
+      if (!findAsset(asset, RSK_CHAIN_ID)?.isNative) {
         const approve = await prepareApproveTransaction({
           token: asset,
           amount: amount.toString(),
@@ -142,7 +142,7 @@ export const useHandleMarketMaking = (onComplete: () => void) => {
             amount.toString(),
             DEPOSIT_MIN_RETURN,
           ],
-          value: normalizeAsset(asset, RSK_CHAIN_ID)?.isNative
+          value: findAsset(asset, RSK_CHAIN_ID)?.isNative
             ? amount.toString()
             : '0',
           gasLimit: GAS_LIMIT.MARKET_MAKING_ADD_LIQUIDITY,
@@ -184,9 +184,10 @@ export const useHandleMarketMaking = (onComplete: () => void) => {
         pool.assetA,
         RSK_CHAIN_ID,
       ).then(item => item.address);
-      const tokenBContractPromise = getAssetContract('WBTC', RSK_CHAIN_ID).then(
-        item => item.address,
-      );
+      const tokenBContractPromise = getAssetContract(
+        COMMON_SYMBOLS.WBTC,
+        RSK_CHAIN_ID,
+      ).then(item => item.address);
 
       const [tokenAContract, tokenBContract] = await Promise.all([
         tokenAContractPromise,
@@ -195,7 +196,7 @@ export const useHandleMarketMaking = (onComplete: () => void) => {
 
       const transactions: Transaction[] = [];
 
-      if (!normalizeAsset(pool.assetA, RSK_CHAIN_ID)?.isNative) {
+      if (!findAsset(pool.assetA, RSK_CHAIN_ID)?.isNative) {
         const approve = await prepareApproveTransaction({
           token: pool.assetA,
           amount: amount.toString(),
@@ -264,7 +265,7 @@ export const useHandleMarketMaking = (onComplete: () => void) => {
 
       const transactions: Transaction[] = [];
 
-      if (!normalizeAsset(asset, RSK_CHAIN_ID)?.isNative) {
+      if (!findAsset(asset, RSK_CHAIN_ID)?.isNative) {
         const approve = await prepareApproveTransaction({
           token: asset,
           amount: amount.toString(),

@@ -9,23 +9,20 @@ import { BOB_CHAIN_ID } from '../../../config/chains';
 
 import { NetworkBanner } from '../../2_molecules/NetworkBanner/NetworkBanner';
 import { useAccount } from '../../../hooks/useAccount';
+import { COMMON_SYMBOLS, findAsset } from '../../../utils/asset';
 import { createRangePositionTx } from './ambient-utils';
 
-const TBTC = constants.AddressZero;
-const SOV = '0x1f4a4737ECcB77B4b63B34edFb32515940d69A34';
-const USDC = '0x27c3321E40f039d10D5FF831F528C9CEAE601B1d';
-// const WBTC = '0x2868d708e442A6a940670d26100036d426F1e16b';
-// const USDCc = '0x4F245e278BEC589bAacF36Ba688B412D51874457';
+const ETH = constants.AddressZero;
+const SOV = findAsset(COMMON_SYMBOLS.SOV, BOB_CHAIN_ID).address;
+const USDC = findAsset('USDC', BOB_CHAIN_ID).address;
 
 export const BobAmmPage: React.FC = () => {
   const croc = useRef<CrocEnv>();
   const { signer } = useAccount();
 
   useEffect(() => {
-    console.log('signer', signer);
     if (!signer) return;
     croc.current = new CrocEnv(getProvider(BOB_CHAIN_ID), signer);
-    console.log('corc', croc.current);
   }, [signer]);
 
   const handlePoolInit = useCallback(async () => {
@@ -34,7 +31,7 @@ export const BobAmmPage: React.FC = () => {
       return;
     }
 
-    const tokenA = croc.current.tokens.materialize(TBTC);
+    const tokenA = croc.current.tokens.materialize(ETH);
     const tokenB = croc.current.tokens.materialize(SOV);
 
     // await tokenA.approveBypassRouter();
@@ -64,7 +61,7 @@ export const BobAmmPage: React.FC = () => {
       return;
     }
 
-    const tokenA = croc.current.tokens.materialize(TBTC);
+    const tokenA = croc.current.tokens.materialize(ETH);
     const tokenB = croc.current.tokens.materialize(SOV);
 
     const pool = croc.current.pool(tokenA.tokenAddr, tokenB.tokenAddr);
@@ -123,19 +120,50 @@ export const BobAmmPage: React.FC = () => {
     console.log({ tx });
   }, []);
 
+  const handleMultihop = useCallback(async () => {
+    if (!croc.current) {
+      alert('CrocEnv not initialized');
+      return;
+    }
+
+    const tokenA = croc.current.tokens.materialize(SOV);
+    const tokenB = croc.current.tokens.materialize(USDC);
+
+    const plan = croc.current
+      .sell(tokenA.tokenAddr, 0.001)
+      .for(tokenB.tokenAddr)
+      .useBypass();
+
+    console.log('plan', plan);
+
+    // todo...
+
+    // const impact = await plan.impact;
+    // console.log({ impact });
+
+    // const slippage = plan.priceSlippage;
+    // console.log({ slippage });
+
+    // const tx = await plan.swap();
+    // console.log({ tx });
+  }, []);
+
   return (
     <div className="container">
       <NetworkBanner requiredChainId={BOB_CHAIN_ID} />
       <p>Test...</p>
       <ol>
         <li>
-          <button onClick={handlePoolInit}>Initialize pool BTC/USDC</button>
+          <button onClick={handlePoolInit}>Initialize pool</button>
         </li>
         <li>
-          <button onClick={handleDeposit}>Deposit to BTC/USDC</button>
+          <button onClick={handleDeposit}>Deposit to pool</button>
         </li>
         <li>
-          <button onClick={handleSwap}>Swap USDC/USDCc</button>
+          <button onClick={handleSwap}>Swap</button>
+        </li>
+        <li>
+          <button onClick={handleMultihop}>Swap multihop</button>
         </li>
       </ol>
     </div>

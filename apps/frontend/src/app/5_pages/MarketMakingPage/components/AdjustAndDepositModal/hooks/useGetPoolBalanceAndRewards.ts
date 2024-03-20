@@ -3,7 +3,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { SupportedTokens } from '@sovryn/contracts';
 import { Decimal } from '@sovryn/utils';
 
-import { defaultChainId } from '../../../../../../config/chains';
+import { defaultRskChainId } from '../../../../../../config/chains';
 
 import { useGetTokenContract } from '../../../../../../hooks/useGetContract';
 import { decimalic } from '../../../../../../utils/math';
@@ -20,10 +20,10 @@ export const useGetPoolBalanceAndRewards = (
 
   const poolContract = useGetTokenContract(
     SupportedTokens.wrbtc,
-    defaultChainId,
+    defaultRskChainId,
   );
 
-  const tokenContract = useGetTokenContract(pool.assetA, defaultChainId);
+  const tokenContract = useGetTokenContract(pool.assetA, defaultRskChainId);
   const { data: tokenPrice } = useGetTokenPrice(tokenContract?.address || '');
 
   const fetchPoolBalance = useCallback(async () => {

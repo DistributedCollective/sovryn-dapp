@@ -3,6 +3,7 @@ import { getProvider } from '@sovryn/ethers-provider';
 import { SmartRouter, smartRoutes } from '@sovryn/sdk';
 import { defaultChainId } from '../../../config/chains';
 
+// todo: request provider dynamically based on the current chain inside of the component instead.
 const provider = getProvider(defaultChainId);
 
 const SWAP_ROUTES = [

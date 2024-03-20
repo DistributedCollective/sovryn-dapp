@@ -2,13 +2,13 @@ import { useEffect, useState } from 'react';
 
 import { Decimal } from '@sovryn/utils';
 
-import { defaultChainId } from '../../../../../../config/chains';
+import { defaultRskChainId } from '../../../../../../config/chains';
 
 import { useLoadContract } from '../../../../../../hooks/useLoadContract';
 
 export const useGetInterestRefund = (loanId: string) => {
   const [interestRefund, setInterestRefund] = useState(Decimal.ZERO);
-  const contract = useLoadContract('protocol', 'protocol', defaultChainId);
+  const contract = useLoadContract('protocol', 'protocol', defaultRskChainId);
 
   useEffect(() => {
     const fetchInterestRefund = async () => {

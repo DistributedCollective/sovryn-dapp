@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 
-import { defaultChainId } from '../../../../config/chains';
+import { defaultRskChainId } from '../../../../config/chains';
 
 import { useFetch } from '../../../../hooks/useFetch';
 import { useGetLiquidityMiningAllocationPointsQuery } from '../../../../utils/graphql/rsk/generated';
@@ -18,7 +18,7 @@ import { getAmmHistory } from '../MarketMakingPage.utils';
 import { AmmLiquidityPoolDictionary } from '../utils/AmmLiquidityPoolDictionary';
 
 export const useGetPromotionsData = (): PromotionsDataResponse => {
-  const { value: ammData } = useFetch(`${AMM_SERVICE_URL[defaultChainId]}/amm`);
+  const { value: ammData } = useFetch(`${AMM_SERVICE_URL[defaultRskChainId]}/amm`);
 
   const [promotionData, setPromotionData] = React.useState<PromotionData[]>([]);
 

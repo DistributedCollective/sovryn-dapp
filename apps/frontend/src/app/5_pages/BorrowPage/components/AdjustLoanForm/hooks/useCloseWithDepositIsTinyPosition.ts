@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
-import { defaultChainId } from '../../../../../../config/chains';
+import { defaultRskChainId } from '../../../../../../config/chains';
 
 import { useLoadContract } from '../../../../../../hooks/useLoadContract';
 import { asyncCall } from '../../../../../../store/rxjs/provider-cache';
@@ -10,7 +10,7 @@ export const useCloseWithDepositIsTinyPosition = (
   loanId: string,
   depositAmount: string,
 ) => {
-  const contract = useLoadContract('protocol', 'protocol', defaultChainId);
+  const contract = useLoadContract('protocol', 'protocol', defaultRskChainId);
   const [isTinyPosition, setIsTinyPosition] = useState(false);
 
   const isValidDepositAmount = useMemo(

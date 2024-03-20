@@ -1,6 +1,6 @@
 import { SupportedTokens } from '@sovryn/contracts';
 
-import { defaultChainId } from '../../../../config/chains';
+import { defaultRskChainId } from '../../../../config/chains';
 
 import { MAINNET_AMM, TESTNET_AMM } from '../MarketMakingPage.constants';
 import { AmmLiquidityPool } from './AmmLiquidityPool';
@@ -9,7 +9,7 @@ export class AmmLiquidityPoolDictionary {
   private static items: AmmLiquidityPool[] = [...MAINNET_AMM, ...TESTNET_AMM];
 
   public static list(): AmmLiquidityPool[] {
-    return this.items.filter(item => item.chainId === defaultChainId);
+    return this.items.filter(item => item.chainId === defaultRskChainId);
   }
 
   public static get(converter: string): AmmLiquidityPool;

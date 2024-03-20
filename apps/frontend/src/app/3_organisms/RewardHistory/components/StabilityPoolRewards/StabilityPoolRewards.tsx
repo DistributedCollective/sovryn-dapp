@@ -16,7 +16,7 @@ import {
   Table,
 } from '@sovryn/ui';
 
-import { chains, defaultChainId } from '../../../../../config/chains';
+import { chains, defaultRskChainId } from '../../../../../config/chains';
 
 import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { ExportCSV } from '../../../../2_molecules/ExportCSV/ExportCSV';
@@ -64,7 +64,7 @@ export const StabilityPoolRewards: FC<RewardHistoryProps> = ({
   const { addNotification } = useNotificationContext();
 
   const [page, setPage] = useState(0);
-  const chain = chains.find(chain => chain.id === defaultChainId);
+  const chain = chains.find(chain => chain.id === defaultRskChainId);
 
   const [orderOptions, setOrderOptions] = useState<OrderOptions>({
     orderBy: 'sequenceNumber',

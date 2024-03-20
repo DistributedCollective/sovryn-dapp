@@ -6,11 +6,11 @@ import runeBridgeABI from '../../../../abi/RuneBridge.json';
 import tokenABI from '../../../../abi/TestToken.json';
 import { useAccount } from '../../../../hooks/useAccount';
 import {
-  ContractContext,
+  Contract,
   defaultValue,
   ContractContextStateType,
   TokenBalance,
-} from '../contexts/contract_context';
+} from '../contexts/contract';
 
 export type ContractContextProviderProps = {
   children: React.ReactNode;
@@ -78,9 +78,5 @@ export const ContractContextProvider: React.FC<
     });
   }, [account, provider, state.runeBridgeContract, state.tokenBalances.length]);
 
-  return (
-    <ContractContext.Provider value={value}>
-      {children}
-    </ContractContext.Provider>
-  );
+  return <Contract.Provider value={value}>{children}</Contract.Provider>;
 };

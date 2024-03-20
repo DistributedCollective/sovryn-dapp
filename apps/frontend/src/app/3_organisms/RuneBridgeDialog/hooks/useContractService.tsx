@@ -1,12 +1,12 @@
 import React from 'react';
 
 import { useAccount } from '../../../../hooks/useAccount';
-import { ContractContext } from '../contexts/contract_context';
+import { Contract } from '../contexts/contract';
 
-export const useContractServices = () => {
+export const useContractService = () => {
   const { account } = useAccount();
   const { set, depositAddress, runeBridgeContract, tokenBalances } =
-    React.useContext(ContractContext);
+    React.useContext(Contract);
   const requestDepositAddress = React.useCallback(async () => {
     const url = 'http://127.0.0.1:8181/api/v1/runes/deposit-addresses/';
     const data = { evm_address: account };

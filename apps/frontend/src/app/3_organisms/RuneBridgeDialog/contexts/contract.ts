@@ -36,4 +36,4 @@ export const tokenABI = [
   'function decimals() view returns (uint)',
 ];
 
-export const ContractContext = React.createContext(defaultValue);
+export const Contract = React.createContext(defaultValue);

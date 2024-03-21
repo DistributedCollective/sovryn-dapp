@@ -1,11 +1,14 @@
-import { BigNumber, utils, providers } from 'ethers';
+import { BigNumber, utils, providers, constants } from 'ethers';
 
 import { CrocEnv } from '@sovryn/ambient-sdk';
 import { getTokenContract } from '@sovryn/contracts';
 import { ChainIds } from '@sovryn/ethers-provider';
 import { numberToChainId } from '@sovryn/ethers-provider';
 
-import { SovrynErrorCode, makeError } from '../../../errors/errors';
+import {
+  hasEnoughAllowance,
+  makeApproveRequest,
+} from '../../../internal/utils';
 import { SwapRouteFunction } from '../types';
 
 export const ambientRoute: SwapRouteFunction = (
@@ -56,21 +59,43 @@ export const ambientRoute: SwapRouteFunction = (
       return utils.parseEther(impact.buyQty);
     },
     approve: async (entry, destination, amount, from, overrides) => {
+      console.log('approve', entry, destination, amount, from, overrides);
+
       const plan = await makePlan(entry, destination, BigNumber.from(amount));
-      console.log(plan);
-      return Promise.resolve(undefined);
+      const contract = await plan.txBase();
+
+      if (
+        await hasEnoughAllowance(
+          provider,
+          entry,
+          contract.address, // Use the contract address directly
+          from,
+          amount ?? constants.MaxUint256,
+        )
+      ) {
+        return undefined;
+      }
+
+      return {
+        ...makeApproveRequest(
+          plan.baseToken.tokenAddr,
+          contract.address, // Use the contract address directly
+          amount ?? constants.MaxUint256,
+        ),
+        ...overrides,
+      };
     },
     permit: async () => Promise.resolve(undefined),
-    async swap(entry, destination, amount, from, options, overrides) {
+    swap: async (entry, destination, amount, from, options, overrides) => {
       const plan = await makePlan(entry, destination, BigNumber.from(amount));
-      console.log('plan::', plan);
-      const tx = await plan.swapArgs({ from: from });
-      console.log('tx::', tx);
+      const txData = await plan.generateSwapData({ from: from });
 
-      throw makeError(
-        'swap not implemented',
-        SovrynErrorCode.ETHERS_CALL_EXCEPTION,
-      );
+      return {
+        to: txData.to,
+        data: txData.data,
+        value: txData.value,
+        ...overrides,
+      };
     },
   };
 };

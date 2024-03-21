@@ -14,7 +14,8 @@ import { createRangePositionTx } from './ambient-utils';
 
 const ETH = constants.AddressZero;
 const SOV = findAsset(COMMON_SYMBOLS.SOV, BOB_CHAIN_ID).address;
-const USDC = findAsset('USDC', BOB_CHAIN_ID).address;
+const USDT = findAsset('USDT', BOB_CHAIN_ID).address;
+const GLD = findAsset('GLD', BOB_CHAIN_ID).address;
 
 export const BobAmmPage: React.FC = () => {
   const croc = useRef<CrocEnv>();
@@ -32,7 +33,7 @@ export const BobAmmPage: React.FC = () => {
     }
 
     const tokenA = croc.current.tokens.materialize(ETH);
-    const tokenB = croc.current.tokens.materialize(SOV);
+    const tokenB = croc.current.tokens.materialize(GLD);
 
     // await tokenA.approveBypassRouter();
     // await tokenA.approveRouter();
@@ -48,6 +49,12 @@ export const BobAmmPage: React.FC = () => {
 
     if (!init) {
       console.log('need to init');
+
+      const approve = await tokenB.approve();
+      console.log('approve', approve);
+
+      await approve?.wait();
+
       const tx = await pool.initPool(70_000);
       console.log('init pool price: ', tx);
     } else {
@@ -62,33 +69,45 @@ export const BobAmmPage: React.FC = () => {
     }
 
     const tokenA = croc.current.tokens.materialize(ETH);
-    const tokenB = croc.current.tokens.materialize(SOV);
+    const tokenB = croc.current.tokens.materialize(GLD);
 
     const pool = croc.current.pool(tokenA.tokenAddr, tokenB.tokenAddr);
     console.log({ pool });
 
     const init = await pool.isInit();
-    console.log('is init', init);
+
+    if (!init) {
+      alert('Pool not initialized');
+      return;
+    }
+
+    // const approval = await tokenB.approve();
+    // approval?.wait();
+    // console.log('approval', approval);
 
     const price = await pool.displayPrice();
-    console.log('display price', price);
+
+    const TOKEN_A_AMOUNT = 0.0001;
+    const TOKEN_B_AMOUNT = price * TOKEN_A_AMOUNT;
+
+    console.log({ TOKEN_A_AMOUNT, TOKEN_B_AMOUNT });
 
     const tx = await createRangePositionTx({
       crocEnv: croc.current,
       isAmbient: true,
-      slippageTolerancePercentage: 0.5,
+      slippageTolerancePercentage: 99,
       tokenA: {
         address: tokenA.tokenAddr,
-        qty: 0.1,
+        qty: TOKEN_A_AMOUNT,
         isWithdrawFromDexChecked: false,
       },
       tokenB: {
         address: tokenB.tokenAddr,
-        qty: 100,
+        qty: TOKEN_B_AMOUNT,
         isWithdrawFromDexChecked: false,
       },
       isTokenAPrimaryRange: true,
-      tick: { low: 1, high: 80000 },
+      tick: { low: 0.00001, high: 800000 },
     });
 
     console.log('tx', tx);
@@ -102,7 +121,7 @@ export const BobAmmPage: React.FC = () => {
     }
 
     const tokenA = croc.current.tokens.materialize(SOV);
-    const tokenB = croc.current.tokens.materialize(USDC);
+    const tokenB = croc.current.tokens.materialize(USDT);
 
     const plan = croc.current
       .sell(tokenA.tokenAddr, 0.001)
@@ -127,7 +146,7 @@ export const BobAmmPage: React.FC = () => {
     }
 
     const tokenA = croc.current.tokens.materialize(SOV);
-    const tokenB = croc.current.tokens.materialize(USDC);
+    const tokenB = croc.current.tokens.materialize(USDT);
 
     const plan = croc.current
       .sell(tokenA.tokenAddr, 0.001)

@@ -84,6 +84,7 @@ const ConvertPage: FC = () => {
               <AssetRenderer
                 showAssetLogo
                 asset={token.symbol}
+                chainId={chain}
                 assetClassName="font-medium"
               />
             ),
@@ -306,9 +307,14 @@ const ConvertPage: FC = () => {
 
   const getAssetRenderer = useCallback(
     (token: string) => (
-      <AssetRenderer showAssetLogo asset={token} assetClassName="font-medium" />
+      <AssetRenderer
+        showAssetLogo
+        asset={token}
+        chainId={currentChainId}
+        assetClassName="font-medium"
+      />
     ),
-    [],
+    [currentChainId],
   );
 
   const { handleSubmit } = useHandleConversion(
@@ -508,6 +514,7 @@ const ConvertPage: FC = () => {
                 value={destinationToken}
                 onChange={setDestinationToken}
                 options={destinationTokenOptions}
+                labelRenderer={() => getAssetRenderer(destinationToken)}
                 className="min-w-[6.7rem]"
                 menuClassName="max-h-[10rem] sm:max-h-[20rem]"
                 dataAttribute="convert-to-asset"

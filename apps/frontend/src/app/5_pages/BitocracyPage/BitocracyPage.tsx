@@ -11,6 +11,10 @@ import {
   ParagraphSize,
 } from '@sovryn/ui';
 
+import { RSK_CHAIN_ID } from '../../../config/chains';
+
+import { NetworkBanner } from '../../2_molecules/NetworkBanner/NetworkBanner';
+import { useRequiredChain } from '../../2_molecules/NetworkBanner/hooks/useRequiredChain';
 import { useAccount } from '../../../hooks/useAccount';
 import { useBlockNumber } from '../../../hooks/useBlockNumber';
 import { translations } from '../../../locales/i18n';
@@ -24,6 +28,7 @@ const pageTranslations = translations.bitocracyPage;
 
 const BitocracyPage: FC = () => {
   const { account } = useAccount();
+  const { invalidChain } = useRequiredChain();
   const { loading, data: proposals } = useGetProposals();
 
   const { value: blockNumber } = useBlockNumber();
@@ -64,7 +69,9 @@ const BitocracyPage: FC = () => {
           {t(pageTranslations.subtitle)}
         </Paragraph>
 
-        {account && (
+        <NetworkBanner requiredChainId={RSK_CHAIN_ID} />
+
+        {account && !invalidChain && (
           <div className="flex w-full items-center sm:justify-end justify-center">
             <Button
               style={ButtonStyle.ghost}

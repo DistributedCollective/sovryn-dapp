@@ -2,20 +2,20 @@ import React, { FC, useCallback } from 'react';
 
 import { t } from 'i18next';
 
-import { SupportedTokens } from '@sovryn/contracts';
 import { FormGroup, AmountInput } from '@sovryn/ui';
 
 import { AssetRenderer } from '../../../../../../../../2_molecules/AssetRenderer/AssetRenderer';
 import { MaxButton } from '../../../../../../../../2_molecules/MaxButton/MaxButton';
 import { useAccount } from '../../../../../../../../../hooks/useAccount';
 import { translations } from '../../../../../../../../../locales/i18n';
+import { COMMON_SYMBOLS } from '../../../../../../../../../utils/asset';
 import { AmmLiquidityPoolDictionary } from '../../../../../../utils/AmmLiquidityPoolDictionary';
 import { useGetMaxDeposit } from '../../../../../AdjustAndDepositModal/hooks/useGetMaxDeposit';
 import { useDepositContext } from '../../../../contexts/BobDepositModalContext';
 
 // TODO: This will be a prop and will likely use a different set of pools
 const POOL = AmmLiquidityPoolDictionary.list().filter(
-  pool => pool.assetA === SupportedTokens.dllr,
+  pool => pool.assetA === COMMON_SYMBOLS.DLLR,
 )[0];
 
 export const AmountForm: FC = () => {

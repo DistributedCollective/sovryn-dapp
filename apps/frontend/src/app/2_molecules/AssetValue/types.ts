@@ -84,6 +84,9 @@ export const AssetDecimals: { [key in SupportedTokens]: number } = {
   [SupportedTokens.eths]: TOKEN_RENDER_PRECISION,
   [SupportedTokens.bnbs]: TOKEN_RENDER_PRECISION,
   [SupportedTokens.moc]: TOKEN_RENDER_PRECISION,
+  // bob
+  [SupportedTokens.wbtc]: BTC_RENDER_PRECISION,
+  [SupportedTokens.usdc]: TOKEN_RENDER_PRECISION,
 };
 
 export enum AssetValueMode {

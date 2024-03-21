@@ -1,4 +1,4 @@
-import { defaultRskChainId } from '../../../../../../config/chains';
+import { RSK_CHAIN_ID } from '../../../../../../config/chains';
 
 import { useCacheCall } from '../../../../../../hooks';
 import { useAccount } from '../../../../../../hooks/useAccount';
@@ -7,13 +7,13 @@ import { useGetStakingBalanceOf } from '../../../hooks/useGetStakingBalanceOf';
 
 export const useGetPersonalStakingStatistics = () => {
   const { account } = useAccount();
-  const stakingContract = useGetProtocolContract('staking', defaultRskChainId);
+  const stakingContract = useGetProtocolContract('staking', RSK_CHAIN_ID);
 
   const { balance } = useGetStakingBalanceOf(account);
 
   const { value: votingPower } = useCacheCall(
     `staking/${stakingContract?.address}/${account}/votingPower`,
-    defaultRskChainId,
+    RSK_CHAIN_ID,
     async () =>
       account && stakingContract
         ? stakingContract.getCurrentVotes(account)

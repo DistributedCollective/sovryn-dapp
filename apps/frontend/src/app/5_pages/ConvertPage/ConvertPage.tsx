@@ -6,7 +6,10 @@ import { Helmet } from 'react-helmet-async';
 import { useSearchParams } from 'react-router-dom';
 
 import { getTokenDetails, SupportedTokens } from '@sovryn/contracts';
+import { ChainId } from '@sovryn/ethers-provider';
+import { getProvider } from '@sovryn/ethers-provider';
 import { SwapRoute } from '@sovryn/sdk';
+import { SmartRouter } from '@sovryn/sdk';
 import {
   Accordion,
   AmountInput,
@@ -36,17 +39,21 @@ import { TOKEN_RENDER_PRECISION } from '../../../constants/currencies';
 import { getTokenDisplayName } from '../../../constants/tokens';
 import { useAccount } from '../../../hooks/useAccount';
 import { useAssetBalance } from '../../../hooks/useAssetBalance';
+import { useCurrentChain } from '../../../hooks/useChainStore';
 import { useWeiAmountInput } from '../../../hooks/useWeiAmountInput';
 import { translations } from '../../../locales/i18n';
 import { removeTrailingZerosFromString } from '../../../utils/helpers';
 import { decimalic, fromWei } from '../../../utils/math';
 import { FIXED_MYNT_RATE, FIXED_RATE_ROUTES } from './ConvertPage.constants';
-import { smartRouter, stableCoins } from './ConvertPage.types';
+import {
+  DEFAULT_SWAP_ENTRIES,
+  SMART_ROUTER_RSK,
+  SMART_ROUTER_STABLECOINS,
+  SWAP_ROUTES,
+} from './ConvertPage.constants';
 import { useConversionMaintenance } from './hooks/useConversionMaintenance';
 import { useGetMaximumAvailableAmount } from './hooks/useGetMaximumAvailableAmount';
 import { useHandleConversion } from './hooks/useHandleConversion';
-import { useCurrentChain } from '../../../hooks/useChainStore';
-import { ChainId } from '@sovryn/ethers-provider';
 
 const commonTranslations = translations.common;
 const pageTranslations = translations.convertPage;
@@ -57,7 +64,7 @@ const tokensToOptions = (
   callback: (options: SelectOption<SupportedTokens>[]) => void,
 ) =>
   Promise.all(
-    addresses.map(address => smartRouter.getTokenDetails(address, chain)),
+    addresses.map(address => SMART_ROUTER_RSK.getTokenDetails(address, chain)),
   ).then(tokens =>
     callback(
       tokens.map(token => ({
@@ -75,6 +82,12 @@ const tokensToOptions = (
 
 const ConvertPage: FC = () => {
   const currentChainId = useCurrentChain();
+
+  const smartRouter = useMemo(
+    () => new SmartRouter(getProvider(currentChainId), SWAP_ROUTES),
+    [currentChainId],
+  );
+
   const { account } = useAccount();
   const [searchParams, setSearchParams] = useSearchParams();
   const fromToken = searchParams.get('from') || '';
@@ -100,8 +113,8 @@ const ConvertPage: FC = () => {
         return SupportedTokens[key];
       }
     }
-    return SupportedTokens.dllr;
-  }, [fromToken]);
+    return DEFAULT_SWAP_ENTRIES[currentChainId];
+  }, [currentChainId, fromToken]);
 
   const [sourceToken, setSourceToken] =
     useState<SupportedTokens>(defaultSourceToken);
@@ -117,10 +130,18 @@ const ConvertPage: FC = () => {
   >([]);
 
   useEffect(() => {
+    const newToken = DEFAULT_SWAP_ENTRIES[currentChainId];
+    if (!!newToken) {
+      setAmount('');
+      setSourceToken(newToken);
+    }
+  }, [currentChainId, setAmount]);
+
+  useEffect(() => {
     smartRouter
       .getEntries(currentChainId)
       .then(tokens => tokensToOptions(tokens, currentChainId, setTokenOptions));
-  }, [currentChainId]);
+  }, [currentChainId, smartRouter]);
 
   useEffect(() => {
     (async () => {
@@ -138,7 +159,7 @@ const ConvertPage: FC = () => {
         setDestinationToken(SupportedTokens.sov);
       }
     })();
-  }, [currentChainId, sourceToken]);
+  }, [currentChainId, smartRouter, sourceToken]);
 
   const sourceTokenOptions = useMemo(
     () =>
@@ -188,7 +209,10 @@ const ConvertPage: FC = () => {
     if (!destinationToken) {
       return sourceToken;
     }
-    if (priceInQuote || stableCoins.find(token => token === destinationToken)) {
+    if (
+      priceInQuote ||
+      SMART_ROUTER_STABLECOINS.find(token => token === destinationToken)
+    ) {
       return destinationToken;
     }
     return sourceToken;
@@ -237,7 +261,7 @@ const ConvertPage: FC = () => {
         getTokenDetails(destinationToken, currentChainId),
       ]);
 
-      const result = await smartRouter.getBestQuote(
+      const result = await SMART_ROUTER_RSK.getBestQuote(
         currentChainId,
         sourceTokenDetails.address,
         destinationTokenDetails.address,

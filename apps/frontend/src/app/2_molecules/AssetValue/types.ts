@@ -66,6 +66,8 @@ export type AssetValueProps = {
 };
 
 export const AssetDecimals: { [key in SupportedTokens]: number } = {
+  [SupportedTokens.btc]: BTC_RENDER_PRECISION,
+  [SupportedTokens.usdt]: BTC_RENDER_PRECISION,
   [SupportedTokens.rbtc]: BTC_RENDER_PRECISION,
   [SupportedTokens.zusd]: TOKEN_RENDER_PRECISION,
   [SupportedTokens.xusd]: TOKEN_RENDER_PRECISION,

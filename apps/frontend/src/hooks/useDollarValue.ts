@@ -2,12 +2,12 @@ import { useMemo } from 'react';
 
 import { SupportedTokens } from '@sovryn/contracts';
 
-import { defaultRskChainId } from '../config/chains';
+import { RSK_CHAIN_ID } from '../config/chains';
 
 import {
-  smartRouter,
-  stableCoins,
-} from '../app/5_pages/ConvertPage/ConvertPage.types';
+  SMART_ROUTER_RSK,
+  SMART_ROUTER_STABLECOINS,
+} from '../app/5_pages/ConvertPage/ConvertPage.constants';
 import { decimalic, fromWei, toWei } from '../utils/math';
 import { useCacheCall } from './useCacheCall';
 import { useTokenDetailsByAsset } from './useTokenDetailsByAsset';
@@ -24,18 +24,18 @@ export function useDollarValue(asset: SupportedTokens, weiAmount: string) {
 
   const { value: usdPrice, loading } = useCacheCall(
     `dollarValue/${asset}`,
-    defaultRskChainId,
+    RSK_CHAIN_ID,
     async () => {
       if (
         !assetDetails?.address ||
         !dllrDetails?.address ||
-        stableCoins.includes(asset)
+        SMART_ROUTER_STABLECOINS.includes(asset)
       ) {
         return '0';
       }
 
-      const result = await smartRouter.getBestQuote(
-        defaultRskChainId,
+      const result = await SMART_ROUTER_RSK.getBestQuote(
+        RSK_CHAIN_ID,
         assetDetails?.address,
         dllrDetails?.address,
         toWei('0.01'),
@@ -60,7 +60,7 @@ export function useDollarValue(asset: SupportedTokens, weiAmount: string) {
   const usdValue = useMemo(() => {
     const decimals = assetDetails?.decimalPrecision || 18;
 
-    if (stableCoins.includes(asset)) {
+    if (SMART_ROUTER_STABLECOINS.includes(asset)) {
       return fromWei(weiAmount);
     } else {
       return decimalic(weiAmount)

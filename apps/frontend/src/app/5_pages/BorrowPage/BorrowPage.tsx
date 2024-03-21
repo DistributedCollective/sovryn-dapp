@@ -17,6 +17,7 @@ import { useGetOpenLoans } from './components/OpenLoansTable/hooks/useGetOpenLoa
 const BorrowPage: FC = () => {
   const { account } = useAccount();
   const { data: loans, loading } = useGetOpenLoans();
+
   const hasOpenLoans = useMemo(
     () => loans?.length > 0 && account,
     [loans, account],

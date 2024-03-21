@@ -1,7 +1,7 @@
-import { SupportedTokens, getTokenContract } from '@sovryn/contracts';
+import { getAssetContract } from '@sovryn/contracts';
 import { ChainIds } from '@sovryn/ethers-provider';
 
 export const makeTokenAddress = async (
-  token: SupportedTokens,
+  token: string,
   chainId?: ChainIds,
-): Promise<string> => getTokenContract(token, chainId).then(c => c.address);
+): Promise<string> => getAssetContract(token, chainId).then(c => c.address);

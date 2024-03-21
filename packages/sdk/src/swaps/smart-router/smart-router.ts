@@ -1,10 +1,10 @@
 import { BigNumber, BigNumberish, providers } from 'ethers';
 
-import { TokenDetailsData, getTokenDetailsByAddress } from '@sovryn/contracts';
+import { AssetDetailsData, getAssetDataByAddress } from '@sovryn/contracts';
+import { ChainId } from '@sovryn/ethers-provider';
 
 import { DEFAULT_SWAP_ROUTES } from './config';
 import { SwapRoute, SwapRouteFunction } from './types';
-import { ChainId } from '@sovryn/ethers-provider';
 
 export type BestRouteQuote = {
   route: SwapRoute;
@@ -135,7 +135,7 @@ export class SmartRouter {
   public async getTokenDetails(
     token: string,
     chain: ChainId,
-  ): Promise<TokenDetailsData> {
-    return getTokenDetailsByAddress(token, chain);
+  ): Promise<AssetDetailsData> {
+    return getAssetDataByAddress(token, chain);
   }
 }

@@ -3,7 +3,7 @@ import React, { FC, useCallback, useMemo, useState } from 'react';
 import { Contract } from 'ethers';
 import { t } from 'i18next';
 
-import { SupportedTokens, getProtocolContract } from '@sovryn/contracts';
+import { getProtocolContract } from '@sovryn/contracts';
 import { getProvider } from '@sovryn/ethers-provider';
 import { Button, ButtonType, ButtonStyle } from '@sovryn/ui';
 
@@ -22,6 +22,7 @@ import { translations } from '../../../../../../../locales/i18n';
 import { decimalic } from '../../../../../../../utils/math';
 import { EarnedFee } from '../../../../RewardsPage.types';
 import { UserCheckpoint } from './WithdrawlAllFees.types';
+import { isBtcBasedAsset } from '../../../../../../../utils/helpers';
 
 type WithdrawFeeProps = {
   fees: EarnedFee[];
@@ -82,13 +83,13 @@ export const WithdrawAllFees: FC<WithdrawFeeProps> = ({ fees, refetch }) => {
 
     const nonRbtcRegular = checkpoints
       .filter(
-        item => !isBtcBasedToken(item.token) && !item.hasSkippedCheckpoints,
+        item => !isBtcBasedAsset(item.token) && !item.hasSkippedCheckpoints,
       )
       .map(item => item.contractAddress);
 
     const rbtcRegular = checkpoints
       .filter(
-        item => isBtcBasedToken(item.token) && !item.hasSkippedCheckpoints,
+        item => isBtcBasedAsset(item.token) && !item.hasSkippedCheckpoints,
       )
       .map(item => item.contractAddress);
 
@@ -194,8 +195,4 @@ async function getNextPositiveCheckpoint(
     hasFees: false,
     hasSkippedCheckpoints: false,
   };
-}
-
-function isBtcBasedToken(token: SupportedTokens) {
-  return [SupportedTokens.rbtc, SupportedTokens.wrbtc].includes(token);
 }

@@ -2,7 +2,6 @@ import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 
 import { t } from 'i18next';
 
-import { SupportedTokens } from '@sovryn/contracts';
 import {
   AmountInput,
   Button,
@@ -33,6 +32,7 @@ import { useDecimalAmountInput } from '../../../../../hooks/useDecimalAmountInpu
 import { useMaxAssetBalance } from '../../../../../hooks/useMaxAssetBalance';
 import { useQueryRate } from '../../../../../hooks/useQueryRate';
 import { translations } from '../../../../../locales/i18n';
+import { COMMON_SYMBOLS } from '../../../../../utils/asset';
 import { areValuesIdentical } from '../../../../../utils/helpers';
 import { decimalic } from '../../../../../utils/math';
 import {
@@ -176,9 +176,7 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
 
   const { borrowApr } = useGetBorrowingAPR(debtToken, debtSize);
 
-  const { balance: debtTokenBalance } = useMaxAssetBalance(
-    debtToken as SupportedTokens,
-  );
+  const { balance: debtTokenBalance } = useMaxAssetBalance(debtToken);
 
   const { maximumCollateralAmount, loading: isMaximumCollateralAmountLoading } =
     useGetMaximumCollateralAmount(collateralToken);
@@ -310,7 +308,7 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
 
   const minimumCollateralRatio = useMemo(
     () =>
-      collateralToken === SupportedTokens.sov
+      collateralToken === COMMON_SYMBOLS.SOV
         ? MINIMUM_COLLATERAL_RATIO_LENDING_POOLS_SOV
         : MINIMUM_COLLATERAL_RATIO_LENDING_POOLS,
     [collateralToken],
@@ -775,7 +773,7 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
           <AssetRenderer
             dataAttribute="adjust-loan-collateral-asset"
             showAssetLogo
-            asset={SupportedTokens[collateralToken]}
+            asset={collateralToken}
             className="min-w-24 h-10 rounded bg-gray-60 items-center px-4 mr-0"
           />
         </div>

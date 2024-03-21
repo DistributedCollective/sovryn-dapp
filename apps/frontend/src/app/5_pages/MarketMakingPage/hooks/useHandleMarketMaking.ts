@@ -2,7 +2,7 @@ import { useCallback } from 'react';
 
 import { t } from 'i18next';
 
-import { SupportedTokens, getTokenContract } from '@sovryn/contracts';
+import { getAssetContract } from '@sovryn/contracts';
 import { Decimal } from '@sovryn/utils';
 
 import { RSK_CHAIN_ID } from '../../../../config/chains';
@@ -17,6 +17,11 @@ import { useTransactionContext } from '../../../../contexts/TransactionContext';
 import { useAccount } from '../../../../hooks/useAccount';
 import { useGetProtocolContract } from '../../../../hooks/useGetContract';
 import { translations } from '../../../../locales/i18n';
+import {
+  COMMON_SYMBOLS,
+  maybeWrappedAsset,
+  findAsset,
+} from '../../../../utils/asset';
 import { toWei } from '../../../../utils/math';
 import { prepareApproveTransaction } from '../../../../utils/transactions';
 import { DEPOSIT_MIN_RETURN } from '../MarketMakingPage.constants';
@@ -35,15 +40,18 @@ export const useHandleMarketMaking = (onComplete: () => void) => {
       }
 
       const [tokenAContractAddress, tokenBContractAddress] = await Promise.all([
-        getTokenContract(pool.assetA, RSK_CHAIN_ID).then(item => item.address),
-        getTokenContract(SupportedTokens.wrbtc, RSK_CHAIN_ID).then(
+        getAssetContract(maybeWrappedAsset(pool.assetA), RSK_CHAIN_ID).then(
           item => item.address,
         ),
+        getAssetContract(
+          maybeWrappedAsset(COMMON_SYMBOLS.BTC),
+          RSK_CHAIN_ID,
+        ).then(item => item.address),
       ]);
 
       const transactions: Transaction[] = [];
 
-      if (pool.assetA !== SupportedTokens.rbtc) {
+      if (!findAsset(pool.assetA, RSK_CHAIN_ID)?.isNative) {
         const approve = await prepareApproveTransaction({
           token: pool.assetA,
           amount: amountA.toString(),
@@ -96,19 +104,18 @@ export const useHandleMarketMaking = (onComplete: () => void) => {
   );
 
   const onDepositV2 = useCallback(
-    async (pool: AmmLiquidityPool, asset: SupportedTokens, amount: Decimal) => {
+    async (pool: AmmLiquidityPool, asset: string, amount: Decimal) => {
       if (!account || !signer || !btcWrapperProxyContract) {
         return;
       }
 
-      const token =
-        asset === SupportedTokens.rbtc ? SupportedTokens.wrbtc : asset;
+      const token = maybeWrappedAsset(asset);
 
-      const tokenContract = await getTokenContract(token, RSK_CHAIN_ID);
+      const tokenContract = await getAssetContract(token, RSK_CHAIN_ID);
 
       const transactions: Transaction[] = [];
 
-      if (asset !== SupportedTokens.rbtc) {
+      if (!findAsset(asset, RSK_CHAIN_ID)?.isNative) {
         const approve = await prepareApproveTransaction({
           token: asset,
           amount: amount.toString(),
@@ -135,7 +142,9 @@ export const useHandleMarketMaking = (onComplete: () => void) => {
             amount.toString(),
             DEPOSIT_MIN_RETURN,
           ],
-          value: asset === SupportedTokens.rbtc ? amount.toString() : '0',
+          value: findAsset(asset, RSK_CHAIN_ID)?.isNative
+            ? amount.toString()
+            : '0',
           gasLimit: GAS_LIMIT.MARKET_MAKING_ADD_LIQUIDITY,
         },
         onComplete,
@@ -171,12 +180,12 @@ export const useHandleMarketMaking = (onComplete: () => void) => {
         return;
       }
 
-      const tokenAContractPromise = getTokenContract(
+      const tokenAContractPromise = getAssetContract(
         pool.assetA,
         RSK_CHAIN_ID,
       ).then(item => item.address);
-      const tokenBContractPromise = getTokenContract(
-        SupportedTokens.wrbtc,
+      const tokenBContractPromise = getAssetContract(
+        COMMON_SYMBOLS.WBTC,
         RSK_CHAIN_ID,
       ).then(item => item.address);
 
@@ -187,7 +196,7 @@ export const useHandleMarketMaking = (onComplete: () => void) => {
 
       const transactions: Transaction[] = [];
 
-      if (pool.assetA !== SupportedTokens.rbtc) {
+      if (!findAsset(pool.assetA, RSK_CHAIN_ID)?.isNative) {
         const approve = await prepareApproveTransaction({
           token: pool.assetA,
           amount: amount.toString(),
@@ -241,7 +250,7 @@ export const useHandleMarketMaking = (onComplete: () => void) => {
   const onWithdrawV2 = useCallback(
     async (
       pool: AmmLiquidityPool,
-      asset: SupportedTokens,
+      asset: string,
       poolWeiAmount: string,
       amount: Decimal,
       minReturn: string,
@@ -250,14 +259,13 @@ export const useHandleMarketMaking = (onComplete: () => void) => {
         return;
       }
 
-      const token =
-        asset === SupportedTokens.rbtc ? SupportedTokens.wrbtc : asset;
+      const token = maybeWrappedAsset(asset);
 
-      const tokenContract = await getTokenContract(token, RSK_CHAIN_ID);
+      const tokenContract = await getAssetContract(token, RSK_CHAIN_ID);
 
       const transactions: Transaction[] = [];
 
-      if (asset !== SupportedTokens.rbtc) {
+      if (!findAsset(asset, RSK_CHAIN_ID)?.isNative) {
         const approve = await prepareApproveTransaction({
           token: asset,
           amount: amount.toString(),

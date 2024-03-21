@@ -1,7 +1,7 @@
 import { BigNumber, utils, providers, constants } from 'ethers';
 
 import { CrocEnv } from '@sovryn/ambient-sdk';
-import { getTokenContract } from '@sovryn/contracts';
+import { getAssetContract } from '@sovryn/contracts';
 import { ChainIds } from '@sovryn/ethers-provider';
 import { numberToChainId } from '@sovryn/ethers-provider';
 
@@ -44,16 +44,16 @@ export const ambientRoute: SwapRouteFunction = (
     pairs: async () => {
       const chainId = await getChainId();
       console.log('chainId', chainId);
-      const btc = await getTokenContract('btc', chainId);
-      const sov = await getTokenContract('sov', chainId);
-      const usdc = await getTokenContract('usdc', chainId);
-      const wbtc = await getTokenContract('wbtc', chainId);
+      const btc = await getAssetContract('ETH', chainId);
+      const sov = await getAssetContract('SOV', chainId);
+      const usdc = await getAssetContract('USDC', chainId);
+      const usdt = await getAssetContract('USDT', chainId);
 
       return new Map<string, string[]>([
-        [btc.address, [sov.address, usdc.address, wbtc.address]],
-        [sov.address, [btc.address, usdc.address, wbtc.address]],
-        [usdc.address, [btc.address, sov.address, wbtc.address]],
-        [wbtc.address, [btc.address, sov.address, usdc.address]],
+        [btc.address, [sov.address, usdc.address, usdt.address]],
+        [sov.address, [btc.address, usdc.address, usdt.address]],
+        [usdc.address, [btc.address, sov.address, usdt.address]],
+        [usdt.address, [btc.address, sov.address, usdc.address]],
       ]);
     },
     quote: async (entry, destination, amount) => {
@@ -77,8 +77,8 @@ export const ambientRoute: SwapRouteFunction = (
         await hasEnoughAllowance(
           provider,
           entry,
-          contract.address, // Use the contract address directly
           from,
+          contract.address, // Use the contract address directly
           amount ?? constants.MaxUint256,
         )
       ) {
@@ -87,7 +87,7 @@ export const ambientRoute: SwapRouteFunction = (
 
       return {
         ...makeApproveRequest(
-          plan.baseToken.tokenAddr,
+          entry,
           contract.address, // Use the contract address directly
           amount ?? constants.MaxUint256,
         ),

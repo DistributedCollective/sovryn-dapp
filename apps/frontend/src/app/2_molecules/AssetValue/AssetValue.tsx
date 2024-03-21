@@ -6,9 +6,12 @@ import classNames from 'classnames';
 import { Tooltip, TooltipTrigger } from '@sovryn/ui';
 import { Decimal } from '@sovryn/utils';
 
+import { RSK_CHAIN_ID } from '../../../config/chains';
+
+import { findAsset } from '../../../utils/asset';
 import { AssetRenderer } from '../AssetRenderer/AssetRenderer';
 import styles from './AssetValue.module.css';
-import { AssetDecimals, AssetValueMode, AssetValueProps } from './types';
+import { AssetValueMode, AssetValueProps } from './types';
 
 export const AssetValue: React.FC<AssetValueProps> = ({
   value,
@@ -25,6 +28,7 @@ export const AssetValue: React.FC<AssetValueProps> = ({
   showNegativeSign = false,
   showAssetLogo = false,
   dataAttribute,
+  chainId = RSK_CHAIN_ID,
 }) => {
   const [formattedValue, fullFormattedValue] = useMemo(() => {
     if (!value && value !== 0) {
@@ -34,7 +38,12 @@ export const AssetValue: React.FC<AssetValueProps> = ({
     let min = minDecimals;
     let max = maxDecimals;
     if (mode === AssetValueMode.predefined) {
-      min = (asset && AssetDecimals[asset]) || 2;
+      if (asset) {
+        const token = findAsset(asset, chainId);
+        min = token?.decimals || 2;
+      } else {
+        min = 2;
+      }
       max = min;
     }
     if (mode === AssetValueMode.auto) {
@@ -70,10 +79,11 @@ export const AssetValue: React.FC<AssetValueProps> = ({
     minDecimals,
     maxDecimals,
     mode,
-    asset,
     isApproximation,
     showPositiveSign,
     showNegativeSign,
+    asset,
+    chainId,
   ]);
 
   if (!formattedValue) {

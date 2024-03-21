@@ -2,7 +2,6 @@ import React, { FC, useCallback, useMemo, useState } from 'react';
 
 import { t } from 'i18next';
 
-import { SupportedTokens } from '@sovryn/contracts';
 import { Paragraph } from '@sovryn/ui';
 import { Decimal } from '@sovryn/utils';
 
@@ -22,20 +21,17 @@ export const AssetSection: FC = () => {
   const [selectedCurrency, setSelectedCurrency] = useState(BITCOIN);
   const [usdValues, setUsdValues] = useState(initialUsdValues);
 
-  const updateUsdValue = useCallback(
-    (token: SupportedTokens, usdValue: string) => {
-      setUsdValues(prevUsdValues => {
-        if (prevUsdValues[token] === usdValue) {
-          return prevUsdValues;
-        }
-        return {
-          ...prevUsdValues,
-          [token]: usdValue,
-        };
-      });
-    },
-    [],
-  );
+  const updateUsdValue = useCallback((token: string, usdValue: string) => {
+    setUsdValues(prevUsdValues => {
+      if (prevUsdValues[token] === usdValue) {
+        return prevUsdValues;
+      }
+      return {
+        ...prevUsdValues,
+        [token]: usdValue,
+      };
+    });
+  }, []);
 
   const totalUsdValue = useMemo(
     () =>

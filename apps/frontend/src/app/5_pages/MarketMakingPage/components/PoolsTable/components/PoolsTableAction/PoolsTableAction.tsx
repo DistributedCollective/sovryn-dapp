@@ -2,7 +2,6 @@ import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 
 import { t } from 'i18next';
 
-import { SupportedTokens } from '@sovryn/contracts';
 import {
   ButtonStyle,
   ButtonSize,
@@ -39,10 +38,7 @@ export const PoolsTableAction: FC<PoolsTableActionProps> = ({ pool }) => {
     refetch,
   } = useGetUserInfo(pool);
 
-  const isMynt = useMemo(
-    () => pool.assetA === SupportedTokens.mynt,
-    [pool.assetA],
-  );
+  const isMynt = useMemo(() => pool.assetA === 'MYNT', [pool.assetA]);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isInitialDeposit, setIsInitialDeposit] = useState(true);

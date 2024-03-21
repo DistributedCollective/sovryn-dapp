@@ -3,7 +3,7 @@ import React, { FC, useMemo } from 'react';
 import { t } from 'i18next';
 import { useNavigate } from 'react-router-dom';
 
-import { SupportedTokens } from '@sovryn/contracts';
+import { Button, ButtonStyle, Paragraph } from '@sovryn/ui';
 
 import { CTA } from '../../../../2_molecules/CTA/CTA';
 import borrowBg from '../../../../../assets/images/QuickLaunch/borrow_bg.svg';
@@ -15,13 +15,14 @@ import { formatValue } from '../../../../../utils/math';
 import { useGetNextSupplyInterestRate } from '../../../LendPage/hooks/useGetNextSupplyInterestRate';
 import { useGetReturnRates } from '../../../MarketMakingPage/hooks/useGetReturnRates';
 import { useGetStakingStatistics } from '../../../StakePage/components/StakingStatistics/hooks/useGetStakingStatistics';
+import { COMMON_SYMBOLS } from '../../../../../utils/asset';
 
 const pageTranslations = translations.landingPage;
 
 export const QuickLaunch: FC = () => {
   const navigate = useNavigate();
   const { maxStakingApr } = useGetStakingStatistics();
-  const { interestRate } = useGetNextSupplyInterestRate(SupportedTokens.dllr);
+  const { interestRate } = useGetNextSupplyInterestRate(COMMON_SYMBOLS.DLLR);
   const { rates } = useGetReturnRates();
 
   const maxRate = useMemo(() => {

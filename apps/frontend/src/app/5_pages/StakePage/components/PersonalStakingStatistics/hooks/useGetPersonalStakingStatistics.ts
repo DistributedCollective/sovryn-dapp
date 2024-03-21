@@ -2,12 +2,14 @@ import { RSK_CHAIN_ID } from '../../../../../../config/chains';
 
 import { useCacheCall } from '../../../../../../hooks';
 import { useAccount } from '../../../../../../hooks/useAccount';
+import { useCurrentChain } from '../../../../../../hooks/useChainStore';
 import { useGetProtocolContract } from '../../../../../../hooks/useGetContract';
 import { useGetStakingBalanceOf } from '../../../hooks/useGetStakingBalanceOf';
 
 export const useGetPersonalStakingStatistics = () => {
   const { account } = useAccount();
-  const stakingContract = useGetProtocolContract('staking', RSK_CHAIN_ID);
+  const chainId = useCurrentChain();
+  const stakingContract = useGetProtocolContract('staking', chainId);
 
   const { balance } = useGetStakingBalanceOf(account);
 

@@ -4,10 +4,12 @@ import { t } from 'i18next';
 
 import { HelperButton } from '@sovryn/ui';
 
+import { RSK_CHAIN_ID } from '../../../../../config/chains';
+
 import { AssetRenderer } from '../../../../2_molecules/AssetRenderer/AssetRenderer';
-import { getTokenLongName } from '../../../../../constants/tokens';
 import { translations } from '../../../../../locales/i18n';
 import { LendingPool } from '../../../../../utils/LendingPool';
+import { findAsset } from '../../../../../utils/asset';
 import { normalizeToken } from '../../../BorrowPage/BorrowPage.utils';
 import { AvailableSupply } from '../../../BorrowPage/components/BorrowAssetsTable/components/AvailableSupply/AvailableSupply';
 import { NextBorrowInterestRate } from '../../../BorrowPage/components/BorrowAssetsTable/components/NextBorrowInterestRate/NextBorrowInterestRate';
@@ -30,7 +32,7 @@ export const COLUMNS_CONFIG = [
           assetClassName="text-xs font-medium"
         />
         <span className="text-gray-40 hidden lg:block">
-          {getTokenLongName(pool.getAsset())}
+          {findAsset(pool.getAsset(), RSK_CHAIN_ID)?.name}
         </span>
       </div>
     ),

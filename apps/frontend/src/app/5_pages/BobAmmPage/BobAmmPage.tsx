@@ -11,6 +11,8 @@ import { NetworkBanner } from '../../2_molecules/NetworkBanner/NetworkBanner';
 import { useAccount } from '../../../hooks/useAccount';
 import { COMMON_SYMBOLS, findAsset } from '../../../utils/asset';
 import { createRangePositionTx } from './ambient-utils';
+import { multiSwap } from './testing-swap';
+import { parseEther } from 'ethers/lib/utils';
 
 const ETH = constants.AddressZero;
 const SOV = findAsset(COMMON_SYMBOLS.SOV, BOB_CHAIN_ID).address;
@@ -145,15 +147,21 @@ export const BobAmmPage: React.FC = () => {
       return;
     }
 
-    const tokenA = croc.current.tokens.materialize(SOV);
-    const tokenB = croc.current.tokens.materialize(USDT);
+    const query = (await croc.current.context).query;
 
-    const plan = croc.current
-      .sell(tokenA.tokenAddr, 0.001)
-      .for(tokenB.tokenAddr)
-      .useBypass();
+    console.log({ query });
 
-    console.log('plan', plan);
+    await multiSwap(croc.current);
+
+    // const tokenA = croc.current.tokens.materialize(SOV);
+    // const tokenB = croc.current.tokens.materialize(USDT);
+
+    // const plan = croc.current
+    //   .sell(tokenA.tokenAddr, 0.001)
+    //   .for(tokenB.tokenAddr)
+    //   .useBypass();
+
+    // console.log('plan', plan);
 
     // todo...
 

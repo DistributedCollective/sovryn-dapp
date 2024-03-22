@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useMemo, useState } from 'react';
+import React, { FC, useCallback, useMemo } from 'react';
 
 import { t } from 'i18next';
 
@@ -16,33 +16,46 @@ import { renderPercentageClassName } from './AmountForm.utils';
 type AmountFormProps = {
   primaryTokenBalance: Decimal;
   secondaryTokenBalance: Decimal;
+  withdrawAmount: Decimal;
+  setWithdrawAmount: (value: Decimal) => void;
+  secondaryWithdrawAmount: Decimal;
+  setSecondaryWithdrawAmount: (value: Decimal) => void;
   pool: AmmLiquidityPool;
 };
 
 export const AmountForm: FC<AmountFormProps> = ({
   primaryTokenBalance,
   secondaryTokenBalance,
+  withdrawAmount,
+  setWithdrawAmount,
+  secondaryWithdrawAmount,
+  setSecondaryWithdrawAmount,
   pool,
 }) => {
   const { account } = useAccount();
-
-  const [withdrawAmount, setWithdrawAmount] = useState(Decimal.ZERO);
-  const [secondaryWithdrawAmount, setSecondaryWithdrawAmount] = useState(
-    Decimal.ZERO,
-  );
 
   const onPercentageButtonClick = useCallback(
     (percentage: number) => {
       setWithdrawAmount(primaryTokenBalance.mul(percentage / 100));
       setSecondaryWithdrawAmount(secondaryTokenBalance.mul(percentage / 100));
     },
-    [primaryTokenBalance, secondaryTokenBalance],
+    [
+      primaryTokenBalance,
+      secondaryTokenBalance,
+      setSecondaryWithdrawAmount,
+      setWithdrawAmount,
+    ],
   );
 
   const onMaxClick = useCallback(() => {
     setWithdrawAmount(primaryTokenBalance);
     setSecondaryWithdrawAmount(secondaryTokenBalance);
-  }, [primaryTokenBalance, secondaryTokenBalance]);
+  }, [
+    primaryTokenBalance,
+    secondaryTokenBalance,
+    setSecondaryWithdrawAmount,
+    setWithdrawAmount,
+  ]);
 
   const onAmountChange = useCallback(
     (value: string) => {
@@ -52,7 +65,12 @@ export const AmountForm: FC<AmountFormProps> = ({
       const percentage = primaryTokenBalance.div(decimalAmount);
       setSecondaryWithdrawAmount(secondaryTokenBalance.div(percentage));
     },
-    [primaryTokenBalance, secondaryTokenBalance],
+    [
+      primaryTokenBalance,
+      secondaryTokenBalance,
+      setSecondaryWithdrawAmount,
+      setWithdrawAmount,
+    ],
   );
 
   const withdrawAmountPercentage = useMemo(

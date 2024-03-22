@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, useCallback, useState } from 'react';
 
 import { t } from 'i18next';
 
@@ -9,7 +9,6 @@ import {
   Dialog,
   DialogBody,
   DialogHeader,
-  noop,
 } from '@sovryn/ui';
 import { Decimal } from '@sovryn/utils';
 
@@ -42,6 +41,17 @@ export const BobWithdrawModal: FC<BobWithdrawModalProps> = ({
   isOpen,
   onClose,
 }) => {
+  const [withdrawAmount, setWithdrawAmount] = useState(Decimal.ZERO);
+  const [secondaryWithdrawAmount, setSecondaryWithdrawAmount] = useState(
+    Decimal.ZERO,
+  );
+
+  const submitHandler = useCallback(() => {
+    console.log(
+      `Withdrawing ${withdrawAmount} ${POOL.assetA} and ${secondaryWithdrawAmount} ${POOL.assetB}`,
+    );
+  }, [secondaryWithdrawAmount, withdrawAmount]);
+
   return (
     <Dialog disableFocusTrap isOpen={isOpen}>
       <DialogHeader title={t(pageTranslations.title)} onClose={onClose} />
@@ -71,6 +81,10 @@ export const BobWithdrawModal: FC<BobWithdrawModalProps> = ({
         <AmountForm
           primaryTokenBalance={BALANCE_A}
           secondaryTokenBalance={BALANCE_B}
+          withdrawAmount={withdrawAmount}
+          secondaryWithdrawAmount={secondaryWithdrawAmount}
+          setWithdrawAmount={setWithdrawAmount}
+          setSecondaryWithdrawAmount={setSecondaryWithdrawAmount}
           pool={POOL}
         />
 
@@ -81,7 +95,7 @@ export const BobWithdrawModal: FC<BobWithdrawModalProps> = ({
           style={ButtonStyle.primary}
           text={t(translations.common.buttons.confirm)}
           className="w-full mt-6"
-          onClick={noop}
+          onClick={submitHandler}
           dataAttribute="withdraw-liquidity-confirm-button"
           disabled={false}
         />

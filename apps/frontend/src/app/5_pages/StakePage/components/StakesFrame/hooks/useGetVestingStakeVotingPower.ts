@@ -3,13 +3,15 @@ import { useCallback, useEffect, useState } from 'react';
 import dayjs from 'dayjs';
 
 import { useBlockNumber } from '../../../../../../hooks/useBlockNumber';
+import { useCurrentChain } from '../../../../../../hooks/useChainStore';
 import { useGetProtocolContract } from '../../../../../../hooks/useGetContract';
 import { asyncCall } from '../../../../../../store/rxjs/provider-cache';
 
 export const useGetVestingStakeVotingPower = (
   vestingContractAddress: string,
 ) => {
-  const stakingContract = useGetProtocolContract('staking');
+  const chainId = useCurrentChain();
+  const stakingContract = useGetProtocolContract('staking', chainId);
   const [votingPower, setVotingPower] = useState<undefined | string>();
   const { value } = useBlockNumber();
 

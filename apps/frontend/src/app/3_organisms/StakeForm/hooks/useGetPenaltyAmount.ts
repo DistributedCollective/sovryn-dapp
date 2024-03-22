@@ -1,10 +1,12 @@
 import { useCallback, useEffect, useState } from 'react';
 
+import { useCurrentChain } from '../../../../hooks/useChainStore';
 import { useGetProtocolContract } from '../../../../hooks/useGetContract';
 import { fromWei, toWei } from '../../../../utils/math';
 
 export const useGetPenaltyAmount = (amount: string, unlockDate: number) => {
-  const stakingContract = useGetProtocolContract('staking');
+  const chainId = useCurrentChain();
+  const stakingContract = useGetProtocolContract('staking', chainId);
   const [penaltyAmount, setPenaltyAmount] = useState('0');
 
   const getPenaltyAmount = useCallback(async () => {

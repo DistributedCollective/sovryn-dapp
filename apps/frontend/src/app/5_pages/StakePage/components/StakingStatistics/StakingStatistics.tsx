@@ -11,11 +11,12 @@ import {
   ParagraphStyle,
 } from '@sovryn/ui';
 
-import { RSK_CHAIN_ID } from '../../../../../config/chains';
+import { BOB_CHAIN_ID, RSK_CHAIN_ID } from '../../../../../config/chains';
 
 import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { TOKEN_RENDER_PRECISION } from '../../../../../constants/currencies';
 import { useAssetBalance } from '../../../../../hooks/useAssetBalance';
+import { useCurrentChain } from '../../../../../hooks/useChainStore';
 import { useLoadContract } from '../../../../../hooks/useLoadContract';
 import { translations } from '../../../../../locales/i18n';
 import { COMMON_SYMBOLS, findAsset } from '../../../../../utils/asset';
@@ -25,6 +26,7 @@ import { GlobalStatistics } from '../../StakePage.utils';
 import { useGetStakingStatistics } from './hooks/useGetStakingStatistics';
 
 export const StakingStatistics = () => {
+  const chainId = useCurrentChain();
   const { totalVotingPower, maxStakingApr } = useGetStakingStatistics();
   const stakingContract = useLoadContract('staking', 'protocol');
   const totalStakedSov = useAssetBalance(
@@ -78,35 +80,37 @@ export const StakingStatistics = () => {
             />
           }
         />
-        <GlobalStatistics
-          label={
-            <span className="flex items-center gap-1">
-              {t(translations.stakePage.statistics.maxStakingApr)}{' '}
-              <HelperButton
-                tooltipClassName="max-w-56 md:max-72"
-                content={
-                  <Trans
-                    i18nKey={t(
-                      translations.stakePage.statistics.maxStakingAprInfo,
-                    )}
-                    components={[
-                      <Link
-                        text={t(
-                          translations.stakePage.statistics
-                            .maxStakingAprInfoCta,
-                        )}
-                        href={MAX_STAKING_APR_LINK}
-                        className="mt-4 inline-block"
-                        openNewTab
-                      />,
-                    ]}
-                  />
-                }
-              />
-            </span>
-          }
-          value={renderMaxStakingApr}
-        />
+        {chainId !== BOB_CHAIN_ID && (
+          <GlobalStatistics
+            label={
+              <span className="flex items-center gap-1">
+                {t(translations.stakePage.statistics.maxStakingApr)}{' '}
+                <HelperButton
+                  tooltipClassName="max-w-56 md:max-72"
+                  content={
+                    <Trans
+                      i18nKey={t(
+                        translations.stakePage.statistics.maxStakingAprInfo,
+                      )}
+                      components={[
+                        <Link
+                          text={t(
+                            translations.stakePage.statistics
+                              .maxStakingAprInfoCta,
+                          )}
+                          href={MAX_STAKING_APR_LINK}
+                          className="mt-4 inline-block"
+                          openNewTab
+                        />,
+                      ]}
+                    />
+                  }
+                />
+              </span>
+            }
+            value={renderMaxStakingApr}
+          />
+        )}
       </div>
     </div>
   );

@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { useAccount } from '../../../../../../hooks/useAccount';
 import { useBlockNumber } from '../../../../../../hooks/useBlockNumber';
+import { useCurrentChain } from '../../../../../../hooks/useChainStore';
 import { useGetProtocolContract } from '../../../../../../hooks/useGetContract';
 import { asyncCall } from '../../../../../../store/rxjs/provider-cache';
 import { areAddressesEqual } from '../../../../../../utils/helpers';
@@ -10,7 +11,8 @@ import { StakeItem } from '../StakesFrame.types';
 
 export const useGetStakes = () => {
   const { account } = useAccount();
-  const stakingContract = useGetProtocolContract('staking');
+  const chainId = useCurrentChain();
+  const stakingContract = useGetProtocolContract('staking', chainId);
   const [stakes, setStakes] = useState<StakeItem[]>([]);
   const [loading, setLoading] = useState(false);
   const { value: block } = useBlockNumber();

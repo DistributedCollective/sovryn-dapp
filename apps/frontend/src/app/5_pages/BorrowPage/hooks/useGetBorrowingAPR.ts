@@ -13,7 +13,7 @@ export const useGetBorrowingAPR = (
 ) => {
   const [borrowApr, setBorrowApr] = useState(BigNumber.from(0));
 
-  const assetContract = useLoadContract(borrowToken, 'lendTokens');
+  const assetContract = useLoadContract(borrowToken, 'loanTokens');
 
   const updateAPR = useCallback(async () => {
     if (!assetContract) {

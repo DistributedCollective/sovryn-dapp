@@ -9,7 +9,6 @@ import {
   EthersLiquity,
   ReadableEthersLiquityWithStore,
 } from '@sovryn-zero/lib-ethers';
-import { SupportedTokens } from '@sovryn/contracts';
 import {
   AmountInput,
   Button,
@@ -29,9 +28,13 @@ import {
 } from '@sovryn/ui';
 import { Decimal } from '@sovryn/utils';
 
+import { RSK_CHAIN_ID } from '../../../config/chains';
+
 import { AmountRenderer } from '../../2_molecules/AmountRenderer/AmountRenderer';
 import { AssetRenderer } from '../../2_molecules/AssetRenderer/AssetRenderer';
 import { MaxButton } from '../../2_molecules/MaxButton/MaxButton';
+import { NetworkBanner } from '../../2_molecules/NetworkBanner/NetworkBanner';
+import { useRequiredChain } from '../../2_molecules/NetworkBanner/hooks/useRequiredChain';
 import { TOKEN_RENDER_PRECISION } from '../../../constants/currencies';
 import { useAccount } from '../../../hooks/useAccount';
 import { useAmountInput } from '../../../hooks/useAmountInput';
@@ -42,6 +45,7 @@ import { useGetRBTCPrice } from '../../../hooks/zero/useGetRBTCPrice';
 import { useGetTroves } from '../../../hooks/zero/useGetTroves';
 import { useUnderCollateralizedTrovesExist } from '../../../hooks/zero/useUnderCollateralizedTrovesExist';
 import { translations } from '../../../locales/i18n';
+import { COMMON_SYMBOLS } from '../../../utils/asset';
 import { formatValue, decimalic } from '../../../utils/math';
 import { tokenList } from './EarnPage.types';
 import { useGetSubsidiesAPR } from './hooks/useGetSubsidiesAPR';
@@ -56,7 +60,7 @@ const EarnPage: FC = () => {
   const [poolBalance, setPoolBalance] = useState(Decimal.ZERO);
   const [ZUSDInStabilityPool, setZUSDInStabilityPool] = useState(Decimal.ZERO);
   const [rewardsAmount, setRewardsAmount] = useState(Decimal.ZERO);
-  const [token, setToken] = useState<SupportedTokens>(SupportedTokens.zusd);
+  const [token, setToken] = useState<string>(COMMON_SYMBOLS.ZUSD);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [isLoading, setIsLoading] = useState(false);
   const { apy } = useGetSubsidiesAPR();
@@ -64,12 +68,12 @@ const EarnPage: FC = () => {
   const { account } = useAccount();
   const { value: block } = useBlockNumber();
   const { price } = useGetRBTCPrice();
-
   const {
     data: troves,
     loading: loadingTroves,
     refetch: refetchTroves,
   } = useGetTroves();
+  const { invalidChain } = useRequiredChain();
 
   const [shouldCheckTroves, setShouldCheckTroves] = useState(true);
   const underCollateralizedTrovesExist =
@@ -170,15 +174,15 @@ const EarnPage: FC = () => {
   );
 
   const onTokenChange = useCallback(
-    (value: SupportedTokens) => {
+    (value: string) => {
       setToken(value);
       setAmount('');
     },
     [setAmount],
   );
 
-  const { weiBalance: zusdWeiBalance } = useAssetBalance(SupportedTokens.zusd);
-  const { weiBalance: dllrWeiBalance } = useAssetBalance(SupportedTokens.dllr);
+  const { weiBalance: zusdWeiBalance } = useAssetBalance(COMMON_SYMBOLS.ZUSD);
+  const { weiBalance: dllrWeiBalance } = useAssetBalance(COMMON_SYMBOLS.DLLR);
 
   useEffect(() => {
     if (
@@ -186,14 +190,14 @@ const EarnPage: FC = () => {
       Number(zusdWeiBalance) > 0 &&
       Number(dllrWeiBalance) === 0
     ) {
-      setToken(SupportedTokens.zusd);
+      setToken(COMMON_SYMBOLS.ZUSD);
     } else {
-      setToken(SupportedTokens.dllr);
+      setToken(COMMON_SYMBOLS.DLLR);
     }
   }, [dllrWeiBalance, zusdWeiBalance, isDeposit, isLoading]);
 
   const getAssetRenderer = useCallback(
-    (token: SupportedTokens) => (
+    (token: string) => (
       <AssetRenderer showAssetLogo asset={token} assetClassName="font-medium" />
     ),
     [],
@@ -259,7 +263,7 @@ const EarnPage: FC = () => {
     return (
       <AmountRenderer
         value={newPoolBalance}
-        suffix={SupportedTokens.zusd}
+        suffix={COMMON_SYMBOLS.ZUSD}
         precision={TOKEN_RENDER_PRECISION}
       />
     );
@@ -292,7 +296,7 @@ const EarnPage: FC = () => {
   );
 
   const isInMaintenance = useMemo(
-    () => actionLocked || (dllrLocked && token === SupportedTokens.dllr),
+    () => actionLocked || (dllrLocked && token === COMMON_SYMBOLS.DLLR),
     [actionLocked, dllrLocked, token],
   );
 
@@ -304,14 +308,16 @@ const EarnPage: FC = () => {
       Number(amount) <= 0 ||
       !isValidAmount ||
       isInMaintenance ||
-      isUnderCollateralized,
+      isUnderCollateralized ||
+      invalidChain,
     [
       account,
       amount,
+      loadingTroves,
       isValidAmount,
       isInMaintenance,
-      loadingTroves,
       isUnderCollateralized,
+      invalidChain,
     ],
   );
 
@@ -364,6 +370,8 @@ const EarnPage: FC = () => {
         >
           {t(pageTranslations.subtitle)}
         </Paragraph>
+
+        <NetworkBanner requiredChainId={RSK_CHAIN_ID} />
 
         <div className="mt-12 w-full p-0 sm:border sm:border-gray-50 sm:rounded sm:w-[28rem] sm:p-6 sm:bg-gray-90">
           <div className="w-full flex flex-row justify-between items-center mb-4">
@@ -433,7 +441,7 @@ const EarnPage: FC = () => {
               value={
                 <AmountRenderer
                   value={poolBalance}
-                  suffix={SupportedTokens.zusd}
+                  suffix={COMMON_SYMBOLS.ZUSD}
                   precision={TOKEN_RENDER_PRECISION}
                 />
               }

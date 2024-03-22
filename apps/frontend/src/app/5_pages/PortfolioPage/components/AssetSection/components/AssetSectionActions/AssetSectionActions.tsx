@@ -3,7 +3,6 @@ import React, { FC, useCallback, useMemo } from 'react';
 import { t } from 'i18next';
 import { useNavigate } from 'react-router-dom';
 
-import { SupportedTokens } from '@sovryn/contracts';
 import { Button, ButtonStyle, Paragraph } from '@sovryn/ui';
 
 import { ReactComponent as ConvertIcon } from '../../../../../../../assets/images/convert.svg';
@@ -13,12 +12,13 @@ import { useAccount } from '../../../../../../../hooks/useAccount';
 import { useAssetBalance } from '../../../../../../../hooks/useAssetBalance';
 import { translations } from '../../../../../../../locales/i18n';
 import { sharedState } from '../../../../../../../store/rxjs/shared-state';
+import { COMMON_SYMBOLS } from '../../../../../../../utils/asset';
 
 export const AssetSectionActions: FC = () => {
   const navigate = useNavigate();
   const { account } = useAccount();
 
-  const { balance } = useAssetBalance(SupportedTokens.rbtc);
+  const { balance } = useAssetBalance(COMMON_SYMBOLS.BTC);
   const hasRbtcBalance = useMemo(() => Number(balance) !== 0, [balance]);
 
   const handleFundWallet = useCallback(

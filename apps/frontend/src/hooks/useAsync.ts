@@ -9,7 +9,8 @@ export const useAsync = <T>(asyncFunction: () => Promise<T>) => {
       asyncFunction()
         .then(setValue)
         .catch(() => setValue(undefined)),
-    [asyncFunction],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [],
   );
 
   useEffect(() => {

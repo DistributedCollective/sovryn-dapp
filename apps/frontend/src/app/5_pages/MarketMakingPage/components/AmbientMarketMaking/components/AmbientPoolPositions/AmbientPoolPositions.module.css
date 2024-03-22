@@ -1,0 +1,6 @@
+.table th {
+  @apply text-gray-30;
+}
+.table tbody tr {
+  @apply bg-gray-80 outline-none;
+}

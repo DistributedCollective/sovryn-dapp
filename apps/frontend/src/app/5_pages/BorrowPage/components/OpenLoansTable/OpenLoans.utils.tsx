@@ -1,6 +1,5 @@
 import React from 'react';
 
-import { SupportedTokens } from '@sovryn/contracts';
 import { Decimal } from '@sovryn/utils';
 
 import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRenderer';
@@ -10,6 +9,10 @@ import {
   TOKEN_RENDER_PRECISION,
 } from '../../../../../constants/currencies';
 import { LendingPoolDictionary } from '../../../../../utils/LendingPoolDictionary';
+import {
+  COMMON_SYMBOLS,
+  maybeUnwrappedAsset,
+} from '../../../../../utils/asset';
 import { isBitpro, isBtcBasedAsset } from '../../../../../utils/helpers';
 import { decimalic } from '../../../../../utils/math';
 import { LoanItem } from './OpenLoansTable.types';
@@ -42,14 +45,14 @@ export const generateRowTitle = (item: LoanItem) => (
 
 export const convertLoanTokenToSupportedAssets = (loanToken: string) => {
   if (isBtcBasedAsset(loanToken)) {
-    return SupportedTokens.rbtc;
+    return COMMON_SYMBOLS.BTC;
   }
 
   if (isBitpro(loanToken)) {
-    return SupportedTokens.bpro;
+    return 'BPRO';
   }
 
-  return loanToken.toLowerCase() as SupportedTokens;
+  return maybeUnwrappedAsset(loanToken.toLowerCase());
 };
 
 export const isSupportedPool = (

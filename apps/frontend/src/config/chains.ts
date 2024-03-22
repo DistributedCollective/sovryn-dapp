@@ -1,42 +1,75 @@
 import setup, { Chain, ChainIds } from '@sovryn/ethers-provider';
+import { ChainId } from '@sovryn/ethers-provider';
 
-import {
-  PUBLIC_RSK_RPC,
-  RSK_EXPLORER,
-  RSK_RPC,
-} from '../constants/infrastructure';
+import bobLogo from '../assets/chains/bob.svg';
+import rskLogo from '../assets/chains/rsk.svg';
+import { BOB } from '../constants/infrastructure/bob';
+import { RSK } from '../constants/infrastructure/rsk';
 import { Environments } from '../types/global';
-import { isMainnet } from '../utils/helpers';
+
+const IS_MAINNET = process.env.REACT_APP_NETWORK === Environments.Mainnet;
 
 export enum Chains {
   RSK = 'rsk',
   BSC = 'bsc',
 }
 
-export const defaultChainId = (
-  isMainnet() ? ChainIds.RSK_MAINNET : ChainIds.RSK_TESTNET
-) as string;
+export const DEFAULT_CHAIN_ID = (
+  IS_MAINNET ? ChainIds.RSK_MAINNET : ChainIds.RSK_TESTNET
+) as ChainId;
 
-// @dev: temp solution for hardware wallets to connect to the correct chain
-// good enough for now, but should be refactored when cross-chain support is needed
-export const chains: Chain[] = [
-  isMainnet()
-    ? {
-        id: ChainIds.RSK_MAINNET,
-        label: 'Rootstock',
-        token: 'RBTC',
-        publicRpcUrl: PUBLIC_RSK_RPC[Environments.Mainnet],
-        rpcUrl: RSK_RPC[Environments.Mainnet],
-        blockExplorerUrl: RSK_EXPLORER[Environments.Mainnet],
-      }
-    : {
-        id: ChainIds.RSK_TESTNET,
-        label: 'Rootstock testnet',
-        token: 'tRBTC',
-        publicRpcUrl: PUBLIC_RSK_RPC[Environments.Testnet],
-        rpcUrl: RSK_RPC[Environments.Testnet],
-        blockExplorerUrl: RSK_EXPLORER[Environments.Testnet],
-      },
+export const RSK_CHAIN_ID = (
+  IS_MAINNET ? ChainIds.RSK_MAINNET : ChainIds.RSK_TESTNET
+) as ChainId;
+
+export const BOB_CHAIN_ID = (
+  IS_MAINNET ? ChainIds.BOB_MAINNET : ChainIds.BOB_TESTNET
+) as ChainId;
+
+export type ChainWithLogo = Chain & { icon: string };
+
+export const APP_CHAIN_LIST: ChainWithLogo[] = [
+  ...(IS_MAINNET
+    ? [
+        {
+          id: ChainIds.RSK_MAINNET,
+          label: 'RSK',
+          token: 'RBTC',
+          publicRpcUrl: RSK.publicRpc[Environments.Mainnet],
+          rpcUrl: RSK.rpc[Environments.Mainnet],
+          blockExplorerUrl: RSK.explorer[Environments.Mainnet],
+          icon: rskLogo,
+        },
+        {
+          id: ChainIds.BOB_MAINNET,
+          label: 'BOB',
+          token: 'BTC',
+          publicRpcUrl: BOB.publicRpc[Environments.Mainnet],
+          rpcUrl: BOB.rpc[Environments.Mainnet],
+          blockExplorerUrl: BOB.explorer[Environments.Mainnet],
+          icon: bobLogo,
+        },
+      ]
+    : [
+        {
+          id: ChainIds.RSK_TESTNET,
+          label: 'RSK',
+          token: 'tRBTC',
+          publicRpcUrl: RSK.publicRpc[Environments.Testnet],
+          rpcUrl: RSK.rpc[Environments.Testnet],
+          blockExplorerUrl: RSK.explorer[Environments.Testnet],
+          icon: rskLogo,
+        },
+        {
+          id: ChainIds.BOB_TESTNET,
+          label: 'BOB',
+          token: 'tETH',
+          publicRpcUrl: BOB.publicRpc[Environments.Testnet],
+          rpcUrl: BOB.rpc[Environments.Testnet],
+          blockExplorerUrl: BOB.explorer[Environments.Testnet],
+          icon: bobLogo,
+        },
+      ]),
 ];
 
-setup(chains);
+setup(APP_CHAIN_LIST);

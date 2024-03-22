@@ -1,15 +1,14 @@
 import { useMemo } from 'react';
 
-import { SupportedTokens } from '@sovryn/contracts';
-
 import { useMaintenance } from '../../../../hooks/useMaintenance';
+import { COMMON_SYMBOLS } from '../../../../utils/asset';
 
-export const useGetBorrowMaintenance = (asset: SupportedTokens) => {
+export const useGetBorrowMaintenance = (asset: string) => {
   const { States } = useMaintenance();
 
   return useMemo(() => {
     switch (asset) {
-      case SupportedTokens.rbtc:
+      case COMMON_SYMBOLS.BTC:
         return {
           NEW_LOANS: States.D2_BORROW_BTC_NEW_LOANS,
           BORROW: States.D2_BORROW_BTC_BORROW,
@@ -20,7 +19,7 @@ export const useGetBorrowMaintenance = (asset: SupportedTokens) => {
           WITHDRAW_COLLATERAL: States.D2_BORROW_BTC_WITHDRAW_COLLATERAL,
           FULL: States.BORROW_FULL,
         };
-      case SupportedTokens.dllr:
+      case COMMON_SYMBOLS.DLLR:
         return {
           NEW_LOANS: States.D2_BORROW_DLLR_NEW_LOANS,
           BORROW: States.D2_BORROW_DLLR_BORROW,
@@ -31,7 +30,7 @@ export const useGetBorrowMaintenance = (asset: SupportedTokens) => {
           WITHDRAW_COLLATERAL: States.D2_BORROW_DLLR_WITHDRAW_COLLATERAL,
           FULL: States.BORROW_FULL,
         };
-      case SupportedTokens.xusd:
+      case COMMON_SYMBOLS.XUSD:
         return {
           NEW_LOANS: States.D2_BORROW_XUSD_NEW_LOANS,
           BORROW: States.D2_BORROW_XUSD_BORROW,
@@ -42,7 +41,7 @@ export const useGetBorrowMaintenance = (asset: SupportedTokens) => {
           WITHDRAW_COLLATERAL: States.D2_BORROW_XUSD_WITHDRAW_COLLATERAL,
           FULL: States.BORROW_FULL,
         };
-      case SupportedTokens.doc:
+      case COMMON_SYMBOLS.DOC:
         return {
           NEW_LOANS: States.D2_BORROW_DOC_NEW_LOANS,
           BORROW: States.D2_BORROW_DOC_BORROW,
@@ -53,7 +52,7 @@ export const useGetBorrowMaintenance = (asset: SupportedTokens) => {
           WITHDRAW_COLLATERAL: States.D2_BORROW_DOC_WITHDRAW_COLLATERAL,
           FULL: States.BORROW_FULL,
         };
-      case SupportedTokens.rusdt:
+      case COMMON_SYMBOLS.RUSDT:
         return {
           NEW_LOANS: States.D2_BORROW_USDT_NEW_LOANS,
           BORROW: States.D2_BORROW_USDT_BORROW,
@@ -64,7 +63,7 @@ export const useGetBorrowMaintenance = (asset: SupportedTokens) => {
           WITHDRAW_COLLATERAL: States.D2_BORROW_USDT_WITHDRAW_COLLATERAL,
           FULL: States.BORROW_FULL,
         };
-      case SupportedTokens.bpro:
+      case COMMON_SYMBOLS.BPRO:
         return {
           NEW_LOANS: States.D2_BORROW_BPRO_NEW_LOANS,
           BORROW: States.D2_BORROW_BPRO_BORROW,

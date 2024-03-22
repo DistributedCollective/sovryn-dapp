@@ -3,7 +3,6 @@ import React, { FC, useCallback, useMemo, useReducer } from 'react';
 import { t } from 'i18next';
 import { useNavigate } from 'react-router-dom';
 
-import { SupportedTokens } from '@sovryn/contracts';
 import {
   Button,
   ButtonStyle,
@@ -14,18 +13,22 @@ import {
 } from '@sovryn/ui';
 
 import { ConnectWalletButton } from '../../2_molecules';
+import { useRequiredChain } from '../../2_molecules/NetworkBanner/hooks/useRequiredChain';
+import { NetworkPicker } from '../../2_molecules/NetworkPicker/NetworkPicker';
 import { SovrynLogo } from '../../2_molecules/SovrynLogo/SovrynLogo';
 import { RSK_FAUCET } from '../../../constants/general';
 import { useWalletConnect, useWrongNetworkCheck } from '../../../hooks';
 import { useAssetBalance } from '../../../hooks/useAssetBalance';
 import { translations } from '../../../locales/i18n';
 import { sharedState } from '../../../store/rxjs/shared-state';
+import { COMMON_SYMBOLS } from '../../../utils/asset';
 import { isMainnet, isTestnetFastBtcEnabled } from '../../../utils/helpers';
 import { menuItemsMapping } from './Header.constants';
 import { NavItem } from './components/NavItem/NavItem';
 import { ProductLinks } from './components/ProductLinks/ProductLinks';
 
 export const Header: FC = () => {
+  const { invalidChain } = useRequiredChain();
   const [isOpen, toggle] = useReducer(v => !v, false);
   const { connectWallet, disconnectWallet, account, pending } =
     useWalletConnect();
@@ -38,7 +41,7 @@ export const Header: FC = () => {
     [navigate],
   );
 
-  const { balance } = useAssetBalance(SupportedTokens.rbtc);
+  const { balance } = useAssetBalance(COMMON_SYMBOLS.BTC);
 
   const hasRbtcBalance = useMemo(() => Number(balance) !== 0, [balance]);
 
@@ -99,7 +102,8 @@ export const Header: FC = () => {
           </ol>
         }
         secondaryContent={
-          <div className="relative">
+          <div className="relative flex flex-row gap-4">
+            <NetworkPicker />
             <ConnectWalletButton
               onConnect={connectWallet}
               onDisconnect={disconnectWallet}
@@ -126,6 +130,7 @@ export const Header: FC = () => {
                   onClick={enableFastBtc ? handleFastBtcClick : noop}
                   href={enableFastBtc ? '' : RSK_FAUCET}
                   hrefExternal={true}
+                  disabled={invalidChain}
                 />
               </>
             )}

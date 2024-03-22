@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
 
-import { SupportedTokens, getTokenDetailsByAddress } from '@sovryn/contracts';
 import { Decimal } from '@sovryn/utils';
 
 import { ProposalCreationParameter } from '../../../5_pages/BitocracyPage/contexts/ProposalContext.types';
@@ -10,12 +9,15 @@ import {
   isTreasuryProposalParameter,
   decodeTreasuryCalldata,
 } from '../ProposalExecutableDetails.utils';
+import { COMMON_SYMBOLS } from '../../../../utils/asset';
+import { getAssetDataByAddress } from '@sovryn/contracts';
+import { RSK_CHAIN_ID } from '../../../../config/chains';
 
 export const useGetTreasuryExecutableDetail = (
   parameter: ProposalCreationParameter,
 ) => {
-  const [assetName, setAssetName] = useState<SupportedTokens | undefined>();
-  const rbtcContract = useGetTokenContract(SupportedTokens.rbtc);
+  const [assetName, setAssetName] = useState<string | undefined>();
+  const rbtcContract = useGetTokenContract(COMMON_SYMBOLS.BTC);
 
   const isTreasuryProposal = useMemo(
     () => isTreasuryProposalParameter(parameter.signature),
@@ -44,10 +46,10 @@ export const useGetTreasuryExecutableDetail = (
     }
 
     if (isRbtcTransfer) {
-      setAssetName(SupportedTokens.rbtc);
+      setAssetName(COMMON_SYMBOLS.BTC);
     } else {
       const resolveToken = async () =>
-        await getTokenDetailsByAddress(treasuryData[1]);
+        await getAssetDataByAddress(treasuryData[1], RSK_CHAIN_ID);
 
       resolveToken().then(result => setAssetName(result.symbol));
     }

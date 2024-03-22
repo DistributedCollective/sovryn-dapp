@@ -2,7 +2,6 @@ import React, { FC, useMemo } from 'react';
 
 import { t } from 'i18next';
 
-import { SupportedTokens } from '@sovryn/contracts';
 import {
   applyDataAttr,
   Paragraph,
@@ -12,10 +11,12 @@ import {
   SimpleTableRow,
 } from '@sovryn/ui';
 
+import { RSK_CHAIN_ID } from '../../../../config/chains';
+
 import { useAssetBalance } from '../../../../hooks/useAssetBalance';
 import { useLoadContract } from '../../../../hooks/useLoadContract';
 import { translations } from '../../../../locales/i18n';
-import { getRskChainId } from '../../../../utils/chain';
+import { COMMON_SYMBOLS, findAsset } from '../../../../utils/asset';
 import { AmountRenderer } from '../../AmountRenderer/AmountRenderer';
 import { useGetTotalSupply } from '../hooks/useGetTotalSupply';
 
@@ -37,8 +38,8 @@ export const EcosystemStats: FC<EcosystemStatsProps> = ({
   const myntMassetManager = useLoadContract('massetManager', 'protocol');
 
   const { balance: babelFishDLLRBalance } = useAssetBalance(
-    SupportedTokens.dllr,
-    getRskChainId(),
+    COMMON_SYMBOLS.DLLR,
+    RSK_CHAIN_ID,
     babelFishMassetManager?.address.toLowerCase() || '',
   );
 
@@ -48,7 +49,7 @@ export const EcosystemStats: FC<EcosystemStatsProps> = ({
         <>
           <AmountRenderer
             value={babelFishDLLRBalance}
-            suffix={SupportedTokens.dllr}
+            suffix={findAsset(COMMON_SYMBOLS.DLLR, RSK_CHAIN_ID)?.symbol}
             precision={USD_DISPLAY_PRECISION}
             showRoundingPrefix={false}
             dataAttribute="ecosystem-statistics-babel-fish-dllr-balance"
@@ -61,8 +62,8 @@ export const EcosystemStats: FC<EcosystemStatsProps> = ({
   );
 
   const { balance: myntZUSDBalance } = useAssetBalance(
-    SupportedTokens.zusd,
-    getRskChainId(),
+    COMMON_SYMBOLS.ZUSD,
+    RSK_CHAIN_ID,
     myntMassetManager?.address.toLowerCase() || '',
   );
 
@@ -71,7 +72,7 @@ export const EcosystemStats: FC<EcosystemStatsProps> = ({
       myntZUSDBalance ? (
         <AmountRenderer
           value={myntZUSDBalance}
-          suffix={SupportedTokens.zusd}
+          suffix={findAsset(COMMON_SYMBOLS.ZUSD, RSK_CHAIN_ID)?.symbol}
           precision={USD_DISPLAY_PRECISION}
           showRoundingPrefix={false}
           dataAttribute="ecosystem-statistics-mynt-zusd-balance"
@@ -83,8 +84,8 @@ export const EcosystemStats: FC<EcosystemStatsProps> = ({
   );
 
   const { balance: myntDOCBalance } = useAssetBalance(
-    SupportedTokens.doc,
-    getRskChainId(),
+    COMMON_SYMBOLS.DOC,
+    RSK_CHAIN_ID,
     myntMassetManager?.address.toLowerCase() || '',
   );
 
@@ -93,7 +94,7 @@ export const EcosystemStats: FC<EcosystemStatsProps> = ({
       myntDOCBalance ? (
         <AmountRenderer
           value={myntDOCBalance}
-          suffix={SupportedTokens.doc}
+          suffix={findAsset(COMMON_SYMBOLS.DOC, RSK_CHAIN_ID)?.symbol}
           precision={USD_DISPLAY_PRECISION}
           showRoundingPrefix={false}
           dataAttribute="ecosystem-statistics-mynt-doc-balance"
@@ -104,14 +105,14 @@ export const EcosystemStats: FC<EcosystemStatsProps> = ({
     [myntDOCBalance],
   );
 
-  const { value: totalDLLRSupply } = useGetTotalSupply(SupportedTokens.dllr);
+  const { value: totalDLLRSupply } = useGetTotalSupply(COMMON_SYMBOLS.DLLR);
 
   const renderTotalDLLRSupply = useMemo(
     () =>
       totalDLLRSupply ? (
         <AmountRenderer
           value={totalDLLRSupply}
-          suffix={SupportedTokens.dllr}
+          suffix={findAsset(COMMON_SYMBOLS.DLLR, RSK_CHAIN_ID)?.symbol}
           precision={USD_DISPLAY_PRECISION}
           showRoundingPrefix={false}
           dataAttribute="ecosystem-statistics-total-dllr-supply"

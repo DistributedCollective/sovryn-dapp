@@ -2,7 +2,6 @@ import React, { FC, useCallback, useMemo } from 'react';
 
 import { t } from 'i18next';
 
-import { SupportedTokens } from '@sovryn/contracts';
 import { Button, ButtonStyle } from '@sovryn/ui';
 
 import { useAccount } from '../../../../../hooks/useAccount';
@@ -16,6 +15,7 @@ import { useIsExecutableProposal } from '../../../BitocracyPage/hooks/useIsExecu
 import { useProposalStatus } from '../../../BitocracyPage/hooks/useProposalStatus';
 import { ProposalActionType } from './ProposalAction.types';
 import { useHandleProposal } from './hooks/useHandleProposal';
+import { COMMON_SYMBOLS } from '../../../../../utils/asset';
 
 type ProposalActionProps = ProposalProps & {
   className?: string;
@@ -29,7 +29,7 @@ export const ProposalAction: FC<ProposalActionProps> = ({
 }) => {
   const { account } = useAccount();
 
-  const { balance, loading } = useAssetBalance(SupportedTokens.rbtc);
+  const { balance, loading } = useAssetBalance(COMMON_SYMBOLS.BTC);
   const status = useProposalStatus(proposal);
   const isExecutableProposal = useIsExecutableProposal(proposal);
 

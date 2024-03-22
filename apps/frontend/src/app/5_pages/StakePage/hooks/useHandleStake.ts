@@ -3,8 +3,6 @@ import { useCallback } from 'react';
 import { constants } from 'ethers';
 import { t } from 'i18next';
 
-import { SupportedTokens } from '@sovryn/contracts';
-
 import {
   Transaction,
   TransactionType,
@@ -16,6 +14,7 @@ import { useGetProtocolContract } from '../../../../hooks/useGetContract';
 import { translations } from '../../../../locales/i18n';
 import { toWei } from '../../../../utils/math';
 import { prepareApproveTransaction } from '../../../../utils/transactions';
+import { COMMON_SYMBOLS } from '../../../../utils/asset';
 
 export const useHandleStake = (
   amount: string,
@@ -36,7 +35,7 @@ export const useHandleStake = (
     const transactions: Transaction[] = [];
 
     const approveTx = await prepareApproveTransaction({
-      token: SupportedTokens.sov,
+      token: COMMON_SYMBOLS.SOV,
       spender: stakingContract.address,
       amount: weiAmount,
       signer,

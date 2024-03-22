@@ -6,11 +6,11 @@ import { getProvider } from '@sovryn/ethers-provider';
 import { ChainId } from '@sovryn/ethers-provider';
 import { Decimal } from '@sovryn/utils';
 
-import { defaultChainId } from '../config/chains';
+import { RSK_CHAIN_ID } from '../config/chains';
 
 import { decimalic } from '../utils/math';
 
-export const useGasPrice = (chainId: ChainId = defaultChainId) => {
+export const useGasPrice = (chainId: ChainId = RSK_CHAIN_ID) => {
   const [gasPrice, setGasPrice] = useState(Decimal.ZERO);
 
   useEffect(() => {

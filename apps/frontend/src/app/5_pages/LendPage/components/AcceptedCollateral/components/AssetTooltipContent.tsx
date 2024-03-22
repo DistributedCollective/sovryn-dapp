@@ -2,10 +2,9 @@ import React, { FC, ReactNode, useEffect, useState } from 'react';
 
 import { t } from 'i18next';
 
-import { SupportedTokens, getTokenDetailsData } from '@sovryn/contracts';
 import { Link, LinkStyle } from '@sovryn/ui';
 
-import { defaultChainId } from '../../../../../../config/chains';
+import { RSK_CHAIN_ID } from '../../../../../../config/chains';
 
 import {
   MINIMUM_COLLATERAL_RATIO_LENDING_POOLS,
@@ -15,10 +14,12 @@ import { getTokenDisplayName } from '../../../../../../constants/tokens';
 import { translations } from '../../../../../../locales/i18n';
 import { getRskExplorerUrl } from '../../../../../../utils/helpers';
 import { decimalic } from '../../../../../../utils/math';
+import { COMMON_SYMBOLS } from '../../../../../../utils/asset';
+import { getAssetData } from '@sovryn/contracts';
 
 type AssetTooltipContentProps = {
-  asset?: SupportedTokens;
-  pools?: SupportedTokens[];
+  asset?: string;
+  pools?: string[];
 };
 
 export const AssetTooltipContent: FC<AssetTooltipContentProps> = ({
@@ -35,7 +36,7 @@ export const AssetTooltipContent: FC<AssetTooltipContentProps> = ({
         return;
       }
 
-      const tokens: SupportedTokens[] = [];
+      const tokens: string[] = [];
       if (asset) {
         tokens.push(asset);
       }
@@ -46,13 +47,10 @@ export const AssetTooltipContent: FC<AssetTooltipContentProps> = ({
       try {
         const links = await Promise.all(
           tokens.map(async token => {
-            const { address } = await getTokenDetailsData(
-              token,
-              defaultChainId,
-            );
+            const { address } = await getAssetData(token, RSK_CHAIN_ID);
 
             const minimumCollateralRatio =
-              token === SupportedTokens.sov
+              token === COMMON_SYMBOLS.SOV
                 ? MINIMUM_COLLATERAL_RATIO_LENDING_POOLS_SOV
                 : MINIMUM_COLLATERAL_RATIO_LENDING_POOLS;
 

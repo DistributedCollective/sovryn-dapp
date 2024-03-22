@@ -1,21 +1,21 @@
 import React, { FC, useEffect } from 'react';
 
-import { SupportedTokens } from '@sovryn/contracts';
 import { Paragraph } from '@sovryn/ui';
+
+import { RSK_CHAIN_ID } from '../../../../../../../config/chains';
 
 import { AmountRenderer } from '../../../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { AssetRenderer } from '../../../../../../2_molecules/AssetRenderer/AssetRenderer';
-import { USD } from '../../../../../../../constants/currencies';
-import { getTokenLongName } from '../../../../../../../constants/tokens';
 import { useAccount } from '../../../../../../../hooks/useAccount';
 import { useAssetBalance } from '../../../../../../../hooks/useAssetBalance';
 import { useDollarValue } from '../../../../../../../hooks/useDollarValue';
-import { getRskChainId } from '../../../../../../../utils/chain';
+import { findAsset } from '../../../../../../../utils/asset';
 import { getCurrencyPrecision } from '../../../ProtocolSection/ProtocolSection.utils';
 import styles from './AssetBalanceRow.module.css';
+import { USD } from '../../../../../../../constants/currencies';
 
 type AssetBalanceRowProps = {
-  token: SupportedTokens;
+  token: string;
   updateUsdValue: (usdValue: string) => void;
 };
 
@@ -24,7 +24,7 @@ export const AssetBalanceRow: FC<AssetBalanceRowProps> = ({
   updateUsdValue,
 }) => {
   const { account } = useAccount();
-  const { weiBalance, balance } = useAssetBalance(token, getRskChainId());
+  const { weiBalance, balance } = useAssetBalance(token, RSK_CHAIN_ID);
   const { usdValue } = useDollarValue(token, weiBalance);
 
   useEffect(() => {
@@ -41,7 +41,7 @@ export const AssetBalanceRow: FC<AssetBalanceRowProps> = ({
           assetClassName={styles.asset}
         />
         <span className="text-gray-40 hidden lg:block">
-          {getTokenLongName(token)}
+          {findAsset(token, RSK_CHAIN_ID).name}
         </span>
       </div>
       <Paragraph className="text-right lg:text-left truncate">

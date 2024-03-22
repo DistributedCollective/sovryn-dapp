@@ -1,13 +1,13 @@
 import { useCallback, useEffect, useState } from 'react';
 
-import { SupportedTokens } from '@sovryn/contracts';
 import { getLoanTokenContract } from '@sovryn/contracts';
 import { Decimal } from '@sovryn/utils';
 
-import { defaultChainId } from '../../../../../../config/chains';
+import { RSK_CHAIN_ID } from '../../../../../../config/chains';
 
 import { useGetProtocolContract } from '../../../../../../hooks/useGetContract';
 import { asyncCall } from '../../../../../../store/rxjs/provider-cache';
+import { COMMON_SYMBOLS } from '../../../../../../utils/asset';
 
 export const useGetLendingRewards = (account: string) => {
   const [lendingRewards, setLendingRewards] = useState(Decimal.ZERO);
@@ -33,12 +33,12 @@ export const useGetLendingRewards = (account: string) => {
       setLoading(true);
       try {
         const dllrToken = await getLoanTokenContract(
-          SupportedTokens.xusd,
-          defaultChainId,
+          COMMON_SYMBOLS.XUSD,
+          RSK_CHAIN_ID,
         );
         const btcToken = await getLoanTokenContract(
-          SupportedTokens.rbtc,
-          defaultChainId,
+          COMMON_SYMBOLS.BTC,
+          RSK_CHAIN_ID,
         );
 
         const [dllrPool, btcPool] = await Promise.all([

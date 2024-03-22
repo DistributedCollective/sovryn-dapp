@@ -5,6 +5,9 @@ import { Helmet } from 'react-helmet-async';
 
 import { Heading, Paragraph, ParagraphSize } from '@sovryn/ui';
 
+import { RSK_CHAIN_ID } from '../../../config/chains';
+
+import { NetworkBanner } from '../../2_molecules/NetworkBanner/NetworkBanner';
 import { useAccount } from '../../../hooks/useAccount';
 import { translations } from '../../../locales/i18n';
 import { BorrowAssetsTable } from './components/BorrowAssetsTable/BorrowAssetsTable';
@@ -14,6 +17,7 @@ import { useGetOpenLoans } from './components/OpenLoansTable/hooks/useGetOpenLoa
 const BorrowPage: FC = () => {
   const { account } = useAccount();
   const { data: loans, loading } = useGetOpenLoans();
+
   const hasOpenLoans = useMemo(
     () => loans?.length > 0 && account,
     [loans, account],
@@ -36,6 +40,8 @@ const BorrowPage: FC = () => {
         >
           {t(translations.fixedInterestPage.subtitle)}
         </Paragraph>
+
+        <NetworkBanner requiredChainId={RSK_CHAIN_ID} />
 
         <div className="w-full">
           {hasOpenLoans && <OpenLoansTable loans={loans} loading={loading} />}

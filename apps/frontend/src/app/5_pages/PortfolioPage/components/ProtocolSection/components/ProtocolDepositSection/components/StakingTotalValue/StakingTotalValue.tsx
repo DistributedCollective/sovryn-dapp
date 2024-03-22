@@ -1,16 +1,15 @@
 import React, { FC, useEffect, useMemo, useState } from 'react';
 
-import { SupportedTokens, getTokenDetails } from '@sovryn/contracts';
 import { Decimal } from '@sovryn/utils';
 
-import { defaultChainId } from '../../../../../../../../../config/chains';
+import { RSK_CHAIN_ID } from '../../../../../../../../../config/chains';
 
 import { AmountRenderer } from '../../../../../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { useAccount } from '../../../../../../../../../hooks/useAccount';
 import { useBlockNumber } from '../../../../../../../../../hooks/useBlockNumber';
 import { removeTrailingZerosFromString } from '../../../../../../../../../utils/helpers';
 import { decimalic, fromWei } from '../../../../../../../../../utils/math';
-import { smartRouter } from '../../../../../../../ConvertPage/ConvertPage.types';
+import { SMART_ROUTER_RSK } from '../../../../../../../ConvertPage/ConvertPage.constants';
 import { useGetStakingBalanceOf } from '../../../../../../../StakePage/hooks/useGetStakingBalanceOf';
 import {
   ProtocolSectionProps,
@@ -20,6 +19,8 @@ import {
   getCurrencyPrecision,
   getConvertedValue,
 } from '../../../../ProtocolSection.utils';
+import { getAssetData } from '@sovryn/contracts';
+import { COMMON_SYMBOLS } from '../../../../../../../../../utils/asset';
 
 export const StakingTotalValue: FC<ProtocolSectionProps> = ({
   selectedCurrency,
@@ -43,12 +44,13 @@ export const StakingTotalValue: FC<ProtocolSectionProps> = ({
       (async () => {
         const [sourceTokenDetails, destinationTokenDetails] = await Promise.all(
           [
-            getTokenDetails(SupportedTokens.sov, defaultChainId),
-            getTokenDetails(SupportedTokens.rbtc, defaultChainId),
+            getAssetData(COMMON_SYMBOLS.SOV, RSK_CHAIN_ID),
+            getAssetData(COMMON_SYMBOLS.BTC, RSK_CHAIN_ID),
           ],
         );
 
-        const result = await smartRouter.getBestQuote(
+        const result = await SMART_ROUTER_RSK.getBestQuote(
+          RSK_CHAIN_ID,
           sourceTokenDetails.address,
           destinationTokenDetails.address,
           stakedValue.toString(),

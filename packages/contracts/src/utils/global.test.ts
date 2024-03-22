@@ -5,7 +5,9 @@ import loanToken from '../abis/loanToken.json';
 import { contracts } from '../contracts';
 import { findContract, getContract, getContractGroupAbi } from './global';
 
-const RSK_XUSD_ADDRESS = contracts.tokens.rsk?.xusd!;
+const RSK_XUSD_ADDRESS = contracts.assets.rsk?.find(
+  item => item.symbol === 'XUSD',
+)?.address!;
 const RSK_SWAP_NETWORK = contracts.protocol.rsk?.swapNetwork.address!;
 
 describe('utils/contracts/global.ts', () => {
@@ -14,8 +16,8 @@ describe('utils/contracts/global.ts', () => {
       const token = await findContract(RSK_XUSD_ADDRESS);
       expect(token.address).toBe(RSK_XUSD_ADDRESS.toLowerCase());
       expect(token.chainId).toBe(ChainIds.RSK_MAINNET);
-      expect(token.group).toBe('tokens');
-      expect(token.name).toBe('xusd');
+      expect(token.group).toBe('assets');
+      expect(token.name).toBe('XUSD');
     });
 
     it('finds protocol contract by address', async () => {
@@ -46,13 +48,13 @@ describe('utils/contracts/global.ts', () => {
 
   describe('getContract', () => {
     it('gets xusd contract', async () => {
-      const token = await getContract('xusd', 'tokens', ChainIds.RSK_MAINNET);
+      const token = await getContract('xusd', 'assets', ChainIds.RSK_MAINNET);
       expect(token.address).toBe(RSK_XUSD_ADDRESS.toLowerCase());
     });
 
     it('caches second xusd contract call', async () => {
-      const token1 = await getContract('xusd', 'tokens', ChainIds.RSK_MAINNET);
-      const token2 = await getContract('xusd', 'tokens', ChainIds.RSK_MAINNET);
+      const token1 = await getContract('xusd', 'assets', ChainIds.RSK_MAINNET);
+      const token2 = await getContract('xusd', 'assets', ChainIds.RSK_MAINNET);
       expect(token1).toBe(token2);
     });
 
@@ -68,7 +70,7 @@ describe('utils/contracts/global.ts', () => {
 
   describe('getContractGroupAbi', () => {
     it('loads token contract abi', async () => {
-      const abi = await getContractGroupAbi('tokens');
+      const abi = await getContractGroupAbi('assets');
       expect(abi).toBe(erc20);
     });
 

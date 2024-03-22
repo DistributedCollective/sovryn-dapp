@@ -2,7 +2,6 @@ import { useMemo } from 'react';
 
 import { BigNumber } from 'ethers';
 
-import { SupportedTokens } from '@sovryn/contracts';
 import { Decimal } from '@sovryn/utils';
 
 import { useGetMarketLiquidity } from '../../../../../5_pages/LendPage/components/LendFrame/components/LendFrameDetails/hooks/useGetMarketLiquidity';
@@ -11,20 +10,26 @@ import {
   MINIMUM_COLLATERAL_RATIO_LENDING_POOLS_SOV,
 } from '../../../../../../constants/lending';
 import { useQueryRate } from '../../../../../../hooks/useQueryRate';
+import {
+  COMMON_SYMBOLS,
+  maybeUnwrappedAsset,
+} from '../../../../../../utils/asset';
 import { decimalic } from '../../../../../../utils/math';
 import { calculatePrepaidInterestFromTargetDate } from '../../../BorrowPage.utils';
 import { useGetMaximumCollateralAmount } from './useGetMaximumCollateralAmount';
 
 export const useGetMaximumBorrowAmount = (
-  borrowToken: SupportedTokens,
-  collateralToken: SupportedTokens,
+  borrowToken: string,
+  collateralToken: string,
   loanDuration: number,
   borrowApr: BigNumber,
   collateralAmount?: Decimal,
 ) => {
   const { availableAmount } = useGetMarketLiquidity(borrowToken);
-  const { maximumCollateralAmount } =
-    useGetMaximumCollateralAmount(collateralToken);
+
+  const { maximumCollateralAmount } = useGetMaximumCollateralAmount(
+    maybeUnwrappedAsset(collateralToken),
+  );
 
   const [collateralPriceInLoanAsset] = useQueryRate(
     collateralToken,
@@ -41,7 +46,7 @@ export const useGetMaximumBorrowAmount = (
 
   const minimumCollateralRatio = useMemo(
     () =>
-      collateralToken === SupportedTokens.sov
+      collateralToken === COMMON_SYMBOLS.SOV
         ? MINIMUM_COLLATERAL_RATIO_LENDING_POOLS_SOV
         : MINIMUM_COLLATERAL_RATIO_LENDING_POOLS,
     [collateralToken],

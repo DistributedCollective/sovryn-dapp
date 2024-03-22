@@ -1187,6 +1187,7 @@
         },
         "apr": "APR"
     },
+
     "marketMakingPage": {
         "meta": {
             "title": "Market Making - Sovryn"
@@ -1255,6 +1256,38 @@
             "24hVolume": "24h volume (BTC)"
         }
     },
+
+    "bobMarketMakingPage": {
+        "depositModal": {
+            "title": "Deposit liquidity",
+            "returnRate": "Return rate",
+            "slippage": "Slippage",
+            "maximumSlippage": "Maximum slippage",
+            "depositDisclaimer": "I understand that my deposit will be at risk of divergence loss as the price of each asset changes",
+            "priceRange": "Price range",
+            "balanced": "Balanced",
+            "infinite": "Infinite",
+            "newPoolStatistics": {
+                "newPoolBalance": "New pool balance",
+                "currentPrice": "Current {{token}} price",
+                "lpFeeRate": "LP fee rate"
+            },
+            "rangeWidth": "Range width",
+            "minPrice": "Min price",
+            "maxPrice": "Max price"
+        },
+        "withdrawModal": {
+            "title": "Withdraw liquidity",
+            "returnRate": "Return rate",
+            "currentBalance": "Current balance",
+            "newPoolStatistics": {
+                "newPoolBalance": "New pool balance",
+                "earnedRewards": "Earned rewards",
+                "slippage": "Slippage"
+            }
+        }
+    },
+
     "borrowHistory": {
         "types": {
             "lineOfCredit": "Line of credit",
@@ -1696,6 +1729,34 @@
             "returns": "Returns",
             "volume": "24H volume",
             "deposit": "Deposit"
+        }
+    },
+    "networkBanner": {
+        "content": "This page is only available on {{network}} network. Please switch your wallet to the correct network."
+    },
+    "ambientMarketMaking": {
+        "meta": {
+            "title": "Market Making - Sovryn"
+        },
+        "title": "Market making",
+        "subtitle": "Earn fees from AMM swaps on BoB chain",
+        "banner": "See RSK Market Making pools. Switch to RSK now.",
+        "poolsTable": {
+            "pair": "Pair",
+            "liquidity": "Liquidity",
+            "returns": "Returns",
+            "returnsInfo": "The return rate shown is based on swap fees, plus liquidity mining rewards (if applicable), earned by the given pool in the previous 24 hour period, extrapolated to show an estimated annual percentage rate of return.",
+            "volume": "24H volume",
+            "balance": "Balance"
+        },
+        "positionsTable": {
+            "positionID": "Position ID",
+            "minPrice": "Min price",
+            "maxPrice": "Max price",
+            "returns": "Returns",
+            "value": "Value (USD)",
+            "balance": "Balance",
+            "withdraw": "Withdraw"
         }
     }
 }

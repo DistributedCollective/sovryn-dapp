@@ -1,8 +1,9 @@
-import { TokenBaseInfo } from '@sovryn/contracts';
-import { SupportedTokenList, SupportedTokens } from '@sovryn/contracts';
+import { RSK_CHAIN_ID } from '../../../config/chains';
 
-const allowedTokens = [SupportedTokens.zusd, SupportedTokens.dllr];
+import { COMMON_SYMBOLS, findAsset } from '../../../utils/asset';
 
-export const tokenList: TokenBaseInfo[] = SupportedTokenList.filter(item =>
-  allowedTokens.includes(item.symbol),
+const allowedTokens = [COMMON_SYMBOLS.ZUSD, COMMON_SYMBOLS.DLLR];
+
+export const tokenList = allowedTokens.map(item =>
+  findAsset(item, RSK_CHAIN_ID),
 );

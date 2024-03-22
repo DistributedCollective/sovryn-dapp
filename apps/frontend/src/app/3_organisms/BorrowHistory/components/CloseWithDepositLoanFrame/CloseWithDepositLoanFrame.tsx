@@ -20,7 +20,7 @@ import {
   Table,
 } from '@sovryn/ui';
 
-import { chains, defaultChainId } from '../../../../../config/chains';
+import { APP_CHAIN_LIST, RSK_CHAIN_ID } from '../../../../../config/chains';
 
 import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { AssetRenderer } from '../../../../2_molecules/AssetRenderer/AssetRenderer';
@@ -40,7 +40,8 @@ export const CloseWithDepositLoanFrame: FC<PropsWithChildren> = ({
   children,
 }) => {
   const [page, setPage] = useState(0);
-  const chain = chains.find(chain => chain.id === defaultChainId);
+
+  const chain = APP_CHAIN_LIST.find(chain => chain.id === RSK_CHAIN_ID);
 
   const { value: block } = useBlockNumber();
 

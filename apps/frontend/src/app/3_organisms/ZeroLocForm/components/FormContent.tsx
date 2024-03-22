@@ -3,7 +3,6 @@ import React, { useCallback, useMemo, FC, useState } from 'react';
 import { t } from 'i18next';
 import { Trans } from 'react-i18next';
 
-import { SupportedTokens } from '@sovryn/contracts';
 import {
   AmountInput,
   Button,
@@ -43,6 +42,7 @@ import { CurrentTroveData } from '../CurrentTroveData';
 import { Label } from '../Label';
 import { Row } from '../Row';
 import { AmountType } from '../types';
+import { COMMON_SYMBOLS } from '../../../../utils/asset';
 
 export type OpenTroveProps = {
   hasTrove: false;
@@ -68,8 +68,8 @@ export type FormContentProps = {
   debtAmount: string;
   maxDebtAmount: Decimal;
   onDebtAmountChange: (value: string) => void;
-  debtToken: SupportedTokens;
-  onDebtTokenChange: (value: SupportedTokens) => void;
+  debtToken: string;
+  onDebtTokenChange: (value: string) => void;
   collateralAmount: string;
   maxCollateralAmount: Decimal;
   onCollateralAmountChange: (value: string) => void;
@@ -170,7 +170,7 @@ export const FormContent: FC<FormContentProps> = props => {
 
   const isInMaintenance = useMemo(
     () =>
-      actionLocked || (dllrLocked && props.debtToken === SupportedTokens.dllr),
+      actionLocked || (dllrLocked && props.debtToken === COMMON_SYMBOLS.DLLR),
     [actionLocked, dllrLocked, props.debtToken],
   );
 
@@ -270,7 +270,7 @@ export const FormContent: FC<FormContentProps> = props => {
       ) : (
         <AmountRenderer
           value={value}
-          suffix={SupportedTokens.zusd}
+          suffix={COMMON_SYMBOLS.ZUSD}
           precision={TOKEN_RENDER_PRECISION}
         />
       ),
@@ -299,7 +299,7 @@ export const FormContent: FC<FormContentProps> = props => {
         <>
           <AmountRenderer
             value={value}
-            suffix={SupportedTokens.zusd}
+            suffix={COMMON_SYMBOLS.ZUSD}
             precision={TOKEN_RENDER_PRECISION}
           />{' '}
           ({formatValue(props.borrowingRate.mul(100), 2)}%)
@@ -404,7 +404,7 @@ export const FormContent: FC<FormContentProps> = props => {
               <AssetRenderer
                 dataAttribute="adjust-credit-line-credit-asset"
                 showAssetLogo
-                asset={SupportedTokens[value]}
+                asset={value}
               />
             )}
           />
@@ -419,7 +419,7 @@ export const FormContent: FC<FormContentProps> = props => {
       <FormGroup
         label={
           <Label
-            token={SupportedTokens.rbtc}
+            token={COMMON_SYMBOLS.BTC}
             maxAmount={props.maxCollateralAmount}
             tabs={collateralTabs}
             onTabChange={handleCollateralTypeChange}

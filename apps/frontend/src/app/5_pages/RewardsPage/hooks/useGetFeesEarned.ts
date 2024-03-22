@@ -2,39 +2,36 @@ import { useEffect, useState, useCallback } from 'react';
 
 import { BigNumber } from 'ethers';
 
-import { SupportedTokens, getProtocolContract } from '@sovryn/contracts';
-import { getTokenContract } from '@sovryn/contracts';
+import { getProtocolContract } from '@sovryn/contracts';
 import { getLoanTokenContract } from '@sovryn/contracts';
 import { getProvider } from '@sovryn/ethers-provider';
 
-import { defaultChainId } from '../../../../config/chains';
+import { RSK_CHAIN_ID } from '../../../../config/chains';
 
 import { useAccount } from '../../../../hooks/useAccount';
 import { useIsMounted } from '../../../../hooks/useIsMounted';
 import { useMulticall } from '../../../../hooks/useMulticall';
+import { COMMON_SYMBOLS, findAsset } from '../../../../utils/asset';
 import { EarnedFee } from '../RewardsPage.types';
 
 const MAX_CHECKPOINTS = 50;
 const FEE_TOKEN_ASSETS = [
-  SupportedTokens.wrbtc,
-  SupportedTokens.rbtc,
-  SupportedTokens.sov,
-  SupportedTokens.zusd,
-  SupportedTokens.mynt,
+  COMMON_SYMBOLS.WBTC,
+  COMMON_SYMBOLS.BTC,
+  COMMON_SYMBOLS.SOV,
+  COMMON_SYMBOLS.ZUSD,
+  'MYNT',
 ];
 
-const FEE_LOAN_ASSETS = [SupportedTokens.rbtc];
+const FEE_LOAN_ASSETS = [COMMON_SYMBOLS.BTC];
 
 let btcDummyAddress: string;
 
 const getRbtcDummyAddress = async () => {
   if (!btcDummyAddress) {
-    const { contract } = await getProtocolContract(
-      'feeSharing',
-      defaultChainId,
-    );
+    const { contract } = await getProtocolContract('feeSharing', RSK_CHAIN_ID);
     btcDummyAddress = await contract(
-      getProvider(defaultChainId),
+      getProvider(RSK_CHAIN_ID),
     ).RBTC_DUMMY_ADDRESS_FOR_CHECKPOINT();
   }
   return btcDummyAddress;
@@ -62,7 +59,7 @@ export const useGetFeesEarned = () => {
       ...FEE_LOAN_ASSETS.map(async asset => ({
         token: asset,
         contractAddress: (
-          await getLoanTokenContract(asset, defaultChainId)
+          await getLoanTokenContract(asset, RSK_CHAIN_ID)
         ).address,
         value: '0',
         rbtcValue: 0,
@@ -73,14 +70,12 @@ export const useGetFeesEarned = () => {
       ...FEE_TOKEN_ASSETS.map(async asset => ({
         token: asset,
         contractAddress:
-          asset === SupportedTokens.rbtc
+          asset.toUpperCase() === COMMON_SYMBOLS.BTC
             ? await getRbtcDummyAddress()
-            : (
-                await getTokenContract(asset, defaultChainId)
-              ).address,
+            : findAsset(asset, RSK_CHAIN_ID).address,
         value: '0',
         rbtcValue: 0,
-        ...(asset !== SupportedTokens.rbtc
+        ...(asset.toUpperCase() !== COMMON_SYMBOLS.BTC
           ? { startFrom: 0, maxCheckpoints: 0 }
           : {}),
         iToken: false,
@@ -96,12 +91,9 @@ export const useGetFeesEarned = () => {
 
     setLoading(true);
 
-    const { contract } = await getProtocolContract(
-      'feeSharing',
-      defaultChainId,
-    );
+    const { contract } = await getProtocolContract('feeSharing', RSK_CHAIN_ID);
 
-    const feeSharingContract = contract(getProvider(defaultChainId));
+    const feeSharingContract = contract(getProvider(RSK_CHAIN_ID));
 
     const checkpoints = await multicall(
       defaultTokenData.flatMap(({ contractAddress }) => [

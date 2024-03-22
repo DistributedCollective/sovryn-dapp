@@ -9,7 +9,6 @@ import React, {
 import { t } from 'i18next';
 import { nanoid } from 'nanoid';
 
-import { SupportedTokens } from '@sovryn/contracts';
 import {
   Table,
   OrderOptions,
@@ -27,6 +26,7 @@ import { useNotificationContext } from '../../../../../contexts/NotificationCont
 import { useAccount } from '../../../../../hooks/useAccount';
 import { useBlockNumber } from '../../../../../hooks/useBlockNumber';
 import { translations } from '../../../../../locales/i18n';
+import { COMMON_SYMBOLS } from '../../../../../utils/asset';
 import { zeroClient } from '../../../../../utils/clients';
 import {
   Redemption,
@@ -105,7 +105,7 @@ export const ZeroConversionsHistoryFrame: React.FC<PropsWithChildren> = ({
       sent: redemption.tokensActuallyRedeemed.length
         ? redemption.tokensActuallyRedeemed
         : '-',
-      sentToken: getTokenDisplayName(SupportedTokens.zusd),
+      sentToken: getTokenDisplayName(COMMON_SYMBOLS.ZUSD),
       received: redemption.collateralRedeemed.length
         ? redemption.collateralRedeemed
         : '-',

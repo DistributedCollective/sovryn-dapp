@@ -4,13 +4,9 @@ import dayjs from 'dayjs';
 import { constants, ethers } from 'ethers';
 import { t } from 'i18next';
 
-import {
-  SupportedTokens,
-  getLendTokenContract,
-  getTokenContract,
-} from '@sovryn/contracts';
+import { getAssetData, getLoanTokenContract } from '@sovryn/contracts';
 
-import { defaultChainId } from '../../../../../../config/chains';
+import { RSK_CHAIN_ID } from '../../../../../../config/chains';
 
 import {
   Transaction,
@@ -20,6 +16,10 @@ import { GAS_LIMIT } from '../../../../../../constants/gasLimits';
 import { useTransactionContext } from '../../../../../../contexts/TransactionContext';
 import { useAccount } from '../../../../../../hooks/useAccount';
 import { translations } from '../../../../../../locales/i18n';
+import {
+  COMMON_SYMBOLS,
+  maybeWrappedAsset,
+} from '../../../../../../utils/asset';
 import { toWei } from '../../../../../../utils/math';
 import { prepareApproveTransaction } from '../../../../../../utils/transactions';
 
@@ -31,11 +31,11 @@ export const useBorrow = () => {
 
   const handleSubmit = useCallback(
     async (
-      borrowToken: SupportedTokens,
+      borrowToken: string,
       borrowAmount: string,
       firstRolloverDate: number,
       collateralAmount: string,
-      collateralToken: SupportedTokens,
+      collateralToken: string,
       loanId?: string,
     ) => {
       if (!signer) {
@@ -44,10 +44,15 @@ export const useBorrow = () => {
 
       const loanDuration = Math.ceil(firstRolloverDate - currentDate);
 
-      const isCollateralRbtc = collateralToken === SupportedTokens.rbtc;
+      const isCollateralRbtc =
+        collateralToken === COMMON_SYMBOLS.WBTC ||
+        collateralToken === COMMON_SYMBOLS.BTC;
 
       const { abi: borrowTokenAbi, address: borrowTokenAddress } =
-        await getLendTokenContract(borrowToken, defaultChainId);
+        await getLoanTokenContract(
+          maybeWrappedAsset(borrowToken),
+          RSK_CHAIN_ID,
+        );
 
       const borrowTokenContract = new ethers.Contract(
         borrowTokenAddress,
@@ -55,9 +60,9 @@ export const useBorrow = () => {
         signer,
       );
 
-      const { address: collateralTokenAddress } = await getTokenContract(
-        isCollateralRbtc ? SupportedTokens.wrbtc : collateralToken,
-        defaultChainId,
+      const { address: collateralTokenAddress } = await getAssetData(
+        maybeWrappedAsset(collateralToken),
+        RSK_CHAIN_ID,
       );
 
       const transactions: Transaction[] = [];

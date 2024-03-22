@@ -2,7 +2,7 @@ import { useCallback } from 'react';
 
 import { t } from 'i18next';
 
-import { defaultChainId } from '../../../../../../config/chains';
+import { RSK_CHAIN_ID } from '../../../../../../config/chains';
 
 import {
   Transaction,
@@ -16,7 +16,7 @@ import { translations } from '../../../../../../locales/i18n';
 import { toWei } from '../../../../../../utils/math';
 
 export const useWithdrawCollateral = () => {
-  const contract = useLoadContract('protocol', 'protocol', defaultChainId);
+  const contract = useLoadContract('protocol', 'protocol', RSK_CHAIN_ID);
   const { setTransactions, setIsOpen, setTitle } = useTransactionContext();
   const { account, signer } = useAccount();
 

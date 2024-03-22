@@ -1,8 +1,7 @@
 import { t } from 'i18next';
 
-import { SupportedTokens } from '@sovryn/contracts';
-
 import { translations } from '../../../../../locales/i18n';
+import { COMMON_SYMBOLS } from '../../../../../utils/asset';
 import {
   ProposalCreationParameter,
   ProposalCreationType,
@@ -107,7 +106,7 @@ export const DEFAULT_PARAMETER: ProposalCreationParameter = {
   },
   treasuryStepExtraData: {
     recipientAddress: '',
-    token: SupportedTokens.rbtc,
+    token: COMMON_SYMBOLS.BTC,
     amount: '0',
     index: 1,
   },

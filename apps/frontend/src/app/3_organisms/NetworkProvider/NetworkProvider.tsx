@@ -5,7 +5,7 @@ import { interval, startWith } from 'rxjs';
 
 import { getProvider } from '@sovryn/ethers-provider';
 
-import { chains } from '../../../config/chains';
+import { APP_CHAIN_LIST } from '../../../config/chains';
 
 import { onboard } from '../../../lib/connector';
 import {
@@ -28,7 +28,7 @@ export const NetworkProvider: React.FC<React.PropsWithChildren> = ({
     const blockSubscription = interval(BLOCK_FETCH_INTERVAL)
       .pipe(startWith(-1))
       .subscribe(() =>
-        chains.forEach(({ id }) =>
+        APP_CHAIN_LIST.forEach(({ id }) =>
           startCall(
             `${id}_blockNumber`,
             () => getProvider(id).getBlockNumber(),

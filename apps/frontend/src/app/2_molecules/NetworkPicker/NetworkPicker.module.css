@@ -1,0 +1,11 @@
+.itemContent {
+  @apply flex flex-row gap-3 items-center pr-4;
+
+  & .icon {
+    @apply w-5 h-5 opacity-50;
+  }
+}
+
+.menuItem:hover .icon {
+  @apply opacity-100;
+}

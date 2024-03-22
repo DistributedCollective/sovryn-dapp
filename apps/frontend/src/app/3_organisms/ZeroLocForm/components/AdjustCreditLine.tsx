@@ -2,7 +2,6 @@ import React, { useCallback, useMemo, useState, FC, useEffect } from 'react';
 
 import { t } from 'i18next';
 
-import { SupportedTokens } from '@sovryn/contracts';
 import { ErrorLevel } from '@sovryn/ui';
 import { Decimal } from '@sovryn/utils';
 
@@ -17,6 +16,7 @@ import { useAmountInput } from '../../../../hooks/useAmountInput';
 import { useAssetBalance } from '../../../../hooks/useAssetBalance';
 import { useMaxAssetBalance } from '../../../../hooks/useMaxAssetBalance';
 import { translations } from '../../../../locales/i18n';
+import { COMMON_SYMBOLS } from '../../../../utils/asset';
 import { formatValue, decimalic } from '../../../../utils/math';
 import {
   CRITICAL_COLLATERAL_RATIO,
@@ -62,7 +62,7 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
   const [collateralAmountInput, setCollateralAmount, collateralAmount] =
     useAmountInput('');
   const [debtAmountInput, setDebtAmount, debtAmount] = useAmountInput('');
-  const [debtToken, setDebtToken] = useState<SupportedTokens>(BORROW_ASSETS[0]);
+  const [debtToken, setDebtToken] = useState<string>(BORROW_ASSETS[0]);
   const [maxOriginationFeeRate, setMaxOriginationFeeRate] = useState('0');
 
   const debtSize = useMemo(() => decimalic(debtAmount), [debtAmount]);
@@ -74,7 +74,7 @@ export const AdjustCreditLine: FC<AdjustCreditLineProps> = ({
   const {
     balance: maxCollateralToDepositAmount,
     loading: maxRbtcBalanceLoading,
-  } = useMaxAssetBalance(SupportedTokens.rbtc);
+  } = useMaxAssetBalance(COMMON_SYMBOLS.BTC);
   const { balance: debtTokenBalance } = useAssetBalance(debtToken);
 
   const isIncreasingDebt = useMemo(

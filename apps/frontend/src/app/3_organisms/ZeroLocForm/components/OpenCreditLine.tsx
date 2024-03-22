@@ -16,6 +16,7 @@ import { getTokenDisplayName } from '../../../../constants/tokens';
 import { useAmountInput } from '../../../../hooks/useAmountInput';
 import { useMaxAssetBalance } from '../../../../hooks/useMaxAssetBalance';
 import { translations } from '../../../../locales/i18n';
+import { COMMON_SYMBOLS } from '../../../../utils/asset';
 import { formatValue, decimalic } from '../../../../utils/math';
 import {
   CRITICAL_COLLATERAL_RATIO,
@@ -65,7 +66,7 @@ export const OpenCreditLine: FC<OpenCreditLineProps> = ({
   );
 
   const { weiBalance: maxRbtcWeiBalance, loading: maxRbtcBalanceLoading } =
-    useMaxAssetBalance(SupportedTokens.rbtc);
+    useMaxAssetBalance(COMMON_SYMBOLS.BTC);
 
   const originationFee = useMemo(
     () => getOriginationFeeAmount(debtSize, borrowingRate),

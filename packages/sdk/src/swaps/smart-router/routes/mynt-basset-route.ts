@@ -1,11 +1,7 @@
 import { BigNumber, Contract, constants, providers } from 'ethers';
 
-import {
-  SupportedTokens,
-  getProtocolContract,
-  getTokenContract,
-} from '@sovryn/contracts';
-import { ChainId, numberToChainId } from '@sovryn/ethers-provider';
+import { getAssetContract, getProtocolContract } from '@sovryn/contracts';
+import { ChainId, ChainIds, numberToChainId } from '@sovryn/ethers-provider';
 
 import { SovrynErrorCode, makeError } from '../../../errors/errors';
 import {
@@ -35,9 +31,7 @@ export const myntBassetRoute: SwapRouteFunction = (
   const getDllrToken = async () => {
     if (!dllr) {
       const chainId = await getChainId();
-      dllr = (
-        await getTokenContract(SupportedTokens.dllr, chainId)
-      ).address.toLowerCase();
+      dllr = (await getAssetContract('DLLR', chainId)).address.toLowerCase();
     }
     return dllr;
   };
@@ -56,6 +50,7 @@ export const myntBassetRoute: SwapRouteFunction = (
 
   return {
     name: 'MyntBasset',
+    chains: [ChainIds.RSK_MAINNET, ChainIds.RSK_TESTNET],
     async pairs() {
       if (pairCache) {
         return pairCache;
@@ -64,10 +59,10 @@ export const myntBassetRoute: SwapRouteFunction = (
       const chainId = await getChainId();
       const dllr = await getDllrToken();
       const zusd = (
-        await getTokenContract(SupportedTokens.zusd, chainId)
+        await getAssetContract('ZUSD', chainId)
       ).address.toLowerCase();
       const doc = (
-        await getTokenContract(SupportedTokens.doc, chainId)
+        await getAssetContract('DOC', chainId)
       ).address.toLowerCase();
 
       pairCache = new Map<string, string[]>([
@@ -123,8 +118,8 @@ export const myntBassetRoute: SwapRouteFunction = (
         await hasEnoughAllowance(
           provider,
           entry,
-          spender,
           from,
+          spender,
           amount ?? constants.MaxUint256,
         )
       ) {

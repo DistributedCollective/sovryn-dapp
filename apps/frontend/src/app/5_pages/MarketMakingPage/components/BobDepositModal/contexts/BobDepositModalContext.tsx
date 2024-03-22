@@ -1,0 +1,86 @@
+import React, {
+  FC,
+  PropsWithChildren,
+  createContext,
+  useContext,
+  useState,
+} from 'react';
+
+import { noop } from '@sovryn/ui';
+
+import { DEFAULT_SLIPPAGE } from '../BobDepositModal.constants';
+import { DepositContextValue } from './BobDepositModalContext.types';
+
+const defaultContextValue: DepositContextValue = {
+  rangeWidth: 0,
+  setRangeWidth: noop,
+  lowerBoundaryPrice: 0,
+  setLowerBoundaryPrice: noop,
+  upperBoundaryPrice: 0,
+  setUpperBoundaryPrice: noop,
+  lowerBoundaryPercentage: 0,
+  setLowerBoundaryPercentage: noop,
+  upperBoundaryPercentage: 0,
+  setUpperBoundaryPercentage: noop,
+  maximumSlippage: DEFAULT_SLIPPAGE,
+  setMaximumSlippage: noop,
+  firstAssetValue: '',
+  setFirstAssetValue: noop,
+  secondAssetValue: '',
+  setSecondAssetValue: noop,
+};
+
+const DepositContext = createContext<DepositContextValue>(defaultContextValue);
+
+export const useDepositContext = () =>
+  useContext(DepositContext) as DepositContextValue;
+
+export const DepositContextProvider: FC<PropsWithChildren> = ({ children }) => {
+  const [rangeWidth, setRangeWidth] = useState(defaultContextValue.rangeWidth);
+  const [lowerBoundaryPrice, setLowerBoundaryPrice] = useState(
+    defaultContextValue.lowerBoundaryPrice,
+  );
+  const [lowerBoundaryPercentage, setLowerBoundaryPercentage] = useState(
+    defaultContextValue.lowerBoundaryPercentage,
+  );
+  const [upperBoundaryPrice, setUpperBoundaryPrice] = useState(
+    defaultContextValue.lowerBoundaryPrice,
+  );
+  const [upperBoundaryPercentage, setUpperBoundaryPercentage] = useState(
+    defaultContextValue.lowerBoundaryPercentage,
+  );
+  const [maximumSlippage, setMaximumSlippage] = useState(
+    defaultContextValue.maximumSlippage,
+  );
+  const [firstAssetValue, setFirstAssetValue] = useState(
+    defaultContextValue.firstAssetValue,
+  );
+  const [secondAssetValue, setSecondAssetValue] = useState(
+    defaultContextValue.secondAssetValue,
+  );
+
+  return (
+    <DepositContext.Provider
+      value={{
+        rangeWidth,
+        setRangeWidth,
+        lowerBoundaryPrice,
+        setLowerBoundaryPrice,
+        lowerBoundaryPercentage,
+        setLowerBoundaryPercentage,
+        upperBoundaryPrice,
+        setUpperBoundaryPrice,
+        upperBoundaryPercentage,
+        setUpperBoundaryPercentage,
+        maximumSlippage,
+        setMaximumSlippage,
+        firstAssetValue,
+        setFirstAssetValue,
+        secondAssetValue,
+        setSecondAssetValue,
+      }}
+    >
+      {children}
+    </DepositContext.Provider>
+  );
+};

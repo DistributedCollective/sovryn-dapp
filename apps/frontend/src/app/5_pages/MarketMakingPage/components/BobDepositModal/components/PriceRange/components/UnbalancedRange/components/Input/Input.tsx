@@ -23,7 +23,7 @@ export const Input: FC<InputProps> = ({
 }) => (
   <div className="flex flex-col items-center min-w-36">
     <div className="text-xs font-medium text-gray-30 mb-2">{label}</div>
-    <div className="flex rounded bg-gray-80 px-2 py-4 w-full justify-between">
+    <div className="flex rounded bg-gray-80 p-3 w-full justify-between">
       <Button
         text="-"
         onClick={onMinusClick}

@@ -1,6 +1,5 @@
 import React, { FC, useCallback, useMemo, useState } from 'react';
 
-import classNames from 'classnames';
 import { t } from 'i18next';
 
 import { FormGroup, AmountInput, Button, ButtonStyle } from '@sovryn/ui';
@@ -11,8 +10,8 @@ import { MaxButton } from '../../../../../../2_molecules/MaxButton/MaxButton';
 import { useAccount } from '../../../../../../../hooks/useAccount';
 import { translations } from '../../../../../../../locales/i18n';
 import { AmmLiquidityPool } from '../../../../utils/AmmLiquidityPool';
-
-const PERCENTAGE_OPTIONS = [10, 25, 50, 75, 100];
+import { PERCENTAGE_OPTIONS } from './AmountForm.constants';
+import { renderPercentageClassName } from './AmountForm.utils';
 
 type AmountFormProps = {
   primaryTokenBalance: Decimal;
@@ -57,19 +56,11 @@ export const AmountForm: FC<AmountFormProps> = ({
   );
 
   const withdrawAmountPercentage = useMemo(
-    () =>
+    (): number =>
       withdrawAmount === Decimal.ZERO
         ? 0
         : withdrawAmount.div(primaryTokenBalance).mul(100).toNumber(),
     [primaryTokenBalance, withdrawAmount],
-  );
-
-  const renderPercentageClassName = useMemo(
-    () => (percentage: number) =>
-      classNames('ml-2 p-1 w-12 h-6', {
-        'bg-gray-50': withdrawAmountPercentage === percentage,
-      }),
-    [withdrawAmountPercentage],
   );
 
   return (
@@ -81,7 +72,10 @@ export const AmountForm: FC<AmountFormProps> = ({
             key={item}
             onClick={() => onPercentageButtonClick(item)}
             style={ButtonStyle.secondary}
-            className={renderPercentageClassName(item)}
+            className={renderPercentageClassName(
+              withdrawAmountPercentage,
+              item,
+            )}
           />
         ))}
       </div>

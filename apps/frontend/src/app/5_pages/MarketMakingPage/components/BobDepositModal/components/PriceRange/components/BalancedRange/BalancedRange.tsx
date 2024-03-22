@@ -1,6 +1,5 @@
 import React, { FC, useCallback, useMemo } from 'react';
 
-import classNames from 'classnames';
 import { t } from 'i18next';
 
 import {
@@ -14,20 +13,12 @@ import {
 import { translations } from '../../../../../../../../../locales/i18n';
 import { useDepositContext } from '../../../../contexts/BobDepositModalContext';
 import { BUTTON_OPTIONS, INFINITE } from './BalancedRange.constants';
+import { renderRangeWidthClassName } from './BalancedRange.utils';
 
 export const BalancedRange: FC = () => {
   const { rangeWidth, setRangeWidth } = useDepositContext();
 
   const isInfiniteRange = useMemo(() => rangeWidth === 100, [rangeWidth]);
-
-  const renderRangeWidthClassName = useMemo(
-    () => (rangeOption: number) =>
-      classNames('ml-2 p-1 w-12 h-6', {
-        'bg-gray-50': rangeWidth === rangeOption,
-        'w-fit px-2': rangeOption === 100,
-      }),
-    [rangeWidth],
-  );
 
   const onRangeChange = useCallback(
     (value: number) => {
@@ -54,7 +45,7 @@ export const BalancedRange: FC = () => {
             key={item}
             onClick={() => onRangeChange(item)}
             style={ButtonStyle.secondary}
-            className={renderRangeWidthClassName(item)}
+            className={renderRangeWidthClassName(rangeWidth, item)}
           />
         ))}
       </div>

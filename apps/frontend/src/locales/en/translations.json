@@ -1275,6 +1275,16 @@
             "rangeWidth": "Range width",
             "minPrice": "Min price",
             "maxPrice": "Max price"
+        },
+        "withdrawModal": {
+            "title": "Withdraw liquidity",
+            "returnRate": "Return rate",
+            "currentBalance": "Current balance",
+            "newPoolStatistics": {
+                "newPoolBalance": "New pool balance",
+                "earnedRewards": "Earned rewards",
+                "slippage": "Slippage"
+            }
         }
     },
 

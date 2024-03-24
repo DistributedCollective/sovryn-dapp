@@ -1,3 +1,5 @@
+import { ChainIds } from '@sovryn/ethers-provider';
+
 import { Environments, Services } from '../types/global';
 
 export const SERVICES_CONFIG = {
@@ -27,6 +29,11 @@ export const GRAPH_WRAPPER = {
 export const AMM_SERVICE = {
   [Environments.Mainnet]: 'https://amm-apy.sovryn.app/',
   [Environments.Testnet]: 'https://amm-apy.test.sovryn.app/',
+};
+
+export const BOB_INDEXER = {
+  [ChainIds.BOB_MAINNET]: 'https://ambindexer.net/gcgo/',
+  [ChainIds.BOB_TESTNET]: 'https://ambindexer.net/gcgo/',
 };
 
 export const ESTIMATOR_URI = process.env.REACT_APP_ESTIMATOR_URI;

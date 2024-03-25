@@ -1,10 +1,10 @@
 import { CrocEnv, encodeCrocPrice } from '@sovryn/ambient-sdk';
 
 import { OrderDirective } from '@sovryn/ambient-sdk/src/encoding/longform';
-import { parseEther } from 'ethers/lib/utils';
-import { ETH_TOKEN, USDC_TOKEN } from './fork-constants';
+import { parseEther, parseUnits } from 'ethers/lib/utils';
+import { ETH_TOKEN, USDC_TOKEN, WBTC_TOKEN } from './fork-constants';
 
-const SLIPPDAGE = 0.1;
+const SLIPPDAGE = 0.01;
 
 // Reference
 // https://github.com/CrocSwap/sdk/blob/main/src/recipes/reposition.ts
@@ -14,22 +14,25 @@ const SLIPPDAGE = 0.1;
 
 const ENTRY = ETH_TOKEN;
 const NEXT = USDC_TOKEN;
+const END = WBTC_TOKEN;
 
 // SOV -> GLD
 export const multiSwap = async (env: CrocEnv) => {
-  const ENTRY_AMOUNT = parseEther('0.01');
+  const ENTRY_AMOUNT = parseUnits('0.1', 18);
   const POOL_INDEX = (await env.context).chain.poolIndex;
+
+  // const t = env.tokens.materialize(ENTRY);
+  // const e = await t.approve();
+  // await e?.wait();
 
   // entry
   const directive = new OrderDirective(ENTRY);
 
-  // SOV->ETH
+  // HOP 1:
   directive.appendHop(NEXT);
 
   const POOL_1 = getPool(env, ENTRY, NEXT);
-  const price = await POOL_1.displayPrice();
-
-  console.log({ price });
+  const PRICE_1 = await POOL_1.displayPrice();
 
   const POOL_1_INFO = await POOL_1.context;
   const POOL_1_CURVE = await POOL_1_INFO.query.queryCurve(
@@ -38,29 +41,49 @@ export const multiSwap = async (env: CrocEnv) => {
     POOL_INDEX,
   );
 
-  console.log({ price, poolInfo: POOL_1_INFO, curve: POOL_1_CURVE });
+  console.log({ price: PRICE_1, poolInfo: POOL_1_INFO, curve: POOL_1_CURVE });
 
   const pool1 = directive.appendPool(POOL_INDEX);
-  // pool1.chain.swapDefer = true;
-  // pool1.swap.rollType = 4;
-  pool1.swap.isBuy = false;
+  pool1.chain.swapDefer = true;
+  pool1.swap.rollType = 4;
+  pool1.swap.isBuy = true;
   pool1.swap.qty = ENTRY_AMOUNT;
 
   const priceMult = 1 + SLIPPDAGE; // or 1 - SLIPPDAGE
 
-  const limitPrice = await POOL_1.baseToken.normQty(price * priceMult);
+  const limitPrice = await POOL_1.baseToken.normQty(PRICE_1 * priceMult);
 
   pool1.swap.limitPrice = limitPrice;
-  // pool1.swap.limitPrice = encodeCrocPrice(price * priceMult);
 
-  // // ETH->GLD
-  // directive.appendHop(GLD);
-  // directive.appendPool(3600);
+  // HOP 2:
+  directive.appendHop(END);
+
+  const POOL_2 = getPool(env, ENTRY, END);
+  const PRICE_2 = await POOL_2.displayPrice();
+
+  const POOL_2_INFO = await POOL_2.context;
+  const POOL_2_CURVE = await POOL_2_INFO.query.queryCurve(
+    ENTRY,
+    END,
+    POOL_INDEX,
+  );
+
+  console.log({ price: PRICE_2, poolInfo: POOL_2_INFO, curve: POOL_2_CURVE });
+
+  const pool2 = directive.appendPool(POOL_INDEX);
+  pool2.chain.swapDefer = true;
+  pool2.swap.rollType = 4;
+  pool2.swap.isBuy = true;
+  pool2.swap.qty = ENTRY_AMOUNT;
+
+  const limitPrice_2 = await POOL_1.baseToken.normQty(PRICE_2 * priceMult);
+
+  pool2.swap.limitPrice = limitPrice_2;
 
   console.log({
     directive,
-    limitPrice: limitPrice.toString(),
-    priceRoot_: POOL_1_CURVE.priceRoot_.toString(),
+    limitPrice: limitPrice_2.toString(),
+    priceRoot_: POOL_2_CURVE.priceRoot_.toString(),
   });
 
   const bytes = directive.encodeBytes();
@@ -76,6 +99,8 @@ export const multiSwap = async (env: CrocEnv) => {
 
   return result;
 };
+
+const enters = () => {};
 
 const getPool = (env: CrocEnv, base: string, quote: string) =>
   env.pool(base, quote);

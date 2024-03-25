@@ -6,6 +6,7 @@ import rskLogo from '../assets/chains/rsk.svg';
 import { BOB } from '../constants/infrastructure/bob';
 import { RSK } from '../constants/infrastructure/rsk';
 import { Environments } from '../types/global';
+import { FORK } from '../constants/infrastructure/fork';
 
 const IS_MAINNET = process.env.REACT_APP_NETWORK === Environments.Mainnet;
 
@@ -67,6 +68,15 @@ export const APP_CHAIN_LIST: ChainWithLogo[] = [
           publicRpcUrl: BOB.publicRpc[Environments.Testnet],
           rpcUrl: BOB.rpc[Environments.Testnet],
           blockExplorerUrl: BOB.explorer[Environments.Testnet],
+          icon: bobLogo,
+        },
+        {
+          id: ChainIds.SEPOLIA,
+          label: 'TENDERLY',
+          token: 'tETH',
+          publicRpcUrl: FORK.publicRpc[Environments.Testnet],
+          rpcUrl: FORK.rpc[Environments.Testnet],
+          blockExplorerUrl: FORK.explorer[Environments.Testnet],
           icon: bobLogo,
         },
       ]),

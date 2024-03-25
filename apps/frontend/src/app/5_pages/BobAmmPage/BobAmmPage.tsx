@@ -1,31 +1,51 @@
 import React, { useCallback, useEffect, useRef } from 'react';
 
-import { constants } from 'ethers';
-
 import { CrocEnv } from '@sovryn/ambient-sdk';
 import { getProvider } from '@sovryn/ethers-provider';
 
 import { BOB_CHAIN_ID } from '../../../config/chains';
 
-import { NetworkBanner } from '../../2_molecules/NetworkBanner/NetworkBanner';
 import { useAccount } from '../../../hooks/useAccount';
-import { COMMON_SYMBOLS, findAsset } from '../../../utils/asset';
+import { findAsset } from '../../../utils/asset';
 import { createRangePositionTx } from './ambient-utils';
 import { multiSwap } from './testing-swap';
-import { parseEther } from 'ethers/lib/utils';
+import { ChainIds } from '@sovryn/ethers-provider';
+import { ETH_TOKEN, OKB_TOKEN, USDC_TOKEN, WBTC_TOKEN } from './fork-constants';
+import { parseUnits } from 'ethers/lib/utils';
+import { CrocTokenView } from '@sovryn/ambient-sdk/dist/tokens';
 
-const ETH = constants.AddressZero;
-const SOV = findAsset(COMMON_SYMBOLS.SOV, BOB_CHAIN_ID).address;
-const USDT = findAsset('USDT', BOB_CHAIN_ID).address;
-const GLD = findAsset('GLD', BOB_CHAIN_ID).address;
+// const CHAIN_ID = BOB_CHAIN_ID;
+const CHAIN_ID = ChainIds.SEPOLIA;
+// const USDC_TOKEN = findAsset('GLD', BOB_CHAIN_ID)?.address;
+
+const testAllowance = async (
+  owner: string,
+  token: CrocTokenView,
+  amount: number,
+) => {
+  const allowance = await token.allowance(owner);
+  const decimals = await token.decimals;
+
+  const needAllowance = parseUnits(
+    (amount + 0.00001).toFixed(decimals),
+    decimals,
+  );
+
+  if (allowance.lt(needAllowance)) {
+    console.log('Need to approve');
+    const approval = await token.approve();
+    console.log('approval', approval);
+    await approval?.wait();
+  }
+};
 
 export const BobAmmPage: React.FC = () => {
   const croc = useRef<CrocEnv>();
-  const { signer } = useAccount();
+  const { signer, account } = useAccount();
 
   useEffect(() => {
     if (!signer) return;
-    croc.current = new CrocEnv(getProvider(BOB_CHAIN_ID), signer);
+    croc.current = new CrocEnv(getProvider(CHAIN_ID), signer);
   }, [signer]);
 
   const handlePoolInit = useCallback(async () => {
@@ -34,8 +54,8 @@ export const BobAmmPage: React.FC = () => {
       return;
     }
 
-    const tokenA = croc.current.tokens.materialize(ETH);
-    const tokenB = croc.current.tokens.materialize(GLD);
+    const tokenA = croc.current.tokens.materialize(ETH_TOKEN);
+    const tokenB = croc.current.tokens.materialize(OKB_TOKEN);
 
     // await tokenA.approveBypassRouter();
     // await tokenA.approveRouter();
@@ -52,17 +72,15 @@ export const BobAmmPage: React.FC = () => {
     if (!init) {
       console.log('need to init');
 
-      const approve = await tokenB.approve();
-      console.log('approve', approve);
+      await testAllowance(account, tokenA, 1);
+      await testAllowance(account, tokenB, 1);
 
-      await approve?.wait();
-
-      const tx = await pool.initPool(70_000);
+      const tx = await pool.initPool(100);
       console.log('init pool price: ', tx);
     } else {
       alert('Pool already initialized');
     }
-  }, []);
+  }, [account]);
 
   const handleDeposit = useCallback(async () => {
     if (!croc.current) {
@@ -70,8 +88,8 @@ export const BobAmmPage: React.FC = () => {
       return;
     }
 
-    const tokenA = croc.current.tokens.materialize(ETH);
-    const tokenB = croc.current.tokens.materialize(GLD);
+    const tokenA = croc.current.tokens.materialize(ETH_TOKEN);
+    const tokenB = croc.current.tokens.materialize(WBTC_TOKEN);
 
     const pool = croc.current.pool(tokenA.tokenAddr, tokenB.tokenAddr);
     console.log({ pool });
@@ -89,15 +107,20 @@ export const BobAmmPage: React.FC = () => {
 
     const price = await pool.displayPrice();
 
-    const TOKEN_A_AMOUNT = 0.0001;
+    console.log('display price', price);
+
+    const TOKEN_A_AMOUNT = 200; // 0.0001
     const TOKEN_B_AMOUNT = price * TOKEN_A_AMOUNT;
 
     console.log({ TOKEN_A_AMOUNT, TOKEN_B_AMOUNT });
 
+    await testAllowance(account, tokenA, TOKEN_A_AMOUNT);
+    await testAllowance(account, tokenB, TOKEN_B_AMOUNT);
+
     const tx = await createRangePositionTx({
       crocEnv: croc.current,
       isAmbient: true,
-      slippageTolerancePercentage: 99,
+      slippageTolerancePercentage: 3,
       tokenA: {
         address: tokenA.tokenAddr,
         qty: TOKEN_A_AMOUNT,
@@ -109,12 +132,15 @@ export const BobAmmPage: React.FC = () => {
         isWithdrawFromDexChecked: false,
       },
       isTokenAPrimaryRange: true,
-      tick: { low: 0.00001, high: 800000 },
+      tick: { low: 2552, high: 3100 },
     });
 
     console.log('tx', tx);
     console.log('tx', tx?.hash);
-  }, []);
+
+    const receipt = await tx?.wait();
+    console.log('receipt', receipt);
+  }, [account]);
 
   const handleSwap = useCallback(async () => {
     if (!croc.current) {
@@ -122,11 +148,16 @@ export const BobAmmPage: React.FC = () => {
       return;
     }
 
-    const tokenA = croc.current.tokens.materialize(SOV);
-    const tokenB = croc.current.tokens.materialize(USDT);
+    const tokenA = croc.current.tokens.materialize(ETH_TOKEN);
+    const tokenB = croc.current.tokens.materialize(USDC_TOKEN);
+
+    const pool = croc.current.pool(tokenA.tokenAddr, tokenB.tokenAddr);
+
+    const price = await pool.displayPrice();
+    console.log('price', price);
 
     const plan = croc.current
-      .sell(tokenA.tokenAddr, 0.001)
+      .sell(tokenA.tokenAddr, 0.01)
       .for(tokenB.tokenAddr);
 
     console.log('plan', plan);
@@ -139,6 +170,9 @@ export const BobAmmPage: React.FC = () => {
 
     const tx = await plan.swap();
     console.log({ tx });
+
+    const result = await tx.wait();
+    console.log({ result });
   }, []);
 
   const handleMultihop = useCallback(async () => {
@@ -177,7 +211,6 @@ export const BobAmmPage: React.FC = () => {
 
   return (
     <div className="container">
-      <NetworkBanner requiredChainId={BOB_CHAIN_ID} />
       <p>Test...</p>
       <ol>
         <li>

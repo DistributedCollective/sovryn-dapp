@@ -77,7 +77,7 @@ export const RuneBridgeDialog: React.FC<RuneBridgeDialogProps> = ({
     index !== null ? setIndex(index) : setIndex(0);
   }, []);
   const dialogSize = useMemo(
-    () => (isMobile ? DialogSize.md : DialogSize.xl2),
+    () => (isMobile ? DialogSize.md : DialogSize.xl3),
     [isMobile],
   );
   // Reset the selected index to 0 in case the connected account changes because the new account may have the Send tab hidden and it would crash the app if we tried to access that index

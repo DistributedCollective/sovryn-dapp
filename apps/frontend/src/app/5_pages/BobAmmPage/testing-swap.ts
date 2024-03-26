@@ -27,11 +27,11 @@ export const multiSwap = async (env: CrocEnv, signer: string) => {
 
   const TOKEN = buy ? ENTRY : NEXT;
 
-  const ENTRY_AMOUNT = await env.token(TOKEN).normQty(buy ? 0.1 : 15);
+  const ENTRY_AMOUNT = await env.token(TOKEN).normQty(buy ? 0.1 : 0.2);
 
   console.log({ ENTRY_AMOUNT: ENTRY_AMOUNT.toString() });
 
-  await testAllowance(signer, env.tokens.materialize(ENTRY), ENTRY_AMOUNT);
+  await testAllowance(signer, env.tokens.materialize(TOKEN), ENTRY_AMOUNT);
 
   const POOL_INDEX = (await env.context).chain.poolIndex;
   const PATH = (await env.context).chain.proxyPaths.long;
@@ -126,7 +126,9 @@ const testAllowance = async (
   const allowance = await token.allowance(owner);
 
   if (allowance.lt(amount)) {
-    console.log('Need to approve');
+    console.log(
+      'Need to approve: ' + allowance.toString() + ' < ' + amount.toString(),
+    );
     const approval = await token.approve();
     console.log('approval', approval);
     await approval?.wait();

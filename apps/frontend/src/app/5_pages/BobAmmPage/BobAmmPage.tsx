@@ -193,7 +193,7 @@ export const BobAmmPage: React.FC = () => {
 
     console.log({ query });
 
-    await multiSwap(croc.current);
+    await multiSwap(croc.current, account);
 
     // const tokenA = croc.current.tokens.materialize(SOV);
     // const tokenB = croc.current.tokens.materialize(USDT);
@@ -215,7 +215,7 @@ export const BobAmmPage: React.FC = () => {
 
     // const tx = await plan.swap();
     // console.log({ tx });
-  }, []);
+  }, [account]);
 
   const handleDexDeposit = useCallback(async () => {
     if (!croc.current) {

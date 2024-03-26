@@ -948,14 +948,14 @@
         "title": "Rune Bridge",
         "tabs": {
           "receiveLabel": "Receive",
-          "receiveInfoText": "Transfer Rune Token from other networks to your Rootstock address",
+          "receiveInfoText": "Transfer Runes from Bitcoin to your Rootstock address",
           "sendLabel": "Send",
-          "sendInfoText": "Transfer RSK Token from the Rootstock network to a specified address"
+          "sendInfoText": "Transfer Rune Tokens from Rootstock your Bitcoin address"
         }
       },
         "receiveInstructions": {
             "title": "Instructions",
-            "line1": "Only transfer Rune token from the bitcoin network",
+            "line1": "Only transfer Runes, not Bitcoin",
             "line2": "Do not send less than the minimum amount",
             "line3": "Do not send more than the maximum amount",
             "line4": "Allow up to {{hours}} hrs to process",
@@ -964,13 +964,13 @@
         },
       "sendInstructions": {
             "title": "Instructions",
-            "line1": "Only transfer RSK token to the bitcoin network",
+            "line1": "Only transfer Rune Tokens to a wallet that supports Runes",
             "line2": "Do not send less than the minimum amount",
             "line3": "Do not send more than the maximum amount",
             "line4": "Allow up to {{hours}} hrs to process",
             "line5": "If your transaction takes longer than {{hours}} hrs please <0>create a support ticket</0>",
             "line5cta": "create a support ticket",
-            "supportedFormats": "Supported address formats: P2PKH, P2SH, P2WPKH, P2WSH"
+            "supportedFormats": "Supported address formats: P2TR, P2PKH, P2SH, P2WPKH, P2WSH"
         },
         "limits": {
             "title": "Transfer policies",
@@ -985,7 +985,7 @@
         },
         "send": {
             "amountForm": {
-                "title": "Select and enter the amount of Rootstock Token to send",
+                "title": "Select and enter the amount of Rune Token to send",
                 "amountLabel": "Send"
             },
             "addressForm": {

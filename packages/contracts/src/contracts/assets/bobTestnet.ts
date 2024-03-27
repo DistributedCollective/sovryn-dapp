@@ -9,7 +9,7 @@ export const bobTestnet: Array<AssetDetails> = [
     name: 'Ether',
     isNative: true,
     decimals: 18,
-    getIcon: async () => (await import('./icons/unknown')).default,
+    getIcon: async () => (await import('./icons/rsk/eths')).default,
     description: 'BOB Ether',
   },
   {
@@ -54,5 +54,12 @@ export const bobTestnet: Array<AssetDetails> = [
     name: 'WBTC',
     decimals: 18,
     getIcon: async () => (await import('./icons/unknown')).default,
+  },
+  {
+    symbol: 'GLD',
+    address: '0x230Eb714A710DeF5cbc09DF27a7a360F947e015F',
+    name: 'GOLD',
+    decimals: 18,
+    getIcon: async () => (await import('./icons/rsk/mynt')).default,
   },
 ];

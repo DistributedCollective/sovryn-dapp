@@ -1,28 +1,58 @@
-import React, { useCallback, useEffect, useRef } from 'react';
-
-import { constants } from 'ethers';
+import React, {
+  FC,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 
 import { CrocEnv } from '@sovryn/ambient-sdk';
-import { getProvider } from '@sovryn/ethers-provider';
+import { ChainIds, getProvider } from '@sovryn/ethers-provider';
 
 import { BOB_CHAIN_ID } from '../../../config/chains';
 
-import { NetworkBanner } from '../../2_molecules/NetworkBanner/NetworkBanner';
 import { useAccount } from '../../../hooks/useAccount';
-import { COMMON_SYMBOLS, findAsset } from '../../../utils/asset';
 import { createRangePositionTx } from './ambient-utils';
+import { multiSwap } from './testing-swap';
+import { ETH_TOKEN, OKB_TOKEN, USDC_TOKEN, WBTC_TOKEN } from './fork-constants';
+import { parseUnits } from 'ethers/lib/utils';
+import { CrocTokenView } from '@sovryn/ambient-sdk/dist/tokens';
+import classNames from 'classnames';
+import { bfsShortestPath, graph } from './pool-graph';
+import { Decimal } from '@sovryn/utils';
 
-const ETH = constants.AddressZero;
-const SOV = findAsset(COMMON_SYMBOLS.SOV, BOB_CHAIN_ID).address;
-const USDC = findAsset('USDC', BOB_CHAIN_ID).address;
+// const CHAIN_ID = BOB_CHAIN_ID;
+const CHAIN_ID = ChainIds.SEPOLIA;
+
+const testAllowance = async (
+  owner: string,
+  token: CrocTokenView,
+  amount: number,
+) => {
+  const allowance = await token.allowance(owner);
+  const decimals = await token.decimals;
+
+  const needAllowance = parseUnits(
+    (amount + 0.00001).toFixed(decimals),
+    decimals,
+  );
+
+  if (allowance.lt(needAllowance)) {
+    console.log('Need to approve');
+    const approval = await token.approve();
+    console.log('approval', approval);
+    await approval?.wait();
+  }
+};
 
 export const BobAmmPage: React.FC = () => {
   const croc = useRef<CrocEnv>();
-  const { signer } = useAccount();
+  const { signer, account } = useAccount();
 
   useEffect(() => {
     if (!signer) return;
-    croc.current = new CrocEnv(getProvider(BOB_CHAIN_ID), signer);
+    croc.current = new CrocEnv(getProvider(CHAIN_ID), signer);
   }, [signer]);
 
   const handlePoolInit = useCallback(async () => {
@@ -31,8 +61,8 @@ export const BobAmmPage: React.FC = () => {
       return;
     }
 
-    const tokenA = croc.current.tokens.materialize(ETH);
-    const tokenB = croc.current.tokens.materialize(SOV);
+    const tokenA = croc.current.tokens.materialize(ETH_TOKEN);
+    const tokenB = croc.current.tokens.materialize(OKB_TOKEN);
 
     // await tokenA.approveBypassRouter();
     // await tokenA.approveRouter();
@@ -48,12 +78,16 @@ export const BobAmmPage: React.FC = () => {
 
     if (!init) {
       console.log('need to init');
-      const tx = await pool.initPool(70_000);
+
+      await testAllowance(account, tokenA, 1);
+      await testAllowance(account, tokenB, 1);
+
+      const tx = await pool.initPool(100);
       console.log('init pool price: ', tx);
     } else {
       alert('Pool already initialized');
     }
-  }, []);
+  }, [account]);
 
   const handleDeposit = useCallback(async () => {
     if (!croc.current) {
@@ -61,39 +95,59 @@ export const BobAmmPage: React.FC = () => {
       return;
     }
 
-    const tokenA = croc.current.tokens.materialize(ETH);
-    const tokenB = croc.current.tokens.materialize(SOV);
+    const tokenA = croc.current.tokens.materialize(ETH_TOKEN);
+    const tokenB = croc.current.tokens.materialize(USDC_TOKEN);
 
     const pool = croc.current.pool(tokenA.tokenAddr, tokenB.tokenAddr);
     console.log({ pool });
 
     const init = await pool.isInit();
-    console.log('is init', init);
+
+    if (!init) {
+      alert('Pool not initialized');
+      return;
+    }
+
+    // const approval = await tokenB.approve();
+    // approval?.wait();
+    // console.log('approval', approval);
 
     const price = await pool.displayPrice();
+
     console.log('display price', price);
+
+    const TOKEN_A_AMOUNT = 0.0001; // 0.0001
+    const TOKEN_B_AMOUNT = price * TOKEN_A_AMOUNT;
+
+    console.log({ TOKEN_A_AMOUNT, TOKEN_B_AMOUNT });
+
+    await testAllowance(account, tokenA, TOKEN_A_AMOUNT);
+    await testAllowance(account, tokenB, TOKEN_B_AMOUNT);
 
     const tx = await createRangePositionTx({
       crocEnv: croc.current,
       isAmbient: true,
-      slippageTolerancePercentage: 0.5,
+      slippageTolerancePercentage: 3,
       tokenA: {
         address: tokenA.tokenAddr,
-        qty: 0.1,
+        qty: TOKEN_A_AMOUNT,
         isWithdrawFromDexChecked: false,
       },
       tokenB: {
         address: tokenB.tokenAddr,
-        qty: 100,
+        qty: TOKEN_B_AMOUNT,
         isWithdrawFromDexChecked: false,
       },
       isTokenAPrimaryRange: true,
-      tick: { low: 1, high: 80000 },
+      tick: { low: 2552, high: 3100 },
     });
 
     console.log('tx', tx);
     console.log('tx', tx?.hash);
-  }, []);
+
+    const receipt = await tx?.wait();
+    console.log('receipt', receipt);
+  }, [account]);
 
   const handleSwap = useCallback(async () => {
     if (!croc.current) {
@@ -101,11 +155,16 @@ export const BobAmmPage: React.FC = () => {
       return;
     }
 
-    const tokenA = croc.current.tokens.materialize(SOV);
-    const tokenB = croc.current.tokens.materialize(USDC);
+    const tokenA = croc.current.tokens.materialize(ETH_TOKEN);
+    const tokenB = croc.current.tokens.materialize(USDC_TOKEN);
+
+    const pool = croc.current.pool(tokenA.tokenAddr, tokenB.tokenAddr);
+
+    const price = await pool.displayPrice();
+    console.log('price', price);
 
     const plan = croc.current
-      .sell(tokenA.tokenAddr, 0.001)
+      .sell(tokenA.tokenAddr, 0.01)
       .for(tokenB.tokenAddr);
 
     console.log('plan', plan);
@@ -118,54 +177,196 @@ export const BobAmmPage: React.FC = () => {
 
     const tx = await plan.swap();
     console.log({ tx });
+
+    const result = await tx.wait();
+    console.log({ result });
   }, []);
 
-  const handleMultihop = useCallback(async () => {
+  const handleDexDeposit = useCallback(async () => {
     if (!croc.current) {
       alert('CrocEnv not initialized');
       return;
     }
 
-    const tokenA = croc.current.tokens.materialize(SOV);
-    const tokenB = croc.current.tokens.materialize(USDC);
+    const token = croc.current.tokens.materialize(USDC_TOKEN);
 
-    const plan = croc.current
-      .sell(tokenA.tokenAddr, 0.001)
-      .for(tokenB.tokenAddr)
-      .useBypass();
+    const tx = await token.deposit(20, account);
+    console.log({ tx });
 
-    console.log('plan', plan);
+    const result = await tx?.wait();
+    console.log({ result });
+  }, [account]);
 
-    // todo...
+  const [dexBalances, setDexBalances] = useState<Record<string, Decimal>>({});
+  const [walletBalances, setWalletBalances] = useState<Record<string, Decimal>>(
+    {},
+  );
+  const [prevDexBalances, setPrevDexBalances] = useState<
+    Record<string, Decimal>
+  >({});
+  const [prevWalletBalances, setPrevWalletBalances] = useState<
+    Record<string, Decimal>
+  >({});
 
-    // const impact = await plan.impact;
-    // console.log({ impact });
+  const updateBalances = useCallback(async () => {
+    if (!croc.current) {
+      return;
+    }
+    const labels = ['ETH', 'USDC', 'WBTC', 'OKB'];
+    const items = [ETH_TOKEN, USDC_TOKEN, WBTC_TOKEN, OKB_TOKEN];
+    const decimals = [18, 6, 8, 18];
 
-    // const slippage = plan.priceSlippage;
-    // console.log({ slippage });
+    const _dexBalances: Record<string, Decimal> = {};
+    const _walletBalances: Record<string, Decimal> = {};
 
-    // const tx = await plan.swap();
-    // console.log({ tx });
+    for (let i = 0; i < items.length; i++) {
+      const token = croc.current.tokens.materialize(items[i]);
+      const decimals = await token.decimals;
+      const balance = await token.balanceDisplay(account);
+      const wallet = await token.walletDisplay(account);
+      _dexBalances[labels[i]] = Decimal.from(balance.toString());
+      _walletBalances[labels[i]] = Decimal.from(wallet.toString());
+    }
+
+    setWalletBalances(p => {
+      setPrevWalletBalances(p);
+      return _walletBalances;
+    });
+    setDexBalances(p => {
+      setPrevDexBalances(p);
+      return _dexBalances;
+    });
+  }, [account]);
+
+  useEffect(() => {
+    updateBalances();
+  }, [account, updateBalances]);
+
+  const handleMultihop = useCallback(
+    async (buy: boolean) => {
+      if (!croc.current) {
+        alert('CrocEnv not initialized');
+        return;
+      }
+
+      const query = (await croc.current.context).query;
+
+      console.log({ query });
+
+      await multiSwap(croc.current, account, buy);
+
+      await updateBalances();
+    },
+    [account, updateBalances],
+  );
+
+  const findPath = useCallback(() => {
+    const conversionPath = bfsShortestPath(graph, 'SOV', 'USDC');
+    console.log(conversionPath);
   }, []);
+  return (
+    <div className="container flex flex-row">
+      <div className="w-72">
+        <ol>
+          <li>
+            <button onClick={handlePoolInit}>Initialize pool</button>
+          </li>
+          <li>
+            <button onClick={handleDeposit}>Deposit to pool</button>
+          </li>
+          <li>
+            <button onClick={handleSwap}>Swap</button>
+          </li>
+          <li>
+            <button onClick={() => handleMultihop(true)}>
+              Swap multihop (buy)
+            </button>
+            <button onClick={() => handleMultihop(false)}>
+              Swap multihop (sell)
+            </button>
+          </li>
+          <li>
+            <button onClick={findPath}>Find path</button>
+          </li>
+          {/* <li>
+          <button onClick={handleDexDeposit}>Deposit to DEX</button>
+        </li> */}
+        </ol>
+      </div>
+      <div className="w-72">
+        <h1>Dex Balances</h1>
+        <ol>
+          {Object.entries(dexBalances).map(([label, balance]) => (
+            <RenderBalance
+              key={label}
+              label={label}
+              balance={balance}
+              prevBalance={prevDexBalances[label]}
+            />
+          ))}
+          <li>
+            <button onClick={updateBalances} className="mt-8">
+              Update Balance
+            </button>
+          </li>
+        </ol>
+      </div>
+      <div className="w-72">
+        <h1>Wallet Balances</h1>
+        <ol>
+          {Object.entries(walletBalances).map(([label, balance]) => (
+            <RenderBalance
+              key={label}
+              label={label}
+              balance={balance}
+              prevBalance={prevWalletBalances[label]}
+            />
+          ))}
+
+          <li>
+            <button onClick={updateBalances} className="mt-8">
+              Update Balance
+            </button>
+          </li>
+        </ol>
+      </div>
+    </div>
+  );
+};
+
+type RenderBalanceProps = {
+  label: string;
+  balance: Decimal;
+  prevBalance?: Decimal;
+};
+
+const RenderBalance: FC<RenderBalanceProps> = ({
+  label,
+  balance,
+  prevBalance,
+}) => {
+  const diff = useMemo(() => {
+    if (prevBalance !== undefined && prevBalance !== balance) {
+      return balance.sub(prevBalance ?? 0).toNumber();
+    }
+    return 0;
+  }, [balance, prevBalance]);
 
   return (
-    <div className="container">
-      <NetworkBanner requiredChainId={BOB_CHAIN_ID} />
-      <p>Test...</p>
-      <ol>
-        <li>
-          <button onClick={handlePoolInit}>Initialize pool</button>
-        </li>
-        <li>
-          <button onClick={handleDeposit}>Deposit to pool</button>
-        </li>
-        <li>
-          <button onClick={handleSwap}>Swap</button>
-        </li>
-        <li>
-          <button onClick={handleMultihop}>Swap multihop</button>
-        </li>
-      </ol>
-    </div>
+    <li>
+      {label}: {balance.toNumber()}{' '}
+      {diff !== 0 ? (
+        <span
+          className={classNames({
+            'text-error': diff < 0,
+            'text-success': diff > 0,
+          })}
+        >
+          ({diff})
+        </span>
+      ) : (
+        <></>
+      )}
+    </li>
   );
 };

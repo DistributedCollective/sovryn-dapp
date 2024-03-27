@@ -71,6 +71,7 @@ export const AssetDecimals: { [key in SupportedTokens]: number } = {
   [SupportedTokens.xusd]: TOKEN_RENDER_PRECISION,
   [SupportedTokens.dllr]: TOKEN_RENDER_PRECISION,
   [SupportedTokens.sov]: TOKEN_RENDER_PRECISION,
+  [SupportedTokens.ossov]: TOKEN_RENDER_PRECISION,
   [SupportedTokens.doc]: TOKEN_RENDER_PRECISION,
   [SupportedTokens.mynt]: TOKEN_RENDER_PRECISION,
   [SupportedTokens.wrbtc]: BTC_RENDER_PRECISION,

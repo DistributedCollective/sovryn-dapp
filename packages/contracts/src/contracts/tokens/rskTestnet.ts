@@ -4,6 +4,7 @@ export const rskTestnet: Record<string, string> = {
   rbtc: constants.AddressZero,
   wrbtc: '0x69FE5cEC81D5eF92600c1A0dB1F11986AB3758Ab',
   sov: '0x6a9A07972D07e58F0daf5122d11E069288A375fb',
+  ossov: '0x687C75B68771E363F1675047F94c0a8a13493E67',
   xusd: '0xa9262cc3fb54ea55b1b0af00efca9416b8d59570',
   dllr: '0x007b3AA69A846cB1f76b60b3088230A52D2A83AC',
   doc: '0xcb46c0ddc60d18efeb0e586c17af6ea36452dae0',

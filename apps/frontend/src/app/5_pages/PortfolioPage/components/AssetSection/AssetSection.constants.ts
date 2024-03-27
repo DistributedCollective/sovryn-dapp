@@ -4,6 +4,7 @@ import { Decimal } from '@sovryn/utils';
 export const availableTokens = [
   SupportedTokens.rbtc,
   SupportedTokens.sov,
+  SupportedTokens.ossov,
   SupportedTokens.dllr,
   SupportedTokens.zusd,
   SupportedTokens.xusd,

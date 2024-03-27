@@ -31,6 +31,7 @@ export const getTokenDisplayName = (
 export const tokensLongName = {
   [SupportedTokens.rbtc]: 'Bitcoin',
   [SupportedTokens.sov]: 'Sovryn Token',
+  [SupportedTokens.ossov]: 'Sovryn Token for BitcoinOS',
   [SupportedTokens.dllr]: 'Sovryn Dollar',
   [SupportedTokens.fish]: 'Babelfish',
   [SupportedTokens.zusd]: 'Zero USD',

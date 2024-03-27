@@ -1,5 +1,7 @@
 import { createContext, Dispatch, SetStateAction } from 'react';
 
+import { TokenBalance } from './contract';
+
 export enum SendFlowStep {
   MAIN,
   AMOUNT,
@@ -23,6 +25,7 @@ export type SendFlowContextStateType = {
   amount: string;
   address: string;
   limits: SendFlowLimits;
+  selectedToken: TokenBalance;
 };
 
 export type SendFlowContextFunctionsType = {
@@ -42,6 +45,12 @@ export const defaultValue: SendFlowContextType = {
     baseFee: 0,
     dynamicFee: 0,
     loading: true,
+  },
+  selectedToken: {
+    symbol: '',
+    balance: '0',
+    name: '',
+    tokenContractAddress: '',
   },
   set: () => {},
 };

@@ -22,7 +22,9 @@ export const ContractContextProvider: React.FC<
     React.useState<ContractContextStateType>(defaultValue);
   const { provider, account } = useAccount();
   const requestTokenBalances = React.useCallback(async () => {
-    if (!state.runeBridgeContract) return;
+    if (!state.runeBridgeContract) {
+      return;
+    }
     const listTokens = await state.runeBridgeContract.listTokens();
     const tokenBalances: TokenBalance[] = [];
     for (const tokenAddress of listTokens) {

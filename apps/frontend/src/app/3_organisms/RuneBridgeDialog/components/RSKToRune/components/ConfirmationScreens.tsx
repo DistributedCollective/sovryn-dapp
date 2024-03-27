@@ -19,6 +19,7 @@ import { fromWei, toWei } from '../../../../../../utils/math';
 import { TransactionType } from '../../../../TransactionStepDialog/TransactionStepDialog.types';
 import { GAS_LIMIT_FAST_BTC_WITHDRAW } from '../../../constants';
 import { SendFlowContext, SendFlowStep } from '../../../contexts/sendflow';
+import { useContractService } from '../../../hooks/useContractService';
 import { ReviewScreen } from './ReviewScreen';
 import { StatusScreen } from './StatusScreen';
 
@@ -29,15 +30,26 @@ type ConfirmationScreensProps = {
 export const ConfirmationScreens: React.FC<ConfirmationScreensProps> = ({
   onClose,
 }) => {
-  const { account } = useAccount();
-  const { step, address, amount, set } = useContext(SendFlowContext);
+  const { account, signer } = useAccount();
+  const {
+    step,
+    address: receiverAddress,
+    amount,
+    set,
+    selectedToken,
+  } = useContext(SendFlowContext);
 
-  const { setTransactions, setTitle, setIsOpen } = useTransactionContext();
+  const {
+    setRuneBridgeTransactions,
+    setTitle,
+    setRuneBridgeIsOpen,
+    setRuneBridgeToken,
+  } = useTransactionContext();
 
   const [txHash, setTxHash] = useState<string | undefined>(undefined);
   const [txStatus, setTxStatus] = useState(StatusType.idle);
   const [currentFeeWei, setCurrentFeeWei] = useState(BigNumber.from(0));
-
+  const { runeBridgeContract } = useContractService();
   const fastBtcBridgeContract = useGetProtocolContract('fastBtcBridge');
 
   const weiAmount = useMemo(() => toWei(amount), [amount]);
@@ -71,40 +83,48 @@ export const ConfirmationScreens: React.FC<ConfirmationScreensProps> = ({
       ),
     [currentFeeWei, weiAmount],
   );
-
   const handleConfirm = useCallback(async () => {
-    if (fastBtcBridgeContract) {
-      setTransactions([
+    if (runeBridgeContract) {
+      if (!signer) {
+        throw new Error('Signer not found');
+      }
+      setRuneBridgeTransactions([
         {
           title: t(translations.fastBtc.send.txDialog.sendBTC),
           request: {
             type: TransactionType.signTransaction,
-            contract: fastBtcBridgeContract,
+            contract: runeBridgeContract.connect(signer),
             fnName: 'transferToBtc',
-            args: [address],
-            value: toWei(amount),
+            args: [
+              selectedToken.tokenContractAddress,
+              toWei(amount),
+              receiverAddress,
+            ],
             gasLimit: GAS_LIMIT_FAST_BTC_WITHDRAW,
           },
           onStart: hash => {
             setTxHash(hash);
             set(prevState => ({ ...prevState, step: SendFlowStep.CONFIRM }));
-            setIsOpen(false);
+            setRuneBridgeIsOpen(false);
           },
           onChangeStatus: setTxStatus,
         },
       ]);
-
       setTitle(t(translations.fastBtc.send.txDialog.title));
-      setIsOpen(true);
+      setRuneBridgeIsOpen(true);
+      setRuneBridgeToken(selectedToken);
     }
   }, [
-    address,
     amount,
-    fastBtcBridgeContract,
+    receiverAddress,
+    runeBridgeContract,
+    selectedToken,
     set,
-    setIsOpen,
+    setRuneBridgeIsOpen,
+    setRuneBridgeToken,
+    setRuneBridgeTransactions,
     setTitle,
-    setTransactions,
+    signer,
   ]);
 
   const handleRetry = useCallback(() => {
@@ -119,7 +139,7 @@ export const ConfirmationScreens: React.FC<ConfirmationScreensProps> = ({
         feesPaid={feesPaid}
         receiveAmount={receiveAmount}
         from={account}
-        to={address}
+        to={receiverAddress}
         amount={amount}
       />
     );
@@ -133,7 +153,7 @@ export const ConfirmationScreens: React.FC<ConfirmationScreensProps> = ({
       feesPaid={feesPaid}
       receiveAmount={receiveAmount}
       from={account}
-      to={address}
+      to={receiverAddress}
       amount={amount}
       onRetry={handleRetry}
     />

@@ -12,7 +12,6 @@ import {
 } from '@sovryn/ui';
 
 import { TxIdWithNotification } from '../../../../../2_molecules/TxIdWithNotification/TransactionIdWithNotification';
-import { BITCOIN } from '../../../../../../constants/currencies';
 import { useMaintenance } from '../../../../../../hooks/useMaintenance';
 import { translations } from '../../../../../../locales/i18n';
 import {
@@ -20,6 +19,7 @@ import {
   getRskExplorerUrl,
 } from '../../../../../../utils/helpers';
 import { formatValue } from '../../../../../../utils/math';
+import { useSendFlowService } from '../../../hooks/useSendFlowService';
 
 const translation = translations.fastBtc.send.confirmationScreens;
 
@@ -45,6 +45,7 @@ export const ReviewScreen: React.FC<ReviewScreenProps> = ({
 }) => {
   const { checkMaintenance, States } = useMaintenance();
   const fastBtcLocked = checkMaintenance(States.FASTBTC_SEND);
+  const { selectedToken } = useSendFlowService();
 
   const items = useMemo(
     () => [
@@ -70,7 +71,7 @@ export const ReviewScreen: React.FC<ReviewScreenProps> = ({
         label: t(translation.sending),
         value: (
           <>
-            {formatValue(Number(amount), 8)} {BITCOIN}
+            {formatValue(Number(amount), 8)} {selectedToken.symbol}
           </>
         ),
       },
@@ -78,7 +79,7 @@ export const ReviewScreen: React.FC<ReviewScreenProps> = ({
         label: t(translation.serviceFee),
         value: (
           <>
-            {formatValue(feesPaid, 8)} {BITCOIN}
+            {formatValue(feesPaid, 8)} {selectedToken.symbol}
           </>
         ),
       },
@@ -86,12 +87,12 @@ export const ReviewScreen: React.FC<ReviewScreenProps> = ({
         label: t(translation.receiving),
         value: (
           <>
-            {formatValue(receiveAmount, 8)} {BITCOIN}
+            {formatValue(receiveAmount, 8)} {selectedToken.symbol}
           </>
         ),
       },
     ],
-    [amount, feesPaid, from, receiveAmount, to],
+    [amount, feesPaid, from, receiveAmount, selectedToken.symbol, to],
   );
 
   return (

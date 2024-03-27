@@ -15,7 +15,10 @@ import './config/chains';
 
 import { LoaderProvider } from './app/0_meta/LoaderProvider/LoaderProvider';
 import { ServiceWorkerProvider } from './app/2_molecules/ServiceWorkerProvider/ServiceWorkerProvider';
-import { TransactionStepDialog } from './app/3_organisms';
+import {
+  RuneBridgeTransactionStepDialog,
+  TransactionStepDialog,
+} from './app/3_organisms';
 import { NetworkProvider } from './app/3_organisms/NetworkProvider/NetworkProvider';
 import { SharedStateProvider } from './app/3_organisms/SharedStateProvider/SharedStateProvider';
 import { MaintenanceModeContextProvider } from './contexts/MaintenanceModeContext';
@@ -49,6 +52,7 @@ root.render(
                 </MaintenanceModeContextProvider>
               </HelmetProvider>
             </ApolloProvider>
+            <RuneBridgeTransactionStepDialog disableFocusTrap />
             <TransactionStepDialog disableFocusTrap />
           </ServiceWorkerProvider>
         </NotificationProvider>

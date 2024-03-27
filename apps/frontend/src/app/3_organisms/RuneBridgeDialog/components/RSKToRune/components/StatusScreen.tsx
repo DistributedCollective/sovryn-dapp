@@ -64,7 +64,6 @@ export const StatusScreen: React.FC<StatusScreenProps> = ({
   onRetry,
 }) => {
   const { value: block } = useBlockNumber();
-
   const { data, refetch } = useGetBitcoinTxIdQuery({
     variables: { createdAtTx: txHash || '' },
   });
@@ -153,12 +152,8 @@ export const StatusScreen: React.FC<StatusScreenProps> = ({
       return txStatus;
     }
 
-    if (!bitcoinTxHash) {
-      return StatusType.pending;
-    }
-
     return StatusType.success;
-  }, [bitcoinTxHash, txStatus]);
+  }, [txStatus]);
 
   const hasTransactionFailed = useMemo(
     () => status === StatusType.error,
@@ -169,7 +164,6 @@ export const StatusScreen: React.FC<StatusScreenProps> = ({
     () => status === StatusType.pending,
     [status],
   );
-
   return (
     <div className="text-center">
       <Heading type={HeadingType.h2} className="font-medium mb-6">

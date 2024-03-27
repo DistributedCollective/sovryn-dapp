@@ -8,23 +8,20 @@ import React, {
 } from 'react';
 
 import { CrocEnv } from '@sovryn/ambient-sdk';
-import { getProvider } from '@sovryn/ethers-provider';
+import { ChainIds, getProvider } from '@sovryn/ethers-provider';
 
 import { BOB_CHAIN_ID } from '../../../config/chains';
 
 import { useAccount } from '../../../hooks/useAccount';
-import { findAsset } from '../../../utils/asset';
 import { createRangePositionTx } from './ambient-utils';
 import { multiSwap } from './testing-swap';
-import { ChainIds } from '@sovryn/ethers-provider';
 import { ETH_TOKEN, OKB_TOKEN, USDC_TOKEN, WBTC_TOKEN } from './fork-constants';
-import { formatUnits, parseUnits } from 'ethers/lib/utils';
+import { parseUnits } from 'ethers/lib/utils';
 import { CrocTokenView } from '@sovryn/ambient-sdk/dist/tokens';
 import classNames from 'classnames';
 
 // const CHAIN_ID = BOB_CHAIN_ID;
 const CHAIN_ID = ChainIds.SEPOLIA;
-// const USDC_TOKEN = findAsset('GLD', BOB_CHAIN_ID)?.address;
 
 const testAllowance = async (
   owner: string,
@@ -97,7 +94,7 @@ export const BobAmmPage: React.FC = () => {
     }
 
     const tokenA = croc.current.tokens.materialize(ETH_TOKEN);
-    const tokenB = croc.current.tokens.materialize(WBTC_TOKEN);
+    const tokenB = croc.current.tokens.materialize(USDC_TOKEN);
 
     const pool = croc.current.pool(tokenA.tokenAddr, tokenB.tokenAddr);
     console.log({ pool });
@@ -117,7 +114,7 @@ export const BobAmmPage: React.FC = () => {
 
     console.log('display price', price);
 
-    const TOKEN_A_AMOUNT = 200; // 0.0001
+    const TOKEN_A_AMOUNT = 0.0001; // 0.0001
     const TOKEN_B_AMOUNT = price * TOKEN_A_AMOUNT;
 
     console.log({ TOKEN_A_AMOUNT, TOKEN_B_AMOUNT });
@@ -213,8 +210,8 @@ export const BobAmmPage: React.FC = () => {
     if (!croc.current) {
       return;
     }
-    const labels = ['ETH', 'USDC', 'WBTC', 'OKB'];
-    const items = [ETH_TOKEN, USDC_TOKEN, WBTC_TOKEN, OKB_TOKEN];
+    const labels = ['ETH', 'USDC', /*'WBTC', */ 'OKB'];
+    const items = [ETH_TOKEN, USDC_TOKEN, /*WBTC_TOKEN,*/ OKB_TOKEN];
 
     const _dexBalances: Record<string, number> = {};
     const _walletBalances: Record<string, number> = {};

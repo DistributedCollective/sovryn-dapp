@@ -1,7 +1,7 @@
 import { CrocEnv, MAX_SQRT_PRICE, MIN_SQRT_PRICE } from '@sovryn/ambient-sdk';
 
 import { OrderDirective } from '@sovryn/ambient-sdk/src/encoding/longform';
-import { ETH_TOKEN, OKB_TOKEN, USDC_TOKEN, WBTC_TOKEN } from './fork-constants';
+import { ETH_TOKEN, OKB_TOKEN, USDC_TOKEN } from './fork-constants';
 import { BigNumber } from 'ethers';
 import { Decimal } from '@sovryn/utils';
 import { CrocTokenView } from '@sovryn/ambient-sdk/dist/tokens';
@@ -23,7 +23,7 @@ export const multiSwap = async (
 ) => {
   const useSurplus = false;
 
-  const ENTRY_AMOUNT_1 = await env.token(USDC_TOKEN).normQty(20);
+  const ENTRY_AMOUNT_1 = await env.token(USDC_TOKEN).normQty(100);
 
   console.log({ ENTRY_AMOUNT: ENTRY_AMOUNT_1.toString() });
 
@@ -36,7 +36,7 @@ export const multiSwap = async (
   const POOL_INDEX = (await env.context).chain.poolIndex;
   const PATH = (await env.context).chain.proxyPaths.long;
 
-  // entry
+  // entry (ETH -> USDC)
   const order = new OrderDirective(ETH_TOKEN);
   order.open.useSurplus = useSurplus;
 
@@ -77,7 +77,8 @@ export const multiSwap = async (
 
   console.log(
     'out',
-    Decimal.fromBigNumberString(impact_1.baseFlow).abs().toBigNumber(),
+    Decimal.fromBigNumberString(impact_1.baseFlow).abs().toBigNumber().toString(),
+    Decimal.fromBigNumberString(impact_1.quoteFlow).abs().toBigNumber().toString(),
   );
 
   const OUT_1 = Decimal.fromBigNumberString(impact_1.baseFlow)
@@ -86,7 +87,7 @@ export const multiSwap = async (
 
   console.log('out1', OUT_1.toString());
 
-  // HOP 2:
+  // HOP 2: (ETH -> WBTC)
 
   order.appendHop(ETH_TOKEN);
   const hop_2 = order.appendHop(OKB_TOKEN);
@@ -101,7 +102,7 @@ export const multiSwap = async (
   pool_2.swap.inBaseQty = isBuy_2;
   pool_2.swap.qty = OUT_1;
 
-  const { finalPrice: finalPrice2 } = await calcImpact(
+  const impact_2 = await calcImpact(
     env,
     ETH_TOKEN,
     OKB_TOKEN,
@@ -111,7 +112,7 @@ export const multiSwap = async (
     OUT_1,
   );
 
-  pool_2.swap.limitPrice = Decimal.fromBigNumberString(finalPrice2)
+  pool_2.swap.limitPrice = Decimal.fromBigNumberString(impact_2.finalPrice)
     .mul(isBuy_2 ? 1 + SLIPPDAGE : 1 - SLIPPDAGE)
     .toBigNumber();
   // @dev https://github.com/CrocSwap/CrocSwap-protocol/blob/8a273515be92dd4e28e4c51a86097e8d35bc48ad/contracts/libraries/Chaining.sol#L28
@@ -120,6 +121,12 @@ export const multiSwap = async (
   console.log('price 2:', pool_2.swap.limitPrice.toString());
 
   pool_2.chain.rollExit = true;
+
+  console.log(
+    'out2',
+    Decimal.fromBigNumberString(impact_2.baseFlow).abs().toBigNumber().toString(),
+    Decimal.fromBigNumberString(impact_2.quoteFlow).abs().toBigNumber().toString(),
+  );
 
   console.log('ORDER: ', order);
 

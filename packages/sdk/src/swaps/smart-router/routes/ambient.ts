@@ -48,9 +48,11 @@ export const ambientRoute: SwapRouteFunction = (
     const eth = (await getAssetContract('ETH', chainId)).address;
     const usdc = (await getAssetContract('USDC', chainId)).address;
     const wbtc = (await getAssetContract('WBTC', chainId)).address;
+    const okb = (await getAssetContract('OKB', chainId)).address;
     const pools: Pool[] = [
       [eth, usdc],
       [eth, wbtc],
+      [eth, okb],
     ];
 
     return pools;
@@ -86,10 +88,24 @@ export const ambientRoute: SwapRouteFunction = (
       return pairs;
     },
     quote: async (entry, destination, amount) => {
-      const plan = await makePlan(entry, destination, BigNumber.from(amount));
-      const impact = await plan.impact;
+      try {
+        const plan = await makePlan(entry, destination, BigNumber.from(amount));
+        const impact = await plan.impact;
 
-      return utils.parseEther(impact.buyQty);
+        console.log('plan', plan);
+        console.log('impact', impact);
+
+        // @dev multihop pairs has no price, for now we return 1
+        // @todo: implement multihop pair quote
+        if (impact.buyQty === '0.0') {
+          return utils.parseEther('1');
+        }
+
+        return utils.parseEther(impact.buyQty);
+      } catch (e) {
+        console.warn('Error getting quote', e);
+        return utils.parseEther('1');
+      }
     },
     approve: async (entry, destination, amount, from, overrides) => {
       if (entry === constants.AddressZero) {

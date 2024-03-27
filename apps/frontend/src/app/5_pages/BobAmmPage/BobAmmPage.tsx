@@ -20,6 +20,7 @@ import { parseUnits } from 'ethers/lib/utils';
 import { CrocTokenView } from '@sovryn/ambient-sdk/dist/tokens';
 import classNames from 'classnames';
 import { bfsShortestPath, graph } from './pool-graph';
+import { Decimal } from '@sovryn/utils';
 
 // const CHAIN_ID = BOB_CHAIN_ID;
 const CHAIN_ID = ChainIds.SEPOLIA;
@@ -196,15 +197,15 @@ export const BobAmmPage: React.FC = () => {
     console.log({ result });
   }, [account]);
 
-  const [dexBalances, setDexBalances] = useState<Record<string, number>>({});
-  const [walletBalances, setWalletBalances] = useState<Record<string, number>>(
+  const [dexBalances, setDexBalances] = useState<Record<string, Decimal>>({});
+  const [walletBalances, setWalletBalances] = useState<Record<string, Decimal>>(
     {},
   );
   const [prevDexBalances, setPrevDexBalances] = useState<
-    Record<string, number>
+    Record<string, Decimal>
   >({});
   const [prevWalletBalances, setPrevWalletBalances] = useState<
-    Record<string, number>
+    Record<string, Decimal>
   >({});
 
   const updateBalances = useCallback(async () => {
@@ -213,16 +214,18 @@ export const BobAmmPage: React.FC = () => {
     }
     const labels = ['ETH', 'USDC', 'WBTC', 'OKB'];
     const items = [ETH_TOKEN, USDC_TOKEN, WBTC_TOKEN, OKB_TOKEN];
+    const decimals = [18, 6, 8, 18];
 
-    const _dexBalances: Record<string, number> = {};
-    const _walletBalances: Record<string, number> = {};
+    const _dexBalances: Record<string, Decimal> = {};
+    const _walletBalances: Record<string, Decimal> = {};
 
     for (let i = 0; i < items.length; i++) {
       const token = croc.current.tokens.materialize(items[i]);
+      const decimals = await token.decimals;
       const balance = await token.balanceDisplay(account);
       const wallet = await token.walletDisplay(account);
-      _dexBalances[labels[i]] = Number(balance);
-      _walletBalances[labels[i]] = Number(wallet);
+      _dexBalances[labels[i]] = Decimal.from(balance.toString());
+      _walletBalances[labels[i]] = Decimal.from(wallet.toString());
     }
 
     setWalletBalances(p => {
@@ -333,8 +336,8 @@ export const BobAmmPage: React.FC = () => {
 
 type RenderBalanceProps = {
   label: string;
-  balance: number;
-  prevBalance?: number;
+  balance: Decimal;
+  prevBalance?: Decimal;
 };
 
 const RenderBalance: FC<RenderBalanceProps> = ({
@@ -344,14 +347,14 @@ const RenderBalance: FC<RenderBalanceProps> = ({
 }) => {
   const diff = useMemo(() => {
     if (prevBalance !== undefined && prevBalance !== balance) {
-      return balance - prevBalance;
+      return balance.sub(prevBalance ?? 0).toNumber();
     }
     return 0;
   }, [balance, prevBalance]);
 
   return (
     <li>
-      {label}: {balance}{' '}
+      {label}: {balance.toNumber()}{' '}
       {diff !== 0 ? (
         <span
           className={classNames({

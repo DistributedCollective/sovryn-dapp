@@ -1,7 +1,6 @@
 import React, { FC, useCallback, useMemo, useReducer } from 'react';
 
 import { t } from 'i18next';
-import { useNavigate } from 'react-router-dom';
 
 import { SupportedTokens } from '@sovryn/contracts';
 import {
@@ -30,13 +29,6 @@ export const Header: FC = () => {
   const { connectWallet, disconnectWallet, account, pending } =
     useWalletConnect();
   useWrongNetworkCheck();
-
-  const navigate = useNavigate();
-
-  const handleLeaderboardClick = useCallback(
-    () => navigate(`/powa`),
-    [navigate],
-  );
 
   const { balance } = useAssetBalance(SupportedTokens.rbtc);
 
@@ -91,10 +83,10 @@ export const Header: FC = () => {
             ))}
             <ProductLinks />
             <Button
-              text={t(translations.leaderboardPage.headerLink)}
+              text={t(translations.header.nav.bob)}
               style={ButtonStyle.primary}
               className="bg-[#24BFB74D]/[0.3] border-[#24BFB74D]/[0.3] hover:bg-[#24BFB74D]"
-              onClick={handleLeaderboardClick}
+              onClick={() => window.open('https://gobob.sovryn.app', '_blank')}
             />
           </ol>
         }

@@ -20,7 +20,7 @@ export const useGetStakingStatistics = () => {
     totalVotingPower: 0,
     maxStakingApr: 0,
   });
-  const { value: block } = useBlockNumber();
+  const { value: block } = useBlockNumber(chainId);
 
   const fetchStakingStatistics = useCallback(async () => {
     if (!stakingContract) {

@@ -50,6 +50,7 @@ export const useHandleAdjustStake = (
         spender: stakingContract.address,
         amount: weiAmount,
         signer,
+        chain: chainId,
       });
 
       if (approveTx) {
@@ -149,14 +150,15 @@ export const useHandleAdjustStake = (
   }, [
     signer,
     stakingContract,
+    action,
     amount,
+    chainId,
     timestamp,
     account,
     onComplete,
     setTransactions,
     setTitle,
     setIsOpen,
-    action,
     updatedTimestamp,
     delegateAddress,
   ]);

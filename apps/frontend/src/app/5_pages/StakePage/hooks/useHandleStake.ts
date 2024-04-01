@@ -41,6 +41,7 @@ export const useHandleStake = (
       spender: stakingContract.address,
       amount: weiAmount,
       signer,
+      chain: chainId,
     });
 
     if (approveTx) {
@@ -67,12 +68,13 @@ export const useHandleStake = (
     signer,
     stakingContract,
     amount,
+    chainId,
     timestamp,
+    account,
     onComplete,
     setTransactions,
     setTitle,
     setIsOpen,
-    account,
   ]);
 
   const handleSubmit = useCallback(() => stake(), [stake]);

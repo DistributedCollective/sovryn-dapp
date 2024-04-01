@@ -1271,6 +1271,19 @@
                 "newPoolBalance": "New pool balance",
                 "currentPrice": "Current {{token}} price",
                 "lpFeeRate": "LP fee rate"
+            },
+            "rangeWidth": "Range width",
+            "minPrice": "Min price",
+            "maxPrice": "Max price"
+        },
+        "withdrawModal": {
+            "title": "Withdraw liquidity",
+            "returnRate": "Return rate",
+            "currentBalance": "Current balance",
+            "newPoolStatistics": {
+                "newPoolBalance": "New pool balance",
+                "earnedRewards": "Earned rewards",
+                "slippage": "Slippage"
             }
         }
     },

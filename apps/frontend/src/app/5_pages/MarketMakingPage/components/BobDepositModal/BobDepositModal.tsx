@@ -3,8 +3,6 @@ import React, { FC, useCallback, useMemo, useState } from 'react';
 import { t } from 'i18next';
 
 import {
-  Accordion,
-  AmountInput,
   Button,
   ButtonStyle,
   ButtonType,
@@ -12,20 +10,18 @@ import {
   Dialog,
   DialogBody,
   DialogHeader,
-  FormGroup,
 } from '@sovryn/ui';
 
-import { AssetRenderer } from '../../../../2_molecules/AssetRenderer/AssetRenderer';
 import { CurrentStatistics } from '../../../../2_molecules/CurrentStatistics/CurrentStatistics';
-import { MaxButton } from '../../../../2_molecules/MaxButton/MaxButton';
 import { useAccount } from '../../../../../hooks/useAccount';
-import { useWeiAmountInput } from '../../../../../hooks/useWeiAmountInput';
 import { translations } from '../../../../../locales/i18n';
 import { COMMON_SYMBOLS } from '../../../../../utils/asset';
 import { AmmLiquidityPoolDictionary } from '../../utils/AmmLiquidityPoolDictionary';
-import { useGetMaxDeposit } from '../AdjustAndDepositModal/hooks/useGetMaxDeposit';
 import { NewPoolStatistics } from './components/NewPoolStatistics/NewPoolStatistics';
 import { PriceRange } from './components/PriceRange/PriceRange';
+import { AmountForm } from './components/PriceRange/components/AmountForm/AmountForm';
+import { SlippageSettings } from './components/PriceRange/components/SlippageSettings/SlippageSettings';
+import { useDepositContext } from './contexts/BobDepositModalContext';
 
 // TODO: This will be a prop and will likely use a different set of pools
 const POOL = AmmLiquidityPoolDictionary.list().filter(
@@ -45,30 +41,17 @@ export const BobDepositModal: FC<BobDepositModalProps> = ({
 }) => {
   const { account } = useAccount();
 
+  const { firstAssetValue, secondAssetValue, maximumSlippage, rangeWidth } =
+    useDepositContext();
+
   const [hasDisclaimerBeenChecked, setHasDisclaimerBeenChecked] =
     useState(false);
 
-  const [firstAssetValue, setFirstAssetValue] = useWeiAmountInput('');
-  const [secondAssetValue, setSecondAssetValue] = useWeiAmountInput('');
-
-  const [slippageTolerance, setSlippageTolerance] = useState(0.5);
-
-  const [isSlippageExpanded, setIsSlippageExpanded] = useState(false);
-
-  // TODO: We will need a separate hook for Ambient pool deposits
-  const { balanceTokenA, balanceTokenB } = useGetMaxDeposit(POOL, true);
-
-  const handleFirstAssetMaxClick = useCallback(() => {
-    setFirstAssetValue(balanceTokenA.toString());
-  }, [balanceTokenA, setFirstAssetValue]);
-
-  const handleSecondAssetMaxClick = useCallback(() => {
-    setSecondAssetValue(balanceTokenB.toString());
-  }, [balanceTokenB, setSecondAssetValue]);
-
   const handleSubmit = useCallback(() => {
-    console.log(`submit`);
-  }, []);
+    console.log(
+      `submit, firstAssetValue: ${firstAssetValue} , secondAssetValue: ${secondAssetValue} , maximumSlippage: ${maximumSlippage} , rangeWidth: ${rangeWidth}`,
+    );
+  }, [firstAssetValue, maximumSlippage, rangeWidth, secondAssetValue]);
 
   const isSubmitDisabled = useMemo(() => !account, [account]);
 
@@ -87,81 +70,9 @@ export const BobDepositModal: FC<BobDepositModalProps> = ({
             />
           </div>
 
-          <FormGroup
-            label={
-              <div className="flex justify-end w-full">
-                <MaxButton
-                  value={balanceTokenA}
-                  token={POOL.assetA}
-                  onClick={handleFirstAssetMaxClick}
-                />
-              </div>
-            }
-            labelElement="div"
-            className="max-w-none mt-8"
-            dataAttribute="bob-amm-pool-deposit-asset1"
-          >
-            <AmountInput
-              value={firstAssetValue}
-              onChangeText={setFirstAssetValue}
-              maxAmount={balanceTokenA.toNumber()}
-              label={t(translations.common.amount)}
-              className="max-w-none"
-              unit={<AssetRenderer asset={POOL.assetA} />}
-              disabled={!account}
-              placeholder="0"
-            />
-          </FormGroup>
-
-          <FormGroup
-            label={
-              <div className="flex justify-end w-full">
-                <MaxButton
-                  value={balanceTokenB}
-                  token={POOL.assetB}
-                  onClick={handleSecondAssetMaxClick}
-                />
-              </div>
-            }
-            labelElement="div"
-            className="max-w-none mt-8"
-            dataAttribute="bob-amm-pool-deposit-asset2"
-          >
-            <AmountInput
-              value={secondAssetValue}
-              onChangeText={setSecondAssetValue}
-              maxAmount={balanceTokenB.toNumber()}
-              label={t(translations.common.amount)}
-              className="max-w-none"
-              unit={<AssetRenderer asset={POOL.assetB} />}
-              disabled={!account}
-              placeholder="0"
-            />
-          </FormGroup>
-
+          <AmountForm />
           <PriceRange />
-
-          <div className="bg-gray-90 px-2 py-4 mt-6 rounded">
-            <Accordion
-              label={t(pageTranslations.slippage)}
-              open={isSlippageExpanded}
-              onClick={() => setIsSlippageExpanded(!isSlippageExpanded)}
-              labelClassName="justify-between"
-            >
-              <AmountInput
-                value={slippageTolerance}
-                onChange={e => setSlippageTolerance(e.target.value)}
-                label={t(pageTranslations.maximumSlippage)}
-                className="max-w-none w-full"
-                unit="%"
-                step={0.01}
-                decimalPrecision={2}
-                placeholder="0"
-                max={100}
-              />
-            </Accordion>
-          </div>
-
+          <SlippageSettings />
           <NewPoolStatistics pool={POOL} />
 
           <div className="mt-8">
@@ -172,17 +83,15 @@ export const BobDepositModal: FC<BobDepositModalProps> = ({
             />
           </div>
 
-          <div className="mt-6 flex flex-row items-center justify-between gap-8">
-            <Button
-              type={ButtonType.submit}
-              style={ButtonStyle.primary}
-              text={t(translations.common.buttons.confirm)}
-              className="w-full"
-              onClick={handleSubmit}
-              dataAttribute="new-loan-confirm-button"
-              disabled={isSubmitDisabled}
-            />
-          </div>
+          <Button
+            type={ButtonType.submit}
+            style={ButtonStyle.primary}
+            text={t(translations.common.buttons.confirm)}
+            className="w-full mt-6"
+            onClick={handleSubmit}
+            dataAttribute="add-liquidity-confirm-button"
+            disabled={isSubmitDisabled}
+          />
         </DialogBody>
       </Dialog>
     </>

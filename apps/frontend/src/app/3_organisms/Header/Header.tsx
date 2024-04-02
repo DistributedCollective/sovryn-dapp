@@ -13,6 +13,7 @@ import {
 } from '@sovryn/ui';
 
 import { ConnectWalletButton } from '../../2_molecules';
+import { useRequiredChain } from '../../2_molecules/NetworkBanner/hooks/useRequiredChain';
 import { NetworkPicker } from '../../2_molecules/NetworkPicker/NetworkPicker';
 import { SovrynLogo } from '../../2_molecules/SovrynLogo/SovrynLogo';
 import { RSK_FAUCET } from '../../../constants/general';
@@ -26,6 +27,7 @@ import { NavItem } from './components/NavItem/NavItem';
 import { ProductLinks } from './components/ProductLinks/ProductLinks';
 
 export const Header: FC = () => {
+  const { invalidChain } = useRequiredChain();
   const [isOpen, toggle] = useReducer(v => !v, false);
   const { connectWallet, disconnectWallet, account, pending } =
     useWalletConnect();
@@ -120,6 +122,7 @@ export const Header: FC = () => {
                   onClick={enableFastBtc ? handleFastBtcClick : noop}
                   href={enableFastBtc ? '' : RSK_FAUCET}
                   hrefExternal={true}
+                  disabled={invalidChain}
                 />
               </>
             )}

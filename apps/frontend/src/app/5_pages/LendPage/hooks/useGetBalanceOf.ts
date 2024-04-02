@@ -7,7 +7,7 @@ import {
 } from '@sovryn/contracts';
 import { getProvider } from '@sovryn/ethers-provider';
 
-import { defaultChainId } from '../../../../config/chains';
+import { defaultRskChainId } from '../../../../config/chains';
 
 import { useAccount } from '../../../../hooks/useAccount';
 import { useCacheCall } from '../../../../hooks/useCacheCall';
@@ -30,14 +30,14 @@ export const useGetBalanceOf = (asset: SupportedTokens) => {
 
       const { address, abi } = await getLoanTokenContract(
         asset,
-        defaultChainId,
+        defaultRskChainId,
       );
 
       try {
         const contract = new Contract(
           address,
           abi,
-          getProvider(defaultChainId),
+          getProvider(defaultRskChainId),
         );
         directBalance = contract.balanceOf(account);
       } catch (e) {}
@@ -45,13 +45,13 @@ export const useGetBalanceOf = (asset: SupportedTokens) => {
       try {
         const { address: lmAddress, abi: lmAbi } = await getProtocolContract(
           'liquidityMiningProxy',
-          defaultChainId,
+          defaultRskChainId,
         );
 
         const contract = new Contract(
           lmAddress,
           lmAbi,
-          getProvider(defaultChainId),
+          getProvider(defaultRskChainId),
         );
         balanceInLM = await contract.getUserPoolTokenBalance(address, account);
       } catch (e) {}

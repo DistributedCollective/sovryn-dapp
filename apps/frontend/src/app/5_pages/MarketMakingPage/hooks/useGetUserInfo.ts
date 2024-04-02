@@ -6,7 +6,7 @@ import { SupportedTokens, getProtocolContract } from '@sovryn/contracts';
 import { getProvider } from '@sovryn/ethers-provider';
 import { Decimal } from '@sovryn/utils';
 
-import { defaultChainId } from '../../../../config/chains';
+import { defaultRskChainId } from '../../../../config/chains';
 
 import { useAccount } from '../../../../hooks/useAccount';
 import {
@@ -24,10 +24,10 @@ export const useGetUserInfo = (pool: AmmLiquidityPool) => {
   const [balanceB, setBalanceB] = useState<Decimal>(Decimal.ZERO);
   const [loadingB, setLoadingB] = useState(false);
   const liquidityMiningProxy = useGetProtocolContract('liquidityMiningProxy');
-  const contractTokenA = useGetTokenContract(assetA, defaultChainId);
+  const contractTokenA = useGetTokenContract(assetA, defaultRskChainId);
   const contractTokenB = useGetTokenContract(
     SupportedTokens.wrbtc,
-    defaultChainId,
+    defaultRskChainId,
   );
 
   const getUserInfo = useCallback(
@@ -65,12 +65,12 @@ export const useGetUserInfo = (pool: AmmLiquidityPool) => {
 
       const { abi } = await getProtocolContract(
         'babelfishAggregator',
-        defaultChainId,
+        defaultRskChainId,
       );
       const contract = new ethers.Contract(
         poolTokenA,
         abi,
-        getProvider(defaultChainId),
+        getProvider(defaultRskChainId),
       );
 
       const totalSupply = await contract

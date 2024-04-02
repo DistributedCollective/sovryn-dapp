@@ -2,7 +2,7 @@ import { t } from 'i18next';
 
 import { ChainIds } from '@sovryn/ethers-provider';
 
-import { defaultChainId } from '../../../../../../../config/chains';
+import { defaultRskChainId } from '../../../../../../../config/chains';
 
 import { translations } from '../../../../../../../locales/i18n';
 import { Governor } from '../../NewProposalForm.types';
@@ -28,12 +28,12 @@ const developmentFundAddresses = {
 };
 
 export const GOVERNOR_VAULT_OWNER_ADDRESS =
-  governorVaultOwnerAddresses[defaultChainId];
+  governorVaultOwnerAddresses[defaultRskChainId];
 export const GOVERNOR_VAULT_ADMIN_ADDRESS =
-  governorVaultAdminAddresses[defaultChainId];
-export const ADOPTION_FUND_ADDRESS = adoptionFundAddresses[defaultChainId];
+  governorVaultAdminAddresses[defaultRskChainId];
+export const ADOPTION_FUND_ADDRESS = adoptionFundAddresses[defaultRskChainId];
 export const DEVELOPMENT_FUND_ADDRESS =
-  developmentFundAddresses[defaultChainId];
+  developmentFundAddresses[defaultRskChainId];
 
 export const TREASURY_OPTIONS = [
   {

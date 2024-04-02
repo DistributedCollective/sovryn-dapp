@@ -48,7 +48,7 @@ export const EcosystemStats: FC<EcosystemStatsProps> = ({
       babelFishDLLRBalance ? (
         <>
           <AmountRenderer
-            value={babelFishZUSDBalance}
+            value={babelFishDLLRBalance}
             suffix={findAsset(COMMON_SYMBOLS.DLLR, RSK_CHAIN_ID)?.symbol}
             precision={USD_DISPLAY_PRECISION}
             showRoundingPrefix={false}

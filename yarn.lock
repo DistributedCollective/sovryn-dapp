@@ -1858,13 +1858,6 @@
     semver "^7.3.2"
     webpack-merge "^4.2.2"
 
-"@crocswap-libs/sdk@^0.2.82":
-  version "0.2.82"
-  resolved "https://registry.yarnpkg.com/@crocswap-libs/sdk/-/sdk-0.2.82.tgz#20f7ae1b5f97fb7b7682683bbe2896a07715befc"
-  integrity sha512-ySOEniBByDvRFhQOlllxdMfGC+WGKPu3GZBMArGegs47n8HwEmNIe6i7pbPEm/633lyHEzFAFQrhnjtuKwJ1qg==
-  dependencies:
-    ethers "^5.5.3"
-
 "@cspotcode/source-map-support@^0.8.0":
   version "0.8.1"
   resolved "https://registry.yarnpkg.com/@cspotcode/source-map-support/-/source-map-support-0.8.1.tgz#00629c35a688e05a88b1cda684fb9d5e73f000a1"

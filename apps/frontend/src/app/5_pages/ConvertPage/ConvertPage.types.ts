@@ -9,6 +9,7 @@ const SWAP_ROUTES = [
   smartRoutes.myntBassetRoute,
   smartRoutes.myntFixedRateRoute,
   smartRoutes.mocIntegrationSwapRoute,
+  smartRoutes.ambientRoute,
 ];
 
 export const smartRouter = new SmartRouter(provider, SWAP_ROUTES);

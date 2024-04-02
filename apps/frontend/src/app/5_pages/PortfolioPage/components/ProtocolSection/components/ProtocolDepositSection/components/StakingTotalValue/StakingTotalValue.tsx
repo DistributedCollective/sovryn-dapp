@@ -49,6 +49,7 @@ export const StakingTotalValue: FC<ProtocolSectionProps> = ({
         );
 
         const result = await smartRouter.getBestQuote(
+          defaultChainId,
           sourceTokenDetails.address,
           destinationTokenDetails.address,
           stakedValue.toString(),

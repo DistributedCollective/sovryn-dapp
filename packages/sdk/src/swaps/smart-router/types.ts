@@ -1,4 +1,5 @@
 import type { TransactionRequest } from '@ethersproject/abstract-provider';
+import type { ChainId } from '@sovryn/ethers-provider';
 import { PermitTransferFrom } from '@uniswap/permit2-sdk';
 
 import type { BigNumber, BigNumberish, providers } from 'ethers';
@@ -17,6 +18,7 @@ export type SwapOptions = {
 
 export type SwapRoute = {
   name: string;
+  chains: ChainId[];
 
   // List of token pairs available for swapping. Key is the base token, value is the list of quote tokens.
   // Example: { '0x': ['0x', '0x'] }

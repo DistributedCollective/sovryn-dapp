@@ -42,13 +42,11 @@ export const ambientRoute: SwapRouteFunction = (
       const chainId = await getChainId();
       console.log('chainId', chainId);
       const btc = await getTokenContract('btc', chainId);
-      const usdt = await getTokenContract('usdt', chainId);
-
-      console.log('btc', btc.address);
+      const sov = await getTokenContract('sov', chainId);
 
       return new Map<string, string[]>([
-        [btc.address, [usdt.address]],
-        [usdt.address, [btc.address]],
+        [btc.address, [sov.address]],
+        [sov.address, [btc.address]],
       ]);
     },
     quote: async (entry, destination, amount) => {

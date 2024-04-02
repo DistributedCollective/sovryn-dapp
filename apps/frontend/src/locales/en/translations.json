@@ -1189,6 +1189,7 @@
         },
         "apr": "APR"
     },
+
     "marketMakingPage": {
         "meta": {
             "title": "Market Making - Sovryn"
@@ -1257,6 +1258,25 @@
             "24hVolume": "24h volume (BTC)"
         }
     },
+
+    "bobMarketMakingPage": {
+        "depositModal": {
+            "title": "Deposit liquidity",
+            "returnRate": "Return rate",
+            "slippage": "Slippage",
+            "maximumSlippage": "Maximum slippage",
+            "depositDisclaimer": "I understand that my deposit will be at risk of divergence loss as the price of each asset changes",
+            "priceRange": "Price range",
+            "balanced": "Balanced",
+            "infinite": "Infinite",
+            "newPoolStatistics": {
+                "newPoolBalance": "New pool balance",
+                "currentPrice": "Current {{token}} price",
+                "lpFeeRate": "LP fee rate"
+            }
+        }
+    },
+
     "borrowHistory": {
         "types": {
             "lineOfCredit": "Line of credit",

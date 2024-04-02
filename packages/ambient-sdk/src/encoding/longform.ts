@@ -8,14 +8,14 @@ export class OrderDirective {
     }
 
     encodeBytes(): BytesLike {
-        let schema = encodeWord(LONG_FORM_SCHEMA_TYPE)
-        let open = encodeSettlement(this.open)
-        let hops = listEncoding(this.hops, encodeHop)
+        const schema = encodeWord(LONG_FORM_SCHEMA_TYPE)
+        const open = encodeSettlement(this.open)
+        const hops = listEncoding(this.hops, encodeHop)
         return ethers.utils.concat([schema, open, hops])
     }
 
     appendHop (nextToken: string): HopDirective {
-        const hop = { settlement: simpleSettle(nextToken), 
+        const hop = { settlement: simpleSettle(nextToken),
             pools: [],
             improve: { isEnabled: false, useBaseSide: false } }
         this.hops.push(hop)
@@ -23,7 +23,7 @@ export class OrderDirective {
     }
 
     appendPool (poolIdx: number): PoolDirective {
-        const pool = { 
+        const pool = {
             poolIdx: poolIdx,
             passive: {
                 ambient: { isAdd: false, rollType: 0, liquidity: BigNumber.from(0) },
@@ -32,7 +32,7 @@ export class OrderDirective {
             swap: {
                 isBuy: false,
                 inBaseQty: false,
-                rollType: 0, 
+                rollType: 0,
                 qty: BigNumber.from(0),
                 limitPrice: BigNumber.from(0)
             },
@@ -43,10 +43,10 @@ export class OrderDirective {
     }
 
     appendRangeMint (lowTick: number, highTick: number, liq: BigNumberish): ConcentratedDirective {
-        const range = { lowTick: lowTick, highTick: highTick, 
-            isRelTick: false, 
-            isAdd: true, 
-            rollType: 0, 
+        const range = { lowTick: lowTick, highTick: highTick,
+            isRelTick: false,
+            isAdd: true,
+            rollType: 0,
             liquidity: BigNumber.from(liq).abs()}
         const pool = ((this.hops.at(-1) as HopDirective).pools.at(-1) as PoolDirective)
         pool.passive.concentrated.push(range)
@@ -56,8 +56,8 @@ export class OrderDirective {
     appendAmbientMint (liq: BigNumberish): AmbientDirective {
         const pool = ((this.hops.at(-1) as HopDirective).pools.at(-1) as PoolDirective)
         pool.passive.ambient = {
-            isAdd: true, 
-            rollType: 0, 
+            isAdd: true,
+            rollType: 0,
             liquidity: BigNumber.from(liq).abs()
         }
         return pool.passive.ambient
@@ -208,7 +208,7 @@ function listEncoding<T> (elems: T[], encoderFn: (x: T) => BytesLike): BytesLike
     return ethers.utils.concat([count].concat(vals))
 }
 
-function encodeToken (tokenAddr: BytesLike): BytesLike {    
+function encodeToken (tokenAddr: BytesLike): BytesLike {
     return ethers.utils.hexZeroPad(tokenAddr, 32)
 }
 

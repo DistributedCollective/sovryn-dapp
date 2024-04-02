@@ -97,7 +97,8 @@ export class CrocSwapPlan {
   }
 
   async swap(args: CrocSwapExecOpts = {}): Promise<TransactionResponse> {
-    const gasEst = await this.estimateGas(args);
+    // const gasEst = await this.estimateGas(args);
+    const gasEst = BigNumber.from(6_000_000);
     const callArgs = Object.assign({ gasEst: gasEst }, args);
     return this.sendTx(Object.assign({}, args, callArgs));
   }
@@ -351,11 +352,12 @@ export class CrocSwapPlan {
       ],
     );
 
+    const aargs = await this.buildTxArgs(surplusFlags, args.gasEst);
+
     return base.userCmd(
       HOT_PROXY_IDX,
       cmd,
-      await this.buildTxArgs(surplusFlags, args.gasEst),
-      { from: args.from },
+      { gasLimit: args.gasEst, value: aargs.value },
     );
   }
 

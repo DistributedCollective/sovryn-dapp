@@ -60,10 +60,15 @@ export const ambientRoute: SwapRouteFunction = (
       const plan = await makePlan(entry, destination, BigNumber.from(amount));
       console.log('plan', plan);
       const impact = await plan.impact;
+
+      console.log('impact', impact);
+
       return utils.parseEther(impact.buyQty);
     },
     approve: async (entry, destination, amount, from, overrides) => {
-      console.log('approve', entry, destination, amount, from, overrides);
+      if (entry === constants.AddressZero) {
+        return undefined;
+      }
 
       const plan = await makePlan(entry, destination, BigNumber.from(amount));
       const contract = await plan.txBase();

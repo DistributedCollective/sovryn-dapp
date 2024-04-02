@@ -188,7 +188,7 @@ const BOB_TESTNET_CHAIN: ChainSpec = {
     router: '0x31B957FE4C68B1949C38F2F8AaeB0028C6860a5d',
     routerBypass: '0xf1e7167A0b085B52A8ad02A5Cc48eD2027b8B577',
   },
-  poolIndex: 0,
+  poolIndex: 36000,
   isTestNet: true,
   chainId: '0x6f',
   gridSize: 16,

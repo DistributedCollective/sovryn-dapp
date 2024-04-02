@@ -2,7 +2,6 @@ import React, { FC } from 'react';
 
 import { t } from 'i18next';
 
-import { SupportedTokens } from '@sovryn/contracts';
 import { applyDataAttr } from '@sovryn/ui';
 import { Decimalish } from '@sovryn/utils';
 
@@ -14,7 +13,7 @@ type MaxButtonProps = {
   value: Decimalish;
   onClick?: () => void;
   precision?: number;
-  token: SupportedTokens;
+  token: string;
   dataAttribute?: string;
   label?: string;
 };

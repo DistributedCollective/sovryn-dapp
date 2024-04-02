@@ -3,7 +3,6 @@ import React, { useMemo } from 'react';
 import { t } from 'i18next';
 import { Trans } from 'react-i18next';
 
-import { SupportedTokens } from '@sovryn/contracts';
 import {
   HelperButton,
   Link,
@@ -12,12 +11,14 @@ import {
   ParagraphStyle,
 } from '@sovryn/ui';
 
+import { RSK_CHAIN_ID } from '../../../../../config/chains';
+
 import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { TOKEN_RENDER_PRECISION } from '../../../../../constants/currencies';
 import { useAssetBalance } from '../../../../../hooks/useAssetBalance';
 import { useLoadContract } from '../../../../../hooks/useLoadContract';
 import { translations } from '../../../../../locales/i18n';
-import { getRskChainId } from '../../../../../utils/chain';
+import { COMMON_SYMBOLS, findAsset } from '../../../../../utils/asset';
 import { fromWei } from '../../../../../utils/math';
 import { APR, MAX_STAKING_APR_LINK, VP } from '../../StakePage.constants';
 import { GlobalStatistics } from '../../StakePage.utils';
@@ -27,8 +28,8 @@ export const StakingStatistics = () => {
   const { totalVotingPower, maxStakingApr } = useGetStakingStatistics();
   const stakingContract = useLoadContract('staking', 'protocol');
   const totalStakedSov = useAssetBalance(
-    SupportedTokens.sov,
-    getRskChainId(),
+    COMMON_SYMBOLS.SOV,
+    RSK_CHAIN_ID,
     stakingContract?.address,
   );
 
@@ -62,7 +63,7 @@ export const StakingStatistics = () => {
           value={
             <AmountRenderer
               value={totalStakedSov?.balance}
-              suffix={SupportedTokens.sov}
+              suffix={findAsset(COMMON_SYMBOLS.SOV, RSK_CHAIN_ID).symbol}
               precision={TOKEN_RENDER_PRECISION}
             />
           }

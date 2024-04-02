@@ -1,26 +1,29 @@
-import { SupportedTokens, getTokenDetails } from '@sovryn/contracts';
+import { AssetDetails } from '@sovryn/contracts';
+
+import { RSK_CHAIN_ID } from '../config/chains';
+
+import { findAsset } from './asset';
 
 export class LendingPool {
-  private _assetDetails;
+  private _details: AssetDetails;
   constructor(
-    private _name: string,
-    private _asset: SupportedTokens,
-    private _borrowCollateral: SupportedTokens[] = [],
+    private _asset: string,
+    private _borrowCollateral: string[] = [],
     public readonly useLM: boolean,
     public readonly deprecated: boolean = false,
   ) {
-    this._assetDetails = getTokenDetails(this._asset);
+    this._details = findAsset(this._asset, RSK_CHAIN_ID);
   }
   public getName(): string {
-    return this._name;
+    return this._details.symbol;
   }
-  public getAsset(): SupportedTokens {
-    return this._asset;
+  public getAsset(): string {
+    return this._details.symbol;
   }
-  public getAssetDetails(): SupportedTokens {
-    return this._assetDetails;
+  public getAssetDetails(): AssetDetails {
+    return this._details;
   }
-  public getBorrowCollateral(): SupportedTokens[] {
+  public getBorrowCollateral(): string[] {
     return this._borrowCollateral;
   }
 }

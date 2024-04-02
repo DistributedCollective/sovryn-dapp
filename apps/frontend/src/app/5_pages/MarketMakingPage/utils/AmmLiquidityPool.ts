@@ -1,6 +1,5 @@
 import { ContractInterface } from 'ethers';
 
-import { SupportedTokens } from '@sovryn/contracts';
 import { ChainIds } from '@sovryn/ethers-provider';
 
 import LiquidityPoolV1Converter from '../abis/LiquidityPoolV1Converter.json';
@@ -13,8 +12,8 @@ export class AmmLiquidityPool {
   private _previousConverters: string[] = [];
 
   constructor(
-    public readonly assetA: SupportedTokens,
-    public readonly assetB: SupportedTokens,
+    public readonly assetA: string,
+    public readonly assetB: string,
     public readonly converterVersion: ConverterVersion,
     public readonly chainId: ChainIds,
     public readonly converter: string,
@@ -37,11 +36,12 @@ export class AmmLiquidityPool {
       this.poolTokenB = poolTokenB.toLowerCase();
     }
   }
-  public getPoolTokenAddress(asset: SupportedTokens) {
-    if (asset === this.assetA) {
+  public getPoolTokenAddress(asset: string) {
+    asset = asset.toLowerCase();
+    if (asset === this.assetA.toLowerCase()) {
       return this.poolTokenA;
     }
-    if (asset === this.assetB) {
+    if (asset === this.assetB.toLowerCase()) {
       return this.poolTokenB;
     }
     return undefined;

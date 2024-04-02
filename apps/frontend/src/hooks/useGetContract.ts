@@ -16,4 +16,4 @@ export const useGetTokenContract = (
   contractName: string,
   chain: ChainId = RSK_CHAIN_ID,
   customSigner?: ethers.providers.JsonRpcSigner,
-) => useLoadContract(contractName, 'tokens', chain, customSigner);
+) => useLoadContract(contractName, 'assets', chain, customSigner);

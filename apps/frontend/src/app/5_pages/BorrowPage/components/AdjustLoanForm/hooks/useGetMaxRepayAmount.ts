@@ -1,6 +1,5 @@
 import { useMemo } from 'react';
 
-import { SupportedTokens } from '@sovryn/contracts';
 import { Decimal } from '@sovryn/utils';
 
 import { LoanItem } from '../../../../../5_pages/BorrowPage/components/OpenLoansTable/OpenLoansTable.types';
@@ -9,9 +8,7 @@ import { decimalic } from '../../../../../../utils/math';
 import { useGetInterestRefund } from './useGetInterestRefund';
 
 export const useGetMaxRepayAmount = (loanToken: string, loan: LoanItem) => {
-  const { balance: loanTokenBalance } = useMaxAssetBalance(
-    loanToken as SupportedTokens,
-  );
+  const { balance: loanTokenBalance } = useMaxAssetBalance(loanToken);
   const interestRefund = useGetInterestRefund(loan.id);
   const totalDebt = useMemo(() => decimalic(loan.debt.toString()), [loan.debt]);
 

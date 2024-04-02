@@ -4,7 +4,6 @@ import classNames from 'classnames';
 import dayjs from 'dayjs';
 import { t } from 'i18next';
 
-import { SupportedTokens } from '@sovryn/contracts';
 import { Dialog, DialogHeader, DialogBody, Pagination } from '@sovryn/ui';
 import { Decimal } from '@sovryn/utils';
 
@@ -16,6 +15,7 @@ import {
   VestingHistoryItem,
 } from '../../Vesting.types';
 import { renderContractAddress, renderBalance } from '../../Vestings.utils';
+import { COMMON_SYMBOLS } from '../../../../../../../utils/asset';
 
 type UnlockScheduleDialogProps = {
   vestingContract: VestingContractTableRecord;
@@ -123,7 +123,7 @@ export const UnlockScheduleDialog: React.FC<UnlockScheduleDialogProps> = ({
                     <div>
                       <AssetValue
                         value={Decimal.from(item.amount)}
-                        asset={SupportedTokens.sov}
+                        asset={COMMON_SYMBOLS.SOV}
                         assetClassName={classNames({
                           'font-bold': isTheClosestUnlockDate,
                           'font-normal': !isTheClosestUnlockDate,

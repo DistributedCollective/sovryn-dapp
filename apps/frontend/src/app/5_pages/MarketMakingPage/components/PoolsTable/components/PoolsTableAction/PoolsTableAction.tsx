@@ -15,6 +15,7 @@ import { useAccount } from '../../../../../../../hooks/useAccount';
 import { useBlockNumber } from '../../../../../../../hooks/useBlockNumber';
 import { useMaintenance } from '../../../../../../../hooks/useMaintenance';
 import { translations } from '../../../../../../../locales/i18n';
+import { COMMON_SYMBOLS } from '../../../../../../../utils/asset';
 import { useCheckPoolMaintenance } from '../../../../hooks/useCheckPoolMaintenance';
 import { useGetUserInfo } from '../../../../hooks/useGetUserInfo';
 import { AmmLiquidityPool } from '../../../../utils/AmmLiquidityPool';
@@ -138,14 +139,14 @@ export const PoolsTableAction: FC<PoolsTableActionProps> = ({ pool }) => {
       />
 
       <AdjustAndDepositModal
-        isOpen={isModalOpen && pool.assetA !== SupportedTokens.dllr}
+        isOpen={isModalOpen && pool.assetA !== COMMON_SYMBOLS.DLLR}
         onClose={handleClose}
         pool={pool}
         isInitialDeposit={isInitialDeposit}
       />
 
       <BobDepositModal
-        isOpen={isBobModalOpen && pool.assetA === SupportedTokens.dllr}
+        isOpen={isBobModalOpen && pool.assetA === COMMON_SYMBOLS.DLLR}
         onClose={handleClose}
       />
     </div>

@@ -2,7 +2,6 @@ import React, { FC } from 'react';
 
 import { t } from 'i18next';
 
-import { SupportedTokens } from '@sovryn/contracts';
 import { SimpleTable, SimpleTableRow } from '@sovryn/ui';
 
 import { AmountRenderer } from '../../../../../../2_molecules/AmountRenderer/AmountRenderer';
@@ -11,6 +10,7 @@ import {
   TOKEN_RENDER_PRECISION,
 } from '../../../../../../../constants/currencies';
 import { translations } from '../../../../../../../locales/i18n';
+import { COMMON_SYMBOLS } from '../../../../../../../utils/asset';
 import { AmmLiquidityPool } from '../../../../utils/AmmLiquidityPool';
 
 const pageTranslations =
@@ -43,7 +43,7 @@ export const NewPoolStatistics: FC<NewPoolStatisticsProps> = ({ pool }) => {
             value={51456.245605939}
             suffix={pool.assetB.toUpperCase()}
             precision={
-              pool.assetB === SupportedTokens.rbtc
+              pool.assetB === COMMON_SYMBOLS.BTC
                 ? BTC_RENDER_PRECISION
                 : TOKEN_RENDER_PRECISION
             }

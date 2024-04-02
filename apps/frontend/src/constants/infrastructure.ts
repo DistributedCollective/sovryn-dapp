@@ -14,30 +14,6 @@ export const SERVICES_CONFIG = {
   },
 };
 
-// Used for adding a new chain to a wallet
-export const PUBLIC_RSK_RPC = {
-  [Environments.Mainnet]: 'https://mainnet.sovryn.app/rpc',
-  [Environments.Testnet]: 'https://testnet.sovryn.app/rpc',
-};
-
-// Used for contract calls
-export const RSK_RPC = {
-  [Environments.Mainnet]: [
-    'https://rsk-live.sovryn.app/rpc',
-    'https://public-node.rsk.co',
-  ],
-  [Environments.Testnet]: [
-    PUBLIC_RSK_RPC[Environments.Testnet],
-    'https://public-node.testnet.rsk.co',
-  ],
-};
-
-//TODO: refactor this into separate dictionary file once we add more chains
-export const RSK_EXPLORER = {
-  [Environments.Mainnet]: 'https://explorer.rsk.co',
-  [Environments.Testnet]: 'https://explorer.testnet.rsk.co',
-};
-
 export const BTC_EXPLORER = {
   [Environments.Mainnet]: 'https://mempool.space',
   [Environments.Testnet]: 'https://mempool.space/testnet',

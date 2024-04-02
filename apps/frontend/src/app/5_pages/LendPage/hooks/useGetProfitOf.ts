@@ -1,6 +1,6 @@
 import { SupportedTokens } from '@sovryn/contracts';
 
-import { defaultRskChainId } from '../../../../config/chains';
+import { RSK_CHAIN_ID } from '../../../../config/chains';
 
 import { useAccount } from '../../../../hooks/useAccount';
 import { useCacheCall } from '../../../../hooks/useCacheCall';
@@ -9,11 +9,11 @@ import { fromWei } from '../../../../utils/math';
 
 export const useGetProfitOf = (asset: SupportedTokens) => {
   const { account } = useAccount();
-  const lendContract = useLoadContract(asset, 'loanTokens', defaultRskChainId);
+  const lendContract = useLoadContract(asset, 'loanTokens', RSK_CHAIN_ID);
 
   const { value: profit } = useCacheCall(
     `poolToken/${lendContract?.address}/profitOf/${account}`,
-    defaultRskChainId,
+    RSK_CHAIN_ID,
     async () => (account ? lendContract?.profitOf(account).then(fromWei) : '0'),
     [account],
     '0',

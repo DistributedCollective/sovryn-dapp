@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { chains, defaultChainId } from '../../../config/chains';
+import { APP_CHAIN_LIST, DEFAULT_CHAIN_ID } from '../../../config/chains';
 
 import { TxIdWithNotification } from '../TxIdWithNotification/TransactionIdWithNotification';
 
@@ -9,7 +9,7 @@ type TransactionIdRendererProps = {
   dataAttribute?: string;
 };
 
-const chain = chains.find(chain => chain.id === defaultChainId);
+const chain = APP_CHAIN_LIST.find(chain => chain.id === DEFAULT_CHAIN_ID);
 
 // todo: should accept chainId as a prop
 export const TransactionIdRenderer: React.FC<TransactionIdRendererProps> = ({

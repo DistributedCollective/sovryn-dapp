@@ -1,15 +1,19 @@
 import { BigNumber, utils, providers } from 'ethers';
 
+import { CrocEnv } from '@sovryn/ambient-sdk';
+import { getTokenContract } from '@sovryn/contracts';
 import { ChainIds } from '@sovryn/ethers-provider';
+import { numberToChainId } from '@sovryn/ethers-provider';
 
 import { SovrynErrorCode, makeError } from '../../../errors/errors';
 import { SwapRouteFunction } from '../types';
-import { getTokenContract } from '@sovryn/contracts';
-import { CrocEnv } from '@sovryn/ambient-sdk';
 
 export const ambientRoute: SwapRouteFunction = (
   provider: providers.Provider,
 ) => {
+  const getChainId = async () =>
+    numberToChainId((await provider.getNetwork()).chainId);
+
   const makePlan = async (
     entry: string,
     destination: string,
@@ -33,14 +37,18 @@ export const ambientRoute: SwapRouteFunction = (
 
   return {
     name: 'Ambient',
-    chains: [ChainIds.MAINNET],
+    chains: [ChainIds.BOB_MAINNET, ChainIds.BOB_TESTNET],
     pairs: async () => {
-      const rbtc = await getTokenContract('rbtc', ChainIds.MAINNET);
-      const dllr = await getTokenContract('dllr', ChainIds.MAINNET);
+      const chainId = await getChainId();
+      console.log('chainId', chainId);
+      const btc = await getTokenContract('btc', chainId);
+      const usdt = await getTokenContract('usdt', chainId);
+
+      console.log('btc', btc.address);
 
       return new Map<string, string[]>([
-        [rbtc.address, [dllr.address]],
-        [dllr.address, [rbtc.address]],
+        [btc.address, [usdt.address]],
+        [usdt.address, [btc.address]],
       ]);
     },
     quote: async (entry, destination, amount) => {

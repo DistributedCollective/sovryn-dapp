@@ -3,14 +3,14 @@ import React, { FC, useEffect, useMemo, useState } from 'react';
 import { SupportedTokens, getTokenDetails } from '@sovryn/contracts';
 import { Decimal } from '@sovryn/utils';
 
-import { defaultRskChainId } from '../../../../../../../../../config/chains';
+import { RSK_CHAIN_ID } from '../../../../../../../../../config/chains';
 
 import { AmountRenderer } from '../../../../../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { useAccount } from '../../../../../../../../../hooks/useAccount';
 import { useBlockNumber } from '../../../../../../../../../hooks/useBlockNumber';
 import { removeTrailingZerosFromString } from '../../../../../../../../../utils/helpers';
 import { decimalic, fromWei } from '../../../../../../../../../utils/math';
-import { smartRouter } from '../../../../../../../ConvertPage/ConvertPage.types';
+import { SMART_ROUTER_RSK } from '../../../../../../../ConvertPage/ConvertPage.constants';
 import { useGetStakingBalanceOf } from '../../../../../../../StakePage/hooks/useGetStakingBalanceOf';
 import {
   ProtocolSectionProps,
@@ -43,13 +43,13 @@ export const StakingTotalValue: FC<ProtocolSectionProps> = ({
       (async () => {
         const [sourceTokenDetails, destinationTokenDetails] = await Promise.all(
           [
-            getTokenDetails(SupportedTokens.sov, defaultRskChainId),
-            getTokenDetails(SupportedTokens.rbtc, defaultRskChainId),
+            getTokenDetails(SupportedTokens.sov, RSK_CHAIN_ID),
+            getTokenDetails(SupportedTokens.rbtc, RSK_CHAIN_ID),
           ],
         );
 
-        const result = await smartRouter.getBestQuote(
-          defaultRskChainId,
+        const result = await SMART_ROUTER_RSK.getBestQuote(
+          RSK_CHAIN_ID,
           sourceTokenDetails.address,
           destinationTokenDetails.address,
           stakedValue.toString(),

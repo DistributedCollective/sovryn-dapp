@@ -5,7 +5,7 @@ import { t } from 'i18next';
 import { SupportedTokens, getTokenContract } from '@sovryn/contracts';
 import { Decimal } from '@sovryn/utils';
 
-import { defaultRskChainId } from '../../../../config/chains';
+import { RSK_CHAIN_ID } from '../../../../config/chains';
 
 import {
   Transaction,
@@ -35,10 +35,8 @@ export const useHandleMarketMaking = (onComplete: () => void) => {
       }
 
       const [tokenAContractAddress, tokenBContractAddress] = await Promise.all([
-        getTokenContract(pool.assetA, defaultRskChainId).then(
-          item => item.address,
-        ),
-        getTokenContract(SupportedTokens.wrbtc, defaultRskChainId).then(
+        getTokenContract(pool.assetA, RSK_CHAIN_ID).then(item => item.address),
+        getTokenContract(SupportedTokens.wrbtc, RSK_CHAIN_ID).then(
           item => item.address,
         ),
       ]);
@@ -106,7 +104,7 @@ export const useHandleMarketMaking = (onComplete: () => void) => {
       const token =
         asset === SupportedTokens.rbtc ? SupportedTokens.wrbtc : asset;
 
-      const tokenContract = await getTokenContract(token, defaultRskChainId);
+      const tokenContract = await getTokenContract(token, RSK_CHAIN_ID);
 
       const transactions: Transaction[] = [];
 
@@ -175,11 +173,11 @@ export const useHandleMarketMaking = (onComplete: () => void) => {
 
       const tokenAContractPromise = getTokenContract(
         pool.assetA,
-        defaultRskChainId,
+        RSK_CHAIN_ID,
       ).then(item => item.address);
       const tokenBContractPromise = getTokenContract(
         SupportedTokens.wrbtc,
-        defaultRskChainId,
+        RSK_CHAIN_ID,
       ).then(item => item.address);
 
       const [tokenAContract, tokenBContract] = await Promise.all([
@@ -255,7 +253,7 @@ export const useHandleMarketMaking = (onComplete: () => void) => {
       const token =
         asset === SupportedTokens.rbtc ? SupportedTokens.wrbtc : asset;
 
-      const tokenContract = await getTokenContract(token, defaultRskChainId);
+      const tokenContract = await getTokenContract(token, RSK_CHAIN_ID);
 
       const transactions: Transaction[] = [];
 

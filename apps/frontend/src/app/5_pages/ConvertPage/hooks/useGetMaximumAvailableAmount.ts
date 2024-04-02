@@ -3,14 +3,18 @@ import { useEffect, useMemo, useState } from 'react';
 import { BigNumber } from 'ethers';
 
 import { getProtocolContract, SupportedTokens } from '@sovryn/contracts';
+import { ChainId } from '@sovryn/ethers-provider';
 import { Decimal } from '@sovryn/utils';
 
 import { useAccount } from '../../../../hooks/useAccount';
 import { useAssetBalance } from '../../../../hooks/useAssetBalance';
-import { useIsMounted } from '../../../../hooks/useIsMounted';
-import { allowedTokens, bassets, masset } from '../ConvertPage.types';
-import { ChainId } from '@sovryn/ethers-provider';
 import { useCurrentChain } from '../../../../hooks/useChainStore';
+import { useIsMounted } from '../../../../hooks/useIsMounted';
+import {
+  SMART_ROUTER_ALLOWED_TOKENS,
+  BASSETS,
+  MASSET,
+} from '../ConvertPage.constants';
 
 export const useGetMaximumAvailableAmount = (
   sourceToken: SupportedTokens,
@@ -23,14 +27,14 @@ export const useGetMaximumAvailableAmount = (
 
   //  bAsset => DLLR conversion
   const isMint = useMemo(
-    () => bassets.includes(sourceToken) && destinationToken === masset,
+    () => BASSETS.includes(sourceToken) && destinationToken === MASSET,
     [destinationToken, sourceToken],
   );
 
   const isZero = useMemo(
     () =>
-      allowedTokens.includes(sourceToken) &&
-      allowedTokens.includes(destinationToken),
+      SMART_ROUTER_ALLOWED_TOKENS.includes(sourceToken) &&
+      SMART_ROUTER_ALLOWED_TOKENS.includes(destinationToken),
     [destinationToken, sourceToken],
   );
 

@@ -14,6 +14,8 @@ import {
 } from '@sovryn/ui';
 import { Decimal } from '@sovryn/utils';
 
+import { defaultRskChainId } from '../../../../../config/chains';
+
 import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { AssetRenderer } from '../../../../2_molecules/AssetRenderer/AssetRenderer';
 import { GAS_LIMIT } from '../../../../../constants/gasLimits';
@@ -24,7 +26,6 @@ import { translations } from '../../../../../locales/i18n';
 import { asyncCall } from '../../../../../store/rxjs/provider-cache';
 import { FullAdjustModalState } from './AdjustLendingModalContainer';
 import { Label } from './Label';
-import { useCurrentChain } from '../../../../../hooks/useChainStore';
 
 export enum FormType {
   Deposit = 'deposit',
@@ -41,11 +42,10 @@ export const LendingForm: FC<DepositProps> = ({ state, onConfirm }) => {
   const [value, setValue, amount] = useWeiAmountInput('');
 
   const isDeposit = useMemo(() => type === FormType.Deposit, [type]);
-  const currentChainId = useCurrentChain();
 
   const { balance: userBalance } = useMaxAssetBalance(
     state.token,
-    currentChainId,
+    defaultRskChainId,
     GAS_LIMIT.LENDING_MINT,
   );
 

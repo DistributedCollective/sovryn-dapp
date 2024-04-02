@@ -1,4 +1,11 @@
-import React, { useCallback, useEffect, useRef } from 'react';
+import React, {
+  FC,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 
 import { CrocEnv } from '@sovryn/ambient-sdk';
 import { getProvider } from '@sovryn/ethers-provider';
@@ -11,8 +18,9 @@ import { createRangePositionTx } from './ambient-utils';
 import { multiSwap } from './testing-swap';
 import { ChainIds } from '@sovryn/ethers-provider';
 import { ETH_TOKEN, OKB_TOKEN, USDC_TOKEN, WBTC_TOKEN } from './fork-constants';
-import { parseUnits } from 'ethers/lib/utils';
+import { formatUnits, parseUnits } from 'ethers/lib/utils';
 import { CrocTokenView } from '@sovryn/ambient-sdk/dist/tokens';
+import classNames from 'classnames';
 
 // const CHAIN_ID = BOB_CHAIN_ID;
 const CHAIN_ID = ChainIds.SEPOLIA;
@@ -209,23 +217,159 @@ export const BobAmmPage: React.FC = () => {
     // console.log({ tx });
   }, []);
 
+  const handleDexDeposit = useCallback(async () => {
+    if (!croc.current) {
+      alert('CrocEnv not initialized');
+      return;
+    }
+
+    const token = croc.current.tokens.materialize(USDC_TOKEN);
+
+    const tx = await token.deposit(20, account);
+    console.log({ tx });
+
+    const result = await tx?.wait();
+    console.log({ result });
+  }, [account]);
+
+  const [dexBalances, setDexBalances] = useState<Record<string, number>>({});
+  const [walletBalances, setWalletBalances] = useState<Record<string, number>>(
+    {},
+  );
+  const [prevDexBalances, setPrevDexBalances] = useState<
+    Record<string, number>
+  >({});
+  const [prevWalletBalances, setPrevWalletBalances] = useState<
+    Record<string, number>
+  >({});
+
+  const updateBalances = useCallback(async () => {
+    if (!croc.current) {
+      return;
+    }
+    const labels = ['ETH', 'USDC', 'WBTC', 'OKB'];
+    const items = [ETH_TOKEN, USDC_TOKEN, WBTC_TOKEN, OKB_TOKEN];
+
+    const _dexBalances: Record<string, number> = {};
+    const _walletBalances: Record<string, number> = {};
+
+    for (let i = 0; i < items.length; i++) {
+      const token = croc.current.tokens.materialize(items[i]);
+      const balance = await token.balanceDisplay(account);
+      const wallet = await token.walletDisplay(account);
+      _dexBalances[labels[i]] = Number(balance);
+      _walletBalances[labels[i]] = Number(wallet);
+    }
+
+    setWalletBalances(p => {
+      setPrevWalletBalances(p);
+      return _walletBalances;
+    });
+    setDexBalances(p => {
+      setPrevDexBalances(p);
+      return _dexBalances;
+    });
+  }, [account]);
+
+  useEffect(() => {
+    updateBalances();
+  }, [account, updateBalances]);
+
   return (
-    <div className="container">
-      <p>Test...</p>
-      <ol>
-        <li>
-          <button onClick={handlePoolInit}>Initialize pool</button>
-        </li>
-        <li>
-          <button onClick={handleDeposit}>Deposit to pool</button>
-        </li>
-        <li>
-          <button onClick={handleSwap}>Swap</button>
-        </li>
-        <li>
-          <button onClick={handleMultihop}>Swap multihop</button>
-        </li>
-      </ol>
+    <div className="container flex flex-row">
+      <div className="w-72">
+        <ol>
+          <li>
+            <button onClick={handlePoolInit}>Initialize pool</button>
+          </li>
+          <li>
+            <button onClick={handleDeposit}>Deposit to pool</button>
+          </li>
+          <li>
+            <button onClick={handleSwap}>Swap</button>
+          </li>
+          <li>
+            <button onClick={handleMultihop}>Swap multihop</button>
+          </li>
+          {/* <li>
+          <button onClick={handleDexDeposit}>Deposit to DEX</button>
+        </li> */}
+        </ol>
+      </div>
+      <div className="w-72">
+        <h1>Dex Balances</h1>
+        <ol>
+          {Object.entries(dexBalances).map(([label, balance]) => (
+            <RenderBalance
+              key={label}
+              label={label}
+              balance={balance}
+              prevBalance={prevDexBalances[label]}
+            />
+          ))}
+          <li>
+            <button onClick={updateBalances} className="mt-8">
+              Update Balance
+            </button>
+          </li>
+        </ol>
+      </div>
+      <div className="w-72">
+        <h1>Wallet Balances</h1>
+        <ol>
+          {Object.entries(walletBalances).map(([label, balance]) => (
+            <RenderBalance
+              key={label}
+              label={label}
+              balance={balance}
+              prevBalance={prevWalletBalances[label]}
+            />
+          ))}
+
+          <li>
+            <button onClick={updateBalances} className="mt-8">
+              Update Balance
+            </button>
+          </li>
+        </ol>
+      </div>
     </div>
+  );
+};
+
+type RenderBalanceProps = {
+  label: string;
+  balance: number;
+  prevBalance?: number;
+};
+
+const RenderBalance: FC<RenderBalanceProps> = ({
+  label,
+  balance,
+  prevBalance,
+}) => {
+  const diff = useMemo(() => {
+    if (prevBalance !== undefined && prevBalance !== balance) {
+      return balance - prevBalance;
+    }
+    return 0;
+  }, [balance, prevBalance]);
+
+  return (
+    <li>
+      {label}: {balance}{' '}
+      {diff !== 0 ? (
+        <span
+          className={classNames({
+            'text-error': diff < 0,
+            'text-success': diff > 0,
+          })}
+        >
+          ({diff})
+        </span>
+      ) : (
+        <></>
+      )}
+    </li>
   );
 };

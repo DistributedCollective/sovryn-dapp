@@ -19,6 +19,7 @@ import { ETH_TOKEN, OKB_TOKEN, USDC_TOKEN, WBTC_TOKEN } from './fork-constants';
 import { parseUnits } from 'ethers/lib/utils';
 import { CrocTokenView } from '@sovryn/ambient-sdk/dist/tokens';
 import classNames from 'classnames';
+import { bfsShortestPath, graph } from './pool-graph';
 
 // const CHAIN_ID = BOB_CHAIN_ID;
 const CHAIN_ID = ChainIds.SEPOLIA;
@@ -210,8 +211,8 @@ export const BobAmmPage: React.FC = () => {
     if (!croc.current) {
       return;
     }
-    const labels = ['ETH', 'USDC', /*'WBTC', */ 'OKB'];
-    const items = [ETH_TOKEN, USDC_TOKEN, /*WBTC_TOKEN,*/ OKB_TOKEN];
+    const labels = ['ETH', 'USDC', 'WBTC', 'OKB'];
+    const items = [ETH_TOKEN, USDC_TOKEN, WBTC_TOKEN, OKB_TOKEN];
 
     const _dexBalances: Record<string, number> = {};
     const _walletBalances: Record<string, number> = {};
@@ -256,6 +257,10 @@ export const BobAmmPage: React.FC = () => {
     [account, updateBalances],
   );
 
+  const findPath = useCallback(() => {
+    const conversionPath = bfsShortestPath(graph, 'SOV', 'USDC');
+    console.log(conversionPath);
+  }, []);
   return (
     <div className="container flex flex-row">
       <div className="w-72">
@@ -276,6 +281,9 @@ export const BobAmmPage: React.FC = () => {
             <button onClick={() => handleMultihop(false)}>
               Swap multihop (sell)
             </button>
+          </li>
+          <li>
+            <button onClick={findPath}>Find path</button>
           </li>
           {/* <li>
           <button onClick={handleDexDeposit}>Deposit to DEX</button>

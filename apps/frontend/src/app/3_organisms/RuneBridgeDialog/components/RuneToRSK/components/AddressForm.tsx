@@ -15,12 +15,15 @@ import {
   applyDataAttr,
   Icon,
   IconNames,
-  prettyTx,
   NotificationType,
 } from '@sovryn/ui';
 
 import { useNotificationContext } from '../../../../../../contexts/NotificationContext';
 import { translations } from '../../../../../../locales/i18n';
+import {
+  Environments,
+  ExplorerNetworkURI,
+} from '../../../../../../types/global';
 import { TransferPolicies } from '../../../../FastBtcDialog/components/ReceiveFlow/components/TransferPolicies';
 import { useValidateFederators } from '../../../../FastBtcDialog/hooks/useValidateFederators';
 import { URIType } from '../../../../FastBtcDialog/types';
@@ -35,6 +38,10 @@ export const AddressForm = () => {
     () => !loading && !isSignatureValid,
     [isSignatureValid, loading],
   );
+  const explorerNetworkURI =
+    process.env.REACT_APP_NETWORK === Environments.Testnet
+      ? ExplorerNetworkURI.Testnet
+      : ExplorerNetworkURI.Mainnet;
   const copyAddress = useCallback(async () => {
     await navigator.clipboard.writeText(depositAddress);
 
@@ -47,15 +54,11 @@ export const AddressForm = () => {
     });
   }, [addNotification, depositAddress]);
 
-  const formattedAddress = useMemo(
-    () => prettyTx(depositAddress, 12, 12),
-    [depositAddress],
-  );
   const rows: RowObject[] = tokenBalances.map((tokenBalance, index) => {
     return {
       address: (
         <TransactionId
-          href={`https://explorer.testnet.rsk.co/address/${tokenBalance.tokenContractAddress}`}
+          href={`${explorerNetworkURI}/address/${tokenBalance.tokenContractAddress}`}
           value={tokenBalance.tokenContractAddress}
         />
       ),
@@ -88,7 +91,7 @@ export const AddressForm = () => {
           </div>
 
           <div className="flex justify-between mt-5 items-center bg-gray-70 border rounded border-gray-50 py-2 pl-3 pr-2 text-gray-30">
-            <div>{formattedAddress}</div>
+            <div>{depositAddress}</div>
 
             <span
               className="cursor-pointer rounded"

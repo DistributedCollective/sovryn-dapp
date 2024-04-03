@@ -12,6 +12,13 @@ export enum SendFlowStep {
   COMPLETED,
 }
 
+export enum AddressValidationState {
+  NONE = 'NONE',
+  LOADING = 'LOADING',
+  VALID = 'VALID',
+  INVALID = 'INVALID',
+}
+
 type SendFlowLimits = {
   min: number;
   max: number;
@@ -26,6 +33,7 @@ export type SendFlowContextStateType = {
   address: string;
   limits: SendFlowLimits;
   selectedToken: TokenBalance;
+  addressValidationState: AddressValidationState;
 };
 
 export type SendFlowContextFunctionsType = {
@@ -52,6 +60,7 @@ export const defaultValue: SendFlowContextType = {
     name: '',
     tokenContractAddress: '',
   },
+  addressValidationState: AddressValidationState.NONE,
   set: () => {},
 };
 

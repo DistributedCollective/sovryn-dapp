@@ -1,5 +1,16 @@
-import React, { useCallback, useContext, useMemo, useState } from 'react';
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 
+import {
+  AddressType,
+  getAddressInfo,
+  validate,
+} from 'bitcoin-address-validation';
 import { t } from 'i18next';
 
 import {
@@ -14,15 +25,24 @@ import {
   ParagraphSize,
 } from '@sovryn/ui';
 
+import { useGetProtocolContract } from '../../../../../../hooks/useGetContract';
 import { useMaintenance } from '../../../../../../hooks/useMaintenance';
 import { translations } from '../../../../../../locales/i18n';
-import { SendFlowContext, SendFlowStep } from '../../../contexts/sendflow';
+import {
+  currentBTCNetwork,
+  currentNetwork,
+} from '../../../../../../utils/helpers';
+import {
+  AddressValidationState,
+  SendFlowContext,
+  SendFlowStep,
+} from '../../../contexts/sendflow';
 
 export const AddressForm: React.FC = () => {
-  const { address, set } = useContext(SendFlowContext);
+  const { address, set, addressValidationState } = useContext(SendFlowContext);
   const { checkMaintenance, States } = useMaintenance();
   const fastBtcLocked = checkMaintenance(States.FASTBTC_SEND);
-
+  const fastBtcBridgeContract = useGetProtocolContract('fastBtcBridge');
   const [value, setValue] = useState(address);
 
   const onContinueClick = useCallback(
@@ -34,13 +54,65 @@ export const AddressForm: React.FC = () => {
       })),
     [set, value],
   );
+  const invalidAddress = useMemo(
+    () => addressValidationState === AddressValidationState.INVALID,
+    [addressValidationState],
+  );
+  const setAddressValidationState = useCallback(
+    (state: AddressValidationState) => {
+      set(prevState => ({
+        ...prevState,
+        addressValidationState: state,
+      }));
+    },
+    [set],
+  );
+  const validateAddress = useCallback(
+    (address: string) => {
+      setAddressValidationState(AddressValidationState.LOADING);
+      const isValidBtcAddress = validate(address, currentBTCNetwork);
 
-  const isSubmitDisabled = useMemo(() => !value || value === '', [value]);
+      if (!fastBtcBridgeContract) {
+        return;
+      }
+
+      const isValid = fastBtcBridgeContract.isValidBtcAddress(address);
+
+      if (isValidBtcAddress && isValid) {
+        const { type, network } = getAddressInfo(address);
+        const isNetworkValid =
+          network.toLowerCase() === currentNetwork.toLowerCase();
+        const isTypeValid = type.toLowerCase() !== AddressType.p2tr;
+
+        setAddressValidationState(
+          isNetworkValid && isTypeValid
+            ? AddressValidationState.VALID
+            : AddressValidationState.INVALID,
+        );
+      } else {
+        setAddressValidationState(AddressValidationState.INVALID);
+      }
+    },
+    [fastBtcBridgeContract, setAddressValidationState],
+  );
+
+  useEffect(() => {
+    if (value && value !== '') {
+      setAddressValidationState(AddressValidationState.LOADING);
+      validateAddress(value);
+    } else {
+      setAddressValidationState(AddressValidationState.NONE);
+    }
+  }, [value, validateAddress, setAddressValidationState]);
+  const isSubmitDisabled = useMemo(
+    () => invalidAddress || fastBtcLocked || !value || value === '',
+    [fastBtcLocked, invalidAddress, value],
+  );
 
   return (
     <div className="text-center">
       <Heading type={HeadingType.h2} className="font-medium mb-8">
-        {t(translations.fastBtc.send.addressForm.title)}
+        {t(translations.runeBridge.send.addressForm.title)}
       </Heading>
 
       <div className="text-left">
@@ -50,9 +122,15 @@ export const AddressForm: React.FC = () => {
         <Input
           onChangeText={setValue}
           value={value}
-          // invalid={invalidAddress}
+          invalid={invalidAddress}
           className="max-w-none"
         />
+        {invalidAddress && (
+          <ErrorBadge
+            level={ErrorLevel.Critical}
+            message={t(translations.runeBridge.send.addressForm.invalidAddress)}
+          />
+        )}
       </div>
 
       <Button

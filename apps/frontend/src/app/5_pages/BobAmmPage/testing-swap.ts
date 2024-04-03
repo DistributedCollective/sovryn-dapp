@@ -5,7 +5,6 @@ import { ETH_TOKEN, USDC_TOKEN, WBTC_TOKEN } from './fork-constants';
 import { BigNumber } from 'ethers';
 import { Decimal } from '@sovryn/utils';
 import { CrocTokenView } from '@sovryn/ambient-sdk/dist/tokens';
-import { parseUnits } from 'ethers/lib/utils';
 
 const SLIPPDAGE = 0.1;
 
@@ -21,13 +20,16 @@ const NEXT = USDC_TOKEN;
 const END = WBTC_TOKEN;
 
 // SOV -> GLD
-export const multiSwap = async (env: CrocEnv, signer: string) => {
-  const buy = false; // true = use ethereum, false = use token
+export const multiSwap = async (
+  env: CrocEnv,
+  signer: string,
+  isBuy: boolean, // true = use ethereum (base), false = use token (quote)
+) => {
   const useSurplus = false;
 
-  const TOKEN = buy ? ENTRY : NEXT;
+  const TOKEN = isBuy ? ENTRY : NEXT;
 
-  const ENTRY_AMOUNT = await env.token(TOKEN).normQty(buy ? 0.1 : 0.2);
+  const ENTRY_AMOUNT = await env.token(TOKEN).normQty(isBuy ? 0.1 : 0.2);
 
   console.log({ ENTRY_AMOUNT: ENTRY_AMOUNT.toString() });
 
@@ -46,8 +48,8 @@ export const multiSwap = async (env: CrocEnv, signer: string) => {
 
   const pool = order.appendPool(POOL_INDEX);
 
-  pool.swap.isBuy = buy;
-  pool.swap.inBaseQty = buy;
+  pool.swap.isBuy = isBuy;
+  pool.swap.inBaseQty = isBuy;
   pool.swap.qty = ENTRY_AMOUNT;
 
   const { finalPrice } = await calcImpact(
@@ -61,7 +63,7 @@ export const multiSwap = async (env: CrocEnv, signer: string) => {
   );
 
   pool.swap.limitPrice = Decimal.fromBigNumberString(finalPrice)
-    .mul(buy ? 1 + SLIPPDAGE : 1 - SLIPPDAGE)
+    .mul(isBuy ? 1 + SLIPPDAGE : 1 - SLIPPDAGE)
     .toBigNumber();
   // @dev https://github.com/CrocSwap/CrocSwap-protocol/blob/8a273515be92dd4e28e4c51a86097e8d35bc48ad/contracts/libraries/Chaining.sol#L28
   pool.swap.rollType = 0;
@@ -77,7 +79,7 @@ export const multiSwap = async (env: CrocEnv, signer: string) => {
 
   let value = BigNumber.from(0);
   // if useSurplus is enabled, we can send higher value than needed - it will be refunded.
-  if (ENTRY === ETH_TOKEN && buy) {
+  if (ENTRY === ETH_TOKEN && isBuy) {
     value = ENTRY_AMOUNT;
   }
 

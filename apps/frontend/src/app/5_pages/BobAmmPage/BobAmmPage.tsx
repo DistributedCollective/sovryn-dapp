@@ -183,40 +183,6 @@ export const BobAmmPage: React.FC = () => {
     console.log({ result });
   }, []);
 
-  const handleMultihop = useCallback(async () => {
-    if (!croc.current) {
-      alert('CrocEnv not initialized');
-      return;
-    }
-
-    const query = (await croc.current.context).query;
-
-    console.log({ query });
-
-    await multiSwap(croc.current, account);
-
-    // const tokenA = croc.current.tokens.materialize(SOV);
-    // const tokenB = croc.current.tokens.materialize(USDT);
-
-    // const plan = croc.current
-    //   .sell(tokenA.tokenAddr, 0.001)
-    //   .for(tokenB.tokenAddr)
-    //   .useBypass();
-
-    // console.log('plan', plan);
-
-    // todo...
-
-    // const impact = await plan.impact;
-    // console.log({ impact });
-
-    // const slippage = plan.priceSlippage;
-    // console.log({ slippage });
-
-    // const tx = await plan.swap();
-    // console.log({ tx });
-  }, [account]);
-
   const handleDexDeposit = useCallback(async () => {
     if (!croc.current) {
       alert('CrocEnv not initialized');
@@ -275,6 +241,24 @@ export const BobAmmPage: React.FC = () => {
     updateBalances();
   }, [account, updateBalances]);
 
+  const handleMultihop = useCallback(
+    async (buy: boolean) => {
+      if (!croc.current) {
+        alert('CrocEnv not initialized');
+        return;
+      }
+
+      const query = (await croc.current.context).query;
+
+      console.log({ query });
+
+      await multiSwap(croc.current, account, buy);
+
+      await updateBalances();
+    },
+    [account, updateBalances],
+  );
+
   return (
     <div className="container flex flex-row">
       <div className="w-72">
@@ -289,7 +273,12 @@ export const BobAmmPage: React.FC = () => {
             <button onClick={handleSwap}>Swap</button>
           </li>
           <li>
-            <button onClick={handleMultihop}>Swap multihop</button>
+            <button onClick={() => handleMultihop(true)}>
+              Swap multihop (buy)
+            </button>
+            <button onClick={() => handleMultihop(false)}>
+              Swap multihop (sell)
+            </button>
           </li>
           {/* <li>
           <button onClick={handleDexDeposit}>Deposit to DEX</button>

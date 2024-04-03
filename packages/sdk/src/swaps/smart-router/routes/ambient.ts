@@ -1,12 +1,13 @@
 import { BigNumber, utils, providers, constants, BigNumberish } from 'ethers';
 
 import { CrocEnv, CrocPoolView } from '@sovryn/ambient-sdk';
-import { Decimal } from '@sovryn/utils';
+import { OrderDirective } from '@sovryn/ambient-sdk/dist/encoding/longform';
 import { getAssetContract } from '@sovryn/contracts';
 import { ChainIds } from '@sovryn/ethers-provider';
 import { numberToChainId } from '@sovryn/ethers-provider';
-import { OrderDirective } from '@sovryn/ambient-sdk/src/encoding/longform';
+import { Decimal } from '@sovryn/utils';
 
+import { SovrynErrorCode, makeError } from '../../../errors/errors';
 import {
   hasEnoughAllowance,
   makeApproveRequest,
@@ -19,7 +20,6 @@ import {
   constructGraph,
   groupItemsInPairs,
 } from '../utils/ambient-utils';
-import { SovrynErrorCode, makeError } from '../../../errors/errors';
 
 export const ambientRoute: SwapRouteFunction = (
   provider: providers.Provider,
@@ -91,9 +91,6 @@ export const ambientRoute: SwapRouteFunction = (
       try {
         const plan = await makePlan(entry, destination, BigNumber.from(amount));
         const impact = await plan.impact;
-
-        console.log('plan', plan);
-        console.log('impact', impact);
 
         // @dev multihop pairs has no price, for now we return 1
         // @todo: implement multihop pair quote

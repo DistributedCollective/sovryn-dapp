@@ -7,20 +7,17 @@ import React, {
   useState,
 } from 'react';
 
-import { CrocEnv } from '@sovryn/ambient-sdk';
-import { ChainIds, getProvider } from '@sovryn/ethers-provider';
+import classNames from 'classnames';
+import { parseUnits } from 'ethers/lib/utils';
 
-import { BOB_CHAIN_ID } from '../../../config/chains';
+import { CrocEnv } from '@sovryn/ambient-sdk';
+import { CrocTokenView } from '@sovryn/ambient-sdk/dist/tokens';
+import { ChainIds, getProvider } from '@sovryn/ethers-provider';
+import { Decimal } from '@sovryn/utils';
 
 import { useAccount } from '../../../hooks/useAccount';
 import { createRangePositionTx } from './ambient-utils';
-import { multiSwap } from './testing-swap';
 import { ETH_TOKEN, OKB_TOKEN, USDC_TOKEN, WBTC_TOKEN } from './fork-constants';
-import { parseUnits } from 'ethers/lib/utils';
-import { CrocTokenView } from '@sovryn/ambient-sdk/dist/tokens';
-import classNames from 'classnames';
-import { bfsShortestPath, graph } from './pool-graph';
-import { Decimal } from '@sovryn/utils';
 
 // const CHAIN_ID = BOB_CHAIN_ID;
 const CHAIN_ID = ChainIds.SEPOLIA;
@@ -149,54 +146,6 @@ export const BobAmmPage: React.FC = () => {
     console.log('receipt', receipt);
   }, [account]);
 
-  const handleSwap = useCallback(async () => {
-    if (!croc.current) {
-      alert('CrocEnv not initialized');
-      return;
-    }
-
-    const tokenA = croc.current.tokens.materialize(ETH_TOKEN);
-    const tokenB = croc.current.tokens.materialize(USDC_TOKEN);
-
-    const pool = croc.current.pool(tokenA.tokenAddr, tokenB.tokenAddr);
-
-    const price = await pool.displayPrice();
-    console.log('price', price);
-
-    const plan = croc.current
-      .sell(tokenA.tokenAddr, 0.01)
-      .for(tokenB.tokenAddr);
-
-    console.log('plan', plan);
-
-    const impact = await plan.impact;
-    console.log({ impact });
-
-    const slippage = plan.priceSlippage;
-    console.log({ slippage });
-
-    const tx = await plan.swap();
-    console.log({ tx });
-
-    const result = await tx.wait();
-    console.log({ result });
-  }, []);
-
-  const handleDexDeposit = useCallback(async () => {
-    if (!croc.current) {
-      alert('CrocEnv not initialized');
-      return;
-    }
-
-    const token = croc.current.tokens.materialize(USDC_TOKEN);
-
-    const tx = await token.deposit(20, account);
-    console.log({ tx });
-
-    const result = await tx?.wait();
-    console.log({ result });
-  }, [account]);
-
   const [dexBalances, setDexBalances] = useState<Record<string, Decimal>>({});
   const [walletBalances, setWalletBalances] = useState<Record<string, Decimal>>(
     {},
@@ -214,14 +163,12 @@ export const BobAmmPage: React.FC = () => {
     }
     const labels = ['ETH', 'USDC', 'WBTC', 'OKB'];
     const items = [ETH_TOKEN, USDC_TOKEN, WBTC_TOKEN, OKB_TOKEN];
-    const decimals = [18, 6, 8, 18];
 
     const _dexBalances: Record<string, Decimal> = {};
     const _walletBalances: Record<string, Decimal> = {};
 
     for (let i = 0; i < items.length; i++) {
       const token = croc.current.tokens.materialize(items[i]);
-      const decimals = await token.decimals;
       const balance = await token.balanceDisplay(account);
       const wallet = await token.walletDisplay(account);
       _dexBalances[labels[i]] = Decimal.from(balance.toString());
@@ -242,28 +189,6 @@ export const BobAmmPage: React.FC = () => {
     updateBalances();
   }, [account, updateBalances]);
 
-  const handleMultihop = useCallback(
-    async (buy: boolean) => {
-      if (!croc.current) {
-        alert('CrocEnv not initialized');
-        return;
-      }
-
-      const query = (await croc.current.context).query;
-
-      console.log({ query });
-
-      await multiSwap(croc.current, account, buy);
-
-      await updateBalances();
-    },
-    [account, updateBalances],
-  );
-
-  const findPath = useCallback(() => {
-    const conversionPath = bfsShortestPath(graph, 'SOV', 'USDC');
-    console.log(conversionPath);
-  }, []);
   return (
     <div className="container flex flex-row">
       <div className="w-72">
@@ -274,23 +199,6 @@ export const BobAmmPage: React.FC = () => {
           <li>
             <button onClick={handleDeposit}>Deposit to pool</button>
           </li>
-          <li>
-            <button onClick={handleSwap}>Swap</button>
-          </li>
-          <li>
-            <button onClick={() => handleMultihop(true)}>
-              Swap multihop (buy)
-            </button>
-            <button onClick={() => handleMultihop(false)}>
-              Swap multihop (sell)
-            </button>
-          </li>
-          <li>
-            <button onClick={findPath}>Find path</button>
-          </li>
-          {/* <li>
-          <button onClick={handleDexDeposit}>Deposit to DEX</button>
-        </li> */}
         </ol>
       </div>
       <div className="w-72">

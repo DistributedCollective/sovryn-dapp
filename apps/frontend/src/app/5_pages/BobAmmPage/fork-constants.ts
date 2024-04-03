@@ -1,6 +1,7 @@
 import { ethers } from 'ethers';
-import { findAsset } from '../../../utils/asset';
-import { BOB_CHAIN_ID } from '../../../config/chains';
+
+// import { findAsset } from '../../../utils/asset';
+// import { BOB_CHAIN_ID } from '../../../config/chains';
 
 export const ETH_TOKEN = ethers.constants.AddressZero;
 // Sepolia Fork

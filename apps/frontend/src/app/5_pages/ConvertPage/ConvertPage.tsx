@@ -119,7 +119,7 @@ const ConvertPage: FC = () => {
         return item.symbol;
       }
     }
-    return DEFAULT_SWAP_ENTRIES[currentChainId];
+    return DEFAULT_SWAP_ENTRIES[currentChainId] ?? COMMON_SYMBOLS.ETH;
   }, [currentChainId, fromToken]);
 
   const [sourceToken, setSourceToken] = useState<string>(defaultSourceToken);

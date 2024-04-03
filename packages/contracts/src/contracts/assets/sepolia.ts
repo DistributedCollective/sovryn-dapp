@@ -25,4 +25,11 @@ export const sepolia: Array<AssetDetails> = [
     decimals: 8,
     getIcon: async () => (await import('./icons/unknown')).default,
   },
+  {
+    symbol: 'OKB',
+    address: '0x3F4B6664338F23d2397c953f2AB4Ce8031663f80',
+    name: 'OKB',
+    decimals: 18,
+    getIcon: async () => (await import('./icons/unknown')).default,
+  },
 ];

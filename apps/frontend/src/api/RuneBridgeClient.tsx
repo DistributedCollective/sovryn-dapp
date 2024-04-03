@@ -1,14 +1,12 @@
 export interface RequestOpts {
   method?: 'GET' | 'POST' | 'PUT' | 'DELETE';
-  username?: string;
-  password?: string;
   data?: Record<string, any>;
   multipart?: boolean;
 }
 
 class ApiError extends Error {}
 
-class runeBridgeClient {
+class RuneBridgeClient {
   private baseUrl: string;
 
   constructor(baseUrl: string) {
@@ -86,4 +84,4 @@ class runeBridgeClient {
   }
 }
 
-export default runeBridgeClient;
+export default RuneBridgeClient;

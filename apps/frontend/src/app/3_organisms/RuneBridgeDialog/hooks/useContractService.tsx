@@ -1,5 +1,7 @@
 import React from 'react';
 
+import { runeBridgeApiClient } from '../../../../api';
+import { RequestOpts } from '../../../../api/RuneBridgeClient';
 import { useAccount } from '../../../../hooks/useAccount';
 import { Contract } from '../contexts/contract';
 
@@ -13,31 +15,23 @@ export const useContractService = () => {
     requestTokenBalances,
   } = React.useContext(Contract);
   const requestDepositAddress = React.useCallback(async () => {
-    const url = 'http://127.0.0.1:8181/api/v1/runes/deposit-addresses/';
+    const url = '/runes/deposit-addresses/';
     const data = { evm_address: account };
-    return await fetch(url, {
+    const requestOps: RequestOpts = {
       method: 'POST',
-      credentials: 'include',
-      mode: 'cors',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(data),
-    })
-      .then(async response => {
-        if (!response.ok) {
-          const error = await response.text();
-          throw new Error(error);
-        }
-        const result = await response.json();
-        const { deposit_address: depositAddress } = result;
+      data,
+    };
+    return await runeBridgeApiClient
+      .request(url, requestOps)
+      .then(response => {
+        const { deposit_address: depositAddress } = response;
         set(prevState => {
           return {
             ...prevState,
             depositAddress,
           };
         });
-        return result;
+        return response;
       })
       .catch(error => {
         throw new Error(error);

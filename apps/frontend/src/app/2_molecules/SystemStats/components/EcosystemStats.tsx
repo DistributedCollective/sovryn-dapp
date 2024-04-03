@@ -16,7 +16,7 @@ import { RSK_CHAIN_ID } from '../../../../config/chains';
 import { useAssetBalance } from '../../../../hooks/useAssetBalance';
 import { useLoadContract } from '../../../../hooks/useLoadContract';
 import { translations } from '../../../../locales/i18n';
-import { COMMON_SYMBOLS, findAsset } from '../../../../utils/asset';
+import { COMMON_SYMBOLS, findAsset, findAsset } from '../../../../utils/asset';
 import { AmountRenderer } from '../../AmountRenderer/AmountRenderer';
 import { useGetTotalSupply } from '../hooks/useGetTotalSupply';
 

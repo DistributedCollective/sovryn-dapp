@@ -46,7 +46,7 @@ export const ambientRoute: SwapRouteFunction = (
     const chainId = await getChainId();
 
     // testing for sepolia fork...
-    if (chainId === ChainIds.SEPOLIA) {
+    if (chainId === ChainIds.SEPOLIA || chainId === ChainIds.MAINNET) {
       const eth = (await getAssetContract('ETH', chainId)).address;
       const usdc = (await getAssetContract('USDC', chainId)).address;
       const wbtc = (await getAssetContract('WBTC', chainId)).address;
@@ -62,10 +62,12 @@ export const ambientRoute: SwapRouteFunction = (
 
     const eth = (await getAssetContract('ETH', chainId)).address;
     const sov = (await getAssetContract('SOV', chainId)).address;
+    const wbtc = (await getAssetContract('WBTC', chainId)).address;
     const gld = (await getAssetContract('GLD', chainId)).address;
     const pools: Pool[] = [
       [eth, sov],
       [eth, gld],
+      [eth, wbtc],
     ];
 
     return pools;
@@ -73,8 +75,13 @@ export const ambientRoute: SwapRouteFunction = (
 
   return {
     name: 'Ambient',
-    // todo: remove sepolia before release
-    chains: [ChainIds.BOB_MAINNET, ChainIds.BOB_TESTNET, ChainIds.SEPOLIA],
+    // todo: remove eth chains before release
+    chains: [
+      ChainIds.BOB_MAINNET,
+      ChainIds.BOB_TESTNET,
+      ChainIds.MAINNET,
+      ChainIds.SEPOLIA,
+    ],
     pairs: async () => {
       const pools = await loadPools();
 
@@ -102,20 +109,90 @@ export const ambientRoute: SwapRouteFunction = (
       return pairs;
     },
     quote: async (entry, destination, amount) => {
-      try {
+      const pools = await loadPools();
+
+      if (
+        pools.find(
+          pool =>
+            (pool[0].toLowerCase() === entry.toLowerCase() &&
+              pool[1].toLowerCase() === destination.toLowerCase()) ||
+            (pool[0].toLowerCase() === destination.toLowerCase() &&
+              pool[1].toLowerCase() === entry.toLowerCase()),
+        )
+      ) {
         const plan = await makePlan(entry, destination, BigNumber.from(amount));
         const impact = await plan.impact;
+        return utils.parseEther(impact.buyQty);
+      } else {
+        // otherwise, use long form orders to build multi-hop swaps
+        console.log('Long form swap not implemented yet');
 
-        // @dev multihop pairs has no price, for now we return 1
-        // @todo: implement multihop pair quote
-        if (impact.buyQty === '0.0') {
-          return utils.parseEther('1');
+        const graph = constructGraph(pools);
+        console.log('Graph:', graph);
+        const path = bfsShortestPath(graph, entry, destination);
+        console.log('Path:', path);
+
+        const poolCount = Math.ceil((path?.length ?? 0) / 2);
+        console.log('Pool count:', poolCount);
+
+        if (poolCount < 2) {
+          console.error('Found paths: ' + poolCount, ' Path: ', path);
+          throw makeError(
+            `Cannot swap ${entry} to ${destination}; #1`,
+            SovrynErrorCode.SWAP_PAIR_NOT_AVAILABLE,
+          );
         }
 
-        return utils.parseEther(impact.buyQty);
-      } catch (e) {
-        console.warn('Error getting quote', e);
-        return utils.parseEther('1');
+        const env = new CrocEnv(provider);
+        const context = await env.context;
+
+        const entryAmount = await parseAmount(env, entry, amount);
+
+        console.log('Entry Amount:', entryAmount.toString());
+
+        const poolIndex = context.chain.poolIndex;
+
+        const groupedPath = groupItemsInPairs(path ?? []);
+
+        const ambientPools = await Promise.all(
+          groupedPath.map(item => env.pool(item[0], item[1])),
+        );
+
+        console.log('Ambient Pools:', ambientPools);
+
+        if (ambientPools.length === 0) {
+          throw makeError(
+            `Cannot swap ${entry} to ${destination}; #2`,
+            SovrynErrorCode.SWAP_PAIR_NOT_AVAILABLE,
+          );
+        }
+
+        let lastOut = await calculateImpact(
+          env,
+          ambientPools[0],
+          poolIndex,
+          entry,
+          entryAmount,
+        );
+
+        console.log('Entry Out:', lastOut);
+
+        for (let i = 1; i < ambientPools.length; i++) {
+          const pool = ambientPools[i];
+          const poolPath = groupedPath[i];
+
+          lastOut = await calculateImpact(
+            env,
+            pool,
+            poolIndex,
+            poolPath[0],
+            lastOut.amount,
+          );
+
+          console.log('Pool Out:', i, lastOut);
+        }
+
+        return lastOut.amount;
       }
     },
     approve: async (entry, destination, amount, from, overrides) => {
@@ -279,6 +356,32 @@ export const ambientRoute: SwapRouteFunction = (
       }
     },
   };
+};
+
+const calculateImpact = async (
+  env: CrocEnv,
+  pool: CrocPoolView,
+  poolIndex: number,
+  entry: string,
+  amount: BigNumber,
+): Promise<{ amount: BigNumber; isBuy: boolean }> => {
+  const isBuy = pool.baseToken.tokenAddr.toLowerCase() === entry.toLowerCase();
+
+  const impact = await calcImpact(
+    env,
+    pool.baseToken.tokenAddr,
+    pool.quoteToken.tokenAddr,
+    poolIndex,
+    isBuy,
+    isBuy,
+    amount,
+  );
+
+  const entryOut = Decimal.fromBigNumberString(impact.baseFlow)
+    .abs()
+    .toBigNumber();
+
+  return { amount: entryOut, isBuy };
 };
 
 const setupPool = async (

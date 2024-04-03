@@ -197,7 +197,7 @@ const BOB_TESTNET_CHAIN: ChainSpec = {
   proxyPaths: {
     cold: 3,
     long: 130,
-    liq: 2,
+    liq: 128,
   },
   blockExplorer: 'https://bob-sepolia.explorer.caldera.xyz',
   displayName: 'BOB Testnet',

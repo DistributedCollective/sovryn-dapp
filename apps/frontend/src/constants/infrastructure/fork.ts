@@ -6,6 +6,7 @@ export const FORK = {
   rpc: {
     [Environments.Testnet]: [
       'https://rpc.tenderly.co/fork/' + TENDERLY_FORK_ID,
+      // 'https://rpc.vnet.tenderly.co/devnet/my-first-devnet/d2a17dcf-81a0-4c53-b773-798db4521cd9',
     ],
   },
   publicRpc: {

@@ -4,9 +4,9 @@ import { ChainId } from '@sovryn/ethers-provider';
 import bobLogo from '../assets/chains/bob.svg';
 import rskLogo from '../assets/chains/rsk.svg';
 import { BOB } from '../constants/infrastructure/bob';
+import { FORK } from '../constants/infrastructure/fork';
 import { RSK } from '../constants/infrastructure/rsk';
 import { Environments } from '../types/global';
-import { FORK } from '../constants/infrastructure/fork';
 
 const IS_MAINNET = process.env.REACT_APP_NETWORK === Environments.Mainnet;
 
@@ -72,7 +72,7 @@ export const APP_CHAIN_LIST: ChainWithLogo[] = [
         },
         {
           id: ChainIds.SEPOLIA,
-          label: 'TENDERLY',
+          label: 'Sepolia',
           token: 'tETH',
           publicRpcUrl: FORK.publicRpc[Environments.Testnet],
           rpcUrl: FORK.rpc[Environments.Testnet],

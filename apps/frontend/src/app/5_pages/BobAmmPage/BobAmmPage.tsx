@@ -12,15 +12,17 @@ import { parseUnits } from 'ethers/lib/utils';
 
 import { CrocEnv } from '@sovryn/ambient-sdk';
 import { CrocTokenView } from '@sovryn/ambient-sdk/dist/tokens';
-import { ChainIds, getProvider } from '@sovryn/ethers-provider';
+import { getProvider } from '@sovryn/ethers-provider';
 import { Decimal } from '@sovryn/utils';
+
+import { BOB_CHAIN_ID } from '../../../config/chains';
 
 import { useAccount } from '../../../hooks/useAccount';
 import { createRangePositionTx } from './ambient-utils';
 import { ETH_TOKEN, OKB_TOKEN, USDC_TOKEN, WBTC_TOKEN } from './fork-constants';
 
-// const CHAIN_ID = BOB_CHAIN_ID;
-const CHAIN_ID = ChainIds.SEPOLIA;
+const CHAIN_ID = BOB_CHAIN_ID;
+// const CHAIN_ID = ChainIds.SEPOLIA;
 
 const testAllowance = async (
   owner: string,
@@ -161,7 +163,7 @@ export const BobAmmPage: React.FC = () => {
     if (!croc.current) {
       return;
     }
-    const labels = ['ETH', 'USDC', 'WBTC', 'OKB'];
+    const labels = ['ETH', 'SOV', 'WBTC', 'GLD'];
     const items = [ETH_TOKEN, USDC_TOKEN, WBTC_TOKEN, OKB_TOKEN];
 
     const _dexBalances: Record<string, Decimal> = {};
@@ -169,8 +171,8 @@ export const BobAmmPage: React.FC = () => {
 
     for (let i = 0; i < items.length; i++) {
       const token = croc.current.tokens.materialize(items[i]);
-      const balance = await token.balanceDisplay(account);
-      const wallet = await token.walletDisplay(account);
+      const balance = await token.balanceDisplay(account).catch(() => 0);
+      const wallet = await token.walletDisplay(account).catch(() => 0);
       _dexBalances[labels[i]] = Decimal.from(balance.toString());
       _walletBalances[labels[i]] = Decimal.from(wallet.toString());
     }

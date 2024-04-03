@@ -12,6 +12,7 @@ import {
   ErrorLevel,
   Heading,
   HeadingType,
+  Paragraph,
   RowObject,
   Select,
   TableBase,
@@ -19,10 +20,11 @@ import {
 } from '@sovryn/ui';
 
 import { RuneBridgeMaxButton } from '../../../../../2_molecules/MaxButton/RuneBridgeMaxButton';
-import { BTC_RENDER_PRECISION } from '../../../../../../constants/currencies';
+import { TOKEN_RENDER_PRECISION } from '../../../../../../constants/currencies';
 import { useMaintenance } from '../../../../../../hooks/useMaintenance';
 import { translations } from '../../../../../../locales/i18n';
 import { fromWei, toWei } from '../../../../../../utils/math';
+import { GAS_LIMIT_FAST_BTC_WITHDRAW } from '../../../../FastBtcDialog/constants';
 import { SendFlowContext, SendFlowStep } from '../../../contexts/sendflow';
 import { useContractService } from '../../../hooks/useContractService';
 import { TransferPolicies } from './TransferPolicies';
@@ -56,6 +58,13 @@ export const AmountForm: React.FC = () => {
     const maxAmountWei = toWei(tokenBalance.balance);
     return limit.gt(maxAmountWei) ? limit : maxAmountWei;
   }, [limits.max, selectedToken.tokenContractAddress, tokenBalances]);
+  const maxExceed = useMemo(() => {
+    if (value === '0') {
+      return false;
+    }
+    return toWei(value).gt(maxAmount);
+  }, [maxAmount, value]);
+
   const tokenBalancesLoaded = tokenBalances.length > 0;
   const onMaximumAmountClick = useCallback(
     () => setValue(fromWei(maxAmount)),
@@ -70,6 +79,10 @@ export const AmountForm: React.FC = () => {
         set(prevState => ({
           ...prevState,
           selectedToken: selectedToken,
+          limits: {
+            ...prevState.limits,
+            max: Number(selectedToken.balance),
+          },
         }));
       }
     },
@@ -93,6 +106,23 @@ export const AmountForm: React.FC = () => {
       name: tokenBalance.name,
     };
   });
+
+  const invalid = useMemo(() => {
+    if (value === '0' || !selectedToken.tokenContractAddress) {
+      return true;
+    }
+
+    const amount = Number(value);
+    const selectedTokenBalanceInWei = toWei(selectedToken.balance);
+    if (amount < 0 || amount < limits.min || amount > limits.max) {
+      return true;
+    }
+
+    return toWei(amount)
+      .add(GAS_LIMIT_FAST_BTC_WITHDRAW)
+      .gt(selectedTokenBalanceInWei.add(GAS_LIMIT_FAST_BTC_WITHDRAW) || '0');
+  }, [selectedToken, value, limits]);
+
   return (
     <>
       <Heading type={HeadingType.h2} className="font-medium mb-8 text-center">
@@ -112,7 +142,7 @@ export const AmountForm: React.FC = () => {
             onClick={onMaximumAmountClick}
             value={fromWei(maxAmount)}
             token={selectedToken}
-            precision={BTC_RENDER_PRECISION}
+            precision={TOKEN_RENDER_PRECISION}
             dataAttribute="funding-send-amount-max"
           />
         </div>
@@ -123,11 +153,17 @@ export const AmountForm: React.FC = () => {
             onChangeText={setValue}
             unit={selectedToken.symbol}
             value={value}
-            decimalPrecision={BTC_RENDER_PRECISION}
+            decimalPrecision={TOKEN_RENDER_PRECISION}
             className="max-w-none"
-            // invalid={maxExceed}
+            invalid={maxExceed || !selectedToken.tokenContractAddress}
+            disabled={!selectedToken.tokenContractAddress || fastBtcLocked}
             dataAttribute="funding-send-amount-input"
           />
+          {maxExceed && (
+            <Paragraph className="text-error-light font-medium mt-2">
+              {t(translations.fastBtc.send.addressForm.maxExceed)}
+            </Paragraph>
+          )}
         </div>
 
         <TransferPolicies />
@@ -160,7 +196,7 @@ export const AmountForm: React.FC = () => {
         <Button
           text={t(translations.common.buttons.continue)}
           onClick={onContinueClick}
-          disabled={!tokenBalancesLoaded} // {invalid || fastBtcLocked}
+          disabled={!tokenBalancesLoaded || invalid || fastBtcLocked} // {invalid || fastBtcLocked}
           style={ButtonStyle.secondary}
           className="mt-10 w-full"
           dataAttribute="funding-send-amount-confirm"

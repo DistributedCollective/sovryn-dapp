@@ -30,6 +30,7 @@ export type ReceiveFlowContextStateType = {
   depositRskTransactionHash: string | null;
   limits: ReceiveFlowLimits;
   signatures: Signature[];
+  errorMessage: string | null;
 };
 
 export type TxData = {
@@ -69,6 +70,7 @@ export const defaultValue: ReceiveFlowContextType = {
     loading: true,
   },
   signatures: [],
+  errorMessage: null,
   set: () => {
     throw new Error('set() has not been defined.');
   },

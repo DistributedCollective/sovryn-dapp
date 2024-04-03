@@ -17,8 +17,11 @@ export const useChainStore = create<ChainStore>()(
     set => ({
       currentChainId: DEFAULT_CHAIN_ID,
       setCurrentChainId: async (chainId: ChainId = DEFAULT_CHAIN_ID) => {
-        // todo: should disconnect wallets which does not support network changes
-        await onboard.setChain({ chainId });
+        if (onboard.state.get().wallets.length > 0) {
+          // todo: should disconnect wallets which does not support network changes
+          await onboard.setChain({ chainId });
+        }
+
         set({ currentChainId: chainId });
       },
     }),

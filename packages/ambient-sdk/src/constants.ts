@@ -42,6 +42,8 @@ const SCROLL_LOGO =
 
 const DFLT_SDK_INFURA_KEY = '360ea5fda45b4a22883de8522ebd639e';
 
+const TENDERLY_FORK_ID = '600da1f5-ca21-4d57-8192-233e092a5bf3';
+
 const GOERLI_CHAIN: ChainSpec = {
   nodeUrl: 'https://goerli.infura.io/v3/' + DFLT_SDK_INFURA_KEY,
   wsUrl: 'wss://goerli.infura.io/ws/v3/' + DFLT_SDK_INFURA_KEY,
@@ -194,8 +196,8 @@ const BOB_TESTNET_CHAIN: ChainSpec = {
   gridSize: 16,
   proxyPaths: {
     cold: 3,
-    long: 4,
-    liq: 2,
+    long: 130,
+    liq: 128,
   },
   blockExplorer: 'https://bob-sepolia.explorer.caldera.xyz',
   displayName: 'BOB Testnet',
@@ -208,6 +210,16 @@ const LOCAL_FORK_CHAIN: ChainSpec = Object.assign({}, GOERLI_CHAIN, {
   displayName: 'Local Fork',
 });
 
+const TENDERLY_FORK: ChainSpec = Object.assign({}, SEPOLIA_CHAIN, {
+  nodeUrl: 'https://rpc.tenderly.co/fork/c' + TENDERLY_FORK_ID,
+  wsUrl: undefined,
+  blockExplorer:
+    'https://dashboard.tenderly.co/explorer/fork/' +
+    TENDERLY_FORK_ID +
+    '/transactions',
+  displayName: 'Tenderly Fork',
+});
+
 export const CHAIN_SPECS: { [chainId: string]: ChainSpec } = {
   '0x1': MAINNET_CHAIN,
   '0x5': GOERLI_CHAIN,
@@ -215,11 +227,13 @@ export const CHAIN_SPECS: { [chainId: string]: ChainSpec } = {
   '0x97114f': BOB_TESTNET_CHAIN,
   '0x7a69': LOCAL_FORK_CHAIN,
   '0x66eed': ARB_GOERLI_CHAIN,
-  '0xaa36a7': SEPOLIA_CHAIN,
+  // '0xaa36a7': SEPOLIA_CHAIN,
+  '0xaa36a7': TENDERLY_FORK,
   '0x8274f': SCROLL_SEPOLIA_CHAIN,
   '0x82750': SCROLL_CHAIN,
   goerli: GOERLI_CHAIN,
-  sepolia: SEPOLIA_CHAIN,
+  // sepolia: SEPOLIA_CHAIN,
+  sepolia: TENDERLY_FORK,
   arbtest: ARB_GOERLI_CHAIN,
   arbgoerli: ARB_GOERLI_CHAIN,
   local: LOCAL_FORK_CHAIN,

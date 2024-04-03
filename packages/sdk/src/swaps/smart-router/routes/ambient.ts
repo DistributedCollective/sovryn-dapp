@@ -45,14 +45,27 @@ export const ambientRoute: SwapRouteFunction = (
   const loadPools = async () => {
     const chainId = await getChainId();
 
+    // testing for sepolia fork...
+    if (chainId === ChainIds.SEPOLIA) {
+      const eth = (await getAssetContract('ETH', chainId)).address;
+      const usdc = (await getAssetContract('USDC', chainId)).address;
+      const wbtc = (await getAssetContract('WBTC', chainId)).address;
+      const okb = (await getAssetContract('OKB', chainId)).address;
+      const pools: Pool[] = [
+        [eth, usdc],
+        [eth, wbtc],
+        [eth, okb],
+      ];
+
+      return pools;
+    }
+
     const eth = (await getAssetContract('ETH', chainId)).address;
-    const usdc = (await getAssetContract('USDC', chainId)).address;
-    const wbtc = (await getAssetContract('WBTC', chainId)).address;
-    const okb = (await getAssetContract('OKB', chainId)).address;
+    const sov = (await getAssetContract('SOV', chainId)).address;
+    const gld = (await getAssetContract('GLD', chainId)).address;
     const pools: Pool[] = [
-      [eth, usdc],
-      [eth, wbtc],
-      [eth, okb],
+      [eth, sov],
+      [eth, gld],
     ];
 
     return pools;
@@ -60,6 +73,7 @@ export const ambientRoute: SwapRouteFunction = (
 
   return {
     name: 'Ambient',
+    // todo: remove sepolia before release
     chains: [ChainIds.BOB_MAINNET, ChainIds.BOB_TESTNET, ChainIds.SEPOLIA],
     pairs: async () => {
       const pools = await loadPools();

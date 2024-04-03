@@ -196,7 +196,7 @@ const BOB_TESTNET_CHAIN: ChainSpec = {
   gridSize: 16,
   proxyPaths: {
     cold: 3,
-    long: 4,
+    long: 130,
     liq: 2,
   },
   blockExplorer: 'https://bob-sepolia.explorer.caldera.xyz',
@@ -210,10 +210,13 @@ const LOCAL_FORK_CHAIN: ChainSpec = Object.assign({}, GOERLI_CHAIN, {
   displayName: 'Local Fork',
 });
 
-const TENDERLY_FORK: ChainSpec = Object.assign({}, SEPOLIA_CHAIN,{
+const TENDERLY_FORK: ChainSpec = Object.assign({}, SEPOLIA_CHAIN, {
   nodeUrl: 'https://rpc.tenderly.co/fork/c' + TENDERLY_FORK_ID,
   wsUrl: undefined,
-  blockExplorer: 'https://dashboard.tenderly.co/explorer/fork/' + TENDERLY_FORK_ID + '/transactions',
+  blockExplorer:
+    'https://dashboard.tenderly.co/explorer/fork/' +
+    TENDERLY_FORK_ID +
+    '/transactions',
   displayName: 'Tenderly Fork',
 });
 

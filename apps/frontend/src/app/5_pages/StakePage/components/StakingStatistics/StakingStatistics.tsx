@@ -11,7 +11,7 @@ import {
   ParagraphStyle,
 } from '@sovryn/ui';
 
-import { BOB_CHAIN_ID, RSK_CHAIN_ID } from '../../../../../config/chains';
+import { RSK_CHAIN_ID } from '../../../../../config/chains';
 
 import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { TOKEN_RENDER_PRECISION } from '../../../../../constants/currencies';
@@ -20,6 +20,7 @@ import { useCurrentChain } from '../../../../../hooks/useChainStore';
 import { useLoadContract } from '../../../../../hooks/useLoadContract';
 import { translations } from '../../../../../locales/i18n';
 import { COMMON_SYMBOLS, findAsset } from '../../../../../utils/asset';
+import { isBobChain } from '../../../../../utils/chain';
 import { fromWei } from '../../../../../utils/math';
 import { APR, MAX_STAKING_APR_LINK, VP } from '../../StakePage.constants';
 import { GlobalStatistics } from '../../StakePage.utils';
@@ -31,7 +32,7 @@ export const StakingStatistics = () => {
   const stakingContract = useLoadContract('staking', 'protocol');
   const totalStakedSov = useAssetBalance(
     COMMON_SYMBOLS.SOV,
-    RSK_CHAIN_ID,
+    chainId,
     stakingContract?.address,
   );
 
@@ -80,7 +81,7 @@ export const StakingStatistics = () => {
             />
           }
         />
-        {chainId !== BOB_CHAIN_ID && (
+        {!isBobChain(chainId) && (
           <GlobalStatistics
             label={
               <span className="flex items-center gap-1">

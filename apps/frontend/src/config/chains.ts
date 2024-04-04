@@ -3,6 +3,7 @@ import { ChainId } from '@sovryn/ethers-provider';
 
 import bobLogo from '../assets/chains/bob.svg';
 import rskLogo from '../assets/chains/rsk.svg';
+import unknownLogo from '../assets/chains/unknown.svg';
 import { BOB } from '../constants/infrastructure/bob';
 import { FORK } from '../constants/infrastructure/fork';
 import { RSK } from '../constants/infrastructure/rsk';
@@ -71,13 +72,13 @@ export const APP_CHAIN_LIST: ChainWithLogo[] = [
           icon: bobLogo,
         },
         {
-          id: ChainIds.SEPOLIA,
-          label: 'Sepolia',
+          id: ChainIds.FORK,
+          label: 'Fork',
           token: 'tETH',
           publicRpcUrl: FORK.publicRpc[Environments.Testnet],
           rpcUrl: FORK.rpc[Environments.Testnet],
           blockExplorerUrl: FORK.explorer[Environments.Testnet],
-          icon: bobLogo,
+          icon: unknownLogo,
         },
       ]),
 ];

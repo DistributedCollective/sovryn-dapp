@@ -42,8 +42,6 @@ const SCROLL_LOGO =
 
 const DFLT_SDK_INFURA_KEY = '360ea5fda45b4a22883de8522ebd639e';
 
-const TENDERLY_FORK_ID = '612b39ab-7310-4e58-a69e-6b98b0962b7d';
-
 const GOERLI_CHAIN: ChainSpec = {
   nodeUrl: 'https://goerli.infura.io/v3/' + DFLT_SDK_INFURA_KEY,
   wsUrl: 'wss://goerli.infura.io/ws/v3/' + DFLT_SDK_INFURA_KEY,
@@ -211,15 +209,21 @@ const LOCAL_FORK_CHAIN: ChainSpec = Object.assign({}, GOERLI_CHAIN, {
   displayName: 'Local Fork',
 });
 
-const TENDERLY_FORK: ChainSpec = Object.assign({}, SEPOLIA_CHAIN, {
-  chainId: '0x6a62287',
-  nodeUrl: 'https://rpc.tenderly.co/fork/c' + TENDERLY_FORK_ID,
+const TENDERLY_FORK: ChainSpec = Object.assign({}, BOB_TESTNET_CHAIN, {
+  chainId: '0x1b669',
+  nodeUrl:
+    'https://virtual.mainnet.rpc.tenderly.co/4a0f7fb8-07fb-4cdd-baad-ec76fc7c6233',
   wsUrl: undefined,
   blockExplorer:
-    'https://dashboard.tenderly.co/explorer/fork/' +
-    TENDERLY_FORK_ID +
-    '/transactions',
+    'https://dashboard.tenderly.co/explorer/vnet/85e84e6d-a6fe-4497-8cfc-e32db752ac01/transactions',
   displayName: 'Tenderly Fork',
+  addrs: {
+    dex: '0xDFDC89c04EE7E661Fdbfd50972923823350d8514',
+    query: '0x7B794a3101594EC9aF48eF505E9f18DFbe966315',
+    impact: '0x3beb724c3c2b8ae0DfCe74015B21f6cf962D9881',
+    router: '0xc442ce6a859d3155B4c1347dD424ad11a936f560',
+    routerBypass: '0x31B957FE4C68B1949C38F2F8AaeB0028C6860a5d',
+  },
 });
 
 export const CHAIN_SPECS: { [chainId: string]: ChainSpec } = {
@@ -231,7 +235,7 @@ export const CHAIN_SPECS: { [chainId: string]: ChainSpec } = {
   '0xaa36a7': SEPOLIA_CHAIN,
   '0x8274f': SCROLL_SEPOLIA_CHAIN,
   '0x82750': SCROLL_CHAIN,
-  '0x6a62287': TENDERLY_FORK,
+  '0x1b669': TENDERLY_FORK,
   goerli: GOERLI_CHAIN,
   sepolia: SEPOLIA_CHAIN,
   arbtest: ARB_GOERLI_CHAIN,

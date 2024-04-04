@@ -1734,7 +1734,7 @@
         }
     },
     "networkBanner": {
-        "content": "This page is only available on {{network}} network. Please switch your wallet to the correct network."
+        "content": "Functionality only available on {{network}} chain, please click here to switch to the correct network."
     },
     "ambientMarketMaking": {
         "meta": {

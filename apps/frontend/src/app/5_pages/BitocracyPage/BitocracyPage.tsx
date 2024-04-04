@@ -58,7 +58,9 @@ const BitocracyPage: FC = () => {
       <Helmet>
         <title>{t(pageTranslations.meta.title)}</title>
       </Helmet>
-      <div className="w-full flex flex-col items-center text-gray-10 mt-6 sm:mt-24 max-w-6xl">
+      <div className="w-full flex flex-col items-center text-gray-10 max-w-6xl">
+        <NetworkBanner requiredChainId={RSK_CHAIN_ID} className="mb-6" />
+
         <Heading className="text-base sm:text-2xl font-medium">
           {t(pageTranslations.title)}
         </Heading>
@@ -68,8 +70,6 @@ const BitocracyPage: FC = () => {
         >
           {t(pageTranslations.subtitle)}
         </Paragraph>
-
-        <NetworkBanner requiredChainId={RSK_CHAIN_ID} />
 
         {account && !invalidChain && (
           <div className="flex w-full items-center sm:justify-end justify-center">

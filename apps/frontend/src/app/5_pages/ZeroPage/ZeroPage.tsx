@@ -25,8 +25,11 @@ import {
 } from '@sovryn/ui';
 import { Decimal } from '@sovryn/utils';
 
+import { RSK_CHAIN_ID } from '../../../config/chains';
+
 import { withDeferredLoaderData } from '../../0_meta/DeferredDataLoader/withDeferredRouterData';
 import { LOCStatus } from '../../2_molecules/LOCStatus/LOCStatus';
+import { NetworkBanner } from '../../2_molecules/NetworkBanner/NetworkBanner';
 import { SystemStats } from '../../2_molecules/SystemStats/SystemStats';
 import { GettingStartedPopup } from '../../3_organisms/GettingStartedPopup/GettingStartedPopup';
 import { LOCChart } from '../../3_organisms/LOCChart/LOCChart';
@@ -144,6 +147,7 @@ const ZeroPage: FC<ZeroPageProps> = ({ deferred: [price] }) => {
         <title>{t(translations.zeroPage.meta.title)}</title>
       </Helmet>
       <div className="px-0 container max-w-[100rem] mb-7">
+        <NetworkBanner requiredChainId={RSK_CHAIN_ID} />
         {!account && <div className="mt-6 lg:mt-12"></div>}
         {account && !showWelcomeBanner && !isLoading && (
           <LOCStatus

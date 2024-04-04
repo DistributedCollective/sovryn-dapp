@@ -62,12 +62,14 @@ export const ambientRoute: SwapRouteFunction = (
 
     const eth = (await getAssetContract('ETH', chainId)).address;
     const sov = (await getAssetContract('SOV', chainId)).address;
-    const wbtc = (await getAssetContract('WBTC', chainId)).address;
-    const gld = (await getAssetContract('GLD', chainId)).address;
+    const usdt = (await getAssetContract('USDT', chainId)).address;
+    const usdc = (await getAssetContract('USDC', chainId)).address;
+    const dai = (await getAssetContract('DAI', chainId)).address;
     const pools: Pool[] = [
       [eth, sov],
-      [eth, gld],
-      [eth, wbtc],
+      [eth, usdc],
+      [eth, usdt],
+      [eth, dai],
     ];
 
     return pools;

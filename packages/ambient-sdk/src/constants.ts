@@ -182,7 +182,8 @@ const SCROLL_CHAIN: ChainSpec = {
 };
 
 const BOB_TESTNET_CHAIN: ChainSpec = {
-  nodeUrl: 'https://bob-sepolia.rpc.caldera.xyz/http',
+  nodeUrl: 'https://sepolia-dencun.rpc.gobob.xyz',
+  wsUrl: 'wss://sepolia-dencun.rpc.gobob.xyz/wss',
   addrs: {
     dex: '0xdA95787c585F179BE374a241C8f0cdC25dC5A751',
     query: '0xA6b5f74DDCc75b4b561D84B19Ad7FD51f0405483',
@@ -192,14 +193,14 @@ const BOB_TESTNET_CHAIN: ChainSpec = {
   },
   poolIndex: 36000,
   isTestNet: true,
-  chainId: '0x97114f',
+  chainId: '0x94258',
   gridSize: 16,
   proxyPaths: {
     cold: 3,
     long: 130,
     liq: 128,
   },
-  blockExplorer: 'https://bob-sepolia.explorer.caldera.xyz',
+  blockExplorer: 'https://sepolia-dencun.explorer.gobob.xyz',
   displayName: 'BOB Testnet',
   logoUrl: ETHEREUM_LOGO,
 };
@@ -224,8 +225,7 @@ const TENDERLY_FORK: ChainSpec = Object.assign({}, SEPOLIA_CHAIN, {
 export const CHAIN_SPECS: { [chainId: string]: ChainSpec } = {
   '0x1': MAINNET_CHAIN,
   '0x5': GOERLI_CHAIN,
-  '0x6f': BOB_TESTNET_CHAIN, // 111
-  '0x97114f': BOB_TESTNET_CHAIN,
+  '0x94258': BOB_TESTNET_CHAIN,
   '0x7a69': LOCAL_FORK_CHAIN,
   '0x66eed': ARB_GOERLI_CHAIN,
   '0xaa36a7': SEPOLIA_CHAIN,

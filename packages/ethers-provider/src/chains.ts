@@ -10,4 +10,6 @@ export enum ChainIds {
   BOB_TESTNET = '0x97114f', // 9900367
   /** @deprecated */
   ROPSTEN = '0x3',
+  // forks
+  FORK = '0x6a62287', //111551111
 }

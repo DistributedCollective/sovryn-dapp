@@ -13,16 +13,16 @@ import { parseUnits } from 'ethers/lib/utils';
 import { CrocEnv } from '@sovryn/ambient-sdk';
 import { CrocTokenView } from '@sovryn/ambient-sdk/dist/tokens';
 import { getProvider } from '@sovryn/ethers-provider';
+import { ChainIds } from '@sovryn/ethers-provider';
 import { Decimal } from '@sovryn/utils';
 
-import { BOB_CHAIN_ID } from '../../../config/chains';
-
+// import { BOB_CHAIN_ID } from '../../../config/chains';
 import { useAccount } from '../../../hooks/useAccount';
+import { findAsset } from '../../../utils/asset';
 import { createRangePositionTx } from './ambient-utils';
-import { ETH_TOKEN, OKB_TOKEN, USDC_TOKEN, WBTC_TOKEN } from './fork-constants';
 
-const CHAIN_ID = BOB_CHAIN_ID;
-// const CHAIN_ID = ChainIds.SEPOLIA;
+// const CHAIN_ID = BOB_CHAIN_ID;
+const CHAIN_ID = ChainIds.FORK;
 
 const testAllowance = async (
   owner: string,
@@ -54,99 +54,110 @@ export const BobAmmPage: React.FC = () => {
     croc.current = new CrocEnv(getProvider(CHAIN_ID), signer);
   }, [signer]);
 
-  const handlePoolInit = useCallback(async () => {
-    if (!croc.current) {
-      alert('CrocEnv not initialized');
-      return;
-    }
+  const handlePoolInit = useCallback(
+    async (base: string, quote: string, price: number) => {
+      if (!croc.current) {
+        alert('CrocEnv not initialized');
+        return;
+      }
 
-    const tokenA = croc.current.tokens.materialize(ETH_TOKEN);
-    const tokenB = croc.current.tokens.materialize(OKB_TOKEN);
+      const baseToken = findAsset(base, CHAIN_ID).address;
+      const quoteToken = findAsset(quote, CHAIN_ID).address;
 
-    // await tokenA.approveBypassRouter();
-    // await tokenA.approveRouter();
+      const tokenA = croc.current.tokens.materialize(baseToken);
+      const tokenB = croc.current.tokens.materialize(quoteToken);
 
-    const pool = croc.current.pool(tokenA.tokenAddr, tokenB.tokenAddr);
-    console.log({ pool });
+      // await tokenA.approveBypassRouter();
+      // await tokenA.approveRouter();
 
-    const init = await pool.isInit();
-    console.log('is init', init);
+      const pool = croc.current.pool(tokenA.tokenAddr, tokenB.tokenAddr);
+      console.log({ pool });
 
-    const price = await pool.displayPrice();
-    console.log('display price', price);
+      const init = await pool.isInit();
+      console.log('is init', init);
 
-    if (!init) {
-      console.log('need to init');
+      if (!init) {
+        console.log('need to init');
 
-      await testAllowance(account, tokenA, 1);
-      await testAllowance(account, tokenB, 1);
+        await testAllowance(account, tokenA, 1);
+        await testAllowance(account, tokenB, 1);
 
-      const tx = await pool.initPool(100);
-      console.log('init pool price: ', tx);
-    } else {
-      alert('Pool already initialized');
-    }
-  }, [account]);
+        const tx = await pool.initPool(price);
+        console.log('init pool price: ', tx);
+      } else {
+        const price = await pool.displayPrice();
+        console.log('display price', price);
+        alert('Pool already initialized: ' + price);
+      }
+    },
+    [account],
+  );
 
-  const handleDeposit = useCallback(async () => {
-    if (!croc.current) {
-      alert('CrocEnv not initialized');
-      return;
-    }
+  const handleDeposit = useCallback(
+    async (base: string, quote: string, amount: number) => {
+      if (!croc.current) {
+        alert('CrocEnv not initialized');
+        return;
+      }
 
-    const tokenA = croc.current.tokens.materialize(ETH_TOKEN);
-    const tokenB = croc.current.tokens.materialize(USDC_TOKEN);
+      const baseToken = findAsset(base, CHAIN_ID).address;
+      const quoteToken = findAsset(quote, CHAIN_ID).address;
 
-    const pool = croc.current.pool(tokenA.tokenAddr, tokenB.tokenAddr);
-    console.log({ pool });
+      const tokenA = croc.current.tokens.materialize(baseToken);
+      const tokenB = croc.current.tokens.materialize(quoteToken);
 
-    const init = await pool.isInit();
+      const pool = croc.current.pool(tokenA.tokenAddr, tokenB.tokenAddr);
+      console.log({ pool });
 
-    if (!init) {
-      alert('Pool not initialized');
-      return;
-    }
+      const init = await pool.isInit();
 
-    // const approval = await tokenB.approve();
-    // approval?.wait();
-    // console.log('approval', approval);
+      if (!init) {
+        alert('Pool not initialized');
+        return;
+      }
 
-    const price = await pool.displayPrice();
+      // const approval = await tokenB.approve();
+      // approval?.wait();
+      // console.log('approval', approval);
 
-    console.log('display price', price);
+      const price = await pool.displayPrice();
 
-    const TOKEN_A_AMOUNT = 0.0001; // 0.0001
-    const TOKEN_B_AMOUNT = price * TOKEN_A_AMOUNT;
+      console.log('display price', price);
 
-    console.log({ TOKEN_A_AMOUNT, TOKEN_B_AMOUNT });
+      const TOKEN_A_AMOUNT = amount; // 0.0001
+      const TOKEN_B_AMOUNT = price * TOKEN_A_AMOUNT;
 
-    await testAllowance(account, tokenA, TOKEN_A_AMOUNT);
-    await testAllowance(account, tokenB, TOKEN_B_AMOUNT);
+      console.log({ TOKEN_A_AMOUNT, TOKEN_B_AMOUNT });
 
-    const tx = await createRangePositionTx({
-      crocEnv: croc.current,
-      isAmbient: true,
-      slippageTolerancePercentage: 3,
-      tokenA: {
-        address: tokenA.tokenAddr,
-        qty: TOKEN_A_AMOUNT,
-        isWithdrawFromDexChecked: false,
-      },
-      tokenB: {
-        address: tokenB.tokenAddr,
-        qty: TOKEN_B_AMOUNT,
-        isWithdrawFromDexChecked: false,
-      },
-      isTokenAPrimaryRange: true,
-      tick: { low: 2552, high: 3100 },
-    });
+      await testAllowance(account, tokenA, TOKEN_A_AMOUNT);
+      await testAllowance(account, tokenB, TOKEN_B_AMOUNT);
 
-    console.log('tx', tx);
-    console.log('tx', tx?.hash);
+      const tx = await createRangePositionTx({
+        crocEnv: croc.current,
+        isAmbient: true,
+        slippageTolerancePercentage: 3,
+        tokenA: {
+          address: tokenA.tokenAddr,
+          qty: TOKEN_A_AMOUNT,
+          isWithdrawFromDexChecked: false,
+        },
+        tokenB: {
+          address: tokenB.tokenAddr,
+          qty: TOKEN_B_AMOUNT,
+          isWithdrawFromDexChecked: false,
+        },
+        isTokenAPrimaryRange: true,
+        tick: { low: 2552, high: 3100 },
+      });
 
-    const receipt = await tx?.wait();
-    console.log('receipt', receipt);
-  }, [account]);
+      console.log('tx', tx);
+      console.log('tx', tx?.hash);
+
+      const receipt = await tx?.wait();
+      console.log('receipt', receipt);
+    },
+    [account],
+  );
 
   const [dexBalances, setDexBalances] = useState<Record<string, Decimal>>({});
   const [walletBalances, setWalletBalances] = useState<Record<string, Decimal>>(
@@ -163,8 +174,8 @@ export const BobAmmPage: React.FC = () => {
     if (!croc.current) {
       return;
     }
-    const labels = ['ETH', 'SOV', 'WBTC', 'GLD'];
-    const items = [ETH_TOKEN, USDC_TOKEN, WBTC_TOKEN, OKB_TOKEN];
+    const labels = ['ETH', 'VCT', 'SBL', 'CPL'];
+    const items = labels.map(label => findAsset(label, CHAIN_ID).address);
 
     const _dexBalances: Record<string, Decimal> = {};
     const _walletBalances: Record<string, Decimal> = {};
@@ -196,10 +207,26 @@ export const BobAmmPage: React.FC = () => {
       <div className="w-72">
         <ol>
           <li>
-            <button onClick={handlePoolInit}>Initialize pool</button>
+            <button onClick={() => handlePoolInit('ETH', 'VCT', 1000)}>
+              Initialize pool: ETH/VCT (1000 VCT)
+            </button>
+            <button onClick={() => handlePoolInit('ETH', 'SBL', 500)}>
+              Initialize pool: ETH/SBL (500 SBL)
+            </button>
+            <button onClick={() => handlePoolInit('ETH', 'CPL', 250)}>
+              Initialize pool: ETH/CPL (250 CPL)
+            </button>
           </li>
           <li>
-            <button onClick={handleDeposit}>Deposit to pool</button>
+            <button onClick={() => handleDeposit('ETH', 'VCT', 100)}>
+              Deposit to pool: ETH/VCT (100 ETH)
+            </button>
+            <button onClick={() => handleDeposit('ETH', 'SBL', 100)}>
+              Deposit to pool: ETH/SBL (100 ETH)
+            </button>
+            <button onClick={() => handleDeposit('ETH', 'CPL', 100)}>
+              Deposit to pool: ETH/CPL (100 ETH)
+            </button>
           </li>
         </ol>
       </div>

@@ -46,15 +46,15 @@ export const ambientRoute: SwapRouteFunction = (
     const chainId = await getChainId();
 
     // testing for sepolia fork...
-    if (chainId === ChainIds.SEPOLIA || chainId === ChainIds.MAINNET) {
+    if (chainId === ChainIds.FORK) {
       const eth = (await getAssetContract('ETH', chainId)).address;
-      const usdc = (await getAssetContract('USDC', chainId)).address;
-      const wbtc = (await getAssetContract('WBTC', chainId)).address;
-      const okb = (await getAssetContract('OKB', chainId)).address;
+      const vct = (await getAssetContract('VCT', chainId)).address;
+      const sbl = (await getAssetContract('SBL', chainId)).address;
+      const cpl = (await getAssetContract('CPL', chainId)).address;
       const pools: Pool[] = [
-        [eth, usdc],
-        [eth, wbtc],
-        [eth, okb],
+        [eth, vct],
+        [eth, sbl],
+        [eth, cpl],
       ];
 
       return pools;
@@ -75,13 +75,8 @@ export const ambientRoute: SwapRouteFunction = (
 
   return {
     name: 'Ambient',
-    // todo: remove eth chains before release
-    chains: [
-      ChainIds.BOB_MAINNET,
-      ChainIds.BOB_TESTNET,
-      ChainIds.MAINNET,
-      ChainIds.SEPOLIA,
-    ],
+    // todo: remove fork chain before release
+    chains: [ChainIds.BOB_MAINNET, ChainIds.BOB_TESTNET, ChainIds.FORK],
     pairs: async () => {
       const pools = await loadPools();
 
@@ -120,23 +115,23 @@ export const ambientRoute: SwapRouteFunction = (
               pool[1].toLowerCase() === entry.toLowerCase()),
         )
       ) {
-        const plan = await makePlan(entry, destination, BigNumber.from(amount));
+        const plan = await makePlan(
+          entry,
+          destination,
+          BigNumber.from(amount),
+          0.1,
+        );
         const impact = await plan.impact;
         return utils.parseEther(impact.buyQty);
       } else {
         // otherwise, use long form orders to build multi-hop swaps
-        console.log('Long form swap not implemented yet');
 
         const graph = constructGraph(pools);
-        console.log('Graph:', graph);
         const path = bfsShortestPath(graph, entry, destination);
-        console.log('Path:', path);
 
         const poolCount = Math.ceil((path?.length ?? 0) / 2);
-        console.log('Pool count:', poolCount);
 
         if (poolCount < 2) {
-          console.error('Found paths: ' + poolCount, ' Path: ', path);
           throw makeError(
             `Cannot swap ${entry} to ${destination}; #1`,
             SovrynErrorCode.SWAP_PAIR_NOT_AVAILABLE,
@@ -148,8 +143,6 @@ export const ambientRoute: SwapRouteFunction = (
 
         const entryAmount = await parseAmount(env, entry, amount);
 
-        console.log('Entry Amount:', entryAmount.toString());
-
         const poolIndex = context.chain.poolIndex;
 
         const groupedPath = groupItemsInPairs(path ?? []);
@@ -157,8 +150,6 @@ export const ambientRoute: SwapRouteFunction = (
         const ambientPools = await Promise.all(
           groupedPath.map(item => env.pool(item[0], item[1])),
         );
-
-        console.log('Ambient Pools:', ambientPools);
 
         if (ambientPools.length === 0) {
           throw makeError(
@@ -175,8 +166,6 @@ export const ambientRoute: SwapRouteFunction = (
           entryAmount,
         );
 
-        console.log('Entry Out:', lastOut);
-
         for (let i = 1; i < ambientPools.length; i++) {
           const pool = ambientPools[i];
           const poolPath = groupedPath[i];
@@ -188,11 +177,11 @@ export const ambientRoute: SwapRouteFunction = (
             poolPath[0],
             lastOut.amount,
           );
-
-          console.log('Pool Out:', i, lastOut);
         }
 
-        return lastOut.amount;
+        return Decimal.fromBigNumberString(
+          lastOut.amount.toString(),
+        ).toBigNumber();
       }
     },
     approve: async (entry, destination, amount, from, overrides) => {
@@ -228,8 +217,6 @@ export const ambientRoute: SwapRouteFunction = (
     },
     permit: async () => Promise.resolve(undefined),
     swap: async (entry, destination, amount, from, options, overrides) => {
-      console.log('amount', amount.toString());
-
       const slippage = Number(options?.slippage ?? 10) / 1000;
 
       const pools = await loadPools();
@@ -244,7 +231,6 @@ export const ambientRoute: SwapRouteFunction = (
               pool[1].toLowerCase() === entry.toLowerCase()),
         )
       ) {
-        console.log('Using pool for swap');
         const plan = await makePlan(entry, destination, BigNumber.from(amount));
         const txData = await plan.generateSwapData({ from: from });
 
@@ -256,18 +242,13 @@ export const ambientRoute: SwapRouteFunction = (
         };
       } else {
         // otherwise, use long form orders to build multi-hop swaps
-        console.log('Long form swap not implemented yet');
 
         const graph = constructGraph(pools);
-        console.log('Graph:', graph);
         const path = bfsShortestPath(graph, entry, destination);
-        console.log('Path:', path);
 
         const poolCount = Math.ceil((path?.length ?? 0) / 2);
-        console.log('Pool count:', poolCount);
 
         if (poolCount < 2) {
-          console.error('Found paths: ' + poolCount, ' Path: ', path);
           throw makeError(
             `Cannot swap ${entry} to ${destination}; #1`,
             SovrynErrorCode.SWAP_PAIR_NOT_AVAILABLE,
@@ -279,8 +260,6 @@ export const ambientRoute: SwapRouteFunction = (
 
         const entryAmount = await parseAmount(env, entry, amount);
 
-        console.log('Entry Amount:', entryAmount.toString());
-
         const poolIndex = context.chain.poolIndex;
         const proxyPath = context.chain.proxyPaths.long;
 
@@ -289,8 +268,6 @@ export const ambientRoute: SwapRouteFunction = (
         const ambientPools = await Promise.all(
           groupedPath.map(item => env.pool(item[0], item[1])),
         );
-
-        console.log('Ambient Pools:', ambientPools);
 
         if (ambientPools.length === 0) {
           throw makeError(
@@ -315,8 +292,6 @@ export const ambientRoute: SwapRouteFunction = (
           slippage,
         );
 
-        console.log('Entry Out:', lastOut);
-
         for (let i = 1; i < ambientPools.length; i++) {
           const pool = ambientPools[i];
           const poolPath = groupedPath[i];
@@ -336,11 +311,7 @@ export const ambientRoute: SwapRouteFunction = (
             lastOut,
             slippage,
           );
-
-          console.log('Pool Out:', i, lastOut);
         }
-
-        console.log('Order:', order);
 
         const data = context.dex.interface.encodeFunctionData('userCmd', [
           proxyPath,
@@ -377,7 +348,9 @@ const calculateImpact = async (
     amount,
   );
 
-  const entryOut = Decimal.fromBigNumberString(impact.baseFlow)
+  const entryOut = Decimal.fromBigNumberString(
+    isBuy ? impact.quoteFlow : impact.baseFlow,
+  )
     .abs()
     .toBigNumber();
 
@@ -399,8 +372,6 @@ const setupPool = async (
   orderPool.swap.inBaseQty = orderPool.swap.isBuy;
   orderPool.swap.qty = amount;
 
-  console.log('Pool:', orderPool, pool, entry, amount, slippage);
-
   const impact = await calcImpact(
     env,
     pool.baseToken.tokenAddr,
@@ -410,8 +381,6 @@ const setupPool = async (
     orderPool.swap.inBaseQty,
     orderPool.swap.qty,
   );
-
-  console.log('Impact:', impact);
 
   orderPool.swap.limitPrice = Decimal.fromBigNumberString(impact.finalPrice)
     .mul(orderPool.swap.isBuy ? 1 + slippage : 1 - slippage)

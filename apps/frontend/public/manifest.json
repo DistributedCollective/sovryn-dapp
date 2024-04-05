@@ -3,19 +3,14 @@
   "name": "Sovryn dapp",
   "icons": [
     {
-      "src": "favicon.ico",
-      "sizes": "64x64 32x32 24x24 16x16",
-      "type": "image/x-icon"
+      "src": "65f8461a5e19e361750f0b25_Pic.png",
+      "type": "image/png",
+      "sizes": "32x32"
     },
     {
-      "src": "logo192.png",
+      "src": "660572553f6c84fdff7a5928_256.png",
       "type": "image/png",
-      "sizes": "192x192"
-    },
-    {
-      "src": "logo512.png",
-      "type": "image/png",
-      "sizes": "512x512"
+      "sizes": "256x256"
     }
   ],
   "start_url": "./",

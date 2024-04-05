@@ -3,7 +3,9 @@ import { ChainId } from '@sovryn/ethers-provider';
 
 import bobLogo from '../assets/chains/bob.svg';
 import rskLogo from '../assets/chains/rsk.svg';
+import unknownLogo from '../assets/chains/unknown.svg';
 import { BOB } from '../constants/infrastructure/bob';
+import { FORK } from '../constants/infrastructure/fork';
 import { RSK } from '../constants/infrastructure/rsk';
 import { Environments } from '../types/global';
 
@@ -68,6 +70,15 @@ export const APP_CHAIN_LIST: ChainWithLogo[] = [
           rpcUrl: BOB.rpc[Environments.Testnet],
           blockExplorerUrl: BOB.explorer[Environments.Testnet],
           icon: bobLogo,
+        },
+        {
+          id: ChainIds.FORK,
+          label: 'Virtual Network',
+          token: 'tETH',
+          publicRpcUrl: FORK.publicRpc[Environments.Testnet],
+          rpcUrl: FORK.rpc[Environments.Testnet],
+          blockExplorerUrl: FORK.explorer[Environments.Testnet],
+          icon: unknownLogo,
         },
       ]),
 ];

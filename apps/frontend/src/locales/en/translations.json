@@ -106,7 +106,8 @@
             },
             "convert": "Convert",
             "stake": "Stake",
-            "bitocracy": "Bitocracy"
+            "bitocracy": "Bitocracy",
+            "bob": "Go BoB"
         }
     },
     "footer": {
@@ -860,6 +861,7 @@
 
     "leaderboardPage": {
         "headerLink": "POWA Points",
+        "headerDescription": "Earn Points, Earn POWA",
         "title": "You’ve got the POWA!",
         "subtitle": "Earn Points - get POWA",
         "description1": "POWA is the most powaful Bitcoin token! Minted on an entirely new Bitcoin technology, POWA tokens allow early use of what's to come with the <0>BitcoinOS</0> launch.",

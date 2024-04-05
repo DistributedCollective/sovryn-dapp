@@ -2,7 +2,7 @@ import { constants } from 'ethers';
 
 import { AssetDetails } from '../../types';
 
-export const bobTestnet: Array<AssetDetails> = [
+export const fork: Array<AssetDetails> = [
   {
     symbol: 'ETH',
     address: constants.AddressZero,
@@ -10,33 +10,31 @@ export const bobTestnet: Array<AssetDetails> = [
     isNative: true,
     decimals: 18,
     getIcon: async () => (await import('./icons/bob/eth')).default,
-    description: 'BOB Ether',
   },
   {
     symbol: 'SOV',
-    address: '0x3E610F32806e09C2Ba65b8c88A6E4f777c8Cb559',
-    name: 'Sovryn',
+    address: '0x0D7423380F4b6f96D8188CCCfB086aBEC84A0934',
+    name: 'SOV',
     decimals: 18,
     getIcon: async () => (await import('./icons/bob/sov')).default,
-    description: 'Sovryn Token',
-  },
-  {
-    symbol: 'USDC',
-    address: '0xEf6495e4D07Fa58e473C5CC3a2e3ebB8876CC798',
-    name: 'USDC',
-    decimals: 18,
-    getIcon: async () => (await import('./icons/bob/usdc')).default,
   },
   {
     symbol: 'USDT',
-    address: '0xfCDaC6196C22908ddA4CE84fb595B1C7986346bF',
+    address: '0xEc025c3651308Ff67835Cf0F147315466932E15c',
     name: 'USDT',
     decimals: 18,
     getIcon: async () => (await import('./icons/bob/usdt')).default,
   },
   {
+    symbol: 'USDC',
+    address: '0x378e86475772613daf249F4342f57617032acDBE',
+    name: 'USDC',
+    decimals: 18,
+    getIcon: async () => (await import('./icons/bob/usdc')).default,
+  },
+  {
     symbol: 'DAI',
-    address: '0x0D7423380F4b6f96D8188CCCfB086aBEC84A0934',
+    address: '0x87d252A68a0AC2428C6e849f4Ec0b30DD3DCA62B',
     name: 'DAI',
     decimals: 18,
     getIcon: async () => (await import('./icons/bob/dai')).default,

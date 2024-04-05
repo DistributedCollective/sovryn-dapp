@@ -21,7 +21,7 @@ const defaultContextValue: DepositContextValue = {
   setLowerBoundaryPrice: noop,
   upperBoundaryPrice: 0,
   setUpperBoundaryPrice: noop,
-  lowerBoundaryPercentage: DEFAULT_RANGE_WIDTH,
+  lowerBoundaryPercentage: DEFAULT_RANGE_WIDTH * -1,
   setLowerBoundaryPercentage: noop,
   upperBoundaryPercentage: DEFAULT_RANGE_WIDTH,
   setUpperBoundaryPercentage: noop,
@@ -47,10 +47,10 @@ export const DepositContextProvider: FC<PropsWithChildren> = ({ children }) => {
     defaultContextValue.lowerBoundaryPercentage,
   );
   const [upperBoundaryPrice, setUpperBoundaryPrice] = useState(
-    defaultContextValue.lowerBoundaryPrice,
+    defaultContextValue.upperBoundaryPrice,
   );
   const [upperBoundaryPercentage, setUpperBoundaryPercentage] = useState(
-    defaultContextValue.lowerBoundaryPercentage,
+    defaultContextValue.upperBoundaryPercentage,
   );
   const [maximumSlippage, setMaximumSlippage] = useState(
     defaultContextValue.maximumSlippage,

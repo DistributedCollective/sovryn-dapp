@@ -13,7 +13,6 @@ import { Decimal } from '@sovryn/utils';
 
 import { APP_CHAIN_LIST } from '../../../../../../../config/chains';
 
-import { CrocContextProvider } from '../../../../../../../contexts/CrocContext';
 import { useAccount } from '../../../../../../../hooks/useAccount';
 import { useBlockNumber } from '../../../../../../../hooks/useBlockNumber';
 import { useCurrentChain } from '../../../../../../../hooks/useChainStore';
@@ -166,19 +165,17 @@ export const PoolsTableAction: FC<PoolsTableActionProps> = ({ pool }) => {
         isInitialDeposit={isInitialDeposit}
       />
 
-      <CrocContextProvider>
-        <DepositContextProvider>
-          <BobDepositModal
-            isOpen={isBobModalOpen && pool.assetA === COMMON_SYMBOLS.DLLR}
-            onClose={handleClose}
-          />
-        </DepositContextProvider>
-
-        <BobWithdrawModal
-          isOpen={isBobModalOpen && pool.assetA === COMMON_SYMBOLS.SOV}
+      <DepositContextProvider>
+        <BobDepositModal
+          isOpen={isBobModalOpen && pool.assetA === COMMON_SYMBOLS.DLLR}
           onClose={handleClose}
         />
-      </CrocContextProvider>
+      </DepositContextProvider>
+
+      <BobWithdrawModal
+        isOpen={isBobModalOpen && pool.assetA === COMMON_SYMBOLS.SOV}
+        onClose={handleClose}
+      />
     </div>
   );
 };

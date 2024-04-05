@@ -17,6 +17,7 @@ import { EmailUnsubscribedPage } from './app/5_pages/EmailUnsubscribedPage/Email
 import { EmailVerifiedPage } from './app/5_pages/EmailVerifiedPage/EmailVerifiedPage';
 import { ErrorPage } from './app/5_pages/ErrorPage/ErrorPage';
 import { zeroPageLoader } from './app/5_pages/ZeroPage/loader';
+import { CrocContextProvider } from './contexts/CrocContext';
 import { isIPFSBuild } from './utils/helpers';
 import { loadable } from './utils/loadable';
 
@@ -109,7 +110,11 @@ const routes = [
       },
       {
         path: '/earn/market-making',
-        element: <MarketMakingPage />,
+        element: (
+          <CrocContextProvider>
+            <MarketMakingPage />
+          </CrocContextProvider>
+        ),
       },
       {
         path: '/earn',

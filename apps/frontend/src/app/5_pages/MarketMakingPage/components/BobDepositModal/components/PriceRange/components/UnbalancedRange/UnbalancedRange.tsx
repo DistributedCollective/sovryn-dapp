@@ -2,6 +2,8 @@ import React, { FC, useCallback, useEffect } from 'react';
 
 import { t } from 'i18next';
 
+import { Decimal } from '@sovryn/utils';
+
 import { translations } from '../../../../../../../../../locales/i18n';
 import { POOL_ASSET_A, POOL_ASSET_B } from '../../../../BobDepositModal';
 import { useDepositContext } from '../../../../contexts/BobDepositModalContext';
@@ -10,7 +12,6 @@ import { Input } from './components/Input/Input';
 
 export const UnbalancedRange: FC = () => {
   const {
-    // rangeWidth,
     lowerBoundaryPrice,
     lowerBoundaryPercentage,
     upperBoundaryPrice,
@@ -22,77 +23,81 @@ export const UnbalancedRange: FC = () => {
   } = useDepositContext();
 
   const { price: currentPrice } = useGetPoolInfo(POOL_ASSET_A, POOL_ASSET_B);
-  console.log(`current price: ${currentPrice} g`);
 
-  // const priceDifferenceLowerBoundary = useMemo(
-  //   () =>
-  //     Decimal.from(currentPrice).mul(
-  //       Decimal.from(lowerBoundaryPercentage).div(100),
-  //     ),
-  //   [currentPrice, lowerBoundaryPercentage],
-  // );
+  const calculatePrice = useCallback(
+    (percentage: number) =>
+      Decimal.from(currentPrice)
+        .add(Decimal.from(currentPrice).mul(Decimal.from(percentage).div(100)))
+        .toNumber(),
+    [currentPrice],
+  );
 
-  // const priceDifferenceUpperBoundary = useMemo(
-  //   () =>
-  //     Decimal.from(currentPrice).mul(
-  //       Decimal.from(upperBoundaryPercentage).div(100),
-  //     ),
-  //   [currentPrice, upperBoundaryPercentage],
-  // );
+  const updateRange = useCallback(
+    (isUpperBoundary: boolean, isPlus: boolean) => {
+      const currentPercentage = isUpperBoundary
+        ? upperBoundaryPercentage
+        : lowerBoundaryPercentage;
 
-  console.log(`lowerBoundaryPercentage: ${lowerBoundaryPercentage}`);
+      const newPercentage = isPlus
+        ? currentPercentage + 1
+        : currentPercentage - 1;
+
+      const newPrice =
+        newPercentage === 0 ? currentPrice : calculatePrice(newPercentage);
+
+      if (isUpperBoundary) {
+        setUpperBoundaryPercentage(newPercentage);
+        setUpperBoundaryPrice(newPrice);
+      } else {
+        setLowerBoundaryPercentage(newPercentage);
+        setLowerBoundaryPrice(newPrice);
+      }
+    },
+    [
+      calculatePrice,
+      currentPrice,
+      lowerBoundaryPercentage,
+      setLowerBoundaryPercentage,
+      setLowerBoundaryPrice,
+      setUpperBoundaryPercentage,
+      setUpperBoundaryPrice,
+      upperBoundaryPercentage,
+    ],
+  );
 
   const onMinPriceMinusClick = useCallback(() => {
-    setLowerBoundaryPrice(previousValue => previousValue - 10);
-    setLowerBoundaryPercentage(previousValue => previousValue - 1);
-  }, [setLowerBoundaryPercentage, setLowerBoundaryPrice]);
+    updateRange(false, false);
+  }, [updateRange]);
 
   const onMinPricePlusClick = useCallback(() => {
-    setLowerBoundaryPrice(previousValue => previousValue + 10);
-    setLowerBoundaryPercentage(previousValue => previousValue + 1);
-  }, [setLowerBoundaryPercentage, setLowerBoundaryPrice]);
+    updateRange(false, true);
+  }, [updateRange]);
 
   const onMaxPriceMinusClick = useCallback(() => {
-    setUpperBoundaryPrice(previousValue => previousValue - 10);
-    setUpperBoundaryPercentage(previousValue => previousValue - 1);
-  }, [setUpperBoundaryPercentage, setUpperBoundaryPrice]);
+    updateRange(true, false);
+  }, [updateRange]);
 
   const onMaxPricePlusClick = useCallback(() => {
-    setUpperBoundaryPrice(previousValue => previousValue + 10);
-    setUpperBoundaryPercentage(previousValue => previousValue + 1);
-  }, [setUpperBoundaryPercentage, setUpperBoundaryPrice]);
+    updateRange(true, true);
+  }, [updateRange]);
 
   useEffect(() => {
     if (lowerBoundaryPrice === 0) {
-      setLowerBoundaryPrice(currentPrice);
+      setLowerBoundaryPrice(calculatePrice(lowerBoundaryPercentage));
     }
 
     if (upperBoundaryPrice === 0) {
-      setUpperBoundaryPrice(currentPrice);
+      setUpperBoundaryPrice(calculatePrice(upperBoundaryPercentage));
     }
   }, [
-    currentPrice,
+    calculatePrice,
+    lowerBoundaryPercentage,
     lowerBoundaryPrice,
     setLowerBoundaryPrice,
     setUpperBoundaryPrice,
+    upperBoundaryPercentage,
     upperBoundaryPrice,
   ]);
-
-  // useEffect(() => {
-  //   if (
-  //     rangeWidth !== lowerBoundaryPercentage ||
-  //     rangeWidth !== upperBoundaryPercentage
-  //   ) {
-  //     setLowerBoundaryPercentage(rangeWidth);
-  //     setUpperBoundaryPercentage(rangeWidth);
-  //   }
-  // }, [
-  //   lowerBoundaryPercentage,
-  //   rangeWidth,
-  //   setLowerBoundaryPercentage,
-  //   setUpperBoundaryPercentage,
-  //   upperBoundaryPercentage,
-  // ]);
 
   return (
     <div className="flex justify-between px-4">
@@ -102,7 +107,6 @@ export const UnbalancedRange: FC = () => {
         onPlusClick={onMinPricePlusClick}
         value={lowerBoundaryPrice}
         range={lowerBoundaryPercentage}
-        isLowerBoundary
       />
 
       <Input

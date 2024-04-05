@@ -29,7 +29,8 @@ const BorrowPage: FC = () => {
         <title>{t(translations.fixedInterestPage.meta.title)}</title>
       </Helmet>
 
-      <div className="px-0 container md:mx-9 mx-0 md:mb-2 mt-4 mb-7">
+      <div className="px-0 container md:mx-9 mx-0 md:mb-2 mb-7">
+        <NetworkBanner requiredChainId={RSK_CHAIN_ID} className="mb-4" />
         <Heading className="text-center mb-3 lg:text-2xl">
           {t(translations.fixedInterestPage.title)}
         </Heading>
@@ -40,8 +41,6 @@ const BorrowPage: FC = () => {
         >
           {t(translations.fixedInterestPage.subtitle)}
         </Paragraph>
-
-        <NetworkBanner requiredChainId={RSK_CHAIN_ID} />
 
         <div className="w-full">
           {hasOpenLoans && <OpenLoansTable loans={loans} loading={loading} />}

@@ -294,12 +294,22 @@ export const AdjustStakeForm: FC<AdjustStakeFormProps> = ({
       setVotingPowerChanged(0);
     }
     if (weight !== 0) {
-      setVotingPowerChanged(
-        (Number(!isExtendTab ? amount : stake.stakedAmount) * weight) /
-          WEIGHT_FACTOR,
-      );
+      if (isExtendTab) {
+        setVotingPowerChanged(
+          (Number(stake.stakedAmount) * weight) / WEIGHT_FACTOR - votingPower,
+        );
+      } else {
+        setVotingPowerChanged((Number(amount) * weight) / WEIGHT_FACTOR);
+      }
     }
-  }, [amount, weight, isValidAmount, isExtendTab, stake.stakedAmount]);
+  }, [
+    amount,
+    weight,
+    isValidAmount,
+    isExtendTab,
+    stake.stakedAmount,
+    votingPower,
+  ]);
 
   useEffect(() => {
     setAmount('');

@@ -82,6 +82,12 @@ export const Header: FC = () => {
               </li>
             ))}
             <ProductLinks />
+            <Button
+              text={t(translations.header.nav.bob)}
+              style={ButtonStyle.primary}
+              className="bg-[#24BFB74D]/[0.3] border-[#24BFB74D]/[0.3] hover:bg-[#24BFB74D]"
+              onClick={() => window.open('https://gobob.sovryn.app', '_blank')}
+            />
           </ol>
         }
         secondaryContent={

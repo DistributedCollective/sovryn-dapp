@@ -7,7 +7,7 @@ import { useNavigate } from 'react-router-dom';
 
 import { Button, ButtonSize, ButtonStyle } from '@sovryn/ui';
 
-import { WIKI_LINKS } from '../../../../../constants/links';
+import { POWA_LINK } from '../../../../../constants/links';
 import { translations } from '../../../../../locales/i18n';
 import styles from './Banner.module.css';
 import { LandingPromoCard } from './components/LandingPromoCard/LandingPromoCard';
@@ -15,16 +15,13 @@ import { LandingPromoCard } from './components/LandingPromoCard/LandingPromoCard
 export const Banner: FC = () => {
   const navigate = useNavigate();
 
-  const handleClick = useCallback(
-    () => navigate('/convert?from=rbtc&to=sov'),
-    [navigate],
-  );
+  const handleClick = useCallback(() => navigate('/powa'), [navigate]);
 
   return (
     <div className="w-full relative pb-7">
       <Carousel
         arrows={false}
-        draggable
+        draggable={false} // Needs to be true when we have more than 1 promo
         partialVisible={false}
         focusOnSelect={false}
         responsive={{
@@ -45,20 +42,24 @@ export const Banner: FC = () => {
         infinite
       >
         <LandingPromoCard
-          heading={t(translations.landingPage.promotions.sov.title)}
-          description={t(translations.landingPage.promotions.sov.description)}
+          heading={t(translations.landingPage.promotions.competition.title)}
+          description={t(
+            translations.landingPage.promotions.competition.description,
+          )}
           actions={
             <>
               <Button
                 style={ButtonStyle.secondary}
                 size={ButtonSize.large}
-                text={t(translations.landingPage.promotions.sov.cta)}
+                text={t(translations.landingPage.promotions.competition.cta)}
                 onClick={handleClick}
               />
 
               <Button
-                text={t(translations.stakePage.stakingRewards.learnMoreLink)}
-                href={WIKI_LINKS.STAKING}
+                text={t(
+                  translations.landingPage.promotions.competition.secondaryCta,
+                )}
+                href={POWA_LINK} // TODO: Needs to be changed later, the landing page does not exist yet
                 style={ButtonStyle.ghost}
                 hrefExternal
               />

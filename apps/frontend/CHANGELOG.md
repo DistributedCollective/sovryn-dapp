@@ -1,5 +1,47 @@
 # frontend
 
+## 1.0.52
+
+### Patch Changes
+
+- 6d5ba110: SOV-3985: Refactor POWA menu display
+  Update dapp Favicon
+
+## 1.0.51
+
+### Patch Changes
+
+- 3ffea217: SOV-3964: open links in SIP proposals in a new browser tab
+- 0c16d474: SOV-3917: New voting power is now shown correctly when extending an existing stake
+- 0061ffe3: SOV-3870: Replace ZUSD with DLLR in Ecosystem Statistics
+
+## 1.0.50
+
+### Patch Changes
+
+- 8a310501: SOV-3978: Leaderboard copy adjustments
+
+## 1.0.49
+
+### Patch Changes
+
+- d9f276a7: SOV-3963: Use name() to identify SIP proposal as non-executable
+
+## 1.0.48
+
+### Patch Changes
+
+- 50f7724d: SOV-3935: Competition leaderboard
+
+## 1.0.47
+
+### Patch Changes
+
+- 3d6870a1: SOV-3827: Protocol Data Page
+- 865fa7ba: SOV-3823: Fix markdown display on Bitocracy
+- Updated dependencies [3d6870a1]
+  - @sovryn/ui@1.0.23
+
 ## 1.0.46
 
 ### Patch Changes

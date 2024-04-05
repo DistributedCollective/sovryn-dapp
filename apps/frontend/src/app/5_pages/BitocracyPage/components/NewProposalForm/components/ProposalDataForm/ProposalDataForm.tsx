@@ -127,6 +127,13 @@ export const ProposalDataForm: FC<ProposalDataFormProps> = ({
           <div className={styles.description}>
             <ReactMarkdown
               remarkPlugins={[remarkGfm]}
+              components={{
+                a: props => (
+                  <a href={props.href} target="_blank" rel="noreferrer">
+                    {props.children}
+                  </a>
+                ),
+              }}
               className="w-full bg-gray-70 border border-gray-70 p-3 rounded focus:border-gray-60 mt-2 min-h-36 overflow-auto"
             >
               {form.text}

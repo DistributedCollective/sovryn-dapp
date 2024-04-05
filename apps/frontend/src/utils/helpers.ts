@@ -1,3 +1,5 @@
+import { RefObject } from 'react';
+
 import dayjs from 'dayjs';
 import { BigNumber, providers } from 'ethers';
 import resolveConfig from 'tailwindcss/resolveConfig';
@@ -207,3 +209,12 @@ export const renderTokenSymbol = (token: string) =>
 
 export const generateNonce = () =>
   BigNumber.from(Math.floor(Date.now() + Math.random() * 100));
+
+export const scrollToElement = (ref: RefObject<any>) => {
+  if (ref.current) {
+    ref.current.scrollIntoView({
+      behavior: 'smooth',
+      block: 'start',
+    });
+  }
+};

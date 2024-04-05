@@ -18,6 +18,7 @@ import {
   bfsShortestPath,
   calcImpact,
   constructGraph,
+  fetchPools,
   groupItemsInPairs,
 } from '../utils/ambient-utils';
 
@@ -42,39 +43,34 @@ export const ambientRoute: SwapRouteFunction = (
       .for(destination, { slippage });
   };
 
+  const poolCache: Record<string, Pool[]> = {};
   const loadPools = async () => {
     const chainId = await getChainId();
+    if (!poolCache[chainId]) {
+      // testing for virtual network fork...
+      if (chainId === ChainIds.FORK) {
+        const eth = (await getAssetContract('ETH', chainId)).address;
+        const sov = (await getAssetContract('SOV', chainId)).address;
+        const usdt = (await getAssetContract('USDT', chainId)).address;
+        const usdc = (await getAssetContract('USDC', chainId)).address;
+        const dai = (await getAssetContract('DAI', chainId)).address;
+        const pools: Pool[] = [
+          [eth, sov],
+          [eth, usdc],
+          [eth, usdt],
+          [eth, dai],
+        ];
 
-    // testing for virtual network fork...
-    if (chainId === ChainIds.FORK) {
-      const eth = (await getAssetContract('ETH', chainId)).address;
-      const sov = (await getAssetContract('SOV', chainId)).address;
-      const usdt = (await getAssetContract('USDT', chainId)).address;
-      const usdc = (await getAssetContract('USDC', chainId)).address;
-      const dai = (await getAssetContract('DAI', chainId)).address;
-      const pools: Pool[] = [
-        [eth, sov],
-        [eth, usdc],
-        [eth, usdt],
-        [eth, dai],
-      ];
+        poolCache[chainId] = pools;
 
-      return pools;
+        return pools;
+      }
+
+      const pools = await fetchPools(chainId);
+      poolCache[chainId] = pools;
     }
 
-    const eth = (await getAssetContract('ETH', chainId)).address;
-    const sov = (await getAssetContract('SOV', chainId)).address;
-    const usdt = (await getAssetContract('USDT', chainId)).address;
-    const usdc = (await getAssetContract('USDC', chainId)).address;
-    const dai = (await getAssetContract('DAI', chainId)).address;
-    const pools: Pool[] = [
-      [eth, sov],
-      [eth, usdc],
-      [eth, usdt],
-      [eth, dai],
-    ];
-
-    return pools;
+    return poolCache[chainId];
   };
 
   return {

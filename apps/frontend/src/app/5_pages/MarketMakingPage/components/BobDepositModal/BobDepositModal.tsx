@@ -16,17 +16,15 @@ import { CurrentStatistics } from '../../../../2_molecules/CurrentStatistics/Cur
 import { useAccount } from '../../../../../hooks/useAccount';
 import { translations } from '../../../../../locales/i18n';
 import { COMMON_SYMBOLS } from '../../../../../utils/asset';
-import { AmmLiquidityPoolDictionary } from '../../utils/AmmLiquidityPoolDictionary';
 import { NewPoolStatistics } from './components/NewPoolStatistics/NewPoolStatistics';
 import { PriceRange } from './components/PriceRange/PriceRange';
 import { AmountForm } from './components/PriceRange/components/AmountForm/AmountForm';
 import { SlippageSettings } from './components/PriceRange/components/SlippageSettings/SlippageSettings';
 import { useDepositContext } from './contexts/BobDepositModalContext';
 
-// TODO: This will be a prop and will likely use a different set of pools
-const POOL = AmmLiquidityPoolDictionary.list().filter(
-  pool => pool.assetA === COMMON_SYMBOLS.DLLR,
-)[0];
+// TODO: This will be a prop
+export const POOL_ASSET_A = COMMON_SYMBOLS.ETH;
+export const POOL_ASSET_B = COMMON_SYMBOLS.SOV;
 
 const pageTranslations = translations.bobMarketMakingPage.depositModal;
 
@@ -62,8 +60,8 @@ export const BobDepositModal: FC<BobDepositModalProps> = ({
         <DialogBody>
           <div className="bg-gray-90 p-4 rounded">
             <CurrentStatistics
-              symbol={POOL.assetA}
-              symbol2={POOL.assetB}
+              symbol={POOL_ASSET_A}
+              symbol2={POOL_ASSET_B}
               label1={t(pageTranslations.returnRate)}
               value1="5.6%"
               className="flex justify-between"
@@ -73,7 +71,10 @@ export const BobDepositModal: FC<BobDepositModalProps> = ({
           <AmountForm />
           <PriceRange />
           <SlippageSettings />
-          <NewPoolStatistics pool={POOL} />
+          <NewPoolStatistics
+            poolAssetA={POOL_ASSET_A}
+            poolAssetB={POOL_ASSET_B}
+          />
 
           <div className="mt-8">
             <Checkbox

@@ -8,19 +8,22 @@ import React, {
 
 import { noop } from '@sovryn/ui';
 
-import { DEFAULT_SLIPPAGE } from '../BobDepositModal.constants';
+import {
+  DEFAULT_RANGE_WIDTH,
+  DEFAULT_SLIPPAGE,
+} from '../BobDepositModal.constants';
 import { DepositContextValue } from './BobDepositModalContext.types';
 
 const defaultContextValue: DepositContextValue = {
-  rangeWidth: 0,
+  rangeWidth: DEFAULT_RANGE_WIDTH,
   setRangeWidth: noop,
   lowerBoundaryPrice: 0,
   setLowerBoundaryPrice: noop,
   upperBoundaryPrice: 0,
   setUpperBoundaryPrice: noop,
-  lowerBoundaryPercentage: 0,
+  lowerBoundaryPercentage: DEFAULT_RANGE_WIDTH * -1,
   setLowerBoundaryPercentage: noop,
-  upperBoundaryPercentage: 0,
+  upperBoundaryPercentage: DEFAULT_RANGE_WIDTH,
   setUpperBoundaryPercentage: noop,
   maximumSlippage: DEFAULT_SLIPPAGE,
   setMaximumSlippage: noop,
@@ -44,10 +47,10 @@ export const DepositContextProvider: FC<PropsWithChildren> = ({ children }) => {
     defaultContextValue.lowerBoundaryPercentage,
   );
   const [upperBoundaryPrice, setUpperBoundaryPrice] = useState(
-    defaultContextValue.lowerBoundaryPrice,
+    defaultContextValue.upperBoundaryPrice,
   );
   const [upperBoundaryPercentage, setUpperBoundaryPercentage] = useState(
-    defaultContextValue.lowerBoundaryPercentage,
+    defaultContextValue.upperBoundaryPercentage,
   );
   const [maximumSlippage, setMaximumSlippage] = useState(
     defaultContextValue.maximumSlippage,

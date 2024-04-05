@@ -68,7 +68,7 @@ export const rsk: Record<string, AsyncContractConfigData> = {
       (await import('../../abis/stakingRewards.json')).default,
   },
   stakingRewardsOs: {
-    address: '0x720bA758526E086EAe849063f3160F12a624A6f6', //TODO: Update this address
+    address: '0xb0e08B7e4498ecA6868781aC3B5086fF4F66be56',
     getAbi: async () =>
       (await import('../../abis/StakingRewardsOs.json')).default,
   },

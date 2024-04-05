@@ -4,7 +4,7 @@ export const rsk: Record<string, string> = {
   rbtc: constants.AddressZero,
   wrbtc: '0x542fDA317318eBF1d3DEAf76E0b632741A7e677d',
   sov: '0xEFc78fc7d48b64958315949279Ba181c2114ABBd',
-  ossov: '0x687C75B68771E363F1675047F94c0a8a13493E67', //TODO: Update this address
+  ossov: '0x6F6f88Ac9f8a1f0b2863aFb3b705487d07A78151',
   xusd: '0xb5999795BE0EbB5bAb23144AA5FD6A02D080299F',
   dllr: '0xc1411567d2670e24d9C4DaAa7CdA95686e1250AA',
   doc: '0xe700691da7b9851f2f35f8b8182c69c53ccad9db',

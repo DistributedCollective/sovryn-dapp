@@ -29,7 +29,7 @@ import { useGetStakingStatistics } from './hooks/useGetStakingStatistics';
 export const StakingStatistics = () => {
   const chainId = useCurrentChain();
   const { totalVotingPower, maxStakingApr } = useGetStakingStatistics();
-  const stakingContract = useLoadContract('staking', 'protocol');
+  const stakingContract = useLoadContract('staking', 'protocol', chainId);
   const totalStakedSov = useAssetBalance(
     COMMON_SYMBOLS.SOV,
     chainId,

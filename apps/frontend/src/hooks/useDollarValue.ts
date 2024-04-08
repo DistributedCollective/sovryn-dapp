@@ -9,17 +9,15 @@ import {
 import { COMMON_SYMBOLS } from '../utils/asset';
 import { decimalic, fromWei, toWei } from '../utils/math';
 import { useCacheCall } from './useCacheCall';
-import { useCurrentChain } from './useChainStore';
 import { useTokenDetailsByAsset } from './useTokenDetailsByAsset';
 import { useGetRBTCPrice } from './zero/useGetRBTCPrice';
 
 export function useDollarValue(asset: string, weiAmount: string) {
-  if (asset.toLowerCase() === 'zusd') {
-    asset = 'xusd';
+  if (['zusd', 'usdc', 'usdt', 'dai'].includes(asset.toLowerCase())) {
+    asset = 'XUSD';
   }
-  const chainId = useCurrentChain();
-  const assetDetails = useTokenDetailsByAsset(asset, chainId);
-  const dllrDetails = useTokenDetailsByAsset(COMMON_SYMBOLS.DLLR);
+  const assetDetails = useTokenDetailsByAsset(asset, RSK_CHAIN_ID);
+  const dllrDetails = useTokenDetailsByAsset(COMMON_SYMBOLS.DLLR, RSK_CHAIN_ID);
   const { price: btcPrice } = useGetRBTCPrice();
 
   const { value: usdPrice, loading } = useCacheCall(

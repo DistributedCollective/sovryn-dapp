@@ -1,5 +1,13 @@
 # frontend
 
+## 1.0.53
+
+### Patch Changes
+
+- e76f1662: SOV-3871: Staking Rewards OS contracts and UI
+- Updated dependencies [e76f1662]
+  - @sovryn/contracts@1.0.20
+
 ## 1.0.52
 
 ### Patch Changes

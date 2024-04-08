@@ -35,6 +35,7 @@ export enum SupportedTokens {
   xusd = 'xusd',
   dllr = 'dllr',
   sov = 'sov',
+  ossov = 'ossov',
   doc = 'doc',
   rdoc = 'rdoc',
   bnbs = 'bnbs',

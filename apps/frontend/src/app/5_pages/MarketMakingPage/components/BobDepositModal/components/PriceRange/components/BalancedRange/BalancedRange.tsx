@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useMemo } from 'react';
+import React, { FC, useCallback, useEffect, useMemo } from 'react';
 
 import { t } from 'i18next';
 
@@ -25,48 +25,69 @@ import { BUTTON_OPTIONS, INFINITE } from './BalancedRange.constants';
 import { renderRangeWidthClassName } from './BalancedRange.utils';
 
 export const BalancedRange: FC = () => {
-  const { rangeWidth, setRangeWidth } = useDepositContext();
+  const {
+    rangeWidth,
+    setRangeWidth,
+    setMinimumPrice,
+    setMaximumPrice,
+    minimumPrice,
+    maximumPrice,
+  } = useDepositContext();
 
   const isInfiniteRange = useMemo(() => rangeWidth === 100, [rangeWidth]);
 
   const { price: currentPrice } = useGetPoolInfo(POOL_ASSET_A, POOL_ASSET_B);
 
-  const priceDifference = useMemo(
-    () => Decimal.from(currentPrice).mul(Decimal.from(rangeWidth).div(100)),
-    [currentPrice, rangeWidth],
+  const updatePrice = useCallback(
+    (isMinimumPrice: boolean, value: number) => {
+      if (value === 0) {
+        return currentPrice;
+      }
+
+      if (value === 100) {
+        return isMinimumPrice ? MINIMUM_PRICE : MAXIMUM_PRICE;
+      }
+
+      const priceDifference = Decimal.from(currentPrice).mul(
+        Decimal.from(value).div(100),
+      );
+
+      if (isMinimumPrice) {
+        const result = decimalic(currentPrice).sub(priceDifference);
+
+        return result.lt(0) ? 0 : result.toNumber();
+      }
+
+      return decimalic(currentPrice).add(priceDifference).toNumber();
+    },
+    [currentPrice],
   );
 
-  const minimumPrice = useMemo(() => {
-    if (rangeWidth === 0) {
-      return currentPrice;
+  useEffect(() => {
+    if (minimumPrice === 0 && currentPrice !== 0) {
+      setMinimumPrice(updatePrice(true, rangeWidth));
     }
 
-    if (rangeWidth === 100) {
-      return MINIMUM_PRICE;
+    if (maximumPrice === 0 && currentPrice !== 0) {
+      setMaximumPrice(updatePrice(false, rangeWidth));
     }
-
-    const result = decimalic(currentPrice).sub(priceDifference);
-
-    return result.lt(0) ? 0 : result.toNumber();
-  }, [currentPrice, priceDifference, rangeWidth]);
-
-  const maximumPrice = useMemo(() => {
-    if (rangeWidth === 0) {
-      return currentPrice;
-    }
-
-    if (rangeWidth === 100) {
-      return MAXIMUM_PRICE;
-    }
-
-    return decimalic(currentPrice).add(priceDifference).toNumber();
-  }, [currentPrice, priceDifference, rangeWidth]);
+  }, [
+    currentPrice,
+    maximumPrice,
+    minimumPrice,
+    rangeWidth,
+    setMaximumPrice,
+    setMinimumPrice,
+    updatePrice,
+  ]);
 
   const onRangeChange = useCallback(
     (value: number) => {
+      setMinimumPrice(updatePrice(true, value));
+      setMaximumPrice(updatePrice(false, value));
       setRangeWidth(value);
     },
-    [setRangeWidth],
+    [setMaximumPrice, setMinimumPrice, setRangeWidth, updatePrice],
   );
 
   return (

@@ -3,10 +3,10 @@ import { Dispatch, SetStateAction } from 'react';
 export type DepositContextValue = {
   rangeWidth: number;
   setRangeWidth: Dispatch<SetStateAction<number>>;
-  lowerBoundaryPrice: number;
-  setLowerBoundaryPrice: Dispatch<SetStateAction<number>>;
-  upperBoundaryPrice: number;
-  setUpperBoundaryPrice: Dispatch<SetStateAction<number>>;
+  minimumPrice: number;
+  setMinimumPrice: Dispatch<SetStateAction<number>>;
+  maximumPrice: number;
+  setMaximumPrice: Dispatch<SetStateAction<number>>;
   lowerBoundaryPercentage: number;
   setLowerBoundaryPercentage: Dispatch<SetStateAction<number>>;
   upperBoundaryPercentage: number;
@@ -17,4 +17,6 @@ export type DepositContextValue = {
   setFirstAssetValue: Dispatch<SetStateAction<string>>;
   secondAssetValue: string;
   setSecondAssetValue: Dispatch<SetStateAction<string>>;
+  isBalancedRange: boolean;
+  setIsBalancedRange: Dispatch<SetStateAction<boolean>>;
 };

@@ -14,9 +14,11 @@ import { translations } from '../../../../../../../../../locales/i18n';
 import { POOL_ASSET_A, POOL_ASSET_B } from '../../../../BobDepositModal';
 import { useDepositContext } from '../../../../contexts/BobDepositModalContext';
 import { useGetMaxDeposit } from '../../../../hooks/useGetMaxDeposit';
+import { useGetPoolInfo } from '../../../../hooks/useGetPoolInfo';
 
 export const AmountForm: FC = () => {
   const { account } = useAccount();
+  const { price } = useGetPoolInfo('ETH', 'SOV');
 
   const {
     firstAssetValue,
@@ -34,11 +36,37 @@ export const AmountForm: FC = () => {
 
   const handleFirstAssetMaxClick = useCallback(() => {
     setFirstAssetValue(balanceTokenA.toString());
-  }, [balanceTokenA, setFirstAssetValue]);
+    setSecondAssetValue(String(balanceTokenA.toNumber() * price));
+  }, [balanceTokenA, price, setFirstAssetValue, setSecondAssetValue]);
 
   const handleSecondAssetMaxClick = useCallback(() => {
     setSecondAssetValue(balanceTokenB.toString());
-  }, [balanceTokenB, setSecondAssetValue]);
+    setFirstAssetValue(String(balanceTokenB.toNumber() / price));
+  }, [balanceTokenB, price, setFirstAssetValue, setSecondAssetValue]);
+
+  const onFirstAssetChange = useCallback(
+    (value: string) => {
+      setFirstAssetValue(value);
+      if (price === 0) {
+        return;
+      }
+
+      setSecondAssetValue(String(Number(value) * price));
+    },
+    [price, setFirstAssetValue, setSecondAssetValue],
+  );
+
+  const onSecondAssetChange = useCallback(
+    (value: string) => {
+      setSecondAssetValue(value);
+      if (price === 0) {
+        return;
+      }
+
+      setFirstAssetValue(String(Number(value) / price));
+    },
+    [price, setFirstAssetValue, setSecondAssetValue],
+  );
   return (
     <>
       <FormGroup
@@ -57,7 +85,7 @@ export const AmountForm: FC = () => {
       >
         <AmountInput
           value={firstAssetValue}
-          onChangeText={setFirstAssetValue}
+          onChangeText={onFirstAssetChange}
           maxAmount={balanceTokenA.toNumber()}
           label={t(translations.common.amount)}
           className="max-w-none"
@@ -83,7 +111,7 @@ export const AmountForm: FC = () => {
       >
         <AmountInput
           value={secondAssetValue}
-          onChangeText={setSecondAssetValue}
+          onChangeText={onSecondAssetChange}
           maxAmount={balanceTokenB.toNumber()}
           label={t(translations.common.amount)}
           className="max-w-none"

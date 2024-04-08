@@ -3,4 +3,4 @@
 "@sovryn/contracts": patch
 ---
 
-SOV-3871: Staking Rewards OS integration and testing
+SOV-3871: Staking Rewards OS contracts and UI

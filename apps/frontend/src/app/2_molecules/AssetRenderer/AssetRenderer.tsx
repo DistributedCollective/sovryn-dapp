@@ -59,8 +59,6 @@ export const AssetRenderer: FC<AssetRendererProps> = ({
   className,
   dataAttribute,
   logoClassName,
-  showLongName,
-  assetLongNameClassName,
 }) => {
   const [token, setToken] = useState(asset);
   const [logo, setLogo] = useState<string | undefined>(undefined);

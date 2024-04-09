@@ -25,12 +25,14 @@ export const useLoadContract = (
   const provider = useMemo(() => getProvider(chain), [chain]);
 
   useEffect(() => {
-    getContract(contractName, group, chain).then(result => {
-      if (isMounted()) {
-        setAddress(result.address);
-        setAbi(result.abi);
-      }
-    });
+    getContract(contractName, group, chain)
+      .then(result => {
+        if (isMounted()) {
+          setAddress(result.address);
+          setAbi(result.abi);
+        }
+      })
+      .catch(console.warn);
   }, [chain, contractName, group, isMounted]);
 
   return useMemo(() => {

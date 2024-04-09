@@ -486,6 +486,11 @@
                 "description": "Anyone using Sovryn already has points that will convert to POWA - a new bitcoin-token that allows an early use of what’s to come with the BitcoinOS launch. See how many points you’ve got:",
                 "cta": "Leaderboard",
                 "secondaryCta": "More about POWA"
+            },
+            "runesExtraSpice": {
+                "title": "RUNES & EXTRA SPICE",
+                "description": "Get early exposure to bitcoin tokens with our points campaign. In collaboration with BOB.",
+                "cta": "Learn More"
             }
         },
         "titleSection": {

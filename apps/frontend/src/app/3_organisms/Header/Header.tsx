@@ -15,6 +15,7 @@ import {
 import { ConnectWalletButton } from '../../2_molecules';
 import { SovrynLogo } from '../../2_molecules/SovrynLogo/SovrynLogo';
 import { RSK_FAUCET } from '../../../constants/general';
+import { GOBOB_LINK } from '../../../constants/links';
 import { useWalletConnect, useWrongNetworkCheck } from '../../../hooks';
 import { useAssetBalance } from '../../../hooks/useAssetBalance';
 import { translations } from '../../../locales/i18n';
@@ -86,7 +87,7 @@ export const Header: FC = () => {
               text={t(translations.header.nav.bob)}
               style={ButtonStyle.primary}
               className="bg-[#24BFB74D]/[0.3] border-[#24BFB74D]/[0.3] hover:bg-[#24BFB74D]"
-              onClick={() => window.open('https://gobob.sovryn.app', '_blank')}
+              onClick={() => window.open(GOBOB_LINK, '_blank')}
             />
           </ol>
         }

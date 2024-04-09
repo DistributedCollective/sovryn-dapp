@@ -1,11 +1,25 @@
+import { MaxAllowanceTransferAmount } from '@uniswap/permit2-sdk';
+
 import { useCallback } from 'react';
 
+import { BigNumber, Contract, ethers } from 'ethers';
 import { parseUnits } from 'ethers/lib/utils';
+import { t } from 'i18next';
 
+import { priceToTick } from '@sovryn/ambient-sdk';
 import { CrocTokenView } from '@sovryn/ambient-sdk/dist/tokens';
 
+import { BOB_CHAIN_ID } from '../../../../../../config/chains';
+
+import {
+  Transaction,
+  TransactionType,
+} from '../../../../../3_organisms/TransactionStepDialog/TransactionStepDialog.types';
 import { useCrocContext } from '../../../../../../contexts/CrocContext';
+import { useTransactionContext } from '../../../../../../contexts/TransactionContext';
 import { useAccount } from '../../../../../../hooks/useAccount';
+import { translations } from '../../../../../../locales/i18n';
+import { prepareApproveTransaction } from '../../../../../../utils/transactions';
 import { createRangePositionTx } from '../../../../BobAmmPage/ambient-utils';
 import { useDepositContext } from '../contexts/BobDepositModalContext';
 import { useGetPoolInfo } from './useGetPoolInfo';
@@ -25,12 +39,12 @@ const testAllowance = async (
 
   if (allowance.lt(needAllowance)) {
     const approval = await token.approve();
-    await approval?.wait();
+    return approval;
   }
 };
 
 export const useHandleSubmit = (assetA: string, assetB: string) => {
-  const { account } = useAccount();
+  const { account, signer } = useAccount();
   const { croc } = useCrocContext();
   const { poolTokens } = useGetPoolInfo(assetA, assetB);
   const {
@@ -43,17 +57,69 @@ export const useHandleSubmit = (assetA: string, assetB: string) => {
     rangeWidth,
   } = useDepositContext();
 
+  const { setTransactions, setIsOpen, setTitle } = useTransactionContext();
+
   const onSubmit = useCallback(async () => {
-    if (!croc || !poolTokens) {
+    if (!croc || !poolTokens || !signer) {
       return;
     }
 
-    console.log(
-      `lowerBoundaryPrice: ${lowerBoundaryPrice} , upperBoundaryPrice: ${upperBoundaryPrice}, firstAssetValue: ${firstAssetValue} , secondAssetValue: ${secondAssetValue}`,
+    const transactions: Transaction[] = [];
+
+    const allowanceA = await testAllowance(
+      account,
+      poolTokens.tokenA,
+      Number(firstAssetValue),
+    );
+    const allowanceB = await testAllowance(
+      account,
+      poolTokens.tokenB,
+      Number(secondAssetValue),
     );
 
-    await testAllowance(account, poolTokens.tokenA, Number(firstAssetValue));
-    await testAllowance(account, poolTokens.tokenB, Number(secondAssetValue));
+    if (allowanceA) {
+      const approve = await prepareApproveTransaction({
+        token: poolTokens.tokenA.tokenAddr,
+        chain: BOB_CHAIN_ID,
+        amount:
+          allowanceA.weiQty === ethers.constants.MaxUint256
+            ? MaxAllowanceTransferAmount
+            : allowanceA.weiQty,
+        spender: allowanceA.address,
+        contract: new Contract(
+          poolTokens.tokenA.tokenAddr,
+          (
+            await poolTokens.tokenA.context
+          ).erc20Write.interface,
+          signer,
+        ),
+      });
+      if (approve) {
+        transactions.push(approve);
+      }
+    }
+
+    if (allowanceB) {
+      const approve = await prepareApproveTransaction({
+        token: poolTokens.tokenB.tokenAddr,
+        chain: BOB_CHAIN_ID,
+        amount:
+          allowanceB.weiQty === ethers.constants.MaxUint256
+            ? MaxAllowanceTransferAmount
+            : allowanceB.weiQty,
+        spender: allowanceB.address,
+        contract: new Contract(
+          poolTokens.tokenB.tokenAddr,
+          (
+            await poolTokens.tokenB.context
+          ).erc20Write.interface,
+          signer,
+        ),
+      });
+      if (approve) {
+        transactions.push(approve);
+      }
+    }
 
     const tx = await createRangePositionTx({
       crocEnv: croc,
@@ -70,14 +136,29 @@ export const useHandleSubmit = (assetA: string, assetB: string) => {
         isWithdrawFromDexChecked: false,
       },
       isTokenAPrimaryRange: true,
-      tick: { low: lowerBoundaryPrice, high: upperBoundaryPrice },
+      tick: {
+        low: priceToTick(lowerBoundaryPrice),
+        high: priceToTick(upperBoundaryPrice),
+      },
     });
 
-    console.log('tx', tx);
-    console.log('tx', tx?.hash);
+    transactions.push({
+      title: t(translations.common.deposit),
+      request: {
+        type: TransactionType.signTransaction,
+        contract: tx.contract,
+        fnName: 'userCmd',
+        args: [tx.path, tx.calldata],
+        value: tx.txArgs?.value ? tx.txArgs.value : 0,
+        gasLimit: tx.txArgs?.gasLimit
+          ? tx.txArgs.gasLimit
+          : BigNumber.from(6_000_000),
+      },
+    });
 
-    const receipt = await tx?.wait();
-    console.log('receipt', receipt);
+    setTransactions(transactions);
+    setTitle(t(translations.bobMarketMakingPage.depositModal.title));
+    setIsOpen(true);
   }, [
     account,
     croc,
@@ -88,6 +169,10 @@ export const useHandleSubmit = (assetA: string, assetB: string) => {
     poolTokens,
     rangeWidth,
     secondAssetValue,
+    setIsOpen,
+    setTitle,
+    setTransactions,
+    signer,
     upperBoundaryPrice,
   ]);
 

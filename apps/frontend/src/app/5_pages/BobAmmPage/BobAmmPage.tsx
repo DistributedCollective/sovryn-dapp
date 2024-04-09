@@ -1,3 +1,5 @@
+import { MaxAllowanceTransferAmount } from '@uniswap/permit2-sdk';
+
 import React, {
   FC,
   useCallback,
@@ -8,18 +10,26 @@ import React, {
 } from 'react';
 
 import classNames from 'classnames';
+import { BigNumber, Contract, ethers } from 'ethers';
 import { parseUnits } from 'ethers/lib/utils';
 
-import { CrocEnv } from '@sovryn/ambient-sdk';
+import { CrocEnv, MAX_TICK, MIN_TICK } from '@sovryn/ambient-sdk';
 import { CrocTokenView } from '@sovryn/ambient-sdk/dist/tokens';
 import { getProvider } from '@sovryn/ethers-provider';
 import { ChainIds } from '@sovryn/ethers-provider';
 import { Decimal } from '@sovryn/utils';
 
-// import { BOB_CHAIN_ID } from '../../../config/chains';
+import { BOB_CHAIN_ID } from '../../../config/chains';
+
+import {
+  Transaction,
+  TransactionType,
+} from '../../3_organisms/TransactionStepDialog/TransactionStepDialog.types';
+import { useTransactionContext } from '../../../contexts/TransactionContext';
 import { useAccount } from '../../../hooks/useAccount';
 import { useCurrentChain } from '../../../hooks/useChainStore';
 import { findAsset } from '../../../utils/asset';
+import { prepareApproveTransaction } from '../../../utils/transactions';
 import { createRangePositionTx } from './ambient-utils';
 
 const testAllowance = async (
@@ -38,13 +48,13 @@ const testAllowance = async (
   if (allowance.lt(needAllowance)) {
     console.log('Need to approve');
     const approval = await token.approve();
-    console.log('approval', approval);
-    await approval?.wait();
+    return approval;
   }
 };
 
 export const BobAmmPage: React.FC = () => {
   const CHAIN_ID = useCurrentChain();
+  const { setTransactions, setIsOpen, setTitle } = useTransactionContext();
 
   const isFork = useCallback(() => CHAIN_ID === ChainIds.FORK, [CHAIN_ID]);
 
@@ -130,12 +140,58 @@ export const BobAmmPage: React.FC = () => {
 
       console.log({ TOKEN_A_AMOUNT, TOKEN_B_AMOUNT });
 
-      await testAllowance(account, tokenA, TOKEN_A_AMOUNT);
-      await testAllowance(account, tokenB, TOKEN_B_AMOUNT);
+      const transactions: Transaction[] = [];
+
+      const allowanceA = await testAllowance(account, tokenA, TOKEN_A_AMOUNT);
+      const allowanceB = await testAllowance(account, tokenB, TOKEN_B_AMOUNT);
+
+      if (allowanceA) {
+        const approve = await prepareApproveTransaction({
+          token: tokenA.tokenAddr,
+          chain: BOB_CHAIN_ID,
+          amount:
+            allowanceA.weiQty === ethers.constants.MaxUint256
+              ? MaxAllowanceTransferAmount
+              : allowanceA.weiQty,
+          spender: allowanceA.address,
+          contract: new Contract(
+            tokenA.tokenAddr,
+            (
+              await tokenA.context
+            ).erc20Write.interface,
+            signer,
+          ),
+        });
+        if (approve) {
+          transactions.push(approve);
+        }
+      }
+
+      if (allowanceB) {
+        const approve = await prepareApproveTransaction({
+          token: tokenB.tokenAddr,
+          chain: BOB_CHAIN_ID,
+          amount:
+            allowanceB.weiQty === ethers.constants.MaxUint256
+              ? MaxAllowanceTransferAmount
+              : allowanceB.weiQty,
+          spender: allowanceB.address,
+          contract: new Contract(
+            tokenB.tokenAddr,
+            (
+              await tokenB.context
+            ).erc20Write.interface,
+            signer,
+          ),
+        });
+        if (approve) {
+          transactions.push(approve);
+        }
+      }
 
       const tx = await createRangePositionTx({
         crocEnv: croc.current,
-        isAmbient: true,
+        isAmbient: false,
         slippageTolerancePercentage: 3,
         tokenA: {
           address: tokenA.tokenAddr,
@@ -148,16 +204,28 @@ export const BobAmmPage: React.FC = () => {
           isWithdrawFromDexChecked: false,
         },
         isTokenAPrimaryRange: true,
-        tick: { low: 2552, high: 3100 },
+        tick: { low: MIN_TICK, high: MAX_TICK },
       });
 
-      console.log('tx', tx);
-      console.log('tx', tx?.hash);
+      transactions.push({
+        title: 'Deposit',
+        request: {
+          type: TransactionType.signTransaction,
+          contract: tx.contract,
+          fnName: 'userCmd',
+          args: [tx.path, tx.calldata],
+          value: tx.txArgs?.value ? tx.txArgs.value : 0,
+          gasLimit: tx.txArgs?.gasLimit
+            ? tx.txArgs.gasLimit
+            : BigNumber.from(6_000_000),
+        },
+      });
 
-      const receipt = await tx?.wait();
-      console.log('receipt', receipt);
+      setTransactions(transactions);
+      setTitle(`Deposit liquidity to ${base}/${quote} pool`);
+      setIsOpen(true);
     },
-    [CHAIN_ID, account],
+    [CHAIN_ID, account, setIsOpen, setTitle, setTransactions, signer],
   );
 
   const [dexBalances, setDexBalances] = useState<Record<string, Decimal>>({});
@@ -255,16 +323,16 @@ export const BobAmmPage: React.FC = () => {
               </button>
             </li>
             <li>
-              <button onClick={() => handleDeposit('ETH', 'SOV', 1)}>
+              <button onClick={() => handleDeposit('ETH', 'SOV', 0.001)}>
                 Deposit to pool: ETH/SOV (1 ETH)
               </button>
-              <button onClick={() => handleDeposit('ETH', 'USDC', 1)}>
+              <button onClick={() => handleDeposit('ETH', 'USDC', 0.001)}>
                 Deposit to pool: ETH/USDC (1 ETH)
               </button>
-              <button onClick={() => handleDeposit('ETH', 'USDT', 1)}>
+              <button onClick={() => handleDeposit('ETH', 'USDT', 0.001)}>
                 Deposit to pool: ETH/USDT (1 ETH)
               </button>
-              <button onClick={() => handleDeposit('ETH', 'DAI', 1)}>
+              <button onClick={() => handleDeposit('ETH', 'DAI', 0.001)}>
                 Deposit to pool: ETH/DAI (1 ETH)
               </button>
             </li>

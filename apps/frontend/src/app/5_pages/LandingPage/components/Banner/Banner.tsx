@@ -1,22 +1,17 @@
-import React, { FC, useCallback } from 'react';
+import React, { FC } from 'react';
 
 import { t } from 'i18next';
 import Carousel from 'react-multi-carousel';
 import 'react-multi-carousel/lib/styles.css';
-import { useNavigate } from 'react-router-dom';
 
 import { Button, ButtonSize, ButtonStyle } from '@sovryn/ui';
 
-import { POWA_LINK } from '../../../../../constants/links';
+import { GOBOB_LINK } from '../../../../../constants/links';
 import { translations } from '../../../../../locales/i18n';
 import styles from './Banner.module.css';
 import { LandingPromoCard } from './components/LandingPromoCard/LandingPromoCard';
 
 export const Banner: FC = () => {
-  const navigate = useNavigate();
-
-  const handleClick = useCallback(() => navigate('/powa'), [navigate]);
-
   return (
     <div className="w-full relative pb-7">
       <Carousel
@@ -42,25 +37,19 @@ export const Banner: FC = () => {
         infinite
       >
         <LandingPromoCard
-          heading={t(translations.landingPage.promotions.competition.title)}
+          heading={t(translations.landingPage.promotions.runesExtraSpice.title)}
           description={t(
-            translations.landingPage.promotions.competition.description,
+            translations.landingPage.promotions.runesExtraSpice.description,
           )}
           actions={
             <>
               <Button
                 style={ButtonStyle.secondary}
                 size={ButtonSize.large}
-                text={t(translations.landingPage.promotions.competition.cta)}
-                onClick={handleClick}
-              />
-
-              <Button
                 text={t(
-                  translations.landingPage.promotions.competition.secondaryCta,
+                  translations.landingPage.promotions.runesExtraSpice.cta,
                 )}
-                href={POWA_LINK} // TODO: Needs to be changed later, the landing page does not exist yet
-                style={ButtonStyle.ghost}
+                href={GOBOB_LINK}
                 hrefExternal
               />
             </>

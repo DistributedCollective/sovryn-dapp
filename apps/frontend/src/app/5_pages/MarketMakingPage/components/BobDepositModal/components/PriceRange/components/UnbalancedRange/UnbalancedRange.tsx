@@ -12,13 +12,13 @@ import { Input } from './components/Input/Input';
 
 export const UnbalancedRange: FC = () => {
   const {
-    lowerBoundaryPrice,
+    minimumPrice,
     lowerBoundaryPercentage,
-    upperBoundaryPrice,
+    maximumPrice,
     upperBoundaryPercentage,
-    setLowerBoundaryPrice,
+    setMinimumPrice,
     setLowerBoundaryPercentage,
-    setUpperBoundaryPrice,
+    setMaximumPrice,
     setUpperBoundaryPercentage,
   } = useDepositContext();
 
@@ -47,10 +47,10 @@ export const UnbalancedRange: FC = () => {
 
       if (isUpperBoundary) {
         setUpperBoundaryPercentage(newPercentage);
-        setUpperBoundaryPrice(newPrice);
+        setMaximumPrice(newPrice);
       } else {
         setLowerBoundaryPercentage(newPercentage);
-        setLowerBoundaryPrice(newPrice);
+        setMinimumPrice(newPrice);
       }
     },
     [
@@ -58,9 +58,9 @@ export const UnbalancedRange: FC = () => {
       currentPrice,
       lowerBoundaryPercentage,
       setLowerBoundaryPercentage,
-      setLowerBoundaryPrice,
+      setMaximumPrice,
+      setMinimumPrice,
       setUpperBoundaryPercentage,
-      setUpperBoundaryPrice,
       upperBoundaryPercentage,
     ],
   );
@@ -82,21 +82,21 @@ export const UnbalancedRange: FC = () => {
   }, [updateRange]);
 
   useEffect(() => {
-    if (lowerBoundaryPrice === 0) {
-      setLowerBoundaryPrice(calculatePrice(lowerBoundaryPercentage));
+    if (minimumPrice === 0) {
+      setMinimumPrice(calculatePrice(lowerBoundaryPercentage));
     }
 
-    if (upperBoundaryPrice === 0) {
-      setUpperBoundaryPrice(calculatePrice(upperBoundaryPercentage));
+    if (maximumPrice === 0) {
+      setMaximumPrice(calculatePrice(upperBoundaryPercentage));
     }
   }, [
     calculatePrice,
     lowerBoundaryPercentage,
-    lowerBoundaryPrice,
-    setLowerBoundaryPrice,
-    setUpperBoundaryPrice,
+    maximumPrice,
+    minimumPrice,
+    setMaximumPrice,
+    setMinimumPrice,
     upperBoundaryPercentage,
-    upperBoundaryPrice,
   ]);
 
   return (
@@ -105,7 +105,7 @@ export const UnbalancedRange: FC = () => {
         label={t(translations.bobMarketMakingPage.depositModal.minPrice)}
         onMinusClick={onMinPriceMinusClick}
         onPlusClick={onMinPricePlusClick}
-        value={lowerBoundaryPrice}
+        value={minimumPrice}
         range={lowerBoundaryPercentage}
       />
 
@@ -113,7 +113,7 @@ export const UnbalancedRange: FC = () => {
         label={t(translations.bobMarketMakingPage.depositModal.maxPrice)}
         onMinusClick={onMaxPriceMinusClick}
         onPlusClick={onMaxPricePlusClick}
-        value={upperBoundaryPrice}
+        value={maximumPrice}
         range={upperBoundaryPercentage}
       />
     </div>

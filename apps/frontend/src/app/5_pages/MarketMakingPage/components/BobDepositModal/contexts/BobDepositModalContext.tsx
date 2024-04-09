@@ -17,10 +17,10 @@ import { DepositContextValue } from './BobDepositModalContext.types';
 const defaultContextValue: DepositContextValue = {
   rangeWidth: DEFAULT_RANGE_WIDTH,
   setRangeWidth: noop,
-  lowerBoundaryPrice: 0,
-  setLowerBoundaryPrice: noop,
-  upperBoundaryPrice: 0,
-  setUpperBoundaryPrice: noop,
+  minimumPrice: 0,
+  setMinimumPrice: noop,
+  maximumPrice: 0,
+  setMaximumPrice: noop,
   lowerBoundaryPercentage: DEFAULT_RANGE_WIDTH * -1,
   setLowerBoundaryPercentage: noop,
   upperBoundaryPercentage: DEFAULT_RANGE_WIDTH,
@@ -31,6 +31,8 @@ const defaultContextValue: DepositContextValue = {
   setFirstAssetValue: noop,
   secondAssetValue: '',
   setSecondAssetValue: noop,
+  isBalancedRange: true,
+  setIsBalancedRange: noop,
 };
 
 const DepositContext = createContext<DepositContextValue>(defaultContextValue);
@@ -40,14 +42,14 @@ export const useDepositContext = () =>
 
 export const DepositContextProvider: FC<PropsWithChildren> = ({ children }) => {
   const [rangeWidth, setRangeWidth] = useState(defaultContextValue.rangeWidth);
-  const [lowerBoundaryPrice, setLowerBoundaryPrice] = useState(
-    defaultContextValue.lowerBoundaryPrice,
+  const [minimumPrice, setMinimumPrice] = useState(
+    defaultContextValue.minimumPrice,
   );
   const [lowerBoundaryPercentage, setLowerBoundaryPercentage] = useState(
     defaultContextValue.lowerBoundaryPercentage,
   );
-  const [upperBoundaryPrice, setUpperBoundaryPrice] = useState(
-    defaultContextValue.upperBoundaryPrice,
+  const [maximumPrice, setMaximumPrice] = useState(
+    defaultContextValue.maximumPrice,
   );
   const [upperBoundaryPercentage, setUpperBoundaryPercentage] = useState(
     defaultContextValue.upperBoundaryPercentage,
@@ -61,18 +63,21 @@ export const DepositContextProvider: FC<PropsWithChildren> = ({ children }) => {
   const [secondAssetValue, setSecondAssetValue] = useState(
     defaultContextValue.secondAssetValue,
   );
+  const [isBalancedRange, setIsBalancedRange] = useState(
+    defaultContextValue.isBalancedRange,
+  );
 
   return (
     <DepositContext.Provider
       value={{
         rangeWidth,
         setRangeWidth,
-        lowerBoundaryPrice,
-        setLowerBoundaryPrice,
+        minimumPrice,
+        setMinimumPrice,
         lowerBoundaryPercentage,
         setLowerBoundaryPercentage,
-        upperBoundaryPrice,
-        setUpperBoundaryPrice,
+        maximumPrice,
+        setMaximumPrice,
         upperBoundaryPercentage,
         setUpperBoundaryPercentage,
         maximumSlippage,
@@ -81,6 +86,8 @@ export const DepositContextProvider: FC<PropsWithChildren> = ({ children }) => {
         setFirstAssetValue,
         secondAssetValue,
         setSecondAssetValue,
+        isBalancedRange,
+        setIsBalancedRange,
       }}
     >
       {children}

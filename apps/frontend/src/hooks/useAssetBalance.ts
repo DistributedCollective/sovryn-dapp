@@ -67,6 +67,17 @@ export const useAssetBalance = (
       const tokenDetails = await getAssetData(asset, chainId);
 
       const hashedArgs = idHash([
+        'balance',
+        chainId,
+        tokenDetails.address,
+        tokenDetails.address === constants.AddressZero
+          ? 'nativeBalance'
+          : 'balanceOf',
+        account,
+      ]);
+
+      console.log('hashedArgs', hashedArgs, [
+        'balance',
         chainId,
         tokenDetails.address,
         tokenDetails.address === constants.AddressZero

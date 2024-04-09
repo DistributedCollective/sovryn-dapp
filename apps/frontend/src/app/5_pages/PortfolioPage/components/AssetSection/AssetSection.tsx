@@ -7,11 +7,12 @@ import { Decimal } from '@sovryn/utils';
 
 import { BITCOIN } from '../../../../../constants/currencies';
 import { useAccount } from '../../../../../hooks/useAccount';
+import { useCurrentChain } from '../../../../../hooks/useChainStore';
 import { useGetRBTCPrice } from '../../../../../hooks/zero/useGetRBTCPrice';
 import { translations } from '../../../../../locales/i18n';
 import { decimalic } from '../../../../../utils/math';
 import { ProtocolTotalSection } from '../ProtocolSection/components/ProtocolTotalSection/ProtocolTotalSection';
-import { initialUsdValues, availableTokens } from './AssetSection.constants';
+import { initialUsdValues, getAvailableTokens } from './AssetSection.constants';
 import { AssetBalanceRow } from './components/AssetBalanceRow/AssetBalanceRow';
 import { AssetSectionActions } from './components/AssetSectionActions/AssetSectionActions';
 
@@ -20,6 +21,8 @@ export const AssetSection: FC = () => {
   const { price: btcPrice } = useGetRBTCPrice();
   const [selectedCurrency, setSelectedCurrency] = useState(BITCOIN);
   const [usdValues, setUsdValues] = useState(initialUsdValues);
+  const chainId = useCurrentChain();
+  const availableTokens = useMemo(() => getAvailableTokens(chainId), [chainId]);
 
   const updateUsdValue = useCallback((token: string, usdValue: string) => {
     setUsdValues(prevUsdValues => {

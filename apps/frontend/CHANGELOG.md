@@ -1,5 +1,11 @@
 # frontend
 
+## 1.0.54
+
+### Patch Changes
+
+- 4a66523f: SOV-4016: update banner promo
+
 ## 1.0.53
 
 ### Patch Changes

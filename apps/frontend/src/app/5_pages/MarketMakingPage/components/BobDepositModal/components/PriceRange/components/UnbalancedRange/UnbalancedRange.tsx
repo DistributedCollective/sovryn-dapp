@@ -46,17 +46,23 @@ export const UnbalancedRange: FC = () => {
         newPercentage === 0 ? currentPrice : calculatePrice(newPercentage);
 
       if (isUpperBoundary) {
-        setUpperBoundaryPercentage(newPercentage);
-        setMaximumPrice(newPrice);
+        if (newPrice > minimumPrice) {
+          setUpperBoundaryPercentage(newPercentage);
+          setMaximumPrice(newPrice);
+        }
       } else {
-        setLowerBoundaryPercentage(newPercentage);
-        setMinimumPrice(newPrice);
+        if (newPrice < maximumPrice) {
+          setLowerBoundaryPercentage(newPercentage);
+          setMinimumPrice(newPrice);
+        }
       }
     },
     [
       calculatePrice,
       currentPrice,
       lowerBoundaryPercentage,
+      maximumPrice,
+      minimumPrice,
       setLowerBoundaryPercentage,
       setMaximumPrice,
       setMinimumPrice,

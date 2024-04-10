@@ -84,6 +84,7 @@ const ConvertPage: FC = () => {
               <AssetRenderer
                 showAssetLogo
                 asset={token.symbol}
+                chainId={chain}
                 assetClassName="font-medium"
               />
             ),
@@ -118,7 +119,7 @@ const ConvertPage: FC = () => {
         return item.symbol;
       }
     }
-    return DEFAULT_SWAP_ENTRIES[currentChainId];
+    return DEFAULT_SWAP_ENTRIES[currentChainId] ?? COMMON_SYMBOLS.ETH;
   }, [currentChainId, fromToken]);
 
   const [sourceToken, setSourceToken] = useState<string>(defaultSourceToken);
@@ -251,8 +252,7 @@ const ConvertPage: FC = () => {
       setQuote('');
       setRoute(undefined);
 
-      // if (!sourceToken || !destinationToken || weiAmount.lte(0)) {
-      if (!sourceToken || !destinationToken) {
+      if (!sourceToken || !destinationToken || weiAmount.lte(0)) {
         return;
       }
 
@@ -267,8 +267,6 @@ const ConvertPage: FC = () => {
         destinationTokenDetails.address,
         weiAmount,
       );
-
-      console.log('get best quote result', result);
 
       setRoute(result.route);
       const quote = removeTrailingZerosFromString(
@@ -306,9 +304,14 @@ const ConvertPage: FC = () => {
 
   const getAssetRenderer = useCallback(
     (token: string) => (
-      <AssetRenderer showAssetLogo asset={token} assetClassName="font-medium" />
+      <AssetRenderer
+        showAssetLogo
+        asset={token}
+        chainId={currentChainId}
+        assetClassName="font-medium"
+      />
     ),
-    [],
+    [currentChainId],
   );
 
   const { handleSubmit } = useHandleConversion(

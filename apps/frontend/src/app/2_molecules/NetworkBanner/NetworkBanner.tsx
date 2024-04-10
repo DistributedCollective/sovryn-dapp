@@ -1,16 +1,22 @@
 import React, { FC } from 'react';
 
+import classNames from 'classnames';
 import { t } from 'i18next';
 
 import { ChainId } from '@sovryn/ethers-provider';
+import { Icon, IconNames, Paragraph } from '@sovryn/ui';
 
 import { useRequiredChain } from './hooks/useRequiredChain';
 
 type NetworkBannerProps = {
   requiredChainId: ChainId;
+  className?: string;
 };
 
-export const NetworkBanner: FC<NetworkBannerProps> = ({ requiredChainId }) => {
+export const NetworkBanner: FC<NetworkBannerProps> = ({
+  requiredChainId,
+  className,
+}) => {
   const { requiredChain, invalidChain, updateChain } =
     useRequiredChain(requiredChainId);
 
@@ -21,10 +27,22 @@ export const NetworkBanner: FC<NetworkBannerProps> = ({ requiredChainId }) => {
   return (
     <div
       onClick={updateChain}
-      className="container mt-2 mb-8 text-center p-2 cursor-pointer rounded-lg"
+      className={classNames(
+        'mx-auto w-full text-center cursor-pointer rounded-lg mb-2',
+        className,
+      )}
     >
-      <div className="bg-warning p-4">
-        {t('networkBanner.content', { network: requiredChain?.label })}
+      <div className="flex flex-col sm:flex-row justify-center items-center bg-white font-bold text-sovryn-black p-4">
+        <div className="flex flex-row items-center text-left sm:text-center mb-2 sm:mb-0">
+          <div className="text-primary-75">
+            <Icon icon={IconNames.WARNING} size={18} />
+          </div>
+          <div className="ml-2">
+            <Paragraph>
+              {t('networkBanner.content', { network: requiredChain?.label })}
+            </Paragraph>
+          </div>
+        </div>
       </div>
     </div>
   );

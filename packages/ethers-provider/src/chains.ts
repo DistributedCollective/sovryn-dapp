@@ -6,8 +6,9 @@ export enum ChainIds {
   BSC_MAINNET = '0x38',
   BSC_TESTNET = '0x61',
   BOB_MAINNET = '0x6e', // todo: update this when mainnet is live
-  // BOB_TESTNET = '0x6f', // 111
-  BOB_TESTNET = '0x97114f', // 9900367
+  BOB_TESTNET = '0x94258', // 606808
   /** @deprecated */
   ROPSTEN = '0x3',
+  // forks
+  FORK = '0x1b669', //112233
 }

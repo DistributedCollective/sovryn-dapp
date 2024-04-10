@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { MS } from '../../../../../../constants/general';
 import { useBlockNumber } from '../../../../../../hooks/useBlockNumber';
+import { useCurrentChain } from '../../../../../../hooks/useChainStore';
 import { useGetProtocolContract } from '../../../../../../hooks/useGetContract';
 import { Environments } from '../../../../../../types/global';
 import { isMainnet } from '../../../../../../utils/helpers';
@@ -13,12 +14,13 @@ const redashAprUrl = isMainnet()
 
 export const useGetStakingStatistics = () => {
   const currentDate = useMemo(() => new Date(), []);
-  const stakingContract = useGetProtocolContract('staking');
+  const chainId = useCurrentChain();
+  const stakingContract = useGetProtocolContract('staking', chainId);
   const [stakingStats, setStakingStats] = useState({
     totalVotingPower: 0,
     maxStakingApr: 0,
   });
-  const { value: block } = useBlockNumber();
+  const { value: block } = useBlockNumber(chainId);
 
   const fetchStakingStatistics = useCallback(async () => {
     if (!stakingContract) {

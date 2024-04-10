@@ -368,11 +368,11 @@ const EmailNotificationSettingsDialogComponent: React.FC<
       />
       <DialogBody className="p-6">
         <div className="p-6 bg-gray-90">
+          <NetworkBanner requiredChainId={RSK_CHAIN_ID} />
           <Paragraph style={ParagraphStyle.tall}>
             {t(translations.emailNotificationsDialog.title)}
           </Paragraph>
 
-          <NetworkBanner requiredChainId={RSK_CHAIN_ID} />
           <FormGroup
             className="mt-6 mb-4"
             label={t(translations.emailNotificationsDialog.emailInputLabel)}

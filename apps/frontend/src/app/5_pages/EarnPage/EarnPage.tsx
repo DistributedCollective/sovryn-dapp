@@ -360,7 +360,8 @@ const EarnPage: FC = () => {
       <Helmet>
         <title>{t(translations.earnPage.meta.title)}</title>
       </Helmet>
-      <div className="w-full flex flex-col items-center text-gray-10 mt-9 sm:mt-24">
+      <div className="w-full flex flex-col items-center text-gray-10">
+        <NetworkBanner requiredChainId={RSK_CHAIN_ID} className="mb-8" />
         <Heading className="text-base sm:text-2xl">
           {t(pageTranslations.title)}
         </Heading>
@@ -370,8 +371,6 @@ const EarnPage: FC = () => {
         >
           {t(pageTranslations.subtitle)}
         </Paragraph>
-
-        <NetworkBanner requiredChainId={RSK_CHAIN_ID} />
 
         <div className="mt-12 w-full p-0 sm:border sm:border-gray-50 sm:rounded sm:w-[28rem] sm:p-6 sm:bg-gray-90">
           <div className="w-full flex flex-row justify-between items-center mb-4">

@@ -2,7 +2,7 @@
 import { AddressZero } from '@ethersproject/constants';
 import { TransactionResponse } from '@ethersproject/providers';
 
-import { BigNumber, BigNumberish } from 'ethers';
+import { BigNumber, BigNumberish, Contract } from 'ethers';
 
 import { CrocContext } from './context';
 import {
@@ -36,6 +36,13 @@ import {
 type PriceRange = [number, number];
 type TickRange = [number, number];
 type BlockTag = number | string;
+
+type Params = {
+  contract: Contract;
+  path: number;
+  calldata: string;
+  txArgs?: { value?: BigNumberish; gasLimit?: BigNumberish };
+};
 
 export class CrocPoolView {
   constructor(
@@ -197,30 +204,16 @@ export class CrocPoolView {
     let txArgs =
       this.baseToken.tokenAddr === AddressZero ? { value: ETH_INIT_BURN } : {};
 
-    console.log('pool chain', (await this.context).chain);
-    console.log('pool index', (await this.context).chain.poolIndex);
-
     let encoder = new PoolInitEncoder(
       this.baseToken.tokenAddr,
       this.quoteToken.tokenAddr,
       (await this.context).chain.poolIndex,
     );
 
-    console.log('encoder', encoder);
-
     let spotPrice = this.fromDisplayPrice(initPrice);
-    console.log('spotPrice', await spotPrice);
     let calldata = encoder.encodeInitialize(await spotPrice);
 
-    console.log('calldata', calldata);
-
     let cntx = await this.context;
-
-    console.log('txArgs', cntx.dex.address, [
-      cntx.chain.proxyPaths.cold,
-      calldata,
-      txArgs,
-    ]);
 
     return cntx.dex.userCmd(cntx.chain.proxyPaths.cold, calldata, txArgs);
   }
@@ -229,7 +222,7 @@ export class CrocPoolView {
     qty: TokenQty,
     limits: PriceRange,
     opts?: CrocLpOpts,
-  ): Promise<TransactionResponse> {
+  ): Promise<Params> {
     return this.mintAmbient(qty, this.useTrueBase, limits, opts);
   }
 
@@ -237,7 +230,7 @@ export class CrocPoolView {
     qty: TokenQty,
     limits: PriceRange,
     opts?: CrocLpOpts,
-  ): Promise<TransactionResponse> {
+  ): Promise<Params> {
     return this.mintAmbient(qty, !this.useTrueBase, limits, opts);
   }
 
@@ -246,7 +239,7 @@ export class CrocPoolView {
     range: TickRange,
     limits: PriceRange,
     opts?: CrocLpOpts,
-  ): Promise<TransactionResponse> {
+  ): Promise<Params> {
     return this.mintRange(qty, this.useTrueBase, range, await limits, opts);
   }
 
@@ -255,7 +248,7 @@ export class CrocPoolView {
     range: TickRange,
     limits: PriceRange,
     opts?: CrocLpOpts,
-  ): Promise<TransactionResponse> {
+  ): Promise<Params> {
     return this.mintRange(qty, !this.useTrueBase, range, await limits, opts);
   }
 
@@ -322,11 +315,46 @@ export class CrocPoolView {
     return this.sendCmd(calldata);
   }
 
+  public async constructParams(
+    calldata: string,
+    txArgs?: { value?: BigNumberish },
+  ): Promise<Params> {
+    let cntx = await this.context;
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    if (txArgs && !txArgs.gasLimit) {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      txArgs.gasLimit = BigNumber.from(6_000_000);
+    }
+
+    return txArgs
+      ? {
+          contract: cntx.dex,
+          path: cntx.chain.proxyPaths.liq,
+          calldata,
+          txArgs,
+        }
+      : {
+          contract: cntx.dex,
+          path: cntx.chain.proxyPaths.liq,
+          calldata,
+        };
+  }
+
   private async sendCmd(
     calldata: string,
     txArgs?: { value?: BigNumberish },
   ): Promise<TransactionResponse> {
     let cntx = await this.context;
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    if (txArgs && !txArgs.gasLimit) {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      txArgs.gasLimit = BigNumber.from(6_000_000);
+    }
+
     return txArgs
       ? cntx.dex.userCmd(cntx.chain.proxyPaths.liq, calldata, txArgs)
       : cntx.dex.userCmd(cntx.chain.proxyPaths.liq, calldata);
@@ -337,9 +365,10 @@ export class CrocPoolView {
     isQtyBase: boolean,
     limits: PriceRange,
     opts?: CrocLpOpts,
-  ): Promise<TransactionResponse> {
+  ): Promise<Params> {
     let msgVal = this.msgValAmbient(qty, isQtyBase, limits, opts);
     let weiQty = this.normQty(qty, isQtyBase);
+
     let [lowerBound, upperBound] = await this.transformLimits(limits);
 
     const calldata = (await this.makeEncoder()).encodeMintAmbient(
@@ -349,7 +378,8 @@ export class CrocPoolView {
       upperBound,
       this.maskSurplusFlag(opts),
     );
-    return this.sendCmd(calldata, { value: await msgVal });
+
+    return this.constructParams(calldata, { value: await msgVal });
   }
 
   private async boundLimits(
@@ -412,7 +442,7 @@ export class CrocPoolView {
     range: TickRange,
     limits: PriceRange,
     opts?: CrocLpOpts,
-  ): Promise<TransactionResponse> {
+  ): Promise<Params> {
     const saneLimits = await this.boundLimits(range, limits);
 
     let msgVal = this.msgValRange(
@@ -434,7 +464,7 @@ export class CrocPoolView {
       upperBound,
       this.maskSurplusFlag(opts),
     );
-    return this.sendCmd(calldata, { value: await msgVal });
+    return this.constructParams(calldata, { value: await msgVal });
   }
 
   private maskSurplusFlag(opts?: CrocLpOpts): number {

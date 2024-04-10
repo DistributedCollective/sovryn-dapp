@@ -4,22 +4,21 @@ import { t } from 'i18next';
 
 import { FormGroup, AmountInput } from '@sovryn/ui';
 
+import { BOB_CHAIN_ID } from '../../../../../../../../../config/chains';
+
 import { AssetRenderer } from '../../../../../../../../2_molecules/AssetRenderer/AssetRenderer';
 import { MaxButton } from '../../../../../../../../2_molecules/MaxButton/MaxButton';
 import { useAccount } from '../../../../../../../../../hooks/useAccount';
+import { useAssetBalance } from '../../../../../../../../../hooks/useAssetBalance';
 import { translations } from '../../../../../../../../../locales/i18n';
-import { COMMON_SYMBOLS } from '../../../../../../../../../utils/asset';
-import { AmmLiquidityPoolDictionary } from '../../../../../../utils/AmmLiquidityPoolDictionary';
-import { useGetMaxDeposit } from '../../../../../AdjustAndDepositModal/hooks/useGetMaxDeposit';
+import { POOL_ASSET_A, POOL_ASSET_B } from '../../../../BobDepositModal';
 import { useDepositContext } from '../../../../contexts/BobDepositModalContext';
-
-// TODO: This will be a prop and will likely use a different set of pools
-const POOL = AmmLiquidityPoolDictionary.list().filter(
-  pool => pool.assetA === COMMON_SYMBOLS.DLLR,
-)[0];
+import { useGetMaxDeposit } from '../../../../hooks/useGetMaxDeposit';
+import { useGetPoolInfo } from '../../../../hooks/useGetPoolInfo';
 
 export const AmountForm: FC = () => {
   const { account } = useAccount();
+  const { price } = useGetPoolInfo('ETH', 'SOV');
 
   const {
     firstAssetValue,
@@ -28,16 +27,46 @@ export const AmountForm: FC = () => {
     setSecondAssetValue,
   } = useDepositContext();
 
-  // TODO: We will need a separate hook for Ambient pool deposits
-  const { balanceTokenA, balanceTokenB } = useGetMaxDeposit(POOL, true);
+  const { balance: balanceTokenA } = useAssetBalance(
+    POOL_ASSET_A,
+    BOB_CHAIN_ID,
+  );
+
+  const { balanceTokenB } = useGetMaxDeposit(POOL_ASSET_A, POOL_ASSET_B);
 
   const handleFirstAssetMaxClick = useCallback(() => {
     setFirstAssetValue(balanceTokenA.toString());
-  }, [balanceTokenA, setFirstAssetValue]);
+    setSecondAssetValue(String(balanceTokenA.toNumber() * price));
+  }, [balanceTokenA, price, setFirstAssetValue, setSecondAssetValue]);
 
   const handleSecondAssetMaxClick = useCallback(() => {
     setSecondAssetValue(balanceTokenB.toString());
-  }, [balanceTokenB, setSecondAssetValue]);
+    setFirstAssetValue(String(balanceTokenB.toNumber() / price));
+  }, [balanceTokenB, price, setFirstAssetValue, setSecondAssetValue]);
+
+  const onFirstAssetChange = useCallback(
+    (value: string) => {
+      setFirstAssetValue(value);
+      if (price === 0) {
+        return;
+      }
+
+      setSecondAssetValue(String(Number(value) * price));
+    },
+    [price, setFirstAssetValue, setSecondAssetValue],
+  );
+
+  const onSecondAssetChange = useCallback(
+    (value: string) => {
+      setSecondAssetValue(value);
+      if (price === 0) {
+        return;
+      }
+
+      setFirstAssetValue(String(Number(value) / price));
+    },
+    [price, setFirstAssetValue, setSecondAssetValue],
+  );
   return (
     <>
       <FormGroup
@@ -45,7 +74,7 @@ export const AmountForm: FC = () => {
           <div className="flex justify-end w-full">
             <MaxButton
               value={balanceTokenA}
-              token={POOL.assetA}
+              token={POOL_ASSET_A}
               onClick={handleFirstAssetMaxClick}
             />
           </div>
@@ -56,11 +85,11 @@ export const AmountForm: FC = () => {
       >
         <AmountInput
           value={firstAssetValue}
-          onChangeText={setFirstAssetValue}
+          onChangeText={onFirstAssetChange}
           maxAmount={balanceTokenA.toNumber()}
           label={t(translations.common.amount)}
           className="max-w-none"
-          unit={<AssetRenderer asset={POOL.assetA} />}
+          unit={<AssetRenderer asset={POOL_ASSET_A} />}
           disabled={!account}
           placeholder="0"
         />
@@ -71,7 +100,7 @@ export const AmountForm: FC = () => {
           <div className="flex justify-end w-full">
             <MaxButton
               value={balanceTokenB}
-              token={POOL.assetB}
+              token={POOL_ASSET_B}
               onClick={handleSecondAssetMaxClick}
             />
           </div>
@@ -82,11 +111,11 @@ export const AmountForm: FC = () => {
       >
         <AmountInput
           value={secondAssetValue}
-          onChangeText={setSecondAssetValue}
+          onChangeText={onSecondAssetChange}
           maxAmount={balanceTokenB.toNumber()}
           label={t(translations.common.amount)}
           className="max-w-none"
-          unit={<AssetRenderer asset={POOL.assetB} />}
+          unit={<AssetRenderer asset={POOL_ASSET_B} />}
           disabled={!account}
           placeholder="0"
         />

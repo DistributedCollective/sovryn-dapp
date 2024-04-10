@@ -1,10 +1,12 @@
 import { useCallback, useEffect, useState } from 'react';
 
+import { useCurrentChain } from '../../../../hooks/useChainStore';
 import { useGetProtocolContract } from '../../../../hooks/useGetContract';
 import { asyncCall } from '../../../../store/rxjs/provider-cache';
 
 export const useGetKickoffTs = () => {
-  const stakingContract = useGetProtocolContract('staking');
+  const chainId = useCurrentChain();
+  const stakingContract = useGetProtocolContract('staking', chainId);
   const [kickoffTs, setKickoffTs] = useState(0);
 
   const getKickoffTs = useCallback(async () => {

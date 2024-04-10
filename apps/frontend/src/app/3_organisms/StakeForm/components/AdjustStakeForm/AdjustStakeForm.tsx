@@ -36,6 +36,7 @@ import {
 import { MS } from '../../../../../constants/general';
 import { useAccount } from '../../../../../hooks/useAccount';
 import { useAssetBalance } from '../../../../../hooks/useAssetBalance';
+import { useCurrentChain } from '../../../../../hooks/useChainStore';
 import { useMaintenance } from '../../../../../hooks/useMaintenance';
 import { translations } from '../../../../../locales/i18n';
 import { COMMON_SYMBOLS } from '../../../../../utils/asset';
@@ -59,7 +60,9 @@ export const AdjustStakeForm: FC<AdjustStakeFormProps> = ({
 }) => {
   const { account } = useAccount();
   const [amount, setAmount] = useState('');
-  const { balance } = useAssetBalance(COMMON_SYMBOLS.SOV);
+
+  const chainId = useCurrentChain();
+  const { balance } = useAssetBalance(COMMON_SYMBOLS.SOV, chainId);
   const [delegateToAddress, setDelegateToAddress] = useState('');
   const [votingPowerChanged, setVotingPowerChanged] = useState(0);
   const [unlockDate, setUnlockDate] = useState(0);

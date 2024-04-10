@@ -28,6 +28,7 @@ import { useHandleStake } from '../../../../5_pages/StakePage/hooks/useHandleSta
 import { TOKEN_RENDER_PRECISION } from '../../../../../constants/currencies';
 import { useAccount } from '../../../../../hooks/useAccount';
 import { useAssetBalance } from '../../../../../hooks/useAssetBalance';
+import { useCurrentChain } from '../../../../../hooks/useChainStore';
 import { useMaintenance } from '../../../../../hooks/useMaintenance';
 import { translations } from '../../../../../locales/i18n';
 import { COMMON_SYMBOLS } from '../../../../../utils/asset';
@@ -43,7 +44,8 @@ export const AddStakeForm: FC<StakeFormProps> = ({
   const [amount, setAmount] = useState('');
   const [unlockDate, setUnlockDate] = useState(0);
 
-  const { balance } = useAssetBalance(COMMON_SYMBOLS.SOV);
+  const chainId = useCurrentChain();
+  const { balance } = useAssetBalance(COMMON_SYMBOLS.SOV, chainId);
   const { balance: stakedValue } = useGetStakingBalanceOf(account);
   const totalVestingsBalance = useGetTotalVestingsBalance();
 

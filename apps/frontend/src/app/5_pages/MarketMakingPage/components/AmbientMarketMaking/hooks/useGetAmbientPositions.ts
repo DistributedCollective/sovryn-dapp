@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 
 import { BOB_CHAIN_ID } from '../../../../../../config/chains';
 
-import { BOB_INDEXER } from '../../../../../../constants/infrastructure';
+import { BOB } from '../../../../../../constants/infrastructure/bob';
 import { useFetch } from '../../../../../../hooks/useFetch';
 import { AmbientPosition } from '../AmbientMarketMaking.types';
 
@@ -14,7 +14,7 @@ const chainId = '0x1';
 
 export const useGetAmbientPositions = () => {
   const { value, loading } = useFetch(
-    `${BOB_INDEXER[BOB_CHAIN_ID]}user_pool_positions?user=${account}&base=${base}&quote=${quote}&poolIdx=${poolIdx}&chainId=${chainId}`,
+    `${BOB.indexer[BOB_CHAIN_ID]}user_pool_positions?user=${account}&base=${base}&quote=${quote}&poolIdx=${poolIdx}&chainId=${chainId}`,
   );
 
   const positions = useMemo(

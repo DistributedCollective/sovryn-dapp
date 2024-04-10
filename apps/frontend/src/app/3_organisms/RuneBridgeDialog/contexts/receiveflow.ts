@@ -25,18 +25,17 @@ export type ReceiveFlowContextStateType = {
   address: string;
   addressLoading: boolean;
   addressError: string | null;
-  depositTx: TxData | null;
-  transferTx: TxData | null;
-  depositRskTransactionHash: string | null;
+  txCheckingAttempts: number;
+  depositTx: TxData;
   limits: ReceiveFlowLimits;
   signatures: Signature[];
   errorMessage: string | null;
 };
 
 export type TxData = {
-  txHash: string;
-  value: number;
-  status: TxStatus;
+  lastBlockHash: string;
+  statuses: TxStatus[];
+  currentTX: TxStatus;
 };
 
 export type Signature = {
@@ -44,10 +43,24 @@ export type Signature = {
   signature: number;
 };
 
-type TxStatus = 'pending' | 'confirmed' | string;
+export type TxStatus = {
+  btcDepositTxid: string;
+  btcDepositVout: string; // amount this should be a BigNumber
+  runeName: string;
+  amountDecimal: string;
+  status: stateType;
+  evmTransferTxHash: string;
+};
+
+export type stateType = 'detected' | 'completed' | 'seen' | string;
 
 export type ReceiveFlowContextFunctionsType = {
   set: Dispatch<SetStateAction<ReceiveFlowContextStateType>>;
+  requestLastScannedBlock: () => Promise<any>;
+  getRuneDepositStatus: (
+    userEvmAddress: string,
+    lastScannedBlockHash: string,
+  ) => Promise<any>;
 };
 
 export type ReceiveFlowContextType = ReceiveFlowContextStateType &
@@ -59,9 +72,19 @@ export const defaultValue: ReceiveFlowContextType = {
   address: '',
   addressLoading: false,
   addressError: null,
-  depositTx: null,
-  transferTx: null,
-  depositRskTransactionHash: null,
+  txCheckingAttempts: 0,
+  depositTx: {
+    lastBlockHash: '',
+    statuses: [],
+    currentTX: {
+      btcDepositTxid: '',
+      btcDepositVout: '',
+      runeName: '',
+      amountDecimal: '',
+      status: '',
+      evmTransferTxHash: '',
+    },
+  },
   limits: {
     min: 0,
     max: 0,
@@ -73,6 +96,12 @@ export const defaultValue: ReceiveFlowContextType = {
   errorMessage: null,
   set: () => {
     throw new Error('set() has not been defined.');
+  },
+  requestLastScannedBlock: async () => {
+    throw new Error('requestLastScannedBlock() has not been defined.');
+  },
+  getRuneDepositStatus: async () => {
+    throw new Error('getRuneDepositStatus() has not been defined.');
   },
 };
 

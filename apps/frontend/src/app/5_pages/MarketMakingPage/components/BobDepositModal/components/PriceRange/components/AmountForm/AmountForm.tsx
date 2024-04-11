@@ -4,12 +4,11 @@ import { t } from 'i18next';
 
 import { FormGroup, AmountInput } from '@sovryn/ui';
 
-import { BOB_CHAIN_ID } from '../../../../../../../../../config/chains';
-
 import { AssetRenderer } from '../../../../../../../../2_molecules/AssetRenderer/AssetRenderer';
 import { MaxButton } from '../../../../../../../../2_molecules/MaxButton/MaxButton';
 import { useAccount } from '../../../../../../../../../hooks/useAccount';
 import { useAssetBalance } from '../../../../../../../../../hooks/useAssetBalance';
+import { useCurrentChain } from '../../../../../../../../../hooks/useChainStore';
 import { translations } from '../../../../../../../../../locales/i18n';
 import { POOL_ASSET_A, POOL_ASSET_B } from '../../../../BobDepositModal';
 import { useDepositContext } from '../../../../contexts/BobDepositModalContext';
@@ -20,6 +19,8 @@ export const AmountForm: FC = () => {
   const { account } = useAccount();
   const { price } = useGetPoolInfo('ETH', 'SOV');
 
+  const chainId = useCurrentChain();
+
   const {
     firstAssetValue,
     setFirstAssetValue,
@@ -27,10 +28,7 @@ export const AmountForm: FC = () => {
     setSecondAssetValue,
   } = useDepositContext();
 
-  const { balance: balanceTokenA } = useAssetBalance(
-    POOL_ASSET_A,
-    BOB_CHAIN_ID,
-  );
+  const { balance: balanceTokenA } = useAssetBalance(POOL_ASSET_A, chainId);
 
   const { balanceTokenB } = useGetMaxDeposit(POOL_ASSET_A, POOL_ASSET_B);
 

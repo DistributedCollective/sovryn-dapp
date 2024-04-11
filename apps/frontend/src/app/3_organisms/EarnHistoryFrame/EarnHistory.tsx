@@ -2,13 +2,17 @@ import React, { FC, useMemo, useState } from 'react';
 
 import { Select } from '@sovryn/ui';
 
+import { useCurrentChain } from '../../../hooks/useChainStore';
+import { isRskChain } from '../../../utils/chain';
 import { EARN_HISTORY_OPTIONS } from './EarnHistory.constants';
 import { EarnHistoryType } from './EarnHistory.types';
+import { AmbientMarketMakingHistoryFrame } from './components/AmbientMarketMakingHistoryFrame/AmbientMarketMakingHistoryFrame';
 import { LendingHistoryFrame } from './components/LendingHistoryFrame/LendingHistoryFrame';
 import { MarketMakingHistoryFrame } from './components/MarketMakingHistoryFrame/MarketMakingHistoryFrame';
 import { StabilityPoolHistoryFrame } from './components/StabilityPoolHistoryFrame/StabilityPoolHistoryFrame';
 
 export const EarnHistory: FC = () => {
+  const chainId = useCurrentChain();
   const [selectedHistoryType, setSelectedHistoryType] = useState(
     EarnHistoryType.stabilityPool,
   );
@@ -46,13 +50,20 @@ export const EarnHistory: FC = () => {
       case EarnHistoryType.marketMaking:
         return (
           <>
-            <MarketMakingHistoryFrame>
-              {SelectComponent}
-            </MarketMakingHistoryFrame>
+            {isRskChain(chainId) && (
+              <MarketMakingHistoryFrame>
+                {SelectComponent}
+              </MarketMakingHistoryFrame>
+            )}
+            {!isRskChain(chainId) && (
+              <AmbientMarketMakingHistoryFrame>
+                {SelectComponent}
+              </AmbientMarketMakingHistoryFrame>
+            )}
           </>
         );
     }
-  }, [SelectComponent, selectedHistoryType]);
+  }, [SelectComponent, chainId, selectedHistoryType]);
 
   return <>{HistoryFrame}</>;
 };

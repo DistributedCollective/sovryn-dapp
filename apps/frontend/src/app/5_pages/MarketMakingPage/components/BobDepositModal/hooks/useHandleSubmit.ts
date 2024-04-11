@@ -9,8 +9,6 @@ import { t } from 'i18next';
 import { priceToTick } from '@sovryn/ambient-sdk';
 import { CrocTokenView } from '@sovryn/ambient-sdk/dist/tokens';
 
-import { BOB_CHAIN_ID } from '../../../../../../config/chains';
-
 import {
   Transaction,
   TransactionType,
@@ -18,6 +16,7 @@ import {
 import { useCrocContext } from '../../../../../../contexts/CrocContext';
 import { useTransactionContext } from '../../../../../../contexts/TransactionContext';
 import { useAccount } from '../../../../../../hooks/useAccount';
+import { useCurrentChain } from '../../../../../../hooks/useChainStore';
 import { translations } from '../../../../../../locales/i18n';
 import { prepareApproveTransaction } from '../../../../../../utils/transactions';
 import { createRangePositionTx } from '../../../../BobAmmPage/ambient-utils';
@@ -44,6 +43,7 @@ const testAllowance = async (
 };
 
 export const useHandleSubmit = (assetA: string, assetB: string) => {
+  const chainId = useCurrentChain();
   const { account, signer } = useAccount();
   const { croc } = useCrocContext();
   const { poolTokens } = useGetPoolInfo(assetA, assetB);
@@ -80,7 +80,7 @@ export const useHandleSubmit = (assetA: string, assetB: string) => {
     if (allowanceA) {
       const approve = await prepareApproveTransaction({
         token: poolTokens.tokenA.tokenAddr,
-        chain: BOB_CHAIN_ID,
+        chain: chainId,
         amount:
           allowanceA.weiQty === ethers.constants.MaxUint256
             ? MaxAllowanceTransferAmount
@@ -102,7 +102,7 @@ export const useHandleSubmit = (assetA: string, assetB: string) => {
     if (allowanceB) {
       const approve = await prepareApproveTransaction({
         token: poolTokens.tokenB.tokenAddr,
-        chain: BOB_CHAIN_ID,
+        chain: chainId,
         amount:
           allowanceB.weiQty === ethers.constants.MaxUint256
             ? MaxAllowanceTransferAmount
@@ -161,6 +161,7 @@ export const useHandleSubmit = (assetA: string, assetB: string) => {
     setIsOpen(true);
   }, [
     account,
+    chainId,
     croc,
     firstAssetValue,
     isBalancedRange,

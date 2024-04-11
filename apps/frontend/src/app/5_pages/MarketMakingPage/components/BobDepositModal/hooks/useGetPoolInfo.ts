@@ -1,8 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
-import { BOB_CHAIN_ID } from '../../../../../../config/chains';
-
 import { useCrocContext } from '../../../../../../contexts/CrocContext';
+import { useCurrentChain } from '../../../../../../hooks/useChainStore';
 import { COMMON_SYMBOLS, findAsset } from '../../../../../../utils/asset';
 import { ETH_TOKEN } from '../../../../BobAmmPage/fork-constants';
 
@@ -15,6 +14,8 @@ const ALLOWED_POOL_TOKENS = [
 ];
 
 export const useGetPoolInfo = (assetA: string, assetB: string) => {
+  const chainId = useCurrentChain();
+
   const [price, setPrice] = useState(0);
   const { croc } = useCrocContext();
 
@@ -36,20 +37,20 @@ export const useGetPoolInfo = (assetA: string, assetB: string) => {
     if (assetA === COMMON_SYMBOLS.ETH) {
       assetAAddress = ETH_TOKEN;
     } else {
-      assetAAddress = findAsset(assetB, BOB_CHAIN_ID).address;
+      assetAAddress = findAsset(assetB, chainId).address;
     }
 
     if (assetB === COMMON_SYMBOLS.ETH) {
       assetBAddress = ETH_TOKEN;
     } else {
-      assetBAddress = findAsset(assetB, BOB_CHAIN_ID).address;
+      assetBAddress = findAsset(assetB, chainId).address;
     }
 
     const tokenA = croc.tokens.materialize(assetAAddress);
     const tokenB = croc.tokens.materialize(assetBAddress);
 
     return { tokenA, tokenB };
-  }, [assetA, assetB, croc]);
+  }, [assetA, assetB, chainId, croc]);
 
   const pool = useMemo(() => {
     if (!poolTokens || !croc) {

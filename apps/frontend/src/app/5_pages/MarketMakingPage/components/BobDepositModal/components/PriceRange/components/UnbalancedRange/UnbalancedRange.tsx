@@ -88,12 +88,15 @@ export const UnbalancedRange: FC = () => {
   }, [updateRange]);
 
   useEffect(() => {
-    if (minimumPrice === 0) {
-      setMinimumPrice(calculatePrice(lowerBoundaryPercentage));
+    const calculatedMinimumPrice = calculatePrice(lowerBoundaryPercentage);
+    const calculatedMaximumPrice = calculatePrice(upperBoundaryPercentage);
+
+    if (minimumPrice === 0 || calculatedMinimumPrice !== minimumPrice) {
+      setMinimumPrice(calculatedMinimumPrice);
     }
 
-    if (maximumPrice === 0) {
-      setMaximumPrice(calculatePrice(upperBoundaryPercentage));
+    if (maximumPrice === 0 || calculatedMaximumPrice !== maximumPrice) {
+      setMaximumPrice(calculatedMaximumPrice);
     }
   }, [
     calculatePrice,

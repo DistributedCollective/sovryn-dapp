@@ -28,7 +28,7 @@ export const NewPoolStatistics: FC<NewPoolStatisticsProps> = ({
   poolAssetB,
 }) => {
   const { firstAssetValue, secondAssetValue } = useDepositContext();
-  const { price } = useGetPoolInfo(POOL_ASSET_A, POOL_ASSET_B);
+  const { price, feeRate } = useGetPoolInfo(POOL_ASSET_A, POOL_ASSET_B);
 
   return (
     <SimpleTable className="mt-6">
@@ -61,7 +61,7 @@ export const NewPoolStatistics: FC<NewPoolStatisticsProps> = ({
       />
       <SimpleTableRow
         label={t(pageTranslations.lpFeeRate)}
-        value={<AmountRenderer value={0.36} suffix="%" />}
+        value={<AmountRenderer value={feeRate} suffix="%" />}
       />
     </SimpleTable>
   );

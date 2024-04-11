@@ -1,5 +1,8 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
+import { BOB_CHAIN_ID } from '../../../../../../config/chains';
+
+import { BOB } from '../../../../../../constants/infrastructure/bob';
 import { useCrocContext } from '../../../../../../contexts/CrocContext';
 import { useCurrentChain } from '../../../../../../hooks/useChainStore';
 import { COMMON_SYMBOLS, findAsset } from '../../../../../../utils/asset';
@@ -17,6 +20,7 @@ export const useGetPoolInfo = (assetA: string, assetB: string) => {
   const chainId = useCurrentChain();
 
   const [price, setPrice] = useState(0);
+  const [feeRate, setFeeRate] = useState('0');
   const { croc } = useCrocContext();
 
   const poolTokens = useMemo(() => {
@@ -68,11 +72,48 @@ export const useGetPoolInfo = (assetA: string, assetB: string) => {
     return pool.displayPrice().then(result => setPrice(result));
   }, [pool]);
 
+  const getLiquidityFee = useCallback(async () => {
+    if (!pool || !poolTokens) {
+      return;
+    }
+
+    const poolStatsFreshEndpoint = BOB.indexer + '/pool_stats?';
+
+    return fetch(
+      poolStatsFreshEndpoint +
+        new URLSearchParams({
+          base: poolTokens.tokenA.tokenAddr,
+          quote: poolTokens.tokenB.tokenAddr,
+          poolIdx: (await pool.context).chain.poolIndex.toString(),
+          chainId: BOB_CHAIN_ID, // We don't have indexer on any other chain
+        }),
+    )
+      .then(response => response?.json())
+      .then(json => {
+        if (!json?.data) {
+          return undefined;
+        }
+
+        const payload = json.data;
+
+        setFeeRate(payload.feeRate);
+      })
+      .catch(error => {
+        return undefined;
+      });
+  }, [pool, poolTokens]);
+
   useEffect(() => {
     if (price === 0) {
       getPoolPrice();
     }
   }, [getPoolPrice, price]);
 
-  return { poolTokens, price };
+  useEffect(() => {
+    if (feeRate === '0') {
+      getLiquidityFee();
+    }
+  }, [feeRate, getLiquidityFee, pool]);
+
+  return { poolTokens, price, feeRate };
 };

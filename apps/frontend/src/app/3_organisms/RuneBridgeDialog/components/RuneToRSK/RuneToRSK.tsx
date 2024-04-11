@@ -133,9 +133,11 @@ export const RuneToRSK: React.FC<RuneToRSKProps> = ({ onClose }) => {
           depositTx.lastBlockHash &&
           txCheckingAttempts >= 2 && (
             <>
-              {step === ReceiveflowStep.ADDRESS && (
-                <GoBackButton onClick={onBackClick} />
-              )}
+              <div className="mb-6">
+                {step === ReceiveflowStep.ADDRESS && (
+                  <GoBackButton onClick={onBackClick} />
+                )}
+              </div>
               <AddressForm />
             </>
           )}

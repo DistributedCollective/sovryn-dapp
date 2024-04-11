@@ -17,6 +17,7 @@ import { useAccount } from '../../../hooks/useAccount';
 import { useIsMobile } from '../../../hooks/useIsMobile';
 import { translations } from '../../../locales/i18n';
 import { RSKToRune, RuneToRSK } from './components';
+import { MobileCloseButton } from './components/MobileCloseButton';
 import { ContractContextProvider } from './contextproviders/ContractContextProvider';
 import { ReceiveFlowContextProvider } from './contextproviders/ReceiveContextProvider';
 import { SendFlowContextProvider } from './contextproviders/SendContextProvider';
@@ -54,6 +55,7 @@ export const RuneBridgeDialog: React.FC<RuneBridgeDialogProps> = ({
         content: (
           <ReceiveFlowContextProvider>
             <RuneToRSK onClose={onClose} />
+            <MobileCloseButton onClick={onClose} />
           </ReceiveFlowContextProvider>
         ),
         activeClassName: ACTIVE_CLASSNAME,
@@ -65,6 +67,7 @@ export const RuneBridgeDialog: React.FC<RuneBridgeDialogProps> = ({
         content: (
           <SendFlowContextProvider>
             <RSKToRune onClose={onClose} />
+            <MobileCloseButton onClick={onClose} />
           </SendFlowContextProvider>
         ),
         activeClassName: ACTIVE_CLASSNAME,

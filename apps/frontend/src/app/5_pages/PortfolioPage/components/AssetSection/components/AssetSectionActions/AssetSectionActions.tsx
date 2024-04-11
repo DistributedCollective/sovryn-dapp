@@ -26,6 +26,11 @@ export const AssetSectionActions: FC = () => {
     [hasRbtcBalance],
   );
 
+  const handleRuneBridge = useCallback(
+    () => sharedState.actions.openRuneBridgeDialog(!hasRbtcBalance),
+    [hasRbtcBalance],
+  );
+
   const handleWithdraw = useCallback(
     () => sharedState.actions.openFastBtcDialog(false, 1),
     [],
@@ -65,6 +70,19 @@ export const AssetSectionActions: FC = () => {
           </button>
           <Paragraph>
             {t(translations.portfolioPage.assetSection.convert)}
+          </Paragraph>
+        </div>
+
+        <div className="flex flex-col gap-3 items-center">
+          <button
+            onClick={handleRuneBridge}
+            className="bg-gray-70 w-12 h-12 rounded flex items-center justify-center"
+            disabled={!account}
+          >
+            <DepositIcon />
+          </button>
+          <Paragraph>
+            {t(translations.portfolioPage.assetSection.runeBridge)}
           </Paragraph>
         </div>
         {isRbtcWithdrawalAllowed && (

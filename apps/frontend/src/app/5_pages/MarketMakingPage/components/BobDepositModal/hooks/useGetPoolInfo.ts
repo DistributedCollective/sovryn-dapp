@@ -25,7 +25,6 @@ export const useGetPoolInfo = (assetA: string, assetB: string) => {
 
   const poolTokens = useMemo(() => {
     if (!croc) {
-      console.log(`croc not initialized`);
       return;
     }
     // TODO: This is just a temporary solution

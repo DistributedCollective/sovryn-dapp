@@ -64,8 +64,6 @@ export const BobDepositModal: FC<BobDepositModalProps> = ({
             <CurrentStatistics
               symbol={POOL_ASSET_A}
               symbol2={POOL_ASSET_B}
-              label1={t(pageTranslations.returnRate)}
-              value1="5.6%"
               className="flex justify-between"
             />
           </div>

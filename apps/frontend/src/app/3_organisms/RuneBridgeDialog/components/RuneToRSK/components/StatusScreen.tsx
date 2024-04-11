@@ -61,18 +61,8 @@ export const StatusScreen: React.FC<StatusScreenProps> = ({ onClose }) => {
   const receiveAmount = useMemo(() => {
     return fromWei(toWei(amount).sub(feeAmount));
   }, [amount, feeAmount]);
-  console.log('statusscreen view: depositTx', depositTx);
   const items = useMemo(() => {
     const { currentTX } = depositTx;
-
-    console.log(
-      'statusscreen view: btcExplorerUrl',
-      `${btcExplorerUrl}/tx/${currentTX.btcDepositTxid}`,
-    );
-    console.log(
-      'statusscreen view: rskExplorerUrl',
-      `${rskExplorerUrl}/tx/${currentTX.evmTransferTxHash}`,
-    );
     return [
       {
         label: t(translation.to),

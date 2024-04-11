@@ -39,7 +39,6 @@ export const RuneToRSK: React.FC<RuneToRSKProps> = ({ onClose }) => {
       ].includes(step)
     )
       return;
-    console.log('requestLastScannedBlock');
     requestLastScannedBlock().then(response => {
       if (!response.last_scanned_block) {
         return;
@@ -68,7 +67,6 @@ export const RuneToRSK: React.FC<RuneToRSKProps> = ({ onClose }) => {
         depositTx.lastBlockHash,
       );
       const currentDepositStatus = response.deposits?.[0];
-      console.log('response currentDepositStatus:', currentDepositStatus);
       if (!currentDepositStatus) {
         set(prevState => ({
           ...prevState,

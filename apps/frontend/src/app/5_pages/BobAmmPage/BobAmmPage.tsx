@@ -19,8 +19,6 @@ import { getProvider } from '@sovryn/ethers-provider';
 import { ChainIds } from '@sovryn/ethers-provider';
 import { Decimal } from '@sovryn/utils';
 
-import { BOB_CHAIN_ID } from '../../../config/chains';
-
 import {
   Transaction,
   TransactionType,
@@ -148,7 +146,7 @@ export const BobAmmPage: React.FC = () => {
       if (allowanceA) {
         const approve = await prepareApproveTransaction({
           token: tokenA.tokenAddr,
-          chain: BOB_CHAIN_ID,
+          chain: CHAIN_ID,
           amount:
             allowanceA.weiQty === ethers.constants.MaxUint256
               ? MaxAllowanceTransferAmount
@@ -170,7 +168,7 @@ export const BobAmmPage: React.FC = () => {
       if (allowanceB) {
         const approve = await prepareApproveTransaction({
           token: tokenB.tokenAddr,
-          chain: BOB_CHAIN_ID,
+          chain: CHAIN_ID,
           amount:
             allowanceB.weiQty === ethers.constants.MaxUint256
               ? MaxAllowanceTransferAmount

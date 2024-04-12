@@ -9,7 +9,6 @@ export const useReceiveFlowService = () => {
     set,
     errorMessage,
     depositTx,
-    txCheckingAttempts,
     requestLastScannedBlock,
     getRuneDepositStatus,
   } = useContext(ReceiveFlowContext);
@@ -23,7 +22,6 @@ export const useReceiveFlowService = () => {
     set,
     depositTx,
     errorMessage,
-    txCheckingAttempts,
     requestDepositAddressCallback,
     requestLastScannedBlock,
     getRuneDepositStatus,

@@ -1,8 +1,5 @@
 import React, { useCallback, useEffect } from 'react';
 
-import { Heading, HeadingType, StatusType } from '@sovryn/ui';
-
-import { StatusIcon } from '../../../../2_molecules/StatusIcon/StatusIcon';
 import { useAccount } from '../../../../../hooks/useAccount';
 import { ReceiveflowStep } from '../../contexts/receiveflow';
 import { useReceiveFlowService } from '../../hooks/useReceiveFlowService';
@@ -16,10 +13,9 @@ interface RuneToRSKProps {
 }
 
 export const RuneToRSK: React.FC<RuneToRSKProps> = ({ onClose }) => {
-  const { account: evmAdress } = useAccount();
+  const { account: evmAddress } = useAccount();
   const {
     step,
-    txCheckingAttempts,
     set,
     requestLastScannedBlock,
     getRuneDepositStatus,
@@ -28,17 +24,20 @@ export const RuneToRSK: React.FC<RuneToRSKProps> = ({ onClose }) => {
   const onBackClick = useCallback(() => {
     set(prevState => ({ ...prevState, step: ReceiveflowStep.MAIN }));
   }, [set]);
+
   useEffect(() => {
     if (
       depositTx?.lastBlockHash ||
-      !evmAdress ||
+      !evmAddress ||
       ![
         ReceiveflowStep.ADDRESS,
         ReceiveflowStep.PROCESSING,
         ReceiveflowStep.COMPLETED,
       ].includes(step)
-    )
+    ) {
       return;
+    }
+
     requestLastScannedBlock().then(response => {
       if (!response.last_scanned_block) {
         return;
@@ -53,27 +52,28 @@ export const RuneToRSK: React.FC<RuneToRSKProps> = ({ onClose }) => {
         }));
       }
     });
-  }, [depositTx?.lastBlockHash, evmAdress, requestLastScannedBlock, set, step]);
+  }, [
+    depositTx?.lastBlockHash,
+    evmAddress,
+    requestLastScannedBlock,
+    set,
+    step,
+  ]);
+
   useEffect(() => {
-    if (!depositTx.lastBlockHash || !evmAdress) {
+    if (!depositTx.lastBlockHash || !evmAddress) {
       return;
     }
-    const interval = setInterval(async () => {
+
+    const checkPendingTx = async () => {
       if (!depositTx.lastBlockHash) {
         return;
       }
       const response = await getRuneDepositStatus(
-        evmAdress,
+        evmAddress,
         depositTx.lastBlockHash,
       );
       const currentDepositStatus = response.deposits?.[0];
-      if (!currentDepositStatus) {
-        set(prevState => ({
-          ...prevState,
-          txCheckingAttempts: prevState.txCheckingAttempts + 1,
-        }));
-        return;
-      }
       const currentStep =
         currentDepositStatus?.status === 'confirmed'
           ? ReceiveflowStep.COMPLETED
@@ -83,7 +83,6 @@ export const RuneToRSK: React.FC<RuneToRSKProps> = ({ onClose }) => {
         ...prevState,
         step: currentStep,
         isTxInProgress: currentDepositStatus?.status !== 'confirmed',
-        txCheckingAttempts: 0,
         depositTx: {
           ...prevState.depositTx,
           statuses: response.deposits,
@@ -97,47 +96,39 @@ export const RuneToRSK: React.FC<RuneToRSKProps> = ({ onClose }) => {
           },
         },
       }));
-    }, 5000);
+    };
+    const interval = setInterval(checkPendingTx, 5000);
     return () => clearInterval(interval);
   }, [
     depositTx,
     depositTx.lastBlockHash,
     depositTx.currentTX,
-    evmAdress,
+    evmAddress,
     getRuneDepositStatus,
     requestLastScannedBlock,
     set,
     step,
   ]);
+
   return (
     <div>
       <div className="mt-0 md:mt-12">
         {step === ReceiveflowStep.MAIN && <MainScreen />}
-        {txCheckingAttempts <= 1 && step === ReceiveflowStep.ADDRESS && (
-          <div className="text-center">
-            <Heading type={HeadingType.h2} className="font-medium mb-6">
-              Checking pending transactions...
-            </Heading>
-            <div className="mb-6">
-              <StatusIcon
-                status={StatusType.pending}
-                dataAttribute="checking-pending-transactions"
-              />
-            </div>
-          </div>
-        )}
+        {[ReceiveflowStep.PROCESSING, ReceiveflowStep.COMPLETED].includes(
+          step,
+        ) &&
+          depositTx?.currentTX.status && <StatusScreen onClose={onClose} />}
         {(step === ReceiveflowStep.ADDRESS ||
           depositTx?.currentTX.status === 'confirmed') &&
-          depositTx.lastBlockHash &&
-          txCheckingAttempts >= 2 && (
-            <>
+          depositTx.lastBlockHash && (
+            <div>
               <div className="mb-6">
                 {step === ReceiveflowStep.ADDRESS && (
                   <GoBackButton onClick={onBackClick} />
                 )}
               </div>
               <AddressForm />
-            </>
+            </div>
           )}
 
         {[ReceiveflowStep.PROCESSING, ReceiveflowStep.COMPLETED].includes(

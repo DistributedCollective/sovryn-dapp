@@ -23,6 +23,7 @@ export const ContractContextProvider: React.FC<
   const { provider, account } = useAccount();
   const requestTokenBalances = React.useCallback(async () => {
     if (!state.runeBridgeContract) {
+      console.log('no contract');
       return;
     }
     const listTokens = await state.runeBridgeContract.listTokens();

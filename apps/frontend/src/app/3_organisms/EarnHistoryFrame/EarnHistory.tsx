@@ -3,7 +3,7 @@ import React, { FC, useMemo, useState } from 'react';
 import { Select } from '@sovryn/ui';
 
 import { useCurrentChain } from '../../../hooks/useChainStore';
-import { isRskChain } from '../../../utils/chain';
+import { isBobChain, isRskChain } from '../../../utils/chain';
 import { EARN_HISTORY_OPTIONS } from './EarnHistory.constants';
 import { EarnHistoryType } from './EarnHistory.types';
 import { AmbientMarketMakingHistoryFrame } from './components/AmbientMarketMakingHistoryFrame/AmbientMarketMakingHistoryFrame';
@@ -55,7 +55,7 @@ export const EarnHistory: FC = () => {
                 {SelectComponent}
               </MarketMakingHistoryFrame>
             )}
-            {!isRskChain(chainId) && (
+            {isBobChain(chainId) && (
               <AmbientMarketMakingHistoryFrame>
                 {SelectComponent}
               </AmbientMarketMakingHistoryFrame>

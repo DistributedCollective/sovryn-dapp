@@ -1,6 +1,5 @@
 import React, { useCallback } from 'react';
 
-import { AnimationWrapper } from '../../../../2_molecules/AnimateWrapper/AnimationWrapper';
 import { SendFlowStep } from '../../contexts/sendflow';
 import { useSendFlowService } from '../../hooks/useSendFlowService';
 import { GoBackButton } from '../GoBackButton';
@@ -44,17 +43,15 @@ export const RSKToRune: React.FC<RSKToRuneProps> = ({ onClose }) => {
         <GoBackButton onClick={onBackClick} />
       )}
       <div className="mt-0 md:mt-12">
-        <AnimationWrapper key={step}>
-          {step === SendFlowStep.MAIN && <MainScreen />}
-          {step === SendFlowStep.AMOUNT && <AmountForm />}
-          {step === SendFlowStep.ADDRESS && <AddressForm />}
-          {[
-            SendFlowStep.REVIEW,
-            SendFlowStep.CONFIRM,
-            SendFlowStep.PROCESSING,
-            SendFlowStep.COMPLETED,
-          ].includes(step) && <ConfirmationScreens onClose={onClose} />}
-        </AnimationWrapper>
+        {step === SendFlowStep.MAIN && <MainScreen />}
+        {step === SendFlowStep.AMOUNT && <AmountForm />}
+        {step === SendFlowStep.ADDRESS && <AddressForm />}
+        {[
+          SendFlowStep.REVIEW,
+          SendFlowStep.CONFIRM,
+          SendFlowStep.PROCESSING,
+          SendFlowStep.COMPLETED,
+        ].includes(step) && <ConfirmationScreens onClose={onClose} />}
       </div>
     </>
   );

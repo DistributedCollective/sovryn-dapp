@@ -2,7 +2,6 @@ import React, { useCallback, useEffect } from 'react';
 
 import { Heading, HeadingType, StatusType } from '@sovryn/ui';
 
-import { AnimationWrapper } from '../../../../2_molecules/AnimateWrapper/AnimationWrapper';
 import { StatusIcon } from '../../../../2_molecules/StatusIcon/StatusIcon';
 import { useAccount } from '../../../../../hooks/useAccount';
 import { ReceiveflowStep } from '../../contexts/receiveflow';
@@ -113,40 +112,38 @@ export const RuneToRSK: React.FC<RuneToRSKProps> = ({ onClose }) => {
   return (
     <div>
       <div className="mt-0 md:mt-12">
-        <AnimationWrapper key={step}>
-          {step === ReceiveflowStep.MAIN && <MainScreen />}
-          {txCheckingAttempts <= 1 && step === ReceiveflowStep.ADDRESS && (
-            <div className="text-center">
-              <Heading type={HeadingType.h2} className="font-medium mb-6">
-                Checking pending transactions...
-              </Heading>
-              <div className="mb-6">
-                <StatusIcon
-                  status={StatusType.pending}
-                  dataAttribute="checking-pending-transactions"
-                />
-              </div>
+        {step === ReceiveflowStep.MAIN && <MainScreen />}
+        {txCheckingAttempts <= 1 && step === ReceiveflowStep.ADDRESS && (
+          <div className="text-center">
+            <Heading type={HeadingType.h2} className="font-medium mb-6">
+              Checking pending transactions...
+            </Heading>
+            <div className="mb-6">
+              <StatusIcon
+                status={StatusType.pending}
+                dataAttribute="checking-pending-transactions"
+              />
             </div>
+          </div>
+        )}
+        {(step === ReceiveflowStep.ADDRESS ||
+          depositTx?.currentTX.status === 'confirmed') &&
+          depositTx.lastBlockHash &&
+          txCheckingAttempts >= 2 && (
+            <>
+              <div className="mb-6">
+                {step === ReceiveflowStep.ADDRESS && (
+                  <GoBackButton onClick={onBackClick} />
+                )}
+              </div>
+              <AddressForm />
+            </>
           )}
-          {(step === ReceiveflowStep.ADDRESS ||
-            depositTx?.currentTX.status === 'confirmed') &&
-            depositTx.lastBlockHash &&
-            txCheckingAttempts >= 2 && (
-              <>
-                <div className="mb-6">
-                  {step === ReceiveflowStep.ADDRESS && (
-                    <GoBackButton onClick={onBackClick} />
-                  )}
-                </div>
-                <AddressForm />
-              </>
-            )}
 
-          {[ReceiveflowStep.PROCESSING, ReceiveflowStep.COMPLETED].includes(
-            step,
-          ) &&
-            depositTx?.currentTX.status && <StatusScreen onClose={onClose} />}
-        </AnimationWrapper>
+        {[ReceiveflowStep.PROCESSING, ReceiveflowStep.COMPLETED].includes(
+          step,
+        ) &&
+          depositTx?.currentTX.status && <StatusScreen onClose={onClose} />}
       </div>
     </div>
   );

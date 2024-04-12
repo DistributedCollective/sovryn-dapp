@@ -6,11 +6,7 @@ import React, {
   useState,
 } from 'react';
 
-import {
-  AddressType,
-  getAddressInfo,
-  validate,
-} from 'bitcoin-address-validation';
+import { getAddressInfo, validate } from 'bitcoin-address-validation';
 import { t } from 'i18next';
 
 import {
@@ -25,7 +21,6 @@ import {
   ParagraphSize,
 } from '@sovryn/ui';
 
-import { useGetProtocolContract } from '../../../../../../hooks/useGetContract';
 import { useMaintenance } from '../../../../../../hooks/useMaintenance';
 import { translations } from '../../../../../../locales/i18n';
 import {
@@ -42,7 +37,8 @@ export const AddressForm: React.FC = () => {
   const { address, set, addressValidationState } = useContext(SendFlowContext);
   const { checkMaintenance, States } = useMaintenance();
   const fastBtcLocked = checkMaintenance(States.FASTBTC_SEND);
-  const fastBtcBridgeContract = useGetProtocolContract('fastBtcBridge');
+  // TODO: maybe do rune bridhe validation
+  // const fastBtcBridgeContract = useGetProtocolContract('fastBtcBridge');
   const [value, setValue] = useState(address);
 
   const onContinueClick = useCallback(
@@ -72,20 +68,19 @@ export const AddressForm: React.FC = () => {
       setAddressValidationState(AddressValidationState.LOADING);
       const isValidBtcAddress = validate(address, currentBTCNetwork);
 
-      if (!fastBtcBridgeContract) {
-        return;
-      }
+      // if (!fastBtcBridgeContract) {
+      //   return;
+      // }
 
-      const isValid = fastBtcBridgeContract.isValidBtcAddress(address);
+      // const isValid = fastBtcBridgeContract.isValidBtcAddress(address);
 
-      if (isValidBtcAddress && isValid) {
-        const { type, network } = getAddressInfo(address);
+      if (isValidBtcAddress) {
+        const { network } = getAddressInfo(address);
         const isNetworkValid =
           network.toLowerCase() === currentNetwork.toLowerCase();
-        const isTypeValid = type.toLowerCase() !== AddressType.p2tr;
 
         setAddressValidationState(
-          isNetworkValid && isTypeValid
+          isNetworkValid
             ? AddressValidationState.VALID
             : AddressValidationState.INVALID,
         );
@@ -93,7 +88,8 @@ export const AddressForm: React.FC = () => {
         setAddressValidationState(AddressValidationState.INVALID);
       }
     },
-    [fastBtcBridgeContract, setAddressValidationState],
+    // [fastBtcBridgeContract, setAddressValidationState],
+    [setAddressValidationState],
   );
 
   useEffect(() => {

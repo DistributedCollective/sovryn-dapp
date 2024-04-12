@@ -74,6 +74,10 @@ export const RuneToRSK: React.FC<RuneToRSKProps> = ({ onClose }) => {
         depositTx.lastBlockHash,
       );
       const currentDepositStatus = response.deposits?.[0];
+      if (!currentDepositStatus) {
+        // no deposits
+        return;
+      }
       const currentStep =
         currentDepositStatus?.status === 'confirmed'
           ? ReceiveflowStep.COMPLETED
@@ -130,11 +134,6 @@ export const RuneToRSK: React.FC<RuneToRSKProps> = ({ onClose }) => {
               <AddressForm />
             </div>
           )}
-
-        {[ReceiveflowStep.PROCESSING, ReceiveflowStep.COMPLETED].includes(
-          step,
-        ) &&
-          depositTx?.currentTX.status && <StatusScreen onClose={onClose} />}
       </div>
     </div>
   );

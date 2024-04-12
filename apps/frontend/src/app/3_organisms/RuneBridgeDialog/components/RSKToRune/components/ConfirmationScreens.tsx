@@ -14,7 +14,6 @@ import { StatusType } from '@sovryn/ui';
 import { useTransactionContext } from '../../../../../../contexts/TransactionContext';
 import { useAccount } from '../../../../../../hooks/useAccount';
 import { useGetProtocolContract } from '../../../../../../hooks/useGetContract';
-import { translations } from '../../../../../../locales/i18n';
 import { fromWei, toWei } from '../../../../../../utils/math';
 import { TransactionType } from '../../../../TransactionStepDialog/TransactionStepDialog.types';
 import { GAS_LIMIT_FAST_BTC_WITHDRAW } from '../../../constants';
@@ -90,7 +89,7 @@ export const ConfirmationScreens: React.FC<ConfirmationScreensProps> = ({
       }
       setRuneBridgeTransactions([
         {
-          title: t(translations.fastBtc.send.txDialog.sendBTC),
+          title: t(`Send ${selectedToken.name}`),
           request: {
             type: TransactionType.signTransaction,
             contract: runeBridgeContract.connect(signer),
@@ -110,7 +109,7 @@ export const ConfirmationScreens: React.FC<ConfirmationScreensProps> = ({
           onChangeStatus: setTxStatus,
         },
       ]);
-      setTitle(t(translations.fastBtc.send.txDialog.title));
+      setTitle(t(`Send ${selectedToken.name} to the bitcoin network`));
       setRuneBridgeIsOpen(true);
       setRuneBridgeToken(selectedToken);
     }

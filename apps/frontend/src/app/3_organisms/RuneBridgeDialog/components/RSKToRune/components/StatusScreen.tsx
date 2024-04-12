@@ -14,7 +14,6 @@ import {
 
 import { StatusIcon } from '../../../../../2_molecules/StatusIcon/StatusIcon';
 import { TxIdWithNotification } from '../../../../../2_molecules/TxIdWithNotification/TransactionIdWithNotification';
-import { BITCOIN } from '../../../../../../constants/currencies';
 import { useBlockNumber } from '../../../../../../hooks/useBlockNumber';
 import { translations } from '../../../../../../locales/i18n';
 import { useGetBitcoinTxIdQuery } from '../../../../../../utils/graphql/rsk/generated';
@@ -23,6 +22,7 @@ import {
   getRskExplorerUrl,
 } from '../../../../../../utils/helpers';
 import { formatValue } from '../../../../../../utils/math';
+import { useSendFlowService } from '../../../hooks/useSendFlowService';
 
 const translation = translations.fastBtc.send.confirmationScreens;
 
@@ -67,7 +67,7 @@ export const StatusScreen: React.FC<StatusScreenProps> = ({
   const { data, refetch } = useGetBitcoinTxIdQuery({
     variables: { createdAtTx: txHash || '' },
   });
-
+  const { selectedToken } = useSendFlowService();
   const bitcoinTxHash = useMemo(
     () => data?.bitcoinTransfers?.[0]?.bitcoinTxHash,
     [data],
@@ -101,7 +101,7 @@ export const StatusScreen: React.FC<StatusScreenProps> = ({
         label: t(translation.sending),
         value: (
           <>
-            {formatValue(Number(amount), 8)} {BITCOIN}
+            {formatValue(Number(amount), 8)} {selectedToken.symbol}
           </>
         ),
       },
@@ -109,7 +109,7 @@ export const StatusScreen: React.FC<StatusScreenProps> = ({
         label: t(translation.serviceFee),
         value: (
           <>
-            {formatValue(feesPaid, 8)} {BITCOIN}
+            {formatValue(feesPaid, 8)} {selectedToken.symbol}
           </>
         ),
       },
@@ -117,7 +117,7 @@ export const StatusScreen: React.FC<StatusScreenProps> = ({
         label: t(translation.receiving),
         value: (
           <>
-            {formatValue(receiveAmount, 8)} {BITCOIN}
+            {formatValue(receiveAmount, 8)} {selectedToken.symbol}
           </>
         ),
       },
@@ -144,7 +144,16 @@ export const StatusScreen: React.FC<StatusScreenProps> = ({
         ),
       },
     ],
-    [amount, bitcoinTxHash, feesPaid, from, receiveAmount, to, txHash],
+    [
+      amount,
+      bitcoinTxHash,
+      feesPaid,
+      from,
+      receiveAmount,
+      selectedToken.symbol,
+      to,
+      txHash,
+    ],
   );
 
   const status = useMemo(() => {

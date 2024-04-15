@@ -23,8 +23,6 @@ import { useCheckPoolMaintenance } from '../../../../hooks/useCheckPoolMaintenan
 import { useGetUserInfo } from '../../../../hooks/useGetUserInfo';
 import { AmmLiquidityPool } from '../../../../utils/AmmLiquidityPool';
 import { AdjustAndDepositModal } from '../../../AdjustAndDepositModal/AdjustAndDepositModal';
-import { BobDepositModal } from '../../../BobDepositModal/BobDepositModal';
-import { DepositContextProvider } from '../../../BobDepositModal/contexts/BobDepositModalContext';
 import { BobWithdrawModal } from '../../../BobWIthdrawModal/BobWithdrawModal';
 
 type PoolsTableActionProps = {
@@ -164,13 +162,6 @@ export const PoolsTableAction: FC<PoolsTableActionProps> = ({ pool }) => {
         pool={pool}
         isInitialDeposit={isInitialDeposit}
       />
-
-      <DepositContextProvider>
-        <BobDepositModal
-          isOpen={isBobModalOpen && pool.assetA === COMMON_SYMBOLS.DLLR}
-          onClose={handleClose}
-        />
-      </DepositContextProvider>
 
       <BobWithdrawModal
         isOpen={isBobModalOpen && pool.assetA === COMMON_SYMBOLS.SOV}

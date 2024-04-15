@@ -15,7 +15,7 @@ import {
 import { CurrentStatistics } from '../../../../2_molecules/CurrentStatistics/CurrentStatistics';
 import { useAccount } from '../../../../../hooks/useAccount';
 import { translations } from '../../../../../locales/i18n';
-import { COMMON_SYMBOLS } from '../../../../../utils/asset';
+import { AmbientLiquidityPool } from '../AmbientMarketMaking/utils/AmbientLiquidityPool';
 import { NewPoolStatistics } from './components/NewPoolStatistics/NewPoolStatistics';
 import { PriceRange } from './components/PriceRange/PriceRange';
 import { AmountForm } from './components/PriceRange/components/AmountForm/AmountForm';
@@ -23,20 +23,18 @@ import { SlippageSettings } from './components/PriceRange/components/SlippageSet
 import { useDepositContext } from './contexts/BobDepositModalContext';
 import { useHandleSubmit } from './hooks/useHandleSubmit';
 
-// TODO: This will be a prop
-export const POOL_ASSET_A = COMMON_SYMBOLS.ETH;
-export const POOL_ASSET_B = COMMON_SYMBOLS.SOV;
-
 const pageTranslations = translations.bobMarketMakingPage.depositModal;
 
 type BobDepositModalProps = {
   isOpen: boolean;
   onClose: () => void;
+  pool: AmbientLiquidityPool;
 };
 
 export const BobDepositModal: FC<BobDepositModalProps> = ({
   isOpen,
   onClose,
+  pool,
 }) => {
   const { firstAssetValue, secondAssetValue } = useDepositContext();
   const { account } = useAccount();
@@ -44,7 +42,9 @@ export const BobDepositModal: FC<BobDepositModalProps> = ({
   const [hasDisclaimerBeenChecked, setHasDisclaimerBeenChecked] =
     useState(false);
 
-  const handleSubmit = useHandleSubmit('ETH', 'SOV');
+  const { base, quote } = useMemo(() => pool, [pool]);
+
+  const handleSubmit = useHandleSubmit(base, quote);
 
   const isSubmitDisabled = useMemo(
     () =>
@@ -62,19 +62,16 @@ export const BobDepositModal: FC<BobDepositModalProps> = ({
         <DialogBody>
           <div className="bg-gray-90 p-4 rounded">
             <CurrentStatistics
-              symbol={POOL_ASSET_A}
-              symbol2={POOL_ASSET_B}
+              symbol={base}
+              symbol2={quote}
               className="flex justify-between"
             />
           </div>
 
-          <AmountForm />
-          <PriceRange />
+          <AmountForm pool={pool} />
+          <PriceRange pool={pool} />
           <SlippageSettings />
-          <NewPoolStatistics
-            poolAssetA={POOL_ASSET_A}
-            poolAssetB={POOL_ASSET_B}
-          />
+          <NewPoolStatistics pool={pool} />
 
           <div className="mt-8">
             <Checkbox

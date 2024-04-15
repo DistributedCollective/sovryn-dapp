@@ -43,3 +43,30 @@ export interface AmbientTransaction {
   inBaseQty: boolean;
   txId: string;
 }
+export interface AmbientPoolCandle {
+  priceOpen: number;
+  priceClose: number;
+  minPrice: number;
+  maxPrice: number;
+  volumeBase: number;
+  volumeQuote: number;
+  tvlBase: number;
+  tvlQuote: number;
+  feeRateOpen: number;
+  feeRateClose: number;
+  period: number;
+  time: number;
+}
+export interface AmbientPoolStats {
+  latestTime: number;
+  baseTvl: number;
+  quoteTvl: number;
+  baseVolume: number;
+  quoteVolume: number;
+  baseFees: number;
+  quoteFees: number;
+  lastPriceSwap: number;
+  lastPriceLiq: number;
+  lastPriceIndic: number;
+  feeRate: number;
+}

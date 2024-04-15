@@ -290,7 +290,7 @@ export const BobAmmPage: React.FC = () => {
               </button>
             </li>
             <li>
-              <button onClick={() => handleDeposit('ETH', 'SOV', 100)}>
+              <button onClick={() => handleDeposit('ETH', 'SOV', 0.000001)}>
                 Deposit to pool: ETH/SOV (100 ETH)
               </button>
               <button onClick={() => handleDeposit('ETH', 'USDC', 100)}>

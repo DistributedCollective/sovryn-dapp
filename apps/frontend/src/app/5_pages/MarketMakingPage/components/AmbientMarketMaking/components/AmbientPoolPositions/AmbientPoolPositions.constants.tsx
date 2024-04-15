@@ -2,15 +2,15 @@ import React from 'react';
 
 import { t } from 'i18next';
 
-import { ButtonSize, ButtonStyle, Button } from '@sovryn/ui';
-
 import { AmountRenderer } from '../../../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { TransactionIdRenderer } from '../../../../../../2_molecules/TransactionIdRenderer/TransactionIdRenderer';
 import { BITCOIN } from '../../../../../../../constants/currencies';
 import { translations } from '../../../../../../../locales/i18n';
 import { AmbientPosition } from '../../AmbientMarketMaking.types';
+import { AmbientLiquidityPool } from '../../utils/AmbientLiquidityPool';
+import { AmbientPoolPositionWithdraw } from './components/AmbientPoolPositionWithdraw/AmbientPoolPositionWithdraw';
 
-export const COLUMNS_CONFIG = [
+export const COLUMNS_CONFIG = (pool: AmbientLiquidityPool) => [
   {
     id: 'positionID',
     title: t(translations.ambientMarketMaking.positionsTable.positionID),
@@ -41,20 +41,18 @@ export const COLUMNS_CONFIG = [
     id: 'returns',
     title: t(translations.ambientMarketMaking.positionsTable.returns),
     cellRenderer: (position: AmbientPosition) => (
-      <AmountRenderer value={'10'} suffix="%" />
+      <AmountRenderer value={position.aprEst * 100} suffix="%" />
     ),
   },
   {
     id: 'value',
     title: t(translations.ambientMarketMaking.positionsTable.value),
-    cellRenderer: (position: AmbientPosition) => (
-      <AmountRenderer value={'1000'} prefix="$" />
-    ),
+    cellRenderer: () => <AmountRenderer value={'1000'} prefix="$" />,
   },
   {
     id: 'balance',
     title: t(translations.ambientMarketMaking.positionsTable.balance),
-    cellRenderer: (position: AmbientPosition) => (
+    cellRenderer: () => (
       <div className="flex flex-col gap-1">
         <AmountRenderer value={'1000'} suffix="DLLR" />
         <AmountRenderer value={'1000'} suffix={BITCOIN} />
@@ -66,11 +64,7 @@ export const COLUMNS_CONFIG = [
     title: '',
     cellRenderer: (position: AmbientPosition) => (
       <div className="flex justify-end items-center">
-        <Button
-          style={ButtonStyle.secondary}
-          size={ButtonSize.small}
-          text={t(translations.common.withdraw)}
-        />
+        <AmbientPoolPositionWithdraw pool={pool} position={position} />
       </div>
     ),
     className: 'table-cell',

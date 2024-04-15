@@ -6,18 +6,19 @@ import { RSK_CHAIN_ID } from '../config/chains';
 
 export const useTokenDetailsByAsset = (
   asset?: string,
+  chainId = RSK_CHAIN_ID,
 ): AssetDetailsData | undefined => {
   const [token, setToken] = useState<AssetDetailsData | undefined>();
 
   useEffect(() => {
     if (asset) {
-      getAssetData(asset!, RSK_CHAIN_ID)
+      getAssetData(asset!, chainId)
         .then(setToken)
         .catch(e => {
           console.error('token not found?', e);
         });
     }
-  }, [asset]);
+  }, [asset, chainId]);
 
   return token;
 };

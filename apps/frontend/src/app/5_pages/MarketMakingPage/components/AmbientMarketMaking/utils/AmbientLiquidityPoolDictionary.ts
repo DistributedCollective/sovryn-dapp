@@ -10,13 +10,13 @@ export class AmbientLiquidityPoolDictionary {
     return this.items.filter(item => item.chainId === BOB_CHAIN_ID);
   }
 
-  public static get(assetA: string, assetB: string): AmbientLiquidityPool;
+  public static get(base: string, quote: string): AmbientLiquidityPool;
 
-  public static get(assetA: string, assetB: string): AmbientLiquidityPool {
+  public static get(base: string, quote: string): AmbientLiquidityPool {
     return this.list().find(
       item =>
-        (item.assetA === assetA && item.assetB === assetB) ||
-        (item.assetB === assetB && item.assetA === assetA),
+        (item.base === base && item.quote === quote) ||
+        (item.quote === quote && item.base === base),
     ) as AmbientLiquidityPool;
   }
 

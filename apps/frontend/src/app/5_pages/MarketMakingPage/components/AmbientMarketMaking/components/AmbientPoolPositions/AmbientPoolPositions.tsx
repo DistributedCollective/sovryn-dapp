@@ -2,33 +2,27 @@ import React, { FC } from 'react';
 
 import { t } from 'i18next';
 
-import {
-  ButtonSize,
-  Button,
-  ButtonStyle,
-  SimpleTableRow,
-  Table,
-} from '@sovryn/ui';
+import { SimpleTableRow, Table } from '@sovryn/ui';
 
 import { AmountRenderer } from '../../../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { TransactionIdRenderer } from '../../../../../../2_molecules/TransactionIdRenderer/TransactionIdRenderer';
 import { BITCOIN } from '../../../../../../../constants/currencies';
 import { useIsMobile } from '../../../../../../../hooks/useIsMobile';
 import { translations } from '../../../../../../../locales/i18n';
-import { AmmLiquidityPool } from '../../../../utils/AmmLiquidityPool';
-import { PoolsTableAction } from '../../../PoolsTable/components/PoolsTableAction/PoolsTableAction';
 import { useGetAmbientPositions } from '../../hooks/useGetAmbientPositions';
+import { AmbientLiquidityPool } from '../../utils/AmbientLiquidityPool';
 import { COLUMNS_CONFIG } from './AmbientPoolPositions.constants';
 import styles from './AmbientPoolPositions.module.css';
+import { AmbientPoolPositionWithdraw } from './components/AmbientPoolPositionWithdraw/AmbientPoolPositionWithdraw';
 
 type AmbientPoolPositionsProps = {
-  pool: AmmLiquidityPool;
+  pool: AmbientLiquidityPool;
 };
 
 export const AmbientPoolPositions: FC<AmbientPoolPositionsProps> = ({
   pool,
 }) => {
-  const { positions, isLoading } = useGetAmbientPositions();
+  const { positions, isLoading } = useGetAmbientPositions(pool);
 
   const { isMobile } = useIsMobile();
 
@@ -80,24 +74,20 @@ export const AmbientPoolPositions: FC<AmbientPoolPositionsProps> = ({
             />
             <SimpleTableRow
               label={t(translations.ambientMarketMaking.positionsTable.returns)}
-              value={<AmountRenderer value={'10'} suffix="%" />}
+              value={
+                <AmountRenderer value={position.aprEst * 100} suffix="%" />
+              }
             />
-            <Button
-              className="w-full"
-              style={ButtonStyle.secondary}
-              size={ButtonSize.small}
-              text={t(translations.common.withdraw)}
-            />
+            <AmbientPoolPositionWithdraw pool={pool} position={position} />
           </div>
         ))}
-        <PoolsTableAction pool={pool} />
       </div>
     );
   }
   return (
     <div className="w-full p-6">
       <Table
-        columns={COLUMNS_CONFIG}
+        columns={COLUMNS_CONFIG(pool)}
         rows={positions}
         noData={t(translations.common.tables.noData)}
         loadingData={t(translations.common.tables.loading)}

@@ -14,7 +14,7 @@ import { Decimal } from '@sovryn/utils';
 import { AmountRenderer } from '../../../../../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { translations } from '../../../../../../../../../locales/i18n';
 import { decimalic } from '../../../../../../../../../utils/math';
-import { POOL_ASSET_A, POOL_ASSET_B } from '../../../../BobDepositModal';
+import { AmbientLiquidityPool } from '../../../../../AmbientMarketMaking/utils/AmbientLiquidityPool';
 import {
   MAXIMUM_PRICE,
   MINIMUM_PRICE,
@@ -24,7 +24,11 @@ import { useGetPoolInfo } from '../../../../hooks/useGetPoolInfo';
 import { BUTTON_OPTIONS, INFINITE } from './BalancedRange.constants';
 import { renderRangeWidthClassName } from './BalancedRange.utils';
 
-export const BalancedRange: FC = () => {
+type BalancedRangeProps = {
+  pool: AmbientLiquidityPool;
+};
+
+export const BalancedRange: FC<BalancedRangeProps> = ({ pool }) => {
   const {
     rangeWidth,
     setRangeWidth,
@@ -36,7 +40,7 @@ export const BalancedRange: FC = () => {
 
   const isInfiniteRange = useMemo(() => rangeWidth === 100, [rangeWidth]);
 
-  const { price: currentPrice } = useGetPoolInfo(POOL_ASSET_A, POOL_ASSET_B);
+  const { price: currentPrice } = useGetPoolInfo(pool.base, pool.quote);
 
   const updatePrice = useCallback(
     (isMinimumPrice: boolean, value: number) => {
@@ -120,11 +124,11 @@ export const BalancedRange: FC = () => {
       <SimpleTable className="mt-12">
         <SimpleTableRow
           label={t(translations.bobMarketMakingPage.depositModal.minPrice)}
-          value={<AmountRenderer value={minimumPrice} suffix={POOL_ASSET_B} />}
+          value={<AmountRenderer value={minimumPrice} suffix={pool.quote} />}
         />
         <SimpleTableRow
           label={t(translations.bobMarketMakingPage.depositModal.maxPrice)}
-          value={<AmountRenderer value={maximumPrice} suffix={POOL_ASSET_B} />}
+          value={<AmountRenderer value={maximumPrice} suffix={pool.quote} />}
         />
       </SimpleTable>
     </>

@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, useMemo } from 'react';
 
 import { t } from 'i18next';
 
@@ -11,7 +11,7 @@ import {
 } from '../../../../../../../constants/currencies';
 import { translations } from '../../../../../../../locales/i18n';
 import { COMMON_SYMBOLS } from '../../../../../../../utils/asset';
-import { POOL_ASSET_A, POOL_ASSET_B } from '../../BobDepositModal';
+import { AmbientLiquidityPool } from '../../../AmbientMarketMaking/utils/AmbientLiquidityPool';
 import { useDepositContext } from '../../contexts/BobDepositModalContext';
 import { useGetPoolInfo } from '../../hooks/useGetPoolInfo';
 
@@ -19,40 +19,37 @@ const pageTranslations =
   translations.bobMarketMakingPage.depositModal.newPoolStatistics;
 
 type NewPoolStatisticsProps = {
-  poolAssetA: string;
-  poolAssetB: string;
+  pool: AmbientLiquidityPool;
 };
 
-export const NewPoolStatistics: FC<NewPoolStatisticsProps> = ({
-  poolAssetA,
-  poolAssetB,
-}) => {
+export const NewPoolStatistics: FC<NewPoolStatisticsProps> = ({ pool }) => {
   const { firstAssetValue, secondAssetValue } = useDepositContext();
-  const { price, feeRate } = useGetPoolInfo(POOL_ASSET_A, POOL_ASSET_B);
+  const { base, quote } = useMemo(() => pool, [pool]);
+  const { price, feeRate } = useGetPoolInfo(pool.base, pool.quote);
 
   return (
     <SimpleTable className="mt-6">
       <SimpleTableRow
         label={t(pageTranslations.newPoolBalance)}
-        value={<AmountRenderer value={firstAssetValue} suffix={poolAssetA} />}
+        value={<AmountRenderer value={firstAssetValue} suffix={base} />}
         className="mb-1"
         valueClassName="text-primary-10"
       />
       <SimpleTableRow
         label=""
-        value={<AmountRenderer value={secondAssetValue} suffix={poolAssetB} />}
+        value={<AmountRenderer value={secondAssetValue} suffix={quote} />}
         valueClassName="text-primary-10"
       />
       <SimpleTableRow
         label={t(pageTranslations.currentPrice, {
-          token: poolAssetB.toUpperCase(),
+          token: quote.toUpperCase(),
         })}
         value={
           <AmountRenderer
             value={price}
-            suffix={poolAssetB.toUpperCase()}
+            suffix={quote.toUpperCase()}
             precision={
-              poolAssetB === COMMON_SYMBOLS.BTC
+              quote === COMMON_SYMBOLS.BTC
                 ? BTC_RENDER_PRECISION
                 : TOKEN_RENDER_PRECISION
             }

@@ -5,12 +5,16 @@ import { t } from 'i18next';
 import { Decimal } from '@sovryn/utils';
 
 import { translations } from '../../../../../../../../../locales/i18n';
-import { POOL_ASSET_A, POOL_ASSET_B } from '../../../../BobDepositModal';
+import { AmbientLiquidityPool } from '../../../../../AmbientMarketMaking/utils/AmbientLiquidityPool';
 import { useDepositContext } from '../../../../contexts/BobDepositModalContext';
 import { useGetPoolInfo } from '../../../../hooks/useGetPoolInfo';
 import { Input } from './components/Input/Input';
 
-export const UnbalancedRange: FC = () => {
+type UnbalancedRangeProps = {
+  pool: AmbientLiquidityPool;
+};
+
+export const UnbalancedRange: FC<UnbalancedRangeProps> = ({ pool }) => {
   const {
     minimumPrice,
     lowerBoundaryPercentage,
@@ -22,7 +26,7 @@ export const UnbalancedRange: FC = () => {
     setUpperBoundaryPercentage,
   } = useDepositContext();
 
-  const { price: currentPrice } = useGetPoolInfo(POOL_ASSET_A, POOL_ASSET_B);
+  const { price: currentPrice } = useGetPoolInfo(pool.base, pool.quote);
 
   const calculatePrice = useCallback(
     (percentage: number) =>

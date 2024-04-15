@@ -1,4 +1,4 @@
-import React, { FC, useCallback } from 'react';
+import React, { FC, useCallback, useMemo } from 'react';
 
 import { t } from 'i18next';
 
@@ -10,14 +10,19 @@ import { useAccount } from '../../../../../../../../../hooks/useAccount';
 import { useAssetBalance } from '../../../../../../../../../hooks/useAssetBalance';
 import { useCurrentChain } from '../../../../../../../../../hooks/useChainStore';
 import { translations } from '../../../../../../../../../locales/i18n';
-import { POOL_ASSET_A, POOL_ASSET_B } from '../../../../BobDepositModal';
+import { AmbientLiquidityPool } from '../../../../../AmbientMarketMaking/utils/AmbientLiquidityPool';
 import { useDepositContext } from '../../../../contexts/BobDepositModalContext';
 import { useGetMaxDeposit } from '../../../../hooks/useGetMaxDeposit';
 import { useGetPoolInfo } from '../../../../hooks/useGetPoolInfo';
 
-export const AmountForm: FC = () => {
+type AmountFormProps = {
+  pool: AmbientLiquidityPool;
+};
+
+export const AmountForm: FC<AmountFormProps> = ({ pool }) => {
   const { account } = useAccount();
-  const { price } = useGetPoolInfo('ETH', 'SOV');
+  const { base, quote } = useMemo(() => pool, [pool]);
+  const { price } = useGetPoolInfo(base, quote);
 
   const chainId = useCurrentChain();
 
@@ -28,9 +33,9 @@ export const AmountForm: FC = () => {
     setSecondAssetValue,
   } = useDepositContext();
 
-  const { balance: balanceTokenA } = useAssetBalance(POOL_ASSET_A, chainId);
+  const { balance: balanceTokenA } = useAssetBalance(base, chainId);
 
-  const { balanceTokenB } = useGetMaxDeposit(POOL_ASSET_A, POOL_ASSET_B);
+  const { balanceTokenB } = useGetMaxDeposit(base, quote);
 
   const handleFirstAssetMaxClick = useCallback(() => {
     setFirstAssetValue(balanceTokenA.toString());
@@ -72,7 +77,7 @@ export const AmountForm: FC = () => {
           <div className="flex justify-end w-full">
             <MaxButton
               value={balanceTokenA}
-              token={POOL_ASSET_A}
+              token={base}
               onClick={handleFirstAssetMaxClick}
             />
           </div>
@@ -87,7 +92,7 @@ export const AmountForm: FC = () => {
           maxAmount={balanceTokenA.toNumber()}
           label={t(translations.common.amount)}
           className="max-w-none"
-          unit={<AssetRenderer asset={POOL_ASSET_A} />}
+          unit={<AssetRenderer asset={base} />}
           disabled={!account}
           placeholder="0"
         />
@@ -98,7 +103,7 @@ export const AmountForm: FC = () => {
           <div className="flex justify-end w-full">
             <MaxButton
               value={balanceTokenB}
-              token={POOL_ASSET_B}
+              token={quote}
               onClick={handleSecondAssetMaxClick}
             />
           </div>
@@ -113,7 +118,7 @@ export const AmountForm: FC = () => {
           maxAmount={balanceTokenB.toNumber()}
           label={t(translations.common.amount)}
           className="max-w-none"
-          unit={<AssetRenderer asset={POOL_ASSET_B} />}
+          unit={<AssetRenderer asset={quote} />}
           disabled={!account}
           placeholder="0"
         />

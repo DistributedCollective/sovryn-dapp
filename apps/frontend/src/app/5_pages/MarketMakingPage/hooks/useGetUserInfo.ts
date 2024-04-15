@@ -9,6 +9,7 @@ import { Decimal } from '@sovryn/utils';
 import { RSK_CHAIN_ID } from '../../../../config/chains';
 
 import { useAccount } from '../../../../hooks/useAccount';
+import { useCurrentChain } from '../../../../hooks/useChainStore';
 import {
   useGetProtocolContract,
   useGetTokenContract,
@@ -24,9 +25,13 @@ export const useGetUserInfo = (pool: AmmLiquidityPool) => {
   const [loadingA, setLoadingA] = useState(false);
   const [balanceB, setBalanceB] = useState<Decimal>(Decimal.ZERO);
   const [loadingB, setLoadingB] = useState(false);
-  const liquidityMiningProxy = useGetProtocolContract('liquidityMiningProxy');
-  const contractTokenA = useGetTokenContract(assetA, RSK_CHAIN_ID);
-  const contractTokenB = useGetTokenContract(COMMON_SYMBOLS.WBTC, RSK_CHAIN_ID);
+  const chainId = useCurrentChain();
+  const liquidityMiningProxy = useGetProtocolContract(
+    'liquidityMiningProxy',
+    chainId,
+  );
+  const contractTokenA = useGetTokenContract(assetA, chainId);
+  const contractTokenB = useGetTokenContract(COMMON_SYMBOLS.WBTC, chainId);
 
   const getUserInfo = useCallback(
     async (token: string) =>

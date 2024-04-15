@@ -20,6 +20,7 @@ import { NewPoolStatistics } from './components/NewPoolStatistics/NewPoolStatist
 import { PriceRange } from './components/PriceRange/PriceRange';
 import { AmountForm } from './components/PriceRange/components/AmountForm/AmountForm';
 import { SlippageSettings } from './components/PriceRange/components/SlippageSettings/SlippageSettings';
+import { useDepositContext } from './contexts/BobDepositModalContext';
 import { useHandleSubmit } from './hooks/useHandleSubmit';
 
 // TODO: This will be a prop
@@ -37,6 +38,7 @@ export const BobDepositModal: FC<BobDepositModalProps> = ({
   isOpen,
   onClose,
 }) => {
+  const { firstAssetValue, secondAssetValue } = useDepositContext();
   const { account } = useAccount();
 
   const [hasDisclaimerBeenChecked, setHasDisclaimerBeenChecked] =
@@ -44,7 +46,14 @@ export const BobDepositModal: FC<BobDepositModalProps> = ({
 
   const handleSubmit = useHandleSubmit('ETH', 'SOV');
 
-  const isSubmitDisabled = useMemo(() => !account, [account]);
+  const isSubmitDisabled = useMemo(
+    () =>
+      !account ||
+      !hasDisclaimerBeenChecked ||
+      (firstAssetValue === '0' && secondAssetValue === '0') ||
+      (!firstAssetValue && !secondAssetValue),
+    [account, firstAssetValue, hasDisclaimerBeenChecked, secondAssetValue],
+  );
 
   return (
     <>
@@ -55,8 +64,6 @@ export const BobDepositModal: FC<BobDepositModalProps> = ({
             <CurrentStatistics
               symbol={POOL_ASSET_A}
               symbol2={POOL_ASSET_B}
-              label1={t(pageTranslations.returnRate)}
-              value1="5.6%"
               className="flex justify-between"
             />
           </div>

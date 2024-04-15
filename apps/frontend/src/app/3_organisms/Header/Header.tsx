@@ -1,7 +1,6 @@
 import React, { FC, useCallback, useMemo, useReducer } from 'react';
 
 import { t } from 'i18next';
-import { useNavigate } from 'react-router-dom';
 
 import { SupportedTokens } from '@sovryn/contracts';
 import {
@@ -16,6 +15,7 @@ import {
 import { ConnectWalletButton } from '../../2_molecules';
 import { SovrynLogo } from '../../2_molecules/SovrynLogo/SovrynLogo';
 import { RSK_FAUCET } from '../../../constants/general';
+import { GOBOB_LINK } from '../../../constants/links';
 import { useWalletConnect, useWrongNetworkCheck } from '../../../hooks';
 import { useAssetBalance } from '../../../hooks/useAssetBalance';
 import { translations } from '../../../locales/i18n';
@@ -30,13 +30,6 @@ export const Header: FC = () => {
   const { connectWallet, disconnectWallet, account, pending } =
     useWalletConnect();
   useWrongNetworkCheck();
-
-  const navigate = useNavigate();
-
-  const handleLeaderboardClick = useCallback(
-    () => navigate(`/powa`),
-    [navigate],
-  );
 
   const { balance } = useAssetBalance(SupportedTokens.rbtc);
 
@@ -91,10 +84,10 @@ export const Header: FC = () => {
             ))}
             <ProductLinks />
             <Button
-              text={t(translations.leaderboardPage.headerLink)}
+              text={t(translations.header.nav.bob)}
               style={ButtonStyle.primary}
               className="bg-[#24BFB74D]/[0.3] border-[#24BFB74D]/[0.3] hover:bg-[#24BFB74D]"
-              onClick={handleLeaderboardClick}
+              onClick={() => window.open(GOBOB_LINK, '_blank')}
             />
           </ol>
         }

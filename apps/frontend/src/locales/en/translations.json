@@ -106,7 +106,8 @@
             },
             "convert": "Convert",
             "stake": "Stake",
-            "bitocracy": "Bitocracy"
+            "bitocracy": "Bitocracy",
+            "bob": "Go BoB"
         }
     },
     "footer": {
@@ -485,6 +486,11 @@
                 "description": "Anyone using Sovryn already has points that will convert to POWA - a new bitcoin-token that allows an early use of what’s to come with the BitcoinOS launch. See how many points you’ve got:",
                 "cta": "Leaderboard",
                 "secondaryCta": "More about POWA"
+            },
+            "runesExtraSpice": {
+                "title": "RUNES & EXTRA SPICE",
+                "description": "Get early exposure to bitcoin tokens with our points campaign. In collaboration with BOB.",
+                "cta": "Learn More"
             }
         },
         "titleSection": {
@@ -860,6 +866,7 @@
 
     "leaderboardPage": {
         "headerLink": "POWA Points",
+        "headerDescription": "Earn Points, Earn POWA",
         "title": "You’ve got the POWA!",
         "subtitle": "Earn Points - get POWA",
         "description1": "POWA is the most powaful Bitcoin token! Minted on an entirely new Bitcoin technology, POWA tokens allow early use of what's to come with the <0>BitcoinOS</0> launch.",
@@ -923,7 +930,7 @@
             "tables": {
                 "trading": {
                     "title": "Trade",
-                    "item1": "Provide liquidity for SOV/DLLR pool, per $1 value",
+                    "item1": "Provide liquidity for SOV or DLLR AMMs, per $1 value",
                     "item2": "Any AMM trade, per $1 value",
                     "item3": "Import stablecoins, per $1 value",
                     "item4": "Weekly top  importer",
@@ -1156,6 +1163,7 @@
         },
         "staking": {
             "stakingSubsidies": "Staking subsidies",
+            "stakingSubsidiesOs": "Staking subsidies (SIP-76)",
             "stakingRevenue": "Staking revenue",
             "stakingRevenueLegacy": "Staking revenue (legacy)",
             "liquidityMiningError": "Your liquidity mining vesting contract holds more than {{count}} checkpoints worth of rewards. Please withdraw liquid rewards from your vesting contract to enable the 'Withdraw' button and claim additional rewards."

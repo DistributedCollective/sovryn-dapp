@@ -32,6 +32,11 @@ export const SupportedTokenList: TokenBaseInfo[] = [
     getIcon: async () => (await import('../tokenDetails/logos/sov')).default,
   },
   {
+    symbol: SupportedTokens.ossov,
+    decimalPrecision: 18,
+    getIcon: async () => (await import('../tokenDetails/logos/sov')).default,
+  },
+  {
     symbol: SupportedTokens.doc,
     decimalPrecision: 18,
     getIcon: async () => (await import('../tokenDetails/logos/doc')).default,

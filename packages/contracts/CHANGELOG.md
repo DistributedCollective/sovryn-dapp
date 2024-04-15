@@ -1,5 +1,11 @@
 # @sovryn/contracts
 
+## 1.0.20
+
+### Patch Changes
+
+- e76f1662: SOV-3871: Staking Rewards OS contracts and UI
+
 ## 1.0.19
 
 ### Patch Changes

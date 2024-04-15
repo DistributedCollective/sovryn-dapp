@@ -17,7 +17,11 @@ export const COLUMNS_CONFIG = [
     title: t(translations.ambientMarketMaking.poolsTable.pair),
     cellRenderer: (pool: AmbientLiquidityPool) => (
       <div data-pool-key={pool.key}>
-        <AssetPairRenderer asset1={pool.base} asset2={pool.quote} />
+        <AssetPairRenderer
+          asset1={pool.base}
+          asset2={pool.quote}
+          chainId={pool.chainId}
+        />
       </div>
     ),
     className: 'hidden lg:block',

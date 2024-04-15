@@ -29,6 +29,7 @@ export const AssetPairRenderer: FC<AssetPairRendererProps> = ({
   <div className={classNames('flex items-center', className)}>
     <AssetRenderer
       asset={asset1}
+      chainId={chainId}
       showAssetLogo
       className="mr-0"
       assetClassName="hidden"
@@ -36,6 +37,7 @@ export const AssetPairRenderer: FC<AssetPairRendererProps> = ({
     />
     <AssetRenderer
       asset={asset2}
+      chainId={chainId}
       showAssetLogo
       className="mr-0 -ml-2"
       assetClassName="hidden"

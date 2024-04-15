@@ -32,6 +32,7 @@ export const defaultValue: TransactionContextInterface = {
   runeBridgeToken: {
     symbol: '',
     balance: '',
+    decimals: 18,
     name: '',
     tokenContractAddress: '',
   },
@@ -59,6 +60,7 @@ export const TransactionProvider: React.FC<Props> = ({ children }) => {
   const [runeBridgeToken, setRuneBridgeToken] = useState<TokenBalance>({
     balance: '',
     name: '',
+    decimals: 18,
     symbol: '',
     tokenContractAddress: '',
   });

@@ -41,6 +41,7 @@ export const ContractContextProvider: React.FC<
       tokenBalances.push({
         symbol: symbol,
         balance: ethers.utils.formatUnits(balance, decimals),
+        decimals: decimals,
         name: name,
         tokenContractAddress: tokenAddress,
       });

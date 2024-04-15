@@ -6,6 +6,7 @@ export type TokenBalance = {
   symbol: string;
   balance: string;
   name: string;
+  decimals: number;
   tokenContractAddress: string;
 };
 

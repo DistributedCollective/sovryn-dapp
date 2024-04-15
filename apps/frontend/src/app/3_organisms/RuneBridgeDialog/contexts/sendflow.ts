@@ -57,6 +57,7 @@ export const defaultValue: SendFlowContextType = {
   selectedToken: {
     symbol: '',
     balance: '0',
+    decimals: 18,
     name: '',
     tokenContractAddress: '',
   },

@@ -27,7 +27,7 @@ import { fromWei, toWei } from '../../../../../../utils/math';
 import { GAS_LIMIT_FAST_BTC_WITHDRAW } from '../../../../FastBtcDialog/constants';
 import { SendFlowContext, SendFlowStep } from '../../../contexts/sendflow';
 import { useContractService } from '../../../hooks/useContractService';
-import { TransferPolicies } from './TransferPolicies';
+import { Limits } from '../../Limits';
 
 export const AmountForm: React.FC = () => {
   const { amount, limits, selectedToken, set } = useContext(SendFlowContext);
@@ -166,7 +166,12 @@ export const AmountForm: React.FC = () => {
           )}
         </div>
 
-        <TransferPolicies />
+        <Limits
+          minimumAmount="No limit"
+          maximumAmount="No limit"
+          serviceFee="Free"
+          className="mb-6"
+        />
 
         <div className="mt-4">
           <TableBase

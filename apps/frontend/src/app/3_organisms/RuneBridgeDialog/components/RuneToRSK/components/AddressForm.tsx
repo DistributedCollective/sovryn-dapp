@@ -15,7 +15,8 @@ import {
   applyDataAttr,
   Icon,
   IconNames,
-  NotificationType, prettyTx,
+  NotificationType,
+  prettyTx,
 } from '@sovryn/ui';
 
 import { useNotificationContext } from '../../../../../../contexts/NotificationContext';
@@ -24,12 +25,13 @@ import {
   Environments,
   ExplorerNetworkURI,
 } from '../../../../../../types/global';
-import { TransferPolicies } from '../../../../FastBtcDialog/components/ReceiveFlow/components/TransferPolicies';
 import { useValidateFederators } from '../../../../FastBtcDialog/hooks/useValidateFederators';
 import { URIType } from '../../../../FastBtcDialog/types';
 import { useContractService } from '../../../hooks/useContractService';
+import { Limits } from '../../Limits';
 
 const config = resolveConfig(tailwindConfig);
+
 export const AddressForm = () => {
   const { depositAddress, tokenBalances } = useContractService();
   const { isSignatureValid, loading } = useValidateFederators();
@@ -74,7 +76,12 @@ export const AddressForm = () => {
   });
   return (
     <div className="full">
-      <TransferPolicies />
+      <Limits
+        minimumAmount="No limit"
+        maximumAmount="No limit"
+        serviceFee="Free"
+        className="mb-6"
+      />
 
       <div className="bg-gray-80 border rounded border-gray-50  text-xs relative">
         <div className="p-6">

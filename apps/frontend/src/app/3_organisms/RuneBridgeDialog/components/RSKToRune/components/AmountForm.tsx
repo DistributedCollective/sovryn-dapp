@@ -149,13 +149,14 @@ export const AmountForm: React.FC = () => {
             </Paragraph>
           )}
         </div>
-
-        <TransferPolicies
-          minimumAmount="No limit"
-          maximumAmount="No limit"
-          serviceFee="Free"
-          className="mb-6"
-        />
+        <div className="mt-4">
+          <TransferPolicies
+            minimumAmount="No limit"
+            maximumAmount="No limit"
+            serviceFee="Free"
+            className="mb-6"
+          />
+        </div>
 
         <Button
           text={t(translations.common.buttons.continue)}

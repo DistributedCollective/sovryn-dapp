@@ -6,15 +6,15 @@ import {
   SMART_ROUTER_RSK,
   SMART_ROUTER_STABLECOINS,
 } from '../app/5_pages/ConvertPage/ConvertPage.constants';
+import { COMMON_SYMBOLS } from '../utils/asset';
 import { decimalic, fromWei, toWei } from '../utils/math';
 import { useCacheCall } from './useCacheCall';
 import { useTokenDetailsByAsset } from './useTokenDetailsByAsset';
 import { useGetRBTCPrice } from './zero/useGetRBTCPrice';
-import { COMMON_SYMBOLS } from '../utils/asset';
 
 export function useDollarValue(asset: string, weiAmount: string) {
-  if (asset.toLowerCase() === 'zusd') {
-    asset = 'xusd';
+  if (['zusd', 'usdc', 'usdt', 'dai'].includes(asset.toLowerCase())) {
+    asset = 'XUSD';
   }
   const assetDetails = useTokenDetailsByAsset(asset);
   const dllrDetails = useTokenDetailsByAsset(COMMON_SYMBOLS.DLLR);

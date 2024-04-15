@@ -18,7 +18,6 @@ import { useIsMobile } from '../../../hooks/useIsMobile';
 import { translations } from '../../../locales/i18n';
 import { RSKToRune, RuneToRSK } from './components';
 import { MobileCloseButton } from './components/MobileCloseButton';
-import { RuneListing } from './components/RuneListing/RuneListing';
 import { ContractContextProvider } from './contextproviders/ContractContextProvider';
 import { ReceiveFlowContextProvider } from './contextproviders/ReceiveContextProvider';
 import { SendFlowContextProvider } from './contextproviders/SendContextProvider';
@@ -50,18 +49,6 @@ export const RuneBridgeDialog: React.FC<RuneBridgeDialogProps> = ({
 
   const items = useMemo(() => {
     return [
-      {
-        label: t(translation.tabs.listingLabel),
-        infoText: t(translation.tabs.listingInfoText),
-        content: (
-          <div>
-            <RuneListing />
-            <MobileCloseButton onClick={onClose} />
-          </div>
-        ),
-        activeClassName: ACTIVE_CLASSNAME,
-        dataAttribute: 'funding-listing',
-      },
       {
         label: t(translation.tabs.receiveLabel),
         infoText: t(translation.tabs.receiveInfoText),

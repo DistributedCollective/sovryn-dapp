@@ -954,8 +954,6 @@
       "mainScreen": {
         "title": "Rune Bridge",
         "tabs": {
-          "listingLabel": "Info",
-          "listingInfoText": "Info about the Sovryn Rune Bridge",
           "receiveLabel": "Receive",
           "receiveInfoText": "Transfer Runes from Bitcoin to your Rootstock address",
           "sendLabel": "Send",

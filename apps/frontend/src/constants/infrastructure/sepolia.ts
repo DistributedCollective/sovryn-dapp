@@ -1,0 +1,20 @@
+import { Environments } from '../../types/global';
+
+const rpc = {
+  [Environments.Testnet]: 'https://ethereum-sepolia-rpc.publicnode.com',
+};
+
+export const SEPOLIA = {
+  rpc,
+  publicRpc: rpc,
+  explorer: {
+    [Environments.Testnet]: 'https://sepolia.etherscan.io/',
+  },
+  indexer: {
+    [Environments.Testnet]:
+      'https://bob-ambient-graphcache.test.sovryn.app/gcgo',
+  },
+  bridge: {
+    [Environments.Testnet]: 'https://bob-testnet.bridge.caldera.xyz',
+  },
+};

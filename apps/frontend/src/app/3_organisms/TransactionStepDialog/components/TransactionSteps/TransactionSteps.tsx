@@ -1,7 +1,7 @@
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 
 import classNames from 'classnames';
-import { ethers } from 'ethers';
+import { BigNumber, ethers } from 'ethers';
 import { parseUnits } from 'ethers/lib/utils';
 import { t } from 'i18next';
 
@@ -82,16 +82,25 @@ export const TransactionSteps: FC<TransactionStepsProps> = ({
         };
 
         if (isTransactionRequest(request)) {
-          const { contract, fnName, args: requestArgs, gasLimit } = request;
+          const {
+            contract,
+            fnName,
+            args: requestArgs,
+            gasLimit,
+            value,
+          } = request;
           const args = [...requestArgs];
           if (fnName === APPROVAL_FUNCTION) {
             args[1] = ethers.constants.MaxUint256;
           }
+
           item.config.gasLimit =
             gasLimit ??
-            (await contract.estimateGas[fnName](...args).then(gas =>
-              gas.toString(),
-            ));
+            (await contract.estimateGas[fnName](
+              ...[...args, { value: value ?? 0 }],
+            )
+              .then(gas => gas.toString())
+              .catch(() => BigNumber.from(6_000_000).toString()));
 
           item.config.gasLimit &&
             setEstimatedGasFee(
@@ -109,15 +118,18 @@ export const TransactionSteps: FC<TransactionStepsProps> = ({
             fnName === APPROVAL_FUNCTION ? false : undefined;
           item.config.gasPrice = request.gasPrice ?? gasPrice;
         } else if (isSignTransactionDataRequest(request)) {
-          const { signer, data, to, gasLimit } = request;
+          const { signer, data, to, gasLimit, value } = request;
 
           item.config.gasLimit =
             gasLimit ??
             (
-              await signer.estimateGas({
-                to,
-                data,
-              })
+              await signer
+                .estimateGas({
+                  to,
+                  data,
+                  value: value ?? 0,
+                })
+                .catch(() => BigNumber.from(6_000_000))
             ).toString();
 
           item.config.gasPrice = request.gasPrice ?? gasPrice;

@@ -38,13 +38,15 @@ const testAllowance = async (
   const allowance = await token.allowance(owner);
   const decimals = await token.decimals;
 
-  const needAllowance = parseUnits(
-    (amount + 0.00001).toFixed(decimals),
-    decimals,
-  );
+  const needAllowance = parseUnits(amount.toFixed(decimals), decimals);
 
   if (allowance.lt(needAllowance)) {
-    console.log('Need to approve');
+    console.log(
+      'Need to approve',
+      decimals,
+      allowance.toString(),
+      needAllowance.toString(),
+    );
     const approval = await token.approve();
     return approval;
   }
@@ -89,10 +91,74 @@ export const BobAmmPage: React.FC = () => {
       if (!init) {
         console.log('need to init');
 
-        await testAllowance(account, tokenA, 1);
-        await testAllowance(account, tokenB, 1);
+        const allowanceA = await testAllowance(account, tokenA, 1);
+        const allowanceB = await testAllowance(account, tokenB, 1);
+
+        const transactions: Transaction[] = [];
+
+        if (allowanceA) {
+          const approve = await prepareApproveTransaction({
+            token: tokenA.tokenAddr,
+            chain: CHAIN_ID,
+            amount:
+              allowanceA.weiQty === ethers.constants.MaxUint256
+                ? MaxAllowanceTransferAmount
+                : allowanceA.weiQty,
+            spender: allowanceA.address,
+            contract: new Contract(
+              tokenA.tokenAddr,
+              (
+                await tokenA.context
+              ).erc20Write.interface,
+              signer,
+            ),
+          });
+          if (approve) {
+            transactions.push(approve);
+          }
+        }
+
+        if (allowanceB) {
+          const approve = await prepareApproveTransaction({
+            token: tokenB.tokenAddr,
+            chain: CHAIN_ID,
+            amount:
+              allowanceB.weiQty === ethers.constants.MaxUint256
+                ? MaxAllowanceTransferAmount
+                : allowanceB.weiQty,
+            spender: allowanceB.address,
+            contract: new Contract(
+              tokenB.tokenAddr,
+              (
+                await tokenB.context
+              ).erc20Write.interface,
+              signer,
+            ),
+          });
+          if (approve) {
+            transactions.push(approve);
+          }
+        }
 
         const tx = await pool.initPool(price);
+
+        console.log('init pool tx', tx);
+
+        transactions.push({
+          title: 'Deposit',
+          request: {
+            type: TransactionType.signTransaction,
+            contract: tx.contract.connect(signer!),
+            fnName: tx.fn,
+            args: tx.args,
+            value: tx.value ?? 0,
+          },
+        });
+
+        setTransactions(transactions);
+        setTitle(`Init ${base}/${quote} pool`);
+        setIsOpen(true);
+
         console.log('init pool price: ', tx);
       } else {
         const price = await pool.displayPrice();
@@ -103,7 +169,7 @@ export const BobAmmPage: React.FC = () => {
         alert('Pool already initialized: ' + price);
       }
     },
-    [CHAIN_ID, account],
+    [CHAIN_ID, account, setIsOpen, setTitle, setTransactions, signer],
   );
 
   const handleDeposit = useCallback(
@@ -321,17 +387,17 @@ export const BobAmmPage: React.FC = () => {
               </button>
             </li>
             <li>
-              <button onClick={() => handleDeposit('ETH', 'SOV', 0.001)}>
-                Deposit to pool: ETH/SOV (1 ETH)
+              <button onClick={() => handleDeposit('ETH', 'SOV', 0.5)}>
+                Deposit to pool: ETH/SOV (0.5 ETH)
               </button>
-              <button onClick={() => handleDeposit('ETH', 'USDC', 0.001)}>
-                Deposit to pool: ETH/USDC (1 ETH)
+              <button onClick={() => handleDeposit('ETH', 'USDC', 0.5)}>
+                Deposit to pool: ETH/USDC (0.5 ETH)
               </button>
-              <button onClick={() => handleDeposit('ETH', 'USDT', 0.001)}>
-                Deposit to pool: ETH/USDT (1 ETH)
+              <button onClick={() => handleDeposit('ETH', 'USDT', 0.5)}>
+                Deposit to pool: ETH/USDT (0.5 ETH)
               </button>
-              <button onClick={() => handleDeposit('ETH', 'DAI', 0.001)}>
-                Deposit to pool: ETH/DAI (1 ETH)
+              <button onClick={() => handleDeposit('ETH', 'DAI', 0.05)}>
+                Deposit to pool: ETH/DAI (0.5 ETH)
               </button>
             </li>
           </ol>

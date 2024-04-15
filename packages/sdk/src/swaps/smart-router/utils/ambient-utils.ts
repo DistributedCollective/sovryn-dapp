@@ -87,6 +87,8 @@ export const calcImpact = async (
 const INDEXER = {
   [ChainIds.BOB_TESTNET]:
     'https://bob-ambient-graphcache.test.sovryn.app/gcgo/pool_list',
+  [ChainIds.SEPOLIA]:
+    'https://bob-ambient-graphcache.test.sovryn.app/gcgo/pool_list', // todo: update with sepolia indexer
 };
 
 // Fetch pools from the indexer and return list of pairs if assets are supported by chain

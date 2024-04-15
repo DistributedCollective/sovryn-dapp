@@ -3,6 +3,7 @@ import { MaxAllowanceTransferAmount } from '@uniswap/permit2-sdk';
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 
 import classNames from 'classnames';
+import { BigNumber } from 'ethers';
 import { formatUnits, parseUnits } from 'ethers/lib/utils';
 import { t } from 'i18next';
 
@@ -81,8 +82,6 @@ export const TransactionStep: FC<TransactionStepProps> = ({
   const [token, setToken] = useState<AssetDetailsData | undefined>();
 
   useEffect(() => {
-    console.log(request);
-
     const updateToken = (address: string) => {
       findContract(address, chainId)
         .then(result => {
@@ -115,12 +114,15 @@ export const TransactionStep: FC<TransactionStepProps> = ({
           args,
           gasLimit: requestGasLimit,
           gasPrice: requestGasPrice,
+          value,
         } = request;
         const gasLimit =
           requestGasLimit ??
-          (await contract.estimateGas[fnName](...args).then(gas =>
-            gas.toString(),
-          ));
+          (await contract.estimateGas[fnName](
+            ...[...args, { value: value ?? 0 }],
+          )
+            .then(gas => gas.toString())
+            .catch(() => BigNumber.from(6_000_000).toString()));
 
         updateConfig({
           unlimitedAmount: false,
@@ -139,15 +141,19 @@ export const TransactionStep: FC<TransactionStepProps> = ({
           to,
           gasLimit: requestGasLimit,
           gasPrice: requestGasPrice,
+          value,
         } = request;
 
         const gasLimit =
           requestGasLimit ??
           (
-            await signer.estimateGas({
-              to,
-              data,
-            })
+            await signer
+              .estimateGas({
+                to,
+                data,
+                value: value ?? 0,
+              })
+              .catch(() => BigNumber.from(6_000_000))
           ).toString();
 
         updateConfig({

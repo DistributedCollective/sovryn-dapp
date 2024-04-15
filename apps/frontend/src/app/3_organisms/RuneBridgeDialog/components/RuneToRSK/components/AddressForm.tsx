@@ -15,7 +15,7 @@ import {
   applyDataAttr,
   Icon,
   IconNames,
-  NotificationType,
+  NotificationType, prettyTx,
 } from '@sovryn/ui';
 
 import { useNotificationContext } from '../../../../../../contexts/NotificationContext';
@@ -38,6 +38,12 @@ export const AddressForm = () => {
     () => !loading && !isSignatureValid,
     [isSignatureValid, loading],
   );
+
+  const formattedDepositAddress = useMemo(
+    () => prettyTx(depositAddress, 20, 20),
+    [depositAddress],
+  );
+
   const explorerNetworkURI =
     process.env.REACT_APP_NETWORK === Environments.Testnet
       ? ExplorerNetworkURI.Testnet
@@ -91,7 +97,7 @@ export const AddressForm = () => {
           </div>
 
           <div className="flex justify-between mt-5 items-center bg-gray-70 border rounded border-gray-50 py-2 pl-3 pr-2 text-gray-30">
-            <div>{depositAddress}</div>
+            <div>{formattedDepositAddress}</div>
 
             <span
               className="cursor-pointer rounded"

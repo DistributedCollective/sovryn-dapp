@@ -37,7 +37,7 @@ export const AddressForm: React.FC = () => {
   const { address, set, addressValidationState } = useContext(SendFlowContext);
   const { checkMaintenance, States } = useMaintenance();
   const fastBtcLocked = checkMaintenance(States.FASTBTC_SEND);
-  // TODO: maybe do rune bridhe validation
+  // TODO: maybe do rune bridge validation
   // const fastBtcBridgeContract = useGetProtocolContract('fastBtcBridge');
   const [value, setValue] = useState(address);
 

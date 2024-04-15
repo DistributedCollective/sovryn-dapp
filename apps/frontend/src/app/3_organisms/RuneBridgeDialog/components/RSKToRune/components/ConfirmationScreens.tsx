@@ -6,14 +6,13 @@ import React, {
   useState,
 } from 'react';
 
-import { BigNumber } from 'ethers';
+import { BigNumber, Contract } from 'ethers';
 import { t } from 'i18next';
 
 import { StatusType } from '@sovryn/ui';
 
 import { useTransactionContext } from '../../../../../../contexts/TransactionContext';
 import { useAccount } from '../../../../../../hooks/useAccount';
-import { useGetProtocolContract } from '../../../../../../hooks/useGetContract';
 import { fromWei, toWei } from '../../../../../../utils/math';
 import { TransactionType } from '../../../../TransactionStepDialog/TransactionStepDialog.types';
 import { GAS_LIMIT_FAST_BTC_WITHDRAW } from '../../../constants';
@@ -49,17 +48,15 @@ export const ConfirmationScreens: React.FC<ConfirmationScreensProps> = ({
   const [txStatus, setTxStatus] = useState(StatusType.idle);
   const [currentFeeWei, setCurrentFeeWei] = useState(BigNumber.from(0));
   const { runeBridgeContract } = useContractService();
-  const fastBtcBridgeContract = useGetProtocolContract('fastBtcBridge');
 
   const weiAmount = useMemo(() => toWei(amount), [amount]);
 
   const getCurrentFeeWei = useCallback(async () => {
-    const currentFeeWei = await fastBtcBridgeContract?.calculateCurrentFeeWei(
-      weiAmount,
-    );
+    // TODO: calculate actual fee
+    const currentFeeWei = BigNumber.from(0);
 
     setCurrentFeeWei(currentFeeWei);
-  }, [fastBtcBridgeContract, weiAmount]);
+  }, [setCurrentFeeWei]);
 
   useEffect(() => {
     getCurrentFeeWei().then();
@@ -89,6 +86,26 @@ export const ConfirmationScreens: React.FC<ConfirmationScreensProps> = ({
       }
       setRuneBridgeTransactions([
         {
+          title: t(`Approve ${selectedToken.name}`),
+          request: {
+            type: TransactionType.signTransaction,
+            contract: new Contract(
+              selectedToken.tokenContractAddress,
+              [
+                'function approve(address spender, uint256 amount) returns (bool)',
+              ],
+              signer,
+            ),
+            fnName: 'approve',
+            args: [runeBridgeContract.address, toWei(amount)],
+            gasLimit: GAS_LIMIT_FAST_BTC_WITHDRAW,
+          },
+          onStart: hash => {
+            setTxHash(hash);
+          },
+          onChangeStatus: setTxStatus,
+        },
+        {
           title: t(`Send ${selectedToken.name}`),
           request: {
             type: TransactionType.signTransaction,
@@ -102,6 +119,7 @@ export const ConfirmationScreens: React.FC<ConfirmationScreensProps> = ({
             gasLimit: GAS_LIMIT_FAST_BTC_WITHDRAW,
           },
           onStart: hash => {
+            setTxStatus(StatusType.idle);
             setTxHash(hash);
             set(prevState => ({ ...prevState, step: SendFlowStep.CONFIRM }));
             setRuneBridgeIsOpen(false);

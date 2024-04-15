@@ -1,20 +1,10 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
-import { BOB_CHAIN_ID } from '../../../../../../config/chains';
-
 import { BOB } from '../../../../../../constants/infrastructure/bob';
 import { useCrocContext } from '../../../../../../contexts/CrocContext';
 import { useCurrentChain } from '../../../../../../hooks/useChainStore';
 import { COMMON_SYMBOLS, findAsset } from '../../../../../../utils/asset';
 import { ETH_TOKEN } from '../../../../BobAmmPage/fork-constants';
-
-// TODO: There will be a dictionary with pools, this is just a temporary solution
-const ALLOWED_POOL_TOKENS = [
-  COMMON_SYMBOLS.ETH,
-  COMMON_SYMBOLS.SOV,
-  COMMON_SYMBOLS.WBTC,
-  'GLD',
-];
 
 export const useGetPoolInfo = (assetA: string, assetB: string) => {
   const chainId = useCurrentChain();
@@ -25,13 +15,6 @@ export const useGetPoolInfo = (assetA: string, assetB: string) => {
 
   const poolTokens = useMemo(() => {
     if (!croc) {
-      return;
-    }
-    // TODO: This is just a temporary solution
-    if (
-      !ALLOWED_POOL_TOKENS.includes(assetA) ||
-      !ALLOWED_POOL_TOKENS.includes(assetB)
-    ) {
       return;
     }
 
@@ -84,7 +67,7 @@ export const useGetPoolInfo = (assetA: string, assetB: string) => {
           base: poolTokens.tokenA.tokenAddr,
           quote: poolTokens.tokenB.tokenAddr,
           poolIdx: (await pool.context).chain.poolIndex.toString(),
-          chainId: BOB_CHAIN_ID, // We don't have indexer on any other chain
+          chainId: chainId,
         }),
     )
       .then(response => response?.json())
@@ -100,7 +83,7 @@ export const useGetPoolInfo = (assetA: string, assetB: string) => {
       .catch(error => {
         return undefined;
       });
-  }, [pool, poolTokens]);
+  }, [chainId, pool, poolTokens]);
 
   useEffect(() => {
     if (price === 0) {

@@ -37,12 +37,7 @@ export const ConfirmationScreens: React.FC<ConfirmationScreensProps> = ({
     selectedToken,
   } = useContext(SendFlowContext);
 
-  const {
-    setRuneBridgeTransactions,
-    setTitle,
-    setRuneBridgeIsOpen,
-    setRuneBridgeToken,
-  } = useTransactionContext();
+  const { setTransactions, setTitle, setIsOpen } = useTransactionContext();
 
   const [txHash, setTxHash] = useState<string | undefined>(undefined);
   const [txStatus, setTxStatus] = useState(StatusType.idle);
@@ -84,7 +79,7 @@ export const ConfirmationScreens: React.FC<ConfirmationScreensProps> = ({
       if (!signer) {
         throw new Error('Signer not found');
       }
-      setRuneBridgeTransactions([
+      setTransactions([
         {
           title: t(`Approve ${selectedToken.name}`),
           request: {
@@ -122,14 +117,13 @@ export const ConfirmationScreens: React.FC<ConfirmationScreensProps> = ({
             setTxStatus(StatusType.idle);
             setTxHash(hash);
             set(prevState => ({ ...prevState, step: SendFlowStep.CONFIRM }));
-            setRuneBridgeIsOpen(false);
+            setIsOpen(false);
           },
           onChangeStatus: setTxStatus,
         },
       ]);
       setTitle(t(`Send ${selectedToken.name} to the bitcoin network`));
-      setRuneBridgeIsOpen(true);
-      setRuneBridgeToken(selectedToken);
+      setIsOpen(true);
     }
   }, [
     amount,
@@ -137,10 +131,9 @@ export const ConfirmationScreens: React.FC<ConfirmationScreensProps> = ({
     runeBridgeContract,
     selectedToken,
     set,
-    setRuneBridgeIsOpen,
-    setRuneBridgeToken,
-    setRuneBridgeTransactions,
+    setTransactions,
     setTitle,
+    setIsOpen,
     signer,
   ]);
 

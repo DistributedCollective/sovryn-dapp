@@ -968,7 +968,7 @@
             "line4": "Allow up to {{hours}} hrs to process",
             "line5": "If your transaction takes longer than {{hours}} hrs please <0>create a support ticket</0>",
             "line5cta": "create a support ticket",
-            "postage": "Set the postage to at least {{postageBtc}} ({{postageSat}} satoshi)."
+            "postage": "Set the postage to at least {{postageSat}} satoshi ({{postageBtc}} BTC)."
       },
       "sendInstructions": {
             "title": "Instructions",

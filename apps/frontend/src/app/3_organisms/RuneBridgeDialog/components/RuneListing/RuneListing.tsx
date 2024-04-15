@@ -23,21 +23,21 @@ export const RuneListing = () => {
               value={tokenBalance.tokenContractAddress}
             />
           ),
-          rune: <RuneExplorerLink rune={tokenBalance.name} />,
+          name: <RuneExplorerLink rune={tokenBalance.name} />,
           balance: `${tokenBalance.balance} ${tokenBalance.symbol}`,
         };
       }),
     [tokenBalances],
   );
   return (
-    <div>
+    <>
       <h1>Rune Listing</h1>
       <div className="mt-2">
         <TableBase
           columns={[
             {
               align: Align.left,
-              id: 'rune',
+              id: 'name',
               title: 'Rune',
             },
             {
@@ -57,6 +57,6 @@ export const RuneListing = () => {
           rows={rows}
         />
       </div>
-    </div>
+    </>
   );
 };

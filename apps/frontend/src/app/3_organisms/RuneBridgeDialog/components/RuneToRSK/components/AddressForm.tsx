@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback } from 'react';
 
 import classNames from 'classnames';
 import { t } from 'i18next';
@@ -12,13 +12,16 @@ import {
   Icon,
   IconNames,
   NotificationType,
-  prettyTx,
+  Paragraph,
 } from '@sovryn/ui';
 
 import { useNotificationContext } from '../../../../../../contexts/NotificationContext';
 import { translations } from '../../../../../../locales/i18n';
-import { useValidateFederators } from '../../../../FastBtcDialog/hooks/useValidateFederators';
 import { URIType } from '../../../../FastBtcDialog/types';
+import {
+  DEPOSIT_FEE_RUNE_PERCENTAGE,
+  MIN_POSTAGE_BTC,
+} from '../../../constants';
 import { useContractService } from '../../../hooks/useContractService';
 import { TransferPolicies } from '../../TransferPolicies';
 
@@ -26,24 +29,14 @@ const config = resolveConfig(tailwindConfig);
 
 export const AddressForm = () => {
   const { depositAddress, tokenBalances } = useContractService();
-  const { isSignatureValid, loading } = useValidateFederators();
   const { addNotification } = useNotificationContext();
-  const hasValidationBeenUnsuccessful = useMemo(
-    () => !loading && !isSignatureValid,
-    [isSignatureValid, loading],
-  );
-
-  const formattedDepositAddress = useMemo(
-    () => prettyTx(depositAddress, 20, 20),
-    [depositAddress],
-  );
 
   const copyAddress = useCallback(async () => {
     await navigator.clipboard.writeText(depositAddress);
 
     addNotification({
       type: NotificationType.success,
-      title: t(translations.fastBtc.addressForm.copyAddressSuccess),
+      title: t(translations.runeBridge.addressForm.copyAddressSuccess),
       content: '',
       dismissible: true,
       id: nanoid(),
@@ -53,21 +46,21 @@ export const AddressForm = () => {
   return (
     <div className="full">
       <TransferPolicies
-        minimumAmount="No limit"
-        maximumAmount="No limit"
-        serviceFee="Free"
+        serviceFee={`${DEPOSIT_FEE_RUNE_PERCENTAGE} %`}
+        minimumPostage={`${MIN_POSTAGE_BTC} BTC`}
         supportedRunes={tokenBalances.map(tokenBalance => tokenBalance.name)}
         className="mb-6"
       />
+
+      <Paragraph className="font-medium mb-2">
+        {t(translations.runeBridge.addressForm.title)}:
+      </Paragraph>
 
       <div className="bg-gray-80 border rounded border-gray-50  text-xs relative">
         <div className="p-6">
           <div
             className={classNames(
-              'h-48 justify-center items-center flex rounded',
-              {
-                'bg-white': !hasValidationBeenUnsuccessful,
-              },
+              'h-48 justify-center items-center flex rounded bg-white',
             )}
           >
             <QRCode
@@ -81,7 +74,7 @@ export const AddressForm = () => {
           </div>
 
           <div className="flex justify-between mt-5 items-center bg-gray-70 border rounded border-gray-50 py-2 pl-3 pr-2 text-gray-30">
-            <div>{formattedDepositAddress}</div>
+            <div className="break-words max-w-11/12">{depositAddress}</div>
 
             <span
               className="cursor-pointer rounded"

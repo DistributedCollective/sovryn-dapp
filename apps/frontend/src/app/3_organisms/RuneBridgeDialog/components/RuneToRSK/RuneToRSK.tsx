@@ -116,6 +116,9 @@ export const RuneToRSK: React.FC<RuneToRSKProps> = ({ onClose }) => {
 
   return (
     <div>
+      {step === ReceiveflowStep.ADDRESS && (
+        <GoBackButton onClick={onBackClick} />
+      )}
       <div className="mt-0 md:mt-12">
         {step === ReceiveflowStep.MAIN && <MainScreen />}
         {[ReceiveflowStep.PROCESSING, ReceiveflowStep.COMPLETED].includes(
@@ -126,11 +129,6 @@ export const RuneToRSK: React.FC<RuneToRSKProps> = ({ onClose }) => {
           depositTx?.currentTX.status === 'confirmed') &&
           depositTx.lastBlockHash && (
             <div>
-              <div className="mb-6">
-                {step === ReceiveflowStep.ADDRESS && (
-                  <GoBackButton onClick={onBackClick} />
-                )}
-              </div>
               <AddressForm />
             </div>
           )}

@@ -15,7 +15,7 @@ import { useTransactionContext } from '../../../../../../contexts/TransactionCon
 import { useAccount } from '../../../../../../hooks/useAccount';
 import { fromWei, toWei } from '../../../../../../utils/math';
 import { TransactionType } from '../../../../TransactionStepDialog/TransactionStepDialog.types';
-import { GAS_LIMIT_FAST_BTC_WITHDRAW } from '../../../constants';
+import { GAS_LIMIT_RUNE_BRIDGE_WITHDRAW } from '../../../constants';
 import { SendFlowContext, SendFlowStep } from '../../../contexts/sendflow';
 import { useContractService } from '../../../hooks/useContractService';
 import { ReviewScreen } from './ReviewScreen';
@@ -98,7 +98,7 @@ export const ConfirmationScreens: React.FC<ConfirmationScreensProps> = ({
             ),
             fnName: 'approve',
             args: [runeBridgeContract.address, toWei(amount)],
-            gasLimit: GAS_LIMIT_FAST_BTC_WITHDRAW,
+            gasLimit: GAS_LIMIT_RUNE_BRIDGE_WITHDRAW,
           },
           onStart: hash => {
             setTxHash(hash);
@@ -116,7 +116,7 @@ export const ConfirmationScreens: React.FC<ConfirmationScreensProps> = ({
               toWei(amount),
               receiverAddress,
             ],
-            gasLimit: GAS_LIMIT_FAST_BTC_WITHDRAW,
+            gasLimit: GAS_LIMIT_RUNE_BRIDGE_WITHDRAW,
           },
           onStart: hash => {
             setTxStatus(StatusType.idle);

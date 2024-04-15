@@ -10,9 +10,10 @@ import { RuneExplorerLink } from './RuneExplorerLink';
 const translation = translations.runeBridge.limits;
 
 type TransferPoliciesProps = {
-  minimumAmount: string;
-  maximumAmount: string;
-  serviceFee: string;
+  minimumAmount?: string;
+  maximumAmount?: string;
+  serviceFee?: string;
+  minimumPostage?: string;
   supportedRunes?: string[];
   className?: string;
 };
@@ -21,6 +22,7 @@ export const TransferPolicies: React.FC<TransferPoliciesProps> = ({
   minimumAmount,
   maximumAmount,
   serviceFee,
+  minimumPostage,
   supportedRunes,
   className,
 }) => {
@@ -32,20 +34,33 @@ export const TransferPolicies: React.FC<TransferPoliciesProps> = ({
       label={t(translation.title)}
       children={
         <div className="bg-gray-80 border rounded border-gray-50 p-3 text-xs text-gray-30">
-          <div className="flex justify-between mb-3">
-            <span>{t(translation.minimumAmount)}</span>
-            <span>{minimumAmount}</span>
-          </div>
+          {minimumAmount && (
+            <div className="flex justify-between mb-3">
+              <span>{t(translation.minimumAmount)}</span>
+              <span>{minimumAmount}</span>
+            </div>
+          )}
 
-          <div className="flex justify-between mb-3">
-            <span>{t(translation.maximumAmount)}</span>
-            <span>{maximumAmount}</span>
-          </div>
+          {maximumAmount && (
+            <div className="flex justify-between mb-3">
+              <span>{t(translation.maximumAmount)}</span>
+              <span>{maximumAmount}</span>
+            </div>
+          )}
 
-          <div className="flex justify-between">
-            <span>{t(translation.serviceFee)}</span>
-            <span>{serviceFee}</span>
-          </div>
+          {minimumPostage && (
+            <div className="flex justify-between mb-3">
+              <span>{t(translation.minimumPostage)}</span>
+              <span>{minimumPostage}</span>
+            </div>
+          )}
+
+          {serviceFee && (
+            <div className="flex justify-between">
+              <span>{t(translation.serviceFee)}</span>
+              <span>{serviceFee}</span>
+            </div>
+          )}
 
           {supportedRunes && (
             <div className="flex justify-between mt-3">

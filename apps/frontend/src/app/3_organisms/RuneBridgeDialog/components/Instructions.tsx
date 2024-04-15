@@ -7,6 +7,7 @@ import { Heading, HeadingType, Link } from '@sovryn/ui';
 
 import { HELPDESK_LINK } from '../../../../constants/links';
 import { translations } from '../../../../locales/i18n';
+import { MIN_POSTAGE_SATS, MIN_POSTAGE_BTC } from '../constants';
 
 type InstructionsProps = {
   isReceive?: boolean;
@@ -29,7 +30,14 @@ export const Instructions: React.FC<InstructionsProps> = ({ isReceive }) => {
 
       <ul className="list-disc list-inside text-xs leading-5 font-medium text-gray-30 mt-4 mb-12">
         <li className="mb-4">{t(translation.line1)}</li>
-        {!isReceive && (
+        {isReceive ? (
+          <li className="mb-4">
+            {t(translations.runeBridge.receiveInstructions.postage, {
+              postageSat: MIN_POSTAGE_SATS,
+              postageBtc: MIN_POSTAGE_BTC,
+            })}
+          </li>
+        ) : (
           <li className="mb-4">
             {t(translations.runeBridge.sendInstructions.supportedFormats)}
           </li>

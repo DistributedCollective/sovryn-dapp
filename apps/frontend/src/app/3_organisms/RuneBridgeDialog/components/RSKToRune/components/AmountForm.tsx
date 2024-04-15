@@ -20,7 +20,7 @@ import { TOKEN_RENDER_PRECISION } from '../../../../../../constants/currencies';
 import { useMaintenance } from '../../../../../../hooks/useMaintenance';
 import { translations } from '../../../../../../locales/i18n';
 import { fromWei, toWei } from '../../../../../../utils/math';
-import { GAS_LIMIT_FAST_BTC_WITHDRAW } from '../../../../FastBtcDialog/constants';
+import { GAS_LIMIT_RUNE_BRIDGE_WITHDRAW } from '../../../constants';
 import { SendFlowContext, SendFlowStep } from '../../../contexts/sendflow';
 import { useContractService } from '../../../hooks/useContractService';
 import { TransferPolicies } from '../../TransferPolicies';
@@ -103,8 +103,8 @@ export const AmountForm: React.FC = () => {
     }
 
     return toWei(amount)
-      .add(GAS_LIMIT_FAST_BTC_WITHDRAW)
-      .gt(selectedTokenBalanceInWei.add(GAS_LIMIT_FAST_BTC_WITHDRAW) || '0');
+      .add(GAS_LIMIT_RUNE_BRIDGE_WITHDRAW)
+      .gt(selectedTokenBalanceInWei.add(GAS_LIMIT_RUNE_BRIDGE_WITHDRAW) || '0');
   }, [selectedToken, value, limits]);
 
   return (

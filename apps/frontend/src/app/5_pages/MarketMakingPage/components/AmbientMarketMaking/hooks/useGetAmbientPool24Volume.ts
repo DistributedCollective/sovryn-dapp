@@ -21,7 +21,7 @@ export const useGetAmbientPool24Volume = (pool: AmbientLiquidityPool) => {
   );
 
   const data = useMemo(() => {
-    return (candles[0] as AmbientPoolCandle) || undefined;
+    return (candles || [])[0] as AmbientPoolCandle | undefined;
   }, [candles]);
 
   return {

@@ -8,6 +8,7 @@ import { AssetPairRenderer } from '../../../../../../2_molecules/AssetPairRender
 import { translations } from '../../../../../../../locales/i18n';
 import { AmbientLiquidityPool } from '../../utils/AmbientLiquidityPool';
 import { AmbientPool24Volume } from './components/AmbientPool24Volume/AmbientPool24Volume';
+import { AmbientPoolDeposit } from './components/AmbientPoolDeposit/AmbientPoolDeposit';
 import { AmbientPoolLiquidity } from './components/AmbientPoolLiquidity/AmbientPoolLiquidity';
 
 export const COLUMNS_CONFIG = [
@@ -58,7 +59,9 @@ export const COLUMNS_CONFIG = [
   {
     id: '',
     title: '',
-    cellRenderer: (pool: AmbientLiquidityPool) => null,
+    cellRenderer: (pool: AmbientLiquidityPool) => (
+      <AmbientPoolDeposit pool={pool} />
+    ),
     className: 'table-cell',
   },
 ];

@@ -13,6 +13,7 @@ export const SUBGRAPH = {
   RSK: process.env.REACT_APP_GRAPH_RSK,
   ZERO: process.env.REACT_APP_GRAPH_ZERO,
   MYNT: process.env.REACT_APP_GRAPH_MYNT,
+  BOB: process.env.REACT_APP_GRAPH_BOB,
 };
 
 export const EXPORT_RECORD_LIMIT = 500;

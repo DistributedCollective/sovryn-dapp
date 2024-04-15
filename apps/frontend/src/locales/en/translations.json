@@ -954,13 +954,15 @@
       "mainScreen": {
         "title": "Rune Bridge",
         "tabs": {
+          "listingLabel": "Info",
+          "listingInfoText": "Info about the Sovryn Rune Bridge",
           "receiveLabel": "Receive",
           "receiveInfoText": "Transfer Runes from Bitcoin to your Rootstock address",
           "sendLabel": "Send",
           "sendInfoText": "Transfer Rune Tokens from Rootstock your Bitcoin address"
         }
       },
-        "receiveInstructions": {
+      "receiveInstructions": {
             "title": "Instructions",
             "line1": "Only transfer Runes, not Bitcoin",
             "line2": "Do not send less than the minimum amount",
@@ -983,7 +985,8 @@
             "title": "Transfer policies",
             "minimumAmount": "Minimum amount",
             "maximumAmount": "Maximum amount",
-            "serviceFee": "Service fee"
+            "serviceFee": "Service fee",
+            "supportedRunes": "Supported Runes"
         },
         "addressForm": {
             "title": "Send BTC to this address",

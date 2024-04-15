@@ -4,7 +4,6 @@ import { parseUnits } from 'ethers/lib/utils';
 import { t } from 'i18next';
 
 import {
-  Align,
   AmountInput,
   Button,
   ButtonStyle,
@@ -13,10 +12,7 @@ import {
   Heading,
   HeadingType,
   Paragraph,
-  RowObject,
   Select,
-  TableBase,
-  TransactionId,
 } from '@sovryn/ui';
 
 import { RuneBridgeMaxButton } from '../../../../../2_molecules/MaxButton/RuneBridgeMaxButton';
@@ -27,7 +23,7 @@ import { fromWei, toWei } from '../../../../../../utils/math';
 import { GAS_LIMIT_FAST_BTC_WITHDRAW } from '../../../../FastBtcDialog/constants';
 import { SendFlowContext, SendFlowStep } from '../../../contexts/sendflow';
 import { useContractService } from '../../../hooks/useContractService';
-import { Limits } from '../../Limits';
+import { TransferPolicies } from '../../TransferPolicies';
 
 export const AmountForm: React.FC = () => {
   const { amount, limits, selectedToken, set } = useContext(SendFlowContext);
@@ -94,18 +90,6 @@ export const AmountForm: React.FC = () => {
       value: tokenBalance.tokenContractAddress,
     };
   });
-  const rows: RowObject[] = tokenBalances.map((tokenBalance, index) => {
-    return {
-      address: (
-        <TransactionId
-          href={`https://explorer.testnet.rsk.co/address/${tokenBalance.tokenContractAddress}`}
-          value={tokenBalance.tokenContractAddress}
-        />
-      ),
-      balance: `${tokenBalance.balance} ${tokenBalance.symbol}`,
-      name: tokenBalance.name,
-    };
-  });
 
   const invalid = useMemo(() => {
     if (value === '0' || !selectedToken.tokenContractAddress) {
@@ -166,38 +150,13 @@ export const AmountForm: React.FC = () => {
           )}
         </div>
 
-        <Limits
+        <TransferPolicies
           minimumAmount="No limit"
           maximumAmount="No limit"
           serviceFee="Free"
           className="mb-6"
         />
 
-        <div className="mt-4">
-          <TableBase
-            columns={[
-              {
-                align: Align.left,
-                id: 'name',
-                title: 'Name',
-              },
-              {
-                align: Align.left,
-                id: 'address',
-                title: 'Address',
-              },
-              {
-                align: Align.left,
-                id: 'balance',
-                title: 'Balance',
-              },
-            ]}
-            dataAttribute="addressTable"
-            onRowClick={() => {}}
-            rowKey={row => row.name}
-            rows={rows}
-          />
-        </div>
         <Button
           text={t(translations.common.buttons.continue)}
           onClick={onContinueClick}

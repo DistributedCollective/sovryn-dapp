@@ -8,10 +8,6 @@ import resolveConfig from 'tailwindcss/resolveConfig';
 
 import tailwindConfig from '@sovryn/tailwindcss-config';
 import {
-  Align,
-  RowObject,
-  TransactionId,
-  TableBase,
   applyDataAttr,
   Icon,
   IconNames,
@@ -21,14 +17,10 @@ import {
 
 import { useNotificationContext } from '../../../../../../contexts/NotificationContext';
 import { translations } from '../../../../../../locales/i18n';
-import {
-  Environments,
-  ExplorerNetworkURI,
-} from '../../../../../../types/global';
 import { useValidateFederators } from '../../../../FastBtcDialog/hooks/useValidateFederators';
 import { URIType } from '../../../../FastBtcDialog/types';
 import { useContractService } from '../../../hooks/useContractService';
-import { Limits } from '../../Limits';
+import { TransferPolicies } from '../../TransferPolicies';
 
 const config = resolveConfig(tailwindConfig);
 
@@ -46,10 +38,6 @@ export const AddressForm = () => {
     [depositAddress],
   );
 
-  const explorerNetworkURI =
-    process.env.REACT_APP_NETWORK === Environments.Testnet
-      ? ExplorerNetworkURI.Testnet
-      : ExplorerNetworkURI.Mainnet;
   const copyAddress = useCallback(async () => {
     await navigator.clipboard.writeText(depositAddress);
 
@@ -62,24 +50,13 @@ export const AddressForm = () => {
     });
   }, [addNotification, depositAddress]);
 
-  const rows: RowObject[] = tokenBalances.map((tokenBalance, index) => {
-    return {
-      address: (
-        <TransactionId
-          href={`${explorerNetworkURI}/address/${tokenBalance.tokenContractAddress}`}
-          value={tokenBalance.tokenContractAddress}
-        />
-      ),
-      balance: `${tokenBalance.balance} ${tokenBalance.symbol}`,
-      name: tokenBalance.name,
-    };
-  });
   return (
     <div className="full">
-      <Limits
+      <TransferPolicies
         minimumAmount="No limit"
         maximumAmount="No limit"
         serviceFee="Free"
+        supportedRunes={tokenBalances.map(tokenBalance => tokenBalance.name)}
         className="mb-6"
       />
 
@@ -115,32 +92,6 @@ export const AddressForm = () => {
             </span>
           </div>
         </div>
-      </div>
-
-      <div className="mt-2">
-        <TableBase
-          columns={[
-            {
-              align: Align.left,
-              id: 'name',
-              title: 'Name',
-            },
-            {
-              align: Align.left,
-              id: 'address',
-              title: 'Address',
-            },
-            {
-              align: Align.left,
-              id: 'balance',
-              title: 'Balance',
-            },
-          ]}
-          dataAttribute="addressTable"
-          onRowClick={() => {}}
-          rowKey={row => row.name}
-          rows={rows}
-        />
       </div>
     </div>
   );

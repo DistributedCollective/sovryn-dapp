@@ -33,13 +33,11 @@ import { APP_CHAIN_LIST } from '../../../../../config/chains';
 
 import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { TxIdWithNotification } from '../../../../2_molecules/TxIdWithNotification/TransactionIdWithNotification';
-import {
-  BITCOIN,
-  BTC_RENDER_PRECISION,
-} from '../../../../../constants/currencies';
+import { BTC_RENDER_PRECISION } from '../../../../../constants/currencies';
 import { APPROVAL_FUNCTION } from '../../../../../constants/general';
 import { useCurrentChain } from '../../../../../hooks/useChainStore';
 import { translations } from '../../../../../locales/i18n';
+import { findNativeAsset } from '../../../../../utils/asset';
 import { fromWei, toWei } from '../../../../../utils/math';
 import {
   Transaction,
@@ -241,6 +239,11 @@ export const TransactionStep: FC<TransactionStepProps> = ({
       : '';
   }, [config.gasLimit, config.gasPrice]);
 
+  const gasFeeSuffix = useMemo(
+    () => findNativeAsset(chainId).symbol,
+    [chainId],
+  );
+
   return (
     <div className="flex flex-col">
       <StatusItem content={step} label={title} status={status} />
@@ -290,7 +293,7 @@ export const TransactionStep: FC<TransactionStepProps> = ({
                 value={
                   <AmountRenderer
                     value={estimatedGasFee}
-                    suffix={BITCOIN}
+                    suffix={gasFeeSuffix}
                     precision={BTC_RENDER_PRECISION}
                   />
                 }

@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from 'react';
+import React, { useMemo } from 'react';
 
 import classNames from 'classnames';
 import { t } from 'i18next';
@@ -14,9 +14,7 @@ import {
 
 import { StatusIcon } from '../../../../../2_molecules/StatusIcon/StatusIcon';
 import { TxIdWithNotification } from '../../../../../2_molecules/TxIdWithNotification/TransactionIdWithNotification';
-import { useBlockNumber } from '../../../../../../hooks/useBlockNumber';
 import { translations } from '../../../../../../locales/i18n';
-import { useGetBitcoinTxIdQuery } from '../../../../../../utils/graphql/rsk/generated';
 import {
   getBtcExplorerUrl,
   getRskExplorerUrl,
@@ -24,7 +22,7 @@ import {
 import { formatValue } from '../../../../../../utils/math';
 import { useSendFlowService } from '../../../hooks/useSendFlowService';
 
-const translation = translations.fastBtc.send.confirmationScreens;
+const translation = translations.runeBridge.send.confirmationScreens;
 
 const getTitle = (status: StatusType) => {
   switch (status) {
@@ -68,19 +66,7 @@ export const StatusScreen: React.FC<StatusScreenProps> = ({
   onClose,
   onRetry,
 }) => {
-  const { value: block } = useBlockNumber();
-  const { data, refetch } = useGetBitcoinTxIdQuery({
-    variables: { createdAtTx: txHash || '' },
-  });
   const { selectedToken } = useSendFlowService();
-  const bitcoinTxHash = useMemo(
-    () => data?.bitcoinTransfers?.[0]?.bitcoinTxHash,
-    [data],
-  );
-
-  useEffect(() => {
-    refetch();
-  }, [refetch, txHash, block]);
 
   const items = useMemo(
     () => [
@@ -139,28 +125,20 @@ export const StatusScreen: React.FC<StatusScreenProps> = ({
           <Icon icon={IconNames.PENDING} />
         ),
       },
-      {
-        label: t(translation.bitcoinTxId),
-        value: bitcoinTxHash ? (
-          <TxIdWithNotification
-            value={bitcoinTxHash}
-            href={`${btcExplorerUrl}/tx/${bitcoinTxHash}`}
-          />
-        ) : (
-          <Icon icon={IconNames.PENDING} />
-        ),
-      },
+      // We don't yet have an API for this
+      // {
+      //   label: t(translation.bitcoinTxId),
+      //   value: bitcoinTxHash ? (
+      //     <TxIdWithNotification
+      //       value={bitcoinTxHash}
+      //       href={`${btcExplorerUrl}/tx/${bitcoinTxHash}`}
+      //     />
+      //   ) : (
+      //     <Icon icon={IconNames.PENDING} />
+      //   ),
+      // },
     ],
-    [
-      amount,
-      bitcoinTxHash,
-      feesPaid,
-      from,
-      receiveAmount,
-      selectedToken.symbol,
-      to,
-      txHash,
-    ],
+    [amount, feesPaid, from, receiveAmount, selectedToken.symbol, to, txHash],
   );
 
   const status = useMemo(() => {

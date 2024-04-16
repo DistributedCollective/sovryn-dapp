@@ -5,7 +5,7 @@ import {
   getProtocolContract,
   getTokenContract,
 } from '@sovryn/contracts';
-import { ChainId, numberToChainId } from '@sovryn/ethers-provider';
+import { ChainId, ChainIds, numberToChainId } from '@sovryn/ethers-provider';
 
 import { SovrynErrorCode, makeError } from '../../../errors/errors';
 import {
@@ -49,6 +49,7 @@ export const myntFixedRateRoute: SwapRouteFunction = (
 
   return {
     name: 'MyntFixedRate',
+    chains: [ChainIds.RSK_MAINNET, ChainIds.RSK_TESTNET],
     pairs: async () => {
       if (!pairCache) {
         const chainId = await getChainId();

@@ -46,17 +46,23 @@ export const UnbalancedRange: FC = () => {
         newPercentage === 0 ? currentPrice : calculatePrice(newPercentage);
 
       if (isUpperBoundary) {
-        setUpperBoundaryPercentage(newPercentage);
-        setMaximumPrice(newPrice);
+        if (newPrice > minimumPrice) {
+          setUpperBoundaryPercentage(newPercentage);
+          setMaximumPrice(newPrice);
+        }
       } else {
-        setLowerBoundaryPercentage(newPercentage);
-        setMinimumPrice(newPrice);
+        if (newPrice < maximumPrice) {
+          setLowerBoundaryPercentage(newPercentage);
+          setMinimumPrice(newPrice);
+        }
       }
     },
     [
       calculatePrice,
       currentPrice,
       lowerBoundaryPercentage,
+      maximumPrice,
+      minimumPrice,
       setLowerBoundaryPercentage,
       setMaximumPrice,
       setMinimumPrice,
@@ -82,12 +88,15 @@ export const UnbalancedRange: FC = () => {
   }, [updateRange]);
 
   useEffect(() => {
-    if (minimumPrice === 0) {
-      setMinimumPrice(calculatePrice(lowerBoundaryPercentage));
+    const calculatedMinimumPrice = calculatePrice(lowerBoundaryPercentage);
+    const calculatedMaximumPrice = calculatePrice(upperBoundaryPercentage);
+
+    if (minimumPrice === 0 || calculatedMinimumPrice !== minimumPrice) {
+      setMinimumPrice(calculatedMinimumPrice);
     }
 
-    if (maximumPrice === 0) {
-      setMaximumPrice(calculatePrice(upperBoundaryPercentage));
+    if (maximumPrice === 0 || calculatedMaximumPrice !== maximumPrice) {
+      setMaximumPrice(calculatedMaximumPrice);
     }
   }, [
     calculatePrice,

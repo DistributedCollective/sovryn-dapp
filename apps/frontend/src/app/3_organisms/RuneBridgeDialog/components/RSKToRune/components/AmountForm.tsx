@@ -36,7 +36,7 @@ export const AmountForm: React.FC = () => {
   const { tokenBalances } = useContractService();
   const runeBridgeLocked = useRuneBridgeLocked();
 
-  const [value, setValue] = useState(amount || '0');
+  const [value, setValue] = useState(amount || '');
 
   const onContinueClick = useCallback(
     () =>
@@ -61,7 +61,7 @@ export const AmountForm: React.FC = () => {
   }, [limits.max, selectedToken.tokenContractAddress, tokenBalances]);
 
   const maxExceed = useMemo(() => {
-    if (value === '0') {
+    if (value === '' || value === '0') {
       return false;
     }
     return toWei(value).gt(maxAmount);
@@ -69,8 +69,8 @@ export const AmountForm: React.FC = () => {
 
   const tokenBalancesLoaded = tokenBalances.length > 0;
   const onMaximumAmountClick = useCallback(
-    () => setValue(fromWei(maxAmount)),
-    [maxAmount],
+    () => setValue(fromWei(maxAmount, selectedToken.decimals)),
+    [maxAmount, selectedToken],
   );
   const onSelectToken = useCallback(
     (token: string) => {
@@ -98,7 +98,7 @@ export const AmountForm: React.FC = () => {
   });
 
   const invalid = useMemo(() => {
-    if (value === '0' || !selectedToken.tokenContractAddress) {
+    if (!value || value === '0' || !selectedToken.tokenContractAddress) {
       return true;
     }
 
@@ -133,7 +133,7 @@ export const AmountForm: React.FC = () => {
           </div>
           <MaxButton
             onClick={onMaximumAmountClick}
-            value={fromWei(maxAmount)}
+            value={fromWei(maxAmount, selectedToken.decimals)}
             token={selectedToken.symbol}
             precision={TOKEN_RENDER_PRECISION}
             dataAttribute="funding-send-amount-max"
@@ -148,6 +148,7 @@ export const AmountForm: React.FC = () => {
             value={value}
             decimalPrecision={TOKEN_RENDER_PRECISION}
             className="max-w-none"
+            placeholder="0"
             invalid={maxExceed || !selectedToken.tokenContractAddress}
             disabled={!selectedToken.tokenContractAddress || runeBridgeLocked}
             dataAttribute="funding-send-amount-input"

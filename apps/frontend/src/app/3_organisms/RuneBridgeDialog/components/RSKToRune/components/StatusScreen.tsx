@@ -100,8 +100,7 @@ export const StatusScreen: React.FC<StatusScreenProps> = ({
         label: t(translation.serviceFee),
         value: (
           <>
-            {formatValue(feesPaid.rune, 8)} {selectedToken.symbol}
-            <br />
+            {formatValue(feesPaid.rune, 8)} {selectedToken.symbol} +{' '}
             {formatValue(feesPaid.baseCurrency, 8)} BTC
           </>
         ),

@@ -1,12 +1,6 @@
-import React, {
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react';
+import React, { useCallback, useContext, useMemo, useState } from 'react';
 
-import { BigNumber, Contract } from 'ethers';
+import { Contract } from 'ethers';
 import { t } from 'i18next';
 
 import { StatusType } from '@sovryn/ui';
@@ -15,7 +9,7 @@ import { useTransactionContext } from '../../../../../../contexts/TransactionCon
 import { useAccount } from '../../../../../../hooks/useAccount';
 import { useGetProtocolContract } from '../../../../../../hooks/useGetContract';
 import { translations } from '../../../../../../locales/i18n';
-import { fromWei, toWei } from '../../../../../../utils/math';
+import { toWei } from '../../../../../../utils/math';
 import {
   TransactionType,
   TokenDetails,
@@ -50,48 +44,19 @@ export const ConfirmationScreens: React.FC<ConfirmationScreensProps> = ({
 
   const [txHash, setTxHash] = useState<string | undefined>(undefined);
   const [txStatus, setTxStatus] = useState(StatusType.idle);
-  const [currentFeeWei, setCurrentFeeWei] = useState(BigNumber.from(0));
   const runeBridgeContract = useGetProtocolContract('runeBridge');
-
-  const weiAmount = useMemo(
-    () => toWei(amount, selectedToken.decimals),
-    [amount, selectedToken.decimals],
-  );
-
-  const getCurrentFeeWei = useCallback(async () => {
-    // We could get this from the contract, but for now it's hardcoded
-    const currentFeeWei = weiAmount.mul(
-      BigNumber.from(WITHDRAW_FEE_RUNE_PERCENTAGE).div(100),
-    );
-
-    setCurrentFeeWei(currentFeeWei);
-  }, [setCurrentFeeWei, weiAmount]);
-
-  useEffect(() => {
-    getCurrentFeeWei().then();
-  }, [getCurrentFeeWei]);
 
   const feesPaid = useMemo(
     () => ({
-      rune:
-        currentFeeWei && currentFeeWei.gt(0)
-          ? Number(fromWei(currentFeeWei, selectedToken.decimals))
-          : 0,
+      rune: (Number(amount) * WITHDRAW_FEE_RUNE_PERCENTAGE) / 100,
       baseCurrency: WITHDRAW_FEE_BASE_CURRENCY_BTC,
     }),
-    [currentFeeWei, selectedToken.decimals],
+    [amount],
   );
 
   const receiveAmount = useMemo(
-    () =>
-      Number(
-        fromWei(
-          currentFeeWei && currentFeeWei.gt(0)
-            ? weiAmount.sub(currentFeeWei)
-            : weiAmount,
-        ),
-      ),
-    [currentFeeWei, weiAmount],
+    () => Number(amount) - feesPaid.rune,
+    [amount, feesPaid],
   );
   const handleConfirm = useCallback(async () => {
     if (!runeBridgeContract) {

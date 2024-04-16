@@ -126,15 +126,17 @@ export const RuneToRSK: React.FC<RuneToRSKProps> = ({ onClose }) => {
         {step === ReceiveflowStep.MAIN && <MainScreen />}
         {[ReceiveflowStep.PROCESSING, ReceiveflowStep.COMPLETED].includes(
           step,
-        ) &&
-          depositTx?.currentTX.status && <StatusScreen onClose={onClose} />}
-        {(step === ReceiveflowStep.ADDRESS ||
-          depositTx?.currentTX.status === 'confirmed') &&
-          depositTx.lastBlockHash && (
-            <div>
-              <AddressForm />
-            </div>
-          )}
+        ) && depositTx?.currentTX.status ? (
+          <StatusScreen onClose={onClose} />
+        ) : (step === ReceiveflowStep.ADDRESS ||
+            depositTx?.currentTX.status === 'confirmed') &&
+          depositTx.lastBlockHash ? (
+          <div>
+            <AddressForm />
+          </div>
+        ) : (
+          ''
+        )}
       </div>
     </div>
   );

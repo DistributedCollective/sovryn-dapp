@@ -21,6 +21,7 @@ import { useGetUserInfo } from '../../../../hooks/useGetUserInfo';
 import { AmmLiquidityPool } from '../../../../utils/AmmLiquidityPool';
 import { AdjustAndDepositModal } from '../../../AdjustAndDepositModal/AdjustAndDepositModal';
 import { BobDepositModal } from '../../../BobDepositModal/BobDepositModal';
+import { DepositContextProvider } from '../../../BobDepositModal/contexts/BobDepositModalContext';
 
 type PoolsTableActionProps = {
   pool: AmmLiquidityPool;
@@ -145,10 +146,12 @@ export const PoolsTableAction: FC<PoolsTableActionProps> = ({ pool }) => {
         isInitialDeposit={isInitialDeposit}
       />
 
-      <BobDepositModal
-        isOpen={isBobModalOpen && pool.assetA === COMMON_SYMBOLS.DLLR}
-        onClose={handleClose}
-      />
+      <DepositContextProvider>
+        <BobDepositModal
+          isOpen={isBobModalOpen && pool.assetA === COMMON_SYMBOLS.DLLR}
+          onClose={handleClose}
+        />
+      </DepositContextProvider>
     </div>
   );
 };

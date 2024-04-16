@@ -70,10 +70,15 @@ export const ContractContextProvider: React.FC<
   );
 
   useEffect(() => {
-    const refreshTokenBalances = setInterval(async () => {
-      await requestTokenBalances();
-    }, 5000);
-    return () => clearInterval(refreshTokenBalances);
+    const refreshTokenBalancesInterval = setInterval(
+      requestTokenBalances,
+      5000,
+    );
+    const refreshTokenBalancesTimeout = setTimeout(requestTokenBalances, 500);
+    return () => {
+      clearInterval(refreshTokenBalancesInterval);
+      clearTimeout(refreshTokenBalancesTimeout);
+    };
   }, [requestTokenBalances]);
 
   return <Contract.Provider value={value}>{children}</Contract.Provider>;

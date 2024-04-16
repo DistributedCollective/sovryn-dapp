@@ -12,28 +12,33 @@ import {
 } from '@sovryn/ui';
 
 import { TxIdWithNotification } from '../../../../../2_molecules/TxIdWithNotification/TransactionIdWithNotification';
-import { useMaintenance } from '../../../../../../hooks/useMaintenance';
 import { translations } from '../../../../../../locales/i18n';
 import {
   getBtcExplorerUrl,
   getRskExplorerUrl,
 } from '../../../../../../utils/helpers';
 import { formatValue } from '../../../../../../utils/math';
+import { useRuneBridgeLocked } from '../../../hooks/useRuneBridgeLocked';
 import { useSendFlowService } from '../../../hooks/useSendFlowService';
 
-const translation = translations.fastBtc.send.confirmationScreens;
+const translation = translations.runeBridge.send.confirmationScreens;
 
 const rskExplorerUrl = getRskExplorerUrl();
 const btcExplorerUrl = getBtcExplorerUrl();
 
-type ReviewScreenProps = {
+interface FeesPaid {
+  rune: number;
+  baseCurrency: number;
+}
+
+interface ReviewScreenProps {
   from: string;
   to: string;
   amount: string;
-  feesPaid: number;
+  feesPaid: FeesPaid;
   receiveAmount: number;
   onConfirm: () => void;
-};
+}
 
 export const ReviewScreen: React.FC<ReviewScreenProps> = ({
   amount,
@@ -43,8 +48,7 @@ export const ReviewScreen: React.FC<ReviewScreenProps> = ({
   from,
   to,
 }) => {
-  const { checkMaintenance, States } = useMaintenance();
-  const fastBtcLocked = checkMaintenance(States.FASTBTC_SEND);
+  const runeBridgeLocked = useRuneBridgeLocked();
   const { selectedToken } = useSendFlowService();
 
   const items = useMemo(
@@ -79,7 +83,9 @@ export const ReviewScreen: React.FC<ReviewScreenProps> = ({
         label: t(translation.serviceFee),
         value: (
           <>
-            {formatValue(feesPaid, 8)} {selectedToken.symbol}
+            {formatValue(feesPaid.rune, 8)} {selectedToken.symbol}
+            <br />
+            {formatValue(feesPaid.baseCurrency, 8)} BTC
           </>
         ),
       },
@@ -119,14 +125,14 @@ export const ReviewScreen: React.FC<ReviewScreenProps> = ({
         <Button
           text={t(translations.common.buttons.confirm)}
           onClick={onConfirm}
-          disabled={fastBtcLocked}
+          disabled={runeBridgeLocked}
           className="w-full"
           dataAttribute="funding-send-confirm"
         />
-        {fastBtcLocked && (
+        {runeBridgeLocked && (
           <ErrorBadge
             level={ErrorLevel.Warning}
-            message={t(translations.maintenanceMode.fastBtc)}
+            message={t(translations.maintenanceMode.runeBridge)}
           />
         )}
       </div>

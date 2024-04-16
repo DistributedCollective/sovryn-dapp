@@ -141,6 +141,7 @@
     },
     "maintenanceMode": {
         "fastBtc": "Fast BTC is locked",
+        "runeBridge": "Rune Bridge is locked",
         "featureDisabled": "This feature is currently disabled",
         "openingLOC": "Opening a line of credit is currently disabled",
         "fullD2": {
@@ -1017,8 +1018,9 @@
                 "bitcoinTxId": "Bitcoin TXID"
             },
             "txDialog": {
-                "title": "Send BTC to the bitcoin network",
-                "sendBTC": "Send BTC"
+                "title": "Send {{rune}} to the bitcoin network",
+                "approveTxTitle": "Approve {{rune}}",
+                "sendTxTitle": "Send {{rune}}"
             }
         }
     },

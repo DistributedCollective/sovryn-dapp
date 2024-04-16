@@ -40,11 +40,16 @@ const getTitle = (status: StatusType) => {
 const rskExplorerUrl = getRskExplorerUrl();
 const btcExplorerUrl = getBtcExplorerUrl();
 
+interface FeesPaid {
+  rune: number;
+  baseCurrency: number;
+}
+
 type StatusScreenProps = {
   from: string;
   to: string;
   amount: string;
-  feesPaid: number;
+  feesPaid: FeesPaid;
   receiveAmount: number;
   txHash?: string;
   txStatus: StatusType;
@@ -109,7 +114,9 @@ export const StatusScreen: React.FC<StatusScreenProps> = ({
         label: t(translation.serviceFee),
         value: (
           <>
-            {formatValue(feesPaid, 8)} {selectedToken.symbol}
+            {formatValue(feesPaid.rune, 8)} {selectedToken.symbol}
+            <br />
+            {formatValue(feesPaid.baseCurrency, 8)} BTC
           </>
         ),
       },

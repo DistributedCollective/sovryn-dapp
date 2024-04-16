@@ -15,21 +15,26 @@ import {
   Select,
 } from '@sovryn/ui';
 
-import { RuneBridgeMaxButton } from '../../../../../2_molecules/MaxButton/RuneBridgeMaxButton';
+import { MaxButton } from '../../../../../2_molecules/MaxButton/MaxButton';
 import { TOKEN_RENDER_PRECISION } from '../../../../../../constants/currencies';
-import { useMaintenance } from '../../../../../../hooks/useMaintenance';
 import { translations } from '../../../../../../locales/i18n';
 import { fromWei, toWei } from '../../../../../../utils/math';
-import { GAS_LIMIT_RUNE_BRIDGE_WITHDRAW } from '../../../constants';
+import {
+  GAS_LIMIT_RUNE_BRIDGE_WITHDRAW,
+  WITHDRAW_FEE_RUNE_PERCENTAGE,
+  WITHDRAW_FEE_BASE_CURRENCY_BTC,
+  WITHDRAW_MIN_AMOUNT,
+  WITHDRAW_MAX_AMOUNT,
+} from '../../../constants';
 import { SendFlowContext, SendFlowStep } from '../../../contexts/sendflow';
 import { useContractService } from '../../../hooks/useContractService';
+import { useRuneBridgeLocked } from '../../../hooks/useRuneBridgeLocked';
 import { TransferPolicies } from '../../TransferPolicies';
 
 export const AmountForm: React.FC = () => {
   const { amount, limits, selectedToken, set } = useContext(SendFlowContext);
   const { tokenBalances } = useContractService();
-  const { checkMaintenance, States } = useMaintenance();
-  const fastBtcLocked = checkMaintenance(States.FASTBTC_SEND);
+  const runeBridgeLocked = useRuneBridgeLocked();
 
   const [value, setValue] = useState(amount || '0');
 
@@ -51,9 +56,10 @@ export const AmountForm: React.FC = () => {
     if (!tokenBalance) {
       return limit;
     }
-    const maxAmountWei = toWei(tokenBalance.balance);
+    const maxAmountWei = toWei(tokenBalance.balance, tokenBalance.decimals);
     return limit.gt(maxAmountWei) ? limit : maxAmountWei;
   }, [limits.max, selectedToken.tokenContractAddress, tokenBalances]);
+
   const maxExceed = useMemo(() => {
     if (value === '0') {
       return false;
@@ -97,12 +103,15 @@ export const AmountForm: React.FC = () => {
     }
 
     const amount = Number(value);
-    const selectedTokenBalanceInWei = toWei(selectedToken.balance);
+    const selectedTokenBalanceInWei = toWei(
+      selectedToken.balance,
+      selectedToken.decimals,
+    );
     if (amount < 0 || amount < limits.min || amount > limits.max) {
       return true;
     }
 
-    return toWei(amount)
+    return toWei(amount, selectedToken.decimals)
       .add(GAS_LIMIT_RUNE_BRIDGE_WITHDRAW)
       .gt(selectedTokenBalanceInWei.add(GAS_LIMIT_RUNE_BRIDGE_WITHDRAW) || '0');
   }, [selectedToken, value, limits]);
@@ -122,10 +131,10 @@ export const AmountForm: React.FC = () => {
               value={selectedToken.tokenContractAddress}
             />
           </div>
-          <RuneBridgeMaxButton
+          <MaxButton
             onClick={onMaximumAmountClick}
             value={fromWei(maxAmount)}
-            token={selectedToken}
+            token={selectedToken.symbol}
             precision={TOKEN_RENDER_PRECISION}
             dataAttribute="funding-send-amount-max"
           />
@@ -140,20 +149,24 @@ export const AmountForm: React.FC = () => {
             decimalPrecision={TOKEN_RENDER_PRECISION}
             className="max-w-none"
             invalid={maxExceed || !selectedToken.tokenContractAddress}
-            disabled={!selectedToken.tokenContractAddress || fastBtcLocked}
+            disabled={!selectedToken.tokenContractAddress || runeBridgeLocked}
             dataAttribute="funding-send-amount-input"
           />
           {maxExceed && (
             <Paragraph className="text-error-light font-medium mt-2">
-              {t(translations.fastBtc.send.addressForm.maxExceed)}
+              {t(translations.runeBridge.send.addressForm.maxExceed)}
             </Paragraph>
           )}
         </div>
         <div className="mt-4">
           <TransferPolicies
-            minimumAmount="No limit"
-            maximumAmount="No limit"
-            serviceFee="Free"
+            minimumAmount={`${WITHDRAW_MIN_AMOUNT} ${
+              selectedToken?.symbol ?? 'RUNE'
+            }`}
+            maximumAmount={`${WITHDRAW_MAX_AMOUNT} ${
+              selectedToken?.symbol ?? 'RUNE'
+            }`}
+            serviceFee={`${WITHDRAW_FEE_RUNE_PERCENTAGE}% + ${WITHDRAW_FEE_BASE_CURRENCY_BTC} BTC`}
             className="mb-6"
           />
         </div>
@@ -161,16 +174,16 @@ export const AmountForm: React.FC = () => {
         <Button
           text={t(translations.common.buttons.continue)}
           onClick={onContinueClick}
-          disabled={!tokenBalancesLoaded || invalid || fastBtcLocked} // {invalid || fastBtcLocked}
+          disabled={!tokenBalancesLoaded || invalid || runeBridgeLocked} // {invalid || runeBridgeLocked}
           style={ButtonStyle.secondary}
           className="mt-10 w-full"
           dataAttribute="funding-send-amount-confirm"
         />
 
-        {fastBtcLocked && (
+        {runeBridgeLocked && (
           <ErrorBadge
             level={ErrorLevel.Warning}
-            message={t(translations.maintenanceMode.fastBtc)}
+            message={t(translations.maintenanceMode.runeBridge)}
             dataAttribute="funding-send-amount-confirm-error"
           />
         )}

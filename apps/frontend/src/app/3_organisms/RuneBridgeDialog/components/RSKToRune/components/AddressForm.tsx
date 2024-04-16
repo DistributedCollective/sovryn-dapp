@@ -21,7 +21,6 @@ import {
   ParagraphSize,
 } from '@sovryn/ui';
 
-import { useMaintenance } from '../../../../../../hooks/useMaintenance';
 import { translations } from '../../../../../../locales/i18n';
 import {
   currentBTCNetwork,
@@ -32,13 +31,11 @@ import {
   SendFlowContext,
   SendFlowStep,
 } from '../../../contexts/sendflow';
+import { useRuneBridgeLocked } from '../../../hooks/useRuneBridgeLocked';
 
 export const AddressForm: React.FC = () => {
   const { address, set, addressValidationState } = useContext(SendFlowContext);
-  const { checkMaintenance, States } = useMaintenance();
-  const fastBtcLocked = checkMaintenance(States.FASTBTC_SEND);
-  // TODO: maybe do rune bridge validation
-  // const fastBtcBridgeContract = useGetProtocolContract('fastBtcBridge');
+  const runeBridgeLocked = useRuneBridgeLocked();
   const [value, setValue] = useState(address);
 
   const onContinueClick = useCallback(
@@ -68,11 +65,7 @@ export const AddressForm: React.FC = () => {
       setAddressValidationState(AddressValidationState.LOADING);
       const isValidBtcAddress = validate(address, currentBTCNetwork);
 
-      // if (!fastBtcBridgeContract) {
-      //   return;
-      // }
-
-      // const isValid = fastBtcBridgeContract.isValidBtcAddress(address);
+      // smart contract side validation could be done here too
 
       if (isValidBtcAddress) {
         const { network } = getAddressInfo(address);
@@ -88,7 +81,6 @@ export const AddressForm: React.FC = () => {
         setAddressValidationState(AddressValidationState.INVALID);
       }
     },
-    // [fastBtcBridgeContract, setAddressValidationState],
     [setAddressValidationState],
   );
 
@@ -101,8 +93,8 @@ export const AddressForm: React.FC = () => {
     }
   }, [value, validateAddress, setAddressValidationState]);
   const isSubmitDisabled = useMemo(
-    () => invalidAddress || fastBtcLocked || !value || value === '',
-    [fastBtcLocked, invalidAddress, value],
+    () => invalidAddress || runeBridgeLocked || !value || value === '',
+    [runeBridgeLocked, invalidAddress, value],
   );
 
   return (
@@ -138,10 +130,10 @@ export const AddressForm: React.FC = () => {
         dataAttribute="funding-send-address-confirm"
       />
 
-      {fastBtcLocked && (
+      {runeBridgeLocked && (
         <ErrorBadge
           level={ErrorLevel.Warning}
-          message={t(translations.maintenanceMode.fastBtc)}
+          message={t(translations.maintenanceMode.runeBridge)}
         />
       )}
     </div>

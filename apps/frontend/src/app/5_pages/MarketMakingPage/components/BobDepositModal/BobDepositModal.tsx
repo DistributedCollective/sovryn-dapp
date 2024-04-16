@@ -2,7 +2,6 @@ import React, { FC, useCallback, useMemo, useState } from 'react';
 
 import { t } from 'i18next';
 
-import { SupportedTokens } from '@sovryn/contracts';
 import {
   Accordion,
   AmountInput,
@@ -22,6 +21,7 @@ import { MaxButton } from '../../../../2_molecules/MaxButton/MaxButton';
 import { useAccount } from '../../../../../hooks/useAccount';
 import { useWeiAmountInput } from '../../../../../hooks/useWeiAmountInput';
 import { translations } from '../../../../../locales/i18n';
+import { COMMON_SYMBOLS } from '../../../../../utils/asset';
 import { AmmLiquidityPoolDictionary } from '../../utils/AmmLiquidityPoolDictionary';
 import { useGetMaxDeposit } from '../AdjustAndDepositModal/hooks/useGetMaxDeposit';
 import { NewPoolStatistics } from './components/NewPoolStatistics/NewPoolStatistics';
@@ -29,7 +29,7 @@ import { PriceRange } from './components/PriceRange/PriceRange';
 
 // TODO: This will be a prop and will likely use a different set of pools
 const POOL = AmmLiquidityPoolDictionary.list().filter(
-  pool => pool.assetA === SupportedTokens.dllr,
+  pool => pool.assetA === COMMON_SYMBOLS.DLLR,
 )[0];
 
 const pageTranslations = translations.bobMarketMakingPage.depositModal;

@@ -2,8 +2,8 @@ import React, { useEffect } from 'react';
 
 import { ethers } from 'ethers';
 
-import runeBridgeABI from '../../../../abi/RuneBridge.json';
 import { useAccount } from '../../../../hooks/useAccount';
+import runeBridgeABI from '../abi/RuneBridge.json';
 import {
   Contract,
   defaultValue,

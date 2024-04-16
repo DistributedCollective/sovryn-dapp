@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react';
 
-import { runeBridgeApiClient } from '../../../../api';
-import { RequestOpts } from '../../../../api/RuneBridgeClient';
+import { runeBridgeApiClient } from '../api';
+import { RequestOpts } from '../api/RuneBridgeClient';
 import {
   ReceiveFlowContext,
   defaultValue,

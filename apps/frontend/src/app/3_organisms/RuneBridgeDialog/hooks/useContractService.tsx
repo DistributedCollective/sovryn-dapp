@@ -1,8 +1,8 @@
 import React from 'react';
 
-import { runeBridgeApiClient } from '../../../../api';
-import { RequestOpts } from '../../../../api/RuneBridgeClient';
 import { useAccount } from '../../../../hooks/useAccount';
+import { runeBridgeApiClient } from '../api';
+import { RequestOpts } from '../api/RuneBridgeClient';
 import { Contract } from '../contexts/contract';
 
 export const useContractService = () => {

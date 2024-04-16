@@ -141,9 +141,9 @@ export const Staking: FC = () => {
               amount: (
                 <AmountRenderer
                   value={liquidOsSovClaimAmount}
-                  suffix={getTokenDisplayName(SupportedTokens.ossov)}
+                  suffix={getTokenDisplayName('OSSOV')}
                   precision={BTC_RENDER_PRECISION}
-                  dataAttribute={`${SupportedTokens.sov}-os-liquid-amount`}
+                  dataAttribute={`ossov-liquid-amount`}
                 />
               ),
               action: (
@@ -155,7 +155,7 @@ export const Staking: FC = () => {
                   refetch={refetchLiquidOsSovClaim}
                 />
               ),
-              key: `${SupportedTokens.sov}-os-liquid-fee`,
+              key: `ossov-liquid-fee`,
             },
           ]
         : []),

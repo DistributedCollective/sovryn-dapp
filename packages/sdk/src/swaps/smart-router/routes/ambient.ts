@@ -45,16 +45,18 @@ export const ambientRoute: SwapRouteFunction = (
   const loadPools = async () => {
     const chainId = await getChainId();
 
-    // testing for sepolia fork...
+    // testing for virtual network fork...
     if (chainId === ChainIds.FORK) {
       const eth = (await getAssetContract('ETH', chainId)).address;
-      const vct = (await getAssetContract('VCT', chainId)).address;
-      const sbl = (await getAssetContract('SBL', chainId)).address;
-      const cpl = (await getAssetContract('CPL', chainId)).address;
+      const sov = (await getAssetContract('SOV', chainId)).address;
+      const usdt = (await getAssetContract('USDT', chainId)).address;
+      const usdc = (await getAssetContract('USDC', chainId)).address;
+      const dai = (await getAssetContract('DAI', chainId)).address;
       const pools: Pool[] = [
-        [eth, vct],
-        [eth, sbl],
-        [eth, cpl],
+        [eth, sov],
+        [eth, usdc],
+        [eth, usdt],
+        [eth, dai],
       ];
 
       return pools;

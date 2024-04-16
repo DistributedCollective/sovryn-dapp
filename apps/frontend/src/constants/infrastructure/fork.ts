@@ -1,21 +1,17 @@
 import { Environments } from '../../types/global';
 
-const TENDERLY_FORK_ID = '612b39ab-7310-4e58-a69e-6b98b0962b7d';
-
 export const FORK = {
   rpc: {
     [Environments.Testnet]: [
-      'https://rpc.tenderly.co/fork/' + TENDERLY_FORK_ID,
-      // 'https://rpc.vnet.tenderly.co/devnet/my-first-devnet/d2a17dcf-81a0-4c53-b773-798db4521cd9',
+      'https://virtual.mainnet.rpc.tenderly.co/4a0f7fb8-07fb-4cdd-baad-ec76fc7c6233',
     ],
   },
   publicRpc: {
-    [Environments.Testnet]: 'https://rpc.tenderly.co/fork/' + TENDERLY_FORK_ID,
+    [Environments.Testnet]:
+      'https://virtual.mainnet.rpc.tenderly.co/4a0f7fb8-07fb-4cdd-baad-ec76fc7c6233',
   },
   explorer: {
     [Environments.Testnet]:
-      'https://dashboard.tenderly.co/explorer/fork/' +
-      TENDERLY_FORK_ID +
-      '/transactions',
+      'https://dashboard.tenderly.co/explorer/vnet/85e84e6d-a6fe-4497-8cfc-e32db752ac01/transactions',
   },
 };

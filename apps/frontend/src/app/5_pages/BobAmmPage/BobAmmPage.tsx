@@ -175,9 +175,7 @@ export const BobAmmPage: React.FC = () => {
     if (!croc.current) {
       return;
     }
-    const labels = isFork()
-      ? ['ETH', 'VCT', 'SBL', 'CPL']
-      : ['ETH', 'SOV', 'USDT', 'USDC', 'DAI'];
+    const labels = ['ETH', 'SOV', 'USDT', 'USDC', 'DAI'];
     const items = labels.map(label => findAsset(label, CHAIN_ID).address);
 
     const _dexBalances: Record<string, Decimal> = {};
@@ -199,7 +197,7 @@ export const BobAmmPage: React.FC = () => {
       setPrevDexBalances(p);
       return _dexBalances;
     });
-  }, [CHAIN_ID, account, isFork]);
+  }, [CHAIN_ID, account]);
 
   useEffect(() => {
     updateBalances();
@@ -212,25 +210,31 @@ export const BobAmmPage: React.FC = () => {
         {isFork() ? (
           <ol>
             <li>
-              <button onClick={() => handlePoolInit('ETH', 'VCT', 1000)}>
-                Initialize pool: ETH/VCT (1000 VCT)
+              <button onClick={() => handlePoolInit('ETH', 'SOV', 1600)}>
+                Initialize pool: ETH/SOV (1600 SOV)
               </button>
-              <button onClick={() => handlePoolInit('ETH', 'SBL', 500)}>
-                Initialize pool: ETH/SBL (500 SBL)
+              <button onClick={() => handlePoolInit('ETH', 'USDC', 3300)}>
+                Initialize pool: ETH/USDC (3300$)
               </button>
-              <button onClick={() => handlePoolInit('ETH', 'CPL', 250)}>
-                Initialize pool: ETH/CPL (250 CPL)
+              <button onClick={() => handlePoolInit('ETH', 'USDT', 3250)}>
+                Initialize pool: ETH/USDT (3250$)
+              </button>
+              <button onClick={() => handlePoolInit('ETH', 'DAI', 3200)}>
+                Initialize pool: ETH/DAI (3200$)
               </button>
             </li>
             <li>
-              <button onClick={() => handleDeposit('ETH', 'VCT', 100)}>
-                Deposit to pool: ETH/VCT (100 ETH)
+              <button onClick={() => handleDeposit('ETH', 'SOV', 100)}>
+                Deposit to pool: ETH/SOV (100 ETH)
               </button>
-              <button onClick={() => handleDeposit('ETH', 'SBL', 100)}>
-                Deposit to pool: ETH/SBL (100 ETH)
+              <button onClick={() => handleDeposit('ETH', 'USDC', 100)}>
+                Deposit to pool: ETH/USDC (100 ETH)
               </button>
-              <button onClick={() => handleDeposit('ETH', 'CPL', 100)}>
-                Deposit to pool: ETH/CPL (100 ETH)
+              <button onClick={() => handleDeposit('ETH', 'USDT', 100)}>
+                Deposit to pool: ETH/USDT (100 ETH)
+              </button>
+              <button onClick={() => handleDeposit('ETH', 'DAI', 100)}>
+                Deposit to pool: ETH/DAI (100 ETH)
               </button>
             </li>
           </ol>

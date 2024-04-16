@@ -73,7 +73,7 @@ export const APP_CHAIN_LIST: ChainWithLogo[] = [
         },
         {
           id: ChainIds.FORK,
-          label: 'Fork',
+          label: 'Virtual Network',
           token: 'tETH',
           publicRpcUrl: FORK.publicRpc[Environments.Testnet],
           rpcUrl: FORK.rpc[Environments.Testnet],

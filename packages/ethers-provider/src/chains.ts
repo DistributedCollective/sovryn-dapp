@@ -10,5 +10,5 @@ export enum ChainIds {
   /** @deprecated */
   ROPSTEN = '0x3',
   // forks
-  FORK = '0x6a62287', //111551111
+  FORK = '0x1b669', //112233
 }

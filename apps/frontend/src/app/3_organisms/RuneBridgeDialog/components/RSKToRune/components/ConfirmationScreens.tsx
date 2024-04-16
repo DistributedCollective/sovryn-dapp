@@ -78,61 +78,62 @@ export const ConfirmationScreens: React.FC<ConfirmationScreensProps> = ({
     [currentFeeWei, weiAmount],
   );
   const handleConfirm = useCallback(async () => {
-    if (runeBridgeContract) {
-      const tokenContract = new Contract(
-        selectedToken.tokenContractAddress,
-        ['function approve(address spender, uint256 amount) returns (bool)'],
-        signer,
-      );
-      const tokenDetails: TokenDetails = {
-        address: selectedToken.tokenContractAddress,
-        symbol: selectedToken.symbol as any,
-        decimalPrecision: selectedToken.decimals,
-      };
-      if (!signer) {
-        throw new Error('Signer not found');
-      }
-      setTransactions([
-        {
-          title: t(`Approve ${selectedToken.name}`),
-          request: {
-            type: TransactionType.signTransaction,
-            contract: tokenContract,
-            tokenDetails,
-            fnName: 'approve',
-            args: [runeBridgeContract.address, toWei(amount)],
-            gasLimit: GAS_LIMIT_RUNE_BRIDGE_WITHDRAW,
-          },
-          onStart: hash => {
-            setTxHash(hash);
-          },
-          onChangeStatus: setTxStatus,
-        },
-        {
-          title: t(`Send ${selectedToken.name}`),
-          request: {
-            type: TransactionType.signTransaction,
-            contract: runeBridgeContract.connect(signer),
-            fnName: 'transferToBtc',
-            args: [
-              selectedToken.tokenContractAddress,
-              toWei(amount),
-              receiverAddress,
-            ],
-            gasLimit: GAS_LIMIT_RUNE_BRIDGE_WITHDRAW,
-          },
-          onStart: hash => {
-            setTxStatus(StatusType.idle);
-            setTxHash(hash);
-            set(prevState => ({ ...prevState, step: SendFlowStep.CONFIRM }));
-            setIsOpen(false);
-          },
-          onChangeStatus: setTxStatus,
-        },
-      ]);
-      setTitle(t(`Send ${selectedToken.name} to the bitcoin network`));
-      setIsOpen(true);
+    if (!runeBridgeContract) {
+      return;
     }
+    const tokenContract = new Contract(
+      selectedToken.tokenContractAddress,
+      ['function approve(address spender, uint256 amount) returns (bool)'],
+      signer,
+    );
+    const tokenDetails: TokenDetails = {
+      address: selectedToken.tokenContractAddress,
+      symbol: selectedToken.symbol as any,
+      decimalPrecision: selectedToken.decimals,
+    };
+    if (!signer) {
+      throw new Error('Signer not found');
+    }
+    setTransactions([
+      {
+        title: t(`Approve ${selectedToken.name}`),
+        request: {
+          type: TransactionType.signTransaction,
+          contract: tokenContract,
+          tokenDetails,
+          fnName: 'approve',
+          args: [runeBridgeContract.address, toWei(amount)],
+          gasLimit: GAS_LIMIT_RUNE_BRIDGE_WITHDRAW,
+        },
+        onStart: hash => {
+          setTxHash(hash);
+        },
+        onChangeStatus: setTxStatus,
+      },
+      {
+        title: t(`Send ${selectedToken.name}`),
+        request: {
+          type: TransactionType.signTransaction,
+          contract: runeBridgeContract.connect(signer),
+          fnName: 'transferToBtc',
+          args: [
+            selectedToken.tokenContractAddress,
+            toWei(amount),
+            receiverAddress,
+          ],
+          gasLimit: GAS_LIMIT_RUNE_BRIDGE_WITHDRAW,
+        },
+        onStart: hash => {
+          setTxStatus(StatusType.idle);
+          setTxHash(hash);
+          set(prevState => ({ ...prevState, step: SendFlowStep.CONFIRM }));
+          setIsOpen(false);
+        },
+        onChangeStatus: setTxStatus,
+      },
+    ]);
+    setTitle(t(`Send ${selectedToken.name} to the bitcoin network`));
+    setIsOpen(true);
   }, [
     amount,
     receiverAddress,

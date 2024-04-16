@@ -267,7 +267,8 @@ export const BobAmmPage: React.FC = () => {
           qty: TOKEN_B_AMOUNT,
           isWithdrawFromDexChecked: false,
         },
-        isTokenAPrimaryRange: true,
+        // todo: check if this need to be switched for certain cases
+        isTokenAPrimaryRange: false,
         tick: { low: MIN_TICK, high: MAX_TICK },
       });
 

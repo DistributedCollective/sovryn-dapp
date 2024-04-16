@@ -135,7 +135,7 @@ export const useHandleSubmit = (assetA: string, assetB: string) => {
         qty: Number(secondAssetValue),
         isWithdrawFromDexChecked: false,
       },
-      isTokenAPrimaryRange: true,
+      isTokenAPrimaryRange: false,
       tick: {
         low: priceToTick(lowerBoundaryPrice),
         high: priceToTick(upperBoundaryPrice),

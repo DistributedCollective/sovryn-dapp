@@ -88,7 +88,7 @@ export const Accordion: FC<IAccordionProps> = ({
 
       {!alwaysMounted && open && (
         <div
-          className={styles.content}
+          className={classNames(styles.content, styles.isOpen)}
           {...applyDataAttr(`${dataAttribute}-content`)}
         >
           {children}

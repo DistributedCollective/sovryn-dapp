@@ -1,6 +1,6 @@
 import { Environments } from '../../types/global';
 
-const TENDERLY_FORK_ID = '600da1f5-ca21-4d57-8192-233e092a5bf3';
+const TENDERLY_FORK_ID = '612b39ab-7310-4e58-a69e-6b98b0962b7d';
 
 export const FORK = {
   rpc: {

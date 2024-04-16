@@ -42,7 +42,7 @@ const SCROLL_LOGO =
 
 const DFLT_SDK_INFURA_KEY = '360ea5fda45b4a22883de8522ebd639e';
 
-const TENDERLY_FORK_ID = '600da1f5-ca21-4d57-8192-233e092a5bf3';
+const TENDERLY_FORK_ID = '612b39ab-7310-4e58-a69e-6b98b0962b7d';
 
 const GOERLI_CHAIN: ChainSpec = {
   nodeUrl: 'https://goerli.infura.io/v3/' + DFLT_SDK_INFURA_KEY,
@@ -182,7 +182,8 @@ const SCROLL_CHAIN: ChainSpec = {
 };
 
 const BOB_TESTNET_CHAIN: ChainSpec = {
-  nodeUrl: 'https://bob-sepolia.rpc.caldera.xyz/http',
+  nodeUrl: 'https://sepolia-dencun.rpc.gobob.xyz',
+  wsUrl: 'wss://sepolia-dencun.rpc.gobob.xyz/wss',
   addrs: {
     dex: '0xdA95787c585F179BE374a241C8f0cdC25dC5A751',
     query: '0xA6b5f74DDCc75b4b561D84B19Ad7FD51f0405483',
@@ -192,14 +193,14 @@ const BOB_TESTNET_CHAIN: ChainSpec = {
   },
   poolIndex: 36000,
   isTestNet: true,
-  chainId: '0x97114f',
+  chainId: '0x94258',
   gridSize: 16,
   proxyPaths: {
     cold: 3,
     long: 130,
     liq: 128,
   },
-  blockExplorer: 'https://bob-sepolia.explorer.caldera.xyz',
+  blockExplorer: 'https://sepolia-dencun.explorer.gobob.xyz',
   displayName: 'BOB Testnet',
   logoUrl: ETHEREUM_LOGO,
 };
@@ -211,6 +212,7 @@ const LOCAL_FORK_CHAIN: ChainSpec = Object.assign({}, GOERLI_CHAIN, {
 });
 
 const TENDERLY_FORK: ChainSpec = Object.assign({}, SEPOLIA_CHAIN, {
+  chainId: '0x6a62287',
   nodeUrl: 'https://rpc.tenderly.co/fork/c' + TENDERLY_FORK_ID,
   wsUrl: undefined,
   blockExplorer:
@@ -223,17 +225,15 @@ const TENDERLY_FORK: ChainSpec = Object.assign({}, SEPOLIA_CHAIN, {
 export const CHAIN_SPECS: { [chainId: string]: ChainSpec } = {
   '0x1': MAINNET_CHAIN,
   '0x5': GOERLI_CHAIN,
-  '0x6f': BOB_TESTNET_CHAIN, // 111
-  '0x97114f': BOB_TESTNET_CHAIN,
+  '0x94258': BOB_TESTNET_CHAIN,
   '0x7a69': LOCAL_FORK_CHAIN,
   '0x66eed': ARB_GOERLI_CHAIN,
-  // '0xaa36a7': SEPOLIA_CHAIN,
-  '0xaa36a7': TENDERLY_FORK,
+  '0xaa36a7': SEPOLIA_CHAIN,
   '0x8274f': SCROLL_SEPOLIA_CHAIN,
   '0x82750': SCROLL_CHAIN,
+  '0x6a62287': TENDERLY_FORK,
   goerli: GOERLI_CHAIN,
-  // sepolia: SEPOLIA_CHAIN,
-  sepolia: TENDERLY_FORK,
+  sepolia: SEPOLIA_CHAIN,
   arbtest: ARB_GOERLI_CHAIN,
   arbgoerli: ARB_GOERLI_CHAIN,
   local: LOCAL_FORK_CHAIN,
@@ -243,4 +243,5 @@ export const CHAIN_SPECS: { [chainId: string]: ChainSpec } = {
   scroll: SCROLL_CHAIN,
   scrollsepolia: SCROLL_SEPOLIA_CHAIN,
   bobTestnet: BOB_TESTNET_CHAIN,
+  fork: TENDERLY_FORK,
 };

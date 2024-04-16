@@ -16,9 +16,9 @@ import {
 
 import { APPROVAL_FUNCTION } from '../../../../../constants/general';
 import { useAccount } from '../../../../../hooks/useAccount';
-import { useAssetBalance } from '../../../../../hooks/useAssetBalance';
+import { useCurrentChain } from '../../../../../hooks/useChainStore';
+import { useNativeAssetBalance } from '../../../../../hooks/useNativeAssetBalance';
 import { translations } from '../../../../../locales/i18n';
-import { COMMON_SYMBOLS } from '../../../../../utils/asset';
 import { sleep } from '../../../../../utils/helpers';
 import { fromWei, toWei } from '../../../../../utils/math';
 import { signERC2612Permit } from '../../../../../utils/permit/permit';
@@ -54,16 +54,17 @@ export const TransactionSteps: FC<TransactionStepsProps> = ({
   gasPrice,
   onTxStatusChange,
 }) => {
+  const chainId = useCurrentChain();
   const [stepData, setStepData] = useState<TransactionStepData[]>([]);
   const [step, setStep] = useState(-1);
   const [error, setError] = useState(false);
   const [estimatedGasFee, setEstimatedGasFee] = useState(0);
-  const { balance: rbtcBalance, loading } = useAssetBalance(COMMON_SYMBOLS.BTC);
+  const { balance: nativeBalance, loading } = useNativeAssetBalance(chainId);
   const { account } = useAccount();
 
   const hasEnoughBalance = useMemo(
-    () => account && !loading && rbtcBalance.sub(estimatedGasFee).gt(0),
-    [account, loading, rbtcBalance, estimatedGasFee],
+    () => account && !loading && nativeBalance.sub(estimatedGasFee).gt(0),
+    [account, loading, nativeBalance, estimatedGasFee],
   );
 
   useEffect(() => {

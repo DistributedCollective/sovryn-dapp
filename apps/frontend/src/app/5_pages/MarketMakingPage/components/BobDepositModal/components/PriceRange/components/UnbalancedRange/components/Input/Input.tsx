@@ -10,7 +10,6 @@ type InputProps = {
   range: number;
   onMinusClick: () => void;
   onPlusClick: () => void;
-  isLowerBoundary?: boolean;
 };
 
 export const Input: FC<InputProps> = ({
@@ -19,7 +18,6 @@ export const Input: FC<InputProps> = ({
   range,
   onMinusClick,
   onPlusClick,
-  isLowerBoundary,
 }) => (
   <div className="flex flex-col items-center min-w-36">
     <div className="text-xs font-medium text-gray-30 mb-2">{label}</div>
@@ -42,7 +40,7 @@ export const Input: FC<InputProps> = ({
       />
     </div>
     <div className="text-xs font-medium text-gray-30 mt-2">{`${
-      isLowerBoundary ? '-' : '+'
+      range < 1 ? '' : '+'
     }${range}%`}</div>
   </div>
 );

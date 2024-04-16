@@ -14,6 +14,6 @@ export const ETH_TOKEN = ethers.constants.AddressZero;
 // export const OKB_TOKEN = '0x3F4B6664338F23d2397c953f2AB4Ce8031663f80';
 
 // BOB testnet
-export const USDC_TOKEN = findAsset('SOV', BOB_CHAIN_ID).address;
-export const WBTC_TOKEN = findAsset('WBTC', BOB_CHAIN_ID).address;
-export const OKB_TOKEN = findAsset('GLD', BOB_CHAIN_ID).address;
+export const USDC_TOKEN = findAsset('SOV', BOB_CHAIN_ID)?.address;
+export const WBTC_TOKEN = findAsset('WBTC', BOB_CHAIN_ID)?.address;
+export const OKB_TOKEN = findAsset('GLD', BOB_CHAIN_ID)?.address;

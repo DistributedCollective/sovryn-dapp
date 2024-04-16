@@ -1,8 +1,9 @@
 import { SupportedTokens } from '@sovryn/contracts';
 import { getProvider } from '@sovryn/ethers-provider';
 import { SmartRouter, smartRoutes } from '@sovryn/sdk';
+import { defaultChainId } from '../../../config/chains';
 
-const provider = getProvider();
+const provider = getProvider(defaultChainId);
 
 const SWAP_ROUTES = [
   smartRoutes.ammSwapRoute,

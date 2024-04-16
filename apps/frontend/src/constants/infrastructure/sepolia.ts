@@ -17,4 +17,8 @@ export const SEPOLIA = {
   bridge: {
     [Environments.Testnet]: 'https://bob-testnet.bridge.caldera.xyz',
   },
+  subgraph: {
+    [Environments.Testnet]:
+      'https://api.studio.thegraph.com/proxy/71652/sdex-sepolia/version/latest',
+  },
 };

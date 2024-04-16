@@ -24,6 +24,6 @@ export const BOB = {
   subgraph: {
     [Environments.Mainnet]: '',
     [Environments.Testnet]:
-      'https://bob-ambient-subgraph.test.sovryn.app/subgraphs/name/DistributedCollective/bob-ambient-subgraph/graphql',
+      'https://bob-ambient-subgraph.test.sovryn.app/subgraphs/name/DistributedCollective/bob-ambient-subgraph',
   },
 };

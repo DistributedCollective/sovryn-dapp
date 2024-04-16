@@ -16,8 +16,6 @@ import {
   NotificationType,
 } from '@sovryn/ui';
 
-import { BOB_CHAIN_ID } from '../../../../../config/chains';
-
 import {
   DEFAULT_HISTORY_FRAME_PAGE_SIZE,
   EXPORT_RECORD_LIMIT,
@@ -27,13 +25,14 @@ import { useNotificationContext } from '../../../../../contexts/NotificationCont
 import { useAccount } from '../../../../../hooks/useAccount';
 import { useBlockNumber } from '../../../../../hooks/useBlockNumber';
 import { translations } from '../../../../../locales/i18n';
-import { bobClient } from '../../../../../utils/clients';
+import { sepoliaSdexClient } from '../../../../../utils/clients';
 import {
   Swap,
   Swap_OrderBy,
   useGetSwapHistoryLazyQuery,
 } from '../../../../../utils/graphql/bob/generated';
 import { dateFormat } from '../../../../../utils/helpers';
+import { fromWei } from '../../../../../utils/math';
 import { BaseConversionsHistoryFrame } from '../BaseConversionsHistoryFrame/BaseConversionsHistoryFrame';
 import { COLUMNS_CONFIG } from './BobConversionsHistoryFrame.constants';
 import { generateRowTitle } from './BobConversionsHistoryFrame.utils';
@@ -71,7 +70,7 @@ export const BobConversionsHistoryFrame: React.FC<PropsWithChildren> = ({
   );
 
   const [getConversions] = useGetSwapHistoryLazyQuery({
-    client: bobClient,
+    client: sepoliaSdexClient,
   });
 
   const exportData = useCallback(async () => {
@@ -103,17 +102,17 @@ export const BobConversionsHistoryFrame: React.FC<PropsWithChildren> = ({
           ? t(translations.conversionsHistory.swapMultihop)
           : t(translations.conversionsHistory.swap),
       sent: tx.inBaseQty
-        ? Math.abs(Number(tx.baseFlow))
-        : Math.abs(Number(tx.quoteFlow)),
+        ? Math.abs(Number(fromWei(tx.baseFlow)))
+        : Math.abs(Number(fromWei(tx.quoteFlow))),
       sentToken: tx.inBaseQty
-        ? getTokenDisplayNameByAddress(tx.pool.base, BOB_CHAIN_ID)
-        : getTokenDisplayNameByAddress(tx.pool.quote, BOB_CHAIN_ID),
+        ? getTokenDisplayNameByAddress(tx.pool.base)
+        : getTokenDisplayNameByAddress(tx.pool.quote),
       receivedToken: tx.inBaseQty
-        ? getTokenDisplayNameByAddress(tx.pool.quote, BOB_CHAIN_ID)
-        : getTokenDisplayNameByAddress(tx.pool.base, BOB_CHAIN_ID),
+        ? getTokenDisplayNameByAddress(tx.pool.quote)
+        : getTokenDisplayNameByAddress(tx.pool.base),
       received: tx.inBaseQty
-        ? Math.abs(Number(tx.quoteFlow))
-        : Math.abs(Number(tx.baseFlow)),
+        ? Math.abs(Number(fromWei(tx.quoteFlow)))
+        : Math.abs(Number(fromWei(tx.baseFlow))),
       TXID: tx.transactionHash,
     }));
   }, [account, addNotification, getConversions]);

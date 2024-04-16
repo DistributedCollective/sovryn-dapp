@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 
 import { OrderOptions } from '@sovryn/ui';
 
-import { bobClient } from '../../../../../../utils/clients';
+import { sepoliaSdexClient } from '../../../../../../utils/clients';
 import {
   Swap_OrderBy,
   useGetSwapHistoryQuery,
@@ -31,5 +31,8 @@ export const useGetBobConversionsHistory = (
     ],
   );
 
-  return useGetSwapHistoryQuery({ variables: config, client: bobClient });
+  return useGetSwapHistoryQuery({
+    variables: config,
+    client: sepoliaSdexClient,
+  });
 };

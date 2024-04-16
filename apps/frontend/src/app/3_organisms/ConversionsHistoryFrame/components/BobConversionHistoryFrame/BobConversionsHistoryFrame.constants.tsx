@@ -2,8 +2,6 @@ import React from 'react';
 
 import { t } from 'i18next';
 
-import { BOB_CHAIN_ID } from '../../../../../config/chains';
-
 import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { TransactionIdRenderer } from '../../../../2_molecules/TransactionIdRenderer/TransactionIdRenderer';
 import { getTokenDisplayNameByAddress } from '../../../../../constants/tokens';
@@ -20,10 +18,7 @@ const renderAmount = (
 ) => (
   <AmountRenderer
     value={Math.abs(Number(fromWei(value)))}
-    suffix={getTokenDisplayNameByAddress(
-      inBaseQty ? pool.base : pool.quote,
-      BOB_CHAIN_ID,
-    )}
+    suffix={getTokenDisplayNameByAddress(inBaseQty ? pool.base : pool.quote)}
   />
 );
 

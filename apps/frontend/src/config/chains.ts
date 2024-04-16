@@ -7,6 +7,7 @@ import unknownLogo from '../assets/chains/unknown.svg';
 import { BOB } from '../constants/infrastructure/bob';
 import { FORK } from '../constants/infrastructure/fork';
 import { RSK } from '../constants/infrastructure/rsk';
+import { SEPOLIA } from '../constants/infrastructure/sepolia';
 import { Environments } from '../types/global';
 
 const IS_MAINNET = process.env.REACT_APP_NETWORK === Environments.Mainnet;
@@ -70,6 +71,15 @@ export const APP_CHAIN_LIST: ChainWithLogo[] = [
           rpcUrl: BOB.rpc[Environments.Testnet],
           blockExplorerUrl: BOB.explorer[Environments.Testnet],
           icon: bobLogo,
+        },
+        {
+          id: ChainIds.SEPOLIA,
+          label: 'Sepolia Testnet',
+          token: 'tETH',
+          publicRpcUrl: SEPOLIA.publicRpc[Environments.Testnet],
+          rpcUrl: SEPOLIA.rpc[Environments.Testnet],
+          blockExplorerUrl: SEPOLIA.explorer[Environments.Testnet],
+          icon: unknownLogo,
         },
         {
           id: ChainIds.FORK,

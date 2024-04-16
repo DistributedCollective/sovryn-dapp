@@ -198,7 +198,7 @@ export class CrocPoolView {
     });
   }
 
-  async initPool(initPrice: number): Promise<TransactionResponse> {
+  async initPool(initPrice: number) {
     // Very small amount of ETH in economic terms but more than sufficient for min init burn
     const ETH_INIT_BURN = BigNumber.from(10).pow(12);
     let txArgs =
@@ -215,7 +215,12 @@ export class CrocPoolView {
 
     let cntx = await this.context;
 
-    return cntx.dex.userCmd(cntx.chain.proxyPaths.cold, calldata, txArgs);
+    return {
+      contract: cntx.dex,
+      fn: 'userCmd',
+      args: [cntx.chain.proxyPaths.cold, calldata],
+      ...txArgs,
+    };
   }
 
   async mintAmbientBase(

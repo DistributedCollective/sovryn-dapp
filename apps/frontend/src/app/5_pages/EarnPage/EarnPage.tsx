@@ -361,134 +361,138 @@ const EarnPage: FC = () => {
         <title>{t(translations.earnPage.meta.title)}</title>
       </Helmet>
       <div className="w-full flex flex-col items-center text-gray-10">
-        <NetworkBanner requiredChainId={RSK_CHAIN_ID} className="mb-8" />
-        <Heading className="text-base sm:text-2xl">
-          {t(pageTranslations.title)}
-        </Heading>
-        <Paragraph
-          size={ParagraphSize.base}
-          className="mt-2.5 sm:mt-4 sm:text-base"
+        <NetworkBanner
+          requiredChainId={RSK_CHAIN_ID}
+          childClassName="flex flex-col items-center text-gray-10"
         >
-          {t(pageTranslations.subtitle)}
-        </Paragraph>
+          <Heading className="text-base sm:text-2xl">
+            {t(pageTranslations.title)}
+          </Heading>
+          <Paragraph
+            size={ParagraphSize.base}
+            className="mt-2.5 sm:mt-4 sm:text-base"
+          >
+            {t(pageTranslations.subtitle)}
+          </Paragraph>
 
-        <div className="mt-12 w-full p-0 sm:border sm:border-gray-50 sm:rounded sm:w-[28rem] sm:p-6 sm:bg-gray-90">
-          <div className="w-full flex flex-row justify-between items-center mb-4">
-            <Tabs
-              size={TabSize.small}
-              type={TabType.secondary}
-              items={actions}
-              onChange={setIndex}
-              index={index}
-              className={classNames({
-                invisible: poolBalance.isZero(),
+          <div className="mt-12 w-full p-0 sm:border sm:border-gray-50 sm:rounded sm:w-[28rem] sm:p-6 sm:bg-gray-90">
+            <div className="w-full flex flex-row justify-between items-center mb-4">
+              <Tabs
+                size={TabSize.small}
+                type={TabType.secondary}
+                items={actions}
+                onChange={setIndex}
+                index={index}
+                className={classNames({
+                  invisible: poolBalance.isZero(),
+                })}
+              />
+
+              <MaxButton
+                onClick={onMaximumAmountClick}
+                value={maximumAmount}
+                token={token}
+                dataAttribute="earn-max-button"
+              />
+            </div>
+
+            <div className="w-full flex flex-row justify-between items-center gap-3 mt-3.5">
+              <AmountInput
+                value={amountInput}
+                onChangeText={setAmount}
+                label={t(translations.common.amount)}
+                min={0}
+                max={maximumAmount.toString()}
+                disabled={!account || isUnderCollateralized}
+                invalid={!isValidAmount}
+                className="w-full flex-grow-0 flex-shrink"
+                dataAttribute="earn-amount-input"
+                placeholder="0"
+              />
+
+              <Select
+                value={token}
+                onChange={onTokenChange}
+                options={tokenOptions}
+                labelRenderer={() => getAssetRenderer(token)}
+                className="min-w-[6.7rem]"
+                dataAttribute="earn-token-select"
+              />
+            </div>
+            {!isValidAmount && account && (
+              <ErrorBadge
+                level={ErrorLevel.Critical}
+                message={t(pageTranslations.form.invalidAmountError)}
+                dataAttribute="earn-amount-input-error"
+              />
+            )}
+
+            <SimpleTable className="mt-3">
+              <SimpleTableRow
+                label={t(pageTranslations.subsidiesRewardRate)}
+                valueClassName={classNames('transition-colors', {
+                  'text-primary-10': !isAmountZero,
+                })}
+                value={`${formatValue(apy, 2)}% ${t(pageTranslations.apr)}`}
+              />
+            </SimpleTable>
+
+            <SimpleTable className="mt-3">
+              <SimpleTableRow
+                label={t(pageTranslations.currentPoolBalance)}
+                value={
+                  <AmountRenderer
+                    value={poolBalance}
+                    suffix={COMMON_SYMBOLS.ZUSD}
+                    precision={TOKEN_RENDER_PRECISION}
+                  />
+                }
+              />
+              <SimpleTableRow
+                label={t(pageTranslations.currentPoolShare)}
+                value={`${formatValue(poolShare, 4)} %`}
+              />
+            </SimpleTable>
+            <SimpleTable className="mt-3">
+              <SimpleTableRow
+                label={t(pageTranslations.newPoolBalance)}
+                valueClassName={classNames('transition-colors', {
+                  'text-primary-10': !isAmountZero,
+                })}
+                value={newPoolBalanceLabel}
+              />
+              <SimpleTableRow
+                label={t(pageTranslations.newPoolShare)}
+                valueClassName={classNames('transition-colors', {
+                  'text-primary-10': !isAmountZero,
+                })}
+                value={newPoolShare}
+              />
+            </SimpleTable>
+            <Button
+              type={ButtonType.reset}
+              style={ButtonStyle.primary}
+              text={t(commonTranslations.buttons.confirm)}
+              className={classNames('w-full mt-8', {
+                'opacity-30 cursor-not-allowed bg-primary': isSubmitDisabled,
               })}
+              onClick={handleSubmit}
+              dataAttribute="earn-submit"
             />
-
-            <MaxButton
-              onClick={onMaximumAmountClick}
-              value={maximumAmount}
-              token={token}
-              dataAttribute="earn-max-button"
-            />
+            {isInMaintenance && (
+              <ErrorBadge
+                level={ErrorLevel.Warning}
+                message={t(translations.maintenanceMode.featureDisabled)}
+              />
+            )}
+            {isUnderCollateralized && (
+              <ErrorBadge
+                level={ErrorLevel.Critical}
+                message={t(translations.earnPage.form.undercollateralized)}
+              />
+            )}
           </div>
-
-          <div className="w-full flex flex-row justify-between items-center gap-3 mt-3.5">
-            <AmountInput
-              value={amountInput}
-              onChangeText={setAmount}
-              label={t(translations.common.amount)}
-              min={0}
-              max={maximumAmount.toString()}
-              disabled={!account || isUnderCollateralized}
-              invalid={!isValidAmount}
-              className="w-full flex-grow-0 flex-shrink"
-              dataAttribute="earn-amount-input"
-              placeholder="0"
-            />
-
-            <Select
-              value={token}
-              onChange={onTokenChange}
-              options={tokenOptions}
-              labelRenderer={() => getAssetRenderer(token)}
-              className="min-w-[6.7rem]"
-              dataAttribute="earn-token-select"
-            />
-          </div>
-          {!isValidAmount && account && (
-            <ErrorBadge
-              level={ErrorLevel.Critical}
-              message={t(pageTranslations.form.invalidAmountError)}
-              dataAttribute="earn-amount-input-error"
-            />
-          )}
-
-          <SimpleTable className="mt-3">
-            <SimpleTableRow
-              label={t(pageTranslations.subsidiesRewardRate)}
-              valueClassName={classNames('transition-colors', {
-                'text-primary-10': !isAmountZero,
-              })}
-              value={`${formatValue(apy, 2)}% ${t(pageTranslations.apr)}`}
-            />
-          </SimpleTable>
-
-          <SimpleTable className="mt-3">
-            <SimpleTableRow
-              label={t(pageTranslations.currentPoolBalance)}
-              value={
-                <AmountRenderer
-                  value={poolBalance}
-                  suffix={COMMON_SYMBOLS.ZUSD}
-                  precision={TOKEN_RENDER_PRECISION}
-                />
-              }
-            />
-            <SimpleTableRow
-              label={t(pageTranslations.currentPoolShare)}
-              value={`${formatValue(poolShare, 4)} %`}
-            />
-          </SimpleTable>
-          <SimpleTable className="mt-3">
-            <SimpleTableRow
-              label={t(pageTranslations.newPoolBalance)}
-              valueClassName={classNames('transition-colors', {
-                'text-primary-10': !isAmountZero,
-              })}
-              value={newPoolBalanceLabel}
-            />
-            <SimpleTableRow
-              label={t(pageTranslations.newPoolShare)}
-              valueClassName={classNames('transition-colors', {
-                'text-primary-10': !isAmountZero,
-              })}
-              value={newPoolShare}
-            />
-          </SimpleTable>
-          <Button
-            type={ButtonType.reset}
-            style={ButtonStyle.primary}
-            text={t(commonTranslations.buttons.confirm)}
-            className={classNames('w-full mt-8', {
-              'opacity-30 cursor-not-allowed bg-primary': isSubmitDisabled,
-            })}
-            onClick={handleSubmit}
-            dataAttribute="earn-submit"
-          />
-          {isInMaintenance && (
-            <ErrorBadge
-              level={ErrorLevel.Warning}
-              message={t(translations.maintenanceMode.featureDisabled)}
-            />
-          )}
-          {isUnderCollateralized && (
-            <ErrorBadge
-              level={ErrorLevel.Critical}
-              message={t(translations.earnPage.form.undercollateralized)}
-            />
-          )}
-        </div>
+        </NetworkBanner>
       </div>
     </>
   );

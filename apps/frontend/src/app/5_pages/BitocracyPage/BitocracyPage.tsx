@@ -59,34 +59,37 @@ const BitocracyPage: FC = () => {
         <title>{t(pageTranslations.meta.title)}</title>
       </Helmet>
       <div className="w-full flex flex-col items-center text-gray-10 max-w-6xl">
-        <NetworkBanner requiredChainId={RSK_CHAIN_ID} className="mb-6" />
-
-        <Heading className="text-base sm:text-2xl font-medium">
-          {t(pageTranslations.title)}
-        </Heading>
-        <Paragraph
-          size={ParagraphSize.base}
-          className="mt-2.5 sm:mt-4 sm:text-base font-medium mb-9"
+        <NetworkBanner
+          requiredChainId={RSK_CHAIN_ID}
+          childClassName="flex flex-col items-center text-gray-10"
         >
-          {t(pageTranslations.subtitle)}
-        </Paragraph>
+          <Heading className="text-base sm:text-2xl font-medium">
+            {t(pageTranslations.title)}
+          </Heading>
+          <Paragraph
+            size={ParagraphSize.base}
+            className="mt-2.5 sm:mt-4 sm:text-base font-medium mb-9"
+          >
+            {t(pageTranslations.subtitle)}
+          </Paragraph>
 
-        {account && !invalidChain && (
-          <div className="flex w-full items-center sm:justify-end justify-center">
-            <Button
-              style={ButtonStyle.ghost}
-              text={t(pageTranslations.actions.bitocracyAlerts)}
-              className="mb-3 sm:mb-0"
-              onClick={handleAlertsClick}
-            />
-            <NewProposalButton hasActiveProposal={hasActiveProposal} />
-          </div>
-        )}
-        <Proposals
-          activeProposals={activeProposals}
-          pastProposals={pastProposals}
-          loading={loading}
-        />
+          {account && !invalidChain && (
+            <div className="flex w-full items-center sm:justify-end justify-center">
+              <Button
+                style={ButtonStyle.ghost}
+                text={t(pageTranslations.actions.bitocracyAlerts)}
+                className="mb-3 sm:mb-0"
+                onClick={handleAlertsClick}
+              />
+              <NewProposalButton hasActiveProposal={hasActiveProposal} />
+            </div>
+          )}
+          <Proposals
+            activeProposals={activeProposals}
+            pastProposals={pastProposals}
+            loading={loading}
+          />
+        </NetworkBanner>
       </div>
     </ProposalContextProvider>
   );

@@ -1734,7 +1734,7 @@
         }
     },
     "networkBanner": {
-        "content": "Functionality only available on {{network}} chain, please click here to switch to the correct network."
+        "content": "This feature hasn't arrived on {{currentNetwork}} yet, click here to switch to {{network}} if you would like to try it out!"
     },
     "ambientMarketMaking": {
         "meta": {

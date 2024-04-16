@@ -7,7 +7,7 @@ import {
 } from '@sovryn/contracts';
 import { getProvider } from '@sovryn/ethers-provider';
 
-import { defaultRskChainId } from '../../../../config/chains';
+import { RSK_CHAIN_ID } from '../../../../config/chains';
 
 import { useAccount } from '../../../../hooks/useAccount';
 import { useCacheCall } from '../../../../hooks/useCacheCall';
@@ -17,11 +17,11 @@ import { fromWei } from '../../../../utils/math';
 export const useGetBalanceOf = (asset: SupportedTokens) => {
   const { account } = useAccount();
 
-  const lendContract = useLoadContract(asset, 'loanTokens', defaultRskChainId);
+  const lendContract = useLoadContract(asset, 'loanTokens', RSK_CHAIN_ID);
 
   const { value: balanceTotal } = useCacheCall(
     `loanTokens/${lendContract?.address}/balanceOf/${account}`,
-    defaultRskChainId,
+    RSK_CHAIN_ID,
     async () => {
       if (!account) {
         return Promise.resolve('0');
@@ -29,30 +29,23 @@ export const useGetBalanceOf = (asset: SupportedTokens) => {
       let directBalance = BigNumber.from(0);
       let balanceInLM = BigNumber.from(0);
 
-      const { address, abi } = await getLoanTokenContract(
-        asset,
-        defaultRskChainId,
-      );
+      const { address, abi } = await getLoanTokenContract(asset, RSK_CHAIN_ID);
 
       try {
-        const contract = new Contract(
-          address,
-          abi,
-          getProvider(defaultRskChainId),
-        );
+        const contract = new Contract(address, abi, getProvider(RSK_CHAIN_ID));
         directBalance = contract.balanceOf(account);
       } catch (e) {}
 
       try {
         const { address: lmAddress, abi: lmAbi } = await getProtocolContract(
           'liquidityMiningProxy',
-          defaultRskChainId,
+          RSK_CHAIN_ID,
         );
 
         const contract = new Contract(
           lmAddress,
           lmAbi,
-          getProvider(defaultRskChainId),
+          getProvider(RSK_CHAIN_ID),
         );
         balanceInLM = await contract.getUserPoolTokenBalance(address, account);
       } catch (e) {}

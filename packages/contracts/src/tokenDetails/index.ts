@@ -2,6 +2,16 @@ import { SupportedTokens, TokenBaseInfo } from '../types';
 
 export const SupportedTokenList: TokenBaseInfo[] = [
   {
+    symbol: SupportedTokens.btc,
+    decimalPrecision: 8,
+    getIcon: async () => (await import('../tokenDetails/logos/rbtc')).default,
+  },
+  {
+    symbol: SupportedTokens.usdt,
+    decimalPrecision: 4,
+    getIcon: async () => (await import('../tokenDetails/logos/rusdt')).default,
+  },
+  {
     symbol: SupportedTokens.rbtc,
     decimalPrecision: 18,
     getIcon: async () => (await import('../tokenDetails/logos/rbtc')).default,

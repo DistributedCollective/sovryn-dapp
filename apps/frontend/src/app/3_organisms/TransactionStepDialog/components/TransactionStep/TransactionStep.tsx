@@ -27,7 +27,7 @@ import {
   StatusType,
 } from '@sovryn/ui';
 
-import { chains, defaultRskChainId } from '../../../../../config/chains';
+import { APP_CHAIN_LIST, RSK_CHAIN_ID } from '../../../../../config/chains';
 
 import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { TxIdWithNotification } from '../../../../2_molecules/TxIdWithNotification/TransactionIdWithNotification';
@@ -60,7 +60,7 @@ export type TransactionStepProps = {
   isLoading: boolean;
 };
 
-const chain = chains.find(chain => chain.id === defaultRskChainId);
+const chain = APP_CHAIN_LIST.find(chain => chain.id === RSK_CHAIN_ID);
 
 export const TransactionStep: FC<TransactionStepProps> = ({
   step,

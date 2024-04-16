@@ -13,6 +13,7 @@ import {
 } from '@sovryn/ui';
 
 import { ConnectWalletButton } from '../../2_molecules';
+import { NetworkPicker } from '../../2_molecules/NetworkPicker/NetworkPicker';
 import { SovrynLogo } from '../../2_molecules/SovrynLogo/SovrynLogo';
 import { RSK_FAUCET } from '../../../constants/general';
 import { GOBOB_LINK } from '../../../constants/links';
@@ -92,7 +93,8 @@ export const Header: FC = () => {
           </ol>
         }
         secondaryContent={
-          <div className="relative">
+          <div className="relative flex flex-row gap-4">
+            <NetworkPicker />
             <ConnectWalletButton
               onConnect={connectWallet}
               onDisconnect={disconnectWallet}

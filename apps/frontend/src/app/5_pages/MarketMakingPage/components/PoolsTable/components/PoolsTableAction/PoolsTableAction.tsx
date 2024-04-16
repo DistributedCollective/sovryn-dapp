@@ -11,8 +11,11 @@ import {
 } from '@sovryn/ui';
 import { Decimal } from '@sovryn/utils';
 
+import { APP_CHAIN_LIST } from '../../../../../../../config/chains';
+
 import { useAccount } from '../../../../../../../hooks/useAccount';
 import { useBlockNumber } from '../../../../../../../hooks/useBlockNumber';
+import { useCurrentChain } from '../../../../../../../hooks/useChainStore';
 import { useMaintenance } from '../../../../../../../hooks/useMaintenance';
 import { translations } from '../../../../../../../locales/i18n';
 import { COMMON_SYMBOLS } from '../../../../../../../utils/asset';
@@ -22,12 +25,20 @@ import { AmmLiquidityPool } from '../../../../utils/AmmLiquidityPool';
 import { AdjustAndDepositModal } from '../../../AdjustAndDepositModal/AdjustAndDepositModal';
 import { BobDepositModal } from '../../../BobDepositModal/BobDepositModal';
 import { DepositContextProvider } from '../../../BobDepositModal/contexts/BobDepositModalContext';
+import { BobWithdrawModal } from '../../../BobWIthdrawModal/BobWithdrawModal';
 
 type PoolsTableActionProps = {
   pool: AmmLiquidityPool;
 };
 
 export const PoolsTableAction: FC<PoolsTableActionProps> = ({ pool }) => {
+  const chainId = useCurrentChain();
+  const chain = useMemo(
+    () => APP_CHAIN_LIST.find(chain => chain.id === chainId),
+    [chainId],
+  );
+  const isBobChain = useMemo(() => chain?.label === 'BOB', [chain?.label]);
+
   const { account } = useAccount();
   const { value: block } = useBlockNumber();
 
@@ -115,7 +126,11 @@ export const PoolsTableAction: FC<PoolsTableActionProps> = ({ pool }) => {
                 <Button
                   style={ButtonStyle.primary}
                   size={ButtonSize.small}
-                  text={t(translations.common.deposit)}
+                  text={
+                    isBobChain && pool.assetA === COMMON_SYMBOLS.SOV
+                      ? 'Withdraw'
+                      : t(translations.common.deposit)
+                  }
                   dataAttribute="pools-table-deposit-button"
                   className="w-full lg:w-auto prevent-row-click"
                   disabledStyle={actionLocked}
@@ -140,7 +155,11 @@ export const PoolsTableAction: FC<PoolsTableActionProps> = ({ pool }) => {
       />
 
       <AdjustAndDepositModal
-        isOpen={isModalOpen && pool.assetA !== COMMON_SYMBOLS.DLLR}
+        isOpen={
+          isModalOpen &&
+          isBobChain &&
+          ![COMMON_SYMBOLS.DLLR, COMMON_SYMBOLS.SOV].includes(pool.assetA)
+        }
         onClose={handleClose}
         pool={pool}
         isInitialDeposit={isInitialDeposit}
@@ -152,6 +171,11 @@ export const PoolsTableAction: FC<PoolsTableActionProps> = ({ pool }) => {
           onClose={handleClose}
         />
       </DepositContextProvider>
+
+      <BobWithdrawModal
+        isOpen={isBobModalOpen && pool.assetA === COMMON_SYMBOLS.SOV}
+        onClose={handleClose}
+      />
     </div>
   );
 };

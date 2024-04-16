@@ -13,7 +13,7 @@ export const PriceRange: FC = () => {
   const [isBalanced, setIsBalanced] = useState(true);
 
   return (
-    <div className="bg-gray-90 px-2 py-4 mt-6 rounded">
+    <div className="bg-gray-90 px-2 py-4 mt-4 rounded">
       <Accordion
         label={t(translations.bobMarketMakingPage.depositModal.priceRange)}
         open={isPriceRangeExpanded}

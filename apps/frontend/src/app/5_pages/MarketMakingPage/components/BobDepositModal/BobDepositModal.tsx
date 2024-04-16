@@ -83,17 +83,15 @@ export const BobDepositModal: FC<BobDepositModalProps> = ({
             />
           </div>
 
-          <div className="mt-6 flex flex-row items-center justify-between gap-8">
-            <Button
-              type={ButtonType.submit}
-              style={ButtonStyle.primary}
-              text={t(translations.common.buttons.confirm)}
-              className="w-full"
-              onClick={handleSubmit}
-              dataAttribute="new-loan-confirm-button"
-              disabled={isSubmitDisabled}
-            />
-          </div>
+          <Button
+            type={ButtonType.submit}
+            style={ButtonStyle.primary}
+            text={t(translations.common.buttons.confirm)}
+            className="w-full mt-6"
+            onClick={handleSubmit}
+            dataAttribute="add-liquidity-confirm-button"
+            disabled={isSubmitDisabled}
+          />
         </DialogBody>
       </Dialog>
     </>

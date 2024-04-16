@@ -51,7 +51,7 @@ export const AmountForm: FC = () => {
           </div>
         }
         labelElement="div"
-        className="max-w-none mt-8"
+        className="max-w-none mt-6"
         dataAttribute="bob-amm-pool-deposit-asset1"
       >
         <AmountInput
@@ -77,7 +77,7 @@ export const AmountForm: FC = () => {
           </div>
         }
         labelElement="div"
-        className="max-w-none mt-8"
+        className="max-w-none mt-6"
         dataAttribute="bob-amm-pool-deposit-asset2"
       >
         <AmountInput

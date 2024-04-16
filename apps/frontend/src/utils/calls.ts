@@ -8,7 +8,7 @@ import {
 import { getProvider } from '@sovryn/ethers-provider';
 import { Decimal } from '@sovryn/utils';
 
-import { defaultChainId } from '../config/chains';
+import { defaultRskChainId } from '../config/chains';
 
 import { asyncCall } from '../store/rxjs/provider-cache';
 
@@ -25,17 +25,17 @@ export const queryReturn = async (
     async () => {
       const { address: sourceTokenAddress } = await getTokenContract(
         normalizeToken(sourceToken),
-        defaultChainId,
+        defaultRskChainId,
       );
       const { address: destTokenAddress } = await getTokenContract(
         normalizeToken(destToken),
-        defaultChainId,
+        defaultRskChainId,
       );
       const { address, abi } = await getProtocolContract(
         'priceFeed',
-        defaultChainId,
+        defaultRskChainId,
       );
-      const contract = new Contract(address, abi, getProvider(defaultChainId));
+      const contract = new Contract(address, abi, getProvider(defaultRskChainId));
       const rate = await contract.queryReturn(
         sourceTokenAddress,
         destTokenAddress,
@@ -55,17 +55,17 @@ export const queryRate = async (
     async () => {
       const { address: sourceTokenAddress } = await getTokenContract(
         normalizeToken(sourceToken),
-        defaultChainId,
+        defaultRskChainId,
       );
       const { address: destTokenAddress } = await getTokenContract(
         normalizeToken(destToken),
-        defaultChainId,
+        defaultRskChainId,
       );
       const { address, abi } = await getProtocolContract(
         'priceFeed',
-        defaultChainId,
+        defaultRskChainId,
       );
-      const contract = new Contract(address, abi, getProvider(defaultChainId));
+      const contract = new Contract(address, abi, getProvider(defaultRskChainId));
       const rate = await contract.queryRate(
         sourceTokenAddress,
         destTokenAddress,

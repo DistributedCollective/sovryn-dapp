@@ -2,8 +2,6 @@ import { DependencyList, useEffect, useMemo, useState } from 'react';
 
 import { Subscription } from 'rxjs';
 
-import { defaultChainId } from '../config/chains';
-
 import {
   CacheCallOptions,
   observeCall,
@@ -11,6 +9,7 @@ import {
 } from '../store/rxjs/provider-cache';
 import { useBlockNumber } from './useBlockNumber';
 import { useIsMounted } from './useIsMounted';
+import { useCurrentChain } from './useChainStore';
 
 type State<T> = {
   value: T;
@@ -25,8 +24,9 @@ export const useCacheCall = <T>(
   defaultValue?: T,
   options?: Partial<CacheCallOptions>,
 ): State<T> => {
+  const currentChainId = useCurrentChain();
   const isMounted = useIsMounted();
-  const { value: block } = useBlockNumber(defaultChainId);
+  const { value: block } = useBlockNumber(currentChainId);
 
   const [state, setState] = useState<State<T>>({
     value: defaultValue ?? (null as T),

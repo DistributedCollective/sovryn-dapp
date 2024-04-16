@@ -5,7 +5,7 @@ import { t } from 'i18next';
 import { SupportedTokens } from '@sovryn/contracts';
 import { Decimal } from '@sovryn/utils';
 
-import { defaultChainId } from '../../../../../../config/chains';
+import { defaultRskChainId } from '../../../../../../config/chains';
 
 import {
   Transaction,
@@ -26,7 +26,7 @@ export const useExtendLoan = (
   nextRollover: string | number,
   useCollateral: boolean,
 ) => {
-  const contract = useLoadContract('protocol', 'protocol', defaultChainId);
+  const contract = useLoadContract('protocol', 'protocol', defaultRskChainId);
   const { setTransactions, setIsOpen, setTitle } = useTransactionContext();
   const { account, signer } = useAccount();
 

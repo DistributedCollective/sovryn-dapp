@@ -29,8 +29,6 @@ import {
 } from '@sovryn/ui';
 import { Decimal } from '@sovryn/utils';
 
-import { defaultChainId } from '../../../config/chains';
-
 import { AmountRenderer } from '../../2_molecules/AmountRenderer/AmountRenderer';
 import { AssetRenderer } from '../../2_molecules/AssetRenderer/AssetRenderer';
 import { MaxButton } from '../../2_molecules/MaxButton/MaxButton';
@@ -47,18 +45,19 @@ import { smartRouter, stableCoins } from './ConvertPage.types';
 import { useConversionMaintenance } from './hooks/useConversionMaintenance';
 import { useGetMaximumAvailableAmount } from './hooks/useGetMaximumAvailableAmount';
 import { useHandleConversion } from './hooks/useHandleConversion';
+import { useCurrentChain } from '../../../hooks/useChainStore';
+import { ChainId } from '@sovryn/ethers-provider';
 
 const commonTranslations = translations.common;
 const pageTranslations = translations.convertPage;
 
 const tokensToOptions = (
   addresses: string[],
+  chain: ChainId,
   callback: (options: SelectOption<SupportedTokens>[]) => void,
 ) =>
   Promise.all(
-    addresses.map(address =>
-      smartRouter.getTokenDetails(address, defaultChainId),
-    ),
+    addresses.map(address => smartRouter.getTokenDetails(address, chain)),
   ).then(tokens =>
     callback(
       tokens.map(token => ({
@@ -75,6 +74,7 @@ const tokensToOptions = (
   );
 
 const ConvertPage: FC = () => {
+  const currentChainId = useCurrentChain();
   const { account } = useAccount();
   const [searchParams, setSearchParams] = useSearchParams();
   const fromToken = searchParams.get('from') || '';
@@ -118,27 +118,27 @@ const ConvertPage: FC = () => {
 
   useEffect(() => {
     smartRouter
-      .getEntries(defaultChainId)
-      .then(tokens => tokensToOptions(tokens, setTokenOptions));
-  }, []);
+      .getEntries(currentChainId)
+      .then(tokens => tokensToOptions(tokens, currentChainId, setTokenOptions));
+  }, [currentChainId]);
 
   useEffect(() => {
     (async () => {
       const sourceTokenDetails = await getTokenDetails(
         sourceToken,
-        defaultChainId,
+        currentChainId,
       );
       smartRouter
-        .getDestination(defaultChainId, sourceTokenDetails.address)
+        .getDestination(currentChainId, sourceTokenDetails.address)
         .then(tokens => {
-          tokensToOptions(tokens, setDestinationTokenOptions);
+          tokensToOptions(tokens, currentChainId, setDestinationTokenOptions);
         });
 
       if (sourceToken === SupportedTokens.mynt) {
         setDestinationToken(SupportedTokens.sov);
       }
     })();
-  }, [sourceToken]);
+  }, [currentChainId, sourceToken]);
 
   const sourceTokenOptions = useMemo(
     () =>
@@ -232,15 +232,13 @@ const ConvertPage: FC = () => {
         return;
       }
 
-      console.log('search?', sourceToken, destinationToken, weiAmount.toString(), defaultChainId);
-
       const [sourceTokenDetails, destinationTokenDetails] = await Promise.all([
-        getTokenDetails(sourceToken, defaultChainId),
-        getTokenDetails(destinationToken, defaultChainId),
+        getTokenDetails(sourceToken, currentChainId),
+        getTokenDetails(destinationToken, currentChainId),
       ]);
 
       const result = await smartRouter.getBestQuote(
-        defaultChainId,
+        currentChainId,
         sourceTokenDetails.address,
         destinationTokenDetails.address,
         weiAmount,
@@ -254,7 +252,7 @@ const ConvertPage: FC = () => {
       );
       setQuote(quote);
     })();
-  }, [sourceToken, destinationToken, weiAmount]);
+  }, [sourceToken, destinationToken, weiAmount, currentChainId]);
 
   const onMaximumAmountClick = useCallback(
     () => setAmount(maximumAmountToConvert.toString()),

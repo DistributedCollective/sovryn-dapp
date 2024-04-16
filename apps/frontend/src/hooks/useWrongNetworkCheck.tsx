@@ -4,12 +4,12 @@ import { t } from 'i18next';
 
 import { Paragraph, NotificationType, Button, ButtonStyle } from '@sovryn/ui';
 
-import { chains, defaultChainId } from '../config/chains';
+import { chains, defaultRskChainId } from '../config/chains';
 
 import { useNotificationContext } from '../contexts/NotificationContext';
 import { useWalletConnect } from './useWalletConnect';
 
-const defaultChain = chains.find(chain => chain.id === defaultChainId);
+const defaultChain = chains.find(chain => chain.id === defaultRskChainId);
 
 const WrongNetworkSwitcherId = 'WrongNetworkSwitcher';
 
@@ -20,12 +20,12 @@ export const useWrongNetworkCheck = () => {
   const isWrongChain = useMemo(() => {
     return (
       wallets[0]?.accounts[0]?.address &&
-      wallets[0].chains[0].id !== defaultChainId
+      wallets[0].chains[0].id !== defaultRskChainId
     );
   }, [wallets]);
 
   const switchChain = useCallback(() => {
-    switchNetwork(defaultChainId);
+    switchNetwork(defaultRskChainId);
   }, [switchNetwork]);
 
   useEffect(() => {

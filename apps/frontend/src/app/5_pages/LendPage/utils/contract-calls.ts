@@ -8,7 +8,7 @@ import {
 import { getProvider } from '@sovryn/ethers-provider';
 import { Decimal } from '@sovryn/utils';
 
-import { defaultChainId } from '../../../../config/chains';
+import { defaultRskChainId } from '../../../../config/chains';
 
 import { asyncCall } from '../../../../store/rxjs/provider-cache';
 
@@ -19,10 +19,10 @@ export const lendingBalanceOf = async (
   let directBalance = Decimal.ZERO;
   let balanceInLM = Decimal.ZERO;
 
-  const { address, abi } = await getLoanTokenContract(asset, defaultChainId);
+  const { address, abi } = await getLoanTokenContract(asset, defaultRskChainId);
 
   try {
-    const contract = new Contract(address, abi, getProvider(defaultChainId));
+    const contract = new Contract(address, abi, getProvider(defaultRskChainId));
     directBalance = await asyncCall(
       `loanToken/${address}/balanceOf/${owner}`,
       () => contract.balanceOf(owner),
@@ -34,13 +34,13 @@ export const lendingBalanceOf = async (
   try {
     const { address: lmAddress, abi: lmAbi } = await getProtocolContract(
       'liquidityMiningProxy',
-      defaultChainId,
+      defaultRskChainId,
     );
 
     const contract = new Contract(
       lmAddress,
       lmAbi,
-      getProvider(defaultChainId),
+      getProvider(defaultRskChainId),
     );
     balanceInLM = await asyncCall(
       `liquidityMiningProxy/getUserPoolTokenBalance/${address}/${owner}`,

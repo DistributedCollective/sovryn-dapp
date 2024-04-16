@@ -5,7 +5,7 @@ import { t } from 'i18next';
 
 import { getProtocolContract } from '@sovryn/contracts';
 
-import { defaultChainId } from '../../../../config/chains';
+import { defaultRskChainId } from '../../../../config/chains';
 
 import { TransactionType } from '../../../3_organisms/TransactionStepDialog/TransactionStepDialog.types';
 import { GAS_LIMIT } from '../../../../constants/gasLimits';
@@ -34,7 +34,7 @@ export const useHandleAdjustVestingStake = (
       try {
         const { abi: VestingAbi } = await getProtocolContract(
           'vesting',
-          defaultChainId,
+          defaultRskChainId,
         );
         const vestingContract = new Contract(
           contractAddress,

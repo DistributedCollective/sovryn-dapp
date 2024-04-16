@@ -12,8 +12,6 @@ import {
 } from '@sovryn/contracts';
 import { PermitTransactionResponse, SwapRoute } from '@sovryn/sdk';
 
-import { defaultChainId } from '../../../../config/chains';
-
 import {
   Transaction,
   TransactionType,
@@ -35,6 +33,7 @@ import {
   UNSIGNED_PERMIT,
 } from '../../../../utils/transactions';
 import { getRouteContract } from '../ConvertPage.utils';
+import { useCurrentChain } from '../../../../hooks/useChainStore';
 
 export const useHandleConversion = (
   sourceToken: SupportedTokens,
@@ -44,23 +43,24 @@ export const useHandleConversion = (
   slippageTolerance: string,
   onComplete: () => void,
 ) => {
+  const currentChainId = useCurrentChain();
   const { account, signer } = useAccount();
 
   const { setTransactions, setIsOpen, setTitle } = useTransactionContext();
 
   const getMassetManager = useCallback(async () => {
     const { address: massetManagerAddress, abi: massetManagerAbi } =
-      await getProtocolContract('massetManager', defaultChainId);
+      await getProtocolContract('massetManager', currentChainId);
 
     return new ethers.Contract(massetManagerAddress, massetManagerAbi, signer);
-  }, [signer]);
+  }, [currentChainId, signer]);
 
   const getWithdrawTokensTransactions = useCallback(async () => {
     const massetManager = await getMassetManager();
 
     const { address: bassetAddress } = await getTokenDetails(
       destinationToken,
-      defaultChainId,
+      currentChainId,
     );
 
     return [
@@ -79,11 +79,12 @@ export const useHandleConversion = (
       },
     ] as Transaction[];
   }, [
-    account,
-    destinationToken,
     getMassetManager,
+    destinationToken,
+    currentChainId,
     sourceToken,
     weiAmount,
+    account,
     onComplete,
   ]);
 
@@ -92,7 +93,7 @@ export const useHandleConversion = (
 
     const { address: bassetAddress, abi: bassetAbi } = await getTokenDetails(
       sourceToken,
-      defaultChainId,
+      currentChainId,
     );
 
     const bassetToken = new ethers.Contract(bassetAddress, bassetAbi, signer);
@@ -125,7 +126,15 @@ export const useHandleConversion = (
     });
 
     return transactions;
-  }, [account, getMassetManager, signer, sourceToken, weiAmount, onComplete]);
+  }, [
+    getMassetManager,
+    sourceToken,
+    currentChainId,
+    signer,
+    weiAmount,
+    account,
+    onComplete,
+  ]);
 
   const handleSubmit = useCallback(async () => {
     if (!route || !signer) {
@@ -136,8 +145,8 @@ export const useHandleConversion = (
       !!route && ['ZeroRedemption', 'MocIntegration'].includes(route.name);
 
     const [sourceTokenDetails, destinationTokenDetails] = await Promise.all([
-      getTokenDetails(sourceToken, defaultChainId),
-      getTokenDetails(destinationToken, defaultChainId),
+      getTokenDetails(sourceToken, currentChainId),
+      getTokenDetails(destinationToken, currentChainId),
     ]);
 
     const approveTxData = await route.approve(
@@ -294,6 +303,7 @@ export const useHandleConversion = (
     setIsOpen(true);
   }, [
     account,
+    currentChainId,
     destinationToken,
     onComplete,
     route,

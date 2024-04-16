@@ -49,6 +49,9 @@ export enum SupportedTokens {
   bpro = 'bpro',
   rusdt = 'rusdt',
   mynt = 'mynt',
+  // bob
+  wbtc = 'wbtc',
+  usdc = 'usdc',
 }
 
 export type TokenBaseInfo = {

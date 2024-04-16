@@ -91,4 +91,15 @@ export const SupportedTokenList: TokenBaseInfo[] = [
     decimalPrecision: 18,
     getIcon: async () => (await import('../tokenDetails/logos/mynt')).default,
   },
+  // bobTestnet
+  {
+    symbol: SupportedTokens.wbtc,
+    decimalPrecision: 18,
+    getIcon: async () => (await import('../tokenDetails/logos/mynt')).default,
+  },
+  {
+    symbol: SupportedTokens.usdc,
+    decimalPrecision: 18,
+    getIcon: async () => (await import('../tokenDetails/logos/mynt')).default,
+  },
 ];

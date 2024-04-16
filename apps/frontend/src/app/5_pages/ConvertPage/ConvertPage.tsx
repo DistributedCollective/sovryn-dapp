@@ -47,7 +47,6 @@ import { decimalic, fromWei } from '../../../utils/math';
 import { FIXED_MYNT_RATE, FIXED_RATE_ROUTES } from './ConvertPage.constants';
 import {
   DEFAULT_SWAP_ENTRIES,
-  SMART_ROUTER_RSK,
   SMART_ROUTER_STABLECOINS,
   SWAP_ROUTES,
 } from './ConvertPage.constants';
@@ -58,34 +57,37 @@ import { useHandleConversion } from './hooks/useHandleConversion';
 const commonTranslations = translations.common;
 const pageTranslations = translations.convertPage;
 
-const tokensToOptions = (
-  addresses: string[],
-  chain: ChainId,
-  callback: (options: SelectOption<SupportedTokens>[]) => void,
-) =>
-  Promise.all(
-    addresses.map(address => SMART_ROUTER_RSK.getTokenDetails(address, chain)),
-  ).then(tokens =>
-    callback(
-      tokens.map(token => ({
-        value: token.symbol,
-        label: (
-          <AssetRenderer
-            showAssetLogo
-            asset={token.symbol}
-            assetClassName="font-medium"
-          />
-        ),
-      })),
-    ),
-  );
-
 const ConvertPage: FC = () => {
   const currentChainId = useCurrentChain();
 
   const smartRouter = useMemo(
     () => new SmartRouter(getProvider(currentChainId), SWAP_ROUTES),
     [currentChainId],
+  );
+
+  const tokensToOptions = useCallback(
+    (
+      addresses: string[],
+      chain: ChainId,
+      callback: (options: SelectOption<SupportedTokens>[]) => void,
+    ) =>
+      Promise.all(
+        addresses.map(address => smartRouter.getTokenDetails(address, chain)),
+      ).then(tokens =>
+        callback(
+          tokens.map(token => ({
+            value: token.symbol,
+            label: (
+              <AssetRenderer
+                showAssetLogo
+                asset={token.symbol}
+                assetClassName="font-medium"
+              />
+            ),
+          })),
+        ),
+      ),
+    [smartRouter],
   );
 
   const { account } = useAccount();
@@ -141,7 +143,7 @@ const ConvertPage: FC = () => {
     smartRouter
       .getEntries(currentChainId)
       .then(tokens => tokensToOptions(tokens, currentChainId, setTokenOptions));
-  }, [currentChainId, smartRouter]);
+  }, [currentChainId, smartRouter, tokensToOptions]);
 
   useEffect(() => {
     (async () => {
@@ -159,7 +161,7 @@ const ConvertPage: FC = () => {
         setDestinationToken(SupportedTokens.sov);
       }
     })();
-  }, [currentChainId, smartRouter, sourceToken]);
+  }, [currentChainId, smartRouter, sourceToken, tokensToOptions]);
 
   const sourceTokenOptions = useMemo(
     () =>
@@ -261,7 +263,7 @@ const ConvertPage: FC = () => {
         getTokenDetails(destinationToken, currentChainId),
       ]);
 
-      const result = await SMART_ROUTER_RSK.getBestQuote(
+      const result = await smartRouter.getBestQuote(
         currentChainId,
         sourceTokenDetails.address,
         destinationTokenDetails.address,
@@ -276,7 +278,7 @@ const ConvertPage: FC = () => {
       );
       setQuote(quote);
     })();
-  }, [sourceToken, destinationToken, weiAmount, currentChainId]);
+  }, [sourceToken, destinationToken, weiAmount, currentChainId, smartRouter]);
 
   const onMaximumAmountClick = useCallback(
     () => setAmount(maximumAmountToConvert.toString()),

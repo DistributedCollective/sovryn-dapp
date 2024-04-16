@@ -17,6 +17,10 @@ import {
   ParagraphStyle,
 } from '@sovryn/ui';
 
+import { RSK_CHAIN_ID } from '../../../config/chains';
+
+import { NetworkBanner } from '../../2_molecules/NetworkBanner/NetworkBanner';
+import { useRequiredChain } from '../../2_molecules/NetworkBanner/hooks/useRequiredChain';
 import { useNotificationContext } from '../../../contexts/NotificationContext';
 import { useAccount } from '../../../hooks/useAccount';
 import { translations } from '../../../locales/i18n';
@@ -50,6 +54,7 @@ type EmailNotificationSettingsDialogProps = {
 const EmailNotificationSettingsDialogComponent: React.FC<
   EmailNotificationSettingsDialogProps
 > = ({ isOpen, onClose }) => {
+  const { invalidChain } = useRequiredChain();
   const { account, eip1193Provider: provider } = useAccount();
   const { addNotification } = useNotificationContext();
 
@@ -111,14 +116,17 @@ const EmailNotificationSettingsDialogComponent: React.FC<
       !notificationToken ||
       !isValidEmail ||
       (!email && !notificationUser?.isEmailConfirmed) ||
-      (email === notificationUser?.email && !haveSubscriptionsBeenUpdated),
+      (email === notificationUser?.email && !haveSubscriptionsBeenUpdated) ||
+      invalidChain,
     [
-      email,
-      isValidEmail,
       loading,
       notificationToken,
-      notificationUser,
+      isValidEmail,
+      email,
+      notificationUser?.isEmailConfirmed,
+      notificationUser?.email,
       haveSubscriptionsBeenUpdated,
+      invalidChain,
     ],
   );
 
@@ -363,6 +371,8 @@ const EmailNotificationSettingsDialogComponent: React.FC<
           <Paragraph style={ParagraphStyle.tall}>
             {t(translations.emailNotificationsDialog.title)}
           </Paragraph>
+
+          <NetworkBanner requiredChainId={RSK_CHAIN_ID} />
           <FormGroup
             className="mt-6 mb-4"
             label={t(translations.emailNotificationsDialog.emailInputLabel)}

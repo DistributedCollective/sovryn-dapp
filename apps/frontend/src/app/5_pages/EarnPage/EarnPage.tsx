@@ -29,9 +29,13 @@ import {
 } from '@sovryn/ui';
 import { Decimal } from '@sovryn/utils';
 
+import { RSK_CHAIN_ID } from '../../../config/chains';
+
 import { AmountRenderer } from '../../2_molecules/AmountRenderer/AmountRenderer';
 import { AssetRenderer } from '../../2_molecules/AssetRenderer/AssetRenderer';
 import { MaxButton } from '../../2_molecules/MaxButton/MaxButton';
+import { NetworkBanner } from '../../2_molecules/NetworkBanner/NetworkBanner';
+import { useRequiredChain } from '../../2_molecules/NetworkBanner/hooks/useRequiredChain';
 import { TOKEN_RENDER_PRECISION } from '../../../constants/currencies';
 import { useAccount } from '../../../hooks/useAccount';
 import { useAmountInput } from '../../../hooks/useAmountInput';
@@ -64,12 +68,12 @@ const EarnPage: FC = () => {
   const { account } = useAccount();
   const { value: block } = useBlockNumber();
   const { price } = useGetRBTCPrice();
-
   const {
     data: troves,
     loading: loadingTroves,
     refetch: refetchTroves,
   } = useGetTroves();
+  const { invalidChain } = useRequiredChain();
 
   const [shouldCheckTroves, setShouldCheckTroves] = useState(true);
   const underCollateralizedTrovesExist =
@@ -304,14 +308,16 @@ const EarnPage: FC = () => {
       Number(amount) <= 0 ||
       !isValidAmount ||
       isInMaintenance ||
-      isUnderCollateralized,
+      isUnderCollateralized ||
+      invalidChain,
     [
       account,
       amount,
+      loadingTroves,
       isValidAmount,
       isInMaintenance,
-      loadingTroves,
       isUnderCollateralized,
+      invalidChain,
     ],
   );
 
@@ -364,6 +370,8 @@ const EarnPage: FC = () => {
         >
           {t(pageTranslations.subtitle)}
         </Paragraph>
+
+        <NetworkBanner requiredChainId={RSK_CHAIN_ID} />
 
         <div className="mt-12 w-full p-0 sm:border sm:border-gray-50 sm:rounded sm:w-[28rem] sm:p-6 sm:bg-gray-90">
           <div className="w-full flex flex-row justify-between items-center mb-4">

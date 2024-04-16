@@ -3,7 +3,9 @@ import { useMemo } from 'react';
 import { OrderDirection } from '@sovryn/ui';
 
 import { useAccount } from '../../../../../../hooks/useAccount';
-import { bobClient } from '../../../../../../utils/clients';
+import { useCurrentChain } from '../../../../../../hooks/useChainStore';
+import { isBobChain } from '../../../../../../utils/chain';
+import { bobClient, sepoliaSdexClient } from '../../../../../../utils/clients';
 import { useGetLiquidityChangesQuery } from '../../../../../../utils/graphql/bob/generated';
 
 export const useGetAmbientMarketMakingHistory = (
@@ -11,6 +13,7 @@ export const useGetAmbientMarketMakingHistory = (
   page: number,
   orderDirection: OrderDirection,
 ) => {
+  const chainId = useCurrentChain();
   const { account } = useAccount();
   const config = useMemo(
     () => ({
@@ -24,6 +27,7 @@ export const useGetAmbientMarketMakingHistory = (
 
   return useGetLiquidityChangesQuery({
     variables: config,
-    client: bobClient,
+    // todo: we shouldn't use sepolia client in the end
+    client: isBobChain(chainId) ? bobClient : sepoliaSdexClient,
   });
 };

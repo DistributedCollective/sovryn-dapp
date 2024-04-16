@@ -20,6 +20,7 @@ import { useCheckPoolMaintenance } from '../../../../hooks/useCheckPoolMaintenan
 import { useGetUserInfo } from '../../../../hooks/useGetUserInfo';
 import { AmmLiquidityPool } from '../../../../utils/AmmLiquidityPool';
 import { AdjustAndDepositModal } from '../../../AdjustAndDepositModal/AdjustAndDepositModal';
+import { BobDepositModal } from '../../../BobDepositModal/BobDepositModal';
 
 type PoolsTableActionProps = {
   pool: AmmLiquidityPool;
@@ -46,6 +47,8 @@ export const PoolsTableAction: FC<PoolsTableActionProps> = ({ pool }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isInitialDeposit, setIsInitialDeposit] = useState(true);
 
+  const [isBobModalOpen, setIsBobModalOpen] = useState(false);
+
   const actionLocked = useMemo(
     () => checkMaintenance(States.D2_MARKET_MAKING_FULL) || poolLocked,
     [States.D2_MARKET_MAKING_FULL, checkMaintenance, poolLocked],
@@ -57,6 +60,7 @@ export const PoolsTableAction: FC<PoolsTableActionProps> = ({ pool }) => {
     }
     setIsInitialDeposit(true);
     setIsModalOpen(true);
+    setIsBobModalOpen(true);
   }, [actionLocked]);
 
   const handleAdjustClick = useCallback(() => {
@@ -70,6 +74,7 @@ export const PoolsTableAction: FC<PoolsTableActionProps> = ({ pool }) => {
   const handleClose = useCallback(() => {
     setIsInitialDeposit(true);
     setIsModalOpen(false);
+    setIsBobModalOpen(false);
   }, []);
 
   useEffect(() => {
@@ -137,10 +142,15 @@ export const PoolsTableAction: FC<PoolsTableActionProps> = ({ pool }) => {
       />
 
       <AdjustAndDepositModal
-        isOpen={isModalOpen}
+        isOpen={isModalOpen && pool.assetA !== SupportedTokens.dllr}
         onClose={handleClose}
         pool={pool}
         isInitialDeposit={isInitialDeposit}
+      />
+
+      <BobDepositModal
+        isOpen={isBobModalOpen && pool.assetA === SupportedTokens.dllr}
+        onClose={handleClose}
       />
     </div>
   );

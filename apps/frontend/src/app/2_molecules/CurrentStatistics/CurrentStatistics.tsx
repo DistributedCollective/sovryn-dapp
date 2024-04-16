@@ -11,9 +11,10 @@ export type CurrentStatisticsProps = {
   symbol: SupportedTokens;
   symbol2?: SupportedTokens;
   label1: string;
-  label2: string;
+  label2?: string;
   value1: React.ReactNode;
-  value2: React.ReactNode;
+  value2?: React.ReactNode;
+  className?: string;
 };
 
 export const CurrentStatistics: FC<CurrentStatisticsProps> = ({
@@ -23,8 +24,9 @@ export const CurrentStatistics: FC<CurrentStatisticsProps> = ({
   label2,
   value1,
   value2,
+  className,
 }) => (
-  <>
+  <div className={className}>
     {!!symbol2 ? (
       <AssetPairRenderer asset1={symbol} asset2={symbol2} />
     ) : (
@@ -45,5 +47,5 @@ export const CurrentStatistics: FC<CurrentStatisticsProps> = ({
         {value2}
       </div>
     </div>
-  </>
+  </div>
 );

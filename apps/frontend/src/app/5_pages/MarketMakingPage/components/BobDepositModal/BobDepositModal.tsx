@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useMemo, useState } from 'react';
+import React, { FC, useMemo, useState } from 'react';
 
 import { t } from 'i18next';
 
@@ -20,7 +20,7 @@ import { NewPoolStatistics } from './components/NewPoolStatistics/NewPoolStatist
 import { PriceRange } from './components/PriceRange/PriceRange';
 import { AmountForm } from './components/PriceRange/components/AmountForm/AmountForm';
 import { SlippageSettings } from './components/PriceRange/components/SlippageSettings/SlippageSettings';
-import { useDepositContext } from './contexts/BobDepositModalContext';
+import { useHandleSubmit } from './hooks/useHandleSubmit';
 
 // TODO: This will be a prop
 export const POOL_ASSET_A = COMMON_SYMBOLS.ETH;
@@ -39,17 +39,10 @@ export const BobDepositModal: FC<BobDepositModalProps> = ({
 }) => {
   const { account } = useAccount();
 
-  const { firstAssetValue, secondAssetValue, maximumSlippage, rangeWidth } =
-    useDepositContext();
-
   const [hasDisclaimerBeenChecked, setHasDisclaimerBeenChecked] =
     useState(false);
 
-  const handleSubmit = useCallback(() => {
-    console.log(
-      `submit, firstAssetValue: ${firstAssetValue} , secondAssetValue: ${secondAssetValue} , maximumSlippage: ${maximumSlippage} , rangeWidth: ${rangeWidth}`,
-    );
-  }, [firstAssetValue, maximumSlippage, rangeWidth, secondAssetValue]);
+  const handleSubmit = useHandleSubmit('ETH', 'SOV');
 
   const isSubmitDisabled = useMemo(() => !account, [account]);
 

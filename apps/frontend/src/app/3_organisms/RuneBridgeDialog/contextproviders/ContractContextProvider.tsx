@@ -3,7 +3,9 @@ import React, { useEffect } from 'react';
 import { ethers } from 'ethers';
 
 import { useAccount } from '../../../../hooks/useAccount';
+import { currentNetwork } from '../../../../utils/helpers';
 import runeBridgeABI from '../abi/RuneBridge.json';
+import { contractAddresses } from '../config';
 import {
   Contract,
   defaultValue,
@@ -61,7 +63,7 @@ export const ContractContextProvider: React.FC<
     }),
     [requestTokenBalances, state],
   );
-  const runeBridgeAddress = process.env.REACT_APP_RUNE_BRIDGE_CONTRACT_ADDRESS!;
+  const runeBridgeAddress = contractAddresses[currentNetwork];
 
   useEffect(() => {
     const runeBridgeContract = new ethers.Contract(

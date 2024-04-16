@@ -511,7 +511,6 @@ const ConvertPage: FC = () => {
                 value={destinationToken}
                 onChange={setDestinationToken}
                 options={destinationTokenOptions}
-                labelRenderer={() => getAssetRenderer(destinationToken)}
                 className="min-w-[6.7rem]"
                 menuClassName="max-h-[10rem] sm:max-h-[20rem]"
                 dataAttribute="convert-to-asset"

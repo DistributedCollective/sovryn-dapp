@@ -2,11 +2,7 @@ import { createContext, Dispatch, SetStateAction } from 'react';
 
 export enum ReceiveflowStep {
   MAIN,
-  VALIDATION,
-  AMOUNT,
   ADDRESS,
-  REVIEW,
-  CONFIRM,
   PROCESSING,
   COMPLETED,
 }
@@ -47,12 +43,20 @@ export type TxStatus = {
   btcDepositTxid: string;
   btcDepositVout: string; // amount this should be a BigNumber
   runeName: string;
+  runeSymbol: string;
   amountDecimal: string;
-  status: stateType;
+  feeDecimal: string;
+  receiveAmountDecimal: string;
+  status: TransferStatusType;
   evmTransferTxHash: string;
 };
 
-export type stateType = 'detected' | 'completed' | 'seen' | string;
+export type TransferStatusType =
+  | 'detected'
+  | 'seen'
+  | 'sent_to_evm'
+  | 'confirmed'
+  | string;
 
 export type ReceiveFlowContextFunctionsType = {
   set: Dispatch<SetStateAction<ReceiveFlowContextStateType>>;
@@ -80,7 +84,10 @@ export const defaultValue: ReceiveFlowContextType = {
       btcDepositTxid: '',
       btcDepositVout: '',
       runeName: '',
+      runeSymbol: '',
       amountDecimal: '',
+      feeDecimal: '',
+      receiveAmountDecimal: '',
       status: '',
       evmTransferTxHash: '',
     },

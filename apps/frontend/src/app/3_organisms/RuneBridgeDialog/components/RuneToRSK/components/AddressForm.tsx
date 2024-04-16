@@ -9,6 +9,8 @@ import resolveConfig from 'tailwindcss/resolveConfig';
 import tailwindConfig from '@sovryn/tailwindcss-config';
 import {
   applyDataAttr,
+  ErrorBadge,
+  ErrorLevel,
   Icon,
   IconNames,
   NotificationType,
@@ -23,6 +25,7 @@ import {
   MIN_POSTAGE_BTC,
 } from '../../../constants';
 import { useContractService } from '../../../hooks/useContractService';
+import { useRuneBridgeLocked } from '../../../hooks/useRuneBridgeLocked';
 import { TransferPolicies } from '../../TransferPolicies';
 
 const config = resolveConfig(tailwindConfig);
@@ -30,6 +33,7 @@ const config = resolveConfig(tailwindConfig);
 export const AddressForm = () => {
   const { depositAddress, tokenBalances } = useContractService();
   const { addNotification } = useNotificationContext();
+  const runeBridgeLocked = useRuneBridgeLocked();
 
   const copyAddress = useCallback(async () => {
     await navigator.clipboard.writeText(depositAddress);
@@ -42,6 +46,17 @@ export const AddressForm = () => {
       id: nanoid(),
     });
   }, [addNotification, depositAddress]);
+
+  if (runeBridgeLocked) {
+    return (
+      <div className="full">
+        <ErrorBadge
+          level={ErrorLevel.Warning}
+          message={t(translations.maintenanceMode.runeBridge)}
+        />
+      </div>
+    );
+  }
 
   return (
     <div className="full">

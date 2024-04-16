@@ -94,14 +94,17 @@ export const RuneToRSK: React.FC<RuneToRSKProps> = ({ onClose }) => {
             btcDepositTxid: currentDepositStatus.btc_deposit_txid,
             btcDepositVout: currentDepositStatus.btc_deposit_vout,
             runeName: currentDepositStatus.rune_name,
+            runeSymbol: currentDepositStatus.rune_symbol,
             amountDecimal: currentDepositStatus.amount_decimal,
+            feeDecimal: currentDepositStatus.fee_decimal,
+            receiveAmountDecimal: currentDepositStatus.receive_amount_decimal,
             status: currentDepositStatus.status,
             evmTransferTxHash: currentDepositStatus.evm_transfer_tx_hash,
           },
         },
       }));
     };
-    const interval = setInterval(checkPendingTx, 5000);
+    const interval = setInterval(checkPendingTx, 10_000);
     return () => clearInterval(interval);
   }, [
     depositTx,

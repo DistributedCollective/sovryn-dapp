@@ -14,26 +14,38 @@ import {
 
 import { StatusIcon } from '../../../../../2_molecules/StatusIcon/StatusIcon';
 import { TxIdWithNotification } from '../../../../../2_molecules/TxIdWithNotification/TransactionIdWithNotification';
-import { BITCOIN } from '../../../../../../constants/currencies';
-import { BTC_IN_SATOSHIS } from '../../../../../../constants/general';
 import { useAccount } from '../../../../../../hooks/useAccount';
 import { translations } from '../../../../../../locales/i18n';
 import {
   getBtcExplorerUrl,
   getRskExplorerUrl,
 } from '../../../../../../utils/helpers';
-import { formatValue, fromWei, toWei } from '../../../../../../utils/math';
-import { DEPOSIT_FEE_SATS } from '../../../constants';
-import { ReceiveflowStep } from '../../../contexts/receiveflow';
+import { formatValue } from '../../../../../../utils/math';
+import {
+  ReceiveflowStep,
+  TransferStatusType,
+} from '../../../contexts/receiveflow';
 import { useReceiveFlowService } from '../../../hooks/useReceiveFlowService';
 
-const translation = translations.fastBtc.receive.statusScreen;
+const translation = translations.runeBridge.receive.statusScreen;
 
 const rskExplorerUrl = getRskExplorerUrl();
 const btcExplorerUrl = getBtcExplorerUrl();
 
 type StatusScreenProps = {
   onClose: () => void;
+};
+
+const formatTxStatus = (status: TransferStatusType) => {
+  switch (status) {
+    case 'detected':
+    case 'seen':
+    case 'sent_to_evm':
+    case 'confirmed':
+      return t(translation.transferStatus[status]);
+    default:
+      return status;
+  }
 };
 
 export const StatusScreen: React.FC<StatusScreenProps> = ({ onClose }) => {
@@ -45,24 +57,13 @@ export const StatusScreen: React.FC<StatusScreenProps> = ({ onClose }) => {
     [step],
   );
 
-  const feeAmount = useMemo(
-    () => toWei(DEPOSIT_FEE_SATS / BTC_IN_SATOSHIS),
-    [],
-  );
-
-  const amount = useMemo(() => {
-    if (depositTx) {
-      const { currentTX } = depositTx;
-      return currentTX.amountDecimal ? currentTX.amountDecimal : 0;
-    }
-    return 0;
-  }, [depositTx]);
-
-  const receiveAmount = useMemo(() => {
-    return fromWei(toWei(amount).sub(feeAmount));
-  }, [amount, feeAmount]);
   const items = useMemo(() => {
     const { currentTX } = depositTx;
+    const runeSymbol = currentTX.runeSymbol ?? currentTX.runeName;
+    const fee = Number(currentTX.feeDecimal || 0);
+    const amount = Number(currentTX.amountDecimal || 0);
+    const receiveAmount = Number(currentTX.receiveAmountDecimal || 0);
+
     return [
       {
         label: t(translation.to),
@@ -75,26 +76,32 @@ export const StatusScreen: React.FC<StatusScreenProps> = ({ onClose }) => {
       },
       {
         label: t(translation.sending),
-        value: (
+        value: amount ? (
           <>
-            {formatValue(Number(amount), 8)} {BITCOIN}
+            {formatValue(amount, 8)} {runeSymbol}
           </>
+        ) : (
+          <Icon icon={IconNames.PENDING} />
         ),
       },
       {
         label: t(translation.serviceFee),
-        value: (
+        value: fee ? (
           <>
-            {formatValue(Number(fromWei(feeAmount)), 8)} {BITCOIN}
+            {formatValue(fee, 8)} {runeSymbol}
           </>
+        ) : (
+          <Icon icon={IconNames.PENDING} />
         ),
       },
       {
         label: t(translation.receiving),
-        value: (
+        value: receiveAmount ? (
           <>
-            {formatValue(Number(receiveAmount), 8)} {BITCOIN}
+            {formatValue(receiveAmount, 8)} {runeSymbol}
           </>
+        ) : (
+          <Icon icon={IconNames.PENDING} />
         ),
       },
       {
@@ -123,8 +130,8 @@ export const StatusScreen: React.FC<StatusScreenProps> = ({ onClose }) => {
           <Icon icon={IconNames.PENDING} />
         ),
       },
-    ];
-  }, [account, amount, depositTx, feeAmount, receiveAmount]);
+    ].filter(x => x);
+  }, [account, depositTx]);
 
   return (
     <>
@@ -141,7 +148,7 @@ export const StatusScreen: React.FC<StatusScreenProps> = ({ onClose }) => {
             dataAttribute="funding-receive-status"
           />
         </div>
-        <div className="mb-6">{depositTx.currentTX.status}</div>
+        <div className="mb-6">{formatTxStatus(depositTx.currentTX.status)}</div>
 
         <div className="bg-gray-80 border rounded border-gray-50 p-3 text-xs text-gray-30">
           {items.map(({ label, value }, index) => (

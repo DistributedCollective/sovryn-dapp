@@ -5,10 +5,10 @@ import { t } from 'i18next';
 import { Button, ButtonStyle, ErrorBadge, ErrorLevel } from '@sovryn/ui';
 
 import { useAccount } from '../../../../../../hooks/useAccount';
-import { useMaintenance } from '../../../../../../hooks/useMaintenance';
 import { translations } from '../../../../../../locales/i18n';
 import { ReceiveflowStep } from '../../../contexts/receiveflow';
 import { useReceiveFlowService } from '../../../hooks/useReceiveFlowService';
+import { useRuneBridgeLocked } from '../../../hooks/useRuneBridgeLocked';
 import { Instructions } from '../../Instructions';
 
 export const MainScreen: React.FC = () => {
@@ -16,8 +16,7 @@ export const MainScreen: React.FC = () => {
   const { requestDepositAddressCallback, errorMessage, set } =
     useReceiveFlowService();
 
-  const { checkMaintenance, States } = useMaintenance();
-  const fastBtcLocked = checkMaintenance(States.FASTBTC_SEND);
+  const runeBridgeLocked = useRuneBridgeLocked();
   const onContinueClick = useCallback(async () => {
     await requestDepositAddressCallback()
       .then(() => {
@@ -35,10 +34,10 @@ export const MainScreen: React.FC = () => {
     <div>
       <Instructions isReceive />
 
-      {fastBtcLocked ? (
+      {runeBridgeLocked ? (
         <ErrorBadge
           level={ErrorLevel.Warning}
-          message={t(translations.maintenanceMode.fastBtc)}
+          message={t(translations.maintenanceMode.runeBridge)}
         />
       ) : (
         <Button

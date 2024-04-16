@@ -1022,6 +1022,25 @@
                 "approveTxTitle": "Approve {{rune}}",
                 "sendTxTitle": "Send {{rune}}"
             }
+        },
+        "receive": {
+            "loading": "Loading... this may take up to 30 seconds",
+            "statusScreen": {
+                "transferStatus": {
+                  "detected": "Transfer detected",
+                  "seen": "Runes received by the bridge",
+                  "sent_to_evm": "Rune Tokens transferred in Rootstock",
+                  "confirmed": "Rune Token transfer confirmed in Rootstock"
+                },
+                "statusTitleProcessing": "Transfer processing...",
+                "statusTitleComplete": "Transfer complete",
+                "to": "To",
+                "sending": "Sending",
+                "serviceFee": "Service fee",
+                "receiving": "Receiving",
+                "bitcoinTxId": "Bitcoin TXID",
+                "rootstockTxId": "Rootstock TXID"
+            }
         }
     },
 

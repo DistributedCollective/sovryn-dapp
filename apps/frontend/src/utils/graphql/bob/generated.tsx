@@ -1619,6 +1619,29 @@ export type GetLiquidityChangesQuery = {
   }>;
 };
 
+export type GetSwapHistoryQueryVariables = Exact<{
+  user?: InputMaybe<Scalars['Bytes']>;
+  skip: Scalars['Int'];
+  pageSize: Scalars['Int'];
+  orderBy?: InputMaybe<Swap_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+}>;
+
+export type GetSwapHistoryQuery = {
+  __typename?: 'Query';
+  swaps: Array<{
+    __typename?: 'Swap';
+    transactionHash: string;
+    time: string;
+    baseFlow: string;
+    quoteFlow: string;
+    qty: string;
+    inBaseQty: boolean;
+    isBuy: boolean;
+    pool: { __typename?: 'Pool'; base: string; quote: string };
+  }>;
+};
+
 export const GetLiquidityChangesDocument = gql`
   query getLiquidityChanges(
     $user: Bytes
@@ -1700,4 +1723,88 @@ export type GetLiquidityChangesLazyQueryHookResult = ReturnType<
 export type GetLiquidityChangesQueryResult = Apollo.QueryResult<
   GetLiquidityChangesQuery,
   GetLiquidityChangesQueryVariables
+>;
+export const GetSwapHistoryDocument = gql`
+  query getSwapHistory(
+    $user: Bytes
+    $skip: Int!
+    $pageSize: Int!
+    $orderBy: Swap_orderBy
+    $orderDirection: OrderDirection
+  ) {
+    swaps(
+      where: { user: $user }
+      first: $pageSize
+      skip: $skip
+      orderBy: $orderBy
+      orderDirection: $orderDirection
+    ) {
+      transactionHash
+      time
+      pool {
+        base
+        quote
+      }
+      baseFlow
+      quoteFlow
+      qty
+      inBaseQty
+      isBuy
+    }
+  }
+`;
+
+/**
+ * __useGetSwapHistoryQuery__
+ *
+ * To run a query within a React component, call `useGetSwapHistoryQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetSwapHistoryQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetSwapHistoryQuery({
+ *   variables: {
+ *      user: // value for 'user'
+ *      skip: // value for 'skip'
+ *      pageSize: // value for 'pageSize'
+ *      orderBy: // value for 'orderBy'
+ *      orderDirection: // value for 'orderDirection'
+ *   },
+ * });
+ */
+export function useGetSwapHistoryQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    GetSwapHistoryQuery,
+    GetSwapHistoryQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<GetSwapHistoryQuery, GetSwapHistoryQueryVariables>(
+    GetSwapHistoryDocument,
+    options,
+  );
+}
+export function useGetSwapHistoryLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    GetSwapHistoryQuery,
+    GetSwapHistoryQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<GetSwapHistoryQuery, GetSwapHistoryQueryVariables>(
+    GetSwapHistoryDocument,
+    options,
+  );
+}
+export type GetSwapHistoryQueryHookResult = ReturnType<
+  typeof useGetSwapHistoryQuery
+>;
+export type GetSwapHistoryLazyQueryHookResult = ReturnType<
+  typeof useGetSwapHistoryLazyQuery
+>;
+export type GetSwapHistoryQueryResult = Apollo.QueryResult<
+  GetSwapHistoryQuery,
+  GetSwapHistoryQueryVariables
 >;

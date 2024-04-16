@@ -8,6 +8,10 @@ export const CONVERT_HISTORY_OPTIONS = [
     value: ConvertHistoryType.AMM,
     label: t(translations.conversionsHistory.types.AMM),
   },
+  {
+    value: ConvertHistoryType.BOB,
+    label: t(translations.conversionsHistory.types.BOB),
+  },
   //TODO: requires adding the data to the subgraph
   // {
   //   value: ConvertHistoryType.MOC,

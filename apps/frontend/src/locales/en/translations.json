@@ -1353,11 +1353,13 @@
         },
         "type": "Convert",
         "swap": "Swap",
+        "swapMultihop": "Swap (multihop)",
         "mint": "Mint",
         "burn": "Burn",
         "redeem": "Redeem",
         "types": {
             "AMM": "AMM",
+            "BOB": "BOB",
             "MOC": "Money On Chain",
             "Mynt": "Mynt",
             "Zero": "Zero"

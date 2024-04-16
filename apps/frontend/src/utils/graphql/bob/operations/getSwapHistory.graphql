@@ -1,0 +1,27 @@
+query getSwapHistory(
+  $user: Bytes
+  $skip: Int!
+  $pageSize: Int!
+  $orderBy: Swap_orderBy
+  $orderDirection: OrderDirection
+) {
+  swaps(
+    where: { user: $user }
+    first: $pageSize
+    skip: $skip
+    orderBy: $orderBy
+    orderDirection: $orderDirection
+  ) {
+    transactionHash
+    time
+    pool {
+      base
+      quote
+    }
+    baseFlow
+    quoteFlow
+    qty
+    inBaseQty
+    isBuy
+  }
+}

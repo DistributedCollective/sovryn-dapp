@@ -10,11 +10,12 @@ import {
 import { GAS_LIMIT } from '../../../../constants/gasLimits';
 import { useTransactionContext } from '../../../../contexts/TransactionContext';
 import { useAccount } from '../../../../hooks/useAccount';
+import { useCurrentChain } from '../../../../hooks/useChainStore';
 import { useGetProtocolContract } from '../../../../hooks/useGetContract';
 import { translations } from '../../../../locales/i18n';
+import { COMMON_SYMBOLS } from '../../../../utils/asset';
 import { toWei } from '../../../../utils/math';
 import { prepareApproveTransaction } from '../../../../utils/transactions';
-import { COMMON_SYMBOLS } from '../../../../utils/asset';
 
 export const useHandleStake = (
   amount: string,
@@ -23,8 +24,9 @@ export const useHandleStake = (
 ) => {
   const { signer, account } = useAccount();
   const { setTransactions, setIsOpen, setTitle } = useTransactionContext();
+  const chainId = useCurrentChain();
 
-  const stakingContract = useGetProtocolContract('staking');
+  const stakingContract = useGetProtocolContract('staking', chainId);
 
   const stake = useCallback(async () => {
     if (!signer || !stakingContract) {
@@ -39,6 +41,7 @@ export const useHandleStake = (
       spender: stakingContract.address,
       amount: weiAmount,
       signer,
+      chain: chainId,
     });
 
     if (approveTx) {
@@ -65,12 +68,13 @@ export const useHandleStake = (
     signer,
     stakingContract,
     amount,
+    chainId,
     timestamp,
+    account,
     onComplete,
     setTransactions,
     setTitle,
     setIsOpen,
-    account,
   ]);
 
   const handleSubmit = useCallback(() => stake(), [stake]);

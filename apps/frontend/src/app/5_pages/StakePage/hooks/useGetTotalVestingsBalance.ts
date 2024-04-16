@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 
 import { Decimal } from '@sovryn/utils';
 
+import { useCurrentChain } from '../../../../hooks/useChainStore';
 import { useGetProtocolContract } from '../../../../hooks/useGetContract';
 import { asyncCall } from '../../../../store/rxjs/provider-cache';
 import { decimalic } from '../../../../utils/math';
@@ -9,7 +10,8 @@ import { useGetVestings } from '../components/VestingStakesFrame/hooks/useGetVes
 
 export const useGetTotalVestingsBalance = () => {
   const { vestingContracts, loadingVestings } = useGetVestings();
-  const stakingContract = useGetProtocolContract('staking');
+  const chainId = useCurrentChain();
+  const stakingContract = useGetProtocolContract('staking', chainId);
   const [balance, setBalance] = useState(Decimal.ZERO);
 
   useEffect(() => {

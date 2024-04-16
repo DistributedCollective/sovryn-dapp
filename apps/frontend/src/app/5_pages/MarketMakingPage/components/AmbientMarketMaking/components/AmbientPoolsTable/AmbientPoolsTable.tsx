@@ -37,6 +37,7 @@ export const AmbientPoolsTable: FC<AmbientPoolsTableProps> = () => {
         <AssetPairRenderer
           asset1={pool.base}
           asset2={pool.quote}
+          chainId={pool.chainId}
           size={AssetPairSize.small}
         />
       </div>

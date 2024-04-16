@@ -5,11 +5,16 @@ import { t } from 'i18next';
 import { Accordion, Toggle, ToggleAlignment } from '@sovryn/ui';
 
 import { translations } from '../../../../../../../locales/i18n';
+import { AmbientLiquidityPool } from '../../../AmbientMarketMaking/utils/AmbientLiquidityPool';
 import { useDepositContext } from '../../contexts/BobDepositModalContext';
 import { BalancedRange } from './components/BalancedRange/BalancedRange';
 import { UnbalancedRange } from './components/UnbalancedRange/UnbalancedRange';
 
-export const PriceRange: FC = () => {
+type PriceRangeProps = {
+  pool: AmbientLiquidityPool;
+};
+
+export const PriceRange: FC<PriceRangeProps> = ({ pool }) => {
   const { isBalancedRange, setIsBalancedRange } = useDepositContext();
   const [isPriceRangeExpanded, setIsPriceRangeExpanded] = useState(false);
 
@@ -30,7 +35,13 @@ export const PriceRange: FC = () => {
           />
         </div>
 
-        <div>{isBalancedRange ? <BalancedRange /> : <UnbalancedRange />}</div>
+        <div>
+          {isBalancedRange ? (
+            <BalancedRange pool={pool} />
+          ) : (
+            <UnbalancedRange pool={pool} />
+          )}
+        </div>
       </Accordion>
     </div>
   );

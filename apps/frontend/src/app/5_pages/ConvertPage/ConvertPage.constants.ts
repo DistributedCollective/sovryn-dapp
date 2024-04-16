@@ -5,6 +5,8 @@ import { SmartRouter, smartRoutes } from '@sovryn/sdk';
 
 import { RSK_CHAIN_ID } from '../../../config/chains';
 
+import { COMMON_SYMBOLS } from '../../../utils/asset';
+
 export const FIXED_RATE_ROUTES = ['MyntBasset', 'MyntFixedRate'];
 
 export const FIXED_MYNT_RATE = '0.004723550439442834'; // We need it here as well because ConvertPage slightly rounds maximum price
@@ -23,23 +25,23 @@ export const SMART_ROUTER_RSK = new SmartRouter(
 );
 
 export const SMART_ROUTER_STABLECOINS = [
-  SupportedTokens.zusd,
-  SupportedTokens.dllr,
-  SupportedTokens.xusd,
-  SupportedTokens.doc,
-  SupportedTokens.rdoc,
-  SupportedTokens.rusdt,
+  COMMON_SYMBOLS.ZUSD,
+  COMMON_SYMBOLS.DLLR,
+  COMMON_SYMBOLS.XUSD,
+  COMMON_SYMBOLS.DOC,
+  'RDOC',
+  COMMON_SYMBOLS.RUSDT,
 ];
 
-export const BASSETS = [SupportedTokens.zusd, SupportedTokens.doc];
-export const MASSET = SupportedTokens.dllr;
+export const BASSETS = [COMMON_SYMBOLS.ZUSD, COMMON_SYMBOLS.DOC];
+export const MASSET = COMMON_SYMBOLS.DLLR;
 
 export const SMART_ROUTER_ALLOWED_TOKENS = [...BASSETS, MASSET];
 
 export const DEFAULT_SWAP_ENTRIES: Partial<Record<ChainIds, SupportedTokens>> =
   {
-    [ChainIds.RSK_MAINNET]: SupportedTokens.dllr,
-    [ChainIds.RSK_TESTNET]: SupportedTokens.dllr,
-    [ChainIds.BOB_MAINNET]: SupportedTokens.btc,
-    [ChainIds.BOB_TESTNET]: SupportedTokens.btc,
+    [ChainIds.RSK_MAINNET]: COMMON_SYMBOLS.DLLR,
+    [ChainIds.RSK_TESTNET]: COMMON_SYMBOLS.DLLR,
+    [ChainIds.BOB_MAINNET]: COMMON_SYMBOLS.ETH,
+    [ChainIds.BOB_TESTNET]: COMMON_SYMBOLS.ETH,
   };

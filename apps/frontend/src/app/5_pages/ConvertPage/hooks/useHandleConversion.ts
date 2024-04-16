@@ -5,11 +5,7 @@ import { useCallback } from 'react';
 import { BigNumber, ethers } from 'ethers';
 import { t } from 'i18next';
 
-import {
-  SupportedTokens,
-  getProtocolContract,
-  getTokenDetails,
-} from '@sovryn/contracts';
+import { getAssetData, getProtocolContract } from '@sovryn/contracts';
 import { PermitTransactionResponse, SwapRoute } from '@sovryn/sdk';
 
 import {
@@ -21,7 +17,9 @@ import { GAS_LIMIT } from '../../../../constants/gasLimits';
 import { getTokenDisplayName } from '../../../../constants/tokens';
 import { useTransactionContext } from '../../../../contexts/TransactionContext';
 import { useAccount } from '../../../../hooks/useAccount';
+import { useCurrentChain } from '../../../../hooks/useChainStore';
 import { translations } from '../../../../locales/i18n';
+import { COMMON_SYMBOLS } from '../../../../utils/asset';
 import {
   DEFAULT_SIGNATURE,
   EMPTY_PERMIT_TRANSFER_FROM,
@@ -33,11 +31,10 @@ import {
   UNSIGNED_PERMIT,
 } from '../../../../utils/transactions';
 import { getRouteContract } from '../ConvertPage.utils';
-import { useCurrentChain } from '../../../../hooks/useChainStore';
 
 export const useHandleConversion = (
-  sourceToken: SupportedTokens,
-  destinationToken: SupportedTokens,
+  sourceToken: string,
+  destinationToken: string,
   weiAmount: BigNumber,
   route: SwapRoute | undefined,
   slippageTolerance: string,
@@ -58,7 +55,7 @@ export const useHandleConversion = (
   const getWithdrawTokensTransactions = useCallback(async () => {
     const massetManager = await getMassetManager();
 
-    const { address: bassetAddress } = await getTokenDetails(
+    const { address: bassetAddress } = await getAssetData(
       destinationToken,
       currentChainId,
     );
@@ -91,7 +88,7 @@ export const useHandleConversion = (
   const getDepositTokenTransactions = useCallback(async () => {
     const massetManager = await getMassetManager();
 
-    const { address: bassetAddress, abi: bassetAbi } = await getTokenDetails(
+    const { address: bassetAddress, abi: bassetAbi } = await getAssetData(
       sourceToken,
       currentChainId,
     );
@@ -145,8 +142,8 @@ export const useHandleConversion = (
       !!route && ['ZeroRedemption', 'MocIntegration'].includes(route.name);
 
     const [sourceTokenDetails, destinationTokenDetails] = await Promise.all([
-      getTokenDetails(sourceToken, currentChainId),
-      getTokenDetails(destinationToken, currentChainId),
+      getAssetData(sourceToken, currentChainId),
+      getAssetData(destinationToken, currentChainId),
     ]);
 
     const approveTxData = await route.approve(
@@ -160,7 +157,7 @@ export const useHandleConversion = (
 
     if (requiresPermit2) {
       const approveTx = await prepareApproveTransaction({
-        token: SupportedTokens.dllr,
+        token: COMMON_SYMBOLS.DLLR,
         spender: PERMIT2_ADDRESS,
         amount: weiAmount,
         signer,

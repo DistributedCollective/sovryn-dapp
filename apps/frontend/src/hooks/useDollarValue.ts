@@ -1,7 +1,5 @@
 import { useMemo } from 'react';
 
-import { SupportedTokens } from '@sovryn/contracts';
-
 import { RSK_CHAIN_ID } from '../config/chains';
 
 import {
@@ -12,15 +10,15 @@ import { decimalic, fromWei, toWei } from '../utils/math';
 import { useCacheCall } from './useCacheCall';
 import { useTokenDetailsByAsset } from './useTokenDetailsByAsset';
 import { useGetRBTCPrice } from './zero/useGetRBTCPrice';
+import { COMMON_SYMBOLS } from '../utils/asset';
 
-export function useDollarValue(asset: SupportedTokens, weiAmount: string) {
-  if (asset === SupportedTokens.zusd) {
-    asset = SupportedTokens.xusd;
+export function useDollarValue(asset: string, weiAmount: string) {
+  if (asset.toLowerCase() === 'zusd') {
+    asset = 'xusd';
   }
   const assetDetails = useTokenDetailsByAsset(asset);
-  const dllrDetails = useTokenDetailsByAsset(SupportedTokens.dllr);
+  const dllrDetails = useTokenDetailsByAsset(COMMON_SYMBOLS.DLLR);
   const { price: btcPrice } = useGetRBTCPrice();
-  const isNativeAsset = useMemo(() => asset === SupportedTokens.rbtc, [asset]);
 
   const { value: usdPrice, loading } = useCacheCall(
     `dollarValue/${asset}`,
@@ -58,23 +56,23 @@ export function useDollarValue(asset: SupportedTokens, weiAmount: string) {
   );
 
   const usdValue = useMemo(() => {
-    const decimals = assetDetails?.decimalPrecision || 18;
+    const decimals = assetDetails?.decimals || 18;
 
     if (SMART_ROUTER_STABLECOINS.includes(asset)) {
       return fromWei(weiAmount);
     } else {
       return decimalic(weiAmount)
-        .mul(isNativeAsset ? btcPrice : usdPrice)
+        .mul(assetDetails?.isNative ? btcPrice : usdPrice)
         .div(10 ** decimals)
         .toString();
     }
   }, [
+    assetDetails?.decimals,
+    assetDetails?.isNative,
     asset,
-    assetDetails?.decimalPrecision,
-    usdPrice,
     weiAmount,
     btcPrice,
-    isNativeAsset,
+    usdPrice,
   ]);
 
   return {

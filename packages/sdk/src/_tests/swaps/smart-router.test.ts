@@ -1,6 +1,6 @@
 import { BigNumber, ethers, providers } from 'ethers';
 
-import { SupportedTokens, getTokenContract } from '@sovryn/contracts';
+import { getAssetContract } from '@sovryn/contracts';
 import { ChainIds } from '@sovryn/ethers-provider';
 
 import { smartRoutes } from '../../swaps/smart-router';
@@ -21,10 +21,10 @@ describe('SmartRouter', () => {
     provider = (await makeChainFixture()).provider;
     router = new SmartRouter(provider, Object.values(smartRoutes));
 
-    xusd = (await getTokenContract(SupportedTokens.xusd)).address;
-    sov = (await getTokenContract(SupportedTokens.sov)).address;
-    dllr = (await getTokenContract(SupportedTokens.dllr)).address;
-    zusd = (await getTokenContract(SupportedTokens.zusd)).address;
+    xusd = (await getAssetContract('XUSD')).address;
+    sov = (await getAssetContract('SOV')).address;
+    dllr = (await getAssetContract('DLLR')).address;
+    zusd = (await getAssetContract('ZUSD')).address;
   });
 
   describe('getAvailableRoutes', () => {
@@ -130,8 +130,9 @@ describe('SmartRouter', () => {
       await expect(router.getTokenDetails(btc, chainId)).resolves.toMatchObject(
         {
           address: btc,
-          symbol: 'rbtc',
-          decimalPrecision: 18,
+          symbol: 'BTC',
+          decimals: 18,
+          isNative: true,
           icon: expect.any(String),
           abi: expect.any(Array),
         },

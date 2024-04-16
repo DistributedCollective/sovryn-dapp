@@ -1,6 +1,5 @@
 import { useMemo } from 'react';
 
-import { SupportedTokens } from '@sovryn/contracts';
 import { Decimal } from '@sovryn/utils';
 
 import { RSK_CHAIN_ID } from '../../../../../../config/chains';
@@ -13,6 +12,7 @@ import { composeGas } from '../../../../../../utils/helpers';
 import { useGetTokenPrice } from '../../../../BorrowPage/hooks/useGetTokenPrice';
 import { AmmLiquidityPool } from '../../../utils/AmmLiquidityPool';
 import { useGetPoolsBalance } from './useGetPoolsBalance';
+import { COMMON_SYMBOLS } from '../../../../../../utils/asset';
 
 export const useGetMaxDeposit = (
   pool: AmmLiquidityPool,
@@ -20,7 +20,7 @@ export const useGetMaxDeposit = (
 ) => {
   const { balance: balanceTokenA } = useAssetBalance(pool.assetA, RSK_CHAIN_ID);
   const { balance: balanceTokenB } = useAssetBalance(
-    SupportedTokens.rbtc,
+    COMMON_SYMBOLS.BTC,
     RSK_CHAIN_ID,
   );
 

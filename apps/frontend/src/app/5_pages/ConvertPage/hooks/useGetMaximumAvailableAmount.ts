@@ -6,10 +6,13 @@ import { getProtocolContract, SupportedTokens } from '@sovryn/contracts';
 import { ChainId } from '@sovryn/ethers-provider';
 import { Decimal } from '@sovryn/utils';
 
+import { RSK_CHAIN_ID } from '../../../../config/chains';
+
 import { useAccount } from '../../../../hooks/useAccount';
 import { useAssetBalance } from '../../../../hooks/useAssetBalance';
 import { useCurrentChain } from '../../../../hooks/useChainStore';
 import { useIsMounted } from '../../../../hooks/useIsMounted';
+import { isRskChain } from '../../../../utils/chain';
 import {
   SMART_ROUTER_ALLOWED_TOKENS,
   BASSETS,
@@ -47,21 +50,23 @@ export const useGetMaximumAvailableAmount = (
     const getMassetManagerDetails = async () => {
       const { address: massetManagerAddress } = await getProtocolContract(
         'massetManager',
-        chain ?? currentChainId,
+        RSK_CHAIN_ID,
       );
       return massetManagerAddress;
     };
 
-    getMassetManagerDetails().then(result => {
-      if (isMounted()) {
-        setMassetManagerAddress(result);
-      }
-    });
+    if (isRskChain(currentChainId)) {
+      getMassetManagerDetails().then(result => {
+        if (isMounted()) {
+          setMassetManagerAddress(result);
+        }
+      });
+    }
   }, [chain, currentChainId, isMounted]);
 
   const { weiBalance: destinationTokenAggregatorWeiBalance } = useAssetBalance(
     destinationToken,
-    chain ?? currentChainId,
+    RSK_CHAIN_ID,
     massetManagerAddress,
   );
 
@@ -72,6 +77,10 @@ export const useGetMaximumAvailableAmount = (
 
   if (!account) {
     return Decimal.ZERO;
+  }
+
+  if (!isRskChain(currentChainId)) {
+    return sourceTokenBalance;
   }
 
   if (isMint || !isZero) {

@@ -1,13 +1,13 @@
+import { AssetDetailsData, getAssetDataByAddress } from '@sovryn/contracts';
 import { useEffect, useState } from 'react';
-
-import { getTokenDetailsByAddress, TokenDetailsData } from '@sovryn/contracts';
+import { RSK_CHAIN_ID } from '../config/chains';
 
 export const useTokenDetailsByAddress = (address?: string) => {
-  const [token, setToken] = useState<TokenDetailsData | undefined>();
+  const [token, setToken] = useState<AssetDetailsData | undefined>();
 
   useEffect(() => {
     const getTokenDetails = () => {
-      getTokenDetailsByAddress(address!)
+      getAssetDataByAddress(address!, RSK_CHAIN_ID)
         .then(setToken)
         .catch(e => {
           console.error('token not found?', e);

@@ -3,14 +3,16 @@ import React, { FC } from 'react';
 import { t } from 'i18next';
 import { Trans } from 'react-i18next';
 
-import { SupportedTokens } from '@sovryn/contracts';
 import { HelperButton, Link, SimpleTable } from '@sovryn/ui';
 import { Decimal } from '@sovryn/utils';
+
+import { RSK_CHAIN_ID } from '../../../../../../../config/chains';
 
 import { BITCOIN } from '../../../../../../../constants/currencies';
 import { WIKI_LINKS } from '../../../../../../../constants/links';
 import { useAccount } from '../../../../../../../hooks/useAccount';
 import { translations } from '../../../../../../../locales/i18n';
+import { COMMON_SYMBOLS, findAsset } from '../../../../../../../utils/asset';
 import { useHandleRewards } from '../../hooks/useHandleRewards';
 import { LiquidityMiningAction } from '../LiquidityMiningAction/LiquidityMiningAction';
 import {
@@ -78,7 +80,9 @@ export const LiquidityMiningMobile: FC<LiquidityMiningMobileProps> = ({
             <div>
               {renderAmount(lendingRewards, 'lendingRewardsVested')}
               {renderPool(
-                `${SupportedTokens.dllr.toLocaleUpperCase()}, ${BITCOIN.toLocaleUpperCase()}`,
+                `${
+                  findAsset(COMMON_SYMBOLS.DLLR, RSK_CHAIN_ID).symbol
+                }, ${BITCOIN.toLocaleUpperCase()}`,
               )}
             </div>
             <div>

@@ -1,6 +1,5 @@
 import { t } from 'i18next';
 
-import { SupportedTokens } from '@sovryn/contracts';
 import { prettyTx } from '@sovryn/ui';
 
 import {
@@ -9,6 +8,7 @@ import {
   TOKEN_RENDER_PRECISION,
 } from '../../../../constants/currencies';
 import { translations } from '../../../../locales/i18n';
+import { COMMON_SYMBOLS } from '../../../../utils/asset';
 import { areAddressesEqual } from '../../../../utils/helpers';
 import { formatValue } from '../../../../utils/math';
 import { chartConfig } from '../utils';
@@ -50,7 +50,7 @@ export const useGetChartOptions = (
               `${t(translations.chart.debtAmount)}: ${formatValue(
                 Number(debt),
                 TOKEN_RENDER_PRECISION,
-              )} ${SupportedTokens.zusd.toUpperCase()}`,
+              )} ${COMMON_SYMBOLS.ZUSD.toUpperCase()}`,
               `${t(translations.chart.collateralRatio)}: ${formatValue(
                 Number(collateralRatio),
                 0,
@@ -62,7 +62,7 @@ export const useGetChartOptions = (
                 `${t(translations.chart.redemptionBuffer)}: ${formatValue(
                   redemptionBuffer,
                   TOKEN_RENDER_PRECISION,
-                )} ${SupportedTokens.zusd.toUpperCase()}`,
+                )} ${COMMON_SYMBOLS.ZUSD.toUpperCase()}`,
               );
             }
             return tooltipContent;

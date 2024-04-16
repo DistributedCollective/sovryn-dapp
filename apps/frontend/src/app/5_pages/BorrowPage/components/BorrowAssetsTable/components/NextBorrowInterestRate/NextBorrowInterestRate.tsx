@@ -1,13 +1,12 @@
 import React, { FC } from 'react';
 
-import { SupportedTokens } from '@sovryn/contracts';
 import { Decimal } from '@sovryn/utils';
 
 import { AmountRenderer } from '../../../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { useGetBorrowingAPR } from '../../../../hooks/useGetBorrowingAPR';
 
 type NextBorrowInterestRateProps = {
-  asset: SupportedTokens;
+  asset: string;
   amount?: Decimal;
 };
 

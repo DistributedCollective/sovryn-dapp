@@ -1,12 +1,10 @@
-import { SupportedTokens } from '@sovryn/contracts';
-
 import { RSK_CHAIN_ID } from '../../../../config/chains';
 
 import { useCacheCall } from '../../../../hooks/useCacheCall';
 import { useLoadContract } from '../../../../hooks/useLoadContract';
 import { fromWei } from '../../../../utils/math';
 
-export const useGetNextSupplyInterestRate = (asset: SupportedTokens) => {
+export const useGetNextSupplyInterestRate = (asset: string) => {
   const lendContract = useLoadContract(asset, 'loanTokens', RSK_CHAIN_ID);
 
   const { value: interestRate } = useCacheCall(

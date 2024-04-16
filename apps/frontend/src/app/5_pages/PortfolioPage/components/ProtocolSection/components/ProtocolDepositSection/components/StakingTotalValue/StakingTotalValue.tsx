@@ -1,6 +1,5 @@
 import React, { FC, useEffect, useMemo, useState } from 'react';
 
-import { SupportedTokens, getTokenDetails } from '@sovryn/contracts';
 import { Decimal } from '@sovryn/utils';
 
 import { RSK_CHAIN_ID } from '../../../../../../../../../config/chains';
@@ -20,6 +19,8 @@ import {
   getCurrencyPrecision,
   getConvertedValue,
 } from '../../../../ProtocolSection.utils';
+import { getAssetData } from '@sovryn/contracts';
+import { COMMON_SYMBOLS } from '../../../../../../../../../utils/asset';
 
 export const StakingTotalValue: FC<ProtocolSectionProps> = ({
   selectedCurrency,
@@ -43,8 +44,8 @@ export const StakingTotalValue: FC<ProtocolSectionProps> = ({
       (async () => {
         const [sourceTokenDetails, destinationTokenDetails] = await Promise.all(
           [
-            getTokenDetails(SupportedTokens.sov, RSK_CHAIN_ID),
-            getTokenDetails(SupportedTokens.rbtc, RSK_CHAIN_ID),
+            getAssetData(COMMON_SYMBOLS.SOV, RSK_CHAIN_ID),
+            getAssetData(COMMON_SYMBOLS.BTC, RSK_CHAIN_ID),
           ],
         );
 

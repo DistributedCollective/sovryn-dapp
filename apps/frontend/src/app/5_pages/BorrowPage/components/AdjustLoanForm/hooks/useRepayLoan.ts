@@ -2,8 +2,6 @@ import { useCallback } from 'react';
 
 import { t } from 'i18next';
 
-import { SupportedTokens } from '@sovryn/contracts';
-
 import { RSK_CHAIN_ID } from '../../../../../../config/chains';
 
 import {
@@ -15,6 +13,7 @@ import { useTransactionContext } from '../../../../../../contexts/TransactionCon
 import { useAccount } from '../../../../../../hooks/useAccount';
 import { useLoadContract } from '../../../../../../hooks/useLoadContract';
 import { translations } from '../../../../../../locales/i18n';
+import { COMMON_SYMBOLS } from '../../../../../../utils/asset';
 import { toWei } from '../../../../../../utils/math';
 import { prepareApproveTransaction } from '../../../../../../utils/transactions';
 
@@ -27,7 +26,7 @@ export const useRepayLoan = () => {
     async (
       repayAmount: string,
       loanId: string,
-      borrowToken: SupportedTokens,
+      borrowToken: string,
       isPartialRepay?: boolean,
     ) => {
       if (!contract || !account || !signer) {
@@ -36,7 +35,7 @@ export const useRepayLoan = () => {
 
       const weiRepayAmount = toWei(repayAmount);
 
-      const isBorrowTokenRbtc = borrowToken === SupportedTokens.rbtc;
+      const isBorrowTokenRbtc = borrowToken === COMMON_SYMBOLS.BTC;
 
       const transactions: Transaction[] = [];
 

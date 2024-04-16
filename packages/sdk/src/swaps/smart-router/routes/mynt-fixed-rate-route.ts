@@ -1,10 +1,6 @@
 import { BigNumber, Contract, constants, providers, utils } from 'ethers';
 
-import {
-  SupportedTokens,
-  getProtocolContract,
-  getTokenContract,
-} from '@sovryn/contracts';
+import { getAsset, getProtocolContract } from '@sovryn/contracts';
 import { ChainId, ChainIds, numberToChainId } from '@sovryn/ethers-provider';
 
 import { SovrynErrorCode, makeError } from '../../../errors/errors';
@@ -53,12 +49,8 @@ export const myntFixedRateRoute: SwapRouteFunction = (
     pairs: async () => {
       if (!pairCache) {
         const chainId = await getChainId();
-        const mynt = (
-          await getTokenContract(SupportedTokens.mynt, chainId)
-        ).address.toLowerCase();
-        const sov = (
-          await getTokenContract(SupportedTokens.sov, chainId)
-        ).address.toLowerCase();
+        const mynt = (await getAsset('MYNT', chainId)).address.toLowerCase();
+        const sov = (await getAsset('SOV', chainId)).address.toLowerCase();
         pairCache = new Map<string, string[]>([[mynt, [sov]]]);
       }
       return pairCache;
@@ -79,8 +71,8 @@ export const myntFixedRateRoute: SwapRouteFunction = (
         await hasEnoughAllowance(
           provider,
           entry,
-          converter.address,
           from,
+          converter.address,
           amount ?? constants.MaxUint256,
         )
       ) {

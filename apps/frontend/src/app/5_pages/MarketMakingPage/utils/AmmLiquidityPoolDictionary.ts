@@ -1,5 +1,3 @@
-import { SupportedTokens } from '@sovryn/contracts';
-
 import { RSK_CHAIN_ID } from '../../../../config/chains';
 
 import { MAINNET_AMM, TESTNET_AMM } from '../MarketMakingPage.constants';
@@ -13,15 +11,12 @@ export class AmmLiquidityPoolDictionary {
   }
 
   public static get(converter: string): AmmLiquidityPool;
-  public static get(
-    assetA: SupportedTokens,
-    assetB: SupportedTokens,
-  ): AmmLiquidityPool;
+  public static get(assetA: string, assetB: string): AmmLiquidityPool;
   public static get(poolTokenA: string): AmmLiquidityPool;
 
   public static get(
-    converterOrAssetA: SupportedTokens | string,
-    assetB?: SupportedTokens,
+    converterOrAssetA: string,
+    assetB?: string,
   ): AmmLiquidityPool {
     if (assetB) {
       return this.list().find(

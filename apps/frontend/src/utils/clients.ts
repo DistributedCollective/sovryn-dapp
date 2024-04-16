@@ -22,3 +22,10 @@ export const myntClient = new ApolloClient({
     resultCaching: false,
   }),
 });
+
+export const bobClient = new ApolloClient({
+  uri: SUBGRAPH.BOB,
+  cache: new InMemoryCache({
+    resultCaching: false,
+  }),
+});

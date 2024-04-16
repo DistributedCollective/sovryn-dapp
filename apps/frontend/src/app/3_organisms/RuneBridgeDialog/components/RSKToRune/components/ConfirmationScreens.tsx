@@ -88,7 +88,7 @@ export const ConfirmationScreens: React.FC<ConfirmationScreensProps> = ({
     );
     const tokenDetails: TokenDetails = {
       address: selectedToken.tokenContractAddress,
-      symbol: selectedToken.symbol as any,
+      symbol: selectedToken.symbol,
       decimalPrecision: selectedToken.decimals,
     };
     if (!signer) {

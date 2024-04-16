@@ -14,7 +14,10 @@ import { StatusType } from '@sovryn/ui';
 import { useTransactionContext } from '../../../../../../contexts/TransactionContext';
 import { useAccount } from '../../../../../../hooks/useAccount';
 import { fromWei, toWei } from '../../../../../../utils/math';
-import { TransactionType } from '../../../../TransactionStepDialog/TransactionStepDialog.types';
+import {
+  TransactionType,
+  TokenDetails,
+} from '../../../../TransactionStepDialog/TransactionStepDialog.types';
 import { GAS_LIMIT_RUNE_BRIDGE_WITHDRAW } from '../../../constants';
 import { SendFlowContext, SendFlowStep } from '../../../contexts/sendflow';
 import { useContractService } from '../../../hooks/useContractService';
@@ -76,6 +79,16 @@ export const ConfirmationScreens: React.FC<ConfirmationScreensProps> = ({
   );
   const handleConfirm = useCallback(async () => {
     if (runeBridgeContract) {
+      const tokenContract = new Contract(
+        selectedToken.tokenContractAddress,
+        ['function approve(address spender, uint256 amount) returns (bool)'],
+        signer,
+      );
+      const tokenDetails: TokenDetails = {
+        address: selectedToken.tokenContractAddress,
+        symbol: selectedToken.symbol as any,
+        decimalPrecision: selectedToken.decimals,
+      };
       if (!signer) {
         throw new Error('Signer not found');
       }
@@ -84,13 +97,8 @@ export const ConfirmationScreens: React.FC<ConfirmationScreensProps> = ({
           title: t(`Approve ${selectedToken.name}`),
           request: {
             type: TransactionType.signTransaction,
-            contract: new Contract(
-              selectedToken.tokenContractAddress,
-              [
-                'function approve(address spender, uint256 amount) returns (bool)',
-              ],
-              signer,
-            ),
+            contract: tokenContract,
+            tokenDetails,
             fnName: 'approve',
             args: [runeBridgeContract.address, toWei(amount)],
             gasLimit: GAS_LIMIT_RUNE_BRIDGE_WITHDRAW,

@@ -3,9 +3,7 @@ import React, { useEffect } from 'react';
 import { ethers } from 'ethers';
 
 import { useAccount } from '../../../../hooks/useAccount';
-import { currentNetwork } from '../../../../utils/helpers';
-import runeBridgeABI from '../abi/RuneBridge.json';
-import { contractAddresses } from '../config';
+import { useGetProtocolContract } from '../../../../hooks/useGetContract';
 import {
   Contract,
   defaultValue,
@@ -22,13 +20,18 @@ export const ContractContextProvider: React.FC<
 > = ({ children }) => {
   const [state, setState] =
     React.useState<ContractContextStateType>(defaultValue);
+
   const { provider, account } = useAccount();
+  const runeBridgeContract = useGetProtocolContract('runeBridge');
+
   const requestTokenBalances = React.useCallback(async () => {
-    if (!state.runeBridgeContract) {
-      console.log('no contract');
+    if (!runeBridgeContract) {
+      console.warn(
+        'RuneBridge contract not loaded, cannot refresh token balances',
+      );
       return;
     }
-    const listTokens = await state.runeBridgeContract.listTokens();
+    const listTokens = await runeBridgeContract.listTokens();
     const tokenBalances: TokenBalance[] = [];
     for (const tokenAddress of listTokens) {
       const tokenContract = new ethers.Contract(
@@ -54,28 +57,17 @@ export const ContractContextProvider: React.FC<
         tokenBalances,
       }));
     }
-  }, [account, provider, state.runeBridgeContract]);
+  }, [account, provider, runeBridgeContract]);
+
   const value = React.useMemo(
     () => ({
       ...state,
+      runeBridgeContract,
       set: setState,
       requestTokenBalances,
     }),
-    [requestTokenBalances, state],
+    [requestTokenBalances, state, runeBridgeContract],
   );
-  const runeBridgeAddress = contractAddresses[currentNetwork];
-
-  useEffect(() => {
-    const runeBridgeContract = new ethers.Contract(
-      runeBridgeAddress,
-      runeBridgeABI,
-      provider,
-    );
-    setState(state => ({
-      ...state,
-      runeBridgeContract,
-    }));
-  }, [provider, runeBridgeAddress]);
 
   useEffect(() => {
     const refreshTokenBalances = setInterval(async () => {

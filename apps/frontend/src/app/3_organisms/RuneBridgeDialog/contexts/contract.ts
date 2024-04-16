@@ -12,13 +12,12 @@ export type TokenBalance = {
 
 export type ContractContextStateType = {
   tokenBalances: TokenBalance[];
-  runeBridgeContract: ethers.Contract | null;
+  runeBridgeContract: ethers.Contract | undefined;
   depositAddress: string;
 };
 
 export type ContractContextFunctionsType = {
   set: Dispatch<SetStateAction<ContractContextStateType>>;
-  requestTokenBalances: (address: string) => void;
 };
 
 export type ContractContextType = ContractContextStateType &
@@ -26,12 +25,9 @@ export type ContractContextType = ContractContextStateType &
 
 export const defaultValue: ContractContextType = {
   tokenBalances: [],
-  runeBridgeContract: null,
+  runeBridgeContract: undefined,
   depositAddress: '',
   set: () => {},
-  requestTokenBalances: (address: string) => {
-    throw new Error('requestTokenBalances() has not been defined.');
-  },
 };
 
 export const tokenABI = [

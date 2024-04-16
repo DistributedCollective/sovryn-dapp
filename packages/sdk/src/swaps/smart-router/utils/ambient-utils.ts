@@ -1,5 +1,8 @@
-import { CrocEnv, MAX_SQRT_PRICE, MIN_SQRT_PRICE } from '@sovryn/ambient-sdk';
 import { BigNumber } from 'ethers';
+
+import { CrocEnv, MAX_SQRT_PRICE, MIN_SQRT_PRICE } from '@sovryn/ambient-sdk';
+import { getAssetDataByAddress } from '@sovryn/contracts';
+import { ChainId, ChainIds } from '@sovryn/ethers-provider';
 
 export type Pool = [string, string];
 
@@ -79,4 +82,36 @@ export const calcImpact = async (
     0,
     initialLimitPrice(isBuy),
   );
+};
+
+const INDEXER = {
+  [ChainIds.BOB_TESTNET]:
+    'https://bob-ambient-graphcache.test.sovryn.app/gcgo/pool_list',
+};
+
+// Fetch pools from the indexer and return list of pairs if assets are supported by chain
+export const fetchPools = async (chainId: ChainId) => {
+  if (!INDEXER[chainId]) return [];
+  const response = await fetch(`${INDEXER[chainId]}?chainId=${chainId}`);
+  const pools = await response
+    .json()
+    .then(response =>
+      (response.data ?? []).map(item => [item.base, item.quote]),
+    );
+
+  const items: Pool[] = [];
+  for (const pool of pools) {
+    const [base, quote] = pool;
+    const baseAsset = await getAssetDataByAddress(base, chainId).catch(
+      () => null,
+    );
+    const quoteAsset = await getAssetDataByAddress(quote, chainId).catch(
+      () => null,
+    );
+
+    if (!baseAsset || !quoteAsset) continue;
+    items.push([baseAsset.address, quoteAsset.address]);
+  }
+
+  return items;
 };

@@ -136,6 +136,11 @@ export class CrocSwapPlan {
     base: { [name: string]: ContractFunction<T> },
     args: CrocSwapExecOpts,
   ): Promise<CrocTransactionData> {
+    console.log('hot path build tx data', {
+      base,
+      args,
+      callType: this.callType || 'default',
+    });
     const reader = new CrocSlotReader(this.context);
     if (this.callType === 'proxy') {
       return this.userCmdBuildTxData(base as Contract, args);
@@ -207,12 +212,10 @@ export class CrocSwapPlan {
     const TIP = 0;
     const surplusFlags = this.maskSurplusArgs(args);
 
-    const txData = await contract.populateTransaction.swap(
+    const data = contract.interface.encodeFunctionData('swap', [
       this.baseToken.tokenAddr,
       this.quoteToken.tokenAddr,
-      (
-        await this.context
-      ).chain.poolIndex,
+      (await this.context).chain.poolIndex,
       this.sellBase,
       this.qtyInBase,
       await this.qty,
@@ -220,13 +223,14 @@ export class CrocSwapPlan {
       await this.calcLimitPrice(),
       await this.calcSlipQty(),
       surplusFlags,
-      await this.buildTxArgs(surplusFlags, args.gasEst),
-    );
+    ]);
+
+    const { value } = await this.attachEthMsg(surplusFlags);
 
     return {
-      to: txData.to || '',
-      data: txData.data || '',
-      value: txData.value || BigNumber.from(0),
+      to: contract.address,
+      data,
+      value,
     };
   }
 

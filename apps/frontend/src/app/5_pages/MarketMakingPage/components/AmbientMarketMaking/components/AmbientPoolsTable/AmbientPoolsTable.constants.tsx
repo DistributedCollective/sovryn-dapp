@@ -9,6 +9,7 @@ import { translations } from '../../../../../../../locales/i18n';
 import { AmbientLiquidityPool } from '../../utils/AmbientLiquidityPool';
 import { AmbientPool24Volume } from './components/AmbientPool24Volume/AmbientPool24Volume';
 import { AmbientPoolDeposit } from './components/AmbientPoolDeposit/AmbientPoolDeposit';
+import { AmbientPoolFeeRate } from './components/AmbientPoolFeeRate/AmbientPoolFeeRate';
 import { AmbientPoolLiquidity } from './components/AmbientPoolLiquidity/AmbientPoolLiquidity';
 
 export const COLUMNS_CONFIG = [
@@ -24,7 +25,6 @@ export const COLUMNS_CONFIG = [
         />
       </div>
     ),
-    className: 'hidden lg:block',
   },
   {
     id: 'liquidity',
@@ -34,24 +34,25 @@ export const COLUMNS_CONFIG = [
     ),
   },
   {
-    id: 'returns',
+    id: 'lpFeeRate',
     title: (
       <span className="flex items-center gap-1">
-        {t(translations.ambientMarketMaking.poolsTable.returns)}{' '}
+        {t(translations.ambientMarketMaking.poolsTable.lpFeeRate)}{' '}
         <HelperButton
-          content={t(translations.ambientMarketMaking.poolsTable.returnsInfo)}
+          content={t(translations.ambientMarketMaking.poolsTable.lpFeeRateInfo)}
         />
       </span>
     ),
     cellRenderer: (pool: AmbientLiquidityPool) => (
-      <AmbientPool24Volume pool={pool} />
+      <AmbientPoolFeeRate pool={pool} />
     ),
-    className: 'hidden lg:block',
   },
   {
     id: 'volume',
     title: t(translations.ambientMarketMaking.poolsTable.volume),
-    cellRenderer: (pool: AmbientLiquidityPool) => null,
+    cellRenderer: (pool: AmbientLiquidityPool) => (
+      <AmbientPool24Volume pool={pool} />
+    ),
   },
   {
     id: 'balance',

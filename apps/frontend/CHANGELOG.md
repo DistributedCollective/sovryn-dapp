@@ -21,6 +21,13 @@
 - 6d5ba110: SOV-3985: Refactor POWA menu display
   Update dapp Favicon
 
+## 1.0.52
+
+### Patch Changes
+
+- 6d5ba110: SOV-3985: Refactor POWA menu display
+  Update dapp Favicon
+
 ## 1.0.51
 
 ### Patch Changes

@@ -169,9 +169,7 @@ export class CrocPoolView {
       : { below: await abovePrices, above: await belowPrices };
   }
 
-  async displayToOutsidePin(
-    dispPrice: number,
-  ): Promise<{
+  async displayToOutsidePin(dispPrice: number): Promise<{
     tick: number;
     price: number;
     isTickBelow: boolean;
@@ -199,6 +197,9 @@ export class CrocPoolView {
     let txArgs =
       this.baseToken.tokenAddr === AddressZero ? { value: ETH_INIT_BURN } : {};
 
+    console.log('pool chain', (await this.context).chain);
+    console.log('pool index', (await this.context).chain.poolIndex);
+
     let encoder = new PoolInitEncoder(
       this.baseToken.tokenAddr,
       this.quoteToken.tokenAddr,
@@ -208,7 +209,7 @@ export class CrocPoolView {
     console.log('encoder', encoder);
 
     let spotPrice = this.fromDisplayPrice(initPrice);
-    console.log('spotPrice', spotPrice);
+    console.log('spotPrice', await spotPrice);
     let calldata = encoder.encodeInitialize(await spotPrice);
 
     console.log('calldata', calldata);

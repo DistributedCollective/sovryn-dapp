@@ -1,5 +1,11 @@
 # frontend
 
+## 1.0.55
+
+### Patch Changes
+
+- 1fbe6a0c: SOV-4047: update copy on Leaderboard page
+
 ## 1.0.54
 
 ### Patch Changes

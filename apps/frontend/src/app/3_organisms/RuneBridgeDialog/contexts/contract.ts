@@ -38,3 +38,7 @@ export const tokenABI = [
 ];
 
 export const Contract = React.createContext(defaultValue);
+
+export const useContractContext = () => {
+  return React.useContext(Contract) as ContractContextType;
+};

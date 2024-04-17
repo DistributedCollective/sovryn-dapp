@@ -26,14 +26,14 @@ import {
   WITHDRAW_MIN_AMOUNT,
   WITHDRAW_MAX_AMOUNT,
 } from '../../../constants';
+import { useContractContext } from '../../../contexts/contract';
 import { SendFlowContext, SendFlowStep } from '../../../contexts/sendflow';
-import { useContractService } from '../../../hooks/useContractService';
 import { useRuneBridgeLocked } from '../../../hooks/useRuneBridgeLocked';
 import { TransferPolicies } from '../../TransferPolicies';
 
 export const AmountForm: React.FC = () => {
   const { amount, limits, selectedToken, set } = useContext(SendFlowContext);
-  const { tokenBalances } = useContractService();
+  const { tokenBalances } = useContractContext();
   const runeBridgeLocked = useRuneBridgeLocked();
 
   const [value, setValue] = useState(amount || '');

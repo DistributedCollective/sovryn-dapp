@@ -24,14 +24,14 @@ import {
   DEPOSIT_FEE_RUNE_PERCENTAGE,
   MIN_POSTAGE_BTC,
 } from '../../../constants';
-import { useContractService } from '../../../hooks/useContractService';
+import { useContractContext } from '../../../contexts/contract';
 import { useRuneBridgeLocked } from '../../../hooks/useRuneBridgeLocked';
 import { TransferPolicies } from '../../TransferPolicies';
 
 const config = resolveConfig(tailwindConfig);
 
 export const AddressForm = () => {
-  const { depositAddress, tokenBalances } = useContractService();
+  const { depositAddress, tokenBalances } = useContractContext();
   const { addNotification } = useNotificationContext();
   const runeBridgeLocked = useRuneBridgeLocked();
 

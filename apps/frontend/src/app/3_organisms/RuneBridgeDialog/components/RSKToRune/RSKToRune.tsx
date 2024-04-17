@@ -8,9 +8,9 @@ import { AmountForm } from './components/AmountForm';
 import { ConfirmationScreens } from './components/ConfirmationScreens';
 import { MainScreen } from './components/MainScreen';
 
-interface RSKToRuneProps {
+type RSKToRuneProps = {
   onClose: () => void;
-}
+};
 
 const allowedStepsToGoBackFrom = [
   SendFlowStep.AMOUNT,

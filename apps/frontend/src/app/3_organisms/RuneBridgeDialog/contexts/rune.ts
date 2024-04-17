@@ -10,20 +10,19 @@ export type TokenBalance = {
   tokenContractAddress: string;
 };
 
-export type ContractContextStateType = {
+export type RuneContextStateType = {
   tokenBalances: TokenBalance[];
   runeBridgeContract: ethers.Contract | undefined;
   depositAddress: string;
 };
 
-export type ContractContextFunctionsType = {
-  set: Dispatch<SetStateAction<ContractContextStateType>>;
+export type RuneContextFunctionsType = {
+  set: Dispatch<SetStateAction<RuneContextStateType>>;
 };
 
-export type ContractContextType = ContractContextStateType &
-  ContractContextFunctionsType;
+export type RuneContextType = RuneContextStateType & RuneContextFunctionsType;
 
-export const defaultValue: ContractContextType = {
+export const defaultValue: RuneContextType = {
   tokenBalances: [],
   runeBridgeContract: undefined,
   depositAddress: '',
@@ -37,8 +36,8 @@ export const tokenABI = [
   'function decimals() view returns (uint)',
 ];
 
-export const Contract = React.createContext(defaultValue);
+export const RuneContext = React.createContext(defaultValue);
 
-export const useContractContext = () => {
-  return React.useContext(Contract) as ContractContextType;
+export const useRuneContext = () => {
+  return React.useContext(RuneContext) as RuneContextType;
 };

@@ -3,11 +3,11 @@ import React from 'react';
 import { useAccount } from '../../../../hooks/useAccount';
 import { runeBridgeApiClient } from '../api';
 import { RequestOpts } from '../api/RuneBridgeClient';
-import { useContractContext } from '../contexts/contract';
+import { useRuneContext } from '../contexts/rune';
 
 export const useContractService = () => {
   const { account } = useAccount();
-  const { set } = useContractContext();
+  const { set } = useRuneContext();
 
   const requestDepositAddress = React.useCallback(async () => {
     const url = '/runes/deposit-addresses/';

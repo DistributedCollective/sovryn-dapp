@@ -6,21 +6,21 @@ import { useAccount } from '../../../../hooks/useAccount';
 import { useGetProtocolContract } from '../../../../hooks/useGetContract';
 import { useInterval } from '../../../../hooks/useInterval';
 import {
-  Contract,
+  RuneContext,
   defaultValue,
-  ContractContextStateType,
+  RuneContextStateType,
   TokenBalance,
   tokenABI,
-} from '../contexts/contract';
+} from '../contexts/rune';
 
-export type ContractContextProviderProps = {
+export type RuneContextProviderProps = {
   children: React.ReactNode;
 };
-export const ContractContextProvider: React.FC<
-  ContractContextProviderProps
-> = ({ children }) => {
-  const [state, setState] =
-    React.useState<ContractContextStateType>(defaultValue);
+
+export const RuneContextProvider: React.FC<RuneContextProviderProps> = ({
+  children,
+}) => {
+  const [state, setState] = React.useState<RuneContextStateType>(defaultValue);
 
   const { provider, account } = useAccount();
   const runeBridgeContract = useGetProtocolContract('runeBridge');
@@ -74,5 +74,5 @@ export const ContractContextProvider: React.FC<
     immediate: true,
   });
 
-  return <Contract.Provider value={value}>{children}</Contract.Provider>;
+  return <RuneContext.Provider value={value}>{children}</RuneContext.Provider>;
 };

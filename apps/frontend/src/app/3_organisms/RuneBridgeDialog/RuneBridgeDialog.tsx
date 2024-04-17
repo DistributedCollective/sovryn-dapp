@@ -20,9 +20,9 @@ import { translations } from '../../../locales/i18n';
 import { ReceiveFlow } from './components/ReceiveFlow/ReceiveFlow';
 import { SendFlow } from './components/SendFlow/SendFlow';
 import { ACTIVE_CLASSNAME } from './constants';
-import { ContractContextProvider } from './contextproviders/ContractContextProvider';
-import { ReceiveFlowContextProvider } from './contextproviders/ReceiveContextProvider';
-import { SendFlowContextProvider } from './contextproviders/SendContextProvider';
+import { ReceiveFlowContextProvider } from './contextproviders/ReceiveFlowContext';
+import { RuneContextProvider } from './contextproviders/RuneContextProvider';
+import { SendFlowContextProvider } from './contextproviders/SendFlowContext';
 
 const translation = translations.runeBridge.mainScreen;
 
@@ -94,7 +94,7 @@ export const RuneBridgeDialog: React.FC<RuneBridgeDialogProps> = ({
       disableFocusTrap
       closeOnEscape={false}
     >
-      <ContractContextProvider>
+      <RuneContextProvider>
         <Tabs
           index={index}
           items={items}
@@ -128,7 +128,7 @@ export const RuneBridgeDialog: React.FC<RuneBridgeDialogProps> = ({
             />
           )}
         />
-      </ContractContextProvider>
+      </RuneContextProvider>
     </Dialog>
   );
 };

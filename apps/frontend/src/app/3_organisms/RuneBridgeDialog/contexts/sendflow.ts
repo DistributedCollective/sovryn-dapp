@@ -1,6 +1,6 @@
 import { createContext, Dispatch, SetStateAction, useContext } from 'react';
 
-import { TokenBalance } from './contract';
+import { TokenBalance } from './rune';
 
 export enum SendFlowStep {
   MAIN,

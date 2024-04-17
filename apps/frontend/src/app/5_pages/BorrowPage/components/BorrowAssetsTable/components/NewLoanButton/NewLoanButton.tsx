@@ -11,7 +11,7 @@ import {
   DialogSize,
 } from '@sovryn/ui';
 
-import { useRequiredChain } from '../../../../../../2_molecules/NetworkBanner/hooks/useRequiredChain';
+import { useRequiredChain } from '../../../../../../../hooks/chain/useRequiredChain';
 import { useAccount } from '../../../../../../../hooks/useAccount';
 import { translations } from '../../../../../../../locales/i18n';
 import { LendingPool } from '../../../../../../../utils/LendingPool';

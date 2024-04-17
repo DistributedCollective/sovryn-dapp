@@ -8,8 +8,8 @@ import { Icon, IconNames, Paragraph } from '@sovryn/ui';
 
 import { APP_CHAIN_LIST } from '../../../config/chains';
 
+import { useRequiredChain } from '../../../hooks/chain/useRequiredChain';
 import { useChainStore } from '../../../hooks/useChainStore';
-import { useRequiredChain } from './hooks/useRequiredChain';
 
 type NetworkBannerProps = {
   requiredChainId: ChainId;

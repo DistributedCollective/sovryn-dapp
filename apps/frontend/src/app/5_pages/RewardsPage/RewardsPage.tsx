@@ -21,8 +21,8 @@ import {
 import { RSK_CHAIN_ID } from '../../../config/chains';
 
 import { NetworkBanner } from '../../2_molecules/NetworkBanner/NetworkBanner';
-import { useRequiredChain } from '../../2_molecules/NetworkBanner/hooks/useRequiredChain';
 import { WIKI_LINKS } from '../../../constants/links';
+import { useRequiredChain } from '../../../hooks/chain/useRequiredChain';
 import { useMaintenance } from '../../../hooks/useMaintenance';
 import { translations } from '../../../locales/i18n';
 import { generateD1Link } from '../../../utils/helpers';

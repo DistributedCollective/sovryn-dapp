@@ -5,7 +5,7 @@ import { t } from 'i18next';
 import { SupportedTokens } from '@sovryn/contracts';
 import { Button, ButtonSize, ButtonStyle } from '@sovryn/ui';
 
-import { useRequiredChain } from '../../../../../../2_molecules/NetworkBanner/hooks/useRequiredChain';
+import { useRequiredChain } from '../../../../../../../hooks/chain/useRequiredChain';
 import { useAccount } from '../../../../../../../hooks/useAccount';
 import { translations } from '../../../../../../../locales/i18n';
 import { eventDriven } from '../../../../../../../store/rxjs/event-driven';

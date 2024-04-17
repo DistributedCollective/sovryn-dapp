@@ -12,11 +12,11 @@ import {
 } from '@sovryn/ui';
 
 import { ConnectWalletButton } from '../../2_molecules';
-import { useRequiredChain } from '../../2_molecules/NetworkBanner/hooks/useRequiredChain';
 import { NetworkPicker } from '../../2_molecules/NetworkPicker/NetworkPicker';
 import { SovrynLogo } from '../../2_molecules/SovrynLogo/SovrynLogo';
 import { RSK_FAUCET } from '../../../constants/general';
 import { useWalletConnect, useWrongNetworkCheck } from '../../../hooks';
+import { useRequiredChain } from '../../../hooks/chain/useRequiredChain';
 import { useAssetBalance } from '../../../hooks/useAssetBalance';
 import { translations } from '../../../locales/i18n';
 import { sharedState } from '../../../store/rxjs/shared-state';

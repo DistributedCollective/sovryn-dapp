@@ -14,7 +14,7 @@ import {
 import { RSK_CHAIN_ID } from '../../../config/chains';
 
 import { NetworkBanner } from '../../2_molecules/NetworkBanner/NetworkBanner';
-import { useRequiredChain } from '../../2_molecules/NetworkBanner/hooks/useRequiredChain';
+import { useRequiredChain } from '../../../hooks/chain/useRequiredChain';
 import { useAccount } from '../../../hooks/useAccount';
 import { useBlockNumber } from '../../../hooks/useBlockNumber';
 import { translations } from '../../../locales/i18n';

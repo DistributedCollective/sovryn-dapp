@@ -34,8 +34,8 @@ import { AmountRenderer } from '../../2_molecules/AmountRenderer/AmountRenderer'
 import { AssetRenderer } from '../../2_molecules/AssetRenderer/AssetRenderer';
 import { MaxButton } from '../../2_molecules/MaxButton/MaxButton';
 import { NetworkBanner } from '../../2_molecules/NetworkBanner/NetworkBanner';
-import { useRequiredChain } from '../../2_molecules/NetworkBanner/hooks/useRequiredChain';
 import { TOKEN_RENDER_PRECISION } from '../../../constants/currencies';
+import { useRequiredChain } from '../../../hooks/chain/useRequiredChain';
 import { useAccount } from '../../../hooks/useAccount';
 import { useAmountInput } from '../../../hooks/useAmountInput';
 import { useAssetBalance } from '../../../hooks/useAssetBalance';

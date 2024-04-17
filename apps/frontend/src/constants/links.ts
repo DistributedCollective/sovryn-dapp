@@ -51,6 +51,7 @@ export const WIKI_LINKS = {
     'https://wiki.sovryn.com/sovryn-dapp/borrowing#basics-of-borrowing-on-sovryn',
   REWARDS: 'https://wiki.sovryn.app/en/sovryn-dapp/sovryn-rewards-explained',
   STAKING: 'https://wiki.sovryn.com/en/governance/staking-vesting-voting',
+  WALLET_SETUP: 'https://wiki.sovryn.com/en/getting-started/wallet-setup',
 };
 
 export const HELPDESK_LINK = 'https://help.sovryn.app/';

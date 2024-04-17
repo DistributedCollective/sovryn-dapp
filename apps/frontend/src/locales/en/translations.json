@@ -124,7 +124,8 @@
     },
     "wrongNetworkSwitcher": {
         "title": "Wrong network",
-        "description": "We detected that you are currently connected to the wrong network. Please switch your wallet to use {{network}} network."
+        "description": "We detected that you are currently connected to the wrong network. Please switch your wallet to use {{network}} network.",
+        "learnMore": "Learn more"
     },
     "errorPage": {
         "meta": {

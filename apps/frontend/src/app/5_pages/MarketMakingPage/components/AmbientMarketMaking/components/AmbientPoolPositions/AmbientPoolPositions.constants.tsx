@@ -2,20 +2,21 @@ import React from 'react';
 
 import { t } from 'i18next';
 
+import { TransactionId } from '@sovryn/ui';
+
 import { AmountRenderer } from '../../../../../../2_molecules/AmountRenderer/AmountRenderer';
-import { TransactionIdRenderer } from '../../../../../../2_molecules/TransactionIdRenderer/TransactionIdRenderer';
-import { BITCOIN } from '../../../../../../../constants/currencies';
 import { translations } from '../../../../../../../locales/i18n';
 import { AmbientPosition } from '../../AmbientMarketMaking.types';
 import { AmbientLiquidityPool } from '../../utils/AmbientLiquidityPool';
 import { AmbientPoolPositionWithdraw } from './components/AmbientPoolPositionWithdraw/AmbientPoolPositionWithdraw';
+import { AmbientPositionBalance } from './components/AmbientPositionBalance/AmbientPositionBalance';
 
 export const COLUMNS_CONFIG = (pool: AmbientLiquidityPool) => [
   {
     id: 'positionID',
     title: t(translations.ambientMarketMaking.positionsTable.positionID),
     cellRenderer: (position: AmbientPosition) => (
-      <TransactionIdRenderer hash={position.positionId} />
+      <TransactionId href="" value={position.positionId} />
     ),
   },
   {
@@ -52,11 +53,8 @@ export const COLUMNS_CONFIG = (pool: AmbientLiquidityPool) => [
   {
     id: 'balance',
     title: t(translations.ambientMarketMaking.positionsTable.balance),
-    cellRenderer: () => (
-      <div className="flex flex-col gap-1">
-        <AmountRenderer value={'1000'} suffix="DLLR" />
-        <AmountRenderer value={'1000'} suffix={BITCOIN} />
-      </div>
+    cellRenderer: (position: AmbientPosition) => (
+      <AmbientPositionBalance pool={pool} position={position} />
     ),
   },
   {
@@ -67,6 +65,5 @@ export const COLUMNS_CONFIG = (pool: AmbientLiquidityPool) => [
         <AmbientPoolPositionWithdraw pool={pool} position={position} />
       </div>
     ),
-    className: 'table-cell',
   },
 ];

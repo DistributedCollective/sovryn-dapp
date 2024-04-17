@@ -13,6 +13,7 @@ type AmbientPool24VolumeProps = {
 
 export const AmbientPool24Volume: FC<AmbientPool24VolumeProps> = ({ pool }) => {
   const { data } = useGetAmbientPool24Volume(pool);
+
   return (
     <div className="flex flex-col gap-0.5">
       <AmountRenderer

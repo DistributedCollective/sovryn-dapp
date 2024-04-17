@@ -13,7 +13,7 @@ import { BalanceChange } from './components/BalanceChange';
 
 export const COLUMNS_CONFIG = [
   {
-    id: 'timestamp',
+    id: 'time',
     title: t(translations.common.tables.columnTitles.timestamp),
     cellRenderer: (item: LiquidityChange) => (
       <>{dateFormat(Number(item.time))}</>
@@ -21,9 +21,10 @@ export const COLUMNS_CONFIG = [
     sortable: true,
   },
   {
-    id: 'transactionType',
+    id: 'changeType',
     title: t(translations.common.tables.columnTitles.transactionType),
     cellRenderer: (item: LiquidityChange) => <>{getTransactionType(item)}</>,
+    sortable: true,
   },
   {
     id: 'balanceChange',

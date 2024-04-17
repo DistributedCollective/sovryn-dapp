@@ -17,7 +17,8 @@ import { MobileCloseButton } from '../../1_atoms/MobileCloseButton/MobileCloseBu
 import { useAccount } from '../../../hooks/useAccount';
 import { useIsMobile } from '../../../hooks/useIsMobile';
 import { translations } from '../../../locales/i18n';
-import { SendFlow, ReceiveFlow } from './components';
+import { ReceiveFlow } from './components/ReceiveFlow/ReceiveFlow';
+import { SendFlow } from './components/SendFlow/SendFlow';
 import { ACTIVE_CLASSNAME } from './constants';
 import { ContractContextProvider } from './contextproviders/ContractContextProvider';
 import { ReceiveFlowContextProvider } from './contextproviders/ReceiveContextProvider';

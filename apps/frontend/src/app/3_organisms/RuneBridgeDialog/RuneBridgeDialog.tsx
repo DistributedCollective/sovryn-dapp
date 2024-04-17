@@ -13,30 +13,27 @@ import {
   VerticalTabs,
 } from '@sovryn/ui';
 
+import { MobileCloseButton } from '../../1_atoms/MobileCloseButton/MobileCloseButton';
 import { useAccount } from '../../../hooks/useAccount';
 import { useIsMobile } from '../../../hooks/useIsMobile';
 import { translations } from '../../../locales/i18n';
 import { RSKToRune, RuneToRSK } from './components';
-import { MobileCloseButton } from './components/MobileCloseButton';
+import { ACTIVE_CLASSNAME } from './constants';
 import { ContractContextProvider } from './contextproviders/ContractContextProvider';
 import { ReceiveFlowContextProvider } from './contextproviders/ReceiveContextProvider';
 import { SendFlowContextProvider } from './contextproviders/SendContextProvider';
-
-const ACTIVE_CLASSNAME = 'border-t-primary-30';
 
 const translation = translations.runeBridge.mainScreen;
 
 type RuneBridgeDialogProps = {
   isOpen: boolean;
   onClose: () => void;
-  shouldHideSend?: boolean;
   step?: number;
 };
 
 export const RuneBridgeDialog: React.FC<RuneBridgeDialogProps> = ({
   isOpen,
   onClose,
-  shouldHideSend = false,
   step = 0,
 }) => {
   const [index, setIndex] = useState(step);

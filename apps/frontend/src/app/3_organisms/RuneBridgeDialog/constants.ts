@@ -1,5 +1,7 @@
 import { toWei } from '../../../utils/math';
 
+export const ACTIVE_CLASSNAME = 'border-t-primary-30';
+
 export const DEPOSIT_FEE_SATS = 0;
 export const DEPOSIT_FEE_RUNE_PERCENTAGE = 0.4;
 

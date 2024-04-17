@@ -1,9 +1,9 @@
 import React, { useCallback, useEffect } from 'react';
 
+import { GoBackButton } from '../../../../1_atoms/GoBackButton/GoBackButton';
 import { useAccount } from '../../../../../hooks/useAccount';
 import { ReceiveflowStep } from '../../contexts/receiveflow';
 import { useReceiveFlowService } from '../../hooks/useReceiveFlowService';
-import { GoBackButton } from '../GoBackButton';
 import { AddressForm } from './components/AddressForm';
 import { MainScreen } from './components/MainScreen';
 import { StatusScreen } from './components/StatusScreen';

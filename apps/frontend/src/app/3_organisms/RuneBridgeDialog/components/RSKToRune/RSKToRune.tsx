@@ -1,8 +1,8 @@
 import React, { useCallback } from 'react';
 
+import { GoBackButton } from '../../../../1_atoms/GoBackButton/GoBackButton';
 import { SendFlowStep } from '../../contexts/sendflow';
 import { useSendFlowService } from '../../hooks/useSendFlowService';
-import { GoBackButton } from '../GoBackButton';
 import { AddressForm } from './components/AddressForm';
 import { AmountForm } from './components/AmountForm';
 import { ConfirmationScreens } from './components/ConfirmationScreens';

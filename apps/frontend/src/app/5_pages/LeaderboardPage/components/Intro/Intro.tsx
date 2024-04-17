@@ -26,7 +26,7 @@ export const Intro: FC<IntroProps> = ({ pointsSectionRef }) => {
         {t(baseTranslation.title)}
       </div>
       <div className="text-sm font-semibold mt-4">
-        {t(baseTranslation.subtitle)}
+        <Trans i18nKey={t(baseTranslation.subtitle)} />
       </div>
       <div className="text-sm font-medium mt-6">
         <Trans

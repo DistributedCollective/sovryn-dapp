@@ -65,7 +65,6 @@ export async function createRangePositionTx(params: CreateRangePositionParams) {
           tokenA.isWithdrawFromDexChecked,
           tokenB.isWithdrawFromDexChecked,
         ],
-        lpConduit,
       },
     );
 
@@ -79,7 +78,6 @@ export async function createRangePositionTx(params: CreateRangePositionParams) {
           tokenA.isWithdrawFromDexChecked,
           tokenB.isWithdrawFromDexChecked,
         ],
-        lpConduit,
       },
     );
 

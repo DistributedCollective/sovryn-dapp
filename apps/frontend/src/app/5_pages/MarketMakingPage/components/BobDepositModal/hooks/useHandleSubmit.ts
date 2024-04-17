@@ -20,6 +20,7 @@ import { useCurrentChain } from '../../../../../../hooks/useChainStore';
 import { translations } from '../../../../../../locales/i18n';
 import { prepareApproveTransaction } from '../../../../../../utils/transactions';
 import { createRangePositionTx } from '../../../../BobAmmPage/ambient-utils';
+import { AmbientLiquidityPoolDictionary } from '../../AmbientMarketMaking/utils/AmbientLiquidityPoolDictionary';
 import { useDepositContext } from '../contexts/BobDepositModalContext';
 import { useGetPoolInfo } from './useGetPoolInfo';
 
@@ -121,6 +122,8 @@ export const useHandleSubmit = (assetA: string, assetB: string) => {
       }
     }
 
+    const pool = AmbientLiquidityPoolDictionary.get(assetA, assetB, chainId);
+
     const tx = await createRangePositionTx({
       crocEnv: croc,
       isAmbient: isBalancedRange && rangeWidth === 100,
@@ -140,6 +143,7 @@ export const useHandleSubmit = (assetA: string, assetB: string) => {
         low: priceToTick(lowerBoundaryPrice),
         high: priceToTick(upperBoundaryPrice),
       },
+      lpConduit: pool?.lpTokenAddress,
     });
 
     transactions.push({
@@ -161,6 +165,8 @@ export const useHandleSubmit = (assetA: string, assetB: string) => {
     setIsOpen(true);
   }, [
     account,
+    assetA,
+    assetB,
     chainId,
     croc,
     firstAssetValue,

@@ -1,6 +1,8 @@
 import { ChainIds } from '@sovryn/ethers-provider';
 import { ChainId } from '@sovryn/ethers-provider';
 
+import { APP_CHAIN_LIST } from '../config/chains';
+
 import { isMainnet } from './helpers';
 
 /** @deprecated use RSK_CHAIN_ID */
@@ -20,3 +22,8 @@ export const isEthChain = (chainId: ChainId) =>
   [ChainIds.MAINNET, ChainIds.SEPOLIA, ChainIds.ROPSTEN].includes(
     chainId as ChainIds,
   );
+
+export const getChainById = (chainId: ChainId) =>
+  APP_CHAIN_LIST.find(chain => chain.id === chainId);
+
+export const getChainLabel = (chainId: ChainId) => getChainById(chainId)?.label;

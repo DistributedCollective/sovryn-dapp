@@ -11,7 +11,9 @@ export class AmbientLiquidityPoolDictionary {
   public static list(): AmbientLiquidityPool[] {
     return this.items.filter(
       item =>
-        item.chainId === BOB_CHAIN_ID || item.chainId === ChainIds.SEPOLIA,
+        item.chainId === BOB_CHAIN_ID ||
+        item.chainId === ChainIds.SEPOLIA ||
+        item.chainId === ChainIds.FORK,
     );
   }
 

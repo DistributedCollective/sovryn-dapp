@@ -1,7 +1,7 @@
 import { BigNumber, utils, providers, constants, BigNumberish } from 'ethers';
 
-import { CrocEnv, CrocPoolView } from '@sovryn/ambient-sdk';
-import { OrderDirective } from '@sovryn/ambient-sdk/dist/encoding/longform';
+import { CrocEnv, CrocPoolView } from '@sovryn/sdex';
+import { OrderDirective } from '@sovryn/sdex/dist/encoding/longform';
 import { getAssetContract } from '@sovryn/contracts';
 import { ChainIds } from '@sovryn/ethers-provider';
 import { numberToChainId } from '@sovryn/ethers-provider';

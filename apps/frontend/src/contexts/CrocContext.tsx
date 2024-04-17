@@ -7,7 +7,7 @@ import React, {
   useState,
 } from 'react';
 
-import { CrocEnv } from '@sovryn/ambient-sdk';
+import { CrocEnv } from '@sovryn/sdex';
 import { getProvider } from '@sovryn/ethers-provider';
 
 import { useAccount } from '../hooks/useAccount';

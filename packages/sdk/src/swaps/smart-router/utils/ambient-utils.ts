@@ -1,6 +1,6 @@
 import { BigNumber } from 'ethers';
 
-import { CrocEnv, MAX_SQRT_PRICE, MIN_SQRT_PRICE } from '@sovryn/ambient-sdk';
+import { CrocEnv, MAX_SQRT_PRICE, MIN_SQRT_PRICE } from '@sovryn/sdex';
 import { getAssetDataByAddress } from '@sovryn/contracts';
 import { ChainId, ChainIds } from '@sovryn/ethers-provider';
 

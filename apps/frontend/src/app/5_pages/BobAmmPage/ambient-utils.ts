@@ -1,4 +1,4 @@
-import { CrocEnv } from '@sovryn/ambient-sdk';
+import { CrocEnv } from '@sovryn/sdex';
 
 type RangePositionTokenInfo = {
   address: string;

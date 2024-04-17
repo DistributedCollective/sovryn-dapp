@@ -4746,6 +4746,11 @@
     joi "17.9.1"
     rxjs "7.5.6"
 
+"@sovryn/sdex@*":
+  version "0.3.9-2"
+  dependencies:
+    ethers "^5.5.3"
+
 "@stablelib/aead@^1.0.1":
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/@stablelib/aead/-/aead-1.0.1.tgz#c4b1106df9c23d1b867eb9b276d8f42d5fc4c0c3"

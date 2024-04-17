@@ -1,6 +1,6 @@
 import { BigNumber } from 'ethers';
 
-import { bigNumToFloat, floatToBigNum, truncateRightBits } from './';
+import { bigNumToFloat, floatToBigNum, truncateRightBits } from '.';
 
 /* Converts a fixed base token collateral amount to pool liquidity units. This conversion only applies
  * to the current pool price. If price moves the ratio between token collateral and liquidity will also

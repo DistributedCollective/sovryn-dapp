@@ -12,7 +12,7 @@ export const SEPOLIA = {
   },
   indexer: {
     [Environments.Testnet]:
-      'https://bob-ambient-graphcache.test.sovryn.app/gcgo',
+      'https://sepolia-ambient-graphcache.test.sovryn.app/gcgo',
   },
   bridge: {
     [Environments.Testnet]: 'https://bob-testnet.bridge.caldera.xyz',

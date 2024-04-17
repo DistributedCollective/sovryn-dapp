@@ -13,8 +13,8 @@ import classNames from 'classnames';
 import { BigNumber, Contract, ethers } from 'ethers';
 import { parseUnits } from 'ethers/lib/utils';
 
-import { CrocEnv, MAX_TICK, MIN_TICK } from '@sovryn/ambient-sdk';
-import { CrocTokenView } from '@sovryn/ambient-sdk/dist/tokens';
+import { CrocEnv, MAX_TICK, MIN_TICK } from '@sovryn/sdex';
+import { CrocTokenView } from '@sovryn/sdex/dist/tokens';
 import { getProvider } from '@sovryn/ethers-provider';
 import { ChainIds } from '@sovryn/ethers-provider';
 import { Decimal } from '@sovryn/utils';
@@ -267,7 +267,8 @@ export const BobAmmPage: React.FC = () => {
           qty: TOKEN_B_AMOUNT,
           isWithdrawFromDexChecked: false,
         },
-        isTokenAPrimaryRange: true,
+        // todo: check if this need to be switched for certain cases
+        isTokenAPrimaryRange: false,
         tick: { low: MIN_TICK, high: MAX_TICK },
       });
 

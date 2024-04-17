@@ -2,6 +2,7 @@ import { BigNumber } from 'ethers';
 
 import { ChainId } from '@sovryn/ethers-provider';
 
+import { getCurrentChain } from '../../../../../../hooks/useChainStore';
 import { findAsset } from '../../../../../../utils/asset';
 
 export class AmbientLiquidityPool {
@@ -12,11 +13,13 @@ export class AmbientLiquidityPool {
   public readonly quote;
 
   constructor(
-    private readonly _base: string,
-    private readonly _quote: string,
-    public readonly chainId: ChainId,
+    _base: string,
+    _quote: string,
+    public readonly _chainId: ChainId, // temporary hidding it
     public readonly poolIdx: string,
   ) {
+    const chainId = getCurrentChain();
+
     this._baseAddress = findAsset(_base, chainId).address;
     this._quoteAddress = findAsset(_quote, chainId).address;
 
@@ -29,5 +32,9 @@ export class AmbientLiquidityPool {
 
   public get key() {
     return `${this.base}/${this.quote}`;
+  }
+
+  public get chainId() {
+    return getCurrentChain();
   }
 }

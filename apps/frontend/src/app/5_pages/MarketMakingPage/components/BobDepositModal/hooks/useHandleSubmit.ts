@@ -6,8 +6,8 @@ import { BigNumber, Contract, ethers } from 'ethers';
 import { parseUnits } from 'ethers/lib/utils';
 import { t } from 'i18next';
 
-import { priceToTick } from '@sovryn/ambient-sdk';
-import { CrocTokenView } from '@sovryn/ambient-sdk/dist/tokens';
+import { priceToTick } from '@sovryn/sdex';
+import { CrocTokenView } from '@sovryn/sdex/dist/tokens';
 
 import {
   Transaction,
@@ -135,7 +135,7 @@ export const useHandleSubmit = (assetA: string, assetB: string) => {
         qty: Number(secondAssetValue),
         isWithdrawFromDexChecked: false,
       },
-      isTokenAPrimaryRange: true,
+      isTokenAPrimaryRange: false,
       tick: {
         low: priceToTick(lowerBoundaryPrice),
         high: priceToTick(upperBoundaryPrice),

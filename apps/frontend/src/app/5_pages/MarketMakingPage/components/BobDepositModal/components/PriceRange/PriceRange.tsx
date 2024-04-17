@@ -25,6 +25,7 @@ export const PriceRange: FC<PriceRangeProps> = ({ pool }) => {
         open={isPriceRangeExpanded}
         onClick={() => setIsPriceRangeExpanded(!isPriceRangeExpanded)}
         labelClassName="justify-between"
+        alwaysMounted
       >
         <div className="my-4">
           <Toggle

@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
-import { BOB } from '../../../../../../constants/infrastructure/bob';
 import { useCrocContext } from '../../../../../../contexts/CrocContext';
 import { useCurrentChain } from '../../../../../../hooks/useChainStore';
 import { COMMON_SYMBOLS, findAsset } from '../../../../../../utils/asset';
+import { getIndexerUri } from '../../../../../../utils/indexer';
 import { ETH_TOKEN } from '../../../../BobAmmPage/fork-constants';
 
 export const useGetPoolInfo = (assetA: string, assetB: string) => {
@@ -59,7 +59,7 @@ export const useGetPoolInfo = (assetA: string, assetB: string) => {
       return;
     }
 
-    const poolStatsFreshEndpoint = BOB.indexer + '/pool_stats?';
+    const poolStatsFreshEndpoint = getIndexerUri(chainId) + '/pool_stats?';
 
     return fetch(
       poolStatsFreshEndpoint +

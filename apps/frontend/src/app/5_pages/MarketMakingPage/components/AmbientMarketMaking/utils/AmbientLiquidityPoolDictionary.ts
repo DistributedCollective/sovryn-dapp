@@ -1,3 +1,5 @@
+import { ChainIds } from '@sovryn/ethers-provider';
+
 import { BOB_CHAIN_ID } from '../../../../../../config/chains';
 
 import { TESTNET_AMM } from '../AmbientMarketMaking.constants';
@@ -7,7 +9,12 @@ export class AmbientLiquidityPoolDictionary {
   private static items: AmbientLiquidityPool[] = [...TESTNET_AMM];
 
   public static list(): AmbientLiquidityPool[] {
-    return this.items.filter(item => item.chainId === BOB_CHAIN_ID);
+    return this.items.filter(
+      item =>
+        item.chainId === BOB_CHAIN_ID ||
+        item.chainId === ChainIds.SEPOLIA ||
+        item.chainId === ChainIds.FORK,
+    );
   }
 
   public static get(base: string, quote: string): AmbientLiquidityPool;

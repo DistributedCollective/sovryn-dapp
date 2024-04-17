@@ -17,7 +17,7 @@ import { MobileCloseButton } from '../../1_atoms/MobileCloseButton/MobileCloseBu
 import { useAccount } from '../../../hooks/useAccount';
 import { useIsMobile } from '../../../hooks/useIsMobile';
 import { translations } from '../../../locales/i18n';
-import { RSKToRune, RuneToRSK } from './components';
+import { SendFlow, ReceiveFlow } from './components';
 import { ACTIVE_CLASSNAME } from './constants';
 import { ContractContextProvider } from './contextproviders/ContractContextProvider';
 import { ReceiveFlowContextProvider } from './contextproviders/ReceiveContextProvider';
@@ -51,7 +51,7 @@ export const RuneBridgeDialog: React.FC<RuneBridgeDialogProps> = ({
         infoText: t(translation.tabs.receiveInfoText),
         content: (
           <ReceiveFlowContextProvider>
-            <RuneToRSK onClose={onClose} />
+            <ReceiveFlow onClose={onClose} />
             <MobileCloseButton onClick={onClose} />
           </ReceiveFlowContextProvider>
         ),
@@ -63,7 +63,7 @@ export const RuneBridgeDialog: React.FC<RuneBridgeDialogProps> = ({
         infoText: t(translation.tabs.sendInfoText),
         content: (
           <SendFlowContextProvider>
-            <RSKToRune onClose={onClose} />
+            <SendFlow onClose={onClose} />
             <MobileCloseButton onClick={onClose} />
           </SendFlowContextProvider>
         ),

@@ -8,11 +8,11 @@ import { AddressForm } from './components/AddressForm';
 import { MainScreen } from './components/MainScreen';
 import { StatusScreen } from './components/StatusScreen';
 
-interface RuneToRSKProps {
+interface ReceiveFlowProps {
   onClose: () => void;
 }
 
-export const RuneToRSK: React.FC<RuneToRSKProps> = ({ onClose }) => {
+export const ReceiveFlow: React.FC<ReceiveFlowProps> = ({ onClose }) => {
   const { account: evmAddress } = useAccount();
   const {
     step,

@@ -8,7 +8,7 @@ import { AmountForm } from './components/AmountForm';
 import { ConfirmationScreens } from './components/ConfirmationScreens';
 import { MainScreen } from './components/MainScreen';
 
-type RSKToRuneProps = {
+type SendFlowProps = {
   onClose: () => void;
 };
 
@@ -31,7 +31,7 @@ const getBackStep = (step: SendFlowStep) => {
   }
 };
 
-export const RSKToRune: React.FC<RSKToRuneProps> = ({ onClose }) => {
+export const SendFlow: React.FC<SendFlowProps> = ({ onClose }) => {
   const { set, step } = useSendFlowService();
   const onBackClick = useCallback(() => {
     set(prevState => ({ ...prevState, step: getBackStep(step) }));

@@ -1,2 +1,2 @@
-export * from './RSKToRune/RSKToRune';
-export * from './RuneToRSK/RuneToRSK';
+export * from './SendFlow/SendFlow';
+export * from './ReceiveFlow/ReceiveFlow';

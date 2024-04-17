@@ -29,13 +29,13 @@ export const AmbientPositionBalance: FC<AmbientPositionBalanceProps> = ({
     <div className="flex flex-col">
       <AmountRenderer
         value={decimalic(result?.positionLiqBase || '0').div(
-          Math.pow(10, (baseToken?.decimals || 0) + 3),
+          Math.pow(10, baseToken?.decimals || 0),
         )}
         suffix={pool.base}
       />
       <AmountRenderer
         value={decimalic(result?.positionLiqQuote || '0').div(
-          Math.pow(10, (quoteToken?.decimals || 0) + 3),
+          Math.pow(10, quoteToken?.decimals || 0),
         )}
         suffix={pool.quote}
       />

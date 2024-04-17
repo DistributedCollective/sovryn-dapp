@@ -1,4 +1,4 @@
-import { createContext, Dispatch, SetStateAction } from 'react';
+import { createContext, Dispatch, SetStateAction, useContext } from 'react';
 
 export enum ReceiveflowStep {
   MAIN,
@@ -114,3 +114,7 @@ export const defaultValue: ReceiveFlowContextType = {
 
 export const ReceiveFlowContext =
   createContext<ReceiveFlowContextType>(defaultValue);
+
+export const useReceiveFlowContext = () => {
+  return useContext(ReceiveFlowContext) as ReceiveFlowContextType;
+};

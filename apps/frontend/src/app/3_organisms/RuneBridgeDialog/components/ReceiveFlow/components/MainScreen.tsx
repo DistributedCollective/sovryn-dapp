@@ -7,18 +7,19 @@ import { Button, ButtonStyle, ErrorBadge, ErrorLevel } from '@sovryn/ui';
 import { useAccount } from '../../../../../../hooks/useAccount';
 import { translations } from '../../../../../../locales/i18n';
 import { ReceiveflowStep } from '../../../contexts/receiveflow';
-import { useReceiveFlowService } from '../../../hooks/useReceiveFlowService';
+import { useReceiveFlowContext } from '../../../contexts/receiveflow';
+import { useContractService } from '../../../hooks/useContractService';
 import { useRuneBridgeLocked } from '../../../hooks/useRuneBridgeLocked';
 import { Instructions } from '../../Instructions';
 
 export const MainScreen: React.FC = () => {
   const { account } = useAccount();
-  const { requestDepositAddressCallback, errorMessage, set } =
-    useReceiveFlowService();
+  const { requestDepositAddress } = useContractService();
+  const { errorMessage, set } = useReceiveFlowContext();
 
   const runeBridgeLocked = useRuneBridgeLocked();
   const onContinueClick = useCallback(async () => {
-    await requestDepositAddressCallback()
+    await requestDepositAddress()
       .then(() => {
         set(prevState => ({
           ...prevState,
@@ -29,7 +30,7 @@ export const MainScreen: React.FC = () => {
       .catch(e => {
         set(prevState => ({ ...prevState, errorMessage: String(e) }));
       });
-  }, [requestDepositAddressCallback, set]);
+  }, [requestDepositAddress, set]);
   return (
     <div>
       <Instructions isReceive />

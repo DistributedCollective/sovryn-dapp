@@ -3,14 +3,14 @@ import React, { useCallback, useEffect } from 'react';
 import { GoBackButton } from '../../../../1_atoms/GoBackButton/GoBackButton';
 import { useAccount } from '../../../../../hooks/useAccount';
 import { ReceiveflowStep } from '../../contexts/receiveflow';
-import { useReceiveFlowService } from '../../hooks/useReceiveFlowService';
+import { useReceiveFlowContext } from '../../contexts/receiveflow';
 import { AddressForm } from './components/AddressForm';
 import { MainScreen } from './components/MainScreen';
 import { StatusScreen } from './components/StatusScreen';
 
-interface ReceiveFlowProps {
+type ReceiveFlowProps = {
   onClose: () => void;
-}
+};
 
 export const ReceiveFlow: React.FC<ReceiveFlowProps> = ({ onClose }) => {
   const { account: evmAddress } = useAccount();
@@ -20,7 +20,7 @@ export const ReceiveFlow: React.FC<ReceiveFlowProps> = ({ onClose }) => {
     requestLastScannedBlock,
     getRuneDepositStatus,
     depositTx,
-  } = useReceiveFlowService();
+  } = useReceiveFlowContext();
   const onBackClick = useCallback(() => {
     set(prevState => ({ ...prevState, step: ReceiveflowStep.MAIN }));
   }, [set]);

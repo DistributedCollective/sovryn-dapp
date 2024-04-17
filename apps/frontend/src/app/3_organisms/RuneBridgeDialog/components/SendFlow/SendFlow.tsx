@@ -2,7 +2,7 @@ import React, { useCallback } from 'react';
 
 import { GoBackButton } from '../../../../1_atoms/GoBackButton/GoBackButton';
 import { SendFlowStep } from '../../contexts/sendflow';
-import { useSendFlowService } from '../../hooks/useSendFlowService';
+import { useSendFlowContext } from '../../contexts/sendflow';
 import { AddressForm } from './components/AddressForm';
 import { AmountForm } from './components/AmountForm';
 import { ConfirmationScreens } from './components/ConfirmationScreens';
@@ -32,7 +32,7 @@ const getBackStep = (step: SendFlowStep) => {
 };
 
 export const SendFlow: React.FC<SendFlowProps> = ({ onClose }) => {
-  const { set, step } = useSendFlowService();
+  const { set, step } = useSendFlowContext();
   const onBackClick = useCallback(() => {
     set(prevState => ({ ...prevState, step: getBackStep(step) }));
   }, [set, step]);

@@ -18,8 +18,8 @@ import {
   getRskExplorerUrl,
 } from '../../../../../../utils/helpers';
 import { formatValue } from '../../../../../../utils/math';
+import { useSendFlowContext } from '../../../contexts/sendflow';
 import { useRuneBridgeLocked } from '../../../hooks/useRuneBridgeLocked';
-import { useSendFlowService } from '../../../hooks/useSendFlowService';
 
 const translation = translations.runeBridge.send.confirmationScreens;
 
@@ -49,7 +49,7 @@ export const ReviewScreen: React.FC<ReviewScreenProps> = ({
   to,
 }) => {
   const runeBridgeLocked = useRuneBridgeLocked();
-  const { selectedToken } = useSendFlowService();
+  const { selectedToken } = useSendFlowContext();
 
   const items = useMemo(
     () => [

@@ -1,4 +1,4 @@
-import { createContext, Dispatch, SetStateAction } from 'react';
+import { createContext, Dispatch, SetStateAction, useContext } from 'react';
 
 import { TokenBalance } from './contract';
 
@@ -66,3 +66,7 @@ export const defaultValue: SendFlowContextType = {
 };
 
 export const SendFlowContext = createContext<SendFlowContextType>(defaultValue);
+
+export const useSendFlowContext = () => {
+  return useContext(SendFlowContext) as SendFlowContextType;
+};

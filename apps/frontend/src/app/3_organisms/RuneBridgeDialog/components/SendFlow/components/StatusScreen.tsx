@@ -20,7 +20,7 @@ import {
   getRskExplorerUrl,
 } from '../../../../../../utils/helpers';
 import { formatValue } from '../../../../../../utils/math';
-import { useSendFlowService } from '../../../hooks/useSendFlowService';
+import { useSendFlowContext } from '../../../contexts/sendflow';
 
 const translation = translations.runeBridge.send.confirmationScreens;
 
@@ -66,7 +66,7 @@ export const StatusScreen: React.FC<StatusScreenProps> = ({
   onClose,
   onRetry,
 }) => {
-  const { selectedToken } = useSendFlowService();
+  const { selectedToken } = useSendFlowContext();
 
   const items = useMemo(
     () => [

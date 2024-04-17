@@ -98,7 +98,6 @@ export const SharedStateProvider: React.FC<React.PropsWithChildren> = ({
 
       <RuneBridgeDialog
         isOpen={runeBridgeDialog.isOpen}
-        shouldHideSend={runeBridgeDialog.shouldHideSend}
         onClose={handleRuneBridgeDialogClose}
         step={runeBridgeDialog.step}
       />

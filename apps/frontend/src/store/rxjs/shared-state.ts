@@ -25,7 +25,6 @@ export type EmailNotificationSettingsDialogState = {
 
 export type RuneBridgeDialogState = {
   isOpen: boolean;
-  shouldHideSend: boolean;
   step?: number;
 };
 
@@ -40,7 +39,6 @@ const INITIAL_STATE = {
   },
   runeBridgeDialog: {
     isOpen: false,
-    shouldHideSend: false,
     step: 0,
   },
 };
@@ -96,15 +94,11 @@ const closeFastBtcDialog = () =>
       isOpen: false,
     },
   }));
-const openRuneBridgeDialog = (
-  shouldHideSend: boolean = false,
-  step: number = 0,
-) =>
+const openRuneBridgeDialog = (step: number = 0) =>
   dispatch(state => ({
     ...state,
     runeBridgeDialog: {
       isOpen: true,
-      shouldHideSend,
       step,
     },
   }));

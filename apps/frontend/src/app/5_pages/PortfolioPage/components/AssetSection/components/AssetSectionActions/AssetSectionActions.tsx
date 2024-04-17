@@ -27,8 +27,8 @@ export const AssetSectionActions: FC = () => {
   );
 
   const handleRuneBridge = useCallback(
-    () => sharedState.actions.openRuneBridgeDialog(!hasRbtcBalance),
-    [hasRbtcBalance],
+    () => sharedState.actions.openRuneBridgeDialog(),
+    [],
   );
 
   const handleWithdraw = useCallback(
@@ -42,8 +42,8 @@ export const AssetSectionActions: FC = () => {
   );
 
   const handleExchangeRune = useCallback(
-    () => sharedState.actions.openRuneBridgeDialog(!hasRbtcBalance),
-    [hasRbtcBalance],
+    () => sharedState.actions.openRuneBridgeDialog(),
+    [],
   );
 
   return (

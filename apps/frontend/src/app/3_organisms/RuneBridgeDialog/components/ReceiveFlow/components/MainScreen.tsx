@@ -8,13 +8,13 @@ import { useAccount } from '../../../../../../hooks/useAccount';
 import { translations } from '../../../../../../locales/i18n';
 import { ReceiveflowStep } from '../../../contexts/receiveflow';
 import { useReceiveFlowContext } from '../../../contexts/receiveflow';
-import { useContractService } from '../../../hooks/useContractService';
+import { useRequestDepositAddress } from '../../../hooks/useRequestDepositAddress';
 import { useRuneBridgeLocked } from '../../../hooks/useRuneBridgeLocked';
 import { Instructions } from '../../Instructions';
 
 export const MainScreen: React.FC = () => {
   const { account } = useAccount();
-  const { requestDepositAddress } = useContractService();
+  const requestDepositAddress = useRequestDepositAddress();
   const { errorMessage, set } = useReceiveFlowContext();
 
   const runeBridgeLocked = useRuneBridgeLocked();

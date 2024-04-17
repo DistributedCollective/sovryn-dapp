@@ -5,11 +5,11 @@ import { runeBridgeApiClient } from '../api';
 import { RequestOpts } from '../api/RuneBridgeClient';
 import { useRuneContext } from '../contexts/rune';
 
-export const useContractService = () => {
+export const useRequestDepositAddress = () => {
   const { account } = useAccount();
   const { set } = useRuneContext();
 
-  const requestDepositAddress = React.useCallback(async () => {
+  return React.useCallback(async () => {
     const url = '/runes/deposit-addresses/';
     const data = { evm_address: account };
     const requestOps: RequestOpts = {
@@ -27,8 +27,4 @@ export const useContractService = () => {
       return response;
     });
   }, [account, set]);
-
-  return {
-    requestDepositAddress,
-  };
 };

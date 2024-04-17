@@ -5,12 +5,13 @@ import { Dropdown, Menu, MenuItem } from '@sovryn/ui';
 import { APP_CHAIN_LIST } from '../../../config/chains';
 
 import { useChainStore } from '../../../hooks/useChainStore';
+import { getChainById } from '../../../utils/chain';
 import styles from './NetworkPicker.module.css';
 
 export const NetworkPicker = () => {
   const { currentChainId, setCurrentChainId } = useChainStore();
   const selectedChain = useMemo(
-    () => APP_CHAIN_LIST.find(chain => chain.id === currentChainId),
+    () => getChainById(currentChainId),
     [currentChainId],
   );
   return (

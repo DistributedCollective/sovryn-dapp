@@ -10,10 +10,9 @@ import {
   Link,
 } from '@sovryn/ui';
 
-import { APP_CHAIN_LIST } from '../config/chains';
-
 import { WIKI_LINKS } from '../constants/links';
 import { useNotificationContext } from '../contexts/NotificationContext';
+import { getChainById } from '../utils/chain';
 import { useCurrentChain } from './useChainStore';
 import { useWalletConnect } from './useWalletConnect';
 
@@ -36,7 +35,7 @@ export const useWrongNetworkCheck = () => {
 
   useEffect(() => {
     if (isWrongChain) {
-      const expectedChain = APP_CHAIN_LIST.find(chain => chain.id === chainId);
+      const expectedChain = getChainById(chainId);
       addNotification(
         {
           type: NotificationType.warning,

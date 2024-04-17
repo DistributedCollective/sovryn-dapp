@@ -29,8 +29,6 @@ import {
   noop,
 } from '@sovryn/ui';
 
-import { APP_CHAIN_LIST } from '../../../../../config/chains';
-
 import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { TxIdWithNotification } from '../../../../2_molecules/TxIdWithNotification/TransactionIdWithNotification';
 import { BTC_RENDER_PRECISION } from '../../../../../constants/currencies';
@@ -38,6 +36,7 @@ import { APPROVAL_FUNCTION } from '../../../../../constants/general';
 import { useCurrentChain } from '../../../../../hooks/useChainStore';
 import { translations } from '../../../../../locales/i18n';
 import { findNativeAsset } from '../../../../../utils/asset';
+import { getChainById } from '../../../../../utils/chain';
 import { fromWei, toWei } from '../../../../../utils/math';
 import {
   Transaction,
@@ -71,10 +70,7 @@ export const TransactionStep: FC<TransactionStepProps> = ({
   isLoading,
 }) => {
   const chainId = useCurrentChain();
-  const chain = useMemo(
-    () => APP_CHAIN_LIST.find(chain => chain.id === chainId),
-    [chainId],
-  );
+  const chain = useMemo(() => getChainById(chainId), [chainId]);
 
   const { request, title, subtitle } = transaction;
   const [token, setToken] = useState<AssetDetailsData | undefined>();

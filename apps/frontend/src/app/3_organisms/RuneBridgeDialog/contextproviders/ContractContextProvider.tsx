@@ -1,9 +1,10 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 
 import { ethers } from 'ethers';
 
 import { useAccount } from '../../../../hooks/useAccount';
 import { useGetProtocolContract } from '../../../../hooks/useGetContract';
+import { useInterval } from '../../../../hooks/useInterval';
 import {
   Contract,
   defaultValue,
@@ -69,17 +70,9 @@ export const ContractContextProvider: React.FC<
     [requestTokenBalances, state, runeBridgeContract],
   );
 
-  useEffect(() => {
-    const refreshTokenBalancesInterval = setInterval(
-      requestTokenBalances,
-      5000,
-    );
-    const refreshTokenBalancesTimeout = setTimeout(requestTokenBalances, 500);
-    return () => {
-      clearInterval(refreshTokenBalancesInterval);
-      clearTimeout(refreshTokenBalancesTimeout);
-    };
-  }, [requestTokenBalances]);
+  useInterval(requestTokenBalances, 10000, {
+    immediate: true,
+  });
 
   return <Contract.Provider value={value}>{children}</Contract.Provider>;
 };

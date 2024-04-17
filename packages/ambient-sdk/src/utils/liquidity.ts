@@ -1,9 +1,6 @@
-import { BigNumber } from "ethers";
-import {
-  bigNumToFloat,
-  floatToBigNum,
-  truncateRightBits,
-} from "./";
+import { BigNumber } from 'ethers';
+
+import { bigNumToFloat, floatToBigNum, truncateRightBits } from './';
 
 /* Converts a fixed base token collateral amount to pool liquidity units. This conversion only applies
  * to the current pool price. If price moves the ratio between token collateral and liquidity will also
@@ -15,10 +12,10 @@ import {
 export function liquidityForBaseQty(
   price: number,
   qty: BigNumber,
-  mult: number = 1.0
+  mult: number = 1.0,
 ): BigNumber {
   return floatToBigNum(
-    Math.floor((bigNumToFloat(qty) / Math.sqrt(price)) * mult)
+    Math.floor((bigNumToFloat(qty) / Math.sqrt(price)) * mult),
   );
 }
 
@@ -32,17 +29,17 @@ export function liquidityForBaseQty(
 export function liquidityForQuoteQty(
   price: number,
   qty: BigNumber,
-  mult = 1.0
+  mult = 1.0,
 ): BigNumber {
   return floatToBigNum(
-    Math.floor(bigNumToFloat(qty) * Math.sqrt(price) * mult)
+    Math.floor(bigNumToFloat(qty) * Math.sqrt(price) * mult),
   );
 }
 
 export function baseVirtualReserves(
   price: number,
   liq: BigNumber,
-  mult: number = 1.0
+  mult: number = 1.0,
 ): BigNumber {
   return floatToBigNum(bigNumToFloat(liq) * Math.sqrt(price) * mult);
 }
@@ -50,7 +47,7 @@ export function baseVirtualReserves(
 export function quoteVirtualReserves(
   price: number,
   liq: BigNumber,
-  mult: number = 1.0
+  mult: number = 1.0,
 ): BigNumber {
   return floatToBigNum((bigNumToFloat(liq) / Math.sqrt(price)) * mult);
 }
@@ -66,7 +63,7 @@ export function liquidityForBaseConc(
   price: number,
   qty: BigNumber,
   lower: number,
-  upper: number
+  upper: number,
 ): BigNumber {
   const concFactor = baseConcFactor(price, lower, upper);
   return liquidityForBaseQty(price, qty, concFactor);
@@ -83,7 +80,7 @@ export function liquidityForQuoteConc(
   price: number,
   qty: BigNumber,
   lower: number,
-  upper: number
+  upper: number,
 ): BigNumber {
   const concFactor = quoteConcFactor(price, lower, upper);
   return liquidityForQuoteQty(price, qty, concFactor);
@@ -93,7 +90,7 @@ export function baseTokenForConcLiq(
   price: number,
   liq: BigNumber,
   lower: number,
-  upper: number
+  upper: number,
 ): BigNumber {
   const concFactor = baseConcFactor(price, lower, upper);
   return baseVirtualReserves(price, liq, 1 / concFactor);
@@ -103,23 +100,29 @@ export function quoteTokenForConcLiq(
   price: number,
   liq: BigNumber,
   lower: number,
-  upper: number
+  upper: number,
 ): BigNumber {
   const concFactor = quoteConcFactor(price, lower, upper);
   return quoteVirtualReserves(price, liq, 1 / concFactor);
 }
 
-export function baseTokenForQuoteConc (baseQty: number, 
-  lower: number, upper: number): number {
-  const growth = Math.sqrt(upper/lower) - 1
+export function baseTokenForQuoteConc(
+  baseQty: number,
+  lower: number,
+  upper: number,
+): number {
+  const growth = Math.sqrt(upper / lower) - 1;
   const virtBase = baseQty / growth;
-  const virtQuote = virtBase / lower
-  return virtQuote * (1 / (1 - growth) - 1)
+  const virtQuote = virtBase / lower;
+  return virtQuote * (1 / (1 - growth) - 1);
 }
 
-export function quoteTokenForBaseConc (quoteQty: number, 
-  lower: number, upper: number): number {
-  return baseTokenForQuoteConc(quoteQty, 1/upper, 1/lower)
+export function quoteTokenForBaseConc(
+  quoteQty: number,
+  lower: number,
+  upper: number,
+): number {
+  return baseTokenForQuoteConc(quoteQty, 1 / upper, 1 / lower);
 }
 
 /* Calculates the concentration leverage factor for the base token given the range relative to
@@ -133,7 +136,7 @@ export function quoteTokenForBaseConc (quoteQty: number,
 export function baseConcFactor(
   price: number,
   lower: number,
-  upper: number
+  upper: number,
 ): number {
   if (price < lower) {
     return Infinity;
@@ -155,7 +158,7 @@ export function baseConcFactor(
 export function quoteConcFactor(
   price: number,
   lower: number,
-  upper: number
+  upper: number,
 ): number {
   return baseConcFactor(1 / price, 1 / upper, 1 / lower);
 }
@@ -170,7 +173,7 @@ export function quoteConcFactor(
 export function concDepositSkew(
   price: number,
   lower: number,
-  upper: number
+  upper: number,
 ): number {
   const base = baseConcFactor(price, lower, upper);
   const quote = quoteConcFactor(price, lower, upper);
@@ -181,26 +184,43 @@ export function concDepositSkew(
 export function concDepositBalance(
   price: number,
   lower: number,
-  upper: number
+  upper: number,
 ): number {
-const base = baseConcFactor(price, lower, upper);
-const quote = quoteConcFactor(price, lower, upper);
+  const base = baseConcFactor(price, lower, upper);
+  const quote = quoteConcFactor(price, lower, upper);
 
-return quote / (base + quote);
+  return quote / (base + quote);
 }
 
 export function capitalConcFactor(
   price: number,
   lower: number,
-  upper: number
+  upper: number,
 ): number {
   const base = 1 / baseConcFactor(price, lower, upper);
   const quote = 1 / quoteConcFactor(price, lower, upper);
-  return 1 / ((base + quote) / 2.0)
+  return 1 / ((base + quote) / 2.0);
 }
 
+export function concBaseSlippagePrice(
+  spotPrice: number,
+  upperPrice: number,
+  slippage: number,
+): number {
+  const delta = Math.sqrt(upperPrice) - Math.sqrt(spotPrice);
+  const lowerSqrt = Math.sqrt(upperPrice) - delta * (1 + slippage);
+  return Math.pow(lowerSqrt, 2);
+}
 
-
+export function concQuoteSlippagePrice(
+  spotPrice: number,
+  lowerPrice: number,
+  slippage: number,
+): number {
+  const delta = Math.sqrt(spotPrice) - Math.sqrt(lowerPrice);
+  const upperSqrt = (1 + slippage) * delta + Math.sqrt(lowerPrice);
+  return Math.pow(upperSqrt, 2);
+}
 
 /* Rounds a liquidity magnitude to a multiple that can be used inside the protocol. */
 export function roundForConcLiq(liq: BigNumber): BigNumber {

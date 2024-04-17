@@ -31,6 +31,8 @@ import {
   neighborTicks,
   pinTickOutside,
   tickToPrice,
+  concBaseSlippagePrice,
+  concQuoteSlippagePrice,
 } from './utils';
 
 type PriceRange = [number, number];
@@ -268,6 +270,7 @@ export class CrocPoolView {
       lowerBound,
       upperBound,
       this.maskSurplusFlag(opts),
+      this.applyLpConduit(opts),
     );
     return this.sendCmd(calldata);
   }
@@ -281,6 +284,7 @@ export class CrocPoolView {
       lowerBound,
       upperBound,
       this.maskSurplusFlag(opts),
+      this.applyLpConduit(opts),
     );
     return this.sendCmd(calldata);
   }
@@ -300,6 +304,7 @@ export class CrocPoolView {
       lowerBound,
       upperBound,
       this.maskSurplusFlag(opts),
+      this.applyLpConduit(opts),
     );
     return this.sendCmd(calldata);
   }
@@ -316,6 +321,7 @@ export class CrocPoolView {
       lowerBound,
       upperBound,
       this.maskSurplusFlag(opts),
+      this.applyLpConduit(opts),
     );
     return this.sendCmd(calldata);
   }
@@ -382,6 +388,7 @@ export class CrocPoolView {
       lowerBound,
       upperBound,
       this.maskSurplusFlag(opts),
+      this.applyLpConduit(opts),
     );
 
     return this.constructParams(calldata, { value: await msgVal });
@@ -390,6 +397,8 @@ export class CrocPoolView {
   private async boundLimits(
     range: TickRange,
     limits: PriceRange,
+    isQtyBase: boolean,
+    floatingSlippage: number = 0.1,
   ): Promise<PriceRange> {
     let spotPrice = this.spotPrice();
     const [lowerPrice, upperPrice] = this.rangeToPrice(range);
@@ -403,14 +412,19 @@ export class CrocPoolView {
     } else if (lowerPrice > (await spotPrice)) {
       amplifyUpper = lowerPrice / BOUND_PREC;
     } else {
-      // Generally assume we don't want to send more than 1% more than the floating side
-      const MAX_AMPLICATION = 1.02;
-      const slippageCap = 1 - Math.pow(1 - 1 / MAX_AMPLICATION, 2);
-
-      amplifyLower =
-        ((await spotPrice) - lowerPrice) * slippageCap + lowerPrice;
-      amplifyUpper =
-        upperPrice - (upperPrice - (await spotPrice)) * slippageCap;
+      if (isQtyBase) {
+        amplifyLower = concBaseSlippagePrice(
+          await spotPrice,
+          upperPrice,
+          floatingSlippage,
+        );
+      } else {
+        amplifyUpper = concQuoteSlippagePrice(
+          await spotPrice,
+          lowerPrice,
+          floatingSlippage,
+        );
+      }
     }
 
     return this.untransformLimits([
@@ -448,7 +462,12 @@ export class CrocPoolView {
     limits: PriceRange,
     opts?: CrocLpOpts,
   ): Promise<Params> {
-    const saneLimits = await this.boundLimits(range, limits);
+    const saneLimits = await this.boundLimits(
+      range,
+      limits,
+      isQtyBase,
+      opts?.floatingSlippage,
+    );
 
     let msgVal = this.msgValRange(
       qty,
@@ -468,6 +487,7 @@ export class CrocPoolView {
       lowerBound,
       upperBound,
       this.maskSurplusFlag(opts),
+      this.applyLpConduit(opts),
     );
     return this.constructParams(calldata, { value: await msgVal });
   }
@@ -477,6 +497,13 @@ export class CrocPoolView {
       return this.maskSurplusFlag({ surplus: false });
     }
     return encodeSurplusArg(opts.surplus, this.useTrueBase);
+  }
+
+  private applyLpConduit(opts?: CrocLpOpts): string {
+    if (!opts || opts.lpConduit === undefined) {
+      return AddressZero;
+    }
+    return opts.lpConduit;
   }
 
   private async msgValAmbient(
@@ -541,10 +568,10 @@ export class CrocPoolView {
     range: TickRange,
     limits: PriceRange,
   ): Promise<TokenQty> {
-    const [, boundPrice] = await this.transformLimits(limits);
+    const spotPrice = await this.spotPrice();
     const [lowerPrice, upperPrice] = this.rangeToPrice(range);
 
-    let skew = concDepositSkew(boundPrice, lowerPrice, upperPrice);
+    let skew = concDepositSkew(spotPrice, lowerPrice, upperPrice);
     let ambiQty = this.calcEthInQuote(quoteQty, limits);
     let concQty = ambiQty.then(aq => Math.ceil(aq * skew));
 
@@ -578,4 +605,6 @@ export class CrocPoolView {
 
 export interface CrocLpOpts {
   surplus?: CrocSurplusFlags;
+  floatingSlippage?: number;
+  lpConduit?: string;
 }

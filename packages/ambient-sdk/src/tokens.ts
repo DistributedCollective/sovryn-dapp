@@ -5,6 +5,8 @@ import { Contract, BigNumber, ethers } from 'ethers';
 
 import { MAX_LIQ } from './constants';
 import { CrocContext } from './context';
+import { BlockTag } from './position';
+import { GAS_PADDING } from './utils';
 import { toDisplayQty, fromDisplayQty } from './utils/token';
 
 /* Type representing specified token quantities. This type can either represent the raw non-decimalized
@@ -98,7 +100,7 @@ export class CrocTokenView {
     );
 
     return (await this.resolveWrite()).approve(addr, weiQty, {
-      gasLimit: (await gasEst).add(2000),
+      gasLimit: (await gasEst).add(15000),
     });
   }
 
@@ -119,25 +121,39 @@ export class CrocTokenView {
     return (await this.context).dex.userCmd(COLD_PROXY_IDX, cmd);
   }
 
-  async wallet(address: string): Promise<BigNumber> {
+  async wallet(
+    address: string,
+    block: BlockTag = 'latest',
+  ): Promise<BigNumber> {
     if (this.isNativeEth) {
-      return (await this.context).provider.getBalance(address);
+      return (await this.context).provider.getBalance(address, block);
     } else {
-      return (await this.resolve()).balanceOf(address);
+      return (await this.resolve()).balanceOf(address, { blockTag: block });
     }
   }
 
-  async walletDisplay(address: string): Promise<string> {
-    const balance = this.wallet(address);
+  async walletDisplay(
+    address: string,
+    block: BlockTag = 'latest',
+  ): Promise<string> {
+    const balance = this.wallet(address, block);
     return toDisplayQty(await balance, await this.decimals);
   }
 
-  async balance(address: string): Promise<BigNumber> {
-    return (await this.context).query.querySurplus(address, this.tokenAddr);
+  async balance(
+    address: string,
+    block: BlockTag = 'latest',
+  ): Promise<BigNumber> {
+    return (await this.context).query.querySurplus(address, this.tokenAddr, {
+      blockTag: block,
+    });
   }
 
-  async balanceDisplay(address: string): Promise<string> {
-    const balance = this.balance(address);
+  async balanceDisplay(
+    address: string,
+    block: BlockTag = 'latest',
+  ): Promise<string> {
+    const balance = this.balance(address, block);
     return toDisplayQty(await balance, await this.decimals);
   }
 
@@ -219,6 +235,12 @@ export class CrocTokenView {
 
     const txArgs = useMsgVal ? { value: await weiQty } : {};
     const cntx = await this.context;
+    const gasEst = await cntx.dex.estimateGas.userCmd(
+      cntx.chain.proxyPaths.cold,
+      cmd,
+      txArgs,
+    );
+    Object.assign(txArgs, { gasLimit: gasEst.add(GAS_PADDING) });
     return cntx.dex.userCmd(cntx.chain.proxyPaths.cold, cmd, txArgs);
   }
 

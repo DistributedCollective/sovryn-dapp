@@ -1,7 +1,7 @@
-import { BigNumber, ethers } from "ethers";
-import { MAX_LIQ } from "../constants";
-import { encodeCrocPrice } from "../utils/price";
-import { AddressZero } from "@ethersproject/constants";
+import { BigNumber, ethers } from 'ethers';
+
+import { MAX_LIQ } from '../constants';
+import { encodeCrocPrice } from '../utils/price';
 
 type Address = string;
 type PoolType = number;
@@ -26,7 +26,8 @@ export class WarmPathEncoder {
     qtyIsBase: boolean,
     limitLow: number,
     limitHigh: number,
-    useSurplus: number
+    useSurplus: number,
+    lpConduit: Address,
   ) {
     return this.encodeWarmPath(
       qtyIsBase ? MINT_CONC_BASE : MINT_CONC_QUOTE,
@@ -35,7 +36,8 @@ export class WarmPathEncoder {
       qty,
       limitLow,
       limitHigh,
-      useSurplus
+      useSurplus,
+      lpConduit,
     );
   }
 
@@ -45,7 +47,8 @@ export class WarmPathEncoder {
     liq: BigNumber,
     limitLow: number,
     limitHigh: number,
-    useSurplus: number
+    useSurplus: number,
+    lpConduit: Address,
   ) {
     return this.encodeWarmPath(
       BURN_CONCENTRATED,
@@ -54,7 +57,8 @@ export class WarmPathEncoder {
       liq,
       limitLow,
       limitHigh,
-      useSurplus
+      useSurplus,
+      lpConduit,
     );
   }
 
@@ -63,7 +67,8 @@ export class WarmPathEncoder {
     upperTick: number,
     limitLow: number,
     limitHigh: number,
-    useSurplus: number
+    useSurplus: number,
+    lpConduit: Address,
   ) {
     return this.encodeWarmPath(
       HARVEST_CONCENTRATED,
@@ -72,7 +77,8 @@ export class WarmPathEncoder {
       BigNumber.from(0),
       limitLow,
       limitHigh,
-      useSurplus
+      useSurplus,
+      lpConduit,
     );
   }
 
@@ -81,7 +87,8 @@ export class WarmPathEncoder {
     qtyIsBase: boolean,
     limitLow: number,
     limitHigh: number,
-    useSurplus: number
+    useSurplus: number,
+    lpConduit: Address,
   ) {
     return this.encodeWarmPath(
       qtyIsBase ? MINT_AMBIENT_BASE : MINT_AMBIENT_QUOTE,
@@ -90,7 +97,8 @@ export class WarmPathEncoder {
       qty,
       limitLow,
       limitHigh,
-      useSurplus
+      useSurplus,
+      lpConduit,
     );
   }
 
@@ -98,7 +106,8 @@ export class WarmPathEncoder {
     liq: BigNumber,
     limitLow: number,
     limitHigh: number,
-    useSurplus: number
+    useSurplus: number,
+    lpConduit: Address,
   ) {
     return this.encodeWarmPath(
       BURN_AMBIENT,
@@ -107,14 +116,16 @@ export class WarmPathEncoder {
       liq,
       limitLow,
       limitHigh,
-      useSurplus
+      useSurplus,
+      lpConduit,
     );
   }
 
   encodeBurnAmbientAll(
     limitLow: number,
     limitHigh: number,
-    useSurplus: number
+    useSurplus: number,
+    lpConduit: Address,
   ) {
     return this.encodeWarmPath(
       BURN_AMBIENT,
@@ -123,7 +134,8 @@ export class WarmPathEncoder {
       MAX_LIQ,
       limitLow,
       limitHigh,
-      useSurplus
+      useSurplus,
+      lpConduit,
     );
   }
 
@@ -134,7 +146,8 @@ export class WarmPathEncoder {
     qty: BigNumber,
     limitLow: number,
     limitHigh: number,
-    useSurplus: number
+    useSurplus: number,
+    lpConduit: Address,
   ): string {
     return this.abiCoder.encode(WARM_ARG_TYPES, [
       callCode,
@@ -147,44 +160,44 @@ export class WarmPathEncoder {
       encodeCrocPrice(limitLow),
       encodeCrocPrice(limitHigh),
       useSurplus,
-      AddressZero,
+      lpConduit,
     ]);
   }
 }
 
 const MINT_CONCENTRATED: number = 1;
 const MINT_CONC_BASE: number = 11;
-const MINT_CONC_QUOTE: number = 12
+const MINT_CONC_QUOTE: number = 12;
 const BURN_CONCENTRATED: number = 2;
 const MINT_AMBIENT: number = 3;
 const MINT_AMBIENT_BASE: number = 31;
 const MINT_AMBIENT_QUOTE: number = 32;
 const BURN_AMBIENT: number = 4;
-const HARVEST_CONCENTRATED: number = 5
+const HARVEST_CONCENTRATED: number = 5;
 
 const WARM_ARG_TYPES = [
-  "uint8", // Type call
-  "address", // Base
-  "address", // Quote
-  "uint24", // Pool Index
-  "int24", // Lower Tick
-  "int24", // Upper Tick
-  "uint128", // Liquidity
-  "uint128", // Lower limit
-  "uint128", // Upper limit
-  "uint8", // reserve flags
-  "address", // deposit vault
+  'uint8', // Type call
+  'address', // Base
+  'address', // Quote
+  'uint24', // Pool Index
+  'int24', // Lower Tick
+  'int24', // Upper Tick
+  'uint128', // Liquidity
+  'uint128', // Lower limit
+  'uint128', // Upper limit
+  'uint8', // reserve flags
+  'address', // deposit vault
 ];
 
 export function isTradeWarmCall(txData: string): boolean {
-  const USER_CMD_METHOD = "0xa15112f9";
-  const LIQ_PATH = 2
+  const USER_CMD_METHOD = '0xa15112f9';
+  const LIQ_PATH = 2;
   const encoder = new ethers.utils.AbiCoder();
 
   if (txData.slice(0, 10) === USER_CMD_METHOD) {
     const result = encoder.decode(
-      ["uint16", "bytes"],
-      "0x".concat(txData.slice(10))
+      ['uint16', 'bytes'],
+      '0x'.concat(txData.slice(10)),
     );
     return result[0] == LIQ_PATH;
   }
@@ -203,7 +216,7 @@ interface WarmPathArgs {
 }
 
 export function decodeWarmPathCall(txData: string): WarmPathArgs {
-  const argData = "0x".concat(txData.slice(10 + 192));
+  const argData = '0x'.concat(txData.slice(10 + 192));
   const encoder = new ethers.utils.AbiCoder();
   const result = encoder.decode(WARM_ARG_TYPES, argData);
   return {

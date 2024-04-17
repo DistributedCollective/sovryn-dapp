@@ -19,7 +19,11 @@ import {
   sortBaseQuoteViews,
   TokenQty,
 } from './tokens';
-import { decodeCrocPrice } from './utils';
+import {
+  decodeCrocPrice,
+  getUnsignedRawTransaction,
+  GAS_PADDING,
+} from './utils';
 
 /* Describes the predicted impact of a given swap.
  * @property sellQty The total quantity of tokens predicted to be sold by the swapper to the dex.
@@ -155,7 +159,6 @@ export class CrocSwapPlan {
     contract: Contract,
     args: CrocSwapExecOpts,
   ): Promise<CrocTransactionData> {
-
     const TIP = 0;
     const surplusFlags = this.maskSurplusArgs(args);
 
@@ -193,7 +196,7 @@ export class CrocSwapPlan {
 
     return {
       to: contract.address,
-      data: contract.interface.encodeFunctionData("userCmd", [
+      data: contract.interface.encodeFunctionData('userCmd', [
         HOT_PROXY_IDX,
         cmd,
       ]),
@@ -272,12 +275,15 @@ export class CrocSwapPlan {
     args: CrocSwapExecOpts,
   ) {
     const reader = new CrocSlotReader(this.context);
-    if (this.callType === 'proxy') {
-      return this.userCmdCall(base, args);
-    } else if (this.callType === 'router') {
+    if (this.callType === 'router') {
       return this.swapCall(base, args);
     } else if (this.callType === 'bypass') {
       return this.swapCall(base, args);
+    } else if (
+      this.callType === 'proxy' ||
+      (await this.context).chain.proxyPaths.dfltColdSwap
+    ) {
+      return this.userCmdCall(base, args);
     } else {
       return (await reader.isHotPathOpen())
         ? this.swapCall(base, args)
@@ -349,11 +355,43 @@ export class CrocSwapPlan {
 
     const aargs = await this.buildTxArgs(surplusFlags, args.gasEst);
 
-    return base.userCmd(
-      HOT_PROXY_IDX,
-      cmd,
-      { gasLimit: args.gasEst, value: aargs.value },
+    return base.userCmd(HOT_PROXY_IDX, cmd, {
+      gasLimit: args.gasEst,
+      value: aargs.value,
+    });
+  }
+
+  /**
+   * Utility function to generate a "signed" raw transaction for a swap, used for L1 gas estimation on L2's like Scroll.
+   * Extra 0xFF...F is appended to the unsigned raw transaction to simulate the signature and other missing fields.
+   *
+   * Note: This function is only intended for L1 gas estimation, and does not generate valid signed transactions.
+   */
+  async getFauxRawTx(args: CrocSwapExecOpts = {}): Promise<`0x${string}`> {
+    const TIP = 0;
+    const surplusFlags = this.maskSurplusArgs(args);
+
+    const unsignedTx = await (
+      await this.context
+    ).dex.populateTransaction.swap(
+      this.baseToken.tokenAddr,
+      this.quoteToken.tokenAddr,
+      (
+        await this.context
+      ).chain.poolIndex,
+      this.sellBase,
+      this.qtyInBase,
+      await this.qty,
+      TIP,
+      await this.calcLimitPrice(),
+      await this.calcSlipQty(),
+      surplusFlags,
+      await this.buildTxArgs(surplusFlags),
     );
+
+    // append 160 'f's to the end of the raw transaction to simulate the signature and other missing fields
+    return (getUnsignedRawTransaction(unsignedTx) +
+      'f'.repeat(160)) as `0x${string}`;
   }
 
   async calcImpact(): Promise<CrocImpact> {
@@ -411,7 +449,6 @@ export class CrocSwapPlan {
     const txArgs = await this.attachEthMsg(surplusArg);
 
     if (gasEst) {
-      const GAS_PADDING = 15000;
       Object.assign(txArgs, { gasLimit: gasEst.add(GAS_PADDING) });
     }
 

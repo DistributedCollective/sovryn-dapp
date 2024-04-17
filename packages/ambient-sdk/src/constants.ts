@@ -29,6 +29,7 @@ export interface ChainSpec {
     cold: number;
     liq: number;
     long: number;
+    dfltColdSwap?: boolean;
   };
   blockExplorer?: string;
   displayName: string;
@@ -56,6 +57,7 @@ const BOB_TESTNET_CHAIN: ChainSpec = {
     cold: 3,
     long: 130,
     liq: 128,
+    dfltColdSwap: true,
   },
   blockExplorer: 'https://sepolia-dencun.explorer.gobob.xyz',
   displayName: 'BOB Testnet',
@@ -65,10 +67,10 @@ const BOB_TESTNET_CHAIN: ChainSpec = {
 const TENDERLY_FORK: ChainSpec = Object.assign({}, BOB_TESTNET_CHAIN, {
   chainId: '0x1b669',
   nodeUrl:
-    'https://virtual.mainnet.rpc.tenderly.co/4a0f7fb8-07fb-4cdd-baad-ec76fc7c6233',
+    'https://virtual.mainnet.rpc.tenderly.co/85e84e6d-a6fe-4497-8cfc-e32db752ac01',
   wsUrl: undefined,
   blockExplorer:
-    'https://dashboard.tenderly.co/explorer/vnet/85e84e6d-a6fe-4497-8cfc-e32db752ac01/transactions',
+    'https://dashboard.tenderly.co/explorer/vnet/85e84e6d-a6fe-4497-8cfc-e32db752ac01',
   displayName: 'Tenderly Fork',
   addrs: {
     dex: '0xDFDC89c04EE7E661Fdbfd50972923823350d8514',
@@ -97,6 +99,7 @@ const SEPOLIA_CHAIN: ChainSpec = {
     cold: 3,
     long: 130,
     liq: 128,
+    dfltColdSwap: true,
   },
   blockExplorer: 'https://sepolia.etherscan.io/',
   displayName: 'Sepolia',

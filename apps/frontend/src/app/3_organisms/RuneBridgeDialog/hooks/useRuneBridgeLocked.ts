@@ -1,4 +1,6 @@
+import { useMaintenance } from '../../../../hooks/useMaintenance';
+
 export const useRuneBridgeLocked = () => {
-  // this can be easily changed later on when we have support for maintenance mode
-  return false;
+  const { checkMaintenance, States } = useMaintenance();
+  return checkMaintenance(States.D2_RUNE_BRIDGE_RSK);
 };

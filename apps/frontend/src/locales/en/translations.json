@@ -1737,13 +1737,15 @@
     "networkBanner": {
         "content": "This feature hasn't arrived on {{currentNetwork}} yet, click here to switch to {{network}} if you would like to try it out!"
     },
+    "marketMakingNetworkBanner": {
+        "content": "Check out more AMM pools on Sovryn by switching to {{network}}"
+    },
     "ambientMarketMaking": {
         "meta": {
             "title": "Market Making - Sovryn"
         },
         "title": "Market making",
         "subtitle": "Earn fees from AMM swaps on BoB chain",
-        "banner": "See RSK Market Making pools. Switch to RSK now.",
         "poolsTable": {
             "pair": "Pair",
             "liquidity": "Liquidity",

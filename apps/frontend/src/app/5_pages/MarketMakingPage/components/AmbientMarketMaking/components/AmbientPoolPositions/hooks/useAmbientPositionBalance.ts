@@ -6,7 +6,7 @@ import {
   floatToBigNum,
   quoteTokenForConcLiq,
   tickToPrice,
-} from '@sovryn/ambient-sdk';
+} from '@sovryn/sdex';
 
 import { useGetPoolInfo } from '../../../../BobDepositModal/hooks/useGetPoolInfo';
 import { AmbientPosition } from '../../../AmbientMarketMaking.types';

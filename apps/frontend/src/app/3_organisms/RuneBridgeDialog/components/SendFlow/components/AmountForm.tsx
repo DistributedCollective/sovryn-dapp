@@ -17,6 +17,7 @@ import {
 
 import { MaxButton } from '../../../../../2_molecules/MaxButton/MaxButton';
 import { TOKEN_RENDER_PRECISION } from '../../../../../../constants/currencies';
+import { BITCOIN } from '../../../../../../constants/currencies';
 import { translations } from '../../../../../../locales/i18n';
 import { fromWei, toWei } from '../../../../../../utils/math';
 import {
@@ -50,9 +51,10 @@ export const AmountForm: React.FC = () => {
 
   const maxAmount = useMemo(() => {
     const limit = parseUnits(limits.max.toString(), 10);
-    const tokenBalance = tokenBalances.find(token => {
-      return token.tokenContractAddress === selectedToken.tokenContractAddress;
-    });
+    const tokenBalance = tokenBalances.find(
+      token =>
+        token.tokenContractAddress === selectedToken.tokenContractAddress,
+    );
     if (!tokenBalance) {
       return limit;
     }
@@ -126,7 +128,7 @@ export const AmountForm: React.FC = () => {
         <div className="flex items-center justify-between mb-3">
           <div>
             <Select
-              onChange={e => onSelectToken(e)}
+              onChange={onSelectToken}
               options={options}
               value={selectedToken.tokenContractAddress}
             />
@@ -167,7 +169,7 @@ export const AmountForm: React.FC = () => {
             maximumAmount={`${WITHDRAW_MAX_AMOUNT} ${
               selectedToken?.symbol ?? 'RUNE'
             }`}
-            serviceFee={`${WITHDRAW_FEE_RUNE_PERCENTAGE}% + ${WITHDRAW_FEE_BASE_CURRENCY_BTC} BTC`}
+            serviceFee={`${WITHDRAW_FEE_RUNE_PERCENTAGE}% + ${WITHDRAW_FEE_BASE_CURRENCY_BTC} ${BITCOIN}`}
             className="mb-6"
           />
         </div>

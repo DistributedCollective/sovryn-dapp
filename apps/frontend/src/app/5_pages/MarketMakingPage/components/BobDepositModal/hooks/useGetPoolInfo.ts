@@ -97,5 +97,5 @@ export const useGetPoolInfo = (assetA: string, assetB: string) => {
     }
   }, [feeRate, getLiquidityFee, pool]);
 
-  return { poolTokens, price, feeRate };
+  return { poolTokens, price, feeRate, pool };
 };

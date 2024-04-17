@@ -1746,8 +1746,8 @@
         "poolsTable": {
             "pair": "Pair",
             "liquidity": "Liquidity",
-            "returns": "Returns",
-            "returnsInfo": "The return rate shown is based on swap fees, plus liquidity mining rewards (if applicable), earned by the given pool in the previous 24 hour period, extrapolated to show an estimated annual percentage rate of return.",
+            "lpFeeRate": "LP fee rate",
+            "lpFeeRateInfo": "The fee rate that is charged per swap and given to AMM LPs",
             "volume": "24H volume",
             "balance": "Balance"
         },

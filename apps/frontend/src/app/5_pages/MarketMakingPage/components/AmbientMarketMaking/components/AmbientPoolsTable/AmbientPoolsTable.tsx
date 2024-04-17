@@ -6,6 +6,7 @@ import { Table } from '@sovryn/ui';
 
 import { AssetPairRenderer } from '../../../../../../2_molecules/AssetPairRenderer/AssetPairRenderer';
 import { AssetPairSize } from '../../../../../../2_molecules/AssetPairRenderer/AssetPairRenderer.types';
+import { useCurrentChain } from '../../../../../../../hooks/useChainStore';
 import { useIsMobile } from '../../../../../../../hooks/useIsMobile';
 import { translations } from '../../../../../../../locales/i18n';
 import { AmbientLiquidityPool } from '../../utils/AmbientLiquidityPool';
@@ -16,16 +17,20 @@ import styles from './AmbientPoolsTable.module.css';
 
 type AmbientPoolsTableProps = {};
 
-const ammPools = AmbientLiquidityPoolDictionary.list();
-
 export const AmbientPoolsTable: FC<AmbientPoolsTableProps> = () => {
+  const chainId = useCurrentChain();
   const { isMobile } = useIsMobile();
   const [activePool, setActivePool] = useState('');
   const tableRef = useRef<HTMLDivElement>(null);
 
+  const ammPools = useMemo(
+    () => AmbientLiquidityPoolDictionary.list(chainId),
+    [chainId],
+  );
+
   const expandedIndex = useMemo(
     () => ammPools.findIndex(pool => pool.key === activePool),
-    [activePool],
+    [activePool, ammPools],
   );
 
   const generateRowTitle = useCallback(

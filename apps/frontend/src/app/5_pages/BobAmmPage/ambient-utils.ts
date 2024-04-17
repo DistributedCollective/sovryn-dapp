@@ -14,6 +14,7 @@ export interface CreateRangePositionParams {
   tokenB: RangePositionTokenInfo;
   isTokenAPrimaryRange: boolean; // TODO: better name for this variable
   tick: { low: number; high: number };
+  lpConduit?: string;
 }
 
 export async function createRangePositionTx(params: CreateRangePositionParams) {
@@ -25,6 +26,7 @@ export async function createRangePositionTx(params: CreateRangePositionParams) {
     tokenB,
     isTokenAPrimaryRange,
     tick,
+    lpConduit,
   } = params;
 
   const pool = crocEnv.pool(tokenA.address, tokenB.address);
@@ -41,6 +43,7 @@ export async function createRangePositionTx(params: CreateRangePositionParams) {
         tokenA.isWithdrawFromDexChecked,
         tokenB.isWithdrawFromDexChecked,
       ],
+      lpConduit,
     });
 
   const mintAmbientBase = () =>
@@ -49,6 +52,7 @@ export async function createRangePositionTx(params: CreateRangePositionParams) {
         tokenA.isWithdrawFromDexChecked,
         tokenB.isWithdrawFromDexChecked,
       ],
+      lpConduit,
     });
 
   const mintRangeQuote = () =>

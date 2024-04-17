@@ -26,19 +26,19 @@ const translation = translations.runeBridge.send.confirmationScreens;
 const rskExplorerUrl = getRskExplorerUrl();
 const btcExplorerUrl = getBtcExplorerUrl();
 
-interface FeesPaid {
+type FeesPaid = {
   rune: number;
   baseCurrency: number;
-}
+};
 
-interface ReviewScreenProps {
+type ReviewScreenProps = {
   from: string;
   to: string;
   amount: string;
   feesPaid: FeesPaid;
   receiveAmount: number;
   onConfirm: () => void;
-}
+};
 
 export const ReviewScreen: React.FC<ReviewScreenProps> = ({
   amount,

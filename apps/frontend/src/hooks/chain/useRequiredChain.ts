@@ -1,13 +1,14 @@
 import { useCallback, useMemo } from 'react';
 
-import { APP_CHAIN_LIST, RSK_CHAIN_ID } from '../../../../config/chains';
+import { RSK_CHAIN_ID } from '../../config/chains';
 
-import { useChainStore } from '../../../../hooks/useChainStore';
+import { getChainById } from '../../utils/chain';
+import { useChainStore } from '../useChainStore';
 
 export const useRequiredChain = (requiredChainId = RSK_CHAIN_ID) => {
   const { currentChainId, setCurrentChainId } = useChainStore();
   const requiredChain = useMemo(
-    () => APP_CHAIN_LIST.find(chain => chain.id === requiredChainId),
+    () => getChainById(requiredChainId),
     [requiredChainId],
   );
 

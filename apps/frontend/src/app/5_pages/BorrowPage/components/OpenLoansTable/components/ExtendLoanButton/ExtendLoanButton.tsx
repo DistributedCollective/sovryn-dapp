@@ -4,7 +4,7 @@ import { t } from 'i18next';
 
 import { Button, ButtonStyle } from '@sovryn/ui';
 
-import { useRequiredChain } from '../../../../../../2_molecules/NetworkBanner/hooks/useRequiredChain';
+import { useRequiredChain } from '../../../../../../../hooks/chain/useRequiredChain';
 import { useAccount } from '../../../../../../../hooks/useAccount';
 import { translations } from '../../../../../../../locales/i18n';
 import { LoanItem } from '../../OpenLoansTable.types';

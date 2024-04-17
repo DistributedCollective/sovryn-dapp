@@ -2,11 +2,17 @@ import React, { useCallback, useEffect, useMemo } from 'react';
 
 import { t } from 'i18next';
 
-import { Paragraph, NotificationType, Button, ButtonStyle } from '@sovryn/ui';
+import {
+  Paragraph,
+  NotificationType,
+  Button,
+  ButtonStyle,
+  Link,
+} from '@sovryn/ui';
 
-import { APP_CHAIN_LIST } from '../config/chains';
-
+import { WIKI_LINKS } from '../constants/links';
 import { useNotificationContext } from '../contexts/NotificationContext';
+import { getChainById } from '../utils/chain';
 import { useCurrentChain } from './useChainStore';
 import { useWalletConnect } from './useWalletConnect';
 
@@ -29,7 +35,7 @@ export const useWrongNetworkCheck = () => {
 
   useEffect(() => {
     if (isWrongChain) {
-      const expectedChain = APP_CHAIN_LIST.find(chain => chain.id === chainId);
+      const expectedChain = getChainById(chainId);
       addNotification(
         {
           type: NotificationType.warning,
@@ -41,8 +47,14 @@ export const useWrongNetworkCheck = () => {
                   network: expectedChain?.label,
                 })}
               </Paragraph>
+              <Link
+                text={t('wrongNetworkSwitcher.learnMore')}
+                href={WIKI_LINKS.WALLET_SETUP}
+                openNewTab
+                className="block mt-1"
+              />
               <Button
-                className="mb-2 mt-7"
+                className="mb-2 mt-3"
                 style={ButtonStyle.secondary}
                 text={t('common.buttons.switch')}
                 onClick={switchChain}

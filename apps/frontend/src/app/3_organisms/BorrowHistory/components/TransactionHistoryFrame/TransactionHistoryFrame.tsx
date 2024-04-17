@@ -22,7 +22,7 @@ import {
   Table,
 } from '@sovryn/ui';
 
-import { APP_CHAIN_LIST, RSK_CHAIN_ID } from '../../../../../config/chains';
+import { RSK_CHAIN_ID } from '../../../../../config/chains';
 
 import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { ExportCSV } from '../../../../2_molecules/ExportCSV/ExportCSV';
@@ -47,6 +47,7 @@ import { useBlockNumber } from '../../../../../hooks/useBlockNumber';
 import { useMaintenance } from '../../../../../hooks/useMaintenance';
 import { translations } from '../../../../../locales/i18n';
 import { COMMON_SYMBOLS } from '../../../../../utils/asset';
+import { getChainById } from '../../../../../utils/chain';
 import { zeroClient } from '../../../../../utils/clients';
 import {
   InputMaybe,
@@ -68,7 +69,7 @@ export const TransactionHistoryFrame: FC<PropsWithChildren> = ({
   const { account } = useAccount();
   const { addNotification } = useNotificationContext();
   const [page, setPage] = useState(0);
-  const chain = APP_CHAIN_LIST.find(chain => chain.id === RSK_CHAIN_ID);
+  const chain = getChainById(RSK_CHAIN_ID);
   const [filters, setFilters] = useState<InputMaybe<TroveChange_Filter>>({});
 
   const { value: block } = useBlockNumber();

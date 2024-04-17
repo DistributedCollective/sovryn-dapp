@@ -124,7 +124,8 @@
     },
     "wrongNetworkSwitcher": {
         "title": "Wrong network",
-        "description": "We detected that you are currently connected to the wrong network. Please switch your wallet to use {{network}} network."
+        "description": "We detected that you are currently connected to the wrong network. Please switch your wallet to use {{network}} network.",
+        "learnMore": "Learn more"
     },
     "errorPage": {
         "meta": {
@@ -1734,7 +1735,10 @@
         }
     },
     "networkBanner": {
-        "content": "Functionality only available on {{network}} chain, please click here to switch to the correct network."
+        "content": "This feature hasn't arrived on {{currentNetwork}} yet, click here to switch to {{network}} if you would like to try it out!"
+    },
+    "marketMakingNetworkBanner": {
+        "content": "Check out more AMM pools on Sovryn by switching to {{network}}"
     },
     "ambientMarketMaking": {
         "meta": {
@@ -1742,7 +1746,6 @@
         },
         "title": "Market making",
         "subtitle": "Earn fees from AMM swaps on BoB chain",
-        "banner": "See RSK Market Making pools. Switch to RSK now.",
         "poolsTable": {
             "pair": "Pair",
             "liquidity": "Liquidity",

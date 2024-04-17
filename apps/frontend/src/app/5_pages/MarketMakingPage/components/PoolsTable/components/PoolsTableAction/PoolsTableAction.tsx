@@ -11,14 +11,13 @@ import {
 } from '@sovryn/ui';
 import { Decimal } from '@sovryn/utils';
 
-import { APP_CHAIN_LIST } from '../../../../../../../config/chains';
-
 import { useAccount } from '../../../../../../../hooks/useAccount';
 import { useBlockNumber } from '../../../../../../../hooks/useBlockNumber';
 import { useCurrentChain } from '../../../../../../../hooks/useChainStore';
 import { useMaintenance } from '../../../../../../../hooks/useMaintenance';
 import { translations } from '../../../../../../../locales/i18n';
 import { COMMON_SYMBOLS } from '../../../../../../../utils/asset';
+import { getChainById } from '../../../../../../../utils/chain';
 import { useCheckPoolMaintenance } from '../../../../hooks/useCheckPoolMaintenance';
 import { useGetUserInfo } from '../../../../hooks/useGetUserInfo';
 import { AmmLiquidityPool } from '../../../../utils/AmmLiquidityPool';
@@ -31,10 +30,7 @@ type PoolsTableActionProps = {
 
 export const PoolsTableAction: FC<PoolsTableActionProps> = ({ pool }) => {
   const chainId = useCurrentChain();
-  const chain = useMemo(
-    () => APP_CHAIN_LIST.find(chain => chain.id === chainId),
-    [chainId],
-  );
+  const chain = useMemo(() => getChainById(chainId), [chainId]);
   const isBobChain = useMemo(() => chain?.label === 'BOB', [chain?.label]);
 
   const { account } = useAccount();

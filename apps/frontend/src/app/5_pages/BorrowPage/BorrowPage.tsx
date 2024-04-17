@@ -30,22 +30,23 @@ const BorrowPage: FC = () => {
       </Helmet>
 
       <div className="px-0 container md:mx-9 mx-0 md:mb-2 mb-7">
-        <NetworkBanner requiredChainId={RSK_CHAIN_ID} className="mb-4" />
-        <Heading className="text-center mb-3 lg:text-2xl">
-          {t(translations.fixedInterestPage.title)}
-        </Heading>
+        <NetworkBanner requiredChainId={RSK_CHAIN_ID}>
+          <Heading className="text-center mb-3 lg:text-2xl">
+            {t(translations.fixedInterestPage.title)}
+          </Heading>
 
-        <Paragraph
-          className="text-center mb-6 lg:mb-10"
-          size={ParagraphSize.base}
-        >
-          {t(translations.fixedInterestPage.subtitle)}
-        </Paragraph>
+          <Paragraph
+            className="text-center mb-6 lg:mb-10"
+            size={ParagraphSize.base}
+          >
+            {t(translations.fixedInterestPage.subtitle)}
+          </Paragraph>
 
-        <div className="w-full">
-          {hasOpenLoans && <OpenLoansTable loans={loans} loading={loading} />}
-          <BorrowAssetsTable />
-        </div>
+          <div className="w-full">
+            {hasOpenLoans && <OpenLoansTable loans={loans} loading={loading} />}
+            <BorrowAssetsTable />
+          </div>
+        </NetworkBanner>
       </div>
     </>
   );

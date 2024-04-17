@@ -17,21 +17,22 @@ const LendPage: FC = () => (
       <title>{t(translations.lendPage.meta.title)}</title>
     </Helmet>
     <div className="px-0 container md:mx-9 mx-0 md:mb-2 mb-7">
-      <NetworkBanner requiredChainId={RSK_CHAIN_ID} className="mb-4" />
-      <Heading className="text-center mb-3 lg:text-2xl">
-        {t(translations.lendPage.title)}
-      </Heading>
+      <NetworkBanner requiredChainId={RSK_CHAIN_ID}>
+        <Heading className="text-center mb-3 lg:text-2xl">
+          {t(translations.lendPage.title)}
+        </Heading>
 
-      <Paragraph
-        className="text-center mb-6 lg:mb-10"
-        size={ParagraphSize.base}
-      >
-        {t(translations.lendPage.subtitle)}
-      </Paragraph>
+        <Paragraph
+          className="text-center mb-6 lg:mb-10"
+          size={ParagraphSize.base}
+        >
+          {t(translations.lendPage.subtitle)}
+        </Paragraph>
 
-      <div className="w-full md:bg-gray-90 md:py-7 md:px-6 rounded mb-6">
-        <LendFrame />
-      </div>
+        <div className="w-full md:bg-gray-90 md:py-7 md:px-6 rounded mb-6">
+          <LendFrame />
+        </div>
+      </NetworkBanner>
     </div>
   </>
 );

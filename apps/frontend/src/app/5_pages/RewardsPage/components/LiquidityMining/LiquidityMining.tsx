@@ -7,11 +7,11 @@ import { Paragraph, Table } from '@sovryn/ui';
 import { RSK_CHAIN_ID } from '../../../../../config/chains';
 
 import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRenderer';
-import { useRequiredChain } from '../../../../2_molecules/NetworkBanner/hooks/useRequiredChain';
 import {
   BITCOIN,
   TOKEN_RENDER_PRECISION,
 } from '../../../../../constants/currencies';
+import { useRequiredChain } from '../../../../../hooks/chain/useRequiredChain';
 import { useAccount } from '../../../../../hooks/useAccount';
 import { useBlockNumber } from '../../../../../hooks/useBlockNumber';
 import { translations } from '../../../../../locales/i18n';

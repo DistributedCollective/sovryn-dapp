@@ -38,8 +38,9 @@ export const currentNetwork: Environments = !!process.env.REACT_APP_NETWORK
   ? (process.env.REACT_APP_NETWORK as Environments)
   : Environments.Mainnet;
 
-export const currentBTCNetwork: Network =
+export const currentBtcNetwork: Network =
   currentNetwork === Environments.Mainnet ? Network.mainnet : Network.testnet;
+
 export const isMainnet = () =>
   process.env.REACT_APP_NETWORK === Environments.Mainnet;
 

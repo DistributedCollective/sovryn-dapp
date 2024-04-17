@@ -23,7 +23,7 @@ import {
 
 import { translations } from '../../../../../../locales/i18n';
 import {
-  currentBTCNetwork,
+  currentBtcNetwork,
   currentNetwork,
 } from '../../../../../../utils/helpers';
 import {
@@ -63,7 +63,7 @@ export const AddressForm: React.FC = () => {
   const validateAddress = useCallback(
     (address: string) => {
       setAddressValidationState(AddressValidationState.LOADING);
-      const isValidBtcAddress = validate(address, currentBTCNetwork);
+      const isValidBtcAddress = validate(address, currentBtcNetwork);
 
       // smart contract side validation could be done here too
 

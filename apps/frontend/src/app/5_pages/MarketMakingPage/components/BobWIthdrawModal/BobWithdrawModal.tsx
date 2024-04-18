@@ -1,5 +1,6 @@
-import React, { FC, useCallback, useState } from 'react';
+import React, { FC, useState } from 'react';
 
+import { BigNumber } from 'ethers';
 import { t } from 'i18next';
 
 import {
@@ -15,11 +16,13 @@ import { Decimal } from '@sovryn/utils';
 import { CurrentStatistics } from '../../../../2_molecules/CurrentStatistics/CurrentStatistics';
 import { translations } from '../../../../../locales/i18n';
 import { COMMON_SYMBOLS } from '../../../../../utils/asset';
+import { PoolPositionType } from '../../MarketMakingPage.types';
 import { AmmLiquidityPoolDictionary } from '../../utils/AmmLiquidityPoolDictionary';
 import { CurrentBalance } from '../PoolsTable/components/CurrentBalance/CurrentBalance';
 import { PoolsTableReturns } from '../PoolsTable/components/PoolsTableReturns/PoolsTableReturns';
 import { AmountForm } from './components/AmountForm/AmountForm';
 import { NewPoolStatistics } from './components/NewPoolStatistics/NewPoolStatistics';
+import { useHandleSubmit } from './hooks/useHandleSubmit';
 
 const pageTranslations = translations.bobMarketMakingPage.withdrawModal;
 
@@ -46,11 +49,14 @@ export const BobWithdrawModal: FC<BobWithdrawModalProps> = ({
     Decimal.ZERO,
   );
 
-  const submitHandler = useCallback(() => {
-    console.log(
-      `Withdrawing ${withdrawAmount} ${POOL.assetA} and ${secondaryWithdrawAmount} ${POOL.assetB}`,
-    );
-  }, [secondaryWithdrawAmount, withdrawAmount]);
+  //TODO replace with actual pool
+  const handleSubmit = useHandleSubmit(
+    BigNumber.from('2048'),
+    'ETH',
+    'SOV',
+    true,
+    PoolPositionType.concentrated,
+  );
 
   return (
     <Dialog disableFocusTrap isOpen={isOpen}>
@@ -95,7 +101,7 @@ export const BobWithdrawModal: FC<BobWithdrawModalProps> = ({
           style={ButtonStyle.primary}
           text={t(translations.common.buttons.confirm)}
           className="w-full mt-6"
-          onClick={submitHandler}
+          onClick={handleSubmit}
           dataAttribute="withdraw-liquidity-confirm-button"
           disabled={false}
         />

@@ -263,7 +263,7 @@ export class CrocPoolView {
     liq: BigNumber,
     limits: PriceRange,
     opts?: CrocLpOpts,
-  ): Promise<TransactionResponse> {
+  ): Promise<string> {
     let [lowerBound, upperBound] = await this.transformLimits(limits);
     const calldata = (await this.makeEncoder()).encodeBurnAmbient(
       liq,
@@ -272,13 +272,10 @@ export class CrocPoolView {
       this.maskSurplusFlag(opts),
       this.applyLpConduit(opts),
     );
-    return this.sendCmd(calldata);
+    return calldata;
   }
 
-  async burnAmbientAll(
-    limits: PriceRange,
-    opts?: CrocLpOpts,
-  ): Promise<TransactionResponse> {
+  async burnAmbientAll(limits: PriceRange, opts?: CrocLpOpts): Promise<string> {
     let [lowerBound, upperBound] = await this.transformLimits(limits);
     const calldata = (await this.makeEncoder()).encodeBurnAmbientAll(
       lowerBound,
@@ -286,7 +283,7 @@ export class CrocPoolView {
       this.maskSurplusFlag(opts),
       this.applyLpConduit(opts),
     );
-    return this.sendCmd(calldata);
+    return calldata;
   }
 
   async burnRangeLiq(
@@ -294,7 +291,7 @@ export class CrocPoolView {
     range: TickRange,
     limits: PriceRange,
     opts?: CrocLpOpts,
-  ): Promise<TransactionResponse> {
+  ): Promise<string> {
     let [lowerBound, upperBound] = await this.transformLimits(limits);
     let roundLotLiq = roundForConcLiq(liq);
     const calldata = (await this.makeEncoder()).encodeBurnConc(
@@ -306,7 +303,7 @@ export class CrocPoolView {
       this.maskSurplusFlag(opts),
       this.applyLpConduit(opts),
     );
-    return this.sendCmd(calldata);
+    return calldata;
   }
 
   async harvestRange(

@@ -79,7 +79,8 @@ export const RuneContextProvider: React.FC<RuneContextProviderProps> = ({
   useInterval(requestTokenBalances, 10000);
 
   useEffect(() => {
-    setTimeout(requestTokenBalances, 500);
+    const timeout = setTimeout(requestTokenBalances, 1000);
+    return () => clearTimeout(timeout);
   }, [requestTokenBalances]);
 
   return <RuneContext.Provider value={value}>{children}</RuneContext.Provider>;

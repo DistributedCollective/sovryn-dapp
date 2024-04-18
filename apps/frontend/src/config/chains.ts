@@ -29,6 +29,10 @@ export const BOB_CHAIN_ID = (
   IS_MAINNET ? ChainIds.BOB_MAINNET : ChainIds.BOB_TESTNET
 ) as ChainId;
 
+export const SEPOLIA_CHAIN_ID = (
+  IS_MAINNET ? ChainIds.BOB_MAINNET : ChainIds.SEPOLIA
+) as ChainId;
+
 export type ChainWithLogo = Chain & { icon: string };
 
 export const APP_CHAIN_LIST: ChainWithLogo[] = [

@@ -12,6 +12,11 @@ export const findAsset = (asset: string, chainId: ChainId) =>
     item => item.symbol.toLowerCase() === asset.toLowerCase(),
   )!;
 
+export const findAssetByAddress = (address: string, chainId: ChainId) =>
+  contracts.assets[getNetworkByChainId(chainId)]?.find(
+    item => item.address.toLowerCase() === address.toLowerCase(),
+  )!;
+
 export const findNativeAsset = (chainId: ChainId) =>
   contracts.assets[getNetworkByChainId(chainId)]?.find(item => item.isNative)!;
 

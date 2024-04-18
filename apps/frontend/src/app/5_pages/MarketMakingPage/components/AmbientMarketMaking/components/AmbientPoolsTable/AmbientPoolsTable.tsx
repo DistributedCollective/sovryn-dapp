@@ -15,9 +15,7 @@ import { AmbientPoolPositions } from '../AmbientPoolPositions/AmbientPoolPositio
 import { COLUMNS_CONFIG } from './AmbientPoolsTable.constants';
 import styles from './AmbientPoolsTable.module.css';
 
-type AmbientPoolsTableProps = {};
-
-export const AmbientPoolsTable: FC<AmbientPoolsTableProps> = () => {
+export const AmbientPoolsTable: FC = () => {
   const chainId = useCurrentChain();
   const { account } = useAccount();
   const [activePool, setActivePool] = useState('');

@@ -15,14 +15,15 @@ import {
 } from '@sovryn/ui';
 import { Decimal } from '@sovryn/utils';
 
+import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { CurrentStatistics } from '../../../../2_molecules/CurrentStatistics/CurrentStatistics';
 import { useCrocContext } from '../../../../../contexts/CrocContext';
 import { translations } from '../../../../../locales/i18n';
 import { decimalic } from '../../../../../utils/math';
 import { PoolPositionType } from '../../MarketMakingPage.types';
 import { AmbientPosition } from '../AmbientMarketMaking/AmbientMarketMaking.types';
+import { AmbientPositionBalance } from '../AmbientMarketMaking/components/AmbientPoolPositions/components/AmbientPositionBalance/AmbientPositionBalance';
 import { AmbientLiquidityPool } from '../AmbientMarketMaking/utils/AmbientLiquidityPool';
-import { CurrentBalance } from '../PoolsTable/components/CurrentBalance/CurrentBalance';
 import { AmountForm } from './components/AmountForm/AmountForm';
 import { NewPoolStatistics } from './components/NewPoolStatistics/NewPoolStatistics';
 import { useGetPoolInfo } from './hooks/useGetPoolInfo';
@@ -150,20 +151,8 @@ export const BobWithdrawModal: FC<BobWithdrawModalProps> = ({
             symbol2={pool.quote}
             label1={t(pageTranslations.returnRate)}
             label2={t(pageTranslations.currentBalance)}
-            // value1={
-            //   <PoolsTableReturns
-            //     className="text-xs font-semibold"
-            //     pool={pool}
-            //   />
-            // }
-            value2={
-              <CurrentBalance
-                pool={null}
-                poolAmbient={pool}
-                balanceA={depositedAmountBase}
-                balanceB={depositedAmountQuote}
-              />
-            }
+            value1={<AmountRenderer value={position.aprEst * 100} suffix="%" />}
+            value2={<AmbientPositionBalance pool={pool} position={position} />}
           />
         </div>
 

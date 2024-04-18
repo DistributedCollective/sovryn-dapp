@@ -107,7 +107,16 @@
             "convert": "Convert",
             "stake": "Stake",
             "bitocracy": "Bitocracy",
-            "bob": "Go BoB"
+            "bob": "Go BoB",
+            "bridges": {
+                "title": "Bridges",
+                "subMenu": {
+                    "runes": "Runes",
+                    "runesDescription": "Transfer between Bitcoin and RSK",
+                    "tokenBridge": "Tokens",
+                    "tokenBridgeDescription": "Transfer between RSK and other chains"
+                }
+            }
         }
     },
     "footer": {

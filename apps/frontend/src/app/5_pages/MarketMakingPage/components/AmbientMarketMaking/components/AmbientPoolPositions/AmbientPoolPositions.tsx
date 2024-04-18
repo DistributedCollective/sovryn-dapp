@@ -90,7 +90,7 @@ export const AmbientPoolPositions: FC<AmbientPoolPositionsProps> = ({
         dataAttribute="ambient-pool-positions-table"
         preventExpandOnClickClass="prevent-row-click"
         className={styles.table}
-        isLoading={isLoading}
+        isLoading={!positions.length ? isLoading : false}
       />
     </div>
   );

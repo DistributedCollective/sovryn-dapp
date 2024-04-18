@@ -2,6 +2,7 @@ import axios from 'axios';
 
 import { useCacheCall } from '../../../../../../hooks';
 import { useAccount } from '../../../../../../hooks/useAccount';
+import { useBlockNumber } from '../../../../../../hooks/useBlockNumber';
 import { useCurrentChain } from '../../../../../../hooks/useChainStore';
 import { useTokenDetailsByAsset } from '../../../../../../hooks/useTokenDetailsByAsset';
 import { getIndexerUri } from '../../../../../../utils/indexer';
@@ -13,6 +14,7 @@ export const useGetAmbientPositions = (pool: AmbientLiquidityPool) => {
   const { account } = useAccount();
   const baseToken = useTokenDetailsByAsset(pool.base, pool.chainId);
   const quoteToken = useTokenDetailsByAsset(pool.quote, pool.chainId);
+  const { value: blockNumber } = useBlockNumber(chainId);
 
   const { value: positions, loading } = useCacheCall(
     `user-pools-balance/${pool.base}/${pool.quote}/`,
@@ -35,7 +37,7 @@ export const useGetAmbientPositions = (pool: AmbientLiquidityPool) => {
         return [];
       }
     },
-    [baseToken, quoteToken, pool, account],
+    [baseToken, quoteToken, pool, account, blockNumber],
     [],
   );
 

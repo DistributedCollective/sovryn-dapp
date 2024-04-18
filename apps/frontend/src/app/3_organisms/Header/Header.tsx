@@ -15,25 +15,32 @@ import { ConnectWalletButton } from '../../2_molecules';
 import { NetworkPicker } from '../../2_molecules/NetworkPicker/NetworkPicker';
 import { SovrynLogo } from '../../2_molecules/SovrynLogo/SovrynLogo';
 import { RSK_FAUCET } from '../../../constants/general';
+import { BOB } from '../../../constants/infrastructure/bob';
 import { useWalletConnect, useWrongNetworkCheck } from '../../../hooks';
 import { useRequiredChain } from '../../../hooks/chain/useRequiredChain';
 import { useAssetBalance } from '../../../hooks/useAssetBalance';
+import { useCurrentChain } from '../../../hooks/useChainStore';
 import { translations } from '../../../locales/i18n';
 import { sharedState } from '../../../store/rxjs/shared-state';
+import { Environments } from '../../../types/global';
 import { COMMON_SYMBOLS } from '../../../utils/asset';
+import { isBobChain, isRskChain } from '../../../utils/chain';
 import { isMainnet, isTestnetFastBtcEnabled } from '../../../utils/helpers';
 import { menuItemsMapping } from './Header.constants';
 import { NavItem } from './components/NavItem/NavItem';
 import { ProductLinks } from './components/ProductLinks/ProductLinks';
 
 export const Header: FC = () => {
-  const { invalidChain } = useRequiredChain();
+  const chainId = useCurrentChain();
   const [isOpen, toggle] = useReducer(v => !v, false);
   const { connectWallet, disconnectWallet, account, pending } =
     useWalletConnect();
   useWrongNetworkCheck();
 
-  const { balance } = useAssetBalance(COMMON_SYMBOLS.BTC);
+  const { balance } = useAssetBalance(
+    isRskChain(chainId) ? COMMON_SYMBOLS.BTC : COMMON_SYMBOLS.ETH,
+    chainId,
+  );
 
   const hasRbtcBalance = useMemo(() => Number(balance) !== 0, [balance]);
 
@@ -52,6 +59,18 @@ export const Header: FC = () => {
     () => sharedState.actions.openFastBtcDialog(!hasRbtcBalance),
     [hasRbtcBalance],
   );
+
+  const href = useMemo(() => {
+    if (isBobChain(chainId)) {
+      return BOB.bridge[
+        isMainnet() ? Environments.Mainnet : Environments.Testnet
+      ];
+    }
+
+    if (!enableFastBtc) {
+      return RSK_FAUCET;
+    }
+  }, [chainId, enableFastBtc]);
 
   return (
     <>
@@ -119,10 +138,10 @@ export const Header: FC = () => {
                     hasRbtcBalance ? ButtonStyle.secondary : ButtonStyle.primary
                   }
                   dataAttribute="dapp-header-funding"
-                  onClick={enableFastBtc ? handleFastBtcClick : noop}
-                  href={enableFastBtc ? '' : RSK_FAUCET}
+                  onClick={!href ? handleFastBtcClick : noop}
+                  href={href}
                   hrefExternal={true}
-                  disabled={invalidChain}
+                  disabled={!isRskChain(chainId) && !isBobChain(chainId)}
                 />
               </>
             )}

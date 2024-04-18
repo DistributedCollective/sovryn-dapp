@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, useCallback } from 'react';
 
 import { t } from 'i18next';
 import Carousel from 'react-multi-carousel';
@@ -8,15 +8,19 @@ import { Button, ButtonSize, ButtonStyle } from '@sovryn/ui';
 
 import { GOBOB_LINK } from '../../../../../constants/links';
 import { translations } from '../../../../../locales/i18n';
+import { sharedState } from '../../../../../store/rxjs/shared-state';
 import styles from './Banner.module.css';
 import { LandingPromoCard } from './components/LandingPromoCard/LandingPromoCard';
 
 export const Banner: FC = () => {
+  const handleRunesClick = useCallback(() => {
+    sharedState.actions.openRuneBridgeDialog();
+  }, []);
   return (
     <div className="w-full relative pb-7">
       <Carousel
         arrows={false}
-        draggable={false} // Needs to be true when we have more than 1 promo
+        draggable={true} // Needs to be true when we have more than 1 promo
         partialVisible={false}
         focusOnSelect={false}
         responsive={{
@@ -30,12 +34,30 @@ export const Banner: FC = () => {
         swipeable
         className="static"
         renderDotsOutside
-        showDots={false} // Needs to be true when we have more than 1 promo
-        autoPlay={false} // Needs to be true when we have more than 1 promo
+        showDots={true} // Needs to be true when we have more than 1 promo
+        autoPlay={true} // Needs to be true when we have more than 1 promo
         dotListClass={styles.dot}
         autoPlaySpeed={15000}
         infinite
       >
+        <LandingPromoCard
+          heading={t(translations.landingPage.promotions.runesBridge.title)}
+          description={t(
+            translations.landingPage.promotions.runesBridge.description,
+          )}
+          actions={
+            <>
+              <Button
+                style={ButtonStyle.secondary}
+                size={ButtonSize.large}
+                text={t(translations.landingPage.promotions.runesBridge.cta)}
+                onClick={handleRunesClick}
+                hrefExternal
+              />
+            </>
+          }
+          className="border-sovryn-blue"
+        />
         <LandingPromoCard
           heading={t(translations.landingPage.promotions.runesExtraSpice.title)}
           description={t(
@@ -54,6 +76,7 @@ export const Banner: FC = () => {
               />
             </>
           }
+          className="border-primary"
         />
       </Carousel>
     </div>

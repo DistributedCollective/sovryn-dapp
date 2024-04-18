@@ -501,6 +501,11 @@
                 "title": "RUNES & EXTRA SPICE",
                 "description": "Get early exposure to bitcoin tokens with our points campaign. In collaboration with BOB.",
                 "cta": "Learn More"
+            },
+            "runesBridge": {
+                "title": "RUNES HAVE ARRIVED",
+                "description": "Now Runes are tradable on mainnet! Deposit Runes from bitcoin via Runes bridge and start trading on Sovryn.",
+                "cta": "Deposit Runes"
             }
         },
         "titleSection": {

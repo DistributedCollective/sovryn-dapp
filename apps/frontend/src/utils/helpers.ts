@@ -78,7 +78,7 @@ export const getAmmServiceUrl = () =>
 
 export const dateFormat = (timestamp: number) => {
   const stamp = dayjs.tz(Number(timestamp) * MS, 'UTC');
-  return stamp.format(`YYYY-MM-DD HH:MM:ss +UTC`);
+  return stamp.format(`YYYY-MM-DD HH:mm:ss +UTC`);
 };
 
 export const getNextDay = (day: number) => {

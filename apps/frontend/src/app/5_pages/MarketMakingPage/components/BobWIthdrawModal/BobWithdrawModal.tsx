@@ -1,6 +1,5 @@
 import React, { FC, useEffect, useMemo, useState } from 'react';
 
-import { BigNumber } from 'ethers';
 import { t } from 'i18next';
 
 import {
@@ -19,7 +18,7 @@ import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRen
 import { CurrentStatistics } from '../../../../2_molecules/CurrentStatistics/CurrentStatistics';
 import { useCrocContext } from '../../../../../contexts/CrocContext';
 import { translations } from '../../../../../locales/i18n';
-import { decimalic } from '../../../../../utils/math';
+import { bigNumberic, decimalic } from '../../../../../utils/math';
 import { PoolPositionType } from '../../MarketMakingPage.types';
 import { AmbientPosition } from '../AmbientMarketMaking/AmbientMarketMaking.types';
 import { AmbientPositionBalance } from '../AmbientMarketMaking/components/AmbientPoolPositions/components/AmbientPositionBalance/AmbientPositionBalance';
@@ -76,8 +75,8 @@ export const BobWithdrawModal: FC<BobWithdrawModalProps> = ({
   const withdraw = useMemo(
     () =>
       isFullWithdrawal
-        ? BigNumber.from(currentLiquidity.toString())
-        : BigNumber.from(withdrawLiquidity.toString()),
+        ? bigNumberic(currentLiquidity.toString())
+        : bigNumberic(withdrawLiquidity.toBigNumber()),
     [withdrawLiquidity, currentLiquidity, isFullWithdrawal],
   );
 

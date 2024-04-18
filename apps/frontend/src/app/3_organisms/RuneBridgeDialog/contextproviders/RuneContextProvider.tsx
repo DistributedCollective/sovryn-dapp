@@ -2,6 +2,7 @@ import React from 'react';
 
 import { ethers } from 'ethers';
 
+import { useCacheCall } from '../../../../hooks';
 import { useAccount } from '../../../../hooks/useAccount';
 import { useGetProtocolContract } from '../../../../hooks/useGetContract';
 import { useInterval } from '../../../../hooks/useInterval';
@@ -25,14 +26,17 @@ export const RuneContextProvider: React.FC<RuneContextProviderProps> = ({
   const { provider, account } = useAccount();
   const runeBridgeContract = useGetProtocolContract('runeBridge');
 
+  const { value: listTokens } = useCacheCall('runeBridge/tokens', async () =>
+    runeBridgeContract?.listTokens(),
+  );
+
   const requestTokenBalances = React.useCallback(async () => {
-    if (!runeBridgeContract) {
+    if (!listTokens) {
       console.warn(
         'RuneBridge contract not loaded, cannot refresh token balances',
       );
       return;
     }
-    const listTokens = await runeBridgeContract.listTokens();
     const tokenBalances: TokenBalance[] = [];
     for (const tokenAddress of listTokens) {
       const tokenContract = new ethers.Contract(
@@ -58,7 +62,7 @@ export const RuneContextProvider: React.FC<RuneContextProviderProps> = ({
         tokenBalances,
       }));
     }
-  }, [account, provider, runeBridgeContract]);
+  }, [account, provider, listTokens]);
 
   const value = React.useMemo(
     () => ({

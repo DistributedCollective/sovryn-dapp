@@ -16,7 +16,7 @@ export const AmbientPoolLiquidity: FC<AmbientPoolLiquidityProps> = ({
 }) => {
   const { stats } = useGetAmbientPoolStats(pool);
   return (
-    <div className="flex flex-col gap-0.5">
+    <div className="inline-flex flex-col gap-0.5">
       <AmountRenderer
         value={fromWei(decimalic(stats?.baseTvl || 0).toString())}
         suffix={getTokenDisplayName(pool.base, pool.chainId)}

@@ -14,6 +14,7 @@ import { AmbientLiquidityPool } from '../../utils/AmbientLiquidityPool';
 import { COLUMNS_CONFIG } from './AmbientPoolPositions.constants';
 import styles from './AmbientPoolPositions.module.css';
 import { AmbientPoolPositionWithdraw } from './components/AmbientPoolPositionWithdraw/AmbientPoolPositionWithdraw';
+import { AmbientPositionPrices } from './components/AmbientPositionPrices/AmbientPositionPrices';
 
 type AmbientPoolPositionsProps = {
   pool: AmbientLiquidityPool;
@@ -65,15 +66,10 @@ export const AmbientPoolPositions: FC<AmbientPoolPositionsProps> = ({
                   </span>
                 </div>
               }
-              value={
-                <div className="flex flex-col">
-                  <AmountRenderer value={position.bidTick} suffix="DLLR" />
-                  <AmountRenderer value={position.askTick} suffix="DLLR" />
-                </div>
-              }
+              value={<AmbientPositionPrices pool={pool} position={position} />}
             />
             <SimpleTableRow
-              label={t(translations.ambientMarketMaking.positionsTable.returns)}
+              label={t(translations.ambientMarketMaking.positionsTable.apr)}
               value={
                 <AmountRenderer value={position.aprEst * 100} suffix="%" />
               }

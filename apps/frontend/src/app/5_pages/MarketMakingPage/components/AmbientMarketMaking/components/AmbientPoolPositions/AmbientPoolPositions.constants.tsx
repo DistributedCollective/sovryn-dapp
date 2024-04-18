@@ -10,6 +10,8 @@ import { AmbientPosition } from '../../AmbientMarketMaking.types';
 import { AmbientLiquidityPool } from '../../utils/AmbientLiquidityPool';
 import { AmbientPoolPositionWithdraw } from './components/AmbientPoolPositionWithdraw/AmbientPoolPositionWithdraw';
 import { AmbientPositionBalance } from './components/AmbientPositionBalance/AmbientPositionBalance';
+import { AmbientPositionPrices } from './components/AmbientPositionPrices/AmbientPositionPrices';
+import { AmbientPositionValue } from './components/AmbientPositionValue/AmbientPositionValue';
 
 export const COLUMNS_CONFIG = (pool: AmbientLiquidityPool) => [
   {
@@ -32,15 +34,12 @@ export const COLUMNS_CONFIG = (pool: AmbientLiquidityPool) => [
       </div>
     ),
     cellRenderer: (position: AmbientPosition) => (
-      <div className="flex flex-col">
-        <AmountRenderer value={position.bidTick} suffix="DLLR" />
-        <AmountRenderer value={position.askTick} suffix="DLLR" />
-      </div>
+      <AmbientPositionPrices pool={pool} position={position} />
     ),
   },
   {
     id: 'returns',
-    title: t(translations.ambientMarketMaking.positionsTable.returns),
+    title: t(translations.ambientMarketMaking.positionsTable.apr),
     cellRenderer: (position: AmbientPosition) => (
       <AmountRenderer value={position.aprEst * 100} suffix="%" />
     ),
@@ -48,7 +47,9 @@ export const COLUMNS_CONFIG = (pool: AmbientLiquidityPool) => [
   {
     id: 'value',
     title: t(translations.ambientMarketMaking.positionsTable.value),
-    cellRenderer: () => <AmountRenderer value={'1000'} prefix="$" />,
+    cellRenderer: (position: AmbientPosition) => (
+      <AmbientPositionValue pool={pool} position={position} />
+    ),
   },
   {
     id: 'balance',

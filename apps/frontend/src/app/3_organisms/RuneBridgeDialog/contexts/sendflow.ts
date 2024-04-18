@@ -1,5 +1,7 @@
 import { createContext, Dispatch, SetStateAction, useContext } from 'react';
 
+import { BigNumber } from 'ethers';
+
 import { noop } from '@sovryn/ui';
 
 import { TokenBalance } from './rune';
@@ -24,8 +26,10 @@ export enum AddressValidationState {
 type SendFlowLimits = {
   min: number;
   max: number;
-  baseFee: number;
-  dynamicFee: number;
+  flatFeeBaseCurrency: number;
+  flatFeeBaseCurrencyWei: BigNumber;
+  flatFeeTokens: number;
+  dynamicFeeTokens: number;
   loading: boolean;
 };
 
@@ -52,8 +56,10 @@ export const defaultValue: SendFlowContextType = {
   limits: {
     min: 0,
     max: 0,
-    baseFee: 0,
-    dynamicFee: 0,
+    flatFeeBaseCurrency: 0,
+    flatFeeBaseCurrencyWei: BigNumber.from(0),
+    dynamicFeeTokens: 0,
+    flatFeeTokens: 0,
     loading: true,
   },
   selectedToken: {

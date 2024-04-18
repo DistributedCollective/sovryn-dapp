@@ -14,12 +14,7 @@ import {
   TransactionType,
   TokenDetails,
 } from '../../../../TransactionStepDialog/TransactionStepDialog.types';
-import {
-  GAS_LIMIT_RUNE_BRIDGE_WITHDRAW,
-  WITHDRAW_FEE_BASE_CURRENCY_BTC,
-  WITHDRAW_FEE_BASE_CURRENCY_WEI,
-  WITHDRAW_FEE_RUNE_PERCENTAGE,
-} from '../../../constants';
+import { GAS_LIMIT_RUNE_BRIDGE_WITHDRAW } from '../../../constants';
 import { SendFlowContext, SendFlowStep } from '../../../contexts/sendflow';
 import { ReviewScreen } from './ReviewScreen';
 import { StatusScreen } from './StatusScreen';
@@ -38,6 +33,7 @@ export const ConfirmationScreens: React.FC<ConfirmationScreensProps> = ({
     amount,
     set,
     selectedToken,
+    limits,
   } = useContext(SendFlowContext);
 
   const { setTransactions, setTitle, setIsOpen } = useTransactionContext();
@@ -48,10 +44,16 @@ export const ConfirmationScreens: React.FC<ConfirmationScreensProps> = ({
 
   const feesPaid = useMemo(
     () => ({
-      rune: (Number(amount) * WITHDRAW_FEE_RUNE_PERCENTAGE) / 100,
-      baseCurrency: WITHDRAW_FEE_BASE_CURRENCY_BTC,
+      rune:
+        (Number(amount) * limits.dynamicFeeTokens) / 100 + limits.flatFeeTokens,
+      baseCurrency: limits.flatFeeBaseCurrency,
     }),
-    [amount],
+    [
+      amount,
+      limits.dynamicFeeTokens,
+      limits.flatFeeBaseCurrency,
+      limits.flatFeeTokens,
+    ],
   );
 
   const receiveAmount = useMemo(
@@ -109,7 +111,7 @@ export const ConfirmationScreens: React.FC<ConfirmationScreensProps> = ({
             toWei(amount, selectedToken.decimals),
             receiverAddress,
           ],
-          value: WITHDRAW_FEE_BASE_CURRENCY_WEI,
+          value: limits.flatFeeBaseCurrencyWei,
           gasLimit: GAS_LIMIT_RUNE_BRIDGE_WITHDRAW,
         },
         onStart: hash => {
@@ -137,6 +139,7 @@ export const ConfirmationScreens: React.FC<ConfirmationScreensProps> = ({
     setTitle,
     setIsOpen,
     signer,
+    limits.flatFeeBaseCurrencyWei,
   ]);
 
   const handleRetry = useCallback(() => {

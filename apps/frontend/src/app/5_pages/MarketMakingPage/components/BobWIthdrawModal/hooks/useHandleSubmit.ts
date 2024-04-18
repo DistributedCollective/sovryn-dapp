@@ -11,10 +11,12 @@ import { GAS_LIMIT } from '../../../../../../constants/gasLimits';
 import { useCrocContext } from '../../../../../../contexts/CrocContext';
 import { useTransactionContext } from '../../../../../../contexts/TransactionContext';
 import { useAccount } from '../../../../../../hooks/useAccount';
+import { useCurrentChain } from '../../../../../../hooks/useChainStore';
 import { translations } from '../../../../../../locales/i18n';
 import { PoolPositionType } from '../../../MarketMakingPage.types';
 import { AmbientPosition } from '../../AmbientMarketMaking/AmbientMarketMaking.types';
 import { AmbientLiquidityPool } from '../../AmbientMarketMaking/utils/AmbientLiquidityPool';
+import { AmbientLiquidityPoolDictionary } from '../../AmbientMarketMaking/utils/AmbientLiquidityPoolDictionary';
 import { DEFAULT_SLIPPAGE } from '../../BobDepositModal/BobDepositModal.constants';
 import { useGetPoolInfo } from './useGetPoolInfo';
 
@@ -29,6 +31,7 @@ export const useHandleSubmit = (
   const { croc } = useCrocContext();
   const { poolTokens } = useGetPoolInfo(pool.base, pool.quote);
 
+  const chainId = useCurrentChain();
   const { setTransactions, setIsOpen, setTitle } = useTransactionContext();
 
   const onSubmit = useCallback(async () => {
@@ -38,12 +41,18 @@ export const useHandleSubmit = (
 
     const transactions: Transaction[] = [];
 
-    const pool = croc.pool(
+    const crocPool = croc.pool(
       poolTokens.tokenA.tokenAddr,
       poolTokens.tokenB.tokenAddr,
     );
 
-    const poolPrice = await pool.displayPrice();
+    const ambientPool = AmbientLiquidityPoolDictionary.get(
+      pool.base,
+      pool.quote,
+      chainId,
+    );
+
+    const poolPrice = await crocPool.displayPrice();
 
     const price = {
       min: poolPrice * (1 - DEFAULT_SLIPPAGE / 100),
@@ -55,15 +64,20 @@ export const useHandleSubmit = (
     try {
       if (position.positionType === PoolPositionType.ambient) {
         if (isFullWithdrawal) {
-          calldata = await pool.burnAmbientAll([price.min, price.max]);
+          calldata = await crocPool.burnAmbientAll([price.min, price.max], {
+            lpConduit: ambientPool?.lpTokenAddress,
+          });
         } else {
-          calldata = await pool.burnAmbientLiq(withdrawAmount, [
-            price.min,
-            price.max,
-          ]);
+          calldata = await crocPool.burnAmbientLiq(
+            withdrawAmount,
+            [price.min, price.max],
+            {
+              lpConduit: ambientPool?.lpTokenAddress,
+            },
+          );
         }
       } else if (position.positionType === PoolPositionType.concentrated) {
-        calldata = await pool.burnRangeLiq(
+        calldata = await crocPool.burnRangeLiq(
           withdrawAmount,
           [position.bidTick, position.askTick],
           [price.min, price.max],
@@ -79,9 +93,9 @@ export const useHandleSubmit = (
       title: t(translations.common.withdraw),
       request: {
         type: TransactionType.signTransaction,
-        contract: (await pool.context).dex,
+        contract: (await crocPool.context).dex,
         fnName: 'userCmd',
-        args: [(await pool.context).chain.proxyPaths.liq, calldata],
+        args: [(await crocPool.context).chain.proxyPaths.liq, calldata],
         value: 0,
         gasLimit: GAS_LIMIT.WITHDRAW_MARKET_MAKING_LIQUIDITY,
       },
@@ -102,6 +116,8 @@ export const useHandleSubmit = (
     isFullWithdrawal,
     position,
     onComplete,
+    chainId,
+    pool,
   ]);
 
   return onSubmit;

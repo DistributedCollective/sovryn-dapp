@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 
 import { ethers } from 'ethers';
 
@@ -74,9 +74,13 @@ export const RuneContextProvider: React.FC<RuneContextProviderProps> = ({
     [requestTokenBalances, state, runeBridgeContract],
   );
 
-  useInterval(requestTokenBalances, 10000, {
-    immediate: true,
-  });
+  // we cannot use immediate: true because runeBridgeContract is not loaded on the initial render
+
+  useInterval(requestTokenBalances, 10000);
+
+  useEffect(() => {
+    setTimeout(requestTokenBalances, 500);
+  }, [requestTokenBalances]);
 
   return <RuneContext.Provider value={value}>{children}</RuneContext.Provider>;
 };

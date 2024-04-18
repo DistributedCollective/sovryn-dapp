@@ -1,10 +1,4 @@
-import React, {
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { getAddressInfo, validate } from 'bitcoin-address-validation';
 import { t } from 'i18next';
@@ -28,13 +22,13 @@ import {
 } from '../../../../../../utils/helpers';
 import {
   AddressValidationState,
-  SendFlowContext,
   SendFlowStep,
+  useSendFlowContext,
 } from '../../../contexts/sendflow';
 import { useRuneBridgeLocked } from '../../../hooks/useRuneBridgeLocked';
 
 export const AddressForm: React.FC = () => {
-  const { address, set, addressValidationState } = useContext(SendFlowContext);
+  const { address, set, addressValidationState } = useSendFlowContext();
   const runeBridgeLocked = useRuneBridgeLocked();
   const [value, setValue] = useState(address);
 

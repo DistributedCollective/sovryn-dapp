@@ -2,6 +2,8 @@ import React, { Dispatch, SetStateAction } from 'react';
 
 import { ethers } from 'ethers';
 
+import { noop } from '@sovryn/ui';
+
 export type TokenBalance = {
   symbol: string;
   balance: string;
@@ -26,7 +28,7 @@ export const defaultValue: RuneContextType = {
   tokenBalances: [],
   runeBridgeContract: undefined,
   depositAddress: '',
-  set: () => {},
+  set: noop,
 };
 
 export const tokenABI = [

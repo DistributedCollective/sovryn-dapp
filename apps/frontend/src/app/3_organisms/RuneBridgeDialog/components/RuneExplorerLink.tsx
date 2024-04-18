@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { FC } from 'react';
 
 import { Environments } from '../../../../types/global';
 import { currentNetwork } from '../../../../utils/helpers';
@@ -12,7 +12,7 @@ const EXPLORER_BASE_URL =
     ? 'https://testnet.ordinals.com'
     : 'https://ordinals.com';
 
-export const RuneExplorerLink = ({ rune }: RuneExplorerLinkProps) => (
+export const RuneExplorerLink: FC<RuneExplorerLinkProps> = ({ rune }) => (
   <a
     href={`${EXPLORER_BASE_URL}/rune/${rune}`}
     target="_blank"

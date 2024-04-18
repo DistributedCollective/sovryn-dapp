@@ -1,5 +1,7 @@
 import { createContext, Dispatch, SetStateAction, useContext } from 'react';
 
+import { noop } from '@sovryn/ui';
+
 import { TokenBalance } from './rune';
 
 export enum SendFlowStep {
@@ -62,7 +64,7 @@ export const defaultValue: SendFlowContextType = {
     tokenContractAddress: '',
   },
   addressValidationState: AddressValidationState.NONE,
-  set: () => {},
+  set: noop,
 };
 
 export const SendFlowContext = createContext<SendFlowContextType>(defaultValue);

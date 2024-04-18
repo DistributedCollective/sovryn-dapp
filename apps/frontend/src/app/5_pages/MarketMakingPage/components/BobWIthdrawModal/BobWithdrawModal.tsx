@@ -111,13 +111,20 @@ export const BobWithdrawModal: FC<BobWithdrawModalProps> = ({
         poolTokens.tokenA.tokenAddr,
         poolTokens.tokenB.tokenAddr,
       );
+      const baseTokenDecimals = await poolTokens.tokenA.decimals;
+      const quoteTokenDecimals = await poolTokens.tokenB.decimals;
+
       const spotPrice = await pool.spotPrice();
       const sqrtPrice = Math.sqrt(spotPrice);
       setPoolPrice(sqrtPrice);
       const baseAmount = decimalic(currentLiquidity).mul(sqrtPrice);
       const quoteAmount = decimalic(currentLiquidity).div(sqrtPrice);
-      const convertedBaseAmount = baseAmount.div(Math.pow(10, 18));
-      const convertedQuoteAmount = quoteAmount.div(Math.pow(10, 18));
+      const convertedBaseAmount = baseAmount.div(
+        Math.pow(10, baseTokenDecimals),
+      );
+      const convertedQuoteAmount = quoteAmount.div(
+        Math.pow(10, quoteTokenDecimals),
+      );
       setDepositedAmountBase(convertedBaseAmount);
       setDepositedAmountQuote(convertedQuoteAmount);
     };

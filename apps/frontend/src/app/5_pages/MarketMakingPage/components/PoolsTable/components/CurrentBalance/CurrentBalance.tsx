@@ -50,12 +50,16 @@ export const CurrentBalance: FC<CurrentBalanceProps> = ({
         />
         <AmountRenderer
           value={balanceB}
-          suffix={BITCOIN}
-          precision={BTC_RENDER_PRECISION}
+          suffix={getTokenDisplayName(
+            poolAmbient ? poolAmbient.quote : BITCOIN,
+          )}
+          precision={
+            poolAmbient ? TOKEN_RENDER_PRECISION : BTC_RENDER_PRECISION
+          }
         />
       </div>
     ),
-    [balanceA, balanceB, pool?.assetA, poolAmbient],
+    [balanceA, balanceB, pool, poolAmbient],
   );
 
   return account ? (

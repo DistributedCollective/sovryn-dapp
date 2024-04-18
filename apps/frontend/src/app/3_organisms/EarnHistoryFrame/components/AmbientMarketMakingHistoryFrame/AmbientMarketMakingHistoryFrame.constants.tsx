@@ -2,9 +2,8 @@ import React from 'react';
 
 import { t } from 'i18next';
 
-import { BOB_CHAIN_ID } from '../../../../../config/chains';
-
 import { TransactionIdRenderer } from '../../../../2_molecules/TransactionIdRenderer/TransactionIdRenderer';
+import { getCurrentChain } from '../../../../../hooks/useChainStore';
 import { translations } from '../../../../../locales/i18n';
 import { LiquidityChange } from '../../../../../utils/graphql/bob/generated';
 import { dateFormat } from '../../../../../utils/helpers';
@@ -41,7 +40,7 @@ export const COLUMNS_CONFIG = [
     cellRenderer: (item: LiquidityChange) => (
       <TransactionIdRenderer
         hash={item.transactionHash}
-        chainId={BOB_CHAIN_ID}
+        chainId={getCurrentChain()}
       />
     ),
   },

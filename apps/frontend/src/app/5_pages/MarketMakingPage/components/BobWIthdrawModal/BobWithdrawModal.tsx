@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useMemo, useState } from 'react';
+import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 
 import { t } from 'i18next';
 
@@ -19,9 +19,9 @@ import { CurrentStatistics } from '../../../../2_molecules/CurrentStatistics/Cur
 import { useCrocContext } from '../../../../../contexts/CrocContext';
 import { translations } from '../../../../../locales/i18n';
 import { bigNumberic, decimalic } from '../../../../../utils/math';
-import { PoolPositionType } from '../../MarketMakingPage.types';
 import { AmbientPosition } from '../AmbientMarketMaking/AmbientMarketMaking.types';
 import { AmbientPositionBalance } from '../AmbientMarketMaking/components/AmbientPoolPositions/components/AmbientPositionBalance/AmbientPositionBalance';
+import { useAmbientPositionBalance } from '../AmbientMarketMaking/components/AmbientPoolPositions/hooks/useAmbientPositionBalance';
 import { AmbientLiquidityPool } from '../AmbientMarketMaking/utils/AmbientLiquidityPool';
 import { AmountForm } from './components/AmountForm/AmountForm';
 import { NewPoolStatistics } from './components/NewPoolStatistics/NewPoolStatistics';
@@ -35,6 +35,7 @@ type BobWithdrawModalProps = {
   onClose: () => void;
   pool: AmbientLiquidityPool;
   position: AmbientPosition;
+  onWithdraw: () => void;
 };
 
 export const BobWithdrawModal: FC<BobWithdrawModalProps> = ({
@@ -42,8 +43,12 @@ export const BobWithdrawModal: FC<BobWithdrawModalProps> = ({
   onClose,
   pool,
   position,
+  onWithdraw,
 }) => {
   const { croc } = useCrocContext();
+  const deposits = useAmbientPositionBalance(pool, position);
+  const [baseTokenDecimals, setBaseTokenDecimals] = useState(0);
+  const [quoteTokenDecimals, setQuoteTokenDecimals] = useState(0);
 
   const [depositedAmountBase, setDepositedAmountBase] = useState(Decimal.ZERO);
   const [depositedAmountQuote, setDepositedAmountQuote] = useState(
@@ -57,16 +62,6 @@ export const BobWithdrawModal: FC<BobWithdrawModalProps> = ({
   const [poolPrice, setPoolPrice] = useState(0);
   const { poolTokens } = useGetPoolInfo(pool.base, pool.quote);
 
-  const currentLiquidity = useMemo(
-    () =>
-      position.positionType === PoolPositionType.ambient
-        ? position.ambientLiq
-        : position.positionType === PoolPositionType.concentrated
-        ? position.concLiq
-        : 0,
-    [position],
-  );
-
   const isFullWithdrawal = useMemo(
     () => withdrawAmount.eq(depositedAmountBase),
     [withdrawAmount, depositedAmountBase],
@@ -75,18 +70,24 @@ export const BobWithdrawModal: FC<BobWithdrawModalProps> = ({
   const withdraw = useMemo(
     () =>
       isFullWithdrawal
-        ? bigNumberic(currentLiquidity.toString())
-        : bigNumberic(withdrawLiquidity.toBigNumber()),
-    [withdrawLiquidity, currentLiquidity, isFullWithdrawal],
+        ? bigNumberic(deposits?.positionLiqBase.toString() || '0')
+        : bigNumberic(withdrawLiquidity.toString() || '0'),
+    [withdrawLiquidity, deposits, isFullWithdrawal],
   );
+
+  const onComplete = useCallback(() => {
+    onWithdraw?.();
+    onClose();
+  }, [onWithdraw, onClose]);
 
   const handleSubmit = useHandleSubmit(
     withdraw,
     isFullWithdrawal,
     pool,
     position,
-    onClose,
+    onComplete,
   );
+
   const isValidAmount = useMemo(
     () => Number(withdrawAmount) <= Number(depositedAmountBase),
     [withdrawAmount, depositedAmountBase],
@@ -113,32 +114,39 @@ export const BobWithdrawModal: FC<BobWithdrawModalProps> = ({
       );
       const baseTokenDecimals = await poolTokens.tokenA.decimals;
       const quoteTokenDecimals = await poolTokens.tokenB.decimals;
+      setBaseTokenDecimals(baseTokenDecimals);
+      setQuoteTokenDecimals(quoteTokenDecimals);
 
       const spotPrice = await pool.spotPrice();
       const sqrtPrice = Math.sqrt(spotPrice);
       setPoolPrice(sqrtPrice);
-      const baseAmount = decimalic(currentLiquidity).mul(sqrtPrice);
-      const quoteAmount = decimalic(currentLiquidity).div(sqrtPrice);
-      const convertedBaseAmount = baseAmount.div(
-        Math.pow(10, baseTokenDecimals),
-      );
-      const convertedQuoteAmount = quoteAmount.div(
-        Math.pow(10, quoteTokenDecimals),
-      );
-      setDepositedAmountBase(convertedBaseAmount);
-      setDepositedAmountQuote(convertedQuoteAmount);
     };
 
     getDepositedAmounts();
-  }, [croc, poolTokens, currentLiquidity]);
+  }, [croc, poolTokens]);
 
   useEffect(() => {
     if (withdrawAmount.gt(0) && isValidAmount) {
       const amount = withdrawAmount.div(poolPrice);
-      const convertedAmount = amount.mul(Math.pow(10, 18));
+      const convertedAmount = amount.mul(Math.pow(10, baseTokenDecimals));
       setWithdrawLiquidity(convertedAmount);
     }
-  }, [withdrawAmount, poolPrice, isValidAmount]);
+  }, [withdrawAmount, poolPrice, isValidAmount, baseTokenDecimals]);
+
+  useEffect(() => {
+    if (deposits) {
+      setDepositedAmountBase(
+        decimalic(deposits?.positionLiqBase || '0').div(
+          Math.pow(10, baseTokenDecimals),
+        ),
+      );
+      setDepositedAmountQuote(
+        decimalic(deposits?.positionLiqQuote || '0').div(
+          Math.pow(10, quoteTokenDecimals),
+        ),
+      );
+    }
+  }, [deposits, baseTokenDecimals, quoteTokenDecimals]);
 
   return (
     <Dialog disableFocusTrap isOpen={isOpen}>

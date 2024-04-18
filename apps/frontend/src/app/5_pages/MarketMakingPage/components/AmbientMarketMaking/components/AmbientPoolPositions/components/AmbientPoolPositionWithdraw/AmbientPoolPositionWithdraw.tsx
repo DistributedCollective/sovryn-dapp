@@ -12,11 +12,12 @@ import { AmbientLiquidityPool } from '../../../../utils/AmbientLiquidityPool';
 type AmbientPoolPositionWithdrawProps = {
   pool: AmbientLiquidityPool;
   position: AmbientPosition;
+  onWithdraw: () => void;
 };
 
 export const AmbientPoolPositionWithdraw: FC<
   AmbientPoolPositionWithdrawProps
-> = ({ pool, position }) => {
+> = ({ pool, position, onWithdraw }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const toggleModal = useCallback(
@@ -37,6 +38,7 @@ export const AmbientPoolPositionWithdraw: FC<
         onClose={toggleModal}
         pool={pool}
         position={position}
+        onWithdraw={onWithdraw}
       />
     </>
   );

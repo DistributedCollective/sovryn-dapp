@@ -17,7 +17,6 @@ import { SovrynLogo } from '../../2_molecules/SovrynLogo/SovrynLogo';
 import { RSK_FAUCET } from '../../../constants/general';
 import { BOB } from '../../../constants/infrastructure/bob';
 import { useWalletConnect, useWrongNetworkCheck } from '../../../hooks';
-import { useRequiredChain } from '../../../hooks/chain/useRequiredChain';
 import { useAssetBalance } from '../../../hooks/useAssetBalance';
 import { useCurrentChain } from '../../../hooks/useChainStore';
 import { translations } from '../../../locales/i18n';

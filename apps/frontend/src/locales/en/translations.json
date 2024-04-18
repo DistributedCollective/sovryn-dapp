@@ -975,25 +975,23 @@
           "sendInfoText": "Transfer Rune Tokens from Rootstock to your Bitcoin address"
         }
       },
-      "receiveInstructions": {
+        "instructions": {
             "title": "Instructions",
-            "line1": "Only transfer Runes, not Bitcoin",
-            "line2": "Do not send less than the minimum amount",
-            "line3": "Do not send more than the maximum amount",
-            "line4": "Allow up to {{hours}} hrs to process",
-            "line5": "If your transaction takes longer than {{hours}} hrs please <0>create a support ticket</0>",
-            "line5cta": "create a support ticket",
-            "postage": "Set the postage to at least {{postageSat}} satoshi ({{postageBtc}} BTC)."
-      },
-      "sendInstructions": {
-            "title": "Instructions",
-            "line1": "Only transfer Rune Tokens to a wallet that supports Runes, such as ord. Runes sent to a Bitcoin wallet without support for Runes will be lost.",
-            "line2": "Do not send less than the minimum amount",
-            "line3": "Do not send more than the maximum amount",
-            "line4": "Allow up to {{hours}} hrs to process",
-            "line5": "If your transaction takes longer than {{hours}} hrs please <0>create a support ticket</0>",
-            "line5cta": "create a support ticket",
-            "supportedFormats": "Supported address formats: P2TR, P2PKH, P2SH, P2WPKH, P2WSH"
+            "upToNHours": "Allow up to {{hours}} hrs to process",
+            "createSupportTicket": "If your transaction takes longer than {{hours}} hrs please <0>create a support ticket</0>",
+            "createSupportTicketCta": "create a support ticket",
+            "receive": {
+                "onlyRunes": "Only transfer Runes, not Bitcoin",
+                "onlySupportedRunes": "Only transfer Runes that are supported by the bridge, visible on the next page. Transfers of unsupported Runes will not be processed",
+                "postage": "Set the postage to at least {{postageSat}} satoshi ({{postageBtc}} BTC)"
+            },
+            "send": {
+                "wallet": "Only transfer Rune Tokens to a wallet that supports Runes, such as <0>the Ordinals wallet \"ord\"</0>. Runes sent to a Bitcoin wallet without support for Runes will be lost",
+                "walletCta": "the Ordinals wallet \"ord\"",
+                "minAmount": "Do not send less than the minimum amount",
+                "maxAmount": "Do not send more than the maximum amount",
+                "supportedFormats": "Supported address formats: P2TR, P2PKH, P2SH, P2WPKH, P2WSH"
+            }
         },
         "limits": {
             "title": "Transfer policies",

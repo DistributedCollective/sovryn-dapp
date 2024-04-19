@@ -123,7 +123,7 @@ export const rsk: Record<string, AsyncContractConfigData> = {
       (await import('../../abis/LoanTokenSettingsLowerAdmin.json')).default,
   },
   runeBridge: {
-    address: '0x26f5b5d6558e87bDA3066B0880F4DDcf971b5Efb',
+    address: '0x94f1dcc69019819f64807BC0D275F9f3503cBD37',
     getAbi: async () => (await import('../../abis/RuneBridge.json')).default,
   },
 };

@@ -68,9 +68,9 @@ export const sepolia: Array<AssetDetails> = [
     getIcon: async () => (await import('./icons/unknown')).default,
   },
   {
-    symbol: 'rETH',
+    symbol: 'RETH',
     address: '0x0215Ac7606a7408686C8B885b4A238b07EE28E7c',
-    name: 'eETH',
+    name: 'RETH',
     decimals: 18,
     getIcon: async () => (await import('./icons/unknown')).default,
   },
@@ -84,13 +84,6 @@ export const sepolia: Array<AssetDetails> = [
   {
     symbol: 'tBTC',
     address: '0xCfe5251BA648aFD41a079B7860803c52e09329e7',
-    name: 'tBTC',
-    decimals: 18,
-    getIcon: async () => (await import('./icons/unknown')).default,
-  },
-  {
-    symbol: 'tBTC',
-    address: '0x7a6cBEbcB12095f32D620E0970A22F8635946D15',
     name: 'tBTC',
     decimals: 18,
     getIcon: async () => (await import('./icons/unknown')).default,

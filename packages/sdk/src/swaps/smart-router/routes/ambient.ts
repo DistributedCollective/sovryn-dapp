@@ -1,10 +1,10 @@
 import { BigNumber, utils, providers, constants, BigNumberish } from 'ethers';
 
-import { CrocEnv, CrocPoolView } from '@sovryn/sdex';
-import { OrderDirective } from '@sovryn/sdex/dist/encoding/longform';
 import { getAssetContract } from '@sovryn/contracts';
 import { ChainIds } from '@sovryn/ethers-provider';
 import { numberToChainId } from '@sovryn/ethers-provider';
+import { CrocEnv, CrocPoolView } from '@sovryn/sdex';
+import { OrderDirective } from '@sovryn/sdex/dist/encoding/longform';
 import { Decimal } from '@sovryn/utils';
 
 import { SovrynErrorCode, makeError } from '../../../errors/errors';
@@ -54,11 +54,13 @@ export const ambientRoute: SwapRouteFunction = (
         const usdt = (await getAssetContract('USDT', chainId)).address;
         const usdc = (await getAssetContract('USDC', chainId)).address;
         const dai = (await getAssetContract('DAI', chainId)).address;
+        const vct = (await getAssetContract('VCT', chainId)).address;
         const pools: Pool[] = [
           [eth, sov],
           [eth, usdc],
           [eth, usdt],
           [eth, dai],
+          [eth, vct],
         ];
 
         poolCache[chainId] = pools;

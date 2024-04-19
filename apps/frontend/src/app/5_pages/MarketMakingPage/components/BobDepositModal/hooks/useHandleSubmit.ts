@@ -127,6 +127,9 @@ export const useHandleSubmit = (assetA: string, assetB: string) => {
     // todo: check if tokenA is primary range
     // needs to be true by default, only false when base pool token (ex ETH) is not being deposited.
     // todo: figure out how to detect it.
+    // @dev: if base token liquidity a lot lower than quote token, then it MUST be TRUE.
+    // @dev: if quote token liquidity a lot lower than base token, then it MUST be TRUE as well.
+    // @dev: if liquidity is balanced, then it can be either TRUE or FALSE. I recommend having it TRUE by default.
     const isTokenAPrimaryRange = true;
 
     const tick = {

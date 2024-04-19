@@ -1,6 +1,7 @@
 import React, { FC, useCallback, useMemo, useReducer } from 'react';
 
 import { t } from 'i18next';
+import { useNavigate } from 'react-router-dom';
 
 import {
   Button,
@@ -30,6 +31,7 @@ import { NavItem } from './components/NavItem/NavItem';
 import { ProductLinks } from './components/ProductLinks/ProductLinks';
 
 export const Header: FC = () => {
+  const navigate = useNavigate();
   const chainId = useCurrentChain();
   const [isOpen, toggle] = useReducer(v => !v, false);
   const { connectWallet, disconnectWallet, account, pending } =
@@ -126,7 +128,13 @@ export const Header: FC = () => {
         extraContent={
           <>
             {account && (
-              <>
+              <div className="flex space-x-4">
+                <Button
+                  text={t(translations.header.nav.claimLp)}
+                  style={ButtonStyle.primary}
+                  className="bg-[#24BFB74D]/[0.3] border-[#24BFB74D]/[0.3] hover:bg-[#24BFB74D]"
+                  onClick={() => navigate('/claim-lp')}
+                />
                 <Button
                   text={t(
                     hasRbtcBalance
@@ -142,7 +150,7 @@ export const Header: FC = () => {
                   hrefExternal={true}
                   disabled={!isRskChain(chainId) && !isBobChain(chainId)}
                 />
-              </>
+              </div>
             )}
           </>
         }

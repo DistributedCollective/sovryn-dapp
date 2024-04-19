@@ -107,7 +107,8 @@
             "convert": "Convert",
             "stake": "Stake",
             "bitocracy": "Bitocracy",
-            "bob": "Go BoB"
+            "bob": "Go BoB",
+            "claimLp": "Claim LP"
         }
     },
     "footer": {

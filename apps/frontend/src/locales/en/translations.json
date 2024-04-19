@@ -1787,6 +1787,7 @@
       "claimTx": {
         "title": "Claim LP deposits",
         "description": "Claim your LP tokens from Sovryn & BOB liquidity campaign"
-      }
+      },
+      "ammCta": "Claim LP tokens"
     }
 }

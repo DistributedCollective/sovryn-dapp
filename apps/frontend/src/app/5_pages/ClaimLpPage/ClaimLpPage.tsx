@@ -6,6 +6,7 @@ import { Trans } from 'react-i18next';
 
 import { Button, Heading, Link, Paragraph, ParagraphSize } from '@sovryn/ui';
 
+import { useAccount } from '../../../hooks/useAccount';
 import { useCurrentChain } from '../../../hooks/useChainStore';
 import { translations } from '../../../locales/i18n';
 import { isBobChain } from '../../../utils/chain';
@@ -13,6 +14,7 @@ import { ABOUT_LP_URL, CAMPAIGN_URL } from './ClaimLpPage.constants';
 import { Claim, useClaimLp } from './hooks/useClaimLp';
 
 const ClaimLpPage: FC = () => {
+  const { account } = useAccount();
   const chainId = useCurrentChain();
   const [loading, setLoading] = useState(false);
   const [claimable, setClaimable] = useState<Claim[]>([]);
@@ -20,7 +22,7 @@ const ClaimLpPage: FC = () => {
   const { claim, getUnclaimed } = useClaimLp();
 
   const canClaim = useMemo(
-    () => isBobChain(chainId) && claimable.length > 0 && loading,
+    () => isBobChain(chainId) && claimable.length > 0 && !loading,
     [chainId, claimable.length, loading],
   );
 
@@ -33,7 +35,7 @@ const ClaimLpPage: FC = () => {
 
   useEffect(() => {
     getUnclaimed().then(setClaimable);
-  }, [getUnclaimed]);
+  }, [getUnclaimed, account]);
 
   return (
     <>

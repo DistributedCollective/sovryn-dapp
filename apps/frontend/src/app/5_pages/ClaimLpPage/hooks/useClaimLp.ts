@@ -2,12 +2,9 @@ import { useCallback } from 'react';
 
 import { t } from 'i18next';
 
-import { NotificationType } from '@sovryn/ui';
-
 import { BOB_CHAIN_ID } from '../../../../config/chains';
 
 import { TransactionType } from '../../../3_organisms/TransactionStepDialog/TransactionStepDialog.types';
-import { useNotificationContext } from '../../../../contexts/NotificationContext';
 import { useTransactionContext } from '../../../../contexts/TransactionContext';
 import { useAccount } from '../../../../hooks/useAccount';
 import { useCurrentChain } from '../../../../hooks/useChainStore';
@@ -32,7 +29,6 @@ export const useClaimLp = (onComplete?: () => void) => {
   const chainId = useCurrentChain();
   const { signer, account } = useAccount();
   const { setTransactions, setIsOpen, setTitle } = useTransactionContext();
-  const { addNotification } = useNotificationContext();
 
   const contract = useGetProtocolContract('merkleDistributor', BOB_CHAIN_ID);
 
@@ -56,29 +52,44 @@ export const useClaimLp = (onComplete?: () => void) => {
 
   const getUnclaimed = useCallback(async (): Promise<Claim[]> => {
     const { claims } = await findProofs();
-    const unclaimedIndexes = contract
-      ?.contract(signer)
-      .getUnclaimed(claims.map(c => c.index));
+    if (!claims.length) {
+      return [];
+    }
+
+    let unclaimedIndexes: number[] = [];
+
+    if (claims.some(c => c.index === 0)) {
+      unclaimedIndexes = (
+        await Promise.all(
+          claims.map(c =>
+            contract
+              ?.isClaimed(c.index)
+              .then(res => (!res ? c.index : null))
+              .catch(() => null),
+          ),
+        )
+      ).filter(item => item !== null) as number[];
+    } else {
+      unclaimedIndexes = (await contract
+        ?.getUnclaimed(claims.map(c => c.index))
+        .then(res =>
+          res.map(item => item.toNumber()).filter(item => item !== 0),
+        )
+        .catch(() => [])) as number[];
+    }
+
     return claims.filter(c => unclaimedIndexes.includes(c.index));
-  }, [contract, findProofs, signer]);
+  }, [contract, findProofs]);
 
   const claim = useCallback(async () => {
-    if (chainId !== BOB_CHAIN_ID) {
-      return addNotification({
-        id: 'claim-lp',
-        title: 'wrong network',
-        type: NotificationType.error,
-      });
+    if (!signer || chainId !== BOB_CHAIN_ID) {
+      return;
     }
 
     const claims = await getUnclaimed();
 
     if (!claims.length) {
-      return addNotification({
-        id: 'claim-lp',
-        title: 'no claims',
-        type: NotificationType.error,
-      });
+      return;
     }
 
     setTransactions([
@@ -86,7 +97,7 @@ export const useClaimLp = (onComplete?: () => void) => {
         title: t(translations.claimLpPage.claimTx.title),
         request: {
           type: TransactionType.signTransaction,
-          contract: contract?.contract(signer),
+          contract: contract?.connect(signer)!,
           fnName: 'claim',
           args: [
             claims.map(c => c.index),
@@ -103,7 +114,6 @@ export const useClaimLp = (onComplete?: () => void) => {
     setIsOpen(true);
   }, [
     account,
-    addNotification,
     chainId,
     contract,
     getUnclaimed,

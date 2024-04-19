@@ -109,7 +109,7 @@
             "bitocracy": "Bitocracy",
             "bob": "Go BoB",
             "bridges": {
-                "title": "Bridge Assets",
+                "title": "Transfer Assets",
                 "subMenu": {
                     "runeBridge": "Runes",
                     "runeBridgeDescription": "Transfer between Bitcoin and Sovryn",

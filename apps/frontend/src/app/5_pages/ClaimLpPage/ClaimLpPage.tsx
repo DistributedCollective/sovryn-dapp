@@ -4,12 +4,13 @@ import { t } from 'i18next';
 import { Helmet } from 'react-helmet-async';
 import { Trans } from 'react-i18next';
 
+import { ChainIds } from '@sovryn/ethers-provider';
 import { Button, Heading, Link, Paragraph, ParagraphSize } from '@sovryn/ui';
 
 import { useAccount } from '../../../hooks/useAccount';
 import { useCurrentChain } from '../../../hooks/useChainStore';
 import { translations } from '../../../locales/i18n';
-import { isBobChain } from '../../../utils/chain';
+// import { isBobChain } from '../../../utils/chain';
 import { ABOUT_LP_URL, CAMPAIGN_URL } from './ClaimLpPage.constants';
 import { Claim, useClaimLp } from './hooks/useClaimLp';
 
@@ -22,7 +23,8 @@ const ClaimLpPage: FC = () => {
   const { claim, getUnclaimed } = useClaimLp();
 
   const canClaim = useMemo(
-    () => isBobChain(chainId) && claimable.length > 0 && !loading,
+    // () => isBobChain(chainId) && claimable.length > 0 && !loading, // todo: use this after QA
+    () => chainId === ChainIds.FORK && claimable.length > 0 && !loading,
     [chainId, claimable.length, loading],
   );
 

@@ -2,8 +2,9 @@ import { useCallback } from 'react';
 
 import { t } from 'i18next';
 
-import { BOB_CHAIN_ID } from '../../../../config/chains';
+import { ChainIds } from '@sovryn/ethers-provider';
 
+// import { BOB_CHAIN_ID } from '../../../../config/chains';
 import { TransactionType } from '../../../3_organisms/TransactionStepDialog/TransactionStepDialog.types';
 import { useTransactionContext } from '../../../../contexts/TransactionContext';
 import { useAccount } from '../../../../hooks/useAccount';
@@ -30,7 +31,7 @@ export const useClaimLp = (onComplete?: () => void) => {
   const { signer, account } = useAccount();
   const { setTransactions, setIsOpen, setTitle } = useTransactionContext();
 
-  const contract = useGetProtocolContract('merkleDistributor', BOB_CHAIN_ID);
+  const contract = useGetProtocolContract('merkleDistributor', ChainIds.FORK); // todo: change to BOB_CHAIN_ID after QA
 
   const findProofs = useCallback(async () => {
     const proof: Proof = isMainnet()
@@ -82,7 +83,9 @@ export const useClaimLp = (onComplete?: () => void) => {
   }, [contract, findProofs]);
 
   const claim = useCallback(async () => {
-    if (!signer || chainId !== BOB_CHAIN_ID) {
+    // if (!signer || chainId !== BOB_CHAIN_ID) {
+    if (!signer || chainId !== ChainIds.FORK) {
+      // todo: change to BOB_CHAIN_ID after QA
       return;
     }
 
@@ -106,6 +109,7 @@ export const useClaimLp = (onComplete?: () => void) => {
             claims.map(c => c.amount),
             claims.map(c => c.proof),
           ],
+          gasLimit: Math.min(claims.length * 45_000 + 21_000, 6_000_000),
         },
         onComplete,
       },

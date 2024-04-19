@@ -125,11 +125,10 @@ export const useHandleSubmit = (assetA: string, assetB: string) => {
     const pool = AmbientLiquidityPoolDictionary.get(assetA, assetB, chainId);
 
     // todo: check if tokenA is primary range
-    // needs to be true by default, only false when base pool token (ex ETH) is not being deposited.
-    // todo: figure out how to detect it.
-    // @dev: if base token liquidity a lot lower than quote token, then it MUST be TRUE.
-    // @dev: if quote token liquidity a lot lower than base token, then it MUST be TRUE as well.
-    // @dev: if liquidity is balanced, then it can be either TRUE or FALSE. I recommend having it TRUE by default.
+    // @dev: It's expected to be TRUE if user enters amount to BASE token input and FALSE if user enters amount to QUOTE token input.
+    // @dev: We can have it as TRUE by default.
+    // @dev: If liquidity is out of balance and user wants to deposit position which is out of range (max price is lower than current price)  - it MUST be FALSE, to depositing QUOTE token only.
+    // @dev: If liquidity is out of balance and user wants to deposit position which is out of range (min price is higher than current price) - it MUST be TRUE, to depositing BASE token only.
     const isTokenAPrimaryRange = true;
 
     const tick = {

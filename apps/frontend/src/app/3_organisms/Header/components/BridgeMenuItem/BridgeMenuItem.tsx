@@ -7,6 +7,7 @@ import { SupportedTokens } from '@sovryn/contracts';
 import { Menu, MenuItem } from '@sovryn/ui';
 
 import { RSK_FAUCET } from '../../../../../constants/general';
+import { BABELFISH_APP_LINK } from '../../../../../constants/links';
 import { useAssetBalance } from '../../../../../hooks/useAssetBalance';
 import { useIsMobile } from '../../../../../hooks/useIsMobile';
 import { sharedState } from '../../../../../store/rxjs/shared-state';
@@ -30,13 +31,17 @@ export const BridgeMenuItem: FC<BridgeMenuItemProps> = ({ dataAttribute }) => {
     [],
   );
 
-  const handleTokensClick = useCallback(() => {
+  const handleBtcClicked = useCallback(() => {
     if (enableFastBtc) sharedState.actions.openFastBtcDialog(!hasRbtcBalance);
     else window.open(RSK_FAUCET, '_blank');
   }, [hasRbtcBalance, enableFastBtc]);
 
   const handleRunesClick = useCallback(() => {
     sharedState.actions.openRuneBridgeDialog();
+  }, []);
+
+  const handleTokensClick = useCallback(() => {
+    window.open(BABELFISH_APP_LINK, '_blank');
   }, []);
 
   return (
@@ -50,9 +55,21 @@ export const BridgeMenuItem: FC<BridgeMenuItemProps> = ({ dataAttribute }) => {
     >
       <Menu className="rounded-t-none rounded-b px-2 py-3 lg:rounded lg:p-1">
         <MenuItem
-          key={t('header.nav.bridges.subMenu.runes')}
-          text={t('header.nav.bridges.subMenu.runes')}
-          label={!isMobile && t('header.nav.bridges.subMenu.runesDescription')}
+          key={t('header.nav.bridges.subMenu.btcBridge')}
+          text={t('header.nav.bridges.subMenu.btcBridge')}
+          label={
+            !isMobile && t('header.nav.bridges.subMenu.btcBridgeDescription')
+          }
+          dataAttribute={`dapp-menu-btcBridge`}
+          className="no-underline"
+          onClick={handleBtcClicked}
+        />
+        <MenuItem
+          key={t('header.nav.bridges.subMenu.runeBridge')}
+          text={t('header.nav.bridges.subMenu.runeBridge')}
+          label={
+            !isMobile && t('header.nav.bridges.subMenu.runeBridgeDescription')
+          }
           dataAttribute={`dapp-menu-runeBridge`}
           className="no-underline"
           onClick={handleRunesClick}

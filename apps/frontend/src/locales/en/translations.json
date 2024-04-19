@@ -109,12 +109,14 @@
             "bitocracy": "Bitocracy",
             "bob": "Go BoB",
             "bridges": {
-                "title": "Bridges",
+                "title": "Bridge Assets",
                 "subMenu": {
-                    "runes": "Runes",
-                    "runesDescription": "Transfer between Bitcoin and RSK",
-                    "tokenBridge": "Tokens",
-                    "tokenBridgeDescription": "Transfer between RSK and other chains"
+                    "runeBridge": "Runes",
+                    "runeBridgeDescription": "Transfer between Bitcoin and Sovryn",
+                    "tokenBridge": "Stablecoins",
+                    "tokenBridgeDescription": "Transfer between RSK and other chains",
+                    "btcBridge": "BTC",
+                    "btcBridgeDescription": "Transfer between Bitcoin and Sovryn"
                 }
             }
         }

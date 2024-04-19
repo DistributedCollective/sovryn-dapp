@@ -55,6 +55,8 @@ export const WIKI_LINKS = {
 
 export const HELPDESK_LINK = 'https://help.sovryn.app/';
 
+export const BABELFISH_APP_LINK = 'https://app.babelfish.money';
+
 export const POWA_LINK = 'https://sovryn.com/powa';
 
 export const GOBOB_LINK = 'https://gobob.sovryn.app';

@@ -6,11 +6,7 @@ import classNames from 'classnames';
 import { formatUnits, parseUnits } from 'ethers/lib/utils';
 import { t } from 'i18next';
 
-import {
-  getTokenDetailsByAddress,
-  TokenDetailsData,
-  findContract,
-} from '@sovryn/contracts';
+import { getTokenDetailsByAddress, findContract } from '@sovryn/contracts';
 import {
   Accordion,
   AmountInput,
@@ -43,6 +39,7 @@ import {
   Transaction,
   TransactionConfig,
   TransactionReceipt,
+  TokenDetails,
 } from '../../TransactionStepDialog.types';
 import {
   isSignTransactionDataRequest,
@@ -73,10 +70,22 @@ export const TransactionStep: FC<TransactionStepProps> = ({
   isLoading,
 }) => {
   const { request, title, subtitle } = transaction;
-  const [token, setToken] = useState<TokenDetailsData | undefined>();
+  const [token, setToken] = useState<TokenDetails | undefined>();
 
   useEffect(() => {
     const updateToken = (address: string) => {
+      if (isTransactionRequest(request) && request.tokenDetails) {
+        if (request.tokenDetails.address === address) {
+          setToken(request.tokenDetails);
+          return;
+        } else {
+          console.warn(
+            "Supplied token details address %s doesn't match address %s",
+            request.tokenDetails.address,
+            address,
+          );
+        }
+      }
       findContract(address).then(result => {
         if (result.group === 'tokens') {
           getTokenDetailsByAddress(address)

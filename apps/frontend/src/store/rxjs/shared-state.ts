@@ -10,6 +10,7 @@ import {
 export type EventDriverState = {
   fastBtcDialog: FastBtcDialogState;
   emailNotificationSettingsDialog: EmailNotificationSettingsDialogState;
+  runeBridgeDialog: RuneBridgeDialogState;
 };
 
 export type FastBtcDialogState = {
@@ -22,6 +23,11 @@ export type EmailNotificationSettingsDialogState = {
   isOpen: boolean;
 };
 
+export type RuneBridgeDialogState = {
+  isOpen: boolean;
+  step?: number;
+};
+
 const INITIAL_STATE = {
   fastBtcDialog: {
     isOpen: false,
@@ -30,6 +36,10 @@ const INITIAL_STATE = {
   },
   emailNotificationSettingsDialog: {
     isOpen: false,
+  },
+  runeBridgeDialog: {
+    isOpen: false,
+    step: 0,
   },
 };
 
@@ -84,6 +94,23 @@ const closeFastBtcDialog = () =>
       isOpen: false,
     },
   }));
+const openRuneBridgeDialog = (step: number = 0) =>
+  dispatch(state => ({
+    ...state,
+    runeBridgeDialog: {
+      isOpen: true,
+      step,
+    },
+  }));
+
+const closeRuneBridgeDialog = () =>
+  dispatch(state => ({
+    ...state,
+    runeBridgeDialog: {
+      ...state.runeBridgeDialog,
+      isOpen: false,
+    },
+  }));
 
 const openEmailNotificationSettingsDialog = () =>
   dispatch(state => ({
@@ -109,5 +136,7 @@ export const sharedState = {
     closeFastBtcDialog,
     openEmailNotificationSettingsDialog,
     closeEmailNotificationSettingsDialog,
+    openRuneBridgeDialog,
+    closeRuneBridgeDialog,
   },
 };

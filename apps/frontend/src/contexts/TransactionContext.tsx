@@ -11,9 +11,16 @@ interface TransactionContextInterface {
   setTitle: (title: string) => void;
 }
 
-const TransactionContext = createContext<TransactionContextInterface | null>(
-  null,
-);
+export const defaultValue: TransactionContextInterface = {
+  transactions: [],
+  setTransactions: () => {},
+  isOpen: false,
+  setIsOpen: () => {},
+  title: '',
+  setTitle: () => {},
+};
+export const TransactionContext =
+  createContext<TransactionContextInterface>(defaultValue);
 
 export const useTransactionContext = () => {
   return useContext(TransactionContext) as TransactionContextInterface;

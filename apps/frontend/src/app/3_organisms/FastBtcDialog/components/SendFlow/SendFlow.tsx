@@ -1,9 +1,9 @@
 import React, { useCallback } from 'react';
 
+import { GoBackButton } from '../../../../1_atoms/GoBackButton/GoBackButton';
+import { MobileCloseButton } from '../../../../1_atoms/MobileCloseButton/MobileCloseButton';
 import { WithdrawContext, WithdrawStep } from '../../contexts/withdraw-context';
 import { useWithdrawBridgeConfig } from '../../hooks/useWithdrawBridgeConfig';
-import { GoBackButton } from '../GoBackButton';
-import { MobileCloseButton } from '../MobileCloseButton';
 import { AddressForm } from './components/AddressForm';
 import { AmountForm } from './components/AmountForm';
 import { ConfirmationScreens } from './components/ConfirmationScreens';

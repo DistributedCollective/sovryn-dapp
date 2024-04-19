@@ -14,7 +14,7 @@ type MaxButtonProps = {
   value: Decimalish;
   onClick?: () => void;
   precision?: number;
-  token: SupportedTokens;
+  token: SupportedTokens | string;
   dataAttribute?: string;
   label?: string;
 };

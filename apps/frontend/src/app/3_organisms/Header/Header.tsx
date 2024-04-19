@@ -1,27 +1,22 @@
-import React, { FC, useCallback, useMemo, useReducer } from 'react';
+import React, { FC, useCallback, useReducer } from 'react';
 
 import { t } from 'i18next';
 
-import { SupportedTokens } from '@sovryn/contracts';
 import {
   Button,
   ButtonStyle,
   Header as UIHeader,
   Icon,
   IconNames,
-  noop,
 } from '@sovryn/ui';
 
 import { ConnectWalletButton } from '../../2_molecules';
 import { SovrynLogo } from '../../2_molecules/SovrynLogo/SovrynLogo';
-import { RSK_FAUCET } from '../../../constants/general';
 import { GOBOB_LINK } from '../../../constants/links';
 import { useWalletConnect, useWrongNetworkCheck } from '../../../hooks';
-import { useAssetBalance } from '../../../hooks/useAssetBalance';
 import { translations } from '../../../locales/i18n';
-import { sharedState } from '../../../store/rxjs/shared-state';
-import { isMainnet, isTestnetFastBtcEnabled } from '../../../utils/helpers';
 import { menuItemsMapping } from './Header.constants';
+import { BridgeMenuItem } from './components/BridgeMenuItem/BridgeMenuItem';
 import { NavItem } from './components/NavItem/NavItem';
 import { ProductLinks } from './components/ProductLinks/ProductLinks';
 
@@ -31,25 +26,11 @@ export const Header: FC = () => {
     useWalletConnect();
   useWrongNetworkCheck();
 
-  const { balance } = useAssetBalance(SupportedTokens.rbtc);
-
-  const hasRbtcBalance = useMemo(() => Number(balance) !== 0, [balance]);
-
-  const enableFastBtc = useMemo(
-    () => isMainnet() || (!isMainnet() && isTestnetFastBtcEnabled()),
-    [],
-  );
-
   const handleNavClick = useCallback(() => {
     if (isOpen) {
       toggle();
     }
   }, [isOpen]);
-
-  const handleFastBtcClick = useCallback(
-    () => sharedState.actions.openFastBtcDialog(!hasRbtcBalance),
-    [hasRbtcBalance],
-  );
 
   return (
     <>
@@ -104,24 +85,7 @@ export const Header: FC = () => {
         }
         extraContent={
           <>
-            {account && (
-              <>
-                <Button
-                  text={t(
-                    hasRbtcBalance
-                      ? translations.header.funding
-                      : translations.header.fundWallet,
-                  )}
-                  style={
-                    hasRbtcBalance ? ButtonStyle.secondary : ButtonStyle.primary
-                  }
-                  dataAttribute="dapp-header-funding"
-                  onClick={enableFastBtc ? handleFastBtcClick : noop}
-                  href={enableFastBtc ? '' : RSK_FAUCET}
-                  hrefExternal={true}
-                />
-              </>
-            )}
+            {account && <BridgeMenuItem dataAttribute="dapp-header-bridges" />}
           </>
         }
       />

@@ -4,6 +4,7 @@ import { AsyncContractConfigData } from '../../types';
 import { bobTestnet } from './bobTestnet';
 import { rsk } from './rsk';
 import { rskTestnet } from './rskTestnet';
+import { sepolia } from './sepolia';
 
 export const protocol: Partial<
   Record<Network, Record<string, AsyncContractConfigData>>
@@ -11,4 +12,5 @@ export const protocol: Partial<
   rsk,
   rskTestnet,
   bobTestnet,
+  sepolia,
 };

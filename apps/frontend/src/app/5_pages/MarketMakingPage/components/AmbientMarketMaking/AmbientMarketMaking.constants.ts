@@ -97,7 +97,7 @@ export const TESTNET_AMM = [
     'SOV',
     ChainIds.SEPOLIA,
     '36000',
-    '0xDE570382BF7FD24eaf02314153a75E0380Eeb78f',
+    '0xE015847C4919428b2878c983fe72e81f935344Bc',
   ),
   new AmbientLiquidityPool(
     'wstETH',

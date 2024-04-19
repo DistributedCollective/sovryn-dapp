@@ -13,10 +13,10 @@ import classNames from 'classnames';
 import { BigNumber, Contract, ethers } from 'ethers';
 import { parseUnits } from 'ethers/lib/utils';
 
-import { CrocEnv, MAX_TICK, MIN_TICK } from '@sovryn/sdex';
-import { CrocTokenView } from '@sovryn/sdex/dist/tokens';
 import { getProvider } from '@sovryn/ethers-provider';
 import { ChainIds } from '@sovryn/ethers-provider';
+import { CrocEnv, MAX_TICK, MIN_TICK } from '@sovryn/sdex';
+import { CrocTokenView } from '@sovryn/sdex/dist/tokens';
 import { Decimal } from '@sovryn/utils';
 
 import {
@@ -268,7 +268,7 @@ export const BobAmmPage: React.FC = () => {
           isWithdrawFromDexChecked: false,
         },
         // todo: check if this need to be switched for certain cases
-        isTokenAPrimaryRange: false,
+        isTokenAPrimaryRange: true,
         tick: { low: MIN_TICK, high: MAX_TICK },
       });
 
@@ -308,7 +308,7 @@ export const BobAmmPage: React.FC = () => {
     if (!croc.current) {
       return;
     }
-    const labels = ['ETH', 'SOV', 'USDT', 'USDC', 'DAI'];
+    const labels = ['ETH', 'SOV', 'USDT', 'USDC', 'DAI', 'VCT'];
     const items = labels.map(label => findAsset(label, CHAIN_ID).address);
 
     const _dexBalances: Record<string, Decimal> = {};
@@ -385,6 +385,9 @@ export const BobAmmPage: React.FC = () => {
               </button>
               <button onClick={() => handlePoolInit('ETH', 'DAI', 3200)}>
                 Initialize pool: ETH/DAI (3200$)
+              </button>
+              <button onClick={() => handlePoolInit('ETH', 'VCT', 1)}>
+                Initialize pool: ETH/VCT
               </button>
             </li>
             <li>

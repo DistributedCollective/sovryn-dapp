@@ -21,6 +21,7 @@ export const TESTNET_AMM = [
   new AmbientLiquidityPool('ETH', 'USDT', ChainIds.SEPOLIA, '36000'),
   new AmbientLiquidityPool('ETH', 'USDC', ChainIds.SEPOLIA, '36000'),
   new AmbientLiquidityPool('ETH', 'DAI', ChainIds.SEPOLIA, '36000'),
+  new AmbientLiquidityPool('ETH', 'VCT', ChainIds.SEPOLIA, '36000'),
   // Virtual
   new AmbientLiquidityPool('ETH', 'SOV', ChainIds.FORK, '36000'),
   new AmbientLiquidityPool('ETH', 'USDT', ChainIds.FORK, '36000'),

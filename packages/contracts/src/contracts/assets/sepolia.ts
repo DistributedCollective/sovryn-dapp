@@ -12,6 +12,13 @@ export const sepolia: Array<AssetDetails> = [
     getIcon: async () => (await import('./icons/rsk/eths')).default,
   },
   {
+    symbol: 'VCT',
+    address: '0xf05DAE5c43048d3e579e710683CAD73Fa3756b04',
+    name: 'Victor',
+    decimals: 18,
+    getIcon: async () => (await import('./icons/unknown')).default,
+  },
+  {
     symbol: 'SOV',
     address: '0xebE5E8866db71286242af5fbF64e9464596a40F2',
     name: 'SOV',

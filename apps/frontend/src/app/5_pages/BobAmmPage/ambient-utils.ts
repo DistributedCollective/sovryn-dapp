@@ -55,8 +55,8 @@ export async function createRangePositionTx(params: CreateRangePositionParams) {
       lpConduit,
     });
 
-  const mintRangeQuote = () =>
-    pool.mintRangeQuote(
+  const mintRangeQuote = () => {
+    return pool.mintRangeQuote(
       tokenA.qty,
       [tick.low, tick.high],
       [price.min, price.max],
@@ -67,9 +67,10 @@ export async function createRangePositionTx(params: CreateRangePositionParams) {
         ],
       },
     );
+  };
 
-  const mintRangeBase = () =>
-    pool.mintRangeBase(
+  const mintRangeBase = () => {
+    return pool.mintRangeBase(
       tokenB.qty,
       [tick.low, tick.high],
       [price.min, price.max],
@@ -80,6 +81,7 @@ export async function createRangePositionTx(params: CreateRangePositionParams) {
         ],
       },
     );
+  };
 
   const tx = isAmbient
     ? await (isTokenAPrimaryRange ? mintAmbientQuote() : mintAmbientBase())

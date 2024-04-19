@@ -6,7 +6,7 @@ import { BigNumber, Contract, ethers } from 'ethers';
 import { parseUnits } from 'ethers/lib/utils';
 import { t } from 'i18next';
 
-import { priceToTick } from '@sovryn/sdex';
+import { calcRangeTilt, priceToTick, tickToPrice } from '@sovryn/sdex';
 import { CrocTokenView } from '@sovryn/sdex/dist/tokens';
 
 import {
@@ -124,6 +124,26 @@ export const useHandleSubmit = (assetA: string, assetB: string) => {
 
     const pool = AmbientLiquidityPoolDictionary.get(assetA, assetB, chainId);
 
+    // todo: check if tokenA is primary range
+    // needs to be true by default, only false when base pool token (ex ETH) is not being deposited.
+    // todo: figure out how to detect it.
+    const isTokenAPrimaryRange = true;
+
+    const tick = {
+      low: priceToTick(lowerBoundaryPrice),
+      high: priceToTick(upperBoundaryPrice),
+    };
+
+    console.log('tick', tick);
+    const price = {
+      min: tickToPrice(tick.low),
+      max: tickToPrice(tick.high),
+    };
+    console.log('price', price);
+
+    const rangeTilt = calcRangeTilt(price.min, tick.low, tick.high);
+    console.log('rangeTilt', rangeTilt);
+
     const tx = await createRangePositionTx({
       crocEnv: croc,
       isAmbient: isBalancedRange && rangeWidth === 100,
@@ -138,13 +158,12 @@ export const useHandleSubmit = (assetA: string, assetB: string) => {
         qty: Number(secondAssetValue),
         isWithdrawFromDexChecked: false,
       },
-      isTokenAPrimaryRange: false,
-      tick: {
-        low: priceToTick(lowerBoundaryPrice),
-        high: priceToTick(upperBoundaryPrice),
-      },
+      isTokenAPrimaryRange,
+      tick,
       lpConduit: pool?.lpTokenAddress,
     });
+
+    console.log('tx', tx);
 
     transactions.push({
       title: t(translations.common.deposit),

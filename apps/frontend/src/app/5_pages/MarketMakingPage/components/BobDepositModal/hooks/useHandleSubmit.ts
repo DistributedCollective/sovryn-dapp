@@ -6,7 +6,7 @@ import { BigNumber, Contract, ethers } from 'ethers';
 import { parseUnits } from 'ethers/lib/utils';
 import { t } from 'i18next';
 
-import { calcRangeTilt, priceToTick, tickToPrice } from '@sovryn/sdex';
+import { priceToTick } from '@sovryn/sdex';
 import { CrocTokenView } from '@sovryn/sdex/dist/tokens';
 
 import {
@@ -56,6 +56,7 @@ export const useHandleSubmit = (assetA: string, assetB: string) => {
     maximumSlippage,
     isBalancedRange,
     rangeWidth,
+    concData,
   } = useDepositContext();
 
   const { setTransactions, setIsOpen, setTitle } = useTransactionContext();
@@ -129,22 +130,12 @@ export const useHandleSubmit = (assetA: string, assetB: string) => {
     // @dev: We can have it as TRUE by default.
     // @dev: If liquidity is out of balance and user wants to deposit position which is out of range (max price is lower than current price)  - it MUST be FALSE, to depositing QUOTE token only.
     // @dev: If liquidity is out of balance and user wants to deposit position which is out of range (min price is higher than current price) - it MUST be TRUE, to depositing BASE token only.
-    const isTokenAPrimaryRange = true;
+    const isTokenAPrimaryRange = !isFinite(concData.base) ? false : true;
 
     const tick = {
       low: priceToTick(lowerBoundaryPrice),
       high: priceToTick(upperBoundaryPrice),
     };
-
-    console.log('tick', tick);
-    const price = {
-      min: tickToPrice(tick.low),
-      max: tickToPrice(tick.high),
-    };
-    console.log('price', price);
-
-    const rangeTilt = calcRangeTilt(price.min, tick.low, tick.high);
-    console.log('rangeTilt', rangeTilt);
 
     const tx = await createRangePositionTx({
       crocEnv: croc,
@@ -165,7 +156,7 @@ export const useHandleSubmit = (assetA: string, assetB: string) => {
       lpConduit: pool?.lpTokenAddress,
     });
 
-    console.log('tx', tx);
+    console.log('txData', tx);
 
     transactions.push({
       title: t(translations.common.deposit),
@@ -189,6 +180,7 @@ export const useHandleSubmit = (assetA: string, assetB: string) => {
     assetA,
     assetB,
     chainId,
+    concData.base,
     croc,
     firstAssetValue,
     isBalancedRange,

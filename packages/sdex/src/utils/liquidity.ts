@@ -179,7 +179,10 @@ export function concDepositSkew(
   const quote = quoteConcFactor(price, lower, upper);
 
   // @dev: leave it for debugging. if base is infinite - base token deposit is not required (isTokenAPrimaryRange=false)
-  console.log('base', base, 'quote', quote);
+  console.log('price', price, 'base', base, 'quote', quote, {
+    lower,
+    upper,
+  });
 
   return quote / base;
 }

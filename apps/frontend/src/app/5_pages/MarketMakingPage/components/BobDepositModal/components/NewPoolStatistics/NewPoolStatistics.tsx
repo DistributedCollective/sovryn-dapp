@@ -1,4 +1,4 @@
-import React, { FC, useMemo } from 'react';
+import React, { FC, useEffect, useMemo } from 'react';
 
 import { t } from 'i18next';
 
@@ -23,9 +23,14 @@ type NewPoolStatisticsProps = {
 };
 
 export const NewPoolStatistics: FC<NewPoolStatisticsProps> = ({ pool }) => {
-  const { firstAssetValue, secondAssetValue } = useDepositContext();
+  const { firstAssetValue, secondAssetValue, setSpotPrice } =
+    useDepositContext();
   const { base, quote } = useMemo(() => pool, [pool]);
-  const { price, feeRate } = useGetPoolInfo(pool.base, pool.quote);
+  const { price, spotPrice, feeRate } = useGetPoolInfo(pool.base, pool.quote);
+
+  useEffect(() => {
+    setSpotPrice(spotPrice);
+  }, [spotPrice, setSpotPrice]);
 
   return (
     <SimpleTable className="mt-6">

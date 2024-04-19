@@ -2,7 +2,7 @@ import { Environments } from '../../types/global';
 
 const rpc = {
   [Environments.Mainnet]: '',
-  [Environments.Testnet]: 'https://sepolia-dencun.rpc.gobob.xyz',
+  [Environments.Testnet]: 'https://testnet.rpc.gobob.xyz',
 };
 
 export const BOB = {
@@ -10,7 +10,7 @@ export const BOB = {
   publicRpc: rpc,
   explorer: {
     [Environments.Mainnet]: '',
-    [Environments.Testnet]: 'https://sepolia-dencun.explorer.gobob.xyz',
+    [Environments.Testnet]: 'https://testnet-explorer.gobob.xyz',
   },
   indexer: {
     [Environments.Mainnet]: '',
@@ -19,7 +19,7 @@ export const BOB = {
   },
   bridge: {
     [Environments.Mainnet]: 'https://integration.gobob.xyz/',
-    [Environments.Testnet]: 'https://bob-testnet.bridge.caldera.xyz',
+    [Environments.Testnet]: 'https://app.gobob.xyz',
   },
   subgraph: {
     [Environments.Mainnet]: '',

@@ -1,7 +1,6 @@
 import { MaxAllowanceTransferAmount } from '@uniswap/permit2-sdk';
 
 import React, {
-  FC,
   useCallback,
   useEffect,
   useMemo,
@@ -9,15 +8,14 @@ import React, {
   useState,
 } from 'react';
 
-import classNames from 'classnames';
 import { BigNumber, Contract, ethers } from 'ethers';
 import { parseUnits } from 'ethers/lib/utils';
 
-import { CrocEnv, MAX_TICK, MIN_TICK } from '@sovryn/sdex';
-import { CrocTokenView } from '@sovryn/sdex/dist/tokens';
 import { getProvider } from '@sovryn/ethers-provider';
 import { ChainIds } from '@sovryn/ethers-provider';
-import { Decimal } from '@sovryn/utils';
+import { CrocEnv, MAX_TICK, MIN_TICK } from '@sovryn/sdex';
+import { CrocTokenView } from '@sovryn/sdex/dist/tokens';
+import { Button, Input } from '@sovryn/ui';
 
 import {
   Transaction,
@@ -26,7 +24,7 @@ import {
 import { useTransactionContext } from '../../../contexts/TransactionContext';
 import { useAccount } from '../../../hooks/useAccount';
 import { useCurrentChain } from '../../../hooks/useChainStore';
-import { findAsset } from '../../../utils/asset';
+import { findAsset, listAssetsOfChain } from '../../../utils/asset';
 import { prepareApproveTransaction } from '../../../utils/transactions';
 import { createRangePositionTx } from './ambient-utils';
 
@@ -58,6 +56,17 @@ export const BobAmmPage: React.FC = () => {
 
   const isFork = useCallback(() => CHAIN_ID === ChainIds.FORK, [CHAIN_ID]);
 
+  const tokens = useMemo(() => listAssetsOfChain(CHAIN_ID), [CHAIN_ID]);
+  const [tokenA, setTokenA] = useState<string>();
+  const [tokenB, setTokenB] = useState<string>();
+  const [tokenAAddress, setTokenAAddress] = useState<string>();
+  const [tokenBAddress, setTokenBAddress] = useState<string>();
+  const [price, setPrice] = useState<number>(1);
+  const [spotPrice, setSpotPrice] = useState<number>(0);
+  const [testing, setTesting] = useState<boolean>(false);
+  const [isInit, setIsInit] = useState<boolean>(false);
+  const [error, setError] = useState<string>();
+
   const croc = useRef<CrocEnv>();
   const { signer, account } = useAccount();
 
@@ -66,10 +75,56 @@ export const BobAmmPage: React.FC = () => {
     croc.current = new CrocEnv(getProvider(CHAIN_ID), signer);
   }, [CHAIN_ID, signer]);
 
+  useEffect(() => {
+    if (!croc.current) return;
+    if (!tokenA || !tokenB) return;
+    setTesting(true);
+
+    console.log('fetching pool', tokenA, tokenB);
+
+    const baseToken = findAsset(tokenA, CHAIN_ID).address;
+    const quoteToken = findAsset(tokenB, CHAIN_ID).address;
+
+    setTokenAAddress(baseToken);
+    setTokenBAddress(quoteToken);
+
+    console.log({ baseToken, quoteToken });
+
+    const pool = croc.current.pool(baseToken, quoteToken);
+
+    pool
+      .isInit()
+      .then(init => {
+        setIsInit(init);
+        return init ? pool.displayPrice() : Promise.resolve(1);
+      })
+      .then(price => {
+        setSpotPrice(price);
+      })
+      .catch(e => {
+        setError(e.message);
+        setIsInit(false);
+        setSpotPrice(0);
+      })
+      .finally(() => {
+        setTesting(false);
+      });
+  }, [tokenA, tokenB, CHAIN_ID]);
+
   const handlePoolInit = useCallback(
     async (base: string, quote: string, price: number) => {
       if (!croc.current) {
         alert('CrocEnv not initialized');
+        return;
+      }
+
+      if (!signer) {
+        alert('Signer not initialized');
+        return;
+      }
+
+      if (!base || !quote) {
+        alert('Select tokens');
         return;
       }
 
@@ -268,7 +323,7 @@ export const BobAmmPage: React.FC = () => {
           isWithdrawFromDexChecked: false,
         },
         // todo: check if this need to be switched for certain cases
-        isTokenAPrimaryRange: false,
+        isTokenAPrimaryRange: true,
         tick: { low: MIN_TICK, high: MAX_TICK },
       });
 
@@ -293,100 +348,74 @@ export const BobAmmPage: React.FC = () => {
     [CHAIN_ID, account, setIsOpen, setTitle, setTransactions, signer],
   );
 
-  const [dexBalances, setDexBalances] = useState<Record<string, Decimal>>({});
-  const [walletBalances, setWalletBalances] = useState<Record<string, Decimal>>(
-    {},
-  );
-  const [prevDexBalances, setPrevDexBalances] = useState<
-    Record<string, Decimal>
-  >({});
-  const [prevWalletBalances, setPrevWalletBalances] = useState<
-    Record<string, Decimal>
-  >({});
-
-  const updateBalances = useCallback(async () => {
-    if (!croc.current) {
-      return;
-    }
-    const labels = ['ETH', 'SOV', 'USDT', 'USDC', 'DAI'];
-    const items = labels.map(label => findAsset(label, CHAIN_ID).address);
-
-    const _dexBalances: Record<string, Decimal> = {};
-    const _walletBalances: Record<string, Decimal> = {};
-
-    for (let i = 0; i < items.length; i++) {
-      const token = croc.current.tokens.materialize(items[i]);
-      const balance = await token.balanceDisplay(account).catch(() => 0);
-      const wallet = await token.walletDisplay(account).catch(() => 0);
-      _dexBalances[labels[i]] = Decimal.from(balance.toString());
-      _walletBalances[labels[i]] = Decimal.from(wallet.toString());
-    }
-
-    setWalletBalances(p => {
-      setPrevWalletBalances(p);
-      return _walletBalances;
-    });
-    setDexBalances(p => {
-      setPrevDexBalances(p);
-      return _dexBalances;
-    });
-  }, [CHAIN_ID, account]);
-
-  useEffect(() => {
-    updateBalances();
-  }, [account, updateBalances]);
-
   return (
     <div className="container flex flex-row">
       <div className="w-72">
-        <h1>Actions: {CHAIN_ID}</h1>
+        <h1>Init Pool: {CHAIN_ID}</h1>
+        <div className="mb-12">
+          <select
+            value={tokenA}
+            onChange={e => setTokenA(e.target.value)}
+            className="bg-black"
+          >
+            <option value="">Select base token</option>
+            {tokens.map(token => (
+              <option key={token.symbol} value={token.symbol}>
+                {token.symbol}
+              </option>
+            ))}
+          </select>
+          <select
+            value={tokenB}
+            onChange={e => setTokenB(e.target.value)}
+            className="bg-black"
+          >
+            <option value="">Select quote token</option>
+            {tokens.map(token => (
+              <option key={token.symbol} value={token.symbol}>
+                {token.symbol}
+              </option>
+            ))}
+          </select>
+          <p>Base: {tokenAAddress}</p>
+          <p>Quote: {tokenBAddress}</p>
+          <p>
+            Price: 1 {tokenA} = {price} {tokenB}
+          </p>
+          <Input
+            type="number"
+            value={price}
+            onChangeText={val => setPrice(Number(val))}
+          />
+          <Button
+            text="Init Pool"
+            onClick={() => handlePoolInit(tokenA!, tokenB!, price)}
+          />
+          {testing && <p>loading</p>}
+          {isInit ? (
+            <p>Pool is created with price {spotPrice}.</p>
+          ) : (
+            <p>Pool is not created yet.</p>
+          )}
+          {error && <p className="text-danger">{error}</p>}
+        </div>
         {isFork() ? (
-          <ol>
-            <li>
-              <button onClick={() => handlePoolInit('ETH', 'SOV', 1600)}>
-                Initialize pool: ETH/SOV (1600 SOV)
-              </button>
-              <button onClick={() => handlePoolInit('ETH', 'USDC', 3300)}>
-                Initialize pool: ETH/USDC (3300$)
-              </button>
-              <button onClick={() => handlePoolInit('ETH', 'USDT', 3250)}>
-                Initialize pool: ETH/USDT (3250$)
-              </button>
-              <button onClick={() => handlePoolInit('ETH', 'DAI', 3200)}>
-                Initialize pool: ETH/DAI (3200$)
-              </button>
-            </li>
-            <li>
-              <button onClick={() => handleDeposit('ETH', 'SOV', 0.000001)}>
-                Deposit to pool: ETH/SOV (100 ETH)
-              </button>
-              <button onClick={() => handleDeposit('ETH', 'USDC', 100)}>
-                Deposit to pool: ETH/USDC (100 ETH)
-              </button>
-              <button onClick={() => handleDeposit('ETH', 'USDT', 100)}>
-                Deposit to pool: ETH/USDT (100 ETH)
-              </button>
-              <button onClick={() => handleDeposit('ETH', 'DAI', 100)}>
-                Deposit to pool: ETH/DAI (100 ETH)
-              </button>
-            </li>
-          </ol>
+          <>
+            <button onClick={() => handleDeposit('ETH', 'SOV', 0.000001)}>
+              Deposit to pool: ETH/SOV (100 ETH)
+            </button>
+            <button onClick={() => handleDeposit('ETH', 'USDC', 100)}>
+              Deposit to pool: ETH/USDC (100 ETH)
+            </button>
+            <button onClick={() => handleDeposit('ETH', 'USDT', 100)}>
+              Deposit to pool: ETH/USDT (100 ETH)
+            </button>
+            <button onClick={() => handleDeposit('ETH', 'DAI', 100)}>
+              Deposit to pool: ETH/DAI (100 ETH)
+            </button>
+          </>
         ) : (
           <ol>
-            <li>
-              <button onClick={() => handlePoolInit('ETH', 'SOV', 1600)}>
-                Initialize pool: ETH/SOV (1600 SOV)
-              </button>
-              <button onClick={() => handlePoolInit('ETH', 'USDC', 3300)}>
-                Initialize pool: ETH/USDC (3300$)
-              </button>
-              <button onClick={() => handlePoolInit('ETH', 'USDT', 3250)}>
-                Initialize pool: ETH/USDT (3250$)
-              </button>
-              <button onClick={() => handlePoolInit('ETH', 'DAI', 3200)}>
-                Initialize pool: ETH/DAI (3200$)
-              </button>
-            </li>
             <li>
               <button onClick={() => handleDeposit('ETH', 'SOV', 0.001)}>
                 Deposit to pool: ETH/SOV (0.1 ETH)
@@ -404,80 +433,6 @@ export const BobAmmPage: React.FC = () => {
           </ol>
         )}
       </div>
-      <div className="w-72">
-        <h1>Dex Balances</h1>
-        <ol>
-          {Object.entries(dexBalances).map(([label, balance]) => (
-            <RenderBalance
-              key={label}
-              label={label}
-              balance={balance}
-              prevBalance={prevDexBalances[label]}
-            />
-          ))}
-          <li>
-            <button onClick={updateBalances} className="mt-8">
-              Update Balance
-            </button>
-          </li>
-        </ol>
-      </div>
-      <div className="w-72">
-        <h1>Wallet Balances</h1>
-        <ol>
-          {Object.entries(walletBalances).map(([label, balance]) => (
-            <RenderBalance
-              key={label}
-              label={label}
-              balance={balance}
-              prevBalance={prevWalletBalances[label]}
-            />
-          ))}
-
-          <li>
-            <button onClick={updateBalances} className="mt-8">
-              Update Balance
-            </button>
-          </li>
-        </ol>
-      </div>
     </div>
-  );
-};
-
-type RenderBalanceProps = {
-  label: string;
-  balance: Decimal;
-  prevBalance?: Decimal;
-};
-
-const RenderBalance: FC<RenderBalanceProps> = ({
-  label,
-  balance,
-  prevBalance,
-}) => {
-  const diff = useMemo(() => {
-    if (prevBalance !== undefined && prevBalance !== balance) {
-      return balance.sub(prevBalance ?? 0).toNumber();
-    }
-    return 0;
-  }, [balance, prevBalance]);
-
-  return (
-    <li>
-      {label}: {balance.toNumber()}{' '}
-      {diff !== 0 ? (
-        <span
-          className={classNames({
-            'text-error': diff < 0,
-            'text-success': diff > 0,
-          })}
-        >
-          ({diff})
-        </span>
-      ) : (
-        <></>
-      )}
-    </li>
   );
 };

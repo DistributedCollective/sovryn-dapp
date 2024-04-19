@@ -16,7 +16,13 @@ export const useGetPoolInfo = (assetA: string, assetB: string) => {
       return;
     }
 
-    return pool.displayPrice().then(result => setPrice(result));
+    return pool.displayPrice().then(result => {
+      if (isFinite(result)) {
+        setPrice(result);
+      } else {
+        setPrice(0.000001); // fake price for non existing pools, to prevent ui crashes.
+      }
+    });
   }, [pool]);
 
   const getLiquidityFee = useCallback(async () => {

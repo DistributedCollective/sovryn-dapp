@@ -2,8 +2,7 @@ import { useMemo } from 'react';
 
 import { useCrocContext } from '../../../../../../contexts/CrocContext';
 import { useCurrentChain } from '../../../../../../hooks/useChainStore';
-import { COMMON_SYMBOLS, findAsset } from '../../../../../../utils/asset';
-import { ETH_TOKEN } from '../../../../BobAmmPage/fork-constants';
+import { findAsset } from '../../../../../../utils/asset';
 
 export const useGetPool = (assetA: string, assetB: string) => {
   const chainId = useCurrentChain();
@@ -15,19 +14,8 @@ export const useGetPool = (assetA: string, assetB: string) => {
       return;
     }
 
-    let assetAAddress, assetBAddress;
-
-    if (assetA === COMMON_SYMBOLS.ETH) {
-      assetAAddress = ETH_TOKEN;
-    } else {
-      assetAAddress = findAsset(assetB, chainId).address;
-    }
-
-    if (assetB === COMMON_SYMBOLS.ETH) {
-      assetBAddress = ETH_TOKEN;
-    } else {
-      assetBAddress = findAsset(assetB, chainId).address;
-    }
+    const assetAAddress = findAsset(assetA, chainId).address;
+    const assetBAddress = findAsset(assetB, chainId).address;
 
     const tokenA = croc.tokens.materialize(assetAAddress);
     const tokenB = croc.tokens.materialize(assetBAddress);

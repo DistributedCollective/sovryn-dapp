@@ -6,7 +6,7 @@ import { BigNumber, Contract, ethers } from 'ethers';
 import { parseUnits } from 'ethers/lib/utils';
 import { t } from 'i18next';
 
-import { priceToTick } from '@sovryn/sdex';
+import { calcRangeTilt, priceToTick, tickToPrice } from '@sovryn/sdex';
 import { CrocTokenView } from '@sovryn/sdex/dist/tokens';
 
 import {
@@ -124,6 +124,28 @@ export const useHandleSubmit = (assetA: string, assetB: string) => {
 
     const pool = AmbientLiquidityPoolDictionary.get(assetA, assetB, chainId);
 
+    // todo: check if tokenA is primary range
+    // @dev: It's expected to be TRUE if user enters amount to BASE token input and FALSE if user enters amount to QUOTE token input.
+    // @dev: We can have it as TRUE by default.
+    // @dev: If liquidity is out of balance and user wants to deposit position which is out of range (max price is lower than current price)  - it MUST be FALSE, to depositing QUOTE token only.
+    // @dev: If liquidity is out of balance and user wants to deposit position which is out of range (min price is higher than current price) - it MUST be TRUE, to depositing BASE token only.
+    const isTokenAPrimaryRange = true;
+
+    const tick = {
+      low: priceToTick(lowerBoundaryPrice),
+      high: priceToTick(upperBoundaryPrice),
+    };
+
+    console.log('tick', tick);
+    const price = {
+      min: tickToPrice(tick.low),
+      max: tickToPrice(tick.high),
+    };
+    console.log('price', price);
+
+    const rangeTilt = calcRangeTilt(price.min, tick.low, tick.high);
+    console.log('rangeTilt', rangeTilt);
+
     const tx = await createRangePositionTx({
       crocEnv: croc,
       isAmbient: isBalancedRange && rangeWidth === 100,
@@ -138,13 +160,12 @@ export const useHandleSubmit = (assetA: string, assetB: string) => {
         qty: Number(secondAssetValue),
         isWithdrawFromDexChecked: false,
       },
-      isTokenAPrimaryRange: false,
-      tick: {
-        low: priceToTick(lowerBoundaryPrice),
-        high: priceToTick(upperBoundaryPrice),
-      },
+      isTokenAPrimaryRange,
+      tick,
       lpConduit: pool?.lpTokenAddress,
     });
+
+    console.log('tx', tx);
 
     transactions.push({
       title: t(translations.common.deposit),

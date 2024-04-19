@@ -476,6 +476,7 @@ export class CrocPoolView {
       await saneLimits,
       opts,
     );
+
     let weiQty = this.normQty(qty, isQtyBase);
     let [lowerBound, upperBound] = await this.transformLimits(await saneLimits);
 
@@ -524,6 +525,13 @@ export class CrocPoolView {
     opts?: CrocLpOpts,
   ): Promise<BigNumber> {
     let ethQty = isQtyBase ? qty : this.ethForRangeQuote(qty, range, limits);
+    console.log(
+      'ethQty',
+      ethQty,
+      isQtyBase,
+      qty,
+      this.ethForRangeQuote(qty, range, limits),
+    );
     return this.ethToAttach(await ethQty, opts);
   }
 
@@ -569,9 +577,11 @@ export class CrocPoolView {
     limits: PriceRange,
   ): Promise<TokenQty> {
     const spotPrice = await this.spotPrice();
+    // const [, boundPrice] = await this.transformLimits(limits)
     const [lowerPrice, upperPrice] = this.rangeToPrice(range);
 
     let skew = concDepositSkew(spotPrice, lowerPrice, upperPrice);
+    // let skew = concDepositSkew(boundPrice, lowerPrice, upperPrice);
     let ambiQty = this.calcEthInQuote(quoteQty, limits);
     let concQty = ambiQty.then(aq => Math.ceil(aq * skew));
 

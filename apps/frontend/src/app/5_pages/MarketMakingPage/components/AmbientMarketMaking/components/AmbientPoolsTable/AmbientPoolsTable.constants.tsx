@@ -11,13 +11,14 @@ import { AmbientPool24Volume } from './components/AmbientPool24Volume/AmbientPoo
 import { AmbientPoolDeposit } from './components/AmbientPoolDeposit/AmbientPoolDeposit';
 import { AmbientPoolFeeRate } from './components/AmbientPoolFeeRate/AmbientPoolFeeRate';
 import { AmbientPoolLiquidity } from './components/AmbientPoolLiquidity/AmbientPoolLiquidity';
+import { AmbientPoolTotalBalance } from './components/AmbientPoolTotalBalance/AmbientPoolTotalBalance';
 
 export const COLUMNS_CONFIG = [
   {
     id: 'pair',
     title: t(translations.ambientMarketMaking.poolsTable.pair),
     cellRenderer: (pool: AmbientLiquidityPool) => (
-      <div data-pool-key={pool.key}>
+      <div className="inline-flex" data-pool-key={pool.key}>
         <AssetPairRenderer
           asset1={pool.base}
           asset2={pool.quote}
@@ -58,7 +59,7 @@ export const COLUMNS_CONFIG = [
     id: 'balance',
     title: t(translations.ambientMarketMaking.poolsTable.balance),
     cellRenderer: (pool: AmbientLiquidityPool) => (
-      <div className="flex flex-col gap-1"></div>
+      <AmbientPoolTotalBalance pool={pool} />
     ),
   },
   {

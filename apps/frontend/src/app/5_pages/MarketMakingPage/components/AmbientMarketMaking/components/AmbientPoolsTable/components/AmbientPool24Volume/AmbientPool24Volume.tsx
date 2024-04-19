@@ -15,7 +15,7 @@ export const AmbientPool24Volume: FC<AmbientPool24VolumeProps> = ({ pool }) => {
   const { data } = useGetAmbientPool24Volume(pool);
 
   return (
-    <div className="flex flex-col gap-0.5">
+    <div className="inline-flex flex-col gap-0.5">
       <AmountRenderer
         value={fromWei(decimalic(data?.volumeBase || 0).toString())}
         suffix={getTokenDisplayName(pool.base, pool.chainId)}

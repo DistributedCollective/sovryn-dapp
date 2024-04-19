@@ -1760,7 +1760,7 @@
             "positionID": "Position ID",
             "minPrice": "Min price",
             "maxPrice": "Max price",
-            "returns": "Returns",
+            "apr": "APR",
             "value": "Value (USD)",
             "balance": "Balance",
             "withdraw": "Withdraw"

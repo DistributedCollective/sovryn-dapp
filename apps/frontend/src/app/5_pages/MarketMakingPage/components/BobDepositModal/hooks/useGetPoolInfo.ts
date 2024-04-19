@@ -1,38 +1,15 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
-import { useCrocContext } from '../../../../../../contexts/CrocContext';
 import { useCurrentChain } from '../../../../../../hooks/useChainStore';
-import { findAsset } from '../../../../../../utils/asset';
 import { getIndexerUri } from '../../../../../../utils/indexer';
+import { useGetPool } from './useGetPool';
 
 export const useGetPoolInfo = (assetA: string, assetB: string) => {
   const chainId = useCurrentChain();
+  const { pool, poolTokens } = useGetPool(assetA, assetB);
 
   const [price, setPrice] = useState(0);
   const [feeRate, setFeeRate] = useState('0');
-  const { croc } = useCrocContext();
-
-  const poolTokens = useMemo(() => {
-    if (!croc) {
-      return;
-    }
-
-    const assetAAddress = findAsset(assetA, chainId).address;
-    const assetBAddress = findAsset(assetB, chainId).address;
-
-    const tokenA = croc.tokens.materialize(assetAAddress);
-    const tokenB = croc.tokens.materialize(assetBAddress);
-
-    return { tokenA, tokenB };
-  }, [assetA, assetB, chainId, croc]);
-
-  const pool = useMemo(() => {
-    if (!poolTokens || !croc) {
-      return;
-    }
-
-    return croc.pool(poolTokens.tokenA.tokenAddr, poolTokens.tokenB.tokenAddr);
-  }, [croc, poolTokens]);
 
   const getPoolPrice = useCallback(async () => {
     if (!pool) {

@@ -1,26 +1,32 @@
 import React, { FC } from 'react';
 
+import { t } from 'i18next';
+
 import { AmountRenderer } from '../../../../../../../../2_molecules/AmountRenderer/AmountRenderer';
+import { useAccount } from '../../../../../../../../../hooks/useAccount';
 import { useCurrentChain } from '../../../../../../../../../hooks/useChainStore';
 import { useTokenDetailsByAsset } from '../../../../../../../../../hooks/useTokenDetailsByAsset';
+import { translations } from '../../../../../../../../../locales/i18n';
 import { decimalic } from '../../../../../../../../../utils/math';
-import { AmbientPosition } from '../../../../AmbientMarketMaking.types';
+import { useGetPositionsTotalBalance } from '../../../../hooks/useGetPositionsTotalBalance';
 import { AmbientLiquidityPool } from '../../../../utils/AmbientLiquidityPool';
-import { useAmbientPositionBalance } from '../../hooks/useAmbientPositionBalance';
 
-type AmbientPositionBalanceProps = {
+type AmbientPoolTotalBalanceProps = {
   pool: AmbientLiquidityPool;
-  position: AmbientPosition;
 };
 
-export const AmbientPositionBalance: FC<AmbientPositionBalanceProps> = ({
-  position,
+export const AmbientPoolTotalBalance: FC<AmbientPoolTotalBalanceProps> = ({
   pool,
 }) => {
+  const { account } = useAccount();
   const chainId = useCurrentChain();
   const baseToken = useTokenDetailsByAsset(pool.base, chainId);
   const quoteToken = useTokenDetailsByAsset(pool.quote, chainId);
-  const result = useAmbientPositionBalance(pool, position);
+  const result = useGetPositionsTotalBalance(pool);
+
+  if (!account) {
+    return <div>{t(translations.common.na)}</div>;
+  }
   if (!result) {
     return null;
   }

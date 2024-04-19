@@ -42,7 +42,7 @@ export const sepoliaSdexClient = new ApolloClient({
 });
 
 export const bobStakingClient = new ApolloClient({
-  uri: SUBGRAPH.BOB_SUBGRAPH,
+  uri: SUBGRAPH.BOB_STAKING,
   cache: new InMemoryCache({
     resultCaching: false,
   }),

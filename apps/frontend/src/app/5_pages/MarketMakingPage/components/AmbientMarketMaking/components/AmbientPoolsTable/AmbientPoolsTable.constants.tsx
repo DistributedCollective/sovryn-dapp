@@ -18,7 +18,7 @@ export const COLUMNS_CONFIG = [
     id: 'pair',
     title: t(translations.ambientMarketMaking.poolsTable.pair),
     cellRenderer: (pool: AmbientLiquidityPool) => (
-      <div data-pool-key={pool.key}>
+      <div className="inline-flex" data-pool-key={pool.key}>
         <AssetPairRenderer
           asset1={pool.base}
           asset2={pool.quote}

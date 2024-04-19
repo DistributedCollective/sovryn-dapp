@@ -24,6 +24,7 @@ export const AmbientPoolDeposit: FC<AmbientPoolDepositProps> = ({ pool }) => {
   return (
     <>
       <Button
+        className="md:w-auto w-full"
         style={ButtonStyle.primary}
         size={ButtonSize.small}
         text={t(translations.common.deposit)}

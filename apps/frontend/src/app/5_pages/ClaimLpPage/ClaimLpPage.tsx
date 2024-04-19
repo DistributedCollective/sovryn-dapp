@@ -30,8 +30,10 @@ const ClaimLpPage: FC = () => {
     setLoading(true);
     claim().then(() => {
       setLoading(false);
+      // Refresh the claimable list
+      getUnclaimed().then(setClaimable);
     });
-  }, [claim]);
+  }, [claim, getUnclaimed]);
 
   useEffect(() => {
     getUnclaimed().then(setClaimable);

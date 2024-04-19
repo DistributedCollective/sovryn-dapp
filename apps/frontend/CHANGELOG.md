@@ -1,5 +1,11 @@
 # frontend
 
+## 1.0.56
+
+### Patch Changes
+
+- 7c3a4abf: SOV-4022: Runes bridge UI
+
 ## 1.0.55
 
 ### Patch Changes

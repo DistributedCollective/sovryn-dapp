@@ -14,6 +14,8 @@ export const SUBGRAPH = {
   ZERO: process.env.REACT_APP_GRAPH_ZERO,
   MYNT: process.env.REACT_APP_GRAPH_MYNT,
   BOB: process.env.REACT_APP_GRAPH_BOB,
+  BOB_SUBGRAPH:
+    'https://bob-staking-subgraph.test.sovryn.app/subgraphs/name/DistributedCollective/sovryn-subgraph-staking/graphql', // todo: make it env variable after testing.
 };
 
 export const EXPORT_RECORD_LIMIT = 500;

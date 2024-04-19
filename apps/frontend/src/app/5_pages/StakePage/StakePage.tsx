@@ -4,7 +4,9 @@ import { t } from 'i18next';
 import { Helmet } from 'react-helmet-async';
 
 import { useAccount } from '../../../hooks/useAccount';
+import { useCurrentChain } from '../../../hooks/useChainStore';
 import { translations } from '../../../locales/i18n';
+import { isRskChain } from '../../../utils/chain';
 import { AddStakeRenderer } from './components/AddStakeRenderer/AddStakeRenderer';
 import { PersonalStakingStatistics } from './components/PersonalStakingStatistics/PersonalStakingStatistics';
 import { useGetPersonalStakingStatistics } from './components/PersonalStakingStatistics/hooks/useGetPersonalStakingStatistics';
@@ -14,6 +16,7 @@ import { StakingStatistics } from './components/StakingStatistics/StakingStatist
 import { VestingStakesFrame } from './components/VestingStakesFrame/VestingStakesFrame';
 
 const StakePage: FC = () => {
+  const chainId = useCurrentChain();
   const { account } = useAccount();
   const { balance, votingPower } = useGetPersonalStakingStatistics();
   const hasStakedValue = useMemo(() => Number(balance) > 0, [balance]);
@@ -37,7 +40,8 @@ const StakePage: FC = () => {
 
         <div className="w-full md:bg-gray-90 md:py-7 md:px-6 rounded mb-6">
           <StakesFrame />
-          <VestingStakesFrame />
+
+          {isRskChain(chainId) && <VestingStakesFrame />}
         </div>
 
         <div className="md:hidden block w-full">

@@ -2,7 +2,11 @@ import { useMemo } from 'react';
 
 import { OrderOptions } from '@sovryn/ui';
 
-import { rskClient } from '../../../../../../utils/clients';
+import { useCurrentChain } from '../../../../../../hooks/useChainStore';
+import {
+  SubgraphType,
+  getSubgraphClient,
+} from '../../../../../../utils/clients';
 import {
   useGetStakingWithdrawsQuery,
   V2StakingWithdrawn_OrderBy,
@@ -15,6 +19,7 @@ export const useGetStakingWithdraws = (
   page: number,
   orderOptions: OrderOptions,
 ) => {
+  const chainId = useCurrentChain();
   const config = useMemo(
     () => ({
       user: account.toLowerCase(),
@@ -34,7 +39,7 @@ export const useGetStakingWithdraws = (
 
   const { loading, data } = useGetStakingWithdrawsQuery({
     variables: config,
-    client: rskClient,
+    client: getSubgraphClient(SubgraphType.STAKING, chainId),
   });
 
   const list = useMemo(() => {

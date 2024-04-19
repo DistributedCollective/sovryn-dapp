@@ -2,9 +2,8 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { useCrocContext } from '../../../../../../contexts/CrocContext';
 import { useCurrentChain } from '../../../../../../hooks/useChainStore';
-import { COMMON_SYMBOLS, findAsset } from '../../../../../../utils/asset';
+import { findAsset } from '../../../../../../utils/asset';
 import { getIndexerUri } from '../../../../../../utils/indexer';
-import { ETH_TOKEN } from '../../../../BobAmmPage/fork-constants';
 
 export const useGetPoolInfo = (assetA: string, assetB: string) => {
   const chainId = useCurrentChain();
@@ -18,19 +17,8 @@ export const useGetPoolInfo = (assetA: string, assetB: string) => {
       return;
     }
 
-    let assetAAddress, assetBAddress;
-
-    if (assetA === COMMON_SYMBOLS.ETH) {
-      assetAAddress = ETH_TOKEN;
-    } else {
-      assetAAddress = findAsset(assetB, chainId).address;
-    }
-
-    if (assetB === COMMON_SYMBOLS.ETH) {
-      assetBAddress = ETH_TOKEN;
-    } else {
-      assetBAddress = findAsset(assetB, chainId).address;
-    }
+    const assetAAddress = findAsset(assetA, chainId).address;
+    const assetBAddress = findAsset(assetB, chainId).address;
 
     const tokenA = croc.tokens.materialize(assetAAddress);
     const tokenB = croc.tokens.materialize(assetBAddress);
@@ -51,7 +39,13 @@ export const useGetPoolInfo = (assetA: string, assetB: string) => {
       return;
     }
 
-    return pool.displayPrice().then(result => setPrice(result));
+    return pool.displayPrice().then(result => {
+      if (isFinite(result)) {
+        setPrice(result);
+      } else {
+        setPrice(0.000001); // fake price for non existing pools, to prevent ui crashes.
+      }
+    });
   }, [pool]);
 
   const getLiquidityFee = useCallback(async () => {

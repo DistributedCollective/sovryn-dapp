@@ -19,4 +19,14 @@ export type DepositContextValue = {
   setSecondAssetValue: Dispatch<SetStateAction<string>>;
   isBalancedRange: boolean;
   setIsBalancedRange: Dispatch<SetStateAction<boolean>>;
+  spotPrice: number;
+  setSpotPrice: Dispatch<SetStateAction<number>>;
+  concData: {
+    base: number;
+    quote: number;
+    skew: number;
+  };
+  setConcData: Dispatch<
+    SetStateAction<{ base: number; quote: number; skew: number }>
+  >;
 };

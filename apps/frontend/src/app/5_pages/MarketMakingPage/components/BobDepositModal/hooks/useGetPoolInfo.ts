@@ -9,6 +9,7 @@ export const useGetPoolInfo = (assetA: string, assetB: string) => {
   const chainId = useCurrentChain();
 
   const [price, setPrice] = useState(0);
+  const [spotPrice, setSpotPrice] = useState(0);
   const [feeRate, setFeeRate] = useState('0');
   const { croc } = useCrocContext();
 
@@ -44,6 +45,20 @@ export const useGetPoolInfo = (assetA: string, assetB: string) => {
         setPrice(result);
       } else {
         setPrice(0.000001); // fake price for non existing pools, to prevent ui crashes.
+      }
+    });
+  }, [pool]);
+
+  const getSpotPrice = useCallback(async () => {
+    if (!pool) {
+      return;
+    }
+
+    return pool.spotPrice().then(result => {
+      if (isFinite(result)) {
+        setSpotPrice(result);
+      } else {
+        setSpotPrice(0.000001); // fake price for non existing pools, to prevent ui crashes.
       }
     });
   }, [pool]);
@@ -86,10 +101,16 @@ export const useGetPoolInfo = (assetA: string, assetB: string) => {
   }, [getPoolPrice, price]);
 
   useEffect(() => {
+    if (spotPrice === 0) {
+      getSpotPrice();
+    }
+  }, [getSpotPrice, spotPrice]);
+
+  useEffect(() => {
     if (feeRate === '0') {
       getLiquidityFee();
     }
   }, [feeRate, getLiquidityFee, pool]);
 
-  return { poolTokens, price, feeRate, pool };
+  return { poolTokens, price, feeRate, pool, spotPrice };
 };

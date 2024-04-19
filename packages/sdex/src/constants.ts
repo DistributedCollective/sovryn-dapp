@@ -51,7 +51,7 @@ const BOB_TESTNET_CHAIN: ChainSpec = {
   },
   poolIndex: 36000,
   isTestNet: true,
-  chainId: '0x6f',
+  chainId: '0x6f', // 111
   gridSize: 16,
   proxyPaths: {
     cold: 3,

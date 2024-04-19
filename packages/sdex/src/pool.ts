@@ -525,13 +525,6 @@ export class CrocPoolView {
     opts?: CrocLpOpts,
   ): Promise<BigNumber> {
     let ethQty = isQtyBase ? qty : this.ethForRangeQuote(qty, range, limits);
-    console.log(
-      'ethQty',
-      ethQty,
-      isQtyBase,
-      qty,
-      this.ethForRangeQuote(qty, range, limits),
-    );
     return this.ethToAttach(await ethQty, opts);
   }
 

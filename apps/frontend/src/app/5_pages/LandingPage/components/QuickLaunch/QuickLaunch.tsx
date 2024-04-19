@@ -75,6 +75,7 @@ export const QuickLaunch: FC = () => {
     <div className="bg-gray-80 rounded min-h-72 md:p-6 p-4 sm:mb-14 mb-10 grid md:grid-cols-2 xl:grid-cols-4 md:gap-6 gap-4">
       {options.map((option, index) => (
         <CTA
+          key={index}
           index={index}
           backgroundImage={option.backgroundImage}
           title={option.title}

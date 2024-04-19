@@ -26,7 +26,7 @@ import {
 } from '../app/3_organisms/TransactionStepDialog/TransactionStepDialog.types';
 import { APPROVAL_FUNCTION } from '../constants/general';
 import { translations } from '../locales/i18n';
-import { COMMON_SYMBOLS, findAsset } from './asset';
+import { COMMON_SYMBOLS, findAsset, findAssetByAddress } from './asset';
 import { generateNonce } from './helpers';
 
 export const prepareDeadline = (
@@ -180,7 +180,8 @@ export const prepareApproveTransaction = async ({
   const owner = await tokenContract.signer.getAddress();
 
   const allowance = await tokenContract.allowance(owner, spender);
-  const symbol = findAsset(token, chain)?.symbol;
+  const symbol =
+    findAsset(token, chain)?.symbol ?? findAssetByAddress(token, chain)?.symbol;
 
   if (BigNumber.from(allowance).lt(amount)) {
     return {

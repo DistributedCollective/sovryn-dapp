@@ -2,7 +2,11 @@ import { useMemo } from 'react';
 
 import { OrderOptions } from '@sovryn/ui';
 
-import { rskClient } from '../../../../../../utils/clients';
+import { useCurrentChain } from '../../../../../../hooks/useChainStore';
+import {
+  SubgraphType,
+  getSubgraphClient,
+} from '../../../../../../utils/clients';
 import {
   useGetExtendedStakingDurationsQuery,
   V2ExtendedStakingDuration_OrderBy,
@@ -15,6 +19,7 @@ export const useGetStakingExtendedDuration = (
   page: number,
   orderOptions: OrderOptions,
 ) => {
+  const chainId = useCurrentChain();
   const config = useMemo(
     () => ({
       user: account.toLowerCase(),
@@ -34,7 +39,7 @@ export const useGetStakingExtendedDuration = (
 
   const { loading, data } = useGetExtendedStakingDurationsQuery({
     variables: config,
-    client: rskClient,
+    client: getSubgraphClient(SubgraphType.STAKING, chainId),
   });
 
   const list = useMemo(() => {

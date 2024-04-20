@@ -4,6 +4,7 @@ import { t } from 'i18next';
 
 import { TransactionIdRenderer } from '../../../../2_molecules/TransactionIdRenderer/TransactionIdRenderer';
 import { TxIdWithNotification } from '../../../../2_molecules/TxIdWithNotification/TransactionIdWithNotification';
+import { getCurrentChain } from '../../../../../hooks/useChainStore';
 import { translations } from '../../../../../locales/i18n';
 import { dateFormat, getRskExplorerUrl } from '../../../../../utils/helpers';
 import { StakingDelegateChangeItem } from './StakingDelegateChanges.types';
@@ -51,6 +52,7 @@ export const COLUMNS_CONFIG = [
       <TransactionIdRenderer
         hash={item.id.split('-')[0]}
         dataAttribute="staking-delegate-history-tx-hash"
+        chainId={getCurrentChain()}
       />
     ),
   },

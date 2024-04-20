@@ -14,6 +14,7 @@ export const SUBGRAPH = {
   ZERO: process.env.REACT_APP_GRAPH_ZERO,
   MYNT: process.env.REACT_APP_GRAPH_MYNT,
   BOB: process.env.REACT_APP_GRAPH_BOB,
+  BOB_STAKING: process.env.REACT_APP_GRAPH_BOB_STAKING,
 };
 
 export const EXPORT_RECORD_LIMIT = 500;

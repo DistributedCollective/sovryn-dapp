@@ -15,7 +15,7 @@ export const useTokenDetailsByAsset = (
       getAssetData(asset!, chainId)
         .then(setToken)
         .catch(e => {
-          console.error('token not found?', e);
+          console.error('token not found?', asset, chainId, e);
         });
     }
   }, [asset, chainId]);

@@ -83,8 +83,6 @@ export async function createRangePositionTx(params: CreateRangePositionParams) {
     );
   };
 
-  console.log('tx params', params);
-
   const tx = isAmbient
     ? await (isTokenAPrimaryRange ? mintAmbientQuote() : mintAmbientBase())
     : await (isTokenAPrimaryRange ? mintRangeQuote() : mintRangeBase());

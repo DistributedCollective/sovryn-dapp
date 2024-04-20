@@ -1,5 +1,7 @@
 import { useMemo } from 'react';
 
+import { ChainId } from '@sovryn/ethers-provider';
+
 import { RSK_CHAIN_ID } from '../config/chains';
 
 import {
@@ -9,20 +11,29 @@ import {
 import { COMMON_SYMBOLS } from '../utils/asset';
 import { decimalic, fromWei, toWei } from '../utils/math';
 import { useCacheCall } from './useCacheCall';
+import { useCurrentChain } from './useChainStore';
 import { useTokenDetailsByAsset } from './useTokenDetailsByAsset';
 import { useGetRBTCPrice } from './zero/useGetRBTCPrice';
 
-export function useDollarValue(asset: string, weiAmount: string) {
+export function useDollarValue(
+  asset: string,
+  weiAmount: string,
+  chainId?: ChainId,
+) {
   if (['zusd', 'usdc', 'usdt', 'dai'].includes(asset.toLowerCase())) {
     asset = 'XUSD';
   }
-  const assetDetails = useTokenDetailsByAsset(asset);
-  const dllrDetails = useTokenDetailsByAsset(COMMON_SYMBOLS.DLLR);
+  const chain = useCurrentChain();
+  const assetDetails = useTokenDetailsByAsset(asset, chainId || chain);
+  const dllrDetails = useTokenDetailsByAsset(
+    COMMON_SYMBOLS.DLLR, // todo: define USD equivalent token for all chains in config
+    chainId || chain,
+  );
   const { price: btcPrice } = useGetRBTCPrice();
 
   const { value: usdPrice, loading } = useCacheCall(
     `dollarValue/${asset}`,
-    RSK_CHAIN_ID,
+    chainId || chain,
     async () => {
       if (
         !assetDetails?.address ||
@@ -32,6 +43,7 @@ export function useDollarValue(asset: string, weiAmount: string) {
         return '0';
       }
 
+      // todo: use correct router for chain
       const result = await SMART_ROUTER_RSK.getBestQuote(
         RSK_CHAIN_ID,
         assetDetails?.address,

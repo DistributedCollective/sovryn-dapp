@@ -4,7 +4,6 @@ import { t } from 'i18next';
 
 import { AmountRenderer } from '../../../../../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { useAccount } from '../../../../../../../../../hooks/useAccount';
-import { useCurrentChain } from '../../../../../../../../../hooks/useChainStore';
 import { useTokenDetailsByAsset } from '../../../../../../../../../hooks/useTokenDetailsByAsset';
 import { translations } from '../../../../../../../../../locales/i18n';
 import { decimalic } from '../../../../../../../../../utils/math';
@@ -19,9 +18,8 @@ export const AmbientPoolTotalBalance: FC<AmbientPoolTotalBalanceProps> = ({
   pool,
 }) => {
   const { account } = useAccount();
-  const chainId = useCurrentChain();
-  const baseToken = useTokenDetailsByAsset(pool.base, chainId);
-  const quoteToken = useTokenDetailsByAsset(pool.quote, chainId);
+  const baseToken = useTokenDetailsByAsset(pool.base, pool.chainId);
+  const quoteToken = useTokenDetailsByAsset(pool.quote, pool.chainId);
   const result = useGetPositionsTotalBalance(pool);
 
   if (!account) {

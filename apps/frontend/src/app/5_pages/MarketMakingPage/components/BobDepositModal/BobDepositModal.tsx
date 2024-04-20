@@ -36,7 +36,8 @@ export const BobDepositModal: FC<BobDepositModalProps> = ({
   onClose,
   pool,
 }) => {
-  const { firstAssetValue, secondAssetValue } = useDepositContext();
+  const { firstAssetValue, secondAssetValue, minimumPrice, maximumPrice } =
+    useDepositContext();
   const { account } = useAccount();
 
   const [hasDisclaimerBeenChecked, setHasDisclaimerBeenChecked] =
@@ -51,8 +52,16 @@ export const BobDepositModal: FC<BobDepositModalProps> = ({
       !account ||
       !hasDisclaimerBeenChecked ||
       (firstAssetValue === '0' && secondAssetValue === '0') ||
+      minimumPrice >= maximumPrice ||
       (!firstAssetValue && !secondAssetValue),
-    [account, firstAssetValue, hasDisclaimerBeenChecked, secondAssetValue],
+    [
+      account,
+      firstAssetValue,
+      hasDisclaimerBeenChecked,
+      maximumPrice,
+      minimumPrice,
+      secondAssetValue,
+    ],
   );
 
   return (
@@ -67,6 +76,9 @@ export const BobDepositModal: FC<BobDepositModalProps> = ({
               className="flex justify-between"
             />
           </div>
+
+          <p>{minimumPrice}</p>
+          <p>{maximumPrice}</p>
 
           <AmountForm pool={pool} />
           <PriceRange pool={pool} />

@@ -56,7 +56,7 @@ export const useHandleSubmit = (assetA: string, assetB: string) => {
     maximumSlippage,
     isBalancedRange,
     rangeWidth,
-    concData,
+    usesBaseToken,
   } = useDepositContext();
 
   const { setTransactions, setIsOpen, setTitle } = useTransactionContext();
@@ -125,13 +125,6 @@ export const useHandleSubmit = (assetA: string, assetB: string) => {
 
     const pool = AmbientLiquidityPoolDictionary.get(assetA, assetB, chainId);
 
-    // todo: check if tokenA is primary range
-    // @dev: It's expected to be TRUE if user enters amount to BASE token input and FALSE if user enters amount to QUOTE token input.
-    // @dev: We can have it as TRUE by default.
-    // @dev: If liquidity is out of balance and user wants to deposit position which is out of range (max price is lower than current price)  - it MUST be FALSE, to depositing QUOTE token only.
-    // @dev: If liquidity is out of balance and user wants to deposit position which is out of range (min price is higher than current price) - it MUST be TRUE, to depositing BASE token only.
-    const isTokenAPrimaryRange = !isFinite(concData.base) ? false : true;
-
     const tick = {
       low: priceToTick(lowerBoundaryPrice),
       high: priceToTick(upperBoundaryPrice),
@@ -151,7 +144,7 @@ export const useHandleSubmit = (assetA: string, assetB: string) => {
         qty: Number(secondAssetValue),
         isWithdrawFromDexChecked: false,
       },
-      isTokenAPrimaryRange,
+      isTokenAPrimaryRange: usesBaseToken,
       tick,
       lpConduit: pool?.lpTokenAddress,
     });
@@ -180,7 +173,6 @@ export const useHandleSubmit = (assetA: string, assetB: string) => {
     assetA,
     assetB,
     chainId,
-    concData.base,
     croc,
     firstAssetValue,
     isBalancedRange,
@@ -194,6 +186,7 @@ export const useHandleSubmit = (assetA: string, assetB: string) => {
     setTransactions,
     signer,
     upperBoundaryPrice,
+    usesBaseToken,
   ]);
 
   return onSubmit;

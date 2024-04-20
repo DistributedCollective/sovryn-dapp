@@ -3,16 +3,9 @@ import React, {
   PropsWithChildren,
   createContext,
   useContext,
-  useEffect,
   useState,
 } from 'react';
 
-import {
-  baseConcFactor,
-  concDepositSkew,
-  priceToTick,
-  quoteConcFactor,
-} from '@sovryn/sdex';
 import { noop } from '@sovryn/ui';
 
 import {
@@ -42,12 +35,8 @@ const defaultContextValue: DepositContextValue = {
   setIsBalancedRange: noop,
   spotPrice: 0,
   setSpotPrice: noop,
-  concData: {
-    base: 0, // if base is infinite - base token deposit is not required (isTokenAPrimaryRange=false)
-    quote: 0, // if quote is infinite - quote token deposit is not required (isTokenAPrimaryRange=true)
-    skew: 0, // The ratio of base to quote token deposit amounts for this concentrated range order *relative* to full-range ambient deposit ratio.
-  },
-  setConcData: noop,
+  usesBaseToken: true,
+  setUsesBaseToken: noop,
 };
 
 const DepositContext = createContext<DepositContextValue>(defaultContextValue);
@@ -82,27 +71,9 @@ export const DepositContextProvider: FC<PropsWithChildren> = ({ children }) => {
     defaultContextValue.isBalancedRange,
   );
   const [spotPrice, setSpotPrice] = useState(defaultContextValue.spotPrice);
-  const [concData, setConcData] = useState(defaultContextValue.concData);
-
-  useEffect(() => {
-    const tick = {
-      low: priceToTick(minimumPrice),
-      high: priceToTick(maximumPrice),
-    };
-
-    const quoteFactor = quoteConcFactor(spotPrice, minimumPrice, maximumPrice);
-    const baseFactor = baseConcFactor(spotPrice, minimumPrice, maximumPrice);
-    const skew = concDepositSkew(spotPrice, minimumPrice, maximumPrice);
-
-    // todo: leave it for debugging while testing stuff
-    console.log({ spotPrice, quoteFactor, baseFactor, skew, tick });
-
-    setConcData({
-      base: baseFactor,
-      quote: quoteFactor,
-      skew,
-    });
-  }, [minimumPrice, maximumPrice, spotPrice]);
+  const [usesBaseToken, setUsesBaseToken] = useState(
+    defaultContextValue.usesBaseToken,
+  );
 
   return (
     <DepositContext.Provider
@@ -127,8 +98,8 @@ export const DepositContextProvider: FC<PropsWithChildren> = ({ children }) => {
         setIsBalancedRange,
         spotPrice,
         setSpotPrice,
-        concData,
-        setConcData,
+        usesBaseToken,
+        setUsesBaseToken,
       }}
     >
       {children}

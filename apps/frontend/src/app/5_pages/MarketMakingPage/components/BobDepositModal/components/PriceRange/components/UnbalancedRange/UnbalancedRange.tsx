@@ -26,7 +26,7 @@ export const UnbalancedRange: FC<UnbalancedRangeProps> = ({ pool }) => {
     setUpperBoundaryPercentage,
   } = useDepositContext();
 
-  const { price: currentPrice } = useGetPoolInfo(pool.base, pool.quote);
+  const { spotPrice: currentPrice } = useGetPoolInfo(pool.base, pool.quote);
 
   const calculatePrice = useCallback(
     (percentage: number) =>
@@ -47,7 +47,7 @@ export const UnbalancedRange: FC<UnbalancedRangeProps> = ({ pool }) => {
         : currentPercentage - 1;
 
       const newPrice =
-        newPercentage === 0 ? currentPrice : calculatePrice(newPercentage);
+        newPercentage < 0 ? currentPrice : calculatePrice(newPercentage);
 
       if (isUpperBoundary) {
         if (newPrice > minimumPrice) {

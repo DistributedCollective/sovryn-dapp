@@ -40,7 +40,7 @@ export const BalancedRange: FC<BalancedRangeProps> = ({ pool }) => {
 
   const isInfiniteRange = useMemo(() => rangeWidth === 100, [rangeWidth]);
 
-  const { price: currentPrice } = useGetPoolInfo(pool.base, pool.quote);
+  const { spotPrice: currentPrice } = useGetPoolInfo(pool.base, pool.quote);
 
   const updatePrice = useCallback(
     (isMinimumPrice: boolean, value: number) => {
@@ -118,17 +118,17 @@ export const BalancedRange: FC<BalancedRangeProps> = ({ pool }) => {
       </div>
 
       <div className="px-4 mt-4">
-        <Slider onChange={onRangeChange} value={rangeWidth} />
+        <Slider onChange={onRangeChange} value={rangeWidth} min={1} max={100} />
       </div>
 
       <SimpleTable className="mt-12">
         <SimpleTableRow
           label={t(translations.bobMarketMakingPage.depositModal.minPrice)}
-          value={<AmountRenderer value={minimumPrice} suffix={pool.quote} />}
+          value={<AmountRenderer value={minimumPrice} suffix={pool.base} />}
         />
         <SimpleTableRow
           label={t(translations.bobMarketMakingPage.depositModal.maxPrice)}
-          value={<AmountRenderer value={maximumPrice} suffix={pool.quote} />}
+          value={<AmountRenderer value={maximumPrice} suffix={pool.base} />}
         />
       </SimpleTable>
     </>

@@ -6,6 +6,7 @@ import {
   tickToPrice,
 } from '@sovryn/sdex';
 
+import { PoolPositionType } from '../../../../MarketMakingPage.types';
 import { AmbientPosition } from '../../AmbientMarketMaking.types';
 
 export const getPositionBalance = (
@@ -15,7 +16,7 @@ export const getPositionBalance = (
   if (!spotPrice) {
     return;
   }
-  if (position.positionType === 'ambient') {
+  if (position.positionType === PoolPositionType.ambient) {
     const positionLiq = position.ambientLiq;
 
     return {
@@ -23,7 +24,7 @@ export const getPositionBalance = (
       positionLiqBase: positionLiq * Math.sqrt(spotPrice),
       positionLiqQuote: positionLiq / Math.sqrt(spotPrice),
     };
-  } else if (position.positionType === 'concentrated') {
+  } else if (position.positionType === PoolPositionType.concentrated) {
     const positionLiq = position.concLiq;
 
     const positionLiqBase = bigNumToFloat(

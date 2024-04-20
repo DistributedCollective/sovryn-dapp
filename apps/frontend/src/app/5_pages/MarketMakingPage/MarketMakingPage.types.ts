@@ -46,3 +46,8 @@ export type PromotionsDataResponse = {
   data: PromotionData[];
   loading: boolean;
 };
+
+export enum PoolPositionType {
+  ambient = 'ambient',
+  concentrated = 'concentrated',
+}

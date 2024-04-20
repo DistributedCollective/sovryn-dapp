@@ -81,6 +81,7 @@ export const AmbientPoolPositions: FC<AmbientPoolPositionsProps> = ({
       </div>
     );
   }
+
   return (
     <div className="w-full p-6">
       <Table

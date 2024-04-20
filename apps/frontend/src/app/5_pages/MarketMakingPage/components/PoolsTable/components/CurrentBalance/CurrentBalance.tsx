@@ -14,9 +14,11 @@ import { getTokenDisplayName } from '../../../../../../../constants/tokens';
 import { useAccount } from '../../../../../../../hooks/useAccount';
 import { translations } from '../../../../../../../locales/i18n';
 import { AmmLiquidityPool } from '../../../../utils/AmmLiquidityPool';
+import { AmbientLiquidityPool } from '../../../AmbientMarketMaking/utils/AmbientLiquidityPool';
 
 type CurrentBalanceProps = {
-  pool: AmmLiquidityPool;
+  pool: AmmLiquidityPool | null;
+  poolAmbient?: AmbientLiquidityPool;
   balanceA: Decimal;
   balanceB: Decimal;
   showLabel?: boolean;
@@ -24,6 +26,7 @@ type CurrentBalanceProps = {
 
 export const CurrentBalance: FC<CurrentBalanceProps> = ({
   pool,
+  poolAmbient,
   balanceA,
   balanceB,
   showLabel = false,
@@ -40,17 +43,23 @@ export const CurrentBalance: FC<CurrentBalanceProps> = ({
       <div className="flex-col flex font-medium gap-0.5">
         <AmountRenderer
           value={balanceA}
-          suffix={getTokenDisplayName(pool.assetA)}
+          suffix={getTokenDisplayName(
+            poolAmbient ? poolAmbient.base : pool?.assetA,
+          )}
           precision={TOKEN_RENDER_PRECISION}
         />
         <AmountRenderer
           value={balanceB}
-          suffix={BITCOIN}
-          precision={BTC_RENDER_PRECISION}
+          suffix={getTokenDisplayName(
+            poolAmbient ? poolAmbient.quote : BITCOIN,
+          )}
+          precision={
+            poolAmbient ? TOKEN_RENDER_PRECISION : BTC_RENDER_PRECISION
+          }
         />
       </div>
     ),
-    [balanceA, balanceB, pool.assetA],
+    [balanceA, balanceB, pool, poolAmbient],
   );
 
   return account ? (

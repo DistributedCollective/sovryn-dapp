@@ -32,7 +32,12 @@ export const useGetAmbientPositions = (pool: AmbientLiquidityPool) => {
           }`,
         );
 
-        return data.data as AmbientPosition[];
+        const filteredPositions = data.data.filter(
+          (position: AmbientPosition) =>
+            position.ambientLiq > 0 || position.concLiq > 0,
+        );
+
+        return filteredPositions;
       } catch (error) {
         return [];
       }

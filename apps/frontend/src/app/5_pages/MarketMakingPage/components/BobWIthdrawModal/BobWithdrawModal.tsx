@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useState } from 'react';
+import React, { FC, useEffect, useMemo, useState } from 'react';
 
 import { t } from 'i18next';
 
@@ -9,48 +9,172 @@ import {
   Dialog,
   DialogBody,
   DialogHeader,
+  ErrorBadge,
+  ErrorLevel,
 } from '@sovryn/ui';
 import { Decimal } from '@sovryn/utils';
 
+import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { CurrentStatistics } from '../../../../2_molecules/CurrentStatistics/CurrentStatistics';
+import { useCrocContext } from '../../../../../contexts/CrocContext';
 import { translations } from '../../../../../locales/i18n';
-import { COMMON_SYMBOLS } from '../../../../../utils/asset';
-import { AmmLiquidityPoolDictionary } from '../../utils/AmmLiquidityPoolDictionary';
-import { CurrentBalance } from '../PoolsTable/components/CurrentBalance/CurrentBalance';
-import { PoolsTableReturns } from '../PoolsTable/components/PoolsTableReturns/PoolsTableReturns';
+import { bigNumberic, decimalic } from '../../../../../utils/math';
+import { AmbientPosition } from '../AmbientMarketMaking/AmbientMarketMaking.types';
+import { AmbientPositionBalance } from '../AmbientMarketMaking/components/AmbientPoolPositions/components/AmbientPositionBalance/AmbientPositionBalance';
+import { useAmbientPositionBalance } from '../AmbientMarketMaking/components/AmbientPoolPositions/hooks/useAmbientPositionBalance';
+import { AmbientLiquidityPool } from '../AmbientMarketMaking/utils/AmbientLiquidityPool';
 import { AmountForm } from './components/AmountForm/AmountForm';
 import { NewPoolStatistics } from './components/NewPoolStatistics/NewPoolStatistics';
+import { useGetPoolInfo } from './hooks/useGetPoolInfo';
+import { useHandleSubmit } from './hooks/useHandleSubmit';
 
 const pageTranslations = translations.bobMarketMakingPage.withdrawModal;
-
-// TODO: This will be a prop and will likely use a different set of pools
-const POOL = AmmLiquidityPoolDictionary.list().filter(
-  pool => pool.assetA === COMMON_SYMBOLS.SOV,
-)[0];
-
-// TODO: Hardcoded, we will need to query it
-const BALANCE_A = Decimal.from(1500);
-const BALANCE_B = Decimal.from(0.06);
 
 type BobWithdrawModalProps = {
   isOpen: boolean;
   onClose: () => void;
+  pool: AmbientLiquidityPool;
+  position: AmbientPosition;
 };
 
 export const BobWithdrawModal: FC<BobWithdrawModalProps> = ({
   isOpen,
   onClose,
+  pool,
+  position,
 }) => {
+  const { croc } = useCrocContext();
+  const deposits = useAmbientPositionBalance(pool, position);
+  const [baseTokenDecimals, setBaseTokenDecimals] = useState(0);
+  const [quoteTokenDecimals, setQuoteTokenDecimals] = useState(0);
+
+  const [depositedAmountBase, setDepositedAmountBase] = useState(Decimal.ZERO);
+  const [depositedAmountQuote, setDepositedAmountQuote] = useState(
+    Decimal.ZERO,
+  );
   const [withdrawAmount, setWithdrawAmount] = useState(Decimal.ZERO);
   const [secondaryWithdrawAmount, setSecondaryWithdrawAmount] = useState(
     Decimal.ZERO,
   );
+  const [withdrawLiquidity, setWithdrawLiquidity] = useState(Decimal.ZERO);
+  const [poolPrice, setPoolPrice] = useState(0);
+  const { poolTokens } = useGetPoolInfo(pool.base, pool.quote);
 
-  const submitHandler = useCallback(() => {
-    console.log(
-      `Withdrawing ${withdrawAmount} ${POOL.assetA} and ${secondaryWithdrawAmount} ${POOL.assetB}`,
-    );
-  }, [secondaryWithdrawAmount, withdrawAmount]);
+  const isFullWithdrawal = useMemo(
+    () =>
+      withdrawAmount.eq(depositedAmountBase) &&
+      secondaryWithdrawAmount.eq(depositedAmountQuote),
+    [
+      withdrawAmount,
+      depositedAmountBase,
+      secondaryWithdrawAmount,
+      depositedAmountQuote,
+    ],
+  );
+
+  const withdraw = useMemo(
+    () =>
+      isFullWithdrawal
+        ? bigNumberic(deposits?.positionLiq.toString() || '0')
+        : bigNumberic(withdrawLiquidity.toString() || '0'),
+    [withdrawLiquidity, isFullWithdrawal, deposits],
+  );
+
+  const handleSubmit = useHandleSubmit(
+    withdraw,
+    isFullWithdrawal,
+    pool,
+    position,
+    onClose,
+  );
+
+  const isValidAmount = useMemo(
+    () =>
+      Number(withdrawAmount) <= Number(depositedAmountBase) ||
+      secondaryWithdrawAmount <= depositedAmountQuote,
+    [
+      withdrawAmount,
+      depositedAmountBase,
+      secondaryWithdrawAmount,
+      depositedAmountQuote,
+    ],
+  );
+
+  const isSubmitDisabled = useMemo(
+    () =>
+      !depositedAmountBase ||
+      !withdrawAmount ||
+      !secondaryWithdrawAmount ||
+      (Number(withdrawAmount) === 0 && Number(secondaryWithdrawAmount) === 0) ||
+      !isValidAmount,
+    [
+      depositedAmountBase,
+      withdrawAmount,
+      isValidAmount,
+      secondaryWithdrawAmount,
+    ],
+  );
+
+  useEffect(() => {
+    const getDepositedAmounts = async () => {
+      if (!croc || !poolTokens) {
+        setDepositedAmountBase(Decimal.ZERO);
+        return;
+      }
+      const pool = croc.pool(
+        poolTokens.tokenA.tokenAddr,
+        poolTokens.tokenB.tokenAddr,
+      );
+      const baseTokenDecimals = await poolTokens.tokenA.decimals;
+      const quoteTokenDecimals = await poolTokens.tokenB.decimals;
+      setBaseTokenDecimals(baseTokenDecimals);
+      setQuoteTokenDecimals(quoteTokenDecimals);
+
+      const spotPrice = await pool.spotPrice();
+      const sqrtPrice = Math.sqrt(spotPrice);
+      setPoolPrice(sqrtPrice);
+    };
+
+    getDepositedAmounts();
+  }, [croc, poolTokens]);
+
+  useEffect(() => {
+    if (withdrawAmount.gt(0) && isValidAmount) {
+      const amount = withdrawAmount.div(poolPrice);
+      const convertedAmount = amount.mul(Math.pow(10, baseTokenDecimals));
+      setWithdrawLiquidity(convertedAmount);
+      return;
+    }
+
+    if (secondaryWithdrawAmount.gt(0) && isValidAmount) {
+      const amount = secondaryWithdrawAmount.mul(poolPrice);
+      const convertedAmount = amount.mul(Math.pow(10, quoteTokenDecimals));
+      console.log('secondaryWithdrawAmount 2', convertedAmount.toString());
+      setWithdrawLiquidity(convertedAmount);
+    }
+  }, [
+    withdrawAmount,
+    secondaryWithdrawAmount,
+    poolPrice,
+    baseTokenDecimals,
+    quoteTokenDecimals,
+    isValidAmount,
+  ]);
+
+  useEffect(() => {
+    if (deposits) {
+      setDepositedAmountBase(
+        decimalic(deposits?.positionLiqBase || '0').div(
+          Math.pow(10, baseTokenDecimals),
+        ),
+      );
+      setDepositedAmountQuote(
+        decimalic(deposits?.positionLiqQuote || '0').div(
+          Math.pow(10, quoteTokenDecimals),
+        ),
+      );
+    }
+  }, [deposits, baseTokenDecimals, quoteTokenDecimals]);
 
   return (
     <Dialog disableFocusTrap isOpen={isOpen}>
@@ -58,46 +182,47 @@ export const BobWithdrawModal: FC<BobWithdrawModalProps> = ({
       <DialogBody>
         <div className="bg-gray-90 p-4 rounded">
           <CurrentStatistics
-            symbol={POOL.assetA}
-            symbol2={POOL.assetB}
+            symbol={pool.base}
+            symbol2={pool.quote}
             label1={t(pageTranslations.returnRate)}
             label2={t(pageTranslations.currentBalance)}
-            value1={
-              <PoolsTableReturns
-                className="text-xs font-semibold"
-                pool={POOL}
-              />
-            }
-            value2={
-              <CurrentBalance
-                pool={POOL}
-                balanceA={BALANCE_A}
-                balanceB={BALANCE_B}
-              />
-            }
+            value1={<AmountRenderer value={position.aprEst * 100} suffix="%" />}
+            value2={<AmbientPositionBalance pool={pool} position={position} />}
           />
         </div>
 
         <AmountForm
-          primaryTokenBalance={BALANCE_A}
-          secondaryTokenBalance={BALANCE_B}
+          primaryTokenBalance={depositedAmountBase}
+          secondaryTokenBalance={depositedAmountQuote}
           withdrawAmount={withdrawAmount}
           secondaryWithdrawAmount={secondaryWithdrawAmount}
           setWithdrawAmount={setWithdrawAmount}
           setSecondaryWithdrawAmount={setSecondaryWithdrawAmount}
-          pool={POOL}
+          pool={pool}
         />
 
-        <NewPoolStatistics pool={POOL} />
+        {!isValidAmount && (
+          <ErrorBadge
+            level={ErrorLevel.Critical}
+            message={t(pageTranslations.form.invalidAmountError)}
+            dataAttribute="withdraw-liquidity-from-amount-error"
+          />
+        )}
+
+        <NewPoolStatistics
+          baseAmount={depositedAmountBase.sub(withdrawAmount)}
+          quoteAmount={depositedAmountQuote.sub(secondaryWithdrawAmount)}
+          pool={pool}
+        />
 
         <Button
           type={ButtonType.submit}
           style={ButtonStyle.primary}
           text={t(translations.common.buttons.confirm)}
           className="w-full mt-6"
-          onClick={submitHandler}
+          onClick={handleSubmit}
           dataAttribute="withdraw-liquidity-confirm-button"
-          disabled={false}
+          disabled={isSubmitDisabled}
         />
       </DialogBody>
     </Dialog>

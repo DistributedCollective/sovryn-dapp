@@ -162,7 +162,7 @@
         "gasLimit": "Gas limit",
         "gasPrice": "Gas price",
         "resetValues": "Reset values",
-        "notEnoughBalance": "Estimated gas fee exceeds BTC balance"
+        "notEnoughBalance": "Estimated gas fee exceeds {{asset}} balance"
     },
 
     "zeroPage": {
@@ -1287,6 +1287,9 @@
                 "newPoolBalance": "New pool balance",
                 "earnedRewards": "Earned rewards",
                 "slippage": "Slippage"
+            },
+            "form": {
+                "invalidAmountError": "Exceeds maximum amount"
             }
         }
     },

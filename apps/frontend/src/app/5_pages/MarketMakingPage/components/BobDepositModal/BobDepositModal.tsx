@@ -77,9 +77,6 @@ export const BobDepositModal: FC<BobDepositModalProps> = ({
             />
           </div>
 
-          <p>{minimumPrice}</p>
-          <p>{maximumPrice}</p>
-
           <AmountForm pool={pool} />
           <PriceRange pool={pool} />
           <SlippageSettings />

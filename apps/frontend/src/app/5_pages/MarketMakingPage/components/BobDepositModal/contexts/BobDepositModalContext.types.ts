@@ -21,12 +21,6 @@ export type DepositContextValue = {
   setIsBalancedRange: Dispatch<SetStateAction<boolean>>;
   spotPrice: number;
   setSpotPrice: Dispatch<SetStateAction<number>>;
-  concData: {
-    base: number;
-    quote: number;
-    skew: number;
-  };
-  setConcData: Dispatch<
-    SetStateAction<{ base: number; quote: number; skew: number }>
-  >;
+  usesBaseToken: boolean;
+  setUsesBaseToken: Dispatch<SetStateAction<boolean>>;
 };

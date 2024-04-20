@@ -145,5 +145,16 @@ export const decimalic = (value: Decimalish | undefined | null): Decimal => {
   return value;
 };
 
+export const bigNumberic = (
+  value: BigNumberish | undefined | null,
+): BigNumber => {
+  if (String(value).search(/e[-+]?/) > 0) {
+    return BigNumber.from(
+      Number(value).toLocaleString('fullwide', { useGrouping: false }),
+    );
+  }
+  return BigNumber.from(String(value || 0));
+};
+
 export const isScientificNumber = (value: number) =>
   String(value).search(/e[-+]?/) > 0;

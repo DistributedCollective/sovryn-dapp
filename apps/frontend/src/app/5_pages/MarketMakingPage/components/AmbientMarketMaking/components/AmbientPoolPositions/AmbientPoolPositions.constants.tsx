@@ -2,9 +2,8 @@ import React from 'react';
 
 import { t } from 'i18next';
 
-import { TransactionId } from '@sovryn/ui';
-
 import { AmountRenderer } from '../../../../../../2_molecules/AmountRenderer/AmountRenderer';
+import { TransactionIdRenderer } from '../../../../../../2_molecules/TransactionIdRenderer/TransactionIdRenderer';
 import { translations } from '../../../../../../../locales/i18n';
 import { AmbientPosition } from '../../AmbientMarketMaking.types';
 import { AmbientLiquidityPool } from '../../utils/AmbientLiquidityPool';
@@ -18,7 +17,10 @@ export const COLUMNS_CONFIG = (pool: AmbientLiquidityPool) => [
     id: 'positionID',
     title: t(translations.ambientMarketMaking.positionsTable.positionID),
     cellRenderer: (position: AmbientPosition) => (
-      <TransactionId href="" value={position.positionId} />
+      <TransactionIdRenderer
+        hash={position.firstMintTx}
+        chainId={pool.chainId}
+      />
     ),
   },
   {

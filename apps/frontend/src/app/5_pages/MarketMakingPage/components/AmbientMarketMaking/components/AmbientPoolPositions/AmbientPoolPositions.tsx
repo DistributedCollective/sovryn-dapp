@@ -2,9 +2,10 @@ import React, { FC } from 'react';
 
 import { t } from 'i18next';
 
-import { SimpleTableRow, Table, TransactionId } from '@sovryn/ui';
+import { SimpleTableRow, Table } from '@sovryn/ui';
 
 import { AmountRenderer } from '../../../../../../2_molecules/AmountRenderer/AmountRenderer';
+import { TransactionIdRenderer } from '../../../../../../2_molecules/TransactionIdRenderer/TransactionIdRenderer';
 import { useIsMobile } from '../../../../../../../hooks/useIsMobile';
 import { translations } from '../../../../../../../locales/i18n';
 import { useGetAmbientPositions } from '../../hooks/useGetAmbientPositions';
@@ -36,7 +37,12 @@ export const AmbientPoolPositions: FC<AmbientPoolPositionsProps> = ({
               label={t(
                 translations.ambientMarketMaking.positionsTable.positionID,
               )}
-              value={<TransactionId href="" value={position.positionId} />}
+              value={
+                <TransactionIdRenderer
+                  hash={position.firstMintTx}
+                  chainId={pool.chainId}
+                />
+              }
             />
             <SimpleTableRow
               label={t(translations.ambientMarketMaking.positionsTable.balance)}

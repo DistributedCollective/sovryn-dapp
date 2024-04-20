@@ -31,6 +31,7 @@ export const AmountForm: FC<AmountFormProps> = ({ pool }) => {
     setFirstAssetValue,
     secondAssetValue,
     setSecondAssetValue,
+    setUsesBaseToken,
   } = useDepositContext();
 
   const { balance: balanceTokenA } = useAssetBalance(base, chainId);
@@ -40,15 +41,30 @@ export const AmountForm: FC<AmountFormProps> = ({ pool }) => {
   const handleFirstAssetMaxClick = useCallback(() => {
     setFirstAssetValue(balanceTokenA.toString());
     setSecondAssetValue(String(balanceTokenA.toNumber() * price));
-  }, [balanceTokenA, price, setFirstAssetValue, setSecondAssetValue]);
+    setUsesBaseToken(true);
+  }, [
+    balanceTokenA,
+    price,
+    setFirstAssetValue,
+    setSecondAssetValue,
+    setUsesBaseToken,
+  ]);
 
   const handleSecondAssetMaxClick = useCallback(() => {
     setSecondAssetValue(balanceTokenB.toString());
     setFirstAssetValue(String(balanceTokenB.toNumber() / price));
-  }, [balanceTokenB, price, setFirstAssetValue, setSecondAssetValue]);
+    setUsesBaseToken(false);
+  }, [
+    balanceTokenB,
+    price,
+    setFirstAssetValue,
+    setSecondAssetValue,
+    setUsesBaseToken,
+  ]);
 
   const onFirstAssetChange = useCallback(
     (value: string) => {
+      setUsesBaseToken(true);
       setFirstAssetValue(value);
       if (price === 0) {
         return;
@@ -56,11 +72,12 @@ export const AmountForm: FC<AmountFormProps> = ({ pool }) => {
 
       setSecondAssetValue(String(Number(value) * price));
     },
-    [price, setFirstAssetValue, setSecondAssetValue],
+    [price, setFirstAssetValue, setSecondAssetValue, setUsesBaseToken],
   );
 
   const onSecondAssetChange = useCallback(
     (value: string) => {
+      setUsesBaseToken(false);
       setSecondAssetValue(value);
       if (price === 0) {
         return;
@@ -68,7 +85,7 @@ export const AmountForm: FC<AmountFormProps> = ({ pool }) => {
 
       setFirstAssetValue(String(Number(value) / price));
     },
-    [price, setFirstAssetValue, setSecondAssetValue],
+    [price, setFirstAssetValue, setSecondAssetValue, setUsesBaseToken],
   );
   return (
     <>

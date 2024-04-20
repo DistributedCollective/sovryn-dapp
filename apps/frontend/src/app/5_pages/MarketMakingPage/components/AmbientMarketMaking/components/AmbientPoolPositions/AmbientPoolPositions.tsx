@@ -1,4 +1,4 @@
-import React, { FC, useCallback } from 'react';
+import React, { FC } from 'react';
 
 import { t } from 'i18next';
 
@@ -24,11 +24,9 @@ type AmbientPoolPositionsProps = {
 export const AmbientPoolPositions: FC<AmbientPoolPositionsProps> = ({
   pool,
 }) => {
-  const { positions, isLoading, refetch } = useGetAmbientPositions(pool);
+  const { positions, isLoading } = useGetAmbientPositions(pool);
 
   const { isMobile } = useIsMobile();
-
-  const onWithdrawHandler = useCallback(() => refetch(), [refetch]);
 
   if (isMobile) {
     return (
@@ -77,11 +75,7 @@ export const AmbientPoolPositions: FC<AmbientPoolPositionsProps> = ({
                 <AmountRenderer value={position.aprEst * 100} suffix="%" />
               }
             />
-            <AmbientPoolPositionWithdraw
-              pool={pool}
-              position={position}
-              onWithdraw={onWithdrawHandler}
-            />
+            <AmbientPoolPositionWithdraw pool={pool} position={position} />
           </div>
         ))}
       </div>
@@ -91,7 +85,7 @@ export const AmbientPoolPositions: FC<AmbientPoolPositionsProps> = ({
   return (
     <div className="w-full p-6">
       <Table
-        columns={COLUMNS_CONFIG(pool, onWithdrawHandler)}
+        columns={COLUMNS_CONFIG(pool)}
         rows={positions}
         noData={t(translations.common.tables.noData)}
         loadingData={t(translations.common.tables.loading)}

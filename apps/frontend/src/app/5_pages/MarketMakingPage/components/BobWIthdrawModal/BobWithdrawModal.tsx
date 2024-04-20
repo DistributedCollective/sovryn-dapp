@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
+import React, { FC, useEffect, useMemo, useState } from 'react';
 
 import { t } from 'i18next';
 
@@ -35,7 +35,6 @@ type BobWithdrawModalProps = {
   onClose: () => void;
   pool: AmbientLiquidityPool;
   position: AmbientPosition;
-  onWithdraw: () => void;
 };
 
 export const BobWithdrawModal: FC<BobWithdrawModalProps> = ({
@@ -43,7 +42,6 @@ export const BobWithdrawModal: FC<BobWithdrawModalProps> = ({
   onClose,
   pool,
   position,
-  onWithdraw,
 }) => {
   const { croc } = useCrocContext();
   const deposits = useAmbientPositionBalance(pool, position);
@@ -82,17 +80,12 @@ export const BobWithdrawModal: FC<BobWithdrawModalProps> = ({
     [withdrawLiquidity, isFullWithdrawal, deposits],
   );
 
-  const onComplete = useCallback(() => {
-    onWithdraw?.();
-    onClose();
-  }, [onWithdraw, onClose]);
-
   const handleSubmit = useHandleSubmit(
     withdraw,
     isFullWithdrawal,
     pool,
     position,
-    onComplete,
+    onClose,
   );
 
   const isValidAmount = useMemo(

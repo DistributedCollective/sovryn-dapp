@@ -12,10 +12,7 @@ import { AmbientPositionBalance } from './components/AmbientPositionBalance/Ambi
 import { AmbientPositionPrices } from './components/AmbientPositionPrices/AmbientPositionPrices';
 import { AmbientPositionValue } from './components/AmbientPositionValue/AmbientPositionValue';
 
-export const COLUMNS_CONFIG = (
-  pool: AmbientLiquidityPool,
-  onSuccess: () => void,
-) => [
+export const COLUMNS_CONFIG = (pool: AmbientLiquidityPool) => [
   {
     id: 'positionID',
     title: t(translations.ambientMarketMaking.positionsTable.positionID),
@@ -68,11 +65,7 @@ export const COLUMNS_CONFIG = (
     title: '',
     cellRenderer: (position: AmbientPosition) => (
       <div className="flex justify-end items-center">
-        <AmbientPoolPositionWithdraw
-          pool={pool}
-          position={position}
-          onWithdraw={onSuccess}
-        />
+        <AmbientPoolPositionWithdraw pool={pool} position={position} />
       </div>
     ),
   },

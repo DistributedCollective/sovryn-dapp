@@ -27,6 +27,7 @@ export const COMMON_SYMBOLS = {
   BTC: 'BTC',
   WBTC: 'WBTC',
   SOV: 'SOV',
+  OSSOV: 'OSSOV',
   DLLR: 'DLLR',
   ZUSD: 'ZUSD',
   XUSD: 'XUSD',

@@ -21,6 +21,14 @@ export const rskTestnet: Array<AssetDetails> = [
     description: 'Sovryn Token',
   },
   {
+    symbol: 'OSSOV',
+    address: '0x687C75B68771E363F1675047F94c0a8a13493E67',
+    name: 'Sovryn',
+    decimals: 18,
+    getIcon: async () => (await import('./icons/rsk/sov')).default,
+    description: '',
+  },
+  {
     symbol: 'WBTC',
     address: '0x69FE5cEC81D5eF92600c1A0dB1F11986AB3758Ab',
     name: 'Wrapped Bitcoin',

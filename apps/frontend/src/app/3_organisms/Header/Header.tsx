@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useMemo, useReducer } from 'react';
+import React, { FC, useCallback, useReducer } from 'react';
 
 import { t } from 'i18next';
 
@@ -8,68 +8,30 @@ import {
   Header as UIHeader,
   Icon,
   IconNames,
-  noop,
 } from '@sovryn/ui';
 
 import { ConnectWalletButton } from '../../2_molecules';
 import { NetworkPicker } from '../../2_molecules/NetworkPicker/NetworkPicker';
 import { SovrynLogo } from '../../2_molecules/SovrynLogo/SovrynLogo';
-import { RSK_FAUCET } from '../../../constants/general';
-import { BOB } from '../../../constants/infrastructure/bob';
+import { GOBOB_LINK } from '../../../constants/links';
 import { useWalletConnect, useWrongNetworkCheck } from '../../../hooks';
-import { useAssetBalance } from '../../../hooks/useAssetBalance';
-import { useCurrentChain } from '../../../hooks/useChainStore';
 import { translations } from '../../../locales/i18n';
-import { sharedState } from '../../../store/rxjs/shared-state';
-import { Environments } from '../../../types/global';
-import { COMMON_SYMBOLS } from '../../../utils/asset';
-import { isBobChain, isRskChain } from '../../../utils/chain';
-import { isMainnet, isTestnetFastBtcEnabled } from '../../../utils/helpers';
 import { menuItemsMapping } from './Header.constants';
+import { BridgeMenuItem } from './components/BridgeMenuItem/BridgeMenuItem';
 import { NavItem } from './components/NavItem/NavItem';
 import { ProductLinks } from './components/ProductLinks/ProductLinks';
 
 export const Header: FC = () => {
-  const chainId = useCurrentChain();
   const [isOpen, toggle] = useReducer(v => !v, false);
   const { connectWallet, disconnectWallet, account, pending } =
     useWalletConnect();
   useWrongNetworkCheck();
-
-  const { balance } = useAssetBalance(
-    isRskChain(chainId) ? COMMON_SYMBOLS.BTC : COMMON_SYMBOLS.ETH,
-    chainId,
-  );
-
-  const hasRbtcBalance = useMemo(() => Number(balance) !== 0, [balance]);
-
-  const enableFastBtc = useMemo(
-    () => isMainnet() || (!isMainnet() && isTestnetFastBtcEnabled()),
-    [],
-  );
 
   const handleNavClick = useCallback(() => {
     if (isOpen) {
       toggle();
     }
   }, [isOpen]);
-
-  const handleFastBtcClick = useCallback(
-    () => sharedState.actions.openFastBtcDialog(!hasRbtcBalance),
-    [hasRbtcBalance],
-  );
-
-  const href = useMemo(() => {
-    if (isBobChain(chainId)) {
-      return BOB.bridge[
-        isMainnet() ? Environments.Mainnet : Environments.Testnet
-      ];
-    }
-
-    if (!enableFastBtc) {
-      return RSK_FAUCET;
-    }
-  }, [chainId, enableFastBtc]);
 
   return (
     <>
@@ -107,7 +69,7 @@ export const Header: FC = () => {
               text={t(translations.header.nav.bob)}
               style={ButtonStyle.primary}
               className="bg-[#24BFB74D]/[0.3] border-[#24BFB74D]/[0.3] hover:bg-[#24BFB74D]"
-              onClick={() => window.open('https://gobob.sovryn.app', '_blank')}
+              onClick={() => window.open(GOBOB_LINK, '_blank')}
             />
           </ol>
         }
@@ -125,25 +87,7 @@ export const Header: FC = () => {
         }
         extraContent={
           <>
-            {account && (
-              <>
-                <Button
-                  text={t(
-                    hasRbtcBalance
-                      ? translations.header.funding
-                      : translations.header.fundWallet,
-                  )}
-                  style={
-                    hasRbtcBalance ? ButtonStyle.secondary : ButtonStyle.primary
-                  }
-                  dataAttribute="dapp-header-funding"
-                  onClick={!href ? handleFastBtcClick : noop}
-                  href={href}
-                  hrefExternal={true}
-                  disabled={!isRskChain(chainId) && !isBobChain(chainId)}
-                />
-              </>
-            )}
+            {account && <BridgeMenuItem dataAttribute="dapp-header-bridges" />}
           </>
         }
       />

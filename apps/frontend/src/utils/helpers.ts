@@ -1,5 +1,6 @@
 import { RefObject } from 'react';
 
+import { Network } from 'bitcoin-address-validation';
 import dayjs from 'dayjs';
 import { BigNumber, providers } from 'ethers';
 import resolveConfig from 'tailwindcss/resolveConfig';
@@ -37,6 +38,9 @@ export const prettyTx = (
 export const currentNetwork: Environments = !!process.env.REACT_APP_NETWORK
   ? (process.env.REACT_APP_NETWORK as Environments)
   : Environments.Mainnet;
+
+export const currentBtcNetwork: Network =
+  currentNetwork === Environments.Mainnet ? Network.mainnet : Network.testnet;
 
 export const isMainnet = () =>
   process.env.REACT_APP_NETWORK === Environments.Mainnet;

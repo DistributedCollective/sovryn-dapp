@@ -3,25 +3,24 @@ import React, { FC, useCallback } from 'react';
 import { t } from 'i18next';
 import Carousel from 'react-multi-carousel';
 import 'react-multi-carousel/lib/styles.css';
-import { useNavigate } from 'react-router-dom';
 
 import { Button, ButtonSize, ButtonStyle } from '@sovryn/ui';
 
-import { POWA_LINK } from '../../../../../constants/links';
+import { GOBOB_LINK } from '../../../../../constants/links';
 import { translations } from '../../../../../locales/i18n';
+import { sharedState } from '../../../../../store/rxjs/shared-state';
 import styles from './Banner.module.css';
 import { LandingPromoCard } from './components/LandingPromoCard/LandingPromoCard';
 
 export const Banner: FC = () => {
-  const navigate = useNavigate();
-
-  const handleClick = useCallback(() => navigate('/powa'), [navigate]);
-
+  const handleRunesClick = useCallback(() => {
+    sharedState.actions.openRuneBridgeDialog();
+  }, []);
   return (
     <div className="w-full relative pb-7">
       <Carousel
         arrows={false}
-        draggable={false} // Needs to be true when we have more than 1 promo
+        draggable={true} // Needs to be true when we have more than 1 promo
         partialVisible={false}
         focusOnSelect={false}
         responsive={{
@@ -35,36 +34,49 @@ export const Banner: FC = () => {
         swipeable
         className="static"
         renderDotsOutside
-        showDots={false} // Needs to be true when we have more than 1 promo
-        autoPlay={false} // Needs to be true when we have more than 1 promo
+        showDots={true} // Needs to be true when we have more than 1 promo
+        autoPlay={true} // Needs to be true when we have more than 1 promo
         dotListClass={styles.dot}
         autoPlaySpeed={15000}
         infinite
       >
         <LandingPromoCard
-          heading={t(translations.landingPage.promotions.competition.title)}
+          heading={t(translations.landingPage.promotions.runesBridge.title)}
           description={t(
-            translations.landingPage.promotions.competition.description,
+            translations.landingPage.promotions.runesBridge.description,
           )}
           actions={
             <>
               <Button
                 style={ButtonStyle.secondary}
                 size={ButtonSize.large}
-                text={t(translations.landingPage.promotions.competition.cta)}
-                onClick={handleClick}
-              />
-
-              <Button
-                text={t(
-                  translations.landingPage.promotions.competition.secondaryCta,
-                )}
-                href={POWA_LINK} // TODO: Needs to be changed later, the landing page does not exist yet
-                style={ButtonStyle.ghost}
+                text={t(translations.landingPage.promotions.runesBridge.cta)}
+                onClick={handleRunesClick}
                 hrefExternal
               />
             </>
           }
+          className="border-sovryn-blue"
+        />
+        <LandingPromoCard
+          heading={t(translations.landingPage.promotions.runesExtraSpice.title)}
+          description={t(
+            translations.landingPage.promotions.runesExtraSpice.description,
+          )}
+          actions={
+            <>
+              <Button
+                style={ButtonStyle.secondary}
+                size={ButtonSize.large}
+                text={t(
+                  translations.landingPage.promotions.runesExtraSpice.cta,
+                )}
+                href={GOBOB_LINK}
+                hrefExternal
+              />
+            </>
+          }
+          className="border-primary"
         />
       </Carousel>
     </div>

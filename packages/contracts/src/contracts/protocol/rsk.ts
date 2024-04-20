@@ -67,6 +67,11 @@ export const rsk: Record<string, AsyncContractConfigData> = {
     getAbi: async () =>
       (await import('../../abis/stakingRewards.json')).default,
   },
+  stakingRewardsOs: {
+    address: '0xb0e08B7e4498ecA6868781aC3B5086fF4F66be56',
+    getAbi: async () =>
+      (await import('../../abis/StakingRewardsOs.json')).default,
+  },
   multiCall: {
     address: '0x6c62bf5440de2cb157205b15c424bceb5c3368f5',
     getAbi: async () => (await import('../../abis/multiCall2.json')).default,
@@ -116,5 +121,9 @@ export const rsk: Record<string, AsyncContractConfigData> = {
     address: '0x248Df85079707C6B7106982b8FE236Be22816aaF',
     getAbi: async () =>
       (await import('../../abis/LoanTokenSettingsLowerAdmin.json')).default,
+  },
+  runeBridge: {
+    address: '0x94f1dcc69019819f64807BC0D275F9f3503cBD37',
+    getAbi: async () => (await import('../../abis/RuneBridge.json')).default,
   },
 };

@@ -1,7 +1,7 @@
 import { Environments } from '../../types/global';
 
 const rpc = {
-  [Environments.Mainnet]: '',
+  [Environments.Mainnet]: 'https://rpc.gobob.xyz',
   [Environments.Testnet]: 'https://testnet.rpc.gobob.xyz',
 };
 
@@ -9,7 +9,7 @@ export const BOB = {
   rpc,
   publicRpc: rpc,
   explorer: {
-    [Environments.Mainnet]: '',
+    [Environments.Mainnet]: 'https://explorer.gobob.xyz',
     [Environments.Testnet]: 'https://testnet-explorer.gobob.xyz',
   },
   indexer: {

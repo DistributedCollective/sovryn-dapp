@@ -1,5 +1,5 @@
 // eslint-disable-next-line import/no-anonymous-default-export
-export default `<svg width="20" height="20" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg">
+export default `<svg width="38" height="38" viewBox="0 0 38 38" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg">
 <g class="layer">
  <g id="svg_7">
   <path d="m10,19.8c5.41,0 9.8,-4.39 9.8,-9.8c0,-5.41 -4.39,-9.8 -9.8,-9.8c-5.41,0 -9.8,4.39 -9.8,9.8c0,5.41 4.39,9.8 9.8,9.8z" fill="#1D2229" id="svg_1"/>

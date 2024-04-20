@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 
-import { MAX_TICK, MIN_TICK, tickToPrice } from '@sovryn/sdex';
+import { tickToPrice } from '@sovryn/sdex';
 
 import { AmountRenderer } from '../../../../../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { INFINITE } from '../../../../../BobDepositModal/components/PriceRange/components/BalancedRange/BalancedRange.constants';
@@ -16,7 +16,7 @@ export const AmbientPositionPrices: FC<AmbientPositionPricesProps> = ({
   position,
   pool,
 }) => {
-  if (position.bidTick === MIN_TICK && position.askTick === MAX_TICK) {
+  if (position.positionType === 'ambient') {
     return <div>{INFINITE}</div>;
   }
   return (

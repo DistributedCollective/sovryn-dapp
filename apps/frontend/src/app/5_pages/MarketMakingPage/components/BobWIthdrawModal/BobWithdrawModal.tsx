@@ -63,16 +63,23 @@ export const BobWithdrawModal: FC<BobWithdrawModalProps> = ({
   const { poolTokens } = useGetPoolInfo(pool.base, pool.quote);
 
   const isFullWithdrawal = useMemo(
-    () => withdrawAmount.eq(depositedAmountBase),
-    [withdrawAmount, depositedAmountBase],
+    () =>
+      withdrawAmount.eq(depositedAmountBase) &&
+      secondaryWithdrawAmount.eq(depositedAmountQuote),
+    [
+      withdrawAmount,
+      depositedAmountBase,
+      secondaryWithdrawAmount,
+      depositedAmountQuote,
+    ],
   );
 
   const withdraw = useMemo(
     () =>
       isFullWithdrawal
-        ? bigNumberic(deposits?.positionLiqBase.toString() || '0')
+        ? bigNumberic(deposits?.positionLiq.toString() || '0')
         : bigNumberic(withdrawLiquidity.toString() || '0'),
-    [withdrawLiquidity, deposits, isFullWithdrawal],
+    [withdrawLiquidity, isFullWithdrawal, deposits],
   );
 
   const onComplete = useCallback(() => {
@@ -89,17 +96,30 @@ export const BobWithdrawModal: FC<BobWithdrawModalProps> = ({
   );
 
   const isValidAmount = useMemo(
-    () => Number(withdrawAmount) <= Number(depositedAmountBase),
-    [withdrawAmount, depositedAmountBase],
+    () =>
+      Number(withdrawAmount) <= Number(depositedAmountBase) ||
+      secondaryWithdrawAmount <= depositedAmountQuote,
+    [
+      withdrawAmount,
+      depositedAmountBase,
+      secondaryWithdrawAmount,
+      depositedAmountQuote,
+    ],
   );
 
   const isSubmitDisabled = useMemo(
     () =>
       !depositedAmountBase ||
       !withdrawAmount ||
-      Number(withdrawAmount) <= 0 ||
+      !secondaryWithdrawAmount ||
+      (Number(withdrawAmount) === 0 && Number(secondaryWithdrawAmount) === 0) ||
       !isValidAmount,
-    [depositedAmountBase, withdrawAmount, isValidAmount],
+    [
+      depositedAmountBase,
+      withdrawAmount,
+      isValidAmount,
+      secondaryWithdrawAmount,
+    ],
   );
 
   useEffect(() => {
@@ -130,8 +150,23 @@ export const BobWithdrawModal: FC<BobWithdrawModalProps> = ({
       const amount = withdrawAmount.div(poolPrice);
       const convertedAmount = amount.mul(Math.pow(10, baseTokenDecimals));
       setWithdrawLiquidity(convertedAmount);
+      return;
     }
-  }, [withdrawAmount, poolPrice, isValidAmount, baseTokenDecimals]);
+
+    if (secondaryWithdrawAmount.gt(0) && isValidAmount) {
+      const amount = secondaryWithdrawAmount.mul(poolPrice);
+      const convertedAmount = amount.mul(Math.pow(10, quoteTokenDecimals));
+      console.log('secondaryWithdrawAmount 2', convertedAmount.toString());
+      setWithdrawLiquidity(convertedAmount);
+    }
+  }, [
+    withdrawAmount,
+    secondaryWithdrawAmount,
+    poolPrice,
+    baseTokenDecimals,
+    quoteTokenDecimals,
+    isValidAmount,
+  ]);
 
   useEffect(() => {
     if (deposits) {

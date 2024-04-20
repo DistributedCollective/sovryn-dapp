@@ -73,6 +73,14 @@ export const AmountForm: FC<AmountFormProps> = ({
     ],
   );
 
+  const onSecondaryAmountChange = useCallback(
+    (value: string) => {
+      const decimalAmount = Decimal.from(value);
+      setSecondaryWithdrawAmount(decimalAmount);
+    },
+    [setSecondaryWithdrawAmount],
+  );
+
   const withdrawAmountPercentage = useMemo(
     (): number =>
       withdrawAmount === Decimal.ZERO
@@ -100,13 +108,15 @@ export const AmountForm: FC<AmountFormProps> = ({
 
       <FormGroup
         label={
-          <div className="flex justify-end w-full">
-            <MaxButton
-              value={primaryTokenBalance}
-              token={pool.base}
-              onClick={onMaxClick}
-            />
-          </div>
+          primaryTokenBalance.gt(0) && (
+            <div className="flex justify-end w-full">
+              <MaxButton
+                value={primaryTokenBalance}
+                token={pool.base}
+                onClick={onMaxClick}
+              />
+            </div>
+          )
         }
         labelElement="div"
         className="max-w-none my-6"
@@ -119,19 +129,40 @@ export const AmountForm: FC<AmountFormProps> = ({
           label={t(translations.common.amount)}
           className="max-w-none"
           unit={<AssetRenderer asset={pool.base} />}
-          disabled={!account}
+          disabled={!account || Number(primaryTokenBalance) === 0}
           placeholder="0"
         />
       </FormGroup>
 
-      <AmountInput
-        value={secondaryWithdrawAmount.toString()}
-        readOnly
-        label={t(translations.common.amount)}
-        className="max-w-none"
-        unit={<AssetRenderer asset={pool.quote} />}
-        placeholder="0"
-      />
+      <FormGroup
+        label={
+          secondaryTokenBalance.gt(0) &&
+          Number(primaryTokenBalance) === 0 && (
+            <div className="flex justify-end w-full">
+              <MaxButton
+                value={secondaryTokenBalance}
+                token={pool.quote}
+                onClick={onMaxClick}
+              />
+            </div>
+          )
+        }
+        labelElement="div"
+        className="max-w-none my-6"
+        dataAttribute="bob-amm-pool-deposit-asset2"
+      >
+        <AmountInput
+          value={secondaryWithdrawAmount.toString()}
+          onChangeText={onSecondaryAmountChange}
+          maxAmount={secondaryTokenBalance.toNumber()}
+          label={t(translations.common.amount)}
+          className="max-w-none"
+          unit={<AssetRenderer asset={pool.quote} />}
+          disabled={!account || Number(secondaryTokenBalance) === 0}
+          placeholder="0"
+          readOnly={Number(primaryTokenBalance) > 0}
+        />
+      </FormGroup>
     </>
   );
 };

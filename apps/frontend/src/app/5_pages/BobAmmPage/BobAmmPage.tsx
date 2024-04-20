@@ -310,7 +310,7 @@ export const BobAmmPage: React.FC = () => {
 
       const tx = await createRangePositionTx({
         crocEnv: croc.current,
-        isAmbient: true,
+        isAmbient: false,
         slippageTolerancePercentage: 3,
         tokenA: {
           address: tokenA.tokenAddr,

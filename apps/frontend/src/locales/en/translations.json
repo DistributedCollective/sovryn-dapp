@@ -1287,6 +1287,9 @@
                 "newPoolBalance": "New pool balance",
                 "earnedRewards": "Earned rewards",
                 "slippage": "Slippage"
+            },
+            "form": {
+                "invalidAmountError": "Exceeds maximum amount"
             }
         }
     },

@@ -1,18 +1,10 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
-import { BOB_CHAIN_ID } from '../../../../../../config/chains';
+import { SEPOLIA_CHAIN_ID } from '../../../../../../config/chains';
 
 import { useCrocContext } from '../../../../../../contexts/CrocContext';
 import { COMMON_SYMBOLS, findAsset } from '../../../../../../utils/asset';
 import { ETH_TOKEN } from '../../../../BobAmmPage/fork-constants';
-
-// TODO: There will be a dictionary with pools, this is just a temporary solution
-const ALLOWED_POOL_TOKENS = [
-  COMMON_SYMBOLS.ETH,
-  COMMON_SYMBOLS.SOV,
-  COMMON_SYMBOLS.WBTC,
-  'GLD',
-];
 
 export const useGetPoolInfo = (assetA: string, assetB: string) => {
   const [price, setPrice] = useState(0);
@@ -20,29 +12,21 @@ export const useGetPoolInfo = (assetA: string, assetB: string) => {
 
   const poolTokens = useMemo(() => {
     if (!croc) {
-      console.log(`croc not initialized`);
-      return;
-    }
-    // TODO: This is just a temporary solution
-    if (
-      !ALLOWED_POOL_TOKENS.includes(assetA) ||
-      !ALLOWED_POOL_TOKENS.includes(assetB)
-    ) {
       return;
     }
 
-    let assetAAddress, assetBAddress;
+    let assetAAddress: string, assetBAddress: string;
 
     if (assetA === COMMON_SYMBOLS.ETH) {
       assetAAddress = ETH_TOKEN;
     } else {
-      assetAAddress = findAsset(assetB, BOB_CHAIN_ID).address;
+      assetAAddress = findAsset(assetB, SEPOLIA_CHAIN_ID).address;
     }
 
     if (assetB === COMMON_SYMBOLS.ETH) {
       assetBAddress = ETH_TOKEN;
     } else {
-      assetBAddress = findAsset(assetB, BOB_CHAIN_ID).address;
+      assetBAddress = findAsset(assetB, SEPOLIA_CHAIN_ID).address;
     }
 
     const tokenA = croc.tokens.materialize(assetAAddress);

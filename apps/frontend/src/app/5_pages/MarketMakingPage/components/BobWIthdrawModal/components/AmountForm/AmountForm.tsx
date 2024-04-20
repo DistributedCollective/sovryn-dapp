@@ -9,7 +9,7 @@ import { AssetRenderer } from '../../../../../../2_molecules/AssetRenderer/Asset
 import { MaxButton } from '../../../../../../2_molecules/MaxButton/MaxButton';
 import { useAccount } from '../../../../../../../hooks/useAccount';
 import { translations } from '../../../../../../../locales/i18n';
-import { AmmLiquidityPool } from '../../../../utils/AmmLiquidityPool';
+import { AmbientLiquidityPool } from '../../../AmbientMarketMaking/utils/AmbientLiquidityPool';
 import { PERCENTAGE_OPTIONS } from './AmountForm.constants';
 import { renderPercentageClassName } from './AmountForm.utils';
 
@@ -20,7 +20,7 @@ type AmountFormProps = {
   setWithdrawAmount: (value: Decimal) => void;
   secondaryWithdrawAmount: Decimal;
   setSecondaryWithdrawAmount: (value: Decimal) => void;
-  pool: AmmLiquidityPool;
+  pool: AmbientLiquidityPool;
 };
 
 export const AmountForm: FC<AmountFormProps> = ({
@@ -103,7 +103,7 @@ export const AmountForm: FC<AmountFormProps> = ({
           <div className="flex justify-end w-full">
             <MaxButton
               value={primaryTokenBalance}
-              token={pool.assetA}
+              token={pool.base}
               onClick={onMaxClick}
             />
           </div>
@@ -118,7 +118,7 @@ export const AmountForm: FC<AmountFormProps> = ({
           maxAmount={primaryTokenBalance.toNumber()}
           label={t(translations.common.amount)}
           className="max-w-none"
-          unit={<AssetRenderer asset={pool.assetA} />}
+          unit={<AssetRenderer asset={pool.base} />}
           disabled={!account}
           placeholder="0"
         />
@@ -129,7 +129,7 @@ export const AmountForm: FC<AmountFormProps> = ({
         readOnly
         label={t(translations.common.amount)}
         className="max-w-none"
-        unit={<AssetRenderer asset={pool.assetB} />}
+        unit={<AssetRenderer asset={pool.quote} />}
         placeholder="0"
       />
     </>

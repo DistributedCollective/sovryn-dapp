@@ -13,23 +13,21 @@ import { useTransactionContext } from '../../../../../../contexts/TransactionCon
 import { useAccount } from '../../../../../../hooks/useAccount';
 import { translations } from '../../../../../../locales/i18n';
 import { PoolPositionType } from '../../../MarketMakingPage.types';
+import { AmbientPosition } from '../../AmbientMarketMaking/AmbientMarketMaking.types';
+import { AmbientLiquidityPool } from '../../AmbientMarketMaking/utils/AmbientLiquidityPool';
 import { DEFAULT_SLIPPAGE } from '../../BobDepositModal/BobDepositModal.constants';
 import { useGetPoolInfo } from './useGetPoolInfo';
-import { useGetPoolLiquidity } from './useGetPoolLiqudity';
 
 export const useHandleSubmit = (
   withdrawAmount: BigNumber,
-  assetA: string,
-  assetB: string,
-  isFullAmountWithdraw: boolean,
-  positionType: PoolPositionType,
+  isFullWithdrawal: boolean,
+  pool: AmbientLiquidityPool,
+  position: AmbientPosition,
+  onComplete: () => void,
 ) => {
   const { signer } = useAccount();
   const { croc } = useCrocContext();
-  const { poolTokens } = useGetPoolInfo(assetA, assetB);
-
-  const { liquidity } = useGetPoolLiquidity(assetA, assetB, positionType);
-  console.log('liquidity', liquidity.toString());
+  const { poolTokens } = useGetPoolInfo(pool.base, pool.quote);
 
   const { setTransactions, setIsOpen, setTitle } = useTransactionContext();
 
@@ -55,8 +53,8 @@ export const useHandleSubmit = (
     let calldata: string = '';
 
     try {
-      if (positionType === PoolPositionType.ambient) {
-        if (isFullAmountWithdraw) {
+      if (position.positionType === PoolPositionType.ambient) {
+        if (isFullWithdrawal) {
           calldata = await pool.burnAmbientAll([price.min, price.max]);
         } else {
           calldata = await pool.burnAmbientLiq(withdrawAmount, [
@@ -64,13 +62,10 @@ export const useHandleSubmit = (
             price.max,
           ]);
         }
-      } else if (positionType === PoolPositionType.concentrated) {
-        // TODO replace with actual tick values from the pool
-        const lowerTick = -665454;
-        const upperTick = 831818;
+      } else if (position.positionType === PoolPositionType.concentrated) {
         calldata = await pool.burnRangeLiq(
-          BigNumber.from(withdrawAmount),
-          [lowerTick, upperTick],
+          withdrawAmount,
+          [position.bidTick, position.askTick],
           [price.min, price.max],
         );
       } else {
@@ -90,6 +85,7 @@ export const useHandleSubmit = (
         value: 0,
         gasLimit: GAS_LIMIT.WITHDRAW_MARKET_MAKING_LIQUIDITY,
       },
+      onComplete,
     });
 
     setTransactions(transactions);
@@ -103,8 +99,9 @@ export const useHandleSubmit = (
     setIsOpen,
     setTitle,
     withdrawAmount,
-    isFullAmountWithdraw,
-    positionType,
+    isFullWithdrawal,
+    position,
+    onComplete,
   ]);
 
   return onSubmit;

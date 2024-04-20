@@ -22,7 +22,6 @@ import { useCheckPoolMaintenance } from '../../../../hooks/useCheckPoolMaintenan
 import { useGetUserInfo } from '../../../../hooks/useGetUserInfo';
 import { AmmLiquidityPool } from '../../../../utils/AmmLiquidityPool';
 import { AdjustAndDepositModal } from '../../../AdjustAndDepositModal/AdjustAndDepositModal';
-import { BobWithdrawModal } from '../../../BobWIthdrawModal/BobWithdrawModal';
 
 type PoolsTableActionProps = {
   pool: AmmLiquidityPool;
@@ -50,8 +49,6 @@ export const PoolsTableAction: FC<PoolsTableActionProps> = ({ pool }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isInitialDeposit, setIsInitialDeposit] = useState(true);
 
-  const [isBobModalOpen, setIsBobModalOpen] = useState(false);
-
   const actionLocked = useMemo(
     () => checkMaintenance(States.D2_MARKET_MAKING_FULL) || poolLocked,
     [States.D2_MARKET_MAKING_FULL, checkMaintenance, poolLocked],
@@ -63,7 +60,6 @@ export const PoolsTableAction: FC<PoolsTableActionProps> = ({ pool }) => {
     }
     setIsInitialDeposit(true);
     setIsModalOpen(true);
-    setIsBobModalOpen(true);
   }, [actionLocked]);
 
   const handleAdjustClick = useCallback(() => {
@@ -77,7 +73,6 @@ export const PoolsTableAction: FC<PoolsTableActionProps> = ({ pool }) => {
   const handleClose = useCallback(() => {
     setIsInitialDeposit(true);
     setIsModalOpen(false);
-    setIsBobModalOpen(false);
   }, []);
 
   useEffect(() => {
@@ -122,7 +117,7 @@ export const PoolsTableAction: FC<PoolsTableActionProps> = ({ pool }) => {
                   size={ButtonSize.small}
                   text={
                     isBobChain && pool.assetA === COMMON_SYMBOLS.SOV
-                      ? 'Withdraw'
+                      ? t(translations.common.withdraw)
                       : t(translations.common.deposit)
                   }
                   dataAttribute="pools-table-deposit-button"
@@ -157,11 +152,6 @@ export const PoolsTableAction: FC<PoolsTableActionProps> = ({ pool }) => {
         onClose={handleClose}
         pool={pool}
         isInitialDeposit={isInitialDeposit}
-      />
-
-      <BobWithdrawModal
-        isOpen={isBobModalOpen && pool.assetA === COMMON_SYMBOLS.SOV}
-        onClose={handleClose}
       />
     </div>
   );

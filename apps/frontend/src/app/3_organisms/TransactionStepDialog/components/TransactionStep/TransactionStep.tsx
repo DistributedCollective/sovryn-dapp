@@ -77,6 +77,19 @@ export const TransactionStep: FC<TransactionStepProps> = ({
 
   useEffect(() => {
     const updateToken = (address: string) => {
+      //FIXME: this logic needs to be updated to handle new typings, and matched with fixes to TransactionStepDialog.types.ts
+      //   if (isTransactionRequest(request) && request.tokenDetails) {
+      //     if (request.tokenDetails.address === address) {
+      //       setToken(request.tokenDetails);
+      //       return;
+      //     } else {
+      //       console.warn(
+      //         "Supplied token details address %s doesn't match address %s",
+      //         request.tokenDetails.address,
+      //         address,
+      //       );
+      //     }
+      //   }
       findContract(address, chainId)
         .then(result => {
           if (result.group === 'assets') {
@@ -97,28 +110,6 @@ export const TransactionStep: FC<TransactionStepProps> = ({
       const { to } = request;
       updateToken(to);
     }
-    //TODO: verify if this logic needs to be integrated into the above code
-    //   if (isTransactionRequest(request) && request.tokenDetails) {
-    //     if (request.tokenDetails.address === address) {
-    //       setToken(request.tokenDetails);
-    //       return;
-    //     } else {
-    //       console.warn(
-    //         "Supplied token details address %s doesn't match address %s",
-    //         request.tokenDetails.address,
-    //         address,
-    //       );
-    //     }
-    //   }
-    //   findContract(address).then(result => {
-    //     if (result.group === 'tokens') {
-    //       getTokenDetailsByAddress(address)
-    //         .then(setToken)
-    //         .catch(e => {
-    //           console.error('token not found?', result, e);
-    //         });
-    //     }
-    //   });
   }, [chainId, request]);
 
   const resetConfig = useCallback(async () => {

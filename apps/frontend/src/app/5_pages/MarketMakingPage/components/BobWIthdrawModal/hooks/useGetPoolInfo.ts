@@ -20,7 +20,7 @@ export const useGetPoolInfo = (assetA: string, assetB: string) => {
     if (assetA === COMMON_SYMBOLS.ETH) {
       assetAAddress = ETH_TOKEN;
     } else {
-      assetAAddress = findAsset(assetB, SEPOLIA_CHAIN_ID).address;
+      assetAAddress = findAsset(assetA, SEPOLIA_CHAIN_ID).address;
     }
 
     if (assetB === COMMON_SYMBOLS.ETH) {

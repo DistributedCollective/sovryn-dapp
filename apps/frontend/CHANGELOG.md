@@ -1,5 +1,11 @@
 # frontend
 
+## 1.0.57
+
+### Patch Changes
+
+- 2473bdd8: SOV-4066: update promotional banners on Landing page
+
 ## 1.0.56
 
 ### Patch Changes

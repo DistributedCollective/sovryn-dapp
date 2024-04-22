@@ -139,19 +139,17 @@ export const BobWithdrawModal: FC<BobWithdrawModalProps> = ({
         const convertedAmount = amount.mul(Math.pow(10, baseTokenDecimals));
         setWithdrawLiquidity(convertedAmount);
       } else if (position.positionType === PoolPositionType.concentrated) {
-        const positionBaseLiquidity = bigNumberic(
-          deposits?.positionLiqBase.toString() || '0',
-        );
-        const withdrawalAmount = bigNumberic(
-          withdrawAmount.mul(Math.pow(10, baseTokenDecimals)).toString() || '0',
-        );
-        const percentageWithdrawal = withdrawalAmount
-          .mul(100)
-          .div(positionBaseLiquidity);
         const positionLiquidity = bigNumberic(
           deposits?.positionLiq.toString() || '0',
         );
-        const withdraw = positionLiquidity.mul(percentageWithdrawal).div(100);
+        const percentage = withdrawAmount
+          .mul(100)
+          .div(depositedAmountBase)
+          .toNumber();
+        const percentageWithDecimal = Number(percentage.toFixed(2)) * 100;
+        const withdraw = bigNumberic(
+          positionLiquidity.mul(percentageWithDecimal).div(1e4),
+        );
         setWithdrawLiquidity(decimalic(withdraw.toString()));
       }
     }

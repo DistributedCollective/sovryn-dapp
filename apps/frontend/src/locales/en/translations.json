@@ -46,6 +46,7 @@
         "withdraw": "Withdraw",
         "txId": "TXID",
         "btc": "BTC",
+        "eth": "ETH",
         "usd": "USD",
         "tx": {
             "signPermitTitle": "Permit {{symbol}}",

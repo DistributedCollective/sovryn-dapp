@@ -7,17 +7,18 @@ import { Button, ButtonStyle, Paragraph } from '@sovryn/ui';
 import { Decimal } from '@sovryn/utils';
 
 import { AmountRenderer } from '../../../../../../2_molecules/AmountRenderer/AmountRenderer';
-import { BITCOIN, USD } from '../../../../../../../constants/currencies';
+import { USD } from '../../../../../../../constants/currencies';
 import { translations } from '../../../../../../../locales/i18n';
 import {
   getCurrencyPrecision,
   getConvertedValue,
+  getNativeToken,
 } from '../../ProtocolSection.utils';
 
 type ProtocolTotalSectionProps = {
   totalValue: Decimal;
   selectedCurrency: string;
-  btcPrice: string;
+  nativeTokenPrice: string;
   onCurrencyChange: (currency: string) => void;
   className?: string;
   title?: string;
@@ -26,12 +27,12 @@ type ProtocolTotalSectionProps = {
 export const ProtocolTotalSection: FC<ProtocolTotalSectionProps> = ({
   totalValue,
   selectedCurrency,
-  btcPrice,
+  nativeTokenPrice,
   onCurrencyChange,
   className,
   title = t(translations.portfolioPage.protocolSection.totalValue),
 }) => {
-  const currencies = useMemo(() => [BITCOIN, USD], []);
+  const currencies = useMemo(() => [getNativeToken(), USD], []);
 
   const renderCurrencyClassName = useMemo(
     () => (currency: string) =>
@@ -61,7 +62,11 @@ export const ProtocolTotalSection: FC<ProtocolTotalSectionProps> = ({
 
       <div className="rounded md:bg-gray-80 text-gray-10 font-medium md:text-[2.25rem] md:p-3 mb-4 truncate">
         <AmountRenderer
-          value={getConvertedValue(totalValue, selectedCurrency, btcPrice)}
+          value={getConvertedValue(
+            totalValue,
+            selectedCurrency,
+            nativeTokenPrice,
+          )}
           suffix={selectedCurrency}
           precision={getCurrencyPrecision(selectedCurrency)}
           dataAttribute="portfolio-total-value"

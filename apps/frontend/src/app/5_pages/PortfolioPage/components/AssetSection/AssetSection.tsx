@@ -5,12 +5,12 @@ import { t } from 'i18next';
 import { Paragraph } from '@sovryn/ui';
 import { Decimal } from '@sovryn/utils';
 
-import { BITCOIN } from '../../../../../constants/currencies';
 import { useAccount } from '../../../../../hooks/useAccount';
 import { useCurrentChain } from '../../../../../hooks/useChainStore';
-import { useGetRBTCPrice } from '../../../../../hooks/zero/useGetRBTCPrice';
+import { useGetNativeTokenPrice } from '../../../../../hooks/useGetNativeTokenPrice';
 import { translations } from '../../../../../locales/i18n';
 import { decimalic } from '../../../../../utils/math';
+import { getNativeToken } from '../ProtocolSection/ProtocolSection.utils';
 import { ProtocolTotalSection } from '../ProtocolSection/components/ProtocolTotalSection/ProtocolTotalSection';
 import { getAvailableTokens } from './AssetSection.constants';
 import { AssetBalanceRow } from './components/AssetBalanceRow/AssetBalanceRow';
@@ -18,9 +18,9 @@ import { AssetSectionActions } from './components/AssetSectionActions/AssetSecti
 
 export const AssetSection: FC = () => {
   const { account } = useAccount();
-  const { price: btcPrice } = useGetRBTCPrice();
-  const [selectedCurrency, setSelectedCurrency] = useState(BITCOIN);
+  const [selectedCurrency, setSelectedCurrency] = useState(getNativeToken());
   const [usdValues, setUsdValues] = useState({});
+  const { price: nativeTokenPrice } = useGetNativeTokenPrice();
   const chainId = useCurrentChain();
   const availableTokens = useMemo(() => getAvailableTokens(chainId), [chainId]);
 
@@ -47,8 +47,8 @@ export const AssetSection: FC = () => {
   );
 
   const totalValue = useMemo(
-    () => decimalic(totalUsdValue.div(btcPrice).toString()),
-    [totalUsdValue, btcPrice],
+    () => decimalic(totalUsdValue.div(nativeTokenPrice).toString()),
+    [totalUsdValue, nativeTokenPrice],
   );
 
   return (
@@ -56,7 +56,7 @@ export const AssetSection: FC = () => {
       <ProtocolTotalSection
         totalValue={totalValue}
         selectedCurrency={selectedCurrency}
-        btcPrice={btcPrice}
+        nativeTokenPrice={nativeTokenPrice}
         onCurrencyChange={setSelectedCurrency}
         title={t(translations.portfolioPage.assetSection.totalAssets)}
         className="md:max-w-sm"

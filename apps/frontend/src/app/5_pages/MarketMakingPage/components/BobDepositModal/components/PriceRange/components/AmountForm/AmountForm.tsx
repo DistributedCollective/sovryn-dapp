@@ -2,6 +2,7 @@ import React, { FC, useCallback, useMemo } from 'react';
 
 import { t } from 'i18next';
 
+import { concDepositSkew } from '@sovryn/sdex';
 import { FormGroup, AmountInput } from '@sovryn/ui';
 
 import { AssetRenderer } from '../../../../../../../../2_molecules/AssetRenderer/AssetRenderer';
@@ -10,6 +11,7 @@ import { useAccount } from '../../../../../../../../../hooks/useAccount';
 import { useAssetBalance } from '../../../../../../../../../hooks/useAssetBalance';
 import { useCurrentChain } from '../../../../../../../../../hooks/useChainStore';
 import { translations } from '../../../../../../../../../locales/i18n';
+import { calculateSecondaryDepositQty } from '../../../../../../../BobAmmPage/ambient-utils';
 import { AmbientLiquidityPool } from '../../../../../AmbientMarketMaking/utils/AmbientLiquidityPool';
 import { useDepositContext } from '../../../../contexts/BobDepositModalContext';
 import { useGetMaxDeposit } from '../../../../hooks/useGetMaxDeposit';
@@ -22,7 +24,7 @@ type AmountFormProps = {
 export const AmountForm: FC<AmountFormProps> = ({ pool }) => {
   const { account } = useAccount();
   const { base, quote } = useMemo(() => pool, [pool]);
-  const { price } = useGetPoolInfo(base, quote);
+  const { price, spotPrice, poolTokens } = useGetPoolInfo(base, quote);
 
   const chainId = useCurrentChain();
 
@@ -32,61 +34,133 @@ export const AmountForm: FC<AmountFormProps> = ({ pool }) => {
     secondAssetValue,
     setSecondAssetValue,
     setUsesBaseToken,
+    minimumPrice,
+    maximumPrice,
+    isBalancedRange,
+    rangeWidth,
   } = useDepositContext();
+
+  const depositSkew = useMemo(
+    () => concDepositSkew(spotPrice, minimumPrice, maximumPrice),
+    [spotPrice, minimumPrice, maximumPrice],
+  );
+
+  const getOtherTokenQuantity = useCallback(
+    async (
+      inputValue: string,
+      primaryToken: 'A' | 'B',
+      isTokenABase: boolean,
+    ) => {
+      if (spotPrice === undefined) {
+        return;
+      }
+
+      const tokenQuantity = calculateSecondaryDepositQty(
+        spotPrice,
+        (await poolTokens?.tokenA.decimals) || 18,
+        (await poolTokens?.tokenB.decimals) || 18,
+        inputValue,
+        primaryToken === 'A',
+        isTokenABase,
+        isBalancedRange && rangeWidth === 100,
+        depositSkew,
+      );
+      return tokenQuantity;
+    },
+    [
+      depositSkew,
+      isBalancedRange,
+      poolTokens?.tokenA.decimals,
+      poolTokens?.tokenB.decimals,
+      rangeWidth,
+      spotPrice,
+    ],
+  );
 
   const { balance: balanceTokenA } = useAssetBalance(base, chainId);
 
   const { balanceTokenB } = useGetMaxDeposit(base, quote);
 
-  const handleFirstAssetMaxClick = useCallback(() => {
+  const handleFirstAssetMaxClick = useCallback(async () => {
     setFirstAssetValue(balanceTokenA.toString());
-    setSecondAssetValue(String(balanceTokenA.toNumber() * price));
+
+    const secondAssetQuantity = await getOtherTokenQuantity(
+      balanceTokenA.toString(),
+      'A',
+      true,
+    );
+
+    setSecondAssetValue(secondAssetQuantity);
     setUsesBaseToken(true);
   }, [
     balanceTokenA,
-    price,
+    getOtherTokenQuantity,
     setFirstAssetValue,
     setSecondAssetValue,
     setUsesBaseToken,
   ]);
 
-  const handleSecondAssetMaxClick = useCallback(() => {
+  const handleSecondAssetMaxClick = useCallback(async () => {
     setSecondAssetValue(balanceTokenB.toString());
-    setFirstAssetValue(String(balanceTokenB.toNumber() / price));
+
+    const firstAssetQuantity = await getOtherTokenQuantity(
+      balanceTokenB.toString(),
+      'B',
+      true,
+    );
+
+    setFirstAssetValue(firstAssetQuantity);
     setUsesBaseToken(false);
   }, [
     balanceTokenB,
-    price,
+    getOtherTokenQuantity,
     setFirstAssetValue,
     setSecondAssetValue,
     setUsesBaseToken,
   ]);
 
   const onFirstAssetChange = useCallback(
-    (value: string) => {
+    async (value: string) => {
       setUsesBaseToken(true);
       setFirstAssetValue(value);
       if (price === 0) {
         return;
       }
 
-      setSecondAssetValue(String(Number(value) * price));
+      const secondAssetQuantity = await getOtherTokenQuantity(value, 'A', true);
+
+      setSecondAssetValue(secondAssetQuantity);
     },
-    [price, setFirstAssetValue, setSecondAssetValue, setUsesBaseToken],
+    [
+      price,
+      setFirstAssetValue,
+      setSecondAssetValue,
+      setUsesBaseToken,
+      getOtherTokenQuantity,
+    ],
   );
 
   const onSecondAssetChange = useCallback(
-    (value: string) => {
+    async (value: string) => {
       setUsesBaseToken(false);
       setSecondAssetValue(value);
       if (price === 0) {
         return;
       }
 
-      setFirstAssetValue(String(Number(value) / price));
+      const firstAssetQuantity = await getOtherTokenQuantity(value, 'B', true);
+
+      setFirstAssetValue(firstAssetQuantity);
     },
-    [price, setFirstAssetValue, setSecondAssetValue, setUsesBaseToken],
+    [
+      price,
+      setFirstAssetValue,
+      setSecondAssetValue,
+      setUsesBaseToken,
+      getOtherTokenQuantity,
+    ],
   );
+
   return (
     <>
       <FormGroup

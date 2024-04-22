@@ -20,6 +20,7 @@ import { useCrocContext } from '../../../../../contexts/CrocContext';
 import { translations } from '../../../../../locales/i18n';
 import { bigNumberic, decimalic } from '../../../../../utils/math';
 import { PoolPositionType } from '../../MarketMakingPage.types';
+import { useGetPool } from '../../hooks/useGetPool';
 import { AmbientPosition } from '../AmbientMarketMaking/AmbientMarketMaking.types';
 import { AmbientPositionBalance } from '../AmbientMarketMaking/components/AmbientPoolPositions/components/AmbientPositionBalance/AmbientPositionBalance';
 import { useAmbientPositionBalance } from '../AmbientMarketMaking/components/AmbientPoolPositions/hooks/useAmbientPositionBalance';
@@ -27,7 +28,6 @@ import { usePoolSpotPrice } from '../AmbientMarketMaking/components/AmbientPoolP
 import { AmbientLiquidityPool } from '../AmbientMarketMaking/utils/AmbientLiquidityPool';
 import { AmountForm } from './components/AmountForm/AmountForm';
 import { NewPoolStatistics } from './components/NewPoolStatistics/NewPoolStatistics';
-import { useGetPoolInfo } from './hooks/useGetPoolInfo';
 import { useHandleSubmit } from './hooks/useHandleSubmit';
 
 const pageTranslations = translations.bobMarketMakingPage.withdrawModal;
@@ -63,7 +63,7 @@ export const BobWithdrawModal: FC<BobWithdrawModalProps> = ({
   );
   const [withdrawLiquidity, setWithdrawLiquidity] = useState(Decimal.ZERO);
   const [poolPrice, setPoolPrice] = useState(0);
-  const { poolTokens } = useGetPoolInfo(pool.base, pool.quote);
+  const { poolTokens } = useGetPool(pool.base, pool.quote);
 
   const isFullWithdrawal = useMemo(
     () =>

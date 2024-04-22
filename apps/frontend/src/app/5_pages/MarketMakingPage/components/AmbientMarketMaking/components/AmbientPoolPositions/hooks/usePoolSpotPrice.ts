@@ -1,6 +1,6 @@
 import { useCacheCall } from '../../../../../../../../hooks';
 import { useCurrentChain } from '../../../../../../../../hooks/useChainStore';
-import { useGetPool } from '../../../../BobDepositModal/hooks/useGetPool';
+import { useGetPool } from '../../../../../hooks/useGetPool';
 
 export const usePoolSpotPrice = (assetA: string, assetB: string) => {
   const chainId = useCurrentChain();

@@ -6,11 +6,14 @@ import {
   EthersLiquity,
   ReadableEthersLiquityWithStore,
 } from '@sovryn-zero/lib-ethers';
+import { ChainIds } from '@sovryn/ethers-provider';
 import { Decimal } from '@sovryn/utils';
 
 import { AmountRenderer } from '../../../../../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { useAccount } from '../../../../../../../../../hooks/useAccount';
 import { useBlockNumber } from '../../../../../../../../../hooks/useBlockNumber';
+import { useCurrentChain } from '../../../../../../../../../hooks/useChainStore';
+import { isBobChain } from '../../../../../../../../../utils/chain';
 import { decimalic } from '../../../../../../../../../utils/math';
 import {
   ProtocolTypes,
@@ -29,6 +32,7 @@ export const StabilityPoolTotalValue: FC<ProtocolSectionProps> = ({
   const { account } = useAccount();
   const { value: block } = useBlockNumber();
 
+  const chainId = useCurrentChain();
   const [balance, setBalance] = useState(Decimal.ZERO);
 
   const { liquity } = useLoaderData() as {
@@ -38,12 +42,17 @@ export const StabilityPoolTotalValue: FC<ProtocolSectionProps> = ({
 
   const renderTotalBalance = useMemo(
     () =>
-      account ? getConvertedValue(balance, selectedCurrency, btcPrice) : 0,
-    [balance, selectedCurrency, btcPrice, account],
+      account
+        ? getConvertedValue(balance, selectedCurrency, btcPrice, chainId)
+        : 0,
+    [account, balance, selectedCurrency, btcPrice, chainId],
   );
 
   const getStabilityDeposit = useCallback(async () => {
     if (!account || !liquity || !btcPrice) {
+      return;
+    }
+    if (liquity.connection.chainId !== Number(chainId)) {
       return;
     }
     try {
@@ -53,7 +62,7 @@ export const StabilityPoolTotalValue: FC<ProtocolSectionProps> = ({
     } catch (error) {
       console.error('Error fetching stability deposit:', error);
     }
-  }, [account, liquity, btcPrice]);
+  }, [account, liquity, btcPrice, chainId]);
 
   useEffect(() => {
     getStabilityDeposit();
@@ -62,6 +71,17 @@ export const StabilityPoolTotalValue: FC<ProtocolSectionProps> = ({
   useEffect(() => {
     onValueChange(balance, ProtocolTypes.STABILITY_POOL);
   }, [balance, onValueChange]);
+
+  if (isBobChain(chainId) || chainId === ChainIds.SEPOLIA) {
+    return (
+      <AmountRenderer
+        value={0}
+        suffix={selectedCurrency}
+        precision={getCurrencyPrecision(selectedCurrency)}
+        isAnimated
+      />
+    );
+  }
 
   return (
     <AmountRenderer

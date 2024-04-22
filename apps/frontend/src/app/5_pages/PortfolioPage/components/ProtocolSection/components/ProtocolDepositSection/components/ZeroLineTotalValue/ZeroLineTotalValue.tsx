@@ -3,11 +3,14 @@ import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useLoaderData } from 'react-router-dom';
 
 import { UserTrove } from '@sovryn-zero/lib-base';
+import { ChainIds } from '@sovryn/ethers-provider';
 import { Decimal } from '@sovryn/utils';
 
 import { AmountRenderer } from '../../../../../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { useAccount } from '../../../../../../../../../hooks/useAccount';
 import { useBlockNumber } from '../../../../../../../../../hooks/useBlockNumber';
+import { useCurrentChain } from '../../../../../../../../../hooks/useChainStore';
+import { isBobChain } from '../../../../../../../../../utils/chain';
 import { decimalic } from '../../../../../../../../../utils/math';
 import { ZeroPageLoaderData } from '../../../../../../../ZeroPage/loader';
 import {
@@ -29,15 +32,21 @@ export const ZeroLineTotalValue: FC<ProtocolSectionProps> = ({
   const { liquity } = useLoaderData() as ZeroPageLoaderData;
   const [balance, setBalance] = useState(Decimal.ZERO);
   const { value: block } = useBlockNumber();
+  const chainId = useCurrentChain();
 
   const renderTotalBalance = useMemo(
     () =>
-      account ? getConvertedValue(balance, selectedCurrency, btcPrice) : 0,
-    [balance, selectedCurrency, btcPrice, account],
+      account
+        ? getConvertedValue(balance, selectedCurrency, btcPrice, chainId)
+        : 0,
+    [account, balance, selectedCurrency, btcPrice, chainId],
   );
 
   const getTroves = useCallback(async () => {
     if (!account || !liquity) {
+      return;
+    }
+    if (liquity.connection.chainId !== Number(chainId)) {
       return;
     }
     try {
@@ -46,7 +55,7 @@ export const ZeroLineTotalValue: FC<ProtocolSectionProps> = ({
     } catch (error) {
       console.error('Error fetching Troves:', error);
     }
-  }, [account, liquity]);
+  }, [account, chainId, liquity]);
 
   useEffect(() => {
     getTroves();
@@ -59,6 +68,17 @@ export const ZeroLineTotalValue: FC<ProtocolSectionProps> = ({
   useEffect(() => {
     onValueChange(balance, ProtocolTypes.ZERO_LINE_OF_CREDIT);
   }, [balance, onValueChange]);
+
+  if (isBobChain(chainId) || chainId === ChainIds.SEPOLIA) {
+    return (
+      <AmountRenderer
+        value={0}
+        suffix={selectedCurrency}
+        precision={getCurrencyPrecision(selectedCurrency)}
+        isAnimated
+      />
+    );
+  }
 
   return (
     <AmountRenderer

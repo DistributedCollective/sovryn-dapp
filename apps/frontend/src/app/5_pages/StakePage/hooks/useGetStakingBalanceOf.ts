@@ -1,5 +1,3 @@
-import { RSK_CHAIN_ID } from '../../../../config/chains';
-
 import { useCacheCall } from '../../../../hooks';
 import { useCurrentChain } from '../../../../hooks/useChainStore';
 import { useGetProtocolContract } from '../../../../hooks/useGetContract';
@@ -10,7 +8,7 @@ export const useGetStakingBalanceOf = (address: string) => {
 
   const { value: balance } = useCacheCall(
     `staking/${stakingContract?.address}/${address}/balanceOf`,
-    RSK_CHAIN_ID,
+    chainId,
     async () =>
       address && stakingContract ? stakingContract.balanceOf(address) : '0',
     [address],

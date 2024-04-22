@@ -1,5 +1,6 @@
 import React, { FC, useEffect, useMemo, useState } from 'react';
 
+import { getAssetData } from '@sovryn/contracts';
 import { Decimal } from '@sovryn/utils';
 
 import { RSK_CHAIN_ID } from '../../../../../../../../../config/chains';
@@ -7,6 +8,8 @@ import { RSK_CHAIN_ID } from '../../../../../../../../../config/chains';
 import { AmountRenderer } from '../../../../../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { useAccount } from '../../../../../../../../../hooks/useAccount';
 import { useBlockNumber } from '../../../../../../../../../hooks/useBlockNumber';
+import { useCurrentChain } from '../../../../../../../../../hooks/useChainStore';
+import { COMMON_SYMBOLS } from '../../../../../../../../../utils/asset';
 import { removeTrailingZerosFromString } from '../../../../../../../../../utils/helpers';
 import { decimalic, fromWei } from '../../../../../../../../../utils/math';
 import { SMART_ROUTER_RSK } from '../../../../../../../ConvertPage/ConvertPage.constants';
@@ -19,8 +22,6 @@ import {
   getCurrencyPrecision,
   getConvertedValue,
 } from '../../../../ProtocolSection.utils';
-import { getAssetData } from '@sovryn/contracts';
-import { COMMON_SYMBOLS } from '../../../../../../../../../utils/asset';
 
 export const StakingTotalValue: FC<ProtocolSectionProps> = ({
   selectedCurrency,
@@ -30,13 +31,16 @@ export const StakingTotalValue: FC<ProtocolSectionProps> = ({
   const { account } = useAccount();
   const { value: block } = useBlockNumber();
   const [balance, setBalance] = useState(Decimal.ZERO);
+  const chainId = useCurrentChain();
 
   const { balance: stakedValue } = useGetStakingBalanceOf(account);
 
   const renderTotalBalance = useMemo(
     () =>
-      account ? getConvertedValue(balance, selectedCurrency, btcPrice) : 0,
-    [balance, selectedCurrency, btcPrice, account],
+      account
+        ? getConvertedValue(balance, selectedCurrency, btcPrice, chainId)
+        : 0,
+    [account, balance, selectedCurrency, btcPrice, chainId],
   );
 
   useEffect(() => {

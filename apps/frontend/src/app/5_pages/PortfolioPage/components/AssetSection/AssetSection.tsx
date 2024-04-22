@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useMemo, useState } from 'react';
+import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 
 import { t } from 'i18next';
 
@@ -18,12 +18,18 @@ import { AssetSectionActions } from './components/AssetSectionActions/AssetSecti
 
 export const AssetSection: FC = () => {
   const { account } = useAccount();
-  const [selectedCurrency, setSelectedCurrency] = useState(getNativeToken());
+  const chainId = useCurrentChain();
+
+  const [selectedCurrency, setSelectedCurrency] = useState(
+    getNativeToken(chainId),
+  );
   const [usdValues, setUsdValues] = useState({});
   const { price: nativeTokenPrice } = useGetNativeTokenPrice();
-  const chainId = useCurrentChain();
   const availableTokens = useMemo(() => getAvailableTokens(chainId), [chainId]);
 
+  useEffect(() => {
+    setUsdValues({});
+  }, [chainId]);
   const updateUsdValue = useCallback((token: string, usdValue: string) => {
     setUsdValues(prevUsdValues => {
       if (prevUsdValues[token] === usdValue) {

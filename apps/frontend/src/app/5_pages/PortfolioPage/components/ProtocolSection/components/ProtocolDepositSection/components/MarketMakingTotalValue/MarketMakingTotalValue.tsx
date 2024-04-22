@@ -1,10 +1,13 @@
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 
+import { ChainIds } from '@sovryn/ethers-provider';
 import { Decimal } from '@sovryn/utils';
 
 import { AmountRenderer } from '../../../../../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { useAccount } from '../../../../../../../../../hooks/useAccount';
 import { useBlockNumber } from '../../../../../../../../../hooks/useBlockNumber';
+import { useCurrentChain } from '../../../../../../../../../hooks/useChainStore';
+import { isBobChain } from '../../../../../../../../../utils/chain';
 import { AmmLiquidityPoolDictionary } from '../../../../../../../MarketMakingPage/utils/AmmLiquidityPoolDictionary';
 import {
   ProtocolTypes,
@@ -26,9 +29,9 @@ export const MarketMakingTotalValue: FC<ProtocolSectionProps> = ({
 }) => {
   const { account } = useAccount();
   const { value: block } = useBlockNumber();
-
   const [poolValues, setPoolValues] = useState<PoolValues>({});
   const [addedPools, setAddedPools] = useState<Set<string>>(new Set());
+  const chainId = useCurrentChain();
 
   const handleBalanceUpdate = useCallback(
     (newBalance: Decimal, poolId: string) => {
@@ -56,9 +59,10 @@ export const MarketMakingTotalValue: FC<ProtocolSectionProps> = ({
             ),
             selectedCurrency,
             btcPrice,
+            chainId,
           )
         : 0,
-    [poolValues, selectedCurrency, btcPrice, account],
+    [account, poolValues, selectedCurrency, btcPrice, chainId],
   );
 
   const totalBalance = useMemo(
@@ -81,6 +85,17 @@ export const MarketMakingTotalValue: FC<ProtocolSectionProps> = ({
       onValueChange(Decimal.ZERO, ProtocolTypes.MARKET_MAKING);
     }
   }, [account, onValueChange, totalBalance]);
+
+  if (isBobChain(chainId) || chainId === ChainIds.SEPOLIA) {
+    return (
+      <AmountRenderer
+        value={0}
+        suffix={selectedCurrency}
+        precision={getCurrencyPrecision(selectedCurrency)}
+        isAnimated
+      />
+    );
+  }
 
   return (
     <>

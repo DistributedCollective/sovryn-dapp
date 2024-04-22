@@ -501,13 +501,13 @@
             },
             "runesExtraSpice": {
                 "title": "RUNES & EXTRA SPICE",
-                "description": "Get early exposure to bitcoin tokens with our points campaign. In collaboration with BOB.",
+                "description": "Get early exposure to bitcoin tokens with our points campaign. In collaboration with BOB. Last chance! Open until April 30!",
                 "cta": "Learn More"
             },
             "runesBridge": {
-                "title": "RUNES HAVE ARRIVED",
-                "description": "Now Runes are tradable on mainnet! Deposit Runes from bitcoin via Runes bridge and start trading on Sovryn.",
-                "cta": "Deposit Runes"
+                "title": "RUNES ARE COMING",
+                "description": "Runes will soon be tradeable on mainnet! Runes bridge is being prepared to go live. Stay tuned!",
+                "cta": "Learn more about Runes"
             }
         },
         "titleSection": {

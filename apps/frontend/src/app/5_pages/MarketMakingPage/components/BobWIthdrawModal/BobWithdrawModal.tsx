@@ -94,15 +94,8 @@ export const BobWithdrawModal: FC<BobWithdrawModalProps> = ({
   );
 
   const isValidAmount = useMemo(
-    () =>
-      Number(withdrawAmount) <= Number(depositedAmountBase) ||
-      secondaryWithdrawAmount <= depositedAmountQuote,
-    [
-      withdrawAmount,
-      depositedAmountBase,
-      secondaryWithdrawAmount,
-      depositedAmountQuote,
-    ],
+    () => Number(withdrawAmount) <= Number(depositedAmountBase),
+    [withdrawAmount, depositedAmountBase],
   );
 
   const isSubmitDisabled = useMemo(

@@ -9,6 +9,7 @@ import {
   SMART_ROUTER_STABLECOINS,
 } from '../app/5_pages/ConvertPage/ConvertPage.constants';
 import { COMMON_SYMBOLS } from '../utils/asset';
+import { isRskChain } from '../utils/chain';
 import { decimalic, fromWei, toWei } from '../utils/math';
 import { useCacheCall } from './useCacheCall';
 import { useCurrentChain } from './useChainStore';
@@ -20,10 +21,14 @@ export function useDollarValue(
   weiAmount: string,
   chainId?: ChainId,
 ) {
-  if (['zusd', 'usdc', 'usdt', 'dai'].includes(asset.toLowerCase())) {
-    asset = 'XUSD';
-  }
   const chain = useCurrentChain();
+  if (['zusd', 'usdc', 'usdt', 'dai'].includes(asset.toLowerCase())) {
+    if (isRskChain(chainId || chain)) {
+      asset = COMMON_SYMBOLS.XUSD;
+    } else {
+      asset = COMMON_SYMBOLS.DLLR;
+    }
+  }
   const assetDetails = useTokenDetailsByAsset(asset, chainId || chain);
   const dllrDetails = useTokenDetailsByAsset(
     COMMON_SYMBOLS.DLLR, // todo: define USD equivalent token for all chains in config

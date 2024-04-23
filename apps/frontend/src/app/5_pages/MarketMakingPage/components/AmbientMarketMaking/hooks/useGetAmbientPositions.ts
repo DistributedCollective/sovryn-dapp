@@ -42,7 +42,14 @@ export const useGetAmbientPositions = (pool: AmbientLiquidityPool) => {
         return [];
       }
     },
-    [baseToken, quoteToken, pool, account, blockNumber],
+    [
+      baseToken?.address,
+      quoteToken?.address,
+      pool.poolIdx,
+      account,
+      blockNumber,
+      chainId,
+    ],
     [],
   );
 

@@ -16,17 +16,13 @@ export const useGetTokenDecimals = (
 
       setLoading(true);
 
-      try {
-        const [baseDecimals, quoteDecimals] = await Promise.all([
-          baseToken.decimals,
-          quoteToken.decimals,
-        ]);
+      const [baseDecimals, quoteDecimals] = await Promise.all([
+        baseToken.decimals,
+        quoteToken.decimals,
+      ]);
 
-        setBaseTokenDecimals(baseDecimals);
-        setQuoteTokenDecimals(quoteDecimals);
-      } catch (error) {
-        console.error('Error fetching token decimals:', error);
-      }
+      setBaseTokenDecimals(baseDecimals);
+      setQuoteTokenDecimals(quoteDecimals);
 
       setLoading(false);
     };

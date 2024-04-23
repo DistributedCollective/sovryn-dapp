@@ -24,8 +24,8 @@ import { useGetPool } from '../../hooks/useGetPool';
 import { AmbientPosition } from '../AmbientMarketMaking/AmbientMarketMaking.types';
 import { AmbientPositionBalance } from '../AmbientMarketMaking/components/AmbientPoolPositions/components/AmbientPositionBalance/AmbientPositionBalance';
 import { useAmbientPositionBalance } from '../AmbientMarketMaking/components/AmbientPoolPositions/hooks/useAmbientPositionBalance';
-import { usePoolSpotPrice } from '../AmbientMarketMaking/components/AmbientPoolPositions/hooks/usePoolSpotPrice';
 import { AmbientLiquidityPool } from '../AmbientMarketMaking/utils/AmbientLiquidityPool';
+import { useGetPoolInfo } from '../BobDepositModal/hooks/useGetPoolInfo';
 import { AmountForm } from './components/AmountForm/AmountForm';
 import { NewPoolStatistics } from './components/NewPoolStatistics/NewPoolStatistics';
 import { useGetTokenDecimals } from './hooks/useGetTokenDecimals';
@@ -58,7 +58,7 @@ export const BobWithdrawModal: FC<BobWithdrawModalProps> = ({
   const [secondaryWithdrawAmount, setSecondaryWithdrawAmount] = useState(
     Decimal.ZERO,
   );
-  const { value: price } = usePoolSpotPrice(pool.base, pool.quote);
+  const { spotPrice: price } = useGetPoolInfo(pool.base, pool.quote);
   const [sqrtPrice, setSqrtPrice] = useState(0);
   const [withdrawLiquidity, setWithdrawLiquidity] = useState(Decimal.ZERO);
   const { poolTokens } = useGetPool(pool.base, pool.quote);
@@ -137,19 +137,17 @@ export const BobWithdrawModal: FC<BobWithdrawModalProps> = ({
   }, [withdrawAmount, sqrtPrice, baseTokenDecimals]);
 
   const handleConcentratedPosition = useCallback(() => {
-    const positionLiquidity = bigNumberic(
-      deposits?.positionLiq.toString() || '0',
-    );
     const percentage = withdrawAmount
       .mul(100)
       .div(depositedAmountBase)
       .toNumber();
     const percentageWithDecimal = Number(percentage.toFixed(2)) * 100;
-    const withdraw = bigNumberic(
-      positionLiquidity.mul(percentageWithDecimal).div(1e4),
-    );
+    const withdraw = bigNumberic(totalLiquidity)
+      .mul(percentageWithDecimal)
+      .div(1e4);
+
     setWithdrawLiquidity(decimalic(withdraw.toString()));
-  }, [withdrawAmount, depositedAmountBase, deposits]);
+  }, [withdrawAmount, depositedAmountBase, totalLiquidity]);
 
   const handleSecondaryWithdraw = useCallback(() => {
     const amount = secondaryWithdrawAmount.mul(sqrtPrice);

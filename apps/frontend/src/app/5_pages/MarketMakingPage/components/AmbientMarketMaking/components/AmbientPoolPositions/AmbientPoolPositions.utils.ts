@@ -31,7 +31,14 @@ export const getPositionBalance = (
       positionLiqQuote: Number(positionLiqQuote),
     };
   } else if (position.positionType === PoolPositionType.concentrated) {
-    const positionLiq = position.concLiq;
+    let positionLiq = position.concLiq;
+    const positionLiqString = String(positionLiq);
+    if (
+      positionLiqString.includes('e+') ||
+      positionLiqString.includes('0000')
+    ) {
+      positionLiq -= 1e7;
+    }
 
     const positionLiqBase = bigNumToFloat(
       baseTokenForConcLiq(

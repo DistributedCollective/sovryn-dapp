@@ -1,8 +1,8 @@
 import { useMemo } from 'react';
 
-import { useCrocContext } from '../../../../../../contexts/CrocContext';
-import { useCurrentChain } from '../../../../../../hooks/useChainStore';
-import { findAsset } from '../../../../../../utils/asset';
+import { useCrocContext } from '../../../../contexts/CrocContext';
+import { useCurrentChain } from '../../../../hooks/useChainStore';
+import { findAsset } from '../../../../utils/asset';
 
 export const useGetPool = (assetA: string, assetB: string) => {
   const chainId = useCurrentChain();

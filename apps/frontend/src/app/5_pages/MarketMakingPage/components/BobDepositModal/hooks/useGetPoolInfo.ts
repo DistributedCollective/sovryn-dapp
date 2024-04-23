@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 
 import { useCurrentChain } from '../../../../../../hooks/useChainStore';
 import { getIndexerUri } from '../../../../../../utils/indexer';
-import { useGetPool } from './useGetPool';
+import { useGetPool } from '../../../hooks/useGetPool';
 
 export const useGetPoolInfo = (assetA: string, assetB: string) => {
   const chainId = useCurrentChain();

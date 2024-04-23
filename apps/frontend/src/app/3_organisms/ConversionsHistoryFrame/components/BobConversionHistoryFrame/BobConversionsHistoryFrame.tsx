@@ -24,6 +24,7 @@ import { getTokenDisplayNameByAddress } from '../../../../../constants/tokens';
 import { useNotificationContext } from '../../../../../contexts/NotificationContext';
 import { useAccount } from '../../../../../hooks/useAccount';
 import { useBlockNumber } from '../../../../../hooks/useBlockNumber';
+import { getCurrentChain } from '../../../../../hooks/useChainStore';
 import { translations } from '../../../../../locales/i18n';
 import { sepoliaSdexClient } from '../../../../../utils/clients';
 import {
@@ -43,7 +44,6 @@ export const BobConversionsHistoryFrame: React.FC<PropsWithChildren> = ({
 }) => {
   const { account } = useAccount();
   const [page, setPage] = useState(0);
-
   const { value: block } = useBlockNumber();
 
   const { addNotification } = useNotificationContext();
@@ -105,11 +105,11 @@ export const BobConversionsHistoryFrame: React.FC<PropsWithChildren> = ({
         ? Math.abs(Number(fromWei(tx.baseFlow)))
         : Math.abs(Number(fromWei(tx.quoteFlow))),
       sentToken: tx.inBaseQty
-        ? getTokenDisplayNameByAddress(tx.pool.base)
-        : getTokenDisplayNameByAddress(tx.pool.quote),
+        ? getTokenDisplayNameByAddress(tx.pool.base, getCurrentChain())
+        : getTokenDisplayNameByAddress(tx.pool.quote, getCurrentChain()),
       receivedToken: tx.inBaseQty
-        ? getTokenDisplayNameByAddress(tx.pool.quote)
-        : getTokenDisplayNameByAddress(tx.pool.base),
+        ? getTokenDisplayNameByAddress(tx.pool.quote, getCurrentChain())
+        : getTokenDisplayNameByAddress(tx.pool.base, getCurrentChain()),
       received: tx.inBaseQty
         ? Math.abs(Number(fromWei(tx.quoteFlow)))
         : Math.abs(Number(fromWei(tx.baseFlow))),

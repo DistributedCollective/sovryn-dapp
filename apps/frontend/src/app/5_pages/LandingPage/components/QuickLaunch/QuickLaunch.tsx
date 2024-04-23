@@ -3,6 +3,8 @@ import React, { FC, useMemo } from 'react';
 import { t } from 'i18next';
 import { useNavigate } from 'react-router-dom';
 
+import { Chains } from '../../../../../config/chains';
+
 import { CTA } from '../../../../2_molecules/CTA/CTA';
 import borrowBg from '../../../../../assets/images/QuickLaunch/borrow_bg.svg';
 import earnBg from '../../../../../assets/images/QuickLaunch/earn_bg.svg';
@@ -43,6 +45,7 @@ export const QuickLaunch: FC = () => {
       action: t(pageTranslations.quickLaunch.stake.action),
       url: () => navigate('/earn/staking'),
       backgroundImage: stakeBg,
+      badges: [Chains.RSK],
     },
     {
       title: t(pageTranslations.quickLaunch.earn.title, {
@@ -52,6 +55,7 @@ export const QuickLaunch: FC = () => {
       action: t(pageTranslations.quickLaunch.earn.action),
       url: () => navigate('/earn/market-making'),
       backgroundImage: earnBg,
+      badges: [Chains.RSK, Chains.BOB],
     },
     {
       title: t(pageTranslations.quickLaunch.lend.title, {
@@ -61,6 +65,7 @@ export const QuickLaunch: FC = () => {
       action: t(pageTranslations.quickLaunch.lend.action),
       url: () => navigate('/earn/lend'),
       backgroundImage: lendBg,
+      badges: [Chains.RSK],
     },
     {
       title: t(pageTranslations.quickLaunch.borrow.title),
@@ -68,6 +73,7 @@ export const QuickLaunch: FC = () => {
       action: t(pageTranslations.quickLaunch.borrow.action),
       url: () => navigate('/borrow/fixed-interest'),
       backgroundImage: borrowBg,
+      badges: [Chains.RSK],
     },
   ];
 
@@ -82,6 +88,7 @@ export const QuickLaunch: FC = () => {
           description={option.description}
           action={option.action}
           navigateTo={option.url}
+          badges={option.badges}
         />
       ))}
     </div>

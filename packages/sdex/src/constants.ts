@@ -39,6 +39,31 @@ export interface ChainSpec {
 const ETHEREUM_LOGO =
   'https://d33wubrfki0l68.cloudfront.net/fcd4ecd90386aeb50a235ddc4f0063cfbb8a7b66/4295e/static/bfc04ac72981166c740b189463e1f74c/40129/eth-diamond-black-white.jpg';
 
+const BOB_CHAIN: ChainSpec = {
+  nodeUrl: 'https://rpc.gobob.xyz',
+  addrs: {
+    // todo: update addresses
+    dex: '0xA86F239490bd35923eCBD578C2A8989803294bee',
+    query: '0x9d9Fd4127E988B95E25F058cf11B274ffA98801E',
+    impact: '0xdB0Bb1e4b7aA5a747E17957FC66C772cea089ec5',
+    router: '0x3F1cE244F286e9e16B68cd117b07A7c4a8bf815e',
+    routerBypass: '0xAeb44C43Edd3a13921C626ACE5515deB243A5653',
+  },
+  poolIndex: 36000,
+  isTestNet: true,
+  chainId: '0xed88', // 60808
+  gridSize: 16,
+  proxyPaths: {
+    cold: 3,
+    long: 130,
+    liq: 128,
+    dfltColdSwap: true,
+  },
+  blockExplorer: 'https://xplorer.gobob.xyz',
+  displayName: 'BOB',
+  logoUrl: ETHEREUM_LOGO,
+};
+
 const BOB_TESTNET_CHAIN: ChainSpec = {
   nodeUrl: 'https://testnet.rpc.gobob.xyz',
   // wsUrl: 'wss://sepolia-dencun.rpc.gobob.xyz/wss',
@@ -113,12 +138,14 @@ const LOCAL_FORK_CHAIN: ChainSpec = Object.assign({}, SEPOLIA_CHAIN, {
 });
 
 export const CHAIN_SPECS: { [chainId: string]: ChainSpec } = {
+  '0xed88': BOB_CHAIN,
   '0x6f': BOB_TESTNET_CHAIN,
   '0x7a69': LOCAL_FORK_CHAIN,
   '0xaa36a7': SEPOLIA_CHAIN,
   '0x1b669': TENDERLY_FORK,
   sepolia: SEPOLIA_CHAIN,
   local: LOCAL_FORK_CHAIN,
+  bob: BOB_CHAIN,
   bobTestnet: BOB_TESTNET_CHAIN,
   fork: TENDERLY_FORK,
 };

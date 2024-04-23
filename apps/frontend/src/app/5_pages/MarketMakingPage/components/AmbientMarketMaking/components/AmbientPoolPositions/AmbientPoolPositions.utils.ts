@@ -16,6 +16,7 @@ export const getPositionBalance = (
   if (!spotPrice) {
     return;
   }
+
   if (position.positionType === PoolPositionType.ambient) {
     const positionLiq = position.ambientLiq;
     const positionLiqBase = Number(positionLiq * Math.sqrt(spotPrice)).toFixed(
@@ -31,15 +32,7 @@ export const getPositionBalance = (
       positionLiqQuote: Number(positionLiqQuote),
     };
   } else if (position.positionType === PoolPositionType.concentrated) {
-    let positionLiq = position.concLiq;
-    const positionLiqString = String(positionLiq);
-    if (
-      positionLiqString.includes('e+') ||
-      positionLiqString.includes('0000')
-    ) {
-      positionLiq -= 1e7;
-    }
-
+    const positionLiq = position.concLiq;
     const positionLiqBase = bigNumToFloat(
       baseTokenForConcLiq(
         spotPrice,

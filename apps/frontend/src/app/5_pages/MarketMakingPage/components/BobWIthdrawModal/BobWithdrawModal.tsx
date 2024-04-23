@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useMemo, useState } from 'react';
+import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 
 import { t } from 'i18next';
 
@@ -28,6 +28,7 @@ import { usePoolSpotPrice } from '../AmbientMarketMaking/components/AmbientPoolP
 import { AmbientLiquidityPool } from '../AmbientMarketMaking/utils/AmbientLiquidityPool';
 import { AmountForm } from './components/AmountForm/AmountForm';
 import { NewPoolStatistics } from './components/NewPoolStatistics/NewPoolStatistics';
+import { useGetTokenDecimals } from './hooks/useGetTokenDecimals';
 import { useHandleSubmit } from './hooks/useHandleSubmit';
 
 const pageTranslations = translations.bobMarketMakingPage.withdrawModal;
@@ -46,24 +47,40 @@ export const BobWithdrawModal: FC<BobWithdrawModalProps> = ({
   position,
 }) => {
   const { croc } = useCrocContext();
-  const { value: price } = usePoolSpotPrice(pool.base, pool.quote);
-
   const deposits = useAmbientPositionBalance(pool, position);
-
-  const [baseTokenDecimals, setBaseTokenDecimals] = useState(0);
-  const [quoteTokenDecimals, setQuoteTokenDecimals] = useState(0);
 
   const [depositedAmountBase, setDepositedAmountBase] = useState(Decimal.ZERO);
   const [depositedAmountQuote, setDepositedAmountQuote] = useState(
     Decimal.ZERO,
   );
+  const [totalLiquidity, setTotalLiquidity] = useState('0');
   const [withdrawAmount, setWithdrawAmount] = useState(Decimal.ZERO);
   const [secondaryWithdrawAmount, setSecondaryWithdrawAmount] = useState(
     Decimal.ZERO,
   );
+  const { value: price } = usePoolSpotPrice(pool.base, pool.quote);
+  const [sqrtPrice, setSqrtPrice] = useState(0);
   const [withdrawLiquidity, setWithdrawLiquidity] = useState(Decimal.ZERO);
-  const [poolPrice, setPoolPrice] = useState(0);
   const { poolTokens } = useGetPool(pool.base, pool.quote);
+  const { baseTokenDecimals, quoteTokenDecimals } = useGetTokenDecimals(
+    poolTokens?.tokenA,
+    poolTokens?.tokenB,
+  );
+
+  const updateLiquidity = useCallback(async () => {
+    try {
+      if (!croc || !position) return;
+      const pos = croc.positions(position.base, position.quote, position.user);
+
+      const liquidity =
+        position.positionType === PoolPositionType.ambient
+          ? (await pos.queryAmbient()).seeds
+          : (await pos.queryRangePos(position.bidTick, position.askTick)).liq;
+      setTotalLiquidity(liquidity.toString());
+    } catch (error) {
+      console.error(error);
+    }
+  }, [croc, position]);
 
   const isFullWithdrawal = useMemo(
     () =>
@@ -80,9 +97,9 @@ export const BobWithdrawModal: FC<BobWithdrawModalProps> = ({
   const withdraw = useMemo(
     () =>
       isFullWithdrawal
-        ? bigNumberic(deposits?.positionLiq.toString() || '0')
+        ? bigNumberic(totalLiquidity)
         : bigNumberic(withdrawLiquidity.toString() || '0'),
-    [withdrawLiquidity, isFullWithdrawal, deposits],
+    [withdrawLiquidity, isFullWithdrawal, totalLiquidity],
   );
 
   const handleSubmit = useHandleSubmit(
@@ -113,71 +130,81 @@ export const BobWithdrawModal: FC<BobWithdrawModalProps> = ({
     ],
   );
 
+  const handleAmbientPosition = useCallback(() => {
+    const amount = withdrawAmount.div(sqrtPrice);
+    const convertedAmount = amount.mul(Math.pow(10, baseTokenDecimals));
+    setWithdrawLiquidity(convertedAmount);
+  }, [withdrawAmount, sqrtPrice, baseTokenDecimals]);
+
+  const handleConcentratedPosition = useCallback(() => {
+    const positionLiquidity = bigNumberic(
+      deposits?.positionLiq.toString() || '0',
+    );
+    const percentage = withdrawAmount
+      .mul(100)
+      .div(depositedAmountBase)
+      .toNumber();
+    const percentageWithDecimal = Number(percentage.toFixed(2)) * 100;
+    const withdraw = bigNumberic(
+      positionLiquidity.mul(percentageWithDecimal).div(1e4),
+    );
+    setWithdrawLiquidity(decimalic(withdraw.toString()));
+  }, [withdrawAmount, depositedAmountBase, deposits]);
+
+  const handleSecondaryWithdraw = useCallback(() => {
+    const amount = secondaryWithdrawAmount.mul(sqrtPrice);
+    const convertedAmount = amount.mul(Math.pow(10, quoteTokenDecimals));
+    setWithdrawLiquidity(convertedAmount);
+  }, [secondaryWithdrawAmount, sqrtPrice, quoteTokenDecimals]);
+
   useEffect(() => {
-    const getDepositedAmounts = async () => {
-      if (!croc || !poolTokens || !price) {
-        setDepositedAmountBase(Decimal.ZERO);
-        return;
-      }
+    if (!isValidAmount) {
+      return;
+    }
 
-      const baseTokenDecimals = await poolTokens.tokenA.decimals;
-      const quoteTokenDecimals = await poolTokens.tokenB.decimals;
-      setBaseTokenDecimals(baseTokenDecimals);
-      setQuoteTokenDecimals(quoteTokenDecimals);
-
-      const sqrtPrice = Math.sqrt(price);
-      setPoolPrice(sqrtPrice);
-    };
-
-    getDepositedAmounts();
-  }, [croc, poolTokens, price]);
-
-  useEffect(() => {
-    if (withdrawAmount.gt(0) && isValidAmount && depositedAmountQuote.gt(0)) {
+    if (
+      withdrawAmount.gt(0) &&
+      depositedAmountQuote.gt(0) &&
+      baseTokenDecimals
+    ) {
       if (position.positionType === PoolPositionType.ambient) {
-        const amount = withdrawAmount.div(poolPrice);
-        const convertedAmount = amount.mul(Math.pow(10, baseTokenDecimals));
-        setWithdrawLiquidity(convertedAmount);
+        handleAmbientPosition();
       } else if (position.positionType === PoolPositionType.concentrated) {
-        const positionLiquidity = bigNumberic(
-          deposits?.positionLiq.toString() || '0',
-        );
-        const percentage = withdrawAmount
-          .mul(100)
-          .div(depositedAmountBase)
-          .toNumber();
-        const percentageWithDecimal = Number(percentage.toFixed(2)) * 100;
-        const withdraw = bigNumberic(
-          positionLiquidity.mul(percentageWithDecimal).div(1e4),
-        );
-        setWithdrawLiquidity(decimalic(withdraw.toString()));
+        handleConcentratedPosition();
       }
     }
 
     if (
       secondaryWithdrawAmount.gt(0) &&
-      isValidAmount &&
-      depositedAmountBase.eq(0)
+      depositedAmountBase.eq(0) &&
+      quoteTokenDecimals
     ) {
-      const amount = secondaryWithdrawAmount.mul(poolPrice);
-      const convertedAmount = amount.mul(Math.pow(10, quoteTokenDecimals));
-      setWithdrawLiquidity(convertedAmount);
+      handleSecondaryWithdraw();
     }
   }, [
     depositedAmountBase,
     withdrawAmount,
     isValidAmount,
     depositedAmountQuote,
-    poolPrice,
+    sqrtPrice,
     baseTokenDecimals,
     quoteTokenDecimals,
     position,
     deposits,
     secondaryWithdrawAmount,
+    handleAmbientPosition,
+    handleConcentratedPosition,
+    handleSecondaryWithdraw,
   ]);
 
   useEffect(() => {
-    if (deposits) {
+    if (position && croc) {
+      updateLiquidity();
+    }
+  }, [position, croc, updateLiquidity]);
+
+  useEffect(() => {
+    if (deposits && price) {
       setDepositedAmountBase(
         decimalic(deposits?.positionLiqBase || '0').div(
           Math.pow(10, baseTokenDecimals),
@@ -188,8 +215,9 @@ export const BobWithdrawModal: FC<BobWithdrawModalProps> = ({
           Math.pow(10, quoteTokenDecimals),
         ),
       );
+      setSqrtPrice(Math.sqrt(price));
     }
-  }, [deposits, baseTokenDecimals, quoteTokenDecimals]);
+  }, [deposits, baseTokenDecimals, quoteTokenDecimals, price]);
 
   return (
     <Dialog disableFocusTrap isOpen={isOpen}>

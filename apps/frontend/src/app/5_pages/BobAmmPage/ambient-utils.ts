@@ -1,8 +1,9 @@
 import { CrocEnv, toDisplayPrice } from '@sovryn/sdex';
+import { TokenQty } from '@sovryn/sdex/dist/tokens';
 
 type RangePositionTokenInfo = {
   address: string;
-  qty: number;
+  qty: TokenQty;
   isWithdrawFromDexChecked: boolean;
 };
 

@@ -3,11 +3,11 @@ import { MaxAllowanceTransferAmount } from '@uniswap/permit2-sdk';
 import { useCallback } from 'react';
 
 import { BigNumber, Contract, ethers } from 'ethers';
-import { parseUnits } from 'ethers/lib/utils';
 import { t } from 'i18next';
 
 import { priceToTick } from '@sovryn/sdex';
 import { CrocTokenView } from '@sovryn/sdex/dist/tokens';
+import { Decimal } from '@sovryn/utils';
 
 import {
   Transaction,
@@ -27,17 +27,11 @@ import { useGetPoolInfo } from './useGetPoolInfo';
 const testAllowance = async (
   owner: string,
   token: CrocTokenView,
-  amount: number,
+  amount: BigNumber,
 ) => {
   const allowance = await token.allowance(owner);
-  const decimals = await token.decimals;
 
-  const needAllowance = parseUnits(
-    (amount + 0.00001).toFixed(decimals),
-    decimals,
-  );
-
-  if (allowance.lt(needAllowance)) {
+  if (allowance.lt(amount)) {
     const approval = await token.approve();
     return approval;
   }
@@ -66,17 +60,23 @@ export const useHandleSubmit = (assetA: string, assetB: string) => {
       return;
     }
 
+    const firstAssetBigNumberAmount =
+      Decimal.from(firstAssetValue).toBigNumber();
+
+    const secondAssetBigNumberAmount =
+      Decimal.from(secondAssetValue).toBigNumber();
+
     const transactions: Transaction[] = [];
 
     const allowanceA = await testAllowance(
       account,
       poolTokens.tokenA,
-      Number(firstAssetValue),
+      firstAssetBigNumberAmount,
     );
     const allowanceB = await testAllowance(
       account,
       poolTokens.tokenB,
-      Number(secondAssetValue),
+      secondAssetBigNumberAmount,
     );
 
     if (allowanceA) {
@@ -136,12 +136,12 @@ export const useHandleSubmit = (assetA: string, assetB: string) => {
       slippageTolerancePercentage: maximumSlippage,
       tokenA: {
         address: poolTokens.tokenA.tokenAddr,
-        qty: Number(firstAssetValue),
+        qty: firstAssetBigNumberAmount,
         isWithdrawFromDexChecked: false,
       },
       tokenB: {
         address: poolTokens.tokenB.tokenAddr,
-        qty: Number(secondAssetValue),
+        qty: secondAssetBigNumberAmount,
         isWithdrawFromDexChecked: false,
       },
       isTokenAPrimaryRange: usesBaseToken,

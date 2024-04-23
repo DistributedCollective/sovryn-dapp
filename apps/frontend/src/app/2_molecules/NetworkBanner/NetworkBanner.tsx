@@ -65,7 +65,7 @@ export const NetworkBanner: FC<NetworkBannerProps> = ({
         className={classNames('relative pointer-events-none', childClassName)}
       >
         <div
-          className="bg-cover absolute w-full h-full left-0 top-0 opacity-75 z-1"
+          className="bg-cover absolute w-full h-full left-0 top-0 opacity-75 z-[1]"
           style={{
             //1px image of sovryn-black #0D0D0F - elements with partial opacity will remain visible unless we use this method of overlay
             backgroundImage:

@@ -292,6 +292,14 @@ export class Decimal {
     return this;
   }
 
+  toUnits(unit: number = PRECISION): Decimal {
+    return this.div(Math.pow(10, unit));
+  }
+
+  asUnits(unit: number = 0): Decimal {
+    return this.div(Math.pow(10, PRECISION - unit));
+  }
+
   get zero(): this | undefined {
     if (this.isZero()) {
       return this;

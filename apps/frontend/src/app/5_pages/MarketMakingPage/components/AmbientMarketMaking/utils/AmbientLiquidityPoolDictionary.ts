@@ -26,8 +26,10 @@ export class AmbientLiquidityPoolDictionary {
   ): AmbientLiquidityPool {
     return this.list(chainId).find(
       item =>
-        (item.base === base && item.quote === quote) ||
-        (item.quote === quote && item.base === base),
+        (item.base.toLowerCase() === base.toLowerCase() &&
+          item.quote.toLowerCase() === quote.toLowerCase()) ||
+        (item.quote.toLowerCase() === quote.toLowerCase() &&
+          item.base.toLowerCase() === base.toLowerCase()),
     ) as AmbientLiquidityPool;
   }
 }

@@ -155,7 +155,7 @@ export const ambientRoute: SwapRouteFunction = (
         const groupedPath = groupItemsInPairs(path ?? []);
 
         const ambientPools = await Promise.all(
-          groupedPath.map(item => env.pool(item[0], item[1])),
+          groupedPath.map(item => env.pool(item[0], item[1], poolIndex)), // todo: detect pool index
         );
 
         if (ambientPools.length === 0) {
@@ -273,7 +273,7 @@ export const ambientRoute: SwapRouteFunction = (
         const groupedPath = groupItemsInPairs(path ?? []);
 
         const ambientPools = await Promise.all(
-          groupedPath.map(item => env.pool(item[0], item[1])),
+          groupedPath.map(item => env.pool(item[0], item[1], poolIndex)), // todo: detect pool index
         );
 
         if (ambientPools.length === 0) {

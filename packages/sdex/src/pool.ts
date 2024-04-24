@@ -50,6 +50,7 @@ export class CrocPoolView {
   constructor(
     quoteToken: CrocTokenView,
     baseToken: CrocTokenView,
+    poolIndex: number,
     context: Promise<CrocContext>,
   ) {
     [this.baseToken, this.quoteToken] = sortBaseQuoteViews(
@@ -62,6 +63,7 @@ export class CrocPoolView {
     this.quoteDecimals = this.quoteToken.decimals;
 
     this.useTrueBase = this.baseToken.tokenAddr === baseToken.tokenAddr;
+    this.poolIndex = poolIndex;
   }
 
   /* Checks to see if a canonical pool has been initialized for this pair. */
@@ -74,7 +76,7 @@ export class CrocPoolView {
     let sqrtPrice = (await this.context).query.queryPrice(
       this.baseToken.tokenAddr,
       this.quoteToken.tokenAddr,
-      (await this.context).chain.poolIndex,
+      this.poolIndex,
       txArgs,
     );
     return decodeCrocPrice(await sqrtPrice);
@@ -90,7 +92,7 @@ export class CrocPoolView {
     return (await this.context).query.queryCurveTick(
       this.baseToken.tokenAddr,
       this.quoteToken.tokenAddr,
-      (await this.context).chain.poolIndex,
+      this.poolIndex,
       txArgs,
     );
   }
@@ -100,7 +102,7 @@ export class CrocPoolView {
     return (await this.context).query.queryLiquidity(
       this.baseToken.tokenAddr,
       this.quoteToken.tokenAddr,
-      (await this.context).chain.poolIndex,
+      this.poolIndex,
       txArgs,
     );
   }
@@ -110,7 +112,7 @@ export class CrocPoolView {
     return (await this.context).query.queryCurve(
       this.baseToken.tokenAddr,
       this.quoteToken.tokenAddr,
-      (await this.context).chain.poolIndex,
+      this.poolIndex,
       txArgs,
     );
   }
@@ -120,7 +122,7 @@ export class CrocPoolView {
     const queryCurve = (await this.context).query.queryCurve(
       this.baseToken.tokenAddr,
       this.quoteToken.tokenAddr,
-      (await this.context).chain.poolIndex,
+      this.poolIndex,
       txArgs,
     );
     const seedDeflator = (await queryCurve).seedDeflator_;
@@ -209,7 +211,7 @@ export class CrocPoolView {
     let encoder = new PoolInitEncoder(
       this.baseToken.tokenAddr,
       this.quoteToken.tokenAddr,
-      (await this.context).chain.poolIndex,
+      this.poolIndex,
     );
 
     let spotPrice = this.fromDisplayPrice(initPrice);
@@ -591,7 +593,7 @@ export class CrocPoolView {
     return new WarmPathEncoder(
       this.baseToken.tokenAddr,
       this.quoteToken.tokenAddr,
-      (await this.context).chain.poolIndex,
+      this.poolIndex,
     );
   }
 
@@ -601,6 +603,7 @@ export class CrocPoolView {
   readonly quoteDecimals: Promise<number>;
   readonly useTrueBase: boolean;
   readonly context: Promise<CrocContext>;
+  readonly poolIndex: number;
 }
 
 export interface CrocLpOpts {

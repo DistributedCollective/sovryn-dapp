@@ -69,25 +69,25 @@ export class CrocEnv {
    *                   view. Note the quote or base side only matters for display price
    *                   purposes.
    * @param tokenBase The address of the token to use as the base token in the view. */
-  pool(tokenQuote: string, tokenBase: string): CrocPoolView {
+  pool(tokenQuote: string, tokenBase: string, poolIndex: number): CrocPoolView {
     const viewA = this.tokens.materialize(tokenQuote);
     const viewB = this.tokens.materialize(tokenBase);
-    return new CrocPoolView(viewA, viewB, this.context);
+    return new CrocPoolView(viewA, viewB, poolIndex, this.context);
   }
 
   /* Returns a view of the canonical pool for the token pair against native ETH. For example
    * the below woudl return a pool view for MKR/ETH with MKR priced in ETH for display purposes
    *       crocEnv.poolEth(MKR) */
-  poolEth(token: string): CrocPoolView {
-    return this.pool(token, AddressZero);
+  poolEth(token: string, poolIndex: number): CrocPoolView {
+    return this.pool(token, AddressZero, poolIndex);
   }
 
   /* Returns a view of the canonical pool for the token pair against native ETH, but ETH is
    * priced in terms of the token. Usually the convention when ETH is paired against stablecoins
    * or paired against Bitcoin. For example the below would return a pool view for ETH/USDC
    *       crocEnv.poolEthQuote(USDC) */
-  poolEthQuote(token: string): CrocPoolView {
-    return this.pool(AddressZero, token);
+  poolEthQuote(token: string, poolIndex: number): CrocPoolView {
+    return this.pool(AddressZero, token, poolIndex);
   }
 
   /* Returns a position view for a single user on the canonical pool for a single pair. */
@@ -95,11 +95,13 @@ export class CrocEnv {
     tokenQuote: string,
     tokenBase: string,
     owner: string,
+    poolIndex: number,
   ): CrocPositionView {
     return new CrocPositionView(
       this.tokens.materialize(tokenQuote),
       this.tokens.materialize(tokenBase),
       owner,
+      poolIndex,
       this.context,
     );
   }

@@ -15,7 +15,7 @@ export const useGetAmbientPoolStats = (pool: AmbientLiquidityPool) => {
   const { value, loading } = useFetch(
     `${getIndexerUri(chainId)}/pool_stats?base=${baseToken?.address}&quote=${
       quoteToken?.address
-    }&poolIdx=${pool.poolIdx}&chainId=${pool.chainId}`,
+    }&poolIdx=${pool.poolIndex}&chainId=${pool.chainId}`,
   );
 
   const stats = useMemo(() => {
@@ -25,5 +25,7 @@ export const useGetAmbientPoolStats = (pool: AmbientLiquidityPool) => {
   return {
     stats,
     loading,
+    baseToken,
+    quoteToken,
   };
 };

@@ -4,6 +4,7 @@ import { getAssetDataByAddress } from '@sovryn/contracts';
 import { ChainId, ChainIds } from '@sovryn/ethers-provider';
 import { CrocEnv, MAX_SQRT_PRICE, MIN_SQRT_PRICE } from '@sovryn/sdex';
 
+export type PoolWithIndex = [string, string, number];
 export type Pool = [string, string];
 
 type Graph = Map<string, string[]>;
@@ -100,12 +101,12 @@ export const fetchPools = async (chainId: ChainId) => {
   const pools = await response
     .json()
     .then(response =>
-      (response.data ?? []).map(item => [item.base, item.quote]),
+      (response.data ?? []).map(item => [item.base, item.quote, item.poolIdx]),
     );
 
-  const items: Pool[] = [];
+  const items: PoolWithIndex[] = [];
   for (const pool of pools) {
-    const [base, quote] = pool;
+    const [base, quote, index] = pool;
     const baseAsset = await getAssetDataByAddress(base, chainId).catch(
       () => null,
     );
@@ -114,7 +115,7 @@ export const fetchPools = async (chainId: ChainId) => {
     );
 
     if (!baseAsset || !quoteAsset) continue;
-    items.push([baseAsset.address, quoteAsset.address]);
+    items.push([baseAsset.address, quoteAsset.address, index]);
   }
 
   return items;

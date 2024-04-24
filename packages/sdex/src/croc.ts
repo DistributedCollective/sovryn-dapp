@@ -29,8 +29,8 @@ export class CrocEnv {
    *
    * @param token The address of the token to buy.
    * @param qty The fixed quantity of the token to buy. */
-  buy(token: string, qty: TokenQty): BuyPrefix {
-    return new BuyPrefix(token, qty, this.tokens, this.context);
+  buy(token: string, qty: TokenQty, poolIndex: number): BuyPrefix {
+    return new BuyPrefix(token, qty, this.tokens, poolIndex, this.context);
   }
 
   /* Generates a prefix object for a swap with a fixed buy quantity of native ETH.
@@ -38,8 +38,14 @@ export class CrocEnv {
    *    crocEnv.buyEth(100).with(DAI)
    *
    * @param qty The fixed quantity of native ETH to buy. */
-  buyEth(qty: TokenQty): BuyPrefix {
-    return new BuyPrefix(AddressZero, qty, this.tokens, this.context);
+  buyEth(qty: TokenQty, poolIndex: number): BuyPrefix {
+    return new BuyPrefix(
+      AddressZero,
+      qty,
+      this.tokens,
+      poolIndex,
+      this.context,
+    );
   }
 
   /* Generates a prefix object for a swap with a fixed sell quantity.
@@ -48,8 +54,8 @@ export class CrocEnv {
    *
    * @param token The address of the token to sell.
    * @param qty The fixed quantity of the token to sell. */
-  sell(token: string, qty: TokenQty): SellPrefix {
-    return new SellPrefix(token, qty, this.tokens, this.context);
+  sell(token: string, qty: TokenQty, poolIndex: number): SellPrefix {
+    return new SellPrefix(token, qty, this.tokens, poolIndex, this.context);
   }
 
   /* Generates a prefix object for a swap with a fixed sell quantity of native ETH.
@@ -57,8 +63,14 @@ export class CrocEnv {
    *    crocEnv.sellEth(100).for(DAI)
    *
    * @param qty The fixed quantity of native ETH to sell. */
-  sellEth(qty: TokenQty): SellPrefix {
-    return new SellPrefix(AddressZero, qty, this.tokens, this.context);
+  sellEth(qty: TokenQty, poolIndex: number): SellPrefix {
+    return new SellPrefix(
+      AddressZero,
+      qty,
+      this.tokens,
+      poolIndex,
+      this.context,
+    );
   }
 
   /* Returns a view of the canonical pool for the underlying token pair. For example the
@@ -134,11 +146,13 @@ class BuyPrefix {
     token: string,
     qty: TokenQty,
     repo: TokenRepo,
+    poolIndex: number,
     context: Promise<CrocContext>,
   ) {
     this.token = token;
     this.qty = qty;
     this.context = context;
+    this.poolIndex = poolIndex;
     this.repo = repo;
   }
 
@@ -148,6 +162,7 @@ class BuyPrefix {
       this.repo.materialize(this.token),
       this.qty,
       true,
+      this.poolIndex,
       this.context,
       args,
     );
@@ -171,6 +186,7 @@ class BuyPrefix {
   readonly token: string;
   readonly qty: TokenQty;
   readonly context: Promise<CrocContext>;
+  readonly poolIndex: number;
   repo: TokenRepo;
 }
 
@@ -179,10 +195,12 @@ class SellPrefix {
     token: string,
     qty: TokenQty,
     repo: TokenRepo,
+    poolIndex: number,
     context: Promise<CrocContext>,
   ) {
     this.token = token;
     this.qty = qty;
+    this.poolIndex = poolIndex;
     this.context = context;
     this.repo = repo;
   }
@@ -193,6 +211,7 @@ class SellPrefix {
       this.repo.materialize(token),
       this.qty,
       false,
+      this.poolIndex,
       this.context,
       args,
     );
@@ -214,6 +233,7 @@ class SellPrefix {
 
   readonly token: string;
   readonly qty: TokenQty;
+  readonly poolIndex: number;
   readonly context: Promise<CrocContext>;
   repo: TokenRepo;
 }

@@ -68,7 +68,8 @@
             "deposit": "Deposit",
             "withdrawal": "Withdrawal"
         },
-        "learnMore": "Learn more"
+        "learnMore": "Learn more",
+        "invalidAmountError": "Exceeds maximum amount"
     },
     "connectWalletButton": {
         "connect": "Get started",
@@ -975,15 +976,15 @@
         }
     },
     "runeBridge": {
-      "mainScreen": {
-        "title": "Rune Bridge",
-        "tabs": {
-          "receiveLabel": "Receive",
-          "receiveInfoText": "Transfer Runes from Bitcoin to your Rootstock address",
-          "sendLabel": "Send",
-          "sendInfoText": "Transfer Rune Tokens from Rootstock to your Bitcoin address"
-        }
-      },
+        "mainScreen": {
+            "title": "Rune Bridge",
+            "tabs": {
+                "receiveLabel": "Receive",
+                "receiveInfoText": "Transfer Runes from Bitcoin to your Rootstock address",
+                "sendLabel": "Send",
+                "sendInfoText": "Transfer Rune Tokens from Rootstock to your Bitcoin address"
+            }
+        },
         "instructions": {
             "title": "Instructions",
             "upToNHours": "Allow up to {{hours}} hrs to process",
@@ -1048,10 +1049,10 @@
             "loading": "Loading... this may take up to 30 seconds",
             "statusScreen": {
                 "transferStatus": {
-                  "detected": "Transfer detected",
-                  "seen": "Runes received by the bridge",
-                  "sent_to_evm": "Rune Tokens transferred in Rootstock",
-                  "confirmed": "Rune Token transfer confirmed in Rootstock"
+                    "detected": "Transfer detected",
+                    "seen": "Runes received by the bridge",
+                    "sent_to_evm": "Rune Tokens transferred in Rootstock",
+                    "confirmed": "Rune Token transfer confirmed in Rootstock"
                 },
                 "statusTitleProcessing": "Transfer processing...",
                 "statusTitleComplete": "Transfer complete",

@@ -22,6 +22,7 @@ import { AmountForm } from './components/PriceRange/components/AmountForm/Amount
 import { SlippageSettings } from './components/PriceRange/components/SlippageSettings/SlippageSettings';
 import { useDepositContext } from './contexts/BobDepositModalContext';
 import { useHandleSubmit } from './hooks/useHandleSubmit';
+import { useValidateDepositAmounts } from './hooks/useValidateDepositAmounts';
 
 const pageTranslations = translations.bobMarketMakingPage.depositModal;
 
@@ -44,6 +45,8 @@ export const BobDepositModal: FC<BobDepositModalProps> = ({
     useState(false);
 
   const { base, quote } = useMemo(() => pool, [pool]);
+  const { isFirstAssetValueInvalid, isSecondAssetValueInvalid } =
+    useValidateDepositAmounts(base, quote);
 
   const handleSubmit = useHandleSubmit(base, quote);
 
@@ -53,11 +56,15 @@ export const BobDepositModal: FC<BobDepositModalProps> = ({
       !hasDisclaimerBeenChecked ||
       (firstAssetValue === '0' && secondAssetValue === '0') ||
       minimumPrice >= maximumPrice ||
-      (!firstAssetValue && !secondAssetValue),
+      (!firstAssetValue && !secondAssetValue) ||
+      isFirstAssetValueInvalid ||
+      isSecondAssetValueInvalid,
     [
       account,
       firstAssetValue,
       hasDisclaimerBeenChecked,
+      isFirstAssetValueInvalid,
+      isSecondAssetValueInvalid,
       maximumPrice,
       minimumPrice,
       secondAssetValue,

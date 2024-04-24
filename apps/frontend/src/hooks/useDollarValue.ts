@@ -1,11 +1,10 @@
 import { useMemo } from 'react';
 
-import { ChainId } from '@sovryn/ethers-provider';
-
-import { RSK_CHAIN_ID } from '../config/chains';
+import { ChainId, getProvider } from '@sovryn/ethers-provider';
+import { SmartRouter } from '@sovryn/sdk';
 
 import {
-  SMART_ROUTER_RSK,
+  SWAP_ROUTES,
   SMART_ROUTER_STABLECOINS,
 } from '../app/5_pages/ConvertPage/ConvertPage.constants';
 import { COMMON_SYMBOLS } from '../utils/asset';
@@ -22,12 +21,14 @@ export function useDollarValue(
   chainId?: ChainId,
 ) {
   const chain = useCurrentChain();
-  if (['zusd', 'usdc', 'usdt', 'dai'].includes(asset.toLowerCase())) {
+  if (asset.toUpperCase() === COMMON_SYMBOLS.ZUSD) {
     if (isRskChain(chainId || chain)) {
       asset = COMMON_SYMBOLS.XUSD;
     } else {
-      asset = COMMON_SYMBOLS.DLLR;
+      asset = 'USDT';
     }
+  } else if (asset.toLocaleLowerCase() === 'weth') {
+    asset = COMMON_SYMBOLS.ETH;
   }
   const assetDetails = useTokenDetailsByAsset(asset, chainId || chain);
   const dllrDetails = useTokenDetailsByAsset(
@@ -35,6 +36,12 @@ export function useDollarValue(
     chainId || chain,
   );
   const { price: btcPrice } = useGetRBTCPrice();
+
+  const currentChainId = useCurrentChain();
+  const smartRouter = useMemo(
+    () => new SmartRouter(getProvider(currentChainId), SWAP_ROUTES),
+    [currentChainId],
+  );
 
   const { value: usdPrice, loading } = useCacheCall(
     `dollarValue/${asset}`,
@@ -49,12 +56,13 @@ export function useDollarValue(
       }
 
       // todo: use correct router for chain
-      const result = await SMART_ROUTER_RSK.getBestQuote(
-        RSK_CHAIN_ID,
+      const result = await smartRouter.getBestQuote(
+        currentChainId,
         assetDetails?.address,
         dllrDetails?.address,
         toWei('0.01'),
       );
+
       return fromWei(
         decimalic(result.quote.toString() || '0')
           .mul(100)
@@ -79,18 +87,17 @@ export function useDollarValue(
       return fromWei(weiAmount);
     } else {
       return decimalic(weiAmount)
-        .mul(assetDetails?.isNative ? btcPrice : usdPrice)
+        .mul(
+          [COMMON_SYMBOLS.BTC, COMMON_SYMBOLS.WBTC].includes(
+            asset.toUpperCase(),
+          )
+            ? btcPrice
+            : usdPrice,
+        )
         .div(10 ** decimals)
         .toString();
     }
-  }, [
-    assetDetails?.decimals,
-    assetDetails?.isNative,
-    asset,
-    weiAmount,
-    btcPrice,
-    usdPrice,
-  ]);
+  }, [assetDetails?.decimals, asset, weiAmount, btcPrice, usdPrice]);
 
   return {
     loading,

@@ -16,6 +16,7 @@ export const getPositionBalance = (
   if (!spotPrice) {
     return;
   }
+
   if (position.positionType === PoolPositionType.ambient) {
     const positionLiq = position.ambientLiq;
     const positionLiqBase = Number(positionLiq * Math.sqrt(spotPrice)).toFixed(
@@ -32,7 +33,6 @@ export const getPositionBalance = (
     };
   } else if (position.positionType === PoolPositionType.concentrated) {
     const positionLiq = position.concLiq;
-
     const positionLiqBase = bigNumToFloat(
       baseTokenForConcLiq(
         spotPrice,

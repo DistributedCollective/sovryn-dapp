@@ -456,15 +456,15 @@
                 },
                 "second": {
                     "title": "On which blockchain does Sovryn operate?",
-                    "description": "Sovryn currently operates on two chains—BOB and Rootstock.<br/>BOB (Build on Bitcoin)—a hybrid Layer-2 rollup secured by bitcoin and natively connected to Ethereum. It uses the Ethereum Virtual Machine.<br/>Rootstock (RSK)—a smart-contract, merge-mined sidechain of bitcoin. Its engine is a forked version of the Ethereum Virtual Machine.<br/>Both BOB and Rootstock are compatible with Ethereum smart contracts and the tools used to deploy and interact with them."
+                    "description": "Sovryn currently operates on two chains—BOB and Rootstock.<br/><br/>BOB (Build on Bitcoin)—a hybrid Layer-2 rollup secured by bitcoin and natively connected to Ethereum. It uses the Ethereum Virtual Machine.<br/><br/>Rootstock (RSK)—a smart-contract, merge-mined sidechain of bitcoin. Its engine is a forked version of the Ethereum Virtual Machine.<br/><br/>Both BOB and Rootstock are compatible with Ethereum smart contracts and the tools used to deploy and interact with them."
                 },
                 "third": {
                     "title": "How do I get funds into Sovryn?",
-                    "description": "On BOB, you can use the bridge interface to bring in assets from Ethereum and to bridge in BTC from the bitcoin network.<br/>On Rootstock, you can bridge in BTC from the bitcoin network with FastBTC. You can also bridge in stablecoins with Babelfish and other assets from Ethereum and BSC using the Sovryn bridge."
+                    "description": "On BOB, you can use the bridge interface to bring in assets from Ethereum and to bridge in BTC from the bitcoin network.<br/><br/>On Rootstock, you can bridge in BTC from the bitcoin network with FastBTC. You can also bridge in stablecoins with Babelfish and other assets from Ethereum and BSC using the Sovryn bridge."
                 },
                 "fourth": {
                     "title": "What is the native gas token?",
-                    "description": "On BOB, the native currency is ETH, which must be used for gas for transactions. Soon you will be able to use other assets to pay for gas as well.<br/>On Rootstock, the native currency is RBTC, which must be used for gas for transactions. RBTC is pegged 1:1 with BTC."
+                    "description": "On BOB, the native currency is ETH, which must be used for gas for transactions. Soon you will be able to use other assets to pay for gas as well.<br/><br/>On Rootstock, the native currency is RBTC, which must be used for gas for transactions. RBTC is pegged 1:1 with BTC."
                 },
                 "fifth": {
                     "title": "What can I do on the Sovryn dapp?",

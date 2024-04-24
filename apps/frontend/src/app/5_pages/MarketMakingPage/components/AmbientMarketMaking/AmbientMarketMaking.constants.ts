@@ -81,6 +81,9 @@ export const TESTNET_AMM = [
     36000,
     '0xe8523EBb8EC8Cf1b7f14D0623f7adB53b09f047C',
   ),
+  new AmbientLiquidityPool('ETH', 'TIL', ChainIds.BOB_TESTNET, 36000),
+  new AmbientLiquidityPool('DAI', 'TIL', ChainIds.BOB_TESTNET, 36000),
+  new AmbientLiquidityPool('USDC', 'TIL', ChainIds.BOB_TESTNET, 36000),
   // SEPOLIA
   // BOB
   new AmbientLiquidityPool(

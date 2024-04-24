@@ -76,16 +76,6 @@ export const PersonalStakingStatistics = () => {
                     <div>
                       {t(
                         translations.stakePage.personalStatistics
-                          .votingPowerInfo.line2,
-                      )}
-                      :{' '}
-                      <b>
-                        {fromWei(0)} {VP}
-                      </b>
-                    </div>
-                    <div>
-                      {t(
-                        translations.stakePage.personalStatistics
                           .votingPowerInfo.line3,
                       )}
                       :{' '}

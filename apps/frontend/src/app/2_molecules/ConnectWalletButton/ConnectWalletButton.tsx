@@ -87,9 +87,7 @@ export const ConnectWalletButton: FC<
               <Link to="/rewards" className="no-underline">
                 <MenuItem
                   text={t(translations.connectWalletButton.rewards)}
-                  className={classNames('no-underline', {
-                    hidden: !isRskChain(chainId),
-                  })}
+                  className="no-underline"
                   dataAttribute={`${dataAttribute}-menu-rewards`}
                 />
               </Link>

@@ -48,7 +48,7 @@ export const ambientRoute: SwapRouteFunction = (
     const chainId = await getChainId();
     if (!poolCache[chainId]) {
       // testing for virtual network fork...
-      if (chainId === ChainIds.FORK || chainId === ChainIds.SEPOLIA) {
+      if (chainId === ChainIds.FORK) {
         const eth = (await getAssetContract('ETH', chainId)).address;
         const sov = (await getAssetContract('SOV', chainId)).address;
         const usdt = (await getAssetContract('USDT', chainId)).address;

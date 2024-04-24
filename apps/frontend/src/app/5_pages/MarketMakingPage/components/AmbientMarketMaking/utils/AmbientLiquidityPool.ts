@@ -18,18 +18,29 @@ export class AmbientLiquidityPool {
     public readonly poolIdx: string,
     public readonly lpTokenAddress?: string,
   ) {
-    this.lpTokenAddress = lpTokenAddress
-      ? lpTokenAddress.toLowerCase()
-      : undefined;
+    try {
+      this.lpTokenAddress = lpTokenAddress
+        ? lpTokenAddress.toLowerCase()
+        : undefined;
 
-    this._baseAddress = findAsset(_base, chainId).address;
-    this._quoteAddress = findAsset(_quote, chainId).address;
+      this._baseAddress = findAsset(_base, chainId).address;
+      this._quoteAddress = findAsset(_quote, chainId).address;
 
-    [this.base, this.quote] = BigNumber.from(this._baseAddress).lt(
-      this._quoteAddress,
-    )
-      ? [_base, _quote]
-      : [_quote, _base];
+      [this.base, this.quote] = BigNumber.from(this._baseAddress).lt(
+        this._quoteAddress,
+      )
+        ? [_base, _quote]
+        : [_quote, _base];
+    } catch (error) {
+      console.error(
+        'Failed to construct Ambient Liqudity Pool',
+        _base,
+        _quote,
+        chainId,
+        error,
+      );
+      throw error;
+    }
   }
 
   public get key() {

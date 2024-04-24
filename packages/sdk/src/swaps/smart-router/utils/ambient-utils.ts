@@ -1,8 +1,8 @@
 import { BigNumber } from 'ethers';
 
-import { CrocEnv, MAX_SQRT_PRICE, MIN_SQRT_PRICE } from '@sovryn/sdex';
 import { getAssetDataByAddress } from '@sovryn/contracts';
 import { ChainId, ChainIds } from '@sovryn/ethers-provider';
+import { CrocEnv, MAX_SQRT_PRICE, MIN_SQRT_PRICE } from '@sovryn/sdex';
 
 export type Pool = [string, string];
 
@@ -85,10 +85,12 @@ export const calcImpact = async (
 };
 
 const INDEXER = {
+  [ChainIds.BOB_MAINNET]:
+    'https://bob-ambient-graphcache.sovryn.app/gcgo/pool_list',
   [ChainIds.BOB_TESTNET]:
     'https://bob-ambient-graphcache.test.sovryn.app/gcgo/pool_list',
   [ChainIds.SEPOLIA]:
-    'https://bob-ambient-graphcache.test.sovryn.app/gcgo/pool_list', // todo: update with sepolia indexer
+    'https://sepolia-ambient-graphcache.test.sovryn.app/gcgo/pool_list',
 };
 
 // Fetch pools from the indexer and return list of pairs if assets are supported by chain

@@ -2,6 +2,7 @@ import React, { FC } from 'react';
 
 import { t } from 'i18next';
 
+import { ChainId } from '@sovryn/ethers-provider';
 import { applyDataAttr } from '@sovryn/ui';
 import { Decimalish } from '@sovryn/utils';
 
@@ -16,6 +17,7 @@ type MaxButtonProps = {
   token: string;
   dataAttribute?: string;
   label?: string;
+  chainId?: ChainId;
 };
 
 export const MaxButton: FC<MaxButtonProps> = ({
@@ -25,6 +27,7 @@ export const MaxButton: FC<MaxButtonProps> = ({
   token,
   dataAttribute,
   label = t(translations.common.max),
+  chainId,
 }) => (
   <button
     onClick={onClick}
@@ -35,7 +38,7 @@ export const MaxButton: FC<MaxButtonProps> = ({
     <AmountRenderer
       value={value}
       precision={precision}
-      suffix={getTokenDisplayName(token)}
+      suffix={getTokenDisplayName(token, chainId)}
       useTooltip={false}
     />
     {`)`}

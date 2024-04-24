@@ -70,7 +70,12 @@ export const BobWithdrawModal: FC<BobWithdrawModalProps> = ({
   const updateLiquidity = useCallback(async () => {
     try {
       if (!croc || !position) return;
-      const pos = croc.positions(position.base, position.quote, position.user);
+      const pos = croc.positions(
+        position.base,
+        position.quote,
+        position.user,
+        pool.poolIndex,
+      );
 
       const liquidity =
         position.positionType === PoolPositionType.ambient
@@ -80,7 +85,7 @@ export const BobWithdrawModal: FC<BobWithdrawModalProps> = ({
     } catch (error) {
       console.error(error);
     }
-  }, [croc, position]);
+  }, [croc, position, pool]);
 
   const isFullWithdrawal = useMemo(
     () =>

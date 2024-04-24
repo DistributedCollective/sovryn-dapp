@@ -1,6 +1,6 @@
 import { ApolloClient, InMemoryCache } from '@apollo/client';
 
-import { ChainId } from '@sovryn/ethers-provider';
+import { ChainIds, ChainId } from '@sovryn/ethers-provider';
 
 import { SUBGRAPH } from '../constants/general';
 import { SEPOLIA } from '../constants/infrastructure/sepolia';
@@ -56,6 +56,10 @@ export enum SubgraphType {
 export const getSubgraphClient = (type: SubgraphType, chainId: ChainId) => {
   if (isRskChain(chainId)) {
     return rskClient;
+  }
+
+  if (chainId === ChainIds.SEPOLIA) {
+    return sepoliaSdexClient;
   }
 
   switch (type) {

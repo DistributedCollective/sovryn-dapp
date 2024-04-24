@@ -1,4 +1,3 @@
-import { SupportedTokens } from '@sovryn/contracts';
 import { getProvider } from '@sovryn/ethers-provider';
 import { ChainIds } from '@sovryn/ethers-provider';
 import { SmartRouter, smartRoutes } from '@sovryn/sdk';
@@ -38,11 +37,10 @@ export const MASSET = COMMON_SYMBOLS.DLLR;
 
 export const SMART_ROUTER_ALLOWED_TOKENS = [...BASSETS, MASSET];
 
-export const DEFAULT_SWAP_ENTRIES: Partial<Record<ChainIds, SupportedTokens>> =
-  {
-    [ChainIds.RSK_MAINNET]: COMMON_SYMBOLS.DLLR,
-    [ChainIds.RSK_TESTNET]: COMMON_SYMBOLS.DLLR,
-    [ChainIds.BOB_MAINNET]: COMMON_SYMBOLS.ETH,
-    [ChainIds.BOB_TESTNET]: COMMON_SYMBOLS.ETH,
-    [ChainIds.SEPOLIA]: COMMON_SYMBOLS.ETH,
-  };
+export const DEFAULT_SWAP_ENTRIES: Partial<Record<ChainIds, string>> = {
+  [ChainIds.RSK_MAINNET]: COMMON_SYMBOLS.DLLR,
+  [ChainIds.RSK_TESTNET]: COMMON_SYMBOLS.DLLR,
+  [ChainIds.BOB_MAINNET]: COMMON_SYMBOLS.ETH,
+  [ChainIds.BOB_TESTNET]: COMMON_SYMBOLS.ETH,
+  [ChainIds.SEPOLIA]: COMMON_SYMBOLS.ETH,
+};

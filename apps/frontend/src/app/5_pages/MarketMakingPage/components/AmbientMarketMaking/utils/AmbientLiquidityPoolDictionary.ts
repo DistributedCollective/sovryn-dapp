@@ -1,10 +1,13 @@
 import { ChainId } from '@sovryn/ethers-provider';
 
-import { TESTNET_AMM } from '../AmbientMarketMaking.constants';
+import { MAINNET_AMM, TESTNET_AMM } from '../AmbientMarketMaking.constants';
 import { AmbientLiquidityPool } from './AmbientLiquidityPool';
 
 export class AmbientLiquidityPoolDictionary {
-  private static items: AmbientLiquidityPool[] = [...TESTNET_AMM];
+  private static items: AmbientLiquidityPool[] = [
+    ...MAINNET_AMM,
+    ...TESTNET_AMM,
+  ];
 
   public static list(chainId: ChainId): AmbientLiquidityPool[] {
     return this.items.filter(item => item.chainId === chainId);

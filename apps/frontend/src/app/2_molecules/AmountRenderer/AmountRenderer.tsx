@@ -119,7 +119,7 @@ export const AmountRenderer: FC<AmountRendererProps> = ({
     <Tooltip
       content={
         <span className="flex items-center">
-          {`${prefix} ${decimalic(value)} ${suffix.toUpperCase()}`}
+          {`${prefix} ${decimalic(value)} ${suffix}`}
           <span
             className="ml-1 cursor-pointer hover:bg-gray-20 p-1 rounded text-gray-50"
             onClick={copyAddress}
@@ -145,13 +145,13 @@ export const AmountRenderer: FC<AmountRendererProps> = ({
             separator={thousand}
             decimal={decimal}
             prefix={shouldShowRoundingPrefix ? `~ ${prefix}` : `${prefix}`}
-            suffix={` ${suffix.toUpperCase()}`}
+            suffix={` ${suffix}`}
           />
         ) : (
           <>
             {shouldShowRoundingPrefix ? '~ ' : ''}
             {prefix}
-            {localeFormattedValue} {suffix.toUpperCase()}
+            {localeFormattedValue} {suffix}
           </>
         )}
       </span>

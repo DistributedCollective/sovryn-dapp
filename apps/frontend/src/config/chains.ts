@@ -46,7 +46,7 @@ export const APP_CHAIN_LIST: ChainWithLogo[] = [
         {
           id: ChainIds.BOB_MAINNET,
           label: 'BOB',
-          token: 'BTC',
+          token: 'ETH',
           publicRpcUrl: BOB.publicRpc[Environments.Mainnet],
           rpcUrl: BOB.rpc[Environments.Mainnet],
           blockExplorerUrl: BOB.explorer[Environments.Mainnet],
@@ -56,7 +56,7 @@ export const APP_CHAIN_LIST: ChainWithLogo[] = [
     : [
         {
           id: ChainIds.RSK_TESTNET,
-          label: 'RSK',
+          label: 'RSK Testnet',
           token: 'tRBTC',
           publicRpcUrl: RSK.publicRpc[Environments.Testnet],
           rpcUrl: RSK.rpc[Environments.Testnet],
@@ -65,7 +65,7 @@ export const APP_CHAIN_LIST: ChainWithLogo[] = [
         },
         {
           id: ChainIds.BOB_TESTNET,
-          label: 'BOB',
+          label: 'BOB Testnet',
           token: 'tETH',
           publicRpcUrl: BOB.publicRpc[Environments.Testnet],
           rpcUrl: BOB.rpc[Environments.Testnet],

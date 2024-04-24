@@ -1,71 +1,83 @@
 import { ChainIds } from '@sovryn/ethers-provider';
 
-import { BOB_CHAIN_ID } from '../../../../../config/chains';
-
 import { AmbientLiquidityPool } from './utils/AmbientLiquidityPool';
+
+export const MAINNET_AMM = [
+  // BOB mock pools
+  new AmbientLiquidityPool('ETH', 'mWSTETH', ChainIds.BOB_MAINNET, '400'),
+  new AmbientLiquidityPool('mDLLR', 'mSOV', ChainIds.BOB_MAINNET, '410'),
+  new AmbientLiquidityPool('ETH', 'mSOV', ChainIds.BOB_MAINNET, '410'),
+  new AmbientLiquidityPool('mUSDC', 'mUSDT', ChainIds.BOB_MAINNET, '400'),
+  new AmbientLiquidityPool('mDLLR', 'mDAI', ChainIds.BOB_MAINNET, '400'),
+  new AmbientLiquidityPool('mWBTC', 'mTBTC', ChainIds.BOB_MAINNET, '400'),
+  new AmbientLiquidityPool('mSOV', 'mPOWA', ChainIds.BOB_MAINNET, '420'),
+  new AmbientLiquidityPool('mDLLR', 'mUSDT', ChainIds.BOB_MAINNET, '400'),
+  new AmbientLiquidityPool('ETH', 'mRETH', ChainIds.BOB_MAINNET, '400'),
+  new AmbientLiquidityPool('mWBTC', 'mSOV', ChainIds.BOB_MAINNET, '410'),
+];
 
 export const TESTNET_AMM = [
   // BOB
   new AmbientLiquidityPool(
     'WBTC',
     'SOV',
-    BOB_CHAIN_ID,
+    ChainIds.BOB_TESTNET,
     '36000',
     '0x8C3cD9182dbef229a36351633f470ea904e105Ac',
   ),
   new AmbientLiquidityPool(
     'tBTC',
     'SOV',
-    BOB_CHAIN_ID,
+    ChainIds.BOB_TESTNET,
     '36000',
     '0x68D00Ff88F3a5987584E313b42Cb11CfeeE4FB39',
   ),
   new AmbientLiquidityPool(
     'ETH',
     'SOV',
-    BOB_CHAIN_ID,
+    ChainIds.BOB_TESTNET,
     '36000',
     '0x869f0297749084e0256cC761867FE7cE456640FC',
   ),
   new AmbientLiquidityPool(
     'rETH',
     'SOV',
-    BOB_CHAIN_ID,
+    ChainIds.BOB_TESTNET,
     '36000',
     '0x4F39F44C022C7a79FA78E71f74F0eF2CFcEe10A4',
   ),
   new AmbientLiquidityPool(
     'wstETH',
     'SOV',
-    BOB_CHAIN_ID,
+    ChainIds.BOB_TESTNET,
     '36000',
     '0xaC716d3e8dd48DaEc9189943CAd08deFF60c59B0',
   ),
   new AmbientLiquidityPool(
     'USDT',
     'SOV',
-    BOB_CHAIN_ID,
+    ChainIds.BOB_TESTNET,
     '36000',
     '0x838c5172779357E60C28cc6315c8DCFa0F782786',
   ),
   new AmbientLiquidityPool(
     'USDC',
     'SOV',
-    BOB_CHAIN_ID,
+    ChainIds.BOB_TESTNET,
     '36000',
     '0xE1EA7bCD93232c66DE8D4D1a5e22da53803e7A69',
   ),
   new AmbientLiquidityPool(
     'DAI',
     'SOV',
-    BOB_CHAIN_ID,
+    ChainIds.BOB_TESTNET,
     '36000',
     '0xa87Bed23E26b2Bb7725173168D983eE4Ec0e2b64',
   ),
   new AmbientLiquidityPool(
     'DLLR',
     'SOV',
-    BOB_CHAIN_ID,
+    ChainIds.BOB_TESTNET,
     '36000',
     '0xe8523EBb8EC8Cf1b7f14D0623f7adB53b09f047C',
   ),

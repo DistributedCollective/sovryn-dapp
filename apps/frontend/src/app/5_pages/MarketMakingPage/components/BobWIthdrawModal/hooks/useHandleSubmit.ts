@@ -41,15 +41,16 @@ export const useHandleSubmit = (
 
     const transactions: Transaction[] = [];
 
-    const crocPool = croc.pool(
-      poolTokens.tokenA.tokenAddr,
-      poolTokens.tokenB.tokenAddr,
-    );
-
     const ambientPool = AmbientLiquidityPoolDictionary.get(
       pool.base,
       pool.quote,
       chainId,
+    );
+
+    const crocPool = croc.pool(
+      poolTokens.tokenA.tokenAddr,
+      poolTokens.tokenB.tokenAddr,
+      ambientPool.poolIndex,
     );
 
     const poolPrice = await crocPool.displayPrice();

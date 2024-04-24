@@ -57,6 +57,7 @@ export const BobAmmPage: React.FC = () => {
   const isFork = useCallback(() => CHAIN_ID === ChainIds.FORK, [CHAIN_ID]);
 
   const tokens = useMemo(() => listAssetsOfChain(CHAIN_ID), [CHAIN_ID]);
+  const [poolIndex, setPoolIndex] = useState<number>(36000);
   const [tokenA, setTokenA] = useState<string>();
   const [tokenB, setTokenB] = useState<string>();
   const [tokenAAddress, setTokenAAddress] = useState<string>();
@@ -90,7 +91,7 @@ export const BobAmmPage: React.FC = () => {
 
     console.log({ baseToken, quoteToken });
 
-    const pool = croc.current.pool(baseToken, quoteToken);
+    const pool = croc.current.pool(baseToken, quoteToken, poolIndex);
 
     pool
       .isInit()
@@ -109,10 +110,10 @@ export const BobAmmPage: React.FC = () => {
       .finally(() => {
         setTesting(false);
       });
-  }, [tokenA, tokenB, CHAIN_ID]);
+  }, [tokenA, tokenB, CHAIN_ID, poolIndex]);
 
   const handlePoolInit = useCallback(
-    async (base: string, quote: string, price: number) => {
+    async (base: string, quote: string, price: number, index: number) => {
       if (!croc.current) {
         alert('CrocEnv not initialized');
         return;
@@ -137,7 +138,7 @@ export const BobAmmPage: React.FC = () => {
       // await tokenA.approveBypassRouter();
       // await tokenA.approveRouter();
 
-      const pool = croc.current.pool(tokenA.tokenAddr, tokenB.tokenAddr);
+      const pool = croc.current.pool(tokenA.tokenAddr, tokenB.tokenAddr, index);
       console.log({ pool });
 
       const init = await pool.isInit();
@@ -240,7 +241,7 @@ export const BobAmmPage: React.FC = () => {
       const tokenA = croc.current.tokens.materialize(baseToken);
       const tokenB = croc.current.tokens.materialize(quoteToken);
 
-      const pool = croc.current.pool(tokenA.tokenAddr, tokenB.tokenAddr);
+      const pool = croc.current.pool(tokenA.tokenAddr, tokenB.tokenAddr, 36000);
       console.log({ pool });
 
       const init = await pool.isInit();
@@ -325,6 +326,7 @@ export const BobAmmPage: React.FC = () => {
         // todo: check if this need to be switched for certain cases
         isTokenAPrimaryRange: true,
         tick: { low: MIN_TICK, high: MAX_TICK },
+        poolIndex: 36000,
       });
 
       transactions.push({
@@ -387,9 +389,16 @@ export const BobAmmPage: React.FC = () => {
             value={price}
             onChangeText={val => setPrice(Number(val))}
           />
+
+          <p>Pool Template Index:</p>
+          <Input
+            type="number"
+            value={poolIndex}
+            onChangeText={val => setPoolIndex(Number(val))}
+          />
           <Button
             text="Init Pool"
-            onClick={() => handlePoolInit(tokenA!, tokenB!, price)}
+            onClick={() => handlePoolInit(tokenA!, tokenB!, price, poolIndex)}
           />
           {testing && <p>loading</p>}
           {isInit ? (

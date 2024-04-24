@@ -60,11 +60,13 @@ export const useHandleSubmit = (assetA: string, assetB: string) => {
       return;
     }
 
-    const firstAssetBigNumberAmount =
-      Decimal.from(firstAssetValue).toBigNumber();
+    const firstAssetBigNumberAmount = Decimal.from(firstAssetValue)
+      .asUnits(await poolTokens.tokenA.decimals)
+      .toBigNumber();
 
-    const secondAssetBigNumberAmount =
-      Decimal.from(secondAssetValue).toBigNumber();
+    const secondAssetBigNumberAmount = Decimal.from(secondAssetValue)
+      .asUnits(await poolTokens.tokenB.decimals)
+      .toBigNumber();
 
     const transactions: Transaction[] = [];
 
@@ -147,6 +149,7 @@ export const useHandleSubmit = (assetA: string, assetB: string) => {
       isTokenAPrimaryRange: usesBaseToken,
       tick,
       lpConduit: pool?.lpTokenAddress,
+      poolIndex: pool?.poolIndex,
     });
 
     console.log('txData', tx);

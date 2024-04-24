@@ -17,7 +17,7 @@ export const useGetAmbientTransactions = (pool: AmbientLiquidityPool) => {
   const { value, loading } = useFetch(
     `${getIndexerUri(chainId)}/user_pool_txs?user=${account}&base=${
       baseToken?.address
-    }&quote=${quoteToken?.address}&poolIdx=${pool.poolIdx}&chainId=${
+    }&quote=${quoteToken?.address}&poolIdx=${pool.poolIndex}&chainId=${
       pool.chainId
     }`,
   );

@@ -83,4 +83,11 @@ export const bobTestnet: Array<AssetDetails> = [
     decimals: 18,
     getIcon: async () => (await import('./icons/bob/tbtc')).default,
   },
+  {
+    symbol: 'TIL',
+    address: '0xd0FE317B5D6caa7299E3cC094EACc96c0B116184',
+    name: 'Tiltom Token',
+    decimals: 6,
+    getIcon: async () => (await import('./icons/unknown')).default,
+  },
 ];

@@ -433,8 +433,8 @@
                     "description": "Sovryn supports the most popular browser and hardware wallets."
                 },
                 "second": {
-                    "title": "Deposit BTC",
-                    "description": "Transfer BTC from the bitcoin network to your Rootstock address."
+                    "title": "Deposit funds",
+                    "description": "Transfer funds to your address from our selection of bridges."
                 },
                 "third": {
                     "title": "Start earning",

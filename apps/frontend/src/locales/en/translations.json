@@ -524,10 +524,15 @@
             "ctaText": "New to Sovryn?"
         },
         "protocolDataSection": {
-            "title": "Protocol Data",
+            "title": "Protocol data",
             "cta": "View more",
-            "totalValueLocked": "Total value locked",
-            "volume": "24 hour volume"
+            "totalValueLockedAllNetworks": "Total value locked on all networks",
+            "volumeAllNetworks": "24 hour volume on all networks",
+            "tvlRskNetwork": "TVL RSK network",
+            "volumeRskNetwork": "24 hour RSK network",
+            "tvlBobNetwork": "TVL BOB network",
+            "volumeBobNetwork": "24 hour BOB network",
+            "dataComingSoon": "Data coming soon"
         }
     },
 

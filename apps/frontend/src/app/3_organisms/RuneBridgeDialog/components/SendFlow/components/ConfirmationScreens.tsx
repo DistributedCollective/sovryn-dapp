@@ -3,6 +3,7 @@ import React, { useCallback, useContext, useMemo, useState } from 'react';
 import { Contract } from 'ethers';
 import { t } from 'i18next';
 
+import { AssetDetailsData } from '@sovryn/contracts';
 import { StatusType } from '@sovryn/ui';
 
 import { useTransactionContext } from '../../../../../../contexts/TransactionContext';
@@ -10,11 +11,9 @@ import { useAccount } from '../../../../../../hooks/useAccount';
 import { useGetProtocolContract } from '../../../../../../hooks/useGetContract';
 import { translations } from '../../../../../../locales/i18n';
 import { toWei } from '../../../../../../utils/math';
-import {
-  TokenDetails,
-  TransactionType,
-} from '../../../../TransactionStepDialog/TransactionStepDialog.types';
+import { TransactionType } from '../../../../TransactionStepDialog/TransactionStepDialog.types';
 import { GAS_LIMIT_RUNE_BRIDGE_WITHDRAW } from '../../../constants';
+import { tokenABI } from '../../../contexts/rune';
 import { SendFlowContext, SendFlowStep } from '../../../contexts/sendflow';
 import { ReviewScreen } from './ReviewScreen';
 import { StatusScreen } from './StatusScreen';
@@ -69,7 +68,9 @@ export const ConfirmationScreens: React.FC<ConfirmationScreensProps> = ({
       ['function approve(address spender, uint256 amount) returns (bool)'],
       signer,
     );
-    const tokenDetails: TokenDetails = {
+    const assetDetailsData: AssetDetailsData = {
+      abi: tokenABI,
+      contract: () => tokenContract,
       address: selectedToken.tokenContractAddress,
       symbol: selectedToken.symbol,
       decimals: selectedToken.decimals,
@@ -85,7 +86,7 @@ export const ConfirmationScreens: React.FC<ConfirmationScreensProps> = ({
         request: {
           type: TransactionType.signTransaction,
           contract: tokenContract,
-          tokenDetails,
+          assetDetailsData: assetDetailsData,
           fnName: 'approve',
           args: [
             runeBridgeContract.address,

@@ -85,7 +85,7 @@ export const BobWithdrawModal: FC<BobWithdrawModalProps> = ({
     } catch (error) {
       console.error(error);
     }
-  }, [croc, position, pool]);
+  }, [croc, pool.poolIndex, position]);
 
   const isFullWithdrawal = useMemo(
     () =>

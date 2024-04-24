@@ -64,7 +64,7 @@ export const useGetPoolInfo = (assetA: string, assetB: string) => {
 
         const payload = json.data;
 
-        setFeeRate(payload.feeRate);
+        setFeeRate((payload.feeRate * 100).toString());
       })
       .catch(error => {
         return undefined;

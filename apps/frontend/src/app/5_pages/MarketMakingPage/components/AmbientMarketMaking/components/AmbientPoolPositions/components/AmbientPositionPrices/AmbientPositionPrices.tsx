@@ -3,6 +3,7 @@ import React, { FC, useMemo } from 'react';
 import { MIN_TICK, MAX_TICK, tickToPrice } from '@sovryn/sdex';
 
 import { AmountRenderer } from '../../../../../../../../2_molecules/AmountRenderer/AmountRenderer';
+import { PoolPositionType } from '../../../../../../MarketMakingPage.types';
 import { AmbientPosition } from '../../../../AmbientMarketMaking.types';
 import { AmbientLiquidityPool } from '../../../../utils/AmbientLiquidityPool';
 
@@ -17,7 +18,7 @@ export const AmbientPositionPrices: FC<AmbientPositionPricesProps> = ({
 }) => {
   const isAmbient = useMemo(
     () =>
-      position.positionType === 'ambient' ||
+      position.positionType === PoolPositionType.ambient ||
       (position.bidTick === MIN_TICK && position.askTick === MAX_TICK),
     [position.askTick, position.bidTick, position.positionType],
   );

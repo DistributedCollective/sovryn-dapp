@@ -2,11 +2,10 @@ import React from 'react';
 
 import { t } from 'i18next';
 
-import { SEPOLIA_CHAIN_ID } from '../../../../../config/chains';
-
 import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { TransactionIdRenderer } from '../../../../2_molecules/TransactionIdRenderer/TransactionIdRenderer';
 import { getTokenDisplayNameByAddress } from '../../../../../constants/tokens';
+import { getCurrentChain } from '../../../../../hooks/useChainStore';
 import { translations } from '../../../../../locales/i18n';
 import { Swap } from '../../../../../utils/graphql/bob/generated';
 import { dateFormat } from '../../../../../utils/helpers';
@@ -20,7 +19,10 @@ const renderAmount = (
 ) => (
   <AmountRenderer
     value={Math.abs(Number(fromWei(value)))}
-    suffix={getTokenDisplayNameByAddress(inBaseQty ? pool.base : pool.quote)}
+    suffix={getTokenDisplayNameByAddress(
+      inBaseQty ? pool.base : pool.quote,
+      getCurrentChain(),
+    )}
   />
 );
 
@@ -63,7 +65,7 @@ export const COLUMNS_CONFIG = [
       <TransactionIdRenderer
         hash={item.transactionHash}
         dataAttribute="bob-conversion-history-tx-hash"
-        chainId={SEPOLIA_CHAIN_ID}
+        chainId={getCurrentChain()}
       />
     ),
   },

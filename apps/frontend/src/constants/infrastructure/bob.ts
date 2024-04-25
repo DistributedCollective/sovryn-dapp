@@ -13,7 +13,7 @@ export const BOB = {
     [Environments.Testnet]: 'https://testnet-explorer.gobob.xyz',
   },
   indexer: {
-    [Environments.Mainnet]: '',
+    [Environments.Mainnet]: 'https://bob-ambient-graphcache.sovryn.app/gcgo',
     [Environments.Testnet]:
       'https://bob-ambient-graphcache.test.sovryn.app/gcgo',
   },
@@ -22,7 +22,8 @@ export const BOB = {
     [Environments.Testnet]: 'https://app.gobob.xyz',
   },
   subgraph: {
-    [Environments.Mainnet]: '',
+    [Environments.Mainnet]:
+      'https://bob-ambient-subgraph.sovryn.app/subgraphs/name/DistributedCollective/bob-ambient-subgraph',
     [Environments.Testnet]:
       'https://bob-ambient-subgraph.test.sovryn.app/subgraphs/name/DistributedCollective/bob-ambient-subgraph',
   },

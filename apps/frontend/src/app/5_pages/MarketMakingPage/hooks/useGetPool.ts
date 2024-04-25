@@ -1,8 +1,9 @@
 import { useMemo } from 'react';
 
-import { useCrocContext } from '../../../../../../contexts/CrocContext';
-import { useCurrentChain } from '../../../../../../hooks/useChainStore';
-import { findAsset } from '../../../../../../utils/asset';
+import { useCrocContext } from '../../../../contexts/CrocContext';
+import { useCurrentChain } from '../../../../hooks/useChainStore';
+import { findAsset } from '../../../../utils/asset';
+import { AmbientLiquidityPoolDictionary } from '../components/AmbientMarketMaking/utils/AmbientLiquidityPoolDictionary';
 
 export const useGetPool = (assetA: string, assetB: string) => {
   const chainId = useCurrentChain();
@@ -20,7 +21,13 @@ export const useGetPool = (assetA: string, assetB: string) => {
     const tokenA = croc.tokens.materialize(assetAAddress);
     const tokenB = croc.tokens.materialize(assetBAddress);
 
-    return { tokenA, tokenB };
+    const { poolIndex } = AmbientLiquidityPoolDictionary.get(
+      assetA,
+      assetB,
+      chainId,
+    );
+
+    return { tokenA, tokenB, poolIndex };
   }, [assetA, assetB, chainId, croc]);
 
   const pool = useMemo(() => {
@@ -28,7 +35,11 @@ export const useGetPool = (assetA: string, assetB: string) => {
       return;
     }
 
-    return croc.pool(poolTokens.tokenA.tokenAddr, poolTokens.tokenB.tokenAddr);
+    return croc.pool(
+      poolTokens.tokenA.tokenAddr,
+      poolTokens.tokenB.tokenAddr,
+      poolTokens.poolIndex,
+    );
   }, [croc, poolTokens]);
 
   return {

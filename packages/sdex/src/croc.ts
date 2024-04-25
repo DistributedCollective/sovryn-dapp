@@ -29,8 +29,8 @@ export class CrocEnv {
    *
    * @param token The address of the token to buy.
    * @param qty The fixed quantity of the token to buy. */
-  buy(token: string, qty: TokenQty): BuyPrefix {
-    return new BuyPrefix(token, qty, this.tokens, this.context);
+  buy(token: string, qty: TokenQty, poolIndex: number): BuyPrefix {
+    return new BuyPrefix(token, qty, this.tokens, poolIndex, this.context);
   }
 
   /* Generates a prefix object for a swap with a fixed buy quantity of native ETH.
@@ -38,8 +38,14 @@ export class CrocEnv {
    *    crocEnv.buyEth(100).with(DAI)
    *
    * @param qty The fixed quantity of native ETH to buy. */
-  buyEth(qty: TokenQty): BuyPrefix {
-    return new BuyPrefix(AddressZero, qty, this.tokens, this.context);
+  buyEth(qty: TokenQty, poolIndex: number): BuyPrefix {
+    return new BuyPrefix(
+      AddressZero,
+      qty,
+      this.tokens,
+      poolIndex,
+      this.context,
+    );
   }
 
   /* Generates a prefix object for a swap with a fixed sell quantity.
@@ -48,8 +54,8 @@ export class CrocEnv {
    *
    * @param token The address of the token to sell.
    * @param qty The fixed quantity of the token to sell. */
-  sell(token: string, qty: TokenQty): SellPrefix {
-    return new SellPrefix(token, qty, this.tokens, this.context);
+  sell(token: string, qty: TokenQty, poolIndex: number): SellPrefix {
+    return new SellPrefix(token, qty, this.tokens, poolIndex, this.context);
   }
 
   /* Generates a prefix object for a swap with a fixed sell quantity of native ETH.
@@ -57,8 +63,14 @@ export class CrocEnv {
    *    crocEnv.sellEth(100).for(DAI)
    *
    * @param qty The fixed quantity of native ETH to sell. */
-  sellEth(qty: TokenQty): SellPrefix {
-    return new SellPrefix(AddressZero, qty, this.tokens, this.context);
+  sellEth(qty: TokenQty, poolIndex: number): SellPrefix {
+    return new SellPrefix(
+      AddressZero,
+      qty,
+      this.tokens,
+      poolIndex,
+      this.context,
+    );
   }
 
   /* Returns a view of the canonical pool for the underlying token pair. For example the
@@ -69,25 +81,25 @@ export class CrocEnv {
    *                   view. Note the quote or base side only matters for display price
    *                   purposes.
    * @param tokenBase The address of the token to use as the base token in the view. */
-  pool(tokenQuote: string, tokenBase: string): CrocPoolView {
+  pool(tokenQuote: string, tokenBase: string, poolIndex: number): CrocPoolView {
     const viewA = this.tokens.materialize(tokenQuote);
     const viewB = this.tokens.materialize(tokenBase);
-    return new CrocPoolView(viewA, viewB, this.context);
+    return new CrocPoolView(viewA, viewB, poolIndex, this.context);
   }
 
   /* Returns a view of the canonical pool for the token pair against native ETH. For example
    * the below woudl return a pool view for MKR/ETH with MKR priced in ETH for display purposes
    *       crocEnv.poolEth(MKR) */
-  poolEth(token: string): CrocPoolView {
-    return this.pool(token, AddressZero);
+  poolEth(token: string, poolIndex: number): CrocPoolView {
+    return this.pool(token, AddressZero, poolIndex);
   }
 
   /* Returns a view of the canonical pool for the token pair against native ETH, but ETH is
    * priced in terms of the token. Usually the convention when ETH is paired against stablecoins
    * or paired against Bitcoin. For example the below would return a pool view for ETH/USDC
    *       crocEnv.poolEthQuote(USDC) */
-  poolEthQuote(token: string): CrocPoolView {
-    return this.pool(AddressZero, token);
+  poolEthQuote(token: string, poolIndex: number): CrocPoolView {
+    return this.pool(AddressZero, token, poolIndex);
   }
 
   /* Returns a position view for a single user on the canonical pool for a single pair. */
@@ -95,11 +107,13 @@ export class CrocEnv {
     tokenQuote: string,
     tokenBase: string,
     owner: string,
+    poolIndex: number,
   ): CrocPositionView {
     return new CrocPositionView(
       this.tokens.materialize(tokenQuote),
       this.tokens.materialize(tokenBase),
       owner,
+      poolIndex,
       this.context,
     );
   }
@@ -132,11 +146,13 @@ class BuyPrefix {
     token: string,
     qty: TokenQty,
     repo: TokenRepo,
+    poolIndex: number,
     context: Promise<CrocContext>,
   ) {
     this.token = token;
     this.qty = qty;
     this.context = context;
+    this.poolIndex = poolIndex;
     this.repo = repo;
   }
 
@@ -146,6 +162,7 @@ class BuyPrefix {
       this.repo.materialize(this.token),
       this.qty,
       true,
+      this.poolIndex,
       this.context,
       args,
     );
@@ -169,6 +186,7 @@ class BuyPrefix {
   readonly token: string;
   readonly qty: TokenQty;
   readonly context: Promise<CrocContext>;
+  readonly poolIndex: number;
   repo: TokenRepo;
 }
 
@@ -177,10 +195,12 @@ class SellPrefix {
     token: string,
     qty: TokenQty,
     repo: TokenRepo,
+    poolIndex: number,
     context: Promise<CrocContext>,
   ) {
     this.token = token;
     this.qty = qty;
+    this.poolIndex = poolIndex;
     this.context = context;
     this.repo = repo;
   }
@@ -191,6 +211,7 @@ class SellPrefix {
       this.repo.materialize(token),
       this.qty,
       false,
+      this.poolIndex,
       this.context,
       args,
     );
@@ -212,6 +233,7 @@ class SellPrefix {
 
   readonly token: string;
   readonly qty: TokenQty;
+  readonly poolIndex: number;
   readonly context: Promise<CrocContext>;
   repo: TokenRepo;
 }

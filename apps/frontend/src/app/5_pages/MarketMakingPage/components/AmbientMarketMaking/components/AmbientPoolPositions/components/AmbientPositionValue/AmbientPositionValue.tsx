@@ -1,6 +1,7 @@
 import React, { FC, useMemo } from 'react';
 
 import { AmountRenderer } from '../../../../../../../../2_molecules/AmountRenderer/AmountRenderer';
+import { getCurrentChain } from '../../../../../../../../../hooks/useChainStore';
 import { useDollarValue } from '../../../../../../../../../hooks/useDollarValue';
 import { bigNumberic, decimalic } from '../../../../../../../../../utils/math';
 import { AmbientPosition } from '../../../../AmbientMarketMaking.types';
@@ -21,10 +22,12 @@ export const AmbientPositionValue: FC<AmbientPositionValueProps> = ({
   const { usdValue: baseValue } = useDollarValue(
     pool.base,
     bigNumberic(result?.positionLiqBase || '0').toString(),
+    getCurrentChain(),
   );
   const { usdValue: quoteValue } = useDollarValue(
     pool.quote,
     bigNumberic(result?.positionLiqQuote || '0').toString(),
+    getCurrentChain(),
   );
 
   const value = useMemo(

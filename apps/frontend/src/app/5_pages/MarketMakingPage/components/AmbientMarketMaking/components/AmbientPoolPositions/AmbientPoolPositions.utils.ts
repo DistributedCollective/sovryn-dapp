@@ -16,17 +16,23 @@ export const getPositionBalance = (
   if (!spotPrice) {
     return;
   }
+
   if (position.positionType === PoolPositionType.ambient) {
     const positionLiq = position.ambientLiq;
+    const positionLiqBase = Number(positionLiq * Math.sqrt(spotPrice)).toFixed(
+      0,
+    );
+    const positionLiqQuote = Number(positionLiq / Math.sqrt(spotPrice)).toFixed(
+      0,
+    );
 
     return {
       positionLiq,
-      positionLiqBase: positionLiq * Math.sqrt(spotPrice),
-      positionLiqQuote: positionLiq / Math.sqrt(spotPrice),
+      positionLiqBase: Number(positionLiqBase),
+      positionLiqQuote: Number(positionLiqQuote),
     };
   } else if (position.positionType === PoolPositionType.concentrated) {
     const positionLiq = position.concLiq;
-
     const positionLiqBase = bigNumToFloat(
       baseTokenForConcLiq(
         spotPrice,

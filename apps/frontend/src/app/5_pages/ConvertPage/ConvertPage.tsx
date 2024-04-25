@@ -443,6 +443,7 @@ const ConvertPage: FC = () => {
                 value={maximumAmountToConvert}
                 token={sourceToken}
                 dataAttribute="convert-from-max"
+                chainId={currentChainId}
               />
             </div>
 

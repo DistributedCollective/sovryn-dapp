@@ -1,6 +1,6 @@
 import { ChainId } from '@sovryn/ethers-provider';
 
-import { RSK_CHAIN_ID, SEPOLIA_CHAIN_ID } from '../config/chains';
+import { BOB_CHAIN_ID, RSK_CHAIN_ID } from '../config/chains';
 
 import { findAsset, findAssetByAddress } from '../utils/asset';
 
@@ -11,5 +11,5 @@ export const getTokenDisplayName = (
 
 export const getTokenDisplayNameByAddress = (
   address: string,
-  chainId: ChainId = SEPOLIA_CHAIN_ID,
+  chainId: ChainId = BOB_CHAIN_ID,
 ): string => findAssetByAddress(address, chainId)?.symbol || address;

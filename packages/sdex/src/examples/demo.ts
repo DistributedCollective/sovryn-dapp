@@ -31,7 +31,7 @@ async function demo() {
   //console.log(await croc.approveBypassRouter())
   //console.log(await croc.token(USDC).approveRouter(100))
 
-  console.log(await croc.buy(USDC, 5).withEth().useRouter().swap());
+  console.log(await croc.buy(USDC, 5, 36000).withEth().useRouter().swap());
   /*console.log((await croc.sell(USDC, 0.01).forEth().useBypass().swap()))
     console.log((await croc.sellEth(0.00001).for(USDC).useBypass().swap()))
     console.log((await croc.buyEth(0.00001).with(USDC).useBypass().swap()))*/

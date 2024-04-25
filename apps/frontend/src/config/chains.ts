@@ -15,6 +15,7 @@ const IS_MAINNET = process.env.REACT_APP_NETWORK === Environments.Mainnet;
 export enum Chains {
   RSK = 'rsk',
   BSC = 'bsc',
+  BOB = 'bob',
 }
 
 export const DEFAULT_CHAIN_ID = (
@@ -27,10 +28,6 @@ export const RSK_CHAIN_ID = (
 
 export const BOB_CHAIN_ID = (
   IS_MAINNET ? ChainIds.BOB_MAINNET : ChainIds.BOB_TESTNET
-) as ChainId;
-
-export const SEPOLIA_CHAIN_ID = (
-  IS_MAINNET ? ChainIds.BOB_MAINNET : ChainIds.SEPOLIA
 ) as ChainId;
 
 export type ChainWithLogo = Chain & { icon: string };
@@ -50,7 +47,7 @@ export const APP_CHAIN_LIST: ChainWithLogo[] = [
         {
           id: ChainIds.BOB_MAINNET,
           label: 'BOB',
-          token: 'BTC',
+          token: 'ETH',
           publicRpcUrl: BOB.publicRpc[Environments.Mainnet],
           rpcUrl: BOB.rpc[Environments.Mainnet],
           blockExplorerUrl: BOB.explorer[Environments.Mainnet],
@@ -60,7 +57,7 @@ export const APP_CHAIN_LIST: ChainWithLogo[] = [
     : [
         {
           id: ChainIds.RSK_TESTNET,
-          label: 'RSK',
+          label: 'RSK Testnet',
           token: 'tRBTC',
           publicRpcUrl: RSK.publicRpc[Environments.Testnet],
           rpcUrl: RSK.rpc[Environments.Testnet],
@@ -69,7 +66,7 @@ export const APP_CHAIN_LIST: ChainWithLogo[] = [
         },
         {
           id: ChainIds.BOB_TESTNET,
-          label: 'BOB',
+          label: 'BOB Testnet',
           token: 'tETH',
           publicRpcUrl: BOB.publicRpc[Environments.Testnet],
           rpcUrl: BOB.rpc[Environments.Testnet],

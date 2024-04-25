@@ -15,7 +15,7 @@ export const useGetAmbientPool24Volume = (pool: AmbientLiquidityPool) => {
   const { value: candles, loading } = useFetch(
     `${getIndexerUri(chainId)}/pool_candles?base=${baseToken?.address}&quote=${
       quoteToken?.address
-    }&poolIdx=${pool.poolIdx}&chainId=${pool.chainId}&n=2&period=86400`,
+    }&poolIdx=${pool.poolIndex}&chainId=${pool.chainId}&n=2&period=86400`,
   );
 
   const data = useMemo(() => {

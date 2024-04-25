@@ -1,9 +1,10 @@
 import { BigNumber } from 'ethers';
 
-import { CrocEnv, MAX_SQRT_PRICE, MIN_SQRT_PRICE } from '@sovryn/sdex';
 import { getAssetDataByAddress } from '@sovryn/contracts';
 import { ChainId, ChainIds } from '@sovryn/ethers-provider';
+import { CrocEnv, MAX_SQRT_PRICE, MIN_SQRT_PRICE } from '@sovryn/sdex';
 
+export type PoolWithIndex = [string, string, number];
 export type Pool = [string, string];
 
 type Graph = Map<string, string[]>;
@@ -85,10 +86,12 @@ export const calcImpact = async (
 };
 
 const INDEXER = {
+  [ChainIds.BOB_MAINNET]:
+    'https://bob-ambient-graphcache.sovryn.app/gcgo/pool_list',
   [ChainIds.BOB_TESTNET]:
     'https://bob-ambient-graphcache.test.sovryn.app/gcgo/pool_list',
   [ChainIds.SEPOLIA]:
-    'https://bob-ambient-graphcache.test.sovryn.app/gcgo/pool_list', // todo: update with sepolia indexer
+    'https://sepolia-ambient-graphcache.test.sovryn.app/gcgo/pool_list',
 };
 
 // Fetch pools from the indexer and return list of pairs if assets are supported by chain
@@ -98,12 +101,12 @@ export const fetchPools = async (chainId: ChainId) => {
   const pools = await response
     .json()
     .then(response =>
-      (response.data ?? []).map(item => [item.base, item.quote]),
+      (response.data ?? []).map(item => [item.base, item.quote, item.poolIdx]),
     );
 
-  const items: Pool[] = [];
+  const items: PoolWithIndex[] = [];
   for (const pool of pools) {
-    const [base, quote] = pool;
+    const [base, quote, index] = pool;
     const baseAsset = await getAssetDataByAddress(base, chainId).catch(
       () => null,
     );
@@ -112,7 +115,7 @@ export const fetchPools = async (chainId: ChainId) => {
     );
 
     if (!baseAsset || !quoteAsset) continue;
-    items.push([baseAsset.address, quoteAsset.address]);
+    items.push([baseAsset.address, quoteAsset.address, index]);
   }
 
   return items;

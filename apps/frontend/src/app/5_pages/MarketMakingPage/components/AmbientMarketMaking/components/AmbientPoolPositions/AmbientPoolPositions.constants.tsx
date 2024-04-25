@@ -7,6 +7,7 @@ import { TransactionIdRenderer } from '../../../../../../2_molecules/Transaction
 import { translations } from '../../../../../../../locales/i18n';
 import { AmbientPosition } from '../../AmbientMarketMaking.types';
 import { AmbientLiquidityPool } from '../../utils/AmbientLiquidityPool';
+import { AmbientPoolPositionClaimFees } from './components/AmbientPoolPositionClaimFees/AmbientPoolPositionClaimFees';
 import { AmbientPoolPositionWithdraw } from './components/AmbientPoolPositionWithdraw/AmbientPoolPositionWithdraw';
 import { AmbientPositionBalance } from './components/AmbientPositionBalance/AmbientPositionBalance';
 import { AmbientPositionPrices } from './components/AmbientPositionPrices/AmbientPositionPrices';
@@ -63,8 +64,16 @@ export const COLUMNS_CONFIG = (pool: AmbientLiquidityPool) => [
   {
     id: '',
     title: '',
+    className: 'max-w-64',
     cellRenderer: (position: AmbientPosition) => (
       <div className="flex justify-end items-center">
+        {position.rewardLiq > 0 && (
+          <AmbientPoolPositionClaimFees
+            pool={pool}
+            position={position}
+            className="mr-4"
+          />
+        )}
         <AmbientPoolPositionWithdraw pool={pool} position={position} />
       </div>
     ),

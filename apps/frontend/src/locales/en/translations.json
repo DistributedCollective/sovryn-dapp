@@ -1416,6 +1416,13 @@
             "form": {
                 "invalidAmountError": "Exceeds maximum amount"
             }
+        },
+        "claimFeesModal": {
+            "title": "Claim confirmation",
+            "slippage": "Slippage",
+            "earnedToken": "Earned {{token}}",
+            "removalValue": "Removal value",
+            "claimFees": "Claim fees"
         }
     },
 

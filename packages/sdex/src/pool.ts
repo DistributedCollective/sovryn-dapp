@@ -1,6 +1,5 @@
 /* eslint-disable prefer-const */
 import { AddressZero } from '@ethersproject/constants';
-import { TransactionResponse } from '@ethersproject/providers';
 
 import { BigNumber, BigNumberish, Contract } from 'ethers';
 
@@ -312,7 +311,7 @@ export class CrocPoolView {
     range: TickRange,
     limits: PriceRange,
     opts?: CrocLpOpts,
-  ): Promise<TransactionResponse> {
+  ): Promise<string> {
     let [lowerBound, upperBound] = await this.transformLimits(limits);
     const calldata = (await this.makeEncoder()).encodeHarvestConc(
       range[0],
@@ -322,7 +321,7 @@ export class CrocPoolView {
       this.maskSurplusFlag(opts),
       this.applyLpConduit(opts),
     );
-    return this.sendCmd(calldata);
+    return calldata;
   }
 
   public async constructParams(
@@ -350,24 +349,6 @@ export class CrocPoolView {
           path: cntx.chain.proxyPaths.liq,
           calldata,
         };
-  }
-
-  private async sendCmd(
-    calldata: string,
-    txArgs?: { value?: BigNumberish },
-  ): Promise<TransactionResponse> {
-    let cntx = await this.context;
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    if (txArgs && !txArgs.gasLimit) {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      txArgs.gasLimit = BigNumber.from(6_000_000);
-    }
-
-    return txArgs
-      ? cntx.dex.userCmd(cntx.chain.proxyPaths.liq, calldata, txArgs)
-      : cntx.dex.userCmd(cntx.chain.proxyPaths.liq, calldata);
   }
 
   private async mintAmbient(

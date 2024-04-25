@@ -12,6 +12,7 @@ import { useGetAmbientPositions } from '../../hooks/useGetAmbientPositions';
 import { AmbientLiquidityPool } from '../../utils/AmbientLiquidityPool';
 import { COLUMNS_CONFIG } from './AmbientPoolPositions.constants';
 import styles from './AmbientPoolPositions.module.css';
+import { AmbientPoolPositionClaimFees } from './components/AmbientPoolPositionClaimFees/AmbientPoolPositionClaimFees';
 import { AmbientPoolPositionWithdraw } from './components/AmbientPoolPositionWithdraw/AmbientPoolPositionWithdraw';
 import { AmbientPositionBalance } from './components/AmbientPositionBalance/AmbientPositionBalance';
 import { AmbientPositionPrices } from './components/AmbientPositionPrices/AmbientPositionPrices';
@@ -75,6 +76,13 @@ export const AmbientPoolPositions: FC<AmbientPoolPositionsProps> = ({
                 <AmountRenderer value={position.aprEst * 100} suffix="%" />
               }
             />
+            {position.rewardLiq > 0 && (
+              <AmbientPoolPositionClaimFees
+                pool={pool}
+                position={position}
+                className="mb-2"
+              />
+            )}
             <AmbientPoolPositionWithdraw pool={pool} position={position} />
           </div>
         ))}

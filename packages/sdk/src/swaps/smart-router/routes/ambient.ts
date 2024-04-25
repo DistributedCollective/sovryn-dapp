@@ -1,6 +1,5 @@
 import { BigNumber, utils, providers, constants, BigNumberish } from 'ethers';
 
-import { getAssetContract } from '@sovryn/contracts';
 import { ChainIds } from '@sovryn/ethers-provider';
 import { numberToChainId } from '@sovryn/ethers-provider';
 import { CrocEnv, CrocPoolView } from '@sovryn/sdex';
@@ -14,7 +13,7 @@ import {
 } from '../../../internal/utils';
 import { SwapRouteFunction } from '../types';
 import {
-  Pool,
+  PoolWithIndex,
   bfsShortestPath,
   calcImpact,
   constructGraph,
@@ -31,6 +30,7 @@ export const ambientRoute: SwapRouteFunction = (
   const makePlan = async (
     entry: string,
     destination: string,
+    poolIndex: number,
     _amount: BigNumber,
     slippage?: number,
   ) => {
@@ -38,41 +38,33 @@ export const ambientRoute: SwapRouteFunction = (
 
     const amount = await parseAmount(env, entry, _amount);
 
+    console.log('amount', amount.toString(), slippage, poolIndex);
+
     return env
-      .sell(entry, BigNumber.from(amount))
+      .sell(entry, BigNumber.from(amount), poolIndex)
       .for(destination, { slippage });
   };
 
-  const poolCache: Record<string, Pool[]> = {};
+  const poolCache: Record<string, PoolWithIndex[]> = {};
   const loadPools = async () => {
     const chainId = await getChainId();
     if (!poolCache[chainId]) {
-      // testing for virtual network fork...
-      if (chainId === ChainIds.FORK) {
-        const eth = (await getAssetContract('ETH', chainId)).address;
-        const sov = (await getAssetContract('SOV', chainId)).address;
-        const usdt = (await getAssetContract('USDT', chainId)).address;
-        const usdc = (await getAssetContract('USDC', chainId)).address;
-        const dai = (await getAssetContract('DAI', chainId)).address;
-        const vct = (await getAssetContract('VCT', chainId)).address;
-        const pools: Pool[] = [
-          [eth, sov],
-          [eth, usdc],
-          [eth, usdt],
-          [eth, dai],
-          [eth, vct],
-        ];
-
-        poolCache[chainId] = pools;
-
-        return pools;
-      }
-
       const pools = await fetchPools(chainId);
       poolCache[chainId] = pools;
     }
 
     return poolCache[chainId];
+  };
+
+  const findPair = (chainId: string, base: string, quote: string) => {
+    const pools = poolCache[chainId] ?? [];
+    return pools.find(
+      pool =>
+        (pool[0].toLowerCase() === base.toLowerCase() &&
+          pool[1].toLowerCase() === quote.toLowerCase()) ||
+        (pool[0].toLowerCase() === quote.toLowerCase() &&
+          pool[1].toLowerCase() === base.toLowerCase()),
+    );
   };
 
   return {
@@ -88,7 +80,9 @@ export const ambientRoute: SwapRouteFunction = (
       const pools = await loadPools();
 
       const uniqueTokens = new Set<string>();
-      pools.forEach(pool => pool.forEach(token => uniqueTokens.add(token)));
+      pools.forEach(pool =>
+        [pool[0], pool[1]].forEach(token => uniqueTokens.add(token)),
+      );
       const tokens = Array.from(uniqueTokens);
 
       const pairs = new Map<string, string[]>();
@@ -111,29 +105,28 @@ export const ambientRoute: SwapRouteFunction = (
       return pairs;
     },
     quote: async (entry, destination, amount) => {
+      const chainId = await getChainId();
       const pools = await loadPools();
 
-      if (
-        pools.find(
-          pool =>
-            (pool[0].toLowerCase() === entry.toLowerCase() &&
-              pool[1].toLowerCase() === destination.toLowerCase()) ||
-            (pool[0].toLowerCase() === destination.toLowerCase() &&
-              pool[1].toLowerCase() === entry.toLowerCase()),
-        )
-      ) {
+      const pair = findPair(chainId, entry, destination);
+
+      console.log('pair', [entry, destination], pair);
+
+      if (pair) {
         const plan = await makePlan(
           entry,
           destination,
+          pair[2],
           BigNumber.from(amount),
-          0.1,
+          0.3,
         );
         const impact = await plan.impact;
+
         return utils.parseEther(impact.buyQty);
       } else {
         // otherwise, use long form orders to build multi-hop swaps
 
-        const graph = constructGraph(pools);
+        const graph = constructGraph(pools.map(p => [p[0], p[1]]));
         const path = bfsShortestPath(graph, entry, destination);
 
         const poolCount = Math.ceil((path?.length ?? 0) / 2);
@@ -146,17 +139,24 @@ export const ambientRoute: SwapRouteFunction = (
         }
 
         const env = new CrocEnv(provider);
-        const context = await env.context;
+
+        console.log('uses multihop', path, poolCount);
 
         const entryAmount = await parseAmount(env, entry, amount);
 
-        const poolIndex = context.chain.poolIndex;
-
         const groupedPath = groupItemsInPairs(path ?? []);
+        const pathsToPoolsWithIndexes = groupedPath.map(item => {
+          const index = findPair(chainId, item[0], item[1])?.[2]!;
+          return [item[0], item[1], index] as PoolWithIndex;
+        });
 
         const ambientPools = await Promise.all(
-          groupedPath.map(item => env.pool(item[0], item[1])),
+          pathsToPoolsWithIndexes.map(item =>
+            env.pool(item[0], item[1], item[2]),
+          ),
         );
+
+        console.log('ambientPools', ambientPools);
 
         if (ambientPools.length === 0) {
           throw makeError(
@@ -168,10 +168,12 @@ export const ambientRoute: SwapRouteFunction = (
         let lastOut = await calculateImpact(
           env,
           ambientPools[0],
-          poolIndex,
+          ambientPools[0].poolIndex,
           entry,
           entryAmount,
         );
+
+        console.log('out', lastOut);
 
         for (let i = 1; i < ambientPools.length; i++) {
           const pool = ambientPools[i];
@@ -180,10 +182,12 @@ export const ambientRoute: SwapRouteFunction = (
           lastOut = await calculateImpact(
             env,
             pool,
-            poolIndex,
+            pool.poolIndex,
             poolPath[0],
             lastOut.amount,
           );
+
+          console.log('out', i, lastOut);
         }
 
         return Decimal.fromBigNumberString(
@@ -227,18 +231,18 @@ export const ambientRoute: SwapRouteFunction = (
       const slippage = Number(options?.slippage ?? 10) / 1000;
 
       const pools = await loadPools();
+      const chainId = await getChainId();
+
+      const pair = await findPair(chainId, entry, destination);
 
       // if there is a pool for the pair, use it
-      if (
-        pools.find(
-          pool =>
-            (pool[0].toLowerCase() === entry.toLowerCase() &&
-              pool[1].toLowerCase() === destination.toLowerCase()) ||
-            (pool[0].toLowerCase() === destination.toLowerCase() &&
-              pool[1].toLowerCase() === entry.toLowerCase()),
-        )
-      ) {
-        const plan = await makePlan(entry, destination, BigNumber.from(amount));
+      if (pair) {
+        const plan = await makePlan(
+          entry,
+          destination,
+          pair[2],
+          BigNumber.from(amount),
+        );
         const txData = await plan.generateSwapData({ from: from });
 
         return {
@@ -250,7 +254,7 @@ export const ambientRoute: SwapRouteFunction = (
       } else {
         // otherwise, use long form orders to build multi-hop swaps
 
-        const graph = constructGraph(pools);
+        const graph = constructGraph(pools.map(p => [p[0], p[1]]));
         const path = bfsShortestPath(graph, entry, destination);
 
         const poolCount = Math.ceil((path?.length ?? 0) / 2);
@@ -267,13 +271,19 @@ export const ambientRoute: SwapRouteFunction = (
 
         const entryAmount = await parseAmount(env, entry, amount);
 
-        const poolIndex = context.chain.poolIndex;
         const proxyPath = context.chain.proxyPaths.long;
 
         const groupedPath = groupItemsInPairs(path ?? []);
 
+        const pathsToPoolsWithIndexes = groupedPath.map(item => {
+          const index = findPair(chainId, item[0], item[1])?.[2]!;
+          return [item[0], item[1], index] as PoolWithIndex;
+        });
+
         const ambientPools = await Promise.all(
-          groupedPath.map(item => env.pool(item[0], item[1])),
+          pathsToPoolsWithIndexes.map(item =>
+            env.pool(item[0], item[1], item[2]),
+          ),
         );
 
         if (ambientPools.length === 0) {
@@ -293,7 +303,7 @@ export const ambientRoute: SwapRouteFunction = (
           order,
           env,
           ambientPools[0],
-          poolIndex,
+          ambientPools[0].poolIndex,
           entry,
           entryAmount,
           slippage,
@@ -313,7 +323,7 @@ export const ambientRoute: SwapRouteFunction = (
             order,
             env,
             pool,
-            poolIndex,
+            pool.poolIndex,
             poolPath[0],
             lastOut,
             slippage,
@@ -378,6 +388,7 @@ const setupPool = async (
     pool.baseToken.tokenAddr.toLowerCase() === entry.toLowerCase();
   orderPool.swap.inBaseQty = orderPool.swap.isBuy;
   orderPool.swap.qty = amount;
+  orderPool.poolIdx = poolIndex;
 
   const impact = await calcImpact(
     env,

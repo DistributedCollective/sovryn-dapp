@@ -122,6 +122,7 @@ export class CrocReposition {
       buyToken,
       await this.convertCollateral(),
       false,
+      (await this.pool.context).chain.poolIndex,
       (await this.pool).context,
       { slippage: this.impact },
     );

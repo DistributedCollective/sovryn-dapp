@@ -58,19 +58,28 @@ export interface CrocSwapPlanOpts {
 }
 
 export class CrocSwapPlan {
+  public readonly poolIndex: number;
   constructor(
     sellToken: CrocTokenView,
     buyToken: CrocTokenView,
     qty: TokenQty,
     qtyIsBuy: boolean,
+    poolIndex: number,
     context: Promise<CrocContext>,
     opts: CrocSwapPlanOpts = DFLT_SWAP_ARGS,
   ) {
+    this.poolIndex = poolIndex;
+
     [this.baseToken, this.quoteToken] = sortBaseQuoteViews(sellToken, buyToken);
     this.sellBase = this.baseToken === sellToken;
     this.qtyInBase = this.sellBase !== qtyIsBuy;
 
-    this.poolView = new CrocPoolView(this.baseToken, this.quoteToken, context);
+    this.poolView = new CrocPoolView(
+      this.baseToken,
+      this.quoteToken,
+      this.poolIndex,
+      context,
+    );
     const tokenView = this.qtyInBase ? this.baseToken : this.quoteToken;
     this.qty = tokenView.normQty(qty);
 
@@ -181,7 +190,7 @@ export class CrocSwapPlan {
       [
         this.baseToken.tokenAddr,
         this.quoteToken.tokenAddr,
-        (await this.context).chain.poolIndex,
+        this.poolIndex,
         this.sellBase,
         this.qtyInBase,
         await this.qty,
@@ -214,7 +223,7 @@ export class CrocSwapPlan {
     const data = contract.interface.encodeFunctionData('swap', [
       this.baseToken.tokenAddr,
       this.quoteToken.tokenAddr,
-      (await this.context).chain.poolIndex,
+      this.poolIndex,
       this.sellBase,
       this.qtyInBase,
       await this.qty,
@@ -298,12 +307,10 @@ export class CrocSwapPlan {
     const TIP = 0;
     const surplusFlags = this.maskSurplusArgs(args);
 
-    console.log('swap call', base, args);
-
     return base.swap(
       this.baseToken.tokenAddr,
       this.quoteToken.tokenAddr,
-      (await this.context).chain.poolIndex,
+      this.poolIndex,
       this.sellBase,
       this.qtyInBase,
       await this.qty,
@@ -342,7 +349,7 @@ export class CrocSwapPlan {
       [
         this.baseToken.tokenAddr,
         this.quoteToken.tokenAddr,
-        (await this.context).chain.poolIndex,
+        this.poolIndex,
         this.sellBase,
         this.qtyInBase,
         await this.qty,
@@ -375,10 +382,7 @@ export class CrocSwapPlan {
       await this.context
     ).dex.populateTransaction.swap(
       this.baseToken.tokenAddr,
-      this.quoteToken.tokenAddr,
-      (
-        await this.context
-      ).chain.poolIndex,
+      this.poolIndex,
       this.sellBase,
       this.qtyInBase,
       await this.qty,
@@ -403,9 +407,7 @@ export class CrocSwapPlan {
     ).slipQuery.calcImpact(
       this.baseToken.tokenAddr,
       this.quoteToken.tokenAddr,
-      (
-        await this.context
-      ).chain.poolIndex,
+      this.poolIndex,
       this.sellBase,
       this.qtyInBase,
       await this.qty,

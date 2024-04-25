@@ -7,15 +7,18 @@ export const sdexPool = (
   chainId: ChainId,
   baseAddress: string,
   quoteAddress: string,
-) => createSdex(chainId).pool(quoteAddress, baseAddress);
+  poolIndex: number,
+) => createSdex(chainId).pool(quoteAddress, baseAddress, poolIndex);
 
 export const sdexPoolFromAsset = (
   chainId: ChainId,
   baseSymbol: string,
   quoteSymbol: string,
+  poolIndex: number,
 ) =>
   sdexPool(
     chainId,
     findAsset(quoteSymbol, chainId).address,
     findAsset(baseSymbol, chainId).address,
+    poolIndex,
   );

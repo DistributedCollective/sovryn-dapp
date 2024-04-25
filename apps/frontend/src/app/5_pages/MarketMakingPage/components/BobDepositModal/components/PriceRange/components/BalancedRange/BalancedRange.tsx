@@ -124,11 +124,23 @@ export const BalancedRange: FC<BalancedRangeProps> = ({ pool }) => {
       <SimpleTable className="mt-12">
         <SimpleTableRow
           label={t(translations.bobMarketMakingPage.depositModal.minPrice)}
-          value={<AmountRenderer value={minimumPrice} suffix={pool.base} />}
+          value={
+            isInfiniteRange ? (
+              <span className="text-xs font-medium">0</span>
+            ) : (
+              <AmountRenderer value={minimumPrice} suffix={pool.base} />
+            )
+          }
         />
         <SimpleTableRow
           label={t(translations.bobMarketMakingPage.depositModal.maxPrice)}
-          value={<AmountRenderer value={maximumPrice} suffix={pool.base} />}
+          value={
+            isInfiniteRange ? (
+              <span className="text-xs font-medium">∞</span>
+            ) : (
+              <AmountRenderer value={maximumPrice} suffix={pool.base} />
+            )
+          }
         />
       </SimpleTable>
     </>

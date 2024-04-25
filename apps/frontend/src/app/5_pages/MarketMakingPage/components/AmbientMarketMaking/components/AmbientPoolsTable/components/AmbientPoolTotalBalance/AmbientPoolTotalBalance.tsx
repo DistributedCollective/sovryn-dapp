@@ -32,14 +32,14 @@ export const AmbientPoolTotalBalance: FC<AmbientPoolTotalBalanceProps> = ({
   return (
     <div className="inline-flex flex-col">
       <AmountRenderer
-        value={decimalic(result?.positionLiqBase || '0').div(
-          Math.pow(10, baseToken?.decimals || 0),
+        value={decimalic(result?.positionLiqBase || '0').toUnits(
+          baseToken?.decimals,
         )}
         suffix={pool.base}
       />
       <AmountRenderer
-        value={decimalic(result?.positionLiqQuote || '0').div(
-          Math.pow(10, quoteToken?.decimals || 0),
+        value={decimalic(result?.positionLiqQuote || '0').toUnits(
+          quoteToken?.decimals,
         )}
         suffix={pool.quote}
       />

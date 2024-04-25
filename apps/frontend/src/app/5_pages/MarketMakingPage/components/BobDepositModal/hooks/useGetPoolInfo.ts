@@ -52,7 +52,7 @@ export const useGetPoolInfo = (assetA: string, assetB: string) => {
         new URLSearchParams({
           base: poolTokens.tokenA.tokenAddr,
           quote: poolTokens.tokenB.tokenAddr,
-          poolIdx: (await pool.context).chain.poolIndex.toString(),
+          poolIdx: poolTokens.poolIndex.toString(),
           chainId: chainId,
         }),
     )
@@ -64,7 +64,7 @@ export const useGetPoolInfo = (assetA: string, assetB: string) => {
 
         const payload = json.data;
 
-        setFeeRate(payload.feeRate);
+        setFeeRate((payload.feeRate * 100).toString());
       })
       .catch(error => {
         return undefined;

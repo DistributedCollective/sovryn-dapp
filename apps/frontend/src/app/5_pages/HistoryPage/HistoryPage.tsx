@@ -19,7 +19,7 @@ import { useCurrentChain } from '../../../hooks/useChainStore';
 import { translations } from '../../../locales/i18n';
 import { myntClient, zeroClient } from '../../../utils/clients';
 import styles from './HistoryPage.module.css';
-import { IUsesChain } from './HistoryPage.types';
+import { UsesChain } from './HistoryPage.types';
 import { isHistoryItemOnChain } from './HistoryPage.utils';
 
 const ACTIVE_CLASSNAME = 'border-t-primary-30';
@@ -63,7 +63,7 @@ const fundingHistory = (
   </div>
 );
 
-type HistoryTabItem = ITabItem & IUsesChain;
+type HistoryTabItem = ITabItem & UsesChain;
 
 const HistoryPage: FC = () => {
   const [index, setIndex] = useState(0);

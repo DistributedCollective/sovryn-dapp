@@ -2,14 +2,14 @@ import { t } from 'i18next';
 
 import { Chains } from '../../../config/chains';
 
-import { IUsesChain } from '../../5_pages/HistoryPage/HistoryPage.types';
+import { UsesChain } from '../../5_pages/HistoryPage/HistoryPage.types';
 import { translations } from '../../../locales/i18n';
 import { ConvertHistoryType } from './ConvertHistory.types';
 
 export type ConvertHistoryItem = {
   value: ConvertHistoryType;
   label: string;
-} & IUsesChain;
+} & UsesChain;
 
 export const CONVERT_HISTORY_OPTIONS: ConvertHistoryItem[] = [
   {

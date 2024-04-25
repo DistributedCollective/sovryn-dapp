@@ -9,11 +9,13 @@ export class CrocPositionView {
     base: CrocTokenView,
     quote: CrocTokenView,
     owner: Address,
+    poolIndex: number,
     context: Promise<CrocContext>,
   ) {
     [this.baseToken, this.quoteToken] = sortBaseQuoteViews(base, quote);
     this.owner = owner;
     this.context = context;
+    this.poolIndex = poolIndex;
   }
 
   async queryRangePos(lowerTick: number, upperTick: number, block?: BlockTag) {
@@ -23,7 +25,7 @@ export class CrocPositionView {
       this.owner,
       this.baseToken.tokenAddr,
       this.quoteToken.tokenAddr,
-      context.chain.poolIndex,
+      this.poolIndex,
       lowerTick,
       upperTick,
       blockArg,
@@ -37,7 +39,7 @@ export class CrocPositionView {
       this.owner,
       this.baseToken.tokenAddr,
       this.quoteToken.tokenAddr,
-      context.chain.poolIndex,
+      this.poolIndex,
       blockArg,
     );
   }
@@ -49,7 +51,7 @@ export class CrocPositionView {
       this.owner,
       this.baseToken.tokenAddr,
       this.quoteToken.tokenAddr,
-      context.chain.poolIndex,
+      this.poolIndex,
       blockArg,
     );
   }
@@ -68,7 +70,7 @@ export class CrocPositionView {
       await context.query.queryKnockoutPivot(
         this.baseToken.tokenAddr,
         this.quoteToken.tokenAddr,
-        context.chain.poolIndex,
+        this.poolIndex,
         isBid,
         pivotTick,
         blockArg,
@@ -79,7 +81,7 @@ export class CrocPositionView {
       this.owner,
       this.baseToken.tokenAddr,
       this.quoteToken.tokenAddr,
-      context.chain.poolIndex,
+      this.poolIndex,
       pivotTime,
       isBid,
       lowerTick,
@@ -95,7 +97,7 @@ export class CrocPositionView {
       this.owner,
       this.baseToken.tokenAddr,
       this.quoteToken.tokenAddr,
-      context.chain.poolIndex,
+      this.poolIndex,
       lowerTick,
       upperTick,
       blockArg,
@@ -106,6 +108,7 @@ export class CrocPositionView {
   readonly baseToken: CrocTokenView;
   readonly quoteToken: CrocTokenView;
   readonly context: Promise<CrocContext>;
+  readonly poolIndex: number;
 }
 
 function toCallArg(block?: BlockTag): { blockTag?: BlockTag } {

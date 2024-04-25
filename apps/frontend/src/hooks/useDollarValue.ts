@@ -13,7 +13,6 @@ import { decimalic, fromWei, toWei } from '../utils/math';
 import { useCacheCall } from './useCacheCall';
 import { useCurrentChain } from './useChainStore';
 import { useTokenDetailsByAsset } from './useTokenDetailsByAsset';
-import { useGetRBTCPrice } from './zero/useGetRBTCPrice';
 
 export function useDollarValue(
   asset: string,
@@ -35,8 +34,6 @@ export function useDollarValue(
     COMMON_SYMBOLS.DLLR, // todo: define USD equivalent token for all chains in config
     chainId || chain,
   );
-  const { price: btcPrice } = useGetRBTCPrice();
-
   const currentChainId = useCurrentChain();
   const smartRouter = useMemo(
     () => new SmartRouter(getProvider(currentChainId), SWAP_ROUTES),
@@ -44,7 +41,7 @@ export function useDollarValue(
   );
 
   const { value: usdPrice, loading } = useCacheCall(
-    `dollarValue/${asset}`,
+    `dollarValue/${chainId || chain}/${asset}`,
     chainId || chain,
     async () => {
       if (
@@ -87,17 +84,11 @@ export function useDollarValue(
       return fromWei(weiAmount);
     } else {
       return decimalic(weiAmount)
-        .mul(
-          [COMMON_SYMBOLS.BTC, COMMON_SYMBOLS.WBTC].includes(
-            asset.toUpperCase(),
-          )
-            ? btcPrice
-            : usdPrice,
-        )
+        .mul(usdPrice)
         .div(10 ** decimals)
         .toString();
     }
-  }, [assetDetails?.decimals, asset, weiAmount, btcPrice, usdPrice]);
+  }, [assetDetails?.decimals, asset, weiAmount, usdPrice]);
 
   return {
     loading,

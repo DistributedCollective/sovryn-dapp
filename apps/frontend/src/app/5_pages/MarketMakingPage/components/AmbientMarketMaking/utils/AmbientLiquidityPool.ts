@@ -15,7 +15,7 @@ export class AmbientLiquidityPool {
     _base: string,
     _quote: string,
     public readonly chainId: ChainId,
-    public readonly poolIdx: string,
+    public readonly poolIndex: number,
     public readonly lpTokenAddress?: string,
   ) {
     try {

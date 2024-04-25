@@ -15,6 +15,7 @@ const IS_MAINNET = process.env.REACT_APP_NETWORK === Environments.Mainnet;
 export enum Chains {
   RSK = 'rsk',
   BSC = 'bsc',
+  BOB = 'bob',
 }
 
 export const DEFAULT_CHAIN_ID = (

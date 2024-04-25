@@ -8,6 +8,7 @@ import {
 
 import { PageContainer } from './app/4_templates';
 import { EmailVerificationStateContainer } from './app/4_templates/EmailVerificationStateContainer/EmailVerificationStateContainer';
+import { BobAmmPage } from './app/5_pages/BobAmmPage/BobAmmPage';
 import { earnPageLoader } from './app/5_pages/EarnPage/loader';
 import { EmailDuplicateVerifiedPage } from './app/5_pages/EmailDuplicateVerifiedPage/EmailDuplicateVerifiedPage';
 import { EmailErrorPage } from './app/5_pages/EmailErrorPage/EmailErrorPage';
@@ -153,10 +154,10 @@ const routes = [
         path: '/stats',
         element: <ProtocolDataPage />,
       },
-      // {
-      //   path: '/bob/amm',
-      //   element: <BobAmmPage />,
-      // },
+      {
+        path: '/bob/amm',
+        element: <BobAmmPage />,
+      },
     ],
   },
   {

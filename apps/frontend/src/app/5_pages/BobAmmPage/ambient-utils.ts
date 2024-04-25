@@ -16,6 +16,7 @@ export interface CreateRangePositionParams {
   isTokenAPrimaryRange: boolean; // TODO: better name for this variable
   tick: { low: number; high: number };
   lpConduit?: string;
+  poolIndex: number;
 }
 
 export async function createRangePositionTx(params: CreateRangePositionParams) {
@@ -28,9 +29,10 @@ export async function createRangePositionTx(params: CreateRangePositionParams) {
     isTokenAPrimaryRange,
     tick,
     lpConduit,
+    poolIndex,
   } = params;
 
-  const pool = crocEnv.pool(tokenA.address, tokenB.address);
+  const pool = crocEnv.pool(tokenA.address, tokenB.address, poolIndex);
   const poolPrice = await pool.displayPrice();
 
   const price = {

@@ -75,7 +75,7 @@ export const bob: Array<AssetDetails> = [
   //   symbol: 'USDC',
   //   address: '',
   //   name: 'USDC',
-  //   decimals: 18,
+  //   decimals: 6,
   //   getIcon: async () => (await import('./icons/bob/usdc')).default,
   // },
   // {
@@ -141,7 +141,7 @@ export const bob: Array<AssetDetails> = [
     symbol: 'mUSDC',
     address: '0x1f4a4737ECcB77B4b63B34edFb32515940d69A34',
     name: 'USDC (Mock)',
-    decimals: 18,
+    decimals: 6,
     getIcon: async () => (await import('./icons/bob/usdc')).default,
   },
   {

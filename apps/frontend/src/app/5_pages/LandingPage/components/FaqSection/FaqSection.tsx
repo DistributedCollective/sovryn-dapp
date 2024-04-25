@@ -1,6 +1,7 @@
 import React, { FC, useCallback, useState } from 'react';
 
 import { t } from 'i18next';
+import { Trans } from 'react-i18next';
 
 import { Accordion, Paragraph } from '@sovryn/ui';
 
@@ -54,7 +55,7 @@ export const FaqSection: FC = () => {
             children={
               <div className="bg-gray-70 px-4 py-3 -mt-3 rounded-b">
                 <Paragraph className="text-gray-40 text-xs font-medium">
-                  {item.description}
+                  <Trans i18nKey={item.description} />
                 </Paragraph>
               </div>
             }

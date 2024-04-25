@@ -553,11 +553,6 @@
             "title": "Personal staking statistics",
             "stakedSov": "Staked SOV",
             "votingPower": "Voting power",
-            "votingPowerInfo": {
-                "line1": "Own voting power",
-                "line2": "Delegated voting power",
-                "line3": "Total personal voting power"
-            },
             "votingPowerShare": "Voting power share"
         },
         "table": {

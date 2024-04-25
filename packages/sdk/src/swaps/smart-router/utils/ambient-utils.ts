@@ -60,6 +60,7 @@ export function groupItemsInPairs<T>(items: T[]): T[][] {
   return groupedItems;
 }
 
+// for some reason some pairs are failing when using these values in calcImpact
 const initialLimitPrice = (isBuy: boolean) =>
   isBuy ? MAX_SQRT_PRICE : MIN_SQRT_PRICE;
 

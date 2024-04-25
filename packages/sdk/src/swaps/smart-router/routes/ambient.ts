@@ -140,8 +140,6 @@ export const ambientRoute: SwapRouteFunction = (
 
         const env = new CrocEnv(provider);
 
-        console.log('uses multihop', path, poolCount);
-
         const entryAmount = await parseAmount(env, entry, amount);
 
         const groupedPath = groupItemsInPairs(path ?? []);
@@ -156,8 +154,6 @@ export const ambientRoute: SwapRouteFunction = (
           ),
         );
 
-        console.log('ambientPools', ambientPools);
-
         if (ambientPools.length === 0) {
           throw makeError(
             `Cannot swap ${entry} to ${destination}; #2`,
@@ -171,28 +167,46 @@ export const ambientRoute: SwapRouteFunction = (
           ambientPools[0].poolIndex,
           entry,
           entryAmount,
-        );
+        ).catch(e => {
+          console.error('Error calculating impact (init)', e, [
+            ambientPools[0],
+            entry,
+            entryAmount,
+          ]);
+          return { amount: BigNumber.from(0), isBuy: true, impact: {} };
+        });
 
-        console.log('out', lastOut);
+        console.log('firstOut', lastOut);
 
         for (let i = 1; i < ambientPools.length; i++) {
           const pool = ambientPools[i];
           const poolPath = groupedPath[i];
+
+          const prev = lastOut;
 
           lastOut = await calculateImpact(
             env,
             pool,
             pool.poolIndex,
             poolPath[0],
-            lastOut.amount,
-          );
+            prev.amount,
+          ).catch(e => {
+            console.error('Error calculating impact', i, e, [
+              pool,
+              poolPath[0],
+              prev.amount,
+            ]);
+            return { amount: BigNumber.from(0), isBuy: true, impact: {} };
+          });
 
-          console.log('out', i, lastOut);
+          console.log('lastOut', i, lastOut);
         }
 
-        return Decimal.fromBigNumberString(
-          lastOut.amount.toString(),
-        ).toBigNumber();
+        const decimals = await env.tokens.materialize(destination).decimals;
+
+        return BigNumber.from(lastOut.amount.toString()).mul(
+          Math.pow(10, 18 - decimals),
+        );
       }
     },
     approve: async (entry, destination, amount, from, overrides) => {
@@ -294,10 +308,8 @@ export const ambientRoute: SwapRouteFunction = (
         }
 
         const order = new OrderDirective(ambientPools[0].baseToken.tokenAddr);
-        order.open.useSurplus = false;
 
         const entryHop = order.appendHop(ambientPools[0].quoteToken.tokenAddr);
-        entryHop.settlement.useSurplus = false;
 
         let lastOut = await setupPool(
           order,
@@ -309,15 +321,18 @@ export const ambientRoute: SwapRouteFunction = (
           slippage,
         );
 
+        order.open.useSurplus = !lastOut.orderPool.swap.inBaseQty;
+        entryHop.settlement.useSurplus = lastOut.orderPool.swap.inBaseQty;
+
         for (let i = 1; i < ambientPools.length; i++) {
           const pool = ambientPools[i];
           const poolPath = groupedPath[i];
 
           const baseHop = order.appendHop(pool.baseToken.tokenAddr);
-          baseHop.settlement.useSurplus = false;
+          baseHop.settlement.useSurplus = true;
 
           const quoteHop = order.appendHop(pool.quoteToken.tokenAddr);
-          quoteHop.settlement.useSurplus = false;
+          quoteHop.settlement.useSurplus = true;
 
           lastOut = await setupPool(
             order,
@@ -325,10 +340,20 @@ export const ambientRoute: SwapRouteFunction = (
             pool,
             pool.poolIndex,
             poolPath[0],
-            lastOut,
+            lastOut.entryOut,
             slippage,
           );
+
+          if (i === ambientPools.length - 1) {
+            const isBase = lastOut.orderPool.swap.inBaseQty;
+            baseHop.settlement.useSurplus = isBase;
+            quoteHop.settlement.useSurplus = !isBase;
+          }
+
+          console.log('is Last', i === ambientPools.length - 1);
         }
+
+        console.log('order', order);
 
         const data = context.dex.interface.encodeFunctionData('userCmd', [
           proxyPath,
@@ -352,7 +377,7 @@ const calculateImpact = async (
   poolIndex: number,
   entry: string,
   amount: BigNumber,
-): Promise<{ amount: BigNumber; isBuy: boolean }> => {
+): Promise<{ amount: BigNumber; isBuy: boolean; impact: any }> => {
   const isBuy = pool.baseToken.tokenAddr.toLowerCase() === entry.toLowerCase();
 
   const impact = await calcImpact(
@@ -365,13 +390,15 @@ const calculateImpact = async (
     amount,
   );
 
+  console.log('impact', impact);
+
   const entryOut = Decimal.fromBigNumberString(
     isBuy ? impact.quoteFlow : impact.baseFlow,
   )
     .abs()
     .toBigNumber();
 
-  return { amount: entryOut, isBuy };
+  return { amount: entryOut, isBuy, impact };
 };
 
 const setupPool = async (
@@ -410,7 +437,7 @@ const setupPool = async (
     .abs()
     .toBigNumber();
 
-  return entryOut;
+  return { entryOut, orderPool };
 };
 
 const parseAmount = async (

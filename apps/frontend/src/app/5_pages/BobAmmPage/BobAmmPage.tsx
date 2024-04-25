@@ -350,6 +350,27 @@ export const BobAmmPage: React.FC = () => {
     [CHAIN_ID, account, setIsOpen, setTitle, setTransactions, signer],
   );
 
+  const handleBalances = useCallback(async () => {
+    if (!croc.current) return;
+
+    return await Promise.all(
+      tokens.map(token =>
+        croc
+          .current!.token(token.address)
+          .balanceDisplay(account)
+          .then(value => ({ token: token.symbol, balance: value })),
+      ),
+    );
+  }, [account, tokens]);
+
+  useEffect(() => {
+    (async () => {
+      const result = await handleBalances();
+
+      console.log('balances', result);
+    })();
+  }, [CHAIN_ID, account, handleBalances, tokens]);
+
   return (
     <div className="container flex flex-row">
       <div className="w-72">
@@ -407,6 +428,9 @@ export const BobAmmPage: React.FC = () => {
             <p>Pool is not created yet.</p>
           )}
           {error && <p className="text-danger">{error}</p>}
+        </div>
+        <div>
+          <button onClick={handleBalances}>print balance to console</button>
         </div>
         {isFork() ? (
           <>

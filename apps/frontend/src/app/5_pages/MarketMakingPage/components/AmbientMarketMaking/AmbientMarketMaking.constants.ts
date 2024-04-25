@@ -22,6 +22,7 @@ export const TESTNET_AMM = [
   // new AmbientLiquidityPool('A18', 'C18', ChainIds.BOB_TESTNET, 36000),
   // Sepolia
   new AmbientLiquidityPool('A18', 'B18', ChainIds.SEPOLIA, 36000),
+  new AmbientLiquidityPool('A18', 'D18', ChainIds.SEPOLIA, 36000),
   new AmbientLiquidityPool('A18', 'C18', ChainIds.SEPOLIA, 36000),
   new AmbientLiquidityPool('C18', 'E6', ChainIds.SEPOLIA, 36000),
   // bob testnet

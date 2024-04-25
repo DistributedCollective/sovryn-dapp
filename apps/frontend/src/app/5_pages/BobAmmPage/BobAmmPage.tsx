@@ -24,7 +24,11 @@ import {
 import { useTransactionContext } from '../../../contexts/TransactionContext';
 import { useAccount } from '../../../hooks/useAccount';
 import { useCurrentChain } from '../../../hooks/useChainStore';
-import { findAsset, listAssetsOfChain } from '../../../utils/asset';
+import {
+  findAsset,
+  findAssetByAddress,
+  listAssetsOfChain,
+} from '../../../utils/asset';
 import { prepareApproveTransaction } from '../../../utils/transactions';
 import { createRangePositionTx } from './ambient-utils';
 
@@ -64,9 +68,13 @@ export const BobAmmPage: React.FC = () => {
   const [tokenBAddress, setTokenBAddress] = useState<string>();
   const [price, setPrice] = useState<number>(1);
   const [spotPrice, setSpotPrice] = useState<number>(0);
+  const [displayPrice, setDisplayPrice] = useState<number>(0);
   const [testing, setTesting] = useState<boolean>(false);
   const [isInit, setIsInit] = useState<boolean>(false);
   const [error, setError] = useState<string>();
+
+  const [base, setBase] = useState<string>();
+  const [quote, setQuote] = useState<string>();
 
   const croc = useRef<CrocEnv>();
   const { signer, account } = useAccount();
@@ -93,19 +101,27 @@ export const BobAmmPage: React.FC = () => {
 
     const pool = croc.current.pool(baseToken, quoteToken, poolIndex);
 
+    console.log({ pool });
+
     pool
       .isInit()
       .then(init => {
         setIsInit(init);
-        return init ? pool.displayPrice() : Promise.resolve(1);
+        return init ? pool.spotPrice() : Promise.resolve(1);
       })
-      .then(price => {
+      .then(async price => {
+        setBase(pool.baseToken.tokenAddr);
+        setQuote(pool.quoteToken.tokenAddr);
+        setDisplayPrice(await pool.displayPrice());
         setSpotPrice(price);
+        setError(undefined);
       })
       .catch(e => {
         setError(e.message);
         setIsInit(false);
         setSpotPrice(0);
+        setDisplayPrice(0);
+        console.error(e);
       })
       .finally(() => {
         setTesting(false);
@@ -423,7 +439,33 @@ export const BobAmmPage: React.FC = () => {
           />
           {testing && <p>loading</p>}
           {isInit ? (
-            <p>Pool is created with price {spotPrice}.</p>
+            <>
+              <p>Pool is created.</p>
+              <p>
+                Spot price: {spotPrice}{' '}
+                {base ? findAssetByAddress(base!, CHAIN_ID)?.symbol : base}
+              </p>
+              <p>
+                Display price: {displayPrice} {tokenB}
+              </p>
+              {base && quote && (
+                <p>
+                  1 {tokenA} = {displayPrice} {tokenB}
+                </p>
+              )}
+              {base && (
+                <p>
+                  Pool Base: {base} |{' '}
+                  {findAssetByAddress(base!, CHAIN_ID)?.symbol}
+                </p>
+              )}
+              {quote && (
+                <p>
+                  Pool Quote: {quote} |{' '}
+                  {findAssetByAddress(quote!, CHAIN_ID)?.symbol}
+                </p>
+              )}
+            </>
           ) : (
             <p>Pool is not created yet.</p>
           )}

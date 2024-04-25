@@ -64,7 +64,6 @@ export const COLUMNS_CONFIG = (pool: AmbientLiquidityPool) => [
   {
     id: '',
     title: '',
-    className: 'max-w-64',
     cellRenderer: (position: AmbientPosition) => (
       <div className="flex justify-end items-center">
         {position.rewardLiq > 0 && (

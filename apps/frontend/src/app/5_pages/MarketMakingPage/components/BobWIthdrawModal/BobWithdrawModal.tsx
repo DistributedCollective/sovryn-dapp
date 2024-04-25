@@ -17,6 +17,7 @@ import { Decimal } from '@sovryn/utils';
 import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { CurrentStatistics } from '../../../../2_molecules/CurrentStatistics/CurrentStatistics';
 import { useCrocContext } from '../../../../../contexts/CrocContext';
+import { useIsMounted } from '../../../../../hooks/useIsMounted';
 import { translations } from '../../../../../locales/i18n';
 import { bigNumberic, decimalic } from '../../../../../utils/math';
 import { PoolPositionType } from '../../MarketMakingPage.types';
@@ -48,6 +49,7 @@ export const BobWithdrawModal: FC<BobWithdrawModalProps> = ({
 }) => {
   const { croc } = useCrocContext();
   const deposits = useAmbientPositionBalance(pool, position);
+  const isMounted = useIsMounted();
 
   const [depositedAmountBase, setDepositedAmountBase] = useState(Decimal.ZERO);
   const [depositedAmountQuote, setDepositedAmountQuote] = useState(
@@ -69,7 +71,10 @@ export const BobWithdrawModal: FC<BobWithdrawModalProps> = ({
 
   const updateLiquidity = useCallback(async () => {
     try {
-      if (!croc || !position) return;
+      if (!croc || !position) {
+        return;
+      }
+
       const pos = croc.positions(
         position.base,
         position.quote,
@@ -201,10 +206,10 @@ export const BobWithdrawModal: FC<BobWithdrawModalProps> = ({
   ]);
 
   useEffect(() => {
-    if (position && croc) {
+    if (position && croc && isMounted()) {
       updateLiquidity();
     }
-  }, [position, croc, updateLiquidity]);
+  }, [position, croc, updateLiquidity, isMounted]);
 
   useEffect(() => {
     if (deposits && price) {

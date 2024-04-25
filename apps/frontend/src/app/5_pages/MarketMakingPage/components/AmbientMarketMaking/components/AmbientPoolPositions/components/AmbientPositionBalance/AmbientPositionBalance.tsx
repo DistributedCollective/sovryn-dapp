@@ -1,6 +1,7 @@
 import React, { FC } from 'react';
 
 import { AmountRenderer } from '../../../../../../../../2_molecules/AmountRenderer/AmountRenderer';
+import { useIsMounted } from '../../../../../../../../../hooks/useIsMounted';
 import { useTokenDetailsByAsset } from '../../../../../../../../../hooks/useTokenDetailsByAsset';
 import { decimalic } from '../../../../../../../../../utils/math';
 import { AmbientPosition } from '../../../../AmbientMarketMaking.types';
@@ -16,10 +17,11 @@ export const AmbientPositionBalance: FC<AmbientPositionBalanceProps> = ({
   position,
   pool,
 }) => {
+  const isMounted = useIsMounted();
   const baseToken = useTokenDetailsByAsset(pool.base, pool.chainId);
   const quoteToken = useTokenDetailsByAsset(pool.quote, pool.chainId);
   const result = useAmbientPositionBalance(pool, position);
-  if (!result) {
+  if (!result || !isMounted()) {
     return null;
   }
 

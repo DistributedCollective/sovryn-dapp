@@ -1,15 +1,18 @@
 import axios from 'axios';
 
+import { useCrocContext } from '../../../../../../contexts/CrocContext';
 import { useCacheCall } from '../../../../../../hooks';
 import { useAccount } from '../../../../../../hooks/useAccount';
 import { useBlockNumber } from '../../../../../../hooks/useBlockNumber';
 import { useCurrentChain } from '../../../../../../hooks/useChainStore';
 import { useTokenDetailsByAsset } from '../../../../../../hooks/useTokenDetailsByAsset';
 import { getIndexerUri } from '../../../../../../utils/indexer';
-// import { AmbientPosition } from '../AmbientMarketMaking.types';
+import { PoolPositionType } from '../../../MarketMakingPage.types';
+import { AmbientPosition } from '../AmbientMarketMaking.types';
 import { AmbientLiquidityPool } from '../utils/AmbientLiquidityPool';
 
 export const useGetAmbientPositions = (pool: AmbientLiquidityPool) => {
+  const { croc } = useCrocContext();
   const chainId = useCurrentChain();
   const { account } = useAccount();
   const baseToken = useTokenDetailsByAsset(pool.base, pool.chainId);
@@ -17,10 +20,10 @@ export const useGetAmbientPositions = (pool: AmbientLiquidityPool) => {
   const { value: blockNumber } = useBlockNumber(chainId);
 
   const { value: positions, loading } = useCacheCall(
-    `user-pools-balance/${pool.base}/${pool.quote}/`,
+    `user-pools-balance/${pool.base}/${pool.quote}/${pool.poolIndex}/${account}`,
     chainId,
     async () => {
-      if (!baseToken || !quoteToken || !account) {
+      if (!baseToken || !quoteToken || !account || !croc) {
         return [];
       }
       try {
@@ -32,14 +35,32 @@ export const useGetAmbientPositions = (pool: AmbientLiquidityPool) => {
           }`,
         );
 
-        // const filteredPositions = data.data.filter(
-        //   (position: AmbientPosition) =>
-        //     position.ambientLiq > 0 || position.concLiq > 0,
-        // );
+        const positions = data.data as AmbientPosition[];
 
-        // return filteredPositions;
+        const ambientIndex = positions.findIndex(
+          position => position.positionType === PoolPositionType.ambient,
+        );
 
-        return data.data;
+        if (ambientIndex !== -1 && pool.lpTokenAddress) {
+          const wallet = await croc.token(pool.lpTokenAddress).wallet(account);
+          const ambientPosition = positions[ambientIndex];
+          ambientPosition.ambientLiq = wallet.toString() as any;
+          // const rewards = await croc
+          //   .positions(
+          //     pool.baseAddress,
+          //     pool.quoteAddress,
+          //     ambientPosition.user,
+          //     pool.poolIndex,
+          //   )
+          //   .queryRewards(MIN_TICK, MAX_TICK);
+        }
+
+        const filteredPositions = positions.filter(
+          (position: AmbientPosition) =>
+            position.ambientLiq > 0 || position.concLiq > 0,
+        );
+
+        return filteredPositions;
       } catch (error) {
         return [];
       }

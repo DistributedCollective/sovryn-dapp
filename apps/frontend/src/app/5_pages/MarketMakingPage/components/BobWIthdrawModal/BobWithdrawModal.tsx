@@ -77,15 +77,28 @@ export const BobWithdrawModal: FC<BobWithdrawModalProps> = ({
         pool.poolIndex,
       );
 
-      const liquidity =
-        position.positionType === PoolPositionType.ambient
-          ? (await pos.queryAmbient()).seeds
-          : (await pos.queryRangePos(position.bidTick, position.askTick)).liq;
+      let liquidity;
+
+      if (position.positionType === PoolPositionType.ambient) {
+        if (pool.lpTokenAddress) {
+          const wallet = await croc
+            .token(pool.lpTokenAddress)
+            .wallet(position.user);
+          liquidity = wallet;
+        } else {
+          liquidity = (await pos.queryAmbient()).seeds;
+        }
+      } else {
+        liquidity = (
+          await pos.queryRangePos(position.bidTick, position.askTick)
+        ).liq;
+      }
+
       setTotalLiquidity(liquidity.toString());
     } catch (error) {
       console.error(error);
     }
-  }, [croc, pool.poolIndex, position]);
+  }, [croc, pool.lpTokenAddress, pool.poolIndex, position]);
 
   const isFullWithdrawal = useMemo(
     () =>

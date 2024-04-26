@@ -5,8 +5,8 @@ import { ChainId } from '@sovryn/ethers-provider';
 import { findAsset } from '../../../../../../utils/asset';
 
 export class AmbientLiquidityPool {
-  private _baseAddress: string;
-  private _quoteAddress: string;
+  public readonly baseAddress: string;
+  public readonly quoteAddress: string;
 
   public readonly base;
   public readonly quote;
@@ -23,14 +23,18 @@ export class AmbientLiquidityPool {
         ? lpTokenAddress.toLowerCase()
         : undefined;
 
-      this._baseAddress = findAsset(_base, chainId).address;
-      this._quoteAddress = findAsset(_quote, chainId).address;
+      const _baseAddress = findAsset(_base, chainId).address;
+      const _quoteAddress = findAsset(_quote, chainId).address;
 
-      [this.base, this.quote] = BigNumber.from(this._baseAddress).lt(
-        this._quoteAddress,
-      )
+      [this.base, this.quote] = BigNumber.from(_baseAddress).lt(_quoteAddress)
         ? [_base, _quote]
         : [_quote, _base];
+
+      [this.baseAddress, this.quoteAddress] = BigNumber.from(_baseAddress).lt(
+        _quoteAddress,
+      )
+        ? [_baseAddress, _quoteAddress]
+        : [_quoteAddress, _baseAddress];
     } catch (error) {
       console.error(
         'Failed to construct Ambient Liqudity Pool',

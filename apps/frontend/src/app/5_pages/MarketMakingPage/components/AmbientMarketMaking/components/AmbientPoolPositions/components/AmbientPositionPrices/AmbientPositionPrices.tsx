@@ -1,8 +1,9 @@
 import React, { FC, useMemo } from 'react';
 
-import { tickToPrice } from '@sovryn/sdex';
+import { MIN_TICK, MAX_TICK, tickToPrice } from '@sovryn/sdex';
 
 import { AmountRenderer } from '../../../../../../../../2_molecules/AmountRenderer/AmountRenderer';
+import { PoolPositionType } from '../../../../../../MarketMakingPage.types';
 import { AmbientPosition } from '../../../../AmbientMarketMaking.types';
 import { AmbientLiquidityPool } from '../../../../utils/AmbientLiquidityPool';
 
@@ -16,8 +17,10 @@ export const AmbientPositionPrices: FC<AmbientPositionPricesProps> = ({
   pool,
 }) => {
   const isAmbient = useMemo(
-    () => position.positionType === 'ambient',
-    [position.positionType],
+    () =>
+      position.positionType === PoolPositionType.ambient ||
+      (position.bidTick === MIN_TICK && position.askTick === MAX_TICK),
+    [position.askTick, position.bidTick, position.positionType],
   );
 
   if (isAmbient) {
@@ -28,6 +31,7 @@ export const AmbientPositionPrices: FC<AmbientPositionPricesProps> = ({
       </>
     );
   }
+
   return (
     <div className="inline-flex flex-col">
       <AmountRenderer

@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 
 import { t } from 'i18next';
 
-import { Heading, HelperButton } from '@sovryn/ui';
+import { Heading } from '@sovryn/ui';
 import { Decimal } from '@sovryn/utils';
 
 import { RSK_CHAIN_ID } from '../../../../../config/chains';
@@ -58,44 +58,7 @@ export const PersonalStakingStatistics = () => {
         <PersonalStatistics
           label={
             <span className="flex items-center gap-1">
-              {t(translations.stakePage.personalStatistics.votingPower)}{' '}
-              <HelperButton
-                tooltipClassName="max-w-56 md:max-w-96"
-                content={
-                  <div className="flex flex-col">
-                    <div>
-                      {t(
-                        translations.stakePage.personalStatistics
-                          .votingPowerInfo.line1,
-                      )}
-                      :{' '}
-                      <b>
-                        {fromWei(votingPower)} {VP}
-                      </b>
-                    </div>
-                    <div>
-                      {t(
-                        translations.stakePage.personalStatistics
-                          .votingPowerInfo.line2,
-                      )}
-                      :{' '}
-                      <b>
-                        {fromWei(0)} {VP}
-                      </b>
-                    </div>
-                    <div>
-                      {t(
-                        translations.stakePage.personalStatistics
-                          .votingPowerInfo.line3,
-                      )}
-                      :{' '}
-                      <b>
-                        {fromWei(votingPower)} {VP}
-                      </b>
-                    </div>
-                  </div>
-                }
-              />
+              {t(translations.stakePage.personalStatistics.votingPower)}
             </span>
           }
           value={

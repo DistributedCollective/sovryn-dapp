@@ -1,38 +1,47 @@
 import { useMemo } from 'react';
 
-import { ChainId } from '@sovryn/ethers-provider';
-
-import { RSK_CHAIN_ID } from '../config/chains';
+import { ChainId, getProvider } from '@sovryn/ethers-provider';
+import { SmartRouter } from '@sovryn/sdk';
 
 import {
-  SMART_ROUTER_RSK,
+  SWAP_ROUTES,
   SMART_ROUTER_STABLECOINS,
 } from '../app/5_pages/ConvertPage/ConvertPage.constants';
 import { COMMON_SYMBOLS } from '../utils/asset';
+import { isRskChain } from '../utils/chain';
 import { decimalic, fromWei, toWei } from '../utils/math';
 import { useCacheCall } from './useCacheCall';
 import { useCurrentChain } from './useChainStore';
 import { useTokenDetailsByAsset } from './useTokenDetailsByAsset';
-import { useGetRBTCPrice } from './zero/useGetRBTCPrice';
 
 export function useDollarValue(
   asset: string,
   weiAmount: string,
   chainId?: ChainId,
 ) {
-  if (['zusd', 'usdc', 'usdt', 'dai'].includes(asset.toLowerCase())) {
-    asset = 'XUSD';
-  }
   const chain = useCurrentChain();
+  if (asset.toUpperCase() === COMMON_SYMBOLS.ZUSD) {
+    if (isRskChain(chainId || chain)) {
+      asset = COMMON_SYMBOLS.XUSD;
+    } else {
+      asset = 'USDT';
+    }
+  } else if (asset.toLocaleLowerCase() === 'weth') {
+    asset = COMMON_SYMBOLS.ETH;
+  }
   const assetDetails = useTokenDetailsByAsset(asset, chainId || chain);
   const dllrDetails = useTokenDetailsByAsset(
     COMMON_SYMBOLS.DLLR, // todo: define USD equivalent token for all chains in config
     chainId || chain,
   );
-  const { price: btcPrice } = useGetRBTCPrice();
+  const currentChainId = useCurrentChain();
+  const smartRouter = useMemo(
+    () => new SmartRouter(getProvider(currentChainId), SWAP_ROUTES),
+    [currentChainId],
+  );
 
   const { value: usdPrice, loading } = useCacheCall(
-    `dollarValue/${asset}`,
+    `dollarValue/${chainId || chain}/${asset}`,
     chainId || chain,
     async () => {
       if (
@@ -44,12 +53,13 @@ export function useDollarValue(
       }
 
       // todo: use correct router for chain
-      const result = await SMART_ROUTER_RSK.getBestQuote(
-        RSK_CHAIN_ID,
+      const result = await smartRouter.getBestQuote(
+        currentChainId,
         assetDetails?.address,
         dllrDetails?.address,
         toWei('0.01'),
       );
+
       return fromWei(
         decimalic(result.quote.toString() || '0')
           .mul(100)
@@ -74,18 +84,11 @@ export function useDollarValue(
       return fromWei(weiAmount);
     } else {
       return decimalic(weiAmount)
-        .mul(assetDetails?.isNative ? btcPrice : usdPrice)
+        .mul(usdPrice)
         .div(10 ** decimals)
         .toString();
     }
-  }, [
-    assetDetails?.decimals,
-    assetDetails?.isNative,
-    asset,
-    weiAmount,
-    btcPrice,
-    usdPrice,
-  ]);
+  }, [assetDetails?.decimals, asset, weiAmount, usdPrice]);
 
   return {
     loading,

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 
 import { Decimal } from '@sovryn/utils';
 
+import { useCurrentChain } from '../../../../../../hooks/useChainStore';
 import { useGetProtocolContract } from '../../../../../../hooks/useGetContract';
 import { decimalic } from '../../../../../../utils/math';
 import { AdjustType } from '../AdjustAndDepositModal.types';
@@ -16,7 +17,12 @@ export const useGetPoolBalance = (
   const [tokenPoolBalance, setTokenPoolBalance] = useState<Decimal>(
     Decimal.ZERO,
   );
-  const liquidityMiningProxy = useGetProtocolContract('liquidityMiningProxy');
+
+  const chain = useCurrentChain();
+  const liquidityMiningProxy = useGetProtocolContract(
+    'liquidityMiningProxy',
+    chain,
+  );
 
   useEffect(() => {
     const fetchPoolBalance = async () => {

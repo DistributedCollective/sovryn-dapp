@@ -985,9 +985,9 @@
             "title": "Rune Bridge",
             "tabs": {
                 "receiveLabel": "Receive",
-                "receiveInfoText": "Transfer Runes from Bitcoin to your Rootstock address",
+                "receiveInfoText": "Transfer Runes from Bitcoin to your {{service}} address",
                 "sendLabel": "Send",
-                "sendInfoText": "Transfer Rune Tokens from Rootstock to your Bitcoin address"
+                "sendInfoText": "Transfer Rune Tokens from {{service}} to your Bitcoin address"
             }
         },
         "instructions": {
@@ -998,7 +998,7 @@
             "receive": {
                 "onlyRunes": "Only transfer Runes, not Bitcoin",
                 "onlySupportedRunes": "Only transfer Runes that are supported by the bridge, visible on the next page. Transfers of unsupported Runes will not be processed",
-                "postage": "Set the postage to at least {{postageSat}} satoshi ({{postageBtc}} BTC)"
+                "postage": "Set the postage to at least {{postageSat}} {{cryptoDenomination}} ({{postageBtc}} {{coinAbbreviation}})"
             },
             "send": {
                 "wallet": "Only transfer Rune Tokens to a wallet that supports Runes, such as <0>the Ordinals wallet \"ord\"</0>. Runes sent to a Bitcoin wallet without support for Runes will be lost",
@@ -1041,7 +1041,7 @@
                 "sending": "Sending",
                 "serviceFee": "Service fee",
                 "receiving": "Receiving",
-                "hash": "Rootstock TXID",
+                "hash": "{{service}} TXID",
                 "bitcoinTxId": "Bitcoin TXID"
             },
             "txDialog": {
@@ -1056,8 +1056,8 @@
                 "transferStatus": {
                     "detected": "Transfer detected",
                     "seen": "Runes received by the bridge",
-                    "sent_to_evm": "Rune Tokens transferred in Rootstock",
-                    "confirmed": "Rune Token transfer confirmed in Rootstock"
+                    "sent_to_evm": "Rune Tokens transferred in {{service}}",
+                    "confirmed": "Rune Token transfer confirmed in {{service}}"
                 },
                 "statusTitleProcessing": "Transfer processing...",
                 "statusTitleComplete": "Transfer complete",
@@ -1066,7 +1066,8 @@
                 "serviceFee": "Service fee",
                 "receiving": "Receiving",
                 "bitcoinTxId": "Bitcoin TXID",
-                "rootstockTxId": "Rootstock TXID"
+                "rootstockTxId": "Rootstock TXID",
+                "currentChainTxId": "{{chainName}} TXID"
             }
         }
     },

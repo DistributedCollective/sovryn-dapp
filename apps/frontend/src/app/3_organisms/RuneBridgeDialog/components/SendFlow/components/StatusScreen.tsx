@@ -21,6 +21,7 @@ import {
 } from '../../../../../../utils/helpers';
 import { formatValue } from '../../../../../../utils/math';
 import { useSendFlowContext } from '../../../contexts/sendflow';
+import { TranslationContext } from '../../../contexts/translation';
 
 const translation = translations.runeBridge.send.confirmationScreens;
 
@@ -67,7 +68,7 @@ export const StatusScreen: React.FC<StatusScreenProps> = ({
   onRetry,
 }) => {
   const { selectedToken } = useSendFlowContext();
-
+  const { service } = React.useContext(TranslationContext);
   const items = useMemo(
     () => [
       {
@@ -114,7 +115,7 @@ export const StatusScreen: React.FC<StatusScreenProps> = ({
         ),
       },
       {
-        label: t(translation.hash),
+        label: t(translation.hash, { service }),
         value: txHash ? (
           <TxIdWithNotification
             value={txHash}
@@ -137,7 +138,17 @@ export const StatusScreen: React.FC<StatusScreenProps> = ({
       //   ),
       // },
     ],
-    [amount, feesPaid, from, receiveAmount, selectedToken.symbol, to, txHash],
+    [
+      amount,
+      feesPaid.baseCurrency,
+      feesPaid.rune,
+      from,
+      receiveAmount,
+      selectedToken.symbol,
+      service,
+      to,
+      txHash,
+    ],
   );
 
   const status = useMemo(() => {

@@ -26,6 +26,7 @@ import {
   TransferStatusType,
 } from '../../../contexts/receiveflow';
 import { useReceiveFlowContext } from '../../../contexts/receiveflow';
+import { TranslationContext } from '../../../contexts/translation';
 
 const translation = translations.runeBridge.receive.statusScreen;
 
@@ -36,13 +37,13 @@ type StatusScreenProps = {
   onClose: () => void;
 };
 
-const formatTxStatus = (status: TransferStatusType) => {
+const formatTxStatus = (status: TransferStatusType, service: string) => {
   switch (status) {
     case 'detected':
     case 'seen':
     case 'sent_to_evm':
     case 'confirmed':
-      return t(translation.transferStatus[status]);
+      return t(translation.transferStatus[status], { service });
     default:
       return status;
   }
@@ -51,7 +52,7 @@ const formatTxStatus = (status: TransferStatusType) => {
 export const StatusScreen: React.FC<StatusScreenProps> = ({ onClose }) => {
   const { account } = useAccount();
   const { step, depositTx } = useReceiveFlowContext();
-
+  const { service, chainName } = React.useContext(TranslationContext);
   const isProcessing = useMemo(
     () => step === ReceiveflowStep.PROCESSING,
     [step],
@@ -118,7 +119,7 @@ export const StatusScreen: React.FC<StatusScreenProps> = ({ onClose }) => {
         ),
       },
       {
-        label: t(translation.rootstockTxId),
+        label: t(translation.currentChainTxId, { chainName }),
         value: currentTX ? (
           <>
             <TxIdWithNotification
@@ -131,7 +132,7 @@ export const StatusScreen: React.FC<StatusScreenProps> = ({ onClose }) => {
         ),
       },
     ].filter(x => x);
-  }, [account, depositTx]);
+  }, [account, chainName, depositTx]);
 
   return (
     <>
@@ -148,7 +149,9 @@ export const StatusScreen: React.FC<StatusScreenProps> = ({ onClose }) => {
             dataAttribute="funding-receive-status"
           />
         </div>
-        <div className="mb-6">{formatTxStatus(depositTx.currentTX.status)}</div>
+        <div className="mb-6">
+          {formatTxStatus(depositTx.currentTX.status, service)}
+        </div>
 
         <div className="bg-gray-80 border rounded border-gray-50 p-3 text-xs text-gray-30">
           {items.map(({ label, value }, index) => (

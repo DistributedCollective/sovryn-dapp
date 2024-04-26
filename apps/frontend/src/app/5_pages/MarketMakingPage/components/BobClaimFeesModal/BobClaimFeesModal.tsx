@@ -17,7 +17,6 @@ import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRen
 import { CurrentStatistics } from '../../../../2_molecules/CurrentStatistics/CurrentStatistics';
 import { USD } from '../../../../../constants/currencies';
 import { translations } from '../../../../../locales/i18n';
-import { useGetPool } from '../../hooks/useGetPool';
 import { AmbientPosition } from '../AmbientMarketMaking/AmbientMarketMaking.types';
 import { AmbientLiquidityPool } from '../AmbientMarketMaking/utils/AmbientLiquidityPool';
 import { DEFAULT_SLIPPAGE } from '../BobDepositModal/BobDepositModal.constants';
@@ -41,8 +40,7 @@ export const BobClaimFeesModal: FC<BobClaimFeesModalProps> = ({
   position,
 }) => {
   const { base, quote } = useMemo(() => pool, [pool]);
-  const { spotPrice } = useGetPoolInfo(pool.base, pool.quote);
-  const { poolTokens } = useGetPool(pool.base, pool.quote);
+  const { spotPrice, poolTokens } = useGetPoolInfo(pool.base, pool.quote);
 
   const { baseTokenDecimals, quoteTokenDecimals } = useGetTokenDecimals(
     poolTokens?.tokenA,
@@ -90,15 +88,15 @@ export const BobClaimFeesModal: FC<BobClaimFeesModalProps> = ({
           <SimpleTable className="mt-6">
             <SimpleTableRow
               label={t(pageTranslations.earnedToken, {
-                token: pool.base,
+                token: base,
               })}
-              value={<AmountRenderer value={feesBase} suffix={USD} />}
+              value={<AmountRenderer value={feesBase} />}
             />
             <SimpleTableRow
               label={t(pageTranslations.earnedToken, {
-                token: pool.quote,
+                token: quote,
               })}
-              value={<AmountRenderer value={feesQuote} suffix={USD} />}
+              value={<AmountRenderer value={feesQuote} />}
             />
             <SimpleTableRow
               label={t(pageTranslations.removalValue)}

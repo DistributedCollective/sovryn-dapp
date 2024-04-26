@@ -9,7 +9,6 @@ import {
 import { GAS_LIMIT } from '../../../../../../constants/gasLimits';
 import { useCrocContext } from '../../../../../../contexts/CrocContext';
 import { useTransactionContext } from '../../../../../../contexts/TransactionContext';
-import { useAccount } from '../../../../../../hooks/useAccount';
 import { useCurrentChain } from '../../../../../../hooks/useChainStore';
 import { translations } from '../../../../../../locales/i18n';
 import { PoolPositionType } from '../../../MarketMakingPage.types';
@@ -24,7 +23,6 @@ export const useHandleSubmit = (
   position: AmbientPosition,
   onComplete: () => void,
 ) => {
-  const { signer } = useAccount();
   const { croc } = useCrocContext();
   const { poolTokens } = useGetPool(pool.base, pool.quote);
 
@@ -32,7 +30,7 @@ export const useHandleSubmit = (
   const { setTransactions, setIsOpen, setTitle } = useTransactionContext();
 
   const onSubmit = useCallback(async () => {
-    if (!croc || !poolTokens || !signer) {
+    if (!croc || !poolTokens) {
       return;
     }
 
@@ -91,7 +89,6 @@ export const useHandleSubmit = (
   }, [
     croc,
     poolTokens,
-    signer,
     setTransactions,
     setIsOpen,
     setTitle,

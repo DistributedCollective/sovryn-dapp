@@ -264,8 +264,22 @@ export const BobAmmPage: React.FC = () => {
     })();
   }, [CHAIN_ID, account, handleBalances, tokens]);
 
+  const handleWithdraw = useCallback(
+    async (token: string) => {
+      if (!croc.current) return;
+
+      const asset = croc.current.token(findAsset(token, CHAIN_ID).address);
+      const balance = await asset.balance(account);
+
+      const tx = await asset.withdraw(balance, account);
+
+      console.log('withdraw tx', tx);
+    },
+    [CHAIN_ID, account],
+  );
+
   return (
-    <div className="container flex flex-row space-x-12">
+    <div className="container flex flex-row justify-between space-x-12">
       <div className="w-72">
         <h1>Init Pool: {CHAIN_ID}</h1>
         <div className="mb-12">
@@ -356,7 +370,10 @@ export const BobAmmPage: React.FC = () => {
         <ol>
           {balances?.map(b => (
             <li key={b.token}>
-              {b.token}: {b.balance}
+              {b.token}: {b.balance}{' '}
+              <button onClick={() => handleWithdraw(b.token)}>
+                [withdraw]
+              </button>
             </li>
           ))}
         </ol>

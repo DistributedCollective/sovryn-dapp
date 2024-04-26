@@ -98,12 +98,25 @@ const INDEXER = {
 // Fetch pools from the indexer and return list of pairs if assets are supported by chain
 export const fetchPools = async (chainId: ChainId) => {
   if (!INDEXER[chainId]) return [];
-  const response = await fetch(`${INDEXER[chainId]}?chainId=${chainId}`);
-  const pools = await response
-    .json()
-    .then(response =>
-      (response.data ?? []).map(item => [item.base, item.quote, item.poolIdx]),
-    );
+  // const response = await fetch(`${INDEXER[chainId]}?chainId=${chainId}`);
+  // const pools = await response
+  //   .json()
+  //   .then(response =>
+  //     (response.data ?? []).map(item => [item.base, item.quote, item.poolIdx]),
+  //   );
+
+  const pools = [
+    [
+      '0x0F004Fd9e9e1f884975908137F5494C3cA1D9914',
+      '0x395131c2360101acB9Fa8a4d412b0bc43607DF22',
+      36000,
+    ],
+    [
+      '0x395131c2360101acB9Fa8a4d412b0bc43607DF22',
+      '0x412342D0537B2d5F21E513Cf6C7bFb92D433a813',
+      36000,
+    ],
+  ] as PoolWithIndex[];
 
   const items: PoolWithIndex[] = [];
   for (const pool of pools) {

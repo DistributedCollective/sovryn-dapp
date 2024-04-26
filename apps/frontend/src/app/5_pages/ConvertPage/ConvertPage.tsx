@@ -329,24 +329,24 @@ const ConvertPage: FC = () => {
     route,
   );
 
-  const isSubmitDisabled = useMemo(
-    () =>
-      isInMaintenance ||
-      !account ||
-      !amount ||
-      Number(amount) <= 0 ||
-      Number(amount) > Number(maximumAmountToConvert) ||
-      !destinationToken ||
-      !route,
-    [
-      isInMaintenance,
-      account,
-      amount,
-      maximumAmountToConvert,
-      destinationToken,
-      route,
-    ],
-  );
+  // const isSubmitDisabled = useMemo(
+  //   () =>
+  //     isInMaintenance ||
+  //     !account ||
+  //     !amount ||
+  //     Number(amount) <= 0 ||
+  //     Number(amount) > Number(maximumAmountToConvert) ||
+  //     !destinationToken ||
+  //     !route,
+  //   [
+  //     isInMaintenance,
+  //     account,
+  //     amount,
+  //     maximumAmountToConvert,
+  //     destinationToken,
+  //     route,
+  //   ],
+  // );
 
   const renderDestinationAmount = useMemo(
     () => quote || t(commonTranslations.na),
@@ -582,7 +582,7 @@ const ConvertPage: FC = () => {
             style={ButtonStyle.primary}
             text={t(commonTranslations.buttons.confirm)}
             className="w-full mt-8"
-            disabled={isSubmitDisabled}
+            // disabled={isSubmitDisabled}
             onClick={handleSubmit}
             dataAttribute="convert-confirm"
           />

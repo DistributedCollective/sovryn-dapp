@@ -23,10 +23,9 @@ export const RuneContextProvider: React.FC<RuneContextProviderProps> = ({
   children,
 }) => {
   const [state, setState] = React.useState<RuneContextStateType>(defaultValue);
-
-  const { provider, account } = useAccount();
-  const runeBridgeContract = useGetProtocolContract('runeBridge');
   const chainId = useCurrentChain();
+  const { provider, account } = useAccount();
+  const runeBridgeContract = useGetProtocolContract('runeBridge', chainId);
 
   const { value: listTokens } = useCacheCall(
     'runeBridge/tokens',

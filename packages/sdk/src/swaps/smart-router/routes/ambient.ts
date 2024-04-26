@@ -104,108 +104,108 @@ export const ambientRoute: SwapRouteFunction = (
 
       console.log('pair', [entry, destination], pair);
 
-      // if (pair) {
-      //   console.log('is direct swap');
-      //   const plan = await makePlan(
-      //     entry,
-      //     destination,
-      //     pair[2],
-      //     BigNumber.from(amount),
-      //     0.3,
-      //   );
-      //   const impact = await plan.impact;
-
-      //   return utils.parseEther(impact.buyQty);
-      // } else {
-      console.log('is multi-hop swap');
-      // otherwise, use long form orders to build multi-hop swaps
-
-      const graph = constructGraph(pools.map(p => [p[0], p[1]]));
-      const path = bfsShortestPath(graph, entry, destination);
-
-      const poolCount = Math.ceil((path?.length ?? 0) / 2);
-
-      console.log('path', path, poolCount);
-
-      if (poolCount < 1) {
-        throw makeError(
-          `Cannot swap ${entry} to ${destination}; #1`,
-          SovrynErrorCode.SWAP_PAIR_NOT_AVAILABLE,
+      if (pair) {
+        console.log('is direct swap');
+        const plan = await makePlan(
+          entry,
+          destination,
+          pair[2],
+          BigNumber.from(amount),
+          0.3,
         );
-      }
+        const impact = await plan.impact;
 
-      const env = new CrocEnv(provider);
+        return utils.parseEther(impact.buyQty);
+      } else {
+        console.log('is multi-hop swap');
+        // otherwise, use long form orders to build multi-hop swaps
 
-      const entryAmount = await parseAmount(env, entry, amount);
+        const graph = constructGraph(pools.map(p => [p[0], p[1]]));
+        const path = bfsShortestPath(graph, entry, destination);
 
-      const groupedPath = groupItemsInPairs(path ?? []);
-      const pathsToPoolsWithIndexes = groupedPath.map(item => {
-        const index = findPair(chainId, item[0], item[1])?.[2]!;
-        return [item[0], item[1], index] as PoolWithIndex;
-      });
+        const poolCount = Math.ceil((path?.length ?? 0) / 2);
 
-      const ambientPools = await Promise.all(
-        pathsToPoolsWithIndexes.map(item =>
-          env.pool(item[0], item[1], item[2]),
-        ),
-      );
+        console.log('path', path, poolCount);
 
-      console.log('pools', ambientPools);
+        if (poolCount < 1) {
+          throw makeError(
+            `Cannot swap ${entry} to ${destination}; #1`,
+            SovrynErrorCode.SWAP_PAIR_NOT_AVAILABLE,
+          );
+        }
 
-      if (ambientPools.length === 0) {
-        throw makeError(
-          `Cannot swap ${entry} to ${destination}; #2`,
-          SovrynErrorCode.SWAP_PAIR_NOT_AVAILABLE,
+        const env = new CrocEnv(provider);
+
+        const entryAmount = await parseAmount(env, entry, amount);
+
+        const groupedPath = groupItemsInPairs(path ?? []);
+        const pathsToPoolsWithIndexes = groupedPath.map(item => {
+          const index = findPair(chainId, item[0], item[1])?.[2]!;
+          return [item[0], item[1], index] as PoolWithIndex;
+        });
+
+        const ambientPools = await Promise.all(
+          pathsToPoolsWithIndexes.map(item =>
+            env.pool(item[0], item[1], item[2]),
+          ),
         );
-      }
 
-      let lastOut = await calculateImpact(
-        env,
-        ambientPools[0],
-        ambientPools[0].poolIndex,
-        entry,
-        entryAmount,
-      ).catch(e => {
-        console.error('Error calculating impact (init)', e, [
+        console.log('pools', ambientPools);
+
+        if (ambientPools.length === 0) {
+          throw makeError(
+            `Cannot swap ${entry} to ${destination}; #2`,
+            SovrynErrorCode.SWAP_PAIR_NOT_AVAILABLE,
+          );
+        }
+
+        let lastOut = await calculateImpact(
+          env,
           ambientPools[0],
+          ambientPools[0].poolIndex,
           entry,
           entryAmount,
-        ]);
-        return { amount: BigNumber.from(0), isBuy: true, impact: {} };
-      });
-
-      console.log('firstOut', lastOut);
-
-      for (let i = 1; i < ambientPools.length; i++) {
-        const pool = ambientPools[i];
-        const poolPath = groupedPath[i];
-
-        const prev = lastOut;
-
-        lastOut = await calculateImpact(
-          env,
-          pool,
-          pool.poolIndex,
-          poolPath[0],
-          prev.amount,
         ).catch(e => {
-          console.error('Error calculating impact', i, e, [
-            pool,
-            poolPath[0],
-            prev.amount,
+          console.error('Error calculating impact (init)', e, [
+            ambientPools[0],
+            entry,
+            entryAmount,
           ]);
           return { amount: BigNumber.from(0), isBuy: true, impact: {} };
         });
 
-        console.log('lastOut', i, lastOut);
+        console.log('firstOut', lastOut);
+
+        for (let i = 1; i < ambientPools.length; i++) {
+          const pool = ambientPools[i];
+          const poolPath = groupedPath[i];
+
+          const prev = lastOut;
+
+          lastOut = await calculateImpact(
+            env,
+            pool,
+            pool.poolIndex,
+            poolPath[0],
+            prev.amount,
+          ).catch(e => {
+            console.error('Error calculating impact', i, e, [
+              pool,
+              poolPath[0],
+              prev.amount,
+            ]);
+            return { amount: BigNumber.from(0), isBuy: true, impact: {} };
+          });
+
+          console.log('lastOut', i, lastOut);
+        }
+
+        const decimals = await env.tokens.materialize(destination).decimals;
+
+        return BigNumber.from(lastOut.amount.toString()).mul(
+          Math.pow(10, 18 - decimals),
+        );
       }
-
-      const decimals = await env.tokens.materialize(destination).decimals;
-
-      return BigNumber.from(lastOut.amount.toString()).mul(
-        Math.pow(10, 18 - decimals),
-      );
-      // }
     },
     approve: async (entry, destination, amount, from, overrides) => {
       if (entry === constants.AddressZero) {

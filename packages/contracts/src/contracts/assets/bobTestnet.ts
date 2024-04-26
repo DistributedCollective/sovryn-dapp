@@ -94,48 +94,48 @@ export const bobTestnet: Array<AssetDetails> = [
   //
 
   // testing
-  {
-    symbol: 'A18',
-    address: '0x18cc6F964C0E59C8A587b08cf4f9b4520A8d2431',
-    name: 'A18',
-    decimals: 18,
-    getIcon: async () => (await import('./icons/unknown')).default,
-  },
-  {
-    symbol: 'B18',
-    address: '0x202D7d35a5735Dc8932C17B632c9bf921e94bA82',
-    name: 'B18',
-    decimals: 18,
-    getIcon: async () => (await import('./icons/unknown')).default,
-  },
-  {
-    symbol: 'C18',
-    address: '0x223796b158314a806c480dFAD4eC491B9d88f849',
-    name: 'C18',
-    decimals: 18,
-    getIcon: async () => (await import('./icons/unknown')).default,
-  },
-  {
-    symbol: 'D18',
-    address: '0x084242A496899a9Bd3059fdbB84695474fbdF258',
-    name: 'D18',
-    decimals: 18,
-    getIcon: async () => (await import('./icons/unknown')).default,
-  },
-  {
-    symbol: 'E6',
-    address: '0x854D08327a8f097e0fe7495054bA038ba19F0697',
-    name: 'E6',
-    decimals: 6,
-    getIcon: async () => (await import('./icons/unknown')).default,
-  },
-  {
-    symbol: 'F8',
-    address: '0x9e6B84f51C4BBE00a5Dd4526FfE4d97B18b3a2AE',
-    name: 'F8',
-    decimals: 8,
-    getIcon: async () => (await import('./icons/unknown')).default,
-  },
+  // {
+  //   symbol: 'A18',
+  //   address: '0x18cc6F964C0E59C8A587b08cf4f9b4520A8d2431',
+  //   name: 'A18',
+  //   decimals: 18,
+  //   getIcon: async () => (await import('./icons/unknown')).default,
+  // },
+  // {
+  //   symbol: 'B18',
+  //   address: '0x202D7d35a5735Dc8932C17B632c9bf921e94bA82',
+  //   name: 'B18',
+  //   decimals: 18,
+  //   getIcon: async () => (await import('./icons/unknown')).default,
+  // },
+  // {
+  //   symbol: 'C18',
+  //   address: '0x223796b158314a806c480dFAD4eC491B9d88f849',
+  //   name: 'C18',
+  //   decimals: 18,
+  //   getIcon: async () => (await import('./icons/unknown')).default,
+  // },
+  // {
+  //   symbol: 'D18',
+  //   address: '0x084242A496899a9Bd3059fdbB84695474fbdF258',
+  //   name: 'D18',
+  //   decimals: 18,
+  //   getIcon: async () => (await import('./icons/unknown')).default,
+  // },
+  // {
+  //   symbol: 'E6',
+  //   address: '0x854D08327a8f097e0fe7495054bA038ba19F0697',
+  //   name: 'E6',
+  //   decimals: 6,
+  //   getIcon: async () => (await import('./icons/unknown')).default,
+  // },
+  // {
+  //   symbol: 'F8',
+  //   address: '0x9e6B84f51C4BBE00a5Dd4526FfE4d97B18b3a2AE',
+  //   name: 'F8',
+  //   decimals: 8,
+  //   getIcon: async () => (await import('./icons/unknown')).default,
+  // },
 
   // temporary mock tokens
   {

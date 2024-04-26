@@ -84,7 +84,7 @@ export const ProtocolSection: FC = () => {
       </Paragraph>
       <ProtocolDepositSection
         selectedCurrency={selectedCurrency}
-        btcPrice={nativeTokenPrice}
+        nativeTokenPrice={nativeTokenPrice}
         onValueChange={handleValueUpdate}
       />
     </div>

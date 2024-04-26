@@ -26,7 +26,7 @@ import {
 
 export const StabilityPoolTotalValue: FC<ProtocolSectionProps> = ({
   selectedCurrency,
-  btcPrice,
+  nativeTokenPrice,
   onValueChange,
 }) => {
   const { account } = useAccount();
@@ -43,13 +43,18 @@ export const StabilityPoolTotalValue: FC<ProtocolSectionProps> = ({
   const renderTotalBalance = useMemo(
     () =>
       account
-        ? getConvertedValue(balance, selectedCurrency, btcPrice, chainId)
+        ? getConvertedValue(
+            balance,
+            selectedCurrency,
+            nativeTokenPrice,
+            chainId,
+          )
         : 0,
-    [account, balance, selectedCurrency, btcPrice, chainId],
+    [account, balance, selectedCurrency, nativeTokenPrice, chainId],
   );
 
   const getStabilityDeposit = useCallback(async () => {
-    if (!account || !liquity || !btcPrice) {
+    if (!account || !liquity || !nativeTokenPrice) {
       return;
     }
     if (liquity.connection.chainId !== Number(chainId)) {
@@ -57,12 +62,14 @@ export const StabilityPoolTotalValue: FC<ProtocolSectionProps> = ({
     }
     try {
       const result = await liquity.getStabilityDeposit(account);
-      const balance = decimalic(result.currentZUSD.toString()).div(btcPrice);
+      const balance = decimalic(result.currentZUSD.toString()).div(
+        nativeTokenPrice,
+      );
       setBalance(balance);
     } catch (error) {
       console.error('Error fetching stability deposit:', error);
     }
-  }, [account, liquity, btcPrice, chainId]);
+  }, [account, liquity, nativeTokenPrice, chainId]);
 
   useEffect(() => {
     getStabilityDeposit();

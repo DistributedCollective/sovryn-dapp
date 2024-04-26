@@ -24,7 +24,7 @@ const lendPools = LendingPoolDictionary.list();
 
 export const LendingTotalValue: FC<ProtocolSectionProps> = ({
   selectedCurrency,
-  btcPrice,
+  nativeTokenPrice,
   onValueChange,
 }) => {
   const { account } = useAccount();
@@ -59,11 +59,11 @@ export const LendingTotalValue: FC<ProtocolSectionProps> = ({
               Decimal.ZERO,
             ),
             selectedCurrency,
-            btcPrice,
+            nativeTokenPrice,
             chainId,
           )
         : 0,
-    [account, poolValues, selectedCurrency, btcPrice, chainId],
+    [account, poolValues, selectedCurrency, nativeTokenPrice, chainId],
   );
 
   const totalBalance = useMemo(

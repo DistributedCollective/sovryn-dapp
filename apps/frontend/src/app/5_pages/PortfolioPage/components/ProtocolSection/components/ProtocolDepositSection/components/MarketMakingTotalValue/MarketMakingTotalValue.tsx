@@ -1,13 +1,11 @@
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 
-import { ChainIds } from '@sovryn/ethers-provider';
 import { Decimal } from '@sovryn/utils';
 
 import { AmountRenderer } from '../../../../../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { useAccount } from '../../../../../../../../../hooks/useAccount';
 import { useBlockNumber } from '../../../../../../../../../hooks/useBlockNumber';
 import { useCurrentChain } from '../../../../../../../../../hooks/useChainStore';
-import { isBobChain } from '../../../../../../../../../utils/chain';
 import { AmmLiquidityPoolDictionary } from '../../../../../../../MarketMakingPage/utils/AmmLiquidityPoolDictionary';
 import {
   ProtocolTypes,
@@ -24,7 +22,7 @@ const ammPools = AmmLiquidityPoolDictionary.list();
 
 export const MarketMakingTotalValue: FC<ProtocolSectionProps> = ({
   selectedCurrency,
-  btcPrice,
+  nativeTokenPrice,
   onValueChange,
 }) => {
   const { account } = useAccount();
@@ -58,11 +56,11 @@ export const MarketMakingTotalValue: FC<ProtocolSectionProps> = ({
               Decimal.ZERO,
             ),
             selectedCurrency,
-            btcPrice,
+            nativeTokenPrice,
             chainId,
           )
         : 0,
-    [account, poolValues, selectedCurrency, btcPrice, chainId],
+    [account, poolValues, selectedCurrency, nativeTokenPrice, chainId],
   );
 
   const totalBalance = useMemo(
@@ -85,17 +83,6 @@ export const MarketMakingTotalValue: FC<ProtocolSectionProps> = ({
       onValueChange(Decimal.ZERO, ProtocolTypes.MARKET_MAKING);
     }
   }, [account, onValueChange, totalBalance]);
-
-  if (isBobChain(chainId) || chainId === ChainIds.SEPOLIA) {
-    return (
-      <AmountRenderer
-        value={0}
-        suffix={selectedCurrency}
-        precision={getCurrencyPrecision(selectedCurrency)}
-        isAnimated
-      />
-    );
-  }
 
   return (
     <>

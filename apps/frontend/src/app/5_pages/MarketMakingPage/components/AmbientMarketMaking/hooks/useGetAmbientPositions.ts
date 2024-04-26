@@ -17,7 +17,7 @@ export const useGetAmbientPositions = (pool: AmbientLiquidityPool) => {
   const { value: blockNumber } = useBlockNumber(chainId);
 
   const { value: positions, loading } = useCacheCall(
-    `user-pools-balance/${pool.base}/${pool.quote}/`,
+    `user-pools-balance/${pool.base}/${pool.quote}/${account}`,
     chainId,
     async () => {
       if (!baseToken || !quoteToken || !account) {

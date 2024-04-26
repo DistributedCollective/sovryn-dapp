@@ -24,7 +24,7 @@ import {
 
 export const ZeroLineTotalValue: FC<ProtocolSectionProps> = ({
   selectedCurrency,
-  btcPrice,
+  nativeTokenPrice,
   onValueChange,
 }) => {
   const { account } = useAccount();
@@ -37,9 +37,14 @@ export const ZeroLineTotalValue: FC<ProtocolSectionProps> = ({
   const renderTotalBalance = useMemo(
     () =>
       account
-        ? getConvertedValue(balance, selectedCurrency, btcPrice, chainId)
+        ? getConvertedValue(
+            balance,
+            selectedCurrency,
+            nativeTokenPrice,
+            chainId,
+          )
         : 0,
-    [account, balance, selectedCurrency, btcPrice, chainId],
+    [account, balance, selectedCurrency, nativeTokenPrice, chainId],
   );
 
   const getTroves = useCallback(async () => {

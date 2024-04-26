@@ -7,48 +7,33 @@ import {
   TransactionType,
 } from '../../../../../3_organisms/TransactionStepDialog/TransactionStepDialog.types';
 import { GAS_LIMIT } from '../../../../../../constants/gasLimits';
-import { useCrocContext } from '../../../../../../contexts/CrocContext';
 import { useTransactionContext } from '../../../../../../contexts/TransactionContext';
-import { useCurrentChain } from '../../../../../../hooks/useChainStore';
 import { translations } from '../../../../../../locales/i18n';
 import { PoolPositionType } from '../../../MarketMakingPage.types';
-import { useGetPool } from '../../../hooks/useGetPool';
 import { AmbientPosition } from '../../AmbientMarketMaking/AmbientMarketMaking.types';
 import { AmbientLiquidityPool } from '../../AmbientMarketMaking/utils/AmbientLiquidityPool';
-import { AmbientLiquidityPoolDictionary } from '../../AmbientMarketMaking/utils/AmbientLiquidityPoolDictionary';
 import { DEFAULT_SLIPPAGE } from '../../BobDepositModal/BobDepositModal.constants';
+import { useGetPoolInfo } from '../../BobDepositModal/hooks/useGetPoolInfo';
 
 export const useHandleSubmit = (
   pool: AmbientLiquidityPool,
   position: AmbientPosition,
   onComplete: () => void,
 ) => {
-  const { croc } = useCrocContext();
-  const { poolTokens } = useGetPool(pool.base, pool.quote);
+  const {
+    poolTokens,
+    pool: crocPool,
+    price: poolPrice,
+  } = useGetPoolInfo(pool.base, pool.quote);
 
-  const chainId = useCurrentChain();
   const { setTransactions, setIsOpen, setTitle } = useTransactionContext();
 
   const onSubmit = useCallback(async () => {
-    if (!croc || !poolTokens) {
+    if (!poolTokens || !crocPool || !poolPrice) {
       return;
     }
 
     const transactions: Transaction[] = [];
-
-    const ambientPool = AmbientLiquidityPoolDictionary.get(
-      pool.base,
-      pool.quote,
-      chainId,
-    );
-
-    const crocPool = croc.pool(
-      poolTokens.tokenA.tokenAddr,
-      poolTokens.tokenB.tokenAddr,
-      ambientPool.poolIndex,
-    );
-
-    const poolPrice = await crocPool.displayPrice();
 
     const price = {
       min: poolPrice * (1 - DEFAULT_SLIPPAGE / 100),
@@ -87,15 +72,16 @@ export const useHandleSubmit = (
     setTitle(t(translations.bobMarketMakingPage.claimFeesModal.title));
     setIsOpen(true);
   }, [
-    croc,
-    poolTokens,
-    setTransactions,
-    setIsOpen,
-    setTitle,
-    position,
+    crocPool,
     onComplete,
-    chainId,
-    pool,
+    poolPrice,
+    poolTokens,
+    position.askTick,
+    position.bidTick,
+    position.positionType,
+    setTitle,
+    setIsOpen,
+    setTransactions,
   ]);
 
   return onSubmit;

@@ -51,7 +51,7 @@ const BOB_CHAIN: ChainSpec = {
   poolIndex: 410,
   isTestNet: false,
   chainId: '0xed88', // 60808
-  gridSize: 16,
+  gridSize: 4, // 16?
   proxyPaths: {
     cold: 3,
     long: 130,

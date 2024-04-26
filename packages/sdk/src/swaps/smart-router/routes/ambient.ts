@@ -2,13 +2,7 @@ import { BigNumber, utils, providers, constants, BigNumberish } from 'ethers';
 
 import { ChainIds } from '@sovryn/ethers-provider';
 import { numberToChainId } from '@sovryn/ethers-provider';
-import {
-  CrocEnv,
-  CrocPoolView,
-  MAX_SQRT_PRICE,
-  MIN_SQRT_PRICE,
-  encodeCrocPrice,
-} from '@sovryn/sdex';
+import { CrocEnv, CrocPoolView } from '@sovryn/sdex';
 import { OrderDirective } from '@sovryn/sdex/dist/encoding/longform';
 import { Decimal } from '@sovryn/utils';
 
@@ -73,13 +67,7 @@ export const ambientRoute: SwapRouteFunction = (
 
   return {
     name: 'Ambient',
-    // todo: remove fork chain before release
-    chains: [
-      ChainIds.BOB_MAINNET,
-      ChainIds.BOB_TESTNET,
-      ChainIds.FORK,
-      ChainIds.SEPOLIA,
-    ],
+    chains: [ChainIds.BOB_MAINNET, ChainIds.BOB_TESTNET, ChainIds.SEPOLIA],
     pairs: async () => {
       const pools = await loadPools();
 
@@ -258,156 +246,121 @@ export const ambientRoute: SwapRouteFunction = (
       const pools = await loadPools();
       const chainId = await getChainId();
 
-      // const pair = await findPair(chainId, entry, destination);
+      const pair = await findPair(chainId, entry, destination);
 
       // if there is a pool for the pair, use it
-      // if (pair) {
-      //   const plan = await makePlan(
-      //     entry,
-      //     destination,
-      //     pair[2],
-      //     BigNumber.from(amount),
-      //   );
-      //   const txData = await plan.generateSwapData({ from: from });
-
-      //   return {
-      //     to: txData.to,
-      //     data: txData.data,
-      //     value: txData.value,
-      //     ...overrides,
-      //   };
-      // } else {
-      // otherwise, use long form orders to build multi-hop swaps
-
-      const graph = constructGraph(pools.map(p => [p[0], p[1]]));
-      const path = bfsShortestPath(graph, entry, destination);
-
-      const poolCount = Math.ceil((path?.length ?? 0) / 2);
-
-      if (poolCount < 1) {
-        throw makeError(
-          `Cannot swap ${entry} to ${destination}; #1`,
-          SovrynErrorCode.SWAP_PAIR_NOT_AVAILABLE,
+      if (pair) {
+        const plan = await makePlan(
+          entry,
+          destination,
+          pair[2],
+          BigNumber.from(amount),
         );
-      }
+        const txData = await plan.generateSwapData({ from: from });
 
-      const env = new CrocEnv(provider);
-      const context = await env.context;
-
-      const entryAmount = await parseAmount(env, entry, amount);
-
-      const proxyPath = context.chain.proxyPaths.long;
-
-      const groupedPath = groupItemsInPairs(path ?? []);
-
-      const pathsToPoolsWithIndexes = groupedPath.map(item => {
-        const index = findPair(chainId, item[0], item[1])?.[2]!;
-        return [item[0], item[1], index] as PoolWithIndex;
-      });
-
-      const ambientPools = await Promise.all(
-        pathsToPoolsWithIndexes.map(item =>
-          env.pool(item[0], item[1], item[2]),
-        ),
-      );
-
-      if (ambientPools.length === 0) {
-        throw makeError(
-          `Cannot swap ${entry} to ${destination}; #2`,
-          SovrynErrorCode.SWAP_PAIR_NOT_AVAILABLE,
-        );
-      }
-
-      const order = new OrderDirective(ambientPools[0].baseToken.tokenAddr);
-
-      const entryHop = order.appendHop(ambientPools[0].quoteToken.tokenAddr);
-
-      let lastOut = await setupPool(
-        order,
-        env,
-        ambientPools[0],
-        ambientPools[0].poolIndex,
-        entry,
-        entryAmount,
-        slippage,
-      );
-
-      // order.open.useSurplus = !lastOut.orderPool.swap.inBaseQty;
-      // entryHop.settlement.useSurplus = lastOut.orderPool.swap.inBaseQty;
-
-      // if it's single pool, entry and exit direct
-      if (ambientPools.length === 1) {
-        order.open.useSurplus = false;
-        entryHop.settlement.useSurplus = false;
+        return {
+          to: txData.to,
+          data: txData.data,
+          value: txData.value,
+          ...overrides,
+        };
       } else {
-        // if it's multi pool, entry direct, exit surplus
-        order.open.useSurplus = false;
-        entryHop.settlement.useSurplus = true;
+        // otherwise, use long form orders to build multi-hop swaps
 
-        console.log('s', ambientPools[0].useTrueBase);
-      }
+        const graph = constructGraph(pools.map(p => [p[0], p[1]]));
+        const path = bfsShortestPath(graph, entry, destination);
 
-      console.log(
-        'first item',
-        'inBaseQty',
-        lastOut.orderPool.swap.inBaseQty,
-        'isBuy',
-        lastOut.orderPool.swap.isBuy,
-        'useTrueBase',
-        ambientPools[0].useTrueBase,
-        'amount',
-        lastOut.entryOut.toString(),
-        'impact:baseflow',
-        lastOut.impact.baseFlow.toString(),
-        'impact:quoteFlow',
-        lastOut.impact.quoteFlow.toString(),
-        'impact:finalPrice',
-        lastOut.impact.finalPrice.toString(),
-      );
+        const poolCount = Math.ceil((path?.length ?? 0) / 2);
 
-      for (let i = 1; i < ambientPools.length; i++) {
-        const pool = ambientPools[i];
-        const poolPath = groupedPath[i];
+        console.log('path length', path?.length, 'pool count', poolCount);
 
-        const baseHop = order.appendHop(pool.baseToken.tokenAddr);
-        baseHop.settlement.useSurplus = true;
+        if (poolCount < 1) {
+          throw makeError(
+            `Cannot swap ${entry} to ${destination}; #1`,
+            SovrynErrorCode.SWAP_PAIR_NOT_AVAILABLE,
+          );
+        }
 
-        const quoteHop = order.appendHop(pool.quoteToken.tokenAddr);
-        quoteHop.settlement.useSurplus = true;
+        const env = new CrocEnv(provider);
+        const context = await env.context;
 
-        lastOut = await setupPool(
+        const entryAmount = await parseAmount(env, entry, amount);
+
+        const proxyPath = context.chain.proxyPaths.long;
+
+        const groupedPath = groupItemsInPairs(path ?? []);
+
+        const pathsToPoolsWithIndexes = groupedPath.map(item => {
+          const index = findPair(chainId, item[0], item[1])?.[2]!;
+          return [item[0], item[1], index] as PoolWithIndex;
+        });
+
+        const ambientPools = await Promise.all(
+          pathsToPoolsWithIndexes.map(item =>
+            env.pool(item[0], item[1], item[2]),
+          ),
+        );
+
+        if (ambientPools.length === 0) {
+          throw makeError(
+            `Cannot swap ${entry} to ${destination}; #2`,
+            SovrynErrorCode.SWAP_PAIR_NOT_AVAILABLE,
+          );
+        }
+
+        const order = new OrderDirective(ambientPools[0].baseToken.tokenAddr);
+
+        const entryHop = order.appendHop(ambientPools[0].quoteToken.tokenAddr);
+
+        let lastOut = await setupPool(
           order,
           env,
-          pool,
-          pool.poolIndex,
-          poolPath[0],
-          lastOut.entryOut,
+          ambientPools[0],
+          ambientPools[0].poolIndex,
+          entry,
+          entryAmount,
           slippage,
         );
 
-        // if (i === ambientPools.length - 1) {
-        //   const isBase = lastOut.orderPool.swap.inBaseQty;
-        //   // baseHop.settlement.useSurplus = isBase;
-        //   // quoteHop.settlement.useSurplus = !isBase;
+        // order.open.useSurplus = !lastOut.orderPool.swap.inBaseQty;
+        // entryHop.settlement.useSurplus = lastOut.orderPool.swap.inBaseQty;
 
-        //   baseHop.settlement.useSurplus = !pool.useTrueBase;
-        //   quoteHop.settlement.useSurplus = pool.useTrueBase;
-        // }
+        // if it's single pool, entry and exit direct
+        if (ambientPools.length === 1) {
+          order.open.useSurplus = false;
+          entryHop.settlement.useSurplus = false;
+        } else {
+          // if it's multi pool, entry direct, exit surplus
 
-        baseHop.settlement.useSurplus =
-          destination.toLowerCase() !== pool.baseToken.tokenAddr.toLowerCase();
-        quoteHop.settlement.useSurplus =
-          destination.toLowerCase() !== pool.quoteToken.tokenAddr.toLowerCase();
+          const baseIsEntry =
+            entry.toLowerCase() ===
+            ambientPools[0].baseToken.tokenAddr.toLowerCase();
+
+          // setting both true would also work, but would force user to always use surplus first
+          // we may not want that atm.
+          order.open.useSurplus = !baseIsEntry;
+          entryHop.settlement.useSurplus = baseIsEntry;
+        }
 
         console.log(
-          'step',
-          i,
+          'openSurplus',
+          order.open.useSurplus,
+          ambientPools[0].baseToken.tokenAddr,
+        );
+        console.log(
+          'entrySurplus',
+          entryHop.settlement.useSurplus,
+          ambientPools[0].quoteToken.tokenAddr,
+        );
+
+        console.log(
+          'first item',
           'inBaseQty',
           lastOut.orderPool.swap.inBaseQty,
           'isBuy',
           lastOut.orderPool.swap.isBuy,
           'useTrueBase',
-          pool.useTrueBase,
+          ambientPools[0].useTrueBase,
           'amount',
           lastOut.entryOut.toString(),
           'impact:baseflow',
@@ -418,23 +371,88 @@ export const ambientRoute: SwapRouteFunction = (
           lastOut.impact.finalPrice.toString(),
         );
 
-        console.log('is Last', i === ambientPools.length - 1);
+        for (let i = 1; i < ambientPools.length; i++) {
+          const pool = ambientPools[i];
+          const poolPath = groupedPath[i];
+
+          const baseHop = order.appendHop(pool.baseToken.tokenAddr);
+          baseHop.settlement.useSurplus = true;
+
+          const quoteHop = order.appendHop(pool.quoteToken.tokenAddr);
+          quoteHop.settlement.useSurplus = true;
+
+          lastOut = await setupPool(
+            order,
+            env,
+            pool,
+            pool.poolIndex,
+            poolPath[0],
+            lastOut.entryOut,
+            slippage,
+          );
+
+          // by default, use surplus for all intermediate pools
+          baseHop.settlement.useSurplus = true;
+          quoteHop.settlement.useSurplus = true;
+
+          const isLastPool = i === ambientPools.length - 1;
+          console.log('isLastPool', isLastPool);
+          if (isLastPool) {
+            const isBaseDestination =
+              destination.toLowerCase() ===
+              pool.baseToken.tokenAddr.toLowerCase();
+            console.log('isBaseDestination', isBaseDestination);
+
+            // works for DLLR -> USDT -> USDC swap
+            baseHop.settlement.useSurplus = !isBaseDestination;
+            quoteHop.settlement.useSurplus = isBaseDestination;
+          }
+
+          console.log(
+            'baseSurplus',
+            baseHop.settlement.useSurplus,
+            pool.baseToken.tokenAddr,
+          );
+          console.log(
+            'quoteSurplus',
+            quoteHop.settlement.useSurplus,
+            pool.quoteToken.tokenAddr,
+          );
+
+          console.log(
+            'step',
+            i,
+            'inBaseQty',
+            lastOut.orderPool.swap.inBaseQty,
+            'isBuy',
+            lastOut.orderPool.swap.isBuy,
+            'useTrueBase',
+            pool.useTrueBase,
+            'amount',
+            lastOut.entryOut.toString(),
+            'impact:baseflow',
+            lastOut.impact.baseFlow.toString(),
+            'impact:quoteFlow',
+            lastOut.impact.quoteFlow.toString(),
+            'impact:finalPrice',
+            lastOut.impact.finalPrice.toString(),
+          );
+        }
+
+        console.log('order', order);
+
+        const data = context.dex.interface.encodeFunctionData('userCmd', [
+          proxyPath,
+          order.encodeBytes(),
+        ]);
+
+        return {
+          to: context.dex.address,
+          data,
+          value: entry === constants.AddressZero ? entryAmount : 0,
+          ...overrides,
+        };
       }
-
-      console.log('order', order);
-
-      const data = context.dex.interface.encodeFunctionData('userCmd', [
-        proxyPath,
-        order.encodeBytes(),
-      ]);
-
-      return {
-        to: context.dex.address,
-        data,
-        value: entry === constants.AddressZero ? entryAmount : 0,
-        ...overrides,
-      };
-      // }
     },
   };
 };
@@ -498,9 +516,6 @@ const setupPool = async (
   orderPool.swap.limitPrice = Decimal.fromBigNumberString(impact.finalPrice)
     .mul(orderPool.swap.isBuy ? 1 + slippage : 1 - slippage)
     .toBigNumber();
-  // orderPool.swap.limitPrice = BigNumber.from(
-  //   orderPool.swap.isBuy ? MAX_SQRT_PRICE : MIN_SQRT_PRICE,
-  // );
   orderPool.swap.rollType = 0;
   orderPool.chain.rollExit = true;
 

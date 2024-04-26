@@ -6,7 +6,7 @@ import { useBlockNumber } from '../../../../../../hooks/useBlockNumber';
 import { useCurrentChain } from '../../../../../../hooks/useChainStore';
 import { useTokenDetailsByAsset } from '../../../../../../hooks/useTokenDetailsByAsset';
 import { getIndexerUri } from '../../../../../../utils/indexer';
-import { AmbientPosition } from '../AmbientMarketMaking.types';
+// import { AmbientPosition } from '../AmbientMarketMaking.types';
 import { AmbientLiquidityPool } from '../utils/AmbientLiquidityPool';
 
 export const useGetAmbientPositions = (pool: AmbientLiquidityPool) => {
@@ -32,12 +32,14 @@ export const useGetAmbientPositions = (pool: AmbientLiquidityPool) => {
           }`,
         );
 
-        const filteredPositions = data.data.filter(
-          (position: AmbientPosition) =>
-            position.ambientLiq > 0 || position.concLiq > 0,
-        );
+        // const filteredPositions = data.data.filter(
+        //   (position: AmbientPosition) =>
+        //     position.ambientLiq > 0 || position.concLiq > 0,
+        // );
 
-        return filteredPositions;
+        // return filteredPositions;
+
+        return data.data;
       } catch (error) {
         return [];
       }

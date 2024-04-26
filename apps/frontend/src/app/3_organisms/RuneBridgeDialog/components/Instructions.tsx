@@ -12,15 +12,12 @@ import {
   MIN_POSTAGE_BTC,
   ORD_WALLET_LINK,
 } from '../constants';
-import { TranslationContext } from '../contexts/translation';
 
 type InstructionsProps = {
   isReceive?: boolean;
 };
 
 export const Instructions: React.FC<InstructionsProps> = ({ isReceive }) => {
-  const { coinAbbreviation, cryptoDenomination } =
-    React.useContext(TranslationContext);
   return (
     <>
       <Heading type={HeadingType.h2} className="font-medium leading-[1.375rem]">
@@ -40,10 +37,8 @@ export const Instructions: React.FC<InstructionsProps> = ({ isReceive }) => {
             </li>
             <li className="mb-4">
               {t(translations.runeBridge.instructions.receive.postage, {
-                postageSat: MIN_POSTAGE_SATS, //TODO: Please update the minimum postage amount in other chains.
+                postageSat: MIN_POSTAGE_SATS,
                 postageBtc: MIN_POSTAGE_BTC,
-                coinAbbreviation: coinAbbreviation,
-                cryptoDenomination: cryptoDenomination,
               })}
             </li>
           </>

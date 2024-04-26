@@ -26,7 +26,7 @@ import {
   TransferStatusType,
 } from '../../../contexts/receiveflow';
 import { useReceiveFlowContext } from '../../../contexts/receiveflow';
-import { TranslationContext } from '../../../contexts/translation';
+import { useTranslationContext } from '../../../contexts/translation';
 
 const translation = translations.runeBridge.receive.statusScreen;
 
@@ -52,7 +52,7 @@ const formatTxStatus = (status: TransferStatusType, service: string) => {
 export const StatusScreen: React.FC<StatusScreenProps> = ({ onClose }) => {
   const { account } = useAccount();
   const { step, depositTx } = useReceiveFlowContext();
-  const { service, chainName } = React.useContext(TranslationContext);
+  const { service, chainName } = useTranslationContext();
   const isProcessing = useMemo(
     () => step === ReceiveflowStep.PROCESSING,
     [step],

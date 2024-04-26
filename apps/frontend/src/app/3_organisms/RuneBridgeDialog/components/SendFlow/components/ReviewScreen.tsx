@@ -19,6 +19,7 @@ import {
 } from '../../../../../../utils/helpers';
 import { formatValue } from '../../../../../../utils/math';
 import { useSendFlowContext } from '../../../contexts/sendflow';
+import { useTranslationContext } from '../../../contexts/translation';
 import { useRuneBridgeLocked } from '../../../hooks/useRuneBridgeLocked';
 
 const translation = translations.runeBridge.send.confirmationScreens;
@@ -50,7 +51,7 @@ export const ReviewScreen: React.FC<ReviewScreenProps> = ({
 }) => {
   const runeBridgeLocked = useRuneBridgeLocked();
   const { selectedToken } = useSendFlowContext();
-
+  const { coinAbbreviation } = useTranslationContext();
   const items = useMemo(
     () => [
       {
@@ -84,7 +85,7 @@ export const ReviewScreen: React.FC<ReviewScreenProps> = ({
         value: (
           <>
             {formatValue(feesPaid.rune, 8)} {selectedToken.symbol} +{' '}
-            {formatValue(feesPaid.baseCurrency, 8)} BTC
+            {formatValue(feesPaid.baseCurrency, 8)} {coinAbbreviation}
           </>
         ),
       },
@@ -97,7 +98,16 @@ export const ReviewScreen: React.FC<ReviewScreenProps> = ({
         ),
       },
     ],
-    [amount, feesPaid, from, receiveAmount, selectedToken.symbol, to],
+    [
+      amount,
+      coinAbbreviation,
+      feesPaid.baseCurrency,
+      feesPaid.rune,
+      from,
+      receiveAmount,
+      selectedToken.symbol,
+      to,
+    ],
   );
 
   return (

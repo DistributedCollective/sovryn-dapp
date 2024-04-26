@@ -32,16 +32,15 @@ export const TranslationContextProvider: React.FC<RuneContextProviderProps> = ({
     )
       return;
     const service = isBobChain(chainId) ? 'Bob' : 'Rootstock';
-    const cryptoDenomination = isBobChain(chainId) ? 'Ether' : 'Satoshi';
     const coinAbbreviation = isBobChain(chainId) ? 'ETH' : 'BTC';
     const chainName = service;
     setState({
+      ...state,
       service,
-      cryptoDenomination,
       coinAbbreviation,
       chainName,
     });
-  }, [chainId]);
+  }, [chainId, state]);
   const value = React.useMemo(
     () => ({
       ...state,

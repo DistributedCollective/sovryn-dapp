@@ -21,7 +21,7 @@ import {
 } from '../../../../../../utils/helpers';
 import { formatValue } from '../../../../../../utils/math';
 import { useSendFlowContext } from '../../../contexts/sendflow';
-import { TranslationContext } from '../../../contexts/translation';
+import { useTranslationContext } from '../../../contexts/translation';
 
 const translation = translations.runeBridge.send.confirmationScreens;
 
@@ -68,7 +68,7 @@ export const StatusScreen: React.FC<StatusScreenProps> = ({
   onRetry,
 }) => {
   const { selectedToken } = useSendFlowContext();
-  const { service } = React.useContext(TranslationContext);
+  const { service, coinAbbreviation } = useTranslationContext();
   const items = useMemo(
     () => [
       {
@@ -102,7 +102,7 @@ export const StatusScreen: React.FC<StatusScreenProps> = ({
         value: (
           <>
             {formatValue(feesPaid.rune, 8)} {selectedToken.symbol} +{' '}
-            {formatValue(feesPaid.baseCurrency, 8)} BTC
+            {formatValue(feesPaid.baseCurrency, 8)} {coinAbbreviation}
           </>
         ),
       },
@@ -140,6 +140,7 @@ export const StatusScreen: React.FC<StatusScreenProps> = ({
     ],
     [
       amount,
+      coinAbbreviation,
       feesPaid.baseCurrency,
       feesPaid.rune,
       from,

@@ -60,6 +60,7 @@ export function groupItemsInPairs<T>(items: T[]): T[][] {
   return groupedItems;
 }
 
+// for some reason some pairs are failing when using these values in calcImpact
 const initialLimitPrice = (isBuy: boolean) =>
   isBuy ? MAX_SQRT_PRICE : MIN_SQRT_PRICE;
 
@@ -103,6 +104,34 @@ export const fetchPools = async (chainId: ChainId) => {
     .then(response =>
       (response.data ?? []).map(item => [item.base, item.quote, item.poolIdx]),
     );
+
+  // const pools = [
+  //   [
+  //     '0x0F004Fd9e9e1f884975908137F5494C3cA1D9914',
+  //     '0x395131c2360101acB9Fa8a4d412b0bc43607DF22',
+  //     36000,
+  //   ],
+  //   [
+  //     '0x395131c2360101acB9Fa8a4d412b0bc43607DF22', // USDT
+  //     '0x412342D0537B2d5F21E513Cf6C7bFb92D433a813', // DLLR
+  //     36000,
+  //   ],
+  //   [
+  //     '0x39F696fC50a39E26c93c903eeF1fff1Df5c392C4', //DAI
+  //     '0x412342D0537B2d5F21E513Cf6C7bFb92D433a813', // DLLR
+  //     36000,
+  //   ],
+  //   [
+  //     '0x0000000000000000000000000000000000000000', // ERH
+  //     '0xebE5E8866db71286242af5fbF64e9464596a40F2', // SOV
+  //     36000,
+  //   ],
+  //   [
+  //     '0x412342D0537B2d5F21E513Cf6C7bFb92D433a813', //dLLR
+  //     '0xebE5E8866db71286242af5fbF64e9464596a40F2',
+  //     36000,
+  //   ],
+  // ] as PoolWithIndex[];
 
   const items: PoolWithIndex[] = [];
   for (const pool of pools) {

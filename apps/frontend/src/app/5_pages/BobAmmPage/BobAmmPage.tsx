@@ -8,12 +8,11 @@ import React, {
   useState,
 } from 'react';
 
-import { BigNumber, Contract, ethers } from 'ethers';
+import { Contract, ethers } from 'ethers';
 import { parseUnits } from 'ethers/lib/utils';
 
 import { getProvider } from '@sovryn/ethers-provider';
-import { ChainIds } from '@sovryn/ethers-provider';
-import { CrocEnv, MAX_TICK, MIN_TICK } from '@sovryn/sdex';
+import { CrocEnv } from '@sovryn/sdex';
 import { CrocTokenView } from '@sovryn/sdex/dist/tokens';
 import { Button, Input } from '@sovryn/ui';
 
@@ -24,9 +23,12 @@ import {
 import { useTransactionContext } from '../../../contexts/TransactionContext';
 import { useAccount } from '../../../hooks/useAccount';
 import { useCurrentChain } from '../../../hooks/useChainStore';
-import { findAsset, listAssetsOfChain } from '../../../utils/asset';
+import {
+  findAsset,
+  findAssetByAddress,
+  listAssetsOfChain,
+} from '../../../utils/asset';
 import { prepareApproveTransaction } from '../../../utils/transactions';
-import { createRangePositionTx } from './ambient-utils';
 
 const testAllowance = async (
   owner: string,
@@ -54,8 +56,6 @@ export const BobAmmPage: React.FC = () => {
   const CHAIN_ID = useCurrentChain();
   const { setTransactions, setIsOpen, setTitle } = useTransactionContext();
 
-  const isFork = useCallback(() => CHAIN_ID === ChainIds.FORK, [CHAIN_ID]);
-
   const tokens = useMemo(() => listAssetsOfChain(CHAIN_ID), [CHAIN_ID]);
   const [poolIndex, setPoolIndex] = useState<number>(36000);
   const [tokenA, setTokenA] = useState<string>();
@@ -64,9 +64,13 @@ export const BobAmmPage: React.FC = () => {
   const [tokenBAddress, setTokenBAddress] = useState<string>();
   const [price, setPrice] = useState<number>(1);
   const [spotPrice, setSpotPrice] = useState<number>(0);
+  const [displayPrice, setDisplayPrice] = useState<number>(0);
   const [testing, setTesting] = useState<boolean>(false);
   const [isInit, setIsInit] = useState<boolean>(false);
   const [error, setError] = useState<string>();
+
+  const [base, setBase] = useState<string>();
+  const [quote, setQuote] = useState<string>();
 
   const croc = useRef<CrocEnv>();
   const { signer, account } = useAccount();
@@ -93,19 +97,27 @@ export const BobAmmPage: React.FC = () => {
 
     const pool = croc.current.pool(baseToken, quoteToken, poolIndex);
 
+    console.log({ pool });
+
     pool
       .isInit()
       .then(init => {
         setIsInit(init);
-        return init ? pool.displayPrice() : Promise.resolve(1);
+        return init ? pool.spotPrice() : Promise.resolve(1);
       })
-      .then(price => {
+      .then(async price => {
+        setBase(pool.baseToken.tokenAddr);
+        setQuote(pool.quoteToken.tokenAddr);
+        setDisplayPrice(await pool.displayPrice());
         setSpotPrice(price);
+        setError(undefined);
       })
       .catch(e => {
         setError(e.message);
         setIsInit(false);
         setSpotPrice(0);
+        setDisplayPrice(0);
+        console.error(e);
       })
       .finally(() => {
         setTesting(false);
@@ -228,130 +240,46 @@ export const BobAmmPage: React.FC = () => {
     [CHAIN_ID, account, setIsOpen, setTitle, setTransactions, signer],
   );
 
-  const handleDeposit = useCallback(
-    async (base: string, quote: string, amount: number) => {
-      if (!croc.current) {
-        alert('CrocEnv not initialized');
-        return;
-      }
+  const [balances, setBalances] = useState<any[]>();
+  const handleBalances = useCallback(async () => {
+    if (!croc.current) return;
 
-      const baseToken = findAsset(base, CHAIN_ID).address;
-      const quoteToken = findAsset(quote, CHAIN_ID).address;
+    const result = await Promise.all(
+      tokens.map(token =>
+        croc
+          .current!.token(token.address)
+          .balanceDisplay(account)
+          .then(value => ({ token: token.symbol, balance: value })),
+      ),
+    );
 
-      const tokenA = croc.current.tokens.materialize(baseToken);
-      const tokenB = croc.current.tokens.materialize(quoteToken);
+    setBalances(result);
 
-      const pool = croc.current.pool(tokenA.tokenAddr, tokenB.tokenAddr, 36000);
-      console.log({ pool });
+    return result;
+  }, [account, tokens]);
 
-      const init = await pool.isInit();
+  useEffect(() => {
+    (async () => {
+      await handleBalances();
+    })();
+  }, [CHAIN_ID, account, handleBalances, tokens]);
 
-      if (!init) {
-        alert('Pool not initialized');
-        return;
-      }
+  const handleWithdraw = useCallback(
+    async (token: string) => {
+      if (!croc.current) return;
 
-      const price = await pool.displayPrice();
+      const asset = croc.current.token(findAsset(token, CHAIN_ID).address);
+      const balance = await asset.balance(account);
 
-      console.log('display price', price.toString());
+      const tx = await asset.withdraw(balance, account);
 
-      const TOKEN_A_AMOUNT = amount; // 0.0001
-      const TOKEN_B_AMOUNT = price * TOKEN_A_AMOUNT;
-
-      console.log({ TOKEN_A_AMOUNT, TOKEN_B_AMOUNT });
-
-      const transactions: Transaction[] = [];
-
-      const allowanceA = await testAllowance(account, tokenA, TOKEN_A_AMOUNT);
-      const allowanceB = await testAllowance(account, tokenB, TOKEN_B_AMOUNT);
-
-      if (allowanceA) {
-        const approve = await prepareApproveTransaction({
-          token: tokenA.tokenAddr,
-          chain: CHAIN_ID,
-          amount:
-            allowanceA.weiQty === ethers.constants.MaxUint256
-              ? MaxAllowanceTransferAmount
-              : allowanceA.weiQty,
-          spender: allowanceA.address,
-          contract: new Contract(
-            tokenA.tokenAddr,
-            (
-              await tokenA.context
-            ).erc20Write.interface,
-            signer,
-          ),
-        });
-        if (approve) {
-          transactions.push(approve);
-        }
-      }
-
-      if (allowanceB) {
-        const approve = await prepareApproveTransaction({
-          token: tokenB.tokenAddr,
-          chain: CHAIN_ID,
-          amount:
-            allowanceB.weiQty === ethers.constants.MaxUint256
-              ? MaxAllowanceTransferAmount
-              : allowanceB.weiQty,
-          spender: allowanceB.address,
-          contract: new Contract(
-            tokenB.tokenAddr,
-            (
-              await tokenB.context
-            ).erc20Write.interface,
-            signer,
-          ),
-        });
-        if (approve) {
-          transactions.push(approve);
-        }
-      }
-
-      const tx = await createRangePositionTx({
-        crocEnv: croc.current,
-        isAmbient: false,
-        slippageTolerancePercentage: 3,
-        tokenA: {
-          address: tokenA.tokenAddr,
-          qty: TOKEN_A_AMOUNT,
-          isWithdrawFromDexChecked: false,
-        },
-        tokenB: {
-          address: tokenB.tokenAddr,
-          qty: TOKEN_B_AMOUNT,
-          isWithdrawFromDexChecked: false,
-        },
-        // todo: check if this need to be switched for certain cases
-        isTokenAPrimaryRange: true,
-        tick: { low: MIN_TICK, high: MAX_TICK },
-        poolIndex: 36000,
-      });
-
-      transactions.push({
-        title: 'Deposit',
-        request: {
-          type: TransactionType.signTransaction,
-          contract: tx.contract,
-          fnName: 'userCmd',
-          args: [tx.path, tx.calldata],
-          value: tx.txArgs?.value ? tx.txArgs.value : 0,
-          gasLimit: tx.txArgs?.gasLimit
-            ? tx.txArgs.gasLimit
-            : BigNumber.from(6_000_000),
-        },
-      });
-
-      setTransactions(transactions);
-      setTitle(`Deposit liquidity to ${base}/${quote} pool`);
-      setIsOpen(true);
+      console.log('withdraw tx', tx);
     },
-    [CHAIN_ID, account, setIsOpen, setTitle, setTransactions, signer],
+    [CHAIN_ID, account],
   );
 
   return (
-    <div className="container flex flex-row">
+    <div className="container flex flex-row justify-between space-x-12">
       <div className="w-72">
         <h1>Init Pool: {CHAIN_ID}</h1>
         <div className="mb-12">
@@ -402,45 +330,53 @@ export const BobAmmPage: React.FC = () => {
           />
           {testing && <p>loading</p>}
           {isInit ? (
-            <p>Pool is created with price {spotPrice}.</p>
+            <>
+              <p>Pool is created.</p>
+              <p>
+                Spot price: {spotPrice}{' '}
+                {base ? findAssetByAddress(base!, CHAIN_ID)?.symbol : base}
+              </p>
+              <p>
+                Display price: {displayPrice} {tokenB}
+              </p>
+              {base && quote && (
+                <p>
+                  1 {tokenA} = {displayPrice} {tokenB}
+                </p>
+              )}
+              {base && (
+                <p>
+                  Pool Base: {base} |{' '}
+                  {findAssetByAddress(base!, CHAIN_ID)?.symbol}
+                </p>
+              )}
+              {quote && (
+                <p>
+                  Pool Quote: {quote} |{' '}
+                  {findAssetByAddress(quote!, CHAIN_ID)?.symbol}
+                </p>
+              )}
+            </>
           ) : (
             <p>Pool is not created yet.</p>
           )}
           {error && <p className="text-danger">{error}</p>}
         </div>
-        {isFork() ? (
-          <>
-            <button onClick={() => handleDeposit('ETH', 'SOV', 0.000001)}>
-              Deposit to pool: ETH/SOV (100 ETH)
-            </button>
-            <button onClick={() => handleDeposit('ETH', 'USDC', 100)}>
-              Deposit to pool: ETH/USDC (100 ETH)
-            </button>
-            <button onClick={() => handleDeposit('ETH', 'USDT', 100)}>
-              Deposit to pool: ETH/USDT (100 ETH)
-            </button>
-            <button onClick={() => handleDeposit('ETH', 'DAI', 100)}>
-              Deposit to pool: ETH/DAI (100 ETH)
-            </button>
-          </>
-        ) : (
-          <ol>
-            <li>
-              <button onClick={() => handleDeposit('ETH', 'SOV', 0.001)}>
-                Deposit to pool: ETH/SOV (0.1 ETH)
-              </button>
-              <button onClick={() => handleDeposit('ETH', 'USDC', 0.5)}>
-                Deposit to pool: ETH/USDC (0.5 ETH)
-              </button>
-              <button onClick={() => handleDeposit('ETH', 'USDT', 0.5)}>
-                Deposit to pool: ETH/USDT (0.5 ETH)
-              </button>
-              <button onClick={() => handleDeposit('ETH', 'DAI', 0.05)}>
-                Deposit to pool: ETH/DAI (0.5 ETH)
+      </div>
+      <div className="w-72">
+        <h1>
+          Dex balances <button onClick={handleBalances}>[update]</button>
+        </h1>
+        <ol>
+          {balances?.map(b => (
+            <li key={b.token}>
+              {b.token}: {b.balance}{' '}
+              <button onClick={() => handleWithdraw(b.token)}>
+                [withdraw]
               </button>
             </li>
-          </ol>
-        )}
+          ))}
+        </ol>
       </div>
     </div>
   );

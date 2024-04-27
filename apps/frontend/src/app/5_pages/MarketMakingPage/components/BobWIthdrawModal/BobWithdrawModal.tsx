@@ -116,7 +116,7 @@ export const BobWithdrawModal: FC<BobWithdrawModalProps> = ({
     () =>
       isFullWithdrawal
         ? bigNumberic(totalLiquidity)
-        : bigNumberic(withdrawLiquidity.toString() || '0'),
+        : bigNumberic((withdrawLiquidity.toString() || '0').split('.')[0]),
     [withdrawLiquidity, isFullWithdrawal, totalLiquidity],
   );
 

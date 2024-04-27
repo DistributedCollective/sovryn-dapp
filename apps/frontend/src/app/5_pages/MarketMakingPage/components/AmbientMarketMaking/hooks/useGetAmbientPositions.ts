@@ -53,6 +53,8 @@ export const useGetAmbientPositions = (pool: AmbientLiquidityPool) => {
           //     pool.poolIndex,
           //   )
           //   .queryRewards(MIN_TICK, MAX_TICK);
+
+          console.log('ambientPosition', ambientPosition);
         }
 
         const filteredPositions = positions.filter(

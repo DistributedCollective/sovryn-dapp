@@ -4,10 +4,11 @@ import { ERC20_READ_ABI } from '../abis/erc20.read';
 import { CrocEnv } from '../croc';
 
 //const ETH = ethers.constants.AddressZero
+const AddressZero = ethers.constants.AddressZero;
 //const DAI = "0xdc31Ee1784292379Fbb2964b3B9C4124D8F89C60"
 
 // Scroll
-const USDC = '0x06eFdBFf2a14a7c8E15944D1F4A48F9F95F663A4';
+//const USDC = '0x06eFdBFf2a14a7c8E15944D1F4A48F9F95F663A4';
 
 // Mainnet
 //const USDC = "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
@@ -16,7 +17,8 @@ const USDC = '0x06eFdBFf2a14a7c8E15944D1F4A48F9F95F663A4';
 //const USDC = "0x60bBA138A74C5e7326885De5090700626950d509"
 
 // USDC/ETH lpConduit
-const USDC_ETH_LP_CONDUIT = '0x8c1A6FfA18183ef223d5Eb3b0A0208515E64bB88';
+//const USDC_ETH_LP_CONDUIT = '0x8c1A6FfA18183ef223d5Eb3b0A0208515E64bB88';
+const USDC_ETH_LP_CONDUIT = '0xe3De48e0Fcbd095BBF5C8C60E6af2f5Eb9c6c09a';
 
 // deepcode ignore HardcodedSecret: testnet dummy key
 const KEY =
@@ -26,12 +28,12 @@ const KEY =
 async function demo() {
   const wallet = new ethers.Wallet(KEY);
 
-  const croc = new CrocEnv('scroll', wallet);
+  const croc = new CrocEnv('bob', wallet);
 
   //console.log(await croc.approveBypassRouter())
   //console.log(await croc.token(USDC).approveRouter(100))
 
-  console.log(await croc.buy(USDC, 5, 36000).withEth().useRouter().swap());
+  //console.log(await croc.buy(USDC, 5, 36000).withEth().useRouter().swap());
   /*console.log((await croc.sell(USDC, 0.01).forEth().useBypass().swap()))
     console.log((await croc.sellEth(0.00001).for(USDC).useBypass().swap()))
     console.log((await croc.buyEth(0.00001).with(USDC).useBypass().swap()))*/
@@ -97,6 +99,47 @@ async function demo() {
     croc.pool(AddressZero, USDC).displayPrice().then(console.log);
 
     croc.pool(AddressZero, USDC).mintAmbientQuote(100, [2000, 4000])*/
+
+  const mockTokens = {
+    ETH: AddressZero,
+    SOV2: '0x3dDEcc66c995f66AA427472d811c1199BaB28C0f',
+    DLLR2: '0x5a9FD87E5CFbDEF6963798eB1a5d6A97cf33Fb80',
+    DAI2: '0x775c4fB6Af4aE406f6498447f4A1621Bca6474aF',
+    USDT2: '0x92EC01BD13eF1Bb5CB68CD8B5D8c46400F22Ea14',
+    SOV: '0xC9ca82dC26645541BaF0D2E28A4c02bc894EF648',
+    DLLR: '0x5a9FD87E5CFbDEF6963798eB1a5d6A97cf33Fb80',
+    DAI: '0xD017396d2284699e0Ce34b236CcE5321Ee3078e5',
+    USDT: '0xaB8E3cd71F9b3D3CED3e7982D6D74fb19F25832a',
+  };
+
+  const [SOV2, DAI2, USDT2, SOV, DAI, USDT, DLLR] = [
+    mockTokens.SOV2,
+    mockTokens.DAI2,
+    mockTokens.USDT2,
+    mockTokens.SOV,
+    mockTokens.DAI,
+    mockTokens.USDT,
+    mockTokens.DLLR,
+  ];
+  // await (await croc.pool(SOV, DAI).initPool(1.9)).wait()
+
+  //croc.poolEth(USDC).spotPrice().then(console.log);
+  //croc.pool(SOV, DAI).displayPrice().then(console.log);
+  //croc.pool(DAI, SOV).displayPrice().then(console.log);
+  console.log(SOV2, DAI2, USDT2, DAI, USDT);
+  // croc.pool(AddressZero, USDC).mintAmbientQuote(100, [2000, 4000])*/
+  let spotPrice = await croc.pool(DLLR, SOV, 410).spotPrice();
+  console.log(`DLLR/SOV Spot Price: ${spotPrice.toString()}`);
+  spotPrice = await croc.pool(DAI2, SOV2, 400).spotPrice();
+  console.log(`DAI2/SOV Spot Price: ${spotPrice.toString()}`);
+  //spotPrice = await croc.pool(USDT2, SOV2, 420).spotPrice();
+  // console.log(`SOV2/USDT2 Spot Price: ${spotPrice.toString()}`);
+  console.log('encoding mint ambient quote');
+  const usdt2LpConduit = '0x125b225b5b38009cfc7a2bbbc7357a6b6c4531c1'; //   DLLR/SOV
+  const encodedData = await croc
+    .pool(SOV, DLLR, 410)
+    .encodeMintAmbientQuote(100, [1.8, 2.5], usdt2LpConduit);
+  console.log('encodedData:', encodedData);
 
   //croc.poolEth(DAI).initPool()
 

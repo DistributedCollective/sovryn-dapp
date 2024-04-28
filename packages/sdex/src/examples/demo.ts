@@ -2,6 +2,7 @@ import { ethers } from 'ethers';
 
 import { ERC20_READ_ABI } from '../abis/erc20.read';
 import { CrocEnv } from '../croc';
+import { priceToTick } from '../utils/price';
 
 //const ETH = ethers.constants.AddressZero
 const AddressZero = ethers.constants.AddressZero;
@@ -141,6 +142,18 @@ async function demo() {
     .encodeMintAmbientQuote(100, [1.8, 2.5], usdt2LpConduit);
   console.log('encodedData:', encodedData);
 
+  // ENCODE DEPOSIT FOR CONCENTRATED LIQ POOLS
+  const amount = 50000;
+  const cpoolEncodedData = await croc
+    .pool(SOV, DLLR, 420)
+    .encodeMintRangeQuote(
+      amount,
+      [-priceToTick(amount * 0.8), priceToTick(amount * 5)],
+      [1.8, 2.8],
+    );
+  console.log([-priceToTick(amount * 0.8), priceToTick(amount * 5)]);
+  console.log('cpoolEncodedData for SOV/DLLR:', cpoolEncodedData);
+
   //croc.poolEth(DAI).initPool()
 
   /*await croc.poolEth(DAI).mintAmbientQuote(50, [0.0005, 0.000625])
@@ -152,7 +165,10 @@ async function demo() {
 
   //await croc.poolEth(DAI).mintAmbientBase(0.0001, [0.0001, 0.001])
   //await croc.poolEth(DAI).mintAmbientQuote(50, [0.0001, 0.001])
-  //await croc.poolEth(DAI).mintRangeBase(0.03, [-640000, 640000], [0.0001, 0.001])
+
+  // await croc
+  //   .poolEth(DAI)
+  //   .mintRangeBase(0.03, [-640000, 640000], [0.0001, 0.001]);
   //await croc.poolEth(DAI).mintRangeQuote(50, [-640000, 640000], [0.0001, 0.001])
 
   //await croc.poolEth(DAI).burnAmbientAll([0.0001, 0.001])

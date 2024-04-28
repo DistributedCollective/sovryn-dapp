@@ -318,6 +318,36 @@ export class CrocPoolView {
     return this.mintRange(qty, !this.useTrueBase, range, await limits, opts);
   }
 
+  async encodeMintRangeBase(
+    qty: TokenQty,
+    range: TickRange,
+    limits: PriceRange,
+    opts?: CrocLpOpts,
+  ): Promise<string> {
+    return this.encodeMintRange(
+      qty,
+      this.useTrueBase,
+      range,
+      await limits,
+      opts,
+    );
+  }
+
+  async encodeMintRangeQuote(
+    qty: TokenQty,
+    range: TickRange,
+    limits: PriceRange,
+    opts?: CrocLpOpts,
+  ): Promise<string> {
+    return this.encodeMintRange(
+      qty,
+      !this.useTrueBase,
+      range,
+      await limits,
+      opts,
+    );
+  }
+
   async burnAmbientLiq(
     liq: BigNumber,
     limits: PriceRange,
@@ -547,6 +577,38 @@ export class CrocPoolView {
       this.applyLpConduit(opts),
     );
     return this.constructParams(calldata, { value: await msgVal });
+  }
+
+  private async encodeMintRange(
+    qty: TokenQty,
+    isQtyBase: boolean,
+    range: TickRange,
+    limits: PriceRange,
+    opts?: CrocLpOpts,
+  ): Promise<string> {
+    const saneLimits = await this.boundLimits(
+      range,
+      limits,
+      isQtyBase,
+      opts?.floatingSlippage,
+    );
+
+    //let msgVal = this.msgValRange(qty, isQtyBase, range, saneLimits, opts);
+
+    let weiQty = this.normQty(qty, isQtyBase);
+    let [lowerBound, upperBound] = await this.transformLimits(await saneLimits);
+
+    const calldata = (await this.makeEncoder()).encodeMintConc(
+      range[0],
+      range[1],
+      await weiQty,
+      isQtyBase,
+      lowerBound,
+      upperBound,
+      this.maskSurplusFlag(opts),
+      this.applyLpConduit(opts),
+    );
+    return calldata;
   }
 
   private maskSurplusFlag(opts?: CrocLpOpts): number {

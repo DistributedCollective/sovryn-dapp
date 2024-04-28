@@ -107,6 +107,17 @@ export const TESTNET_AMM = [
   ),
   // new AmbientLiquidityPool('POWA', 'SOV', ChainIds.SEPOLIA, 36000),
   // BOB
+
+  new AmbientLiquidityPool('USDC', 'USDT', ChainIds.BOB_TESTNET, 36000),
+  new AmbientLiquidityPool('DAI', 'DLLR', ChainIds.BOB_TESTNET, 36000),
+  new AmbientLiquidityPool('USDT', 'DLLR', ChainIds.BOB_TESTNET, 36000),
+  new AmbientLiquidityPool('TBTC', 'WBTC', ChainIds.BOB_TESTNET, 36000),
+  new AmbientLiquidityPool('RETH', 'ETH', ChainIds.BOB_TESTNET, 36000),
+  new AmbientLiquidityPool('WSTETH', 'ETH', ChainIds.BOB_TESTNET, 36000),
+  new AmbientLiquidityPool('DLLR', 'SOV', ChainIds.BOB_TESTNET, 36000),
+  new AmbientLiquidityPool('WBTC', 'SOV', ChainIds.BOB_TESTNET, 36000),
+  new AmbientLiquidityPool('ETH', 'SOV', ChainIds.BOB_TESTNET, 36000),
+  new AmbientLiquidityPool('POWA', 'SOV', ChainIds.BOB_TESTNET, 36000),
   new AmbientLiquidityPool(
     'USDT',
     'ALEX',
@@ -114,14 +125,4 @@ export const TESTNET_AMM = [
     36000,
     '0xff9a5a59d60F74016726c4463E3c262C25520b81',
   ),
-  // new AmbientLiquidityPool('USDC', 'USDT', ChainIds.BOB_TESTNET, 36000),
-  // new AmbientLiquidityPool('DAI', 'DLLR', ChainIds.BOB_TESTNET, 36000),
-  // new AmbientLiquidityPool('USDT', 'DLLR', ChainIds.BOB_TESTNET, 36000),
-  // new AmbientLiquidityPool('TBTC', 'WBTC', ChainIds.BOB_TESTNET, 36000),
-  // new AmbientLiquidityPool('RETH', 'ETH', ChainIds.BOB_TESTNET, 36000),
-  // new AmbientLiquidityPool('WSTETH', 'ETH', ChainIds.BOB_TESTNET, 36000),
-  // new AmbientLiquidityPool('DLLR', 'SOV', ChainIds.BOB_TESTNET, 36000),
-  // new AmbientLiquidityPool('WBTC', 'SOV', ChainIds.BOB_TESTNET, 36000),
-  // new AmbientLiquidityPool('ETH', 'SOV', ChainIds.BOB_TESTNET, 36000),
-  // new AmbientLiquidityPool('POWA', 'SOV', ChainIds.BOB_TESTNET, 36000),
 ];

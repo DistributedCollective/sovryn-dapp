@@ -1,4 +1,4 @@
-import React, { FC, useMemo, useState } from 'react';
+import React, { FC, useCallback, useMemo, useState } from 'react';
 
 import { t } from 'i18next';
 
@@ -16,6 +16,10 @@ import { CurrentStatistics } from '../../../../2_molecules/CurrentStatistics/Cur
 import { useAccount } from '../../../../../hooks/useAccount';
 import { translations } from '../../../../../locales/i18n';
 import { AmbientLiquidityPool } from '../AmbientMarketMaking/utils/AmbientLiquidityPool';
+import {
+  DEFAULT_RANGE_WIDTH,
+  DEFAULT_SLIPPAGE,
+} from './BobDepositModal.constants';
 import { NewPoolStatistics } from './components/NewPoolStatistics/NewPoolStatistics';
 import { PriceRange } from './components/PriceRange/PriceRange';
 import { AmountForm } from './components/PriceRange/components/AmountForm/AmountForm';
@@ -37,8 +41,17 @@ export const BobDepositModal: FC<BobDepositModalProps> = ({
   onClose,
   pool,
 }) => {
-  const { firstAssetValue, secondAssetValue, minimumPrice, maximumPrice } =
-    useDepositContext();
+  const {
+    firstAssetValue,
+    secondAssetValue,
+    minimumPrice,
+    maximumPrice,
+    setFirstAssetValue,
+    setSecondAssetValue,
+    setIsBalancedRange,
+    setRangeWidth,
+    setMaximumSlippage,
+  } = useDepositContext();
   const { account } = useAccount();
 
   const [hasDisclaimerBeenChecked, setHasDisclaimerBeenChecked] =
@@ -48,7 +61,25 @@ export const BobDepositModal: FC<BobDepositModalProps> = ({
   const { isFirstAssetValueInvalid, isSecondAssetValueInvalid } =
     useValidateDepositAmounts(base, quote);
 
-  const handleSubmit = useHandleSubmit(base, quote);
+  const onComplete = useCallback(() => {
+    onClose();
+    setFirstAssetValue('');
+    setSecondAssetValue('');
+    setHasDisclaimerBeenChecked(false);
+    setIsBalancedRange(true);
+    setRangeWidth(DEFAULT_RANGE_WIDTH);
+    setMaximumSlippage(DEFAULT_SLIPPAGE);
+  }, [
+    onClose,
+    setFirstAssetValue,
+    setSecondAssetValue,
+    setHasDisclaimerBeenChecked,
+    setIsBalancedRange,
+    setRangeWidth,
+    setMaximumSlippage,
+  ]);
+
+  const handleSubmit = useHandleSubmit(base, quote, onComplete);
 
   const isSubmitDisabled = useMemo(
     () =>

@@ -41,7 +41,11 @@ const testAllowance = async (
   }
 };
 
-export const useHandleSubmit = (assetA: string, assetB: string) => {
+export const useHandleSubmit = (
+  assetA: string,
+  assetB: string,
+  onComplete: () => void,
+) => {
   const chainId = useCurrentChain();
   const { account, signer } = useAccount();
   const { croc } = useCrocContext();
@@ -172,6 +176,7 @@ export const useHandleSubmit = (assetA: string, assetB: string) => {
           ? tx.txArgs.gasLimit
           : BigNumber.from(6_000_000),
       },
+      onComplete,
     });
 
     setTransactions(transactions);
@@ -194,6 +199,7 @@ export const useHandleSubmit = (assetA: string, assetB: string) => {
     setTitle,
     setTransactions,
     signer,
+    onComplete,
     upperBoundaryPrice,
     usesBaseToken,
   ]);

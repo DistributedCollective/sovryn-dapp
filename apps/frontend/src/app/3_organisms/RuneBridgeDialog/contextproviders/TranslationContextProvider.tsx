@@ -20,7 +20,6 @@ export const TranslationContextProvider: React.FC<RuneContextProviderProps> = ({
   const [state, setState] =
     React.useState<TranslationContextStateType>(defaultValue);
   const chainId = useCurrentChain();
-
   React.useEffect(() => {
     if (
       ![
@@ -34,13 +33,15 @@ export const TranslationContextProvider: React.FC<RuneContextProviderProps> = ({
     const service = isBobChain(chainId) ? 'Bob' : 'Rootstock';
     const coinAbbreviation = isBobChain(chainId) ? 'ETH' : 'BTC';
     const chainName = service;
-    setState({
-      ...state,
-      service,
-      coinAbbreviation,
-      chainName,
+    setState(prevState => {
+      return {
+        ...prevState,
+        service,
+        coinAbbreviation,
+        chainName,
+      };
     });
-  }, [chainId, state]);
+  }, [chainId]);
   const value = React.useMemo(
     () => ({
       ...state,

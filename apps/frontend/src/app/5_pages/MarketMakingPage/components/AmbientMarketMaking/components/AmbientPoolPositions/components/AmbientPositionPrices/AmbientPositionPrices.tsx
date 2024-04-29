@@ -4,6 +4,8 @@ import { MIN_TICK, MAX_TICK, tickToPrice } from '@sovryn/sdex';
 
 import { AmountRenderer } from '../../../../../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { PoolPositionType } from '../../../../../../MarketMakingPage.types';
+import { useGetPoolInfo } from '../../../../../BobDepositModal/hooks/useGetPoolInfo';
+import { useGetTokenDecimals } from '../../../../../BobWIthdrawModal/hooks/useGetTokenDecimals';
 import { AmbientPosition } from '../../../../AmbientMarketMaking.types';
 import { AmbientLiquidityPool } from '../../../../utils/AmbientLiquidityPool';
 
@@ -23,6 +25,13 @@ export const AmbientPositionPrices: FC<AmbientPositionPricesProps> = ({
     [position.askTick, position.bidTick, position.positionType],
   );
 
+  const { poolTokens } = useGetPoolInfo(pool.base, pool.quote);
+
+  const { quoteTokenDecimals } = useGetTokenDecimals(
+    poolTokens?.tokenA,
+    poolTokens?.tokenB,
+  );
+
   if (isAmbient) {
     return (
       <>
@@ -37,10 +46,12 @@ export const AmbientPositionPrices: FC<AmbientPositionPricesProps> = ({
       <AmountRenderer
         value={tickToPrice(position.bidTick)}
         suffix={pool.quote}
+        decimals={quoteTokenDecimals}
       />
       <AmountRenderer
         value={tickToPrice(position.askTick)}
         suffix={pool.quote}
+        decimals={quoteTokenDecimals}
       />
     </div>
   );

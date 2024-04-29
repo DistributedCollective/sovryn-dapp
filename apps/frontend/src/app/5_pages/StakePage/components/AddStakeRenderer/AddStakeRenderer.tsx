@@ -14,7 +14,9 @@ import {
 } from '@sovryn/ui';
 
 import { AddStakeForm } from '../../../../3_organisms/StakeForm/components/AddStakeForm/AddStakeForm';
+import { useCurrentChain } from '../../../../../hooks/useChainStore';
 import { translations } from '../../../../../locales/i18n';
+import { isRskChain } from '../../../../../utils/chain';
 import { NextStepDialog } from '../NextStepDialog/NextStepDialog';
 
 type AddStakeRendererProps = {
@@ -25,6 +27,7 @@ export const AddStakeRenderer: FC<AddStakeRendererProps> = ({
   hasStakedValue,
 }) => {
   const navigate = useNavigate();
+  const chainId = useCurrentChain();
   const [isNextStepOpen, setIsNextStepOpen] = useState(false);
   const [openCreateStakeDialog, toggleCreateStakeDialog] = useReducer(
     v => !v,
@@ -33,8 +36,10 @@ export const AddStakeRenderer: FC<AddStakeRendererProps> = ({
 
   const onSuccess = useCallback(() => {
     toggleCreateStakeDialog();
-    setIsNextStepOpen(true);
-  }, []);
+    if (isRskChain(chainId)) {
+      setIsNextStepOpen(true);
+    }
+  }, [chainId]);
 
   const onConfirm = useCallback(() => setIsNextStepOpen(false), []);
 

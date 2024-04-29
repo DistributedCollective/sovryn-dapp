@@ -26,7 +26,10 @@ export const NewPoolStatistics: FC<NewPoolStatisticsProps> = ({ pool }) => {
   const { firstAssetValue, secondAssetValue, setSpotPrice } =
     useDepositContext();
   const { base, quote } = useMemo(() => pool, [pool]);
-  const { spotPrice, feeRate } = useGetPoolInfo(pool.base, pool.quote);
+  const { spotPrice, feeRate, displayQuotePrice } = useGetPoolInfo(
+    pool.base,
+    pool.quote,
+  );
 
   useEffect(() => {
     setSpotPrice(spotPrice);
@@ -51,7 +54,7 @@ export const NewPoolStatistics: FC<NewPoolStatisticsProps> = ({ pool }) => {
         })}
         value={
           <AmountRenderer
-            value={spotPrice}
+            value={displayQuotePrice}
             suffix={base.toUpperCase()}
             precision={
               quote === COMMON_SYMBOLS.BTC

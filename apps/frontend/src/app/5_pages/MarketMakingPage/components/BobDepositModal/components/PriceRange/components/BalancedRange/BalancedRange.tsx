@@ -40,7 +40,10 @@ export const BalancedRange: FC<BalancedRangeProps> = ({ pool }) => {
 
   const isInfiniteRange = useMemo(() => rangeWidth === 100, [rangeWidth]);
 
-  const { spotPrice: currentPrice } = useGetPoolInfo(pool.base, pool.quote);
+  const { displayQuotePrice: currentPrice } = useGetPoolInfo(
+    pool.base,
+    pool.quote,
+  );
 
   const updatePrice = useCallback(
     (isMinimumPrice: boolean, value: number) => {

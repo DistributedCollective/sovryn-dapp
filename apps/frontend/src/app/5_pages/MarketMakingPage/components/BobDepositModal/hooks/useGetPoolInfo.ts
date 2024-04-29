@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { useCurrentChain } from '../../../../../../hooks/useChainStore';
 import { getIndexerUri } from '../../../../../../utils/indexer';
@@ -89,5 +89,10 @@ export const useGetPoolInfo = (assetA: string, assetB: string) => {
     }
   }, [feeRate, getLiquidityFee, pool]);
 
-  return { poolTokens, price, feeRate, pool, spotPrice };
+  const displayQuotePrice = useMemo(
+    () => (price === 0 ? 0 : 1 / price),
+    [price],
+  );
+
+  return { poolTokens, price, feeRate, pool, spotPrice, displayQuotePrice };
 };

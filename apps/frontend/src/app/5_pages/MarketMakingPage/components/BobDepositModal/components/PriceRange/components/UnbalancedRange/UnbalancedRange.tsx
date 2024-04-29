@@ -26,7 +26,10 @@ export const UnbalancedRange: FC<UnbalancedRangeProps> = ({ pool }) => {
     setUpperBoundaryPercentage,
   } = useDepositContext();
 
-  const { spotPrice: currentPrice } = useGetPoolInfo(pool.base, pool.quote);
+  const { displayQuotePrice: currentPrice } = useGetPoolInfo(
+    pool.base,
+    pool.quote,
+  );
 
   const calculatePrice = useCallback(
     (percentage: number) =>

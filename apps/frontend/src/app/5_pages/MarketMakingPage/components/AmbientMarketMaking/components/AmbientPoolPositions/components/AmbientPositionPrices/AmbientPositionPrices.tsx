@@ -36,11 +36,11 @@ export const AmbientPositionPrices: FC<AmbientPositionPricesProps> = ({
     <div className="inline-flex flex-col">
       <AmountRenderer
         value={tickToPrice(position.bidTick)}
-        suffix={pool.quote}
+        suffix={pool.base}
       />
       <AmountRenderer
         value={tickToPrice(position.askTick)}
-        suffix={pool.quote}
+        suffix={pool.base}
       />
     </div>
   );

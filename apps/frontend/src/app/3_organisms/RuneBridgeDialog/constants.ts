@@ -9,3 +9,9 @@ export const MIN_POSTAGE_BTC = MIN_POSTAGE_SATS / 1e8;
 export const GAS_LIMIT_RUNE_BRIDGE_WITHDRAW = 200000;
 
 export const ORD_WALLET_LINK = 'https://github.com/ordinals/ord';
+
+export const depositAddressPath = 'deposit-addresses/';
+
+export const lastScannedBtcBlockPath = 'last-scanned-btc-block/';
+
+export const depositsPath = 'deposits';

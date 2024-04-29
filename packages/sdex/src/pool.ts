@@ -231,15 +231,14 @@ export class CrocPoolView {
     qty: TokenQty,
     isQtyBase: boolean,
     limits: PriceRange,
-    lpConduit: string,
     opts?: CrocLpOpts,
   ): Promise<string> {
     let weiQty = this.normQty(qty, isQtyBase);
     let [lowerBound, upperBound] = await this.transformLimits(limits);
     console.log('[lowerBound, upperBound]:', lowerBound, upperBound);
     console.log(
-      'calldata: await weiQty, isQtyBase, lowerBound, upperBound',
-      await weiQty,
+      'calldata: await weiQty, isQtyBase, lowerBound, upperBound: ',
+      (await weiQty).toString(),
       isQtyBase,
       lowerBound,
       upperBound,
@@ -250,38 +249,24 @@ export class CrocPoolView {
       lowerBound,
       upperBound,
       this.maskSurplusFlag(opts),
-      lpConduit,
+      this.applyLpConduit(opts),
     );
     return calldata;
   }
-  async encodeAmbientBase(
+  async encodeMintAmbientBase(
     qty: TokenQty,
     limits: PriceRange,
-    lpConduit: string,
     opts?: CrocLpOpts,
   ): Promise<string> {
-    return this.encodeMintAmbient(
-      qty,
-      this.useTrueBase,
-      limits,
-      lpConduit,
-      opts,
-    );
+    return this.encodeMintAmbient(qty, this.useTrueBase, limits, opts);
   }
 
   async encodeMintAmbientQuote(
     qty: TokenQty,
     limits: PriceRange,
-    lpConduit: string,
     opts?: CrocLpOpts,
   ): Promise<string> {
-    return this.encodeMintAmbient(
-      qty,
-      !this.useTrueBase,
-      limits,
-      lpConduit,
-      opts,
-    );
+    return this.encodeMintAmbient(qty, !this.useTrueBase, limits, opts);
   }
 
   async mintAmbientBase(

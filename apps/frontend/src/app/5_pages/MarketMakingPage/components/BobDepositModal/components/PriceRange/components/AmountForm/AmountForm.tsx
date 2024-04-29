@@ -8,6 +8,7 @@ import { FormGroup, AmountInput, ErrorBadge, ErrorLevel } from '@sovryn/ui';
 import { AssetRenderer } from '../../../../../../../../2_molecules/AssetRenderer/AssetRenderer';
 import { MaxButton } from '../../../../../../../../2_molecules/MaxButton/MaxButton';
 import { useAccount } from '../../../../../../../../../hooks/useAccount';
+import { useIsMounted } from '../../../../../../../../../hooks/useIsMounted';
 import { translations } from '../../../../../../../../../locales/i18n';
 import { calculateSecondaryDepositQty } from '../../../../../../../BobAmmPage/ambient-utils';
 import { AmbientLiquidityPool } from '../../../../../AmbientMarketMaking/utils/AmbientLiquidityPool';
@@ -21,6 +22,7 @@ type AmountFormProps = {
 };
 
 export const AmountForm: FC<AmountFormProps> = ({ pool }) => {
+  const isMounted = useIsMounted();
   const { account } = useAccount();
   const { base, quote } = useMemo(() => pool, [pool]);
   const { price, spotPrice, poolTokens } = useGetPoolInfo(base, quote);
@@ -51,7 +53,7 @@ export const AmountForm: FC<AmountFormProps> = ({ pool }) => {
       primaryToken: 'A' | 'B',
       isTokenABase: boolean,
     ) => {
-      if (spotPrice === undefined) {
+      if (spotPrice === undefined || !isMounted()) {
         return;
       }
 
@@ -70,6 +72,7 @@ export const AmountForm: FC<AmountFormProps> = ({ pool }) => {
     [
       depositSkew,
       isBalancedRange,
+      isMounted,
       poolTokens?.tokenA.decimals,
       poolTokens?.tokenB.decimals,
       rangeWidth,

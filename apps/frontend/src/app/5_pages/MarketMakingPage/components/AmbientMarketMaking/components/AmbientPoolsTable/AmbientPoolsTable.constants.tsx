@@ -20,8 +20,8 @@ export const COLUMNS_CONFIG = [
     cellRenderer: (pool: AmbientLiquidityPool) => (
       <div className="inline-flex" data-pool-key={pool.key}>
         <AssetPairRenderer
-          asset1={pool.base}
-          asset2={pool.quote}
+          asset1={pool.quote}
+          asset2={pool.base}
           chainId={pool.chainId}
         />
       </div>

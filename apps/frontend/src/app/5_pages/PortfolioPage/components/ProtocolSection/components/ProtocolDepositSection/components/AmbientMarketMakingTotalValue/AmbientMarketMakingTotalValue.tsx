@@ -89,9 +89,10 @@ export const AmbientMarketMakingTotalValue: FC<ProtocolSectionProps> = ({
       {positions.map((position, index) => {
         const assetA = findAssetByAddress(position.base, chainId);
         const assetB = findAssetByAddress(position.quote, chainId);
+
         const pool = AmbientLiquidityPoolDictionary.get(
-          assetA.symbol,
-          assetB.symbol,
+          assetA?.symbol,
+          assetB?.symbol,
           chainId,
         );
         if (!pool) {

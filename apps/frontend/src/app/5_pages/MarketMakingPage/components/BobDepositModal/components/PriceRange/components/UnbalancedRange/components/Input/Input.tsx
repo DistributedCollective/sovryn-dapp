@@ -10,6 +10,7 @@ type InputProps = {
   range: number;
   onMinusClick: () => void;
   onPlusClick: () => void;
+  decimals: number;
 };
 
 export const Input: FC<InputProps> = ({
@@ -18,6 +19,7 @@ export const Input: FC<InputProps> = ({
   range,
   onMinusClick,
   onPlusClick,
+  decimals,
 }) => (
   <div className="flex flex-col items-center min-w-36">
     <div className="text-xs font-medium text-gray-30 mb-2">{label}</div>
@@ -31,6 +33,7 @@ export const Input: FC<InputProps> = ({
       <AmountRenderer
         value={value}
         className="text-sm font-medium text-gray-10"
+        decimals={decimals}
       />
       <Button
         text="+"

@@ -43,12 +43,17 @@ async function createPosition(
   env: CrocEnv,
   { base, quote, poolIndex, amountInBase, lpConduit }: CreatePositionProps,
 ) {
-  const pool = env.pool(base, quote, poolIndex);
+  const [baseToken, quoteToken] = base < quote ? [base, quote] : [quote, base];
+  const pool = env.pool(baseToken, quoteToken, poolIndex);
   const poolPrice = await pool.displayPrice();
 
-  const decimals = await (!pool.useTrueBase
+  const expectedBase =
+    pool.baseToken.tokenAddr.toLowerCase() === base.toLowerCase();
+
+  const decimals = await (expectedBase
     ? pool.baseToken.decimals
     : pool.quoteToken.decimals);
+
   const amount = parseUnits(amountInBase.toString(), decimals);
 
   const limits = {
@@ -57,14 +62,12 @@ async function createPosition(
   };
 
   console.log('Resolved Pool:', {
-    base: pool.baseToken.tokenAddr,
-    quote: pool.quoteToken.tokenAddr,
-    useTrueBase: pool.useTrueBase,
-    expectedBase: pool.baseToken.tokenAddr.toLowerCase() === base.toLowerCase(),
     displayPrice: poolPrice,
+    amount: amount.toString(),
+    decimals: decimals,
   });
 
-  const mintData = await (!pool.useTrueBase
+  const mintData = await (!expectedBase
     ? pool.mintAmbientBase(amount, [limits.min, limits.max], {
         surplus: [false, false],
         lpConduit,
@@ -89,76 +92,6 @@ async function demo() {
   const wallet = new ethers.Wallet(KEY);
 
   const croc = new CrocEnv('bob', wallet);
-
-  //console.log(await croc.approveBypassRouter())
-  //console.log(await croc.token(USDC).approveRouter(100))
-
-  //console.log(await croc.buy(USDC, 5, 36000).withEth().useRouter().swap());
-  /*console.log((await croc.sell(USDC, 0.01).forEth().useBypass().swap()))
-    console.log((await croc.sellEth(0.00001).for(USDC).useBypass().swap()))
-    console.log((await croc.buyEth(0.00001).with(USDC).useBypass().swap()))*/
-
-  /*const types = ["uint128","uint128","uint128","uint64","uint64","int24","bool","bool","uint8","uint128","uint128",
-        "uint8","uint16","uint8","uint16","uint8","uint8","uint8","bytes32","address"]
-    console.log(abi.decode(types, log))*/
-
-  //await croc.token(USDC).approve(0.001)
-  //await croc.token(USDC).approveRouter()
-  //await croc.token(USDC).approveBypassRouter()
-
-  //console.log((await croc.sell(USDC, 7.5).forEth().useBypass().swap()))
-  //console.log((await croc.sellEth(0).for(USDC).swap()))
-  //console.log((await croc.buy(USDC, 1).withEth().useBypass().swap()))
-  //console.log((await croc.buyEth(0).with(USDC).forceProxy().swap()))
-
-  /*croc.token(DAI).deposit(1, wallet.address)
-    croc.token(DAI).withdraw(0.25, wallet.address)
-    croc.token(DAI).transfer(0.001, "0xd825D73CDD050ecbEBC0B3a8D9C5952d1F64722e")*/
-
-  //croc.tokenEth().deposit(0.001, wallet.address)
-  //croc.tokenEth().withdraw(0.0001, wallet.address)
-  /*let tx = croc.tokenEth().transfer(0.0001, "0xd825D73CDD050ecbEBC0B3a8D9C5952d1F64722e")
-
-    await (await tx).wait()
-    console.log(await croc.token(DAI).balanceDisplay(wallet.address))
-    console.log(await croc.token(DAI).balanceDisplay("0xd825D73CDD050ecbEBC0B3a8D9C5952d1F64722e"))
-    console.log(await croc.tokenEth().balanceDisplay("0xd825D73CDD050ecbEBC0B3a8D9C5952d1F64722e"))
-    console.log(await croc.token(DAI).walletDisplay(wallet.address))*/
-
-  //let ko = new CrocKnockoutHandle(DAI, AddressZero, 0.001, -78464+512, croc.context)
-  /*ko = new CrocKnockoutHandle(DAI, AddressZero, 0.001, -78464+1024, croc.context)
-    //ko = new CrocKnockoutHandle(DAI, AddressZero, 0.001, -78464+2048, croc.context)
-    //ko = new CrocKnockoutHandle(AddressZero, DAI, 0.01, -78464-2048, croc.context)
-    //ko = new CrocKnockoutHandle(AddressZero, DAI, 0.01, -78464-1024, croc.context)
-    await (await ko.mint()).wait()*/
-
-  //let tx = croc.poolEth(DAI).burnAmbientLiq(BigNumber.from(10).pow(7), [0.0001, 0.001])
-  //let tx = croc.poolEth(DAI).mintRangeBase(0.0001, [-640000, 640000], [0.0001, 0.001])
-  //let tx = croc.poolEth(DAI).mintRangeBase(1.0, [-100000, 0], [0.0001, 0.001])
-
-  //let tx = croc.poolEth(DAI).burnRangeLiq(BigNumber.from(10).pow(7), [-640000, 640000], [0.0001, 0.001])
-  /*let tx = croc.poolEth(DAI).harvestRange([-640000, 640000], [0.0001, 0.001])
-    await (await tx).wait()*/
-
-  /*let ko = new CrocKnockoutHandle(DAI, AddressZero, 0.001, -73152, croc.context)
-    await (await ko.mint()).wait()
-    ko = new CrocKnockoutHandle(DAI, AddressZero, 0.001, -74432, croc.context)
-    await (await ko.mint()).wait()
-
-    croc.poolEth(DAI).spotTick().then(console.log)
-    croc.poolEth(DAI).spotPrice().then(console.log)*/
-
-  /*croc.poolEth(DAI).spotPrice().then(console.log);
-    croc.pool(DAI, AddressZero).displayPrice().then(console.log);
-    croc.pool(AddressZero, DAI).displayPrice().then(console.log);*/
-
-  //await (await croc.pool(AddressZero, USDC).initPool(3000)).wait()
-
-  /*croc.poolEth(USDC).spotPrice().then(console.log);
-    croc.pool(USDC, AddressZero).displayPrice().then(console.log);
-    croc.pool(AddressZero, USDC).displayPrice().then(console.log);
-
-    croc.pool(AddressZero, USDC).mintAmbientQuote(100, [2000, 4000])*/
 
   const mockTokens = {
     ETH: AddressZero,
@@ -206,7 +139,7 @@ async function demo() {
     base: SOV,
     quote: USDT,
     poolIndex: 410,
-    amountInBase: 28231.073,
+    amountInBase: 28231.073, // passing 28k SOV, USDT side will be calculated
     lpConduit: usdt2LpConduit,
   });
 

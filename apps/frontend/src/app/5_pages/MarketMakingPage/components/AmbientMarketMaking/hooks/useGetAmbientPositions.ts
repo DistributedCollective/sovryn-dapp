@@ -37,24 +37,47 @@ export const useGetAmbientPositions = (pool: AmbientLiquidityPool) => {
 
         const positions = data.data as AmbientPosition[];
 
-        const ambientIndex = positions.findIndex(
-          position => position.positionType === PoolPositionType.ambient,
-        );
-
-        if (ambientIndex !== -1 && pool.lpTokenAddress) {
+        if (pool.lpTokenAddress) {
           const wallet = await croc.token(pool.lpTokenAddress).wallet(account);
-          const ambientPosition = positions[ambientIndex];
-          ambientPosition.ambientLiq = wallet.toString() as any;
-          // const rewards = await croc
-          //   .positions(
-          //     pool.baseAddress,
-          //     pool.quoteAddress,
-          //     ambientPosition.user,
-          //     pool.poolIndex,
-          //   )
-          //   .queryRewards(MIN_TICK, MAX_TICK);
+          if (wallet.gt(0)) {
+            const ambientIndex = positions.findIndex(
+              position => position.positionType === PoolPositionType.ambient,
+            );
 
-          console.log('ambientPosition', ambientPosition);
+            if (ambientIndex !== -1) {
+              console.log(
+                'ambientIndex found, update position.',
+                positions[ambientIndex],
+              );
+              const ambientPosition = positions[ambientIndex];
+              ambientPosition.ambientLiq = wallet.toString() as any;
+            } else {
+              console.log('ambientIndex not found, add new position to list.');
+              positions.push({
+                chainId: pool.chainId,
+                base: pool.base,
+                quote: pool.quote,
+                poolIdx: pool.poolIndex,
+                bidTick: 0,
+                askTick: 0,
+                isBid: false,
+                user: account,
+                timeFirstMint: 0,
+                latestUpdateTime: 0,
+                lastMintTx: '',
+                firstMintTx: '',
+                positionType: PoolPositionType.ambient,
+                ambientLiq: wallet.toString() as any,
+                rewardLiq: 0,
+                liqRefreshTime: 0,
+                aprDuration: 0,
+                aprPostLiq: 0,
+                aprContributedLiq: 0,
+                aprEst: 0,
+                positionId: '',
+              } as AmbientPosition);
+            }
+          }
         }
 
         const filteredPositions = positions.filter(

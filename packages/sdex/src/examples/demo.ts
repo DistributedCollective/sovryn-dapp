@@ -77,13 +77,14 @@ async function createPosition(
         lpConduit,
       }));
 
-  const data = mintData.contract.interface.encodeFunctionData('userCmd', [
-    mintData.path,
-    mintData.calldata,
-  ]);
+  // const data = mintData.contract.interface.encodeFunctionData('userCmd', [
+  //   mintData.path,
+  //   mintData.calldata,
+  // ]);
 
   console.log('to', mintData.contract.address);
-  console.log('data', data);
+  // console.log('data', data);
+  console.log('calldata', mintData.calldata);
   console.log('value:', mintData.txArgs?.value?.toString());
   console.log('-'.repeat(50));
 }

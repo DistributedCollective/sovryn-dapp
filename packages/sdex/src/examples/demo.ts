@@ -1,9 +1,11 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { ethers } from 'ethers';
+import { parseUnits } from 'ethers/lib/utils';
 
 //import { ERC20_READ_ABI } from '../abis/erc20.read';
 import { CrocEnv } from '../croc';
-import { priceToTick } from '../utils/price';
+
+// import { priceToTick } from '../utils/price';
 
 //const ETH = ethers.constants.AddressZero
 const AddressZero = ethers.constants.AddressZero;
@@ -26,6 +28,62 @@ const AddressZero = ethers.constants.AddressZero;
 const KEY =
   process.env.WALLET_KEY ||
   '0x7c5e2cfbba7b00ba95e5ed7cd80566021da709442e147ad3e08f23f5044a3d5a';
+
+const SLIPPAGE_TORELANCE = 0.05; // 0.05%
+
+type CreatePositionProps = {
+  base: string;
+  quote: string;
+  poolIndex: number;
+  amountInBase: number;
+  lpConduit?: string;
+};
+
+async function createPosition(
+  env: CrocEnv,
+  { base, quote, poolIndex, amountInBase, lpConduit }: CreatePositionProps,
+) {
+  const pool = env.pool(base, quote, poolIndex);
+  const poolPrice = await pool.displayPrice();
+
+  const decimals = await (!pool.useTrueBase
+    ? pool.baseToken.decimals
+    : pool.quoteToken.decimals);
+  const amount = parseUnits(amountInBase.toString(), decimals);
+
+  const limits = {
+    min: poolPrice * (1 - SLIPPAGE_TORELANCE / 100),
+    max: poolPrice * (1 + SLIPPAGE_TORELANCE / 100),
+  };
+
+  console.log('Resolved Pool:', {
+    base: pool.baseToken.tokenAddr,
+    quote: pool.quoteToken.tokenAddr,
+    useTrueBase: pool.useTrueBase,
+    expectedBase: pool.baseToken.tokenAddr.toLowerCase() === base.toLowerCase(),
+    displayPrice: poolPrice,
+  });
+
+  const mintData = await (!pool.useTrueBase
+    ? pool.mintAmbientBase(amount, [limits.min, limits.max], {
+        surplus: [false, false],
+        lpConduit,
+      })
+    : pool.mintAmbientQuote(amount, [limits.min, limits.max], {
+        surplus: [false, false],
+        lpConduit,
+      }));
+
+  const data = mintData.contract.interface.encodeFunctionData('userCmd', [
+    mintData.path,
+    mintData.calldata,
+  ]);
+
+  console.log('to', mintData.contract.address);
+  console.log('data', data);
+  console.log('value:', mintData.txArgs?.value?.toString());
+  console.log('-'.repeat(50));
+}
 
 async function demo() {
   const wallet = new ethers.Wallet(KEY);
@@ -117,6 +175,8 @@ async function demo() {
     WSTETH: '0x7fA3A90d5B19E6E4Bf4FD6F64904f2F953F30eaf',
   };
 
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
   const [SOV, DAI, USDT, USDC, DLLR, tBTC, WBTC] = [
     // @todo replace with real tokens - NOT MOCKED!
     mockTokens.SOV,
@@ -130,138 +190,146 @@ async function demo() {
 
   // ----- AMBIENT LIQUIDITY -----
   // USDT/SOV
-  let spotPrice = await croc.pool(USDT, SOV, 410).spotPrice();
-  console.log(`USDT/SOV Spot Price: ${spotPrice.toString()}`);
-  spotPrice = await croc.pool(SOV, USDT, 410).spotPrice();
-  console.log(`SOV/USDT Spot Price: ${spotPrice.toString()}`);
+  // let spotPrice = await croc.pool(USDT, SOV, 410).spotPrice();
+  // console.log(`USDT/SOV Spot Price: ${spotPrice.toString()}`);
+  // spotPrice = await croc.pool(SOV, USDT, 410).spotPrice();
+  // console.log(`SOV/USDT Spot Price: ${spotPrice.toString()}`);
 
-  let usdt2LpConduit = '0x1e894177d9f28CC3150ECB30E458bD9438D6C46e'; // SOV/USDT
-  let amountParam = 28231.073;
-  let encodedData = await croc
-    .pool(SOV, USDT, 410)
-    .encodeMintAmbientQuote(amountParam, [1.8, 2.5], usdt2LpConduit);
-  console.log('Encoded data to deposit', amountParam, ' USDT:', encodedData);
+  const usdt2LpConduit = '0x1e894177d9f28CC3150ECB30E458bD9438D6C46e'; // SOV/USDT
+  // let amountParam = 28231.073;
+  // let encodedData = await croc
+  //   .pool(SOV, USDT, 410)
+  //   .encodeMintAmbientQuote(amountParam, [1.8, 2.5], usdt2LpConduit);
+  // console.log('Encoded data to deposit', amountParam, ' USDT:', encodedData);
 
-  // USDC/SOV
-  spotPrice = await croc.pool(USDC, SOV, 410).spotPrice();
-  console.log(`USDC/SOV Spot Price: ${spotPrice.toString()}`);
-  spotPrice = await croc.pool(SOV, USDC, 410).spotPrice();
-  console.log(`SOV/USDC Spot Price: ${spotPrice.toString()}`);
+  await createPosition(croc, {
+    base: SOV,
+    quote: USDT,
+    poolIndex: 410,
+    amountInBase: 28231.073,
+    lpConduit: usdt2LpConduit,
+  });
 
-  usdt2LpConduit = '0x941fEF5263f46dc7c00CD122CcA2b8559CA8FB96'; // SOV/USDC
-  amountParam = 161363.41;
-  encodedData = await croc
-    .pool(SOV, USDC, 410)
-    .encodeMintAmbientQuote(amountParam, [1.8, 2.5], usdt2LpConduit);
-  console.log('Encoded data to deposit', amountParam, 'USDC:', encodedData);
+  // // USDC/SOV
+  // spotPrice = await croc.pool(USDC, SOV, 410).spotPrice();
+  // console.log(`USDC/SOV Spot Price: ${spotPrice.toString()}`);
+  // spotPrice = await croc.pool(SOV, USDC, 410).spotPrice();
+  // console.log(`SOV/USDC Spot Price: ${spotPrice.toString()}`);
 
-  // DAI/SOV
-  spotPrice = await croc.pool(DAI, SOV, 410).spotPrice();
-  console.log(`DAI/SOV Spot Price: ${spotPrice.toString()}`);
-  spotPrice = await croc.pool(SOV, DAI, 410).spotPrice();
-  console.log(`SOV/DAI Spot Price: ${spotPrice.toString()}`);
+  // usdt2LpConduit = '0x941fEF5263f46dc7c00CD122CcA2b8559CA8FB96'; // SOV/USDC
+  // amountParam = 161363.41;
+  // encodedData = await croc
+  //   .pool(SOV, USDC, 410)
+  //   .encodeMintAmbientQuote(amountParam, [1.8, 2.5], usdt2LpConduit);
+  // console.log('Encoded data to deposit', amountParam, 'USDC:', encodedData);
 
-  usdt2LpConduit = '0x83c0E209589782DDe525Dfa20Ad19a502841eAA6'; // SOV/DAI
-  amountParam = 14889.096;
-  encodedData = await croc
-    .pool(SOV, DAI, 410)
-    .encodeMintAmbientQuote(amountParam, [1.8, 2.5], usdt2LpConduit);
-  console.log('Encoded data to deposit', amountParam, 'DAI:', encodedData);
+  // // DAI/SOV
+  // spotPrice = await croc.pool(DAI, SOV, 410).spotPrice();
+  // console.log(`DAI/SOV Spot Price: ${spotPrice.toString()}`);
+  // spotPrice = await croc.pool(SOV, DAI, 410).spotPrice();
+  // console.log(`SOV/DAI Spot Price: ${spotPrice.toString()}`);
 
-  //@todo add WBTC, tBTC, ETH, wstETH, rETH ambient pools paired with SOV
+  // usdt2LpConduit = '0x83c0E209589782DDe525Dfa20Ad19a502841eAA6'; // SOV/DAI
+  // amountParam = 14889.096;
+  // encodedData = await croc
+  //   .pool(SOV, DAI, 410)
+  //   .encodeMintAmbientQuote(amountParam, [1.8, 2.5], usdt2LpConduit);
+  // console.log('Encoded data to deposit', amountParam, 'DAI:', encodedData);
 
-  // --- ENCODE DEPOSIT FOR CONCENTRATED LIQ POOLS ----
-  type PriceRange = [number, number];
-  type TickRange = [number, number];
+  // //@todo add WBTC, tBTC, ETH, wstETH, rETH ambient pools paired with SOV
 
-  async function getEncodedMintRangeQuote(
-    baseToken: string,
-    quoteToken: string,
-    poolIdx: number,
-    amount: number,
-    tickGrid: number,
-    tickRangeParam: TickRange,
-    limits: PriceRange,
-  ): Promise<string> {
-    const tickRange: TickRange = [
-      priceToTick(tickRangeParam[0]),
-      priceToTick(tickRangeParam[1]),
-    ].map(
-      x => x + (x % tickGrid > 0 ? tickGrid - (x % tickGrid) : 0),
-    ) as TickRange; //cast to the nearest tick multiple of tickGrid
-    return await croc
-      .pool(baseToken, quoteToken, poolIdx)
-      .encodeMintRangeQuote(amount, tickRange, limits);
-  }
+  // // --- ENCODE DEPOSIT FOR CONCENTRATED LIQ POOLS ----
+  // type PriceRange = [number, number];
+  // type TickRange = [number, number];
 
-  // let price;
-  let tickGrid;
-  let poolIdx;
-  let tickRange: TickRange;
-  let priceLimit: PriceRange;
-  let cpoolEncodedData;
-  let amount;
+  // async function getEncodedMintRangeQuote(
+  //   baseToken: string,
+  //   quoteToken: string,
+  //   poolIdx: number,
+  //   amount: number,
+  //   tickGrid: number,
+  //   tickRangeParam: TickRange,
+  //   limits: PriceRange,
+  // ): Promise<string> {
+  //   const tickRange: TickRange = [
+  //     priceToTick(tickRangeParam[0]),
+  //     priceToTick(tickRangeParam[1]),
+  //   ].map(
+  //     x => x + (x % tickGrid > 0 ? tickGrid - (x % tickGrid) : 0),
+  //   ) as TickRange; //cast to the nearest tick multiple of tickGrid
+  //   return await croc
+  //     .pool(baseToken, quoteToken, poolIdx)
+  //     .encodeMintRangeQuote(amount, tickRange, limits);
+  // }
 
-  // SOV/DLLR
-  amount = 100000;
-  const price = 2;
-  tickGrid = 4;
-  poolIdx = 400; //0.1% fee
-  tickRange = [price * 0.2, price * 5]; //80% down, 5X up
-  priceLimit = [1.8, 2.5]; //>= 1.8 DLLR/SOV, <= 2.5 DLLR/SOV
-  cpoolEncodedData = await getEncodedMintRangeQuote(
-    SOV,
-    DLLR,
-    poolIdx,
-    amount,
-    tickGrid,
-    tickRange,
-    priceLimit,
-  );
-  console.log('cpoolEncodedData for SOV/DLLR:', cpoolEncodedData);
+  // // let price;
+  // let tickGrid;
+  // let poolIdx;
+  // let tickRange: TickRange;
+  // let priceLimit: PriceRange;
+  // let cpoolEncodedData;
+  // let amount;
 
-  // ----- STABLES ----------
-  amount = 50000;
-  tickGrid = 4;
-  poolIdx = 400;
-  tickRange = [0.9957, 1.0068]; //base on ambient app price
-  priceLimit = [0.9957, 1.0068]; //>= 1.8 DLLR/SOV, <= 2.5 DLLR/SOV
+  // // SOV/DLLR
+  // amount = 100000;
+  // const price = 2;
+  // tickGrid = 4;
+  // poolIdx = 400; //0.1% fee
+  // tickRange = [price * 0.2, price * 5]; //80% down, 5X up
+  // priceLimit = [1.8, 2.5]; //>= 1.8 DLLR/SOV, <= 2.5 DLLR/SOV
+  // cpoolEncodedData = await getEncodedMintRangeQuote(
+  //   SOV,
+  //   DLLR,
+  //   poolIdx,
+  //   amount,
+  //   tickGrid,
+  //   tickRange,
+  //   priceLimit,
+  // );
+  // console.log('cpoolEncodedData for SOV/DLLR:', cpoolEncodedData);
 
-  // USDC/USDT
-  cpoolEncodedData = await getEncodedMintRangeQuote(
-    USDT,
-    USDC,
-    poolIdx,
-    amount,
-    tickGrid,
-    tickRange,
-    priceLimit,
-  );
-  console.log('cpoolEncodedData for USDC/USDT:', cpoolEncodedData);
+  // // ----- STABLES ----------
+  // amount = 50000;
+  // tickGrid = 4;
+  // poolIdx = 400;
+  // tickRange = [0.9957, 1.0068]; //base on ambient app price
+  // priceLimit = [0.9957, 1.0068]; //>= 1.8 DLLR/SOV, <= 2.5 DLLR/SOV
 
-  // USDT/DLLR
-  cpoolEncodedData = await getEncodedMintRangeQuote(
-    USDT,
-    DLLR,
-    poolIdx,
-    amount,
-    tickGrid,
-    tickRange,
-    priceLimit,
-  );
-  console.log('cpoolEncodedData for USDT/DLLR:', cpoolEncodedData);
+  // // USDC/USDT
+  // cpoolEncodedData = await getEncodedMintRangeQuote(
+  //   USDT,
+  //   USDC,
+  //   poolIdx,
+  //   amount,
+  //   tickGrid,
+  //   tickRange,
+  //   priceLimit,
+  // );
+  // console.log('cpoolEncodedData for USDC/USDT:', cpoolEncodedData);
 
-  // tBTC/WBTC
-  cpoolEncodedData = await getEncodedMintRangeQuote(
-    tBTC,
-    WBTC,
-    poolIdx,
-    amount,
-    tickGrid,
-    tickRange,
-    priceLimit,
-  );
-  console.log('cpoolEncodedData for tBTC/WBTC:', cpoolEncodedData);
+  // // USDT/DLLR
+  // cpoolEncodedData = await getEncodedMintRangeQuote(
+  //   USDT,
+  //   DLLR,
+  //   poolIdx,
+  //   amount,
+  //   tickGrid,
+  //   tickRange,
+  //   priceLimit,
+  // );
+  // console.log('cpoolEncodedData for USDT/DLLR:', cpoolEncodedData);
+
+  // // tBTC/WBTC
+  // cpoolEncodedData = await getEncodedMintRangeQuote(
+  //   tBTC,
+  //   WBTC,
+  //   poolIdx,
+  //   amount,
+  //   tickGrid,
+  //   tickRange,
+  //   priceLimit,
+  // );
+  // console.log('cpoolEncodedData for tBTC/WBTC:', cpoolEncodedData);
 
   //croc.poolEth(DAI).initPool()
 

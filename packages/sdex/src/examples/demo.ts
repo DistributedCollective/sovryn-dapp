@@ -137,12 +137,27 @@ async function demo() {
   // console.log('Encoded data to deposit', amountParam, ' USDT:', encodedData);
 
   await createPosition(croc, {
-    base: SOV,
-    quote: USDT,
+    base: USDT,
+    quote: SOV,
     poolIndex: 410,
-    amountInBase: 28231.073, // passing 28k SOV, USDT side will be calculated
+    amountInBase: 28231.07, // passing 28k SOV, USDT side will be calculated
     lpConduit: usdt2LpConduit,
   });
+
+  type PriceRange = [number, number];
+  const pool = croc.pool(USDT, SOV, 410);
+  const poolPrice = await pool.displayPrice();
+  const limits: PriceRange = [
+    poolPrice * (1 - SLIPPAGE_TORELANCE / 100),
+    poolPrice * (1 + SLIPPAGE_TORELANCE / 100),
+  ];
+  console.log('pool price:', poolPrice);
+  console.log(
+    'encoded_data: ',
+    await pool.burnAmbientLiq(ethers.utils.parseEther('0.0193363'), limits, {
+      lpConduit: usdt2LpConduit,
+    }),
+  );
 
   // // USDC/SOV
   // spotPrice = await croc.pool(USDC, SOV, 410).spotPrice();

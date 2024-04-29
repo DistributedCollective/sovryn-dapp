@@ -19,7 +19,11 @@ import { useAccount } from '../../../../../../hooks/useAccount';
 import { useCurrentChain } from '../../../../../../hooks/useChainStore';
 import { translations } from '../../../../../../locales/i18n';
 import { prepareApproveTransaction } from '../../../../../../utils/transactions';
-import { createRangePositionTx } from '../../../../BobAmmPage/ambient-utils';
+import {
+  createRangePositionTx,
+  roundDownTick,
+  roundUpTick,
+} from '../../../../BobAmmPage/ambient-utils';
 import { AmbientLiquidityPoolDictionary } from '../../AmbientMarketMaking/utils/AmbientLiquidityPoolDictionary';
 import { useDepositContext } from '../contexts/BobDepositModalContext';
 import { useGetPoolInfo } from './useGetPoolInfo';
@@ -37,7 +41,11 @@ const testAllowance = async (
   }
 };
 
-export const useHandleSubmit = (assetA: string, assetB: string) => {
+export const useHandleSubmit = (
+  assetA: string,
+  assetB: string,
+  onComplete: () => void,
+) => {
   const chainId = useCurrentChain();
   const { account, signer } = useAccount();
   const { croc } = useCrocContext();
@@ -127,9 +135,11 @@ export const useHandleSubmit = (assetA: string, assetB: string) => {
 
     const pool = AmbientLiquidityPoolDictionary.get(assetA, assetB, chainId);
 
+    const gridSize = (await croc.context).chain.gridSize;
+
     const tick = {
-      low: priceToTick(lowerBoundaryPrice),
-      high: priceToTick(upperBoundaryPrice),
+      low: roundDownTick(priceToTick(lowerBoundaryPrice), gridSize),
+      high: roundUpTick(priceToTick(upperBoundaryPrice), gridSize),
     };
 
     const tx = await createRangePositionTx({
@@ -166,6 +176,7 @@ export const useHandleSubmit = (assetA: string, assetB: string) => {
           ? tx.txArgs.gasLimit
           : BigNumber.from(6_000_000),
       },
+      onComplete,
     });
 
     setTransactions(transactions);
@@ -188,6 +199,7 @@ export const useHandleSubmit = (assetA: string, assetB: string) => {
     setTitle,
     setTransactions,
     signer,
+    onComplete,
     upperBoundaryPrice,
     usesBaseToken,
   ]);

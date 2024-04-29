@@ -64,7 +64,7 @@ export const useHandleSubmit = (
 
     try {
       if (position.positionType === PoolPositionType.ambient) {
-        if (isFullWithdrawal) {
+        if (isFullWithdrawal && !ambientPool?.lpTokenAddress) {
           calldata = await crocPool.burnAmbientAll([price.min, price.max], {
             lpConduit: ambientPool?.lpTokenAddress,
           });

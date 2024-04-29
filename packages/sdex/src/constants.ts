@@ -48,10 +48,10 @@ const BOB_CHAIN: ChainSpec = {
     router: '0x9f93D654a1cdC128c27F99Af5452b26d8002e607',
     routerBypass: '0x7b96cC2256e94348a678B554e2fC648D13b1560E',
   },
-  poolIndex: 410,
+  poolIndex: 400,
   isTestNet: false,
   chainId: '0xed88', // 60808
-  gridSize: 16,
+  gridSize: 4,
   proxyPaths: {
     cold: 3,
     long: 130,

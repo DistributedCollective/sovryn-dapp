@@ -2,6 +2,8 @@ import React from 'react';
 
 import { t } from 'i18next';
 
+import { HelperButton } from '@sovryn/ui';
+
 import { AmountRenderer } from '../../../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { TransactionIdRenderer } from '../../../../../../2_molecules/TransactionIdRenderer/TransactionIdRenderer';
 import { translations } from '../../../../../../../locales/i18n';
@@ -41,7 +43,14 @@ export const COLUMNS_CONFIG = (pool: AmbientLiquidityPool) => [
   },
   {
     id: 'returns',
-    title: t(translations.ambientMarketMaking.positionsTable.apr),
+    title: (
+      <span className="flex items-center gap-1">
+        {t(translations.ambientMarketMaking.positionsTable.apr)}{' '}
+        <HelperButton
+          content={t(translations.ambientMarketMaking.positionsTable.aprInfo)}
+        />
+      </span>
+    ),
     cellRenderer: (position: AmbientPosition) => (
       <AmountRenderer value={position.aprEst * 100} suffix="%" />
     ),

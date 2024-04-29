@@ -1,4 +1,4 @@
-import { CrocEnv, toDisplayPrice } from '@sovryn/sdex';
+import { CrocEnv, MAX_TICK, MIN_TICK, toDisplayPrice } from '@sovryn/sdex';
 import { TokenQty } from '@sovryn/sdex/dist/tokens';
 
 type RangePositionTokenInfo = {
@@ -17,6 +17,18 @@ export interface CreateRangePositionParams {
   tick: { low: number; high: number };
   lpConduit?: string;
   poolIndex: number;
+}
+
+export function roundDownTick(lowTick: number, nTicksGrid: number): number {
+  const tickGrid = Math.floor(lowTick / nTicksGrid) * nTicksGrid;
+  const horizon = Math.floor(MIN_TICK / nTicksGrid) * nTicksGrid;
+  return Math.max(tickGrid, horizon);
+}
+
+export function roundUpTick(highTick: number, nTicksGrid: number): number {
+  const tickGrid = Math.ceil(highTick / nTicksGrid) * nTicksGrid;
+  const horizon = Math.ceil(MAX_TICK / nTicksGrid) * nTicksGrid;
+  return Math.min(tickGrid, horizon);
 }
 
 export async function createRangePositionTx(params: CreateRangePositionParams) {

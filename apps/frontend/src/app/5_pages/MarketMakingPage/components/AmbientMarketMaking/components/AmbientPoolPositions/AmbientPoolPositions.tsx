@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 
 import { t } from 'i18next';
 
-import { SimpleTableRow, Table } from '@sovryn/ui';
+import { HelperButton, SimpleTableRow, Table } from '@sovryn/ui';
 
 import { AmountRenderer } from '../../../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { TransactionIdRenderer } from '../../../../../../2_molecules/TransactionIdRenderer/TransactionIdRenderer';
@@ -70,7 +70,16 @@ export const AmbientPoolPositions: FC<AmbientPoolPositionsProps> = ({
               value={<AmbientPositionPrices pool={pool} position={position} />}
             />
             <SimpleTableRow
-              label={t(translations.ambientMarketMaking.positionsTable.apr)}
+              label={
+                <span className="flex items-center gap-1">
+                  {t(translations.ambientMarketMaking.positionsTable.apr)}{' '}
+                  <HelperButton
+                    content={t(
+                      translations.ambientMarketMaking.positionsTable.aprInfo,
+                    )}
+                  />
+                </span>
+              }
               value={
                 <AmountRenderer value={position.aprEst * 100} suffix="%" />
               }

@@ -1,6 +1,7 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { ethers } from 'ethers';
 
-import { ERC20_READ_ABI } from '../abis/erc20.read';
+//import { ERC20_READ_ABI } from '../abis/erc20.read';
 import { CrocEnv } from '../croc';
 import { priceToTick } from '../utils/price';
 
@@ -19,7 +20,7 @@ const AddressZero = ethers.constants.AddressZero;
 
 // USDC/ETH lpConduit
 //const USDC_ETH_LP_CONDUIT = '0x8c1A6FfA18183ef223d5Eb3b0A0208515E64bB88';
-const USDC_ETH_LP_CONDUIT = '0xe3De48e0Fcbd095BBF5C8C60E6af2f5Eb9c6c09a';
+//const USDC_ETH_LP_CONDUIT = '0xe3De48e0Fcbd095BBF5C8C60E6af2f5Eb9c6c09a';
 
 // deepcode ignore HardcodedSecret: testnet dummy key
 const KEY =
@@ -103,56 +104,164 @@ async function demo() {
 
   const mockTokens = {
     ETH: AddressZero,
-    SOV2: '0x3dDEcc66c995f66AA427472d811c1199BaB28C0f',
-    DLLR2: '0x5a9FD87E5CFbDEF6963798eB1a5d6A97cf33Fb80',
-    DAI2: '0x775c4fB6Af4aE406f6498447f4A1621Bca6474aF',
-    USDT2: '0x92EC01BD13eF1Bb5CB68CD8B5D8c46400F22Ea14',
-    SOV: '0xC9ca82dC26645541BaF0D2E28A4c02bc894EF648',
-    DLLR: '0x5a9FD87E5CFbDEF6963798eB1a5d6A97cf33Fb80',
-    DAI: '0xD017396d2284699e0Ce34b236CcE5321Ee3078e5',
-    USDT: '0xaB8E3cd71F9b3D3CED3e7982D6D74fb19F25832a',
+    WBTC: '0xF40A3C629661AF37010FAFbACA2eb4aA37d9abAa',
+    tBTC: '0x42527B3ba7100ECA14c9405016752B6121328582',
+    rETH: '0x0458b6a3b20a20D263df49D72dA928BfFe4473F3',
+    USDT: '0x26bF6A30286cE03176BF3B026Aa1f87b566ca891',
+    DAI: '0x9FF262Fe3CB0c5AeDF081c580067BA846881Ed3C',
+    SOV: '0x93A37dDD1860a14C2d740f576C6BE5502A1ef06b',
+    ALEX: '0x41aBc192389aC3B63BBb5751984956eD8B2AB4A9',
+    USDC: '0xBd95925809F916eCFe140f6Ef70eA43185c0ECD9',
+    DLLR: '0xf545c0d1BaAAF7De1d2E0B2d2c1D59a0338ecCC2',
+    POWA: '0x4Ad48819AB9f6601849dD4b73DF9b115C4AeFa3a',
+    WSTETH: '0x7fA3A90d5B19E6E4Bf4FD6F64904f2F953F30eaf',
   };
 
-  const [SOV2, DAI2, USDT2, SOV, DAI, USDT, DLLR] = [
-    mockTokens.SOV2,
-    mockTokens.DAI2,
-    mockTokens.USDT2,
+  const [SOV, DAI, USDT, USDC, DLLR, tBTC, WBTC] = [
+    // @todo replace with real tokens - NOT MOCKED!
     mockTokens.SOV,
     mockTokens.DAI,
     mockTokens.USDT,
+    mockTokens.USDC,
     mockTokens.DLLR,
+    mockTokens.tBTC,
+    mockTokens.WBTC,
   ];
-  // await (await croc.pool(SOV, DAI).initPool(1.9)).wait()
 
-  //croc.poolEth(USDC).spotPrice().then(console.log);
-  //croc.pool(SOV, DAI).displayPrice().then(console.log);
-  //croc.pool(DAI, SOV).displayPrice().then(console.log);
-  console.log(SOV2, DAI2, USDT2, DAI, USDT);
-  // croc.pool(AddressZero, USDC).mintAmbientQuote(100, [2000, 4000])*/
-  let spotPrice = await croc.pool(DLLR, SOV, 410).spotPrice();
-  console.log(`DLLR/SOV Spot Price: ${spotPrice.toString()}`);
-  spotPrice = await croc.pool(DAI2, SOV2, 400).spotPrice();
-  console.log(`DAI2/SOV Spot Price: ${spotPrice.toString()}`);
-  //spotPrice = await croc.pool(USDT2, SOV2, 420).spotPrice();
-  // console.log(`SOV2/USDT2 Spot Price: ${spotPrice.toString()}`);
-  console.log('encoding mint ambient quote');
-  const usdt2LpConduit = '0x125b225b5b38009cfc7a2bbbc7357a6b6c4531c1'; //   DLLR/SOV
-  const encodedData = await croc
-    .pool(SOV, DLLR, 410)
-    .encodeMintAmbientQuote(100, [1.8, 2.5], usdt2LpConduit);
-  console.log('encodedData:', encodedData);
+  // ----- AMBIENT LIQUIDITY -----
+  // USDT/SOV
+  let spotPrice = await croc.pool(USDT, SOV, 410).spotPrice();
+  console.log(`USDT/SOV Spot Price: ${spotPrice.toString()}`);
+  spotPrice = await croc.pool(SOV, USDT, 410).spotPrice();
+  console.log(`SOV/USDT Spot Price: ${spotPrice.toString()}`);
 
-  // ENCODE DEPOSIT FOR CONCENTRATED LIQ POOLS
-  const amount = 50000;
-  const cpoolEncodedData = await croc
-    .pool(SOV, DLLR, 420)
-    .encodeMintRangeQuote(
-      amount,
-      [-priceToTick(amount * 0.8), priceToTick(amount * 5)],
-      [1.8, 2.8],
-    );
-  console.log([-priceToTick(amount * 0.8), priceToTick(amount * 5)]);
+  let usdt2LpConduit = '0x1e894177d9f28CC3150ECB30E458bD9438D6C46e'; // SOV/USDT
+  let amountParam = 28231.073;
+  let encodedData = await croc
+    .pool(SOV, USDT, 410)
+    .encodeMintAmbientQuote(amountParam, [1.8, 2.5], usdt2LpConduit);
+  console.log('Encoded data to deposit', amountParam, ' USDT:', encodedData);
+
+  // USDC/SOV
+  spotPrice = await croc.pool(USDC, SOV, 410).spotPrice();
+  console.log(`USDC/SOV Spot Price: ${spotPrice.toString()}`);
+  spotPrice = await croc.pool(SOV, USDC, 410).spotPrice();
+  console.log(`SOV/USDC Spot Price: ${spotPrice.toString()}`);
+
+  usdt2LpConduit = '0x941fEF5263f46dc7c00CD122CcA2b8559CA8FB96'; // SOV/USDC
+  amountParam = 161363.41;
+  encodedData = await croc
+    .pool(SOV, USDC, 410)
+    .encodeMintAmbientQuote(amountParam, [1.8, 2.5], usdt2LpConduit);
+  console.log('Encoded data to deposit', amountParam, 'USDC:', encodedData);
+
+  // DAI/SOV
+  spotPrice = await croc.pool(DAI, SOV, 410).spotPrice();
+  console.log(`DAI/SOV Spot Price: ${spotPrice.toString()}`);
+  spotPrice = await croc.pool(SOV, DAI, 410).spotPrice();
+  console.log(`SOV/DAI Spot Price: ${spotPrice.toString()}`);
+
+  usdt2LpConduit = '0x83c0E209589782DDe525Dfa20Ad19a502841eAA6'; // SOV/DAI
+  amountParam = 14889.096;
+  encodedData = await croc
+    .pool(SOV, DAI, 410)
+    .encodeMintAmbientQuote(amountParam, [1.8, 2.5], usdt2LpConduit);
+  console.log('Encoded data to deposit', amountParam, 'DAI:', encodedData);
+
+  //@todo add WBTC, tBTC, ETH, wstETH, rETH ambient pools paired with SOV
+
+  // --- ENCODE DEPOSIT FOR CONCENTRATED LIQ POOLS ----
+  type PriceRange = [number, number];
+  type TickRange = [number, number];
+
+  async function getEncodedMintRangeQuote(
+    baseToken: string,
+    quoteToken: string,
+    poolIdx: number,
+    amount: number,
+    tickGrid: number,
+    tickRangeParam: TickRange,
+    limits: PriceRange,
+  ): Promise<string> {
+    const tickRange: TickRange = [
+      priceToTick(tickRangeParam[0]),
+      priceToTick(tickRangeParam[1]),
+    ].map(
+      x => x + (x % tickGrid > 0 ? tickGrid - (x % tickGrid) : 0),
+    ) as TickRange; //cast to the nearest tick multiple of tickGrid
+    return await croc
+      .pool(baseToken, quoteToken, poolIdx)
+      .encodeMintRangeQuote(amount, tickRange, limits);
+  }
+
+  // let price;
+  let tickGrid;
+  let poolIdx;
+  let tickRange: TickRange;
+  let priceLimit: PriceRange;
+  let cpoolEncodedData;
+  let amount;
+
+  // SOV/DLLR
+  amount = 100000;
+  const price = 2;
+  tickGrid = 4;
+  poolIdx = 400; //0.1% fee
+  tickRange = [price * 0.2, price * 5]; //80% down, 5X up
+  priceLimit = [1.8, 2.5]; //>= 1.8 DLLR/SOV, <= 2.5 DLLR/SOV
+  cpoolEncodedData = await getEncodedMintRangeQuote(
+    SOV,
+    DLLR,
+    poolIdx,
+    amount,
+    tickGrid,
+    tickRange,
+    priceLimit,
+  );
   console.log('cpoolEncodedData for SOV/DLLR:', cpoolEncodedData);
+
+  // ----- STABLES ----------
+  amount = 50000;
+  tickGrid = 4;
+  poolIdx = 400;
+  tickRange = [0.9957, 1.0068]; //base on ambient app price
+  priceLimit = [0.9957, 1.0068]; //>= 1.8 DLLR/SOV, <= 2.5 DLLR/SOV
+
+  // USDC/USDT
+  cpoolEncodedData = await getEncodedMintRangeQuote(
+    USDT,
+    USDC,
+    poolIdx,
+    amount,
+    tickGrid,
+    tickRange,
+    priceLimit,
+  );
+  console.log('cpoolEncodedData for USDC/USDT:', cpoolEncodedData);
+
+  // USDT/DLLR
+  cpoolEncodedData = await getEncodedMintRangeQuote(
+    USDT,
+    DLLR,
+    poolIdx,
+    amount,
+    tickGrid,
+    tickRange,
+    priceLimit,
+  );
+  console.log('cpoolEncodedData for USDT/DLLR:', cpoolEncodedData);
+
+  // tBTC/WBTC
+  cpoolEncodedData = await getEncodedMintRangeQuote(
+    tBTC,
+    WBTC,
+    poolIdx,
+    amount,
+    tickGrid,
+    tickRange,
+    priceLimit,
+  );
+  console.log('cpoolEncodedData for tBTC/WBTC:', cpoolEncodedData);
 
   //croc.poolEth(DAI).initPool()
 
@@ -298,13 +407,13 @@ async function demo() {
 
   // mint USDC/ETH lp tokens
   // await croc.poolEth(USDC).mintAmbientQuote(50, [0.0001, 0.001], { lpConduit: USDC_ETH_LP_CONDUIT });
-  const lpConduitContract = new ethers.Contract(
-    USDC_ETH_LP_CONDUIT,
-    ERC20_READ_ABI,
-    (await croc.context).provider,
-  );
-  const lpTokenBalance = await lpConduitContract.balanceOf(wallet.address);
-  console.log(ethers.utils.formatUnits(lpTokenBalance, 18));
+  // const lpConduitContract = new ethers.Contract(
+  //   USDC_ETH_LP_CONDUIT,
+  //   ERC20_READ_ABI,
+  //   (await croc.context).provider,
+  // );
+  // const lpTokenBalance = await lpConduitContract.balanceOf(wallet.address);
+  // console.log(ethers.utils.formatUnits(lpTokenBalance, 18));
 
   // burn USDC/ETH lp tokens
   // const lpConduitPositionView = new CrocPositionView(pool, USDC_ETH_LP_CONDUIT);

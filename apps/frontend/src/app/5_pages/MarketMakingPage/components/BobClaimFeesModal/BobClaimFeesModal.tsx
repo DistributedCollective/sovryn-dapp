@@ -15,7 +15,6 @@ import {
 
 import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { CurrentStatistics } from '../../../../2_molecules/CurrentStatistics/CurrentStatistics';
-import { USD } from '../../../../../constants/currencies';
 import { translations } from '../../../../../locales/i18n';
 import { AmbientPosition } from '../AmbientMarketMaking/AmbientMarketMaking.types';
 import { AmbientLiquidityPool } from '../AmbientMarketMaking/utils/AmbientLiquidityPool';
@@ -70,8 +69,6 @@ export const BobClaimFeesModal: FC<BobClaimFeesModalProps> = ({
     );
   }, [position, spotPrice, quoteTokenDecimals]);
 
-  const feesTotal = useMemo(() => feesBase + feesQuote, [feesBase, feesQuote]);
-
   return (
     <>
       <Dialog disableFocusTrap isOpen={isOpen}>
@@ -97,10 +94,6 @@ export const BobClaimFeesModal: FC<BobClaimFeesModalProps> = ({
                 token: quote,
               })}
               value={<AmountRenderer value={feesQuote} />}
-            />
-            <SimpleTableRow
-              label={t(pageTranslations.removalValue)}
-              value={<AmountRenderer value={feesTotal} suffix={USD} />}
             />
           </SimpleTable>
 

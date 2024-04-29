@@ -1884,7 +1884,8 @@
             "positionID": "Position ID",
             "minPrice": "Min price",
             "maxPrice": "Max price",
-            "apr": "APR",
+            "apr": "Estimated APR",
+            "aprInfo": "APR is estimated based on previous fees earned at the defined price range, if no trades were made previously you may see 0 value",
             "value": "Value (USD)",
             "balance": "Balance",
             "withdraw": "Withdraw"

@@ -1,18 +1,14 @@
 import React from 'react';
 
-import { ChainIds } from '@sovryn/ethers-provider';
-
 import { useCurrentChain } from '../../../../hooks/useChainStore';
 import { useMaintenance } from '../../../../hooks/useMaintenance';
+import { isBobChain } from '../../../../utils/chain';
 
 export const useRuneBridgeLocked = () => {
   const { checkMaintenance, States } = useMaintenance();
   const chainId = useCurrentChain();
   return React.useMemo(() => {
-    const isBobChain = [ChainIds.BOB_MAINNET, ChainIds.BOB_TESTNET].includes(
-      chainId as ChainIds,
-    );
-    const currentState = isBobChain
+    const currentState = isBobChain(chainId)
       ? States.D2_RUNE_BRIDGE_BOB
       : States.D2_RUNE_BRIDGE_RSK;
     return checkMaintenance(currentState);

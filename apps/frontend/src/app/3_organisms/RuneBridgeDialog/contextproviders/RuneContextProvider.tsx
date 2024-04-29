@@ -2,13 +2,12 @@ import React, { useEffect } from 'react';
 
 import { ethers } from 'ethers';
 
-import { ChainIds } from '@sovryn/ethers-provider';
-
 import { useCacheCall } from '../../../../hooks';
 import { useAccount } from '../../../../hooks/useAccount';
 import { useCurrentChain } from '../../../../hooks/useChainStore';
 import { useGetProtocolContract } from '../../../../hooks/useGetContract';
 import { useInterval } from '../../../../hooks/useInterval';
+import { isBobChain } from '../../../../utils/chain';
 import { currentNetwork } from '../../../../utils/helpers';
 import { runeBridgeApiClient } from '../api';
 import { endpoints } from '../config';
@@ -92,10 +91,7 @@ export const RuneContextProvider: React.FC<RuneContextProviderProps> = ({
   }, [requestTokenBalances]);
 
   useEffect(() => {
-    const isBobChain = [ChainIds.BOB_MAINNET, ChainIds.BOB_TESTNET].includes(
-      chainId as ChainIds,
-    );
-    const suffix = isBobChain ? 'runesbob' : 'runes';
+    const suffix = isBobChain(chainId) ? 'runesbob' : 'runes';
     const baseUrl = `${endpoints[currentNetwork]}/api/v1`;
     runeBridgeApiClient.baseUrl = `${baseUrl}/${suffix}`;
   }, [chainId]);

@@ -19,9 +19,6 @@ class RuneBridgeClient {
   set baseUrl(value: string) {
     this._baseUrl = this.sanitizeUrl(value);
   }
-  get baseUrl() {
-    return this._baseUrl;
-  }
 
   async request(
     path: string,

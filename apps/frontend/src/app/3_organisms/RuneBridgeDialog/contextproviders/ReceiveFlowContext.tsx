@@ -1,6 +1,5 @@
 import React, { useCallback } from 'react';
 
-import { runeBridgeApiClient } from '../api';
 import { RequestOpts } from '../api/RuneBridgeClient';
 import { depositsPath, lastScannedBtcBlockPath } from '../constants';
 import {
@@ -8,6 +7,7 @@ import {
   defaultValue,
   ReceiveFlowContextStateType,
 } from '../contexts/receiveflow';
+import { useRuneBridgeApiClient } from '../hooks/useRuneBridgeApiClient';
 
 export type ReceiveFlowContextProviderProps = {
   children: React.ReactNode;
@@ -18,6 +18,7 @@ export const ReceiveFlowContextProvider: React.FC<
 > = ({ children }) => {
   const [state, setState] =
     React.useState<ReceiveFlowContextStateType>(defaultValue);
+  const runeBridgeApiClient = useRuneBridgeApiClient();
   const requestLastScannedBlock = useCallback(async () => {
     const reqOptions: RequestOpts = {
       method: 'GET',
@@ -26,7 +27,7 @@ export const ReceiveFlowContextProvider: React.FC<
       lastScannedBtcBlockPath,
       reqOptions,
     );
-  }, []);
+  }, [runeBridgeApiClient]);
   const getRuneDepositStatus = useCallback(
     async (userEvmAddress: string, lastScannedBlockHash: string) => {
       const path = `${depositsPath}/${userEvmAddress}/${lastScannedBlockHash}`;
@@ -35,7 +36,7 @@ export const ReceiveFlowContextProvider: React.FC<
       };
       return await runeBridgeApiClient.request(path, reqOptions);
     },
-    [],
+    [runeBridgeApiClient],
   );
   const value = React.useMemo(
     () => ({

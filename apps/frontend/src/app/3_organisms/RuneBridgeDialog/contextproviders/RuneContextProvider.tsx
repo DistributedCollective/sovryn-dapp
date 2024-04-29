@@ -7,10 +7,6 @@ import { useAccount } from '../../../../hooks/useAccount';
 import { useCurrentChain } from '../../../../hooks/useChainStore';
 import { useGetProtocolContract } from '../../../../hooks/useGetContract';
 import { useInterval } from '../../../../hooks/useInterval';
-import { isBobChain } from '../../../../utils/chain';
-import { currentNetwork } from '../../../../utils/helpers';
-import { runeBridgeApiClient } from '../api';
-import { endpoints } from '../config';
 import {
   RuneContext,
   defaultValue,
@@ -90,10 +86,5 @@ export const RuneContextProvider: React.FC<RuneContextProviderProps> = ({
     return () => clearTimeout(timeout);
   }, [requestTokenBalances]);
 
-  useEffect(() => {
-    const suffix = isBobChain(chainId) ? 'runesbob' : 'runes';
-    const baseUrl = `${endpoints[currentNetwork]}/api/v1`;
-    runeBridgeApiClient.baseUrl = `${baseUrl}/${suffix}`;
-  }, [chainId]);
   return <RuneContext.Provider value={value}>{children}</RuneContext.Provider>;
 };

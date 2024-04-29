@@ -7,7 +7,7 @@ export interface RequestOpts {
 class ApiError extends Error {}
 
 class RuneBridgeClient {
-  private _baseUrl: string;
+  private readonly _baseUrl: string;
 
   constructor(baseUrl: string) {
     this._baseUrl = this.sanitizeUrl(baseUrl);
@@ -15,9 +15,6 @@ class RuneBridgeClient {
 
   private sanitizeUrl(url: string): string {
     return url.replace(/\/*$/, '');
-  }
-  set baseUrl(value: string) {
-    this._baseUrl = this.sanitizeUrl(value);
   }
 
   async request(
@@ -87,7 +84,7 @@ class RuneBridgeClient {
     if (path.charAt(0) !== '/') {
       path = '/' + path;
     }
-    return `${this.baseUrl}${path}`;
+    return `${this._baseUrl}${path}`;
   }
 }
 

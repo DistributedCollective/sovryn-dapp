@@ -49,8 +49,15 @@ export const bobTestnet: Array<AssetDetails> = [
   },
   {
     symbol: 'SOV',
+    address: '0xe5a2C0c6037c5B0008B7800bE22C94Bd899F1a59',
+    name: 'SOV',
+    decimals: 18,
+    getIcon: async () => (await import('./icons/bob/sov')).default,
+  },
+  {
+    symbol: 'mSOV',
     address: '0x05da4128d52750421D1bA07E932Cb68B28c69021',
-    name: 'eSOV',
+    name: 'mSOV',
     decimals: 18,
     getIcon: async () => (await import('./icons/bob/sov')).default,
   },

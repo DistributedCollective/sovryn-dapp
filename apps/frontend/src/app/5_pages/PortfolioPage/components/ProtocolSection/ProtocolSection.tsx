@@ -6,6 +6,7 @@ import { Paragraph } from '@sovryn/ui';
 import { Decimal } from '@sovryn/utils';
 
 import { useAccount } from '../../../../../hooks/useAccount';
+import { useCurrentChain } from '../../../../../hooks/useChainStore';
 import { useGetNativeTokenPrice } from '../../../../../hooks/useGetNativeTokenPrice';
 import { translations } from '../../../../../locales/i18n';
 import { ProtocolTypes, PoolValues } from './ProtocolSection.types';
@@ -16,7 +17,10 @@ import { ProtocolTotalSection } from './components/ProtocolTotalSection/Protocol
 
 export const ProtocolSection: FC = () => {
   const { account } = useAccount();
-  const [selectedCurrency, setSelectedCurrency] = useState(getNativeToken());
+  const chainId = useCurrentChain();
+  const [selectedCurrency, setSelectedCurrency] = useState(
+    getNativeToken(chainId),
+  );
   const [value, setValue] = useState(Decimal.ZERO);
   const [protocolValues, setProtocolValues] = useState<PoolValues>({});
 
@@ -58,6 +62,12 @@ export const ProtocolSection: FC = () => {
     }
   }, [account]);
 
+  useEffect(() => {
+    setProtocolValues({});
+    setValue(Decimal.ZERO);
+    setSelectedCurrency(getNativeToken(chainId));
+  }, [chainId]);
+
   return (
     <div className="flex flex-col gap-3">
       <ProtocolTotalSection
@@ -75,7 +85,7 @@ export const ProtocolSection: FC = () => {
       </Paragraph>
       <ProtocolDepositSection
         selectedCurrency={selectedCurrency}
-        btcPrice={nativeTokenPrice}
+        nativeTokenPrice={nativeTokenPrice}
         onValueChange={handleValueUpdate}
       />
     </div>

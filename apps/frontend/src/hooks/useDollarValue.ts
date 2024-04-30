@@ -19,9 +19,11 @@ export function useDollarValue(
   weiAmount: string,
   chainId?: ChainId,
 ) {
-  const chain = useCurrentChain();
+  const currentChainId = useCurrentChain();
+  const chain = chainId || currentChainId;
+
   if (asset.toUpperCase() === COMMON_SYMBOLS.ZUSD) {
-    if (isRskChain(chainId || chain)) {
+    if (isRskChain(chain)) {
       asset = COMMON_SYMBOLS.XUSD;
     } else {
       asset = 'USDT';
@@ -29,21 +31,20 @@ export function useDollarValue(
   } else if (asset.toLocaleLowerCase() === 'weth') {
     asset = COMMON_SYMBOLS.ETH;
   }
-  const assetDetails = useTokenDetailsByAsset(asset, chainId || chain);
+  const assetDetails = useTokenDetailsByAsset(asset, chain);
   const dllrDetails = useTokenDetailsByAsset(
     COMMON_SYMBOLS.DLLR, // todo: define USD equivalent token for all chains in config
-    chainId || chain,
-  );
-  const currentChainId = useCurrentChain();
-  const smartRouter = useMemo(
-    () => new SmartRouter(getProvider(currentChainId), SWAP_ROUTES),
-    [currentChainId],
+    chain,
   );
 
   const { value: usdPrice, loading } = useCacheCall(
-    `dollarValue/${chainId || chain}/${asset}`,
-    chainId || chain,
+    `dollarValue/${chain}/${asset}`,
+    chain,
     async () => {
+      console.log({
+        assetDetails,
+        dllrDetails,
+      });
       if (
         !assetDetails?.address ||
         !dllrDetails?.address ||
@@ -52,9 +53,10 @@ export function useDollarValue(
         return '0';
       }
 
+      const smartRouter = new SmartRouter(getProvider(chain), SWAP_ROUTES);
       // todo: use correct router for chain
       const result = await smartRouter.getBestQuote(
-        currentChainId,
+        chain,
         assetDetails?.address,
         dllrDetails?.address,
         toWei('0.01'),
@@ -73,6 +75,7 @@ export function useDollarValue(
       assetDetails,
       dllrDetails,
       asset,
+      chain,
     ],
     '0',
   );

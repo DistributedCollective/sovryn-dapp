@@ -8,6 +8,7 @@ import { Decimal } from '@sovryn/utils';
 
 import { AmountRenderer } from '../../../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { USD } from '../../../../../../../constants/currencies';
+import { useCurrentChain } from '../../../../../../../hooks/useChainStore';
 import { translations } from '../../../../../../../locales/i18n';
 import {
   getCurrencyPrecision,
@@ -32,7 +33,8 @@ export const ProtocolTotalSection: FC<ProtocolTotalSectionProps> = ({
   className,
   title = t(translations.portfolioPage.protocolSection.totalValue),
 }) => {
-  const currencies = useMemo(() => [getNativeToken(), USD], []);
+  const chainId = useCurrentChain();
+  const currencies = useMemo(() => [getNativeToken(chainId), USD], [chainId]);
 
   const renderCurrencyClassName = useMemo(
     () => (currency: string) =>
@@ -66,6 +68,7 @@ export const ProtocolTotalSection: FC<ProtocolTotalSectionProps> = ({
             totalValue,
             selectedCurrency,
             nativeTokenPrice,
+            chainId,
           )}
           suffix={selectedCurrency}
           precision={getCurrencyPrecision(selectedCurrency)}

@@ -143,7 +143,11 @@ const routes = [
       },
       {
         path: '/portfolio',
-        element: <PortfolioPage />,
+        element: (
+          <CrocContextProvider>
+            <PortfolioPage />
+          </CrocContextProvider>
+        ),
         loader: zeroPageLoader,
       },
       {

@@ -2,7 +2,7 @@ import { Decimal } from '@sovryn/utils';
 
 export type ProtocolSectionProps = {
   selectedCurrency: string;
-  btcPrice: string;
+  nativeTokenPrice: string;
   onValueChange: (value: Decimal, poolIdentifier: ProtocolTypes) => void;
 };
 

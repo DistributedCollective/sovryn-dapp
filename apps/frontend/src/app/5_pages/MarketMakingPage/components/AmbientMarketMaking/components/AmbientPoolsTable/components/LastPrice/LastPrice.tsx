@@ -1,8 +1,8 @@
 import React, { FC } from 'react';
 
 import { AmountRenderer } from '../../../../../../../../2_molecules/AmountRenderer/AmountRenderer';
+import { decimalic } from '../../../../../../../../../utils/math';
 import { useGetPoolInfo } from '../../../../../BobDepositModal/hooks/useGetPoolInfo';
-import { useGetTokenDecimals } from '../../../../../BobWIthdrawModal/hooks/useGetTokenDecimals';
 import { AmbientLiquidityPool } from '../../../../utils/AmbientLiquidityPool';
 
 type LastPriceProps = {
@@ -10,18 +10,7 @@ type LastPriceProps = {
 };
 
 export const LastPrice: FC<LastPriceProps> = ({ pool }) => {
-  const { spotPrice, poolTokens } = useGetPoolInfo(pool.base, pool.quote);
+  const { price } = useGetPoolInfo(pool.base, pool.quote);
 
-  const { quoteTokenDecimals } = useGetTokenDecimals(
-    poolTokens?.tokenA,
-    poolTokens?.tokenB,
-  );
-
-  return (
-    <AmountRenderer
-      value={spotPrice}
-      suffix={pool.base}
-      decimals={quoteTokenDecimals}
-    />
-  );
+  return <AmountRenderer value={decimalic(price)} suffix={pool.quote} />;
 };

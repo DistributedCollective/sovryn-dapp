@@ -2,6 +2,7 @@ import React, { FC, useCallback, useEffect, useMemo } from 'react';
 
 import { t } from 'i18next';
 
+import { toDisplayPrice } from '@sovryn/sdex';
 import {
   Button,
   ButtonStyle,
@@ -46,7 +47,7 @@ export const BalancedRange: FC<BalancedRangeProps> = ({ pool }) => {
     pool.quote,
   );
 
-  const { quoteTokenDecimals } = useGetTokenDecimals(
+  const { baseTokenDecimals, quoteTokenDecimals } = useGetTokenDecimals(
     poolTokens?.tokenA,
     poolTokens?.tokenB,
   );
@@ -103,6 +104,18 @@ export const BalancedRange: FC<BalancedRangeProps> = ({ pool }) => {
     [setMaximumPrice, setMinimumPrice, setRangeWidth, updatePrice],
   );
 
+  const renderMin = useMemo(
+    () =>
+      toDisplayPrice(maximumPrice, baseTokenDecimals, quoteTokenDecimals, true),
+    [baseTokenDecimals, maximumPrice, quoteTokenDecimals],
+  );
+
+  const renderMax = useMemo(
+    () =>
+      toDisplayPrice(minimumPrice, baseTokenDecimals, quoteTokenDecimals, true),
+    [baseTokenDecimals, minimumPrice, quoteTokenDecimals],
+  );
+
   return (
     <>
       <div className="flex items-center flex-col">
@@ -137,11 +150,7 @@ export const BalancedRange: FC<BalancedRangeProps> = ({ pool }) => {
             isInfiniteRange ? (
               <span className="text-xs font-medium">0</span>
             ) : (
-              <AmountRenderer
-                value={minimumPrice}
-                suffix={pool.base}
-                decimals={quoteTokenDecimals}
-              />
+              <AmountRenderer value={renderMin} suffix={pool.quote} />
             )
           }
         />
@@ -151,11 +160,7 @@ export const BalancedRange: FC<BalancedRangeProps> = ({ pool }) => {
             isInfiniteRange ? (
               <span className="text-xs font-medium">∞</span>
             ) : (
-              <AmountRenderer
-                value={maximumPrice}
-                suffix={pool.base}
-                decimals={quoteTokenDecimals}
-              />
+              <AmountRenderer value={renderMax} suffix={pool.quote} />
             )
           }
         />

@@ -8,6 +8,7 @@ type InputProps = {
   label: string;
   value: number;
   range: number;
+  text: number;
   onMinusClick: () => void;
   onPlusClick: () => void;
   decimals: number;
@@ -16,6 +17,7 @@ type InputProps = {
 export const Input: FC<InputProps> = ({
   label,
   value,
+  text,
   range,
   onMinusClick,
   onPlusClick,
@@ -31,7 +33,7 @@ export const Input: FC<InputProps> = ({
         className="text-gray-30 text-base font-medium px-2"
       />
       <AmountRenderer
-        value={value}
+        value={text}
         className="text-sm font-medium text-gray-10"
         decimals={decimals}
       />

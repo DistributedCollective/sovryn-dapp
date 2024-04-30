@@ -1,5 +1,3 @@
-import { BigNumber } from 'ethers';
-
 import { ChainId } from '@sovryn/ethers-provider';
 
 import { findAsset } from '../../../../../../utils/asset';
@@ -12,8 +10,8 @@ export class AmbientLiquidityPool {
   public readonly quote;
 
   constructor(
-    _base: string,
-    _quote: string,
+    tokenA: string,
+    tokenB: string,
     public readonly chainId: ChainId,
     public readonly poolIndex: number,
     public readonly lpTokenAddress?: string,
@@ -23,23 +21,21 @@ export class AmbientLiquidityPool {
         ? lpTokenAddress.toLowerCase()
         : undefined;
 
-      const _baseAddress = findAsset(_base, chainId).address;
-      const _quoteAddress = findAsset(_quote, chainId).address;
+      const tokenAAddress = findAsset(tokenA, chainId).address;
+      const tokenBAddress = findAsset(tokenB, chainId).address;
 
-      [this.base, this.quote] = BigNumber.from(_baseAddress).lt(_quoteAddress)
-        ? [_base, _quote]
-        : [_quote, _base];
+      const isABase = tokenAAddress.toLowerCase() < tokenBAddress.toLowerCase();
 
-      [this.baseAddress, this.quoteAddress] = BigNumber.from(_baseAddress).lt(
-        _quoteAddress,
-      )
-        ? [_baseAddress, _quoteAddress]
-        : [_quoteAddress, _baseAddress];
+      [this.base, this.quote] = isABase ? [tokenA, tokenB] : [tokenB, tokenA];
+
+      [this.baseAddress, this.quoteAddress] = isABase
+        ? [tokenAAddress, tokenBAddress]
+        : [tokenBAddress, tokenAAddress];
     } catch (error) {
       console.error(
         'Failed to construct Ambient Liqudity Pool',
-        _base,
-        _quote,
+        tokenA,
+        tokenB,
         chainId,
         error,
       );
@@ -48,6 +44,6 @@ export class AmbientLiquidityPool {
   }
 
   public get key() {
-    return `${this.base}/${this.quote}`;
+    return `${this.base}wtf/${this.quote}`;
   }
 }

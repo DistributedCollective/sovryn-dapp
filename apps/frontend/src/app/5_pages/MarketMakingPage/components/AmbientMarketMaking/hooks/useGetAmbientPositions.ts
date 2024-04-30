@@ -45,14 +45,9 @@ export const useGetAmbientPositions = (pool: AmbientLiquidityPool) => {
             );
 
             if (ambientIndex !== -1) {
-              console.log(
-                'ambientIndex found, update position.',
-                positions[ambientIndex],
-              );
               const ambientPosition = positions[ambientIndex];
               ambientPosition.ambientLiq = wallet.toString() as any;
             } else {
-              console.log('ambientIndex not found, add new position to list.');
               positions.push({
                 chainId: pool.chainId,
                 base: pool.base,

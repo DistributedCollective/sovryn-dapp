@@ -27,7 +27,7 @@ export const COLUMNS_CONFIG = (pool: AmbientLiquidityPool) => [
     ),
   },
   {
-    id: 'liquidity',
+    id: 'prices',
     title: (
       <div className="flex flex-col">
         <span>

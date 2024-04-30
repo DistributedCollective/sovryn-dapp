@@ -170,7 +170,13 @@ export const bob: Array<AssetDetails> = [
     decimals: 18,
     getIcon: async () => (await import('./icons/unknown')).default,
   },
-  // todo: add POWA
+  {
+    symbol: 'POWA',
+    address: '0xd0C2f08a873186db5cFB7b767dB62BEF9e495BFF',
+    name: 'POWA',
+    decimals: 18,
+    getIcon: async () => (await import('./icons/bob/powa')).default,
+  },
   // todo: remove mock tokens for production
   ...mockTokens,
 ];

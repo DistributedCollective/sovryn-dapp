@@ -1,9 +1,10 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { ethers } from 'ethers';
-import { parseUnits } from 'ethers/lib/utils';
 
 //import { ERC20_READ_ABI } from '../abis/erc20.read';
 import { CrocEnv } from '../croc';
+import { bobMainnetPoolConfigs } from './config';
+import { createPositionAmbientLiquidity } from './helper';
 
 // import { priceToTick } from '../utils/price';
 
@@ -29,65 +30,7 @@ const KEY =
   process.env.WALLET_KEY ||
   '0x7c5e2cfbba7b00ba95e5ed7cd80566021da709442e147ad3e08f23f5044a3d5a';
 
-const SLIPPAGE_TORELANCE = 0.05; // 0.05%
-
-type CreatePositionProps = {
-  base: string;
-  quote: string;
-  poolIndex: number;
-  amountInBase: number;
-  lpConduit?: string;
-};
-
-async function createPosition(
-  env: CrocEnv,
-  { base, quote, poolIndex, amountInBase, lpConduit }: CreatePositionProps,
-) {
-  const [baseToken, quoteToken] = base < quote ? [base, quote] : [quote, base];
-  const pool = env.pool(baseToken, quoteToken, poolIndex);
-  const poolPrice = await pool.displayPrice();
-
-  const expectedBase =
-    pool.baseToken.tokenAddr.toLowerCase() === base.toLowerCase();
-
-  const decimals = await (expectedBase
-    ? pool.baseToken.decimals
-    : pool.quoteToken.decimals);
-
-  const amount = parseUnits(amountInBase.toString(), decimals);
-
-  const limits = {
-    min: poolPrice * (1 - SLIPPAGE_TORELANCE / 100),
-    max: poolPrice * (1 + SLIPPAGE_TORELANCE / 100),
-  };
-
-  console.log('Resolved Pool:', {
-    displayPrice: poolPrice,
-    amount: amount.toString(),
-    decimals: decimals,
-  });
-
-  const mintData = await (!expectedBase
-    ? pool.mintAmbientBase(amount, [limits.min, limits.max], {
-        surplus: [false, false],
-        lpConduit,
-      })
-    : pool.mintAmbientQuote(amount, [limits.min, limits.max], {
-        surplus: [false, false],
-        lpConduit,
-      }));
-
-  // const data = mintData.contract.interface.encodeFunctionData('userCmd', [
-  //   mintData.path,
-  //   mintData.calldata,
-  // ]);
-
-  console.log('to', mintData.contract.address);
-  // console.log('data', data);
-  console.log('calldata', mintData.calldata);
-  console.log('value:', mintData.txArgs?.value?.toString());
-  console.log('-'.repeat(50));
-}
+// const SLIPPAGE_TORELANCE = 0.05; // 0.05%
 
 async function demo() {
   const wallet = new ethers.Wallet(KEY);
@@ -129,35 +72,37 @@ async function demo() {
   // spotPrice = await croc.pool(SOV, USDT, 410).spotPrice();
   // console.log(`SOV/USDT Spot Price: ${spotPrice.toString()}`);
 
-  const usdt2LpConduit = '0x1e894177d9f28CC3150ECB30E458bD9438D6C46e'; // SOV/USDT
+  // const usdt2LpConduit = '0x1e894177d9f28CC3150ECB30E458bD9438D6C46e'; // SOV/USDT
   // let amountParam = 28231.073;
   // let encodedData = await croc
   //   .pool(SOV, USDT, 410)
   //   .encodeMintAmbientQuote(amountParam, [1.8, 2.5], usdt2LpConduit);
   // console.log('Encoded data to deposit', amountParam, ' USDT:', encodedData);
 
-  await createPosition(croc, {
-    base: USDT,
-    quote: SOV,
-    poolIndex: 410,
-    amountInBase: 28231.07, // passing 28k SOV, USDT side will be calculated
-    lpConduit: usdt2LpConduit,
-  });
+  const slippageTolerancePercentage = 10; // 10%
 
-  type PriceRange = [number, number];
-  const pool = croc.pool(USDT, SOV, 410);
-  const poolPrice = await pool.displayPrice();
-  const limits: PriceRange = [
-    poolPrice * (1 - SLIPPAGE_TORELANCE / 100),
-    poolPrice * (1 + SLIPPAGE_TORELANCE / 100),
-  ];
-  console.log('pool price:', poolPrice);
-  console.log(
-    'encoded_data: ',
-    await pool.burnAmbientLiq(ethers.utils.parseEther('0.0193363'), limits, {
-      lpConduit: usdt2LpConduit,
-    }),
-  );
+  for (const poolConfig of bobMainnetPoolConfigs) {
+    const price = poolConfig.price;
+    await createPositionAmbientLiquidity(croc, {
+      base: poolConfig.baseToken.tokenAddress,
+      quote: poolConfig.quoteToken.tokenAddress,
+      poolIndex: poolConfig.poolIdx,
+      amountInBase: poolConfig.amountInBase, // decimal not yet considered here
+      lpConduit: poolConfig.lpConduit,
+      price: price, // price
+      slippageTolerancePercentage,
+    });
+  }
+
+  // await burnAmbientLiquidity(croc, {
+  //   base: USDT,
+  //   quote: SOV,
+  //   poolIndex: 410,
+  //   amountInBase: 28231.07, // passing 28k SOV, USDT side will be calculated
+  //   lpConduit: usdt2LpConduit,
+  //   price: price,// price
+  //   slippageTolerancePercentage,
+  // })
 
   // // USDC/SOV
   // spotPrice = await croc.pool(USDC, SOV, 410).spotPrice();

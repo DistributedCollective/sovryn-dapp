@@ -18,6 +18,7 @@ import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRen
 import { CurrentStatistics } from '../../../../2_molecules/CurrentStatistics/CurrentStatistics';
 import { useCrocContext } from '../../../../../contexts/CrocContext';
 import { useIsMounted } from '../../../../../hooks/useIsMounted';
+import { useMaintenance } from '../../../../../hooks/useMaintenance';
 import { translations } from '../../../../../locales/i18n';
 import { bigNumberic, decimalic } from '../../../../../utils/math';
 import { PoolPositionType } from '../../MarketMakingPage.types';
@@ -50,6 +51,8 @@ export const BobWithdrawModal: FC<BobWithdrawModalProps> = ({
   const { croc } = useCrocContext();
   const deposits = useAmbientPositionBalance(pool, position);
   const isMounted = useIsMounted();
+  const { checkMaintenance, States } = useMaintenance();
+  const withdrawLocked = checkMaintenance(States.BOB_WITHDRAW_LIQUIDITY);
 
   const [depositedAmountBase, setDepositedAmountBase] = useState(Decimal.ZERO);
   const [depositedAmountQuote, setDepositedAmountQuote] = useState(
@@ -144,12 +147,14 @@ export const BobWithdrawModal: FC<BobWithdrawModalProps> = ({
       !withdrawAmount ||
       !secondaryWithdrawAmount ||
       (Number(withdrawAmount) === 0 && Number(secondaryWithdrawAmount) === 0) ||
-      !isValidAmount,
+      !isValidAmount ||
+      withdrawLocked,
     [
       depositedAmountBase,
       withdrawAmount,
       isValidAmount,
       secondaryWithdrawAmount,
+      withdrawLocked,
     ],
   );
 

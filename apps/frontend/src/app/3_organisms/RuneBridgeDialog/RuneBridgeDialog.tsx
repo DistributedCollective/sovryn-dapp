@@ -9,6 +9,9 @@ import {
   Dialog,
   DialogSize,
   Heading,
+  Paragraph,
+  ParagraphSize,
+  ParagraphStyle,
   Tabs,
   VerticalTabs,
 } from '@sovryn/ui';
@@ -49,7 +52,23 @@ export const RuneBridgeDialog: React.FC<RuneBridgeDialogProps> = ({
 
   const items = useMemo(() => {
     if (!isChainSupported) {
-      return [];
+      return [
+        {
+          label: t(translation.tabs.unSupportedLabel, { chainName }),
+          infoText: '',
+          content: (
+            <div className="mt-0 md:mt-12">
+              <Paragraph
+                size={ParagraphSize.base}
+                style={ParagraphStyle.normal}
+                children={`${chainName} is currently not supported by Rune bridge.`}
+              />
+            </div>
+          ),
+          activeClassName: ACTIVE_CLASSNAME,
+          dataAttribute: 'funding-receive',
+        },
+      ];
     }
     return [
       {

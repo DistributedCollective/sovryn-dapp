@@ -984,6 +984,7 @@
         "mainScreen": {
             "title": "Rune Bridge",
             "tabs": {
+                "unSupportedLabel": "{{chainName}}",
                 "receiveLabel": "Receive",
                 "receiveInfoText": "Transfer Runes from Bitcoin to your {{chainName}} address",
                 "sendLabel": "Send",

@@ -1,12 +1,16 @@
 import { ChainId } from '@sovryn/ethers-provider';
 
-import { MAINNET_AMM, TESTNET_AMM } from '../AmbientMarketMaking.constants';
 import { AmbientLiquidityPool } from './AmbientLiquidityPool';
+import { bobMainnet } from './pools/bobMainnet';
+import { bobTestnet } from './pools/bobTestnet';
+import { mockBobMainnet } from './pools/mockBobMainnet';
 
 export class AmbientLiquidityPoolDictionary {
   private static items: AmbientLiquidityPool[] = [
-    ...MAINNET_AMM,
-    ...TESTNET_AMM,
+    ...bobMainnet,
+    ...bobTestnet,
+    ...mockBobMainnet, // todo: remove
+    // ...sepolia,
   ];
 
   public static list(chainId: ChainId): AmbientLiquidityPool[] {

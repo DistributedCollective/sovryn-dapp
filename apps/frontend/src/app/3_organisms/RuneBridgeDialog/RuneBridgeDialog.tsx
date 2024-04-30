@@ -61,7 +61,7 @@ export const RuneBridgeDialog: React.FC<RuneBridgeDialogProps> = ({
               <Paragraph
                 size={ParagraphSize.base}
                 style={ParagraphStyle.normal}
-                children={`${chainName} is currently not supported by Rune bridge.`}
+                children={`${chainName} is currently not supported by the Rune Bridge.`}
               />
             </div>
           ),

@@ -31,7 +31,7 @@ export const CurrentStatistics: FC<CurrentStatisticsProps> = ({
   return (
     <div className={className}>
       {!!symbol2 ? (
-        <AssetPairRenderer asset1={symbol2} asset2={symbol} chainId={chainId} />
+        <AssetPairRenderer asset1={symbol} asset2={symbol2} chainId={chainId} />
       ) : (
         <AssetRenderer
           logoClassName={styles.assetLogo}

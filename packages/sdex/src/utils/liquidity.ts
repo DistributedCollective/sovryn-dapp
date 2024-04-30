@@ -177,13 +177,6 @@ export function concDepositSkew(
 ): number {
   const base = baseConcFactor(price, lower, upper);
   const quote = quoteConcFactor(price, lower, upper);
-
-  // @dev: leave it for debugging. if base is infinite - base token deposit is not required (isTokenAPrimaryRange=false)
-  console.log('price', price, 'base', base, 'quote', quote, {
-    lower,
-    upper,
-  });
-
   return quote / base;
 }
 

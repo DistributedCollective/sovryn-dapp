@@ -1,6 +1,6 @@
 import React, { FC, useMemo } from 'react';
 
-import { MIN_TICK, MAX_TICK, tickToPrice } from '@sovryn/sdex';
+import { MIN_TICK, MAX_TICK, tickToPrice, toDisplayPrice } from '@sovryn/sdex';
 
 import { AmountRenderer } from '../../../../../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { PoolPositionType } from '../../../../../../MarketMakingPage.types';
@@ -27,7 +27,7 @@ export const AmbientPositionPrices: FC<AmbientPositionPricesProps> = ({
 
   const { poolTokens } = useGetPoolInfo(pool.base, pool.quote);
 
-  const { quoteTokenDecimals } = useGetTokenDecimals(
+  const { baseTokenDecimals, quoteTokenDecimals } = useGetTokenDecimals(
     poolTokens?.tokenA,
     poolTokens?.tokenB,
   );
@@ -44,14 +44,22 @@ export const AmbientPositionPrices: FC<AmbientPositionPricesProps> = ({
   return (
     <div className="inline-flex flex-col">
       <AmountRenderer
-        value={tickToPrice(position.bidTick)}
+        value={toDisplayPrice(
+          tickToPrice(position.askTick),
+          baseTokenDecimals,
+          quoteTokenDecimals,
+          true,
+        )}
         suffix={pool.quote}
-        decimals={quoteTokenDecimals}
       />
       <AmountRenderer
-        value={tickToPrice(position.askTick)}
+        value={toDisplayPrice(
+          tickToPrice(position.bidTick),
+          baseTokenDecimals,
+          quoteTokenDecimals,
+          true,
+        )}
         suffix={pool.quote}
-        decimals={quoteTokenDecimals}
       />
     </div>
   );

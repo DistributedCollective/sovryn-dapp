@@ -1,7 +1,8 @@
-import React, { FC, useCallback, useEffect } from 'react';
+import React, { FC, useCallback, useEffect, useMemo } from 'react';
 
 import { t } from 'i18next';
 
+import { toDisplayPrice } from '@sovryn/sdex';
 import { Decimal } from '@sovryn/utils';
 
 import { translations } from '../../../../../../../../../locales/i18n';
@@ -32,7 +33,7 @@ export const UnbalancedRange: FC<UnbalancedRangeProps> = ({ pool }) => {
     pool.quote,
   );
 
-  const { quoteTokenDecimals } = useGetTokenDecimals(
+  const { baseTokenDecimals, quoteTokenDecimals } = useGetTokenDecimals(
     poolTokens?.tokenA,
     poolTokens?.tokenB,
   );
@@ -121,6 +122,16 @@ export const UnbalancedRange: FC<UnbalancedRangeProps> = ({ pool }) => {
     upperBoundaryPercentage,
   ]);
 
+  const renderMin = useMemo(
+    () => toDisplayPrice(minimumPrice, baseTokenDecimals, quoteTokenDecimals),
+    [baseTokenDecimals, minimumPrice, quoteTokenDecimals],
+  );
+
+  const renderMax = useMemo(
+    () => toDisplayPrice(maximumPrice, baseTokenDecimals, quoteTokenDecimals),
+    [baseTokenDecimals, maximumPrice, quoteTokenDecimals],
+  );
+
   return (
     <div className="flex justify-between px-4">
       <Input
@@ -128,6 +139,7 @@ export const UnbalancedRange: FC<UnbalancedRangeProps> = ({ pool }) => {
         onMinusClick={onMinPriceMinusClick}
         onPlusClick={onMinPricePlusClick}
         value={minimumPrice}
+        text={renderMin}
         range={lowerBoundaryPercentage}
         decimals={quoteTokenDecimals}
       />
@@ -137,6 +149,7 @@ export const UnbalancedRange: FC<UnbalancedRangeProps> = ({ pool }) => {
         onMinusClick={onMaxPriceMinusClick}
         onPlusClick={onMaxPricePlusClick}
         value={maximumPrice}
+        text={renderMax}
         range={upperBoundaryPercentage}
         decimals={quoteTokenDecimals}
       />

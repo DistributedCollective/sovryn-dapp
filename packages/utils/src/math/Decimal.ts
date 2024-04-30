@@ -37,6 +37,10 @@ export class Decimal {
   }
 
   private static _fromString(representation: string): Decimal {
+    if (representation === 'Infinity') {
+      return Decimal.INFINITY;
+    }
+
     if (!representation || !representation.match(stringRepresentationFormat)) {
       throw new Error(`bad decimal format: "${representation}"`);
     }

@@ -155,13 +155,13 @@ export async function burnAmbientLiquidity(
 ) {
   const pool = croc.pool(base, quote, poolIndex);
 
-  const [baseToken, quoteToken] = base < quote ? [base, quote] : [quote, base];
+  //   const [baseToken, quoteToken] = base < quote ? [base, quote] : [quote, base];
   const poolPrice = await pool.displayPrice();
 
   const slippagePercentage = (poolPrice / price) * 100;
   if (slippagePercentage > slippageTolerancePercentage) {
     throw new Error(
-      `burnAmbientLiquidity:: Invalid slippage for token ${baseToken} - ${quoteToken}, expected ${slippageTolerancePercentage}% got ${slippagePercentage}%, with expected price: ${price}, got ${poolPrice}`,
+      `burnAmbientLiquidity:: Invalid slippage for token ${base} - ${quote}, expected ${slippageTolerancePercentage}% got ${slippagePercentage}%, with expected price: ${price}, got ${poolPrice}`,
     );
   }
 
@@ -200,14 +200,14 @@ export async function createPositionConcentratedLiquidity(
   }: CreateConcentratedPositionProps,
 ) {
   const pool = env.pool(base, quote, poolIndex);
-  const [baseToken, quoteToken] = base < quote ? [base, quote] : [quote, base];
+  //   const [baseToken, quoteToken] = base < quote ? [base, quote] : [quote, base];
 
   const poolPrice = await pool.displayPrice();
 
   const slippagePercentage = (poolPrice / price) * 100;
   if (slippagePercentage > slippageTolerancePercentage) {
     throw new Error(
-      `createPosition:: Invalid slippage for token ${baseToken} - ${quoteToken}, expected ${slippageTolerancePercentage}% got ${slippagePercentage}%, with expected price: ${price}, got ${poolPrice}`,
+      `createPosition:: Invalid slippage for token ${base} - ${quote}, expected ${slippageTolerancePercentage}% got ${slippagePercentage}%, with expected price: ${price}, got ${poolPrice}`,
     );
   }
 
@@ -264,13 +264,13 @@ export async function burnConcentratedLiquidity(
   }: IBurnConcentratedLiquidity,
 ) {
   const pool = croc.pool(base, quote, poolIndex);
-  const [baseToken, quoteToken] = base < quote ? [base, quote] : [quote, base];
+  //   const [baseToken, quoteToken] = base < quote ? [base, quote] : [quote, base];
   const poolPrice = await pool.displayPrice();
 
   const slippagePercentage = (poolPrice / price) * 100;
   if (slippagePercentage > slippageTolerancePercentage) {
     throw new Error(
-      `burnAmbientLiquidity:: Invalid slippage for token ${baseToken} - ${quoteToken}, expected ${slippageTolerancePercentage}% got ${slippagePercentage}%, with expected price: ${price}, got ${poolPrice}`,
+      `burnAmbientLiquidity:: Invalid slippage for token ${base} - ${quote}, expected ${slippageTolerancePercentage}% got ${slippagePercentage}%, with expected price: ${price}, got ${poolPrice}`,
     );
   }
 

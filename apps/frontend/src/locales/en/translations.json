@@ -457,7 +457,8 @@
                 },
                 "second": {
                     "title": "On which blockchain does Sovryn operate?",
-                    "description": "Sovryn currently operates on two chains—BOB and Rootstock.<br/><br/>BOB (Build on Bitcoin)—a hybrid Layer-2 rollup secured by bitcoin and natively connected to Ethereum. It uses the Ethereum Virtual Machine.<br/><br/>Rootstock (RSK)—a smart-contract, merge-mined sidechain of bitcoin. Its engine is a forked version of the Ethereum Virtual Machine.<br/><br/>Both BOB and Rootstock are compatible with Ethereum smart contracts and the tools used to deploy and interact with them."
+                    "description": "Sovryn currently operates on two chains—BOB and Rootstock.<br/><br/><0>BOB (Build on Bitcoin)</0> — a hybrid Layer-2 rollup secured by bitcoin and natively connected to Ethereum. It uses the Ethereum Virtual Machine.<br/><br/>Rootstock (RSK)—a smart-contract, merge-mined sidechain of bitcoin. Its engine is a forked version of the Ethereum Virtual Machine.<br/><br/>Both BOB and Rootstock are compatible with Ethereum smart contracts and the tools used to deploy and interact with them.",
+                    "cta": "BOB (Build on Bitcoin)"
                 },
                 "third": {
                     "title": "How do I get funds into Sovryn?",
@@ -516,6 +517,11 @@
                 "title": "RUNES HAVE ARRIVED",
                 "description": "Now Runes are tradable on mainnet! Deposit Runes from bitcoin via Runes bridge and start trading on Sovryn.",
                 "cta": "Deposit Runes"
+            },
+            "sovrynIsLiveOnBob": {
+                "title": "Sovryn is live on BOB",
+                "description": "Trade, earn Spice & Runes in AMM and stake eSOV today! Even more functionality is coming soon on BOB!",
+                "cta": "Deposit in AMM"
             }
         },
         "titleSection": {
@@ -1878,7 +1884,7 @@
             "title": "Market Making - Sovryn"
         },
         "title": "Market making",
-        "subtitle": "Earn fees from AMM swaps on BoB chain",
+        "subtitle": "Earn Spice & Rune points and fees from AMM swaps on BoB chain",
         "poolsTable": {
             "pair": "Pair",
             "liquidity": "Liquidity",

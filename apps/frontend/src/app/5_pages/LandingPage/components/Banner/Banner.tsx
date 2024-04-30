@@ -3,6 +3,7 @@ import React, { FC, useCallback } from 'react';
 import { t } from 'i18next';
 import Carousel from 'react-multi-carousel';
 import 'react-multi-carousel/lib/styles.css';
+import { useNavigate } from 'react-router-dom';
 
 import { Button, ButtonSize, ButtonStyle } from '@sovryn/ui';
 
@@ -13,11 +14,12 @@ import styles from './Banner.module.css';
 import { LandingPromoCard } from './components/LandingPromoCard/LandingPromoCard';
 
 export const Banner: FC = () => {
+  const navigate = useNavigate();
   const handleRunesClick = useCallback(() => {
     sharedState.actions.openRuneBridgeDialog();
   }, []);
   return (
-    <div className="w-full relative pb-7">
+    <div className="w-full relative pb-16">
       <Carousel
         arrows={false}
         draggable={true} // Needs to be true when we have more than 1 promo
@@ -40,6 +42,28 @@ export const Banner: FC = () => {
         autoPlaySpeed={15000}
         infinite
       >
+        <LandingPromoCard
+          heading={t(
+            translations.landingPage.promotions.sovrynIsLiveOnBob.title,
+          )}
+          description={t(
+            translations.landingPage.promotions.sovrynIsLiveOnBob.description,
+          )}
+          actions={
+            <>
+              <Button
+                style={ButtonStyle.secondary}
+                size={ButtonSize.large}
+                text={t(
+                  translations.landingPage.promotions.sovrynIsLiveOnBob.cta,
+                )}
+                onClick={() => navigate('/earn/market-making')}
+                hrefExternal
+              />
+            </>
+          }
+          className="border-primary"
+        />
         <LandingPromoCard
           heading={t(translations.landingPage.promotions.runesBridge.title)}
           description={t(

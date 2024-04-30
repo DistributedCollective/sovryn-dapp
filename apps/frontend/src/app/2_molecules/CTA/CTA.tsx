@@ -31,7 +31,7 @@ export const CTA: FC<CTAProps> = ({
           <Badge
             key={index}
             content={badge.toUpperCase()}
-            className="block mr-1.5 h-[0.875rem] min-w-[1.438rem] rounded font-medium text-[0.563rem] text-center"
+            className="flex justify-center items-center mr-1.5 h-[0.875rem] min-w-[1.438rem] rounded font-medium text-[0.563rem] py-1"
             style={BadgeStyle.teal}
           />
         ))}

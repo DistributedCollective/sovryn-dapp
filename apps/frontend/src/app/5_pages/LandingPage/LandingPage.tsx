@@ -27,7 +27,7 @@ const LandingPage: FC = () => {
       </Helmet>
 
       <div className="container max-w-screen-xl mx-auto mt-10 mb-20">
-        <div className="flex flex-col lg:flex-row mb-10 gap-4">
+        <div className="flex flex-col lg:flex-row mb-10 gap-4 items-start">
           <div className="flex-1 min-h-40">
             <TitleSection ctaRef={gettingStartedRef} />
             <ProtocolData />

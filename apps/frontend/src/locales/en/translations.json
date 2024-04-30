@@ -521,8 +521,8 @@
                 "cta": "Deposit Runes"
             },
             "sovrynIsLiveOnBob": {
-                "title": "Sovryn is live on BOB",
-                "description": "Trade, earn Spice & Runes in AMM and stake eSOV today! Even more functionality is coming soon on BOB!",
+                "title": "Hello, BOB!",
+                "description": "The Sovryn DEX is now live on BOB. Enjoy passive yield, Spice, runes trading & more on the new chain.",
                 "cta": "Deposit in AMM"
             }
         },

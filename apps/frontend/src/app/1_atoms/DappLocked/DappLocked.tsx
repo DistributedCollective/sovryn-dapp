@@ -9,7 +9,7 @@ import { translations } from '../../../locales/i18n';
 
 export const DappLocked: FC = () => (
   <div className="flex-grow bg-black flex flex-col">
-    <div className="w-full flex justify-end p-4">
+    <div className="w-full flex justify-start p-4">
       <NetworkPicker className="mr-6" />
     </div>
 

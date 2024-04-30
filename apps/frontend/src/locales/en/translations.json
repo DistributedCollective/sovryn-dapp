@@ -1909,7 +1909,7 @@
       "aboutCampaign": "About Extra Spice and Runes campaign",
       "longDescription": "Your deposits were transferred into the Sovryn AMM pools on BOB. Deposit represents 50% of the value of your original token and 50% in SOV. Trading fees will begin accruing immediately.",
       "eSovDescription": "For eSOV Depositors:<br/>If you deposited eSOV via Sovryn’s referral link, please move your eSOV to BOB and stake them in Sovryn on BOB. This action must be done by <0>2024-05-10 12:00:00 UTC</0> to be eligible for Extra Spice. <1>Read more</1>",
-      "claimWarning": "Please note that users claiming from the distributor contract prior to <0>2024-06-07 12:00:00 UTC</0> will not be eligible to Extra Spice, and claiming prior to <1>2024-07-07 12:00:00 UTC</1> will not be eligible to Rune points.",
+      "claimWarning": "Please note that users claiming from the distributor contract prior to <0>2024-05-31 12:00:00 UTC</0> will not be eligible to Extra Spice, and claiming prior to <1>2024-06-30 12:00:00 UTC</1> will not be eligible to Rune points.",
       "disclaimer": "I understand that by claiming deposits now I will lose eligibility for the additional rewards",
       "descriptionValues": {
         "amm": "Marked Making page"

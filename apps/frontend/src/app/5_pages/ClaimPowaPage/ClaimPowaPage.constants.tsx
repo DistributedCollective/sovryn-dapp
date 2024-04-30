@@ -1,5 +1,5 @@
 export const CAMPAIGN_URL = '';
-export const ABOUT_LP_URL = '';
+export const ABOUT_POWA_URL = '';
 export const SUBMIT_WALLET_URL = '';
 
 export const FIRST_AIRDROP_DATE = '2024-05-01T10:00:00Z';

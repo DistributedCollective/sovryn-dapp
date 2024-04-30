@@ -19,7 +19,7 @@ import { useCurrentChain } from '../../../hooks/useChainStore';
 import { translations } from '../../../locales/i18n';
 import { isRskChain } from '../../../utils/chain';
 import {
-  ABOUT_LP_URL,
+  ABOUT_POWA_URL,
   CAMPAIGN_URL,
   FINAL_AIRDROP_DATE,
   FIRST_AIRDROP_DATE,
@@ -162,7 +162,7 @@ const ClaimPowaPage: FC = () => {
           </div>
           <div className="text-center">
             <Link
-              href={ABOUT_LP_URL}
+              href={ABOUT_POWA_URL}
               text={t(translations.claimPowaPage.readMore)}
               className="text-xs"
             />

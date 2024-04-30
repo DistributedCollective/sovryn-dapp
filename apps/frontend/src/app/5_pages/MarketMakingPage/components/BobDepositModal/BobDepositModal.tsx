@@ -14,6 +14,7 @@ import {
 
 import { CurrentStatistics } from '../../../../2_molecules/CurrentStatistics/CurrentStatistics';
 import { useAccount } from '../../../../../hooks/useAccount';
+import { useMaintenance } from '../../../../../hooks/useMaintenance';
 import { translations } from '../../../../../locales/i18n';
 import { AmbientLiquidityPool } from '../AmbientMarketMaking/utils/AmbientLiquidityPool';
 import {
@@ -53,6 +54,8 @@ export const BobDepositModal: FC<BobDepositModalProps> = ({
     setMaximumSlippage,
   } = useDepositContext();
   const { account } = useAccount();
+  const { checkMaintenance, States } = useMaintenance();
+  const depositLocked = checkMaintenance(States.BOB_DEPOSIT_LIQUIDITY);
 
   const [hasDisclaimerBeenChecked, setHasDisclaimerBeenChecked] =
     useState(false);
@@ -89,7 +92,8 @@ export const BobDepositModal: FC<BobDepositModalProps> = ({
       minimumPrice >= maximumPrice ||
       (!firstAssetValue && !secondAssetValue) ||
       isFirstAssetValueInvalid ||
-      isSecondAssetValueInvalid,
+      isSecondAssetValueInvalid ||
+      depositLocked,
     [
       account,
       firstAssetValue,
@@ -99,6 +103,7 @@ export const BobDepositModal: FC<BobDepositModalProps> = ({
       maximumPrice,
       minimumPrice,
       secondAssetValue,
+      depositLocked,
     ],
   );
 

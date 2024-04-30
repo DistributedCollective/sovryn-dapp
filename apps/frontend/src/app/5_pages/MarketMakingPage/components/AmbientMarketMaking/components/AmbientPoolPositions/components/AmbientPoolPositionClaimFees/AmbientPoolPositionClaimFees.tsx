@@ -4,6 +4,7 @@ import { t } from 'i18next';
 
 import { ButtonSize, ButtonStyle, Button } from '@sovryn/ui';
 
+import { useMaintenance } from '../../../../../../../../../hooks/useMaintenance';
 import { translations } from '../../../../../../../../../locales/i18n';
 import { BobClaimFeesModal } from '../../../../../BobClaimFeesModal/BobClaimFeesModal';
 import { AmbientPosition } from '../../../../AmbientMarketMaking.types';
@@ -18,6 +19,9 @@ type AmbientPoolPositionClaimFeesProps = {
 export const AmbientPoolPositionClaimFees: FC<
   AmbientPoolPositionClaimFeesProps
 > = ({ pool, position, className }) => {
+  const { checkMaintenance, States } = useMaintenance();
+  const claimLocked = checkMaintenance(States.BOB_CLAIM_AMM_FEES);
+
   const [isOpen, setIsOpen] = useState(false);
   const toggleModal = useCallback(
     () => setIsOpen(prevIsOpen => !prevIsOpen),
@@ -32,6 +36,7 @@ export const AmbientPoolPositionClaimFees: FC<
         text={t(translations.bobMarketMakingPage.claimFeesModal.claimFees)}
         onClick={() => setIsOpen(true)}
         className={className}
+        disabled={claimLocked}
       />
       <BobClaimFeesModal
         isOpen={isOpen}

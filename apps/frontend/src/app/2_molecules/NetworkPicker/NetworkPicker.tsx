@@ -1,4 +1,6 @@
-import React, { useMemo } from 'react';
+import React, { FC, useMemo } from 'react';
+
+import classNames from 'classnames';
 
 import { Dropdown, Menu, MenuItem } from '@sovryn/ui';
 
@@ -8,7 +10,10 @@ import { useChainStore } from '../../../hooks/useChainStore';
 import { getChainById } from '../../../utils/chain';
 import styles from './NetworkPicker.module.css';
 
-export const NetworkPicker = () => {
+type NetworkPickerProps = {
+  className?: string;
+};
+export const NetworkPicker: FC<NetworkPickerProps> = ({ className }) => {
   const { currentChainId, setCurrentChainId } = useChainStore();
   const selectedChain = useMemo(
     () => getChainById(currentChainId),
@@ -26,7 +31,7 @@ export const NetworkPicker = () => {
         </>
       }
       closeOnClick
-      className="h-8 min-w-0"
+      className={classNames('h-8 min-w-0', className)}
       dropdownClassName="z-[10000000]"
     >
       <Menu>

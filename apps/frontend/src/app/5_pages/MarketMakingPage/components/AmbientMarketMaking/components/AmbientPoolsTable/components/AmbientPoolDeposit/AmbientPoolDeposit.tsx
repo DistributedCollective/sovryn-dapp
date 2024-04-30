@@ -5,6 +5,7 @@ import { t } from 'i18next';
 import { ButtonSize, ButtonStyle, Button } from '@sovryn/ui';
 
 import { useAccount } from '../../../../../../../../../hooks/useAccount';
+import { useMaintenance } from '../../../../../../../../../hooks/useMaintenance';
 import { translations } from '../../../../../../../../../locales/i18n';
 import { BobDepositModal } from '../../../../../BobDepositModal/BobDepositModal';
 import { DepositContextProvider } from '../../../../../BobDepositModal/contexts/BobDepositModalContext';
@@ -20,6 +21,8 @@ export const AmbientPoolDeposit: FC<AmbientPoolDepositProps> = ({ pool }) => {
 
   const onClick = useCallback(() => setIsOpen(true), []);
   const handleClose = useCallback(() => setIsOpen(false), []);
+  const { checkMaintenance, States } = useMaintenance();
+  const depositLocked = checkMaintenance(States.BOB_DEPOSIT_LIQUIDITY);
 
   return (
     <>
@@ -29,7 +32,7 @@ export const AmbientPoolDeposit: FC<AmbientPoolDepositProps> = ({ pool }) => {
         size={ButtonSize.small}
         text={t(translations.common.deposit)}
         onClick={onClick}
-        disabled={!account}
+        disabled={!account || depositLocked}
       />
 
       <DepositContextProvider>

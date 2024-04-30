@@ -149,6 +149,12 @@ enum States {
 
   D2_RUNE_BRIDGE_RSK = 'd2RuneBridgeRSK',
   D2_RUNE_BRIDGE_BOB = 'd2RuneBridgeBOB',
+
+  // BOB chain states
+  BOB_FULL = 'fullD2Bob',
+  BOB_DEPOSIT_LIQUIDITY = 'd2BobDepositLiquidity',
+  BOB_WITHDRAW_LIQUIDITY = 'd2BobWithdrawLiquidity',
+  BOB_CLAIM_AMM_FEES = 'd2BobClaimAMMFees',
 }
 
 type MaintenanceResult = {

@@ -15,6 +15,7 @@ import {
 
 import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { CurrentStatistics } from '../../../../2_molecules/CurrentStatistics/CurrentStatistics';
+import { useMaintenance } from '../../../../../hooks/useMaintenance';
 import { translations } from '../../../../../locales/i18n';
 import { AmbientPosition } from '../AmbientMarketMaking/AmbientMarketMaking.types';
 import { AmbientLiquidityPool } from '../AmbientMarketMaking/utils/AmbientLiquidityPool';
@@ -45,6 +46,8 @@ export const BobClaimFeesModal: FC<BobClaimFeesModalProps> = ({
     poolTokens?.tokenA,
     poolTokens?.tokenB,
   );
+  const { checkMaintenance, States } = useMaintenance();
+  const claimLocked = checkMaintenance(States.BOB_CLAIM_AMM_FEES);
 
   const handleSubmit = useHandleSubmit(pool, position, onClose);
 
@@ -111,6 +114,7 @@ export const BobClaimFeesModal: FC<BobClaimFeesModalProps> = ({
             className="w-full mt-6"
             onClick={handleSubmit}
             dataAttribute="claim-fees-confirm-button"
+            disabled={claimLocked}
           />
         </DialogBody>
       </Dialog>

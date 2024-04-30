@@ -75,6 +75,7 @@ export const ConnectWalletButton: FC<
           address={address}
           dataAttribute={dataAttribute}
           className={className}
+          dropdownClassName="z-[10000000]"
           content={
             <Menu className="mb-4">
               <Link to="/portfolio" className="no-underline">

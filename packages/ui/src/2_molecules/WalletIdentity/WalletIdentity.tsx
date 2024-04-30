@@ -22,6 +22,7 @@ export type WalletIdentityProps = {
   startLength?: number;
   endLength?: number;
   content?: ReactNode;
+  dropdownClassName?: string;
 };
 
 export const WalletIdentity: FC<WalletIdentityProps> = ({
@@ -35,6 +36,7 @@ export const WalletIdentity: FC<WalletIdentityProps> = ({
   dataAttribute,
   submenuLabels,
   content,
+  dropdownClassName,
 }) => {
   if (hideSubmenu) {
     return (
@@ -51,7 +53,7 @@ export const WalletIdentity: FC<WalletIdentityProps> = ({
   return (
     <Dropdown
       className={classNames(styles.dropdown, className)}
-      dropdownClassName={styles.dropdownMenu}
+      dropdownClassName={classNames(styles.dropdownMenu, dropdownClassName)}
       text={
         <AddressBadge
           address={address}

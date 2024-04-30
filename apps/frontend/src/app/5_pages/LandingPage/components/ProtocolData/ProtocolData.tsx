@@ -16,6 +16,7 @@ import {
   BTC_VALUE_PRECISION,
   USD_VALUE_PRECISION,
 } from './ProtocolData.constants';
+import styles from './ProtocolData.module.css';
 import { useGetData } from './hooks/useGetData';
 
 const pageTranslations = translations.landingPage.protocolDataSection;
@@ -158,7 +159,7 @@ export const ProtocolData: FC = () => {
         dataAttribute="protocol-data-accordion"
         open={open}
         onClick={toggle}
-        className="bg-gray-90 rounded shadow lg:max-w-lg pb-6 p-4 pt-3 mt-3"
+        className={styles.accordion}
       />
     </div>
   );

@@ -15,7 +15,7 @@ export const bobMainnetMockAmbientPoolConfigs = [
     },
     price: 0.47,
     poolIdx: 410,
-    amountInBase: 1000,
+    amountInBase: 28231,
     lpConduit: '0x1e894177d9f28CC3150ECB30E458bD9438D6C46e',
   },
   {
@@ -33,7 +33,7 @@ export const bobMainnetMockAmbientPoolConfigs = [
     },
     price: 0.47,
     poolIdx: 410,
-    amountInBase: 1000,
+    amountInBase: 161363.4,
     lpConduit: '0x941fEF5263f46dc7c00CD122CcA2b8559CA8FB96',
   },
   {
@@ -69,7 +69,7 @@ export const bobMainnetMockAmbientPoolConfigs = [
     },
     price: 31330,
     poolIdx: 410,
-    amountInBase: 1000,
+    amountInBase: 33.46968694,
     lpConduit: '0x5F17b43703713eE66bF33C940782dABEf77247a8',
   },
   {
@@ -87,7 +87,7 @@ export const bobMainnetMockAmbientPoolConfigs = [
     },
     price: 25369,
     poolIdx: 410,
-    amountInBase: 1000,
+    amountInBase: '5.71385253021192418', //'5.713852530211924187'
     lpConduit: '0x9Fddb3a3D9a014A2A1F85DB3ebF6Ba5E26F4e5Ad',
   },
   {
@@ -146,6 +146,7 @@ export const bobMainnetMockAmbientPoolConfigs = [
   },
 ];
 
+const stablesRangeMultipliers = [0.99044, 1.01288];
 export const bobMainnetMockConcentratedPoolConfigs = [
   // Additional pairs
   {
@@ -164,7 +165,7 @@ export const bobMainnetMockConcentratedPoolConfigs = [
     price: 0.47,
     poolIdx: 410,
     amountInBase: 1000,
-    range: [0, 0], // @todo update this
+    rangeMultipliers: [0.2, 5], // [-80%, + 5X]
   },
   {
     baseToken: {
@@ -182,7 +183,7 @@ export const bobMainnetMockConcentratedPoolConfigs = [
     price: 0.47,
     poolIdx: 410,
     amountInBase: 1000,
-    range: [0, 0], // @todo update this
+    rangeMultipliers: stablesRangeMultipliers,
   },
   {
     baseToken: {
@@ -200,7 +201,7 @@ export const bobMainnetMockConcentratedPoolConfigs = [
     price: 0.47,
     poolIdx: 410,
     amountInBase: 1000,
-    range: [0, 0], // @todo update this
+    rangeMultipliers: stablesRangeMultipliers,
   },
   {
     baseToken: {
@@ -218,6 +219,6 @@ export const bobMainnetMockConcentratedPoolConfigs = [
     price: 1522,
     poolIdx: 410,
     amountInBase: 1000,
-    range: [0, 0], // @todo update this
+    rangeMultipliers: stablesRangeMultipliers,
   },
 ];

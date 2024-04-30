@@ -4,12 +4,10 @@ import { ethers } from 'ethers';
 //import { ERC20_READ_ABI } from '../abis/erc20.read';
 import { CrocEnv } from '../croc';
 import {
-  bobMainnetMockAmbientPoolConfigs,
-  bobMainnetMockConcentratedPoolConfigs,
+  bobMainnetMockAmbientPoolConfigs, //bobMainnetMockConcentratedPoolConfigs,
 } from './config';
 import {
-  createPositionAmbientLiquidity,
-  createPositionConcentratedLiquidity,
+  createPositionAmbientLiquidity, //createPositionConcentratedLiquidity, //burnAmbientLiquidity,
 } from './helper';
 
 // import { priceToTick } from '../utils/price';
@@ -37,7 +35,6 @@ const KEY =
   '0x7c5e2cfbba7b00ba95e5ed7cd80566021da709442e147ad3e08f23f5044a3d5a';
 
 // const SLIPPAGE_TORELANCE = 0.05; // 0.05%
-type TickRange = [number, number];
 
 async function demo() {
   const wallet = new ethers.Wallet(KEY);
@@ -59,8 +56,8 @@ async function demo() {
     WSTETH: '0x7fA3A90d5B19E6E4Bf4FD6F64904f2F953F30eaf',
   };
 
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
+  //eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  //@ts-ignore
   const [SOV, DAI, USDT, USDC, DLLR, tBTC, WBTC] = [
     // @todo replace with real tokens - NOT MOCKED!
     mockTokens.SOV,
@@ -71,6 +68,36 @@ async function demo() {
     mockTokens.tBTC,
     mockTokens.WBTC,
   ];
+
+  // const bobMainnetTokens = {
+  //   ETH: AddressZero,
+  //   WBTC: '0x03c7054bcb39f7b2e5b2c7acb37583e32d70cfa3',
+  //   tBTC: '0xBBa2eF945D523C4e2608C9E1214C2Cc64D4fc2e2',
+  //   rETH: '0xb5686c4f60904ec2bda6277d6fe1f7caa8d1b41a',
+  //   USDT: '0x05d032ac25d322df992303dca074ee7392c117b9',
+  //   DAI: '0x6c851f501a3f24e29a8e39a29591cddf09369080',
+  //   SOV: '0xba20a5e63eeEFfFA6fD365E7e540628F8fC61474',
+  //   USDC: '0xe75D0fB2C24A55cA1e3F96781a2bCC7bdba058F0',
+  //   DLLR: '0xf3107eEC1e6F067552C035FD87199e1A5169CB20',
+  //   POWA: '0xd0C2f08a873186db5cFB7b767dB62BEF9e495BFF',
+  //   wstETH: '0x85008aE6198BC91aC0735CB5497CF125ddAAc528',
+  // };
+
+  //eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  //@ts-ignore
+  // const [ETH, WBTC, tBTC, rETH, USDT, DAI, SOV, USDC, DLLR, POWA, wstETH] = [
+  //   bobMainnetTokens.ETH,
+  //   bobMainnetTokens.WBTC,
+  //   bobMainnetTokens.tBTC,
+  //   bobMainnetTokens.rETH,
+  //   bobMainnetTokens.USDT,
+  //   bobMainnetTokens.DAI,
+  //   bobMainnetTokens.SOV,
+  //   bobMainnetTokens.USDC,
+  //   bobMainnetTokens.DLLR,
+  //   bobMainnetTokens.POWA,
+  //   bobMainnetTokens.wstETH,
+  // ];
 
   // ----- AMBIENT LIQUIDITY -----
   // USDT/SOV
@@ -89,6 +116,9 @@ async function demo() {
   const slippageTolerancePercentage = 10; // 10%
 
   for (const poolConfig of bobMainnetMockAmbientPoolConfigs) {
+    console.log(
+      `Processing ambient pool ${poolConfig.poolIdx} ${poolConfig.baseToken.tokenSymbol} - ${poolConfig.quoteToken.tokenSymbol} `,
+    );
     const price = poolConfig.price;
     await createPositionAmbientLiquidity(croc, {
       base: poolConfig.baseToken.tokenAddress,
@@ -101,18 +131,21 @@ async function demo() {
     });
   }
 
-  for (const poolConfig of bobMainnetMockConcentratedPoolConfigs) {
-    const price = poolConfig.price;
-    await createPositionConcentratedLiquidity(croc, {
-      base: poolConfig.baseToken.tokenAddress,
-      quote: poolConfig.quoteToken.tokenAddress,
-      poolIndex: poolConfig.poolIdx,
-      amountInBase: poolConfig.amountInBase, // decimal not yet considered here
-      range: poolConfig.range as TickRange,
-      price: price, // price
-      slippageTolerancePercentage,
-    });
-  }
+  // for (const poolConfig of bobMainnetMockConcentratedPoolConfigs) {
+  //   console.log(
+  //     `Processing concentrated pool ${poolConfig.poolIdx} ${poolConfig.baseToken.tokenSymbol} - ${poolConfig.quoteToken.tokenSymbol} `,
+  //   );
+  //   const price = poolConfig.price;
+  //   await createPositionConcentratedLiquidity(croc, {
+  //     base: poolConfig.baseToken.tokenAddress,
+  //     quote: poolConfig.quoteToken.tokenAddress,
+  //     poolIndex: poolConfig.poolIdx,
+  //     amountInBase: poolConfig.amountInBase, // decimal not yet considered here
+  //     rangeMultipliers: poolConfig.rangeMultipliers,
+  //     price: price, // price
+  //     slippageTolerancePercentage,
+  //   });
+  // }
 
   // await burnAmbientLiquidity(croc, {
   //   base: USDT,
@@ -123,6 +156,39 @@ async function demo() {
   //   price: price,// price
   //   slippageTolerancePercentage,
   // })
+
+  // await burnAmbientLiquidity(croc, {
+  //   base: USDC,
+  //   quote: SOV,
+  //   poolIndex: 410,
+  //   amountInBase: 0.11062517, // passing 28k SOV, USDT side will be calculated
+  //   lpConduit: '0x941fEF5263f46dc7c00CD122CcA2b8559CA8FB96',
+  //   price: price, // price
+  //   slippageTolerancePercentage,
+  // });
+  const lpConduit = '0x9Fddb3a3D9a014A2A1F85DB3ebF6Ba5E26F4e5Ad';
+  const SLIPPAGE_TORELANCE = 0.05; // 0.05%
+  type PriceRange = [number, number];
+  const pool = croc.pool(tBTC, SOV, 410);
+  const poolPrice = await pool.displayPrice();
+  const limits: PriceRange = [
+    poolPrice * (1 - SLIPPAGE_TORELANCE / 100),
+    poolPrice * (1 + SLIPPAGE_TORELANCE / 100),
+  ];
+  console.log('burning........');
+  console.log('pool price:', poolPrice);
+  console.log(
+    'encoded_data: ',
+    //await pool.burnAmbientLiq(ethers.utils.parseEther('0.0193363'), limits, {
+    await pool.burnAmbientLiq(
+      ethers.utils.parseEther('909.944828342431797637'), //909.944828342431797637
+      limits,
+      {
+        lpConduit: lpConduit,
+      },
+    ),
+    console.log('-'.repeat(50)),
+  );
 
   // // USDC/SOV
   // spotPrice = await croc.pool(USDC, SOV, 410).spotPrice();

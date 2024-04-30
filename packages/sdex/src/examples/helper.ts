@@ -16,7 +16,7 @@ export interface CreateAmbientPositionProps {
   base: string;
   quote: string;
   poolIndex: number;
-  amountInBase: number;
+  amountInBase: number | string;
   lpConduit?: string;
   range?: TickRange;
   price: number;
@@ -38,7 +38,7 @@ export interface CreateConcentratedPositionProps {
   quote: string;
   poolIndex: number;
   amountInBase: number;
-  range: TickRange;
+  rangeMultipliers: number[];
   price: number;
   slippageTolerancePercentage: number;
 }
@@ -118,16 +118,34 @@ export async function createPositionAmbientLiquidity(
     amount: amount.toString(),
     decimals: decimals,
   });
+  console.log('expectedBase:', expectedBase);
+  const mintData = await pool.mintAmbientQuote(
+    amount,
+    [limits.min, limits.max],
+    {
+      surplus: [false, false],
+      lpConduit,
+    },
+  );
 
-  const mintData = await (!expectedBase
-    ? pool.mintAmbientBase(amount, [limits.min, limits.max], {
-        surplus: [false, false],
-        lpConduit,
-      })
-    : pool.mintAmbientQuote(amount, [limits.min, limits.max], {
-        surplus: [false, false],
-        lpConduit,
-      }));
+  // const mintData = await (!expectedBase
+  //   ? pool.mintAmbientBase(amount, [limits.min, limits.max], {
+  //       surplus: [false, false],
+  //       lpConduit,
+  //     })
+  //   : pool.mintAmbientQuote(amount, [limits.min, limits.max], {
+  //       surplus: [false, false],
+  //       lpConduit,
+  //     }));
+  // const mintData = await (!expectedBase
+  //   ? pool.encodeMintAmbientBase(amount, [limits.min, limits.max], {
+  //       surplus: [false, false],
+  //       lpConduit,
+  //     })
+  //   : pool.encodeMintAmbientQuote(amount, [limits.min, limits.max], {
+  //       surplus: [false, false],
+  //       lpConduit,
+  //     }));
 
   // const data = mintData.contract.interface.encodeFunctionData('userCmd', [
   //   mintData.path,
@@ -135,10 +153,12 @@ export async function createPositionAmbientLiquidity(
   // ]);
 
   console.log('to', mintData.contract.address);
-  // console.log('data', data);
   console.log('calldata', mintData.calldata);
   console.log('value:', mintData.txArgs?.value?.toString());
   console.log('-'.repeat(50));
+  //console.log('calldata', mintData);
+  //console.log('value:', mintData.txArgs?.value?.toString());
+  //console.log('-'.repeat(50));
 }
 
 export async function burnAmbientLiquidity(
@@ -172,7 +192,10 @@ export async function burnAmbientLiquidity(
     ? pool.baseToken.decimals
     : pool.quoteToken.decimals);
 
-  const amount = parseUnits(amountInBase.toString(), decimals);
+  const amountInBaseStr =
+    typeof amountInBase !== 'string' ? amountInBase.toString() : amountInBase;
+
+  const amount = parseUnits(amountInBaseStr, decimals);
 
   const limits: PriceRange = [
     poolPrice * (1 - SLIPPAGE_TORELANCE / 100),
@@ -196,12 +219,12 @@ export async function createPositionConcentratedLiquidity(
     amountInBase,
     price,
     slippageTolerancePercentage,
-    range,
+    rangeMultipliers,
   }: CreateConcentratedPositionProps,
 ) {
   const pool = env.pool(base, quote, poolIndex);
   //   const [baseToken, quoteToken] = base < quote ? [base, quote] : [quote, base];
-
+  const range: TickRange = rangeMultipliers.map(m => m * price) as TickRange;
   const poolPrice = await pool.displayPrice();
 
   const slippagePercentage = (poolPrice / price) * 100;

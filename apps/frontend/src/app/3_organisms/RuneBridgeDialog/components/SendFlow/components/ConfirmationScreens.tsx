@@ -8,6 +8,7 @@ import { StatusType } from '@sovryn/ui';
 
 import { useTransactionContext } from '../../../../../../contexts/TransactionContext';
 import { useAccount } from '../../../../../../hooks/useAccount';
+import { useCurrentChain } from '../../../../../../hooks/useChainStore';
 import { useGetProtocolContract } from '../../../../../../hooks/useGetContract';
 import { translations } from '../../../../../../locales/i18n';
 import { toWei } from '../../../../../../utils/math';
@@ -39,7 +40,8 @@ export const ConfirmationScreens: React.FC<ConfirmationScreensProps> = ({
 
   const [txHash, setTxHash] = useState<string | undefined>(undefined);
   const [txStatus, setTxStatus] = useState(StatusType.idle);
-  const runeBridgeContract = useGetProtocolContract('runeBridge');
+  const chainId = useCurrentChain();
+  const runeBridgeContract = useGetProtocolContract('runeBridge', chainId);
 
   const feesPaid = useMemo(
     () => ({

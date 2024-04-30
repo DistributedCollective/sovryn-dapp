@@ -27,6 +27,7 @@ export const NetworkPicker = () => {
       }
       closeOnClick
       className="h-8 min-w-0"
+      dropdownClassName="z-[10000000]"
     >
       <Menu>
         {APP_CHAIN_LIST.map(item => (

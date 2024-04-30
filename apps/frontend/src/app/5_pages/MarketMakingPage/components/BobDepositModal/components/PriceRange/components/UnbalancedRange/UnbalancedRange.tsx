@@ -6,6 +6,7 @@ import { Decimal } from '@sovryn/utils';
 
 import { translations } from '../../../../../../../../../locales/i18n';
 import { AmbientLiquidityPool } from '../../../../../AmbientMarketMaking/utils/AmbientLiquidityPool';
+import { useGetTokenDecimals } from '../../../../../BobWIthdrawModal/hooks/useGetTokenDecimals';
 import { useDepositContext } from '../../../../contexts/BobDepositModalContext';
 import { useGetPoolInfo } from '../../../../hooks/useGetPoolInfo';
 import { Input } from './components/Input/Input';
@@ -26,7 +27,15 @@ export const UnbalancedRange: FC<UnbalancedRangeProps> = ({ pool }) => {
     setUpperBoundaryPercentage,
   } = useDepositContext();
 
-  const { spotPrice: currentPrice } = useGetPoolInfo(pool.base, pool.quote);
+  const { spotPrice: currentPrice, poolTokens } = useGetPoolInfo(
+    pool.base,
+    pool.quote,
+  );
+
+  const { quoteTokenDecimals } = useGetTokenDecimals(
+    poolTokens?.tokenA,
+    poolTokens?.tokenB,
+  );
 
   const calculatePrice = useCallback(
     (percentage: number) =>
@@ -120,6 +129,7 @@ export const UnbalancedRange: FC<UnbalancedRangeProps> = ({ pool }) => {
         onPlusClick={onMinPricePlusClick}
         value={minimumPrice}
         range={lowerBoundaryPercentage}
+        decimals={quoteTokenDecimals}
       />
 
       <Input
@@ -128,6 +138,7 @@ export const UnbalancedRange: FC<UnbalancedRangeProps> = ({ pool }) => {
         onPlusClick={onMaxPricePlusClick}
         value={maximumPrice}
         range={upperBoundaryPercentage}
+        decimals={quoteTokenDecimals}
       />
     </div>
   );

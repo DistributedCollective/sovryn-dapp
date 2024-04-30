@@ -12,6 +12,7 @@ import {
 import { translations } from '../../../../../../../locales/i18n';
 import { COMMON_SYMBOLS } from '../../../../../../../utils/asset';
 import { AmbientLiquidityPool } from '../../../AmbientMarketMaking/utils/AmbientLiquidityPool';
+import { useGetTokenDecimals } from '../../../BobWIthdrawModal/hooks/useGetTokenDecimals';
 import { useDepositContext } from '../../contexts/BobDepositModalContext';
 import { useGetPoolInfo } from '../../hooks/useGetPoolInfo';
 
@@ -26,7 +27,15 @@ export const NewPoolStatistics: FC<NewPoolStatisticsProps> = ({ pool }) => {
   const { firstAssetValue, secondAssetValue, setSpotPrice } =
     useDepositContext();
   const { base, quote } = useMemo(() => pool, [pool]);
-  const { spotPrice, feeRate } = useGetPoolInfo(pool.base, pool.quote);
+  const { spotPrice, feeRate, poolTokens } = useGetPoolInfo(
+    pool.base,
+    pool.quote,
+  );
+
+  const { quoteTokenDecimals } = useGetTokenDecimals(
+    poolTokens?.tokenA,
+    poolTokens?.tokenB,
+  );
 
   useEffect(() => {
     setSpotPrice(spotPrice);
@@ -58,6 +67,7 @@ export const NewPoolStatistics: FC<NewPoolStatisticsProps> = ({ pool }) => {
                 ? BTC_RENDER_PRECISION
                 : TOKEN_RENDER_PRECISION
             }
+            decimals={quoteTokenDecimals}
           />
         }
       />

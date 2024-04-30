@@ -1878,6 +1878,7 @@
             "lpFeeRate": "LP fee rate",
             "lpFeeRateInfo": "The fee rate that is charged per swap and given to AMM LPs",
             "volume": "24H volume",
+            "lastPrice": "Last price",
             "balance": "Balance"
         },
         "positionsTable": {

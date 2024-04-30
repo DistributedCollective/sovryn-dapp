@@ -58,10 +58,11 @@ const BitocracyPage: FC = () => {
       <Helmet>
         <title>{t(pageTranslations.meta.title)}</title>
       </Helmet>
-      <div className="w-full flex flex-col items-center text-gray-10 max-w-6xl">
+      <div className="w-full flex flex-col items-center text-gray-10 md:max-w-6xl">
         <NetworkBanner
           requiredChainId={RSK_CHAIN_ID}
           childClassName="flex flex-col items-center text-gray-10"
+          outerClassName="w-full"
         >
           <Heading className="text-base sm:text-2xl font-medium">
             {t(pageTranslations.title)}

@@ -15,6 +15,7 @@ import { AmountRenderer } from '../../../../../../../../2_molecules/AmountRender
 import { translations } from '../../../../../../../../../locales/i18n';
 import { decimalic } from '../../../../../../../../../utils/math';
 import { AmbientLiquidityPool } from '../../../../../AmbientMarketMaking/utils/AmbientLiquidityPool';
+import { useGetTokenDecimals } from '../../../../../BobWIthdrawModal/hooks/useGetTokenDecimals';
 import {
   MAXIMUM_PRICE,
   MINIMUM_PRICE,
@@ -40,7 +41,15 @@ export const BalancedRange: FC<BalancedRangeProps> = ({ pool }) => {
 
   const isInfiniteRange = useMemo(() => rangeWidth === 100, [rangeWidth]);
 
-  const { spotPrice: currentPrice } = useGetPoolInfo(pool.base, pool.quote);
+  const { spotPrice: currentPrice, poolTokens } = useGetPoolInfo(
+    pool.base,
+    pool.quote,
+  );
+
+  const { quoteTokenDecimals } = useGetTokenDecimals(
+    poolTokens?.tokenA,
+    poolTokens?.tokenB,
+  );
 
   const updatePrice = useCallback(
     (isMinimumPrice: boolean, value: number) => {
@@ -128,7 +137,11 @@ export const BalancedRange: FC<BalancedRangeProps> = ({ pool }) => {
             isInfiniteRange ? (
               <span className="text-xs font-medium">0</span>
             ) : (
-              <AmountRenderer value={minimumPrice} suffix={pool.base} />
+              <AmountRenderer
+                value={minimumPrice}
+                suffix={pool.base}
+                decimals={quoteTokenDecimals}
+              />
             )
           }
         />
@@ -138,7 +151,11 @@ export const BalancedRange: FC<BalancedRangeProps> = ({ pool }) => {
             isInfiniteRange ? (
               <span className="text-xs font-medium">∞</span>
             ) : (
-              <AmountRenderer value={maximumPrice} suffix={pool.base} />
+              <AmountRenderer
+                value={maximumPrice}
+                suffix={pool.base}
+                decimals={quoteTokenDecimals}
+              />
             )
           }
         />

@@ -12,7 +12,7 @@ import {
   Tooltip,
   TooltipTrigger,
 } from '@sovryn/ui';
-import { Decimalish } from '@sovryn/utils';
+import { Decimal, Decimalish } from '@sovryn/utils';
 
 import { useNotificationContext } from '../../../contexts/NotificationContext';
 import { translations } from '../../../locales/i18n';
@@ -40,6 +40,7 @@ type AmountRendererProps = {
   useTooltip?: boolean;
   showRoundingPrefix?: boolean;
   trigger?: TooltipTrigger;
+  decimals?: number;
 };
 
 export const AmountRenderer: FC<AmountRendererProps> = ({
@@ -53,11 +54,20 @@ export const AmountRenderer: FC<AmountRendererProps> = ({
   useTooltip = true,
   showRoundingPrefix = true,
   trigger = TooltipTrigger.click,
+  decimals = 18,
 }) => {
+  const adjustedValue = useMemo(
+    () =>
+      !value || value === 0 || value === '0'
+        ? Decimal.ZERO
+        : Decimal.from(value).asUnits(decimals),
+    [decimals, value],
+  );
+
   const { addNotification } = useNotificationContext();
 
   const copyAddress = useCallback(async () => {
-    await navigator.clipboard.writeText(String(value));
+    await navigator.clipboard.writeText(String(adjustedValue));
 
     addNotification({
       type: NotificationType.success,
@@ -66,11 +76,11 @@ export const AmountRenderer: FC<AmountRendererProps> = ({
       dismissible: true,
       id: nanoid(),
     });
-  }, [addNotification, value]);
+  }, [addNotification, adjustedValue]);
 
   const valueIsRounded = useMemo(
-    () => getDecimalPartLength(value) > precision,
-    [precision, value],
+    () => getDecimalPartLength(adjustedValue) > precision,
+    [adjustedValue, precision],
   );
 
   const shouldShowRoundingPrefix = useMemo(
@@ -84,14 +94,14 @@ export const AmountRenderer: FC<AmountRendererProps> = ({
   );
 
   const calculatedPrecision = useMemo(
-    () => calculateDecimalPlaces(value, precision),
-    [value, precision],
+    () => calculateDecimalPlaces(adjustedValue, precision),
+    [adjustedValue, precision],
   );
 
   const countUpValues = useMemo(() => {
-    const endValue = decimalic(value).toString();
+    const endValue = decimalic(adjustedValue).toString();
     const [whole = '', decimals = ''] = endValue.split('.');
-    const checkPrecision = isValueBetweenZeroAndOne(Number(value))
+    const checkPrecision = isValueBetweenZeroAndOne(Number(adjustedValue))
       ? calculatedPrecision
       : precision;
     const end = parseFloat(
@@ -102,24 +112,24 @@ export const AmountRenderer: FC<AmountRendererProps> = ({
       end,
       decimals: getDecimalPartLength(end),
     };
-  }, [calculatedPrecision, value, precision]);
+  }, [adjustedValue, calculatedPrecision, precision]);
 
   const localeFormattedValue = useMemo(
     () =>
       formatValue(
-        value,
-        isValueBetweenZeroAndOne(Number(value))
+        adjustedValue,
+        isValueBetweenZeroAndOne(Number(adjustedValue))
           ? calculatedPrecision
           : precision,
       ),
-    [value, calculatedPrecision, precision],
+    [adjustedValue, calculatedPrecision, precision],
   );
 
   return (
     <Tooltip
       content={
         <span className="flex items-center">
-          {`${prefix} ${decimalic(value)} ${suffix}`}
+          {`${prefix} ${decimalic(adjustedValue)} ${suffix}`}
           <span
             className="ml-1 cursor-pointer hover:bg-gray-20 p-1 rounded text-gray-50"
             onClick={copyAddress}

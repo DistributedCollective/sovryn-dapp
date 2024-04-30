@@ -3,11 +3,11 @@ import { MaxAllowanceTransferAmount } from '@uniswap/permit2-sdk';
 import { useCallback } from 'react';
 
 import { BigNumber, Contract, ethers } from 'ethers';
-import { parseUnits } from 'ethers/lib/utils';
 import { t } from 'i18next';
 
-import { calcRangeTilt, priceToTick, tickToPrice } from '@sovryn/sdex';
+import { priceToTick } from '@sovryn/sdex';
 import { CrocTokenView } from '@sovryn/sdex/dist/tokens';
+import { Decimal } from '@sovryn/utils';
 
 import {
   Transaction,
@@ -19,7 +19,11 @@ import { useAccount } from '../../../../../../hooks/useAccount';
 import { useCurrentChain } from '../../../../../../hooks/useChainStore';
 import { translations } from '../../../../../../locales/i18n';
 import { prepareApproveTransaction } from '../../../../../../utils/transactions';
-import { createRangePositionTx } from '../../../../BobAmmPage/ambient-utils';
+import {
+  createRangePositionTx,
+  roundDownTick,
+  roundUpTick,
+} from '../../../../BobAmmPage/ambient-utils';
 import { AmbientLiquidityPoolDictionary } from '../../AmbientMarketMaking/utils/AmbientLiquidityPoolDictionary';
 import { useDepositContext } from '../contexts/BobDepositModalContext';
 import { useGetPoolInfo } from './useGetPoolInfo';
@@ -27,23 +31,21 @@ import { useGetPoolInfo } from './useGetPoolInfo';
 const testAllowance = async (
   owner: string,
   token: CrocTokenView,
-  amount: number,
+  amount: BigNumber,
 ) => {
   const allowance = await token.allowance(owner);
-  const decimals = await token.decimals;
 
-  const needAllowance = parseUnits(
-    (amount + 0.00001).toFixed(decimals),
-    decimals,
-  );
-
-  if (allowance.lt(needAllowance)) {
+  if (allowance.lt(amount)) {
     const approval = await token.approve();
     return approval;
   }
 };
 
-export const useHandleSubmit = (assetA: string, assetB: string) => {
+export const useHandleSubmit = (
+  assetA: string,
+  assetB: string,
+  onComplete: () => void,
+) => {
   const chainId = useCurrentChain();
   const { account, signer } = useAccount();
   const { croc } = useCrocContext();
@@ -56,6 +58,7 @@ export const useHandleSubmit = (assetA: string, assetB: string) => {
     maximumSlippage,
     isBalancedRange,
     rangeWidth,
+    usesBaseToken,
   } = useDepositContext();
 
   const { setTransactions, setIsOpen, setTitle } = useTransactionContext();
@@ -65,17 +68,25 @@ export const useHandleSubmit = (assetA: string, assetB: string) => {
       return;
     }
 
+    const firstAssetBigNumberAmount = Decimal.from(firstAssetValue)
+      .asUnits(await poolTokens.tokenA.decimals)
+      .toBigNumber();
+
+    const secondAssetBigNumberAmount = Decimal.from(secondAssetValue)
+      .asUnits(await poolTokens.tokenB.decimals)
+      .toBigNumber();
+
     const transactions: Transaction[] = [];
 
     const allowanceA = await testAllowance(
       account,
       poolTokens.tokenA,
-      Number(firstAssetValue),
+      firstAssetBigNumberAmount,
     );
     const allowanceB = await testAllowance(
       account,
       poolTokens.tokenB,
-      Number(secondAssetValue),
+      secondAssetBigNumberAmount,
     );
 
     if (allowanceA) {
@@ -124,27 +135,12 @@ export const useHandleSubmit = (assetA: string, assetB: string) => {
 
     const pool = AmbientLiquidityPoolDictionary.get(assetA, assetB, chainId);
 
-    // todo: check if tokenA is primary range
-    // @dev: It's expected to be TRUE if user enters amount to BASE token input and FALSE if user enters amount to QUOTE token input.
-    // @dev: We can have it as TRUE by default.
-    // @dev: If liquidity is out of balance and user wants to deposit position which is out of range (max price is lower than current price)  - it MUST be FALSE, to depositing QUOTE token only.
-    // @dev: If liquidity is out of balance and user wants to deposit position which is out of range (min price is higher than current price) - it MUST be TRUE, to depositing BASE token only.
-    const isTokenAPrimaryRange = true;
+    const gridSize = (await croc.context).chain.gridSize;
 
     const tick = {
-      low: priceToTick(lowerBoundaryPrice),
-      high: priceToTick(upperBoundaryPrice),
+      low: roundDownTick(priceToTick(lowerBoundaryPrice), gridSize),
+      high: roundUpTick(priceToTick(upperBoundaryPrice), gridSize),
     };
-
-    console.log('tick', tick);
-    const price = {
-      min: tickToPrice(tick.low),
-      max: tickToPrice(tick.high),
-    };
-    console.log('price', price);
-
-    const rangeTilt = calcRangeTilt(price.min, tick.low, tick.high);
-    console.log('rangeTilt', rangeTilt);
 
     const tx = await createRangePositionTx({
       crocEnv: croc,
@@ -152,20 +148,21 @@ export const useHandleSubmit = (assetA: string, assetB: string) => {
       slippageTolerancePercentage: maximumSlippage,
       tokenA: {
         address: poolTokens.tokenA.tokenAddr,
-        qty: Number(firstAssetValue),
+        qty: firstAssetBigNumberAmount,
         isWithdrawFromDexChecked: false,
       },
       tokenB: {
         address: poolTokens.tokenB.tokenAddr,
-        qty: Number(secondAssetValue),
+        qty: secondAssetBigNumberAmount,
         isWithdrawFromDexChecked: false,
       },
-      isTokenAPrimaryRange,
+      isTokenAPrimaryRange: usesBaseToken,
       tick,
       lpConduit: pool?.lpTokenAddress,
+      poolIndex: pool?.poolIndex,
     });
 
-    console.log('tx', tx);
+    console.log('txData', tx);
 
     transactions.push({
       title: t(translations.common.deposit),
@@ -179,6 +176,7 @@ export const useHandleSubmit = (assetA: string, assetB: string) => {
           ? tx.txArgs.gasLimit
           : BigNumber.from(6_000_000),
       },
+      onComplete,
     });
 
     setTransactions(transactions);
@@ -201,7 +199,9 @@ export const useHandleSubmit = (assetA: string, assetB: string) => {
     setTitle,
     setTransactions,
     signer,
+    onComplete,
     upperBoundaryPrice,
+    usesBaseToken,
   ]);
 
   return onSubmit;

@@ -1,16 +1,12 @@
 // eslint-disable-next-line import/no-anonymous-default-export
-export default `<svg width="20" height="20" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg">
-<g class="layer">
- <g id="svg_10">
-  <rect fill="#00A3FF" height="19.7" id="svg_1" rx="256" width="19.7" x="0.1" y="0.1"/>
-  <path d="m13.99,9.25l0.11,0.17c1.24,1.91 0.97,4.41 -0.67,6.01c-0.96,0.94 -2.22,1.41 -3.48,1.41l4.04,-7.59z" fill="#fff" id="svg_2" opacity="0.6"/>
-  <path d="m9.95,11.56l4.04,-2.31l-4.04,7.59l0,-5.28z" fill="#fff" id="svg_3" opacity="0.2"/>
-  <path d="m5.91,9.25l-0.11,0.17c-1.24,1.91 -0.97,4.41 0.67,6.01c0.96,0.94 2.22,1.41 3.48,1.41l-4.04,-7.59z" fill="#fff" id="svg_4"/>
-  <path d="m9.95,11.56l-4.04,-2.31l4.04,7.59l0,-5.28z" fill="#fff" id="svg_5" opacity="0.6"/>
-  <path d="m9.95,6.4l0,3.98l3.48,-1.99l-3.48,-1.99z" fill="#fff" id="svg_6" opacity="0.2"/>
-  <path d="m9.95,6.4l-3.48,1.99l3.48,1.99l0,-3.98z" fill="#fff" id="svg_7" opacity="0.6"/>
-  <path d="m9.95,3.06l-3.48,5.34l3.48,-2l0,-3.34z" fill="#fff" id="svg_8"/>
-  <path d="m9.95,6.4l3.48,2l-3.48,-5.34l0,3.34z" fill="#fff" id="svg_9" opacity="0.6"/>
- </g>
-</g>
+export default `<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+<circle cx="10" cy="10" r="10" fill="#00A3FF"/>
+<path d="M5.88349 9.29587L5.77516 9.45836C4.52939 11.4083 4.80021 13.954 6.47929 15.5789C7.40008 16.5539 8.70002 17.0413 9.99996 17.0413C9.99996 17.0413 9.99996 17.0413 5.88349 9.29587Z" fill="white"/>
+<path opacity="0.6" d="M10 11.6249L5.88354 9.2417C10 17.0413 10 17.0413 10 17.0413C10 15.3622 10 13.4123 10 11.6249Z" fill="white"/>
+<path opacity="0.6" d="M14.1165 9.29587L14.2248 9.45836C15.4706 11.4083 15.1998 13.954 13.5207 15.5789C12.5457 16.5539 11.2999 17.0413 10 17.0413C10 17.0413 10 17.0413 14.1165 9.29587Z" fill="white"/>
+<path opacity="0.2" d="M10 11.6249L14.1165 9.2417C10 17.0413 10 17.0413 10 17.0413C10 15.3622 10 13.4123 10 11.6249Z" fill="white"/>
+<path opacity="0.2" d="M10 6.371V10.4333L13.5748 8.42924L10 6.371Z" fill="white"/>
+<path opacity="0.6" d="M10 6.371L6.42517 8.42924L10 10.4333V6.371Z" fill="white"/>
+<path d="M10 2.95868L6.42517 8.42925L10 6.37102V2.95868Z" fill="white"/>
+<path opacity="0.6" d="M10 6.37102L13.5748 8.42925L10 2.95868V6.37102Z" fill="white"/>
 </svg>`;

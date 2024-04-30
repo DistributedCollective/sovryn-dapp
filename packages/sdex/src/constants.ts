@@ -39,6 +39,30 @@ export interface ChainSpec {
 const ETHEREUM_LOGO =
   'https://d33wubrfki0l68.cloudfront.net/fcd4ecd90386aeb50a235ddc4f0063cfbb8a7b66/4295e/static/bfc04ac72981166c740b189463e1f74c/40129/eth-diamond-black-white.jpg';
 
+const BOB_CHAIN: ChainSpec = {
+  nodeUrl: 'https://rpc.gobob.xyz',
+  addrs: {
+    dex: '0xe5bc234A484A912A61Aa74501960cFc202e773dA',
+    query: '0xf1e7167A0b085B52A8ad02A5Cc48eD2027b8B577',
+    impact: '0x30B2a8810B091D1DbE4aAA4905141f815586e274',
+    router: '0x9f93D654a1cdC128c27F99Af5452b26d8002e607',
+    routerBypass: '0x7b96cC2256e94348a678B554e2fC648D13b1560E',
+  },
+  poolIndex: 400,
+  isTestNet: false,
+  chainId: '0xed88', // 60808
+  gridSize: 4,
+  proxyPaths: {
+    cold: 3,
+    long: 130,
+    liq: 128,
+    dfltColdSwap: true,
+  },
+  blockExplorer: 'https://xplorer.gobob.xyz',
+  displayName: 'BOB',
+  logoUrl: ETHEREUM_LOGO,
+};
+
 const BOB_TESTNET_CHAIN: ChainSpec = {
   nodeUrl: 'https://testnet.rpc.gobob.xyz',
   // wsUrl: 'wss://sepolia-dencun.rpc.gobob.xyz/wss',
@@ -51,7 +75,7 @@ const BOB_TESTNET_CHAIN: ChainSpec = {
   },
   poolIndex: 36000,
   isTestNet: true,
-  chainId: '0x6f',
+  chainId: '0x6f', // 111
   gridSize: 16,
   proxyPaths: {
     cold: 3,
@@ -113,12 +137,14 @@ const LOCAL_FORK_CHAIN: ChainSpec = Object.assign({}, SEPOLIA_CHAIN, {
 });
 
 export const CHAIN_SPECS: { [chainId: string]: ChainSpec } = {
+  '0xed88': BOB_CHAIN,
   '0x6f': BOB_TESTNET_CHAIN,
   '0x7a69': LOCAL_FORK_CHAIN,
   '0xaa36a7': SEPOLIA_CHAIN,
   '0x1b669': TENDERLY_FORK,
   sepolia: SEPOLIA_CHAIN,
   local: LOCAL_FORK_CHAIN,
+  bob: BOB_CHAIN,
   bobTestnet: BOB_TESTNET_CHAIN,
   fork: TENDERLY_FORK,
 };

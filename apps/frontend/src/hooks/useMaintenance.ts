@@ -146,6 +146,9 @@ enum States {
   D2_MARKET_MAKING_MOC = 'marketMakingMOC',
   D2_MARKET_MAKING_RIF = 'marketMakingRIF',
   D2_MARKET_MAKING_MYNT = 'marketMakingMYNT',
+
+  D2_RUNE_BRIDGE_RSK = 'd2RuneBridgeRSK',
+  D2_RUNE_BRIDGE_BOB = 'd2RuneBridgeBOB',
 }
 
 type MaintenanceResult = {

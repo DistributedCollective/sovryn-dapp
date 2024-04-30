@@ -7,8 +7,8 @@ import { Table } from '@sovryn/ui';
 
 import { AssetPairRenderer } from '../../../../../../2_molecules/AssetPairRenderer/AssetPairRenderer';
 import { AssetPairSize } from '../../../../../../2_molecules/AssetPairRenderer/AssetPairRenderer.types';
+import { useAccount } from '../../../../../../../hooks/useAccount';
 import { useCurrentChain } from '../../../../../../../hooks/useChainStore';
-import { useIsMobile } from '../../../../../../../hooks/useIsMobile';
 import { translations } from '../../../../../../../locales/i18n';
 import { AmbientLiquidityPool } from '../../utils/AmbientLiquidityPool';
 import { AmbientLiquidityPoolDictionary } from '../../utils/AmbientLiquidityPoolDictionary';
@@ -16,11 +16,9 @@ import { AmbientPoolPositions } from '../AmbientPoolPositions/AmbientPoolPositio
 import { COLUMNS_CONFIG } from './AmbientPoolsTable.constants';
 import styles from './AmbientPoolsTable.module.css';
 
-type AmbientPoolsTableProps = {};
-
-export const AmbientPoolsTable: FC<AmbientPoolsTableProps> = () => {
+export const AmbientPoolsTable: FC = () => {
   const chainId = useCurrentChain();
-  const { isMobile } = useIsMobile();
+  const { account } = useAccount();
   const [activePool, setActivePool] = useState('');
   const tableRef = useRef<HTMLDivElement>(null);
 
@@ -41,8 +39,8 @@ export const AmbientPoolsTable: FC<AmbientPoolsTableProps> = () => {
         data-pool-key={pool.key}
       >
         <AssetPairRenderer
-          asset1={pool.base}
-          asset2={pool.quote}
+          asset1={pool.quote}
+          asset2={pool.base}
           chainId={pool.chainId}
           size={AssetPairSize.small}
         />
@@ -56,13 +54,9 @@ export const AmbientPoolsTable: FC<AmbientPoolsTableProps> = () => {
     [],
   );
 
-  const mobileRenderer = useCallback(
-    (pool: AmbientLiquidityPool) => <AmbientPoolPositions pool={pool} />,
-    [],
-  );
-
   const onPoolClick = useCallback(
-    (pool: AmbientLiquidityPool) => setActivePool(pool.key),
+    (pool: AmbientLiquidityPool) =>
+      setActivePool(activePool => (activePool === pool.key ? '' : pool.key)),
     [setActivePool],
   );
 
@@ -85,12 +79,11 @@ export const AmbientPoolsTable: FC<AmbientPoolsTableProps> = () => {
         dataAttribute="ambient-pool-table"
         expandedClassNames="border border-gray-70 border-t-0"
         preventExpandOnClickClass="prevent-row-click"
-        expandedContent={!isMobile ? generateExpandedContent : undefined}
-        onRowClick={onPoolClick}
+        expandedContent={generateExpandedContent}
+        onRowClick={account ? onPoolClick : undefined}
         expandedIndex={expandedIndex}
         className={styles.table}
         rowTitle={generateRowTitle}
-        mobileRenderer={mobileRenderer}
       />
     </div>
   );

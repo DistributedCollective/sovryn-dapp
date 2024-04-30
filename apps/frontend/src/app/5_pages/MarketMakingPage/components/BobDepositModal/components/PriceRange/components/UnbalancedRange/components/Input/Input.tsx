@@ -8,16 +8,20 @@ type InputProps = {
   label: string;
   value: number;
   range: number;
+  text: number;
   onMinusClick: () => void;
   onPlusClick: () => void;
+  decimals: number;
 };
 
 export const Input: FC<InputProps> = ({
   label,
   value,
+  text,
   range,
   onMinusClick,
   onPlusClick,
+  decimals,
 }) => (
   <div className="flex flex-col items-center min-w-36">
     <div className="text-xs font-medium text-gray-30 mb-2">{label}</div>
@@ -29,8 +33,9 @@ export const Input: FC<InputProps> = ({
         className="text-gray-30 text-base font-medium px-2"
       />
       <AmountRenderer
-        value={value}
+        value={text}
         className="text-sm font-medium text-gray-10"
+        decimals={decimals}
       />
       <Button
         text="+"

@@ -2,25 +2,32 @@ import React from 'react';
 
 import { t } from 'i18next';
 
-import { TransactionId } from '@sovryn/ui';
+import { HelperButton } from '@sovryn/ui';
 
 import { AmountRenderer } from '../../../../../../2_molecules/AmountRenderer/AmountRenderer';
+import { TransactionIdRenderer } from '../../../../../../2_molecules/TransactionIdRenderer/TransactionIdRenderer';
 import { translations } from '../../../../../../../locales/i18n';
 import { AmbientPosition } from '../../AmbientMarketMaking.types';
 import { AmbientLiquidityPool } from '../../utils/AmbientLiquidityPool';
+import { AmbientPoolPositionClaimFees } from './components/AmbientPoolPositionClaimFees/AmbientPoolPositionClaimFees';
 import { AmbientPoolPositionWithdraw } from './components/AmbientPoolPositionWithdraw/AmbientPoolPositionWithdraw';
 import { AmbientPositionBalance } from './components/AmbientPositionBalance/AmbientPositionBalance';
+import { AmbientPositionPrices } from './components/AmbientPositionPrices/AmbientPositionPrices';
+import { AmbientPositionValue } from './components/AmbientPositionValue/AmbientPositionValue';
 
 export const COLUMNS_CONFIG = (pool: AmbientLiquidityPool) => [
   {
     id: 'positionID',
     title: t(translations.ambientMarketMaking.positionsTable.positionID),
     cellRenderer: (position: AmbientPosition) => (
-      <TransactionId href="" value={position.positionId} />
+      <TransactionIdRenderer
+        hash={position.firstMintTx}
+        chainId={pool.chainId}
+      />
     ),
   },
   {
-    id: 'liquidity',
+    id: 'prices',
     title: (
       <div className="flex flex-col">
         <span>
@@ -32,15 +39,19 @@ export const COLUMNS_CONFIG = (pool: AmbientLiquidityPool) => [
       </div>
     ),
     cellRenderer: (position: AmbientPosition) => (
-      <div className="flex flex-col">
-        <AmountRenderer value={position.bidTick} suffix="DLLR" />
-        <AmountRenderer value={position.askTick} suffix="DLLR" />
-      </div>
+      <AmbientPositionPrices pool={pool} position={position} />
     ),
   },
   {
     id: 'returns',
-    title: t(translations.ambientMarketMaking.positionsTable.returns),
+    title: (
+      <span className="flex items-center gap-1">
+        {t(translations.ambientMarketMaking.positionsTable.apr)}{' '}
+        <HelperButton
+          content={t(translations.ambientMarketMaking.positionsTable.aprInfo)}
+        />
+      </span>
+    ),
     cellRenderer: (position: AmbientPosition) => (
       <AmountRenderer value={position.aprEst * 100} suffix="%" />
     ),
@@ -48,7 +59,9 @@ export const COLUMNS_CONFIG = (pool: AmbientLiquidityPool) => [
   {
     id: 'value',
     title: t(translations.ambientMarketMaking.positionsTable.value),
-    cellRenderer: () => <AmountRenderer value={'1000'} prefix="$" />,
+    cellRenderer: (position: AmbientPosition) => (
+      <AmbientPositionValue pool={pool} position={position} />
+    ),
   },
   {
     id: 'balance',
@@ -62,6 +75,13 @@ export const COLUMNS_CONFIG = (pool: AmbientLiquidityPool) => [
     title: '',
     cellRenderer: (position: AmbientPosition) => (
       <div className="flex justify-end items-center">
+        {position.rewardLiq > 0 && (
+          <AmbientPoolPositionClaimFees
+            pool={pool}
+            position={position}
+            className="mr-4"
+          />
+        )}
         <AmbientPoolPositionWithdraw pool={pool} position={position} />
       </div>
     ),

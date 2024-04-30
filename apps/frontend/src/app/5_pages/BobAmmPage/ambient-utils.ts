@@ -1,8 +1,9 @@
-import { CrocEnv } from '@sovryn/sdex';
+import { CrocEnv, MAX_TICK, MIN_TICK, toDisplayPrice } from '@sovryn/sdex';
+import { TokenQty } from '@sovryn/sdex/dist/tokens';
 
 type RangePositionTokenInfo = {
   address: string;
-  qty: number;
+  qty: TokenQty;
   isWithdrawFromDexChecked: boolean;
 };
 
@@ -15,6 +16,19 @@ export interface CreateRangePositionParams {
   isTokenAPrimaryRange: boolean; // TODO: better name for this variable
   tick: { low: number; high: number };
   lpConduit?: string;
+  poolIndex: number;
+}
+
+export function roundDownTick(lowTick: number, nTicksGrid: number): number {
+  const tickGrid = Math.floor(lowTick / nTicksGrid) * nTicksGrid;
+  const horizon = Math.floor(MIN_TICK / nTicksGrid) * nTicksGrid;
+  return Math.max(tickGrid, horizon);
+}
+
+export function roundUpTick(highTick: number, nTicksGrid: number): number {
+  const tickGrid = Math.ceil(highTick / nTicksGrid) * nTicksGrid;
+  const horizon = Math.ceil(MAX_TICK / nTicksGrid) * nTicksGrid;
+  return Math.min(tickGrid, horizon);
 }
 
 export async function createRangePositionTx(params: CreateRangePositionParams) {
@@ -27,9 +41,10 @@ export async function createRangePositionTx(params: CreateRangePositionParams) {
     isTokenAPrimaryRange,
     tick,
     lpConduit,
+    poolIndex,
   } = params;
 
-  const pool = crocEnv.pool(tokenA.address, tokenB.address);
+  const pool = crocEnv.pool(tokenA.address, tokenB.address, poolIndex);
   const poolPrice = await pool.displayPrice();
 
   const price = {
@@ -83,11 +98,69 @@ export async function createRangePositionTx(params: CreateRangePositionParams) {
     );
   };
 
-  console.log('tx params', params);
-
   const tx = isAmbient
     ? await (isTokenAPrimaryRange ? mintAmbientQuote() : mintAmbientBase())
     : await (isTokenAPrimaryRange ? mintRangeQuote() : mintRangeBase());
 
   return tx;
 }
+
+// NOTE: depositSkew calculated in sdk
+export const calculateSecondaryDepositQty = (
+  poolPriceNonDisplay: number, // the 'scaled' or 'wei' price of the pool
+  tokenADecimals: number,
+  tokenBDecimals: number,
+  primaryInputValueStr: string, // the token quantity entered by the user
+  isTokenAPrimary: boolean,
+  isTokenABase: boolean,
+  isAmbientPosition: boolean,
+  depositSkew?: number,
+) => {
+  const baseDecimals = isTokenABase ? tokenADecimals : tokenBDecimals;
+  const quoteDecimals = !isTokenABase ? tokenADecimals : tokenBDecimals;
+
+  const poolDisplayPrice = toDisplayPrice(
+    poolPriceNonDisplay,
+    baseDecimals,
+    quoteDecimals,
+  );
+
+  const isPrimaryTokenBase =
+    (isTokenAPrimary && isTokenABase) || (!isTokenAPrimary && !isTokenABase);
+
+  let secondaryQuantity;
+
+  const primInputValueNum = parseFloat(primaryInputValueStr);
+
+  if (isAmbientPosition) {
+    if (isPrimaryTokenBase) {
+      secondaryQuantity = primInputValueNum / poolDisplayPrice;
+    } else {
+      secondaryQuantity = primInputValueNum / (1 / poolDisplayPrice);
+    }
+  } else {
+    if (depositSkew) {
+      if (isPrimaryTokenBase) {
+        secondaryQuantity =
+          primInputValueNum / (poolDisplayPrice * depositSkew);
+      } else {
+        secondaryQuantity =
+          primInputValueNum * (poolDisplayPrice * depositSkew);
+      }
+    }
+  }
+
+  if (secondaryQuantity) {
+    if (
+      secondaryQuantity === Infinity ||
+      secondaryQuantity === -Infinity ||
+      isNaN(secondaryQuantity)
+    ) {
+      return 0;
+    } else {
+      return secondaryQuantity;
+    }
+  } else {
+    return null;
+  }
+};

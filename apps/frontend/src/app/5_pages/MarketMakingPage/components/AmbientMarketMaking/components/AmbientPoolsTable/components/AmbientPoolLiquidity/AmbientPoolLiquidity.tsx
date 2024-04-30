@@ -3,7 +3,7 @@ import React, { FC } from 'react';
 import { AmountRenderer } from '../../../../../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { TOKEN_RENDER_PRECISION } from '../../../../../../../../../constants/currencies';
 import { getTokenDisplayName } from '../../../../../../../../../constants/tokens';
-import { decimalic, fromWei } from '../../../../../../../../../utils/math';
+import { decimalic } from '../../../../../../../../../utils/math';
 import { useGetAmbientPoolStats } from '../../../../hooks/useGetAmbientPoolStats';
 import { AmbientLiquidityPool } from '../../../../utils/AmbientLiquidityPool';
 
@@ -14,16 +14,16 @@ type AmbientPoolLiquidityProps = {
 export const AmbientPoolLiquidity: FC<AmbientPoolLiquidityProps> = ({
   pool,
 }) => {
-  const { stats } = useGetAmbientPoolStats(pool);
+  const { stats, baseToken, quoteToken } = useGetAmbientPoolStats(pool);
   return (
-    <div className="flex flex-col gap-0.5">
+    <div className="inline-flex flex-col gap-0.5">
       <AmountRenderer
-        value={fromWei(decimalic(stats?.baseTvl || 0).toString())}
+        value={decimalic(stats?.baseTvl || 0).toUnits(baseToken?.decimals)}
         suffix={getTokenDisplayName(pool.base, pool.chainId)}
         precision={TOKEN_RENDER_PRECISION}
       />
       <AmountRenderer
-        value={fromWei(decimalic(stats?.quoteTvl || 0).toString())}
+        value={decimalic(stats?.quoteTvl || 0).toUnits(quoteToken?.decimals)}
         suffix={getTokenDisplayName(pool.quote, pool.chainId)}
         precision={TOKEN_RENDER_PRECISION}
       />

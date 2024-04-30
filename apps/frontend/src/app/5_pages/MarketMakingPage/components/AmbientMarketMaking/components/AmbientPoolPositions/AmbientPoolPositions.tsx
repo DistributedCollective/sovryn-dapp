@@ -2,18 +2,21 @@ import React, { FC } from 'react';
 
 import { t } from 'i18next';
 
-import { SimpleTableRow, Table } from '@sovryn/ui';
+import { HelperButton, SimpleTableRow, Table } from '@sovryn/ui';
 
 import { AmountRenderer } from '../../../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { TransactionIdRenderer } from '../../../../../../2_molecules/TransactionIdRenderer/TransactionIdRenderer';
-import { BITCOIN } from '../../../../../../../constants/currencies';
 import { useIsMobile } from '../../../../../../../hooks/useIsMobile';
 import { translations } from '../../../../../../../locales/i18n';
 import { useGetAmbientPositions } from '../../hooks/useGetAmbientPositions';
 import { AmbientLiquidityPool } from '../../utils/AmbientLiquidityPool';
 import { COLUMNS_CONFIG } from './AmbientPoolPositions.constants';
 import styles from './AmbientPoolPositions.module.css';
+import { AmbientPoolPositionClaimFees } from './components/AmbientPoolPositionClaimFees/AmbientPoolPositionClaimFees';
 import { AmbientPoolPositionWithdraw } from './components/AmbientPoolPositionWithdraw/AmbientPoolPositionWithdraw';
+import { AmbientPositionBalance } from './components/AmbientPositionBalance/AmbientPositionBalance';
+import { AmbientPositionPrices } from './components/AmbientPositionPrices/AmbientPositionPrices';
+import { AmbientPositionValue } from './components/AmbientPositionValue/AmbientPositionValue';
 
 type AmbientPoolPositionsProps = {
   pool: AmbientLiquidityPool;
@@ -28,27 +31,27 @@ export const AmbientPoolPositions: FC<AmbientPoolPositionsProps> = ({
 
   if (isMobile) {
     return (
-      <div className="flex flex-col gap-2 w-full p-1">
+      <div className="flex flex-col gap-4 w-full p-1">
         {positions.map(position => (
           <div className="flex flex-col gap-2" key={position.positionId}>
             <SimpleTableRow
               label={t(
                 translations.ambientMarketMaking.positionsTable.positionID,
               )}
-              value={<TransactionIdRenderer hash={position.positionId} />}
-            />
-            <SimpleTableRow
-              label={t(translations.ambientMarketMaking.positionsTable.balance)}
               value={
-                <div className="flex flex-col gap-1">
-                  <AmountRenderer value={'1000'} suffix="DLLR" />
-                  <AmountRenderer value={'1000'} suffix={BITCOIN} />
-                </div>
+                <TransactionIdRenderer
+                  hash={position.firstMintTx}
+                  chainId={pool.chainId}
+                />
               }
             />
             <SimpleTableRow
+              label={t(translations.ambientMarketMaking.positionsTable.balance)}
+              value={<AmbientPositionBalance pool={pool} position={position} />}
+            />
+            <SimpleTableRow
               label={t(translations.ambientMarketMaking.positionsTable.value)}
-              value={<AmountRenderer value={'1000'} prefix="$" />}
+              value={<AmbientPositionValue pool={pool} position={position} />}
             />
             <SimpleTableRow
               label={
@@ -65,25 +68,37 @@ export const AmbientPoolPositions: FC<AmbientPoolPositionsProps> = ({
                   </span>
                 </div>
               }
-              value={
-                <div className="flex flex-col">
-                  <AmountRenderer value={position.bidTick} suffix="DLLR" />
-                  <AmountRenderer value={position.askTick} suffix="DLLR" />
-                </div>
-              }
+              value={<AmbientPositionPrices pool={pool} position={position} />}
             />
             <SimpleTableRow
-              label={t(translations.ambientMarketMaking.positionsTable.returns)}
+              label={
+                <span className="flex items-center gap-1">
+                  {t(translations.ambientMarketMaking.positionsTable.apr)}{' '}
+                  <HelperButton
+                    content={t(
+                      translations.ambientMarketMaking.positionsTable.aprInfo,
+                    )}
+                  />
+                </span>
+              }
               value={
                 <AmountRenderer value={position.aprEst * 100} suffix="%" />
               }
             />
+            {position.rewardLiq > 0 && (
+              <AmbientPoolPositionClaimFees
+                pool={pool}
+                position={position}
+                className="mb-2"
+              />
+            )}
             <AmbientPoolPositionWithdraw pool={pool} position={position} />
           </div>
         ))}
       </div>
     );
   }
+
   return (
     <div className="w-full p-6">
       <Table
@@ -94,7 +109,7 @@ export const AmbientPoolPositions: FC<AmbientPoolPositionsProps> = ({
         dataAttribute="ambient-pool-positions-table"
         preventExpandOnClickClass="prevent-row-click"
         className={styles.table}
-        isLoading={isLoading}
+        isLoading={!positions.length ? isLoading : false}
       />
     </div>
   );

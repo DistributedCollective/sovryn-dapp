@@ -2,7 +2,11 @@ import { useMemo } from 'react';
 
 import { OrderOptions } from '@sovryn/ui';
 
-import { sepoliaSdexClient } from '../../../../../../utils/clients';
+import { getCurrentChain } from '../../../../../../hooks/useChainStore';
+import {
+  SubgraphType,
+  getSubgraphClient,
+} from '../../../../../../utils/clients';
 import {
   Swap_OrderBy,
   useGetSwapHistoryQuery,
@@ -33,6 +37,6 @@ export const useGetBobConversionsHistory = (
 
   return useGetSwapHistoryQuery({
     variables: config,
-    client: sepoliaSdexClient,
+    client: getSubgraphClient(SubgraphType.GENERAL, getCurrentChain()),
   });
 };

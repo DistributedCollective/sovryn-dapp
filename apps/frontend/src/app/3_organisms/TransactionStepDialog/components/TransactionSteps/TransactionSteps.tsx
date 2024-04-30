@@ -19,6 +19,7 @@ import { useAccount } from '../../../../../hooks/useAccount';
 import { useCurrentChain } from '../../../../../hooks/useChainStore';
 import { useNativeAssetBalance } from '../../../../../hooks/useNativeAssetBalance';
 import { translations } from '../../../../../locales/i18n';
+import { findNativeAsset } from '../../../../../utils/asset';
 import { sleep } from '../../../../../utils/helpers';
 import { fromWei, toWei } from '../../../../../utils/math';
 import { signERC2612Permit } from '../../../../../utils/permit/permit';
@@ -66,6 +67,8 @@ export const TransactionSteps: FC<TransactionStepsProps> = ({
     () => account && !loading && nativeBalance.sub(estimatedGasFee).gt(0),
     [account, loading, nativeBalance, estimatedGasFee],
   );
+
+  const nativeAsset = useMemo(() => findNativeAsset(chainId), [chainId]);
 
   useEffect(() => {
     const initialize = async () => {
@@ -440,7 +443,9 @@ export const TransactionSteps: FC<TransactionStepsProps> = ({
           {!hasEnoughBalance && (
             <ErrorBadge
               level={ErrorLevel.Critical}
-              message={t(translations.transactionStep.notEnoughBalance)}
+              message={t(translations.transactionStep.notEnoughBalance, {
+                asset: nativeAsset.symbol,
+              })}
             />
           )}
         </>

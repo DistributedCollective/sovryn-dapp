@@ -1,38 +1,16 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
-import { useCrocContext } from '../../../../../../contexts/CrocContext';
 import { useCurrentChain } from '../../../../../../hooks/useChainStore';
-import { findAsset } from '../../../../../../utils/asset';
 import { getIndexerUri } from '../../../../../../utils/indexer';
+import { useGetPool } from '../../../hooks/useGetPool';
 
 export const useGetPoolInfo = (assetA: string, assetB: string) => {
   const chainId = useCurrentChain();
+  const { pool, poolTokens } = useGetPool(assetA, assetB);
 
   const [price, setPrice] = useState(0);
+  const [spotPrice, setSpotPrice] = useState(0);
   const [feeRate, setFeeRate] = useState('0');
-  const { croc } = useCrocContext();
-
-  const poolTokens = useMemo(() => {
-    if (!croc) {
-      return;
-    }
-
-    const assetAAddress = findAsset(assetA, chainId).address;
-    const assetBAddress = findAsset(assetB, chainId).address;
-
-    const tokenA = croc.tokens.materialize(assetAAddress);
-    const tokenB = croc.tokens.materialize(assetBAddress);
-
-    return { tokenA, tokenB };
-  }, [assetA, assetB, chainId, croc]);
-
-  const pool = useMemo(() => {
-    if (!poolTokens || !croc) {
-      return;
-    }
-
-    return croc.pool(poolTokens.tokenA.tokenAddr, poolTokens.tokenB.tokenAddr);
-  }, [croc, poolTokens]);
 
   const getPoolPrice = useCallback(async () => {
     if (!pool) {
@@ -44,6 +22,20 @@ export const useGetPoolInfo = (assetA: string, assetB: string) => {
         setPrice(result);
       } else {
         setPrice(0.000001); // fake price for non existing pools, to prevent ui crashes.
+      }
+    });
+  }, [pool]);
+
+  const getSpotPrice = useCallback(async () => {
+    if (!pool) {
+      return;
+    }
+
+    return pool.spotPrice().then(result => {
+      if (isFinite(result)) {
+        setSpotPrice(result);
+      } else {
+        setSpotPrice(0.000001); // fake price for non existing pools, to prevent ui crashes.
       }
     });
   }, [pool]);
@@ -60,7 +52,7 @@ export const useGetPoolInfo = (assetA: string, assetB: string) => {
         new URLSearchParams({
           base: poolTokens.tokenA.tokenAddr,
           quote: poolTokens.tokenB.tokenAddr,
-          poolIdx: (await pool.context).chain.poolIndex.toString(),
+          poolIdx: poolTokens.poolIndex.toString(),
           chainId: chainId,
         }),
     )
@@ -72,7 +64,7 @@ export const useGetPoolInfo = (assetA: string, assetB: string) => {
 
         const payload = json.data;
 
-        setFeeRate(payload.feeRate);
+        setFeeRate((payload.feeRate * 100).toString());
       })
       .catch(error => {
         return undefined;
@@ -86,10 +78,16 @@ export const useGetPoolInfo = (assetA: string, assetB: string) => {
   }, [getPoolPrice, price]);
 
   useEffect(() => {
+    if (spotPrice === 0) {
+      getSpotPrice();
+    }
+  }, [getSpotPrice, spotPrice]);
+
+  useEffect(() => {
     if (feeRate === '0') {
       getLiquidityFee();
     }
   }, [feeRate, getLiquidityFee, pool]);
 
-  return { poolTokens, price, feeRate, pool };
+  return { poolTokens, price, feeRate, pool, spotPrice };
 };

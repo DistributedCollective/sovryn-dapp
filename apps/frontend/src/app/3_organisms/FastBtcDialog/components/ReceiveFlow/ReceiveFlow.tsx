@@ -1,5 +1,7 @@
 import React, { useCallback, useEffect, useState, useMemo } from 'react';
 
+import { GoBackButton } from '../../../../1_atoms/GoBackButton/GoBackButton';
+import { MobileCloseButton } from '../../../../1_atoms/MobileCloseButton/MobileCloseButton';
 import { useAccount } from '../../../../../hooks/useAccount';
 import { useBlockNumber } from '../../../../../hooks/useBlockNumber';
 import { useGetProtocolContract } from '../../../../../hooks/useGetContract';
@@ -14,8 +16,6 @@ import {
 } from '../../contexts/deposit-context';
 import { useDepositSocket } from '../../hooks/useDepositSocket';
 import { ReceiveEvents } from '../../types';
-import { GoBackButton } from '../GoBackButton';
-import { MobileCloseButton } from '../MobileCloseButton';
 import { AddressForm } from './components/AddressForm';
 import { MainScreen } from './components/MainScreen';
 import { StatusScreen } from './components/StatusScreen';

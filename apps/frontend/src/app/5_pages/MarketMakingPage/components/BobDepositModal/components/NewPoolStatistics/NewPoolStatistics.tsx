@@ -1,4 +1,4 @@
-import React, { FC, useMemo } from 'react';
+import React, { FC, useEffect, useMemo } from 'react';
 
 import { t } from 'i18next';
 
@@ -10,7 +10,7 @@ import {
   TOKEN_RENDER_PRECISION,
 } from '../../../../../../../constants/currencies';
 import { translations } from '../../../../../../../locales/i18n';
-import { COMMON_SYMBOLS } from '../../../../../../../utils/asset';
+import { COMMON_SYMBOLS, findAsset } from '../../../../../../../utils/asset';
 import { AmbientLiquidityPool } from '../../../AmbientMarketMaking/utils/AmbientLiquidityPool';
 import { useDepositContext } from '../../contexts/BobDepositModalContext';
 import { useGetPoolInfo } from '../../hooks/useGetPoolInfo';
@@ -23,9 +23,14 @@ type NewPoolStatisticsProps = {
 };
 
 export const NewPoolStatistics: FC<NewPoolStatisticsProps> = ({ pool }) => {
-  const { firstAssetValue, secondAssetValue } = useDepositContext();
+  const { firstAssetValue, secondAssetValue, setSpotPrice } =
+    useDepositContext();
   const { base, quote } = useMemo(() => pool, [pool]);
-  const { price, feeRate } = useGetPoolInfo(pool.base, pool.quote);
+  const { spotPrice, price, feeRate } = useGetPoolInfo(pool.base, pool.quote);
+
+  useEffect(() => {
+    setSpotPrice(spotPrice);
+  }, [spotPrice, setSpotPrice]);
 
   return (
     <SimpleTable className="mt-6">
@@ -42,12 +47,12 @@ export const NewPoolStatistics: FC<NewPoolStatisticsProps> = ({ pool }) => {
       />
       <SimpleTableRow
         label={t(pageTranslations.currentPrice, {
-          token: quote.toUpperCase(),
+          token: findAsset(base, pool.chainId).symbol ?? base,
         })}
         value={
           <AmountRenderer
             value={price}
-            suffix={quote.toUpperCase()}
+            suffix={findAsset(quote, pool.chainId).symbol ?? quote}
             precision={
               quote === COMMON_SYMBOLS.BTC
                 ? BTC_RENDER_PRECISION

@@ -1,6 +1,5 @@
 /* eslint-disable prefer-const */
 import { AddressZero } from '@ethersproject/constants';
-import { TransactionResponse } from '@ethersproject/providers';
 
 import { BigNumber, BigNumberish, Contract } from 'ethers';
 
@@ -50,6 +49,7 @@ export class CrocPoolView {
   constructor(
     quoteToken: CrocTokenView,
     baseToken: CrocTokenView,
+    poolIndex: number,
     context: Promise<CrocContext>,
   ) {
     [this.baseToken, this.quoteToken] = sortBaseQuoteViews(
@@ -62,6 +62,7 @@ export class CrocPoolView {
     this.quoteDecimals = this.quoteToken.decimals;
 
     this.useTrueBase = this.baseToken.tokenAddr === baseToken.tokenAddr;
+    this.poolIndex = poolIndex;
   }
 
   /* Checks to see if a canonical pool has been initialized for this pair. */
@@ -74,7 +75,7 @@ export class CrocPoolView {
     let sqrtPrice = (await this.context).query.queryPrice(
       this.baseToken.tokenAddr,
       this.quoteToken.tokenAddr,
-      (await this.context).chain.poolIndex,
+      this.poolIndex,
       txArgs,
     );
     return decodeCrocPrice(await sqrtPrice);
@@ -90,7 +91,7 @@ export class CrocPoolView {
     return (await this.context).query.queryCurveTick(
       this.baseToken.tokenAddr,
       this.quoteToken.tokenAddr,
-      (await this.context).chain.poolIndex,
+      this.poolIndex,
       txArgs,
     );
   }
@@ -100,7 +101,7 @@ export class CrocPoolView {
     return (await this.context).query.queryLiquidity(
       this.baseToken.tokenAddr,
       this.quoteToken.tokenAddr,
-      (await this.context).chain.poolIndex,
+      this.poolIndex,
       txArgs,
     );
   }
@@ -110,7 +111,7 @@ export class CrocPoolView {
     return (await this.context).query.queryCurve(
       this.baseToken.tokenAddr,
       this.quoteToken.tokenAddr,
-      (await this.context).chain.poolIndex,
+      this.poolIndex,
       txArgs,
     );
   }
@@ -120,7 +121,7 @@ export class CrocPoolView {
     const queryCurve = (await this.context).query.queryCurve(
       this.baseToken.tokenAddr,
       this.quoteToken.tokenAddr,
-      (await this.context).chain.poolIndex,
+      this.poolIndex,
       txArgs,
     );
     const seedDeflator = (await queryCurve).seedDeflator_;
@@ -209,7 +210,7 @@ export class CrocPoolView {
     let encoder = new PoolInitEncoder(
       this.baseToken.tokenAddr,
       this.quoteToken.tokenAddr,
-      (await this.context).chain.poolIndex,
+      this.poolIndex,
     );
 
     let spotPrice = this.fromDisplayPrice(initPrice);
@@ -263,7 +264,7 @@ export class CrocPoolView {
     liq: BigNumber,
     limits: PriceRange,
     opts?: CrocLpOpts,
-  ): Promise<TransactionResponse> {
+  ): Promise<string> {
     let [lowerBound, upperBound] = await this.transformLimits(limits);
     const calldata = (await this.makeEncoder()).encodeBurnAmbient(
       liq,
@@ -272,13 +273,10 @@ export class CrocPoolView {
       this.maskSurplusFlag(opts),
       this.applyLpConduit(opts),
     );
-    return this.sendCmd(calldata);
+    return calldata;
   }
 
-  async burnAmbientAll(
-    limits: PriceRange,
-    opts?: CrocLpOpts,
-  ): Promise<TransactionResponse> {
+  async burnAmbientAll(limits: PriceRange, opts?: CrocLpOpts): Promise<string> {
     let [lowerBound, upperBound] = await this.transformLimits(limits);
     const calldata = (await this.makeEncoder()).encodeBurnAmbientAll(
       lowerBound,
@@ -286,7 +284,7 @@ export class CrocPoolView {
       this.maskSurplusFlag(opts),
       this.applyLpConduit(opts),
     );
-    return this.sendCmd(calldata);
+    return calldata;
   }
 
   async burnRangeLiq(
@@ -294,7 +292,7 @@ export class CrocPoolView {
     range: TickRange,
     limits: PriceRange,
     opts?: CrocLpOpts,
-  ): Promise<TransactionResponse> {
+  ): Promise<string> {
     let [lowerBound, upperBound] = await this.transformLimits(limits);
     let roundLotLiq = roundForConcLiq(liq);
     const calldata = (await this.makeEncoder()).encodeBurnConc(
@@ -306,14 +304,14 @@ export class CrocPoolView {
       this.maskSurplusFlag(opts),
       this.applyLpConduit(opts),
     );
-    return this.sendCmd(calldata);
+    return calldata;
   }
 
   async harvestRange(
     range: TickRange,
     limits: PriceRange,
     opts?: CrocLpOpts,
-  ): Promise<TransactionResponse> {
+  ): Promise<string> {
     let [lowerBound, upperBound] = await this.transformLimits(limits);
     const calldata = (await this.makeEncoder()).encodeHarvestConc(
       range[0],
@@ -323,7 +321,7 @@ export class CrocPoolView {
       this.maskSurplusFlag(opts),
       this.applyLpConduit(opts),
     );
-    return this.sendCmd(calldata);
+    return calldata;
   }
 
   public async constructParams(
@@ -351,24 +349,6 @@ export class CrocPoolView {
           path: cntx.chain.proxyPaths.liq,
           calldata,
         };
-  }
-
-  private async sendCmd(
-    calldata: string,
-    txArgs?: { value?: BigNumberish },
-  ): Promise<TransactionResponse> {
-    let cntx = await this.context;
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    if (txArgs && !txArgs.gasLimit) {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      txArgs.gasLimit = BigNumber.from(6_000_000);
-    }
-
-    return txArgs
-      ? cntx.dex.userCmd(cntx.chain.proxyPaths.liq, calldata, txArgs)
-      : cntx.dex.userCmd(cntx.chain.proxyPaths.liq, calldata);
   }
 
   private async mintAmbient(
@@ -525,13 +505,6 @@ export class CrocPoolView {
     opts?: CrocLpOpts,
   ): Promise<BigNumber> {
     let ethQty = isQtyBase ? qty : this.ethForRangeQuote(qty, range, limits);
-    console.log(
-      'ethQty',
-      ethQty,
-      isQtyBase,
-      qty,
-      this.ethForRangeQuote(qty, range, limits),
-    );
     return this.ethToAttach(await ethQty, opts);
   }
 
@@ -601,7 +574,7 @@ export class CrocPoolView {
     return new WarmPathEncoder(
       this.baseToken.tokenAddr,
       this.quoteToken.tokenAddr,
-      (await this.context).chain.poolIndex,
+      this.poolIndex,
     );
   }
 
@@ -611,6 +584,7 @@ export class CrocPoolView {
   readonly quoteDecimals: Promise<number>;
   readonly useTrueBase: boolean;
   readonly context: Promise<CrocContext>;
+  readonly poolIndex: number;
 }
 
 export interface CrocLpOpts {

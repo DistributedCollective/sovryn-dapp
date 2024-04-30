@@ -3,7 +3,7 @@ import { persist, createJSONStorage } from 'zustand/middleware';
 
 import { ChainId } from '@sovryn/ethers-provider';
 
-import { DEFAULT_CHAIN_ID } from '../config/chains';
+import { APP_CHAIN_LIST, DEFAULT_CHAIN_ID } from '../config/chains';
 
 import { onboard } from '../lib/connector';
 
@@ -28,6 +28,21 @@ export const useChainStore = create<ChainStore>()(
     {
       name: 'chain-storage',
       storage: createJSONStorage(() => localStorage),
+      onRehydrateStorage: () => {
+        return (s, e) => {
+          if (e) {
+            console.warn('chain store rehydration error', e);
+            return;
+          }
+          // reset to default chain if current chain is not in the list
+          if (
+            s?.currentChainId &&
+            !APP_CHAIN_LIST.find(item => item.id === s.currentChainId)
+          ) {
+            s.setCurrentChainId(APP_CHAIN_LIST[0].id);
+          }
+        };
+      },
     },
   ),
 );

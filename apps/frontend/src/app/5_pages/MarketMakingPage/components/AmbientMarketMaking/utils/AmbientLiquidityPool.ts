@@ -1,38 +1,49 @@
-import { BigNumber } from 'ethers';
-
 import { ChainId } from '@sovryn/ethers-provider';
 
 import { findAsset } from '../../../../../../utils/asset';
 
 export class AmbientLiquidityPool {
-  private _baseAddress: string;
-  private _quoteAddress: string;
+  public readonly baseAddress: string;
+  public readonly quoteAddress: string;
 
   public readonly base;
   public readonly quote;
 
   constructor(
-    _base: string,
-    _quote: string,
+    tokenA: string,
+    tokenB: string,
     public readonly chainId: ChainId,
-    public readonly poolIdx: string,
+    public readonly poolIndex: number,
     public readonly lpTokenAddress?: string,
   ) {
-    this.lpTokenAddress = lpTokenAddress
-      ? lpTokenAddress.toLowerCase()
-      : undefined;
+    try {
+      this.lpTokenAddress = lpTokenAddress
+        ? lpTokenAddress.toLowerCase()
+        : undefined;
 
-    this._baseAddress = findAsset(_base, chainId).address;
-    this._quoteAddress = findAsset(_quote, chainId).address;
+      const tokenAAddress = findAsset(tokenA, chainId).address;
+      const tokenBAddress = findAsset(tokenB, chainId).address;
 
-    [this.base, this.quote] = BigNumber.from(this._baseAddress).lt(
-      this._quoteAddress,
-    )
-      ? [_base, _quote]
-      : [_quote, _base];
+      const isABase = tokenAAddress.toLowerCase() < tokenBAddress.toLowerCase();
+
+      [this.base, this.quote] = isABase ? [tokenA, tokenB] : [tokenB, tokenA];
+
+      [this.baseAddress, this.quoteAddress] = isABase
+        ? [tokenAAddress, tokenBAddress]
+        : [tokenBAddress, tokenAAddress];
+    } catch (error) {
+      console.error(
+        'Failed to construct Ambient Liqudity Pool',
+        tokenA,
+        tokenB,
+        chainId,
+        error,
+      );
+      throw error;
+    }
   }
 
   public get key() {
-    return `${this.base}/${this.quote}`;
+    return `${this.base}wtf/${this.quote}`;
   }
 }

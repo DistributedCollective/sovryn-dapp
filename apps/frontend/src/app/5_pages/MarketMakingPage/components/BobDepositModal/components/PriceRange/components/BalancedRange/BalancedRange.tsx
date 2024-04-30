@@ -2,6 +2,7 @@ import React, { FC, useCallback, useEffect, useMemo } from 'react';
 
 import { t } from 'i18next';
 
+import { toDisplayPrice } from '@sovryn/sdex';
 import {
   Button,
   ButtonStyle,
@@ -15,6 +16,7 @@ import { AmountRenderer } from '../../../../../../../../2_molecules/AmountRender
 import { translations } from '../../../../../../../../../locales/i18n';
 import { decimalic } from '../../../../../../../../../utils/math';
 import { AmbientLiquidityPool } from '../../../../../AmbientMarketMaking/utils/AmbientLiquidityPool';
+import { useGetTokenDecimals } from '../../../../../BobWIthdrawModal/hooks/useGetTokenDecimals';
 import {
   MAXIMUM_PRICE,
   MINIMUM_PRICE,
@@ -40,7 +42,15 @@ export const BalancedRange: FC<BalancedRangeProps> = ({ pool }) => {
 
   const isInfiniteRange = useMemo(() => rangeWidth === 100, [rangeWidth]);
 
-  const { price: currentPrice } = useGetPoolInfo(pool.base, pool.quote);
+  const { spotPrice: currentPrice, poolTokens } = useGetPoolInfo(
+    pool.base,
+    pool.quote,
+  );
+
+  const { baseTokenDecimals, quoteTokenDecimals } = useGetTokenDecimals(
+    poolTokens?.tokenA,
+    poolTokens?.tokenB,
+  );
 
   const updatePrice = useCallback(
     (isMinimumPrice: boolean, value: number) => {
@@ -94,6 +104,18 @@ export const BalancedRange: FC<BalancedRangeProps> = ({ pool }) => {
     [setMaximumPrice, setMinimumPrice, setRangeWidth, updatePrice],
   );
 
+  const renderMin = useMemo(
+    () =>
+      toDisplayPrice(maximumPrice, baseTokenDecimals, quoteTokenDecimals, true),
+    [baseTokenDecimals, maximumPrice, quoteTokenDecimals],
+  );
+
+  const renderMax = useMemo(
+    () =>
+      toDisplayPrice(minimumPrice, baseTokenDecimals, quoteTokenDecimals, true),
+    [baseTokenDecimals, minimumPrice, quoteTokenDecimals],
+  );
+
   return (
     <>
       <div className="flex items-center flex-col">
@@ -118,17 +140,29 @@ export const BalancedRange: FC<BalancedRangeProps> = ({ pool }) => {
       </div>
 
       <div className="px-4 mt-4">
-        <Slider onChange={onRangeChange} value={rangeWidth} />
+        <Slider onChange={onRangeChange} value={rangeWidth} min={1} max={100} />
       </div>
 
       <SimpleTable className="mt-12">
         <SimpleTableRow
           label={t(translations.bobMarketMakingPage.depositModal.minPrice)}
-          value={<AmountRenderer value={minimumPrice} suffix={pool.quote} />}
+          value={
+            isInfiniteRange ? (
+              <span className="text-xs font-medium">0</span>
+            ) : (
+              <AmountRenderer value={renderMin} suffix={pool.quote} />
+            )
+          }
         />
         <SimpleTableRow
           label={t(translations.bobMarketMakingPage.depositModal.maxPrice)}
-          value={<AmountRenderer value={maximumPrice} suffix={pool.quote} />}
+          value={
+            isInfiniteRange ? (
+              <span className="text-xs font-medium">∞</span>
+            ) : (
+              <AmountRenderer value={renderMax} suffix={pool.quote} />
+            )
+          }
         />
       </SimpleTable>
     </>

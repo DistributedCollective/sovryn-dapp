@@ -80,6 +80,7 @@ export type SignPermitRequest = {
 export type SignTransactionRequest = {
   type: TransactionType.signTransaction;
   contract: ethers.Contract;
+  tokenDetails?: TokenDetails;
   fnName: string;
   args: any[];
   value?: BigNumberish;
@@ -115,3 +116,10 @@ export type TransactionReceipt = {
   request: TransactionRequest;
   response?: string | PermitTransactionResponse;
 };
+
+// should be kept compatible with AssetDetails from @sovryn/contracts
+export interface TokenDetails {
+  address: string;
+  symbol: string;
+  decimals: number;
+}

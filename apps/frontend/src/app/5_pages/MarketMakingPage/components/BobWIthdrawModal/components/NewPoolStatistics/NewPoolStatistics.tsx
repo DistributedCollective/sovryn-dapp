@@ -3,34 +3,41 @@ import React, { FC } from 'react';
 import { t } from 'i18next';
 
 import { SimpleTable, SimpleTableRow } from '@sovryn/ui';
+import { Decimal } from '@sovryn/utils';
 
 import { AmountRenderer } from '../../../../../../2_molecules/AmountRenderer/AmountRenderer';
-import { TOKEN_RENDER_PRECISION } from '../../../../../../../constants/currencies';
 import { translations } from '../../../../../../../locales/i18n';
-import { AmmLiquidityPool } from '../../../../utils/AmmLiquidityPool';
+import { AmbientLiquidityPool } from '../../../AmbientMarketMaking/utils/AmbientLiquidityPool';
+import { DEFAULT_SLIPPAGE } from '../../../BobDepositModal/BobDepositModal.constants';
 
 const pageTranslations =
   translations.bobMarketMakingPage.withdrawModal.newPoolStatistics;
 
 type NewPoolStatisticsProps = {
-  pool: AmmLiquidityPool;
+  baseAmount: Decimal;
+  quoteAmount: Decimal;
+  pool: AmbientLiquidityPool;
 };
 
-export const NewPoolStatistics: FC<NewPoolStatisticsProps> = ({ pool }) => {
+export const NewPoolStatistics: FC<NewPoolStatisticsProps> = ({
+  baseAmount,
+  quoteAmount,
+  pool,
+}) => {
   return (
     <SimpleTable className="mt-6">
       <SimpleTableRow
         label={t(pageTranslations.newPoolBalance)}
-        value={<AmountRenderer value={700} suffix={pool.assetA} />}
+        value={<AmountRenderer value={baseAmount} suffix={pool.base} />}
         className="mb-1"
         valueClassName="text-primary-10"
       />
       <SimpleTableRow
         label=""
-        value={<AmountRenderer value={0.026} suffix={pool.assetB} />}
+        value={<AmountRenderer value={quoteAmount} suffix={pool.quote} />}
         valueClassName="text-primary-10"
       />
-      <SimpleTableRow
+      {/* <SimpleTableRow
         label={t(pageTranslations.earnedRewards)}
         value={
           <AmountRenderer
@@ -39,10 +46,10 @@ export const NewPoolStatistics: FC<NewPoolStatisticsProps> = ({ pool }) => {
             precision={TOKEN_RENDER_PRECISION}
           />
         }
-      />
+      /> */}
       <SimpleTableRow
         label={t(pageTranslations.slippage)}
-        value={<AmountRenderer value={1.25} suffix="%" />}
+        value={<AmountRenderer value={DEFAULT_SLIPPAGE} suffix="%" />}
       />
     </SimpleTable>
   );

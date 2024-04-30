@@ -1,5 +1,31 @@
 # frontend
 
+## 1.0.56
+
+### Patch Changes
+
+- 7c3a4abf: SOV-4022: Runes bridge UI
+
+## 1.0.55
+
+### Patch Changes
+
+- 1fbe6a0c: SOV-4047: update copy on Leaderboard page
+
+## 1.0.54
+
+### Patch Changes
+
+- 4a66523f: SOV-4016: update banner promo
+
+## 1.0.53
+
+### Patch Changes
+
+- e76f1662: SOV-3871: Staking Rewards OS contracts and UI
+- Updated dependencies [e76f1662]
+  - @sovryn/contracts@1.0.20
+
 ## 1.0.52
 
 ### Patch Changes

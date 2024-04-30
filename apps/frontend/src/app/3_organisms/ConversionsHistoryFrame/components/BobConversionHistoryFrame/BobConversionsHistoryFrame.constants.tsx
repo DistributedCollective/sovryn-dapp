@@ -1,28 +1,37 @@
 import React from 'react';
 
+import { formatUnits } from 'ethers/lib/utils';
 import { t } from 'i18next';
 
-import { SEPOLIA_CHAIN_ID } from '../../../../../config/chains';
+import { prettyTx } from '@sovryn/ui';
 
 import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { TransactionIdRenderer } from '../../../../2_molecules/TransactionIdRenderer/TransactionIdRenderer';
-import { getTokenDisplayNameByAddress } from '../../../../../constants/tokens';
+import { getCurrentChain } from '../../../../../hooks/useChainStore';
 import { translations } from '../../../../../locales/i18n';
+import { findAssetByAddress } from '../../../../../utils/asset';
 import { Swap } from '../../../../../utils/graphql/bob/generated';
 import { dateFormat } from '../../../../../utils/helpers';
-import { fromWei } from '../../../../../utils/math';
+import { decimalic } from '../../../../../utils/math';
 import { generateTransactionType } from './BobConversionsHistoryFrame.utils';
 
 const renderAmount = (
   value: string,
   pool: { base: string; quote: string },
   inBaseQty: boolean,
-) => (
-  <AmountRenderer
-    value={Math.abs(Number(fromWei(value)))}
-    suffix={getTokenDisplayNameByAddress(inBaseQty ? pool.base : pool.quote)}
-  />
-);
+) => {
+  const token = findAssetByAddress(
+    inBaseQty ? pool.base : pool.quote,
+    getCurrentChain(),
+  );
+  const amount = decimalic(formatUnits(value, token?.decimals || 18)).abs();
+  return (
+    <AmountRenderer
+      value={amount}
+      suffix={token?.symbol ?? prettyTx(inBaseQty ? pool.base : pool.quote)}
+    />
+  );
+};
 
 export const COLUMNS_CONFIG = [
   {
@@ -63,7 +72,7 @@ export const COLUMNS_CONFIG = [
       <TransactionIdRenderer
         hash={item.transactionHash}
         dataAttribute="bob-conversion-history-tx-hash"
-        chainId={SEPOLIA_CHAIN_ID}
+        chainId={getCurrentChain()}
       />
     ),
   },

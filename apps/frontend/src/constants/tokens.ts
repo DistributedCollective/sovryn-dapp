@@ -1,6 +1,7 @@
 import { ChainId } from '@sovryn/ethers-provider';
+import { prettyTx } from '@sovryn/ui';
 
-import { RSK_CHAIN_ID, SEPOLIA_CHAIN_ID } from '../config/chains';
+import { BOB_CHAIN_ID, RSK_CHAIN_ID } from '../config/chains';
 
 import { findAsset, findAssetByAddress } from '../utils/asset';
 
@@ -11,5 +12,9 @@ export const getTokenDisplayName = (
 
 export const getTokenDisplayNameByAddress = (
   address: string,
-  chainId: ChainId = SEPOLIA_CHAIN_ID,
-): string => findAssetByAddress(address, chainId)?.symbol || address;
+  chainId: ChainId = BOB_CHAIN_ID,
+  fallbackPrettified = true,
+): string =>
+  findAssetByAddress(address, chainId)?.symbol || fallbackPrettified
+    ? prettyTx(address)
+    : address;

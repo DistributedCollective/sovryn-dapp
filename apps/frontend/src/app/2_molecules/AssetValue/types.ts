@@ -1,6 +1,5 @@
-import { Decimal } from '@sovryn/utils';
-
 import { ChainId } from '@sovryn/ethers-provider';
+import { Decimal } from '@sovryn/utils';
 
 export type AssetValueProps = {
   /**

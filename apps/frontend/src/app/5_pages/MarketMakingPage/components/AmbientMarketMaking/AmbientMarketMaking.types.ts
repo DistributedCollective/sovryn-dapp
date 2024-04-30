@@ -1,3 +1,5 @@
+import { PoolPositionType } from '../../MarketMakingPage.types';
+
 export interface AmbientPosition {
   chainId: string;
   base: string;
@@ -11,7 +13,7 @@ export interface AmbientPosition {
   latestUpdateTime: number;
   lastMintTx: string;
   firstMintTx: string;
-  positionType: string;
+  positionType: PoolPositionType;
   ambientLiq: number;
   concLiq: number;
   rewardLiq: number;

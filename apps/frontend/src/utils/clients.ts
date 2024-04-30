@@ -1,7 +1,10 @@
 import { ApolloClient, InMemoryCache } from '@apollo/client';
 
+import { ChainIds, ChainId } from '@sovryn/ethers-provider';
+
 import { SUBGRAPH } from '../constants/general';
 import { SEPOLIA } from '../constants/infrastructure/sepolia';
+import { isRskChain } from './chain';
 
 export const rskClient = new ApolloClient({
   uri: SUBGRAPH.RSK,
@@ -37,3 +40,32 @@ export const sepoliaSdexClient = new ApolloClient({
     resultCaching: false,
   }),
 });
+
+export const bobStakingClient = new ApolloClient({
+  uri: SUBGRAPH.BOB_STAKING,
+  cache: new InMemoryCache({
+    resultCaching: false,
+  }),
+});
+
+export enum SubgraphType {
+  GENERAL,
+  STAKING,
+}
+
+export const getSubgraphClient = (type: SubgraphType, chainId: ChainId) => {
+  if (isRskChain(chainId)) {
+    return rskClient;
+  }
+
+  if (chainId === ChainIds.SEPOLIA) {
+    return sepoliaSdexClient;
+  }
+
+  switch (type) {
+    case SubgraphType.STAKING:
+      return bobStakingClient;
+    default:
+      return bobClient;
+  }
+};

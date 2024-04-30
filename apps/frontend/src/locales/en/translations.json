@@ -46,6 +46,7 @@
         "withdraw": "Withdraw",
         "txId": "TXID",
         "btc": "BTC",
+        "eth": "ETH",
         "usd": "USD",
         "tx": {
             "signPermitTitle": "Permit {{symbol}}",
@@ -67,7 +68,8 @@
             "deposit": "Deposit",
             "withdrawal": "Withdrawal"
         },
-        "learnMore": "Learn more"
+        "learnMore": "Learn more",
+        "invalidAmountError": "Exceeds maximum amount"
     },
     "connectWalletButton": {
         "connect": "Get started",
@@ -108,7 +110,23 @@
             "stake": "Stake",
             "bitocracy": "Bitocracy",
             "bob": "Go BoB",
-            "claimLp": "Claim LP"
+            "claimLp": "Claim LP",
+            "bridges": {
+                "title": "Transfer Assets",
+                "subMenu": {
+                    "runeBridge": "Runes",
+                    "runeBridgeDescription": "Transfer between Bitcoin and Sovryn",
+                    "tokenBridge": "Stablecoins",
+                    "tokenBridgeDescription": "Transfer between RSK and other chains",
+                    "btcBridge": "BTC",
+                    "btcBridgeDescription": "Transfer between Bitcoin and Sovryn",
+                    "btcBridgeDescription_BOB": "Transfer between Sovryn and other chains",
+                    "ethBridge": "ETH",
+                    "ethBridgeDescription": "Transfer between Ethereum and Sovryn",
+                    "ercBridge": "ERC-20",
+                    "ercBridgeDescription": "Transfer between Ethereum and Sovryn"
+                }
+            }
         }
     },
     "footer": {
@@ -143,6 +161,7 @@
     },
     "maintenanceMode": {
         "fastBtc": "Fast BTC is locked",
+        "runeBridge": "Rune Bridge is locked",
         "featureDisabled": "This feature is currently disabled",
         "openingLOC": "Opening a line of credit is currently disabled",
         "fullD2": {
@@ -163,7 +182,7 @@
         "gasLimit": "Gas limit",
         "gasPrice": "Gas price",
         "resetValues": "Reset values",
-        "notEnoughBalance": "Estimated gas fee exceeds balance"
+        "notEnoughBalance": "Estimated gas fee exceeds {{asset}} balance"
     },
 
     "zeroPage": {
@@ -416,8 +435,8 @@
                     "description": "Sovryn supports the most popular browser and hardware wallets."
                 },
                 "second": {
-                    "title": "Deposit BTC",
-                    "description": "Transfer BTC from the bitcoin network to your Rootstock address."
+                    "title": "Deposit funds",
+                    "description": "Transfer funds to your address from our selection of bridges."
                 },
                 "third": {
                     "title": "Start earning",
@@ -439,15 +458,15 @@
                 },
                 "second": {
                     "title": "On which blockchain does Sovryn operate?",
-                    "description": "Rootstock—a smart contract merge-mined sidechain of bitcoin. Its engine is a forked version of the Ethereum Virtual Machine, and the RVM (Rootstock Virtual Machine) is compatible with Ethereum smart contracts and the tools used to deploy and interact with them."
+                    "description": "Sovryn currently operates on two chains—BOB and Rootstock.<br/><br/>BOB (Build on Bitcoin)—a hybrid Layer-2 rollup secured by bitcoin and natively connected to Ethereum. It uses the Ethereum Virtual Machine.<br/><br/>Rootstock (RSK)—a smart-contract, merge-mined sidechain of bitcoin. Its engine is a forked version of the Ethereum Virtual Machine.<br/><br/>Both BOB and Rootstock are compatible with Ethereum smart contracts and the tools used to deploy and interact with them."
                 },
                 "third": {
                     "title": "How do I get funds into Sovryn?",
-                    "description": "Get funds in and out of Rootstock for use on Sovryn with FastBTC. It is designed to provide quick and simple BTC/RBTC conversions directly within the Sovryn dapp. You can also bridge in stablecoins with Babelfish and other assets using the Sovryn bridge."
+                    "description": "On BOB, you can use the bridge interface to bring in assets from Ethereum and to bridge in BTC from the bitcoin network.<br/><br/>On Rootstock, you can bridge in BTC from the bitcoin network with FastBTC. You can also bridge in stablecoins with Babelfish and other assets from Ethereum and BSC using the Sovryn bridge."
                 },
                 "fourth": {
                     "title": "What is the native gas token?",
-                    "description": "RBTC, the native currency of Rootstock, is used to pay for the gas required for the execution of transactions. RBTC is pegged 1:1 with bitcoin."
+                    "description": "On BOB, the native currency is ETH, which must be used for gas for transactions. Soon you will be able to use other assets to pay for gas as well.<br/><br/>On Rootstock, the native currency is RBTC, which must be used for gas for transactions. RBTC is pegged 1:1 with BTC."
                 },
                 "fifth": {
                     "title": "What can I do on the Sovryn dapp?",
@@ -488,6 +507,16 @@
                 "description": "Anyone using Sovryn already has points that will convert to POWA - a new bitcoin-token that allows an early use of what’s to come with the BitcoinOS launch. See how many points you’ve got:",
                 "cta": "Leaderboard",
                 "secondaryCta": "More about POWA"
+            },
+            "runesExtraSpice": {
+                "title": "RUNES & EXTRA SPICE",
+                "description": "Get early exposure to bitcoin tokens with our points campaign. In collaboration with BOB.",
+                "cta": "Learn More"
+            },
+            "runesBridge": {
+                "title": "RUNES HAVE ARRIVED",
+                "description": "Now Runes are tradable on mainnet! Deposit Runes from bitcoin via Runes bridge and start trading on Sovryn.",
+                "cta": "Deposit Runes"
             }
         },
         "titleSection": {
@@ -497,10 +526,15 @@
             "ctaText": "New to Sovryn?"
         },
         "protocolDataSection": {
-            "title": "Protocol Data",
+            "title": "Protocol data",
             "cta": "View more",
-            "totalValueLocked": "Total value locked",
-            "volume": "24 hour volume"
+            "totalValueLockedAllNetworks": "Total value locked on all networks",
+            "volumeAllNetworks": "24 hour volume on all networks",
+            "tvlRskNetwork": "TVL RSK network",
+            "volumeRskNetwork": "24 hour RSK network",
+            "tvlBobNetwork": "TVL BOB network",
+            "volumeBobNetwork": "24 hour BOB network",
+            "dataComingSoon": "Data coming soon"
         }
     },
 
@@ -520,11 +554,6 @@
             "title": "Personal staking statistics",
             "stakedSov": "Staked SOV",
             "votingPower": "Voting power",
-            "votingPowerInfo": {
-                "line1": "Own voting power",
-                "line2": "Delegated voting power",
-                "line3": "Total personal voting power"
-            },
             "votingPowerShare": "Voting power share"
         },
         "table": {
@@ -865,7 +894,7 @@
         "headerLink": "POWA Points",
         "headerDescription": "Earn Points, Earn POWA",
         "title": "You’ve got the POWA!",
-        "subtitle": "Earn Points - get POWA",
+        "subtitle": "The POWA Points campaign is now closed. <br/>POWA will drop on the halving.",
         "description1": "POWA is the most powaful Bitcoin token! Minted on an entirely new Bitcoin technology, POWA tokens allow early use of what's to come with the <0>BitcoinOS</0> launch.",
         "description2": "Stake, Trade, or use your Influence to earn Points and POWA. Connect your wallet to see how many points you already have!",
         "primaryCta": "How to earn points",
@@ -944,6 +973,96 @@
                     "title": "Influence",
                     "item1": "See Influence leaderboard for current quests points breakdown."
                 }
+            }
+        }
+    },
+    "runeBridge": {
+        "mainScreen": {
+            "title": "Rune Bridge",
+            "tabs": {
+                "receiveLabel": "Receive",
+                "receiveInfoText": "Transfer Runes from Bitcoin to your Rootstock address",
+                "sendLabel": "Send",
+                "sendInfoText": "Transfer Rune Tokens from Rootstock to your Bitcoin address"
+            }
+        },
+        "instructions": {
+            "title": "Instructions",
+            "upToNHours": "Allow up to {{hours}} hrs to process",
+            "createSupportTicket": "If your transaction takes longer than {{hours}} hrs please <0>create a support ticket</0>",
+            "createSupportTicketCta": "create a support ticket",
+            "receive": {
+                "onlyRunes": "Only transfer Runes, not Bitcoin",
+                "onlySupportedRunes": "Only transfer Runes that are supported by the bridge, visible on the next page. Transfers of unsupported Runes will not be processed",
+                "postage": "Set the postage to at least {{postageSat}} satoshi ({{postageBtc}} BTC)"
+            },
+            "send": {
+                "wallet": "Only transfer Rune Tokens to a wallet that supports Runes, such as <0>the Ordinals wallet \"ord\"</0>. Runes sent to a Bitcoin wallet without support for Runes will be lost",
+                "walletCta": "the Ordinals wallet \"ord\"",
+                "minAmount": "Do not send less than the minimum amount",
+                "maxAmount": "Do not send more than the maximum amount",
+                "supportedFormats": "Supported address formats: P2TR, P2PKH, P2SH, P2WPKH, P2WSH"
+            }
+        },
+        "limits": {
+            "title": "Transfer policies",
+            "minimumAmount": "Minimum amount",
+            "maximumAmount": "Maximum amount",
+            "minimumPostage": "Minimum postage",
+            "serviceFee": "Service fee",
+            "supportedRunes": "Supported Runes"
+        },
+        "addressForm": {
+            "title": "Send Runes to this address",
+            "copyAddressSuccess": "Address was copied to clipboard."
+        },
+        "send": {
+            "amountForm": {
+                "title": "Select the Rune Token and enter the amount to send",
+                "amountLabel": "Send"
+            },
+            "addressForm": {
+                "title": "Enter recipient's bitcoin address",
+                "addressLabel": "Address",
+                "maxExceed": "Exceeds maximum amount",
+                "invalidAddress": "Invalid address"
+            },
+            "confirmationScreens": {
+                "reviewTitle": "Transfer details",
+                "statusTitleProcessing": "Transfer processing...",
+                "statusTitleComplete": "Transfer complete",
+                "statusTitleFailed": "Transfer failed",
+                "from": "From",
+                "to": "To",
+                "sending": "Sending",
+                "serviceFee": "Service fee",
+                "receiving": "Receiving",
+                "hash": "Rootstock TXID",
+                "bitcoinTxId": "Bitcoin TXID"
+            },
+            "txDialog": {
+                "title": "Send {{rune}} to the bitcoin network",
+                "approveTxTitle": "Approve {{rune}}",
+                "sendTxTitle": "Send {{rune}}"
+            }
+        },
+        "receive": {
+            "loading": "Loading... this may take up to 30 seconds",
+            "statusScreen": {
+                "transferStatus": {
+                    "detected": "Transfer detected",
+                    "seen": "Runes received by the bridge",
+                    "sent_to_evm": "Rune Tokens transferred in Rootstock",
+                    "confirmed": "Rune Token transfer confirmed in Rootstock"
+                },
+                "statusTitleProcessing": "Transfer processing...",
+                "statusTitleComplete": "Transfer complete",
+                "to": "To",
+                "sending": "Sending",
+                "serviceFee": "Service fee",
+                "receiving": "Receiving",
+                "bitcoinTxId": "Bitcoin TXID",
+                "rootstockTxId": "Rootstock TXID"
             }
         }
     },
@@ -1090,6 +1209,7 @@
         },
         "staking": {
             "stakingSubsidies": "Staking subsidies",
+            "stakingSubsidiesOs": "Staking subsidies (SIP-76)",
             "stakingRevenue": "Staking revenue",
             "stakingRevenueLegacy": "Staking revenue (legacy)",
             "liquidityMiningError": "Your liquidity mining vesting contract holds more than {{count}} checkpoints worth of rewards. Please withdraw liquid rewards from your vesting contract to enable the 'Withdraw' button and claim additional rewards."
@@ -1197,7 +1317,7 @@
             "title": "Market Making - Sovryn"
         },
         "title": "Market making",
-        "subtitle": "Earn fees from AMM swaps",
+        "subtitle": "Earn fees from AMM swaps on RSK",
         "promotions": {
             "p1": "Provide a 1:1 ratio of two assets to the AMM pool and instantly start accruing your share of weekly rewards.",
             "p2": "Next rewards recalibration on {{recalibrationDate}}.",
@@ -1288,7 +1408,17 @@
                 "newPoolBalance": "New pool balance",
                 "earnedRewards": "Earned rewards",
                 "slippage": "Slippage"
+            },
+            "form": {
+                "invalidAmountError": "Exceeds maximum amount"
             }
+        },
+        "claimFeesModal": {
+            "title": "Claim confirmation",
+            "slippage": "Slippage",
+            "earnedToken": "Earned {{token}}",
+            "removalValue": "Removal value",
+            "claimFees": "Claim fees"
         }
     },
 
@@ -1683,7 +1813,8 @@
             "withdraw": "Withdraw",
             "asset": "Asset",
             "balance": "Balance",
-            "usdValue": "USD Value"
+            "usdValue": "USD Value",
+            "runeBridge": "Rune Bridge"
         }
     },
     "protocolDataPage": {
@@ -1741,7 +1872,7 @@
         "content": "This feature hasn't arrived on {{currentNetwork}} yet, click here to switch to {{network}} if you would like to try it out!"
     },
     "marketMakingNetworkBanner": {
-        "content": "Check out more AMM pools on Sovryn by switching to {{network}}"
+        "content": "Check out more AMM pools on Sovryn by <0>switching to</0> {{network}}"
     },
     "ambientMarketMaking": {
         "meta": {
@@ -1755,13 +1886,15 @@
             "lpFeeRate": "LP fee rate",
             "lpFeeRateInfo": "The fee rate that is charged per swap and given to AMM LPs",
             "volume": "24H volume",
+            "lastPrice": "Last price",
             "balance": "Balance"
         },
         "positionsTable": {
             "positionID": "Position ID",
             "minPrice": "Min price",
             "maxPrice": "Max price",
-            "returns": "Returns",
+            "apr": "Estimated APR",
+            "aprInfo": "APR is estimated based on previous fees earned at the defined price range, if no trades were made previously you may see 0 value",
             "value": "Value (USD)",
             "balance": "Balance",
             "withdraw": "Withdraw"

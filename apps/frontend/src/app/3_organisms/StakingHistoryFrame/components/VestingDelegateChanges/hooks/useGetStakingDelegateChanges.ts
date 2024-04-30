@@ -2,7 +2,11 @@ import { useMemo } from 'react';
 
 import { OrderOptions } from '@sovryn/ui';
 
-import { rskClient } from '../../../../../../utils/clients';
+import { useCurrentChain } from '../../../../../../hooks/useChainStore';
+import {
+  SubgraphType,
+  getSubgraphClient,
+} from '../../../../../../utils/clients';
 import {
   VestingHistoryItem_OrderBy,
   useGetDelegateChangesForVestingsQuery,
@@ -16,12 +20,13 @@ export const useGetStakingDelegateChanges = (
   page: number,
   orderOptions: OrderOptions,
 ) => {
+  const chainId = useCurrentChain();
   const { data: vestings, loading: loadingVestings } =
     useGetUserVestingContractsQuery({
       variables: {
         userAddress: account.toLowerCase(),
       },
-      client: rskClient,
+      client: getSubgraphClient(SubgraphType.STAKING, chainId),
     });
 
   const config = useMemo(
@@ -43,7 +48,7 @@ export const useGetStakingDelegateChanges = (
 
   const { loading, data } = useGetDelegateChangesForVestingsQuery({
     variables: config,
-    client: rskClient,
+    client: getSubgraphClient(SubgraphType.STAKING, chainId),
   });
 
   const list = useMemo(() => {

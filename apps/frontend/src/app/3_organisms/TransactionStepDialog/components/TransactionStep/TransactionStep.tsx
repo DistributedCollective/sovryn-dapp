@@ -8,9 +8,9 @@ import { formatUnits, parseUnits } from 'ethers/lib/utils';
 import { t } from 'i18next';
 
 import {
-  AssetDetailsData,
   findContract,
   getAssetDataByAddress,
+  AssetDetailsData,
 } from '@sovryn/contracts';
 import {
   Accordion,
@@ -77,6 +77,19 @@ export const TransactionStep: FC<TransactionStepProps> = ({
 
   useEffect(() => {
     const updateToken = (address: string) => {
+      //FIXME: this logic needs to be updated to handle new typings, and matched with fixes to TransactionStepDialog.types.ts
+      //   if (isTransactionRequest(request) && request.tokenDetails) {
+      //     if (request.tokenDetails.address === address) {
+      //       setToken(request.tokenDetails);
+      //       return;
+      //     } else {
+      //       console.warn(
+      //         "Supplied token details address %s doesn't match address %s",
+      //         request.tokenDetails.address,
+      //         address,
+      //       );
+      //     }
+      //   }
       findContract(address, chainId)
         .then(result => {
           if (result.group === 'assets') {

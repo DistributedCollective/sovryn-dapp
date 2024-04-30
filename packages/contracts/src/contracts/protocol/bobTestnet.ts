@@ -10,4 +10,8 @@ export const bobTestnet: Record<string, AsyncContractConfigData> = {
     getAbi: async () =>
       (await import('../../abis/merkleDistributor.json')).default,
   },
+  runeBridge: {
+    address: '',
+    getAbi: async () => (await import('../../abis/RuneBridge.json')).default,
+  },
 };

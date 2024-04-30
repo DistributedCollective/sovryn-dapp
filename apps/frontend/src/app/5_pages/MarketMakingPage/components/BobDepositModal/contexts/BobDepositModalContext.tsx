@@ -33,6 +33,10 @@ const defaultContextValue: DepositContextValue = {
   setSecondAssetValue: noop,
   isBalancedRange: true,
   setIsBalancedRange: noop,
+  spotPrice: 0,
+  setSpotPrice: noop,
+  usesBaseToken: true,
+  setUsesBaseToken: noop,
 };
 
 const DepositContext = createContext<DepositContextValue>(defaultContextValue);
@@ -66,6 +70,10 @@ export const DepositContextProvider: FC<PropsWithChildren> = ({ children }) => {
   const [isBalancedRange, setIsBalancedRange] = useState(
     defaultContextValue.isBalancedRange,
   );
+  const [spotPrice, setSpotPrice] = useState(defaultContextValue.spotPrice);
+  const [usesBaseToken, setUsesBaseToken] = useState(
+    defaultContextValue.usesBaseToken,
+  );
 
   return (
     <DepositContext.Provider
@@ -88,6 +96,10 @@ export const DepositContextProvider: FC<PropsWithChildren> = ({ children }) => {
         setSecondAssetValue,
         isBalancedRange,
         setIsBalancedRange,
+        spotPrice,
+        setSpotPrice,
+        usesBaseToken,
+        setUsesBaseToken,
       }}
     >
       {children}

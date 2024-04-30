@@ -20,7 +20,9 @@ export function useFetch<T = any>(
   });
 
   useEffect(() => {
-    if (condition !== undefined && !condition) return;
+    if (condition !== undefined && !condition) {
+      return;
+    }
 
     const cancel = axios.CancelToken.source();
 

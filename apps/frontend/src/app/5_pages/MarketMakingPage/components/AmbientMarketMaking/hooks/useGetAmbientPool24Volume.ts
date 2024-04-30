@@ -16,6 +16,11 @@ export const useGetAmbientPool24Volume = (pool: AmbientLiquidityPool) => {
     `${getIndexerUri(chainId)}/pool_candles?base=${baseToken?.address}&quote=${
       quoteToken?.address
     }&poolIdx=${pool.poolIndex}&chainId=${pool.chainId}&n=2&period=86400`,
+    undefined,
+    baseToken !== undefined &&
+      baseToken.address !== undefined &&
+      quoteToken !== undefined &&
+      quoteToken.address !== undefined,
   );
 
   const data = useMemo(() => {

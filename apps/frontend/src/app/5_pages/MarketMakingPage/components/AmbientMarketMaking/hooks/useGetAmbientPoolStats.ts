@@ -16,11 +16,20 @@ export const useGetAmbientPoolStats = (pool: AmbientLiquidityPool) => {
     `${getIndexerUri(chainId)}/pool_stats?base=${baseToken?.address}&quote=${
       quoteToken?.address
     }&poolIdx=${pool.poolIndex}&chainId=${pool.chainId}`,
+    undefined,
+    baseToken !== undefined &&
+      baseToken.address !== undefined &&
+      quoteToken !== undefined &&
+      quoteToken.address !== undefined,
   );
 
-  const stats = useMemo(() => {
-    return value?.data as AmbientPoolStats | undefined;
-  }, [value?.data]);
+  const stats = useMemo(
+    () =>
+      value !== undefined && value?.data !== undefined
+        ? (value.data as AmbientPoolStats)
+        : undefined,
+    [value],
+  );
 
   return {
     stats,

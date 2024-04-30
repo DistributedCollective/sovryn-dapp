@@ -15,17 +15,15 @@ import {
 
 import { MobileCloseButton } from '../../1_atoms/MobileCloseButton/MobileCloseButton';
 import { useAccount } from '../../../hooks/useAccount';
-import { useCurrentChain } from '../../../hooks/useChainStore';
 import { useIsMobile } from '../../../hooks/useIsMobile';
 import { translations } from '../../../locales/i18n';
-import { isBobChain } from '../../../utils/chain';
 import { ReceiveFlow } from './components/ReceiveFlow/ReceiveFlow';
 import { SendFlow } from './components/SendFlow/SendFlow';
 import { ACTIVE_CLASSNAME } from './constants';
 import { ReceiveFlowContextProvider } from './contextproviders/ReceiveFlowContext';
 import { RuneContextProvider } from './contextproviders/RuneContextProvider';
 import { SendFlowContextProvider } from './contextproviders/SendFlowContext';
-import { TranslationContextProvider } from './contextproviders/TranslationContextProvider';
+import { useChainDetails } from './hooks/useChainDetails';
 
 const translation = translations.runeBridge.mainScreen;
 
@@ -42,20 +40,21 @@ export const RuneBridgeDialog: React.FC<RuneBridgeDialogProps> = ({
 }) => {
   const [index, setIndex] = useState(step);
   const { account } = useAccount();
-  const chainId = useCurrentChain();
+  const { supported: isChainSupported, chainName } = useChainDetails();
   const { isMobile } = useIsMobile();
+
   useEffect(() => {
     setIndex(step);
   }, [step]);
-  const service = useMemo(
-    () => (isBobChain(chainId) ? 'Bob' : 'Rootstock'),
-    [chainId],
-  );
+
   const items = useMemo(() => {
+    if (!isChainSupported) {
+      return [];
+    }
     return [
       {
         label: t(translation.tabs.receiveLabel),
-        infoText: t(translation.tabs.receiveInfoText, { service }),
+        infoText: t(translation.tabs.receiveInfoText, { chainName }),
         content: (
           <ReceiveFlowContextProvider>
             <ReceiveFlow onClose={onClose} />
@@ -67,7 +66,7 @@ export const RuneBridgeDialog: React.FC<RuneBridgeDialogProps> = ({
       },
       {
         label: t(translation.tabs.sendLabel),
-        infoText: t(translation.tabs.sendInfoText, { service }),
+        infoText: t(translation.tabs.sendInfoText, { chainName }),
         content: (
           <SendFlowContextProvider>
             <SendFlow onClose={onClose} />
@@ -78,15 +77,17 @@ export const RuneBridgeDialog: React.FC<RuneBridgeDialogProps> = ({
         dataAttribute: 'funding-send',
       },
     ];
-  }, [onClose, service]);
+  }, [onClose, chainName, isChainSupported]);
 
   const onChangeIndex = useCallback((index: number | null) => {
     index !== null ? setIndex(index) : setIndex(0);
   }, []);
+
   const dialogSize = useMemo(
     () => (isMobile ? DialogSize.md : DialogSize.xl3),
     [isMobile],
   );
+
   // Reset the selected index to 0 in case the connected account changes because the new account may have the Send tab hidden and it would crash the app if we tried to access that index
   useEffect(() => {
     setIndex(0);
@@ -100,43 +101,41 @@ export const RuneBridgeDialog: React.FC<RuneBridgeDialogProps> = ({
       disableFocusTrap
       closeOnEscape={false}
     >
-      <TranslationContextProvider>
-        <RuneContextProvider>
-          <Tabs
-            index={index}
-            items={items}
-            onChange={onChangeIndex}
-            className="w-full md:hidden"
-            contentClassName="pt-9 px-6 pb-7 h-full"
-          />
-          <VerticalTabs
-            items={items}
-            onChange={onChangeIndex}
-            selectedIndex={index}
-            tabsClassName="min-h-[42rem] block pt-0 relative"
-            headerClassName="pb-0 pt-5"
-            footerClassName="absolute bottom-5 left-5"
-            contentClassName="px-10 pb-10 pt-6"
-            className="hidden md:flex"
-            header={() => (
-              <>
-                <div className="rounded bg-gray-60 px-2 py-1 w-fit mb-9">
-                  <AddressBadge address={account} />
-                </div>
-                <Heading className="mb-6">{t(translation.title)}</Heading>
-              </>
-            )}
-            footer={() => (
-              <Button
-                text={t(translations.common.buttons.close)}
-                onClick={onClose}
-                style={ButtonStyle.ghost}
-                dataAttribute="funding-close"
-              />
-            )}
-          />
-        </RuneContextProvider>
-      </TranslationContextProvider>
+      <RuneContextProvider>
+        <Tabs
+          index={index}
+          items={items}
+          onChange={onChangeIndex}
+          className="w-full md:hidden"
+          contentClassName="pt-9 px-6 pb-7 h-full"
+        />
+        <VerticalTabs
+          items={items}
+          onChange={onChangeIndex}
+          selectedIndex={index}
+          tabsClassName="min-h-[42rem] block pt-0 relative"
+          headerClassName="pb-0 pt-5"
+          footerClassName="absolute bottom-5 left-5"
+          contentClassName="px-10 pb-10 pt-6"
+          className="hidden md:flex"
+          header={() => (
+            <>
+              <div className="rounded bg-gray-60 px-2 py-1 w-fit mb-9">
+                <AddressBadge address={account} />
+              </div>
+              <Heading className="mb-6">{t(translation.title)}</Heading>
+            </>
+          )}
+          footer={() => (
+            <Button
+              text={t(translations.common.buttons.close)}
+              onClick={onClose}
+              style={ButtonStyle.ghost}
+              dataAttribute="funding-close"
+            />
+          )}
+        />
+      </RuneContextProvider>
     </Dialog>
   );
 };

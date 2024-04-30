@@ -15,13 +15,10 @@ import {
 import { StatusIcon } from '../../../../../2_molecules/StatusIcon/StatusIcon';
 import { TxIdWithNotification } from '../../../../../2_molecules/TxIdWithNotification/TransactionIdWithNotification';
 import { translations } from '../../../../../../locales/i18n';
-import {
-  getBtcExplorerUrl,
-  getRskExplorerUrl,
-} from '../../../../../../utils/helpers';
+import { getBtcExplorerUrl } from '../../../../../../utils/helpers';
 import { formatValue } from '../../../../../../utils/math';
 import { useSendFlowContext } from '../../../contexts/sendflow';
-import { useTranslationContext } from '../../../contexts/translation';
+import { useChainDetails } from '../../../hooks/useChainDetails';
 
 const translation = translations.runeBridge.send.confirmationScreens;
 
@@ -36,7 +33,6 @@ const getTitle = (status: StatusType) => {
   }
 };
 
-const rskExplorerUrl = getRskExplorerUrl();
 const btcExplorerUrl = getBtcExplorerUrl();
 
 interface FeesPaid {
@@ -68,7 +64,7 @@ export const StatusScreen: React.FC<StatusScreenProps> = ({
   onRetry,
 }) => {
   const { selectedToken } = useSendFlowContext();
-  const { service, coinAbbreviation } = useTranslationContext();
+  const { chainName, baseCurrency, explorerUrl } = useChainDetails();
   const items = useMemo(
     () => [
       {
@@ -76,7 +72,7 @@ export const StatusScreen: React.FC<StatusScreenProps> = ({
         value: (
           <TxIdWithNotification
             value={from}
-            href={`${rskExplorerUrl}/address/${from}`}
+            href={`${explorerUrl}/address/${from}`}
           />
         ),
       },
@@ -102,7 +98,7 @@ export const StatusScreen: React.FC<StatusScreenProps> = ({
         value: (
           <>
             {formatValue(feesPaid.rune, 8)} {selectedToken.symbol} +{' '}
-            {formatValue(feesPaid.baseCurrency, 8)} {coinAbbreviation}
+            {formatValue(feesPaid.baseCurrency, 8)} {baseCurrency}
           </>
         ),
       },
@@ -115,11 +111,11 @@ export const StatusScreen: React.FC<StatusScreenProps> = ({
         ),
       },
       {
-        label: t(translation.hash, { service }),
+        label: t(translation.hash, { chainName }),
         value: txHash ? (
           <TxIdWithNotification
             value={txHash}
-            href={`${rskExplorerUrl}/tx/${txHash}`}
+            href={`${explorerUrl}/tx/${txHash}`}
           />
         ) : (
           <Icon icon={IconNames.PENDING} />
@@ -140,15 +136,16 @@ export const StatusScreen: React.FC<StatusScreenProps> = ({
     ],
     [
       amount,
-      coinAbbreviation,
+      baseCurrency,
       feesPaid.baseCurrency,
       feesPaid.rune,
       from,
       receiveAmount,
       selectedToken.symbol,
-      service,
+      chainName,
       to,
       txHash,
+      explorerUrl,
     ],
   );
 

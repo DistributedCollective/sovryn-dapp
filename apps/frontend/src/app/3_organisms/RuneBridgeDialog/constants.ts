@@ -16,6 +16,6 @@ export const lastScannedBtcBlockPath = 'last-scanned-btc-block/';
 
 export const depositsPath = 'deposits';
 
-export const runesRSK = 'runesrsk';
+export const runesRskBridgeName = 'runes';
 
-export const runesBOB = 'runesbob';
+export const runesBobBridgeName = 'runesbob';

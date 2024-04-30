@@ -16,34 +16,30 @@ import { StatusIcon } from '../../../../../2_molecules/StatusIcon/StatusIcon';
 import { TxIdWithNotification } from '../../../../../2_molecules/TxIdWithNotification/TransactionIdWithNotification';
 import { useAccount } from '../../../../../../hooks/useAccount';
 import { translations } from '../../../../../../locales/i18n';
-import {
-  getBtcExplorerUrl,
-  getRskExplorerUrl,
-} from '../../../../../../utils/helpers';
+import { getBtcExplorerUrl } from '../../../../../../utils/helpers';
 import { formatValue } from '../../../../../../utils/math';
 import {
   ReceiveflowStep,
   TransferStatusType,
 } from '../../../contexts/receiveflow';
 import { useReceiveFlowContext } from '../../../contexts/receiveflow';
-import { useTranslationContext } from '../../../contexts/translation';
+import { useChainDetails } from '../../../hooks/useChainDetails';
 
 const translation = translations.runeBridge.receive.statusScreen;
 
-const rskExplorerUrl = getRskExplorerUrl();
 const btcExplorerUrl = getBtcExplorerUrl();
 
 type StatusScreenProps = {
   onClose: () => void;
 };
 
-const formatTxStatus = (status: TransferStatusType, service: string) => {
+const formatTxStatus = (status: TransferStatusType, chainName: string) => {
   switch (status) {
     case 'detected':
     case 'seen':
     case 'sent_to_evm':
     case 'confirmed':
-      return t(translation.transferStatus[status], { service });
+      return t(translation.transferStatus[status], { chainName });
     default:
       return status;
   }
@@ -52,7 +48,7 @@ const formatTxStatus = (status: TransferStatusType, service: string) => {
 export const StatusScreen: React.FC<StatusScreenProps> = ({ onClose }) => {
   const { account } = useAccount();
   const { step, depositTx } = useReceiveFlowContext();
-  const { service, chainName } = useTranslationContext();
+  const { explorerUrl, chainName } = useChainDetails();
   const isProcessing = useMemo(
     () => step === ReceiveflowStep.PROCESSING,
     [step],
@@ -71,7 +67,7 @@ export const StatusScreen: React.FC<StatusScreenProps> = ({ onClose }) => {
         value: (
           <TxIdWithNotification
             value={account}
-            href={`${rskExplorerUrl}/address/${account}`}
+            href={`${explorerUrl}/address/${account}`}
           />
         ),
       },
@@ -124,7 +120,7 @@ export const StatusScreen: React.FC<StatusScreenProps> = ({ onClose }) => {
           <>
             <TxIdWithNotification
               value={currentTX.evmTransferTxHash}
-              href={`${rskExplorerUrl}/tx/${currentTX.evmTransferTxHash}`}
+              href={`${explorerUrl}/tx/${currentTX.evmTransferTxHash}`}
             />
           </>
         ) : (
@@ -132,7 +128,7 @@ export const StatusScreen: React.FC<StatusScreenProps> = ({ onClose }) => {
         ),
       },
     ].filter(x => x);
-  }, [account, chainName, depositTx]);
+  }, [account, chainName, depositTx, explorerUrl]);
 
   return (
     <>
@@ -150,7 +146,7 @@ export const StatusScreen: React.FC<StatusScreenProps> = ({ onClose }) => {
           />
         </div>
         <div className="mb-6">
-          {formatTxStatus(depositTx.currentTX.status, service)}
+          {formatTxStatus(depositTx.currentTX.status, chainName)}
         </div>
 
         <div className="bg-gray-80 border rounded border-gray-50 p-3 text-xs text-gray-30">

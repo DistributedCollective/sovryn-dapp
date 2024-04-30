@@ -985,9 +985,9 @@
             "title": "Rune Bridge",
             "tabs": {
                 "receiveLabel": "Receive",
-                "receiveInfoText": "Transfer Runes from Bitcoin to your {{service}} address",
+                "receiveInfoText": "Transfer Runes from Bitcoin to your {{chainName}} address",
                 "sendLabel": "Send",
-                "sendInfoText": "Transfer Rune Tokens from {{service}} to your Bitcoin address"
+                "sendInfoText": "Transfer Rune Tokens from {{chainName}} to your Bitcoin address"
             }
         },
         "instructions": {
@@ -1041,7 +1041,7 @@
                 "sending": "Sending",
                 "serviceFee": "Service fee",
                 "receiving": "Receiving",
-                "hash": "{{service}} TXID",
+                "hash": "{{chainName}} TXID",
                 "bitcoinTxId": "Bitcoin TXID"
             },
             "txDialog": {
@@ -1056,8 +1056,8 @@
                 "transferStatus": {
                     "detected": "Transfer detected",
                     "seen": "Runes received by the bridge",
-                    "sent_to_evm": "Rune Tokens transferred in {{service}}",
-                    "confirmed": "Rune Token transfer confirmed in {{service}}"
+                    "sent_to_evm": "Rune Tokens transferred in {{chainName}}",
+                    "confirmed": "Rune Token transfer confirmed in {{chainName}}"
                 },
                 "statusTitleProcessing": "Transfer processing...",
                 "statusTitleComplete": "Transfer complete",

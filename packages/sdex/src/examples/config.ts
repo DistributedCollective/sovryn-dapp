@@ -1,4 +1,4 @@
-export const bobMainnetPoolConfigs = [
+export const bobMainnetMockAmbientPoolConfigs = [
   // SOV Pairs
   {
     baseToken: {
@@ -15,8 +15,7 @@ export const bobMainnetPoolConfigs = [
     },
     price: 0.47,
     poolIdx: 410,
-    // NOTE: NEED TO MAKE SURE THAT WE PASS THE CORRECT AMOUNT AS THE BASE AMOUNT, WHICH MEANS WE NEED TO KNOW THE BASE AMOUNT IN ADVANCED
-    amountInBase: 1000, // baseToken is USDT, so need to pass USDT amount here
+    amountInBase: 1000,
     lpConduit: '0x1e894177d9f28CC3150ECB30E458bD9438D6C46e',
   },
   {
@@ -34,7 +33,7 @@ export const bobMainnetPoolConfigs = [
     },
     price: 0.47,
     poolIdx: 410,
-    amountInBase: 1000, // baseToken is SOV, so need to pass SOV amount here
+    amountInBase: 1000,
     lpConduit: '0x941fEF5263f46dc7c00CD122CcA2b8559CA8FB96',
   },
   {
@@ -52,7 +51,7 @@ export const bobMainnetPoolConfigs = [
     },
     price: 0.47,
     poolIdx: 410,
-    amountInBase: 1000, // baseToken is SOV, so need to pass SOV amount here
+    amountInBase: 1000,
     lpConduit: '0x83c0E209589782DDe525Dfa20Ad19a502841eAA6',
   },
   {
@@ -70,7 +69,7 @@ export const bobMainnetPoolConfigs = [
     },
     price: 31330,
     poolIdx: 410,
-    amountInBase: 1000, // baseToken is SOV, so need to pass SOV amount here
+    amountInBase: 1000,
     lpConduit: '0x5F17b43703713eE66bF33C940782dABEf77247a8',
   },
   {
@@ -88,7 +87,7 @@ export const bobMainnetPoolConfigs = [
     },
     price: 25369,
     poolIdx: 410,
-    amountInBase: 1000, // baseToken is tBTC, so need to pass tBTC amount here
+    amountInBase: 1000,
     lpConduit: '0x9Fddb3a3D9a014A2A1F85DB3ebF6Ba5E26F4e5Ad',
   },
   {
@@ -106,7 +105,7 @@ export const bobMainnetPoolConfigs = [
     },
     price: 1522,
     poolIdx: 410,
-    amountInBase: 1000, // baseToken is ETH, so need to pass ETH amount here
+    amountInBase: 1000,
     lpConduit: '0x0866A012aFB48e72E45ee12A4410aaa6CeD7E212',
   },
   {
@@ -124,7 +123,7 @@ export const bobMainnetPoolConfigs = [
     },
     price: 1522,
     poolIdx: 410,
-    amountInBase: 1000, // baseToken is MOCK_WSTETH, so need to pass MOCK_WSTETH amount here
+    amountInBase: 1000,
     lpConduit: '0x52bD02eCC0C198B5D6200f5E1eD58fefac643B88',
   },
   {
@@ -142,7 +141,83 @@ export const bobMainnetPoolConfigs = [
     },
     price: 1522,
     poolIdx: 410,
-    amountInBase: 1000, // baseToken is rETH, so need to pass rETH amount here
+    amountInBase: 1000,
     lpConduit: '0x6Cd59dF6D7dE6C12A76ded2141c71c08e4b70330',
+  },
+];
+
+export const bobMainnetMockConcentratedPoolConfigs = [
+  // Additional pairs
+  {
+    baseToken: {
+      tokenSymbol: 'DLLR',
+      tokenDeploymentName: 'MOCK_DLLR',
+      isNativeToken: false,
+      tokenAddress: '0xf545c0d1BaAAF7De1d2E0B2d2c1D59a0338ecCC2',
+    },
+    quoteToken: {
+      tokenSymbol: 'SOV',
+      tokenDeploymentName: 'MOCK_SOV',
+      isNativeToken: false,
+      tokenAddress: '0x93A37dDD1860a14C2d740f576C6BE5502A1ef06b',
+    },
+    price: 0.47,
+    poolIdx: 410,
+    amountInBase: 1000,
+    range: [0, 0], // @todo update this
+  },
+  {
+    baseToken: {
+      tokenSymbol: 'USDC',
+      tokenDeploymentName: 'MOCK_USDC',
+      isNativeToken: false,
+      tokenAddress: '0xBd95925809F916eCFe140f6Ef70eA43185c0ECD9',
+    },
+    quoteToken: {
+      tokenSymbol: 'USDT',
+      tokenDeploymentName: 'MOCK_USDT',
+      isNativeToken: false,
+      tokenAddress: '0x26bF6A30286cE03176BF3B026Aa1f87b566ca891',
+    },
+    price: 0.47,
+    poolIdx: 410,
+    amountInBase: 1000,
+    range: [0, 0], // @todo update this
+  },
+  {
+    baseToken: {
+      tokenSymbol: 'USDT',
+      tokenDeploymentName: 'MOCK_USDT',
+      isNativeToken: false,
+      tokenAddress: '0x26bF6A30286cE03176BF3B026Aa1f87b566ca891',
+    },
+    quoteToken: {
+      tokenSymbol: 'DLLR',
+      tokenDeploymentName: 'MOCK_DLLR',
+      isNativeToken: false,
+      tokenAddress: '0xf545c0d1BaAAF7De1d2E0B2d2c1D59a0338ecCC2',
+    },
+    price: 0.47,
+    poolIdx: 410,
+    amountInBase: 1000,
+    range: [0, 0], // @todo update this
+  },
+  {
+    baseToken: {
+      tokenSymbol: 'TBTC',
+      tokenDeploymentName: 'MOCK_tBTC',
+      isNativeToken: false,
+      tokenAddress: '0x42527B3ba7100ECA14c9405016752B6121328582',
+    },
+    quoteToken: {
+      tokenSymbol: 'WBTC',
+      tokenDeploymentName: 'MOCK_WBTC',
+      isNativeToken: false,
+      tokenAddress: '0xF40A3C629661AF37010FAFbACA2eb4aA37d9abAa',
+    },
+    price: 1522,
+    poolIdx: 410,
+    amountInBase: 1000,
+    range: [0, 0], // @todo update this
   },
 ];

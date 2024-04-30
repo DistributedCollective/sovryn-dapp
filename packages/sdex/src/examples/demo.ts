@@ -3,8 +3,14 @@ import { ethers } from 'ethers';
 
 //import { ERC20_READ_ABI } from '../abis/erc20.read';
 import { CrocEnv } from '../croc';
-import { bobMainnetPoolConfigs } from './config';
-import { createPositionAmbientLiquidity } from './helper';
+import {
+  bobMainnetMockAmbientPoolConfigs,
+  bobMainnetMockConcentratedPoolConfigs,
+} from './config';
+import {
+  createPositionAmbientLiquidity,
+  createPositionConcentratedLiquidity,
+} from './helper';
 
 // import { priceToTick } from '../utils/price';
 
@@ -31,6 +37,7 @@ const KEY =
   '0x7c5e2cfbba7b00ba95e5ed7cd80566021da709442e147ad3e08f23f5044a3d5a';
 
 // const SLIPPAGE_TORELANCE = 0.05; // 0.05%
+type TickRange = [number, number];
 
 async function demo() {
   const wallet = new ethers.Wallet(KEY);
@@ -81,7 +88,7 @@ async function demo() {
 
   const slippageTolerancePercentage = 10; // 10%
 
-  for (const poolConfig of bobMainnetPoolConfigs) {
+  for (const poolConfig of bobMainnetMockAmbientPoolConfigs) {
     const price = poolConfig.price;
     await createPositionAmbientLiquidity(croc, {
       base: poolConfig.baseToken.tokenAddress,
@@ -89,6 +96,19 @@ async function demo() {
       poolIndex: poolConfig.poolIdx,
       amountInBase: poolConfig.amountInBase, // decimal not yet considered here
       lpConduit: poolConfig.lpConduit,
+      price: price, // price
+      slippageTolerancePercentage,
+    });
+  }
+
+  for (const poolConfig of bobMainnetMockConcentratedPoolConfigs) {
+    const price = poolConfig.price;
+    await createPositionConcentratedLiquidity(croc, {
+      base: poolConfig.baseToken.tokenAddress,
+      quote: poolConfig.quoteToken.tokenAddress,
+      poolIndex: poolConfig.poolIdx,
+      amountInBase: poolConfig.amountInBase, // decimal not yet considered here
+      range: poolConfig.range as TickRange,
       price: price, // price
       slippageTolerancePercentage,
     });

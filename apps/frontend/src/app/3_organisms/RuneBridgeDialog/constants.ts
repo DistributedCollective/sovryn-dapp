@@ -15,3 +15,7 @@ export const depositAddressPath = 'deposit-addresses/';
 export const lastScannedBtcBlockPath = 'last-scanned-btc-block/';
 
 export const depositsPath = 'deposits';
+
+export const runesRSK = 'runesrsk';
+
+export const runesBOB = 'runesbob';

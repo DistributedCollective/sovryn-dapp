@@ -67,6 +67,10 @@ const LeaderboardPage = loadable(
   () => import('./app/5_pages/LeaderboardPage/LeaderboardPage'),
 );
 
+const ClaimLpPage = loadable(
+  () => import('./app/5_pages/ClaimLpPage/ClaimLpPage'),
+);
+
 const routes = [
   {
     path: '/',
@@ -157,6 +161,10 @@ const routes = [
       {
         path: '/bob/amm',
         element: <BobAmmPage />,
+      },
+      {
+        path: '/claim-lp',
+        element: <ClaimLpPage />,
       },
     ],
   },

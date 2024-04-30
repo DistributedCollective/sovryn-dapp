@@ -1,6 +1,7 @@
 import React, { FC, useCallback, useMemo, useRef, useState } from 'react';
 
 import { t } from 'i18next';
+import { Link } from 'react-router-dom';
 
 import { Table } from '@sovryn/ui';
 
@@ -61,6 +62,14 @@ export const AmbientPoolsTable: FC = () => {
 
   return (
     <div ref={tableRef} className="bg-gray-90 py-4 px-4 rounded w-full mt-8">
+      <div className="flex justify-end mb-4">
+        <Link
+          to="/claim-lp"
+          className="text-primary-20 text-sm hover:text-primary-10"
+        >
+          {t(translations.claimLpPage.ammCta)}
+        </Link>
+      </div>
       <Table
         columns={COLUMNS_CONFIG}
         rows={ammPools}

@@ -29,7 +29,7 @@ import {
   MINIMUM_COLLATERAL_RATIO_LENDING_POOLS_SOV,
 } from '../../../../../constants/lending';
 import { getTokenDisplayName } from '../../../../../constants/tokens';
-import { useMaintenance } from '../../../../../hooks/useMaintenance';
+import { useIsDappLocked } from '../../../../../hooks/maintenances/useIsDappLocked';
 import { useQueryRate } from '../../../../../hooks/useQueryRate';
 import { translations } from '../../../../../locales/i18n';
 import { COMMON_SYMBOLS } from '../../../../../utils/asset';
@@ -51,8 +51,7 @@ type ExtendLoanFormProps = {
 };
 
 export const ExtendLoanForm: FC<ExtendLoanFormProps> = ({ loan }) => {
-  const { checkMaintenance, States } = useMaintenance();
-  const dappLocked = checkMaintenance(States.FULLD2);
+  const dappLocked = useIsDappLocked();
 
   const minRollOverDate = useMemo(
     () =>

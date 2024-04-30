@@ -65,3 +65,5 @@ export const GOBOB_LINK = 'https://gobob.sovryn.app';
 export const SEPOLIA_FAUCET_LINK = 'https://sepolia-faucet.pk910.de';
 
 export const BOB_DOCS_LINK = 'https://docs.gobob.xyz/';
+
+export const ROOTSTOCK_LINK = 'https://rootstock.io/';

@@ -5,7 +5,7 @@ import { Trans } from 'react-i18next';
 
 import { Accordion, Link, Paragraph } from '@sovryn/ui';
 
-import { BOB_DOCS_LINK } from '../../../../../constants/links';
+import { BOB_DOCS_LINK, ROOTSTOCK_LINK } from '../../../../../constants/links';
 import { translations } from '../../../../../locales/i18n';
 
 const pageTranslations = translations.landingPage.faqSection;
@@ -24,6 +24,11 @@ const faqData = [
           <Link
             text={t(pageTranslations.list.second.cta)}
             href={BOB_DOCS_LINK}
+            openNewTab
+          />,
+          <Link
+            text={t(pageTranslations.list.second.cta2)}
+            href={ROOTSTOCK_LINK}
             openNewTab
           />,
         ]}

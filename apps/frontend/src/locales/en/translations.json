@@ -458,8 +458,9 @@
                 },
                 "second": {
                     "title": "On which blockchain does Sovryn operate?",
-                    "description": "Sovryn currently operates on two chains—BOB and Rootstock.<br/><br/><0>BOB (Build on Bitcoin)</0> — a hybrid Layer-2 rollup secured by bitcoin and natively connected to Ethereum. It uses the Ethereum Virtual Machine.<br/><br/>Rootstock (RSK)—a smart-contract, merge-mined sidechain of bitcoin. Its engine is a forked version of the Ethereum Virtual Machine.<br/><br/>Both BOB and Rootstock are compatible with Ethereum smart contracts and the tools used to deploy and interact with them.",
-                    "cta": "BOB (Build on Bitcoin)"
+                    "description": "Sovryn currently operates on two chains—BOB and Rootstock.<br/><br/><0>BOB (Build on Bitcoin)</0> — a hybrid Layer-2 rollup secured by bitcoin and natively connected to Ethereum. It uses the Ethereum Virtual Machine.<br/><br/><1>Rootstock (RSK)</1>—a smart-contract, merge-mined sidechain of bitcoin. Its engine is a forked version of the Ethereum Virtual Machine.<br/><br/>Both BOB and Rootstock are compatible with Ethereum smart contracts and the tools used to deploy and interact with them.",
+                    "cta": "BOB (Build on Bitcoin)",
+                    "cta2": "Rootstock (RSK)"
                 },
                 "third": {
                     "title": "How do I get funds into Sovryn?",

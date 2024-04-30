@@ -48,6 +48,7 @@ export const ambientRoute: SwapRouteFunction = (
     const chainId = await getChainId();
     if (!poolCache[chainId]) {
       const pools = await fetchPools(chainId);
+      console.log('pools', pools);
       poolCache[chainId] = pools;
     }
 

@@ -1,6 +1,6 @@
 import { BigNumber } from 'ethers';
 
-import { getAssetDataByAddress } from '@sovryn/contracts';
+import { getAssetContract, getAssetDataByAddress } from '@sovryn/contracts';
 import { ChainId, ChainIds } from '@sovryn/ethers-provider';
 import { CrocEnv, MAX_SQRT_PRICE, MIN_SQRT_PRICE } from '@sovryn/sdex';
 
@@ -96,7 +96,7 @@ const INDEXER = {
 };
 
 // Fetch pools from the indexer and return list of pairs if assets are supported by chain
-export const fetchPools = async (chainId: ChainId) => {
+export const fetchPoolsFromIndexer = async (chainId: ChainId) => {
   if (!INDEXER[chainId]) return [];
   const response = await fetch(`${INDEXER[chainId]}?chainId=${chainId}`);
   const pools = await response
@@ -148,4 +148,77 @@ export const fetchPools = async (chainId: ChainId) => {
   }
 
   return items;
+};
+
+const POOLS = {
+  [ChainIds.BOB_MAINNET]: [
+    // real tokens
+    // ['USDC', 'USDT', 400],
+    // ['DAI', 'DLLR', 400],
+    // ['USDT', 'DLLR', 400],
+    // ['TBTC', 'wBTC', 400],
+    // ['RETH', 'ETH', 400],
+    // ['WSTETH', 'ETH', 400],
+    // ['DLLR', 'SOV', 410],
+    // ['USDT', 'SOV', 410],
+    // ['USDC', 'SOV', 410],
+    // ['DAI', 'SOV', 410],
+    // ['ETH', 'SOV', 410],
+    // ['WSTETH', 'SOV', 410],
+    // ['RETH', 'SOV', 410],
+    // ['WBTC', 'SOV', 410],
+    // ['TBTC', 'SOV', 410],
+    // ['POWA', 'SOV', 420],
+    // mock pools
+    ['mUSDC', 'mUSDT', 400],
+    ['mDAI', 'MDLLR', 400],
+    ['mUSDT', 'mDLLR', 400],
+    ['mTBTC', 'mwBTC', 400],
+    ['mRETH', 'ETH', 400],
+    ['mWSTETH', 'ETH', 400],
+    ['mDLLR', 'mSOV', 410],
+    ['mUSDT', 'mSOV', 410],
+    ['mUSDC', 'mSOV', 410],
+    ['mDAI', 'mSOV', 410],
+    ['ETH', 'mSOV', 410],
+    ['mWSTETH', 'mSOV', 410],
+    ['mRETH', 'mSOV', 410],
+    ['mWBTC', 'mSOV', 410],
+    ['mTBTC', 'mSOV', 410],
+    ['mPOWA', 'mSOV', 420],
+  ],
+  [ChainIds.BOB_TESTNET]: [
+    ['USDC', 'USDT', 36000],
+    ['DAI', 'DLLR', 36000],
+    ['USDT', 'DLLR', 36000],
+    ['TBTC', 'WBTC', 36000],
+    ['RETH', 'ETH', 36000],
+    ['WSTETH', 'ETH', 36000],
+    ['DLLR', 'SOV', 37000],
+    ['USDT', 'SOV', 37000],
+    ['USDC', 'SOV', 37000],
+    ['DAI', 'SOV', 37000],
+    ['ETH', 'SOV', 37000],
+    ['WSTETH', 'SOV', 37000],
+    ['RETH', 'SOV', 37000],
+    ['WBTC', 'SOV', 37000],
+    ['TBTC', 'SOV', 37000],
+    ['POWA', 'SOV', 38000],
+  ],
+  [ChainIds.SEPOLIA]: [['USDC', 'USDT', 36000]],
+};
+
+export const fetchPools = async (chainId: ChainId) => {
+  const items = await Promise.all(
+    (POOLS[chainId] ?? []).map(async pool => [
+      (await getAssetContract(pool[0], chainId)).address,
+      (await getAssetContract(pool[1], chainId)).address,
+      pool[2],
+    ]),
+  );
+  return items.map(item => {
+    const [base, quote] =
+      item[0] < item[1] ? [item[0], item[1]] : [item[1], item[0]];
+    return [base, quote, item[2]];
+  }) as PoolWithIndex[];
 };

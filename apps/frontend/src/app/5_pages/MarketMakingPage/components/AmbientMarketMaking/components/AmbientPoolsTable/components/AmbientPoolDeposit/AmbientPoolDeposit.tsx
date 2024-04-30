@@ -18,7 +18,10 @@ export const AmbientPoolDeposit: FC<AmbientPoolDepositProps> = ({ pool }) => {
   const [isOpen, setIsOpen] = useState(false);
   const { account } = useAccount();
 
-  const onClick = useCallback(() => setIsOpen(true), []);
+  const onClick = useCallback((e: React.MouseEvent<Element, MouseEvent>) => {
+    e.stopPropagation();
+    setIsOpen(true);
+  }, []);
   const handleClose = useCallback(() => setIsOpen(false), []);
 
   return (

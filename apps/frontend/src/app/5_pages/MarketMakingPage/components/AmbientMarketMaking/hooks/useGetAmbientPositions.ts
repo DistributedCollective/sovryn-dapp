@@ -3,7 +3,6 @@ import axios from 'axios';
 import { useCrocContext } from '../../../../../../contexts/CrocContext';
 import { useCacheCall } from '../../../../../../hooks';
 import { useAccount } from '../../../../../../hooks/useAccount';
-import { useBlockNumber } from '../../../../../../hooks/useBlockNumber';
 import { useCurrentChain } from '../../../../../../hooks/useChainStore';
 import { useTokenDetailsByAsset } from '../../../../../../hooks/useTokenDetailsByAsset';
 import { getIndexerUri } from '../../../../../../utils/indexer';
@@ -17,12 +16,12 @@ export const useGetAmbientPositions = (pool: AmbientLiquidityPool) => {
   const { account } = useAccount();
   const baseToken = useTokenDetailsByAsset(pool.base, pool.chainId);
   const quoteToken = useTokenDetailsByAsset(pool.quote, pool.chainId);
-  const { value: blockNumber } = useBlockNumber(chainId);
 
   const { value: positions, loading } = useCacheCall(
     `user-pools-balance/${pool.base}/${pool.quote}/${pool.poolIndex}/${account}`,
     chainId,
     async () => {
+      console.log('getting user pools balance');
       if (!baseToken || !quoteToken || !account || !croc) {
         return [];
       }
@@ -90,14 +89,7 @@ export const useGetAmbientPositions = (pool: AmbientLiquidityPool) => {
         return [];
       }
     },
-    [
-      baseToken?.address,
-      quoteToken?.address,
-      pool.poolIndex,
-      account,
-      blockNumber,
-      chainId,
-    ],
+    [baseToken?.address, quoteToken?.address, pool.poolIndex, account, chainId],
     [],
   );
 

@@ -4,6 +4,7 @@ import { Subscription } from 'rxjs';
 
 import { ChainId } from '@sovryn/ethers-provider';
 
+import { useTransactionContext } from '../contexts/TransactionContext';
 import {
   CacheCallOptions,
   observeCall,
@@ -28,6 +29,7 @@ export const useCacheCall = <T>(
 ): State<T> => {
   const isMounted = useIsMounted();
   const { value: block } = useBlockNumber(chain);
+  const { txTrigger } = useTransactionContext();
 
   const [state, setState] = useState<State<T>>({
     value: defaultValue ?? (null as T),
@@ -36,7 +38,7 @@ export const useCacheCall = <T>(
   });
 
   useEffect(() => {
-    if (!isMounted() || !block) {
+    if (!isMounted()) {
       return;
     }
 
@@ -62,7 +64,7 @@ export const useCacheCall = <T>(
       }
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [block, key, JSON.stringify(deps)]);
+  }, [txTrigger, key, JSON.stringify(deps)]);
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   return useMemo(() => state, [JSON.stringify(state)]);

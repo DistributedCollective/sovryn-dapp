@@ -6,7 +6,7 @@ export const bobTestnet: Record<string, AsyncContractConfigData> = {
     getAbi: async () => (await import('../../abis/staking.json')).default,
   },
   runeBridge: {
-    address: '',
+    address: '0x8989E07E565966463C73dadE4c095DaC991e1dD2',
     getAbi: async () => (await import('../../abis/RuneBridge.json')).default,
   },
 };

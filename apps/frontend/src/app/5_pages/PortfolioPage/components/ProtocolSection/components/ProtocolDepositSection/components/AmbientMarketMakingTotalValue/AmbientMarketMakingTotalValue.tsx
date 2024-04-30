@@ -80,10 +80,6 @@ export const AmbientMarketMakingTotalValue: FC<ProtocolSectionProps> = ({
     }
   }, [account, onValueChange, totalBalance]);
 
-  console.log({
-    totalBalance: totalBalance.toString(),
-    positionValues,
-  });
   return (
     <>
       {positions.map((position, index) => {

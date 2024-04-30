@@ -29,7 +29,9 @@ export const AssetSection: FC = () => {
 
   useEffect(() => {
     setUsdValues({});
+    setSelectedCurrency(getNativeToken(chainId));
   }, [chainId]);
+
   const updateUsdValue = useCallback((token: string, usdValue: string) => {
     setUsdValues(prevUsdValues => {
       if (prevUsdValues[token] === usdValue) {
@@ -84,7 +86,7 @@ export const AssetSection: FC = () => {
         </div>
         {availableTokens.map(token => (
           <AssetBalanceRow
-            key={token}
+            key={`${token}-${chainId}`}
             token={token}
             updateUsdValue={(usdValue: string) =>
               updateUsdValue(token, usdValue)

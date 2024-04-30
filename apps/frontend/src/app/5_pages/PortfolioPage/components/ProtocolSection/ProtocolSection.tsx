@@ -65,6 +65,7 @@ export const ProtocolSection: FC = () => {
   useEffect(() => {
     setProtocolValues({});
     setValue(Decimal.ZERO);
+    setSelectedCurrency(getNativeToken(chainId));
   }, [chainId]);
 
   return (

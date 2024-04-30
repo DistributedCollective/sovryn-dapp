@@ -15,7 +15,8 @@ export const bobMainnetPoolConfigs = [
     },
     price: 0.47,
     poolIdx: 410,
-    amountInBase: 1000, // NOTE: NEED TO MAKE SURE THAT WE PASS THE CORRECT AMOUNT AS THE BASE AMOUNT, WHICH MEANS WE NEED TO KNOW THE BASE AMOUNT IN ADVANCED
+    // NOTE: NEED TO MAKE SURE THAT WE PASS THE CORRECT AMOUNT AS THE BASE AMOUNT, WHICH MEANS WE NEED TO KNOW THE BASE AMOUNT IN ADVANCED
+    amountInBase: 1000, // baseToken is USDT, so need to pass USDT amount here
     lpConduit: '0x1e894177d9f28CC3150ECB30E458bD9438D6C46e',
   },
   {
@@ -33,7 +34,7 @@ export const bobMainnetPoolConfigs = [
     },
     price: 0.47,
     poolIdx: 410,
-    amountInBase: 1000,
+    amountInBase: 1000, // baseToken is SOV, so need to pass SOV amount here
     lpConduit: '0x941fEF5263f46dc7c00CD122CcA2b8559CA8FB96',
   },
   {
@@ -51,7 +52,7 @@ export const bobMainnetPoolConfigs = [
     },
     price: 0.47,
     poolIdx: 410,
-    amountInBase: 1000,
+    amountInBase: 1000, // baseToken is SOV, so need to pass SOV amount here
     lpConduit: '0x83c0E209589782DDe525Dfa20Ad19a502841eAA6',
   },
   {
@@ -67,9 +68,9 @@ export const bobMainnetPoolConfigs = [
       isNativeToken: false,
       tokenAddress: '0x93A37dDD1860a14C2d740f576C6BE5502A1ef06b',
     },
-    price: 31330, // paired to SOV (eDLLR/eSOV) --> means 1 eDLLR = 0.47 eSOV
+    price: 31330,
     poolIdx: 410,
-    amountInBase: 1000,
+    amountInBase: 1000, // baseToken is SOV, so need to pass SOV amount here
     lpConduit: '0x5F17b43703713eE66bF33C940782dABEf77247a8',
   },
   {
@@ -87,7 +88,7 @@ export const bobMainnetPoolConfigs = [
     },
     price: 25369,
     poolIdx: 410,
-    amountInBase: 1000,
+    amountInBase: 1000, // baseToken is tBTC, so need to pass tBTC amount here
     lpConduit: '0x9Fddb3a3D9a014A2A1F85DB3ebF6Ba5E26F4e5Ad',
   },
   {
@@ -103,9 +104,9 @@ export const bobMainnetPoolConfigs = [
       isNativeToken: false,
       tokenAddress: '0x93A37dDD1860a14C2d740f576C6BE5502A1ef06b',
     },
-    price: 1522, // paired to SOV (ETH/eSOV) --> means 1 ETH = 1522 eSOV
+    price: 1522,
     poolIdx: 410,
-    amountInBase: 1000,
+    amountInBase: 1000, // baseToken is ETH, so need to pass ETH amount here
     lpConduit: '0x0866A012aFB48e72E45ee12A4410aaa6CeD7E212',
   },
   {
@@ -123,7 +124,7 @@ export const bobMainnetPoolConfigs = [
     },
     price: 1522,
     poolIdx: 410,
-    amountInBase: 1000,
+    amountInBase: 1000, // baseToken is MOCK_WSTETH, so need to pass MOCK_WSTETH amount here
     lpConduit: '0x52bD02eCC0C198B5D6200f5E1eD58fefac643B88',
   },
   {
@@ -141,7 +142,7 @@ export const bobMainnetPoolConfigs = [
     },
     price: 1522,
     poolIdx: 410,
-    amountInBase: 1000,
+    amountInBase: 1000, // baseToken is rETH, so need to pass rETH amount here
     lpConduit: '0x6Cd59dF6D7dE6C12A76ded2141c71c08e4b70330',
   },
 ];

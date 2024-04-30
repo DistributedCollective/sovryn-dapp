@@ -998,7 +998,7 @@
             "receive": {
                 "onlyRunes": "Only transfer Runes, not Bitcoin",
                 "onlySupportedRunes": "Only transfer Runes that are supported by the bridge, visible on the next page. Transfers of unsupported Runes will not be processed",
-                "postage": "Set the postage to at least {{postageSat}} Satoshi ({{postageBtc}} BTC)"
+                "postage": "Set the postage to at least {{postageSat}} satoshi ({{postageBtc}} BTC)"
             },
             "send": {
                 "wallet": "Only transfer Rune Tokens to a wallet that supports Runes, such as <0>the Ordinals wallet \"ord\"</0>. Runes sent to a Bitcoin wallet without support for Runes will be lost",

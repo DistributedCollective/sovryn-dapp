@@ -230,7 +230,8 @@ export async function createPositionConcentratedLiquidity(
     rangeMultipliers,
   }: CreateConcentratedPositionProps,
 ) {
-  const [baseToken, quoteToken] = base < quote ? [base, quote] : [quote, base];
+  // const [baseToken, quoteToken] = base < quote ? [base, quote] : [quote, base];
+  const [baseToken, quoteToken] = [base, quote]; // : [quote, base];
   const pool = env.pool(baseToken, quoteToken, poolIndex);
 
   const poolPrice = await pool.displayPrice();
@@ -274,24 +275,32 @@ export async function createPositionConcentratedLiquidity(
     decimals: decimals,
   });
 
-  const mintData = await (!expectedBase
-    ? pool.mintRangeBase(
-        amount,
-        [ticks.low, ticks.high],
-        [limits.min, limits.max],
-        {
-          surplus: [false, false],
-        },
-      )
-    : pool.mintRangeQuote(
-        amount,
-        [ticks.low, ticks.high],
-        [limits.min, limits.max],
-        {
-          surplus: [false, false],
-        },
-      ));
-
+  // const mintData = await (!expectedBase
+  //   ? pool.mintRangeBase(
+  //       amount,
+  //       [ticks.low, ticks.high],
+  //       [limits.min, limits.max],
+  //       {
+  //         surplus: [false, false],
+  //       },
+  //     )
+  //   : pool.mintRangeQuote(
+  //       amount,
+  //       [ticks.low, ticks.high],
+  //       [limits.min, limits.max],
+  //       {
+  //         surplus: [false, false],
+  //       },
+  //     ));
+  const mintData = await pool.mintRangeQuote(
+    amount,
+    [ticks.low, ticks.high],
+    [limits.min, limits.max],
+    {
+      surplus: [false, false],
+    },
+  );
+  console.log('expectedBase:', expectedBase);
   console.log('to', mintData.contract.address);
   console.log('calldata', mintData.calldata);
   console.log('value:', mintData.txArgs?.value?.toString());

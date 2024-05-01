@@ -60,9 +60,9 @@ export class SmartRouter {
 
     const quotes = await Promise.all(
       routes.map(async route => {
-        const quote = await route
-          .quote(entry, destination, amount)
-          .catch(console.error);
+        const quote = await route.quote(entry, destination, amount).catch(e => {
+          throw e;
+        });
         if (!quote) {
           return { route, quote: BigNumber.from(0) };
         }
@@ -84,7 +84,13 @@ export class SmartRouter {
     quote: string,
     amount: BigNumberish,
   ): Promise<BestRouteQuote> {
-    const routes = await this.getQuotes(chain, base, quote, amount);
+    let routes: BestRouteQuote[] = [];
+
+    try {
+      routes = await this.getQuotes(chain, base, quote, amount);
+    } catch (e) {
+      throw e;
+    }
 
     if (routes.length === 0) {
       throw new Error('No routes available');

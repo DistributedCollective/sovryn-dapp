@@ -1,5 +1,5 @@
 ---
-'@sovryn/sdk': patch
+'@sovryn/sdk': minor
 ---
 
 feat: allow multichain for smart router

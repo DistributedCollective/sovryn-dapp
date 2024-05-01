@@ -2,4 +2,5 @@
 '@sovryn/contracts': minor
 ---
 
-SOV-3966: refactor assets list
+Major refactoring to support multichain functionality
+BoB chain contract definitions

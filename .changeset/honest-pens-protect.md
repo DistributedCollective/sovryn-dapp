@@ -2,4 +2,5 @@
 "@sovryn/utils": patch
 ---
 
-fix: change pool prices
+Major refactoring for BOB chain launch
+

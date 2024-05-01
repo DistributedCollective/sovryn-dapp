@@ -1,6 +1,5 @@
 ---
-"frontend": patch
-"@sovryn/contracts": patch
+"@sovryn/contracts": minor
 ---
 
-SOV-3930: Staking page updates
+Major refactoring for BOB chain launch

@@ -2,4 +2,4 @@
 '@sovryn/sdk': minor
 ---
 
-SOV-3966: refactor token list
+Major refactoring for BOB chain launch

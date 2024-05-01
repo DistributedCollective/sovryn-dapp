@@ -118,7 +118,9 @@ export const BridgeMenuItem: FC<BridgeMenuItemProps> = ({ dataAttribute }) => {
               : t('header.nav.bridges.subMenu.btcBridgeDescription_BOB')
           }
           dataAttribute={`dapp-menu-btcBridge`}
-          className="no-underline"
+          className={classNames('no-underline', {
+            hidden: !isRskChain(chainId),
+          })}
           onClick={handleBtcClicked}
         />
         <MenuItem

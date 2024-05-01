@@ -119,12 +119,11 @@
                     "tokenBridge": "Stablecoins",
                     "tokenBridgeDescription": "Transfer between RSK and other chains",
                     "btcBridge": "BTC",
-                    "btcBridgeDescription": "Transfer between Bitcoin and Sovryn",
-                    "btcBridgeDescription_BOB": "Transfer between Sovryn and other chains",
+                    "btcBridgeDescription": "Transfer between Bitcoin and RSK",
                     "ethBridge": "ETH",
-                    "ethBridgeDescription": "Transfer between Ethereum and Sovryn",
+                    "ethBridgeDescription": "Transfer between BOB and other chains",
                     "ercBridge": "ERC-20",
-                    "ercBridgeDescription": "Transfer between Ethereum and Sovryn"
+                    "ercBridgeDescription": "Transfer between BOB and other chains"
                 }
             }
         }

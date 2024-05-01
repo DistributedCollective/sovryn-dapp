@@ -369,3 +369,79 @@ export const bobMainnetAmbientPoolConfigs = [
     lpConduit: '',
   },
 ];
+
+export const bobMainnetConcentratedPoolConfigs = [
+  // Additional pairs
+  {
+    baseToken: {
+      tokenSymbol: 'DLLR',
+      tokenDeploymentName: 'DLLR',
+      isNativeToken: false,
+      tokenAddress: '0xf3107eEC1e6F067552C035FD87199e1A5169CB20',
+    },
+    quoteToken: {
+      tokenSymbol: 'SOV',
+      tokenDeploymentName: 'SOV',
+      isNativeToken: false,
+      tokenAddress: '0xba20a5e63eeEFfFA6fD365E7e540628F8fC61474',
+    },
+    price: 0.47,
+    poolIdx: 400,
+    amountInBase: 1000,
+    rangeMultipliers: [0.2, 5], // [-80%, + 5X]
+  },
+  {
+    baseToken: {
+      tokenSymbol: 'USDC',
+      tokenDeploymentName: 'USDC',
+      isNativeToken: false,
+      tokenAddress: '0xe75D0fB2C24A55cA1e3F96781a2bCC7bdba058F0',
+    },
+    quoteToken: {
+      tokenSymbol: 'USDT',
+      tokenDeploymentName: 'USDT',
+      isNativeToken: false,
+      tokenAddress: '0x05d032ac25d322df992303dca074ee7392c117b9',
+    },
+    price: 1,
+    poolIdx: 400,
+    amountInBase: 1000,
+    rangeMultipliers: stablesRangeMultipliers,
+  },
+  {
+    baseToken: {
+      tokenSymbol: 'USDT',
+      tokenDeploymentName: 'USDT',
+      isNativeToken: false,
+      tokenAddress: '0x05d032ac25d322df992303dca074ee7392c117b9',
+    },
+    quoteToken: {
+      tokenSymbol: 'DLLR',
+      tokenDeploymentName: 'DLLR',
+      isNativeToken: false,
+      tokenAddress: '0xf3107eEC1e6F067552C035FD87199e1A5169CB20',
+    },
+    price: 1,
+    poolIdx: 400,
+    amountInBase: 1000,
+    rangeMultipliers: stablesRangeMultipliers,
+  },
+  {
+    baseToken: {
+      tokenSymbol: 'TBTC',
+      tokenDeploymentName: 'tBTC',
+      isNativeToken: false,
+      tokenAddress: '0xBBa2eF945D523C4e2608C9E1214C2Cc64D4fc2e2',
+    },
+    quoteToken: {
+      tokenSymbol: 'WBTC',
+      tokenDeploymentName: 'WBTC',
+      isNativeToken: false,
+      tokenAddress: '0x03c7054bcb39f7b2e5b2c7acb37583e32d70cfa3',
+    },
+    price: 1,
+    poolIdx: 400,
+    amountInBase: 1000,
+    rangeMultipliers: stablesRangeMultipliers,
+  },
+];

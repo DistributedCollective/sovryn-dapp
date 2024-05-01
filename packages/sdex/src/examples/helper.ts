@@ -1,6 +1,8 @@
 import { parseUnits } from 'ethers/lib/utils';
 
+import { MAX_TICK, MIN_TICK } from '../constants';
 import { CrocEnv } from '../croc';
+import { priceToTick } from '../utils';
 
 export interface IBurnAmbientLiquidity {
   base: string;
@@ -155,10 +157,16 @@ export async function createPositionAmbientLiquidity(
   console.log('to', mintData.contract.address);
   console.log('calldata', mintData.calldata);
   console.log('value:', mintData.txArgs?.value?.toString());
+
+  if (process.argv.includes('--tx')) {
+    const data = mintData.contract.interface.encodeFunctionData('userCmd', [
+      mintData.path,
+      mintData.calldata,
+    ]);
+    console.log('data:', data);
+  }
+
   console.log('-'.repeat(50));
-  //console.log('calldata', mintData);
-  //console.log('value:', mintData.txArgs?.value?.toString());
-  //console.log('-'.repeat(50));
 }
 
 export async function burnAmbientLiquidity(
@@ -222,9 +230,8 @@ export async function createPositionConcentratedLiquidity(
     rangeMultipliers,
   }: CreateConcentratedPositionProps,
 ) {
-  const pool = env.pool(base, quote, poolIndex);
-  //   const [baseToken, quoteToken] = base < quote ? [base, quote] : [quote, base];
-  const range: TickRange = rangeMultipliers.map(m => m * price) as TickRange;
+  const [baseToken, quoteToken] = base < quote ? [base, quote] : [quote, base];
+  const pool = env.pool(baseToken, quoteToken, poolIndex);
 
   const poolPrice = await pool.displayPrice();
 
@@ -234,6 +241,18 @@ export async function createPositionConcentratedLiquidity(
     slippageTolerancePercentage,
     false,
   );
+
+  const spotPrice = await pool.spotPrice();
+
+  const gridSize = (await env.context).chain.gridSize;
+
+  const minimumPrice = spotPrice * rangeMultipliers[0];
+  const maximumPrice = spotPrice * rangeMultipliers[1];
+
+  const ticks = {
+    low: roundDownTick(priceToTick(minimumPrice), gridSize),
+    high: roundUpTick(priceToTick(maximumPrice), gridSize),
+  };
 
   const expectedBase =
     pool.baseToken.tokenAddr.toLowerCase() === base.toLowerCase();
@@ -256,22 +275,35 @@ export async function createPositionConcentratedLiquidity(
   });
 
   const mintData = await (!expectedBase
-    ? pool.mintRangeBase(amount, range, [limits.min, limits.max], {
-        surplus: [false, false],
-      })
-    : pool.mintRangeQuote(amount, range, [limits.min, limits.max], {
-        surplus: [false, false],
-      }));
-
-  // const data = mintData.contract.interface.encodeFunctionData('userCmd', [
-  //   mintData.path,
-  //   mintData.calldata,
-  // ]);
+    ? pool.mintRangeBase(
+        amount,
+        [ticks.low, ticks.high],
+        [limits.min, limits.max],
+        {
+          surplus: [false, false],
+        },
+      )
+    : pool.mintRangeQuote(
+        amount,
+        [ticks.low, ticks.high],
+        [limits.min, limits.max],
+        {
+          surplus: [false, false],
+        },
+      ));
 
   console.log('to', mintData.contract.address);
-  // console.log('data', data);
   console.log('calldata', mintData.calldata);
   console.log('value:', mintData.txArgs?.value?.toString());
+
+  if (process.argv.includes('--tx')) {
+    const data = mintData.contract.interface.encodeFunctionData('userCmd', [
+      mintData.path,
+      mintData.calldata,
+    ]);
+    console.log('data:', data);
+  }
+
   console.log('-'.repeat(50));
 }
 
@@ -316,4 +348,16 @@ export async function burnConcentratedLiquidity(
     'encoded_data: ',
     await pool.burnRangeLiq(amount, range, limits, {}),
   );
+}
+
+export function roundDownTick(lowTick: number, nTicksGrid: number): number {
+  const tickGrid = Math.floor(lowTick / nTicksGrid) * nTicksGrid;
+  const horizon = Math.floor(MIN_TICK / nTicksGrid) * nTicksGrid;
+  return Math.max(tickGrid, horizon);
+}
+
+export function roundUpTick(highTick: number, nTicksGrid: number): number {
+  const tickGrid = Math.ceil(highTick / nTicksGrid) * nTicksGrid;
+  const horizon = Math.ceil(MAX_TICK / nTicksGrid) * nTicksGrid;
+  return Math.min(tickGrid, horizon);
 }

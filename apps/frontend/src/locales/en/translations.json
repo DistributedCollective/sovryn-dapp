@@ -1955,26 +1955,22 @@
     },
     "claimPowaPage": {
         "meta": {
-            "title": "Claim your POWA - Sovryn"
+            "title": "POWA to the People - Sovryn"
         },
-        "title": "Claim your POWA",
-        "subtitle": "Claim POWA points ",
-        "aboutCampaign": "About POWA campaign",
-        "claimDeposits": "Claim deposits",
-        "readMore": "Read more about Runes",
+        "title": "POWA to the People",
+        "subtitle": "Claim your POWA",
+        "claimPowa": "Claim your POWA",
+        "details": "Details about the POWA campaign",
         "descriptionValues": {
-            "aboutClaiming": "Claim your POWA points to get a airdrop of POWA - the Rune memecoin. After claiming you will be received POWA token to your RSK wallet address. POWA token tokens will be distributed in 3 batches:",
-            "firstAirdrop": "First airdrop: {{firstAirdropDate}}",
-            "secondAirdrop": "Second airdrop: {{secondAirdropDate}}",
-            "finalAirdrop": "Final airdrop: {{finalAirdropDate}}",
-            "rskAddress": "Haven’t provided your RSK wallet address yet?<br /><0>Submit you wallet address</0> for the airdrop before {{date}}.",
-            "rskAddressCTA": "Submit you wallet address"
+            "aboutClaiming": "Claim your POWA rune token to the same Rootstock address you used for the Trading and Staking leaderboards or the one you gave out in Gleam for the influence campaign. Make sure it’s connected now to Sovryn.",
+            "rskAddress": "Haven’t provided a Rootstock address yet? <0>Supply one here.</0>",
+            "rskAddressCTA": "Supply one here.",
+            "faq": "Got questions? Please ask in our <0>telegram channel.</0> ",
+            "faqCTA": "telegram channel."
         },
-        "longDescription": "Some other important information here if we have something to add. Lorem bitcoinae dollar situs ametus, consensusium adipiscing elitum, sed  do proofus-of-workium tempor incididunt ut blockchainus et dollar magna  aliqua.Ut miningus ad minim veniamus, quis nodus exercitationus  walletus.",
         "claimTx": {
-            "title": "Claim POWA deposits",
+            "title": "Claim your POWA",
             "description": "Claim your POWA points"
-        },
-        "disclaimer": "I understand that by claiming deposits now I will lose eligibility for the additional rewards"
+        }
     }
 }

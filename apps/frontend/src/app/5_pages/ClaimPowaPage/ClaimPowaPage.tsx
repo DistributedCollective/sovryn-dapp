@@ -1,13 +1,12 @@
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 
-import dayjs from 'dayjs';
 import { t } from 'i18next';
 import { Helmet } from 'react-helmet-async';
 import { Trans } from 'react-i18next';
 
 import {
   Button,
-  Checkbox,
+  ButtonSize,
   Heading,
   Link,
   Paragraph,
@@ -20,12 +19,10 @@ import { translations } from '../../../locales/i18n';
 import { isRskChain } from '../../../utils/chain';
 import {
   ABOUT_POWA_URL,
-  CAMPAIGN_URL,
-  FINAL_AIRDROP_DATE,
-  FIRST_AIRDROP_DATE,
-  SECOND_AIRDROP_DATE,
   SUBMIT_WALLET_URL,
+  TELEGRAM_POWA_URL,
 } from './ClaimPowaPage.constants';
+import iconPowa from './assets/powa.svg';
 import { Claim, useClaimPowa } from './hooks/useClaimPowa';
 
 const ClaimPowaPage: FC = () => {
@@ -34,16 +31,10 @@ const ClaimPowaPage: FC = () => {
   const [loading, setLoading] = useState(false);
   const [claimable, setClaimable] = useState<Claim[]>([]);
   const { claim, getUnclaimed } = useClaimPowa();
-  const [hasDisclaimerBeenChecked, setHasDisclaimerBeenChecked] =
-    useState(false);
 
   const canClaim = useMemo(
-    () =>
-      isRskChain(chainId) &&
-      claimable.length > 0 &&
-      !loading &&
-      hasDisclaimerBeenChecked,
-    [chainId, claimable.length, loading, hasDisclaimerBeenChecked],
+    () => isRskChain(chainId) && claimable.length > 0 && !loading,
+    [chainId, claimable.length, loading],
   );
 
   const handleClaim = useCallback(() => {
@@ -63,109 +54,78 @@ const ClaimPowaPage: FC = () => {
       <Helmet>
         <title>{t(translations.claimPowaPage.meta.title)}</title>
       </Helmet>
-      <div className="w-full flex flex-col items-center text-gray-10 mt-9 mb-12">
+      <div className="w-full flex flex-col items-center text-gray-10 mt-7 mb-12">
         <Heading className="text-base sm:text-2xl font-medium">
           {t(translations.claimPowaPage.title)}
         </Heading>
         <Paragraph
           size={ParagraphSize.base}
-          className="mt-2.5 sm:mt-4 font-medium text-center"
+          className="mt-2.5 sm:mt-3 font-medium text-center"
           children={t(translations.claimPowaPage.subtitle)}
         />
 
-        <Link
-          href={CAMPAIGN_URL}
-          text={t(translations.claimPowaPage.aboutCampaign)}
-          className="mt-4"
-        />
+        <div className="mt-12 w-full rounded sm:w-[32rem] p-4 bg-gray-90 font-medium">
+          <div className="flex items-start">
+            <img
+              src={iconPowa}
+              alt={t(translations.claimPowaPage.title)}
+              className="mr-3"
+            />
 
-        <div className="mt-4 w-full rounded sm:w-[30rem] p-4 bg-gray-90 font-medium ">
-          <Paragraph
-            className="text-xs text-gray-30"
-            children={t(
-              translations.claimPowaPage.descriptionValues.aboutClaiming,
-            )}
-          />
-          <div className="text-center my-2">
-            <div className="inline-flex flex-col text-left">
+            <div>
               <Paragraph
-                className="text-xs text-gray-30 leading-5"
+                className="text-xs text-gray-30 leading-5 mb-2"
                 children={t(
-                  translations.claimPowaPage.descriptionValues.firstAirdrop,
-                  {
-                    firstAirdropDate:
-                      dayjs(FIRST_AIRDROP_DATE).format('DD.MM.YY'),
-                  },
+                  translations.claimPowaPage.descriptionValues.aboutClaiming,
                 )}
               />
-              <Paragraph
-                className="text-xs text-gray-30 leading-5"
-                children={t(
-                  translations.claimPowaPage.descriptionValues.secondAirdrop,
-                  {
-                    secondAirdropDate:
-                      dayjs(SECOND_AIRDROP_DATE).format('DD.MM.YY'),
-                  },
-                )}
-              />
-              <Paragraph
-                className="text-xs text-gray-30 leading-5"
-                children={t(
-                  translations.claimPowaPage.descriptionValues.finalAirdrop,
-                  {
-                    finalAirdropDate:
-                      dayjs(FINAL_AIRDROP_DATE).format('DD.MM.YY'),
-                  },
-                )}
-              />
-            </div>
-          </div>
-          <div className="text-xs text-gray-30 mb-5">
-            <Trans
-              i18nKey={t(
-                translations.claimPowaPage.descriptionValues.rskAddress,
-                {
-                  date: dayjs(FINAL_AIRDROP_DATE).format('DD.MM.YY'),
-                },
-              )}
-              components={[
-                <Link
-                  text={t(
-                    translations.claimPowaPage.descriptionValues.rskAddressCTA,
+              <div className="text-xs text-gray-30 mb-2">
+                <Trans
+                  i18nKey={t(
+                    translations.claimPowaPage.descriptionValues.rskAddress,
                   )}
-                  href={SUBMIT_WALLET_URL}
-                />,
-              ]}
-            />
-          </div>
-          <div className="bg-gray-70 rounded p-3 mb-2.5">
-            <Paragraph
-              className="text-xs text-gray-30 leading-5"
-              children={t(translations.claimPowaPage.longDescription)}
-            />
-          </div>
-          <div className="my-2.5">
-            <Checkbox
-              checked={hasDisclaimerBeenChecked}
-              onChangeValue={setHasDisclaimerBeenChecked}
-              label={t(translations.claimPowaPage.disclaimer)}
-            />
-          </div>
-          <div className="mb-4 text-center">
-            <Button
-              text={t(translations.claimPowaPage.claimDeposits)}
-              className="grow-0 shrink w-full max-w-48"
-              disabled={!canClaim}
-              loading={loading}
-              onClick={handleClaim}
-            />
-          </div>
-          <div className="text-center">
-            <Link
-              href={ABOUT_POWA_URL}
-              text={t(translations.claimPowaPage.readMore)}
-              className="text-xs"
-            />
+                  components={[
+                    <Link
+                      text={t(
+                        translations.claimPowaPage.descriptionValues
+                          .rskAddressCTA,
+                      )}
+                      href={SUBMIT_WALLET_URL}
+                    />,
+                  ]}
+                />
+              </div>
+              <div className="text-xs text-gray-30 mb-5">
+                <Trans
+                  i18nKey={t(translations.claimPowaPage.descriptionValues.faq)}
+                  components={[
+                    <Link
+                      text={t(
+                        translations.claimPowaPage.descriptionValues.faqCTA,
+                      )}
+                      href={TELEGRAM_POWA_URL}
+                    />,
+                  ]}
+                />
+              </div>
+              <div className="mb-3 text-center pr-10">
+                <Button
+                  text={t(translations.claimPowaPage.claimPowa)}
+                  className="grow-0 shrink w-full max-w-60"
+                  disabled={!canClaim}
+                  loading={loading}
+                  onClick={handleClaim}
+                  size={ButtonSize.large}
+                />
+              </div>
+              <div className="text-center pr-10">
+                <Link
+                  href={ABOUT_POWA_URL}
+                  text={t(translations.claimPowaPage.details)}
+                  className="text-xs"
+                />
+              </div>
+            </div>
           </div>
         </div>
       </div>

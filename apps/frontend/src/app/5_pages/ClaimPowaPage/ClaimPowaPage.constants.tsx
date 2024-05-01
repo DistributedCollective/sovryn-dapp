@@ -1,7 +1,3 @@
-export const CAMPAIGN_URL = '';
-export const ABOUT_POWA_URL = '';
-export const SUBMIT_WALLET_URL = '';
-
-export const FIRST_AIRDROP_DATE = '2024-05-01T10:00:00Z';
-export const SECOND_AIRDROP_DATE = '2024-05-02T10:00:00Z';
-export const FINAL_AIRDROP_DATE = '2024-05-03T10:00:00Z';
+export const TELEGRAM_POWA_URL = 'https://t.me/SovrynBitcoin';
+export const ABOUT_POWA_URL = 'https://wiki.sovryn.com/en/campaign/powa';
+export const SUBMIT_WALLET_URL = 'https://gleam.io/EK36C/influence-powa';

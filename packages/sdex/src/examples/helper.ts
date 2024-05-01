@@ -181,9 +181,10 @@ export async function burnAmbientLiquidity(
     slippageTolerancePercentage,
   }: IBurnAmbientLiquidity,
 ) {
-  const pool = croc.pool(base, quote, poolIndex);
-
   //   const [baseToken, quoteToken] = base < quote ? [base, quote] : [quote, base];
+  const [baseToken, quoteToken] = [base, quote]; // : [quote, base];
+  const pool = croc.pool(baseToken, quoteToken, poolIndex);
+
   const poolPrice = await pool.displayPrice();
 
   const slippagePercentage = (poolPrice / price) * 100;

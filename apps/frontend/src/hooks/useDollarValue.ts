@@ -41,10 +41,6 @@ export function useDollarValue(
     `dollarValue/${chain}/${asset}`,
     chain,
     async () => {
-      console.log({
-        assetDetails,
-        dllrDetails,
-      });
       if (
         !assetDetails?.address ||
         !dllrDetails?.address ||

@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useMemo } from 'react';
+import React, { FC, useCallback, useEffect, useMemo } from 'react';
 
 import { t } from 'i18next';
 
@@ -40,6 +40,7 @@ export const AmountForm: FC<AmountFormProps> = ({ pool }) => {
     maximumPrice,
     isBalancedRange,
     rangeWidth,
+    usesBaseToken,
   } = useDepositContext();
 
   const depositSkew = useMemo(
@@ -161,6 +162,46 @@ export const AmountForm: FC<AmountFormProps> = ({ pool }) => {
       getOtherTokenQuantity,
     ],
   );
+
+  const handleRangeChange = useCallback(async () => {
+    if (isBalancedRange) {
+      if (usesBaseToken) {
+        if (firstAssetValue === '0') {
+          return;
+        }
+        const secondAssetQuantity = await getOtherTokenQuantity(
+          firstAssetValue,
+          'A',
+          true,
+        );
+        setSecondAssetValue(secondAssetQuantity);
+      } else {
+        if (firstAssetValue === '0') {
+          return;
+        }
+        const firstAssetQuantity = await getOtherTokenQuantity(
+          secondAssetValue,
+          'B',
+          true,
+        );
+        setFirstAssetValue(firstAssetQuantity);
+      }
+    }
+  }, [
+    isBalancedRange,
+    usesBaseToken,
+    getOtherTokenQuantity,
+    firstAssetValue,
+    setSecondAssetValue,
+    secondAssetValue,
+    setFirstAssetValue,
+  ]);
+
+  useEffect(() => {
+    if (isBalancedRange) {
+      handleRangeChange();
+    }
+  }, [minimumPrice, maximumPrice, isBalancedRange, handleRangeChange]);
 
   return (
     <>

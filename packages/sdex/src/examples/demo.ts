@@ -168,22 +168,22 @@ async function demo() {
   //   price: price, // price
   //   slippageTolerancePercentage,
   // });
-  const lpConduit = '0x9Fddb3a3D9a014A2A1F85DB3ebF6Ba5E26F4e5Ad';
+  const lpConduit = '0x1e894177d9f28CC3150ECB30E458bD9438D6C46e';
   const SLIPPAGE_TORELANCE = 0.05; // 0.05%
   type PriceRange = [number, number];
-  const pool = croc.pool(tBTC, SOV, 410);
+  const pool = croc.pool(USDT, SOV, 410);
   const poolPrice = await pool.displayPrice();
   const limits: PriceRange = [
     poolPrice * (1 - SLIPPAGE_TORELANCE / 100),
     poolPrice * (1 + SLIPPAGE_TORELANCE / 100),
   ];
-  console.log('burning........');
+  console.log(`burning from USDT - SOV 0.01 LP token USDT`);
   console.log('pool price:', poolPrice);
   console.log(
     'encoded_data: ',
     //await pool.burnAmbientLiq(ethers.utils.parseEther('0.0193363'), limits, {
     await pool.burnAmbientLiq(
-      ethers.utils.parseEther('909.944828342431797637'), //909.944828342431797637
+      ethers.utils.parseEther('0.01'), //909.944828342431797637
       limits,
       {
         lpConduit: lpConduit,

@@ -218,7 +218,7 @@ export const bobMainnetMockConcentratedPoolConfigs = [
     },
     price: 1,
     poolIdx: 400,
-    amountInBase: 1000,
+    amountInBase: 1.5,
     rangeMultipliers: stablesRangeMultipliers,
   },
 ];

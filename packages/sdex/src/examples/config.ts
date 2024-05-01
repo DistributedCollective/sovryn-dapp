@@ -149,24 +149,24 @@ export const bobMainnetMockAmbientPoolConfigs = [
 const stablesRangeMultipliers = [0.99044, 1.01288];
 export const bobMainnetMockConcentratedPoolConfigs = [
   // Additional pairs
-  {
-    baseToken: {
-      tokenSymbol: 'DLLR',
-      tokenDeploymentName: 'MOCK_DLLR',
-      isNativeToken: false,
-      tokenAddress: '0xf545c0d1BaAAF7De1d2E0B2d2c1D59a0338ecCC2',
-    },
-    quoteToken: {
-      tokenSymbol: 'SOV',
-      tokenDeploymentName: 'MOCK_SOV',
-      isNativeToken: false,
-      tokenAddress: '0x93A37dDD1860a14C2d740f576C6BE5502A1ef06b',
-    },
-    price: 0.47,
-    poolIdx: 410,
-    amountInBase: 1000,
-    rangeMultipliers: [0.2, 5], // [-80%, + 5X]
-  },
+  //   {
+  //     baseToken: {
+  //       tokenSymbol: 'DLLR',
+  //       tokenDeploymentName: 'MOCK_DLLR',
+  //       isNativeToken: false,
+  //       tokenAddress: '0xf545c0d1BaAAF7De1d2E0B2d2c1D59a0338ecCC2',
+  //     },
+  //     quoteToken: {
+  //       tokenSymbol: 'SOV',
+  //       tokenDeploymentName: 'MOCK_SOV',
+  //       isNativeToken: false,
+  //       tokenAddress: '0x93A37dDD1860a14C2d740f576C6BE5502A1ef06b',
+  //     },
+  //     price: 0.47,
+  //     poolIdx: 410,
+  //     amountInBase: 1000,
+  //     rangeMultipliers: [0.2, 5], // [-80%, + 5X]
+  //   },
   {
     baseToken: {
       tokenSymbol: 'USDC',
@@ -180,8 +180,8 @@ export const bobMainnetMockConcentratedPoolConfigs = [
       isNativeToken: false,
       tokenAddress: '0x26bF6A30286cE03176BF3B026Aa1f87b566ca891',
     },
-    price: 0.47,
-    poolIdx: 410,
+    price: 1,
+    poolIdx: 400,
     amountInBase: 1000,
     rangeMultipliers: stablesRangeMultipliers,
   },
@@ -198,8 +198,8 @@ export const bobMainnetMockConcentratedPoolConfigs = [
       isNativeToken: false,
       tokenAddress: '0xf545c0d1BaAAF7De1d2E0B2d2c1D59a0338ecCC2',
     },
-    price: 0.47,
-    poolIdx: 410,
+    price: 1,
+    poolIdx: 400,
     amountInBase: 1000,
     rangeMultipliers: stablesRangeMultipliers,
   },
@@ -216,8 +216,8 @@ export const bobMainnetMockConcentratedPoolConfigs = [
       isNativeToken: false,
       tokenAddress: '0xF40A3C629661AF37010FAFbACA2eb4aA37d9abAa',
     },
-    price: 1522,
-    poolIdx: 410,
+    price: 1,
+    poolIdx: 400,
     amountInBase: 1000,
     rangeMultipliers: stablesRangeMultipliers,
   },

@@ -225,14 +225,15 @@ export async function createPositionConcentratedLiquidity(
   const pool = env.pool(base, quote, poolIndex);
   //   const [baseToken, quoteToken] = base < quote ? [base, quote] : [quote, base];
   const range: TickRange = rangeMultipliers.map(m => m * price) as TickRange;
+
   const poolPrice = await pool.displayPrice();
 
-  const slippagePercentage = (poolPrice / price) * 100;
-  if (slippagePercentage > slippageTolerancePercentage) {
-    throw new Error(
-      `createPosition:: Invalid slippage for token ${base} - ${quote}, expected ${slippageTolerancePercentage}% got ${slippagePercentage}%, with expected price: ${price}, got ${poolPrice}`,
-    );
-  }
+  checkWithinSlippageTolerancePercentage(
+    poolPrice,
+    price,
+    slippageTolerancePercentage,
+    false,
+  );
 
   const expectedBase =
     pool.baseToken.tokenAddr.toLowerCase() === base.toLowerCase();

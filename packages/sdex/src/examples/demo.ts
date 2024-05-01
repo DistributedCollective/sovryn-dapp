@@ -4,10 +4,12 @@ import { ethers } from 'ethers';
 //import { ERC20_READ_ABI } from '../abis/erc20.read';
 import { CrocEnv } from '../croc';
 import {
-  bobMainnetMockAmbientPoolConfigs, //bobMainnetMockConcentratedPoolConfigs,
+  // bobMainnetMockAmbientPoolConfigs,
+  bobMainnetMockConcentratedPoolConfigs, //bobMainnetMockConcentratedPoolConfigs,
 } from './config';
 import {
-  createPositionAmbientLiquidity, //createPositionConcentratedLiquidity, //burnAmbientLiquidity,
+  // createPositionAmbientLiquidity,
+  createPositionConcentratedLiquidity, //createPositionConcentratedLiquidity, //burnAmbientLiquidity,
 } from './helper';
 
 // import { priceToTick } from '../utils/price';
@@ -115,37 +117,37 @@ async function demo() {
 
   const slippageTolerancePercentage = 10; // 10%
 
-  for (const poolConfig of bobMainnetMockAmbientPoolConfigs) {
-    console.log(
-      `Processing ambient pool ${poolConfig.poolIdx} ${poolConfig.baseToken.tokenSymbol} - ${poolConfig.quoteToken.tokenSymbol} `,
-    );
-    const price = poolConfig.price;
-    await createPositionAmbientLiquidity(croc, {
-      base: poolConfig.baseToken.tokenAddress,
-      quote: poolConfig.quoteToken.tokenAddress,
-      poolIndex: poolConfig.poolIdx,
-      amountInBase: poolConfig.amountInBase, // decimal not yet considered here
-      lpConduit: poolConfig.lpConduit,
-      price: price, // price
-      slippageTolerancePercentage,
-    });
-  }
-
-  // for (const poolConfig of bobMainnetMockConcentratedPoolConfigs) {
+  // for (const poolConfig of bobMainnetMockAmbientPoolConfigs) {
   //   console.log(
-  //     `Processing concentrated pool ${poolConfig.poolIdx} ${poolConfig.baseToken.tokenSymbol} - ${poolConfig.quoteToken.tokenSymbol} `,
+  //     `Processing ambient pool ${poolConfig.poolIdx} ${poolConfig.baseToken.tokenSymbol} - ${poolConfig.quoteToken.tokenSymbol} `,
   //   );
   //   const price = poolConfig.price;
-  //   await createPositionConcentratedLiquidity(croc, {
+  //   await createPositionAmbientLiquidity(croc, {
   //     base: poolConfig.baseToken.tokenAddress,
   //     quote: poolConfig.quoteToken.tokenAddress,
   //     poolIndex: poolConfig.poolIdx,
   //     amountInBase: poolConfig.amountInBase, // decimal not yet considered here
-  //     rangeMultipliers: poolConfig.rangeMultipliers,
+  //     lpConduit: poolConfig.lpConduit,
   //     price: price, // price
   //     slippageTolerancePercentage,
   //   });
   // }
+
+  for (const poolConfig of bobMainnetMockConcentratedPoolConfigs) {
+    console.log(
+      `Processing concentrated pool ${poolConfig.poolIdx} ${poolConfig.baseToken.tokenSymbol} - ${poolConfig.quoteToken.tokenSymbol} `,
+    );
+    const price = poolConfig.price;
+    await createPositionConcentratedLiquidity(croc, {
+      base: poolConfig.baseToken.tokenAddress,
+      quote: poolConfig.quoteToken.tokenAddress,
+      poolIndex: poolConfig.poolIdx,
+      amountInBase: poolConfig.amountInBase, // decimal not yet considered here
+      rangeMultipliers: poolConfig.rangeMultipliers,
+      price: price, // price
+      slippageTolerancePercentage,
+    });
+  }
 
   // await burnAmbientLiquidity(croc, {
   //   base: USDT,

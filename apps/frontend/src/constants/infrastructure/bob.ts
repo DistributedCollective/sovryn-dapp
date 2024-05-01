@@ -18,8 +18,8 @@ export const BOB = {
       'https://bob-ambient-graphcache.test.sovryn.app/gcgo',
   },
   bridge: {
-    [Environments.Mainnet]: 'https://app.gobob.xyz',
-    [Environments.Testnet]: 'https://app.gobob.xyz',
+    [Environments.Mainnet]: 'https://app.gobob.xyz/bridge',
+    [Environments.Testnet]: 'https://app.gobob.xyz/bridge',
   },
   subgraph: {
     [Environments.Mainnet]:
